@@ -50,4 +50,3 @@ public interface VMClassLibrary
 	InputStream resourceAsStream(String __rc)
 		throws IOException, NullPointerException;
 }
-

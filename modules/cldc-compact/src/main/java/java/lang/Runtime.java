@@ -10,8 +10,6 @@
 
 package java.lang;
 
-import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 
@@ -75,7 +73,7 @@ public class Runtime
 	 */
 	public void gc()
 	{
-		Assembly.sysCall(SystemCallIndex.GARBAGE_COLLECT);
+		RuntimeShelf.garbageCollect();
 	}
 	
 	/**

@@ -123,8 +123,6 @@ public class SummerCoatBackend
 		// boot since it does not matter as the bootstrap should find the
 		// launcher or the correct program to load rather than having it
 		// baked into the ROM
-		PackMinimizer.minimize(__out, bootLib, new String[]{bootLib},
-			"cc.squirreljme.jvm.summercoat.Bootstrap",
-			false, __libs);
+		PackMinimizer.minimize(__out, bootLib, __libs);
 	}
 }

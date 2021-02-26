@@ -31,6 +31,17 @@ public abstract class Register
 	}
 	
 	/**
+	 * Returns this value as an integer value.
+	 * 
+	 * @return This register as an int value register.
+	 * @since 2020/11/28
+	 */
+	public IntValueRegister asIntValue()
+	{
+		return IntValueRegister.of(this.register);
+	}
+	
+	/**
 	 * Uses the same register in this class, but as a plain register.
 	 * 
 	 * @return The plain register.

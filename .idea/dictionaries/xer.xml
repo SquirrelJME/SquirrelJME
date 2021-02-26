@@ -1,10 +1,14 @@
 <component name="ProjectDictionaryState">
   <dictionary name="xer">
     <words>
+      <w>acache</w>
       <w>accel</w>
+      <w>aload</w>
       <w>anycoat</w>
+      <w>astore</w>
       <w>backlight</w>
       <w>baos</w>
+      <w>bipush</w>
       <w>bitfield</w>
       <w>bootram</w>
       <w>cldc</w>
@@ -21,8 +25,16 @@
       <w>fileselectors</w>
       <w>fprintf</w>
       <w>gawroriski</w>
+      <w>icache</w>
       <w>idleitem</w>
+      <w>ineg</w>
+      <w>invokeinterface</w>
+      <w>invokenonvirtual</w>
+      <w>invokespecial</w>
+      <w>invokevirtual</w>
       <w>ioob</w>
+      <w>ireturn</w>
+      <w>itable</w>
       <w>jarray</w>
       <w>javase</w>
       <w>jboolean</w>
@@ -46,6 +58,7 @@
       <w>jweak</w>
       <w>lcdui</w>
       <w>ljava</w>
+      <w>memhandle</w>
       <w>messg</w>
       <w>microedition</w>
       <w>midlet</w>
@@ -53,7 +66,9 @@
       <w>multiphasicapps</w>
       <w>narg</w>
       <w>nase</w>
+      <w>negv</w>
       <w>noassert</w>
+      <w>nokia</w>
       <w>nsee</w>
       <w>phasic</w>
       <w>roro</w>
@@ -74,11 +89,15 @@
       <w>uiform</w>
       <w>uiitem</w>
       <w>uiwidget</w>
+      <w>uncount</w>
       <w>ushort</w>
+      <w>vgame</w>
       <w>vmtypes</w>
       <w>vtable</w>
+      <w>wikipedia</w>
       <w>xemulator</w>
       <w>xsnapshot</w>
+      <w>xtable</w>
     </words>
   </dictionary>
 </component>

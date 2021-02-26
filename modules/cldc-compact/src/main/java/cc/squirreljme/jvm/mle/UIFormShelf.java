@@ -16,9 +16,9 @@ import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
-import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
+import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 
 /**
@@ -275,6 +275,17 @@ public final class UIFormShelf
 	 * @since 2020/07/18
 	 */
 	public static native void itemDelete(UIItemBracket __item)
+		throws MLECallError;
+	
+	/**
+	 * Returns the form the item is on.
+	 * 
+	 * @param __item The item to get.
+	 * @return The form the item is on.
+	 * @throws MLECallError If {@code __item} is {@code null}.
+	 * @since 2021/01/03
+	 */
+	public static native UIFormBracket itemForm(UIItemBracket __item)
 		throws MLECallError;
 	
 	/**

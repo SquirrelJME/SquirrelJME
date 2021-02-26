@@ -28,12 +28,12 @@ public abstract class AbstractImageDemo
 	extends MIDlet
 {
 	/** No mirrors. */
-	private static final int[] _NO_MIRROR =
+	static final int[] _NO_MIRROR =
 		new int[]{Sprite.TRANS_NONE, Sprite.TRANS_ROT90,
 			Sprite.TRANS_ROT180, Sprite.TRANS_ROT270};
 			
 	/** Mirrors. */
-	private static final int[] _MIRROR =
+	static final int[] _MIRROR =
 		new int[]{Sprite.TRANS_MIRROR, Sprite.TRANS_MIRROR_ROT90,
 			Sprite.TRANS_MIRROR_ROT180, Sprite.TRANS_MIRROR_ROT270};
 	
@@ -162,6 +162,10 @@ public abstract class AbstractImageDemo
 						(w * j), basey, 0);
 				basey += h;
 			}
+			
+			// Plain image drawing
+			__g.drawImage(image, 0, basey,
+				Graphics.TOP | Graphics.LEFT);
 		}
 	}
 }

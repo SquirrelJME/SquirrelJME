@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,11 +31,14 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.regex.Pattern;
@@ -331,7 +335,7 @@ public final class VMHelpers
 		
 		// Library is here?
 		return ((Path)raw).resolve(
-			System.mapLibraryName("emulator-base"));
+			System.mapLibraryName("emulator-base")).toAbsolutePath();
 	}
 	
 	/**
@@ -511,6 +515,65 @@ public final class VMHelpers
 				out.write(buf, 0, rc);
 			}
 		}
+	}
+	
+	/**
+	 * Resolves path elements as needed to determine where a file is.
+	 * 
+	 * @param __in The input to resolve.
+	 * @return The path of the given object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/12/27
+	 */
+	public static Iterable<Path> resolvePath(Object __in)
+		throws NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Direct file paths
+		if (__in instanceof Path)
+			return Collections.singleton((Path)__in);
+		else if (__in instanceof File)
+			return Collections.singleton(((File)__in).toPath());
+		
+		// A produced value
+		else if (__in instanceof Callable)
+			try
+			{
+				return VMHelpers.resolvePath(
+					((Callable<?>)__in).call());
+			}
+			catch (Exception e)
+			{
+				if (e instanceof RuntimeException)
+					throw (RuntimeException)e;
+				
+				throw new RuntimeException("Could not run Callable.", e);
+			}
+		
+		// A supplied value
+		else if (__in instanceof Supplier)
+			return VMHelpers.resolvePath(
+					((Supplier<?>)__in).get());
+		
+		// An iterable sequence
+		else if (__in instanceof Iterable)
+		{
+			List<Path> result = new ArrayList<>();
+			
+			// Process each one
+			for (Object obj : (Iterable<?>)__in)
+				for (Path sub : VMHelpers.resolvePath(obj))
+					result.add(sub);
+			
+			return result;
+		}
+		
+		// Unknown
+		else
+			throw new RuntimeException(String.format(
+				"Unknown input path type %s", __in.getClass()));			
 	}
 	
 	/**
@@ -739,7 +802,7 @@ public final class VMHelpers
 				return Collections.unmodifiableMap(singles);
 			
 			// If the test has no matching file, then just ignore it
-			__project.getLogger().info("Could not find test {}, ignoring.",
+			__project.getLogger().warn("Could not find test {}, ignoring.",
 				singleTest);
 		}
 		
@@ -867,13 +930,19 @@ public final class VMHelpers
 		
 		// If the test does not have a multi-parameter match it exactly.
 		// However if we requested a specific multi-parameter then match that
-		// as well
+		// as well.
+		// Convert slashes to dots as well for binary name usage
 		int la = __key.indexOf('@');
 		if (la < 0 || __singleTest.indexOf('@') >= 0)
-			return __key.equals(__singleTest);
+			return __key.equals(__singleTest) ||
+				__key.equals(__singleTest.replace('/', '.'));
 		
 		// Only match by the basename, if multi-parameter assume all of them
-		return __key.substring(0, la).equals(__singleTest);
+		// But also convert all slashes to dots in the event binary names
+		// are used.
+		return __key.substring(0, la).equals(__singleTest) ||
+			__key.substring(0, la).equals(
+				__singleTest.replace('/', '.'));
 	}
 	
 	/**

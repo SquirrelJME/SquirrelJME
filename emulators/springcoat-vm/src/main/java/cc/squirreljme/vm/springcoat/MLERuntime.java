@@ -12,11 +12,12 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
+import cc.squirreljme.jvm.mle.constants.ByteOrderType;
+import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
@@ -28,6 +29,21 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 public enum MLERuntime
 	implements MLEFunction
 {
+	/** {@link RuntimeShelf#byteOrder()}. */
+	BYTE_ORDER("byteOrder:()I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/02/09
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			// SpringCoat is always big endian
+			return ByteOrderType.BIG_ENDIAN;
+		}
+	},
+	
 	/** {@link RuntimeShelf#currentTimeMillis()}. */
 	CURRENT_TIME_MILLIS("currentTimeMillis:()J")
 	{
@@ -71,6 +87,22 @@ public enum MLERuntime
 		}
 	},
 	
+	/** {@link RuntimeShelf#garbageCollect()}. */
+	GARBAGE_COLLECT("garbageCollect:()V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/01/04
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			// Use the system GC since it is the only suggestion we can make
+			Runtime.getRuntime().gc();
+			return null;
+		}
+	},
+	
 	/** {@link RuntimeShelf#lineEnding()}. */
 	LINE_ENDING("lineEnding:()I")
 	{
@@ -97,10 +129,15 @@ public enum MLERuntime
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			switch (System.getProperty("user.country"))
+			String country = System.getProperty("user.country",
+				"unknown");
+			String lang = System.getProperty("user.language",
+				"unknown");
+			
+			switch (country)
 			{
 				case "US":
-					switch (System.getProperty("user.language"))
+					switch (lang)
 					{
 						case "en":
 							return BuiltInLocaleType.ENGLISH_US;
@@ -110,6 +147,21 @@ public enum MLERuntime
 				default:
 					return BuiltInLocaleType.UNSPECIFIED;
 			}
+		}
+	},
+	
+	/** {@link RuntimeShelf#memoryProfile()}. */
+	MEMORY_PROFILE("memoryProfile:()I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/02/19
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			// No memory concerns
+			return MemoryProfileType.NORMAL;
 		}
 	},
 	

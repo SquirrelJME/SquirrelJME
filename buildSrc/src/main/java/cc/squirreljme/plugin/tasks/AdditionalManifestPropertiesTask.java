@@ -181,7 +181,7 @@ public class AdditionalManifestPropertiesTask
 				attributes.putValue(
 					"X-SquirrelJME-DefinedStandards",
 					AdditionalManifestPropertiesTask
-						.__delimate(config.definedStandards, ' '));
+						.__delimate(config.definedStandards, ','));
 		}
 		
 		// Find all module dependencies
@@ -339,7 +339,7 @@ public class AdditionalManifestPropertiesTask
 		StringBuilder sb = new StringBuilder();
 		for (Object o : __it)
 		{
-			// Add delimeter?
+			// Add decimeter?
 			if (sb.length() > 0)
 				sb.append(__delim);
 			

@@ -15,15 +15,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.util.jar.JarInputStream;
 import net.multiphasicapps.zip.blockreader.FileChannelBlockAccessor;
 import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
-import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
-import net.multiphasicapps.zip.streamreader.ZipStreamReader;
+import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
 
 /**
  * This is an emulation of {@link JarPackageBracket} so that it can access
@@ -72,8 +68,6 @@ public class EmulatedJarPackageBracket
 			new FileChannelBlockAccessor(this.path)))
 		{
 			ZipBlockEntry entry = zip.get(__rc);
-			if (entry == null)
-				return null;
 			
 			// Copy contents of the entry into memory
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -92,6 +86,10 @@ public class EmulatedJarPackageBracket
 			}
 			
 			return new ByteArrayInputStream(baos.toByteArray());
+		}
+		catch (ZipEntryNotFoundException ignored)
+		{
+			return null;
 		}
 		catch (IOException e)
 		{

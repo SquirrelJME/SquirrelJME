@@ -11,7 +11,6 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
@@ -245,6 +244,24 @@ public enum MLEType
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return MLEType.__type(__args[0]).getSpringClass().isArray();
+		}
+	},
+	
+	/** {@link TypeShelf#isAssignableFrom(TypeBracket, TypeBracket)}. */
+	IS_ASSIGNABLE_FROM("isAssignableFrom:(Lcc/squirreljme/jvm/mle/" +
+		"brackets/TypeBracket;Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)Z")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/02/07
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			if (MLEType.__type(__args[0]).getSpringClass().isAssignableFrom(
+				MLEType.__type(__args[1]).getSpringClass()))
+				return 1;
+			return 0;
 		}
 	},
 	

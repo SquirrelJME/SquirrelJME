@@ -27,11 +27,11 @@ import net.multiphasicapps.classfile.MethodHandle;
 public final class DualClassRuntimePoolBuilder
 {
 	/** The class pool. */
-	protected final BasicPoolBuilder classpool =
+	protected final BasicPoolBuilder classPool =
 		new BasicPoolBuilder();
 	
 	/** The run-time pool. */
-	protected final BasicPoolBuilder runpool =
+	protected final BasicPoolBuilder runPool =
 		new BasicPoolBuilder();
 	
 	/**
@@ -70,8 +70,8 @@ public final class DualClassRuntimePoolBuilder
 			throw new NullPointerException("NARG");
 		
 		// The pool to be added to and the underlying static pool
-		BasicPoolBuilder runpool = this.runpool,
-			classpool = this.classpool;
+		BasicPoolBuilder runpool = this.runPool,
+			classpool = this.classPool;
 		
 		// Already within the pool?
 		BasicPoolEntry rv = runpool.getByValue(__v);
@@ -98,9 +98,9 @@ public final class DualClassRuntimePoolBuilder
 					this.addStatic(fr.memberType().className()).index);
 			
 				// Class information pointer
-			case CLASS_INFO_POINTER:
+			case TYPE_BRACKET_POINTER:
 				return runpool.add(__v,
-					this.addStatic(((ClassInfoPointer)__v).name).index);
+					this.addStatic(((TypeBracketPointer)__v).name).index);
 						
 				// The constant pool of another (or current) class
 			case CLASS_POOL:
@@ -119,24 +119,37 @@ public final class DualClassRuntimePoolBuilder
 					this.addStatic(mh.descriptor()).index);
 				
 				// The index of a method
-			case VIRTUAL_METHOD_INDEX:
-				VirtualMethodIndex v = (VirtualMethodIndex)__v;
+			case INVOKE_XTABLE:
+				InvokeXTable xv = (InvokeXTable)__v;
+				
 				return runpool.add(__v,
-					0x7FFF,
-					this.addStatic(v.inClass).index,
-					this.addStatic(v.name.toString()).index,
-					this.addStatic(v.type).index);
+					xv.invokeType.ordinal(),
+					this.addStatic(xv.targetClass).index);
 				
 				// The name of an interface class
 			case INTERFACE_CLASS:
 				InterfaceClassName icn = (InterfaceClassName)__v;
 				return runpool.add(__v,
 					this.addStatic(icn.name).index);
+			
+				// Quick class casting check
+			case QUICK_CAST_CHECK:
+				QuickCastCheck qcc = (QuickCastCheck)__v;
+				return runpool.add(__v,
+					this.addStatic(qcc.from).index,
+					this.addStatic(qcc.to).index);
 				
+				// Class Name Hash
+			case CLASS_NAME_HASH:
+				ClassNameHash cnh = (ClassNameHash)__v;
+				return runpool.add(__v,
+					cnh.hashCode() >>> 16,
+					cnh.hashCode() & 0xFFFF,
+					this.addStatic(cnh.className).index);
+			
 				// A string that is noted for its value (debugging)
+				// Or a string that is used
 			case NOTED_STRING:
-				
-				// A string that is used
 			case USED_STRING:
 				return runpool.add(__v,
 					this.addStatic(__v.toString()).index);
@@ -167,7 +180,7 @@ public final class DualClassRuntimePoolBuilder
 			throw new NullPointerException("NARG");
 		
 		// The pool to be added to
-		BasicPoolBuilder classpool = this.classpool;
+		BasicPoolBuilder classpool = this.classPool;
 		
 		// Already within the pool?
 		BasicPoolEntry rv = classpool.getByValue(__v);
@@ -287,7 +300,7 @@ public final class DualClassRuntimePoolBuilder
 	 */
 	public final BasicPoolBuilder classPool()
 	{
-		return this.classpool;
+		return this.classPool;
 	}
 	
 	/**
@@ -298,7 +311,7 @@ public final class DualClassRuntimePoolBuilder
 	 */
 	public final BasicPoolBuilder runtimePool()
 	{
-		return this.runpool;
+		return this.runPool;
 	}
 }
 

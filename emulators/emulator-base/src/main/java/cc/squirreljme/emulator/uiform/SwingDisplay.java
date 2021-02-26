@@ -10,7 +10,6 @@
 package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
-import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
@@ -97,8 +96,12 @@ public final class SwingDisplay
 							"Associated with display.");
 				}
 			
-			// Remove previous form if there is one
+			// Do nothing if this is already current
 			SwingForm current = this._current;
+			if (current == __form)
+				return;
+			
+			// Remove previous form if there is one
 			if (current != null)
 				synchronized (current)
 				{

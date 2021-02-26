@@ -190,7 +190,7 @@ public final class NativeInstruction
 		if (this == __o)
 			return true;
 		
-		if (!(this instanceof NativeInstruction))
+		if (!(__o instanceof NativeInstruction))
 			return false;
 		
 		NativeInstruction o = (NativeInstruction)__o;
@@ -292,35 +292,43 @@ public final class NativeInstruction
 			case NativeInstructionType.DEBUG_EXIT:
 			case NativeInstructionType.RETURN:
 				return 0;
+				
+			case NativeInstructionType.MEM_HANDLE_COUNT_UP:
+				return 1;
 			
 			case NativeInstructionType.ATOMIC_INT_INCREMENT:
+			case NativeInstructionType.BREAKPOINT_MARKED:
+			case NativeInstructionType.PING:
 			case NativeInstructionType.COPY:
 			case NativeInstructionType.INVOKE:
 			case NativeInstructionType.LOAD_POOL:
-			case NativeInstructionType.STORE_POOL:
 			case NativeInstructionType.SYSTEM_CALL:
 			case NativeInstructionType.INVOKE_POINTER_ONLY:
+			case NativeInstructionType.MEM_HANDLE_COUNT_DOWN:
 				return 2;
 					
 			case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
 			case NativeInstructionType.DEBUG_POINT:
 			case NativeInstructionType.IF_ICMP:
 			case NativeInstructionType.IFEQ_CONST:
-			case NativeInstructionType.LOAD_FROM_INTARRAY:
 			case NativeInstructionType.MATH_REG_INT:
 			case NativeInstructionType.MATH_CONST_INT:
-			case NativeInstructionType.MEMORY_OFF_REG:
-			case NativeInstructionType.MEMORY_OFF_REG_JAVA:
-			case NativeInstructionType.MEMORY_OFF_ICONST:
-			case NativeInstructionType.MEMORY_OFF_ICONST_JAVA:
-			case NativeInstructionType.STORE_TO_INTARRAY:
-			case NativeInstructionType.INTERFACE_I_FOR_OBJECT:
-			case NativeInstructionType.INTERFACE_VT_DX_LOOKUP:
-			case NativeInstructionType.INVOKE_POOL_AND_POINTER:
+			case NativeInstructionType.INVOKE_POINTER_AND_POOL:
 				return 3;
 				
+			case NativeInstructionType.MEM_HANDLE_OFF_REG:
+			case NativeInstructionType.MEM_HANDLE_OFF_ICONST:
+				if (DataType.of(__op & DataType.MASK).isWide())
+					return 4;
+				return 3;
+			
+			case NativeInstructionType.MEMORY_OFF_REG:
+			case NativeInstructionType.MEMORY_OFF_ICONST:
+				if (DataType.of(__op & DataType.MASK).isWide())
+					return 5;
+				return 4;
+				
 			case NativeInstructionType.DEBUG_ENTRY:
-			case NativeInstructionType.INTERFACE_VT_LOAD:
 				return 4;
 			
 			case NativeInstructionType.ATOMIC_COMPARE_GET_AND_SET:
@@ -351,6 +359,18 @@ public final class NativeInstruction
 			case NativeInstructionType.RETURN:
 				return ArgumentFormat.of();
 				
+				// [r16]
+			case NativeInstructionType.MEM_HANDLE_COUNT_UP:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUREG);
+				
+				// [i16, p16]
+			case NativeInstructionType.BREAKPOINT_MARKED:
+			case NativeInstructionType.PING:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VPOOL);
+				
 				// [r16, reglist]
 			case NativeInstructionType.SYSTEM_CALL:
 			case NativeInstructionType.INVOKE:
@@ -361,6 +381,7 @@ public final class NativeInstruction
 				
 				// [r16, r16]
 			case NativeInstructionType.COPY:
+			case NativeInstructionType.MEM_HANDLE_COUNT_DOWN:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG);
@@ -373,25 +394,16 @@ public final class NativeInstruction
 				
 				// [p16, r16]
 			case NativeInstructionType.LOAD_POOL:
-			case NativeInstructionType.STORE_POOL:
 				return ArgumentFormat.of(
 					ArgumentFormat.VPOOL,
 					ArgumentFormat.VUREG);
 					
 				// [r16, r16, reglist]
-			case NativeInstructionType.INVOKE_POOL_AND_POINTER:
+			case NativeInstructionType.INVOKE_POINTER_AND_POOL:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG,
 					ArgumentFormat.REGLIST);
-					
-				// [p16, r16, r16]
-			case NativeInstructionType.INTERFACE_I_FOR_OBJECT:
-			case NativeInstructionType.INTERFACE_VT_DX_LOOKUP:
-				return ArgumentFormat.of(
-					ArgumentFormat.VPOOL,
-					ArgumentFormat.VUREG,
-					ArgumentFormat.VUREG);
 					
 				// [p16, p16, p16, p16]
 			case NativeInstructionType.DEBUG_ENTRY:
@@ -416,15 +428,67 @@ public final class NativeInstruction
 					ArgumentFormat.VUINT);
 				
 				// [r16, r16, r16]
-			case NativeInstructionType.LOAD_FROM_INTARRAY:
 			case NativeInstructionType.MATH_REG_INT:
-			case NativeInstructionType.MEMORY_OFF_REG:
-			case NativeInstructionType.MEMORY_OFF_REG_JAVA:
-			case NativeInstructionType.STORE_TO_INTARRAY:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG);
+					
+				// [r16 [+r16], r16+r16, i32]
+			case NativeInstructionType.MEMORY_OFF_REG:
+				if (DataType.of(__op & DataType.MASK).isWide())
+					return ArgumentFormat.of(
+						ArgumentFormat.VUREG,
+						ArgumentFormat.VUREG,
+						ArgumentFormat.VUREG,
+						ArgumentFormat.VUREG,
+						ArgumentFormat.VUREG);
+				return ArgumentFormat.of(
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG);
+				
+				// [r16 [+r16], r16+r16, i32]
+			case NativeInstructionType.MEMORY_OFF_ICONST:
+				if (DataType.of(__op & DataType.MASK).isWide())
+					return ArgumentFormat.of(
+						ArgumentFormat.VUREG,
+						ArgumentFormat.VUREG,
+						ArgumentFormat.VUREG,
+						ArgumentFormat.VUREG,
+						ArgumentFormat.INT32);
+				return ArgumentFormat.of(
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG,
+					ArgumentFormat.INT32);
+					
+				// [r16 [+r16], r16, r16]
+			case NativeInstructionType.MEM_HANDLE_OFF_REG:
+				if (DataType.of(__op & DataType.MASK).isWide())
+					return ArgumentFormat.of(
+						ArgumentFormat.VUREG,
+						ArgumentFormat.VUREG,
+						ArgumentFormat.VUREG,
+						ArgumentFormat.VUREG);
+				return ArgumentFormat.of(
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG);
+				
+				// [r16 [+r16], r16, i32]
+			case NativeInstructionType.MEM_HANDLE_OFF_ICONST:
+				if (DataType.of(__op & DataType.MASK).isWide())
+					return ArgumentFormat.of(
+						ArgumentFormat.VUREG,
+						ArgumentFormat.VUREG,
+						ArgumentFormat.VUREG,
+						ArgumentFormat.INT32);
+				return ArgumentFormat.of(
+					ArgumentFormat.VUREG,
+					ArgumentFormat.VUREG,
+					ArgumentFormat.INT32);
 			
 				// [r16, i32, r16]
 			case NativeInstructionType.MATH_CONST_INT:
@@ -432,14 +496,6 @@ public final class NativeInstruction
 					ArgumentFormat.VUREG,
 					ArgumentFormat.INT32,
 					ArgumentFormat.VUREG);
-				
-				// [r16, r16, i32]
-			case NativeInstructionType.MEMORY_OFF_ICONST:
-			case NativeInstructionType.MEMORY_OFF_ICONST_JAVA:
-				return ArgumentFormat.of(
-					ArgumentFormat.VUREG,
-					ArgumentFormat.VUREG,
-					ArgumentFormat.INT32);
 				
 				// [r16, r16, j16]
 			case NativeInstructionType.IF_ICMP:
@@ -454,14 +510,6 @@ public final class NativeInstruction
 					ArgumentFormat.VUREG,
 					ArgumentFormat.INT32,
 					ArgumentFormat.VJUMP);
-			
-				// [r16, r16, r16, r16]
-			case NativeInstructionType.INTERFACE_VT_LOAD:
-				return ArgumentFormat.of(
-					ArgumentFormat.VUREG,
-					ArgumentFormat.VUREG,
-					ArgumentFormat.VUREG,
-					ArgumentFormat.VUREG);
 			
 			// [r16 (check), r16 (get), r16 (set), r16 (addr), u16 (off)]
 			case NativeInstructionType.ATOMIC_COMPARE_GET_AND_SET:
@@ -538,9 +586,9 @@ public final class NativeInstruction
 					"_" +
 					(((__op & 0x80) != 0) ? "ICONST" : "REG");
 			
-			case NativeInstructionType.MEMORY_OFF_REG_JAVA:
-			case NativeInstructionType.MEMORY_OFF_ICONST_JAVA:
-				return "MEM_" +
+			case NativeInstructionType.MEM_HANDLE_OFF_REG:
+			case NativeInstructionType.MEM_HANDLE_OFF_ICONST:
+				return "MEM_HANDLE_OFF_" +
 					(((__op & 0x08) != 0) ? "LOAD" : "STORE") +
 					"_" +
 					DataType.of(__op & 0x07).name() +
@@ -553,6 +601,9 @@ public final class NativeInstruction
 			case NativeInstructionType.ATOMIC_INT_INCREMENT:
 				return "ATOMIC_INT_INCREMENT";
 			case NativeInstructionType.BREAKPOINT:		return "BREAKPOINT";
+			case NativeInstructionType.BREAKPOINT_MARKED:
+				return "BREAKPOINT_MARKED";
+			case NativeInstructionType.PING:			return "PING";
 			case NativeInstructionType.COPY:			return "COPY";
 			case NativeInstructionType.DEBUG_ENTRY:		return "DEBUG_ENTRY";
 			case NativeInstructionType.DEBUG_EXIT:		return "DEBUG_EXIT";
@@ -560,28 +611,20 @@ public final class NativeInstruction
 			case NativeInstructionType.IFEQ_CONST:		return "IFEQ_CONST";
 			case NativeInstructionType.INVOKE:			return "INVOKE";
 			case NativeInstructionType.LOAD_POOL:		return "LOAD_POOL";
-			case NativeInstructionType.LOAD_FROM_INTARRAY:
-				return "LOAD_FROM_INTARRAY";
 			case NativeInstructionType.RETURN:			return "RETURN";
-			case NativeInstructionType.STORE_POOL:		return "STORE_POOL";
-			case NativeInstructionType.STORE_TO_INTARRAY:
-				return "STORE_TO_INTARRAY";
 			case NativeInstructionType.SYSTEM_CALL:		return "SYSTEM_CALL";
-		
-			case NativeInstructionType.INTERFACE_I_FOR_OBJECT:
-				return "INTERFACE_I_FOR_OBJECT";
-			
-			case NativeInstructionType.INTERFACE_VT_DX_LOOKUP:
-				return "INTERFACE_VT_DX_LOOKUP";
-			
-			case NativeInstructionType.INTERFACE_VT_LOAD:
-				return "INTERFACE_VT_LOAD";
 			
 			case NativeInstructionType.INVOKE_POINTER_ONLY:
 				return "INVOKE_POINTER_ONLY";
 			
-			case NativeInstructionType.INVOKE_POOL_AND_POINTER:
-				return "INVOKE_POOL_AND_POINTER";
+			case NativeInstructionType.INVOKE_POINTER_AND_POOL:
+				return "INVOKE_POINTER_AND_POOL";
+			
+			case NativeInstructionType.MEM_HANDLE_COUNT_DOWN:
+				return "MEM_HANDLE_COUNT_DOWN";
+				
+			case NativeInstructionType.MEM_HANDLE_COUNT_UP:
+				return "MEM_HANDLE_COUNT_UP";
 			
 			default:
 				return String.format("UNKNOWN_%02x", __op);

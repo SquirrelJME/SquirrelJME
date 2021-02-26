@@ -169,7 +169,7 @@ public final class Base64Decoder
 		if (__in == null || __chars == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.erorr BD0g The alphabet to use for the base64
+		// {@squirreljme.error BD0g The alphabet to use for the base64
 		// decoder must be 64 characters plus one padding character.
 		// (The character count)}
 		int n;

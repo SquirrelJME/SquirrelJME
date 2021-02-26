@@ -9,10 +9,10 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.util.SimpleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.SingleTaskOutputFile;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
-import org.gradle.process.internal.DslExecActionFactory;
 import org.gradle.workers.WorkerExecutor;
 
 /**
@@ -38,8 +38,6 @@ public class VMTestTask
 	 * Initializes the task.
 	 * 
 	 * @param __executor The executor for the task.
-	 * @param __execFactory This is a work around to use internal executions
-	 * for specifications needed to spawn VMs within workers.
 	 * @param __sourceSet The source set to use.
 	 * @param __vmType The virtual machine type.
 	 * @param __libTask The task used to create libraries, this may be directly
@@ -47,12 +45,11 @@ public class VMTestTask
 	 * @since 2020/08/07
 	 */
 	@Inject
-	public VMTestTask(WorkerExecutor __executor,
-		@Deprecated DslExecActionFactory __execFactory, String __sourceSet,
+	public VMTestTask(WorkerExecutor __executor, String __sourceSet,
 		VMSpecifier __vmType, VMLibraryTask __libTask)
 		throws NullPointerException
 	{
-		if (__executor == null || __execFactory == null ||
+		if (__executor == null || 
 			__sourceSet == null || __vmType == null || __libTask == null)
 			throw new NullPointerException("NARG");
 			
@@ -72,27 +69,28 @@ public class VMTestTask
 		
 		// Add the entire JAR as input, so that if it changes for any reason
 		// then all tests should be considered invalid and rerun
-		this.getInputs().file(this.getProject().provider(
-			new SingleTaskOutputFile(__libTask)));
-		
 		// All of the input source files to be tested
-		this.getInputs().files(this.getProject().provider(
-			new VMTestInputs(this, __sourceSet)));
+		this.getInputs().files(
+			this.getProject().provider(
+				new SingleTaskOutputFile(__libTask)),
+			this.getProject().provider(
+				new VMTestInputs(this, __sourceSet)));
 		
 		// All of the test results that are created
 		this.getOutputs().files(this.getProject().provider(
 			new VMTestOutputs(this, __sourceSet, __vmType)));
 		
+		// Add additional testing to see if our test run will not be up to
+		// date when we run these
+		this.getOutputs().upToDateWhen(
+			new VMRunUpToDateWhen(__sourceSet, __vmType));
+		
 		// Only run if there are actual tests to run
 		this.onlyIf(new CheckForTests(__sourceSet));
 		
 		// Performs the action of the task
-		// HACK: Note that this uses internal Gradle classes to create a
-		// standard execution spec. Since this may change or break in the
-		// future the rest of it is hidden from the class which does the
-		// actual task action
 		this.doLast(new VMTestTaskAction(__executor,
-			() -> __execFactory.newDecoratedJavaExecAction(), __sourceSet,
+			SimpleJavaExecSpecFiller::new, __sourceSet,
 			__vmType));
 	}
 	

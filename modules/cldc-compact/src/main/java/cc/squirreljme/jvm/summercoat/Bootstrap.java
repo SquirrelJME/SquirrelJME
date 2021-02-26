@@ -9,6 +9,12 @@
 
 package cc.squirreljme.jvm.summercoat;
 
+import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.launch.AvailableSuites;
+import cc.squirreljme.jvm.launch.SuiteScanner;
+import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Main bootstrap entry point.
  *
@@ -16,4 +22,28 @@ package cc.squirreljme.jvm.summercoat;
  */
 public final class Bootstrap
 {
+	/**
+	 * Main entry point for the virtual machine.
+	 * 
+	 * @since 2020/11/28
+	 */
+	public static void vmEntry()
+	{
+		// Introduction banner for the virtual machine itself
+		Debugging.notice("SquirrelJME %s",
+			SquirrelJME.RUNTIME_VERSION);
+		Debugging.notice("(C) 2013-2021 Stephanie Gawroriski");
+		Debugging.notice("Licensed under the GPLv3!");
+		Debugging.notice("E-Mail : xerthesquirrel@gmail.com");
+		Debugging.notice("Website: https://squirreljme.cc/");
+		Debugging.notice("Donate!: https://patreon.com/SquirrelJME");
+		Debugging.notice("");
+		
+		// Perform a scan for every suite, we need to find the launcher!
+		Debugging.notice("Performing initial suite scan...");
+		AvailableSuites suites = SuiteScanner.scanSuites(null);
+		
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
 }

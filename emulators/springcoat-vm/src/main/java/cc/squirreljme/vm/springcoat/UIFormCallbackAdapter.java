@@ -31,6 +31,14 @@ public class UIFormCallbackAdapter
 	private static final ClassName CALLBACK_CLASS =
 		new ClassName("cc/squirreljme/jvm/mle/callbacks/UIFormCallback");
 	
+	/** Printing of stack traces. */
+	private static final MethodNameAndType PRINTSTACKTRACE_NAT =
+		new MethodNameAndType("printStackTrace", "()V");
+	
+	/** Throwable classes. */
+	private static final ClassName THROWABLE_CLASS =
+		new ClassName("java/lang/Throwable");
+	
 	/** The object to call into. */
 	private final SpringObject callback;
 	
@@ -187,8 +195,19 @@ public class UIFormCallbackAdapter
 				UIFormCallbackAdapter.CALLBACK_CLASS, __nat, callArgs);
 			
 			// Request failed, do not fail but eat the exception
-			if (fail != null)
-				Debugging.debugNote("Callback exception: %s", fail);
+			if (fail instanceof MethodInvokeException)
+			{
+				MethodInvokeException mie = (MethodInvokeException)fail;
+				
+				Debugging.debugNote("Callback exception: %s",
+					mie.exception);
+				
+				// Print stack trace through the VM if possible
+				cb.thread().invokeMethod(false,
+					UIFormCallbackAdapter.THROWABLE_CLASS,
+					UIFormCallbackAdapter.PRINTSTACKTRACE_NAT,
+					mie.exception);
+			}
 		}
 	}
 }

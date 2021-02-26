@@ -68,7 +68,7 @@ public class Image
 		// If no alpha, set upper channel to full opaqueness
 		if (!__alpha)
 			for (int i = 0, n = __data.length; i < n; i++)
-				__data[i] |= 0xFF000000;
+				__data[i] |= 0xFF_000000;
 	}
 	
 	public final void getARGB16(short[] __data, int __off, int __scanlen,

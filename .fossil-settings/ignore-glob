@@ -60,3 +60,4 @@ ratufacoat/out
 # Fossil files
 _FOSSIL_
 ci-comment-*.txt
+out-*

@@ -1004,7 +1004,8 @@ public final class ByteCodeProcessor
 				break;
 			
 			case STRING:
-				handler.doPoolLoad(__v.boxedValue(), result.out(0));
+				handler.doPoolLoadString(__v.boxedValue().toString(),
+					result.out(0));
 				break;
 				
 			case CLASS:

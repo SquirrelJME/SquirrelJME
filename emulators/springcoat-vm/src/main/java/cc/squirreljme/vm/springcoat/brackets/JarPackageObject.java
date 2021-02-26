@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.springcoat.brackets;
 
+import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.AbstractGhostObject;
 
@@ -33,6 +34,8 @@ public class JarPackageObject
 	public JarPackageObject(VMClassLibrary __lib)
 		throws NullPointerException
 	{
+		super(JarPackageBracket.class);
+		
 		if (__lib == null)
 			throw new NullPointerException("NARG");
 		

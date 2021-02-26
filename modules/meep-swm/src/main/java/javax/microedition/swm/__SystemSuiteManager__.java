@@ -10,11 +10,11 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.jvm.suite.DependencyInfo;
+import cc.squirreljme.jvm.suite.InvalidSuiteException;
+import cc.squirreljme.jvm.suite.MatchResult;
 import cc.squirreljme.runtime.cldc.asm.SuiteAccess;
 import cc.squirreljme.runtime.swm.ByteArrayJarStreamSupplier;
-import cc.squirreljme.runtime.swm.DependencyInfo;
-import cc.squirreljme.runtime.swm.InvalidSuiteException;
-import cc.squirreljme.runtime.swm.MatchResult;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -194,14 +194,13 @@ final class __SystemSuiteManager__
 	/**
 	 * Returns the suites which match the given dependency set.
 	 *
-	 * This is copied from the SquirrelJME build system.
-	 *
 	 * @param __set The set of dependencies to get.
 	 * @param __opt If {@code true} include optional dependencies.
-	 * @return Suites which statisfy the given dependencies.
+	 * @return Suites which satisfy the given dependencies.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/02
 	 */
+	@Deprecated
 	static Suite[] __matchDependencies(DependencyInfo __set, boolean __opt)
 		throws NullPointerException
 	{

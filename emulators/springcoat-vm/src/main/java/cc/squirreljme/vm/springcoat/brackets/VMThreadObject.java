@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.springcoat.brackets;
 
+import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
 import cc.squirreljme.vm.springcoat.AbstractGhostObject;
 import cc.squirreljme.vm.springcoat.SpringThread;
 
@@ -33,6 +34,8 @@ public final class VMThreadObject
 	public VMThreadObject(SpringThread __thread)
 		throws NullPointerException
 	{
+		super(VMThreadBracket.class);
+		
 		if (__thread == null)
 			throw new NullPointerException("NARG");
 		

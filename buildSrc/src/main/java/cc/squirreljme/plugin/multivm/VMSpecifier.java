@@ -9,17 +9,16 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.util.JavaExecSpecFiller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.SourceSet;
-import org.gradle.process.JavaExecSpec;
 
 /**
  * Provider interface for the various virtual machines that are available.
@@ -128,7 +127,7 @@ public interface VMSpecifier
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	void spawnJvmArguments(Task __task, JavaExecSpec __execSpec,
+	void spawnJvmArguments(Task __task, JavaExecSpecFiller __execSpec,
 		String __mainClass, Map<String, String> __sysProps, Path[] __libPath,
 		Path[] __classPath, String... __args)
 		throws NullPointerException;  

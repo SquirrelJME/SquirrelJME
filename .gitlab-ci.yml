@@ -5,7 +5,7 @@
 # SquirrelJME is under the GNU General Public License v3+, or later.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: GitLab CI/CD for libRetro (NOT FOR GitLab-proper)
+# DESCRIPTION: GitLab CI/CD for libRetro
 
 ##############################################################################
 ################################# BOILERPLATE ################################
@@ -13,6 +13,8 @@
 
 # Core definitions
 .core-defs:
+  dependencies:
+    - summercoat-built-in
   variables:
     CORENAME: squirreljme
     JNI_PATH: ratufacoat/libretro/
@@ -22,6 +24,10 @@
 # Inclusion templates, required for the build to work
 include:
   ################################## DESKTOPS ################################
+  # Linux 32-bit
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/linux-i686.yml'
+
   # Linux 64-bit
   - project: 'libretro-infrastructure/ci-templates'
     file: '/linux-x64.yml'
@@ -29,6 +35,14 @@ include:
   # MacOS 64-bit
   - project: 'libretro-infrastructure/ci-templates'
     file: '/osx-x64.yml'
+
+  # MacOS ARM 64-bit
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/osx-arm64.yml'
+
+  # Windows 32-bit
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/windows-i686-mingw.yml'
 
   # Windows 64-bit
   - project: 'libretro-infrastructure/ci-templates'
@@ -38,6 +52,10 @@ include:
   # Android
   - project: 'libretro-infrastructure/ci-templates'
     file: '/android-jni.yml'
+
+  # iOS 9
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/ios9.yml'
 
   ################################## CONSOLES ################################
   # Dingux (GCW Zero)
@@ -60,6 +78,10 @@ include:
   - project: 'libretro-infrastructure/ci-templates'
     file: '/wii-static.yml'
 
+  # Nintendo Wii U
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/wiiu-static.yml'
+
   # PLayStation 2
   - project: 'libretro-infrastructure/ci-templates'
     file: '/ps2-static.yml'
@@ -67,6 +89,11 @@ include:
   # PlayStation Vita
   - project: 'libretro-infrastructure/ci-templates'
     file: '/vita-static.yml'
+
+  #################################### MISC ##################################
+  # Emscripten
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/emscripten-static.yml'
 
 # Stages for building
 stages:
@@ -78,7 +105,24 @@ stages:
 #################################### STAGES ##################################
 ##############################################################################
 
+########################### SUMMERCOAT BUILT-IN ROM ##########################
+summercoat-built-in:
+  image: openjdk:8-jdk
+  stage: build-prepare
+  artifacts:
+    paths:
+      - "ratufacoat/build/builtin.c"
+    expire_in: 10 min
+  script:
+    - ./gradlew :romSummerCoatRatufaCoat --full-stacktrace
+
 ################################### DESKTOPS #################################
+# Linux 32-bit
+libretro-build-linux-i686:
+  extends:
+    - .libretro-linux-i686-make-default
+    - .core-defs
+
 # Linux 64-bit
 libretro-build-linux-x64:
   extends:
@@ -89,6 +133,18 @@ libretro-build-linux-x64:
 libretro-build-osx-x64:
   extends:
     - .libretro-osx-x64-make-default
+    - .core-defs
+
+# MacOS ARM 64-bit
+libretro-build-osx-arm64:
+  extends:
+    - .libretro-osx-arm64-make-default
+    - .core-defs
+
+# Windows 32-bit
+libretro-build-windows-i686:
+  extends:
+    - .libretro-windows-i686-mingw-make-default
     - .core-defs
 
 # Windows 64-bit
@@ -122,6 +178,12 @@ android-x86:
     - .libretro-android-jni-x86
     - .core-defs
 
+# iOS 9
+libretro-build-ios-9:
+  extends:
+    - .libretro-ios9-make-default
+    - .core-defs
+
 ################################### CONSOLES #################################
 # Dingux (GCW Zero)
 libretro-build-dingux:
@@ -130,7 +192,7 @@ libretro-build-dingux:
     - .core-defs
 
 # Nintendo 3DS
-libretro-build-3ds:
+libretro-build-ctr:
   extends:
     - .libretro-ctr-static-retroarch-master
     - .core-defs
@@ -153,6 +215,12 @@ libretro-build-wii:
     - .libretro-wii-static-retroarch-master
     - .core-defs
 
+# Nintendo Wii U
+libretro-build-wiiu:
+  extends:
+    - .libretro-wiiu-static-retroarch-master
+    - .core-defs
+
 # PlayStation 2
 libretro-build-ps2:
   extends:
@@ -163,4 +231,11 @@ libretro-build-ps2:
 libretro-build-vita:
   extends:
     - .libretro-vita-static-retroarch-master
+    - .core-defs
+
+#################################### MISC ##################################
+# Emscripten
+libretro-build-emscripten:
+  extends:
+    - .libretro-emscripten-static-retroarch-master
     - .core-defs

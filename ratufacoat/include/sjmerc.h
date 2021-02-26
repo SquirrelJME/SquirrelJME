@@ -175,6 +175,9 @@ extern "C"
 /** {@code byte} type. */
 typedef int8_t sjme_jbyte;
 
+/** Unsigned {@code byte} type. */
+typedef uint8_t sjme_ubyte;
+
 /** {@code short} type. */
 typedef int16_t sjme_jshort;
 

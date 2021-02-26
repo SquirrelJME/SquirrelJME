@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
+import cc.squirreljme.jvm.summercoat.ld.mem.WritableMemory;
 
 /**
  * This contains the machine state.
@@ -24,18 +25,27 @@ public final class MachineState
 	/** The profiler snapshot to write to. */
 	protected final ProfilerSnapshot profiler;
 	
+	/** The memory handle manager. */
+	protected final MemHandleManager memHandles =
+		new MemHandleManager();
+	
+	/** The base address for the system ROM. */
+	protected final int romBase;
+	
 	/** Was the supervisor okay? */
-	private volatile boolean _supervisorokay;
+	private volatile boolean _superVisorOkay;
 	
 	/**
 	 * Initializes the machine state.
 	 *
 	 * @param __mem The memory state.
 	 * @param __pf The profiler, this is optional.
+	 * @param __romBase
 	 * @throws NullPointerException If no memory was specified.
 	 * @since 2019/12/28
 	 */
-	public MachineState(WritableMemory __mem, ProfilerSnapshot __pf)
+	public MachineState(WritableMemory __mem, ProfilerSnapshot __pf,
+		int __romBase)
 		throws NullPointerException
 	{
 		if (__mem == null)
@@ -43,6 +53,7 @@ public final class MachineState
 		
 		this.memory = __mem;
 		this.profiler = __pf;
+		this.romBase = __romBase;
 	}
 	
 	/**
@@ -54,7 +65,7 @@ public final class MachineState
 	{
 		synchronized (this)
 		{
-			this._supervisorokay = true;
+			this._superVisorOkay = true;
 		}
 	}
 	
@@ -68,7 +79,7 @@ public final class MachineState
 	{
 		synchronized (this)
 		{
-			return this._supervisorokay;
+			return this._superVisorOkay;
 		}
 	}
 }

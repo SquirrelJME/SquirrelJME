@@ -12,7 +12,6 @@ package cc.squirreljme.emulator;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Paths;

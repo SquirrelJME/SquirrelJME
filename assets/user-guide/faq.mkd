@@ -1,5 +1,7 @@
 # Frequently Asked Questions
 
+ * ***Q***: How do I import SquirrelJME's dependencies for my Java project?
+   * ***A***: Please look at the _Developer Guide_.
  * ***Q***: Is _SquirrelJME_ only on _Windows_?
    * ***A***: No, _SquirrelJME_ is a cross-platform Java Virtual Machine that
      can run on a variety of platforms. These include your standard Windows,

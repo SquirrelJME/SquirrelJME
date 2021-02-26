@@ -10,14 +10,14 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
-import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMFactory;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
+import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
+import cc.squirreljme.vm.VMClassLibrary;
 import java.util.Map;
-import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 
 /**
  * Factory which creates instances of the SpringCoat virtual machine.

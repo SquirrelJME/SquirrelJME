@@ -21,6 +21,15 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 public final class TypeShelf
 {
 	/**
+	 * Not used.
+	 * 
+	 * @since 2021/01/20
+	 */
+	private TypeShelf()
+	{
+	}
+	
+	/**
 	 * Returns the binary name of the given class.
 	 *
 	 * @param __type The type to get the binary name of.
@@ -149,6 +158,23 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	public static native boolean isArray(TypeBracket __type)
+		throws MLECallError;
+	
+	/**
+	 * Performs the same logic as {@link Class#isAssignableFrom(Class)}, 
+	 * checks if the given class can be assigned to this one. The check is
+	 * in the same order as {@code instanceof Object} that is
+	 * {@code b.getClass().isAssignableFrom(a.getClass()) == (a instanceof b)}
+	 * and {@code (Class<B>)a} does not throw {@link ClassCastException}.
+	 * 
+	 * @param __this The basis class
+	 * @param __other The target class which is checked for assignment.
+	 * @return If the given 
+	 * @throws MLECallError On null arguments.
+	 * @since 2021/02/07
+	 */
+	public static native boolean isAssignableFrom(TypeBracket __this,
+		TypeBracket __other)
 		throws MLECallError;
 	
 	/**

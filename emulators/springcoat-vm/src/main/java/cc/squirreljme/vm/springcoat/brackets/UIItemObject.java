@@ -10,9 +10,6 @@
 package cc.squirreljme.vm.springcoat.brackets;
 
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
-import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.springcoat.AbstractGhostObject;
 
 /**
  * This wraps a native {@link UIItemBracket}.
@@ -35,6 +32,8 @@ public final class UIItemObject
 	public UIItemObject(UIItemBracket __item)
 		throws NullPointerException
 	{
+		super(UIItemBracket.class);
+		
 		if (__item == null)
 			throw new NullPointerException("NARG");
 		

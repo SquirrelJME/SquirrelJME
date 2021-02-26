@@ -10,7 +10,9 @@
 package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.GuardedOutputStream;
+import cc.squirreljme.plugin.util.JavaExecSpecFiller;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,14 +24,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.process.ExecResult;
-import org.gradle.process.JavaExecSpec;
 
 /**
  * Represents the type of virtual machine to run.
@@ -64,7 +67,8 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void spawnJvmArguments(Task __task, JavaExecSpec __execSpec,
+		public void spawnJvmArguments(Task __task,
+			JavaExecSpecFiller __execSpec,
 			String __mainClass, Map<String, String> __sysProps,
 			Path[] __libPath, Path[] __classPath, String... __args)
 			throws NullPointerException
@@ -98,13 +102,29 @@ public enum VMType
 				__task.getProject().project(this.emulatorProject)));
 			
 			// Add all of the emulator outputs
+			Set<Path> vmSupportPath = new LinkedHashSet<>(); 
 			for (File file : __task.getProject().project(this.emulatorProject)
 				.getTasks().getByName("jar").getOutputs().getFiles())
-				classPath.add(file);
+				vmSupportPath.add(file.toPath());
+			
+			// Use all the supporting path
+			classPath.addAll(vmSupportPath);
 			
 			// Append the target class path on top of this, as everything
 			// will be running directly
 			classPath.addAll(Arrays.asList(__classPath));
+			
+			// Add the VM classpath so it can be recreated if we need to spawn
+			// additional tasks such as by the launcher
+			sysProps.put("squirreljme.hosted.vm.supportpath",
+				VMHelpers.classpathAsString(vmSupportPath));
+			sysProps.put("squirreljme.hosted.vm.classpath",
+				VMHelpers.classpathAsString(VMHelpers.resolvePath(classPath)));
+			
+			// Declare system properties that are all the originally defined
+			// system properties
+			for (Map.Entry<String, String> e : __sysProps.entrySet())
+				sysProps.put("squirreljme.orig." + e.getKey(), e.getValue());
 			
 			// Debug
 			__task.getLogger().debug("Hosted ClassPath: {}", classPath);
@@ -149,7 +169,7 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void spawnJvmArguments(Task __task, JavaExecSpec __execSpec,
+		public void spawnJvmArguments(Task __task, JavaExecSpecFiller __execSpec,
 			String __mainClass, Map<String, String> __sysProps,
 			Path[] __libPath, Path[] __classPath, String... __args)
 			throws NullPointerException
@@ -211,7 +231,8 @@ public enum VMType
 				{
 					// Figure out the arguments to the JVM, it does not matter
 					// what the classpath is
-					VMType.HOSTED.spawnJvmArguments(__task, __spec,
+					VMType.HOSTED.spawnJvmArguments(__task,
+						new GradleJavaExecSpecFiller(__spec),
 						"cc.squirreljme.jvm.aot.Main",
 						Collections.emptyMap(),
 						classPath,
@@ -260,8 +281,18 @@ public enum VMType
 			Collection<Task> rv = new LinkedList<>();
 			for (ProjectAndTaskName task : VMHelpers.runClassTasks(project,
 				SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED))
-				rv.add(rootProject.project(task.project).getTasks()
-					.getByName(task.task));
+			{
+				Project taskProject = rootProject.project(task.project);
+				
+				// Depends on all of the classes, not just the libraries, for
+				// anything the AOT compiler uses. If the compiler changes we
+				// need to make sure the updated compiler is used!
+				rv.add(taskProject.getTasks().getByName("classes"));
+				rv.add(taskProject.getTasks().getByName("jar"));
+				
+				// The library that makes up the task is important
+				rv.add(taskProject.getTasks().getByName(task.task));
+			}
 			
 			// Make sure the hosted environment is working since it needs to
 			// be kept up to date as well
@@ -309,7 +340,8 @@ public enum VMType
 				{
 					// Figure out the arguments to the JVM, it does not matter
 					// what the classpath is
-					VMType.HOSTED.spawnJvmArguments(__task, __spec,
+					VMType.HOSTED.spawnJvmArguments(__task,
+						new GradleJavaExecSpecFiller(__spec),
 						"cc.squirreljme.jvm.aot.Main",
 						Collections.emptyMap(),
 						classPath,
@@ -340,7 +372,7 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void spawnJvmArguments(Task __task, JavaExecSpec __execSpec,
+		public void spawnJvmArguments(Task __task, JavaExecSpecFiller __execSpec,
 			String __mainClass, Map<String, String> __sysProps,
 			Path[] __libPath, Path[] __classPath, String... __args)
 			throws NullPointerException
@@ -475,7 +507,7 @@ public enum VMType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	public void spawnVmViaFactory(Task __task, JavaExecSpec __execSpec,
+	public void spawnVmViaFactory(Task __task, JavaExecSpecFiller __execSpec,
 		String __mainClass, Map<String, String> __sysProps, Path[] __libPath,
 		Path[] __classPath, String[] __args)
 		throws NullPointerException

@@ -9,7 +9,10 @@
 
 package cc.squirreljme.vm.summercoat;
 
-import cc.squirreljme.emulator.vm.VMException;
+import cc.squirreljme.jvm.summercoat.ld.mem.AbstractWritableMemory;
+import cc.squirreljme.jvm.summercoat.ld.mem.Memory;
+import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
+import cc.squirreljme.jvm.summercoat.ld.mem.WritableMemory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,43 +62,45 @@ public final class VirtualMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public final int memReadByte(int __addr)
+	public final int memReadByte(long __addr)
 	{
 		// Find memory to read from
 		Memory[] cache = this._cache;
 		for (Memory c : cache)
 		{
-			int cbase = c.memRegionOffset(),
-				csize = c.memRegionSize(),
-				vaddr = __addr - cbase;
+			long cbase = c.memRegionOffset();
+			long csize = c.memRegionSize();
+			long vaddr = __addr - cbase;
 			
 			if (vaddr >= 0 && vaddr < csize)
 				return ((ReadableMemory)c).memReadByte(vaddr);
 		}
 		
-		// {@squirreljme.error AE0i Invalid read from unmapped or non-writable
-		// memory! (The address)}
-		throw new VMException(String.format("AE0i %08x", __addr));
+		// Unmapped address
+		throw new VMMemoryAccessException(String.format(
+			"Unmapped Address %#010x", __addr));
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/21
+	 * @return
 	 */
 	@Override
-	public int memRegionOffset()
+	public long memRegionOffset()
 	{
-		return 0x00000000;
+		return 0;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/21
+	 * @return
 	 */
 	@Override
-	public final int memRegionSize()
+	public final long memRegionSize()
 	{
-		return 0x7FFFFFFF;
+		return Memory.MAX_32BIT;
 	}
 	
 	/**
@@ -103,13 +108,13 @@ public final class VirtualMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public final void memWriteByte(int __addr, int __v)
+	public final void memWriteByte(long __addr, int __v)
 	{
 		// Find memory to write to
 		Memory[] cache = this._cache;
 		for (Memory c : cache)
 		{
-			int cbase = c.memRegionOffset(),
+			long cbase = c.memRegionOffset(),
 				csize = c.memRegionSize(),
 				vaddr = __addr - cbase;
 			
@@ -125,7 +130,8 @@ public final class VirtualMemory
 		
 		// {@squirreljme.error AE0j Invalid write to unmapped or non-writable
 		// memory! (The address; The value to write)}
-		throw new VMException(String.format("AE0j %08x %d", __addr, __v));
+		throw new VMMemoryAccessException(
+			String.format("AE0j %08x %d", __addr, __v));
 	}
 }
 

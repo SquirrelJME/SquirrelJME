@@ -9,7 +9,6 @@
 
 package mleui.invalid;
 
-import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
@@ -188,6 +187,10 @@ public class TestUIFormShelfInvalid
 			case 23:
 				__backend.formItemRemove(__backend.formNew(),
 					UIItemPosition.BODY);
+				break;
+			
+			case 24:
+				__backend.itemForm(null);
 				break;
 			
 			default:

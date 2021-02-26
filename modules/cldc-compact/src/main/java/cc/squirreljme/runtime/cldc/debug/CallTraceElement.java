@@ -10,11 +10,6 @@
 
 package cc.squirreljme.runtime.cldc.debug;
 
-import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.CallStackItem;
-import cc.squirreljme.jvm.SystemCallError;
-import cc.squirreljme.jvm.SystemCallIndex;
-import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
@@ -53,6 +48,9 @@ public final class CallTraceElement
 	
 	/** The task ID. */
 	protected final int taskId;
+	
+	/** The native instruction type. */
+	protected final int nativeOp;
 	
 	/** String representation. */
 	private Reference<String> _string;
@@ -143,6 +141,28 @@ public final class CallTraceElement
 	public CallTraceElement(String __cl, String __mn, String __md, long __addr,
 		String __file, int __line, int __jbc, int __jpc, int __tid)
 	{
+		this(__cl, __mn, __md, __addr, __file, __line, __jbc, __jpc, __tid,
+			-1);
+	}
+	
+	/**
+	 * Initializes a call trace element.
+	 *
+	 * @param __cl The class name.
+	 * @param __mn The method name.
+	 * @param __md The method descriptor.
+	 * @param __addr The address the method executes at.
+	 * @param __file The file.
+	 * @param __line The line in the file.
+	 * @param __jbc The Java byte code instruction used.
+	 * @param __jpc The Java PC address.
+	 * @param __tid The task ID.
+	 * @param __nOp The native operation.
+	 * @since 2021/01/24
+	 */
+	public CallTraceElement(String __cl, String __mn, String __md, long __addr,
+		String __file, int __line, int __jbc, int __jpc, int __tid, int __nOp)
+	{
 		this.className = __cl;
 		this.methodName = __mn;
 		this.methodType = __md;
@@ -152,6 +172,7 @@ public final class CallTraceElement
 		this.byteCodeOp = __jbc;
 		this.byteCodeAddr = __jpc;
 		this.taskId = __tid;
+		this.nativeOp = __nOp;
 	}
 	
 	/**
@@ -224,7 +245,8 @@ public final class CallTraceElement
 			this.line == o.line &&
 			this.byteCodeOp == o.byteCodeOp &&
 			this.byteCodeAddr == o.byteCodeAddr &&
-			this.taskId == o.taskId;
+			this.taskId == o.taskId && 
+			this.nativeOp == o.nativeOp;
 	}
 	
 	/**
@@ -257,7 +279,8 @@ public final class CallTraceElement
 				~this.line +
 				~this.byteCodeOp +
 				~this.byteCodeAddr +
-				~this.taskId);
+				~this.taskId +
+				~this.nativeOp);
 		}
 		return rv;
 	}
@@ -296,6 +319,17 @@ public final class CallTraceElement
 	}
 	
 	/**
+	 * Returns the native operation.
+	 * 
+	 * @return The native operation.
+	 * @since 2021/01/24
+	 */
+	public final int nativeOp()
+	{
+		return this.nativeOp;
+	}
+	
+	/**
 	 * Formats the call trace element but having it only represent the method
 	 * point without the class information.
 	 *
@@ -316,7 +350,8 @@ public final class CallTraceElement
 			int line = this.line;
 			int jInst = this.byteCodeOp & 0xFF;
 			int jAddr = this.byteCodeAddr;
-			int taskid = this.taskId;
+			int taskId = this.taskId;
+			int nativeOp = this.nativeOp;
 			
 			// Format it nicely
 			StringBuilder sb = new StringBuilder();
@@ -333,10 +368,10 @@ public final class CallTraceElement
 			}
 			
 			// Task ID?
-			if (taskid != 0)
+			if (taskId != 0)
 			{
 				sb.append(" T");
-				sb.append(taskid);
+				sb.append(taskId);
 			}
 			
 			// Execution address
@@ -356,6 +391,16 @@ public final class CallTraceElement
 				// Otherwise use an index
 				else
 					sb.append(address);
+			}
+			
+			// Is there a native operation?
+			if (nativeOp >= 0)
+			{
+				sb.append(" ^");
+				sb.append(Integer.toString(nativeOp, 16).toUpperCase());
+				sb.append("h/");
+				sb.append(Integer.toString(nativeOp, 2).toUpperCase());
+				sb.append('b');
 			}
 			
 			// File, Line, and/or Java instruction/address
@@ -462,6 +507,7 @@ public final class CallTraceElement
 			int jbcinst = this.byteCodeOp & 0xFF;
 			int jbcaddr = this.byteCodeAddr;
 			int taskid = this.taskId;
+			int nativeOp = this.nativeOp;
 			
 			// Format it nicely
 			StringBuilder sb = new StringBuilder();
@@ -499,6 +545,16 @@ public final class CallTraceElement
 				// Otherwise use an index
 				else
 					sb.append(address);
+			}
+			
+			// Is there a native operation?
+			if (nativeOp >= 0)
+			{
+				sb.append(" ^");
+				sb.append(Integer.toString(nativeOp, 16).toUpperCase());
+				sb.append("h/");
+				sb.append(Integer.toString(nativeOp, 2).toUpperCase());
+				sb.append('b');
 			}
 			
 			// File, Line, and/or Java instruction/address
@@ -547,126 +603,6 @@ public final class CallTraceElement
 			this._string = new WeakReference<>((rv = sb.toString()));
 		}
 		
-		return rv;
-	}
-	
-	/**
-	 * Obtains the current raw call trace which has not been resolved.
-	 *
-	 * @return The raw call trace.
-	 * @since 2019/06/16
-	 */
-	@Deprecated
-	public static final int[] traceRaw()
-	{
-		// Get the call height, ignore if not supported!
-		int callheight = Assembly.sysCallPV(SystemCallIndex.CALL_STACK_HEIGHT);
-		if (callheight <= 0 || Assembly.sysCallPV(SystemCallIndex.ERROR_GET,
-			SystemCallIndex.CALL_STACK_HEIGHT) != SystemCallError.NO_ERROR)
-			return new int[0];
-		
-		// Remove the top-most frame because it will be this method
-		callheight--;
-		
-		// Get the call parameters
-		int[] rv = new int[callheight * CallStackItem.NUM_ITEMS];
-		for (int z = 0, base = 0; z < callheight; z++,
-			base += CallStackItem.NUM_ITEMS)
-			for (int i = 0; i < CallStackItem.NUM_ITEMS; i++)
-			{
-				// Get parameter
-				int vx = Assembly.sysCallPV(SystemCallIndex.CALL_STACK_ITEM,
-					1 + z, i);
-				
-				// Nullify unknown or invalid parameters
-				if (Assembly.sysCallPV(SystemCallIndex.ERROR_GET,
-					SystemCallIndex.CALL_STACK_ITEM) !=
-					SystemCallError.NO_ERROR)
-					vx = 0;
-				
-				// Fill in
-				rv[base + i] = vx;
-			}
-		
-		// Return the raw parameters
-		return rv;
-	}
-	
-	/**
-	 * Resolves the specified call trace into call trace elements.
-	 *
-	 * @param __trace The trace to resolve.
-	 * @return The resolved trace.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/06/16
-	 */
-	@Deprecated
-	public static final CallTraceElement[] traceResolve(int[] __trace)
-		throws NullPointerException
-	{
-		if (__trace == null)
-			throw new NullPointerException("NARG");
-		
-		// Get the call height
-		int callheight = __trace.length / CallStackItem.NUM_ITEMS;
-		
-		// Process all the items
-		CallTraceElement[] rv = new CallTraceElement[callheight];
-		for (int z = 0, base = 0; z < callheight; z++,
-			base += CallStackItem.NUM_ITEMS)
-		{
-			// Load class name
-			int xcl = Assembly.sysCallV(SystemCallIndex.LOAD_STRING,
-				__trace[base + CallStackItem.CLASS_NAME]);
-			String scl = ((xcl == 0 || Assembly.sysCallV(
-				SystemCallIndex.ERROR_GET, SystemCallIndex.LOAD_STRING) !=
-				SystemCallError.NO_ERROR) ?
-				(String)null : (String)Assembly.pointerToObject(xcl));
-				
-			// Load method name
-			int xmn = Assembly.sysCallV(SystemCallIndex.LOAD_STRING,
-				__trace[base + CallStackItem.METHOD_NAME]);
-			String smn = ((xmn == 0 || Assembly.sysCallV(
-				SystemCallIndex.ERROR_GET, SystemCallIndex.LOAD_STRING) !=
-				SystemCallError.NO_ERROR) ?
-				(String)null : (String)Assembly.pointerToObject(xmn));
-			
-			// Load method type
-			int xmt = Assembly.sysCallV(SystemCallIndex.LOAD_STRING,
-				__trace[base + CallStackItem.METHOD_NAME]);
-			String smt = ((xmt == 0 || Assembly.sysCallV(
-				SystemCallIndex.ERROR_GET, SystemCallIndex.LOAD_STRING) !=
-				SystemCallError.NO_ERROR) ?
-				(String)null : (String)Assembly.pointerToObject(xmt));
-			
-			// Load source file
-			int xsf = Assembly.sysCallV(SystemCallIndex.LOAD_STRING,
-				__trace[base + CallStackItem.SOURCE_FILE]);
-			String ssf = ((xsf == 0 || Assembly.sysCallV(
-				SystemCallIndex.ERROR_GET, SystemCallIndex.LOAD_STRING) !=
-				SystemCallError.NO_ERROR) ?
-				(String)null : (String)Assembly.pointerToObject(xsf));
-			
-			// The PC address
-			int pcaddr = __trace[base + CallStackItem.PC_ADDRESS];
-			
-			// Task ID
-			int tid = __trace[base + CallStackItem.TASK_ID];
-			
-			// Build elements
-			rv[z] = new CallTraceElement(
-				scl,
-				smn,
-				smt,
-				(pcaddr == 0 ? -1 : pcaddr),
-				ssf,
-				__trace[base + CallStackItem.SOURCE_LINE],
-				__trace[base + CallStackItem.JAVA_OPERATION],
-				__trace[base + CallStackItem.JAVA_PC_ADDRESS],
-				tid);
-		}
-		
-		// Use the resolved form
 		return rv;
 	}
 }

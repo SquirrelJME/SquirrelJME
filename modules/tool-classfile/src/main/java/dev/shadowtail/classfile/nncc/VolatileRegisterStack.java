@@ -10,13 +10,14 @@
 package dev.shadowtail.classfile.nncc;
 
 import dev.shadowtail.classfile.summercoat.register.ExecutablePointer;
-import dev.shadowtail.classfile.summercoat.register.InterfaceOfObject;
-import dev.shadowtail.classfile.summercoat.register.InterfaceVTIndex;
+import dev.shadowtail.classfile.summercoat.register.IntValueRegister;
+import dev.shadowtail.classfile.summercoat.register.MemHandleRegister;
 import dev.shadowtail.classfile.summercoat.register.RuntimePoolPointer;
 import dev.shadowtail.classfile.summercoat.register.TypedRegister;
 import dev.shadowtail.classfile.summercoat.register.Volatile;
 import java.util.ArrayList;
 import java.util.Collection;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
 
 /**
  * This is a stack which is used to manage which volatile registers are used.
@@ -66,27 +67,27 @@ public final class VolatileRegisterStack
 	}
 	
 	/**
-	 * Returns a volatile to represent this as an interface of an object.
+	 * Obtains an integer value register.
 	 * 
-	 * @return Interface of object register.
-	 * @since 2020/11/24
+	 * @return An integer value register.
+	 * @since 2020/11/28
 	 */
-	public Volatile<InterfaceOfObject> getInterfaceOfObject()
+	public Volatile<IntValueRegister> getIntValue()
 	{
 		return new Volatile<>(this,
-			new InterfaceOfObject(this.getUnmanaged()));
+			new IntValueRegister(this.getUnmanaged()));
 	}
 	
 	/**
-	 * Returns a register to store an interface virtual table index.
+	 * Returns a memory handle register.
 	 * 
-	 * @return Volatile to store an interface vtable index.
-	 * @since 2020/11/24
+	 * @return The memory handle register.
+	 * @since 2021/01/24
 	 */
-	public Volatile<InterfaceVTIndex> getInterfaceVTIndex()
+	protected Volatile<MemHandleRegister> getMemHandle()
 	{
 		return new Volatile<>(this,
-			new InterfaceVTIndex(this.getUnmanaged()));
+			new MemHandleRegister(this.getUnmanaged()));
 	}
 	
 	/**
@@ -138,9 +139,10 @@ public final class VolatileRegisterStack
 			at++;
 		
 		// {@squirreljme.error JC4l Exceeded maximum permitted registers.
-		// (The base register)}
+		// (The base register; The current count)}
 		if (at >= NativeCode.MAX_REGISTERS)
-			throw new IllegalStateException("JC4l " + this.base);
+			throw new InvalidClassFormatException(
+				String.format("JC4l %d %d", this.base, at));
 		
 		// Record it
 		used.add(at);

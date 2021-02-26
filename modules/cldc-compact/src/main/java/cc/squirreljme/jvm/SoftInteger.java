@@ -63,11 +63,11 @@ public class SoftInteger
 		// If the integer has the sign bit, then it will be sign extended
 		// meaning all the upper bits get set
 		if ((__a & 0x80000000) != 0)
-			return Assembly.longPack(0xFFFFFFFF, __a);
+			return Assembly.longPack(__a, 0xFFFFFFFF);
 		
 		// Otherwise the top is just zero
 		else
-			return Assembly.longPack(0, __a);
+			return Assembly.longPack(__a, 0);
 	}
 }
 

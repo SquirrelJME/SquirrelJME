@@ -38,7 +38,8 @@ public final class NullPlayer
 		Manager.getSystemTimeBase();
 	
 	/** The state of the player. */
-	private volatile int _state = Player.UNREALIZED;
+	private volatile int _state =
+		Player.UNREALIZED;
 	
 	/**
 	 * Initializes the player.
@@ -188,7 +189,10 @@ public final class NullPlayer
 	@Override
 	public final int getState()
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			return this._state;
+		}
 	}
 	
 	/**

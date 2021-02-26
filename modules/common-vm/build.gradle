@@ -16,11 +16,10 @@ squirreljme
 
 dependencies
 {
-	implementation project(":modules:cldc")
+	api project(":modules:cldc")
 
-	implementation project(":modules:midp-lcdui")
-	implementation project(":modules:meep-swm")
-	implementation project(":modules:meep-midlet")
-	implementation project(":modules:tool-manifest-reader")
-	implementation project(":modules:zip")
+	api project(":modules:midp-lcdui")
+	api project(":modules:meep-swm")
+	api project(":modules:meep-midlet")
+	api project(":modules:zip")
 }

@@ -15,10 +15,8 @@ import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMResourceAccess;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
-import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.IOException;
@@ -46,6 +44,10 @@ import net.multiphasicapps.classfile.MethodNameAndType;
 public final class SpringMachine
 	implements Runnable, VirtualMachine
 {
+	/** Exit code indicating bad task things. */
+	public static final int EXIT_CODE_FATAL_EXCEPTION =
+		123;
+	
 	/** The class which contains the thread starting point. */
 	private static final ClassName _START_CLASS =
 		new ClassName("java/lang/__Start__");
@@ -61,6 +63,10 @@ public final class SpringMachine
 	/** The new thread instance. */
 	private static final MethodDescriptor _THREAD_NEW =
 		new MethodDescriptor("(Ljava/lang/String;)V");
+	
+	/** The next virtual machine ID. */
+	private static volatile int _nextVmNumber =
+		1; 
 	
 	/** The class loader. */
 	protected final SpringClassLoader classloader;
@@ -85,6 +91,9 @@ public final class SpringMachine
 	
 	/** The terminal pipe manager. */
 	protected final TerminalPipeManager terminalPipes;
+	
+	/** The virtual machine identifier. */
+	protected final String vmId;
 	
 	/** State for the callback threader. */
 	private final CallbackThreader _cbThreader =
@@ -171,6 +180,15 @@ public final class SpringMachine
 		
 		// Setup resource accessor
 		this.resourceaccessor = new VMResourceAccess(__sm);
+		
+		// Determine an ID for the VM, used for profiler information
+		synchronized (SpringMachine.class)
+		{
+			this.vmId = String.format("%s#%d@%08x",
+				__cl.bootLibrary().name(),
+				SpringMachine._nextVmNumber++,
+				System.identityHashCode(this));
+		}
 	}
 	
 	/**
@@ -209,9 +227,8 @@ public final class SpringMachine
 			SpringThread rv = new SpringThread(
 				(v = ++this._nextthreadid), __main,
 				usedName,
-				this.profiler.measureThread(String.format("%s-vm%08x-%d-%s",
-				this.classloader.bootLibrary().name(),
-				System.identityHashCode(this), v, usedName)));
+				this.profiler.measureThread(String.format("VM_%s-%d-%s",
+				this.vmId, v, usedName)));
 			
 			// Signal that a major state has changed
 			this.notifyAll();
@@ -613,7 +630,7 @@ public final class SpringMachine
 			if (e instanceof Error)
 				throw (Error)e;
 			
-			return TaskAccess.EXIT_CODE_FATAL_EXCEPTION;
+			return SpringMachine.EXIT_CODE_FATAL_EXCEPTION;
 		}
 	}
 	

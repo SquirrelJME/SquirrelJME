@@ -9,10 +9,10 @@
 
 package com.nokia.mid.ui;
 
-import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.DeviceFeedbackType;
-import cc.squirreljme.jvm.Framebuffer;
-import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.mle.constants.UIMetricType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
 /**
  * This is used to utilize special hardware that exists on the device for
@@ -36,10 +36,12 @@ public class DeviceControl
 		if (__ms < 0)
 			throw new IllegalArgumentException("EB2z");
 		
+		throw Debugging.todo();
+		/*
 		// Blink!
 		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
 			DeviceFeedbackType.BLINK_LED, ((__ms > (long)Integer.MAX_VALUE) ?
-				Integer.MAX_VALUE : (int)__ms));
+				Integer.MAX_VALUE : (int)__ms));*/
 	}
 	
 	/**
@@ -63,9 +65,18 @@ public class DeviceControl
 		if (__lvl < 0 || __lvl > 100)
 			throw new IllegalArgumentException("EB32 " + __lvl);
 		
+		// If controlling the backlight is supported, allow it to be changed
+		UIBackend backend = UIBackendFactory.getInstance();
+		if (backend.metric(UIMetricType.SUPPORTS_BACKLIGHT_CONTROL) == 0)
+			return;
+		
+		throw Debugging.todo();
+		/*
 		// Get maximum backlight level, stop if it is zero which means the
 		// property is not supported or there is no backlight that can be
 		// controlled
+		throw Debugging.todo();
+		/*
 		int max = Assembly.sysCallV(SystemCallIndex.FRAMEBUFFER,
 			Framebuffer.CONTROL_BACKLIGHT_LEVEL_MAX);
 		if (max == 0)
@@ -75,7 +86,7 @@ public class DeviceControl
 		int val = (max * __lvl) / 100;
 		Assembly.sysCall(SystemCallIndex.FRAMEBUFFER,
 			Framebuffer.CONTROL_BACKLIGHT_LEVEL_SET,
-			(val < 0 ? 0 : (val > max ? max : val)));
+			(val < 0 ? 0 : (val > max ? max : val)));*/
 	}
 	
 	/**
@@ -100,9 +111,11 @@ public class DeviceControl
 			throw new IllegalArgumentException("EB34 " + __freq);
 		
 		// Vibrate!
+		throw Debugging.todo();
+		/*
 		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
 			DeviceFeedbackType.VIBRATE, ((__ms > (long)Integer.MAX_VALUE) ?
-				Integer.MAX_VALUE : (int)__ms));
+				Integer.MAX_VALUE : (int)__ms));*/
 	}
 	
 	/**
@@ -113,8 +126,10 @@ public class DeviceControl
 	public static void stopVibra()
 	{
 		// Clear vibration
+		throw Debugging.todo();
+		/*
 		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
-			DeviceFeedbackType.VIBRATE, 0);
+			DeviceFeedbackType.VIBRATE, 0);*/
 	}
 }
 

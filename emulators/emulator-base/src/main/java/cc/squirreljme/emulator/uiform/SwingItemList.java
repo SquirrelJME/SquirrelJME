@@ -11,12 +11,21 @@ package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
+import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
+import cc.squirreljme.jvm.mle.constants.UIListType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.Random;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  * List.
@@ -25,12 +34,16 @@ import javax.swing.SwingUtilities;
  */
 public class SwingItemList
 	extends SwingItem
+	implements ListSelectionListener, KeyListener, MouseListener
 {
 	/** The model for the list. */
 	final DefaultListModel<ListEntry> _model;
 	
 	/** The list used. */
 	final JList<ListEntry> _list;
+	
+	/** Is the enter command being used to select an item? */
+	private boolean _enterCommand;
 	
 	/**
 	 * Initializes the item.
@@ -49,6 +62,13 @@ public class SwingItemList
 		list.setCellRenderer(new ListRenderer());
 		
 		this._list = list;
+		
+		// Register a listener for selection changes
+		list.addListSelectionListener(this);
+		
+		// Register listener to listen for enter/return to select an item
+		list.addKeyListener(this);
+		list.addMouseListener(this);
 	}
 	
 	/**
@@ -87,6 +107,85 @@ public class SwingItemList
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2020/12/28
+	 */
+	@Override
+	public void keyPressed(KeyEvent __e)
+	{
+		// Only emit if we desire this behavior and specific keys were typed
+		if (this._enterCommand && (__e.getKeyCode() == KeyEvent.VK_ENTER ||
+			__e.getKeyCode() == KeyEvent.VK_SPACE))
+			this.__activate();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/12/28
+	 */
+	@Override
+	public void keyReleased(KeyEvent __e)
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/12/28
+	 */
+	@Override
+	public void keyTyped(KeyEvent __e)
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/12/28
+	 */
+	@Override
+	public void mouseClicked(MouseEvent __e)
+	{
+		// Only emit if we desire this behavior and we double clicked
+		if (this._enterCommand && __e.getClickCount() >= 2)
+			this.__activate();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/12/28
+	 */
+	@Override
+	public void mouseEntered(MouseEvent __e)
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/12/28
+	 */
+	@Override
+	public void mouseExited(MouseEvent __e)
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/12/28
+	 */
+	@Override
+	public void mousePressed(MouseEvent __e)
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/12/28
+	 */
+	@Override
+	public void mouseReleased(MouseEvent __e)
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/07/18
 	 */
 	@Override
@@ -99,6 +198,9 @@ public class SwingItemList
 		
 		try
 		{
+			ListEntry elem;
+			
+			// Depends on which action was performed
 			switch (__id)
 			{
 				case UIWidgetProperty.INT_NUM_ELEMENTS:
@@ -116,11 +218,39 @@ public class SwingItemList
 					break;
 				
 				case UIWidgetProperty.INT_LIST_ITEM_DISABLED:
-					model.get(__sub)._disabled = (__newValue != 0);
+					{
+						boolean nowDisabled = (__newValue != 0);
+						
+						elem = model.get(__sub);
+						elem._disabled = nowDisabled;
+						
+						// Disabling an element means it cannot be selected
+						if (nowDisabled)
+						{
+							elem._selected = false;
+							list.removeSelectionInterval(__sub, __sub);
+						}
+					}
 					break;
 				
 				case UIWidgetProperty.INT_LIST_ITEM_SELECTED:
-					model.get(__sub)._selected = (__newValue != 0);
+					{
+						elem = model.get(__sub);
+						
+						// Disabled items cannot be selected at all
+						boolean sel = (__newValue != 0);
+						if (elem._disabled && sel)
+							break;
+						
+						// Update the model
+						elem._selected = sel;
+						
+						// There are two different methods for selections
+						if (sel)
+							list.addSelectionInterval(__sub,__sub);
+						else
+							list.removeSelectionInterval(__sub, __sub);
+					}
 					break;
 				
 				case UIWidgetProperty.INT_LIST_ITEM_ICON_DIMENSION:
@@ -129,6 +259,11 @@ public class SwingItemList
 				
 				case UIWidgetProperty.INT_LIST_ITEM_FONT:
 					model.get(__sub)._fontDescription = __newValue;
+					break;
+				
+					// Change of the list type
+				case UIWidgetProperty.INT_LIST_TYPE:
+					this.__changeListType(__newValue);
 					break;
 				
 				default:
@@ -251,6 +386,115 @@ public class SwingItemList
 		{
 			throw new MLECallError("Invalid index: " + __sub, e);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/12/28
+	 */
+	@Override
+	public void valueChanged(ListSelectionEvent __e)
+	{
+		// Do not emit selection changes if it is still being changed, since
+		// this could result in a rush of events
+		if (__e.getValueIsAdjusting())
+			return;
+		
+		// Can only do something if there is a form and callback
+		SwingForm form = this.form();
+		UIFormCallback callback = (form != null ? form.callback() : null);
+		if (form == null || callback == null)
+			return;
+		
+		// The list selection is being updated
+		int keyCode = new Random().nextInt();
+		callback.propertyChange(form, this,
+			UIWidgetProperty.INT_UPDATE_LIST_SELECTION_LOCK, 0,
+			0, keyCode);
+		
+		// Send updates on all the items which were selected or not
+		JList<ListEntry> list = this._list;
+		DefaultListModel<ListEntry> model = this._model;
+		for (int dx = __e.getFirstIndex(),
+			end = Math.min(__e.getLastIndex(), model.size() - 1);
+			dx <= end; dx++)
+		{
+			ListEntry entry = model.get(dx);
+			boolean sel = list.isSelectedIndex(dx);
+			
+			// If this item was somehow disabled, then remove selection from it
+			if (sel && entry._disabled)
+			{
+				entry._selected = false;
+				sel = false;
+			}
+			
+			// Update the selection model for the list
+			boolean was = entry._selected;
+			entry._selected = sel;
+			
+			// Inform the list of the change, if it actually happened
+			if (was != sel)
+				callback.propertyChange(form, this,
+					UIWidgetProperty.INT_LIST_ITEM_SELECTED, dx,
+					keyCode, (sel ? 1 : 0));
+		}
+		
+		// List no longer being updated
+		callback.propertyChange(form, this,
+			UIWidgetProperty.INT_UPDATE_LIST_SELECTION_LOCK, 0,
+			keyCode, 0);
+	}
+	
+	/**
+	 * Activates this list.
+	 * 
+	 * @since 2020/12/28
+	 */
+	private void __activate()
+	{
+		// Can only do something if there is a form and callback
+		SwingForm form = this.form();
+		UIFormCallback callback = (form != null ? form.callback() : null);
+		if (form == null || callback == null)
+			return;
+		
+		callback.eventKey(form, this,
+			UIKeyEventType.COMMAND_ACTIVATED, 0, 0);
+	}
+	
+	/**
+	 * Changes the type of list used.
+	 * 
+	 * @param __type The type of list to use.
+	 * @since 2020/12/28
+	 */
+	private void __changeListType(int __type)
+	{
+		// Which model are we using?
+		int mode;
+		switch (__type)
+		{
+				// These are both effectively the same, except one always
+				// selects the focused item
+			case UIListType.IMPLICIT:
+			case UIListType.EXCLUSIVE:
+				mode = ListSelectionModel.SINGLE_SELECTION;
+				break;
+			
+			case UIListType.MULTIPLE:
+				mode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
+				break;
+			
+			default:
+				return;
+		}
+		
+		// Use this one
+		this._list.setSelectionMode(mode);
+		
+		// Is the enter command used?
+		this._enterCommand = (__type == UIListType.IMPLICIT);
 	}
 	
 	/**

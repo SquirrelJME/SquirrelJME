@@ -349,6 +349,23 @@ public enum MLEUIForm
 		}
 	},
 	
+	/** {@link UIFormShelf#injector()}. */
+	INJECTOR("injector:()Lcc/squirreljme/jvm/mle/callbacks/" +
+		"UIFormCallback;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/02/25
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			// Use a proxy to call from SpringCoat to the real machine
+			return new UIFormCallbackProxy(__thread.machine,
+				UIFormShelf.injector());
+		}
+	},
+	
 	/** {@link UIFormShelf#itemDelete(UIItemBracket)}. */
 	ITEM_DELETE("itemDelete:(Lcc/squirreljme/jvm/mle/brackets/" +
 		"UIItemBracket;)V")
@@ -364,6 +381,23 @@ public enum MLEUIForm
 			return null;
 		}
 	},
+	
+	/** {@link UIFormShelf#itemForm(UIItemBracket)}. */
+	ITEM_FORM("itemForm:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"UIItemBracket;)Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/01/03
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			UIFormBracket form = UIFormShelf.itemForm(
+				MLEUIForm.__item(__args[0]).item);
+			return (form == null ? null : new UIFormObject(form));
+		}
+	}, 
 	
 	/** {@link UIFormShelf#itemNew(int)}. */  
 	ITEM_NEW("itemNew:(I)Lcc/squirreljme/jvm/mle/brackets/" +

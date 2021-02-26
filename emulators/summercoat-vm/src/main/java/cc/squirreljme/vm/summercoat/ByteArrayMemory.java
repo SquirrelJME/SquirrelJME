@@ -9,14 +9,17 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.jvm.mle.constants.ByteOrderType;
+import cc.squirreljme.jvm.summercoat.ld.mem.AbstractWritableMemory;
+
 /**
- * This is a region of memory which uses a read-only byte array.
+ * This is a region of memory which is backed by a byte array, this may or
+ * may not be writable.
  *
  * @since 2019/04/21
  */
 public final class ByteArrayMemory
-	extends AbstractReadableMemory
-	implements ReadableMemory
+	extends AbstractWritableMemory
 {
 	/** The offset to this address. */
 	protected final int offset;
@@ -25,7 +28,10 @@ public final class ByteArrayMemory
 	protected final int size;
 	
 	/** Offset into the byte array. */
-	protected final int boff;
+	protected final int arrayOff;
+	
+	/** Allow writing into this memory? */
+	protected final boolean allowWrites;
 	
 	/** The backing byte array. */
 	private final byte[] _bytes;
@@ -49,6 +55,21 @@ public final class ByteArrayMemory
 	 *
 	 * @param __mo The memory offset.
 	 * @param __b The memory bytes.
+	 * @param __allowWrites Allow writing to this memory.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/02/14
+	 */
+	public ByteArrayMemory(int __mo, byte[] __b, boolean __allowWrites)
+		throws NullPointerException
+	{
+		this(__mo, __b, 0, __b.length, __allowWrites);
+	}
+	
+	/**
+	 * Initializes the byte array memory.
+	 *
+	 * @param __mo The memory offset.
+	 * @param __b The memory bytes.
 	 * @param __o The array offset.
 	 * @param __l The number of bytes to access.
 	 * @throws IndexOutOfBoundsException If the byte array offset and/or
@@ -59,6 +80,28 @@ public final class ByteArrayMemory
 	public ByteArrayMemory(int __mo, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
+		this(__mo, __b, __o, __l, false);
+	}
+	
+	/**
+	 * Initializes the byte array memory.
+	 *
+	 * @param __mo The memory offset.
+	 * @param __b The memory bytes.
+	 * @param __o The array offset.
+	 * @param __l The number of bytes to access.
+	 * @param __allowWrites Allow writing to this memory.
+	 * @throws IndexOutOfBoundsException If the byte array offset and/or
+	 * length exceeds the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/02/14
+	 */
+	public ByteArrayMemory(int __mo,
+		byte[] __b, int __o, int __l, boolean __allowWrites)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		super(ByteOrderType.BIG_ENDIAN);
+		
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
@@ -66,8 +109,9 @@ public final class ByteArrayMemory
 		
 		this.offset = __mo;
 		this._bytes = __b;
-		this.boff = __o;
+		this.arrayOff = __o;
 		this.size = __l;
+		this.allowWrites = __allowWrites;
 	}
 	
 	/**
@@ -75,13 +119,12 @@ public final class ByteArrayMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public int memReadByte(int __addr)
+	public int memReadByte(long __addr)
 	{
-		// Treat out of region reads as invalid data
-		if (__addr < 0 || __addr >= this.size)
-			return -1;
+		// Check if this access is valid or not
+		this.__check(__addr, false, 1);
 		
-		return this._bytes[this.boff + __addr] & 0xFF;
+		return this._bytes[(int)(this.arrayOff + __addr)] & 0xFF;
 	}
 	
 	/**
@@ -89,7 +132,7 @@ public final class ByteArrayMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public void memReadBytes(int __addr, byte[] __b, int __o, int __l)
+	public void memReadBytes(long __addr, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		if (__b == null)
@@ -97,71 +140,57 @@ public final class ByteArrayMemory
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// Get properties
-		byte[] bytes = this._bytes;
-		int offset = this.offset,
-			size = this.size;
+		// Check read
+		this.__check(__addr, false, __l);
 		
-		// The end index where we are reading
-		int enddx = __addr + __l;
-		
-		// The limiting index, which never exceeds the size
-		int limdx = (enddx > size ? size : enddx);
-		
-		// The real address to read from
-		int ai = this.boff + __addr;
-		
-		// Copy all data
-		while (ai < limdx)
-			__b[__o++] = bytes[ai++];
-		
-		// If there is anything left over, pour in -1s
-		while ((ai++) < enddx)
-			__b[__o++] = -1;
+		// Copy data quickly using acceleration!
+		System.arraycopy(this._bytes, (int)(this.arrayOff + __addr),
+			__b, __o, __l);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/21
 	 */
+	@SuppressWarnings("MagicNumber")
 	@Override
-	public int memReadInt(int __addr)
+	public int memReadInt(long __addr)
 	{
-		// Treat out of region reads as invalid data
-		if (__addr < 0 || __addr >= this.size - 3)
-			return -1;
+		// Check if this access is valid or not
+		this.__check(__addr, false, 4);
 		
 		byte[] bytes = this._bytes;
-		int rp = this.boff + __addr;
+		int rp = (int)(this.arrayOff + __addr);
 		return ((bytes[rp++] & 0xFF) << 24) |
 			((bytes[rp++] & 0xFF) << 16) |
 			((bytes[rp++] & 0xFF) << 8) |
-			(bytes[rp++] & 0xFF);
+			(bytes[rp] & 0xFF);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/21
 	 */
+	@SuppressWarnings("MagicNumber")
 	@Override
-	public int memReadShort(int __addr)
+	public int memReadShort(long __addr)
 	{
-		// Treat out of region reads as invalid data
-		if (__addr < 0 || __addr >= this.size - 1)
-			return -1;
+		// Check if this access is valid or not
+		this.__check(__addr, false, 2);
 		
 		byte[] bytes = this._bytes;
-		int rp = this.boff + __addr;
+		int rp = (int)(this.arrayOff + __addr);
 		return (short)(((bytes[rp++] & 0xFF) << 8) |
-			(bytes[rp++] & 0xFF));
+			(bytes[rp] & 0xFF));
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/21
+	 * @return
 	 */
 	@Override
-	public int memRegionOffset()
+	public long memRegionOffset()
 	{
 		return this.offset;
 	}
@@ -169,11 +198,108 @@ public final class ByteArrayMemory
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/21
+	 * @return
 	 */
 	@Override
-	public final int memRegionSize()
+	public final long memRegionSize()
 	{
 		return this.size;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
+	public void memWriteByte(long __addr, int __v)
+	{
+		// Check if this access is valid or not
+		this.__check(__addr, true, 1);
+		
+		int wp = (int)(this.arrayOff + __addr);
+		this._bytes[wp] = (byte)(__v);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/02/14
+	 */
+	@Override
+	public void memWriteBytes(long __addr, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Check read
+		this.__check(__addr, true, __l);
+		
+		// Copy data quickly using acceleration!
+		System.arraycopy(__b, __o,
+			this._bytes, (int)(this.arrayOff + __addr), __l);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@SuppressWarnings("MagicNumber")
+	@Override
+	public final void memWriteInt(long __addr, int __v)
+	{
+		// Check if this access is valid or not
+		this.__check(__addr, true, 4);
+		
+		byte[] bytes = this._bytes;
+		int wp = (int)(this.arrayOff + __addr);
+		bytes[wp++] = (byte)(__v >>> 24);
+		bytes[wp++] = (byte)(__v >>> 16);
+		bytes[wp++] = (byte)(__v >>> 8);
+		bytes[wp] = (byte)(__v);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
+	public final void memWriteShort(long __addr, int __v)
+	{
+		// Check if this access is valid or not
+		this.__check(__addr, true, 2);
+		
+		byte[] bytes = this._bytes;
+		int wp = (int)(this.arrayOff + __addr);
+		bytes[wp++] = (byte)(__v >>> 8);
+		bytes[wp] = (byte)(__v);
+	}
+	
+	/**
+	 * Checks if the given address can be read from or written to.
+	 * 
+	 * @param __addr The address to write to.
+	 * @param __write If this is being written to.
+	 * @param __len The number of bytes to write.
+	 * @throws VMMemoryAccessException If the memory access is invalid.
+	 * @since 2021/02/14
+	 */
+	private void __check(long __addr, boolean __write, int __len)
+		throws VMMemoryAccessException
+	{
+		// Not able to write to ROM memory areas
+		if (__write && !this.allowWrites)
+			throw new VMMemoryAccessException("Cannot write to ROM.");
+		
+		// Check if the address is within bounds.
+		if (__addr < 0 || __addr > Integer.MAX_VALUE ||
+			(__addr + __len) > this.size)
+			throw new VMMemoryAccessException("Invalid Address: " + __addr);
+		
+		// Cannot read/write from unaligned memory for a given type
+		if ((__addr % __len) != 0)
+			throw new VMMemoryAccessException("Unaligned Address: " + __addr);
 	}
 }
 

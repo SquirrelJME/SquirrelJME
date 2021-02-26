@@ -11,7 +11,6 @@ package cc.squirreljme.runtime.launcher.ui;
 
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
-import cc.squirreljme.runtime.lcdui.gfx.AdvancedGraphics;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import java.io.IOException;
 import java.io.InputStream;

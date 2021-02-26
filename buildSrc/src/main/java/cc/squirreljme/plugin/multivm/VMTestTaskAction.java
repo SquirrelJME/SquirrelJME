@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.util.JavaExecSpecFiller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,14 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.function.Supplier;
 import org.gradle.api.Action;
-import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.jvm.tasks.Jar;
-import org.gradle.nativeplatform.tasks.LinkSharedLibrary;
-import org.gradle.process.JavaExecSpec;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
 
@@ -71,7 +67,7 @@ public class VMTestTaskAction
 	protected final VMSpecifier vmType;
 	
 	/** Factory for making specifications. */
-	protected final Supplier<JavaExecSpec> specFactory;
+	protected final Supplier<JavaExecSpecFiller> specFactory;
 	
 	/**
 	 * Initializes the virtual machine task action.
@@ -84,7 +80,7 @@ public class VMTestTaskAction
 	 * @since 2020/08/23
 	 */
 	public VMTestTaskAction(WorkerExecutor __executor,
-		Supplier<JavaExecSpec> __specFactory, String __sourceSet,
+		Supplier<JavaExecSpecFiller> __specFactory, String __sourceSet,
 		VMSpecifier __vmType)
 		throws NullPointerException
 	{
@@ -115,7 +111,7 @@ public class VMTestTaskAction
 		// We will need this as we cannot pass tasks for execution specs
 		// due to a serialization barrier, so we must only pass command line
 		// arguments
-		Supplier<JavaExecSpec> specFactory = this.specFactory;
+		Supplier<JavaExecSpecFiller> specFactory = this.specFactory;
 		
 		// All results will go here
 		String sourceSet = this.sourceSet;
@@ -155,7 +151,7 @@ public class VMTestTaskAction
 		for (String testName : testNames)
 		{
 			// Determine the arguments that are used to spawn the JVM
-			JavaExecSpec execSpec = specFactory.get();
+			JavaExecSpecFiller execSpec = specFactory.get();
 			Path[] classPath = VMHelpers.runClassPath(
 				(VMExecutableTask)__task, sourceSet, vmType);
 			vmType.spawnJvmArguments(__task, execSpec,

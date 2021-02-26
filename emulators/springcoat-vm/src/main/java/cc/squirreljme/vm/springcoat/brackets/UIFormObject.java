@@ -10,9 +10,6 @@
 package cc.squirreljme.vm.springcoat.brackets;
 
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
-import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.springcoat.AbstractGhostObject;
 
 /**
  * This wraps a native {@link UIFormBracket}.
@@ -35,6 +32,8 @@ public final class UIFormObject
 	public UIFormObject(UIFormBracket __form)
 		throws NullPointerException
 	{
+		super(UIFormBracket.class);
+		
 		if (__form == null)
 			throw new NullPointerException("NARG");
 		

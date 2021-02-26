@@ -23,20 +23,25 @@ public class VMFullSuite
 	/** The virtual machine type. */
 	public final VMSpecifier vmType;
 	
+	/** The source set used. */
+	public final String sourceSet;
+	
 	/**
 	 * Initializes the full suite task.
 	 * 
+	 * @param __sourceSet The source set used.
 	 * @param __vmType The virtual machine type.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/17
 	 */
 	@Inject
-	public VMFullSuite(VMSpecifier __vmType)
+	public VMFullSuite(String __sourceSet, VMSpecifier __vmType)
 		throws NullPointerException
 	{
-		if (__vmType == null)
+		if (__vmType == null || __sourceSet == null)
 			throw new NullPointerException("NARG");
 		
+		this.sourceSet = __sourceSet;
 		this.vmType = __vmType;
 		
 		// Runs the entire API/Library suite of SquirrelJME to run a given
@@ -49,9 +54,10 @@ public class VMFullSuite
 		this.getOutputs().upToDateWhen(new AlwaysFalse());
 		
 		// This depends on everything!
-		this.dependsOn(new VMFullSuiteDepends(this, __vmType));
+		this.dependsOn(new VMFullSuiteDepends(this, __sourceSet,
+			__vmType));
 		
 		// Actual running of everything
-		this.doLast(new VMFullSuiteTaskAction(__vmType));
+		this.doLast(new VMFullSuiteTaskAction(__sourceSet, __vmType));
 	}
 }

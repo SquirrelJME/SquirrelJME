@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.springcoat.brackets;
 
+import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.vm.springcoat.AbstractGhostObject;
 import cc.squirreljme.vm.springcoat.SpringClass;
 
@@ -33,6 +34,8 @@ public class TypeObject
 	public TypeObject(SpringClass __cl)
 		throws NullPointerException
 	{
+		super(TypeBracket.class);
+		
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
