@@ -37,7 +37,8 @@ stages:
 
     # Download the built-in ROM
     - echo Downloading External ROM...
-    - curl -L "$(curl -L -H "Circle-Token: $CIRCLECI_ACCESS_TOKEN" "https://circleci.com/api/v1.1/project/github/SquirrelJME/SquirrelJME/$SQUIRRELJME_ROM_ID/artifacts" | tr -d '\n' | tr -d ' ' | sed 's/.*"url":"\([^"]*\)".*/\1/')" > ratufacoat/build/builtin.c
+    - "curl -L -H \"Circle-Token: $CIRCLECI_ACCESS_TOKEN\" \"https://circleci.com/api/v1.1/project/github/SquirrelJME/SquirrelJME/$SQUIRRELJME_ROM_ID/artifacts\" | tr -d '\n' | tr -d ' ' | sed 's/.*\"url\":\"\\([^\"]*\\)\".*/\\1/' > .rom-url"
+    - "curl -L \"$(cat .rom-url)\" > ratufacoat/build/builtin.c"
 
 # Inclusion templates, required for the build to work
 include:
