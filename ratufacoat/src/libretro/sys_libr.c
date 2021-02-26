@@ -18,6 +18,11 @@
 #include "sjmerc.h"
 #include "sjmecon.h"
 
+/** Is the build in ROM used? */
+#if defined(SQUIRRELJME_HAS_BUILTIN)
+	#include "builtin.h"
+#endif
+
 /** Screen size. */
 #define SJME_RETROARCH_WIDTH 240
 #define SJME_RETROARCH_HEIGHT 320
@@ -202,6 +207,12 @@ void retro_set_environment(retro_environment_t cb)
 				"Cycles Per Frame; "
 				"1048576|2097152|4194304|32768|65536|131072|262144|524288"},
 			
+			// Force the use of the external ROM?
+#if defined(SQUIRRELJME_HAS_BUILTIN)
+			{"squirreljme_use_external_rom",
+				"Use External ROM; disabled|enabled"},
+#endif
+			
 			/* End. */
 			{NULL, NULL}
 		};
@@ -344,6 +355,11 @@ void retro_init(void)
 	struct retro_vfs_file_handle* romfile;
 	int strlens;
 	sjme_jint romsize, readat, readcount;
+#if defined(SQUIRRELJME_HAS_BUILTIN)
+	struct retro_log_callback logging;
+	struct retro_variable var;
+	sjme_jbyte useBuiltInRom;
+#endif
 	
 	/* Use ARGB 32-bit. */
 	format = RETRO_PIXEL_FORMAT_XRGB8888;
@@ -352,11 +368,29 @@ void retro_init(void)
 	if (environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &format))
 		log_cb(RETRO_LOG_INFO, "Using XRGB8888?\n");
 	
+	/* Size of the read ROM. */
+	romsize = 0;
+
+	/* Is a built-in ROM available? */
+#if defined(SQUIRRELJME_HAS_BUILTIN)
+	/* Which variable being read? */
+	memset(&var, 0, sizeof(var));
+	var.key = "squirreljme_use_external_rom";
+	
+	/* If it is not disabled then it is enabled */
+	if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+		if (var.value != NULL)
+			useBuiltInRom = strcmp("disabled", var.value);
+	
+	/* Use the built-in ROM for these. */
+	sjme_retroarch_basicrom = (void*)sjme_builtInRomData;
+	romsize = sjme_builtInRomSize;
+#endif
+	
 	/* Load the SummerCoat ROM using RetroArch VFS rather than letting */
 	/* RatufaCoat itself load the ROM since there might be very specific */
 	/* file stuff we can initially skip. */
-	romsize = 0;
-	if (vfs_cb != NULL &&
+	if (romsize == 0 && vfs_cb != NULL &&
 		environ_cb(RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &sysdir))
 	{
 		/* Determine length of strings. */

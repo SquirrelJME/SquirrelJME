@@ -13,8 +13,8 @@
 #include "sjmerc.h"
 
 #if defined(SQUIRRELJME_HAS_BUILTIN)
-extern const sjme_ubyte builtInRomData[];
-extern const sjme_jint builtInRomSize;
+extern const sjme_ubyte sjme_builtInRomData[];
+extern const sjme_jint sjme_builtInRomSize;
 #endif
 
 #endif /* SQUIRRELJME_BUILTIN_H */

@@ -26,6 +26,11 @@ target_include_directories(squirreljme-libretro PUBLIC
 target_link_libraries(squirreljme-libretro
 	SquirrelJMECore)
 
+# If Static ROM is being used, extra RetroArch options are available
+if(SQUIRRELJME_HAS_BUILTIN)
+	add_compile_definitions(SQUIRRELJME_HAS_BUILTIN=1)
+endif()
+
 # Custom launching the core, tries to find RetroArch on the system
 ## Determine RetroArch directory
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
