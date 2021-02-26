@@ -279,8 +279,6 @@ libretro-build-vita:
 #################################### MISC ##################################
 # Emscripten
 libretro-build-emscripten:
-  dependencies:
-    - summercoat-built-in
   extends:
     - .libretro-emscripten-static-retroarch-master
     - .core-defs
