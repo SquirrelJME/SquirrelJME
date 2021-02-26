@@ -490,8 +490,6 @@ jobs:
       - run:
           name: Construct Built-In SummerCoat ROM for RatufaCoat
           command: ./gradlew :romSummerCoatRatufaCoat --console plain --continue --parallel
-      - store_artifacts:
-        path: 'ratufacoat/build/builtin.c'
       - persist_to_workspace:
           root: .
           paths:
@@ -501,6 +499,8 @@ jobs:
             - '*/build/*'
             - '*/*/build/*'
             - 'ratufacoat/build/builtin.c'
+      - store_artifacts:
+          path: ratufacoat/build/builtin.c
 
 workflows:
   version: 2
