@@ -29,19 +29,15 @@ stages:
 # SquirrelJME Support (Shared)
 .squirreljme-support-shared:
   needs:
-    - project: libretro/SquirrelJME
-      #pipeline: ${CI_PIPELINE_ID}
+    - pipeline: ${CI_PIPELINE_ID}
       job: summercoat-built-in
-      ref: ${CI_COMMIT_SHA}
       artifacts: true
 
 # SquirrelJME Support (Static)
 .squirreljme-support-static:
   needs:
-    - project: libretro/SquirrelJME
-      #pipeline: ${CI_PIPELINE_ID}
+    - pipeline: ${CI_PIPELINE_ID}
       job: summercoat-built-in
-      ref: ${CI_COMMIT_SHA}
       artifacts: true
     - project: libretro/RetroArch
       job: ${STATIC_RETROARCH_JOB_NAME}
