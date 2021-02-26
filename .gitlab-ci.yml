@@ -116,7 +116,8 @@ summercoat-built-in:
     expire_in: 10 min
   script:
     # We need a compile to generate the native code used to compile ROMs
-    - apt-get --no-install-recommends -y install build-essential
+    - apt-get update
+    - apt-get --no-install-recommends -y install build-essential gcc g++
 
     # Then perform the ROM generation
     - ./gradlew :romSummerCoatRatufaCoat --full-stacktrace
