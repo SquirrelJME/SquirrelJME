@@ -14,6 +14,7 @@
 # Stages for building
 stages:
   - build-prepare
+  - do-nothing
   - build-shared
   - build-static
 
@@ -137,6 +138,17 @@ summercoat-built-in:
 
     # Then perform the ROM generation
     - ./gradlew :romSummerCoatRatufaCoat --full-stacktrace
+
+# Does nothing
+does-nothing:
+  image: openjdk:8-jdk
+  stage: do-nothing
+  artifacts:
+    paths:
+      - "ratufacoat/build/builtin.c"
+    expire_in: 10 min
+  script:
+    - echo "This does not do anything..."
 
 ################################### DESKTOPS #################################
 # Linux 32-bit
