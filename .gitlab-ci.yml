@@ -11,15 +11,20 @@
 ################################# BOILERPLATE ################################
 ##############################################################################
 
+# Stages for building
+stages:
+  - build-prepare
+  - build-shared
+  - build-static
+
 # Core definitions
 .core-defs:
-  dependencies:
-    - summercoat-built-in
   variables:
     CORENAME: squirreljme
     JNI_PATH: ratufacoat/libretro/
     MAKEFILE_PATH: ratufacoat
     MAKEFILE: makefilelibretro
+    SQUIRRELJME_HAS_BUILTIN: 1
 
 # Inclusion templates, required for the build to work
 include:
@@ -94,12 +99,6 @@ include:
   # Emscripten
   - project: 'libretro-infrastructure/ci-templates'
     file: '/emscripten-static.yml'
-
-# Stages for building
-stages:
-  - build-prepare
-  - build-shared
-  - build-static
 
 ##############################################################################
 #################################### STAGES ##################################
