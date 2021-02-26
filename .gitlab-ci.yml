@@ -14,7 +14,6 @@
 # Stages for building
 stages:
   - build-prepare
-  - do-nothing
   - build-shared
   - build-static
 
@@ -30,15 +29,19 @@ stages:
 # SquirrelJME Support (Shared)
 .squirreljme-support-shared:
   needs:
-    - pipeline: $CI_PIPELINE_ID
+    - project: libretro/SquirrelJME
+      #pipeline: ${CI_PIPELINE_ID}
       job: summercoat-built-in
+      ref: ${CI_COMMIT_SHA}
       artifacts: true
 
 # SquirrelJME Support (Static)
 .squirreljme-support-static:
   needs:
-    - pipeline: $CI_PIPELINE_ID
+    - project: libretro/SquirrelJME
+      #pipeline: ${CI_PIPELINE_ID}
       job: summercoat-built-in
+      ref: ${CI_COMMIT_SHA}
       artifacts: true
     - project: libretro/RetroArch
       job: ${STATIC_RETROARCH_JOB_NAME}
@@ -138,17 +141,6 @@ summercoat-built-in:
 
     # Then perform the ROM generation
     - ./gradlew :romSummerCoatRatufaCoat --full-stacktrace
-
-# Does nothing
-does-nothing:
-  image: openjdk:8-jdk
-  stage: do-nothing
-  artifacts:
-    paths:
-      - "ratufacoat/build/builtin.c"
-    expire_in: 10 min
-  script:
-    - echo "This does not do anything..."
 
 ################################### DESKTOPS #################################
 # Linux 32-bit
