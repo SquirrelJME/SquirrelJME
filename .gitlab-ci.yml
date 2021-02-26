@@ -13,6 +13,7 @@
 
 # Stages for building
 stages:
+  - squirreljme-rom
   - build-prepare
   - build-shared
   - build-static
