@@ -13,6 +13,7 @@
 
 # Stages for building
 stages:
+  - squirreljme-rom
   - build-prepare
   - build-shared
   - build-static
@@ -107,7 +108,7 @@ include:
 ########################### SUMMERCOAT BUILT-IN ROM ##########################
 summercoat-built-in:
   image: openjdk:8-jdk
-  stage: build-prepare
+  stage: squirreljme-rom
   artifacts:
     paths:
       - "ratufacoat/build/builtin.c"
