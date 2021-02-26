@@ -32,7 +32,12 @@ stages:
   only:
     - triggers
   before_script:
-    - "echo from external: $SQUIRRELJME_ROM_ID"
+    # Make sure the directories exist first
+    - mkdir -p ratufacoat/build/
+
+    # Download the built-in ROM
+    - echo Downloading External ROM...
+    - curl -L "$(curl -L -H "Circle-Token: $CIRCLECI_ACCESS_TOKEN" "https://circleci.com/api/v1.1/project/github/SquirrelJME/SquirrelJME/$SQUIRRELJME_ROM_ID/artifacts" | tr -d '\n' | tr -d ' ' | sed 's/.*"url":"\([^"]*\)".*/\1/')" > ratufacoat/build/builtin.c
 
 # Inclusion templates, required for the build to work
 include:
