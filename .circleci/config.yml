@@ -573,7 +573,7 @@ workflows:
             - test_summercoat
       - construct_romTestSummerCoat:
           requires:
-            - test_summercoat
+            - construct_romSummerCoat
 
       # The Built-In C File
       - construct_builtInSummerCoatRom:
