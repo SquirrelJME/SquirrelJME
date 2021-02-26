@@ -30,6 +30,8 @@ stages:
 .squirreljme-support:
   needs:
     - job: summercoat-built-in
+      project: libretro/SquirrelJME
+      ref: $CI_COMMIT_BRANCH
       artifacts: true
 
 # Inclusion templates, required for the build to work
