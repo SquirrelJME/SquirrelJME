@@ -13,6 +13,7 @@
     <file url="file://$PROJECT_DIR$/include/syscall.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/test.cpp" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/todo.h" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/libretro/libretro.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/CMakeLists.txt" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/bootrom.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/cpu.c" charset="ISO-8859-1" />
