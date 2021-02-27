@@ -72,36 +72,6 @@ static struct
 static sjme_error sjme_retroarch_error =
 	{SJME_ERROR_NONE, 0};
 
-/** Returns the supported RetroArch version. */
-unsigned retro_api_version(void)
-{
-	return RETRO_API_VERSION;
-}
-
-/** Region. */
-unsigned retro_get_region(void)
-{
-	return RETRO_REGION_NTSC;
-}
-
-/** Sets system information on RetroArch. */
-void retro_get_system_info(struct retro_system_info* info)
-{
-	/* Wipe. */
-	memset(info, 0, sizeof(*info));
-	
-	/* Set properties. */
-	info->library_name = "squirreljme";
-	info->library_version = SQUIRRELJME_VERSION_STRING;
-	info->valid_extensions = "jar";
-	
-	/* Full path is not needed, but game data may be specified!. */
-	info->need_fullpath = false;
-	
-	/* SquirrelJME works with JAR files, which are ZIP files. */
-	info->block_extract = true;
-}
-
 /** Get audio/video information. */
 void retro_get_system_av_info(struct retro_system_av_info* info)
 {
@@ -557,24 +527,6 @@ void retro_run(void)
 		SJME_RETROARCH_WIDTH * sizeof(uint32_t));
 }
 
-/** Serialize size? */
-size_t retro_serialize_size(void)
-{
-	return 0;
-}
-
-/** Serialize? */
-bool retro_serialize(void* data, size_t size)
-{
-	return false;
-}
-
-/** Unserialize? */
-bool retro_unserialize(const void* data, size_t size)
-{
-	return false;
-}
-
 /** Get memory data? */
 void* retro_get_memory_data(unsigned id)
 {
@@ -585,16 +537,6 @@ void* retro_get_memory_data(unsigned id)
 size_t retro_get_memory_size(unsigned id)
 {
 	return 0;
-}
-
-/** Reset cheat. */
-void retro_cheat_reset(void)
-{
-}
-
-/** Set cheat. */
-void retro_cheat_set(unsigned index, bool enabled, const char* code)
-{
 }
 
 /** Load a game? */

@@ -10,6 +10,9 @@
 # Define shared library
 add_library(squirreljme_libretro SHARED
 	lraudio.c
+	lrcheat.c
+	lrfreeze.c
+	lrinfo.c
 	lrjoypad.c
 	sys_libr.c)
 
