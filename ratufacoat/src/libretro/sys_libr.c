@@ -296,8 +296,8 @@ void retro_init(void)
 	struct retro_vfs_file_handle* romfile;
 	int strlens;
 	sjme_jint romsize, readat, readcount;
-#if defined(SQUIRRELJME_HAS_BUILTIN)
 	struct retro_log_callback logging;
+#if defined(SQUIRRELJME_HAS_BUILTIN)
 	struct retro_variable var;
 	sjme_jbyte useBuiltInRom;
 #endif

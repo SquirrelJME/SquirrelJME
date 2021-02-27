@@ -22,11 +22,21 @@ COREDEFINES := $(SQUIRRELJME_EXTRA_CFLAGS)
 INCFLAGS := -I$(CORE_DIR)/include -I$(CORE_DIR)/libretro $(INCFLAGS) \
 	$(SQUIRRELJME_EXTRA_CFLAGS)
 
-SOURCES_C   := $(CORE_DIR)/src/sjmerc.c \
+SOURCES_C   := \
+	$(CORE_DIR)/src/bootrom.c \
+	$(CORE_DIR)/src/cpu.c \
+	$(CORE_DIR)/src/debug.c \
+	$(CORE_DIR)/src/handles.c \
+	$(CORE_DIR)/src/sjmerc.c \
 	$(CORE_DIR)/src/sjmercnm.c \
 	$(CORE_DIR)/src/sjmercvm.c \
 	$(CORE_DIR)/src/stringies.c \
 	$(CORE_DIR)/src/syscall.c \
+	$(CORE_DIR)/src/libretro/lraudio.c \
+	$(CORE_DIR)/src/libretro/lrcheat.c \
+	$(CORE_DIR)/src/libretro/lrfreeze.c \
+	$(CORE_DIR)/src/libretro/lrinfo.c \
+	$(CORE_DIR)/src/libretro/lrjoypad.c \
 	$(CORE_DIR)/src/libretro/sys_libr.c \
 	$(SQUIRRELJME_EXTRA_C_SOURCES)
 
