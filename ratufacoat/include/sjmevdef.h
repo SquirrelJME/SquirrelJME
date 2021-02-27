@@ -47,20 +47,6 @@ typedef struct sjme_jlong_combine
 } sjme_jlong_combine;
 
 /**
- * Division result.
- *
- * @since 2019/06/20
- */
-typedef struct sjme_jint_div
-{
-	/** Quotient. */
-	sjme_jint quot;
-
-	/** Remainder. */
-	sjme_jint rem;
-} sjme_jint_div;
-
-/**
  * This contains the state of a single CPU frame.
  *
  * @since 2019/06/27

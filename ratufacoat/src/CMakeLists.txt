@@ -18,9 +18,11 @@ add_library(SquirrelJMECore STATIC
 	cpu.c
 	debug.c
 	handles.c
+	jvm.c
 	sjmerc.c
 	sjmercnm.c
 	sjmercvm.c
+	softmath.c
 	stringies.c
 	syscall.c
 	${SQUIRRELJME_BUILTIN_FILE})

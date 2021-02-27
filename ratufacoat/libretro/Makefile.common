@@ -33,9 +33,11 @@ SOURCES_C   := \
 	$(CORE_DIR)/src/cpu.c \
 	$(CORE_DIR)/src/debug.c \
 	$(CORE_DIR)/src/handles.c \
+	$(CORE_DIR)/src/jvm.c \
 	$(CORE_DIR)/src/sjmerc.c \
 	$(CORE_DIR)/src/sjmercnm.c \
 	$(CORE_DIR)/src/sjmercvm.c \
+	$(CORE_DIR)/src/softmath.c \
 	$(CORE_DIR)/src/stringies.c \
 	$(CORE_DIR)/src/syscall.c \
 	$(CORE_DIR)/src/libretro/lraudio.c \
