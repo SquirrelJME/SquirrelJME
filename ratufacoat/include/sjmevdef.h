@@ -17,6 +17,9 @@
 #ifndef SJME_hGRATUFACOATSJMFHSJMEVDEFH
 #define SJME_hGRATUFACOATSJMFHSJMEVDEFH
 
+#include "sjmerc.h"
+#include "sjmecon.h"
+
 /** Anti-C++. */
 #ifdef _cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
