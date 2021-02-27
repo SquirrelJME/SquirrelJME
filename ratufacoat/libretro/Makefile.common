@@ -11,6 +11,12 @@
 ###### CORE DEFINED OPTIONS ######
 NOTHING :=
 
+# If we are on Emscripten, it in no way will support a built in ROM so it
+# must be downloaded.
+ifeq ($(platform),emscripten)
+	undefine SQUIRRELJME_HAS_BUILTIN
+endif
+
 # Including Built-In ROM?
 ifdef SQUIRRELJME_HAS_BUILTIN
 SQUIRRELJME_EXTRA_C_SOURCES = $(CORE_DIR)/build/builtin.c
