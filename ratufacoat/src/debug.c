@@ -7,5 +7,4 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "cpu.h"
-#include "opcode.h"
+#include "debug.h"

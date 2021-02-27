@@ -5,14 +5,18 @@
     <file url="file://$PROJECT_DIR$/include/bootrom.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/builtin.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/cpu.h" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/include/debug.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/handles.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/sjmecon.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/sjmerc.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/stringies.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/syscall.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/test.cpp" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/include/todo.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/CMakeLists.txt" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/bootrom.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/cpu.c" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/debug.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/handles.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/handles.cpp" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/libretro/CMakeLists.txt" charset="ISO-8859-1" />

@@ -14,7 +14,9 @@ endif()
 
 # Base core library
 add_library(SquirrelJMECore STATIC
+	bootrom.c
 	cpu.c
+	debug.c
 	handles.c
 	sjmerc.c
 	sjmercnm.c
