@@ -14,6 +14,8 @@ endif()
 
 # Base core library
 add_library(SquirrelJMECore STATIC
+	accelgfx.c
+	audio.c
 	bootrom.c
 	cpu.c
 	debug.c
@@ -25,6 +27,7 @@ add_library(SquirrelJMECore STATIC
 	softmath.c
 	stringies.c
 	syscall.c
+	video.c
 	${SQUIRRELJME_BUILTIN_FILE})
 target_include_directories(SquirrelJMECore PUBLIC
 	"${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
