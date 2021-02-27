@@ -14,7 +14,13 @@ endif()
 
 # Base core library
 add_library(SquirrelJMECore STATIC
-	sjmerc.c sjmercnm.c sjmercvm.c stringies.c syscall.c handles.c
+	cpu.c
+	handles.c
+	sjmerc.c
+	sjmercnm.c
+	sjmercvm.c
+	stringies.c
+	syscall.c
 	${SQUIRRELJME_BUILTIN_FILE})
 target_include_directories(SquirrelJMECore PUBLIC
 	"${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
