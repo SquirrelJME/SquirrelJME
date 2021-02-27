@@ -7,27 +7,37 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "handles.h"
-
 /**
- * Storage for all memory handles.
+ * RetroArch GamePad and Controller Support.
  * 
  * @since 2021/02/27
  */
-struct sjme_memHandles
+
+#include "lrlocal.h"
+
+/** Sets controller port device. */
+void retro_set_controller_port_device(unsigned port, unsigned device)
 {
-};
+}
 
 /**
- * Structure for a single memory handle.
+ * Set input polling callback.
  * 
+ * @param cb The callback for input polling.
  * @since 2021/02/27
  */
-struct sjme_memHandle
+void retro_set_input_poll(retro_input_poll_t cb)
+{	
+	g_libRetroState->input_poll_cb = cb;
+}
+
+/**
+ * Set input state callback.
+ * 
+ * @param cb The callback for input state.
+ * @since 2021/02/27
+ */
+void retro_set_input_state(retro_input_state_t cb)
 {
-	/** The identifier of the handle. */
-	sjme_jint id;
-	
-	/** The reference count of the handle. */
-	sjme_jint refCount;
-};
+	g_libRetroState->input_state_cb = cb;
+}

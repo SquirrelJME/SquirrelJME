@@ -9,6 +9,7 @@
 
 # Define shared library
 add_library(squirreljme-libretro SHARED
+	lrjoypad.c
 	sys_libr.c)
 
 # Remove the "lib" prefix on Windows, it is incorrect

@@ -347,14 +347,19 @@ typedef uint32_t sjme_juint;
 /** Pixel format: Packed 4-bit. */
 #define SJME_PIXELFORMAT_PACKED_FOUR SJME_JINT_C(5)
 
-/** Marker that indicates that a method returns failure. */
+/**
+ * Marker that indicates that a method returns failure.
+ *
+ * Will be one of @code SJME_RETURN_SUCCESS @endcode or
+ * @code SJME_RETURN_FAIL @endcode.
+ */
 typedef sjme_jint sjme_returnFail;
 
-/** Method success. */
-#define SJME_RETURN_SUCCESS 0
+/** Method success. @typedef sjme_returnFail. */
+#define SJME_RETURN_SUCCESS ((sjme_returnFail)0)
 
-/** Method failure. */
-#define SJME_RETURN_FAIL 1
+/** Method failure. @typedef sjme_returnFail. */
+#define SJME_RETURN_FAIL ((sjme_returnFail)1)
 
 /** This represents an error. */
 typedef struct sjme_error

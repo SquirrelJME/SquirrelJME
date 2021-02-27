@@ -8,22 +8,21 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Memory handle support, used to have potentially loosely bound regions
- * of memory.
+ * Local RetroArch Support.
  * 
  * @since 2021/02/27
  */
 
-#ifndef SQUIRRELJME_HANDLES_H
-#define SQUIRRELJME_HANDLES_H
+#ifndef SQUIRRELJME_LRLOCAL_H
+#define SQUIRRELJME_LRLOCAL_H
 
-#include "sjmerc.h"
+#include <libretro.h>
 
 /** Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_HANDLES_H
+#define SJME_CXX_SQUIRRELJME_LRLOCAL_H
 extern "C"
 {
 #endif /** #ifdef SJME_CXX_IS_EXTERNED */
@@ -31,32 +30,32 @@ extern "C"
 
 /****************************************************************************/
 
-/** Storage for all memory handles. */
-typedef struct sjme_memHandles sjme_memHandles;
-
-/** A single memory handle. */
-typedef struct sjme_memHandle sjme_memHandle;
-
 /**
- * Initializes the state of memory handles.
+ * The held state for RetroArch.
  * 
- * @param out The output where handles will go.
- * @param error The error state, if any.
- * @return 
+ * @since 2021/02/27
  */
-sjme_returnFail sjme_initMemHandles(sjme_memHandles** out, sjme_error* error);
+typedef struct sjme_libRetroState
+{
+	/** Input polling callback. */
+	retro_input_poll_t input_poll_cb;
+	
+	/** Input state callback. */
+	retro_input_state_t input_state_cb;
+} sjme_libRetroState;
 
-//sjme_memHandle* sjme_memHandleNew(
+/** The global RetroArch State. */
+extern sjme_libRetroState* g_libRetroState;
 
 /****************************************************************************/
 
 /** Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_HANDLES_H
+#ifdef SJME_CXX_SQUIRRELJME_LRLOCAL_H
 }
-#undef SJME_CXX_SQUIRRELJME_HANDLES_H
+#undef SJME_CXX_SQUIRRELJME_LRLOCAL_H
 #undef SJME_CXX_IS_EXTERNED
-#endif /** #ifdef SJME_CXX_SQUIRRELJME_HANDLES_H */
+#endif /** #ifdef SJME_CXX_SQUIRRELJME_LRLOCAL_H */
 #endif /** #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_HANDLES_H */
+#endif /* SQUIRRELJME_LRLOCAL_H */

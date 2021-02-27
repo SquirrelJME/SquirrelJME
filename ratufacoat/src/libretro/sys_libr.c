@@ -17,6 +17,7 @@
 
 #include "sjmerc.h"
 #include "sjmecon.h"
+#include "lrlocal.h"
 
 /** Is the build in ROM used? */
 #if defined(SQUIRRELJME_HAS_BUILTIN)
@@ -36,12 +37,13 @@ static void fallback_log(enum retro_log_level level, const char* fmt, ...)
 {
 }
 
+/** RetroArch state. */
+sjme_libRetroState* g_libRetroState;
+
 /** Callbacks. */
 static retro_audio_sample_batch_t audio_cb = NULL;
 static retro_audio_sample_t audio_samble_cb = NULL;
 static retro_environment_t environ_cb = NULL;
-static retro_input_poll_t input_poll_cb = NULL;
-static retro_input_state_t input_state_cb = NULL;
 static retro_log_printf_t log_cb = fallback_log;
 static struct retro_vfs_interface* vfs_cb = NULL;
 static retro_video_refresh_t video_cb = NULL;
@@ -126,11 +128,6 @@ void retro_set_audio_sample(retro_audio_sample_t cb)
 void retro_set_audio_sample_batch(retro_audio_sample_batch_t cb)
 {
 	audio_cb = cb;
-}
-
-/** Sets controller port device. */
-void retro_set_controller_port_device(unsigned port, unsigned device)
-{
 }
 
 /** Initializes the RetroArch environment. */
@@ -251,18 +248,6 @@ void retro_set_environment(retro_environment_t cb)
 			vfs_cb = vfs_getter.iface;
 }
 
-/** Set input polling. */
-void retro_set_input_poll(retro_input_poll_t cb)
-{	
-	input_poll_cb = cb;
-}
-
-/** Set input state. */
-void retro_set_input_state(retro_input_state_t cb)
-{
-	input_state_cb = cb;
-}
-
 /** Set video refresh callback. */
 void retro_set_video_refresh(retro_video_refresh_t cb)
 {
@@ -360,6 +345,10 @@ void retro_init(void)
 	struct retro_variable var;
 	sjme_jbyte useBuiltInRom;
 #endif
+	
+	/* Reset global state */
+	g_libRetroState = malloc(sizeof(*g_libRetroState));
+	memset(g_libRetroState, 0, sizeof(*g_libRetroState));
 	
 	/* Use ARGB 32-bit. */
 	format = RETRO_PIXEL_FORMAT_XRGB8888;
@@ -524,7 +513,7 @@ void retro_run(void)
 	
 	/* Poll for input because otherwise it prevents RetroArch from accessing */
 	/* the menu. */
-	input_poll_cb();
+	g_libRetroState->input_poll_cb();
 	
 	/* If the VM died, just display a screen. */
 	if (sjme_retroarch_error.code != SJME_ERROR_NONE)
