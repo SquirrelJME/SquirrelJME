@@ -38,10 +38,16 @@ extern "C"
 typedef struct sjme_libRetroState
 {
 	/** Input polling callback. */
-	retro_input_poll_t input_poll_cb;
+	retro_input_poll_t inputPollFunc;
 	
 	/** Input state callback. */
-	retro_input_state_t input_state_cb;
+	retro_input_state_t inputStateFunc;
+	
+	/** Audio callback. */
+	retro_audio_sample_batch_t audioSampleBatchFunc;
+	
+	/** Audio sample callback. */
+	retro_audio_sample_t audioSampleFunc;
 } sjme_libRetroState;
 
 /** The global RetroArch State. */

@@ -8,23 +8,24 @@
 # DESCRIPTION: LibRetro CMake Layer, solely for IDE and quick testing purposes
 
 # Define shared library
-add_library(squirreljme-libretro SHARED
+add_library(squirreljme_libretro SHARED
+	lraudio.c
 	lrjoypad.c
 	sys_libr.c)
 
 # Remove the "lib" prefix on Windows, it is incorrect
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
-	set_target_properties(squirreljme-libretro PROPERTIES PREFIX "")
+	set_target_properties(squirreljme_libretro PROPERTIES PREFIX "")
 endif()
 
 # Include all of these
-target_include_directories(squirreljme-libretro PUBLIC
+target_include_directories(squirreljme_libretro PUBLIC
 	"${PROJECT_BINARY_DIR}"
 	"${PROJECT_SOURCE_DIR}/include"
 	"${PROJECT_SOURCE_DIR}/libretro")
 
 # Include the SquirrelJME Core as all of the JVM code is there
-target_link_libraries(squirreljme-libretro
+target_link_libraries(squirreljme_libretro
 	SquirrelJMECore)
 
 # If Static ROM is being used, extra RetroArch options are available
@@ -47,8 +48,8 @@ endif()
 ## Target to run RetroArch with the SquirrelJME Core
 if(DEFINED SQUIRRELJME_LIBRETRO_DIR)
 	add_custom_target(RetroArch
-		DEPENDS squirreljme-libretro
-		COMMAND "${SQUIRRELJME_LIBRETRO_DIR}/retroarch${SQUIRRELJME_LIBRETRO_EXTENSION}" "-L" "$<TARGET_FILE:squirreljme-libretro>"
+		DEPENDS squirreljme_libretro
+		COMMAND "${SQUIRRELJME_LIBRETRO_DIR}/retroarch${SQUIRRELJME_LIBRETRO_EXTENSION}" "-L" "$<TARGET_FILE:squirreljme_libretro>"
 		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
 		COMMENT "Starting RetroArch with SquirrelJME")
 endif()

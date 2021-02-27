@@ -41,8 +41,6 @@ static void fallback_log(enum retro_log_level level, const char* fmt, ...)
 sjme_libRetroState* g_libRetroState;
 
 /** Callbacks. */
-static retro_audio_sample_batch_t audio_cb = NULL;
-static retro_audio_sample_t audio_samble_cb = NULL;
 static retro_environment_t environ_cb = NULL;
 static retro_log_printf_t log_cb = fallback_log;
 static struct retro_vfs_interface* vfs_cb = NULL;
@@ -116,18 +114,6 @@ void retro_get_system_av_info(struct retro_system_av_info* info)
 	info->geometry.max_height   = SJME_RETROARCH_HEIGHT;
 	info->geometry.aspect_ratio =
 		(double)SJME_RETROARCH_WIDTH / (double)SJME_RETROARCH_HEIGHT;
-}
-
-/** Set audio sample callback. */
-void retro_set_audio_sample(retro_audio_sample_t cb)
-{
-	audio_samble_cb = cb;
-}
-
-/** Set audio sample batching. */
-void retro_set_audio_sample_batch(retro_audio_sample_batch_t cb)
-{
-	audio_cb = cb;
 }
 
 /** Initializes the RetroArch environment. */
@@ -513,7 +499,7 @@ void retro_run(void)
 	
 	/* Poll for input because otherwise it prevents RetroArch from accessing */
 	/* the menu. */
-	g_libRetroState->input_poll_cb();
+	g_libRetroState->inputPollFunc();
 	
 	/* If the VM died, just display a screen. */
 	if (sjme_retroarch_error.code != SJME_ERROR_NONE)

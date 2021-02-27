@@ -8,36 +8,21 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * RetroArch GamePad and Controller Support.
+ * RetroArch Audio and MIDI Support.
  * 
  * @since 2021/02/27
  */
 
 #include "lrlocal.h"
 
-/** Sets controller port device. */
-void retro_set_controller_port_device(unsigned port, unsigned device)
+/** Set audio sample callback. */
+void retro_set_audio_sample(retro_audio_sample_t cb)
 {
+	g_libRetroState->audioSampleFunc = cb;
 }
 
-/**
- * Set input polling callback.
- * 
- * @param cb The callback for input polling.
- * @since 2021/02/27
- */
-void retro_set_input_poll(retro_input_poll_t cb)
-{	
-	g_libRetroState->inputPollFunc = cb;
-}
-
-/**
- * Set input state callback.
- * 
- * @param cb The callback for input state.
- * @since 2021/02/27
- */
-void retro_set_input_state(retro_input_state_t cb)
+/** Set audio sample batching. */
+void retro_set_audio_sample_batch(retro_audio_sample_batch_t cb)
 {
-	g_libRetroState->inputStateFunc = cb;
+	g_libRetroState->audioSampleBatchFunc = cb;
 }
