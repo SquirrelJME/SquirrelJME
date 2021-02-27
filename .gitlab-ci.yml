@@ -25,6 +25,7 @@ stages:
     MAKEFILE_PATH: ratufacoat
     MAKEFILE: makefilelibretro
     SQUIRRELJME_HAS_BUILTIN: 1
+    SQUIRRELJME_ROM_URL: https://circleci.com/api/v1.1/project/github/SquirrelJME/SquirrelJME/$SQUIRRELJME_ROM_ID/artifacts
 
 # SquirrelJME Support (Common)
 .squirreljme-support-common:
@@ -37,7 +38,7 @@ stages:
 
     # Download the built-in ROM
     - echo Downloading External ROM...
-    - "curl -L -H \"Circle-Token: $CIRCLECI_ACCESS_TOKEN\" \"https://circleci.com/api/v1.1/project/github/SquirrelJME/SquirrelJME/$SQUIRRELJME_ROM_ID/artifacts\" | tr -d '\n' | tr -d ' ' | sed 's/.*\"url\":\"\\([^\"]*\\)\".*/\\1/' > .rom-url"
+    - "curl -L -H \"Circle-Token: $CIRCLECI_ACCESS_TOKEN\" \"$SQUIRRELJME_ROM_URL\" | tr -d '\n' | tr -d ' ' | sed 's/.*\"url\":\"\\([^\"]*\\)\".*/\\1/' > .rom-url"
     - "curl -L \"$(cat .rom-url)\" > ratufacoat/build/builtin.c"
 
 # Inclusion templates, required for the build to work
