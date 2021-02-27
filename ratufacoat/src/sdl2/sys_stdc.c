@@ -317,7 +317,7 @@ int main(int argc, char** argv)
 	stdcfuncs.framebuffer = sjme_stdc_framebuffer;
 	
 	/* Create VM. */
-	jvm = sjme_jvmnew(&options, &stdcfuncs, &error);
+	jvm = sjme_jvmNew(&options, &stdcfuncs, &error);
 	if (jvm == NULL)
 	{
 		fprintf(stderr, "Failed to create the JVM! (Error %d/0x%X %d/0x%X)\n",

@@ -630,7 +630,7 @@ sjme_jint sjme_jvmdestroy(sjme_jvm* jvm, sjme_error* error);
  * @return The resulting JVM or {@code NULL} if it could not be created.
  * @since 2019/06/03
  */
-sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
+sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	sjme_error* error);
 
 /**

@@ -369,6 +369,7 @@ void retro_init(void)
 		log_cb(RETRO_LOG_INFO, "Using XRGB8888?\n");
 	
 	/* Size of the read ROM. */
+	sjme_retroarch_basicrom = NULL;
 	romsize = 0;
 
 	/* Is a built-in ROM available? */
@@ -494,8 +495,9 @@ void retro_reset(void)
 	memset(&sjme_ratufacoat_videoram, 0, sizeof(sjme_ratufacoat_videoram));
 	
 	/* Initialize the JVM. */
-	sjme_retroarch_jvm = sjme_jvmnew(&sjme_retroarch_options,
-		&sjme_retroarch_nativefuncs, &sjme_retroarch_error);
+	sjme_retroarch_jvm = sjme_jvmNew(&sjme_retroarch_options,
+									 &sjme_retroarch_nativefuncs,
+									 &sjme_retroarch_error);
 	
 	/* Try to get the logger again because for some reason RetroArch */
 	/* nukes our callback and then it never works again? */

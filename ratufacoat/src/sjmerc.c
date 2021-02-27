@@ -2408,7 +2408,7 @@ void sjme_configinit(sjme_jvm* jvm, sjme_jvmoptions* options,
 }
 
 /** Creates a new instance of the JVM. */
-sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
+sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	sjme_error* error)
 {
 	sjme_jvmoptions nulloptions;

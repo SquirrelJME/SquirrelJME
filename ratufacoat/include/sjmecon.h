@@ -18,7 +18,7 @@
 #define SJME_hGRATUFACOATSJMONHSJMECONH
 
 /** Anti-C++. */
-#ifdef _cplusplus
+#ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
 #define SJME_cXRATUFACOATSJMONHSJMECONH
