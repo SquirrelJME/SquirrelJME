@@ -56,9 +56,6 @@ struct sjme_jvm
 	/** Threads. */
 	sjme_cpu threads[SJME_THREAD_MAX];
 	
-	/** Total instruction count. */
-	sjme_jint totalinstructions;
-	
 	/** Did the supervisor boot okay? */
 	sjme_jint supervisorokay;
 	
@@ -88,6 +85,9 @@ struct sjme_jvm
 	
 	/** Squelch the framebuffer console? */
 	sjme_jint squelchfbconsole;
+	
+	/** CPU Metrics. */
+	sjme_cpuMetrics metrics;
 };
 
 sjme_jint sjme_jvmDestroy(sjme_jvm* jvm, sjme_error* error)
@@ -515,5 +515,15 @@ sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 sjme_vmem* sjme_jvmVMem(sjme_jvm* jvm)
 {
 	return jvm->vmem;
+}
+
+struct sjme_cpuMetrics* sjme_jvmCpuMetrics(sjme_jvm* jvm)
+{
+	return &jvm->metrics;
+}
+
+sjme_jboolean sjme_jvmIsDebug(sjme_jvm* jvm)
+{
+	return jvm->enabledebug;
 }
 

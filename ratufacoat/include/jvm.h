@@ -132,6 +132,24 @@ sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
  */
 sjme_vmem* sjme_jvmVMem(sjme_jvm* jvm);
 
+/**
+ * Returns the JVM CPU metrics.
+ * 
+ * @param jvm The JVM to get the metrics for.
+ * @return The CPU metrics.
+ * @since 2012/02/28
+ */
+struct sjme_cpuMetrics* sjme_jvmCpuMetrics(sjme_jvm* jvm);
+
+/**
+ * Checks if debugging is enabled for the JVM.
+ * 
+ * @param jvm The JVM to check. 
+ * @return If debugging is enabled.
+ * @since 2012/02/28
+ */
+sjme_jboolean sjme_jvmIsDebug(sjme_jvm* jvm); 
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

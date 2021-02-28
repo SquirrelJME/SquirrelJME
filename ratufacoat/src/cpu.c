@@ -63,7 +63,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 		}
 		
 		/* Increase total instruction count. */
-		jvm->totalinstructions++;
+		sjme_jvmCpuMetrics(jvm)->totalinstructions++;
 		
 		/* The zero register always must be zero. */
 		r[0] = 0;
@@ -414,10 +414,10 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 				
 				/* Breakpoint, only if debugging enabled. */
 			case SJME_OP_BREAKPOINT:
-				if (jvm->enabledebug != 0)
+				if (sjme_jvmIsDebug(jvm) != 0)
 				{
 					sjme_seterror(error, SJME_ERROR_CPUBREAKPOINT,
-						jvm->totalinstructions);
+						sjme_jvmCpuMetrics(jvm)->totalinstructions);
 					
 					return cycles;
 				}
@@ -616,7 +616,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					if (oldcpu == NULL)
 					{
 						sjme_seterror(error, SJME_ERROR_THREADRETURN,
-							jvm->totalinstructions);
+							sjme_jvmCpuMetrics(jvm)->totalinstructions);
 						
 						return cycles;
 					}

@@ -190,6 +190,9 @@ typedef int32_t sjme_jint;
 /** Unsigned {@code int} type. */
 typedef uint32_t sjme_juint;
 
+/** Boolean type. */
+typedef sjme_jbyte sjme_jboolean;
+
 /** Constant value macros. */
 #define SJME_JBYTE_C(x) INT8_C(x)
 #define SJME_JSHORT_C(x) INT16_C(x)

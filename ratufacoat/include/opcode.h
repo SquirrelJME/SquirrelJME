@@ -175,7 +175,7 @@ sjme_jint sjme_opdecodereg(sjme_vmem* vmem, sjme_vmemptr* ptr,
  * @since 2019/06/13
  */
 sjme_jint sjme_opdecodejmp(sjme_vmem* vmem, sjme_vmemptr* ptr,
-	sjme_error* error)
+	sjme_error* error);
 	
 /*--------------------------------------------------------------------------*/
 

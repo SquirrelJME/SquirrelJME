@@ -105,6 +105,17 @@ struct sjme_cpu
 	sjme_jint ipcexception;
 };
 
+/**
+ * Metrics for the CPU.
+ * 
+ * @since 2021/02/28
+ */
+typedef struct sjme_cpuMetrics
+{
+	/** Total instruction count. */
+	sjme_jint totalinstructions;
+} sjme_cpuMetrics;
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
