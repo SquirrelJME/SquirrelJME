@@ -702,9 +702,6 @@ extern "C"
 #endif /** #ifdef SJME_cXRATUFACOATSJMONHSJMECONH */
 #endif /* #ifdef __cplusplus */
 
-/* Includes added due to refactors. */
-#include "opcode.h"
-
 /** Header guard. */
 #endif /* #ifndef SJME_hGRATUFACOATSJMONHSJMECONH */
 

@@ -323,35 +323,6 @@ typedef struct sjme_vmemmap
 } sjme_vmemmap;
 
 /**
- * SQF Font information.
- *
- * @since 2019/06/20
- */
-typedef struct sjme_sqf
-{
-	/** The pixel height of the font. */
-	sjme_jint pixelheight;
-	
-	/** The ascent of the font. */
-	sjme_jint ascent;
-	
-	/** The descent of the font. */
-	sjme_jint descent;
-	
-	/** The bytes per scanline. */
-	sjme_jint bytesperscan;
-	
-	/** Widths for each character. */
-	sjme_jbyte* charwidths;
-	
-	/** Which characters are valid? */
-	sjme_jbyte* isvalidchar;
-	
-	/** Which characters make up the bitmap? */
-	sjme_jbyte* charbmp;
-} sjme_sqf;
-
-/**
  * Represents the framebuffer for SquirrelJME.
  *
  * @since 2019/06/20

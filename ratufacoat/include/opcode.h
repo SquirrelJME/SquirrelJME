@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_OPCODE_H
 #define SQUIRRELJME_OPCODE_H
 
+#include "error.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
@@ -115,6 +117,66 @@ extern "C"
 /** Compare and exchange. */
 #define SJME_OP_BREAKPOINT UINT8_C(0xFF)
 
+/**
+ * Decodes an integer value from operations which could be unaligned.
+ *
+ * @param vmem Virtual memory.
+ * @param ptr The pointer to read from.
+ * @param error Error flag.
+ * @return The resulting read value.
+ * @since 2019/06/16
+ */
+sjme_jint sjme_opdecodejint(sjme_vmem* vmem, sjme_vmemptr* ptr,
+	sjme_error* error);
+
+/**
+ * Decodes a short value from operations which could be unaligned.
+ *
+ * @param vmem Virtual memory.
+ * @param ptr The pointer to read from.
+ * @param error Error flag.
+ * @return The resulting read value.
+ * @since 2019/06/16
+ */
+sjme_jint sjme_opdecodejshort(sjme_vmem* vmem, sjme_vmemptr* ptr,
+	sjme_error* error);
+	
+/**
+ * Decodes a variable unsigned int operation argument.
+ *
+ * @param vmem Virtual memory.
+ * @param ptr The pointer to read from.
+ * @param error Error flag.
+ * @return The resulting decoded value.
+ * @since 2019/06/09
+ */
+sjme_jint sjme_opdecodeui(sjme_vmem* vmem, sjme_vmemptr* ptr,
+	sjme_error* error);
+	
+/**
+ * Decodes register from the virtual machine.
+ *
+ * @param vmem Virtual memory.
+ * @param ptr The pointer to read from.
+ * @param error Error flag.
+ * @return The resulting register value.
+ * @since 2019/06/25
+ */
+sjme_jint sjme_opdecodereg(sjme_vmem* vmem, sjme_vmemptr* ptr,
+	sjme_error* error);
+
+/**
+ * Decodes a relative jump offset.
+ *
+ * @param vmem Virtual memory.
+ * @param ptr The pointer to read from.
+ * @param error Error flag.
+ * @return The resulting relative jump.
+ * @since 2019/06/13
+ */
+sjme_jint sjme_opdecodejmp(sjme_vmem* vmem, sjme_vmemptr* ptr,
+	sjme_error* error)
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

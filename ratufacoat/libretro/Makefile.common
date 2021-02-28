@@ -32,6 +32,7 @@ SOURCES_C   := \
 	$(CORE_DIR)/src/accelgfx.c \
 	$(CORE_DIR)/src/audio.c \
 	$(CORE_DIR)/src/bootrom.c \
+	$(CORE_DIR)/src/corefont.c \
 	$(CORE_DIR)/src/cpu.c \
 	$(CORE_DIR)/src/debug.c \
 	$(CORE_DIR)/src/error.c \

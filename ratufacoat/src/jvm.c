@@ -21,6 +21,74 @@
 #include "bootrom.h"
 #include "memory.h"
 
+struct sjme_jvm
+{
+	/** Virtual memory information. */
+	sjme_vmem* vmem;
+	
+	/** RAM. */
+	sjme_vmemmap* ram;
+	
+	/** ROM. */
+	sjme_vmemmap* rom;
+	
+	/** Configuration space. */
+	sjme_vmemmap* config;
+	
+	/** Framebuffer. */
+	sjme_vmemmap* framebuffer;
+	
+	/** OptionJAR. */
+	sjme_vmemmap* optionjar;
+	
+	/** Preset ROM. */
+	void* presetrom;
+	
+	/** Framebuffer info. */
+	sjme_framebuffer* fbinfo;
+	
+	/** Native functions. */
+	sjme_nativefuncs* nativefuncs;
+	
+	/** Linearly fair CPU execution engine. */
+	sjme_jint fairthreadid;
+	
+	/** Threads. */
+	sjme_cpu threads[SJME_THREAD_MAX];
+	
+	/** Total instruction count. */
+	sjme_jint totalinstructions;
+	
+	/** Did the supervisor boot okay? */
+	sjme_jint supervisorokay;
+	
+	/** Console X position. */
+	sjme_jint conx;
+	
+	/** Console Y position. */
+	sjme_jint cony;
+	
+	/** Console width. */
+	sjme_jint conw;
+	
+	/** Console height. */
+	sjme_jint conh;
+	
+	/** System call static field pointer. */
+	sjme_vmemptr syscallsfp;
+	
+	/** System call code pointer. */
+	sjme_vmemptr syscallcode;
+	
+	/** System call pool pointer. */
+	sjme_vmemptr syscallpool;
+	
+	/** Is debugging enabled? */
+	sjme_jint enabledebug;
+	
+	/** Squelch the framebuffer console? */
+	sjme_jint squelchfbconsole;
+};
 
 sjme_jint sjme_jvmDestroy(sjme_jvm* jvm, sjme_error* error)
 {
@@ -442,5 +510,10 @@ sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	
 	/* The JVM is ready to use. */
 	return rv;
+}
+
+sjme_vmem* sjme_jvmVMem(sjme_jvm* jvm)
+{
+	return jvm->vmem;
 }
 

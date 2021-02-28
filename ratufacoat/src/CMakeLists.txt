@@ -17,6 +17,7 @@ add_library(SquirrelJMECore STATIC
 	accelgfx.c
 	audio.c
 	bootrom.c
+	corefont.c
 	cpu.c
 	debug.c
 	error.c

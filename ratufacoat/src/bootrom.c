@@ -49,7 +49,7 @@ sjme_returnFail sjme_loadBootRom(sjme_jvm* jvm, sjme_error* error)
 	rp = jvm->rom->fakeptr;
 	
 	/* Check ROM magic number. */
-	if ((qq = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error))
+	if ((qq = sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, &rp, error))
 		!= SJME_ROM_MAGIC_NUMBER)
 	{
 		sjme_seterror(error, SJME_ERROR_INVALIDROMMAGIC, qq);
@@ -58,17 +58,17 @@ sjme_returnFail sjme_loadBootRom(sjme_jvm* jvm, sjme_error* error)
 	}
 	
 	/* Ignore numjars, tocoffset, bootjarindex. */
-	sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
-	sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
-	sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
+	sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, &rp, error);
+	sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, &rp, error);
+	sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, &rp, error);
 	
 	/* Read and calculate BootJAR position. */
-	bootjaroff = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp,
+	bootjaroff = sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, &rp,
 		error);
 	rp = bootjar = vrombase + bootjaroff;
 	
 	/* Check JAR magic number. */
-	if ((qq = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error))
+	if ((qq = sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, &rp, error))
 		!= SJME_JAR_MAGIC_NUMBER)
 	{
 		sjme_seterror(error, SJME_ERROR_INVALIDROMMAGIC, qq);
@@ -77,34 +77,34 @@ sjme_returnFail sjme_loadBootRom(sjme_jvm* jvm, sjme_error* error)
 	}
 	
 	/* Ignore numrc, tocoffset, manifestoff, manifestlen. */
-	sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
-	sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
-	sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
-	sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
+	sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, &rp, error);
+	sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, &rp, error);
+	sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, &rp, error);
+	sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, &rp, error);
 	
 	/* Read boot offset for later. */
-	bootoff = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
+	bootoff = sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, &rp, error);
 	
 	/* Ignore bootsize. */
-	sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
+	sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, &rp, error);
 	
 	/* Seed initial CPU state. */
-	cpu->state.r[SJME_POOL_REGISTER] = vrambase + sjme_vmmreadp(jvm->vmem,
+	cpu->state.r[SJME_POOL_REGISTER] = vrambase + sjme_vmmreadp(sjme_jvmVMem(jvm),
 		SJME_VMMTYPE_JAVAINTEGER, &rp, error);
 	cpu->state.r[SJME_STATIC_FIELD_REGISTER] = vrambase +
-		sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
-	cpu->state.pc = (bootjar + sjme_vmmreadp(jvm->vmem,
+		sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, &rp, error);
+	cpu->state.pc = (bootjar + sjme_vmmreadp(sjme_jvmVMem(jvm),
 		SJME_VMMTYPE_JAVAINTEGER, &rp, error));
 	
 	/* Load system call handler information. */
-	sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, jvm->syscallsfp, 0,
-		vrambase + sjme_vmmreadp(jvm->vmem,
+	sjme_vmmwrite(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, jvm->syscallsfp, 0,
+		vrambase + sjme_vmmreadp(sjme_jvmVMem(jvm),
 			SJME_VMMTYPE_JAVAINTEGER, &rp, error), error);
-	sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, jvm->syscallcode, 0,
-		bootjar + sjme_vmmreadp(jvm->vmem,
+	sjme_vmmwrite(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, jvm->syscallcode, 0,
+		bootjar + sjme_vmmreadp(sjme_jvmVMem(jvm),
 			SJME_VMMTYPE_JAVAINTEGER, &rp, error), error);
-	sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, jvm->syscallpool, 0,
-		vrambase + sjme_vmmreadp(jvm->vmem,
+	sjme_vmmwrite(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, jvm->syscallpool, 0,
+		vrambase + sjme_vmmreadp(sjme_jvmVMem(jvm),
 			SJME_VMMTYPE_JAVAINTEGER, &rp, error), error);
 	
 	/* Bootstrap entry arguments. */
@@ -128,34 +128,34 @@ sjme_returnFail sjme_loadBootRom(sjme_jvm* jvm, sjme_error* error)
 	rp = bootjar + bootoff;
 	
 	/* Copy initial base memory bytes, which is pure big endian. */
-	n = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
+	n = sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, &rp, error);
 	for (i = 0; i < n; i++)
-		sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_BYTE, vrambase, i,
-			sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_BYTE, &rp, error), error);
+		sjme_vmmwrite(sjme_jvmVMem(jvm), SJME_VMMTYPE_BYTE, vrambase, i,
+			sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_BYTE, &rp, error), error);
 	
 	/* Load all seeds, which restores natural byte order. */
-	n = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error);
+	n = sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, &rp, error);
 	for (i = 0; i < n; i++)
 	{
 		/* Read seed information. */
-		seedop = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_BYTE, &rp, error);
+		seedop = sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_BYTE, &rp, error);
 		seedsize = (seedop >> SJME_JINT_C(4)) & SJME_JINT_C(0xF);
 		seedop = (seedop & SJME_JINT_C(0xF));
-		seedaddr = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp,
+		seedaddr = sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, &rp,
 			error);
 		
 		/* Wide value. */
 		if (seedsize == 8)
 		{
-			seedvalh = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp,
+			seedvalh = sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, &rp,
 				error);
-			seedvall = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp,
+			seedvall = sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, &rp,
 				error);
 		}
 		
 		/* Narrow value. */
 		else
-			seedvalh = sjme_vmmreadp(jvm->vmem, sjme_vmmsizetojavatype(
+			seedvalh = sjme_vmmreadp(sjme_jvmVMem(jvm), sjme_vmmsizetojavatype(
 				seedsize, error), &rp, error);
 		
 		/* Make sure the seed types are correct. */
@@ -180,21 +180,21 @@ sjme_returnFail sjme_loadBootRom(sjme_jvm* jvm, sjme_error* error)
 		if (seedsize == 8)
 		{
 #if defined(SJME_BIG_ENDIAN)
-			sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_INTEGER,
+			sjme_vmmwrite(sjme_jvmVMem(jvm), SJME_VMMTYPE_INTEGER,
 				vrambase, seedaddr, seedvalh, error);
-			sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_INTEGER,
+			sjme_vmmwrite(sjme_jvmVMem(jvm), SJME_VMMTYPE_INTEGER,
 				vrambase + 4, seedaddr, seedvall, error);
 #else
-			sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_INTEGER,
+			sjme_vmmwrite(sjme_jvmVMem(jvm), SJME_VMMTYPE_INTEGER,
 				vrambase, seedaddr, seedvall, error);
-			sjme_vmmwrite(jvm->vmem, SJME_VMMTYPE_INTEGER,
+			sjme_vmmwrite(sjme_jvmVMem(jvm), SJME_VMMTYPE_INTEGER,
 				vrambase + 4, seedaddr, seedvalh, error);
 #endif
 		}
 		
 		/* Write narrow value. */
 		else
-			sjme_vmmwrite(jvm->vmem, sjme_vmmsizetotype(seedsize, error),
+			sjme_vmmwrite(sjme_jvmVMem(jvm), sjme_vmmsizetotype(seedsize, error),
 				vrambase, seedaddr, seedvalh, error);
 			
 #if defined(SJME_DEBUG)
@@ -209,7 +209,7 @@ sjme_returnFail sjme_loadBootRom(sjme_jvm* jvm, sjme_error* error)
 	}
 	
 	/* Check end value. */
-	if ((qq = sjme_vmmreadp(jvm->vmem, SJME_VMMTYPE_JAVAINTEGER, &rp, error))
+	if ((qq = sjme_vmmreadp(sjme_jvmVMem(jvm), SJME_VMMTYPE_JAVAINTEGER, &rp, error))
 		!= (~SJME_JINT_C(0)))
 	{
 		sjme_seterror(error, SJME_ERROR_INVALIDBOOTRAMEND, qq);

@@ -18,8 +18,8 @@
 
 #include "error.h"
 #include "native.h"
-#include "cpu.h"
 #include "sjmecon.h"
+#include "oldstuff.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -89,80 +89,6 @@ typedef struct sjme_jvmoptions
 } sjme_jvmoptions;
 
 /**
- * Virtual machine state.
- * 
- * @since 2021/02/28
- */
-struct sjme_jvm
-{
-	/** Virtual memory information. */
-	sjme_vmem* vmem;
-	
-	/** RAM. */
-	sjme_vmemmap* ram;
-	
-	/** ROM. */
-	sjme_vmemmap* rom;
-	
-	/** Configuration space. */
-	sjme_vmemmap* config;
-	
-	/** Framebuffer. */
-	sjme_vmemmap* framebuffer;
-	
-	/** OptionJAR. */
-	sjme_vmemmap* optionjar;
-	
-	/** Preset ROM. */
-	void* presetrom;
-	
-	/** Framebuffer info. */
-	sjme_framebuffer* fbinfo;
-	
-	/** Native functions. */
-	sjme_nativefuncs* nativefuncs;
-	
-	/** Linearly fair CPU execution engine. */
-	sjme_jint fairthreadid;
-	
-	/** Threads. */
-	sjme_cpu threads[SJME_THREAD_MAX];
-	
-	/** Total instruction count. */
-	sjme_jint totalinstructions;
-	
-	/** Did the supervisor boot okay? */
-	sjme_jint supervisorokay;
-	
-	/** Console X position. */
-	sjme_jint conx;
-	
-	/** Console Y position. */
-	sjme_jint cony;
-	
-	/** Console width. */
-	sjme_jint conw;
-	
-	/** Console height. */
-	sjme_jint conh;
-	
-	/** System call static field pointer. */
-	sjme_vmemptr syscallsfp;
-	
-	/** System call code pointer. */
-	sjme_vmemptr syscallcode;
-	
-	/** System call pool pointer. */
-	sjme_vmemptr syscallpool;
-	
-	/** Is debugging enabled? */
-	sjme_jint enabledebug;
-	
-	/** Squelch the framebuffer console? */
-	sjme_jint squelchfbconsole;
-};
-
-/**
  * Executes code running within the JVM.
  *
  * @param jvm The JVM to execute.
@@ -195,6 +121,16 @@ sjme_jint sjme_jvmDestroy(sjme_jvm* jvm, sjme_error* error);
  */
 sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	sjme_error* error);
+
+/**
+ * Returns the virtual memory of the given JVM.
+ * 
+ * @param jvm The JVM to get the virtual memory of.
+ * @return The virtual memory.
+ * @deprecated Deprecated, do not use.
+ * @since 2021/02/28 
+ */
+sjme_vmem* sjme_jvmVMem(sjme_jvm* jvm);
 
 /*--------------------------------------------------------------------------*/
 

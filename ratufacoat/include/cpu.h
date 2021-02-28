@@ -17,7 +17,6 @@
 #define SQUIRRELJME_CPU_H
 
 #include "sjmerc.h"
-#include "syscall.h"
 #include "error.h"
 #include "sjmecon.h"
 
