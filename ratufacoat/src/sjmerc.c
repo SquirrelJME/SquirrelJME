@@ -1818,54 +1818,6 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* outromsize,
 	return rv;
 }
 
-sjme_jint sjme_jvmDestroy(sjme_jvm* jvm, sjme_error* error)
-{
-	sjme_cpuframe* cpu;
-	sjme_cpuframe* oldcpu;
-	sjme_jint i;
-	
-	/* Missing this? */
-	if (jvm == NULL)
-	{
-		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
-		
-		return 0;
-	}
-	
-	/* Reset error. */
-	sjme_seterror(error, SJME_ERROR_NONE, 0);
-	
-	/* Go through and cleanup CPUs. */
-	for (i = 0; i < SJME_THREAD_MAX; i++)
-	{
-		/* Get CPU here. */
-		cpu = &jvm->threads[i].state;
-		
-		/* Recursively clear CPU stacks. */
-		while (cpu->parent != NULL)
-		{
-			/* Keep for later free. */
-			oldcpu = cpu->parent;
-			
-			/* Copy down. */
-			*cpu = *oldcpu;
-			
-			/* Free CPU state. */
-			if (oldcpu != &jvm->threads[i].state)
-				sjme_free(oldcpu);
-		}
-	}
-	
-	/* Delete major JVM data areas. */
-	sjme_free(jvm->ram);
-	sjme_free(jvm->config);
-	if (jvm->presetrom == NULL)
-		sjme_free(jvm->rom);
-	
-	/* Destroyed okay. */
-	return 1;
-}
-
 /** Initializes the configuration space. */
 void sjme_configinit(sjme_jvm* jvm, sjme_jvmoptions* options,
 	sjme_nativefuncs* nativefuncs, sjme_error* error)
