@@ -14,6 +14,7 @@ add_library(squirreljme_libretro SHARED
 	lrfreeze.c
 	lrinfo.c
 	lrjoypad.c
+	lrvfs.c
 	sys_libr.c)
 
 # Remove the "lib" prefix on Windows, it is incorrect

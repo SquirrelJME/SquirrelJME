@@ -50,6 +50,7 @@ SOURCES_C   := \
 	$(CORE_DIR)/src/libretro/lrfreeze.c \
 	$(CORE_DIR)/src/libretro/lrinfo.c \
 	$(CORE_DIR)/src/libretro/lrjoypad.c \
+	$(CORE_DIR)/src/libretro/lrvfs.c \
 	$(CORE_DIR)/src/libretro/sys_libr.c \
 	$(SQUIRRELJME_EXTRA_C_SOURCES)
 
