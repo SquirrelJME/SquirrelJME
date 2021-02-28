@@ -363,6 +363,10 @@ sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		}
 	}
 	
+	// TODO: Implement the rest of this!
+	if (1)
+		return rv;
+	
 	/* Needed by destruction later. */
 	rv->presetrom = options->presetrom;
 	
@@ -449,9 +453,6 @@ sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		
 		return NULL;
 	}
-	
-	/* Initialize configuration space. */
-	sjme_configinit(rv, options, nativefuncs, error);
 	
 	/* Initialize the BootRAM and boot the CPU. */
 	if (sjme_loadBootRom(rv, error) == 0)

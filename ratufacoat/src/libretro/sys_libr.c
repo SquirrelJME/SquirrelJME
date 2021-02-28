@@ -156,13 +156,56 @@ void retro_set_environment(retro_environment_t cb)
 		};
 	struct retro_variable vars[] =
 		{
-			{"squirreljme_debug_notes",
-				"Enable Debug Notes; disabled|enabled"},
+			/* CPU and Timing. */
 			{"squirreljme_cycles_per_frame",
-				"Cycles Per Frame; "
-				"1048576|2097152|4194304|32768|65536|131072|262144|524288"},
+				"CPU Cycles Per Frame (Higher = Faster); "
+				"1048576|2097152|4194304|8388608|"
+				"16384|32768|65536|131072|262144|524288"},
+			{"squirreljme_locked_clock",
+				"Lock RTC to CPU Cycles; "
+				"disabled|enabled"},
+			{"squirreljme_time_warp",
+				"Time Warping (Year Adjustment); "
+				"None|-1 Year|-5 Years|-10 Years|-15 Years|-20 Years|"
+				"-25 Years"},
 			
-			// Force the use of the external ROM?
+			/* Input. */
+			{"squirreljme_keycode_type",
+				"Key Code Type; "
+				"SquirrelJME/S40/S60|Motorola|Siemens"},
+			{"squirreljme_enable_touchscreen",
+				"Enable Touchscreen; "
+				"enabled|disabled"},
+			{"squirreljme_joystick_as_mouse",
+				"Use Joystick as Mouse; "
+				"disabled|enabled"},
+			{"squirreljme_joystick_as_mouse_soft1",
+				"SoftKey 1 Key Short/Long Press (Joystick as Mouse); "
+				"Key/Key|Key/Touch|Touch/Key"},
+			{"squirreljme_joystick_as_mouse_soft2",
+				"SoftKey 2 Key Short/Long Press (Joystick as Mouse); "
+				"Key/Touch|Key/Key|Touch/Key"},
+			
+			/* Graphics. */
+			{"squirreljme_display_size",
+				"Display Size; "
+				"240x320|320x480|96x65|128x128|128x160|176x208|176x220"},
+			{"squirreljme_accel_gfx",
+				"Accelerated Graphics; "
+				"enabled|disabled"},
+			{"squirreljme_display_colors",
+				"Display Colors; "
+				"16777216|65536|256|16|4|2"},
+			
+			/* Debugging. */
+			{"squirreljme_debugging",
+				"Enable Debugging; "
+				"disabled|enabled"},
+			{"squirreljme_profile",
+				"Generate VisualVM Profiles; "
+				"disabled|enabled"},
+			
+			/* Disable Internal ROM. */
 #if defined(SQUIRRELJME_HAS_BUILTIN)
 			{"squirreljme_use_external_rom",
 				"Use External ROM; disabled|enabled"},
