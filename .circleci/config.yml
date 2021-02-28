@@ -16,6 +16,9 @@ executors:
   buildenv:
     docker:
       - image: circleci/openjdk:8-jdk
+  buster:
+    docker:
+      - image: debian:buster-backports
 
 orbs:
   win: circleci/windows@2.4.0
@@ -244,9 +247,6 @@ jobs:
   ratufacoat_build_linux:
     executor: buildenv
     resource_class: small
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - run:
@@ -260,6 +260,35 @@ jobs:
           name: Setup CMake build
           working_directory: ratufacoat
           command: cmake .
+      - run:
+          name: Compile CMake build
+          working_directory: ratufacoat
+          command: cmake --build .
+      - run:
+          name: Test CMake Build
+          working_directory: ratufacoat
+          command: ctest .
+      - store_artifacts:
+          path: ratufacoat/src/sdl2/SquirrelJME
+          destination: SquirrelJME
+
+  ### RatufaCoat (PowerPC, Cross Arch Testing)
+  ratufacoat_build_linux_powerpc:
+    executor: buster
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: Install required dependencies
+          command: |
+            sudo apt-get update -y
+            sudo apt-get install -y cmake build-essential gcc-powerpc-linux-gnu binutils-powerpc-linux-gnu binfmt-support qemu-user-static
+      - attach_workspace:
+          at: .
+      - run:
+          name: Setup CMake build
+          working_directory: ratufacoat
+          command: cmake . -DCMAKE_C_COMPILER=powerpc-linux-gnu-gcc -DCMAKE_AR=/usr/bin/powerpc-linux-gnu-gcc-ar -DCMAKE_LINKER=/usr/bin/powerpc-linux-gnu-ld
       - run:
           name: Compile CMake build
           working_directory: ratufacoat
@@ -592,6 +621,7 @@ workflows:
 
       ############################## RATUFACOAT ##############################
       - ratufacoat_build_linux
+      - ratufacoat_build_linux_powerpc
 
       # Only run Windows and Mac OS X on trunk as a cost saving measure
       - ratufacoat_build_windows:
