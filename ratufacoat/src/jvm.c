@@ -391,7 +391,7 @@ sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 			/* Write the ROM failure message! */
 			sjme_console_pipewrite(rv, (nativefuncs != NULL ?
 				nativefuncs->stderr_write : NULL), sjme_romfailmessage, 0,
-				sizeof(sjme_romfailmessage) / sizeof(sjme_jbyte), error);
+				sjme_romfailmessageSizeOf, error);
 			
 			/* Clear resources */
 			sjme_free(rv);
@@ -471,7 +471,7 @@ sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		/* Write the Boot failure message! */
 		sjme_console_pipewrite(rv, (nativefuncs != NULL ?
 			nativefuncs->stderr_write : NULL), sjme_bootfailmessage, 0,
-			sizeof(sjme_bootfailmessage) / sizeof(sjme_jbyte), error);
+			sjme_bootfailmessageSizeOf, error);
 		
 		/* Force error to be on-screen. */
 		rv->supervisorokay = 0;

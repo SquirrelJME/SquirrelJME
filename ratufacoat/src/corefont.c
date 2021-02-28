@@ -296,6 +296,9 @@ const sjme_jbyte sjme_romfailmessage[] =
 	109, 101, 114, 67, 111, 97, 116, 32, 82, 79, 77, 39, 46, 13, 10
 };
 
+const sjme_jint sjme_romfailmessageSizeOf =
+		sizeof(sjme_romfailmessage) / sizeof(sjme_jbyte);
+
 const sjme_jbyte sjme_bootfailmessage[] =
 {
 	70, 97, 105, 108, 101, 100, 32, 116, 111, 32, 105, 110, 105, 116, 105, 97,
@@ -309,6 +312,9 @@ const sjme_jbyte sjme_bootfailmessage[] =
 	90, 73, 80, 32, 116, 105, 116, 108, 101, 100, 32, 39, 83, 117, 109, 109,
 	101, 114, 67, 111, 97, 116, 32, 82, 79, 77, 39, 46, 13, 10
 };
+
+const sjme_jint sjme_bootfailmessageSizeOf =
+		sizeof(sjme_bootfailmessage) / sizeof(sjme_jbyte);
 
 const sjme_sqf sjme_font =
 {

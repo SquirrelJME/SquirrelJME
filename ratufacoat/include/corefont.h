@@ -81,8 +81,14 @@ extern const sjme_jbyte sjme_fontcharbmp[];
 /** ROM load failure message. */
 extern const sjme_jbyte sjme_romfailmessage[];
 
+/** Size of the ROM fail message. */
+extern const sjme_jint sjme_romfailmessageSizeOf;
+
 /** BootRAM failed to load. */
 extern const sjme_jbyte sjme_bootfailmessage[];
+
+/** Size of BootRAM failed message. */
+extern const sjme_jint sjme_bootfailmessageSizeOf;
 
 /** SQF Defined Font. */
 extern const sjme_sqf sjme_font;
