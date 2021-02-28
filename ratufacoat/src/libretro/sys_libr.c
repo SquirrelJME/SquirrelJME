@@ -197,6 +197,11 @@ void retro_set_environment(retro_environment_t cb)
 				"Display Colors; "
 				"16777216|65536|256|16|4|2"},
 			
+			/* Internet. */
+			{"squirreljme_allow_tcpip",
+				"Allow TCP/IP Connections; "
+				"disabled|enabled"},
+			
 			/* Debugging. */
 			{"squirreljme_debugging",
 				"Enable Debugging; "
