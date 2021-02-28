@@ -17,17 +17,17 @@
 #ifndef SJME_hGRATUFACOATSJMFHSJMEBSQFH
 #define SJME_hGRATUFACOATSJMFHSJMEBSQFH
 
-/** Anti-C++. */
+/* Anti-C++. */
 #ifdef _cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
 #define SJME_cXRATUFACOATSJMFHSJMEBSQFH
 extern "C"
 {
-#endif /** #ifdef SJME_CXX_IS_EXTERNED */
-#endif /** #ifdef __cplusplus */
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
 
-/****************************************************************************/
+/*--------------------------------------------------------------------------*/
 
 /** Upper shift value mask, since shifting off the type is undefined. */
 static sjme_jint sjme_sh_umask[33] =
@@ -358,16 +358,16 @@ static sjme_sqf sjme_font =
 	sjme_fontcharbmp
 };
 
-/****************************************************************************/
+/*--------------------------------------------------------------------------*/
 
-/** Anti-C++. */
+/* Anti-C++. */
 #ifdef __cplusplus
 #ifdef SJME_cXRATUFACOATSJMFHSJMEBSQFH
 }
 #undef SJME_cXRATUFACOATSJMFHSJMEBSQFH
 #undef SJME_CXX_IS_EXTERNED
 #endif /** #ifdef SJME_cXRATUFACOATSJMFHSJMEBSQFH */
-#endif /** #ifdef __cplusplus */
+#endif /* #ifdef __cplusplus */
 
 /** Header guard. */
 #endif /* #ifndef SJME_hGRATUFACOATSJMFHSJMEBSQFH */

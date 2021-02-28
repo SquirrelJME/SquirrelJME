@@ -16,27 +16,39 @@
 #ifndef SQUIRRELJME_DEBUG_H
 #define SQUIRRELJME_DEBUG_H
 
-/** Anti-C++. */
+#include "sjmerc.h"
+
+/* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
 #define SJME_CXX_SQUIRRELJME_DEBUG_H
 extern "C"
 {
-#endif /** #ifdef SJME_CXX_IS_EXTERNED */
-#endif /** #ifdef __cplusplus */
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
 
-/****************************************************************************/
+/*--------------------------------------------------------------------------*/
 
-/****************************************************************************/
+/**
+ * Indicates a To-Do and then terminates the program.
+ * 
+ * @param message The @c printf style message.
+ * @param ... Any @c printf style arguments.
+ * @return Never returns.
+ * @since 2021/02/28 
+ */
+sjme_returnNever sjme_todo(const char* message, ...);
 
-/** Anti-C++. */
+/*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
 #ifdef __cplusplus
 #ifdef SJME_CXX_SQUIRRELJME_DEBUG_H
 }
 #undef SJME_CXX_SQUIRRELJME_DEBUG_H
 #undef SJME_CXX_IS_EXTERNED
-#endif /** #ifdef SJME_CXX_SQUIRRELJME_DEBUG_H */
-#endif /** #ifdef __cplusplus */
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_DEBUG_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_DEBUG_H */

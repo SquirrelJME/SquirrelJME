@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "debug.h"
 #include "handles.h"
 
 /**
@@ -31,3 +32,14 @@ struct sjme_memHandle
 	/** The reference count of the handle. */
 	sjme_jint refCount;
 };
+
+sjme_returnFail sjme_initMemHandles(sjme_memHandles** out, sjme_error* error)
+{
+	sjme_todo("sjme_initMemHandles(%p, %p)", out, error);
+}
+
+sjme_returnFail sjme_destroyMemHandles(sjme_memHandles* in, sjme_error* error)
+{
+	sjme_todo("sjme_destroyMemHandles(%p, %p)", in, error);
+}
+

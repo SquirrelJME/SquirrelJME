@@ -30,6 +30,7 @@ typedef struct sjme_singleTest
 /** Test table. */
 static const sjme_singleTest sjme_singleTests[] =
 {
+	SJME_TEST(testMemHandleInit),
 	SJME_TEST(testNothing),
 	SJME_TEST(testOpCodes),
 	
@@ -42,12 +43,12 @@ static const sjme_singleTest sjme_singleTests[] =
  * 
  * @param argc Argument count.
  * @param argv Arguments.
- * @return {@code EXIT_SUCCESS} on success, otherwise {@code EXIT_FAILURE}.
+ * @return @a EXIT_SUCCESS on success, otherwise @a EXIT_FAILURE.
  * @since 2020/08/12
  */
 int main(int argc, char** argv)
 {
-	int allTests, execTest, currentExitCode;
+	int allTests, execTest, currentExitCode, ranTests;
 	const sjme_singleTest* test;
 	
 	/* Running all tests? */
@@ -60,6 +61,7 @@ int main(int argc, char** argv)
 	currentExitCode = EXIT_SUCCESS;
 	
 	/* Go through the test table and find the named tests if applicable. */
+	ranTests = 0;
 	for (test = &sjme_singleTests[0]; test->name != NULL; test++)
 	{
 		/* Determine if this is a test to run */
@@ -79,10 +81,15 @@ int main(int argc, char** argv)
 			fprintf(stderr, "Running test %s...\n", test->name);
 			
 			/* Run it, if it fails, then signal. */
+			ranTests++;
 			if (test->function() != EXIT_SUCCESS)
 				currentExitCode = EXIT_FAILURE;
 		}
 	}
+	
+	/* Specified a specific test but was not ran, so fail. */
+	if (!allTests && ranTests <= 0)
+		return EXIT_FAILURE;
 	
 	/* And the code if all tests ran. */
 	return currentExitCode;

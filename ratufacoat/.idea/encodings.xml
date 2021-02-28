@@ -10,6 +10,7 @@
     <file url="file://$PROJECT_DIR$/include/debug.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/handles.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/jvm.h" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/include/sjmebsqf.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/sjmecon.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/sjmerc.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/sjmevdef.h" charset="ISO-8859-1" />
@@ -48,6 +49,8 @@
     <file url="file://$PROJECT_DIR$/tests/CMakeLists.txt" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/tests/libcheck.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/tests/mainEntry.c" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/tests/testBoop.c" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/tests/testMemHandleInit.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/tests/testNothing.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/tests/testOpCodes.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/tests/testing.h" charset="ISO-8859-1" />

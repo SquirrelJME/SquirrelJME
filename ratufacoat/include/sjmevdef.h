@@ -20,17 +20,17 @@
 #include "sjmerc.h"
 #include "sjmecon.h"
 
-/** Anti-C++. */
+/* Anti-C++. */
 #ifdef _cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
 #define SJME_cXRATUFACOATSJMFHSJMEVDEFH
 extern "C"
 {
-#endif /** #ifdef SJME_CXX_IS_EXTERNED */
-#endif /** #ifdef __cplusplus */
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
 
-/****************************************************************************/
+/*--------------------------------------------------------------------------*/
 
 /**
  * Long return value result
@@ -181,16 +181,16 @@ struct sjme_jvm
 	sjme_jint squelchfbconsole;
 };
 
-/****************************************************************************/
+/*--------------------------------------------------------------------------*/
 
-/** Anti-C++. */
+/* Anti-C++. */
 #ifdef __cplusplus
 #ifdef SJME_cXRATUFACOATSJMFHSJMEVDEFH
 }
 #undef SJME_cXRATUFACOATSJMFHSJMEVDEFH
 #undef SJME_CXX_IS_EXTERNED
 #endif /** #ifdef SJME_cXRATUFACOATSJMFHSJMEVDEFH */
-#endif /** #ifdef __cplusplus */
+#endif /* #ifdef __cplusplus */
 
 /** Header guard. */
 #endif /* #ifndef SJME_hGRATUFACOATSJMFHSJMEVDEFH */

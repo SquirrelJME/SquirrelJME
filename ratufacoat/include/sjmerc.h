@@ -160,17 +160,17 @@
 	#endif
 #endif
 
-/** Anti-C++. */
+/* Anti-C++. */
 #ifdef _cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
 #define SJME_cXRATUFACOATSJMERCHSJMERCH
 extern "C"
 {
-#endif /** #ifdef SJME_CXX_IS_EXTERNED */
-#endif /** #ifdef __cplusplus */
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
 
-/****************************************************************************/
+/*--------------------------------------------------------------------------*/
 
 /** {@code byte} type. */
 typedef int8_t sjme_jbyte;
@@ -352,6 +352,8 @@ typedef uint32_t sjme_juint;
  *
  * Will be one of @code SJME_RETURN_SUCCESS @endcode or
  * @code SJME_RETURN_FAIL @endcode.
+ * 
+ * @since 2021/02/27
  */
 typedef sjme_jint sjme_returnFail;
 
@@ -360,6 +362,15 @@ typedef sjme_jint sjme_returnFail;
 
 /** Method failure. @typedef sjme_returnFail. */
 #define SJME_RETURN_FAIL ((sjme_returnFail)1)
+
+/**
+ * Marker indicating that the method never returns.
+ * 
+ * @since 2021/02/28
+ */
+typedef struct sjme_returnNever
+{
+} sjme_returnNever;
 
 /** This represents an error. */
 typedef struct sjme_error
@@ -786,16 +797,16 @@ sjme_jint sjme_vmmatomicintcheckgetandset(sjme_vmem* vmem, sjme_jint check,
 sjme_jint sjme_vmmatomicintaddandget(sjme_vmem* vmem,
 	sjme_vmemptr ptr, sjme_jint off, sjme_jint add, sjme_error* error);
 
-/****************************************************************************/
+/*--------------------------------------------------------------------------*/
 
-/** Anti-C++. */
+/* Anti-C++. */
 #ifdef __cplusplus
 #ifdef SJME_cXRATUFACOATSJMERCHSJMERCH
 }
 #undef SJME_cXRATUFACOATSJMERCHSJMERCH
 #undef SJME_CXX_IS_EXTERNED
 #endif /** #ifdef SJME_cXRATUFACOATSJMERCHSJMERCH */
-#endif /** #ifdef __cplusplus */
+#endif /* #ifdef __cplusplus */
 
 /** Header guard. */
 #endif /* #ifndef SJME_hGRATUFACOATSJMERCHSJMERCH */

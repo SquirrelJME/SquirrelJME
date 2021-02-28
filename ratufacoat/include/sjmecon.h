@@ -17,17 +17,17 @@
 #ifndef SJME_hGRATUFACOATSJMONHSJMECONH
 #define SJME_hGRATUFACOATSJMONHSJMECONH
 
-/** Anti-C++. */
+/* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
 #define SJME_cXRATUFACOATSJMONHSJMECONH
 extern "C"
 {
-#endif /** #ifdef SJME_CXX_IS_EXTERNED */
-#endif /** #ifdef __cplusplus */
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
 
-/****************************************************************************/
+/*--------------------------------------------------------------------------*/
 
 /*****************************************************************************
 ***************************** DEFAULT CONSTANTS ******************************
@@ -697,16 +697,16 @@ extern "C"
 /** The Thread ID for out of bounds IPC events. */
 #define SJME_OOB_IPC_THREAD SJME_JINT_C(0xFFFFFFFF)
 
-/****************************************************************************/
+/*--------------------------------------------------------------------------*/
 
-/** Anti-C++. */
+/* Anti-C++. */
 #ifdef __cplusplus
 #ifdef SJME_cXRATUFACOATSJMONHSJMECONH
 }
 #undef SJME_cXRATUFACOATSJMONHSJMECONH
 #undef SJME_CXX_IS_EXTERNED
 #endif /** #ifdef SJME_cXRATUFACOATSJMONHSJMECONH */
-#endif /** #ifdef __cplusplus */
+#endif /* #ifdef __cplusplus */
 
 /* Includes added due to refactors. */
 #include "opcode.h"

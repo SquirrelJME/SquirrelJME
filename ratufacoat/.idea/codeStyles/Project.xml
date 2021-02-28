@@ -463,6 +463,7 @@
       </arrangement>
     </codeStyleSettings>
     <codeStyleSettings language="ObjectiveC">
+      <option name="KEEP_CONTROL_STATEMENT_IN_ONE_LINE" value="false" />
       <option name="BRACE_STYLE" value="2" />
       <option name="CLASS_BRACE_STYLE" value="2" />
       <option name="ELSE_ON_NEW_LINE" value="true" />
@@ -471,6 +472,8 @@
       <option name="ALIGN_MULTILINE_ARRAY_INITIALIZER_EXPRESSION" value="false" />
       <option name="SPACE_AFTER_TYPE_CAST" value="false" />
       <option name="TERNARY_OPERATION_SIGNS_ON_NEXT_LINE" value="false" />
+      <option name="KEEP_SIMPLE_BLOCKS_IN_ONE_LINE" value="false" />
+      <option name="KEEP_SIMPLE_METHODS_IN_ONE_LINE" value="false" />
       <option name="ARRAY_INITIALIZER_LBRACE_ON_NEXT_LINE" value="true" />
       <option name="ARRAY_INITIALIZER_RBRACE_ON_NEXT_LINE" value="true" />
       <option name="ENUM_CONSTANTS_WRAP" value="2" />

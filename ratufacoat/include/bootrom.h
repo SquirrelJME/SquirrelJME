@@ -18,17 +18,17 @@
 
 #include "sjmerc.h"
 
-/** Anti-C++. */
+/* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
 #define SJME_cXRATUFACOATSJMONHSJMECONH
 extern "C"
 {
-#endif /** #ifdef SJME_CXX_IS_EXTERNED */
-#endif /** #ifdef __cplusplus */
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
 
-/****************************************************************************/
+/*--------------------------------------------------------------------------*/
 
 /** Version used for classes and otherwise. */
 #define SJME_CLASSINFO_CLASS_VERSION_20201129 1
@@ -47,15 +47,15 @@ extern "C"
 sjme_returnFail sjme_loadBootRom(sjme_jvm* jvm, void* bootRom,
 	sjme_error* error);
 
-/****************************************************************************/
+/*--------------------------------------------------------------------------*/
 
-/** Anti-C++. */
+/* Anti-C++. */
 #ifdef __cplusplus
 #ifdef SJME_cXRATUFACOATSJMONHSJMECONH
 }
 #undef SJME_cXRATUFACOATSJMONHSJMECONH
 #undef SJME_CXX_IS_EXTERNED
 #endif /** #ifdef SJME_cXRATUFACOATSJMONHSJMECONH */
-#endif /** #ifdef __cplusplus */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_BOOTROM_H */

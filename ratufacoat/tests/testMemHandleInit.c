@@ -7,21 +7,21 @@
 // See license.mkd for licensing and copyright information.
 // --------------------------------------------------------------------------*/
 
-#ifndef SQUIRRELJME_TESTS_H
-#define SQUIRRELJME_TESTS_H
+#include "tests.h"
+#include "handles.h"
 
-#include <stdlib.h>
-
-/**
- * Macro for prototyping tests.
- *
- * @param name The name of the test to wrap.
- */
-#define SJME_TEST_PROTOTYPE(name) int name(void)
-
-/** Available tests. */
-SJME_TEST_PROTOTYPE(testMemHandleInit);
-SJME_TEST_PROTOTYPE(testNothing);
-SJME_TEST_PROTOTYPE(testOpCodes);
-
-#endif /* SQUIRRELJME_TESTS_H */
+SJME_TEST_PROTOTYPE(testMemHandleInit)
+{
+	sjme_error error;
+	sjme_memHandles* handles = NULL;
+	
+	/* Initialize handles. */
+	if (sjme_initMemHandles(&handles, &error))
+		return EXIT_FAILURE;
+	
+	/* Then immediately destroy them. */
+	if (sjme_destroyMemHandles(handles, &error))
+		return EXIT_FAILURE;
+	
+	return EXIT_SUCCESS;
+}

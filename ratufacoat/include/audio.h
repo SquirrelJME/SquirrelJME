@@ -16,27 +16,27 @@
 #ifndef SQUIRRELJME_AUDIO_H
 #define SQUIRRELJME_AUDIO_H
 
-/** Anti-C++. */
+/* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
 #define SJME_CXX_SQUIRRELJME_AUDIO_H
 extern "C"
 {
-#endif /** #ifdef SJME_CXX_IS_EXTERNED */
-#endif /** #ifdef __cplusplus */
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
 
-/****************************************************************************/
+/*--------------------------------------------------------------------------*/
 
-/****************************************************************************/
+/*--------------------------------------------------------------------------*/
 
-/** Anti-C++. */
+/* Anti-C++. */
 #ifdef __cplusplus
 #ifdef SJME_CXX_SQUIRRELJME_AUDIO_H
 }
 #undef SJME_CXX_SQUIRRELJME_AUDIO_H
 #undef SJME_CXX_IS_EXTERNED
-#endif /** #ifdef SJME_CXX_SQUIRRELJME_AUDIO_H */
-#endif /** #ifdef __cplusplus */
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_AUDIO_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_AUDIO_H */
