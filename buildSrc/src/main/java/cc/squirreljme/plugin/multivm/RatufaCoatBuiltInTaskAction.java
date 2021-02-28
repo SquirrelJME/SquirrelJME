@@ -17,6 +17,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
@@ -145,6 +147,11 @@ public class RatufaCoatBuiltInTaskAction
 				Path inputRom = __task.getInputs()
 					.getFiles().getSingleFile().toPath();
 				byte[] romData = Files.readAllBytes(inputRom);
+				long romDate = Files.getLastModifiedTime(inputRom).toMillis();
+				
+				// Get ROM Unique Identifier (ROM Sum)
+				byte[] romDigest = MessageDigest.getInstance("SHA-256")
+					.digest(romData);
 				
 				// Determine file size for progress metering
 				int romSize = romData.length;
@@ -217,6 +224,26 @@ public class RatufaCoatBuiltInTaskAction
 					romData.length);
 				out.println();
 				
+				// Write ROM ID
+				out.printf("const sjme_jbyte sjme_builtInRomId[] = " +
+				 	"{%s};",
+				 	Arrays.toString(romDigest)
+				 		.replace('[', ' ')
+				 		.replace(']', ' '));
+				out.println();
+				
+				// Write ROM ID Length
+				out.printf("const sjme_jint sjme_builtInRomIdLen = " +
+				 	"SJME_JINT_C(%d);",
+				 	romDigest.length);
+				out.println();
+				
+				// Write ROM date
+				out.printf("const sjme_jint sjme_builtInRomDate[] = " +
+					"{SJME_JINT_C(%d), SJME_JINT_C(%d)};",
+					(int)(romDate >>> 32), (int)romDate);
+				out.println();
+				
 				// End Only when built-in is enabled
 				out.println();
 				out.println("#endif");
@@ -232,7 +259,7 @@ public class RatufaCoatBuiltInTaskAction
 		}
 		
 		// It did fail to write
-		catch (IOException e)
+		catch (IOException | NoSuchAlgorithmException e)
 		{
 			throw new RuntimeException("Could not build ROM: " + output, e);
 		}
