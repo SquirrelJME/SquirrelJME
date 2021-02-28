@@ -16,6 +16,10 @@
 #include "sjmerc.h"
 #include "jvm.h"
 #include "cpu.h"
+#include "corefont.h"
+#include "oldstuff.h"
+#include "bootrom.h"
+#include "memory.h"
 
 sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_error* error, sjme_jint cycles)
 {
@@ -345,7 +349,7 @@ sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	sjme_configinit(rv, options, nativefuncs, error);
 	
 	/* Initialize the BootRAM and boot the CPU. */
-	if (sjme_initboot(rv, error) == 0)
+	if (sjme_loadBootRom(rv, error) == 0)
 	{
 		/* Write the Boot failure message! */
 		sjme_console_pipewrite(rv, (nativefuncs != NULL ?

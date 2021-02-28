@@ -22,7 +22,7 @@
 /* Available tests. */
 SJME_TEST_PROTOTYPE(testMemHandleCycle);
 SJME_TEST_PROTOTYPE(testMemHandleInit);
-SJME_TEST_PROTOTYPE(testMemHandleInvalid)
+SJME_TEST_PROTOTYPE(testMemHandleInvalid);
 SJME_TEST_PROTOTYPE(testNothing);
 SJME_TEST_PROTOTYPE(testOpCodes);
 

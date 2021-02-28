@@ -42,12 +42,10 @@ extern "C"
  * Loads the BootROM into the given JVM.
  * 
  * @param jvm The virtual machine to load for.
- * @param bootRom The boot ROM to load.
  * @param error The error state, if an error happens.
  * @since 2021/02/27
  */
-sjme_returnFail sjme_loadBootRom(sjme_jvm* jvm, void* bootRom,
-	sjme_error* error);
+sjme_returnFail sjme_loadBootRom(sjme_jvm* jvm, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 
