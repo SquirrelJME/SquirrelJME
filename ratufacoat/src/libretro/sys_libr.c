@@ -202,6 +202,11 @@ void retro_set_environment(retro_environment_t cb)
 				"Allow TCP/IP Connections; "
 				"disabled|enabled"},
 			
+			/* Multiplayer. */
+			{"squirreljme_local_multiplayer_mode",
+				"Local Multiplayer Mode (Protocol); "
+				"None|Bluetooth|Dial-Up|IrDA|Serial|SMS|TCP/UDP"},
+			
 			/* Debugging. */
 			{"squirreljme_debugging",
 				"Enable Debugging; "
