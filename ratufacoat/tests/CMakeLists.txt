@@ -13,7 +13,7 @@ enable_testing()
 # Build executable just for testing
 file(GLOB SQUIRRELJME_TEST_SOURCES "test*.c")
 add_executable(SquirrelJMETests
-    mainEntry.c
+    mainentry.c
 	${SQUIRRELJME_TEST_SOURCES})
 
 # Additional includes
