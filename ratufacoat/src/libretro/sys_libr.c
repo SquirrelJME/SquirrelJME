@@ -205,7 +205,7 @@ void retro_set_environment(retro_environment_t cb)
 			/* Multiplayer. */
 			{"squirreljme_local_multiplayer_mode",
 				"Local Multiplayer Mode (Protocol); "
-				"None|Bluetooth|Dial-Up|IrDA|Serial|SMS|TCP/UDP"},
+				"None|All|Bluetooth|Dial-Up|IrDA|Serial|SMS|TCP/UDP"},
 			
 			/* Debugging. */
 			{"squirreljme_debugging",
