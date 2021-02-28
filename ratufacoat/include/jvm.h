@@ -19,6 +19,7 @@
 #include "error.h"
 #include "native.h"
 #include "cpu.h"
+#include "sjmecon.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -31,6 +32,13 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+/**
+ * Instance of the JVM.
+ *
+ * @since 2019/06/03
+ */
+typedef struct sjme_jvm sjme_jvm;
 
 /**
  * Java virtual machine arguments.

@@ -10,6 +10,8 @@
 #ifndef SQUIRRELJME_STRINGIES_H
 #define SQUIRRELJME_STRINGIES_H
 
+#include "error.h"
+
 /**
  * Returns a description of the given JVM error.
  *

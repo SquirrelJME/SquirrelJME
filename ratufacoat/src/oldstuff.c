@@ -7,10 +7,4 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "bootrom.h"
-
-sjme_returnFail sjme_loadBootRom(sjme_jvm* jvm, void* bootRom,
-	sjme_error* error)
-{
-	exit(1);
-}
+#include "oldstuff.h"

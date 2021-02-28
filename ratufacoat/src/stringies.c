@@ -11,6 +11,7 @@
 
 #include "sjmerc.h"
 #include "stringies.h"
+#include "error.h"
 
 /** Error string storage. */
 typedef struct sjme_jvmErrorString

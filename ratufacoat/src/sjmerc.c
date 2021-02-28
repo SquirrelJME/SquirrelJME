@@ -16,11 +16,12 @@
 #include "sjmerc.h"
 #include "sjmecon.h"
 #include "sjmebsqf.h"
-#include "sjmevdef.h"
 #include "stringies.h"
 #include "softmath.h"
 #include "error.h"
 #include "native.h"
+#include "oldstuff.h"
+#include "cpu.h"
 
 /**
  * Decodes an integer value from operations which could be unaligned.

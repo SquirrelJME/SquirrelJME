@@ -31,6 +31,20 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Long return value result
+ *
+ * @since 2019/12/07
+ */
+typedef struct sjme_jlong_combine
+{
+	/** Low. */
+	sjme_jint lo;
+	
+	/** High. */
+	sjme_jint hi;
+} sjme_jlong_combine;
+
+/**
  * Division result.
  *
  * @since 2019/06/20

@@ -5,26 +5,22 @@
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
-// --------------------------------------------------------------------------*/
+// -------------------------------------------------------------------------*/
 
 /**
- * SquirrelJME Virtual Machine Definitions.
- *
- * @since 2019/10/06
+ * Native memory functions.
+ * 
+ * @since 2021/02/28
  */
 
-/** Header guard. */
-#ifndef SJME_hGRATUFACOATSJMFHSJMEVDEFH
-#define SJME_hGRATUFACOATSJMFHSJMEVDEFH
-
-#include "sjmerc.h"
-#include "sjmecon.h"
+#ifndef SQUIRRELJME_MEMORY_H
+#define SQUIRRELJME_MEMORY_H
 
 /* Anti-C++. */
-#ifdef _cplusplus
+#ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_cXRATUFACOATSJMFHSJMEVDEFH
+#define SJME_CXX_SQUIRRELJME_MEMORY_H
 extern "C"
 {
 #endif /* #ifdef SJME_CXX_IS_EXTERNED */
@@ -32,31 +28,32 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+
 /**
- * Long return value result
+ * Allocates the given number of bytes.
  *
- * @since 2019/12/07
+ * @param size The number of bytes to allocate.
+ * @since 2019/06/07
  */
-typedef struct sjme_jlong_combine
-{
-	/** Low. */
-	sjme_jint lo;
-	
-	/** High. */
-	sjme_jint hi;
-} sjme_jlong_combine;
+void* sjme_malloc(sjme_jint size);
+
+/**
+ * Frees the given pointer.
+ *
+ * @param p The pointer to free.
+ * @since 2019/06/07
+ */
+void sjme_free(void* p);
 
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_cXRATUFACOATSJMFHSJMEVDEFH
+#ifdef SJME_CXX_SQUIRRELJME_MEMORY_H
 }
-#undef SJME_cXRATUFACOATSJMFHSJMEVDEFH
+#undef SJME_CXX_SQUIRRELJME_MEMORY_H
 #undef SJME_CXX_IS_EXTERNED
-#endif /** #ifdef SJME_cXRATUFACOATSJMFHSJMEVDEFH */
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_MEMORY_H */
 #endif /* #ifdef __cplusplus */
 
-/** Header guard. */
-#endif /* #ifndef SJME_hGRATUFACOATSJMFHSJMEVDEFH */
-
+#endif /* SQUIRRELJME_MEMORY_H */

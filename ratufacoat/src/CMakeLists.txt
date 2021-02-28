@@ -22,8 +22,10 @@ add_library(SquirrelJMECore STATIC
 	error.c
 	handles.c
 	jvm.c
+	memory.c
+	oldstuff.c
+	opcode.c
 	sjmerc.c
-	sjmercnm.c
 	sjmercvm.c
 	softmath.c
 	stringies.c

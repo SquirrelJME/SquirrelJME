@@ -8,12 +8,13 @@
 // --------------------------------------------------------------------------*/
 
 /**
- * Virtual memory functions.
+ * Virtual memory functions (deprecated).
  *
  * @since 2019/06/25
  */
 
 #include "sjmerc.h"
+#include "oldstuff.h"
 
 /** Base of virtual memory. */
 #define SJME_VIRTUAL_MEM_BASE SJME_JINT_C(1048576)

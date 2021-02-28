@@ -9,7 +9,7 @@
 
 #include "error.h"
 
-void sjme_seterror(sjme_error* error, sjme_jint code, sjme_jint value)
+void sjme_seterror(sjme_error* error, sjme_errorCode code, sjme_jint value)
 {
 	if (error != NULL)
 	{

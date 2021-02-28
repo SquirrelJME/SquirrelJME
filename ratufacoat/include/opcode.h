@@ -5,10 +5,28 @@
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
-// --------------------------------------------------------------------------*/
+// -------------------------------------------------------------------------*/
+
+/**
+ * Opcode decoding and otherwise.
+ * 
+ * @since 2021/02/28
+ */
 
 #ifndef SQUIRRELJME_OPCODE_H
 #define SQUIRRELJME_OPCODE_H
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_OPCODE_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
+/*--------------------------------------------------------------------------*/
 
 /** Encoding mask. */
 #define SJME_ENC_MASK UINT8_C(0xF0)
@@ -96,5 +114,16 @@
 
 /** Compare and exchange. */
 #define SJME_OP_BREAKPOINT UINT8_C(0xFF)
+
+/*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_OPCODE_H
+}
+#undef SJME_CXX_SQUIRRELJME_OPCODE_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_OPCODE_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_OPCODE_H */

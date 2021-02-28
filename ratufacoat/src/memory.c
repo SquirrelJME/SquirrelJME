@@ -20,6 +20,7 @@
 #endif
 
 #include "sjmerc.h"
+#include "memory.h"
 
 /** Allocates the given number of bytes. */
 void* sjme_malloc(sjme_jint size)

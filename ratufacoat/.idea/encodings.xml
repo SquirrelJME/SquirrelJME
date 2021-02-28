@@ -11,7 +11,11 @@
     <file url="file://$PROJECT_DIR$/include/error.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/handles.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/jvm.h" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/include/memory.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/native.h" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/include/oldstuff.h" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/include/opcode.h" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/include/opcode.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/sjmebsqf.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/sjmecon.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/sjmerc.h" charset="ISO-8859-1" />
@@ -41,6 +45,9 @@
     <file url="file://$PROJECT_DIR$/src/libretro/lrjoypad.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/libretro/lrlocal.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/libretro/sys_libr.c" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/memory.c" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/oldstuff.c" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/opcode.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/sdl2/CMakeLists.txt" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/sdl2/sys_stdc.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/sjmerc.c" charset="ISO-8859-1" />
