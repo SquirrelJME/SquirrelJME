@@ -59,18 +59,6 @@ struct sjme_jvm
 	/** Did the supervisor boot okay? */
 	sjme_jint supervisorokay;
 	
-	/** Console X position. */
-	sjme_jint conx;
-	
-	/** Console Y position. */
-	sjme_jint cony;
-	
-	/** Console width. */
-	sjme_jint conw;
-	
-	/** Console height. */
-	sjme_jint conh;
-	
 	/** System call static field pointer. */
 	sjme_vmemptr syscallsfp;
 	
@@ -352,18 +340,18 @@ sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 				(fbinfo->scanlen * fbinfo->bitsperpixel) / 8;
 		
 		/* Console positions and size. */
-		rv->conx = 0;
-		rv->cony = 0;
-		rv->conw = fbinfo->width / sjme_font.charwidths[0];
-		rv->conh = fbinfo->height / sjme_font.pixelheight;
+		fbinfo->conx = 0;
+		fbinfo->cony = 0;
+		fbinfo->conw = fbinfo->width / sjme_font.charwidths[0];
+		fbinfo->conh = fbinfo->height / sjme_font.pixelheight;
 	}
 	
 	/* Virtual map framebuffer, if available. */
 	if (fbinfo != NULL)
 	{
-		rv->framebuffer = sjme_vmmmap(vmem, 0, fbinfo->pixels,
+		fbinfo->framebuffer = sjme_vmmmap(vmem, 0, fbinfo->pixels,
 			(fbinfo->numpixels * fbinfo->bitsperpixel) / 8, error);
-		if (rv->framebuffer == NULL)
+		if (fbinfo->framebuffer == NULL)
 		{
 			sjme_seterror(error, SJME_ERROR_VMMMAPFAIL, 0);
 			
@@ -527,3 +515,12 @@ sjme_jboolean sjme_jvmIsDebug(sjme_jvm* jvm)
 	return jvm->enabledebug;
 }
 
+sjme_framebuffer* sjme_jvmFramebuffer(sjme_jvm* jvm)
+{
+	return jvm->fbinfo;
+}
+
+sjme_nativefuncs* sjme_jvmNativeFuncs(sjme_jvm* jvm)
+{
+	return jvm->nativefuncs;
+}

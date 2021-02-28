@@ -7,11 +7,15 @@
 // See license.mkd for licensing and copyright information.
 // --------------------------------------------------------------------------*/
 
+#include "debug.h"
 #include "syscall.h"
 
 void sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	sjme_jshort callid, sjme_jint* args, sjme_jlong_combine* rv)
 {
+	sjme_todo("sjme_syscall()");
+#if 0
+	
 	sjme_jint* syserr;
 	sjme_jint ia, ib, ic;
 	sjme_jbyte ba;
@@ -222,7 +226,7 @@ void sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			/* Gets/sets property of the framebuffer. */
 		case SJME_SYSCALL_FRAMEBUFFER_PROPERTY:
 			/* No framebuffer is defined? */
-			if (jvm->fbinfo == NULL)
+			if (sjme_jvmFramebuffer(jvm) == NULL)
 			{
 				*syserr = SJME_SYSCALL_ERROR_NO_FRAMEBUFFER;
 				return;
@@ -234,62 +238,62 @@ void sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					/* Framebuffer address. */
 				case SJME_FB_CONTROL_ADDRESS:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					rv->lo = jvm->framebuffer->fakeptr;
+					rv->lo = sjme_jvmFramebuffer(jvm)->framebuffer->fakeptr;
 					break;
 					
 					/* Width of the framebuffer. */
 				case SJME_FB_CONTROL_WIDTH:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					rv->lo = jvm->fbinfo->width;
+					rv->lo = sjme_jvmFramebuffer(jvm)->width;
 					break;
 					
 					/* Height of the framebuffer. */
 				case SJME_FB_CONTROL_HEIGHT:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					rv->lo = jvm->fbinfo->height;
+					rv->lo = sjme_jvmFramebuffer(jvm)->height;
 					break;
 					
 					/* Scanline length of the framebuffer. */
 				case SJME_FB_CONTROL_SCANLEN:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					rv->lo = jvm->fbinfo->scanlen;
+					rv->lo = sjme_jvmFramebuffer(jvm)->scanlen;
 					break;
 					
 					/* Flush the framebuffer. */
 				case SJME_FB_CONTROL_FLUSH:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					if (jvm->fbinfo->flush != NULL)
-						jvm->fbinfo->flush();
+					if (sjme_jvmFramebuffer(jvm)->flush != NULL)
+						sjme_jvmFramebuffer(jvm)->flush();
 					break;
 					
 					/* Frame-buffer format. */
 				case SJME_FB_CONTROL_FORMAT:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					rv->lo = jvm->fbinfo->format;
+					rv->lo = sjme_jvmFramebuffer(jvm)->format;
 					break;
 					
 					/* Scanline length in bytes. */
 				case SJME_FB_CONTROL_SCANLEN_BYTES:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					rv->lo = jvm->fbinfo->scanlenbytes;
+					rv->lo = sjme_jvmFramebuffer(jvm)->scanlenbytes;
 					break;
 					
 					/* Bytes per pixel. */
 				case SJME_FB_CONTROL_BYTES_PER_PIXEL:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					rv->lo = jvm->fbinfo->bitsperpixel / 8;
+					rv->lo = sjme_jvmFramebuffer(jvm)->bitsperpixel / 8;
 					break;
 					
 					/* The number of pixels. */
 				case SJME_FB_CONTROL_NUM_PIXELS:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					rv->lo = jvm->fbinfo->numpixels;
+					rv->lo = sjme_jvmFramebuffer(jvm)->numpixels;
 					break;
 					
 					/* Bits per pixels. */
 				case SJME_FB_CONTROL_BITS_PER_PIXEL:
 					*syserr = SJME_SYSCALL_ERROR_NO_ERROR;
-					rv->lo = jvm->fbinfo->bitsperpixel;
+					rv->lo = sjme_jvmFramebuffer(jvm)->bitsperpixel;
 					break;
 				
 					/* Unknown property, but there is a framebuffer. */
@@ -523,4 +527,5 @@ void sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			*syserr = SJME_SYSCALL_ERROR_UNSUPPORTED_SYSTEM_CALL;
 			return;
 	}
+#endif
 }

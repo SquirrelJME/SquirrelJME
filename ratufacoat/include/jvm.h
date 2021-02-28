@@ -137,7 +137,7 @@ sjme_vmem* sjme_jvmVMem(sjme_jvm* jvm);
  * 
  * @param jvm The JVM to get the metrics for.
  * @return The CPU metrics.
- * @since 2012/02/28
+ * @since 2021/02/28
  */
 struct sjme_cpuMetrics* sjme_jvmCpuMetrics(sjme_jvm* jvm);
 
@@ -146,9 +146,27 @@ struct sjme_cpuMetrics* sjme_jvmCpuMetrics(sjme_jvm* jvm);
  * 
  * @param jvm The JVM to check. 
  * @return If debugging is enabled.
- * @since 2012/02/28
+ * @since 2021/02/28
  */
 sjme_jboolean sjme_jvmIsDebug(sjme_jvm* jvm); 
+
+/**
+ * Returns the framebuffer of the given JVM.
+ * 
+ * @param jvm The JVM to get the framebuffer of.
+ * @return The framebuffer.
+ * @since 2021/02/28
+ */
+sjme_framebuffer* sjme_jvmFramebuffer(sjme_jvm* jvm);
+
+/**
+ * Returns the native functions.
+ * 
+ * @param jvm The JVM to get the native functions from.
+ * @return The native functions.
+ * @since 2021/02/28
+ */
+sjme_nativefuncs* sjme_jvmNativeFuncs(sjme_jvm* jvm);
 
 /*--------------------------------------------------------------------------*/
 

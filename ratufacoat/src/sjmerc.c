@@ -24,6 +24,7 @@
 #include "cpu.h"
 #include "memory.h"
 #include "jvm.h"
+#include "debug.h"
 
 /** Draws single character onto the console. */
 void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
@@ -40,7 +41,8 @@ void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
 		return;
 	
 	/* Ignore if out of bounds. */
-	if (x < 0 || y < 0 || x >= jvm->conw || y >= jvm->conh)
+	if (x < 0 || y < 0 || x >= sjme_jvmFramebuffer(jvm)->conw ||
+		y >= sjme_jvmFramebuffer(jvm)->conh)
 		return;
 	
 	/* Font dimensions. */
@@ -57,7 +59,7 @@ void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
 	mp = &sjme_font.charbmp[((sjme_jint)ch) * fonth * sjme_font.bytesperscan];
 	
 	/* Drawing format for the data value? */
-	bpp = jvm->fbinfo->bitsperpixel;
+	bpp = sjme_jvmFramebuffer(jvm)->bitsperpixel;
 	switch (bpp)
 	{
 		case 1:
@@ -83,9 +85,9 @@ void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
 	for (r = 0; r < fonth; r++)
 	{
 		/* Determine screen position. */
-		sp = jvm->framebuffer->fakeptr +
-			((x * jvm->fbinfo->bitsperpixel) / 8) +
-			((y + r) * (jvm->fbinfo->scanlenbytes));
+		sp = sjme_jvmFramebuffer(jvm)->framebuffer->fakeptr +
+			((x * sjme_jvmFramebuffer(jvm)->bitsperpixel) / 8) +
+			((y + r) * (sjme_jvmFramebuffer(jvm)->scanlenbytes));
 		
 		/* Clear pixel queue. */
 		pq = 0;
@@ -150,13 +152,17 @@ sjme_jint sjme_console_pipewrite(sjme_jvm* jvm,
 		
 		/* Draw to the console in supervisor boot mode or if it was not */
 		/* yet squelched. */
-		if ((jvm->supervisorokay == 0 || jvm->squelchfbconsole == 0) &&
-			jvm->fbinfo != NULL)
+		if (1
+#if 0
+			(jvm->supervisorokay == 0 || jvm->squelchfbconsole == 0) &&
+			sjme_jvmFramebuffer(jvm) != NULL
+#endif
+			)
 		{
 			/* Carriage return? */
 			donewline = 0;
 			if (b == '\r')
-				jvm->conx = 0;
+				sjme_jvmFramebuffer(jvm)->conx = 0;
 			
 			/* Newline? */
 			else if (b == '\n')
@@ -166,13 +172,16 @@ sjme_jint sjme_console_pipewrite(sjme_jvm* jvm,
 			else
 			{
 				/* Draw it. */
-				sjme_console_drawplate(jvm, jvm->conx, jvm->cony, b, error);
+				sjme_console_drawplate(jvm,
+					sjme_jvmFramebuffer(jvm)->conx,
+					sjme_jvmFramebuffer(jvm)->cony, b, error);
 				
 				/* Move cursor up. */
-				jvm->conx++;
+				sjme_jvmFramebuffer(jvm)->conx++;
 				
 				/* New line to print on? */
-				if (jvm->conx >= jvm->conw)
+				if (sjme_jvmFramebuffer(jvm)->conx >=
+					sjme_jvmFramebuffer(jvm)->conw)
 					donewline = 1;
 			}
 			
@@ -180,36 +189,37 @@ sjme_jint sjme_console_pipewrite(sjme_jvm* jvm,
 			if (donewline != 0)
 			{
 				/* Move the cursor to the start of the next line. */
-				jvm->conx = 0;
-				jvm->cony++;
+				sjme_jvmFramebuffer(jvm)->conx = 0;
+				sjme_jvmFramebuffer(jvm)->cony++;
 				
 				/* Too much text on the screen? Move it up! */
-				if (jvm->cony >= jvm->conh)
+				if (sjme_jvmFramebuffer(jvm)->cony >=
+					sjme_jvmFramebuffer(jvm)->conh)
 				{
 					/* Move framebuffer up. */
 					memmove(
-						SJME_POINTER_OFFSET_LONG(jvm->fbinfo->pixels, 0),
-						SJME_POINTER_OFFSET_LONG(jvm->fbinfo->pixels,
+						SJME_POINTER_OFFSET_LONG(sjme_jvmFramebuffer(jvm)->pixels, 0),
+						SJME_POINTER_OFFSET_LONG(sjme_jvmFramebuffer(jvm)->pixels,
 							sjme_font.pixelheight *
-							(jvm->fbinfo->scanlenbytes)),
-						(jvm->fbinfo->height - sjme_font.pixelheight) *
-							(jvm->fbinfo->scanlenbytes));
+							(sjme_jvmFramebuffer(jvm)->scanlenbytes)),
+						(sjme_jvmFramebuffer(jvm)->height - sjme_font.pixelheight) *
+							(sjme_jvmFramebuffer(jvm)->scanlenbytes));
 					
 					/* Wipe bytes at the bottom. */
 					memset(
-						SJME_POINTER_OFFSET_LONG(jvm->fbinfo->pixels,
-							(jvm->fbinfo->height - sjme_font.pixelheight) *
-								(jvm->fbinfo->scanlenbytes)), 0,
-						sjme_font.pixelheight * (jvm->fbinfo->scanlenbytes));
+						SJME_POINTER_OFFSET_LONG(sjme_jvmFramebuffer(jvm)->pixels,
+							(sjme_jvmFramebuffer(jvm)->height - sjme_font.pixelheight) *
+								(sjme_jvmFramebuffer(jvm)->scanlenbytes)), 0,
+						sjme_font.pixelheight * (sjme_jvmFramebuffer(jvm)->scanlenbytes));
 					
 					/* Move the cursor up one line. */
-					jvm->cony--;
+					sjme_jvmFramebuffer(jvm)->cony--;
 				}
 			}
 			
 			/* Always flush in debug mode to force screen updates. */
-			if (jvm->fbinfo->flush != NULL)
-				jvm->fbinfo->flush();
+			if (sjme_jvmFramebuffer(jvm)->flush != NULL)
+				sjme_jvmFramebuffer(jvm)->flush();
 		}
 		
 		/* Forward to pipe? */
@@ -234,7 +244,8 @@ void sjme_printerror(sjme_jvm* jvm, sjme_error* error)
 	sjme_jint (*po)(sjme_jint b);
 	
 	/* Get output console. */
-	po = (jvm->nativefuncs != NULL ? jvm->nativefuncs->stderr_write : NULL);
+	po = (sjme_jvmNativeFuncs(jvm) != NULL ?
+		sjme_jvmNativeFuncs(jvm)->stderr_write : NULL);
 
 	/* Load the JVM error into the target buffer. */
 	sjme_describeJvmError(error, message, &messageLen);
@@ -244,8 +255,8 @@ void sjme_printerror(sjme_jvm* jvm, sjme_error* error)
 		sizeof(messageLen) / sizeof(sjme_jbyte), error);
 	
 	/* Always flush the screen on error. */
-	if (jvm->fbinfo->flush != NULL)
-		jvm->fbinfo->flush();
+	if (sjme_jvmFramebuffer(jvm)->flush != NULL)
+		sjme_jvmFramebuffer(jvm)->flush();
 
 #undef ERROR_SIZE
 }
@@ -382,6 +393,9 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* outromsize,
 void sjme_configinit(sjme_jvm* jvm, sjme_jvmoptions* options,
 	sjme_nativefuncs* nativefuncs, sjme_error* error)
 {
+	sjme_todo("sjme_configinit -- DELETE");
+	
+#if 0
 #define SJME_CONFIG_FORMAT_INTEGER SJME_JINT_C(1)
 #define SJME_CONFIG_FORMAT_KEYVALUE SJME_JINT_C(2)
 #define SJME_CONFIG_FORMAT_STRING SJME_JINT_C(3)
@@ -562,4 +576,5 @@ void sjme_configinit(sjme_jvm* jvm, sjme_jvmoptions* options,
 #undef SJME_CONFIG_FORMAT_KEYVALUE
 #undef SJME_CONFIG_FORMAT_STRING
 #undef SJME_CONFIG_FORMAT_STRINGS
+#endif
 }

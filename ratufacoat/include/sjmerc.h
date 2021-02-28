@@ -358,6 +358,21 @@ typedef struct sjme_framebuffer
 	
 	/** Flush the framebuffer. */
 	void (*flush)(void);
+	
+	/** The frame buffer virtual memory. */
+	sjme_vmemmap* framebuffer;
+	
+	/** Console X position. */
+	sjme_jint conx;
+	
+	/** Console Y position. */
+	sjme_jint cony;
+	
+	/** Console width. */
+	sjme_jint conw;
+	
+	/** Console height. */
+	sjme_jint conh;
 } sjme_framebuffer;
 
 /**
