@@ -281,8 +281,8 @@ jobs:
       - run:
           name: Install required dependencies
           command: |
-            sudo apt-get update -y
-            sudo apt-get install -y cmake build-essential gcc-powerpc-linux-gnu binutils-powerpc-linux-gnu binfmt-support qemu-user-static
+            apt-get update -y
+            apt-get install -y cmake build-essential gcc-powerpc-linux-gnu binutils-powerpc-linux-gnu binfmt-support qemu-user-static
       - attach_workspace:
           at: .
       - run:
