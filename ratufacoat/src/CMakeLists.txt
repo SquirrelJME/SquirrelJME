@@ -26,7 +26,6 @@ add_library(SquirrelJMECore STATIC
 	oldstuff.c
 	opcode.c
 	sjmerc.c
-	sjmercvm.c
 	softmath.c
 	stringies.c
 	syscall.c

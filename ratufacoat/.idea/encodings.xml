@@ -47,11 +47,11 @@
     <file url="file://$PROJECT_DIR$/src/libretro/sys_libr.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/memory.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/oldstuff.c" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/oldstuff.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/opcode.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/sdl2/CMakeLists.txt" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/sdl2/sys_stdc.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/sjmerc.c" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/src/sjmercvm.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/softmath.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/stringies.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/syscall.c" charset="ISO-8859-1" />
