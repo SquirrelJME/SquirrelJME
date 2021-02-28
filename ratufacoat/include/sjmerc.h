@@ -664,7 +664,8 @@ sjme_vmem* sjme_vmmnew(sjme_error* error);
  * @param ptr The region to map.
  * @param size The number of bytes to map.
  * @param error The error state.
- * @return The memory mapping information, returns {@code NULL} on error.
+ * @return The memory mapping information, returns @code NULL @endcode on
+ * error.
  * @since 2019/06/25
  */
 sjme_vmemmap* sjme_vmmmap(sjme_vmem* vmem, sjme_jint at, void* ptr,

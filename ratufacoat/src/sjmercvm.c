@@ -34,7 +34,6 @@ struct sjme_vmem
 	sjme_vmemmap** maps;
 };
 
-/** Creates a new virtual memory manager. */
 sjme_vmem* sjme_vmmnew(sjme_error* error)
 {
 	sjme_vmem* rv;
@@ -54,7 +53,6 @@ sjme_vmem* sjme_vmmnew(sjme_error* error)
 	return rv;
 }
 
-/** Virtually maps the given region of memory. */
 sjme_vmemmap* sjme_vmmmap(sjme_vmem* vmem, sjme_jint at, void* ptr,
 	sjme_jint size, sjme_error* error)
 {
@@ -105,7 +103,6 @@ sjme_vmemmap* sjme_vmmmap(sjme_vmem* vmem, sjme_jint at, void* ptr,
 	return rv;
 }
 
-/** Resolves the given true memory address. */
 void* sjme_vmmresolve(sjme_vmem* vmem, sjme_vmemptr ptr, sjme_jint off,
 	sjme_error* error)
 {
@@ -157,7 +154,6 @@ void* sjme_vmmresolve(sjme_vmem* vmem, sjme_vmemptr ptr, sjme_jint off,
 	return NULL;
 }
 
-/** Convert size to Java type. */
 sjme_jint sjme_vmmsizetojavatype(sjme_jint size, sjme_error* error)
 {
 	/* Convert. */
@@ -178,7 +174,6 @@ sjme_jint sjme_vmmsizetojavatype(sjme_jint size, sjme_error* error)
 	return 0;
 }
 
-/** Convert size to type. */
 sjme_jint sjme_vmmsizetotype(sjme_jint size, sjme_error* error)
 {
 	/* Convert. */
@@ -199,7 +194,6 @@ sjme_jint sjme_vmmsizetotype(sjme_jint size, sjme_error* error)
 	return 0;
 }
 
-/** Reads from virtual memory. */
 sjme_jint sjme_vmmread(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
 	sjme_jint off, sjme_error* error)
 {
@@ -276,7 +270,6 @@ sjme_jint sjme_vmmread(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
 	}
 }
 
-/** Reads from virtual memory. */
 sjme_jint sjme_vmmreadp(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr* ptr,
 	sjme_error* error)
 {
@@ -307,7 +300,6 @@ sjme_jint sjme_vmmreadp(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr* ptr,
 	return rv;
 }
 
-/** Write to virtual memory. */
 void sjme_vmmwrite(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
 	sjme_jint off, sjme_jint val, sjme_error* error)
 {
@@ -373,7 +365,6 @@ void sjme_vmmwrite(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
 	}
 }
 
-/** Write to virtual memory. */
 void sjme_vmmwritep(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr* ptr,
 	sjme_jint val, sjme_error* error)
 {
@@ -401,7 +392,6 @@ void sjme_vmmwritep(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr* ptr,
 	}
 }
 
-/** Atomically reads, checks, and then sets the value. */
 sjme_jint sjme_vmmatomicintcheckgetandset(sjme_vmem* vmem, sjme_jint check,
 	sjme_jint set, sjme_vmemptr ptr, sjme_jint off, sjme_error* error)
 {
@@ -426,7 +416,6 @@ sjme_jint sjme_vmmatomicintcheckgetandset(sjme_vmem* vmem, sjme_jint check,
 	return rv;
 }
 
-/** Atomically increments and integer and then gets its value. */
 sjme_jint sjme_vmmatomicintaddandget(sjme_vmem* vmem,
 	sjme_vmemptr ptr, sjme_jint off, sjme_jint add, sjme_error* error)
 {
