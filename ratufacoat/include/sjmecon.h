@@ -107,12 +107,6 @@ extern "C"
 ********************************* REGISTERS **********************************
 *****************************************************************************/
 
-/** Maximum CPU registers. */
-#define SJME_MAX_REGISTERS SJME_JINT_C(64)
-
-/** Maximum system call arguments. */
-#define SJME_MAX_SYSCALLARGS SJME_JINT_C(8)
-
 /** The zero register. */
 #define SJME_ZERO_REGISTER SJME_JINT_C(0)
 

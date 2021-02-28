@@ -28,6 +28,16 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/**
+ * This contains the state of a single CPU frame.
+ *
+ * @since 2019/06/27
+ */
+typedef struct sjme_cpuframe sjme_cpuframe;
+
+/** Virtual CPU. */
+typedef struct sjme_cpu sjme_cpu;
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

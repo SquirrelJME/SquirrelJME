@@ -230,90 +230,6 @@ typedef uint32_t sjme_juint;
 /** Open file for read and writing, create new file or truncate existing. */
 #define SJME_OPENMODE_READWRITETRUNCATE SJME_JINT_C(3)
 
-/** No error. */
-#define SJME_ERROR_NONE SJME_JINT_C(0)
-
-/** Unknown error. */
-#define SJME_ERROR_UNKNOWN SJME_JINT_C(-1)
-
-/** File does not exist. */
-#define SJME_ERROR_NOSUCHFILE SJME_JINT_C(-2)
-
-/** Invalid argument. */
-#define SJME_ERROR_INVALIDARG SJME_JINT_C(-3)
-
-/** End of file reached. */
-#define SJME_ERROR_ENDOFFILE SJME_JINT_C(-4)
-
-/** No memory available. */
-#define SJME_ERROR_NOMEMORY SJME_JINT_C(-5)
-
-/** No native ROM file specified. */
-#define SJME_ERROR_NONATIVEROM SJME_JINT_C(-6)
-
-/** No support for files. */
-#define SJME_ERROR_NOFILES SJME_JINT_C(-7)
-
-/** Invalid ROM magic number. */
-#define SJME_ERROR_INVALIDROMMAGIC SJME_JINT_C(-8)
-
-/** Invalid JAR magic number. */
-#define SJME_ERROR_INVALIDJARMAGIC SJME_JINT_C(-9)
-
-/** Invalid end of BootRAM. */
-#define SJME_ERROR_INVALIDBOOTRAMEND SJME_JINT_C(-10)
-
-/** Invalid BootRAM seed. */
-#define SJME_ERROR_INVALIDBOOTRAMSEED SJME_JINT_C(-11)
-
-/** CPU hit breakpoint. */
-#define SJME_ERROR_CPUBREAKPOINT SJME_JINT_C(-12)
-
-/** Cannot write Java values. */
-#define SJME_ERROR_NOJAVAWRITE SJME_JINT_C(-13)
-
-/** Read error. */
-#define SJME_ERROR_READERROR SJME_JINT_C(-14)
-
-/** Early end of file reached. */
-#define SJME_ERROR_EARLYEOF SJME_JINT_C(-15)
-
-/** Virtual machine not ready. */
-#define SJME_ERROR_JVMNOTREADY SJME_JINT_C(-16)
-
-/** The virtual machine has exited, supervisor boot okay. */
-#define SJME_ERROR_JVMEXIT_SUV_OKAY SJME_JINT_C(-17)
-
-/** The virtual machine has exited, the supervisor did not flag! */
-#define SJME_ERROR_JVMEXIT_SUV_FAIL SJME_JINT_C(-18)
-
-/** Thread returned at the top-most frame and not through a system call. */
-#define SJME_ERROR_THREADRETURN SJME_JINT_C(-19)
-
-/** Bad memory access. */
-#define SJME_ERROR_BADADDRESS SJME_JINT_C(-20)
-
-/** Invalid CPU operation. */
-#define SJME_ERROR_INVALIDOP SJME_JINT_C(-21)
-
-/** Could not initialize the VMM. */
-#define SJME_ERROR_VMMNEWFAIL SJME_JINT_C(-22)
-
-/** Invalid size. */
-#define SJME_ERROR_INVALIDSIZE SJME_JINT_C(-23)
-
-/** Address resolution error. */
-#define SJME_ERROR_ADDRRESFAIL SJME_JINT_C(-24)
-
-/** Invalid memory type. */
-#define SJME_ERROR_INVALIDMEMTYPE SJME_JINT_C(-25)
-
-/** Register value overflowed. */
-#define SJME_ERROR_REGISTEROVERFLOW SJME_JINT_C(-26)
-
-/** Could not map address. */
-#define SJME_ERROR_VMMMAPFAIL SJME_JINT_C(-27)
-
 /** VMM Type: Byte. */
 #define SJME_VMMTYPE_BYTE SJME_JINT_C(-1)
 
@@ -372,16 +288,6 @@ typedef struct sjme_returnNever
 {
 } sjme_returnNever;
 
-/** This represents an error. */
-typedef struct sjme_error
-{
-	/** Error code. */
-	sjme_jint code;
-	
-	/** The value of it. */
-	sjme_jint value;
-} sjme_error;
-
 /**
  * Virtual memory information.
  *
@@ -415,54 +321,6 @@ typedef struct sjme_vmemmap
 	/** Banked access function. */
 	uintptr_t (*bank)(sjme_jint* offset);
 } sjme_vmemmap;
-
-/**
- * Java virtual machine arguments.
- *
- * @since 2019/06/03
- */
-typedef struct sjme_jvmargs
-{
-	/** The format of the arguments. */
-	int format;
-	
-	/** Arguments that can be used. */
-	union
-	{
-		/** Standard C. */
-		struct
-		{
-			/** Argument count. */
-			int argc;
-			
-			/** Arguments. */
-			char** argv;
-		} stdc;
-	} args;
-} sjme_jvmargs;
-
-/**
- * Options used to initialize the virtual machine.
- *
- * @since 2019/06/06
- */
-typedef struct sjme_jvmoptions
-{
-	/** The amount of RAM to allocate, 0 is default. */
-	sjme_jint ramsize;
-	
-	/** Preset ROM pointer, does not need loading? */
-	void* presetrom;
-	
-	/** Preset ROM size. */
-	sjme_jint romsize;
-	
-	/** If non-zero then the ROM needs to be copied (address unsafe). */
-	sjme_jbyte copyrom;
-	
-	/** Command line arguments sent to the VM. */
-	sjme_jvmargs args;
-} sjme_jvmoptions;
 
 /**
  * SQF Font information.
@@ -550,55 +408,6 @@ typedef struct sjme_nativefile sjme_nativefile;
 typedef struct sjme_jvm sjme_jvm;
 
 /**
- * Native functions available for the JVM to use.
- *
- * @since 2019/06/03
- */
-typedef struct sjme_nativefuncs
-{
-	/** Current monotonic nano-seconds, returns low nanos. */
-	sjme_jint (*nanotime)(sjme_jint* hi);
-	
-	/** Current system clock in Java time, returns low time. */
-	sjme_jint (*millitime)(sjme_jint* hi);
-	
-	/** The filename to use for the native ROM. */
-	sjme_nativefilename* (*nativeromfile)(void);
-	
-	/** Converts the Java char sequence to native filename. */
-	sjme_nativefilename* (*nativefilename)(sjme_jint len, sjme_jchar* chars);
-	
-	/** Frees the specified filename. */
-	void (*freefilename)(sjme_nativefilename* filename);
-	
-	/** Opens the specified file. */
-	sjme_nativefile* (*fileopen)(sjme_nativefilename* filename,
-		sjme_jint mode, sjme_error* error);
-	
-	/** Closes the specified file. */
-	void (*fileclose)(sjme_nativefile* file, sjme_error* error);
-	
-	/** Returns the size of the file. */
-	sjme_jint (*filesize)(sjme_nativefile* file, sjme_error* error);
-	
-	/** Reads part of a file. */
-	sjme_jint (*fileread)(sjme_nativefile* file, void* dest, sjme_jint len,
-		sjme_error* error);
-	
-	/** Writes single byte to standard output. */
-	sjme_jint (*stdout_write)(sjme_jint b);
-	
-	/** Writes single byte to standard error. */
-	sjme_jint (*stderr_write)(sjme_jint b);
-	
-	/** Obtains the framebuffer. */
-	sjme_framebuffer* (*framebuffer)(void);
-	
-	/** Returns information on where to load optional JAR from. */
-	sjme_jint (*optional_jar)(void** ptr, sjme_jint* size);
-} sjme_nativefuncs;
-
-/**
  * Allocates the given number of bytes.
  *
  * @param size The number of bytes to allocate.
@@ -613,50 +422,6 @@ void* sjme_malloc(sjme_jint size);
  * @since 2019/06/07
  */
 void sjme_free(void* p);
-
-/**
- * Sets the error code.
- *
- * @param error The error to set.
- * @param code The error code.
- * @param value The error value.
- * @since 2019/06/25
- */
-void sjme_seterror(sjme_error* error, sjme_jint code, sjme_jint value);
-
-/**
- * Executes code running within the JVM.
- *
- * @param jvm The JVM to execute.
- * @param error JVM execution error.
- * @param cycles The number of cycles to execute for.
- * @return Non-zero if the JVM is resuming, otherwise zero on its exit.
- * @since 2019/06/05
- */
-sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_error* error, sjme_jint cycles);
-
-/**
- * Destroys the virtual machine instance.
- *
- * @param jvm The JVM to destroy.
- * @param error The error state.
- * @return Non-zero if successful.
- * @since 2019/06/09
- */
-sjme_jint sjme_jvmdestroy(sjme_jvm* jvm, sjme_error* error);
-
-/**
- * Creates a new instance of a SquirrelJME JVM.
- *
- * @param args Arguments to the JVM.
- * @param options Options used to initialize the JVM.
- * @param nativefuncs Native functions used in the JVM.
- * @param error Error flag.
- * @return The resulting JVM or {@code NULL} if it could not be created.
- * @since 2019/06/03
- */
-sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
-	sjme_error* error);
 
 /**
  * Creates a new virtual memory manager.

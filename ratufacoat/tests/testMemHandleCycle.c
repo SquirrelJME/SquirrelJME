@@ -5,23 +5,32 @@
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
-// --------------------------------------------------------------------------*/
+// -------------------------------------------------------------------------*/
 
 #include "tests.h"
 #include "handles.h"
 
+/** Handle test size. */
+#define TEST_HANDLE_SIZE 128
+
 /**
- * Test that memory handles can actually be initialized.
+ * Tests a full cycle for memory handles, everything about them.
  * 
  * @since 2021/02/28 
  */
-SJME_TEST_PROTOTYPE(testMemHandleInit)
+SJME_TEST_PROTOTYPE(testMemHandleCycle)
 {
 	sjme_error error;
 	sjme_memHandles* handles = NULL;
+	sjme_memHandle* handle = NULL;
 	
 	/* Initialize handles. */
 	if (sjme_memHandlesInit(&handles, &error))
+		return EXIT_FAILURE;
+	
+	/* Create a new handle. */
+	if (sjme_memHandleNew(handles, &handle,
+		SJME_MEMHANDLE_KIND_OBJECT_INSTANCE, TEST_HANDLE_SIZE, &error))
 		return EXIT_FAILURE;
 	
 	/* Then immediately destroy them. */

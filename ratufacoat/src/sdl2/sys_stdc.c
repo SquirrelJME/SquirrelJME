@@ -20,6 +20,9 @@
 #include <errno.h>
 
 #include "sjmerc.h"
+#include "error.h"
+#include "native.h"
+#include "jvm.h"
 
 /** Screen size. */
 #define SJME_STDC_WIDTH 240
@@ -345,7 +348,7 @@ int main(int argc, char** argv)
 				(int)error.value, (unsigned int)error.value);
 			
 			/* Destroy the JVM to free resources. */
-			sjme_jvmdestroy(jvm, &error);
+			sjme_jvmDestroy(jvm, &error);
 			if (error.code != SJME_ERROR_NONE)
 				fprintf(stderr,
 					"JVM destruction error! (Error %d/0x%X %d/0x%X)\n",
@@ -360,7 +363,7 @@ int main(int argc, char** argv)
 	}
 	
 	/* Destroy the VM so it uses no memory. */
-	sjme_jvmdestroy(jvm, &error);
+	sjme_jvmDestroy(jvm, &error);
 	if (error.code != SJME_ERROR_NONE)
 		fprintf(stderr, "JVM destruction error! (Error %d/0x%X %d/0x%X)\n",
 			(int)error.code, (unsigned int)error.code,

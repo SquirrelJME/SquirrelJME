@@ -17,6 +17,7 @@
 #define SQUIRRELJME_BOOTROM_H
 
 #include "sjmerc.h"
+#include "error.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

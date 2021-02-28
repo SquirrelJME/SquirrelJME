@@ -29,17 +29,28 @@ struct sjme_memHandle
 	/** The identifier of the handle. */
 	sjme_jint id;
 	
+	/** The kind of this handle. */
+	sjme_memHandleKind kind;
+	
 	/** The reference count of the handle. */
 	sjme_jint refCount;
 };
 
-sjme_returnFail sjme_initMemHandles(sjme_memHandles** out, sjme_error* error)
+sjme_returnFail sjme_memHandlesInit(sjme_memHandles** out, sjme_error* error)
 {
-	sjme_todo("sjme_initMemHandles(%p, %p)", out, error);
+	sjme_todo("sjme_memHandlesInit(%p, %p)", out, error);
 }
 
-sjme_returnFail sjme_destroyMemHandles(sjme_memHandles* in, sjme_error* error)
+sjme_returnFail sjme_memHandlesDestroy(sjme_memHandles* in, sjme_error* error)
 {
-	sjme_todo("sjme_destroyMemHandles(%p, %p)", in, error);
+	sjme_todo("sjme_memHandlesDestroy(%p, %p)", in, error);
 }
 
+
+sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
+	sjme_memHandle** out, sjme_memHandleKind kind, sjme_jint size,
+	sjme_error* error)
+{
+	sjme_todo("sjme_memHandleNew(%p, %p, %d, %d, %s)",
+		handles, out, kind, size, error);
+}

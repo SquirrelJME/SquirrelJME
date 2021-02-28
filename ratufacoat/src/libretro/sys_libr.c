@@ -18,6 +18,8 @@
 #include "sjmerc.h"
 #include "sjmecon.h"
 #include "lrlocal.h"
+#include "native.h"
+#include "jvm.h"
 
 /** Is the build in ROM used? */
 #if defined(SQUIRRELJME_HAS_BUILTIN)
@@ -419,7 +421,7 @@ void retro_deinit(void)
 	
 	/* Destroy the JVM as well. */
 	if (sjme_retroarch_jvm != NULL)
-		sjme_jvmdestroy(sjme_retroarch_jvm, NULL);
+		sjme_jvmDestroy(sjme_retroarch_jvm, NULL);
 	sjme_retroarch_jvm = NULL;
 }
 
@@ -430,7 +432,7 @@ void retro_reset(void)
 	
 	/* Destroy the JVM, if it already exists. */
 	if (sjme_retroarch_jvm != NULL)
-		sjme_jvmdestroy(sjme_retroarch_jvm, NULL);
+		sjme_jvmDestroy(sjme_retroarch_jvm, NULL);
 	sjme_retroarch_jvm = NULL;
 	
 	/* Reset error code! */

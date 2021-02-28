@@ -19,6 +19,7 @@ add_library(SquirrelJMECore STATIC
 	bootrom.c
 	cpu.c
 	debug.c
+	error.c
 	handles.c
 	jvm.c
 	sjmerc.c

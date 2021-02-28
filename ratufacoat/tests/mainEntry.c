@@ -30,7 +30,9 @@ typedef struct sjme_singleTest
 /** Test table. */
 static const sjme_singleTest sjme_singleTests[] =
 {
+	SJME_TEST(testMemHandleCycle),
 	SJME_TEST(testMemHandleInit),
+	SJME_TEST(testMemHandleInvalid),
 	SJME_TEST(testNothing),
 	SJME_TEST(testOpCodes),
 	
