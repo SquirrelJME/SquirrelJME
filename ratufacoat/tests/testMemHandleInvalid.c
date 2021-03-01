@@ -30,6 +30,16 @@ SJME_TEST_PROTOTYPE(testMemHandleInvalid)
 		SJME_MEMHANDLE_KIND_OBJECT_INSTANCE, -127, &error))
 		return EXIT_FAILURE;
 	
+	/* Invalid handle (low). */
+	if (!sjme_memHandleNew(handles, &handle,
+		SJME_MEMHANDLE_KIND_UNDEFINED, 128, &error))
+		return EXIT_FAILURE;
+	
+	/* Invalid handle (high). */
+	if (!sjme_memHandleNew(handles, &handle,
+		SJME_MEMHANDLE_KIND_NUM_KINDS, 128, &error))
+		return EXIT_FAILURE;
+	
 	/* Then immediately destroy them. */
 	if (sjme_memHandlesDestroy(handles, &error))
 		return EXIT_FAILURE;
