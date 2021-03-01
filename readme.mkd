@@ -78,6 +78,7 @@ Information:
  * _End-User Documents_
    * [Building](building.mkd)
    * [Changelog](changelog.mkd)
+     * Also see [Live Updates](https://updates.squirreljme.cc/)
    * [Compatibility](compatibility.mkd)
    * [History](history.mkd)
    * [Release Roadmap](route.mkd)
