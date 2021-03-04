@@ -90,7 +90,7 @@ jobs:
           working_directory: ratufacoat
           shell: bash.exe
           command: |
-            "$PROGRAMFILES/CMake/bin/ctest.exe" .
+            "$PROGRAMFILES/CMake/bin/ctest.exe" --extra-verbose -T Test .
       - store_artifacts:
           path: ratufacoat\src\sdl2\Debug\SquirrelJME.exe
           destination: SquirrelJME.exe
@@ -174,7 +174,7 @@ jobs:
       - run:
           name: Test CMake Build
           working_directory: ratufacoat
-          command: ctest .
+          command: ctest --extra-verbose -T Test .
       - store_artifacts:
           path: ratufacoat/src/sdl2/SquirrelJME
           destination: SquirrelJME
@@ -267,7 +267,7 @@ jobs:
       - run:
           name: Test CMake Build
           working_directory: ratufacoat
-          command: ctest .
+          command: ctest --extra-verbose -T Test .
       - store_artifacts:
           path: ratufacoat/src/sdl2/SquirrelJME
           destination: SquirrelJME
@@ -296,7 +296,7 @@ jobs:
       - run:
           name: Test CMake Build
           working_directory: ratufacoat
-          command: ctest .
+          command: ctest --extra-verbose -T Test .
       - store_artifacts:
           path: ratufacoat/src/sdl2/SquirrelJME
           destination: SquirrelJME
