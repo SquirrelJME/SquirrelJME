@@ -41,4 +41,8 @@ foreach(SQUIRRELJME_TEST_SOURCE ${SQUIRRELJME_TEST_SOURCES})
 	# Note it and register it accordingly
 	message("Adding test ${SQUIRRELJME_TEST_SOURCE}...")
 	add_test(NAME ${SQUIRRELJME_TEST_SOURCE} COMMAND SquirrelJMETests ${SQUIRRELJME_TEST_SOURCE})
+
+	# Code for skipped tests
+	set_property(TEST ${SQUIRRELJME_TEST_SOURCE} PROPERTY SKIP_RETURN_CODE 42)
+	set_tests_properties(${SQUIRRELJME_TEST_SOURCE} PROPERTIES SKIP_RETURN_CODE 42)
 endforeach()

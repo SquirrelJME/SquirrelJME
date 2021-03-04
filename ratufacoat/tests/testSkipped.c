@@ -5,17 +5,16 @@
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
-// --------------------------------------------------------------------------*/
+// -------------------------------------------------------------------------*/
 
-#ifndef SQUIRRELJME_BUILTIN_H
-#define SQUIRRELJME_BUILTIN_H
+#include "tests.h"
 
-#include "sjmerc.h"
-
-extern const sjme_jbyte sjme_builtInRomId[];
-extern const sjme_jint sjme_builtInRomIdLen;
-extern const sjme_jint sjme_builtInRomDate[];
-extern const sjme_ubyte sjme_builtInRomData[];
-extern const sjme_jint sjme_builtInRomSize;
-
-#endif /* SQUIRRELJME_BUILTIN_H */
+/**
+ * Tests that skipping works, this should always result in a skip.
+ * 
+ * @since 2021/03/04
+ */
+SJME_TEST_PROTOTYPE(testSkipped)
+{
+	return SKIP_TEST();
+}

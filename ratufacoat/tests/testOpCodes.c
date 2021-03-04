@@ -11,5 +11,5 @@
 
 SJME_TEST_PROTOTYPE(testOpCodes)
 {
-	return EXIT_FAILURE;
+	return FAIL_TEST(0);
 }

@@ -17,32 +17,31 @@
  */
 SJME_TEST_PROTOTYPE(testMemHandleInvalid)
 {
-	sjme_error error;
 	sjme_memHandles* handles = NULL;
 	sjme_memHandle* handle = NULL;
 	
 	/* Initialize handles. */
-	if (sjme_memHandlesInit(&handles, &error))
-		return EXIT_FAILURE;
+	if (sjme_memHandlesInit(&handles, &shim->error))
+		return FAIL_TEST(1);
 	
 	/* Negative size. */
 	if (!sjme_memHandleNew(handles, &handle,
-		SJME_MEMHANDLE_KIND_OBJECT_INSTANCE, -127, &error))
-		return EXIT_FAILURE;
+		SJME_MEMHANDLE_KIND_OBJECT_INSTANCE, -127, &shim->error))
+		return FAIL_TEST(2);
 	
 	/* Invalid handle (low). */
 	if (!sjme_memHandleNew(handles, &handle,
-		SJME_MEMHANDLE_KIND_UNDEFINED, 128, &error))
-		return EXIT_FAILURE;
+		SJME_MEMHANDLE_KIND_UNDEFINED, 128, &shim->error))
+		return FAIL_TEST(3);
 	
 	/* Invalid handle (high). */
 	if (!sjme_memHandleNew(handles, &handle,
-		SJME_MEMHANDLE_KIND_NUM_KINDS, 128, &error))
-		return EXIT_FAILURE;
+		SJME_MEMHANDLE_KIND_NUM_KINDS, 128, &shim->error))
+		return FAIL_TEST(4);
 	
 	/* Then immediately destroy them. */
-	if (sjme_memHandlesDestroy(handles, &error))
-		return EXIT_FAILURE;
+	if (sjme_memHandlesDestroy(handles, &shim->error))
+		return FAIL_TEST(5);
 	
-	return EXIT_SUCCESS;
+	return PASS_TEST();
 }

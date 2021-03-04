@@ -133,6 +133,23 @@ typedef struct sjme_error
 } sjme_error;
 
 /**
+ * Clears the error.
+ * 
+ * @param error The error to clear.
+ * @since 2021/03/04
+ */
+void sjme_clearError(sjme_error* error);
+
+/**
+ * Checks if an error is present.
+ * 
+ * @param error The error to check. 
+ * @return If there is an error present or not.
+ * @since 2021/03/04
+ */
+sjme_returnFail sjme_hasError(sjme_error* error);
+
+/**
  * Sets the error code.
  *
  * @param error The error to set.
@@ -140,7 +157,7 @@ typedef struct sjme_error
  * @param value The error value.
  * @since 2019/06/25
  */
-void sjme_seterror(sjme_error* error, sjme_errorCode code, sjme_jint value);
+void sjme_setError(sjme_error* error, sjme_errorCode code, sjme_jint value);
 
 /*--------------------------------------------------------------------------*/
 

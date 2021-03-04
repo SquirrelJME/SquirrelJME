@@ -44,7 +44,7 @@ sjme_vmem* sjme_vmmnew(sjme_error* error)
 	rv = sjme_malloc(sizeof(*rv));
 	if (rv == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_NOMEMORY, sizeof(*rv));
+		sjme_setError(error, SJME_ERROR_NOMEMORY, sizeof(*rv));
 		
 		return NULL;
 	}
@@ -67,7 +67,7 @@ sjme_vmemmap* sjme_vmmmap(sjme_vmem* vmem, sjme_jint at, void* ptr,
 	/* Invalid argument. */
 	if (vmem == NULL || ptr == NULL || size <= 0)
 	{
-		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return NULL;
 	}
@@ -77,7 +77,7 @@ sjme_vmemmap* sjme_vmmmap(sjme_vmem* vmem, sjme_jint at, void* ptr,
 	newmaps = sjme_malloc(sizeof(*newmaps) * (vmem->count + 1));
 	if (rv == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_NOMEMORY, sizeof(*rv));
+		sjme_setError(error, SJME_ERROR_NOMEMORY, sizeof(*rv));
 		
 		sjme_free(rv);
 		sjme_free(newmaps);
@@ -116,7 +116,7 @@ void* sjme_vmmresolve(sjme_vmem* vmem, sjme_vmemptr ptr, sjme_jint off,
 	/* Invalid argument. */
 	if (vmem == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return NULL;
 	}
@@ -152,7 +152,7 @@ void* sjme_vmmresolve(sjme_vmem* vmem, sjme_vmemptr ptr, sjme_jint off,
 	}
 	
 	/* Address is not valid. */
-	sjme_seterror(error, SJME_ERROR_BADADDRESS, optr);
+	sjme_setError(error, SJME_ERROR_BADADDRESS, optr);
 	return NULL;
 }
 
@@ -172,7 +172,7 @@ sjme_jint sjme_vmmsizetojavatype(sjme_jint size, sjme_error* error)
 	}
 	
 	/* Not valid. */
-	sjme_seterror(error, SJME_ERROR_INVALIDSIZE, size);
+	sjme_setError(error, SJME_ERROR_INVALIDSIZE, size);
 	return 0;
 }
 
@@ -192,7 +192,7 @@ sjme_jint sjme_vmmsizetotype(sjme_jint size, sjme_error* error)
 	}
 	
 	/* Not valid. */
-	sjme_seterror(error, SJME_ERROR_INVALIDSIZE, size);
+	sjme_setError(error, SJME_ERROR_INVALIDSIZE, size);
 	return 0;
 }
 
@@ -205,7 +205,7 @@ sjme_jint sjme_vmmread(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
 	/* Invalid argument? */
 	if (vmem == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return 0;
 	}
@@ -222,7 +222,7 @@ sjme_jint sjme_vmmread(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
 	if (realptr == NULL)
 	{
 		if (error->code == SJME_ERROR_NONE)
-			sjme_seterror(error, SJME_ERROR_ADDRRESFAIL, ptr + off);
+			sjme_setError(error, SJME_ERROR_ADDRRESFAIL, ptr + off);
 		
 		return 0;
 	}
@@ -267,7 +267,7 @@ sjme_jint sjme_vmmread(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
 #endif
 			
 		default:
-			sjme_seterror(error, SJME_ERROR_INVALIDMEMTYPE, type);
+			sjme_setError(error, SJME_ERROR_INVALIDMEMTYPE, type);
 			return 0;
 	}
 }
@@ -311,7 +311,7 @@ void sjme_vmmwrite(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
 	/* Invalid argument? */
 	if (vmem == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return;
 	}
@@ -328,7 +328,7 @@ void sjme_vmmwrite(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
 	if (realptr == NULL)
 	{
 		if (error->code == SJME_ERROR_NONE)
-			sjme_seterror(error, SJME_ERROR_ADDRRESFAIL, ptr + off);
+			sjme_setError(error, SJME_ERROR_ADDRRESFAIL, ptr + off);
 		
 		return;
 	}
@@ -362,7 +362,7 @@ void sjme_vmmwrite(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
 			return;
 			
 		default:
-			sjme_seterror(error, SJME_ERROR_INVALIDMEMTYPE, type);
+			sjme_setError(error, SJME_ERROR_INVALIDMEMTYPE, type);
 			return;
 	}
 }
@@ -402,7 +402,7 @@ sjme_jint sjme_vmmatomicintcheckgetandset(sjme_vmem* vmem, sjme_jint check,
 	/* Invalid argument? */
 	if (vmem == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return 0;
 	}
@@ -426,7 +426,7 @@ sjme_jint sjme_vmmatomicintaddandget(sjme_vmem* vmem,
 	/* Invalid argument? */
 	if (vmem == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return 0;
 	}

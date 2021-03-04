@@ -79,7 +79,7 @@ sjme_nativefile* sjme_stdc_fileopen(sjme_nativefilename* filename,
 	
 	if (filename == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return NULL;
 	}
@@ -100,9 +100,9 @@ sjme_nativefile* sjme_stdc_fileopen(sjme_nativefilename* filename,
 		{
 			err = errno;
 			if (err == ENOENT)
-				sjme_seterror(error, SJME_ERROR_NOSUCHFILE, 0);
+				sjme_setError(error, SJME_ERROR_NOSUCHFILE, 0);
 			else
-				sjme_seterror(error, SJME_ERROR_UNKNOWN, 0);
+				sjme_setError(error, SJME_ERROR_UNKNOWN, 0);
 		}
 		
 		// Clear out
@@ -122,7 +122,7 @@ void sjme_stdc_fileclose(sjme_nativefile* file, sjme_error* error)
 	/* Not closing a file? */
 	if (file == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return;
 	}
@@ -133,8 +133,8 @@ void sjme_stdc_fileclose(sjme_nativefile* file, sjme_error* error)
 	
 	/* Set error state? */
 	if (error != NULL)
-		sjme_seterror(error, (rv == 0 ? SJME_ERROR_NONE : SJME_ERROR_UNKNOWN),
-			0);
+		sjme_setError(error, (rv == 0 ? SJME_ERROR_NONE : SJME_ERROR_UNKNOWN),
+					  0);
 	
 	/* Free resources. */
 	free(file);
@@ -148,7 +148,7 @@ sjme_jint sjme_stdc_filesize(sjme_nativefile* file, sjme_error* error)
 	/* Not valid? */
 	if (file == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return SJME_JINT_C(-1);
 	}
@@ -159,7 +159,7 @@ sjme_jint sjme_stdc_filesize(sjme_nativefile* file, sjme_error* error)
 	/* Seek to end. */
 	if (fseek(file->file, 0, SEEK_END) != 0)
 	{
-		sjme_seterror(error, SJME_ERROR_UNKNOWN, 0);
+		sjme_setError(error, SJME_ERROR_UNKNOWN, 0);
 		
 		return SJME_JINT_C(-1);
 	}
@@ -168,7 +168,7 @@ sjme_jint sjme_stdc_filesize(sjme_nativefile* file, sjme_error* error)
 	size = ftell(file->file);
 	if (size < 0)
 	{
-		sjme_seterror(error, SJME_ERROR_UNKNOWN, 0);
+		sjme_setError(error, SJME_ERROR_UNKNOWN, 0);
 		
 		return SJME_JINT_C(-1);
 	}
@@ -176,7 +176,7 @@ sjme_jint sjme_stdc_filesize(sjme_nativefile* file, sjme_error* error)
 	/* Seek back. */
 	if (fseek(file->file, now, SEEK_SET) != 0)
 	{
-		sjme_seterror(error, SJME_ERROR_UNKNOWN, 0);
+		sjme_setError(error, SJME_ERROR_UNKNOWN, 0);
 		
 		return SJME_JINT_C(-1);
 	}
@@ -200,7 +200,7 @@ sjme_jint sjme_stdc_fileread(sjme_nativefile* file, void* dest, sjme_jint len,
 	/* Invalid argument? */
 	if (file == NULL || dest == NULL || len < 0)
 	{
-		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return SJME_JINT_C(-1);
 	}
@@ -211,11 +211,11 @@ sjme_jint sjme_stdc_fileread(sjme_nativefile* file, void* dest, sjme_jint len,
 	{
 		/* End of file? */
 		if (feof(file->file) != 0)
-			sjme_seterror(error, SJME_ERROR_ENDOFFILE, 0);
+			sjme_setError(error, SJME_ERROR_ENDOFFILE, 0);
 		
 		/* Another error. */
 		else
-			sjme_seterror(error, SJME_ERROR_UNKNOWN, 0);
+			sjme_setError(error, SJME_ERROR_UNKNOWN, 0);
 		
 		return SJME_JINT_C(-1);
 	}
@@ -320,10 +320,11 @@ int main(int argc, char** argv)
 	stdcfuncs.framebuffer = sjme_stdc_framebuffer;
 	
 	/* Create VM. */
-	jvm = sjme_jvmNew(&options, &stdcfuncs, &error);
-	if (jvm == NULL)
+	jvm = NULL;
+	if (sjme_jvmNew(&jvm, &options, &stdcfuncs, &error))
 	{
-		fprintf(stderr, "Failed to create the JVM! (Error %d/0x%X %d/0x%X)\n",
+		fprintf(stderr,
+			"Failed to create the JVM! (Error %d/0x%X %d/0x%X)\n",
 			(int)error.code, (unsigned int)error.code,
 			(int)error.value, (unsigned int)error.value);
 		return EXIT_FAILURE;
@@ -348,8 +349,7 @@ int main(int argc, char** argv)
 				(int)error.value, (unsigned int)error.value);
 			
 			/* Destroy the JVM to free resources. */
-			sjme_jvmDestroy(jvm, &error);
-			if (error.code != SJME_ERROR_NONE)
+			if (sjme_jvmDestroy(jvm, &error))
 				fprintf(stderr,
 					"JVM destruction error! (Error %d/0x%X %d/0x%X)\n",
 					(int)error.code, (unsigned int)error.code,
@@ -363,8 +363,7 @@ int main(int argc, char** argv)
 	}
 	
 	/* Destroy the VM so it uses no memory. */
-	sjme_jvmDestroy(jvm, &error);
-	if (error.code != SJME_ERROR_NONE)
+	if (sjme_jvmDestroy(jvm, &error))
 		fprintf(stderr, "JVM destruction error! (Error %d/0x%X %d/0x%X)\n",
 			(int)error.code, (unsigned int)error.code,
 			(int)error.value, (unsigned int)error.value);

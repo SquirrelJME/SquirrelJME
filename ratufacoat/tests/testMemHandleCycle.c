@@ -20,22 +20,22 @@
  */
 SJME_TEST_PROTOTYPE(testMemHandleCycle)
 {
-	sjme_error error;
 	sjme_memHandles* handles = NULL;
 	sjme_memHandle* handle = NULL;
 	
 	/* Initialize handles. */
-	if (sjme_memHandlesInit(&handles, &error))
-		return EXIT_FAILURE;
+	if (sjme_memHandlesInit(&handles, &shim->error))
+		return FAIL_TEST(1);
 	
 	/* Create a new handle. */
 	if (sjme_memHandleNew(handles, &handle,
-		SJME_MEMHANDLE_KIND_OBJECT_INSTANCE, TEST_HANDLE_SIZE, &error))
-		return EXIT_FAILURE;
+		SJME_MEMHANDLE_KIND_OBJECT_INSTANCE, TEST_HANDLE_SIZE,
+		&shim->error))
+		return FAIL_TEST(2);
 	
 	/* Then immediately destroy them. */
-	if (sjme_memHandlesDestroy(handles, &error))
-		return EXIT_FAILURE;
+	if (sjme_memHandlesDestroy(handles, &shim->error))
+		return FAIL_TEST(3);
 	
-	return EXIT_SUCCESS;
+	return PASS_TEST();
 }

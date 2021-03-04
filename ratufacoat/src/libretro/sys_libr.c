@@ -495,9 +495,12 @@ void retro_reset(void)
 	memset(&sjme_ratufacoat_videoram, 0, sizeof(sjme_ratufacoat_videoram));
 	
 	/* Initialize the JVM. */
-	sjme_retroarch_jvm = sjme_jvmNew(&sjme_retroarch_options,
-									 &sjme_retroarch_nativefuncs,
-									 &sjme_retroarch_error);
+	sjme_retroarch_jvm = NULL;
+	if (sjme_jvmNew(&sjme_retroarch_jvm,
+		 &sjme_retroarch_options,
+		 &sjme_retroarch_nativefuncs,
+		 &sjme_retroarch_error))
+		 ;
 	
 	/* Try to get the logger again because for some reason RetroArch */
 	/* nukes our callback and then it never works again? */

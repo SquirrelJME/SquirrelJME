@@ -72,7 +72,10 @@ typedef struct sjme_jvmargs
  */
 typedef struct sjme_jvmoptions
 {
-	/** The amount of RAM to allocate, 0 is default. */
+	/**
+	 * The amount of RAM to allocate, 0 is default.
+	 * @deprecated Do not use, handles are used instead.
+	 */
 	sjme_jint ramsize;
 	
 	/** Preset ROM pointer, does not need loading? */
@@ -104,23 +107,24 @@ sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_error* error, sjme_jint cycles);
  *
  * @param jvm The JVM to destroy.
  * @param error The error state.
- * @return Non-zero if successful.
+ * @return If this failed or not.
  * @since 2019/06/09
  */
-sjme_jint sjme_jvmDestroy(sjme_jvm* jvm, sjme_error* error);
+sjme_returnFail sjme_jvmDestroy(sjme_jvm* jvm, sjme_error* error);
 
 /**
  * Creates a new instance of a SquirrelJME JVM.
  *
+ * @param outJvm The output JVM.
  * @param args Arguments to the JVM.
  * @param options Options used to initialize the JVM.
  * @param nativefuncs Native functions used in the JVM.
  * @param error Error flag.
- * @return The resulting JVM or {@code NULL} if it could not be created.
+ * @return If the JVM creation has failed or not.
  * @since 2019/06/03
  */
-sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
-	sjme_error* error);
+sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
+	sjme_nativefuncs* nativefuncs, sjme_error* error);
 
 /**
  * Returns the virtual memory of the given JVM.

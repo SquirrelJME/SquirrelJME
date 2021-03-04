@@ -78,7 +78,7 @@ struct sjme_jvm
 	sjme_cpuMetrics metrics;
 };
 
-sjme_jint sjme_jvmDestroy(sjme_jvm* jvm, sjme_error* error)
+sjme_returnFail sjme_jvmDestroy(sjme_jvm* jvm, sjme_error* error)
 {
 	sjme_cpuframe* cpu;
 	sjme_cpuframe* oldcpu;
@@ -87,13 +87,13 @@ sjme_jint sjme_jvmDestroy(sjme_jvm* jvm, sjme_error* error)
 	/* Missing this? */
 	if (jvm == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
 		
-		return 0;
+		return SJME_RETURN_FAIL;
 	}
 	
 	/* Reset error. */
-	sjme_seterror(error, SJME_ERROR_NONE, 0);
+	sjme_setError(error, SJME_ERROR_NONE, 0);
 	
 	/* Go through and cleanup CPUs. */
 	for (i = 0; i < SJME_THREAD_MAX; i++)
@@ -123,7 +123,7 @@ sjme_jint sjme_jvmDestroy(sjme_jvm* jvm, sjme_error* error)
 		sjme_free(jvm->rom);
 	
 	/* Destroyed okay. */
-	return 1;
+	return SJME_RETURN_SUCCESS;
 }
 
 sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_error* error, sjme_jint cycles)
@@ -142,7 +142,7 @@ sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_error* error, sjme_jint cycles)
 	/* Do nothing. */
 	if (jvm == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return 0;
 	}
@@ -188,8 +188,8 @@ sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_error* error, sjme_jint cycles)
 	return cycles;
 }
 
-sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
-	sjme_error* error)
+sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
+	sjme_nativefuncs* nativefuncs, sjme_error* error)
 {
 	sjme_jvmoptions nulloptions;
 	void* ram;
@@ -203,15 +203,14 @@ sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	
 	/* We need native functions. */
 	if (nativefuncs == NULL)
-		return NULL;
+		return SJME_RETURN_FAIL;
 	
 	/* Allocate virtual memory manager. */
 	vmem = sjme_vmmnew(error);
 	if (vmem == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_VMMNEWFAIL, error->code);
-		
-		return NULL;
+		sjme_setError(error, SJME_ERROR_VMMNEWFAIL, error->code);
+		return SJME_RETURN_FAIL;
 	}
 	
 	/* Allocate VM state. */
@@ -219,22 +218,23 @@ sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	conf = sjme_malloc(SJME_DEFAULT_CONF_SIZE);
 	if (rv == NULL || conf == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_NOMEMORY,
-			sizeof(*rv) + SJME_DEFAULT_CONF_SIZE);
+		sjme_setError(error, SJME_ERROR_NOMEMORY,
+					  sizeof(*rv) + SJME_DEFAULT_CONF_SIZE);
 		
 		sjme_free(rv);
 		sjme_free(conf);
 		
-		return NULL;
+		return SJME_RETURN_FAIL;
 	}
 	
 	/* Store virtual memory area. */
 	rv->vmem = vmem;
 	
 	/* Virtual map config. */
-	rv->config = sjme_vmmmap(vmem, 0, conf, SJME_DEFAULT_CONF_SIZE, error);
+	rv->config = sjme_vmmmap(vmem, 0, conf,
+		SJME_DEFAULT_CONF_SIZE, error);
 	if (rv->config == NULL)
-		return NULL;
+		return SJME_RETURN_FAIL;
 	
 	/* If there were no options specified, just use a null set. */
 	if (options == NULL)
@@ -264,24 +264,24 @@ sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	/* Failed to allocate the RAM. */
 	if (ram == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_NOMEMORY, options->ramsize);
+		sjme_setError(error, SJME_ERROR_NOMEMORY, options->ramsize);
 			
 		sjme_free(rv);
 		sjme_free(conf);
 		
-		return NULL;
+		return SJME_RETURN_FAIL;
 	}
 	
 	/* Virtual map RAM. */
 	rv->ram = sjme_vmmmap(vmem, 0, ram, options->ramsize, error);
 	if (rv->ram == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_VMMMAPFAIL, 0);
+		sjme_setError(error, SJME_ERROR_VMMMAPFAIL, 0);
 		
 		sjme_free(rv);
 		sjme_free(conf);
 		
-		return NULL;
+		return SJME_RETURN_FAIL;
 	}
 	
 	/* Set native functions. */
@@ -353,19 +353,15 @@ sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 			(fbinfo->numpixels * fbinfo->bitsperpixel) / 8, error);
 		if (fbinfo->framebuffer == NULL)
 		{
-			sjme_seterror(error, SJME_ERROR_VMMMAPFAIL, 0);
+			sjme_setError(error, SJME_ERROR_VMMMAPFAIL, 0);
 			
 			sjme_free(rv);
 			sjme_free(ram);
 			sjme_free(conf);
 			
-			return NULL;
+			return SJME_RETURN_FAIL;
 		}
 	}
-	
-	// TODO: Implement the rest of this!
-	if (1)
-		return rv;
 	
 	/* Needed by destruction later. */
 	rv->presetrom = options->presetrom;
@@ -391,7 +387,7 @@ sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 			sjme_free(conf);
 			
 			/* Fail */
-			return NULL;
+			return SJME_RETURN_FAIL;
 		}
 	}
 	
@@ -405,12 +401,12 @@ sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		rom = sjme_malloc(options->romsize);
 		if (rom == NULL)
 		{
-			sjme_seterror(error, SJME_ERROR_NOMEMORY, options->romsize);
+			sjme_setError(error, SJME_ERROR_NOMEMORY, options->romsize);
 			
 			sjme_free(ram);
 			sjme_free(conf);
 			
-			return NULL;
+			return SJME_RETURN_FAIL;
 		}
 		
 		/* Copy large chunks at a time. */
@@ -443,7 +439,7 @@ sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 	rv->rom = sjme_vmmmap(vmem, 0, rom, romsize, error);
 	if (rv->rom == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_VMMMAPFAIL, 0);
+		sjme_setError(error, SJME_ERROR_VMMMAPFAIL, 0);
 		
 		sjme_free(rv);
 		sjme_free(ram);
@@ -451,7 +447,7 @@ sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		if (rv->presetrom == NULL)
 			sjme_free(rom);
 		
-		return NULL;
+		return SJME_RETURN_FAIL;
 	}
 	
 	/* Initialize the BootRAM and boot the CPU. */
@@ -475,7 +471,7 @@ sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 		if (rv->presetrom == NULL)
 			sjme_free(rom);
 		
-		return NULL;
+		return SJME_RETURN_FAIL;
 	}
 	
 	/* Memory map the option JAR, if available. */
@@ -485,7 +481,7 @@ sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 			rv->optionjar = sjme_vmmmap(vmem, 0, optionjar, i, error);
 			if (rv->rom == NULL)
 			{
-				sjme_seterror(error, SJME_ERROR_VMMMAPFAIL, 0);
+				sjme_setError(error, SJME_ERROR_VMMMAPFAIL, 0);
 				
 				sjme_free(rv);
 				sjme_free(ram);
@@ -493,12 +489,13 @@ sjme_jvm* sjme_jvmNew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
 				if (rv->presetrom == NULL)
 					sjme_free(rom);
 				
-				return NULL;
+				return SJME_RETURN_FAIL;
 			}
 		}
 	
 	/* The JVM is ready to use. */
-	return rv;
+	*outJvm = rv;
+	return SJME_RETURN_SUCCESS;
 }
 
 sjme_vmem* sjme_jvmVMem(sjme_jvm* jvm)

@@ -42,7 +42,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	/* Invalid argument? */
 	if (jvm == NULL || cpu == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
 		
 		return cycles;
 	}
@@ -416,8 +416,8 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			case SJME_OP_BREAKPOINT:
 				if (sjme_jvmIsDebug(jvm) != 0)
 				{
-					sjme_seterror(error, SJME_ERROR_CPUBREAKPOINT,
-						sjme_jvmCpuMetrics(jvm)->totalinstructions);
+					sjme_setError(error, SJME_ERROR_CPUBREAKPOINT,
+								  sjme_jvmCpuMetrics(jvm)->totalinstructions);
 					
 					return cycles;
 				}
@@ -498,8 +498,8 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					oldcpu = sjme_malloc(sizeof(*oldcpu));
 					if (oldcpu == NULL)
 					{
-						sjme_seterror(error, SJME_ERROR_NOMEMORY,
-							sizeof(*oldcpu));
+						sjme_setError(error, SJME_ERROR_NOMEMORY,
+									  sizeof(*oldcpu));
 						
 						return cycles;
 					}
@@ -615,8 +615,9 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					/* Exit must be done through an exit system call! */
 					if (oldcpu == NULL)
 					{
-						sjme_seterror(error, SJME_ERROR_THREADRETURN,
-							sjme_jvmCpuMetrics(jvm)->totalinstructions);
+						sjme_setError(error, SJME_ERROR_THREADRETURN,
+									  sjme_jvmCpuMetrics(
+											  jvm)->totalinstructions);
 						
 						return cycles;
 					}
@@ -729,8 +730,8 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 						oldcpu = sjme_malloc(sizeof(*oldcpu));
 						if (oldcpu == NULL)
 						{
-							sjme_seterror(error, SJME_ERROR_NOMEMORY,
-								sizeof(*oldcpu));
+							sjme_setError(error, SJME_ERROR_NOMEMORY,
+										  sizeof(*oldcpu));
 							
 							return cycles;
 						}
@@ -776,7 +777,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			
 				/* Invalid operation. */
 			default:
-				sjme_seterror(error, SJME_ERROR_INVALIDOP, op);
+				sjme_setError(error, SJME_ERROR_INVALIDOP, op);
 				
 				return cycles;
 		}

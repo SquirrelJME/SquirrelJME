@@ -9,7 +9,12 @@
 
 #include "tests.h"
 
+/**
+ * Tests that doing nothing works, sanity check for the test framework.
+ * 
+ * @since 2021/03/04 
+ */
 SJME_TEST_PROTOTYPE(testNothing)
 {
-	return EXIT_SUCCESS;
+	return PASS_TEST();
 }

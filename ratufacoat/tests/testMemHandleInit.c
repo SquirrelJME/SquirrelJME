@@ -17,16 +17,15 @@
  */
 SJME_TEST_PROTOTYPE(testMemHandleInit)
 {
-	sjme_error error;
 	sjme_memHandles* handles = NULL;
 	
 	/* Initialize handles. */
-	if (sjme_memHandlesInit(&handles, &error))
-		return EXIT_FAILURE;
+	if (sjme_memHandlesInit(&handles, &shim->error))
+		return FAIL_TEST(1);
 	
 	/* Then immediately destroy them. */
-	if (sjme_memHandlesDestroy(handles, &error))
-		return EXIT_FAILURE;
+	if (sjme_memHandlesDestroy(handles, &shim->error))
+		return FAIL_TEST(2);
 	
-	return EXIT_SUCCESS;
+	return PASS_TEST();
 }

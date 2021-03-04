@@ -31,6 +31,7 @@ add_library(SquirrelJMECore STATIC
 	stringies.c
 	syscall.c
 	video.c
+	xbuiltin.c
 	${SQUIRRELJME_BUILTIN_FILE})
 target_include_directories(SquirrelJMECore PUBLIC
 	"${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")

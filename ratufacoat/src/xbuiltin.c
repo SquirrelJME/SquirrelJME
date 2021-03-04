@@ -7,29 +7,18 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "error.h"
+#include "builtin.h"
 
-void sjme_clearError(sjme_error* error)
-{
-	if (error != NULL)
-	{
-		error->code = SJME_ERROR_NONE;
-		error->value = 0;
-	}
-}
-
-sjme_returnFail sjme_hasError(sjme_error* error)
-{
-	if (error != NULL && error->code != SJME_ERROR_NONE)
-		return SJME_RETURN_FAIL;
-	return SJME_RETURN_SUCCESS;
-}
-
-void sjme_setError(sjme_error* error, sjme_errorCode code, sjme_jint value)
-{
-	if (error != NULL)
-	{
-		error->code = code;
-		error->value = value;
-	}
-}
+/*
+ * If the ROM is not built-in, then initialize these to nothing.
+ * 
+ * This is used for the tests so that they do not need to know about the
+ * macros or otherwise from the library.
+ */
+#if !defined(SQUIRRELJME_HAS_BUILTIN)
+const sjme_jbyte sjme_builtInRomId[] = {};
+const sjme_jint sjme_builtInRomIdLen = 0;
+const sjme_jint sjme_builtInRomDate[] = {0, 0};
+const sjme_ubyte sjme_builtInRomData[] = {};
+const sjme_jint sjme_builtInRomSize = 0;
+#endif

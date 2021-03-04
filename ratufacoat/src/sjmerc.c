@@ -291,7 +291,7 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* outromsize,
 		nativefuncs->fileopen == NULL || nativefuncs->filesize == NULL ||
 		nativefuncs->fileread == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_NOFILES, 0);
+		sjme_setError(error, SJME_ERROR_NOFILES, 0);
 		
 		return NULL;
 	}
@@ -300,7 +300,7 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* outromsize,
 	fn = nativefuncs->nativeromfile();
 	if (fn == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_NONATIVEROM, 0);
+		sjme_setError(error, SJME_ERROR_NONATIVEROM, 0);
 		
 		return NULL;
 	}
@@ -336,7 +336,7 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* outromsize,
 						/* Reached early EOF?? */
 						if (readat < romsize)
 						{
-							sjme_seterror(error, SJME_ERROR_EARLYEOF, 0);
+							sjme_setError(error, SJME_ERROR_EARLYEOF, 0);
 							
 							/* Failed */
 							sjme_free(rv);
@@ -345,7 +345,7 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* outromsize,
 						
 						/* Otherwise clear. */
 						else
-							sjme_seterror(error, SJME_ERROR_NONE, 0);
+							sjme_setError(error, SJME_ERROR_NONE, 0);
 						
 						break;
 					}
@@ -354,7 +354,7 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* outromsize,
 					else
 					{
 						/* Force error to be set. */
-						sjme_seterror(error, SJME_ERROR_READERROR, 0);
+						sjme_setError(error, SJME_ERROR_READERROR, 0);
 						
 						/* Free resources. */
 						sjme_free(rv);
@@ -370,7 +370,7 @@ void* sjme_loadrom(sjme_nativefuncs* nativefuncs, sjme_jint* outromsize,
 		
 		/* Just set error. */
 		else
-			sjme_seterror(error, SJME_ERROR_NOMEMORY, romsize);
+			sjme_setError(error, SJME_ERROR_NOMEMORY, romsize);
 		
 		/* Close when done. */
 		if (nativefuncs->fileclose != NULL)
