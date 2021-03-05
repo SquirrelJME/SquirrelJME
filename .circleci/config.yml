@@ -273,6 +273,33 @@ jobs:
           path: ratufacoat/src/sdl2/SquirrelJME
           destination: SquirrelJME
 
+  ### RatufaCoat (MIPS, Cross Arch Testing)
+  ratufacoat_build_linux_mips:
+    executor: buster
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: Install required dependencies
+          command: |
+            apt-get update -y
+            apt-get install -y build-essential gcc-mips-linux-gnu binutils-mips-linux-gnu
+            apt-get install -y -t buster-backports cmake qemu-user-static
+      - attach_workspace:
+          at: .
+      - run:
+          name: Setup CMake build
+          working_directory: ratufacoat
+          command: cmake -DSQUIRRELJME_TEST_WRAPPER="$(which qemu-mips-static)" -DCMAKE_C_COMPILER="$(which mips-linux-gnu-gcc)" -DCMAKE_AR="$(which mips-linux-gnu-gcc-ar)" -DCMAKE_LINKER="$(which mips-linux-gnu-ld)" .
+      - run:
+          name: Compile CMake build
+          working_directory: ratufacoat
+          command: cmake --build .
+      - run:
+          name: Test CMake Build
+          working_directory: ratufacoat
+          command: ctest --extra-verbose -T Test .
+
   ### RatufaCoat (PowerPC, Cross Arch Testing)
   ratufacoat_build_linux_powerpc:
     executor: buster
@@ -291,6 +318,33 @@ jobs:
           name: Setup CMake build
           working_directory: ratufacoat
           command: cmake -DSQUIRRELJME_TEST_WRAPPER="$(which qemu-ppc-static)" -DCMAKE_C_COMPILER="$(which powerpc-linux-gnu-gcc)" -DCMAKE_AR="$(which powerpc-linux-gnu-gcc-ar)" -DCMAKE_LINKER="$(which powerpc-linux-gnu-ld)" .
+      - run:
+          name: Compile CMake build
+          working_directory: ratufacoat
+          command: cmake --build .
+      - run:
+          name: Test CMake Build
+          working_directory: ratufacoat
+          command: ctest --extra-verbose -T Test .
+
+  ### RatufaCoat (SPARC64, Cross Arch Testing)
+  ratufacoat_build_linux_sparc64:
+    executor: buster
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: Install required dependencies
+          command: |
+            apt-get update -y
+            apt-get install -y build-essential gcc-sparc64-linux-gnu binutils-sparc64-linux-gnu
+            apt-get install -y -t buster-backports cmake qemu-user-static
+      - attach_workspace:
+          at: .
+      - run:
+          name: Setup CMake build
+          working_directory: ratufacoat
+          command: cmake -DSQUIRRELJME_TEST_WRAPPER="$(which qemu-sparc64-static)" -DCMAKE_C_COMPILER="$(which sparc64-linux-gnu-gcc)" -DCMAKE_AR="$(which sparc64-linux-gnu-gcc-ar)" -DCMAKE_LINKER="$(which sparc64-linux-gnu-ld)" .
       - run:
           name: Compile CMake build
           working_directory: ratufacoat
@@ -531,11 +585,6 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - '.gradle/*'
-            - 'build/*'
-            - '*/.gradle/*'
-            - '*/build/*'
-            - '*/*/build/*'
             - 'ratufacoat/build/builtin.c'
       - store_artifacts:
           path: ratufacoat/build/builtin.c
@@ -620,7 +669,9 @@ workflows:
 
       ############################## RATUFACOAT ##############################
       - ratufacoat_build_linux
+      - ratufacoat_build_linux_mips
       - ratufacoat_build_linux_powerpc
+      - ratufacoat_build_linux_sparc64
 
       # Only run Windows and Mac OS X on trunk as a cost saving measure
       - ratufacoat_build_windows:
