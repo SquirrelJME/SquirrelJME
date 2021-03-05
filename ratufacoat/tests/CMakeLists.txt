@@ -24,6 +24,11 @@ target_link_libraries(SquirrelJMETests
 # Enable support for testing
 enable_testing()
 
+# Used to wrap for QEMU and otherwise
+if(DEFINED SQUIRRELJME_TEST_WRAPPER)
+	message("Wrapping tests in ${SQUIRRELJME_TEST_WRAPPER}...")
+endif()
+
 # Scan for tests
 foreach(SQUIRRELJME_TEST_SOURCE ${SQUIRRELJME_TEST_SOURCES})
 	# CMake 3.20 has cmake_path, so we can use that.
@@ -40,7 +45,15 @@ foreach(SQUIRRELJME_TEST_SOURCE ${SQUIRRELJME_TEST_SOURCES})
 
 	# Note it and register it accordingly
 	message("Adding test ${SQUIRRELJME_TEST_SOURCE}...")
-	add_test(NAME ${SQUIRRELJME_TEST_SOURCE} COMMAND SquirrelJMETests ${SQUIRRELJME_TEST_SOURCE})
+	if(DEFINED SQUIRRELJME_TEST_WRAPPER)
+		add_test(NAME ${SQUIRRELJME_TEST_SOURCE}
+			COMMAND ${SQUIRRELJME_TEST_WRAPPER} $<TARGET_FILE:SquirrelJMETests>
+			${SQUIRRELJME_TEST_SOURCE})
+	else()
+		add_test(NAME ${SQUIRRELJME_TEST_SOURCE}
+			COMMAND $<TARGET_FILE:SquirrelJMETests>
+			${SQUIRRELJME_TEST_SOURCE})
+	endif()
 
 	# Code for skipped tests
 	set_property(TEST ${SQUIRRELJME_TEST_SOURCE} PROPERTY SKIP_RETURN_CODE 42)

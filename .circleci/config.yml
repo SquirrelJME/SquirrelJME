@@ -292,7 +292,7 @@ jobs:
       - run:
           name: Compile CMake build
           working_directory: ratufacoat
-          command: cmake --build .
+          command: cmake "-DSQUIRRELJME_TEST_WRAPPER=$(which qemu-ppc)" --build .
       - run:
           name: Test CMake Build
           working_directory: ratufacoat

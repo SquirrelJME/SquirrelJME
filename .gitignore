@@ -53,9 +53,11 @@ ratufacoat/src/SquirrelJME.dir
 ratufacoat/x86
 ratufacoat/x64
 ratufacoat/out
+ratufacoat/Testing
 *.o
 *.dll
 *.exe
+*.dylib
 
 # Fossil files
 _FOSSIL_
