@@ -5,6 +5,7 @@
       <w>cflags</w>
       <w>gawroriski</w>
       <w>memhandle</w>
+      <w>notrun</w>
       <w>phasic</w>
       <w>ratufa</w>
       <w>sjme</w>
@@ -13,6 +14,7 @@
       <w>sjmercvm</w>
       <w>softmath</w>
       <w>squirreljme</w>
+      <w>stdin</w>
       <w>stringies</w>
       <w>syscall</w>
       <w>tcpip</w>
