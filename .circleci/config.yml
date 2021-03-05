@@ -288,11 +288,11 @@ jobs:
       - run:
           name: Setup CMake build
           working_directory: ratufacoat
-          command: cmake . -DCMAKE_C_COMPILER=powerpc-linux-gnu-gcc -DCMAKE_AR=/usr/bin/powerpc-linux-gnu-gcc-ar -DCMAKE_LINKER=/usr/bin/powerpc-linux-gnu-ld
+          command: cmake . -DSQUIRRELJME_TEST_WRAPPER="$(which qemu-ppc)" -DCMAKE_C_COMPILER=powerpc-linux-gnu-gcc -DCMAKE_AR=/usr/bin/powerpc-linux-gnu-gcc-ar -DCMAKE_LINKER=/usr/bin/powerpc-linux-gnu-ld
       - run:
           name: Compile CMake build
           working_directory: ratufacoat
-          command: cmake "-DSQUIRRELJME_TEST_WRAPPER=$(which qemu-ppc)" --build .
+          command: cmake --build .
       - run:
           name: Test CMake Build
           working_directory: ratufacoat
