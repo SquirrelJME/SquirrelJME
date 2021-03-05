@@ -299,9 +299,6 @@ jobs:
           name: Test CMake Build
           working_directory: ratufacoat
           command: ctest --extra-verbose -T Test .
-      - store_artifacts:
-          path: ratufacoat/src/sdl2/SquirrelJME
-          destination: SquirrelJME
 
   ### SpringCoat
   test_springcoat:

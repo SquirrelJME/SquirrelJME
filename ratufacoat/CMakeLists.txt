@@ -30,6 +30,13 @@ else()
 	set(SQUIRRELJME_BUILTIN_FILE)
 endif()
 
+# Enable support for testing, this is needed here otherwise testing will not
+# work at all! Major headache this has caused...
+# From: https://cmake.org/cmake/help/v3.13/command/enable_testing.html
+# > Note that ctest expects to find a test file in the build directory root.
+# > Therefore, this command should be in the source directory root.
+enable_testing()
+
 # Include directories for the project
 add_subdirectory(src)
 target_include_directories(SquirrelJME PUBLIC

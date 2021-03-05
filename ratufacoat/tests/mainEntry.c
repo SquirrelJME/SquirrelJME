@@ -206,7 +206,10 @@ int main(int argc, char** argv)
 	
 	/* Specified a specific test but was not ran, so fail. */
 	if (!allTests && ranTests <= 0)
+	{
+		fprintf(stderr, "Did not run any SquirrelJME Tests...\n");
 		return EXIT_FAILURE;
+	}
 		
 	/* If every single test was skipped, mark as such. */
 	if (skippedTests == ranTests)
