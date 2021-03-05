@@ -41,6 +41,9 @@ if(SQUIRRELJME_HAS_BUILTIN)
 	add_compile_definitions(SQUIRRELJME_HAS_BUILTIN=1)
 endif()
 
+# Make this position independent so it can be linked into shared libraries
+set_property(TARGET SquirrelJMECore PROPERTY POSITION_INDEPENDENT_CODE ON)
+
 # Add the SDL2 Implementation
 add_subdirectory(sdl2)
 
