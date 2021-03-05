@@ -17,9 +17,9 @@ add_executable(SquirrelJMETests
 target_include_directories(SquirrelJMETests PUBLIC
 	"${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
 
-# Link in core SquirrelJME
+# Link in core SquirrelJME, make it static so there are no dependencies
 target_link_libraries(SquirrelJMETests
-	SquirrelJMECore)
+	SquirrelJMECore -static)
 
 # Enable support for testing
 enable_testing()
@@ -47,12 +47,10 @@ foreach(SQUIRRELJME_TEST_SOURCE ${SQUIRRELJME_TEST_SOURCES})
 	message("Adding test ${SQUIRRELJME_TEST_SOURCE}...")
 	if(DEFINED SQUIRRELJME_TEST_WRAPPER)
 		add_test(NAME ${SQUIRRELJME_TEST_SOURCE}
-			COMMAND ${SQUIRRELJME_TEST_WRAPPER} $<TARGET_FILE:SquirrelJMETests>
-			${SQUIRRELJME_TEST_SOURCE})
+			COMMAND ${SQUIRRELJME_TEST_WRAPPER} $<TARGET_FILE:SquirrelJMETests> ${SQUIRRELJME_TEST_SOURCE})
 	else()
 		add_test(NAME ${SQUIRRELJME_TEST_SOURCE}
-			COMMAND $<TARGET_FILE:SquirrelJMETests>
-			${SQUIRRELJME_TEST_SOURCE})
+			COMMAND $<TARGET_FILE:SquirrelJMETests> ${SQUIRRELJME_TEST_SOURCE})
 	endif()
 
 	# Code for skipped tests
