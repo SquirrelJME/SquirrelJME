@@ -21,6 +21,10 @@ target_include_directories(SquirrelJMETests PUBLIC
 target_link_libraries(SquirrelJMETests
 	SquirrelJMECore -static)
 
+# Versioning information
+add_compile_definitions(SQUIRRELJME_VERSION="${SQUIRRELJME_VERSION}")
+add_compile_definitions(SQUIRRELJME_VERSION_ID="${SQUIRRELJME_VERSION_ID}")
+
 # Used to wrap for QEMU and otherwise
 if(DEFINED SQUIRRELJME_TEST_WRAPPER)
 	message("Wrapping tests in ${SQUIRRELJME_TEST_WRAPPER}...")

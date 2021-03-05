@@ -24,8 +24,17 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-/** Version string. */
-#define SQUIRRELJME_VERSION_STRING "0.3.0"
+/* Versioning identifier. */
+#if !defined(SQUIRRELJME_VERSION)
+	/** Version string. */
+	#define SQUIRRELJME_VERSION "0.3.0"
+#endif
+
+/* Version ID. */
+#if !defined(SQUIRRELJME_VERSION_ID)
+	/** Version ID. */
+	#define SQUIRRELJME_VERSION_ID "unknown:"__DATE__""__TIME__
+#endif
 
 /** Is this a 64-bit system? */
 #if !defined(SJME_BITS)

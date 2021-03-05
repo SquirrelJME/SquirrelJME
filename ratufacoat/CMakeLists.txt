@@ -6,9 +6,47 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
+# Needs to be this or older
 cmake_minimum_required (VERSION 3.13)
+
+# Load version number
+file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/../squirreljme-version"
+	SQUIRRELJME_VERSION LIMIT_COUNT 1)
+message("Building for SquirrelJME ${SQUIRRELJME_VERSION}!")
+
+# Load Fossil manifest, if possible
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../manifest.uuid" AND
+	NOT IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../manifest.uuid")
+	file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/../manifest.uuid"
+		SQUIRRELJME_VERSION_ID_FOSSIL LIMIT_COUNT 1)
+	string(SUBSTRING "fossil:${SQUIRRELJME_VERSION_ID_FOSSIL}" 0 -1
+		SQUIRRELJME_VERSION_ID)
+else()
+	# Try to get version from Git Commit
+	execute_process(COMMAND git rev-parse HEAD
+		OUTPUT_QUIET ERROR_QUIET
+		RESULT_VARIABLE SQUIRRELJME_VERSION_ID_GIT_CODE
+		OUTPUT_VARIABLE SQUIRRELJME_VERSION_ID_GIT)
+	if("${SQUIRRELJME_VERSION_ID_GIT_CODE}" EQUAL "0")
+		string(SUBSTRING "git:${SQUIRRELJME_VERSION_ID_GIT}" 0 -1
+			SQUIRRELJME_VERSION_ID)
+	else()
+		# Otherwise use some ID
+		string(UUID SQUIRRELJME_VERSION_ID_TIME
+			NAMESPACE 00000000-0000-0000-0000-000000000000
+			NAME "squirreljme-build-id"
+			TYPE SHA1)
+		string(SUBSTRING "unknown:${SQUIRRELJME_VERSION_ID_TIME}" 0 -1
+			SQUIRRELJME_VERSION_ID)
+	endif()
+endif()
+
+# Show ID version
+message("Version ID: ${SQUIRRELJME_VERSION_ID}")
+
+# Define the project and the versioning info
 project(SquirrelJME
-	VERSION 0.3.0
+	VERSION ${SQUIRRELJME_VERSION}
 	DESCRIPTION "SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things devices."
 	HOMEPAGE_URL https://squirreljme.cc/
 	LANGUAGES C)

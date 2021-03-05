@@ -124,6 +124,10 @@ int main(int argc, char** argv)
 	sjme_jbyte errorBuf[ERROR_BUF_LEN];
 	sjme_jint errorBufLen;
 	
+	/* Version report for tests. */
+	fprintf(stderr, "SquirrelJME %s\n",
+		SQUIRRELJME_VERSION" ("SQUIRRELJME_VERSION_ID")");
+	
 	/* Running all tests? */
 	if (argc == 1 || argv[0] == NULL)
 		allTests = 1;

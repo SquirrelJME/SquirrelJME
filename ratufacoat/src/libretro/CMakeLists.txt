@@ -37,6 +37,10 @@ if(SQUIRRELJME_HAS_BUILTIN)
 	add_compile_definitions(SQUIRRELJME_HAS_BUILTIN=1)
 endif()
 
+# Versioning information
+add_compile_definitions(SQUIRRELJME_VERSION="${SQUIRRELJME_VERSION}")
+add_compile_definitions(SQUIRRELJME_VERSION_ID="${SQUIRRELJME_VERSION_ID}")
+
 # RetroArch must be built with position independent code for any kind of
 # library.
 set_property(TARGET squirreljme_libretro PROPERTY POSITION_INDEPENDENT_CODE ON)

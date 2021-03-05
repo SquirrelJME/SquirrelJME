@@ -38,7 +38,7 @@ void retro_get_system_info(struct retro_system_info* info)
 	
 	/* Set properties. */
 	info->library_name = "squirreljme";
-	info->library_version = SQUIRRELJME_VERSION_STRING;
+	info->library_version = SQUIRRELJME_VERSION" ("SQUIRRELJME_VERSION_ID")";
 	info->valid_extensions = "jar";
 	
 	/* Full path is not needed, but game data may be specified!. */
