@@ -245,7 +245,7 @@ jobs:
 
   ### RatufaCoat
   ratufacoat_build_linux:
-    executor: buildenv
+    executor: buster
     resource_class: small
     steps:
       - checkout
@@ -253,7 +253,8 @@ jobs:
           name: Install required dependencies
           command: |
             sudo apt-get update -y
-            sudo apt-get install -y cmake build-essential
+            sudo apt-get install -y build-essential
+            apt-get install -y -t buster-backports cmake
       - attach_workspace:
           at: .
       - run:
@@ -282,7 +283,8 @@ jobs:
           name: Install required dependencies
           command: |
             apt-get update -y
-            apt-get install -y cmake build-essential gcc-powerpc-linux-gnu binutils-powerpc-linux-gnu binfmt-support qemu-user-static
+            apt-get install -y build-essential gcc-powerpc-linux-gnu binutils-powerpc-linux-gnu
+            apt-get install -y -t buster-backports cmake qemu-user-static
       - attach_workspace:
           at: .
       - run:

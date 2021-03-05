@@ -37,6 +37,10 @@ if(SQUIRRELJME_HAS_BUILTIN)
 	add_compile_definitions(SQUIRRELJME_HAS_BUILTIN=1)
 endif()
 
+# RetroArch must be built with position independent code for any kind of
+# library.
+set_property(TARGET squirreljme_libretro PROPERTY POSITION_INDEPENDENT_CODE ON)
+
 # Custom launching the core, tries to find RetroArch on the system
 ## Determine RetroArch directory
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
