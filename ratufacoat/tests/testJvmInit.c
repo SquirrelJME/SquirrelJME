@@ -27,8 +27,8 @@ SJME_TEST_PROTOTYPE(testJvmInit)
 	
 	/* Setup options. */
 	memset(&options, 0, sizeof(options));
-	options.presetrom = sjme_builtInRomData;
-	options.romsize = sjme_builtInRomSize;
+	options.romData = sjme_builtInRomData;
+	options.romSize = sjme_builtInRomSize;
 	
 	/* Try to create the JVM. */
 	jvm = NULL;

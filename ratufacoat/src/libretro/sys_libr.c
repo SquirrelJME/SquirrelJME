@@ -450,9 +450,9 @@ void retro_init(void)
 	
 	/* Setup options. */
 	memset(&sjme_retroarch_options, 0, sizeof(sjme_retroarch_options));
-	sjme_retroarch_options.ramsize = SJME_DEFAULT_RAM_SIZE * 2;
-	sjme_retroarch_options.presetrom = sjme_retroarch_basicrom;
-	sjme_retroarch_options.romsize = romsize;
+	sjme_retroarch_options.ramSize = SJME_DEFAULT_RAM_SIZE * 2;
+	sjme_retroarch_options.romData = sjme_retroarch_basicrom;
+	sjme_retroarch_options.romSize = romsize;
 	
 	/* Set native functions. */
 	memset(&sjme_retroarch_nativefuncs, 0, sizeof(sjme_retroarch_nativefuncs));

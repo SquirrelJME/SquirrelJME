@@ -41,8 +41,8 @@ struct sjme_jvm
 	/** OptionJAR. */
 	sjme_vmemmap* optionjar;
 	
-	/** Preset ROM. */
-	void* presetrom;
+	/** ROM Data. */
+	const sjme_ubyte* romData;
 	
 	/** Framebuffer info. */
 	sjme_framebuffer* fbinfo;
@@ -118,9 +118,6 @@ sjme_returnFail sjme_jvmDestroy(sjme_jvm* jvm, sjme_error* error)
 	
 	/* Delete major JVM data areas. */
 	sjme_free(jvm->ram);
-	sjme_free(jvm->config);
-	if (jvm->presetrom == NULL)
-		sjme_free(jvm->rom);
 	
 	/* Destroyed okay. */
 	return SJME_RETURN_SUCCESS;
@@ -193,7 +190,7 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 {
 	sjme_jvmoptions nullOptions;
 	void* ram;
-	void* rom;
+	const sjme_ubyte* rom;
 	void* conf;
 	void* optionjar;
 	sjme_jvm* rv;
@@ -210,7 +207,7 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 	}
 	
 	/* No ROM Specified, since it is now required. */
-	if (options->presetrom == NULL || options->romsize <= 0)
+	if (options->romData == NULL || options->romSize <= 0)
 	{
 		sjme_setError(error, SJME_ERROR_NONATIVEROM, 0);
 		return SJME_RETURN_FAIL;
@@ -226,14 +223,12 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 	
 	/* Allocate VM state. */
 	rv = sjme_malloc(sizeof(*rv));
-	conf = sjme_malloc(SJME_DEFAULT_CONF_SIZE);
-	if (rv == NULL || conf == NULL)
+	if (rv == NULL)
 	{
-		sjme_setError(error, SJME_ERROR_NOMEMORY,
-					  sizeof(*rv) + SJME_DEFAULT_CONF_SIZE);
-		
 		sjme_free(rv);
-		sjme_free(conf);
+		
+		sjme_setError(error, SJME_ERROR_NOMEMORY,
+					  sizeof(*rv));
 		
 		return SJME_RETURN_FAIL;
 	}
@@ -241,49 +236,41 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 	/* Store virtual memory area. */
 	rv->vmem = vmem;
 	
-	/* Virtual map config. */
-	rv->config = sjme_vmmmap(vmem, 0, conf,
-		SJME_DEFAULT_CONF_SIZE, error);
-	if (rv->config == NULL)
-		return SJME_RETURN_FAIL;
-	
 	/* If no RAM size was specified then use the default. */
-	if (options->ramsize <= 0)
-		options->ramsize = SJME_DEFAULT_RAM_SIZE;
+	if (options->ramSize <= 0)
+		options->ramSize = SJME_DEFAULT_RAM_SIZE;
 	
 	/* Allocate RAM, or at least keep trying to. */
-	while (options->ramsize >= SJME_MINIMUM_RAM_SIZE)
+	while (options->ramSize >= SJME_MINIMUM_RAM_SIZE)
 	{
 		/* Attempt to allocate the RAM. */
-		ram = sjme_malloc(options->ramsize);
+		ram = sjme_malloc(options->ramSize);
 		
 		/* Ram allocated! So stop. */
 		if (ram != NULL)
 			break;
 		
 		/* Cut RAM allocation size down in half. */
-		options->ramsize /= 2;
+		options->ramSize /= 2;
 	}
 	
 	/* Failed to allocate the RAM. */
 	if (ram == NULL)
 	{
-		sjme_setError(error, SJME_ERROR_NOMEMORY, options->ramsize);
+		sjme_setError(error, SJME_ERROR_NOMEMORY, options->ramSize);
 			
 		sjme_free(rv);
-		sjme_free(conf);
 		
 		return SJME_RETURN_FAIL;
 	}
 	
 	/* Virtual map RAM. */
-	rv->ram = sjme_vmmmap(vmem, 0, ram, options->ramsize, error);
+	rv->ram = sjme_vmmmap(vmem, 0, ram, options->ramSize, error);
 	if (rv->ram == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_VMMMAPFAIL, 0);
 		
 		sjme_free(rv);
-		sjme_free(conf);
 		
 		return SJME_RETURN_FAIL;
 	}
@@ -361,83 +348,15 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 			
 			sjme_free(rv);
 			sjme_free(ram);
-			sjme_free(conf);
 			
 			return SJME_RETURN_FAIL;
 		}
 	}
 	
 	/* Needed by destruction later. */
-	rv->presetrom = options->presetrom;
-	
-	/* Load the ROM? */
-	rom = options->presetrom;
-	if (rom == NULL)
-	{
-		/* Call sub-routine which can load the ROM. */
-		rom = sjme_loadrom(nativefuncs, &romsize, error);
-		
-		/* Could not load the ROM? */
-		if (rom == NULL)
-		{
-			/* Write the ROM failure message! */
-			sjme_console_pipewrite(rv, (nativefuncs != NULL ?
-				nativefuncs->stderr_write : NULL), sjme_romfailmessage, 0,
-				sjme_romfailmessageSizeOf, error);
-			
-			/* Clear resources */
-			sjme_free(rv);
-			sjme_free(ram);
-			sjme_free(conf);
-			
-			/* Fail */
-			return SJME_RETURN_FAIL;
-		}
-	}
-	
-	/* If we are copying from the preset ROM, duplicate it. */
-	if (options->presetrom != NULL && options->copyrom != 0)
-	{
-		/* Use this ROM size. */
-		romsize = options->romsize;
-		
-		/* Allocate space to fit ROM. */
-		rom = sjme_malloc(options->romsize);
-		if (rom == NULL)
-		{
-			sjme_setError(error, SJME_ERROR_NOMEMORY, options->romsize);
-			
-			sjme_free(ram);
-			sjme_free(conf);
-			
-			return SJME_RETURN_FAIL;
-		}
-		
-		/* Copy large chunks at a time. */
-		for (i = 0; i < options->romsize;)
-		{
-			/* Byte left to move? */
-			l = options->romsize - i;
-			
-			/* Function uses a size_t which may be limited on this platform. */
-			if (sizeof(sjme_jint) > sizeof(size_t) && l > (sjme_jint)SIZE_MAX)
-				l = (sjme_jint)SIZE_MAX;
-			
-			/* Copy the data. */
-			memmove(SJME_POINTER_OFFSET(rom, i),
-				SJME_POINTER_OFFSET(options->presetrom, i), l);
-			
-			/* Offset up. */
-			i += l;
-		}
-		
-		/* We copied it, so never make a preset ROM. */
-		rv->presetrom = NULL;
-	}
-	
-	/* If we are using a preset ROM then just use the size. */
-	if (rv->presetrom != NULL)
-		romsize = options->romsize;
+	rv->romData = options->romData;
+	rom = options->romData;
+	romsize = options->romSize;
 	
 	/* Virtual map ROM. */
 	rv->rom = sjme_vmmmap(vmem, 0, rom, romsize, error);
@@ -448,7 +367,7 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 		sjme_free(rv);
 		sjme_free(ram);
 		sjme_free(conf);
-		if (rv->presetrom == NULL)
+		if (rv->romData == NULL)
 			sjme_free(rom);
 		
 		return SJME_RETURN_FAIL;
@@ -472,7 +391,7 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 		sjme_free(conf);
 		
 		/* If a pre-set ROM is not being used, make sure it gets cleared. */
-		if (rv->presetrom == NULL)
+		if (rv->romData == NULL)
 			sjme_free(rom);
 		
 		return SJME_RETURN_FAIL;
@@ -490,7 +409,7 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 				sjme_free(rv);
 				sjme_free(ram);
 				sjme_free(conf);
-				if (rv->presetrom == NULL)
+				if (rv->romData == NULL)
 					sjme_free(rom);
 				
 				return SJME_RETURN_FAIL;

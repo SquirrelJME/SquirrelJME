@@ -39,9 +39,6 @@ extern "C"
 /** Minimum permitted RAM size. */
 #define SJME_MINIMUM_RAM_SIZE SJME_JINT_C(65536)
 
-/** Default size of configuration ROM. */
-#define SJME_DEFAULT_CONF_SIZE SJME_JINT_C(65536)
-
 /** Magic number for ROMs. */
 #define SJME_ROM_MAGIC_NUMBER SJME_JINT_C(0x58455223)
 

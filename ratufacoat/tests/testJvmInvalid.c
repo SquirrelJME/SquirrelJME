@@ -23,8 +23,8 @@ SJME_TEST_PROTOTYPE(testJvmInvalid)
 	
 	/* Setup options, use invalid ROM data here but specify it. */
 	memset(&options, 0, sizeof(options));
-	options.presetrom = malloc(1);
-	options.romsize = 1;
+	options.romData = malloc(1);
+	options.romSize = 1;
 	
 	/* Missing options. */
 	jvm = NULL;
@@ -63,8 +63,8 @@ SJME_TEST_PROTOTYPE(testJvmInvalid)
 	
 	/* Missing ROM Size. */
 	jvm = NULL;
-	options.presetrom = sjme_builtInRomData;
-	options.romsize = 0;
+	options.romData = sjme_builtInRomData;
+	options.romSize = 0;
 	sjme_clearError(&shim->error);
 	if (!sjme_jvmNew(&jvm, &options, shim->nativeFunctions, &shim->error))
 		return FAIL_TEST(7);
@@ -75,8 +75,8 @@ SJME_TEST_PROTOTYPE(testJvmInvalid)
 	
 	/* Missing ROM data. */
 	jvm = NULL;
-	options.presetrom = NULL;
-	options.romsize = sjme_builtInRomSize;
+	options.romData = NULL;
+	options.romSize = sjme_builtInRomSize;
 	sjme_clearError(&shim->error);
 	if (!sjme_jvmNew(&jvm, &options, shim->nativeFunctions, &shim->error))
 		return FAIL_TEST(9);
@@ -87,8 +87,8 @@ SJME_TEST_PROTOTYPE(testJvmInvalid)
 	
 	/* Missing both? */
 	jvm = NULL;
-	options.presetrom = NULL;
-	options.romsize = 0;
+	options.romData = NULL;
+	options.romSize = 0;
 	sjme_clearError(&shim->error);
 	if (!sjme_jvmNew(&jvm, &options, shim->nativeFunctions, &shim->error))
 		return FAIL_TEST(11);

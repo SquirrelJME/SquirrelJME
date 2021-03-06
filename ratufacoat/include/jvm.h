@@ -76,16 +76,13 @@ typedef struct sjme_jvmoptions
 	 * The amount of RAM to allocate, 0 is default.
 	 * @deprecated Do not use, handles are used instead.
 	 */
-	sjme_jint ramsize;
+	sjme_jint ramSize;
 	
 	/** Preset ROM pointer, does not need loading? */
-	void* presetrom;
+	const sjme_ubyte* romData;
 	
 	/** Preset ROM size. */
-	sjme_jint romsize;
-	
-	/** If non-zero then the ROM needs to be copied (address unsafe). */
-	sjme_jbyte copyrom;
+	sjme_jint romSize;
 	
 	/** Command line arguments sent to the VM. */
 	sjme_jvmargs args;
