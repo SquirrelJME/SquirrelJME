@@ -95,10 +95,12 @@ jobs:
           shell: bash.exe
           name: Convert CTest to JUnit XML
           command: python3 ctest-to-junit.py
+          working_directory: ratufacoat
           when: always
       - run:
           shell: bash.exe
           name: Save test results
+          working_directory: ratufacoat
           command: |
             mkdir -p /c/users/circleci/test-results/junit-windows
             /usr/bin/find . -type f -regex '.*/build/junit/.*\.xml' -exec cp {} /c/users/circleci/test-results/junit-windows/ \;
@@ -286,9 +288,11 @@ jobs:
       - run:
           name: Convert CTest to JUnit XML
           command: python3 ctest-to-junit.py
+          working_directory: ratufacoat
           when: always
       - run:
           name: Save test results
+          working_directory: ratufacoat
           command: |
             mkdir -p ~/test-results/junit-linux/
             find . -type f -regex '.*/build/junit/.*\.xml' -exec cp {} ~/test-results/junit-linux/ \;
