@@ -76,3 +76,12 @@ sjme_returnFail sjme_memHandleAccess(sjme_memHandle* handle,
 	sjme_todo("sjme_memHandleAccess(%p, %d, %d, %p, %d, %p)",
 		handle, write, type, inOut, offset, error);
 }
+
+sjme_returnFail sjme_memHandleAccessWide(sjme_memHandle* handle,
+	sjme_jboolean write, sjme_dataType type, sjme_jlong* inOut,
+	sjme_jint offset, sjme_error* error)
+{
+	sjme_todo("sjme_memHandleAccess(%p, %d, %d, %p, %d, %p)",
+		handle, write, type, inOut, offset, error);
+}
+

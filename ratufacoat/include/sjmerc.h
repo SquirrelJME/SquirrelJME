@@ -202,8 +202,11 @@ typedef uint32_t sjme_juint;
 /** Boolean type. */
 typedef enum sjme_jboolean
 {
-	false = 0,
-	true = 1,
+	/** False. */
+	sjme_false = 0,
+	
+	/** True. */
+	sjme_true = 1,
 } sjme_jboolean;
 
 /** Constant value macros. */

@@ -23,9 +23,9 @@
     <file url="file://$PROJECT_DIR$/include/sjmecon.h" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/include/sjmerc.h" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/include/sjmevdef.h" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/include/softmath.h" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/include/softmath.h" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/include/stringies.h" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/include/syscall.h" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/include/syscall.h" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/include/syscall2.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/test.cpp" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/todo.h" charset="ISO-8859-1" />

@@ -45,7 +45,7 @@ extern "C"
  * @since 2019/06/09
  */
 void sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
-	sjme_jshort callid, sjme_jint* args, sjme_jlong_combine* rv);
+	sjme_jshort callid, sjme_jint* args, sjme_jlong* rv);
 
 /*--------------------------------------------------------------------------*/
 

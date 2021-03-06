@@ -20,6 +20,7 @@
 #include "sjmerc.h"
 #include "error.h"
 #include "datatype.h"
+#include "softmath.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -187,6 +188,22 @@ sjme_returnFail sjme_memHandleInBounds(sjme_memHandle* handle,
  */
 sjme_returnFail sjme_memHandleAccess(sjme_memHandle* handle,
 	sjme_jboolean write, sjme_dataType type, sjme_jint* inOut,
+	sjme_jint offset, sjme_error* error);
+
+/**
+ * Accesses a memory handle using wide data.
+ * 
+ * @param handle The handle to read/write from.
+ * @param write Writing to the handle?
+ * @param type The type of data to read/write.
+ * @param inOut The input/output.
+ * @param offset The offset into the handle.
+ * @param error The failure state.
+ * @return If this failed or not.
+ * @since 2021/03/06
+ */
+sjme_returnFail sjme_memHandleAccessWide(sjme_memHandle* handle,
+	sjme_jboolean write, sjme_dataType type, sjme_jlong* inOut,
 	sjme_jint offset, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/

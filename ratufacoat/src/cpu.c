@@ -37,7 +37,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	sjme_jint* r;
 	sjme_jint ia, ib, ic, id, ie;
 	sjme_cpuframe* oldcpu;
-	sjme_jlong_combine longcombine;
+	sjme_jlong longcombine;
 	
 	/* Invalid argument? */
 	if (jvm == NULL || cpu == NULL)

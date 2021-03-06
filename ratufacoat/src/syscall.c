@@ -11,7 +11,7 @@
 #include "syscall.h"
 
 void sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
-	sjme_jshort callid, sjme_jint* args, sjme_jlong_combine* rv)
+	sjme_jshort callid, sjme_jint* args, sjme_jlong* rv)
 {
 	sjme_todo("sjme_syscall()");
 #if 0

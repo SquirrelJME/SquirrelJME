@@ -35,14 +35,22 @@ extern "C"
  *
  * @since 2019/12/07
  */
-typedef struct sjme_jlong_combine
+typedef struct sjme_jlong
 {
+#if defined(SJME_BIG_ENDIAN)
+	/** High. */
+	sjme_jint hi;
+	
+	/** Low. */
+	sjme_jint lo;
+#else
 	/** Low. */
 	sjme_jint lo;
 	
 	/** High. */
 	sjme_jint hi;
-} sjme_jlong_combine;
+#endif
+} sjme_jlong;
 
 /**
  * Division result.
