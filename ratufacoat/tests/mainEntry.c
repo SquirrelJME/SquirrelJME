@@ -129,6 +129,7 @@ int main(int argc, char** argv)
 		SQUIRRELJME_VERSION" ("SQUIRRELJME_VERSION_ID")");
 	fprintf(stderr, "Built-In ROM is %s\n",
 		(sjme_builtInRomSize == 0 ? "Unavailable" : "Available"));
+	fflush(stderr);
 	
 	/* Running all tests? */
 	if (argc == 1 || argv[0] == NULL)
@@ -161,12 +162,15 @@ int main(int argc, char** argv)
 		{
 			/* Indicate a message that it is running. */
 			fprintf(stderr, "Running test %s...\n", test->name);
+			fflush(stderr);
 			
 			/* Setup shim. */
 			shim = shimNew();
 			if (shim == NULL)
 			{
 				fprintf(stderr, "Failed to create shim!\n");
+				fflush(stderr);
+				
 				return EXIT_FAILURE;
 			}
 			
@@ -189,6 +193,7 @@ int main(int argc, char** argv)
 			fprintf(stderr, "%s ", (result == 0 ? "PASS" :
 				(result == SKIP_TEST() ? "SKIP" : "FAIL")));
 			fprintf(stderr, "%d (%#x)\n", result, result);
+			fflush(stderr);
 			
 			/* Note error code, if any. */
 			if (sjme_hasError(&shim->error))
@@ -203,6 +208,7 @@ int main(int argc, char** argv)
 				/* Print it. */
 				fprintf(stderr, "Test %s error: %s\n",
 					test->name, errorBuf);
+				fflush(stderr);
 			}
 			
 			/* Destroy shim. */
