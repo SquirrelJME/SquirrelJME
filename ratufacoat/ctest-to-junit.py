@@ -1,6 +1,16 @@
+# ---------------------------------------------------------------------------
+# Multi-Phasic Applications: SquirrelJME
+#     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+#     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
+# ---------------------------------------------------------------------------
+# SquirrelJME is under the GNU General Public License v3, or later.
+# For more information see license.txt.
+# ---------------------------------------------------------------------------
+# DESCRIPTION: Converts CTest Result XML Output into Ant/Gradle JUnit's XML
+
 import sys
 import os
-import xml.etree.ElementTree as xml
+import xml.etree.ElementTree as Xml
 import datetime
 
 # Convert banner
@@ -19,7 +29,7 @@ squirreljmeWantValue = None
 squirreljmeStdErr = None
 
 # Parse the XML Tree
-for event, tree in xml.iterparse(sys.stdin, events=("start", "end")):
+for event, tree in Xml.iterparse(sys.stdin, events=("start", "end")):
     tag = tree.tag
     text = tree.text
     attrib = tree.attrib
@@ -132,19 +142,6 @@ for event, tree in xml.iterparse(sys.stdin, events=("start", "end")):
             file.write('</testcase>')
             file.write('</testsuite>')
             file.write('\n')
-
-            # <testsuite name="io.TestReadLineEOF" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-03-05T18:23:27.788" hostname="Hosted" time="916.623">
-            # <properties>
-            # <property name="squirreljme.test.result" value="XERSQUIRRELJMEXER:result:PASS:" />
-            # <property name="squirreljme.test.nanoseconds" value="XERSQUIRRELJMEXER:nanoseconds:916622600:" />
-            # </properties>
-            # <testcase name="io.TestReadLineEOF" classname="io.TestReadLineEOF" time="916.623">
-            # <system-out><![CDATA[]]></system-out>
-            # <system-err><![CDATA[Java Version: 1.8.0_252Java Over-Layer: Loading C:\Users\xer\Projects\squirreljme\emulators\emulator-base\build\lib\main\release\emulator-base.dll...
-            # ...
-            # ]]></system-err>
-            # </testcase>
-            # </testsuite>
 
         # Reset all test state
         squirreljmeTestName = None
