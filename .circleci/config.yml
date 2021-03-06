@@ -289,6 +289,7 @@ jobs:
           name: Where is everything?
           working_directory: ratufacoat
           command: find . -type f
+          when: always
       - run:
           name: Convert CTest to JUnit XML
           command: python3 ctest-to-junit.py
