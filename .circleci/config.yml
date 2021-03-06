@@ -94,7 +94,7 @@ jobs:
       - run:
           shell: bash.exe
           name: Convert CTest to JUnit XML
-          command: python3 ctest-to-junit.py
+          command: python3 ctest-to-junit.py < Testing/*/Test.xml
           working_directory: ratufacoat
           when: always
       - run:
@@ -286,13 +286,8 @@ jobs:
           working_directory: ratufacoat
           command: ctest --extra-verbose -T Test .
       - run:
-          name: Where is everything?
-          working_directory: ratufacoat
-          command: find . -type f
-          when: always
-      - run:
           name: Convert CTest to JUnit XML
-          command: python3 ctest-to-junit.py
+          command: python3 ctest-to-junit.py < Testing/*/Test.xml
           working_directory: ratufacoat
           when: always
       - run:
