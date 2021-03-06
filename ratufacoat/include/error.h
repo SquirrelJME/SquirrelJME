@@ -120,6 +120,9 @@ typedef enum sjme_errorCode
 	
 	/** Could not map address. */
 	SJME_ERROR_VMMMAPFAIL,
+	
+	/** Null arguments. */
+	SJME_ERROR_NULLARGS,
 } sjme_errorCode; 
 
 /** This represents an error. */

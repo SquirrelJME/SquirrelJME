@@ -33,7 +33,7 @@ SJME_TEST_PROTOTYPE(testJvmInit)
 	/* Try to create the JVM. */
 	jvm = NULL;
 	sjme_clearError(&shim->error);
-	if (sjme_jvmNew(&jvm, NULL, shim->nativeFunctions, &shim->error))
+	if (sjme_jvmNew(&jvm, &options, shim->nativeFunctions, &shim->error))
 		return FAIL_TEST(1);
 	
 	/* Was still null or has an error? */

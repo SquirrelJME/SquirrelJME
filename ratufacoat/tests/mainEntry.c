@@ -96,6 +96,7 @@ typedef struct sjme_singleTest
 static const sjme_singleTest sjme_singleTests[] =
 {
 	SJME_TEST(testJvmInit),
+	SJME_TEST(testJvmInvalid),
 	SJME_TEST(testMemHandleCycle),
 	SJME_TEST(testMemHandleInit),
 	SJME_TEST(testMemHandleInvalid),

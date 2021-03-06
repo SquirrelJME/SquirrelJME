@@ -4,5 +4,5 @@
 
 SJME_TEST_PROTOTYPE(${NAME})
 {
-	return EXIT_FAILURE;
+	return FAIL_TEST(1);
 }

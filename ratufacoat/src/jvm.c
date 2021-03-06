@@ -191,7 +191,7 @@ sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_error* error, sjme_jint cycles)
 sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 	sjme_nativefuncs* nativefuncs, sjme_error* error)
 {
-	sjme_jvmoptions nulloptions;
+	sjme_jvmoptions nullOptions;
 	void* ram;
 	void* rom;
 	void* conf;
@@ -201,9 +201,20 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 	sjme_framebuffer* fbinfo;
 	sjme_vmem* vmem;
 	
-	/* We need native functions. */
-	if (nativefuncs == NULL)
+	/* Missing important arguments. */
+	if (outJvm == NULL || nativefuncs == NULL || options == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS,
+			((!!nativefuncs)) * 2 + (!!options));
 		return SJME_RETURN_FAIL;
+	}
+	
+	/* No ROM Specified, since it is now required. */
+	if (options->presetrom == NULL || options->romsize <= 0)
+	{
+		sjme_setError(error, SJME_ERROR_NONATIVEROM, 0);
+		return SJME_RETURN_FAIL;
+	}
 	
 	/* Allocate virtual memory manager. */
 	vmem = sjme_vmmnew(error);
@@ -235,13 +246,6 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 		SJME_DEFAULT_CONF_SIZE, error);
 	if (rv->config == NULL)
 		return SJME_RETURN_FAIL;
-	
-	/* If there were no options specified, just use a null set. */
-	if (options == NULL)
-	{
-		memset(&nulloptions, 0, sizeof(nulloptions));
-		options = &nulloptions;
-	}
 	
 	/* If no RAM size was specified then use the default. */
 	if (options->ramsize <= 0)
