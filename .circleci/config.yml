@@ -91,6 +91,20 @@ jobs:
           shell: bash.exe
           command: |
             "$PROGRAMFILES/CMake/bin/ctest.exe" --extra-verbose -T Test .
+      - run:
+          shell: bash.exe
+          name: Convert CTest to JUnit XML
+          command: python3 ctest-to-junit.py
+          when: always
+      - run:
+          shell: bash.exe
+          name: Save test results
+          command: |
+            mkdir -p /c/users/circleci/test-results/junit-windows
+            /usr/bin/find . -type f -regex '.*/build/junit/.*\.xml' -exec cp {} /c/users/circleci/test-results/junit-windows/ \;
+          when: always
+      - store_test_results:
+          path: c:\users\circleci\test-results
       - store_artifacts:
           path: ratufacoat\src\sdl2\Debug\SquirrelJME.exe
           destination: SquirrelJME.exe
@@ -269,6 +283,19 @@ jobs:
           name: Test CMake Build
           working_directory: ratufacoat
           command: ctest --extra-verbose -T Test .
+      - run:
+          shell: bash.exe
+          name: Convert CTest to JUnit XML
+          command: python3 ctest-to-junit.py
+          when: always
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit-linux/
+            find . -type f -regex '.*/build/junit/.*\.xml' -exec cp {} ~/test-results/junit-linux/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
       - store_artifacts:
           path: ratufacoat/src/sdl2/SquirrelJME
           destination: SquirrelJME

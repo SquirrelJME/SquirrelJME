@@ -1,4 +1,5 @@
 import sys
+import os
 import xml.etree.ElementTree as xml
 import datetime
 
@@ -24,13 +25,13 @@ for event, tree in xml.iterparse(sys.stdin, events=("start", "end")):
     attrib = tree.attrib
 
     # Debugging
-    #print('DEBUG: %s %s `%s` %s' % (event, tag, text, attrib))
+    # print('DEBUG: %s %s `%s` %s' % (event, tag, text, attrib))
 
     # Start of a new tag
     if event == "start":
         # Test time (UNIX Time -> 2021-03-05T18:23:27.788)
         if tag == "StartTestTime":
-            squirreljmeGlobalTestTime = datetime.datetime\
+            squirreljmeGlobalTestTime = datetime.datetime \
                 .utcfromtimestamp(int(text)).strftime("%Y-%m-%dT%H:%M:%S")
 
         # Defining new test
@@ -83,45 +84,61 @@ for event, tree in xml.iterparse(sys.stdin, events=("start", "end")):
         if squirreljmeExecTime is None:
             squirreljmeExecTime = 0
 
-        # XML Header
-        print('<?xml version="1.0" encoding="UTF-8"?>')
+        # Create build directory if missing
+        if not os.path.isdir("build"):
+            os.mkdir("build")
+        if not os.path.isdir("build/junit"):
+            os.mkdir("build/junit")
 
-        # Test Suite Information
-        print('<testsuite name="%s" tests="1" skipped="%d" '
-              'failures="%d" errors="%d" timestamp="%s" '
-              'hostname="CTest" time="%g">' %
-              (squirreljmeTestName, squirreljmeNumSkipped,
-               squirreljmeNumFailed, squirreljmeNumFailed,
-               squirreljmeGlobalTestTime, squirreljmeExecTime))
+        # Open output file
+        with open("build/junit/TEST-" + squirreljmeTestName + ".xml",
+                  "wt") as file:
+            # XML Header
+            file.write('<?xml version="1.0" encoding="UTF-8"?>')
+            file.write('\n')
 
-        # Test Case (mostly the same)
-        print('<testcase name="%s" '
-              'classname="%s" time="%g">' %
-              (squirreljmeTestName, squirreljmeTestName,
-               squirreljmeExecTime))
+            # Test Suite Information
+            file.write('<testsuite name="%s" tests="1" skipped="%d" '
+                       'failures="%d" errors="%d" timestamp="%s" '
+                       'hostname="CTest" time="%g">' %
+                       (squirreljmeTestName, squirreljmeNumSkipped,
+                        squirreljmeNumFailed, squirreljmeNumFailed,
+                        squirreljmeGlobalTestTime, squirreljmeExecTime))
+            file.write('\n')
 
-        # Standard output
-        print('<system-out><![CDATA[]]></system-out>')
+            # Test Case (mostly the same)
+            file.write('<testcase name="%s" '
+                       'classname="%s" time="%g">' %
+                       (squirreljmeTestName, squirreljmeTestName,
+                        squirreljmeExecTime))
+            file.write('\n')
 
-        # Standard error
-        print('<system-err><![CDATA[%s]]></system-err>' % squirreljmeStdErr)
+            # Standard output
+            file.write('<system-out><![CDATA[]]></system-out>')
+            file.write('\n')
 
-        # End tags
-        print('</testcase>')
-        print('</testsuite>')
+            # Standard error
+            file.write(
+                '<system-err><![CDATA[%s]]></system-err>' % squirreljmeStdErr)
+            file.write('\n')
 
-        # <testsuite name="io.TestReadLineEOF" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-03-05T18:23:27.788" hostname="Hosted" time="916.623">
-        # <properties>
-        # <property name="squirreljme.test.result" value="XERSQUIRRELJMEXER:result:PASS:" />
-        # <property name="squirreljme.test.nanoseconds" value="XERSQUIRRELJMEXER:nanoseconds:916622600:" />
-        # </properties>
-        # <testcase name="io.TestReadLineEOF" classname="io.TestReadLineEOF" time="916.623">
-        # <system-out><![CDATA[]]></system-out>
-        # <system-err><![CDATA[Java Version: 1.8.0_252Java Over-Layer: Loading C:\Users\xer\Projects\squirreljme\emulators\emulator-base\build\lib\main\release\emulator-base.dll...
-        # ...
-        # ]]></system-err>
-        # </testcase>
-        # </testsuite>
+            # End tags
+            file.write('</testcase>')
+            file.write('</testsuite>')
+            file.write('\n')
+
+            # <testsuite name="io.TestReadLineEOF" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-03-05T18:23:27.788" hostname="Hosted" time="916.623">
+            # <properties>
+            # <property name="squirreljme.test.result" value="XERSQUIRRELJMEXER:result:PASS:" />
+            # <property name="squirreljme.test.nanoseconds" value="XERSQUIRRELJMEXER:nanoseconds:916622600:" />
+            # </properties>
+            # <testcase name="io.TestReadLineEOF" classname="io.TestReadLineEOF" time="916.623">
+            # <system-out><![CDATA[]]></system-out>
+            # <system-err><![CDATA[Java Version: 1.8.0_252Java Over-Layer: Loading C:\Users\xer\Projects\squirreljme\emulators\emulator-base\build\lib\main\release\emulator-base.dll...
+            # ...
+            # ]]></system-err>
+            # </testcase>
+            # </testsuite>
 
         # Reset all test state
         squirreljmeTestName = None
