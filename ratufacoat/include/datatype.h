@@ -8,22 +8,19 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Native memory functions.
+ * Data types.
  * 
- * @since 2021/02/28
+ * @since 2021/03/06
  */
 
-#ifndef SQUIRRELJME_MEMORY_H
-#define SQUIRRELJME_MEMORY_H
-
-#include "sjmerc.h"
-#include "datatype.h"
+#ifndef SQUIRRELJME_DATATYPE_H
+#define SQUIRRELJME_DATATYPE_H
 
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_MEMORY_H
+#define SJME_CXX_SQUIRRELJME_DATATYPE_H
 extern "C"
 {
 #endif /* #ifdef SJME_CXX_IS_EXTERNED */
@@ -32,30 +29,49 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
- * Allocates the given number of bytes.
- *
- * @param size The number of bytes to allocate.
- * @since 2019/06/07
+ * The type of data to be written.
+ * 
+ * @since 2021/03/06
  */
-void* sjme_malloc(sjme_jint size);
-
-/**
- * Frees the given pointer.
- *
- * @param p The pointer to free.
- * @since 2019/06/07
- */
-void sjme_free(void* p);
+typedef enum sjme_dataType
+{
+	/** Object. */
+	SJME_DATATYPE_OBJECT = 0,
+	
+	/** Byte. */
+	SJME_DATATYPE_BYTE = 1,
+	
+	/** Short. */
+	SJME_DATATYPE_SHORT = 2,
+	
+	/** Character. */
+	SJME_DATATYPE_CHARACTER = 3,
+	
+	/** Integer. */
+	SJME_DATATYPE_INTEGER = 4,
+	
+	/** Float. */
+	SJME_DATATYPE_FLOAT = 5,
+	
+	/** Long. */
+	SJME_DATATYPE_LONG = 6,
+	
+	/** Double. */
+	SJME_DATATYPE_DOUBLE = 7,
+	
+	/** The number of data types. */
+	SJME_NUM_DATATYPES = 8,
+} sjme_dataType;
 
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_MEMORY_H
+#ifdef SJME_CXX_SQUIRRELJME_DATATYPE_H
 }
-#undef SJME_CXX_SQUIRRELJME_MEMORY_H
+#undef SJME_CXX_SQUIRRELJME_DATATYPE_H
 #undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_MEMORY_H */
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_DATATYPE_H */
 #endif /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_MEMORY_H */
+#endif /* SQUIRRELJME_DATATYPE_H */

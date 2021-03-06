@@ -19,6 +19,7 @@
 
 #include "sjmerc.h"
 #include "error.h"
+#include "datatype.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -38,6 +39,11 @@ typedef struct sjme_memHandles sjme_memHandles;
 /** A single memory handle. */
 typedef struct sjme_memHandle sjme_memHandle;
 
+/**
+ * The kind of memory handle the object is.
+ * 
+ * @since 2021/03/06
+ */
 typedef enum sjme_memHandleKind
 {
 	/** Undefined. */
@@ -153,6 +159,35 @@ sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
  */
 sjme_returnFail sjme_memHandleDelete(sjme_memHandles* handles,
 	sjme_memHandle* handle, sjme_error* error);
+	
+/**
+ * Check if the given range sequence is in range for a memory handle.
+ * 
+ * @param handle The memory handle.
+ * @param offset The offset into the handle.
+ * @param length The number of bytes to check.
+ * @param error The output error state.
+ * @return If the access would be out of bounds.
+ * @since 2021/01/24
+ */
+sjme_returnFail sjme_memHandleInBounds(sjme_memHandle* handle, 
+	sjme_jint offset, sjme_jint length, sjme_error* error);
+
+/**
+ * Accesses a memory handle
+ * 
+ * @param handle The handle to read/write from.
+ * @param write Writing to the handle?
+ * @param type The type of data to read/write.
+ * @param inOut The input/output.
+ * @param offset The offset into the handle.
+ * @param error The failure state.
+ * @return If this failed or not.
+ * @since 2021/03/06
+ */
+sjme_returnFail sjme_memHandleAccess(sjme_memHandle* handle,
+	sjme_jboolean write, sjme_dataType type, sjme_jint* inOut,
+	sjme_jint offset, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

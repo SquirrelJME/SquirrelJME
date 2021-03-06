@@ -197,34 +197,6 @@ extern "C"
 #define SJME_MEM_DATATYPE_MASK UINT8_C(0x07)
 
 /*****************************************************************************
-******************************** DATA TYPES **********************************
-*****************************************************************************/
-
-/** Object. */
-#define SJME_DATATYPE_OBJECT UINT8_C(0)
-
-/** Byte. */
-#define SJME_DATATYPE_BYTE UINT8_C(1)
-
-/** Short. */
-#define SJME_DATATYPE_SHORT UINT8_C(2)
-
-/** Character. */
-#define SJME_DATATYPE_CHARACTER UINT8_C(3)
-
-/** Integer. */
-#define SJME_DATATYPE_INTEGER UINT8_C(4)
-
-/** Float. */
-#define SJME_DATATYPE_FLOAT UINT8_C(5)
-
-/** Long. */
-#define SJME_DATATYPE_LONG UINT8_C(6)
-
-/** Double. */
-#define SJME_DATATYPE_DOUBLE UINT8_C(7)
-
-/*****************************************************************************
 ***************************** COMPARISON TYPES *******************************
 *****************************************************************************/
 

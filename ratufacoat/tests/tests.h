@@ -48,6 +48,7 @@ typedef struct sjme_testShim
 /* Available tests. */
 SJME_TEST_PROTOTYPE(testJvmInit);
 SJME_TEST_PROTOTYPE(testJvmInvalid);
+SJME_TEST_PROTOTYPE(testMemHandleAccess);
 SJME_TEST_PROTOTYPE(testMemHandleCycle);
 SJME_TEST_PROTOTYPE(testMemHandleInit);
 SJME_TEST_PROTOTYPE(testMemHandleInvalid);

@@ -16,12 +16,12 @@
     <file url="file://$PROJECT_DIR$/include/handles.h" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/include/ipnet.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/jvm.h" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/include/memory.h" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/include/memory.h" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/include/native.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/oldstuff.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/opcode.h" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/include/sjmecon.h" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/include/sjmerc.h" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/include/sjmecon.h" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/include/sjmerc.h" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/include/sjmevdef.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/softmath.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/stringies.h" charset="ISO-8859-1" />
@@ -43,7 +43,7 @@
     <file url="file://$PROJECT_DIR$/src/debug.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/error.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/gpio.c" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/src/handles.c" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/handles.c" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/handles.cpp" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/ipnet.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/jvm.c" charset="UTF-8" />
@@ -77,7 +77,7 @@
     <file url="file://$PROJECT_DIR$/tests/shim.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/tests/testBoop.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/tests/testJvmInit.c" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/tests/testMemHandleCycle.c" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/tests/testMemHandleCycle.c" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/tests/testMemHandleInit.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/tests/testMemHandleInvalid.c" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/tests/testNothing.c" charset="ISO-8859-1" />

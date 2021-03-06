@@ -61,3 +61,18 @@ sjme_returnFail sjme_memHandleDelete(sjme_memHandles* handles,
 	sjme_todo("sjme_memHandleDelete(%p, %p, %p)",
 		handles, handle, error);
 }
+
+sjme_returnFail sjme_memHandleInBounds(sjme_memHandle* handle, 
+	sjme_jint offset, sjme_jint length, sjme_error* error)
+{
+	sjme_todo("sjme_memHandleDelete(%p, %d, %d, %p)",
+		handle, offset, length, error);
+}
+
+sjme_returnFail sjme_memHandleAccess(sjme_memHandle* handle,
+	sjme_jboolean write, sjme_dataType type, sjme_jint* inOut,
+	sjme_jint offset, sjme_error* error)
+{
+	sjme_todo("sjme_memHandleAccess(%p, %d, %d, %p, %d, %p)",
+		handle, write, type, inOut, offset, error);
+}

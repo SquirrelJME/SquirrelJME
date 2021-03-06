@@ -200,7 +200,11 @@ typedef int32_t sjme_jint;
 typedef uint32_t sjme_juint;
 
 /** Boolean type. */
-typedef sjme_jbyte sjme_jboolean;
+typedef enum sjme_jboolean
+{
+	false = 0,
+	true = 1,
+} sjme_jboolean;
 
 /** Constant value macros. */
 #define SJME_JBYTE_C(x) INT8_C(x)
