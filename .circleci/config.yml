@@ -674,7 +674,7 @@ jobs:
             - 'ratufacoat/build/builtin.c'
 
   # Poke RetroArch for building the cores
-  construct_builtInSummerCoatRom_retroArchPoke:
+  poke_RetroArch:
     executor: buildenv
     environment:
       # Allow Gradle to be fully cached
@@ -765,7 +765,7 @@ workflows:
             - construct_romSummerCoat
 
       # Only tell RetroArch to build if Linux went okay
-      - construct_builtInSummerCoatRom_retroArchPoke:
+      - poke_RetroArch:
           requires:
             - ratufacoat_build_linux
             - ratufacoat_build_windows
