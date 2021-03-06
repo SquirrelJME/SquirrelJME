@@ -56,15 +56,21 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
 # Does the static ROM file exist? If it does we can pack it into the binary
-if(EXISTS "${PROJECT_SOURCE_DIR}/build/builtin.c")
+option(SQUIRRELJME_USE_BUILTIN "Use Built-In ROM (If Detected)" ON)
+set(SQUIRRELJME_BUILTIN_FILE_CHECK "${PROJECT_SOURCE_DIR}/build/builtin.c")
+if(SQUIRRELJME_USE_BUILTIN AND EXISTS "${SQUIRRELJME_BUILTIN_FILE_CHECK}")
 	message("SquirrelJME: Including Built-In ROM.")
-	set(SQUIRRELJME_HAS_BUILTIN)
 
-	option(SQUIRRELJME_HAS_BUILTIN "Use Built-In ROM (Detected)" ON)
+	set(SQUIRRELJME_HAS_BUILTIN ON)
+	set(SQUIRRELJME_BUILTIN_FILE "${SQUIRRELJME_BUILTIN_FILE_CHECK}")
 else()
-	message("SquirrelJME: No Built-In ROM Available.")
+	if(EXISTS "${SQUIRRELJME_BUILTIN_FILE_CHECK}")
+		message("SquirrelJME: Built-In ROM Available, but disabled.")
+	else()
+		message("SquirrelJME: No Built-In ROM Available.")
+	endif()
 
-	option(SQUIRRELJME_HAS_BUILTIN "Use Built-In ROM (Detected)" OFF)
+	set(SQUIRRELJME_HAS_BUILTIN OFF)
 	set(SQUIRRELJME_BUILTIN_FILE)
 endif()
 

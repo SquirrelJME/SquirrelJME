@@ -7,11 +7,6 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Main project source code
 
-# Does the static ROM file exist? If it does we can pack it into the binary
-if(SQUIRRELJME_HAS_BUILTIN)
-	set(SQUIRRELJME_BUILTIN_FILE "${PROJECT_SOURCE_DIR}/build/builtin.c")
-endif()
-
 # Base core library
 add_library(SquirrelJMECore STATIC
 	accelgfx.c
@@ -41,6 +36,7 @@ target_include_directories(SquirrelJMECore PUBLIC
 	"${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
 
 # Does the static ROM file exist? If it does we can pack it into the binary
+message("Built-In? ${SQUIRRELJME_HAS_BUILTIN} ${SQUIRRELJME_BUILTIN_FILE}")
 if(SQUIRRELJME_HAS_BUILTIN)
 	add_compile_definitions(SQUIRRELJME_HAS_BUILTIN=1)
 endif()

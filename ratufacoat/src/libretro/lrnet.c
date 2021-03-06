@@ -7,4 +7,4 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#inclide "lrlocal.h"
+#include "lrlocal.h"

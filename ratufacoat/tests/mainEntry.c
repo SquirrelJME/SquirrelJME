@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
+#include "builtin.h"
 #include "tests.h"
 #include "stringies.h"
 
@@ -124,9 +124,11 @@ int main(int argc, char** argv)
 	sjme_jbyte errorBuf[ERROR_BUF_LEN];
 	sjme_jint errorBufLen;
 	
-	/* Version report for tests. */
-	fprintf(stderr, "SquirrelJME %s\n",
+	/* General test report. */
+	fprintf(stderr, "Testing SquirrelJME %s\n",
 		SQUIRRELJME_VERSION" ("SQUIRRELJME_VERSION_ID")");
+	fprintf(stderr, "Built-In ROM is %s\n",
+		(sjme_builtInRomSize == 0 ? "Unavailable" : "Available"));
 	
 	/* Running all tests? */
 	if (argc == 1 || argv[0] == NULL)
