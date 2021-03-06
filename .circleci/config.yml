@@ -672,6 +672,17 @@ jobs:
           root: .
           paths:
             - 'ratufacoat/build/builtin.c'
+
+  # Poke RetroArch for building the cores
+  construct_builtInSummerCoatRom_retroArchPoke:
+    executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
       - store_artifacts:
           path: ratufacoat/build/builtin.c
       - run:
@@ -753,8 +764,17 @@ workflows:
           requires:
             - construct_romSummerCoat
 
+      # Only tell RetroArch to build if Linux went okay
+      - construct_builtInSummerCoatRom_retroArchPoke:
+          requires:
+            - ratufacoat_build_linux
+            - ratufacoat_build_windows
+            - ratufacoat_build_macosx
+
       ############################## RATUFACOAT ##############################
-      - ratufacoat_build_linux
+      - ratufacoat_build_linux:
+          requires:
+            - construct_builtInSummerCoatRom
       - ratufacoat_build_linux_mips:
           requires:
             - ratufacoat_build_linux
@@ -767,11 +787,15 @@ workflows:
 
       # Only run Windows and Mac OS X on trunk as a cost saving measure
       - ratufacoat_build_windows:
+          requires:
+            - construct_builtInSummerCoatRom
           filters:
             branches:
               only:
                 - trunk
       - ratufacoat_build_macosx:
+          requires:
+            - construct_builtInSummerCoatRom
           filters:
             branches:
               only:
