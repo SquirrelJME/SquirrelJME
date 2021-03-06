@@ -755,9 +755,15 @@ workflows:
 
       ############################## RATUFACOAT ##############################
       - ratufacoat_build_linux
-      - ratufacoat_build_linux_mips
-      - ratufacoat_build_linux_powerpc
-      - ratufacoat_build_linux_sparc64
+      - ratufacoat_build_linux_mips:
+          requires:
+            - ratufacoat_build_linux
+      - ratufacoat_build_linux_powerpc:
+          requires:
+            - ratufacoat_build_linux
+      - ratufacoat_build_linux_sparc64:
+          requires:
+            - ratufacoat_build_linux
 
       # Only run Windows and Mac OS X on trunk as a cost saving measure
       - ratufacoat_build_windows:
