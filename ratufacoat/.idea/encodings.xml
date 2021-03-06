@@ -13,7 +13,7 @@
     <file url="file://$PROJECT_DIR$/include/debug.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/error.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/gpio.h" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/include/handles.h" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/include/handles.h" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/include/ipnet.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/jvm.h" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/include/memory.h" charset="ISO-8859-1" />
@@ -79,7 +79,7 @@
     <file url="file://$PROJECT_DIR$/tests/testJvmInit.c" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/tests/testMemHandleCycle.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/tests/testMemHandleInit.c" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/tests/testMemHandleInvalid.c" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/tests/testMemHandleInvalid.c" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/tests/testNothing.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/tests/testOpCodes.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/tests/testSkipped.c" charset="ISO-8859-1" />

@@ -51,6 +51,13 @@ sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 	sjme_memHandle** out, sjme_memHandleKind kind, sjme_jint size,
 	sjme_error* error)
 {
-	sjme_todo("sjme_memHandleNew(%p, %p, %d, %d, %s)",
+	sjme_todo("sjme_memHandleNew(%p, %p, %d, %d, %p)",
 		handles, out, kind, size, error);
+}
+
+sjme_returnFail sjme_memHandleDelete(sjme_memHandles* handles,
+	sjme_memHandle* handle, sjme_error* error)
+{
+	sjme_todo("sjme_memHandleDelete(%p, %p, %p)",
+		handles, handle, error);
 }

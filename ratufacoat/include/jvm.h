@@ -115,13 +115,13 @@ sjme_returnFail sjme_jvmDestroy(sjme_jvm* jvm, sjme_error* error);
  * @param outJvm The output JVM.
  * @param args Arguments to the JVM.
  * @param options Options used to initialize the JVM.
- * @param nativefuncs Native functions used in the JVM.
+ * @param nativeFuncs Native functions used in the JVM.
  * @param error Error flag.
  * @return If the JVM creation has failed or not.
  * @since 2019/06/03
  */
 sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
-	sjme_nativefuncs* nativefuncs, sjme_error* error);
+	sjme_nativefuncs* nativeFuncs, sjme_error* error);
 
 /**
  * Returns the virtual memory of the given JVM.

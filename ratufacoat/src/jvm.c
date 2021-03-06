@@ -186,7 +186,7 @@ sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_error* error, sjme_jint cycles)
 }
 
 sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
-	sjme_nativefuncs* nativefuncs, sjme_error* error)
+	sjme_nativefuncs* nativeFuncs, sjme_error* error)
 {
 	sjme_jvmoptions nullOptions;
 	void* ram;
@@ -199,10 +199,10 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 	sjme_vmem* vmem;
 	
 	/* Missing important arguments. */
-	if (outJvm == NULL || nativefuncs == NULL || options == NULL)
+	if (outJvm == NULL || nativeFuncs == NULL || options == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS,
-			((!!nativefuncs)) * 2 + (!!options));
+			((!!nativeFuncs)) * 2 + (!!options));
 		return SJME_RETURN_FAIL;
 	}
 	
@@ -276,12 +276,12 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 	}
 	
 	/* Set native functions. */
-	rv->nativefuncs = nativefuncs;
+	rv->nativefuncs = nativeFuncs;
 	
 	/* Initialize the framebuffer info, if available. */
 	fbinfo = NULL;
-	if (nativefuncs->framebuffer != NULL)
-		fbinfo = nativefuncs->framebuffer();
+	if (nativeFuncs->framebuffer != NULL)
+		fbinfo = nativeFuncs->framebuffer();
 	
 	/* Initialize framebuffer, done a bit early to show errors. */
 	rv->fbinfo = fbinfo;
@@ -377,8 +377,8 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 	if (sjme_loadBootRom(rv, error) == 0)
 	{
 		/* Write the Boot failure message! */
-		sjme_console_pipewrite(rv, (nativefuncs != NULL ?
-			nativefuncs->stderr_write : NULL), sjme_bootfailmessage, 0,
+		sjme_console_pipewrite(rv, (nativeFuncs != NULL ?
+			nativeFuncs->stderr_write : NULL), sjme_bootfailmessage, 0,
 			sjme_bootfailmessageSizeOf, error);
 		
 		/* Force error to be on-screen. */
@@ -398,8 +398,8 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 	}
 	
 	/* Memory map the option JAR, if available. */
-	if (nativefuncs->optional_jar != NULL)
-		if (nativefuncs->optional_jar(&optionjar, &i) != 0)
+	if (nativeFuncs->optional_jar != NULL)
+		if (nativeFuncs->optional_jar(&optionjar, &i) != 0)
 		{
 			rv->optionjar = sjme_vmmmap(vmem, 0, optionjar, i, error);
 			if (rv->rom == NULL)

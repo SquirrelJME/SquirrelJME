@@ -142,6 +142,18 @@ sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 	sjme_memHandle** out, sjme_memHandleKind kind, sjme_jint size,
 	sjme_error* error);
 
+/**
+ * Deletes the given memory handle.
+ * 
+ * @param handles The handle storage.
+ * @param handle The handle to clear.
+ * @param error The output error state.
+ * @return If destroying the mem handle worked or not.
+ * @since 2021/03/06 
+ */
+sjme_returnFail sjme_memHandleDelete(sjme_memHandles* handles,
+	sjme_memHandle* handle, sjme_error* error);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
