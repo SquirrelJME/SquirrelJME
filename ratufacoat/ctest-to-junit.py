@@ -69,7 +69,7 @@ for event, tree in xml.iterparse(sys.stdin, events=("start", "end")):
         elif tag == "Value":
             # Execution time?
             if "execTime" == squirreljmeWantValue:
-                squirreljmeExecTime = float(text) * 1000
+                squirreljmeExecTime = max(float(1), float(text) * 1000)
 
             # Standard error?
             elif "stdErr" == squirreljmeWantValue:
