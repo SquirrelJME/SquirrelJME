@@ -267,7 +267,7 @@ jobs:
           name: Install required dependencies
           command: |
             apt-get update -y
-            apt-get install -y build-essential
+            apt-get install -y build-essential python3
             apt-get install -y -t buster-backports cmake
       - attach_workspace:
           at: .
@@ -284,7 +284,6 @@ jobs:
           working_directory: ratufacoat
           command: ctest --extra-verbose -T Test .
       - run:
-          shell: bash.exe
           name: Convert CTest to JUnit XML
           command: python3 ctest-to-junit.py
           when: always
@@ -310,7 +309,7 @@ jobs:
           name: Install required dependencies
           command: |
             apt-get update -y
-            apt-get install -y build-essential gcc-mips-linux-gnu binutils-mips-linux-gnu
+            apt-get install -y build-essential gcc-mips-linux-gnu binutils-mips-linux-gnu python3
             apt-get install -y -t buster-backports cmake qemu-user-static
       - attach_workspace:
           at: .
@@ -337,7 +336,7 @@ jobs:
           name: Install required dependencies
           command: |
             apt-get update -y
-            apt-get install -y build-essential gcc-powerpc-linux-gnu binutils-powerpc-linux-gnu
+            apt-get install -y build-essential gcc-powerpc-linux-gnu binutils-powerpc-linux-gnu python3
             apt-get install -y -t buster-backports cmake qemu-user-static
       - attach_workspace:
           at: .
@@ -364,7 +363,7 @@ jobs:
           name: Install required dependencies
           command: |
             apt-get update -y
-            apt-get install -y build-essential gcc-sparc64-linux-gnu binutils-sparc64-linux-gnu
+            apt-get install -y build-essential gcc-sparc64-linux-gnu binutils-sparc64-linux-gnu python3
             apt-get install -y -t buster-backports cmake qemu-user-static
       - attach_workspace:
           at: .
