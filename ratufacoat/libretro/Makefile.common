@@ -32,11 +32,15 @@ SOURCES_C   := \
 	$(CORE_DIR)/src/accelgfx.c \
 	$(CORE_DIR)/src/audio.c \
 	$(CORE_DIR)/src/bootrom.c \
+	$(CORE_DIR)/src/btooth.c \
+	$(CORE_DIR)/src/cellfunc.c \
 	$(CORE_DIR)/src/corefont.c \
 	$(CORE_DIR)/src/cpu.c \
 	$(CORE_DIR)/src/debug.c \
 	$(CORE_DIR)/src/error.c \
+	$(CORE_DIR)/src/gpio.c \
 	$(CORE_DIR)/src/handles.c \
+	$(CORE_DIR)/src/ipnet.c \
 	$(CORE_DIR)/src/jvm.c \
 	$(CORE_DIR)/src/memory.c \
 	$(CORE_DIR)/src/oldstuff.c \
@@ -46,11 +50,13 @@ SOURCES_C   := \
 	$(CORE_DIR)/src/stringies.c \
 	$(CORE_DIR)/src/syscall.c \
 	$(CORE_DIR)/src/video.c \
+	$(CORE_DIR)/src/xbuiltin.c \
 	$(CORE_DIR)/src/libretro/lraudio.c \
 	$(CORE_DIR)/src/libretro/lrcheat.c \
 	$(CORE_DIR)/src/libretro/lrfreeze.c \
 	$(CORE_DIR)/src/libretro/lrinfo.c \
 	$(CORE_DIR)/src/libretro/lrjoypad.c \
+	$(CORE_DIR)/src/libretro/lrnet.c \
 	$(CORE_DIR)/src/libretro/lrvfs.c \
 	$(CORE_DIR)/src/libretro/sys_libr.c \
 	$(SQUIRRELJME_EXTRA_C_SOURCES)

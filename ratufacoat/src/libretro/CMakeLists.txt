@@ -14,6 +14,7 @@ add_library(squirreljme_libretro SHARED
 	lrfreeze.c
 	lrinfo.c
 	lrjoypad.c
+	lrnet.c
 	lrvfs.c
 	sys_libr.c)
 

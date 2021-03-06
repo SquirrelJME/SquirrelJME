@@ -17,11 +17,15 @@ add_library(SquirrelJMECore STATIC
 	accelgfx.c
 	audio.c
 	bootrom.c
+	btooth.c
+	cellfunc.c
 	corefont.c
 	cpu.c
 	debug.c
 	error.c
+	gpio.c
 	handles.c
+	ipnet.c
 	jvm.c
 	memory.c
 	oldstuff.c
