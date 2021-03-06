@@ -191,6 +191,20 @@ jobs:
           name: Test CMake Build
           working_directory: ratufacoat
           command: ctest --extra-verbose -T Test .
+      - run:
+          name: Convert CTest to JUnit XML
+          command: python3 ctest-to-junit.py < Testing/*/Test.xml
+          working_directory: ratufacoat
+          when: always
+      - run:
+          name: Save test results
+          working_directory: ratufacoat
+          command: |
+            mkdir -p ~/test-results/junit-macosx/
+            find . -type f -regex '.*/build/junit/.*\.xml' -exec cp {} ~/test-results/junit-macosx/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
       - store_artifacts:
           path: ratufacoat/src/sdl2/SquirrelJME
           destination: SquirrelJME
@@ -300,8 +314,6 @@ jobs:
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
-          path: ~/test-results
-      - store_artifacts:
           path: ratufacoat/src/sdl2/SquirrelJME
           destination: SquirrelJME
 
@@ -331,6 +343,20 @@ jobs:
           name: Test CMake Build
           working_directory: ratufacoat
           command: ctest --extra-verbose -T Test .
+      - run:
+          name: Convert CTest to JUnit XML
+          command: python3 ctest-to-junit.py < Testing/*/Test.xml
+          working_directory: ratufacoat
+          when: always
+      - run:
+          name: Save test results
+          working_directory: ratufacoat
+          command: |
+            mkdir -p ~/test-results/junit-linux/
+            find . -type f -regex '.*/build/junit/.*\.xml' -exec cp {} ~/test-results/junit-linux/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
 
   ### RatufaCoat (PowerPC, Cross Arch Testing)
   ratufacoat_build_linux_powerpc:
@@ -358,6 +384,20 @@ jobs:
           name: Test CMake Build
           working_directory: ratufacoat
           command: ctest --extra-verbose -T Test .
+      - run:
+          name: Convert CTest to JUnit XML
+          command: python3 ctest-to-junit.py < Testing/*/Test.xml
+          working_directory: ratufacoat
+          when: always
+      - run:
+          name: Save test results
+          working_directory: ratufacoat
+          command: |
+            mkdir -p ~/test-results/junit-linux/
+            find . -type f -regex '.*/build/junit/.*\.xml' -exec cp {} ~/test-results/junit-linux/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
 
   ### RatufaCoat (SPARC64, Cross Arch Testing)
   ratufacoat_build_linux_sparc64:
@@ -385,6 +425,20 @@ jobs:
           name: Test CMake Build
           working_directory: ratufacoat
           command: ctest --extra-verbose -T Test .
+      - run:
+          name: Convert CTest to JUnit XML
+          command: python3 ctest-to-junit.py < Testing/*/Test.xml
+          working_directory: ratufacoat
+          when: always
+      - run:
+          name: Save test results
+          working_directory: ratufacoat
+          command: |
+            mkdir -p ~/test-results/junit-linux/
+            find . -type f -regex '.*/build/junit/.*\.xml' -exec cp {} ~/test-results/junit-linux/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
 
   ### SpringCoat
   test_springcoat:

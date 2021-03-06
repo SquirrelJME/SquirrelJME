@@ -113,6 +113,12 @@ for event, tree in xml.iterparse(sys.stdin, events=("start", "end")):
                         squirreljmeExecTime))
             file.write('\n')
 
+            # Failure, needed for cases
+            if squirreljmeNumFailed > 0:
+                file.write('<failure type="%s"><![CDATA[%s]]></failure>' %
+                    (squirreljmeTestName, squirreljmeStdErr))
+                file.write('\n')
+
             # Standard output
             file.write('<system-out><![CDATA[]]></system-out>')
             file.write('\n')
