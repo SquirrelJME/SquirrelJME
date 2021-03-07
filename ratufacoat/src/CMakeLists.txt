@@ -10,6 +10,7 @@
 # Base core library
 add_library(SquirrelJMECore STATIC
 	accelgfx.c
+	atomic.c
 	audio.c
 	bootrom.c
 	btooth.c

@@ -46,7 +46,6 @@ sjme_returnFail sjme_memHandlesDestroy(sjme_memHandles* in, sjme_error* error)
 	sjme_todo("sjme_memHandlesDestroy(%p, %p)", in, error);
 }
 
-
 sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 	sjme_memHandle** out, sjme_memHandleKind kind, sjme_jint size,
 	sjme_error* error)

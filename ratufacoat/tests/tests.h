@@ -46,6 +46,7 @@ typedef struct sjme_testShim
 #define SKIP_TEST() SJME_JINT_C(-65535)
 
 /* Available tests. */
+SJME_TEST_PROTOTYPE(testAtomic);
 SJME_TEST_PROTOTYPE(testJvmInit);
 SJME_TEST_PROTOTYPE(testJvmInvalid);
 SJME_TEST_PROTOTYPE(testMemHandleAccess);

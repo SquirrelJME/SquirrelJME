@@ -30,6 +30,7 @@ INCFLAGS := -I$(CORE_DIR)/include -I$(CORE_DIR)/libretro $(INCFLAGS) \
 
 SOURCES_C   := \
 	$(CORE_DIR)/src/accelgfx.c \
+	$(CORE_DIR)/src/atomic.c \
 	$(CORE_DIR)/src/audio.c \
 	$(CORE_DIR)/src/bootrom.c \
 	$(CORE_DIR)/src/btooth.c \
