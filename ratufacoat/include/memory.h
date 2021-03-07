@@ -34,7 +34,7 @@ extern "C"
 /**
  * Allocates the given number of bytes.
  *
- * @param size The number of bytes to allocate.
+ * @param size The number of bytes to allocate or @c NULL if that failed.
  * @since 2019/06/07
  */
 void* sjme_malloc(sjme_jint size);

@@ -17,6 +17,7 @@ add_library(SquirrelJMECore STATIC
 	cellfunc.c
 	corefont.c
 	cpu.c
+	datatype.c
 	debug.c
 	error.c
 	gpio.c

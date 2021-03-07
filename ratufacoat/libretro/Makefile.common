@@ -37,6 +37,7 @@ SOURCES_C   := \
 	$(CORE_DIR)/src/cellfunc.c \
 	$(CORE_DIR)/src/corefont.c \
 	$(CORE_DIR)/src/cpu.c \
+	$(CORE_DIR)/src/datatype.c \
 	$(CORE_DIR)/src/debug.c \
 	$(CORE_DIR)/src/error.c \
 	$(CORE_DIR)/src/gpio.c \

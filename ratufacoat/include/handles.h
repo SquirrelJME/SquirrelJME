@@ -127,12 +127,13 @@ sjme_returnFail sjme_memHandlesInit(sjme_memHandles** out, sjme_error* error);
 /**
  * Destroys and deallocates the state of memory handles.
  * 
- * @param in The handles to destroy.
+ * @param handles The handles to destroy.
  * @param error The error state.
  * @return If this failed or not.
  * @since 2021/02/28
  */
-sjme_returnFail sjme_memHandlesDestroy(sjme_memHandles* in, sjme_error* error);
+sjme_returnFail sjme_memHandlesDestroy(sjme_memHandles* handles,
+	sjme_error* error);
 
 /**
  * Initializes a new memory 

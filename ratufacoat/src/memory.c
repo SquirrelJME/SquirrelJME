@@ -22,7 +22,6 @@
 #include "sjmerc.h"
 #include "memory.h"
 
-/** Allocates the given number of bytes. */
 void* sjme_malloc(sjme_jint size)
 {
 	void* rv;
@@ -32,7 +31,8 @@ void* sjme_malloc(sjme_jint size)
 		return NULL;
 	
 	/* Round size and include extra 4-bytes for size storage. */
-	size = ((size + SJME_JINT_C(3)) & (~SJME_JINT_C(3))) + SJME_JINT_C(4);
+	size = ((size + SJME_JINT_C(3)) & (~SJME_JINT_C(3))) +
+		SJME_JINT_C(4);
 	
 	/* Exceeds maximum permitted allocation size? */
 	if (sizeof(sjme_jint) > sizeof(size_t) && size > (sjme_jint)SIZE_MAX)
@@ -62,23 +62,22 @@ void* sjme_malloc(sjme_jint size)
 	return SJME_POINTER_OFFSET_LONG(rv, 4);
 }
 
-/** Frees the given pointer. */
 void sjme_free(void* p)
 {
-	void* basep;
+	void* baseP;
 	
 	/* Ignore null pointers. */
 	if (p == NULL)
 		return;
 	
 	/* Base pointer which is size shifted. */
-	basep = SJME_POINTER_OFFSET_LONG(p, -4);
+	baseP = SJME_POINTER_OFFSET_LONG(p, -4);
 	
 #if defined(__palmos__)
 	/* Use Palm OS free. */
-	MemPtrFree(basep);
+	MemPtrFree(baseP);
 #else
 	/* Use Standard C free. */
-	free(basep);
+	free(baseP);
 #endif
 }

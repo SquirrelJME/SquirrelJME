@@ -123,6 +123,15 @@ typedef enum sjme_errorCode
 	
 	/** Null arguments. */
 	SJME_ERROR_NULLARGS,
+	
+	/** Negative size. */
+	SJME_ERROR_NEGATIVE_SIZE,
+	
+	/** Invalid memory handle kind. */
+	SJME_ERROR_INVALID_MEMHANDLE_KIND,
+	
+	/** Out of bounds. */
+	SJME_ERROR_OUT_OF_BOUNDS,
 } sjme_errorCode; 
 
 /** This represents an error. */

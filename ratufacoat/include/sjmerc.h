@@ -290,13 +290,14 @@ typedef enum sjme_jboolean
  * 
  * @since 2021/02/27
  */
-typedef sjme_jint sjme_returnFail;
-
-/** Method success. @typedef sjme_returnFail. */
-#define SJME_RETURN_SUCCESS ((sjme_returnFail)0)
-
-/** Method failure. @typedef sjme_returnFail. */
-#define SJME_RETURN_FAIL ((sjme_returnFail)1)
+typedef enum sjme_returnFail
+{
+	/** Method success. @typedef sjme_returnFail. */
+	SJME_RETURN_SUCCESS = 0,
+	
+	/** Method failure. @typedef sjme_returnFail. */
+	SJME_RETURN_FAIL = 1,
+} sjme_returnFail;
 
 /**
  * Marker indicating that the method never returns.
