@@ -18,6 +18,9 @@
 /** Minimum possible mask. */
 #define SJME_MINIMAL_MASK 63
 
+/** Random allocation tries. */
+#define SJME_RANDOM_TRIES 7
+
 /**
  * Storage for all memory handles.
  * 
@@ -33,6 +36,9 @@ struct sjme_memHandles
 	
 	/** Random number for the handle ID. */
 	sjme_randomState random;
+	
+	/** Used number of handles. */
+	sjme_jint usedHandles;
 	
 	/** Dangling data for handles. */
 	sjme_ubyte bytes[];
@@ -156,9 +162,10 @@ sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 	sjme_error* error)
 {
 	sjme_memHandle** newHandles;
+	sjme_memHandle** tray;
 	sjme_memHandle* rv = NULL;
 	sjme_memHandle* check;
-	sjme_jint randId, trySlot, tryId, scanSlot, mask, topMask;
+	sjme_jint randId, trySlot, tryId, scanSlot, mask, topMask, randTry;
 	
 	/* Cannot be null. */
 	if (handles == NULL || out == NULL)
@@ -201,10 +208,41 @@ sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 	trySlot = randId & (handles->numHandles - 1);
 	while (handles->handles[trySlot] != NULL)
 	{
-		/* Find the first free slot. */
-		for (trySlot = 0; trySlot < handles->numHandles; trySlot++)
-			if (handles->handles[trySlot] == NULL)
+		/* If half of our handles are used up then the chance of picking */
+		/* a used handle is 50% or greater, so just do not bother and add */
+		/* more space for handles. */
+		if (handles->usedHandles > (handles->numHandles >> 1))
+			trySlot = handles->numHandles;
+		
+		/* Otherwise first pick at random, then do a linear scan. */
+		else
+		{
+			/* Try a bunch of tries to place this in a still random slot. */
+			for (randTry = 0; randTry < SJME_RANDOM_TRIES; randTry++)
+			{
+				/* Make another random ID and try to fit it in here. */
+				if (sjme_randomNextInt(&handles->random, &randId, error))
+				{
+					sjme_setError(error, SJME_ERROR_COULD_NOT_SEED,
+						randTry);
+					return SJME_RETURN_FAIL;
+				}
+				
+				/* Is this random ID valid? */
+				trySlot = randId & (handles->numHandles - 1);
+				if (handles->handles[trySlot] == NULL)
+					break;
+			}
+			
+			/* A random attempt worked! */
+			if (randTry < SJME_RANDOM_TRIES)
 				break;
+			
+			/* Find the first free slot. */
+			for (trySlot = 0; trySlot < handles->numHandles; trySlot++)
+				if (handles->handles[trySlot] == NULL)
+					break;
+		}
 		
 		/* No slot found? Grow the space. */
 		if (trySlot == handles->numHandles)
@@ -226,6 +264,10 @@ sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 			handles->handles = newHandles;
 			handles->numHandles <<= 1;
 			
+			/* Debug. */
+			fprintf(stderr, "Max Handles: %d\n", handles->numHandles);
+			fflush(stderr);
+			
 			/* Try again! */
 			continue;
 		}
@@ -244,13 +286,14 @@ sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 	/* ex: BOOP 0xcf07b907 -> 47367:0xcf07b907 */
 	topMask = handles->numHandles - 1;
 	tryId = (randId & (~topMask)) | trySlot;
+	tray = handles->handles;
 	for (mask = topMask; mask >= SJME_MINIMAL_MASK; mask >>= 1)
 	{
 		/* Try this slot. */
 		scanSlot = tryId & mask;
 		
 		/* Is there an ID collision? */
-		check = handles->handles[scanSlot];
+		check = tray[scanSlot];
 		if (check != NULL && check->id == tryId)
 		{
 			/* Debug. */
@@ -268,7 +311,7 @@ sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 			}
 			
 			/* Calculate a new ID number. */
-			tryId = (randId & (~(handles->numHandles - 1))) | trySlot;
+			tryId = (randId & (~topMask)) | trySlot;
 			
 			/* Go back to the start, shift up since after-loop shift-down. */
 			mask = topMask << 1;
@@ -277,6 +320,9 @@ sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 	
 	/* Store in this slot. */
 	handles->handles[trySlot] = rv;
+	
+	/* Count up. */
+	handles->usedHandles++;
 	
 	/* Set properties for the handle. */
 	rv->id = tryId;
@@ -317,6 +363,9 @@ sjme_returnFail sjme_memHandleDelete(sjme_memHandles* handles,
 	
 	/* Clear the slot. */
 	handles->handles[slot] = NULL;
+	
+	/* Count down. */
+	handles->usedHandles--;
 	
 	/* Destroy the handle data. */
 	memset(handle, 0, sizeof(*handle) + handle->length);

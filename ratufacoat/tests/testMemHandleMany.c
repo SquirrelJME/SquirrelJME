@@ -11,7 +11,7 @@
 #include "handles.h"
 
 /** The number of handles to allocate. */
-#define HANDLE_COUNT 262145
+#define HANDLE_COUNT 524289 /*262145*/
 
 /** The size of each handle. */
 #define HANDLE_SIZE 128
@@ -35,7 +35,7 @@ SJME_TEST_PROTOTYPE(testMemHandleMany)
 	for (i = 0; i < HANDLE_COUNT; i++)
 	{
 		/* Progress note. */
-		if ((i & 1023) == 0)
+		if ((i & 4095) == 0)
 		{
 			fprintf(stderr, "At %d of %d...\n", i, HANDLE_COUNT);
 			fflush(stderr);
