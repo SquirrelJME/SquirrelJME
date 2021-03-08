@@ -10,6 +10,10 @@
 #include "debug.h"
 #include "handles.h"
 #include "memory.h"
+#include "random.h"
+
+/** Initial maximum handle count. */
+#define SJME_INIT_COUNT 64
 
 /**
  * Storage for all memory handles.
@@ -18,6 +22,14 @@
  */
 struct sjme_memHandles
 {
+	/** Allocated handle array (resized as needed). */
+	sjme_memHandle** handles;
+	
+	/** The handle array size. */
+	sjme_jint numHandles;
+	
+	/** Random number for the handle ID. */
+	sjme_randomState random;
 };
 
 /**
@@ -29,6 +41,9 @@ struct sjme_memHandle
 {
 	/** The identifier of the handle. */
 	sjme_jint id;
+	
+	/** The mask used to determine the position in the slotting table. */
+	sjme_jint slotMask;
 	
 	/** The kind of this handle. */
 	sjme_memHandleKind kind;
@@ -42,6 +57,10 @@ struct sjme_memHandle
 
 sjme_returnFail sjme_memHandlesInit(sjme_memHandles** out, sjme_error* error)
 {
+	sjme_memHandles* rv = NULL;
+	sjme_memHandle** handles = NULL;
+	sjme_jlong seed;
+	
 	/* Cannot be null. */
 	if (out == NULL)
 	{
@@ -49,7 +68,45 @@ sjme_returnFail sjme_memHandlesInit(sjme_memHandles** out, sjme_error* error)
 		return SJME_RETURN_FAIL;
 	}
 	
-	sjme_todo("sjme_memHandlesInit(%p, %p)", out, error);
+	/* Allocate, check if it was actually done. */
+	rv = sjme_malloc(sizeof(*rv));
+	if (rv == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NO_MEMORY, sizeof(*rv));
+		return SJME_RETURN_FAIL;
+	}
+	
+	/* Seed the RNG for generated upper values. */
+	seed.hi = SJME_POINTER_TO_JINT((void*)rv);
+	seed.lo = SJME_POINTER_TO_JINT((void*)out);
+	if (sjme_randomSeed(&rv->random, seed, error))
+	{
+		sjme_free(rv);
+		
+		if (!sjme_hasError(error))
+			sjme_setError(error, SJME_ERROR_COULD_NOT_SEED,
+				sizeof(sjme_memHandle*) * SJME_INIT_COUNT);
+		return SJME_RETURN_FAIL;
+	}
+	
+	/* Allocate storage for all handles. */
+	handles = sjme_malloc(sizeof(sjme_memHandle*) * SJME_INIT_COUNT);
+	if (handles == NULL)
+	{
+		sjme_free(rv);
+		
+		sjme_setError(error, SJME_ERROR_NO_MEMORY,
+			sizeof(sjme_memHandle*) * SJME_INIT_COUNT);
+		return SJME_RETURN_FAIL;
+	}
+	
+	/* Set where handles are contained. */
+	rv->handles = handles;
+	rv->numHandles = SJME_INIT_COUNT;
+	
+	/* It worked! So return the pointer. */
+	*out = rv;
+	return SJME_RETURN_SUCCESS;
 }
 
 sjme_returnFail sjme_memHandlesDestroy(sjme_memHandles* handles,

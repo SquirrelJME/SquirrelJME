@@ -53,7 +53,7 @@ typedef enum sjme_errorCode
 	SJME_ERROR_ENDOFFILE,
 	
 	/** No memory available. */
-	SJME_ERROR_NOMEMORY,
+	SJME_ERROR_NO_MEMORY,
 	
 	/** No native ROM file specified. */
 	SJME_ERROR_NONATIVEROM,
@@ -132,6 +132,9 @@ typedef enum sjme_errorCode
 	
 	/** Out of bounds. */
 	SJME_ERROR_OUT_OF_BOUNDS,
+	
+	/** Could not seed the RNG. */
+	SJME_ERROR_COULD_NOT_SEED,
 } sjme_errorCode; 
 
 /** This represents an error. */

@@ -47,6 +47,7 @@ SOURCES_C   := \
 	$(CORE_DIR)/src/memory.c \
 	$(CORE_DIR)/src/oldstuff.c \
 	$(CORE_DIR)/src/opcode.c \
+	$(CORE_DIR)/src/random.c \
 	$(CORE_DIR)/src/sjmerc.c \
 	$(CORE_DIR)/src/softmath.c \
 	$(CORE_DIR)/src/stringies.c \

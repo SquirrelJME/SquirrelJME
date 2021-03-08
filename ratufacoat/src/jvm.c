@@ -227,7 +227,7 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 	{
 		sjme_free(rv);
 		
-		sjme_setError(error, SJME_ERROR_NOMEMORY,
+		sjme_setError(error, SJME_ERROR_NO_MEMORY,
 					  sizeof(*rv));
 		
 		return SJME_RETURN_FAIL;
@@ -257,7 +257,7 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 	/* Failed to allocate the RAM. */
 	if (ram == NULL)
 	{
-		sjme_setError(error, SJME_ERROR_NOMEMORY, options->ramSize);
+		sjme_setError(error, SJME_ERROR_NO_MEMORY, options->ramSize);
 			
 		sjme_free(rv);
 		

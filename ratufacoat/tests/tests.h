@@ -56,6 +56,7 @@ SJME_TEST_PROTOTYPE(testMemHandleInit);
 SJME_TEST_PROTOTYPE(testMemHandleInvalid);
 SJME_TEST_PROTOTYPE(testNothing);
 SJME_TEST_PROTOTYPE(testOpCodes);
+SJME_TEST_PROTOTYPE(testRandom);
 SJME_TEST_PROTOTYPE(testSkipped);
 
 #endif /* SQUIRRELJME_TESTS_H */

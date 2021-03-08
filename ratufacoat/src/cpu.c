@@ -498,7 +498,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					oldcpu = sjme_malloc(sizeof(*oldcpu));
 					if (oldcpu == NULL)
 					{
-						sjme_setError(error, SJME_ERROR_NOMEMORY,
+						sjme_setError(error, SJME_ERROR_NO_MEMORY,
 									  sizeof(*oldcpu));
 						
 						return cycles;
@@ -730,7 +730,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 						oldcpu = sjme_malloc(sizeof(*oldcpu));
 						if (oldcpu == NULL)
 						{
-							sjme_setError(error, SJME_ERROR_NOMEMORY,
+							sjme_setError(error, SJME_ERROR_NO_MEMORY,
 										  sizeof(*oldcpu));
 							
 							return cycles;

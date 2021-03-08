@@ -105,6 +105,7 @@ static const sjme_singleTest sjme_singleTests[] =
 	SJME_TEST(testMemHandleInvalid),
 	SJME_TEST(testNothing),
 	SJME_TEST(testOpCodes),
+	SJME_TEST(testRandom),
 	SJME_TEST(testSkipped),
 	
 	/* End of tests. */

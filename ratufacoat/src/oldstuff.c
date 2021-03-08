@@ -44,7 +44,7 @@ sjme_vmem* sjme_vmmnew(sjme_error* error)
 	rv = sjme_malloc(sizeof(*rv));
 	if (rv == NULL)
 	{
-		sjme_setError(error, SJME_ERROR_NOMEMORY, sizeof(*rv));
+		sjme_setError(error, SJME_ERROR_NO_MEMORY, sizeof(*rv));
 		
 		return NULL;
 	}
@@ -77,7 +77,7 @@ sjme_vmemmap* sjme_vmmmap(sjme_vmem* vmem, sjme_jint at, void* ptr,
 	newmaps = sjme_malloc(sizeof(*newmaps) * (vmem->count + 1));
 	if (rv == NULL)
 	{
-		sjme_setError(error, SJME_ERROR_NOMEMORY, sizeof(*rv));
+		sjme_setError(error, SJME_ERROR_NO_MEMORY, sizeof(*rv));
 		
 		sjme_free(rv);
 		sjme_free(newmaps);
