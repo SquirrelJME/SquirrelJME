@@ -13,10 +13,65 @@
  * @since 2021/02/27
  */
 
+#include "debug.h"
 #include "sjmerc.h"
 #include "softmath.h"
 
-sjme_jint_div sjme_div(sjme_jint anum, sjme_jint aden)
+/** Unsigned shift right masks. */
+static const sjme_jint sjme_ushrIntMask[32] =
+	{
+		SJME_JINT_C(0x00000000),
+		SJME_JINT_C(0x00000001),
+		SJME_JINT_C(0x00000003),
+		SJME_JINT_C(0x00000007),
+		SJME_JINT_C(0x0000000F),
+		SJME_JINT_C(0x0000001F),
+		SJME_JINT_C(0x0000003F),
+		SJME_JINT_C(0x0000007F),
+		SJME_JINT_C(0x000000FF),
+		SJME_JINT_C(0x000001FF),
+		SJME_JINT_C(0x000003FF),
+		SJME_JINT_C(0x000007FF),
+		SJME_JINT_C(0x00000FFF),
+		SJME_JINT_C(0x00001FFF),
+		SJME_JINT_C(0x00003FFF),
+		SJME_JINT_C(0x00007FFF),
+		SJME_JINT_C(0x0000FFFF),
+		SJME_JINT_C(0x0001FFFF),
+		SJME_JINT_C(0x0003FFFF),
+		SJME_JINT_C(0x0007FFFF),
+		SJME_JINT_C(0x000FFFFF),
+		SJME_JINT_C(0x001FFFFF),
+		SJME_JINT_C(0x003FFFFF),
+		SJME_JINT_C(0x007FFFFF),
+		SJME_JINT_C(0x00FFFFFF),
+		SJME_JINT_C(0x01FFFFFF),
+		SJME_JINT_C(0x03FFFFFF),
+		SJME_JINT_C(0x07FFFFFF),
+		SJME_JINT_C(0x0FFFFFFF),
+		SJME_JINT_C(0x1FFFFFFF),
+		SJME_JINT_C(0x3FFFFFFF),
+	};
+
+sjme_jlong sjme_addLongF(sjme_jlong a, sjme_jint bLo, sjme_jint bHi)
+{
+	sjme_jlong c;
+	
+	/* Add the higher/lower parts */
+	c.hi = a.hi + bHi;
+	c.lo = a.lo + bLo;
+	
+	/* If the low addition carried a bit over, then set that bit in the */
+	/* high part */
+	if ((c.lo + SJME_JINT_C(0x80000000)) <
+		(a.lo + SJME_JINT_C(0x80000000)))
+		c.hi++;
+	
+	/* Return result */
+	return c;
+}
+
+sjme_jint_div sjme_divInt(sjme_jint anum, sjme_jint aden)
 {
 	/* From Wikipedia (http://en.wikipedia.org/wiki/Division_%28digital%29) */
 	/* if D == 0 then throw DivisionByZeroException end*/
@@ -80,4 +135,26 @@ sjme_jint_div sjme_div(sjme_jint anum, sjme_jint aden)
 	
 	/* Return */
 	return rv;
+}
+
+sjme_jlong sjme_mulLong(sjme_jlong a, sjme_jlong b)
+{
+	sjme_todo("sjme_mulLong(%08x:%08x, %08x:%08x)",
+		a.hi, a.lo, b.hi, b.lo);
+}
+
+sjme_jlong sjme_mulLongF(sjme_jlong a, sjme_jint bLo, sjme_jint bHi)
+{
+	sjme_jlong b;
+	
+	b.hi = bHi;
+	b.lo = bLo;
+	
+	return sjme_mulLong(a, b);
+}
+
+sjme_jint sjme_ushrInt(sjme_jint val, sjme_jint sh)
+{
+	sh &= 31;
+	return (val >> sh) & sjme_ushrIntMask[sh];
 }

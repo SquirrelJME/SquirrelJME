@@ -67,6 +67,17 @@ typedef struct sjme_jint_div
 } sjme_jint_div;
 
 /**
+ * Adds the given long value, fractional.
+ * 
+ * @param a A.
+ * @param bLo B, low bits.
+ * @param bHi B, high bits.
+ * @return The resultant long.
+ * @since 2021/03/07
+ */
+sjme_jlong sjme_addLongF(sjme_jlong a, sjme_jint bLo, sjme_jint bHi);
+
+/**
  * Performs software division.
  * 
  * @param anum The numerator.
@@ -74,7 +85,39 @@ typedef struct sjme_jint_div
  * @return The result of the operation.
  * @since 2021/02/27
  */
-sjme_jint_div sjme_div(sjme_jint anum, sjme_jint aden);
+sjme_jint_div sjme_divInt(sjme_jint anum, sjme_jint aden);
+
+/**
+ * Multiplies the given long value.
+ * 
+ * @param a A.
+ * @param bLo B, low bits.
+ * @param bHi B, high bits.
+ * @return The resultant long.
+ * @since 2021/03/07
+ */
+sjme_jlong sjme_mulLong(sjme_jlong a, sjme_jlong b);
+
+/**
+ * Multiplies the given long value, fractional.
+ * 
+ * @param a A.
+ * @param bLo B, low bits.
+ * @param bHi B, high bits.
+ * @return The resultant long.
+ * @since 2021/03/07
+ */
+sjme_jlong sjme_mulLongF(sjme_jlong a, sjme_jint bLo, sjme_jint bHi);
+
+/**
+ * Unsigned shift right.
+ * 
+ * @param val The value to shift. 
+ * @param sh The shift by amount.
+ * @return The unsigned right shift value.
+ * @since 2021/03/07
+ */
+sjme_jint sjme_ushrInt(sjme_jint val, sjme_jint sh);
 
 /*--------------------------------------------------------------------------*/
 

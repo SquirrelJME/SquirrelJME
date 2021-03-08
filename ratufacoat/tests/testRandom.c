@@ -54,22 +54,34 @@ SJME_TEST_PROTOTYPE(testRandom)
 {
 	sjme_randomState random;
 	sjme_jlong seed;
+	sjme_jboolean jboolean;
+	sjme_jint jint;
 	
 	/* Seed the RNG. */
 	seed.hi = SJME_JINT_C(0xFFFFFFFF);
 	seed.lo = SJME_JINT_C(0xCAFEBABE);
-	if (sjme_randomSeed(&random, seed, NULL))
+	if (sjme_randomSeed(&random, seed, &shim->error))
 		return FAIL_TEST(1);
 	
 	/* Check booleans. */
 	for (int i = 0; i < RANDOM_CYCLES; i++)
-		if (matchBool[i] != sjme_randomNextBoolean(&random))
+	{
+		if (sjme_randomNextBoolean(&random, &jboolean, &shim->error))
 			return FAIL_TEST(100 + i);
+		
+		if (matchBool[i] != jboolean)
+			return FAIL_TEST(200 + i);
+	}
 	
 	/* Check integers. */
 	for (int i = 0; i < RANDOM_CYCLES; i++)
-		if (matchInt[i] != sjme_randomNextInt(&random))
-			return FAIL_TEST(200 + i);
+	{
+		if (sjme_randomNextInt(&random, &jint, &shim->error))
+			return FAIL_TEST(300 + i);
+		
+		if (matchInt[i] != jint)
+			return FAIL_TEST(400 + i);
+	}
 	
 	return PASS_TEST();
 }

@@ -184,11 +184,11 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 							break;
 							
 						case SJME_MATH_DIV:
-							ic = sjme_div(ia, ib).quot;
+							ic = sjme_divInt(ia, ib).quot;
 							break;
 							
 						case SJME_MATH_REM:
-							ic = sjme_div(ia, ib).rem;
+							ic = sjme_divInt(ia, ib).rem;
 							break;
 							
 						case SJME_MATH_NEG:

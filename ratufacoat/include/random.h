@@ -38,11 +38,8 @@ extern "C"
  */
 typedef struct sjme_randomState
 {
-	/** The seed used. */
+	/** The seed value for upcoming values. */
 	sjme_jlong seed;
-	
-	/** The current value for upcoming values. */
-	sjme_jlong current;
 } sjme_randomState;
 
 /**
@@ -61,19 +58,35 @@ sjme_returnFail sjme_randomSeed(sjme_randomState* random, sjme_jlong seed,
  * Returns the next boolean from the RNG.
  * 
  * @param random The random state.
- * @return The random boolean.
+ * @param out The random boolean.
+ * @param error The error state.
  * @since 2021/03/07
  */
-sjme_jboolean sjme_randomNextBoolean(sjme_randomState* random);
+sjme_returnFail sjme_randomNextBoolean(sjme_randomState* random,
+	sjme_jboolean* out, sjme_error* error);
 
 /**
  * Returns the next integer from the RNG.
  * 
  * @param random The random state.
- * @return The random integer.
+ * @param out The random integer.
+ * @param error The error state.
  * @since 2021/03/07
  */
-sjme_jint sjme_randomNextInt(sjme_randomState* random);
+sjme_returnFail sjme_randomNextInt(sjme_randomState* random, sjme_jint* out,
+	sjme_error* error);
+
+/**
+ * Returns the next integer from the RNG with the given cap.
+ * 
+ * @param random The random state.
+ * @param out The random integer.
+ * @param bits The requested bits.
+ * @param error The error state.
+ * @since 2021/03/07
+ */
+sjme_returnFail sjme_randomNextBits(sjme_randomState* random, sjme_jint* out,
+	sjme_jint bits, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 
