@@ -72,12 +72,6 @@ typedef struct sjme_jvmargs
  */
 typedef struct sjme_jvmoptions
 {
-	/**
-	 * The amount of RAM to allocate, 0 is default.
-	 * @deprecated Do not use, handles are used instead.
-	 */
-	sjme_jint ramSize;
-	
 	/** Preset ROM pointer, does not need loading? */
 	const sjme_ubyte* romData;
 	

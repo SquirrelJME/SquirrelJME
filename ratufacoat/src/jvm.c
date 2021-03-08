@@ -20,29 +20,22 @@
 #include "oldstuff.h"
 #include "bootrom.h"
 #include "memory.h"
+#include "debug.h"
+#include "handles.h"
 
 struct sjme_jvm
 {
-	/** Virtual memory information. */
-	sjme_vmem* vmem;
-	
-	/** RAM. */
-	sjme_vmemmap* ram;
-	
-	/** ROM. */
-	sjme_vmemmap* rom;
-	
-	/** Configuration space. */
-	sjme_vmemmap* config;
-	
 	/** Framebuffer. */
 	sjme_vmemmap* framebuffer;
 	
 	/** OptionJAR. */
-	sjme_vmemmap* optionjar;
+	sjme_vmemmap* optionJar;
 	
 	/** ROM Data. */
 	const sjme_ubyte* romData;
+	
+	/** ROM Size. */
+	sjme_jint romSize;
 	
 	/** Framebuffer info. */
 	sjme_framebuffer* fbinfo;
@@ -74,8 +67,8 @@ struct sjme_jvm
 	/** Squelch the framebuffer console? */
 	sjme_jint squelchfbconsole;
 	
-	/** CPU Metrics. */
-	sjme_cpuMetrics metrics;
+	/** Memory handle state. */
+	sjme_memHandles* handles;
 };
 
 sjme_returnFail sjme_jvmDestroy(sjme_jvm* jvm, sjme_error* error)
@@ -117,7 +110,7 @@ sjme_returnFail sjme_jvmDestroy(sjme_jvm* jvm, sjme_error* error)
 	}
 	
 	/* Delete major JVM data areas. */
-	sjme_free(jvm->ram);
+	sjme_free(jvm);
 	
 	/* Destroyed okay. */
 	return SJME_RETURN_SUCCESS;
@@ -189,14 +182,10 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 	sjme_nativefuncs* nativeFuncs, sjme_error* error)
 {
 	sjme_jvmoptions nullOptions;
-	void* ram;
-	const sjme_ubyte* rom;
-	void* conf;
-	void* optionjar;
+	void* optionJar;
 	sjme_jvm* rv;
-	sjme_jint i, l, romsize;
+	sjme_jint i, l, romSize;
 	sjme_framebuffer* fbinfo;
-	sjme_vmem* vmem;
 	
 	/* Missing important arguments. */
 	if (outJvm == NULL || nativeFuncs == NULL || options == NULL)
@@ -213,65 +202,22 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 		return SJME_RETURN_FAIL;
 	}
 	
-	/* Allocate virtual memory manager. */
-	vmem = sjme_vmmnew(error);
-	if (vmem == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_VMMNEWFAIL, error->code);
-		return SJME_RETURN_FAIL;
-	}
-	
 	/* Allocate VM state. */
 	rv = sjme_malloc(sizeof(*rv));
 	if (rv == NULL)
 	{
 		sjme_free(rv);
 		
-		sjme_setError(error, SJME_ERROR_NO_MEMORY,
-					  sizeof(*rv));
-		
+		sjme_setError(error, SJME_ERROR_NO_MEMORY, sizeof(*rv));
 		return SJME_RETURN_FAIL;
 	}
 	
-	/* Store virtual memory area. */
-	rv->vmem = vmem;
-	
-	/* If no RAM size was specified then use the default. */
-	if (options->ramSize <= 0)
-		options->ramSize = SJME_DEFAULT_RAM_SIZE;
-	
-	/* Allocate RAM, or at least keep trying to. */
-	while (options->ramSize >= SJME_MINIMUM_RAM_SIZE)
+	/* Initialize handle storage. */
+	if (sjme_memHandlesInit(&rv->handles, error))
 	{
-		/* Attempt to allocate the RAM. */
-		ram = sjme_malloc(options->ramSize);
-		
-		/* Ram allocated! So stop. */
-		if (ram != NULL)
-			break;
-		
-		/* Cut RAM allocation size down in half. */
-		options->ramSize /= 2;
-	}
-	
-	/* Failed to allocate the RAM. */
-	if (ram == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NO_MEMORY, options->ramSize);
-			
 		sjme_free(rv);
 		
-		return SJME_RETURN_FAIL;
-	}
-	
-	/* Virtual map RAM. */
-	rv->ram = sjme_vmmmap(vmem, 0, ram, options->ramSize, error);
-	if (rv->ram == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_VMMMAPFAIL, 0);
-		
-		sjme_free(rv);
-		
+		sjme_setError(error, SJME_ERROR_NO_MEMORY, sizeof(*rv));
 		return SJME_RETURN_FAIL;
 	}
 	
@@ -337,44 +283,12 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 		fbinfo->conh = fbinfo->height / sjme_font.pixelheight;
 	}
 	
-	/* Virtual map framebuffer, if available. */
-	if (fbinfo != NULL)
-	{
-		fbinfo->framebuffer = sjme_vmmmap(vmem, 0, fbinfo->pixels,
-			(fbinfo->numpixels * fbinfo->bitsperpixel) / 8, error);
-		if (fbinfo->framebuffer == NULL)
-		{
-			sjme_setError(error, SJME_ERROR_VMMMAPFAIL, 0);
-			
-			sjme_free(rv);
-			sjme_free(ram);
-			
-			return SJME_RETURN_FAIL;
-		}
-	}
-	
 	/* Needed by destruction later. */
 	rv->romData = options->romData;
-	rom = options->romData;
-	romsize = options->romSize;
-	
-	/* Virtual map ROM. */
-	rv->rom = sjme_vmmmap(vmem, 0, rom, romsize, error);
-	if (rv->rom == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_VMMMAPFAIL, 0);
-		
-		sjme_free(rv);
-		sjme_free(ram);
-		sjme_free(conf);
-		if (rv->romData == NULL)
-			sjme_free(rom);
-		
-		return SJME_RETURN_FAIL;
-	}
+	rv->romSize = options->romSize;
 	
 	/* Initialize the BootRAM and boot the CPU. */
-	if (sjme_loadBootRom(rv, error) == 0)
+	if (sjme_loadBootRom(rv, error))
 	{
 		/* Write the Boot failure message! */
 		sjme_console_pipewrite(rv, (nativeFuncs != NULL ?
@@ -386,31 +300,24 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 		sjme_printerror(rv, error);
 		
 		/* Cleanup. */
+		sjme_memHandlesDestroy(rv->handles, error);
 		sjme_free(rv);
-		sjme_free(ram);
-		sjme_free(conf);
 		
-		/* If a pre-set ROM is not being used, make sure it gets cleared. */
-		if (rv->romData == NULL)
-			sjme_free(rom);
-		
+		if (!sjme_hasError(error));
+			sjme_setError(error, SJME_ERROR_INVALID_BOOTRAM, 0);
 		return SJME_RETURN_FAIL;
 	}
 	
 	/* Memory map the option JAR, if available. */
 	if (nativeFuncs->optional_jar != NULL)
-		if (nativeFuncs->optional_jar(&optionjar, &i) != 0)
+		if (nativeFuncs->optional_jar(&optionJar, &i) != 0)
 		{
-			rv->optionjar = sjme_vmmmap(vmem, 0, optionjar, i, error);
+			rv->optionJar = sjme_vmmmap(vmem, 0, optionJar, i, error);
 			if (rv->rom == NULL)
 			{
 				sjme_setError(error, SJME_ERROR_VMMMAPFAIL, 0);
 				
 				sjme_free(rv);
-				sjme_free(ram);
-				sjme_free(conf);
-				if (rv->romData == NULL)
-					sjme_free(rom);
 				
 				return SJME_RETURN_FAIL;
 			}
@@ -423,10 +330,11 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 
 sjme_vmem* sjme_jvmVMem(sjme_jvm* jvm)
 {
-	return jvm->vmem;
+	sjme_todo("Remove use of sjme_jvmVMem(%p)", jvm);
+	return NULL;
 }
 
-struct sjme_cpuMetrics* sjme_jvmCpuMetrics(sjme_jvm* jvm)
+sjme_cpuMetrics* sjme_jvmCpuMetrics(sjme_jvm* jvm)
 {
 	return &jvm->metrics;
 }

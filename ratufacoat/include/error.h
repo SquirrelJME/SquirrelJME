@@ -144,6 +144,9 @@ typedef enum sjme_errorCode
 	
 	/** Invalid data type. */
 	SJME_ERROR_INVALID_DATATYPE,
+	
+	/** Invalid boot RAM. */
+	SJME_ERROR_INVALID_BOOTRAM,
 } sjme_errorCode; 
 
 /** This represents an error. */

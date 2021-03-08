@@ -264,24 +264,6 @@ typedef enum sjme_jboolean
 /** VMM Type: Java Integer. */
 #define SJME_VMMTYPE_JAVAINTEGER SJME_JINT_C(-5)
 
-/** Pixel format: Integer RGB888. */
-#define SJME_PIXELFORMAT_INTEGER_RGB888 SJME_JINT_C(0)
-
-/** Pixel format: Byte Indexed. */
-#define SJME_PIXELFORMAT_BYTE_INDEXED SJME_JINT_C(1)
-
-/** Pixel format: Short RGB565. */
-#define SJME_PIXELFORMAT_SHORT_RGB565 SJME_JINT_C(2)
-
-/** Pixel format: Packed 1-bit. */
-#define SJME_PIXELFORMAT_PACKED_ONE SJME_JINT_C(3)
-
-/** Pixel format: Packed 2-bit. */
-#define SJME_PIXELFORMAT_PACKED_TWO SJME_JINT_C(4)
-
-/** Pixel format: Packed 4-bit. */
-#define SJME_PIXELFORMAT_PACKED_FOUR SJME_JINT_C(5)
-
 /**
  * Marker that indicates that a method returns failure.
  *

@@ -64,6 +64,7 @@ static const sjme_jvmErrorString sjme_jvmErrorStrings[] =
 	{SJME_ERROR_DESTROY_FAIL, "Destruction failed"},
 	{SJME_ERROR_INVALID_HANDLE, "Invalid memory handle"},
 	{SJME_ERROR_INVALID_DATATYPE, "Invalid data type"},
+	{SJME_ERROR_INVALID_BOOTRAM, "Invalid BootRAM"},
 	
 	{SJME_ERROR_NONE, NULL}
 };
