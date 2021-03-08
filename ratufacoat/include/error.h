@@ -138,6 +138,9 @@ typedef enum sjme_errorCode
 	
 	/** Destruction failed. */
 	SJME_ERROR_DESTROY_FAIL,
+	
+	/** Invalid memory handle. */
+	SJME_ERROR_INVALID_HANDLE,
 } sjme_errorCode; 
 
 /** This represents an error. */

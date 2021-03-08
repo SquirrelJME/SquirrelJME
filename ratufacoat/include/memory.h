@@ -40,6 +40,15 @@ extern "C"
 void* sjme_malloc(sjme_jint size);
 
 /**
+ * Re-allocates the given pointer.
+ *
+ * @param ptr The pointer to change in size.
+ * @param size The number of bytes to allocate or @c NULL if that failed.
+ * @since 2021/03/08
+ */
+void* sjme_realloc(void* ptr, sjme_jint size);
+
+/**
  * Frees the given pointer.
  *
  * @param p The pointer to free.

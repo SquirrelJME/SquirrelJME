@@ -235,7 +235,7 @@ typedef enum sjme_jboolean
 
 /** Pointer math, no precision loss. */
 #define SJME_POINTER_OFFSET_LONG(p, o) SJME_JMEM_TO_POINTER( \
-	SJME_POINTER_TO_JMEM(p) + ((uintptr_t)(o)))
+	SJME_POINTER_TO_JMEM(p) + ((intptr_t)(o)))
 
 /** Standard C format for arguments. */
 #define SJME_JVMARG_FORMAT_STDC SJME_JINT_C(1)

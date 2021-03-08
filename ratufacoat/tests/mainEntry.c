@@ -103,6 +103,7 @@ static const sjme_singleTest sjme_singleTests[] =
 	SJME_TEST(testMemHandleEndian),
 	SJME_TEST(testMemHandleInit),
 	SJME_TEST(testMemHandleInvalid),
+	SJME_TEST(testMemHandleMany),
 	SJME_TEST(testNothing),
 	SJME_TEST(testOpCodes),
 	SJME_TEST(testRandom),

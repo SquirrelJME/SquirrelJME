@@ -17,6 +17,8 @@
 #if defined(__palmos__)
 	#include <MemoryMgr.h>
 	#include <MemGlue.h>
+#else
+	#include <string.h>
 #endif
 
 #include "sjmerc.h"
@@ -53,6 +55,9 @@ void* sjme_malloc(sjme_jint size)
 #if defined(__palmos__)
 	/* Clear memory on Palm OS. */
 	MemSet(rv, size, 0);
+#else
+	/* Clear values to zero. */
+	memset(rv, 0, size);
 #endif
 	
 	/* Store the size into this memory block for later free. */
@@ -60,6 +65,43 @@ void* sjme_malloc(sjme_jint size)
 	
 	/* Return the adjusted pointer. */
 	return SJME_POINTER_OFFSET_LONG(rv, 4);
+}
+
+void* sjme_realloc(void* ptr, sjme_jint size)
+{
+	void* rv;
+	sjme_jint oldSize;
+	
+	/* These will never allocate. */
+	if (size <= 0)
+	{
+		/* Free pointer? */
+		if (ptr != NULL)
+			sjme_free(ptr);
+		
+		return NULL;
+	}
+	
+	/* Allocate new pointer, keep old pointer if this failed. */
+	rv = sjme_malloc(size);
+	if (rv == NULL)
+		return NULL;
+	
+	/* Copy old data over? */
+	if (ptr != NULL)
+	{
+		/* Get the old size, to copy the data around. */
+		oldSize = *((sjme_jint*)(SJME_POINTER_OFFSET_LONG(ptr, -4)));
+		
+		/* Only copy the smaller of size. */
+		memmove(rv, ptr, (size > oldSize ? oldSize : size));
+		
+		/* Free the old pointer. */
+		sjme_free(ptr);
+	}
+	
+	/* Return the new pointer. */
+	return rv;
 }
 
 void sjme_free(void* p)
