@@ -102,7 +102,7 @@ sjme_returnFail sjme_randomNextBits(sjme_randomState* random, sjme_jint* out,
 	seed = sjme_mulLongF(seed,
 		SJME_JINT_C(0xDEECE66D), SJME_JINT_C(0x5));
 	/* bb = aa + 0xBL */
-	seed = sjme_addLongF(seed, 0, SJME_JINT_C(0xB));
+	seed = sjme_addLongF(seed, SJME_JINT_C(0xB), 0);
 	/* cc = & ((1L << 48) - 1) */
 	seed.hi = seed.hi & SJME_JINT_C(0xFFFF);
 	

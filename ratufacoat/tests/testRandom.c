@@ -70,7 +70,11 @@ SJME_TEST_PROTOTYPE(testRandom)
 			return FAIL_TEST(100 + i);
 		
 		if (matchBool[i] != jboolean)
+		{
+			fprintf(stderr, "%i: want=%d != got=%d\n",
+				i, matchBool[i], jboolean);
 			return FAIL_TEST(200 + i);
+		}
 	}
 	
 	/* Check integers. */
@@ -80,7 +84,11 @@ SJME_TEST_PROTOTYPE(testRandom)
 			return FAIL_TEST(300 + i);
 		
 		if (matchInt[i] != jint)
+		{
+			fprintf(stderr, "%i: want=%d != got=%d\n",
+				i, matchInt[i], jint);
 			return FAIL_TEST(400 + i);
+		}
 	}
 	
 	return PASS_TEST();

@@ -139,8 +139,17 @@ sjme_jint_div sjme_divInt(sjme_jint anum, sjme_jint aden)
 
 sjme_jlong sjme_mulLong(sjme_jlong a, sjme_jlong b)
 {
-	sjme_todo("sjme_mulLong(%08x:%08x, %08x:%08x)",
-		a.hi, a.lo, b.hi, b.lo);
+	/* TODO: Replace this with 32-bit version? */
+	sjme_jlong rv;
+	int64_t aa = (((int64_t)a.hi) << 32) |
+		(((int64_t)a.lo) & UINT64_C(0xFFFFFFFF));
+	int64_t bb = (((int64_t)b.hi) << 32) |
+		(((int64_t)b.lo) & UINT64_C(0xFFFFFFFF));
+	int64_t cc = aa * bb;
+	
+	rv.hi = (sjme_jint)(cc >> 32);
+	rv.lo = (sjme_jint)(cc);
+	return rv;
 }
 
 sjme_jlong sjme_mulLongF(sjme_jlong a, sjme_jint bLo, sjme_jint bHi)
