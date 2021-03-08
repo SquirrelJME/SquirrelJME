@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_DATATYPE_H
 #define SQUIRRELJME_DATATYPE_H
 
+#include "sjmerc.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
@@ -62,6 +64,9 @@ typedef enum sjme_dataType
 	/** The number of data types. */
 	SJME_NUM_DATATYPES = 8,
 } sjme_dataType;
+
+/** Data type sizes. */
+extern const sjme_jint sjme_dataTypeSize[SJME_NUM_DATATYPES];
 
 /*--------------------------------------------------------------------------*/
 

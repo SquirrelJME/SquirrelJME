@@ -141,6 +141,9 @@ typedef enum sjme_errorCode
 	
 	/** Invalid memory handle. */
 	SJME_ERROR_INVALID_HANDLE,
+	
+	/** Invalid data type. */
+	SJME_ERROR_INVALID_DATATYPE,
 } sjme_errorCode; 
 
 /** This represents an error. */

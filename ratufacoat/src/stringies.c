@@ -56,6 +56,14 @@ static const sjme_jvmErrorString sjme_jvmErrorStrings[] =
 	{SJME_ERROR_INVALIDMEMTYPE, "Invalid memory type"},
 	{SJME_ERROR_REGISTEROVERFLOW, "Register overflow"},
 	{SJME_ERROR_VMMMAPFAIL, "Virtual memory mapping failed"},
+	{SJME_ERROR_NULLARGS, "Null arguments"},
+	{SJME_ERROR_NEGATIVE_SIZE, "Negative size"},
+	{SJME_ERROR_INVALID_MEMHANDLE_KIND, "Invalid memory handle kind"},
+	{SJME_ERROR_OUT_OF_BOUNDS, "Out of bounds"},
+	{SJME_ERROR_COULD_NOT_SEED, "Could not seed the RNG"},
+	{SJME_ERROR_DESTROY_FAIL, "Destruction failed"},
+	{SJME_ERROR_INVALID_HANDLE, "Invalid memory handle"},
+	{SJME_ERROR_INVALID_DATATYPE, "Invalid data type"},
 	
 	{SJME_ERROR_NONE, NULL}
 };

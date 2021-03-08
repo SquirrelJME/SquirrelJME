@@ -33,10 +33,11 @@ static const sjme_dataType testTypesNarrow[] = {
 	SJME_DATATYPE_FLOAT, SJME_DATATYPE_OBJECT, -1};
 	
 /** Mask for the test types. */
-static const sjme_jint testTypesNarrowMask[] = {
-	0xFF, 0xFFFF,
-	0xFFFF, 0xFFFFFFFF,
-	0xFFFFFFFF, 0xFFFFFFFF, -1};
+static const sjme_jint testTypesNarrowValue[] = {
+	0xFFFFFFCB, 0x0000CDCB,
+	0xFFFFCDCB, MAGIC_NUMBER,
+	MAGIC_NUMBER, MAGIC_NUMBER,
+	-1};
 
 /** Long test types. */
 static const enum sjme_dataType testTypesWide[] = {
@@ -89,15 +90,19 @@ SJME_TEST_PROTOTYPE(testMemHandleAccess)
 	
 	/* Off right side. */
 	sjme_clearError(&shim->error);
-	if (!sjme_memHandleInBounds(handle, 4, HANDLE_SIZE, &shim->error))
+	if (!sjme_memHandleInBounds(handle, 4, HANDLE_SIZE * 2,
+		&shim->error))
 		return FAIL_TEST(8);
 		
 	/* Missing error? */
 	if (!sjme_hasError(&shim->error))
 		return FAIL_TEST(9);
 	
+	/* Clear error for future writes. */
+	sjme_clearError(&shim->error);
+	
 	/* Read/Write/Read tests for readIn. */
-	for (i = 0; testTypesNarrow[i] >= 0; i++)
+	for (i = 0; testTypesNarrow[i] != -1; i++)
 	{
 		/* Read in initial value, which should be zero! */
 		readIn = FILLER_NUMBER;
@@ -121,8 +126,8 @@ SJME_TEST_PROTOTYPE(testMemHandleAccess)
 			&readIn, 0, &shim->error))
 			return FAIL_TEST(130 + i);
 		
-		/* Whatever value is read, must match the masked value. */
-		if (readIn != (MAGIC_NUMBER & testTypesNarrowMask[i]))
+		/* Whatever value is read, must match what is expected. */
+		if (readIn != testTypesNarrowValue[i])
 			return FAIL_TEST(140 + i);
 		
 		/* Write zero back in. */
@@ -133,7 +138,7 @@ SJME_TEST_PROTOTYPE(testMemHandleAccess)
 	}
 	
 	/* Read/Write/Read tests for readIn (wide). */
-	for (i = 0; testTypesWide[i] >= 0; i++)
+	for (i = 0; testTypesWide[i] != -1; i++)
 	{
 		/* Read in initial value, which should be zero! */
 		readInL.hi = FILLER_NUMBER_HIGH;
@@ -143,7 +148,7 @@ SJME_TEST_PROTOTYPE(testMemHandleAccess)
 			return FAIL_TEST(200 + i);
 		
 		/* This value MUST be zero. */
-		if (readIn != 0)
+		if (readInL.hi != 0 || readInL.lo != 0)
 			return FAIL_TEST(210 + i);
 		
 		/* Write full value. */
@@ -161,9 +166,15 @@ SJME_TEST_PROTOTYPE(testMemHandleAccess)
 			return FAIL_TEST(230 + i);
 		
 		/* Must be equal values. */
-		if (readInL.hi == MAGIC_NUMBER_HIGH &&
-			readInL.lo == MAGIC_NUMBER)
+		if (readInL.hi != MAGIC_NUMBER_HIGH &&
+			readInL.lo != MAGIC_NUMBER)
+		{
+			fprintf(stderr, "0x%08x:%08x != 0x%08x:%08x\n",
+				readInL.hi, readInL.lo, MAGIC_NUMBER_HIGH, MAGIC_NUMBER);
+			fflush(stderr);
+			
 			return FAIL_TEST(240 + i);
+		}
 		
 		/* Write zero back in. */
 		writeOutL.hi = 0;
@@ -174,7 +185,7 @@ SJME_TEST_PROTOTYPE(testMemHandleAccess)
 	}
 	
 	/* Test using narrow types with wide. */
-	for (i = 0; testTypesNarrow[i] >= 0; i++)
+	for (i = 0; testTypesNarrow[i] != -1; i++)
 	{
 		/* Using the wrong method. */
 		sjme_clearError(&shim->error);
@@ -188,7 +199,7 @@ SJME_TEST_PROTOTYPE(testMemHandleAccess)
 	}
 	
 	/* Test using wide types with narrow. */
-	for (i = 0; testTypesWide[i] >= 0; i++)
+	for (i = 0; testTypesWide[i] != -1; i++)
 	{
 		/* Using the wrong method. */
 		sjme_clearError(&shim->error);

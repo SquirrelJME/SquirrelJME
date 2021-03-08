@@ -35,9 +35,9 @@
 
 /** The left most byte. */
 #if defined(SJME_BIG_ENDIAN)
-	#define LEFT_MOST_BYTE SJME_JINT_C(0xD7)
+	#define LEFT_MOST_BYTE SJME_JINT_C(0xFFFFFFD7)
 #else
-	#define LEFT_MOST_BYTE SJME_JINT_C(0xCB)
+	#define LEFT_MOST_BYTE SJME_JINT_C(0xFFFFFFCB)
 #endif
 
 /**
@@ -92,12 +92,18 @@ SJME_TEST_PROTOTYPE(testMemHandleEndian)
 	/* Read single byte to see if it correctly matches the system. */
 	readIn = 0;
 	if (sjme_memHandleAccess(handle, sjme_false,
-		SJME_DATATYPE_BYTE, &readIn, 1, &shim->error))
+		SJME_DATATYPE_BYTE, &readIn, 0, &shim->error))
 		return FAIL_TEST(8);
 	
 	/* Must be this value. */
 	if (LEFT_MOST_BYTE != readIn)
+	{
+		fprintf(stderr, "Wanted %#x, but was %#x\n",
+			LEFT_MOST_BYTE, readIn);
+		fflush(stderr);
+		
 		return FAIL_TEST(9);
+	}
 	
 	/* Then immediately destroy them. */
 	if (sjme_memHandlesDestroy(handles, &shim->error))

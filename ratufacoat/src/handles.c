@@ -42,9 +42,6 @@ struct sjme_memHandles
 	
 	/** Statistics. */
 	sjme_memHandleStats stats;
-	
-	/** Dangling data for handles. */
-	sjme_ubyte bytes[];
 };
 
 /**
@@ -68,6 +65,9 @@ struct sjme_memHandle
 	
 	/** The length of this handle. */
 	sjme_jint length;
+	
+	/** Dangling data for handles. */
+	sjme_jbyte bytes[];
 };
 
 sjme_returnFail sjme_memHandlesInit(sjme_memHandles** out, sjme_error* error)
@@ -433,8 +433,63 @@ sjme_returnFail sjme_memHandleAccess(sjme_memHandle* handle,
 		return SJME_RETURN_FAIL;
 	}
 	
-	sjme_todo("sjme_memHandleAccess(%p, %d, %d, %p, %d, %p)",
-		handle, write, type, inOut, offset, error);
+	/* Must be a valid data type. */
+	if (type != SJME_DATATYPE_OBJECT &&
+		type != SJME_DATATYPE_BYTE &&
+		type != SJME_DATATYPE_SHORT &&
+		type != SJME_DATATYPE_CHARACTER &&
+		type != SJME_DATATYPE_INTEGER &&
+		type != SJME_DATATYPE_FLOAT)
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_DATATYPE, type);
+		return SJME_RETURN_FAIL;
+	}
+	
+	/* Check bounds of the handle. */
+	if (sjme_memHandleInBounds(handle, offset, sjme_dataTypeSize[type], error))
+	{
+		if (!sjme_hasError(error))
+			sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, offset);
+		return SJME_RETURN_FAIL;
+	}
+	
+	/* Read the value here. */
+	switch (type)
+	{
+		case SJME_DATATYPE_BYTE:
+			if (write)
+				handle->bytes[offset] = *inOut;
+			else
+				*inOut = handle->bytes[offset];
+			break;
+		
+		case SJME_DATATYPE_SHORT:
+			if (write)
+				*((sjme_jshort*)&handle->bytes[offset]) = *inOut;
+			else
+				*inOut = *((sjme_jshort*)&handle->bytes[offset]);
+			break;
+		
+		case SJME_DATATYPE_CHARACTER:
+			if (write)
+				*((sjme_jshort*)&handle->bytes[offset]) = *inOut;
+			else
+				*inOut = (*((sjme_jshort*)&handle->bytes[offset])) &
+					SJME_JINT_C(0xFFFF);
+			break;
+		
+		case SJME_DATATYPE_OBJECT:
+		case SJME_DATATYPE_INTEGER:
+		case SJME_DATATYPE_FLOAT:
+			if (write)
+				*((sjme_jint*)&handle->bytes[offset]) = *inOut;
+			else
+				*inOut = *((sjme_jint*)&handle->bytes[offset]);
+			break;
+	}
+	
+	// Success
+	return SJME_RETURN_SUCCESS;
 }
 
 sjme_returnFail sjme_memHandleAccessWide(sjme_memHandle* handle,
@@ -448,7 +503,47 @@ sjme_returnFail sjme_memHandleAccessWide(sjme_memHandle* handle,
 		return SJME_RETURN_FAIL;
 	}
 	
-	sjme_todo("sjme_memHandleAccess(%p, %d, %d, %p, %d, %p)",
-		handle, write, type, inOut, offset, error);
+	/* Must be a valid data type. */
+	if (type != SJME_DATATYPE_LONG &&
+		type != SJME_DATATYPE_DOUBLE)
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_DATATYPE, type);
+		return SJME_RETURN_FAIL;
+	}
+	
+	/* Check bounds of the handle. */
+	if (sjme_memHandleInBounds(handle, offset, sjme_dataTypeSize[type], error))
+	{
+		if (!sjme_hasError(error))
+			sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, offset);
+		return SJME_RETURN_FAIL;
+	}
+
+#if defined(SJME_BIG_ENDIAN)
+	if (write)
+	{
+		*((sjme_jint*)&handle->bytes[offset]) = inOut->hi;
+		*((sjme_jint*)&handle->bytes[offset + 4]) = inOut->lo;
+	}
+	else
+	{
+		inOut->hi = *((sjme_jint*)&handle->bytes[offset]);
+		inOut->lo = *((sjme_jint*)&handle->bytes[offset + 4]);
+	}
+#else
+	if (write)
+	{
+		*((sjme_jint*)&handle->bytes[offset]) = inOut->lo;
+		*((sjme_jint*)&handle->bytes[offset + 4]) = inOut->hi;
+	}
+	else
+	{
+		inOut->lo = *((sjme_jint*)&handle->bytes[offset]);
+		inOut->hi = *((sjme_jint*)&handle->bytes[offset + 4]);
+	}
+#endif
+	
+	// Success
+	return SJME_RETURN_SUCCESS;
 }
 

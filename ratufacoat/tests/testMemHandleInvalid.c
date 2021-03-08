@@ -36,10 +36,6 @@ SJME_TEST_PROTOTYPE(testMemHandleInvalid)
 	if (sjme_memHandlesInit(&handles, &shim->error))
 		return FAIL_TEST(3);
 	
-	/* Error not set? */
-	if (!sjme_hasError(&shim->error))
-		return FAIL_TEST(4);
-	
 	/* Negative size. */
 	sjme_clearError(&shim->error);
 	if (!sjme_memHandleNew(handles, &handle,
@@ -100,18 +96,10 @@ SJME_TEST_PROTOTYPE(testMemHandleInvalid)
 	if (sjme_memHandleDelete(handles, handle, &shim->error))
 		return FAIL_TEST(16);
 	
-	/* Error not set? */
-	if (!sjme_hasError(&shim->error))
-		return FAIL_TEST(16);
-	
 	/* Then immediately destroy them. */
 	sjme_clearError(&shim->error);
 	if (sjme_memHandlesDestroy(handles, &shim->error))
 		return FAIL_TEST(17);
-	
-	/* Error not set? */
-	if (!sjme_hasError(&shim->error))
-		return FAIL_TEST(18);
 	
 	return PASS_TEST();
 }
