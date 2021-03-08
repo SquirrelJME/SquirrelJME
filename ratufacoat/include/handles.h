@@ -34,6 +34,35 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/**
+ * Memory handle statistics.
+ * 
+ * @since 2021/03/08
+ */
+typedef struct sjme_memHandleStats
+{
+	/** Successes after a re-roll. */
+	sjme_jint reRollHit;
+	
+	/** Fails after a re-roll. */
+	sjme_jint reRollMiss;
+	
+	/** Number of times the re-roll loop ran. */
+	sjme_jint reRollCount;
+	
+	/** Number of times handles grew. */
+	sjme_jint growCount;
+	
+	/** Number of allocated. */
+	sjme_jint numNew;
+	
+	/** Number of deallocated. */
+	sjme_jint numDelete;
+	
+	/** Number of times the down mask made a collision. */
+	sjme_jint downMaskMiss;
+} sjme_memHandleStats;
+
 /** Storage for all memory handles. */
 typedef struct sjme_memHandles sjme_memHandles;
 
@@ -134,6 +163,18 @@ sjme_returnFail sjme_memHandlesInit(sjme_memHandles** out, sjme_error* error);
  */
 sjme_returnFail sjme_memHandlesDestroy(sjme_memHandles* handles,
 	sjme_error* error);
+
+/**
+ * Returns the handle statistics.
+ * 
+ * @param handles The handles to get for.
+ * @param out The target statistics.
+ * @param error The error state.
+ * @return If this failed or not.
+ * @since 2021/03/08
+ */
+sjme_returnFail sjme_memHandlesStats(sjme_memHandles* handles,
+	sjme_memHandleStats* out, sjme_error* error);
 
 /**
  * Initializes a new memory 

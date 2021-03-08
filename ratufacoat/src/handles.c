@@ -40,6 +40,9 @@ struct sjme_memHandles
 	/** Used number of handles. */
 	sjme_jint usedHandles;
 	
+	/** Statistics. */
+	sjme_memHandleStats stats;
+	
 	/** Dangling data for handles. */
 	sjme_ubyte bytes[];
 };
@@ -157,6 +160,21 @@ sjme_returnFail sjme_memHandlesDestroy(sjme_memHandles* handles,
 	return SJME_RETURN_SUCCESS;
 }
 
+sjme_returnFail sjme_memHandlesStats(sjme_memHandles* handles,
+	sjme_memHandleStats* out, sjme_error* error)
+{
+	if (handles == NULL || out == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		return SJME_RETURN_FAIL;
+	}
+	
+	/* Copy over. */
+	memmove(out, &handles->stats, sizeof(sjme_memHandleStats));
+	
+	return SJME_RETURN_SUCCESS;
+}
+
 sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 	sjme_memHandle** out, sjme_memHandleKind kind, sjme_jint size,
 	sjme_error* error)
@@ -208,10 +226,14 @@ sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 	trySlot = randId & (handles->numHandles - 1);
 	while (handles->handles[trySlot] != NULL)
 	{
-		/* If half of our handles are used up then the chance of picking */
-		/* a used handle is 50% or greater, so just do not bother and add */
-		/* more space for handles. */
-		if (handles->usedHandles > (handles->numHandles >> 1))
+		/* Keep track of this loop. */
+		handles->stats.reRollCount++;
+		
+		/* If the majority of our handles are taken up then the chance of */
+		/* randomly grabbing a new one will be more difficult so just give */
+		/* up here. */
+		if (handles->usedHandles > ((handles->numHandles >> 1) +
+			(handles->numHandles >> 2)))
 			trySlot = handles->numHandles;
 		
 		/* Otherwise first pick at random, then do a linear scan. */
@@ -236,7 +258,13 @@ sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 			
 			/* A random attempt worked! */
 			if (randTry < SJME_RANDOM_TRIES)
+			{
+				handles->stats.reRollHit++;
 				break;
+			}
+			
+			/* Counts as a miss. */
+			handles->stats.reRollMiss++;
 			
 			/* Find the first free slot. */
 			for (trySlot = 0; trySlot < handles->numHandles; trySlot++)
@@ -264,9 +292,8 @@ sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 			handles->handles = newHandles;
 			handles->numHandles <<= 1;
 			
-			/* Debug. */
-			fprintf(stderr, "Max Handles: %d\n", handles->numHandles);
-			fflush(stderr);
+			/* Keep statistics. */
+			handles->stats.growCount++;
 			
 			/* Try again! */
 			continue;
@@ -296,10 +323,8 @@ sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 		check = tray[scanSlot];
 		if (check != NULL && check->id == tryId)
 		{
-			/* Debug. */
-			fprintf(stderr, "BOOP 0x%08x -> %d:0x%08x\n",
-				tryId, scanSlot, check->id);
-			fflush(stderr);
+			/* Keep track of this. */
+			handles->stats.downMaskMiss++;
 			
 			/* Grab another ID. */
 			if (sjme_randomNextInt(&handles->random, &randId, error))
@@ -323,6 +348,7 @@ sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 	
 	/* Count up. */
 	handles->usedHandles++;
+	handles->stats.numNew++;
 	
 	/* Set properties for the handle. */
 	rv->id = tryId;
@@ -366,6 +392,7 @@ sjme_returnFail sjme_memHandleDelete(sjme_memHandles* handles,
 	
 	/* Count down. */
 	handles->usedHandles--;
+	handles->stats.numDelete++;
 	
 	/* Destroy the handle data. */
 	memset(handle, 0, sizeof(*handle) + handle->length);
