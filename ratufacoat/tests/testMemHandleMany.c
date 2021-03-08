@@ -11,7 +11,7 @@
 #include "handles.h"
 
 /** The number of handles to allocate. */
-#define HANDLE_COUNT 65537
+#define HANDLE_COUNT 262145
 
 /** The size of each handle. */
 #define HANDLE_SIZE 128
@@ -40,11 +40,17 @@ SJME_TEST_PROTOTYPE(testMemHandleMany)
 			fprintf(stderr, "At %d of %d...\n", i, HANDLE_COUNT);
 			fflush(stderr);
 		}
-			
+		
 		if (sjme_memHandleNew(handles, &handle,
 			SJME_MEMHANDLE_KIND_OBJECT_INSTANCE, HANDLE_SIZE,
 			&shim->error))
+		{
+			/* Stop if we ran out of memory! */
+			if (shim->error.code == SJME_ERROR_NO_MEMORY)
+				break;
+			
 			return FAIL_TEST(10000 + i);
+		}
 	}
 	
 	/* Then immediately destroy them all, this frees everything. */

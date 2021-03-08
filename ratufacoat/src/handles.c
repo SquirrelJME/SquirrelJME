@@ -15,6 +15,9 @@
 /** Initial maximum handle count. */
 #define SJME_INIT_COUNT 64
 
+/** Minimum possible mask. */
+#define SJME_MINIMAL_MASK 63
+
 /**
  * Storage for all memory handles.
  * 
@@ -155,7 +158,7 @@ sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 	sjme_memHandle** newHandles;
 	sjme_memHandle* rv = NULL;
 	sjme_memHandle* check;
-	sjme_jint randId, trySlot, tryId, scanSlot;
+	sjme_jint randId, trySlot, tryId, scanSlot, mask, topMask;
 	
 	/* Cannot be null. */
 	if (handles == NULL || out == NULL)
@@ -232,9 +235,20 @@ sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 	}
 	
 	/* Make sure the ID is unique. */
-	tryId = (randId & (~(handles->numHandles - 1))) | trySlot;
-	for (scanSlot = 0; scanSlot < handles->numHandles; scanSlot++)
+	/* Note that since the lowest set of bits is masked out of the actual */
+	/* slot, we can just go down the masks and see if there is a collision! */
+	/* Linear scanning will take a very long forever the more and more */
+	/* handles exist. */
+	/* ex: BOOP 0x97e1dda4 -> 23972:0x97e1dda4 */
+	/* ex: BOOP 0xdb8936c4 -> 5828:0xdb8936c4 */
+	/* ex: BOOP 0xcf07b907 -> 47367:0xcf07b907 */
+	topMask = handles->numHandles - 1;
+	tryId = (randId & (~topMask)) | trySlot;
+	for (mask = topMask; mask >= SJME_MINIMAL_MASK; mask >>= 1)
 	{
+		/* Try this slot. */
+		scanSlot = tryId & mask;
+		
 		/* Is there an ID collision? */
 		check = handles->handles[scanSlot];
 		if (check != NULL && check->id == tryId)
@@ -256,8 +270,8 @@ sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 			/* Calculate a new ID number. */
 			tryId = (randId & (~(handles->numHandles - 1))) | trySlot;
 			
-			/* Go back to the start. */
-			scanSlot = -1;
+			/* Go back to the start, shift up since after-loop shift-down. */
+			mask = topMask << 1;
 		}
 	}
 	
