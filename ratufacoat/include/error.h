@@ -135,6 +135,9 @@ typedef enum sjme_errorCode
 	
 	/** Could not seed the RNG. */
 	SJME_ERROR_COULD_NOT_SEED,
+	
+	/** Destruction failed. */
+	SJME_ERROR_DESTROY_FAIL,
 } sjme_errorCode; 
 
 /** This represents an error. */

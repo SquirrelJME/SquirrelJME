@@ -112,6 +112,8 @@ sjme_returnFail sjme_memHandlesInit(sjme_memHandles** out, sjme_error* error)
 sjme_returnFail sjme_memHandlesDestroy(sjme_memHandles* handles,
 	sjme_error* error)
 {
+	sjme_jint i;
+	
 	/* Cannot be null. */
 	if (handles == NULL)
 	{
@@ -119,7 +121,26 @@ sjme_returnFail sjme_memHandlesDestroy(sjme_memHandles* handles,
 		return SJME_RETURN_FAIL;
 	}
 	
-	sjme_todo("sjme_memHandlesDestroy(%p, %p)", handles, error);
+	/* Delete all existing handles. */
+	for (i = 0; i < handles->numHandles; i++)
+		if (handles->handles[i] != NULL)
+			if (sjme_memHandleDelete(handles, handles->handles[i], error))
+			{
+				if (!sjme_hasError(error))
+					sjme_setError(error,
+						SJME_ERROR_DESTROY_FAIL, 0);
+				return SJME_RETURN_FAIL;
+			}
+	
+	/* Clear handles array. */
+	sjme_free(handles->handles);
+	
+	/* Wipe and then clear handles. */
+	memset(handles, 0, sizeof(*handles));
+	sjme_free(handles);
+	
+	/* Success! */
+	return SJME_RETURN_SUCCESS;
 }
 
 sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
