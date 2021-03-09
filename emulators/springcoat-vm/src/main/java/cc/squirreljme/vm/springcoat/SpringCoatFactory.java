@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jdwp.JDWPFactory;
 import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.emulator.vm.VMException;
@@ -43,8 +44,9 @@ public class SpringCoatFactory
 	 */
 	@Override
 	protected VirtualMachine createVM(ProfilerSnapshot __ps,
-		VMSuiteManager __sm, VMClassLibrary[] __cp, String __maincl,
-		Map<String, String> __sprops, String[] __args)
+		JDWPFactory __jdwp, VMSuiteManager __sm,
+		VMClassLibrary[] __cp, String __maincl, Map<String, String> __sprops,
+		String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
 		// Create a new instance of the VM

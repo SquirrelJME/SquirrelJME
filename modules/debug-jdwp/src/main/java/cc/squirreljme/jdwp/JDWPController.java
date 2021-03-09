@@ -22,7 +22,7 @@ import java.io.OutputStream;
  *
  * @since 2021/03/08
  */
-public class JDWPController
+public final class JDWPController
 {
 	/** The binding, which is called to perform any actions. */
 	protected final JDWPBinding bind;
