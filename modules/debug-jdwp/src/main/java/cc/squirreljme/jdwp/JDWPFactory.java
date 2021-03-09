@@ -96,6 +96,31 @@ public final class JDWPFactory
 		if (__bind == null)
 			throw new NullPointerException("NARG");
 		
-		return new JDWPController(__bind, this.in, this.out);
+		// Close if opening fails
+		JDWPController rv = null;
+		try
+		{
+			// Setup controller and perform the handshake
+			rv = new JDWPController(__bind, this.in, this.out);
+			rv.handshake();
+			
+			return rv;
+		}
+		catch (IOException e)
+		{
+			if (rv != null)
+				try
+				{
+					rv.close();
+				}
+				catch (IOException f)
+				{
+					e.addSuppressed(f);
+				}
+			
+			// {@squirreljme.error AG01 Could not establish the JDWP
+			// connection.}
+			throw new RuntimeException("AG01", e);
+		}
 	}
 }

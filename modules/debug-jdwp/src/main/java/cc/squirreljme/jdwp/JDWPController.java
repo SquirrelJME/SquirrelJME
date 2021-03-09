@@ -9,12 +9,13 @@
 
 package cc.squirreljme.jdwp;
 
+import java.io.Closeable;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.InputStream;
-import java.io.InterruptedIOException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 /**
  * This class acts as the main controller interface for JDWP and acts as a kind
@@ -23,7 +24,12 @@ import java.io.OutputStream;
  * @since 2021/03/08
  */
 public final class JDWPController
+	implements Closeable
 {
+	/** Handshake bytes. */
+	private static final byte[] _HANDSHAKE_SEQUENCE =
+		{'J', 'D', 'W', 'P', '-', 'H', 'a', 'n', 'd', 's', 'h', 'a', 'k', 'e'};
+	
 	/** The binding, which is called to perform any actions. */
 	protected final JDWPBinding bind;
 	
@@ -52,5 +58,73 @@ public final class JDWPController
 		this.bind = __bind;
 		this.in = new DataInputStream(__in);
 		this.out = new DataOutputStream(__out);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/08
+	 */
+	@Override
+	public void close()
+		throws IOException
+	{
+		IOException fail = null;
+		
+		// Close the input
+		try
+		{
+			this.in.close();
+		}
+		catch (IOException e)
+		{
+			fail = e;
+		}
+		
+		// And the output
+		try
+		{
+			this.out.close();
+		}
+		catch (IOException e)
+		{
+			if (fail == null)
+				fail = e;
+			else
+				fail.addSuppressed(e);
+		}
+	}
+	
+	/**
+	 * Performs the handshake for JDWP.
+	 * 
+	 * @throws IOException On read/write errors.
+	 * @since 2021/03/08
+	 */
+	protected void handshake()
+		throws IOException
+	{
+		// The debugger sends the handshake sequence first
+		int seqLen = JDWPController._HANDSHAKE_SEQUENCE.length;
+		byte[] debuggerShake = new byte[seqLen];
+		
+		// Read in the handshake
+		for (int i = 0; i < seqLen; i++)
+		{
+			int read = this.in.read();
+			
+			// {@squirreljme.error AG02 EOF reading handshake.}
+			if (read < 0)
+				throw new IOException("AG02");
+			
+			debuggerShake[i] = (byte)read;
+		}
+		
+		// {@squirreljme.error AG03 Debugger sent an invalid handshake.}
+		if (!Arrays.equals(debuggerShake, JDWPController._HANDSHAKE_SEQUENCE))
+			throw new IOException("AG03");
+		
+		// We then reply with our own handshake
+		this.out.write(JDWPController._HANDSHAKE_SEQUENCE);
+		this.out.flush();
 	}
 }

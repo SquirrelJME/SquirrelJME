@@ -49,8 +49,14 @@ public class SpringCoatFactory
 		String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
-		// Create a new instance of the VM
+		// Setup the main task manager which runs everything
 		SpringTaskManager tm = new SpringTaskManager(__sm, __ps);
+		
+		// Bind this to the task manager which is the pure global state
+		if (__jdwp != null)
+			__jdwp.open(tm); 
+		
+		// Spawn initial virtual machine task
 		return tm.startTask(__cp, __maincl, __args, __sprops,
 			TaskPipeRedirectType.TERMINAL, TaskPipeRedirectType.TERMINAL,
 			false);
