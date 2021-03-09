@@ -1,0 +1,18 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "Provides an implementation of the JDWP Debugging Interface."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "AG"
+	swmType = JavaMEMidletType.LIBRARY
+	swmName = "JDWP Implementation"
+	swmVendor = "Stephanie Gawroriski"
+	tags += "debug"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+}
