@@ -208,9 +208,9 @@ void retro_set_environment(retro_environment_t cb)
 				"None|All|Bluetooth|Dial-Up|IrDA|Serial|SMS|TCP/UDP"},
 			
 			/* Debugging. */
-			{"squirreljme_debugging",
-				"Enable Debugging; "
-				"disabled|enabled"},
+			{"squirreljme_remote_jdwp",
+				"Remote JDWP Debugging Port; "
+				"disabled|8000|8080|1234"},
 			{"squirreljme_profile",
 				"Generate VisualVM Profiles; "
 				"disabled|enabled"},

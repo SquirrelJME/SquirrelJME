@@ -43,6 +43,7 @@ SOURCES_C   := \
 	$(CORE_DIR)/src/gpio.c \
 	$(CORE_DIR)/src/handles.c \
 	$(CORE_DIR)/src/ipnet.c \
+	$(CORE_DIR)/src/jdwp.c \
 	$(CORE_DIR)/src/jvm.c \
 	$(CORE_DIR)/src/memory.c \
 	$(CORE_DIR)/src/oldstuff.c \

@@ -23,6 +23,7 @@ add_library(SquirrelJMECore STATIC
 	gpio.c
 	handles.c
 	ipnet.c
+	jdwp.c
 	jvm.c
 	memory.c
 	oldstuff.c
