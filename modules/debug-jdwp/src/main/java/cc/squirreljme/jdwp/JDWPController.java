@@ -9,13 +9,11 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 
 /**
  * This class acts as the main controller interface for JDWP and acts as a kind
@@ -26,18 +24,11 @@ import java.util.Arrays;
 public final class JDWPController
 	implements Closeable
 {
-	/** Handshake bytes. */
-	private static final byte[] _HANDSHAKE_SEQUENCE =
-		{'J', 'D', 'W', 'P', '-', 'H', 'a', 'n', 'd', 's', 'h', 'a', 'k', 'e'};
-	
 	/** The binding, which is called to perform any actions. */
 	protected final JDWPBinding bind;
 	
-	/** The input communication stream. */
-	protected final DataInputStream in;
-	
-	/** The output communication stream. */
-	protected final DataOutputStream out;
+	/** The communication link. */
+	protected final CommLink commLink;
 	
 	/**
 	 * Initializes the controller which manages the communication of JDWP.
@@ -56,8 +47,7 @@ public final class JDWPController
 			throw new NullPointerException("NARG");
 		
 		this.bind = __bind;
-		this.in = new DataInputStream(__in);
-		this.out = new DataOutputStream(__out);
+		this.commLink = new CommLink(__in, __out);
 	}
 	
 	/**
@@ -68,63 +58,27 @@ public final class JDWPController
 	public void close()
 		throws IOException
 	{
-		IOException fail = null;
-		
-		// Close the input
-		try
-		{
-			this.in.close();
-		}
-		catch (IOException e)
-		{
-			fail = e;
-		}
-		
-		// And the output
-		try
-		{
-			this.out.close();
-		}
-		catch (IOException e)
-		{
-			if (fail == null)
-				fail = e;
-			else
-				fail.addSuppressed(e);
-		}
+		this.commLink.close();
 	}
 	
 	/**
-	 * Performs the handshake for JDWP.
+	 * Polls for state changes within JDWP and processes any events as
+	 * needed.
 	 * 
-	 * @throws IOException On read/write errors.
-	 * @since 2021/03/08
+	 * @return If JDWP debugging will continue.
+	 * @throws JDWPException If there is an issue with the connection.
+	 * @since 2021/03/10
 	 */
-	protected void handshake()
-		throws IOException
+	public boolean poll()
+		throws JDWPException
 	{
-		// The debugger sends the handshake sequence first
-		int seqLen = JDWPController._HANDSHAKE_SEQUENCE.length;
-		byte[] debuggerShake = new byte[seqLen];
-		
-		// Read in the handshake
-		for (int i = 0; i < seqLen; i++)
+		// Read in any packets we get to process them
+		JDWPPacket packet = null;
+		while (null != (packet = this.commLink.poll()))
 		{
-			int read = this.in.read();
-			
-			// {@squirreljme.error AG02 EOF reading handshake.}
-			if (read < 0)
-				throw new IOException("AG02");
-			
-			debuggerShake[i] = (byte)read;
+			throw Debugging.todo();
 		}
 		
-		// {@squirreljme.error AG03 Debugger sent an invalid handshake.}
-		if (!Arrays.equals(debuggerShake, JDWPController._HANDSHAKE_SEQUENCE))
-			throw new IOException("AG03");
-		
-		// We then reply with our own handshake
-		this.out.write(JDWPController._HANDSHAKE_SEQUENCE);
-		this.out.flush();
+		return true;
 	}
 }

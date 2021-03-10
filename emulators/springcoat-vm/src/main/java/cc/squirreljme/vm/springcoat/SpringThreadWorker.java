@@ -11,6 +11,8 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
+import cc.squirreljme.jdwp.JDWPController;
+import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
@@ -82,7 +84,7 @@ public final class SpringThreadWorker
 		new VerboseManager();
 	
 	/** The current step count. */
-	private volatile int _stepcount;
+	private volatile int _stepCount;
 	
 	/**
 	 * Initialize the worker.
@@ -1536,8 +1538,23 @@ public final class SpringThreadWorker
 			throw e;
 		}
 		
+		// Poll the JDWP debugger for any new debugging state
+		JDWPController jdwp = this.machine.tasks.jdwpController;
+		if (jdwp != null)
+			try
+			{
+				if (!jdwp.poll())
+					this.machine.tasks.jdwpController = null;
+			}
+			catch (JDWPException e)
+			{
+				e.printStackTrace();
+				
+				this.machine.tasks.jdwpController = null;
+			}
+		
 		// Increase the step count
-		this._stepcount++;
+		this._stepCount++;
 		
 		SpringThread.Frame frame = thread.currentFrame();
 		ByteCode code = frame.byteCode();

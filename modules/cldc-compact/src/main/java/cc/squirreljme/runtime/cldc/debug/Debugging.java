@@ -497,6 +497,7 @@ public final class Debugging
 			System.err.print(__c);
 			if (__d > 0)
 				System.err.print(__d);
+			System.err.flush();
 			
 			return;
 		}

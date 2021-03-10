@@ -54,7 +54,7 @@ public class SpringCoatFactory
 		
 		// Bind this to the task manager which is the pure global state
 		if (__jdwp != null)
-			__jdwp.open(tm); 
+			tm.jdwpController = __jdwp.open(tm); 
 		
 		// Spawn initial virtual machine task
 		return tm.startTask(__cp, __maincl, __args, __sprops,

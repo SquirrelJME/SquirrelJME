@@ -14,6 +14,7 @@ import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jdwp.JDWPBinding;
+import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.lang.ref.Reference;
@@ -51,6 +52,9 @@ public final class SpringTaskManager
 	/** Machines that are running on the VM. */
 	private final Collection<Reference<SpringMachine>> _machines =
 		new LinkedList<>();
+	
+	/** Controller for JDWP Connections. */
+	protected JDWPController jdwpController;
 	
 	/**
 	 * Initializes the task manager.
