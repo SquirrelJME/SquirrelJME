@@ -54,4 +54,19 @@ public final class JDWPPacket
 	{
 		throw Debugging.todo();
 	}
+	
+	/**
+	 * Loads the packet data within.
+	 * 
+	 * @param __header The header.
+	 * @param __data The packet data.
+	 * @param __dataLen The data length.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/03/10
+	 */
+	void __load(byte[] __header, byte[] __data, int __dataLen)
+		throws NullPointerException
+	{
+		throw Debugging.todo();
+	}
 }

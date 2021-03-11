@@ -30,6 +30,9 @@ public final class JDWPController
 	/** The communication link. */
 	protected final CommLink commLink;
 	
+	/** The thread containing the communication link. */
+	protected final Thread commLinkThread;
+	
 	/**
 	 * Initializes the controller which manages the communication of JDWP.
 	 * 
@@ -47,7 +50,15 @@ public final class JDWPController
 			throw new NullPointerException("NARG");
 		
 		this.bind = __bind;
-		this.commLink = new CommLink(__in, __out);
+		
+		CommLink commLink = new CommLink(__in, __out);
+		this.commLink = commLink;
+		
+		// Setup Communication Link thread
+		Thread thread = new Thread(commLink, "SquirrelJME-JDWPCommLink");
+		thread.start();
+		
+		this.commLinkThread = thread;
 	}
 	
 	/**
@@ -72,9 +83,9 @@ public final class JDWPController
 	public boolean poll()
 		throws JDWPException
 	{
-		// Read in any packets we get to process them
-		JDWPPacket packet = null;
-		while (null != (packet = this.commLink.poll()))
+		// Read in any packets and process them as they come
+		for (JDWPPacket packet = this.commLink.poll(); packet != null;
+			this.commLink.poll())
 		{
 			throw Debugging.todo();
 		}

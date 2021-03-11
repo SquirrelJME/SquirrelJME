@@ -13,8 +13,10 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Deque;
@@ -26,11 +28,19 @@ import java.util.LinkedList;
  * @since 2021/03/09
  */
 public final class CommLink
-	implements Closeable
+	implements Closeable, Runnable
 {
 	/** Handshake sequence, sent by both sides. */
 	private static final byte[] _HANDSHAKE_SEQUENCE =
 		{'J', 'D', 'W', 'P', '-', 'H', 'a', 'n', 'd', 's', 'h', 'a', 'k', 'e'};
+	
+	/** Initial data buffer length. */
+	private static final int _INIT_DATA_LEN =
+		1024;
+	
+	/** The size of the packet header. */
+	private static final int _HEADER_SIZE =
+		11;
 	
 	/** The input communication stream. */
 	protected final DataInputStream in;
@@ -42,8 +52,18 @@ public final class CommLink
 	private final Deque<JDWPPacket> _freePackets =
 		new LinkedList<>();
 	
+	/** Packets which are ready. */
+	private final Deque<JDWPPacket> _readyPackets =
+		new LinkedList<>();
+	
 	/** Did we do our handshake? */
 	private volatile boolean _didHandshake;
+	
+	/** Read error? */
+	private volatile IOException _exception;
+	
+	/** Are we in shutdown? */
+	private volatile boolean _shutdown;
 	
 	/**
 	 * Initializes the communication link.
@@ -107,17 +127,166 @@ public final class CommLink
 	 * @return A packet or {@code null} if there are none.
 	 * @since 2021/03/10
 	 */
+	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	public JDWPPacket poll()
 		throws JDWPException
 	{
 		synchronized (this)
 		{
-			// If the handshake did not happen, do it now
+			// {@squirreljme.error AG06 Read error in JDWP.}
+			if (this._exception != null)
+				throw new JDWPException("AG06", this._exception);
+			
+			// Return any packets which are ready
+			Deque<JDWPPacket> readyPackets = this._readyPackets;
+			synchronized (readyPackets)
+			{
+				return readyPackets.poll();
+			}
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/10
+	 */
+	@Override
+	public void run()
+	{
+		// If the handshake did not happen, do it now
+		synchronized (this)
+		{
 			if (!this._didHandshake)
 				this.__handshake();
-			
-			throw Debugging.todo();
 		}
+		
+		// Used to read in the header as needed
+		byte[] header = new byte[CommLink._HEADER_SIZE];
+		int headerAt = 0;
+		
+		// Data and whatever length
+		byte[] data = new byte[CommLink._INIT_DATA_LEN];
+		int dataLen = -1;
+		int dataAt = 0;
+		
+		// Constant reading in loop
+		Deque<JDWPPacket> readyPackets = this._readyPackets;
+		for (InputStream in = this.in;;)
+			try
+			{
+				// Debug
+				Debugging.debugNote("JDWP: Reading packet (%d, %d)...",
+					headerAt, dataAt);
+				
+				// Shutting down?
+				if (this._shutdown)
+					break;
+				
+				// Still reading in the header?
+				int headerLeft = CommLink._HEADER_SIZE - headerAt;
+				if (headerLeft > 0)
+				{
+					int rc = in.read(header, headerAt, headerLeft);
+					
+					// EOF?
+					if (rc < 0)
+					{
+						// {@squirreljme.error AG07 Short header read.}
+						if (headerAt > 0)
+							throw new EOFException("AG07");
+							
+						break;
+					}
+					
+					headerLeft -= rc;
+					headerAt += rc;
+				}
+				
+				// Still need the header to be read?
+				if (headerLeft > 0)
+					continue;
+				
+				// Do not know the data length yet?
+				if (dataLen < 0)
+				{
+					// Figure out the data length, note that it includes our
+					// own header!!
+					dataLen = Math.max(((header[0] & 0xFF) << 24) |
+						((header[1] & 0xFF) << 16) |
+						((header[2] & 0xFF) << 8) |
+						(header[3] & 0xFF) - 11, 0);
+						
+					// If our buffer is too small, grow it just enough to fit
+					if (dataLen > data.length)
+						data = new byte[dataLen];
+				}
+				
+				// Debug
+				Debugging.debugNote("JDWP: Reading data (%d/%d)...",
+					dataAt, dataLen);
+				
+				// Read in any associated data
+				int dataLeft = dataLen - dataAt;
+				if (dataLen >= 0 && dataLeft > 0)
+				{
+					int rc = in.read(data, dataAt, dataLeft);
+					
+					// EOF?
+					if (rc < 0)
+					{
+						// {@squirreljme.error AG08 Short header read.}
+						if (dataAt > 0)
+							throw new EOFException("AG08");
+							
+						break;
+					}
+					
+					dataLeft -= rc;
+					dataAt += rc;
+				}
+				
+				// Still need more data to be read
+				if (dataLen >= 0 && dataLeft > 0)
+					continue;
+					
+				// Debug
+				Debugging.debugNote("JDWP: Packet Ready (%d, %d)...",
+					headerAt, dataAt);
+				
+				// Grab a new packet
+				JDWPPacket packet = this.__getPacket();
+				packet.__load(header, data, dataLen);
+				
+				// Return any packets which are ready
+				synchronized (readyPackets)
+				{
+					readyPackets.push(packet);
+				}
+				
+				// Reset
+				headerAt = 0;
+				dataAt = 0;
+				dataLen = -1;
+			}
+			
+			// If we get interrupted, we just either shutdown or continue
+			catch (InterruptedIOException ignored)
+			{
+			}
+	
+			// Read error?
+			catch (IOException e)
+			{
+				synchronized (this)
+				{
+					this._exception = e;
+					return;
+				}
+			}
+		
+		// Shut down
+		this._shutdown = true;
+		Debugging.debugNote("JDWP: Shutting down...");
 	}
 	
 	/**
