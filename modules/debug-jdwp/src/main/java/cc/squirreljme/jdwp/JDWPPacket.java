@@ -24,8 +24,27 @@ import java.util.Deque;
 public final class JDWPPacket
 	implements Closeable
 {
+	/** Flag used for replies. */
+	public static final short FLAG_REPLY =
+		0x80; 
+	
 	/** The queue where packets will go when done. */
 	private final Deque<JDWPPacket> _queue;
+	
+	/** The ID of this packet. */
+	private volatile int _id;
+	
+	/** The flags for this packet. */
+	private volatile int _flags;
+	
+	/** The command set (if not a reply). */
+	private volatile int _commandSet;
+	
+	/* The command (if not a reply). */
+	private volatile int _command;
+	
+	/** The error code (if a reply). */
+	private volatile int _errorCode;
 	
 	/**
 	 * Initializes the packet with the queue it will go back into whenever
@@ -53,6 +72,20 @@ public final class JDWPPacket
 		throws IOException
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Is this a reply packet?
+	 * 
+	 * @return If this is a reply.
+	 * @since 2021/03/11
+	 */
+	public boolean isReply()
+	{
+		synchronized (this)
+		{
+			return (this._flags & JDWPPacket.FLAG_REPLY) != 0;
+		}
 	}
 	
 	/**
