@@ -84,11 +84,17 @@ public final class JDWPController
 		throws JDWPException
 	{
 		// Read in any packets and process them as they come
-		for (JDWPPacket packet = this.commLink.poll(); packet != null;
-			this.commLink.poll())
-		{
-			throw Debugging.todo();
-		}
+		for (;;)
+			try (JDWPPacket packet = this.commLink.poll())
+			{
+				// No data?
+				if (packet == null)
+					break;
+				
+				Debugging.debugNote("Incoming: %s", packet);
+				
+				throw Debugging.todo();
+			}
 		
 		return true;
 	}

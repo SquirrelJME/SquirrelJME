@@ -89,7 +89,7 @@ public final class CommLink
 	 */
 	@Override
 	public void close()
-		throws IOException
+		throws JDWPException
 	{
 		IOException fail = null;
 		
@@ -116,8 +116,9 @@ public final class CommLink
 				fail.addSuppressed(e);
 		}
 		
+		// {@squirreljme.error AG09 Could not close communication link.}
 		if (fail != null)
-			throw fail;
+			throw new JDWPException("AG09", fail);
 	}
 	
 	/**
