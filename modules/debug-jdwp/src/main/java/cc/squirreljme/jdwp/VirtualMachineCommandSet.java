@@ -30,7 +30,7 @@ public enum VirtualMachineCommandSet
 			throws JDWPException
 		{
 			JDWPPacket rv = __controller.__reply(
-				__packet.id(), JDWPErrorType.NO_ERROR);
+				__packet.id(), ErrorType.NO_ERROR);
 			
 			// field, method, object, reference, frame
 			for (int i = 0; i < 5; i++)

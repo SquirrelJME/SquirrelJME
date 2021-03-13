@@ -12,6 +12,8 @@ package cc.squirreljme.jdwp;
 import java.io.Closeable;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Deque;
 
@@ -34,7 +36,7 @@ public final class JDWPPacket
 		32;
 	
 	/** The queue where packets will go when done. */
-	private final Deque<JDWPPacket> _queue;
+	private final Reference<Deque<JDWPPacket>> _queue;
 	
 	/** The ID of this packet. */
 	volatile int _id;
@@ -51,7 +53,7 @@ public final class JDWPPacket
 		-1;
 	
 	/** The error code (if a reply). */
-	volatile int _errorCode;
+	volatile ErrorType _errorCode;
 	
 	/** The packet data. */
 	private volatile byte[] _data;
@@ -79,19 +81,35 @@ public final class JDWPPacket
 		if (__queue == null)
 			throw new NullPointerException("NARG");
 		
-		this._queue = __queue;
+		this._queue = new WeakReference<>(__queue);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/03/10
 	 */
+	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	@Override
 	public void close()
 		throws JDWPException
 	{
-		// Set to closed
-		this._open = false;
+		synchronized (this)
+		{
+			// Ignore if closed already (prevent double queue add)
+			if (!this._open)
+				return;
+			
+			// Set to closed
+			this._open = false;
+			
+			// Return to the queue
+			Deque<JDWPPacket> queue = this._queue.get();
+			if (queue != null)
+				synchronized (queue)
+				{
+					queue.add(this);
+				}
+		}
 	}
 	
 	/**
@@ -166,6 +184,57 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Reads a single byte from the packet
+	 * 
+	 * @return The single read value.
+	 * @throws JDWPException If the end of the packet was reached.
+	 * @since 2021/03/13
+	 */
+	public final byte readByte()
+		throws JDWPException
+	{
+		synchronized (this)
+		{
+			// Ensure this is open
+			this.__checkOpen();
+			
+			// {@squirreljme.error AG0d End of packet reached. 
+			// (The packet size)}
+			int readPos = this._readPos;
+			if (readPos >= this._length)
+				throw new JDWPException("AG0d " + readPos);
+			
+			// Read in and increment the position
+			byte rv = this._data[readPos];
+			this._readPos = readPos + 1;
+			return rv;
+		}
+	}
+	
+	/**
+	 * Reads an integer byte from the packet
+	 * 
+	 * @return The single read value.
+	 * @throws JDWPException If the end of the packet was reached.
+	 * @since 2021/03/13
+	 */
+	public final int readInt()
+		throws JDWPException
+	{
+		synchronized (this)
+		{
+			// Ensure this is open
+			this.__checkOpen();
+			
+			// Read in each byte
+			return ((this.readByte() & 0xFF) << 24) |
+				((this.readByte() & 0xFF) << 16) |
+				((this.readByte() & 0xFF) << 8) |
+				(this.readByte() & 0xFF);
+		}
+	}
+	
+	/**
 	 * Resets and opens the packet.
 	 * 
 	 * @param __open Should this be opened?
@@ -183,7 +252,7 @@ public final class JDWPPacket
 			this._flags = 0;
 			this._commandSet = -1;
 			this._command = -1;
-			this._errorCode = 0;
+			this._errorCode = null;
 			this._length = 0;
 			this._readPos = 0;
 			
@@ -290,9 +359,7 @@ public final class JDWPPacket
 			
 			// Reply packet
 			if (this.isReply())
-			{
-				__out.writeShort(this._errorCode);
-			}
+				__out.writeShort(this._errorCode.id);
 			
 			// Command packet
 			else
@@ -379,15 +446,15 @@ public final class JDWPPacket
 				this._command = -1;
 				
 				// Read just the error code
-				this._errorCode = ((__header[9] & 0xFF) << 8) |
-					(__header[10] & 0xFF);
+				this._errorCode = ErrorType.of(((__header[9] & 0xFF) << 8) |
+					(__header[10] & 0xFF));
 			}
 			
 			// Non-reply
 			else
 			{
 				// These are not used
-				this._errorCode = -1;
+				this._errorCode = null;
 				
 				// Read the command used
 				this._commandSet = __header[9] & 0xFF;

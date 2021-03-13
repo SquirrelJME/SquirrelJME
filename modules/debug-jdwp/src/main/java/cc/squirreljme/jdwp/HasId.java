@@ -10,17 +10,17 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Error types for JDWP.
+ * Anything that has an ID.
  *
- * @since 2021/03/12
+ * @since 2021/03/13
  */
-public interface JDWPErrorType
+public interface HasId
 {
-	/** No error. */
-	byte NO_ERROR = 
-		0;
-	
-	/** Not implemented. */
-	byte NOT_IMPLEMENTED =
-		99;
+	/**
+	 * Returns the command ID.
+	 * 
+	 * @return The command ID.
+	 * @since 2021/03/12
+	 */
+	int id();
 }

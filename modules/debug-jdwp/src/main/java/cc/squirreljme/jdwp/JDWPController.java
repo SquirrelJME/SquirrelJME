@@ -105,7 +105,7 @@ public final class JDWPController
 					.command(packet.command());
 				if (command == null)
 					result = this.__reply(packet.id(),
-						JDWPErrorType.NOT_IMPLEMENTED);
+						ErrorType.NOT_IMPLEMENTED);
 				
 				// Execute the command normally
 				else
@@ -119,7 +119,7 @@ public final class JDWPController
 					// If a result is missing, assume nothing needed
 					if (result == null)
 						result = this.__reply(packet.id(),
-							JDWPErrorType.NO_ERROR);
+							ErrorType.NO_ERROR);
 				}
 				
 				// Debug
@@ -143,7 +143,7 @@ public final class JDWPController
 	 * @return The packet used.
 	 * @since 2021/03/12
 	 */
-	JDWPPacket __reply(int __id, int __error)
+	JDWPPacket __reply(int __id, ErrorType __error)
 	{
 		JDWPPacket rv = this.commLink.__getPacket(true);
 		

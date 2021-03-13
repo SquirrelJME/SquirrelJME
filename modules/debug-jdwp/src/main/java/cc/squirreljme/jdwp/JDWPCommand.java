@@ -15,15 +15,8 @@ package cc.squirreljme.jdwp;
  * @since 2021/03/12
  */
 public interface JDWPCommand
+	extends HasId
 {
-	/**
-	 * Returns the command ID.
-	 * 
-	 * @return The command ID.
-	 * @since 2021/03/12
-	 */
-	int id();
-	
 	/**
 	 * Executes the given command.
 	 * 

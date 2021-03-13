@@ -9,15 +9,13 @@
 
 package cc.squirreljme.jdwp;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Command set for JDWP Packets.
  *
  * @since 2021/03/12
  */
 public enum JDWPCommandSet
+	implements HasId
 {
 	/** Unknown command set. */
 	UNKNOWN(-1),
@@ -32,36 +30,14 @@ public enum JDWPCommandSet
 	;
 	
 	/** Quick lookup for command sets. */
-	private static final JDWPCommandSet[] _QUICK;
+	private static final __QuickTable__<JDWPCommandSet> _QUICK =
+		new __QuickTable__<>(JDWPCommandSet.values());
 	
 	/** The Id of the set. */
 	public final int id;
 	
 	/** Command set commands. */
-	private final JDWPCommand[] _commands; 
-	
-	static
-	{
-		// Fill in ID maps
-		List<JDWPCommandSet> quick = new ArrayList<>();
-		for (JDWPCommandSet set : JDWPCommandSet.values())
-		{
-			// Ignore unknown
-			if (set == JDWPCommandSet.UNKNOWN)
-				continue;
-			
-			// Add null fillers
-			int id = set.id;
-			while (quick.size() <= id)
-				quick.add(null);
-			
-			// Set specific position
-			quick.set(id, set);
-		}
-		
-		_QUICK = quick.<JDWPCommandSet>toArray(
-			new JDWPCommandSet[quick.size()]);
-	}
+	private final __QuickTable__<JDWPCommand> _commands; 
 	
 	/**
 	 * Initializes the command set enum.
@@ -73,22 +49,7 @@ public enum JDWPCommandSet
 	JDWPCommandSet(int __id, JDWPCommand... __cmds)
 	{
 		this.id = __id;
-		
-		// Build quick command lookup
-		List<JDWPCommand> commands = new ArrayList<>(__cmds.length);
-		for (JDWPCommand cmd : __cmds)
-		{
-			// Add null fillers
-			int cmdId = cmd.id();
-			while (commands.size() <= cmdId)
-				commands.add(null);
-			
-			// Set in slot
-			commands.set(cmdId, cmd);
-		}
-		
-		this._commands = commands.<JDWPCommand>toArray(
-			new JDWPCommand[commands.size()]);
+		this._commands = new __QuickTable__<>(__cmds);
 	}
 	
 	/**
@@ -100,10 +61,17 @@ public enum JDWPCommandSet
 	 */
 	public final JDWPCommand command(int __id)
 	{
-		JDWPCommand[] commands = this._commands;
-		if (__id < 0 || __id >= commands.length)
-			return null;
-		return commands[__id];
+		return this._commands.get(__id);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public final int id()
+	{
+		return this.id;
 	}
 	
 	/**
@@ -115,11 +83,11 @@ public enum JDWPCommandSet
 	 */
 	public static JDWPCommandSet of(int __id)
 	{
-		JDWPCommandSet[] quick = JDWPCommandSet._QUICK;
-		if (__id < 0 || __id >= quick.length)
-			return JDWPCommandSet.UNKNOWN;
+		JDWPCommandSet rv = JDWPCommandSet._QUICK.get(__id);
 		
-		JDWPCommandSet rv = quick[__id];
-		return (rv == null ? JDWPCommandSet.UNKNOWN : rv);
+		// Is always not null
+		if (rv == null)
+			return JDWPCommandSet.UNKNOWN;
+		return rv;
 	}
 }

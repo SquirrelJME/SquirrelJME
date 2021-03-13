@@ -32,12 +32,13 @@ public enum EventRequestCommandSet
 			throws JDWPException
 		{
 			JDWPPacket rv = __controller.__reply(
-				__packet.id(), JDWPErrorType.NO_ERROR);
+				__packet.id(), ErrorType.NO_ERROR);
 			
-			// Which kind of event? If not supported report not implemented
+			// Which kind of event? If not supported, it is not valid
 			EventKind eventKind = EventKind.of(__packet.readByte());
 			if (eventKind == null)
-				throw Debugging.todo();
+				return __controller.__reply(__packet.id(),
+					ErrorType.INVALID_EVENT_TYPE);
 			
 			// How does this suspend?
 			SuspendPolicy suspendPolicy =
@@ -47,10 +48,16 @@ public enum EventRequestCommandSet
 			int numModifiers = __packet.readInt();
 			for (int i = 0; i < numModifiers; i++)
 			{
+				// Check if the kind if supported or known about
 				EventModKind modKind = EventModKind.of(__packet.readByte());
+				if (modKind == null)
+					return __controller.__reply(__packet.id(),
+						ErrorType.NOT_IMPLEMENTED);
+					
+				// Depends on the kind
 				switch (modKind)
 				{
-					case OCCURANCE_COUNTDOWN:
+					case LIMIT_OCCURRENCES:
 						throw Debugging.todo();
 					
 					case CONDITIONAL:
@@ -75,9 +82,9 @@ public enum EventRequestCommandSet
 						throw Debugging.todo();
 					
 					case FIELD:
-						throw Debugging.tood();
+						throw Debugging.todo();
 					
-					case CALL_STACK:
+					case CALL_STACK_STEPPING:
 						throw Debugging.todo();
 					
 					case THIS_OBJECT:
@@ -86,11 +93,16 @@ public enum EventRequestCommandSet
 					case SOURCE_FILENAME_PATTERN:
 						throw Debugging.todo();
 					
-						// Report error on invalid kinds
+						// Report not-implemented
 					default:
-						throw Debugging.todo();
+						return __controller.__reply(__packet.id(),
+							ErrorType.NOT_IMPLEMENTED);
 				}
 			}
+			
+			// Register the event request
+			if (true)
+				throw Debugging.todo();
 			
 			return rv;
 		}
