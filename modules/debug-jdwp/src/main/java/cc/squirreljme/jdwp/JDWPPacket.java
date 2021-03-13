@@ -232,9 +232,10 @@ public final class JDWPPacket
 			byte[] data = this._data;
 			
 			// Too small?
-			if (length + 1 > data.length)
-				this._data = (data = Arrays.copyOf(
-					data, data.length + JDWPPacket._GROW_SIZE));
+			if (data == null || length + 1 > data.length)
+				this._data = (data = (data == null ?
+					new byte[JDWPPacket._GROW_SIZE] : Arrays.copyOf(
+					data, data.length + JDWPPacket._GROW_SIZE)));
 			
 			// Write the byte
 			data[length] = (byte)__v;
@@ -282,8 +283,8 @@ public final class JDWPPacket
 			// Must be an open packet
 			this.__checkOpen();
 			
-			// Write shared header
-			__out.writeInt(this._length);
+			// Write shared header (includes header size)
+			__out.writeInt(this._length + CommLink._HEADER_SIZE);
 			__out.writeInt(this._id);
 			__out.writeByte(this._flags);
 			

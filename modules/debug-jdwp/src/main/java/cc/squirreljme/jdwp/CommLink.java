@@ -39,7 +39,7 @@ public final class CommLink
 		1024;
 	
 	/** The size of the packet header. */
-	private static final int _HEADER_SIZE =
+	static final int _HEADER_SIZE =
 		11;
 	
 	/** The input communication stream. */
