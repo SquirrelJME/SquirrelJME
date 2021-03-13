@@ -189,6 +189,10 @@ public final class CommLink
 				{
 					int rc = in.read(header, headerAt, headerLeft);
 					
+					// Debug
+					Debugging.debugNote("JDWP: Header <- %d %d/%d",
+						rc, headerAt, headerLeft);
+					
 					// EOF?
 					if (rc < 0)
 					{
@@ -231,6 +235,10 @@ public final class CommLink
 				if (dataLen >= 0 && dataLeft > 0)
 				{
 					int rc = in.read(data, dataAt, dataLeft);
+					
+					// Debug
+					Debugging.debugNote("JDWP: Data <- %d %d/%d",
+						rc, dataAt, dataLeft);
 					
 					// EOF?
 					if (rc < 0)
@@ -307,7 +315,9 @@ public final class CommLink
 		// Write to the destination
 		try
 		{
+			// Write then make sure it is instantly available
 			__packet.writeTo(this.out);
+			this.out.flush();
 		}
 		
 		// {@squirreljme.error AG01 Could not send the packet. (The packet)}
