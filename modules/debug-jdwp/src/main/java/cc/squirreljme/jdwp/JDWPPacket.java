@@ -12,6 +12,7 @@ package cc.squirreljme.jdwp;
 import java.io.Closeable;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
@@ -284,12 +285,25 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Writes the boolean to the output.
+	 * 
+	 * @param __b The boolean to write.
+	 * @throws JDWPException If it could not be written.
+	 * @since 2021/03/13
+	 */
+	public void writeBoolean(boolean __b)
+		throws JDWPException
+	{
+		this.writeByte((__b ? 1 : 0));
+	}
+	
+	/**
 	 * Writes the given byte.
 	 * 
 	 * @param __v The value to write.
 	 * @since 2021/03/12
 	 */
-	private void writeByte(int __v)
+	public void writeByte(int __v)
 	{
 		synchronized (this)
 		{
@@ -313,12 +327,27 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Writes an ID to the output.
+	 * 
+	 * @param __v The value to write.
+	 * @throws JDWPException If it could not be written.
+	 * @since 2021/03/12
+	 */
+	public void writeId(JDWPId __v)
+		throws JDWPException
+	{
+		this.writeInt((__v == null ? 0 : __v.id()));
+	}
+	
+	/**
 	 * Writes an integer to the output.
 	 * 
 	 * @param __v The value to write.
+	 * @throws JDWPException If it could not be written.
 	 * @since 2021/03/12
 	 */
-	protected void writeInt(int __v)
+	public void writeInt(int __v)
+		throws JDWPException
 	{
 		synchronized (this)
 		{
@@ -330,6 +359,39 @@ public final class JDWPPacket
 			this.writeByte(__v >> 16);
 			this.writeByte(__v >> 8);
 			this.writeByte(__v);
+		}
+	}
+	
+	/**
+	 * Writes the string to the output.
+	 * 
+	 * @param __string The string to write.
+	 * @throws JDWPException If it could not be written.
+	 * @since 2021/03/13
+	 */
+	public void writeString(String __string)
+		throws JDWPException
+	{
+		synchronized (this)
+		{
+			byte[] bytes;
+			try
+			{
+				bytes = __string.getBytes("utf-8");
+			}
+			
+			// {@squirreljme.error AG0e UTF-8 is not supported?}
+			catch (UnsupportedEncodingException __e)
+			{
+				throw new JDWPException("AG0e", __e);
+			}
+			
+			// Write length
+			this.writeInt(bytes.length);
+			
+			// Write all the bytes
+			for (byte b : bytes)
+				this.writeByte(b);
 		}
 	}
 	

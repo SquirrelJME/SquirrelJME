@@ -9,22 +9,23 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
- * Interface for JDWP Command execution.
+ * Thread groups for JDWP access.
  *
- * @since 2021/03/12
+ * @since 2021/03/13
  */
-public interface JDWPCommand
-	extends JDWPId
+public final class JDWPThreadGroups
 {
 	/**
-	 * Executes the given command.
+	 * Returns the current thread groups.
 	 * 
-	 * @param __controller The controller used.
-	 * @param __packet The packet being input.
-	 * @return The result packet, if there is one.
-	 * @since 2021/03/12
+	 * @return The current thread groups.
+	 * @since 2021/03/13
 	 */
-	JDWPPacket execute(JDWPController __controller, JDWPPacket __packet)
-		throws JDWPException;
+	public JDWPThreadGroup[] current()
+	{
+		throw Debugging.todo();
+	}
 }

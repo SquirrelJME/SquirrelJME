@@ -15,7 +15,7 @@ package cc.squirreljme.jdwp;
  * @since 2021/03/12
  */
 public enum JDWPCommandSet
-	implements HasId
+	implements JDWPId
 {
 	/** Unknown command set. */
 	UNKNOWN(-1),

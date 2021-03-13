@@ -15,7 +15,10 @@ import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jdwp.JDWPBinding;
 import cc.squirreljme.jdwp.JDWPController;
+import cc.squirreljme.jdwp.JDWPThreadGroups;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
+import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
@@ -73,6 +76,16 @@ public final class SpringTaskManager
 		this.suites = __sm;
 		this.profiler = (__ps == null ? new ProfilerSnapshot() : __ps);
 		this.globalState = new GlobalState();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public void jdwpUpdateThreadGroups(JDWPThreadGroups __groups)
+	{
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -173,6 +186,36 @@ public final class SpringTaskManager
 		}
 		
 		return result.<SpringMachine>toArray(new SpringMachine[result.size()]);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public String vmDescription()
+	{
+		return "SquirrelJME SpringCoat " + SquirrelJME.RUNTIME_VERSION;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public String vmName()
+	{
+		return "SquirrelJME SpringCoat";
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public String vmVersion()
+	{
+		return SquirrelJME.RUNTIME_VERSION;
 	}
 }
 

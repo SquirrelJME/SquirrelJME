@@ -38,6 +38,10 @@ public final class JDWPController
 	/** The thread containing the communication link. */
 	protected final Thread commLinkThread;
 	
+	/** Thread groups. */
+	final JDWPThreadGroups _threadGroups =
+		new JDWPThreadGroups();
+	
 	/** Event mappings by Kind. */
 	private final Map<EventKind, List<EventRequest>> _eventByKind =
 		new EnumTypeMap<EventKind, List<EventRequest>>(

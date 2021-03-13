@@ -9,15 +9,13 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * Represents an event request.
  *
  * @since 2021/03/13
  */
 public final class EventRequest
-	implements HasId
+	implements JDWPId
 {
 	/** The ID of the event. */
 	public final int id;

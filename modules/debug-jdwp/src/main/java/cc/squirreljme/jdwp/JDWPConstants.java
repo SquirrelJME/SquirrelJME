@@ -18,5 +18,5 @@ public interface JDWPConstants
 {
 	/** ID Sizes. */
 	byte ID_SIZE =
-		8;
+		4;
 }

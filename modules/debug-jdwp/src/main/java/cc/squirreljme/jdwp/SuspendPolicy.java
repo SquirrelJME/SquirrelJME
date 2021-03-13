@@ -15,7 +15,7 @@ package cc.squirreljme.jdwp;
  * @since 2021/03/13
  */
 public enum SuspendPolicy
-	implements HasId
+	implements JDWPId
 {
 	/** None. */
 	NONE(0),

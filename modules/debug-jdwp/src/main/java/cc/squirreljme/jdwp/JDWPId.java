@@ -14,7 +14,7 @@ package cc.squirreljme.jdwp;
  *
  * @since 2021/03/13
  */
-public interface HasId
+public interface JDWPId
 {
 	/**
 	 * Returns the command ID.
