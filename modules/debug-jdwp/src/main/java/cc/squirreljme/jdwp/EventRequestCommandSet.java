@@ -10,6 +10,8 @@
 package cc.squirreljme.jdwp;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Event request command set.
@@ -42,6 +44,7 @@ public enum EventRequestCommandSet
 				SuspendPolicy.of(__packet.readByte());
 			
 			// Modifier kinds
+			List<EventModifier> modifiers = new ArrayList<>();
 			int numModifiers = __packet.readInt();
 			for (int i = 0; i < numModifiers; i++)
 			{
@@ -67,7 +70,9 @@ public enum EventRequestCommandSet
 						throw Debugging.todo();
 						
 					case ONLY_IN_CLASS_PATTERN:
-						throw Debugging.todo();
+						modifiers.add(new OnlyInClassPatternModifier(
+							__packet.readString()));
+						break;
 					
 					case NOT_IN_CLASS_PATTERN:
 						throw Debugging.todo();
@@ -99,7 +104,8 @@ public enum EventRequestCommandSet
 			
 			// Register the event request
 			EventRequest request = new EventRequest(
-				__controller.__nextId(), eventKind, suspendPolicy);
+				__controller.__nextId(), eventKind, suspendPolicy,
+				modifiers.toArray(new EventModifier[modifiers.size()]));
 			__controller.__addEventRequest(request);
 			
 			// Respond with the ID of this event

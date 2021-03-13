@@ -236,6 +236,42 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Reads the specified string.
+	 * 
+	 * @return The read string.
+	 * @throws JDWPException If it could not be read.
+	 * @since 2021/03/13
+	 */
+	public final String readString()
+		throws JDWPException
+	{
+		synchronized (this)
+		{
+			// Ensure this is open
+			this.__checkOpen();
+			
+			// Read length
+			int len = this.readInt();
+			
+			// Read in UTF data
+			byte[] utf = new byte[len];
+			for (int i = 0; i < len; i++)
+				utf[i] = this.readByte();
+			
+			// Build final string
+			try
+			{
+				return new String(utf, "utf-8");
+			}
+			catch (UnsupportedEncodingException __e)
+			{
+				// {@squirreljme.error AG0f UTF-8 not supported?}
+				throw new JDWPException("AG0f", __e);
+			}
+		}
+	}
+	
+	/**
 	 * Resets and opens the packet.
 	 * 
 	 * @param __open Should this be opened?

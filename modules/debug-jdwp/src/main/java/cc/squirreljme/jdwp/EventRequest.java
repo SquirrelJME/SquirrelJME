@@ -26,17 +26,21 @@ public final class EventRequest
 	/** The suspend policy. */
 	public final SuspendPolicy suspendPolicy;
 	
+	/** Modifiers for events. */
+	private final EventModifier[] _modifiers;
+	
 	/**
 	 * Initializes the event request.
 	 * 
 	 * @param __id The identifier of the request.
 	 * @param __eventKind The kind of event this is.
 	 * @param __suspendPolicy The suspension policy.
+	 * @param __modifiers Modifiers for the event.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/13
 	 */
 	public EventRequest(int __id, EventKind __eventKind,
-		SuspendPolicy __suspendPolicy)
+		SuspendPolicy __suspendPolicy, EventModifier... __modifiers)
 		throws NullPointerException
 	{
 		if (__eventKind == null || __suspendPolicy == null)
@@ -45,6 +49,8 @@ public final class EventRequest
 		this.id = __id;
 		this.eventKind = __eventKind;
 		this.suspendPolicy = __suspendPolicy;
+		this._modifiers = (__modifiers == null ? new EventModifier[0] :
+			__modifiers.clone());
 	}
 	
 	/**

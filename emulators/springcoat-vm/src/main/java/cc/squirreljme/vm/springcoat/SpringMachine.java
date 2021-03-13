@@ -701,6 +701,16 @@ public final class SpringMachine
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public final String toString()
+	{
+		return this.vmId;
+	}
+	
+	/**
 	 * Splits long to integers.
 	 *
 	 * @param __dx The index.

@@ -19,6 +19,25 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public final class JDWPThreadGroup
 	implements JDWPId
 {
+	/** The object this is bound to. */
+	protected final Object object;
+	
+	/**
+	 * Initializes the thread group.
+	 * 
+	 * @param __v The value to bind to.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/03/13
+	 */
+	public JDWPThreadGroup(Object __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		this.object = __v;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/03/13
@@ -26,6 +45,6 @@ public final class JDWPThreadGroup
 	@Override
 	public int id()
 	{
-		throw Debugging.todo();
+		return System.identityHashCode(this.object);
 	}
 }

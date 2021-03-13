@@ -49,6 +49,29 @@ public enum VirtualMachineCommandSet
 		}
 	},
 	
+	/** Classes by signature. */
+	CLASSES_BY_SIGNATURE(2)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/13
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			// Write result
+			JDWPPacket rv = __controller.__reply(
+				__packet.id(), ErrorType.NO_ERROR);
+			
+			Debugging.todoNote("Implement CLASSES_BY_SIGNATURE");
+			rv.writeInt(0);
+			
+			return rv;
+		}
+	},
+	
 	/** Top level thread groups. */
 	TOP_LEVEL_THREAD_GROUPS(5)
 	{

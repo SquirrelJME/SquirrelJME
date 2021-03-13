@@ -9,7 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Thread groups for JDWP access.
@@ -18,6 +19,37 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  */
 public final class JDWPThreadGroups
 {
+	/** Thread group mapping. */
+	private final Map<Integer, JDWPThreadGroup> _groups =
+		new LinkedHashMap<>();
+	
+	/**
+	 * Binds the object to the given group.
+	 * 
+	 * @param __v The object to bind.
+	 * @return The thread group binding.
+	 * @throws NullPointerException
+	 */
+	public JDWPThreadGroup bind(Object __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		Map<Integer, JDWPThreadGroup> groups = this._groups;
+		synchronized (this)
+		{
+			int id = System.identityHashCode(__v);
+			
+			// Create it if it is not yet set?
+			JDWPThreadGroup rv = groups.get(id);
+			if (rv == null)
+				groups.put(id, (rv = new JDWPThreadGroup(__v)));
+			
+			return rv;
+		}
+	}
+	
 	/**
 	 * Returns the current thread groups.
 	 * 
@@ -26,6 +58,10 @@ public final class JDWPThreadGroups
 	 */
 	public JDWPThreadGroup[] current()
 	{
-		throw Debugging.todo();
+		Map<Integer, JDWPThreadGroup> groups = this._groups;
+		synchronized (this)
+		{
+			return groups.values().toArray(new JDWPThreadGroup[groups.size()]);
+		}
 	}
 }

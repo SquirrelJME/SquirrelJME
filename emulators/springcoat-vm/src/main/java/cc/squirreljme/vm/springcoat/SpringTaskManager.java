@@ -85,7 +85,8 @@ public final class SpringTaskManager
 	@Override
 	public void jdwpUpdateThreadGroups(JDWPThreadGroups __groups)
 	{
-		throw Debugging.todo();
+		for (SpringMachine machine : this.tasks())
+			__groups.bind(machine);
 	}
 	
 	/**
