@@ -255,7 +255,7 @@ public final class CommLink
 					headerAt, dataAt);
 				
 				// Grab a new packet
-				JDWPPacket packet = this.__getPacket();
+				JDWPPacket packet = this.__getPacket(false);
 				packet.__load(header, data, dataLen);
 				
 				// Return any packets which are ready
@@ -294,13 +294,11 @@ public final class CommLink
 	 * Sends the packet to the remote end.
 	 * 
 	 * @param __packet The packet to send.
-	 * @param __context The context packet for the command ID and code, may
-	 * be {@code null}.
 	 * @throws JDWPException If the packet could not be sent.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/12
 	 */
-	protected void send(JDWPPacket __packet, JDWPPacket __context)
+	protected void send(JDWPPacket __packet)
 		throws JDWPException, NullPointerException
 	{
 		if (__packet == null)
@@ -376,22 +374,25 @@ public final class CommLink
 	 * @return A packet that is fresh, this may be recycled from a previous
 	 * packet or taken from another.
 	 * @since 2021/03/10
+	 * @param __open
 	 */
 	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
-	JDWPPacket __getPacket()
+	JDWPPacket __getPacket(boolean __open)
 	{
 		Deque<JDWPPacket> freePackets = this._freePackets;
 		synchronized (freePackets)
 		{
 			// If there are no free packets then make a new one
+			JDWPPacket rv;
 			if (freePackets.isEmpty())
-				return new JDWPPacket(freePackets);
+				rv = new JDWPPacket(freePackets);
 			
 			// Grab the next free one
-			JDWPPacket rv = freePackets.remove();
+			else
+				rv = freePackets.remove();
 			
 			// Clear it for the next run
-			rv.resetAndOpen();
+			rv.resetAndOpen(__open);
 			
 			return rv;
 		}

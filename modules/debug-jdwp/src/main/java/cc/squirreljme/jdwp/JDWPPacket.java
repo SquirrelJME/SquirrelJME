@@ -168,9 +168,10 @@ public final class JDWPPacket
 	/**
 	 * Resets and opens the packet.
 	 * 
+	 * @param __open Should this be opened?
 	 * @since 2021/03/12
 	 */
-	protected final void resetAndOpen()
+	protected final void resetAndOpen(boolean __open)
 	{
 		synchronized (this)
 		{
@@ -186,8 +187,8 @@ public final class JDWPPacket
 			this._length = 0;
 			this._readPos = 0;
 			
-			// Mark as open
-			this._open = true;
+			// Mark as open?
+			this._open = __open;
 		}
 	}
 	

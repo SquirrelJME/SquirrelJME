@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * Virtual machine command set.
  *
@@ -36,7 +34,7 @@ public enum VirtualMachineCommandSet
 			
 			// field, method, object, reference, frame
 			for (int i = 0; i < 5; i++)
-				__packet.writeInt(JDWPConstants.ID_SIZE);
+				rv.writeInt(JDWPConstants.ID_SIZE);
 			
 			return rv;
 		}

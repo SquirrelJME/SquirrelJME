@@ -92,7 +92,7 @@ public final class JDWPController
 					break;
 				
 				// Debug
-				Debugging.debugNote("Incoming: %s", packet);
+				Debugging.debugNote("JDWP: <- %s", packet);
 				
 				// Resultant packet, returned as a result
 				JDWPPacket result;
@@ -113,10 +113,13 @@ public final class JDWPController
 							JDWPErrorType.NO_ERROR);
 				}
 				
+				// Debug
+				Debugging.debugNote("JDWP: -> %s", result);
+				
 				// Send the result to the debugger, close when done
 				try (JDWPPacket ignored = result)
 				{
-					commLink.send(result, packet);
+					commLink.send(result);
 				}
 			}
 		
@@ -133,7 +136,7 @@ public final class JDWPController
 	 */
 	JDWPPacket __reply(int __id, int __error)
 	{
-		JDWPPacket rv = this.commLink.__getPacket();
+		JDWPPacket rv = this.commLink.__getPacket(true);
 		
 		rv._id = __id;
 		rv._errorCode = __error;
