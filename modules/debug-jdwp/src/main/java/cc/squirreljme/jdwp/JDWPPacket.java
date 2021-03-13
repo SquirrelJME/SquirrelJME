@@ -271,13 +271,13 @@ public final class JDWPPacket
 		synchronized (this)
 		{
 			if (!this._open)
-				return "JDWDPacket:Closed";
+				return "JDWPPacket:Closed";
 			
 			int flags = this._flags;
-			return String.format("JDWDPacket[id=%08x,flags=%02x,len=%d]:%s",
+			return String.format("JDWPPacket[id=%08x,flags=%02x,len=%d]:%s",
 				this._id, flags, this._length,
 				((flags & JDWPPacket.FLAG_REPLY) != 0 ?
-					String.format("[error=%d]", this._errorCode) :
+					String.format("[error=%s]", this._errorCode) :
 					String.format("[cmdSet=%d;cmd=%d]",
 						this._commandSet, this._command)));
 		}

@@ -20,6 +20,69 @@ public enum EventKind
 	/** Single Step. */
 	SINGLE_STEP(1),
 	
+	/** Breakpoint. */
+	BREAKPOINT(2),
+	
+	/** Frame pop. */
+	FRAME_POP(3),
+	
+	/** Exception. */
+	EXCEPTION(4),
+	
+	/** User defined. */
+	USER_DEFINED(5),
+	
+	/** Start of thread. */
+	THREAD_START(6),
+	
+	/** End of thread. */
+	THREAD_DEATH(7),
+	
+	/** Class being prepared. */
+	CLASS_PREPARE(8),
+	
+	/** Class unloading. */
+	CLASS_UNLOAD(9),
+	
+	/** Class loading. */
+	CLASS_LOAD(10),
+	
+	/** Field access. */
+	FIELD_ACCESS(20),
+	
+	/** Field modification. */
+	FIELD_MODIFICATION(21),
+	
+	/** Exception catch. */
+	EXCEPTION_CATCH(30),
+	
+	/** Method entry. */
+	METHOD_ENTRY(40),
+	
+	/** Method exit. */
+	METHOD_EXIT(41),
+	
+	/** Method exit with return value. */
+	METHOD_EXIT_WITH_RETURN_VALUE(42),
+	
+	/** Contended monitor enter. */
+	MONITOR_CONTENDED_ENTER(43),
+	
+	/** Contended monitor exit. */
+	MONITOR_CONTENDED_EXIT(44),
+	
+	/** Monitor wait. */
+	MONITOR_WAIT(45),
+	
+	/** Monitor waited. */
+	MONITOR_WAITED(46),
+	
+	/** Virtual machine start. */
+	VM_START(90),
+	
+	/** Virtual machine death. */
+	VM_DEATH(99),
+	
 	/* End. */
 	;
 	

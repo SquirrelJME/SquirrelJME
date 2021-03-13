@@ -19,7 +19,6 @@ import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.PrintStream;
-import todo.OOPS;
 
 /**
  * This class contains all of the static methods which are for writing debug
@@ -40,10 +39,6 @@ public final class Debugging
 	/** Exit status for TODOs. */
 	private static final int _TODO_EXIT_STATUS =
 		63;
-	
-	/** Used to prevent loops. */
-	@SuppressWarnings("StaticVariableMayNotBeInitialized")
-	private static volatile boolean _noLoop;
 	
 	/** This will be set when TODOs are tripped, to prevent infinite loops. */
 	@SuppressWarnings("StaticVariableMayNotBeInitialized")
@@ -314,19 +309,9 @@ public final class Debugging
 	private static void __format(char __cha, char __chb, String __format,
 		Object... __args)
 	{
-		// Print quickly and stop because this may infinite loop
-		if (Debugging._noLoop)
-		{
-			Debugging.__print('X');
-			return;
-		}
-		
 		// Print otherwise
 		try
 		{
-			// Do not re-enter this loop
-			Debugging._noLoop = true;
-			
 			// Print header marker
 			Debugging.__print(__cha, __chb);
 			Debugging.__print(':', ' ');
@@ -460,12 +445,6 @@ public final class Debugging
 			
 			// End of line
 			Debugging.__printLine();
-		}
-		
-		// Clear loop prevention flag
-		finally
-		{
-			Debugging._noLoop = false;
 		}
 	}
 	
