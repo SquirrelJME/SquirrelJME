@@ -31,9 +31,6 @@ public enum EventRequestCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			JDWPPacket rv = __controller.__reply(
-				__packet.id(), ErrorType.NO_ERROR);
-			
 			// Which kind of event? If not supported, it is not valid
 			EventKind eventKind = EventKind.of(__packet.readByte());
 			if (eventKind == null)
@@ -101,8 +98,14 @@ public enum EventRequestCommandSet
 			}
 			
 			// Register the event request
-			if (true)
-				throw Debugging.todo();
+			EventRequest request = new EventRequest(
+				__controller.__nextId(), eventKind, suspendPolicy);
+			__controller.__addEventRequest(request);
+			
+			// Respond with the ID of this event
+			JDWPPacket rv = __controller.__reply(
+				__packet.id(), ErrorType.NO_ERROR);
+			rv.writeInt(request.id());
 			
 			return rv;
 		}

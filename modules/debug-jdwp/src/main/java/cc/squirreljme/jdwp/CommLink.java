@@ -175,10 +175,6 @@ public final class CommLink
 		for (InputStream in = this.in;;)
 			try
 			{
-				// Debug
-				Debugging.debugNote("JDWP: Reading packet (%d, %d)...",
-					headerAt, dataAt);
-				
 				// Shutting down?
 				if (this._shutdown)
 					break;
@@ -188,10 +184,6 @@ public final class CommLink
 				if (headerLeft > 0)
 				{
 					int rc = in.read(header, headerAt, headerLeft);
-					
-					// Debug
-					Debugging.debugNote("JDWP: Header <- %d %d/%d",
-						rc, headerAt, headerLeft);
 					
 					// EOF?
 					if (rc < 0)
@@ -226,19 +218,11 @@ public final class CommLink
 						data = new byte[dataLen];
 				}
 				
-				// Debug
-				Debugging.debugNote("JDWP: Reading data (%d/%d)...",
-					dataAt, dataLen);
-				
 				// Read in any associated data
 				int dataLeft = dataLen - dataAt;
 				if (dataLen >= 0 && dataLeft > 0)
 				{
 					int rc = in.read(data, dataAt, dataLeft);
-					
-					// Debug
-					Debugging.debugNote("JDWP: Data <- %d %d/%d",
-						rc, dataAt, dataLeft);
 					
 					// EOF?
 					if (rc < 0)
@@ -257,10 +241,6 @@ public final class CommLink
 				// Still need more data to be read
 				if (dataLen >= 0 && dataLeft > 0)
 					continue;
-					
-				// Debug
-				Debugging.debugNote("JDWP: Packet Ready (%d, %d)...",
-					headerAt, dataAt);
 				
 				// Grab a new packet
 				JDWPPacket packet = this.__getPacket(false);

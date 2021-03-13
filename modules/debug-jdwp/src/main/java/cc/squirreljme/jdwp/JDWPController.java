@@ -10,10 +10,15 @@
 package cc.squirreljme.jdwp;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class acts as the main controller interface for JDWP and acts as a kind
@@ -33,8 +38,20 @@ public final class JDWPController
 	/** The thread containing the communication link. */
 	protected final Thread commLinkThread;
 	
+	/** Event mappings by Kind. */
+	private final Map<EventKind, List<EventRequest>> _eventByKind =
+		new EnumTypeMap<EventKind, List<EventRequest>>(
+			EventKind.class, EventKind.values());
+	
+	/** Event mapping by Id. */
+	private final Map<Integer, EventRequest> _eventById =
+		new LinkedHashMap<>();
+	
 	/** Are events to the debugger being held? */
 	protected volatile boolean _holdEvents;
+	
+	/** Next ID number. */
+	private volatile int _nextId;
 	
 	/**
 	 * Initializes the controller which manages the communication of JDWP.
@@ -133,6 +150,48 @@ public final class JDWPController
 			}
 		
 		return true;
+	}
+	
+	/**
+	 * Adds an event request for later event handling.
+	 * 
+	 * @param __request The request to add.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/03/13
+	 */
+	void __addEventRequest(EventRequest __request)
+		throws NullPointerException
+	{
+		if (__request == null)
+			throw new NullPointerException("NARG");
+		
+		Map<EventKind, List<EventRequest>> eventByKind = this._eventByKind;
+		synchronized (this)
+		{
+			// Get list of the event
+			List<EventRequest> list = eventByKind.get(__request.eventKind);
+			if (list == null)
+				eventByKind.put(__request.eventKind,
+					(list = new LinkedList<>()));
+			
+			// Map events
+			list.add(__request);
+			this._eventById.put(__request.id(), __request);
+		}
+	}
+	
+	/**
+	 * The next ID number.
+	 * 
+	 * @return Returns a new ID number.
+	 * @since 2021/03/13
+	 */
+	final int __nextId()
+	{
+		synchronized (this)
+		{
+			return ++this._nextId;
+		}
 	}
 	
 	/**
