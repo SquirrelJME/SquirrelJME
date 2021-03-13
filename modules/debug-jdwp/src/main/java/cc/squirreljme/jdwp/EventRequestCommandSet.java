@@ -50,7 +50,7 @@ public enum EventRequestCommandSet
 				EventModKind modKind = EventModKind.of(__packet.readByte());
 				switch (modKind)
 				{
-					case LIMIT_OCCURANCE:
+					case OCCURANCE_COUNTDOWN:
 						throw Debugging.todo();
 					
 					case CONDITIONAL:
