@@ -33,6 +33,9 @@ public final class JDWPController
 	/** The thread containing the communication link. */
 	protected final Thread commLinkThread;
 	
+	/** Are events to the debugger being held? */
+	protected volatile boolean _holdEvents;
+	
 	/**
 	 * Initializes the controller which manages the communication of JDWP.
 	 * 
@@ -107,7 +110,13 @@ public final class JDWPController
 				// Execute the command normally
 				else
 				{
-					result = command.execute(this, packet);
+					// Lock to make sure state does not get warped
+					synchronized (this)
+					{
+						result = command.execute(this, packet);
+					}
+					
+					// If a result is missing, assume nothing needed
 					if (result == null)
 						result = this.__reply(packet.id(),
 							JDWPErrorType.NO_ERROR);

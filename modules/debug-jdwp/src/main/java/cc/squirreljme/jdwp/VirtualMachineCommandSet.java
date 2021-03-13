@@ -17,7 +17,7 @@ package cc.squirreljme.jdwp;
 public enum VirtualMachineCommandSet
 	implements JDWPCommand
 {
-	/* Returns the size of variable data. */
+	/** Returns the size of variable data. */
 	ID_SIZES(7)
 	{
 		/**
@@ -37,6 +37,42 @@ public enum VirtualMachineCommandSet
 				rv.writeInt(JDWPConstants.ID_SIZE);
 			
 			return rv;
+		}
+	},
+	
+	/** Hold events, keep them queued and not transmit them. */
+	HOLD_EVENTS(15)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/12
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			// Hold any events
+			__controller._holdEvents = true;
+			return null;
+		}
+	},
+	
+	/** Release any events. */
+	RELEASE_EVENTS(16)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/12
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			// Resume events and let them flow
+			__controller._holdEvents = false;
+			return null;
 		}
 	},
 		

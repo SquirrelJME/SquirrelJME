@@ -25,6 +25,9 @@ public enum JDWPCommandSet
 	/** Virtual machine command set. */
 	VIRTUAL_MACHINE(1, VirtualMachineCommandSet.values()),
 	
+	/** Event requests. */
+	EVENT_REQUEST(15, EventRequestCommandSet.values()),
+	
 	/* End. */
 	;
 	
