@@ -291,6 +291,35 @@ public final class CommLink
 	}
 	
 	/**
+	 * Sends the packet to the remote end.
+	 * 
+	 * @param __packet The packet to send.
+	 * @param __context The context packet for the command ID and code, may
+	 * be {@code null}.
+	 * @throws JDWPException If the packet could not be sent.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/03/12
+	 */
+	protected void send(JDWPPacket __packet, JDWPPacket __context)
+		throws JDWPException, NullPointerException
+	{
+		if (__packet == null)
+			throw new NullPointerException("NARG");
+		
+		// Write to the destination
+		try
+		{
+			__packet.writeTo(this.out);
+		}
+		
+		// {@squirreljme.error AG01 Could not send the packet. (The packet)}
+		catch (IOException e)
+		{
+			throw new JDWPException("AG01 " + __packet, e);
+		}
+	}
+	
+	/**
 	 * Performs the handshake for JDWP.
 	 * 
 	 * @throws JDWPException If the handshake could not happen.
@@ -349,7 +378,7 @@ public final class CommLink
 	 * @since 2021/03/10
 	 */
 	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
-	private JDWPPacket __getPacket()
+	JDWPPacket __getPacket()
 	{
 		Deque<JDWPPacket> freePackets = this._freePackets;
 		synchronized (freePackets)
@@ -359,7 +388,12 @@ public final class CommLink
 				return new JDWPPacket(freePackets);
 			
 			// Grab the next free one
-			return freePackets.remove();
+			JDWPPacket rv = freePackets.remove();
+			
+			// Clear it for the next run
+			rv.resetAndOpen();
+			
+			return rv;
 		}
 	}
 }

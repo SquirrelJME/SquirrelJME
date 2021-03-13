@@ -84,18 +84,61 @@ public final class JDWPController
 		throws JDWPException
 	{
 		// Read in any packets and process them as they come
-		for (;;)
-			try (JDWPPacket packet = this.commLink.poll())
+		for (CommLink commLink = this.commLink;;)
+			try (JDWPPacket packet = commLink.poll())
 			{
 				// No data?
 				if (packet == null)
 					break;
 				
+				// Debug
 				Debugging.debugNote("Incoming: %s", packet);
 				
-				throw Debugging.todo();
+				// Resultant packet, returned as a result
+				JDWPPacket result;
+				
+				// Get the command and if it is unknown, ignore it
+				JDWPCommand command = packet.commandSet()
+					.command(packet.command());
+				if (command == null)
+					result = this.__reply(packet.id(),
+						JDWPErrorType.NOT_IMPLEMENTED);
+				
+				// Execute the command normally
+				else
+				{
+					result = command.execute(this, packet);
+					if (result == null)
+						result = this.__reply(packet.id(),
+							JDWPErrorType.NO_ERROR);
+				}
+				
+				// Send the result to the debugger, close when done
+				try (JDWPPacket ignored = result)
+				{
+					commLink.send(result, packet);
+				}
 			}
 		
 		return true;
+	}
+	
+	/**
+	 * Creates a reply packet.
+	 * 
+	 * @param __id The identifier.
+	 * @param __error The error code.
+	 * @return The packet used.
+	 * @since 2021/03/12
+	 */
+	JDWPPacket __reply(int __id, int __error)
+	{
+		JDWPPacket rv = this.commLink.__getPacket();
+		
+		rv._id = __id;
+		rv._errorCode = __error;
+		rv._flags = JDWPPacket.FLAG_REPLY;
+		
+		return rv;
 	}
 }
