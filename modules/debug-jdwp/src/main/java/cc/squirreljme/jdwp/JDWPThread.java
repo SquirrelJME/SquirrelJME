@@ -10,11 +10,11 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Represents a thread group which may contain sub-threads and otherwise.
+ * Represents a debugger thread.
  *
  * @since 2021/03/13
  */
-public interface JDWPThreadGroup
+public interface JDWPThread
 	extends JDWPId
 {
 }

@@ -47,13 +47,13 @@ final class __QuickTable__<I extends JDWPId>
 		// Determine the minimum ID, for value shifting
 		int minId = Integer.MAX_VALUE;
 		for (I i : __items)
-			minId = Math.min(minId, i.id());
+			minId = Math.min(minId, i.debuggerId());
 		
 		List<I> quick = new ArrayList<>();
 		for (I i : __items)
 		{
 			// Determine where it fits in the table
-			int spot = i.id() - minId;
+			int spot = i.debuggerId() - minId;
 			
 			// Make the table grow to fit the entry
 			while (spot >= quick.size())

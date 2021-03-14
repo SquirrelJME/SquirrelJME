@@ -111,7 +111,7 @@ public enum EventRequestCommandSet
 			// Respond with the ID of this event
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
-			rv.writeInt(request.id());
+			rv.writeInt(request.debuggerId());
 			
 			return rv;
 		}
@@ -139,7 +139,7 @@ public enum EventRequestCommandSet
 	 * @since 2021/03/12
 	 */
 	@Override
-	public final int id()
+	public final int debuggerId()
 	{
 		return this.id;
 	}

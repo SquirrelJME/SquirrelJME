@@ -52,7 +52,7 @@ public enum SuspendPolicy
 	 * @since 2021/03/13
 	 */
 	@Override
-	public final int id()
+	public final int debuggerId()
 	{
 		return this.id;
 	}

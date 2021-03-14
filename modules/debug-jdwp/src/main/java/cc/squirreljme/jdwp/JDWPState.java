@@ -10,11 +10,17 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Represents a thread group which may contain sub-threads and otherwise.
+ * This contains the complete state for the debugging instance.
  *
  * @since 2021/03/13
  */
-public interface JDWPThreadGroup
-	extends JDWPId
+public final class JDWPState
 {
+	/** Thread groups which are available. */
+	public final JDWPLinker<JDWPThreadGroup> threadGroups =
+		new JDWPLinker<>(JDWPThreadGroup.class);
+	
+	/** Threads that are available. */
+	public final JDWPLinker<JDWPThread> threads =
+		new JDWPLinker<>(JDWPThread.class);
 }

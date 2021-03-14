@@ -11,8 +11,10 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledThread;
+import cc.squirreljme.jdwp.JDWPThread;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNullPointerException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
@@ -32,6 +34,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  * @since 2018/09/01
  */
 public final class SpringThread
+	implements JDWPThread
 {
 	/** Maximum depth of the stack. */
 	public static final int MAX_STACK_DEPTH =
@@ -115,6 +118,16 @@ public final class SpringThread
 				return null;
 			return frames.get(frames.size() - 1);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public int debuggerId()
+	{
+		return System.identityHashCode(this);
 	}
 	
 	/**

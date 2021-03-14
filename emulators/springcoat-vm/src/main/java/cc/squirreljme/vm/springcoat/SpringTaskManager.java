@@ -15,10 +15,13 @@ import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jdwp.JDWPBinding;
 import cc.squirreljme.jdwp.JDWPController;
-import cc.squirreljme.jdwp.JDWPThreadGroups;
+import cc.squirreljme.jdwp.JDWPLinker;
+import cc.squirreljme.jdwp.JDWPState;
+import cc.squirreljme.jdwp.JDWPThread;
+import cc.squirreljme.jdwp.JDWPThreadGroup;
+import cc.squirreljme.jdwp.JDWPUpdateWhat;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
@@ -83,10 +86,33 @@ public final class SpringTaskManager
 	 * @since 2021/03/13
 	 */
 	@Override
-	public void jdwpUpdateThreadGroups(JDWPThreadGroups __groups)
+	public void debuggerUpdate(JDWPState __state, JDWPUpdateWhat... __what)
 	{
-		for (SpringMachine machine : this.tasks())
-			__groups.bind(machine);
+		for (JDWPUpdateWhat what : __what)
+			switch (what)
+			{
+					// Thread groups
+				case THREAD_GROUPS:
+					{
+						JDWPLinker<JDWPThreadGroup> threadGroups =
+							__state.threadGroups;
+						
+						for (SpringMachine machine : this.tasks())
+							threadGroups.put(machine);
+					}
+					break;
+					
+					// Threads
+				case THREADS:
+					{
+						JDWPLinker<JDWPThread> threads = __state.threads;
+						
+						for (SpringMachine machine : this.tasks())
+							for (SpringThread thread : machine.getThreads())
+								threads.put(thread);
+					}
+					break;
+			}
 	}
 	
 	/**

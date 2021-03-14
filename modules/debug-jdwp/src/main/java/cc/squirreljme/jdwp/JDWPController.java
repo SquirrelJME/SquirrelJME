@@ -38,9 +38,9 @@ public final class JDWPController
 	/** The thread containing the communication link. */
 	protected final Thread commLinkThread;
 	
-	/** Thread groups. */
-	final JDWPThreadGroups _threadGroups =
-		new JDWPThreadGroups();
+	/** Debugger state. */
+	protected final JDWPState state =
+		new JDWPState();
 	
 	/** Event mappings by Kind. */
 	private final Map<EventKind, List<EventRequest>> _eventByKind =
@@ -94,6 +94,22 @@ public final class JDWPController
 		throws IOException
 	{
 		this.commLink.close();
+	}
+	
+	/**
+	 * Updates the state as needed for debugging.
+	 * 
+	 * @param __what What gets updated?
+	 * @return The debugger state.
+	 * @since 2021/03/13
+	 */
+	public JDWPState debuggerUpdate(JDWPUpdateWhat... __what)
+	{
+		JDWPState state = this.state;
+		
+		this.bind.debuggerUpdate(state, __what);
+		
+		return state;
 	}
 	
 	/**
@@ -180,7 +196,7 @@ public final class JDWPController
 			
 			// Map events
 			list.add(__request);
-			this._eventById.put(__request.id(), __request);
+			this._eventById.put(__request.debuggerId(), __request);
 		}
 	}
 	

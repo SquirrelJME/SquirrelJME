@@ -10,11 +10,18 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Represents a thread group which may contain sub-threads and otherwise.
+ * Indicators for what gets updated in the debugging state.
  *
  * @since 2021/03/13
  */
-public interface JDWPThreadGroup
-	extends JDWPId
+public enum JDWPUpdateWhat
 {
+	/** Thread groups. */
+	THREAD_GROUPS,
+	
+	/** Threads. */
+	THREADS,
+	
+	/* End. */
+	;
 }

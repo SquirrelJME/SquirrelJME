@@ -18,6 +18,15 @@ package cc.squirreljme.jdwp;
 public interface JDWPBinding
 {
 	/**
+	 * Updates the state as needed for debugging.
+	 * 
+	 * @param __state The debugger state.
+	 * @param __what What gets updated?
+	 * @since 2021/03/13
+	 */
+	void debuggerUpdate(JDWPState __state, JDWPUpdateWhat... __what);
+	
+	/**
 	 * Returns the virtual machine description.
 	 * 
 	 * @return The virtual machine description.
@@ -40,12 +49,4 @@ public interface JDWPBinding
 	 * @since 2021/03/13
 	 */
 	String vmVersion();
-	
-	/**
-	 * Updates the groups.
-	 * 
-	 * @param __groups The groups to update.
-	 * @since 2021/03/13
-	 */
-	void jdwpUpdateThreadGroups(JDWPThreadGroups __groups);
 }

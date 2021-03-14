@@ -10,6 +10,7 @@
 package cc.squirreljme.jdwp;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.List;
 
 /**
  * Virtual machine command set.
@@ -72,6 +73,35 @@ public enum VirtualMachineCommandSet
 		}
 	},
 	
+	/** All Threads. */
+	ALL_THREADS(4)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/13
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			// Request JVM Update
+			List<JDWPThread> threads =
+				__controller.debuggerUpdate(JDWPUpdateWhat.THREADS)
+				.threads.values();
+			
+			// Write result
+			JDWPPacket rv = __controller.__reply(
+				__packet.id(), ErrorType.NO_ERROR);
+			
+			rv.writeInt(threads.size());
+			for (JDWPThread thread : threads)
+				rv.writeId(thread);
+			
+			return rv;
+		}
+	},
+	
 	/** Top level thread groups. */
 	TOP_LEVEL_THREAD_GROUPS(5)
 	{
@@ -84,21 +114,18 @@ public enum VirtualMachineCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Update the VM thread groups
-			JDWPThreadGroups groupCache = __controller._threadGroups;
-			__controller.bind.jdwpUpdateThreadGroups(groupCache);
-			
-			// Get current thread groups
-			JDWPThreadGroup[] groups = groupCache.current();
+			// Request JVM Update
+			List<JDWPThreadGroup> groups =
+				__controller.debuggerUpdate(JDWPUpdateWhat.THREAD_GROUPS)
+				.threadGroups.values();
 			
 			// Write result
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
-			int n = groups.length;
-			rv.writeInt(n);
-			for (JDWPThreadGroup __group : groups)
-				rv.writeId(__group);
+			rv.writeInt(groups.size());
+			for (JDWPThreadGroup group : groups)
+				rv.writeId(group);
 			
 			return rv;
 		}
@@ -225,7 +252,7 @@ public enum VirtualMachineCommandSet
 	 * @since 2021/03/12
 	 */
 	@Override
-	public final int id()
+	public final int debuggerId()
 	{
 		return this.id;
 	}

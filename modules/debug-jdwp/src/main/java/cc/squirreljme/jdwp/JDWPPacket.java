@@ -372,7 +372,7 @@ public final class JDWPPacket
 	public void writeId(JDWPId __v)
 		throws JDWPException
 	{
-		this.writeInt((__v == null ? 0 : __v.id()));
+		this.writeInt((__v == null ? 0 : __v.debuggerId()));
 	}
 	
 	/**

@@ -10,17 +10,17 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Anything that has an ID.
+ * Anything that has an ID utilized by the debugger.
  *
  * @since 2021/03/13
  */
 public interface JDWPId
 {
 	/**
-	 * Returns the command ID.
+	 * Returns the debugger ID.
 	 * 
-	 * @return The command ID.
+	 * @return The debugger ID.
 	 * @since 2021/03/12
 	 */
-	int id();
+	int debuggerId();
 }
