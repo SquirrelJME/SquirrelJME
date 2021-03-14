@@ -27,16 +27,13 @@ import java.util.Map;
  * @since 2021/03/08
  */
 public final class JDWPController
-	implements Closeable
+	implements Closeable, Runnable
 {
 	/** The binding, which is called to perform any actions. */
 	protected final JDWPBinding bind;
 	
 	/** The communication link. */
 	protected final CommLink commLink;
-	
-	/** The thread containing the communication link. */
-	protected final Thread commLinkThread;
 	
 	/** Debugger state. */
 	protected final JDWPState state =
@@ -74,15 +71,11 @@ public final class JDWPController
 			throw new NullPointerException("NARG");
 		
 		this.bind = __bind;
-		
-		CommLink commLink = new CommLink(__in, __out);
-		this.commLink = commLink;
+		this.commLink = new CommLink(__in, __out);
 		
 		// Setup Communication Link thread
-		Thread thread = new Thread(commLink, "SquirrelJME-JDWPCommLink");
+		Thread thread = new Thread(this, "JDWPController");
 		thread.start();
-		
-		this.commLinkThread = thread;
 	}
 	
 	/**
@@ -91,7 +84,6 @@ public final class JDWPController
 	 */
 	@Override
 	public void close()
-		throws IOException
 	{
 		this.commLink.close();
 	}
@@ -170,6 +162,23 @@ public final class JDWPController
 			}
 		
 		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public void run()
+	{
+		// This runs in a thread, so if this thread ever stops for any reason
+		// we terminate the connection
+		try (JDWPController self = this)
+		{
+			CommLink commLink = this.commLink;
+			while (!commLink._shutdown)
+				this.poll();
+		}
 	}
 	
 	/**

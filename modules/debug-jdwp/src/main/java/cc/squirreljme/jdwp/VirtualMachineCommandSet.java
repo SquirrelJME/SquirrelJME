@@ -169,7 +169,7 @@ public enum VirtualMachineCommandSet
 			// Update all threads available then tell every one to suspend
 			for (JDWPThread thread : __controller
 				.debuggerUpdate(JDWPUpdateWhat.THREADS).threads.values())
-				thread.debuggerSuspend(JDWPSuspend.SUSPEND);
+				thread.debuggerSuspend().suspend();
 			
 			return null;
 		}

@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jdwp.JDWPMethod;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Method;
@@ -23,7 +24,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  * @since 2018/07/22
  */
 public final class SpringMethod
-	implements SpringMember
+	implements JDWPMethod, SpringMember
 {
 	/** The class this technically belongs to. */
 	protected final ClassName inclass;
@@ -62,6 +63,16 @@ public final class SpringMethod
 	public final ByteCode byteCode()
 	{
 		return this.method.byteCode();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public int debuggerId()
+	{
+		return System.identityHashCode(this);
 	}
 	
 	/**

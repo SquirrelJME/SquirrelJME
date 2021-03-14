@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * Command set for thread support.
  *
@@ -62,10 +60,9 @@ public enum ThreadReferenceCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
+			// Thread is missing or otherwise invalid?
 			JDWPThread thread = __controller.state.threads.get(
 				__packet.readId());
-			
-			// Thread is missing or otherwise invalid?
 			if (thread == null)
 				return __controller.__reply(
 				__packet.id(), ErrorType.INVALID_THREAD);
@@ -77,7 +74,70 @@ public enum ThreadReferenceCommandSet
 			rv.writeInt(1);
 			
 			// If the thread is suspended, then it will be flagged as such
-			rv.writeInt(thread.debuggerSuspend(JDWPSuspend.QUERY) > 0 ? 1 : 0);
+			rv.writeInt(thread.debuggerSuspend().query() > 0 ? 1 : 0);
+			
+			return rv;
+		}
+	},
+	
+	/** Frames. */
+	FRAMES(6)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/13
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			// Thread is missing or otherwise invalid?
+			JDWPThread thread = __controller.state.threads.get(
+				__packet.readId());
+			if (thread == null)
+				return __controller.__reply(
+				__packet.id(), ErrorType.INVALID_THREAD);
+			
+			// Input for the packet
+			int startFrame = __packet.readInt();
+			int count = __packet.readInt();
+			
+			// Correct the frame count
+			JDWPThreadFrame[] frames = thread.debuggerFrames();
+			count = (count == -1 ? Math.max(0, frames.length - startFrame) :
+				Math.min(count, frames.length - startFrame));
+			
+			// Start by writing the frame count
+			JDWPPacket rv = __controller.__reply(
+				__packet.id(), ErrorType.NO_ERROR);
+			rv.writeInt(count);
+			
+			// Write each individual frame
+			for (int i = startFrame, j = 0; j < count; i++, j++)
+			{
+				// Register this frame so it can be grabbed later
+				JDWPThreadFrame frame = frames[i];
+				__controller.state.frames.put(frame);
+				
+				// Write frame ID
+				rv.writeId(frame);
+				
+				// Write the frame location
+				JDWPClass classy = frame.debuggerAtClass();
+				rv.writeByte(classy.debuggerClassType().id);
+				rv.writeId(classy);
+				
+				// Write the method ID and the special index (address)
+				JDWPMethod method = frame.debuggerAtMethod();
+				rv.writeId(method);
+				rv.writeLong(frame.debuggerAtIndex());
+				
+				// Make sure the class and methods are registered for later
+				// retrieval
+				__controller.state.classes.put(classy);
+				__controller.state.methods.put(method);
+			} 
 			
 			return rv;
 		}
@@ -107,7 +167,7 @@ public enum ThreadReferenceCommandSet
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Return the frame count
-			rv.writeInt(thread.debuggerFrameCount());
+			rv.writeInt(thread.debuggerFrames().length);
 			
 			return rv;
 		}
@@ -138,7 +198,7 @@ public enum ThreadReferenceCommandSet
 			
 			// This just uses the object name of the thread, whatever that
 			// may be for simplicity and mapping
-			rv.writeInt(thread.debuggerSuspend(JDWPSuspend.QUERY));
+			rv.writeInt(thread.debuggerSuspend().query());
 			
 			return rv;
 		}

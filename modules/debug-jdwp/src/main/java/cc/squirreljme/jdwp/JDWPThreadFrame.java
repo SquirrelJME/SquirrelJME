@@ -10,26 +10,34 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Represents a debugger thread.
+ * Represents a single thread frame.
  *
  * @since 2021/03/13
  */
-public interface JDWPThread
+public interface JDWPThreadFrame
 	extends JDWPId
 {
 	/**
-	 * Returns the suspension tracker.
+	 * Returns the class this frame is at.
 	 * 
-	 * @return The suspension tracker.
+	 * @return The class this frame is at.
 	 * @since 2021/03/13
 	 */
-	JDWPThreadSuspension debuggerSuspend();
+	JDWPClass debuggerAtClass();
 	
 	/**
-	 * Returns all of the thread frames.
+	 * The index this frame is at, the value is implementation defined.
 	 * 
-	 * @return The thread frames.
+	 * @return The implementation defined index.
 	 * @since 2021/03/13
 	 */
-	JDWPThreadFrame[] debuggerFrames();
+	long debuggerAtIndex();
+	
+	/**
+	 * Returns the method this frame is at.
+	 * 
+	 * @return The method the frame is at.
+	 * @since 2021/03/13
+	 */
+	JDWPMethod debuggerAtMethod();
 }

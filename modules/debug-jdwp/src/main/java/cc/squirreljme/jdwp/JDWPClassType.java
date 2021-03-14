@@ -10,26 +10,35 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Represents a debugger thread.
+ * Represents the class type.
  *
  * @since 2021/03/13
  */
-public interface JDWPThread
-	extends JDWPId
+public enum JDWPClassType
 {
-	/**
-	 * Returns the suspension tracker.
-	 * 
-	 * @return The suspension tracker.
-	 * @since 2021/03/13
-	 */
-	JDWPThreadSuspension debuggerSuspend();
+	/** A class. */
+	CLASS(1),
+	
+	/** An interface. */
+	INTERFACE(2),
+	
+	/** An array. */
+	ARRAY(3),
+	
+	/* End. */
+	;
+	
+	/** The ID. */
+	public final int id;
 	
 	/**
-	 * Returns all of the thread frames.
+	 * Initializes the class type.
 	 * 
-	 * @return The thread frames.
+	 * @param __id The ID.
 	 * @since 2021/03/13
 	 */
-	JDWPThreadFrame[] debuggerFrames();
+	JDWPClassType(int __id)
+	{
+		this.id = __id;
+	}
 }

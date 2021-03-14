@@ -11,8 +11,11 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledThread;
-import cc.squirreljme.jdwp.JDWPSuspend;
+import cc.squirreljme.jdwp.JDWPClass;
+import cc.squirreljme.jdwp.JDWPMethod;
 import cc.squirreljme.jdwp.JDWPThread;
+import cc.squirreljme.jdwp.JDWPThreadFrame;
+import cc.squirreljme.jdwp.JDWPThreadSuspension;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -52,6 +55,10 @@ public final class SpringThread
 	
 	/** Profiler information. */
 	protected final ProfiledThread profiler;
+	
+	/** Tracker for debugging suspension. */
+	protected final JDWPThreadSuspension debuggerSuspension =
+		new JDWPThreadSuspension();
 	
 	/** The stack frames. */
 	private final List<SpringThread.Frame> _frames =
@@ -137,14 +144,12 @@ public final class SpringThread
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/03/13
+	 * @return
 	 */
 	@Override
-	public int debuggerFrameCount()
+	public JDWPThreadSuspension debuggerSuspend()
 	{
-		synchronized (this)
-		{
-			return this.numFrames();
-		}
+		return this.debuggerSuspension;
 	}
 	
 	/**
@@ -152,26 +157,20 @@ public final class SpringThread
 	 * @since 2021/03/13
 	 */
 	@Override
-	public int debuggerSuspend(JDWPSuspend __type)
+	public JDWPThreadFrame[] debuggerFrames()
 	{
-		synchronized (this)
-		{
-			switch (__type)
-			{
-				case QUERY:
-					return this._suspendCount;
-				
-				case SUSPEND:
-					return ++this._suspendCount;
-				
-				case RESUME:
-					this._suspendCount = Math.max(0, this._suspendCount - 1);
-					return this._suspendCount;
-				
-				default:
-					throw Debugging.oops(__type);
-			}
-		}
+		Frame[] frames = this.frames();
+		JDWPThreadFrame[] rv = new JDWPThreadFrame[frames.length];
+		
+		// Filter out any blank frames because it does not make sense to
+		// the debugger at all
+		int at = 0;
+		for (Frame frame : frames)
+			if (!frame.isBlank())
+				rv[at++] = frame;
+		
+		return (at == frames.length ? rv :
+			Arrays.<JDWPThreadFrame>copyOf(rv, at));
 	}
 	
 	/**
@@ -257,7 +256,8 @@ public final class SpringThread
 		
 		// Create new frame
 		List<SpringThread.Frame> frames = this._frames;
-		Frame rv = new Frame(frames.size(), __m, vmArgs);
+		Frame rv = new Frame(frames.size(),
+			this._worker.loadClass(__m.inClass()), __m, vmArgs);
 		
 		// Profile for this frame
 		this.profiler.enterFrame(__m.inClass().toString(),
@@ -719,6 +719,7 @@ public final class SpringThread
 	 * @since 2018/09/03
 	 */
 	public static class Frame
+		implements JDWPThreadFrame
 	{
 		/** The frame level. */
 		public final int level;
@@ -734,6 +735,9 @@ public final class SpringThread
 		
 		/** Is this frame blank? */
 		protected final boolean isblank;
+		
+		/** The class this is for. */
+		protected final SpringClass springClass;
 		
 		/** Local variables. */
 		private final Object[] _locals;
@@ -757,7 +761,7 @@ public final class SpringThread
 		private SpringObject _tossedexception;
 		
 		/** Object which has a monitor for quicker unlock. */
-		private volatile SpringObject _monitor;
+		volatile SpringObject _monitor;
 		
 		/**
 		 * Initializes a blank guard frame.
@@ -769,6 +773,7 @@ public final class SpringThread
 		{
 			this.level = __level;
 			this.method = null;
+			this.springClass = null;
 			this.code = null;
 			this.thisobject = null;
 			this.isblank = true;
@@ -780,15 +785,17 @@ public final class SpringThread
 		 * Initializes the frame.
 		 *
 		 * @param __level The frame depth.
+		 * @param __cl The class used.
 		 * @param __m The method used for the frame.
 		 * @param __args The frame arguments.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2018/09/03
 		 */
-		Frame(int __level, SpringMethod __m, Object... __args)
+		Frame(int __level, SpringClass __cl, SpringMethod __m,
+			Object... __args)
 			throws NullPointerException
 		{
-			if (__m == null)
+			if (__cl == null || __m == null)
 				throw new NullPointerException("NARG");
 			
 			__args = (__args == null ? new Object[0] : __args.clone());
@@ -796,6 +803,7 @@ public final class SpringThread
 			this.level = __level;
 			this.isblank = false;
 			this.method = __m;
+			this.springClass = __cl;
 			
 			// We will need to initialize the local and stack data from the
 			// information the byte code gives
@@ -846,6 +854,46 @@ public final class SpringThread
 		public final void clearStack()
 		{
 			this._stacktop = 0;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/13
+		 */
+		@Override
+		public JDWPClass debuggerAtClass()
+		{
+			return this.springClass;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/13
+		 */
+		@Override
+		public long debuggerAtIndex()
+		{
+			return this._pc;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/13
+		 */
+		@Override
+		public JDWPMethod debuggerAtMethod()
+		{
+			return this.method;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/13
+		 */
+		@Override
+		public int debuggerId()
+		{
+			return System.identityHashCode(this);
 		}
 		
 		/**

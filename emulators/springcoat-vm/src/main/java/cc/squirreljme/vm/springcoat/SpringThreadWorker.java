@@ -798,7 +798,7 @@ public final class SpringThreadWorker
 			// Print the thread trace
 			thread.printStackTrace(System.err);
 			
-			// Propogate up
+			// Propagate up
 			throw e;
 		}
 		
@@ -1541,16 +1541,9 @@ public final class SpringThreadWorker
 		// Poll the JDWP debugger for any new debugging state
 		JDWPController jdwp = this.machine.tasks.jdwpController;
 		if (jdwp != null)
-			try
+			while (thread.debuggerSuspension.await())
 			{
-				if (!jdwp.poll())
-					this.machine.tasks.jdwpController = null;
-			}
-			catch (JDWPException e)
-			{
-				e.printStackTrace();
-				
-				this.machine.tasks.jdwpController = null;
+				// Nothing needed while this waits
 			}
 		
 		// Increase the step count

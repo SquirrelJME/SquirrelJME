@@ -10,7 +10,10 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jdwp.JDWPClass;
+import cc.squirreljme.jdwp.JDWPClassType;
 import cc.squirreljme.jvm.Constants;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeException;
@@ -42,7 +45,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  * @since 2018/07/21
  */
 public final class SpringClass
-	implements HasAccessibleFlags
+	implements HasAccessibleFlags, JDWPClass
 {
 	/** The name of this class. */
 	protected final ClassName name;
@@ -243,6 +246,32 @@ public final class SpringClass
 	public final SpringClass componentType()
 	{
 		return this.component;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public JDWPClassType debuggerClassType()
+	{
+		if (this.flags().isInterface())
+			return JDWPClassType.INTERFACE;
+		
+		if (this.name.isArray())
+			return JDWPClassType.ARRAY;
+		
+		return JDWPClassType.CLASS;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public int debuggerId()
+	{
+		return System.identityHashCode(this);
 	}
 	
 	/**

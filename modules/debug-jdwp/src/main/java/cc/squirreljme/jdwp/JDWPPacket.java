@@ -412,6 +412,33 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Writes a long to the output.
+	 * 
+	 * @param __v The value to write.
+	 * @throws JDWPException If it could not be written.
+	 * @since 2021/03/13
+	 */
+	public void writeLong(long __v)
+		throws JDWPException
+	{
+		synchronized (this)
+		{
+			// Must be an open packet
+			this.__checkOpen();
+			
+			// Write the data
+			this.writeByte((byte)(__v >> 56));
+			this.writeByte((byte)(__v >> 48));
+			this.writeByte((byte)(__v >> 40));
+			this.writeByte((byte)(__v >> 32));
+			this.writeByte((byte)(__v >> 24));
+			this.writeByte((byte)(__v >> 16));
+			this.writeByte((byte)(__v >> 8));
+			this.writeByte((byte)(__v));
+		}
+	}
+	
+	/**
 	 * Writes the string to the output.
 	 * 
 	 * @param __string The string to write.

@@ -23,4 +23,16 @@ public final class JDWPState
 	/** Threads that are available. */
 	public final JDWPLinker<JDWPThread> threads =
 		new JDWPLinker<>(JDWPThread.class);
+	
+	/** Frames that may exist from time to time. */
+	public final JDWPLinker<JDWPThreadFrame> frames =
+		new JDWPLinker<>(JDWPThreadFrame.class);
+	
+	/** Classes that are known. */
+	public final  JDWPLinker<JDWPClass> classes =
+		new JDWPLinker<>(JDWPClass.class);
+	
+	/** Methods that are known. */
+	public final JDWPLinker<JDWPMethod> methods =
+		new JDWPLinker<>(JDWPMethod.class);
 }

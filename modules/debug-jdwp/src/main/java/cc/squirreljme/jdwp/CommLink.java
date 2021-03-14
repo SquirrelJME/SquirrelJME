@@ -28,7 +28,7 @@ import java.util.LinkedList;
  * @since 2021/03/09
  */
 public final class CommLink
-	implements Closeable, Runnable
+	implements Closeable
 {
 	/** Handshake sequence, sent by both sides. */
 	private static final byte[] _HANDSHAKE_SEQUENCE =
@@ -52,18 +52,28 @@ public final class CommLink
 	private final Deque<JDWPPacket> _freePackets =
 		new LinkedList<>();
 	
-	/** Packets which are ready. */
-	private final Deque<JDWPPacket> _readyPackets =
-		new LinkedList<>();
+	/** The header bytes. */
+	private final byte[] _header =
+		new byte[CommLink._HEADER_SIZE];
+	
+	/** Read position for the header. */
+	private volatile int _headerAt;
+	
+	/** The data. */
+	private volatile byte[] _data =
+		new byte[CommLink._INIT_DATA_LEN];
+	
+	/** Read position for read data. */
+	private volatile int _dataAt;
+	
+	/** Length of read data. */
+	private volatile int _dataLen;
 	
 	/** Did we do our handshake? */
 	private volatile boolean _didHandshake;
 	
-	/** Read error? */
-	private volatile IOException _exception;
-	
 	/** Are we in shutdown? */
-	private volatile boolean _shutdown;
+	volatile boolean _shutdown;
 	
 	/**
 	 * Initializes the communication link.
@@ -132,28 +142,6 @@ public final class CommLink
 	public JDWPPacket poll()
 		throws JDWPException
 	{
-		synchronized (this)
-		{
-			// {@squirreljme.error AG06 Read error in JDWP.}
-			if (this._exception != null)
-				throw new JDWPException("AG06", this._exception);
-			
-			// Return any packets which are ready
-			Deque<JDWPPacket> readyPackets = this._readyPackets;
-			synchronized (readyPackets)
-			{
-				return readyPackets.poll();
-			}
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/10
-	 */
-	@Override
-	public void run()
-	{
 		// If the handshake did not happen, do it now
 		synchronized (this)
 		{
@@ -162,22 +150,21 @@ public final class CommLink
 		}
 		
 		// Used to read in the header as needed
-		byte[] header = new byte[CommLink._HEADER_SIZE];
-		int headerAt = 0;
+		byte[] header = this._header;
+		int headerAt = this._headerAt;
 		
 		// Data and whatever length
-		byte[] data = new byte[CommLink._INIT_DATA_LEN];
-		int dataLen = -1;
-		int dataAt = 0;
+		byte[] data = this._data;
+		int dataLen = this._dataLen;
+		int dataAt = this._dataAt;
 		
 		// Constant reading in loop
-		Deque<JDWPPacket> readyPackets = this._readyPackets;
 		for (InputStream in = this.in;;)
 			try
 			{
 				// Shutting down?
 				if (this._shutdown)
-					break;
+					return null;
 				
 				// Still reading in the header?
 				int headerLeft = CommLink._HEADER_SIZE - headerAt;
@@ -192,7 +179,8 @@ public final class CommLink
 						if (headerAt > 0)
 							throw new EOFException("AG07");
 							
-						break;
+						this._shutdown = true;
+						return null;
 					}
 					
 					headerLeft -= rc;
@@ -231,7 +219,8 @@ public final class CommLink
 						if (dataAt > 0)
 							throw new EOFException("AG08");
 							
-						break;
+						this._shutdown = true;
+						return null;
 					}
 					
 					dataLeft -= rc;
@@ -242,40 +231,39 @@ public final class CommLink
 				if (dataLen >= 0 && dataLeft > 0)
 					continue;
 				
-				// Grab a new packet
+				// Setup a fresh packet
 				JDWPPacket packet = this.__getPacket(false);
 				packet.__load(header, data, dataLen);
 				
-				// Return any packets which are ready
-				synchronized (readyPackets)
-				{
-					readyPackets.push(packet);
-				}
-				
-				// Reset
+				// Reset state for the next run
 				headerAt = 0;
 				dataAt = 0;
 				dataLen = -1;
+				
+				// This packet is ready so use it now
+				return packet;
 			}
 			
 			// If we get interrupted, we just either shutdown or continue
 			catch (InterruptedIOException ignored)
 			{
+				return null;
 			}
 	
-			// Read error?
+			// {@squirreljme.error AG06 Read error.}
 			catch (IOException e)
 			{
-				synchronized (this)
-				{
-					this._exception = e;
-					return;
-				}
+				throw new JDWPException("AG06", e);
 			}
-		
-		// Shut down
-		this._shutdown = true;
-		Debugging.debugNote("JDWP: Shutting down...");
+			
+			// Store resultant state
+			finally
+			{
+				this._headerAt = headerAt;
+				this._data = data;
+				this._dataLen = dataLen;
+				this._dataAt = dataAt;
+			}
 	}
 	
 	/**
@@ -361,10 +349,10 @@ public final class CommLink
 	/**
 	 * Returns a fresh packet.
 	 * 
+	 * @param __open Should this be opened?
 	 * @return A packet that is fresh, this may be recycled from a previous
 	 * packet or taken from another.
 	 * @since 2021/03/10
-	 * @param __open
 	 */
 	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	JDWPPacket __getPacket(boolean __open)
