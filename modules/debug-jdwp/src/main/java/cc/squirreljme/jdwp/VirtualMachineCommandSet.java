@@ -177,6 +177,27 @@ public enum VirtualMachineCommandSet
 		}
 	},
 	
+	/** Resume all threads. */
+	RESUME(9)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			// Update all threads available then tell every one to resume
+			for (JDWPThread thread : __controller
+				.debuggerUpdate(JDWPUpdateWhat.THREADS).threads.values())
+				thread.debuggerSuspend().resume();
+			
+			return null;
+		}
+	},
+	
 	/** Capabilities. */
 	CAPABILITIES(12)
 	{
@@ -376,7 +397,7 @@ public enum VirtualMachineCommandSet
 				rv.writeId(type);
 				
 				// The signatures, the generic is ignored
-				rv.writeString(type.debuggerFieldDescriptor());
+				rv.writeString(type.debuggerBinaryName());
 				rv.writeString("");
 				
 				// All classes are considered initialized

@@ -251,6 +251,26 @@ public final class SpringClass
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/03/14
+	 */
+	@Override
+	public String debuggerBinaryName()
+	{
+		return this.name.toString();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/14
+	 */
+	@Override
+	public JDWPClass debuggerClass()
+	{
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/03/13
 	 */
 	@Override

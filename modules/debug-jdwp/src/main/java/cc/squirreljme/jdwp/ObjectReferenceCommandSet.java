@@ -10,86 +10,67 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Reference type command set.
+ * Object reference command set.
  *
- * @since 2021/03/13
+ * @since 2021/03/14
  */
-public enum ReferenceTypeCommandSet
+public enum ObjectReferenceCommandSet
 	implements JDWPCommand
 {
-	/** Signature with generic (class). */
-	SIGNATURE_WITH_GENERIC(13)
+	/** The type that an object is. */
+	REFERENCE_TYPE(1)
 	{
 		/**
 		 * {@inheritDoc}
-		 * @since 2021/03/13
+		 * @since 2021/03/14
 		 */
 		@Override
 		public JDWPPacket execute(JDWPController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Which class does this refer to?
-			JDWPClass type = __controller.state.classes.get(
-				__packet.readId());
-			if (type == null)
+			JDWPReferenceType ref = __controller.state
+				.getReferenceType(__packet.readId());
+			if (ref == null)
 				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_CLASS);
-				
+				__packet.id(), ErrorType.INVALID_OBJECT);
+			
+			// Get the true class type
+			JDWPClass classy = ref.debuggerClass(); 
+			
+			// Write the details of this class
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
-			
-			// Only a normal signature is used, since generics are not needed
-			rv.writeString(type.debuggerBinaryName());
-			rv.writeString("");
+			rv.writeByte(classy.debuggerClassType().id);
+			rv.writeId(classy);
 			
 			return rv;
 		}
 	},
 	
-	/** Methods with generic types. */
-	METHODS_WITH_GENERIC(15)
+	/** Is this object garbage collected? */
+	IS_COLLECTED(9)
 	{
 		/**
 		 * {@inheritDoc}
-		 * @since 2021/03/13
+		 * @since 2021/03/14
 		 */
 		@Override
 		public JDWPPacket execute(JDWPController __controller,
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Which class does this refer to?
-			JDWPClass type = __controller.state.classes.get(
-				__packet.readId());
+			JDWPReferenceType type = __controller.state
+				.getReferenceType(__packet.readId());
 			if (type == null)
 				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_CLASS);
-				
+				__packet.id(), ErrorType.INVALID_OBJECT);
+			
+			// No objects get garbage collected as they exist when they
+			// exist!
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
-			
-			// Write number of methods
-			JDWPMethod[] methods = type.debuggerMethods();
-			rv.writeInt(methods.length);
-			
-			// Write information on each method
-			for (JDWPMethod method : methods)
-			{
-				// Register this method for later lookup
-				__controller.state.methods.put(method);
-				
-				// Information about the method
-				rv.writeId(method);
-				rv.writeString(method.debuggerMethodName());
-				rv.writeString(method.debuggerMethodType());
-				
-				// Generics are not used in SquirrelJME, ignore
-				rv.writeString("");
-				
-				// Modifier flags
-				rv.writeInt(method.debuggerMethodFlags());
-			}
+			rv.writeBoolean(false);
 			
 			return rv;
 		}
@@ -105,16 +86,16 @@ public enum ReferenceTypeCommandSet
 	 * Returns the ID used.
 	 * 
 	 * @param __id The ID used.
-	 * @since 2021/03/13
+	 * @since 2021/03/14
 	 */
-	ReferenceTypeCommandSet(int __id)
+	ObjectReferenceCommandSet(int __id)
 	{
 		this.id = __id;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2021/03/13
+	 * @since 2021/03/14
 	 */
 	@Override
 	public final int debuggerId()

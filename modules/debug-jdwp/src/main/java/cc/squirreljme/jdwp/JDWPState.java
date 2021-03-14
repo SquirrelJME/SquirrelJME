@@ -29,10 +29,27 @@ public final class JDWPState
 		new JDWPLinker<>(JDWPThreadFrame.class);
 	
 	/** Classes that are known. */
-	public final  JDWPLinker<JDWPClass> classes =
+	public final JDWPLinker<JDWPClass> classes =
 		new JDWPLinker<>(JDWPClass.class);
 	
 	/** Methods that are known. */
 	public final JDWPLinker<JDWPMethod> methods =
 		new JDWPLinker<>(JDWPMethod.class);
+	
+	/** Objects that are known. */
+	public final JDWPLinker<JDWPObject> objects =
+		new JDWPLinker<>(JDWPObject.class);
+	
+	/**
+	 * Returns a reference type.
+	 * 
+	 * @param __id The identifier.
+	 * @return The reference type.
+	 * @since 2021/03/14
+	 */
+	public final JDWPReferenceType getReferenceType(int __id)
+	{
+		JDWPClass classy = this.classes.get(__id);
+		return (classy != null ? classy : this.objects.get(__id));
+	}
 }

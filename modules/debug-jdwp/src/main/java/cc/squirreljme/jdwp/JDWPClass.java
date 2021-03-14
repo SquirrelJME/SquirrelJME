@@ -15,8 +15,16 @@ package cc.squirreljme.jdwp;
  * @since 2021/03/13
  */
 public interface JDWPClass
-	extends JDWPId
+	extends JDWPReferenceType
 {
+	/**
+	 * Returns the class binary name.
+	 * 
+	 * @return The binary name of the class.
+	 * @since 2021/03/14
+	 */
+	String debuggerBinaryName();
+	
 	/**
 	 * Returns the class type of this class.
 	 * 

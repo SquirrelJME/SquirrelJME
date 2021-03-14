@@ -29,6 +29,9 @@ public enum ErrorType
 	/** Invalid thread group. */
 	INVALID_THREAD_GROUP(11),
 	
+	/** Invalid object. */
+	INVALID_OBJECT(20),
+	
 	/** Invalid class. */
 	INVALID_CLASS(21),
 	

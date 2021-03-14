@@ -1541,10 +1541,21 @@ public final class SpringThreadWorker
 		// Poll the JDWP debugger for any new debugging state
 		JDWPController jdwp = this.machine.tasks.jdwpController;
 		if (jdwp != null)
-			while (thread.debuggerSuspension.await())
+		{
+			// This only returns while we are suspended, but if it returns
+			// early then we were interrupted which means we need to signal
+			// that to whatever is running
+			boolean interrupted = false;
+			while (thread.debuggerSuspension.await(jdwp, this.thread))
 			{
-				// Nothing needed while this waits
+				interrupted = true;
 			}
+			
+			// The debugger released suspension so we can perform the
+			// interrupt now
+			if (interrupted)
+				this.thread.hardInterrupt();
+		}
 		
 		// Increase the step count
 		this._stepCount++;

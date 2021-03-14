@@ -61,6 +61,9 @@ public final class SpringThread
 	protected final JDWPThreadSuspension debuggerSuspension =
 		new JDWPThreadSuspension();
 	
+	/** The virtual machine reference. */
+	protected final Reference<SpringMachine> machineRef;
+	
 	/** The stack frames. */
 	private final List<SpringThread.Frame> _frames =
 		new ArrayList<>();
@@ -95,6 +98,7 @@ public final class SpringThread
 	/**
 	 * Initializes the thread.
 	 *
+	 * @param __machRef The machine reference.
 	 * @param __id The thread ID.
 	 * @param __main Is this a main thread.
 	 * @param __n The name of the thread.
@@ -102,13 +106,14 @@ public final class SpringThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/01
 	 */
-	SpringThread(int __id, boolean __main, String __n,
-		ProfiledThread __profiler)
+	SpringThread(Reference<SpringMachine> __machRef, int __id, boolean __main,
+		String __n, ProfiledThread __profiler)
 		throws NullPointerException
 	{
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
+		this.machineRef = __machRef;
 		this.id = __id;
 		this.main = __main;
 		this.name = __n;
@@ -181,7 +186,8 @@ public final class SpringThread
 	@Override
 	public JDWPThreadGroup debuggerThreadGroup()
 	{
-		return this._worker.machine;
+		SpringThreadWorker worker = this._worker;
+		return (worker == null ? this.machineRef.get() : worker.machine);
 	}
 	
 	/**

@@ -12,7 +12,6 @@ package cc.squirreljme.jdwp;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
 import java.io.Closeable;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.LinkedHashMap;
@@ -29,6 +28,14 @@ import java.util.Map;
 public final class JDWPController
 	implements Closeable, Runnable
 {
+	/** The event type. */
+	private static final int _EVENT_TYPE =
+		64;
+	
+	/** Composite event. */
+	private static final int _COMPOSITE_COMMAND =
+		100;
+	
 	/** The binding, which is called to perform any actions. */
 	protected final JDWPBinding bind;
 	
@@ -179,6 +186,23 @@ public final class JDWPController
 			while (!commLink._shutdown)
 				this.poll();
 		}
+	}
+	
+	/**
+	 * Signals that the thread suspend.
+	 * 
+	 * @param __thread The thread to be suspended or resumed.
+	 * @param __suspend If the thread is to be suspended.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/03/14
+	 */
+	public void signalThreadSuspend(JDWPThread __thread, boolean __suspend)
+		throws NullPointerException
+	{
+		if (__thread == null)
+			throw new NullPointerException("NARG");
+		
+		// Nothing needs to be done here...
 	}
 	
 	/**
