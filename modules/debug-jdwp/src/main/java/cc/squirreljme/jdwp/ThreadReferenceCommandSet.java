@@ -103,7 +103,11 @@ public enum ThreadReferenceCommandSet
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write the thread group
-			rv.writeId(thread.debuggerThreadGroup());
+			JDWPThreadGroup group = thread.debuggerThreadGroup();
+			rv.writeId(group);
+			
+			// Register it for later finding
+			__controller.state.threadGroups.put(group);
 			
 			return rv;
 		}

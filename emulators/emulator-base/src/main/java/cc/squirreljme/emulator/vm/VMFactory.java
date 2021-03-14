@@ -22,6 +22,7 @@ import cc.squirreljme.vm.VMClassLibrary;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -605,7 +606,10 @@ public abstract class VMFactory
 		try
 		{
 			// Create socket
-			socket = new Socket(__host, __port);
+			if (__host == null || __host.isEmpty())
+				socket = new ServerSocket(__port).accept();
+			else
+				socket = new Socket(__host, __port);
 			
 			// Use factory to create it
 			return new JDWPFactory(socket.getInputStream(),

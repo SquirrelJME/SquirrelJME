@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -62,14 +62,30 @@ public enum VirtualMachineCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			Debugging.debugNote("JDWP: Want %s", __packet.readString());
+			String wantSig = __packet.readString();
 			
+			// Add any loaded classes, multiple VMs may result in multiple
+			// classes being added
+			List<JDWPClass> classes = new LinkedList<>();
+			for (JDWPClass check : __controller.state.classes.values())
+				if (wantSig.equals(check.debuggerFieldDescriptor()))
+					classes.add(check);
+				
 			// Write result
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
-			Debugging.todoNote("JDWP: Implement CLASSES_BY_SIGNATURE");
-			rv.writeInt(0);
+			// Record all classes
+			rv.writeInt(classes.size());
+			for (JDWPClass classy : classes)
+			{
+				// Write the class type
+				rv.writeByte(classy.debuggerClassType().id);
+				rv.writeId(classy);
+				
+				// Classes are always loaded
+				rv.writeInt(VirtualMachineCommandSet._CLASS_INITIALIZED);
+			}
 			
 			return rv;
 		}
@@ -243,6 +259,37 @@ public enum VirtualMachineCommandSet
 		}
 	},
 	
+	/** Class paths. */
+	CLASS_PATHS(13)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			JDWPPacket rv = __controller.__reply(
+				__packet.id(), ErrorType.NO_ERROR);
+			
+			// Base directory is the current directory
+			rv.writeString(".");
+			
+			// There are no non-platform class paths
+			rv.writeInt(0);
+			
+			// However the boot class path is used to refer to everything
+			String[] classPaths = __controller.bind.debuggerLibraries();
+			rv.writeInt(classPaths.length);
+			for (String p : classPaths)
+				rv.writeString(p);
+			
+			return rv;
+		}
+	},
+	
 	/** Hold events, keep them queued and not transmit them. */
 	HOLD_EVENTS(15)
 	{
@@ -316,8 +363,8 @@ public enum VirtualMachineCommandSet
 			rv.writeBoolean(false);
 			
 			// New Capabilities
-			if (__packet.command() == VirtualMachineCommandSet
-				.CAPABILITIES_NEW.id)
+			if (__packet.command() ==
+				VirtualMachineCommandSet.CAPABILITIES_NEW.id)
 			{
 				// canRedefineClasses
 				rv.writeBoolean(false);
@@ -385,8 +432,8 @@ public enum VirtualMachineCommandSet
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
-			// Just use all the known about classes rather than scanning
-			// all of the,
+			// Get a list of every loaded class and return their information
+			__controller.debuggerUpdate(JDWPUpdateWhat.LOADED_CLASSES);
 			List<JDWPClass> classes = __controller.state.classes.values();
 			rv.writeInt(classes.size());
 			
@@ -397,11 +444,11 @@ public enum VirtualMachineCommandSet
 				rv.writeId(type);
 				
 				// The signatures, the generic is ignored
-				rv.writeString(type.debuggerBinaryName());
+				rv.writeString(type.debuggerFieldDescriptor());
 				rv.writeString("");
 				
 				// All classes are considered initialized
-				rv.writeInt(4);
+				rv.writeInt(VirtualMachineCommandSet._CLASS_INITIALIZED);
 			}
 			
 			return rv;
@@ -410,6 +457,10 @@ public enum VirtualMachineCommandSet
 		
 	/* End. */
 	;
+	
+	/** Class is initialized. */
+	private static final int _CLASS_INITIALIZED =
+		4;
 	
 	/** The ID of the packet. */
 	public final int id;

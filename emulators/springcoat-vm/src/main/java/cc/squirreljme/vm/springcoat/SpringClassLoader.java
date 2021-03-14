@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassFile;
@@ -291,6 +292,22 @@ public final class SpringClassLoader
 			// correctly. (The class being read)}
 			throw new SpringClassFormatException(__cn, String.format(
 				"BK16 %s", __cn), e);
+		}
+	}
+	
+	/**
+	 * Returns all of the loaded classes.
+	 * 
+	 * @return All of the loaded virtual machine classes.
+	 * @since 2021/03/14
+	 */
+	public final SpringClass[] loadedClasses()
+	{
+		synchronized (this.loaderlock)
+		{
+			Collection<SpringClass> classes = this._classes.values();
+			return classes.<SpringClass>toArray(
+				new SpringClass[classes.size()]);
 		}
 	}
 	

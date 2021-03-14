@@ -22,6 +22,9 @@ public enum JDWPUpdateWhat
 	/** Threads. */
 	THREADS,
 	
+	/** Loaded classes. */
+	LOADED_CLASSES,
+	
 	/* End. */
 	;
 }

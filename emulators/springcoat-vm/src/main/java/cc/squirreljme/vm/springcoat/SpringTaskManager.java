@@ -14,6 +14,7 @@ import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jdwp.JDWPBinding;
+import cc.squirreljme.jdwp.JDWPClass;
 import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.JDWPLinker;
 import cc.squirreljme.jdwp.JDWPState;
@@ -22,10 +23,12 @@ import cc.squirreljme.jdwp.JDWPThreadGroup;
 import cc.squirreljme.jdwp.JDWPUpdateWhat;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -83,6 +86,16 @@ public final class SpringTaskManager
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/03/14
+	 */
+	@Override
+	public String[] debuggerLibraries()
+	{
+		return this.suites.listLibraryNames();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/03/13
 	 */
 	@Override
@@ -91,6 +104,19 @@ public final class SpringTaskManager
 		for (JDWPUpdateWhat what : __what)
 			switch (what)
 			{
+					// Loaded classes
+				case LOADED_CLASSES:
+					{
+						JDWPLinker<JDWPClass> classes =
+							__state.classes;
+							
+						for (SpringMachine machine : this.tasks())
+							for (SpringClass cl :
+								machine.classLoader().loadedClasses())
+								classes.put(cl);
+					}
+					break;
+					
 					// Thread groups
 				case THREAD_GROUPS:
 					{

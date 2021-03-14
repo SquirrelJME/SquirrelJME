@@ -43,6 +43,9 @@ public enum EventRequestCommandSet
 			SuspendPolicy suspendPolicy =
 				SuspendPolicy.of(__packet.readByte());
 			
+			// Occurrence limit
+			int occurrenceLimit = -1;
+			
 			// Modifier kinds
 			List<EventModifier> modifiers = new ArrayList<>();
 			int numModifiers = __packet.readInt();
@@ -58,7 +61,8 @@ public enum EventRequestCommandSet
 				switch (modKind)
 				{
 					case LIMIT_OCCURRENCES:
-						throw Debugging.todo();
+						occurrenceLimit = __packet.readInt();
+						break;
 					
 					case CONDITIONAL:
 						throw Debugging.todo();
@@ -105,6 +109,7 @@ public enum EventRequestCommandSet
 			// Register the event request
 			EventRequest request = new EventRequest(
 				__controller.__nextId(), eventKind, suspendPolicy,
+				occurrenceLimit,
 				modifiers.toArray(new EventModifier[modifiers.size()]));
 			__controller.__addEventRequest(request);
 			

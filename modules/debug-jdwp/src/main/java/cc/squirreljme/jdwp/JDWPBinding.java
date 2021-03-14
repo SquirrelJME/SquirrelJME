@@ -18,6 +18,14 @@ package cc.squirreljme.jdwp;
 public interface JDWPBinding
 {
 	/**
+	 * Returns the libraries for the debugger.
+	 * 
+	 * @return The debugger libraries.
+	 * @since 2021/03/14
+	 */
+	String[] debuggerLibraries();
+	
+	/**
 	 * Updates the state as needed for debugging.
 	 * 
 	 * @param __state The debugger state.
