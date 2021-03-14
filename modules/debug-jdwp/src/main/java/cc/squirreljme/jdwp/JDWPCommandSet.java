@@ -29,6 +29,9 @@ public enum JDWPCommandSet
 	/** Thread Reference. */
 	THREAD_REFERENCE(11, ThreadReferenceCommandSet.values()),
 	
+	/** Thread group reference. */
+	THREAD_GROUP_REFERENCE(12, ThreadGroupReferenceCommandSet.values()),
+	
 	/** Event requests. */
 	EVENT_REQUEST(15, EventRequestCommandSet.values()),
 	

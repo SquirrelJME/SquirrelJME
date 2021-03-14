@@ -288,6 +288,16 @@ public final class SpringClass
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public String debuggerName()
+	{
+		return this.name.toString();
+	}
+	
+	/**
 	 * Returns the number of array dimensions.
 	 *
 	 * @return The number of dimensions.

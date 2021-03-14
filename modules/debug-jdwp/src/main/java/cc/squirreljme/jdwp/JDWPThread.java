@@ -18,6 +18,14 @@ public interface JDWPThread
 	extends JDWPId
 {
 	/**
+	 * Returns all of the thread frames.
+	 * 
+	 * @return The thread frames.
+	 * @since 2021/03/13
+	 */
+	JDWPThreadFrame[] debuggerFrames();
+	
+	/**
 	 * Returns the suspension tracker.
 	 * 
 	 * @return The suspension tracker.
@@ -26,10 +34,10 @@ public interface JDWPThread
 	JDWPThreadSuspension debuggerSuspend();
 	
 	/**
-	 * Returns all of the thread frames.
+	 * Returns the owning thread group.
 	 * 
-	 * @return The thread frames.
+	 * @return The thread group this is in.
 	 * @since 2021/03/13
 	 */
-	JDWPThreadFrame[] debuggerFrames();
+	JDWPThreadGroup debuggerThreadGroup();
 }

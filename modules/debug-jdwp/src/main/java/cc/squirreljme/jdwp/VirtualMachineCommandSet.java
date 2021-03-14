@@ -187,6 +187,11 @@ public enum VirtualMachineCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
+			// Same as new capabilities
+			if (true)
+				return VirtualMachineCommandSet.CAPABILITIES_NEW
+					.execute(__controller, __packet);
+			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
@@ -248,6 +253,135 @@ public enum VirtualMachineCommandSet
 			// Resume events and let them flow
 			__controller._holdEvents = false;
 			return null;
+		}
+	},
+	
+	/** New Capabilities. */
+	CAPABILITIES_NEW(17)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/13
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			JDWPPacket rv = __controller.__reply(
+				__packet.id(), ErrorType.NO_ERROR);
+			
+			// canWatchFieldModification
+			rv.writeBoolean(false);
+			
+			// canWatchFieldAccess
+			rv.writeBoolean(false);
+			
+			// canGetBytecodes
+			rv.writeBoolean(false);
+			
+			// canGetSyntheticAttribute
+			rv.writeBoolean(false);
+			
+			// canGetOwnedMonitorInfo
+			rv.writeBoolean(false);
+			
+			// canGetCurrentContendedMonitor
+			rv.writeBoolean(false);
+			
+			// canGetMonitorInfo
+			rv.writeBoolean(false);
+			
+			// New Capabilities
+			if (__packet.command() == VirtualMachineCommandSet
+				.CAPABILITIES_NEW.id)
+			{
+				// canRedefineClasses
+				rv.writeBoolean(false);
+				
+				// canAddMethod
+				rv.writeBoolean(false);
+				
+				// canUnrestrictedlyRedefineClasses
+				rv.writeBoolean(false);
+				
+				// canPopFrames
+				rv.writeBoolean(false);
+				
+				// canUseInstanceFilters
+				rv.writeBoolean(false);
+				
+				// canGetSourceDebugExtension
+				rv.writeBoolean(false);
+				
+				// canRequestVMDeathEvent
+				rv.writeBoolean(false);
+				
+				// canSetDefaultStratum
+				rv.writeBoolean(false);
+				
+				// canGetInstanceInfo
+				rv.writeBoolean(false);
+				
+				// canRequestMonitorEvents
+				rv.writeBoolean(false);
+				
+				// canGetMonitorFrameInfo
+				rv.writeBoolean(false);
+				
+				// canUseSourceNameFilters
+				rv.writeBoolean(false);
+				
+				// canGetConstantPool
+				rv.writeBoolean(false);
+				
+				// canForceEarlyReturn
+				rv.writeBoolean(false);
+				
+				// Reserved
+				for (int i = 26; i <= 32; i++)
+					rv.writeBoolean(false);
+			}
+			
+			return rv;
+		}
+	},
+	
+	/** All loaded classes with generic signature included. */ 
+	ALL_CLASSES_WITH_GENERIC_SIGNATURE(20)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/13
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			JDWPPacket rv = __controller.__reply(
+				__packet.id(), ErrorType.NO_ERROR);
+			
+			// Just use all the known about classes rather than scanning
+			// all of the,
+			List<JDWPClass> classes = __controller.state.classes.values();
+			rv.writeInt(classes.size());
+			
+			for (JDWPClass type : classes)
+			{
+				// The type ID
+				rv.writeByte(type.debuggerClassType().id);
+				rv.writeId(type);
+				
+				// The signatures, the generic is ignored
+				rv.writeString(type.debuggerName());
+				rv.writeString("");
+				
+				// All classes are considered initialized
+				rv.writeInt(4);
+			}
+			
+			return rv;
 		}
 	},
 		

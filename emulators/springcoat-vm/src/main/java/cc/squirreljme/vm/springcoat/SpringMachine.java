@@ -15,6 +15,7 @@ import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMResourceAccess;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
+import cc.squirreljme.jdwp.JDWPThread;
 import cc.squirreljme.jdwp.JDWPThreadGroup;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
@@ -246,6 +247,16 @@ public final class SpringMachine
 	public int debuggerId()
 	{
 		return System.identityHashCode(this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public JDWPThread[] debuggerThreads()
+	{
+		return this.getThreads();
 	}
 	
 	/**

@@ -15,6 +15,7 @@ import cc.squirreljme.jdwp.JDWPClass;
 import cc.squirreljme.jdwp.JDWPMethod;
 import cc.squirreljme.jdwp.JDWPThread;
 import cc.squirreljme.jdwp.JDWPThreadFrame;
+import cc.squirreljme.jdwp.JDWPThreadGroup;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
@@ -136,6 +137,27 @@ public final class SpringThread
 	 * @since 2021/03/13
 	 */
 	@Override
+	public JDWPThreadFrame[] debuggerFrames()
+	{
+		Frame[] frames = this.frames();
+		JDWPThreadFrame[] rv = new JDWPThreadFrame[frames.length];
+		
+		// Filter out any blank frames because it does not make sense to
+		// the debugger at all
+		int at = 0;
+		for (Frame frame : frames)
+			if (!frame.isBlank())
+				rv[at++] = frame;
+		
+		return (at == frames.length ? rv :
+			Arrays.<JDWPThreadFrame>copyOf(rv, at));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
 	public int debuggerId()
 	{
 		return System.identityHashCode(this);
@@ -157,20 +179,9 @@ public final class SpringThread
 	 * @since 2021/03/13
 	 */
 	@Override
-	public JDWPThreadFrame[] debuggerFrames()
+	public JDWPThreadGroup debuggerThreadGroup()
 	{
-		Frame[] frames = this.frames();
-		JDWPThreadFrame[] rv = new JDWPThreadFrame[frames.length];
-		
-		// Filter out any blank frames because it does not make sense to
-		// the debugger at all
-		int at = 0;
-		for (Frame frame : frames)
-			if (!frame.isBlank())
-				rv[at++] = frame;
-		
-		return (at == frames.length ? rv :
-			Arrays.<JDWPThreadFrame>copyOf(rv, at));
+		return this._worker.machine;
 	}
 	
 	/**

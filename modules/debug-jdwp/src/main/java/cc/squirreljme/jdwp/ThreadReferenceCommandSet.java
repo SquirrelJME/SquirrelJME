@@ -80,6 +80,35 @@ public enum ThreadReferenceCommandSet
 		}
 	},
 	
+	/** Thread group of a thread. */
+	THREAD_GROUP(5)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/13
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			// Thread is missing or otherwise invalid?
+			JDWPThread thread = __controller.state.threads.get(
+				__packet.readId());
+			if (thread == null)
+				return __controller.__reply(
+				__packet.id(), ErrorType.INVALID_THREAD);
+				
+			JDWPPacket rv = __controller.__reply(
+				__packet.id(), ErrorType.NO_ERROR);
+			
+			// Write the thread group
+			rv.writeId(thread.debuggerThreadGroup());
+			
+			return rv;
+		}
+	},
+	
 	/** Frames. */
 	FRAMES(6)
 	{

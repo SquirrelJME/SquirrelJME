@@ -32,4 +32,12 @@ public interface JDWPClass
 	 * @since 2021/03/13
 	 */
 	JDWPMethod[] debuggerMethods();
+	
+	/**
+	 * Returns the class name.
+	 * 
+	 * @return The class name.
+	 * @since 2021/03/13
+	 */
+	String debuggerName();
 }
