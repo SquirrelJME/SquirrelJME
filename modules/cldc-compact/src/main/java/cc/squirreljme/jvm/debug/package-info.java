@@ -7,21 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp;
-
 /**
- * Represents a reference type.
+ * Extra classes used for debugging purposes.
  *
  * @since 2021/03/14
  */
-public interface JDWPReferenceType
-	extends JDWPObjectLike
-{
-	/**
-	 * Returns the class of this object.
-	 * 
-	 * @return The class type.
-	 * @since 2021/03/14
-	 */
-	JDWPClass debuggerClass();
-}
+
+package cc.squirreljme.jvm.debug;

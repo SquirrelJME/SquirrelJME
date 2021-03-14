@@ -15,7 +15,7 @@ package cc.squirreljme.jdwp;
  * @since 2021/03/13
  */
 public interface JDWPThread
-	extends JDWPId
+	extends JDWPObjectLike
 {
 	/**
 	 * Returns all of the thread frames.
@@ -32,6 +32,14 @@ public interface JDWPThread
 	 * @since 2021/03/13
 	 */
 	JDWPThreadSuspension debuggerSuspend();
+	
+	/**
+	 * Returns the thread object used for this thread.
+	 * 
+	 * @return The object used for the thread.
+	 * @since 2021/03/14
+	 */
+	JDWPObject debuggerThreadObject();
 	
 	/**
 	 * Returns the owning thread group.

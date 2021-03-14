@@ -18,7 +18,7 @@ package cc.squirreljme.jdwp;
  * @since 2021/03/13
  */
 public interface JDWPThreadGroup
-	extends JDWPId
+	extends JDWPObjectLike
 {
 	/**
 	 * Returns all of the child threads.

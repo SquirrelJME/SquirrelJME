@@ -10,18 +10,12 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Represents a reference type.
+ * Represents that something that is like an object and can be referred to
+ * by object.
  *
  * @since 2021/03/14
  */
-public interface JDWPReferenceType
-	extends JDWPObjectLike
+public interface JDWPObjectLike
+	extends JDWPId
 {
-	/**
-	 * Returns the class of this object.
-	 * 
-	 * @return The class type.
-	 * @since 2021/03/14
-	 */
-	JDWPClass debuggerClass();
 }

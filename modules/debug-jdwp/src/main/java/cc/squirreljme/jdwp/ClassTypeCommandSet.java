@@ -32,8 +32,7 @@ public enum ClassTypeCommandSet
 			throws JDWPException
 		{
 			// Which class does this refer to?
-			JDWPClass type = __controller.state.classes.get(
-				__packet.readId());
+			JDWPClass type = __controller.state.getAnyClass(__packet.readId());
 			if (type == null)
 				return __controller.__reply(
 				__packet.id(), ErrorType.INVALID_CLASS);

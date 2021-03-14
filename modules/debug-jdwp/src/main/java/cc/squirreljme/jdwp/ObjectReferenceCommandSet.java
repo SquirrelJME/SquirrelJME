@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Object reference command set.
  *
@@ -29,14 +31,23 @@ public enum ObjectReferenceCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			JDWPReferenceType ref = __controller.state
-				.getReferenceType(__packet.readId());
-			if (ref == null)
+			// This can be a large number of sets of objects
+			int id = __packet.readId();
+			JDWPObjectLike object = __controller.state.getObjectLike(id);
+			if (object == null)
+			{
+				// Debug
+				JDWPId any = __controller.state.any(id);
+				Debugging.debugNote("JDWP: InvalidRef: %s (0x%08x a %s)",
+					any, id, (any == null ? "null" :
+						any.getClass().getName()));
+				
 				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_OBJECT);
+					__packet.id(), ErrorType.INVALID_OBJECT);
+			}
 			
-			// Get the true class type
-			JDWPClass classy = ref.debuggerClass(); 
+			// The true class may be synthetic but may also be real!
+			JDWPClass classy = __controller.state.getObjectLikeClass(object);
 			
 			// Write the details of this class
 			JDWPPacket rv = __controller.__reply(
@@ -60,11 +71,12 @@ public enum ObjectReferenceCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			JDWPReferenceType type = __controller.state
-				.getReferenceType(__packet.readId());
-			if (type == null)
+			// This could refer to any object
+			JDWPObjectLike object = __controller.state.getObjectLike(
+				__packet.readId());
+			if (object == null)
 				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_OBJECT);
+					__packet.id(), ErrorType.INVALID_OBJECT);
 			
 			// No objects get garbage collected as they exist when they
 			// exist!

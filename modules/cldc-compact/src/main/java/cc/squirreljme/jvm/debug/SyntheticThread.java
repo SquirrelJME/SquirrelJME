@@ -7,21 +7,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp;
+package cc.squirreljme.jvm.debug;
 
 /**
- * Represents a reference type.
+ * Synthetic thread.
  *
  * @since 2021/03/14
  */
-public interface JDWPReferenceType
-	extends JDWPObjectLike
+public interface SyntheticThread
 {
-	/**
-	 * Returns the class of this object.
-	 * 
-	 * @return The class type.
-	 * @since 2021/03/14
-	 */
-	JDWPClass debuggerClass();
 }

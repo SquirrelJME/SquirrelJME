@@ -13,6 +13,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.emulator.profiler.ProfiledThread;
 import cc.squirreljme.jdwp.JDWPClass;
 import cc.squirreljme.jdwp.JDWPMethod;
+import cc.squirreljme.jdwp.JDWPObject;
 import cc.squirreljme.jdwp.JDWPThread;
 import cc.squirreljme.jdwp.JDWPThreadFrame;
 import cc.squirreljme.jdwp.JDWPThreadGroup;
@@ -188,6 +189,16 @@ public final class SpringThread
 	{
 		SpringThreadWorker worker = this._worker;
 		return (worker == null ? this.machineRef.get() : worker.machine);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/14
+	 */
+	@Override
+	public JDWPObject debuggerThreadObject()
+	{
+		throw Debugging.todo();
 	}
 	
 	/**

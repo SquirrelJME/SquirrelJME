@@ -15,6 +15,6 @@ package cc.squirreljme.jdwp;
  * @since 2021/03/14
  */
 public interface JDWPObject
-	extends JDWPReferenceType
+	extends JDWPObjectLike, JDWPReferenceType
 {
 }

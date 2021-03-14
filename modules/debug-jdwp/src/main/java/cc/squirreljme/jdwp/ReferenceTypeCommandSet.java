@@ -30,7 +30,7 @@ public enum ReferenceTypeCommandSet
 			throws JDWPException
 		{
 			// Which class does this refer to?
-			JDWPClass type = __controller.state.classes.get(
+			JDWPClass type = __controller.state.getAnyClass(
 				__packet.readId());
 			if (type == null)
 				return __controller.__reply(
@@ -40,7 +40,7 @@ public enum ReferenceTypeCommandSet
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Only a normal signature is used, since generics are not needed
-			rv.writeString(type.debuggerBinaryName());
+			rv.writeString(type.debuggerFieldDescriptor());
 			rv.writeString("");
 			
 			return rv;
