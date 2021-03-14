@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPClass;
 import cc.squirreljme.jdwp.JDWPClassType;
+import cc.squirreljme.jdwp.JDWPMethod;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
@@ -272,6 +273,18 @@ public final class SpringClass
 	public int debuggerId()
 	{
 		return System.identityHashCode(this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public JDWPMethod[] debuggerMethods()
+	{
+		List<JDWPMethod> result = new ArrayList<>(this._methods.values());
+		
+		return result.<JDWPMethod>toArray(new JDWPMethod[result.size()]);
 	}
 	
 	/**

@@ -24,4 +24,12 @@ public interface JDWPClass
 	 * @since 2021/03/13
 	 */
 	JDWPClassType debuggerClassType();
+	
+	/**
+	 * Returns all of the methods within the class.
+	 * 
+	 * @return The methods in the class.
+	 * @since 2021/03/13
+	 */
+	JDWPMethod[] debuggerMethods();
 }

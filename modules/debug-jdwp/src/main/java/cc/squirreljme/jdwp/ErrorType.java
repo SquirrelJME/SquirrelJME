@@ -26,6 +26,9 @@ public enum ErrorType
 	/** Invalid thread. */
 	INVALID_THREAD(10),
 	
+	/** Invalid class. */
+	INVALID_CLASS(21),
+	
 	/** Not implemented. */
 	NOT_IMPLEMENTED(99),
 	

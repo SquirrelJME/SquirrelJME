@@ -17,4 +17,27 @@ package cc.squirreljme.jdwp;
 public interface JDWPMethod
 	extends JDWPId
 {
+	/**
+	 * Returns the method flag bits.
+	 * 
+	 * @return The method flag bits.
+	 * @since 2021/03/13
+	 */
+	int debuggerMethodFlags();
+	
+	/**
+	 * Returns the method name.
+	 * 
+	 * @return The method name.
+	 * @since 2021/03/13
+	 */
+	String debuggerMethodName();
+	
+	/**
+	 * Returns the method type signature.
+	 * 
+	 * @return The method type signature.
+	 * @since 2021/03/13
+	 */
+	String debuggerMethodType();
 }

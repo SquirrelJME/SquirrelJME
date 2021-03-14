@@ -77,6 +77,36 @@ public final class SpringMethod
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public int debuggerMethodFlags()
+	{
+		return this.flags().toJavaBits();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public String debuggerMethodName()
+	{
+		return this.name().toString();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public String debuggerMethodType()
+	{
+		return this.nameAndType().type().toString();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/09/09
 	 */
 	@Override
