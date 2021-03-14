@@ -30,7 +30,7 @@ public final class EventRequest
 	private final EventModifier[] _modifiers;
 	
 	/** The number of occurrences left. */
-	private volatile int _occurrencesLeft;
+	volatile int _occurrencesLeft;
 	
 	/**
 	 * Initializes the event request.
@@ -68,5 +68,16 @@ public final class EventRequest
 	public final int debuggerId()
 	{
 		return this.id;
+	}
+	
+	/**
+	 * Returns the modifiers for this event.
+	 * 
+	 * @return The modifiers for this event.
+	 * @since 2021/03/14
+	 */
+	public final EventModifier[] modifiers()
+	{
+		return this._modifiers.clone();
 	}
 }

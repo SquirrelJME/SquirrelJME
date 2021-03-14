@@ -46,11 +46,11 @@ public final class JDWPPacket
 	volatile int _flags;
 	
 	/** The command set (if not a reply). */
-	private volatile int _commandSet =
+	volatile int _commandSet =
 		-1;
 	
 	/* The command (if not a reply). */
-	private volatile int _command =
+	volatile int _command =
 		-1;
 	
 	/** The error code (if a reply). */

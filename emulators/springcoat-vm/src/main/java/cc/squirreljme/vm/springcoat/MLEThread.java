@@ -9,10 +9,12 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import net.multiphasicapps.classfile.ClassName;
@@ -129,6 +131,14 @@ public enum MLEThread
 			// The thread gets these as well
 			target.setThreadInstance(javaThread);
 			target.setVMThread(vmThread);
+			
+			// If we are debugging, signal that this thread is in the start
+			// state. We need the instance to have been set for this to even
+			// properly work!
+			JDWPController jdwp = target.machineRef.get()
+				.taskManager().jdwpController;
+			if (jdwp != null)
+				jdwp.signalThreadState(target, true);
 			
 			return vmThread;
 		}
@@ -248,6 +258,7 @@ public enum MLEThread
 			MLEThread.__javaThread(__thread, __args[0]).fieldByNameAndType(
 				false, "_isAlive", "Z")
 				.set((int)__args[1] != 0);
+			
 			return null;
 		}
 	},
@@ -412,6 +423,29 @@ public enum MLEThread
 				.lookupField(false, "_vmThread",
 				"Lcc/squirreljme/jvm/mle/brackets/VMThreadBracket;"))
 				.get();
+		}
+	},
+	
+	/** {@link ThreadShelf#vmThreadEnd(VMThreadBracket)}. */
+	VM_THREAD_END("vmThreadEnd:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"VMThreadBracket;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringThread thread = MLEThread.__vmThread(__args[0]).getThread();
+			
+			// If debugging, signal that the thread has ended
+			JDWPController jdwp = thread.machineRef.get()
+				.taskManager().jdwpController;
+			if (jdwp != null)
+				jdwp.signalThreadState(thread, false);
+			
+			return null;
 		}
 	},
 	

@@ -68,7 +68,9 @@ public enum EventRequestCommandSet
 						throw Debugging.todo();
 					
 					case ONLY_IN_THREAD:
-						throw Debugging.todo();
+						modifiers.add(new ThreadModifier(
+							__controller.state.threads.get(__packet.id())));
+						break;
 					
 					case ONLY_IN_CLASS:
 						throw Debugging.todo();
@@ -111,7 +113,7 @@ public enum EventRequestCommandSet
 				__controller.__nextId(), eventKind, suspendPolicy,
 				occurrenceLimit,
 				modifiers.toArray(new EventModifier[modifiers.size()]));
-			__controller.__addEventRequest(request);
+			__controller.eventManager.addEventRequest(request);
 			
 			// Respond with the ID of this event
 			JDWPPacket rv = __controller.__reply(

@@ -45,15 +45,10 @@ public final class JDWPController
 	/** Debugger state. */
 	protected final JDWPState state =
 		new JDWPState();
-	
-	/** Event mappings by Kind. */
-	private final Map<EventKind, List<EventRequest>> _eventByKind =
-		new EnumTypeMap<EventKind, List<EventRequest>>(
-			EventKind.class, EventKind.values());
-	
-	/** Event mapping by Id. */
-	private final Map<Integer, EventRequest> _eventById =
-		new LinkedHashMap<>();
+		
+	/** The event manager. */
+	protected final EventManager eventManager =
+		new EventManager();
 	
 	/** Are events to the debugger being held? */
 	protected volatile boolean _holdEvents;
@@ -189,6 +184,50 @@ public final class JDWPController
 	}
 	
 	/**
+	 * Signals that the given thread has started.
+	 * 
+	 * @param __thread The thread that started.
+	 * @param __started Was this thread started?
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/03/14
+	 */
+	public void signalThreadState(JDWPThread __thread, boolean __started)
+		throws NullPointerException
+	{
+		if (__thread == null)
+			throw new NullPointerException("NARG");
+		
+		// Register this thread for later use
+		this.state.threads.put(__thread);
+		
+		// Which event is being sent?
+		EventKind kind = (__started ? EventKind.THREAD_START :
+			EventKind.THREAD_DEATH);
+		
+		// Send if requested
+		EventRequest request = this.eventManager.get(kind,
+			(__started ? null :
+			new ThreadModifierMatcher(__thread)));
+		if (request != null)
+			try (JDWPPacket event = this.__event())
+			{
+				// No threads got suspended
+				event.writeByte(SuspendPolicy.NONE.id);
+				
+				// Only a single event
+				event.writeInt(1);
+				
+				// Signal of thread start
+				event.writeByte(kind.id);
+				event.writeInt(request.id);
+				event.writeId(__thread);
+				
+				// Send it away!
+				this.commLink.send(event);
+			}
+	}
+	
+	/**
 	 * Signals that the thread suspend.
 	 * 
 	 * @param __thread The thread to be suspended or resumed.
@@ -206,31 +245,25 @@ public final class JDWPController
 	}
 	
 	/**
-	 * Adds an event request for later event handling.
+	 * Creates an event packet.
 	 * 
-	 * @param __request The request to add.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/03/13
+	 * @return The event packet.
+	 * @since 2021/03/14
 	 */
-	void __addEventRequest(EventRequest __request)
-		throws NullPointerException
+	private JDWPPacket __event()
 	{
-		if (__request == null)
-			throw new NullPointerException("NARG");
+		JDWPPacket rv = this.commLink.__getPacket(true);
 		
-		Map<EventKind, List<EventRequest>> eventByKind = this._eventByKind;
-		synchronized (this)
-		{
-			// Get list of the event
-			List<EventRequest> list = eventByKind.get(__request.eventKind);
-			if (list == null)
-				eventByKind.put(__request.eventKind,
-					(list = new LinkedList<>()));
-			
-			// Map events
-			list.add(__request);
-			this._eventById.put(__request.debuggerId(), __request);
-		}
+		// Composite command code
+		rv._commandSet = 64;
+		rv._command = 100;
+		
+		// Is just a normal event
+		rv._id = this.__nextId();
+		rv._errorCode = ErrorType.NO_ERROR;
+		rv._flags = 0;
+		
+		return rv;
 	}
 	
 	/**
