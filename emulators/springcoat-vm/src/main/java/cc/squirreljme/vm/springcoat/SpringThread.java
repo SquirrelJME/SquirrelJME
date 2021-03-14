@@ -11,6 +11,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledThread;
+import cc.squirreljme.jdwp.JDWPSuspend;
 import cc.squirreljme.jdwp.JDWPThread;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
@@ -74,6 +75,9 @@ public final class SpringThread
 	/** Did we signal exit? */
 	volatile boolean _signaledexit;
 	
+	/** The suspend count of the virtual machine. */
+	volatile int _suspendCount;
+	
 	/** The current worker for the thread. */
 	volatile SpringThreadWorker _worker;
 	
@@ -128,6 +132,46 @@ public final class SpringThread
 	public int debuggerId()
 	{
 		return System.identityHashCode(this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public int debuggerFrameCount()
+	{
+		synchronized (this)
+		{
+			return this.numFrames();
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public int debuggerSuspend(JDWPSuspend __type)
+	{
+		synchronized (this)
+		{
+			switch (__type)
+			{
+				case QUERY:
+					return this._suspendCount;
+				
+				case SUSPEND:
+					return ++this._suspendCount;
+				
+				case RESUME:
+					this._suspendCount = Math.max(0, this._suspendCount - 1);
+					return this._suspendCount;
+				
+				default:
+					throw Debugging.oops(__type);
+			}
+		}
 	}
 	
 	/**

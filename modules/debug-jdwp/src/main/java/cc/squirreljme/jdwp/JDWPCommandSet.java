@@ -23,6 +23,9 @@ public enum JDWPCommandSet
 	/** Virtual machine command set. */
 	VIRTUAL_MACHINE(1, VirtualMachineCommandSet.values()),
 	
+	/** Thread Reference. */
+	THREAD_REFERENCE(11, ThreadReferenceCommandSet.values()),
+	
 	/** Event requests. */
 	EVENT_REQUEST(15, EventRequestCommandSet.values()),
 	

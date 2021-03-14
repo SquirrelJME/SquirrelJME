@@ -154,6 +154,27 @@ public enum VirtualMachineCommandSet
 		}
 	},
 	
+	/** Suspend all threads. */
+	SUSPEND(8)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/13
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			// Update all threads available then tell every one to suspend
+			for (JDWPThread thread : __controller
+				.debuggerUpdate(JDWPUpdateWhat.THREADS).threads.values())
+				thread.debuggerSuspend(JDWPSuspend.SUSPEND);
+			
+			return null;
+		}
+	},
+	
 	/** Capabilities. */
 	CAPABILITIES(12)
 	{

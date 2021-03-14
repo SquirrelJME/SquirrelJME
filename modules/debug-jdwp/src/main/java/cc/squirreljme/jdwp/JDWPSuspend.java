@@ -10,27 +10,21 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Represents a debugger thread.
+ * Which kind of suspend is being performed?
  *
  * @since 2021/03/13
  */
-public interface JDWPThread
-	extends JDWPId
+public enum JDWPSuspend
 {
-	/**
-	 * Returns the frame count.
-	 * 
-	 * @since 2021/03/13
-	 */
-	int debuggerFrameCount();
+	/** Query only. */
+	QUERY,
 	
-	/**
-	 * Queries, suspends, or otherwise resumes the thread, after the operation
-	 * completes the suspension count will be returned.
-	 * 
-	 * @param __type The type of suspend.
-	 * @return The resultant suspension count.
-	 * @since 2021/03/13
-	 */
-	int debuggerSuspend(JDWPSuspend __type);
+	/** Suspend execution. */
+	SUSPEND,
+	
+	/** Resume execution. */
+	RESUME,
+	
+	/* End. */
+	;
 }

@@ -213,6 +213,19 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Reads an identifier from the packet.
+	 * 
+	 * @return The single read value.
+	 * @throws JDWPException If the end of the packet was reached.
+	 * @since 2021/03/13
+	 */
+	public final int readId()
+		throws JDWPException
+	{
+		return this.readInt();
+	}
+	
+	/**
 	 * Reads an integer byte from the packet
 	 * 
 	 * @return The single read value.
