@@ -292,9 +292,9 @@ public final class SpringClass
 	 * @since 2021/03/13
 	 */
 	@Override
-	public String debuggerName()
+	public String debuggerFieldDescriptor()
 	{
-		return this.name.toString();
+		return this.name.field().toString();
 	}
 	
 	/**

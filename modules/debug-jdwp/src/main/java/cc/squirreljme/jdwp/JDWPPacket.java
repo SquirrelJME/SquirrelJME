@@ -323,13 +323,21 @@ public final class JDWPPacket
 			if (!this._open)
 				return "JDWPPacket:Closed";
 			
+			// Find the command set
+			JDWPCommandSet commandSet = JDWPCommandSet.of(this._commandSet);
+			JDWPCommand command = (commandSet == null ? null :
+				commandSet.command(this._command));
+			
 			int flags = this._flags;
 			return String.format("JDWPPacket[id=%08x,flags=%02x,len=%d]:%s",
 				this._id, flags, this._length,
 				((flags & JDWPPacket.FLAG_REPLY) != 0 ?
 					String.format("[error=%s]", this._errorCode) :
-					String.format("[cmdSet=%d;cmd=%d]",
-						this._commandSet, this._command)));
+					String.format("[cmdSet=%s;cmd=%s]",
+						(commandSet == null ||
+							commandSet == JDWPCommandSet.UNKNOWN ?
+							this._commandSet : commandSet),
+						(command == null ? this._command : command))));
 		}
 	}
 	

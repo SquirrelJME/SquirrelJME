@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * Reference type command set.
  *
@@ -42,7 +40,7 @@ public enum ReferenceTypeCommandSet
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Only a normal signature is used, since generics are not needed
-			rv.writeString(type.debuggerName());
+			rv.writeString(type.debuggerFieldDescriptor());
 			rv.writeString("");
 			
 			return rv;

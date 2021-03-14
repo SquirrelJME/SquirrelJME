@@ -34,10 +34,10 @@ public interface JDWPClass
 	JDWPMethod[] debuggerMethods();
 	
 	/**
-	 * Returns the class name.
+	 * Returns the class name as a field descriptor.
 	 * 
-	 * @return The class name.
+	 * @return The class name as a field descriptor.
 	 * @since 2021/03/13
 	 */
-	String debuggerName();
+	String debuggerFieldDescriptor();
 }

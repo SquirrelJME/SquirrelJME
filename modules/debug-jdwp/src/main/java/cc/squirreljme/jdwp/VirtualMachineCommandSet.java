@@ -50,7 +50,7 @@ public enum VirtualMachineCommandSet
 		}
 	},
 	
-	/** Classes by signature. */
+	/** Class search by signature. */
 	CLASSES_BY_SIGNATURE(2)
 	{
 		/**
@@ -62,11 +62,13 @@ public enum VirtualMachineCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
+			Debugging.debugNote("JDWP: Want %s", __packet.readString());
+			
 			// Write result
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
-			Debugging.todoNote("Implement CLASSES_BY_SIGNATURE");
+			Debugging.todoNote("JDWP: Implement CLASSES_BY_SIGNATURE");
 			rv.writeInt(0);
 			
 			return rv;
@@ -374,7 +376,7 @@ public enum VirtualMachineCommandSet
 				rv.writeId(type);
 				
 				// The signatures, the generic is ignored
-				rv.writeString(type.debuggerName());
+				rv.writeString(type.debuggerFieldDescriptor());
 				rv.writeString("");
 				
 				// All classes are considered initialized
