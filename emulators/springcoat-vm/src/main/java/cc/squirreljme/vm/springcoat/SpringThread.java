@@ -29,6 +29,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
@@ -64,6 +65,9 @@ public final class SpringThread
 	
 	/** The virtual machine reference. */
 	protected final Reference<SpringMachine> machineRef;
+	
+	/** Unique thread ID. */
+	protected final int uniqueId;
 	
 	/** The stack frames. */
 	private final List<SpringThread.Frame> _frames =
@@ -101,14 +105,15 @@ public final class SpringThread
 	 *
 	 * @param __machRef The machine reference.
 	 * @param __id The thread ID.
+	 * @param __uniqueId Unique ID for debugging.
 	 * @param __main Is this a main thread.
 	 * @param __n The name of the thread.
 	 * @param __profiler Profiled storage.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/01
 	 */
-	SpringThread(Reference<SpringMachine> __machRef, int __id, boolean __main,
-		String __n, ProfiledThread __profiler)
+	SpringThread(Reference<SpringMachine> __machRef, int __id, int __uniqueId,
+		boolean __main, String __n, ProfiledThread __profiler)
 		throws NullPointerException
 	{
 		if (__n == null)
@@ -116,6 +121,7 @@ public final class SpringThread
 		
 		this.machineRef = __machRef;
 		this.id = __id;
+		this.uniqueId = __uniqueId;
 		this.main = __main;
 		this.name = __n;
 		this.profiler = __profiler;
@@ -155,8 +161,12 @@ public final class SpringThread
 			if (!frame.isBlank())
 				rv[at++] = frame;
 		
-		return (at == frames.length ? rv :
+		// Spring Coat does threads in the reverse order, so it needs to be
+		// flipped to be in Java order
+		rv = (at == frames.length ? rv :
 			Arrays.<JDWPThreadFrame>copyOf(rv, at));
+		Collections.reverse(Arrays.asList(rv));
+		return rv;
 	}
 	
 	/**
@@ -166,7 +176,7 @@ public final class SpringThread
 	@Override
 	public int debuggerId()
 	{
-		return System.identityHashCode(this);
+		return this.uniqueId;
 	}
 	
 	/**

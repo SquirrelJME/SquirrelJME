@@ -38,6 +38,9 @@ public enum ErrorType
 	/** Not implemented. */
 	NOT_IMPLEMENTED(99),
 	
+	/** Absent information. */
+	ABSENT_INFORMATION(101),
+	
 	/** Invalid event type. */
 	INVALID_EVENT_TYPE(102),
 	

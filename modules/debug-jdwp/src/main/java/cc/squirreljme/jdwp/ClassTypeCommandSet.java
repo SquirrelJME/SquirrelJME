@@ -44,7 +44,8 @@ public enum ClassTypeCommandSet
 			rv.writeId(superClass);
 			
 			// Register the super class so it can be known
-			__controller.state.classes.put(superClass);
+			if (superClass != null)
+				__controller.state.classes.put(superClass);
 			
 			return rv;
 		}

@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Reference type command set.
  *
@@ -17,6 +19,40 @@ package cc.squirreljme.jdwp;
 public enum ReferenceTypeCommandSet
 	implements JDWPCommand
 {
+	/** Source file. */
+	SOURCE_FILE(7)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			// Which class does this refer to?
+			JDWPReferenceType type = __controller.state.getReferenceType(
+				__packet.readId());
+			if (type == null)
+				return __controller.__reply(
+				__packet.id(), ErrorType.INVALID_CLASS);
+			
+			// Does this have a source file?
+			String sourceFile = type.debuggerClass().debuggerSourceFile();
+			if (sourceFile == null)
+				return __controller.__reply(
+				__packet.id(), ErrorType.ABSENT_INFORMATION);
+			
+			JDWPPacket rv = __controller.__reply(
+				__packet.id(), ErrorType.NO_ERROR);
+			
+			rv.writeString(sourceFile);
+			
+			return rv;
+		}
+	},
+	
 	/** Signature with generic (class). */
 	SIGNATURE_WITH_GENERIC(13)
 	{

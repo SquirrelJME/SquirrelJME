@@ -226,7 +226,9 @@ public final class SpringMachine
 			int v;
 			SpringThread rv = new SpringThread(
 				new WeakReference<>(this),
-				(v = ++this._nextthreadid), __main,
+				(v = ++this._nextthreadid),
+				this.tasks.nextThreadId(),
+				__main,
 				usedName,
 				this.profiler.measureThread(String.format("VM_%s-%d-%s",
 				this.vmId, v, usedName)));

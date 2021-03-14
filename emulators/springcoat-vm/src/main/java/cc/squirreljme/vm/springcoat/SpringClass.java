@@ -322,6 +322,16 @@ public final class SpringClass
 	 * @since 2021/03/14
 	 */
 	@Override
+	public String debuggerSourceFile()
+	{
+		return this.file.sourceFile();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/14
+	 */
+	@Override
 	public JDWPClass debuggerSuperClass()
 	{
 		return this.superclass;

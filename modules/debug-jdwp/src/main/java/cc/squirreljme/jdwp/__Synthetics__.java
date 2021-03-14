@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Synthetics.
  *
@@ -116,6 +118,16 @@ abstract class __Synthetics__
 		 * @since 2021/03/14
 		 */
 		@Override
+		public String debuggerSourceFile()
+		{
+			return null;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
 		public JDWPClass debuggerSuperClass()
 		{
 			return null;
@@ -190,6 +202,16 @@ abstract class __Synthetics__
 		 * @since 2021/03/14
 		 */
 		@Override
+		public String debuggerSourceFile()
+		{
+			return null;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
 		public JDWPClass debuggerSuperClass()
 		{
 			return null;
@@ -257,6 +279,16 @@ abstract class __Synthetics__
 		public JDWPMethod[] debuggerMethods()
 		{
 			return new JDWPMethod[0];
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
+		public String debuggerSourceFile()
+		{
+			return null;
 		}
 		
 		/**

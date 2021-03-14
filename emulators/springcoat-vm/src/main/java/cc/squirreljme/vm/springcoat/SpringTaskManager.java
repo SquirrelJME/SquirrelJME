@@ -65,6 +65,9 @@ public final class SpringTaskManager
 	/** Controller for JDWP Connections. */
 	protected JDWPController jdwpController;
 	
+	/** Next thread ID, for debugging. */
+	private volatile int _nextThreadId;
+	
 	/**
 	 * Initializes the task manager.
 	 *
@@ -139,6 +142,20 @@ public final class SpringTaskManager
 					}
 					break;
 			}
+	}
+	
+	/**
+	 * Return the next thread ID.
+	 * 
+	 * @return The next thread ID.
+	 * @since 2021/03/14
+	 */
+	protected int nextThreadId()
+	{
+		synchronized (this)
+		{
+			return ++this._nextThreadId;
+		}
 	}
 	
 	/**

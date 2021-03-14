@@ -18,7 +18,10 @@ public interface JDWPThread
 	extends JDWPObjectLike
 {
 	/**
-	 * Returns all of the thread frames.
+	 * Returns all of the thread frames, it will be noted that this is in
+	 * the same format as {@link Throwable#printStackTrace()} in that the
+	 * top-most frames are lower. This means that the most recently called
+	 * method should be at index zero.
 	 * 
 	 * @return The thread frames.
 	 * @since 2021/03/13

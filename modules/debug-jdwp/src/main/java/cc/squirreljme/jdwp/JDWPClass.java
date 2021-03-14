@@ -50,6 +50,14 @@ public interface JDWPClass
 	JDWPMethod[] debuggerMethods();
 	
 	/**
+	 * The source file for this class.
+	 * 
+	 * @return The class source file, if {@code null} it is not available.
+	 * @since 2021/03/14
+	 */
+	String debuggerSourceFile();
+	
+	/**
 	 * Returns the super class of this class.
 	 * 
 	 * @return The super class or {@code null} if there is none.
