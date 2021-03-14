@@ -26,6 +26,9 @@ public enum JDWPCommandSet
 	/** Reference type. */
 	REFERENCE_TYPE(2, ReferenceTypeCommandSet.values()),
 	
+	/** Class types. */
+	CLASS_TYPE(3, ClassTypeCommandSet.values()),
+	
 	/** Thread Reference. */
 	THREAD_REFERENCE(11, ThreadReferenceCommandSet.values()),
 	

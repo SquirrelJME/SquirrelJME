@@ -280,6 +280,16 @@ public final class SpringClass
 	 * @since 2021/03/13
 	 */
 	@Override
+	public String debuggerFieldDescriptor()
+	{
+		return this.name.field().toString();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
 	public JDWPMethod[] debuggerMethods()
 	{
 		List<JDWPMethod> result = new ArrayList<>(this._methods.values());
@@ -289,12 +299,12 @@ public final class SpringClass
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2021/03/13
+	 * @since 2021/03/14
 	 */
 	@Override
-	public String debuggerFieldDescriptor()
+	public JDWPClass debuggerSuperClass()
 	{
-		return this.name.field().toString();
+		return this.superclass;
 	}
 	
 	/**

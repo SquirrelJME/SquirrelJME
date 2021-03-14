@@ -26,6 +26,14 @@ public interface JDWPClass
 	JDWPClassType debuggerClassType();
 	
 	/**
+	 * Returns the class name as a field descriptor.
+	 * 
+	 * @return The class name as a field descriptor.
+	 * @since 2021/03/13
+	 */
+	String debuggerFieldDescriptor();
+	
+	/**
 	 * Returns all of the methods within the class.
 	 * 
 	 * @return The methods in the class.
@@ -34,10 +42,10 @@ public interface JDWPClass
 	JDWPMethod[] debuggerMethods();
 	
 	/**
-	 * Returns the class name as a field descriptor.
+	 * Returns the super class of this class.
 	 * 
-	 * @return The class name as a field descriptor.
-	 * @since 2021/03/13
+	 * @return The super class or {@code null} if there is none.
+	 * @since 2021/03/14
 	 */
-	String debuggerFieldDescriptor();
+	JDWPClass debuggerSuperClass();
 }
