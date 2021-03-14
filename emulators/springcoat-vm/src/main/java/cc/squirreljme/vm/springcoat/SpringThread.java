@@ -911,7 +911,12 @@ public final class SpringThread
 		@Override
 		public long debuggerAtIndex()
 		{
-			return this._pc;
+			ByteCode code = this.code;
+			if (code == null)
+				return -1;
+			
+			// These just use indexes, not true addresses
+			return code.addressToIndex(this._pc);
 		}
 		
 		/**

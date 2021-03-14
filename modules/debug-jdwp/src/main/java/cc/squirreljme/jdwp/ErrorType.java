@@ -35,6 +35,9 @@ public enum ErrorType
 	/** Invalid class. */
 	INVALID_CLASS(21),
 	
+	/** Invalid method ID. */
+	INVALID_METHOD_ID(23),
+	
 	/** Not implemented. */
 	NOT_IMPLEMENTED(99),
 	

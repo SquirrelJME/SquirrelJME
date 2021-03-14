@@ -11,6 +11,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPMethod;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Method;
@@ -34,6 +35,9 @@ public final class SpringMethod
 	
 	/** The file this method is in. */
 	protected final String infile;
+	
+	/** The line table (cached). */
+	private volatile int[] _lineTable;
 	
 	/**
 	 * Initializes the method representation.
@@ -73,6 +77,35 @@ public final class SpringMethod
 	public int debuggerId()
 	{
 		return System.identityHashCode(this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/14
+	 */
+	@Override
+	public int[] debuggerLineTable()
+	{
+		// Pre-cached?
+		int[] lineTable = this._lineTable;
+		if (lineTable != null)
+			return lineTable.clone();
+		
+		// If there is no method byte code then ignore
+		ByteCode byteCode = this.method.byteCode();
+		if (byteCode == null)
+			return null;
+		
+		// Otherwise map each unique address to a line number
+		int[] addrs = byteCode.validAddresses();
+		int n = addrs.length;
+		int[] rv = new int[n];
+		for (int i = 0; i < n; i++)
+			rv[i] = byteCode.lineOfAddress(addrs[i]);
+		
+		// Cache it and return a safe copy of it
+		this._lineTable = rv;
+		return rv.clone();
 	}
 	
 	/**

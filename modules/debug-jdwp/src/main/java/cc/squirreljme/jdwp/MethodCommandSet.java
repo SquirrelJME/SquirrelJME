@@ -31,15 +31,45 @@ public enum MethodCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
+			// Ignore class it is not needed
+			__packet.readId();
+			
+			// Find the method
+			JDWPMethod method = __controller.state.methods.get(
+				__packet.readId());
+			if (method == null)
+				return __controller.__reply(
+				__packet.id(), ErrorType.INVALID_METHOD_ID);
+			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
-				
-			Debugging.todoNote("JDWP: Implement LINE_TABLE.");
 			
-			// Just treat as native methods for now
-			rv.writeLong(-1);
-			rv.writeLong(-1);
-			rv.writeInt(0);
+			// Obtain the line table to record, ensure that it exists and is
+			// valid.
+			int[] lineTable = method.debuggerLineTable();
+			if (lineTable == null || lineTable.length == 0 || lineTable[0] < 0)
+			{
+				// No information, so it is treated like if it were native
+				rv.writeLong(-1);
+				rv.writeLong(-1);
+				rv.writeInt(0);
+			}
+			
+			// Otherwise record the information
+			else
+			{
+				// Size of the line table
+				rv.writeLong(0);
+				rv.writeLong(lineTable.length);
+				
+				// Write out the line table
+				rv.writeInt(lineTable.length);
+				for (int i = 0, n = lineTable.length; i < n; i++)
+				{
+					rv.writeLong(i);
+					rv.writeInt(Math.max(0, lineTable[i]));
+				}
+			}
 			
 			return rv;
 		}

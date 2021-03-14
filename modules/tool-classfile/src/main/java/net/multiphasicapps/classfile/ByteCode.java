@@ -781,6 +781,17 @@ public final class ByteCode
 	}
 	
 	/**
+	 * Returns all of the valid addresses within this code.
+	 * 
+	 * @return The list of valid addresses.
+	 * @since 2021/03/14
+	 */
+	public final int[] validAddresses()
+	{
+		return this._index.clone();
+	}
+	
+	/**
 	 * Returns all of the local variables which are written to.
 	 *
 	 * @return The local variables which are written to.

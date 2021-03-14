@@ -28,7 +28,8 @@ public interface JDWPThreadFrame
 	/**
 	 * The index this frame is at, the value is implementation defined.
 	 * 
-	 * @return The implementation defined index.
+	 * @return The implementation defined index, if the adress is not valid
+	 * then this must return {@code -1}.
 	 * @since 2021/03/13
 	 */
 	long debuggerAtIndex();

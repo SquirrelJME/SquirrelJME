@@ -168,8 +168,7 @@ public enum ThreadReferenceCommandSet
 				rv.writeId(method);
 				
 				// Where is this located? Note that the index
-				Debugging.todoNote("JDWP: Implement line positions.");
-				rv.writeLong(-1); //frame.debuggerAtIndex());
+				rv.writeLong(frame.debuggerAtIndex());
 				
 				// Make sure the class and methods are registered for later
 				// retrieval

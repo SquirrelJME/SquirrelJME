@@ -18,6 +18,14 @@ public interface JDWPMethod
 	extends JDWPId
 {
 	/**
+	 * Returns the line table for the method.
+	 * 
+	 * @return The line table or {@code null} if there is none.
+	 * @since 2021/03/14
+	 */
+	int[] debuggerLineTable();
+	
+	/**
 	 * Returns the method flag bits.
 	 * 
 	 * @return The method flag bits.
