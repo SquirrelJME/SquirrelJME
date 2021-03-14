@@ -119,7 +119,13 @@ public final class JDWPThreadSuspension
 		{
 			// Nothing to resume
 			if (this._count == 0)
+			{
+				// Notify any threads in the event they are waiting
+				this.notifyAll();
+				
+				// No suspensions
 				return 0;
+			}
 			
 			// Count down, if we reach zero then we will make notifications
 			// so we do not need to needlessly wake threads up
