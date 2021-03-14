@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Command set for thread support.
  *
@@ -164,7 +166,10 @@ public enum ThreadReferenceCommandSet
 				// Write the method ID and the special index (address)
 				JDWPMethod method = frame.debuggerAtMethod();
 				rv.writeId(method);
-				rv.writeLong(frame.debuggerAtIndex());
+				
+				// Where is this located? Note that the index
+				Debugging.todoNote("JDWP: Implement line positions.");
+				rv.writeLong(-1); //frame.debuggerAtIndex());
 				
 				// Make sure the class and methods are registered for later
 				// retrieval

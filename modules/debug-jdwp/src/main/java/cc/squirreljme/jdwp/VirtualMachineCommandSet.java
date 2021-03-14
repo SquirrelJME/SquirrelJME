@@ -409,7 +409,7 @@ public enum VirtualMachineCommandSet
 				rv.writeBoolean(false);
 				
 				// Reserved
-				for (int i = 26; i <= 32; i++)
+				for (int i = 22; i <= 32; i++)
 					rv.writeBoolean(false);
 			}
 			
