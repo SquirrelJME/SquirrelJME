@@ -36,6 +36,10 @@ public final class JDWPState
 	public final JDWPLinker<JDWPMethod> methods =
 		new JDWPLinker<>(JDWPMethod.class);
 	
+	/** Fields that are known. */
+	public final JDWPLinker<JDWPField> fields =
+		new JDWPLinker<>(JDWPField.class);
+	
 	/** Objects that are known. */
 	public final JDWPLinker<JDWPObject> objects =
 		new JDWPLinker<>(JDWPObject.class);
@@ -68,6 +72,10 @@ public final class JDWPState
 			return rv;
 		
 		rv = this.methods.get(__id);
+		if (rv != null)
+			return rv;
+		
+		rv = this.fields.get(__id);
 		if (rv != null)
 			return rv;
 		

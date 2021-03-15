@@ -10,18 +10,11 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Represents a debugged method reference.
+ * Represents a field.
  *
- * @since 2021/03/13
+ * @since 2021/03/14
  */
-public interface JDWPMethod
+public interface JDWPField
 	extends JDWPMember
 {
-	/**
-	 * Returns the line table for the method.
-	 * 
-	 * @return The line table or {@code null} if there is none.
-	 * @since 2021/03/14
-	 */
-	int[] debuggerLineTable();
 }

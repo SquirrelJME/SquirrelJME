@@ -108,6 +108,16 @@ abstract class __Synthetics__
 		 * @since 2021/03/14
 		 */
 		@Override
+		public JDWPField[] debuggerFields()
+		{
+			return new JDWPField[0];
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
 		public JDWPMethod[] debuggerMethods()
 		{
 			return new JDWPMethod[0];
@@ -192,6 +202,16 @@ abstract class __Synthetics__
 		 * @since 2021/03/14
 		 */
 		@Override
+		public JDWPField[] debuggerFields()
+		{
+			return new JDWPField[0];
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
 		public JDWPMethod[] debuggerMethods()
 		{
 			return new JDWPMethod[0];
@@ -269,6 +289,16 @@ abstract class __Synthetics__
 		public String debuggerFieldDescriptor()
 		{
 			return "Lcc/squirreljme/jvm/debug/SyntheticThreadGroup;";
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
+		public JDWPField[] debuggerFields()
+		{
+			return new JDWPField[0];
 		}
 		
 		/**

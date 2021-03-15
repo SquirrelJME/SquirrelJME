@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPClass;
 import cc.squirreljme.jdwp.JDWPClassType;
+import cc.squirreljme.jdwp.JDWPField;
 import cc.squirreljme.jdwp.JDWPMethod;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -305,6 +306,13 @@ public final class SpringClass
 		return this.name.field().toString();
 	}
 	
+	@Override
+	public JDWPField[] debuggerFields()
+	{
+		List<JDWPField> result = new ArrayList<>(this._fields.values());
+		return result.<JDWPField>toArray(new JDWPField[result.size()]);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/03/13
@@ -313,7 +321,6 @@ public final class SpringClass
 	public JDWPMethod[] debuggerMethods()
 	{
 		List<JDWPMethod> result = new ArrayList<>(this._methods.values());
-		
 		return result.<JDWPMethod>toArray(new JDWPMethod[result.size()]);
 	}
 	

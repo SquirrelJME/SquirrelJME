@@ -42,6 +42,14 @@ public interface JDWPClass
 	String debuggerFieldDescriptor();
 	
 	/**
+	 * Returns the class fields.
+	 * 
+	 * @return The class fields.
+	 * @since 2021/03/14
+	 */
+	JDWPField[] debuggerFields();
+	
+	/**
 	 * Returns all of the methods within the class.
 	 * 
 	 * @return The methods in the class.

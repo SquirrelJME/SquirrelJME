@@ -113,7 +113,7 @@ public final class SpringMethod
 	 * @since 2021/03/13
 	 */
 	@Override
-	public int debuggerMethodFlags()
+	public int debuggerMemberFlags()
 	{
 		return this.flags().toJavaBits();
 	}
@@ -123,7 +123,7 @@ public final class SpringMethod
 	 * @since 2021/03/13
 	 */
 	@Override
-	public String debuggerMethodName()
+	public String debuggerMemberName()
 	{
 		return this.name().toString();
 	}
@@ -133,7 +133,7 @@ public final class SpringMethod
 	 * @since 2021/03/13
 	 */
 	@Override
-	public String debuggerMethodType()
+	public String debuggerMemberType()
 	{
 		return this.nameAndType().type().toString();
 	}

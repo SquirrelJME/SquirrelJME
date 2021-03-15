@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jdwp.JDWPField;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Field;
 import net.multiphasicapps.classfile.FieldFlags;
@@ -21,7 +22,7 @@ import net.multiphasicapps.classfile.FieldNameAndType;
  * @since 2018/07/22
  */
 public final class SpringField
-	implements SpringMember
+	implements JDWPField, SpringMember
 {
 	/** The class this technically belongs to. */
 	protected final ClassName inclass;
@@ -65,6 +66,46 @@ public final class SpringField
 		// Not used for statics
 		else
 			this.index = -1;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/14
+	 */
+	@Override
+	public int debuggerId()
+	{
+		return System.identityHashCode(this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public int debuggerMemberFlags()
+	{
+		return this.flags().toJavaBits();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public String debuggerMemberName()
+	{
+		return this.nameAndType().name().toString();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public String debuggerMemberType()
+	{
+		return this.nameAndType().type().toString();
 	}
 	
 	/**

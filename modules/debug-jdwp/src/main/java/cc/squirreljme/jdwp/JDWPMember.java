@@ -10,18 +10,34 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Represents a debugged method reference.
+ * Represents a member field or method of a class.
  *
- * @since 2021/03/13
+ * @since 2021/03/14
  */
-public interface JDWPMethod
-	extends JDWPMember
+public interface JDWPMember
+	extends JDWPId
 {
 	/**
-	 * Returns the line table for the method.
+	 * Returns the member flag bits.
 	 * 
-	 * @return The line table or {@code null} if there is none.
-	 * @since 2021/03/14
+	 * @return The member flag bits.
+	 * @since 2021/03/13
 	 */
-	int[] debuggerLineTable();
+	int debuggerMemberFlags();
+	
+	/**
+	 * Returns the member name.
+	 * 
+	 * @return The member name.
+	 * @since 2021/03/13
+	 */
+	String debuggerMemberName();
+	
+	/**
+	 * Returns the member type signature.
+	 * 
+	 * @return The member type signature.
+	 * @since 2021/03/13
+	 */
+	String debuggerMemberType();
 }

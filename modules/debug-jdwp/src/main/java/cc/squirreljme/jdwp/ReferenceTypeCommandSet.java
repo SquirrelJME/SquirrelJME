@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * Reference type command set.
  *
@@ -19,6 +17,11 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public enum ReferenceTypeCommandSet
 	implements JDWPCommand
 {
+	/** Non-generic signature of a given type. */
+	SIGNATURE(1)
+	{
+	}, 
+	
 	/** Source file. */
 	SOURCE_FILE(7)
 	{
@@ -83,6 +86,54 @@ public enum ReferenceTypeCommandSet
 		}
 	},
 	
+	/** Fields with generic types. */
+	FIELDS_WITH_GENERIC(14)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			// Which class does this refer to?
+			JDWPClass type = __controller.state.classes.get(
+				__packet.readId());
+			if (type == null)
+				return __controller.__reply(
+				__packet.id(), ErrorType.INVALID_CLASS);
+				
+			JDWPPacket rv = __controller.__reply(
+				__packet.id(), ErrorType.NO_ERROR);
+			
+			// Write number of fields
+			JDWPField[] fields = type.debuggerFields();
+			rv.writeInt(fields.length);
+			
+			// Write information on each method
+			for (JDWPField field : fields)
+			{
+				// Register this method for later lookup
+				__controller.state.fields.put(field);
+				
+				// Information about the method
+				rv.writeId(field);
+				rv.writeString(field.debuggerMemberName());
+				rv.writeString(field.debuggerMemberType());
+				
+				// Generics are not used in SquirrelJME, ignore
+				rv.writeString("");
+				
+				// Modifier flags
+				rv.writeInt(field.debuggerMemberFlags());
+			}
+			
+			return rv;
+		}
+	},
+	
 	/** Methods with generic types. */
 	METHODS_WITH_GENERIC(15)
 	{
@@ -117,14 +168,14 @@ public enum ReferenceTypeCommandSet
 				
 				// Information about the method
 				rv.writeId(method);
-				rv.writeString(method.debuggerMethodName());
-				rv.writeString(method.debuggerMethodType());
+				rv.writeString(method.debuggerMemberName());
+				rv.writeString(method.debuggerMemberType());
 				
 				// Generics are not used in SquirrelJME, ignore
 				rv.writeString("");
 				
 				// Modifier flags
-				rv.writeInt(method.debuggerMethodFlags());
+				rv.writeInt(method.debuggerMemberFlags());
 			}
 			
 			return rv;
