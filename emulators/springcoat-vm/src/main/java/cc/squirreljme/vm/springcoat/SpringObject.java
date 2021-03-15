@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jdwp.JDWPObject;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
 
 /**
@@ -20,6 +21,7 @@ import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
  * @since 2018/09/08
  */
 public interface SpringObject
+	extends JDWPObject
 {
 	/**
 	 * Returns the monitor for this object.

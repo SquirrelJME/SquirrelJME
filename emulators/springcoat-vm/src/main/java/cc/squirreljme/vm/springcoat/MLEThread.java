@@ -13,6 +13,7 @@ import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
+import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
@@ -379,11 +380,16 @@ public enum MLEThread
 			else
 				try
 				{
+					__thread.thread.setStatus(ThreadStatusType.SLEEPING);
 					Thread.sleep(ms, ns);
 				}
 				catch (InterruptedException ignored)
 				{
 					return true;
+				}
+				finally
+				{
+					__thread.thread.setStatus(ThreadStatusType.RUNNING);
 				}
 			
 			return false;

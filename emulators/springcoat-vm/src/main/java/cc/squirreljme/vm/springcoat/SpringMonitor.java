@@ -11,6 +11,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.constants.MonitorResultType;
+import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIllegalMonitorStateException;
 
 /**
@@ -71,11 +72,17 @@ public final class SpringMonitor
 					// Wait for lock to be freed
 					try
 					{
+						__t.setStatus(ThreadStatusType.MONITOR_WAIT);
 						this.wait();
 					}
 					catch (InterruptedException e)
 					{
 						// Ignore
+					}
+					finally
+					{
+						// Go back to the running state
+						__t.setStatus(ThreadStatusType.RUNNING);
 					}
 				}
 			}
@@ -260,6 +267,9 @@ public final class SpringMonitor
 					// Could be interrupted
 					try
 					{
+						// Start waiting on it
+						__by.setStatus(ThreadStatusType.MONITOR_WAIT);
+						
 						// Check if time expired
 						if (!waitforever)
 						{
@@ -286,6 +296,12 @@ public final class SpringMonitor
 					catch (InterruptedException e)
 					{
 						interrupted = true;
+					}
+					
+					// Go back to the running state
+					finally
+					{
+						__by.setStatus(ThreadStatusType.RUNNING);
 					}
 				}
 			}

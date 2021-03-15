@@ -12,12 +12,14 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledThread;
 import cc.squirreljme.jdwp.JDWPClass;
+import cc.squirreljme.jdwp.JDWPCollectable;
 import cc.squirreljme.jdwp.JDWPMethod;
 import cc.squirreljme.jdwp.JDWPObject;
 import cc.squirreljme.jdwp.JDWPThread;
 import cc.squirreljme.jdwp.JDWPThreadFrame;
 import cc.squirreljme.jdwp.JDWPThreadGroup;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
+import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -41,7 +43,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  * @since 2018/09/01
  */
 public final class SpringThread
-	implements JDWPThread
+	implements JDWPCollectable, JDWPThread
 {
 	/** Maximum depth of the stack. */
 	public static final int MAX_STACK_DEPTH =
@@ -72,6 +74,9 @@ public final class SpringThread
 	/** The stack frames. */
 	private final List<SpringThread.Frame> _frames =
 		new ArrayList<>();
+	
+	/** The thread status. */
+	private int _status;
 	
 	/** The thread's {@link Thread} instance. */
 	private SpringObject _threadInstance;
@@ -181,8 +186,17 @@ public final class SpringThread
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/03/15
+	 */
+	@Override
+	public boolean debuggerIsCollected()
+	{
+		return this.isTerminated();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/03/13
-	 * @return
 	 */
 	@Override
 	public JDWPThreadSuspension debuggerSuspend()
@@ -209,6 +223,19 @@ public final class SpringThread
 	public JDWPObject debuggerThreadObject()
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/15
+	 */
+	@Override
+	public int debuggerThreadStatus()
+	{
+		synchronized (this)
+		{
+			return this._status;
+		}
 	}
 	
 	/**
@@ -645,6 +672,20 @@ public final class SpringThread
 	}
 	
 	/**
+	 * Sets the thread status.
+	 * 
+	 * @param __status The {@link ThreadStatusType} to set.
+	 * @since 2021/03/15
+	 */
+	public void setStatus(int __status)
+	{
+		synchronized (this)
+		{
+			this._status = __status;
+		}
+	}
+	
+	/**
 	 * Sets the {@link Thread} instance.
 	 *
 	 * @param __object The object to set the instance to.
@@ -937,6 +978,22 @@ public final class SpringThread
 		public int debuggerId()
 		{
 			return System.identityHashCode(this);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/15
+		 */
+		@Override
+		public Object debuggerRegisterGetValue(boolean __stack, int __dx)
+		{
+			Object[] vals = (__stack ? this._stack : this._locals);
+			if (__dx < 0 || __dx >= vals.length)
+				return null;
+			
+			// This may return the special null, hide that
+			Object rv = vals[__dx];
+			return (rv == SpringNullObject.NULL ? null : rv);
 		}
 		
 		/**

@@ -520,6 +520,80 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Writes a value to the output.
+	 * 
+	 * @param __val The value to write.
+	 * @throws JDWPException If it failed to write.
+	 * @since 2021/03/15
+	 */
+	protected void writeValue(Object __val)
+		throws JDWPException
+	{
+		synchronized (this)
+		{
+			// Must be an open packet
+			this.__checkOpen();
+			
+			// Integer
+			if (__val instanceof Integer)
+			{
+				this.writeByte('I');
+				this.writeInt((int)__val);
+			}
+			
+			// Long
+			else if (__val instanceof Long)
+			{
+				this.writeByte('L');
+				this.writeLong((long)__val);
+			}
+			
+			// Float
+			else if (__val instanceof Float)
+			{
+				this.writeByte('D');
+				this.writeInt(Float.floatToRawIntBits((float)__val));
+			}
+			
+			// Double
+			else if (__val instanceof Double)
+			{
+				this.writeByte('D');
+				this.writeLong(Double.doubleToRawLongBits((double)__val));
+			}
+			
+			// IDAble
+			else if (__val instanceof JDWPId)
+			{
+				JDWPId id = (JDWPId)__val;
+				
+				// Thread
+				if (id instanceof JDWPThread)
+					this.writeByte('t');
+				
+				// Thread group
+				else if (id instanceof JDWPThreadGroup)
+					this.writeByte('g');
+				
+				// Class
+				else if (id instanceof JDWPClass)
+					this.writeByte('c');
+				
+				// Treat as object otherwise
+				else
+					this.writeByte('L');
+				
+				// Write ID
+				this.writeId(id);
+			}
+			
+			// Unknown, treat as void?
+			else
+				this.writeByte('V');
+		}
+	}
+	
+	/**
 	 * Checks if the packet is open.
 	 * 
 	 * @throws IllegalStateException If it is not open.

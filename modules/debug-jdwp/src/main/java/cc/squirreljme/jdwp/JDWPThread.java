@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
+
 /**
  * Represents a debugger thread.
  *
@@ -51,4 +53,12 @@ public interface JDWPThread
 	 * @since 2021/03/13
 	 */
 	JDWPThreadGroup debuggerThreadGroup();
+	
+	/**
+	 * Returns the {@link ThreadStatusType} of a thread.
+	 * 
+	 * @return The {@link ThreadStatusType}.
+	 * @since 2021/03/15
+	 */
+	int debuggerThreadStatus();
 }

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -72,8 +73,25 @@ public enum ThreadReferenceCommandSet
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
-			// Consider all threads as running
-			rv.writeInt(1);
+			// Which state is this thread in?
+			switch (thread.debuggerThreadStatus())
+			{
+					// Sleeping
+				case ThreadStatusType.SLEEPING:
+					rv.writeInt(2);
+					break;
+					
+					// Waiting on a monitor?
+				case ThreadStatusType.MONITOR_WAIT:
+					rv.writeInt(3);
+					break;
+				
+					// Running state, assuming anything else is running
+				case ThreadStatusType.RUNNING:
+				default:
+					rv.writeInt(1);
+					break;
+			}
 			
 			// If the thread is suspended, then it will be flagged as such
 			rv.writeInt(thread.debuggerSuspend().query() > 0 ? 1 : 0);

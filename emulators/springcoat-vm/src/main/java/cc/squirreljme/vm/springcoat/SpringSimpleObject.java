@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jdwp.JDWPClass;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -64,6 +65,26 @@ public final class SpringSimpleObject
 		int i = 0;
 		for (SpringField f : __cl.fieldTable())
 			fields[i++] = new SpringFieldStorage(f);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/05/30
+	 */
+	@Override
+	public final int debuggerId()
+	{
+		return System.identityHashCode(this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/05/30
+	 */
+	@Override
+	public final JDWPClass debuggerClass()
+	{
+		return this.type();
 	}
 	
 	/**

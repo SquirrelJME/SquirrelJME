@@ -7,14 +7,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp;
+package cc.squirreljme.jvm.mle.constants;
 
 /**
- * Represents an object type.
+ * The status on what a {@link Thread} is doing.
  *
- * @since 2021/03/14
+ * @since 2021/03/15
  */
-public interface JDWPObject
-	extends JDWPReferenceType
+public interface ThreadStatusType
 {
+	/** Running. */
+	byte RUNNING =
+		0;
+	
+	/** Sleeping. */
+	byte SLEEPING =
+		1;
+	
+	/** Waiting on a monitor. */
+	byte MONITOR_WAIT =
+		2;
 }

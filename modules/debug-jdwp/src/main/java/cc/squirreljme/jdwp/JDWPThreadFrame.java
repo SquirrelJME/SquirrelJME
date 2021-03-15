@@ -41,4 +41,15 @@ public interface JDWPThreadFrame
 	 * @since 2021/03/13
 	 */
 	JDWPMethod debuggerAtMethod();
+	
+	/**
+	 * Obtains the value at the given stack entry.
+	 * 
+	 * @param __stack Refer to the stack? If the target JVM does not support
+	 * the byte code stack, then this will not have any effect.
+	 * @param __dx The index to get.
+	 * @return The object at the given slot.
+	 * @since 2021/03/15
+	 */
+	Object debuggerRegisterGetValue(boolean __stack, int __dx);
 }

@@ -94,7 +94,7 @@ public enum ReferenceTypeCommandSet
 			throws JDWPException
 		{
 			// Which class does this refer to?
-			JDWPReferenceType type = __controller.state.getReferenceType(
+			JDWPObjectLike type = __controller.state.getObjectLike(
 				__packet.readId());
 			if (type == null)
 				return __controller.__reply(
@@ -104,8 +104,8 @@ public enum ReferenceTypeCommandSet
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write all the interfaces
-			JDWPClass[] interfaces = type.debuggerClass()
-				.debuggerInterfaceClasses();
+			JDWPClass[] interfaces = __controller.state
+				.getObjectLikeClass(type).debuggerInterfaceClasses();
 			rv.writeInt(interfaces.length);
 			for (JDWPClass impl : interfaces)
 				rv.writeId(impl);
@@ -157,17 +157,18 @@ public enum ReferenceTypeCommandSet
 			throws JDWPException
 		{
 			// Which class does this refer to?
-			JDWPClass type = __controller.state.classes.get(
-				__packet.readId());
+			JDWPObjectLike type = __controller.state
+				.getObjectLike(__packet.readId());
 			if (type == null)
 				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_CLASS);
+					__packet.id(), ErrorType.INVALID_CLASS);
 				
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write number of fields
-			JDWPField[] fields = type.debuggerFields();
+			JDWPField[] fields = __controller.state.getObjectLikeClass(type)
+				.debuggerFields();
 			rv.writeInt(fields.length);
 			
 			// Write information on each method
@@ -205,17 +206,18 @@ public enum ReferenceTypeCommandSet
 			throws JDWPException
 		{
 			// Which class does this refer to?
-			JDWPClass type = __controller.state.classes.get(
+			JDWPObjectLike type = __controller.state.getObjectLike(
 				__packet.readId());
 			if (type == null)
 				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_CLASS);
+					__packet.id(), ErrorType.INVALID_CLASS);
 				
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write number of methods
-			JDWPMethod[] methods = type.debuggerMethods();
+			JDWPMethod[] methods = __controller.state.getObjectLikeClass(type)
+				.debuggerMethods();
 			rv.writeInt(methods.length);
 			
 			// Write information on each method

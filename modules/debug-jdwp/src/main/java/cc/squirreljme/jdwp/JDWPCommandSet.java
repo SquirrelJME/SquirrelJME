@@ -44,6 +44,9 @@ public enum JDWPCommandSet
 	/** Event requests. */
 	EVENT_REQUEST(15, EventRequestCommandSet.values()),
 	
+	/** Stack frames. */
+	STACK_FRAMES(16, StackFrameCommandSet.values()),
+	
 	/* End. */
 	;
 	

@@ -9,7 +9,9 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jdwp.JDWPClass;
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 
@@ -39,6 +41,26 @@ public abstract class AbstractGhostObject
 			throw new NullPointerException("NARG");
 		
 		this.represents = __rep;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/05/30
+	 */
+	@Override
+	public final int debuggerId()
+	{
+		return System.identityHashCode(this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/05/30
+	 */
+	@Override
+	public final JDWPClass debuggerClass()
+	{
+		throw Debugging.todo();
 	}
 	
 	/**

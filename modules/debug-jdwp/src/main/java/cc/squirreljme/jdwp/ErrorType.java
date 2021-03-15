@@ -38,6 +38,9 @@ public enum ErrorType
 	/** Invalid method ID. */
 	INVALID_METHOD_ID(23),
 	
+	/** Invalid frame ID. */
+	INVALID_FRAME_ID(30),
+	
 	/** Not implemented. */
 	NOT_IMPLEMENTED(99),
 	

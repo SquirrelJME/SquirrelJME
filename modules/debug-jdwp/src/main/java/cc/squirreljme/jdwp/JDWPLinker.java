@@ -74,7 +74,9 @@ public final class JDWPLinker<T extends JDWPId>
 			// If we had a reference but it got GCed, clear it out to
 			// remove wasted space
 			T rv = ref.get();
-			if (rv == null)
+			boolean isCollected = (rv instanceof JDWPCollectable) &&
+				((JDWPCollectable)rv).debuggerIsCollected();
+			if (rv == null || isCollected)
 				links.remove(__id);
 			
 			return rv;
@@ -96,6 +98,12 @@ public final class JDWPLinker<T extends JDWPId>
 		
 		// The ID used
 		Integer id = __t.debuggerId();
+		
+		// Do nothing if this object was collected, so it never gets added
+		// again
+		if (__t instanceof JDWPCollectable)
+			if (((JDWPCollectable)__t).debuggerIsCollected())
+				return;
 		
 		// Protect these!
 		Map<Integer, Reference<T>> links = this._links;
@@ -144,7 +152,9 @@ public final class JDWPLinker<T extends JDWPId>
 				
 				// Use the value if it still exists
 				T val = entry.getValue().get();
-				if (val != null)
+				boolean isCollected = (val instanceof JDWPCollectable) &&
+					((JDWPCollectable)val).debuggerIsCollected();
+				if (val != null && !isCollected)
 					result.add(val);
 				
 				// If it got GCed, remove it
