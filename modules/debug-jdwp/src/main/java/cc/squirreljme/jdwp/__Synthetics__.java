@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * Synthetics.
  *
@@ -51,13 +49,102 @@ abstract class __Synthetics__
 	}
 	
 	/**
+	 * Base for any class types.
+	 * 
+	 * @since 2021/03/14
+	 */
+	private abstract static class __BaseClass__
+		extends __Synthetics__
+		implements JDWPClass
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
+		public JDWPClass debuggerClass()
+		{
+			return this;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
+		public JDWPClassType debuggerClassType()
+		{
+			return JDWPClassType.INTERFACE;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
+		public String debuggerFieldDescriptor()
+		{
+			return "L" + this.debuggerBinaryName() + ";";
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
+		public JDWPField[] debuggerFields()
+		{
+			return new JDWPField[0];
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
+		public JDWPClass[] debuggerInterfaceClasses()
+		{
+			return new JDWPClass[0];
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
+		public JDWPMethod[] debuggerMethods()
+		{
+			return new JDWPMethod[0];
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
+		public String debuggerSourceFile()
+		{
+			return null;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
+		public JDWPClass debuggerSuperClass()
+		{
+			return null;
+		}
+	} 
+	
+	/**
 	 * Represents a synthetic class type for classes.
 	 * 
 	 * @since 2021/03/14
 	 */
 	private static final class __Class__
-		extends __Synthetics__
-		implements JDWPClass
+		extends __BaseClass__
 	{
 		__Class__()
 		{
@@ -72,170 +159,6 @@ abstract class __Synthetics__
 		{
 			return "cc/squirreljme/jvm/debug/SyntheticClass";
 		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public JDWPClass debuggerClass()
-		{
-			return this;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public JDWPClassType debuggerClassType()
-		{
-			return JDWPClassType.INTERFACE;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public String debuggerFieldDescriptor()
-		{
-			return "Lcc/squirreljme/jvm/debug/SyntheticClass;";
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public JDWPField[] debuggerFields()
-		{
-			return new JDWPField[0];
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public JDWPMethod[] debuggerMethods()
-		{
-			return new JDWPMethod[0];
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public String debuggerSourceFile()
-		{
-			return null;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public JDWPClass debuggerSuperClass()
-		{
-			return null;
-		}
-	}
-	
-	/**
-	 * Represents a synthetic thread type for classes.
-	 * 
-	 * @since 2021/03/14
-	 */
-	private static final class __Thread__
-		extends __Synthetics__
-		implements JDWPClass
-	{
-		__Thread__()
-		{
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public String debuggerBinaryName()
-		{
-			return "cc/squirreljme/jvm/debug/SyntheticThread";
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public JDWPClass debuggerClass()
-		{
-			return this;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public JDWPClassType debuggerClassType()
-		{
-			return JDWPClassType.INTERFACE;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public String debuggerFieldDescriptor()
-		{
-			return "Lcc/squirreljme/jvm/debug/SyntheticThread;";
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public JDWPField[] debuggerFields()
-		{
-			return new JDWPField[0];
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public JDWPMethod[] debuggerMethods()
-		{
-			return new JDWPMethod[0];
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public String debuggerSourceFile()
-		{
-			return null;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public JDWPClass debuggerSuperClass()
-		{
-			return null;
-		}
 	}
 	
 	/**
@@ -244,7 +167,7 @@ abstract class __Synthetics__
 	 * @since 2021/03/14
 	 */
 	private static final class __ThreadGroup__
-		extends __Synthetics__
+		extends __BaseClass__
 		implements JDWPClass
 	{
 		__ThreadGroup__()
@@ -260,15 +183,19 @@ abstract class __Synthetics__
 		{
 			return "cc/squirreljme/jvm/debug/SyntheticThreadGroup";
 		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public JDWPClass debuggerClass()
+	}
+	
+	/**
+	 * Represents a synthetic thread type for classes.
+	 * 
+	 * @since 2021/03/14
+	 */
+	private static final class __Thread__
+		extends __BaseClass__
+		implements JDWPClass
+	{
+		__Thread__()
 		{
-			return this;
 		}
 		
 		/**
@@ -276,59 +203,9 @@ abstract class __Synthetics__
 		 * @since 2021/03/14
 		 */
 		@Override
-		public JDWPClassType debuggerClassType()
+		public String debuggerBinaryName()
 		{
-			return JDWPClassType.INTERFACE;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public String debuggerFieldDescriptor()
-		{
-			return "Lcc/squirreljme/jvm/debug/SyntheticThreadGroup;";
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public JDWPField[] debuggerFields()
-		{
-			return new JDWPField[0];
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public JDWPMethod[] debuggerMethods()
-		{
-			return new JDWPMethod[0];
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public String debuggerSourceFile()
-		{
-			return null;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/14
-		 */
-		@Override
-		public JDWPClass debuggerSuperClass()
-		{
-			return null;
+			return "cc/squirreljme/jvm/debug/SyntheticThread";
 		}
 	}
 }

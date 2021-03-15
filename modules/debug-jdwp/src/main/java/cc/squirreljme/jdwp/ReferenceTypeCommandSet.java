@@ -81,6 +81,39 @@ public enum ReferenceTypeCommandSet
 		}
 	},
 	
+	/** Interfaces. */
+	INTERFACES(10)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			// Which class does this refer to?
+			JDWPReferenceType type = __controller.state.getReferenceType(
+				__packet.readId());
+			if (type == null)
+				return __controller.__reply(
+				__packet.id(), ErrorType.INVALID_CLASS);
+			
+			JDWPPacket rv = __controller.__reply(
+				__packet.id(), ErrorType.NO_ERROR);
+			
+			// Write all the interfaces
+			JDWPClass[] interfaces = type.debuggerClass()
+				.debuggerInterfaceClasses();
+			rv.writeInt(interfaces.length);
+			for (JDWPClass impl : interfaces)
+				rv.writeId(impl);
+			
+			return rv;
+		}
+	},
+	
 	/** Signature with generic (class). */
 	SIGNATURE_WITH_GENERIC(13)
 	{

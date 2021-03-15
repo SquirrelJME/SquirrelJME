@@ -315,6 +315,16 @@ public final class SpringClass
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/03/14
+	 */
+	@Override
+	public JDWPClass[] debuggerInterfaceClasses()
+	{
+		return this.interfaceClasses();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/03/13
 	 */
 	@Override

@@ -50,6 +50,14 @@ public interface JDWPClass
 	JDWPField[] debuggerFields();
 	
 	/**
+	 * Returns interfaces the class implements.
+	 * 
+	 * @return The interface classes.
+	 * @since 2021/03/14
+	 */
+	JDWPClass[] debuggerInterfaceClasses();
+	
+	/**
 	 * Returns all of the methods within the class.
 	 * 
 	 * @return The methods in the class.
