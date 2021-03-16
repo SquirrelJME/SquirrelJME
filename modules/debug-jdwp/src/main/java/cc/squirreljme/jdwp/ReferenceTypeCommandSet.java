@@ -45,7 +45,55 @@ public enum ReferenceTypeCommandSet
 			
 			return rv;
 		}
-	}, 
+	},
+	
+	/** Static field values. */
+	STATIC_FIELD_VALUE(6)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/15
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			// Which class does this refer to?
+			JDWPReferenceType type = __controller.state.getReferenceType(
+				__packet.readId());
+			if (type == null)
+				return __controller.__reply(
+					__packet.id(), ErrorType.INVALID_CLASS);
+				
+			// Read in all fields
+			int numFields = __packet.readInt();
+			JDWPField[] fields = new JDWPField[numFields];
+			for (int i = 0; i < numFields; i++)
+			{
+				JDWPField field = __controller.state.fields.get(
+					__packet.readId());
+				if (field == null)
+					return __controller.__reply(
+						__packet.id(), ErrorType.INVALID_FIELD_ID);
+					
+				fields[i] = field;
+			}
+			
+			JDWPPacket rv = __controller.__reply(
+				__packet.id(), ErrorType.NO_ERROR);
+			
+			// We need the class to communicate with
+			JDWPClass classy = type.debuggerClass();
+			
+			// Write field mappings
+			rv.writeInt(numFields);
+			for (int i = 0; i < numFields; i++)
+				rv.writeValue(classy.debuggerFieldValue(null, fields[i]));
+			
+			return rv;
+		}
+	},
 	
 	/** Source file. */
 	SOURCE_FILE(7)
@@ -64,7 +112,7 @@ public enum ReferenceTypeCommandSet
 				__packet.readId());
 			if (type == null)
 				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_CLASS);
+					__packet.id(), ErrorType.INVALID_CLASS);
 			
 			// Does this have a source file?
 			String sourceFile = type.debuggerClass().debuggerSourceFile();

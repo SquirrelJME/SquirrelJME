@@ -38,6 +38,9 @@ public enum ErrorType
 	/** Invalid method ID. */
 	INVALID_METHOD_ID(23),
 	
+	/** Invalid field ID. */
+	INVALID_FIELD_ID(25),
+	
 	/** Invalid frame ID. */
 	INVALID_FRAME_ID(30),
 	

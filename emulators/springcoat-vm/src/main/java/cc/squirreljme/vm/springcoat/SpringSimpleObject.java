@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPClass;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
+import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -113,7 +114,15 @@ public final class SpringSimpleObject
 	 */
 	public final SpringFieldStorage fieldByIndex(int __dx)
 	{
-		return this._fields[__dx];
+		try
+		{
+			return this._fields[__dx];
+		}
+		catch (IndexOutOfBoundsException e)
+		{
+			throw new SpringVirtualMachineException(
+				"Invalid field index: " + __dx, e);
+		}
 	}
 	
 	/**

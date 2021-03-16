@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Synthetics.
  *
@@ -85,6 +87,17 @@ abstract class __Synthetics__
 		public String debuggerFieldDescriptor()
 		{
 			return "L" + this.debuggerBinaryName() + ";";
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
+		public Object debuggerFieldValue(JDWPObjectLike __obj,
+			JDWPField __field)
+		{
+			return null;
 		}
 		
 		/**

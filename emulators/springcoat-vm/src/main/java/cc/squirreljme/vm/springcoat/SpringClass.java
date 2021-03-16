@@ -14,14 +14,16 @@ import cc.squirreljme.jdwp.JDWPClass;
 import cc.squirreljme.jdwp.JDWPClassType;
 import cc.squirreljme.jdwp.JDWPField;
 import cc.squirreljme.jdwp.JDWPMethod;
+import cc.squirreljme.jdwp.JDWPObjectLike;
 import cc.squirreljme.jvm.Constants;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNullPointerException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
+import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +35,7 @@ import net.multiphasicapps.classfile.Field;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.FieldNameAndType;
+import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.HasAccessibleFlags;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodDescriptor;
@@ -91,6 +94,9 @@ public final class SpringClass
 	/** The table of fields defined in this class, includes super classes. */
 	private final SpringField[] _fieldtable;
 	
+	/** The class loader which loaded this class. */
+	private final Reference<SpringClassLoader> _classLoader;
+	
 	/** Has this class been initialized? */
 	private volatile boolean _initialized;
 	
@@ -102,14 +108,16 @@ public final class SpringClass
 	 * @param __cf The class file for this class.
 	 * @param __ct The component type.
 	 * @param __inJar The JAR this class is in.
+	 * @param __loader The class loader which loaded this class.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/07/21
 	 */
 	SpringClass(SpringClass __super, SpringClass[] __interfaces,
-		ClassFile __cf, SpringClass __ct, VMClassLibrary __inJar)
+		ClassFile __cf, SpringClass __ct, VMClassLibrary __inJar,
+		Reference<SpringClassLoader> __loader)
 		throws NullPointerException
 	{
-		if (__interfaces == null || __cf == null)
+		if (__interfaces == null || __cf == null || __loader == null)
 			throw new NullPointerException("NARG");
 		
 		ClassName name = __cf.thisName();
@@ -119,6 +127,7 @@ public final class SpringClass
 		this.superclass = __super;
 		this.component = __ct;
 		this.dimensions = name.dimensions();
+		this._classLoader = __loader;
 		
 		// Check
 		this._interfaceclasses = (__interfaces = __interfaces.clone());
@@ -240,6 +249,29 @@ public final class SpringClass
 	}
 	
 	/**
+	 * Returns the class loader which loaded this class.
+	 * 
+	 * @return The class loader which loaded this.
+	 * @throws IllegalStateException If it was not set or GCed.
+	 * @since 2021/03/15
+	 */
+	public final SpringClassLoader classLoader()
+		throws IllegalStateException
+	{
+		synchronized (this)
+		{
+			if (this._classLoader == null)
+				throw new IllegalStateException("Owner not set.");
+			
+			SpringClassLoader rv = this._classLoader.get();
+			if (rv == null)
+				throw new IllegalStateException("Owner GCed.");
+			
+			return rv;
+		}
+	}
+	
+	/**
 	 * Returns the component type of this class.
 	 *
 	 * @return The component type.
@@ -306,11 +338,64 @@ public final class SpringClass
 		return this.name.field().toString();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/15
+	 */
 	@Override
 	public JDWPField[] debuggerFields()
 	{
 		List<JDWPField> result = new ArrayList<>(this._fields.values());
 		return result.<JDWPField>toArray(new JDWPField[result.size()]);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/15
+	 */
+	@Override
+	public Object debuggerFieldValue(JDWPObjectLike __obj, JDWPField __field)
+	{
+		SpringField field = (SpringField)__field;
+		
+		// Static Field
+		if (field.isStatic())
+		{
+			SpringFieldStorage storage;
+			try
+			{
+				storage = this.classLoader().machine()
+					.lookupStaticField(field);
+			}
+			catch (SpringVirtualMachineException ignored)
+			{
+				return null;
+			}
+			
+			// Read value
+			return storage.get();
+		}
+		
+		// Non-static field
+		else
+		{
+			// If not an object ignore
+			if (!(__obj instanceof SpringSimpleObject))
+				return null;
+			
+			// Read the value
+			try
+			{
+				return ((SpringSimpleObject)__obj)
+					.fieldByIndex(field.index()).get();
+			}
+			
+			// Could not read the value
+			catch (SpringVirtualMachineException ignored)
+			{
+				return null;
+			}
+		}
 	}
 	
 	/**

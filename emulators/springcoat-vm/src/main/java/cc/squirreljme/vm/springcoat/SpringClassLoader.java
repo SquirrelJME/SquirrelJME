@@ -18,6 +18,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +45,13 @@ public final class SpringClassLoader
 	/** The classes which have been loaded by the virtual machine. */
 	private final Map<ClassName, SpringClass> _classes =
 		new HashMap<>();
+	
+	/** Reference to self. */
+	private final Reference<SpringClassLoader> _machineRef =
+		new WeakReference<>(this);
+	
+	/** Reference to the machine owning this. */
+	private volatile Reference<SpringMachine> _machine;
 	
 	/** Next special class index. */
 	private int _nexcsi =
@@ -184,7 +193,7 @@ public final class SpringClassLoader
 			
 			// Load class information
 			rv = new SpringClass(superclass, interfaceclasses, cf,
-				component, inJar[0]);
+				component, inJar[0], this._machineRef);
 			
 			// Store for later use
 			classes.put(__cn, rv);
@@ -312,6 +321,29 @@ public final class SpringClassLoader
 	}
 	
 	/**
+	 * Returns the machine that owns this.
+	 * 
+	 * @return The machine that owns this.
+	 * @throws IllegalStateException If it was not set or GCed.
+	 * @since 2021/03/15
+	 */
+	public final SpringMachine machine()
+		throws IllegalStateException
+	{
+		synchronized (this)
+		{
+			if (this._machine == null)
+				throw new IllegalStateException("No machine set.");
+			
+			SpringMachine rv = this._machine.get();
+			if (rv == null)
+				throw new IllegalStateException("Owner GCed.");
+			
+			return rv;
+		}
+	}
+	
+	/**
 	 * Returns the root library.
 	 * 
 	 * @return The root library.
@@ -320,6 +352,29 @@ public final class SpringClassLoader
 	public final VMClassLibrary rootLibrary()
 	{
 		return this._classpath[0];
+	}
+	
+	/**
+	 * Binds this class loader to the given machine.
+	 * 
+	 * @param __machine The machine to bind to.
+	 * @throws IllegalStateException If this is already bound.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/03/15
+	 */
+	void __bind(SpringMachine __machine)
+		throws IllegalStateException, NullPointerException
+	{
+		if (__machine == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			if (null != this._machine)
+				throw new IllegalStateException("Classloader already bound.");
+			
+			this._machine = new WeakReference<>(__machine);
+		}
 	}
 }
 

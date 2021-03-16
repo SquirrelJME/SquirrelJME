@@ -166,6 +166,9 @@ public final class SpringMachine
 		if (__cl == null || __sm == null || __pipes == null)
 			throw new NullPointerException("NARG");
 		
+		// Bind to this class class loader
+		__cl.__bind(this);
+		
 		this.suites = __sm;
 		this.classloader = __cl;
 		this.tasks = __tm;

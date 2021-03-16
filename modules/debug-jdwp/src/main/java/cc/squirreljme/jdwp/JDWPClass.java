@@ -42,6 +42,18 @@ public interface JDWPClass
 	String debuggerFieldDescriptor();
 	
 	/**
+	 * Reads the field value from the class.
+	 * 
+	 * @param __obj The object to get the value of, if the field is static
+	 * then this is ignored.
+	 * @param __field The field to read from.
+	 * @return The read value of the field, if the field has a static
+	 * mismatch or does not exist the returned value will be {@code null}.
+	 * @since 2021/03/15
+	 */
+	Object debuggerFieldValue(JDWPObjectLike __obj, JDWPField __field);
+	
+	/**
 	 * Returns the class fields.
 	 * 
 	 * @return The class fields.

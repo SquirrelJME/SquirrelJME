@@ -544,14 +544,14 @@ public final class JDWPPacket
 			// Long
 			else if (__val instanceof Long)
 			{
-				this.writeByte('L');
+				this.writeByte('J');
 				this.writeLong((long)__val);
 			}
 			
 			// Float
 			else if (__val instanceof Float)
 			{
-				this.writeByte('D');
+				this.writeByte('F');
 				this.writeInt(Float.floatToRawIntBits((float)__val));
 			}
 			
