@@ -133,13 +133,22 @@ public enum MLEThread
 			target.setThreadInstance(javaThread);
 			target.setVMThread(vmThread);
 			
-			// If we are debugging, signal that this thread is in the start
-			// state. We need the instance to have been set for this to even
-			// properly work!
+			// If we are debugging, we are going to need to tell the debugger
+			// some important details
 			JDWPController jdwp = target.machineRef.get()
 				.taskManager().jdwpController;
 			if (jdwp != null)
+			{
+				// If we are debugging, we need to tell the debugger that the
+				// virtual machine actually started
+				if (target.machine().rootVm && target.isMain())
+					jdwp.signalVmStart(target);
+				
+				// If we are debugging, signal that this thread is in the start
+				// state. We need the instance to have been set for this to
+				// even properly work!
 				jdwp.signalThreadState(target, true);
+			}
 			
 			return vmThread;
 		}

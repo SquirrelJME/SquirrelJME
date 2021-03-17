@@ -15,6 +15,7 @@ import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMResourceAccess;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
+import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.JDWPThread;
 import cc.squirreljme.jdwp.JDWPThreadGroup;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
@@ -95,6 +96,9 @@ public final class SpringMachine
 	/** The virtual machine identifier. */
 	protected final String vmId;
 	
+	/** Is this the root virtual machine? */
+	protected final boolean rootVm;
+	
 	/** State for the callback threader. */
 	private final CallbackThreader _cbThreader =
 		new CallbackThreader();
@@ -153,6 +157,7 @@ public final class SpringMachine
 	 * @param __gs Global system state.
 	 * @param __pipes The terminal pipe manager, may be {@code null} in which
 	 * case it is initialized for the caller.
+	 * @param __rootVm Is this the root virtual machine?
 	 * @param __args Main entry point arguments.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/03
@@ -160,7 +165,7 @@ public final class SpringMachine
 	public SpringMachine(VMSuiteManager __sm, SpringClassLoader __cl,
 		SpringTaskManager __tm, String __bootcl, ProfilerSnapshot __profiler,
 		Map<String, String> __sprops, GlobalState __gs,
-		TerminalPipeManager __pipes, String... __args)
+		TerminalPipeManager __pipes, boolean __rootVm, String... __args)
 		throws NullPointerException
 	{
 		if (__cl == null || __sm == null || __pipes == null)
@@ -169,6 +174,7 @@ public final class SpringMachine
 		// Bind to this class class loader
 		__cl.__bind(this);
 		
+		this.rootVm = __rootVm;
 		this.suites = __sm;
 		this.classloader = __cl;
 		this.tasks = __tm;

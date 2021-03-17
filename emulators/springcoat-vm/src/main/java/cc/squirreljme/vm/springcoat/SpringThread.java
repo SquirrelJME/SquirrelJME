@@ -211,8 +211,7 @@ public final class SpringThread
 	@Override
 	public JDWPThreadGroup debuggerThreadGroup()
 	{
-		SpringThreadWorker worker = this._worker;
-		return (worker == null ? this.machineRef.get() : worker.machine);
+		return this.machine();
 	}
 	
 	/**
@@ -529,6 +528,18 @@ public final class SpringThread
 			throw new NullPointerException("NARG");
 		
 		return this._worker.invokeMethod(__static, __cl, __nat, __args);
+	}
+	
+	/**
+	 * Returns the machine that created this.
+	 * 
+	 * @return The machine that created this.
+	 * @since 2021/03/16
+	 */
+	public SpringMachine machine()
+	{
+		SpringThreadWorker worker = this._worker;
+		return (worker == null ? this.machineRef.get() : worker.machine);
 	}
 	
 	/**

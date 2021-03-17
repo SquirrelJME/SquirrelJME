@@ -59,7 +59,7 @@ public class SpringCoatFactory
 		// Spawn initial virtual machine task
 		return tm.startTask(__cp, __maincl, __args, __sprops,
 			TaskPipeRedirectType.TERMINAL, TaskPipeRedirectType.TERMINAL,
-			false);
+			false, true);
 	}
 }
 

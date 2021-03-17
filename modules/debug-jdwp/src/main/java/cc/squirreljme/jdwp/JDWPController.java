@@ -10,14 +10,9 @@
 package cc.squirreljme.jdwp;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
 import java.io.Closeable;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * This class acts as the main controller interface for JDWP and acts as a kind
@@ -184,6 +179,60 @@ public final class JDWPController
 	}
 	
 	/**
+	 * Signals a JDWP event, this will find any request and perform suspension
+	 * as requested.
+	 * 
+	 * @param __thread The thread signaling this.
+	 * @param __kind The kind of event to signal.
+	 * @param __matchers The matchers used for the event, optional and may
+	 * be {@code null}.
+	 * @param __args Arguments to the signal packet.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/03/16
+	 */
+	public void signal(JDWPThread __thread, EventKind __kind,
+		EventModifierMatcher[] __matchers,
+		Object... __args)
+		throws NullPointerException
+	{
+		if (__thread == null || __kind == null)
+			throw new NullPointerException("NARG");
+		
+		// Send if requested
+		EventRequest request = this.eventManager.get(__kind, __matchers);
+		if (request == null)
+			return;
+		
+		// Buildup packet to send
+		try (JDWPPacket packet = this.__event())
+		{
+			// Write the single event header
+			packet.writeByte(request.suspendPolicy.id);
+			packet.writeInt(1);
+			packet.writeByte(__kind.id);
+			packet.writeInt(request.id);
+			
+			// Write the signal event data
+			__kind.write(packet, __args);
+			
+			// Send it away!
+			this.commLink.send(packet);
+		}
+		
+		// Suspend all threads?
+		if (request.suspendPolicy == SuspendPolicy.ALL)
+		{
+			for (JDWPThread all : this.debuggerUpdate(JDWPUpdateWhat.THREADS)
+				.threads.values())
+				all.debuggerSuspend().suspend();
+		}
+		
+		// Suspend only a single thread?
+		else if (request.suspendPolicy == SuspendPolicy.EVENT_THREAD)
+			__thread.debuggerSuspend().suspend();
+	}
+	
+	/**
 	 * Signals that the given thread has started.
 	 * 
 	 * @param __thread The thread that started.
@@ -200,31 +249,9 @@ public final class JDWPController
 		// Register this thread for later use
 		this.state.threads.put(__thread);
 		
-		// Which event is being sent?
-		EventKind kind = (__started ? EventKind.THREAD_START :
-			EventKind.THREAD_DEATH);
-		
-		// Send if requested
-		EventRequest request = this.eventManager.get(kind,
-			(__started ? null :
-			new ThreadModifierMatcher(__thread)));
-		if (request != null)
-			try (JDWPPacket event = this.__event())
-			{
-				// No threads got suspended
-				event.writeByte(SuspendPolicy.NONE.id);
-				
-				// Only a single event
-				event.writeInt(1);
-				
-				// Signal of thread start
-				event.writeByte(kind.id);
-				event.writeInt(request.id);
-				event.writeId(__thread);
-				
-				// Send it away!
-				this.commLink.send(event);
-			}
+		// Forward generic event
+		this.signal(__thread, (__started ? EventKind.THREAD_START :
+			EventKind.THREAD_DEATH), null, __thread);
 	}
 	
 	/**
@@ -242,6 +269,40 @@ public final class JDWPController
 			throw new NullPointerException("NARG");
 		
 		// Nothing needs to be done here...
+	}
+	
+	/**
+	 * Signals that the virtual machine started and this is the main thread.
+	 * 
+	 * @param __thread The target thread.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/03/16
+	 */
+	public void signalVmStart(JDWPThread __thread)
+		throws NullPointerException
+	{
+		if (__thread == null)
+			throw new NullPointerException("NARG");
+			
+		// Register this thread for later use
+		this.state.threads.put(__thread);
+		
+		// Tell the remote debugger that we started, note we always generate
+		// this event and we never 
+		try (JDWPPacket packet = this.__event())
+		{
+			// Write the single event header
+			packet.writeByte(SuspendPolicy.NONE.id);
+			packet.writeInt(1);
+			packet.writeByte(EventKind.VM_START.id);
+			packet.writeInt(0);
+			
+			// Write the initial starting thread
+			packet.writeId(__thread);
+			
+			// Send it away!
+			this.commLink.send(packet);
+		}
 	}
 	
 	/**

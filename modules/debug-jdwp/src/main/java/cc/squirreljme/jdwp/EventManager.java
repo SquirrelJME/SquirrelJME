@@ -45,6 +45,9 @@ public final class EventManager
 		if (__request == null)
 			throw new NullPointerException("NARG");
 		
+		// Debug
+		Debugging.debugNote("JDWP: Adding event %s", __request);
+		
 		Map<EventKind, List<EventRequest>> eventByKind = this._eventByKind;
 		synchronized (this)
 		{

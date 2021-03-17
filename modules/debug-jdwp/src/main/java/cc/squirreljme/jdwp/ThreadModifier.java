@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Modifier to match on a given thread.
  *
@@ -34,5 +36,15 @@ public final class ThreadModifier
 			throw new NullPointerException("NARG");
 		
 		this.thread = __thread;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/16
+	 */
+	@Override
+	public String toString()
+	{
+		return "Thread(" + this.thread.debuggerId() + ")";
 	}
 }

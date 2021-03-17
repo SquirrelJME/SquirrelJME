@@ -168,6 +168,7 @@ public final class SpringTaskManager
 	 * @param __stdOutMode Standard output mode.
 	 * @param __stdErrMode Standard error mode.
 	 * @param __forkThread Should the task be started on a new thread?
+	 * @param __rootVm Is this the root virtual machine?
 	 * @return The spawned machine.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/09
@@ -175,7 +176,7 @@ public final class SpringTaskManager
 	public SpringMachine startTask(VMClassLibrary[] __classpath,
 		String __mainClass, String[] __mainArgs,
 		Map<String, String> __sysProps, int __stdOutMode, int __stdErrMode,
-		boolean __forkThread)
+		boolean __forkThread, boolean __rootVm)
 		throws NullPointerException
 	{
 		if (__classpath == null || __mainClass == null || __mainArgs == null ||
@@ -194,7 +195,7 @@ public final class SpringTaskManager
 		SpringMachine machine = new SpringMachine(this.suites,
 			classloader, this, __mainClass,
 			this.profiler, new LinkedHashMap<>(__sysProps), this.globalState,
-			pipes, __mainArgs);
+			pipes, __rootVm, __mainArgs);
 		
 		// Register the machine, use garbage collector for the weak references
 		synchronized (this)

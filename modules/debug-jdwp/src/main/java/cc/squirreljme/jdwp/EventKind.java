@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * The kind of event that is generated.
  *
@@ -18,70 +20,334 @@ public enum EventKind
 	implements JDWPId
 {
 	/** Single Step. */
-	SINGLE_STEP(1),
+	SINGLE_STEP(1)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			throw Debugging.todo();
+		}
+	},
 	
 	/** Breakpoint. */
-	BREAKPOINT(2),
+	BREAKPOINT(2)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			throw Debugging.todo();
+		}
+	},
 	
 	/** Frame pop. */
-	FRAME_POP(3),
+	FRAME_POP(3)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			throw Debugging.todo();
+		}
+	},
 	
 	/** Exception. */
-	EXCEPTION(4),
+	EXCEPTION(4)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			throw Debugging.todo();
+		}
+	},
 	
 	/** User defined. */
-	USER_DEFINED(5),
+	USER_DEFINED(5)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			throw Debugging.todo();
+		}
+	},
 	
 	/** Start of thread. */
-	THREAD_START(6),
+	THREAD_START(6)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			__packet.writeId((JDWPThread)__args[0]);
+		}
+	},
 	
 	/** End of thread. */
-	THREAD_DEATH(7),
+	THREAD_DEATH(7)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			__packet.writeId((JDWPThread)__args[0]);
+		}
+	},
 	
 	/** Class being prepared. */
-	CLASS_PREPARE(8),
+	CLASS_PREPARE(8)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			throw Debugging.todo();
+		}
+	},
 	
 	/** Class unloading. */
-	CLASS_UNLOAD(9),
+	CLASS_UNLOAD(9)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			throw Debugging.todo();
+		}
+	},
 	
 	/** Class loading. */
-	CLASS_LOAD(10),
+	CLASS_LOAD(10)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			throw Debugging.todo();
+		}
+	},
 	
 	/** Field access. */
-	FIELD_ACCESS(20),
+	FIELD_ACCESS(20)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			throw Debugging.todo();
+		}
+	},
 	
 	/** Field modification. */
-	FIELD_MODIFICATION(21),
+	FIELD_MODIFICATION(21)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			throw Debugging.todo();
+		}
+	},
 	
 	/** Exception catch. */
-	EXCEPTION_CATCH(30),
+	EXCEPTION_CATCH(30)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			throw Debugging.todo();
+		}
+	},
 	
 	/** Method entry. */
-	METHOD_ENTRY(40),
+	METHOD_ENTRY(40)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			throw Debugging.todo();
+		}
+	},
 	
 	/** Method exit. */
-	METHOD_EXIT(41),
+	METHOD_EXIT(41)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			throw Debugging.todo();
+		}
+	},
 	
 	/** Method exit with return value. */
-	METHOD_EXIT_WITH_RETURN_VALUE(42),
+	METHOD_EXIT_WITH_RETURN_VALUE(42)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			throw Debugging.todo();
+		}
+	},
 	
 	/** Contended monitor enter. */
-	MONITOR_CONTENDED_ENTER(43),
+	MONITOR_CONTENDED_ENTER(43)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			throw Debugging.todo();
+		}
+	},
 	
 	/** Contended monitor exit. */
-	MONITOR_CONTENDED_EXIT(44),
+	MONITOR_CONTENDED_EXIT(44)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			throw Debugging.todo();
+		}
+	},
 	
 	/** Monitor wait. */
-	MONITOR_WAIT(45),
+	MONITOR_WAIT(45)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			throw Debugging.todo();
+		}
+	},
 	
 	/** Monitor waited. */
-	MONITOR_WAITED(46),
+	MONITOR_WAITED(46)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			throw Debugging.todo();
+		}
+	},
 	
 	/** Virtual machine start. */
-	VM_START(90),
+	VM_START(90)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			throw Debugging.todo();
+		}
+	},
 	
 	/** Virtual machine death. */
-	VM_DEATH(99),
+	VM_DEATH(99)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public void write(JDWPPacket __packet, Object... __args)
+			throws JDWPException
+		{
+			throw Debugging.todo();
+		}
+	},
 	
 	/* End. */
 	;
@@ -103,6 +369,17 @@ public enum EventKind
 	{
 		this.id = __id;
 	}
+	
+	/**
+	 * Writes the packet event data.
+	 * 
+	 * @param __packet The packet to write to.
+	 * @param __args The arguments to the packet.
+	 * @throws JDWPException If it could not be written.
+	 * @since 2021/03/16
+	 */
+	public abstract void write(JDWPPacket __packet, Object... __args)
+		throws JDWPException;
 	
 	/**
 	 * {@inheritDoc}

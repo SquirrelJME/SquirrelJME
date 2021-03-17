@@ -71,4 +71,14 @@ public final class OnlyInClassPatternModifier
 			this.sequence = __pattern;
 		}
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/16
+	 */
+	@Override
+	public final String toString()
+	{
+		return "OnlyInClass(" + this.sequence + ")";
+	}
 }

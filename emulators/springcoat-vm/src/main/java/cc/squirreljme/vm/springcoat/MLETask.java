@@ -274,7 +274,7 @@ public enum MLETask
 			// Spawn the task
 			return new TaskObject(__thread.machine.taskManager().startTask(
 				classpath, mainClass, mainArgs, sysPropsMap, stdOutMode,
-				stdErrMode, true));
+				stdErrMode, true, false));
 		}
 	},
 	

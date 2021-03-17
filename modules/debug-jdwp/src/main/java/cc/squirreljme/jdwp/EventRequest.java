@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import java.util.Arrays;
+
 /**
  * Represents an event request.
  *
@@ -79,5 +81,21 @@ public final class EventRequest
 	public final EventModifier[] modifiers()
 	{
 		return this._modifiers.clone();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/16
+	 */
+	@Override
+	public final String toString()
+	{
+		return String.format(
+			"EventRequest[id=%d,kind=%s,suspend=%s,left=%d,mods=%s]",
+			this.id,
+			this.eventKind,
+			this.suspendPolicy,
+			this._occurrencesLeft,
+			Arrays.asList(this._modifiers));
 	}
 }
