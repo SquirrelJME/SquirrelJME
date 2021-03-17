@@ -148,9 +148,6 @@ public final class JDWPController
 							ErrorType.NO_ERROR);
 				}
 				
-				// Debug
-				Debugging.debugNote("JDWP: -> %s", result);
-				
 				// Send the result to the debugger, close when done
 				try (JDWPPacket ignored = result)
 				{
@@ -230,6 +227,32 @@ public final class JDWPController
 		// Suspend only a single thread?
 		else if (request.suspendPolicy == SuspendPolicy.EVENT_THREAD)
 			__thread.debuggerSuspend().suspend();
+	}
+	
+	/**
+	 * Signals that a class is being prepared.
+	 * 
+	 * @param __thread The thread this was verified under.
+	 * @param __cl The class being verified.
+	 * @param __status The status of this class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/03/16
+	 */
+	public void signalClassPrepare(JDWPThread __thread, JDWPClass __cl,
+		JDWPClassStatus __status)
+		throws NullPointerException
+	{
+		if (__thread == null || __cl == null || __status == null)
+			throw new NullPointerException("NARG");
+			
+		// Register for later use
+		this.state.threads.put(__thread);
+		this.state.classes.put(__cl);
+		
+		// Forward generic event
+		this.signal(__thread, EventKind.CLASS_PREPARE,
+			new EventModifierMatcher[]{new ThreadModifierMatcher(__thread)},
+			__thread, __cl, __status);
 	}
 	
 	/**

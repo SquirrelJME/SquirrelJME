@@ -11,6 +11,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
+import cc.squirreljme.jdwp.JDWPClassStatus;
 import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
@@ -907,6 +908,12 @@ public final class SpringThreadWorker
 			if (__cl.isInitialized())
 				return __cl;
 			
+			// Tell the debugger that this class is verified
+			JDWPController jdwp = this.machine.taskManager().jdwpController;
+			if (jdwp != null)
+				jdwp.signalClassPrepare(this.thread, __cl,
+					JDWPClassStatus.VERIFIED);
+			
 			// Verbosity?
 			if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
 				Debugging.debugNote("Need to initialize %s.", 
@@ -960,6 +967,11 @@ public final class SpringThreadWorker
 						__cl.name());
 			}
 			
+			// Tell the debugger that this class is prepared
+			if (jdwp != null)
+				jdwp.signalClassPrepare(this.thread, __cl,
+					JDWPClassStatus.PREPARED);
+			
 			// Static initializer exists, setup a frame and call it
 			if (init != null)
 			{
@@ -978,6 +990,11 @@ public final class SpringThreadWorker
 				// Execute until it finishes
 				this.run(frameLimit);
 			}
+			
+			// Tell the debugger that this class is fully initialized
+			if (jdwp != null)
+				jdwp.signalClassPrepare(this.thread, __cl,
+					JDWPClassStatus.INITIALIZED);
 		}
 		
 		// Return the input class

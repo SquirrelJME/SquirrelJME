@@ -51,6 +51,54 @@ public enum ThreadReferenceCommandSet
 		}
 	},
 	
+	/** Suspend thread. */
+	SUSPEND(2)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			// Thread is missing or otherwise invalid?
+			JDWPThread thread = __controller.state.threads.get(
+				__packet.readId());
+			if (thread == null)
+				return __controller.__reply(
+				__packet.id(), ErrorType.INVALID_THREAD);
+			
+			thread.debuggerSuspend().suspend();
+			return null;
+		}
+	},
+	
+	/** Resume thread. */
+	RESUME(3)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/16
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			// Thread is missing or otherwise invalid?
+			JDWPThread thread = __controller.state.threads.get(
+				__packet.readId());
+			if (thread == null)
+				return __controller.__reply(
+				__packet.id(), ErrorType.INVALID_THREAD);
+			
+			thread.debuggerSuspend().resume();
+			return null;
+		}
+	},
+	
 	/** Status of the thread. */
 	STATUS(4)
 	{

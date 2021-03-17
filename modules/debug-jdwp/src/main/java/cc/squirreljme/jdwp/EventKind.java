@@ -135,7 +135,22 @@ public enum EventKind
 		public void write(JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			throw Debugging.todo();
+			JDWPThread thread = (JDWPThread)__args[0];
+			JDWPClass cl = (JDWPClass)__args[1];
+			JDWPClassStatus status = (JDWPClassStatus)__args[2];
+			
+			// Write out the packet
+			__packet.writeId(thread);
+			
+			// The Class ID
+			__packet.writeByte(cl.debuggerClassType().id);
+			__packet.writeId(cl);
+			
+			// The signature of the class
+			__packet.writeString(cl.debuggerFieldDescriptor());
+			
+			// The state of this class
+			__packet.writeInt(status.id);
 		}
 	},
 	
