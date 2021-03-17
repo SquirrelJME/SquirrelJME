@@ -34,6 +34,9 @@ public enum JDWPClassStatus
 	/** The ID. */
 	public final int id;
 	
+	/** The bits to set this. */
+	public final int bits;
+	
 	/**
 	 * Initializes the class type.
 	 * 
@@ -43,5 +46,6 @@ public enum JDWPClassStatus
 	JDWPClassStatus(int __id)
 	{
 		this.id = __id;
+		this.bits = __id - 1;
 	}
 }

@@ -150,7 +150,7 @@ public enum EventKind
 			__packet.writeString(cl.debuggerFieldDescriptor());
 			
 			// The state of this class
-			__packet.writeInt(status.id);
+			__packet.writeInt(status.bits);
 		}
 	},
 	
