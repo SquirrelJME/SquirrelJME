@@ -123,6 +123,10 @@ public final class JDWPController
 				// Debug
 				Debugging.debugNote("JDWP: <- %s", packet);
 				
+				// Ignore any reply packet we received
+				if (packet.isReply())
+					continue;
+				
 				// Resultant packet, returned as a result
 				JDWPPacket result;
 				
