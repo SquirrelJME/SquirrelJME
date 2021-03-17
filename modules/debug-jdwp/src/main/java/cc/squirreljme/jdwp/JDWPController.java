@@ -44,6 +44,10 @@ public final class JDWPController
 	/** The event manager. */
 	protected final EventManager eventManager =
 		new EventManager();
+		
+	/** The ID lock. */
+	private final Object _nextIdMonitor =
+		new Object();
 	
 	/** Are events to the debugger being held? */
 	protected volatile boolean _holdEvents;
@@ -362,7 +366,7 @@ public final class JDWPController
 	 */
 	final int __nextId()
 	{
-		synchronized (this)
+		synchronized (this._nextIdMonitor)
 		{
 			return ++this._nextId;
 		}

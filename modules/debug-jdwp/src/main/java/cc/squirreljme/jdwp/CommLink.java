@@ -56,6 +56,10 @@ public final class CommLink
 	private final byte[] _header =
 		new byte[CommLink._HEADER_SIZE];
 	
+	/** The monitor used for the output object. */
+	private final Object _outMonitor =
+		new Object();
+	
 	/** Read position for the header. */
 	private volatile int _headerAt;
 	
@@ -286,9 +290,15 @@ public final class CommLink
 		// Write to the destination
 		try
 		{
-			// Write then make sure it is instantly available
-			__packet.writeTo(this.out);
-			this.out.flush();
+			// Different threads could be sending different replies, so if
+			// these get mashed together then that would be a very bad thing
+			// But we only need to protect the output
+			synchronized (this._outMonitor)
+			{
+				// Write then make sure it is instantly available
+				__packet.writeTo(this.out);
+				this.out.flush();
+			}
 		}
 		
 		// {@squirreljme.error AG01 Could not send the packet. (The packet)}
