@@ -83,8 +83,30 @@ public enum EventRequestCommandSet
 					case NOT_IN_CLASS_PATTERN:
 						throw Debugging.todo();
 					
+						// A specific location in a class
 					case LOCATION:
-						throw Debugging.todo();
+						{
+							// Ignore the type tag, need not know the
+							// difference between interfaces and classes
+							__packet.readByte();
+							
+							// Read the location
+							JDWPClass inClass = __controller.state.classes
+								.get(__packet.readId());
+							JDWPMethod inMethod = __controller.state.methods
+								.get(__packet.readId()); 
+							long index = __packet.readLong();
+							
+							// Not a valid location?
+							if (inClass == null || inMethod == null)
+								return __controller.__reply(__packet.id(),
+									ErrorType.INVALID_LOCATION);
+							
+							// Build location modifier
+							modifiers.add(new LocationModifier(inClass,
+								inMethod, index));
+						}
+						break;
 					
 					case EXCEPTION:
 						throw Debugging.todo();

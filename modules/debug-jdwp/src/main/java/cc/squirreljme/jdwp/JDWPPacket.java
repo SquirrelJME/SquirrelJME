@@ -226,7 +226,7 @@ public final class JDWPPacket
 	}
 	
 	/**
-	 * Reads an integer byte from the packet
+	 * Reads an integer from the packet
 	 * 
 	 * @return The single read value.
 	 * @throws JDWPException If the end of the packet was reached.
@@ -242,6 +242,33 @@ public final class JDWPPacket
 			
 			// Read in each byte
 			return ((this.readByte() & 0xFF) << 24) |
+				((this.readByte() & 0xFF) << 16) |
+				((this.readByte() & 0xFF) << 8) |
+				(this.readByte() & 0xFF);
+		}
+	}
+	
+	/**
+	 * Reads aa long from the packet
+	 * 
+	 * @return The single read value.
+	 * @throws JDWPException If the end of the packet was reached.
+	 * @since 2021/03/17
+	 */
+	public long readLong()
+		throws JDWPException
+	{
+		synchronized (this)
+		{
+			// Ensure this is open
+			this.__checkOpen();
+			
+			// Read in each byte
+			return ((this.readByte() & 0xFFL) << 56) |
+				((this.readByte() & 0xFFL) << 48) |
+				((this.readByte() & 0xFFL) << 40) |
+				((this.readByte() & 0xFFL) << 32) |
+				((this.readByte() & 0xFFL) << 24) |
 				((this.readByte() & 0xFF) << 16) |
 				((this.readByte() & 0xFF) << 8) |
 				(this.readByte() & 0xFF);
