@@ -59,8 +59,16 @@ public enum StackFrameCommandSet
 				__packet.id(), ErrorType.NO_ERROR);
 			rv.writeInt(numSlots);
 			for (int i = 0; i < numSlots; i++)
-				rv.writeValue(frame.debuggerRegisterGetValue(
-					false, wantSlot[i]));
+			{
+				// If we ever get any object values record them, otherwise
+				// the debugger will be incapable of figuring this out
+				Object value = frame.debuggerRegisterGetValue(false,
+					wantSlot[i]);
+				if (value instanceof JDWPObject)
+					__controller.state.objects.put((JDWPObject)value);
+				
+				rv.writeValue(value);
+			}
 			
 			return rv;
 		}
@@ -106,6 +114,13 @@ public enum StackFrameCommandSet
 				// This may be a boxed value like integer
 				Object val = frame.debuggerRegisterGetValue(
 					false, 0);
+				
+				// Register this if it is an object because we want the
+				// debugger able to grab information about this
+				if (val instanceof JDWPObject)
+					__controller.state.objects.put((JDWPObject)val);
+				
+				// Write the ID of the object, if it is one
 				if (val instanceof JDWPObjectLike)
 					rv.writeId((JDWPObjectLike)val);
 				else

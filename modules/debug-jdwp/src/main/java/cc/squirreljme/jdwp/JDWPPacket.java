@@ -553,7 +553,7 @@ public final class JDWPPacket
 	 * @throws JDWPException If it failed to write.
 	 * @since 2021/03/15
 	 */
-	protected void writeValue(Object __val)
+	public void writeValue(Object __val)
 		throws JDWPException
 	{
 		synchronized (this)

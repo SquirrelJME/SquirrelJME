@@ -59,6 +59,62 @@ public enum ObjectReferenceCommandSet
 		}
 	},
 	
+	/** Get field values. */
+	GET_VALUES(2)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/17
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			// Which object do we want?
+			JDWPObject object = __controller.state.objects.get(
+				__packet.readId());
+			if (object == null)
+				return __controller.__reply(
+					__packet.id(), ErrorType.INVALID_OBJECT);
+				
+			// Read in all fields
+			int numFields = __packet.readInt();
+			JDWPField[] fields = new JDWPField[numFields];
+			for (int i = 0; i < numFields; i++)
+			{
+				JDWPField field = __controller.state.fields.get(
+					__packet.readId());
+				if (field == null)
+					return __controller.__reply(
+						__packet.id(), ErrorType.INVALID_FIELD_ID);
+					
+				fields[i] = field;
+			}
+			
+			JDWPPacket rv = __controller.__reply(
+				__packet.id(), ErrorType.NO_ERROR);
+			
+			// We need the class to communicate with
+			JDWPClass classy = object.debuggerClass();
+			
+			// Write field mappings
+			rv.writeInt(numFields);
+			for (int i = 0; i < numFields; i++)
+			{
+				// If this value is an object we need to register it for
+				// future grabbing
+				Object val = classy.debuggerFieldValue(null, fields[i]);
+				if (val instanceof JDWPObject)
+					__controller.state.objects.put((JDWPObject)val);
+				
+				rv.writeValue(val);
+			}
+			
+			return rv;
+		}
+	},
+	
 	/** Is this object garbage collected? */
 	IS_COLLECTED(9)
 	{
