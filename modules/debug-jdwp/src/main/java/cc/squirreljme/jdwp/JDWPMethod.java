@@ -24,4 +24,12 @@ public interface JDWPMethod
 	 * @since 2021/03/14
 	 */
 	int[] debuggerLineTable();
+	
+	/**
+	 * Returns the number of valid locations within the method.
+	 * 
+	 * @return The number of valid locations.
+	 * @since 2021/03/17
+	 */
+	long debuggerLocationCount();
 }

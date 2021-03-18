@@ -43,25 +43,28 @@ public enum MethodCommandSet
 			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
+				
+			// Put down all the valid indexes in the method, even if there
+			// are no possible lines we may still want to break at specific
+			// byte code addresses even without the lines?
+			long addrCount = method.debuggerLocationCount();
+			rv.writeLong(0);
+			rv.writeLong(addrCount);
 			
 			// Obtain the line table to record, ensure that it exists and is
-			// valid.
+			// valid. If this method has no byte code (abstract/native?),
+			// then do nothing.
 			int[] lineTable = method.debuggerLineTable();
-			if (lineTable == null || lineTable.length == 0 || lineTable[0] < 0)
+			if (addrCount <= 0 || lineTable == null ||
+				lineTable.length == 0 || lineTable[0] < 0)
 			{
-				// No information, so it is treated like if it were native
-				rv.writeLong(-1);
-				rv.writeLong(-1);
+				// No information, so there are no lines
 				rv.writeInt(0);
 			}
 			
 			// Otherwise record the information
 			else
 			{
-				// Size of the line table
-				rv.writeLong(0);
-				rv.writeLong(lineTable.length);
-				
 				// Write out the line table
 				rv.writeInt(lineTable.length);
 				for (int i = 0, n = lineTable.length; i < n; i++)

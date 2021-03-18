@@ -408,7 +408,9 @@ public final class ByteCode
 	}
 	
 	/**
-	 * Returns the number of instructions which are within this method.
+	 * Returns the number of instructions (valid addresses) which are within
+	 * this method. This will not match the byte code length unless all
+	 * byte codes were to be single-byte in length.
 	 *
 	 * @return The number of instructions which are in the method.
 	 * @since 2017/08/01

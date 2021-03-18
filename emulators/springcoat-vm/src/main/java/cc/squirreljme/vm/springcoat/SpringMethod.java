@@ -110,6 +110,21 @@ public final class SpringMethod
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/03/17
+	 */
+	@Override
+	public long debuggerLocationCount()
+	{
+		// If there is no method byte code then ignore
+		ByteCode byteCode = this.method.byteCode();
+		if (byteCode == null)
+			return 0;
+		
+		return byteCode.instructionCount();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/03/13
 	 */
 	@Override
