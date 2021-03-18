@@ -47,11 +47,13 @@ public interface JDWPClass
 	 * @param __obj The object to get the value of, if the field is static
 	 * then this is ignored.
 	 * @param __field The field to read from.
-	 * @return The read value of the field, if the field has a static
-	 * mismatch or does not exist the returned value will be {@code null}.
+	 * @param __value The read value of the field.
+	 * @return {@code true} if a value was read, otherwise {@code false}
+	 * if the field has a static mismatch or does not exist.
 	 * @since 2021/03/15
 	 */
-	Object debuggerFieldValue(JDWPObjectLike __obj, JDWPField __field);
+	boolean debuggerFieldValue(JDWPObjectLike __obj, JDWPField __field,
+		JDWPValue __value);
 	
 	/**
 	 * Returns the class fields.

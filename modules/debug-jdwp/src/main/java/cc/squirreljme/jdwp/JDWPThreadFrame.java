@@ -48,8 +48,10 @@ public interface JDWPThreadFrame
 	 * @param __stack Refer to the stack? If the target JVM does not support
 	 * the byte code stack, then this will not have any effect.
 	 * @param __dx The index to get.
-	 * @return The object at the given slot.
+	 * @param __value The value to store into.
+	 * @return If the value here is valid.
 	 * @since 2021/03/15
 	 */
-	Object debuggerRegisterGetValue(boolean __stack, int __dx);
+	boolean debuggerRegisterGetValue(boolean __stack, int __dx,
+		JDWPValue __value);
 }
