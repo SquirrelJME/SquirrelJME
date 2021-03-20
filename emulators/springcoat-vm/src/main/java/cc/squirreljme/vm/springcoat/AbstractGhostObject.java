@@ -10,7 +10,6 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPClass;
-import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
@@ -60,7 +59,7 @@ public abstract class AbstractGhostObject
 	@Override
 	public final JDWPClass debuggerClass()
 	{
-		throw Debugging.todo();
+		return null;
 	}
 	
 	/**

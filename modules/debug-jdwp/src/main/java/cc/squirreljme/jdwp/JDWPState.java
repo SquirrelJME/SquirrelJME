@@ -151,7 +151,10 @@ public final class JDWPState
 		
 		// Known well defined reference type
 		if (__object instanceof JDWPReferenceType)
-			return ((JDWPReferenceType)__object).debuggerClass();
+		{
+			JDWPClass classy = ((JDWPReferenceType)__object).debuggerClass();
+			return (classy == null ? __Synthetics__.FAKE_OBJECT : classy);
+		}
 		
 		// Virtual Thread
 		if (__object instanceof JDWPThread)

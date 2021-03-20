@@ -486,6 +486,27 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Writes a short to the output.
+	 * 
+	 * @param __v The value to write.
+	 * @throws JDWPException If it could not be written.
+	 * @since 2021/03/19
+	 */
+	public void writeShort(int __v)
+		throws JDWPException
+	{
+		synchronized (this)
+		{
+			// Must be an open packet
+			this.__checkOpen();
+			
+			// Write the data
+			this.writeByte(__v >> 8);
+			this.writeByte(__v);
+		}
+	}
+	
+	/**
 	 * Writes the string to the output.
 	 * 
 	 * @param __string The string to write.
@@ -562,16 +583,18 @@ public final class JDWPPacket
 	 * Writes a value to the output.
 	 * 
 	 * @param __val The value to write.
+	 * @param __context Context value which may adjust how the value is
+	 * written, this may be {@code null}.
 	 * @throws JDWPException If it failed to write.
 	 * @since 2021/03/15
 	 */
-	public void writeValue(Object __val)
+	public void writeValue(Object __val, String __context)
 		throws JDWPException
 	{
 		// We really meant to write a value here
 		if (__val instanceof JDWPValue)
 		{
-			this.writeValue(((JDWPValue)__val).get());
+			this.writeValue(((JDWPValue)__val).get(), __context);
 			return;
 		}
 		
@@ -583,8 +606,33 @@ public final class JDWPPacket
 			// Integer
 			if (__val instanceof Integer)
 			{
-				this.writeByte('I');
-				this.writeInt((int)__val);
+				// Should be boolean
+				if ("Z".equals(__context))
+				{
+					this.writeByte('Z');
+					this.writeByte(((int)__val != 0 ? 1 : 0));
+				}
+				
+				// Should be short
+				else if ("S".equals(__context))
+				{
+					this.writeByte('S');
+					this.writeShort((int)__val);
+				}
+				
+				// Should be character
+				else if ("C".equals(__context))
+				{
+					this.writeByte('C');
+					this.writeShort((int)__val);
+				}
+				
+				// Plain integer
+				else
+				{
+					this.writeByte('I');
+					this.writeInt((int)__val);
+				}
 			}
 			
 			// Long

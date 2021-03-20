@@ -83,6 +83,8 @@ public enum ReferenceTypeCommandSet
 			
 			// We need the class to communicate with
 			JDWPClass classy = type.debuggerClass();
+			if (classy == null)
+				classy = __Synthetics__.FAKE_OBJECT;
 			
 			// Write field mappings
 			rv.writeInt(numFields);
@@ -96,7 +98,7 @@ public enum ReferenceTypeCommandSet
 						rv.writeVoid();
 					else
 					{
-						rv.writeValue(value);
+						rv.writeValue(value, fields[i].debuggerMemberType());
 						
 						// Store object for later use
 						Object rawVal = value.get();
@@ -127,9 +129,14 @@ public enum ReferenceTypeCommandSet
 			if (type == null)
 				return __controller.__reply(
 					__packet.id(), ErrorType.INVALID_CLASS);
+					
+			// Get the class
+			JDWPClass classy = type.debuggerClass();
+			if (classy == null)
+				classy = __Synthetics__.FAKE_OBJECT;
 			
 			// Does this have a source file?
-			String sourceFile = type.debuggerClass().debuggerSourceFile();
+			String sourceFile = classy.debuggerSourceFile();
 			if (sourceFile == null)
 				return __controller.__reply(
 				__packet.id(), ErrorType.ABSENT_INFORMATION);

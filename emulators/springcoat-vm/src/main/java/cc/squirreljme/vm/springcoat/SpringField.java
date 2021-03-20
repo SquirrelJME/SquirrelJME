@@ -11,6 +11,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPField;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Field;
 import net.multiphasicapps.classfile.FieldFlags;
@@ -158,6 +159,17 @@ public final class SpringField
 	public final FieldNameAndType nameAndType()
 	{
 		return this.field.nameAndType();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/19
+	 */
+	@Override
+	public String toString()
+	{
+		return String.format("Field %s:%s",
+			this.inclass, this.field);
 	}
 }
 

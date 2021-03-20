@@ -97,6 +97,8 @@ public enum ObjectReferenceCommandSet
 			
 			// We need the class to communicate with
 			JDWPClass classy = object.debuggerClass();
+			if (classy == null)
+				classy = __Synthetics__.FAKE_OBJECT;
 			
 			// Write field mappings
 			rv.writeInt(numFields);
@@ -104,12 +106,12 @@ public enum ObjectReferenceCommandSet
 				try (JDWPValue value = __controller.__value())
 				{
 					// No valid value here? just result in void
-					if (!classy.debuggerFieldValue(null, fields[i],
+					if (!classy.debuggerFieldValue(object, fields[i],
 						value))
 						rv.writeVoid();
 					else
 					{
-						rv.writeValue(value);
+						rv.writeValue(value, fields[i].debuggerMemberType());
 						
 						// Store object for later use
 						Object rawVal = value.get();

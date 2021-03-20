@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * Synthetics.
  *
@@ -30,6 +28,10 @@ abstract class __Synthetics__
 	/** Fake thread group. */
 	protected static final JDWPClass FAKE_THREAD_GROUP =
 		new __ThreadGroup__();
+	
+	/** Fake object. */
+	protected static final JDWPClass FAKE_OBJECT =
+		new __Object__();
 	
 	/**
 	 * Protects the constructor.
@@ -175,26 +177,26 @@ abstract class __Synthetics__
 	}
 	
 	/**
-	 * Represents a synthetic thread group type for classes.
+	 * Represents a synthetic object type for classes.
 	 * 
-	 * @since 2021/03/14
+	 * @since 2021/03/19
 	 */
-	private static final class __ThreadGroup__
+	private static final class __Object__
 		extends __BaseClass__
 		implements JDWPClass
 	{
-		__ThreadGroup__()
+		__Object__()
 		{
 		}
 		
 		/**
 		 * {@inheritDoc}
-		 * @since 2021/03/14
+		 * @since 2021/03/19
 		 */
 		@Override
 		public String debuggerBinaryName()
 		{
-			return "cc/squirreljme/jvm/debug/SyntheticThreadGroup";
+			return "cc/squirreljme/jvm/debug/SyntheticObject";
 		}
 	}
 	
@@ -219,6 +221,30 @@ abstract class __Synthetics__
 		public String debuggerBinaryName()
 		{
 			return "cc/squirreljme/jvm/debug/SyntheticThread";
+		}
+	}
+	
+	/**
+	 * Represents a synthetic thread group type for classes.
+	 * 
+	 * @since 2021/03/14
+	 */
+	private static final class __ThreadGroup__
+		extends __BaseClass__
+		implements JDWPClass
+	{
+		__ThreadGroup__()
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
+		public String debuggerBinaryName()
+		{
+			return "cc/squirreljme/jvm/debug/SyntheticThreadGroup";
 		}
 	}
 }
