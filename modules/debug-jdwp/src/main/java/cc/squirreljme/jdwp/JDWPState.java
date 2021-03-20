@@ -97,6 +97,10 @@ public final class JDWPState
 		if (rv != null)
 			return rv;
 		
+		// Is a fake object?
+		if (__id == __Synthetics__.FAKE_OBJECT.debuggerId())
+			return __Synthetics__.FAKE_OBJECT;
+		
 		// Is a fake class?
 		if (__id == __Synthetics__.FAKE_CLASS.debuggerId())
 			return __Synthetics__.FAKE_CLASS;
