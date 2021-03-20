@@ -36,6 +36,18 @@ public final class JDWPPacket
 	private static final byte _GROW_SIZE =
 		32;
 	
+	/** String type. */
+	private static final String _STRING = 
+		"Ljava/lang/String;";
+	
+	/** Thread type. */
+	private static final String _THREAD =
+		"Ljava/lang/Thread;";
+	
+	/** Class type. */
+	private static final String _CLASS =
+		"Ljava/lang/Class;";
+	
 	/** The queue where packets will go when done. */
 	private final Reference<Deque<JDWPPacket>> _queue;
 	
@@ -76,7 +88,7 @@ public final class JDWPPacket
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/10
 	 */
-	public JDWPPacket(Deque<JDWPPacket> __queue)
+	JDWPPacket(Deque<JDWPPacket> __queue)
 		throws NullPointerException
 	{
 		if (__queue == null)
@@ -556,6 +568,13 @@ public final class JDWPPacket
 	public void writeValue(Object __val)
 		throws JDWPException
 	{
+		// We really meant to write a value here
+		if (__val instanceof JDWPValue)
+		{
+			this.writeValue(((JDWPValue)__val).get());
+			return;
+		}
+		
 		synchronized (this)
 		{
 			// Must be an open packet
@@ -590,12 +609,16 @@ public final class JDWPPacket
 			}
 			
 			// IDAble
-			else if (__val instanceof JDWPId)
+			else if ((__val instanceof JDWPId) || __val == null)
 			{
 				JDWPId id = (JDWPId)__val;
 				
+				// Array
+				if (id instanceof JDWPArray)
+					this.writeByte('[');
+				
 				// Thread
-				if (id instanceof JDWPThread)
+				else if (id instanceof JDWPThread)
 					this.writeByte('t');
 				
 				// Thread group
@@ -605,6 +628,32 @@ public final class JDWPPacket
 				// Class
 				else if (id instanceof JDWPClass)
 					this.writeByte('c');
+				
+				// A kind of reference with a class
+				else if (id instanceof JDWPReferenceType)
+				{
+					JDWPReferenceType ref = (JDWPReferenceType)id;
+					JDWPClass classy = ref.debuggerClass();
+					
+					// String type
+					if (classy != null && JDWPPacket._STRING.equals(
+						classy.debuggerFieldDescriptor()))
+						this.writeByte('s');
+					
+					// Thread type
+					else if (classy != null && JDWPPacket._THREAD.equals(
+						classy.debuggerFieldDescriptor()))
+						this.writeByte('t');
+					
+					// Class type
+					else if (classy != null && JDWPPacket._CLASS.equals(
+						classy.debuggerFieldDescriptor()))
+						this.writeByte('c');
+					
+					// Object otherwise
+					else
+						this.writeByte('L');
+				}
 				
 				// Treat as object otherwise
 				else
@@ -616,7 +665,25 @@ public final class JDWPPacket
 			
 			// Unknown, treat as void?
 			else
-				this.writeByte('V');
+				this.writeVoid();
+		}
+	}
+	
+	/**
+	 * Writes a void type to the output.
+	 * 
+	 * @throws JDWPException If it failed to write.
+	 * @since 2021/03/19
+	 */
+	public void writeVoid()
+		throws JDWPException
+	{
+		synchronized (this)
+		{
+			// Must be an open packet
+			this.__checkOpen();
+			
+			this.writeByte('V');
 		}
 	}
 	

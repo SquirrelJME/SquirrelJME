@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jdwp.JDWPArray;
 import cc.squirreljme.jdwp.JDWPClass;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayIndexOutOfBoundsException;
@@ -24,7 +25,7 @@ import java.lang.ref.WeakReference;
  * @since 2018/09/15
  */
 public abstract class SpringArrayObject
-	implements SpringObject
+	implements JDWPArray, SpringObject
 {
 	/** The monitor for this array. */
 	protected final SpringMonitor monitor =

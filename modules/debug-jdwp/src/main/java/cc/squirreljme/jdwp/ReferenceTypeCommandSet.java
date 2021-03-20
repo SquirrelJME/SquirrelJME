@@ -87,15 +87,23 @@ public enum ReferenceTypeCommandSet
 			// Write field mappings
 			rv.writeInt(numFields);
 			for (int i = 0; i < numFields; i++)
-			{
-				// If this value is an object we need to register it for
-				// future grabbing
-				Object val = classy.debuggerFieldValue(null, fields[i]);
-				if (val instanceof JDWPObject)
-					__controller.state.objects.put((JDWPObject)val);
-				
-				rv.writeValue(val);
-			}
+				try (JDWPValue value = __controller.__value())
+				{
+					// If this value is an object we need to register it for
+					// future grabbing
+					if (!classy.debuggerFieldValue(null,
+						fields[i], value))
+						rv.writeVoid();
+					else
+					{
+						rv.writeValue(value);
+						
+						// Store object for later use
+						Object rawVal = value.get();
+						if (rawVal instanceof JDWPObject)
+							__controller.state.objects.put((JDWPObject)rawVal);
+					}
+				}
 			
 			return rv;
 		}

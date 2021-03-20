@@ -9,7 +9,9 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Deque;
 
 /**
  * Represents a value for storage.
@@ -19,71 +21,136 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public final class JDWPValue
 	implements AutoCloseable
 {
-	/** The type used for the value. */
-	private volatile JDWPValueTag _type;
+	/** Free value queue. */
+	private final Reference<Deque<JDWPValue>> _freeValues;
+	
+	/** Is this open? */
+	private volatile boolean _isOpen;
+	
+	/** The set value. */
+	private volatile Object _value;
+	
+	/** Is this set? */
+	private volatile boolean _isSet;
+	
+	/**
+	 * Initializes the value storage.
+	 * 
+	 * @param __freeValues The free values queue, to go when closed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/03/19
+	 */
+	JDWPValue(Deque<JDWPValue> __freeValues)
+		throws NullPointerException
+	{
+		if (__freeValues == null)
+			throw new NullPointerException("NARG");
+		
+		this._freeValues = new WeakReference<>(__freeValues);
+	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/03/17
 	 */
+	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	@Override
 	public void close()
 	{
-		throw Debugging.todo();
+		if (this._isOpen)
+		{
+			// Clear to closed
+			this._isOpen = true;
+			this._isSet = false;
+			this._value = null;
+			
+			// Recycle this back in the queue
+			Deque<JDWPValue> queue = this._freeValues.get();
+			if (queue != null)
+				synchronized (queue)
+				{
+					queue.add(this);
+				}
+		}
 	}
 	
 	/**
-	 * Returns the number value.
+	 * Returns the value.
 	 * 
-	 * @return The number value.
-	 * @throws IllegalStateException If this is not number compatible or no
-	 * value is set.
+	 * @return The value.
+	 * @throws IllegalStateException If no value was set or this was closed.
 	 * @since 2021/03/17
 	 */
-	public long getNumber()
+	public Object get()
 		throws IllegalStateException
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			// Must be open
+			this.__checkOpen();
+			
+			// {@squirreljme.error AG0j Value not set.}
+			if (!this._isSet)
+				throw new IllegalStateException("AG0j");
+			
+			return this._value;
+		}
 	}
 	
 	/**
-	 * Sets the object value.
+	 * Sets the value.
 	 * 
-	 * @return The object value.
-	 * @throws IllegalStateException If this is not object compatible or no
-	 * value is set.
-	 * @since 2021/03/17
-	 */
-	public JDWPObjectLike getObject()
-		throws IllegalStateException
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * Returns the value type stored here.
-	 * 
-	 * @return The type used for this value.
-	 * @throws IllegalStateException If no value is set.
-	 * @since 2021/03/17
-	 */
-	public JDWPValueTag getType()
-		throws IllegalStateException
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * Sets the given value.
-	 * 
-	 * @param __v The value to set.
+	 * @param __val The value to set.
 	 * @throws IllegalStateException If a value is already set or this is
 	 * not open.
-	 * @since 2021/03/17
+	 * @since 2021/03/19
 	 */
-	public void setBoolean(boolean __v)
+	public void set(Object __val)
+	{
+		synchronized (this)
+		{
+			// Must be open
+			this.__checkOpen();
+			
+			// {@squirreljme.error AG0k Value already set.}
+			if (this._isSet)
+				throw new IllegalStateException("AG0k");
+			
+			this._value = __val;
+			this._isSet = true;
+		}
+	}
+	
+	/**
+	 * Checks if the value is open.
+	 * 
+	 * @throws IllegalStateException If it is not open.
+	 * @since 2021/03/19
+	 */
+	void __checkOpen()
 		throws IllegalStateException
 	{
-		throw Debugging.todo();
+		// {@squirreljme.error AG0i Value not open.}
+		if (!this._isOpen)
+			throw new IllegalStateException("AG0i");
+	}
+	
+	/**
+	 * Resets this value.
+	 * 
+	 * @return {@code this}.
+	 * @since 2021/03/19
+	 */
+	final JDWPValue __resetToOpen()
+	{
+		synchronized (this)
+		{
+			// Set to open
+			this._isOpen = true;
+			this._isSet = false;
+			this._value = null;
+			
+			return this;
+		}
 	}
 }

@@ -94,10 +94,10 @@ abstract class __Synthetics__
 		 * @since 2021/03/14
 		 */
 		@Override
-		public Object debuggerFieldValue(JDWPObjectLike __obj,
-			JDWPField __field)
+		public boolean debuggerFieldValue(JDWPObjectLike __obj,
+			JDWPField __field, JDWPValue __value)
 		{
-			return null;
+			return false;
 		}
 		
 		/**

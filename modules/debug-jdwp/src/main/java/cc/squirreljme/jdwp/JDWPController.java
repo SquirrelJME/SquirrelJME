@@ -13,6 +13,8 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Deque;
+import java.util.LinkedList;
 
 /**
  * This class acts as the main controller interface for JDWP and acts as a kind
@@ -48,6 +50,10 @@ public final class JDWPController
 	/** The ID lock. */
 	private final Object _nextIdMonitor =
 		new Object();
+	
+	/** Value cache. */
+	private final Deque<JDWPValue> _freeValues =
+		new LinkedList<>();
 	
 	/** Are events to the debugger being held? */
 	protected volatile boolean _holdEvents;
@@ -380,7 +386,7 @@ public final class JDWPController
 	 * @return The packet used.
 	 * @since 2021/03/12
 	 */
-	JDWPPacket __reply(int __id, ErrorType __error)
+	final JDWPPacket __reply(int __id, ErrorType __error)
 	{
 		JDWPPacket rv = this.commLink.__getPacket(true);
 		
@@ -389,5 +395,27 @@ public final class JDWPController
 		rv._flags = JDWPPacket.FLAG_REPLY;
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns a value to store data in.
+	 * 
+	 * @return A value to store data in.
+	 * @since 2021/03/19
+	 */
+	final JDWPValue __value()
+	{
+		Deque<JDWPValue> freeValues = this._freeValues;
+		synchronized (this._freeValues)
+		{
+			// Use an existing free value for recycling?
+			JDWPValue rv = freeValues.poll();
+			if (rv != null)
+				return rv.__resetToOpen();
+			
+			// Otherwise make a new one
+			//noinspection resource
+			return new JDWPValue(freeValues).__resetToOpen();
+		}
 	}
 }

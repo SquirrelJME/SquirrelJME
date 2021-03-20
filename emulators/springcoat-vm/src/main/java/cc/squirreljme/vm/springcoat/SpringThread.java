@@ -19,6 +19,7 @@ import cc.squirreljme.jdwp.JDWPThread;
 import cc.squirreljme.jdwp.JDWPThreadFrame;
 import cc.squirreljme.jdwp.JDWPThreadGroup;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
+import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
@@ -996,15 +997,17 @@ public final class SpringThread
 		 * @since 2021/03/15
 		 */
 		@Override
-		public Object debuggerRegisterGetValue(boolean __stack, int __dx)
+		public boolean debuggerRegisterGetValue(boolean __stack, int __dx,
+			JDWPValue __val)
 		{
+			// Is this value even valid?
 			Object[] vals = (__stack ? this._stack : this._locals);
 			if (__dx < 0 || __dx >= vals.length)
-				return null;
+				return false;
 			
-			// This may return the special null, hide that
-			Object rv = vals[__dx];
-			return (rv == SpringNullObject.NULL ? null : rv);
+			// Map null to the correct value
+			__val.set(vals[__dx]);
+			return true;
 		}
 		
 		/**

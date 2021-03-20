@@ -59,16 +59,23 @@ public enum StackFrameCommandSet
 				__packet.id(), ErrorType.NO_ERROR);
 			rv.writeInt(numSlots);
 			for (int i = 0; i < numSlots; i++)
-			{
-				// If we ever get any object values record them, otherwise
-				// the debugger will be incapable of figuring this out
-				Object value = frame.debuggerRegisterGetValue(false,
-					wantSlot[i]);
-				if (value instanceof JDWPObject)
-					__controller.state.objects.put((JDWPObject)value);
-				
-				rv.writeValue(value);
-			}
+				try (JDWPValue value = __controller.__value())
+				{
+					// If we ever get any object values record them, otherwise
+					// the debugger will be incapable of figuring this out
+					if (!frame.debuggerRegisterGetValue(false,
+						wantSlot[i], value))
+						rv.writeVoid();
+					else
+					{
+						rv.writeValue(value);
+						
+						// Store object for later use
+						Object rawVal = value.get();
+						if (rawVal instanceof JDWPObject)
+							__controller.state.objects.put((JDWPObject)rawVal);
+					}
+				}
 			
 			return rv;
 		}
@@ -109,23 +116,25 @@ public enum StackFrameCommandSet
 				StackFrameCommandSet._FLAG_NATIVE)))
 				rv.writeId(null);
 			
+			// Write self value
 			else
-			{
-				// This may be a boxed value like integer
-				Object val = frame.debuggerRegisterGetValue(
-					false, 0);
-				
-				// Register this if it is an object because we want the
-				// debugger able to grab information about this
-				if (val instanceof JDWPObject)
-					__controller.state.objects.put((JDWPObject)val);
-				
-				// Write the ID of the object, if it is one
-				if (val instanceof JDWPObjectLike)
-					rv.writeId((JDWPObjectLike)val);
-				else
-					rv.writeId(null);
-			}
+				try (JDWPValue value = __controller.__value())
+				{
+					// If this value is an object we need to register it for
+					// future grabbing
+					if (!frame.debuggerRegisterGetValue(
+					false, 0, value))
+						rv.writeVoid();
+					else
+					{
+						rv.writeValue(value);
+						
+						// Store object for later use
+						Object rawVal = value.get();
+						if (rawVal instanceof JDWPObject)
+							__controller.state.objects.put((JDWPObject)rawVal);
+					}
+				}
 			
 			return rv;
 		}

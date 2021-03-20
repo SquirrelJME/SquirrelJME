@@ -15,6 +15,7 @@ import cc.squirreljme.jdwp.JDWPClassType;
 import cc.squirreljme.jdwp.JDWPField;
 import cc.squirreljme.jdwp.JDWPMethod;
 import cc.squirreljme.jdwp.JDWPObjectLike;
+import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
@@ -354,7 +355,8 @@ public final class SpringClass
 	 * @since 2021/03/15
 	 */
 	@Override
-	public Object debuggerFieldValue(JDWPObjectLike __obj, JDWPField __field)
+	public boolean debuggerFieldValue(JDWPObjectLike __obj, JDWPField __field,
+		JDWPValue __value)
 	{
 		SpringField field = (SpringField)__field;
 		
@@ -369,11 +371,12 @@ public final class SpringClass
 			}
 			catch (SpringVirtualMachineException ignored)
 			{
-				return null;
+				return false;
 			}
 			
 			// Read value
-			return storage.get();
+			__value.set(storage.get());
+			return true;
 		}
 		
 		// Non-static field
@@ -381,19 +384,20 @@ public final class SpringClass
 		{
 			// If not an object ignore
 			if (!(__obj instanceof SpringSimpleObject))
-				return null;
+				return false;
 			
 			// Read the value
 			try
 			{
-				return ((SpringSimpleObject)__obj)
-					.fieldByIndex(field.index()).get();
+				__value.set(((SpringSimpleObject)__obj)
+					.fieldByIndex(field.index()).get());
+				return true;
 			}
 			
 			// Could not read the value
 			catch (SpringVirtualMachineException ignored)
 			{
-				return null;
+				return false;
 			}
 		}
 	}
