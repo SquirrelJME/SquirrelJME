@@ -35,11 +35,17 @@ public enum JDWPCommandSet
 	/** Object references. */
 	OBJECT_REFERENCE(9, ObjectReferenceCommandSet.values()),
 	
+	/** String reference. */
+	STRING_REFERENCE(10, StringReferenceCommandSet.values()),
+	
 	/** Thread Reference. */
 	THREAD_REFERENCE(11, ThreadReferenceCommandSet.values()),
 	
 	/** Thread group reference. */
 	THREAD_GROUP_REFERENCE(12, ThreadGroupReferenceCommandSet.values()),
+	
+	/** Array references. */
+	ARRAY_REFERENCE(13, ArrayReferenceCommandSet.values()),
 	
 	/** Event requests. */
 	EVENT_REQUEST(15, EventRequestCommandSet.values()),

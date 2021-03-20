@@ -98,7 +98,8 @@ public enum ReferenceTypeCommandSet
 						rv.writeVoid();
 					else
 					{
-						rv.writeValue(value, fields[i].debuggerMemberType());
+						rv.writeValue(value, fields[i].debuggerMemberType(),
+							false);
 						
 						// Store object for later use
 						Object rawVal = value.get();

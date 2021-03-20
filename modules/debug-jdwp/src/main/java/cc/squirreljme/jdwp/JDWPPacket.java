@@ -585,16 +585,17 @@ public final class JDWPPacket
 	 * @param __val The value to write.
 	 * @param __context Context value which may adjust how the value is
 	 * written, this may be {@code null}.
+	 * @param __untag Untagged value?
 	 * @throws JDWPException If it failed to write.
 	 * @since 2021/03/15
 	 */
-	public void writeValue(Object __val, String __context)
+	public void writeValue(Object __val, String __context, boolean __untag)
 		throws JDWPException
 	{
 		// We really meant to write a value here
 		if (__val instanceof JDWPValue)
 		{
-			this.writeValue(((JDWPValue)__val).get(), __context);
+			this.writeValue(((JDWPValue)__val).get(), __context, __untag);
 			return;
 		}
 		
@@ -603,56 +604,74 @@ public final class JDWPPacket
 			// Must be an open packet
 			this.__checkOpen();
 			
-			// Integer
-			if (__val instanceof Integer)
+			// Character
+			if (__val instanceof Character)
 			{
+				if (!__untag)
+					this.writeByte('C');
+				this.writeShort((char)__val);
+			}
+			
+			// Integer or boxed lower types
+			else if (__val instanceof Integer || __val instanceof Short ||
+				__val instanceof Byte)
+			{
+				Number num = (Number)__val;
+				
 				// Should be boolean
 				if ("Z".equals(__context))
 				{
-					this.writeByte('Z');
-					this.writeByte(((int)__val != 0 ? 1 : 0));
+					if (!__untag)
+						this.writeByte('Z');
+					this.writeByte((num.intValue() != 0 ? 1 : 0));
 				}
 				
 				// Should be short
 				else if ("S".equals(__context))
 				{
-					this.writeByte('S');
-					this.writeShort((int)__val);
+					if (!__untag)
+						this.writeByte('S');
+					this.writeShort(num.intValue());
 				}
 				
 				// Should be character
 				else if ("C".equals(__context))
 				{
-					this.writeByte('C');
-					this.writeShort((int)__val);
+					if (!__untag)
+						this.writeByte('C');
+					this.writeShort(num.intValue());
 				}
 				
 				// Plain integer
 				else
 				{
-					this.writeByte('I');
-					this.writeInt((int)__val);
+					if (!__untag)
+						this.writeByte('I');
+					this.writeInt(num.intValue());
 				}
 			}
 			
 			// Long
 			else if (__val instanceof Long)
 			{
-				this.writeByte('J');
+				if (!__untag)
+					this.writeByte('J');
 				this.writeLong((long)__val);
 			}
 			
 			// Float
 			else if (__val instanceof Float)
 			{
-				this.writeByte('F');
+				if (!__untag)
+					this.writeByte('F');
 				this.writeInt(Float.floatToRawIntBits((float)__val));
 			}
 			
 			// Double
 			else if (__val instanceof Double)
 			{
-				this.writeByte('D');
+				if (!__untag)
+					this.writeByte('D');
 				this.writeLong(Double.doubleToRawLongBits((double)__val));
 			}
 			

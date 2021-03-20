@@ -17,4 +17,29 @@ package cc.squirreljme.jdwp;
 public interface JDWPArray
 	extends JDWPObject
 {
+	/**
+	 * Returns the array length.
+	 * 
+	 * @return The array length.
+	 * @since 2021/03/19
+	 */
+	int debuggerArrayLength();
+	
+	/**
+	 * Obtains the value from the given array.
+	 * 
+	 * @param __i The index to get.
+	 * @param __value The resultant value.
+	 * @return If this value is valid.
+	 * @since 2021/03/20
+	 */
+	boolean debuggerArrayGet(int __i, JDWPValue __value);
+	
+	/**
+	 * Returns the field descriptor of the component type.
+	 * 
+	 * @return The field descriptor for the component type.
+	 * @since 2021/03/20
+	 */
+	String debuggerComponentDescriptor();
 }

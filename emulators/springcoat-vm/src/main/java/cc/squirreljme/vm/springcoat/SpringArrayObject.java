@@ -12,6 +12,8 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPArray;
 import cc.squirreljme.jdwp.JDWPClass;
+import cc.squirreljme.jdwp.JDWPValue;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayIndexOutOfBoundsException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayStoreException;
@@ -120,7 +122,41 @@ public abstract class SpringArrayObject
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/05/30
+	 * @since 2021/03/19
+	 */
+	@Override
+	public int debuggerArrayLength()
+	{
+		return this.length;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/20
+	 */
+	@Override
+	public boolean debuggerArrayGet(int __i, JDWPValue __value)
+	{
+		if (__i < 0 || __i >= this.length)
+			return false;
+		
+		__value.set(this.get(Object.class, __i));
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/20
+	 */
+	@Override
+	public String debuggerComponentDescriptor()
+	{
+		return this.type().componentType().debuggerFieldDescriptor();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/12
 	 */
 	@Override
 	public final int debuggerId()
@@ -130,7 +166,7 @@ public abstract class SpringArrayObject
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/05/30
+	 * @since 2021/03/12
 	 */
 	@Override
 	public final JDWPClass debuggerClass()

@@ -56,6 +56,12 @@ public enum ErrorType
 	/** Invalid event type. */
 	INVALID_EVENT_TYPE(102),
 	
+	/** Invalid length. */
+	INVALID_LENGTH(504),
+	
+	/** Invalid array. */
+	INVALID_ARRAY(508),
+	
 	/** End. */
 	;
 	
