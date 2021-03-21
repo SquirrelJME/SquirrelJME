@@ -78,6 +78,46 @@ public enum MethodCommandSet
 		}
 	},
 	
+	/** Method byte code. */
+	BYTE_CODES(3)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/21
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			// Ignore class it is not needed
+			__packet.readId();
+			
+			// Find the method
+			JDWPMethod method = __controller.state.methods.get(
+				__packet.readId());
+			if (method == null)
+				return __controller.__reply(
+					__packet.id(), ErrorType.INVALID_METHOD_ID);
+			
+			// Absent information is not returned normally, but in this case
+			// return it
+			byte[] byteCode = method.debuggerByteCode();
+			if (byteCode == null)
+				return __controller.__reply(
+					__packet.id(), ErrorType.ABSENT_INFORMATION);
+			
+			JDWPPacket rv = __controller.__reply(
+				__packet.id(), ErrorType.NO_ERROR);
+			
+			// Dump the byte code
+			rv.writeInt(byteCode.length);
+			rv.write(byteCode, 0, byteCode.length);
+			
+			return rv;
+		}
+	},
+	
 	/** Variable table with generics. */
 	VARIABLE_TABLE_WITH_GENERIC(5)
 	{

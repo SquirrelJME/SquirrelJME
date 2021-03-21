@@ -71,6 +71,21 @@ public final class SpringMethod
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/03/21
+	 */
+	@Override
+	public byte[] debuggerByteCode()
+	{
+		// If there is no method byte code then ignore
+		ByteCode byteCode = this.method.byteCode();
+		if (byteCode == null)
+			return null;
+		
+		return byteCode.rawByteCode();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/03/13
 	 */
 	@Override

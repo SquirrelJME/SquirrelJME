@@ -18,6 +18,15 @@ public interface JDWPMethod
 	extends JDWPMember
 {
 	/**
+	 * Returns the method byte code.
+	 * 
+	 * @return The byte code of the given method or {@code null} if there
+	 * is none.
+	 * @since 2021/03/21
+	 */
+	byte[] debuggerByteCode();
+	
+	/**
 	 * Returns the line table for the method.
 	 * 
 	 * @return The line table or {@code null} if there is none.

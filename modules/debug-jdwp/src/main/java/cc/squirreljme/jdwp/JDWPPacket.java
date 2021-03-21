@@ -381,6 +381,36 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Writes to the given packet.
+	 * 
+	 * @param __b The buffer.
+	 * @param __o The offset.
+	 * @param __l The length.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws JDWPException If this could not be written.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/03/21
+	 */
+	public void write(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, JDWPException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		synchronized (this)
+		{
+			// Must be an open packet
+			this.__checkOpen();
+			
+			for (int i = 0; i < __l; i++)
+				this.writeByte(__b[__o + i]);
+		}
+	}
+	
+	/**
 	 * Writes the boolean to the output.
 	 * 
 	 * @param __b The boolean to write.

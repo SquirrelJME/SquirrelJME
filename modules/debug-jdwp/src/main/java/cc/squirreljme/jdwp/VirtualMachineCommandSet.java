@@ -347,8 +347,8 @@ public enum VirtualMachineCommandSet
 			// canWatchFieldAccess
 			rv.writeBoolean(false);
 			
-			// canGetBytecodes
-			rv.writeBoolean(false);
+			// canGetBytecodes (supported by SquirrelJME)
+			rv.writeBoolean(true);
 			
 			// canGetSyntheticAttribute
 			rv.writeBoolean(false);
