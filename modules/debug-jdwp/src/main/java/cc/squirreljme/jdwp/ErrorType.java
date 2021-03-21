@@ -59,6 +59,9 @@ public enum ErrorType
 	/** Invalid length. */
 	INVALID_LENGTH(504),
 	
+	/** Invalid string. */
+	INVALID_STRING(506),
+	
 	/** Invalid array. */
 	INVALID_ARRAY(508),
 	

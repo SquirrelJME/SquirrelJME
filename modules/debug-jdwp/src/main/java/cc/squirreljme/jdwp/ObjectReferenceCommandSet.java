@@ -77,7 +77,7 @@ public enum ObjectReferenceCommandSet
 			if (object == null)
 				return __controller.__reply(
 					__packet.id(), ErrorType.INVALID_OBJECT);
-				
+			
 			// Read in all fields
 			int numFields = __packet.readInt();
 			JDWPField[] fields = new JDWPField[numFields];
