@@ -51,7 +51,11 @@ public class HandleKeyEvents
 	@Override
 	public void keyTyped(KeyEvent __e)
 	{
-		this.__handleKey(UIKeyEventType.KEY_PRESSED, __e);
+		// Only valid for character keys
+		if (__e.getKeyChar() == KeyEvent.CHAR_UNDEFINED)
+			return;
+		
+		this.__handleKey(UIKeyEventType.KEY_PRESSED, __e, true);
 	}
 	
 	/**
@@ -61,7 +65,11 @@ public class HandleKeyEvents
 	@Override
 	public void keyPressed(KeyEvent __e)
 	{
-		this.__handleKey(UIKeyEventType.KEY_PRESSED, __e);
+		// Only valid for non-char keys
+		if (__e.getKeyChar() != KeyEvent.CHAR_UNDEFINED)
+			return;
+		
+		this.__handleKey(UIKeyEventType.KEY_PRESSED, __e, false);
 	}
 	
 	/**
@@ -71,7 +79,7 @@ public class HandleKeyEvents
 	@Override
 	public void keyReleased(KeyEvent __e)
 	{
-		this.__handleKey(UIKeyEventType.KEY_RELEASE, __e);
+		this.__handleKey(UIKeyEventType.KEY_RELEASE, __e, false);
 	}
 	
 	/**
@@ -79,9 +87,10 @@ public class HandleKeyEvents
 	 * 
 	 * @param __type The {@link UIKeyEventType}.
 	 * @param __e The event used.
+	 * @param __isTyped Is this a typed key?
 	 * @since 2021/02/16
 	 */
-	private void __handleKey(int __type, KeyEvent __e)
+	private void __handleKey(int __type, KeyEvent __e, boolean __isTyped)
 	{
 		SwingWidget widget = this.item();
 		if (widget == null)
@@ -101,6 +110,11 @@ public class HandleKeyEvents
 		Set<Integer> pressedKeys = this._pressedKeys;
 		if (__type == UIKeyEventType.KEY_PRESSED)
 		{
+			// If this is a typed key and it was never typed before then it
+			// is not possible to repeat it
+			if (__isTyped && !pressedKeys.contains(keyCode))
+				return;
+			
 			// If not added to the set, it becomes repeated
 			if (!pressedKeys.add(keyCode))
 				__type = UIKeyEventType.KEY_REPEATED;
@@ -108,7 +122,12 @@ public class HandleKeyEvents
 		
 		// Otherwise for released, remove it
 		else if (__type == UIKeyEventType.KEY_RELEASE)
-			pressedKeys.remove(keyCode);
+		{
+			// If no key was actually removed, then it was never previously
+			// typed so hide it
+			if (!pressedKeys.remove(keyCode))
+				return;
+		}
 		
 		// If the left/right command specials are pressed then count them as
 		// specifically pressed so we can do middle commands!
@@ -133,6 +152,10 @@ public class HandleKeyEvents
 	 */
 	private static int __keyCode(int __keyCode, char __keyChar)
 	{
+		// Use a character based key if this is one
+		if (__keyChar != KeyEvent.CHAR_UNDEFINED)
+			return __keyChar;
+		
 		// Function keys, these come in two groups
 		if (__keyCode >= KeyEvent.VK_F1 && __keyCode <= KeyEvent.VK_F12)
 			return NonStandardKey.F1 + (__keyCode - KeyEvent.VK_F1);
@@ -150,17 +173,17 @@ public class HandleKeyEvents
 			return NonStandardKey.END;
 		
 		// Arrow keys and directions
-		if (__keyChar == KeyEvent.VK_UP ||
-			__keyChar == KeyEvent.VK_KP_UP)
+		if (__keyCode == KeyEvent.VK_UP ||
+			__keyCode == KeyEvent.VK_KP_UP)
 			return NonStandardKey.KEY_UP;
-		else if (__keyChar == KeyEvent.VK_DOWN ||
-			__keyChar == KeyEvent.VK_KP_DOWN)
+		else if (__keyCode == KeyEvent.VK_DOWN ||
+			__keyCode == KeyEvent.VK_KP_DOWN)
 			return NonStandardKey.KEY_DOWN;
-		else if (__keyChar == KeyEvent.VK_LEFT ||
-			__keyChar == KeyEvent.VK_KP_LEFT)
+		else if (__keyCode == KeyEvent.VK_LEFT ||
+			__keyCode == KeyEvent.VK_KP_LEFT)
 			return NonStandardKey.KEY_LEFT;
-		else if (__keyChar == KeyEvent.VK_RIGHT ||
-			__keyChar == KeyEvent.VK_KP_RIGHT)
+		else if (__keyCode == KeyEvent.VK_RIGHT ||
+			__keyCode == KeyEvent.VK_KP_RIGHT)
 			return NonStandardKey.KEY_RIGHT;
 		
 		// Treat numbers and number pad as the same
@@ -179,14 +202,10 @@ public class HandleKeyEvents
 			return NonStandardKey.KEY_POUND;
 		else if (__keyCode == KeyEvent.VK_ADD)
 			return NonStandardKey.VGAME_COMMAND_LEFT;
-		else if (__keyChar == KeyEvent.VK_SUBTRACT)
+		else if (__keyCode == KeyEvent.VK_SUBTRACT)
 			return NonStandardKey.VGAME_COMMAND_RIGHT;
-		else if (__keyChar == KeyEvent.VK_DECIMAL)
+		else if (__keyCode == KeyEvent.VK_DECIMAL)
 			return NonStandardKey.VGAME_COMMAND_CENTER;
-		
-		// Use a character based key if this is one
-		if (__keyChar != KeyEvent.CHAR_UNDEFINED)
-			return __keyChar;
 		
 		// In the event there is no ASCII
 		if (__keyCode >= KeyEvent.VK_A && __keyCode <= KeyEvent.VK_Z)
