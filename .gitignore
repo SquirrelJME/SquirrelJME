@@ -20,6 +20,11 @@ build/
 ratufacoat/.idea/workspace.xml
 file-*
 
+# BVM
+bvm/.idea/workspace.xml
+bvm/cmake-build-debug
+bvm/cmake-build-release
+
 # Contributions
 *.diff
 *.gdiff
