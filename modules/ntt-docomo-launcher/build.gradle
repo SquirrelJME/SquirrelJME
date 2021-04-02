@@ -1,0 +1,21 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "Launcher which allows NTT Docomo (a.k.a. i-Mode) " +
+	"Applications to be launched."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "AH"
+	swmType = JavaMEMidletType.APPLICATION
+	swmName = "NTT Docomo Launcher"
+	swmVendor = "Stephanie Gawroriski"
+	tags += "nttdocomo"
+	tags += "imode"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+	api project(":modules:ntt-docomo-api")
+}

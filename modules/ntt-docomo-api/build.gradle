@@ -1,0 +1,23 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "NTT Docomo API support."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "AG"
+	swmType = JavaMEMidletType.API
+	swmName = "NTT Docomo API"
+	swmVendor = "Stephanie Gawroriski"
+	tags += "j2me"
+	tags += "nttdocomo"
+	tags += "imode"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+
+	api project(":modules:meep-midlet")
+	api project(":modules:midp-lcdui")
+}
