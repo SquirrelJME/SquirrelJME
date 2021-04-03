@@ -202,6 +202,10 @@ public final class RealMemory
 	public WritableMemory subSection(long __base, long __len)
 		throws MemoryAccessException
 	{
+		// Refers to ourself?
+		if (__base == 0 && __len == this.length)
+			return this;
+		
 		// {@squirreljme.error ZZ4t Sub-section would be out of range.}
 		if (__base < 0 || __len < 0 || (__base + __len) > this.length ||
 			__len > Integer.MAX_VALUE)

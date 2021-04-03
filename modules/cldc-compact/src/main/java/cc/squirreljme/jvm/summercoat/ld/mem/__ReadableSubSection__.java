@@ -147,6 +147,10 @@ class __ReadableSubSection__
 	public ReadableMemory subSection(long __base, long __len)
 		throws MemoryAccessException
 	{
+		// Refers to ourself?
+		if (__base == 0 && __len == this.memRegionSize())
+			return this;
+		
 		// {@squirreljme.error ZZ4q Sub-section would be out of range of
 		// this memory region. (The base address; The length)}
 		if (__base < 0 || __len < 0 || (__base + __len) > this.memRegionSize())
