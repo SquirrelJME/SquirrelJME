@@ -199,7 +199,7 @@ public final class RealMemory
 	 * @since 2021/04/03
 	 */
 	@Override
-	public WritableMemory subSection(long __base, long __len)
+	public RealMemory subSection(long __base, long __len)
 		throws MemoryAccessException
 	{
 		// Refers to ourself?

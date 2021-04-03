@@ -12,8 +12,12 @@ package cc.squirreljme.jvm.summercoat;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.launch.AvailableSuites;
 import cc.squirreljme.jvm.launch.SuiteScanner;
+import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 
 /**
  * Main bootstrap entry point.
@@ -25,9 +29,11 @@ public final class Bootstrap
 	/**
 	 * Main entry point for the virtual machine.
 	 * 
+	 * @throws Throwable On any exception.
 	 * @since 2020/11/28
 	 */
 	public static void vmEntry()
+		throws Throwable
 	{
 		// Introduction banner for the virtual machine itself
 		Debugging.notice("SquirrelJME %s",
@@ -41,9 +47,33 @@ public final class Bootstrap
 		
 		// Perform a scan for every suite, we need to find the launcher!
 		Debugging.notice("Performing initial suite scan...");
-		AvailableSuites suites = SuiteScanner.scanSuites(null);
+		try
+		{
+			AvailableSuites suites = SuiteScanner.scanSuites(null);
 		
-		Assembly.breakpoint();
-		throw Debugging.todo();
+			Assembly.breakpoint();
+			throw Debugging.todo();
+		}
+		
+		// Print a very nasty message regarding this
+		catch (Throwable __t)
+		{
+			// Print trace out
+			Debugging.debugNote("************************************");
+			Debugging.debugNote("*** CRITICAL BOOT EXCEPTION:");
+			CallTraceUtils.printStackTrace(
+				new ConsoleOutputStream(StandardPipeType.STDERR),
+				__t, 0);
+			Debugging.debugNote("************************************");
+			
+			// Break if we can
+			Debugging.debugNote("Sending breakpoint...");
+			Assembly.breakpoint();
+			
+			// Stop execution here
+			Debugging.debugNote("Terminating...");
+			RuntimeShelf.exit(17);
+			throw __t;
+		}
 	}
 }

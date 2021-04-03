@@ -70,8 +70,26 @@ public final class PackRom
 		if (rv != null)
 			return rv.clone();
 		
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		// We need the table of contents to look at libraries
+		TableOfContents toc = this.__toc();
+		
+		// Debug
+		Debugging.debugNote("Loading table of contents...");
+		
+		// Setup base array
+		int count = toc.count();
+		rv = new JarPackageBracket[count];
+		
+		// Debug
+		Debugging.debugNote("Reading table of contents...");
+		
+		// Load in library references
+		for (int i = 0; i < count; i++)
+			throw Debugging.todo();
+		
+		// Cache and use a copy
+		this._libraries = rv;
+		return rv.clone();
 	}
 	
 	/**
@@ -86,8 +104,18 @@ public final class PackRom
 		if (rv != null)
 			return rv;
 		
+		// We need these to determine where to read the data
+		int tocBase = this._properties[PackProperty.OFFSET_TOC];
+		int tocSize = this._properties[PackProperty.SIZE_TOC];
+		
+		// {@squirreljme.error ZZ4u ROM has invalid table of contents
+		// reference.}
+		if (tocBase < 0 || tocSize <= 0)
+			throw new InvalidRomException("ZZ4u");
+		
 		// Setup new table of contents
-		this._toc = (rv = new TableOfContents());
+		this._toc = (rv = new TableOfContents(
+			this.rom.subSection(tocBase, tocSize)));
 		return rv;
 	}
 	
@@ -109,7 +137,7 @@ public final class PackRom
 			// {@squirreljme.error ZZ43 Invalid ROM header. (Magic number)}
 			int romMagic = in.readInt();
 			if (ClassInfoConstants.PACK_MAGIC_NUMBER != romMagic)
-				throw new RuntimeException("ZZ43 " + romMagic);
+				throw new InvalidRomException("ZZ43 " + romMagic);
 				
 			// Read the format version
 			int formatVersion = in.readUnsignedShort();
@@ -118,7 +146,7 @@ public final class PackRom
 			// version identifier is not known. (The format version of the pack
 			// file)}
 			if (formatVersion != ClassInfoConstants.CLASS_VERSION_20201129)
-				throw new RuntimeException("ZZ44 " + formatVersion);
+				throw new InvalidRomException("ZZ44 " + formatVersion);
 			
 			// Read in all the data
 			int numProperties = Math.min(in.readUnsignedShort(),
@@ -130,7 +158,7 @@ public final class PackRom
 			// {@squirreljme.error ZZ46 PackROM size is not valid. (The size)}
 			int romSize = properties[PackProperty.ROM_SIZE];
 			if (romSize <= ClassInfoConstants.PACK_MAXIMUM_HEADER_SIZE)
-				throw new RuntimeException("ZZ46 " + romSize);
+				throw new InvalidRomException("ZZ46 " + romSize);
 			
 			// Build the final PackROM
 			return new PackRom(new RealMemory(__memAddr, romSize,
@@ -140,7 +168,7 @@ public final class PackRom
 		// {@squirreljme.error ZZ42 The ROM is corrupted.}
 		catch (IOException __e)
 		{
-			throw new RuntimeException("ZZ42", __e); 
+			throw new InvalidRomException("ZZ42", __e); 
 		}
 	}
 }

@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.summercoat.lle;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.DebugShelf;
+import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -66,6 +67,7 @@ public final class LLEJarPackageShelf
 	 * Returns the libraries which are available to the virtual machine.
 	 * 
 	 * @return The libraries that are currently available.
+	 * @see JarPackageShelf#libraries()
 	 * @since 2020/10/31
 	 */
 	public static JarPackageBracket[] libraries()
