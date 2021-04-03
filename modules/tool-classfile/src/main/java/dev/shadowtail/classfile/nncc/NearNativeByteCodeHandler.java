@@ -1308,7 +1308,7 @@ public final class NearNativeByteCodeHandler
 			{
 				// Read the old object
 				codeBuilder.addMemHandleAccess(dataType,
-					false, old.register.asIntValue(),
+					true, old.register.asIntValue(),
 					staticStore.register, offset.register);
 				
 				// Count up the value we are storing

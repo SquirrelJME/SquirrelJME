@@ -136,8 +136,8 @@ public final class LLERuntimeShelf
 	 */
 	public static int locale()
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		return SystemCall.runtimeVmAttribute(
+			RuntimeVmAttribute.LOCALE);
 	}
 	
 	/**

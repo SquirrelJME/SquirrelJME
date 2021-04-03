@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.CallStackItem;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
+import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
 import cc.squirreljme.jvm.mle.constants.PipeErrorType;
@@ -304,9 +305,13 @@ public enum SystemCallHandler
 				case RuntimeVmAttribute.BYTE_ORDER:
 					return ByteOrderType.BIG_ENDIAN;
 					
-					// Always UTF-8
+					// The encoding: Always UTF-8
 				case RuntimeVmAttribute.ENCODING:
 					return BuiltInEncodingType.UTF8;
+					
+					// The locale: Always English US
+				case RuntimeVmAttribute.LOCALE:
+					return BuiltInLocaleType.ENGLISH_US;
 				
 					// Unknown
 				default:
