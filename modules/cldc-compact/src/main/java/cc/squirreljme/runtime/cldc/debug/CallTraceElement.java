@@ -363,18 +363,8 @@ public final class CallTraceElement
 		{
 			sb.append(" @");
 			
-			// If the address is really high then it is very likely that
-			// this is some RAM/ROM address rather than some easily read
-			// index. This makes them more readable and understandable
-			if (address > 4096)
-			{
-				sb.append(Long.toString(address, 16).toUpperCase());
-				sb.append('h');
-			}
-			
-			// Otherwise use an index
-			else
-				sb.append(address);
+			sb.append(Long.toString(address, 16).toUpperCase());
+			sb.append('h');
 		}
 		
 		// Is there a native operation?
@@ -501,18 +491,8 @@ public final class CallTraceElement
 		{
 			sb.append(" @");
 			
-			// If the address is really high then it is very likely that
-			// this is some RAM/ROM address rather than some easily read
-			// index. This makes them more readable and understandable
-			if (address > 4096)
-			{
-				sb.append(Long.toString(address, 16).toUpperCase());
-				sb.append('h');
-			}
-			
-			// Otherwise use an index
-			else
-				sb.append(address);
+			sb.append(Long.toString(address, 16).toUpperCase());
+			sb.append('h');
 		}
 		
 		// Is there a native operation?
