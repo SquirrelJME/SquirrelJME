@@ -22,25 +22,6 @@
  */
 #define CTEST_EXIT_SKIPPED 42
 
-sjme_jint shimStdErrWrite(sjme_jint b)
-{
-	sjme_jbyte v;
-	
-	/* Write. */
-	v = (sjme_jbyte)b;
-	fwrite(&v, 1, 1, stderr);
-	
-	/* EOF? */
-	if (feof(stderr))
-		return SJME_JINT_C(0);
-	
-	/* Error? */
-	if (ferror(stderr))
-		return SJME_JINT_C(-1);
-	
-	return SJME_JINT_C(1);
-}
-
 /**
  * Creates a new shim.
  * 
@@ -55,13 +36,6 @@ sjme_testShim* shimNew()
 	rv = malloc(sizeof(*rv));
 	memset(rv, 0, sizeof(*rv));
 	
-	/* Setup native methods. */
-	rv->nativeFunctions = malloc(sizeof(*rv->nativeFunctions));
-	memset(rv->nativeFunctions, 0, sizeof(*rv->nativeFunctions));
-	
-	/* Link native methods. */
-	rv->nativeFunctions->stderr_write = shimStdErrWrite;
-	
 	/* Use this shim. */
 	return rv;
 }
@@ -74,7 +48,6 @@ sjme_testShim* shimNew()
  */
 void shimDestroy(sjme_testShim* shim)
 {
-	free(shim->nativeFunctions);
 	free(shim);
 }
 
@@ -95,19 +68,7 @@ typedef struct sjme_singleTest
 /** Test table. */
 static const sjme_singleTest sjme_singleTests[] =
 {
-	SJME_TEST(testAtomic),
-	SJME_TEST(testJvmInit),
-	SJME_TEST(testJvmInvalid),
-	SJME_TEST(testMemHandleAccess),
-	SJME_TEST(testMemHandleCycle),
-	SJME_TEST(testMemHandleEndian),
-	SJME_TEST(testMemHandleInit),
-	SJME_TEST(testMemHandleInvalid),
-	SJME_TEST(testMemHandleMany),
-	SJME_TEST(testNothing),
-	SJME_TEST(testOpCodes),
-	SJME_TEST(testRandom),
-	SJME_TEST(testSkipped),
+	/*SJME_TEST(testAtomic),*/
 	
 	/* End of tests. */
 	{NULL, NULL}
@@ -133,8 +94,6 @@ int main(int argc, char** argv)
 	/* General test report. */
 	fprintf(stderr, "Testing SquirrelJME %s\n",
 		SQUIRRELJME_VERSION" ("SQUIRRELJME_VERSION_ID")");
-	fprintf(stderr, "Built-In ROM is %s\n",
-		(sjme_builtInRomSize == 0 ? "Unavailable" : "Available"));
 	fflush(stderr);
 	
 	/* Running all tests? */
@@ -225,7 +184,7 @@ int main(int argc, char** argv)
 	/* Specified a specific test but was not ran, so fail. */
 	if (!allTests && ranTests <= 0)
 	{
-		fprintf(stderr, "Did not run any SquirrelJME Tests...\n");
+		fprintf(stderr, "Did not run any BootVM Tests...\n");
 		return EXIT_FAILURE;
 	}
 		
