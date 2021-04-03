@@ -270,11 +270,6 @@ public final class NearNativeByteCodeHandler
 			this.__basicCheckArrayBound(array, index, __dt,
 				offset.register);
 			
-			// Any object being stored gets reference counted
-			boolean isObject = __dt == DataType.OBJECT;
-			if (isObject)
-				this.__refCount(MemHandleRegister.of(__val.register));
-			
 			// Load value
 			if (__dt.isWide())
 				codeBuilder.addMemHandleAccess(__dt, true,
@@ -284,6 +279,11 @@ public final class NearNativeByteCodeHandler
 				codeBuilder.addMemHandleAccess(__dt, true,
 					IntValueRegister.of(__val.register),
 					array, offset.register);
+			
+			// Any object being read gets reference counted
+			boolean isObject = __dt == DataType.OBJECT;
+			if (isObject)
+				this.__refCount(MemHandleRegister.of(__val.register));
 		}
 		
 		// Clear references

@@ -85,6 +85,7 @@ public interface WritableMemory
 	 * @throws MemoryAccessException If the address and length are not valid.
 	 * @since 2021/04/03
 	 */
+	@Override
 	WritableMemory subSection(long __base, long __len)
 		throws MemoryAccessException;
 }

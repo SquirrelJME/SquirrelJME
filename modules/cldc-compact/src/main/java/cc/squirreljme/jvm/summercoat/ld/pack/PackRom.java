@@ -160,6 +160,9 @@ public final class PackRom
 			if (romSize <= ClassInfoConstants.PACK_MAXIMUM_HEADER_SIZE)
 				throw new InvalidRomException("ZZ46 " + romSize);
 			
+			// Debug
+			Debugging.debugNote("ROM Size: %d (%xh)", romSize, romSize);
+			
 			// Build the final PackROM
 			return new PackRom(new RealMemory(__memAddr, romSize,
 				ByteOrderType.BIG_ENDIAN), properties);
