@@ -9,9 +9,17 @@
 
 #include <windows.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 int main(int argc, char** argv)
 {
-	return EXIT_SUCCESS;
+	int i;
+	
+	fprintf(stderr, "Args %d\r\n", argc);
+	for (i = 0; i < argc; i++)
+		fprintf(stderr, "Arg[%d]: %s\r\n", i, argv[i]);
+	fflush(stderr);
+	
+	return EXIT_FAILURE;
 }
 

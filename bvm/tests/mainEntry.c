@@ -10,9 +10,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "builtin.h"
 #include "tests.h"
-#include "stringies.h"
 
 /**
  * Exit code for termination from tests

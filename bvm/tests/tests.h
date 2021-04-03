@@ -13,7 +13,6 @@
 #include <stdlib.h>
 
 #include "sjmerc.h"
-#include "native.h"
 
 /**
  * Testing shim structure.
