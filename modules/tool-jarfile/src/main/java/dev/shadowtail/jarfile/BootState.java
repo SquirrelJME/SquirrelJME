@@ -1654,13 +1654,13 @@ public final class BootState
 					declaredMethods.add(method.nameAndType());
 			}
 			
-			// No further processing is needed for abstract methods
+			// No further processing is needed for non-abstract methods
 			if (!isAtAbstract)
 				continue;
 				
 			// Map in interfaces for this method accordingly if abstract, since
 			// we will need to fill these in
-			for (ClassName iFaceName : at.classFile.interfaceNames())
+			for (ClassName iFaceName : this.allInterfaces(at.thisName))
 			{
 				// Handle all methods within the interface if they have not
 				// yet been declared
