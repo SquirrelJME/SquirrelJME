@@ -208,7 +208,8 @@ public final class RealMemory
 			throw new MemoryAccessException(__base, "ZZ4t");
 		
 		// Just sub-divides real memory
-		return new RealMemory(this.baseAddr + __base, (int)__len);
+		return new RealMemory(this.baseAddr + __base, (int)__len,
+			this.byteOrder);
 	}
 	
 	/**
