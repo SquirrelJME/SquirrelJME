@@ -3084,6 +3084,14 @@ public final class NearNativeByteCodeHandler
 				id = SystemCallIndex.ARRAY_ALLOCATION_BASE;
 				break;
 			
+			case "callStackHeight":
+				id = SystemCallIndex.CALL_STACK_HEIGHT;
+				break;
+			
+			case "callStackItem":
+				id = SystemCallIndex.CALL_STACK_ITEM;
+				break;
+			
 			case "errorGet":
 				id = SystemCallIndex.ERROR_GET;
 				break;

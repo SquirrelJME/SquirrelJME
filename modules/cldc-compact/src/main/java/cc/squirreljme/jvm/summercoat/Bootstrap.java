@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.launch.AvailableSuites;
 import cc.squirreljme.jvm.launch.SuiteScanner;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
@@ -65,6 +66,7 @@ public final class Bootstrap
 			CallTraceUtils.printStackTrace(
 				new ConsoleOutputStream(StandardPipeType.STDERR),
 				__t, 0);
+			TerminalShelf.flush(StandardPipeType.STDERR);
 			Debugging.debugNote("************************************");
 			
 			// Break if we can

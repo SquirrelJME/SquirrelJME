@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.summercoat.constants.RuntimeVmAttribute;
 /**
  * This contains the index of system calls.
  *
+ * @see SystemCall
  * @since 2019/05/23
  */
 public interface SystemCallIndex

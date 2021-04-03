@@ -142,6 +142,17 @@ public final class NativeCPU
 	}
 	
 	/**
+	 * Returns the number of current frames.
+	 * 
+	 * @return The number of available frames.
+	 * @since 2021/04/03
+	 */
+	public int countFrames()
+	{
+		return this._frames.size();
+	}
+	
+	/**
 	 * Enters the given frame for the given address.
 	 *
 	 * @param __movePool Move the pool register?
@@ -211,6 +222,18 @@ public final class NativeCPU
 		
 		// Use this frame
 		return rv;
+	}
+	
+	/**
+	 * Returns all of the CPU frames.
+	 * 
+	 * @return All of the CPU frames.
+	 * @since 2021/04/03
+	 */
+	public CPUFrame[] frames()
+	{
+		LinkedList<CPUFrame> frames = this._frames;
+		return frames.toArray(new CPUFrame[frames.size()]);
 	}
 	
 	/**

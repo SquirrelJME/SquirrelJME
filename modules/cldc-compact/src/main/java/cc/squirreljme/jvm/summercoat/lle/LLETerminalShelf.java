@@ -77,7 +77,7 @@ public final class LLETerminalShelf
 	{
 		// {@squirreljme.error ZZ4y Could flush the pipe.}
 		if (SystemCall.pdFlush(
-			LLETerminalShelf.__pipeOfFd(__fd)) <= 0)
+			LLETerminalShelf.__pipeOfFd(__fd)) != PipeErrorType.NO_ERROR)
 			throw new MLECallError("ZZ4y");
 		
 		return PipeErrorType.NO_ERROR;

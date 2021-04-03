@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.jvm.CallStackItem;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
@@ -43,6 +44,76 @@ public enum SystemCallHandler
 			throws VMSystemCallException
 		{
 			return __cpu.arrayBase;
+		}
+	},
+	
+	/** {@link SystemCallIndex#CALL_STACK_HEIGHT}. */
+	CALL_STACK_HEIGHT(SystemCallIndex.CALL_STACK_HEIGHT)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/03
+		 */
+		@Override
+		public long handle(NativeCPU __cpu, int... __args)
+			throws VMSystemCallException
+		{
+			return __cpu.countFrames();
+		}
+	},
+	
+	/** {@link SystemCallIndex#CALL_STACK_ITEM}. */
+	CALL_STACK_ITEM(SystemCallIndex.CALL_STACK_ITEM)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/03
+		 */
+		@Override
+		public long handle(NativeCPU __cpu, int... __args)
+			throws VMSystemCallException
+		{
+			// Check validity of this frame
+			CPUFrame[] frames = __cpu.frames();
+			int frameId = (frames.length - __args[0]) - 1;
+			if (frameId < 0 || frameId >= frames.length)
+				return 0;
+			
+			// Get specific frame details
+			CPUFrame frame = frames[frameId];
+			switch (__args[1])
+			{
+				case CallStackItem.CLASS_NAME:
+					return frame._inclassp;
+				
+				case CallStackItem.METHOD_NAME:
+					return frame._inmethodnamep;
+				
+				case CallStackItem.METHOD_TYPE:
+					return frame._inmethodtypep;
+				
+				case CallStackItem.SOURCE_FILE:
+					return frame._insourcefilep;
+				
+				case CallStackItem.SOURCE_LINE:
+					return frame._inline;
+				
+				case CallStackItem.PC_ADDRESS:
+					return frame._pc;
+				
+				case CallStackItem.JAVA_OPERATION:
+					return frame._injop;
+				
+				case CallStackItem.JAVA_PC_ADDRESS:
+					return frame._injpc;
+				
+				case CallStackItem.TASK_ID:
+					return frame._taskid;
+				
+					// Unknown, ignore
+				default:
+					return 0;
+			}
 		}
 	},
 	

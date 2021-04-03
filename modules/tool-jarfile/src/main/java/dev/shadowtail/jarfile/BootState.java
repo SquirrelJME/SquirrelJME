@@ -9,6 +9,7 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
@@ -88,11 +89,16 @@ public final class BootState
 	/** Object class info. */
 	private static final FieldNameAndType _OBJECT_CLASS_INFO =
 		new FieldNameAndType("_classInfo",
-		Minimizer.CLASS_INFO_FIELD_DESC);
+			Minimizer.CLASS_INFO_FIELD_DESC);
 	
 	/** The name of the string class. */
 	private static final ClassName _STRING_CLASS =
 		new ClassName("java/lang/String");
+	
+	/** The field for the throwable trace. */
+	private static final FieldNameAndType _THROWABLE_TRACE =
+		new FieldNameAndType("_stack",
+			"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;");
 	
 	/** The class data used. */
 	private final Map<ClassName, ChunkSection> _rawChunks =
@@ -1297,6 +1303,11 @@ public final class BootState
 		// The type used for Class<?>
 		rv.set(StaticVmAttribute.TYPEBRACKET_CLASS,
 			this.loadClass("java/lang/Class")._classInfoHandle);
+		
+		// Offset to Throwable trace data
+		rv.set(StaticVmAttribute.OFFSETOF_THROWABLE_TRACE_FIELD,
+			objectBase + this.loadClass("java/lang/Throwable").classFile
+				.field(false, BootState._THROWABLE_TRACE).offset);
 		
 		return rv;
 	}

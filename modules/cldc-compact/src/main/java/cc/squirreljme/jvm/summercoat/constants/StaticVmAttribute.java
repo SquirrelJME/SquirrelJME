@@ -39,7 +39,11 @@ public interface StaticVmAttribute
 	byte TYPEBRACKET_CLASS =
 		4;
 	
+	/** Offset of Throwable's trace field. */
+	byte OFFSETOF_THROWABLE_TRACE_FIELD =
+		5;
+	
 	/** The number of metrics used. */
 	byte NUM_METRICS =
-		5;
+		6;
 }

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.summercoat;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 
 /**
@@ -57,5 +58,57 @@ public final class SummerCoatUtil
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Loads a string from the given address.
+	 * 
+	 * @param __utfP The pointer to load from, if {@code 0} then {@code null}
+	 * will be returned.
+	 * @return The read string or {@code null} if {@code 0}.
+	 * @since 2021/04/03
+	 */
+	public static String loadString(long __utfP)
+	{
+		if (__utfP == 0)
+			return null;
+		
+		// How long is this string?
+		int maxChars = Assembly.memReadShort(__utfP, 0) & 0xFFFF;
+		char[] chars = new char[maxChars];
+		
+		// Read all bits of the string, handle chars as needed
+		int numChars = 0;
+		for (int i = 0, subChar = 0; i < maxChars; i++)
+		{
+			int a = Assembly.memReadByte(__utfP, 2 + i) & 0xFF;
+			
+			// Still in sub-char sequence?
+			if (subChar > 0)
+			{
+				// Shift the higher bits in and place in the lower sequence
+				chars[numChars] <<= 6;
+				chars[numChars] |= (a & 0x3F);
+				
+				// Done with this char? Move to the next one
+				if ((--subChar) == 0)
+					numChars++;
+				continue;
+			}
+			
+			// Three byte
+			if ((a & 0xF0) == 0xE0)
+				subChar = 2;
+			
+			// Two byte
+			else if ((a & 0xC0) == 0x80)
+				subChar = 1;
+			
+			// Single byte
+			else
+				chars[numChars++] = (char)a;
+		}
+		
+		return new String(chars, 0, numChars);
 	}
 }
