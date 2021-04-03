@@ -80,6 +80,29 @@ public final class LogicHandler
 	}
 	
 	/**
+	 * Sets the value of the given class property.
+	 * 
+	 * @param __info The information to get.
+	 * @param __p The {@link ClassProperty}.
+	 * @param __v The value to set.
+	 * @throws MLECallError If {@code __info} is {@code null} or is not a
+	 * valid class.
+	 * @since 2021/04/03
+	 */
+	public static void typeSetProperty(TypeBracket __info, int __p, int __v)
+		throws MLECallError
+	{
+		if (__info == null)
+			throw new MLECallError("NARG");
+		
+		// {@squirreljme.error ZZ4w Invalid class property. (The property)}
+		if (__p <= 0 || __p >= ClassProperty.NUM_RUNTIME_PROPERTIES)
+			throw new MLECallError("ZZ4w " + __p);
+		
+		LogicHandler.listWrite(__info, __p, __v);
+	}
+	
+	/**
 	 * Garbage collects the given handle.
 	 * 
 	 * @param __p The pointer to clear.

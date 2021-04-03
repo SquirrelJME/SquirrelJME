@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.summercoat.lle;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
@@ -26,6 +27,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2020/05/30
  */
+@SuppressWarnings("unused")
 public final class LLETypeShelf
 {
 	/**
@@ -388,8 +390,13 @@ public final class LLETypeShelf
 	public static String runtimeName(TypeBracket __type)
 		throws MLECallError
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		// {@squirreljme.error ZZ4x No type specified.}
+		if (__type == null)
+			throw new MLECallError("ZZ4x");
+		
+		return (String)Assembly.pointerToObject(
+			LogicHandler.typeGetProperty(__type,
+			ClassProperty.MEMHANDLE_THIS_NAME_RUNTIME));
 	}
 	
 	/**
@@ -511,9 +518,34 @@ public final class LLETypeShelf
 	 * @return The class type for the given type.
 	 * @since 2020/05/30
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> Class<T> typeToClass(TypeBracket __type)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		// {@squirreljme.error ZZ73 No type specified.}
+		if (__type == null)
+			throw new MLECallError("ZZ73");
+		
+		// TODO: Atomically protect this
+		Debugging.todoNote("Protect typeToClass()!");
+		
+		// Is a property already valid here?
+		int rawP = LogicHandler.typeGetProperty(__type,
+			ClassProperty.MEMHANDLE_LANG_CLASS_INSTANCE);
+		if (rawP != 0)
+			return (Class<T>)Assembly.pointerToObject(rawP);
+		
+		// Create new class instance to fill int
+		Object classObj = ObjectShelf.newInstance(
+			Assembly.pointerToTypeBracket(LogicHandler.staticVmAttribute(
+			StaticVmAttribute.TYPEBRACKET_CLASS)));
+		
+		// TODO: Initialize class
+		Debugging.todoNote("Initialize Class!");
+		
+		// Store for later and use this one
+		LogicHandler.typeSetProperty(__type,
+			ClassProperty.MEMHANDLE_LANG_CLASS_INSTANCE,
+			Assembly.objectToPointer(classObj));
+		return (Class<T>)classObj;
 	}
 }

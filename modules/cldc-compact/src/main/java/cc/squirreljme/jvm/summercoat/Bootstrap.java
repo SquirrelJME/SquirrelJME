@@ -60,7 +60,8 @@ public final class Bootstrap
 		{
 			// Print trace out
 			Debugging.debugNote("************************************");
-			Debugging.debugNote("*** CRITICAL BOOT EXCEPTION:");
+			Debugging.debugNote("*** CRITICAL BOOT EXCEPTION");
+			Debugging.debugNote("Message: %s", __t.getMessage());
 			CallTraceUtils.printStackTrace(
 				new ConsoleOutputStream(StandardPipeType.STDERR),
 				__t, 0);

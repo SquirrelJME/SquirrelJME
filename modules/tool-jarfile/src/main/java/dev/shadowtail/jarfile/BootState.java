@@ -625,9 +625,9 @@ public final class BootState
 				this.loadClasses(interfaces.toArray())));
 		
 		// The name of the current class
-		classInfo.set(ClassProperty.MEMHANDLE_THISNAME_DESC,
+		classInfo.set(ClassProperty.MEMHANDLE_THIS_NAME_DESC,
 			this.loadString(__cl.toString()));
-		classInfo.set(ClassProperty.MEMHANDLE_THISNAME_CLASSGETNAME,
+		classInfo.set(ClassProperty.MEMHANDLE_THIS_NAME_RUNTIME,
 			this.loadString(__cl.toRuntimeString()));
 		
 		// Store in constant values for fields
@@ -718,7 +718,7 @@ public final class BootState
 		}
 		
 		// Load the information for the Class<?> instance
-		classInfo.set(ClassProperty.MEMHANDLE_LANGCLASS_INSTANCE,
+		classInfo.set(ClassProperty.MEMHANDLE_LANG_CLASS_INSTANCE,
 			this.loadLangClass(__cl));
 		
 		// Set and initialize all of the entries within the pool
@@ -1293,6 +1293,10 @@ public final class BootState
 		rv.set(StaticVmAttribute.OFFSETOF_OBJECT_TYPE_FIELD,
 			this.loadClass("java/lang/Object").classFile
 				.field(false, BootState._OBJECT_CLASS_INFO).offset);
+		
+		// The type used for Class<?>
+		rv.set(StaticVmAttribute.TYPEBRACKET_CLASS,
+			this.loadClass("java/lang/Class")._classInfoHandle);
 		
 		return rv;
 	}

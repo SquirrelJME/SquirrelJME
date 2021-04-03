@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.summercoat;
 
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
@@ -111,6 +112,17 @@ public final class SystemCall
 	 * @since 2021/01/30
 	 */
 	public static native int runtimeVmAttribute(int __attr);
+	
+	/**
+	 * Flushes the given pipe.
+	 * 
+	 * @param __fd The pipe ID.
+	 * @return One of {@link PipeErrorType}.
+	 * @throws MLECallError On flush errors.
+	 * @since 2021/04/03
+	 */
+	public static native int pdFlush(int __fd)
+		throws MLECallError;
 	
 	/**
 	 * Returns the pipe descriptor of standard error.

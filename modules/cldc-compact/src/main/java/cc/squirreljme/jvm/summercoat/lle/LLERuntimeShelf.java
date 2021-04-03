@@ -72,8 +72,7 @@ public final class LLERuntimeShelf
 	 */
 	public static int encoding()
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		return SystemCall.runtimeVmAttribute(RuntimeVmAttribute.ENCODING);
 	}
 	
 	/**

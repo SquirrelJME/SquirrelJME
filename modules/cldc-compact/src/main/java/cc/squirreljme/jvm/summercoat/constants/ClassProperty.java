@@ -22,7 +22,7 @@ public interface ClassProperty
 	extends StaticClassProperty
 {
 	/** The pointer to the class name (in descriptor form). */
-	byte MEMHANDLE_THISNAME_DESC =
+	byte MEMHANDLE_THIS_NAME_DESC =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 1;
 	
 	/** The allocation size of this class to store all of its fields. */
@@ -46,7 +46,7 @@ public interface ClassProperty
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 6;
 	
 	/** Pointer to a {@link Class} instance. */
-	byte MEMHANDLE_LANGCLASS_INSTANCE =
+	byte MEMHANDLE_LANG_CLASS_INSTANCE =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 7;
 	
 	/** The pointer to the constant pool of this class. */
@@ -62,7 +62,7 @@ public interface ClassProperty
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 10;
 	
 	/** The pointer to the class name (in {@link Class#getName()} form). */
-	byte MEMHANDLE_THISNAME_CLASSGETNAME =
+	byte MEMHANDLE_THIS_NAME_RUNTIME =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 11;
 	
 	/** All interfaces that are implemented by this class. */

@@ -44,7 +44,11 @@ public interface RuntimeVmAttribute
 	byte MEMORY_PROFILE =
 		5;
 	
+	/** The encoding used. */
+	byte ENCODING =
+		6;
+	
 	/** The number of attributes. */
 	byte NUM_RUNTIME_ATTRIBUTES =
-		6;
+		7;
 }

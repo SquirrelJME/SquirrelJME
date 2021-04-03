@@ -3100,6 +3100,10 @@ public final class NearNativeByteCodeHandler
 				id = SystemCallIndex.MEM_HANDLE_MOVE;
 				break;
 			
+			case "pdFlush":
+				id = SystemCallIndex.PD_FLUSH;
+				break;
+			
 			case "pdOfStdErr":
 				id = SystemCallIndex.PD_OF_STDERR;
 				break;

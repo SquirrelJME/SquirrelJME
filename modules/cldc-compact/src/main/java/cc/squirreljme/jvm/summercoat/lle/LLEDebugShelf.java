@@ -21,6 +21,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2020/06/11
  */
+@SuppressWarnings("unused")
 public final class LLEDebugShelf
 {
 	/**
@@ -41,8 +42,9 @@ public final class LLEDebugShelf
 	 */
 	public static TracePointBracket[] getThrowableTrace(Throwable __t)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		// TODO: Implement getThrowableTrace()
+		Debugging.todoNote("Implement getThrowableTrace()");
+		return new TracePointBracket[0];
 	}
 	
 	/**

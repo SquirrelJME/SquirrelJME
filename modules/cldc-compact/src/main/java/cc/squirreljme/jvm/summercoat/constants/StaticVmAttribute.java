@@ -35,7 +35,11 @@ public interface StaticVmAttribute
 	byte SIZE_OBJECT =
 		3;
 	
+	/** The type bracket for {@link Class}. */
+	byte TYPEBRACKET_CLASS =
+		4;
+	
 	/** The number of metrics used. */
 	byte NUM_METRICS =
-		4;
+		5;
 }

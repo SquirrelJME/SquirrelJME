@@ -11,7 +11,10 @@ package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
+import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
+import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.RuntimeVmAttribute;
@@ -226,10 +229,61 @@ public enum SystemCallHandler
 				case RuntimeVmAttribute.MEMORY_PROFILE:
 					return MemoryProfileType.NORMAL;
 				
+					// Always big endian
+				case RuntimeVmAttribute.BYTE_ORDER:
+					return ByteOrderType.BIG_ENDIAN;
+					
+					// Always UTF-8
+				case RuntimeVmAttribute.ENCODING:
+					return BuiltInEncodingType.UTF8;
+				
 					// Unknown
 				default:
 					return 0;
 			}
+		}
+	},
+	
+	/** {@link SystemCallIndex#PD_FLUSH}. */
+	PD_FLUSH(SystemCallIndex.PD_FLUSH)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/03
+		 */
+		@Override
+		public long handle(NativeCPU __cpu, int... __args)
+			throws VMSystemCallException
+		{
+			int pd = __args[0];
+		
+			// Determine where we are writing to
+			PrintStream target;
+			switch (pd)
+			{
+				case StandardPipeType.STDOUT:
+					target = System.out;
+					break;
+					
+				case StandardPipeType.STDERR:
+					target = System.err;
+					break;
+				
+				default:
+					throw new VMSystemCallException(
+						SystemCallError.PIPE_DESCRIPTOR_INVALID);
+			}
+			
+			// Try to flush
+			target.flush();
+			
+			// Did we fail the flush?
+			if (target.checkError())
+				throw new VMSystemCallException(
+					SystemCallError.PIPE_DESCRIPTOR_BAD_FLUSH);
+			
+			// Write okay
+			return PipeErrorType.NO_ERROR;
 		}
 	},
 	
