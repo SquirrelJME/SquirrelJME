@@ -10,27 +10,23 @@
 package cc.squirreljme.jvm.summercoat.ld.mem;
 
 /**
- * This is thrown when there is an error accessing memory.
+ * This is thrown when the given memory is not mappable to real memory in
+ * any way.
  *
- * @since 2021/02/18
+ * @since 2021/04/03
  */
-public class MemoryAccessException
-	extends RuntimeException
+public class NotRealMemoryException
+	extends MemoryAccessException
 {
-	/** The address. */
-	public final long address;
-	
 	/**
 	 * Initializes the exception.
 	 * 
 	 * @param __addr The address.
-	 * @since 2021/02/18
+	 * @since 2021/04/03
 	 */
-	public MemoryAccessException(long __addr)
+	public NotRealMemoryException(long __addr)
 	{
-		super(Long.toString(__addr, 16));
-		
-		this.address = __addr;
+		super(__addr);
 	}
 	
 	/**
@@ -40,11 +36,9 @@ public class MemoryAccessException
 	 * @param __m The message.
 	 * @since 2021/04/03
 	 */
-	public MemoryAccessException(long __addr, String __m)
+	public NotRealMemoryException(long __addr, String __m)
 	{
-		super(__m);
-		
-		this.address = __addr;
+		super(__addr, __m);
 	}
 	
 	/**
@@ -52,12 +46,10 @@ public class MemoryAccessException
 	 * 
 	 * @param __addr The address.
 	 * @param __c The cause.
-	 * @since 2021/02/18
+	 * @since 2021/04/03
 	 */
-	public MemoryAccessException(long __addr, Throwable __c)
+	public NotRealMemoryException(long __addr, Throwable __c)
 	{
-		super(Long.toString(__addr, 16), __c);
-		
-		this.address = __addr;
+		super(__addr, __c);
 	}
 }

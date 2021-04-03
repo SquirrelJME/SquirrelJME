@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.ld.mem.AbstractReadableMemory;
+import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemoryInputStream;
 import cc.squirreljme.jvm.summercoat.ld.mem.RealMemory;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -27,8 +28,8 @@ import java.io.IOException;
  */
 public final class PackRom
 {
-	/** The base address of the ROM. */
-	protected final long baseAddr;
+	/** The area where the ROM is. */
+	protected final ReadableMemory rom;
 	
 	/** Properties for the ROM. */
 	private final int[] _properties;
@@ -42,13 +43,17 @@ public final class PackRom
 	/**
 	 * Initializes the pack ROM manager.
 	 * 
-	 * @param __memAddr The memory address where the Pack ROM is located.
+	 * @param __rom The memory where the ROM is located.
 	 * @param __properties Properties for the ROM.
 	 * @since 2021/02/09
 	 */
-	private PackRom(long __memAddr, int[] __properties)
+	private PackRom(ReadableMemory __rom, int[] __properties)
+		throws NullPointerException
 	{
-		this.baseAddr = __memAddr;
+		if (__rom == null)
+			throw new NullPointerException("NARG");
+		
+		this.rom = __rom;
 		this._properties = __properties;
 	}
 	
@@ -122,8 +127,14 @@ public final class PackRom
 			for (int i = 0; i < numProperties; i++)
 				properties[i] = in.readInt();
 			
+			// {@squirreljme.error ZZ46 PackROM size is not valid. (The size)}
+			int romSize = properties[PackProperty.ROM_SIZE];
+			if (romSize <= ClassInfoConstants.PACK_MAXIMUM_HEADER_SIZE)
+				throw new RuntimeException("ZZ46 " + romSize);
+			
 			// Build the final PackROM
-			return new PackRom(__memAddr, properties);
+			return new PackRom(new RealMemory(__memAddr, romSize,
+				ByteOrderType.BIG_ENDIAN), properties);
 		}
 		
 		// {@squirreljme.error ZZ42 The ROM is corrupted.}

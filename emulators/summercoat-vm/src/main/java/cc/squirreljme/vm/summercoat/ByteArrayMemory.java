@@ -190,17 +190,6 @@ public final class ByteArrayMemory
 	 * @return
 	 */
 	@Override
-	public long memRegionOffset()
-	{
-		return this.offset;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/21
-	 * @return
-	 */
-	@Override
 	public final long memRegionSize()
 	{
 		return this.size;

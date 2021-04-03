@@ -160,5 +160,22 @@ public abstract class AbstractWritableMemory
 	{
 		return new WritableMemoryOutputStream(this, __addr, __len);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/03
+	 */
+	@Override
+	public WritableMemory subSection(long __base, long __len)
+		throws MemoryAccessException
+	{
+		// {@squirreljme.error ZZ4d Sub-section would be out of range of
+		// this memory region. (The base address; The length)}
+		if (__base < 0 || __len < 0 || (__base + __len) > this.memRegionSize())
+			throw new MemoryAccessException(__base,
+				"ZZ4d " + __base + " " + __len);
+		
+		return new __WritableSubSection__(this, __base, __len);
+	}
 }
 

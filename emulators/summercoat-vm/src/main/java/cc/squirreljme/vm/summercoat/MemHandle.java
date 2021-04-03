@@ -105,17 +105,6 @@ public class MemHandle
 	 * @return
 	 */
 	@Override
-	public final long memRegionOffset()
-	{
-		return 0;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/01/17
-	 * @return
-	 */
-	@Override
 	public final long memRegionSize()
 	{
 		return this.size;

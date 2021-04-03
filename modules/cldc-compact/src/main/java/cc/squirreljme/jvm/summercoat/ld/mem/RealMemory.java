@@ -64,6 +64,18 @@ public final class RealMemory
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/04/03
+	 */
+	@Override
+	public long absoluteAddress(long __addr)
+		throws MemoryAccessException, NotRealMemoryException
+	{
+		// Should be able to read a single byte from this region
+		return this.__check(__addr, 1);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/02/14
 	 */
 	@SuppressWarnings("MagicNumber")
@@ -117,17 +129,6 @@ public final class RealMemory
 	{
 		return this.__valueShort((short)Assembly.memReadShort(
 			this.__check(__addr, 2), 0)) & 0xFFFF;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/02/14
-	 * @return
-	 */
-	@Override
-	public long memRegionOffset()
-	{
-		return this.baseAddr;
 	}
 	
 	/**
@@ -191,6 +192,23 @@ public final class RealMemory
 	{
 		Assembly.memWriteShort(this.__check(__addr, 2), 0,
 			this.__valueShort((short)__v));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/03
+	 */
+	@Override
+	public WritableMemory subSection(long __base, long __len)
+		throws MemoryAccessException
+	{
+		// {@squirreljme.error ZZ4t Sub-section would be out of range.}
+		if (__base < 0 || __len < 0 || (__base + __len) > this.length ||
+			__len > Integer.MAX_VALUE)
+			throw new MemoryAccessException(__base, "ZZ4t");
+		
+		// Just sub-divides real memory
+		return new RealMemory(this.baseAddr + __base, (int)__len);
 	}
 	
 	/**
