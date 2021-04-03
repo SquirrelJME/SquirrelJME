@@ -188,13 +188,14 @@ public final class LLEDebugShelf
 	 */
 	public static TracePointBracket[] traceStack()
 	{
-		// How many frames are on the stack?
-		int frameCount = SystemCall.callStackHeight();
+		// How many frames are on the stack? Skip the first two because it is
+		// this method and the other one
+		int frameCount = SystemCall.callStackHeight() - 2;
 		TracePointBracket[] rv = new TracePointBracket[frameCount];
 		
 		// Load in each individual frame
 		for (int i = 0; i < frameCount; i++)
-			rv[i] = LLEDebugShelf.__loadFrame(i);
+			rv[i] = LLEDebugShelf.__loadFrame(i + 2);
 		
 		return rv;
 	}
