@@ -9,11 +9,12 @@
 
 package cc.squirreljme.jvm.summercoat.ld.pack;
 
-import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
+import cc.squirreljme.jvm.summercoat.SummerCoatUtil;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
+import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
 import cc.squirreljme.jvm.summercoat.ld.mem.AbstractReadableMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemoryInputStream;
@@ -28,6 +29,10 @@ import java.io.IOException;
  */
 public final class PackRom
 {
+	/** Mask for integers. */
+	private static final long _INT_MASK =
+		0xFFFFFFFFL;
+	
 	/** The area where the ROM is. */
 	protected final ReadableMemory rom;
 	
@@ -84,8 +89,35 @@ public final class PackRom
 		Debugging.debugNote("Reading table of contents...");
 		
 		// Load in library references
-		for (int i = 0; i < count; i++)
-			throw Debugging.todo();
+		ReadableMemory rom = this.rom;
+		for (int dx = 0; dx < count; dx++)
+		{
+			// Flags for the JAR, is it compressed?
+			int flags = toc.get(dx, PackTocProperty.INT_FLAGS);
+			
+			// Load in the JAR name
+			String name = SummerCoatUtil.loadString(
+				rom.absoluteAddress(toc.get(dx, PackTocProperty.OFFSET_NAME)));
+			
+			// {@squirreljme.error ZZ52 JAR has no name?}
+			if (name == null)
+				throw new InvalidRomException("ZZ52");
+			
+			// {@squirreljme.error ZZ51 Name does not match hashed named.}
+			if (name.hashCode() != toc.get(dx,
+				PackTocProperty.INT_NAME_HASHCODE))
+				throw new InvalidRomException("ZZ51");
+			
+			// The location in memory where the ROM is located
+			ReadableMemory data = rom.subSection(
+				toc.get(dx, PackTocProperty.OFFSET_DATA) &
+					PackRom._INT_MASK,
+				toc.get(dx, PackTocProperty.SIZE_DATA) &
+					PackRom._INT_MASK);
+			
+			// Initialize ROM reference
+			rv[dx] = new JarRom(flags, name, data);
+		}
 		
 		// Cache and use a copy
 		this._libraries = rv;

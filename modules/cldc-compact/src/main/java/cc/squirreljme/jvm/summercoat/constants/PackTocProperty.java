@@ -24,19 +24,23 @@ public interface PackTocProperty
 	byte INT_NAME_HASHCODE =
 		1;
 	
-	/** The name of the resource. */
+	/** The name of the library. */
 	byte OFFSET_NAME =
 		2;
 	
+	/** The size of the library name. */
+	byte SIZE_NAME =
+		3;
+	
 	/** Offset to the JAR data. */
 	byte OFFSET_DATA =
-		3;
+		4;
 	
 	/** The size of the JAR data. */
 	byte SIZE_DATA =
-		4;
+		5;
 	
 	/** The properties available. */
 	byte NUM_PACK_TOC_PROPERTIES =
-		5;
+		6;
 }

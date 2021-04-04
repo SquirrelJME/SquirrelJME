@@ -61,6 +61,33 @@ public final class TableOfContents
 	}
 	
 	/**
+	 * Gets the given table of contents entry for the given index.
+	 * 
+	 * @param __dx The index to get.
+	 * @param __prop The property to get.
+	 * @return The value of the given index.
+	 * @throws IndexOutOfBoundsException If the index and/or property are not
+	 * in range.
+	 * @since 2021/04/04
+	 */
+	public int get(int __dx, int __prop)
+		throws IndexOutOfBoundsException
+	{
+		// Need to initialize this to get the info?
+		if (this._count < 0)
+			this.__init();
+		
+		// {@squirreljme.error ZZ50 The entry and/or property is not within
+		// bounds. (The index; The property)}
+		int span = this._span;
+		if (__dx < 0 || __dx >= this._count ||
+			__prop < 0 || __prop >= span)
+			throw new IndexOutOfBoundsException("ZZ50 " + __dx + " " + __prop);
+		
+		return this.data.memReadInt(4 + ((long)__dx * span) + __prop);
+	}
+	
+	/**
 	 * Initializes the table of contents fields.
 	 * 
 	 * @throws InvalidRomException If the table of contents is not valid.
@@ -69,15 +96,9 @@ public final class TableOfContents
 	private void __init()
 		throws InvalidRomException
 	{
-		// Debug
-		Debugging.debugNote("Will read.");
-		
 		ReadableMemory data = this.data;
 		int count = data.memReadShort(0) & 0xFFFF;
 		int span = data.memReadShort(2) & 0xFFFF;
-		
-		// Debug
-		Debugging.debugNote("TOC %d %d!", count, span);
 		
 		// {@squirreljme.error ZZ4v ROM has no span.}
 		if (span == 0)
