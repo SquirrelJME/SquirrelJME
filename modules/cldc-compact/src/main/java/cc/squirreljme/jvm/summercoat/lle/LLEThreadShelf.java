@@ -206,8 +206,8 @@ public final class LLEThreadShelf
 		TracePointBracket[] __trace)
 		throws MLECallError
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		// TODO: Implement setTrace()
+		Debugging.todoNote("Implement setTrace()");
 	}
 	
 	/**

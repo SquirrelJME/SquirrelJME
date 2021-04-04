@@ -306,7 +306,7 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static int toInteger(int __al, int __ah)
+	public static int toInteger(int __al, @SuppressWarnings("unused") int __ah)
 	{
 		// Just return the low order bits
 		return __al;
@@ -368,6 +368,10 @@ public final class SoftLong
 	private static long __div(boolean __doRem, int __nl, int __nh,
 		int __dl, int __dh)
 	{
+		// {@squirreljme.error ZZ4z Divide by zero.}
+		if (__dl == 0 && __dh == 0)
+			throw new ArithmeticException("ZZ4z");
+		
 		// Wikipedia (http://en.wikipedia.org/wiki/Division_%28digital%29)
 		// if D == 0 then throw DivisionByZeroException end
 		// Q := 0 # initialize quotient and remainder to zero

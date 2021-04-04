@@ -70,11 +70,11 @@ public final class PackRom
 		if (rv != null)
 			return rv.clone();
 		
-		// We need the table of contents to look at libraries
-		TableOfContents toc = this.__toc();
-		
 		// Debug
 		Debugging.debugNote("Loading table of contents...");
+		
+		// We need the table of contents to look at libraries
+		TableOfContents toc = this.__toc();
 		
 		// Setup base array
 		int count = toc.count();
@@ -112,6 +112,9 @@ public final class PackRom
 		// reference.}
 		if (tocBase < 0 || tocSize <= 0)
 			throw new InvalidRomException("ZZ4u");
+		
+		// Debug
+		Debugging.debugNote("TOC at %x (len %d)", tocBase, tocSize);
 		
 		// Setup new table of contents
 		this._toc = (rv = new TableOfContents(

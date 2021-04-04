@@ -968,7 +968,8 @@ public final class ByteCodeProcessor
 		this._canexception = (__v instanceof ConstantValueClass);
 		
 		// Push to the stack this type, the result is always cached
-		JavaStackResult result = this.state.stack.doStack(0, true, jt);
+		JavaStackResult result = this.state.stack.doStack(0,
+			true, jt);
 		this.__update(result);
 		
 		// Do not call generator, we just want the stack result
