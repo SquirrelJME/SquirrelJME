@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.summercoat.lle.LLERuntimeShelf;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Access to real memory within the system, this can access a region of memory.
