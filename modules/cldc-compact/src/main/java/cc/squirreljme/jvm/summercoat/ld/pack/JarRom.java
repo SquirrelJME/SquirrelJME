@@ -48,4 +48,14 @@ public class JarRom
 		this.name = __name;
 		this.data = __data;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/06
+	 */
+	@Override
+	public final String toString()
+	{
+		return this.name;
+	}
 }

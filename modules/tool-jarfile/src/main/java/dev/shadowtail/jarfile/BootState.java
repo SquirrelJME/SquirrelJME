@@ -74,6 +74,11 @@ public final class BootState
 	private static final FieldNameAndType _ARRAY_LENGTH =
 		new FieldNameAndType("length", "I");
 	
+	/** The type bracket in {@link Class}. */
+	private static final FieldNameAndType _CLASS_TYPEBRACKET =
+		new FieldNameAndType("_type",
+			"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;");
+	
 	/** The default constructor. */
 	private static final MethodNameAndType _DEFAULT_CONSTRUCTOR =
 		new MethodNameAndType("<init>", "()V");
@@ -1310,6 +1315,11 @@ public final class BootState
 		rv.set(StaticVmAttribute.OFFSETOF_THROWABLE_TRACE_FIELD,
 			objectBase + this.loadClass("java/lang/Throwable").classFile
 				.field(false, BootState._THROWABLE_TRACE).offset);
+		
+		// Class<?>'s TypeBracket
+		rv.set(StaticVmAttribute.OFFSETOF_CLASS_TYPEBRACKET_FIELD,
+			objectBase + this.loadClass("java/lang/Class").classFile
+				.field(false, BootState._CLASS_TYPEBRACKET).offset);
 		
 		return rv;
 	}

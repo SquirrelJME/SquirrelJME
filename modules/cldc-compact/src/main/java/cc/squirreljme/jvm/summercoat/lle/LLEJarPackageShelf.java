@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.SystemCall;
 import cc.squirreljme.jvm.summercoat.constants.RuntimeVmAttribute;
+import cc.squirreljme.jvm.summercoat.ld.pack.JarRom;
 import cc.squirreljme.jvm.summercoat.ld.pack.PackRom;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.InputStream;
@@ -99,8 +100,15 @@ public final class LLEJarPackageShelf
 	public static String libraryPath(JarPackageBracket __jar)
 		throws MLECallError
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__jar == null)
+			throw new MLECallError("NARG");
+		
+		// {@squirreljme.error ZZ54 Not the right JAR type.}
+		if (!(__jar instanceof JarRom))
+			throw new MLECallError("ZZ54");
+		
+		// The string representation is the JAR name
+		return __jar.toString();
 	}
 	
 	/**

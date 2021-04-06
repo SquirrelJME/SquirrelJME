@@ -174,6 +174,10 @@ public final class Minimizer
 			properties[StaticClassProperty.BOOLEAN_ROOT_IS_OBJECT].setInt(
 				input.thisName().isObjectClass() ? 1 : 0);
 		
+		// Is this primitive?
+		properties[StaticClassProperty.BOOLEAN_IS_PRIMITIVE].setInt(
+			(input.thisName().isPrimitive() ? 1 : 0));
+		
 		// name, superclass, and interfaces
 		properties[StaticClassProperty.SPOOL_THIS_CLASS_NAME].setInt(
 			localPool.add(false, input.thisName()).index);

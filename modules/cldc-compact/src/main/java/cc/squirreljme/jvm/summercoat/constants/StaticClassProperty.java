@@ -166,9 +166,13 @@ public interface StaticClassProperty
 	byte BOOLEAN_ROOT_IS_OBJECT =
 		35;
 	
+	/** Is this a primitive type? */
+	byte BOOLEAN_IS_PRIMITIVE =
+		36;
+	
 	/** The number of static properties. */
 	byte NUM_STATIC_PROPERTIES =
-		36;
+		37;
 	
 	/** Static field base index. */
 	@Deprecated

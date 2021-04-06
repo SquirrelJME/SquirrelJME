@@ -58,13 +58,13 @@ public enum HelperFunction
 		"initClass", "(Lcc/squirreljme/jvm/mle/" +
 		"brackets/TypeBracket;)V"),
 	
-	/** {@link LogicHandler#newArray(TypeBracket, int)}. */
-	NEW_ARRAY("cc/squirreljme/jvm/summercoat/LogicHandler",
-		"newArray", "(Lcc/squirreljme/jvm/mle/brackets" +
+	/** {@link LLEObjectShelf#arrayNew(TypeBracket, int)}. */
+	NEW_ARRAY("cc/squirreljme/jvm/summercoat/lle/LLEObjectShelf",
+		"arrayNew", "(Lcc/squirreljme/jvm/mle/brackets" +
 		"/TypeBracket;I)Ljava/lang/Object;"),
 	
-	/** {@link LogicHandler#newInstance(TypeBracket)}. */
-	NEW_INSTANCE("cc/squirreljme/jvm/summercoat/LogicHandler", 
+	/** {@link LLEObjectShelf#newInstance(TypeBracket)}. */
+	NEW_INSTANCE("cc/squirreljme/jvm/summercoat/lle/LLEObjectShelf", 
 		"newInstance", "(Lcc/squirreljme/jvm/mle/" +
 		"brackets/TypeBracket;)Ljava/lang/Object;"),
 	

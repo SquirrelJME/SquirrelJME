@@ -253,69 +253,6 @@ public final class LogicHandler
 	}
 	
 	/**
-	 * Allocates a new array
-	 * 
-	 * @param __info The class to allocate.
-	 * @param __len The array length.
-	 * @return The allocated object data.
-	 * @throws NegativeArraySizeException If the array is negatively sized.
-	 * @throws MLECallError On null arguments.
-	 * @throws OutOfMemoryError If there is no memory remaining.
-	 * @since 2020/11/29
-	 */
-	public static Object newArray(TypeBracket __info, int __len)
-		throws NegativeArraySizeException, MLECallError,
-			OutOfMemoryError
-	{
-		if (__info == null)
-			throw new MLECallError("NARG");
-		
-		if (__len < 0)
-			throw new NegativeArraySizeException("" + __len);
-		
-		// Determine how large the object needs to be
-		int allocBase = LogicHandler.typeGetProperty(__info,
-			ClassProperty.SIZE_ALLOCATION);
-		int allocSize = allocBase +
-			(__len * LogicHandler.typeGetProperty(__info,
-				ClassProperty.INT_COMPONENT_CELL_SIZE));
-		
-		// Allocate the object
-		Object rv = LogicHandler.__allocObject(__info, allocSize);
-		
-		// Set the length of the array
-		Assembly.memHandleWriteInt(rv, LogicHandler.staticVmAttribute(
-			StaticVmAttribute.OFFSETOF_ARRAY_LENGTH_FIELD), __len);
-		
-		return rv;
-	}
-	
-	/**
-	 * Allocates a new instance of the given class.
-	 * 
-	 * @param __info The class to allocate.
-	 * @return The allocated object data.
-	 * @throws MLECallError On null arguments.
-	 * @throws OutOfMemoryError If there is no memory remaining.
-	 * @since 2020/11/29
-	 */
-	public static Object newInstance(TypeBracket __info)
-		throws MLECallError, OutOfMemoryError
-	{
-		if (__info == null)
-			throw new MLECallError("NARG");
-		
-		// {@squirreljme.error ZZ4j Class has no allocated size?}
-		int allocSize = LogicHandler.typeGetProperty(__info,
-			ClassProperty.SIZE_ALLOCATION);
-		if (allocSize <= 0)
-			throw new MLECallError("ZZ4j");
-		
-		// Allocate the object
-		return LogicHandler.__allocObject(__info, allocSize);
-	}
-	
-	/**
 	 * This is the method that is called for all native and abstract methods
 	 * within the virtual machine so that every method leads somewhere.
 	 * 
@@ -345,47 +282,5 @@ public final class LogicHandler
 			throw new IllegalArgumentException("ZZ4n " + __attr);
 		
 		return LogicHandler.listRead(SystemCall.staticVmAttributes(), __attr);
-	}
-	
-	/**
-	 * Allocates an object and seeds initial information regarding it.
-	 * 
-	 * @param __info The class information.
-	 * @param __allocSize The allocation size of the object.
-	 * @return The allocated object.
-	 * @throws NullPointerException On null arguments.
-	 * @throws OutOfMemoryError If not enough memory is available.
-	 * @since 2021/01/23
-	 */
-	private static Object __allocObject(TypeBracket __info,
-		int __allocSize)
-		throws NullPointerException, OutOfMemoryError
-	{
-		if (__info == null)
-			throw new NullPointerException("NARG");
-		
-		// This represents the kind of handle that gets allocated
-		int memHandleKind = LogicHandler.typeGetProperty(__info,
-			ClassProperty.INT_MEMHANDLE_KIND);
-		
-		// Attempt to allocate a handle
-		int rv = SystemCall.memHandleNew(memHandleKind, __allocSize);
-		if (rv == 0)
-		{
-			// Attempt garbage collection
-			System.gc();
-			
-			// Try again, but fail if it still fails
-			rv = SystemCall.memHandleNew(memHandleKind, __allocSize);
-			if (rv == 0)
-				throw new OutOfMemoryError();
-		}
-		
-		// Set the object type information
-		Assembly.memHandleWriteObject(rv, LogicHandler.staticVmAttribute(
-			StaticVmAttribute.OFFSETOF_OBJECT_TYPE_FIELD), __info);
-		
-		// Convert to represented object before returning.
-		return Assembly.pointerToObject(rv);
 	}
 }

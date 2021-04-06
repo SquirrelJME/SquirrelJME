@@ -74,8 +74,13 @@ public final class LLETypeShelf
 	 */
 	public static TypeBracket classToType(Class<?> __cl)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__cl == null)
+			throw new MLECallError("NARG");
+		
+		// Just read the class type information
+		return Assembly.pointerToTypeBracket(Assembly.memHandleReadInt(__cl,
+			LogicHandler.staticVmAttribute(
+				StaticVmAttribute.OFFSETOF_CLASS_TYPEBRACKET_FIELD)));
 	}
 	
 	/**
@@ -90,8 +95,15 @@ public final class LLETypeShelf
 	public static TypeBracket component(TypeBracket __type)
 		throws MLECallError
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__type == null)
+			throw new MLECallError("NARG");
+		
+		// {@squirreljme.error ZZ53 Not an array type.}
+		if (!TypeShelf.isArray(__type))
+			throw new MLECallError("ZZ53");
+		
+		return Assembly.pointerToTypeBracket(LogicHandler.typeGetProperty(
+			__type, ClassProperty.TYPEBRACKET_COMPONENT));
 	}
 	
 	/**
@@ -105,8 +117,15 @@ public final class LLETypeShelf
 	 */
 	public static TypeBracket componentRoot(TypeBracket __type)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__type == null)
+			throw new MLECallError("NARG");
+		
+		// {@squirreljme.error ZZ53 Not an array type.}
+		if (!TypeShelf.isArray(__type))
+			throw new MLECallError("ZZ53");
+		
+		return Assembly.pointerToTypeBracket(LogicHandler.typeGetProperty(
+			__type, ClassProperty.TYPEBRACKET_ROOT_COMPONENT));
 	}
 	
 	/**
@@ -214,8 +233,11 @@ public final class LLETypeShelf
 	public static boolean isArray(TypeBracket __type)
 		throws MLECallError
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__type == null)
+			throw new MLECallError("NARG");
+		
+		return LogicHandler.typeGetProperty(__type,
+			StaticClassProperty.NUM_DIMENSIONS) > 0;
 	}
 	
 	/**
@@ -342,8 +364,12 @@ public final class LLETypeShelf
 	public static boolean isPrimitive(TypeBracket __type)
 		throws MLECallError
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__type == null)
+			throw new MLECallError("NARG");
+		
+		// Does this class say it is a primitive type?
+		return LogicHandler.typeGetProperty(__type,
+			StaticClassProperty.BOOLEAN_IS_PRIMITIVE) != 0;
 	}
 	
 	/**
