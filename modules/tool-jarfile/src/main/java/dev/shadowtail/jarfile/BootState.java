@@ -1009,6 +1009,10 @@ public final class BootState
 			handleKind, baseArraySize +
 				(__len * __cl.componentType().field().dataType().size()));
 		
+		// Set class kind
+		this.objectFieldSet(rv, BootState._OBJECT_CLASS_INFO,
+			state._classInfoHandle);
+		
 		// Debug
 		if (ClassFileDebug.ENABLE_DEBUG)
 			Debugging.debugNote("array[%d] (sz=%d)", __len, rv.byteSize);
@@ -1017,8 +1021,6 @@ public final class BootState
 		rv._arraySize = __len;
 		
 		// Set array field information
-		this.objectFieldSet(rv, BootState._OBJECT_CLASS_INFO,
-			state._classInfoHandle);
 		this.objectFieldSet(rv, BootState._ARRAY_LENGTH,
 			__len);
 		
@@ -2038,6 +2040,14 @@ public final class BootState
 			case INVOKED_METHOD:
 				InvokedMethod invokedMethod = __entry.<InvokedMethod>value(
 					InvokedMethod.class);
+				
+				// If we are calling an array, treat it as object
+				if (invokedMethod.handle.outerClass().isArray())
+					invokedMethod = new InvokedMethod(
+						invokedMethod.type,
+						new ClassName("java/lang/Object"),
+						invokedMethod.handle().name(),
+						invokedMethod.handle().nameAndType().type());
 				
 				// Load the target class details
 				MethodHandle handle = invokedMethod.handle;
