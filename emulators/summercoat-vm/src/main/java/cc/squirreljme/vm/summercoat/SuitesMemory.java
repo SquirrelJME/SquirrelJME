@@ -285,10 +285,6 @@ public final class SuitesMemory
 					romData, 0, newBytes.length);
 			}
 			
-			// Debug
-			Debugging.debugNote("ROM Header Len: %d", romData.length);
-			HexDumpOutputStream.dump(System.err, romData);
-			
 			// Store ROM virtual header
 			this._headerRom = new ByteArrayMemory(this.offset, romData);
 		}
