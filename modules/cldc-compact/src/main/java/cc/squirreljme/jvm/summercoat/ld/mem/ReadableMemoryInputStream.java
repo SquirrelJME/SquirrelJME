@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.summercoat.ld.mem;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.DataInput;
+import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -311,7 +312,7 @@ public final class ReadableMemoryInputStream
 	public String readUTF()
 		throws IOException
 	{
-		throw Debugging.todo();
+		return DataInputStream.readUTF(this);
 	}
 	
 	/**
