@@ -84,7 +84,8 @@ public final class TableOfContents
 			__prop < 0 || __prop >= span)
 			throw new IndexOutOfBoundsException("ZZ50 " + __dx + " " + __prop);
 		
-		return this.data.memReadInt(4 + ((long)__dx * span) + __prop);
+		return this.data.memReadInt(4 +
+			(4 * (((long)__dx * span) + __prop)));
 	}
 	
 	/**

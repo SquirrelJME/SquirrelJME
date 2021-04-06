@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.summercoat.ld.mem.MemoryAccessException;
 import cc.squirreljme.jvm.summercoat.ld.mem.NotRealMemoryException;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
 import cc.squirreljme.vm.PreAddressedClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.packfile.MinimizedPackHeader;
@@ -283,6 +284,10 @@ public final class SuitesMemory
 				System.arraycopy(newBytes, 0,
 					romData, 0, newBytes.length);
 			}
+			
+			// Debug
+			Debugging.debugNote("ROM Header Len: %d", romData.length);
+			HexDumpOutputStream.dump(System.err, romData);
 			
 			// Store ROM virtual header
 			this._headerRom = new ByteArrayMemory(this.offset, romData);
