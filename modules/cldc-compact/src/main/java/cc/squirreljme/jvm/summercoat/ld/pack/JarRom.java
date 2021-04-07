@@ -11,6 +11,8 @@ package cc.squirreljme.jvm.summercoat.ld.pack;
 
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.InputStream;
 
 /**
  * This represents a Jar, or some other abstract file, within the ROM.
@@ -28,6 +30,12 @@ public class JarRom
 	
 	/** The JAR name. */
 	protected final String name;
+	
+	/** Header structure, dynamically load. */
+	private HeaderStruct _header;
+	
+	/** Table of contents, dynamically loaded. */
+	private TableOfContents _toc;
 	
 	/**
 	 * Initializes the Jar ROM.
@@ -50,6 +58,22 @@ public class JarRom
 	}
 	
 	/**
+	 * @param __rc The resource to load.
+	 * @return The input stream over the resource.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/07
+	 */
+	public final InputStream openResource(String __rc)
+		throws NullPointerException
+	{
+		if (__rc == null)
+			throw new NullPointerException("NARG");
+		
+		TableOfContents toc = this.__toc();
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/06
 	 */
@@ -57,5 +81,38 @@ public class JarRom
 	public final String toString()
 	{
 		return this.name;
+	}
+	
+	/**
+	 * Potentially loads and returns the header.
+	 * 
+	 * @return The header.
+	 * @throws InvalidRomException If the ROM is not valid.
+	 * @since 2021/04/07
+	 */
+	private HeaderStruct __header()
+		throws InvalidRomException
+	{
+		HeaderStruct rv = this._header;
+		if (rv != null)
+			return rv;
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Potentially loads and returns the table of contents.
+	 * 
+	 * @return The table of contents.
+	 * @throws InvalidRomException If the ROM is not valid.
+	 * @since 2021/04/07
+	 */
+	private TableOfContents __toc()
+	{
+		TableOfContents rv = this._toc;
+		if (rv != null)
+			return rv;
+		
+		throw Debugging.todo();
 	}
 }

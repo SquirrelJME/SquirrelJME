@@ -103,12 +103,8 @@ public final class LLEJarPackageShelf
 		if (__jar == null)
 			throw new MLECallError("NARG");
 		
-		// {@squirreljme.error ZZ54 Not the right JAR type.}
-		if (!(__jar instanceof JarRom))
-			throw new MLECallError("ZZ54");
-		
 		// The string representation is the JAR name
-		return __jar.toString();
+		return LLEJarPackageShelf.__rom(__jar).toString();
 	}
 	
 	/**
@@ -126,8 +122,10 @@ public final class LLEJarPackageShelf
 		String __rc)
 		throws MLECallError
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__jar == null || __rc == null)
+			throw new MLECallError("NARG");
+		
+		return LLEJarPackageShelf.__rom(__jar).openResource(__rc);
 	}
 	
 	/**
@@ -156,5 +154,23 @@ public final class LLEJarPackageShelf
 		
 		// Create a new manager
 		return PackRom.load(romAddr);
+	}
+	
+	/**
+	 * Returns the JAR ROM.
+	 * 
+	 * @param __jar The JAR to get from.
+	 * @return The mapped JAR.
+	 * @throws MLECallError If this is not a correct Jar.
+	 * @since 2021/04/06
+	 */
+	private static JarRom __rom(JarPackageBracket __jar)
+		throws MLECallError
+	{
+		// {@squirreljme.error ZZ54 Not the right JAR type.}
+		if (!(__jar instanceof JarRom))
+			throw new MLECallError("ZZ54");
+		
+		return (JarRom)__jar;
 	}
 }

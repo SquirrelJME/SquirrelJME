@@ -37,7 +37,7 @@ public final class PackRom
 	protected final ReadableMemory rom;
 	
 	/** Properties for the ROM. */
-	private final int[] _properties;
+	protected final HeaderStruct header;
 	
 	/** Libraries which are already available. */
 	private JarPackageBracket[] _libraries;
@@ -49,17 +49,17 @@ public final class PackRom
 	 * Initializes the pack ROM manager.
 	 * 
 	 * @param __rom The memory where the ROM is located.
-	 * @param __properties Properties for the ROM.
+	 * @param __header Properties for the ROM.
 	 * @since 2021/02/09
 	 */
-	private PackRom(ReadableMemory __rom, int[] __properties)
+	private PackRom(ReadableMemory __rom, HeaderStruct __header)
 		throws NullPointerException
 	{
 		if (__rom == null)
 			throw new NullPointerException("NARG");
 		
 		this.rom = __rom;
-		this._properties = __properties;
+		this.header = __header;
 	}
 	
 	/**
@@ -137,8 +137,8 @@ public final class PackRom
 			return rv;
 		
 		// We need these to determine where to read the data
-		int tocBase = this._properties[PackProperty.OFFSET_TOC];
-		int tocSize = this._properties[PackProperty.SIZE_TOC];
+		int tocBase = this.header.getProperty(PackProperty.OFFSET_TOC);
+		int tocSize = this.header.getProperty(PackProperty.SIZE_TOC);
 		
 		// {@squirreljme.error ZZ4u ROM has invalid table of contents
 		// reference.}
@@ -169,29 +169,17 @@ public final class PackRom
 			ByteOrderType.BIG_ENDIAN);
 		try (ReadableMemoryInputStream in = headerMem.inputStream())
 		{
+			// Decode the header
+			HeaderStruct header = HeaderStruct.decode(in,
+				PackProperty.NUM_PACK_PROPERTIES);
+			
 			// {@squirreljme.error ZZ43 Invalid ROM header. (Magic number)}
-			int romMagic = in.readInt();
+			int romMagic = header.magicNumber;
 			if (ClassInfoConstants.PACK_MAGIC_NUMBER != romMagic)
 				throw new InvalidRomException("ZZ43 " + romMagic);
-				
-			// Read the format version
-			int formatVersion = in.readUnsignedShort();
-			
-			// {@squirreljme.error ZZ44 Cannot decode pack file because the
-			// version identifier is not known. (The format version of the pack
-			// file)}
-			if (formatVersion != ClassInfoConstants.CLASS_VERSION_20201129)
-				throw new InvalidRomException("ZZ44 " + formatVersion);
-			
-			// Read in all the data
-			int numProperties = Math.min(in.readUnsignedShort(),
-				PackProperty.NUM_PACK_PROPERTIES);
-			int[] properties = new int[numProperties];
-			for (int i = 0; i < numProperties; i++)
-				properties[i] = in.readInt();
 			
 			// {@squirreljme.error ZZ46 PackROM size is not valid. (The size)}
-			int romSize = properties[PackProperty.ROM_SIZE];
+			int romSize = header.getProperty(PackProperty.ROM_SIZE);
 			if (romSize <= ClassInfoConstants.PACK_MAXIMUM_HEADER_SIZE)
 				throw new InvalidRomException("ZZ46 " + romSize);
 			
@@ -200,7 +188,7 @@ public final class PackRom
 			
 			// Build the final PackROM
 			return new PackRom(new RealMemory(__memAddr, romSize,
-				ByteOrderType.BIG_ENDIAN), properties);
+				ByteOrderType.BIG_ENDIAN), header);
 		}
 		
 		// {@squirreljme.error ZZ42 The ROM is corrupted.}
