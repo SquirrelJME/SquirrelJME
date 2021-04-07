@@ -11,6 +11,8 @@ package cc.squirreljme.jvm.summercoat;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
+import cc.squirreljme.runtime.cldc.util.NaturalComparator;
+import java.util.Objects;
 
 /**
  * General utilities for SummerCoat.
@@ -110,5 +112,35 @@ public final class SummerCoatUtil
 		}
 		
 		return new String(chars, 0, numChars);
+	}
+	
+	/**
+	 * Compares the two strings.
+	 * 
+	 * @param __utfP The first string.
+	 * @param __s The second string.
+	 * @return The comparison result.
+	 * @since 2021/04/07
+	 */
+	public static int strCmp(long __utfP, String __s)
+	{
+		return Objects.compare(
+			SummerCoatUtil.loadString(__utfP), __s,
+			new NaturalComparator<String>());
+	}
+	
+	/**
+	 * Compares the two strings.
+	 * 
+	 * @param __s The first string.
+	 * @param __utfP The second string.
+	 * @return The comparison result.
+	 * @since 2021/04/07
+	 */
+	public static int strCmp(String __s, long __utfP)
+	{
+		return Objects.compare(
+			__s, SummerCoatUtil.loadString(__utfP),
+			new NaturalComparator<String>());
 	}
 }
