@@ -20,11 +20,14 @@ import net.multiphasicapps.io.ChunkFutureInteger;
  * is located in memory with a full 64-bit address potential. As such there
  * should be space following for the high value.
  *
- * Used with {@link BootstrapConstants#ACTION_BOOTJARP}.
+ * Used with {@link BootstrapConstants#ACTION_BOOTJARP_A}.
+ * 
+ * The high value is {@link HighBootJarPointer}.
  * 
  * @since 2021/01/18
  */
 public final class BootJarPointer
+	implements HasBootJarPointer
 {
 	/** The offset used, which may be a future. */
 	protected final ChunkFuture value;
@@ -101,6 +104,16 @@ public final class BootJarPointer
 	public boolean equals(Object __o)
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/08
+	 */
+	@Override
+	public BootJarPointer pointer()
+	{
+		return this;
 	}
 	
 	/**

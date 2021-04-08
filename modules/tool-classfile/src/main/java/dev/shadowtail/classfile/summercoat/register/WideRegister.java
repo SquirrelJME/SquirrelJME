@@ -17,6 +17,7 @@ import dev.shadowtail.classfile.nncc.NativeCode;
  * @since 2020/11/28
  */
 public final class WideRegister
+	extends Register
 {
 	/** Wide return value. */
 	public static final WideRegister WIDE_RETURN =
@@ -41,7 +42,9 @@ public final class WideRegister
 	public WideRegister(IntValueRegister __lo, IntValueRegister __hi)
 		throws IllegalArgumentException, NullPointerException
 	{
-		if (__lo == null || __hi == null)
+		super(__lo.register);
+		
+		if (__hi == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error JC4m High and low register are not adjacent.

@@ -10,6 +10,7 @@
 package dev.shadowtail.jarfile;
 
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
+import cc.squirreljme.jvm.summercoat.constants.CompilerConstants;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
@@ -737,9 +738,13 @@ public final class BootState
 			this.loadLangClass(__cl));
 		
 		// Set and initialize all of the entries within the pool
+		List<Object> poolSet = new ArrayList<>(rtPoolSz);
+		poolSet.add(null);	// null/zero entry
 		for (int i = 1; i < rtPoolSz; i++)
 		{
-			Object pv = this.__loadPool(rv, rtPool, rtPool.byIndex(i));
+			Object pv = this.__loadPool(rv, rtPool, rtPool.byIndex(i),
+				poolSet, i);
+			poolSet.add(pv);
 			
 			// Depends on the type of value returned
 			if (pv instanceof Integer)
@@ -748,14 +753,8 @@ public final class BootState
 				pool.set(i, (MemHandle)pv);
 			else if (pv instanceof ChunkFuture)
 				pool.set(i, (ChunkFuture)pv);
-			else if (pv instanceof BootJarPointer)
-				pool.set(i, (BootJarPointer)pv);
-			
-			// Do nothing for high runtime values
-			else if (pv instanceof HighRuntimeValue)
-			{
-				// Do nothing!
-			}
+			else if (pv instanceof HasBootJarPointer)
+				pool.set(i, (HasBootJarPointer)pv);
 			
 			// Do not know what to do with this
 			else
@@ -2000,13 +1999,15 @@ public final class BootState
 	 * @param __rv The class state this is for.
 	 * @param __clPool The class runtime pool;
 	 * @param __entry The entry to load.
+	 * @param __poolSet The pool set used, to refer to older entries.
+	 * @param __dx The current index.
 	 * @return The loaded pool value.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/29
 	 */
 	private Object __loadPool(ClassState __rv, BasicPool __clPool,
-		BasicPoolEntry __entry)
+		BasicPoolEntry __entry, List<Object> __poolSet, int __dx)
 		throws IOException, NullPointerException
 	{
 		if (__clPool == null || __entry == null)
@@ -2098,7 +2099,8 @@ public final class BootState
 					// Find the index for the method
 					for (int i = 0, n = methods.size(); i < n; i++)
 						if (handle.nameAndType().equals(methods.get(i)))
-							return this.__baseArraySize() + ((i * 4) * 2);
+							return this.__baseArraySize() +
+								((i * 4) * CompilerConstants.VTABLE_SPAN);
 					
 					// {@squirreljme.error BC0v Could not find an interface
 					// index for the given method. (The entry; The methods
@@ -2136,7 +2138,8 @@ public final class BootState
 						continue;
 					
 					// Return the offset into the XTable
-					return this.__baseArraySize() + ((i * 4) * 2);
+					return this.__baseArraySize() +
+						((i * 4) * CompilerConstants.VTABLE_SPAN);
 				}
 				
 				// {@squirreljme.error BC0s Could not link the given method.
@@ -2215,9 +2218,16 @@ public final class BootState
 				
 				return classNameHash.hashCode();
 				
-				// Ignore the high value and do nothing
+				// High value of something such as a noted string
 			case HIGH_RUNTIME_VALUE:
-				return __entry;
+				Object loVal = __poolSet.get(__dx - 1);
+				
+				// Low representation of the value
+				if (loVal instanceof BootJarPointer)
+					return new HighBootJarPointer((BootJarPointer)loVal);
+				
+				// Write garbage value in place
+				return 0xCACB_CCCD;
 		}
 		
 		if (false)
@@ -2279,15 +2289,22 @@ public final class BootState
 		
 		int numMethods = __methodInfo.size();
 		ListValueHandle vTable = this._memHandles.allocList(
-			MemHandleKind.VIRTUAL_VTABLE, numMethods * 2);
+			MemHandleKind.VIRTUAL_VTABLE,
+			numMethods * CompilerConstants.VTABLE_SPAN);
 		
 		// Build VTable information into an actual VTable
-		for (int i = 0, o = 0; i < numMethods; i++, o += 2)
+		for (int i = 0, o = 0; i < numMethods;
+			i++, o += CompilerConstants.VTABLE_SPAN)
 		{
 			VTableMethod method = __methodInfo.get(i);
 			
-			vTable.set(o, method.execAddr);
-			vTable.set(o + 1, method.poolHandle);
+			// Write the pool and the execution pointer (high+low)
+			vTable.set(o + CompilerConstants.VTABLE_POOL_INDEX,
+				method.poolHandle);
+			vTable.set(o + CompilerConstants.VTABLE_METHOD_A_INDEX,
+				method.execAddr);
+			vTable.set(o + CompilerConstants.VTABLE_METHOD_B_INDEX,
+				new HighBootJarPointer(method.execAddr));
 		}
 		
 		return vTable;

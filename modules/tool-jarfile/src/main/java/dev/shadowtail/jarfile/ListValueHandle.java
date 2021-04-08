@@ -183,7 +183,7 @@ public class ListValueHandle
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/01/10
 	 */
-	public void set(int __i, BootJarPointer __bjp)
+	public void set(int __i, HasBootJarPointer __bjp)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		if (__bjp == null)
@@ -193,7 +193,7 @@ public class ListValueHandle
 			throw new IndexOutOfBoundsException("IOOB " + __i);
 		
 		this.memActions.write(this,
-			MemoryType.LONG, this.__offset(__i), __bjp);
+			MemoryType.INTEGER, this.__offset(__i), __bjp);
 	}
 	
 	/**

@@ -15,6 +15,7 @@ package dev.shadowtail.classfile.summercoat.register;
  * @since 2020/11/24
  */
 public abstract class Register
+	implements Comparable<Register>
 {
 	/** The register Id. */
 	public final int register;
@@ -53,6 +54,16 @@ public abstract class Register
 			return (PlainRegister)this;
 		
 		return new PlainRegister(this.register);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/08
+	 */
+	@Override
+	public final int compareTo(Register __b)
+	{
+		return this.register - __b.register;
 	}
 	
 	/**

@@ -153,7 +153,8 @@ public final class DualClassRuntimePoolBuilder
 				BasicPoolEntry notedRv = runpool.add(__v,
 					this.addStatic(__v.toString()).index);
 					
-				// Recourses to add another entry following this
+				// Recourses to add another entry following this for the high
+				// value since we need room for it
 				this.addRuntime(new HighRuntimeValue(__v));
 				return notedRv;
 				

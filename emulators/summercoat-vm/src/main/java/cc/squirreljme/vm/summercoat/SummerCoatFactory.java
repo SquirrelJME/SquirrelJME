@@ -252,6 +252,9 @@ public class SummerCoatFactory
 						bigData, 0, bigData.length);
 				}
 				
+				// Boot Jar pointer seed
+				int bootJarSeed = 0;
+				
 				// Read in all the handle actions
 				for (;;)
 				{
@@ -260,12 +263,23 @@ public class SummerCoatFactory
 					if (type == 0)
 						break;
 					
+					// Is there an action mask?
+					int terp;
+					int action = (type < 0 ? -type : type) &
+						BootstrapConstants.ACTION_MASK;
+					
+					// Interpret value as action or the given type
+					if (action != 0)
+						terp = action;
+					else
+						terp = type;
+					
 					// Read the address it occurs at
 					int addr = dis.readUnsignedShort();
 					
 					// Determine what is being written to the memory
 					int readValue = -1;
-					switch (type)
+					switch (terp)
 					{
 							// Ignore Byte swaps
 						case -1:
@@ -320,16 +334,31 @@ public class SummerCoatFactory
 							readValue = target.id;
 							break;
 							
-							// Boot Jar Pointer
-						case BootstrapConstants.ACTION_BOOTJARP:
-							// Read the desired base offset
-							int baseOff = dis.readInt();
+							// Seed the Boot Jar Pointer Value, used for the
+							// low/high
+						case BootstrapConstants.ACTION_BOOTJARP_SEED:
+							bootJarSeed = dis.readInt();
+							readValue = bootJarSeed;
+							break;
+							
+							// Boot Jar Pointer (lo/hi)
+						case BootstrapConstants.ACTION_BOOTJARP_A:
+						case BootstrapConstants.ACTION_BOOTJARP_B:
+							// Load the value from the BootJarSeed
+							int baseOff = bootJarSeed;
 							readValue = baseOff;
 							
-							// Write where it should belong
-							handle.memWriteLong(addr,
-								(long)romBase + (long)bootJarOff +
-									(long)baseOff);
+							// Write where it should belong, SquirrelJME is
+							// always big endian so the lower value is always
+							// first
+							long desire = (long)romBase + (long)bootJarOff +
+								(long)baseOff;
+							if (terp == BootstrapConstants.ACTION_BOOTJARP_A)
+								handle.memWriteInt(addr,
+									(int)desire);
+							else
+								handle.memWriteInt(addr,
+									(int)(desire >>> 32));
 							break;
 						
 						default:

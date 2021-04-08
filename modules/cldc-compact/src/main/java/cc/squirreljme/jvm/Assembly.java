@@ -160,7 +160,7 @@ public final class Assembly
 	 * @param __pool The pool address to load.
 	 * @since 2019/04/28
 	 */
-	public static native void invoke(int __addr, int __pool);
+	public static native void invoke(long __addr, int __pool);
 	
 	/**
 	 * Invoke method at pointer, with arguments.
@@ -170,7 +170,7 @@ public final class Assembly
 	 * @param __a Argument.
 	 * @since 2019/04/28
 	 */
-	public static native void invoke(int __addr, int __pool, int __a);
+	public static native void invoke(long __addr, int __pool, int __a);
 	
 	/**
 	 * Invoke method at pointer, with arguments.
@@ -181,7 +181,7 @@ public final class Assembly
 	 * @param __b Argument.
 	 * @since 2019/04/28
 	 */
-	public static native void invoke(int __addr, int __pool, int __a,
+	public static native void invoke(long __addr, int __pool, int __a,
 		int __b);
 	
 	/**
@@ -194,7 +194,7 @@ public final class Assembly
 	 * @param __c Argument.
 	 * @since 2019/04/28
 	 */
-	public static native void invoke(int __addr, int __pool, int __a,
+	public static native void invoke(long __addr, int __pool, int __a,
 		int __b, int __c);
 	
 	/**
@@ -208,7 +208,7 @@ public final class Assembly
 	 * @param __d Argument.
 	 * @since 2019/04/28
 	 */
-	public static native void invoke(int __addr, int __pool, int __a,
+	public static native void invoke(long __addr, int __pool, int __a,
 		int __b, int __c, int __d);
 	
 	/**
@@ -223,7 +223,7 @@ public final class Assembly
 	 * @param __e Argument.
 	 * @since 2019/04/28
 	 */
-	public static native void invoke(int __addr, int __pool, int __a,
+	public static native void invoke(long __addr, int __pool, int __a,
 		int __b, int __c, int __d, int __e);
 	
 	/**
@@ -239,7 +239,7 @@ public final class Assembly
 	 * @param __f Argument.
 	 * @since 2019/04/28
 	 */
-	public static native void invoke(int __addr, int __pool, int __a,
+	public static native void invoke(long __addr, int __pool, int __a,
 		int __b, int __c, int __d, int __e, int __f);
 	
 	/**
@@ -256,7 +256,7 @@ public final class Assembly
 	 * @param __g Argument.
 	 * @since 2019/04/28
 	 */
-	public static native void invoke(int __addr, int __pool, int __a,
+	public static native void invoke(long __addr, int __pool, int __a,
 		int __b, int __c, int __d, int __e, int __f, int __g);
 	
 	/**
@@ -274,7 +274,7 @@ public final class Assembly
 	 * @param __h Argument.
 	 * @since 2019/04/28
 	 */
-	public static native void invoke(int __addr, int __pool, int __a,
+	public static native void invoke(long __addr, int __pool, int __a,
 		int __b, int __c, int __d, int __e, int __f, int __g, int __h);
 	
 	/**
@@ -285,7 +285,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/04/28
 	 */
-	public static native int invokeV(int __addr, int __pool);
+	public static native int invokeV(long __addr, int __pool);
 	
 	/**
 	 * Invoke method at pointer, with arguments.
@@ -296,7 +296,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/04/28
 	 */
-	public static native int invokeV(int __addr, int __pool, int __a);
+	public static native int invokeV(long __addr, int __pool, int __a);
 	
 	/**
 	 * Invoke method at pointer, with arguments.
@@ -308,7 +308,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/04/28
 	 */
-	public static native int invokeV(int __addr, int __pool, int __a,
+	public static native int invokeV(long __addr, int __pool, int __a,
 		int __b);
 	
 	/**
@@ -322,7 +322,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/04/28
 	 */
-	public static native int invokeV(int __addr, int __pool, int __a,
+	public static native int invokeV(long __addr, int __pool, int __a,
 		int __b, int __c);
 	
 	/**
@@ -337,7 +337,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/04/28
 	 */
-	public static native int invokeV(int __addr, int __pool, int __a,
+	public static native int invokeV(long __addr, int __pool, int __a,
 		int __b, int __c, int __d);
 	
 	/**
@@ -353,7 +353,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/04/28
 	 */
-	public static native int invokeV(int __addr, int __pool, int __a,
+	public static native int invokeV(long __addr, int __pool, int __a,
 		int __b, int __c, int __d, int __e);
 	
 	/**
@@ -370,7 +370,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/04/28
 	 */
-	public static native int invokeV(int __addr, int __pool, int __a,
+	public static native int invokeV(long __addr, int __pool, int __a,
 		int __b, int __c, int __d, int __e, int __f);
 	
 	/**
@@ -388,7 +388,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/04/28
 	 */
-	public static native int invokeV(int __addr, int __pool, int __a,
+	public static native int invokeV(long __addr, int __pool, int __a,
 		int __b, int __c, int __d, int __e, int __f, int __g);
 	
 	/**
@@ -407,7 +407,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/04/28
 	 */
-	public static native int invokeV(int __addr, int __pool, int __a,
+	public static native int invokeV(long __addr, int __pool, int __a,
 		int __b, int __c, int __d, int __e, int __f, int __g, int __h);
 	
 	/**
@@ -418,7 +418,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/12/08
 	 */
-	public static native long invokeVL(int __addr, int __pool);
+	public static native long invokeVL(long __addr, int __pool);
 	
 	/**
 	 * Invoke method at pointer, with arguments.
@@ -429,7 +429,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/12/08
 	 */
-	public static native long invokeVL(int __addr, int __pool, int __a);
+	public static native long invokeVL(long __addr, int __pool, int __a);
 	
 	/**
 	 * Invoke method at pointer, with arguments.
@@ -441,7 +441,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/12/08
 	 */
-	public static native long invokeVL(int __addr, int __pool, int __a,
+	public static native long invokeVL(long __addr, int __pool, int __a,
 		int __b);
 	
 	/**
@@ -455,7 +455,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/12/08
 	 */
-	public static native long invokeVL(int __addr, int __pool, int __a,
+	public static native long invokeVL(long __addr, int __pool, int __a,
 		int __b, int __c);
 	
 	/**
@@ -470,7 +470,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/12/08
 	 */
-	public static native long invokeVL(int __addr, int __pool, int __a, 
+	public static native long invokeVL(long __addr, int __pool, int __a, 
 		int __b, int __c, int __d);
 	
 	/**
@@ -486,7 +486,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/12/08
 	 */
-	public static native long invokeVL(int __addr, int __pool, int __a, 
+	public static native long invokeVL(long __addr, int __pool, int __a, 
 		int __b, int __c, int __d, int __e);
 	
 	/**
@@ -503,7 +503,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/12/08
 	 */
-	public static native long invokeVL(int __addr, int __pool, int __a, 
+	public static native long invokeVL(long __addr, int __pool, int __a, 
 		int __b, int __c, int __d, int __e, int __f);
 	
 	/**
@@ -521,7 +521,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/12/08
 	 */
-	public static native long invokeVL(int __addr, int __pool, int __a, 
+	public static native long invokeVL(long __addr, int __pool, int __a, 
 		int __b, int __c, int __d, int __e, int __f, int __g);
 	
 	/**
@@ -540,7 +540,7 @@ public final class Assembly
 	 * @return The result of the invocation.
 	 * @since 2019/12/08
 	 */
-	public static native long invokeVL(int __addr, int __pool, int __a, 
+	public static native long invokeVL(long __addr, int __pool, int __a, 
 		int __b, int __c, int __d, int __e, int __f, int __g, int __h);
 	
 	/**

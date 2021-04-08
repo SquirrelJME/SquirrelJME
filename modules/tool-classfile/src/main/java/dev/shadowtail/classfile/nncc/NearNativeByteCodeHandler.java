@@ -2213,7 +2213,7 @@ public final class NearNativeByteCodeHandler
 					codeBuilder.addCopy(__in[0].register, __out.register);
 				break;
 				
-				// Invoke method (possibly return a value)
+				// Invoke method with pool and possibly return a value
 			case "invoke":
 			case "invokeV":
 			case "invokeVL":
@@ -2226,17 +2226,15 @@ public final class NearNativeByteCodeHandler
 					// Build the register List
 					List<Integer> args = new ArrayList<>();
 					int n = __in.length;
-					for (int i = 2; i < n; i++)
+					for (int i = 3; i < n; i++)
 						args.add(__in[i].register);
 					
-					// Before we invoke we need to set the next pool so
-					// execution is correct!
-					codeBuilder.addCopy(__in[1].register,
-						NativeCode.NEXT_POOL_REGISTER);
-					
 					// Invoke pointer with arguments
-					codeBuilder.add(NativeInstructionType.INVOKE,
-						__in[0].register, new RegisterList(args));
+					codeBuilder.add(
+						NativeInstructionType.INVOKE_POINTER_AND_POOL,
+						__in[0].register, __in[0].register + 1,
+						__in[1].register,
+						new RegisterList(args));
 					
 					// Copy return value?
 					switch (asmfunc)
@@ -3200,8 +3198,8 @@ public final class NearNativeByteCodeHandler
 		
 		// Need room for the method and pool references
 		VolatileRegisterStack volatiles = this.volatiles;
-		try (Volatile<ExecutablePointer> methodAddr =
-				volatiles.getExecutablePointer();
+		try (Volatile<WideRegister> methodAddr =
+				volatiles.getWide();
 			Volatile<RuntimePoolPointer> poolRef =
 				volatiles.getRuntimePoolPointer())
 		{
@@ -3212,22 +3210,21 @@ public final class NearNativeByteCodeHandler
 				// Load the index to read from
 				codeBuilder.addPoolLoad(__method,
 					methodIndex.register);
-					
-				// Load the method pointer
-				codeBuilder.addMemHandleAccess(DataType.INTEGER, true,
-					methodAddr.register.asIntValue(),
-					__xTable.asMemHandle(), methodIndex.register.asIntValue());
-				
-				// The pool pointer will be in the next position, so add to
-				// get there
-				codeBuilder.addMathConst(StackJavaType.INTEGER, MathType.ADD,
-					methodIndex.register.asIntValue(),
-					DataType.INTEGER.size(),
-					methodIndex.register.asIntValue());
 				
 				// Load the pool pointer
 				codeBuilder.addMemHandleAccess(DataType.INTEGER, true,
 					poolRef.register.asIntValue(),
+					__xTable.asMemHandle(), methodIndex.register.asIntValue());
+					
+				// Move to get the address
+				codeBuilder.addMathConst(StackJavaType.INTEGER, MathType.ADD,
+					methodIndex.register.asIntValue(),
+					DataType.INTEGER.size(),
+					methodIndex.register.asIntValue());
+					
+				// Load the method pointer (as 64-bit value)
+				codeBuilder.addMemHandleAccess(DataType.LONG, true,
+					methodAddr.register,
 					__xTable.asMemHandle(), methodIndex.register.asIntValue());
 			}
 			

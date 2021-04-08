@@ -42,9 +42,21 @@ public interface BootstrapConstants
 	
 	/** Flag for memory handle actions. */
 	byte ACTION_MEMHANDLE = 
+		0x10;
+	
+	/** Boot Jar Pointer seed, for long and short value. */
+	byte ACTION_BOOTJARP_SEED =
+		0x20;
+	
+	/** Boot Jar Pointer action, A (low/high) value. */
+	byte ACTION_BOOTJARP_A =
+		0x30;
+	
+	/** Boot Jar Pointer action, B (low/high) value. */
+	byte ACTION_BOOTJARP_B =
 		0x40;
 	
-	/** Boot Jar Pointer action. */
-	byte ACTION_BOOTJARP =
-		0x20;
+	/** The mask for actions. */
+	byte ACTION_MASK =
+		0x70;
 }
