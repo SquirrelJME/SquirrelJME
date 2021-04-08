@@ -23,11 +23,15 @@ public class TestSoftFloatIToF
 {
 	/** The count. */
 	private static final int _COUNT =
-		128;
+		384;
 	
-	/** Quarter of the count. */
-	private static final int _QUARTER =
-		32;
+	/** Small count. */
+	private static final int _SMALL =
+		64;
+	
+	/** Negative small count. */
+	private static final int _NEG_SMALL =
+		128;
 	
 	/** The seed used. */
 	private static final long _SEED =
@@ -46,14 +50,17 @@ public class TestSoftFloatIToF
 		// Do massive conversions
 		for (int i = 0; i < TestSoftFloatIToF._COUNT; i++)
 		{
-			int iVal = (i < TestSoftFloatIToF._QUARTER ? i :
-				rand.nextInt());
-			float fVal = SoftInteger.toFloat(iVal);//(float)iVal;
+			int iVal = (i < TestSoftFloatIToF._SMALL ? i :
+				(i < TestSoftFloatIToF._NEG_SMALL ?
+					-(i - TestSoftFloatIToF._SMALL) :
+					rand.nextInt()));
+				
+			float fVal = SoftInteger.toFloat(iVal);
+			//float fVal = (float)iVal;
 			
 			this.secondary(String.format("v%03dT%012d", i, iVal)
 					.replace('-', 'n'),
-				Integer.toString(Float.floatToRawIntBits(fVal),
-					16));
+				String.format("0x%08x", Float.floatToRawIntBits(fVal)));
 		}
 	}
 }
