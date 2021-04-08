@@ -740,7 +740,7 @@ public final class NativeCPU
 					break;
 					
 					// Invoke a pointer
-				/*case NativeInstructionType.INVOKE:
+				case NativeInstructionType.INVOKE:
 					{
 						// Load values into the register list
 						for (int i = 0, n = reglist.length; i < n; i++)
@@ -755,7 +755,7 @@ public final class NativeCPU
 						// Clear point counter
 						pointcounter = 0;
 					}
-					break;*/
+					break;
 					
 					// Invoke with a ExecutionPointer+Pool
 				case NativeInstructionType.INVOKE_POINTER_AND_POOL:
@@ -765,8 +765,8 @@ public final class NativeCPU
 							reglist[i] = lr[reglist[i]];
 						
 						// Enter the frame
-						this.enterFrame(false, lr[argRaw[1]],
-							lr[argRaw[0]], reglist);
+						this.enterFrame(false, lr[argRaw[0]],
+							lr[argRaw[1]], reglist);
 						
 						// Entering some other frame
 						reload = true;

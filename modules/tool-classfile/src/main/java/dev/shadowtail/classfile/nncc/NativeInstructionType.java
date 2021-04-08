@@ -129,6 +129,19 @@ public interface NativeInstructionType
 	short RETURN =
 		0xF3;
 	
+	/**
+	 * Invoke. 
+	 * {@code iiiixxxx}.
+	 * 
+	 * @deprecated This instruction will use the deprecated
+	 * {@link NativeCode#NEXT_POOL_REGISTER} and copy it to the pool register
+	 * accordingly, use {@link NativeInstructionType#INVOKE_POINTER_ONLY} or
+	 * {@link NativeInstructionType#INVOKE_POINTER_AND_POOL} instead.
+	 */
+	@Deprecated
+	short INVOKE =
+		0xF7;
+	
 	/** Copy value in register. */
 	short COPY =
 		0xF8;

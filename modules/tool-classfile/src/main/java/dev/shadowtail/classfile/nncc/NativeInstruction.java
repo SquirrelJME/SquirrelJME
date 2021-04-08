@@ -300,8 +300,10 @@ public final class NativeInstruction
 			case NativeInstructionType.BREAKPOINT_MARKED:
 			case NativeInstructionType.PING:
 			case NativeInstructionType.COPY:
+			case NativeInstructionType.INVOKE:
 			case NativeInstructionType.LOAD_POOL:
 			case NativeInstructionType.SYSTEM_CALL:
+			case NativeInstructionType.INVOKE_POINTER_ONLY:
 			case NativeInstructionType.MEM_HANDLE_COUNT_DOWN:
 				return 2;
 					
@@ -311,7 +313,7 @@ public final class NativeInstruction
 			case NativeInstructionType.IFEQ_CONST:
 			case NativeInstructionType.MATH_REG_INT:
 			case NativeInstructionType.MATH_CONST_INT:
-			case NativeInstructionType.INVOKE_POINTER_ONLY:
+			case NativeInstructionType.INVOKE_POINTER_AND_POOL:
 				return 3;
 				
 			case NativeInstructionType.MEM_HANDLE_OFF_REG:
@@ -319,9 +321,6 @@ public final class NativeInstruction
 				if (DataType.of(__op & DataType.MASK).isWide())
 					return 4;
 				return 3;
-			
-			case NativeInstructionType.INVOKE_POINTER_AND_POOL:
-				return 4;
 			
 			case NativeInstructionType.MEMORY_OFF_REG:
 			case NativeInstructionType.MEMORY_OFF_ICONST:
@@ -371,17 +370,12 @@ public final class NativeInstruction
 				return ArgumentFormat.of(
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VPOOL);
-					
+				
 				// [r16, reglist]
 			case NativeInstructionType.SYSTEM_CALL:
-				return ArgumentFormat.of(
-					ArgumentFormat.VUREG,
-					ArgumentFormat.REGLIST);
-				
-				// [r16+r16, reglist]
+			case NativeInstructionType.INVOKE:
 			case NativeInstructionType.INVOKE_POINTER_ONLY:
 				return ArgumentFormat.of(
-					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG,
 					ArgumentFormat.REGLIST);
 				
@@ -404,10 +398,9 @@ public final class NativeInstruction
 					ArgumentFormat.VPOOL,
 					ArgumentFormat.VUREG);
 					
-				// [r16+r16, r16, reglist]
+				// [r16, r16, reglist]
 			case NativeInstructionType.INVOKE_POINTER_AND_POOL:
 				return ArgumentFormat.of(
-					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG,
 					ArgumentFormat.VUREG,
 					ArgumentFormat.REGLIST);
@@ -616,6 +609,7 @@ public final class NativeInstruction
 			case NativeInstructionType.DEBUG_EXIT:		return "DEBUG_EXIT";
 			case NativeInstructionType.DEBUG_POINT:		return "DEBUG_POINT";
 			case NativeInstructionType.IFEQ_CONST:		return "IFEQ_CONST";
+			case NativeInstructionType.INVOKE:			return "INVOKE";
 			case NativeInstructionType.LOAD_POOL:		return "LOAD_POOL";
 			case NativeInstructionType.RETURN:			return "RETURN";
 			case NativeInstructionType.SYSTEM_CALL:		return "SYSTEM_CALL";

@@ -18,17 +18,13 @@ public interface CompilerConstants
 {
 	/** Span of VTables. */
 	byte VTABLE_SPAN =
-		3;
-	
-	/** Pool index in the VTable. */
-	byte VTABLE_POOL_INDEX =
-		0;
+		2;
 	
 	/** VTable method address index (lo/a). */
 	byte VTABLE_METHOD_A_INDEX =
-		1;
+		0;
 	
-	/** VTable method address index (hi/b). */
-	byte VTABLE_METHOD_B_INDEX =
-		2;
+	/** Pool index in the VTable. */
+	byte VTABLE_POOL_INDEX =
+		1;
 }

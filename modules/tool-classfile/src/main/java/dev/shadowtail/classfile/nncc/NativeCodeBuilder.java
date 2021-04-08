@@ -414,7 +414,24 @@ public final class NativeCodeBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/27
 	 */
-	public NativeInstruction addInvokePoolAndPointer(WideRegister __exec,
+	public NativeInstruction addInvokePoolAndPointer(ExecutablePointer __exec,
+		RuntimePoolPointer __pool, Register... __args)
+	{
+		return this.addInvokePoolAndPointer(__exec, __pool,
+			new RegisterList(__args));
+	}
+	
+	/**
+	 * Adds an invocation of a pool and pointer value.
+	 * 
+	 * @param __exec The executable pointer.
+	 * @param __pool The pool pointer.
+	 * @param __args Arguments to the call.
+	 * @return The created instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/27
+	 */
+	public NativeInstruction addInvokePoolAndPointer(ExecutablePointer __exec,
 		RuntimePoolPointer __pool, RegisterList __args)
 		throws NullPointerException
 	{
@@ -422,7 +439,7 @@ public final class NativeCodeBuilder
 			throw new NullPointerException("NARG");
 			
 		return this.__add(NativeInstructionType.INVOKE_POINTER_AND_POOL,
-			__pool, __exec.low, __exec.high, __args);
+			__exec, __pool, __args);
 	}
 	
 	/**

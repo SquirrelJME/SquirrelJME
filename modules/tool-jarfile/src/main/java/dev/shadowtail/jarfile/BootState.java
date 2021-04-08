@@ -2217,17 +2217,6 @@ public final class BootState
 					ClassNameHash.class);
 				
 				return classNameHash.hashCode();
-				
-				// High value of something such as a noted string
-			case HIGH_RUNTIME_VALUE:
-				Object loVal = __poolSet.get(__dx - 1);
-				
-				// Low representation of the value
-				if (loVal instanceof BootJarPointer)
-					return new HighBootJarPointer((BootJarPointer)loVal);
-				
-				// Write garbage value in place
-				return 0xCACB_CCCD;
 		}
 		
 		if (false)
@@ -2303,8 +2292,8 @@ public final class BootState
 				method.poolHandle);
 			vTable.set(o + CompilerConstants.VTABLE_METHOD_A_INDEX,
 				method.execAddr);
-			vTable.set(o + CompilerConstants.VTABLE_METHOD_B_INDEX,
-				new HighBootJarPointer(method.execAddr));
+			/*vTable.set(o + CompilerConstants.VTABLE_METHOD_B_INDEX,
+				new HighBootJarPointer(method.execAddr));*/
 		}
 		
 		return vTable;

@@ -514,8 +514,12 @@ public final class LLETypeShelf
 	public static TypeBracket superClass(TypeBracket __type)
 		throws MLECallError
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__type == null)
+			throw new MLECallError("NARG");
+		
+		return Assembly.pointerToTypeBracket(
+			LogicHandler.typeGetProperty(__type,
+				ClassProperty.TYPEBRACKET_SUPER));
 	}
 	
 	/**
