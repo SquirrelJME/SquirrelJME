@@ -308,6 +308,7 @@ public final class SoftFloat
 	 */
 	protected static int __packToF32UI(boolean __sign, int __exp, int __sig)
 	{
+		// (((uint32_t) (sign)<<31) + ((uint32_t) (exp)<<23) + (sig))
 		return (__sign ? SoftFloat.SIGN_MASK : 0) + ((__exp) << 23) + (__sig);
 	}
 	
@@ -338,12 +339,11 @@ public final class SoftFloat
 			
 			// else if ((0xFD < exp) || (0x80000000 <= sig + roundIncrement))
 			else if (0xFD < __exp ||
-				UnsignedInteger.compareUnsigned(0x80000000,
+				UnsignedInteger.compareUnsigned(0x8000_0000,
 					__sig + roundIncrement) <= 0)
 			{
 				// uiZ = packToF32UI(__sign, 0xFF, 0) - !roundIncrement;
-				// goto uiZ;
-				return SoftFloat.__packToF32UI(__sign, 0xFF, 0) - 1;
+				return SoftFloat.__packToF32UI(__sign, 0xFF, 0);
 			}
 		}
 		
@@ -352,7 +352,9 @@ public final class SoftFloat
 		
 		// sig &= ~(uint_fast32_t) (! (roundBits ^ 0x40) & roundNearEven);
 		__sig &= ~(((roundBits ^ 0x40) == 0 ? 1 : 0) & 1);
-		if (__sig != 0)
+		
+		// if ( ! sig ) exp = 0;
+		if (__sig == 0)
 			__exp = 0;
 		
 		// uiZ = packToF32UI( sign, exp, sig );
