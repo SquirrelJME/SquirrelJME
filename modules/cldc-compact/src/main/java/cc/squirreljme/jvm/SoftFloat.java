@@ -9,11 +9,17 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.runtime.cldc.util.UnsignedInteger;
+
 /**
  * Software math operations on 32-bit floats.
+ * 
+ * This source file uses parts of the Berkeley SoftFloat Release 3e library,
+ * converted into Java. See the 3rd party licenses documentation.
  *
  * @since 2019/05/24
  */
+@SuppressWarnings("CommentedOutCode")
 public final class SoftFloat
 {
 	/** The sign mask. */
@@ -232,8 +238,30 @@ public final class SoftFloat
 	 */
 	private static int __cmp(int __a, int __b)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Equality, note second means -0 == 0
+		// return (uiA == uiB) || ! (uint32_t) ((uiA | uiB)<<1);
+		if (__a == __b || ((__a | __b) << 1) == 0)
+			return 0;
+		
+		// Less than
+		// (signA != signB) ? signA && ((uint32_t) ((uiA | uiB)<<1) != 0)
+		// : (uiA != uiB) && (signA ^ (uiA < uiB));
+		boolean signA = (0 != (__a & SoftFloat.SIGN_MASK));
+		boolean signB = (0 != (__b & SoftFloat.SIGN_MASK));
+		if (signA != signB)
+		{
+			// signA && ((uint32_t) ((uiA | uiB)<<1) != 0)
+			if (signA && ((__a | __b) << 1) != 0)
+				return -1;
+		}
+		
+		// (uiA != uiB) && (signA ^ (uiA < uiB))
+		// ^^^ const ^^
+		else if (signA ^ (UnsignedInteger.compareUnsigned(__a, __b) < 0))
+			return -1;
+		
+		// Anything else assume greater than
+		return 1;
 	}
 }
 
