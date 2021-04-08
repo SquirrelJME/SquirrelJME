@@ -324,6 +324,21 @@ public final class LLEObjectShelf
 	}
 	
 	/**
+	 * Checks if this object is an array.
+	 * 
+	 * @param __object The object to check.
+	 * @return If this object is an array.
+	 * @since 2021/04/07
+	 */
+	public static boolean isArray(Object __object)
+	{
+		if (__object == null)
+			throw new MLECallError("NARG");
+			
+		return LLEObjectShelf.arrayLength(__object) > 0;
+	}
+	
+	/**
 	 * Checks if this object is an instance of the given type.
 	 * 
 	 * @param __o The object to check.

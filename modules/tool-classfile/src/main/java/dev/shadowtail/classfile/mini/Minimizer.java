@@ -571,7 +571,8 @@ public final class Minimizer
 								{
 									vm = localpool.add(true, v).index;
 								}
-								catch (IllegalArgumentException e)
+								catch (IllegalArgumentException|
+									NullPointerException e)
 								{
 									// {@squirreljme.error JC4g Could not add
 									// pool entry because it is not valid.

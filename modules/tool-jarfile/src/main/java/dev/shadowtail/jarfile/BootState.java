@@ -9,7 +9,6 @@
 
 package dev.shadowtail.jarfile;
 
-import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
@@ -29,6 +28,7 @@ import dev.shadowtail.classfile.pool.BasicPoolEntry;
 import dev.shadowtail.classfile.pool.ClassNameHash;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
+import dev.shadowtail.classfile.pool.HighRuntimeValue;
 import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.InvokeXTable;
 import dev.shadowtail.classfile.pool.InvokedMethod;
@@ -95,6 +95,10 @@ public final class BootState
 	private static final FieldNameAndType _OBJECT_CLASS_INFO =
 		new FieldNameAndType("_classInfo",
 			Minimizer.CLASS_INFO_FIELD_DESC);
+	
+	/** The class static initializer. */
+	private static final MethodNameAndType _STATIC_CLINIT = 
+		new MethodNameAndType("<clinit>", "()V");
 	
 	/** The name of the string class. */
 	private static final ClassName _STRING_CLASS =
@@ -747,6 +751,12 @@ public final class BootState
 			else if (pv instanceof BootJarPointer)
 				pool.set(i, (BootJarPointer)pv);
 			
+			// Do nothing for high runtime values
+			else if (pv instanceof HighRuntimeValue)
+			{
+				// Do nothing!
+			}
+			
 			// Do not know what to do with this
 			else
 				throw Debugging.oops(pv);
@@ -769,8 +779,15 @@ public final class BootState
 		MinimizedMethod defConst = classFile.method(false,
 			BootState._DEFAULT_CONSTRUCTOR);
 		if (defConst != null)
-			classInfo.set(ClassProperty.FUNCPTR_DEFAULT_NEW,
+			classInfo.set(ClassProperty.FUNCPTR_DEFAULT_NEW_LO,
 				this.__calcMethodCodeAddr(rv, false, defConst));
+		
+		// Find the static initializer
+		MinimizedMethod clInit = classFile.method(true,
+			BootState._STATIC_CLINIT);
+		if (clInit != null)
+			classInfo.set(ClassProperty.FUNCPTR_CLINIT_LO,
+				this.__calcMethodCodeAddr(rv, true, clInit));
 		
 		// Loading the class is complete!
 		return rv;
@@ -1096,7 +1113,13 @@ public final class BootState
 		
 		// Load in class data
 		else
-			try (InputStream in = this._rawChunks.get(__class).currentStream())
+		{
+			// {@squirreljme.error JC4x Class does not exist. (The class)}
+			ChunkSection chunk = this._rawChunks.get(__class);
+			if (chunk == null)
+				throw new InvalidClassFormatException("JC4x " + __class);
+			
+			try (InputStream in = chunk.currentStream())
 			{
 				rv = MinimizedClassFile.decode(in, this._pool);
 				
@@ -1104,6 +1127,7 @@ public final class BootState
 				if (ClassFileDebug.ENABLE_DEBUG)
 					Debugging.debugNote("Read %s...", rv.thisName());
 			}
+		}
 		
 		// Cache it and use it
 		readClasses.put(__class, rv);
@@ -2190,6 +2214,10 @@ public final class BootState
 					ClassNameHash.class);
 				
 				return classNameHash.hashCode();
+				
+				// Ignore the high value and do nothing
+			case HIGH_RUNTIME_VALUE:
+				return __entry;
 		}
 		
 		if (false)

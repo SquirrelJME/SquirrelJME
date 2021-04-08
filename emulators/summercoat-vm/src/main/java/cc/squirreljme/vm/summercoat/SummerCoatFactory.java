@@ -327,8 +327,9 @@ public class SummerCoatFactory
 							readValue = baseOff;
 							
 							// Write where it should belong
-							handle.memWriteInt(addr,
-								romBase + bootJarOff + baseOff);
+							handle.memWriteLong(addr,
+								(long)romBase + (long)bootJarOff +
+									(long)baseOff);
 							break;
 						
 						default:

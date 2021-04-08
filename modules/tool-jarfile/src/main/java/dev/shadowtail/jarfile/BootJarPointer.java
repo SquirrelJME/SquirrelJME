@@ -9,6 +9,7 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.jvm.summercoat.constants.BootstrapConstants;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.io.ChunkForwardedFuture;
 import net.multiphasicapps.io.ChunkFuture;
@@ -16,8 +17,11 @@ import net.multiphasicapps.io.ChunkFutureInteger;
 
 /**
  * Represents a pointer within the boot JAR, used to refer to where the JAR
- * is located in memory.
+ * is located in memory with a full 64-bit address potential. As such there
+ * should be space following for the high value.
  *
+ * Used with {@link BootstrapConstants#ACTION_BOOTJARP}.
+ * 
  * @since 2021/01/18
  */
 public final class BootJarPointer

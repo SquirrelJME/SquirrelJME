@@ -148,13 +148,36 @@ public final class DualClassRuntimePoolBuilder
 					this.addStatic(cnh.className).index);
 			
 				// A string that is noted for its value (debugging)
-				// Or a string that is used
+				// Needs 64-bit value
 			case NOTED_STRING:
+				BasicPoolEntry notedRv = runpool.add(__v,
+					this.addStatic(__v.toString()).index);
+					
+				// Recourses to add another entry following this
+				this.addRuntime(new HighRuntimeValue(__v));
+				return notedRv;
+				
+				// A string with an object
 			case USED_STRING:
 				return runpool.add(__v,
 					this.addStatic(__v.toString()).index);
-			
-			// Unknown
+				
+				// High value, points to another entry
+			case HIGH_RUNTIME_VALUE:
+				try
+				{
+					return runpool.add(__v,
+						this.runPool.getByValue(
+							((HighRuntimeValue)__v).attachment).index);
+				}
+				catch (NullPointerException e)
+				{
+					// {@squirreljme.error JC4x No base value for the high
+					// runtime. (The entry)}
+					throw new IllegalStateException("JC4x " + __v);
+				}
+				
+				// Unknown
 			default:
 				// {@squirreljme.error JC4f Invalid type in runtime pool.
 				// (The type)}

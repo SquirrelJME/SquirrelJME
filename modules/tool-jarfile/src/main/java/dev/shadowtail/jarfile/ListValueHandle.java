@@ -193,7 +193,7 @@ public class ListValueHandle
 			throw new IndexOutOfBoundsException("IOOB " + __i);
 		
 		this.memActions.write(this,
-			MemoryType.INTEGER, this.__offset(__i), __bjp);
+			MemoryType.LONG, this.__offset(__i), __bjp);
 	}
 	
 	/**

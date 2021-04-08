@@ -12,6 +12,7 @@
       <w>bitfield</w>
       <w>bootram</w>
       <w>cldc</w>
+      <w>clinit</w>
       <w>codebeat</w>
       <w>compactified</w>
       <w>cpibm</w>
@@ -25,6 +26,7 @@
       <w>fileselectors</w>
       <w>fprintf</w>
       <w>framebuffer</w>
+      <w>funcptr</w>
       <w>gawroriski</w>
       <w>icache</w>
       <w>idleitem</w>
@@ -61,6 +63,7 @@
       <w>ljava</w>
       <w>memhandle</w>
       <w>messg</w>
+      <w>methodptr</w>
       <w>microedition</w>
       <w>midlet</w>
       <w>midlets</w>

@@ -288,8 +288,15 @@ public final class MemHandles
 					
 					// Is a BootJAR based pointer
 					else if (store instanceof BootJarPointer)
+					{
+						// {@squirreljme.error JC4x A boot JAR pointer can
+						// only be a long value. (The pointer)}
+						if (type != MemoryType.LONG)
+							throw new IllegalStateException("JC4x " + store);
+						
 						__outData.writeByte(
 							BootstrapConstants.ACTION_BOOTJARP);
+					}
 					
 					// Should not occur
 					else

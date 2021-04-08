@@ -20,6 +20,7 @@ import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePoolBuilder;
 import dev.shadowtail.classfile.pool.FieldAccessTime;
 import dev.shadowtail.classfile.pool.FieldAccessType;
+import dev.shadowtail.classfile.pool.HighRuntimeValue;
 import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.InvokeXTable;
 import dev.shadowtail.classfile.pool.InvokedMethod;
@@ -182,6 +183,7 @@ public final class DualPoolEncoder
 					case INTERFACE_CLASS:
 					case QUICK_CAST_CHECK:
 					case CLASS_NAME_HASH:
+					case HIGH_RUNTIME_VALUE:
 						// Read parts
 						if (iswide)
 							for (int p = 0; p < numparts; p++)
@@ -331,6 +333,12 @@ public final class DualPoolEncoder
 								value = new ClassNameHash(
 									classpool.<ClassName>byIndex(
 										ClassName.class, parts[2]));
+								break;
+								
+								// Decoded value
+							case HIGH_RUNTIME_VALUE:
+								value = new HighRuntimeValue(
+									entries.get(parts[0]).value);
 								break;
 								
 								// Unknown
@@ -668,6 +676,7 @@ public final class DualPoolEncoder
 			case USED_STRING:
 			case INTERFACE_CLASS:
 			case CLASS_NAME_HASH:
+			case HIGH_RUNTIME_VALUE:
 				if (__wide)
 					for (int i = 0, n = __p.length; i < n; i++)
 						dos.writeShortChecked(__p[i]);

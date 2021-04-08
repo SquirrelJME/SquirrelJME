@@ -294,6 +294,25 @@ public enum MLEObject
 		}
 	},
 	
+	/** {@link ObjectShelf#isArray(Object)}. */
+	IS_ARRAY("isInstance:(Ljava/lang/Object;Z")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/07
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringObject object = MLEType.__notNullObject(__args[0]);
+			
+			if (object instanceof SpringArrayObject)
+				return 1;
+			
+			return 0;
+		}
+	},
+	
 	/** {@link ObjectShelf#isInstance(Object, TypeBracket)}. */
 	IS_INSTANCE("isInstance:(Ljava/lang/Object;Lcc/squirreljme/" +
 		"jvm/mle/brackets/TypeBracket;)Z")

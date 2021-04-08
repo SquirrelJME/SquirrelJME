@@ -12,6 +12,7 @@ package dev.shadowtail.classfile.mini;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassNameHash;
 import dev.shadowtail.classfile.pool.ClassPool;
+import dev.shadowtail.classfile.pool.HighRuntimeValue;
 import dev.shadowtail.classfile.pool.InvokeXTable;
 import dev.shadowtail.classfile.pool.InvokedMethod;
 import dev.shadowtail.classfile.pool.NotedString;
@@ -89,6 +90,9 @@ public enum MinimizedPoolEntryType
 	
 	/** The hash code for a class. */
 	CLASS_NAME_HASH(true, ClassNameHash.class),
+	
+	/** Place holder for high long values. */
+	HIGH_RUNTIME_VALUE(true, HighRuntimeValue.class),
 	
 	/* End. */
 	;

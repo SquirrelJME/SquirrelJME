@@ -44,12 +44,18 @@ public final class LLETypeShelf
 	 *
 	 * @param __type The type to get the binary name of.
 	 * @return The binary name of this class.
+	 * @throws MLECallError If the type is not valid.
 	 * @since 2020/06/07
 	 */
 	public static String binaryName(TypeBracket __type)
+		throws MLECallError
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__type == null)
+			throw new MLECallError("NARG");
+		
+		return (String)Assembly.pointerToObject(
+			LogicHandler.typeGetProperty(__type,
+				ClassProperty.MEMHANDLE_THIS_NAME_DESC));
 	}
 	
 	/**
@@ -194,6 +200,48 @@ public final class LLETypeShelf
 	}
 	
 	/**
+	 * Initializes the given class.
+	 * 
+	 * @param __type The class info to initialize.
+	 * @throws MLECallError If the class is {@code null}.
+	 * @since 2020/11/28
+	 */
+	public static void initClass(TypeBracket __type)
+		throws MLECallError
+	{
+		if (__type == null)
+			throw new MLECallError("NARG");
+		
+		// If the class is already initialized, no point in doing it again
+		if (LLETypeShelf.isClassInit(__type))
+			return;
+		
+		// TODO: Protect initClass() for multiple threads
+		Debugging.todoNote("Protected initClass()");
+		
+		// Set as initialized _BEFORE_ we do the actual static method call
+		// because we are going to recurse into super classes and we do not
+		// want to end up in a class initialization loop!
+		LogicHandler.typeSetProperty(__type,
+			ClassProperty.BOOLEAN_IS_INITIALIZED, 1);
+		
+		// Initialize the super class first before we do this one
+		TypeBracket superType = LLETypeShelf.superClass(__type);
+		if (superType != null)
+			LLETypeShelf.initClass(superType);
+		
+		// If there is a static initializer, call it since we will need to
+		// setup any static fields and otherwise
+		long clInitFp = LogicHandler.typeGetPropertyLong(__type,
+			ClassProperty.FUNCPTR_CLINIT_LO);
+		if (clInitFp != 0)
+		{
+			Assembly.breakpoint();
+			throw Debugging.todo();
+		}
+	}
+	
+	/**
 	 * Returns the JAR that the type is within.
 	 *
 	 * @param __type The type to get the JAR of.
@@ -321,6 +369,36 @@ public final class LLETypeShelf
 		return LLETypeShelf.isAssignableFrom(
 			Assembly.objectToPointer(__this),
 			Assembly.objectToPointer(__other));
+	}
+	
+	/**
+	 * Checks if the given class is initialized.
+	 * 
+	 * @param __type The class info to initialize.
+	 * @return If the class is initialized.
+	 * @throws MLECallError If the type is not valid.
+	 * @since 2021/01/20
+	 */
+	public static boolean isClassInit(TypeBracket __type)
+		throws MLECallError
+	{
+		if (__type == null)
+			throw new MLECallError("NARG");
+		
+		// Debug
+		Debugging.debugNote("isClassInit(%s)?",
+			TypeShelf.binaryName(__type));
+		
+		// If this is an array, we just care if the root class is initialized
+		// since arrays are for the most part synthetic
+		if (LLETypeShelf.isArray(__type))
+			return LLETypeShelf.isClassInit(Assembly.pointerToTypeBracket(
+				LogicHandler.typeGetProperty(__type,
+					ClassProperty.TYPEBRACKET_ROOT_COMPONENT)));
+		
+		// Otherwise check if the type is initialized
+		return LogicHandler.typeGetProperty(__type,
+			ClassProperty.BOOLEAN_IS_INITIALIZED) != 0;
 	}
 	
 	/**

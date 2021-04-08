@@ -10,11 +10,12 @@
 package cc.squirreljme.jvm.summercoat;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This handles specific JVM logic that cannot easily be handled in byte code
@@ -80,6 +81,28 @@ public final class LogicHandler
 	}
 	
 	/**
+	 * Returns the value of the given class property as a {@code long}.
+	 * 
+	 * @param __info The information to get.
+	 * @param __p The {@link ClassProperty}.
+	 * @return The value of the given property.
+	 * @throws MLECallError If {@code __info} is {@code null} or is not a
+	 * valid class.
+	 * @since 2021/04/07
+	 */
+	public static long typeGetPropertyLong(TypeBracket __info, int __p)
+		throws MLECallError
+	{
+		int a = LogicHandler.typeGetProperty(__info, __p);
+		int b = LogicHandler.typeGetProperty(__info, __p + 1);
+		
+		// Depends on the system endianess
+		if (RuntimeShelf.byteOrder() == ByteOrderType.BIG_ENDIAN)
+			return Assembly.longPack(a, b);
+		return Assembly.longPack(b, a);
+	}
+	
+	/**
 	 * Sets the value of the given class property.
 	 * 
 	 * @param __info The information to get.
@@ -114,56 +137,6 @@ public final class LogicHandler
 		Assembly.ping();
 		/*Assembly.breakpoint();
 		throw Debugging.todo();*/
-	}
-	
-	/**
-	 * Checks if this object is an array.
-	 * 
-	 * @param __object The object to check.
-	 * @return If this object is an array.
-	 * @since 2021/01/24
-	 */
-	public static boolean isArray(Object __object)
-	{
-		// Null is never an array
-		if (__object == null)
-			return false;
-		
-		Assembly.breakpoint();
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * Checks if the given class is initialized.
-	 * 
-	 * @param __info The class info to initialize.
-	 * @return If the class is initialized.
-	 * @since 2021/01/20
-	 */
-	public static boolean isClassInit(int __info)
-	{
-		if (__info == 0)
-			throw new NullPointerException("NARG");
-		
-		Assembly.breakpoint();
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * Initializes the given class.
-	 * 
-	 * @param __info The class info to initialize.
-	 * @throws MLECallError If the class is {@code null}.
-	 * @since 2020/11/28
-	 */
-	public static void initClass(TypeBracket __info)
-		throws MLECallError
-	{
-		if (__info == null)
-			throw new MLECallError("NARG");
-		
-		Assembly.breakpoint();
-		throw Debugging.todo();
 	}
 	
 	/**
