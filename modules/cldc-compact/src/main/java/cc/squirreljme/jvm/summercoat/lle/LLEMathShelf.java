@@ -50,8 +50,7 @@ public final class LLEMathShelf
 	 */
 	public static int rawFloatToInt(float __v)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		return Assembly.floatToRawIntBits(__v);
 	}
 	
 	/**
@@ -63,8 +62,7 @@ public final class LLEMathShelf
 	 */
 	public static float rawIntToFloat(int __b)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		return Assembly.intBitsToFloat(__b);
 	}
 	
 	/**

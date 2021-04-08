@@ -19,7 +19,7 @@ import cc.squirreljme.runtime.cldc.util.UnsignedInteger;
  *
  * @since 2019/05/24
  */
-@SuppressWarnings("CommentedOutCode")
+@SuppressWarnings({"CommentedOutCode", "MagicNumber"})
 public final class SoftFloat
 {
 	/** The sign mask. */
@@ -262,6 +262,120 @@ public final class SoftFloat
 		
 		// Anything else assume greater than
 		return 1;
+	}
+	
+	/**
+	 * Normalized round packed to 32-bit float.
+	 * 
+	 * @param __sign The sign.
+	 * @param __exp The exponent.
+	 * @param __sig The significand.
+	 * @return The resultant value.
+	 * @since 2021/04/08
+	 */
+	protected static int __normRoundPackToF32(boolean __sign, int __exp,
+		int __sig)
+	{
+		int shiftDist;
+		
+		// shiftDist = softfloat_countLeadingZeros32( __sig ) - 1;
+		shiftDist = Integer.numberOfLeadingZeros(__sig) - 1;
+		__exp -= shiftDist;
+		
+		// if ( (7 <= shiftDist) && ((unsigned int) exp < 0xFD) ) {
+		if (7 <= shiftDist &&
+			UnsignedInteger.compareUnsigned(__exp, 0xFD) < 0)
+		{
+			// uZ.ui = packToF32UI( sign, sig ? exp : 0, sig<<(shiftDist - 7));
+			return SoftFloat.__packToF32UI(__sign,
+				(__sig != 0 ? __exp : 0),
+				__sig << (shiftDist - 7));
+		}
+		
+		// return softfloat_roundPackToF32( sign, exp, sig<<shiftDist );
+		return SoftFloat.__roundPackToF32(__sign, __exp,
+			__sig << shiftDist);
+	}
+	
+	/**
+	 * Packs value to an unsigned integer.
+	 * 
+	 * @param __sign Sign bit.
+	 * @param __exp Exponent.
+	 * @param __sig Significand.
+	 * @return The packed value.
+	 * @since 2021/04/08
+	 */
+	protected static int __packToF32UI(boolean __sign, int __exp, int __sig)
+	{
+		return (__sign ? SoftFloat.SIGN_MASK : 0) + ((__exp) << 23) + (__sig);
+	}
+	
+	/**
+	 * Round and pack to float.
+	 * 
+	 * @param __sign The sign.
+	 * @param __exp The exponent.
+	 * @param __sign The significand.
+	 * @return The resultant value.
+	 * @since 2021/04/08
+	 */
+	private static int __roundPackToF32(boolean __sign, int __exp, int __sig)
+	{
+		int roundIncrement = 0x40;
+		int roundBits = __sig & 0x7F;
+		
+		// if ( 0xFD <= (unsigned int) exp )
+		if (UnsignedInteger.compareUnsigned(0xFD, __exp) <= 0)
+		{
+			// Negative exponent?
+			if (__exp < 0)
+			{
+				__sig = SoftFloat.__shiftRightJam32(__sig, -__exp);
+				__exp = 0;
+				roundBits = __sig & 0x7F;
+			}
+			
+			// else if ((0xFD < exp) || (0x80000000 <= sig + roundIncrement))
+			else if (0xFD < __exp ||
+				UnsignedInteger.compareUnsigned(0x80000000,
+					__sig + roundIncrement) <= 0)
+			{
+				// uiZ = packToF32UI(__sign, 0xFF, 0) - !roundIncrement;
+				// goto uiZ;
+				return SoftFloat.__packToF32UI(__sign, 0xFF, 0) - 1;
+			}
+		}
+		
+		// sig = (sig + roundIncrement)>>7;
+		__sig = (__sig + roundIncrement) >>> 7;
+		
+		// sig &= ~(uint_fast32_t) (! (roundBits ^ 0x40) & roundNearEven);
+		__sig &= ~(((roundBits ^ 0x40) == 0 ? 1 : 0) & 1);
+		if (__sig != 0)
+			__exp = 0;
+		
+		// uiZ = packToF32UI( sign, exp, sig );
+		return SoftFloat.__packToF32UI(__sign, __exp, __sig);
+	}
+	
+	/**
+	 * Shift right and jam float.
+	 * 
+	 * @param __v The value.
+	 * @param __uDist The distance.
+	 * @return The jammed value.
+	 * @since 2021/04/08
+	 */
+	private static int __shiftRightJam32(int __v, int __uDist)
+	{
+		// uint_fast16_t dist
+		// (dist < 31) ? a>>dist | ((uint32_t) (a<<(-dist & 31)) != 0)
+		if (UnsignedInteger.compareUnsigned(__uDist, 31) < 0)
+			return __v >> __uDist | (((__v << (-__uDist & 31)) != 0) ? 1 : 0);
+		
+		// (a != 0)
+		return (__v != 0 ? 1 : 0);
 	}
 }
 

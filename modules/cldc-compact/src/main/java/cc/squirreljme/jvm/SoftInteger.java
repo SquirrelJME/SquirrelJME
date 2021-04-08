@@ -14,6 +14,7 @@ package cc.squirreljme.jvm;
  *
  * @since 2019/05/27
  */
+@SuppressWarnings("MagicNumber")
 public class SoftInteger
 {
 	/**
@@ -47,8 +48,22 @@ public class SoftInteger
 	 */
 	public static float toFloat(int __a)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		boolean sign = (__a < 0);
+		
+		// if ( ! (a & 0x7FFFFFFF) ) {
+		if ((__a & 0x7FFFFFFF) == 0)
+		{
+			// uZ.ui = sign ? packToF32UI( 1, 0x9E, 0 ) : 0;
+			return Float.intBitsToFloat((sign ?
+				SoftFloat.__packToF32UI(true, 0x9E, 0) :
+				0));
+		}
+		
+		int absA = sign ? -__a : __a;
+		
+		// return softfloat_normRoundPackToF32( sign, 0x9C, absA );
+		return Float.intBitsToFloat(
+			SoftFloat.__normRoundPackToF32(sign, 0x9C, absA));
 	}
 	
 	/**
