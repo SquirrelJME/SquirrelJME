@@ -51,7 +51,7 @@ public class SoftInteger
 		boolean sign = (__a < 0);
 		
 		// if ( ! (a & 0x7FFFFFFF) ) {
-		if ((__a & 0x7FFFFFFF) == 0)
+		if ((__a & 0x7FFF_FFFF) == 0)
 		{
 			// uZ.ui = sign ? packToF32UI( 1, 0x9E, 0 ) : 0;
 			return Float.intBitsToFloat((sign ?

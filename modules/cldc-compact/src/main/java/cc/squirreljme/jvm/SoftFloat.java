@@ -316,7 +316,7 @@ public final class SoftFloat
 	 * 
 	 * @param __sign The sign.
 	 * @param __exp The exponent.
-	 * @param __sign The significand.
+	 * @param __sig The significand.
 	 * @return The resultant value.
 	 * @since 2021/04/08
 	 */
