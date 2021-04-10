@@ -46,6 +46,18 @@ public final class SoftFloat
 	public static final float FLOAT_DEFAULT_NAN =
 		Float.intBitsToFloat(0xFFC0_0000);
 	
+	/** Integer from negative overflow. */
+	private static final int _INT_FROM_NEGOVER =
+		-0x7FFFFFFF - 1;
+	
+	/** Integer from positive overflow. */
+	private static final int _INT_FROM_POSOVER =
+		-0x7FFFFFFF - 1;
+	
+	/** Round near even mode. */
+	private static final int _ROUND_NEAR_EVEN = 
+		0;
+	
 	/**
 	 * Not used.
 	 *
@@ -308,8 +320,21 @@ public final class SoftFloat
 	 */
 	public static int toInteger(int __a)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		boolean sign = SoftFloat.__signF32UI(__a);
+		int exp = SoftFloat.__expF32UI(__a);
+		int sig = SoftFloat.__fracF32UI(__a);
+		
+		if (exp != 0)
+			sig |= 0x0080_0000;
+		
+		// sig64 = (uint_fast64_t) sig<<32;
+		long sig64 = Assembly.longPack(0, sig);
+		int shiftDist = 0xAA - exp;
+		
+		if (UnsignedInteger.compareUnsigned(0, shiftDist) < 0)
+			sig64 = SoftFloat.__shiftRightJam64(sig64, shiftDist);
+		
+		return SoftFloat.__roundToI32(sign, sig64);
 	}
 	
 	/**
@@ -574,6 +599,42 @@ public final class SoftFloat
 	}
 	
 	/**
+	 * Rounds to 32-bit integer.
+	 * 
+	 * @param __sign The sign.
+	 * @param __sig The significand.
+	 * @return The resultant integer.
+	 * @since 2021/04/10
+	 */
+	private static int __roundToI32(boolean __sign, long __sig)
+	{
+		int roundBits = ((int)__sig) & 0xFFF;
+		int roundIncrement = 0x800;
+		__sig += roundIncrement;
+		
+		// if ( sig & UINT64_C( 0xFFFFF00000000000 ) ) goto invalid;
+		if ((__sig & 0xFFFF_F000_0000_0000L) != 0)
+			return __sign ? SoftFloat._INT_FROM_NEGOVER :
+				SoftFloat._INT_FROM_POSOVER;
+		
+		// sig32 = sig>>12;
+		int sig32 = (int)(__sig >>> 12);
+		
+		// if (roundBits == 0x800) && (roundMode == softfloat_round_near_even)
+		if (roundBits == 0x800)
+			sig32 &= ~1;
+		
+		int z = __sign ? -sig32 : sig32;
+		
+		// if ( z && ((z < 0) ^ sign) ) goto invalid;
+		if (z != 0 && ((z < 0) ^ __sign))
+			return __sign ? SoftFloat._INT_FROM_NEGOVER :
+				SoftFloat._INT_FROM_POSOVER;
+		
+		return z;
+	}
+	
+	/**
 	 * Shift right and jam float.
 	 * 
 	 * @param __v The value.
@@ -590,6 +651,24 @@ public final class SoftFloat
 		
 		// (a != 0)
 		return (__v != 0 ? 1 : 0);
+	}
+	
+	/**
+	 * Shift right and jam 64-bit.
+	 * 
+	 * @param __a The value.
+	 * @param __dist The distance.
+	 * @return The result.
+	 * @since 2021/04/10
+	 */
+	private static long __shiftRightJam64(long __a, int __dist)
+	{
+		// (__dist < 63) ? __a>>__dist |
+		//     ((uint64_t) (__a<<(-__dist & 63)) != 0) : (__a != 0);
+		if (UnsignedInteger.compareUnsigned(__dist, 63) < 0)
+			return __a >>> __dist |
+				(((__a << (-__dist & 63)) != 0) ? 1 : 0);
+		return (__a != 0 ? 1 : 0);
 	}
 	
 	/**

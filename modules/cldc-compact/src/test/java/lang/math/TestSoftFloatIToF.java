@@ -9,6 +9,7 @@
 
 package lang.math;
 
+import cc.squirreljme.jvm.SoftFloat;
 import cc.squirreljme.jvm.SoftInteger;
 import java.util.Random;
 import net.multiphasicapps.tac.TestRunnable;
@@ -58,8 +59,8 @@ public class TestSoftFloatIToF
 			float fVal = SoftInteger.toFloat(iVal);
 			//float fVal = (float)iVal;
 			
-			//int xVal = SoftFloat.toInteger(iVal);
-			int xVal = (int)fVal;
+			int xVal = SoftFloat.toInteger(Float.floatToRawIntBits(fVal));
+			//int xVal = (int)fVal;
 			
 			this.secondary(String.format("v%03dT%012d", i, iVal)
 					.replace('-', 'n'),
