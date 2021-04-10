@@ -154,7 +154,7 @@ public final class DualClassRuntimePoolBuilder
 					this.addStatic(__v.toString()).index);
 					
 				// Recourses to add another entry following this
-				this.addRuntime(new HighRuntimeValue(__v));
+				/*this.addRuntime(new HighRuntimeValue(__v));*/
 				return notedRv;
 				
 				// A string with an object

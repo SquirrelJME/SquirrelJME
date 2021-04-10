@@ -42,6 +42,9 @@ public final class HighRuntimeValue
 	@Override
 	public boolean equals(Object __o)
 	{
+		if (this == __o)
+			return true;
+		
 		if (!(__o instanceof HighRuntimeValue))
 			return false;
 		

@@ -497,11 +497,14 @@ public final class NearNativeByteCodeHandler
 	public final void doFieldGet(FieldReference __fr,
 		JavaStackResult.Input __i, JavaStackResult.Output __v)
 	{
+		NativeCodeBuilder codeBuilder = this.codebuilder;
+		
 		// Push references
 		this.__refPush();
 		
 		// The instance register
 		MemHandleRegister instance = MemHandleRegister.of(__i.register);
+		MemHandleRegister outValue = MemHandleRegister.of(__v.register);
 		
 		// Cannot be null!
 		this.__basicCheckNPE(instance);
@@ -519,7 +522,6 @@ public final class NearNativeByteCodeHandler
 			this.volatiles.getTyped(AccessedField.class))
 		{
 			// Read field offset
-			NativeCodeBuilder codeBuilder = this.codebuilder;
 			codeBuilder.<AccessedField>addPoolLoad(this.__fieldAccess(
 				FieldAccessType.INSTANCE, __fr, true), fOff.register);
 			
@@ -536,12 +538,12 @@ public final class NearNativeByteCodeHandler
 			else
 			{
 				codeBuilder.addMemHandleAccess(dt, true,
-					IntValueRegister.of(__v.register),
+					outValue.asIntValue(),
 					instance, fOff.register.asIntValue());
 				
 				// Need to count up object?
 				if (__fr.memberType().isObject())
-					this.__refCount(MemHandleRegister.of(__v.register));
+					this.__refCount(outValue);
 			}
 		}
 			
@@ -557,6 +559,7 @@ public final class NearNativeByteCodeHandler
 	public final void doFieldPut(FieldReference __fr,
 		JavaStackResult.Input __i, JavaStackResult.Input __v)
 	{
+		// Debug
 		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
 		// Push references
@@ -595,13 +598,13 @@ public final class NearNativeByteCodeHandler
 			// already in this field
 			if (isObject)
 			{
-				// Count our own reference up
-				this.__refCount(instance);
+				// Count the value up before storing it
+				this.__refCount(value.asMemHandle());
 				
 				// Read the value of the field for later uncount
 				codeBuilder.addMemHandleAccess(dt, true,
-					old.register.asIntValue(), instance,
-					fieldOff.register.asIntValue());
+					old.register.asIntValue(),
+					instance, fieldOff.register.asIntValue());
 			}
 			
 			// Wide access?
@@ -611,7 +614,8 @@ public final class NearNativeByteCodeHandler
 					instance, fieldOff.register.asIntValue());
 			else
 				codeBuilder.addMemHandleAccess(dt, false,
-					value, instance, fieldOff.register.asIntValue());
+					value,
+					instance, fieldOff.register.asIntValue());
 			
 			// If we stored an object, reference count the field after it has
 			// been written to

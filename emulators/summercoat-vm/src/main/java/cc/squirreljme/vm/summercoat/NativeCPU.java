@@ -594,7 +594,7 @@ public final class NativeCPU
 			{
 					// CPU Ping
 				case NativeInstructionType.PING:
-					if (NativeCPU.ENABLE_DEBUG)
+					if (true || NativeCPU.ENABLE_DEBUG)
 					{
 						CallTraceUtils.printStackTrace(System.err,
 							String.format("PING! %04Xh: %s",
@@ -839,7 +839,7 @@ public final class NativeCPU
 						// Is this a long access?
 						boolean isWide = dt.isWide();
 						
-						// The handle to read from
+						// The handle to read from/write to
 						MemHandle handle = this.state.memHandles.get(
 							lr[argRaw[(isWide ? 2 : 1)]]);
 						int off = lr[argRaw[(isWide ? 3 : 2)]];
@@ -864,7 +864,7 @@ public final class NativeCPU
 							
 							case CHARACTER:
 								if (load)
-									readLo = handle.memReadShort(off) & 0xFFF;
+									readLo = handle.memReadShort(off) & 0xFFFF;
 								else
 									handle.memWriteShort(off, writeLo);
 								break;

@@ -217,7 +217,8 @@ public final class LLETypeShelf
 			return;
 		
 		// TODO: Protect initClass() for multiple threads
-		Debugging.todoNote("Protected initClass()");
+		Debugging.todoNote("Protected initClass(%s)",
+			TypeShelf.binaryName(__type));
 		
 		// Set as initialized _BEFORE_ we do the actual static method call
 		// because we are going to recurse into super classes and we do not
@@ -385,16 +386,16 @@ public final class LLETypeShelf
 		if (__type == null)
 			throw new MLECallError("NARG");
 		
-		// Debug
-		Debugging.debugNote("isClassInit(%s)?",
-			TypeShelf.binaryName(__type));
-		
 		// If this is an array, we just care if the root class is initialized
 		// since arrays are for the most part synthetic
 		if (LLETypeShelf.isArray(__type))
 			return LLETypeShelf.isClassInit(Assembly.pointerToTypeBracket(
 				LogicHandler.typeGetProperty(__type,
 					ClassProperty.TYPEBRACKET_ROOT_COMPONENT)));
+		
+		// Debug
+		Debugging.debugNote("isClassInit(%s)?",
+			TypeShelf.binaryName(__type));
 		
 		// Otherwise check if the type is initialized
 		return LogicHandler.typeGetProperty(__type,
