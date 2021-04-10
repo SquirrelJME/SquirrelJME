@@ -7,38 +7,35 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp;
+package cc.squirreljme.vm.springcoat;
+
+import cc.squirreljme.jdwp.JDWPState;
+import cc.squirreljme.jdwp.JDWPViewType;
+import java.lang.ref.Reference;
 
 /**
- * Represents the kind of view that is used for an object or otherwise.
+ * A viewer around class types.
  *
  * @since 2021/04/10
  */
-public enum JDWPViewKind
+public class DebugViewType
+	implements JDWPViewType
 {
-	/** An object. */
-	OBJECT(JDWPViewObject.class),
-	
-	/** A group of threads. */
-	THREAD_GROUP(JDWPViewThreadGroup.class),
-	
-	/** A type such as a class. */
-	TYPE(JDWPViewType.class),
-	
-	/* End. */
-	;
-	
-	/** The viewing class. */
-	public final Class<? extends JDWPView> viewClass;
+	/** The state of the debugger. */
+	protected final Reference<JDWPState> state;
 	
 	/**
-	 * Initializes the view kind.
+	 * Initializes the type viewer.
 	 * 
-	 * @param __viewClass The view class.
+	 * @param __state The state.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/10
 	 */
-	JDWPViewKind(Class<? extends JDWPView> __viewClass)
+	public DebugViewType(Reference<JDWPState> __state)
 	{
-		this.viewClass = __viewClass;
+		if (__state == null)
+			throw new NullPointerException("NARG");
+		
+		this.state = __state;
 	}
 }

@@ -47,6 +47,16 @@ public class DebugViewObject
 	 * @since 2021/04/10
 	 */
 	@Override
+	public boolean isArray(Object __what)
+	{
+		return (__what instanceof SpringArrayObject);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/10
+	 */
+	@Override
 	public boolean readValue(Object __what, int __index, JDWPValue __out)
 	{
 		// Nulls are never valid

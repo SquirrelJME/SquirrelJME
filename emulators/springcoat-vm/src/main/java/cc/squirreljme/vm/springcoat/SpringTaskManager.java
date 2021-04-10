@@ -160,6 +160,12 @@ public final class SpringTaskManager
 			case OBJECT:
 				return __type.cast(new DebugViewObject(__state));
 			
+			case THREAD_GROUP:
+				return __type.cast(new DebugViewThreadGroup(__state));
+			
+			case TYPE:
+				return __type.cast(new DebugViewType(__state));
+			
 			default:
 				throw Debugging.oops(__kind);
 		}

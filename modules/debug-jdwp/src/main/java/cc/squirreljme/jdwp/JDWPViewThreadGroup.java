@@ -10,30 +10,11 @@
 package cc.squirreljme.jdwp;
 
 /**
- * An object viewer.
+ * A view of thread groups.
  *
  * @since 2021/04/10
  */
-public interface JDWPViewObject
+public interface JDWPViewThreadGroup
 	extends JDWPView
 {
-	/**
-	 * Checks if the given object is an array.
-	 * 
-	 * @param __what What is being checked?
-	 * @return If the object is an array.
-	 * @since 2021/04/10
-	 */
-	boolean isArray(Object __what);
-	
-	/**
-	 * Reads the value of an instance field within the object.
-	 *
-	 * @param __what What is being read from?
-	 * @param __index The index to read from the object.
-	 * @param __out Where the value is to be stored.
-	 * @return {@code true} if this is a valid value.
-	 * @since 2021/04/10
-	 */
-	boolean readValue(Object __what, int __index, JDWPValue __out);
 }

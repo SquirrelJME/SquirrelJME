@@ -13,7 +13,6 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jdwp.JDWPArray;
 import cc.squirreljme.jdwp.JDWPClass;
 import cc.squirreljme.jdwp.JDWPValue;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayIndexOutOfBoundsException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayStoreException;
