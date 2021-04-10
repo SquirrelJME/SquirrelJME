@@ -43,8 +43,8 @@ public final class SoftFloat
 		23;
 	
 	/** Default NaN value. */
-	public static final int DEFAULT_NAN =
-		0xFFC0_0000;
+	public static final float FLOAT_DEFAULT_NAN =
+		Float.intBitsToFloat(0xFFC0_0000);
 	
 	/**
 	 * Not used.
@@ -181,7 +181,7 @@ public final class SoftFloat
 		{
 			// if ( ! magBits )
 			if (magBits == 0)
-				return SoftFloat.DEFAULT_NAN;
+				return SoftFloat.FLOAT_DEFAULT_NAN;
 			return Float.intBitsToFloat(
 				SoftFloat.__packToF32UI(signZ, 0xFF, 0));
 		}
