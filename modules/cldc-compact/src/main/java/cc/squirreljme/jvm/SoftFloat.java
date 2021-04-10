@@ -38,6 +38,14 @@ public final class SoftFloat
 	public static final int NAN_MASK =
 		0b0111_1111_1000_0000__0000_0000_0000_0000;
 	
+	/** Exponent shift. */
+	private static final byte _EXP_SHIFT = 
+		23;
+	
+	/** Default NaN value. */
+	public static final int DEFAULT_NAN =
+		0xFFC0_0000;
+	
 	/**
 	 * Not used.
 	 *
@@ -131,8 +139,93 @@ public final class SoftFloat
 	 */
 	public static float mul(int __a, int __b)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// First value
+		boolean signA = SoftFloat.__signF32UI(__a);
+		int expA = SoftFloat.__expF32UI(__a);
+		int sigA = SoftFloat.__fracF32UI(__a);
+		
+		// Second value
+		boolean signB = SoftFloat.__signF32UI(__b);
+		int expB = SoftFloat.__expF32UI(__b);
+		int sigB = SoftFloat.__fracF32UI(__b);
+		
+		// Will this result in a negative value?
+		boolean signZ = signA ^ signB;
+		
+		boolean returnInfinite = false;
+		int magBits = 0;
+		if (expA == 0xFF)
+		{
+			// if ( sigA || ((expB == 0xFF) && sigB) )
+			if (sigA != 0 || ((expB == 0xFF) && sigB != 0))
+				return Float.intBitsToFloat(
+					SoftFloat.__propagateNaNF32UI(__a, __b));
+			
+			magBits = expB | sigB;
+			returnInfinite = true;
+		}
+		
+		if (!returnInfinite && expB == 0xFF)
+		{
+			// if ( sigB )
+			if (sigB != 0)
+				return Float.intBitsToFloat(
+					SoftFloat.__propagateNaNF32UI(__a, __b));
+			
+			magBits = expA | sigA;
+			returnInfinite = true;
+		}
+		
+		// Returning infinite value?
+		if (returnInfinite)
+		{
+			// if ( ! magBits )
+			if (magBits == 0)
+				return SoftFloat.DEFAULT_NAN;
+			return SoftFloat.__packToF32UI(signZ, 0xFF, 0);
+		}
+		
+		// if ( ! expA )
+		if (expA == 0)
+		{
+			// if ( ! sigA )
+			if (sigA == 0)
+				return SoftFloat.__packToF32UI(signZ, 0, 0);
+				
+			long normExpSig = SoftFloat.__normSubnormalF32Sig(sigA);
+			expA = Assembly.longUnpackHigh(normExpSig);
+			sigA = Assembly.longUnpackLow(normExpSig);
+		}
+		
+		// if ( ! expB )
+		if (expB == 0)
+		{
+			// if ( ! sigB )
+			if (sigB == 0)
+				return SoftFloat.__packToF32UI(signZ, 0, 0);
+				
+			long normExpSig = SoftFloat.__normSubnormalF32Sig(sigB);
+			expB = Assembly.longUnpackHigh(normExpSig);
+			sigB = Assembly.longUnpackLow(normExpSig);
+		}
+		
+		int expZ = expA + expB - 0x7F;
+		sigA = (sigA | 0x00800000) << 7;
+		sigB = (sigB | 0x00800000) << 8;
+		
+		// sigZ = softfloat_shortShiftRightJam64(
+		//     (uint_fast64_t)sigA * sigB, 32);
+		int sigZ = (int)SoftFloat.__shortShiftRightJam64(
+			(long)sigA * sigB, 32);
+		
+		// if ( sigZ < 0x40000000 )
+		if (UnsignedInteger.compareUnsigned(sigZ, 0x40000000) < 0)
+		{
+			--expZ;
+			sigZ <<= 1;
+		}
+		
+		return SoftFloat.__roundPackToF32(signZ, expZ, sigZ);
 	}
 	
 	/**
@@ -265,6 +358,56 @@ public final class SoftFloat
 	}
 	
 	/**
+	 * Returns the exponent.
+	 * 
+	 * @param __a The float to read from.
+	 * @return The exponent.
+	 * @since 2021/04/10
+	 */
+	private static int __expF32UI(int __a)
+	{
+		return (((__a) >> SoftFloat._EXP_SHIFT) & 0xFF);
+	}
+	
+	/**
+	 * Returns the fraction/significand from the floating point value.
+	 * 
+	 * @param __a The float to read from.
+	 * @return The fraction/significand.
+	 * @since 2021/04/10
+	 */
+	private static int __fracF32UI(int __a)
+	{
+		return (__a & SoftFloat.FRACTION_MASK);
+	}
+	
+	/**
+	 * Gets if this is a NaN.
+	 * 
+	 * @param __a The value to check.
+	 * @return If this is a NaN.
+	 * @since 2021/04/10
+	 */
+	private static boolean __isNaNF32UI(int __a)
+	{
+		return ((~(__a) & 0x7F800000) == 0) &&
+			((__a) & 0x007FFFFF) != 0;
+	}
+	
+	/**
+	 * Gets if this is a signaling NaN.
+	 * 
+	 * @param __a The value to check.
+	 * @return If this is a signaling NaN.
+	 * @since 2021/04/10
+	 */
+	private static boolean __isSigNaNF32UI(int __a)
+	{
+		return ((__a & 0x7FC00000) == 0x7F800000) &&
+			(__a & 0x003FFFFF) != 0;
+	}
+	
+	/**
 	 * Normalized round packed to 32-bit float.
 	 * 
 	 * @param __sign The sign.
@@ -298,6 +441,24 @@ public final class SoftFloat
 	}
 	
 	/**
+	 * Normalizes a subnormal 32-bit float significand. 
+	 * 
+	 * @param __sig The significand.
+	 * @return The normalized value, the exponent is the high value and
+	 * the significand is the low value.
+	 * @since 2021/04/10
+	 */
+	private static long __normSubnormalF32Sig(int __sig)
+	{
+		// softfloat_countLeadingZeros32( sig ) - 8;
+		int shiftDist = Integer.numberOfLeadingZeros(__sig) - 8;
+		
+		// struct exp16_sig32 { int_fast16_t exp; uint_fast32_t sig; };
+		// exp = 1 - shiftDist ,, sig = sig<<shiftDist
+		return Assembly.longPack(1 - shiftDist, __sig << shiftDist);
+	}
+	
+	/**
 	 * Packs value to an unsigned integer.
 	 * 
 	 * @param __sign Sign bit.
@@ -310,6 +471,50 @@ public final class SoftFloat
 	{
 		// (((uint32_t) (sign)<<31) + ((uint32_t) (exp)<<23) + (sig))
 		return (__sign ? SoftFloat.SIGN_MASK : 0) + ((__exp) << 23) + (__sig);
+	}
+	
+	/**
+	 * Propagates the given NaN values.
+	 * 
+	 * @param __a The first value.
+	 * @param __b The second value.
+	 * @return The propagated NaN.
+	 * @since 2021/04/10
+	 */
+	private static int __propagateNaNF32UI(int __a, int __b)
+	{
+		boolean isSigNaNA = SoftFloat.__isSigNaNF32UI(__a);
+		boolean isSigNaNB = SoftFloat.__isSigNaNF32UI(__b);
+		
+		// Make NaNs non-signaling.
+		int uiNonSigA = __a | 0x00400000;
+		int uiNonSigB = __b | 0x00400000;
+		
+		// Are either of these signaling?
+		if (isSigNaNA | isSigNaNB)
+		{
+			if (isSigNaNA)
+			{
+				if (!isSigNaNB)
+					return SoftFloat.__isNaNF32UI(__b) ? uiNonSigB : uiNonSigA;
+			}
+			else
+				return SoftFloat.__isNaNF32UI(__a) ? uiNonSigA : uiNonSigB;
+		}
+		
+		int uiMagA = __a & 0x7FFFFFFF;
+		int uiMagB = __b & 0x7FFFFFFF;
+		
+		if (UnsignedInteger.compareUnsigned(uiMagA, uiMagB) < 0)
+			return uiNonSigB;
+		
+		if (UnsignedInteger.compareUnsigned(uiMagB, uiMagA) < 0)
+			return uiNonSigA;
+		
+		// return (uiNonSigA < uiNonSigB) ? uiNonSigA : uiNonSigB;
+		if (UnsignedInteger.compareUnsigned(uiNonSigA, uiNonSigB) < 0)
+			return uiNonSigA;
+		return uiNonSigB;
 	}
 	
 	/**
@@ -379,5 +584,31 @@ public final class SoftFloat
 		// (a != 0)
 		return (__v != 0 ? 1 : 0);
 	}
+	
+	/**
+	 * Short shift right jam at 64-bits.
+	 * 
+	 * @param __a The value to jam.
+	 * @param __dist The distance.
+	 * @return The jammed value.
+	 * @since 2021/04/10
+	 */
+	private static long __shortShiftRightJam64(long __a, int __dist)
+	{
+		// return a>>dist | ((a & (((uint_fast64_t) 1<<dist) - 1)) != 0);
+    	return __a >>> __dist |
+    		((__a & (((((1L << __dist) - 1)) != 0) ? 1 : 0)));
+	}
+	
+	/**
+	 * Returns whether the sign bit is set.
+	 * 
+	 * @param __a The float to read from.
+	 * @return If the sign bit is set.
+	 * @since 2021/04/10
+	 */
+	private static boolean __signF32UI(int __a)
+	{
+		return (__a & SoftFloat.SIGN_MASK) != 0;
+	}
 }
-

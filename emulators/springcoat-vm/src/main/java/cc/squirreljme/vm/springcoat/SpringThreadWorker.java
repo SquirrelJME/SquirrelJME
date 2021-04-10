@@ -1021,10 +1021,20 @@ public final class SpringThreadWorker
 		if (__class.toString().startsWith("cc/squirreljme/jvm/Assembly") ||
 			__class.toString().startsWith("cc/squirreljme/jvm/summercoat/lle/"))
 		{
-			// The only exception is made for packing longs
-			if (__class.toString().startsWith("cc/squirreljme/jvm/Assembly") ||
-				__method.name().toString().equals("longPack"))
-				return Assembly.longPack((int)__args[0], (int)__args[1]);
+			// The only exception is made for packing/unpacking longs
+			if (__class.toString().startsWith("cc/squirreljme/jvm/Assembly"))
+				switch (__method.name().toString())
+				{
+					case "longPack":
+						return Assembly.longPack(
+							(int)__args[0], (int)__args[1]);
+					
+					case "longUnpackHigh":
+						return Assembly.longUnpackHigh((long)__args[0]);
+					
+					case "longUnpackLow":
+						return Assembly.longUnpackLow((long)__args[0]);
+				}
 			
 			// Otherwise fail
 			throw new SpringVirtualMachineException(String.format(
