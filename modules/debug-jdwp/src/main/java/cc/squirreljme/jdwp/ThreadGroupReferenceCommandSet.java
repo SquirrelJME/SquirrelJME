@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * Thread group reference commands.
  *
@@ -31,18 +29,19 @@ public enum ThreadGroupReferenceCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Get and make sure it exists
-			JDWPThreadGroup group = __controller.state.threadGroups.get(
-				__packet.readId());
-			if (group == null)
+			JDWPViewThreadGroup view = __controller.viewThreadGroup();
+			
+			// Is this valid?
+			Object group = __controller.state.items.get(__packet.readId());
+			if (!view.isValid(group))
 				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_THREAD_GROUP);
-				
+					__packet.id(), ErrorType.INVALID_THREAD_GROUP);
+			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Matches the string representation of the group
-			rv.writeString(group.toString());
+			rv.writeString(view.name(group));
 			
 			return rv;
 		}
@@ -60,18 +59,19 @@ public enum ThreadGroupReferenceCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Get and make sure it exists
-			JDWPThreadGroup group = __controller.state.threadGroups.get(
-				__packet.readId());
-			if (group == null)
+			JDWPViewThreadGroup view = __controller.viewThreadGroup();
+			
+			// Is this valid?
+			Object group = __controller.state.items.get(__packet.readId());
+			if (!view.isValid(group))
 				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_THREAD_GROUP);
-				
+					__packet.id(), ErrorType.INVALID_THREAD_GROUP);
+			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// There are never any parent thread groups
-			rv.writeId(null);
+			rv.writeId(0);
 			
 			return rv;
 		}
@@ -89,27 +89,26 @@ public enum ThreadGroupReferenceCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Get and make sure it exists
-			JDWPThreadGroup group = __controller.state.threadGroups.get(
-				__packet.readId());
-			if (group == null)
+			JDWPViewThreadGroup view = __controller.viewThreadGroup();
+			
+			// Is this valid?
+			Object group = __controller.state.items.get(__packet.readId());
+			if (!view.isValid(group))
 				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_THREAD_GROUP);
+					__packet.id(), ErrorType.INVALID_THREAD_GROUP);
 				
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write number of child threads
-			JDWPThread[] threads = group.debuggerThreads();
+			Object[] threads = view.threads(group);
 			rv.writeInt(threads.length);
 			
 			// Record all of their IDs
-			for (JDWPThread thread : threads)
+			for (Object thread : threads)
 			{	
-				rv.writeId(thread);
-				
-				// Register for later reference
-				__controller.state.threads.put(thread);
+				__controller.state.items.put(thread);
+				rv.writeId(System.identityHashCode(thread));
 			}
 			
 			// There are never any child thread groups

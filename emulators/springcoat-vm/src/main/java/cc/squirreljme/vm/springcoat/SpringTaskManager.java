@@ -100,6 +100,16 @@ public final class SpringTaskManager
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/04/10
+	 */
+	@Override
+	public Object[] debuggerThreadGroups()
+	{
+		return this.tasks();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/03/13
 	 */
 	@Override
@@ -112,7 +122,7 @@ public final class SpringTaskManager
 				case LOADED_CLASSES:
 					{
 						JDWPLinker<JDWPClass> classes =
-							__state.classes;
+							__state.oldClasses;
 							
 						for (SpringMachine machine : this.tasks())
 							for (SpringClass cl :
@@ -125,7 +135,7 @@ public final class SpringTaskManager
 				case THREAD_GROUPS:
 					{
 						JDWPLinker<JDWPThreadGroup> threadGroups =
-							__state.threadGroups;
+							__state.oldThreadGroups;
 						
 						for (SpringMachine machine : this.tasks())
 							threadGroups.put(machine);
@@ -135,7 +145,7 @@ public final class SpringTaskManager
 					// Threads
 				case THREADS:
 					{
-						JDWPLinker<JDWPThread> threads = __state.threads;
+						JDWPLinker<JDWPThread> threads = __state.oldThreads;
 						
 						for (SpringMachine machine : this.tasks())
 							for (SpringThread thread : machine.getThreads())
@@ -159,6 +169,9 @@ public final class SpringTaskManager
 		{
 			case OBJECT:
 				return __type.cast(new DebugViewObject(__state));
+			
+			case THREAD:
+				return __type.cast(new DebugViewThread(__state));
 			
 			case THREAD_GROUP:
 				return __type.cast(new DebugViewThreadGroup(__state));

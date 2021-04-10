@@ -69,7 +69,7 @@ public enum EventRequestCommandSet
 					
 					case ONLY_IN_THREAD:
 						modifiers.add(new ThreadModifier(
-							__controller.state.threads.get(__packet.id())));
+							__controller.state.oldThreads.get(__packet.id())));
 						break;
 					
 					case ONLY_IN_CLASS:
@@ -91,9 +91,9 @@ public enum EventRequestCommandSet
 							__packet.readByte();
 							
 							// Read the location
-							JDWPClass inClass = __controller.state.classes
+							JDWPClass inClass = __controller.state.oldClasses
 								.get(__packet.readId());
-							JDWPMethod inMethod = __controller.state.methods
+							JDWPMethod inMethod = __controller.state.oldMethods
 								.get(__packet.readId()); 
 							long index = __packet.readLong();
 							

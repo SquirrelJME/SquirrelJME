@@ -10,7 +10,6 @@
 package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Command set for thread support.
@@ -32,20 +31,20 @@ public enum ThreadReferenceCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			JDWPThread thread = __controller.state.threads.get(
-				__packet.readId());
+			JDWPViewThread view = __controller.viewThread();
 			
-			// Thread is missing or otherwise invalid?
-			if (thread == null)
+			// Is this valid?
+			Object thread = __controller.state.items.get(__packet.readId());
+			if (!view.isValid(thread))
 				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_THREAD);
-				
+					__packet.id(), ErrorType.INVALID_THREAD);
+			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// This just uses the object name of the thread, whatever that
 			// may be for simplicity and mapping
-			rv.writeString(thread.toString());
+			rv.writeString(view.name(thread));
 			
 			return rv;
 		}
@@ -63,14 +62,17 @@ public enum ThreadReferenceCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Thread is missing or otherwise invalid?
-			JDWPThread thread = __controller.state.threads.get(
-				__packet.readId());
-			if (thread == null)
-				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_THREAD);
+			JDWPViewThread view = __controller.viewThread();
 			
-			thread.debuggerSuspend().suspend();
+			// Is this valid?
+			Object thread = __controller.state.items.get(__packet.readId());
+			if (!view.isValid(thread))
+				return __controller.__reply(
+					__packet.id(), ErrorType.INVALID_THREAD);
+			
+			// Suspend the thread
+			view.suspension(thread).suspend();
+			
 			return null;
 		}
 	},
@@ -87,14 +89,17 @@ public enum ThreadReferenceCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Thread is missing or otherwise invalid?
-			JDWPThread thread = __controller.state.threads.get(
-				__packet.readId());
-			if (thread == null)
-				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_THREAD);
+			JDWPViewThread view = __controller.viewThread();
 			
-			thread.debuggerSuspend().resume();
+			// Is this valid?
+			Object thread = __controller.state.items.get(__packet.readId());
+			if (!view.isValid(thread))
+				return __controller.__reply(
+					__packet.id(), ErrorType.INVALID_THREAD);
+			
+			// Suspend the thread
+			view.suspension(thread).resume();
+			
 			return null;
 		}
 	},
@@ -111,18 +116,19 @@ public enum ThreadReferenceCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Thread is missing or otherwise invalid?
-			JDWPThread thread = __controller.state.threads.get(
-				__packet.readId());
-			if (thread == null)
+			JDWPViewThread view = __controller.viewThread();
+			
+			// Is this valid?
+			Object thread = __controller.state.items.get(__packet.readId());
+			if (!view.isValid(thread))
 				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_THREAD);
-				
+					__packet.id(), ErrorType.INVALID_THREAD);
+			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Which state is this thread in?
-			switch (thread.debuggerThreadStatus())
+			switch (view.status(thread))
 			{
 					// Sleeping
 				case ThreadStatusType.SLEEPING:
@@ -142,7 +148,7 @@ public enum ThreadReferenceCommandSet
 			}
 			
 			// If the thread is suspended, then it will be flagged as such
-			rv.writeInt(thread.debuggerSuspend().query() > 0 ? 1 : 0);
+			rv.writeInt(view.suspension(thread).query() > 0 ? 1 : 0);
 			
 			return rv;
 		}
@@ -160,22 +166,23 @@ public enum ThreadReferenceCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Thread is missing or otherwise invalid?
-			JDWPThread thread = __controller.state.threads.get(
-				__packet.readId());
-			if (thread == null)
+			JDWPViewThread view = __controller.viewThread();
+			
+			// Is this valid?
+			Object thread = __controller.state.items.get(__packet.readId());
+			if (!view.isValid(thread))
 				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_THREAD);
+					__packet.id(), ErrorType.INVALID_THREAD);
 				
+			// Get the parent
+			Object parent = view.parentGroup(thread);
+			__controller.state.items.put(parent);
+			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write the thread group
-			JDWPThreadGroup group = thread.debuggerThreadGroup();
-			rv.writeId(group);
-			
-			// Register it for later finding
-			__controller.state.threadGroups.put(group);
+			rv.writeId(System.identityHashCode(parent));
 			
 			return rv;
 		}
@@ -194,7 +201,7 @@ public enum ThreadReferenceCommandSet
 			throws JDWPException
 		{
 			// Thread is missing or otherwise invalid?
-			JDWPThread thread = __controller.state.threads.get(
+			JDWPThread thread = __controller.state.oldThreads.get(
 				__packet.readId());
 			if (thread == null)
 				return __controller.__reply(
@@ -212,14 +219,17 @@ public enum ThreadReferenceCommandSet
 			// Start by writing the frame count
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
-			rv.writeInt(count);
+			rv.writeInt(0);//count);
+			
+			if (true)
+				return rv;
 			
 			// Write each individual frame
 			for (int i = startFrame, j = 0; j < count; i++, j++)
 			{
 				// Register this frame so it can be grabbed later
 				JDWPThreadFrame frame = frames[i];
-				__controller.state.frames.put(frame);
+				__controller.state.oldFrames.put(frame);
 				
 				// Write frame ID
 				rv.writeId(frame);
@@ -238,8 +248,8 @@ public enum ThreadReferenceCommandSet
 				
 				// Make sure the class and methods are registered for later
 				// retrieval
-				__controller.state.classes.put(classy);
-				__controller.state.methods.put(method);
+				__controller.state.oldClasses.put(classy);
+				__controller.state.oldMethods.put(method);
 			} 
 			
 			return rv;
@@ -258,7 +268,7 @@ public enum ThreadReferenceCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			JDWPThread thread = __controller.state.threads.get(
+			JDWPThread thread = __controller.state.oldThreads.get(
 				__packet.readId());
 			
 			// Thread is missing or otherwise invalid?
@@ -270,7 +280,7 @@ public enum ThreadReferenceCommandSet
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Return the frame count
-			rv.writeInt(thread.debuggerFrames().length);
+			rv.writeInt(0);//thread.debuggerFrames().length);
 			
 			return rv;
 		}
@@ -288,20 +298,18 @@ public enum ThreadReferenceCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			JDWPThread thread = __controller.state.threads.get(
-				__packet.readId());
+			JDWPViewThread view = __controller.viewThread();
 			
-			// Thread is missing or otherwise invalid?
-			if (thread == null)
+			// Is this valid?
+			Object thread = __controller.state.items.get(__packet.readId());
+			if (!view.isValid(thread))
 				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_THREAD);
+					__packet.id(), ErrorType.INVALID_THREAD);
 				
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
-			// This just uses the object name of the thread, whatever that
-			// may be for simplicity and mapping
-			rv.writeInt(thread.debuggerSuspend().query());
+			rv.writeInt(view.suspension(thread).query());
 			
 			return rv;
 		}

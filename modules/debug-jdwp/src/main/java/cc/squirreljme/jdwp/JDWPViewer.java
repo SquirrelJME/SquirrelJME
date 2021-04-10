@@ -16,8 +16,10 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * within JDWP.
  *
  * @param <V> The view used to do interpret a given object or otherwise
+ * @deprecated Very likely not needed at all.
  * @since 2021/04/10
  */
+@Deprecated
 public final class JDWPViewer<V extends JDWPView>
 	implements JDWPId
 {

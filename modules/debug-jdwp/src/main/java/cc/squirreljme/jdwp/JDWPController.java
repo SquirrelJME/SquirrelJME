@@ -14,8 +14,11 @@ import java.io.Closeable;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This class acts as the main controller interface for JDWP and acts as a kind
@@ -84,6 +87,64 @@ public final class JDWPController
 		// Setup Communication Link thread
 		Thread thread = new Thread(this, "JDWPController");
 		thread.start();
+	}
+	
+	/**
+	 * Returns all thread groups.
+	 * 
+	 * @return All thread groups.
+	 * @since 2021/04/10
+	 */
+	public final Object[] allThreadGroups()
+	{
+		// Get all thread groups
+		Object[] groups = this.bind.debuggerThreadGroups();
+		
+		// Register each one
+		JDWPState state = this.state;
+		for (Object group : groups)
+			state.items.put(group);
+		
+		return groups;
+	}
+	
+	/**
+	 * Returns all threads.
+	 * 
+	 * @return All threads.
+	 * @since 2021/04/10
+	 */
+	public final Object[] allThreads()
+	{
+		// Current state
+		JDWPState state = this.state;
+		
+		// All available threads
+		ArrayList<Object> allThreads = new ArrayList<>(); 
+		
+		// Start from the root thread group and get all of the threads
+		// under them, since this is a machine to thread linkage
+		JDWPViewThreadGroup view = state.view(
+			JDWPViewThreadGroup.class, JDWPViewKind.THREAD_GROUP);
+		for (Object group : this.bind.debuggerThreadGroups())
+		{
+			// Register thread group
+			state.items.put(group);
+			
+			// Obtain all threads from this group
+			Object[] threads = view.threads(group);
+			
+			// Register each thread
+			for (Object thread : threads)
+				state.items.put(thread);
+			
+			// Store into the list
+			allThreads.ensureCapacity(
+				allThreads.size() + threads.length);
+			allThreads.addAll(Arrays.asList(threads));
+		}
+		
+		return allThreads.toArray(new Object[allThreads.size()]);
 	}
 	
 	/**
@@ -235,7 +296,7 @@ public final class JDWPController
 		if (request.suspendPolicy == SuspendPolicy.ALL)
 		{
 			for (JDWPThread all : this.debuggerUpdate(JDWPUpdateWhat.THREADS)
-				.threads.values())
+				.oldThreads.values())
 				all.debuggerSuspend().suspend();
 		}
 		
@@ -261,8 +322,8 @@ public final class JDWPController
 			throw new NullPointerException("NARG");
 			
 		// Register for later use
-		this.state.threads.put(__thread);
-		this.state.classes.put(__cl);
+		this.state.oldThreads.put(__thread);
+		this.state.oldClasses.put(__cl);
 		
 		// Forward generic event
 		this.signal(__thread, EventKind.CLASS_PREPARE,
@@ -285,7 +346,7 @@ public final class JDWPController
 			throw new NullPointerException("NARG");
 		
 		// Register this thread for later use
-		this.state.threads.put(__thread);
+		this.state.oldThreads.put(__thread);
 		
 		// Forward generic event
 		this.signal(__thread, (__started ? EventKind.THREAD_START :
@@ -323,7 +384,7 @@ public final class JDWPController
 			throw new NullPointerException("NARG");
 			
 		// Register this thread for later use
-		this.state.threads.put(__thread);
+		this.state.oldThreads.put(__thread);
 		
 		// Tell the remote debugger that we started, note we always generate
 		// this event and we never 
@@ -341,6 +402,29 @@ public final class JDWPController
 			// Send it away!
 			this.commLink.send(packet);
 		}
+	}
+	
+	/**
+	 * Returns the thread viewer;
+	 * 
+	 * @return The thread viewer.
+	 * @since 2021/04/10
+	 */
+	public final JDWPViewThread viewThread()
+	{
+		return this.state.view(JDWPViewThread.class, JDWPViewKind.THREAD);
+	}
+	
+	/**
+	 * Returns the viewer for thread groups.
+	 * 
+	 * @return The viewer for thread groups.
+	 * @since 2021/04/10
+	 */
+	public final JDWPViewThreadGroup viewThreadGroup()
+	{
+		return this.state.view(JDWPViewThreadGroup.class,
+			JDWPViewKind.THREAD_GROUP);
 	}
 	
 	/**

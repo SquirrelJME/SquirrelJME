@@ -72,7 +72,7 @@ public enum ObjectReferenceCommandSet
 			throws JDWPException
 		{
 			// Which object do we want?
-			JDWPObject object = __controller.state.objects.get(
+			JDWPObject object = __controller.state.oldObjects.get(
 				__packet.readId());
 			if (object == null)
 				return __controller.__reply(
@@ -83,7 +83,7 @@ public enum ObjectReferenceCommandSet
 			JDWPField[] fields = new JDWPField[numFields];
 			for (int i = 0; i < numFields; i++)
 			{
-				JDWPField field = __controller.state.fields.get(
+				JDWPField field = __controller.state.oldFields.get(
 					__packet.readId());
 				if (field == null)
 					return __controller.__reply(
@@ -117,7 +117,7 @@ public enum ObjectReferenceCommandSet
 						// Store object for later use
 						Object rawVal = value.get();
 						if (rawVal instanceof JDWPObject)
-							__controller.state.objects.put((JDWPObject)rawVal);
+							__controller.state.oldObjects.put((JDWPObject)rawVal);
 					}
 				}
 			
@@ -137,15 +137,12 @@ public enum ObjectReferenceCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// This could refer to any object
-			JDWPObjectLike object = __controller.state.getObjectLike(
-				__packet.readId());
-			if (object == null)
+			Object obj = __controller.state.items.get(__packet.readId());
+			if (obj == null)
 				return __controller.__reply(
 					__packet.id(), ErrorType.INVALID_OBJECT);
 			
-			// No objects get garbage collected as they exist when they
-			// exist!
+			// If we still know about this object it was not GCed
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			rv.writeBoolean(false);

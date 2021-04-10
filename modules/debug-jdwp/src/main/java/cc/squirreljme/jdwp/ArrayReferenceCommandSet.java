@@ -30,7 +30,7 @@ public enum ArrayReferenceCommandSet
 			throws JDWPException
 		{
 			// Which object do we want?
-			JDWPObject object = __controller.state.objects.get(
+			JDWPObject object = __controller.state.oldObjects.get(
 				__packet.readId());
 			if (object == null)
 				return __controller.__reply(
@@ -64,7 +64,7 @@ public enum ArrayReferenceCommandSet
 			throws JDWPException
 		{
 			// Which object do we want?
-			JDWPObject object = __controller.state.objects.get(
+			JDWPObject object = __controller.state.oldObjects.get(
 				__packet.readId());
 			if (object == null)
 				return __controller.__reply(
@@ -128,7 +128,7 @@ public enum ArrayReferenceCommandSet
 						// Store object for later use
 						Object rawVal = value.get();
 						if (rawVal instanceof JDWPObject)
-							__controller.state.objects.put((JDWPObject)rawVal);
+							__controller.state.oldObjects.put((JDWPObject)rawVal);
 					}
 				}
 			

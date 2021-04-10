@@ -28,7 +28,7 @@ import java.util.Map;
  * @param <T> The type of values to store.
  * @since 2021/03/13
  */
-public final class JDWPLinker<T extends JDWPId>
+public final class JDWPLinker<T>
 {
 	/** Returns the type of the linked data. */
 	protected final Class<T> type;
@@ -74,9 +74,7 @@ public final class JDWPLinker<T extends JDWPId>
 			// If we had a reference but it got GCed, clear it out to
 			// remove wasted space
 			T rv = ref.get();
-			boolean isCollected = (rv instanceof JDWPCollectable) &&
-				((JDWPCollectable)rv).debuggerIsCollected();
-			if (rv == null || isCollected)
+			if (rv == null)
 				links.remove(__id);
 			
 			return rv;
@@ -97,13 +95,7 @@ public final class JDWPLinker<T extends JDWPId>
 			throw new NullPointerException("NARG");
 		
 		// The ID used
-		Integer id = __t.debuggerId();
-		
-		// Do nothing if this object was collected, so it never gets added
-		// again
-		if (__t instanceof JDWPCollectable)
-			if (((JDWPCollectable)__t).debuggerIsCollected())
-				return;
+		Integer id = System.identityHashCode(__t);
 		
 		// Protect these!
 		Map<Integer, Reference<T>> links = this._links;
@@ -151,10 +143,11 @@ public final class JDWPLinker<T extends JDWPId>
 				Map.Entry<Integer, Reference<T>> entry = it.next();
 				
 				// Use the value if it still exists
-				T val = entry.getValue().get();
-				boolean isCollected = (val instanceof JDWPCollectable) &&
-					((JDWPCollectable)val).debuggerIsCollected();
-				if (val != null && !isCollected)
+				Reference<T> ref = entry.getValue();
+				T val = ref.get();
+				
+				// Has this been collected?
+				if (val != null)
 					result.add(val);
 				
 				// If it got GCed, remove it
@@ -165,6 +158,6 @@ public final class JDWPLinker<T extends JDWPId>
 		
 		// Used fixed array
 		return Arrays.asList(
-			(T[])result.<JDWPId>toArray(new JDWPId[result.size()]));
+			result.<T>toArray((T[])new Object[result.size()]));
 	}
 }

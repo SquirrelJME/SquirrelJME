@@ -12,8 +12,10 @@ package cc.squirreljme.jdwp;
 /**
  * Anything that has an ID utilized by the debugger.
  *
+ * @deprecated Use {@link System#identityHashCode(Object)}. 
  * @since 2021/03/13
  */
+@Deprecated
 public interface JDWPId
 {
 	/**

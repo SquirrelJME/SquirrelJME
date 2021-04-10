@@ -43,7 +43,7 @@ public enum ClassTypeCommandSet
 			
 			// Register the super class so it can be known
 			if (superClass != null)
-				__controller.state.classes.put(superClass);
+				__controller.state.oldClasses.put(superClass);
 			
 			return rv;
 		}

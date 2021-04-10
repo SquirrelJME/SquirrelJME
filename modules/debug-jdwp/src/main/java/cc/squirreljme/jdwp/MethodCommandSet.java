@@ -35,7 +35,7 @@ public enum MethodCommandSet
 			__packet.readId();
 			
 			// Find the method
-			JDWPMethod method = __controller.state.methods.get(
+			JDWPMethod method = __controller.state.oldMethods.get(
 				__packet.readId());
 			if (method == null)
 				return __controller.__reply(
@@ -94,7 +94,7 @@ public enum MethodCommandSet
 			__packet.readId();
 			
 			// Find the method
-			JDWPMethod method = __controller.state.methods.get(
+			JDWPMethod method = __controller.state.oldMethods.get(
 				__packet.readId());
 			if (method == null)
 				return __controller.__reply(
@@ -134,7 +134,7 @@ public enum MethodCommandSet
 			__packet.readId();
 			
 			// Find the method
-			JDWPMethod method = __controller.state.methods.get(
+			JDWPMethod method = __controller.state.oldMethods.get(
 				__packet.readId());
 			if (method == null)
 				return __controller.__reply(

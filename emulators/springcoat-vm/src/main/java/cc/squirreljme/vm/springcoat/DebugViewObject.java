@@ -57,6 +57,16 @@ public class DebugViewObject
 	 * @since 2021/04/10
 	 */
 	@Override
+	public boolean isValid(Object __what)
+	{
+		return (__what instanceof SpringObject);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/10
+	 */
+	@Override
 	public boolean readValue(Object __what, int __index, JDWPValue __out)
 	{
 		// Nulls are never valid

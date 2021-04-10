@@ -38,4 +38,36 @@ public class DebugViewThreadGroup
 		
 		this.state = __state;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/10
+	 */
+	@Override
+	public boolean isValid(Object __what)
+	{
+		return (__what instanceof SpringMachine);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/10
+	 */
+	@Override
+	public String name(Object __what)
+	{
+		return ((SpringMachine)__what).toString();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/10
+	 * @param __what
+	 */
+	@Override
+	public Object[] threads(Object __what)
+	{
+		// Return all of the threads for this group
+		return ((SpringMachine)__what).getThreads();
+	}
 }

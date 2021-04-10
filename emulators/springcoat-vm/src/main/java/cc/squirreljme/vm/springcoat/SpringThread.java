@@ -77,7 +77,7 @@ public final class SpringThread
 		new ArrayList<>();
 	
 	/** The thread status. */
-	private int _status;
+	int _status;
 	
 	/** The thread's {@link Thread} instance. */
 	private SpringObject _threadInstance;

@@ -30,7 +30,7 @@ public enum StringReferenceCommandSet
 			throws JDWPException
 		{
 			// Which object do we want?
-			JDWPObject object = __controller.state.objects.get(
+			JDWPObject object = __controller.state.oldObjects.get(
 				__packet.readId());
 			if (object == null)
 				return __controller.__reply(

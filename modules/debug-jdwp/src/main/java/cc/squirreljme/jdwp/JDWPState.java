@@ -19,34 +19,39 @@ import java.lang.ref.WeakReference;
  */
 public final class JDWPState
 {
+	/** References to everything the debugger knows about. */
+	public final JDWPLinker<Object> items =
+		new JDWPLinker<>(Object.class);
+	
 	/** Thread groups which are available. */
-	public final JDWPLinker<JDWPThreadGroup> threadGroups =
+	public final JDWPLinker<JDWPThreadGroup> oldThreadGroups =
 		new JDWPLinker<>(JDWPThreadGroup.class);
 	
 	/** Threads that are available. */
-	public final JDWPLinker<JDWPThread> threads =
+	public final JDWPLinker<JDWPThread> oldThreads =
 		new JDWPLinker<>(JDWPThread.class);
 	
 	/** Frames that may exist from time to time. */
-	public final JDWPLinker<JDWPThreadFrame> frames =
+	public final JDWPLinker<JDWPThreadFrame> oldFrames =
 		new JDWPLinker<>(JDWPThreadFrame.class);
 	
 	/** Classes that are known. */
-	public final JDWPLinker<JDWPClass> classes =
+	public final JDWPLinker<JDWPClass> oldClasses =
 		new JDWPLinker<>(JDWPClass.class);
 	
+	/** Objects that are known. */
+	public final JDWPLinker<JDWPObject> oldObjects =
+		new JDWPLinker<>(JDWPObject.class);
+	
 	/** Methods that are known. */
-	public final JDWPLinker<JDWPMethod> methods =
+	@Deprecated
+	public final JDWPLinker<JDWPMethod> oldMethods =
 		new JDWPLinker<>(JDWPMethod.class);
 	
 	/** Fields that are known. */
-	public final JDWPLinker<JDWPField> fields =
-		new JDWPLinker<>(JDWPField.class);
-	
-	/** Objects that are known. */
 	@Deprecated
-	public final JDWPLinker<JDWPObject> objects =
-		new JDWPLinker<>(JDWPObject.class);
+	public final JDWPLinker<JDWPField> oldFields =
+		new JDWPLinker<>(JDWPField.class);
 	
 	/** The binding used. */
 	private final Reference<JDWPBinding> _binding;
@@ -82,31 +87,31 @@ public final class JDWPState
 	{
 		JDWPId rv;
 		
-		rv = this.threadGroups.get(__id);
+		rv = this.oldThreadGroups.get(__id);
 		if (rv != null)
 			return rv;
 		
-		rv = this.threads.get(__id);
+		rv = this.oldThreads.get(__id);
 		if (rv != null)
 			return rv;
 		
-		rv = this.frames.get(__id);
+		rv = this.oldFrames.get(__id);
 		if (rv != null)
 			return rv;
 		
-		rv = this.classes.get(__id);
+		rv = this.oldClasses.get(__id);
 		if (rv != null)
 			return rv;
 		
-		rv = this.methods.get(__id);
+		rv = this.oldMethods.get(__id);
 		if (rv != null)
 			return rv;
 		
-		rv = this.fields.get(__id);
+		rv = this.oldFields.get(__id);
 		if (rv != null)
 			return rv;
 		
-		rv = this.objects.get(__id);
+		rv = this.oldObjects.get(__id);
 		return rv;
 	}
 	
@@ -120,7 +125,7 @@ public final class JDWPState
 	public final JDWPClass getAnyClass(int __id)
 	{
 		// Is a well defined class?
-		JDWPClass rv = this.classes.get(__id);
+		JDWPClass rv = this.oldClasses.get(__id);
 		if (rv != null)
 			return rv;
 		
@@ -158,12 +163,12 @@ public final class JDWPState
 			return rv;
 		
 		// Is a thread?
-		rv = this.threads.get(__id);
+		rv = this.oldThreads.get(__id);
 		if (rv != null)
 			return rv;
 		
 		// Is a thread group?
-		return this.threadGroups.get(__id);
+		return this.oldThreadGroups.get(__id);
 	}
 	
 	/**
@@ -209,7 +214,7 @@ public final class JDWPState
 	public final JDWPReferenceType getReferenceType(int __id)
 	{
 		JDWPClass classy = this.getAnyClass(__id);
-		return (classy != null ? classy : this.objects.get(__id));
+		return (classy != null ? classy : this.oldObjects.get(__id));
 	}
 	
 	/**

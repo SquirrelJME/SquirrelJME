@@ -28,12 +28,23 @@ public interface JDWPBinding
 	String[] debuggerLibraries();
 	
 	/**
+	 * Returns the thread groups that are available.
+	 * 
+	 * @return The thread groups for the debugger.
+	 * @since 2021/04/10
+	 */
+	Object[] debuggerThreadGroups();
+	
+	/**
 	 * Updates the state as needed for debugging.
 	 * 
 	 * @param __state The debugger state.
 	 * @param __what What gets updated?
+	 * @deprecated This is being replaced by queries on thread groups and
+	 * otherwise.
 	 * @since 2021/03/13
 	 */
+	@Deprecated
 	void debuggerUpdate(JDWPState __state, JDWPUpdateWhat... __what);
 	
 	/**

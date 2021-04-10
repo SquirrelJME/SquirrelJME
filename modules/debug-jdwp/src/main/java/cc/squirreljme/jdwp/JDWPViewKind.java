@@ -19,6 +19,9 @@ public enum JDWPViewKind
 	/** An object. */
 	OBJECT(JDWPViewObject.class),
 	
+	/** Thread. */
+	THREAD(JDWPViewThread.class),
+	
 	/** A group of threads. */
 	THREAD_GROUP(JDWPViewThreadGroup.class),
 	

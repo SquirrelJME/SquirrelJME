@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -67,7 +69,7 @@ public enum VirtualMachineCommandSet
 			// Add any loaded classes, multiple VMs may result in multiple
 			// classes being added
 			List<JDWPClass> classes = new LinkedList<>();
-			for (JDWPClass check : __controller.state.classes.values())
+			for (JDWPClass check : __controller.state.oldClasses.values())
 				if (wantSig.equals(check.debuggerFieldDescriptor()))
 					classes.add(check);
 				
@@ -103,18 +105,16 @@ public enum VirtualMachineCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Request JVM Update
-			List<JDWPThread> threads =
-				__controller.debuggerUpdate(JDWPUpdateWhat.THREADS)
-				.threads.values();
+			Object[] threads = __controller.allThreads();
 			
 			// Write result
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
-			rv.writeInt(threads.size());
-			for (JDWPThread thread : threads)
-				rv.writeId(thread);
+			// Write all thread references
+			rv.writeInt(threads.length);
+			for (Object thread : threads)
+				rv.writeId(System.identityHashCode(thread));
 			
 			return rv;
 		}
@@ -132,18 +132,15 @@ public enum VirtualMachineCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Request JVM Update
-			List<JDWPThreadGroup> groups =
-				__controller.debuggerUpdate(JDWPUpdateWhat.THREAD_GROUPS)
-				.threadGroups.values();
+			Object[] groups = __controller.allThreadGroups();
 			
 			// Write result
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
-			rv.writeInt(groups.size());
-			for (JDWPThreadGroup group : groups)
-				rv.writeId(group);
+			rv.writeInt(groups.length);
+			for (Object group : groups)
+				rv.writeId(System.identityHashCode(group));
 			
 			return rv;
 		}
@@ -184,10 +181,10 @@ public enum VirtualMachineCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Update all threads available then tell every one to suspend
-			for (JDWPThread thread : __controller
-				.debuggerUpdate(JDWPUpdateWhat.THREADS).threads.values())
-				thread.debuggerSuspend().suspend();
+			// Tell all threads to suspend
+			JDWPViewThread view = __controller.viewThread();
+			for (Object thread : __controller.allThreads())
+				view.suspension(thread).suspend();
 			
 			return null;
 		}
@@ -205,10 +202,10 @@ public enum VirtualMachineCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Update all threads available then tell every one to resume
-			for (JDWPThread thread : __controller
-				.debuggerUpdate(JDWPUpdateWhat.THREADS).threads.values())
-				thread.debuggerSuspend().resume();
+			// Tell all threads to resume
+			JDWPViewThread view = __controller.viewThread();
+			for (Object thread : __controller.allThreads())
+				view.suspension(thread).resume();
 			
 			return null;
 		}
@@ -434,7 +431,7 @@ public enum VirtualMachineCommandSet
 			
 			// Get a list of every loaded class and return their information
 			__controller.debuggerUpdate(JDWPUpdateWhat.LOADED_CLASSES);
-			List<JDWPClass> classes = __controller.state.classes.values();
+			List<JDWPClass> classes = __controller.state.oldClasses.values();
 			rv.writeInt(classes.size());
 			
 			for (JDWPClass type : classes)

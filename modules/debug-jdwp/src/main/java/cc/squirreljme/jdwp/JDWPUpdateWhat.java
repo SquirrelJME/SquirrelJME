@@ -12,8 +12,10 @@ package cc.squirreljme.jdwp;
 /**
  * Indicators for what gets updated in the debugging state.
  *
+ * @deprecated Do not use anymore.
  * @since 2021/03/13
  */
+@Deprecated
 public enum JDWPUpdateWhat
 {
 	/** Thread groups. */

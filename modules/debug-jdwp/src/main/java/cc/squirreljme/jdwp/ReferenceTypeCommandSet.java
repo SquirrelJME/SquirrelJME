@@ -69,7 +69,7 @@ public enum ReferenceTypeCommandSet
 			JDWPField[] fields = new JDWPField[numFields];
 			for (int i = 0; i < numFields; i++)
 			{
-				JDWPField field = __controller.state.fields.get(
+				JDWPField field = __controller.state.oldFields.get(
 					__packet.readId());
 				if (field == null)
 					return __controller.__reply(
@@ -104,7 +104,7 @@ public enum ReferenceTypeCommandSet
 						// Store object for later use
 						Object rawVal = value.get();
 						if (rawVal instanceof JDWPObject)
-							__controller.state.objects.put((JDWPObject)rawVal);
+							__controller.state.oldObjects.put((JDWPObject)rawVal);
 					}
 				}
 			
@@ -245,7 +245,7 @@ public enum ReferenceTypeCommandSet
 			for (JDWPField field : fields)
 			{
 				// Register this method for later lookup
-				__controller.state.fields.put(field);
+				__controller.state.oldFields.put(field);
 				
 				// Information about the method
 				rv.writeId(field);
@@ -294,7 +294,7 @@ public enum ReferenceTypeCommandSet
 			for (JDWPMethod method : methods)
 			{
 				// Register this method for later lookup
-				__controller.state.methods.put(method);
+				__controller.state.oldMethods.put(method);
 				
 				// Information about the method
 				rv.writeId(method);

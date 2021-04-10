@@ -10,29 +10,30 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPState;
-import cc.squirreljme.jdwp.JDWPViewType;
+import cc.squirreljme.jdwp.JDWPThreadSuspension;
+import cc.squirreljme.jdwp.JDWPViewThread;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 
 /**
- * A viewer around class types.
+ * Viewer for threads.
  *
  * @since 2021/04/10
  */
-public class DebugViewType
-	implements JDWPViewType
+public class DebugViewThread
+	implements JDWPViewThread
 {
 	/** The state of the debugger. */
 	protected final Reference<JDWPState> state;
 	
 	/**
-	 * Initializes the type viewer.
+	 * Initializes the thread viewer.
 	 * 
 	 * @param __state The state.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/10
 	 */
-	public DebugViewType(Reference<JDWPState> __state)
+	public DebugViewThread(Reference<JDWPState> __state)
 	{
 		if (__state == null)
 			throw new NullPointerException("NARG");
@@ -47,6 +48,46 @@ public class DebugViewType
 	@Override
 	public boolean isValid(Object __what)
 	{
-		return (__what instanceof SpringClass);
+		return (__what instanceof SpringThread);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/10
+	 */
+	@Override
+	public String name(Object __what)
+	{
+		return ((SpringThread)__what).name();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/10
+	 */
+	@Override
+	public Object parentGroup(Object __what)
+	{
+		return ((SpringThread)__what).machine();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/10
+	 */
+	@Override
+	public JDWPThreadSuspension suspension(Object __what)
+	{
+		return ((SpringThread)__what).debuggerSuspension;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/10
+	 */
+	@Override
+	public int status(Object __what)
+	{
+		return ((SpringThread)__what)._status;
 	}
 }

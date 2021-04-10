@@ -30,14 +30,14 @@ public enum StackFrameCommandSet
 			throws JDWPException
 		{
 			// Thread is missing or otherwise invalid?
-			JDWPThread thread = __controller.state.threads.get(
+			JDWPThread thread = __controller.state.oldThreads.get(
 				__packet.readId());
 			if (thread == null)
 				return __controller.__reply(
 					__packet.id(), ErrorType.INVALID_THREAD);
 			
 			// Frame is missing or otherwise invalid?
-			JDWPThreadFrame frame = __controller.state.frames.get(
+			JDWPThreadFrame frame = __controller.state.oldFrames.get(
 				__packet.readId());
 			if (frame == null)
 				return __controller.__reply(
@@ -73,7 +73,7 @@ public enum StackFrameCommandSet
 						// Store object for later use
 						Object rawVal = value.get();
 						if (rawVal instanceof JDWPObject)
-							__controller.state.objects.put((JDWPObject)rawVal);
+							__controller.state.oldObjects.put((JDWPObject)rawVal);
 					}
 				}
 			
@@ -94,14 +94,14 @@ public enum StackFrameCommandSet
 			throws JDWPException
 		{
 			// Thread is missing or otherwise invalid?
-			JDWPThread thread = __controller.state.threads.get(
+			JDWPThread thread = __controller.state.oldThreads.get(
 				__packet.readId());
 			if (thread == null)
 				return __controller.__reply(
 					__packet.id(), ErrorType.INVALID_THREAD);
 			
 			// Frame is missing or otherwise invalid?
-			JDWPThreadFrame frame = __controller.state.frames.get(
+			JDWPThreadFrame frame = __controller.state.oldFrames.get(
 				__packet.readId());
 			if (frame == null)
 				return __controller.__reply(
@@ -132,7 +132,7 @@ public enum StackFrameCommandSet
 						// Store object for later use
 						Object rawVal = value.get();
 						if (rawVal instanceof JDWPObject)
-							__controller.state.objects.put((JDWPObject)rawVal);
+							__controller.state.oldObjects.put((JDWPObject)rawVal);
 					}
 				}
 			
