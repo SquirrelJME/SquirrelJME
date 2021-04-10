@@ -157,7 +157,7 @@ public final class SoftFloat
 		if (expA == 0xFF)
 		{
 			// if ( sigA || ((expB == 0xFF) && sigB) )
-			if (sigA != 0 || ((expB == 0xFF) && sigB != 0))
+			if (sigA != 0 || ((expB == 0xFF) && (sigB != 0)))
 				return Float.intBitsToFloat(
 					SoftFloat.__propagateNaNF32UI(__a, __b));
 			
@@ -182,7 +182,8 @@ public final class SoftFloat
 			// if ( ! magBits )
 			if (magBits == 0)
 				return SoftFloat.DEFAULT_NAN;
-			return SoftFloat.__packToF32UI(signZ, 0xFF, 0);
+			return Float.intBitsToFloat(
+				SoftFloat.__packToF32UI(signZ, 0xFF, 0));
 		}
 		
 		// if ( ! expA )
@@ -190,7 +191,8 @@ public final class SoftFloat
 		{
 			// if ( ! sigA )
 			if (sigA == 0)
-				return SoftFloat.__packToF32UI(signZ, 0, 0);
+				return Float.intBitsToFloat(
+					SoftFloat.__packToF32UI(signZ, 0, 0));
 				
 			long normExpSig = SoftFloat.__normSubnormalF32Sig(sigA);
 			expA = Assembly.longUnpackHigh(normExpSig);
@@ -202,7 +204,8 @@ public final class SoftFloat
 		{
 			// if ( ! sigB )
 			if (sigB == 0)
-				return SoftFloat.__packToF32UI(signZ, 0, 0);
+				return Float.intBitsToFloat(
+					SoftFloat.__packToF32UI(signZ, 0, 0));
 				
 			long normExpSig = SoftFloat.__normSubnormalF32Sig(sigB);
 			expB = Assembly.longUnpackHigh(normExpSig);
@@ -210,22 +213,23 @@ public final class SoftFloat
 		}
 		
 		int expZ = expA + expB - 0x7F;
-		sigA = (sigA | 0x00800000) << 7;
-		sigB = (sigB | 0x00800000) << 8;
+		sigA = (sigA | 0x0080_0000) << 7;
+		sigB = (sigB | 0x0080_0000) << 8;
 		
 		// sigZ = softfloat_shortShiftRightJam64(
-		//     (uint_fast64_t)sigA * sigB, 32);
+		//     (uint_fast64_t)sigA * sigB, 32); <-- unsigned multiply
 		int sigZ = (int)SoftFloat.__shortShiftRightJam64(
-			(long)sigA * sigB, 32);
+			(sigA & 0xFFFF_FFFFL) * (sigB & 0xFFFF_FFFFL), 32);
 		
 		// if ( sigZ < 0x40000000 )
-		if (UnsignedInteger.compareUnsigned(sigZ, 0x40000000) < 0)
+		if (UnsignedInteger.compareUnsigned(sigZ, 0x4000_0000) < 0)
 		{
 			--expZ;
 			sigZ <<= 1;
 		}
 		
-		return SoftFloat.__roundPackToF32(signZ, expZ, sigZ);
+		return Float.intBitsToFloat(
+			SoftFloat.__roundPackToF32(signZ, expZ, sigZ));
 	}
 	
 	/**
@@ -366,7 +370,8 @@ public final class SoftFloat
 	 */
 	private static int __expF32UI(int __a)
 	{
-		return (((__a) >> SoftFloat._EXP_SHIFT) & 0xFF);
+		// ((int_fast16_t) ((a)>>23) & 0xFF)
+		return (((__a) >>> SoftFloat._EXP_SHIFT) & 0xFF);
 	}
 	
 	/**
@@ -459,7 +464,9 @@ public final class SoftFloat
 	}
 	
 	/**
-	 * Packs value to an unsigned integer.
+	 * Packs value to an unsigned integer, note that some of these values are
+	 * perfectly fine to overflow into each other such as the significand
+	 * being larger than the value.
 	 * 
 	 * @param __sign Sign bit.
 	 * @param __exp Exponent.
@@ -597,7 +604,7 @@ public final class SoftFloat
 	{
 		// return a>>dist | ((a & (((uint_fast64_t) 1<<dist) - 1)) != 0);
     	return __a >>> __dist |
-    		((__a & (((((1L << __dist) - 1)) != 0) ? 1 : 0)));
+			(((__a & ((1L << __dist) - 1)) != 0) ? 1 : 0);
 	}
 	
 	/**
