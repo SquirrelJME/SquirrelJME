@@ -13,8 +13,10 @@ package cc.squirreljme.jdwp;
  * Represents that something that is like an object and can be referred to
  * by object.
  *
+ * @deprecated Use {@link JDWPViewObject}.
  * @since 2021/03/14
  */
+@Deprecated
 public interface JDWPObjectLike
 	extends JDWPId
 {

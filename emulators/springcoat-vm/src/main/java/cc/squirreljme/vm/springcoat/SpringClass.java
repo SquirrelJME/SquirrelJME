@@ -16,8 +16,6 @@ import cc.squirreljme.jdwp.JDWPField;
 import cc.squirreljme.jdwp.JDWPMethod;
 import cc.squirreljme.jdwp.JDWPObjectLike;
 import cc.squirreljme.jdwp.JDWPValue;
-import cc.squirreljme.jvm.Constants;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeException;
@@ -62,7 +60,7 @@ public final class SpringClass
 	protected final SpringClass superclass;
 	
 	/** The number of instance fields that exist. */
-	protected final int instancefieldcount;
+	protected final int instanceFieldCount;
 	
 	/** The dimentions of this class. */
 	protected final int dimensions;
@@ -72,9 +70,6 @@ public final class SpringClass
 	
 	/** The JAR this class is in. */
 	protected final VMClassLibrary inJar;
-	
-	/** The virtualized size of instances for this class. */
-	protected final int instancesize;
 	
 	/** Interface classes. */
 	private final SpringClass[] _interfaceclasses;
@@ -162,13 +157,8 @@ public final class SpringClass
 		// and indexed appropriately so that way casting between types and
 		// accessing other fields is actually valid
 		int superfieldcount = (__super == null ? 0 :
-			__super.instancefieldcount);
+			__super.instanceFieldCount);
 		int instancefieldcount = superfieldcount;
-		
-		// Calculate the instance size
-		this.instancesize = (__super == null ? Constants.OBJECT_BASE_SIZE :
-			(name.dimensions() > 0 ? Constants.ARRAY_BASE_SIZE :
-			__super.instancesize + (instancefieldcount * 4)));
 		
 		// Initialize all of the fields as needed
 		Map<FieldNameAndType, SpringField> fields = this._fields;
@@ -211,7 +201,7 @@ public final class SpringClass
 			fieldtable[i] = instfields.get(p);
 		
 		// Used to quickly determine how big to set storage for a class
-		this.instancefieldcount = instancefieldcount;
+		this.instanceFieldCount = instancefieldcount;
 		
 		// Go through super and interfaces and add non-static methods which
 		// exist in sub-classes
@@ -518,7 +508,7 @@ public final class SpringClass
 	 */
 	public final int instanceFieldCount()
 	{
-		return this.instancefieldcount;
+		return this.instanceFieldCount;
 	}
 	
 	/**

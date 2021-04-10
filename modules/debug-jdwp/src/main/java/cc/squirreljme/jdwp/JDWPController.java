@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -40,8 +41,7 @@ public final class JDWPController
 	protected final CommLink commLink;
 	
 	/** Debugger state. */
-	protected final JDWPState state =
-		new JDWPState();
+	protected final JDWPState state;
 		
 	/** The event manager. */
 	protected final EventManager eventManager =
@@ -78,6 +78,7 @@ public final class JDWPController
 			throw new NullPointerException("NARG");
 		
 		this.bind = __bind;
+		this.state = new JDWPState(new WeakReference<>(__bind));
 		this.commLink = new CommLink(__in, __out);
 		
 		// Setup Communication Link thread

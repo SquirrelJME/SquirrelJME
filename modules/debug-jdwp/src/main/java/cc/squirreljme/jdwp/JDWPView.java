@@ -10,13 +10,10 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Represents an object type.
+ * This is a view of something on JDWP.
  *
- * @deprecated Use {@link JDWPViewObject}.
- * @since 2021/03/14
+ * @since 2021/04/10
  */
-@Deprecated
-public interface JDWPObject
-	extends JDWPReferenceType
+public interface JDWPView
 {
 }

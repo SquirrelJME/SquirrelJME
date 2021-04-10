@@ -10,13 +10,21 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Represents an object type.
+ * An object viewer.
  *
- * @deprecated Use {@link JDWPViewObject}.
- * @since 2021/03/14
+ * @since 2021/04/10
  */
-@Deprecated
-public interface JDWPObject
-	extends JDWPReferenceType
+public interface JDWPViewObject
+	extends JDWPView
 {
+	/**
+	 * Reads the value of an instance field within the object.
+	 *
+	 * @param __what What is being read from?
+	 * @param __index The index to read from the object.
+	 * @param __out Where the value is to be stored.
+	 * @return {@code true} if this is a valid value.
+	 * @since 2021/04/10
+	 */
+	boolean readValue(Object __what, int __index, JDWPValue __out);
 }

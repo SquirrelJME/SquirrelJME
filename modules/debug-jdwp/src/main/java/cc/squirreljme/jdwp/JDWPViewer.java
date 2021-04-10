@@ -9,14 +9,25 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
- * Represents an object type.
+ * This is a viewpoint of a single object, thread, class, method, or otherwise
+ * within JDWP.
  *
- * @deprecated Use {@link JDWPViewObject}.
- * @since 2021/03/14
+ * @param <V> The view used to do interpret a given object or otherwise
+ * @since 2021/04/10
  */
-@Deprecated
-public interface JDWPObject
-	extends JDWPReferenceType
+public final class JDWPViewer<V extends JDWPView>
+	implements JDWPId
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/10
+	 */
+	@Override
+	public int debuggerId()
+	{
+		throw Debugging.todo();
+	}
 }

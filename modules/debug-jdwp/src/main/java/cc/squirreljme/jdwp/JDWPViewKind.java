@@ -10,13 +10,29 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Represents an object type.
+ * Represents the kind of view that is used for an object or otherwise.
  *
- * @deprecated Use {@link JDWPViewObject}.
- * @since 2021/03/14
+ * @since 2021/04/10
  */
-@Deprecated
-public interface JDWPObject
-	extends JDWPReferenceType
+public enum JDWPViewKind
 {
+	/** An object. */
+	OBJECT(JDWPViewObject.class),
+	
+	/* End. */
+	;
+	
+	/** The viewing class. */
+	public final Class<? extends JDWPView> viewClass;
+	
+	/**
+	 * Initializes the view kind.
+	 * 
+	 * @param __viewClass The view class.
+	 * @since 2021/04/10
+	 */
+	JDWPViewKind(Class<? extends JDWPView> __viewClass)
+	{
+		this.viewClass = __viewClass;
+	}
 }

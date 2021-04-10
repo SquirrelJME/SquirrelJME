@@ -36,7 +36,7 @@ public final class SpringSimpleObject
 		new RefLinkHolder();
 	
 	/** Field storage in the class. */
-	private final SpringFieldStorage[] _fields;
+	final SpringFieldStorage[] _fields;
 	
 	/** String representation. */
 	private Reference<String> _string;

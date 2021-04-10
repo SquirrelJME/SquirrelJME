@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import java.lang.ref.Reference;
+
 /**
  * This interface is used by anything that JDWP needs to communicate with,
  * other virtual machines or otherwise to perform actions.
@@ -33,6 +35,21 @@ public interface JDWPBinding
 	 * @since 2021/03/13
 	 */
 	void debuggerUpdate(JDWPState __state, JDWPUpdateWhat... __what);
+	
+	/**
+	 * Returns the view of the given type.
+	 * 
+	 * @param <V> The type to view.
+	 * @param __type The type to view.
+	 * @param __kind The kind of viewer to use.
+	 * @param __state The debugging state to link to.
+	 * @return The view for the given type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/10
+	 */
+	<V extends JDWPView> V debuggerView(Class<V> __type, JDWPViewKind __kind,
+		Reference<JDWPState> __state)
+		throws NullPointerException;
 	
 	/**
 	 * Returns the virtual machine description.

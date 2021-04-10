@@ -21,6 +21,8 @@ import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.JDWPThread;
 import cc.squirreljme.jdwp.JDWPThreadGroup;
 import cc.squirreljme.jdwp.JDWPUpdateWhat;
+import cc.squirreljme.jdwp.JDWPView;
+import cc.squirreljme.jdwp.JDWPViewKind;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -28,7 +30,6 @@ import cc.squirreljme.vm.VMClassLibrary;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -142,6 +143,26 @@ public final class SpringTaskManager
 					}
 					break;
 			}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/10
+	 */
+	@Override
+	public <V extends JDWPView> V debuggerView(Class<V> __type,
+		JDWPViewKind __kind, Reference<JDWPState> __state)
+		throws NullPointerException
+	{
+		// What do we want to view?
+		switch (__kind)
+		{
+			case OBJECT:
+				return __type.cast(new DebugViewObject(__state));
+			
+			default:
+				throw Debugging.oops(__kind);
+		}
 	}
 	
 	/**
