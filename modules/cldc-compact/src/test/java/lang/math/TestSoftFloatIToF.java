@@ -9,7 +9,6 @@
 
 package lang.math;
 
-import cc.squirreljme.jvm.SoftFloat;
 import cc.squirreljme.jvm.SoftInteger;
 import java.util.Random;
 import net.multiphasicapps.tac.TestRunnable;

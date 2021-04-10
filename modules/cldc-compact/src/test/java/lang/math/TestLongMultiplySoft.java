@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package lang;
+package lang.math;
 
 import cc.squirreljme.jvm.SoftLong;
 import cc.squirreljme.runtime.cldc.debug.Debugging;

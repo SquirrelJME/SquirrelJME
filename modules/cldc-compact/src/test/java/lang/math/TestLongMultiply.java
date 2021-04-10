@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package lang;
+package lang.math;
 
 import java.util.Random;
 import net.multiphasicapps.tac.TestRunnable;
