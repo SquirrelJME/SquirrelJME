@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPView;
+
 /**
  * Viewer for methods, all references to methods require a class for context
  * in order to locate the methods.

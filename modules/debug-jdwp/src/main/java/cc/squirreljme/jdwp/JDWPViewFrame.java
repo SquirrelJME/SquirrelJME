@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPViewValidObject;
+
 /**
  * This is a view around thread frames.
  *

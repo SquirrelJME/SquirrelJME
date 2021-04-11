@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPViewValidObject;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 
 /**

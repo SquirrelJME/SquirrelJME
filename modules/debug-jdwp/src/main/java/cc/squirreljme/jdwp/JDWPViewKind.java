@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPView;
+
 /**
  * Represents the kind of view that is used for an object or otherwise.
  *

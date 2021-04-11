@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp;
+package cc.squirreljme.jdwp.views;
 
 /**
  * A viewer over something which has a valid object as its subject.

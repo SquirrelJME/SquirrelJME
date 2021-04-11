@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPView;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
