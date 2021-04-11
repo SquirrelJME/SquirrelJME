@@ -10,7 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPState;
-import cc.squirreljme.jdwp.JDWPViewFrame;
+import cc.squirreljme.jdwp.views.JDWPViewFrame;
 import java.lang.ref.Reference;
 
 /**

@@ -10,6 +10,7 @@
 package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jdwp.views.JDWPView;
+import cc.squirreljme.jdwp.views.JDWPViewKind;
 import java.lang.ref.Reference;
 
 /**

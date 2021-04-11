@@ -11,6 +11,8 @@ package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.trips.JDWPTrip;
+import cc.squirreljme.jdwp.views.JDWPViewFrame;
+import cc.squirreljme.jdwp.views.JDWPViewKind;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.InputStream;

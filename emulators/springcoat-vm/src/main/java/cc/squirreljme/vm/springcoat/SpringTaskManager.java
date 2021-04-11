@@ -22,7 +22,7 @@ import cc.squirreljme.jdwp.JDWPThread;
 import cc.squirreljme.jdwp.JDWPThreadGroup;
 import cc.squirreljme.jdwp.JDWPUpdateWhat;
 import cc.squirreljme.jdwp.views.JDWPView;
-import cc.squirreljme.jdwp.JDWPViewKind;
+import cc.squirreljme.jdwp.views.JDWPViewKind;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.debug.Debugging;

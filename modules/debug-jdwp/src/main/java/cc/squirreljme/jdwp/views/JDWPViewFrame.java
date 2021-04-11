@@ -7,9 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp;
-
-import cc.squirreljme.jdwp.views.JDWPViewValidObject;
+package cc.squirreljme.jdwp.views;
 
 /**
  * This is a view around thread frames.
