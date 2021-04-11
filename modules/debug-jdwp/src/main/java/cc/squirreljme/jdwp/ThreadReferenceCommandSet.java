@@ -200,26 +200,27 @@ public enum ThreadReferenceCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Thread is missing or otherwise invalid?
-			JDWPThread thread = __controller.state.oldThreads.get(
-				__packet.readId());
-			if (thread == null)
+			JDWPViewThread view = __controller.viewThread();
+			
+			// Is this valid?
+			Object thread = __controller.state.items.get(__packet.readId());
+			if (!view.isValid(thread))
 				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_THREAD);
+					__packet.id(), ErrorType.INVALID_THREAD);
 			
 			// Input for the packet
 			int startFrame = __packet.readInt();
 			int count = __packet.readInt();
 			
 			// Correct the frame count
-			JDWPThreadFrame[] frames = thread.debuggerFrames();
+			JDWPThreadFrame[] frames = new JDWPThreadFrame[0];//thread.debuggerFrames();
 			count = (count == -1 ? Math.max(0, frames.length - startFrame) :
 				Math.min(count, frames.length - startFrame));
 			
 			// Start by writing the frame count
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
-			rv.writeInt(0);//count);
+			rv.writeInt(count);
 			
 			if (true)
 				return rv;
@@ -268,13 +269,13 @@ public enum ThreadReferenceCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			JDWPThread thread = __controller.state.oldThreads.get(
-				__packet.readId());
+			JDWPViewThread view = __controller.viewThread();
 			
-			// Thread is missing or otherwise invalid?
-			if (thread == null)
+			// Is this valid?
+			Object thread = __controller.state.items.get(__packet.readId());
+			if (!view.isValid(thread))
 				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_THREAD);
+					__packet.id(), ErrorType.INVALID_THREAD);
 				
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
