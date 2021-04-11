@@ -75,8 +75,7 @@ public enum MLEType
 			return MLEType.__simple(__args[0]).fieldByField(
 				__thread.resolveClass(new ClassName("java/lang/Class"))
 				.lookupField(false, "_type",
-				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;")).get(null,
-				null);
+				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;")).get();
 		}
 	},
 	

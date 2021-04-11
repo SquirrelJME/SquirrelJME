@@ -250,7 +250,7 @@ public final class SpringThreadWorker
 				case "java/lang/Integer":
 					return Integer.valueOf((Integer)
 						sso.fieldByField(sscl.lookupField(false,
-						"_value", "I")).get(null, null));
+						"_value", "I")).get());
 				
 				case "java/lang/String":
 					return new String(this.<char[]>asNativeObject(
@@ -2305,9 +2305,12 @@ public final class SpringThreadWorker
 						SpringSimpleObject sso = (SpringSimpleObject)ref;
 						
 						// Read and push to the stack
-						frame.pushToStack(this.asVMObject(
-							sso.fieldByIndex(ssf.index()).get(this.thread,
-								null)));
+						SpringFieldStorage store =
+							sso.fieldByIndex(ssf.index());
+						frame.pushToStack(this.asVMObject(store.get()));
+						
+						// Debug signal
+						store.signal(this.thread, ref, false);
 					}
 					break;
 					
@@ -2315,13 +2318,19 @@ public final class SpringThreadWorker
 				case InstructionIndex.GETSTATIC:
 					{
 						// Lookup field
-						SpringFieldStorage ssf = this.__lookupStaticField(
+						FieldReference fieldRef =
 							inst.<FieldReference>argument(0,
-							FieldReference.class));
+								FieldReference.class);
+						SpringFieldStorage ssf = this.__lookupStaticField(
+							fieldRef);
 						
 						// Push read value to stack
 						frame.pushToStack(this.asVMObject(
-							ssf.get(this.thread, null)));
+							ssf.get()));
+						
+						// Debug signal
+						ssf.signal(this.thread,
+							this.loadClass(fieldRef.className()), false);
 					}
 					break;
 					
@@ -3224,9 +3233,12 @@ public final class SpringThreadWorker
 							throw new SpringClassCastException("BK2u");
 						
 						// Set
-						sso.fieldByIndex(ssf.index()).set(this.thread, null,
-							value,
-							isinstanceinit);
+						SpringFieldStorage store =
+							sso.fieldByIndex(ssf.index());
+						store.set(value, isinstanceinit);
+						
+						// Debug signal
+						store.signal(this.thread, ref, true);
 					}
 					break;
 				
@@ -3234,14 +3246,20 @@ public final class SpringThreadWorker
 				case InstructionIndex.PUTSTATIC:
 					{
 						// Lookup field
-						SpringFieldStorage ssf = this.__lookupStaticField(
+						FieldReference fieldRef =
 							inst.<FieldReference>argument(0,
-							FieldReference.class));
+								FieldReference.class);
+						SpringFieldStorage ssf = this.__lookupStaticField(
+							fieldRef);
 						
 						// Set value, note that static initializers can set
 						// static field values even if they are final
-						ssf.set(this.thread, null, frame.popFromStack(),
+						ssf.set(frame.popFromStack(),
 							isstaticinit);
+						
+						// Debug signal
+						ssf.signal(this.thread,
+							this.loadClass(fieldRef.className()), true);
 					}
 					break;
 					

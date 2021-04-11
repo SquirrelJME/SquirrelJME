@@ -45,7 +45,7 @@ public enum MLEDebug
 			return ((SpringSimpleObject)object).fieldByNameAndType(
 				false, "_stack",
 				"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;")
-				.get(null, null);
+				.get();
 		}
 	},
 	

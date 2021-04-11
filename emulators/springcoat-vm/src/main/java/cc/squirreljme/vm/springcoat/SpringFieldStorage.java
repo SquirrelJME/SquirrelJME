@@ -114,47 +114,33 @@ public final class SpringFieldStorage
 	/**
 	 * Returns the value of the field.
 	 *
-	 * @param __ctxThread The context thread.
-	 * @param __ctxRef The context reference.
 	 * @return The field value.
 	 * @since 2018/09/15
 	 */
-	public final Object get(SpringThread __ctxThread, Object __ctxRef)
+	public final Object get()
 	{
 		// Volatile field, use volatile field instead
 		// Otherwise just set thread without worrying about any contention
-		Object rv = (this.isvolatile ? this._volatile : this._normal);
-		
-		// Are we debug tripping on this read?
-		JDWPTripValue trip = this._tripValue;
-		if (__ctxThread != null && trip != null && trip.isRead())
-			trip.signalTrip(__ctxThread, __ctxRef, this.fieldIndex);
-		
-		return rv;
+		return (this.isvolatile ? this._volatile : this._normal);
 	}
 	 
 	/**
 	 * Sets the static field to the given value.
 	 *
-	 * @param __ctxThread Context thread.
-	 * @param __ctxRef The context value.
 	 * @param __v The value to set.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/09
 	 */
-	public final void set(SpringThread __ctxThread, Object __ctxRef,
-		Object __v)
+	public final void set(Object __v)
 		throws NullPointerException
 	{
-		this.set(__ctxThread, __ctxRef, __v, false);
+		this.set(__v, false);
 	}
 	
 	/**
 	 * Sets the static field to the given value, final may be overridden
 	 * potentially.
 	 *
-	 * @param __ctxThread Context thread.
-	 * @param __ctxRef The context reference.
 	 * @param __v The value to set.
 	 * @param __writeFinal If true then final is overridden.
 	 * @throws NullPointerException On null arguments.
@@ -162,8 +148,7 @@ public final class SpringFieldStorage
 	 * and we are not allowed to write to final fields.
 	 * @since 2018/09/09
 	 */
-	public final void set(SpringThread __ctxThread, Object __ctxRef,
-		Object __v, boolean __writeFinal)
+	public final void set(Object __v, boolean __writeFinal)
 		throws SpringIncompatibleClassChangeException
 	{
 		if (__v == null)
@@ -184,10 +169,22 @@ public final class SpringFieldStorage
 		// Otherwise just set thread without worrying about any contention
 		else
 			this._normal = __v;
-		
-		// Are we debug tripping on this write?
+	}
+	
+	/**
+	 * Signals storage event.
+	 * 
+	 * @param __ctxThread The context thread.
+	 * @param __ctxRef The context reference.
+	 * @param __w Is this a write?
+	 * @since 2021/04/11
+	 */
+	public void signal(SpringThread __ctxThread, Object __ctxRef, boolean __w)
+	{
+		// Are we debug tripping on this read/write?
 		JDWPTripValue trip = this._tripValue;
-		if (__ctxThread != null && trip != null && trip.isWrite())
+		if (__ctxThread != null && trip != null &&
+			(__w ? trip.isWrite() : trip.isRead()))
 			trip.signalTrip(__ctxThread, __ctxRef, this.fieldIndex);
 	}
 }

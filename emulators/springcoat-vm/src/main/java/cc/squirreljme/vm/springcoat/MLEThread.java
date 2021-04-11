@@ -197,8 +197,8 @@ public enum MLEThread
 				"_interrupted", "Z");
 			
 			// Get and clear the field value
-			Object old = field.get(null, null);
-			field.set(null, null, null, false);
+			Object old = field.get();
+			field.set(false);
 			return old;
 		}
 	}, 
@@ -216,7 +216,7 @@ public enum MLEThread
 		{
 			// Just set the started field to true
 			MLEThread.__javaThread(__thread, __args[0]).fieldByNameAndType(
-				false, "_started", "Z").set(null, null, null, true);
+				false, "_started", "Z").set(true);
 			return null;
 		}
 	},
@@ -234,7 +234,7 @@ public enum MLEThread
 			// Just get the state of the given field
 			return MLEThread.__javaThread(__thread, __args[0])
 				.fieldByNameAndType(false, 
-					"_started", "Z").get(null, null);
+					"_started", "Z").get();
 		}
 	},
 	
@@ -249,7 +249,7 @@ public enum MLEThread
 			return MLEThread.__javaThread(__thread, __args[0])
 				.fieldByNameAndType(
 				false, "_runnable",
-				"Ljava/lang/Runnable;").get(null, null);
+				"Ljava/lang/Runnable;").get();
 		}
 	},
 	
@@ -266,7 +266,7 @@ public enum MLEThread
 			// Just set the started field to true
 			MLEThread.__javaThread(__thread, __args[0]).fieldByNameAndType(
 				false, "_isAlive", "Z")
-				.set(null, null, null, (int)__args[1] != 0);
+				.set((int)__args[1] != 0);
 			
 			return null;
 		}
@@ -436,7 +436,7 @@ public enum MLEThread
 				__thread.resolveClass("java/lang/Thread")
 				.lookupField(false, "_vmThread",
 				"Lcc/squirreljme/jvm/mle/brackets/VMThreadBracket;"))
-				.get(null, null);
+				.get();
 		}
 	},
 	

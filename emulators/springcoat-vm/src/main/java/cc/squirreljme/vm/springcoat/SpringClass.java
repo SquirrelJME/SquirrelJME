@@ -364,7 +364,7 @@ public final class SpringClass
 			}
 			
 			// Read value
-			__value.set(storage.get(null, null));
+			__value.set(storage.get());
 			return true;
 		}
 		
@@ -379,7 +379,7 @@ public final class SpringClass
 			try
 			{
 				__value.set(((SpringSimpleObject)__obj)
-					.fieldByIndex(field.index()).get(null, null));
+					.fieldByIndex(field.index()).get());
 				return true;
 			}
 			

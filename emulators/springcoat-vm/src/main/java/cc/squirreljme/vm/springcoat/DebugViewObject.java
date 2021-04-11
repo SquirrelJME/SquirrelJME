@@ -83,7 +83,7 @@ public class DebugViewObject
 			if (__index >= 0 && __index < store.length)
 			{
 				__out.set(DebugViewObject.__normalizeNull(
-					store[__index].get(null, null)));
+					store[__index].get()));
 				return true;
 			}
 		}
