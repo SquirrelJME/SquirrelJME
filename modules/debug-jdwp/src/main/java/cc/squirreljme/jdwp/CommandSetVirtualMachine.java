@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @since 2021/03/12
  */
-public enum VirtualMachineCommandSet
+public enum CommandSetVirtualMachine
 	implements JDWPCommand
 {
 	/** Version information. */
@@ -84,7 +84,7 @@ public enum VirtualMachineCommandSet
 				rv.writeId(classy);
 				
 				// Classes are always loaded
-				rv.writeInt(VirtualMachineCommandSet._CLASS_INITIALIZED);
+				rv.writeInt(CommandSetVirtualMachine._CLASS_INITIALIZED);
 			}
 			
 			return rv;
@@ -223,7 +223,7 @@ public enum VirtualMachineCommandSet
 		{
 			// Same as new capabilities
 			if (true)
-				return VirtualMachineCommandSet.CAPABILITIES_NEW
+				return CommandSetVirtualMachine.CAPABILITIES_NEW
 					.execute(__controller, __packet);
 			
 			JDWPPacket rv = __controller.__reply(
@@ -359,7 +359,7 @@ public enum VirtualMachineCommandSet
 			
 			// New Capabilities
 			if (__packet.command() ==
-				VirtualMachineCommandSet.CAPABILITIES_NEW.id)
+				CommandSetVirtualMachine.CAPABILITIES_NEW.id)
 			{
 				// canRedefineClasses
 				rv.writeBoolean(false);
@@ -443,7 +443,7 @@ public enum VirtualMachineCommandSet
 				rv.writeString("");
 				
 				// All classes are considered initialized
-				rv.writeInt(VirtualMachineCommandSet._CLASS_INITIALIZED);
+				rv.writeInt(CommandSetVirtualMachine._CLASS_INITIALIZED);
 			}
 			
 			return rv;
@@ -466,7 +466,7 @@ public enum VirtualMachineCommandSet
 	 * @param __id The ID used.
 	 * @since 2021/03/12
 	 */
-	VirtualMachineCommandSet(int __id)
+	CommandSetVirtualMachine(int __id)
 	{
 		this.id = __id;
 	}

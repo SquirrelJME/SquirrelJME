@@ -14,7 +14,7 @@ package cc.squirreljme.jdwp;
  *
  * @since 2021/03/13
  */
-public enum ReferenceTypeCommandSet
+public enum CommandSetReferenceType
 	implements JDWPCommand
 {
 	/** Non-generic signature of a given type. */
@@ -324,7 +324,7 @@ public enum ReferenceTypeCommandSet
 	 * @param __id The ID used.
 	 * @since 2021/03/13
 	 */
-	ReferenceTypeCommandSet(int __id)
+	CommandSetReferenceType(int __id)
 	{
 		this.id = __id;
 	}

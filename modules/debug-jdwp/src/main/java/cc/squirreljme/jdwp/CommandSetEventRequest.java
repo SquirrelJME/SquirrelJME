@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @since 2021/03/12
  */
-public enum EventRequestCommandSet
+public enum CommandSetEventRequest
 	implements JDWPCommand
 {
 	/** Set event requests. */
@@ -158,7 +158,7 @@ public enum EventRequestCommandSet
 	 * @param __id The ID used.
 	 * @since 2021/03/12
 	 */
-	EventRequestCommandSet(int __id)
+	CommandSetEventRequest(int __id)
 	{
 		this.id = __id;
 	}

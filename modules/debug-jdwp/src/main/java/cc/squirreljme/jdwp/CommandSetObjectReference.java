@@ -16,7 +16,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2021/03/14
  */
-public enum ObjectReferenceCommandSet
+public enum CommandSetObjectReference
 	implements JDWPCommand
 {
 	/** The type that an object is. */
@@ -163,7 +163,7 @@ public enum ObjectReferenceCommandSet
 	 * @param __id The ID used.
 	 * @since 2021/03/14
 	 */
-	ObjectReferenceCommandSet(int __id)
+	CommandSetObjectReference(int __id)
 	{
 		this.id = __id;
 	}

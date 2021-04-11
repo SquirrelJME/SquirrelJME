@@ -14,7 +14,7 @@ package cc.squirreljme.jdwp;
  *
  * @since 2021/03/14
  */
-public enum ClassTypeCommandSet
+public enum CommandSetClassType
 	implements JDWPCommand
 {
 	/** The super class of the given class. */
@@ -61,7 +61,7 @@ public enum ClassTypeCommandSet
 	 * @param __id The ID used.
 	 * @since 2021/03/14
 	 */
-	ClassTypeCommandSet(int __id)
+	CommandSetClassType(int __id)
 	{
 		this.id = __id;
 	}

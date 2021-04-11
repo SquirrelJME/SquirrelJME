@@ -16,7 +16,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2021/03/14
  */
-public enum MethodCommandSet
+public enum CommandSetMethod
 	implements JDWPCommand
 {
 	/** Line number table. */
@@ -159,7 +159,7 @@ public enum MethodCommandSet
 	 * @param __id The ID used.
 	 * @since 2021/03/14
 	 */
-	MethodCommandSet(int __id)
+	CommandSetMethod(int __id)
 	{
 		this.id = __id;
 	}

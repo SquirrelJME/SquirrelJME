@@ -21,37 +21,37 @@ public enum JDWPCommandSet
 	UNKNOWN(-1),
 	
 	/** Virtual machine command set. */
-	VIRTUAL_MACHINE(1, VirtualMachineCommandSet.values()),
+	VIRTUAL_MACHINE(1, CommandSetVirtualMachine.values()),
 	
 	/** Reference type. */
-	REFERENCE_TYPE(2, ReferenceTypeCommandSet.values()),
+	REFERENCE_TYPE(2, CommandSetReferenceType.values()),
 	
 	/** Class types. */
-	CLASS_TYPE(3, ClassTypeCommandSet.values()),
+	CLASS_TYPE(3, CommandSetClassType.values()),
 	
 	/** Methods. */
-	METHODS(6, MethodCommandSet.values()),
+	METHODS(6, CommandSetMethod.values()),
 	
 	/** Object references. */
-	OBJECT_REFERENCE(9, ObjectReferenceCommandSet.values()),
+	OBJECT_REFERENCE(9, CommandSetObjectReference.values()),
 	
 	/** String reference. */
-	STRING_REFERENCE(10, StringReferenceCommandSet.values()),
+	STRING_REFERENCE(10, CommandSetStringReference.values()),
 	
 	/** Thread Reference. */
-	THREAD_REFERENCE(11, ThreadReferenceCommandSet.values()),
+	THREAD_REFERENCE(11, CommandSetThreadReference.values()),
 	
 	/** Thread group reference. */
-	THREAD_GROUP_REFERENCE(12, ThreadGroupReferenceCommandSet.values()),
+	THREAD_GROUP_REFERENCE(12, CommandSetThreadGroupReference.values()),
 	
 	/** Array references. */
-	ARRAY_REFERENCE(13, ArrayReferenceCommandSet.values()),
+	ARRAY_REFERENCE(13, CommandSetArrayReference.values()),
 	
 	/** Event requests. */
-	EVENT_REQUEST(15, EventRequestCommandSet.values()),
+	EVENT_REQUEST(15, CommandSetEventRequest.values()),
 	
 	/** Stack frames. */
-	STACK_FRAMES(16, StackFrameCommandSet.values()),
+	STACK_FRAMES(16, CommandSetStackFrame.values()),
 	
 	/* End. */
 	;

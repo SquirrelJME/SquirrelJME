@@ -14,7 +14,7 @@ package cc.squirreljme.jdwp;
  *
  * @since 2021/03/20
  */
-public enum StringReferenceCommandSet
+public enum CommandSetStringReference
 	implements JDWPCommand
 {
 	/** Return the value of the string. */
@@ -38,7 +38,7 @@ public enum StringReferenceCommandSet
 			
 			// Is this not a string?
 			JDWPClass classy = object.debuggerClass();
-			if (classy == null || !StringReferenceCommandSet._STRING
+			if (classy == null || !CommandSetStringReference._STRING
 				.equals(classy.debuggerFieldDescriptor()))
 				return __controller.__reply(
 					__packet.id(), ErrorType.INVALID_STRING);
@@ -46,7 +46,7 @@ public enum StringReferenceCommandSet
 			// Find the internal string array
 			JDWPField charField = null;
 			for (JDWPField field : classy.debuggerFields())
-				if (StringReferenceCommandSet._STRING_CHARS.equals(
+				if (CommandSetStringReference._STRING_CHARS.equals(
 					field.debuggerMemberName()))
 				{
 					charField = field;
@@ -91,7 +91,7 @@ public enum StringReferenceCommandSet
 					// Use an invalid placeholder
 					if (!charArray.debuggerArrayGet(i, value))
 					{
-						chars[i] = StringReferenceCommandSet._BAD_CHAR;
+						chars[i] = CommandSetStringReference._BAD_CHAR;
 						continue;
 					}
 					
@@ -104,7 +104,7 @@ public enum StringReferenceCommandSet
 					
 					// Could not read it so treat as unknown
 					else
-						chars[i] = StringReferenceCommandSet._BAD_CHAR;
+						chars[i] = CommandSetStringReference._BAD_CHAR;
 				}
 			
 			// Report string value
@@ -139,7 +139,7 @@ public enum StringReferenceCommandSet
 	 * @param __id The ID used.
 	 * @since 2021/03/20
 	 */
-	StringReferenceCommandSet(int __id)
+	CommandSetStringReference(int __id)
 	{
 		this.id = __id;
 	}

@@ -16,7 +16,7 @@ import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
  *
  * @since 2021/03/13
  */
-public enum ThreadReferenceCommandSet
+public enum CommandSetThreadReference
 	implements JDWPCommand
 {
 	/** Thread name. */
@@ -328,7 +328,7 @@ public enum ThreadReferenceCommandSet
 	 * @param __id The ID used.
 	 * @since 2021/03/13
 	 */
-	ThreadReferenceCommandSet(int __id)
+	CommandSetThreadReference(int __id)
 	{
 		this.id = __id;
 	}

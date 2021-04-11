@@ -14,7 +14,7 @@ package cc.squirreljme.jdwp;
  *
  * @since 2021/03/15
  */
-public enum StackFrameCommandSet
+public enum CommandSetStackFrame
 	implements JDWPCommand
 {
 	/** Get stack frame values. */
@@ -112,8 +112,8 @@ public enum StackFrameCommandSet
 			
 			// Static and native methods always return null
 			int mFlags = frame.debuggerAtMethod().debuggerMemberFlags();
-			if (0 != (mFlags & (StackFrameCommandSet._FLAG_STATIC |
-				StackFrameCommandSet._FLAG_NATIVE)))
+			if (0 != (mFlags & (CommandSetStackFrame._FLAG_STATIC |
+				CommandSetStackFrame._FLAG_NATIVE)))
 				rv.writeId(null);
 			
 			// Write self value
@@ -160,7 +160,7 @@ public enum StackFrameCommandSet
 	 * @param __id The ID used.
 	 * @since 2021/03/15
 	 */
-	StackFrameCommandSet(int __id)
+	CommandSetStackFrame(int __id)
 	{
 		this.id = __id;
 	}

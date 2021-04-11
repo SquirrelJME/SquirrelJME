@@ -14,7 +14,7 @@ package cc.squirreljme.jdwp;
  *
  * @since 2021/03/13
  */
-public enum ThreadGroupReferenceCommandSet
+public enum CommandSetThreadGroupReference
 	implements JDWPCommand
 {
 	/** The name of the group. */
@@ -130,7 +130,7 @@ public enum ThreadGroupReferenceCommandSet
 	 * @param __id The ID used.
 	 * @since 2021/03/13
 	 */
-	ThreadGroupReferenceCommandSet(int __id)
+	CommandSetThreadGroupReference(int __id)
 	{
 		this.id = __id;
 	}
