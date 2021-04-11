@@ -90,64 +90,6 @@ public final class JDWPController
 	}
 	
 	/**
-	 * Returns all thread groups.
-	 * 
-	 * @return All thread groups.
-	 * @since 2021/04/10
-	 */
-	public final Object[] allThreadGroups()
-	{
-		// Get all thread groups
-		Object[] groups = this.bind.debuggerThreadGroups();
-		
-		// Register each one
-		JDWPState state = this.state;
-		for (Object group : groups)
-			state.items.put(group);
-		
-		return groups;
-	}
-	
-	/**
-	 * Returns all threads.
-	 * 
-	 * @return All threads.
-	 * @since 2021/04/10
-	 */
-	public final Object[] allThreads()
-	{
-		// Current state
-		JDWPState state = this.state;
-		
-		// All available threads
-		ArrayList<Object> allThreads = new ArrayList<>(); 
-		
-		// Start from the root thread group and get all of the threads
-		// under them, since this is a machine to thread linkage
-		JDWPViewThreadGroup view = state.view(
-			JDWPViewThreadGroup.class, JDWPViewKind.THREAD_GROUP);
-		for (Object group : this.bind.debuggerThreadGroups())
-		{
-			// Register thread group
-			state.items.put(group);
-			
-			// Obtain all threads from this group
-			Object[] threads = view.threads(group);
-			
-			// Register each thread
-			for (Object thread : threads)
-				state.items.put(thread);
-			
-			// Store into the list
-			allThreads.ensureCapacity(
-				allThreads.size() + threads.length);
-			allThreads.addAll(Arrays.asList(threads));
-		}
-		
-		return allThreads.toArray(new Object[allThreads.size()]);
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @since 2021/03/08
 	 */
@@ -164,6 +106,7 @@ public final class JDWPController
 	 * @return The debugger state.
 	 * @since 2021/03/13
 	 */
+	@Deprecated
 	public JDWPState debuggerUpdate(JDWPUpdateWhat... __what)
 	{
 		JDWPState state = this.state;
@@ -425,6 +368,64 @@ public final class JDWPController
 	{
 		return this.state.view(JDWPViewThreadGroup.class,
 			JDWPViewKind.THREAD_GROUP);
+	}
+	
+	/**
+	 * Returns all thread groups.
+	 * 
+	 * @return All thread groups.
+	 * @since 2021/04/10
+	 */
+	final Object[] __allThreadGroups()
+	{
+		// Get all thread groups
+		Object[] groups = this.bind.debuggerThreadGroups();
+		
+		// Register each one
+		JDWPState state = this.state;
+		for (Object group : groups)
+			state.items.put(group);
+		
+		return groups;
+	}
+	
+	/**
+	 * Returns all threads.
+	 * 
+	 * @return All threads.
+	 * @since 2021/04/10
+	 */
+	final Object[] __allThreads()
+	{
+		// Current state
+		JDWPState state = this.state;
+		
+		// All available threads
+		ArrayList<Object> allThreads = new ArrayList<>(); 
+		
+		// Start from the root thread group and get all of the threads
+		// under them, since this is a machine to thread linkage
+		JDWPViewThreadGroup view = state.view(
+			JDWPViewThreadGroup.class, JDWPViewKind.THREAD_GROUP);
+		for (Object group : this.bind.debuggerThreadGroups())
+		{
+			// Register thread group
+			state.items.put(group);
+			
+			// Obtain all threads from this group
+			Object[] threads = view.threads(group);
+			
+			// Register each thread
+			for (Object thread : threads)
+				state.items.put(thread);
+			
+			// Store into the list
+			allThreads.ensureCapacity(
+				allThreads.size() + threads.length);
+			allThreads.addAll(Arrays.asList(threads));
+		}
+		
+		return allThreads.toArray(new Object[allThreads.size()]);
 	}
 	
 	/**

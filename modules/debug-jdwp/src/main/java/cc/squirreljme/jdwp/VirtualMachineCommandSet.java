@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jdwp;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -105,7 +103,7 @@ public enum VirtualMachineCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			Object[] threads = __controller.allThreads();
+			Object[] threads = __controller.__allThreads();
 			
 			// Write result
 			JDWPPacket rv = __controller.__reply(
@@ -132,7 +130,7 @@ public enum VirtualMachineCommandSet
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			Object[] groups = __controller.allThreadGroups();
+			Object[] groups = __controller.__allThreadGroups();
 			
 			// Write result
 			JDWPPacket rv = __controller.__reply(
@@ -183,7 +181,7 @@ public enum VirtualMachineCommandSet
 		{
 			// Tell all threads to suspend
 			JDWPViewThread view = __controller.viewThread();
-			for (Object thread : __controller.allThreads())
+			for (Object thread : __controller.__allThreads())
 				view.suspension(thread).suspend();
 			
 			return null;
@@ -204,7 +202,7 @@ public enum VirtualMachineCommandSet
 		{
 			// Tell all threads to resume
 			JDWPViewThread view = __controller.viewThread();
-			for (Object thread : __controller.allThreads())
+			for (Object thread : __controller.__allThreads())
 				view.suspension(thread).resume();
 			
 			return null;
