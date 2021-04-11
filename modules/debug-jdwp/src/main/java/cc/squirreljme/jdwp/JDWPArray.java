@@ -12,8 +12,10 @@ package cc.squirreljme.jdwp;
 /**
  * Represents an array.
  *
+ * @deprecated Use viewers instead.
  * @since 2021/03/17
  */
+@Deprecated
 public interface JDWPArray
 	extends JDWPObject
 {

@@ -12,8 +12,10 @@ package cc.squirreljme.jdwp;
 /**
  * Represents a member field or method of a class.
  *
+ * @deprecated Use viewers with indexes instead.
  * @since 2021/03/14
  */
+@Deprecated
 public interface JDWPMember
 	extends JDWPId
 {

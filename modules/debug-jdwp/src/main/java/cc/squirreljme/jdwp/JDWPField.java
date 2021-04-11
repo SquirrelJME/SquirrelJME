@@ -12,8 +12,10 @@ package cc.squirreljme.jdwp;
 /**
  * Represents a field.
  *
+ * @deprecated Use viewers with field indexes instead.
  * @since 2021/03/14
  */
+@Deprecated
 public interface JDWPField
 	extends JDWPMember
 {

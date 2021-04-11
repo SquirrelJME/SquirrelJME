@@ -12,8 +12,10 @@ package cc.squirreljme.jdwp;
 /**
  * Represents a single thread frame.
  *
+ * @deprecated Use viewers instead.
  * @since 2021/03/13
  */
+@Deprecated
 public interface JDWPThreadFrame
 	extends JDWPId
 {

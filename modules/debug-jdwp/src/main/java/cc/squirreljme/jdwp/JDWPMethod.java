@@ -12,8 +12,10 @@ package cc.squirreljme.jdwp;
 /**
  * Represents a debugged method reference.
  *
+ * @deprecated Use viewers with indexes instead.
  * @since 2021/03/13
  */
+@Deprecated
 public interface JDWPMethod
 	extends JDWPMember
 {

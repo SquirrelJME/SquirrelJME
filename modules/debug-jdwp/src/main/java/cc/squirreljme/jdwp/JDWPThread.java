@@ -14,8 +14,10 @@ import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 /**
  * Represents a debugger thread.
  *
+ * @deprecated Use viewers instead.
  * @since 2021/03/13
  */
+@Deprecated
 public interface JDWPThread
 	extends JDWPObjectLike
 {

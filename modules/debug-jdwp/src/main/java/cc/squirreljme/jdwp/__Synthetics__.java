@@ -12,8 +12,10 @@ package cc.squirreljme.jdwp;
 /**
  * Synthetics.
  *
+ * @deprecated With viewers this should no longer be needed at all.
  * @since 2021/03/14
  */
+@Deprecated
 abstract class __Synthetics__
 	implements JDWPId
 {
