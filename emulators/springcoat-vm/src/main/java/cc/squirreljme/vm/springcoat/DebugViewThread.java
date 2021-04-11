@@ -11,7 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
-import cc.squirreljme.jdwp.JDWPViewThread;
+import cc.squirreljme.jdwp.views.JDWPViewThread;
 import java.lang.ref.Reference;
 import java.util.Arrays;
 import java.util.Collections;

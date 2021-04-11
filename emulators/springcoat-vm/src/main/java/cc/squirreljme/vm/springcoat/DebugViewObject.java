@@ -11,7 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.JDWPValue;
-import cc.squirreljme.jdwp.JDWPViewObject;
+import cc.squirreljme.jdwp.views.JDWPViewObject;
 import cc.squirreljme.jdwp.trips.JDWPTripValue;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;

@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * This exception is thrown if there is any issue with the JDWP connection.
  *

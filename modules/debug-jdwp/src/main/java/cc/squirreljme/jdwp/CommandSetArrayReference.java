@@ -9,6 +9,9 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPViewObject;
+import cc.squirreljme.jdwp.views.JDWPViewType;
+
 /**
  * Array references.
  *

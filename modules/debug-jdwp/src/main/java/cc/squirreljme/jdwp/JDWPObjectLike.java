@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPViewObject;
+
 /**
  * Represents that something that is like an object and can be referred to
  * by object.

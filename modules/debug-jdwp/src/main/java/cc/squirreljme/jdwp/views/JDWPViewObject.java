@@ -7,10 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp;
+package cc.squirreljme.jdwp.views;
 
+import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.trips.JDWPTripValue;
-import cc.squirreljme.jdwp.views.JDWPViewValidObject;
 
 /**
  * An object viewer.

@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPViewObject;
+
 /**
  * Represents an object type.
  *

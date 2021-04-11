@@ -7,9 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp;
+package cc.squirreljme.jdwp.views;
 
-import cc.squirreljme.jdwp.views.JDWPViewValidObject;
+import cc.squirreljme.jdwp.JDWPThreadSuspension;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 
 /**

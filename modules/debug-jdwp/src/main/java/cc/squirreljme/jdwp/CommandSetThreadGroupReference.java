@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPViewThreadGroup;
+
 /**
  * Thread group reference commands.
  *

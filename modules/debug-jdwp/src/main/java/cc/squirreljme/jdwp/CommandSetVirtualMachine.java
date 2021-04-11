@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPViewThread;
 import java.util.LinkedList;
 import java.util.List;
 

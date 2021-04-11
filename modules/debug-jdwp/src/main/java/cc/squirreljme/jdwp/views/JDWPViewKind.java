@@ -9,12 +9,6 @@
 
 package cc.squirreljme.jdwp.views;
 
-import cc.squirreljme.jdwp.JDWPViewMethod;
-import cc.squirreljme.jdwp.JDWPViewObject;
-import cc.squirreljme.jdwp.JDWPViewThread;
-import cc.squirreljme.jdwp.JDWPViewThreadGroup;
-import cc.squirreljme.jdwp.JDWPViewType;
-
 /**
  * Represents the kind of view that is used for an object or otherwise.
  *

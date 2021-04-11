@@ -7,9 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp;
-
-import cc.squirreljme.jdwp.views.JDWPView;
+package cc.squirreljme.jdwp.views;
 
 /**
  * Viewer for methods, all references to methods require a class for context

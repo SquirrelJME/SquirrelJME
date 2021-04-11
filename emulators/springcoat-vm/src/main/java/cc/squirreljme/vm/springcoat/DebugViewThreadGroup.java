@@ -10,7 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPState;
-import cc.squirreljme.jdwp.JDWPViewThreadGroup;
+import cc.squirreljme.jdwp.views.JDWPViewThreadGroup;
 import java.lang.ref.Reference;
 
 /**
