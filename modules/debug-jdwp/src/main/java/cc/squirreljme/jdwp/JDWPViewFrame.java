@@ -10,38 +10,38 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Represents a type.
+ * This is a view around thread frames.
  *
- * @since 2021/04/10
+ * @since 2021/04/11
  */
-public interface JDWPViewType
+public interface JDWPViewFrame
 	extends JDWPView
 {
 	/**
-	 * Returns the component type.
+	 * Returns the class the frame is in.
 	 * 
-	 * @param __which Get the component type of what?
-	 * @return The component type or {@code null} if this is not an array.
+	 * @param __which Which frame are we looking at?
+	 * @return The class the frame is in.
 	 * @since 2021/04/11
 	 */
-	Object componentType(Object __which);
+	Object atClass(Object __which);
 	
 	/**
-	 * Returns the flags of the given class in standard Java class flag
-	 * format.
+	 * Returns the code index the frame is at, typically will be a PC
+	 * address.
 	 * 
-	 * @param __which Get the flags of which class?
-	 * @return The class flags.
+	 * @param __which Which frame are we looking at?
+	 * @return The code index the frame is at.
 	 * @since 2021/04/11
 	 */
-	int flags(Object __which);
+	int atCodeIndex(Object __which);
 	
 	/**
-	 * Returns the signature of the given type.
+	 * Returns the method index within the given class the frame is at.
 	 * 
-	 * @param __which Get the signature of which type?
-	 * @return The signature of the given type.
+	 * @param __which Which frame are we looking at?
+	 * @return The method index.
 	 * @since 2021/04/11
 	 */
-	String signature(Object __which);
+	int atMethodIndex(Object __which);
 }

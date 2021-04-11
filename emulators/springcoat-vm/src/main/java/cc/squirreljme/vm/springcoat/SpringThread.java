@@ -1122,6 +1122,22 @@ public final class SpringThread
 		}
 		
 		/**
+		 * Returns the PC index.
+		 * 
+		 * @return The PC index.
+		 * @since 2021/04/11
+		 */
+		public final int pcIndex()
+		{
+			ByteCode code = this.code;
+			if (code == null)
+				return this._pc;
+			
+			// These just use indexes, not true addresses
+			return code.addressToIndex(this._pc);
+		}
+		
+		/**
 		 * Returns the line of code the program counter is on.
 		 *
 		 * @return The program counter line of code.

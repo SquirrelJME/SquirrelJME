@@ -591,6 +591,43 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Writes a location into the packet.
+	 * 
+	 * @param __controller The controller used. 
+	 * @param __class The class to write.
+	 * @param __atMethodIndex The method index.
+	 * @param __atCodeIndex The code index.
+	 * @throws JDWPException If the packet could not be written.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/11
+	 */
+	public void writeLocation(JDWPController __controller, Object __class,
+		int __atMethodIndex, int __atCodeIndex)
+		throws JDWPException, NullPointerException
+	{
+		if (__controller == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			// Must be an open packet
+			this.__checkOpen();
+			
+			// Write class located within
+			this.writeByte(JDWPUtils.classType(__controller, __class).id);
+			this.writeId(System.identityHashCode(__class));
+			
+			// Write the method ID and the special index (address)
+			this.writeId(__atMethodIndex);
+			
+			// Where is this located? Note that the index is a long here
+			// although such a high value should hopefully never be needed
+			// in SquirrelJME
+			this.writeLong(__atCodeIndex);
+		}
+	}
+	
+	/**
 	 * Writes a long to the output.
 	 * 
 	 * @param __v The value to write.

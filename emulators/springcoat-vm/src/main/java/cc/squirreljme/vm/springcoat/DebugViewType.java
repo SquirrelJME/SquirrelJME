@@ -11,7 +11,6 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.JDWPViewType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 
 /**
@@ -43,30 +42,44 @@ public class DebugViewType
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/11
+	 * @param __which
 	 */
 	@Override
-	public Object componentType(Object __what)
+	public Object componentType(Object __which)
 	{
-		return ((SpringClass)__what).componentType();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/04/10
-	 */
-	@Override
-	public boolean isValid(Object __what)
-	{
-		return (__what instanceof SpringClass);
+		return ((SpringClass)__which).componentType();
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/11
+	 * @param __which
 	 */
 	@Override
-	public String signature(Object __what)
+	public int flags(Object __which)
 	{
-		return ((SpringClass)__what).name.field().toString();
+		return ((SpringClass)__which).flags().toJavaBits();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/10
+	 * @param __which
+	 */
+	@Override
+	public boolean isValid(Object __which)
+	{
+		return (__which instanceof SpringClass);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/11
+	 * @param __which
+	 */
+	@Override
+	public String signature(Object __which)
+	{
+		return ((SpringClass)__which).name.field().toString();
 	}
 }

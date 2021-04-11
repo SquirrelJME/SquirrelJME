@@ -167,6 +167,9 @@ public final class SpringTaskManager
 		// What do we want to view?
 		switch (__kind)
 		{
+			case FRAME:
+				return __type.cast(new DebugViewFrame(__state));
+			
 			case OBJECT:
 				return __type.cast(new DebugViewObject(__state));
 			

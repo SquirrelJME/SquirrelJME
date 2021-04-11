@@ -379,6 +379,17 @@ public final class JDWPController
 	}
 	
 	/**
+	 * Returns the frame viewer.
+	 * 
+	 * @return The frame viewer.
+	 * @since 2021/04/11
+	 */
+	public final JDWPViewFrame viewFrame()
+	{
+		return this.state.view(JDWPViewFrame.class, JDWPViewKind.FRAME);
+	}
+	
+	/**
 	 * Returns the object viewer.
 	 * 
 	 * @return The object viewer.

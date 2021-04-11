@@ -11,7 +11,6 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPMethod;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Method;
@@ -39,15 +38,20 @@ public final class SpringMethod
 	/** The line table (cached). */
 	private volatile int[] _lineTable;
 	
+	/** The method index. */
+	protected final int methodIndex;
+	
 	/**
 	 * Initializes the method representation.
 	 *
 	 * @param __ic The class this belongs to.
 	 * @param __m The method to wrap.
+	 * @param __if The file this is in.
+	 * @param __dx The method index.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/03
 	 */
-	SpringMethod(ClassName __ic, Method __m, String __if)
+	SpringMethod(ClassName __ic, Method __m, String __if, int __dx)
 		throws NullPointerException
 	{
 		if (__ic == null || __m == null)
@@ -56,6 +60,7 @@ public final class SpringMethod
 		this.inclass = __ic;
 		this.method = __m;
 		this.infile = __if;
+		this.methodIndex = __dx;
 	}
 	
 	/**

@@ -24,6 +24,7 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.lang.ref.Reference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +90,9 @@ public final class SpringClass
 	/** The table of fields defined in this class, includes super classes. */
 	private final SpringField[] _fieldtable;
 	
+	/** Method index table. */
+	private final SpringMethod[] _methodLookup;
+	
 	/** The class loader which loaded this class. */
 	private final Reference<SpringClassLoader> _classLoader;
 	
@@ -133,20 +137,36 @@ public final class SpringClass
 		// Used for method location
 		String filename = __cf.sourceFile();
 		
+		// Method index lookup for this class, used for debugging
+		int baseMethods = (__super == null ? 0 : __super._methodLookup.length);
+		int numMethods = baseMethods + __cf.methods().length;
+		SpringMethod[] methodLookup = (__super == null ?
+			new SpringMethod[numMethods] :
+			Arrays.copyOf(__super._methodLookup, numMethods));
+		this._methodLookup = methodLookup;
+		
 		// Go through and initialize methods declared in this class
+		int atMethodDx = baseMethods;
 		Map<MethodNameAndType, SpringMethod> nvmeths = this._nonvirtmethods;
 		Map<MethodNameAndType, SpringMethod> methods = this._methods;
 		for (Method m : __cf.methods())
 		{
+			// Determine index
+			int atIndex = atMethodDx++;
+			
+			// Setup method
 			SpringMethod sm;
 			if (null != methods.put(m.nameAndType(),
-				(sm = new SpringMethod(name, m, filename))))
+				(sm = new SpringMethod(name, m, filename, atIndex))))
 			{
 				// {@squirreljme.error BK0t Duplicated method in class. (The
 				// method)}
 				throw new SpringClassFormatException(name, String.format(
 					"BK0t %s", m.nameAndType()));
 			}
+			
+			// Store method in the lookup table
+			methodLookup[atIndex] = sm;
 			
 			// Store only instance methods which are not static
 			if (!m.flags().isStatic())
@@ -477,6 +497,20 @@ public final class SpringClass
 	public final ClassFile file()
 	{
 		return this.file;
+	}
+	
+	/**
+	 * Returns the method index of the given method.
+	 * 
+	 * @param __method The method to look for.
+	 * @return The method index of the given method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/11
+	 */
+	public int findMethodIndex(SpringMethod __method)
+		throws NullPointerException
+	{
+		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
 	}
 	
 	/**

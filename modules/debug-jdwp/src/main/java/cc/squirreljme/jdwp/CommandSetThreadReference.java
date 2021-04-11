@@ -183,8 +183,6 @@ public enum CommandSetThreadReference
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			JDWPViewThread view = __controller.viewThread();
-			
 			// Which thread do we want?
 			Object thread = __packet.readThread(__controller, false);
 			
@@ -192,8 +190,9 @@ public enum CommandSetThreadReference
 			int startFrame = __packet.readInt();
 			int count = __packet.readInt();
 			
-			// Correct the frame count
-			JDWPThreadFrame[] frames = new JDWPThreadFrame[0];//thread.debuggerFrames();
+			// Correct the frame count, to make sure it is always within
+			// bounds of the call
+			Object[] frames = __controller.viewThread().frames(thread);
 			count = (count == -1 ? Math.max(0, frames.length - startFrame) :
 				Math.min(count, frames.length - startFrame));
 			
@@ -202,35 +201,26 @@ public enum CommandSetThreadReference
 				__packet.id(), ErrorType.NO_ERROR);
 			rv.writeInt(count);
 			
-			if (true)
-				return rv;
-			
 			// Write each individual frame
+			JDWPViewFrame viewFrame = __controller.viewFrame();
 			for (int i = startFrame, j = 0; j < count; i++, j++)
 			{
 				// Register this frame so it can be grabbed later
-				JDWPThreadFrame frame = frames[i];
-				__controller.state.oldFrames.put(frame);
+				Object frame = frames[i];
+				__controller.state.items.put(frame);
 				
 				// Write frame ID
-				rv.writeId(frame);
+				rv.writeId(System.identityHashCode(frame));
+				
+				// We need to store and cache the class for later reference
+				Object classy = viewFrame.atClass(frame);
+				if (classy != null)
+					__controller.state.items.put(classy);
 				
 				// Write the frame location
-				JDWPClass classy = frame.debuggerAtClass();
-				rv.writeByte(classy.debuggerClassType().id);
-				rv.writeId(classy);
-				
-				// Write the method ID and the special index (address)
-				JDWPMethod method = frame.debuggerAtMethod();
-				rv.writeId(method);
-				
-				// Where is this located? Note that the index
-				rv.writeLong(frame.debuggerAtIndex());
-				
-				// Make sure the class and methods are registered for later
-				// retrieval
-				__controller.state.oldClasses.put(classy);
-				__controller.state.oldMethods.put(method);
+				rv.writeLocation(__controller, classy,
+					viewFrame.atMethodIndex(frame),
+					viewFrame.atCodeIndex(frame));
 			} 
 			
 			return rv;
@@ -249,8 +239,6 @@ public enum CommandSetThreadReference
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			JDWPViewThread view = __controller.viewThread();
-			
 			// Which thread do we want?
 			Object thread = __packet.readThread(__controller, false);
 				
@@ -258,7 +246,7 @@ public enum CommandSetThreadReference
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Return the frame count
-			rv.writeInt(0);//thread.debuggerFrames().length);
+			rv.writeInt(__controller.viewThread().frames(thread).length);
 			
 			return rv;
 		}

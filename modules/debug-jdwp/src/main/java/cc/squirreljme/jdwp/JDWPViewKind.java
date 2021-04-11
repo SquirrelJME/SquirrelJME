@@ -16,6 +16,9 @@ package cc.squirreljme.jdwp;
  */
 public enum JDWPViewKind
 {
+	/** Thread frames. */
+	FRAME(JDWPViewFrame.class),
+	
 	/** An object. */
 	OBJECT(JDWPViewObject.class),
 	

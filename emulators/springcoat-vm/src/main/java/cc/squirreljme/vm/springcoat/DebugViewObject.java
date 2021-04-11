@@ -46,22 +46,24 @@ public class DebugViewObject
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/10
+	 * @param __which
 	 */
 	@Override
-	public boolean isValid(Object __what)
+	public boolean isValid(Object __which)
 	{
-		return (__what instanceof SpringObject);
+		return (__which instanceof SpringObject);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/11
+	 * @param __which
 	 */
 	@Override
-	public int arrayLength(Object __what)
+	public int arrayLength(Object __which)
 	{
-		if (__what instanceof SpringArrayObject)
-			return ((SpringArrayObject)__what).length;
+		if (__which instanceof SpringArrayObject)
+			return ((SpringArrayObject)__which).length;
 		return -1;
 	}
 	
@@ -70,9 +72,9 @@ public class DebugViewObject
 	 * @since 2021/04/11
 	 */
 	@Override
-	public boolean readArray(Object __what, int __index, JDWPValue __out)
+	public boolean readArray(Object __which, int __index, JDWPValue __out)
 	{
-		__out.set(((SpringArrayObject)__what).get(Object.class, __index));
+		__out.set(((SpringArrayObject)__which).get(Object.class, __index));
 		return true;
 	}
 	
@@ -81,18 +83,18 @@ public class DebugViewObject
 	 * @since 2021/04/10
 	 */
 	@Override
-	public boolean readValue(Object __what, int __index, JDWPValue __out)
+	public boolean readValue(Object __which, int __index, JDWPValue __out)
 	{
 		// Nulls never have a value
-		if (__what == SpringNullObject.NULL)
+		if (__which == SpringNullObject.NULL)
 			return false;
 		
 		// Is a simple object representation, so we can read a field value
 		// directly from the object representation without knowing about
 		// the class details.
-		if (__what instanceof SpringSimpleObject)
+		if (__which instanceof SpringSimpleObject)
 		{
-			SpringFieldStorage[] store = ((SpringSimpleObject)__what)._fields;
+			SpringFieldStorage[] store = ((SpringSimpleObject)__which)._fields;
 			if (__index >= 0 && __index < store.length)
 			{
 				__out.set(DebugViewObject.__normalizeNull(
@@ -111,10 +113,10 @@ public class DebugViewObject
 	 * @return
 	 */
 	@Override
-	public boolean setTrip(Object __what, int __index, JDWPTripValue __trip)
+	public boolean setTrip(Object __which, int __index, JDWPTripValue __trip)
 	{
 		// Simple representation of an object
-		if (__what instanceof SpringSimpleObject)
+		if (__which instanceof SpringSimpleObject)
 		{
 		}
 		
@@ -124,11 +126,12 @@ public class DebugViewObject
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/11
+	 * @param __which
 	 */
 	@Override
-	public Object type(Object __what)
+	public Object type(Object __which)
 	{
-		return ((SpringObject)__what).type();
+		return ((SpringObject)__which).type();
 	}
 	
 	/**

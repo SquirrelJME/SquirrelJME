@@ -20,18 +20,18 @@ public interface JDWPViewThreadGroup
 	/**
 	 * Returns the name of the thread group.
 	 * 
-	 * @param __what Which thread group to get the name of?
+	 * @param __which Which thread group to get the name of?
 	 * @return The name of the group.
 	 * @since 2021/04/10
 	 */
-	String name(Object __what);
+	String name(Object __which);
 	
 	/**
 	 * Returns the threads which are a part of this group.
 	 * 
-	 * @param __what The object being referred to as a thread group.
+	 * @param __which The object being referred to as a thread group.
 	 * @return The threads that are part of this thread group.
 	 * @since 2021/04/10
 	 */
-	Object[] threads(Object __what);
+	Object[] threads(Object __which);
 }

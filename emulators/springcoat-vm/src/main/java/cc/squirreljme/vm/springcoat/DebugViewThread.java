@@ -10,10 +10,12 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPState;
+import cc.squirreljme.jdwp.JDWPThreadFrame;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
 import cc.squirreljme.jdwp.JDWPViewThread;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Viewer for threads.
@@ -44,50 +46,80 @@ public class DebugViewThread
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/10
+	 * @param __which
 	 */
 	@Override
-	public boolean isValid(Object __what)
+	public boolean isValid(Object __which)
 	{
-		return (__what instanceof SpringThread);
+		return (__which instanceof SpringThread);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/11
+	 * @param __which
+	 */
+	@Override
+	public Object[] frames(Object __which)
+	{
+		SpringThread.Frame[] frames = ((SpringThread)__which).frames();
+		Object[] rv = new Object[frames.length];
+		
+		// Filter out any blank frames because it does not make sense to
+		// the debugger at all
+		int at = 0;
+		for (SpringThread.Frame frame : frames)
+			if (!frame.isBlank())
+				rv[at++] = frame;
+		
+		// Spring Coat does threads in the reverse order, so it needs to be
+		// flipped to be in Java order
+		rv = (at == frames.length ? rv : Arrays.<Object>copyOf(rv, at));
+		Collections.reverse(Arrays.asList(rv));
+		return rv;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/10
+	 * @param __which
 	 */
 	@Override
-	public String name(Object __what)
+	public String name(Object __which)
 	{
-		return ((SpringThread)__what).name();
+		return ((SpringThread)__which).name();
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/10
+	 * @param __which
 	 */
 	@Override
-	public Object parentGroup(Object __what)
+	public Object parentGroup(Object __which)
 	{
-		return ((SpringThread)__what).machine();
+		return ((SpringThread)__which).machine();
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/10
+	 * @param __which
 	 */
 	@Override
-	public JDWPThreadSuspension suspension(Object __what)
+	public JDWPThreadSuspension suspension(Object __which)
 	{
-		return ((SpringThread)__what).debuggerSuspension;
+		return ((SpringThread)__which).debuggerSuspension;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/10
+	 * @param __which
 	 */
 	@Override
-	public int status(Object __what)
+	public int status(Object __which)
 	{
-		return ((SpringThread)__what)._status;
+		return ((SpringThread)__which)._status;
 	}
 }
