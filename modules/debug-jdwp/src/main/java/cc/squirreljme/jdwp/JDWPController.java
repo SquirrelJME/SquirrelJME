@@ -9,16 +9,18 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
+import cc.squirreljme.jdwp.trips.JDWPTrip;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * This class acts as the main controller interface for JDWP and acts as a kind
@@ -57,6 +59,10 @@ public final class JDWPController
 	/** Value cache. */
 	private final Deque<JDWPValue> _freeValues =
 		new LinkedList<>();
+	
+	/** The global trips that are available. */
+	private final JDWPTrip[] _trips =
+		new JDWPTrip[JDWPGlobalTrip.values().length];
 	
 	/** Are events to the debugger being held? */
 	protected volatile boolean _holdEvents;
@@ -186,7 +192,7 @@ public final class JDWPController
 	{
 		// This runs in a thread, so if this thread ever stops for any reason
 		// we terminate the connection
-		try (JDWPController self = this)
+		try (JDWPController ignored = this)
 		{
 			CommLink commLink = this.commLink;
 			while (!commLink._shutdown)
@@ -204,8 +210,10 @@ public final class JDWPController
 	 * be {@code null}.
 	 * @param __args Arguments to the signal packet.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Use {@link #trip(Class, JDWPGlobalTrip)}.
 	 * @since 2021/03/16
 	 */
+	@Deprecated
 	public void signal(JDWPThread __thread, EventKind __kind,
 		EventModifierMatcher[] __matchers,
 		Object... __args)
@@ -255,8 +263,10 @@ public final class JDWPController
 	 * @param __cl The class being verified.
 	 * @param __status The status of this class.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Use {@link #trip(Class, JDWPGlobalTrip)}.
 	 * @since 2021/03/16
 	 */
+	@Deprecated
 	public void signalClassPrepare(JDWPThread __thread, JDWPClass __cl,
 		JDWPClassStatus __status)
 		throws NullPointerException
@@ -280,8 +290,10 @@ public final class JDWPController
 	 * @param __thread The thread that started.
 	 * @param __started Was this thread started?
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Use {@link #trip(Class, JDWPGlobalTrip)}.
 	 * @since 2021/03/14
 	 */
+	@Deprecated
 	public void signalThreadState(JDWPThread __thread, boolean __started)
 		throws NullPointerException
 	{
@@ -302,8 +314,10 @@ public final class JDWPController
 	 * @param __thread The thread to be suspended or resumed.
 	 * @param __suspend If the thread is to be suspended.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Use {@link #trip(Class, JDWPGlobalTrip)}.
 	 * @since 2021/03/14
 	 */
+	@Deprecated
 	public void signalThreadSuspend(JDWPThread __thread, boolean __suspend)
 		throws NullPointerException
 	{
@@ -318,8 +332,10 @@ public final class JDWPController
 	 * 
 	 * @param __thread The target thread.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Use {@link #trip(Class, JDWPGlobalTrip)}. 
 	 * @since 2021/03/16
 	 */
+	@Deprecated
 	public void signalVmStart(JDWPThread __thread)
 		throws NullPointerException
 	{
@@ -345,6 +361,49 @@ public final class JDWPController
 			// Send it away!
 			this.commLink.send(packet);
 		}
+	}
+	
+	/**
+	 * Returns a trip for the given type of global trip.
+	 * 
+	 * @param <T> The type of trip.
+	 * @param __cl The type of trip.
+	 * @param __t The type of trip.
+	 * @return The trip for the given class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/11
+	 */
+	public final <T extends JDWPTrip> T trip(Class<T> __cl, JDWPGlobalTrip __t)
+		throws NullPointerException
+	{
+		if (__cl == null || __t == null)
+			throw new NullPointerException("NARG");
+		
+		// Was a trip already created? Use that if so
+		JDWPTrip[] trips = this._trips;
+		JDWPTrip trip = trips[__t.ordinal()];
+		if (trip != null)
+			return __cl.cast(trip);
+		
+		// Otherwise setup a new trip
+		Reference<JDWPController> ref = new WeakReference<>(this);
+		switch (__t)
+		{
+			case VM_STATE:
+				trip = new __TripVmState__(ref);
+				break;
+			
+			case THREAD_ALIVE:
+				trip = new __TripThreadAlive__(ref);
+				break;
+			
+			default:
+				throw Debugging.oops(__t);
+		}
+		
+		// Cache and use it
+		this._trips[__t.ordinal()] = trip;
+		return  __cl.cast(trip);
 	}
 	
 	/**

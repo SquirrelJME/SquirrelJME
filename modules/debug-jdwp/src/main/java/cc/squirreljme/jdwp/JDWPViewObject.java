@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.trips.JDWPTripValue;
+
 /**
  * An object viewer.
  *

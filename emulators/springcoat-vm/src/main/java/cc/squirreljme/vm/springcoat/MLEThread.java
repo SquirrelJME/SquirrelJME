@@ -10,6 +10,9 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPController;
+import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
+import cc.squirreljme.jdwp.trips.JDWPTripThread;
+import cc.squirreljme.jdwp.trips.JDWPTripVmState;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
@@ -141,12 +144,14 @@ public enum MLEThread
 				// If we are debugging, we need to tell the debugger that the
 				// virtual machine actually started
 				if (target.machine().rootVm && target.isMain())
-					jdwp.signalVmStart(target);
+					jdwp.<JDWPTripVmState>trip(JDWPTripVmState.class,
+						JDWPGlobalTrip.VM_STATE).alive(true);
 				
 				// If we are debugging, signal that this thread is in the start
 				// state. We need the instance to have been set for this to
 				// even properly work!
-				jdwp.signalThreadState(target, true);
+				jdwp.<JDWPTripThread>trip(JDWPTripThread.class,
+					JDWPGlobalTrip.THREAD_ALIVE).alive(target, true);
 			}
 			
 			return vmThread;
@@ -457,7 +462,8 @@ public enum MLEThread
 			JDWPController jdwp = thread.machineRef.get()
 				.taskManager().jdwpController;
 			if (jdwp != null)
-				jdwp.signalThreadState(thread, false);
+				jdwp.<JDWPTripThread>trip(JDWPTripThread.class,
+					JDWPGlobalTrip.THREAD_ALIVE).alive(thread, true);
 			
 			return null;
 		}
