@@ -379,7 +379,18 @@ public final class JDWPController
 	}
 	
 	/**
-	 * Returns the thread viewer;
+	 * Returns the object viewer.
+	 * 
+	 * @return The object viewer.
+	 * @since 2021/04/10
+	 */
+	public final JDWPViewObject viewObject()
+	{
+		return this.state.view(JDWPViewObject.class, JDWPViewKind.OBJECT);
+	}
+	
+	/**
+	 * Returns the thread viewer.
 	 * 
 	 * @return The thread viewer.
 	 * @since 2021/04/10
@@ -399,6 +410,18 @@ public final class JDWPController
 	{
 		return this.state.view(JDWPViewThreadGroup.class,
 			JDWPViewKind.THREAD_GROUP);
+	}
+	
+	/**
+	 * Returns the viewer for types.
+	 * 
+	 * @return The viewer for types.
+	 * @since 2021/04/11
+	 */
+	public final JDWPViewType viewType()
+	{
+		return this.state.view(JDWPViewType.class,
+			JDWPViewKind.TYPE);
 	}
 	
 	/**

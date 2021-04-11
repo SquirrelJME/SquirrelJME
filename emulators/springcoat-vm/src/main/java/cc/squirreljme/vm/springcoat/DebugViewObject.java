@@ -48,19 +48,32 @@ public class DebugViewObject
 	 * @since 2021/04/10
 	 */
 	@Override
-	public boolean isArray(Object __what)
+	public boolean isValid(Object __what)
 	{
-		return (__what instanceof SpringArrayObject);
+		return (__what instanceof SpringObject);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2021/04/10
+	 * @since 2021/04/11
 	 */
 	@Override
-	public boolean isValid(Object __what)
+	public int arrayLength(Object __what)
 	{
-		return (__what instanceof SpringObject);
+		if (__what instanceof SpringArrayObject)
+			return ((SpringArrayObject)__what).length;
+		return -1;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/11
+	 */
+	@Override
+	public boolean readArray(Object __what, int __index, JDWPValue __out)
+	{
+		__out.set(((SpringArrayObject)__what).get(Object.class, __index));
+		return true;
 	}
 	
 	/**
@@ -106,6 +119,16 @@ public class DebugViewObject
 		}
 		
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/11
+	 */
+	@Override
+	public Object type(Object __what)
+	{
+		return ((SpringObject)__what).type();
 	}
 	
 	/**

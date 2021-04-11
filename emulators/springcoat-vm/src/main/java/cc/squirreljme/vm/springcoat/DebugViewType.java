@@ -42,11 +42,31 @@ public class DebugViewType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/04/11
+	 */
+	@Override
+	public Object componentType(Object __what)
+	{
+		return ((SpringClass)__what).componentType();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/04/10
 	 */
 	@Override
 	public boolean isValid(Object __what)
 	{
 		return (__what instanceof SpringClass);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/11
+	 */
+	@Override
+	public String signature(Object __what)
+	{
+		return ((SpringClass)__what).name.field().toString();
 	}
 }

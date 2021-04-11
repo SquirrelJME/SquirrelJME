@@ -197,6 +197,35 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Reads the given array from the packet.
+	 * 
+	 * @param __controller The controller used.
+	 * @param __nullable Can this be null?
+	 * @return The array value.
+	 * @throws JDWPException If this does not refer to a valid array.
+	 * @since 2021/04/11
+	 */
+	public final Object readArray(JDWPController __controller,
+		boolean __nullable)
+		throws JDWPException
+	{
+		int id = this.readId();
+		Object object = this.readObject(__controller, __nullable);
+		
+		// Is this an invalid array?
+		if (__controller.viewObject().arrayLength(object) < 0)
+		{
+			if (__nullable && object == null)
+				return null;
+			
+			// Fail with invalid thread
+			throw ErrorType.INVALID_ARRAY.toss(object, id);
+		}
+		
+		return object;
+	}
+	
+	/**
 	 * Reads a single byte from the packet
 	 * 
 	 * @return The single read value.
@@ -285,6 +314,35 @@ public final class JDWPPacket
 				((this.readByte() & 0xFF) << 8) |
 				(this.readByte() & 0xFF);
 		}
+	}
+	
+	/**
+	 * Reads the given object from the packet.
+	 * 
+	 * @param __controller The controller used.
+	 * @param __nullable Can this be null?
+	 * @return The object value.
+	 * @throws JDWPException If this does not refer to a valid object.
+	 * @since 2021/04/11
+	 */
+	public final Object readObject(JDWPController __controller,
+		boolean __nullable)
+		throws JDWPException
+	{
+		int id = this.readId();
+		Object object = __controller.state.items.get(id);
+		
+		// Is this valid?
+		if (!__controller.viewObject().isValid(object))
+		{
+			if (__nullable && object == null)
+				return null;
+			
+			// Fail with invalid thread
+			throw ErrorType.INVALID_OBJECT.toss(object, id);
+		}
+		
+		return object;
 	}
 	
 	/**
@@ -664,6 +722,23 @@ public final class JDWPPacket
 	 * @since 2021/03/15
 	 */
 	public void writeValue(Object __val, String __context, boolean __untag)
+		throws JDWPException
+	{
+		this.writeValue(__val, JDWPValueTag.fromSignature(__context), __untag);
+	}
+	
+	/**
+	 * Writes a value to the output.
+	 * 
+	 * @param __val The value to write.
+	 * @param __context Context value which may adjust how the value is
+	 * written, this may be {@code null}.
+	 * @param __untag Untagged value?
+	 * @throws JDWPException If it failed to write.
+	 * @since 2021/04/11
+	 */
+	public void writeValue(Object __val, JDWPValueTag __context,
+		boolean __untag)
 		throws JDWPException
 	{
 		// We really meant to write a value here

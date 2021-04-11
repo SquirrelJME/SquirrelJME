@@ -68,7 +68,7 @@ public enum CommandSetStackFrame
 						rv.writeVoid();
 					else
 					{
-						rv.writeValue(value, null, false);
+						rv.writeValue(value, (String)null, false);
 						
 						// Store object for later use
 						Object rawVal = value.get();
@@ -127,7 +127,7 @@ public enum CommandSetStackFrame
 						rv.writeVoid();
 					else
 					{
-						rv.writeValue(value, null, false);
+						rv.writeValue(value, (String)null, false);
 						
 						// Store object for later use
 						Object rawVal = value.get();

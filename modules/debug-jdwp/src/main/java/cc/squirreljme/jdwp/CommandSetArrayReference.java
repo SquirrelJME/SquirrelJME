@@ -30,22 +30,12 @@ public enum CommandSetArrayReference
 			throws JDWPException
 		{
 			// Which object do we want?
-			JDWPObject object = __controller.state.oldObjects.get(
-				__packet.readId());
-			if (object == null)
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_OBJECT);
-			
-			// Not an array?
-			if (!(object instanceof JDWPArray))
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_ARRAY);
-			JDWPArray array = (JDWPArray)object;
+			Object array = __packet.readArray(__controller, false);
 			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
-			rv.writeInt(array.debuggerArrayLength());
+			rv.writeInt(__controller.viewObject().arrayLength(array));
 			
 			return rv;
 		}
@@ -63,73 +53,48 @@ public enum CommandSetArrayReference
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Which object do we want?
-			JDWPObject object = __controller.state.oldObjects.get(
-				__packet.readId());
-			if (object == null)
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_OBJECT);
+			Object array = __packet.readArray(__controller, false);
 			
-			// Not an array?
-			if (!(object instanceof JDWPArray))
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_ARRAY);
-			JDWPArray array = (JDWPArray)object;
-			
-			// Component type?
-			String componentType = array.debuggerComponentDescriptor();
+			// Obtain the component type of the array
+			JDWPViewType viewType = __controller.viewType();
+			Object componentType = viewType.componentType(
+				__controller.viewObject().type(array));
 			
 			// Read requested data indexes
-			int offset = __packet.readInt();
-			int length = __packet.readInt();
+			int off = __packet.readInt();
+			int len = __packet.readInt();
+			
+			// Get array length
+			JDWPViewObject viewObject = __controller.viewObject();
+			int arrayLength = viewObject.arrayLength(array);
 			
 			// Invalid index?
-			if (offset < 0 || length < 0 ||
-				(offset + length) > array.debuggerArrayLength())
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_LENGTH);
+			if (off < 0 || len < 0 || (off + len) > arrayLength)
+				throw ErrorType.INVALID_LENGTH.toss(array, off + len);
 			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write compactified array details, the tag if it is primitive
 			// (anything that is not L) will be treated as untagged values
-			int tag;
-			rv.writeByte((tag = (componentType.length() == 1 ?
-				componentType.charAt(0) : 'L')));
-			rv.writeInt(length);
-			
-			// Default fallback value if a value could not be read.
-			Object fallback = null;
-			switch (tag)
-			{
-				case 'Z': fallback = false; break;
-				case 'B': fallback = (byte)0; break;
-				case 'S': fallback = (short)0; break;
-				case 'C': fallback = '\0'; break;
-				case 'I': fallback = 0; break;
-				case 'J': fallback = 0L; break;
-				case 'F': fallback = 0F; break;
-				case 'D': fallback = 0D; break;
-			}
+			JDWPValueTag tag = JDWPValueTag.fromSignature(
+				viewType.signature(componentType));
+			rv.writeByte(tag.tag);
+			rv.writeInt(len);
 			
 			// Go through and read all the array values
-			for (int i = 0; i < length; i++)
+			for (int i = 0; i < len; i++)
 				try (JDWPValue value = __controller.__value())
 				{
-					// No valid value here? Write a valid placeholder!
-					if (!array.debuggerArrayGet(offset + i, value))
-						rv.writeValue(fallback, componentType, true);
-					else
-					{
-						// Write as untagged if available
-						rv.writeValue(value, componentType, true);
-						
-						// Store object for later use
-						Object rawVal = value.get();
-						if (rawVal instanceof JDWPObject)
-							__controller.state.oldObjects.put((JDWPObject)rawVal);
-					}
+					if (!viewObject.readArray(array, off + i, value))
+						value.set(tag.defaultValue);
+					
+					// Write as untagged if available
+					rv.writeValue(value, tag, true);
+					
+					// Store object for later use
+					if (tag.isObject)
+						__controller.state.items.put(value.get());
 				}
 			
 			return rv;

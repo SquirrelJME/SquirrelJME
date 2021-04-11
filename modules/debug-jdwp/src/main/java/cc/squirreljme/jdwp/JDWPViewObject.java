@@ -20,13 +20,24 @@ public interface JDWPViewObject
 	extends JDWPView
 {
 	/**
-	 * Checks if the given object is an array.
+	 * Returns the array length.
 	 * 
-	 * @param __what What is being checked?
-	 * @return If the object is an array.
+	 * @param __what The object to get the length of.
+	 * @return The array length, negative for objects that are not arrays.
+	 * @since 2021/04/11
+	 */
+	int arrayLength(Object __what);
+	
+	/**
+	 * Reads the value of an array index within the object.
+	 *
+	 * @param __what What is being read from?
+	 * @param __index The index of the array to read from.
+	 * @param __out Where the value is to be stored.
+	 * @return {@code true} if this is a valid value.
 	 * @since 2021/04/10
 	 */
-	boolean isArray(Object __what);
+	boolean readArray(Object __what, int __index, JDWPValue __out);
 	
 	/**
 	 * Reads the value of an instance field within the object.
@@ -49,4 +60,13 @@ public interface JDWPViewObject
 	 * @since 2021/04/11
 	 */
 	boolean setTrip(Object __what, int __index, JDWPTripValue __trip);
+	
+	/**
+	 * Returns the object type.
+	 * 
+	 * @param __what Which object to get the type of.
+	 * @return The type of the given object.
+	 * @since 2021/04/11
+	 */
+	Object type(Object __what);
 }
