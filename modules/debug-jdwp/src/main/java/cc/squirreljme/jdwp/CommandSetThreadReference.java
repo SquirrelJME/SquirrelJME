@@ -31,20 +31,15 @@ public enum CommandSetThreadReference
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			JDWPViewThread view = __controller.viewThread();
-			
-			// Is this valid?
-			Object thread = __controller.state.items.get(__packet.readId());
-			if (!view.isValid(thread))
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_THREAD);
+			// Which thread do we want?
+			Object thread = __packet.readThread(__controller, false);
 			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// This just uses the object name of the thread, whatever that
 			// may be for simplicity and mapping
-			rv.writeString(view.name(thread));
+			rv.writeString(__controller.viewThread().name(thread));
 			
 			return rv;
 		}
@@ -64,11 +59,8 @@ public enum CommandSetThreadReference
 		{
 			JDWPViewThread view = __controller.viewThread();
 			
-			// Is this valid?
-			Object thread = __controller.state.items.get(__packet.readId());
-			if (!view.isValid(thread))
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_THREAD);
+			// Which thread do we want?
+			Object thread = __packet.readThread(__controller, false);
 			
 			// Suspend the thread
 			view.suspension(thread).suspend();
@@ -91,11 +83,8 @@ public enum CommandSetThreadReference
 		{
 			JDWPViewThread view = __controller.viewThread();
 			
-			// Is this valid?
-			Object thread = __controller.state.items.get(__packet.readId());
-			if (!view.isValid(thread))
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_THREAD);
+			// Which thread do we want?
+			Object thread = __packet.readThread(__controller, false);
 			
 			// Suspend the thread
 			view.suspension(thread).resume();
@@ -118,11 +107,8 @@ public enum CommandSetThreadReference
 		{
 			JDWPViewThread view = __controller.viewThread();
 			
-			// Is this valid?
-			Object thread = __controller.state.items.get(__packet.readId());
-			if (!view.isValid(thread))
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_THREAD);
+			// Which thread do we want?
+			Object thread = __packet.readThread(__controller, false);
 			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
@@ -168,11 +154,8 @@ public enum CommandSetThreadReference
 		{
 			JDWPViewThread view = __controller.viewThread();
 			
-			// Is this valid?
-			Object thread = __controller.state.items.get(__packet.readId());
-			if (!view.isValid(thread))
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_THREAD);
+			// Which thread do we want?
+			Object thread = __packet.readThread(__controller, false);
 				
 			// Get the parent
 			Object parent = view.parentGroup(thread);
@@ -202,11 +185,8 @@ public enum CommandSetThreadReference
 		{
 			JDWPViewThread view = __controller.viewThread();
 			
-			// Is this valid?
-			Object thread = __controller.state.items.get(__packet.readId());
-			if (!view.isValid(thread))
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_THREAD);
+			// Which thread do we want?
+			Object thread = __packet.readThread(__controller, false);
 			
 			// Input for the packet
 			int startFrame = __packet.readInt();
@@ -271,11 +251,8 @@ public enum CommandSetThreadReference
 		{
 			JDWPViewThread view = __controller.viewThread();
 			
-			// Is this valid?
-			Object thread = __controller.state.items.get(__packet.readId());
-			if (!view.isValid(thread))
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_THREAD);
+			// Which thread do we want?
+			Object thread = __packet.readThread(__controller, false);
 				
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
@@ -301,11 +278,8 @@ public enum CommandSetThreadReference
 		{
 			JDWPViewThread view = __controller.viewThread();
 			
-			// Is this valid?
-			Object thread = __controller.state.items.get(__packet.readId());
-			if (!view.isValid(thread))
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_THREAD);
+			// Which thread do we want?
+			Object thread = __packet.readThread(__controller, false);
 				
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);

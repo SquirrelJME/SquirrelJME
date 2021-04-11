@@ -97,6 +97,22 @@ public enum ErrorType
 	}
 	
 	/**
+	 * Throws an exception on any kind of failure.
+	 * 
+	 * @param __context The context, may be anything.
+	 * @param __id The ID number.
+	 * @return This is tossed on any command errors.
+	 * @since 2021/04/11
+	 */
+	public final JDWPCommandException toss(Object __context, int __id)
+	{
+		// {@squirreljme.error AG0o Command cause an exception.
+		// (The error; The context; The ID number)}
+		throw new JDWPCommandException(this,
+			String.format("AG0o %s %s %d", this, __context, __id));
+	}
+	
+	/**
 	 * Looks up the constant by the given Id.
 	 * 
 	 * @param __id The Id.

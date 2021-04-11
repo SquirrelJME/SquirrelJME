@@ -161,16 +161,30 @@ public final class JDWPController
 				// Execute the command normally
 				else
 				{
-					// Lock to make sure state does not get warped
-					synchronized (this)
+					try
 					{
-						result = command.execute(this, packet);
+						// Lock to make sure state does not get warped
+						synchronized (this)
+						{
+							result = command.execute(this, packet);
+						}
+						
+						// If a result is missing, assume nothing needed
+						if (result == null)
+							result = this.__reply(packet.id(),
+								ErrorType.NO_ERROR);
 					}
 					
-					// If a result is missing, assume nothing needed
-					if (result == null)
-						result = this.__reply(packet.id(),
-							ErrorType.NO_ERROR);
+					// There was an error executing this command
+					catch (JDWPCommandException e)
+					{
+						// Print a trace of it
+						e.printStackTrace();
+						
+						// Use this result
+						result = this.__reply(
+							packet.id(), e.type);
+					}
 				}
 				
 				// Send the result to the debugger, close when done
@@ -213,8 +227,7 @@ public final class JDWPController
 	 * @deprecated Use {@link #trip(Class, JDWPGlobalTrip)}.
 	 * @since 2021/03/16
 	 */
-	@Deprecated
-	public void signal(JDWPThread __thread, EventKind __kind,
+	public void signal(Object __thread, EventKind __kind,
 		EventModifierMatcher[] __matchers,
 		Object... __args)
 		throws NullPointerException
@@ -228,14 +241,9 @@ public final class JDWPController
 			return;
 		
 		// Buildup packet to send
-		try (JDWPPacket packet = this.__event())
+		try (JDWPPacket packet = this.__event(request.suspendPolicy, __kind,
+			request.id))
 		{
-			// Write the single event header
-			packet.writeByte(request.suspendPolicy.id);
-			packet.writeInt(1);
-			packet.writeByte(__kind.id);
-			packet.writeInt(request.id);
-			
 			// Write the signal event data
 			__kind.write(packet, __args);
 			
@@ -253,7 +261,7 @@ public final class JDWPController
 		
 		// Suspend only a single thread?
 		else if (request.suspendPolicy == SuspendPolicy.EVENT_THREAD)
-			__thread.debuggerSuspend().suspend();
+			this.viewThread().suspension(__thread).suspend();
 	}
 	
 	/**
@@ -325,42 +333,6 @@ public final class JDWPController
 			throw new NullPointerException("NARG");
 		
 		// Nothing needs to be done here...
-	}
-	
-	/**
-	 * Signals that the virtual machine started and this is the main thread.
-	 * 
-	 * @param __thread The target thread.
-	 * @throws NullPointerException On null arguments.
-	 * @deprecated Use {@link #trip(Class, JDWPGlobalTrip)}. 
-	 * @since 2021/03/16
-	 */
-	@Deprecated
-	public void signalVmStart(JDWPThread __thread)
-		throws NullPointerException
-	{
-		if (__thread == null)
-			throw new NullPointerException("NARG");
-			
-		// Register this thread for later use
-		this.state.oldThreads.put(__thread);
-		
-		// Tell the remote debugger that we started, note we always generate
-		// this event and we never 
-		try (JDWPPacket packet = this.__event())
-		{
-			// Write the single event header
-			packet.writeByte(SuspendPolicy.NONE.id);
-			packet.writeInt(1);
-			packet.writeByte(EventKind.VM_START.id);
-			packet.writeInt(0);
-			
-			// Write the initial starting thread
-			packet.writeId(__thread);
-			
-			// Send it away!
-			this.commLink.send(packet);
-		}
 	}
 	
 	/**
@@ -490,11 +462,20 @@ public final class JDWPController
 	/**
 	 * Creates an event packet.
 	 * 
+	 * @param __policy The suspension policy used.
+	 * @param __kind The kind of event to give.
+	 * @param __responseId The response identifier.
 	 * @return The event packet.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/14
 	 */
-	private JDWPPacket __event()
+	JDWPPacket __event(SuspendPolicy __policy, EventKind __kind,
+		int __responseId)
+		throws NullPointerException
 	{
+		if (__policy == null || __kind == null)
+			throw new NullPointerException("NARG");
+		
 		JDWPPacket rv = this.commLink.__getPacket(true);
 		
 		// Composite command code
@@ -505,6 +486,12 @@ public final class JDWPController
 		rv._id = this.__nextId();
 		rv._errorCode = ErrorType.NO_ERROR;
 		rv._flags = 0;
+		
+		// Write the single event header
+		rv.writeByte(__policy.id);
+		rv.writeInt(1);
+		rv.writeByte(__kind.id);
+		rv.writeInt(__responseId);
 		
 		return rv;
 	}

@@ -38,4 +38,21 @@ abstract class __TripBase__
 		
 		this._controller = __controller;
 	}
+	
+	/**
+	 * Returns the debug controller.
+	 * 
+	 * @return The debug controller.
+	 * @since 2021/04/11
+	 */
+	final JDWPController __controller()
+	{
+		// {@squirreljme.error AG0n The debug controller was garbage
+		// collected.}
+		JDWPController rv = this._controller.get();
+		if (rv == null)
+			throw new IllegalStateException("AG0n");
+		
+		return rv;
+	}
 }

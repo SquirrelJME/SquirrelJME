@@ -12,7 +12,6 @@ package cc.squirreljme.jdwp;
 import cc.squirreljme.jdwp.trips.JDWPTripThread;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 
 /**
  * Trip when a thread changes from being alive or dead.
@@ -43,6 +42,14 @@ final class __TripThreadAlive__
 	@Override
 	public void alive(Object __thread, boolean __isAlive)
 	{
-		throw Debugging.todo();
+		JDWPController controller = this.__controller();
+		JDWPState state = controller.state;
+		
+		// Register this thread for later use
+		state.items.put(__thread);
+		
+		// Forward generic event
+		controller.signal(__thread, (__isAlive ? EventKind.THREAD_START :
+			EventKind.THREAD_DEATH), null, __thread);
 	}
 }

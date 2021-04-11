@@ -324,6 +324,35 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Reads the given thread from the packet.
+	 * 
+	 * @param __controller The controller used.
+	 * @param __nullable Can this be null?
+	 * @return The object value.
+	 * @throws JDWPException If this does not refer to a valid thread.
+	 * @since 2021/04/11
+	 */
+	public final Object readThread(JDWPController __controller,
+		boolean __nullable)
+		throws JDWPException
+	{
+		int id = this.readId();
+		Object thread = __controller.state.items.get(id);
+		
+		// Is this valid?
+		if (!__controller.viewThread().isValid(thread))
+		{
+			if (__nullable && thread == null)
+				return null;
+			
+			// Fail with invalid thread
+			throw ErrorType.INVALID_THREAD.toss(thread, id);
+		}
+		
+		return thread;
+	}
+	
+	/**
 	 * Resets and opens the packet.
 	 * 
 	 * @param __open Should this be opened?

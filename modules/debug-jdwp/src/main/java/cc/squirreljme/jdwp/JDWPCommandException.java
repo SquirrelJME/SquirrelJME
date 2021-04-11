@@ -7,22 +7,30 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp.trips;
+package cc.squirreljme.jdwp;
 
 /**
- * Trip on virtual machine state.
+ * This is thrown when there is an error parsing and executing a packet.
  *
  * @since 2021/04/11
  */
-public interface JDWPTripVmState
-	extends JDWPTrip
+public class JDWPCommandException
+	extends JDWPException
 {
+	/** The type of error this is. */
+	public final ErrorType type;
+	
 	/**
-	 * Is the virtual machine alive?
+	 * Initializes the exception.
 	 * 
-	 * @param __bootThread The initial starting thread.
-	 * @param __alive If the virtual machine is alive.
+	 * @param __errorType The error type.
+	 * @param __m The message for the error.
 	 * @since 2021/04/11
 	 */
-	void alive(Object __bootThread, boolean __alive);
+	public JDWPCommandException(ErrorType __errorType, String __m)
+	{
+		super(__m);
+		
+		this.type = __errorType;
+	}
 }

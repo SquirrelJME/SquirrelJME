@@ -182,7 +182,7 @@ public final class SpringThread
 	@Override
 	public int debuggerId()
 	{
-		return this.uniqueId;
+		return System.identityHashCode(this);
 	}
 	
 	/**

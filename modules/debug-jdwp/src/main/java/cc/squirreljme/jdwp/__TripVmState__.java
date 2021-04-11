@@ -9,11 +9,9 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.trips.JDWPTrip;
 import cc.squirreljme.jdwp.trips.JDWPTripVmState;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 
 /**
  * Trip on virtual machine state.
@@ -42,8 +40,25 @@ final class __TripVmState__
 	 * @since 2021/04/11
 	 */
 	@Override
-	public void alive(boolean __alive)
+	public void alive(Object __bootThread, boolean __alive)
 	{
-		throw Debugging.todo();
+		JDWPController controller = this.__controller();
+		JDWPState state = controller.state;
+		
+		// Register this thread for later use
+		state.items.put(__bootThread);
+		
+		// Tell the remote debugger that we started, note we always generate
+		// this event and we never hide it
+		try (JDWPPacket packet = controller.__event(SuspendPolicy.NONE,
+			(__alive ? EventKind.THREAD_START : EventKind.THREAD_DEATH),
+			0))
+		{
+			// Write the initial starting thread
+			packet.writeId(System.identityHashCode(__bootThread));
+			
+			// Send it away!
+			controller.commLink.send(packet);
+		}
 	}
 }

@@ -145,7 +145,7 @@ public enum MLEThread
 				// virtual machine actually started
 				if (target.machine().rootVm && target.isMain())
 					jdwp.<JDWPTripVmState>trip(JDWPTripVmState.class,
-						JDWPGlobalTrip.VM_STATE).alive(true);
+						JDWPGlobalTrip.VM_STATE).alive(target, true);
 				
 				// If we are debugging, signal that this thread is in the start
 				// state. We need the instance to have been set for this to
