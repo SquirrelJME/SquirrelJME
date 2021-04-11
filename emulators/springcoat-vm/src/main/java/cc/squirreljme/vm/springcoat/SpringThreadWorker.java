@@ -13,7 +13,6 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.jdwp.JDWPClassStatus;
 import cc.squirreljme.jdwp.JDWPController;
-import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
@@ -251,7 +250,7 @@ public final class SpringThreadWorker
 				case "java/lang/Integer":
 					return Integer.valueOf((Integer)
 						sso.fieldByField(sscl.lookupField(false,
-						"_value", "I")).get());
+						"_value", "I")).get(null, null));
 				
 				case "java/lang/String":
 					return new String(this.<char[]>asNativeObject(
@@ -928,9 +927,10 @@ public final class SpringThreadWorker
 			// Initialize the static field map
 			Map<SpringField, SpringFieldStorage> sfm =
 				machine.__staticFieldMap();
+			int fieldDx = 0;
 			for (SpringField f : __cl.fieldsOnlyThisClass())
 				if (f.isStatic())
-					sfm.put(f, new SpringFieldStorage(f));
+					sfm.put(f, new SpringFieldStorage(f, fieldDx++));
 			
 			// Recursively call self to load the super class before this class
 			// is handled
@@ -2306,7 +2306,8 @@ public final class SpringThreadWorker
 						
 						// Read and push to the stack
 						frame.pushToStack(this.asVMObject(
-							sso.fieldByIndex(ssf.index()).get()));
+							sso.fieldByIndex(ssf.index()).get(this.thread,
+								null)));
 					}
 					break;
 					
@@ -2319,7 +2320,8 @@ public final class SpringThreadWorker
 							FieldReference.class));
 						
 						// Push read value to stack
-						frame.pushToStack(this.asVMObject(ssf.get()));
+						frame.pushToStack(this.asVMObject(
+							ssf.get(this.thread, null)));
 					}
 					break;
 					
@@ -3222,7 +3224,8 @@ public final class SpringThreadWorker
 							throw new SpringClassCastException("BK2u");
 						
 						// Set
-						sso.fieldByIndex(ssf.index()).set(value,
+						sso.fieldByIndex(ssf.index()).set(this.thread, null,
+							value,
 							isinstanceinit);
 					}
 					break;
@@ -3237,7 +3240,8 @@ public final class SpringThreadWorker
 						
 						// Set value, note that static initializers can set
 						// static field values even if they are final
-						ssf.set(frame.popFromStack(), isstaticinit);
+						ssf.set(this.thread, null, frame.popFromStack(),
+							isstaticinit);
 					}
 					break;
 					

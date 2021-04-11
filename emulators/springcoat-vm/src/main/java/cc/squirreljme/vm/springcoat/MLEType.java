@@ -11,7 +11,6 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
@@ -76,7 +75,8 @@ public enum MLEType
 			return MLEType.__simple(__args[0]).fieldByField(
 				__thread.resolveClass(new ClassName("java/lang/Class"))
 				.lookupField(false, "_type",
-				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;")).get();
+				"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;")).get(null,
+				null);
 		}
 	},
 	

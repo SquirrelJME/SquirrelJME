@@ -10,7 +10,8 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Tracker for JDWP Thread suspension.
+ * This class is used by threads to determine if a thread needs to halt
+ * execution due to a suspension via the debugger.
  *
  * @since 2021/03/13
  */

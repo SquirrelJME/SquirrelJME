@@ -65,7 +65,10 @@ public final class SpringSimpleObject
 		// Initialize variable for all fields
 		int i = 0;
 		for (SpringField f : __cl.fieldTable())
-			fields[i++] = new SpringFieldStorage(f);
+		{
+			int thisDx = i++;
+			fields[thisDx] = new SpringFieldStorage(f, thisDx);
+		}
 	}
 	
 	/**

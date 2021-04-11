@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPState;
+import cc.squirreljme.jdwp.JDWPTripValue;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.JDWPViewObject;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -69,8 +70,8 @@ public class DebugViewObject
 	@Override
 	public boolean readValue(Object __what, int __index, JDWPValue __out)
 	{
-		// Nulls are never valid
-		if (__what == null || __what == SpringNullObject.NULL)
+		// Nulls never have a value
+		if (__what == SpringNullObject.NULL)
 			return false;
 		
 		// Is a simple object representation, so we can read a field value
@@ -81,12 +82,44 @@ public class DebugViewObject
 			SpringFieldStorage[] store = ((SpringSimpleObject)__what)._fields;
 			if (__index >= 0 && __index < store.length)
 			{
-				__out.set(store[__index].get());
+				__out.set(DebugViewObject.__normalizeNull(
+					store[__index].get(null, null)));
 				return true;
 			}
 		}
 		
 		// Not a valid object or one where a value can be read from
 		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/11
+	 * @return
+	 */
+	@Override
+	public boolean setTrip(Object __what, int __index, JDWPTripValue __trip)
+	{
+		// Simple representation of an object
+		if (__what instanceof SpringSimpleObject)
+		{
+		}
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Normalizes a null value so null references become null and not the
+	 * special holder value.
+	 * 
+	 * @param __o The value to normalize.
+	 * @return If the value points to a null object it becomes null.
+	 * @since 2021/04/11
+	 */
+	static Object __normalizeNull(Object __o)
+	{
+		if (__o == SpringNullObject.NULL)
+			return null;
+		return __o;
 	}
 }

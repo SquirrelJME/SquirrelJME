@@ -364,7 +364,7 @@ public final class SpringClass
 			}
 			
 			// Read value
-			__value.set(storage.get());
+			__value.set(storage.get(null, null));
 			return true;
 		}
 		
@@ -379,7 +379,7 @@ public final class SpringClass
 			try
 			{
 				__value.set(((SpringSimpleObject)__obj)
-					.fieldByIndex(field.index()).get());
+					.fieldByIndex(field.index()).get(null, null));
 				return true;
 			}
 			
@@ -457,7 +457,8 @@ public final class SpringClass
 	}
 	
 	/**
-	 * Returns the table of fields used for this class.
+	 * Returns the table of fields used for this class which includes the
+	 * super classes.
 	 *
 	 * @return The field table used for this class.
 	 * @since 2018/09/16

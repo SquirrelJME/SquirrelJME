@@ -15,7 +15,6 @@ import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import net.multiphasicapps.classfile.ClassName;
@@ -198,8 +197,8 @@ public enum MLEThread
 				"_interrupted", "Z");
 			
 			// Get and clear the field value
-			Object old = field.get();
-			field.set(false);
+			Object old = field.get(null, null);
+			field.set(null, null, null, false);
 			return old;
 		}
 	}, 
@@ -217,7 +216,7 @@ public enum MLEThread
 		{
 			// Just set the started field to true
 			MLEThread.__javaThread(__thread, __args[0]).fieldByNameAndType(
-				false, "_started", "Z").set(true);
+				false, "_started", "Z").set(null, null, null, true);
 			return null;
 		}
 	},
@@ -235,7 +234,7 @@ public enum MLEThread
 			// Just get the state of the given field
 			return MLEThread.__javaThread(__thread, __args[0])
 				.fieldByNameAndType(false, 
-					"_started", "Z").get();
+					"_started", "Z").get(null, null);
 		}
 	},
 	
@@ -250,7 +249,7 @@ public enum MLEThread
 			return MLEThread.__javaThread(__thread, __args[0])
 				.fieldByNameAndType(
 				false, "_runnable",
-				"Ljava/lang/Runnable;").get();
+				"Ljava/lang/Runnable;").get(null, null);
 		}
 	},
 	
@@ -267,7 +266,7 @@ public enum MLEThread
 			// Just set the started field to true
 			MLEThread.__javaThread(__thread, __args[0]).fieldByNameAndType(
 				false, "_isAlive", "Z")
-				.set((int)__args[1] != 0);
+				.set(null, null, null, (int)__args[1] != 0);
 			
 			return null;
 		}
@@ -437,7 +436,7 @@ public enum MLEThread
 				__thread.resolveClass("java/lang/Thread")
 				.lookupField(false, "_vmThread",
 				"Lcc/squirreljme/jvm/mle/brackets/VMThreadBracket;"))
-				.get();
+				.get(null, null);
 		}
 	},
 	
