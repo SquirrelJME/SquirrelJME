@@ -15,7 +15,7 @@ package cc.squirreljme.jdwp;
  * @since 2021/04/11
  */
 public interface JDWPViewFrame
-	extends JDWPView
+	extends JDWPViewValidObject
 {
 	/**
 	 * Returns the class the frame is in.

@@ -16,12 +16,4 @@ package cc.squirreljme.jdwp;
  */
 public interface JDWPView
 {
-	/**
-	 * Is this a valid object for viewing?
-	 * 
-	 * @param __which What is being checked?
-	 * @return If it is valid or not.
-	 * @since 2021/04/10
-	 */
-	boolean isValid(Object __which);
 }

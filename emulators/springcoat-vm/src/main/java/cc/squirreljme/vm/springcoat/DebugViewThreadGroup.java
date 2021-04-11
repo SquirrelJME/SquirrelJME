@@ -42,7 +42,6 @@ public class DebugViewThreadGroup
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/10
-	 * @param __which
 	 */
 	@Override
 	public boolean isValid(Object __which)
@@ -53,7 +52,6 @@ public class DebugViewThreadGroup
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/10
-	 * @param __which
 	 */
 	@Override
 	public String name(Object __which)
@@ -64,7 +62,6 @@ public class DebugViewThreadGroup
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/10
-	 * @param __which
 	 */
 	@Override
 	public Object[] threads(Object __which)

@@ -17,7 +17,7 @@ import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
  * @since 2021/04/10
  */
 public interface JDWPViewThread
-	extends JDWPView
+	extends JDWPViewValidObject
 {
 	/**
 	 * Returns the stack frame of the given thread.

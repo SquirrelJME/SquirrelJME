@@ -42,7 +42,6 @@ public class DebugViewType
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/11
-	 * @param __which
 	 */
 	@Override
 	public Object componentType(Object __which)
@@ -53,7 +52,6 @@ public class DebugViewType
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/11
-	 * @param __which
 	 */
 	@Override
 	public int flags(Object __which)
@@ -64,7 +62,6 @@ public class DebugViewType
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/10
-	 * @param __which
 	 */
 	@Override
 	public boolean isValid(Object __which)
@@ -75,7 +72,6 @@ public class DebugViewType
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/11
-	 * @param __which
 	 */
 	@Override
 	public String signature(Object __which)

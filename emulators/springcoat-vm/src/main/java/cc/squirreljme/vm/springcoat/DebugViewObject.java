@@ -46,7 +46,6 @@ public class DebugViewObject
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/10
-	 * @param __which
 	 */
 	@Override
 	public boolean isValid(Object __which)
@@ -57,7 +56,6 @@ public class DebugViewObject
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/11
-	 * @param __which
 	 */
 	@Override
 	public int arrayLength(Object __which)
@@ -126,7 +124,6 @@ public class DebugViewObject
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/11
-	 * @param __which
 	 */
 	@Override
 	public Object type(Object __which)

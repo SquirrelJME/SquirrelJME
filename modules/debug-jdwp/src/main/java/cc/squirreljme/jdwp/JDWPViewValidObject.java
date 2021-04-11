@@ -10,28 +10,19 @@
 package cc.squirreljme.jdwp;
 
 /**
- * A view of thread groups.
+ * A viewer over something which has a valid object as its subject.
  *
- * @since 2021/04/10
+ * @since 2021/04/11
  */
-public interface JDWPViewThreadGroup
-	extends JDWPViewValidObject
+public interface JDWPViewValidObject
+	extends JDWPView
 {
 	/**
-	 * Returns the name of the thread group.
+	 * Is this a valid object for viewing?
 	 * 
-	 * @param __which Which thread group to get the name of?
-	 * @return The name of the group.
+	 * @param __which What is being checked?
+	 * @return If it is valid or not.
 	 * @since 2021/04/10
 	 */
-	String name(Object __which);
-	
-	/**
-	 * Returns the threads which are a part of this group.
-	 * 
-	 * @param __which The object being referred to as a thread group.
-	 * @return The threads that are part of this thread group.
-	 * @since 2021/04/10
-	 */
-	Object[] threads(Object __which);
+	boolean isValid(Object __which);
 }

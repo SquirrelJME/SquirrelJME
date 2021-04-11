@@ -17,7 +17,7 @@ import cc.squirreljme.jdwp.trips.JDWPTripValue;
  * @since 2021/04/10
  */
 public interface JDWPViewObject
-	extends JDWPView
+	extends JDWPViewValidObject
 {
 	/**
 	 * Returns the array length.

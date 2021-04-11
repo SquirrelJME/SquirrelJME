@@ -15,7 +15,7 @@ package cc.squirreljme.jdwp;
  * @since 2021/04/10
  */
 public interface JDWPViewType
-	extends JDWPView
+	extends JDWPViewValidObject
 {
 	/**
 	 * Returns the component type.

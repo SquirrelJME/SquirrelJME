@@ -10,7 +10,6 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPState;
-import cc.squirreljme.jdwp.JDWPThreadFrame;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
 import cc.squirreljme.jdwp.JDWPViewThread;
 import java.lang.ref.Reference;
@@ -46,7 +45,6 @@ public class DebugViewThread
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/10
-	 * @param __which
 	 */
 	@Override
 	public boolean isValid(Object __which)
@@ -57,7 +55,6 @@ public class DebugViewThread
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/11
-	 * @param __which
 	 */
 	@Override
 	public Object[] frames(Object __which)
@@ -82,7 +79,6 @@ public class DebugViewThread
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/10
-	 * @param __which
 	 */
 	@Override
 	public String name(Object __which)
@@ -93,7 +89,6 @@ public class DebugViewThread
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/10
-	 * @param __which
 	 */
 	@Override
 	public Object parentGroup(Object __which)
@@ -104,7 +99,6 @@ public class DebugViewThread
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/10
-	 * @param __which
 	 */
 	@Override
 	public JDWPThreadSuspension suspension(Object __which)
@@ -115,7 +109,6 @@ public class DebugViewThread
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/10
-	 * @param __which
 	 */
 	@Override
 	public int status(Object __which)

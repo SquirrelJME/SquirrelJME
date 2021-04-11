@@ -170,6 +170,9 @@ public final class SpringTaskManager
 			case FRAME:
 				return __type.cast(new DebugViewFrame(__state));
 			
+			case METHOD:
+				return __type.cast(new DebugViewMethod(__state));
+			
 			case OBJECT:
 				return __type.cast(new DebugViewObject(__state));
 			
