@@ -30,20 +30,18 @@ public enum CommandSetClassType
 			throws JDWPException
 		{
 			// Which class does this refer to?
-			JDWPClass type = __controller.state.getAnyClass(__packet.readId());
-			if (type == null)
-				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_CLASS);
+			Object type = __packet.readType(__controller, false); 
 			
 			// Respond with the class ID
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
-			JDWPClass superClass = type.debuggerSuperClass();
-			rv.writeId(superClass);
+			
+			Object superClass = __controller.viewType().superType(type);
+			rv.writeId(System.identityHashCode(superClass));
 			
 			// Register the super class so it can be known
 			if (superClass != null)
-				__controller.state.oldClasses.put(superClass);
+				__controller.state.items.put(superClass);
 			
 			return rv;
 		}

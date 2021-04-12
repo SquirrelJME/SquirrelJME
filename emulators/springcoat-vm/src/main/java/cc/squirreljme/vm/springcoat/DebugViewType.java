@@ -11,6 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.views.JDWPViewType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 
 /**
@@ -77,5 +78,15 @@ public class DebugViewType
 	public String signature(Object __which)
 	{
 		return ((SpringClass)__which).name.field().toString();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/12
+	 */
+	@Override
+	public Object superType(Object __which)
+	{
+		return ((SpringClass)__which).superclass;
 	}
 }

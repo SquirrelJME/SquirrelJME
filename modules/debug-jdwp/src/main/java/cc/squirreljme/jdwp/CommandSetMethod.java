@@ -31,6 +31,13 @@ public enum CommandSetMethod
 			JDWPPacket __packet)
 			throws JDWPException
 		{
+			// Read class and the method it is in
+			Object classy = __packet.readType(__controller, false);
+			int methodId = __packet.readId();
+			
+			if (true)
+				throw Debugging.todo();
+			
 			// Ignore class it is not needed
 			__packet.readId();
 			

@@ -411,6 +411,35 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Reads the given type from the packet.
+	 * 
+	 * @param __controller The controller used.
+	 * @param __nullable Can this be null?
+	 * @return The type value.
+	 * @throws JDWPException If this does not refer to a valid type.
+	 * @since 2021/04/12
+	 */
+	public final Object readType(JDWPController __controller,
+		boolean __nullable)
+		throws JDWPException
+	{
+		int id = this.readId();
+		Object object = __controller.state.items.get(id);
+		
+		// Is this valid?
+		if (!__controller.viewType().isValid(object))
+		{
+			if (__nullable && object == null)
+				return null;
+			
+			// Fail with invalid thread
+			throw ErrorType.INVALID_CLASS.toss(object, id);
+		}
+		
+		return object;
+	}
+	
+	/**
 	 * Resets and opens the packet.
 	 * 
 	 * @param __open Should this be opened?
@@ -756,8 +785,11 @@ public final class JDWPPacket
 	 * written, this may be {@code null}.
 	 * @param __untag Untagged value?
 	 * @throws JDWPException If it failed to write.
+	 * @deprecated Use {@link #writeValue(Object, JDWPValueTag, boolean)} as
+	 * it has better type context.
 	 * @since 2021/03/15
 	 */
+	@Deprecated
 	public void writeValue(Object __val, String __context, boolean __untag)
 		throws JDWPException
 	{

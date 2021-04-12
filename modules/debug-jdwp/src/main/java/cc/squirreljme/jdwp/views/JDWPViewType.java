@@ -44,4 +44,13 @@ public interface JDWPViewType
 	 * @since 2021/04/11
 	 */
 	String signature(Object __which);
+	
+	/**
+	 * Returns the super type of the given type.
+	 * 
+	 * @param __which Get the super class of which type?
+	 * @return The super class or {@code null} if there is none.
+	 * @since 2021/04/12
+	 */
+	Object superType(Object __which);
 }
