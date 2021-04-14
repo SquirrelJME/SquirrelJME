@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPState;
+import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.views.JDWPViewType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
@@ -52,12 +53,62 @@ public class DebugViewType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/04/14
+	 */
+	@Override
+	public int fieldFlags(Object __which, int __fieldId)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/14
+	 */
+	@Override
+	public String fieldName(Object __which, int __fieldId)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/14
+	 */
+	@Override
+	public String fieldSignature(Object __which, int __fieldDx)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/14
+	 */
+	@Override
+	public int[] fields(Object __which)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/04/11
 	 */
 	@Override
 	public int flags(Object __which)
 	{
 		return ((SpringClass)__which).flags().toJavaBits();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/14
+	 */
+	@Override
+	public Object[] interfaceTypes(Object __which)
+	{
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -72,12 +123,118 @@ public class DebugViewType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/04/14
+	 */
+	@Override
+	public boolean isValidField(Object __which, int __fieldDx)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/14
+	 */
+	@Override
+	public boolean isValidMethod(Object __which, int __methodDx)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/14
+	 */
+	@Override
+	public byte[] methodByteCode(Object __which, int __methodId)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/14
+	 */
+	@Override
+	public int methodFlags(Object __which, int __methodId)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/14
+	 */
+	@Override
+	public int[] methodLineTable(Object __which, int __methodId)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/14
+	 */
+	@Override
+	public int methodLocationCount(Object __which, int __methodId)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/14
+	 */
+	@Override
+	public String methodName(Object __which, int __methodId)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/14
+	 */
+	@Override
+	public String methodSignature(Object __which, int __methodDx)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/14
+	 */
+	@Override
+	public int[] methods(Object __which)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/14
+	 */
+	@Override
+	public boolean readValue(Object __which, int __index, JDWPValue __out)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/04/11
 	 */
 	@Override
 	public String signature(Object __which)
 	{
 		return ((SpringClass)__which).name.field().toString();
+	}
+	
+	@Override
+	public String sourceFile(Object __which)
+	{
+		throw Debugging.todo();
 	}
 	
 	/**

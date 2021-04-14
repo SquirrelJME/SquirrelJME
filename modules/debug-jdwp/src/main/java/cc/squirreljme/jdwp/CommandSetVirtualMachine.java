@@ -10,6 +10,7 @@
 package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jdwp.views.JDWPViewThread;
+import cc.squirreljme.jdwp.views.JDWPViewType;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -63,6 +64,9 @@ public enum CommandSetVirtualMachine
 			JDWPPacket __packet)
 			throws JDWPException
 		{
+			List<Object> allTypes = CommandSetVirtualMachine
+				.__allTypes(__controller);
+					
 			String wantSig = __packet.readString();
 			
 			// Add any loaded classes, multiple VMs may result in multiple
@@ -425,22 +429,23 @@ public enum CommandSetVirtualMachine
 			JDWPPacket __packet)
 			throws JDWPException
 		{
+			List<Object> allTypes = CommandSetVirtualMachine
+				.__allTypes(__controller);
+			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
-			// Get a list of every loaded class and return their information
-			__controller.debuggerUpdate(JDWPUpdateWhat.LOADED_CLASSES);
-			List<JDWPClass> classes = __controller.state.oldClasses.values();
-			rv.writeInt(classes.size());
-			
-			for (JDWPClass type : classes)
+			// Write down all the known classes
+			JDWPViewType viewType = __controller.viewType();
+			rv.writeInt(allTypes.size());
+			for (Object type : allTypes)
 			{
 				// The type ID
-				rv.writeByte(type.debuggerClassType().id);
-				rv.writeId(type);
+				rv.writeByte(JDWPUtils.classType(__controller, type).id);
+				rv.writeId(System.identityHashCode(type));
 				
 				// The signatures, the generic is ignored
-				rv.writeString(type.debuggerFieldDescriptor());
+				rv.writeString(viewType.signature(type));
 				rv.writeString("");
 				
 				// All classes are considered initialized
@@ -480,5 +485,25 @@ public enum CommandSetVirtualMachine
 	public final int debuggerId()
 	{
 		return this.id;
+	}
+	
+	/**
+	 * Returns all of the known types.
+	 * 
+	 * @param __controller The controller used.
+	 * @return All of the available types.
+	 * @since 2021/04/14
+	 */
+	static List<Object> __allTypes(JDWPController __controller)
+	{
+		List<Object> allTypes = new LinkedList<>();
+		
+		// Load in all the types
+		JDWPViewType viewType = __controller.viewType();
+		for (Object obj : __controller.state.items.values())
+			if (viewType.isValid(obj))
+				allTypes.add(obj);
+		
+		return allTypes;
 	}
 }

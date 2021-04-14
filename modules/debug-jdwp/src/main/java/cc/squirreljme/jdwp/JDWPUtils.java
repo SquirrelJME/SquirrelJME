@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPViewType;
+
 /**
  * General utilities for JDWP Support.
  *
@@ -45,12 +47,17 @@ public final class JDWPUtils
 		if (__controller == null)
 			throw new NullPointerException("NARG");
 		
+		// If null or not valid, treat as an object
+		JDWPViewType viewType = __controller.viewType();
+		if (__class == null || !viewType.isValid(__class))
+			return JDWPClassType.CLASS;
+		
 		// Array type?
-		if (__controller.viewType().signature(__class).startsWith("["))
+		if (viewType.signature(__class).startsWith("["))
 			return JDWPClassType.ARRAY;
 		
 		// Is this potentially an interface?
-		int flags = __controller.viewType().flags(__class);
+		int flags = viewType.flags(__class);
 		if ((flags & JDWPUtils._INTERFACE_BIT) != 0)
 			return JDWPClassType.INTERFACE;
 		

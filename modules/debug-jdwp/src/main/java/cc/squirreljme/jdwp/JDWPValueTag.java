@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * The value tag for given values.
  *
@@ -17,7 +19,7 @@ package cc.squirreljme.jdwp;
 public enum JDWPValueTag
 {
 	/** Array. */
-	ARRAY('[', false, false, null),
+	ARRAY('[', false, true, null),
 	
 	/** Byte. */
 	BYTE('B', true, false, (byte)0),
@@ -26,7 +28,7 @@ public enum JDWPValueTag
 	CHARACTER('C', true, false, '\0'),
 	
 	/** Object. */
-	OBJECT('L', false, false, null),
+	OBJECT('L', false, true, null),
 	
 	/** Float. */
 	FLOAT('F', true, false, 0F),
@@ -50,19 +52,19 @@ public enum JDWPValueTag
 	BOOLEAN('Z', true, false, false),
 	
 	/** String. */
-	STRING('s', false, false, null),
+	STRING('s', false, true, null),
 	
 	/** Thread. */
-	THREAD('t', false, false, null),
+	THREAD('t', false, true, null),
 	
 	/** Thread Group. */
-	THREAD_GROUP('g', false, false, null),
+	THREAD_GROUP('g', false, true, null),
 	
 	/** Class Loader. */
-	CLASS_LOADER('l', false, false, null),
+	CLASS_LOADER('l', false, true, null),
 	
 	/** Class object. */
-	CLASS_OBJECT('c', false, false, null),
+	CLASS_OBJECT('c', false, true, null),
 	
 	/* End. */
 	;
@@ -146,5 +148,49 @@ public enum JDWPValueTag
 				
 				return JDWPValueTag.OBJECT; 
 		}
+	}
+	
+	/**
+	 * Tries to guess the type of value used.
+	 * 
+	 * @param __controller The controller used.
+	 * @param __value The value type.
+	 * @return The guessed value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/14
+	 */
+	public static JDWPValueTag guessType(JDWPController __controller,
+		JDWPValue __value)
+		throws NullPointerException
+	{
+		if (__controller == null || __value == null)
+			throw new NullPointerException("NARG");
+		
+		// If this a valid object, try to get it from its type
+		Object value = __value.get();
+		if (__controller.viewObject().isValid(value))
+			return JDWPValueTag.fromSignature(__controller.viewType()
+				.signature(__controller.viewObject().type(value)));
+		
+		// Boxed typed?
+		if (value instanceof Boolean)
+			return JDWPValueTag.BOOLEAN;
+		else if (value instanceof Byte)
+			return JDWPValueTag.BYTE;
+		else if (value instanceof Short)
+			return JDWPValueTag.SHORT;
+		else if (value instanceof Character)
+			return JDWPValueTag.CHARACTER;
+		else if (value instanceof Integer)
+			return JDWPValueTag.INTEGER;
+		else if (value instanceof Long)
+			return JDWPValueTag.LONG;
+		else if (value instanceof Float)
+			return JDWPValueTag.FLOAT;
+		else if (value instanceof Double)
+			return JDWPValueTag.DOUBLE;
+		
+		// Unknown, use void
+		return JDWPValueTag.VOID;
 	}
 }

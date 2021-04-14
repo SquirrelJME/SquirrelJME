@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPViewFrame;
+
 /**
  * Command set for stack frames.
  *
@@ -29,19 +31,9 @@ public enum CommandSetStackFrame
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Thread is missing or otherwise invalid?
-			JDWPThread thread = __controller.state.oldThreads.get(
-				__packet.readId());
-			if (thread == null)
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_THREAD);
-			
-			// Frame is missing or otherwise invalid?
-			JDWPThreadFrame frame = __controller.state.oldFrames.get(
-				__packet.readId());
-			if (frame == null)
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_FRAME_ID);
+			// Ignore the thread but check it, then read the frame
+			__packet.readThread(__controller, false);
+			Object frame = __packet.readFrame(__controller, false);
 			
 			// Read in the slot table
 			int numSlots = __packet.readInt();
@@ -58,23 +50,24 @@ public enum CommandSetStackFrame
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			rv.writeInt(numSlots);
+			
+			JDWPViewFrame viewFrame = __controller.viewFrame();
 			for (int i = 0; i < numSlots; i++)
 				try (JDWPValue value = __controller.__value())
 				{
-					// If we ever get any object values record them, otherwise
-					// the debugger will be incapable of figuring this out
-					if (!frame.debuggerRegisterGetValue(false,
-						wantSlot[i], value))
-						rv.writeVoid();
-					else
-					{
-						rv.writeValue(value, (String)null, false);
+					// If this value is an object we need to register it for
+					// future grabbing
+					if (!viewFrame.readValue(frame, wantSlot[i], value))
+						value.set(null);
 						
-						// Store object for later use
-						Object rawVal = value.get();
-						if (rawVal instanceof JDWPObject)
-							__controller.state.oldObjects.put((JDWPObject)rawVal);
-					}
+					// Try to guess the used value
+					JDWPValueTag tag = JDWPValueTag.guessType(
+						__controller, value);
+					rv.writeValue(value, tag, false);
+					
+					// Store object for later use
+					if (tag.isObject)
+						__controller.state.items.put(value.get());
 				}
 			
 			return rv;
@@ -93,28 +86,25 @@ public enum CommandSetStackFrame
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Thread is missing or otherwise invalid?
-			JDWPThread thread = __controller.state.oldThreads.get(
-				__packet.readId());
-			if (thread == null)
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_THREAD);
+			// Ignore the thread but check it, then read the frame
+			__packet.readThread(__controller, false);
+			Object frame = __packet.readFrame(__controller, false);
 			
-			// Frame is missing or otherwise invalid?
-			JDWPThreadFrame frame = __controller.state.oldFrames.get(
-				__packet.readId());
-			if (frame == null)
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_FRAME_ID);
+			// Where is this frame located?
+			JDWPViewFrame viewFrame = __controller.viewFrame();
+			Object type = viewFrame.atClass(frame);
+			int methodDx = viewFrame.atMethodIndex(frame);
 			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Static and native methods always return null
-			int mFlags = frame.debuggerAtMethod().debuggerMemberFlags();
+			int mFlags = __controller.viewType().methodFlags(type, methodDx);
 			if (0 != (mFlags & (CommandSetStackFrame._FLAG_STATIC |
 				CommandSetStackFrame._FLAG_NATIVE)))
-				rv.writeId(null);
+			{
+				rv.writeId(0);
+			}
 			
 			// Write self value
 			else
@@ -122,18 +112,17 @@ public enum CommandSetStackFrame
 				{
 					// If this value is an object we need to register it for
 					// future grabbing
-					if (!frame.debuggerRegisterGetValue(
-					false, 0, value))
-						rv.writeVoid();
-					else
-					{
-						rv.writeValue(value, (String)null, false);
+					if (!viewFrame.readValue(frame, 0, value))
+						value.set(null);
 						
-						// Store object for later use
-						Object rawVal = value.get();
-						if (rawVal instanceof JDWPObject)
-							__controller.state.oldObjects.put((JDWPObject)rawVal);
-					}
+					// Try to guess the used value
+					JDWPValueTag tag = JDWPValueTag.guessType(
+						__controller, value);
+					rv.writeValue(value, tag, false);
+					
+					// Store object for later use
+					if (tag.isObject)
+						__controller.state.items.put(value.get());
 				}
 			
 			return rv;

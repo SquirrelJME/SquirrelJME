@@ -9,6 +9,9 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPViewObject;
+import cc.squirreljme.jdwp.views.JDWPViewType;
+
 /**
  * String reference command set.
  *
@@ -29,71 +32,60 @@ public enum CommandSetStringReference
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Which object do we want?
-			JDWPObject object = __controller.state.oldObjects.get(
-				__packet.readId());
-			if (object == null)
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_OBJECT);
+			// Get the desired object
+			Object object = __packet.readObject(__controller, false);
 			
-			// Is this not a string?
-			JDWPClass classy = object.debuggerClass();
-			if (classy == null || !CommandSetStringReference._STRING
-				.equals(classy.debuggerFieldDescriptor()))
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_STRING);
+			// Is this the string type?
+			JDWPViewObject viewObject = __controller.viewObject();
+			JDWPViewType viewType = __controller.viewType();
+			Object type = viewObject.type(object);
+			if (type == null || !CommandSetStringReference._STRING.equals(
+				viewType.signature(type)))
+				throw ErrorType.INVALID_STRING.toss(object,
+					System.identityHashCode(object));
 			
-			// Find the internal string array
-			JDWPField charField = null;
-			for (JDWPField field : classy.debuggerFields())
+			// Locate the char field index
+			int charFieldDx = -1;
+			for (int fieldId : viewType.fields(type))
 				if (CommandSetStringReference._STRING_CHARS.equals(
-					field.debuggerMemberName()))
+					viewType.fieldName(type, fieldId)))
 				{
-					charField = field;
+					charFieldDx = fieldId;
 					break;
 				}
 			
 			// Is missing? We do not know how strings work then
-			if (charField == null)
-				return __controller.__reply(
-					__packet.id(), ErrorType.NOT_IMPLEMENTED);
+			if (charFieldDx < 0)
+				throw ErrorType.NOT_IMPLEMENTED.toss(type,
+					charFieldDx);
 			
-			// Load the field array
-			JDWPArray charArray;
+			// Load the character array
+			Object charArray;
 			try (JDWPValue value = __controller.__value())
 			{
-				// Cannot obtain this field?
-				if (!classy.debuggerFieldValue(object,
-					charField, value))
-					return __controller.__reply(
-						__packet.id(), ErrorType.INVALID_STRING);
+				// Is this a valid field?
+				if (!viewObject.readValue(object, charFieldDx, value))
+					throw ErrorType.INVALID_STRING.toss(object, charFieldDx);
 				
-				// This must be an array type
-				Object raw = value.get();
-				if (!(raw instanceof JDWPArray))
-					return __controller.__reply(
-						__packet.id(), ErrorType.INVALID_STRING);
-				
-				charArray = (JDWPArray)raw;
+				// Missing?
+				charArray = value.get();
+				if (charArray == null)
+					throw ErrorType.INVALID_STRING.toss(object, charFieldDx);
 			}
 			
 			// How big is this string?
-			int strLen = charArray.debuggerArrayLength();
+			int strLen = viewObject.arrayLength(charArray);
 			if (strLen < 0)
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_STRING);
+				throw ErrorType.INVALID_STRING.toss(object, strLen);
 			
 			// Load in characters
 			char[] chars = new char[strLen];
 			for (int i = 0; i < strLen; i++)
 				try (JDWPValue value = __controller.__value())
 				{
-					// Use an invalid placeholder
-					if (!charArray.debuggerArrayGet(i, value))
-					{
-						chars[i] = CommandSetStringReference._BAD_CHAR;
-						continue;
-					}
+					// Is this value valid?
+					if (!viewObject.readArray(charArray, i, value))
+						value.set(CommandSetStringReference._BAD_CHAR);
 					
 					// Try to map the value
 					Object raw = value.get();

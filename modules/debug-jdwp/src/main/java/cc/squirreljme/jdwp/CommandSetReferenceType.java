@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPViewType;
+
 /**
  * Reference type command set.
  *
@@ -29,19 +31,7 @@ public enum CommandSetReferenceType
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Which class does this refer to?
-			JDWPClass type = __controller.state.getAnyClass(
-				__packet.readId());
-			if (type == null)
-				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_CLASS);
-			
-			// Write the normal class signature
-			JDWPPacket rv = __controller.__reply(
-				__packet.id(), ErrorType.NO_ERROR);
-			rv.writeString(type.debuggerFieldDescriptor());
-			
-			return rv;
+			return this.__signature(false, __controller, __packet);
 		}
 	},
 	
@@ -58,54 +48,43 @@ public enum CommandSetReferenceType
 			throws JDWPException
 		{
 			// Which class does this refer to?
-			JDWPReferenceType type = __controller.state.getReferenceType(
-				__packet.readId());
-			if (type == null)
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_CLASS);
-				
-			// Read in all fields
+			JDWPViewType viewType = __controller.viewType();
+			Object type = __packet.readType(__controller, false);
+			
+			// Read in all field indexes and check for their validity
 			int numFields = __packet.readInt();
-			JDWPField[] fields = new JDWPField[numFields];
+			int[] fields = new int[numFields];
 			for (int i = 0; i < numFields; i++)
 			{
-				JDWPField field = __controller.state.oldFields.get(
-					__packet.readId());
-				if (field == null)
-					return __controller.__reply(
-						__packet.id(), ErrorType.INVALID_FIELD_ID);
-					
-				fields[i] = field;
+				int fieldDx = __packet.readId();
+				if (!viewType.isValidField(type, fieldDx))
+					throw ErrorType.INVALID_FIELD_ID.toss(type, fieldDx);
+				
+				fields[i] = fieldDx;
 			}
 			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
-			
-			// We need the class to communicate with
-			JDWPClass classy = type.debuggerClass();
-			if (classy == null)
-				classy = __Synthetics__.FAKE_OBJECT;
 			
 			// Write field mappings
 			rv.writeInt(numFields);
 			for (int i = 0; i < numFields; i++)
 				try (JDWPValue value = __controller.__value())
 				{
-					// If this value is an object we need to register it for
-					// future grabbing
-					if (!classy.debuggerFieldValue(null,
-						fields[i], value))
-						rv.writeVoid();
-					else
-					{
-						rv.writeValue(value, fields[i].debuggerMemberType(),
-							false);
-						
-						// Store object for later use
-						Object rawVal = value.get();
-						if (rawVal instanceof JDWPObject)
-							__controller.state.oldObjects.put((JDWPObject)rawVal);
-					}
+					// Determine the field type and its tag
+					String fieldSig = viewType.fieldSignature(type, fields[i]);
+					JDWPValueTag tag = JDWPValueTag.fromSignature(fieldSig);
+					
+					// Read the field value, fallback if not valid
+					if (!viewType.readValue(type, fields[i], value))
+						value.set(tag.defaultValue);
+					
+					// Always write as tagged value
+					rv.writeValue(value, tag, false);
+					
+					// Store object for later use
+					if (tag.isObject)
+						__controller.state.items.put(value.get());
 				}
 			
 			return rv;
@@ -124,23 +103,13 @@ public enum CommandSetReferenceType
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Which class does this refer to?
-			JDWPReferenceType type = __controller.state.getReferenceType(
-				__packet.readId());
-			if (type == null)
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_CLASS);
-					
-			// Get the class
-			JDWPClass classy = type.debuggerClass();
-			if (classy == null)
-				classy = __Synthetics__.FAKE_OBJECT;
+			Object type = __packet.readType(__controller, false);
 			
 			// Does this have a source file?
-			String sourceFile = classy.debuggerSourceFile();
+			String sourceFile = __controller.viewType().sourceFile(type);
 			if (sourceFile == null)
-				return __controller.__reply(
-				__packet.id(), ErrorType.ABSENT_INFORMATION);
+				throw ErrorType.ABSENT_INFORMATION.toss(type,
+					System.identityHashCode(type));
 			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
@@ -163,22 +132,23 @@ public enum CommandSetReferenceType
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Which class does this refer to?
-			JDWPObjectLike type = __controller.state.getObjectLike(
-				__packet.readId());
-			if (type == null)
-				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_CLASS);
+			Object type = __packet.readType(__controller, false);
+			
+			// Get every interface
+			Object[] interfaces = __controller.viewType().interfaceTypes(type);
 			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write all the interfaces
-			JDWPClass[] interfaces = __controller.state
-				.getObjectLikeClass(type).debuggerInterfaceClasses();
 			rv.writeInt(interfaces.length);
-			for (JDWPClass impl : interfaces)
-				rv.writeId(impl);
+			for (Object impl : interfaces)
+			{
+				rv.writeId(System.identityHashCode(impl));
+				
+				// Record interface so it is known
+				__controller.state.items.put(impl);
+			}
 			
 			return rv;
 		}
@@ -196,21 +166,7 @@ public enum CommandSetReferenceType
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Which class does this refer to?
-			JDWPClass type = __controller.state.getAnyClass(
-				__packet.readId());
-			if (type == null)
-				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_CLASS);
-				
-			JDWPPacket rv = __controller.__reply(
-				__packet.id(), ErrorType.NO_ERROR);
-			
-			// Only a normal signature is used, since generics are not needed
-			rv.writeString(type.debuggerFieldDescriptor());
-			rv.writeString("");
-			
-			return rv;
+			return this.__signature(true, __controller, __packet);
 		}
 	},
 	
@@ -227,36 +183,29 @@ public enum CommandSetReferenceType
 			throws JDWPException
 		{
 			// Which class does this refer to?
-			JDWPObjectLike type = __controller.state
-				.getObjectLike(__packet.readId());
-			if (type == null)
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_CLASS);
-				
+			JDWPViewType viewType = __controller.viewType();
+			Object type = __packet.readType(__controller, false);
+			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write number of fields
-			JDWPField[] fields = __controller.state.getObjectLikeClass(type)
-				.debuggerFields();
+			int[] fields = viewType.fields(type);
 			rv.writeInt(fields.length);
 			
 			// Write information on each method
-			for (JDWPField field : fields)
+			for (int fieldDx : fields)
 			{
-				// Register this method for later lookup
-				__controller.state.oldFields.put(field);
-				
 				// Information about the method
-				rv.writeId(field);
-				rv.writeString(field.debuggerMemberName());
-				rv.writeString(field.debuggerMemberType());
+				rv.writeId(fieldDx);
+				rv.writeString(viewType.fieldName(type, fieldDx));
+				rv.writeString(viewType.fieldSignature(type, fieldDx));
 				
 				// Generics are not used in SquirrelJME, ignore
 				rv.writeString("");
 				
 				// Modifier flags
-				rv.writeInt(field.debuggerMemberFlags());
+				rv.writeInt(viewType.fieldFlags(type, fieldDx));
 			}
 			
 			return rv;
@@ -276,36 +225,29 @@ public enum CommandSetReferenceType
 			throws JDWPException
 		{
 			// Which class does this refer to?
-			JDWPObjectLike type = __controller.state.getObjectLike(
-				__packet.readId());
-			if (type == null)
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_CLASS);
-				
+			JDWPViewType viewType = __controller.viewType();
+			Object type = __packet.readType(__controller, false);
+			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write number of methods
-			JDWPMethod[] methods = __controller.state.getObjectLikeClass(type)
-				.debuggerMethods();
+			int[] methods = viewType.methods(type);
 			rv.writeInt(methods.length);
 			
 			// Write information on each method
-			for (JDWPMethod method : methods)
+			for (int methodDx : methods)
 			{
-				// Register this method for later lookup
-				__controller.state.oldMethods.put(method);
-				
 				// Information about the method
-				rv.writeId(method);
-				rv.writeString(method.debuggerMemberName());
-				rv.writeString(method.debuggerMemberType());
+				rv.writeId(methodDx);
+				rv.writeString(viewType.methodName(type, methodDx));
+				rv.writeString(viewType.methodSignature(type, methodDx));
 				
 				// Generics are not used in SquirrelJME, ignore
 				rv.writeString("");
 				
 				// Modifier flags
-				rv.writeInt(method.debuggerMemberFlags());
+				rv.writeInt(viewType.methodFlags(type, methodDx));
 			}
 			
 			return rv;
@@ -337,5 +279,32 @@ public enum CommandSetReferenceType
 	public final int debuggerId()
 	{
 		return this.id;
+	}
+	
+	/**
+	 * Returns the signature of a given type.
+	 * 
+	 * @param __generic Is this a generic signature request?
+	 * @param __controller The controller used.
+	 * @param __packet The packet to read from.
+	 * @return The resultant packet.
+	 * @throws JDWPException If this could not be handled.
+	 * @since 2021/04/14
+	 */
+	JDWPPacket __signature(boolean __generic, JDWPController __controller,
+		JDWPPacket __packet)
+		throws JDWPException
+	{
+		Object type = __packet.readType(__controller, false);
+		
+		// Write the normal class signature
+		JDWPPacket rv = __controller.__reply(
+			__packet.id(), ErrorType.NO_ERROR);
+		
+		rv.writeString(__controller.viewType().signature(type));
+		if (__generic)
+			rv.writeString("");
+		
+		return rv;
 	}
 }

@@ -9,7 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jdwp.views.JDWPViewObject;
+import cc.squirreljme.jdwp.views.JDWPViewType;
 
 /**
  * Object reference command set.
@@ -31,29 +32,20 @@ public enum CommandSetObjectReference
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// This can be a large number of sets of objects
-			int id = __packet.readId();
-			JDWPObjectLike object = __controller.state.getObjectLike(id);
-			if (object == null)
-			{
-				// Debug
-				JDWPId any = __controller.state.any(id);
-				Debugging.debugNote("JDWP: InvalidRef: %s (0x%08x a %s)",
-					any, id, (any == null ? "null" :
-						any.getClass().getName()));
-				
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_OBJECT);
-			}
+			// Obtain the object and the type of that object
+			Object object = __packet.readObject(__controller, false);
+			Object type = __controller.viewObject().type(object);
 			
-			// The true class may be synthetic but may also be real!
-			JDWPClass classy = __controller.state.getObjectLikeClass(object);
+			// Register it for future reference
+			if (type != null)
+				__controller.state.items.put(type);
 			
-			// Write the details of this class
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
-			rv.writeByte(classy.debuggerClassType().id);
-			rv.writeId(classy);
+				
+			// Write the details of this class
+			rv.writeByte(JDWPUtils.classType(__controller, type).id);
+			rv.writeId(System.identityHashCode(type));
 			
 			return rv;
 		}
@@ -71,54 +63,47 @@ public enum CommandSetObjectReference
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Which object do we want?
-			JDWPObject object = __controller.state.oldObjects.get(
-				__packet.readId());
-			if (object == null)
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_OBJECT);
+			JDWPViewObject viewObject = __controller.viewObject();
+			JDWPViewType viewType = __controller.viewType();
 			
-			// Read in all fields
+			// The type is needed to ensure the field class is valid
+			Object object = __packet.readObject(__controller, false);
+			Object type = viewObject.type(object);
+			
+			// Read in all field indexes and check for their validity
 			int numFields = __packet.readInt();
-			JDWPField[] fields = new JDWPField[numFields];
+			int[] fields = new int[numFields];
 			for (int i = 0; i < numFields; i++)
 			{
-				JDWPField field = __controller.state.oldFields.get(
-					__packet.readId());
-				if (field == null)
-					return __controller.__reply(
-						__packet.id(), ErrorType.INVALID_FIELD_ID);
-					
-				fields[i] = field;
+				int fieldDx = __packet.readId();
+				if (!viewType.isValidField(type, fieldDx))
+					throw ErrorType.INVALID_FIELD_ID.toss(type, fieldDx);
+				
+				fields[i] = fieldDx;
 			}
 			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
-			
-			// We need the class to communicate with
-			JDWPClass classy = object.debuggerClass();
-			if (classy == null)
-				classy = __Synthetics__.FAKE_OBJECT;
 			
 			// Write field mappings
 			rv.writeInt(numFields);
 			for (int i = 0; i < numFields; i++)
 				try (JDWPValue value = __controller.__value())
 				{
-					// No valid value here? just result in void
-					if (!classy.debuggerFieldValue(object, fields[i],
-						value))
-						rv.writeVoid();
-					else
-					{
-						rv.writeValue(value, fields[i].debuggerMemberType(),
-							false);
-						
-						// Store object for later use
-						Object rawVal = value.get();
-						if (rawVal instanceof JDWPObject)
-							__controller.state.oldObjects.put((JDWPObject)rawVal);
-					}
+					// Determine the field type and its tag
+					String fieldSig = viewType.fieldSignature(type, fields[i]);
+					JDWPValueTag tag = JDWPValueTag.fromSignature(fieldSig);
+					
+					// Read the field value, fallback if not valid
+					if (!viewObject.readValue(object, fields[i], value))
+						value.set(tag.defaultValue);
+					
+					// Always write as tagged value
+					rv.writeValue(value, tag, false);
+					
+					// Store object for later use
+					if (tag.isObject)
+						__controller.state.items.put(value.get());
 				}
 			
 			return rv;
@@ -137,10 +122,8 @@ public enum CommandSetObjectReference
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			Object obj = __controller.state.items.get(__packet.readId());
-			if (obj == null)
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_OBJECT);
+			// Read the value but do nothing for it
+			__packet.readObject(__controller, false);
 			
 			// If we still know about this object it was not GCed
 			JDWPPacket rv = __controller.__reply(

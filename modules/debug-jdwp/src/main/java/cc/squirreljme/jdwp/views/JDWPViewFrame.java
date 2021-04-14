@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp.views;
 
+import cc.squirreljme.jdwp.JDWPValue;
+
 /**
  * This is a view around thread frames.
  *
@@ -44,4 +46,24 @@ public interface JDWPViewFrame
 	 * @since 2021/04/11
 	 */
 	int atMethodIndex(Object __which);
+	
+	/**
+	 * Reads the value of a register within a frame.
+	 *
+	 * @param __which Which frame to read from?
+	 * @param __index The index of the register to read from the frame.
+	 * @param __out Where the value is to be stored.
+	 * @return {@code true} if this is a valid value.
+	 * @since 2021/04/14
+	 */
+	boolean readValue(Object __which, int __index, JDWPValue __out);
+	
+	/**
+	 * Returns the number of values stored in the frame.
+	 * 
+	 * @param __which Which frame to get from?
+	 * @return The number of alues to store in the frame.
+	 * @since 2021/04/14
+	 */
+	int numValues(Object __which);
 }

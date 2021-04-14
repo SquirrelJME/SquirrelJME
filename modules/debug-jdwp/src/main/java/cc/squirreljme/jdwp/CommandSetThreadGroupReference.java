@@ -34,10 +34,8 @@ public enum CommandSetThreadGroupReference
 			JDWPViewThreadGroup view = __controller.viewThreadGroup();
 			
 			// Is this valid?
-			Object group = __controller.state.items.get(__packet.readId());
-			if (!view.isValid(group))
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_THREAD_GROUP);
+			Object group = __packet.readThreadGroup(
+				__controller, false);
 			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
@@ -61,13 +59,8 @@ public enum CommandSetThreadGroupReference
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			JDWPViewThreadGroup view = __controller.viewThreadGroup();
-			
 			// Is this valid?
-			Object group = __controller.state.items.get(__packet.readId());
-			if (!view.isValid(group))
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_THREAD_GROUP);
+			__packet.readThreadGroup(__controller, false);
 			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
@@ -94,10 +87,8 @@ public enum CommandSetThreadGroupReference
 			JDWPViewThreadGroup view = __controller.viewThreadGroup();
 			
 			// Is this valid?
-			Object group = __controller.state.items.get(__packet.readId());
-			if (!view.isValid(group))
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_THREAD_GROUP);
+			Object group = __packet.readThreadGroup(
+				__controller, false);
 				
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
@@ -109,8 +100,10 @@ public enum CommandSetThreadGroupReference
 			// Record all of their IDs
 			for (Object thread : threads)
 			{	
-				__controller.state.items.put(thread);
 				rv.writeId(System.identityHashCode(thread));
+				
+				// Store for later referencing
+				__controller.state.items.put(thread);
 			}
 			
 			// There are never any child thread groups

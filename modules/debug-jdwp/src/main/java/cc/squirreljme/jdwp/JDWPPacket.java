@@ -254,6 +254,33 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Reads the given frame from the packet.
+	 * 
+	 * @param __controller The controller used.
+	 * @param __nullable Can this be null?
+	 * @return The frame value.
+	 * @throws JDWPException If this does not refer to a valid frame.
+	 * @since 2021/04/11
+	 */
+	protected Object readFrame(JDWPController __controller, boolean __nullable)
+	{
+		int id = this.readId();
+		Object frame = __controller.state.items.get(id);
+		
+		// Is this valid?
+		if (!__controller.viewFrame().isValid(frame))
+		{
+			if (__nullable && frame == null)
+				return null;
+			
+			// Fail with invalid thread
+			throw ErrorType.INVALID_FRAME_ID.toss(frame, id);
+		}
+		
+		return frame;
+	}
+	
+	/**
 	 * Reads an identifier from the packet.
 	 * 
 	 * @return The single read value.
@@ -408,6 +435,35 @@ public final class JDWPPacket
 		}
 		
 		return thread;
+	}
+	
+	/**
+	 * Reads the given thread group from the packet.
+	 * 
+	 * @param __controller The controller used.
+	 * @param __nullable Can this be null?
+	 * @return The thread group.
+	 * @throws JDWPException If this does not refer to a valid thread group.
+	 * @since 2021/04/14
+	 */
+	public final Object readThreadGroup(JDWPController __controller,
+		boolean __nullable)
+		throws JDWPException
+	{
+		int id = this.readId();
+		Object group = __controller.state.items.get(id);
+		
+		// Is this valid?
+		if (!__controller.viewThreadGroup().isValid(group))
+		{
+			if (__nullable && group == null)
+				return null;
+			
+			// Fail with invalid thread
+			throw ErrorType.INVALID_THREAD.toss(group, id);
+		}
+		
+		return group;
 	}
 	
 	/**

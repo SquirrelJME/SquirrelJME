@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp.views;
 
+import cc.squirreljme.jdwp.JDWPValue;
+
 /**
  * Represents a type.
  *
@@ -37,6 +39,158 @@ public interface JDWPViewType
 	int flags(Object __which);
 	
 	/**
+	 * Returns the interface types of the given type.
+	 * 
+	 * @param __which Get the interfaces of which type?
+	 * @return The interfaces for this type.
+	 * @since 2021/04/14
+	 */
+	Object[] interfaceTypes(Object __which);
+	
+	/**
+	 * Checks if this is a valid field index.
+	 * 
+	 * @param __which Which class?
+	 * @param __fieldDx The field index.
+	 * @return If this is a valid field index in this class.
+	 * @since 2021/04/14
+	 */
+	boolean isValidField(Object __which, int __fieldDx);
+	
+	/**
+	 * Checks if this is a valid method index.
+	 * 
+	 * @param __which Which class?
+	 * @param __methodDx The method index.
+	 * @return If this is a valid method index in this class.
+	 * @since 2021/04/13
+	 */
+	boolean isValidMethod(Object __which, int __methodDx);
+	
+	/**
+	 * Returns the flags of a field, compatible with Java bitflags.
+	 * 
+	 * @param __which Which class to get the field from.
+	 * @param __fieldId The field ID.
+	 * @return The field flags.
+	 * @since 2021/04/14
+	 */
+	int fieldFlags(Object __which, int __fieldId);
+	
+	/**
+	 * Returns the name of a field.
+	 * 
+	 * @param __which Which class to get the field from.
+	 * @param __fieldId The field ID.
+	 * @return The field name.
+	 * @since 2021/04/14
+	 */
+	String fieldName(Object __which, int __fieldId);
+	
+	/**
+	 * Returns all of the fields within the class.
+	 * 
+	 * @param __which Which class to get the fields of.
+	 * @return All of the field indexes within the class.
+	 * @since 2021/04/14
+	 */
+	int[] fields(Object __which);
+	
+	/**
+	 * Returns the field signature.
+	 * 
+	 * @param __which Which class to get from?
+	 * @param __fieldDx The field index.
+	 * @return The field signature.
+	 * @since 2021/04/14
+	 */
+	String fieldSignature(Object __which, int __fieldDx);
+	
+	/**
+	 * Returns the method byte code.
+	 * 
+	 * @param __which Which class to get from?
+	 * @param __methodId The method index.
+	 * @return The byte code that exists within the method or {@code null} if
+	 * there is no byte code.
+	 * @since 2021/04/14
+	 */
+	byte[] methodByteCode(Object __which, int __methodId);
+	
+	/**
+	 * Returns the flags of a method, compatible with Java bitflags.
+	 * 
+	 * @param __which Which class to get the field from.
+	 * @param __methodId The method ID.
+	 * @return The method flags.
+	 * @since 2021/04/14
+	 */
+	int methodFlags(Object __which, int __methodId);
+	
+	/**
+	 * Returns the method line table, which maps locations to source code
+	 * lines.
+	 * 
+	 * @param __which Which class to get from?
+	 * @param __methodId The method index.
+	 * @return The line number table which matches lines to locations within
+	 * the method, will be {@code null} if not available.
+	 * @since 2021/04/14
+	 */
+	int[] methodLineTable(Object __which, int __methodId);
+	
+	/**
+	 * Returns the method location count.
+	 * 
+	 * @param __which Which class to get from?
+	 * @param __methodId The method index.
+	 * @return The number of locations within the class or a negative value
+	 * if it is unknown ({@code native}).
+	 * @since 2021/04/14
+	 */
+	int methodLocationCount(Object __which, int __methodId);
+	
+	/**
+	 * Returns the name of a method.
+	 * 
+	 * @param __which Which class to get the field from.
+	 * @param __methodId The method ID.
+	 * @return The method name.
+	 * @since 2021/04/14
+	 */
+	String methodName(Object __which, int __methodId);
+	
+	/**
+	 * Returns the method indexes of the class.
+	 * 
+	 * @param __which Get the method indexes of which class?
+	 * @return The method indexes.
+	 * @since 2021/04/14
+	 */
+	int[] methods(Object __which);
+	
+	/**
+	 * Returns the method signature.
+	 * 
+	 * @param __which Which class to get from?
+	 * @param __methodDx The method index.
+	 * @return The method signature.
+	 * @since 2021/04/14
+	 */
+	String methodSignature(Object __which, int __methodDx);
+	
+	/**
+	 * Reads the value of an static field within the class.
+	 *
+	 * @param __which Which class to read from?
+	 * @param __index The index of the field to read from the object.
+	 * @param __out Where the value is to be stored.
+	 * @return {@code true} if this is a valid value.
+	 * @since 2021/04/10
+	 */
+	boolean readValue(Object __which, int __index, JDWPValue __out);
+	
+	/**
 	 * Returns the signature of the given type.
 	 * 
 	 * @param __which Get the signature of which type?
@@ -44,6 +198,16 @@ public interface JDWPViewType
 	 * @since 2021/04/11
 	 */
 	String signature(Object __which);
+	
+	/**
+	 * Returns the source file that the type comes from.
+	 * 
+	 * @param __which Which type to get the source file of?
+	 * @return The source file the type comes from, {@code null} if it is not
+	 * known.
+	 * @since 2021/04/14
+	 */
+	String sourceFile(Object __which);
 	
 	/**
 	 * Returns the super type of the given type.

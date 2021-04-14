@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPState;
+import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.views.JDWPViewFrame;
 import java.lang.ref.Reference;
 
@@ -78,5 +79,27 @@ public class DebugViewFrame
 	public boolean isValid(Object __which)
 	{
 		return (__which instanceof SpringThread.Frame);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/14
+	 */
+	@Override
+	public boolean readValue(Object __which, int __index, JDWPValue __out)
+	{
+		__out.set(((SpringThread.Frame)__which).loadLocal(
+			Object.class, __index));
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/14
+	 */
+	@Override
+	public int numValues(Object __which)
+	{
+		return ((SpringThread.Frame)__which).numLocals();
 	}
 }

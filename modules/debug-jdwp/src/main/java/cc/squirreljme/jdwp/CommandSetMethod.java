@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPViewType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -35,18 +36,10 @@ public enum CommandSetMethod
 			Object classy = __packet.readType(__controller, false);
 			int methodId = __packet.readId();
 			
-			if (true)
-				throw Debugging.todo();
-			
-			// Ignore class it is not needed
-			__packet.readId();
-			
-			// Find the method
-			JDWPMethod method = __controller.state.oldMethods.get(
-				__packet.readId());
-			if (method == null)
-				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_METHOD_ID);
+			// Not a valid method?
+			JDWPViewType viewType = __controller.viewType();
+			if (!viewType.isValidMethod(classy, methodId))
+				throw ErrorType.INVALID_METHOD_ID.toss(classy, methodId);
 			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
@@ -54,14 +47,14 @@ public enum CommandSetMethod
 			// Put down all the valid indexes in the method, even if there
 			// are no possible lines we may still want to break at specific
 			// byte code addresses even without the lines?
-			long addrCount = method.debuggerLocationCount();
+			long addrCount = viewType.methodLocationCount(classy, methodId);
 			rv.writeLong(0);
-			rv.writeLong(addrCount);
+			rv.writeLong(Math.min(-1, addrCount));
 			
 			// Obtain the line table to record, ensure that it exists and is
 			// valid. If this method has no byte code (abstract/native?),
 			// then do nothing.
-			int[] lineTable = method.debuggerLineTable();
+			int[] lineTable = viewType.methodLineTable(classy, methodId);
 			if (addrCount <= 0 || lineTable == null ||
 				lineTable.length == 0 || lineTable[0] < 0)
 			{
@@ -97,22 +90,20 @@ public enum CommandSetMethod
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Ignore class it is not needed
-			__packet.readId();
+			// Read class and the method it is in
+			Object classy = __packet.readType(__controller, false);
+			int methodId = __packet.readId();
 			
-			// Find the method
-			JDWPMethod method = __controller.state.oldMethods.get(
-				__packet.readId());
-			if (method == null)
-				return __controller.__reply(
-					__packet.id(), ErrorType.INVALID_METHOD_ID);
+			// Not a valid method?
+			JDWPViewType viewType = __controller.viewType();
+			if (!viewType.isValidMethod(classy, methodId))
+				throw ErrorType.INVALID_METHOD_ID.toss(classy, methodId);
 			
 			// Absent information is not returned normally, but in this case
 			// return it
-			byte[] byteCode = method.debuggerByteCode();
+			byte[] byteCode = viewType.methodByteCode(classy, methodId);
 			if (byteCode == null)
-				return __controller.__reply(
-					__packet.id(), ErrorType.ABSENT_INFORMATION);
+				throw ErrorType.ABSENT_INFORMATION.toss(classy, methodId);
 			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
@@ -137,15 +128,14 @@ public enum CommandSetMethod
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Ignore class it is not needed
-			__packet.readId();
+			// Read class and the method it is in
+			Object classy = __packet.readType(__controller, false);
+			int methodId = __packet.readId();
 			
-			// Find the method
-			JDWPMethod method = __controller.state.oldMethods.get(
-				__packet.readId());
-			if (method == null)
-				return __controller.__reply(
-				__packet.id(), ErrorType.INVALID_METHOD_ID);
+			// Not a valid method?
+			JDWPViewType viewType = __controller.viewType();
+			if (!viewType.isValidMethod(classy, methodId))
+				throw ErrorType.INVALID_METHOD_ID.toss(classy, methodId);
 			
 			// TODO: Implement
 			Debugging.todoNote("Implement VariableTableWithGeneric.");

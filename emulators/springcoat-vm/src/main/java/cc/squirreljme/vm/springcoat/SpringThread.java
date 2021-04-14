@@ -1111,6 +1111,17 @@ public final class SpringThread
 		}
 		
 		/**
+		 * Returns the number of locals.
+		 * 
+		 * @return The number of locals.
+		 * @since 2021/04/14
+		 */
+		public final int numLocals()
+		{
+			return this._locals.length;
+		}
+		
+		/**
 		 * Returns the instruction counter.
 		 *
 		 * @return The instruction counter.
