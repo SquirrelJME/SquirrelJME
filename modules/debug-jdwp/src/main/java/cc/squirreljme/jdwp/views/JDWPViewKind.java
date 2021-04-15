@@ -19,9 +19,6 @@ public enum JDWPViewKind
 	/** Thread frames. */
 	FRAME(JDWPViewFrame.class),
 	
-	/** Methods. */
-	METHOD(JDWPViewMethod.class),
-	
 	/** An object. */
 	OBJECT(JDWPViewObject.class),
 	
