@@ -64,29 +64,28 @@ public enum CommandSetVirtualMachine
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			List<Object> allTypes = CommandSetVirtualMachine
-				.__allTypes(__controller);
-					
+			// What are we looking for?
 			String wantSig = __packet.readString();
 			
-			// Add any loaded classes, multiple VMs may result in multiple
-			// classes being added
-			List<JDWPClass> classes = new LinkedList<>();
-			for (JDWPClass check : __controller.state.oldClasses.values())
-				if (wantSig.equals(check.debuggerFieldDescriptor()))
-					classes.add(check);
+			// Search all types for a signature
+			List<Object> found = new LinkedList<>();
+			JDWPViewType viewType = __controller.viewType();
+			for (Object type : CommandSetVirtualMachine
+				.__allTypes(__controller))
+				if (wantSig.equals(viewType.signature(type)))
+					found.add(type);
 				
 			// Write result
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Record all classes
-			rv.writeInt(classes.size());
-			for (JDWPClass classy : classes)
+			rv.writeInt(found.size());
+			for (Object type : found)
 			{
 				// Write the class type
-				rv.writeByte(classy.debuggerClassType().id);
-				rv.writeId(classy);
+				rv.writeByte(JDWPUtils.classType(__controller, type).id);
+				rv.writeId(System.identityHashCode(type));
 				
 				// Classes are always loaded
 				rv.writeInt(CommandSetVirtualMachine._CLASS_INITIALIZED);
