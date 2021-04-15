@@ -106,10 +106,25 @@ public enum ErrorType
 	 */
 	public final JDWPCommandException toss(Object __context, int __id)
 	{
+		return this.toss(__context, __id, null);
+	}
+	
+	/**
+	 * Throws an exception on any kind of failure.
+	 * 
+	 * @param __context The context, may be anything.
+	 * @param __id The ID number.
+	 * @param __cause The cause.
+	 * @return This is tossed on any command errors.
+	 * @since 2021/04/15
+	 */
+	public final JDWPCommandException toss(Object __context, int __id,
+		Throwable __cause)
+	{
 		// {@squirreljme.error AG0o Command cause an exception.
 		// (The error; The context; The ID number)}
 		throw new JDWPCommandException(this,
-			String.format("AG0o %s %s %d", this, __context, __id));
+			String.format("AG0o %s %s %d", this, __context, __id), __cause);
 	}
 	
 	/**

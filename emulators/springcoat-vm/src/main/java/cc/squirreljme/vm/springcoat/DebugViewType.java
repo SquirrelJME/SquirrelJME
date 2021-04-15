@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jdwp.JDWPCommandException;
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.views.JDWPViewType;
@@ -48,7 +49,7 @@ public class DebugViewType
 	@Override
 	public Object componentType(Object __which)
 	{
-		return ((SpringClass)__which).componentType();
+		return DebugViewType.__from(__which).componentType();
 	}
 	
 	/**
@@ -98,7 +99,7 @@ public class DebugViewType
 	@Override
 	public int flags(Object __which)
 	{
-		return ((SpringClass)__which).flags().toJavaBits();
+		return DebugViewType.__from(__which).flags().toJavaBits();
 	}
 	
 	/**
@@ -108,7 +109,7 @@ public class DebugViewType
 	@Override
 	public Object[] interfaceTypes(Object __which)
 	{
-		throw Debugging.todo();
+		return DebugViewType.__from(__which).interfaceClasses();
 	}
 	
 	/**
@@ -228,13 +229,17 @@ public class DebugViewType
 	@Override
 	public String signature(Object __which)
 	{
-		return ((SpringClass)__which).name.field().toString();
+		return DebugViewType.__from(__which).name.field().toString();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/15
+	 */
 	@Override
 	public String sourceFile(Object __which)
 	{
-		throw Debugging.todo();
+		return DebugViewType.__from(__which).file.sourceFile();
 	}
 	
 	/**
@@ -244,6 +249,30 @@ public class DebugViewType
 	@Override
 	public Object superType(Object __which)
 	{
-		return ((SpringClass)__which).superclass;
+		return DebugViewType.__from(__which).superclass;
+	}
+	
+	/**
+	 * Gets the class from the given value.
+	 * 
+	 * @param __which Which to convert from.
+	 * @return The spring class of the given type.
+	 * @since 2021/04/15
+	 */
+	private static SpringClass __from(Object __which)
+	{
+		// Missing the class?
+		if (__which == null)
+			throw JDWPCommandException.tossInvalidClass(__which, null);
+		
+		// Return cast form of it
+		try
+		{
+			return ((SpringClass)__which);
+		}
+		catch (ClassCastException e)
+		{
+			throw JDWPCommandException.tossInvalidClass(__which, e);
+		}
 	}
 }

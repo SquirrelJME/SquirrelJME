@@ -33,4 +33,35 @@ public class JDWPCommandException
 		
 		this.type = __errorType;
 	}
+	
+	/**
+	 * Initializes the exception.
+	 * 
+	 * @param __errorType The error type.
+	 * @param __m The message for the error.
+	 * @param __c The cause.
+	 * @since 2021/04/15
+	 */
+	public JDWPCommandException(ErrorType __errorType, String __m,
+		Throwable __c)
+	{
+		super(__m, __c);
+		
+		this.type = __errorType;
+	}
+	
+	/**
+	 * Generates an exception for an invalid class.
+	 * 
+	 * @param __obj The context.
+	 * @param __cause The cause of this exception.
+	 * @return The exception.
+	 * @since 2021/04/15
+	 */
+	public static JDWPCommandException tossInvalidClass(Object __obj,
+		Throwable __cause)
+	{
+		return ErrorType.INVALID_CLASS.toss(__obj,
+			System.identityHashCode(__obj), __cause);
+	}
 }
