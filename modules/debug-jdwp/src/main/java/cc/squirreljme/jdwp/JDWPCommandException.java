@@ -64,4 +64,34 @@ public class JDWPCommandException
 		return ErrorType.INVALID_CLASS.toss(__obj,
 			System.identityHashCode(__obj), __cause);
 	}
+	
+	/**
+	 * Generates an exception for an invalid method.
+	 * 
+	 * @param __obj The context.
+	 * @param __methodDx The method index.
+	 * @param __cause The cause of this exception.
+	 * @return The exception.
+	 * @since 2021/04/15
+	 */
+	public static JDWPCommandException tossInvalidMethod(Object __obj,
+		int __methodDx, Throwable __cause)
+	{
+		return ErrorType.INVALID_METHOD_ID.toss(__obj, __methodDx, __cause);
+	}
+	
+	/**
+	 * Generates an exception for an invalid method.
+	 * 
+	 * @param __obj The context.
+	 * @param __fieldDx The field index.
+	 * @param __cause The cause of this exception.
+	 * @return The exception.
+	 * @since 2021/04/16
+	 */
+	public static JDWPCommandException tossInvalidField(Object __obj,
+		int __fieldDx, Throwable __cause)
+	{
+		return ErrorType.INVALID_FIELD_ID.toss(__obj, __fieldDx, __cause);
+	}
 }

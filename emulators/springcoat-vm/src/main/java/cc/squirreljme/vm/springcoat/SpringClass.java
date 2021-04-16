@@ -16,6 +16,7 @@ import cc.squirreljme.jdwp.JDWPField;
 import cc.squirreljme.jdwp.JDWPMethod;
 import cc.squirreljme.jdwp.JDWPObjectLike;
 import cc.squirreljme.jdwp.JDWPValue;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeException;
@@ -89,6 +90,9 @@ public final class SpringClass
 	
 	/** The table of fields defined in this class, includes super classes. */
 	private final SpringField[] _fieldtable;
+	
+	/** Field lookup. */
+	private final SpringField[] _fieldLookup;
 	
 	/** Method index table. */
 	private final SpringMethod[] _methodLookup;
@@ -176,9 +180,22 @@ public final class SpringClass
 		// Fields that are defined in super classes must be allocated, stored,
 		// and indexed appropriately so that way casting between types and
 		// accessing other fields is actually valid
-		int superfieldcount = (__super == null ? 0 :
+		int superFieldCount = (__super == null ? 0 :
 			__super.instanceFieldCount);
-		int instancefieldcount = superfieldcount;
+		int instanceFieldCount = superFieldCount;
+		
+		// Field index lookup for this class, used for debugging
+		// We only base on the instance fields of the super class because
+		// our statics do not extend because they are part of the class type
+		// and not the instance.
+		int numFields = superFieldCount + __cf.fields().size();
+		SpringField[] fieldLookup = (__super == null ?
+			new SpringField[numFields] :
+			Arrays.copyOf(__super._fieldLookup, numFields));
+		this._fieldLookup = fieldLookup;
+		
+		// Keep static fields at the very end
+		int staticFieldAt = numFields;
 		
 		// Initialize all of the fields as needed
 		Map<FieldNameAndType, SpringField> fields = this._fields;
@@ -187,13 +204,18 @@ public final class SpringClass
 		{
 			boolean isinstance = f.flags().isInstance();
 			
+			// Where is this field located? At which index?
+			int atDx = (isinstance ? instanceFieldCount++ : --staticFieldAt);
+			
 			// {@squirreljme.error BK0u Duplicated field in class. (The field)}
 			SpringField sf;
 			if (null != fields.put(f.nameAndType(),
-				(sf = new SpringField(name, f,
-					(isinstance ? instancefieldcount++ : -1)))))
+				(sf = new SpringField(name, f, atDx))))
 				throw new SpringClassFormatException(name, String.format(
 					"BK0u %s", f.nameAndType()));
+			
+			// Store field lookup
+			fieldLookup[atDx] = sf;
 			
 			// Used to build our part of the field table
 			if (isinstance)
@@ -203,7 +225,7 @@ public final class SpringClass
 		// Each field is referenced by an index rather than a map, this is
 		// more efficient for instances and additionally still allows for
 		// sub-classes to declare fields as needed.
-		SpringField[] fieldtable = new SpringField[instancefieldcount];
+		SpringField[] fieldtable = new SpringField[instanceFieldCount];
 		this._fieldtable = fieldtable;
 		
 		// Copy the super class field table, since technically all of the
@@ -211,17 +233,17 @@ public final class SpringClass
 		if (__super != null)
 		{
 			SpringField[] supertable = __super._fieldtable;
-			for (int i = 0; i < superfieldcount; i++)
+			for (int i = 0; i < superFieldCount; i++)
 				fieldtable[i] = supertable[i];
 		}
 		
 		// Store all of the instance fields
-		for (int i = superfieldcount, p = 0, pn = instfields.size();
+		for (int i = superFieldCount, p = 0, pn = instfields.size();
 			p < pn; i++, p++)
 			fieldtable[i] = instfields.get(p);
 		
 		// Used to quickly determine how big to set storage for a class
-		this.instanceFieldCount = instancefieldcount;
+		this.instanceFieldCount = instanceFieldCount;
 		
 		// Go through super and interfaces and add non-static methods which
 		// exist in sub-classes
@@ -461,6 +483,17 @@ public final class SpringClass
 	public final int dimensions()
 	{
 		return this.name.dimensions();
+	}
+	
+	/**
+	 * Returns the field lookup.
+	 * 
+	 * @return The field lookup.
+	 * @since 2021/04/16
+	 */
+	public final SpringField[] fieldLookup()
+	{
+		return this._fieldLookup.clone();
 	}
 	
 	/**
@@ -841,6 +874,24 @@ public final class SpringClass
 	}
 	
 	/**
+	 * Returns a field for the given index.
+	 * 
+	 * @param __fieldDx The field index.
+	 * @return The field for the given index.
+	 * @throws SpringNoSuchFieldException If the field does not exist.
+	 * @since 2021/04/16
+	 */
+	public final SpringField lookupField(int __fieldDx)
+		throws SpringNoSuchFieldException
+	{
+		SpringField[] lookup = this._fieldLookup;
+		if (__fieldDx < 0 || __fieldDx >= lookup.length)
+			throw new SpringNoSuchFieldException("No field: " + __fieldDx);
+		
+		return lookup[__fieldDx];
+	}
+	
+	/**
 	 * Locates the given method in the class.
 	 *
 	 * @param __static Is the method static?
@@ -849,7 +900,7 @@ public final class SpringClass
 	 * @return The method which was found.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringIncompatibleClassChangeException If the target method
-	 * does not match staticness.
+	 * does not match static-ness.
 	 * @throws SpringNoSuchMethodException If the specified method does not
 	 * exist.
 	 * @since 2018/09/03
@@ -909,6 +960,25 @@ public final class SpringClass
 	}
 	
 	/**
+	 * Looks up a method with the given index.
+	 * 
+	 * @param __methodDx The method index.
+	 * @return The given method.
+	 * @throws SpringNoSuchMethodException If no method by the given index
+	 * exists.
+	 * @since 2021/04/15
+	 */
+	public final SpringMethod lookupMethod(int __methodDx)
+		throws SpringNoSuchMethodException
+	{
+		SpringMethod[] lookup = this._methodLookup;
+		if (__methodDx < 0 || __methodDx >= lookup.length)
+			throw new SpringNoSuchMethodException("No method: " + __methodDx);
+		
+		return lookup[__methodDx];
+	}
+	
+	/**
 	 * Looks up the specified method non-virtually.
 	 *
 	 * @param __nat The name and type.
@@ -945,6 +1015,17 @@ public final class SpringClass
 				"BK10 %s %s", this.name, __nat));
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the method lookup table.
+	 * 
+	 * @return The method lookup table.
+	 * @since 2021/04/15
+	 */
+	public final SpringMethod[] methodLookup()
+	{
+		return this._methodLookup.clone();
 	}
 	
 	/**

@@ -71,21 +71,21 @@ public interface JDWPViewType
 	 * Returns the flags of a field, compatible with Java bitflags.
 	 * 
 	 * @param __which Which class to get the field from.
-	 * @param __fieldId The field ID.
+	 * @param __fieldDx The field ID.
 	 * @return The field flags.
 	 * @since 2021/04/14
 	 */
-	int fieldFlags(Object __which, int __fieldId);
+	int fieldFlags(Object __which, int __fieldDx);
 	
 	/**
 	 * Returns the name of a field.
 	 * 
 	 * @param __which Which class to get the field from.
-	 * @param __fieldId The field ID.
+	 * @param __fieldDx The field ID.
 	 * @return The field name.
 	 * @since 2021/04/14
 	 */
-	String fieldName(Object __which, int __fieldId);
+	String fieldName(Object __which, int __fieldDx);
 	
 	/**
 	 * Returns all of the fields within the class.
@@ -110,55 +110,55 @@ public interface JDWPViewType
 	 * Returns the method byte code.
 	 * 
 	 * @param __which Which class to get from?
-	 * @param __methodId The method index.
+	 * @param __methodDx The method index.
 	 * @return The byte code that exists within the method or {@code null} if
 	 * there is no byte code.
 	 * @since 2021/04/14
 	 */
-	byte[] methodByteCode(Object __which, int __methodId);
+	byte[] methodByteCode(Object __which, int __methodDx);
 	
 	/**
 	 * Returns the flags of a method, compatible with Java bitflags.
 	 * 
 	 * @param __which Which class to get the field from.
-	 * @param __methodId The method ID.
+	 * @param __methodDx The method ID.
 	 * @return The method flags.
 	 * @since 2021/04/14
 	 */
-	int methodFlags(Object __which, int __methodId);
+	int methodFlags(Object __which, int __methodDx);
 	
 	/**
 	 * Returns the method line table, which maps locations to source code
 	 * lines.
 	 * 
 	 * @param __which Which class to get from?
-	 * @param __methodId The method index.
+	 * @param __methodDx The method index.
 	 * @return The line number table which matches lines to locations within
 	 * the method, will be {@code null} if not available.
 	 * @since 2021/04/14
 	 */
-	int[] methodLineTable(Object __which, int __methodId);
+	int[] methodLineTable(Object __which, int __methodDx);
 	
 	/**
 	 * Returns the method location count.
 	 * 
 	 * @param __which Which class to get from?
-	 * @param __methodId The method index.
+	 * @param __methodDx The method index.
 	 * @return The number of locations within the class or a negative value
 	 * if it is unknown ({@code native}).
 	 * @since 2021/04/14
 	 */
-	int methodLocationCount(Object __which, int __methodId);
+	int methodLocationCount(Object __which, int __methodDx);
 	
 	/**
 	 * Returns the name of a method.
 	 * 
 	 * @param __which Which class to get the field from.
-	 * @param __methodId The method ID.
+	 * @param __methodDx The method ID.
 	 * @return The method name.
 	 * @since 2021/04/14
 	 */
-	String methodName(Object __which, int __methodId);
+	String methodName(Object __which, int __methodDx);
 	
 	/**
 	 * Returns the method indexes of the class.

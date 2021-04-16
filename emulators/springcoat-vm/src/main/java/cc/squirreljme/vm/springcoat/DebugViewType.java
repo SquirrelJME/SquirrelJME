@@ -13,7 +13,9 @@ import cc.squirreljme.jdwp.JDWPCommandException;
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.views.JDWPViewType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.lang.ref.Reference;
 
 /**
@@ -49,7 +51,7 @@ public class DebugViewType
 	@Override
 	public Object componentType(Object __which)
 	{
-		return DebugViewType.__from(__which).componentType();
+		return DebugViewType.__class(__which).componentType();
 	}
 	
 	/**
@@ -57,9 +59,9 @@ public class DebugViewType
 	 * @since 2021/04/14
 	 */
 	@Override
-	public int fieldFlags(Object __which, int __fieldId)
+	public int fieldFlags(Object __which, int __fieldDx)
 	{
-		throw Debugging.todo();
+		return DebugViewType.__field(__which, __fieldDx).flags().toJavaBits();
 	}
 	
 	/**
@@ -67,9 +69,10 @@ public class DebugViewType
 	 * @since 2021/04/14
 	 */
 	@Override
-	public String fieldName(Object __which, int __fieldId)
+	public String fieldName(Object __which, int __fieldDx)
 	{
-		throw Debugging.todo();
+		return DebugViewType.__field(__which, __fieldDx).nameAndType()
+			.name().toString();
 	}
 	
 	/**
@@ -79,7 +82,8 @@ public class DebugViewType
 	@Override
 	public String fieldSignature(Object __which, int __fieldDx)
 	{
-		throw Debugging.todo();
+		return DebugViewType.__field(__which, __fieldDx).nameAndType()
+			.type().toString();
 	}
 	
 	/**
@@ -89,7 +93,14 @@ public class DebugViewType
 	@Override
 	public int[] fields(Object __which)
 	{
-		throw Debugging.todo();
+		SpringField[] fields = DebugViewType.__class(__which).fieldLookup();
+		
+		int n = fields.length;
+		int[] rv = new int[n];
+		for (int i = 0; i < n; i++)
+			rv[i] = fields[i].index;
+		
+		return rv;
 	}
 	
 	/**
@@ -99,7 +110,7 @@ public class DebugViewType
 	@Override
 	public int flags(Object __which)
 	{
-		return DebugViewType.__from(__which).flags().toJavaBits();
+		return DebugViewType.__class(__which).flags().toJavaBits();
 	}
 	
 	/**
@@ -109,7 +120,7 @@ public class DebugViewType
 	@Override
 	public Object[] interfaceTypes(Object __which)
 	{
-		return DebugViewType.__from(__which).interfaceClasses();
+		return DebugViewType.__class(__which).interfaceClasses();
 	}
 	
 	/**
@@ -129,7 +140,15 @@ public class DebugViewType
 	@Override
 	public boolean isValidField(Object __which, int __fieldDx)
 	{
-		throw Debugging.todo();
+		try
+		{
+			DebugViewType.__field(__which, __fieldDx);
+			return true;
+		}
+		catch (SpringNoSuchFieldException |JDWPCommandException ignored)
+		{
+			return false;
+		}
 	}
 	
 	/**
@@ -139,7 +158,15 @@ public class DebugViewType
 	@Override
 	public boolean isValidMethod(Object __which, int __methodDx)
 	{
-		throw Debugging.todo();
+		try
+		{
+			DebugViewType.__method(__which, __methodDx);
+			return true;
+		}
+		catch (SpringNoSuchMethodException|JDWPCommandException ignored)
+		{
+			return false;
+		}
 	}
 	
 	/**
@@ -147,9 +174,10 @@ public class DebugViewType
 	 * @since 2021/04/14
 	 */
 	@Override
-	public byte[] methodByteCode(Object __which, int __methodId)
+	public byte[] methodByteCode(Object __which, int __methodDx)
 	{
-		throw Debugging.todo();
+		return DebugViewType.__method(__which, __methodDx)
+			.debuggerByteCode();
 	}
 	
 	/**
@@ -157,9 +185,10 @@ public class DebugViewType
 	 * @since 2021/04/14
 	 */
 	@Override
-	public int methodFlags(Object __which, int __methodId)
+	public int methodFlags(Object __which, int __methodDx)
 	{
-		throw Debugging.todo();
+		return DebugViewType.__method(__which, __methodDx)
+			.flags().toJavaBits();
 	}
 	
 	/**
@@ -167,9 +196,10 @@ public class DebugViewType
 	 * @since 2021/04/14
 	 */
 	@Override
-	public int[] methodLineTable(Object __which, int __methodId)
+	public int[] methodLineTable(Object __which, int __methodDx)
 	{
-		throw Debugging.todo();
+		return DebugViewType.__method(__which, __methodDx)
+			.debuggerLineTable();
 	}
 	
 	/**
@@ -177,9 +207,11 @@ public class DebugViewType
 	 * @since 2021/04/14
 	 */
 	@Override
-	public int methodLocationCount(Object __which, int __methodId)
+	public int methodLocationCount(Object __which, int __methodDx)
 	{
-		throw Debugging.todo();
+		return (int)Math.min(Integer.MAX_VALUE,
+			DebugViewType.__method(__which, __methodDx)
+				.debuggerLocationCount());
 	}
 	
 	/**
@@ -187,9 +219,9 @@ public class DebugViewType
 	 * @since 2021/04/14
 	 */
 	@Override
-	public String methodName(Object __which, int __methodId)
+	public String methodName(Object __which, int __methodDx)
 	{
-		throw Debugging.todo();
+		return DebugViewType.__method(__which, __methodDx).name().toString();
 	}
 	
 	/**
@@ -199,7 +231,8 @@ public class DebugViewType
 	@Override
 	public String methodSignature(Object __which, int __methodDx)
 	{
-		throw Debugging.todo();
+		return DebugViewType.__method(__which, __methodDx).nameAndType()
+			.type().toString();
 	}
 	
 	/**
@@ -209,7 +242,14 @@ public class DebugViewType
 	@Override
 	public int[] methods(Object __which)
 	{
-		throw Debugging.todo();
+		SpringMethod[] methods = DebugViewType.__class(__which).methodLookup();
+		
+		int n = methods.length;
+		int[] rv = new int[n];
+		for (int i = 0; i < n; i++)
+			rv[i] = methods[i].methodIndex;
+		
+		return rv;
 	}
 	
 	/**
@@ -219,7 +259,20 @@ public class DebugViewType
 	@Override
 	public boolean readValue(Object __which, int __index, JDWPValue __out)
 	{
-		throw Debugging.todo();
+		SpringFieldStorage storage;
+		try
+		{
+			storage = DebugViewType.__class(__which).classLoader().machine()
+				.lookupStaticField(DebugViewType.__field(__which, __index));
+		}
+		catch (SpringVirtualMachineException ignored)
+		{
+			return false;
+		}
+		
+		// Read value
+		__out.set(storage.get());
+		return true;
 	}
 	
 	/**
@@ -229,7 +282,7 @@ public class DebugViewType
 	@Override
 	public String signature(Object __which)
 	{
-		return DebugViewType.__from(__which).name.field().toString();
+		return DebugViewType.__class(__which).name.field().toString();
 	}
 	
 	/**
@@ -239,7 +292,7 @@ public class DebugViewType
 	@Override
 	public String sourceFile(Object __which)
 	{
-		return DebugViewType.__from(__which).file.sourceFile();
+		return DebugViewType.__class(__which).file.sourceFile();
 	}
 	
 	/**
@@ -249,7 +302,7 @@ public class DebugViewType
 	@Override
 	public Object superType(Object __which)
 	{
-		return DebugViewType.__from(__which).superclass;
+		return DebugViewType.__class(__which).superclass;
 	}
 	
 	/**
@@ -259,7 +312,7 @@ public class DebugViewType
 	 * @return The spring class of the given type.
 	 * @since 2021/04/15
 	 */
-	private static SpringClass __from(Object __which)
+	private static SpringClass __class(Object __which)
 	{
 		// Missing the class?
 		if (__which == null)
@@ -273,6 +326,48 @@ public class DebugViewType
 		catch (ClassCastException e)
 		{
 			throw JDWPCommandException.tossInvalidClass(__which, e);
+		}
+	}
+	
+	/**
+	 * Looks up the given field.
+	 * 
+	 * @param __which Which class to read from.
+	 * @param __fieldDx The field index.
+	 * @return The method for the given index.
+	 * @since 2021/04/16
+	 */
+	private static SpringField __field(Object __which, int __fieldDx)
+	{
+		try
+		{
+			return DebugViewType.__class(__which).lookupField(__fieldDx);
+		}
+		catch (SpringNoSuchMethodException e)
+		{
+			throw JDWPCommandException.tossInvalidField(
+				__which, __fieldDx, e);
+		}
+	}
+	
+	/**
+	 * Looks up the given method.
+	 * 
+	 * @param __which Which class to read from.
+	 * @param __methodDx The method index.
+	 * @return The method for the given index.
+	 * @since 2021/04/15
+	 */
+	private static SpringMethod __method(Object __which, int __methodDx)
+	{
+		try
+		{
+			return DebugViewType.__class(__which).lookupMethod(__methodDx);
+		}
+		catch (SpringNoSuchMethodException e)
+		{
+			throw JDWPCommandException.tossInvalidMethod(
+				__which, __methodDx, e);
 		}
 	}
 }
