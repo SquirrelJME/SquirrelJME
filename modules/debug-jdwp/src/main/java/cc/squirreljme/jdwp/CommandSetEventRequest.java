@@ -9,9 +9,11 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.util.ArrayList;
-import java.util.List;
+import cc.squirreljme.jdwp.event.CallStackStepping;
+import cc.squirreljme.jdwp.event.ClassPatternMatcher;
+import cc.squirreljme.jdwp.event.EventFilter;
+import cc.squirreljme.jdwp.event.ExceptionOnly;
+import cc.squirreljme.jdwp.event.FieldOnly;
 
 /**
  * Event request command set.
@@ -43,11 +45,19 @@ public enum CommandSetEventRequest
 			SuspendPolicy suspendPolicy =
 				SuspendPolicy.of(__packet.readByte());
 			
-			// Occurrence limit
+			// Modifier properties
 			int occurrenceLimit = -1;
+			Object thread = null;
+			Object type = null;
+			ClassPatternMatcher includeClass = null;
+			ClassPatternMatcher excludeClass = null;
+			FieldOnly fieldOnly = null;
+			JDWPLocation location = null;
+			Object thisInstance = this;
+			ExceptionOnly exception = null;
+			CallStackStepping callStackStepping = null;
 			
 			// Modifier kinds
-			List<EventModifier> modifiers = new ArrayList<>();
 			int numModifiers = __packet.readInt();
 			for (int i = 0; i < numModifiers; i++)
 			{
@@ -56,6 +66,11 @@ public enum CommandSetEventRequest
 				if (modKind == null)
 					return __controller.__reply(__packet.id(),
 						ErrorType.NOT_IMPLEMENTED);
+				
+				// If this is not a valid modifier, ignore this
+				if (!eventKind.isValidModifier(modKind))
+					throw ErrorType.ILLEGAL_ARGUMENT.toss(
+						null, modKind.ordinal(), null);
 					
 				// Depends on the kind
 				switch (modKind)
@@ -64,64 +79,63 @@ public enum CommandSetEventRequest
 						occurrenceLimit = __packet.readInt();
 						break;
 					
-					case CONDITIONAL:
-						throw Debugging.todo();
-					
 					case THREAD_ONLY:
-						modifiers.add(new ThreadModifier(
-							__controller.state.oldThreads.get(__packet.id())));
+						thread = __packet.readThread(
+							__controller, false);
 						break;
 					
 					case CLASS_ONLY:
-						throw Debugging.todo();
+						type = __packet.readType(__controller, false);
+						break;
 						
 					case CLASS_MATCH_PATTERN:
-						modifiers.add(new OnlyInClassPatternModifier(
-							__packet.readString()));
+						includeClass = new ClassPatternMatcher(
+							__packet.readString());
 						break;
 					
 					case CLASS_EXCLUDE_PATTERN:
-						throw Debugging.todo();
+						excludeClass = new ClassPatternMatcher(
+							__packet.readString());
+						break;
 					
 						// A specific location in a class
 					case LOCATION_ONLY:
-						{
-							// Ignore the type tag, need not know the
-							// difference between interfaces and classes
-							__packet.readByte();
-							
-							// Read the location
-							JDWPClass inClass = __controller.state.oldClasses
-								.get(__packet.readId());
-							JDWPMethod inMethod = __controller.state.oldMethods
-								.get(__packet.readId()); 
-							long index = __packet.readLong();
-							
-							// Not a valid location?
-							if (inClass == null || inMethod == null)
-								return __controller.__reply(__packet.id(),
-									ErrorType.INVALID_LOCATION);
-							
-							// Build location modifier
-							modifiers.add(new LocationModifier(inClass,
-								inMethod, index));
-						}
+						location = __packet.readLocation(__controller);
 						break;
 					
 					case EXCEPTION_ONLY:
-						throw Debugging.todo();
+						exception = new ExceptionOnly(
+							__packet.readType(__controller, true),
+							__packet.readBoolean(),
+							__packet.readBoolean());
+						break;
 					
 					case FIELD_ONLY:
-						throw Debugging.todo();
+						{
+							// Make sure this is a valid field
+							Object atType = __packet.readType(__controller,
+								false);
+							int fieldDx = __packet.readId();
+							if (!__controller.viewType().isValidField(atType,
+									fieldDx))
+								ErrorType.INVALID_FIELD_ID.toss(atType,
+									fieldDx, null); 
+							
+							fieldOnly = new FieldOnly(atType, fieldDx);
+						}
+						break;
 					
 					case CALL_STACK_STEPPING:
-						throw Debugging.todo();
+						callStackStepping = new CallStackStepping(
+							__packet.readThread(__controller, false),
+							__packet.readInt(),
+							__packet.readInt());
+						break;
 					
 					case THIS_INSTANCE_ONLY:
-						throw Debugging.todo();
-					
-					case SOURCE_FILENAME_PATTERN:
-						throw Debugging.todo();
+						thisInstance = __packet.readObject(__controller,
+							true);
+						break;
 					
 						// Report not-implemented
 					default:
@@ -130,11 +144,15 @@ public enum CommandSetEventRequest
 				}
 			}
 			
+			// Initialize the event filter with all the modifier parameters
+			EventFilter eventFilter = new EventFilter(thread,
+				type, includeClass, excludeClass, fieldOnly, location,
+				thisInstance, exception, callStackStepping);
+			
 			// Register the event request
 			EventRequest request = new EventRequest(
 				__controller.__nextId(), eventKind, suspendPolicy,
-				occurrenceLimit,
-				modifiers.toArray(new EventModifier[modifiers.size()]));
+				occurrenceLimit, eventFilter);
 			__controller.eventManager.addEventRequest(request);
 			
 			// Respond with the ID of this event

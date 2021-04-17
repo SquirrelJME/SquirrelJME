@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp;
+package cc.squirreljme.jdwp.event;
 
 /**
  * Only in a specific class pattern modifier, anything that ends in a
@@ -22,8 +22,7 @@ package cc.squirreljme.jdwp;
  *
  * @since 2021/03/13
  */
-public final class OnlyInClassPatternModifier
-	implements EventModifier
+public final class ClassPatternMatcher
 {
 	/** Is this a wildcard? */
 	protected final boolean isWildCard;
@@ -41,7 +40,7 @@ public final class OnlyInClassPatternModifier
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/13
 	 */
-	public OnlyInClassPatternModifier(String __pattern)
+	public ClassPatternMatcher(String __pattern)
 		throws NullPointerException
 	{
 		if (__pattern == null)
@@ -79,6 +78,6 @@ public final class OnlyInClassPatternModifier
 	@Override
 	public final String toString()
 	{
-		return "OnlyInClass(" + this.sequence + ")";
+		return "ClassPattern(" + this.sequence + ")";
 	}
 }

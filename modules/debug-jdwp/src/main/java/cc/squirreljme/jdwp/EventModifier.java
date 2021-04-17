@@ -14,6 +14,7 @@ package cc.squirreljme.jdwp;
  *
  * @since 2021/03/13
  */
+@Deprecated
 public interface EventModifier
 {
 }

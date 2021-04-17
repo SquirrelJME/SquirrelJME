@@ -226,6 +226,19 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Reads a single boolean from the packet
+	 * 
+	 * @return The single read value.
+	 * @throws JDWPException If the end of the packet was reached.
+	 * @since 2021/04/17
+	 */
+	public boolean readBoolean()
+		throws JDWPException
+	{
+		return this.readByte() != 0;
+	}
+	
+	/**
 	 * Reads a single byte from the packet
 	 * 
 	 * @return The single read value.
@@ -313,6 +326,38 @@ public final class JDWPPacket
 				((this.readByte() & 0xFF) << 16) |
 				((this.readByte() & 0xFF) << 8) |
 				(this.readByte() & 0xFF);
+		}
+	}
+	
+	/**
+	 * Reads a location from the packet.
+	 * 
+	 * @param __controller The controller to read from.
+	 * @return The given location.
+	 * @throws JDWPException If the location is not valid.
+	 * @since 2021/04/17
+	 */
+	public JDWPLocation readLocation(JDWPController __controller)
+		throws JDWPException
+	{
+		synchronized (this)
+		{
+			// Ensure this is open
+			this.__checkOpen();
+			
+			// Ignore the type tag, we do not need to know the
+			// difference between interfaces and classes
+			this.readByte();
+			
+			// Make sure the type and method are valid
+			Object type = this.readType(__controller, false);
+			int methodDx = this.readId();
+			if (!__controller.viewType().isValidMethod(type, methodDx))
+				throw ErrorType.INVALID_METHOD_ID.toss(type, methodDx,
+					null);
+			
+			// Build location
+			return new JDWPLocation(type, methodDx, this.readLong());
 		}
 	}
 	

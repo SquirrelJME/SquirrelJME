@@ -56,6 +56,9 @@ public enum ErrorType
 	/** Invalid event type. */
 	INVALID_EVENT_TYPE(102),
 	
+	/** Illegal argument. */
+	ILLEGAL_ARGUMENT(103),
+	
 	/** Invalid length. */
 	INVALID_LENGTH(504),
 	

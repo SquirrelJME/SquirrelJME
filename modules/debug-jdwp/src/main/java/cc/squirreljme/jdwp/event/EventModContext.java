@@ -10,13 +10,18 @@
 package cc.squirreljme.jdwp.event;
 
 /**
- * Represents the type of possible filters on an event.
+ * This is the context used for an event modifier, this changes how a value
+ * should be interpreted when it is checked.
  *
  * @since 2021/04/17
  */
-public enum EventFilterType
+public enum EventModContext
 {
+	/** A parameter of one of the arguments of the event. */
+	PARAMETER,
 	
+	/** At the current frame of the current caller. */
+	CURRENT_FRAME,
 	
 	/* End. */
 	;

@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp.event;
 
+import java.lang.ref.Reference;
+
 /**
  * This class is responsible for being a filter on any events that occur.
  *

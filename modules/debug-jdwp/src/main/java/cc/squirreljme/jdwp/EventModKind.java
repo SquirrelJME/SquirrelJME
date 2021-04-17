@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.event.EventFilterType;
-
 /**
  * Event modifier kind.
  *
@@ -21,9 +19,6 @@ public enum EventModKind
 {
 	/** Limit occurrences. */
 	LIMIT_OCCURRENCES(1),
-	
-	/** Conditional expression. */
-	CONDITIONAL(2),
 	
 	/** Only in the given thread. */	
 	THREAD_ONLY(3),
@@ -52,9 +47,6 @@ public enum EventModKind
 	/** This object. */
 	THIS_INSTANCE_ONLY(11),
 	
-	/** The source file name. */
-	SOURCE_FILENAME_PATTERN(12),
-	
 	/* End. */
 	;
 	
@@ -65,20 +57,15 @@ public enum EventModKind
 	/** The event ID. */
 	public final int id;
 	
-	/** The event filters that are possible. */
-	private final EventFilterType[] _filters;
-	
 	/**
 	 * Initializes the constant.
 	 * 
 	 * @param __id The identifier.
-	 * @param __filters The filters used for this.
 	 * @since 2021/03/13
 	 */
-	EventModKind(int __id, EventFilterType... __filters)
+	EventModKind(int __id)
 	{
 		this.id = __id;
-		this._filters = __filters;
 	}
 	
 	/**

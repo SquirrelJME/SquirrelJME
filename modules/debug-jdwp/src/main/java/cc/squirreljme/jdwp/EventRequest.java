@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.event.EventFilter;
 import java.util.Arrays;
 
 /**
@@ -48,7 +49,7 @@ public final class EventRequest
 	 */
 	public EventRequest(int __id, EventKind __eventKind,
 		SuspendPolicy __suspendPolicy, int __occurrenceLimit,
-		EventModifier... __modifiers)
+		EventFilter __modifiers)
 		throws NullPointerException
 	{
 		if (__eventKind == null || __suspendPolicy == null)
