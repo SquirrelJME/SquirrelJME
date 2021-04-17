@@ -20,7 +20,10 @@ public enum EventKind
 	implements JDWPId
 {
 	/** Single Step. */
-	SINGLE_STEP(1)
+	SINGLE_STEP(1, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
+		EventModKind.LOCATION_ONLY, EventModKind.CALL_STACK_STEPPING,
+		EventModKind.THIS_INSTANCE_ONLY)
 	{
 		/**
 		 * {@inheritDoc}
@@ -35,7 +38,9 @@ public enum EventKind
 	},
 	
 	/** Breakpoint. */
-	BREAKPOINT(2)
+	BREAKPOINT(2, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
+		EventModKind.LOCATION_ONLY, EventModKind.THIS_INSTANCE_ONLY)
 	{
 		/**
 		 * {@inheritDoc}
@@ -50,7 +55,9 @@ public enum EventKind
 	},
 	
 	/** Frame pop. */
-	FRAME_POP(3)
+	FRAME_POP(3, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
+		EventModKind.THIS_INSTANCE_ONLY)
 	{
 		/**
 		 * {@inheritDoc}
@@ -65,7 +72,10 @@ public enum EventKind
 	},
 	
 	/** Exception. */
-	EXCEPTION(4)
+	EXCEPTION(4, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
+		EventModKind.LOCATION_ONLY, , EventModKind.EXCEPTION_ONLY,
+		EventModKind.THIS_INSTANCE_ONLY)
 	{
 		/**
 		 * {@inheritDoc}
@@ -80,7 +90,9 @@ public enum EventKind
 	},
 	
 	/** User defined. */
-	USER_DEFINED(5)
+	USER_DEFINED(5, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
+		EventModKind.THIS_INSTANCE_ONLY)
 	{
 		/**
 		 * {@inheritDoc}
@@ -95,7 +107,7 @@ public enum EventKind
 	},
 	
 	/** Start of thread. */
-	THREAD_START(6)
+	THREAD_START(6, EventModKind.THREAD_ONLY)
 	{
 		/**
 		 * {@inheritDoc}
@@ -105,12 +117,12 @@ public enum EventKind
 		public void write(JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			__packet.writeId((JDWPThread)__args[0]);
+			__packet.writeId(System.identityHashCode(__args[0]));
 		}
 	},
 	
 	/** End of thread. */
-	THREAD_DEATH(7)
+	THREAD_DEATH(7, EventModKind.THREAD_ONLY)
 	{
 		/**
 		 * {@inheritDoc}
@@ -120,12 +132,14 @@ public enum EventKind
 		public void write(JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			__packet.writeId((JDWPThread)__args[0]);
+			__packet.writeId(System.identityHashCode(__args[0]));
 		}
 	},
 	
 	/** Class being prepared. */
-	CLASS_PREPARE(8)
+	CLASS_PREPARE(8, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
+		EventModKind.SOURCE_FILENAME_PATTERN)
 	{
 		/**
 		 * {@inheritDoc}
@@ -155,7 +169,8 @@ public enum EventKind
 	},
 	
 	/** Class unloading. */
-	CLASS_UNLOAD(9)
+	CLASS_UNLOAD(9, EventModKind.CLASS_MATCH_PATTERN,
+		EventModKind.CLASS_EXCLUDE_PATTERN)
 	{
 		/**
 		 * {@inheritDoc}
@@ -170,7 +185,9 @@ public enum EventKind
 	},
 	
 	/** Class loading. */
-	CLASS_LOAD(10)
+	CLASS_LOAD(10, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
+		EventModKind.THIS_INSTANCE_ONLY)
 	{
 		/**
 		 * {@inheritDoc}
@@ -185,7 +202,10 @@ public enum EventKind
 	},
 	
 	/** Field access. */
-	FIELD_ACCESS(20)
+	FIELD_ACCESS(20, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
+		EventModKind.LOCATION_ONLY, EventModKind.FIELD_ONLY,
+		EventModKind.THIS_INSTANCE_ONLY)
 	{
 		/**
 		 * {@inheritDoc}
@@ -200,7 +220,10 @@ public enum EventKind
 	},
 	
 	/** Field modification. */
-	FIELD_MODIFICATION(21)
+	FIELD_MODIFICATION(21, EventModKind.THREAD_ONLY,
+		EventModKind.CLASS_ONLY, EventModKind.CLASS_MATCH_PATTERN,
+		EventModKind.CLASS_EXCLUDE_PATTERN, EventModKind.LOCATION_ONLY,
+		EventModKind.FIELD_ONLY, EventModKind.THIS_INSTANCE_ONLY)
 	{
 		/**
 		 * {@inheritDoc}
@@ -215,7 +238,10 @@ public enum EventKind
 	},
 	
 	/** Exception catch. */
-	EXCEPTION_CATCH(30)
+	EXCEPTION_CATCH(30, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
+		EventModKind.LOCATION_ONLY, EventModKind.EXCEPTION_ONLY,
+		EventModKind.THIS_INSTANCE_ONLY)
 	{
 		/**
 		 * {@inheritDoc}
@@ -230,7 +256,9 @@ public enum EventKind
 	},
 	
 	/** Method entry. */
-	METHOD_ENTRY(40)
+	METHOD_ENTRY(40, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
+		EventModKind.THIS_INSTANCE_ONLY)
 	{
 		/**
 		 * {@inheritDoc}
@@ -245,7 +273,9 @@ public enum EventKind
 	},
 	
 	/** Method exit. */
-	METHOD_EXIT(41)
+	METHOD_EXIT(41, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
+		EventModKind.THIS_INSTANCE_ONLY)
 	{
 		/**
 		 * {@inheritDoc}
@@ -260,7 +290,9 @@ public enum EventKind
 	},
 	
 	/** Method exit with return value. */
-	METHOD_EXIT_WITH_RETURN_VALUE(42)
+	METHOD_EXIT_WITH_RETURN_VALUE(42, EventModKind.THREAD_ONLY,
+		EventModKind.CLASS_ONLY, EventModKind.CLASS_MATCH_PATTERN,
+		EventModKind.CLASS_EXCLUDE_PATTERN, EventModKind.THIS_INSTANCE_ONLY)
 	{
 		/**
 		 * {@inheritDoc}
@@ -275,7 +307,9 @@ public enum EventKind
 	},
 	
 	/** Contended monitor enter. */
-	MONITOR_CONTENDED_ENTER(43)
+	MONITOR_CONTENDED_ENTER(43, EventModKind.THREAD_ONLY,
+		EventModKind.CLASS_ONLY, EventModKind.CLASS_MATCH_PATTERN,
+		EventModKind.CLASS_EXCLUDE_PATTERN, EventModKind.THIS_INSTANCE_ONLY)
 	{
 		/**
 		 * {@inheritDoc}
@@ -290,7 +324,9 @@ public enum EventKind
 	},
 	
 	/** Contended monitor exit. */
-	MONITOR_CONTENDED_EXIT(44)
+	MONITOR_CONTENDED_EXIT(44, EventModKind.THREAD_ONLY,
+		EventModKind.CLASS_ONLY, EventModKind.CLASS_MATCH_PATTERN,
+		EventModKind.CLASS_EXCLUDE_PATTERN, EventModKind.THIS_INSTANCE_ONLY)
 	{
 		/**
 		 * {@inheritDoc}
@@ -305,7 +341,9 @@ public enum EventKind
 	},
 	
 	/** Monitor wait. */
-	MONITOR_WAIT(45)
+	MONITOR_WAIT(45, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
+		EventModKind.THIS_INSTANCE_ONLY)
 	{
 		/**
 		 * {@inheritDoc}
@@ -320,7 +358,9 @@ public enum EventKind
 	},
 	
 	/** Monitor waited. */
-	MONITOR_WAITED(46)
+	MONITOR_WAITED(46, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
+		EventModKind.THIS_INSTANCE_ONLY)
 	{
 		/**
 		 * {@inheritDoc}
@@ -335,7 +375,7 @@ public enum EventKind
 	},
 	
 	/** Virtual machine start. */
-	VM_START(90)
+	VM_START(90, EventModKind.THREAD_ONLY)
 	{
 		/**
 		 * {@inheritDoc}
@@ -374,15 +414,20 @@ public enum EventKind
 	/** The event ID. */
 	public final int id;
 	
+	/** The event modifiers that are possible. */
+	private final EventModKind[] _modifiers;
+	
 	/**
 	 * Initializes the event kind.
 	 * 
 	 * @param __id The identifier.
+	 * @param __modifiers The possible supported modifiers for this event.
 	 * @since 2021/03/13
 	 */
-	EventKind(int __id)
+	EventKind(int __id, EventModKind... __modifiers)
 	{
 		this.id = __id;
+		this._modifiers = __modifiers;
 	}
 	
 	/**

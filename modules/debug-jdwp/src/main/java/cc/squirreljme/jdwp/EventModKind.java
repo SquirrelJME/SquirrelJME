@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.event.EventFilterType;
+
 /**
  * Event modifier kind.
  *
@@ -24,31 +26,31 @@ public enum EventModKind
 	CONDITIONAL(2),
 	
 	/** Only in the given thread. */	
-	ONLY_IN_THREAD(3),
+	THREAD_ONLY(3),
 	
 	/** Only in the given class. */
-	ONLY_IN_CLASS(4),
+	CLASS_ONLY(4),
 	
 	/** Only in the given class, by pattern. */
-	ONLY_IN_CLASS_PATTERN(5),
+	CLASS_MATCH_PATTERN(5),
 	
 	/** Not in the given class, by pattern. */
-	NOT_IN_CLASS_PATTERN(6),
+	CLASS_EXCLUDE_PATTERN(6),
 	
 	/** By location. */
-	LOCATION(7),
+	LOCATION_ONLY(7),
 	
 	/** By exception, caught/uncaught. */
-	EXCEPTION(8),
+	EXCEPTION_ONLY(8),
 	
 	/** By field. */
-	FIELD(9),
+	FIELD_ONLY(9),
 	
 	/** Call stack and stepping limit. */
 	CALL_STACK_STEPPING(10),
 	
 	/** This object. */
-	THIS_OBJECT(11),
+	THIS_INSTANCE_ONLY(11),
 	
 	/** The source file name. */
 	SOURCE_FILENAME_PATTERN(12),
@@ -63,15 +65,20 @@ public enum EventModKind
 	/** The event ID. */
 	public final int id;
 	
+	/** The event filters that are possible. */
+	private final EventFilterType[] _filters;
+	
 	/**
 	 * Initializes the constant.
 	 * 
 	 * @param __id The identifier.
+	 * @param __filters The filters used for this.
 	 * @since 2021/03/13
 	 */
-	EventModKind(int __id)
+	EventModKind(int __id, EventFilterType... __filters)
 	{
 		this.id = __id;
+		this._filters = __filters;
 	}
 	
 	/**

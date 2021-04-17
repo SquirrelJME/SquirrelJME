@@ -67,24 +67,24 @@ public enum CommandSetEventRequest
 					case CONDITIONAL:
 						throw Debugging.todo();
 					
-					case ONLY_IN_THREAD:
+					case THREAD_ONLY:
 						modifiers.add(new ThreadModifier(
 							__controller.state.oldThreads.get(__packet.id())));
 						break;
 					
-					case ONLY_IN_CLASS:
+					case CLASS_ONLY:
 						throw Debugging.todo();
 						
-					case ONLY_IN_CLASS_PATTERN:
+					case CLASS_MATCH_PATTERN:
 						modifiers.add(new OnlyInClassPatternModifier(
 							__packet.readString()));
 						break;
 					
-					case NOT_IN_CLASS_PATTERN:
+					case CLASS_EXCLUDE_PATTERN:
 						throw Debugging.todo();
 					
 						// A specific location in a class
-					case LOCATION:
+					case LOCATION_ONLY:
 						{
 							// Ignore the type tag, need not know the
 							// difference between interfaces and classes
@@ -108,16 +108,16 @@ public enum CommandSetEventRequest
 						}
 						break;
 					
-					case EXCEPTION:
+					case EXCEPTION_ONLY:
 						throw Debugging.todo();
 					
-					case FIELD:
+					case FIELD_ONLY:
 						throw Debugging.todo();
 					
 					case CALL_STACK_STEPPING:
 						throw Debugging.todo();
 					
-					case THIS_OBJECT:
+					case THIS_INSTANCE_ONLY:
 						throw Debugging.todo();
 					
 					case SOURCE_FILENAME_PATTERN:
