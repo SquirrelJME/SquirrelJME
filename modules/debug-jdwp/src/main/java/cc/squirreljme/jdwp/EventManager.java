@@ -9,12 +9,15 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.event.EventFilter;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import net.multiphasicapps.collections.EmptyList;
 
 /**
  * Manager for Debugger Events.
@@ -81,6 +84,37 @@ public final class EventManager
 		if (__controller == null || __kind == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		List<EventRequest> rv = null;
+		
+		// Go through all previously registered requests
+		List<EventRequest> requests = this._eventByKind.get(__kind);
+		if (requests != null && !requests.isEmpty())
+			for (Iterator<EventRequest> iterator = requests.iterator();
+				iterator.hasNext();)
+			{
+				EventRequest request = iterator.next();
+				
+				// Are we filtering this?
+				EventFilter filter = request.filter;
+				if (filter != null)
+					throw Debugging.todo();
+				
+				// Starting a fresh list?
+				if (rv == null)
+					rv = new LinkedList<>();
+				
+				// Use this request
+				rv.add(request);
+				
+				// Is this only occuring a specific number of times?
+				int occurrencesLeft = request._occurrencesLeft;
+				if (occurrencesLeft >= 0)
+					if (request._occurrencesLeft <= 0)
+						iterator.remove();
+			}
+		
+		// If there are no found events, just use a single instance of the
+		// created empty list, otherwise use that given list
+		return (rv == null ? EmptyList.<EventRequest>empty() : rv);
 	}
 }
