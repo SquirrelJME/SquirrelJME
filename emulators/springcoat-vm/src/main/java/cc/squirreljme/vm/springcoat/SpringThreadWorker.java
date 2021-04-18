@@ -13,6 +13,8 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.jdwp.JDWPClassStatus;
 import cc.squirreljme.jdwp.JDWPController;
+import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
+import cc.squirreljme.jdwp.trips.JDWPTripClassStatus;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
@@ -909,8 +911,11 @@ public final class SpringThreadWorker
 			
 			// Tell the debugger that this class is verified
 			JDWPController jdwp = this.machine.taskManager().jdwpController;
-			if (jdwp != null)
-				jdwp.signalClassPrepare(this.thread, __cl,
+			JDWPTripClassStatus classTrip = (jdwp == null ? null :
+				jdwp.trip(JDWPTripClassStatus.class,
+					JDWPGlobalTrip.CLASS_STATUS));
+			if (classTrip != null)
+				classTrip.classStatus(this.thread, __cl,
 					JDWPClassStatus.VERIFIED);
 			
 			// Verbosity?
@@ -968,8 +973,8 @@ public final class SpringThreadWorker
 			}
 			
 			// Tell the debugger that this class is prepared
-			if (jdwp != null)
-				jdwp.signalClassPrepare(this.thread, __cl,
+			if (classTrip != null)
+				classTrip.classStatus(this.thread, __cl,
 					JDWPClassStatus.PREPARED);
 			
 			// Static initializer exists, setup a frame and call it
@@ -992,8 +997,8 @@ public final class SpringThreadWorker
 			}
 			
 			// Tell the debugger that this class is fully initialized
-			if (jdwp != null)
-				jdwp.signalClassPrepare(this.thread, __cl,
+			if (classTrip != null)
+				classTrip.classStatus(this.thread, __cl,
 					JDWPClassStatus.INITIALIZED);
 		}
 		

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.event.EventFilter;
 import cc.squirreljme.jdwp.event.EventModContext;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -316,6 +317,17 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
+		protected void inject(JDWPController __controller,
+			EventRequest __request, EventFilter __subject)
+		{
+			throw Debugging.todo();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/17
+		 */
+		@Override
 		public EventModContext modifierContext(EventModKind __modifier)
 		{
 			throw Debugging.todo();
@@ -340,6 +352,17 @@ public enum EventKind
 		EventModKind.FIELD_ONLY, EventModKind.THIS_INSTANCE_ONLY,
 		EventModKind.LIMIT_OCCURRENCES)
 	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/17
+		 */
+		@Override
+		protected void inject(JDWPController __controller,
+			EventRequest __request, EventFilter __subject)
+		{
+			throw Debugging.todo();
+		}
+		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/04/17
@@ -665,6 +688,20 @@ public enum EventKind
 		for (EventModKind mod : __modifiers)
 			modifierBits |= (1 << mod.ordinal());
 		this._modifierBits = modifierBits;
+	}
+	
+	/**
+	 * Injects the given event for trips to occur at later point.
+	 * 
+	 * @param __controller The controller used. 
+	 * @param __request The request being injected.
+	 * @param __subject The subject of this event.
+	 * @since 2021/04/17
+	 */
+	protected void inject(JDWPController __controller,
+		EventRequest __request, EventFilter __subject)
+	{
+		// By default this does nothing.
 	}
 	
 	/**

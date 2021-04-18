@@ -9,17 +9,18 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.trips.JDWPTripThread;
+import cc.squirreljme.jdwp.trips.JDWPTripClassStatus;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 
 /**
- * Trip when a thread changes from being alive or dead.
+ * Trip for when the status of a class has changed.
  *
- * @since 2021/04/11
+ * @since 2021/04/17
  */
-final class __TripThreadAlive__
+final class __TripClassStatus__
 	extends __TripBase__
-	implements JDWPTripThread
+	implements JDWPTripClassStatus
 {
 	/**
 	 * Initializes the trip.
@@ -28,7 +29,7 @@ final class __TripThreadAlive__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/11
 	 */
-	__TripThreadAlive__(Reference<JDWPController> __controller)
+	__TripClassStatus__(Reference<JDWPController> __controller)
 		throws NullPointerException
 	{
 		super(__controller);
@@ -36,19 +37,19 @@ final class __TripThreadAlive__
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2021/04/11
+	 * @since 2021/04/17
 	 */
 	@Override
-	public void alive(Object __thread, boolean __isAlive)
+	public void classStatus(Object __thread, Object __which,
+		JDWPClassStatus __status)
 	{
 		JDWPController controller = this.__controller();
 		JDWPState state = controller.state;
 		
-		// Register this thread for later use
+		// Record these so they can be grabbed later
 		state.items.put(__thread);
+		state.items.put(__which);
 		
-		// Forward generic event
-		controller.signal(__thread, (__isAlive ? EventKind.THREAD_START :
-			EventKind.THREAD_DEATH), __thread);
+		throw Debugging.todo();
 	}
 }

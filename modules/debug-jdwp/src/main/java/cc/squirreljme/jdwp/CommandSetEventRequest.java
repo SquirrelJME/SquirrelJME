@@ -155,6 +155,10 @@ public enum CommandSetEventRequest
 				occurrenceLimit, eventFilter);
 			__controller.eventManager.addEventRequest(request);
 			
+			// Perform injection for the event so whatever we are using for
+			// the call can trip events 
+			eventKind.inject(__controller, request, eventFilter);
+			
 			// Respond with the ID of this event
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);

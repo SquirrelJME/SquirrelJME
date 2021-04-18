@@ -37,9 +37,9 @@ public interface JDWPTripValue
 	 * Signals that the object state has changed.
 	 * 
 	 * @param __thread The thread this was called from.
-	 * @param __what Which object is being set?
+	 * @param __which Which object is being set?
 	 * @param __dx The index of the field being set.
 	 * @since 2021/04/11
 	 */
-	void signalTrip(Object __thread, Object __what, int __dx);
+	void signalTrip(Object __thread, Object __which, int __dx);
 }

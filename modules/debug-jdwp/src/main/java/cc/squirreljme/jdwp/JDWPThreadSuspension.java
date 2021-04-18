@@ -154,9 +154,29 @@ public final class JDWPThreadSuspension
 	 */
 	public final int suspend()
 	{
+		return this.suspend(false);
+	}
+	
+	/**
+	 * Suspends the given thread.
+	 * 
+	 * @param __ifNot Only perform suspension if the thread is not alreayd
+	 * suspended.
+	 * @return The resultant suspension count.
+	 * @since 2021/04/17
+	 */
+	public final int suspend(boolean __ifNot)
+	{
 		synchronized (this)
 		{
-			return ++this._count;
+			// Is this already suspended?
+			int count = this._count;
+			if (__ifNot && count > 0)
+				return count;
+			
+			// Increment the counter and return it
+			this._count = (++count);
+			return count;
 		}
 	}
 }

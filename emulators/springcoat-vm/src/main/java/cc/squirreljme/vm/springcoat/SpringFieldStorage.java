@@ -52,7 +52,7 @@ public final class SpringFieldStorage
 	 * Initializes the static field.
 	 *
 	 * @param __f The field to store for.
-	 * @param __fieldDx
+	 * @param __fieldDx The field index.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2108/09/09
 	 */

@@ -64,51 +64,23 @@ public final class EventManager
 	}
 	
 	/**
-	 * Gets the given event.
+	 * Finds all of the matching requests.
 	 * 
-	 * @param __kind The kind of event to get.
-	 * @param __matchers Matchers for modifiers.
-	 * @return The request, will return {@code null} if not requested.
-	 * @since 2021/03/14
+	 * @param __controller The controller used.
+	 * @param __thread The context thread.
+	 * @param __kind The kind of event to look for.
+	 * @param __args The arguments to the event call.
+	 * @return The valid and found events.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/17
 	 */
-	public EventRequest get(EventKind __kind,
-		EventModifierMatcher... __matchers)
+	protected Iterable<EventRequest> find(JDWPController __controller,
+		Object __thread, EventKind __kind, Object... __args)
+		throws NullPointerException
 	{
-		synchronized (this)
-		{
-			List<EventRequest> requests = this._eventByKind.get(__kind);
-			if (requests == null)
-				return null;
-			
-			// Find a matching one
-			for (EventRequest request : requests)
-			{
-				// Go through all the matchers and find any modifiers which
-				// are compatible with matching and do not match
-				if (__matchers != null && __matchers.length > 0)
-					for (EventModifierMatcher matcher : __matchers)
-						for (EventModifier mod : request.modifiers())
-							if (matcher.mayMatch(mod))
-								if (!matcher.isMatch(mod))
-									return null;
-				
-				// Limit number of times this happens?
-				if (request._occurrencesLeft > 0)
-				{
-					// Did this run out?
-					if (--request._occurrencesLeft <= 0)
-					{
-						requests.remove(request);
-						return null;
-					}
-				} 
-				
-				// Use this one
-				return request;
-			}
-		}
+		if (__controller == null || __kind == null)
+			throw new NullPointerException("NARG");
 		
-		// Not found
-		return null;
+		throw Debugging.todo();
 	}
 }

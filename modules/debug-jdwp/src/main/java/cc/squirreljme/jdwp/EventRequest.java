@@ -29,8 +29,8 @@ public final class EventRequest
 	/** The suspend policy. */
 	public final SuspendPolicy suspendPolicy;
 	
-	/** Modifiers for events. */
-	private final EventModifier[] _modifiers;
+	/** The event filter. */
+	protected final EventFilter filter;
 	
 	/** The number of occurrences left. */
 	volatile int _occurrencesLeft;
@@ -43,13 +43,13 @@ public final class EventRequest
 	 * @param __suspendPolicy The suspension policy.
 	 * @param __occurrenceLimit The number of times this may occur,
 	 * negative values means to occur indefinitely.
-	 * @param __modifiers Modifiers for the event.
+	 * @param __filter Filter for the event.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/13
 	 */
 	public EventRequest(int __id, EventKind __eventKind,
 		SuspendPolicy __suspendPolicy, int __occurrenceLimit,
-		EventFilter __modifiers)
+		EventFilter __filter)
 		throws NullPointerException
 	{
 		if (__eventKind == null || __suspendPolicy == null)
@@ -58,9 +58,8 @@ public final class EventRequest
 		this.id = __id;
 		this.eventKind = __eventKind;
 		this.suspendPolicy = __suspendPolicy;
+		this.filter = __filter;
 		this._occurrencesLeft = __occurrenceLimit;
-		this._modifiers = (__modifiers == null ? new EventModifier[0] :
-			__modifiers.clone());
 	}
 	
 	/**
@@ -74,17 +73,6 @@ public final class EventRequest
 	}
 	
 	/**
-	 * Returns the modifiers for this event.
-	 * 
-	 * @return The modifiers for this event.
-	 * @since 2021/03/14
-	 */
-	public final EventModifier[] modifiers()
-	{
-		return this._modifiers.clone();
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @since 2021/03/16
 	 */
@@ -92,11 +80,11 @@ public final class EventRequest
 	public final String toString()
 	{
 		return String.format(
-			"EventRequest[id=%d,kind=%s,suspend=%s,left=%d,mods=%s]",
+			"EventRequest[id=%d,kind=%s,suspend=%s,left=%d,filter=%s]",
 			this.id,
 			this.eventKind,
 			this.suspendPolicy,
 			this._occurrencesLeft,
-			Arrays.asList(this._modifiers));
+			this.filter);
 	}
 }

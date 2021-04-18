@@ -222,104 +222,45 @@ public final class JDWPController
 	
 	/**
 	 * Signals a JDWP event, this will find any request and perform suspension
-	 * as requested.
+	 * as requested by the debugger.
 	 * 
-	 * @param __thread The thread signaling this.
+	 * @param __thread The thread signaling this, if not known this will be
+	 * {@code null}.
 	 * @param __kind The kind of event to signal.
-	 * @param __matchers The matchers used for the event, optional and may
-	 * be {@code null}.
 	 * @param __args Arguments to the signal packet.
 	 * @throws NullPointerException On null arguments.
-	 * @deprecated Use {@link #trip(Class, JDWPGlobalTrip)}.
 	 * @since 2021/03/16
 	 */
-	public void signal(Object __thread, EventKind __kind,
-		EventModifierMatcher[] __matchers,
-		Object... __args)
+	public void signal(Object __thread, EventKind __kind, Object... __args)
 		throws NullPointerException
 	{
 		if (__thread == null || __kind == null)
 			throw new NullPointerException("NARG");
 		
-		// Send if requested
-		EventRequest request = this.eventManager.get(__kind, __matchers);
-		if (request == null)
-			return;
-		
-		// Buildup packet to send
-		try (JDWPPacket packet = this.__event(request.suspendPolicy, __kind,
-			request.id))
+		// Go through all compatible events for this thread
+		for (EventRequest request : this.eventManager.find(
+			this, __thread, __kind, __args))
 		{
-			// Write the signal event data
-			__kind.write(packet, __args);
+			// Suspend all threads?
+			if (request.suspendPolicy == SuspendPolicy.ALL)
+				for (Object thread : this.__allThreads())
+					this.viewThread().suspension(thread).suspend(true);
 			
-			// Send it away!
-			this.commLink.send(packet);
-		}
-		
-		// Suspend all threads?
-		if (request.suspendPolicy == SuspendPolicy.ALL)
-		{
-			for (JDWPThread all : this.debuggerUpdate(JDWPUpdateWhat.THREADS)
-				.oldThreads.values())
-				all.debuggerSuspend().suspend();
-		}
-		
-		// Suspend only a single thread?
-		else if (request.suspendPolicy == SuspendPolicy.EVENT_THREAD)
-			this.viewThread().suspension(__thread).suspend();
-	}
-	
-	/**
-	 * Signals that a class is being prepared.
-	 * 
-	 * @param __thread The thread this was verified under.
-	 * @param __cl The class being verified.
-	 * @param __status The status of this class.
-	 * @throws NullPointerException On null arguments.
-	 * @deprecated Use {@link #trip(Class, JDWPGlobalTrip)}.
-	 * @since 2021/03/16
-	 */
-	@Deprecated
-	public void signalClassPrepare(JDWPThread __thread, JDWPClass __cl,
-		JDWPClassStatus __status)
-		throws NullPointerException
-	{
-		if (__thread == null || __cl == null || __status == null)
-			throw new NullPointerException("NARG");
+			// Suspend only a single thread?
+			else if (request.suspendPolicy == SuspendPolicy.EVENT_THREAD)
+				this.viewThread().suspension(__thread).suspend(true);
 			
-		// Register for later use
-		this.state.oldThreads.put(__thread);
-		this.state.oldClasses.put(__cl);
-		
-		// Forward generic event
-		this.signal(__thread, EventKind.CLASS_PREPARE,
-			new EventModifierMatcher[]{new ThreadModifierMatcher(__thread)},
-			__thread, __cl, __status);
-	}
-	
-	/**
-	 * Signals that the given thread has started.
-	 * 
-	 * @param __thread The thread that started.
-	 * @param __started Was this thread started?
-	 * @throws NullPointerException On null arguments.
-	 * @deprecated Use {@link #trip(Class, JDWPGlobalTrip)}.
-	 * @since 2021/03/14
-	 */
-	@Deprecated
-	public void signalThreadState(JDWPThread __thread, boolean __started)
-		throws NullPointerException
-	{
-		if (__thread == null)
-			throw new NullPointerException("NARG");
-		
-		// Register this thread for later use
-		this.state.oldThreads.put(__thread);
-		
-		// Forward generic event
-		this.signal(__thread, (__started ? EventKind.THREAD_START :
-			EventKind.THREAD_DEATH), null, __thread);
+			// Send response to the VM of the event that just occurred
+			try (JDWPPacket packet = this.__event(request.suspendPolicy,
+				__kind, request.id))
+			{
+				// Write the signal event data
+				__kind.write(packet, __args);
+				
+				// Send it away!
+				this.commLink.send(packet);
+			}
+		}
 	}
 	
 	/**
@@ -367,6 +308,10 @@ public final class JDWPController
 		Reference<JDWPController> ref = new WeakReference<>(this);
 		switch (__t)
 		{
+			case CLASS_STATUS:
+				trip = new __TripClassStatus__(ref);
+				break;
+			
 			case VM_STATE:
 				trip = new __TripVmState__(ref);
 				break;

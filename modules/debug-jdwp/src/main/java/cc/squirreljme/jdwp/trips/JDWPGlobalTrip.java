@@ -16,6 +16,9 @@ package cc.squirreljme.jdwp.trips;
  */
 public enum JDWPGlobalTrip
 {
+	/** Class preparation, loading, and unloading. */
+	CLASS_STATUS(JDWPTripClassStatus.class),
+	
 	/** Virtual machine state. */
 	VM_STATE(JDWPTripVmState.class),
 	
