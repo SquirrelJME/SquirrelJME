@@ -10,7 +10,6 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jdwp.JDWPMethod;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Method;
@@ -24,7 +23,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  * @since 2018/07/22
  */
 public final class SpringMethod
-	implements JDWPMethod, SpringMember
+	implements SpringMember
 {
 	/** The class this technically belongs to. */
 	protected final ClassName inclass;
@@ -36,7 +35,7 @@ public final class SpringMethod
 	protected final String infile;
 	
 	/** The line table (cached). */
-	private volatile int[] _lineTable;
+	volatile int[] _lineTable;
 	
 	/** The method index. */
 	protected final int methodIndex;
@@ -72,75 +71,6 @@ public final class SpringMethod
 	public final ByteCode byteCode()
 	{
 		return this.method.byteCode();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/21
-	 */
-	@Override
-	public byte[] debuggerByteCode()
-	{
-		// If there is no method byte code then ignore
-		ByteCode byteCode = this.method.byteCode();
-		if (byteCode == null)
-			return null;
-		
-		return byteCode.rawByteCode();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/13
-	 */
-	@Override
-	public int debuggerId()
-	{
-		return System.identityHashCode(this);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/14
-	 */
-	@Override
-	public int[] debuggerLineTable()
-	{
-		// Pre-cached?
-		int[] lineTable = this._lineTable;
-		if (lineTable != null)
-			return lineTable.clone();
-		
-		// If there is no method byte code then ignore
-		ByteCode byteCode = this.method.byteCode();
-		if (byteCode == null)
-			return null;
-		
-		// Otherwise map each unique address to a line number
-		int[] addrs = byteCode.validAddresses();
-		int n = addrs.length;
-		int[] rv = new int[n];
-		for (int i = 0; i < n; i++)
-			rv[i] = byteCode.lineOfAddress(addrs[i]);
-		
-		// Cache it and return a safe copy of it
-		this._lineTable = rv;
-		return rv.clone();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/17
-	 */
-	@Override
-	public long debuggerLocationCount()
-	{
-		// If there is no method byte code then ignore
-		ByteCode byteCode = this.method.byteCode();
-		if (byteCode == null)
-			return 0;
-		
-		return byteCode.instructionCount();
 	}
 	
 	/**

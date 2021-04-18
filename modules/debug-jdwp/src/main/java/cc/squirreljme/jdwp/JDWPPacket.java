@@ -675,21 +675,6 @@ public final class JDWPPacket
 	 * 
 	 * @param __v The value to write.
 	 * @throws JDWPException If it could not be written.
-	 * @deprecated Use {@link #writeId(int)} for Id writes. 
-	 * @since 2021/03/12
-	 */
-	@Deprecated
-	public void writeId(JDWPId __v)
-		throws JDWPException
-	{
-		this.writeInt(System.identityHashCode(__v));
-	}
-	
-	/**
-	 * Writes an ID to the output.
-	 * 
-	 * @param __v The value to write.
-	 * @throws JDWPException If it could not be written.
 	 * @since 2021/04/10
 	 */
 	public void writeId(int __v)

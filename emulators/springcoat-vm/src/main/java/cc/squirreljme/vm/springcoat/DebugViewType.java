@@ -17,6 +17,7 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.lang.ref.Reference;
+import net.multiphasicapps.classfile.ByteCode;
 
 /**
  * A viewer around class types.
@@ -176,8 +177,12 @@ public class DebugViewType
 	@Override
 	public byte[] methodByteCode(Object __which, int __methodDx)
 	{
-		return DebugViewType.__method(__which, __methodDx)
-			.debuggerByteCode();
+		// If there is no method byte code then ignore
+		ByteCode byteCode = DebugViewType.__method(__which, __methodDx).method.byteCode();
+		if (byteCode == null)
+			return null;
+		
+		return byteCode.rawByteCode();
 	}
 	
 	/**
@@ -198,8 +203,29 @@ public class DebugViewType
 	@Override
 	public int[] methodLineTable(Object __which, int __methodDx)
 	{
-		return DebugViewType.__method(__which, __methodDx)
-			.debuggerLineTable();
+		SpringMethod springMethod = DebugViewType.__method(__which,
+			__methodDx);
+		
+		// Pre-cached?
+		int[] lineTable = springMethod._lineTable;
+		if (lineTable != null)
+			return lineTable.clone();
+		
+		// If there is no method byte code then ignore
+		ByteCode byteCode = springMethod.method.byteCode();
+		if (byteCode == null)
+			return null;
+		
+		// Otherwise map each unique address to a line number
+		int[] addrs = byteCode.validAddresses();
+		int n = addrs.length;
+		int[] rv = new int[n];
+		for (int i = 0; i < n; i++)
+			rv[i] = byteCode.lineOfAddress(addrs[i]);
+		
+		// Cache it and return a safe copy of it
+		springMethod._lineTable = rv;
+		return rv.clone();
 	}
 	
 	/**
@@ -209,9 +235,15 @@ public class DebugViewType
 	@Override
 	public int methodLocationCount(Object __which, int __methodDx)
 	{
-		return (int)Math.min(Integer.MAX_VALUE,
-			DebugViewType.__method(__which, __methodDx)
-				.debuggerLocationCount());
+		long result = 0;
+		
+		// If there is no method byte code then ignore
+		ByteCode byteCode = DebugViewType.__method(__which, __methodDx)
+			.method.byteCode();
+		if (byteCode != null)
+			result = byteCode.instructionCount();
+		
+		return (int)Math.min(Integer.MAX_VALUE, result);
 	}
 	
 	/**
