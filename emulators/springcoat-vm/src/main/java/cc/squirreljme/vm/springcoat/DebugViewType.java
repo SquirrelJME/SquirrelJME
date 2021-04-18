@@ -235,15 +235,13 @@ public class DebugViewType
 	@Override
 	public int methodLocationCount(Object __which, int __methodDx)
 	{
-		long result = 0;
-		
 		// If there is no method byte code then ignore
 		ByteCode byteCode = DebugViewType.__method(__which, __methodDx)
 			.method.byteCode();
 		if (byteCode != null)
-			result = byteCode.instructionCount();
+			return byteCode.instructionCount();
 		
-		return (int)Math.min(Integer.MAX_VALUE, result);
+		return 0;
 	}
 	
 	/**
