@@ -238,7 +238,7 @@ public final class JDWPController
 				__kind, request.id))
 			{
 				// Write the signal event data
-				__kind.write(packet, __args);
+				__kind.write(this, packet, __args);
 				
 				// Send it away!
 				this.commLink.send(packet);

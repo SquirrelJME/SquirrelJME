@@ -11,11 +11,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledThread;
-import cc.squirreljme.jdwp.JDWPClass;
-import cc.squirreljme.jdwp.JDWPMethod;
-import cc.squirreljme.jdwp.JDWPThreadFrame;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
-import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
@@ -715,7 +711,6 @@ public final class SpringThread
 	 * @since 2018/09/03
 	 */
 	public static class Frame
-		implements JDWPThreadFrame
 	{
 		/** The frame level. */
 		public final int level;
@@ -850,69 +845,6 @@ public final class SpringThread
 		public final void clearStack()
 		{
 			this._stacktop = 0;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/13
-		 */
-		@Override
-		public JDWPClass debuggerAtClass()
-		{
-			return this.springClass;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/13
-		 */
-		@Override
-		public long debuggerAtIndex()
-		{
-			ByteCode code = this.code;
-			if (code == null)
-				return -1;
-			
-			// These just use indexes, not true addresses
-			return code.addressToIndex(this._pc);
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/13
-		 */
-		@Override
-		public JDWPMethod debuggerAtMethod()
-		{
-			return this.method;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/13
-		 */
-		@Override
-		public int debuggerId()
-		{
-			return System.identityHashCode(this);
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/03/15
-		 */
-		@Override
-		public boolean debuggerRegisterGetValue(boolean __stack, int __dx,
-			JDWPValue __val)
-		{
-			// Is this value even valid?
-			Object[] vals = (__stack ? this._stack : this._locals);
-			if (__dx < 0 || __dx >= vals.length)
-				return false;
-			
-			// Map null to the correct value
-			__val.set(vals[__dx]);
-			return true;
 		}
 		
 		/**

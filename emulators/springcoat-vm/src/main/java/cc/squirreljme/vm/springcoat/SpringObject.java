@@ -10,7 +10,6 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jdwp.JDWPObject;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
 
 /**

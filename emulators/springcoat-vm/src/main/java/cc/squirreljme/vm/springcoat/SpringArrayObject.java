@@ -10,7 +10,6 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jdwp.JDWPClass;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayIndexOutOfBoundsException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayStoreException;
@@ -116,26 +115,6 @@ public abstract class SpringArrayObject
 	 */
 	public abstract void set(int __dx, Object __v)
 		throws SpringArrayStoreException, SpringArrayIndexOutOfBoundsException;
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/12
-	 */
-	@Override
-	public final int debuggerId()
-	{
-		return System.identityHashCode(this);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/12
-	 */
-	@Override
-	public final JDWPClass debuggerClass()
-	{
-		return this.type();
-	}
 	
 	/**
 	 * Returns the length of this array.

@@ -10,13 +10,6 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jdwp.JDWPClass;
-import cc.squirreljme.jdwp.JDWPClassType;
-import cc.squirreljme.jdwp.JDWPField;
-import cc.squirreljme.jdwp.JDWPMethod;
-import cc.squirreljme.jdwp.JDWPObjectLike;
-import cc.squirreljme.jdwp.JDWPValue;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeException;
@@ -50,7 +43,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  * @since 2018/07/21
  */
 public final class SpringClass
-	implements HasAccessibleFlags, JDWPClass
+	implements HasAccessibleFlags
 {
 	/** The name of this class. */
 	protected final ClassName name;
@@ -312,166 +305,6 @@ public final class SpringClass
 	public final SpringClass componentType()
 	{
 		return this.component;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/14
-	 */
-	@Override
-	public String debuggerBinaryName()
-	{
-		return this.name.toString();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/14
-	 */
-	@Override
-	public JDWPClass debuggerClass()
-	{
-		return this;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/13
-	 */
-	@Override
-	public JDWPClassType debuggerClassType()
-	{
-		if (this.flags().isInterface())
-			return JDWPClassType.INTERFACE;
-		
-		if (this.name.isArray())
-			return JDWPClassType.ARRAY;
-		
-		return JDWPClassType.CLASS;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/13
-	 */
-	@Override
-	public int debuggerId()
-	{
-		return System.identityHashCode(this);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/13
-	 */
-	@Override
-	public String debuggerFieldDescriptor()
-	{
-		return this.name.field().toString();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/15
-	 */
-	@Override
-	public JDWPField[] debuggerFields()
-	{
-		List<JDWPField> result = new ArrayList<>(this._fields.values());
-		return result.<JDWPField>toArray(new JDWPField[result.size()]);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/15
-	 */
-	@Override
-	public boolean debuggerFieldValue(JDWPObjectLike __obj, JDWPField __field,
-		JDWPValue __value)
-	{
-		SpringField field = (SpringField)__field;
-		
-		// Static Field
-		if (field.isStatic())
-		{
-			SpringFieldStorage storage;
-			try
-			{
-				storage = this.classLoader().machine()
-					.lookupStaticField(field);
-			}
-			catch (SpringVirtualMachineException ignored)
-			{
-				return false;
-			}
-			
-			// Read value
-			__value.set(storage.get());
-			return true;
-		}
-		
-		// Non-static field
-		else
-		{
-			// If not an object ignore
-			if (!(__obj instanceof SpringSimpleObject))
-				return false;
-			
-			// Read the value
-			try
-			{
-				__value.set(((SpringSimpleObject)__obj)
-					.fieldByIndex(field.index()).get());
-				return true;
-			}
-			
-			// Could not read the value
-			catch (SpringVirtualMachineException ignored)
-			{
-				return false;
-			}
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/14
-	 */
-	@Override
-	public JDWPClass[] debuggerInterfaceClasses()
-	{
-		return this.interfaceClasses();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/13
-	 */
-	@Override
-	public JDWPMethod[] debuggerMethods()
-	{
-		List<JDWPMethod> result = new ArrayList<>(this._methods.values());
-		return result.<JDWPMethod>toArray(new JDWPMethod[result.size()]);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/14
-	 */
-	@Override
-	public String debuggerSourceFile()
-	{
-		return this.file.sourceFile();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/14
-	 */
-	@Override
-	public JDWPClass debuggerSuperClass()
-	{
-		return this.superclass;
 	}
 	
 	/**

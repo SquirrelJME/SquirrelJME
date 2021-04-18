@@ -10,8 +10,6 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jdwp.JDWPClass;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 
@@ -34,26 +32,6 @@ public final class SpringNullObject
 	 */
 	private SpringNullObject()
 	{
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/15
-	 */
-	@Override
-	public int debuggerId()
-	{
-		return 0;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/15
-	 */
-	@Override
-	public JDWPClass debuggerClass()
-	{
-		return null;
 	}
 	
 	/**

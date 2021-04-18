@@ -42,7 +42,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -70,7 +71,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -97,7 +99,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -125,7 +128,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -152,7 +156,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -178,7 +183,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			__packet.writeId(System.identityHashCode(__args[0]));
@@ -204,7 +210,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			__packet.writeId(System.identityHashCode(__args[0]));
@@ -231,7 +238,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			Object thread = __args[0];
@@ -239,14 +247,14 @@ public enum EventKind
 			JDWPClassStatus status = (JDWPClassStatus)__args[2];
 			
 			// Write out the packet
-			__packet.writeId(thread);
+			__packet.writeId(System.identityHashCode(thread));
 			
 			// The Class ID
-			__packet.writeByte(cl.debuggerClassType().id);
-			__packet.writeId(cl);
+			__packet.writeByte(JDWPUtils.classType(__controller, cl).id);
+			__packet.writeId(System.identityHashCode(cl));
 			
 			// The signature of the class
-			__packet.writeString(cl.debuggerFieldDescriptor());
+			__packet.writeString(__controller.viewType().signature(cl));
 			
 			// The state of this class
 			__packet.writeInt(status.bits);
@@ -272,7 +280,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -299,7 +308,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -338,7 +348,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -378,7 +389,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -406,7 +418,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -433,7 +446,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -460,7 +474,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -488,7 +503,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -516,7 +532,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -544,7 +561,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -571,7 +589,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -598,7 +617,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -623,7 +643,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -648,7 +669,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPPacket __packet, Object... __args)
+		public void write(JDWPController __controller, JDWPPacket __packet,
+			Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -665,9 +687,6 @@ public enum EventKind
 	/** The event ID. */
 	public final int id;
 	
-	/** The event modifiers that are possible. */
-	private final EventModKind[] _modifiers;
-	
 	/** The modifier ordinal bits, for quicker lookup. */
 	private final int _modifierBits;
 	
@@ -681,7 +700,6 @@ public enum EventKind
 	EventKind(int __id, EventModKind... __modifiers)
 	{
 		this.id = __id;
-		this._modifiers = __modifiers;
 		
 		// Determine the modifier bits to quickly get the items
 		int modifierBits = 0;
@@ -716,12 +734,14 @@ public enum EventKind
 	/**
 	 * Writes the packet event data.
 	 * 
+	 * @param __controller The controller used.
 	 * @param __packet The packet to write to.
 	 * @param __args The arguments to the packet.
 	 * @throws JDWPException If it could not be written.
 	 * @since 2021/03/16
 	 */
-	public abstract void write(JDWPPacket __packet, Object... __args)
+	public abstract void write(JDWPController __controller,
+		JDWPPacket __packet, Object... __args)
 		throws JDWPException;
 	
 	/**
