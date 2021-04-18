@@ -9,6 +9,9 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
+import cc.squirreljme.jdwp.trips.JDWPTripThread;
+
 /**
  * This class is used by threads to determine if a thread needs to halt
  * execution due to a suspension via the debugger.
@@ -30,21 +33,25 @@ public final class JDWPThreadSuspension
 	/**
 	 * Handles thread suspension, if this is to occur.
 	 * 
-	 * @param __jdwp The controller, used to report suspension and resumption
-	 * to the remote debugger when it actually happens.
+	 * @param __controller The controller, used to report suspension and
+	 * resumption to the remote debugger when it actually happens.
 	 * @param __thread The thread which is calling this, used for signals.
 	 * @return {@code true} if the thread is still waiting and was
 	 * interrupted.
 	 * @throws IllegalStateException If {@code __thread} is not the owner
 	 * of {@code this}.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/13
 	 */
-	public final boolean await(JDWPController __jdwp, JDWPThread __thread)
-		throws IllegalStateException
+	public final boolean await(JDWPController __controller, Object __thread)
+		throws NullPointerException, IllegalStateException
 	{
+		if (__controller == null)
+			throw new NullPointerException("NARG");
+		
 		// {@squirreljme.error AG0g Another thread is being used with await
 		// call.}
-		if (__thread.debuggerSuspend() != this)
+		if (__controller.viewThread().suspension(__thread) != this)
 			throw new IllegalStateException("AG0g");
 		
 		// Loop around constantly, handle interrupts which will just do nothing
@@ -63,7 +70,9 @@ public final class JDWPThreadSuspension
 				{
 					// Going from suspended to clear?
 					if (lastCount > 0)
-						__jdwp.signalThreadSuspend(__thread, false);
+						__controller.trip(JDWPTripThread.class,
+							JDWPGlobalTrip.THREAD)
+							.suspension(__thread, false);
 					
 					return false;
 				}
@@ -72,7 +81,9 @@ public final class JDWPThreadSuspension
 				if (!this._suspendNotified)
 				{
 					this._suspendNotified = true;
-					__jdwp.signalThreadSuspend(__thread, true);
+					__controller.trip(JDWPTripThread.class,
+						JDWPGlobalTrip.THREAD)
+						.suspension(__thread, true);
 				}
 				
 				// If this is being interrupted then just stop here, although

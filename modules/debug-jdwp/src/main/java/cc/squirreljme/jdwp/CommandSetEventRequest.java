@@ -162,7 +162,7 @@ public enum CommandSetEventRequest
 			// Respond with the ID of this event
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
-			rv.writeInt(request.debuggerId());
+			rv.writeInt(request.id);
 			
 			return rv;
 		}

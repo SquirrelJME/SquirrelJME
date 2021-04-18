@@ -81,36 +81,6 @@ public final class SpringField
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2021/03/13
-	 */
-	@Override
-	public int debuggerMemberFlags()
-	{
-		return this.flags().toJavaBits();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/13
-	 */
-	@Override
-	public String debuggerMemberName()
-	{
-		return this.nameAndType().name().toString();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/13
-	 */
-	@Override
-	public String debuggerMemberType()
-	{
-		return this.nameAndType().type().toString();
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2018/09/09
 	 */
 	@Override

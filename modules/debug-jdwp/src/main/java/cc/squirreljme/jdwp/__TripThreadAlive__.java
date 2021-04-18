@@ -10,6 +10,7 @@
 package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jdwp.trips.JDWPTripThread;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 
 /**
@@ -50,5 +51,15 @@ final class __TripThreadAlive__
 		// Forward generic event
 		controller.signal(__thread, (__isAlive ? EventKind.THREAD_START :
 			EventKind.THREAD_DEATH), __thread);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/18
+	 */
+	@Override
+	public void suspension(Object __thread, boolean __isSuspended)
+	{
+		throw Debugging.todo();
 	}
 }

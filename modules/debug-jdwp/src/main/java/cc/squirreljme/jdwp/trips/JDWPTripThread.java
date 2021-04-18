@@ -25,4 +25,13 @@ public interface JDWPTripThread
 	 * @since 2021/04/11
 	 */
 	void alive(Object __thread, boolean __isAlive);
+	
+	/**
+	 * Indicates on thread suspension.
+	 * 
+	 * @param __thread The thread being changed.
+	 * @param __isSuspended Is this suspended?
+	 * @since 2021/04/18
+	 */
+	void suspension(Object __thread, boolean __isSuspended);
 }

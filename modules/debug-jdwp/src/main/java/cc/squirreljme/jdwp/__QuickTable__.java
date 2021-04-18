@@ -22,7 +22,7 @@ import java.util.Set;
  * @param <I> ID Type.
  * @since 2021/03/13
  */
-final class __QuickTable__<I extends JDWPId>
+final class __QuickTable__<I extends __IdNumbered__>
 	extends AbstractMap<Integer, I>  
 {
 	/** The minimum Id. */

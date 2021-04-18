@@ -22,8 +22,8 @@ public enum JDWPGlobalTrip
 	/** Virtual machine state. */
 	VM_STATE(JDWPTripVmState.class),
 	
-	/** Trip on thread alive/death. */
-	THREAD_ALIVE(JDWPTripThread.class),
+	/** Trip on thread alive/death and states. */
+	THREAD(JDWPTripThread.class),
 	
 	/* End. */
 	;

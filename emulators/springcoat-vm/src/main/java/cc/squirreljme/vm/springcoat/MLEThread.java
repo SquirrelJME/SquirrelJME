@@ -151,7 +151,7 @@ public enum MLEThread
 				// state. We need the instance to have been set for this to
 				// even properly work!
 				jdwp.<JDWPTripThread>trip(JDWPTripThread.class,
-					JDWPGlobalTrip.THREAD_ALIVE).alive(target, true);
+					JDWPGlobalTrip.THREAD).alive(target, true);
 			}
 			
 			return vmThread;
@@ -463,7 +463,7 @@ public enum MLEThread
 				.taskManager().jdwpController;
 			if (jdwp != null)
 				jdwp.<JDWPTripThread>trip(JDWPTripThread.class,
-					JDWPGlobalTrip.THREAD_ALIVE).alive(thread, true);
+					JDWPGlobalTrip.THREAD).alive(thread, true);
 			
 			return null;
 		}

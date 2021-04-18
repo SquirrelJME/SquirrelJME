@@ -47,26 +47,6 @@ public abstract class AbstractGhostObject
 	 * @since 2020/05/30
 	 */
 	@Override
-	public final int debuggerId()
-	{
-		return System.identityHashCode(this);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/05/30
-	 */
-	@Override
-	public final JDWPClass debuggerClass()
-	{
-		return null;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/05/30
-	 */
-	@Override
 	public final SpringMonitor monitor()
 	{
 		throw new SpringVirtualMachineException(

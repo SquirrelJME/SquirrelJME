@@ -38,18 +38,6 @@ public interface JDWPBinding
 	Object[] debuggerThreadGroups();
 	
 	/**
-	 * Updates the state as needed for debugging.
-	 * 
-	 * @param __state The debugger state.
-	 * @param __what What gets updated?
-	 * @deprecated This is being replaced by queries on thread groups and
-	 * otherwise.
-	 * @since 2021/03/13
-	 */
-	@Deprecated
-	void debuggerUpdate(JDWPState __state, JDWPUpdateWhat... __what);
-	
-	/**
 	 * Returns the view of the given type.
 	 * 
 	 * @param <V> The type to view.

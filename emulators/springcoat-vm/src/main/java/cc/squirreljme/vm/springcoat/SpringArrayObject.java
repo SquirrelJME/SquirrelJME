@@ -10,9 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jdwp.JDWPArray;
 import cc.squirreljme.jdwp.JDWPClass;
-import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayIndexOutOfBoundsException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayStoreException;
@@ -26,7 +24,7 @@ import java.lang.ref.WeakReference;
  * @since 2018/09/15
  */
 public abstract class SpringArrayObject
-	implements JDWPArray, SpringObject
+	implements SpringObject
 {
 	/** The monitor for this array. */
 	protected final SpringMonitor monitor =
@@ -118,40 +116,6 @@ public abstract class SpringArrayObject
 	 */
 	public abstract void set(int __dx, Object __v)
 		throws SpringArrayStoreException, SpringArrayIndexOutOfBoundsException;
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/19
-	 */
-	@Override
-	public int debuggerArrayLength()
-	{
-		return this.length;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/20
-	 */
-	@Override
-	public boolean debuggerArrayGet(int __i, JDWPValue __value)
-	{
-		if (__i < 0 || __i >= this.length)
-			return false;
-		
-		__value.set(this.get(Object.class, __i));
-		return true;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/20
-	 */
-	@Override
-	public String debuggerComponentDescriptor()
-	{
-		return this.type().componentType().debuggerFieldDescriptor();
-	}
 	
 	/**
 	 * {@inheritDoc}

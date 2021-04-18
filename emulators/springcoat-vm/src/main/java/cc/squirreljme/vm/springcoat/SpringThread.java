@@ -12,18 +12,13 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledThread;
 import cc.squirreljme.jdwp.JDWPClass;
-import cc.squirreljme.jdwp.JDWPCollectable;
 import cc.squirreljme.jdwp.JDWPMethod;
-import cc.squirreljme.jdwp.JDWPObject;
-import cc.squirreljme.jdwp.JDWPThread;
 import cc.squirreljme.jdwp.JDWPThreadFrame;
-import cc.squirreljme.jdwp.JDWPThreadGroup;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNullPointerException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
@@ -32,7 +27,6 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
@@ -44,7 +38,6 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  * @since 2018/09/01
  */
 public final class SpringThread
-	implements JDWPCollectable, JDWPThread
 {
 	/** Maximum depth of the stack. */
 	public static final int MAX_STACK_DEPTH =
@@ -147,94 +140,6 @@ public final class SpringThread
 			if (frames.isEmpty())
 				return null;
 			return frames.get(frames.size() - 1);
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/13
-	 */
-	@Override
-	public JDWPThreadFrame[] debuggerFrames()
-	{
-		Frame[] frames = this.frames();
-		JDWPThreadFrame[] rv = new JDWPThreadFrame[frames.length];
-		
-		// Filter out any blank frames because it does not make sense to
-		// the debugger at all
-		int at = 0;
-		for (Frame frame : frames)
-			if (!frame.isBlank())
-				rv[at++] = frame;
-		
-		// Spring Coat does threads in the reverse order, so it needs to be
-		// flipped to be in Java order
-		rv = (at == frames.length ? rv :
-			Arrays.<JDWPThreadFrame>copyOf(rv, at));
-		Collections.reverse(Arrays.asList(rv));
-		return rv;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/13
-	 */
-	@Override
-	public int debuggerId()
-	{
-		return System.identityHashCode(this);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/15
-	 */
-	@Override
-	public boolean debuggerIsCollected()
-	{
-		return this.isTerminated();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/13
-	 */
-	@Override
-	public JDWPThreadSuspension debuggerSuspend()
-	{
-		return this.debuggerSuspension;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/13
-	 */
-	@Override
-	public JDWPThreadGroup debuggerThreadGroup()
-	{
-		return this.machine();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/14
-	 */
-	@Override
-	public JDWPObject debuggerThreadObject()
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/15
-	 */
-	@Override
-	public int debuggerThreadStatus()
-	{
-		synchronized (this)
-		{
-			return this._status;
 		}
 	}
 	

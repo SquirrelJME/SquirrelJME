@@ -15,7 +15,7 @@ package cc.squirreljme.jdwp;
  * @since 2021/03/13
  */
 public enum EventModKind
-	implements JDWPId
+	implements __IdNumbered__
 {
 	/** Limit occurrences. */
 	LIMIT_OCCURRENCES(1),

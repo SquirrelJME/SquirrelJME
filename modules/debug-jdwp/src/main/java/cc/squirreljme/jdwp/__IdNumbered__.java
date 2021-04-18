@@ -10,22 +10,17 @@
 package cc.squirreljme.jdwp;
 
 /**
- * Represents a thread group which may contain sub-threads and otherwise.
- * 
- * Thread groups have the limitation that they are always top level and they
- * have no child {@link JDWPThreadGroup}s.
+ * Has an ID number.
  *
- * @since 2021/03/13
+ * @since 2021/04/18
  */
-@Deprecated
-public interface JDWPThreadGroup
-	extends JDWPObjectLike
+interface __IdNumbered__
 {
 	/**
-	 * Returns all of the child threads.
+	 * Returns the debugger ID.
 	 * 
-	 * @return The threads which are the child of this thread group.
-	 * @since 2021/03/13
+	 * @return The debugger ID.
+	 * @since 2021/03/12
 	 */
-	JDWPThread[] debuggerThreads();
+	int debuggerId();
 }

@@ -15,7 +15,7 @@ package cc.squirreljme.jdwp;
  * @since 2021/03/12
  */
 public interface JDWPCommand
-	extends JDWPId
+	extends __IdNumbered__
 {
 	/**
 	 * Executes the given command.

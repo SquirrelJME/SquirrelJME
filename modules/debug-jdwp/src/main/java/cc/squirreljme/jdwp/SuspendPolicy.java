@@ -15,7 +15,7 @@ package cc.squirreljme.jdwp;
  * @since 2021/03/13
  */
 public enum SuspendPolicy
-	implements JDWPId
+	implements __IdNumbered__
 {
 	/** None. */
 	NONE(0),

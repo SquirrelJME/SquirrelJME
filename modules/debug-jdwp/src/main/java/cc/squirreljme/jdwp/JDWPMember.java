@@ -19,27 +19,4 @@ package cc.squirreljme.jdwp;
 public interface JDWPMember
 	extends JDWPId
 {
-	/**
-	 * Returns the member Java flag bits.
-	 * 
-	 * @return The member Java flag bits.
-	 * @since 2021/03/13
-	 */
-	int debuggerMemberFlags();
-	
-	/**
-	 * Returns the member name.
-	 * 
-	 * @return The member name.
-	 * @since 2021/03/13
-	 */
-	String debuggerMemberName();
-	
-	/**
-	 * Returns the member type signature.
-	 * 
-	 * @return The member type signature.
-	 * @since 2021/03/13
-	 */
-	String debuggerMemberType();
 }

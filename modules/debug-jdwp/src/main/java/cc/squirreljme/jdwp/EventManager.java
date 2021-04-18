@@ -59,7 +59,7 @@ public final class EventManager
 			
 			// Map events
 			list.add(__request);
-			this._eventById.put(__request.debuggerId(), __request);
+			this._eventById.put(__request.id, __request);
 		}
 	}
 	

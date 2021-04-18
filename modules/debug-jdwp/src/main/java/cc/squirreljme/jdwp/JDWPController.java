@@ -112,23 +112,6 @@ public final class JDWPController
 	}
 	
 	/**
-	 * Updates the state as needed for debugging.
-	 * 
-	 * @param __what What gets updated?
-	 * @return The debugger state.
-	 * @since 2021/03/13
-	 */
-	@Deprecated
-	public JDWPState debuggerUpdate(JDWPUpdateWhat... __what)
-	{
-		JDWPState state = this.state;
-		
-		this.bind.debuggerUpdate(state, __what);
-		
-		return state;
-	}
-	
-	/**
 	 * Polls for state changes within JDWP and processes any events as
 	 * needed.
 	 * 
@@ -264,25 +247,6 @@ public final class JDWPController
 	}
 	
 	/**
-	 * Signals that the thread suspend.
-	 * 
-	 * @param __thread The thread to be suspended or resumed.
-	 * @param __suspend If the thread is to be suspended.
-	 * @throws NullPointerException On null arguments.
-	 * @deprecated Use {@link #trip(Class, JDWPGlobalTrip)}.
-	 * @since 2021/03/14
-	 */
-	@Deprecated
-	public void signalThreadSuspend(JDWPThread __thread, boolean __suspend)
-		throws NullPointerException
-	{
-		if (__thread == null)
-			throw new NullPointerException("NARG");
-		
-		// Nothing needs to be done here...
-	}
-	
-	/**
 	 * Returns a trip for the given type of global trip.
 	 * 
 	 * @param <T> The type of trip.
@@ -316,7 +280,7 @@ public final class JDWPController
 				trip = new __TripVmState__(ref);
 				break;
 			
-			case THREAD_ALIVE:
+			case THREAD:
 				trip = new __TripThreadAlive__(ref);
 				break;
 			

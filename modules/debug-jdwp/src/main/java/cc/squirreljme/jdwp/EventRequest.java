@@ -18,7 +18,6 @@ import java.util.Arrays;
  * @since 2021/03/13
  */
 public final class EventRequest
-	implements JDWPId
 {
 	/** The ID of the event. */
 	public final int id;
@@ -60,16 +59,6 @@ public final class EventRequest
 		this.suspendPolicy = __suspendPolicy;
 		this.filter = __filter;
 		this._occurrencesLeft = __occurrenceLimit;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/13
-	 */
-	@Override
-	public final int debuggerId()
-	{
-		return this.id;
 	}
 	
 	/**

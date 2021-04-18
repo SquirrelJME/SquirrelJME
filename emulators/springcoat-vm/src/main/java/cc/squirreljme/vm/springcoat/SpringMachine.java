@@ -15,9 +15,6 @@ import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMResourceAccess;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
-import cc.squirreljme.jdwp.JDWPController;
-import cc.squirreljme.jdwp.JDWPThread;
-import cc.squirreljme.jdwp.JDWPThreadGroup;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -47,7 +44,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  */
 @SuppressWarnings("OverlyCoupledClass")
 public final class SpringMachine
-	implements JDWPThreadGroup, Runnable, VirtualMachine
+	implements Runnable, VirtualMachine
 {
 	/** The class which contains the thread starting point. */
 	private static final ClassName _START_CLASS =
@@ -249,26 +246,6 @@ public final class SpringMachine
 			threads.add(rv);
 			return rv;
 		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/13
-	 */
-	@Override
-	public int debuggerId()
-	{
-		return System.identityHashCode(this);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/13
-	 */
-	@Override
-	public JDWPThread[] debuggerThreads()
-	{
-		return this.getThreads();
 	}
 	
 	/**

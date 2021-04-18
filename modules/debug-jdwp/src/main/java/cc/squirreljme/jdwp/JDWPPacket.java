@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -681,7 +682,7 @@ public final class JDWPPacket
 	public void writeId(JDWPId __v)
 		throws JDWPException
 	{
-		this.writeInt((__v == null ? 0 : __v.debuggerId()));
+		this.writeInt(System.identityHashCode(__v));
 	}
 	
 	/**
@@ -918,6 +919,9 @@ public final class JDWPPacket
 			return;
 		}
 		
+		if (true)
+			throw Debugging.todo();
+		/*
 		synchronized (this)
 		{
 			// Must be an open packet
@@ -1053,6 +1057,8 @@ public final class JDWPPacket
 			else
 				this.writeVoid();
 		}
+		
+		 */
 	}
 	
 	/**

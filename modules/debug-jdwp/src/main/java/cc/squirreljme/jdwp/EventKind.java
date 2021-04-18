@@ -19,7 +19,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @since 2021/03/13
  */
 public enum EventKind
-	implements JDWPId
+	implements __IdNumbered__
 {
 	/** Single Step. */
 	SINGLE_STEP(1, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
@@ -234,8 +234,8 @@ public enum EventKind
 		public void write(JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			JDWPThread thread = (JDWPThread)__args[0];
-			JDWPClass cl = (JDWPClass)__args[1];
+			Object thread = __args[0];
+			Object cl = __args[1];
 			JDWPClassStatus status = (JDWPClassStatus)__args[2];
 			
 			// Write out the packet

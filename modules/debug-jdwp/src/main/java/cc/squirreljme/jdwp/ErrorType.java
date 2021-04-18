@@ -15,7 +15,7 @@ package cc.squirreljme.jdwp;
  * @since 2021/03/12
  */
 public enum ErrorType
-	implements JDWPId
+	implements __IdNumbered__
 {
 	/** Undefined error. */
 	UNDEFINED_ERROR(-1),
