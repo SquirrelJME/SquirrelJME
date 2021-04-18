@@ -16,7 +16,10 @@ package cc.squirreljme.jdwp;
  */
 public enum JDWPClassStatus
 {
-	/* Class Verified. */
+	/** Class unloaded. */
+	UNLOAD(0),
+	
+	/** Class Verified. */
 	VERIFIED(1),
 	
 	/** Class prepared. */
@@ -46,6 +49,6 @@ public enum JDWPClassStatus
 	JDWPClassStatus(int __id)
 	{
 		this.id = __id;
-		this.bits = __id - 1;
+		this.bits = Math.max(0, __id - 1);
 	}
 }

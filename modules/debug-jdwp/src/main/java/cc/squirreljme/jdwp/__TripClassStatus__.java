@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.trips.JDWPTripClassStatus;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
@@ -50,6 +51,28 @@ final class __TripClassStatus__
 		state.items.put(__thread);
 		state.items.put(__which);
 		
-		throw Debugging.todo();
+		EventKind eventKind;
+		switch (__status)
+		{
+			case UNLOAD:
+				eventKind = EventKind.CLASS_UNLOAD;
+				break;
+			
+			case VERIFIED:
+				eventKind = EventKind.CLASS_LOAD;
+				break;
+			
+			case PREPARED:
+			case INITIALIZED:
+				eventKind = EventKind.CLASS_PREPARE;
+				break;
+			
+			// Unknown, so do nothing
+			default:
+				return;
+		}
+		
+		// Signal this event
+		controller.signal(__thread, eventKind, __which, __status);
 	}
 }
