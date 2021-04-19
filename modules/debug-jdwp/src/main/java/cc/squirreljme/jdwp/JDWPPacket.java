@@ -211,7 +211,6 @@ public final class JDWPPacket
 		boolean __nullable)
 		throws JDWPException
 	{
-		int id = this.readId();
 		Object object = this.readObject(__controller, __nullable);
 		
 		// Is this an invalid array?
@@ -221,7 +220,8 @@ public final class JDWPPacket
 				return null;
 			
 			// Fail with invalid thread
-			throw ErrorType.INVALID_ARRAY.toss(object, id);
+			throw ErrorType.INVALID_ARRAY.toss(object,
+				System.identityHashCode(object));
 		}
 		
 		return object;
@@ -412,7 +412,28 @@ public final class JDWPPacket
 			// If this is a valid thread, then bounce through to the thread's
 			// instance object
 			if (__controller.viewThread().isValid(object))
-				return __controller.viewThread().instance(object);
+			{
+				Object alt = __controller.viewThread().instance(object);
+				if (__controller.viewObject().isValid(alt))
+				{
+					// Make sure it is registered
+					__controller.state.items.put(alt);
+					return alt;
+				}
+			}
+			
+			// If this a valid class, bounce to the class instance object
+			if (__controller.viewType().isValid(object))
+			{
+				// Double check if it is valid
+				Object alt = __controller.viewType().instance(object);
+				if (__controller.viewObject().isValid(alt))
+				{
+					// Make sure it is registered
+					__controller.state.items.put(alt);
+					return alt;
+				}
+			}
 			
 			// Not valid?
 			if (__nullable && object == null)
@@ -488,7 +509,11 @@ public final class JDWPPacket
 			if (__controller.viewObject().isValid(thread))
 				for (Object check : __controller.__allThreads())
 					if (thread == viewThread.instance(check))
+					{
+						// Make sure it is registered
+						__controller.state.items.put(check);
 						return check;
+					}
 			
 			if (__nullable && thread == null)
 				return null;
@@ -548,6 +573,19 @@ public final class JDWPPacket
 		// Is this valid?
 		if (!__controller.viewType().isValid(object))
 		{
+			// We may be trying to read the type of an object, so we need to
+			// alias to that
+			if (__controller.viewObject().isValid(object))
+			{
+				Object alt = __controller.viewObject().type(object);
+				if (__controller.viewType().isValid(alt))
+				{
+					// Make it is registered
+					__controller.state.items.put(alt);
+					return alt;
+				}
+			}
+			
 			if (__nullable && object == null)
 				return null;
 			

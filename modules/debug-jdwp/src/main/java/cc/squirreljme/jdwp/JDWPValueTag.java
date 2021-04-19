@@ -131,19 +131,16 @@ public enum JDWPValueTag
 			default:
 				switch (__signature)
 				{
-					case "java/lang/String":
+					case "Ljava/lang/String;":
 						return JDWPValueTag.STRING;
 						
-					case "java/lang/Thread":
-					case "cc/squirreljme/jvm/debug/SyntheticThread":
+					case "Ljava/lang/Thread;":
+					case "Lcc/squirreljme/jvm/mle/brackets/VMThreadBracket;":
 						return JDWPValueTag.THREAD;
 						
-					case "java/lang/Class":
-					case "cc/squirreljme/jvm/debug/SyntheticClass":
-						return JDWPValueTag.CLASS_LOADER;
-						
-					case "cc/squirreljme/jvm/debug/SyntheticThreadGroup":
-						return JDWPValueTag.THREAD_GROUP;
+					case "Ljava/lang/Class;":
+					case "Lcc/squirreljme/jvm/mle/brackets/TypeBracket;":
+						return JDWPValueTag.CLASS_OBJECT;
 				}
 				
 				return JDWPValueTag.OBJECT; 

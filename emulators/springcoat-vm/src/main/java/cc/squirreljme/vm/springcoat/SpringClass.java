@@ -93,6 +93,9 @@ public final class SpringClass
 	/** The class loader which loaded this class. */
 	private final Reference<SpringClassLoader> _classLoader;
 	
+	/** The class instance. */
+	SpringObject _instance;
+	
 	/** Has this class been initialized? */
 	private volatile boolean _initialized;
 	
@@ -291,6 +294,25 @@ public final class SpringClass
 			SpringClassLoader rv = this._classLoader.get();
 			if (rv == null)
 				throw new IllegalStateException("Owner GCed.");
+			
+			return rv;
+		}
+	}
+	
+	/**
+	 * Returns the {@link Class} object.
+	 * 
+	 * @return The {@link Class} object.
+	 * @since 2021/04/19
+	 */
+	public final SpringObject classObject()
+	{
+		synchronized (this)
+		{
+			SpringObject rv = this._instance;
+			if (rv == null)
+				throw new IllegalStateException("No Class<?> for " +
+					this.name);
 			
 			return rv;
 		}

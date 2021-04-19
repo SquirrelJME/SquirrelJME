@@ -47,7 +47,7 @@ public enum MLETask
 			int n = tasks.length;
 			SpringObject[] result = new SpringObject[n];
 			for (int i = 0; i < n; i++)
-				result[i] = new TaskObject(tasks[i]);
+				result[i] = new TaskObject(__thread.machine);
 			
 			return __thread.asVMObjectArray(__thread.resolveClass(
 				"[Lcc/squirreljme/jvm/mle/brackets/TaskBracket;"), result);
@@ -135,7 +135,8 @@ public enum MLETask
 			// The resultant traces
 			SpringObject[] outTraces = new SpringObject[len];
 			for (int i = 0; i < len; i++)
-				outTraces[i] = new TracePointObject(inTraces[i]); 
+				outTraces[i] = new TracePointObject(__thread.machine,
+					inTraces[i]); 
 			
 			return __thread.asVMObjectArray(__thread.loadClass(
 				"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;"),

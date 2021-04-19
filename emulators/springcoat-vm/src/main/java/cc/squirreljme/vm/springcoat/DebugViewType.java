@@ -13,6 +13,7 @@ import cc.squirreljme.jdwp.JDWPCommandException;
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.views.JDWPViewType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
@@ -85,6 +86,23 @@ public class DebugViewType
 	{
 		return DebugViewType.__field(__which, __fieldDx).nameAndType()
 			.type().toString();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/19
+	 */
+	@Override
+	public Object instance(Object __which)
+	{
+		try
+		{
+			return DebugViewType.__class(__which).classObject();
+		}
+		catch (IllegalStateException ignored)
+		{
+			return null;
+		}
 	}
 	
 	/**

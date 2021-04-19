@@ -484,7 +484,13 @@ public final class SpringThreadWorker
 				// information
 				rv = this.newInstance(classClass.name(), new MethodDescriptor(
 					"(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)V"),
-					new TypeObject(resClass));
+					new TypeObject(machine, resClass));
+				
+				// Store it
+				synchronized (classClass)
+				{
+					classClass._instance = rv;
+				}
 				
 				// Cache and use it
 				com.put(name, rv);

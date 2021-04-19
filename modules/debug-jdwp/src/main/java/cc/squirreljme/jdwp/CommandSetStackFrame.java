@@ -66,7 +66,7 @@ public enum CommandSetStackFrame
 					rv.writeValue(value, tag, false);
 					
 					// Store object for later use
-					if (tag.isObject)
+					if (value.get() != null && tag.isObject)
 						__controller.state.items.put(value.get());
 				}
 			
@@ -121,7 +121,7 @@ public enum CommandSetStackFrame
 					rv.writeValue(value, tag, false);
 					
 					// Store object for later use
-					if (tag.isObject)
+					if (value.get() != null && tag.isObject)
 						__controller.state.items.put(value.get());
 				}
 			

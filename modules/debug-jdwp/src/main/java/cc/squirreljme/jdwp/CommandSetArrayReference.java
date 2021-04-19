@@ -96,7 +96,7 @@ public enum CommandSetArrayReference
 					rv.writeValue(value, tag, true);
 					
 					// Store object for later use
-					if (tag.isObject)
+					if (value.get() != null && tag.isObject)
 						__controller.state.items.put(value.get());
 				}
 			

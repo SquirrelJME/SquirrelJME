@@ -107,6 +107,15 @@ public interface JDWPViewType
 	String fieldSignature(Object __which, int __fieldDx);
 	
 	/**
+	 * Returns the {@link Class} object instance for the given type.
+	 * 
+	 * @param __which Get the instance of which class?
+	 * @return The {@link Class} object instance.
+	 * @since 2021/04/19
+	 */
+	Object instance(Object __which);
+	
+	/**
 	 * Returns the method byte code.
 	 * 
 	 * @param __which Which class to get from?

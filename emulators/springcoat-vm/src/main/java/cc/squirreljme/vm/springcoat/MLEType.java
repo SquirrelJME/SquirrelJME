@@ -95,7 +95,7 @@ public enum MLEType
 			if (!type.isArray())
 				throw new SpringMLECallError("Not an array type.");
 			
-			return new TypeObject(type.componentType());
+			return new TypeObject(__thread.machine, type.componentType());
 		}
 	},
 	
@@ -118,7 +118,7 @@ public enum MLEType
 			// Find the root component
 			while (type.isArray())
 				type = type.componentType();
-			return new TypeObject(type);
+			return new TypeObject(__thread.machine, type);
 		}
 	},
 	
@@ -179,7 +179,7 @@ public enum MLEType
 			
 			try
 			{
-				return new TypeObject(__thread.loadClass(
+				return new TypeObject(__thread.machine, __thread.loadClass(
 					__thread.<String>asNativeObject(String.class, name)));
 			}
 			
@@ -203,8 +203,8 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new JarPackageObject(MLEType.__type(__args[0])
-				.getSpringClass().inJar());
+			return new JarPackageObject(__thread.machine,
+				MLEType.__type(__args[0]).getSpringClass().inJar());
 		}
 	},
 	
@@ -226,7 +226,7 @@ public enum MLEType
 			
 			SpringObject[] rv = new SpringObject[n];
 			for (int i = 0; i < n; i++)
-				rv[i] = new TypeObject(interfaces[i]);
+				rv[i] = new TypeObject(__thread.machine, interfaces[i]);
 			
 			return __thread.asVMObjectArray(__thread.resolveClass(
 				"[Lcc/squirreljme/jvm/mle/brackets/TypeBracket;"), rv);
@@ -304,7 +304,7 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new TypeObject(__thread.loadClass(
+			return new TypeObject(__thread.machine, __thread.loadClass(
 				MLEType.__notNullObject(__args[0]).type().name().toString()));
 		}
 	},
@@ -341,7 +341,7 @@ public enum MLEType
 			
 			if (superClass == null)
 				return SpringNullObject.NULL;
-			return new TypeObject(superClass);
+			return new TypeObject(__thread.machine, superClass);
 		}
 	},
 	
@@ -356,7 +356,7 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new TypeObject(__thread.loadClass(
+			return new TypeObject(__thread.machine, __thread.loadClass(
 				ClassName.fromPrimitiveType(PrimitiveType.BOOLEAN)));
 		}
 	},
@@ -372,7 +372,7 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new TypeObject(__thread.loadClass(
+			return new TypeObject(__thread.machine, __thread.loadClass(
 				ClassName.fromPrimitiveType(PrimitiveType.BYTE)));
 		}
 	},
@@ -388,7 +388,7 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new TypeObject(__thread.loadClass(
+			return new TypeObject(__thread.machine, __thread.loadClass(
 				ClassName.fromPrimitiveType(PrimitiveType.CHARACTER)));
 		}
 	},
@@ -404,7 +404,7 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new TypeObject(__thread.loadClass(
+			return new TypeObject(__thread.machine, __thread.loadClass(
 				ClassName.fromPrimitiveType(PrimitiveType.DOUBLE)));
 		}
 	},
@@ -420,7 +420,7 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new TypeObject(__thread.loadClass(
+			return new TypeObject(__thread.machine, __thread.loadClass(
 				ClassName.fromPrimitiveType(PrimitiveType.FLOAT)));
 		}
 	},
@@ -436,7 +436,7 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new TypeObject(__thread.loadClass(
+			return new TypeObject(__thread.machine, __thread.loadClass(
 				ClassName.fromPrimitiveType(PrimitiveType.INTEGER)));
 		}
 	},
@@ -452,7 +452,7 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new TypeObject(__thread.loadClass(
+			return new TypeObject(__thread.machine, __thread.loadClass(
 				ClassName.fromPrimitiveType(PrimitiveType.LONG)));
 		}
 	},
@@ -468,7 +468,7 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new TypeObject(__thread.loadClass(
+			return new TypeObject(__thread.machine, __thread.loadClass(
 				ClassName.fromPrimitiveType(PrimitiveType.SHORT)));
 		}
 	},

@@ -129,7 +129,7 @@ public enum MLEThread
 			}
 			
 			// Create object with this attached thread
-			VMThreadObject vmThread = new VMThreadObject(target);
+			VMThreadObject vmThread = new VMThreadObject(machine, target);
 			
 			// The thread gets these as well
 			target.setThreadInstance(javaThread);

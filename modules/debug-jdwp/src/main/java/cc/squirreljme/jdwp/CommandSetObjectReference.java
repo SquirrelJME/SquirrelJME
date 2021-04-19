@@ -34,9 +34,11 @@ public enum CommandSetObjectReference
 		{
 			// Obtain the object and the type of that object
 			Object object = __packet.readObject(__controller, false);
-			Object type = __controller.viewObject().type(object);
+			Object type = (__controller.viewType().isValid(object) ?
+				object : __controller.viewObject().type(object));
 			
 			// Register it for future reference
+			__controller.state.items.put(object);
 			if (type != null)
 				__controller.state.items.put(type);
 			
@@ -102,7 +104,7 @@ public enum CommandSetObjectReference
 					rv.writeValue(value, tag, false);
 					
 					// Store object for later use
-					if (tag.isObject)
+					if (value.get() != null && tag.isObject)
 						__controller.state.items.put(value.get());
 				}
 			

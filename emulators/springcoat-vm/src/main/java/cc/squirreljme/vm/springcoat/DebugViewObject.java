@@ -108,7 +108,6 @@ public class DebugViewObject
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/11
-	 * @return
 	 */
 	@Override
 	public boolean setTrip(Object __which, int __index, JDWPTripValue __trip)
