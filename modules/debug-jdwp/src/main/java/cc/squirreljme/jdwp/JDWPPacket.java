@@ -903,149 +903,123 @@ public final class JDWPPacket
 			return;
 		}
 		
-		// Depends on the context
-		switch (__context)
-		{
-			default:
-				throw Debugging.oops(__context);
-		}
-		
-		/*
 		synchronized (this)
 		{
 			// Must be an open packet
 			this.__checkOpen();
 			
-			// Character
-			if (__val instanceof Character)
+			// Depends on the context
+			switch (__context)
 			{
-				if (!__untag)
-					this.writeByte('C');
-				this.writeShort((char)__val);
-			}
-			
-			// Integer or boxed lower types
-			else if (__val instanceof Integer || __val instanceof Short ||
-				__val instanceof Byte)
-			{
-				Number num = (Number)__val;
-				
-				// Should be boolean
-				if ("Z".equals(__context))
-				{
+					// Boolean value, may be untagged
+				case BOOLEAN:
 					if (!__untag)
 						this.writeByte('Z');
-					this.writeByte((num.intValue() != 0 ? 1 : 0));
-				}
-				
-				// Should be short
-				else if ("S".equals(__context))
-				{
+					this.writeBoolean(((__val instanceof Boolean) ?
+						(boolean)__val :
+						((Number)__val).longValue() != 0));
+					break;
+					
+					// Byte value, may be untagged
+				case BYTE:
+					if (!__untag)
+						this.writeByte('B');
+					this.writeByte(((Number)__val).byteValue());
+					break;
+					
+					// Short value, may be untagged
+				case SHORT:
 					if (!__untag)
 						this.writeByte('S');
-					this.writeShort(num.intValue());
-				}
-				
-				// Should be character
-				else if ("C".equals(__context))
-				{
+					this.writeShort(((Number)__val).shortValue());
+					break;
+					
+					// Character value, may be untagged
+				case CHARACTER:
 					if (!__untag)
 						this.writeByte('C');
-					this.writeShort(num.intValue());
-				}
-				
-				// Plain integer
-				else
-				{
+					this.writeShort(((__val instanceof Character) ?
+						(char)__val :
+						((Number)__val).shortValue()));
+					break;
+					
+					// Integer value, may be untagged
+				case INTEGER:
 					if (!__untag)
 						this.writeByte('I');
-					this.writeInt(num.intValue());
-				}
-			}
-			
-			// Long
-			else if (__val instanceof Long)
-			{
-				if (!__untag)
-					this.writeByte('J');
-				this.writeLong((long)__val);
-			}
-			
-			// Float
-			else if (__val instanceof Float)
-			{
-				if (!__untag)
-					this.writeByte('F');
-				this.writeInt(Float.floatToRawIntBits((float)__val));
-			}
-			
-			// Double
-			else if (__val instanceof Double)
-			{
-				if (!__untag)
-					this.writeByte('D');
-				this.writeLong(Double.doubleToRawLongBits((double)__val));
-			}
-			
-			// IDAble
-			else if ((__val instanceof JDWPId) || __val == null)
-			{
-				JDWPId id = (JDWPId)__val;
-				
-				// Array
-				if (id instanceof JDWPArray)
-					this.writeByte('[');
-				
-				// Thread
-				else if (id instanceof JDWPThread)
-					this.writeByte('t');
-				
-				// Thread group
-				else if (id instanceof JDWPThreadGroup)
-					this.writeByte('g');
-				
-				// Class
-				else if (id instanceof JDWPClass)
-					this.writeByte('c');
-				
-				// A kind of reference with a class
-				else if (id instanceof JDWPReferenceType)
-				{
-					JDWPReferenceType ref = (JDWPReferenceType)id;
-					JDWPClass classy = ref.debuggerClass();
+					this.writeInt(((Number)__val).intValue());
+					break;
 					
-					// String type
-					if (classy != null && JDWPPacket._STRING.equals(
-						classy.debuggerFieldDescriptor()))
-						this.writeByte('s');
+					// Long value, may be untagged
+				case LONG:
+					if (!__untag)
+						this.writeByte('J');
+					this.writeLong(((Number)__val).longValue());
+					break;
 					
-					// Thread type
-					else if (classy != null && JDWPPacket._THREAD.equals(
-						classy.debuggerFieldDescriptor()))
-						this.writeByte('t');
+					// Float value, may be untagged
+				case FLOAT:
+					if (!__untag)
+						this.writeByte('F');
+					this.writeInt(Float.floatToRawIntBits(
+						((Number)__val).floatValue()));
+					break;
 					
-					// Class type
-					else if (classy != null && JDWPPacket._CLASS.equals(
-						classy.debuggerFieldDescriptor()))
-						this.writeByte('c');
-					
-					// Object otherwise
-					else
-						this.writeByte('L');
-				}
+					// Long value, may be untagged
+				case DOUBLE:
+					if (!__untag)
+						this.writeByte('D');
+					this.writeLong(Double.doubleToRawLongBits(
+						((Number)__val).doubleValue()));
+					break;
 				
-				// Treat as object otherwise
-				else
-					this.writeByte('L');
+					// Objects are always tagged
+				case ARRAY:
+				case OBJECT:
+				case CLASS_OBJECT:
+				case CLASS_LOADER:
+				case THREAD:
+				case THREAD_GROUP:
+				case STRING:
+					// Write the tag
+					switch (__context)
+					{
+						case ARRAY:
+							this.writeByte('[');
+							break;
+						
+						case CLASS_OBJECT:
+							this.writeByte('c');
+							break;
+						
+						case CLASS_LOADER:
+							this.writeByte('l');
+							break;
+						
+						case THREAD:
+							this.writeByte('t');
+							break;
+						
+						case THREAD_GROUP:
+							this.writeByte('g');
+							break;
+						
+						case STRING:
+							this.writeByte('s');
+							break;
+						
+						default:
+							this.writeByte('L');
+							break;
+					}
+					
+					this.writeId(System.identityHashCode(__val));
+					break;
 				
-				// Write ID
-				this.writeId(id);
+				default:
+					throw Debugging.oops(__context);
 			}
-			
-			// Unknown, treat as void?
-			else
-				this.writeVoid();
-		}*/
+		}
 	}
 	
 	/**
