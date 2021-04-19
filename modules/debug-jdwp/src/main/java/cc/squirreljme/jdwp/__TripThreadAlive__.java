@@ -60,6 +60,6 @@ final class __TripThreadAlive__
 	@Override
 	public void suspension(Object __thread, boolean __isSuspended)
 	{
-		throw Debugging.todo();
+		// There are currently no triggers on this at all
 	}
 }

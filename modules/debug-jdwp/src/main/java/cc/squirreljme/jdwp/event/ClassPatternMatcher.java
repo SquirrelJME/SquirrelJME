@@ -72,6 +72,31 @@ public final class ClassPatternMatcher
 	}
 	
 	/**
+	 * Checks if the class meets the given string.
+	 * 
+	 * @param __s The string to check.
+	 * @return If this meets the string. 
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/18
+	 */
+	public final boolean meets(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Is this a straight string comparison?
+		String sequence = this.sequence;
+		if (!this.isWildCard)
+			return sequence.equals(__s);
+		
+		// Check the end or the start of the string for a match
+		if (this.isPrefix)
+			return sequence.endsWith(__s);
+		return sequence.startsWith(__s);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2021/03/16
 	 */

@@ -227,18 +227,18 @@ public final class JDWPController
 			// Suspend all threads?
 			if (request.suspendPolicy == SuspendPolicy.ALL)
 				for (Object thread : this.__allThreads())
-					this.viewThread().suspension(thread).suspend(true);
+					this.viewThread().suspension(thread).suspend();
 			
 			// Suspend only a single thread?
 			else if (request.suspendPolicy == SuspendPolicy.EVENT_THREAD)
-				this.viewThread().suspension(__thread).suspend(true);
+				this.viewThread().suspension(__thread).suspend();
 			
 			// Send response to the VM of the event that just occurred
 			try (JDWPPacket packet = this.__event(request.suspendPolicy,
 				__kind, request.id))
 			{
 				// Write the signal event data
-				__kind.write(this, packet, __args);
+				__kind.write(this, __thread, packet, __args);
 				
 				// Send it away!
 				this.commLink.send(packet);

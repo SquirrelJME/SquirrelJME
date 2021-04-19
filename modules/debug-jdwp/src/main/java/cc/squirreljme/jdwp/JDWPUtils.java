@@ -10,6 +10,7 @@
 package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jdwp.views.JDWPViewType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * General utilities for JDWP Support.
@@ -63,5 +64,28 @@ public final class JDWPUtils
 		
 		// Just a plain class
 		return JDWPClassType.CLASS;
+	}
+	
+	/**
+	 * Converts a signature to a runtime name.
+	 * 
+	 * @param __signature The signature to convert.
+	 * @return The runtime name of the signature.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/18
+	 */
+	public static String signatureToRuntime(String __signature)
+		throws NullPointerException
+	{
+		if (__signature == null)
+			throw new NullPointerException("NARG");
+		
+		// If not a class, keep as is!
+		if (!__signature.startsWith("L"))
+			return __signature;
+		
+		// Clip off the L; and un-binary name it
+		return __signature.substring(1, __signature.length() - 1)
+			.replace('/', '.');
 	}
 }

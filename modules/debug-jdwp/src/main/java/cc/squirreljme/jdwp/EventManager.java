@@ -12,8 +12,8 @@ package cc.squirreljme.jdwp;
 import cc.squirreljme.jdwp.event.EventFilter;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +33,7 @@ public final class EventManager
 	
 	/** Event mapping by Id. */
 	private final Map<Integer, EventRequest> _eventById =
-		new LinkedHashMap<>();
+		new HashMap<>();
 	
 	/**
 	 * Adds an event request for later event handling.
@@ -67,6 +67,29 @@ public final class EventManager
 	}
 	
 	/**
+	 * Deletes the event by the given ID.
+	 * 
+	 * @param __id The event ID.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/18
+	 */
+	public void delete(int __id)
+		throws NullPointerException
+	{
+		synchronized (this)
+		{
+			// If this request is found, remove from the respective maps
+			// and lists
+			EventRequest request = this._eventById.get(__id);
+			if (request != null)
+			{
+				this._eventByKind.get(request.eventKind).remove(request);
+				this._eventById.remove(__id);
+			}
+		}
+	}
+	
+	/**
 	 * Finds all of the matching requests.
 	 * 
 	 * @param __controller The controller used.
@@ -84,20 +107,30 @@ public final class EventManager
 		if (__controller == null || __kind == null)
 			throw new NullPointerException("NARG");
 		
-		List<EventRequest> rv = null;
-		
 		// Go through all previously registered requests
 		List<EventRequest> requests = this._eventByKind.get(__kind);
-		if (requests != null && !requests.isEmpty())
+		if (requests == null)
+			return EmptyList.<EventRequest>empty();
+		
+		// Lock since this could be used by many threads
+		List<EventRequest> rv = null;
+		synchronized (this)
+		{
+			// Nothing?
+			if (requests.isEmpty())
+				return EmptyList.<EventRequest>empty();
+			
+			// Find matching events
 			for (Iterator<EventRequest> iterator = requests.iterator();
 				iterator.hasNext();)
 			{
 				EventRequest request = iterator.next();
 				
-				// Are we filtering this?
+				// Are we filtering this? And does this meet this?
 				EventFilter filter = request.filter;
-				if (filter != null)
-					throw Debugging.todo();
+				if (filter != null && !filter.meets(__controller, __thread,
+					__kind, __args))
+					continue;
 				
 				// Starting a fresh list?
 				if (rv == null)
@@ -112,6 +145,7 @@ public final class EventManager
 					if (request._occurrencesLeft <= 0)
 						iterator.remove();
 			}
+		}
 		
 		// If there are no found events, just use a single instance of the
 		// created empty list, otherwise use that given list

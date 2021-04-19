@@ -45,6 +45,9 @@ public enum CommandSetEventRequest
 			SuspendPolicy suspendPolicy =
 				SuspendPolicy.of(__packet.readByte());
 			
+			// Is there at least one filter?
+			boolean hasFilter = false;
+			
 			// Modifier properties
 			int occurrenceLimit = -1;
 			Object thread = null;
@@ -71,6 +74,10 @@ public enum CommandSetEventRequest
 				if (!eventKind.isValidModifier(modKind))
 					throw ErrorType.ILLEGAL_ARGUMENT.toss(
 						null, modKind.ordinal(), null);
+				
+				// Everything except occurrences has a filter!
+				if (modKind != EventModKind.LIMIT_OCCURRENCES)
+					hasFilter = true;
 					
 				// Depends on the kind
 				switch (modKind)
@@ -145,9 +152,9 @@ public enum CommandSetEventRequest
 			}
 			
 			// Initialize the event filter with all the modifier parameters
-			EventFilter eventFilter = new EventFilter(thread,
+			EventFilter eventFilter = (hasFilter ? new EventFilter(thread,
 				type, includeClass, excludeClass, fieldOnly, location,
-				thisInstance, exception, callStackStepping);
+				thisInstance, exception, callStackStepping) : null);
 			
 			// Register the event request
 			EventRequest request = new EventRequest(
@@ -165,6 +172,33 @@ public enum CommandSetEventRequest
 			rv.writeInt(request.id);
 			
 			return rv;
+		}
+	},
+	
+	/** Clear event. */
+	CLEAR(2)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/18
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			// Which kind of event? If not supported, it is not valid
+			EventKind eventKind = EventKind.of(__packet.readByte());
+			if (eventKind == null)
+				return __controller.__reply(__packet.id(),
+					ErrorType.INVALID_EVENT_TYPE);
+			
+			// Delete the event, if it is known... the kind is ignored since
+			// we always use unique IDs regardless of type
+			__controller.eventManager.delete(__packet.readInt());
+			
+			// Always successful, even if the ID is not valid
+			return null;
 		}
 	},
 	

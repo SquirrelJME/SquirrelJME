@@ -59,6 +59,9 @@ public enum ErrorType
 	/** Illegal argument. */
 	ILLEGAL_ARGUMENT(103),
 	
+	/** Virtual machine not running. */
+	VM_DEAD(112),
+	
 	/** Invalid length. */
 	INVALID_LENGTH(504),
 	

@@ -32,7 +32,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -42,8 +42,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -61,7 +61,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -71,8 +71,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -89,7 +89,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -99,8 +99,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -118,7 +118,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -128,8 +128,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -146,7 +146,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -156,8 +156,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -173,7 +173,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -183,8 +183,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			__packet.writeId(System.identityHashCode(__args[0]));
@@ -200,7 +200,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -210,8 +210,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			__packet.writeId(System.identityHashCode(__args[0]));
@@ -228,9 +228,16 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
-			throw Debugging.todo();
+			switch (__i)
+			{
+				case 0:
+					return EventModContext.PARAMETER_TYPE;
+				
+				default:
+					return null;
+			}
 		}
 		
 		/**
@@ -238,16 +245,16 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			Object thread = __args[0];
-			Object cl = __args[1];
-			JDWPClassStatus status = (JDWPClassStatus)__args[2];
+			// Extract arguments
+			Object cl = __args[0];
+			JDWPClassStatus status = (JDWPClassStatus)__args[1];
 			
-			// Write out the packet
-			__packet.writeId(System.identityHashCode(thread));
+			// Calling thread
+			__packet.writeId(System.identityHashCode(__thread));
 			
 			// The Class ID
 			__packet.writeByte(JDWPUtils.classType(__controller, cl).id);
@@ -270,7 +277,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -280,8 +287,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -298,7 +305,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -308,8 +315,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -338,7 +345,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -348,8 +355,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -379,7 +386,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -389,8 +396,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -408,7 +415,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -418,8 +425,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -436,7 +443,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -446,8 +453,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -464,7 +471,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -474,8 +481,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -493,7 +500,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -503,8 +510,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -522,7 +529,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -532,8 +539,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -551,7 +558,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -561,8 +568,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -579,7 +586,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -589,8 +596,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -607,7 +614,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -617,8 +624,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -633,7 +640,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -643,8 +650,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -659,7 +666,7 @@ public enum EventKind
 		 * @since 2021/04/17
 		 */
 		@Override
-		public EventModContext modifierContext(EventModKind __modifier)
+		public EventModContext modifierContext(int __i)
 		{
 			throw Debugging.todo();
 		}
@@ -669,8 +676,8 @@ public enum EventKind
 		 * @since 2021/03/16
 		 */
 		@Override
-		public void write(JDWPController __controller, JDWPPacket __packet,
-			Object... __args)
+		public void write(JDWPController __controller, Object __thread,
+			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
 			throw Debugging.todo();
@@ -723,24 +730,28 @@ public enum EventKind
 	}
 	
 	/**
-	 * Returns the context for the given modifier.
+	 * Returns the context for the given argument.
 	 * 
-	 * @param __modifier The modifier used.
-	 * @return The context for the given modifier.
+	 * @param __i The argument index, the first value should always be
+	 * {@code thread}.
+	 * @return The context for the given argument, will be {@code null} if
+	 * not valid for negative values.
 	 * @since 2021/04/17
 	 */
-	public abstract EventModContext modifierContext(EventModKind __modifier);
+	public abstract EventModContext modifierContext(int __i);
 	
 	/**
 	 * Writes the packet event data.
 	 * 
 	 * @param __controller The controller used.
+	 * @param __thread The current thread of execution.
 	 * @param __packet The packet to write to.
-	 * @param __args The arguments to the packet.
+	 * @param __args The arguments to the packet, the first value should
+	 * always be {@code thread}.
 	 * @throws JDWPException If it could not be written.
 	 * @since 2021/03/16
 	 */
-	public abstract void write(JDWPController __controller,
+	public abstract void write(JDWPController __controller, Object __thread,
 		JDWPPacket __packet, Object... __args)
 		throws JDWPException;
 	

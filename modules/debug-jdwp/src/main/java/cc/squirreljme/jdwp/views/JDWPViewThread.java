@@ -30,6 +30,15 @@ public interface JDWPViewThread
 	Object[] frames(Object __which);
 	
 	/**
+	 * Gets the instance object of the given thread.
+	 * 
+	 * @param __which Get the instance object of which thread?
+	 * @return The instance object of the given thread.
+	 * @since 2021/04/18
+	 */
+	Object instance(Object __which);
+	
+	/**
 	 * Returns the name of the given thread.
 	 * 
 	 * @param __which Get the name of which thread?

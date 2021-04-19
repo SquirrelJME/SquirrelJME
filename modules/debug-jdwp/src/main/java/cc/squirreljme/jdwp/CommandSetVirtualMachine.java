@@ -10,6 +10,7 @@
 package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jdwp.views.JDWPViewThread;
+import cc.squirreljme.jdwp.views.JDWPViewThreadGroup;
 import cc.squirreljme.jdwp.views.JDWPViewType;
 import java.util.LinkedList;
 import java.util.List;
@@ -430,6 +431,34 @@ public enum CommandSetVirtualMachine
 		{
 			List<Object> allTypes = CommandSetVirtualMachine
 				.__allTypes(__controller);
+			
+			// If we have zero classes then JDB will crash since it always
+			// expects at least a single class! So we need to go out of our
+			// way to find a class!
+			if (allTypes.isEmpty())
+			{
+				// Try to find a type from the first group we find
+				JDWPViewThreadGroup viewGroup = __controller.viewThreadGroup();
+				for (Object group : __controller.__allThreadGroups())
+				{
+					// Do we have the object class?
+					Object type = viewGroup.findType(group,
+						"java/lang/Object");
+					if (type != null)
+					{
+						// Use this type and register it
+						allTypes.add(type);
+						__controller.state.items.put(type);
+						
+						// We found one, so we need not try more
+						break;
+					}
+				}
+				
+				// If we did not find a class still, just say the VM is dead
+				if (allTypes.isEmpty())
+					throw ErrorType.VM_DEAD.toss(null, 0);
+			}
 			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);

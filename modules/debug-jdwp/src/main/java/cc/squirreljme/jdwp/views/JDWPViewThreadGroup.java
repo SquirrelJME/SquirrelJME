@@ -18,6 +18,16 @@ public interface JDWPViewThreadGroup
 	extends JDWPViewValidObject
 {
 	/**
+	 * Finds a type of the given name from this thread group.
+	 * 
+	 * @param __which Which thread group?
+	 * @param __name The name of the type to find.
+	 * @return The found type.
+	 * @since 2021/04/18
+	 */
+	Object findType(Object __which, String __name);
+	
+	/**
 	 * Returns the name of the thread group.
 	 * 
 	 * @param __which Which thread group to get the name of?

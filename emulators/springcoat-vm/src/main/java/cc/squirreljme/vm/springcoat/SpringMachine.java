@@ -487,11 +487,14 @@ public final class SpringMachine
 	public final CallbackThread obtainCallbackThread()
 		throws NullPointerException
 	{
+		CallbackThread rv = null;
+		
+		// This could deadlock on thread initialization, especially if this
+		// gets suspended by a debugger!
 		Collection<CallbackThread> cbThreads = this._cbThreads;
 		synchronized (this)
 		{
 			// Find the thread that can be opened
-			CallbackThread rv = null;
 			for (CallbackThread thread : cbThreads)
 				if (thread.canOpen())
 				{
@@ -505,26 +508,30 @@ public final class SpringMachine
 				rv.open();
 				return rv;
 			}
+		}
 			
-			// Setup new thread and its worker
-			String name = "callback#" + cbThreads.size();
-			SpringThread thread = this.createThread(name, false);
-			SpringThreadWorker worker = new SpringThreadWorker(this,
-				thread, false);
-			
-			// This always is a daemon thread
-			thread.setDaemon();
-			
-			// Enter blank thread so it is always at the ready
-			thread.enterBlankFrame();
-			
-			// Allocate thread object instance, this will get a VM thread
-			// created for it in the constructor and otherwise
-			SpringObject jvmThread = worker.newInstance(
-				SpringMachine._THREAD_CLASS, SpringMachine._THREAD_NEW,
-				worker.asVMObject(name));
-			thread.setThreadInstance(jvmThread);
-			
+		// Setup new thread and its worker
+		String name = "callback#" + cbThreads.size();
+		SpringThread thread = this.createThread(name, false);
+		SpringThreadWorker worker = new SpringThreadWorker(this,
+			thread, false);
+		
+		// This always is a daemon thread
+		thread.setDaemon();
+		
+		// Enter blank thread so it is always at the ready
+		thread.enterBlankFrame();
+		
+		// Allocate thread object instance, this will get a VM thread
+		// created for it in the constructor and otherwise
+		SpringObject jvmThread = worker.newInstance(
+			SpringMachine._THREAD_CLASS, SpringMachine._THREAD_NEW,
+			worker.asVMObject(name));
+		thread.setThreadInstance(jvmThread);
+		
+		// Register this callback thread since it was initialized
+		synchronized (this)
+		{
 			// Register this
 			rv = new CallbackThread(thread);
 			cbThreads.add(rv);

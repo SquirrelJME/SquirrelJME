@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
 import cc.squirreljme.jdwp.views.JDWPViewThread;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.util.Arrays;
 import java.util.Collections;
@@ -74,6 +75,16 @@ public class DebugViewThread
 		rv = (at == frames.length ? rv : Arrays.<Object>copyOf(rv, at));
 		Collections.reverse(Arrays.asList(rv));
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/18
+	 */
+	@Override
+	public Object instance(Object __which)
+	{
+		return ((SpringThread)__which).threadInstance();
 	}
 	
 	/**

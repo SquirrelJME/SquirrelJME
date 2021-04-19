@@ -405,9 +405,15 @@ public final class JDWPPacket
 		int id = this.readId();
 		Object object = __controller.state.items.get(id);
 		
-		// Is this valid?
+		// Is this not a valid object?
 		if (!__controller.viewObject().isValid(object))
 		{
+			// If this is a valid thread, then bounce through to the thread's
+			// instance object
+			if (__controller.viewThread().isValid(object))
+				return __controller.viewThread().instance(object);
+			
+			// Not valid?
 			if (__nullable && object == null)
 				return null;
 			
@@ -589,7 +595,8 @@ public final class JDWPPacket
 			return String.format("JDWPPacket[id=%08x,flags=%02x,len=%d]:%s",
 				this._id, flags, this._length,
 				((flags & JDWPPacket.FLAG_REPLY) != 0 ?
-					String.format("[error=%s]", this._errorCode) :
+					(this._errorCode == ErrorType.NO_ERROR ? "" :
+						String.format("[error=%s]", this._errorCode)) :
 					String.format("[cmdSet=%s;cmd=%s]",
 						(commandSet == null ||
 							commandSet == JDWPCommandSet.UNKNOWN ?

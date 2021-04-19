@@ -70,6 +70,8 @@ public final class ExceptionOnly
 	@Override
 	public String toString()
 	{
-		throw Debugging.todo();
+		return String.format("ExceptionOnly(type=%x, caught=%b, uncaught=%b)",
+			System.identityHashCode(this.optionalType),
+			this.caught, this.uncaught);
 	}
 }

@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.views.JDWPViewThreadGroup;
 import java.lang.ref.Reference;
+import net.multiphasicapps.classfile.ClassName;
 
 /**
  * A view over a group of threads, in SpringCoat this is an individual machine.
@@ -47,6 +48,17 @@ public class DebugViewThreadGroup
 	public boolean isValid(Object __which)
 	{
 		return (__which instanceof SpringMachine);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/18
+	 */
+	@Override
+	public Object findType(Object __which, String __name)
+	{
+		return ((SpringMachine)__which).classLoader()
+			.loadClass(new ClassName(__name));
 	}
 	
 	/**

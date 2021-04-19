@@ -17,11 +17,8 @@ package cc.squirreljme.jdwp.event;
  */
 public enum EventModContext
 {
-	/** A parameter of one of the arguments of the event. */
-	PARAMETER,
-	
-	/** At the current frame of the current caller. */
-	CURRENT_FRAME,
+	/** Parameter with a type. */
+	PARAMETER_TYPE,
 	
 	/* End. */
 	;
