@@ -49,7 +49,7 @@ public enum CommandSetMethod
 			// byte code addresses even without the lines?
 			long addrCount = viewType.methodLocationCount(classy, methodId);
 			rv.writeLong(0);
-			rv.writeLong(Math.min(-1, addrCount));
+			rv.writeLong(Math.max(-1, addrCount));
 			
 			// Obtain the line table to record, ensure that it exists and is
 			// valid. If this method has no byte code (abstract/native?),

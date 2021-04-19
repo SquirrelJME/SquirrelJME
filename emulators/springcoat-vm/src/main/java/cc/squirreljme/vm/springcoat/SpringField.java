@@ -51,20 +51,15 @@ public final class SpringField
 		
 		this.inclass = __cl;
 		this.field = __f;
+		this.index = __dx;
 		
 		// Instance fields require an index
 		if (__f.flags().isInstance())
 		{
 			// {@squirreljme.error BK17 Negative field index.}
 			if (__dx < 0)
-				throw new IllegalArgumentException("BK17");	
-			
-			this.index = __dx;
+				throw new IllegalArgumentException("BK17");
 		}
-		
-		// Not used for statics
-		else
-			this.index = -1;
 	}
 	
 	/**
