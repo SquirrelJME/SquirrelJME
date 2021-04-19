@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPViewThread;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.DataOutputStream;
@@ -477,8 +478,18 @@ public final class JDWPPacket
 		Object thread = __controller.state.items.get(id);
 		
 		// Is this valid?
-		if (!__controller.viewThread().isValid(thread))
+		JDWPViewThread viewThread = __controller.viewThread();
+		if (!viewThread.isValid(thread))
 		{
+			// Threads may be aliased to objects, and as such if we try to
+			// read a thread that is aliased by an object we need to get
+			// the original thread back
+			// Scan through all threads and see if we can find it again
+			if (__controller.viewObject().isValid(thread))
+				for (Object check : __controller.__allThreads())
+					if (thread == viewThread.instance(check))
+						return check;
+			
 			if (__nullable && thread == null)
 				return null;
 			
@@ -879,25 +890,6 @@ public final class JDWPPacket
 	 * written, this may be {@code null}.
 	 * @param __untag Untagged value?
 	 * @throws JDWPException If it failed to write.
-	 * @deprecated Use {@link #writeValue(Object, JDWPValueTag, boolean)} as
-	 * it has better type context.
-	 * @since 2021/03/15
-	 */
-	@Deprecated
-	public void writeValue(Object __val, String __context, boolean __untag)
-		throws JDWPException
-	{
-		this.writeValue(__val, JDWPValueTag.fromSignature(__context), __untag);
-	}
-	
-	/**
-	 * Writes a value to the output.
-	 * 
-	 * @param __val The value to write.
-	 * @param __context Context value which may adjust how the value is
-	 * written, this may be {@code null}.
-	 * @param __untag Untagged value?
-	 * @throws JDWPException If it failed to write.
 	 * @since 2021/04/11
 	 */
 	public void writeValue(Object __val, JDWPValueTag __context,
@@ -911,8 +903,13 @@ public final class JDWPPacket
 			return;
 		}
 		
-		if (true)
-			throw Debugging.todo();
+		// Depends on the context
+		switch (__context)
+		{
+			default:
+				throw Debugging.oops(__context);
+		}
+		
 		/*
 		synchronized (this)
 		{
@@ -1048,9 +1045,7 @@ public final class JDWPPacket
 			// Unknown, treat as void?
 			else
 				this.writeVoid();
-		}
-		
-		 */
+		}*/
 	}
 	
 	/**
