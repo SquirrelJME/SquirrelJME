@@ -89,6 +89,16 @@ public class DebugViewThread
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/04/19
+	 */
+	@Override
+	public boolean isTerminated(Object __which)
+	{
+		return ((SpringThread)__which).isTerminated();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/04/10
 	 */
 	@Override

@@ -115,28 +115,36 @@ public enum CommandSetThreadReference
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
+			// If this thread has terminated it becomes a zombie
+			boolean terminated = view.isTerminated(thread);
+			if (terminated)
+				rv.writeInt(0);
+			
 			// Which state is this thread in?
-			switch (view.status(thread))
-			{
-					// Sleeping
-				case ThreadStatusType.SLEEPING:
-					rv.writeInt(2);
-					break;
+			else
+				switch (view.status(thread))
+				{
+						// Sleeping
+					case ThreadStatusType.SLEEPING:
+						rv.writeInt(2);
+						break;
+						
+						// Waiting on a monitor?
+					case ThreadStatusType.MONITOR_WAIT:
+						rv.writeInt(3);
+						break;
 					
-					// Waiting on a monitor?
-				case ThreadStatusType.MONITOR_WAIT:
-					rv.writeInt(3);
-					break;
-				
-					// Running state, assuming anything else is running
-				case ThreadStatusType.RUNNING:
-				default:
-					rv.writeInt(1);
-					break;
-			}
+						// Running state, assuming anything else is running
+					case ThreadStatusType.RUNNING:
+					default:
+						rv.writeInt(1);
+						break;
+				}
 			
 			// If the thread is suspended, then it will be flagged as such
-			rv.writeInt(view.suspension(thread).query() > 0 ? 1 : 0);
+			// Terminated threads will never be seen as suspended
+			rv.writeInt(!terminated && view.suspension(thread).query() > 0 ?
+				1 : 0);
 			
 			return rv;
 		}

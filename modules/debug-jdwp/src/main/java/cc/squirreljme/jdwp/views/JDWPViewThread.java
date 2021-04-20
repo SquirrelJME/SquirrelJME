@@ -39,6 +39,15 @@ public interface JDWPViewThread
 	Object instance(Object __which);
 	
 	/**
+	 * Returns the termination status of the thread.
+	 * 
+	 * @param __which Get the termination state of which thread?
+	 * @return If the given thread is terminated.
+	 * @since 2021/04/19
+	 */
+	boolean isTerminated(Object __which);
+	
+	/**
 	 * Returns the name of the given thread.
 	 * 
 	 * @param __which Get the name of which thread?

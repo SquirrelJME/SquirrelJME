@@ -86,9 +86,6 @@ public final class SpringThread
 	/** Did we signal exit? */
 	volatile boolean _signaledexit;
 	
-	/** The suspend count of the virtual machine. */
-	volatile int _suspendCount;
-	
 	/** The current worker for the thread. */
 	volatile SpringThreadWorker _worker;
 	
