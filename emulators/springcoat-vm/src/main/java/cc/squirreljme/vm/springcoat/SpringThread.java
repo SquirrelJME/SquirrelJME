@@ -679,7 +679,7 @@ public final class SpringThread
 		}
 		
 		if (rv == null)
-			throw new IllegalStateException("Thread has no state.");
+			throw new IllegalStateException("Thread has no instance.");
 		
 		return rv;
 	}

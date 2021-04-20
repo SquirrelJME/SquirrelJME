@@ -48,6 +48,16 @@ public class DebugViewType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/04/20
+	 */
+	@Override
+	public Object classLoader(Object __which)
+	{
+		return DebugViewType.__class(__which).classLoader();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/04/11
 	 */
 	@Override
@@ -112,12 +122,17 @@ public class DebugViewType
 	@Override
 	public int[] fields(Object __which)
 	{
-		SpringField[] fields = DebugViewType.__class(__which).fieldLookup();
+		SpringClass type = DebugViewType.__class(__which);
+		SpringField[] fields = type.fieldLookup();
 		
-		int n = fields.length;
+		// Use base field since we only care about our own fields
+		int base = type._fieldLookupBase;
+		
+		// Get these field IDs
+		int n = fields.length - base;
 		int[] rv = new int[n];
 		for (int i = 0; i < n; i++)
-			rv[i] = fields[i].index;
+			rv[i] = fields[base + i].index;
 		
 		return rv;
 	}
@@ -291,12 +306,17 @@ public class DebugViewType
 	@Override
 	public int[] methods(Object __which)
 	{
-		SpringMethod[] methods = DebugViewType.__class(__which).methodLookup();
+		SpringClass type = DebugViewType.__class(__which);
+		SpringMethod[] methods = type.methodLookup();
 		
-		int n = methods.length;
+		// Get base for this method, we do not want inherited methods!
+		int base = type._methodLookupBase;
+		
+		// Only get our own methods
+		int n = methods.length - base;
 		int[] rv = new int[n];
 		for (int i = 0; i < n; i++)
-			rv[i] = methods[i].methodIndex;
+			rv[i] = methods[base + i].methodIndex;
 		
 		return rv;
 	}

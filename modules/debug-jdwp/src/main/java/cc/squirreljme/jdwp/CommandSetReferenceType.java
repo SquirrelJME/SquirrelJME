@@ -10,6 +10,7 @@
 package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jdwp.views.JDWPViewType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Reference type command set.
@@ -32,6 +33,58 @@ public enum CommandSetReferenceType
 			throws JDWPException
 		{
 			return this.__signature(false, __controller, __packet);
+		}
+	},
+	
+	/** The class loader used on a class. */
+	CLASS_LOADER(2)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/20
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			Object type = __packet.readType(__controller, false);
+			
+			JDWPPacket rv = __controller.__reply(
+				__packet.id(), ErrorType.NO_ERROR);
+			
+			// Make sure the class loader is loaded if used
+			Object loader = __controller.viewType().classLoader(type);
+			if (loader != null)
+				__controller.state.items.put(loader);
+			
+			// Write the class loader identifier
+			rv.writeId(System.identityHashCode(loader));
+			
+			return rv;
+		}
+	},
+	
+	/** Modifiers for class. */
+	MODIFIERS(3)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/20
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			Object type = __packet.readType(__controller, false);
+			
+			JDWPPacket rv = __controller.__reply(
+				__packet.id(), ErrorType.NO_ERROR);
+			
+			rv.writeInt(__controller.viewType().flags(type));
+			
+			return rv;
 		}
 	},
 	
@@ -154,6 +207,30 @@ public enum CommandSetReferenceType
 		}
 	},
 	
+	/** Class object of type. */
+	CLASS_OBJECT(11)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/20
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			Object type = __packet.readType(__controller, false);
+			
+			JDWPPacket rv = __controller.__reply(
+				__packet.id(), ErrorType.NO_ERROR);
+			
+			rv.writeId(System.identityHashCode(
+				__controller.viewType().instance(type)));
+			
+			return rv;
+		}
+	},
+	
 	/** Signature with generic (class). */
 	SIGNATURE_WITH_GENERIC(13)
 	{
@@ -249,6 +326,31 @@ public enum CommandSetReferenceType
 				// Modifier flags
 				rv.writeInt(viewType.methodFlags(type, methodDx));
 			}
+			
+			return rv;
+		}
+	},
+	
+	/** Class file version. */
+	CLASS_FILE_VERSION(17)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/20
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			Object type = __packet.readType(__controller, false);
+			
+			JDWPPacket rv = __controller.__reply(
+				__packet.id(), ErrorType.NO_ERROR);
+			
+			// Always Java 1.7
+			rv.writeInt(51);
+			rv.writeInt(0);
 			
 			return rv;
 		}

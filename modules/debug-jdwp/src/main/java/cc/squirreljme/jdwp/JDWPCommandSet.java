@@ -47,6 +47,9 @@ public enum JDWPCommandSet
 	/** Array references. */
 	ARRAY_REFERENCE(13, CommandSetArrayReference.values()),
 	
+	/** Class loader. */
+	CLASS_LOADER(14, CommandSetClassLoader.values()),
+	
 	/** Event requests. */
 	EVENT_REQUEST(15, CommandSetEventRequest.values()),
 	

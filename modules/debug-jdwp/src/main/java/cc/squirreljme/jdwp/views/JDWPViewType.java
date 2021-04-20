@@ -20,6 +20,16 @@ public interface JDWPViewType
 	extends JDWPViewValidObject
 {
 	/**
+	 * Returns the class loader used for the given type, note that there
+	 * should always only be a single class loader in Java ME per process.
+	 * 
+	 * @param __which Which type to get the classloader of?
+	 * @return The class loader for the given type.
+	 * @since 2021/04/20
+	 */
+	Object classLoader(Object __which);
+	
+	/**
 	 * Returns the component type.
 	 * 
 	 * @param __which Get the component type of what?

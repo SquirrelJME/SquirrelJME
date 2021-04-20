@@ -949,6 +949,11 @@ public final class JDWPPacket
 			// Depends on the context
 			switch (__context)
 			{
+					// Void type
+				case VOID:
+					this.writeByte('V');
+					break;
+				
 					// Boolean value, may be untagged
 				case BOOLEAN:
 					if (!__untag)

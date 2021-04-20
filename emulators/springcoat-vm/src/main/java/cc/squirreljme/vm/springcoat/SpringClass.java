@@ -90,6 +90,9 @@ public final class SpringClass
 	/** Method index table. */
 	private final SpringMethod[] _methodLookup;
 	
+	/** Base method indexes. */
+	final int _methodLookupBase;
+	
 	/** The class loader which loaded this class. */
 	private final Reference<SpringClassLoader> _classLoader;
 	
@@ -98,6 +101,9 @@ public final class SpringClass
 	
 	/** The base index for static fields. */
 	final int _staticFieldBase;
+	
+	/** The base index for our own instance fields. */
+	final int _fieldLookupBase;
 	
 	/** The class instance. */
 	SpringObject _instance;
@@ -151,6 +157,9 @@ public final class SpringClass
 			Arrays.copyOf(__super._methodLookup, numMethods));
 		this._methodLookup = methodLookup;
 		
+		// Base method index where entries go
+		this._methodLookupBase = baseMethods;
+		
 		// Go through and initialize methods declared in this class
 		int atMethodDx = baseMethods;
 		Map<MethodNameAndType, SpringMethod> nvmeths = this._nonvirtmethods;
@@ -185,6 +194,10 @@ public final class SpringClass
 		int superFieldCount = (__super == null ? 0 :
 			__super.instanceFieldCount);
 		int instanceFieldCount = superFieldCount;
+		
+		// The base of the instance fields are here, which are used to obtain
+		// everything
+		this._fieldLookupBase = superFieldCount;
 		
 		// Field index lookup for this class, used for debugging
 		// We only base on the instance fields of the super class because

@@ -84,7 +84,14 @@ public class DebugViewThread
 	@Override
 	public Object instance(Object __which)
 	{
-		return ((SpringThread)__which).threadInstance();
+		try
+		{
+			return ((SpringThread)__which).threadInstance();
+		}
+		catch (IllegalStateException ignored)
+		{
+			return null;
+		}
 	}
 	
 	/**
