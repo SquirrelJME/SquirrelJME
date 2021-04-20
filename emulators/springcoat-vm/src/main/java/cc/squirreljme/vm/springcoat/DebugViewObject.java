@@ -72,7 +72,8 @@ public class DebugViewObject
 	@Override
 	public boolean readArray(Object __which, int __index, JDWPValue __out)
 	{
-		__out.set(((SpringArrayObject)__which).get(Object.class, __index));
+		__out.set(DebugViewObject.__normalizeNull(
+			((SpringArrayObject)__which).get(Object.class, __index)));
 		return true;
 	}
 	

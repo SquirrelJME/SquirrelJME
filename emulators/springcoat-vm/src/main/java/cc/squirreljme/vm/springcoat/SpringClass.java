@@ -93,6 +93,12 @@ public final class SpringClass
 	/** The class loader which loaded this class. */
 	private final Reference<SpringClassLoader> _classLoader;
 	
+	/** Static field storage. */
+	final SpringFieldStorage[] _staticFields;
+	
+	/** The base index for static fields. */
+	final int _staticFieldBase;
+	
 	/** The class instance. */
 	SpringObject _instance;
 	
@@ -193,9 +199,13 @@ public final class SpringClass
 		// Keep static fields at the very end
 		int staticFieldAt = numFields;
 		
+		// Static field area
+		SpringFieldStorage[] staticFields = new SpringFieldStorage[numFields];
+		this._staticFields = staticFields;
+		
 		// Initialize all of the fields as needed
 		Map<FieldNameAndType, SpringField> fields = this._fields;
-		List<SpringField> instfields = new ArrayList<>(fields.size());
+		List<SpringField> instFields = new ArrayList<>(fields.size());
 		for (Field f : __cf.fields())
 		{
 			boolean isinstance = f.flags().isInstance();
@@ -213,10 +223,17 @@ public final class SpringClass
 			// Store field lookup
 			fieldLookup[atDx] = sf;
 			
+			// Setup storage for this field if static
+			if (f.flags().isStatic())
+				staticFields[atDx] = new SpringFieldStorage(sf, atDx);
+			
 			// Used to build our part of the field table
 			if (isinstance)
-				instfields.add(sf);
+				instFields.add(sf);
 		}
+		
+		// The position of the last static field is the one that is written
+		this._staticFieldBase = staticFieldAt;
 		
 		// Each field is referenced by an index rather than a map, this is
 		// more efficient for instances and additionally still allows for
@@ -234,9 +251,9 @@ public final class SpringClass
 		}
 		
 		// Store all of the instance fields
-		for (int i = superFieldCount, p = 0, pn = instfields.size();
+		for (int i = superFieldCount, p = 0, pn = instFields.size();
 			p < pn; i++, p++)
-			fieldtable[i] = instfields.get(p);
+			fieldtable[i] = instFields.get(p);
 		
 		// Used to quickly determine how big to set storage for a class
 		this.instanceFieldCount = instanceFieldCount;
@@ -246,13 +263,13 @@ public final class SpringClass
 		for (int i = 0, n = __interfaces.length; i <= n; i++)
 		{
 			// The class to look within
-			SpringClass lookin = (i == 0 ? __super : __interfaces[i - 1]);
-			if (lookin == null)
+			SpringClass lookIn = (i == 0 ? __super : __interfaces[i - 1]);
+			if (lookIn == null)
 				continue;
 			
 			// Go through class methods
 			for (Map.Entry<MethodNameAndType, SpringMethod> e :
-				lookin._methods.entrySet())
+				lookIn._methods.entrySet())
 			{
 				MethodNameAndType k = e.getKey();
 				SpringMethod v = e.getValue();
@@ -578,7 +595,10 @@ public final class SpringClass
 	 */
 	public final boolean isInitialized()
 	{
-		return this._initialized;
+		synchronized (this)
+		{
+			return this._initialized;
+		}
 	}
 	
 	/**
@@ -904,13 +924,16 @@ public final class SpringClass
 	public final void setInitialized()
 		throws SpringVirtualMachineException
 	{
-		// {@squirreljme.error BK11 Class attempted to be initialized twice.
-		// (This class)}
-		if (this._initialized)
-			throw new SpringVirtualMachineException(String.format(
-				"BK11 %s", this.name));
-		
-		this._initialized = true;
+		synchronized (this)
+		{
+			// {@squirreljme.error BK11 Class attempted to be initialized
+			// twice. (This class)}
+			if (this._initialized)
+				throw new SpringVirtualMachineException(String.format(
+					"BK11 %s", this.name));
+			
+			this._initialized = true;
+		}
 	}
 	
 	/**

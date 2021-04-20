@@ -903,6 +903,11 @@ public final class SpringThreadWorker
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
+			
+		// If the class has already been initialized then the class is
+		// ready to be used
+		if (__cl.isInitialized())
+			return __cl;
 		
 		// Use the class loading lock to prevent other threads from loading or
 		// initializing classes while this thread does such things
@@ -910,19 +915,9 @@ public final class SpringThreadWorker
 		SpringClassLoader classloader = machine.classLoader();
 		synchronized (classloader.classLoadingLock())
 		{
-			// If the class has already been initialized then the class is
-			// ready to be used
+			// Check initialization again just in case
 			if (__cl.isInitialized())
 				return __cl;
-			
-			// Tell the debugger that this class is verified
-			JDWPController jdwp = this.machine.taskManager().jdwpController;
-			JDWPTripClassStatus classTrip = (jdwp == null ? null :
-				jdwp.trip(JDWPTripClassStatus.class,
-					JDWPGlobalTrip.CLASS_STATUS));
-			if (classTrip != null)
-				classTrip.classStatus(this.thread, __cl,
-					JDWPClassStatus.VERIFIED);
 			
 			// Verbosity?
 			if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
@@ -934,79 +929,80 @@ public final class SpringThreadWorker
 			// might be seen as initialized when it should not be. So this is
 			// to prevent bad things from happening.
 			__cl.setInitialized();
-			
-			// Initialize the static field map
-			Map<SpringField, SpringFieldStorage> sfm =
-				machine.__staticFieldMap();
-			int fieldDx = 0;
-			for (SpringField f : __cl.fieldsOnlyThisClass())
-				if (f.isStatic())
-					sfm.put(f, new SpringFieldStorage(f, fieldDx++));
-			
-			// Recursively call self to load the super class before this class
-			// is handled
-			SpringClass clsuper = __cl.superClass();
-			if (clsuper != null)
-				this.loadClass(clsuper);
-			
-			// Go through interfaces and do the same
-			for (SpringClass iface : __cl.interfaceClasses())
-				this.loadClass(iface);
-			
-			// Look for static constructor for this class to initialize it as
-			// needed
-			SpringMethod init;
-			try
-			{
-				// Verbosity?
-				if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
-					Debugging.debugNote("Lookup static init for %s.", 
-						__cl.name());
-				
-				init = __cl.lookupMethod(true,
-					new MethodNameAndType("<clinit>", "()V"));
-			}
-			
-			// No static initializer exists
-			catch (SpringNoSuchMethodException e)
-			{
-				init = null;
-				
-				// Verbosity?
-				if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
-					Debugging.debugNote("No static init for %s.", 
-						__cl.name());
-			}
-			
-			// Tell the debugger that this class is prepared
-			if (classTrip != null)
-				classTrip.classStatus(this.thread, __cl,
-					JDWPClassStatus.PREPARED);
-			
-			// Static initializer exists, setup a frame and call it
-			if (init != null)
-			{
-				// Verbosity?
-				if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
-					Debugging.debugNote("Calling static init for %s.", 
-						__cl.name());
-				
-				// Stop execution when the initializer exits
-				SpringThread thread = this.thread;
-				int frameLimit = thread.numFrames();
-				
-				// Enter the static initializer
-				thread.enterFrame(init);
-				
-				// Execute until it finishes
-				this.run(frameLimit);
-			}
-			
-			// Tell the debugger that this class is fully initialized
-			if (classTrip != null)
-				classTrip.classStatus(this.thread, __cl,
-					JDWPClassStatus.INITIALIZED);
 		}
+			
+		// Tell the debugger that this class is verified
+		JDWPController jdwp = this.machine.taskManager().jdwpController;
+		JDWPTripClassStatus classTrip = (jdwp == null ? null :
+			jdwp.trip(JDWPTripClassStatus.class,
+				JDWPGlobalTrip.CLASS_STATUS));
+		if (classTrip != null)
+			classTrip.classStatus(this.thread, __cl,
+				JDWPClassStatus.VERIFIED);
+		
+		// Recursively call self to load the super class before this class
+		// is handled
+		SpringClass clsuper = __cl.superClass();
+		if (clsuper != null)
+			this.loadClass(clsuper);
+		
+		// Go through interfaces and do the same
+		for (SpringClass iface : __cl.interfaceClasses())
+			this.loadClass(iface);
+		
+		// Look for static constructor for this class to initialize it as
+		// needed
+		SpringMethod init;
+		try
+		{
+			// Verbosity?
+			if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
+				Debugging.debugNote("Lookup static init for %s.", 
+					__cl.name());
+			
+			init = __cl.lookupMethod(true,
+				new MethodNameAndType("<clinit>", "()V"));
+		}
+		
+		// No static initializer exists
+		catch (SpringNoSuchMethodException e)
+		{
+			init = null;
+			
+			// Verbosity?
+			if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
+				Debugging.debugNote("No static init for %s.", 
+					__cl.name());
+		}
+		
+		// Tell the debugger that this class is prepared
+		if (classTrip != null)
+			classTrip.classStatus(this.thread, __cl,
+				JDWPClassStatus.PREPARED);
+		
+		// Static initializer exists, setup a frame and call it
+		if (init != null)
+		{
+			// Verbosity?
+			if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
+				Debugging.debugNote("Calling static init for %s.", 
+					__cl.name());
+			
+			// Stop execution when the initializer exits
+			SpringThread thread = this.thread;
+			int frameLimit = thread.numFrames();
+			
+			// Enter the static initializer
+			thread.enterFrame(init);
+			
+			// Execute until it finishes
+			this.run(frameLimit);
+		}
+		
+		// Tell the debugger that this class is fully initialized
+		if (classTrip != null)
+			classTrip.classStatus(this.thread, __cl,
+				JDWPClassStatus.INITIALIZED);
 		
 		// Return the input class
 		return __cl;
@@ -1508,29 +1504,60 @@ public final class SpringThreadWorker
 	 * @throws SpringNoSuchFieldException If the field does not exist.
 	 * @since 2018/09/09
 	 */
-	private final SpringFieldStorage __lookupStaticField(FieldReference __f)
+	private SpringFieldStorage __lookupStaticField(FieldReference __f)
 		throws NullPointerException, SpringIncompatibleClassChangeException,
 			SpringNoSuchFieldException
 	{
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BK2a Could not access the target class for
-		// static field access. (The field reference)}
-		SpringClass inclass = this.loadClass(__f.className());
-		if (!this.checkAccess(inclass))
-			throw new SpringIncompatibleClassChangeException(
-				String.format("BK2a %s", __f));
+		// Static fields can point to a parent class but truly exist in a
+		// super class
+		SpringClass inClass = this.loadClass(__f.className());
+		while (inClass != null)
+		{
+			// {@squirreljme.error BK2a Could not access the target class for
+			// static field access. (The field reference)}
+			if (!this.checkAccess(inClass))
+				throw new SpringIncompatibleClassChangeException(
+					String.format("BK2a %s", __f));
+			
+			// Try finding the field
+			SpringField field;
+			try
+			{
+				field = inClass.lookupField(
+					true, __f.memberNameAndType());
+			}
+			catch (SpringNoSuchFieldException ignored)
+			{
+				// Not found, so try the super class
+				inClass = inClass.superClass();
+				continue;
+			}
+			
+			// {@squirreljme.error BK2b Could not access the target field for
+			// static field access. (The field reference)}
+			if (!this.checkAccess(field))
+				throw new SpringIncompatibleClassChangeException(
+					String.format("BK2b %s", __f));
+			
+			// Get the field index
+			int index = field.index;
+			
+			// Look into the class storage
+			SpringFieldStorage[] store = inClass._staticFields;
+			if (index >= inClass._staticFieldBase && index < store.length &&
+				store[index] != null)
+				return store[index];
+				
+			// Not found, so try the super class
+			inClass = inClass.superClass();
+		}
 		
-		// {@squirreljme.error BK2b Could not access the target field for
-		// static field access. (The field reference)}
-		SpringField field = inclass.lookupField(true, __f.memberNameAndType());
-		if (!this.checkAccess(field))
-			throw new SpringIncompatibleClassChangeException(
-				String.format("BK2b %s", __f));
-		
-		// Lookup the global static field
-		return this.machine.lookupStaticField(field);
+		// This should not hopefully happen
+		throw new SpringNoSuchFieldException(
+			String.format("Static field %s not found.", __f));
 	}
 	
 	/**

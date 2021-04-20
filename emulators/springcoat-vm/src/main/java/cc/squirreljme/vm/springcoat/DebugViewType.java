@@ -196,7 +196,8 @@ public class DebugViewType
 	public byte[] methodByteCode(Object __which, int __methodDx)
 	{
 		// If there is no method byte code then ignore
-		ByteCode byteCode = DebugViewType.__method(__which, __methodDx).method.byteCode();
+		ByteCode byteCode = DebugViewType.__method(__which, __methodDx)
+			.method.byteCode();
 		if (byteCode == null)
 			return null;
 		
@@ -307,20 +308,19 @@ public class DebugViewType
 	@Override
 	public boolean readValue(Object __which, int __index, JDWPValue __out)
 	{
-		SpringFieldStorage storage;
-		try
+		SpringClass classy = DebugViewType.__class(__which);
+		
+		// Get the static field storage for the class
+		SpringFieldStorage[] store = classy._staticFields;
+		if (__index >= classy._staticFieldBase && __index < store.length)
 		{
-			storage = DebugViewType.__class(__which).classLoader().machine()
-				.lookupStaticField(DebugViewType.__field(__which, __index));
-		}
-		catch (SpringVirtualMachineException ignored)
-		{
-			return false;
+			__out.set(DebugViewObject.__normalizeNull(
+				store[__index].get()));
+			return true;
 		}
 		
-		// Read value
-		__out.set(storage.get());
-		return true;
+		// Not a valid static field
+		return false;
 	}
 	
 	/**
