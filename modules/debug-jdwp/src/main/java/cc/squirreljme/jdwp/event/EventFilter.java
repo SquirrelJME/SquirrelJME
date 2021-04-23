@@ -44,6 +44,9 @@ public final class EventFilter
 	/** The instance to check on, may be {@code null}. */
 	protected final Object thisInstance;
 	
+	/** Is this instance set? */
+	protected final boolean thisInstanceSet;
+	
 	/** The thread to check on. */
 	protected final Object thread;
 	
@@ -59,6 +62,7 @@ public final class EventFilter
 	 * @param __excludeClass The class to exclude.
 	 * @param __fieldOnly Only on this field.
 	 * @param __location Only at this location.
+	 * @param __thisInstanceSet Is this instance set?
 	 * @param __thisInstance Only for the given instance.
 	 * @param __exception Only for the given exception.
 	 * @param __callStackStepping Call stepping.
@@ -66,7 +70,8 @@ public final class EventFilter
 	 */
 	public EventFilter(Object __thread, Object __type,
 		ClassPatternMatcher __includeClass, ClassPatternMatcher __excludeClass,
-		FieldOnly __fieldOnly, JDWPLocation __location, Object __thisInstance,
+		FieldOnly __fieldOnly, JDWPLocation __location,
+		boolean __thisInstanceSet, Object __thisInstance,
 		ExceptionOnly __exception, CallStackStepping __callStackStepping)
 	{
 		this.thread = __thread;
@@ -75,7 +80,8 @@ public final class EventFilter
 		this.excludeClass = __excludeClass;
 		this.fieldOnly = __fieldOnly;
 		this.location = __location;
-		this.thisInstance = __thisInstance;
+		this.thisInstance = (__thisInstanceSet ? __thisInstance : null);
+		this.thisInstanceSet = __thisInstanceSet;
 		this.exception = __exception;
 		this.callStackStepping = __callStackStepping;
 	}

@@ -27,19 +27,32 @@ public final class JDWPLocation
 	/** The type where this is located. */
 	protected final Object type;
 	
+	/** The name of the method. */
+	protected final String name;
+	
+	/** The descriptor of the method. */
+	protected final String descriptor;
+	
 	/**
 	 * Initializes the location.
 	 * 
 	 * @param __type The type used.
 	 * @param __methodDx The method index.
 	 * @param __codeDx The code index.
+	 * @param __name The name of the method.
+	 * @param __descriptor The type of the method.
 	 * @since 2021/04/17
 	 */
-	public JDWPLocation(Object __type, int __methodDx, long __codeDx)
+	public JDWPLocation(Object __type, int __methodDx, long __codeDx,
+		String __name, String __descriptor)
 	{
 		this.type = __type;
 		this.methodDx = __methodDx;
 		this.codeDx = __codeDx;
+		
+		// For debugging
+		this.name = Objects.toString(__name, "#" + __methodDx);
+		this.descriptor = Objects.toString(__descriptor, "<?>");
 	}
 	
 	/**
@@ -80,7 +93,7 @@ public final class JDWPLocation
 	@Override
 	public String toString()
 	{
-		return String.format("Location[%s:%d @%d",
-			this.type, this.methodDx, this.codeDx);
+		return String.format("Location[%s.%s%s @%d",
+			this.type, this.name, this.descriptor, this.codeDx);
 	}
 }

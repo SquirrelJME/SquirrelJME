@@ -56,7 +56,8 @@ public enum CommandSetEventRequest
 			ClassPatternMatcher excludeClass = null;
 			FieldOnly fieldOnly = null;
 			JDWPLocation location = null;
-			Object thisInstance = this;
+			Object thisInstance = null;
+			boolean thisInstanceSet = false;
 			ExceptionOnly exception = null;
 			CallStackStepping callStackStepping = null;
 			
@@ -142,6 +143,7 @@ public enum CommandSetEventRequest
 					case THIS_INSTANCE_ONLY:
 						thisInstance = __packet.readObject(__controller,
 							true);
+						thisInstanceSet = true;
 						break;
 					
 						// Report not-implemented
@@ -154,7 +156,8 @@ public enum CommandSetEventRequest
 			// Initialize the event filter with all the modifier parameters
 			EventFilter eventFilter = (hasFilter ? new EventFilter(thread,
 				type, includeClass, excludeClass, fieldOnly, location,
-				thisInstance, exception, callStackStepping) : null);
+				thisInstanceSet, thisInstance, exception,
+				callStackStepping) : null);
 			
 			// Register the event request
 			EventRequest request = new EventRequest(

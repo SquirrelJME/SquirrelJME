@@ -10,6 +10,7 @@
 package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jdwp.views.JDWPViewThread;
+import cc.squirreljme.jdwp.views.JDWPViewType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.DataOutputStream;
@@ -352,14 +353,17 @@ public final class JDWPPacket
 			this.readByte();
 			
 			// Make sure the type and method are valid
+			JDWPViewType viewType = __controller.viewType();
 			Object type = this.readType(__controller, false);
 			int methodDx = this.readId();
-			if (!__controller.viewType().isValidMethod(type, methodDx))
+			if (!viewType.isValidMethod(type, methodDx))
 				throw ErrorType.INVALID_METHOD_ID.toss(type, methodDx,
 					null);
 			
 			// Build location
-			return new JDWPLocation(type, methodDx, this.readLong());
+			return new JDWPLocation(type, methodDx, this.readLong(),
+				viewType.methodName(type, methodDx),
+				viewType.methodSignature(type, methodDx));
 		}
 	}
 	

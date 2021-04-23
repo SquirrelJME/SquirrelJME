@@ -68,6 +68,17 @@ public enum EventKind
 		
 		/**
 		 * {@inheritDoc}
+		 * @since 2021/04/23
+		 */
+		@Override
+		protected void inject(JDWPController __controller,
+			EventRequest __request, EventFilter __subject)
+		{
+			throw Debugging.todo();
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2021/03/16
 		 */
 		@Override
