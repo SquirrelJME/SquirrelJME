@@ -10,6 +10,7 @@
 package cc.squirreljme.jdwp.views;
 
 import cc.squirreljme.jdwp.JDWPValue;
+import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
 
 /**
  * Represents a type.
@@ -124,6 +125,18 @@ public interface JDWPViewType
 	 * @since 2021/04/19
 	 */
 	Object instance(Object __which);
+	
+	/**
+	 * Sets a method breakpoint.
+	 * 
+	 * @param __which Which class is the breakpoint in?
+	 * @param __methodDx The method index.
+	 * @param __codeDx The code index.
+	 * @param __trip The trip to call when this code is executed.
+	 * @since 2021/04/25
+	 */
+	void methodBreakpoint(Object __which, int __methodDx, int __codeDx,
+		JDWPTripBreakpoint __trip);
 	
 	/**
 	 * Returns the method byte code.

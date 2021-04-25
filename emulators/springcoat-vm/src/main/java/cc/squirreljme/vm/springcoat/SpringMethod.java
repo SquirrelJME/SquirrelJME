@@ -10,6 +10,9 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
+import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
+import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Method;
@@ -33,6 +36,9 @@ public final class SpringMethod
 	
 	/** The file this method is in. */
 	protected final String infile;
+	
+	/** Breakpoints for the method. */
+	private volatile Map<Integer, JDWPTripBreakpoint> _breakpoints;
 	
 	/** The line table (cached). */
 	volatile int[] _lineTable;
@@ -177,6 +183,38 @@ public final class SpringMethod
 	public final String toString()
 	{
 		return this.inclass + "::" + this.method.nameAndType().toString();
+	}
+	
+	/**
+	 * Returns the breakpoint mapping, potentially creating it.
+	 * 
+	 * @param __create Should the breakpoint map be created?
+	 * @return The breakpoint map, will be {@code null} if it does not exist.
+	 * @since 2021/04/25
+	 */
+	Map<Integer, JDWPTripBreakpoint> __breakpoints(boolean __create)
+	{
+		// If it exists, already do nothing else
+		// If we are not going to create it, then stop here
+		Map<Integer, JDWPTripBreakpoint> breakpoints = this._breakpoints;
+		if (breakpoints != null || !__create)
+			return breakpoints;
+		
+		// Lock because we want to use the same map always
+		synchronized (this)
+		{
+			// If it exists between this point now or we do not need to
+			// create it, then stop
+			breakpoints = this._breakpoints;
+			if (breakpoints != null)
+				return breakpoints;
+			
+			// Create new one
+			breakpoints = new SortedTreeMap<>();
+			this._breakpoints = breakpoints;
+		}
+		
+		return breakpoints;
 	}
 }
 

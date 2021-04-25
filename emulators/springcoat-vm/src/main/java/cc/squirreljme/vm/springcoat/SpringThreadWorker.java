@@ -14,6 +14,7 @@ import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.jdwp.JDWPClassStatus;
 import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
+import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
 import cc.squirreljme.jdwp.trips.JDWPTripClassStatus;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -1593,10 +1594,34 @@ public final class SpringThreadWorker
 			throw e;
 		}
 		
+		// We need the current frame and byte code so that we can check on
+		// our breakpoints
+		SpringThread.Frame frame = thread.currentFrame();
+		SpringMethod method = frame.method();
+		ByteCode code = frame.byteCode();
+		
 		// Poll the JDWP debugger for any new debugging state
 		JDWPController jdwp = this.machine.tasks.jdwpController;
 		if (jdwp != null)
 		{
+			// Check for breakpoints to stop at first, because if our thread
+			// gets suspended we want to know before we check for suspension.
+			Map<Integer, JDWPTripBreakpoint> jdwpBreakpoints =
+				method.__breakpoints(false);
+			if (jdwpBreakpoints != null)
+			{
+				// See if we can trip on this
+				JDWPTripBreakpoint trip;
+				synchronized (jdwpBreakpoints)
+				{
+					trip = jdwpBreakpoints.get(frame.pc());
+				}
+				
+				// Perform the trip outside of the lock, so we do not deadlock
+				if (trip != null)
+					trip.breakpoint(thread);
+			}
+			
 			// This only returns while we are suspended, but if it returns
 			// early then we were interrupted which means we need to signal
 			// that to whatever is running
@@ -1615,9 +1640,6 @@ public final class SpringThreadWorker
 		// Increase the step count
 		this._stepCount++;
 		
-		SpringThread.Frame frame = thread.currentFrame();
-		ByteCode code = frame.byteCode();
-		
 		// Frame is execution
 		int iec = frame.incrementExecCount();
 		if (iec > 0 && (iec % SpringThreadWorker._EXECUTION_THRESHOLD) == 0)
@@ -1631,7 +1653,6 @@ public final class SpringThreadWorker
 		// Are these certain kinds of initializers? Because final fields are
 		// writable during initialization accordingly
 		SpringClass currentclass = this.contextClass();
-		SpringMethod method = frame.method();
 		boolean isstaticinit = method.isStaticInitializer(),
 			isinstanceinit = method.isInstanceInitializer();
 		

@@ -152,7 +152,12 @@ public final class SpringClassLoader
 		synchronized (this.loaderlock)
 		{
 			// If the class has already been initialized, use that
-			SpringClass rv = classes.get(__cn);
+			SpringClass rv;
+			synchronized (this)
+			{
+				rv = classes.get(__cn);
+			}
+			
 			if (rv != null)
 				return rv;
 			
@@ -196,7 +201,10 @@ public final class SpringClassLoader
 				component, inJar[0], this._machineRef);
 			
 			// Store for later use
-			classes.put(__cn, rv);
+			synchronized (this)
+			{
+				classes.put(__cn, rv);
+			}
 			
 			return rv;
 		}
@@ -312,7 +320,7 @@ public final class SpringClassLoader
 	 */
 	public final SpringClass[] loadedClasses()
 	{
-		synchronized (this.loaderlock)
+		synchronized (this)
 		{
 			Collection<SpringClass> classes = this._classes.values();
 			return classes.<SpringClass>toArray(

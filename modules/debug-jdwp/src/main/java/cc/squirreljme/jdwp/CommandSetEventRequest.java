@@ -90,10 +90,14 @@ public enum CommandSetEventRequest
 					case THREAD_ONLY:
 						thread = __packet.readThread(
 							__controller, false);
+						
+						__controller.state.items.put(type);
 						break;
 					
 					case CLASS_ONLY:
 						type = __packet.readType(__controller, false);
+						
+						__controller.state.items.put(type);
 						break;
 						
 					case CLASS_MATCH_PATTERN:
@@ -167,7 +171,7 @@ public enum CommandSetEventRequest
 			
 			// Perform injection for the event so whatever we are using for
 			// the call can trip events 
-			eventKind.inject(__controller, request, eventFilter);
+			__controller.tripRequest(request);
 			
 			// Respond with the ID of this event
 			JDWPPacket rv = __controller.__reply(

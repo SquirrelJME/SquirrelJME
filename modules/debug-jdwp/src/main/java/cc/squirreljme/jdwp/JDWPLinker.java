@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -103,7 +104,17 @@ public final class JDWPLinker<T>
 		{
 			Reference<T> ref = links.get(id);
 			if (ref == null || ref.get() == null)
-				links.put(id, new WeakReference<>(__t));
+				ref = links.put(id, new WeakReference<>(__t));
+			
+			// Did this change?
+			if (ref != null)
+			{
+				T val = ref.get();
+				if (val != null && val != __t)
+					throw Debugging.oops(String.format(
+						"Change of reference: %s -> %s",
+						val, __t));
+			}
 		}
 	}
 	

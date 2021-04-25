@@ -18,6 +18,15 @@ public interface JDWPViewThreadGroup
 	extends JDWPViewValidObject
 {
 	/**
+	 * Returns all of the types that are available.
+	 * 
+	 * @param __which Which thread group?
+	 * @return All of the types that are known by this thread group.
+	 * @since 2021/04/25
+	 */
+	Object[] allTypes(Object __which);
+	
+	/**
 	 * Finds a type of the given name from this thread group.
 	 * 
 	 * @param __which Which thread group?

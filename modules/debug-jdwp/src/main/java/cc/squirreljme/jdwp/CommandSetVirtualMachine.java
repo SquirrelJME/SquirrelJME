@@ -71,8 +71,7 @@ public enum CommandSetVirtualMachine
 			// Search all types for a signature
 			List<Object> found = new LinkedList<>();
 			JDWPViewType viewType = __controller.viewType();
-			for (Object type : CommandSetVirtualMachine
-				.__allTypes(__controller))
+			for (Object type : __controller.__allTypes(false))
 				if (wantSig.equals(viewType.signature(type)))
 					found.add(type);
 				
@@ -429,8 +428,7 @@ public enum CommandSetVirtualMachine
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			List<Object> allTypes = CommandSetVirtualMachine
-				.__allTypes(__controller);
+			List<Object> allTypes = __controller.__allTypes(false);
 			
 			// If we have zero classes then JDB will crash since it always
 			// expects at least a single class! So we need to go out of our
@@ -513,25 +511,5 @@ public enum CommandSetVirtualMachine
 	public final int debuggerId()
 	{
 		return this.id;
-	}
-	
-	/**
-	 * Returns all of the known types.
-	 * 
-	 * @param __controller The controller used.
-	 * @return All of the available types.
-	 * @since 2021/04/14
-	 */
-	static List<Object> __allTypes(JDWPController __controller)
-	{
-		List<Object> allTypes = new LinkedList<>();
-		
-		// Load in all the types
-		JDWPViewType viewType = __controller.viewType();
-		for (Object obj : __controller.state.items.values())
-			if (viewType.isValid(obj))
-				allTypes.add(obj);
-		
-		return allTypes;
 	}
 }

@@ -11,6 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.views.JDWPViewThreadGroup;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import net.multiphasicapps.classfile.ClassName;
 
@@ -38,6 +39,16 @@ public class DebugViewThreadGroup
 			throw new NullPointerException("NARG");
 		
 		this.state = __state;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/25
+	 */
+	@Override
+	public Object[] allTypes(Object __which)
+	{
+		return ((SpringMachine)__which).classLoader().loadedClasses();
 	}
 	
 	/**

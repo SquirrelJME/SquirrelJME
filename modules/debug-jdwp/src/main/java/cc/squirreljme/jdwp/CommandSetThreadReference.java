@@ -284,8 +284,6 @@ public enum CommandSetThreadReference
 			
 			rv.writeInt(view.suspension(thread).query());
 			
-			System.err.printf("QUERY: %d", view.suspension(thread).query());
-			
 			return rv;
 		}
 	},

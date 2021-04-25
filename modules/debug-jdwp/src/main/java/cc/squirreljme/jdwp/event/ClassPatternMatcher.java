@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp.event;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Only in a specific class pattern modifier, anything that ends in a
  * wildcard. The exact name may be specified which will emit for a given

@@ -9,9 +9,13 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.event.EventFilter;
 import cc.squirreljme.jdwp.event.EventModContext;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Arrays;
+import java.util.List;
+import net.multiphasicapps.collections.EmptyList;
+import net.multiphasicapps.collections.UnmodifiableIterable;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * The kind of event that is generated.
@@ -22,21 +26,12 @@ public enum EventKind
 	implements __IdNumbered__
 {
 	/** Single Step. */
-	SINGLE_STEP(1, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+	SINGLE_STEP(1, null, null, EventModKind.THREAD_ONLY,
+		EventModKind.CLASS_ONLY,
 		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
 		EventModKind.LOCATION_ONLY, EventModKind.CALL_STACK_STEPPING,
 		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -51,32 +46,13 @@ public enum EventKind
 	},
 	
 	/** Breakpoint. */
-	BREAKPOINT(2, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+	BREAKPOINT(2, Arrays.asList(EventModContext.CURRENT_THREAD),
+		null, EventModKind.THREAD_ONLY,
+		EventModKind.CLASS_ONLY,
 		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
 		EventModKind.LOCATION_ONLY, EventModKind.THIS_INSTANCE_ONLY,
 		EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/23
-		 */
-		@Override
-		protected void inject(JDWPController __controller,
-			EventRequest __request, EventFilter __subject)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -91,20 +67,11 @@ public enum EventKind
 	},
 	
 	/** Frame pop. */
-	FRAME_POP(3, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+	FRAME_POP(3, null, null,
+		EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
 		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
 		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -119,21 +86,12 @@ public enum EventKind
 	},
 	
 	/** Exception. */
-	EXCEPTION(4, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+	EXCEPTION(4, null, null,
+		EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
 		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
 		EventModKind.LOCATION_ONLY, EventModKind.EXCEPTION_ONLY,
 		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -148,20 +106,11 @@ public enum EventKind
 	},
 	
 	/** User defined. */
-	USER_DEFINED(5, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+	USER_DEFINED(5, null, null,
+		EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
 		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
 		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -176,19 +125,9 @@ public enum EventKind
 	},
 	
 	/** Start of thread. */
-	THREAD_START(6, EventModKind.THREAD_ONLY,
+	THREAD_START(6, null, null, EventModKind.THREAD_ONLY,
 		EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -203,19 +142,9 @@ public enum EventKind
 	},
 	
 	/** End of thread. */
-	THREAD_DEATH(7, EventModKind.THREAD_ONLY,
+	THREAD_DEATH(7, null, null, EventModKind.THREAD_ONLY,
 		EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -230,27 +159,12 @@ public enum EventKind
 	},
 	
 	/** Class being prepared. */
-	CLASS_PREPARE(8, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+	CLASS_PREPARE(8, null,
+		Arrays.asList(EventModContext.PARAMETER_TYPE),
+		EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
 		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
 		EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			switch (__i)
-			{
-				case 0:
-					return EventModContext.PARAMETER_TYPE;
-				
-				default:
-					return null;
-			}
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -280,19 +194,10 @@ public enum EventKind
 	},
 	
 	/** Class unloading. */
-	CLASS_UNLOAD(9, EventModKind.CLASS_MATCH_PATTERN,
+	CLASS_UNLOAD(9, null, null,
+		EventModKind.CLASS_MATCH_PATTERN,
 		EventModKind.CLASS_EXCLUDE_PATTERN, EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -307,20 +212,11 @@ public enum EventKind
 	},
 	
 	/** Class loading. */
-	CLASS_LOAD(10, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+	CLASS_LOAD(10, null, null,
+		EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
 		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
 		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -335,32 +231,12 @@ public enum EventKind
 	},
 	
 	/** Field access. */
-	FIELD_ACCESS(20, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+	FIELD_ACCESS(20, null, null,
+		EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
 		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
 		EventModKind.LOCATION_ONLY, EventModKind.FIELD_ONLY,
 		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		protected void inject(JDWPController __controller,
-			EventRequest __request, EventFilter __subject)
-		{
-			throw Debugging.todo();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -375,33 +251,13 @@ public enum EventKind
 	},
 	
 	/** Field modification. */
-	FIELD_MODIFICATION(21, EventModKind.THREAD_ONLY,
+	FIELD_MODIFICATION(21, null, null,
+		EventModKind.THREAD_ONLY,
 		EventModKind.CLASS_ONLY, EventModKind.CLASS_MATCH_PATTERN,
 		EventModKind.CLASS_EXCLUDE_PATTERN, EventModKind.LOCATION_ONLY,
 		EventModKind.FIELD_ONLY, EventModKind.THIS_INSTANCE_ONLY,
 		EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		protected void inject(JDWPController __controller,
-			EventRequest __request, EventFilter __subject)
-		{
-			throw Debugging.todo();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -416,21 +272,12 @@ public enum EventKind
 	},
 	
 	/** Exception catch. */
-	EXCEPTION_CATCH(30, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+	EXCEPTION_CATCH(30, null, null,
+		EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
 		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
 		EventModKind.LOCATION_ONLY, EventModKind.EXCEPTION_ONLY,
 		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -445,20 +292,11 @@ public enum EventKind
 	},
 	
 	/** Method entry. */
-	METHOD_ENTRY(40, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+	METHOD_ENTRY(40, null, null,
+		EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
 		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
 		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -473,20 +311,11 @@ public enum EventKind
 	},
 	
 	/** Method exit. */
-	METHOD_EXIT(41, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+	METHOD_EXIT(41, null, null, EventModKind.THREAD_ONLY,
+		EventModKind.CLASS_ONLY,
 		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
 		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -501,21 +330,12 @@ public enum EventKind
 	},
 	
 	/** Method exit with return value. */
-	METHOD_EXIT_WITH_RETURN_VALUE(42, EventModKind.THREAD_ONLY,
+	METHOD_EXIT_WITH_RETURN_VALUE(42, null, null,
+		EventModKind.THREAD_ONLY,
 		EventModKind.CLASS_ONLY, EventModKind.CLASS_MATCH_PATTERN,
 		EventModKind.CLASS_EXCLUDE_PATTERN, EventModKind.THIS_INSTANCE_ONLY,
 		EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -530,21 +350,12 @@ public enum EventKind
 	},
 	
 	/** Contended monitor enter. */
-	MONITOR_CONTENDED_ENTER(43, EventModKind.THREAD_ONLY,
+	MONITOR_CONTENDED_ENTER(43, null, null,
+		EventModKind.THREAD_ONLY,
 		EventModKind.CLASS_ONLY, EventModKind.CLASS_MATCH_PATTERN,
 		EventModKind.CLASS_EXCLUDE_PATTERN, EventModKind.THIS_INSTANCE_ONLY,
 		EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -559,21 +370,12 @@ public enum EventKind
 	},
 	
 	/** Contended monitor exit. */
-	MONITOR_CONTENDED_EXIT(44, EventModKind.THREAD_ONLY,
+	MONITOR_CONTENDED_EXIT(44, null, null,
+		EventModKind.THREAD_ONLY,
 		EventModKind.CLASS_ONLY, EventModKind.CLASS_MATCH_PATTERN,
 		EventModKind.CLASS_EXCLUDE_PATTERN, EventModKind.THIS_INSTANCE_ONLY,
 		EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -588,20 +390,11 @@ public enum EventKind
 	},
 	
 	/** Monitor wait. */
-	MONITOR_WAIT(45, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+	MONITOR_WAIT(45, null, null, EventModKind.THREAD_ONLY,
+		EventModKind.CLASS_ONLY,
 		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
 		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -616,20 +409,11 @@ public enum EventKind
 	},
 	
 	/** Monitor waited. */
-	MONITOR_WAITED(46, EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
+	MONITOR_WAITED(46, null, null, EventModKind.THREAD_ONLY,
+		EventModKind.CLASS_ONLY,
 		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
 		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -644,18 +428,9 @@ public enum EventKind
 	},
 	
 	/** Virtual machine start. */
-	VM_START(90, EventModKind.THREAD_ONLY, EventModKind.LIMIT_OCCURRENCES)
+	VM_START(90, null, null, EventModKind.THREAD_ONLY,
+		EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -670,18 +445,8 @@ public enum EventKind
 	},
 	
 	/** Virtual machine death. */
-	VM_DEATH(99, EventModKind.LIMIT_OCCURRENCES)
+	VM_DEATH(99, null, null, EventModKind.LIMIT_OCCURRENCES)
 	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/04/17
-		 */
-		@Override
-		public EventModContext modifierContext(int __i)
-		{
-			throw Debugging.todo();
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/03/16
@@ -708,16 +473,31 @@ public enum EventKind
 	/** The modifier ordinal bits, for quicker lookup. */
 	private final int _modifierBits;
 	
+	/** Non-argument context. */
+	private final Iterable<EventModContext> _nonArg;
+	
+	/** Argument context. */
+	private final List<EventModContext> _arg;
+	
 	/**
 	 * Initializes the event kind.
 	 * 
 	 * @param __id The identifier.
+	 * @param __nonArg Non-argument context.
+	 * @param __arg Argument context.
 	 * @param __modifiers The possible supported modifiers for this event.
 	 * @since 2021/03/13
 	 */
-	EventKind(int __id, EventModKind... __modifiers)
+	EventKind(int __id, Iterable<EventModContext> __nonArg,
+		List<EventModContext> __arg, EventModKind... __modifiers)
 	{
 		this.id = __id;
+		
+		// Contexts for modifiers
+		this._nonArg = (__nonArg == null ? EmptyList.<EventModContext>empty() :
+			UnmodifiableIterable.<EventModContext>of(__nonArg));
+		this._arg = (__arg == null ? EmptyList.<EventModContext>empty() :
+			UnmodifiableList.<EventModContext>of(__arg));
 		
 		// Determine the modifier bits to quickly get the items
 		int modifierBits = 0;
@@ -725,31 +505,6 @@ public enum EventKind
 			modifierBits |= (1 << mod.ordinal());
 		this._modifierBits = modifierBits;
 	}
-	
-	/**
-	 * Injects the given event for trips to occur at later point.
-	 * 
-	 * @param __controller The controller used. 
-	 * @param __request The request being injected.
-	 * @param __subject The subject of this event.
-	 * @since 2021/04/17
-	 */
-	protected void inject(JDWPController __controller,
-		EventRequest __request, EventFilter __subject)
-	{
-		// By default this does nothing.
-	}
-	
-	/**
-	 * Returns the context for the given argument.
-	 * 
-	 * @param __i The argument index, the first value should always be
-	 * {@code thread}.
-	 * @return The context for the given argument, will be {@code null} if
-	 * not valid for negative values.
-	 * @since 2021/04/17
-	 */
-	public abstract EventModContext modifierContext(int __i);
 	
 	/**
 	 * Writes the packet event data.
@@ -765,6 +520,35 @@ public enum EventKind
 	public abstract void write(JDWPController __controller, Object __thread,
 		JDWPPacket __packet, Object... __args)
 		throws JDWPException;
+	
+	/**
+	 * Returns the context for the given argument.
+	 * 
+	 * @param __i The argument index, the first value should always be
+	 * {@code thread}.
+	 * @return The context for the given argument, will be {@code null} if
+	 * not valid for negative values.
+	 * @since 2021/04/17
+	 */
+	public final EventModContext contextArgument(int __i)
+	{
+		List<EventModContext> arg = this._arg;
+		if (__i < 0 || __i >= arg.size())
+			return null;
+		
+		return arg.get(__i);
+	}
+	
+	/**
+	 * Returns the general context.
+	 * 
+	 * @return The general context.
+	 * @since 2021/04/25
+	 */
+	public final Iterable<EventModContext> contextGeneral()
+	{
+		return this._nonArg;
+	}
 	
 	/**
 	 * {@inheritDoc}

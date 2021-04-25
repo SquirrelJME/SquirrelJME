@@ -285,7 +285,8 @@ public final class CommLink
 			throw new NullPointerException("NARG");
 		
 		// Debug
-		Debugging.debugNote("JDWP: -> %s", __packet);
+		if (false)
+			Debugging.debugNote("JDWP: -> %s", __packet);
 		
 		// Write to the destination
 		try

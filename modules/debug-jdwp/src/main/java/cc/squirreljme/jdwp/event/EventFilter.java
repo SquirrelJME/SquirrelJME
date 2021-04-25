@@ -23,6 +23,9 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  */
 public final class EventFilter
 {
+	/** The execution location. */
+	public final JDWPLocation location;
+	
 	/** The call stack stepping. */
 	protected final CallStackStepping callStackStepping;
 	
@@ -37,9 +40,6 @@ public final class EventFilter
 	
 	/** Include the given class? */
 	protected final ClassPatternMatcher includeClass;
-	
-	/** The execution location. */
-	protected final JDWPLocation location;
 	
 	/** The instance to check on, may be {@code null}. */
 	protected final Object thisInstance;
@@ -87,6 +87,19 @@ public final class EventFilter
 	}
 	
 	/**
+	 * Does this have type matching?
+	 * 
+	 * @return If this has type matching?
+	 * @since 2021/04/25
+	 */
+	public boolean hasTypeMatch()
+	{
+		return this.type != null ||
+			this.includeClass != null ||
+			this.excludeClass != null;
+	}
+	
+	/**
 	 * Checks if this filter meets the given criteria for the event.
 	 * 
 	 * @param __controller The controller used.
@@ -107,34 +120,66 @@ public final class EventFilter
 		if (this.thread != null && __thread != this.thread)
 			return false;
 		
-		// Any needed viewer
-		JDWPViewType viewType = __controller.viewType();
+		// Check the general context for mis-matches
+		for (EventModContext context : __kind.contextGeneral())
+			if (!this.__context(__controller, __thread, context, null))
+				return false;
 		
 		// Handle each argument and find mismatches
 		for (int i = 0, n = __args.length; i < n; i++)
 		{
 			// Check that there is context here 
-			EventModContext context = __kind.modifierContext(i);
+			EventModContext context = __kind.contextArgument(i);
 			if (context == null)
 				continue;
 			
-			// Depends on the context
-			Object arg = __args[i];
-			switch (context)
-			{
-					// A parameter based type
-				case PARAMETER_TYPE:
-					if (!viewType.isValid(arg) ||
-						this.__meetsType(viewType, arg))
-						return false;
-					break;
-				
-				default:
-					throw Debugging.oops(context);
-			}
+			// Check the context if it is valid
+			if (!this.__context(__controller, __thread, context, __args[i]))
+				return false;
 		}
 		
 		// If this was reached then would have all been matched
+		return true;
+	}
+	
+	/**
+	 * Checks if this meets the given type.
+	 * 
+	 * @param __viewType The type viewer.
+	 * @param __arg The argument.
+	 * @return If this meets the given type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/18
+	 */
+	public boolean meetsType(JDWPViewType __viewType, Object __arg)
+		throws NullPointerException
+	{
+		if (__viewType == null)
+			throw new NullPointerException("NARG");
+		
+		// Mismatched type?
+		Object type = this.type;
+		if (type != null && type != __arg)
+			return false;
+		
+		// Not an included class?
+		ClassPatternMatcher includeClass = this.includeClass;
+		ClassPatternMatcher excludeClass = this.excludeClass;
+		if (includeClass != null || excludeClass != null)
+		{
+			// Get the runtime name of the class
+			String runtimeName = JDWPUtils.signatureToRuntime(
+				__viewType.signature(__arg));
+			
+			// Is not an included class?
+			if (includeClass != null && !includeClass.meets(runtimeName))
+				return false;
+			
+			// Is an excluded class?
+			return excludeClass == null || !excludeClass.meets(runtimeName);
+		}
+		
+		// If not failed, this meets!
 		return true;
 	}
 	
@@ -159,38 +204,47 @@ public final class EventFilter
 	}
 	
 	/**
-	 * Checks if this meets the given type.
+	 * Checks the context.
 	 * 
-	 * @param __viewType The type viewer.
-	 * @param __arg The argument.
-	 * @return If this meets the given type.
-	 * @since 2021/04/18
+	 * @param __controller The controller used.
+	 * @param __thread The current thread.
+	 * @param __context The context to check for.
+	 * @param __on The object to test on.
+	 * @return If this is mismatched.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/25
 	 */
-	private boolean __meetsType(JDWPViewType __viewType, Object __arg)
+	private boolean __context(JDWPController __controller, Object __thread,
+		EventModContext __context, Object __on)
+		throws NullPointerException
 	{
-		// Mismatched type?
-		Object type = this.type;
-		if (type != null && type != __arg)
-			return false;
+		if (__controller == null || __context == null)
+			throw new NullPointerException("NARG");
 		
-		// Not an included class?
-		ClassPatternMatcher includeClass = this.includeClass;
-		ClassPatternMatcher excludeClass = this.excludeClass;
-		if (includeClass != null || excludeClass != null)
+		// Viewers
+		JDWPViewType viewType = __controller.viewType();
+		
+		// Depends on the context
+		switch (__context)
 		{
-			// Get the runtime name of the class
-			String runtimeName = JDWPUtils.signatureToRuntime(
-				__viewType.signature(__arg));
+				// The current thread
+			case CURRENT_THREAD:
+				if (__thread != this.thread)
+					return false;
+				break;
 			
-			// Is not an included class?
-			if (includeClass != null && !includeClass.meets(runtimeName))
-				return false;
+				// A parameter based type
+			case PARAMETER_TYPE:
+				if (!viewType.isValid(__on) ||
+					!this.meetsType(viewType, __on))
+					return false;
+				break;
 			
-			// Is an excluded class?
-			return excludeClass == null || !excludeClass.meets(runtimeName);
+			default:
+				throw Debugging.oops(__context);
 		}
 		
-		// If not failed, this meets!
+		// Is okay
 		return true;
 	}
 }

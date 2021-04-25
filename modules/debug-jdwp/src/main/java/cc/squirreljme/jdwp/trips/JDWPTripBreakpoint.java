@@ -7,22 +7,21 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jdwp.event;
+package cc.squirreljme.jdwp.trips;
 
 /**
- * This is the context used for an event modifier, this changes how a value
- * should be interpreted when it is checked.
+ * Handler for breakpoint trips.
  *
- * @since 2021/04/17
+ * @since 2021/04/25
  */
-public enum EventModContext
+public interface JDWPTripBreakpoint
+	extends JDWPTrip
 {
-	/** Parameter with a type. */
-	PARAMETER_TYPE,
-	
-	/** Current thread. */
-	CURRENT_THREAD,
-	
-	/* End. */
-	;
+	/**
+	 * Trip for a breakpoint event.
+	 * 
+	 * @param __thread The thread this is occurring in.
+	 * @since 2021/04/25
+	 */
+	void breakpoint(Object __thread);
 }

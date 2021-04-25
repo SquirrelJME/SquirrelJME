@@ -12,12 +12,13 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jdwp.JDWPCommandException;
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.JDWPValue;
+import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
 import cc.squirreljme.jdwp.views.JDWPViewType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
-import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.lang.ref.Reference;
+import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 
 /**
@@ -200,6 +201,33 @@ public class DebugViewType
 		catch (SpringNoSuchMethodException|JDWPCommandException ignored)
 		{
 			return false;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/25
+	 */
+	@Override
+	public void methodBreakpoint(Object __which, int __methodDx, int __codeDx,
+		JDWPTripBreakpoint __trip)
+	{
+		SpringMethod method = DebugViewType.__method(__which, __methodDx);
+		
+		// Return the method byte code, so we can get the true PC address
+		// If there is no byte code then we just ignore
+		ByteCode byteCode = method.byteCode();
+		if (byteCode == null)
+			return;
+		
+		// Obtain the breakpoint map
+		Map<Integer, JDWPTripBreakpoint> breakpoints =
+			method.__breakpoints(true);
+		
+		// Lock for thread safety
+		synchronized (breakpoints)
+		{
+			breakpoints.put(byteCode.indexToAddress(__codeDx), __trip);
 		}
 	}
 	

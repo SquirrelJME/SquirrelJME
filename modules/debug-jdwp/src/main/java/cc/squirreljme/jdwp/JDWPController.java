@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.event.EventFilter;
 import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.trips.JDWPTrip;
 import cc.squirreljme.jdwp.views.JDWPViewFrame;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This class acts as the main controller interface for JDWP and acts as a kind
@@ -69,6 +71,10 @@ public final class JDWPController
 	/** The global trips that are available. */
 	private final JDWPTrip[] _trips =
 		new JDWPTrip[JDWPGlobalTrip.values().length];
+	
+	/** Weak self reference, so there are not 1000 of these. */
+	private final Reference<JDWPController> _weakThis =
+		new WeakReference<>(this);
 	
 	/** Are events to the debugger being held? */
 	protected volatile boolean _holdEvents;
@@ -131,7 +137,8 @@ public final class JDWPController
 					break;
 				
 				// Debug
-				Debugging.debugNote("JDWP: <- %s", packet);
+				if (false)
+					Debugging.debugNote("JDWP: <- %s", packet);
 				
 				// Ignore any reply packet we received
 				if (packet.isReply())
@@ -217,7 +224,7 @@ public final class JDWPController
 	public void signal(Object __thread, EventKind __kind, Object... __args)
 		throws NullPointerException
 	{
-		if (__thread == null || __kind == null)
+		if (__kind == null)
 			throw new NullPointerException("NARG");
 		
 		// Go through all compatible events for this thread
@@ -269,7 +276,7 @@ public final class JDWPController
 			return __cl.cast(trip);
 		
 		// Otherwise setup a new trip
-		Reference<JDWPController> ref = new WeakReference<>(this);
+		Reference<JDWPController> ref = this._weakThis;
 		switch (__t)
 		{
 			case CLASS_STATUS:
@@ -291,6 +298,62 @@ public final class JDWPController
 		// Cache and use it
 		this._trips[__t.ordinal()] = trip;
 		return  __cl.cast(trip);
+	}
+	
+	/**
+	 * Injects the given event for trips to occur at later point.
+	 * 
+	 * @param __request The request being tripped at a later point.
+	 * @since 2021/04/17
+	 */
+	protected void tripRequest(EventRequest __request)
+		throws NullPointerException
+	{
+		if (__request == null)
+			throw new NullPointerException("NARG");
+		
+		Reference<JDWPController> ref = this._weakThis;
+		
+		// Depends on the event
+		EventFilter filter = __request.filter;
+		switch (__request.eventKind)
+		{
+				// Breakpoint at a random position
+			case BREAKPOINT:
+				{
+					// If there is no location, this is a pointless breakpoint
+					JDWPLocation location = filter.location;
+					if (location == null)
+						return;
+					
+					// Initializes the breakpoint
+					this.viewType().methodBreakpoint(location.type,
+						location.methodDx, (int)location.codeDx,
+						new __TripBreakpoint__(ref));
+				}
+				break;
+			
+				// Preparing/loading a class, since this could be a class that
+				// we already know about, we need to go through all of the
+				// classes to find the right one
+			case CLASS_PREPARE:
+				{
+					// If this filter does not have a type match then it is
+					// very likely a very generic one
+					if (filter == null || !filter.hasTypeMatch())
+						return;
+					
+					// Go through all of our known classes and report ones
+					// that we already know about. Note use the cached types
+					// so we do not have to ask the VM about it.
+					JDWPViewType viewType = this.viewType();
+					for (Object type : this.__allTypes(true))
+						if (filter.meetsType(viewType, type))
+							this.signal(null, __request.eventKind,
+								type, JDWPClassStatus.INITIALIZED);
+				}
+				break;
+		}
 	}
 	
 	/**
@@ -406,6 +469,60 @@ public final class JDWPController
 		}
 		
 		return allThreads.toArray(new Object[allThreads.size()]);
+	}
+	
+	
+	/**
+	 * Returns all of the known types.
+	 * 
+	 * @param __cached Do we use the type cache?
+	 * @return All of the available types.
+	 * @since 2021/04/14
+	 */
+	List<Object> __allTypes(boolean __cached)
+	{
+		List<Object> allTypes = new LinkedList<>();
+		
+		// Using all of the known cached types
+		if (__cached)
+		{
+			JDWPViewType viewType = this.viewType();
+			for (Object obj : this.state.items.values())
+				if (viewType.isValid(obj))
+					allTypes.add(obj);
+		}
+		
+		// Get a fresh perspective on all the loaded types
+		else
+		{
+			for (Object group : this.__allThreadGroups())
+				allTypes.addAll(this.__allTypes(group));
+		}
+		
+		return allTypes;
+	}
+	
+	/**
+	 * Returns all of the types within the given group.
+	 * 
+	 * @param __group The group to search.
+	 * @return All of the types within the group.
+	 * @since 2021/04/25
+	 */
+	private List<Object> __allTypes(Object __group)
+		throws NullPointerException
+	{
+		if (__group == null)
+			throw new NullPointerException("NARG");
+			
+		Object[] types = this.viewThreadGroup().allTypes(__group);
+		
+		// Register all types so that the debugger knows about their existence
+		JDWPLinker<Object> items = this.state.items;
+		for (Object type : types)
+			items.put(type);
+		
+		return Arrays.asList(types);
 	}
 	
 	/**
