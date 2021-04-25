@@ -36,7 +36,7 @@ public interface JDWPViewFrame
 	 * @return The code index the frame is at.
 	 * @since 2021/04/11
 	 */
-	int atCodeIndex(Object __which);
+	long atCodeIndex(Object __which);
 	
 	/**
 	 * Returns the method index within the given class the frame is at.

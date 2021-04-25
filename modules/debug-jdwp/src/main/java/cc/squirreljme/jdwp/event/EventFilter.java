@@ -13,6 +13,8 @@ import cc.squirreljme.jdwp.EventKind;
 import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.JDWPLocation;
 import cc.squirreljme.jdwp.JDWPUtils;
+import cc.squirreljme.jdwp.views.JDWPViewFrame;
+import cc.squirreljme.jdwp.views.JDWPViewThread;
 import cc.squirreljme.jdwp.views.JDWPViewType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -115,10 +117,6 @@ public final class EventFilter
 	{
 		if (__controller == null || __kind == null)
 			throw new NullPointerException("NARG");
-		
-		// Match against the current thread?
-		if (this.thread != null && __thread != this.thread)
-			return false;
 		
 		// Check the general context for mis-matches
 		for (EventModContext context : __kind.contextGeneral())
@@ -223,14 +221,34 @@ public final class EventFilter
 		
 		// Viewers
 		JDWPViewType viewType = __controller.viewType();
+		JDWPViewThread viewThread = __controller.viewThread();
+		JDWPViewFrame viewFrame = __controller.viewFrame();
 		
 		// Depends on the context
 		switch (__context)
 		{
 				// The current thread
 			case CURRENT_THREAD:
-				if (__thread != this.thread)
+				// Thread is only valid if it is set
+				if (this.thread != null && __thread != this.thread)
 					return false;
+				break;
+				
+				// Current location in code
+			case CURRENT_LOCATION:
+				if (this.location != null)
+				{
+					JDWPLocation location = this.location;
+					
+					// With no current thread, we have no idea where we are
+					// even located
+					if (__thread == null)
+						return false;
+					
+					// Is not the same location?
+					if (!location.equals(__controller.locationOf(__thread)))
+						return false;
+				}
 				break;
 			
 				// A parameter based type

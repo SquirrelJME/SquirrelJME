@@ -24,7 +24,8 @@ public interface JDWPViewThread
 	 * Returns the stack frame of the given thread.
 	 * 
 	 * @param __which Get the frames of which thread?
-	 * @return The stack frames.
+	 * @return The stack frames, the top-most thread is the first index in
+	 * the array.
 	 * @since 2021/04/11
 	 */
 	Object[] frames(Object __which);

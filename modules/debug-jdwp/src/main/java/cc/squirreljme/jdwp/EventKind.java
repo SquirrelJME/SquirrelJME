@@ -46,8 +46,10 @@ public enum EventKind
 	},
 	
 	/** Breakpoint. */
-	BREAKPOINT(2, Arrays.asList(EventModContext.CURRENT_THREAD),
-		null, EventModKind.THREAD_ONLY,
+	BREAKPOINT(2, Arrays.asList(EventModContext.CURRENT_THREAD,
+			EventModContext.CURRENT_LOCATION),
+		null,
+		EventModKind.THREAD_ONLY,
 		EventModKind.CLASS_ONLY,
 		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
 		EventModKind.LOCATION_ONLY, EventModKind.THIS_INSTANCE_ONLY,
@@ -62,7 +64,9 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			throw Debugging.todo();
+			__packet.writeId(System.identityHashCode(__thread));
+			__packet.writeLocation(__controller,
+				__controller.locationOf(__thread));
 		}
 	},
 	

@@ -23,6 +23,9 @@ public enum EventModContext
 	/** Current thread. */
 	CURRENT_THREAD,
 	
+	/** Current location in code. */
+	CURRENT_LOCATION,
+	
 	/* End. */
 	;
 }

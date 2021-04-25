@@ -219,15 +219,17 @@ public final class JDWPController
 	 * @param __kind The kind of event to signal.
 	 * @param __args Arguments to the signal packet.
 	 * @throws NullPointerException On null arguments.
+	 * @return If an event was found and sent for it.
 	 * @since 2021/03/16
 	 */
-	public void signal(Object __thread, EventKind __kind, Object... __args)
+	public boolean signal(Object __thread, EventKind __kind, Object... __args)
 		throws NullPointerException
 	{
 		if (__kind == null)
 			throw new NullPointerException("NARG");
 		
 		// Go through all compatible events for this thread
+		boolean hit = false;
 		for (EventRequest request : this.eventManager.find(
 			this, __thread, __kind, __args))
 		{
@@ -240,6 +242,9 @@ public final class JDWPController
 			else if (request.suspendPolicy == SuspendPolicy.EVENT_THREAD)
 				this.viewThread().suspension(__thread).suspend();
 			
+			// Event was hit
+			hit = true;
+			
 			// Send response to the VM of the event that just occurred
 			try (JDWPPacket packet = this.__event(request.suspendPolicy,
 				__kind, request.id))
@@ -251,6 +256,13 @@ public final class JDWPController
 				this.commLink.send(packet);
 			}
 		}
+		
+		// Debug
+		if (!hit)
+			Debugging.debugNote("Could not find anything for %s: %s",
+				__kind, Arrays.asList(__args));
+		
+		return hit;
 	}
 	
 	/**
@@ -560,6 +572,37 @@ public final class JDWPController
 		rv.writeInt(__responseId);
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the location of the given thread.
+	 * 
+	 * @param __thread The thread to get from.
+	 * @return The current thread location.
+	 * @since 2021/04/25
+	 */
+	public JDWPLocation locationOf(Object __thread)
+	{
+		JDWPViewType viewType = this.viewType();
+		JDWPViewThread viewThread = this.viewThread();
+		JDWPViewFrame viewFrame = this.viewFrame();
+		
+		// Get the current frames and see if 
+		Object[] frames = viewThread.frames(__thread);
+		if (frames == null || frames.length == 0)
+			return JDWPLocation.BLANK;
+		
+		// Get frame details
+		Object topFrame = frames[0];
+		Object type = viewFrame.atClass(topFrame);
+		int methodDx = viewFrame.atMethodIndex(topFrame);
+		
+		// Build information
+		return new JDWPLocation(type,
+			methodDx,
+			viewFrame.atCodeIndex(topFrame),
+			viewType.methodName(type, methodDx),
+			viewType.methodSignature(type, methodDx));
 	}
 	
 	/**

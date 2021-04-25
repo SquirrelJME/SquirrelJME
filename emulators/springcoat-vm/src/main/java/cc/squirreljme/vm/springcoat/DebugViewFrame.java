@@ -53,9 +53,10 @@ public class DebugViewFrame
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/04/11
+	 * @return
 	 */
 	@Override
-	public int atCodeIndex(Object __which)
+	public long atCodeIndex(Object __which)
 	{
 		return ((SpringThread.Frame)__which).pcIndex();
 	}

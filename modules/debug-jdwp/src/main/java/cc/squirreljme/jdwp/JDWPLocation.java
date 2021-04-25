@@ -18,6 +18,11 @@ import java.util.Objects;
  */
 public final class JDWPLocation
 {
+	/** Blank location. */
+	protected static final JDWPLocation BLANK = 
+		new JDWPLocation(null, -1, -1,
+			null, null);
+	
 	/** The location within the method. */
 	protected final long codeDx;
 	
@@ -84,6 +89,22 @@ public final class JDWPLocation
 		long codeDx = this.codeDx;
 		return System.identityHashCode(this.type) ^
 			~this.methodDx ^ ((int)codeDx | (int)(codeDx >>> 32));
+	}
+	
+	/**
+	 * Checks if this meets the given location.
+	 * 
+	 * @param __type The class this is at.
+	 * @param __methodDx The method index.
+	 * @param __codeDx The code index.
+	 * @return If this meets the given location.
+	 * @since 2021/04/25
+	 */
+	public boolean meets(Object __type, int __methodDx, int __codeDx)
+	{
+		return this.type == __type &&
+			this.methodDx == __methodDx &&
+			this.codeDx == (long)__codeDx;
 	}
 	
 	/**

@@ -42,6 +42,8 @@ class __TripBreakpoint__
 	@Override
 	public void breakpoint(Object __thread)
 	{
+		Debugging.debugNote("TRIPPING ON BREAKPOINT!");
+		
 		JDWPController controller = this.__controller();
 		
 		// Make sure this thread is registered

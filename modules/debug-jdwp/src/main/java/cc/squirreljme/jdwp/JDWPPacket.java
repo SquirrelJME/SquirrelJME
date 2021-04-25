@@ -770,6 +770,23 @@ public final class JDWPPacket
 	 * Writes a location into the packet.
 	 * 
 	 * @param __controller The controller used. 
+	 * @param __location The location used.
+	 * @throws JDWPException If the packet could not be written.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/25
+	 */
+	public void writeLocation(JDWPController __controller,
+		JDWPLocation __location)
+		throws JDWPException, NullPointerException
+	{
+		this.writeLocation(__controller, __location.type,
+			__location.methodDx, __location.codeDx);
+	}
+	
+	/**
+	 * Writes a location into the packet.
+	 * 
+	 * @param __controller The controller used. 
 	 * @param __class The class to write.
 	 * @param __atMethodIndex The method index.
 	 * @param __atCodeIndex The code index.
@@ -778,7 +795,7 @@ public final class JDWPPacket
 	 * @since 2021/04/11
 	 */
 	public void writeLocation(JDWPController __controller, Object __class,
-		int __atMethodIndex, int __atCodeIndex)
+		int __atMethodIndex, long __atCodeIndex)
 		throws JDWPException, NullPointerException
 	{
 		if (__controller == null)
