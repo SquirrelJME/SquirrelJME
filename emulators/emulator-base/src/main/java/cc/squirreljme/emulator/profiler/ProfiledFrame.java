@@ -36,22 +36,25 @@ public final class ProfiledFrame
 		new LinkedHashMap<>();
 	
 	/** The number of calls made into the frame. */
-	int _numcalls;
+	int _numCalls;
 	
 	/** Cumulative time spent in this frame and child frames. */
-	long _traceruntime;
+	long _totalTime;
 	
-	/** Cumulative time spent in this frame and child frames without sleep. */
-	long _tracecputime;
+	/** Cumulative time spent in this frame and child frames with sleep. */
+	long _totalCpuTime;
 	
 	/** Time only spent in this frame. */
-	long _frameruntime;
+	long _selfTime;
 	
-	/** Time only spent in this frame without sleep. */
-	long _framecputime;
+	/** Time only spent in this frame with sleep. */
+	long _selfCpuTime;
 	
-	/** Time to subtract from the measured self times. */
-	private long _subtractself;
+	/** Time spent calling other methods. */
+	private long _invokingTime;
+	
+	/** The time spent sleeping. */
+	long _sleepTime;
 	
 	/** Current frame start time. */
 	private long _currentstart =
@@ -59,6 +62,10 @@ public final class ProfiledFrame
 	
 	/** Current time sub-frame started execution, to remove self time. */
 	private long _currentsubstart =
+		Long.MIN_VALUE;
+	
+	/** Starting sleep time. */
+	private long _sleepStart =
 		Long.MIN_VALUE;
 	
 	/** The current in-call count for this frame. */
@@ -107,14 +114,17 @@ public final class ProfiledFrame
 		
 		// Increase call count
 		this._inCallCount++;
+		
+		// Increase call count
+		this._numCalls++;
 	}
 	
 	/**
 	 * Indicates that the frame has been exited.
 	 *
 	 * @param __ns The time of the exit.
-	 * @return The time spent in this frame, in total, self time, and CPU
-	 * time.
+	 * @return Total time with invocations, self time, self CPU time, and
+	 * sleep time.
 	 * @throws IllegalStateException If the frame has not been entered.
 	 * @since 2018/11/11
 	 */
@@ -131,31 +141,29 @@ public final class ProfiledFrame
 		if (this._currentsubstart != Long.MIN_VALUE)
 			throw new IllegalStateException("AH04");
 		
-		// Determine the cumulative and self time spent
-		long total = __ns - cs,
-			self = total - this._subtractself;
+		// Determine the cumulative and self time spent (without sub-invokes)
+		long total = __ns - cs;
+		long self = total - this._invokingTime;
 		
-		// Increase call count
-		this._numcalls++;
-		
-		// All sub-frames times
-		this._traceruntime += total;
-		this._tracecputime += total;
+		// Along with the CPU time
+		long sleepTime = this._sleepTime;
+		long selfCPU = self - sleepTime;
 		
 		// And only this frame time
-		this._frameruntime += self;
-		this._framecputime += self;
+		this._selfTime += self;
+		this._selfCpuTime += selfCPU;
 		
 		// Clear these for next time
 		this._currentstart = Long.MIN_VALUE;
-		this._subtractself = 0;
+		this._invokingTime = 0;
+		this._sleepTime = 0;
 		
 		// Lower the in-call count, make sure it never goes below zero
 		if ((--this._inCallCount) < 0)
 			this._inCallCount = 0;
 		
 		// Return both times since they may be useful
-		return new long[]{total, self, total};
+		return new long[]{total, self, selfCPU, sleepTime};
 	}
 	
 	/**
@@ -188,9 +196,9 @@ public final class ProfiledFrame
 		// Reset
 		this._currentsubstart = Long.MIN_VALUE;
 		
-		// Return the amount of time that was spend in this invocation
-		long rv = __ns - css;
-		this._subtractself += rv;
+		// Return the amount of time that was spent in this invocation
+		long rv = Math.max(0, __ns - css);
+		this._invokingTime += rv;
 		return rv;
 	}
 	
@@ -211,6 +219,44 @@ public final class ProfiledFrame
 		
 		// Mark it
 		this._currentsubstart = __ns;
+	}
+	
+	/**
+	 * Enters sleep mode for the current frame.
+	 * 
+	 * @param __enter Are we entering sleep?
+	 * @param __ns The current time.
+	 * @since 2021/04/25
+	 */
+	public void sleep(boolean __enter, long __ns)
+	{
+		long sleepStart = this._sleepStart;
+		
+		// Entering sleep?
+		if (__enter)
+		{
+			// Frame already sleeping
+			if (sleepStart != Long.MIN_VALUE)
+				throw new IllegalStateException(
+					"Frame is already sleeping.");
+			
+			// Mark it
+			this._sleepStart = __ns;
+		}
+		
+		// Ending sleep?
+		else
+		{
+			// Frame is not asleep
+			if (sleepStart == Long.MIN_VALUE)
+				throw new IllegalStateException("Frame is not asleep.");
+			
+			// Reset
+			this._sleepStart = Long.MIN_VALUE;
+			
+			// Reduce the amount of spent time on this
+			this._sleepTime += Math.max(0, __ns - sleepStart);
+		}
 	}
 }
 

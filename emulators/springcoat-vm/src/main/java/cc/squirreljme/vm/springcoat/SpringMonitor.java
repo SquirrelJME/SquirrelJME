@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.jvm.mle.constants.MonitorResultType;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIllegalMonitorStateException;
@@ -72,7 +73,8 @@ public final class SpringMonitor
 					// Wait for lock to be freed
 					try
 					{
-						__t.setStatus(ThreadStatusType.MONITOR_WAIT);
+						SpringMonitor.__changeState(__t, true);
+						
 						this.wait();
 					}
 					catch (InterruptedException e)
@@ -81,8 +83,7 @@ public final class SpringMonitor
 					}
 					finally
 					{
-						// Go back to the running state
-						__t.setStatus(ThreadStatusType.RUNNING);
+						SpringMonitor.__changeState(__t, false);
 					}
 				}
 			}
@@ -267,8 +268,8 @@ public final class SpringMonitor
 					// Could be interrupted
 					try
 					{
-						// Start waiting on it
-						__by.setStatus(ThreadStatusType.MONITOR_WAIT);
+						// Indicate that we are waiting on a monitor
+						SpringMonitor.__changeState(__by, true);
 						
 						// Check if time expired
 						if (!waitforever)
@@ -301,10 +302,47 @@ public final class SpringMonitor
 					// Go back to the running state
 					finally
 					{
-						__by.setStatus(ThreadStatusType.RUNNING);
+						SpringMonitor.__changeState(__by, false);
 					}
 				}
 			}
+		}
+	}
+	
+	/**
+	 * Changes the state of the thread to indicate monitor status.
+	 * 
+	 * @param __thread The thread to change the state of.
+	 * @param __wait Are we waiting?
+	 * @since 2021/04/25
+	 */
+	private static void __changeState(SpringThread __thread, boolean __wait)
+	{
+		// Get the profiler information
+		SpringThread.Frame currentFrame = __thread.currentFrame();
+		ProfiledFrame profiler = (currentFrame == null ? null :
+			currentFrame._profiler);
+		
+		// Is now waiting
+		if (__wait)
+		{
+			// Set as waiting
+			__thread.setStatus(ThreadStatusType.MONITOR_WAIT);
+			
+			// Do not count CPU time
+			if (profiler != null)
+				profiler.sleep(true, System.nanoTime());
+		}
+		
+		// No longer waiting
+		else
+		{
+			// Is now running
+			__thread.setStatus(ThreadStatusType.RUNNING);
+			
+			// Continue counting CPU time
+			if (profiler != null)
+				profiler.sleep(false, System.nanoTime());
 		}
 	}
 }

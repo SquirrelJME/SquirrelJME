@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.trips.JDWPTripThread;
@@ -388,24 +389,48 @@ public enum MLEThread
 			if (ms < 0 || ns < 0 || ns > 1000000000)
 				throw new SpringMLECallError("Out of range time.");
 			
-			if (ms == 0 && ns == 0)
-				Thread.yield();
-			else
-				try
-				{
-					__thread.thread.setStatus(ThreadStatusType.SLEEPING);
-					Thread.sleep(ms, ns);
-				}
-				catch (InterruptedException ignored)
-				{
-					return true;
-				}
-				finally
-				{
-					__thread.thread.setStatus(ThreadStatusType.RUNNING);
-				}
+			// Get the profiler information
+			SpringThread.Frame currentFrame = __thread.thread.currentFrame();
+			ProfiledFrame profiler = (currentFrame == null ? null :
+				currentFrame._profiler);
 			
-			return false;
+			// We need to restore profiler states
+			boolean interrupted = false;
+			try
+			{
+				// Indicate that we are in sleep mode
+				__thread.thread.setStatus(ThreadStatusType.SLEEPING);
+				
+				// Stop counting CPU time for this
+				if (profiler != null)
+					profiler.sleep(true, System.nanoTime());
+				
+				// Just giving up CPU time?
+				if (ms == 0 && ns == 0)
+					Thread.yield();
+				
+				// Normal sleep
+				else
+					try
+					{
+						Thread.sleep(ms, ns);
+					}
+					catch (InterruptedException ignored)
+					{
+						interrupted = true;
+					}
+			}
+			finally
+			{
+				// We have left sleep mode
+				__thread.thread.setStatus(ThreadStatusType.RUNNING);
+				
+				// Continue counting CPU time
+				if (profiler != null)
+					profiler.sleep(false, System.nanoTime());
+			}
+			
+			return interrupted;
 		}
 	},
 	

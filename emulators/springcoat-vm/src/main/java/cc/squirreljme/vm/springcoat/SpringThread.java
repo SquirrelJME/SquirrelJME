@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.emulator.profiler.ProfiledThread;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
@@ -157,15 +158,16 @@ public final class SpringThread
 		if (frames.size() >= SpringThread.MAX_STACK_DEPTH)
 			throw new SpringVirtualMachineException("BK1j");
 		
+		// Profile for this frame
+		rv._profiler = this.profiler.enterFrame(
+			"<blank>", "<blank>", "()V",
+			System.nanoTime());
+		
 		// Lock on frames as a new one is added
 		synchronized (this)
 		{
 			frames.add(rv);
 		}
-		
-		// Profile for this frame
-		this.profiler.enterFrame("<blank>", "<blank>", "()V",
-			System.nanoTime());
 		
 		// Had one frame (started)
 		this._hadoneframe = true;
@@ -223,7 +225,7 @@ public final class SpringThread
 			this._worker.loadClass(__m.inClass()), __m, vmArgs);
 		
 		// Profile for this frame
-		this.profiler.enterFrame(__m.inClass().toString(),
+		rv._profiler = this.profiler.enterFrame(__m.inClass().toString(),
 			__m.nameAndType().name().toString(),
 			__m.nameAndType().type().toString(), System.nanoTime());
 		
@@ -267,7 +269,7 @@ public final class SpringThread
 				// {@squirreljme.error BK1n Cannot enter a monitor of nothing
 				// or a non-object.}
 				Object argzero = __args[0];
-				if (!(argzero instanceof cc.squirreljme.vm.springcoat.SpringObject))
+				if (!(argzero instanceof SpringObject))
 					throw new SpringVirtualMachineException("BK1n");
 				
 				// Use this as the monitor
@@ -733,6 +735,9 @@ public final class SpringThread
 		/** The stack. */
 		private final Object[] _stack;
 		
+		/** Profiled frame. */
+		volatile ProfiledFrame _profiler;
+		
 		/** The top of the stack. */
 		private volatile int _stacktop;
 		
@@ -757,7 +762,7 @@ public final class SpringThread
 		 * @param __level The frame depth.
 		 * @since 2018/09/20
 		 */
-		private Frame(int __level)
+		Frame(int __level)
 		{
 			this.level = __level;
 			this.method = null;

@@ -3606,25 +3606,40 @@ public final class SpringThreadWorker
 				ref.className().toString(),
 				ref.memberName().toString(), ref.memberType().toString());
 			
+			// Current framer
+			SpringThread.Frame currentFrame = this.thread.currentFrame();
+			
+			// Potential return value?
+			MethodDescriptor type = ref.memberType();
+			Object rv;
+			
 			// Now perform the actual call
+			ProfiledFrame oldFrame = currentFrame._profiler;
 			try
 			{
-				// Calculate result of method
-				MethodDescriptor type = ref.memberType();
-				Object rv = this.nativeMethod(ref.className(),
-					ref.memberNameAndType(), args);
+				// Replace frame for tracking
+				currentFrame._profiler = pFrame;
 				
-				// Push native object to the stack
-				if (type.hasReturnValue())
-					__f.pushToStack(this.asVMObject(rv, true));
+				// Perform call and get the result
+				rv = this.nativeMethod(ref.className(),
+					ref.memberNameAndType(), args);
 			}
 			
-			// Exit the profiler frame to it is no longer tracked
+			// Exit the profiler frame so it is no longer tracked
 			finally
 			{
 				if (pFrame.inCallCount() > 0)
 					this.thread.profiler.exitFrame();
+				
+				// Restore old frame
+				if (currentFrame._profiler == pFrame)
+					currentFrame._profiler = oldFrame;
 			}
+			
+			// Push result to the stack, if there is one. This is done here
+			// because this may cause other methods to be invoked
+			if (type.hasReturnValue())
+				__f.pushToStack(this.asVMObject(rv, true));
 		}
 		
 		// Real code that exists in class file format

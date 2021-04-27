@@ -257,11 +257,6 @@ public final class JDWPController
 			}
 		}
 		
-		// Debug
-		if (!hit)
-			Debugging.debugNote("Could not find anything for %s: %s",
-				__kind, Arrays.asList(__args));
-		
 		return hit;
 	}
 	
