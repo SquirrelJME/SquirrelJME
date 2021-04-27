@@ -140,7 +140,7 @@ public final class SpringThread
 	/**
 	 * Enters a blank frame to store data.
 	 *
-	 * @return The
+	 * @return The newly created frame.
 	 * @since 2018/09/20
 	 */
 	public final SpringThread.Frame enterBlankFrame()
@@ -159,9 +159,9 @@ public final class SpringThread
 			throw new SpringVirtualMachineException("BK1j");
 		
 		// Profile for this frame
-		rv._profiler = this.profiler.enterFrame(
+		/*rv._profiler = this.profiler.enterFrame(
 			"<blank>", "<blank>", "()V",
-			System.nanoTime());
+			System.nanoTime());*/
 		
 		// Lock on frames as a new one is added
 		synchronized (this)
@@ -526,9 +526,6 @@ public final class SpringThread
 	public final SpringThread.Frame popFrame()
 		throws SpringVirtualMachineException
 	{
-		// Exit the frame
-		this.profiler.exitFrame(System.nanoTime());
-		
 		// Pop from the stack
 		SpringThread.Frame rv;
 		List<SpringThread.Frame> frames = this._frames;
@@ -541,6 +538,10 @@ public final class SpringThread
 			
 			rv = frames.remove(n - 1);
 		}
+		
+		// Exit the frame, if not blank
+		if (!rv.isblank)
+			this.profiler.exitFrame(System.nanoTime());
 		
 		// If there is a monitor associated with this then leave it
 		SpringObject monitor = rv._monitor;
