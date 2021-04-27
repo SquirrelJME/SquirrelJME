@@ -149,6 +149,10 @@ public final class ProfiledFrame
 		long sleepTime = this._sleepTime;
 		long selfCPU = self - sleepTime;
 		
+		// Before we leave, add our self time to be tracked
+		this._totalTime += self;
+		this._totalCpuTime += selfCPU;
+		
 		// And only this frame time
 		this._selfTime += self;
 		this._selfCpuTime += selfCPU;
