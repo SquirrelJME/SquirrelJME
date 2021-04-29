@@ -14,6 +14,8 @@ import cc.squirreljme.jdwp.event.ClassPatternMatcher;
 import cc.squirreljme.jdwp.event.EventFilter;
 import cc.squirreljme.jdwp.event.ExceptionOnly;
 import cc.squirreljme.jdwp.event.FieldOnly;
+import cc.squirreljme.jdwp.event.StepDepth;
+import cc.squirreljme.jdwp.event.StepSize;
 
 /**
  * Event request command set.
@@ -91,13 +93,15 @@ public enum CommandSetEventRequest
 						thread = __packet.readThread(
 							__controller, false);
 						
-						__controller.state.items.put(type);
+						if (thread != null)
+							__controller.state.items.put(thread);
 						break;
 					
 					case CLASS_ONLY:
 						type = __packet.readType(__controller, false);
 						
-						__controller.state.items.put(type);
+						if (type != null)
+							__controller.state.items.put(type);
 						break;
 						
 					case CLASS_MATCH_PATTERN:
@@ -140,8 +144,8 @@ public enum CommandSetEventRequest
 					case CALL_STACK_STEPPING:
 						callStackStepping = new CallStackStepping(
 							__packet.readThread(__controller, false),
-							__packet.readInt(),
-							__packet.readInt());
+							StepSize.of(__packet.readInt()),
+							StepDepth.of(__packet.readInt()));
 						break;
 					
 					case THIS_INSTANCE_ONLY:

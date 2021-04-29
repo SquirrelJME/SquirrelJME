@@ -65,12 +65,31 @@ public enum CommandSetMethod
 			// Otherwise record the information
 			else
 			{
-				// Write out the line table
-				rv.writeInt(lineTable.length);
-				for (int i = 0, n = lineTable.length; i < n; i++)
+				// Shrink the table so less information is given
+				int countedLines = 0;
+				int[] paddedPCs = new int[lineTable.length];
+				int[] paddedLines = new int[lineTable.length];
+				for (int i = 0, n = lineTable.length, lastLine = -1;
+					i < n; i++)
 				{
-					rv.writeLong(i);
-					rv.writeInt(Math.max(0, lineTable[i]));
+					// If the line has changed, record it
+					int at = lineTable[i];
+					if (i == 0 || at != lastLine)
+					{
+						paddedPCs[countedLines] = i;
+						paddedLines[countedLines++] = at;
+						
+						// Do not repeat this line
+						lastLine = at;
+					}
+				}
+				
+				// Write out the condensed line table
+				rv.writeInt(countedLines);
+				for (int i = 0, n = countedLines; i < n; i++)
+				{
+					rv.writeLong(paddedPCs[i]);
+					rv.writeInt(Math.max(0, paddedLines[i]));
 				}
 			}
 			

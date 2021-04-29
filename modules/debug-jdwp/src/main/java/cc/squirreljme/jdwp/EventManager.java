@@ -139,10 +139,11 @@ public final class EventManager
 				// Use this request
 				rv.add(request);
 				
-				// Is this only occuring a specific number of times?
+				// Is this only occurring a specific number of times?
+				// Remove after this has ran out
 				int occurrencesLeft = request._occurrencesLeft;
 				if (occurrencesLeft >= 0)
-					if (request._occurrencesLeft <= 0)
+					if ((--request._occurrencesLeft) <= 0)
 						iterator.remove();
 			}
 		}

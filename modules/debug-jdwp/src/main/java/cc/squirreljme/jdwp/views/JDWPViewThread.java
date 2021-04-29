@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp.views;
 
+import cc.squirreljme.jdwp.JDWPStepTracker;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 
@@ -65,6 +66,16 @@ public interface JDWPViewThread
 	 * @since 2021/04/10
 	 */
 	Object parentGroup(Object __which);
+	
+	/**
+	 * Returns and potentially creates the thread's stepping tracker.
+	 * 
+	 * @param __which Which thread to get the step tracker from?
+	 * @return The step tracker for the given thread, creating it if it is
+	 * missing.
+	 * @since 2021/04/28
+	 */
+	JDWPStepTracker stepTracker(Object __which);
 	
 	/**
 	 * Returns the thread suspension manager.

@@ -26,7 +26,11 @@ public enum EventKind
 	implements __IdNumbered__
 {
 	/** Single Step. */
-	SINGLE_STEP(1, null, null, EventModKind.THREAD_ONLY,
+	SINGLE_STEP(1,
+		Arrays.asList(EventModContext.CURRENT_THREAD,
+			EventModContext.CURRENT_TYPE),
+		Arrays.asList(EventModContext.PARAMETER_STEPPING),
+		EventModKind.THREAD_ONLY,
 		EventModKind.CLASS_ONLY,
 		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
 		EventModKind.LOCATION_ONLY, EventModKind.CALL_STACK_STEPPING,
@@ -41,7 +45,9 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			throw Debugging.todo();
+			__packet.writeId(System.identityHashCode(__thread));
+			__packet.writeLocation(__controller,
+				__controller.locationOf(__thread));
 		}
 	},
 	

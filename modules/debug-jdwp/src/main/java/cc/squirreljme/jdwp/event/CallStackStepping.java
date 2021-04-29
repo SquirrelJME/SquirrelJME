@@ -19,13 +19,13 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public final class CallStackStepping
 {
 	/** The thread used. */
-	private final Object thread;
+	public final Object thread;
 	
 	/** The relative call stack limit. */
-	private final int depth;
+	public final StepDepth depth;
 	
 	/** Relative size of each step. */
-	private final int size;
+	public final StepSize size;
 	
 	/**
 	 * Initializes the call stack stepping.
@@ -33,10 +33,16 @@ public final class CallStackStepping
 	 * @param __thread The thread used.
 	 * @param __size The relative call stack limit.
 	 * @param __depth Relative size of each step.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/17
 	 */
-	public CallStackStepping(Object __thread, int __size, int __depth)
+	public CallStackStepping(Object __thread, StepSize __size,
+		StepDepth __depth)
+		throws NullPointerException
 	{
+		if (__thread == null || __size == null || __depth == null)
+			throw new NullPointerException("NARG");
+		
 		this.thread = __thread;
 		this.size = __size;
 		this.depth = __depth;
@@ -59,7 +65,9 @@ public final class CallStackStepping
 	@Override
 	public int hashCode()
 	{
-		throw Debugging.todo();
+		return this.thread.hashCode() ^
+			this.depth.hashCode() ^
+			this.size.hashCode();
 	}
 	
 	/**
@@ -69,6 +77,7 @@ public final class CallStackStepping
 	@Override
 	public String toString()
 	{
-		throw Debugging.todo();
+		return String.format("CallStackStepping[thread=%s,depth=%s,size=%s]",
+			this.thread, this.depth, this.size);
 	}
 }

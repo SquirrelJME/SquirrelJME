@@ -13,9 +13,12 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.jdwp.JDWPClassStatus;
 import cc.squirreljme.jdwp.JDWPController;
+import cc.squirreljme.jdwp.JDWPStepTracker;
+import cc.squirreljme.jdwp.JDWPThreadSuspension;
 import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
 import cc.squirreljme.jdwp.trips.JDWPTripClassStatus;
+import cc.squirreljme.jdwp.trips.JDWPTripThread;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
@@ -1622,11 +1625,23 @@ public final class SpringThreadWorker
 					trip.breakpoint(thread);
 			}
 			
+			// Check if we are doing any single stepping
+			JDWPStepTracker stepTracker = thread._stepTracker;
+			if (stepTracker != null && stepTracker.inSteppingMode())
+			{
+				// Tick the current tracker and see if it will activate
+				// before we trigger this event
+				if (stepTracker.tick(jdwp, thread))
+					jdwp.trip(JDWPTripThread.class, JDWPGlobalTrip.THREAD)
+						.step(thread, stepTracker);
+			}
+			
 			// This only returns while we are suspended, but if it returns
 			// early then we were interrupted which means we need to signal
 			// that to whatever is running
 			boolean interrupted = false;
-			while (thread.debuggerSuspension.await(jdwp, this.thread))
+			JDWPThreadSuspension suspension = thread.debuggerSuspension;
+			while (suspension.await(jdwp, thread))
 			{
 				interrupted = true;
 			}
@@ -1634,7 +1649,7 @@ public final class SpringThreadWorker
 			// The debugger released suspension so we can perform the
 			// interrupt now
 			if (interrupted)
-				this.thread.hardInterrupt();
+				thread.hardInterrupt();
 		}
 		
 		// Increase the step count

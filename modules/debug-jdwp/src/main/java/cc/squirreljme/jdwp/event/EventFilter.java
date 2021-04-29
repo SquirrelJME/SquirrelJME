@@ -12,6 +12,7 @@ package cc.squirreljme.jdwp.event;
 import cc.squirreljme.jdwp.EventKind;
 import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.JDWPLocation;
+import cc.squirreljme.jdwp.JDWPStepTracker;
 import cc.squirreljme.jdwp.JDWPUtils;
 import cc.squirreljme.jdwp.views.JDWPViewFrame;
 import cc.squirreljme.jdwp.views.JDWPViewThread;
@@ -29,7 +30,7 @@ public final class EventFilter
 	public final JDWPLocation location;
 	
 	/** The call stack stepping. */
-	protected final CallStackStepping callStackStepping;
+	public final CallStackStepping callStackStepping;
 	
 	/** Which exceptions does this fire on? */
 	protected final ExceptionOnly exception;
@@ -50,7 +51,7 @@ public final class EventFilter
 	protected final boolean thisInstanceSet;
 	
 	/** The thread to check on. */
-	protected final Object thread;
+	public final Object thread;
 	
 	/** The type of class to check on. */
 	protected final Object type;
@@ -250,12 +251,50 @@ public final class EventFilter
 						return false;
 				}
 				break;
+				
+				// Current type being called in the class
+			case CURRENT_TYPE:
+				{
+					// If no thread is available, we have no idea where we are
+					if (__thread == null)
+						return false;
+					
+					// We are at the wrong location for this?
+					Object type = __controller.locationOf(__thread).type;
+					if (!viewType.isValid(type) ||
+						!this.meetsType(viewType, type))
+						return false;
+				}
+				break;
 			
 				// A parameter based type
 			case PARAMETER_TYPE:
 				if (!viewType.isValid(__on) ||
 					!this.meetsType(viewType, __on))
 					return false;
+				break;
+				
+				// Stepping for a given thread
+			case PARAMETER_STEPPING:
+				{
+					// Not a tracker? Do nothing
+					if (!(__on instanceof JDWPStepTracker))
+						return false;
+					
+					// Get the tracker and the stepping
+					JDWPStepTracker stepTracker = (JDWPStepTracker)__on;
+					CallStackStepping stepping = this.callStackStepping;
+					
+					// No stepping here? Cannot be a match
+					if (stepping == null)
+						return false;
+					
+					// We can only reliably check on the thread and the depth
+					// requested.
+					if (__thread != stepping.thread ||
+						stepping.depth != stepTracker.depth())
+						return false;
+				}
 				break;
 			
 			default:

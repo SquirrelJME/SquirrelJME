@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.event.CallStackStepping;
 import cc.squirreljme.jdwp.event.EventFilter;
 import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.trips.JDWPTrip;
@@ -337,6 +338,37 @@ public final class JDWPController
 					this.viewType().methodBreakpoint(location.type,
 						location.methodDx, (int)location.codeDx,
 						new __TripBreakpoint__(ref));
+				}
+				break;
+				
+				// Single stepping
+			case SINGLE_STEP:
+				{
+					// An example single step
+					// EventRequest[id=483,kind=SINGLE_STEP,suspend=ALL,left=1,
+					// filter=EventFilter{callStackStepping=CallStackStepping[
+					// thread=Thread-6: callback#0,depth=0,size=1],
+					// exception=null, excludeClass=ClassPattern(kotlin.
+					// KotlinNullPointerException), fieldOnly=null,
+					// includeClass=null, location=null, thisInstance=null,
+					// thread=null, type=null}]
+					
+					// If there is no stepping what are we going to do?
+					CallStackStepping stepping =
+						filter.callStackStepping;
+					if (stepping == null || stepping.thread == null)
+						return;
+					
+					// Thread was also specified but does not match?
+					if (filter.thread != null &&
+						filter.thread != stepping.thread)
+						return;
+					
+					// Tell the thread to enter stepping mode
+					JDWPStepTracker stepTracker = this.viewThread()
+						.stepTracker(stepping.thread);
+					stepTracker.steppingSet(this, stepping.thread,
+						stepping.size, stepping.depth);
 				}
 				break;
 			

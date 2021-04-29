@@ -9,12 +9,15 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.event.StepDepth;
+import cc.squirreljme.jdwp.event.StepSize;
 import cc.squirreljme.jdwp.trips.JDWPTripThread;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jdwp.views.JDWPViewFrame;
+import cc.squirreljme.jdwp.views.JDWPViewThread;
 import java.lang.ref.Reference;
 
 /**
- * Trip when a thread changes from being alive or dead.
+ * Trip when a thread changes state or has an action or otherwise.
  *
  * @since 2021/04/11
  */
@@ -51,6 +54,28 @@ final class __TripThreadAlive__
 		// Forward generic event
 		controller.signal(__thread, (__isAlive ? EventKind.THREAD_START :
 			EventKind.THREAD_DEATH), __thread);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/28
+	 */
+	@Override
+	public void step(Object __which, JDWPStepTracker __stepTracker)
+	{
+		JDWPController controller = this.__controller();
+		JDWPViewThread viewThread = controller.viewThread();
+		JDWPViewFrame viewFrame = controller.viewFrame();
+		JDWPState state = controller.state;
+		
+		// Register this thread for later use
+		state.items.put(__which);
+		
+		// Signal the step, if no events are found we likely are no longer
+		// going to step so just stop
+		JDWPStepTracker stepTracker = viewThread.stepTracker(__which);
+		if (!controller.signal(__which, EventKind.SINGLE_STEP, stepTracker))
+			stepTracker.clear();
 	}
 	
 	/**

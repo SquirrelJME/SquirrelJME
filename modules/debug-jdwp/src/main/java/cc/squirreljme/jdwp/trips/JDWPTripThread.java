@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp.trips;
 
+import cc.squirreljme.jdwp.JDWPStepTracker;
+
 /**
  * A trip on a thread.
  *
@@ -25,6 +27,15 @@ public interface JDWPTripThread
 	 * @since 2021/04/11
 	 */
 	void alive(Object __thread, boolean __isAlive);
+	
+	/**
+	 * Checks and performs stepping for the given thread.
+	 * 
+	 * @param __which Which thread is being stepped?
+	 * @param __stepTracker The step tracker which is used for this event.
+	 * @since 2021/04/28
+	 */
+	void step(Object __which, JDWPStepTracker __stepTracker);
 	
 	/**
 	 * Indicates on thread suspension.

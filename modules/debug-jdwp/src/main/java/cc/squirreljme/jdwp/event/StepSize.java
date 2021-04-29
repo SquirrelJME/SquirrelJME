@@ -10,28 +10,35 @@
 package cc.squirreljme.jdwp.event;
 
 /**
- * This is the context used for an event modifier, this changes how a value
- * should be interpreted when it is checked.
+ * The stepping size when single stepping.
  *
- * @since 2021/04/17
+ * @since 2021/04/28
  */
-public enum EventModContext
+public enum StepSize
 {
-	/** Parameter with a type. */
-	PARAMETER_TYPE,
+	/** Single instruction stepping. */
+	MIN,
 	
-	/** Parameter for stepping checking. */
-	PARAMETER_STEPPING,
-	
-	/** Current thread. */
-	CURRENT_THREAD,
-	
-	/** Current location in code. */
-	CURRENT_LOCATION,
-	
-	/** The current type we are calling from. */
-	CURRENT_TYPE,
+	/** Step on line changes, if this happens and lines are available. */
+	LINE,
 	
 	/* End. */
 	;
+	
+	/**
+	 * Returns the step size for the given value.
+	 * 
+	 * @param __v The index to get.
+	 * @return The step size for the given value.
+	 * @since 2021/04/28
+	 */
+	public static StepSize of(int __v)
+	{
+		switch (__v)
+		{
+			case 1:		return StepSize.LINE;
+			case 0:
+			default:	return StepSize.MIN;
+		}
+	}
 }

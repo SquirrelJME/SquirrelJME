@@ -30,7 +30,7 @@ public final class JDWPLocation
 	protected final int methodDx;
 	
 	/** The type where this is located. */
-	protected final Object type;
+	public final Object type;
 	
 	/** The name of the method. */
 	protected final String name;

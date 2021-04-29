@@ -39,6 +39,15 @@ public interface JDWPViewFrame
 	long atCodeIndex(Object __which);
 	
 	/**
+	 * Returns the current line index.
+	 * 
+	 * @param __which Which frame are we looking at?
+	 * @return The line index the frame is at or a negative value if not valid.
+	 * @since 2021/04/28
+	 */
+	long atLineIndex(Object __which);
+	
+	/**
 	 * Returns the method index within the given class the frame is at.
 	 * 
 	 * @param __which Which frame are we looking at?
