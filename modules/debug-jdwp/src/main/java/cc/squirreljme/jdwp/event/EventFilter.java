@@ -14,8 +14,6 @@ import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.JDWPLocation;
 import cc.squirreljme.jdwp.JDWPStepTracker;
 import cc.squirreljme.jdwp.JDWPUtils;
-import cc.squirreljme.jdwp.views.JDWPViewFrame;
-import cc.squirreljme.jdwp.views.JDWPViewThread;
 import cc.squirreljme.jdwp.views.JDWPViewType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 

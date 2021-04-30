@@ -298,36 +298,7 @@ public enum CommandSetVirtualMachine
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Same as new capabilities
-			if (true)
-				return CommandSetVirtualMachine.CAPABILITIES_NEW
-					.execute(__controller, __packet);
-			
-			JDWPPacket rv = __controller.__reply(
-				__packet.id(), ErrorType.NO_ERROR);
-			
-			// canWatchFieldModification
-			rv.writeBoolean(false);
-			
-			// canWatchFieldAccess
-			rv.writeBoolean(false);
-			
-			// canGetBytecodes
-			rv.writeBoolean(false);
-			
-			// canGetSyntheticAttribute
-			rv.writeBoolean(false);
-			
-			// canGetOwnedMonitorInfo
-			rv.writeBoolean(false);
-			
-			// canGetCurrentContendedMonitor
-			rv.writeBoolean(false);
-			
-			// canGetMonitorInfo
-			rv.writeBoolean(false);
-			
-			return rv;
+			return this.__capabilities(false, __controller, __packet);
 		}
 	},
 	
@@ -410,82 +381,7 @@ public enum CommandSetVirtualMachine
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			JDWPPacket rv = __controller.__reply(
-				__packet.id(), ErrorType.NO_ERROR);
-			
-			// canWatchFieldModification
-			rv.writeBoolean(false);
-			
-			// canWatchFieldAccess
-			rv.writeBoolean(false);
-			
-			// canGetBytecodes (supported by SquirrelJME)
-			rv.writeBoolean(true);
-			
-			// canGetSyntheticAttribute
-			rv.writeBoolean(false);
-			
-			// canGetOwnedMonitorInfo
-			rv.writeBoolean(false);
-			
-			// canGetCurrentContendedMonitor
-			rv.writeBoolean(false);
-			
-			// canGetMonitorInfo
-			rv.writeBoolean(false);
-			
-			// New Capabilities
-			if (__packet.command() ==
-				CommandSetVirtualMachine.CAPABILITIES_NEW.id)
-			{
-				// canRedefineClasses
-				rv.writeBoolean(false);
-				
-				// canAddMethod
-				rv.writeBoolean(false);
-				
-				// canUnrestrictedlyRedefineClasses
-				rv.writeBoolean(false);
-				
-				// canPopFrames
-				rv.writeBoolean(false);
-				
-				// canUseInstanceFilters
-				rv.writeBoolean(false);
-				
-				// canGetSourceDebugExtension
-				rv.writeBoolean(false);
-				
-				// canRequestVMDeathEvent
-				rv.writeBoolean(false);
-				
-				// canSetDefaultStratum
-				rv.writeBoolean(false);
-				
-				// canGetInstanceInfo
-				rv.writeBoolean(false);
-				
-				// canRequestMonitorEvents
-				rv.writeBoolean(false);
-				
-				// canGetMonitorFrameInfo
-				rv.writeBoolean(false);
-				
-				// canUseSourceNameFilters
-				rv.writeBoolean(false);
-				
-				// canGetConstantPool
-				rv.writeBoolean(false);
-				
-				// canForceEarlyReturn
-				rv.writeBoolean(false);
-				
-				// Reserved
-				for (int i = 22; i <= 32; i++)
-					rv.writeBoolean(false);
-			}
-			
-			return rv;
+			return this.__capabilities(true, __controller, __packet);
 		}
 	},
 	
@@ -584,5 +480,96 @@ public enum CommandSetVirtualMachine
 	public final int debuggerId()
 	{
 		return this.id;
+	}
+	
+	/**
+	 * Returns the capabilities of the debugger and virtual machine.
+	 * 
+	 * @param __new Use new capabilities?
+	 * @param __controller The controller used.
+	 * @param __packet The packet to read from.
+	 * @return The capabilities of the debugger.
+	 * @throws JDWPException If the capabilities could not be returned.
+	 * @since 2021/04/30
+	 */
+	JDWPPacket __capabilities(boolean __new, JDWPController __controller,
+		JDWPPacket __packet)
+		throws JDWPException
+	{
+		JDWPPacket rv = __controller.__reply(
+			__packet.id(), ErrorType.NO_ERROR);
+		
+		// canWatchFieldModification
+		rv.writeBoolean(true);
+		
+		// canWatchFieldAccess
+		rv.writeBoolean(true);
+		
+		// canGetBytecodes (supported by SquirrelJME)
+		rv.writeBoolean(true);
+		
+		// canGetSyntheticAttribute
+		rv.writeBoolean(false);
+		
+		// canGetOwnedMonitorInfo
+		rv.writeBoolean(false);
+		
+		// canGetCurrentContendedMonitor
+		rv.writeBoolean(false);
+		
+		// canGetMonitorInfo
+		rv.writeBoolean(false);
+		
+		// New Capabilities
+		if (__new)
+		{
+			// canRedefineClasses
+			rv.writeBoolean(false);
+			
+			// canAddMethod
+			rv.writeBoolean(false);
+			
+			// canUnrestrictedlyRedefineClasses
+			rv.writeBoolean(false);
+			
+			// canPopFrames
+			rv.writeBoolean(false);
+			
+			// canUseInstanceFilters
+			rv.writeBoolean(false);
+			
+			// canGetSourceDebugExtension
+			rv.writeBoolean(false);
+			
+			// canRequestVMDeathEvent
+			rv.writeBoolean(false);
+			
+			// canSetDefaultStratum
+			rv.writeBoolean(false);
+			
+			// canGetInstanceInfo
+			rv.writeBoolean(false);
+			
+			// canRequestMonitorEvents
+			rv.writeBoolean(false);
+			
+			// canGetMonitorFrameInfo
+			rv.writeBoolean(false);
+			
+			// canUseSourceNameFilters
+			rv.writeBoolean(false);
+			
+			// canGetConstantPool
+			rv.writeBoolean(false);
+			
+			// canForceEarlyReturn
+			rv.writeBoolean(false);
+			
+			// Reserved
+			for (int i = 22; i <= 32; i++)
+				rv.writeBoolean(false);
+		}
+		
+		return rv;
 	}
 }

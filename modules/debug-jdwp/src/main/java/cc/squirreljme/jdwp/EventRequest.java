@@ -10,7 +10,6 @@
 package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jdwp.event.EventFilter;
-import java.util.Arrays;
 
 /**
  * Represents an event request.

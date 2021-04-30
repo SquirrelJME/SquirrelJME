@@ -97,6 +97,22 @@ public enum CommandSetMethod
 		}
 	},
 	
+	/** Variable table without generics. */
+	VARIABLE_TABLE(2)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/30
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			return this.__variables(false, __controller, __packet);
+		}
+	},
+	
 	/** Method byte code. */
 	BYTE_CODES(3)
 	{
@@ -147,19 +163,7 @@ public enum CommandSetMethod
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Read class and the method it is in
-			Object classy = __packet.readType(__controller, false);
-			int methodId = __packet.readId();
-			
-			// Not a valid method?
-			JDWPViewType viewType = __controller.viewType();
-			if (!viewType.isValidMethod(classy, methodId))
-				throw ErrorType.INVALID_METHOD_ID.toss(classy, methodId);
-			
-			// TODO: Implement
-			Debugging.todoNote("Implement VariableTableWithGeneric.");
-			return __controller.__reply(
-				__packet.id(), ErrorType.ABSENT_INFORMATION);
+			return this.__variables(true, __controller, __packet);
 		}
 	},
 		
@@ -188,5 +192,34 @@ public enum CommandSetMethod
 	public final int debuggerId()
 	{
 		return this.id;
+	}
+	
+	/**
+	 * Handles standard or generic variable table information.
+	 * 
+	 * @param __generic Write generic variable tables?
+	 * @param __controller The controller used.
+	 * @param __packet The packet to read from.
+	 * @return The resultant packet.
+	 * @throws JDWPException If this is not valid.
+	 * @since 2021/04/30
+	 */
+	JDWPPacket __variables(boolean __generic, JDWPController __controller,
+		JDWPPacket __packet)
+		throws JDWPException
+	{
+		// Read class and the method it is in
+		Object classy = __packet.readType(__controller, false);
+		int methodId = __packet.readId();
+		
+		// Not a valid method?
+		JDWPViewType viewType = __controller.viewType();
+		if (!viewType.isValidMethod(classy, methodId))
+			throw ErrorType.INVALID_METHOD_ID.toss(classy, methodId);
+		
+		// TODO: Implement VariableTable/WithGeneric.
+		Debugging.todoNote("Implement VariableTable/WithGeneric.");
+		return __controller.__reply(
+			__packet.id(), ErrorType.ABSENT_INFORMATION);
 	}
 }

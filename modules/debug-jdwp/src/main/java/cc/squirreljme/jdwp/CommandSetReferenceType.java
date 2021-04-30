@@ -87,6 +87,38 @@ public enum CommandSetReferenceType
 		}
 	},
 	
+	/** Fields without generic. */
+	FIELDS(4)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/30
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			return this.__fields(false, __controller, __packet);
+		}
+	},
+	
+	/** Methods without generic. */
+	METHODS(5)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/30
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			return this.__methods(false, __controller, __packet);
+		}
+	},
+	
 	/** Static field values. */
 	STATIC_FIELD_VALUE(6)
 	{
@@ -258,33 +290,7 @@ public enum CommandSetReferenceType
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Which class does this refer to?
-			JDWPViewType viewType = __controller.viewType();
-			Object type = __packet.readType(__controller, false);
-			
-			JDWPPacket rv = __controller.__reply(
-				__packet.id(), ErrorType.NO_ERROR);
-			
-			// Write number of fields
-			int[] fields = viewType.fields(type);
-			rv.writeInt(fields.length);
-			
-			// Write information on each method
-			for (int fieldDx : fields)
-			{
-				// Information about the method
-				rv.writeId(fieldDx);
-				rv.writeString(viewType.fieldName(type, fieldDx));
-				rv.writeString(viewType.fieldSignature(type, fieldDx));
-				
-				// Generics are not used in SquirrelJME, ignore
-				rv.writeString("");
-				
-				// Modifier flags
-				rv.writeInt(viewType.fieldFlags(type, fieldDx));
-			}
-			
-			return rv;
+			return this.__fields(true, __controller, __packet);
 		}
 	},
 	
@@ -300,33 +306,7 @@ public enum CommandSetReferenceType
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			// Which class does this refer to?
-			JDWPViewType viewType = __controller.viewType();
-			Object type = __packet.readType(__controller, false);
-			
-			JDWPPacket rv = __controller.__reply(
-				__packet.id(), ErrorType.NO_ERROR);
-			
-			// Write number of methods
-			int[] methods = viewType.methods(type);
-			rv.writeInt(methods.length);
-			
-			// Write information on each method
-			for (int methodDx : methods)
-			{
-				// Information about the method
-				rv.writeId(methodDx);
-				rv.writeString(viewType.methodName(type, methodDx));
-				rv.writeString(viewType.methodSignature(type, methodDx));
-				
-				// Generics are not used in SquirrelJME, ignore
-				rv.writeString("");
-				
-				// Modifier flags
-				rv.writeInt(viewType.methodFlags(type, methodDx));
-			}
-			
-			return rv;
+			return this.__methods(true, __controller, __packet);
 		}
 	},
 	
@@ -380,6 +360,94 @@ public enum CommandSetReferenceType
 	public final int debuggerId()
 	{
 		return this.id;
+	}
+	
+	/**
+	 * Handles standard or generic field information.
+	 * 
+	 * @param __generic Write generic fields?
+	 * @param __controller The controller used.
+	 * @param __packet The packet to read from.
+	 * @return The resultant packet.
+	 * @throws JDWPException If this is not valid.
+	 * @since 2021/04/30
+	 */
+	JDWPPacket __fields(boolean __generic, JDWPController __controller,
+		JDWPPacket __packet)
+		throws JDWPException
+	{
+		// Which class does this refer to?
+		JDWPViewType viewType = __controller.viewType();
+		Object type = __packet.readType(__controller, false);
+		
+		JDWPPacket rv = __controller.__reply(
+			__packet.id(), ErrorType.NO_ERROR);
+		
+		// Write number of fields
+		int[] fields = viewType.fields(type);
+		rv.writeInt(fields.length);
+		
+		// Write information on each method
+		for (int fieldDx : fields)
+		{
+			// Information about the method
+			rv.writeId(fieldDx);
+			rv.writeString(viewType.fieldName(type, fieldDx));
+			rv.writeString(viewType.fieldSignature(type, fieldDx));
+			
+			// Generics are not used in SquirrelJME, ignore
+			if (__generic)
+				rv.writeString("");
+			
+			// Modifier flags
+			rv.writeInt(viewType.fieldFlags(type, fieldDx));
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * Handles standard or generic method information.
+	 * 
+	 * @param __generic Write generic methods?
+	 * @param __controller The controller used.
+	 * @param __packet The packet to read from.
+	 * @return The resultant packet.
+	 * @throws JDWPException If this is not valid.
+	 * @since 2021/04/30
+	 */
+	JDWPPacket __methods(boolean __generic,
+		JDWPController __controller, JDWPPacket __packet)
+		throws JDWPException
+	{
+		// Which class does this refer to?
+		JDWPViewType viewType = __controller.viewType();
+		Object type = __packet.readType(__controller, false);
+		
+		JDWPPacket rv = __controller.__reply(
+			__packet.id(), ErrorType.NO_ERROR);
+		
+		// Write number of methods
+		int[] methods = viewType.methods(type);
+		rv.writeInt(methods.length);
+		
+		// Write information on each method
+		for (int methodDx : methods)
+		{
+			// Information about the method
+			rv.writeId(methodDx);
+			rv.writeString(viewType.methodName(type, methodDx));
+			rv.writeString(viewType.methodSignature(type, methodDx));
+			
+			// Generics are not used in SquirrelJME, ignore
+			if (__generic)
+				rv.writeString("");
+			
+			// Modifier flags
+			rv.writeInt(viewType.methodFlags(type, methodDx));
+		}
+		
+		return rv;
 	}
 	
 	/**

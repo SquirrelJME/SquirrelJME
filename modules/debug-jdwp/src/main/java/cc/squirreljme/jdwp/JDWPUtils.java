@@ -10,7 +10,6 @@
 package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jdwp.views.JDWPViewType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * General utilities for JDWP Support.

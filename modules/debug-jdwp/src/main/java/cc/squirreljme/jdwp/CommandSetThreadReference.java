@@ -12,7 +12,6 @@ package cc.squirreljme.jdwp;
 import cc.squirreljme.jdwp.views.JDWPViewFrame;
 import cc.squirreljme.jdwp.views.JDWPViewThread;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Command set for thread support.

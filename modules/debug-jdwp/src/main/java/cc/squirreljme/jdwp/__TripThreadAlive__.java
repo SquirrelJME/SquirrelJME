@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jdwp;
 
-import cc.squirreljme.jdwp.event.StepDepth;
-import cc.squirreljme.jdwp.event.StepSize;
 import cc.squirreljme.jdwp.trips.JDWPTripThread;
 import cc.squirreljme.jdwp.views.JDWPViewFrame;
 import cc.squirreljme.jdwp.views.JDWPViewThread;

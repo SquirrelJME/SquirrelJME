@@ -10,7 +10,6 @@
 package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jdwp.views.JDWPViewType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,11 +53,14 @@ public enum CommandSetClassLoader
 			rv.writeInt(found.size());
 			for (Object type : found)
 			{
+				if (type != null)
+					__controller.state.items.put(type);
+				
 				rv.writeByte(JDWPUtils.classType(__controller, type).id);
 				rv.writeId(System.identityHashCode(type));
 			}
 			
-			throw Debugging.todo();
+			return rv;
 		}
 	},
 	

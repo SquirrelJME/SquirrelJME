@@ -27,7 +27,6 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,7 +43,7 @@ public final class JDWPController
 {
 	/** Should debugging be enabled? */
 	static final boolean _DEBUG =
-		true || Boolean.getBoolean("cc.squirreljme.jdwp.debug");
+		Boolean.getBoolean("cc.squirreljme.jdwp.debug");
 	
 	/** The event type. */
 	private static final int _EVENT_TYPE =
