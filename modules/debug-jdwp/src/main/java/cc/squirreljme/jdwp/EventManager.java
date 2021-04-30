@@ -67,6 +67,36 @@ public final class EventManager
 	}
 	
 	/**
+	 * Clears all events of the given kind.
+	 * 
+	 * @param __kind The kind of events to clear.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/30
+	 */
+	protected void clear(EventKind __kind)
+		throws NullPointerException
+	{
+		if (__kind == null)
+			throw new NullPointerException("NARG");
+		
+		// Check if there are actual events to clear
+		List<EventRequest> events = this._eventByKind.get(__kind);
+		if (events == null)
+			return;
+		
+		// Get all events to clear
+		EventRequest[] clear;
+		synchronized (this)
+		{
+			clear = events.toArray(new EventRequest[events.size()]);
+		}
+		
+		// Delete all of them
+		for (EventRequest event : clear)
+			this.delete(event.id);
+	}
+	
+	/**
 	 * Deletes the event by the given ID.
 	 * 
 	 * @param __id The event ID.

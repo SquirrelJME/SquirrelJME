@@ -213,6 +213,24 @@ public enum CommandSetEventRequest
 		}
 	},
 	
+	/** Clear all breakpoints. */
+	CLEAR_ALL_BREAKPOINTS(3)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/30
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			__controller.eventManager.clear(EventKind.BREAKPOINT);
+			
+			return null;
+		}
+	},
+	
 	/* End. */
 	;
 	
