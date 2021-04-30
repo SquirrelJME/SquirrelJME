@@ -12,6 +12,7 @@ package cc.squirreljme.jdwp;
 import cc.squirreljme.jdwp.views.JDWPViewFrame;
 import cc.squirreljme.jdwp.views.JDWPViewThread;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Command set for thread support.
@@ -259,6 +260,50 @@ public enum CommandSetThreadReference
 			rv.writeInt(__controller.viewThread().frames(thread).length);
 			
 			return rv;
+		}
+	},
+	
+	/** Stops a thread, not supported in Java ME. */
+	STOP(10)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/30
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			// Read the thread to check if valid, but otherwise do nothing
+			Object thread = __packet.readThread(__controller, false);
+			
+			// Always fail because this does not do anything
+			throw ErrorType.ILLEGAL_ARGUMENT.toss(thread,
+				System.identityHashCode(thread), null);
+		}
+	},
+	
+	/** Interrupt the thread. */
+	INTERRUPT(11)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/30
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			// Which thread do we want?
+			JDWPViewThread view = __controller.viewThread();
+			Object thread = __packet.readThread(__controller, false);
+			
+			// Interrupt the thread
+			view.interrupt(thread);
+			
+			return null;
 		}
 	},
 	

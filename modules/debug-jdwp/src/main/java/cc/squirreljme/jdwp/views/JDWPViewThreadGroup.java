@@ -27,6 +27,15 @@ public interface JDWPViewThreadGroup
 	Object[] allTypes(Object __which);
 	
 	/**
+	 * Forces the virtual machine to exit completely.
+	 *
+	 * @param __which Which thread group to exit?
+	 * @param __code The exit code.
+	 * @since 2021/04/30
+	 */
+	void exit(Object __which, int __code);
+	
+	/**
 	 * Finds a type of the given name from this thread group.
 	 * 
 	 * @param __which Which thread group?

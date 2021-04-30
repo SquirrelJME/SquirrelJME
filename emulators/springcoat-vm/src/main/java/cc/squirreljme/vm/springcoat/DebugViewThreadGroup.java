@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.views.JDWPViewThreadGroup;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import java.lang.ref.Reference;
 import net.multiphasicapps.classfile.ClassName;
 
@@ -49,6 +50,23 @@ public class DebugViewThreadGroup
 	public Object[] allTypes(Object __which)
 	{
 		return ((SpringMachine)__which).classLoader().loadedClasses();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/30
+	 */
+	@Override
+	public void exit(Object __which, int __code)
+	{
+		try
+		{
+			((SpringMachine)__which).exit(__code);
+		}
+		catch (SpringMachineExitException ignored)
+		{
+			// We do not to throw the exception out, since we are exiting
+		}
 	}
 	
 	/**

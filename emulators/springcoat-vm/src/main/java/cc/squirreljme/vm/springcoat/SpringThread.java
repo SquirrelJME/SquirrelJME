@@ -387,7 +387,7 @@ public final class SpringThread
 	{
 		SpringThreadWorker worker = this._worker;
 		if (worker == null)
-			throw new RuntimeException(
+			throw new IllegalStateException(
 				"Cannot interrupt thread with no worker.");
 		
 		// Signal the other thread or something else?

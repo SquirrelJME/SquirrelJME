@@ -107,6 +107,12 @@ public final class CommLink
 	{
 		IOException fail = null;
 		
+		// Enter shut-down mode
+		synchronized (this)
+		{
+			this._shutdown = true;
+		}
+		
 		// Close the input
 		try
 		{
@@ -285,7 +291,7 @@ public final class CommLink
 			throw new NullPointerException("NARG");
 		
 		// Debug
-		if (false)
+		if (JDWPController._DEBUG)
 			Debugging.debugNote("JDWP: -> %s", __packet);
 		
 		// Write to the destination
@@ -321,7 +327,8 @@ public final class CommLink
 		try
 		{
 			// Debug
-			Debugging.debugNote("JDWP: Handshake.");
+			if (JDWPController._DEBUG)
+				Debugging.debugNote("JDWP: Handshake.");
 			
 			// The debugger sends the handshake sequence first
 			int seqLen = CommLink._HANDSHAKE_SEQUENCE.length;
@@ -351,7 +358,8 @@ public final class CommLink
 			this._didHandshake = true;
 			
 			// Debug
-			Debugging.debugNote("JDWP: Hands shaken at a distance.");
+			if (JDWPController._DEBUG)
+				Debugging.debugNote("JDWP: Hands shaken at a distance.");
 		}
 		catch (IOException e)
 		{

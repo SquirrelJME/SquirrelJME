@@ -27,9 +27,11 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * This class acts as the main controller interface for JDWP and acts as a kind
@@ -40,6 +42,10 @@ import java.util.List;
 public final class JDWPController
 	implements Closeable, Runnable
 {
+	/** Should debugging be enabled? */
+	static final boolean _DEBUG =
+		true || Boolean.getBoolean("cc.squirreljme.jdwp.debug");
+	
 	/** The event type. */
 	private static final int _EVENT_TYPE =
 		64;
@@ -77,11 +83,18 @@ public final class JDWPController
 	private final Reference<JDWPController> _weakThis =
 		new WeakReference<>(this);
 	
+	/** Held packets. */
+	private final Queue<JDWPPacket> _heldPackets =
+		new LinkedList<>();
+	
 	/** Are events to the debugger being held? */
-	protected volatile boolean _holdEvents;
+	volatile boolean _holdEvents;
 	
 	/** Next ID number. */
 	private volatile int _nextId;
+	
+	/** Is this closed? */
+	private volatile boolean _closed;
 	
 	/**
 	 * Initializes the controller which manages the communication of JDWP.
@@ -115,7 +128,30 @@ public final class JDWPController
 	@Override
 	public void close()
 	{
-		this.commLink.close();
+		// Only close once
+		synchronized (this)
+		{
+			if (this._closed)
+				return;
+			this._closed = true;
+		}
+		
+		// Close the communication link
+		try
+		{
+			this.commLink.close();
+		}
+		
+		// Close and remove all held packets.
+		finally
+		{
+			synchronized (this)
+			{
+				Queue<JDWPPacket> heldPackets = this._heldPackets;
+				while (!heldPackets.isEmpty())
+					heldPackets.poll().close();
+			}
+		}
 	}
 	
 	/**
@@ -131,6 +167,38 @@ public final class JDWPController
 	{
 		// Read in any packets and process them as they come
 		for (CommLink commLink = this.commLink;;)
+		{
+			// Drain any held packets
+			for (;;)
+			{
+				// Is there a packet?
+				JDWPPacket packet;
+				synchronized (this)
+				{
+					// If we are closed, do nothing
+					if (this._closed)
+						return false;
+					
+					// If we are still holding events, do not drain any
+					if (this._holdEvents)
+						break;
+					
+					// Remove the next packet, if there is any
+					packet = this._heldPackets.poll();
+				}
+				
+				// If there is no packet stop processing
+				if (packet == null)
+					break;
+				
+				// Send this packet and close when done
+				try (JDWPPacket ignored = packet)
+				{
+					commLink.send(packet);
+				}
+			}
+			
+			// Normal packet holding
 			try (JDWPPacket packet = commLink.poll())
 			{
 				// No data?
@@ -138,7 +206,7 @@ public final class JDWPController
 					break;
 				
 				// Debug
-				if (false)
+				if (JDWPController._DEBUG)
 					Debugging.debugNote("JDWP: <- %s", packet);
 				
 				// Ignore any reply packet we received
@@ -160,11 +228,8 @@ public final class JDWPController
 				{
 					try
 					{
-						// Lock to make sure state does not get warped
-						synchronized (this)
-						{
-							result = command.execute(this, packet);
-						}
+						// Execute the command asynchronously
+						result = command.execute(this, packet);
 						
 						// If a result is missing, assume nothing needed
 						if (result == null)
@@ -190,6 +255,7 @@ public final class JDWPController
 					commLink.send(result);
 				}
 			}
+		}
 		
 		return true;
 	}
@@ -229,6 +295,10 @@ public final class JDWPController
 		if (__kind == null)
 			throw new NullPointerException("NARG");
 		
+		// Make sure the thread is known
+		if (__thread != null)
+			this.state.items.put(__thread);
+		
 		// Go through all compatible events for this thread
 		boolean hit = false;
 		for (EventRequest request : this.eventManager.find(
@@ -241,7 +311,10 @@ public final class JDWPController
 			
 			// Suspend only a single thread?
 			else if (request.suspendPolicy == SuspendPolicy.EVENT_THREAD)
-				this.viewThread().suspension(__thread).suspend();
+			{
+				if (__thread != null)
+					this.viewThread().suspension(__thread).suspend();
+			}
 			
 			// Event was hit
 			hit = true;
@@ -252,6 +325,17 @@ public final class JDWPController
 			{
 				// Write the signal event data
 				__kind.write(this, __thread, packet, __args);
+				
+				// Are we holding events? Save this for later if so
+				synchronized (this)
+				{
+					if (this._holdEvents)
+					{
+						this._heldPackets.add(this.commLink
+							.__getPacket(true).copyOf(packet));
+						continue;
+					}
+				}
 				
 				// Send it away!
 				this.commLink.send(packet);
@@ -623,6 +707,13 @@ public final class JDWPController
 		Object topFrame = frames[0];
 		Object type = viewFrame.atClass(topFrame);
 		int methodDx = viewFrame.atMethodIndex(topFrame);
+		
+		// Make sure the types are added!
+		JDWPLinker<Object> items = this.state.items;
+		if (topFrame != null)
+			items.put(topFrame);
+		if (type != null)
+			items.put(type);
 		
 		// Build information
 		return new JDWPLocation(type,

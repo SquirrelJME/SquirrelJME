@@ -56,6 +56,9 @@ public enum JDWPCommandSet
 	/** Stack frames. */
 	STACK_FRAMES(16, CommandSetStackFrame.values()),
 	
+	/** Class object references. */
+	CLASS_OBJECT_REFERENCE(17, CommandSetClassObjectReference.values()),
+	
 	/* End. */
 	;
 	

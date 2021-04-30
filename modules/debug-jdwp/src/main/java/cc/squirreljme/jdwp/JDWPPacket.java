@@ -39,18 +39,6 @@ public final class JDWPPacket
 	private static final byte _GROW_SIZE =
 		32;
 	
-	/** String type. */
-	private static final String _STRING = 
-		"Ljava/lang/String;";
-	
-	/** Thread type. */
-	private static final String _THREAD =
-		"Ljava/lang/Thread;";
-	
-	/** Class type. */
-	private static final String _CLASS =
-		"Ljava/lang/Class;";
-	
 	/** The queue where packets will go when done. */
 	private final Reference<Deque<JDWPPacket>> _queue;
 	
@@ -163,6 +151,71 @@ public final class JDWPPacket
 			// Map the ID
 			return JDWPCommandSet.of(this._commandSet);
 		}
+	}
+	
+	/**
+	 * Returns a copy of the given packet.
+	 * 
+	 * @param __packet The packet to copy from.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/30
+	 */
+	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
+	protected JDWPPacket copyOf(JDWPPacket __packet)
+		throws NullPointerException
+	{
+		if (__packet == null)
+			throw new NullPointerException("NARG");
+		
+		// Read from other packet to prevent potential deadlock
+		int id;
+		int flags;
+		int commandSet;
+		int command;
+		ErrorType errorCode;
+		byte[] data;
+		int length;
+		int readPos;
+		synchronized (__packet)
+		{
+			id = __packet._id;
+			flags = __packet._flags;
+			commandSet = __packet._commandSet;
+			command = __packet._command;
+			errorCode = __packet._errorCode;
+			data = __packet._data;
+			length = __packet._length;
+			readPos = __packet._readPos;
+		}
+		
+		// Set packet details
+		synchronized (this)
+		{
+			this._id = id;
+			this._flags = flags;
+			this._commandSet = commandSet;
+			this._command = command;
+			this._errorCode = errorCode;
+			this._length = length;
+			this._readPos = readPos;
+			
+			// Data might not even be valid here
+			if (data != null)
+			{
+				// Can we get away with only copying part of the array?
+				byte[] ourData = this._data;
+				if (ourData != null && ourData.length >= data.length)
+					System.arraycopy(data, 0,
+						ourData, 0, data.length);
+				
+				// Larger size, which will require array re-allocation
+				else
+					this._data = data.clone();
+			}
+		}
+		
+		return this;
 	}
 	
 	/**

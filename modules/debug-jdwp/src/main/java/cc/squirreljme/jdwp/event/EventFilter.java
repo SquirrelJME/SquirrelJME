@@ -222,8 +222,6 @@ public final class EventFilter
 		
 		// Viewers
 		JDWPViewType viewType = __controller.viewType();
-		JDWPViewThread viewThread = __controller.viewThread();
-		JDWPViewFrame viewFrame = __controller.viewFrame();
 		
 		// Depends on the context
 		switch (__context)

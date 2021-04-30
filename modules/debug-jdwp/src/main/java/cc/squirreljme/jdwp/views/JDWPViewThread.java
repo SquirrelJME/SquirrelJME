@@ -41,6 +41,14 @@ public interface JDWPViewThread
 	Object instance(Object __which);
 	
 	/**
+	 * Interrupts the given thread.
+	 * 
+	 * @param __which Which thread to interrupt?
+	 * @since 2021/04/30
+	 */
+	void interrupt(Object __which);
+	
+	/**
 	 * Returns the termination status of the thread.
 	 * 
 	 * @param __which Get the termination state of which thread?

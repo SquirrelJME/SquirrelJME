@@ -49,7 +49,8 @@ public final class EventManager
 			throw new NullPointerException("NARG");
 		
 		// Debug
-		Debugging.debugNote("JDWP: Adding event %s", __request);
+		if (JDWPController._DEBUG)
+			Debugging.debugNote("JDWP: Adding event %s", __request);
 		
 		Map<EventKind, List<EventRequest>> eventByKind = this._eventByKind;
 		synchronized (this)
@@ -73,7 +74,7 @@ public final class EventManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/30
 	 */
-	protected void clear(EventKind __kind)
+	public void clear(EventKind __kind)
 		throws NullPointerException
 	{
 		if (__kind == null)
@@ -94,6 +95,17 @@ public final class EventManager
 		// Delete all of them
 		for (EventRequest event : clear)
 			this.delete(event.id);
+	}
+	
+	/**
+	 * Clears all events.
+	 * 
+	 * @since 2021/04/30
+	 */
+	public void clearAll()
+	{
+		for (EventKind kind : EventKind.values())
+			this.clear(kind);
 	}
 	
 	/**

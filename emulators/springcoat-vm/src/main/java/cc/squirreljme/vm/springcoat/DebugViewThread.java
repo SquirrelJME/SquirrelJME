@@ -97,6 +97,16 @@ public class DebugViewThread
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/04/30
+	 */
+	@Override
+	public void interrupt(Object __which)
+	{
+		((SpringThread)__which).hardInterrupt();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/04/19
 	 */
 	@Override

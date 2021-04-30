@@ -83,6 +83,9 @@ public enum CommandSetVirtualMachine
 			rv.writeInt(found.size());
 			for (Object type : found)
 			{
+				// Store type for later grabbing
+				__controller.state.items.put(type);
+				
 				// Write the class type
 				rv.writeByte(JDWPUtils.classType(__controller, type).id);
 				rv.writeId(System.identityHashCode(type));
@@ -148,6 +151,52 @@ public enum CommandSetVirtualMachine
 		}
 	},
 	
+	/** Dispose of the debugging connection. */
+	DISPOSE(6)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/30
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			// Terminate the connection
+			try
+			{
+				// Terminate the connection forcibly
+				__controller.close();
+			}
+			
+			// Perform final cleanup always
+			finally
+			{
+				try
+				{
+					// Force all threads to resume
+					JDWPViewThread viewThread = __controller.viewThread();
+					for (Object thread : __controller.__allThreads())
+					{
+						JDWPThreadSuspension suspension =
+							viewThread.suspension(thread);
+						while (suspension.query() > 0)
+							suspension.resume();
+					}
+				}
+				finally
+				{
+					// Clear all events
+					__controller.eventManager.clearAll();
+				}
+			}
+			
+			// No result
+			return null;
+		}
+	},
+	
 	/** Returns the size of variable data. */
 	ID_SIZES(7)
 	{
@@ -208,6 +257,30 @@ public enum CommandSetVirtualMachine
 			JDWPViewThread view = __controller.viewThread();
 			for (Object thread : __controller.__allThreads())
 				view.suspension(thread).resume();
+			
+			return null;
+		}
+	},
+	
+	/** Force exit the virtual machine. */
+	EXIT(10)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/30
+		 */
+		@Override
+		public JDWPPacket execute(JDWPController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			int code = __packet.readInt();
+			
+			// Our main VM does not have an exit, however we can tell every
+			// group that is running to terminate
+			JDWPViewThreadGroup view = __controller.viewThreadGroup();
+			for (Object threadGroup : __controller.__allThreadGroups())
+				view.exit(threadGroup, code);
 			
 			return null;
 		}
