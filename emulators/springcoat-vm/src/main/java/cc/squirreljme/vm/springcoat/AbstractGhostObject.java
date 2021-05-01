@@ -9,9 +9,9 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
+import net.multiphasicapps.classfile.ClassName;
 
 /**
  * This is the base for ghost objects which do not have a defined class type
@@ -23,22 +23,24 @@ public abstract class AbstractGhostObject
 	implements SpringObject
 {
 	/** Which type does this represent? */
-	protected final Class<?> represents;
+	protected final SpringClass represents;
 	
 	/**
 	 * Initializes the base object with the type it represents.
 	 * 
+	 * @param __machine The machine used.
 	 * @param __rep The type this represents.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/01/03
 	 */
-	public AbstractGhostObject(Class<?> __rep)
+	public AbstractGhostObject(SpringMachine __machine, Class<?> __rep)
 		throws NullPointerException
 	{
 		if (__rep == null)
 			throw new NullPointerException("NARG");
 		
-		this.represents = __rep;
+		this.represents = __machine.classLoader().loadClass(
+			new ClassName(__rep.getName().replace('.', '/')));
 	}
 	
 	/**
@@ -70,7 +72,6 @@ public abstract class AbstractGhostObject
 	@Override
 	public final SpringClass type()
 	{
-		throw new SpringVirtualMachineException(
-			"Ghost objects cannot have types: " + this.toString());
+		return this.represents;
 	}
 }

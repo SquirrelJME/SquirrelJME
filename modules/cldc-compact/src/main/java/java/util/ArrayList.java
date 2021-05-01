@@ -107,7 +107,8 @@ public class ArrayList<E>
 		
 		// Cannot fit in this array
 		E[] source = elements;
-		if (nextsize > cap)
+		boolean resize = (nextsize > cap);
+		if (resize)
 		{
 			// Grow the list by a bit
 			int newcap = nextsize + ArrayList._GROWTH;
@@ -125,10 +126,16 @@ public class ArrayList<E>
 		// Store data here
 		elements[__i] = __v;
 		
-		// Store new information
+		// Did the array change?
 		this._size = nextsize;
 		if (elements != source)
 			this._elements = elements;
+			
+		// If we resized the array, clear everything from the old array
+		// This is so everything gets garbage collected
+		if (nextsize > cap)
+			for (int i = 0, n = source.length; i < n; i++)
+				source[i] = null;
 		
 		// Structurally modified
 		this.modCount++;

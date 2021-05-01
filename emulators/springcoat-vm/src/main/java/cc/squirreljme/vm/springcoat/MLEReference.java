@@ -147,7 +147,7 @@ public enum MLEReference
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new RefLinkObject();
+			return new RefLinkObject(__thread.machine);
 		}
 	},
 	
