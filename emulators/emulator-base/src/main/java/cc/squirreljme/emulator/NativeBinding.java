@@ -39,7 +39,7 @@ public final class NativeBinding
 				libFile = NativeBinding.__libFromResources();
 				
 			// Debug
-			System.err.printf("Java Version: %s",
+			System.err.printf("Java Version: %s%n",
 				System.getProperty("java.version"));
 			System.err.printf("Java Over-Layer: Loading %s...%n", libFile);
 			

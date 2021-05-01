@@ -7,8 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package lang;
+package lang.math;
 
+import cc.squirreljme.jvm.SoftLong;
 import java.util.Random;
 import net.multiphasicapps.tac.TestRunnable;
 
@@ -18,7 +19,7 @@ import net.multiphasicapps.tac.TestRunnable;
  *
  * @since 2021/02/20
  */
-public class TestLongDivide
+public class TestLongDivideSoft
 	extends TestRunnable
 {
 	/** Counts. */
@@ -27,7 +28,7 @@ public class TestLongDivide
 	
 	/** Half count. */
 	public static final int HALF_COUNT =
-		TestLongDivide.COUNT / 2;
+		TestLongDivideSoft.COUNT / 2;
 	
 	/**
 	 * {@inheritDoc}
@@ -40,11 +41,11 @@ public class TestLongDivide
 		Random random = new Random(0xCAFEBABE_DEADBEEFL);
 		
 		// Quotient and remainder results
-		long[] quo = new long[TestLongDivide.COUNT];
-		long[] rem = new long[TestLongDivide.COUNT];
+		long[] quo = new long[TestLongDivideSoft.COUNT];
+		long[] rem = new long[TestLongDivideSoft.COUNT];
 		
 		// Constant division!
-		for (int i = 0; i < TestLongDivide.COUNT; i++)
+		for (int i = 0; i < TestLongDivideSoft.COUNT; i++)
 		{
 			long num = random.nextLong();
 			
@@ -52,11 +53,17 @@ public class TestLongDivide
 			// elsewhere...
 			long den = 0L;
 			while (den == 0L)
-				den = (i < TestLongDivide.HALF_COUNT ?
+				den = (i < TestLongDivideSoft.HALF_COUNT ?
 					1 + random.nextInt(1 + i) : random.nextLong());
 			
-			quo[i] = num / den;
-			rem[i] = num % den;
+			// Explode to parts
+			int numL = (int)num;
+			int numH = (int)(num >>> 32);
+			int denL = (int)den;
+			int denH = (int)(den >>> 32);
+			
+			quo[i] = SoftLong.div(numL, numH, denL, denH);
+			rem[i] = SoftLong.rem(numL, numH, denL, denH);
 		}
 		
 		// Store record

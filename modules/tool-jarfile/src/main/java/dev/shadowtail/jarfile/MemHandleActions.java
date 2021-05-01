@@ -152,8 +152,13 @@ public final class MemHandleActions
 		if (!(MemHandleActions.isConstant(__oVal) ||
 			(__oVal instanceof MemHandle) ||
 			(__oVal instanceof ChunkFuture) ||
-			(__oVal instanceof BootJarPointer)))
+			(__oVal instanceof HasBootJarPointer)))
 			throw new ClassCastException("BC07 " + __oVal);
+		
+		// {@squirreljme.error BC0u BootJarPointer is not integer type.}
+		if ((__oVal instanceof HasBootJarPointer) &&
+			__type != MemoryType.INTEGER)
+			throw new IllegalArgumentException("BC0u");
 		
 		// Check for storage ID overflow
 		// {@squirreljme.error BC0b Too many values have been written to the

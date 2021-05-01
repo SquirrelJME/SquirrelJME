@@ -270,11 +270,6 @@ public final class NearNativeByteCodeHandler
 			this.__basicCheckArrayBound(array, index, __dt,
 				offset.register);
 			
-			// Any object being stored gets reference counted
-			boolean isObject = __dt == DataType.OBJECT;
-			if (isObject)
-				this.__refCount(MemHandleRegister.of(__val.register));
-			
 			// Load value
 			if (__dt.isWide())
 				codeBuilder.addMemHandleAccess(__dt, true,
@@ -284,6 +279,11 @@ public final class NearNativeByteCodeHandler
 				codeBuilder.addMemHandleAccess(__dt, true,
 					IntValueRegister.of(__val.register),
 					array, offset.register);
+			
+			// Any object being read gets reference counted
+			boolean isObject = __dt == DataType.OBJECT;
+			if (isObject)
+				this.__refCount(MemHandleRegister.of(__val.register));
 		}
 		
 		// Clear references
@@ -450,7 +450,8 @@ public final class NearNativeByteCodeHandler
 			else
 				this.__invokeStatic(new InvokedMethod(InvokeType.SYSTEM, smc,
 					"to" + __bs.boxedType(),
-					"(I)" + __bs.signature()), __a.register);
+					"(I)" + __bs.signature()),
+					__a.register);
 			
 			// Read out return value
 			int a = NativeCode.RETURN_REGISTER,
@@ -496,11 +497,14 @@ public final class NearNativeByteCodeHandler
 	public final void doFieldGet(FieldReference __fr,
 		JavaStackResult.Input __i, JavaStackResult.Output __v)
 	{
+		NativeCodeBuilder codeBuilder = this.codebuilder;
+		
 		// Push references
 		this.__refPush();
 		
 		// The instance register
 		MemHandleRegister instance = MemHandleRegister.of(__i.register);
+		MemHandleRegister outValue = MemHandleRegister.of(__v.register);
 		
 		// Cannot be null!
 		this.__basicCheckNPE(instance);
@@ -518,7 +522,6 @@ public final class NearNativeByteCodeHandler
 			this.volatiles.getTyped(AccessedField.class))
 		{
 			// Read field offset
-			NativeCodeBuilder codeBuilder = this.codebuilder;
 			codeBuilder.<AccessedField>addPoolLoad(this.__fieldAccess(
 				FieldAccessType.INSTANCE, __fr, true), fOff.register);
 			
@@ -535,12 +538,12 @@ public final class NearNativeByteCodeHandler
 			else
 			{
 				codeBuilder.addMemHandleAccess(dt, true,
-					IntValueRegister.of(__v.register),
+					outValue.asIntValue(),
 					instance, fOff.register.asIntValue());
 				
 				// Need to count up object?
 				if (__fr.memberType().isObject())
-					this.__refCount(MemHandleRegister.of(__v.register));
+					this.__refCount(outValue);
 			}
 		}
 			
@@ -556,6 +559,7 @@ public final class NearNativeByteCodeHandler
 	public final void doFieldPut(FieldReference __fr,
 		JavaStackResult.Input __i, JavaStackResult.Input __v)
 	{
+		// Debug
 		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
 		// Push references
@@ -594,13 +598,13 @@ public final class NearNativeByteCodeHandler
 			// already in this field
 			if (isObject)
 			{
-				// Count our own reference up
-				this.__refCount(instance);
+				// Count the value up before storing it
+				this.__refCount(value.asMemHandle());
 				
 				// Read the value of the field for later uncount
 				codeBuilder.addMemHandleAccess(dt, true,
-					old.register.asIntValue(), instance,
-					fieldOff.register.asIntValue());
+					old.register.asIntValue(),
+					instance, fieldOff.register.asIntValue());
 			}
 			
 			// Wide access?
@@ -610,7 +614,8 @@ public final class NearNativeByteCodeHandler
 					instance, fieldOff.register.asIntValue());
 			else
 				codeBuilder.addMemHandleAccess(dt, false,
-					value, instance, fieldOff.register.asIntValue());
+					value,
+					instance, fieldOff.register.asIntValue());
 			
 			// If we stored an object, reference count the field after it has
 			// been written to
@@ -825,100 +830,27 @@ public final class NearNativeByteCodeHandler
 		JavaStackResult.Input __a, JavaStackResult.Input __b,
 		JavaStackResult.Output __c)
 	{
-		NativeCodeBuilder codeBuilder = this.codebuilder;
+		// Is this wide?
+		boolean isWide = __dt.isWide();
 		
-		// Integer math is supported natively
-		if (__dt == StackJavaType.INTEGER)
-		{
-			// Check for division by zero, only the integer type can have this
-			// done in code because the long can be handled by the software
-			// math library code. Otherwise we would need to add more code to
-			// the generator to handle this.
-			if (__mt == MathType.DIV || __mt == MathType.REM)
-			{
-				// Perform divide by zero check
-				this.__basicCheckDBZ(__b.register);
-				
-				// We already checked the only valid exceptions, so do not
-				// perform later handling!
-				this.state.canexception = false;
-			}
-			
-			// Add math operation
-			codeBuilder.addMathReg(__dt, __mt, __a.register, __b.register,
-				__c.register);
-		}
+		// The first value
+		IntValueRegister al = IntValueRegister.of(__a.register);
+		IntValueRegister ah = (isWide ?
+			IntValueRegister.of(__a.register + 1) : null);
+	
+		// The second value
+		IntValueRegister bl = IntValueRegister.of(__b.register);
+		IntValueRegister bh = (isWide ?
+			IntValueRegister.of(__b.register + 1) : null);
 		
-		// Other kinds of math are done in software
-		else
-		{
-			// Get the software math class for the type
-			ClassName smc = __dt.softwareMathClass();
-			
-			// The function to call is just the lowercased enum
-			String func = __mt.name().toLowerCase();
-			
-			// Remove the L/G from compare as that is only for float/double
-			if (__dt == StackJavaType.LONG && func.startsWith("cmp"))
-				func = "cmp";
-			
-			// Handling wide math?
-			boolean iswide = __dt.isWide();
-			
-			// A, B, and C register
-			int ah = __a.register,
-				bh = __b.register,
-				ch = __c.register;
-			
-			// Low registers
-			int al = (ah == 0 ? 0 : ah + 1),
-				bl = (bh == 0 ? 0 : bh + 1),
-				cl = (ch == 0 ? 0 : ch + 1);
-			
-			// Determine the call signature
-			String type = __mt.signature(__dt);
-			RegisterList args;
-			switch (__mt)
-			{
-				case NEG:
-				case SIGNX8:
-				case SIGNX16:
-					if (iswide)
-						args = new RegisterList(ah, al);
-					else
-						args = new RegisterList(ah);
-					break;
-				
-				case SHL:
-				case SHR:
-				case USHR:
-					if (iswide)
-						args = new RegisterList(ah, al, bh);
-					else
-						args = new RegisterList(ah, bh);
-					break;
-				
-				default:
-					if (iswide)
-						args = new RegisterList(ah, al, bh, bl);
-					else
-						args = new RegisterList(ah, bh);
-					break;
-			}
-			
-			// Perform the call
-			this.__invokeStatic(new InvokedMethod(InvokeType.SYSTEM,
-				smc.toString(), func, type), args);
-			
-			// Read out return value
-			if (iswide)
-			{
-				codeBuilder.addCopy(NativeCode.RETURN_REGISTER, ch);
-				codeBuilder.addCopy(NativeCode.RETURN_REGISTER + 1, cl);
-			}
-			else
-				codeBuilder.addCopy(NativeCode.RETURN_REGISTER, ch);
-		}
+		// The destination register
+		IntValueRegister cl = IntValueRegister.of(__c.register);
+		IntValueRegister ch = (isWide ?
+			IntValueRegister.of(__c.register + 1) : null);
+		
+		// Perform the math operation
+		this.__math(__dt, __mt,
+			al, ah, bl, bh, cl, ch);
 	}
 	
 	/**
@@ -929,74 +861,63 @@ public final class NearNativeByteCodeHandler
 	public final void doMath(StackJavaType __dt, MathType __mt,
 		JavaStackResult.Input __a, Number __b, JavaStackResult.Output __c)
 	{
-		NativeCodeBuilder codebuilder = this.codebuilder;
+		NativeCodeBuilder codeBuilder = this.codebuilder;
 		
-		// If we are dividing by zero just throw an exception
-		if ((__dt == StackJavaType.INTEGER || __dt == StackJavaType.LONG) &&
-			(__mt == MathType.DIV || __mt == MathType.REM))
-			if (__b.longValue() == 0)
-			{
-				// Directly jump to the make exception handler
-				codebuilder.addGoto(this.__labelMakeException(
-					"java/lang/ArithmeticException"));
-				
-				// Already handled this
-				this.state.canexception = false;
-				
-				// Since we are dividing by zero, never actually generate the
-				// division code
-				return;
-			}
+		// Is this wide?
+		boolean isWide = __dt.isWide();
 		
-		// Integer math on constants is natively supported
-		if (__dt == StackJavaType.INTEGER)
+		// Is this just a constant value load?
+		boolean isConst = (__a == JavaStackResult.INPUT_ZERO &&
+			__mt == MathType.OR);
+		
+		// The first value
+		IntValueRegister al = IntValueRegister.of(__a.register);
+		IntValueRegister ah = (isWide ?
+			IntValueRegister.of(__a.register + 1) : null);
+		
+		// The resultant registers
+		IntValueRegister cl = IntValueRegister.of(__c.register);
+		IntValueRegister ch = (isWide ?
+			IntValueRegister.of(__c.register + 1) : null);
+		
+		// We need volatiles to do math with
+		VolatileRegisterStack volatiles = this.volatiles;
+		try (Volatile<IntValueRegister> vl = (!isConst ?
+				volatiles.getIntValue() : null);
+			Volatile<IntValueRegister> vh = (isWide && !isConst ?
+				volatiles.getIntValue() : null))
 		{
-			codebuilder.addMathConst(__dt, __mt, __a.register, __b,
-				__c.register);
-		}
-		
-		// Otherwise store the constant and then do register math on it
-		else
-		{
-			// Need working registers, these must be next to each other!
-			VolatileRegisterStack volatiles = this.volatiles;
-			int volbh = -1, volbl = -7;
-			while (volbl != (volbh + 1))
-			{
-				volbh = volatiles.getUnmanaged();
-				volbl = volatiles.getUnmanaged();
-			}
-			
-			// Read in raw value
-			if (__b instanceof Float)
-				codebuilder.addMathConst(StackJavaType.INTEGER, MathType.OR,
-					0, Float.floatToRawIntBits(__b.floatValue()), volbh);
-			else if (__b instanceof Double)
-			{
-				long bits = Double.doubleToRawLongBits(__b.doubleValue());
-				codebuilder.addMathConst(StackJavaType.INTEGER, MathType.OR,
-					0, (int)(bits >>> 32), volbh);
-				codebuilder.addMathConst(StackJavaType.INTEGER, MathType.OR,
-					0, (int)(bits), volbl);
-			}
+			// Obtain the raw value for constant for loading
+			long constVal;
+			if (__b instanceof Integer)
+				constVal = __b.intValue();
+			else if (__b instanceof Long)
+				constVal = __b.longValue(); 
+			else if (__b instanceof Float)
+				constVal = Float.floatToRawIntBits(__b.floatValue());
 			else
-			{
-				long bits = __b.longValue();
-				codebuilder.addMathConst(StackJavaType.INTEGER, MathType.OR,
-					0, (int)(bits >>> 32), volbh);
-				codebuilder.addMathConst(StackJavaType.INTEGER, MathType.OR,
-					0, (int)(bits), volbl);
-			}
+				constVal = Double.doubleToRawLongBits(__b.doubleValue());
 			
-			// Same as register math except the constant value is
-			// virtualized now
-			this.doMath(__dt, __mt,
-				__a, new JavaStackResult.Input(volbh, JavaType.INTEGER, true),
-				__c);
+			// The target register, if not const
+			IntValueRegister bl = (isConst ? cl : vl.register);
+			IntValueRegister bh = (isWide ?
+				(isConst ? ch : vh.register) : null);
 			
-			// Cleanup
-			volatiles.removeUnmanaged(volbh);
-			volatiles.removeUnmanaged(volbl);
+			// Lower value of the integer/float?
+			codeBuilder.addMathConst(StackJavaType.INTEGER, MathType.OR,
+				IntValueRegister.ZERO, (int)constVal,
+				bl);
+			
+			// Upper value of the long/double
+			if (isWide)
+				codeBuilder.addMathConst(StackJavaType.INTEGER, MathType.OR,
+					IntValueRegister.ZERO, (int)(constVal >>> 32),
+					bh);
+			
+			// Perform the actual math if not constant
+			if (!isConst)
+				this.__math(__dt, __mt,
+					al, ah, bl, bh, cl, ch);
 		}
 	}
 	
@@ -1308,7 +1229,7 @@ public final class NearNativeByteCodeHandler
 			{
 				// Read the old object
 				codeBuilder.addMemHandleAccess(dataType,
-					false, old.register.asIntValue(),
+					true, old.register.asIntValue(),
 					staticStore.register, offset.register);
 				
 				// Count up the value we are storing
@@ -1835,7 +1756,7 @@ public final class NearNativeByteCodeHandler
 	 * @param __br The B register.
 	 * @since 2019/06/24
 	 */
-	private void __basicCheckDBZ(int __br)
+	private void __basicCheckDBZ(IntValueRegister __br)
 	{
 		// If the B register is zero, then we throw the exception
 		this.codebuilder.addIfZero(__br, this.__labelMakeException(
@@ -3084,6 +3005,14 @@ public final class NearNativeByteCodeHandler
 				id = SystemCallIndex.ARRAY_ALLOCATION_BASE;
 				break;
 			
+			case "callStackHeight":
+				id = SystemCallIndex.CALL_STACK_HEIGHT;
+				break;
+			
+			case "callStackItem":
+				id = SystemCallIndex.CALL_STACK_ITEM;
+				break;
+			
 			case "errorGet":
 				id = SystemCallIndex.ERROR_GET;
 				break;
@@ -3098,6 +3027,10 @@ public final class NearNativeByteCodeHandler
 			
 			case "memHandleMove":
 				id = SystemCallIndex.MEM_HANDLE_MOVE;
+				break;
+			
+			case "pdFlush":
+				id = SystemCallIndex.PD_FLUSH;
 				break;
 			
 			case "pdOfStdErr":
@@ -3768,6 +3701,107 @@ public final class NearNativeByteCodeHandler
 		
 		// Copy return value to the output register
 		this.codebuilder.addCopy(NativeCode.RETURN_REGISTER, __r);*/
+	}
+	
+	/**
+	 * Performs math.
+	 * 
+	 * @param __dt The data type.
+	 * @param __mt The math to perform.
+	 * @param __al A low.
+	 * @param __ah A high.
+	 * @param __bl B low.
+	 * @param __bh B high.
+	 * @param __cl C low.
+	 * @param __ch C high.
+	 * @since 2021/04/03
+	 */
+	private void __math(StackJavaType __dt, MathType __mt,
+		IntValueRegister __al, IntValueRegister __ah,
+		IntValueRegister __bl, IntValueRegister __bh,
+		IntValueRegister __cl, IntValueRegister __ch)
+	{
+		NativeCodeBuilder codeBuilder = this.codebuilder;
+		
+		// Integer math is supported natively
+		if (__dt == StackJavaType.INTEGER)
+		{
+			// Check for division by zero, only the integer type can have this
+			// done in code because the long can be handled by the software
+			// math library code. Otherwise we would need to add more code to
+			// the generator to handle this.
+			if (__mt == MathType.DIV || __mt == MathType.REM)
+			{
+				// Perform divide by zero check
+				this.__basicCheckDBZ(__bl);
+				
+				// We already checked the only valid exceptions, so do not
+				// perform later handling!
+				this.state.canexception = false;
+			}
+			
+			// Add math operation
+			codeBuilder.addMathReg(__dt, __mt,
+				__al, __bl,
+				__cl);
+			
+			// Do not perform any software math
+			return;
+		}
+		
+		// Other kinds of math are done in software
+		// Get the software math class for the type
+		ClassName smc = __dt.softwareMathClass();
+		
+		// The function to call is just the lowercase enum
+		String func = __mt.name().toLowerCase();
+		
+		// Remove the L/G from compare as that is only for float/double
+		if (__dt == StackJavaType.LONG && func.startsWith("cmp"))
+			func = "cmp";
+		
+		// Handling wide math?
+		boolean isWide = __dt.isWide();
+		
+		// Determine the call signature
+		String type = __mt.signature(__dt);
+		RegisterList args;
+		switch (__mt)
+		{
+			case NEG:
+			case SIGNX8:
+			case SIGNX16:
+				if (isWide)
+					args = new RegisterList(__al, __ah);
+				else
+					args = new RegisterList(__al);
+				break;
+			
+			case SHL:
+			case SHR:
+			case USHR:
+				if (isWide)
+					args = new RegisterList(__al, __ah, __bl);
+				else
+					args = new RegisterList(__al, __bl);
+				break;
+			
+			default:
+				if (isWide)
+					args = new RegisterList(__al, __ah, __bl, __bh);
+				else
+					args = new RegisterList(__al, __bl);
+				break;
+		}
+		
+		// Perform the call
+		this.__invokeStatic(new InvokedMethod(InvokeType.SYSTEM,
+			smc.toString(), func, type), args);
+		
+		// Read out return value
+		codeBuilder.addCopy(IntValueRegister.RETURN, __cl);
+		if (isWide)
+			codeBuilder.addCopy(IntValueRegister.RETURN_TWO, __ch);
 	}
 	
 	/**

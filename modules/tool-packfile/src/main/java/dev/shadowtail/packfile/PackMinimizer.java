@@ -169,6 +169,7 @@ public class PackMinimizer
 				ChunkWriter.VARIABLE_SIZE, 4);
 			utfName.writeUTF(name);
 			tocFill[PackTocProperty.OFFSET_NAME].set(utfName.futureAddress());
+			tocFill[PackTocProperty.SIZE_NAME].set(utfName.futureSize());
 			
 			// Is the offset and size of this JAR pre-addressed? If it is then
 			// we do not need to compile or copy the ROM since the address

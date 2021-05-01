@@ -19,12 +19,13 @@ import org.gradle.api.DefaultTask;
  */
 public class VMFullSuite
 	extends DefaultTask
+	implements VMExecutableTask
 {
-	/** The virtual machine type. */
-	public final VMSpecifier vmType;
-	
 	/** The source set used. */
 	public final String sourceSet;
+	
+	/** The virtual machine type. */
+	public final VMSpecifier vmType;
 	
 	/**
 	 * Initializes the full suite task.
@@ -54,10 +55,21 @@ public class VMFullSuite
 		this.getOutputs().upToDateWhen(new AlwaysFalse());
 		
 		// This depends on everything!
-		this.dependsOn(new VMFullSuiteDepends(this, __sourceSet,
-			__vmType));
+		this.dependsOn(
+			new VMFullSuiteDepends(this, __sourceSet, __vmType),
+			new VMEmulatorDependencies(this, __vmType));
 		
 		// Actual running of everything
 		this.doLast(new VMFullSuiteTaskAction(__sourceSet, __vmType));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/08
+	 */
+	@Override
+	public String getSourceSet()
+	{
+		return this.sourceSet;
 	}
 }

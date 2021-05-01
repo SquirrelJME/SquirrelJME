@@ -12,6 +12,7 @@
       <w>bitfield</w>
       <w>bootram</w>
       <w>cldc</w>
+      <w>clinit</w>
       <w>codebeat</w>
       <w>compactified</w>
       <w>cpibm</w>
@@ -24,6 +25,8 @@
       <w>endianess</w>
       <w>fileselectors</w>
       <w>fprintf</w>
+      <w>framebuffer</w>
+      <w>funcptr</w>
       <w>gawroriski</w>
       <w>icache</w>
       <w>idleitem</w>
@@ -60,6 +63,7 @@
       <w>ljava</w>
       <w>memhandle</w>
       <w>messg</w>
+      <w>methodptr</w>
       <w>microedition</w>
       <w>midlet</w>
       <w>midlets</w>
@@ -70,6 +74,7 @@
       <w>noassert</w>
       <w>nokia</w>
       <w>nsee</w>
+      <w>offsetof</w>
       <w>phasic</w>
       <w>ratufa</w>
       <w>ratufacoat</w>
@@ -80,14 +85,17 @@
       <w>siiiiii</w>
       <w>siiiiiii</w>
       <w>siiiiiiii</w>
+      <w>softfloat</w>
       <w>softkey</w>
       <w>springcoat</w>
       <w>squirreljme</w>
       <w>stdint</w>
       <w>summercoat</w>
+      <w>sysprop</w>
       <w>tabbedpanes</w>
       <w>targetting</w>
       <w>textboxes</w>
+      <w>typebracket</w>
       <w>uiform</w>
       <w>uiitem</w>
       <w>uiwidget</w>
@@ -98,6 +106,8 @@
       <w>vtable</w>
       <w>wikipedia</w>
       <w>xemulator</w>
+      <w>xjdwp</w>
+      <w>xlibraries</w>
       <w>xsnapshot</w>
       <w>xtable</w>
     </words>

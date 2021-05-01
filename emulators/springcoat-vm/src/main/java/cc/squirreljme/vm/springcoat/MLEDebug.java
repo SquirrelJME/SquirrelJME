@@ -191,7 +191,7 @@ public enum MLEDebug
 			TracePointObject[] rv = new TracePointObject[n];
 			
 			for (int i = 0; i < n; i++)
-				rv[i] = new TracePointObject(trace[i]);
+				rv[i] = new TracePointObject(__thread.machine, trace[i]);
 			
 			return __thread.asVMObjectArray(__thread.loadClass(
 				"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;"),

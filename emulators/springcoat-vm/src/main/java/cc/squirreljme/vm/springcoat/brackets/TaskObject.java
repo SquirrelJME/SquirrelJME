@@ -34,7 +34,7 @@ public final class TaskObject
 	public TaskObject(SpringMachine __machine)
 		throws NullPointerException
 	{
-		super(TaskBracket.class);
+		super(__machine, TaskBracket.class);
 		
 		if (__machine == null)
 			throw new NullPointerException("NARG");

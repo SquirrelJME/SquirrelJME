@@ -14,8 +14,11 @@ import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.ld.mem.AbstractReadableMemory;
+import cc.squirreljme.jvm.summercoat.ld.mem.MemoryAccessException;
+import cc.squirreljme.jvm.summercoat.ld.mem.NotRealMemoryException;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemoryInputStream;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
@@ -69,6 +72,17 @@ public final class SuiteMemory
 		this.suites = __sm;
 		this.libName = __ln;
 		this.offset = __off;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/03
+	 */
+	@Override
+	public long absoluteAddress(long __addr)
+		throws MemoryAccessException, NotRealMemoryException
+	{
+		return this.offset + __addr;
 	}
 	
 	/**
@@ -158,17 +172,6 @@ public final class SuiteMemory
 		
 		// Forward
 		return this._memory.memReadShort(__addr);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/21
-	 * @return
-	 */
-	@Override
-	public long memRegionOffset()
-	{
-		return this.offset;
 	}
 	
 	/**

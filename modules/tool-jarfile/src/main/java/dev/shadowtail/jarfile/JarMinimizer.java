@@ -199,6 +199,7 @@ public final class JarMinimizer
 				ChunkWriter.VARIABLE_SIZE, 4);
 			utfName.writeUTF(rc);
 			tocFill[JarTocProperty.OFFSET_NAME].set(utfName.futureAddress());
+			tocFill[JarTocProperty.SIZE_NAME].set(utfName.futureSize());
 			
 			// Is this a class or manifest?
 			boolean isClass = (rc.endsWith(".class") &&

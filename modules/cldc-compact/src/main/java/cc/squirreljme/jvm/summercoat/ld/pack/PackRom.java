@@ -9,12 +9,14 @@
 
 package cc.squirreljme.jvm.summercoat.ld.pack;
 
-import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
+import cc.squirreljme.jvm.summercoat.SummerCoatUtil;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
+import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
 import cc.squirreljme.jvm.summercoat.ld.mem.AbstractReadableMemory;
+import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemoryInputStream;
 import cc.squirreljme.jvm.summercoat.ld.mem.RealMemory;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -27,11 +29,15 @@ import java.io.IOException;
  */
 public final class PackRom
 {
-	/** The base address of the ROM. */
-	protected final long baseAddr;
+	/** Mask for integers. */
+	private static final long _INT_MASK =
+		0xFFFFFFFFL;
+	
+	/** The area where the ROM is. */
+	protected final ReadableMemory rom;
 	
 	/** Properties for the ROM. */
-	private final int[] _properties;
+	protected final HeaderStruct header;
 	
 	/** Libraries which are already available. */
 	private JarPackageBracket[] _libraries;
@@ -42,14 +48,18 @@ public final class PackRom
 	/**
 	 * Initializes the pack ROM manager.
 	 * 
-	 * @param __memAddr The memory address where the Pack ROM is located.
-	 * @param __properties Properties for the ROM.
+	 * @param __rom The memory where the ROM is located.
+	 * @param __header Properties for the ROM.
 	 * @since 2021/02/09
 	 */
-	private PackRom(long __memAddr, int[] __properties)
+	private PackRom(ReadableMemory __rom, HeaderStruct __header)
+		throws NullPointerException
 	{
-		this.baseAddr = __memAddr;
-		this._properties = __properties;
+		if (__rom == null)
+			throw new NullPointerException("NARG");
+		
+		this.rom = __rom;
+		this.header = __header;
 	}
 	
 	/**
@@ -65,8 +75,53 @@ public final class PackRom
 		if (rv != null)
 			return rv.clone();
 		
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		// Debug
+		Debugging.debugNote("Loading table of contents...");
+		
+		// We need the table of contents to look at libraries
+		TableOfContents toc = this.__toc();
+		
+		// Setup base array
+		int count = toc.count();
+		rv = new JarPackageBracket[count];
+		
+		// Debug
+		Debugging.debugNote("Reading table of contents...");
+		
+		// Load in library references
+		ReadableMemory rom = this.rom;
+		for (int dx = 0; dx < count; dx++)
+		{
+			// Flags for the JAR, is it compressed?
+			int flags = toc.get(dx, PackTocProperty.INT_FLAGS);
+			
+			// Load in the JAR name
+			String name = SummerCoatUtil.loadString(
+				rom.absoluteAddress(toc.get(dx, PackTocProperty.OFFSET_NAME)));
+			
+			// {@squirreljme.error ZZ52 JAR has no name?}
+			if (name == null)
+				throw new InvalidRomException("ZZ52");
+			
+			// {@squirreljme.error ZZ51 Name does not match hashed named.}
+			if (name.hashCode() != toc.get(dx,
+				PackTocProperty.INT_NAME_HASHCODE))
+				throw new InvalidRomException("ZZ51");
+			
+			// The location in memory where the ROM is located
+			ReadableMemory data = rom.subSection(
+				toc.get(dx, PackTocProperty.OFFSET_DATA) &
+					PackRom._INT_MASK,
+				toc.get(dx, PackTocProperty.SIZE_DATA) &
+					PackRom._INT_MASK);
+			
+			// Initialize ROM reference
+			rv[dx] = new JarRom(flags, name, data);
+		}
+		
+		// Cache and use a copy
+		this._libraries = rv;
+		return rv.clone();
 	}
 	
 	/**
@@ -81,8 +136,21 @@ public final class PackRom
 		if (rv != null)
 			return rv;
 		
+		// We need these to determine where to read the data
+		int tocBase = this.header.getProperty(PackProperty.OFFSET_TOC);
+		int tocSize = this.header.getProperty(PackProperty.SIZE_TOC);
+		
+		// {@squirreljme.error ZZ4u ROM has invalid table of contents
+		// reference.}
+		if (tocBase < 0 || tocSize <= 0)
+			throw new InvalidRomException("ZZ4u");
+		
+		// Debug
+		Debugging.debugNote("TOC at %x (len %d)", tocBase, tocSize);
+		
 		// Setup new table of contents
-		this._toc = (rv = new TableOfContents());
+		this._toc = (rv = new TableOfContents(
+			this.rom.subSection(tocBase, tocSize)));
 		return rv;
 	}
 	
@@ -101,35 +169,32 @@ public final class PackRom
 			ByteOrderType.BIG_ENDIAN);
 		try (ReadableMemoryInputStream in = headerMem.inputStream())
 		{
-			// {@squirreljme.error ZZ43 Invalid ROM header. (Magic number)}
-			int romMagic = in.readInt();
-			if (ClassInfoConstants.PACK_MAGIC_NUMBER != romMagic)
-				throw new RuntimeException("ZZ43 " + romMagic);
-				
-			// Read the format version
-			int formatVersion = in.readUnsignedShort();
-			
-			// {@squirreljme.error ZZ44 Cannot decode pack file because the
-			// version identifier is not known. (The format version of the pack
-			// file)}
-			if (formatVersion != ClassInfoConstants.CLASS_VERSION_20201129)
-				throw new RuntimeException("ZZ44 " + formatVersion);
-			
-			// Read in all the data
-			int numProperties = Math.min(in.readUnsignedShort(),
+			// Decode the header
+			HeaderStruct header = HeaderStruct.decode(in,
 				PackProperty.NUM_PACK_PROPERTIES);
-			int[] properties = new int[numProperties];
-			for (int i = 0; i < numProperties; i++)
-				properties[i] = in.readInt();
+			
+			// {@squirreljme.error ZZ43 Invalid ROM header. (Magic number)}
+			int romMagic = header.magicNumber;
+			if (ClassInfoConstants.PACK_MAGIC_NUMBER != romMagic)
+				throw new InvalidRomException("ZZ43 " + romMagic);
+			
+			// {@squirreljme.error ZZ46 PackROM size is not valid. (The size)}
+			int romSize = header.getProperty(PackProperty.ROM_SIZE);
+			if (romSize <= ClassInfoConstants.PACK_MAXIMUM_HEADER_SIZE)
+				throw new InvalidRomException("ZZ46 " + romSize);
+			
+			// Debug
+			Debugging.debugNote("ROM Size: %d (%xh)", romSize, romSize);
 			
 			// Build the final PackROM
-			return new PackRom(__memAddr, properties);
+			return new PackRom(new RealMemory(__memAddr, romSize,
+				ByteOrderType.BIG_ENDIAN), header);
 		}
 		
 		// {@squirreljme.error ZZ42 The ROM is corrupted.}
 		catch (IOException __e)
 		{
-			throw new RuntimeException("ZZ42", __e); 
+			throw new InvalidRomException("ZZ42", __e); 
 		}
 	}
 }

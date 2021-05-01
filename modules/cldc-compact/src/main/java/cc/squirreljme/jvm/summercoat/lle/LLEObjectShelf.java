@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.summercoat.lle;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.constants.MonitorResultType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -17,6 +18,7 @@ import cc.squirreljme.jvm.summercoat.LogicHandler;
 import cc.squirreljme.jvm.summercoat.SystemCall;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
+import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -245,8 +247,18 @@ public final class LLEObjectShelf
 	 */
 	public static int arrayLength(Object __object)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__object == null)
+			throw new MLECallError("NARG");
+		
+		// If not an array, return a negative value from it
+		TypeBracket type = TypeShelf.objectType(__object);
+		if (!TypeShelf.isArray(type))
+			return -1;
+		
+		// Directly read the length attribute
+		return Assembly.memHandleReadInt(__object,
+			LogicHandler.staticVmAttribute(
+				StaticVmAttribute.OFFSETOF_ARRAY_LENGTH_FIELD));
 	}
 	
 	/**
@@ -258,10 +270,30 @@ public final class LLEObjectShelf
 	 * @return The newly allocated array as the given object.
 	 * @since 2020/06/09
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T arrayNew(TypeBracket __type, int __len)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__type == null)
+			throw new MLECallError("NARG");
+		
+		if (__len < 0)
+			throw new NegativeArraySizeException("" + __type);
+		
+		// Determine how large the object needs to be
+		int allocBase = LogicHandler.typeGetProperty(__type,
+			ClassProperty.SIZE_ALLOCATION);
+		int allocSize = allocBase +
+			(__len * LogicHandler.typeGetProperty(__type,
+				ClassProperty.INT_COMPONENT_CELL_SIZE));
+		
+		// Allocate the object
+		Object rv = LLEObjectShelf.__allocObject(__type, allocSize);
+		
+		// Set the length of the array
+		Assembly.memHandleWriteInt(rv, LogicHandler.staticVmAttribute(
+			StaticVmAttribute.OFFSETOF_ARRAY_LENGTH_FIELD), __len);
+		
+		return (T)rv;
 	}
 	
 	/**
@@ -289,6 +321,21 @@ public final class LLEObjectShelf
 	{
 		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Checks if this object is an array.
+	 * 
+	 * @param __object The object to check.
+	 * @return If this object is an array.
+	 * @since 2021/04/07
+	 */
+	public static boolean isArray(Object __object)
+	{
+		if (__object == null)
+			throw new MLECallError("NARG");
+			
+		return LLEObjectShelf.arrayLength(__object) > 0;
 	}
 	
 	/**
@@ -341,8 +388,17 @@ public final class LLEObjectShelf
 	 */
 	public static Object newInstance(TypeBracket __type)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__type == null)
+			throw new MLECallError("NARG");
+		
+		// {@squirreljme.error ZZ4j Class has no allocated size?}
+		int allocSize = LogicHandler.typeGetProperty(__type,
+			ClassProperty.SIZE_ALLOCATION);
+		if (allocSize <= 0)
+			throw new MLECallError("ZZ4j");
+		
+		// Allocate the object
+		return LLEObjectShelf.__allocObject(__type, allocSize);
 	}
 	
 	/**
@@ -372,5 +428,47 @@ public final class LLEObjectShelf
 	{
 		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Allocates an object and seeds initial information regarding it.
+	 * 
+	 * @param __info The class information.
+	 * @param __allocSize The allocation size of the object.
+	 * @return The allocated object.
+	 * @throws NullPointerException On null arguments.
+	 * @throws OutOfMemoryError If not enough memory is available.
+	 * @since 2021/01/23
+	 */
+	private static Object __allocObject(TypeBracket __info,
+		int __allocSize)
+		throws NullPointerException, OutOfMemoryError
+	{
+		if (__info == null)
+			throw new NullPointerException("NARG");
+		
+		// This represents the kind of handle that gets allocated
+		int memHandleKind = LogicHandler.typeGetProperty(__info,
+			ClassProperty.INT_MEMHANDLE_KIND);
+		
+		// Attempt to allocate a handle
+		int rv = SystemCall.memHandleNew(memHandleKind, __allocSize);
+		if (rv == 0)
+		{
+			// Attempt garbage collection
+			System.gc();
+			
+			// Try again, but fail if it still fails
+			rv = SystemCall.memHandleNew(memHandleKind, __allocSize);
+			if (rv == 0)
+				throw new OutOfMemoryError();
+		}
+		
+		// Set the object type information
+		Assembly.memHandleWriteObject(rv, LogicHandler.staticVmAttribute(
+			StaticVmAttribute.OFFSETOF_OBJECT_TYPE_FIELD), __info);
+		
+		// Convert to represented object before returning.
+		return Assembly.pointerToObject(rv);
 	}
 }

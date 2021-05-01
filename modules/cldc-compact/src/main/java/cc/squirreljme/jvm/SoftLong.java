@@ -114,7 +114,7 @@ public final class SoftLong
 	}
 	
 	/**
-	 * Multiplies two values.
+	 * Multiplies two long values.
 	 *
 	 * @param __al A low.
 	 * @param __ah A high.
@@ -125,8 +125,27 @@ public final class SoftLong
 	 */
 	public static long mul(int __al, int __ah, int __bl, int __bh)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Are both sides negative?
+		if (((__ah & __bh) & 0x8000_0000) != 0)
+		{
+			// Negate and check for overflow
+			__ah = (~__ah);
+			__al = (~__al + 1);
+			if (__al == 0)
+				__ah++;
+				
+			// Negate and check for overflow
+			__bh = (~__bh);
+			__bl = (~__bl + 1);
+			if (__bl == 0)
+				__bh++;
+			
+			// Return result
+			return SoftLong.__mul(__al, __ah, __bl, __bh);
+		}
+		
+		// Perform the calculation
+		return SoftLong.__mul(__al, __ah, __bl, __bh);
 	}
 	
 	/**
@@ -306,7 +325,7 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static int toInteger(int __al, int __ah)
+	public static int toInteger(int __al, @SuppressWarnings("unused") int __ah)
 	{
 		// Just return the low order bits
 		return __al;
@@ -365,9 +384,14 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SuppressWarnings("CommentedOutCode")
 	private static long __div(boolean __doRem, int __nl, int __nh,
 		int __dl, int __dh)
 	{
+		// {@squirreljme.error ZZ4z Divide by zero.}
+		if (__dl == 0 && __dh == 0)
+			throw new ArithmeticException("ZZ4z");
+		
 		// Wikipedia (http://en.wikipedia.org/wiki/Division_%28digital%29)
 		// if D == 0 then throw DivisionByZeroException end
 		// Q := 0 # initialize quotient and remainder to zero
@@ -490,6 +514,80 @@ public final class SoftLong
 		
 		// Return, normalize negative if needed
 		return (isNeg ? SoftLong.neg(ql, qh) : Assembly.longPack(ql, qh));
+	}
+	
+	/**
+	 * Multiplies two long values, note that this will fail if both A and B
+	 * are negative. The values must either be both positive or only one is
+	 * negative.
+	 *
+	 * @param __al A low.
+	 * @param __ah A high.
+	 * @param __bl B low.
+	 * @param __bh B high.
+	 * @return The result.
+	 * @since 2019/05/24
+	 */
+	private static long __mul(int __al, int __ah, int __bl, int __bh)
+	{
+		// First value
+		int a = (__ah >>> 16);
+		int b = (__ah & 0xFFFF);
+		int c = (__al >>> 16);
+		int d = (__al & 0xFFFF);
+		
+		// Second value
+		int w = (__bh >>> 16);
+		int x = (__bh & 0xFFFF);
+		int y = (__bl >>> 16);
+		int z = (__bl & 0xFFFF);
+		
+		// Effectively this is long multiplication
+		// Multiplication in two's complement form is the same in both
+		// signed and unsigned, so we need not worry about signs and just treat
+		// this all as unsigned. Each fragment is 16 of the 64 bits.
+		//             |  a.  b,  c.  d
+		// *           |  w.  x,  y.  z
+		// ============|===.===,===.===
+		//             |d_w.d_x,d_y.d_z
+		//          c_w|c_x.c_y,c_z.
+		//      b_w b_x|b_y.b_z,   .
+		//  a_w a_x a_y|a_z.   ,   .
+		// ============|===.===,===.===
+		//  DISCARD       m.  n,  o.  p
+		
+		// Overflow storage, since we want a temporary and we do not want to
+		// make any allocations or otherwise for 64-bit values. This keeps it
+		// all in 32-bit and handles the various situations.
+		int over;
+		
+		// Multiply and add all the parts together
+		// int p = (d * z);
+		int p = (d * z);
+		over = (p >>> 16);
+		
+		// int o = (d * y) + (c * z) + (p >>> 16);
+		int o = over + (d * y);
+		over = (o >>> 16);
+		o = (o & 0xFFFF) + (c * z);
+		over += (o >>> 16);
+		
+		// int n = (d * x) + (c * y) + (b * z) + (o >>> 16);
+		int n = over + (d * x);
+		over = (n >>> 16);
+		n = (n & 0xFFFF) + (c * y);
+		over += (n >>> 16);
+		n = (n & 0xFFFF) + (b * z);
+		over += (n >>> 16);
+		
+		// int m = (d * w) + (c * x) + (b * y) + (a * z) + (n >>> 16);
+		// We need not care about overflow here, because it will all be
+		// discarded anyway!
+		int m = over + (d * w) + (c * x) + (b * y) + (a * z);
+		
+		// Combine the resultant parts
+		return Assembly.longPack((o << 16) | (p & 0xFFFF),
+			(m << 16) | (n & 0xFFFF));
 	}
 }
 

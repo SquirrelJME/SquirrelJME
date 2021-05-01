@@ -80,6 +80,10 @@ public final class SystemCallError
 	public static final byte INVALID_MEMHANDLE_KIND =
 		-15;
 	
+	/** Could not flush the pipe. */
+	public static final byte PIPE_DESCRIPTOR_BAD_FLUSH =
+		-16;
+	
 	/**
 	 * Not used.
 	 *

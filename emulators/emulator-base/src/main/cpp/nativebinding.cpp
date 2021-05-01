@@ -21,6 +21,16 @@ JNIEXPORT jlong JNICALL longPack(JNIEnv* env, jclass classy, jint al, jint ah)
 		((((jlong)ah) & UINT64_C(0xFFFFFFFF)) << UINT64_C(32));
 }
 
+JNIEXPORT jint JNICALL longUnpackHigh(JNIEnv* env, jclass classy, jlong v)
+{
+	return (jint)(v >> UINT64_C(32));
+}
+
+JNIEXPORT jint JNICALL longUnpackLow(JNIEnv* env, jclass classy, jlong v)
+{
+	return (jint)(v);
+}
+
 // Method handler for special functions
 JNIEXPORT void JNICALL restrictedFunction(JNIEnv* env, jclass classy);
 
@@ -69,8 +79,8 @@ static const JNINativeMethod assemblyMethods[] =
 	{"invokeVL", "(IIIIIIIIII)J", (void*)restrictedFunction},
 	{"longBitsToDouble", "(J)D", (void*)restrictedFunction},
 	{"longPack", "(II)J", (void*)longPack},
-	{"longUnpackHigh", "(J)I", (void*)restrictedFunction},
-	{"longUnpackLow", "(J)I", (void*)restrictedFunction},
+	{"longUnpackHigh", "(J)I", (void*)longUnpackHigh},
+	{"longUnpackLow", "(J)I", (void*)longUnpackLow},
 	{"memReadByte", "(JI)I", (void*)restrictedFunction},
 	{"memReadInt", "(JI)I", (void*)restrictedFunction},
 	{"memReadLong", "(JI)J", (void*)restrictedFunction},

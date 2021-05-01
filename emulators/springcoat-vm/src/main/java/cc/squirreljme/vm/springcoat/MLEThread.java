@@ -9,9 +9,15 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.emulator.profiler.ProfiledFrame;
+import cc.squirreljme.jdwp.JDWPController;
+import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
+import cc.squirreljme.jdwp.trips.JDWPTripThread;
+import cc.squirreljme.jdwp.trips.JDWPTripVmState;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
+import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
@@ -124,11 +130,30 @@ public enum MLEThread
 			}
 			
 			// Create object with this attached thread
-			VMThreadObject vmThread = new VMThreadObject(target);
+			VMThreadObject vmThread = new VMThreadObject(machine, target);
 			
 			// The thread gets these as well
 			target.setThreadInstance(javaThread);
 			target.setVMThread(vmThread);
+			
+			// If we are debugging, we are going to need to tell the debugger
+			// some important details
+			JDWPController jdwp = target.machineRef.get()
+				.taskManager().jdwpController;
+			if (jdwp != null)
+			{
+				// If we are debugging, we need to tell the debugger that the
+				// virtual machine actually started
+				if (target.machine().rootVm && target.isMain())
+					jdwp.<JDWPTripVmState>trip(JDWPTripVmState.class,
+						JDWPGlobalTrip.VM_STATE).alive(target, true);
+				
+				// If we are debugging, signal that this thread is in the start
+				// state. We need the instance to have been set for this to
+				// even properly work!
+				jdwp.<JDWPTripThread>trip(JDWPTripThread.class,
+					JDWPGlobalTrip.THREAD).alive(target, true);
+			}
 			
 			return vmThread;
 		}
@@ -248,6 +273,7 @@ public enum MLEThread
 			MLEThread.__javaThread(__thread, __args[0]).fieldByNameAndType(
 				false, "_isAlive", "Z")
 				.set((int)__args[1] != 0);
+			
 			return null;
 		}
 	},
@@ -363,19 +389,48 @@ public enum MLEThread
 			if (ms < 0 || ns < 0 || ns > 1000000000)
 				throw new SpringMLECallError("Out of range time.");
 			
-			if (ms == 0 && ns == 0)
-				Thread.yield();
-			else
-				try
-				{
-					Thread.sleep(ms, ns);
-				}
-				catch (InterruptedException ignored)
-				{
-					return true;
-				}
+			// Get the profiler information
+			SpringThread.Frame currentFrame = __thread.thread.currentFrame();
+			ProfiledFrame profiler = (currentFrame == null ? null :
+				currentFrame._profiler);
 			
-			return false;
+			// We need to restore profiler states
+			boolean interrupted = false;
+			try
+			{
+				// Indicate that we are in sleep mode
+				__thread.thread.setStatus(ThreadStatusType.SLEEPING);
+				
+				// Stop counting CPU time for this
+				if (profiler != null)
+					profiler.sleep(true, System.nanoTime());
+				
+				// Just giving up CPU time?
+				if (ms == 0 && ns == 0)
+					Thread.yield();
+				
+				// Normal sleep
+				else
+					try
+					{
+						Thread.sleep(ms, ns);
+					}
+					catch (InterruptedException ignored)
+					{
+						interrupted = true;
+					}
+			}
+			finally
+			{
+				// We have left sleep mode
+				__thread.thread.setStatus(ThreadStatusType.RUNNING);
+				
+				// Continue counting CPU time
+				if (profiler != null)
+					profiler.sleep(false, System.nanoTime());
+			}
+			
+			return interrupted;
 		}
 	},
 	
@@ -412,6 +467,30 @@ public enum MLEThread
 				.lookupField(false, "_vmThread",
 				"Lcc/squirreljme/jvm/mle/brackets/VMThreadBracket;"))
 				.get();
+		}
+	},
+	
+	/** {@link ThreadShelf#vmThreadEnd(VMThreadBracket)}. */
+	VM_THREAD_END("vmThreadEnd:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"VMThreadBracket;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/03/14
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringThread thread = MLEThread.__vmThread(__args[0]).getThread();
+			
+			// If debugging, signal that the thread has ended
+			JDWPController jdwp = thread.machineRef.get()
+				.taskManager().jdwpController;
+			if (jdwp != null)
+				jdwp.<JDWPTripThread>trip(JDWPTripThread.class,
+					JDWPGlobalTrip.THREAD).alive(thread, true);
+			
+			return null;
 		}
 	},
 	

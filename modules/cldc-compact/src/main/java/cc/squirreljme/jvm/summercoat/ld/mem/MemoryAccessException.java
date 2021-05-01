@@ -17,6 +17,9 @@ package cc.squirreljme.jvm.summercoat.ld.mem;
 public class MemoryAccessException
 	extends RuntimeException
 {
+	/** The address. */
+	public final long address;
+	
 	/**
 	 * Initializes the exception.
 	 * 
@@ -26,6 +29,22 @@ public class MemoryAccessException
 	public MemoryAccessException(long __addr)
 	{
 		super(Long.toString(__addr, 16));
+		
+		this.address = __addr;
+	}
+	
+	/**
+	 * Initializes the exception.
+	 * 
+	 * @param __addr The address.
+	 * @param __m The message.
+	 * @since 2021/04/03
+	 */
+	public MemoryAccessException(long __addr, String __m)
+	{
+		super(__m);
+		
+		this.address = __addr;
 	}
 	
 	/**
@@ -38,5 +57,7 @@ public class MemoryAccessException
 	public MemoryAccessException(long __addr, Throwable __c)
 	{
 		super(Long.toString(__addr, 16), __c);
+		
+		this.address = __addr;
 	}
 }

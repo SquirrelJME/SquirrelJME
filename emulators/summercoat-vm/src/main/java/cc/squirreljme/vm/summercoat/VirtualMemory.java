@@ -11,8 +11,11 @@ package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.jvm.summercoat.ld.mem.AbstractWritableMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.Memory;
+import cc.squirreljme.jvm.summercoat.ld.mem.MemoryAccessException;
+import cc.squirreljme.jvm.summercoat.ld.mem.NotRealMemoryException;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.WritableMemory;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +62,17 @@ public final class VirtualMemory
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/04/03
+	 */
+	@Override
+	public long absoluteAddress(long __addr)
+		throws MemoryAccessException, NotRealMemoryException
+	{
+		return __addr;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/04/21
 	 */
 	@Override
@@ -68,7 +82,7 @@ public final class VirtualMemory
 		Memory[] cache = this._cache;
 		for (Memory c : cache)
 		{
-			long cbase = c.memRegionOffset();
+			long cbase = c.absoluteAddress(0);
 			long csize = c.memRegionSize();
 			long vaddr = __addr - cbase;
 			
@@ -79,17 +93,6 @@ public final class VirtualMemory
 		// Unmapped address
 		throw new VMMemoryAccessException(String.format(
 			"Unmapped Address %#010x", __addr));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/21
-	 * @return
-	 */
-	@Override
-	public long memRegionOffset()
-	{
-		return 0;
 	}
 	
 	/**
@@ -114,7 +117,7 @@ public final class VirtualMemory
 		Memory[] cache = this._cache;
 		for (Memory c : cache)
 		{
-			long cbase = c.memRegionOffset(),
+			long cbase = c.absoluteAddress(0),
 				csize = c.memRegionSize(),
 				vaddr = __addr - cbase;
 			

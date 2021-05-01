@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.summercoat.lle.LLERuntimeShelf;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Access to real memory within the system, this can access a region of memory.
@@ -60,6 +61,18 @@ public final class RealMemory
 		
 		this.baseAddr = __baseAddr;
 		this.length = __len;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/03
+	 */
+	@Override
+	public long absoluteAddress(long __addr)
+		throws MemoryAccessException, NotRealMemoryException
+	{
+		// Should be able to read a single byte from this region
+		return this.__check(__addr, 1);
 	}
 	
 	/**
@@ -117,17 +130,6 @@ public final class RealMemory
 	{
 		return this.__valueShort((short)Assembly.memReadShort(
 			this.__check(__addr, 2), 0)) & 0xFFFF;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/02/14
-	 * @return
-	 */
-	@Override
-	public long memRegionOffset()
-	{
-		return this.baseAddr;
 	}
 	
 	/**
@@ -191,6 +193,28 @@ public final class RealMemory
 	{
 		Assembly.memWriteShort(this.__check(__addr, 2), 0,
 			this.__valueShort((short)__v));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/03
+	 */
+	@Override
+	public RealMemory subSection(long __base, long __len)
+		throws MemoryAccessException
+	{
+		// Refers to ourself?
+		if (__base == 0 && __len == this.length)
+			return this;
+		
+		// {@squirreljme.error ZZ4t Sub-section would be out of range.}
+		if (__base < 0 || __len < 0 || (__base + __len) > this.length ||
+			__len > Integer.MAX_VALUE)
+			throw new MemoryAccessException(__base, "ZZ4t");
+		
+		// Just sub-divides real memory
+		return new RealMemory(this.baseAddr + __base, (int)__len,
+			this.byteOrder);
 	}
 	
 	/**

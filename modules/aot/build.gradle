@@ -1,7 +1,7 @@
 import cc.squirreljme.plugin.swm.JavaMEConfiguration
 import cc.squirreljme.plugin.swm.JavaMEMidletType
 
-version = "1.8.${rootProject.ext.squirreljmeVMVersion}"
+version = "1.8.$squirreljmeVMVersion"
 description = "Support for Ahead-Of-Time Compilers"
 
 squirreljme

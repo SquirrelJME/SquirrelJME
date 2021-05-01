@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.summercoat.constants;
 
+import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.summercoat.SystemCall;
 
 /**
@@ -35,7 +36,19 @@ public interface StaticVmAttribute
 	byte SIZE_OBJECT =
 		3;
 	
+	/** The type bracket for {@link Class}. */
+	byte TYPEBRACKET_CLASS =
+		4;
+	
+	/** Offset of Throwable's trace field. */
+	byte OFFSETOF_THROWABLE_TRACE_FIELD =
+		5;
+	
+	/** Offset of {@link Class}'s {@link TypeBracket} field. */
+	byte OFFSETOF_CLASS_TYPEBRACKET_FIELD =
+		6;
+	
 	/** The number of metrics used. */
 	byte NUM_METRICS =
-		4;
+		7;
 }

@@ -9,6 +9,8 @@
 
 package dev.shadowtail.classfile.summercoat;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.summercoat.LogicHandler;
 import cc.squirreljme.jvm.summercoat.lle.LLEObjectShelf;
@@ -41,30 +43,31 @@ public enum HelperFunction
 	GC_MEM_HANDLE("cc/squirreljme/jvm/summercoat/LogicHandler",
 		"gcMemHandle", "(I)V"),
 	
-	/** {@link LogicHandler#isClassInit(int)}.  */
-	IS_CLASS_INIT("cc/squirreljme/jvm/summercoat/LogicHandler",
-		"isClassInit", "(I)Z"),
+	/** {@link TypeShelf#initClass(TypeBracket)}.  */
+	INIT_CLASS("cc/squirreljme/jvm/summercoat/lle/LLETypeShelf",
+		"initClass", "(Lcc/squirreljme/jvm/mle/" +
+		"brackets/TypeBracket;)V"),
 	
-	/** {@link LogicHandler#isArray(Object)}. */
-	IS_ARRAY("cc/squirreljme/jvm/summercoat/LogicHandler",
+	/** {@link TypeShelf#isClassInit(TypeBracket)}.  */
+	IS_CLASS_INIT("cc/squirreljme/jvm/summercoat/lle/LLETypeShelf",
+		"isClassInit", 
+		"(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)Z"),
+	
+	/** {@link ObjectShelf#isArray(Object)}. */
+	IS_ARRAY("cc/squirreljme/jvm/mle/ObjectShelf",
 		"isArray", "(Ljava/lang/Object;)Z"),
 	
 	/** {@link LLEObjectShelf#isInstance(int, int)}. */
 	IS_INSTANCE("cc/squirreljme/jvm/summercoat/lle/LLEObjectShelf",
 		"isInstance", "(II)Z"),
 	
-	/** {@link LogicHandler#initClass(TypeBracket)}.  */
-	INIT_CLASS("cc/squirreljme/jvm/summercoat/LogicHandler",
-		"initClass", "(Lcc/squirreljme/jvm/mle/" +
-		"brackets/TypeBracket;)V"),
-	
-	/** {@link LogicHandler#newArray(TypeBracket, int)}. */
-	NEW_ARRAY("cc/squirreljme/jvm/summercoat/LogicHandler",
-		"newArray", "(Lcc/squirreljme/jvm/mle/brackets" +
+	/** {@link LLEObjectShelf#arrayNew(TypeBracket, int)}. */
+	NEW_ARRAY("cc/squirreljme/jvm/summercoat/lle/LLEObjectShelf",
+		"arrayNew", "(Lcc/squirreljme/jvm/mle/brackets" +
 		"/TypeBracket;I)Ljava/lang/Object;"),
 	
-	/** {@link LogicHandler#newInstance(TypeBracket)}. */
-	NEW_INSTANCE("cc/squirreljme/jvm/summercoat/LogicHandler", 
+	/** {@link LLEObjectShelf#newInstance(TypeBracket)}. */
+	NEW_INSTANCE("cc/squirreljme/jvm/summercoat/lle/LLEObjectShelf", 
 		"newInstance", "(Lcc/squirreljme/jvm/mle/" +
 		"brackets/TypeBracket;)Ljava/lang/Object;"),
 	

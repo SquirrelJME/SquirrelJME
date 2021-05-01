@@ -35,7 +35,8 @@ final class __Start__
 		61;
 	
 	/**
-	 * This is the entry point for any thread which is not a main thread.
+	 * This is the entry point for any thread which is not a main thread and
+	 * the main thread.
 	 *
 	 * @since 2020/05/31
 	 */
@@ -98,6 +99,7 @@ final class __Start__
 		{
 			// Mark the thread as dead
 			ThreadShelf.javaThreadSetAlive(javaThread, false);
+			ThreadShelf.vmThreadEnd(vmThread);
 		}
 	}
 	

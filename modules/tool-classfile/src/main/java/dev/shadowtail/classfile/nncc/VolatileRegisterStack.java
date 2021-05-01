@@ -15,8 +15,12 @@ import dev.shadowtail.classfile.summercoat.register.MemHandleRegister;
 import dev.shadowtail.classfile.summercoat.register.RuntimePoolPointer;
 import dev.shadowtail.classfile.summercoat.register.TypedRegister;
 import dev.shadowtail.classfile.summercoat.register.Volatile;
+import dev.shadowtail.classfile.summercoat.register.WideRegister;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 
 /**
@@ -147,6 +151,53 @@ public final class VolatileRegisterStack
 		// Record it
 		used.add(at);
 		return at;
+	}
+	
+	/**
+	 * Returns a wide register.
+	 * 
+	 * @return A wide register.
+	 * @since 2021/04/08
+	 */
+	public final Volatile<WideRegister> getWide()
+	{
+		// Get a few registers to find a linked pair
+		List<Integer> ints = new ArrayList<>();
+		for (int i = 0; i < 3; i++)
+			ints.add(this.getUnmanaged());
+		
+		// Sort in register order
+		Collections.sort(ints);
+		
+		// Try to find a register set
+		WideRegister rv = null;
+		for (int i = 0, n = ints.size() - 1; i < n; i++)
+		{
+			int a = ints.get(i);
+			int b = ints.get(i + 1);
+			
+			if (a + 1 == b)
+				rv = new WideRegister(IntValueRegister.of(a),
+					IntValueRegister.of(b));
+		}
+		
+		// {@squirreljme.error JC4y Could not find wide register allocation.}
+		if (rv == null)
+			throw new IllegalStateException("JC4y");
+		
+		// Clear other unused registers
+		for (Iterator<Integer> it = ints.iterator(); it.hasNext();)
+		{
+			int reg = it.next();
+			
+			// If not used at all, clear it
+			if (rv.low.register != reg && rv.high.register != reg)
+				this.removeUnmanaged(reg);
+			
+			it.remove();
+		}
+		
+		return new Volatile<>(this, rv);
 	}
 	
 	/**

@@ -75,5 +75,18 @@ public interface WritableMemory
 	 * @since 2019/04/21
 	 */
 	void memWriteShort(long __addr, int __v);
+	
+	/**
+	 * Returns a sub-section of memory.
+	 * 
+	 * @param __base The base address of memory.
+	 * @param __len The length of memory.
+	 * @return The subsection of memory.
+	 * @throws MemoryAccessException If the address and length are not valid.
+	 * @since 2021/04/03
+	 */
+	@Override
+	WritableMemory subSection(long __base, long __len)
+		throws MemoryAccessException;
 }
 

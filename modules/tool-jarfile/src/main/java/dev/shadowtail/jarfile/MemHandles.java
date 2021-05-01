@@ -263,6 +263,9 @@ public final class MemHandles
 				List<Integer> iAddr = actions._iAddr;
 				List<MemoryType> iType = actions._iType;
 				
+				// The BootJAR Seed value
+				BootJarPointer bootJarSeed = null; 
+				
 				// Write all the address information and potential swapping
 				// if any...
 				for (int i = 1, n = iStore.size(); i < n; i++)
@@ -287,9 +290,38 @@ public final class MemHandles
 							BootstrapConstants.ACTION_MEMHANDLE);
 					
 					// Is a BootJAR based pointer
-					else if (store instanceof BootJarPointer)
-						__outData.writeByte(
-							BootstrapConstants.ACTION_BOOTJARP);
+					else if (store instanceof HasBootJarPointer)
+					{
+						// Which pointer are we referring to?
+						boolean a = (store instanceof BootJarPointer);
+						BootJarPointer bjp =
+							(a ? (BootJarPointer)store :
+							((HighBootJarPointer)store).pointer);
+						
+						// Write new seed value if it has changed at all
+						if (bootJarSeed != bjp)
+						{
+							// Write seed header
+							__outData.writeByte(
+								BootstrapConstants.ACTION_BOOTJARP_SEED);
+							__outData.writeUnsignedShortChecked(0);
+							__outData.writeFuture(ChunkDataType.INTEGER,
+								bjp.value);
+							
+							// Use this for future references
+							bootJarSeed = bjp;
+						}
+						
+						// {@squirreljme.error JC4x A boot JAR pointer can
+						// only be an integer value. (The pointer)}
+						if (type != MemoryType.INTEGER)
+							throw new IllegalStateException("JC4x " + store);
+						
+						// Writing the A or B value tag?
+						__outData.writeByte((a ?
+							BootstrapConstants.ACTION_BOOTJARP_A :
+							BootstrapConstants.ACTION_BOOTJARP_B));
+					}
 					
 					// Should not occur
 					else
@@ -314,13 +346,10 @@ public final class MemHandles
 						}
 						
 						// Boot JAR Pointer
-						else if (store instanceof BootJarPointer)
+						else if (store instanceof HasBootJarPointer)
 						{
-							// The values here are always a future since the
-							// positioning may be dynamic!
-							BootJarPointer bjp = (BootJarPointer)store;
-							__outData.writeFuture(ChunkDataType.INTEGER,
-								bjp.value);
+							// Do nothing here because the intro writes this
+							// down
 						}
 						
 						// Should not occur

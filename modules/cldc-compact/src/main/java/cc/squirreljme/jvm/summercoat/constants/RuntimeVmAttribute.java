@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.summercoat.constants;
 
+import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
+import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
 import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
@@ -44,7 +46,15 @@ public interface RuntimeVmAttribute
 	byte MEMORY_PROFILE =
 		5;
 	
+	/** The {@link BuiltInEncodingType} used. */
+	byte ENCODING =
+		6;
+	
+	/** The {@link BuiltInLocaleType} used. */
+	byte LOCALE =
+		7;
+	
 	/** The number of attributes. */
 	byte NUM_RUNTIME_ATTRIBUTES =
-		6;
+		8;
 }

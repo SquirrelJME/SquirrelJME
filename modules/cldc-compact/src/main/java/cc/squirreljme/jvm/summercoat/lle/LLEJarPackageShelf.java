@@ -11,11 +11,13 @@ package cc.squirreljme.jvm.summercoat.lle;
 
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.DebugShelf;
+import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.SystemCall;
 import cc.squirreljme.jvm.summercoat.constants.RuntimeVmAttribute;
+import cc.squirreljme.jvm.summercoat.ld.pack.JarRom;
 import cc.squirreljme.jvm.summercoat.ld.pack.PackRom;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.InputStream;
@@ -66,6 +68,7 @@ public final class LLEJarPackageShelf
 	 * Returns the libraries which are available to the virtual machine.
 	 * 
 	 * @return The libraries that are currently available.
+	 * @see JarPackageShelf#libraries()
 	 * @since 2020/10/31
 	 */
 	public static JarPackageBracket[] libraries()
@@ -97,8 +100,11 @@ public final class LLEJarPackageShelf
 	public static String libraryPath(JarPackageBracket __jar)
 		throws MLECallError
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__jar == null)
+			throw new MLECallError("NARG");
+		
+		// The string representation is the JAR name
+		return LLEJarPackageShelf.__rom(__jar).toString();
 	}
 	
 	/**
@@ -116,8 +122,10 @@ public final class LLEJarPackageShelf
 		String __rc)
 		throws MLECallError
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__jar == null || __rc == null)
+			throw new MLECallError("NARG");
+		
+		return LLEJarPackageShelf.__rom(__jar).openResource(__rc);
 	}
 	
 	/**
@@ -146,5 +154,23 @@ public final class LLEJarPackageShelf
 		
 		// Create a new manager
 		return PackRom.load(romAddr);
+	}
+	
+	/**
+	 * Returns the JAR ROM.
+	 * 
+	 * @param __jar The JAR to get from.
+	 * @return The mapped JAR.
+	 * @throws MLECallError If this is not a correct Jar.
+	 * @since 2021/04/06
+	 */
+	private static JarRom __rom(JarPackageBracket __jar)
+		throws MLECallError
+	{
+		// {@squirreljme.error ZZ54 Not the right JAR type.}
+		if (!(__jar instanceof JarRom))
+			throw new MLECallError("ZZ54");
+		
+		return (JarRom)__jar;
 	}
 }

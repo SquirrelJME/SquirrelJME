@@ -28,6 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -95,6 +96,9 @@ public enum VMType
 					sysProps.put("squirreljme.emulator.libpath",
 						emuLib.toString());
 			}
+			
+			// Bring in any system defined properties we want to truly set?
+			VMType.__copySysProps(sysProps);
 			
 			// Start with the base emulator class path
 			List<Object> classPath = new ArrayList<>();
@@ -387,6 +391,10 @@ public enum VMType
 	/* End. */
 	;
 	
+	/** Prefix for system properties to appear in the VM. */
+	private static final String _JVM_KEY_PREFIX =
+		"squirreljme.sysprop.";
+	
 	/** The proper name of the VM. */
 	public final String properName;
 	
@@ -517,6 +525,12 @@ public enum VMType
 			__args == null)
 			throw new NullPointerException("NARG");
 		
+		// Copy system properties
+		Map<String, String> sysProps = new LinkedHashMap<>(__sysProps);
+		
+		// Bring in any system defined properties we want to truly set?
+		VMType.__copySysProps(sysProps);
+		
 		// Determine the class-path for the emulator
 		List<Path> vmClassPath = new ArrayList<>();
 		for (File file : VMHelpers.projectRuntimeClasspath(
@@ -540,6 +554,11 @@ public enum VMType
 		// Add library paths, suites that are available for consumption
 		vmArgs.add("-Xlibraries:" + VMHelpers.classpathAsString(__libPath));
 		
+		// Enable JDWP debugging?
+		String jdwpProp = System.getProperty("squirreljme.jdwp");
+		if (jdwpProp != null)
+			vmArgs.add("-Xjdwp:" + jdwpProp);
+		
 		// Determine where profiler snapshots are to go, try to use the
 		// profiler directory for that
 		Path profilerDir = ((__task instanceof VMExecutableTask) ?
@@ -561,7 +580,7 @@ public enum VMType
 		vmArgs.add(VMHelpers.classpathAsString(__classPath));
 		
 		// Any system properties
-		for (Map.Entry<String, String> sysProp : __sysProps.entrySet())
+		for (Map.Entry<String, String> sysProp : sysProps.entrySet())
 			vmArgs.add("-D" + sysProp.getKey() + "=" + sysProp.getValue());
 		
 		// Main class of the target to run
@@ -604,6 +623,36 @@ public enum VMType
 			case PROPER_NOUN:
 			default:
 				return properName;
+		}
+	}
+	
+	/**
+	 * Copies system properties with the given prefix into the system
+	 * properties for the VM.
+	 * 
+	 * @param __sysProps The system properties to copy into.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/03/08
+	 */
+	private static void __copySysProps(Map<String, String> __sysProps)
+		throws NullPointerException
+	{
+		if (__sysProps == null)
+			throw new NullPointerException("NARG");
+		
+		// Copy any that are set
+		for (Map.Entry<Object, Object> prop :
+			System.getProperties().entrySet())
+		{
+			// Only match certain keys
+			String baseKey = Objects.toString(prop.getKey());
+			if (!baseKey.startsWith(VMType._JVM_KEY_PREFIX))
+				continue;
+			
+			// Add it in
+			__sysProps.put(
+				baseKey.substring(VMType._JVM_KEY_PREFIX.length()),
+				Objects.toString(prop.getValue()));
 		}
 	}
 }

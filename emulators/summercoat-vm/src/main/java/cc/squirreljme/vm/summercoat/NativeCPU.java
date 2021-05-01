@@ -142,6 +142,17 @@ public final class NativeCPU
 	}
 	
 	/**
+	 * Returns the number of current frames.
+	 * 
+	 * @return The number of available frames.
+	 * @since 2021/04/03
+	 */
+	public int countFrames()
+	{
+		return this._frames.size();
+	}
+	
+	/**
 	 * Enters the given frame for the given address.
 	 *
 	 * @param __movePool Move the pool register?
@@ -211,6 +222,18 @@ public final class NativeCPU
 		
 		// Use this frame
 		return rv;
+	}
+	
+	/**
+	 * Returns all of the CPU frames.
+	 * 
+	 * @return All of the CPU frames.
+	 * @since 2021/04/03
+	 */
+	public CPUFrame[] frames()
+	{
+		LinkedList<CPUFrame> frames = this._frames;
+		return frames.toArray(new CPUFrame[frames.size()]);
 	}
 	
 	/**
@@ -571,7 +594,7 @@ public final class NativeCPU
 			{
 					// CPU Ping
 				case NativeInstructionType.PING:
-					if (NativeCPU.ENABLE_DEBUG)
+					if (true || NativeCPU.ENABLE_DEBUG)
 					{
 						CallTraceUtils.printStackTrace(System.err,
 							String.format("PING! %04Xh: %s",
@@ -816,7 +839,7 @@ public final class NativeCPU
 						// Is this a long access?
 						boolean isWide = dt.isWide();
 						
-						// The handle to read from
+						// The handle to read from/write to
 						MemHandle handle = this.state.memHandles.get(
 							lr[argRaw[(isWide ? 2 : 1)]]);
 						int off = lr[argRaw[(isWide ? 3 : 2)]];
@@ -841,7 +864,7 @@ public final class NativeCPU
 							
 							case CHARACTER:
 								if (load)
-									readLo = handle.memReadShort(off) & 0xFFF;
+									readLo = handle.memReadShort(off) & 0xFFFF;
 								else
 									handle.memWriteShort(off, writeLo);
 								break;

@@ -10,6 +10,7 @@
 package dev.shadowtail.jarfile;
 
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
+import cc.squirreljme.jvm.summercoat.constants.CompilerConstants;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
@@ -28,6 +29,7 @@ import dev.shadowtail.classfile.pool.BasicPoolEntry;
 import dev.shadowtail.classfile.pool.ClassNameHash;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
+import dev.shadowtail.classfile.pool.HighRuntimeValue;
 import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.InvokeXTable;
 import dev.shadowtail.classfile.pool.InvokedMethod;
@@ -73,6 +75,11 @@ public final class BootState
 	private static final FieldNameAndType _ARRAY_LENGTH =
 		new FieldNameAndType("length", "I");
 	
+	/** The type bracket in {@link Class}. */
+	private static final FieldNameAndType _CLASS_TYPEBRACKET =
+		new FieldNameAndType("_type",
+			"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;");
+	
 	/** The default constructor. */
 	private static final MethodNameAndType _DEFAULT_CONSTRUCTOR =
 		new MethodNameAndType("<init>", "()V");
@@ -88,11 +95,20 @@ public final class BootState
 	/** Object class info. */
 	private static final FieldNameAndType _OBJECT_CLASS_INFO =
 		new FieldNameAndType("_classInfo",
-		Minimizer.CLASS_INFO_FIELD_DESC);
+			Minimizer.CLASS_INFO_FIELD_DESC);
+	
+	/** The class static initializer. */
+	private static final MethodNameAndType _STATIC_CLINIT = 
+		new MethodNameAndType("<clinit>", "()V");
 	
 	/** The name of the string class. */
 	private static final ClassName _STRING_CLASS =
 		new ClassName("java/lang/String");
+	
+	/** The field for the throwable trace. */
+	private static final FieldNameAndType _THROWABLE_TRACE =
+		new FieldNameAndType("_stack",
+			"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;");
 	
 	/** The class data used. */
 	private final Map<ClassName, ChunkSection> _rawChunks =
@@ -625,9 +641,9 @@ public final class BootState
 				this.loadClasses(interfaces.toArray())));
 		
 		// The name of the current class
-		classInfo.set(ClassProperty.MEMHANDLE_THISNAME_DESC,
+		classInfo.set(ClassProperty.MEMHANDLE_THIS_NAME_DESC,
 			this.loadString(__cl.toString()));
-		classInfo.set(ClassProperty.MEMHANDLE_THISNAME_CLASSGETNAME,
+		classInfo.set(ClassProperty.MEMHANDLE_THIS_NAME_RUNTIME,
 			this.loadString(__cl.toRuntimeString()));
 		
 		// Store in constant values for fields
@@ -718,13 +734,17 @@ public final class BootState
 		}
 		
 		// Load the information for the Class<?> instance
-		classInfo.set(ClassProperty.MEMHANDLE_LANGCLASS_INSTANCE,
+		classInfo.set(ClassProperty.MEMHANDLE_LANG_CLASS_INSTANCE,
 			this.loadLangClass(__cl));
 		
 		// Set and initialize all of the entries within the pool
+		List<Object> poolSet = new ArrayList<>(rtPoolSz);
+		poolSet.add(null);	// null/zero entry
 		for (int i = 1; i < rtPoolSz; i++)
 		{
-			Object pv = this.__loadPool(rv, rtPool, rtPool.byIndex(i));
+			Object pv = this.__loadPool(rv, rtPool, rtPool.byIndex(i),
+				poolSet, i);
+			poolSet.add(pv);
 			
 			// Depends on the type of value returned
 			if (pv instanceof Integer)
@@ -733,8 +753,8 @@ public final class BootState
 				pool.set(i, (MemHandle)pv);
 			else if (pv instanceof ChunkFuture)
 				pool.set(i, (ChunkFuture)pv);
-			else if (pv instanceof BootJarPointer)
-				pool.set(i, (BootJarPointer)pv);
+			else if (pv instanceof HasBootJarPointer)
+				pool.set(i, (HasBootJarPointer)pv);
 			
 			// Do not know what to do with this
 			else
@@ -758,8 +778,15 @@ public final class BootState
 		MinimizedMethod defConst = classFile.method(false,
 			BootState._DEFAULT_CONSTRUCTOR);
 		if (defConst != null)
-			classInfo.set(ClassProperty.FUNCPTR_DEFAULT_NEW,
+			classInfo.set(ClassProperty.FUNCPTR_DEFAULT_NEW_LO,
 				this.__calcMethodCodeAddr(rv, false, defConst));
+		
+		// Find the static initializer
+		MinimizedMethod clInit = classFile.method(true,
+			BootState._STATIC_CLINIT);
+		if (clInit != null)
+			classInfo.set(ClassProperty.FUNCPTR_CLINIT_LO,
+				this.__calcMethodCodeAddr(rv, true, clInit));
 		
 		// Loading the class is complete!
 		return rv;
@@ -1003,6 +1030,10 @@ public final class BootState
 			handleKind, baseArraySize +
 				(__len * __cl.componentType().field().dataType().size()));
 		
+		// Set class kind
+		this.objectFieldSet(rv, BootState._OBJECT_CLASS_INFO,
+			state._classInfoHandle);
+		
 		// Debug
 		if (ClassFileDebug.ENABLE_DEBUG)
 			Debugging.debugNote("array[%d] (sz=%d)", __len, rv.byteSize);
@@ -1011,8 +1042,6 @@ public final class BootState
 		rv._arraySize = __len;
 		
 		// Set array field information
-		this.objectFieldSet(rv, BootState._OBJECT_CLASS_INFO,
-			state._classInfoHandle);
 		this.objectFieldSet(rv, BootState._ARRAY_LENGTH,
 			__len);
 		
@@ -1083,7 +1112,13 @@ public final class BootState
 		
 		// Load in class data
 		else
-			try (InputStream in = this._rawChunks.get(__class).currentStream())
+		{
+			// {@squirreljme.error JC4x Class does not exist. (The class)}
+			ChunkSection chunk = this._rawChunks.get(__class);
+			if (chunk == null)
+				throw new InvalidClassFormatException("JC4x " + __class);
+			
+			try (InputStream in = chunk.currentStream())
 			{
 				rv = MinimizedClassFile.decode(in, this._pool);
 				
@@ -1091,6 +1126,7 @@ public final class BootState
 				if (ClassFileDebug.ENABLE_DEBUG)
 					Debugging.debugNote("Read %s...", rv.thisName());
 			}
+		}
 		
 		// Cache it and use it
 		readClasses.put(__class, rv);
@@ -1293,6 +1329,20 @@ public final class BootState
 		rv.set(StaticVmAttribute.OFFSETOF_OBJECT_TYPE_FIELD,
 			this.loadClass("java/lang/Object").classFile
 				.field(false, BootState._OBJECT_CLASS_INFO).offset);
+		
+		// The type used for Class<?>
+		rv.set(StaticVmAttribute.TYPEBRACKET_CLASS,
+			this.loadClass("java/lang/Class")._classInfoHandle);
+		
+		// Offset to Throwable trace data
+		rv.set(StaticVmAttribute.OFFSETOF_THROWABLE_TRACE_FIELD,
+			objectBase + this.loadClass("java/lang/Throwable").classFile
+				.field(false, BootState._THROWABLE_TRACE).offset);
+		
+		// Class<?>'s TypeBracket
+		rv.set(StaticVmAttribute.OFFSETOF_CLASS_TYPEBRACKET_FIELD,
+			objectBase + this.loadClass("java/lang/Class").classFile
+				.field(false, BootState._CLASS_TYPEBRACKET).offset);
 		
 		return rv;
 	}
@@ -1654,13 +1704,13 @@ public final class BootState
 					declaredMethods.add(method.nameAndType());
 			}
 			
-			// No further processing is needed for abstract methods
+			// No further processing is needed for non-abstract methods
 			if (!isAtAbstract)
 				continue;
 				
 			// Map in interfaces for this method accordingly if abstract, since
 			// we will need to fill these in
-			for (ClassName iFaceName : at.classFile.interfaceNames())
+			for (ClassName iFaceName : this.allInterfaces(at.thisName))
 			{
 				// Handle all methods within the interface if they have not
 				// yet been declared
@@ -1949,13 +1999,15 @@ public final class BootState
 	 * @param __rv The class state this is for.
 	 * @param __clPool The class runtime pool;
 	 * @param __entry The entry to load.
+	 * @param __poolSet The pool set used, to refer to older entries.
+	 * @param __dx The current index.
 	 * @return The loaded pool value.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/29
 	 */
 	private Object __loadPool(ClassState __rv, BasicPool __clPool,
-		BasicPoolEntry __entry)
+		BasicPoolEntry __entry, List<Object> __poolSet, int __dx)
 		throws IOException, NullPointerException
 	{
 		if (__clPool == null || __entry == null)
@@ -2024,6 +2076,14 @@ public final class BootState
 				InvokedMethod invokedMethod = __entry.<InvokedMethod>value(
 					InvokedMethod.class);
 				
+				// If we are calling an array, treat it as object
+				if (invokedMethod.handle.outerClass().isArray())
+					invokedMethod = new InvokedMethod(
+						invokedMethod.type,
+						new ClassName("java/lang/Object"),
+						invokedMethod.handle().name(),
+						invokedMethod.handle().nameAndType().type());
+				
 				// Load the target class details
 				MethodHandle handle = invokedMethod.handle;
 				ClassState inClass = this.loadClass(handle.outerClass());
@@ -2039,7 +2099,8 @@ public final class BootState
 					// Find the index for the method
 					for (int i = 0, n = methods.size(); i < n; i++)
 						if (handle.nameAndType().equals(methods.get(i)))
-							return this.__baseArraySize() + ((i * 4) * 2);
+							return this.__baseArraySize() +
+								((i * 4) * CompilerConstants.VTABLE_SPAN);
 					
 					// {@squirreljme.error BC0v Could not find an interface
 					// index for the given method. (The entry; The methods
@@ -2077,7 +2138,8 @@ public final class BootState
 						continue;
 					
 					// Return the offset into the XTable
-					return this.__baseArraySize() + ((i * 4) * 2);
+					return this.__baseArraySize() +
+						((i * 4) * CompilerConstants.VTABLE_SPAN);
 				}
 				
 				// {@squirreljme.error BC0s Could not link the given method.
@@ -2216,15 +2278,22 @@ public final class BootState
 		
 		int numMethods = __methodInfo.size();
 		ListValueHandle vTable = this._memHandles.allocList(
-			MemHandleKind.VIRTUAL_VTABLE, numMethods * 2);
+			MemHandleKind.VIRTUAL_VTABLE,
+			numMethods * CompilerConstants.VTABLE_SPAN);
 		
 		// Build VTable information into an actual VTable
-		for (int i = 0, o = 0; i < numMethods; i++, o += 2)
+		for (int i = 0, o = 0; i < numMethods;
+			i++, o += CompilerConstants.VTABLE_SPAN)
 		{
 			VTableMethod method = __methodInfo.get(i);
 			
-			vTable.set(o, method.execAddr);
-			vTable.set(o + 1, method.poolHandle);
+			// Write the pool and the execution pointer (high+low)
+			vTable.set(o + CompilerConstants.VTABLE_POOL_INDEX,
+				method.poolHandle);
+			vTable.set(o + CompilerConstants.VTABLE_METHOD_A_INDEX,
+				method.execAddr);
+			/*vTable.set(o + CompilerConstants.VTABLE_METHOD_B_INDEX,
+				new HighBootJarPointer(method.execAddr));*/
 		}
 		
 		return vTable;

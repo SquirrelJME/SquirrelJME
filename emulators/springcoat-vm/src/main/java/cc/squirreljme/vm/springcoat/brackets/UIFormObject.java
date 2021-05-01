@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.springcoat.brackets;
 
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.vm.springcoat.SpringMachine;
 
 /**
  * This wraps a native {@link UIFormBracket}.
@@ -25,14 +26,15 @@ public final class UIFormObject
 	/**
 	 * Initializes the form object.
 	 * 
+	 * @param __machine The machine used.
 	 * @param __form The form to wrap.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/01
 	 */
-	public UIFormObject(UIFormBracket __form)
+	public UIFormObject(SpringMachine __machine, UIFormBracket __form)
 		throws NullPointerException
 	{
-		super(UIFormBracket.class);
+		super(__machine, UIFormBracket.class);
 		
 		if (__form == null)
 			throw new NullPointerException("NARG");

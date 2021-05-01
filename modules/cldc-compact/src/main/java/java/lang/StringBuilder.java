@@ -674,6 +674,11 @@ public final class StringBuilder
 		
 		// Set new length
 		this._at = __nl;
+		
+		// Erase old characters in the buffer (security?)
+		char[] buffer = this._buffer;
+		for (int i = __nl, n = buffer.length; i < n; i++)
+			buffer[i] = '\0';
 	}
 	
 	/**
@@ -774,6 +779,11 @@ public final class StringBuilder
 			// Copy characters over
 			char[] extra = Arrays.copyOf(buffer, newCapacity);
 			
+			// Erase the old buffer (security?)
+			for (int i = 0, n = buffer.length; i < n; i++)
+				buffer[i] = '\0';
+			
+			// Store the new buffer
 			this._buffer = (buffer = extra);
 			this._limit = newCapacity;
 		}

@@ -2,7 +2,7 @@ import cc.squirreljme.plugin.swm.JavaMEConfiguration
 import cc.squirreljme.plugin.swm.JavaMEMidletType
 import cc.squirreljme.plugin.swm.JavaMEStandard
 
-version = "1.8.${rootProject.ext.squirreljmeVMVersion}"
+version = "1.8.$squirreljmeVMVersion"
 description = "Bluetooth and OBEX Support"
 
 squirreljme

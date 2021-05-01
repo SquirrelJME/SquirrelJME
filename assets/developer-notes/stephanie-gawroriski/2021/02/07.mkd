@@ -1,0 +1,8 @@
+# 2021/02/07
+
+## 10:54
+
+Okay so there is `ClassInfoBracket` which is the same as `TypeBracket` for
+SummerCoat. For consistency I want to get rid of that and move it to LLE. This
+will be a slight refactoring but will remove the duplicated type information
+and otherwise.

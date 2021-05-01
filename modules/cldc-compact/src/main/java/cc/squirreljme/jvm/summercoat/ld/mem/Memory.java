@@ -25,12 +25,17 @@ public interface Memory
 		0xFFFF_FFFF__FFFF_FFFFL;
 	
 	/**
-	 * The starting region of this memory.
-	 *
-	 * @return The starting region of this memory.
-	 * @since 2019/04/21
+	 * Returns the absolute address of the given memory.
+	 * 
+	 * @param __addr The address to get the absolute address of.
+	 * @return The absolute address of the given memory.
+	 * @throws MemoryAccessException If the address is not within the
+	 * bounds of this memory.
+	 * @throws NotRealMemoryException If this address is not real.
+	 * @since 2021/04/03
 	 */
-	long memRegionOffset();
+	long absoluteAddress(long __addr)
+		throws MemoryAccessException, NotRealMemoryException;
 	
 	/**
 	 * The length of this memory region.

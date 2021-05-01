@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
+import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.jvm.summercoat.SystemCall;
 import cc.squirreljme.jvm.summercoat.constants.RuntimeVmAttribute;
@@ -16,6 +18,7 @@ import cc.squirreljme.jvm.summercoat.constants.RuntimeVmAttribute;
 /**
  * This contains the index of system calls.
  *
+ * @see SystemCall
  * @since 2019/05/23
  */
 public interface SystemCallIndex
@@ -426,12 +429,22 @@ public interface SystemCallIndex
 		37;
 	
 	/**
+	 * Flushes the given pipe descriptor.
+	 * 
+	 * @squirreljme.syscallparam 1 The pipe descriptor.
+	 * @squirreljme.syscallreturn One of {@link PipeErrorType}.
+	 * @since 2021/04/03
+	 */
+	byte PD_FLUSH =
+		38;
+	
+	/**
 	 * The number of system calls that are defined in this run-time.
 	 *
 	 * One must NEVER utilize this value in a system call as it will have
 	 * unintended consequences of requesting future API values.
 	 */
 	byte NUM_SYSCALLS =
-		38;
+		39;
 }
 

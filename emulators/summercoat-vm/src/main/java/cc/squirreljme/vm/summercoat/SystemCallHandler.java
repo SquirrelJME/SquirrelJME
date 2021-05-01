@@ -9,9 +9,14 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.jvm.CallStackItem;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
+import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
+import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
+import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.RuntimeVmAttribute;
@@ -40,6 +45,76 @@ public enum SystemCallHandler
 			throws VMSystemCallException
 		{
 			return __cpu.arrayBase;
+		}
+	},
+	
+	/** {@link SystemCallIndex#CALL_STACK_HEIGHT}. */
+	CALL_STACK_HEIGHT(SystemCallIndex.CALL_STACK_HEIGHT)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/03
+		 */
+		@Override
+		public long handle(NativeCPU __cpu, int... __args)
+			throws VMSystemCallException
+		{
+			return __cpu.countFrames();
+		}
+	},
+	
+	/** {@link SystemCallIndex#CALL_STACK_ITEM}. */
+	CALL_STACK_ITEM(SystemCallIndex.CALL_STACK_ITEM)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/03
+		 */
+		@Override
+		public long handle(NativeCPU __cpu, int... __args)
+			throws VMSystemCallException
+		{
+			// Check validity of this frame
+			CPUFrame[] frames = __cpu.frames();
+			int frameId = (frames.length - __args[0]) - 1;
+			if (frameId < 0 || frameId >= frames.length)
+				return 0;
+			
+			// Get specific frame details
+			CPUFrame frame = frames[frameId];
+			switch (__args[1])
+			{
+				case CallStackItem.CLASS_NAME:
+					return frame._inclassp;
+				
+				case CallStackItem.METHOD_NAME:
+					return frame._inmethodnamep;
+				
+				case CallStackItem.METHOD_TYPE:
+					return frame._inmethodtypep;
+				
+				case CallStackItem.SOURCE_FILE:
+					return frame._insourcefilep;
+				
+				case CallStackItem.SOURCE_LINE:
+					return frame._inline;
+				
+				case CallStackItem.PC_ADDRESS:
+					return frame._pc;
+				
+				case CallStackItem.JAVA_OPERATION:
+					return frame._injop;
+				
+				case CallStackItem.JAVA_PC_ADDRESS:
+					return frame._injpc;
+				
+				case CallStackItem.TASK_ID:
+					return frame._taskid;
+				
+					// Unknown, ignore
+				default:
+					return 0;
+			}
 		}
 	},
 	
@@ -226,10 +301,65 @@ public enum SystemCallHandler
 				case RuntimeVmAttribute.MEMORY_PROFILE:
 					return MemoryProfileType.NORMAL;
 				
+					// Always big endian
+				case RuntimeVmAttribute.BYTE_ORDER:
+					return ByteOrderType.BIG_ENDIAN;
+					
+					// The encoding: Always UTF-8
+				case RuntimeVmAttribute.ENCODING:
+					return BuiltInEncodingType.UTF8;
+					
+					// The locale: Always English US
+				case RuntimeVmAttribute.LOCALE:
+					return BuiltInLocaleType.ENGLISH_US;
+				
 					// Unknown
 				default:
 					return 0;
 			}
+		}
+	},
+	
+	/** {@link SystemCallIndex#PD_FLUSH}. */
+	PD_FLUSH(SystemCallIndex.PD_FLUSH)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/04/03
+		 */
+		@Override
+		public long handle(NativeCPU __cpu, int... __args)
+			throws VMSystemCallException
+		{
+			int pd = __args[0];
+		
+			// Determine where we are writing to
+			PrintStream target;
+			switch (pd)
+			{
+				case StandardPipeType.STDOUT:
+					target = System.out;
+					break;
+					
+				case StandardPipeType.STDERR:
+					target = System.err;
+					break;
+				
+				default:
+					throw new VMSystemCallException(
+						SystemCallError.PIPE_DESCRIPTOR_INVALID);
+			}
+			
+			// Try to flush
+			target.flush();
+			
+			// Did we fail the flush?
+			if (target.checkError())
+				throw new VMSystemCallException(
+					SystemCallError.PIPE_DESCRIPTOR_BAD_FLUSH);
+			
+			// Write okay
+			return PipeErrorType.NO_ERROR;
 		}
 	},
 	

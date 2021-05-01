@@ -56,6 +56,19 @@ public abstract class AbstractReadableMemory
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/04/03
+	 */
+	@Override
+	public long absoluteAddress(long __addr)
+		throws MemoryAccessException, NotRealMemoryException
+	{
+		// {@squirreljme.error ZZ4p This is not memory that has a valid
+		// absolute address.}
+		throw new NotRealMemoryException(__addr, "ZZ4p");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/02/14
 	 */
 	@Override
@@ -195,5 +208,26 @@ public abstract class AbstractReadableMemory
 			default:
 				throw Debugging.oops();
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/03
+	 */
+	@Override
+	public ReadableMemory subSection(long __base, long __len)
+		throws MemoryAccessException
+	{
+		// Refers to ourself?
+		if (__base == 0 && __len == this.memRegionSize())
+			return this;
+		
+		// {@squirreljme.error ZZ4b Sub-section would be out of range of
+		// this memory region. (The base address; The length)}
+		if (__base < 0 || __len < 0 || (__base + __len) > this.memRegionSize())
+			throw new MemoryAccessException(__base,
+				"ZZ4b " + __base + " " + __len);
+		
+		return new __ReadableSubSection__(this, __base, __len);
 	}
 }

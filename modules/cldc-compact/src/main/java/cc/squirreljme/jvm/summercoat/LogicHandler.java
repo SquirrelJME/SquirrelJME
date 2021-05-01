@@ -10,11 +10,12 @@
 package cc.squirreljme.jvm.summercoat;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This handles specific JVM logic that cannot easily be handled in byte code
@@ -80,6 +81,51 @@ public final class LogicHandler
 	}
 	
 	/**
+	 * Returns the value of the given class property as a {@code long}.
+	 * 
+	 * @param __info The information to get.
+	 * @param __p The {@link ClassProperty}.
+	 * @return The value of the given property.
+	 * @throws MLECallError If {@code __info} is {@code null} or is not a
+	 * valid class.
+	 * @since 2021/04/07
+	 */
+	public static long typeGetPropertyLong(TypeBracket __info, int __p)
+		throws MLECallError
+	{
+		int a = LogicHandler.typeGetProperty(__info, __p);
+		int b = LogicHandler.typeGetProperty(__info, __p + 1);
+		
+		// Depends on the system endianess
+		if (RuntimeShelf.byteOrder() == ByteOrderType.BIG_ENDIAN)
+			return Assembly.longPack(a, b);
+		return Assembly.longPack(b, a);
+	}
+	
+	/**
+	 * Sets the value of the given class property.
+	 * 
+	 * @param __info The information to get.
+	 * @param __p The {@link ClassProperty}.
+	 * @param __v The value to set.
+	 * @throws MLECallError If {@code __info} is {@code null} or is not a
+	 * valid class.
+	 * @since 2021/04/03
+	 */
+	public static void typeSetProperty(TypeBracket __info, int __p, int __v)
+		throws MLECallError
+	{
+		if (__info == null)
+			throw new MLECallError("NARG");
+		
+		// {@squirreljme.error ZZ4w Invalid class property. (The property)}
+		if (__p <= 0 || __p >= ClassProperty.NUM_RUNTIME_PROPERTIES)
+			throw new MLECallError("ZZ4w " + __p);
+		
+		LogicHandler.listWrite(__info, __p, __v);
+	}
+	
+	/**
 	 * Garbage collects the given handle.
 	 * 
 	 * @param __p The pointer to clear.
@@ -91,56 +137,6 @@ public final class LogicHandler
 		Assembly.ping();
 		/*Assembly.breakpoint();
 		throw Debugging.todo();*/
-	}
-	
-	/**
-	 * Checks if this object is an array.
-	 * 
-	 * @param __object The object to check.
-	 * @return If this object is an array.
-	 * @since 2021/01/24
-	 */
-	public static boolean isArray(Object __object)
-	{
-		// Null is never an array
-		if (__object == null)
-			return false;
-		
-		Assembly.breakpoint();
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * Checks if the given class is initialized.
-	 * 
-	 * @param __info The class info to initialize.
-	 * @return If the class is initialized.
-	 * @since 2021/01/20
-	 */
-	public static boolean isClassInit(int __info)
-	{
-		if (__info == 0)
-			throw new NullPointerException("NARG");
-		
-		Assembly.breakpoint();
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * Initializes the given class.
-	 * 
-	 * @param __info The class info to initialize.
-	 * @throws MLECallError If the class is {@code null}.
-	 * @since 2020/11/28
-	 */
-	public static void initClass(TypeBracket __info)
-		throws MLECallError
-	{
-		if (__info == null)
-			throw new MLECallError("NARG");
-		
-		Assembly.breakpoint();
-		throw Debugging.todo();
 	}
 	
 	/**
@@ -230,69 +226,6 @@ public final class LogicHandler
 	}
 	
 	/**
-	 * Allocates a new array
-	 * 
-	 * @param __info The class to allocate.
-	 * @param __len The array length.
-	 * @return The allocated object data.
-	 * @throws NegativeArraySizeException If the array is negatively sized.
-	 * @throws MLECallError On null arguments.
-	 * @throws OutOfMemoryError If there is no memory remaining.
-	 * @since 2020/11/29
-	 */
-	public static Object newArray(TypeBracket __info, int __len)
-		throws NegativeArraySizeException, MLECallError,
-			OutOfMemoryError
-	{
-		if (__info == null)
-			throw new MLECallError("NARG");
-		
-		if (__len < 0)
-			throw new NegativeArraySizeException("" + __len);
-		
-		// Determine how large the object needs to be
-		int allocBase = LogicHandler.typeGetProperty(__info,
-			ClassProperty.SIZE_ALLOCATION);
-		int allocSize = allocBase +
-			(__len * LogicHandler.typeGetProperty(__info,
-				ClassProperty.INT_COMPONENT_CELL_SIZE));
-		
-		// Allocate the object
-		Object rv = LogicHandler.__allocObject(__info, allocSize);
-		
-		// Set the length of the array
-		Assembly.memHandleWriteInt(rv, LogicHandler.staticVmAttribute(
-			StaticVmAttribute.OFFSETOF_ARRAY_LENGTH_FIELD), __len);
-		
-		return rv;
-	}
-	
-	/**
-	 * Allocates a new instance of the given class.
-	 * 
-	 * @param __info The class to allocate.
-	 * @return The allocated object data.
-	 * @throws MLECallError On null arguments.
-	 * @throws OutOfMemoryError If there is no memory remaining.
-	 * @since 2020/11/29
-	 */
-	public static Object newInstance(TypeBracket __info)
-		throws MLECallError, OutOfMemoryError
-	{
-		if (__info == null)
-			throw new MLECallError("NARG");
-		
-		// {@squirreljme.error ZZ4j Class has no allocated size?}
-		int allocSize = LogicHandler.typeGetProperty(__info,
-			ClassProperty.SIZE_ALLOCATION);
-		if (allocSize <= 0)
-			throw new MLECallError("ZZ4j");
-		
-		// Allocate the object
-		return LogicHandler.__allocObject(__info, allocSize);
-	}
-	
-	/**
 	 * This is the method that is called for all native and abstract methods
 	 * within the virtual machine so that every method leads somewhere.
 	 * 
@@ -322,47 +255,5 @@ public final class LogicHandler
 			throw new IllegalArgumentException("ZZ4n " + __attr);
 		
 		return LogicHandler.listRead(SystemCall.staticVmAttributes(), __attr);
-	}
-	
-	/**
-	 * Allocates an object and seeds initial information regarding it.
-	 * 
-	 * @param __info The class information.
-	 * @param __allocSize The allocation size of the object.
-	 * @return The allocated object.
-	 * @throws NullPointerException On null arguments.
-	 * @throws OutOfMemoryError If not enough memory is available.
-	 * @since 2021/01/23
-	 */
-	private static Object __allocObject(TypeBracket __info,
-		int __allocSize)
-		throws NullPointerException, OutOfMemoryError
-	{
-		if (__info == null)
-			throw new NullPointerException("NARG");
-		
-		// This represents the kind of handle that gets allocated
-		int memHandleKind = LogicHandler.typeGetProperty(__info,
-			ClassProperty.INT_MEMHANDLE_KIND);
-		
-		// Attempt to allocate a handle
-		int rv = SystemCall.memHandleNew(memHandleKind, __allocSize);
-		if (rv == 0)
-		{
-			// Attempt garbage collection
-			System.gc();
-			
-			// Try again, but fail if it still fails
-			rv = SystemCall.memHandleNew(memHandleKind, __allocSize);
-			if (rv == 0)
-				throw new OutOfMemoryError();
-		}
-		
-		// Set the object type information
-		Assembly.memHandleWriteObject(rv, LogicHandler.staticVmAttribute(
-			StaticVmAttribute.OFFSETOF_OBJECT_TYPE_FIELD), __info);
-		
-		// Convert to represented object before returning.
-		return Assembly.pointerToObject(rv);
 	}
 }

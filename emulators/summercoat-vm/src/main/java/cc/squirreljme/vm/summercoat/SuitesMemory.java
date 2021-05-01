@@ -13,7 +13,11 @@ import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.ld.mem.AbstractReadableMemory;
+import cc.squirreljme.jvm.summercoat.ld.mem.MemoryAccessException;
+import cc.squirreljme.jvm.summercoat.ld.mem.NotRealMemoryException;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
 import cc.squirreljme.vm.PreAddressedClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.packfile.MinimizedPackHeader;
@@ -122,6 +126,17 @@ public final class SuitesMemory
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/03
+	 */
+	@Override
+	public long absoluteAddress(long __addr)
+		throws MemoryAccessException, NotRealMemoryException
+	{
+		return this.offset + __addr;
+	}
+	
+	/**
 	 * Finds the specified library.
 	 *
 	 * @param __name The library to locate.
@@ -197,17 +212,6 @@ public final class SuitesMemory
 	 * @return
 	 */
 	@Override
-	public long memRegionOffset()
-	{
-		return this.offset;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/21
-	 * @return
-	 */
-	@Override
 	public final long memRegionSize()
 	{
 		return this.size;
@@ -253,7 +257,8 @@ public final class SuitesMemory
 		for (int i = 0; i < numSuites; i++)
 		{
 			SuiteMemory from = suiteMem[i];
-			pre[i] = new PreAddressedClassLibrary((int)from.memRegionOffset(),
+			pre[i] = new PreAddressedClassLibrary(
+				(int)from.absoluteAddress(0),
 				(int)from.memRegionSize(), from.libName);
 		}
 		

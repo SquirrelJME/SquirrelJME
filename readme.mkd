@@ -15,7 +15,7 @@ of code execution.
 Additionally, there is a port of SquirrelJME to RetroArch which enables the
 ability to play older J2ME software and games designed for flip-phones.
 
- * Copyright (C) 2013-2020 Stephanie Gawroriski
+ * Copyright (C) 2013-2021 Stephanie Gawroriski
    <xer@multiphasicapps.net>
  * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2020
  * _Lex_ and The _SquirrelJME_ Logo were illustrated by...
@@ -32,38 +32,39 @@ Badges:
 
  * _Checks and Quality_
    * [![CircleCI](
-     https://img.shields.io/circleci/build/github/SquirrelJME/SquirrelJME/trunk.svg)](
+     https://img.shields.io/circleci/build/github/SquirrelJME/SquirrelJME/trunk.svg?label=CircleCI%20Build)](
      https://circleci.com/gh/SquirrelJME/SquirrelJME/tree/trunk)
-   * [![Code Climate maintainability](
+   * [![Code Climate Maintainability](
      https://img.shields.io/codeclimate/maintainability-percentage/SquirrelJME/SquirrelJME)](
      https://codeclimate.com/github/SquirrelJME/SquirrelJME)
      [![Code Climate technical debt](
      https://img.shields.io/codeclimate/tech-debt/SquirrelJME/SquirrelJME)](
      https://codeclimate.com/github/SquirrelJME/SquirrelJME)
    * [![Docker Build](
-     https://img.shields.io/docker/cloud/build/xerthesquirrel/squirreljme)](
+     https://img.shields.io/docker/cloud/build/xerthesquirrel/squirreljme.svg?label=Docker%20Container)](
      https://hub.docker.com/r/xerthesquirrel/squirreljme/builds)
+   * [![RetroArch Core](
+     https://git.libretro.com/libretro/SquirrelJME/badges/trunk/pipeline.svg?key_text=RetroArch%20Core&key_width=115)](
+     https://git.libretro.org/libretro/SquirrelJME)
  * _Social and Community_
-   * [![Discord](https://img.shields.io/discord/278929900893634560.svg)](
+   * [![Discord](https://img.shields.io/discord/278929900893634560.svg?label=Discord%20Server)](
      https://discord.gg/9PkMMKt)
-   * [![Liberapay](
-     https://img.shields.io/liberapay/receives/xershadowtail.svg?logo=liberapay)](
-     https://liberapay.com/xershadowtail)
    * [![Twitter](
-     https://img.shields.io/twitter/follow/MultiPhasicApps.svg?label=Follow)](
+     https://img.shields.io/twitter/follow/MultiPhasicApps.svg?label=Follow%20on%20Twitter)](
      https://twitter.com/MultiPhasicApps)
  * _Downloads and Activity_
    * ![Commit Activity](
-     https://img.shields.io/github/commit-activity/w/SquirrelJME/SquirrelJME.svg)
-   * [![Docker](
-     https://img.shields.io/docker/cloud/automated/xerthesquirrel/squirreljme)](
-     https://hub.docker.com/r/xerthesquirrel/squirreljme)
+     https://img.shields.io/github/commit-activity/w/SquirrelJME/SquirrelJME.svg?label=Code%20Commits)
    * [![Docker Pulls](
-     https://img.shields.io/docker/pulls/xerthesquirrel/squirreljme)](
+     https://img.shields.io/docker/pulls/xerthesquirrel/squirreljme?label=Docker%20Pulls)](
      https://hub.docker.com/r/xerthesquirrel/squirreljme)
    * [![SourceForge Downloads](
-     https://img.shields.io/sourceforge/dm/squirreljme.svg)](
+     https://img.shields.io/sourceforge/dm/squirreljme.svg?label=SourceForge%20Downloads)](
      https://sourceforge.net/projects/squirreljme/files/)
+ * _Donations_
+   * [![Liberapay](
+     https://img.shields.io/liberapay/receives/xershadowtail.svg?logo=liberapay&label=LiberaPay)](
+     https://liberapay.com/xershadowtail)
 
 Information:
 
@@ -73,10 +74,12 @@ Information:
    * _Source_: GNU General Public License, Version 3 or later
    * _Assets_: Creative Commons CC-BY-SA 4.0
    * _Fonts_ : SIL Open Font License Version 1.1
+   * [Third Party Licenses](third-party.mkd)
  * [Contributing to SquirrelJME](contributing.mkd)
  * _End-User Documents_
    * [Building](building.mkd)
    * [Changelog](changelog.mkd)
+     * Also see [Live Updates](https://updates.squirreljme.cc/)
    * [Compatibility](compatibility.mkd)
    * [History](history.mkd)
    * [Release Roadmap](route.mkd)
@@ -125,8 +128,10 @@ Information:
  * [SquirrelJME Mastodon](https://mastodon.online/@SquirrelJME)
  * Locations where you can get support:
    * [Discord](https://discord.gg/9PkMMKt)
+   * [Reddit](https://reddit.com/r/SquirrelJME)
  * Front facing social media:
    * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA/)
+   * [Twitter](https://twitter.com/MultiPhasicApps)
  * [Docker Hub](https://hub.docker.com/r/xerthesquirrel/squirreljme)
  * [SourceForge](https://sourceforge.net/p/squirreljme/)
  * Personal Accounts (If you wish to contact me this way)

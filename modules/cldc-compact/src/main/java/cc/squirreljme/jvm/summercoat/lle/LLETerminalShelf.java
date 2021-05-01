@@ -75,8 +75,12 @@ public final class LLETerminalShelf
 	public static int flush(int __fd)
 		throws MLECallError
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		// {@squirreljme.error ZZ4y Could flush the pipe.}
+		if (SystemCall.pdFlush(
+			LLETerminalShelf.__pipeOfFd(__fd)) != PipeErrorType.NO_ERROR)
+			throw new MLECallError("ZZ4y");
+		
+		return PipeErrorType.NO_ERROR;
 	}
 	
 	/**

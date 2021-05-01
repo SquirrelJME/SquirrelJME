@@ -9,8 +9,11 @@
 
 package cc.squirreljme.jvm.summercoat;
 
+import cc.squirreljme.jvm.CallStackItem;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
+import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
@@ -18,8 +21,9 @@ import cc.squirreljme.jvm.summercoat.constants.RuntimeVmAttribute;
 import cc.squirreljme.jvm.summercoat.struct.StaticVmAttributesStruct;
 
 /**
- * This is a helper wrapper around system calls.
+ * This is a helper wrapper around {@link SystemCallIndex}.
  *
+ * @see SystemCallIndex
  * @since 2020/11/29
  */
 public final class SystemCall
@@ -41,6 +45,27 @@ public final class SystemCall
 	 * @since 2021/01/24
 	 */
 	public static native int arrayAllocationBase();
+	
+	/**
+	 * {@link SystemCallIndex#CALL_STACK_HEIGHT}: Returns the height of
+	 * the call stack.
+	 * 
+	 * @return The height of the call stack.
+	 * @since 2021/04/03
+	 */
+	public static native int callStackHeight();
+	
+	/**
+	 * {@link SystemCallIndex#CALL_STACK_ITEM}: Returns the item from the
+	 * call stack.
+	 * 
+	 * @param __frame The number of frames from the top of the
+	 * call stack to get the items for, zero will be the top-most item.
+	 * @param __item The item to obtain as specified in {@link CallStackItem}.
+	 * @return The value of the given item.
+	 * @since 2021/04/03
+	 */
+	public static native long callStackItem(int __frame, int __item);
 	
 	/**
 	 * {@link SystemCallIndex#ERROR_GET}: Gets the error code of the given
@@ -111,6 +136,17 @@ public final class SystemCall
 	 * @since 2021/01/30
 	 */
 	public static native int runtimeVmAttribute(int __attr);
+	
+	/**
+	 * Flushes the given pipe.
+	 * 
+	 * @param __fd The pipe ID.
+	 * @return One of {@link PipeErrorType}.
+	 * @throws MLECallError On flush errors.
+	 * @since 2021/04/03
+	 */
+	public static native int pdFlush(int __fd)
+		throws MLECallError;
 	
 	/**
 	 * Returns the pipe descriptor of standard error.

@@ -22,7 +22,7 @@ public interface ClassProperty
 	extends StaticClassProperty
 {
 	/** The pointer to the class name (in descriptor form). */
-	byte MEMHANDLE_THISNAME_DESC =
+	byte MEMHANDLE_THIS_NAME_DESC =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 1;
 	
 	/** The allocation size of this class to store all of its fields. */
@@ -46,7 +46,7 @@ public interface ClassProperty
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 6;
 	
 	/** Pointer to a {@link Class} instance. */
-	byte MEMHANDLE_LANGCLASS_INSTANCE =
+	byte MEMHANDLE_LANG_CLASS_INSTANCE =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 7;
 	
 	/** The pointer to the constant pool of this class. */
@@ -62,7 +62,7 @@ public interface ClassProperty
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 10;
 	
 	/** The pointer to the class name (in {@link Class#getName()} form). */
-	byte MEMHANDLE_THISNAME_CLASSGETNAME =
+	byte MEMHANDLE_THIS_NAME_RUNTIME =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 11;
 	
 	/** All interfaces that are implemented by this class. */
@@ -73,43 +73,59 @@ public interface ClassProperty
 	byte INT_JARDX =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 13;
 	
-	/** The function pointer for the default new method, if any. */
-	byte FUNCPTR_DEFAULT_NEW =
+	/** The function pointer for the default new method, if any (low). */
+	byte FUNCPTR_DEFAULT_NEW_LO =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 14;
+	
+	/** The function pointer for the default new method, if any (high). */
+	byte FUNCPTR_DEFAULT_NEW_HI =
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 15;
 	
 	/** The memory pointer to the ROM class in memory. */
 	byte MEMPTR_ROM_CLASS =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 15;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 16;
 	
 	/** The cell size for array components, if this is an array. */
 	byte INT_COMPONENT_CELL_SIZE =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 16;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 17;
 	
 	/** The allocation kind for the memory handle. */
 	byte INT_MEMHANDLE_KIND =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 17;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 18;
 	
 	/** The VTable of the class. */
 	byte MEMHANDLE_VTABLE =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 18;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 19;
 	
 	/** The interface tables that are available for a class. */
 	byte MEMHANDLE_I2XTABLE =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 19;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 20;
 	
 	/** The static invocation table. */
 	byte MEMHANDLE_STABLE =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 20;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 21;
 	
 	/** The mask potential for the I2X Table. */
 	byte MASK_I2XTABLE =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 21;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 22;
 	
 	/** The root component class information. */
 	byte TYPEBRACKET_ROOT_COMPONENT =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 22;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 23;
+	
+	/** Is this class initialized? */
+	byte BOOLEAN_IS_INITIALIZED =
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 24;
+	
+	/** The method pointer to the class static initializer (low). */
+	byte FUNCPTR_CLINIT_LO =
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 25;
+	
+	/** The method pointer to the class static initializer (high). */
+	byte FUNCPTR_CLINIT_HI =
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 26;
 	
 	/** The number of properties available. */
 	byte NUM_RUNTIME_PROPERTIES =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 23;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 27;
 }

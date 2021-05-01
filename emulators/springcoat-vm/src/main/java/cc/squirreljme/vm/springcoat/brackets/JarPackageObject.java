@@ -12,9 +12,10 @@ package cc.squirreljme.vm.springcoat.brackets;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.AbstractGhostObject;
+import cc.squirreljme.vm.springcoat.SpringMachine;
 
 /**
- * Not Described.
+ * Represents a JAR Package.
  *
  * @since 2020/06/17
  */
@@ -27,14 +28,15 @@ public class JarPackageObject
 	/**
 	 * Initializes the package object.
 	 *
+	 * @param __machine The machine used.
 	 * @param __lib The library.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/17
 	 */
-	public JarPackageObject(VMClassLibrary __lib)
+	public JarPackageObject(SpringMachine __machine, VMClassLibrary __lib)
 		throws NullPointerException
 	{
-		super(JarPackageBracket.class);
+		super(__machine, JarPackageBracket.class);
 		
 		if (__lib == null)
 			throw new NullPointerException("NARG");

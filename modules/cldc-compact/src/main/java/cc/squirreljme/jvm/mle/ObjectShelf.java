@@ -195,6 +195,15 @@ public final class ObjectShelf
 	public static native int identityHashCode(Object __o);
 	
 	/**
+	 * Checks if this object is an array.
+	 * 
+	 * @param __object The object to check.
+	 * @return If this object is an array.
+	 * @since 2021/04/07
+	 */
+	public static native boolean isArray(Object __object);
+	
+	/**
 	 * Checks if this object is an instance of the given type.
 	 * 
 	 * @param __o The object to check.

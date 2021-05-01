@@ -1,0 +1,6 @@
+# 2021/01/19
+
+## 23:26
+
+Oh wow `ClassIdentifier` did not have `hashCode()`, this might be why there are
+so many pool entries. Because technically every class is uniquely referenced.

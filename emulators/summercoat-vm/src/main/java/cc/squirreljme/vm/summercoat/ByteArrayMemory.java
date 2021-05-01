@@ -190,17 +190,6 @@ public final class ByteArrayMemory
 	 * @return
 	 */
 	@Override
-	public long memRegionOffset()
-	{
-		return this.offset;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/21
-	 * @return
-	 */
-	@Override
 	public final long memRegionSize()
 	{
 		return this.size;
@@ -295,11 +284,13 @@ public final class ByteArrayMemory
 		// Check if the address is within bounds.
 		if (__addr < 0 || __addr > Integer.MAX_VALUE ||
 			(__addr + __len) > this.size)
-			throw new VMMemoryAccessException("Invalid Address: " + __addr);
+			throw new VMMemoryAccessException(
+				String.format("Invalid Access: %d + %d in %d",
+					__addr, __len, this.size));
 		
 		// Cannot read/write from unaligned memory for a given type
 		if ((__addr % __len) != 0)
-			throw new VMMemoryAccessException("Unaligned Address: " + __addr);
+			throw new VMMemoryAccessException("Unaligned Access: " + __addr);
 	}
 }
 

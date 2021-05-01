@@ -10,10 +10,14 @@
 package cc.squirreljme.jvm.summercoat.lle;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.CallStackItem;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.summercoat.LogicHandler;
+import cc.squirreljme.jvm.summercoat.SummerCoatUtil;
 import cc.squirreljme.jvm.summercoat.SystemCall;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
 
 /**
  * This is the shelf used for accessing the debugging features of SquirrelJME
@@ -21,6 +25,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2020/06/11
  */
+@SuppressWarnings("unused")
 public final class LLEDebugShelf
 {
 	/**
@@ -41,8 +46,13 @@ public final class LLEDebugShelf
 	 */
 	public static TracePointBracket[] getThrowableTrace(Throwable __t)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__t == null)
+			throw new MLECallError("NARG");
+		
+		// This is just a field read
+		return (TracePointBracket[])Assembly.memHandleReadObject(__t,
+			LogicHandler.staticVmAttribute(
+			StaticVmAttribute.OFFSETOF_THROWABLE_TRACE_FIELD));
 	}
 	
 	/**
@@ -54,8 +64,10 @@ public final class LLEDebugShelf
 	 */
 	public static long pointAddress(TracePointBracket __point)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__point == null)
+			throw new MLECallError("NARG");
+		
+		return ((__LLETracePoint__)__point).pcAddr;
 	}
 	
 	/**
@@ -67,8 +79,11 @@ public final class LLEDebugShelf
 	 */
 	public static String pointClass(TracePointBracket __point)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__point == null)
+			throw new MLECallError("NARG");
+		
+		return SummerCoatUtil.loadString(
+			((__LLETracePoint__)__point).classNameP);
 	}
 	
 	/**
@@ -80,8 +95,11 @@ public final class LLEDebugShelf
 	 */
 	public static String pointFile(TracePointBracket __point)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__point == null)
+			throw new MLECallError("NARG");
+		
+		return SummerCoatUtil.loadString(
+			((__LLETracePoint__)__point).sourceFileP);
 	}
 	
 	/**
@@ -93,8 +111,10 @@ public final class LLEDebugShelf
 	 */
 	public static int pointJavaAddress(TracePointBracket __point)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__point == null)
+			throw new MLECallError("NARG");
+		
+		return ((__LLETracePoint__)__point).javaPcAddr;
 	}
 	
 	/**
@@ -106,8 +126,10 @@ public final class LLEDebugShelf
 	 */
 	public static int pointJavaOperation(TracePointBracket __point)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__point == null)
+			throw new MLECallError("NARG");
+		
+		return ((__LLETracePoint__)__point).javaOperation;
 	}
 	
 	/**
@@ -119,8 +141,10 @@ public final class LLEDebugShelf
 	 */
 	public static int pointLine(TracePointBracket __point)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__point == null)
+			throw new MLECallError("NARG");
+		
+		return ((__LLETracePoint__)__point).sourceLine;
 	}
 	
 	/**
@@ -132,8 +156,11 @@ public final class LLEDebugShelf
 	 */
 	public static String pointMethodName(TracePointBracket __point)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__point == null)
+			throw new MLECallError("NARG");
+		
+		return SummerCoatUtil.loadString(
+			((__LLETracePoint__)__point).methodNameP);
 	}
 	
 	/**
@@ -145,8 +172,11 @@ public final class LLEDebugShelf
 	 */
 	public static String pointMethodType(TracePointBracket __point)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__point == null)
+			throw new MLECallError("NARG");
+		
+		return SummerCoatUtil.loadString(
+			((__LLETracePoint__)__point).methodTypeP);
 	}
 	
 	/**
@@ -158,9 +188,16 @@ public final class LLEDebugShelf
 	 */
 	public static TracePointBracket[] traceStack()
 	{
-		// TODO: Implement tracing of the stack.
-		Debugging.todoNote("TODO: implement traceStack()");
-		return new TracePointBracket[0];
+		// How many frames are on the stack? Skip the first two because it is
+		// this method and the other one
+		int frameCount = SystemCall.callStackHeight() - 2;
+		TracePointBracket[] rv = new TracePointBracket[frameCount];
+		
+		// Load in each individual frame
+		for (int i = 0; i < frameCount; i++)
+			rv[i] = LLEDebugShelf.__loadFrame(i + 2);
+		
+		return rv;
 	}
 	
 	/**
@@ -191,5 +228,26 @@ public final class LLEDebugShelf
 	public static void verboseStop(int __code)
 	{
 		SystemCall.verbose(-1, 0, __code);
+	}
+	
+	/**
+	 * Loads the given frame.
+	 * 
+	 * @param __f The frame to load.
+	 * @return The trace point for the given frame.
+	 * @since 2021/04/03
+	 */
+	private static TracePointBracket __loadFrame(int __f)
+	{
+		return new __LLETracePoint__(
+			SystemCall.callStackItem(__f, CallStackItem.CLASS_NAME),
+			SystemCall.callStackItem(__f, CallStackItem.METHOD_NAME),
+			SystemCall.callStackItem(__f, CallStackItem.METHOD_TYPE),
+			SystemCall.callStackItem(__f, CallStackItem.SOURCE_FILE),
+			(int)SystemCall.callStackItem(__f, CallStackItem.SOURCE_LINE),
+			SystemCall.callStackItem(__f, CallStackItem.PC_ADDRESS),
+			(int)SystemCall.callStackItem(__f, CallStackItem.JAVA_OPERATION),
+			(int)SystemCall.callStackItem(__f, CallStackItem.JAVA_PC_ADDRESS),
+			(int)SystemCall.callStackItem(__f, CallStackItem.TASK_ID));
 	}
 }

@@ -28,15 +28,19 @@ public interface JarTocProperty
 	byte OFFSET_NAME =
 		2;
 	
+	/** The size of the resource name. */
+	byte SIZE_NAME =
+		3;
+	
 	/** Offset to the resource data. */
 	byte OFFSET_DATA =
-		3;
+		4;
 	
 	/** The size of the resource data. */
 	byte SIZE_DATA =
-		4;
+		5;
 	
 	/** The properties available. */
 	byte NUM_JAR_TOC_PROPERTIES =
-		5;
+		6;
 }

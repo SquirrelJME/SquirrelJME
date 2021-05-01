@@ -41,17 +41,6 @@ public final class TypedRegister<T>
 	}
 	
 	/**
-	 * Returns the register as a memory handle.
-	 * 
-	 * @return This register as a memory handle.
-	 * @since 2021/01/19
-	 */
-	public MemHandleRegister asMemHandle()
-	{
-		return MemHandleRegister.of(this.register);
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @since 2020/11/24
 	 */

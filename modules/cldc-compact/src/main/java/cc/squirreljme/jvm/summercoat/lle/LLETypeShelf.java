@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.summercoat.lle;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
@@ -26,6 +27,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2020/05/30
  */
+@SuppressWarnings("unused")
 public final class LLETypeShelf
 {
 	/**
@@ -42,12 +44,18 @@ public final class LLETypeShelf
 	 *
 	 * @param __type The type to get the binary name of.
 	 * @return The binary name of this class.
+	 * @throws MLECallError If the type is not valid.
 	 * @since 2020/06/07
 	 */
 	public static String binaryName(TypeBracket __type)
+		throws MLECallError
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__type == null)
+			throw new MLECallError("NARG");
+		
+		return (String)Assembly.pointerToObject(
+			LogicHandler.typeGetProperty(__type,
+				ClassProperty.MEMHANDLE_THIS_NAME_DESC));
 	}
 	
 	/**
@@ -72,8 +80,13 @@ public final class LLETypeShelf
 	 */
 	public static TypeBracket classToType(Class<?> __cl)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__cl == null)
+			throw new MLECallError("NARG");
+		
+		// Just read the class type information
+		return Assembly.pointerToTypeBracket(Assembly.memHandleReadInt(__cl,
+			LogicHandler.staticVmAttribute(
+				StaticVmAttribute.OFFSETOF_CLASS_TYPEBRACKET_FIELD)));
 	}
 	
 	/**
@@ -88,8 +101,15 @@ public final class LLETypeShelf
 	public static TypeBracket component(TypeBracket __type)
 		throws MLECallError
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__type == null)
+			throw new MLECallError("NARG");
+		
+		// {@squirreljme.error ZZ53 Not an array type.}
+		if (!TypeShelf.isArray(__type))
+			throw new MLECallError("ZZ53");
+		
+		return Assembly.pointerToTypeBracket(LogicHandler.typeGetProperty(
+			__type, ClassProperty.TYPEBRACKET_COMPONENT));
 	}
 	
 	/**
@@ -103,8 +123,15 @@ public final class LLETypeShelf
 	 */
 	public static TypeBracket componentRoot(TypeBracket __type)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__type == null)
+			throw new MLECallError("NARG");
+		
+		// {@squirreljme.error ZZ53 Not an array type.}
+		if (!TypeShelf.isArray(__type))
+			throw new MLECallError("ZZ53");
+		
+		return Assembly.pointerToTypeBracket(LogicHandler.typeGetProperty(
+			__type, ClassProperty.TYPEBRACKET_ROOT_COMPONENT));
 	}
 	
 	/**
@@ -173,6 +200,49 @@ public final class LLETypeShelf
 	}
 	
 	/**
+	 * Initializes the given class.
+	 * 
+	 * @param __type The class info to initialize.
+	 * @throws MLECallError If the class is {@code null}.
+	 * @since 2020/11/28
+	 */
+	public static void initClass(TypeBracket __type)
+		throws MLECallError
+	{
+		if (__type == null)
+			throw new MLECallError("NARG");
+		
+		// If the class is already initialized, no point in doing it again
+		if (LLETypeShelf.isClassInit(__type))
+			return;
+		
+		// TODO: Protect initClass() for multiple threads
+		Debugging.todoNote("Protected initClass(%s)",
+			TypeShelf.binaryName(__type));
+		
+		// Set as initialized _BEFORE_ we do the actual static method call
+		// because we are going to recurse into super classes and we do not
+		// want to end up in a class initialization loop!
+		LogicHandler.typeSetProperty(__type,
+			ClassProperty.BOOLEAN_IS_INITIALIZED, 1);
+		
+		// Initialize the super class first before we do this one
+		TypeBracket superType = LLETypeShelf.superClass(__type);
+		if (superType != null)
+			LLETypeShelf.initClass(superType);
+		
+		// If there is a static initializer, call it since we will need to
+		// setup any static fields and otherwise
+		long clInitFp = LogicHandler.typeGetPropertyLong(__type,
+			ClassProperty.FUNCPTR_CLINIT_LO);
+		if (clInitFp != 0)
+		{
+			Assembly.breakpoint();
+			throw Debugging.todo();
+		}
+	}
+	
+	/**
 	 * Returns the JAR that the type is within.
 	 *
 	 * @param __type The type to get the JAR of.
@@ -212,8 +282,11 @@ public final class LLETypeShelf
 	public static boolean isArray(TypeBracket __type)
 		throws MLECallError
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__type == null)
+			throw new MLECallError("NARG");
+		
+		return LogicHandler.typeGetProperty(__type,
+			StaticClassProperty.NUM_DIMENSIONS) > 0;
 	}
 	
 	/**
@@ -300,6 +373,36 @@ public final class LLETypeShelf
 	}
 	
 	/**
+	 * Checks if the given class is initialized.
+	 * 
+	 * @param __type The class info to initialize.
+	 * @return If the class is initialized.
+	 * @throws MLECallError If the type is not valid.
+	 * @since 2021/01/20
+	 */
+	public static boolean isClassInit(TypeBracket __type)
+		throws MLECallError
+	{
+		if (__type == null)
+			throw new MLECallError("NARG");
+		
+		// If this is an array, we just care if the root class is initialized
+		// since arrays are for the most part synthetic
+		if (LLETypeShelf.isArray(__type))
+			return LLETypeShelf.isClassInit(Assembly.pointerToTypeBracket(
+				LogicHandler.typeGetProperty(__type,
+					ClassProperty.TYPEBRACKET_ROOT_COMPONENT)));
+		
+		// Debug
+		Debugging.debugNote("isClassInit(%s)?",
+			TypeShelf.binaryName(__type));
+		
+		// Otherwise check if the type is initialized
+		return LogicHandler.typeGetProperty(__type,
+			ClassProperty.BOOLEAN_IS_INITIALIZED) != 0;
+	}
+	
+	/**
 	 * Checks if this is an enumeration.
 	 * 
 	 * @param __type The type to check.
@@ -340,8 +443,12 @@ public final class LLETypeShelf
 	public static boolean isPrimitive(TypeBracket __type)
 		throws MLECallError
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__type == null)
+			throw new MLECallError("NARG");
+		
+		// Does this class say it is a primitive type?
+		return LogicHandler.typeGetProperty(__type,
+			StaticClassProperty.BOOLEAN_IS_PRIMITIVE) != 0;
 	}
 	
 	/**
@@ -388,8 +495,13 @@ public final class LLETypeShelf
 	public static String runtimeName(TypeBracket __type)
 		throws MLECallError
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		// {@squirreljme.error ZZ4x No type specified.}
+		if (__type == null)
+			throw new MLECallError("ZZ4x");
+		
+		return (String)Assembly.pointerToObject(
+			LogicHandler.typeGetProperty(__type,
+			ClassProperty.MEMHANDLE_THIS_NAME_RUNTIME));
 	}
 	
 	/**
@@ -403,8 +515,12 @@ public final class LLETypeShelf
 	public static TypeBracket superClass(TypeBracket __type)
 		throws MLECallError
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		if (__type == null)
+			throw new MLECallError("NARG");
+		
+		return Assembly.pointerToTypeBracket(
+			LogicHandler.typeGetProperty(__type,
+				ClassProperty.TYPEBRACKET_SUPER));
 	}
 	
 	/**
@@ -511,9 +627,34 @@ public final class LLETypeShelf
 	 * @return The class type for the given type.
 	 * @since 2020/05/30
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> Class<T> typeToClass(TypeBracket __type)
 	{
-		Assembly.breakpoint();
-		throw Debugging.todo();
+		// {@squirreljme.error ZZ73 No type specified.}
+		if (__type == null)
+			throw new MLECallError("ZZ73");
+		
+		// TODO: Atomically protect this
+		Debugging.todoNote("Protect typeToClass()!");
+		
+		// Is a property already valid here?
+		int rawP = LogicHandler.typeGetProperty(__type,
+			ClassProperty.MEMHANDLE_LANG_CLASS_INSTANCE);
+		if (rawP != 0)
+			return (Class<T>)Assembly.pointerToObject(rawP);
+		
+		// Create new class instance to fill int
+		Object classObj = ObjectShelf.newInstance(
+			Assembly.pointerToTypeBracket(LogicHandler.staticVmAttribute(
+			StaticVmAttribute.TYPEBRACKET_CLASS)));
+		
+		// TODO: Initialize class
+		Debugging.todoNote("Initialize Class!");
+		
+		// Store for later and use this one
+		LogicHandler.typeSetProperty(__type,
+			ClassProperty.MEMHANDLE_LANG_CLASS_INSTANCE,
+			Assembly.objectToPointer(classObj));
+		return (Class<T>)classObj;
 	}
 }
