@@ -16,7 +16,9 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeExce
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
+import java.lang.ref.Reference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +55,7 @@ public final class SpringClass
 	protected final SpringClass superclass;
 	
 	/** The number of instance fields that exist. */
-	protected final int instancefieldcount;
+	protected final int instanceFieldCount;
 	
 	/** The dimentions of this class. */
 	protected final int dimensions;
@@ -82,6 +84,30 @@ public final class SpringClass
 	/** The table of fields defined in this class, includes super classes. */
 	private final SpringField[] _fieldtable;
 	
+	/** Field lookup. */
+	private final SpringField[] _fieldLookup;
+	
+	/** Method index table. */
+	private final SpringMethod[] _methodLookup;
+	
+	/** Base method indexes. */
+	final int _methodLookupBase;
+	
+	/** The class loader which loaded this class. */
+	private final Reference<SpringClassLoader> _classLoader;
+	
+	/** Static field storage. */
+	final SpringFieldStorage[] _staticFields;
+	
+	/** The base index for static fields. */
+	final int _staticFieldBase;
+	
+	/** The base index for our own instance fields. */
+	final int _fieldLookupBase;
+	
+	/** The class instance. */
+	SpringObject _instance;
+	
 	/** Has this class been initialized? */
 	private volatile boolean _initialized;
 	
@@ -93,14 +119,16 @@ public final class SpringClass
 	 * @param __cf The class file for this class.
 	 * @param __ct The component type.
 	 * @param __inJar The JAR this class is in.
+	 * @param __loader The class loader which loaded this class.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/07/21
 	 */
 	SpringClass(SpringClass __super, SpringClass[] __interfaces,
-		ClassFile __cf, SpringClass __ct, VMClassLibrary __inJar)
+		ClassFile __cf, SpringClass __ct, VMClassLibrary __inJar,
+		Reference<SpringClassLoader> __loader)
 		throws NullPointerException
 	{
-		if (__interfaces == null || __cf == null)
+		if (__interfaces == null || __cf == null || __loader == null)
 			throw new NullPointerException("NARG");
 		
 		ClassName name = __cf.thisName();
@@ -110,6 +138,7 @@ public final class SpringClass
 		this.superclass = __super;
 		this.component = __ct;
 		this.dimensions = name.dimensions();
+		this._classLoader = __loader;
 		
 		// Check
 		this._interfaceclasses = (__interfaces = __interfaces.clone());
@@ -120,20 +149,39 @@ public final class SpringClass
 		// Used for method location
 		String filename = __cf.sourceFile();
 		
+		// Method index lookup for this class, used for debugging
+		int baseMethods = (__super == null ? 0 : __super._methodLookup.length);
+		int numMethods = baseMethods + __cf.methods().length;
+		SpringMethod[] methodLookup = (__super == null ?
+			new SpringMethod[numMethods] :
+			Arrays.copyOf(__super._methodLookup, numMethods));
+		this._methodLookup = methodLookup;
+		
+		// Base method index where entries go
+		this._methodLookupBase = baseMethods;
+		
 		// Go through and initialize methods declared in this class
+		int atMethodDx = baseMethods;
 		Map<MethodNameAndType, SpringMethod> nvmeths = this._nonvirtmethods;
 		Map<MethodNameAndType, SpringMethod> methods = this._methods;
 		for (Method m : __cf.methods())
 		{
+			// Determine index
+			int atIndex = atMethodDx++;
+			
+			// Setup method
 			SpringMethod sm;
 			if (null != methods.put(m.nameAndType(),
-				(sm = new SpringMethod(name, m, filename))))
+				(sm = new SpringMethod(name, m, filename, atIndex))))
 			{
 				// {@squirreljme.error BK0t Duplicated method in class. (The
 				// method)}
 				throw new SpringClassFormatException(name, String.format(
 					"BK0t %s", m.nameAndType()));
 			}
+			
+			// Store method in the lookup table
+			methodLookup[atIndex] = sm;
 			
 			// Store only instance methods which are not static
 			if (!m.flags().isStatic())
@@ -143,34 +191,67 @@ public final class SpringClass
 		// Fields that are defined in super classes must be allocated, stored,
 		// and indexed appropriately so that way casting between types and
 		// accessing other fields is actually valid
-		int superfieldcount = (__super == null ? 0 :
-			__super.instancefieldcount);
-		int instancefieldcount = superfieldcount;
+		int superFieldCount = (__super == null ? 0 :
+			__super.instanceFieldCount);
+		int instanceFieldCount = superFieldCount;
+		
+		// The base of the instance fields are here, which are used to obtain
+		// everything
+		this._fieldLookupBase = superFieldCount;
+		
+		// Field index lookup for this class, used for debugging
+		// We only base on the instance fields of the super class because
+		// our statics do not extend because they are part of the class type
+		// and not the instance.
+		int numFields = superFieldCount + __cf.fields().size();
+		SpringField[] fieldLookup = (__super == null ?
+			new SpringField[numFields] :
+			Arrays.copyOf(__super._fieldLookup, numFields));
+		this._fieldLookup = fieldLookup;
+		
+		// Keep static fields at the very end
+		int staticFieldAt = numFields;
+		
+		// Static field area
+		SpringFieldStorage[] staticFields = new SpringFieldStorage[numFields];
+		this._staticFields = staticFields;
 		
 		// Initialize all of the fields as needed
 		Map<FieldNameAndType, SpringField> fields = this._fields;
-		List<SpringField> instfields = new ArrayList<>(fields.size());
+		List<SpringField> instFields = new ArrayList<>(fields.size());
 		for (Field f : __cf.fields())
 		{
 			boolean isinstance = f.flags().isInstance();
 			
+			// Where is this field located? At which index?
+			int atDx = (isinstance ? instanceFieldCount++ : --staticFieldAt);
+			
 			// {@squirreljme.error BK0u Duplicated field in class. (The field)}
 			SpringField sf;
 			if (null != fields.put(f.nameAndType(),
-				(sf = new SpringField(name, f,
-					(isinstance ? instancefieldcount++ : -1)))))
+				(sf = new SpringField(name, f, atDx))))
 				throw new SpringClassFormatException(name, String.format(
 					"BK0u %s", f.nameAndType()));
 			
+			// Store field lookup
+			fieldLookup[atDx] = sf;
+			
+			// Setup storage for this field if static
+			if (f.flags().isStatic())
+				staticFields[atDx] = new SpringFieldStorage(sf, sf.index);
+			
 			// Used to build our part of the field table
 			if (isinstance)
-				instfields.add(sf);
+				instFields.add(sf);
 		}
+		
+		// The position of the last static field is the one that is written
+		this._staticFieldBase = staticFieldAt;
 		
 		// Each field is referenced by an index rather than a map, this is
 		// more efficient for instances and additionally still allows for
 		// sub-classes to declare fields as needed.
-		SpringField[] fieldtable = new SpringField[instancefieldcount];
+		SpringField[] fieldtable = new SpringField[instanceFieldCount];
 		this._fieldtable = fieldtable;
 		
 		// Copy the super class field table, since technically all of the
@@ -178,30 +259,30 @@ public final class SpringClass
 		if (__super != null)
 		{
 			SpringField[] supertable = __super._fieldtable;
-			for (int i = 0; i < superfieldcount; i++)
+			for (int i = 0; i < superFieldCount; i++)
 				fieldtable[i] = supertable[i];
 		}
 		
 		// Store all of the instance fields
-		for (int i = superfieldcount, p = 0, pn = instfields.size();
+		for (int i = superFieldCount, p = 0, pn = instFields.size();
 			p < pn; i++, p++)
-			fieldtable[i] = instfields.get(p);
+			fieldtable[i] = instFields.get(p);
 		
 		// Used to quickly determine how big to set storage for a class
-		this.instancefieldcount = instancefieldcount;
+		this.instanceFieldCount = instanceFieldCount;
 		
 		// Go through super and interfaces and add non-static methods which
 		// exist in sub-classes
 		for (int i = 0, n = __interfaces.length; i <= n; i++)
 		{
 			// The class to look within
-			SpringClass lookin = (i == 0 ? __super : __interfaces[i - 1]);
-			if (lookin == null)
+			SpringClass lookIn = (i == 0 ? __super : __interfaces[i - 1]);
+			if (lookIn == null)
 				continue;
 			
 			// Go through class methods
 			for (Map.Entry<MethodNameAndType, SpringMethod> e :
-				lookin._methods.entrySet())
+				lookIn._methods.entrySet())
 			{
 				MethodNameAndType k = e.getKey();
 				SpringMethod v = e.getValue();
@@ -223,6 +304,48 @@ public final class SpringClass
 			instancefieldcount,
 			fields.size(),
 			methods.size());*/
+	}
+	
+	/**
+	 * Returns the class loader which loaded this class.
+	 * 
+	 * @return The class loader which loaded this.
+	 * @throws IllegalStateException If it was not set or GCed.
+	 * @since 2021/03/15
+	 */
+	public final SpringClassLoader classLoader()
+		throws IllegalStateException
+	{
+		synchronized (this)
+		{
+			if (this._classLoader == null)
+				throw new IllegalStateException("Owner not set.");
+			
+			SpringClassLoader rv = this._classLoader.get();
+			if (rv == null)
+				throw new IllegalStateException("Owner GCed.");
+			
+			return rv;
+		}
+	}
+	
+	/**
+	 * Returns the {@link Class} object.
+	 * 
+	 * @return The {@link Class} object.
+	 * @since 2021/04/19
+	 */
+	public final SpringObject classObject()
+	{
+		synchronized (this)
+		{
+			SpringObject rv = this._instance;
+			if (rv == null)
+				throw new IllegalStateException("No Class<?> for " +
+					this.name);
+			
+			return rv;
+		}
 	}
 	
 	/**
@@ -248,6 +371,17 @@ public final class SpringClass
 	}
 	
 	/**
+	 * Returns the field lookup.
+	 * 
+	 * @return The field lookup.
+	 * @since 2021/04/16
+	 */
+	public final SpringField[] fieldLookup()
+	{
+		return this._fieldLookup.clone();
+	}
+	
+	/**
 	 * Returns the fields which are only declared in this class.
 	 *
 	 * @return The fields only declared in this class.
@@ -261,7 +395,8 @@ public final class SpringClass
 	}
 	
 	/**
-	 * Returns the table of fields used for this class.
+	 * Returns the table of fields used for this class which includes the
+	 * super classes.
 	 *
 	 * @return The field table used for this class.
 	 * @since 2018/09/16
@@ -280,6 +415,20 @@ public final class SpringClass
 	public final ClassFile file()
 	{
 		return this.file;
+	}
+	
+	/**
+	 * Returns the method index of the given method.
+	 * 
+	 * @param __method The method to look for.
+	 * @return The method index of the given method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/11
+	 */
+	public int findMethodIndex(SpringMethod __method)
+		throws NullPointerException
+	{
+		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
 	}
 	
 	/**
@@ -312,7 +461,7 @@ public final class SpringClass
 	 */
 	public final int instanceFieldCount()
 	{
-		return this.instancefieldcount;
+		return this.instanceFieldCount;
 	}
 	
 	/**
@@ -458,7 +607,10 @@ public final class SpringClass
 	 */
 	public final boolean isInitialized()
 	{
-		return this._initialized;
+		synchronized (this)
+		{
+			return this._initialized;
+		}
 	}
 	
 	/**
@@ -609,6 +761,24 @@ public final class SpringClass
 	}
 	
 	/**
+	 * Returns a field for the given index.
+	 * 
+	 * @param __fieldDx The field index.
+	 * @return The field for the given index.
+	 * @throws SpringNoSuchFieldException If the field does not exist.
+	 * @since 2021/04/16
+	 */
+	public final SpringField lookupField(int __fieldDx)
+		throws SpringNoSuchFieldException
+	{
+		SpringField[] lookup = this._fieldLookup;
+		if (__fieldDx < 0 || __fieldDx >= lookup.length)
+			throw new SpringNoSuchFieldException("No field: " + __fieldDx);
+		
+		return lookup[__fieldDx];
+	}
+	
+	/**
 	 * Locates the given method in the class.
 	 *
 	 * @param __static Is the method static?
@@ -617,7 +787,7 @@ public final class SpringClass
 	 * @return The method which was found.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringIncompatibleClassChangeException If the target method
-	 * does not match staticness.
+	 * does not match static-ness.
 	 * @throws SpringNoSuchMethodException If the specified method does not
 	 * exist.
 	 * @since 2018/09/03
@@ -677,6 +847,25 @@ public final class SpringClass
 	}
 	
 	/**
+	 * Looks up a method with the given index.
+	 * 
+	 * @param __methodDx The method index.
+	 * @return The given method.
+	 * @throws SpringNoSuchMethodException If no method by the given index
+	 * exists.
+	 * @since 2021/04/15
+	 */
+	public final SpringMethod lookupMethod(int __methodDx)
+		throws SpringNoSuchMethodException
+	{
+		SpringMethod[] lookup = this._methodLookup;
+		if (__methodDx < 0 || __methodDx >= lookup.length)
+			throw new SpringNoSuchMethodException("No method: " + __methodDx);
+		
+		return lookup[__methodDx];
+	}
+	
+	/**
 	 * Looks up the specified method non-virtually.
 	 *
 	 * @param __nat The name and type.
@@ -716,6 +905,17 @@ public final class SpringClass
 	}
 	
 	/**
+	 * Returns the method lookup table.
+	 * 
+	 * @return The method lookup table.
+	 * @since 2021/04/15
+	 */
+	public final SpringMethod[] methodLookup()
+	{
+		return this._methodLookup.clone();
+	}
+	
+	/**
 	 * Returns the name of this class.
 	 *
 	 * @return The name of this class.
@@ -736,13 +936,16 @@ public final class SpringClass
 	public final void setInitialized()
 		throws SpringVirtualMachineException
 	{
-		// {@squirreljme.error BK11 Class attempted to be initialized twice.
-		// (This class)}
-		if (this._initialized)
-			throw new SpringVirtualMachineException(String.format(
-				"BK11 %s", this.name));
-		
-		this._initialized = true;
+		synchronized (this)
+		{
+			// {@squirreljme.error BK11 Class attempted to be initialized
+			// twice. (This class)}
+			if (this._initialized)
+				throw new SpringVirtualMachineException(String.format(
+					"BK11 %s", this.name));
+			
+			this._initialized = true;
+		}
 	}
 	
 	/**

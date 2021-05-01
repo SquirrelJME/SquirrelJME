@@ -40,10 +40,6 @@ public final class Debugging
 	private static final int _TODO_EXIT_STATUS =
 		63;
 	
-	/** Used to prevent loops. */
-	@SuppressWarnings("StaticVariableMayNotBeInitialized")
-	private static volatile boolean _noLoop;
-	
 	/** This will be set when TODOs are tripped, to prevent infinite loops. */
 	@SuppressWarnings("StaticVariableMayNotBeInitialized")
 	private static volatile boolean _tripped;
@@ -366,19 +362,9 @@ public final class Debugging
 	private static void __format(char __cha, char __chb, String __format,
 		Object... __args)
 	{
-		// Print quickly and stop because this may infinite loop
-		if (Debugging._noLoop)
-		{
-			Debugging.print('X');
-			return;
-		}
-		
 		// Print otherwise
 		try
 		{
-			// Do not re-enter this loop
-			Debugging._noLoop = true;
-			
 			// Print header marker, but only if it is used
 			if (__cha != '\0' && __chb != '\0')
 			{
@@ -561,12 +547,48 @@ public final class Debugging
 			// End of line
 			Debugging.__printLine();
 		}
-		
-		// Clear loop prevention flag
-		finally
+	}
+	
+	/**
+	 * Prints the given character.
+	 *
+	 * @param __c The character to print.
+	 * @since 2020/05/07
+	 */
+	@SuppressWarnings({"SameParameterValue"})
+	private static void __print(char __c)
+	{
+		Debugging.__print(__c, '\0');
+	}
+	
+	/**
+	 * Prints the given characters.
+	 *
+	 * @param __c The character to print.
+	 * @param __d Second character to print.
+	 * @since 2020/05/07
+	 */
+	@SuppressWarnings("FeatureEnvy")
+	private static void __print(char __c, char __d)
+	{
+		// If we are on standard Java SE, use the System.err for output
+		if (RuntimeShelf.vmType() == VMType.JAVA_SE)
 		{
-			Debugging._noLoop = false;
+			System.err.print(__c);
+			if (__d > 0)
+				System.err.print(__d);
+			System.err.flush();
+			
+			return;
 		}
+		
+		// Use standard SquirrelJME output
+		TerminalShelf.write(StandardPipeType.STDERR,
+			(__c > Debugging._BYTE_LIMIT ? '?' : __c));
+		
+		if (__d > 0)
+			TerminalShelf.write(StandardPipeType.STDERR,
+				(__d > Debugging._BYTE_LIMIT ? '?' : __d));
 	}
 	
 	/**

@@ -11,6 +11,8 @@
 package cc.squirreljme.emulator.vm;
 
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
+import cc.squirreljme.jdwp.JDWPController;
+import cc.squirreljme.jdwp.JDWPFactory;
 import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.JarClassLibrary;
@@ -20,6 +22,8 @@ import cc.squirreljme.vm.VMClassLibrary;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -71,6 +75,7 @@ public abstract class VMFactory
 	 * Creates the virtual machine using the given parameters.
 	 *
 	 * @param __ps The profiler snapshot to write to.
+	 * @param __jdwp
 	 * @param __sm The suite manager.
 	 * @param __cp The classpath to initialize with.
 	 * @param __maincl The main class to start executing.
@@ -83,8 +88,8 @@ public abstract class VMFactory
 	 * @since 2018/11/17
 	 */
 	protected abstract VirtualMachine createVM(ProfilerSnapshot __ps,
-		VMSuiteManager __sm, VMClassLibrary[] __cp, String __maincl,
-		Map<String, String> __sprops, String[] __args)
+		JDWPFactory __jdwp, VMSuiteManager __sm, VMClassLibrary[] __cp,
+		String __maincl, Map<String, String> __sprops, String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException;
 	
 	/**
@@ -108,15 +113,23 @@ public abstract class VMFactory
 		// There always is a profiler being run, just differs if we save it
 		ProfilerSnapshot profilerSnapshot = new ProfilerSnapshot();
 		
+		// Is JDWP being used?
+		JDWPController jdwp = null;
+		
 		// Determine the path separator character
 		String sepString = System.getProperty("path.separator");
 		char sepChar = (sepString == null || sepString.isEmpty() ? ':' :
 			sepString.charAt(0));
 		
+		// Debugging host and port, if enabled
+		String jdwpHost = null; 
+		int jdwpPort = -1;
+		
 		// Command line format is:
 		// -Xemulator:(vm)
 		// -Xsnapshot:(path-to-nps)
 		// -Xlibraries:(class:path:...)
+		// -Xjdwp:[hostname]:port
 		// -Dsysprop=value
 		// -classpath (class:path:...)
 		// Main-class
@@ -132,8 +145,25 @@ public abstract class VMFactory
 			// Eat it up
 			queue.removeFirst();
 			
+			// JDWP Usage
+			if (item.startsWith("-Xjdwp:"))
+			{
+				String hostPort = item.substring("-Xjdwp:".length());
+				
+				// Figure the hostname/port split
+				int lastCol = hostPort.lastIndexOf(':');
+				if (lastCol < 0)
+					throw new IllegalArgumentException(String.format(
+						"Expected %s to be like -Xjdwp:[hostname]:port.",
+						item));
+				
+				// Split hostname and port
+				jdwpHost = hostPort.substring(0, lastCol);
+				jdwpPort = Integer.parseInt(hostPort.substring(lastCol + 1));
+			}
+			
 			// Select a VM
-			if (item.startsWith("-Xemulator:"))
+			else if (item.startsWith("-Xemulator:"))
 				vmName = item.substring("-Xemulator:".length());
 			
 			// VisualVM Snapshot Dump path
@@ -269,6 +299,8 @@ public abstract class VMFactory
 			// Run the VM
 			VirtualMachine vm = VMFactory.mainVm(vmName,
 				profilerSnapshot,
+				(jdwpPort >= 1 ?
+					VMFactory.__setupJdwp(jdwpHost, jdwpPort) : null),
 				new ArraySuiteManager(suites.values()),
 				classpath.<String>toArray(new String[classpath.size()]),
 				mainClass,
@@ -319,6 +351,7 @@ public abstract class VMFactory
 	 * @param __vm The name of the virtual machine to use, if {@code null}
 	 * then this is automatically determined.
 	 * @param __ps The profiler snapshot to use.
+	 * @param __jdwp
 	 * @param __sm The suite manager used.
 	 * @param __cp The starting class path.
 	 * @param __bootcl The booting class, if {@code null} then {@code __bootid}
@@ -332,8 +365,8 @@ public abstract class VMFactory
 	 * @throws VMException If the virtual machine failed to initialize.
 	 * @since 2018/11/17
 	 */
-	public static VirtualMachine mainVm(String __vm,
-		ProfilerSnapshot __ps, VMSuiteManager __sm, String[] __cp,
+	public static VirtualMachine mainVm(String __vm, ProfilerSnapshot __ps,
+		JDWPFactory __jdwp, VMSuiteManager __sm, String[] __cp,
 		String __bootcl, Map<String, String> __sprops, String... __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
@@ -398,7 +431,7 @@ public abstract class VMFactory
 		}
 		
 		// Create the virtual machine now that everything is available
-		return factory.createVM(__ps, __sm, classpath, __bootcl,
+		return factory.createVM(__ps, __jdwp, __sm, classpath, __bootcl,
 			__sprops, __args);
 	}
 	
@@ -550,5 +583,55 @@ public abstract class VMFactory
 		
 		// Use this name
 		return __name.toLowerCase() + ".jar";
+	}
+	
+	/**
+	 * Sets up JDWP stream for connection.
+	 * 
+	 * @param __host The hostname to use, if {@code null} this will be
+	 * a server.
+	 * @param __port The port to listen on.
+	 * @since 2021/03/08
+	 */
+	private static JDWPFactory __setupJdwp(String __host, int __port)
+	{
+		// Listening?
+		if (__host == null)
+		{
+			throw Debugging.todo();
+		}
+		
+		// Try opening the socket
+		Socket socket = null;
+		try
+		{
+			// Create socket
+			if (__host == null || __host.isEmpty())
+				socket = new ServerSocket(__port).accept();
+			else
+				socket = new Socket(__host, __port);
+			
+			// Use factory to create it
+			return new JDWPFactory(socket.getInputStream(),
+				socket.getOutputStream());
+		}
+		
+		// Could not open the socket?
+		catch (IOException e)
+		{
+			// Close the socket or try to
+			if (socket != null)
+				try
+				{
+					socket.close();
+				}
+				catch (IOException f)
+				{
+					e.addSuppressed(f);
+				}
+				
+			throw new RuntimeException(String.format(
+				"Could not open JDWP socket: %s:%d", __host, __port), e);
+		}
 	}
 }

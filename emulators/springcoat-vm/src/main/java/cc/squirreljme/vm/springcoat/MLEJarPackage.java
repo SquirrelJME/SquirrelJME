@@ -47,7 +47,7 @@ public enum MLEJarPackage
 			int n = springPath.length;
 			SpringObject[] rv = new SpringObject[n];
 			for (int i = 0; i < n; i++)
-				rv[i] = new JarPackageObject(springPath[i]);
+				rv[i] = new JarPackageObject(__thread.machine, springPath[i]);
 			
 			// Wrap
 			return __thread.asVMObjectArray(__thread.resolveClass(
@@ -92,7 +92,8 @@ public enum MLEJarPackage
 			// Load each library as a reference
 			SpringObject[] result = new SpringObject[n];
 			for (int i = 0; i < n; i++)
-				result[i] = new JarPackageObject(suites.loadLibrary(names[i]));
+				result[i] = new JarPackageObject(__thread.machine,
+					suites.loadLibrary(names[i]));
 			
 			return __thread.asVMObjectArray(__thread.resolveClass(
 				"[Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;"),

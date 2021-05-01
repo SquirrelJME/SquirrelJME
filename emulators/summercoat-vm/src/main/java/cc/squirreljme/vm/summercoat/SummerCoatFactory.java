@@ -15,6 +15,7 @@ import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMFactory;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
+import cc.squirreljme.jdwp.JDWPFactory;
 import cc.squirreljme.jvm.summercoat.SummerCoatUtil;
 import cc.squirreljme.jvm.summercoat.constants.BootstrapConstants;
 import cc.squirreljme.jvm.summercoat.constants.JarProperty;
@@ -91,8 +92,8 @@ public class SummerCoatFactory
 	 */
 	@Override
 	protected VirtualMachine createVM(ProfilerSnapshot __ps,
-		VMSuiteManager __sm, VMClassLibrary[] __cp, String __maincl,
-		Map<String, String> __sysProps, String[] __args)
+		JDWPFactory __jdwp, VMSuiteManager __sm, VMClassLibrary[] __cp,
+		String __maincl, Map<String, String> __sysProps, String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
 		// Virtual memory which provides access to many parts of memory

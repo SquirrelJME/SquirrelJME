@@ -112,15 +112,15 @@ final class __NodeTable__
 			0);
 		
 		// Only ever called once
-		vframe._numcalls = 1;
+		vframe._numCalls = 1;
 		
 		// Initialize frame times with thread times
-		vframe._traceruntime = __t._totaltime;
-		vframe._tracecputime = __t._cputime;
+		vframe._totalTime = __t._totalTime;
+		vframe._totalCpuTime = __t._cpuTime;
 		
-		// There is no self time since this is purely a virtual node
-		vframe._frameruntime = 0;
-		vframe._framecputime = 0;
+		// Share the same time as the entire trace
+		vframe._selfTime = __t._totalTime;
+		vframe._selfCpuTime = __t._cpuTime;
 		
 		// Store the thread sub-frames into this virtual thread
 		Map<FrameLocation, ProfiledFrame> vsubf = vframe._frames;
@@ -169,16 +169,17 @@ final class __NodeTable__
 			// The frame location ID, this is data stored in a previous table
 			dos.writeShort(flid);
 			
-			// Number of calls
-			dos.writeInt((int)Math.min(Integer.MAX_VALUE, f._numcalls));
-			
-			// Total time and self time
-			__NodeTable__.__writeLong40(dos, f._traceruntime);
-			__NodeTable__.__writeLong40(dos, f._frameruntime);
+			// Number of calls, force to be 1 since this should always be
+			// the case
+			dos.writeInt(Math.max(1, f._numCalls));
 			
 			// Total time and self time (not sleeping/blocking)
-			__NodeTable__.__writeLong40(dos, f._tracecputime);
-			__NodeTable__.__writeLong40(dos, f._framecputime);
+			__NodeTable__.__writeLong40(dos, f._totalTime);
+			__NodeTable__.__writeLong40(dos, f._selfTime);
+			
+			// Total time and self time (with sleeping/blocking)
+			__NodeTable__.__writeLong40(dos, f._totalCpuTime);
+			__NodeTable__.__writeLong40(dos, f._selfCpuTime);
 			
 			// Write offsets to the sub-frame nodes
 			Collection<ProfiledFrame> sub = f._frames.values();
