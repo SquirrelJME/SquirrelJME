@@ -61,7 +61,7 @@ public enum CommandSetStringReference
 			
 			// Load the character array
 			Object charArray;
-			try (JDWPValue value = __controller.__value())
+			try (JDWPValue value = __controller.value())
 			{
 				// Is this a valid field?
 				if (!viewObject.readValue(object, charFieldDx, value))
@@ -81,7 +81,7 @@ public enum CommandSetStringReference
 			// Load in characters
 			char[] chars = new char[strLen];
 			for (int i = 0; i < strLen; i++)
-				try (JDWPValue value = __controller.__value())
+				try (JDWPValue value = __controller.value())
 				{
 					// Is this value valid?
 					if (!viewObject.readArray(charArray, i, value))

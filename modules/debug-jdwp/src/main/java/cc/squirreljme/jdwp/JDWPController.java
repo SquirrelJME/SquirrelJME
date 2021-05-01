@@ -11,6 +11,7 @@ package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jdwp.event.CallStackStepping;
 import cc.squirreljme.jdwp.event.EventFilter;
+import cc.squirreljme.jdwp.event.FieldOnly;
 import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.trips.JDWPTrip;
 import cc.squirreljme.jdwp.views.JDWPViewFrame;
@@ -43,7 +44,7 @@ public final class JDWPController
 {
 	/** Should debugging be enabled? */
 	static final boolean _DEBUG =
-		Boolean.getBoolean("cc.squirreljme.jdwp.debug");
+		true || Boolean.getBoolean("cc.squirreljme.jdwp.debug");
 	
 	/** The event type. */
 	private static final int _EVENT_TYPE =
@@ -322,6 +323,10 @@ public final class JDWPController
 			try (JDWPPacket packet = this.__event(request.suspendPolicy,
 				__kind, request.id))
 			{
+				if (JDWPController._DEBUG)
+					Debugging.debugNote("JDWP: Event #%d %s",
+						request.id, __kind);
+				
 				// Write the signal event data
 				__kind.write(this, __thread, packet, __args);
 				
@@ -374,6 +379,10 @@ public final class JDWPController
 				trip = new __TripClassStatus__(ref);
 				break;
 			
+			case FIELD:
+				trip = new __TripField__(ref);
+				break;
+			
 			case VM_STATE:
 				trip = new __TripVmState__(ref);
 				break;
@@ -421,6 +430,22 @@ public final class JDWPController
 					this.viewType().methodBreakpoint(location.type,
 						location.methodDx, (int)location.codeDx,
 						new __TripBreakpoint__(ref));
+				}
+				break;
+				
+			case FIELD_ACCESS:
+			case FIELD_MODIFICATION:
+				{
+					// We need to know the field we are watching
+					FieldOnly fieldOnly = filter.fieldOnly;
+					if (fieldOnly == null)
+						return;
+					
+					// Indicate we want to watch this field
+					this.viewType().fieldWatch(
+						fieldOnly.type, fieldOnly.fieldDx,
+						__request.eventKind ==
+							EventKind.FIELD_MODIFICATION);
 				}
 				break;
 				
@@ -475,6 +500,28 @@ public final class JDWPController
 								type, JDWPClassStatus.INITIALIZED);
 				}
 				break;
+		}
+	}
+	
+	/**
+	 * Returns a value to store data in.
+	 * 
+	 * @return A value to store data in.
+	 * @since 2021/03/19
+	 */
+	public final JDWPValue value()
+	{
+		Deque<JDWPValue> freeValues = this._freeValues;
+		synchronized (this._freeValues)
+		{
+			// Use an existing free value for recycling?
+			JDWPValue rv = freeValues.poll();
+			if (rv != null)
+				return rv.__resetToOpen();
+			
+			// Otherwise make a new one
+			//noinspection resource
+			return new JDWPValue(freeValues).__resetToOpen();
 		}
 	}
 	
@@ -753,27 +800,5 @@ public final class JDWPController
 		rv._flags = JDWPPacket.FLAG_REPLY;
 		
 		return rv;
-	}
-	
-	/**
-	 * Returns a value to store data in.
-	 * 
-	 * @return A value to store data in.
-	 * @since 2021/03/19
-	 */
-	final JDWPValue __value()
-	{
-		Deque<JDWPValue> freeValues = this._freeValues;
-		synchronized (this._freeValues)
-		{
-			// Use an existing free value for recycling?
-			JDWPValue rv = freeValues.poll();
-			if (rv != null)
-				return rv.__resetToOpen();
-			
-			// Otherwise make a new one
-			//noinspection resource
-			return new JDWPValue(freeValues).__resetToOpen();
-		}
 	}
 }

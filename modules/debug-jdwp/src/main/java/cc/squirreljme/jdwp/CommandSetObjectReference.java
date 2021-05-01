@@ -90,7 +90,7 @@ public enum CommandSetObjectReference
 			// Write field mappings
 			rv.writeInt(numFields);
 			for (int i = 0; i < numFields; i++)
-				try (JDWPValue value = __controller.__value())
+				try (JDWPValue value = __controller.value())
 				{
 					// Determine the field type and its tag
 					String fieldSig = viewType.fieldSignature(type, fields[i]);

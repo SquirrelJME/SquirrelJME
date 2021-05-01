@@ -10,7 +10,6 @@
 package cc.squirreljme.jdwp.views;
 
 import cc.squirreljme.jdwp.JDWPValue;
-import cc.squirreljme.jdwp.trips.JDWPTripValue;
 
 /**
  * An object viewer.
@@ -50,17 +49,6 @@ public interface JDWPViewObject
 	 * @since 2021/04/10
 	 */
 	boolean readValue(Object __which, int __index, JDWPValue __out);
-	
-	/**
-	 * Sets the trip on the field value.
-	 * 
-	 * @param __which What is a trip being set on?
-	 * @param __index The index of the field to trip on.
-	 * @param __trip The trip to register, may be {@code null} to clear.
-	 * @return If the trip was valid and became set.
-	 * @since 2021/04/11
-	 */
-	boolean setTrip(Object __which, int __index, JDWPTripValue __trip);
 	
 	/**
 	 * Returns the object type.

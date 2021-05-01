@@ -27,7 +27,7 @@ public final class JDWPLocation
 	protected final long codeDx;
 	
 	/** The method index from the type. */
-	protected final int methodDx;
+	public final int methodDx;
 	
 	/** The type where this is located. */
 	public final Object type;

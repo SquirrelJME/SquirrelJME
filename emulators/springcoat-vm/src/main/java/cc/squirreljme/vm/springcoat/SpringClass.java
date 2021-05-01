@@ -238,7 +238,7 @@ public final class SpringClass
 			
 			// Setup storage for this field if static
 			if (f.flags().isStatic())
-				staticFields[atDx] = new SpringFieldStorage(sf, atDx);
+				staticFields[atDx] = new SpringFieldStorage(sf, sf.index);
 			
 			// Used to build our part of the field table
 			if (isinstance)

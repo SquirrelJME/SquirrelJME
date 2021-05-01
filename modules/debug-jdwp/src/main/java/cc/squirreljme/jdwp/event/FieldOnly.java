@@ -10,6 +10,7 @@
 package cc.squirreljme.jdwp.event;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Objects;
 
 /**
  * Only valid in a given field.
@@ -19,10 +20,10 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public final class FieldOnly
 {
 	/** The type the field is in. */
-	protected final Object type;
+	public final Object type;
 	
 	/** The field index. */
-	protected final int fieldDx;
+	public final int fieldDx;
 	
 	/**
 	 * Represents a field only match.
@@ -44,7 +45,15 @@ public final class FieldOnly
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw Debugging.todo();
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof FieldOnly))
+			return false;
+		
+		FieldOnly o = (FieldOnly)__o;
+		return this.type == o.type &&
+			this.fieldDx == o.fieldDx;
 	}
 	
 	/**
@@ -54,7 +63,8 @@ public final class FieldOnly
 	@Override
 	public int hashCode()
 	{
-		throw Debugging.todo();
+		return Objects.hashCode(this.type) ^
+			this.fieldDx;
 	}
 	
 	/**
@@ -64,6 +74,7 @@ public final class FieldOnly
 	@Override
 	public String toString()
 	{
-		throw Debugging.todo();
+		return String.format("FieldOnly[type=%s;fieldDx=%d]",
+			this.type, this.fieldDx);
 	}
 }

@@ -28,7 +28,8 @@ public enum EventKind
 	/** Single Step. */
 	SINGLE_STEP(1,
 		Arrays.asList(EventModContext.CURRENT_THREAD,
-			EventModContext.CURRENT_TYPE),
+			EventModContext.CURRENT_TYPE,
+			EventModContext.CURRENT_INSTANCE),
 		Arrays.asList(EventModContext.PARAMETER_STEPPING),
 		EventModKind.THREAD_ONLY,
 		EventModKind.CLASS_ONLY,
@@ -53,7 +54,8 @@ public enum EventKind
 	
 	/** Breakpoint. */
 	BREAKPOINT(2, Arrays.asList(EventModContext.CURRENT_THREAD,
-			EventModContext.CURRENT_LOCATION),
+			EventModContext.CURRENT_LOCATION,
+			EventModContext.CURRENT_INSTANCE),
 		null,
 		EventModKind.THREAD_ONLY,
 		EventModKind.CLASS_ONLY,
@@ -241,7 +243,13 @@ public enum EventKind
 	},
 	
 	/** Field access. */
-	FIELD_ACCESS(20, null, null,
+	FIELD_ACCESS(20,
+		Arrays.asList(EventModContext.CURRENT_THREAD,
+			EventModContext.CURRENT_LOCATION,
+			EventModContext.CURRENT_TYPE,
+			EventModContext.CURRENT_INSTANCE),
+		Arrays.asList(EventModContext.PARAMETER_TYPE_OR_FIELD,
+			EventModContext.PARAMETER_FIELD),
 		EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
 		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
 		EventModKind.LOCATION_ONLY, EventModKind.FIELD_ONLY,
@@ -256,12 +264,19 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			throw Debugging.todo();
+			this.__field(false, __controller, __thread, __packet,
+				__args);
 		}
 	},
 	
 	/** Field modification. */
-	FIELD_MODIFICATION(21, null, null,
+	FIELD_MODIFICATION(21,
+		Arrays.asList(EventModContext.CURRENT_THREAD,
+			EventModContext.CURRENT_LOCATION,
+			EventModContext.CURRENT_TYPE,
+			EventModContext.CURRENT_INSTANCE),
+		Arrays.asList(EventModContext.PARAMETER_TYPE_OR_FIELD,
+			EventModContext.PARAMETER_FIELD),
 		EventModKind.THREAD_ONLY,
 		EventModKind.CLASS_ONLY, EventModKind.CLASS_MATCH_PATTERN,
 		EventModKind.CLASS_EXCLUDE_PATTERN, EventModKind.LOCATION_ONLY,
@@ -277,7 +292,8 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			throw Debugging.todo();
+			this.__field(true, __controller, __thread, __packet,
+				__args);
 		}
 	},
 	
@@ -581,6 +597,84 @@ public enum EventKind
 	{
 		// Is the ordinal set for this modifier?
 		return (0 != (this._modifierBits & (1 << __mod.ordinal())));
+	}
+	
+	/**
+	 * Performs field packet writing for access and modification.
+	 * 
+	 * @param __write Writing field modification?
+	 * @param __controller The controller used.
+	 * @param __thread The current thread.
+	 * @param __packet The outgoing packet.
+	 * @param __args The arguments to the signal.
+	 * @throws JDWPException If it could not be written.
+	 * @since 2021/04/30
+	 */
+	void __field(boolean __write, JDWPController __controller, Object __thread,
+		JDWPPacket __packet, Object... __args)
+		throws JDWPException
+	{
+		// Get the pass field values
+		Object type = __args[0];
+		int fieldDx = (int)__args[1];
+		boolean write = (boolean)__args[2];
+		Object instance = __args[3];
+		JDWPValue newValue = (JDWPValue)__args[4];
+		
+		// Write current thread and location
+		__packet.writeId(System.identityHashCode(__thread));
+		JDWPLocation location = __controller.locationOf(__thread);
+		__packet.writeLocation(__controller,
+			__controller.locationOf(__thread));
+		
+		// Store the location items
+		JDWPLinker<Object> items = __controller.state.items;
+		if (__thread != null)
+			items.put(__thread);
+		if (location.type != null)
+			items.put(location.type);
+		
+		// Field reference type tag and type????
+		// Documentation says "Kind of reference type. See JDWP.TypeTag" and
+		// "Type of field" but this is then followed by the field ID so it
+		// does not make sense if this is the field signature value because
+		// how would we know which field we were even writing because the
+		// information is not elsewhere at all??? So this is a big guess.
+		// TODO: Was this guessed correctly???
+		__packet.writeByte(JDWPUtils.classType(__controller, type).id);
+		__packet.writeId(System.identityHashCode(type));
+		if (type != null)
+			items.put(type);
+		
+		// The field ID
+		__packet.writeId(fieldDx);
+		
+		// The object accessed
+		__packet.writeId(System.identityHashCode(instance));
+		if (instance != null)
+			items.put(instance);
+		
+		// Write value if that is changing
+		if (__write || write)
+		{
+			// Determine the field information
+			String fieldSig = __controller.viewType()
+				.fieldSignature(type, fieldDx);
+			JDWPValueTag tag = JDWPValueTag.fromSignature(fieldSig);
+			
+			// Write the value
+			__packet.writeValue(newValue, tag, false);
+			
+			// Make sure this is a known object
+			Object itemVal = newValue.get();
+			if (__controller.viewObject().isValid(itemVal))
+				items.put(itemVal);
+		}
+		
+		// Debug
+		if (JDWPController._DEBUG)
+			Debugging.debugNote("Field(%s#%d, %b, %s, %s) @ %s",
+				type, fieldDx, write, instance, newValue, location);
 	}
 	
 	/**

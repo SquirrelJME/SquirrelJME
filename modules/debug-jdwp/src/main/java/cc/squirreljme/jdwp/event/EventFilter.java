@@ -14,6 +14,7 @@ import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.JDWPLocation;
 import cc.squirreljme.jdwp.JDWPStepTracker;
 import cc.squirreljme.jdwp.JDWPUtils;
+import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.views.JDWPViewType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -24,6 +25,10 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  */
 public final class EventFilter
 {
+	/** Static field. */
+	private static final byte _STATIC_FIELD =
+		0x08;
+	
 	/** The execution location. */
 	public final JDWPLocation location;
 	
@@ -37,7 +42,7 @@ public final class EventFilter
 	protected final ClassPatternMatcher excludeClass;
 	
 	/** Only on a specific field? */
-	protected final FieldOnly fieldOnly;
+	public final FieldOnly fieldOnly;
 	
 	/** Include the given class? */
 	protected final ClassPatternMatcher includeClass;
@@ -250,6 +255,7 @@ public final class EventFilter
 				
 				// Current type being called in the class
 			case CURRENT_TYPE:
+				if (this.hasTypeMatch())
 				{
 					// If no thread is available, we have no idea where we are
 					if (__thread == null)
@@ -262,12 +268,99 @@ public final class EventFilter
 						return false;
 				}
 				break;
+				
+				// Current this type
+			case CURRENT_INSTANCE:
+				if (this.thisInstanceSet)
+				{
+					// If no thread is available, we have no idea where we are
+					if (__thread == null)
+						return false;
+					
+					// Is this method static? Determines if we match the
+					// instance or not
+					JDWPLocation location = __controller.locationOf(
+						__thread);
+					boolean isStatic = (__controller.viewType()
+						.methodFlags(location.type, location.methodDx) &
+							EventFilter._STATIC_FIELD) != 0;
+						
+					// Is this a static method?
+					Object thisInstance = this.thisInstance;
+					if (isStatic)
+					{
+						// If this instance is not-null then we can never match
+						// a static method
+						if (null != thisInstance)
+							return false;
+					}
+					
+					// Otherwise for instance methods we need to do much more
+					// work to get the this object
+					else
+					{
+						// No available frames?
+						Object[] frames = __controller.viewThread().frames(
+							__thread);
+						if (frames == null || frames.length == 0)
+							return false;
+						
+						// Get the this from the current frame
+						Object frame = frames[0];
+						try (JDWPValue val = __controller.value())
+						{
+							// Read in the value
+							if (!__controller.viewFrame()
+								.readValue(frame, 0, val))
+								val.set(null);
+							
+							// Is this the wrong object?
+							if (val.get() != thisInstance)
+								return false;
+						}
+					}
+				}
+				break;
+				
+				// A field parameter
+			case PARAMETER_FIELD:
+				if (this.fieldOnly != null)
+				{
+					// Only works on number parameters
+					if (!(__on instanceof Number))
+						return false;
+						
+					// Is this the wrong field?
+					FieldOnly fieldOnly = this.fieldOnly;
+					if (fieldOnly.fieldDx != ((Number)__on).intValue())
+						return false;
+				}
+				break;
+				
+				// Parameter based on a type or field
+			case PARAMETER_TYPE_OR_FIELD:
+				if (this.fieldOnly != null)
+				{
+					// Is this the wrong field?
+					FieldOnly fieldOnly = this.fieldOnly;
+					if (fieldOnly.type != __on)
+						return false;
+				}
+				
+				// Forward to type check and see if that is used
+				if (!this.__context(__controller, __thread,
+					EventModContext.PARAMETER_TYPE, __on))
+					return false;
+				break;
 			
 				// A parameter based type
 			case PARAMETER_TYPE:
-				if (!viewType.isValid(__on) ||
-					!this.meetsType(viewType, __on))
-					return false;
+				if (this.hasTypeMatch())
+				{
+					if (!viewType.isValid(__on) ||
+						!this.meetsType(viewType, __on))
+						return false;
+				}
 				break;
 				
 				// Stepping for a given thread

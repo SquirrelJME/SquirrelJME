@@ -32,6 +32,12 @@ public final class SpringField
 	/** The field index. */
 	protected final int index;
 	
+	/** Are we watching writes? */
+	volatile boolean _watchWrite;
+	
+	/** Are we watching reads? */
+	volatile boolean _watchRead;
+	
 	/**
 	 * Initializes the field.
 	 *
@@ -91,6 +97,20 @@ public final class SpringField
 	public final int index()
 	{
 		return this.index;
+	}
+	
+	/**
+	 * Are we doing debug watching?
+	 * 
+	 * @param __write Watch writes or reads?
+	 * @return If we are doing that kind of watching.
+	 * @since 2021/04/30
+	 */
+	protected boolean isDebugWatching(boolean __write)
+	{
+		if (__write)
+			return this._watchWrite;
+		return this._watchRead;
 	}
 	
 	/**

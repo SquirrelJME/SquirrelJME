@@ -23,6 +23,12 @@ public enum EventModContext
 	/** Parameter for stepping checking. */
 	PARAMETER_STEPPING,
 	
+	/** Parameter with a type or field. */
+	PARAMETER_TYPE_OR_FIELD,
+	
+	/** Parameter with a field. */
+	PARAMETER_FIELD,
+	
 	/** Current thread. */
 	CURRENT_THREAD,
 	
@@ -31,6 +37,9 @@ public enum EventModContext
 	
 	/** The current type we are calling from. */
 	CURRENT_TYPE,
+	
+	/** The current instance we are calling from. */
+	CURRENT_INSTANCE,
 	
 	/* End. */
 	;

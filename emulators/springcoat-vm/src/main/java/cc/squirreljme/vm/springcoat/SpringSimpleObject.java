@@ -66,7 +66,7 @@ public final class SpringSimpleObject
 		for (SpringField f : __cl.fieldTable())
 		{
 			int thisDx = i++;
-			fields[thisDx] = new SpringFieldStorage(f, thisDx);
+			fields[thisDx] = new SpringFieldStorage(f, f.index);
 		}
 	}
 	

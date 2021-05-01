@@ -118,6 +118,19 @@ public interface JDWPViewType
 	String fieldSignature(Object __which, int __fieldDx);
 	
 	/**
+	 * Enables watching on the given field. Note that once enabled these cannot
+	 * be disabled using this method, so if access/modification are watched
+	 * then this will be called twice with {@code false} and {@code true}.
+	 * 
+	 * @param __which Which type to watch?
+	 * @param __fieldDx The field index to watch.
+	 * @param __write If {@code true} then field write is enabled, otherwise
+	 * field access is enabled.
+	 * @since 2021/04/30
+	 */
+	void fieldWatch(Object __which, int __fieldDx, boolean __write);
+	
+	/**
 	 * Returns the {@link Class} object instance for the given type.
 	 * 
 	 * @param __which Get the instance of which class?

@@ -87,7 +87,7 @@ public enum CommandSetArrayReference
 			
 			// Go through and read all the array values
 			for (int i = 0; i < len; i++)
-				try (JDWPValue value = __controller.__value())
+				try (JDWPValue value = __controller.value())
 				{
 					if (!viewObject.readArray(array, off + i, value))
 						value.set(tag.defaultValue);

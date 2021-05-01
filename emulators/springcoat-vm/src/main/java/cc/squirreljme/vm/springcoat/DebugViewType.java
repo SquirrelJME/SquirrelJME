@@ -101,6 +101,21 @@ public class DebugViewType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/04/30
+	 */
+	@Override
+	public void fieldWatch(Object __which, int __fieldDx, boolean __write)
+	{
+		// Set watching on the given field
+		SpringField field = DebugViewType.__field(__which, __fieldDx);
+		if (__write)
+			field._watchWrite = true;
+		else
+			field._watchRead = true;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/04/19
 	 */
 	@Override

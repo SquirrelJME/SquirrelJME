@@ -122,6 +122,21 @@ public final class JDWPValue
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/30
+	 */
+	@Override
+	public final String toString()
+	{
+		synchronized (this)
+		{
+			if (!this._isSet)
+				return "<UNSET>";
+			return String.valueOf(this._value);
+		}
+	}
+	
+	/**
 	 * Checks if the value is open.
 	 * 
 	 * @throws IllegalStateException If it is not open.

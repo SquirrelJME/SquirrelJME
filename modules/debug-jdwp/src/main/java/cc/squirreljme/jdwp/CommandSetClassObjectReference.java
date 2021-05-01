@@ -38,8 +38,9 @@ public enum CommandSetClassObjectReference
 			JDWPViewType viewType = __controller.viewType();
 			for (Object type : __controller.__allTypes(false))
 			{
+				// Is this a match?
 				Object maybe = viewType.instance(type);
-				if (maybe != null && viewType.instance(type) == object)
+				if (maybe == object)
 				{
 					found = type;
 					break; 
@@ -47,9 +48,10 @@ public enum CommandSetClassObjectReference
 			}
 			
 			// Not found?
-			if (found == null)
+			if (found == null || !viewType.isValid(found))
 				throw ErrorType.INVALID_OBJECT.toss(object,
-					System.identityHashCode(object), null);
+					System.identityHashCode(object),
+					new Throwable("No matching type found."));
 					
 			// Make sure it is known
 			__controller.state.items.put(found);

@@ -15,9 +15,11 @@ import cc.squirreljme.jdwp.JDWPClassStatus;
 import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.JDWPStepTracker;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
+import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
 import cc.squirreljme.jdwp.trips.JDWPTripClassStatus;
+import cc.squirreljme.jdwp.trips.JDWPTripField;
 import cc.squirreljme.jdwp.trips.JDWPTripThread;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -1501,6 +1503,8 @@ public final class SpringThreadWorker
 	 * Looks up the specified static field and returns the storage for it.
 	 *
 	 * @param __f The field to lookup.
+	 * @param __outField Output field, this is completely optional and may
+	 * be {@code null}.
 	 * @return The static field storage.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringIncompatibleClassChangeException If the target field is
@@ -1508,7 +1512,8 @@ public final class SpringThreadWorker
 	 * @throws SpringNoSuchFieldException If the field does not exist.
 	 * @since 2018/09/09
 	 */
-	private SpringFieldStorage __lookupStaticField(FieldReference __f)
+	private SpringFieldStorage __lookupStaticField(FieldReference __f,
+		SpringField[] __outField)
 		throws NullPointerException, SpringIncompatibleClassChangeException,
 			SpringNoSuchFieldException
 	{
@@ -1539,6 +1544,10 @@ public final class SpringThreadWorker
 				inClass = inClass.superClass();
 				continue;
 			}
+			
+			// Record field if requested
+			if (__outField != null && __outField.length > 0)
+				__outField[0] = field;
 			
 			// {@squirreljme.error BK2b Could not access the target field for
 			// static field access. (The field reference)}
@@ -2384,7 +2393,11 @@ public final class SpringThreadWorker
 						frame.pushToStack(this.asVMObject(store.get()));
 						
 						// Debug signal
-						store.signal(this.thread, ref, false);
+						if (jdwp != null && ssf.isDebugWatching(false))
+							jdwp.trip(JDWPTripField.class,
+								JDWPGlobalTrip.FIELD).field(thread,
+									this.loadClass(ssf.inclass),
+									ssf.index, false, ref, null);
 					}
 					break;
 					
@@ -2395,16 +2408,22 @@ public final class SpringThreadWorker
 						FieldReference fieldRef =
 							inst.<FieldReference>argument(0,
 								FieldReference.class);
+						SpringField[] field = new SpringField[1];
 						SpringFieldStorage ssf = this.__lookupStaticField(
-							fieldRef);
+							fieldRef, field);
 						
 						// Push read value to stack
 						frame.pushToStack(this.asVMObject(
 							ssf.get()));
 						
 						// Debug signal
-						ssf.signal(this.thread,
-							this.loadClass(fieldRef.className()), false);
+						if (jdwp != null &&
+							field[0].isDebugWatching(false))
+							jdwp.trip(JDWPTripField.class,
+								JDWPGlobalTrip.FIELD).field(thread,
+									this.loadClass(ssf.inclass),
+									ssf.fieldIndex, false,
+									null, null);
 					}
 					break;
 					
@@ -3306,13 +3325,22 @@ public final class SpringThreadWorker
 							sso.type()))
 							throw new SpringClassCastException("BK2u");
 						
+						// Debug signal
+						if (jdwp != null && ssf.isDebugWatching(true))
+							try (JDWPValue jVal = jdwp.value())
+							{
+								jVal.set(
+									DebugViewObject.__normalizeNull(value));
+								jdwp.trip(JDWPTripField.class,
+									JDWPGlobalTrip.FIELD).field(thread,
+										this.loadClass(ssf.inclass),
+										ssf.index, true, ref, jVal);
+							}
+						
 						// Set
 						SpringFieldStorage store =
 							sso.fieldByIndex(ssf.index());
 						store.set(value, isinstanceinit);
-						
-						// Debug signal
-						store.signal(this.thread, ref, true);
 					}
 					break;
 				
@@ -3323,17 +3351,30 @@ public final class SpringThreadWorker
 						FieldReference fieldRef =
 							inst.<FieldReference>argument(0,
 								FieldReference.class);
+						SpringField[] field = new SpringField[1];
 						SpringFieldStorage ssf = this.__lookupStaticField(
-							fieldRef);
+							fieldRef, field);
+						
+						// Read value
+						Object value = frame.popFromStack();
+						
+						// Debug signal
+						if (jdwp != null &&
+							field[0].isDebugWatching(true))
+							try (JDWPValue jVal = jdwp.value())
+							{
+								jVal.set(
+									DebugViewObject.__normalizeNull(value));
+								jdwp.trip(JDWPTripField.class,
+									JDWPGlobalTrip.FIELD).field(thread,
+										this.loadClass(ssf.inclass),
+										ssf.fieldIndex, true,
+										null, jVal);
+							}
 						
 						// Set value, note that static initializers can set
 						// static field values even if they are final
-						ssf.set(frame.popFromStack(),
-							isstaticinit);
-						
-						// Debug signal
-						ssf.signal(this.thread,
-							this.loadClass(fieldRef.className()), true);
+						ssf.set(value, isstaticinit);
 					}
 					break;
 					

@@ -10,7 +10,6 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jdwp.trips.JDWPTripValue;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIllegalAccessException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeException;
 import net.multiphasicapps.classfile.ClassName;
@@ -44,9 +43,6 @@ public final class SpringFieldStorage
 	
 	/** The volatile value of the field. */
 	private volatile Object _volatile;
-	
-	/** The trip used for debugging. */
-	volatile JDWPTripValue _tripValue;
 	
 	/**
 	 * Initializes the static field.
@@ -123,7 +119,7 @@ public final class SpringFieldStorage
 		// Otherwise just set thread without worrying about any contention
 		return (this.isvolatile ? this._volatile : this._normal);
 	}
-	 
+	
 	/**
 	 * Sets the static field to the given value.
 	 *
@@ -169,23 +165,6 @@ public final class SpringFieldStorage
 		// Otherwise just set thread without worrying about any contention
 		else
 			this._normal = __v;
-	}
-	
-	/**
-	 * Signals storage event.
-	 * 
-	 * @param __ctxThread The context thread.
-	 * @param __ctxRef The context reference.
-	 * @param __w Is this a write?
-	 * @since 2021/04/11
-	 */
-	public void signal(SpringThread __ctxThread, Object __ctxRef, boolean __w)
-	{
-		// Are we debug tripping on this read/write?
-		JDWPTripValue trip = this._tripValue;
-		if (__ctxThread != null && trip != null &&
-			(__w ? trip.isWrite() : trip.isRead()))
-			trip.signalTrip(__ctxThread, __ctxRef, this.fieldIndex);
 	}
 }
 

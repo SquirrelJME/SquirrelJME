@@ -19,6 +19,9 @@ public enum JDWPGlobalTrip
 	/** Class preparation, loading, and unloading. */
 	CLASS_STATUS(JDWPTripClassStatus.class),
 	
+	/** Fields. */
+	FIELD(JDWPTripField.class),
+	
 	/** Virtual machine state. */
 	VM_STATE(JDWPTripVmState.class),
 	

@@ -53,7 +53,7 @@ public enum CommandSetStackFrame
 			
 			JDWPViewFrame viewFrame = __controller.viewFrame();
 			for (int i = 0; i < numSlots; i++)
-				try (JDWPValue value = __controller.__value())
+				try (JDWPValue value = __controller.value())
 				{
 					// If this value is an object we need to register it for
 					// future grabbing
@@ -108,7 +108,7 @@ public enum CommandSetStackFrame
 			
 			// Write self value
 			else
-				try (JDWPValue value = __controller.__value())
+				try (JDWPValue value = __controller.value())
 				{
 					// If this value is an object we need to register it for
 					// future grabbing

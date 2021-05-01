@@ -12,8 +12,6 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.views.JDWPViewObject;
-import cc.squirreljme.jdwp.trips.JDWPTripValue;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 
 /**
@@ -104,21 +102,6 @@ public class DebugViewObject
 		
 		// Not a valid object or one where a value can be read from
 		return false;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/04/11
-	 */
-	@Override
-	public boolean setTrip(Object __which, int __index, JDWPTripValue __trip)
-	{
-		// Simple representation of an object
-		if (__which instanceof SpringSimpleObject)
-		{
-		}
-		
-		throw Debugging.todo();
 	}
 	
 	/**
