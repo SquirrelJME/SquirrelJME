@@ -161,28 +161,53 @@ public enum JDWPValueTag
 		if (__controller == null || __value == null)
 			throw new NullPointerException("NARG");
 		
+		// If not set, treat as void
+		if (!__value.isSet())
+			return JDWPValueTag.VOID;
+		return JDWPValueTag.guessTypeRaw(__controller, __value.get());
+	}
+	
+	/**
+	 * Tries to guess the type of value used.
+	 * 
+	 * @param __controller The controller used.
+	 * @param __value The value type.
+	 * @return The guessed value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/30
+	 */
+	public static JDWPValueTag guessTypeRaw(JDWPController __controller,
+		Object __value)
+		throws NullPointerException
+	{
+		if (__controller == null)
+			throw new NullPointerException("NARG");
+		
+		// If null, assume an object type
+		if (__value == null)
+			return JDWPValueTag.OBJECT;
+		
 		// If this a valid object, try to get it from its type
-		Object value = __value.get();
-		if (__controller.viewObject().isValid(value))
+		else if (__controller.viewObject().isValid(__value))
 			return JDWPValueTag.fromSignature(__controller.viewType()
-				.signature(__controller.viewObject().type(value)));
+				.signature(__controller.viewObject().type(__value)));
 		
 		// Boxed typed?
-		if (value instanceof Boolean)
+		else if (__value instanceof Boolean)
 			return JDWPValueTag.BOOLEAN;
-		else if (value instanceof Byte)
+		else if (__value instanceof Byte)
 			return JDWPValueTag.BYTE;
-		else if (value instanceof Short)
+		else if (__value instanceof Short)
 			return JDWPValueTag.SHORT;
-		else if (value instanceof Character)
+		else if (__value instanceof Character)
 			return JDWPValueTag.CHARACTER;
-		else if (value instanceof Integer)
+		else if (__value instanceof Integer)
 			return JDWPValueTag.INTEGER;
-		else if (value instanceof Long)
+		else if (__value instanceof Long)
 			return JDWPValueTag.LONG;
-		else if (value instanceof Float)
+		else if (__value instanceof Float)
 			return JDWPValueTag.FLOAT;
-		else if (value instanceof Double)
+		else if (__value instanceof Double)
 			return JDWPValueTag.DOUBLE;
 		
 		// Unknown, use void

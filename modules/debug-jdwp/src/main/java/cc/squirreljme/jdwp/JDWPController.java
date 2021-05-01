@@ -44,7 +44,7 @@ public final class JDWPController
 {
 	/** Should debugging be enabled? */
 	static final boolean _DEBUG =
-		true || Boolean.getBoolean("cc.squirreljme.jdwp.debug");
+		Boolean.getBoolean("cc.squirreljme.jdwp.debug");
 	
 	/** The event type. */
 	private static final int _EVENT_TYPE =
@@ -152,6 +152,44 @@ public final class JDWPController
 					heldPackets.poll().close();
 			}
 		}
+	}
+	
+	/**
+	 * Returns the location of the given thread.
+	 * 
+	 * @param __thread The thread to get from.
+	 * @return The current thread location.
+	 * @since 2021/04/25
+	 */
+	public JDWPLocation locationOf(Object __thread)
+	{
+		JDWPViewType viewType = this.viewType();
+		JDWPViewThread viewThread = this.viewThread();
+		JDWPViewFrame viewFrame = this.viewFrame();
+		
+		// Get the current frames and see if 
+		Object[] frames = viewThread.frames(__thread);
+		if (frames == null || frames.length == 0)
+			return JDWPLocation.BLANK;
+		
+		// Get frame details
+		Object topFrame = frames[0];
+		Object type = viewFrame.atClass(topFrame);
+		int methodDx = viewFrame.atMethodIndex(topFrame);
+		
+		// Make sure the types are added!
+		JDWPLinker<Object> items = this.state.items;
+		if (topFrame != null)
+			items.put(topFrame);
+		if (type != null)
+			items.put(type);
+		
+		// Build information
+		return new JDWPLocation(type,
+			methodDx,
+			viewFrame.atCodeIndex(topFrame),
+			viewType.methodName(type, methodDx),
+			viewType.methodSignature(type, methodDx));
 	}
 	
 	/**
@@ -729,44 +767,6 @@ public final class JDWPController
 		rv.writeInt(__responseId);
 		
 		return rv;
-	}
-	
-	/**
-	 * Returns the location of the given thread.
-	 * 
-	 * @param __thread The thread to get from.
-	 * @return The current thread location.
-	 * @since 2021/04/25
-	 */
-	public JDWPLocation locationOf(Object __thread)
-	{
-		JDWPViewType viewType = this.viewType();
-		JDWPViewThread viewThread = this.viewThread();
-		JDWPViewFrame viewFrame = this.viewFrame();
-		
-		// Get the current frames and see if 
-		Object[] frames = viewThread.frames(__thread);
-		if (frames == null || frames.length == 0)
-			return JDWPLocation.BLANK;
-		
-		// Get frame details
-		Object topFrame = frames[0];
-		Object type = viewFrame.atClass(topFrame);
-		int methodDx = viewFrame.atMethodIndex(topFrame);
-		
-		// Make sure the types are added!
-		JDWPLinker<Object> items = this.state.items;
-		if (topFrame != null)
-			items.put(topFrame);
-		if (type != null)
-			items.put(type);
-		
-		// Build information
-		return new JDWPLocation(type,
-			methodDx,
-			viewFrame.atCodeIndex(topFrame),
-			viewType.methodName(type, methodDx),
-			viewType.methodSignature(type, methodDx));
 	}
 	
 	/**

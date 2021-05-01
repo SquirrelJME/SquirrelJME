@@ -98,6 +98,25 @@ public final class JDWPValue
 	}
 	
 	/**
+	 * Checks if the value has been set.
+	 * 
+	 * @return If this is set.
+	 * @throws IllegalStateException If this is not open.
+	 * @since 2021/04/30
+	 */
+	public boolean isSet()
+		throws IllegalStateException
+	{
+		synchronized (this)
+		{
+			// Must be open
+			this.__checkOpen();
+			
+			return this._isSet;
+		}
+	}
+	
+	/**
 	 * Sets the value.
 	 * 
 	 * @param __val The value to set.
@@ -106,6 +125,7 @@ public final class JDWPValue
 	 * @since 2021/03/19
 	 */
 	public void set(Object __val)
+		throws IllegalStateException
 	{
 		synchronized (this)
 		{

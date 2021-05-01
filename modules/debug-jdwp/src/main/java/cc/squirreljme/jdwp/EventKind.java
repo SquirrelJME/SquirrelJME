@@ -649,8 +649,9 @@ public enum EventKind
 		// The field ID
 		__packet.writeId(fieldDx);
 		
-		// The object accessed
-		__packet.writeId(System.identityHashCode(instance));
+		// The object accessed, this is tagged oddly
+		__packet.writeValue(instance,
+			JDWPValueTag.guessTypeRaw(__controller, instance), false);
 		if (instance != null)
 			items.put(instance);
 		
