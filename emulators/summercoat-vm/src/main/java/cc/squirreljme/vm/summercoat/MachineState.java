@@ -16,7 +16,6 @@ import cc.squirreljme.jdwp.JDWPFactory;
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.views.JDWPView;
 import cc.squirreljme.jdwp.views.JDWPViewKind;
-import cc.squirreljme.jvm.summercoat.constants.JarProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
 import cc.squirreljme.jvm.summercoat.ld.mem.WritableMemory;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
@@ -102,10 +101,7 @@ public final class MachineState
 	protected NativeCPU createVmCpu()
 	{
 		// Create new CPU
-		NativeCPU rv = new NativeCPU(this, this.memory,
-			this.__nextVCpuId(), this.profiler,
-			this.staticAttribute(StaticVmAttribute.SIZE_BASE_ARRAY),
-			this.staticAttributes());
+		NativeCPU rv = new NativeCPU(this, this.__nextVCpuId());
 		
 		// Store into the mapping
 		synchronized (this)

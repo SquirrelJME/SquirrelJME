@@ -10,11 +10,11 @@
 package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledThread;
-import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.jvm.SupervisorPropertyIndex;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemoryInputStream;
 import cc.squirreljme.jvm.summercoat.ld.mem.WritableMemory;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
@@ -31,6 +31,8 @@ import dev.shadowtail.classfile.xlate.DataType;
 import dev.shadowtail.classfile.xlate.MathType;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -73,22 +75,13 @@ public final class NativeCPU
 		65536;
 	
 	/** The machine state. */
-	protected final MachineState state;
-	
-	/** The memory to read/write from. */
-	protected final WritableMemory memory;
+	private final Reference<MachineState> _state;
 	
 	/** The profiler to use. */
 	protected final ProfiledThread profiler;
 	
 	/** Virtual CPU id. */
 	protected final int vCpuId;
-	
-	/** The array base. */
-	protected final int arrayBase;
-	
-	/** Virtual machine attributes handle. */
-	protected final MemHandle vmAttribHandle;
 	
 	/** The cache for the CPU. */
 	protected final CPUCache cache =
@@ -108,34 +101,27 @@ public final class NativeCPU
 	
 	/** Execution slices which came from the popped frame. */
 	private final Deque<Deque<ExecutionSlice>> _sopf =
-		(NativeCPU.ENABLE_DEBUG ? new LinkedList<Deque<ExecutionSlice>>() : null);
+		(NativeCPU.ENABLE_DEBUG ?
+			new LinkedList<Deque<ExecutionSlice>>() : null);
 	
 	/**
 	 * Initializes the native CPU.
 	 *
 	 * @param __ms The machine state.
-	 * @param __mem The memory space.
 	 * @param __vCpuId Virtual CPU id.
-	 * @param __ps The profiler to use.
-	 * @param __arrayBase The array base size.
-	 * @param __vmAttrHandle Virtual machine attributes handle.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/21
 	 */
-	public NativeCPU(MachineState __ms, WritableMemory __mem, int __vCpuId,
-		ProfilerSnapshot __ps, int __arrayBase, MemHandle __vmAttrHandle)
+	public NativeCPU(MachineState __ms, int __vCpuId)
 		throws NullPointerException
 	{
-		if (__ms == null || __mem == null || __vmAttrHandle == null)
+		if (__ms == null)
 			throw new NullPointerException("NARG");
 		
-		this.state = __ms;
-		this.memory = __mem;
+		this._state = new WeakReference<>(__ms);
 		this.vCpuId = __vCpuId;
-		this.profiler = (__ps == null ? null :
-			__ps.measureThread("cpu-" + __vCpuId));
-		this.arrayBase = __arrayBase;
-		this.vmAttribHandle = __vmAttrHandle;
+		this.profiler = (__ms.profiler == null ? null :
+			__ms.profiler.measureThread("cpu-" + __vCpuId));
 	}
 	
 	/**
@@ -179,7 +165,8 @@ public final class NativeCPU
 		CPUFrame lastframe = frames.peekLast();
 		
 		// Setup new frame
-		CPUFrame rv = new CPUFrame(this.state.memHandles, this.arrayBase);
+		CPUFrame rv = new CPUFrame(this.__state().memHandles,
+			this.__state().staticAttribute(StaticVmAttribute.SIZE_BASE_ARRAY));
 		rv._pc = __pc;
 		rv._entrypc = __pc;
 		rv._lastpc = __pc;
@@ -346,7 +333,7 @@ public final class NativeCPU
 		CPUCache cache = this.cache;
 		
 		// Read the CPU stuff
-		final WritableMemory memory = this.memory;
+		final WritableMemory memory = this.__state().memory;
 		boolean reload = true;
 		ProfiledThread profiler = this.profiler;
 		
@@ -837,7 +824,7 @@ public final class NativeCPU
 						boolean isWide = dt.isWide();
 						
 						// The handle to read from/write to
-						MemHandle handle = this.state.memHandles.get(
+						MemHandle handle = this.__state().memHandles.get(
 							lr[argRaw[(isWide ? 2 : 1)]]);
 						int off = lr[argRaw[(isWide ? 3 : 2)]];
 						
@@ -1201,12 +1188,12 @@ public final class NativeCPU
 					
 					// Count reference up
 				case NativeInstructionType.MEM_HANDLE_COUNT_UP:
-					this.state.memHandles.get(lr[argRaw[0]]).count(true);
+					this.__state().memHandles.get(lr[argRaw[0]]).count(true);
 					break;
 				
 					// Count reference down
 				case NativeInstructionType.MEM_HANDLE_COUNT_DOWN:
-					lr[argRaw[1]] = this.state.memHandles.get(lr[argRaw[0]])
+					lr[argRaw[1]] = this.__state().memHandles.get(lr[argRaw[0]])
 						.count(false);
 					break;
 					
@@ -1320,7 +1307,7 @@ public final class NativeCPU
 		
 		// Load strings
 		String scl, smn, smt, ssf;
-		WritableMemory memory = this.memory;
+		WritableMemory memory = this.__state().memory;
 		__f._inclass = 
 			(scl = (icl == 0 ? null : this.__loadUtfString(icl)));
 		__f._inmethodname = 
@@ -1403,7 +1390,7 @@ public final class NativeCPU
 	 */
 	private int __loadDebugInt(int __addr)
 	{
-		WritableMemory memory = this.memory;
+		WritableMemory memory = this.__state().memory;
 		try
 		{
 			return memory.memReadInt(__addr);
@@ -1424,7 +1411,7 @@ public final class NativeCPU
 	final String __loadUtfString(int __addr)
 	{
 		// Read length to figure out how long the string is
-		WritableMemory memory = this.memory;
+		WritableMemory memory = this.__state().memory;
 		int strlen = -1;
 		try
 		{
@@ -1444,6 +1431,22 @@ public final class NativeCPU
 		{
 			return String.format("@%08x/%d???", __addr, strlen);
 		}
+	}
+	
+	/**
+	 * Returns the machine state.
+	 * 
+	 * @return The machine state.
+	 * @throws IllegalStateException If the machine was garbage collected.
+	 * @since 2021/05/07
+	 */
+	MachineState __state()
+		throws IllegalStateException
+	{
+		MachineState rv = this._state.get();
+		if (rv == null)
+			throw new IllegalStateException("The machine state was GCed.");
+		return rv;
 	}
 	
 	/**

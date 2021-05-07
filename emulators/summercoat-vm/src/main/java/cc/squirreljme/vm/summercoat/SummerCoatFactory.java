@@ -463,11 +463,11 @@ public class SummerCoatFactory
 		
 		// Setup virtual execution CPU
 		NativeCPU cpu = ms.createVmCpu();
-		CPUFrame iframe = cpu.enterFrame(false,
-			startAddress, virtHandles.get(bootPool).id);
+		cpu.enterFrame(false, startAddress,
+			virtHandles.get(bootPool).id);
 		
 		// Setup virtual machine with initial thread
-		return new SummerCoatVirtualMachine(cpu);
+		return new SummerCoatVirtualMachine(ms, cpu);
 	}
 	
 	/**

@@ -20,6 +20,7 @@ import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.RuntimeVmAttribute;
+import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
 import java.io.PrintStream;
@@ -44,7 +45,7 @@ public enum SystemCallHandler
 		public long handle(NativeCPU __cpu, int... __args)
 			throws VMSystemCallException
 		{
-			return __cpu.arrayBase;
+			return __cpu.__state().staticAttribute(StaticVmAttribute.SIZE_BASE_ARRAY);
 		}
 	},
 	
@@ -181,7 +182,7 @@ public enum SystemCallHandler
 		public long handle(NativeCPU __cpu, int... __args)
 			throws VMSystemCallException
 		{
-			MemHandle handle = __cpu.state.memHandles.get(__args[0]);
+			MemHandle handle = __cpu.__state().memHandles.get(__args[0]);
 			int off = __args[1];
 			int len = __args[2];
 			
@@ -214,9 +215,9 @@ public enum SystemCallHandler
 			throws VMSystemCallException
 		{
 			// Get all the details for the system call
-			MemHandle src = __cpu.state.memHandles.get(__args[0]);
+			MemHandle src = __cpu.__state().memHandles.get(__args[0]);
 			int srcOff = __args[1];
-			MemHandle dest = __cpu.state.memHandles.get(__args[2]);
+			MemHandle dest = __cpu.__state().memHandles.get(__args[2]);
 			int destOff = __args[3];
 			int length = __args[4];
 			
@@ -252,7 +253,7 @@ public enum SystemCallHandler
 					SystemCallError.VALUE_OUT_OF_RANGE);
 			
 			// Allocate handle and count up so it is not instantly GCed
-			MemHandle handle = __cpu.state.memHandles.alloc(kind, size);
+			MemHandle handle = __cpu.__state().memHandles.alloc(kind, size);
 			handle.count(true);
 			 
 			return handle.id;
@@ -274,7 +275,7 @@ public enum SystemCallHandler
 			{
 					// The address of the system ROM
 				case RuntimeVmAttribute.ROM_ADDR_LOW:
-					return __cpu.state.romBase;
+					return __cpu.__state().romBase;
 					
 					// SummerCoat is purely a 32-bit system so there is no
 					// high address for the ROM.
@@ -468,7 +469,7 @@ public enum SystemCallHandler
 		public long handle(NativeCPU __cpu, int... __args)
 			throws VMSystemCallException
 		{
-			return __cpu.vmAttribHandle.id;
+			return __cpu.__state().staticAttributes().id;
 		}
 	},
 	
