@@ -11,6 +11,7 @@ package dev.shadowtail.jarfile;
 
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.CompilerConstants;
+import cc.squirreljme.jvm.summercoat.constants.JarProperty;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
@@ -1343,6 +1344,10 @@ public final class BootState
 		rv.set(StaticVmAttribute.OFFSETOF_CLASS_TYPEBRACKET_FIELD,
 			objectBase + this.loadClass("java/lang/Class").classFile
 				.field(false, BootState._CLASS_TYPEBRACKET).offset);
+		
+		// Size of arrays
+		rv.set(StaticVmAttribute.SIZE_BASE_ARRAY,
+			this.__baseArraySize());
 		
 		return rv;
 	}

@@ -68,7 +68,7 @@ public final class NativeCPU
 	private static final int _FRAME_LIMIT = 
 		64;
 	
-	/** Threshhold for too many debug points */
+	/** Threshold for too many debug points */
 	private static final int _POINT_THRESHOLD =
 		65536;
 	
@@ -82,7 +82,7 @@ public final class NativeCPU
 	protected final ProfiledThread profiler;
 	
 	/** Virtual CPU id. */
-	protected final int vcpuid;
+	protected final int vCpuId;
 	
 	/** The array base. */
 	protected final int arrayBase;
@@ -110,22 +110,19 @@ public final class NativeCPU
 	private final Deque<Deque<ExecutionSlice>> _sopf =
 		(NativeCPU.ENABLE_DEBUG ? new LinkedList<Deque<ExecutionSlice>>() : null);
 	
-	/** IPC Exception register. */
-	private int _ipcexception;
-	
 	/**
 	 * Initializes the native CPU.
 	 *
 	 * @param __ms The machine state.
 	 * @param __mem The memory space.
-	 * @param __vcid Virtual CPU id.
+	 * @param __vCpuId Virtual CPU id.
 	 * @param __ps The profiler to use.
 	 * @param __arrayBase The array base size.
 	 * @param __vmAttrHandle Virtual machine attributes handle.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/21
 	 */
-	public NativeCPU(MachineState __ms, WritableMemory __mem, int __vcid,
+	public NativeCPU(MachineState __ms, WritableMemory __mem, int __vCpuId,
 		ProfilerSnapshot __ps, int __arrayBase, MemHandle __vmAttrHandle)
 		throws NullPointerException
 	{
@@ -134,9 +131,9 @@ public final class NativeCPU
 		
 		this.state = __ms;
 		this.memory = __mem;
-		this.vcpuid = __vcid;
+		this.vCpuId = __vCpuId;
 		this.profiler = (__ps == null ? null :
-			__ps.measureThread("cpu-" + __vcid));
+			__ps.measureThread("cpu-" + __vCpuId));
 		this.arrayBase = __arrayBase;
 		this.vmAttribHandle = __vmAttrHandle;
 	}

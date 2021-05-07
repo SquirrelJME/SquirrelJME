@@ -103,7 +103,7 @@ public class SummerCoatFactory
 		int romBase = SummerCoatFactory.SUITE_BASE_ADDR;
 		
 		// Setup non-cpu VM state
-		MachineState ms = new MachineState(vMem, __ps, romBase);
+		MachineState ms = new MachineState(vMem, __ps, romBase, __jdwp);
 		MemHandleManager memHandles = ms.memHandles;
 		
 		// Load ROM file or generate dynamically for loaded classes
@@ -458,11 +458,11 @@ public class SummerCoatFactory
 		// Where are the static attributes?
 		int staticAttrib = bootJarHeader.get(
 			JarProperty.MEMHANDLEID_VM_ATTRIBUTES);
+		ms.setStaticAttributes(virtHandles.get(staticAttrib),
+			bootJarHeader.get(JarProperty.SIZE_BASE_ARRAY));
 		
 		// Setup virtual execution CPU
-		NativeCPU cpu = new NativeCPU(ms, vMem, 0, __ps,
-			bootJarHeader.get(JarProperty.SIZE_BASE_ARRAY),
-			virtHandles.get(staticAttrib));
+		NativeCPU cpu = ms.createVmCpu();
 		CPUFrame iframe = cpu.enterFrame(false,
 			startAddress, virtHandles.get(bootPool).id);
 		
@@ -552,31 +552,6 @@ public class SummerCoatFactory
 			
 			return sm;
 		}
-	}
-	
-	/**
-	 * Converts a class path to a string array.
-	 *
-	 * @param __cp The class path to convert.
-	 * @return The resulting string array.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/21
-	 */
-	public static String[] classPathToStringArray(VMClassLibrary... __cp)
-		throws NullPointerException
-	{
-		if (__cp == null)
-			throw new NullPointerException("NARG");
-		
-		int n = __cp.length;
-		String[] rv = new String[n];
-		for (int i = 0; i < n; i++)
-		{
-			String name = __cp[i].name();
-			rv[i] = (name.endsWith(".jar") ? name : name + ".jar");
-		}
-		
-		return rv;
 	}
 	
 	/**

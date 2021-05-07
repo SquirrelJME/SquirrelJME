@@ -46,17 +46,6 @@ public final class JDWPController
 	static final boolean _DEBUG =
 		Boolean.getBoolean("cc.squirreljme.jdwp.debug");
 	
-	/** The event type. */
-	private static final int _EVENT_TYPE =
-		64;
-	
-	/** Composite event. */
-	private static final int _COMPOSITE_COMMAND =
-		100;
-	
-	/** The binding, which is called to perform any actions. */
-	protected final JDWPBinding bind;
-	
 	/** The communication link. */
 	protected final CommLink commLink;
 	
@@ -66,6 +55,9 @@ public final class JDWPController
 	/** The event manager. */
 	protected final EventManager eventManager =
 		new EventManager();
+	
+	/** The binding, which is called to perform any actions. */
+	private final Reference<JDWPBinding> _bind;
 		
 	/** The ID lock. */
 	private final Object _nextIdMonitor =
@@ -112,13 +104,32 @@ public final class JDWPController
 		if (__bind == null || __in == null || __out == null)
 			throw new NullPointerException("NARG");
 		
-		this.bind = __bind;
+		this._bind = new WeakReference<>(__bind);
 		this.state = new JDWPState(new WeakReference<>(__bind));
 		this.commLink = new CommLink(__in, __out);
 		
 		// Setup Communication Link thread
 		Thread thread = new Thread(this, "JDWPController");
 		thread.start();
+	}
+	
+	/**
+	 * Returns the binding.
+	 * 
+	 * @return The binding.
+	 * @throws JDWPException If the binding has been garbage collected.
+	 * @since 2021/05/07
+	 */
+	public JDWPBinding bind()
+		throws JDWPException
+	{
+		// {@squirreljme.error AG0h The JDWP Binding has been garbage
+		// collected.}
+		JDWPBinding rv = this._bind.get();
+		if (rv == null)
+			throw new JDWPException("AG0h");
+		
+		return rv;
 	}
 	
 	/**
@@ -629,7 +640,7 @@ public final class JDWPController
 	final Object[] __allThreadGroups()
 	{
 		// Get all thread groups
-		Object[] groups = this.bind.debuggerThreadGroups();
+		Object[] groups = this.bind().debuggerThreadGroups();
 		
 		// Register each one
 		JDWPState state = this.state;
@@ -657,7 +668,7 @@ public final class JDWPController
 		// under them, since this is a machine to thread linkage
 		JDWPViewThreadGroup view = state.view(
 			JDWPViewThreadGroup.class, JDWPViewKind.THREAD_GROUP);
-		for (Object group : this.bind.debuggerThreadGroups())
+		for (Object group : this.bind().debuggerThreadGroups())
 		{
 			// Register thread group
 			state.items.put(group);

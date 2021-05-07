@@ -257,7 +257,7 @@ public final class SpringTaskManager
 	@Override
 	public String vmDescription()
 	{
-		return "SquirrelJME SpringCoat " + SquirrelJME.RUNTIME_VERSION;
+		return "SquirrelJME SpringCoat " + this.vmVersion();
 	}
 	
 	/**
