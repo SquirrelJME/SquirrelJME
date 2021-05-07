@@ -212,6 +212,9 @@ The following _System_ properties are available:
    * As an example `squirreljme.sysprop.favorite.animal=squirrel`:
      * Will define system property `favorite.animal=squirrel` within the
        virtual machine.
+ * `squirreljme.thread=value` -- The threading model to use.
+   * `single` or `coop` -- Single Cooperatively Threaded.
+   * `multi` or `smt` -- Simultaneous Multi-Threading.
  * `test.single=classname` -- Run only the given test:
    * Will be the test class to be run.
    * Multi-parameter tests are in the form of `classname@parameter`, if a

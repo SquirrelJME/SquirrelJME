@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
+import cc.squirreljme.jvm.mle.constants.ThreadModelType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 
 /**
@@ -127,6 +128,14 @@ public final class ThreadShelf
 		throws MLECallError;
 	
 	/**
+	 * Returns the {@link ThreadModelType} of the virtual machine.
+	 * 
+	 * @return The {@link ThreadModelType} of the virtual machine.
+	 * @since 2021/05/07
+	 */
+	public static native int model();
+	
+	/**
 	 * Runs the main entry point for the current process and gives it all of
 	 * the arguments that were specified on program initialization.
 	 *
@@ -161,6 +170,10 @@ public final class ThreadShelf
 	 *
 	 * If both times are zero, this means to yield the thread (give up its
 	 * current execution context).
+	 * 
+	 * If SquirrelJME is running in cooperative
+	 * single threaded mode, this will relinquish control of the current
+	 * thread.
 	 *
 	 * @param __ms The number of milliseconds.
 	 * @param __ns The number of nanoseconds.
@@ -272,6 +285,10 @@ public final class ThreadShelf
 	 *
 	 * A thread update is when another thread becomes alive, becomes dead,
 	 * or is started.
+	 * 
+	 * If waiting and SquirrelJME is running in cooperative
+	 * single threaded mode, this will relinquish control of the current
+	 * thread.
 	 *
 	 * @param __ms The amount of time to wait for.
 	 * @return If the thread was interrupted while waiting.

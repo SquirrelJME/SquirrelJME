@@ -313,6 +313,10 @@ public enum SystemCallHandler
 					// The locale: Always English US
 				case RuntimeVmAttribute.LOCALE:
 					return BuiltInLocaleType.ENGLISH_US;
+					
+					// The thread model
+				case RuntimeVmAttribute.THREAD_MODEL:
+					return __cpu.__state().threadingModel.model;
 				
 					// Unknown
 				default:

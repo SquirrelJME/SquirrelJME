@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
+import cc.squirreljme.emulator.vm.VMThreadModel;
 import cc.squirreljme.jdwp.JDWPBinding;
 import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.JDWPFactory;
@@ -48,9 +49,12 @@ public final class MachineState
 	/** The JDWP Controller. */
 	protected final JDWPController jdwp;
 	
+	/** The threading model to use. */
+	protected final VMThreadModel threadingModel;
+	
 	/** The threads which are known. */
 	private final Map<Integer, NativeCPU> _vCpus =
-		new SortedTreeMap<>(); 
+		new SortedTreeMap<>();
 	
 	/** Attributes for {@link StaticVmAttribute}. */
 	private MemHandle _staticAttributes;
@@ -71,11 +75,12 @@ public final class MachineState
 	 * @param __pf The profiler, this is optional.
 	 * @param __romBase The ROM base.
 	 * @param __jdwp The JDWP connection.
+	 * @param __threadModel The threading model.
 	 * @throws NullPointerException If no memory was specified.
 	 * @since 2019/12/28
 	 */
 	public MachineState(WritableMemory __mem, ProfilerSnapshot __pf,
-		int __romBase, JDWPFactory __jdwp)
+		int __romBase, JDWPFactory __jdwp, VMThreadModel __threadModel)
 		throws NullPointerException
 	{
 		if (__mem == null)
@@ -84,6 +89,8 @@ public final class MachineState
 		this.memory = __mem;
 		this.profiler = __pf;
 		this.romBase = __romBase;
+		this.threadingModel = (__threadModel == null ?
+			VMThreadModel.DEFAULT : __threadModel);
 		
 		// Open debugging connection
 		if (__jdwp != null)

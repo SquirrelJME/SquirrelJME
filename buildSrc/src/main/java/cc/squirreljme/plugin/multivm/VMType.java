@@ -559,6 +559,11 @@ public enum VMType
 		if (jdwpProp != null)
 			vmArgs.add("-Xjdwp:" + jdwpProp);
 		
+		// Change threading model?
+		String threadModel = System.getProperty("squirreljme.thread");
+		if (threadModel != null)
+			vmArgs.add("-Xthread:" + threadModel);
+		
 		// Determine where profiler snapshots are to go, try to use the
 		// profiler directory for that
 		Path profilerDir = ((__task instanceof VMExecutableTask) ?

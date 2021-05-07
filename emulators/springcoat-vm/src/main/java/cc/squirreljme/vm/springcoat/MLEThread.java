@@ -17,8 +17,10 @@ import cc.squirreljme.jdwp.trips.JDWPTripVmState;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
+import cc.squirreljme.jvm.mle.constants.ThreadModelType;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import net.multiphasicapps.classfile.ClassName;
@@ -304,6 +306,21 @@ public enum MLEThread
 			
 			// No value is returned
 			return null;
+		}
+	},
+	
+	/** {@link ThreadShelf#model()}. */ 
+	MODEL("model:()I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/05/07
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			// SpringCoat is always multi-threaded
+			return ThreadModelType.SIMULTANEOUS_MULTI_THREAD;
 		}
 	},
 	

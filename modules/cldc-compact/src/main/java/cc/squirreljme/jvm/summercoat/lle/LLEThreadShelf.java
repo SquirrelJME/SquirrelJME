@@ -12,7 +12,10 @@ package cc.squirreljme.jvm.summercoat.lle;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
+import cc.squirreljme.jvm.mle.constants.ThreadModelType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.summercoat.SystemCall;
+import cc.squirreljme.jvm.summercoat.constants.RuntimeVmAttribute;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -166,6 +169,17 @@ public final class LLEThreadShelf
 	{
 		Assembly.breakpoint();
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the {@link ThreadModelType} of the virtual machine.
+	 * 
+	 * @return The {@link ThreadModelType} of the virtual machine.
+	 * @since 2021/05/07
+	 */
+	public static int model()
+	{
+		return SystemCall.runtimeVmAttribute(RuntimeVmAttribute.THREAD_MODEL);
 	}
 	
 	/**
