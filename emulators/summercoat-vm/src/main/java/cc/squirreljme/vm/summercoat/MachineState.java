@@ -57,10 +57,10 @@ public final class MachineState
 		new SortedTreeMap<>();
 	
 	/** Attributes for {@link StaticVmAttribute}. */
-	private MemHandle _staticAttributes;
+	private volatile MemHandle _staticAttributes;
 	
 	/** The array base. */
-	private int _arrayBase;
+	private volatile int _arrayBase;
 	
 	/** Was the supervisor okay? */
 	private volatile boolean _superVisorOkay;

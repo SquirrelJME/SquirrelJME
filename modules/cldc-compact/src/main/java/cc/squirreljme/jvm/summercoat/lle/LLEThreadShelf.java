@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.summercoat.lle;
 
 import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
 import cc.squirreljme.jvm.mle.constants.ThreadModelType;
@@ -57,6 +58,18 @@ public final class LLEThreadShelf
 	}
 	
 	/**
+	 * Returns the exit code for the current process.
+	 *
+	 * @return The exit code for the current process.
+	 * @since 2020/06/17
+	 */
+	public static int currentExitCode()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * Returns the current Java thread.
 	 *
 	 * @return The current {@link Thread}.
@@ -69,12 +82,28 @@ public final class LLEThreadShelf
 	}
 	
 	/**
-	 * Returns the exit code for the current process.
-	 *
-	 * @return The exit code for the current process.
-	 * @since 2020/06/17
+	 * Returns the current virtual machine thread.
+	 * 
+	 * @return The current virtual machine thread.
+	 * @since 2021/05/08
 	 */
-	public static int currentExitCode()
+	public static VMThreadBracket currentVMThread()
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
+	/**
+	 * Checks if these two threads are the same.
+	 * 
+	 * @param __a The first thread.
+	 * @param __b The second thread.
+	 * @return If these are the same thread.
+	 * @throws MLECallError If either arguments are null.
+	 * @since 2021/05/08
+	 */
+	public static boolean equals(VMThreadBracket __a,
+		VMThreadBracket __b)
+		throws MLECallError
 	{
 		Assembly.breakpoint();
 		throw Debugging.todo();
@@ -350,6 +379,21 @@ public final class LLEThreadShelf
 	 * @since 2020/06/17
 	 */
 	public static boolean vmThreadStart(VMThreadBracket __vmThread)
+		throws MLECallError
+	{
+		Assembly.breakpoint();
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the task that owns the given thread.
+	 * 
+	 * @param __vmThread The thread to get the task of.
+	 * @return The task for the given thread.
+	 * @throws MLECallError If the thread is not valid.
+	 * @since 2021/05/08
+	 */
+	public static TaskBracket vmThreadTask(VMThreadBracket __vmThread)
 		throws MLECallError
 	{
 		Assembly.breakpoint();
