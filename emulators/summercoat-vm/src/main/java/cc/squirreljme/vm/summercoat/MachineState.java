@@ -23,7 +23,10 @@ import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.lang.ref.Reference;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This contains the machine state and stores everything about SummerCoat.
@@ -100,15 +103,36 @@ public final class MachineState
 	}
 	
 	/**
+	 * Returns all of the available CPUs.
+	 * 
+	 * @return All of the available CPUs.
+	 * @since 2021/05/08
+	 */
+	protected NativeCPU[] cpus()
+	{
+		synchronized (this)
+		{
+			Collection<NativeCPU> rv = this._vCpus.values();
+			return rv.toArray(new NativeCPU[rv.size()]);
+		}
+	}
+	
+	/**
 	 * Creates a new virtual machine CPU.
 	 * 
+	 * @param __threadInfo Information on the current thread.
 	 * @return A new virtual machine CPU.
 	 * @since 2021/05/07
 	 */
-	protected NativeCPU createVmCpu()
+	protected NativeCPU createVmCpu(MemHandle __threadInfo)
+		throws NullPointerException
 	{
+		if (__threadInfo == null)
+			throw new NullPointerException("NARG");
+		
 		// Create new CPU
-		NativeCPU rv = new NativeCPU(this, this.__nextVCpuId());
+		NativeCPU rv = new NativeCPU(this, this.__nextVCpuId(),
+			__threadInfo);
 		
 		// Store into the mapping
 		synchronized (this)
@@ -136,7 +160,11 @@ public final class MachineState
 	@Override
 	public Object[] debuggerThreadGroups()
 	{
-		throw Debugging.todo();
+		Set<MemHandle> rv = new LinkedHashSet<>();
+		for (NativeCPU cpu : this.cpus())
+			rv.add(cpu.threadInfo);
+		
+		return rv.toArray(new Object[rv.size()]);
 	}
 	
 	/**

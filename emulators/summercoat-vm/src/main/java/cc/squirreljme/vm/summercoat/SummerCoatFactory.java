@@ -25,12 +25,15 @@ import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
+import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
+import cc.squirreljme.jvm.summercoat.constants.ThreadPropertyType;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemoryInputStream;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.mini.MinimizedClassHeader;
+import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
 import dev.shadowtail.jarfile.TableOfContents;
 import dev.shadowtail.packfile.MinimizedPackHeader;
@@ -461,11 +464,16 @@ public class SummerCoatFactory
 		// Where are the static attributes?
 		int staticAttrib = bootJarHeader.get(
 			JarProperty.MEMHANDLEID_VM_ATTRIBUTES);
+		int arrayBase = bootJarHeader.get(JarProperty.SIZE_BASE_ARRAY);
 		ms.setStaticAttributes(virtHandles.get(staticAttrib),
-			bootJarHeader.get(JarProperty.SIZE_BASE_ARRAY));
+			arrayBase);
+		
+		// Find the initial thread and task
+		MemHandle initThread = virtHandles.get(
+			ms.staticAttribute(StaticVmAttribute.MEMHANDLE_BOOT_THREAD));
 		
 		// Setup virtual execution CPU
-		NativeCPU cpu = ms.createVmCpu();
+		NativeCPU cpu = ms.createVmCpu(initThread);
 		cpu.enterFrame(false, startAddress,
 			virtHandles.get(bootPool).id);
 		

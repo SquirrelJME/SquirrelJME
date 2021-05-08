@@ -10,20 +10,24 @@
 package cc.squirreljme.jvm.summercoat.constants;
 
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
+import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
 
 /**
- * Represents the properties for tasks within SummerCoat via
- * {@link TaskBracket}.
+ * Properties for {@link VMThreadBracket} within SummerCoat.
  *
  * @since 2021/05/08
  */
-public interface TaskPropertyType
+public interface ThreadPropertyType
 {
 	/** Not valid. */
 	byte INVALID =
 		0;
 	
+	/** The owning {@link TaskBracket} for this thread. */
+	byte TASK =
+		1;
+	
 	/** The number of properties. */
 	byte NUM_PROPERTIES =
-		1;
+		2;
 }

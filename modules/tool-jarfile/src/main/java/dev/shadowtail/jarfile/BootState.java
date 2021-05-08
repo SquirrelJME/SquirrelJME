@@ -11,10 +11,11 @@ package dev.shadowtail.jarfile;
 
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.CompilerConstants;
-import cc.squirreljme.jvm.summercoat.constants.JarProperty;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
+import cc.squirreljme.jvm.summercoat.constants.TaskPropertyType;
+import cc.squirreljme.jvm.summercoat.constants.ThreadPropertyType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
@@ -30,7 +31,6 @@ import dev.shadowtail.classfile.pool.BasicPoolEntry;
 import dev.shadowtail.classfile.pool.ClassNameHash;
 import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
-import dev.shadowtail.classfile.pool.HighRuntimeValue;
 import dev.shadowtail.classfile.pool.InvokeType;
 import dev.shadowtail.classfile.pool.InvokeXTable;
 import dev.shadowtail.classfile.pool.InvokedMethod;
@@ -137,6 +137,9 @@ public final class BootState
 		
 	/** The name of the boot class. */
 	private ClassName _bootClass;
+	
+	/** The current boot thread. */
+	private ListValueHandle _bootThread;
 	
 	/** An empty I2X Table, to save space. */
 	private ListValueHandle _emptyI2XTable;
@@ -1248,6 +1251,36 @@ public final class BootState
 	}
 	
 	/**
+	 * Returns the boot thread handle.
+	 * 
+	 * @return The boot thread handle.
+	 * @since 2021/05/08
+	 */
+	private MemHandle __bootThread()
+	{
+		// Was it already setup?
+		ListValueHandle rv = this._bootThread;
+		if (rv != null)
+			return rv;
+		
+		// Setup thread
+		rv = this._memHandles.allocList(MemHandleKind.VM_THREAD,
+			ThreadPropertyType.NUM_PROPERTIES);
+		this._bootThread = rv;
+		
+		// Setup task
+		ListValueHandle task = this._memHandles.allocList(
+			MemHandleKind.TASK,
+			TaskPropertyType.NUM_PROPERTIES);
+		
+		// The current task
+		rv.set(ThreadPropertyType.TASK, task);
+		
+		// Use what was created
+		return rv;
+	}
+	
+	/**
 	 * Builds an interface XTable for the given class.
 	 * 
 	 * @param __target The target class.
@@ -1348,6 +1381,10 @@ public final class BootState
 		// Size of arrays
 		rv.set(StaticVmAttribute.SIZE_BASE_ARRAY,
 			this.__baseArraySize());
+		
+		// The current boot thread (and task)
+		rv.set(StaticVmAttribute.MEMHANDLE_BOOT_THREAD,
+			this.__bootThread());
 		
 		return rv;
 	}

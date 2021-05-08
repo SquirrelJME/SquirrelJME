@@ -104,15 +104,19 @@ public final class NativeCPU
 		(NativeCPU.ENABLE_DEBUG ?
 			new LinkedList<Deque<ExecutionSlice>>() : null);
 	
+	/** The current thread information. */
+	protected final MemHandle threadInfo;
+	
 	/**
 	 * Initializes the native CPU.
 	 *
 	 * @param __ms The machine state.
 	 * @param __vCpuId Virtual CPU id.
+	 * @param __threadInfo The current thread handle information.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/21
 	 */
-	public NativeCPU(MachineState __ms, int __vCpuId)
+	public NativeCPU(MachineState __ms, int __vCpuId, MemHandle __threadInfo)
 		throws NullPointerException
 	{
 		if (__ms == null)
@@ -122,6 +126,7 @@ public final class NativeCPU
 		this.vCpuId = __vCpuId;
 		this.profiler = (__ms.profiler == null ? null :
 			__ms.profiler.measureThread("cpu-" + __vCpuId));
+		this.threadInfo = __threadInfo;
 	}
 	
 	/**
@@ -162,7 +167,7 @@ public final class NativeCPU
 		if (frames.size() >= NativeCPU._FRAME_LIMIT)
 			throw new VMException("Frame limit reached.");
 		
-		CPUFrame lastframe = frames.peekLast();
+		CPUFrame lastFrame = frames.peekLast();
 		
 		// Setup new frame
 		CPUFrame rv = new CPUFrame(this.__state().memHandles,
@@ -176,10 +181,10 @@ public final class NativeCPU
 		
 		// Seed initial registers, if valid
 		int[] dest = rv.getRegisters();
-		if (lastframe != null)
+		if (lastFrame != null)
 		{
 			// Copy globals
-			int[] src = lastframe.getRegisters();
+			int[] src = lastFrame.getRegisters();
 			for (int i = 0; i < NativeCode.LOCAL_REGISTER_BASE; i++)
 				dest[i] = src[i];
 			
@@ -189,7 +194,7 @@ public final class NativeCPU
 					src[NativeCode.NEXT_POOL_REGISTER];
 			
 			// Copy task register.
-			rv._taskid = lastframe._taskid;
+			rv._taskid = lastFrame._taskid;
 		}
 		
 		// Copy the arguments to the argument slots
@@ -203,6 +208,10 @@ public final class NativeCPU
 		
 		// Clear zero
 		dest[0] = 0;
+		
+		// Set thread information on the first thread
+		if (lastFrame == null)
+			rv.set(NativeCode.THREAD_REGISTER, this.threadInfo.id);
 		
 		// Use this frame
 		return rv;

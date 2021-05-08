@@ -12,6 +12,7 @@ package cc.squirreljme.vm.summercoat;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.jvm.summercoat.SummerCoatUtil;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
+import cc.squirreljme.jvm.summercoat.ld.mem.MemHandleReference;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.summercoat.handles.MemHandleArray;
 import cc.squirreljme.vm.summercoat.handles.MemHandleArrayBoolean;
@@ -140,6 +141,21 @@ public final class MemHandleManager
 		
 		// Wrap the given array
 		return this.wrapArray(__base, storage);
+	}
+	
+	/**
+	 * Returns the given memory handle.
+	 * 
+	 * @param __id The identifier of the handle.
+	 * @return The memory handle for the given item.
+	 * @throws InvalidMemoryHandleException If the memory handle does not
+	 * exist.
+	 * @since 2021/05/08
+	 */
+	public final MemHandle get(MemHandleReference __id)
+		throws InvalidMemoryHandleException
+	{
+		return this.get((__id == null ? 0 : __id.id));
 	}
 	
 	/**
