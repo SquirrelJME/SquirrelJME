@@ -139,7 +139,7 @@ public final class BootState
 	private ClassName _bootClass;
 	
 	/** The current boot thread. */
-	private ListValueHandle _bootThread;
+	private PropertyListHandle _bootThread;
 	
 	/** An empty I2X Table, to save space. */
 	private ListValueHandle _emptyI2XTable;
@@ -1256,10 +1256,10 @@ public final class BootState
 	 * @return The boot thread handle.
 	 * @since 2021/05/08
 	 */
-	private MemHandle __bootThread()
+	private PropertyListHandle __bootThread()
 	{
 		// Was it already setup?
-		ListValueHandle rv = this._bootThread;
+		PropertyListHandle rv = this._bootThread;
 		if (rv != null)
 			return rv;
 		
@@ -1269,7 +1269,7 @@ public final class BootState
 		this._bootThread = rv;
 		
 		// Setup task
-		ListValueHandle task = this._memHandles.allocList(
+		PropertyListHandle task = this._memHandles.allocList(
 			MemHandleKind.TASK,
 			TaskPropertyType.NUM_PROPERTIES);
 		

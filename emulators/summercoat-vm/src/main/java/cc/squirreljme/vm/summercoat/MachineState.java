@@ -13,7 +13,6 @@ import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.emulator.vm.VMThreadModel;
 import cc.squirreljme.jdwp.JDWPBinding;
 import cc.squirreljme.jdwp.JDWPController;
-import cc.squirreljme.jdwp.JDWPFactory;
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.views.JDWPView;
 import cc.squirreljme.jdwp.views.JDWPViewKind;
@@ -22,6 +21,7 @@ import cc.squirreljme.jvm.summercoat.ld.mem.WritableMemory;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
+import cc.squirreljme.vm.summercoat.debug.DebugThreadGroup;
 import java.lang.ref.Reference;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -49,15 +49,15 @@ public final class MachineState
 	/** The base address for the system ROM. */
 	protected final int romBase;
 	
-	/** The JDWP Controller. */
-	protected final JDWPController jdwp;
-	
 	/** The threading model to use. */
 	protected final VMThreadModel threadingModel;
 	
 	/** The threads which are known. */
 	private final Map<Integer, NativeCPU> _vCpus =
 		new SortedTreeMap<>();
+	
+	/** The JDWP Controller. */
+	volatile JDWPController _jdwp;
 	
 	/** Attributes for {@link StaticVmAttribute}. */
 	private volatile MemHandle _staticAttributes;
@@ -77,13 +77,12 @@ public final class MachineState
 	 * @param __mem The memory state.
 	 * @param __pf The profiler, this is optional.
 	 * @param __romBase The ROM base.
-	 * @param __jdwp The JDWP connection.
 	 * @param __threadModel The threading model.
 	 * @throws NullPointerException If no memory was specified.
 	 * @since 2019/12/28
 	 */
 	public MachineState(WritableMemory __mem, ProfilerSnapshot __pf,
-		int __romBase, JDWPFactory __jdwp, VMThreadModel __threadModel)
+		int __romBase, VMThreadModel __threadModel)
 		throws NullPointerException
 	{
 		if (__mem == null)
@@ -94,12 +93,6 @@ public final class MachineState
 		this.romBase = __romBase;
 		this.threadingModel = (__threadModel == null ?
 			VMThreadModel.DEFAULT : __threadModel);
-		
-		// Open debugging connection
-		if (__jdwp != null)
-			this.jdwp = __jdwp.open(this);
-		else
-			this.jdwp = null;
 	}
 	
 	/**
@@ -176,7 +169,17 @@ public final class MachineState
 		JDWPViewKind __kind, Reference<JDWPState> __state)
 		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__type == null || __kind == null || __state == null)
+			throw new NullPointerException("NARG");
+		
+		switch (__kind)
+		{
+			case THREAD_GROUP:
+				return __type.cast(new DebugThreadGroup());
+			
+			default:
+				throw Debugging.oops(__kind);
+		}
 	}
 	
 	/**

@@ -26,14 +26,12 @@ import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
-import cc.squirreljme.jvm.summercoat.constants.ThreadPropertyType;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemoryInputStream;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.mini.MinimizedClassHeader;
-import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
 import dev.shadowtail.jarfile.TableOfContents;
 import dev.shadowtail.packfile.MinimizedPackHeader;
@@ -108,8 +106,7 @@ public class SummerCoatFactory
 		int romBase = SummerCoatFactory.SUITE_BASE_ADDR;
 		
 		// Setup non-cpu VM state
-		MachineState ms = new MachineState(vMem, __ps, romBase, __jdwp,
-			__threadModel);
+		MachineState ms = new MachineState(vMem, __ps, romBase, __threadModel);
 		MemHandleManager memHandles = ms.memHandles;
 		
 		// Load ROM file or generate dynamically for loaded classes
@@ -469,13 +466,20 @@ public class SummerCoatFactory
 			arrayBase);
 		
 		// Find the initial thread and task
-		MemHandle initThread = virtHandles.get(
+		MemHandle initThread = memHandles.get(
 			ms.staticAttribute(StaticVmAttribute.MEMHANDLE_BOOT_THREAD));
 		
 		// Setup virtual execution CPU
 		NativeCPU cpu = ms.createVmCpu(initThread);
 		cpu.enterFrame(false, startAddress,
 			virtHandles.get(bootPool).id);
+		
+		// Open debugging connection, if we are debugging
+		// We open it here since we know about our threads and otherwise and
+		// also the debugger will not ask us about things we do not yet know
+		// about as well.
+		if (__jdwp != null)
+			ms._jdwp = __jdwp.open(ms);
 		
 		// Setup virtual machine with initial thread
 		return new SummerCoatVirtualMachine(ms, cpu);
