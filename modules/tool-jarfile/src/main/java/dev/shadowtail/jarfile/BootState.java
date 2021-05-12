@@ -141,6 +141,9 @@ public final class BootState
 	/** The current boot thread. */
 	private PropertyListHandle _bootThread;
 	
+	/** The current boot task. */
+	private PropertyListHandle _bootTask;
+	
 	/** An empty I2X Table, to save space. */
 	private ListValueHandle _emptyI2XTable;
 	
@@ -160,6 +163,12 @@ public final class BootState
 	
 	/** The pure virtual handler. */
 	private MethodBinder _pureVirtual;
+	
+	/** The last loaded class, for chain linking. */
+	private ClassState _lastClass;
+	
+	/** The first class in the chain. */
+	private ClassState _firstClass;
 	
 	/**
 	 * Adds the specified class to be loaded and handled later.
@@ -499,6 +508,14 @@ public final class BootState
 		rv = new ClassState(__cl, classFile);
 		classStates.put(__cl, rv);
 		
+		// This is the new last class
+		ClassState lastClass = this._lastClass;
+		this._lastClass = rv;
+		
+		// If this is the first class in the chain, we need to start somewhere
+		if (lastClass == null)
+			this._firstClass = rv;
+		
 		// Header information to extract properties from
 		MinimizedClassHeader header = classFile.header;
 		
@@ -511,6 +528,18 @@ public final class BootState
 		// be copied
 		for (int i = 0; i < StaticClassProperty.NUM_STATIC_PROPERTIES; i++)
 			classInfo.set(i, header.get(i));
+		
+		// Link both classes together
+		if (lastClass != null)
+		{
+			ClassInfoHandle lastHandle = lastClass._classInfoHandle;
+			
+			// Doubly link together these two classes
+			lastHandle.set(ClassProperty.TYPEBRACKET_LINK_CLASS_NEXT,
+				classInfo);
+			classInfo.set(ClassProperty.TYPEBRACKET_LINK_CLASS_PREV,
+				lastHandle);
+		}
 		
 		// Everything is based on the run-time pool, so we need to load
 		// everything inside
@@ -534,8 +563,9 @@ public final class BootState
 		// Store the pointer to where the Class ROM exists in memory, but this
 		// is only valid for non-special classes
 		if (!__cl.isArray() && !__cl.isPrimitive())
-			classInfo.set(ClassProperty.MEMPTR_ROM_CLASS,
-				this._rawChunks.get(classFile.thisName()).futureAddress());
+			classInfo.set(ClassProperty.MEMPTR_ROM_CLASS_LO,
+				new BootJarPointer(this._rawChunks
+					.get(classFile.thisName()).futureAddress()));
 		
 		// Need to determine if we are Object or our super class is Object
 		// that way there can be shortcuts on resolution
@@ -1251,6 +1281,27 @@ public final class BootState
 	}
 	
 	/**
+	 * Returns the boot task.
+	 * 
+	 * @return The boot task.
+	 * @since 2021/05/11
+	 */
+	private PropertyListHandle __bootTask()
+	{
+		// Was it already setup?
+		PropertyListHandle rv = this._bootTask;
+		if (rv != null)
+			return rv;
+		
+		// Setup task
+		rv = this._memHandles.allocList(MemHandleKind.TASK,
+			TaskPropertyType.NUM_PROPERTIES);
+		this._bootTask = rv;
+		
+		return rv;
+	}
+	
+	/**
 	 * Returns the boot thread handle.
 	 * 
 	 * @return The boot thread handle.
@@ -1268,13 +1319,8 @@ public final class BootState
 			ThreadPropertyType.NUM_PROPERTIES);
 		this._bootThread = rv;
 		
-		// Setup task
-		PropertyListHandle task = this._memHandles.allocList(
-			MemHandleKind.TASK,
-			TaskPropertyType.NUM_PROPERTIES);
-		
 		// The current task
-		rv.set(ThreadPropertyType.TASK, task);
+		rv.set(ThreadPropertyType.TASK, this.__bootTask());
 		
 		// Use what was created
 		return rv;
@@ -1385,6 +1431,15 @@ public final class BootState
 		// The current boot thread (and task)
 		rv.set(StaticVmAttribute.MEMHANDLE_BOOT_THREAD,
 			this.__bootThread());
+		
+		// Any additional needed for the task
+		PropertyListHandle bootTask = this.__bootTask();
+		
+		// The first and last classes for the boot task
+		bootTask.set(TaskPropertyType.CLASS_FIRST,
+			this._firstClass._classInfoHandle);
+		bootTask.set(TaskPropertyType.CLASS_LAST,
+			this._lastClass._classInfoHandle);	
 		
 		return rv;
 	}

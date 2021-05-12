@@ -81,51 +81,63 @@ public interface ClassProperty
 	byte FUNCPTR_DEFAULT_NEW_HI =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 15;
 	
-	/** The memory pointer to the ROM class in memory. */
-	byte MEMPTR_ROM_CLASS =
+	/** The memory pointer to the ROM class in memory (low). */
+	byte MEMPTR_ROM_CLASS_LO =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 16;
+	
+	/** The memory pointer to the ROM class in memory (high). */
+	byte MEMPTR_ROM_CLASS_HI =
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 17;
 	
 	/** The cell size for array components, if this is an array. */
 	byte INT_COMPONENT_CELL_SIZE =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 17;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 18;
 	
 	/** The allocation kind for the memory handle. */
 	byte INT_MEMHANDLE_KIND =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 18;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 19;
 	
 	/** The VTable of the class. */
 	byte MEMHANDLE_VTABLE =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 19;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 20;
 	
 	/** The interface tables that are available for a class. */
 	byte MEMHANDLE_I2XTABLE =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 20;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 21;
 	
 	/** The static invocation table. */
 	byte MEMHANDLE_STABLE =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 21;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 22;
 	
 	/** The mask potential for the I2X Table. */
 	byte MASK_I2XTABLE =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 22;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 23;
 	
 	/** The root component class information. */
 	byte TYPEBRACKET_ROOT_COMPONENT =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 23;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 24;
 	
 	/** Is this class initialized? */
 	byte BOOLEAN_IS_INITIALIZED =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 24;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 25;
 	
 	/** The method pointer to the class static initializer (low). */
 	byte FUNCPTR_CLINIT_LO =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 25;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 26;
 	
 	/** The method pointer to the class static initializer (high). */
 	byte FUNCPTR_CLINIT_HI =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 26;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 27;
+	
+	/** The previous class in the class chain. */
+	byte TYPEBRACKET_LINK_CLASS_PREV =
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 28;
+	
+	/** The next class in the class chain. */
+	byte TYPEBRACKET_LINK_CLASS_NEXT =
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 29;
 	
 	/** The number of properties available. */
 	byte NUM_RUNTIME_PROPERTIES =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 27;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 30;
 }

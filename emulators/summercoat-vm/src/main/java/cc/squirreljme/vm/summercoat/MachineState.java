@@ -16,13 +16,18 @@ import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.views.JDWPView;
 import cc.squirreljme.jdwp.views.JDWPViewKind;
+import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
+import cc.squirreljme.jvm.summercoat.constants.ThreadPropertyType;
 import cc.squirreljme.jvm.summercoat.ld.mem.WritableMemory;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
+import cc.squirreljme.vm.summercoat.debug.DebugBase;
 import cc.squirreljme.vm.summercoat.debug.DebugThreadGroup;
+import cc.squirreljme.vm.summercoat.debug.DebugType;
 import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -153,9 +158,17 @@ public final class MachineState
 	@Override
 	public Object[] debuggerThreadGroups()
 	{
+		// Go through all threads and get the task handles
 		Set<MemHandle> rv = new LinkedHashSet<>();
 		for (NativeCPU cpu : this.cpus())
-			rv.add(cpu.threadInfo);
+		{
+			MemHandle threadInfo = DebugBase.handle(cpu.threadInfo,
+				MemHandleKind.VM_THREAD);
+			
+			// Make sure this is an actual task
+			rv.add(DebugBase.handle(DebugBase.getHandle(this,
+				threadInfo, ThreadPropertyType.TASK), MemHandleKind.TASK));
+		}
 		
 		return rv.toArray(new Object[rv.size()]);
 	}
@@ -175,7 +188,12 @@ public final class MachineState
 		switch (__kind)
 		{
 			case THREAD_GROUP:
-				return __type.cast(new DebugThreadGroup());
+				return __type.cast(new DebugThreadGroup(
+					new WeakReference<>(this)));
+			
+			case TYPE:
+				return __type.cast(new DebugType(
+					new WeakReference<>(this)));
 			
 			default:
 				throw Debugging.oops(__kind);
@@ -207,6 +225,17 @@ public final class MachineState
 		{
 			return this._superVisorOkay;
 		}
+	}
+	
+	/**
+	 * Returns the memory handle manager.
+	 * 
+	 * @return The memory handles.
+	 * @since 2021/05/11
+	 */
+	public final MemHandleManager memHandles()
+	{
+		return this.memHandles;
 	}
 	
 	/**

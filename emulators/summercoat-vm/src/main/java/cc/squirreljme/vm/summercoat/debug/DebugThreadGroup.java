@@ -10,7 +10,15 @@
 package cc.squirreljme.vm.summercoat.debug;
 
 import cc.squirreljme.jdwp.views.JDWPViewThreadGroup;
+import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
+import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
+import cc.squirreljme.jvm.summercoat.constants.TaskPropertyType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.summercoat.MachineState;
+import cc.squirreljme.vm.summercoat.MemHandle;
+import java.lang.ref.Reference;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Viewer for thread groups.
@@ -18,8 +26,20 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @since 2021/05/10
  */
 public class DebugThreadGroup
+	extends DebugBase
 	implements JDWPViewThreadGroup
 {
+	/**
+	 * Initializes the thread group debug viewer.
+	 * 
+	 * @param __machine The machine used.
+	 * @since 2021/05/11
+	 */
+	public DebugThreadGroup(Reference<MachineState> __machine)
+	{
+		super(__machine);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/05/10
@@ -27,7 +47,29 @@ public class DebugThreadGroup
 	@Override
 	public Object[] allTypes(Object __which)
 	{
-		throw Debugging.todo();
+		List<MemHandle> rv = new ArrayList<>(); 
+		
+		// Debug
+		Debugging.debugNote("allTypes(0x%08x)", __which);
+		
+		// Go through the entire class chain
+		MemHandle atClass = this.__getHandle(
+			DebugBase.handle(__which, MemHandleKind.TASK),
+			TaskPropertyType.CLASS_FIRST);
+		while (atClass != null)
+		{
+			// Debug
+			Debugging.debugNote("Add Class: %s", atClass);
+			
+			// Add this class
+			rv.add(atClass);
+			
+			// Go to the next class
+			atClass = this.__getHandle(atClass,
+				ClassProperty.TYPEBRACKET_LINK_CLASS_NEXT);
+		}
+		
+		return rv.toArray(new Object[rv.size()]);
 	}
 	
 	/**

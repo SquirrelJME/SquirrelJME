@@ -23,7 +23,15 @@ public interface TaskPropertyType
 	byte INVALID =
 		0;
 	
+	/** The first class. */
+	byte CLASS_FIRST =
+		1;
+	
+	/** The last class. */
+	byte CLASS_LAST =
+		2;
+	
 	/** The number of properties. */
 	byte NUM_PROPERTIES =
-		1;
+		3;
 }
