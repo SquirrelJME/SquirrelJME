@@ -49,6 +49,18 @@ public enum VMType
 	{
 		/**
 		 * {@inheritDoc}
+		 * @since 2021/05/16
+		 */
+		@Override
+		public void dumpLibrary(Task __task, boolean __isTest,
+			InputStream __in, OutputStream __out)
+			throws IOException, NullPointerException
+		{
+			throw new RuntimeException(this.name() + " cannot be dumped.");
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2020/08/15
 		 */
 		@Override
@@ -154,6 +166,18 @@ public enum VMType
 	{
 		/**
 		 * {@inheritDoc}
+		 * @since 2021/05/16
+		 */
+		@Override
+		public void dumpLibrary(Task __task, boolean __isTest,
+			InputStream __in, OutputStream __out)
+			throws IOException, NullPointerException
+		{
+			throw new RuntimeException(this.name() + " cannot be dumped.");
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2020/08/15
 		 */
 		@Override
@@ -173,7 +197,8 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void spawnJvmArguments(Task __task, JavaExecSpecFiller __execSpec,
+		public void spawnJvmArguments(Task __task,
+			JavaExecSpecFiller __execSpec,
 			String __mainClass, Map<String, String> __sysProps,
 			Path[] __libPath, Path[] __classPath, String... __args)
 			throws NullPointerException
@@ -191,6 +216,23 @@ public enum VMType
 	{
 		/**
 		 * {@inheritDoc}
+		 * @since 2021/05/16
+		 */
+		@Override
+		public void dumpLibrary(Task __task, boolean __isTest,
+			InputStream __in, OutputStream __out)
+			throws IOException, NullPointerException
+		{
+			if (__task == null || __in == null || __out == null)
+				throw new NullPointerException("NARG");
+			
+			// Run the specified command
+			this.__aotCommand(__task, __in, __out,
+				"dumpCompile", null);
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2020/08/15
 		 */
 		@Override
@@ -200,69 +242,24 @@ public enum VMType
 		{
 			if (__task == null || __in == null || __out == null)
 				throw new NullPointerException("NARG");
-			
+				
 			// Need to access the config for ROM building
 			SquirrelJMEPluginConfiguration config =
 				SquirrelJMEPluginConfiguration
 				.configuration(__task.getProject());
-			
-			// Class path is of the compiler target, it does not matter
-			Path[] classPath = VMHelpers.runClassPath(__task.getProject()
-				.getRootProject().project(":modules:aot-" +
-					this.vmName(VMNameFormat.LOWERCASE)),
-				SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED);
-			
-			// Setup arguments for compilation
+				
+			// Potential extra arguments
 			Collection<String> args = new ArrayList<>();
-			
-			// The engine to use
-			args.add("-Xcompiler:" + this.vmName(VMNameFormat.LOWERCASE));
-			
-			// The name of this JAR
-			args.add("-Xname:" + __task.getProject().getName());
-			
-			// Perform compilation
-			args.add("compile");
 			
 			// Is this a boot loader? This is never valid for tests as they
 			// are just extra libraries, it does not make sense to have them
 			// be loadable.
 			if (!__isTest && config.isBootLoader)
 				args.add("-boot");
-			
-			// Call the AOT backend
-			ExecResult exitResult = __task.getProject().javaexec(__spec ->
-				{
-					// Figure out the arguments to the JVM, it does not matter
-					// what the classpath is
-					VMType.HOSTED.spawnJvmArguments(__task,
-						new GradleJavaExecSpecFiller(__spec),
-						"cc.squirreljme.jvm.aot.Main",
-						Collections.emptyMap(),
-						classPath,
-						classPath,
-						args.toArray(new String[args.size()]));
-					
-					// Use the error stream directory
-					__spec.setErrorOutput(new GuardedOutputStream(System.err));
-					
-					// Processing is done directly from the input
-					__spec.setStandardInput(__in);
-					
-					// The caller will consume the entire output of what was
-					// processed, so
-					__spec.setStandardOutput(__out);
-					
-					// Ignore error states, let us handle it instead of Gradle
-					// so we could handle multiple different exit codes.
-					__spec.setIgnoreExitValue(true);
-				});
-			
-			// Processing the library did not work?
-			int code;
-			if ((code = exitResult.getExitValue()) != 0)
-				throw new RuntimeException(String.format(
-					"Failed to process library (exit code %d).", code));
+				
+			// Run the specified command
+			this.__aotCommand(__task, __in, __out,
+				"compile", args);
 		}
 		
 		/**
@@ -318,57 +315,17 @@ public enum VMType
 		{
 			if (__task == null || __out == null || __libs == null)
 				throw new NullPointerException("NARG");
-			
-			// Class path is of the compiler target, it does not matter
-			Path[] classPath = VMHelpers.runClassPath(__task.getProject()
-				.getRootProject().project(":modules:aot-" +
-					this.vmName(VMNameFormat.LOWERCASE)),
-				SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED);
-			
+				
 			// Setup arguments for compilation
 			Collection<String> args = new ArrayList<>();
-			
-			// The engine to use
-			args.add("-Xcompiler:" + this.vmName(VMNameFormat.LOWERCASE));
-			
-			// Perform ROM creation
-			args.add("-Xname:squirreljme");
-			args.add("rom");
 			
 			// Put down paths to libraries to link together
 			for (Path path : __libs)
 				args.add(path.toString());
-			
-			// Call the AOT backend
-			ExecResult exitResult = __task.getProject().javaexec(__spec ->
-				{
-					// Figure out the arguments to the JVM, it does not matter
-					// what the classpath is
-					VMType.HOSTED.spawnJvmArguments(__task,
-						new GradleJavaExecSpecFiller(__spec),
-						"cc.squirreljme.jvm.aot.Main",
-						Collections.emptyMap(),
-						classPath,
-						classPath,
-						args.toArray(new String[args.size()]));
-					
-					// Use the error stream directory
-					__spec.setErrorOutput(new GuardedOutputStream(System.err));
-					
-					// The caller will consume the entire output of what was
-					// processed, so
-					__spec.setStandardOutput(__out);
-					
-					// Ignore error states, let us handle it instead of Gradle
-					// so we could handle multiple different exit codes.
-					__spec.setIgnoreExitValue(true);
-				});
-			
-			// Processing the library did not work?
-			int code;
-			if ((code = exitResult.getExitValue()) != 0)
-				throw new RuntimeException(String.format(
-					"Failed to process ROM (exit code %d).", code));
+				
+			// Run the specified command
+			this.__aotCommand(__task, null, __out,
+				"rom", args);
 		}
 		
 		/**
@@ -434,6 +391,16 @@ public enum VMType
 	public final String emulatorProject()
 	{
 		return this.emulatorProject;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/05/16
+	 */
+	@Override
+	public boolean hasDumping()
+	{
+		return this == VMType.SUMMERCOAT;
 	}
 	
 	/**
@@ -629,6 +596,82 @@ public enum VMType
 			default:
 				return properName;
 		}
+	}
+	
+	/**
+	 * @param __task The task being run for.
+	 * @param __in The input source (optional).
+	 * @param __out The output source (optional).
+	 * @param __command The name of the ROM.
+	 * @param __args The arguments for the AOT command.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/05/16
+	 */
+	void __aotCommand(Task __task, InputStream __in, OutputStream __out,
+		String __command, Iterable<String> __args)
+		throws NullPointerException
+	{
+		if (__task == null || __command == null)
+			throw new NullPointerException("NARG");
+		
+		// Class path is of the compiler target, it does not matter
+		Path[] classPath = VMHelpers.runClassPath(__task.getProject()
+			.getRootProject().project(":modules:aot-" +
+				this.vmName(VMNameFormat.LOWERCASE)),
+			SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED);
+		
+		// Setup arguments for compilation
+		Collection<String> args = new ArrayList<>();
+		
+		// The engine to use
+		args.add("-Xcompiler:" + this.vmName(VMNameFormat.LOWERCASE));
+		
+		// The name of this JAR
+		args.add("-Xname:" + __task.getProject().getName());
+		
+		// Our run command and any additional arguments
+		args.add(__command);
+		if (__args != null)
+			for (String arg : __args)
+				args.add(arg);
+		
+		// Call the AOT backend
+		ExecResult exitResult = __task.getProject().javaexec(__spec ->
+			{
+				// Figure out the arguments to the JVM, it does not matter
+				// what the classpath is
+				VMType.HOSTED.spawnJvmArguments(__task,
+					new GradleJavaExecSpecFiller(__spec),
+					"cc.squirreljme.jvm.aot.Main",
+					Collections.emptyMap(),
+					classPath,
+					classPath,
+					args.toArray(new String[args.size()]));
+				
+				// Use the error stream directory
+				__spec.setErrorOutput(new GuardedOutputStream(System.err));
+				
+				// Use the given input
+				if (__in != null)
+					__spec.setStandardInput(__in);
+				
+				// Use output if specified
+				if (__out != null)
+					__spec.setStandardOutput(__out);
+				
+				// Ignore error states, let us handle it instead of Gradle
+				// so we could handle multiple different exit codes.
+				__spec.setIgnoreExitValue(true);
+			});
+		
+		// Processing the library did not work?
+		int code;
+		if ((code = exitResult.getExitValue()) != 0)
+			throw new RuntimeException(String.format(
+				"Failed to run the AOT processor for %s. " +
+				 "(exit code %d, %s %s).",
+				__task.getName(), code, __command,
+				(__args == null ? "" : __args)));
 	}
 	
 	/**

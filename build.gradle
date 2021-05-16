@@ -1,5 +1,3 @@
-import java.nio.file.Paths
-
 apply plugin: 'idea'
 apply plugin: 'cc.squirreljme.plugin.general'
 

@@ -32,6 +32,29 @@ import org.gradle.api.tasks.SourceSet;
 public interface VMSpecifier
 {
 	/**
+	 * Dumps the library.
+	 * 
+	 * @param __task The task running this, may be used to launch a VM.
+	 * @param __isTest Is this a test run?
+	 * @param __in The input data, this may be a JAR or otherwise.
+	 * @param __out The destination output file.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/05/16
+	 */
+	void dumpLibrary(Task __task, boolean __isTest, InputStream __in,
+		OutputStream __out)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * Can this be dumped?
+	 * 
+	 * @return If this can be dumped.
+	 * @since 2021/05/16
+	 */
+	boolean hasDumping();
+	
+	/**
 	 * Is there a ROM task for the VM?
 	 * 
 	 * @return If a ROM is available.

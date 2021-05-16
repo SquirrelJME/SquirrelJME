@@ -19,6 +19,7 @@
       <w>csascii</w>
       <w>csibm</w>
       <w>csisolatin</w>
+      <w>deques</w>
       <w>dlet</w>
       <w>dlets</w>
       <w>dsysprop</w>
@@ -89,6 +90,7 @@
       <w>springcoat</w>
       <w>squirreljme</w>
       <w>stdint</w>
+      <w>subdeques</w>
       <w>summercoat</w>
       <w>sysprop</w>
       <w>tabbedpanes</w>
@@ -104,9 +106,11 @@
       <w>vmtypes</w>
       <w>vtable</w>
       <w>wikipedia</w>
+      <w>xcompiler</w>
       <w>xemulator</w>
       <w>xjdwp</w>
       <w>xlibraries</w>
+      <w>xname</w>
       <w>xsnapshot</w>
       <w>xtable</w>
       <w>xthread</w>
