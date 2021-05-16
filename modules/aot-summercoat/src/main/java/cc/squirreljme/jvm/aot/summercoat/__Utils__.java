@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.summercoat;
 
+import cc.squirreljme.jvm.summercoat.constants.JarProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 
 /**
@@ -103,6 +104,53 @@ final class __Utils__
 				return "isRootIsObject";
 			case StaticClassProperty.BOOLEAN_IS_PRIMITIVE:
 				return "isPrimitive";
+			
+			default:
+				return String.format("UNKNOWN#%d", __prop);
+		}
+	}
+	
+	/**
+	 * Returns the jar property as a string.
+	 * 
+	 * @param __prop The {@link JarProperty}
+	 * @return The string form of the property.
+	 * @since 2021/05/16
+	 */
+	public static Object jarPropertyToString(int __prop)
+	{
+		switch (__prop)
+		{
+			case JarProperty.INT_JAR_VERSION_ID:
+				return "jarVersionId";
+			case JarProperty.COUNT_TOC:
+				return "tableCount";
+			case JarProperty.OFFSET_TOC:
+				return "offsetOfTable";
+			case JarProperty.SIZE_TOC:
+				return "sizeOfTable";
+			case JarProperty.RCDX_MANIFEST:
+				return "indexOfManifest";
+			case JarProperty.OFFSET_BOOT_INIT:
+				return "offsetOfBootInit";
+			case JarProperty.SIZE_BOOT_INIT:
+				return "sizeOfBootInit";
+			case JarProperty.MEMHANDLEID_START_POOL:
+				return "memHandleStartPool";
+			case JarProperty.RCDX_START_CLASS:
+				return "indexOfStartClass";
+			case JarProperty.OFFSET_STATIC_POOL:
+				return "offsetOfStaticPool";
+			case JarProperty.SIZE_STATIC_POOL:
+				return "sizeOfStaticPool";
+			case JarProperty.OFFSET_RUNTIME_POOL:
+				return "offsetOfRuntimePool";
+			case JarProperty.SIZE_RUNTIME_POOL:
+				return "sizeOfRuntimePool";
+			case JarProperty.SIZE_BASE_ARRAY:
+				return "sizeBaseArray";
+			case JarProperty.MEMHANDLEID_VM_ATTRIBUTES:
+				return "memHandleVmAttributes";
 			
 			default:
 				return String.format("UNKNOWN#%d", __prop);

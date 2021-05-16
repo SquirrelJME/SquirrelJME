@@ -24,6 +24,7 @@ import dev.shadowtail.classfile.mini.DualPoolEncoder;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedClassHeader;
 import dev.shadowtail.classfile.mini.MinimizedField;
+import dev.shadowtail.classfile.mini.MinimizedMethod;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.packfile.PackMinimizer;
 import java.io.IOException;
@@ -78,8 +79,14 @@ public class SummerCoatBackend
 		JarRom jar = new JarRom(0, __name,
 			new ByteArrayMemory(0, __inGlob, false));
 		
-		// Decode the dual pool
+		// Notice
+		__out.printf("JarRom: %s%n", __name);
+		
+		// Dump the JAR header
 		HeaderStruct header = jar.header();
+		this.__dumpJarHeader(header, __out);
+		
+		// Decode the dual pool
 		DualClassRuntimePool dualPool = DualPoolEncoder.decode(__inGlob,
 			header.getProperty(JarProperty.OFFSET_STATIC_POOL),
 				header.getProperty(JarProperty.SIZE_STATIC_POOL),
@@ -209,11 +216,10 @@ public class SummerCoatBackend
 			this.__dumpField(f, __out);
 		
 		// Dump methods
-		/*for (MinimizedMethod m : __class.methods(true))
+		for (MinimizedMethod m : __class.methods(true))
 			this.__dumpMethod(m, __out);
 		for (MinimizedMethod m : __class.methods(false))
-			this.__dumpMethod(m, __out);*/
-		__out.println();
+			this.__dumpMethod(m, __out);
 		
 		// End of class
 		__out.println();
@@ -253,6 +259,49 @@ public class SummerCoatBackend
 				__header.get(i), __header.get(i));
 		
 		// Spacer
+		__out.println();
+	}
+	
+	/**
+	 * Dumps the JAR header.
+	 * 
+	 * @param __header The header to dump.
+	 * @param __out The output.
+	 * @since 2021/05/16
+	 */
+	private void __dumpJarHeader(HeaderStruct __header, PrintStream __out)
+	{
+		__out.println("Class Properties:");
+		for (int i = 0, n = __header.numProperties(); i < n; i++)
+			__out.printf("    %2d %-26s: 0x%08x / %d%n",
+				i, __Utils__.jarPropertyToString(i),
+				__header.getProperty(i), __header.getProperty(i));
+		
+		// Spacer
+		__out.println();
+	}
+	
+	/**
+	 * Dumps the method code.
+	 * 
+	 * @param __m The method to dump.
+	 * @param __out The output.
+	 * @since 2021/05/16
+	 */
+	private void __dumpMethod(MinimizedMethod __m, PrintStream __out)
+	{
+		__out.printf("Method %s:%n", __m.nameAndType());
+		__out.printf("    flags : %s%n", __m.flags());
+		__out.printf("    index : %s%n", __m.index);
+		
+		// Is there code to be dumped?
+		byte[] code = __m.code();
+		if (code != null && code.length > 0)
+		{
+			__out.printf("    code  :%n");
+			HexDumpOutputStream.dump(__out, __m.code());
+		}
+		
 		__out.println();
 	}
 }

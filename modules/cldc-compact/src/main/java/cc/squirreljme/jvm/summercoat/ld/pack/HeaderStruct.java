@@ -70,6 +70,17 @@ public final class HeaderStruct
 	}
 	
 	/**
+	 * Returns the number of properties.
+	 * 
+	 * @return The number of properties.
+	 * @since 2021/05/16
+	 */
+	public final int numProperties()
+	{
+		return this._properties.length;
+	}
+	
+	/**
 	 * Decodes the header.
 	 * 
 	 * @param __in The input to decode from.
