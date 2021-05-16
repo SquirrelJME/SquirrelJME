@@ -7,10 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.summercoat;
+package cc.squirreljme.jvm.summercoat.ld.mem;
 
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
-import cc.squirreljme.jvm.summercoat.ld.mem.AbstractWritableMemory;
 
 /**
  * This is a region of memory which is backed by a byte array, this may or
@@ -271,26 +270,27 @@ public final class ByteArrayMemory
 	 * @param __addr The address to write to.
 	 * @param __write If this is being written to.
 	 * @param __len The number of bytes to write.
-	 * @throws VMMemoryAccessException If the memory access is invalid.
+	 * @throws MemoryAccessException If the memory access is invalid.
 	 * @since 2021/02/14
 	 */
 	private void __check(long __addr, boolean __write, int __len)
-		throws VMMemoryAccessException
+		throws MemoryAccessException
 	{
 		// Not able to write to ROM memory areas
 		if (__write && !this.allowWrites)
-			throw new VMMemoryAccessException("Cannot write to ROM.");
+			throw new MemoryAccessException(__addr);
 		
-		// Check if the address is within bounds.
+		// {@squirreljme.error ZZ58 Memory access out of bounds. (The address;
+		// the length; the size.})
 		if (__addr < 0 || __addr > Integer.MAX_VALUE ||
 			(__addr + __len) > this.size)
-			throw new VMMemoryAccessException(
-				String.format("Invalid Access: %d + %d in %d",
+			throw new MemoryAccessException(__addr, 
+				String.format("ZZ58 %d + %d in %d",
 					__addr, __len, this.size));
 		
-		// Cannot read/write from unaligned memory for a given type
+		// {@squirreljme.error ZZ57 Unaligned byte array access.}
 		if ((__addr % __len) != 0)
-			throw new VMMemoryAccessException("Unaligned Access: " + __addr);
+			throw new MemoryAccessException(__addr, "ZZ57");
 	}
 }
 

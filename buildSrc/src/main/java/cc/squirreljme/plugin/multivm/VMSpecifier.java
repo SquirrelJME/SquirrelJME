@@ -119,7 +119,7 @@ public interface VMSpecifier
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/21
 	 */
-	Iterable<Task> processLibraryDependencies(VMLibraryTask __task)
+	Iterable<Task> processLibraryDependencies(VMExecutableTask __task)
 		throws NullPointerException;
 	
 	/**

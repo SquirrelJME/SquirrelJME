@@ -268,7 +268,7 @@ public enum VMType
 		 */
 		@Override
 		public Iterable<Task> processLibraryDependencies(
-			VMLibraryTask __task)
+			VMExecutableTask __task)
 			throws NullPointerException
 		{
 			Project project = __task.getProject().getRootProject()
@@ -451,7 +451,7 @@ public enum VMType
 	 */
 	@Override
 	public Iterable<Task> processLibraryDependencies(
-		VMLibraryTask __task)
+		VMExecutableTask __task)
 		throws NullPointerException
 	{
 		return Collections.emptyList();

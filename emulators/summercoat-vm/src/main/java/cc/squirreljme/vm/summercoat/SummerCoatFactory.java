@@ -26,6 +26,7 @@ import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
+import cc.squirreljme.jvm.summercoat.ld.mem.ByteArrayMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemoryInputStream;
 import cc.squirreljme.runtime.cldc.debug.Debugging;

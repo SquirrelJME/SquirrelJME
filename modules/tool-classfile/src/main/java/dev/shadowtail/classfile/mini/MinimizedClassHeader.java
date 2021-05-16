@@ -236,6 +236,17 @@ public final class MinimizedClassHeader
 	}
 	
 	/**
+	 * Returns the number of properties.
+	 * 
+	 * @return The number of properties.
+	 * @since 2021/05/16
+	 */
+	public final int numProperties()
+	{
+		return this._properties.length;
+	}
+	
+	/**
 	 * Decodes the minimized class header.
 	 *
 	 * @param __is The bytes to decode from.
@@ -255,11 +266,12 @@ public final class MinimizedClassHeader
 		DataInputStream dis = new DataInputStream(__is);
 		
 		// {@squirreljme.error JC04 Invalid minimized class magic number.
-		// (The magic number)}
+		// (The magic number; The expected magic)}
 		int magic;
 		if (ClassInfoConstants.CLASS_MAGIC_NUMBER != (magic = dis.readInt()))
-			throw new InvalidClassFormatException(String.format("JC04 %08x",
-				magic));
+			throw new InvalidClassFormatException(String.format(
+				"JC04 %08x %08x",
+				magic, ClassInfoConstants.CLASS_MAGIC_NUMBER));
 		
 		// {@squirreljme.error JC4u Cannot decode class because the version
 		// identifier is not known. (The format version of the class)}

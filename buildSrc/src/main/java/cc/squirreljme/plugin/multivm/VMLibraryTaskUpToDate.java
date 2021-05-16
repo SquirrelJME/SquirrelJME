@@ -58,7 +58,7 @@ public class VMLibraryTaskUpToDate
 		
 		// Determine if any part of the compiler was not considered up-to-date
 		for (Task dep : this.vmType.processLibraryDependencies(
-			(VMLibraryTask)__task))
+			(VMExecutableTask)__task))
 		{
 			for (File f : dep.getOutputs().getFiles().getFiles())
 			{

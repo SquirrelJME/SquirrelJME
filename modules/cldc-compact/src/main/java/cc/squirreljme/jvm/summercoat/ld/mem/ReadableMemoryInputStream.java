@@ -158,23 +158,29 @@ public final class ReadableMemoryInputStream
 		long length = this.length;
 		long address = this.address;
 		
+		// Is already at EOF
+		if (at >= length)
+			return -1;
+		
 		// Read in all bytes
 		ReadableMemory memory = this.memory;
+		long from = address + at;
 		for (int i = 0; i < __l; i++)
 		{
 			// EOF?
 			if (at >= length)
 			{
-				this._at = at + i;
+				this._at = at;
 				return (i == 0 ? -1 : i);
 			}
 			
 			// Read in
-			__b[__o++] = (byte)memory.memReadByte(address + at + i);
+			__b[__o++] = (byte)memory.memReadByte(from++);
+			at++;
 		}
 		
 		// Count
-		this._at = at + __l;
+		this._at = at;
 		return __l;
 	}
 	

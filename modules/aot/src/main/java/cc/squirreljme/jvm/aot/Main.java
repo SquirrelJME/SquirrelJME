@@ -18,6 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
@@ -126,7 +127,7 @@ public class Main
 					
 					// Dump the result of "compile"
 				case "dumpCompile":
-					Main.dumpCompile(backend, in, out, name, args);
+					Main.dumpCompile(backend, in, out, name);
 					break;
 					
 					// Link multiple libraries into one
@@ -149,20 +150,46 @@ public class Main
 	 * @param __inGlob The input glob.
 	 * @param __out Where to write the output.
 	 * @param __name The name of the Glob.
-	 * @param __args The arguments to the call.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/05/16
 	 */
 	private static void dumpCompile(Backend __backend, InputStream __inGlob,
-		OutputStream __out, String __name, Deque<String> __args)
+		OutputStream __out, String __name)
 		throws IOException, NullPointerException
 	{
 		if (__backend == null || __inGlob == null || __out == null ||
-			__name == null || __args == null)
+			__name == null)
 			throw new NullPointerException("NARG");
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		// Read in the entire contents of the data
+		byte[] dump;
+		try (InputStream in = __inGlob;
+			ByteArrayOutputStream baos = new ByteArrayOutputStream(
+				Math.max(4096, __inGlob.available())))
+		{
+			// Load in a copy
+			byte[] buf = new byte[8192];
+			for (;;)
+			{
+				int rc = in.read(buf);
+				
+				// EOF?
+				if (rc < 0)
+					break;
+				
+				baos.write(buf, 0, rc);
+			}
+			
+			// Write output
+			dump = baos.toByteArray();
+		}
+		
+		// Dump the output
+		try (PrintStream out = new PrintStream(__out, true))
+		{
+			__backend.dumpGlob(dump, __name, out);
+		}
 	}
 	
 	/**
