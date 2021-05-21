@@ -70,7 +70,7 @@ public class VMDumpLibraryTask
 		
 		// The output depends on the task and its source set
 		this.getOutputs().file(this.getProject().provider(
-			() -> Paths.get(file.get() + ".dump").toFile()));
+			() -> Paths.get(file.get() + ".yml").toFile()));
 		this.getOutputs().upToDateWhen(
 			new VMLibraryTaskUpToDate(this.vmType));
 		
