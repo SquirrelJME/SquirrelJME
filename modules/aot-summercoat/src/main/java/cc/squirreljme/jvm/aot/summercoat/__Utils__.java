@@ -117,7 +117,7 @@ final class __Utils__
 	 * @return The string form of the property.
 	 * @since 2021/05/16
 	 */
-	public static Object jarPropertyToString(int __prop)
+	public static String jarPropertyToString(int __prop)
 	{
 		switch (__prop)
 		{
