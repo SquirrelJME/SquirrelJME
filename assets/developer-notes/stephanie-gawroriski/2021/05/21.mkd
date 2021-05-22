@@ -1,0 +1,6 @@
+# 2021/05/21
+
+## 07:48
+
+What if for the class dumping stuff I output to YML, it is an easy enough and
+readable format to write data to along with parsing.
