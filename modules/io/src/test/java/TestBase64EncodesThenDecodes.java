@@ -91,6 +91,13 @@ public class TestBase64EncodesThenDecodes
 				redo = baos.toByteArray();
 			}
 			
+			for (int j = 0; j < i; j++)
+			{
+				Debugging.debugNote("%8s ? %8s",
+					Integer.toString(data[j] & 0xFF, 2),
+					Integer.toString(redo[j] & 0xFF, 2));
+			}
+			
 			// These two must be the same
 			if (!Arrays.equals(data, redo))
 			{

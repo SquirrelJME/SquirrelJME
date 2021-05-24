@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -117,45 +118,43 @@ public final class Base64Encoder
 			int converted = 0;
 			while (converted < __l)
 			{
-				// Is there enough bits to eat?
-				if (count >= Base64Encoder._BIT_COUNT || hitEof)
+				// Determine the character to output
+				if (count >= Base64Encoder._BIT_COUNT)
 				{
-					// Is there padding left to put in
-					if (paddingLeft > 0)
-					{
-						__c[__o + (converted++)] = '=';
-						
-						// We took this padding
-						paddingLeft--;
-						continue;
-					}
+					// Do we need to calculate the padding?
+					if (hitEof && paddingLeft < 0)
+						paddingLeft = (count == 24 ? 0 :
+							(count > 16 ? 1 : 2));
 					
-					// No data left to encode? Stop now
-					if (hitEof && (count == 0 || paddingLeft == 0))
-						break;
-					
-					// Determine the character
+					// Output encoded character
 					__c[__o + (converted++)] =
 						alphabet[bitStream & Base64Encoder._CHAR_MASK];
-					
-					// Determine the amount of padding to add
-					if (hitEof)
-						paddingLeft = (count == 0 || count == 24 ? 0 :
-							(count > 16 ? 1 : 2));
 					
 					// Eat up the bit stream
 					bitStream >>>= Base64Encoder._BIT_COUNT;
 					count -= Base64Encoder._BIT_COUNT;
-					
-					// No point reading if we already know to stop
-					if (hitEof)
-						continue;
 				}
 				
-				// Read in more data
-				int read = in.read();
+				// No padding left to read, we stop
+				else if (paddingLeft == 0)
+					break;
+				
+				// Is there padding left to put in
+				else if (paddingLeft > 0)
+				{
+					__c[__o + (converted++)] = '=';
+					
+					// We took this padding
+					paddingLeft--;
+					continue;
+				}
+				
+				// We could overflow our own storage, so try again
+				if (count + 8 > 24 || hitEof)
+					continue;
 				
 				// If EOF hit, then we will pad
+				int read = in.read();
 				if (read < 0)
 					hitEof = true;
 				
@@ -167,7 +166,8 @@ public final class Base64Encoder
 				}
 			}
 			
-			return (hitEof && converted == 0 ? -1 : converted);
+			return (hitEof && paddingLeft == 0 && converted == 0 ? -1 :
+				converted);
 		}
 		
 		// Always store the fields back when done
