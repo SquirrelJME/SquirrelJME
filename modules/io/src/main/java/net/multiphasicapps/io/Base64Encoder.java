@@ -131,16 +131,17 @@ public final class Base64Encoder
 					}
 					
 					// No data left to encode? Stop now
-					if (hitEof && count == 0)
-						return (converted > 0 ? converted : -1);
+					if (hitEof && (count == 0 || paddingLeft == 0))
+						break;
 					
 					// Determine the character
 					__c[__o + (converted++)] =
 						alphabet[bitStream & Base64Encoder._CHAR_MASK];
 					
 					// Determine the amount of padding to add
-					if (hitEof && paddingLeft < 0)
-						paddingLeft = (count > 8 ? 2 : (count > 0 ? 1 : 0));
+					if (hitEof)
+						paddingLeft = (count == 0 || count == 24 ? 0 :
+							(count > 16 ? 1 : 2));
 					
 					// Eat up the bit stream
 					bitStream >>>= Base64Encoder._BIT_COUNT;
