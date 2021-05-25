@@ -49,6 +49,10 @@ public final class Base64Encoder
 	byte _paddingLeft =
 		-1;
 	
+	/** Bytes converted. */
+	int _totalBytes =
+		0;
+	
 	/**
 	 * Initializes the base64 encoder, using the basic alphabet.
 	 * 
@@ -111,6 +115,7 @@ public final class Base64Encoder
 		byte count = this._count;
 		boolean hitEof = this._hitEof;
 		int paddingLeft = this._paddingLeft;
+		int totalBytes = this._totalBytes;
 		
 		// We want to restore the data fields back when we are done reading
 		try
@@ -118,21 +123,32 @@ public final class Base64Encoder
 			int converted = 0;
 			while (converted < __l)
 			{
+				Debugging.debugNote("cv=%2d bs=%12s " +
+				 	"bn=%2d " +
+					"eo=%b pl=%d _l=%d",
+					converted,
+					"0b" + Integer.toString(bitStream, 2),
+					count, hitEof, paddingLeft, __l);
+					
 				// Determine the character to output
-				if (count >= Base64Encoder._BIT_COUNT)
+				if (count >= Base64Encoder._BIT_COUNT ||
+					(hitEof && count > 0))
 				{
-					// Do we need to calculate the padding?
-					if (hitEof && paddingLeft < 0)
-						paddingLeft = (count == 24 ? 0 :
-							(count > 16 ? 1 : 2));
+					// We want the upper bits!
+					int downShift = Math.max(0,
+						count - Base64Encoder._BIT_COUNT);
+					int upShift = (count < Base64Encoder._BIT_COUNT ?
+						Base64Encoder._BIT_COUNT - count: 0);
 					
 					// Output encoded character
-					__c[__o + (converted++)] =
-						alphabet[bitStream & Base64Encoder._CHAR_MASK];
+					__c[__o + (converted++)] = alphabet[
+						((bitStream >>> downShift) << upShift) &
+							Base64Encoder._CHAR_MASK];
 					
 					// Eat up the bit stream
-					bitStream >>>= Base64Encoder._BIT_COUNT;
-					count -= Base64Encoder._BIT_COUNT;
+					bitStream &= ~(Base64Encoder._CHAR_MASK << downShift);
+					count = (byte)(count < Base64Encoder._BIT_COUNT ? 0 :
+						count - Base64Encoder._BIT_COUNT);
 				}
 				
 				// No padding left to read, we stop
@@ -156,13 +172,26 @@ public final class Base64Encoder
 				// If EOF hit, then we will pad
 				int read = in.read();
 				if (read < 0)
+				{
 					hitEof = true;
+					
+					// How much padding to place in?
+					switch (totalBytes % 3)
+					{
+						case 0: paddingLeft = 0; break;
+						case 1: paddingLeft = 2; break;
+						case 2: paddingLeft = 1; break;
+					}
+				}
 				
 				// Add on top of the stream
 				else
 				{
-					bitStream |= (read & 0xFF) << count;
+					bitStream <<= count;
+					bitStream |= (read & 0xFF);
 					count += 8;
+					
+					totalBytes++;
 				}
 			}
 			
@@ -177,6 +206,7 @@ public final class Base64Encoder
 			this._count = count;
 			this._hitEof = hitEof;
 			this._paddingLeft = (byte)paddingLeft;
+			this._totalBytes = totalBytes;
 		}
 	}
 }
