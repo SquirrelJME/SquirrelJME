@@ -123,13 +123,6 @@ public final class Base64Encoder
 			int converted = 0;
 			while (converted < __l)
 			{
-				Debugging.debugNote("cv=%2d bs=%12s " +
-				 	"bn=%2d " +
-					"eo=%b pl=%d _l=%d",
-					converted,
-					"0b" + Integer.toString(bitStream, 2),
-					count, hitEof, paddingLeft, __l);
-					
 				// Determine the character to output
 				if (count >= Base64Encoder._BIT_COUNT ||
 					(hitEof && count > 0))
@@ -146,10 +139,6 @@ public final class Base64Encoder
 						value <<= Base64Encoder._BIT_COUNT - count;
 					
 					// Output encoded character
-					Debugging.debugNote("Value 0b%06d %b %d",
-						Integer.valueOf(
-							Integer.toString(value, 2), 10),
-						hitEof, count);
 					__c[__o + (converted++)] = alphabet[value];
 					
 					// Eat up the bit stream
