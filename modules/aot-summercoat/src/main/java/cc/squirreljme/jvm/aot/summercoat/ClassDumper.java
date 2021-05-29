@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Iterator;
-import net.multiphasicapps.classfile.ClassFlags;
 import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.io.Base64Alphabet;
 import net.multiphasicapps.io.Base64Encoder;
@@ -179,37 +178,60 @@ public final class ClassDumper
 		this.__dumpHeader(__indent, __class.header, __out);
 		
 		// Dump fields
-		for (MinimizedField f : __class.fields(true))
-			this.__dumpField(f, __out);
-		for (MinimizedField f : __class.fields(false))
-			this.__dumpField(f, __out);
+		this.__dumpFields(__indent, "fieldStatic",
+			__class.fields(true));
+		this.__dumpFields(__indent, "fieldInstance",
+			__class.fields(false));
 		
 		// Dump methods
 		for (MinimizedMethod m : __class.methods(true))
-			this.__dumpMethod(m, __out);
+			this.__dumpMethod(__indent, m, __out);
 		for (MinimizedMethod m : __class.methods(false))
-			this.__dumpMethod(m, __out);
-		
-		// End of class
-		__out.println();
+			this.__dumpMethod(__indent, m, __out);
 	}
 	
 	/**
 	 * Dumps the given field.
 	 * 
+	 * @param __indent The indentation.
 	 * @param __f The field to dump.
-	 * @param __out The output.
 	 * @since 2021/05/16
 	 */
-	private void __dumpField(MinimizedField __f, PrintStream __out)
+	private void __dumpField(int __indent, MinimizedField __f)
 	{
-		__out.printf("Field %s:%n", __f.nameAndType());
-		__out.printf("    flags : %s%n", __f.flags());
-		__out.printf("    type  : %s%n", __f.datatype);
-		__out.printf("    value : %s%n", __f.value);
-		__out.printf("    size  : %s%n", __f.size);
-		__out.printf("    offset: %s%n", __f.offset);
-		__out.println();
+		this.__print(__indent, String.format("- %s %s", __f.name, __f.type),
+			"");
+		
+		this.__print(__indent + 1, "flags", "");
+		this.__printList(__indent + 2, __f.flags());
+		
+		this.__print(__indent + 1, "type", "%s",
+			__f.datatype);
+		this.__print(__indent + 1, "value", "%s",
+			__f.value);
+		this.__print(__indent + 1, "size", "%d",
+			__f.size);
+		this.__print(__indent + 1, "offset", "%d",
+			__f.offset);
+	}
+	
+	/**
+	 * Dumps the given fields.
+	 * 
+	 * @param __indent The indentation.
+	 * @param __key The key for this group.
+	 * @param __fields The fields to dump.
+	 * @since 2021/05/29
+	 */
+	private void __dumpFields(int __indent, String __key,
+		MinimizedField... __fields)
+	{
+		if (__fields == null || __fields.length == 0)
+			return;
+		
+		this.__print(__indent, __key, "");
+		for (MinimizedField f : __fields)
+			this.__dumpField(__indent + 1, f);
 	}
 	
 	/**
@@ -228,9 +250,6 @@ public final class ClassDumper
 			this.__print(__indent + 1,
 				__Utils__.classPropertyToString(i),
 				"%#010x", __header.get(i));
-		
-		// Spacer
-		__out.println();
 	}
 	
 	/**
@@ -250,12 +269,13 @@ public final class ClassDumper
 	
 	/**
 	 * Dumps the method code.
-	 * 
+	 *
+	 * @param __indent The indentation.
 	 * @param __m The method to dump.
 	 * @param __out The output.
 	 * @since 2021/05/16
 	 */
-	private void __dumpMethod(MinimizedMethod __m, PrintStream __out)
+	private void __dumpMethod(int __indent, MinimizedMethod __m, PrintStream __out)
 	{
 		__out.printf("Method %s:%n", __m.nameAndType());
 		__out.printf("    flags : %s%n", __m.flags());
