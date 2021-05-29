@@ -127,6 +127,10 @@ Information:
  * [SquirrelJME Mastodon](https://mastodon.online/@SquirrelJME)
  * Locations where you can get support:
    * [Discord](https://discord.gg/9PkMMKt)
+   * _LiberaChat (IRC)_ (Bridged to _Discord_)
+     * [#squirreljme](ircs://irc.libera.chat:6697/squirreljme) -- Main Support
+     * [#squirreljme-softwares](ircs://irc.libera.chat:6697/squirreljme-software) -- Software channel
+     * [##squirreljme](ircs://irc.libera.chat:6697/#squirreljme) -- Off-Topic
    * [Reddit](https://reddit.com/r/SquirrelJME)
  * Front facing social media:
    * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA/)
