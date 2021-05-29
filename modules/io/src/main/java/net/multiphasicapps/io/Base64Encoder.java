@@ -112,7 +112,7 @@ public final class Base64Encoder
 		char[] alphabet = this._alphabet;
 		
 		int bitStream = this._bitStream;
-		byte count = this._count;
+		int count = this._count;
 		boolean hitEof = this._hitEof;
 		int paddingLeft = this._paddingLeft;
 		int totalBytes = this._totalBytes;
@@ -137,18 +137,24 @@ public final class Base64Encoder
 					// We want the upper bits!
 					int downShift = Math.max(0,
 						count - Base64Encoder._BIT_COUNT);
-					int upShift = (count < Base64Encoder._BIT_COUNT ?
-						Base64Encoder._BIT_COUNT - count: 0);
+					
+					// Read in value, if it is too short then shift it up
+					// and add zero padding accordingly
+					int value = (bitStream >>> downShift) &
+						Base64Encoder._CHAR_MASK;
+					if (hitEof && count < Base64Encoder._BIT_COUNT)
+						value <<= Base64Encoder._BIT_COUNT - count;
 					
 					// Output encoded character
-					__c[__o + (converted++)] = alphabet[
-						((bitStream >>> downShift) << upShift) &
-							Base64Encoder._CHAR_MASK];
+					Debugging.debugNote("Value 0b%06d %b %d",
+						Integer.valueOf(
+							Integer.toString(value, 2), 10),
+						hitEof, count);
+					__c[__o + (converted++)] = alphabet[value];
 					
 					// Eat up the bit stream
-					bitStream &= ~(Base64Encoder._CHAR_MASK << downShift);
-					count = (byte)(count < Base64Encoder._BIT_COUNT ? 0 :
-						count - Base64Encoder._BIT_COUNT);
+					count = Math.max(0, count - Base64Encoder._BIT_COUNT);
+					bitStream &= ~(-1 << downShift);
 				}
 				
 				// No padding left to read, we stop
@@ -184,10 +190,10 @@ public final class Base64Encoder
 					}
 				}
 				
-				// Add on top of the stream
+				// When adding bytes push below
 				else
 				{
-					bitStream <<= count;
+					bitStream <<= 8;
 					bitStream |= (read & 0xFF);
 					count += 8;
 					
@@ -203,7 +209,7 @@ public final class Base64Encoder
 		finally
 		{
 			this._bitStream = bitStream;
-			this._count = count;
+			this._count = (byte)count;
 			this._hitEof = hitEof;
 			this._paddingLeft = (byte)paddingLeft;
 			this._totalBytes = totalBytes;
