@@ -12,13 +12,13 @@ package cc.squirreljme.jvm.aot.summercoat;
 import cc.squirreljme.jvm.summercoat.constants.JarProperty;
 import cc.squirreljme.jvm.summercoat.ld.pack.HeaderStruct;
 import cc.squirreljme.jvm.summercoat.ld.pack.JarRom;
-import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
 import dev.shadowtail.classfile.mini.DualPoolEncoder;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedClassHeader;
 import dev.shadowtail.classfile.mini.MinimizedField;
 import dev.shadowtail.classfile.mini.MinimizedMethod;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -36,11 +36,11 @@ public final class ClassDumper
 {
 	/** The size of each line, used for base64 representation. */
 	private static final int _LINE_SIZE =
-		78;
+		76;
 	
 	/** The size of tabs. */
 	private static final int _TAB_SIZE =
-		4;
+		3;
 	
 	/** Minimum line size. */
 	private static final int _MIN_LINE_SIZE =
@@ -150,9 +150,11 @@ public final class ClassDumper
 	 * 
 	 * @param __indent The indentation.
 	 * @param __class The class to dump.
+	 * @throws IOException On read/write errors.
 	 * @since 2021/05/16
 	 */
 	private void __dumpClass(int __indent, MinimizedClassFile __class)
+		throws IOException
 	{
 		PrintStream __out = this.out; 
 		
@@ -184,10 +186,10 @@ public final class ClassDumper
 			__class.fields(false));
 		
 		// Dump methods
-		for (MinimizedMethod m : __class.methods(true))
-			this.__dumpMethod(__indent, m, __out);
-		for (MinimizedMethod m : __class.methods(false))
-			this.__dumpMethod(__indent, m, __out);
+		this.__dumpMethods(__indent, "methodStatic",
+			__class.methods(true));
+		this.__dumpMethods(__indent, "methodInstance",
+			__class.methods(false));
 	}
 	
 	/**
@@ -199,12 +201,15 @@ public final class ClassDumper
 	 */
 	private void __dumpField(int __indent, MinimizedField __f)
 	{
+		// Key
 		this.__print(__indent, String.format("- %s %s", __f.name, __f.type),
 			"");
 		
+		// Flags
 		this.__print(__indent + 1, "flags", "");
 		this.__printList(__indent + 2, __f.flags());
 		
+		// Other properties
 		this.__print(__indent + 1, "type", "%s",
 			__f.datatype);
 		this.__print(__indent + 1, "value", "%s",
@@ -272,24 +277,52 @@ public final class ClassDumper
 	 *
 	 * @param __indent The indentation.
 	 * @param __m The method to dump.
-	 * @param __out The output.
+	 * @throws IOException On read/write errors. 
 	 * @since 2021/05/16
 	 */
-	private void __dumpMethod(int __indent, MinimizedMethod __m, PrintStream __out)
+	private void __dumpMethod(int __indent, MinimizedMethod __m)
+		throws IOException
 	{
-		__out.printf("Method %s:%n", __m.nameAndType());
-		__out.printf("    flags : %s%n", __m.flags());
-		__out.printf("    index : %s%n", __m.index);
+		// Key
+		this.__print(__indent, String.format("- %s %s", __m.name, __m.type),
+			"");
 		
+		// Flags
+		this.__print(__indent + 1, "flags", "");
+		this.__printList(__indent + 2, __m.flags());
+		
+		// Other properties
+		this.__print(__indent + 1, "index", "%d",
+			__m.index);
+			
 		// Is there code to be dumped?
 		byte[] code = __m.code();
 		if (code != null && code.length > 0)
-		{
-			__out.printf("    code  :%n");
-			HexDumpOutputStream.dump(__out, __m.code());
-		}
+			try (InputStream in = new ByteArrayInputStream(code))
+			{
+				this.__printBinary(__indent + 1, "data", in);
+			}
+	}
+	
+	/**
+	 * Dumps the given methods.
+	 * 
+	 * @param __indent The indentation.
+	 * @param __key The key.
+	 * @param __methods The methods to dump.
+	 * @throws IOException On read/write errors.
+	 * @since 2021/05/29
+	 */
+	private void __dumpMethods(int __indent, String __key,
+		MinimizedMethod... __methods)
+		throws IOException
+	{
+		if (__methods == null || __methods.length == 0)
+			return;
 		
-		__out.println();
+		this.__print(__indent, __key, "");
+		for (MinimizedMethod m : __methods)
+			this.__dumpMethod(__indent + 1, m);
 	}
 	
 	/**
