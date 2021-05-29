@@ -22,6 +22,9 @@ import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Iterator;
+import net.multiphasicapps.classfile.ClassFlags;
+import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.io.Base64Alphabet;
 import net.multiphasicapps.io.Base64Encoder;
 
@@ -140,7 +143,7 @@ public final class ClassDumper
 	private void __dumpResource(int __indent, InputStream __entryIn)
 		throws IOException
 	{
-		this.__printBinary(__indent + 1, "data", __entryIn);
+		this.__printBinary(__indent, "data", __entryIn);
 	}
 	
 	/**
@@ -152,17 +155,28 @@ public final class ClassDumper
 	 */
 	private void __dumpClass(int __indent, MinimizedClassFile __class)
 	{
-		PrintStream __out = this.out;
+		PrintStream __out = this.out; 
 		
 		// Print some basic class details
-		__out.printf("thisName      : %s%n", __class.thisName());
-		__out.printf("superName     : %s%n", __class.superName());
-		__out.printf("interfaceNames: %s%n", __class.interfaceNames());
-		__out.printf("flags:          %s%n", __class.flags());
-		__out.println();
+		this.__print(__indent, "thisName", "%s",
+			__class.thisName());
+		this.__print(__indent, "superName", "%s",
+			__class.superName());
+		
+		// Print flags
+		this.__print(__indent, "flags", "");
+		this.__printList(__indent + 1, __class.flags());
+		
+		// Print interfaces
+		ClassNames iNames = __class.interfaceNames();
+		if (!iNames.isEmpty())
+		{
+			this.__print(__indent, "interfaceNames", "");
+			this.__printList(__indent + 1, iNames);
+		}
 		
 		// Dump header
-		this.__dumpHeader(__class.header, __out);
+		this.__dumpHeader(__indent, __class.header, __out);
 		
 		// Dump fields
 		for (MinimizedField f : __class.fields(true))
@@ -201,17 +215,19 @@ public final class ClassDumper
 	/**
 	 * Dumps the class file header.
 	 * 
+	 * @param __indent The indentation.
 	 * @param __header The header.
 	 * @param __out Where to dump to.
 	 * @since 2021/05/16
 	 */
-	private void __dumpHeader(MinimizedClassHeader __header, PrintStream __out)
+	private void __dumpHeader(int __indent, MinimizedClassHeader __header,
+		PrintStream __out)
 	{
-		__out.println("Class Properties:");
+		this.__print(__indent, "classProperties", "");
 		for (int i = 0, n = __header.numProperties(); i < n; i++)
-			__out.printf("    %2d %-26s: 0x%08x / %d%n",
-				i, __Utils__.classPropertyToString(i),
-				__header.get(i), __header.get(i));
+			this.__print(__indent + 1,
+				__Utils__.classPropertyToString(i),
+				"%#010x", __header.get(i));
 		
 		// Spacer
 		__out.println();
@@ -227,8 +243,9 @@ public final class ClassDumper
 	{
 		this.__print(0, "jarProperties", "");
 		for (int i = 0, n = __header.numProperties(); i < n; i++)
-			this.__print(1, __Utils__.jarPropertyToString(i),
-			"%08x", __header.getProperty(i));
+			this.__print(1,
+				__Utils__.jarPropertyToString(i),
+				"%#010x", __header.getProperty(i));
 	}
 	
 	/**
@@ -367,6 +384,19 @@ public final class ClassDumper
 	}
 	
 	/**
+	 * Prints the given list items.
+	 * 
+	 * @param __indent The indentation.
+	 * @param __items The items to print.
+	 * @since 2021/05/29
+	 */
+	private void __printList(int __indent, Iterable<?> __items)
+	{
+		for (Iterator<?> it = __items.iterator(); it.hasNext();)
+			this.__print(__indent, "- " + it.next());
+	}
+	
+	/**
 	 * Prints the prefix.
 	 * 
 	 * @param __indent The indentation.
@@ -381,7 +411,7 @@ public final class ClassDumper
 		// Print indentation
 		PrintStream out = this.out;
 		for (int i = 0; i < __indent; i++)
-			out.print('\t');
+			out.print("  ");
 		
 		// Print the key?
 		if (__key != null)
