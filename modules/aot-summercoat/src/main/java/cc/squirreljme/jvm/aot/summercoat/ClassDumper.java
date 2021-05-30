@@ -17,6 +17,7 @@ import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedClassHeader;
 import dev.shadowtail.classfile.mini.MinimizedField;
 import dev.shadowtail.classfile.mini.MinimizedMethod;
+import dev.shadowtail.classfile.pool.BasicPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -105,6 +106,9 @@ public final class ClassDumper
 			header.getProperty(JarProperty.OFFSET_RUNTIME_POOL),
 				header.getProperty(JarProperty.SIZE_RUNTIME_POOL));
 		
+		// Dump the pool
+		/*this.__dumpPool(0, dualPool);*/
+		
 		// Write out entries
 		this.__print(0, "entries", "");
 		
@@ -129,20 +133,6 @@ public final class ClassDumper
 					this.__dumpClass(2,
 						MinimizedClassFile.decode(entryIn, dualPool));
 			}
-	}
-	
-	/**
-	 * Dumps the given resource.
-	 * 
-	 * @param __indent The indentation.
-	 * @param __entryIn The entry data to write.
-	 * @throws IOException On read errors.
-	 * @since 2021/05/22
-	 */
-	private void __dumpResource(int __indent, InputStream __entryIn)
-		throws IOException
-	{
-		this.__printBinary(__indent, "data", __entryIn);
 	}
 	
 	/**
@@ -323,6 +313,46 @@ public final class ClassDumper
 		this.__print(__indent, __key, "");
 		for (MinimizedMethod m : __methods)
 			this.__dumpMethod(__indent + 1, m);
+	}
+	
+	/**
+	 * Dumps the dual pool.
+	 * 
+	 * @param __indent The indentation.
+	 * @param __dualPool The dual pool to dump.
+	 * @since 2021/05/30
+	 */
+	private void __dumpPool(int __indent, DualClassRuntimePool __dualPool)
+	{
+		this.__dumpPool(__indent, "static", __dualPool.classPool());
+		this.__dumpPool(__indent, "runtime", __dualPool.runtimePool());
+	}
+	
+	/**
+	 * Dumps the single pool.
+	 * 
+	 * @param __indent The indentation.
+	 * @param __pool The pool to dump.
+	 * @since 2021/05/30
+	 */
+	private void __dumpPool(int __indent, String __key, BasicPool __pool)
+	{
+		this.__print(__indent, __key, "");
+		this.__printList(__indent + 1, __pool);
+	}
+	
+	/**
+	 * Dumps the given resource.
+	 * 
+	 * @param __indent The indentation.
+	 * @param __entryIn The entry data to write.
+	 * @throws IOException On read errors.
+	 * @since 2021/05/22
+	 */
+	private void __dumpResource(int __indent, InputStream __entryIn)
+		throws IOException
+	{
+		this.__printBinary(__indent, "data", __entryIn);
 	}
 	
 	/**
