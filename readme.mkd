@@ -161,10 +161,12 @@ Information:
  * _To compile once and run anywhere_ - Current and up to date Java
    implementations are limited only to a few select systems (_Solaris_,
    _Linux_, _BSD_, _Mac OS X_, and _Windows_). Java ME 8 as of this writing
-   only supports the *FRDM-K64F* and the *Raspberry Pi*. There are multitudes
-   of devices that support **J2ME**, however that is horribly out of date when
-   compared with the Java that is used today (**J2ME** is equal to Java 1.4
-   which was released in _2002_).
+   only supports the *FRDM-K64F* (dropped), *STM32429I-EVAL*, *Raspberry Pi*,
+   *Intel Galileo Gen2* (preview), and *STM 32F746G DISCOVERY* (preview) all
+   of which are either out of date or discontinued by their manufacturers.
+   There are multitudes of devices that support **J2ME**, however that is
+   horribly out of date when compared with the Java that is used today
+   (**J2ME** is equal to Java 1.4 which was released in _2002_).
 
 ## Donations
 
