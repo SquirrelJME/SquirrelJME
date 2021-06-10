@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.nncc.ArgumentFormat;
+import dev.shadowtail.classfile.nncc.InstructionFormat;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
 import dev.shadowtail.classfile.nncc.RegisterList;
@@ -547,15 +548,15 @@ public final class Minimizer
 			dos.write(op);
 			
 			// Encode arguments
-			ArgumentFormat[] format = i.argumentFormat();
+			InstructionFormat format = i.argumentFormat();
 			for (int a = 0, an = i.argumentCount(),
-				afn = format.length; a < an; a++)
+				afn = format.size(); a < an; a++)
 			{
 				// Read argument
 				Object v = i.argument(a);
 				
 				// Write the format
-				switch (format[a])
+				switch (format.get(a))
 				{
 						// Variable 16-bit unsigned integer
 					case VUINT:
@@ -564,7 +565,7 @@ public final class Minimizer
 					case VJUMP:
 						// Remap value
 						int vm = 0;
-						switch (format[a])
+						switch (format.get(a))
 						{
 							case VPOOL:
 								try

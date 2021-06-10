@@ -12,11 +12,15 @@ package cc.squirreljme.jvm.aot.summercoat;
 import cc.squirreljme.jvm.summercoat.constants.JarProperty;
 import cc.squirreljme.jvm.summercoat.ld.pack.HeaderStruct;
 import cc.squirreljme.jvm.summercoat.ld.pack.JarRom;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.mini.DualPoolEncoder;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedClassHeader;
 import dev.shadowtail.classfile.mini.MinimizedField;
 import dev.shadowtail.classfile.mini.MinimizedMethod;
+import dev.shadowtail.classfile.nncc.ArgumentFormat;
+import dev.shadowtail.classfile.nncc.InstructionFormat;
+import dev.shadowtail.classfile.nncc.NativeInstruction;
 import dev.shadowtail.classfile.pool.BasicPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import java.io.ByteArrayInputStream;
@@ -290,7 +294,8 @@ public final class ClassDumper
 		if (code != null && code.length > 0)
 			try (InputStream in = new ByteArrayInputStream(code))
 			{
-				this.__printBinary(__indent + 1, "data", in);
+				this.__printCode(__indent + 1, in);
+				//this.__printBinary(__indent + 1, "data", in);
 			}
 	}
 	
@@ -464,6 +469,28 @@ public final class ClassDumper
 		
 		// End the line
 		out.println();
+	}
+	
+	/**
+	 * Prints the given SummerCoat code out.
+	 * 
+	 * @param __indent The indentation.
+	 * @param __code The code to print.
+	 * @throws IOException On read/write errors.
+	 * @since 2021/06/10
+	 */
+	private void __printCode(int __indent, InputStream __code)
+		throws IOException
+	{
+		for (;;)
+		{
+			int op = __code.read();
+			
+			InstructionFormat format = NativeInstruction.argumentFormat(op);
+			for (int i
+			
+			throw Debugging.todo();
+		}
 	}
 	
 	/**

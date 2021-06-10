@@ -22,6 +22,7 @@ import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
 import dev.shadowtail.classfile.nncc.ArgumentFormat;
+import dev.shadowtail.classfile.nncc.InstructionFormat;
 import dev.shadowtail.classfile.nncc.InvalidInstructionException;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
@@ -423,10 +424,10 @@ public final class NativeCPU
 			int[] reglist = null;
 			
 			// Load arguments for this instruction
-			ArgumentFormat[] af = NativeInstruction.argumentFormat(op);
+			InstructionFormat af = NativeInstruction.argumentFormat(op);
 			int rargp = bpc + 1;
-			for (int i = 0, n = af.length; i < n; i++)
-				switch (af[i])
+			for (int i = 0, n = af.size(); i < n; i++)
+				switch (af.get(i))
 				{
 						// Variable sized entries, may be pool values
 					case VUINT:
@@ -443,14 +444,14 @@ public final class NativeCPU
 							}
 							
 							// Set
-							if (af[i] == ArgumentFormat.VJUMP)
+							if (af.get(i) == ArgumentFormat.VJUMP)
 								argRaw[i] = (short)(base |
 									((base & 0x4000) << 1));
 							else
 								argRaw[i] = base;
 							
 							// Special handling and checks for registers
-							if (af[i] == ArgumentFormat.VUREG)
+							if (af.get(i) == ArgumentFormat.VUREG)
 							{
 								// {@squirreljme.error AE03 Reference to
 								// register which is out of range of maximum
@@ -463,7 +464,7 @@ public final class NativeCPU
 										NativeInstruction.mnemonic(op), base,
 										Arrays.asList(af),
 										IntegerArrayList.asList(argRaw)
-											.subList(0, af.length)));
+											.subList(0, af.size())));
 								
 								// Preload the argument value
 								int r = argRaw[i];
@@ -520,7 +521,7 @@ public final class NativeCPU
 						break;
 					
 					default:
-						throw new todo.OOPS(af[i].name());
+						throw new todo.OOPS(af.get(i).name());
 				}
 			
 			// Determine the encoding
@@ -535,7 +536,7 @@ public final class NativeCPU
 			{
 				// Get slice for this instruction
 				ExecutionSlice el = ExecutionSlice.of(this.trace(nowframe),
-					nowframe, op, argRaw, af.length, reglist);
+					nowframe, op, argRaw, af.size(), reglist);
 				
 				// Add to previous instructions, do not exceed slice limits
 				Deque<ExecutionSlice> execslices = nowframe._execslices;
