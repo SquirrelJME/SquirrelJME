@@ -12,11 +12,14 @@ package cc.squirreljme.plugin.multivm;
 import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.GuardedOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.stream.Stream;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -79,7 +82,23 @@ public class VMFullSuiteTaskAction
 		String exLib = System.getProperty(
 			VMFullSuiteTaskAction.LIBRARIES_PROPERTY);
 		if (exLib != null)
-			libPath.addAll(Arrays.asList(VMHelpers.classpathDecode(exLib)));
+			for (Path p : VMHelpers.classpathDecode(exLib))
+			{
+				// Add contents of a given directory
+				if (Files.isDirectory(p))
+					try (Stream<Path> s = Files.list(p))
+					{
+						libPath.addAll(Arrays.asList(s.toArray(Path[]::new)));
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
+				
+				// Add single path
+				else
+					libPath.add(p);
+			}
 		
 		// Determine the initial classpath of the launcher, which is always
 		// ran first

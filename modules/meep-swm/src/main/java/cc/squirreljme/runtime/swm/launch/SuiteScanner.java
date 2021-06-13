@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.swm.launch;
 
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.EntryPoints;
@@ -95,7 +96,9 @@ public final class SuiteScanner
 				man = new JavaManifest(rc);
 				info = new SuiteInfo(man);
 			}
-			catch (IOException | InvalidSuiteException e)
+			
+			// Prevent bad JARs and files from messing things up
+			catch (IOException|InvalidSuiteException|MLECallError e)
 			{
 				e.printStackTrace();
 				

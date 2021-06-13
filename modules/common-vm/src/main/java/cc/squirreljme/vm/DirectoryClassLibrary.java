@@ -63,6 +63,16 @@ public class DirectoryClassLibrary
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/06/13
+	 */
+	@Override
+	public Path path()
+	{
+		return this.path;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/04/19
 	 */
 	@Override

@@ -15,6 +15,7 @@ import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.JDWPFactory;
 import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.NameOverrideClassLibrary;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
@@ -268,8 +269,12 @@ public abstract class VMFactory
 			VMClassLibrary place;
 			if (SummerCoatJarLibrary.isSqc(path))
 				place = new SummerCoatJarLibrary(path);
-			else
+			else if (JarClassLibrary.isJar(path))
 				place = JarClassLibrary.of(path);
+			
+			// Is just normalized data
+			else
+				place = new DataContainerLibrary(path);
 			
 			// Place in the class library, but make sure the name matches
 			// the normalized name of the JAR
@@ -562,10 +567,13 @@ public abstract class VMFactory
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
+		// Not a known extension or normalized type
+		if (!(__name.endsWith(".jar") || __name.endsWith(".JAR") ||
+			__name.endsWith(".sqc") || __name.endsWith(".SQC")))
+			return __name;
+		
 		// Get the base name of the JAR or SQC
-		if (__name.endsWith(".jar") || __name.endsWith(".JAR") ||
-			__name.endsWith(".sqc") || __name.endsWith(".SQC"))
-			__name = __name.substring(0, __name.length() - 4);
+		__name = __name.substring(0, __name.length() - 4);
 		
 		// Chop down potential foo"-0.4.0" from the end
 		for (int n = __name.length(), i = n - 1; i >= 0; i--)

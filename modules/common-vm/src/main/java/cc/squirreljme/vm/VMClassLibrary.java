@@ -12,6 +12,7 @@ package cc.squirreljme.vm;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 /**
  * This class represents a class library which represents a single JAR file
@@ -36,6 +37,15 @@ public interface VMClassLibrary
 	 * @since 2018/09/13
 	 */
 	String name();
+	
+	/**
+	 * Returns the file system path if it is known and valid. 
+	 * 
+	 * @return The file system path this uses on the disk, this will be
+	 * {@code null} if not valid.
+	 * @since 2021/06/13
+	 */
+	Path path();
 	
 	/**
 	 * Opens the specified resource as a stream.
