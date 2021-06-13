@@ -1,0 +1,10 @@
+# 2021/05/16
+
+## 12:40
+
+I think what would be useful for the compiler would be multiple output channels
+for like debugging information and otherwise. Right now there is just data
+output, but it would be useful to extract other potential information as needed.
+This is just an example though. Std-err could be captured or maybe not captured.
+Or maybe just instead, a decomposer of stuff. Maybe the AOT will have a debug
+exploder of input so that whatever is generated can be spit back out.

@@ -42,7 +42,7 @@ public final class EntryPoint
 	 *
 	 * @param __name The name of the entry point.
 	 * @param __entry The class used for entry.
-	 * @param __imgRc The image resource to use.
+	 * @param __imgRc The image resource to use, may be {@code null}.
 	 * @param __mid Is this a midlet launch?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/20

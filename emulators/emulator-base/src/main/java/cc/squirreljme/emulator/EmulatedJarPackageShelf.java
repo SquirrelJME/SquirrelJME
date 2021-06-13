@@ -12,11 +12,16 @@ package cc.squirreljme.emulator;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.vm.DataContainerLibrary;
+import cc.squirreljme.vm.JarClassLibrary;
+import cc.squirreljme.vm.VMClassLibrary;
 import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Handlers for {@link JarPackageShelf}.
@@ -58,8 +63,17 @@ public final class EmulatedJarPackageShelf
 				next = paths.indexOf(File.pathSeparatorChar, at + 1);
 				String segment = (next < 0 ? paths.substring(at) :
 					paths.substring(at, next));
+				Path segPath = Paths.get(segment);
 				
-				fill.add(new EmulatedJarPackageBracket(Paths.get(segment)));
+				// Are we filling a JAR or filling random file data?
+				VMClassLibrary vmLib;
+				if (JarClassLibrary.isJar(segment))
+					vmLib = new JarClassLibrary(segPath);
+				else
+					vmLib = new DataContainerLibrary(segPath);
+				
+				// Wrap class library container
+				fill.add(new EmulatedJarPackageBracket(vmLib));
 				
 				// Processing no more
 				if (next < 0)
@@ -89,7 +103,8 @@ public final class EmulatedJarPackageShelf
 		if (__jar == null)
 			throw new MLECallError("No JAR.");
 		
-		return ((EmulatedJarPackageBracket)__jar).path.toString();
+		Path path = ((EmulatedJarPackageBracket)__jar).vmLib.path();
+		return Objects.toString(path, null);
 	}
 	
 	/**
