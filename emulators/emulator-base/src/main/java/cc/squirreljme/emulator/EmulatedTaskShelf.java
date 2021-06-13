@@ -143,7 +143,8 @@ public final class EmulatedTaskShelf
 		// itself, this is the virtual classpath to run the process
 		Path[] runClassPath = new Path[__classPath.length];
 		for (int i = 0, n = __classPath.length; i < n; i++)
-			runClassPath[i] = ((EmulatedJarPackageBracket)__classPath[i]).path;
+			runClassPath[i] = ((EmulatedJarPackageBracket)__classPath[i])
+				.vmLib.path();
 		
 		// We need to tell it what our own classpath is, logically
 		sysProps.put(EmulatedTaskShelf.RUN_CLASSPATH,
