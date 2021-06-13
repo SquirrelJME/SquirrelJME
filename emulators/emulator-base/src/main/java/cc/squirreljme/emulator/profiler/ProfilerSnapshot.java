@@ -166,8 +166,7 @@ public final class ProfilerSnapshot
 				cpu.writeInt(1);
 				
 				// Timestamp and duration
-				long start = this.startmillis;
-				cpu.writeLong(start);
+				cpu.writeLong(this.startmillis);
 				
 				// Threads are needed now
 				Map<String, ProfiledThread> threads = this._threads;
@@ -177,7 +176,7 @@ public final class ProfilerSnapshot
 					// thread has spent
 					long maxtime = 0;
 					for (ProfiledThread t : threads.values())
-						maxtime = Math.max(maxtime, t._totaltime);
+						maxtime = Math.max(maxtime, t._totalTime);
 					cpu.writeLong(maxtime);
 					
 					// Thread time is always measured
@@ -352,8 +351,8 @@ public final class ProfilerSnapshot
 		__cpu.writeInt(28);
 		
 		// Whole graph time
-		__cpu.writeLong(__t._totaltime);
-		__cpu.writeLong(__t._cputime);
+		__cpu.writeLong(__t._totalTime);
+		__cpu.writeLong(__t._cpuTime);
 		
 		// No injected methods used
 		__cpu.writeLong(0);
@@ -363,9 +362,9 @@ public final class ProfilerSnapshot
 		__cpu.writeLong(Integer.MAX_VALUE);
 		__cpu.writeLong(Integer.MAX_VALUE);
 		
-		// Net time
-		__cpu.writeLong(__t._totaltime);
-		__cpu.writeLong(__t._cputime);
+		// Net time?
+		__cpu.writeLong(__t._totalTime);
+		__cpu.writeLong(__t._cpuTime);
 		
 		// The number of methods invoked
 		__cpu.writeLong(__t._invtotal);
@@ -402,13 +401,14 @@ public final class ProfilerSnapshot
 			
 			// Write information on the frame
 			__ps.printf(" [n=%d, t=%d, s=%d]",
-				f._numcalls,
-				f._traceruntime,
-				f._frameruntime);
+				f._numCalls,
+				f._totalTime,
+				f._selfTime);
 			__ps.println();
 			
 			// Go into this frame's frames
-			ProfilerSnapshot.__dumpFrames(__ps, __tab + 1, f._frames.values());
+			ProfilerSnapshot.__dumpFrames(__ps,
+				__tab + 1, f._frames.values());
 		}
 	}
 }

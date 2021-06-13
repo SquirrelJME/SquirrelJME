@@ -71,6 +71,7 @@
       <w>squirreljme</w>
       <w>stdint</w>
       <w>summercoat</w>
+      <w>sysprop</w>
       <w>tabbedpanes</w>
       <w>targetting</w>
       <w>textboxes</w>
@@ -81,6 +82,8 @@
       <w>vmtypes</w>
       <w>vtable</w>
       <w>xemulator</w>
+      <w>xjdwp</w>
+      <w>xlibraries</w>
       <w>xsnapshot</w>
     </words>
   </dictionary>

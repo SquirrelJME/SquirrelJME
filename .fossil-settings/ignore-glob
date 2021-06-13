@@ -3,6 +3,8 @@
 buildSrc/.gradle/
 build/
 */build/
+out/
+*/out/
 
 # IntelliJ (Shared but not used)
 .idea/aws.xml
@@ -62,3 +64,35 @@ bvm/cmake-build-release
 # Fossil files
 _FOSSIL_
 ci-comment-*.txt
+in-*0
+in-*1
+in-*2
+in-*3
+in-*4
+in-*5
+in-*6
+in-*7
+in-*8
+in-*9
+in-*A
+in-*B
+in-*C
+in-*D
+in-*E
+in-*F
+out-*0
+out-*1
+out-*2
+out-*3
+out-*4
+out-*5
+out-*6
+out-*7
+out-*8
+out-*9
+out-*A
+out-*B
+out-*C
+out-*D
+out-*E
+out-*F
