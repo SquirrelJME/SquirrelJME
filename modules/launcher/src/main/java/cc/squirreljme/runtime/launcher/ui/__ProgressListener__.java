@@ -9,7 +9,7 @@
 
 package cc.squirreljme.runtime.launcher.ui;
 
-import cc.squirreljme.runtime.swm.launch.JavaApplication;
+import cc.squirreljme.runtime.swm.launch.Application;
 import cc.squirreljme.runtime.swm.launch.SuiteScanListener;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +26,7 @@ final class __ProgressListener__
 	implements SuiteScanListener
 {
 	/** The suites that have been listed. */
-	protected final Collection<JavaApplication> listedSuites;
+	protected final Collection<Application> listedSuites;
 	
 	/** The program list. */
 	protected final List programList;
@@ -40,7 +40,7 @@ final class __ProgressListener__
 	 * @since 2020/12/29
 	 */
 	public __ProgressListener__(List __programList,
-		Collection<JavaApplication> __listedSuites)
+		Collection<Application> __listedSuites)
 		throws NullPointerException
 	{
 		if (__programList == null || __listedSuites == null)
@@ -55,13 +55,13 @@ final class __ProgressListener__
 	 * @since 2020/12/29
 	 */
 	@Override
-	public void scanned(JavaApplication __app, int __dx, int __total)
+	public void scanned(Application __app, int __dx, int __total)
 	{
 		// Do nothing if this is not to appear on the launcher
 		if (__app.isNoLauncher())
 			return;
 		
-		Collection<JavaApplication> listedSuites = this.listedSuites;
+		Collection<Application> listedSuites = this.listedSuites;
 		List programList = this.programList;
 		
 		// Update title to reflect this discovery

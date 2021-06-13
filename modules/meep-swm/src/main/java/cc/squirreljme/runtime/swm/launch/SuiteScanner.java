@@ -17,9 +17,12 @@ import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.EntryPoints;
 import cc.squirreljme.runtime.swm.InvalidSuiteException;
 import cc.squirreljme.runtime.swm.SuiteInfo;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +90,7 @@ public final class SuiteScanner
 		__Libraries__ libs = new __Libraries__();
 		
 		// Applications which should be loaded
-		List<JavaApplication> result = new LinkedList<>();
+		List<Application> result = new LinkedList<>();
 		
 		// Locate programs via the library path
 		for (int i = 0, n = jars.length; i < n; i++)
@@ -104,13 +107,15 @@ public final class SuiteScanner
 			
 			// Scan for multiple application types, since it is very possible
 			// for an application to be in hybrid form (such as MIDP/i-mode)
-			SuiteScanner.__scanJava(__listener, numJars, libs, result, i, jar);
-			SuiteScanner.__scanIMode(__listener, nameToJar, result, i, jar);
+			SuiteScanner.__scanJava(__listener, numJars, libs,
+				result, i, jar);
+			SuiteScanner.__scanIMode(__listener, numJars, libs, nameToJar,
+				result, i, jar);
 		}
 		
 		// Finalize suite list
 		return new AvailableSuites(libs, result
-			.<JavaApplication>toArray(new JavaApplication[result.size()]));
+			.<Application>toArray(new Application[result.size()]));
 	}
 	
 	/**
@@ -124,7 +129,9 @@ public final class SuiteScanner
 	 * @since 2021/06/013
 	 */
 	private static void __scanIMode(SuiteScanListener __listener,
-		Map<String, JarPackageBracket> __nameToJar, List<JavaApplication> __result,
+		int __numJars, __Libraries__ __libs,
+		Map<String, JarPackageBracket> __nameToJar,
+		List<Application> __result,
 		int __jarDx, JarPackageBracket __jar)
 	{
 		// Try to determine what our JAM would be called
@@ -142,7 +149,61 @@ public final class SuiteScanner
 		if (jam == null)
 			return;
 		
-		throw Debugging.todo();
+		// Load the ADF/JAM descriptor that describes this application
+		Map<String, String> adfProps = new LinkedHashMap<>();
+		try (InputStream jamIn = JarPackageShelf.openResource(jam,
+			SuiteScanner._DATA_RESOURCE))
+		{
+			// Missing? Cannot be an i-mode application
+			if (jamIn == null)
+				return;
+			
+			// Load in the JAM (Is encoded in Japanese)
+			try (BufferedReader jamBr = new BufferedReader(
+				new InputStreamReader(jamIn, "shift-jis")))
+			{
+				for (;;)
+				{
+					// EOF?
+					String ln = jamBr.readLine();
+					if (ln == null)
+						break;
+					
+					// No equal sign, ignore
+					int eq = ln.indexOf('=');
+					if (eq < 0)
+						continue;
+					
+					// Split into key and value form
+					String key = ln.substring(0, eq).trim();
+					String val = ln.substring(eq + 1).trim();
+					
+					// Store into if the key is valid
+					if (!key.isEmpty())
+						adfProps.put(key, val);
+				}
+			}
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			return;
+		} 
+			
+		// Load application
+		try
+		{
+			Application app = new IModeApplication(__jar, __libs, adfProps);
+			__result.add(app);
+			
+			// Indicate that it was scanned
+			if (__listener != null)
+				__listener.scanned(app, __jarDx, __numJars);
+		}
+		catch (InvalidSuiteException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -157,7 +218,7 @@ public final class SuiteScanner
 	 * @since 2021/06/13
 	 */
 	private static void __scanJava(SuiteScanListener __listener,
-		int __numJars, __Libraries__ __libs, List<JavaApplication> __result,
+		int __numJars, __Libraries__ __libs, List<Application> __result,
 		int __jarDx, JarPackageBracket __jar)
 	{
 		// Try to read the manifest from the given JAR and process the

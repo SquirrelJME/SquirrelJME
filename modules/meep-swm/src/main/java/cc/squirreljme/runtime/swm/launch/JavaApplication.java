@@ -10,11 +10,8 @@
 package cc.squirreljme.runtime.swm.launch;
 
 import cc.squirreljme.jvm.mle.JarPackageShelf;
-import cc.squirreljme.jvm.mle.TaskShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.jvm.mle.brackets.TaskBracket;
-import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.swm.DependencyInfo;
 import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.SuiteInfo;
 import java.io.InputStream;
@@ -25,6 +22,7 @@ import java.io.InputStream;
  * @since 2020/12/28
  */
 public final class JavaApplication
+	extends Application
 {
 	/** Manifest property for appearing on the launcher. */
 	private static final String _NO_LAUNCHER =
@@ -33,14 +31,8 @@ public final class JavaApplication
 	/** The suite information. */
 	protected final SuiteInfo info;
 	
-	/** The JAR this references. */
-	protected final JarPackageBracket jar;
-	
 	/** The entry point used. */
 	protected final EntryPoint entryPoint;
-	
-	/** The library information. */
-	private final __Libraries__ _libraries;
 	
 	/**
 	 * Initializes the application.
@@ -56,22 +48,21 @@ public final class JavaApplication
 		__Libraries__ __libs, EntryPoint __entryPoint)
 		throws NullPointerException
 	{
+		super(__jar, __libs);
+		
 		if (__info == null || __jar == null || __libs == null ||
 			__entryPoint == null)
 			throw new NullPointerException("NARG");
 		
 		this.info = __info;
-		this.jar = __jar;
 		this.entryPoint = __entryPoint;
-		this._libraries = __libs;
 	}
 	
 	/**
-	 * Returns the display name of the application.
-	 * 
-	 * @return The display name of the application.
+	 * {@inheritDoc}
 	 * @since 2020/12/29
 	 */
+	@Override
 	public String displayName()
 	{
 		EntryPoint entry = this.entryPoint;
@@ -83,38 +74,20 @@ public final class JavaApplication
 	}
 	
 	/**
-	 * Returns the entry point of the task.
-	 * 
-	 * @return The entry point that represents this application.
+	 * {@inheritDoc}
 	 * @since 2020/12/29
 	 */
-	public final EntryPoint entryPoint()
+	@Override
+	public EntryPoint entryPoint()
 	{
 		return this.entryPoint;
 	}
 	
 	/**
-	 * Returns the stream to the application icon data.
-	 * 
-	 * @return The stream for the application data or {@code null} if there is
-	 * no icon.
+	 * {@inheritDoc}
 	 * @since 2020/12/29
 	 */
-	public InputStream iconStream()
-	{
-		String imgRc = this.entryPoint.imageResource();
-		if (imgRc != null)
-			return JarPackageShelf.openResource(this.jar,
-				this.entryPoint.imageResource());
-		return null;
-	}
-	
-	/**
-	 * Indicates that this should not appear on the launcher.
-	 * 
-	 * @return If this should not appear on the launcher.
-	 * @since 2020/12/29
-	 */
+	@Override
 	public boolean isNoLauncher()
 	{
 		return this.info.manifest().getMainAttributes()
@@ -122,44 +95,38 @@ public final class JavaApplication
 	}
 	
 	/**
-	 * Launches the specified task.
-	 * 
-	 * @return The bracket for the task.
-	 * @since 2020/12/29
+	 * {@inheritDoc}
+	 * @since 2021/06/13
 	 */
-	public TaskBracket launch()
+	@Override
+	public DependencyInfo loaderDependencies()
 	{
-		// Find libraries to base off
-		Library[] libraries = this._libraries.matchDependencies(
-			this.info.dependencies(), true);
-		int numLibs = libraries.length;
-		
-		// Determine the class path used from this
-		JarPackageBracket[] classPath = new JarPackageBracket[numLibs + 1];
-		for (int i = 0; i < numLibs; i++)
-			classPath[i] = libraries[i].jar;
-		classPath[numLibs] = this.jar;
-		
-		// Have the task launch itself
-		EntryPoint entry = this.entryPoint;
-		return TaskShelf.start(classPath,
-			(entry.isMidlet() ? "javax.microedition.midlet.__MainHandler__" :
-				entry.entryPoint()),
-			(entry.isMidlet() ? new String[]{entry.entryPoint()} :
-				new String[0]),
-			new String[0],
-			TaskPipeRedirectType.TERMINAL,
-			TaskPipeRedirectType.TERMINAL);
+		return this.info.dependencies();
 	}
 	
 	/**
-	 * Returns the SquirrelJME name of the application.
-	 * 
-	 * @return The SquirrelJME name of the application.
-	 * @since 2020/12/29
+	 * {@inheritDoc}
+	 * @since 2021/06/13
 	 */
-	public String squirrelJMEName()
+	@Override
+	public String[] loaderEntryArgs()
 	{
-		throw Debugging.todo();
+		EntryPoint entry = this.entryPoint;
+		if (entry.isMidlet())
+			return new String[]{entry.entryPoint()};
+		return new String[0];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/06/13
+	 */
+	@Override
+	public String loaderEntryClass()
+	{
+		EntryPoint entry = this.entryPoint;
+		if (entry.isMidlet())
+			return "javax.microedition.midlet.__MainHandler__";
+		return entry.entryPoint();
 	}
 }

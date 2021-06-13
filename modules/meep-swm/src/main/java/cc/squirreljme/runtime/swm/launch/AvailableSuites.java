@@ -17,7 +17,7 @@ package cc.squirreljme.runtime.swm.launch;
 public final class AvailableSuites
 {
 	/** The applications available. */
-	private final JavaApplication[] _apps;
+	private final Application[] _apps;
 	
 	/** The lazy loaded library set. */
 	private final __Libraries__ _libraries;
@@ -30,7 +30,7 @@ public final class AvailableSuites
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/29
 	 */
-	AvailableSuites(__Libraries__ __libs, JavaApplication... __apps)
+	AvailableSuites(__Libraries__ __libs, Application... __apps)
 		throws NullPointerException
 	{
 		if (__libs == null || __apps == null)

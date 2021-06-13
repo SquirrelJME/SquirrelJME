@@ -7,22 +7,36 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.swm.launch;
+package com.nttdocomo.ui;
 
-/**
- * This is a listener which specifies when a suite has been scanned in.
- *
- * @since 2020/12/29
- */
-public interface SuiteScanListener
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
+public abstract class IApplication
 {
-	/**
-	 * Indicates that the given application was scanned.
-	 * 
-	 * @param __app The application that has been scanned.
-	 * @param __dx The JAR index, used to indicate progress.
-	 * @param __total The total number of JARs scanned.
-	 * @since 2020/12/29
-	 */
-	void scanned(Application __app, int __dx, int __total);
+	public abstract void start();
+	
+	public String[] getArgs()
+	{
+		throw Debugging.todo();
+	}
+	
+	public final String getSourceUrl()
+	{
+		throw Debugging.todo();
+	}
+	
+	public void resume()
+	{
+		throw Debugging.todo();
+	}
+	
+	public final void terminate()
+	{
+		throw Debugging.todo();
+	}
+	
+	public static IApplication getCurrentApp()
+	{
+		throw Debugging.todo();
+	}
 }

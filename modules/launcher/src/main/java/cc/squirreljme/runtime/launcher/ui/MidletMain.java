@@ -12,7 +12,7 @@ package cc.squirreljme.runtime.launcher.ui;
 
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.swm.launch.JavaApplication;
+import cc.squirreljme.runtime.swm.launch.Application;
 import cc.squirreljme.runtime.swm.launch.SuiteScanListener;
 import cc.squirreljme.runtime.swm.launch.SuiteScanner;
 import java.util.ArrayList;
@@ -68,7 +68,7 @@ public class MidletMain
 		new __ActiveTask__();
 	
 	/** The suites which are mapped to the list. */
-	private final ArrayList<JavaApplication> _listedSuites =
+	private final ArrayList<Application> _listedSuites =
 		new ArrayList<>();
 	
 	/** The current end-time for the splash screen. */
@@ -135,7 +135,7 @@ public class MidletMain
 			synchronized (this)
 			{
 				// Reset the application list
-				ArrayList<JavaApplication> listedSuites = this._listedSuites;
+				ArrayList<Application> listedSuites = this._listedSuites;
 				listedSuites.clear();
 				
 				// Used to add suites and indicate progress
@@ -235,7 +235,7 @@ public class MidletMain
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/14
 	 */
-	private void __launch(JavaApplication __p)
+	private void __launch(Application __p)
 		throws NullPointerException
 	{
 		if (__p == null)
@@ -268,10 +268,10 @@ public class MidletMain
 	 */
 	private void __launch(int __p)
 	{
-		JavaApplication app;
+		Application app;
 		synchronized (this)
 		{
-			ArrayList<JavaApplication> programs = this._listedSuites;
+			ArrayList<Application> programs = this._listedSuites;
 			
 			// Do nothing if out of bounds
 			if (__p < 0 || __p >= programs.size())
@@ -299,16 +299,16 @@ public class MidletMain
 			throw new NullPointerException("NARG");
 		
 		// Get the applications that are available
-		JavaApplication[] apps;
+		Application[] apps;
 		synchronized (this)
 		{
-			ArrayList<JavaApplication> listed = this._listedSuites;
-			apps = listed.toArray(new JavaApplication[listed.size()]);
+			ArrayList<Application> listed = this._listedSuites;
+			apps = listed.toArray(new Application[listed.size()]);
 		}
 		
 		// Find all the possible matches for a program with given criteria
-		Map<SearchOrder, JavaApplication> found = new HashMap<>();
-		for (JavaApplication app : apps)
+		Map<SearchOrder, Application> found = new HashMap<>();
+		for (Application app : apps)
 		{
 			if (Objects.equals(__p, app.displayName()))
 				found.put(SearchOrder.DISPLAY_NAME, app);
@@ -323,7 +323,7 @@ public class MidletMain
 		// Use priority based order when finding the application
 		for (SearchOrder order : SearchOrder.values())
 		{
-			JavaApplication app = found.get(order);
+			Application app = found.get(order);
 			if (app != null)
 			{
 				this.__launch(app);

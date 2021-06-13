@@ -7,22 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.swm.launch;
-
 /**
- * This is a listener which specifies when a suite has been scanned in.
+ * SquirrelJME Support for NTT Docomo.
  *
- * @since 2020/12/29
+ * @since 2021/06/13
  */
-public interface SuiteScanListener
-{
-	/**
-	 * Indicates that the given application was scanned.
-	 * 
-	 * @param __app The application that has been scanned.
-	 * @param __dx The JAR index, used to indicate progress.
-	 * @param __total The total number of JARs scanned.
-	 * @since 2020/12/29
-	 */
-	void scanned(Application __app, int __dx, int __total);
-}
+
+package cc.squirreljme.runtime.nttdocomo;
