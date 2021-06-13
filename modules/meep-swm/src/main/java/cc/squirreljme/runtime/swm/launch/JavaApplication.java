@@ -24,7 +24,7 @@ import java.io.InputStream;
  *
  * @since 2020/12/28
  */
-public final class Application
+public final class JavaApplication
 {
 	/** Manifest property for appearing on the launcher. */
 	private static final String _NO_LAUNCHER =
@@ -52,7 +52,7 @@ public final class Application
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/29
 	 */
-	Application(SuiteInfo __info, JarPackageBracket __jar,
+	JavaApplication(SuiteInfo __info, JarPackageBracket __jar,
 		__Libraries__ __libs, EntryPoint __entryPoint)
 		throws NullPointerException
 	{
@@ -118,7 +118,7 @@ public final class Application
 	public boolean isNoLauncher()
 	{
 		return this.info.manifest().getMainAttributes()
-			.definesValue(Application._NO_LAUNCHER);
+			.definesValue(JavaApplication._NO_LAUNCHER);
 	}
 	
 	/**

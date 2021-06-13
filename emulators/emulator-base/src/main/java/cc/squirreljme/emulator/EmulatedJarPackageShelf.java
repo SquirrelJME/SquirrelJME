@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Handlers for {@link JarPackageShelf}.
@@ -102,7 +103,8 @@ public final class EmulatedJarPackageShelf
 		if (__jar == null)
 			throw new MLECallError("No JAR.");
 		
-		return ((EmulatedJarPackageBracket)__jar).vmLib.toString();
+		Path path = ((EmulatedJarPackageBracket)__jar).vmLib.path();
+		return Objects.toString(path, null);
 	}
 	
 	/**

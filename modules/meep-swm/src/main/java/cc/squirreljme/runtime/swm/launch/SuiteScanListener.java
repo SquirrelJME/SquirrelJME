@@ -24,5 +24,5 @@ public interface SuiteScanListener
 	 * @param __total The total number of JARs scanned.
 	 * @since 2020/12/29
 	 */
-	void scanned(Application __app, int __dx, int __total);
+	void scanned(JavaApplication __app, int __dx, int __total);
 }

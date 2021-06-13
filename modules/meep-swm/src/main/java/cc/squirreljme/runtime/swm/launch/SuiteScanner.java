@@ -19,8 +19,10 @@ import cc.squirreljme.runtime.swm.InvalidSuiteException;
 import cc.squirreljme.runtime.swm.SuiteInfo;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
@@ -31,6 +33,10 @@ import net.multiphasicapps.tool.manifest.JavaManifest;
  */
 public final class SuiteScanner
 {
+	/** Data resource name. */
+	private static final String _DATA_RESOURCE =
+		"$DATA$";
+	
 	/**
 	 * Not used.
 	 * 
@@ -67,11 +73,21 @@ public final class SuiteScanner
 		JarPackageBracket[] jars = JarPackageShelf.libraries();
 		int numJars = jars.length;
 		
+		// Load the names of all JARs and map to brackets, this is later used
+		// for i-mode lookup.
+		Map<String, JarPackageBracket> nameToJar = new HashMap<>();
+		for (JarPackageBracket jar : jars)
+		{
+			String name = JarPackageShelf.libraryPath(jar);
+			if (name != null)
+				nameToJar.put(name, jar);
+		}
+		
 		// Libraries are lazily handled on launching
 		__Libraries__ libs = new __Libraries__();
 		
 		// Applications which should be loaded
-		List<Application> result = new LinkedList<>();
+		List<JavaApplication> result = new LinkedList<>();
 		
 		// Locate programs via the library path
 		for (int i = 0, n = jars.length; i < n; i++)
@@ -86,60 +102,113 @@ public final class SuiteScanner
 			// Debug
 			Debugging.debugNote("Checking %s...", libPath);
 			
-			// Try to read the manifest from the given JAR and process the
-			// suite information
-			SuiteInfo info;
-			JavaManifest man;
-			try (InputStream rc = JarPackageShelf.openResource(jar,
-				"META-INF/MANIFEST.MF"))
-			{
-				// If no manifest exists, might not be a JAR
-				if (rc == null)
-					continue;
-				
-				man = new JavaManifest(rc);
-				info = new SuiteInfo(man);
-			}
-			
-			// Prevent bad JARs and files from messing things up
-			catch (IOException|InvalidSuiteException|MLECallError e)
-			{
-				e.printStackTrace();
-				continue;
-			}
-			
-			switch (info.type())
-			{
-				// Handle library
-				case LIBLET:
-				case SQUIRRELJME_API:
-					libs.__register(info, jar);
-					break;
-				
-				// Handle application
-				case MIDLET:
-					// Setup application information for all possible entry
-					// points
-					for (EntryPoint e : new EntryPoints(man))
-					{
-						// Load application
-						Application app = new Application(info, jar, libs, e);
-						result.add(app);
-						
-						// Indicate that it was scanned
-						if (__listener != null)
-							__listener.scanned(app, i, numJars);
-					}
-					break;
-				
-				// Unknown?
-				default:
-					throw Debugging.oops();
-			}
+			// Scan for multiple application types, since it is very possible
+			// for an application to be in hybrid form (such as MIDP/i-mode)
+			SuiteScanner.__scanJava(__listener, numJars, libs, result, i, jar);
+			SuiteScanner.__scanIMode(__listener, nameToJar, result, i, jar);
 		}
 		
 		// Finalize suite list
 		return new AvailableSuites(libs, result
-			.<Application>toArray(new Application[result.size()]));
+			.<JavaApplication>toArray(new JavaApplication[result.size()]));
+	}
+	
+	/**
+	 * Scans for an i-mode application and loads them.
+	 * 
+	 * @param __listener The listener used for load events.
+	 * @param __nameToJar The name to JAR mapping, used to find the JAM file.
+	 * @param __result The target applications.
+	 * @param __jarDx The JAR index.
+	 * @param __jar The JAR to check.
+	 * @since 2021/06/013
+	 */
+	private static void __scanIMode(SuiteScanListener __listener,
+		Map<String, JarPackageBracket> __nameToJar, List<JavaApplication> __result,
+		int __jarDx, JarPackageBracket __jar)
+	{
+		// Try to determine what our JAM would be called
+		String jarName = JarPackageShelf.libraryPath(__jar);
+		String jamName;
+		if (jarName.endsWith(".jar"))
+			jamName = jarName.substring(0, jarName.length() - 4) + ".jam";
+		else if (jarName.endsWith(".JAR"))
+			jamName = jarName.substring(0, jarName.length() - 4) + ".JAM";
+		else
+			jamName = jarName + ".jam";
+		
+		// If there is no JAM file, this cannot be an i-mode application
+		JarPackageBracket jam = __nameToJar.get(jamName);
+		if (jam == null)
+			return;
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Scans for Java applications in the given JAR.
+	 * 
+	 * @param __listener The listener used.
+	 * @param __numJars The number of JARs.
+	 * @param __libs The available support libraries.
+	 * @param __result Where applications go.
+	 * @param __jarDx The Jar Index.
+	 * @param __jar The JAR to check.
+	 * @since 2021/06/13
+	 */
+	private static void __scanJava(SuiteScanListener __listener,
+		int __numJars, __Libraries__ __libs, List<JavaApplication> __result,
+		int __jarDx, JarPackageBracket __jar)
+	{
+		// Try to read the manifest from the given JAR and process the
+		// suite information
+		SuiteInfo info;
+		JavaManifest man;
+		try (InputStream rc = JarPackageShelf.openResource(__jar,
+			"META-INF/MANIFEST.MF"))
+		{
+			// If no manifest exists, might not be a JAR
+			if (rc == null)
+				return;
+			
+			man = new JavaManifest(rc);
+			info = new SuiteInfo(man);
+		}
+		
+		// Prevent bad JARs and files from messing things up
+		catch (IOException|InvalidSuiteException|MLECallError e)
+		{
+			e.printStackTrace();
+			return;
+		}
+		
+		switch (info.type())
+		{
+			// Handle library
+			case LIBLET:
+			case SQUIRRELJME_API:
+				__libs.__register(info, __jar);
+				return;
+			
+			// Handle application
+			case MIDLET:
+				// Setup application information for all possible entry
+				// points
+				for (EntryPoint e : new EntryPoints(man))
+				{
+					// Load application
+					JavaApplication app = new JavaApplication(info, __jar, __libs, e);
+					__result.add(app);
+					
+					// Indicate that it was scanned
+					if (__listener != null)
+						__listener.scanned(app, __jarDx, __numJars);
+				}
+				return;
+			
+			// Unknown?
+			default:
+				throw Debugging.oops();
+		}
 	}
 }
