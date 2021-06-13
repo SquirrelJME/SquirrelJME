@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -31,6 +32,13 @@ final class __AppLaunch__
 		// {@squirreljme.error AH01 No main i-mode class specified.}
 		if (__args == null || __args.length < 1 || __args[0] == null)
 			throw new IllegalArgumentException("AH01");
+		
+		// We might be on the emulator
+		Poking.poke();
+		
+		// Debug where we are going in
+		Debugging.debugNote("Entering i-mode Application: %s",
+			__args[0]);
 		
 		throw Debugging.todo();
 	}

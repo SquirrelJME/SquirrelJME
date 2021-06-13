@@ -119,11 +119,14 @@ public class IModeApplication
 		// This determines which library set to load
 		String config = Objects.toString(
 			this._adfProps.get(IModeApplication._CONFIGURATION_VER),
-			Objects.toString(this._adfProps.get(
-				IModeApplication._KVM_VER), "CLDC-1.1"));
-		String profile = Objects.toString(
-			this._adfProps.get(IModeApplication._PROFILE_VER),
-			"DoJa-1.0");
+			this._adfProps.get(IModeApplication._KVM_VER));
+		String profile = this._adfProps.get(IModeApplication._PROFILE_VER);
+		
+		// Default to old stuff
+		if (config == null || config.isEmpty())
+			config = "CLDC-1.0";
+		if (profile == null || profile.isEmpty())
+			profile = "DoJa-1.0";
 		
 		return new DependencyInfo(new Configuration(config),
 			new Profile(profile));
