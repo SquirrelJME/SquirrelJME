@@ -62,6 +62,17 @@ public class ShiftJisDecoder
 			return (char)a | 0x1_0000;
 		}
 		
+		// Two byte characters
+		if ((a >= 0x81 && a <= 0x9F) || (a >= 0xE0 && a <= 0xEF))
+		{
+			// Not enough to read from
+			if (__l < 2)
+				return -1;
+			
+			// Unknown two-byte sequence
+			return 0xFFFD | 0x2_0000;
+		}
+		
 		// TODO: Decode more characters
 		return 0xFFFD | 0x1_0000;
 	}
