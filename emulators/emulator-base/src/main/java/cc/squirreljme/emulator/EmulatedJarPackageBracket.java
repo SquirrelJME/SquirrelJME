@@ -12,14 +12,8 @@ package cc.squirreljme.emulator;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.vm.VMClassLibrary;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import net.multiphasicapps.zip.blockreader.FileChannelBlockAccessor;
-import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
-import net.multiphasicapps.zip.blockreader.ZipBlockReader;
-import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
 
 /**
  * This is an emulation of {@link JarPackageBracket} so that it can access

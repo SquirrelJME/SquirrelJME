@@ -78,9 +78,13 @@ public final class SuiteScanner
 		{
 			JarPackageBracket jar = jars[i];
 			
+			// Ignore non-JARs
+			String libPath = JarPackageShelf.libraryPath(jar);
+			if (!libPath.endsWith(".jar") && !libPath.endsWith(".JAR"))
+				continue;
+			
 			// Debug
-			Debugging.debugNote("Checking %s...",
-				JarPackageShelf.libraryPath(jar));
+			Debugging.debugNote("Checking %s...", libPath);
 			
 			// Try to read the manifest from the given JAR and process the
 			// suite information
@@ -101,7 +105,6 @@ public final class SuiteScanner
 			catch (IOException|InvalidSuiteException|MLECallError e)
 			{
 				e.printStackTrace();
-				
 				continue;
 			}
 			
