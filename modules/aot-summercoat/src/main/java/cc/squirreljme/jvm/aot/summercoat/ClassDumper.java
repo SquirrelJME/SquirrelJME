@@ -486,8 +486,7 @@ public final class ClassDumper
 		{
 			int op = __code.read();
 			
-			InstructionFormat format = NativeInstruction.argumentFormat(op);
-			for (int i
+			//InstructionFormat format = NativeInstruction.argumentFormat(op);
 			
 			throw Debugging.todo();
 		}
