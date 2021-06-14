@@ -465,7 +465,7 @@ workflows:
       # Mac OS X runs decently however the jobs for it have a higher cost, so
       # only perform builds and tests for trunk to lower costs.
       # Currently have an overabundance of credits...
-#      - build_macosx:
+      - build_macosx
 #          requires:
 #            - build_linux
 #          filters:
@@ -476,7 +476,7 @@ workflows:
       # Building on Windows is currently expensive and takes longer, so only
       # run these builds on trunk to lower costs.
       # Currently have an overabundance of credits...
-#      - build_windows:
+      - build_windows
 #          requires:
 #            - build_linux
 #          filters:
