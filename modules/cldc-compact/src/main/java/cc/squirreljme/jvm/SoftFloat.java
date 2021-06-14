@@ -485,7 +485,8 @@ public final class SoftFloat
 		
 		// struct exp16_sig32 { int_fast16_t exp; uint_fast32_t sig; };
 		// exp = 1 - shiftDist ,, sig = sig<<shiftDist
-		return Assembly.longPack(__sig << shiftDist, 1 - shiftDist);
+		return Assembly.longPack(__sig << shiftDist,
+			(short)(1 - shiftDist));
 	}
 	
 	/**
