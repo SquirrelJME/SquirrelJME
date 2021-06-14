@@ -499,9 +499,14 @@ public enum VMType
 		VMType.__copySysProps(sysProps);
 		
 		// Determine the class-path for the emulator
-		List<Path> vmClassPath = new ArrayList<>();
+		Set<Path> vmClassPath = new LinkedHashSet<>();
 		for (File file : VMHelpers.projectRuntimeClasspath(
 			__task.getProject().project(this.emulatorProject)))
+			vmClassPath.add(file.toPath());
+		
+		// Make sure the base emulator is available as well
+		for (File file : VMHelpers.projectRuntimeClasspath(
+			__task.getProject().findProject(":emulators:emulator-base")))
 			vmClassPath.add(file.toPath());
 		
 		// Add all of the emulator outputs

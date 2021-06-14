@@ -144,6 +144,10 @@ public class VMTestTaskAction
 		if (emuLib != null && Files.exists(emuLib))
 			sysProps.put("squirreljme.emulator.libpath", emuLib.toString());
 		
+		// We only need to set the classpath once
+		Path[] classPath = VMHelpers.runClassPath(
+			(VMExecutableTask)__task, sourceSet, vmType);
+		
 		// Execute the tests concurrently but up to the limit, as testing is
 		// very intense on CPU
 		int runCount = 0;
@@ -152,8 +156,6 @@ public class VMTestTaskAction
 		{
 			// Determine the arguments that are used to spawn the JVM
 			JavaExecSpecFiller execSpec = specFactory.get();
-			Path[] classPath = VMHelpers.runClassPath(
-				(VMExecutableTask)__task, sourceSet, vmType);
 			vmType.spawnJvmArguments(__task, execSpec,
 				VMHelpers.SINGLE_TEST_RUNNER, sysProps, classPath, classPath,
 				testName);

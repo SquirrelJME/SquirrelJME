@@ -53,6 +53,11 @@ public abstract class VMTestWorkAction
 		int count = parameters.getCount().get();
 		int total = parameters.getTotal().get();
 		
+		// If we are debugging, we do not want to kill the test by a timeout
+		// if it takes forever because we might be very slow at debugging
+		String jdwpProp = System.getProperty("squirreljme.jdwp");
+		boolean isDebugging = (jdwpProp != null && !jdwpProp.isEmpty());
+		
 		// The process might not be able to execute
 		Process process = null;
 		try
@@ -88,16 +93,19 @@ public abstract class VMTestWorkAction
 			for (;;)
 				try
 				{
-					// Has the test run expired?
-					long nsDur = System.nanoTime() - nsStart;
-					if (nsDur >= VMTestWorkAction._TEST_TIMEOUT)
+					// Has the test run expired? Only when not debugging
+					if (!isDebugging)
 					{
-						// Note it
-						System.err.printf("TIME %s (%d/%d)%n", testName,
-							count, total);
-						
-						// The logic for interrupts is the same
-						throw new InterruptedException("Test Timeout");
+						long nsDur = System.nanoTime() - nsStart;
+						if (nsDur >= VMTestWorkAction._TEST_TIMEOUT)
+						{
+							// Note it
+							System.err.printf("TIME %s (%d/%d)%n", testName,
+								count, total);
+							
+							// The logic for interrupts is the same
+							throw new InterruptedException("Test Timeout");
+						}
 					}
 					
 					// Wait for completion
