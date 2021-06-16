@@ -813,7 +813,7 @@ public final class JavaStackState
 		
 		// Input stack properties
 		Info[] stack = this._stack;
-		int stacktop = this.stacktop;
+		int stackTop = this.stacktop;
 		
 		// Find function
 		JavaStackShuffleType.Function func = this.findShuffleFunction(__t);
@@ -823,12 +823,12 @@ public final class JavaStackState
 			Debugging.debugNote("Shuffle with: %s -> %s", __t, func);
 		
 		// Determine stack properties of the pop
-		int maxpop = func.in.max,
-			basetop = stacktop - maxpop;
+		int maxPop = func.in.max,
+			baseTop = stackTop - maxPop;
 		
 		// Load section of stack to be popped
-		List<Info> pops = new ArrayList<>(maxpop);
-		for (int i = basetop; i < stacktop; i++)
+		List<Info> pops = new ArrayList<>(maxPop);
+		for (int i = baseTop; i < stackTop; i++)
 			pops.add(stack[i]);
 		
 		// Debug
@@ -836,16 +836,16 @@ public final class JavaStackState
 			Debugging.debugNote("Popped: %s", pops);
 		
 		// Input and output slots
-		JavaStackShuffleType.Slots sin = func.in,
-			sout = func.out;
+		JavaStackShuffleType.Slots inSlots = func.in;
+		JavaStackShuffleType.Slots outSlots = func.out;
 		
 		// Map virtual variables to entries on the input so we know what is
 		// what. Also include the register values are stored at for caching.
 		Map<Integer, Info> source = new LinkedHashMap<>();
 		Map<Integer, Integer> storedat = new LinkedHashMap<>();
-		for (int ldx = 0; ldx < maxpop; ldx++)
+		for (int ldx = 0; ldx < maxPop; ldx++)
 		{
-			int var = sin._var[ldx];
+			int var = inSlots._var[ldx];
 			if (var >= 0)
 			{
 				source.put(var, pops.get(ldx));
@@ -858,32 +858,32 @@ public final class JavaStackState
 			Debugging.debugNote("Source map: %s", source);
 		
 		// Number of entries to push
-		int pushcount = sout.max;
+		int pushCount = outSlots.max;
 		
 		// Initialize new stack
-		Info[] newstack = stack.clone();
-		int newstacktop = basetop + pushcount;
+		Info[] newStack = stack.clone();
+		int newStackTop = baseTop + pushCount;
 		
 		// Any enqueues and operations to perform
 		List<Integer> enqs = new ArrayList<>();
-		List<StateOperation> sops = new ArrayList<>();
+		List<StateOperation> stateOps = new ArrayList<>();
 		
 		// For registers which have a value collision, they must be
 		// pre-copied to temporary space
 		int tempbase = this.usedregisters;
-		Map<Integer, Integer> precopy = new LinkedHashMap<>();
+		Map<Integer, Integer> preCopy = new LinkedHashMap<>();
 		
 		// Setup the new stack by pushing around
-		for (int at = basetop, ldx = 0; ldx < pushcount; at++, ldx++)
+		for (int at = baseTop, ldx = 0; ldx < pushCount; at++, ldx++)
 		{
 			// Pushing a top type?
-			int vardx = sout._var[ldx];
+			int vardx = outSlots._var[ldx];
 			if (vardx < 0)
 			{
 				// Set the current to the appropriate top type of the entry
 				// before this one
-				Info prev = newstack[at - 1];
-				newstack[at] = newstack[at].newTypeValue(prev.type.topType(),
+				Info prev = newStack[at - 1];
+				newStack[at] = newStack[at].newTypeValue(prev.type.topType(),
 					prev.value + 1, false);
 				
 				continue;
@@ -892,10 +892,10 @@ public final class JavaStackState
 			// Get the source info to use for this slot
 			// Also the original destination
 			Info ssl = source.get(vardx),
-				ods = newstack[at];
+				ods = newStack[at];
 				
 			// Is this type wide?
-			boolean iswide = ssl.type.isWide();
+			boolean isWide = ssl.type.isWide();
 			
 			// If the value was never used before, try to use the original
 			// register for it
@@ -909,18 +909,18 @@ public final class JavaStackState
 			{
 				// Try to use an already copied value, if it has not yet had
 				// a pre-copy then map it to the copied source instead
-				Integer pre = precopy.get(useval);
+				Integer pre = preCopy.get(useval);
 				if (pre == null)
 				{
-					precopy.put(useval,
-						(pre = (iswide ? -tempbase : tempbase)));
-					tempbase += (iswide ? 2 : 1);
+					preCopy.put(useval,
+						(pre = (isWide ? -tempbase : tempbase)));
+					tempbase += (isWide ? 2 : 1);
 				}
 				
 				// The value to use is the destination register because it
 				// will be copied
 				useval = ods.register;
-				sops.add(StateOperation.copy(iswide, Math.abs(pre), useval));
+				stateOps.add(StateOperation.copy(isWide, Math.abs(pre), useval));
 				
 				// Debug
 				if (__Debug__.ENABLED)
@@ -931,7 +931,7 @@ public final class JavaStackState
 			storedat.put(vardx, useval);
 			
 			// Setup slot
-			newstack[at] = newstack[at].newTypeValue(ssl.type, useval,
+			newStack[at] = newStack[at].newTypeValue(ssl.type, useval,
 				ssl.nocounting);
 		}
 		
@@ -939,19 +939,19 @@ public final class JavaStackState
 		// link order is maintained, negative premaps are treated as
 		// being wide
 		int vdat = 0;
-		for (Map.Entry<Integer, Integer> e : precopy.entrySet())
-			sops.add(vdat++, StateOperation.copy(
+		for (Map.Entry<Integer, Integer> e : preCopy.entrySet())
+			stateOps.add(vdat++, StateOperation.copy(
 				e.getValue() < 0, e.getKey(), Math.abs(e.getValue())));
 				
 		// Debug
 		if (__Debug__.ENABLED)
-			Debugging.debugNote("Pre-copies: %s", precopy);
+			Debugging.debugNote("Pre-copies: %s", preCopy);
 		
 		// Build
 		return new JavaStackResult(this,
-			new JavaStackState(this._locals, newstack, newstacktop),
+			new JavaStackState(this._locals, newStack, newStackTop),
 			new JavaStackEnqueueList(enqs.size(), enqs),
-			new StateOperations(sops));
+			new StateOperations(stateOps));
 	}
 	
 	/**
