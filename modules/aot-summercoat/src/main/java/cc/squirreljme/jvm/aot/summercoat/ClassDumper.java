@@ -18,17 +18,19 @@ import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedClassHeader;
 import dev.shadowtail.classfile.mini.MinimizedField;
 import dev.shadowtail.classfile.mini.MinimizedMethod;
-import dev.shadowtail.classfile.nncc.ArgumentFormat;
-import dev.shadowtail.classfile.nncc.InstructionFormat;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
+import dev.shadowtail.classfile.nncc.NativeInstructionType;
 import dev.shadowtail.classfile.pool.BasicPool;
 import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Iterator;
 import net.multiphasicapps.classfile.ClassNames;
+import net.multiphasicapps.classfile.InstructionMnemonics;
 import net.multiphasicapps.io.Base64Alphabet;
 import net.multiphasicapps.io.Base64Encoder;
 
@@ -180,9 +182,9 @@ public final class ClassDumper
 			__class.fields(false));
 		
 		// Dump methods
-		this.__dumpMethods(__indent, "methodStatic",
+		this.__dumpMethods(__indent, __class.pool, "methodStatic",
 			__class.methods(true));
-		this.__dumpMethods(__indent, "methodInstance",
+		this.__dumpMethods(__indent, __class.pool, "methodInstance",
 			__class.methods(false));
 	}
 	
@@ -271,10 +273,12 @@ public final class ClassDumper
 	 *
 	 * @param __indent The indentation.
 	 * @param __m The method to dump.
+	 * @param __dualPool The dual constant pool.
 	 * @throws IOException On read/write errors. 
 	 * @since 2021/05/16
 	 */
-	private void __dumpMethod(int __indent, MinimizedMethod __m)
+	private void __dumpMethod(int __indent, MinimizedMethod __m,
+		DualClassRuntimePool __dualPool)
 		throws IOException
 	{
 		// Key
@@ -292,9 +296,10 @@ public final class ClassDumper
 		// Is there code to be dumped?
 		byte[] code = __m.code();
 		if (code != null && code.length > 0)
-			try (InputStream in = new ByteArrayInputStream(code))
+			try (DataInputStream in = new DataInputStream(
+				new ByteArrayInputStream(code)))
 			{
-				this.__printCode(__indent + 1, in);
+				this.__printCode(__indent + 1, in, __dualPool);
 				//this.__printBinary(__indent + 1, "data", in);
 			}
 	}
@@ -303,13 +308,14 @@ public final class ClassDumper
 	 * Dumps the given methods.
 	 * 
 	 * @param __indent The indentation.
+	 * @param __dualPool The dual class pool.
 	 * @param __key The key.
 	 * @param __methods The methods to dump.
 	 * @throws IOException On read/write errors.
 	 * @since 2021/05/29
 	 */
-	private void __dumpMethods(int __indent, String __key,
-		MinimizedMethod... __methods)
+	private void __dumpMethods(int __indent, DualClassRuntimePool __dualPool,
+		String __key, MinimizedMethod... __methods)
 		throws IOException
 	{
 		if (__methods == null || __methods.length == 0)
@@ -317,7 +323,7 @@ public final class ClassDumper
 		
 		this.__print(__indent, __key, "");
 		for (MinimizedMethod m : __methods)
-			this.__dumpMethod(__indent + 1, m);
+			this.__dumpMethod(__indent + 1, m, __dualPool);
 	}
 	
 	/**
@@ -476,20 +482,65 @@ public final class ClassDumper
 	 * 
 	 * @param __indent The indentation.
 	 * @param __code The code to print.
+	 * @param __dualPool The dual pool.
 	 * @throws IOException On read/write errors.
 	 * @since 2021/06/10
 	 */
-	private void __printCode(int __indent, InputStream __code)
+	private void __printCode(int __indent, DataInputStream __code,
+		DualClassRuntimePool __dualPool)
 		throws IOException
 	{
-		for (;;)
-		{
-			int op = __code.read();
-			
-			//InstructionFormat format = NativeInstruction.argumentFormat(op);
-			
-			throw Debugging.todo();
-		}
+		// Print header
+		this.__print(__indent, "code", "");
+		
+		// Print each individual instruction
+		for (int baseIndent = __indent + 1;;)
+			try
+			{
+				NativeInstruction instruction =
+					NativeInstruction.decode(__dualPool, __code);
+				
+				// Handle Java Debug Point specially
+				String instStr;
+				if (instruction.operation() ==
+					NativeInstructionType.DEBUG_POINT)
+				{
+					// Read these parameters
+					int sourceLine = instruction.intArgument(0);
+					int javaOp = instruction.intArgument(1);
+					int javaAddr = instruction.intArgument(2);
+					
+					// Build string
+					instStr = String.format("*** Java :%d %s@%d ***",
+						sourceLine,
+						InstructionMnemonics.toString(javaOp),
+						javaAddr);
+				}
+				else
+				{
+					// Quote up strings
+					instStr = instruction.toString();
+					if (instStr.indexOf('"') >= 0)
+					{
+						StringBuilder sb = new StringBuilder();
+						for (int i = 0, n = instStr.length(); i < n; i++)
+						{
+							char c = instStr.charAt(i);
+							if (c == '"')
+								sb.append('\\');
+							sb.append(c);
+						}
+						
+						instStr = sb.toString();
+					}
+				}
+				
+				this.__print(baseIndent, "- \"" + instStr + "\"");
+			}
+			catch (EOFException ignored)
+			{
+				break;
+			}
 	}
 	
 	/**

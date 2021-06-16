@@ -10,10 +10,15 @@
 
 package dev.shadowtail.classfile.nncc;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import dev.shadowtail.classfile.pool.DualClassRuntimePool;
 import dev.shadowtail.classfile.xlate.CompareType;
 import dev.shadowtail.classfile.xlate.DataType;
 import dev.shadowtail.classfile.xlate.MathType;
 import dev.shadowtail.classfile.xlate.StackJavaType;
+import java.io.DataInput;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
@@ -364,6 +369,102 @@ public final class NativeInstruction
 		formatCache[__op] = rv;
 		
 		return rv;
+	}
+	
+	/**
+	 * Decodes the given instruction.
+	 * 
+	 * @param __dualPool The dual pool to use for 
+	 * @param __in The stream to read from.
+	 * @return The decoded instruction.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/06/15
+	 */
+	public static NativeInstruction decode(DualClassRuntimePool __dualPool,
+		DataInput __in)
+		throws IOException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Decode and determine the instruction format
+		int op = __in.readUnsignedByte();
+		InstructionFormat format = NativeInstruction.argumentFormat(op);
+		
+		// Read all instruction arguments
+		Object[] args = new Object[format.size()];
+		for (int i = 0, n = format.size(); i < n; i++)
+		{
+			Object v;
+			switch (format.get(i))
+			{
+				case INT32:
+					v = __in.readInt();
+					break;
+					
+				case INT64:
+					v = __in.readLong();
+					break;
+					
+				case FLOAT32:
+					v = __in.readFloat();
+					break;
+					
+				case FLOAT64:
+					v = __in.readDouble();
+					break;
+					
+				case REGLIST:
+					int len = __in.readUnsignedByte();
+					if ((len & 0x80) != 0)
+					{
+						// Read more length
+						len = ((len & 0x7F) << 8) | __in.readUnsignedByte();
+						
+						// Read in values
+						int[] vals = new int[len];
+						for (int j = 0; j < len; j++)
+							vals[j] = __in.readUnsignedShort();
+						
+						v = new RegisterList(vals);
+					}
+					else
+					{
+						// Read in values
+						int[] vals = new int[len];
+						for (int j = 0; j < len; j++)
+							vals[j] = __in.readUnsignedByte();
+						
+						v = new RegisterList(vals);
+					}
+					break;
+				
+				case VUINT:
+				case VUREG:
+				case VPOOL:
+				case VJUMP:
+					// Read variable width data
+					int data = __in.readUnsignedByte();
+					if ((data & 0x80) != 0)
+						data = ((data & 0x7F) << 8) | __in.readUnsignedByte();
+					
+					if (format.get(i) == ArgumentFormat.VPOOL)
+						v = __dualPool.runtimePool().byIndex(data);
+					else
+						v = data;
+					break;
+					
+				default:
+					throw Debugging.oops();
+			}
+			
+			// Store
+			args[i] = v; 
+		}
+		
+		// Build instruction
+		return new NativeInstruction(op, args);
 	}
 	
 	/**

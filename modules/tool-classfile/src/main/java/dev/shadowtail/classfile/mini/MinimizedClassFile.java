@@ -318,7 +318,7 @@ public final class MinimizedClassFile
 	 * Decodes and returns the minimized representation of the class file.
 	 *
 	 * @param __is The stream to decode from.
-	 * @param __ppool The parent pool, may be {@code null}.
+	 * @param __dPool The parent pool, may be {@code null}.
 	 * @return The resulting minimized class.
 	 * @throws InvalidClassFormatException If the class is not formatted
 	 * correctly.
@@ -327,7 +327,7 @@ public final class MinimizedClassFile
 	 * @since 2019/03/10
 	 */
 	public static MinimizedClassFile decode(InputStream __is,
-		DualClassRuntimePool __ppool)
+		DualClassRuntimePool __dPool)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
 		if (__is == null)
@@ -351,7 +351,7 @@ public final class MinimizedClassFile
 			}
 			
 			// Finish off
-			return MinimizedClassFile.decode(baos.toByteArray(), __ppool);
+			return MinimizedClassFile.decode(baos.toByteArray(), __dPool);
 		}
 	}
 	
