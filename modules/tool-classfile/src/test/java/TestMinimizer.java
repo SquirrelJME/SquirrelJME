@@ -31,16 +31,19 @@ public class TestMinimizer
 	public void test()
 		throws Throwable
 	{
-		if (true)
-			throw new UntestableException("Not a good test, minimized " +
-				"classes can change resulting in this test breaking."); 
-		
 		for (String x : new String[]{"ByteDeque.data",
-			"InflaterInputStream.data"})
+			"InflaterInputStream.data", "__LinkedListListIterator__.data"})
 			try (InputStream in = TestClassLoad.class.getResourceAsStream(x);
 				ByteArrayOutputStream out = new ByteArrayOutputStream())
 			{
+				System.err.printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%n");
+				System.err.printf("@@@ %s%n", x);
+				System.err.printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%n");
+				
 				Minimizer.minimize(ClassFile.decode(in), out);
+				
+				System.err.printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%n");
+				System.err.println();
 			}
 	}
 }

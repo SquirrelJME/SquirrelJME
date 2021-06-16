@@ -29,7 +29,7 @@ public class TestClassLoad
 		throws Throwable
 	{
 		for (String x : new String[]{"ByteDeque.data",
-			"InflaterInputStream.data"})
+			"InflaterInputStream.data", "__LinkedListListIterator__.data"})
 			try (InputStream in = TestClassLoad.class.getResourceAsStream(x))
 			{
 				ClassFile.decode(in);

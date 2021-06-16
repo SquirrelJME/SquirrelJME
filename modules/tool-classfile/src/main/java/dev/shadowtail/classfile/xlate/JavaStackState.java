@@ -818,6 +818,10 @@ public final class JavaStackState
 		// Find function
 		JavaStackShuffleType.Function func = this.findShuffleFunction(__t);
 		
+		// Debug
+		if (__Debug__.ENABLED)
+			Debugging.debugNote("Shuffle with: %s -> %s", __t, func);
+		
 		// Determine stack properties of the pop
 		int maxpop = func.in.max,
 			basetop = stacktop - maxpop;
@@ -826,6 +830,10 @@ public final class JavaStackState
 		List<Info> pops = new ArrayList<>(maxpop);
 		for (int i = basetop; i < stacktop; i++)
 			pops.add(stack[i]);
+		
+		// Debug
+		if (__Debug__.ENABLED)
+			Debugging.debugNote("Popped: %s", pops);
 		
 		// Input and output slots
 		JavaStackShuffleType.Slots sin = func.in,
@@ -934,6 +942,10 @@ public final class JavaStackState
 		for (Map.Entry<Integer, Integer> e : precopy.entrySet())
 			sops.add(vdat++, StateOperation.copy(
 				e.getValue() < 0, e.getKey(), Math.abs(e.getValue())));
+				
+		// Debug
+		if (__Debug__.ENABLED)
+			Debugging.debugNote("Pre-copies: %s", precopy);
 		
 		// Build
 		return new JavaStackResult(this,

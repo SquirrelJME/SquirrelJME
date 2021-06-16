@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.util.JavaExecSpecFiller;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -138,6 +139,21 @@ public class VMTestTaskAction
 		Map<String, String> sysProps = new LinkedHashMap<>();
 		if (Boolean.getBoolean("java.awt.headless"))
 			sysProps.put("java.awt.headless", "true");
+		
+		// Any specific changes to how tests run
+		SquirrelJMEPluginConfiguration config =
+			SquirrelJMEPluginConfiguration.configurationOrNull(
+				__task.getProject());
+		if (config != null)
+		{
+			// If we define any system properties specifically for tests then
+			// use them here. Could be used for debugging.
+			sysProps.putAll(config.testSystemProperties);
+			
+			// Disable parallelism for these tests?
+			if (config.noParallelTests)
+				maxParallel = 1;
+		}
 		
 		// Can we directly refer to the emulator library already?
 		Path emuLib = VMHelpers.findEmulatorLib(__task);
