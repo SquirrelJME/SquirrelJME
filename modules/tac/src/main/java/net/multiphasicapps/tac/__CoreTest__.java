@@ -256,6 +256,51 @@ abstract class __CoreTest__
 	 * @param __key The key to check.
 	 * @param __v The value to check.
 	 * @throws NullPointerException If no key was specified.
+	 * @since 2021/06/17
+	 */
+	public final void secondary(String __key, byte __v)
+		throws NullPointerException
+	{
+		this.secondary(__key, (Object)__v);
+	}
+	
+	/**
+	 * Stores a secondary value which can be additionally used as test
+	 * comparison.
+	 *
+	 * @param __key The key to check.
+	 * @param __v The value to check.
+	 * @throws NullPointerException If no key was specified.
+	 * @since 2021/06/17
+	 */
+	public final void secondary(String __key, short __v)
+		throws NullPointerException
+	{
+		this.secondary(__key, (Object)__v);
+	}
+	
+	/**
+	 * Stores a secondary value which can be additionally used as test
+	 * comparison.
+	 *
+	 * @param __key The key to check.
+	 * @param __v The value to check.
+	 * @throws NullPointerException If no key was specified.
+	 * @since 2021/06/17
+	 */
+	public final void secondary(String __key, char __v)
+		throws NullPointerException
+	{
+		this.secondary(__key, (Object)__v);
+	}
+	
+	/**
+	 * Stores a secondary value which can be additionally used as test
+	 * comparison.
+	 *
+	 * @param __key The key to check.
+	 * @param __v The value to check.
+	 * @throws NullPointerException If no key was specified.
 	 * @since 2021/06/16
 	 */
 	public final void secondary(String __key, int __v)

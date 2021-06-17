@@ -876,7 +876,7 @@ public final class JavaStackState
 		// Setup the new stack by pushing around
 		for (int at = baseTop, ldx = 0; ldx < pushCount; at++, ldx++)
 		{
-			// Pushing a top type?
+			// Pushing a stop type?
 			int vardx = outSlots._var[ldx];
 			if (vardx < 0)
 			{
