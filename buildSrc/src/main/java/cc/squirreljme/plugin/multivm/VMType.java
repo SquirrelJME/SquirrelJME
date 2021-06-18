@@ -145,6 +145,50 @@ public enum VMType
 			// Debug
 			__task.getLogger().debug("Hosted ClassPath: {}", classPath);
 			
+			// Does this run have a debugger specified already?
+			// Prevent double debugger claim which would cause one to fail
+			// to listen and thus break debugging
+			boolean hasDebug = false;
+			for (String arg : __args)
+				if (arg.startsWith("-Xjdwp:"))
+				{
+					hasDebug = true;
+					break;
+				}
+			
+			// Enable debugging for the spawned hosted environment
+			// Use an alternative variable to allow for VMFactory to be
+			// debugged rather than just the emulated environment.
+			String xjdwpProp = System.getProperty("squirreljme.xjdwp");
+			String jdwpProp = (xjdwpProp != null ? xjdwpProp :
+				System.getProperty("squirreljme.jdwp"));
+			if ((xjdwpProp != null && !xjdwpProp.isEmpty()) ||
+				(!hasDebug && jdwpProp != null && !jdwpProp.isEmpty()))
+			{
+				// Figure the hostname/port split
+				int lastCol = jdwpProp.lastIndexOf(':');
+				if (lastCol >= 0)
+				{
+					// Split hostname and port
+					String host = jdwpProp.substring(0, lastCol);
+					int port = Integer.parseInt(
+						jdwpProp.substring(lastCol + 1));
+					
+					// Listen on a given port?
+					if (host.isEmpty())
+						__execSpec.setJvmArgs(Arrays.asList(String.format(
+							"-agentlib:jdwp=transport=dt_socket," +
+							"server=y,suspend=y,address=%d", port)));
+					
+					// Connect to remote VM
+					else
+						__execSpec.setJvmArgs(Arrays.asList(String.format(
+							"-agentlib:jdwp=transport=dt_socket,server=n," +
+							"address=%s:%d,suspend=y," +
+							"onuncaught=y", host, port)));
+				}
+			}
+			
 			// Use the classpath we previously determined
 			__execSpec.classpath(classPath);
 			
