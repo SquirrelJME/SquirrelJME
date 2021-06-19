@@ -46,6 +46,7 @@ import dev.shadowtail.classfile.xlate.JavaStackEnqueueList;
 import dev.shadowtail.classfile.xlate.JavaStackResult;
 import dev.shadowtail.classfile.xlate.JavaStackState;
 import dev.shadowtail.classfile.xlate.MathType;
+import dev.shadowtail.classfile.xlate.SoftRegister;
 import dev.shadowtail.classfile.xlate.StackJavaType;
 import dev.shadowtail.classfile.xlate.StateOperation;
 import dev.shadowtail.classfile.xlate.StateOperations;
@@ -68,6 +69,8 @@ import net.multiphasicapps.classfile.LookupSwitch;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.MethodReference;
+import net.multiphasicapps.collections.AutoCloseableList;
+import net.multiphasicapps.collections.CloseableList;
 
 /**
  * This contains the handler for the near native byte code.
@@ -1120,31 +1123,86 @@ public final class NearNativeByteCodeHandler
 		if (__ops.isEmpty())
 			return;
 		
-		// Generate code for the operations
-		NativeCodeBuilder codebuilder = this.codebuilder;
-		for (StateOperation op : __ops)
-			switch (op.type)
+		// We need volatiles to process these
+		VolatileRegisterStack volatiles = this.volatiles;
+		try (@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+			AutoCloseableList<Volatile<?>> closed = new AutoCloseableList<>())
+		{
+			// Load register values into the map
+			Map<SoftRegister, Register> mapping =
+				new LinkedHashMap<>();
+			for (StateOperation op : __ops)
+				for (SoftRegister sr : new SoftRegister[]{op.a, op.b})
+					if (!mapping.containsKey(sr))
+					{
+						// Build register value
+						Register r;
+						if (!sr.isTemporary)
+						{
+							if (op.type.isWide())
+								r = WideRegister.of(sr.register,
+									sr.register + 1);
+							else
+								r = IntValueRegister.of(sr.register);
+						}
+						
+						// Temporaries need to be cleaned up
+						else
+						{
+							Volatile<? extends Register> vol;
+							if (op.type.isWide())
+								vol = volatiles.getWide();
+							else
+								vol = volatiles.getIntValue();
+							
+							// Get the base register to use
+							r = vol.register;
+							
+							// Close for later
+							closed.add(vol);
+						}
+						
+						// Store for the mapping	
+						mapping.put(sr, r);
+					}
+			
+			// Generate code for the operations, using the appropriate
+			// registers and such
+			NativeCodeBuilder codeBuilder = this.codebuilder;
+			for (StateOperation op : __ops)
 			{
-				case UNCOUNT:
-					this.__refUncount(op.a);
-					break;
+				// Get the A and B sides
+				Register a = mapping.get(op.a);
+				Register b = mapping.get(op.b);
 				
-				case COUNT:
-					this.__refCount(op.a);
-					break;
-				
-				case COPY:
-					codebuilder.addCopy(op.a, op.b);
-					break;
-				
-				case WIDE_COPY:
-					codebuilder.addCopy(op.a, op.b);
-					codebuilder.addCopy(op.a + 1, op.b + 1);
-					break;
-				
-				default:
-					throw Debugging.oops();
+				// Do the action
+				switch (op.type)
+				{
+					case UNCOUNT:
+						this.__refUncount(a.asMemHandle());
+						break;
+					
+					case COUNT:
+						this.__refCount(a.asMemHandle());
+						break;
+					
+					case COPY:
+						codeBuilder.addCopy(a, b);
+						break;
+					
+					case WIDE_COPY:
+						WideRegister wa = (WideRegister)a;
+						WideRegister wb = (WideRegister)b;
+						
+						codeBuilder.addCopy(wa.low, wb.low);
+						codeBuilder.addCopy(wa.high, wb.high);
+						break;
+					
+					default:
+						throw Debugging.oops();
+				}
 			}
+		}
 	}
 	
 	/**

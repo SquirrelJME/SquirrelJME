@@ -41,6 +41,7 @@ public final class JavaStackState
 	public final int stacktop;
 	
 	/** Number of used registers. */
+	@Deprecated
 	public final int usedregisters;
 	
 	/** The local variables defined. */
@@ -572,15 +573,12 @@ public final class JavaStackState
 				
 				// Copy the value from the local to the stack entry's true
 				// register
-				ops.add(new StateOperation((sst.isWide() ?
-					StateOperation.Type.WIDE_COPY : StateOperation.Type.COPY),
-					bumpreg, ssreg));
+				ops.add(StateOperation.copy(sst.isWide(), bumpreg, ssreg));
 				
 				// If the local is counted, then the destination spot on the
 				// stack needs to be counted
 				if (sst.isObject() && !olddest.nocounting)
-					ops.add(new StateOperation(StateOperation.Type.COUNT,
-						ssreg));
+					ops.add(StateOperation.count(ssreg));
 				
 				// Then this slot on the stack becomes just a non-cached direct
 				// value
@@ -842,14 +840,14 @@ public final class JavaStackState
 		// Map virtual variables to entries on the input so we know what is
 		// what. Also include the register values are stored at for caching.
 		Map<Integer, Info> source = new LinkedHashMap<>();
-		Map<Integer, Integer> storedat = new LinkedHashMap<>();
+		Map<Integer, Integer> storedAt = new LinkedHashMap<>();
 		for (int ldx = 0; ldx < maxPop; ldx++)
 		{
 			int var = inSlots._var[ldx];
 			if (var >= 0)
 			{
 				source.put(var, pops.get(ldx));
-				storedat.put(var, -1);
+				storedAt.put(var, -1);
 			}
 		}
 		
@@ -891,52 +889,53 @@ public final class JavaStackState
 			
 			// Get the source info to use for this slot
 			// Also the original destination
-			Info ssl = source.get(vardx),
-				ods = newStack[at];
-				
+			Info ssl = source.get(vardx);
+			Info ods = newStack[at];
+			
 			// Is this type wide?
 			boolean isWide = ssl.type.isWide();
 			
 			// If the value was never used before, try to use the original
 			// register for it
-			int useval = storedat.get(vardx);
-			if (useval < 0)
-				useval = ssl.value;
+			int useVal = storedAt.get(vardx);
+			if (useVal < 0)
+				useVal = ssl.value;
 			
 			// Using the value position would violate the strict no-aliasing
 			// of future registers
-			if (useval > ods.register)
+			if (useVal > ods.register)
 			{
 				// Try to use an already copied value, if it has not yet had
 				// a pre-copy then map it to the copied source instead
-				Integer pre = preCopy.get(useval);
+				Integer pre = preCopy.get(useVal);
 				if (pre == null)
 				{
-					preCopy.put(useval,
+					preCopy.put(useVal,
 						(pre = (isWide ? -tempbase : tempbase)));
 					tempbase += (isWide ? 2 : 1);
 				}
 				
 				// The value to use is the destination register because it
 				// will be copied
-				useval = ods.register;
-				stateOps.add(StateOperation.copy(isWide, Math.abs(pre), useval));
+				useVal = ods.register;
+				stateOps.add(StateOperation.copy(isWide,
+					Math.abs(pre), useVal));
 				
 				// Debug
 				if (__Debug__.ENABLED)
-					Debugging.debugNote("Pre %d -> %d", pre, useval);
+					Debugging.debugNote("Pre %d -> %d", pre, useVal);
 			}
 			
 			// Set value as being stored here
-			storedat.put(vardx, useval);
+			storedAt.put(vardx, useVal);
 			
 			// Setup slot
-			newStack[at] = newStack[at].newTypeValue(ssl.type, useval,
+			newStack[at] = newStack[at].newTypeValue(ssl.type, useVal,
 				ssl.nocounting);
 		}
 		
 		// Pre-copies which are needed, but make sure that the original
-		// link order is maintained, negative premaps are treated as
+		// link order is maintained, negative pre-maps are treated as
 		// being wide
 		int vdat = 0;
 		for (Map.Entry<Integer, Integer> e : preCopy.entrySet())
