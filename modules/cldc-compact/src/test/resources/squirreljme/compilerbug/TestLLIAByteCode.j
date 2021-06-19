@@ -207,6 +207,26 @@ notnull:
 	; >> "COPY:[[18, 13]]"
 	;        #13                  #14->#18                         #18->#13
 	; [this, FakeLinkedList list, int list.modCount + 1] -> [this, int list.modCount + 1, FakeLinkedList list, int list.modCount + 1]
+	; DB: ********************
+	; DB: Preprocessing STACKSHUFFLE:[DUP_X1] (@62#DUP_X1~:[])
+	; DB: Shuffle with: DUP_X1 -> [[ba] -> [aba]]
+	; DB: Popped: [r13:Ljava/util/LinkedList;, r14:I]
+	; DB: Source map: {1=r13:Ljava/util/LinkedList;, 0=r14:I}
+	; DB: Pre 18 -> 13
+	; DB: Pre-copies: {14=18}
+	; DB: *** Stack Result ***
+	; DB: BEF: State:{L=[r8:Ljava/util/__LinkedListListIterator__;:RN,
+	;     r9:Ljava/lang/Object;:RN, r10:I, r11:Ljava/util/__Link__;],
+	;     S=[r8(12):Ljava/util/__LinkedListListIterator__;:N,
+	;     r13:Ljava/util/LinkedList;, r14:I]}
+	; DB: AFT: State:{L=[r8:Ljava/util/__LinkedListListIterator__;:RN,
+	;     r9:Ljava/lang/Object;:RN, r10:I, r11:Ljava/util/__Link__;],
+	;     S=[r8(12):Ljava/util/__LinkedListListIterator__;:N, r13:I,
+	;     r13(14):Ljava/util/LinkedList;:N, r13(15):I]}
+	;     ^^^^^ ALL THREE OF THESE ARE r13??? THIS IS NOT GOOD!
+	; DB: IN : []
+	; DB: OUT: []
+	; DB: OPS: [COPY(14, 18), COPY(18, 13)]
 	dup_x1
 	
 	; >> "*** Java :114 PUTFIELD@63 ***"
@@ -214,6 +234,7 @@ notnull:
 	; >> "LOAD_POOL:[[#5272(ACCESSED_FIELD):NORMAL+INSTANCE+field
 	;    java/util/LinkedList::modCount I, 20]]"
 	; >> "MEM_HANDLE_OFF_STORE_INTEGER_REG_JAVA:[[13, 13, 20]]"
+	;                                             ^ should be 14 (for list)!
 	; >> "IF_ICMP_NOT_EQUALS:[[3, 0, 1579]]"
 	; [this, int list.modCount + 1, FakeLinkedList list, int list.modCount + 1] -> [this, int list.modCount + 1]
 	putfield squirreljme/compilerbug/FakeLinkedList/modCount I
