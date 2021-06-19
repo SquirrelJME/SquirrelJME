@@ -3691,7 +3691,7 @@ public final class SpringThreadWorker
 		
 		// Get the class of the current method being executed, lookup depends
 		// on it
-		SpringClass currentclass = this.loadClass(
+		SpringClass currentClass = this.loadClass(
 			this.thread.currentFrame().method().inClass());
 		
 		// {@squirreljme.error BK35 Instance object for special invoke is
@@ -3701,8 +3701,8 @@ public final class SpringThreadWorker
 			throw new SpringNullPointerException("BK35");
 		
 		// These modify the action to be performed
-		boolean insame = (currentclass == refClass),
-			insuper = currentclass.isSuperClass(refClass),
+		boolean insame = (currentClass == refClass),
+			insuper = currentClass.isSuperClass(refClass),
 			isinit = refmethod.name().isInstanceInitializer(),
 			isprivate = refmethod.flags().isPrivate();
 		
@@ -3714,7 +3714,7 @@ public final class SpringThreadWorker
 		
 		// Call superclass method instead?
 		else if (!isprivate && insuper && !isinit)
-			refmethod = currentclass.superClass().lookupMethod(false,
+			refmethod = currentClass.superClass().lookupMethod(false,
 				ref.memberNameAndType());
 		
 		// Invoke this method
