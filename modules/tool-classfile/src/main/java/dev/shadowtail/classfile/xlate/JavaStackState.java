@@ -821,8 +821,8 @@ public final class JavaStackState
 			Debugging.debugNote("Shuffle with: %s -> %s", __t, func);
 		
 		// Determine stack properties of the pop
-		int maxPop = func.in.max,
-			baseTop = stackTop - maxPop;
+		int maxPop = func.in.max;
+		int baseTop = stackTop - maxPop;
 		
 		// Load section of stack to be popped
 		List<Info> pops = new ArrayList<>(maxPop);

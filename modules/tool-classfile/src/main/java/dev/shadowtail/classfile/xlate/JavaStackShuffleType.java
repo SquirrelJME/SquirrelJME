@@ -78,7 +78,7 @@ public enum JavaStackShuffleType
 		int n = __fs.length;
 		Function[] functions = new Function[n];
 		for (int i = 0; i < n; i++)
-			functions[i] = Function.of(__fs[i]);
+			functions[i] = Function.__of(__fs[i]);
 		this._functions = functions;
 	}
 	
@@ -106,7 +106,7 @@ public enum JavaStackShuffleType
 		 * @throws NullPointerException On null arguments.
 		 * @since 2019/04/01
 		 */
-		public Function(Slots __in, Slots __out)
+		Function(Slots __in, Slots __out)
 			throws NullPointerException
 		{
 			if (__in == null || __out == null)
@@ -141,7 +141,7 @@ public enum JavaStackShuffleType
 		 * @throws NullPointerException On null arguments.
 		 * @since 2019/04/01
 		 */
-		public static Function of(String __s)
+		static Function __of(String __s)
 			throws IllegalArgumentException, NullPointerException
 		{
 			if (__s == null)
@@ -167,6 +167,9 @@ public enum JavaStackShuffleType
 		/** The maximum push/pop count. */
 		public final int max;
 		
+		/** Logical slot ordering. */
+		final byte[] _logicalSlot;
+		
 		/** The variable index, negative values mean top types. */
 		final byte[] _var;
 		
@@ -184,7 +187,7 @@ public enum JavaStackShuffleType
 		 * @throws NullPointerException On null arguments.
 		 * @since 2019/04/01
 		 */
-		public Slots(String __s)
+		Slots(String __s)
 			throws IllegalArgumentException, NullPointerException
 		{
 			if (__s == null)
@@ -223,6 +226,32 @@ public enum JavaStackShuffleType
 			this.max = max;
 			this._var = var;
 			this._wide = wide;
+			
+			// Build logical slots, which can be used to know which slots
+			// are where
+			byte[] logicalSlot = new byte[n];
+			for (int i = 0; i < n; i++)
+			{
+				char c = __s.charAt(i);
+				
+				if (c >= 'A' && c <= 'Z')
+					logicalSlot[i] = (byte)(c - 'A');
+				else
+					logicalSlot[i] = (byte)(c - 'a');
+			}
+			this._logicalSlot = logicalSlot;
+		}
+		
+		/**
+		 * Returns the logical slot for the index.
+		 * 
+		 * @param __dx The index.
+		 * @return The logical slot for the index.
+		 * @since 2021/06/20
+		 */
+		public final int logicalSlot(int __dx)
+		{
+			return this._logicalSlot[__dx];
 		}
 		
 		/**
