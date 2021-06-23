@@ -22,7 +22,9 @@ import java.awt.event.MouseListener;
 import java.util.Random;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -36,6 +38,9 @@ public class SwingItemList
 	extends SwingItem
 	implements ListSelectionListener, KeyListener, MouseListener
 {
+	/** Scrolling for the list. */
+	final JScrollPane _scroll;
+	
 	/** The model for the list. */
 	final DefaultListModel<ListEntry> _model;
 	
@@ -63,12 +68,20 @@ public class SwingItemList
 		
 		this._list = list;
 		
+		// Force the list to show vertically
+		list.setLayoutOrientation(JList.VERTICAL);
+		
 		// Register a listener for selection changes
 		list.addListSelectionListener(this);
 		
 		// Register listener to listen for enter/return to select an item
 		list.addKeyListener(this);
 		list.addMouseListener(this);
+		
+		// Setup scrolling for the list
+		this._scroll = new JScrollPane(list,
+			ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 	}
 	
 	/**
@@ -91,9 +104,10 @@ public class SwingItemList
 	 * @since 2020/07/18
 	 */
 	@Override
-	public JList<?> component()
+	public JScrollPane component()
 	{
-		return this._list;
+		// Use the scroll, so that we get that scrolling
+		return this._scroll;
 	}
 	
 	/**

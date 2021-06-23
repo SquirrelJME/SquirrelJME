@@ -862,6 +862,10 @@ public final class JavaStackState
 		Info[] newStack = stack.clone();
 		int newStackTop = baseTop + pushCount;
 		
+		if (true)
+		{
+		}
+		
 		// Any enqueues and operations to perform
 		List<Integer> enqs = new ArrayList<>();
 		List<StateOperation> stateOps = new ArrayList<>();
@@ -874,7 +878,7 @@ public final class JavaStackState
 		// Setup the new stack by pushing around
 		for (int at = baseTop, ldx = 0; ldx < pushCount; at++, ldx++)
 		{
-			// Pushing a stop type?
+			// Pushing a top type?
 			int vardx = outSlots._var[ldx];
 			if (vardx < 0)
 			{
@@ -903,8 +907,16 @@ public final class JavaStackState
 			
 			// Using the value position would violate the strict no-aliasing
 			// of future registers
-			if (useVal > ods.register)
+			boolean collision = useVal > ods.register;
+			
+			if (collision)
 			{
+				// Debug
+				if (__Debug__.ENABLED)
+					Debugging.debugNote("Collide " +
+					"origUseVal=%d ssl.value=%d useVal=%d ods.register=%d",
+					storedAt.get(vardx), ssl.value, useVal, ods.register);
+				
 				// Try to use an already copied value, if it has not yet had
 				// a pre-copy then map it to the copied source instead
 				Integer pre = preCopy.get(useVal);
@@ -918,12 +930,14 @@ public final class JavaStackState
 				// The value to use is the destination register because it
 				// will be copied
 				useVal = ods.register;
-				stateOps.add(StateOperation.copy(isWide,
-					Math.abs(pre), useVal));
+				StateOperation stateOp = StateOperation.copy(isWide,
+					Math.abs(pre), useVal);
+				stateOps.add(stateOp);
 				
 				// Debug
 				if (__Debug__.ENABLED)
-					Debugging.debugNote("Pre %d -> %d", pre, useVal);
+					Debugging.debugNote("Pre %d -> %d (%s)",
+						pre, useVal, stateOp);
 			}
 			
 			// Set value as being stored here

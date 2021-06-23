@@ -206,12 +206,15 @@ notnull:
 	; r13 (our linked list) gets trashed here with the method
 	; >> "COPY:[[18, 13]]"
 	;        #13                  #14->#18                         #18->#13
-	; [this, FakeLinkedList list, int list.modCount + 1] -> [this, int list.modCount + 1, FakeLinkedList list, int list.modCount + 1]
+	; [this, FakeLinkedList list, int list.modCount + 1] ->
+	;     [this, int list.modCount + 1, FakeLinkedList list,
+	;      int list.modCount + 1]
 	; DB: ********************
 	; DB: Preprocessing STACKSHUFFLE:[DUP_X1] (@62#DUP_X1~:[])
 	; DB: Shuffle with: DUP_X1 -> [[ba] -> [aba]]
 	; DB: Popped: [r13:Ljava/util/LinkedList;, r14:I]
 	; DB: Source map: {1=r13:Ljava/util/LinkedList;, 0=r14:I}
+	; DB: Collide origUseVal=-1 ssl.value=14 useVal=14 ods.register=13
 	; DB: Pre 18 -> 13
 	; DB: Pre-copies: {14=18}
 	; DB: *** Stack Result ***
