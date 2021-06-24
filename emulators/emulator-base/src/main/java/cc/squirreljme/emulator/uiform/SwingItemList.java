@@ -203,7 +203,7 @@ public class SwingItemList
 	 * @since 2020/07/18
 	 */
 	@Override
-	public void property(int __id, int __sub, int __newValue)
+	public void property(int __intProp, int __sub, int __newValue)
 		throws MLECallError
 	{
 		DefaultListModel<ListEntry> model = this._model;
@@ -215,7 +215,7 @@ public class SwingItemList
 			ListEntry elem;
 			
 			// Depends on which action was performed
-			switch (__id)
+			switch (__intProp)
 			{
 				case UIWidgetProperty.INT_NUM_ELEMENTS:
 					if (__newValue < 0)
@@ -281,7 +281,7 @@ public class SwingItemList
 					break;
 				
 				default:
-					throw new MLECallError("" + __id);
+					throw new MLECallError("" + __intProp);
 			}
 		}
 		catch (IndexOutOfBoundsException e)
@@ -301,7 +301,7 @@ public class SwingItemList
 	 * @since 2020/07/18
 	 */
 	@Override
-	public void property(int __id, int __sub, String __newValue)
+	public void property(int __strProp, int __sub, String __newValue)
 	{
 		DefaultListModel<ListEntry> model = this._model;
 		JList<ListEntry> list = this._list;
@@ -309,14 +309,14 @@ public class SwingItemList
 		
 		try
 		{
-			switch (__id)
+			switch (__strProp)
 			{
 				case UIWidgetProperty.STRING_LIST_ITEM_LABEL:
 					model.get(__sub)._label = __newValue;
 					break;
 				
 				default:
-					throw new MLECallError("" + __id);
+					throw new MLECallError("" + __strProp);
 			}
 		}
 		catch (IndexOutOfBoundsException e)

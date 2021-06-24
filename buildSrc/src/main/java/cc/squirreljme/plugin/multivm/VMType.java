@@ -114,11 +114,15 @@ public enum VMType
 			
 			// Start with the base emulator class path
 			List<Object> classPath = new ArrayList<>();
-			classPath.add(VMHelpers.projectRuntimeClasspath(
-				__task.getProject().project(this.emulatorProject)));
+			Set<Path> vmSupportPath = new LinkedHashSet<>();
+			for (File file : VMHelpers.projectRuntimeClasspath(
+				__task.getProject().project(this.emulatorProject)))
+			{
+				vmSupportPath.add(file.toPath());
+				classPath.add(file);
+			}
 			
 			// Add all of the emulator outputs
-			Set<Path> vmSupportPath = new LinkedHashSet<>(); 
 			for (File file : __task.getProject().project(this.emulatorProject)
 				.getTasks().getByName("jar").getOutputs().getFiles())
 				vmSupportPath.add(file.toPath());

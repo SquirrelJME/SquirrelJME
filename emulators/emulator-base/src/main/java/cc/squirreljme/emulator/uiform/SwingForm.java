@@ -86,6 +86,9 @@ public final class SwingForm
 	/** Does the canvas need to be focused automatically? */
 	private volatile boolean _focusBody;
 	
+	/** The next title to choose. */
+	volatile String _nextTitle; 
+	
 	static
 	{
 		try
@@ -503,10 +506,10 @@ public final class SwingForm
 	 * @since 2020/09/21
 	 */
 	@Override
-	public final void property(int __id, int __sub, int __newValue)
+	public final void property(int __intProp, int __sub, int __newValue)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		throw new MLECallError("Unknown property: " + __intProp);
 	}
 	
 	/**
@@ -514,10 +517,21 @@ public final class SwingForm
 	 * @since 2020/09/21
 	 */
 	@Override
-	public final void property(int __id, int __sub, String __newValue)
+	public final void property(int __strProp, int __sub, String __newValue)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		SwingDisplay display = this._display;
+		switch (__strProp)
+		{
+			case UIWidgetProperty.STRING_FORM_TITLE:
+				this._nextTitle = __newValue;
+				if (display != null)
+					display.frame.setTitle(__newValue);
+				break;
+			
+			default:
+				throw new MLECallError("Unknown property: " + __strProp);
+		}
 	}
 	
 	/**
@@ -560,8 +574,14 @@ public final class SwingForm
 	public String propertyStr(int __strProp, int __sub)
 		throws MLECallError
 	{
+		SwingDisplay display = this._display;
 		switch (__strProp)
 		{
+			case UIWidgetProperty.STRING_FORM_TITLE:
+				if (display != null)
+					return display.frame.getTitle();
+				return this._nextTitle;
+			
 			default:
 				throw new MLECallError("Unknown property: " + __strProp);
 		}
