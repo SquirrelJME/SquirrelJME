@@ -17,16 +17,19 @@ ability to play older J2ME software and games designed for flip-phones.
 
  * Copyright (C) 2013-2021 Stephanie Gawroriski
    <xer@multiphasicapps.net>
- * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2020
+ * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2021
  * _Lex_ and The _SquirrelJME_ Logo were illustrated by...
    * Kat Adam-MacEwen
    * Kat@CMYKat Designs & Illustrations <http://www.cmykat-designs.com/>
 
 Please support me on [Patreon](https://www.patreon.com/SquirrelJME)!
 
-Dedicated to Emily (1998-2020), the developer of
+Dedicated to _Emily_ (1998-2020), the developer of
 [Mu](https://github.com/meepingsnesroms/Mu), you will not be forgotten.
 Rest in peace.
+
+Dedicated to _Near_ (2021), the developer of Higan, Ares, etc., may
+your soul rest in peace. You will not be forgotten.
 
 Badges:
 
@@ -78,7 +81,6 @@ Information:
  * _End-User Documents_
    * [Building](building.mkd)
    * [Changelog](changelog.mkd)
-     * Also see [Live Updates](https://updates.squirreljme.cc/)
    * [Compatibility](compatibility.mkd)
    * [History](history.mkd)
    * [Release Roadmap](route.mkd)
