@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
@@ -130,6 +131,11 @@ public enum JavaStackShuffleType
 			int outLen = this.out.max;
 			JavaType[] rv = new JavaType[outLen];
 			
+			// Debug
+			if (__Debug__.ENABLED)
+				Debugging.debugNote("@@layerIn: %s",
+					Arrays.asList(__inTypes));
+			
 			// Map types to the output
 			int at = 0;
 			for (int i = 0; i < outLen; i++)
@@ -141,8 +147,10 @@ public enum JavaStackShuffleType
 				if (outVar < 0)
 					continue;
 				
-				// Otherwise
-				rv[at++] = __inTypes[this.in.findVariableSlot(outVar)];
+				// Otherwise map the slot, note that we need to map a raw
+				// index to a logical slot for this to work properly
+				rv[at++] = __inTypes[this.in.logicalSlot(
+					this.in.findVariableSlot(outVar))];
 			}
 			
 			return (at == outLen ? rv : Arrays.copyOf(rv, at));
@@ -202,8 +210,8 @@ public enum JavaStackShuffleType
 		/** Logical maximum push/pop count. */
 		public final int logicalMax;
 		
-		/** Logical slot ordering. */
-		final byte[] _logicalSlot;
+		/** Mapping to turn indexes into logical slots. */
+		final byte[] _indexToLogicalSlot;
 		
 		/** The variable index, negative values mean top types. */
 		final byte[] _var;
@@ -263,19 +271,23 @@ public enum JavaStackShuffleType
 			this._var = var;
 			this._wide = wide;
 			
-			// Build logical slots, which can be used to know which slots
-			// are where
-			byte[] logicalSlot = new byte[n];
-			for (int i = 0; i < n; i++)
+			// Build mapping from indexes to logical slots, so it can be
+			// determined which index belongs to which slot.
+			byte[] indexToLogicalSlot = new byte[max];
+			for (int i = 0, at = 0; i < n; i++)
 			{
 				char c = __s.charAt(i);
 				
+				// Top slots take two
 				if (c >= 'A' && c <= 'Z')
-					logicalSlot[i] = (byte)(c - 'A');
+				{
+					indexToLogicalSlot[at++] = (byte)(c - 'A');
+					indexToLogicalSlot[at++] = (byte)(c - 'A');
+				}
 				else
-					logicalSlot[i] = (byte)(c - 'a');
+					indexToLogicalSlot[at++] = (byte)(c - 'a');
 			}
-			this._logicalSlot = logicalSlot;
+			this._indexToLogicalSlot = indexToLogicalSlot;
 		}
 		
 		/**
@@ -310,7 +322,7 @@ public enum JavaStackShuffleType
 		 */
 		public final int logicalSlot(int __dx)
 		{
-			return this._logicalSlot[__dx];
+			return this._indexToLogicalSlot[__dx];
 		}
 		
 		/**

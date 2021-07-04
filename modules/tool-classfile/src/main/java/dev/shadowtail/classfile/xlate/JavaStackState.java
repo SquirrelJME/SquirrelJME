@@ -888,8 +888,8 @@ public final class JavaStackState
 					continue;
 				
 				// Get the input variable associated with the given output
-				int inSlot = func.in.findVariableSlot(
-					func.out.logicalVariable(i));
+				int inSlot = func.in.logicalSlot(func.in.findVariableSlot(
+					func.out.logicalVariable(i)));
 				JavaStackResult.Input in = ins[inSlot];
 				
 				// Debug
