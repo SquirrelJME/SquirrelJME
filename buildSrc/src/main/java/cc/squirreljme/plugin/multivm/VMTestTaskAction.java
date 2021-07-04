@@ -140,6 +140,11 @@ public class VMTestTaskAction
 		if (Boolean.getBoolean("java.awt.headless"))
 			sysProps.put("java.awt.headless", "true");
 		
+		// If debugging, do not run in parallel
+		if (null != System.getProperty("squirreljme.xjdwp",
+			System.getProperty("squirreljme.jdwp")))
+			maxParallel = 1;
+		
 		// Any specific changes to how tests run
 		SquirrelJMEPluginConfiguration config =
 			SquirrelJMEPluginConfiguration.configurationOrNull(
