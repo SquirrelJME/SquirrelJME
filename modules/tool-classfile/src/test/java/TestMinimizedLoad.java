@@ -34,8 +34,7 @@ public class TestMinimizedLoad
 		if (true)
 			throw new UntestableException("Already tested by another."); 
 		
-		for (String x : new String[]{"ByteDeque.data",
-			"InflaterInputStream.data", "__LinkedListListIterator__.data"})
+		for (String x : TestClassLoad.CLASS_LIST)
 			try (InputStream in = TestClassLoad.class.getResourceAsStream(x))
 			{
 				Minimizer.minimize(ClassFile.decode(in));

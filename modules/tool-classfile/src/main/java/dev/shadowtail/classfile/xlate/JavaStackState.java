@@ -735,9 +735,13 @@ public final class JavaStackState
 		List<Info> popped = new ArrayList<>();
 		for (int i = 0; i < __n; i++)
 		{
-			// {@squirreljme.error JC1n Stack underflow.}
+			// {@squirreljme.error JC1n Stack underflow. (Origin state;
+			// The number of items to op; Not reference counted?; The push
+			// types.)}
 			if (stacktop <= 0)
-				throw new IllegalArgumentException("JC1n");
+				throw new IllegalArgumentException(String.format(
+					"JC1n %s (%d, %b, %s)",
+					this, __n, __nc, Arrays.asList(__pts)));
 			
 			// Read top most entry, handle tops accordingly
 			Info inf = stack[--stacktop];

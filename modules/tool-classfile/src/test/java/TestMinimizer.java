@@ -31,8 +31,7 @@ public class TestMinimizer
 	public void test()
 		throws Throwable
 	{
-		for (String x : new String[]{"ByteDeque.data",
-			"InflaterInputStream.data", "__LinkedListListIterator__.data"})
+		for (String x : TestClassLoad.CLASS_LIST)
 			try (InputStream in = TestClassLoad.class.getResourceAsStream(x);
 				ByteArrayOutputStream out = new ByteArrayOutputStream())
 			{
