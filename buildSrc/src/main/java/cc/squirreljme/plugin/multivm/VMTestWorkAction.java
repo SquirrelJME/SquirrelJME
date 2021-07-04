@@ -55,7 +55,8 @@ public abstract class VMTestWorkAction
 		
 		// If we are debugging, we do not want to kill the test by a timeout
 		// if it takes forever because we might be very slow at debugging
-		String jdwpProp = System.getProperty("squirreljme.jdwp");
+		String jdwpProp = System.getProperty("squirreljme.xjdwp",
+			System.getProperty("squirreljme.jdwp"));
 		boolean isDebugging = (jdwpProp != null && !jdwpProp.isEmpty());
 		
 		// The process might not be able to execute
