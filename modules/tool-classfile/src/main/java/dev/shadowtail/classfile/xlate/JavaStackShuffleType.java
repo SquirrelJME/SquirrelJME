@@ -11,6 +11,8 @@ package dev.shadowtail.classfile.xlate;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
+import net.multiphasicapps.classfile.JavaType;
 
 /**
  * This represents the type of stack shuffle to perform. Since these
@@ -25,35 +27,35 @@ public enum JavaStackShuffleType
 	DUP("a:aa"),
 	
 	/** dup_x1. */
-	DUP_X1("ba:aba"),
+	DUP_X1("ab:bab"),
 	
 	/** dup_x2. */
-	DUP_X2("cba:acba",
-		"Ba:aBa"),
+	DUP_X2("abc:cabc",
+		"Ab:bAb"),
 	
 	/** dup2. */
-	DUP2("ba:baba",
+	DUP2("ab:abab",
 		"A:AA"),
 	
 	/** dup2_x1. */
-	DUP2_X1("cba:bacba",
-		"bA:AbA"),
+	DUP2_X1("abc:bcabc",
+		"aB:BaB"),
 	
 	/** dup2_x2. */
-	DUP2_X2("dcba:badcba",
-		"cbA:AcbA",
-		"Cba:baCba",
-		"BA:ABA"),
+	DUP2_X2("abcd:cdabcd",
+		"abC:CabC",
+		"Abc:bcAbc",
+		"AB:BAB"),
 	
 	/** pop. */
 	POP("a:"),
 	
 	/** pop2. */
-	POP2("ba:",
+	POP2("ab:",
 		"A:"),
 	
 	/** swap. */
-	SWAP("ba:ab"),
+	SWAP("ab:ba"), 
 	
 	/* End. */
 	;
@@ -117,6 +119,36 @@ public enum JavaStackShuffleType
 		}
 		
 		/**
+		 * Layers the input types to the output.
+		 * 
+		 * @param __inTypes The input types. 
+		 * @return The layered output types.
+		 * @since 2021/07/04
+		 */
+		public JavaType[] layerTypes(JavaType... __inTypes)
+		{
+			int outLen = this.out.max;
+			JavaType[] rv = new JavaType[outLen];
+			
+			// Map types to the output
+			int at = 0;
+			for (int i = 0; i < outLen; i++)
+			{
+				int outVar = this.out.variable(i);
+				
+				// If this is a top type, there is no variable mapping so this
+				// just gets a bit lost here
+				if (outVar < 0)
+					continue;
+				
+				// Otherwise
+				rv[at++] = __inTypes[this.in.findVariableSlot(outVar)];
+			}
+			
+			return (at == outLen ? rv : Arrays.copyOf(rv, at));
+		}
+		
+		/**
 		 * {@inheritDoc}
 		 * @since 2019/04/04
 		 */
@@ -167,6 +199,9 @@ public enum JavaStackShuffleType
 		/** The maximum push/pop count. */
 		public final int max;
 		
+		/** Logical maximum push/pop count. */
+		public final int logicalMax;
+		
 		/** Logical slot ordering. */
 		final byte[] _logicalSlot;
 		
@@ -196,6 +231,7 @@ public enum JavaStackShuffleType
 			// Determine the actual popping, with top types and such
 			int n = __s.length(),
 				max = 0;
+			this.logicalMax = n;
 			for (int i = 0; i < n; i++)
 				if (Character.isUpperCase(__s.charAt(i)))
 					max += 2;
@@ -243,6 +279,29 @@ public enum JavaStackShuffleType
 		}
 		
 		/**
+		 * Finds the slot that the variable is in.
+		 * 
+		 * @param __var The variable to search for.
+		 * @return The first slot the variable belongs in.
+		 * @since 2021/07/04
+		 */
+		public final int findVariableSlot(int __var)
+		{
+			// {@squirreljme.error JC52 Cannot locate the slot of a wide
+			// value.}
+			if (__var < 0)
+				throw new IllegalArgumentException("JC52");
+			
+			for (int i = 0, n = this.max; i < n; i++)
+				if (this.variable(i) == __var)
+					return i;
+			
+			// {@squirreljme.error JC51 Could not find the slot for the given
+			// variable. (The variable)}
+			throw new IllegalArgumentException("JC51 " + __var);
+		}
+		
+		/**
 		 * Returns the logical slot for the index.
 		 * 
 		 * @param __dx The index.
@@ -252,6 +311,37 @@ public enum JavaStackShuffleType
 		public final int logicalSlot(int __dx)
 		{
 			return this._logicalSlot[__dx];
+		}
+		
+		/**
+		 * Like {@link #variable(int)} but instead returns the index via the
+		 * logical slot.
+		 * 
+		 * @param __dx The index to obtain.
+		 * @return The variable type, this will never return a negative value
+		 * for the top type.
+		 * @see #variable(int). 
+		 * @since 2021/07/04
+		 */
+		public int logicalVariable(int __dx)
+		{
+			byte[] var = this._var;
+			
+			int at = 0;
+			for (int res : var)
+			{
+				if (res < 0)
+					continue;
+				
+				if (at == __dx)
+					return res;
+				
+				at++;
+			}
+			
+			// {@squirreljme.error JC53 Could not find the variable for
+			// the logical slot. (The logical slot)}
+			throw new IllegalArgumentException("JC53 " + __dx);
 		}
 		
 		/**

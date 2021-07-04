@@ -115,15 +115,20 @@ notnull:
 	new squirreljme/compilerbug/__Link__
 	; [__Link__ a] -> [__Link__ a, __Link__ a]
 	dup
-	; [__Link__ a, __Link__ a] -> [__Link__ a, __Link__ a, __Link__ this._next (#3)]
+	; [__Link__ a, __Link__ a] ->
+	;     [__Link__ a, __Link__ a, __Link__ this._next (#3)]
 	aload 3
-	; [__Link__ a, __Link__ a, __Link__ this._next (#3)] -> [__Link__ a, __Link__ a.prev]
+	; [__Link__ a, __Link__ a, __Link__ this._next (#3)] ->
+	;     [__Link__ a, __Link__ a.prev]
 	getfield squirreljme/compilerbug/__Link__/_prev Lsquirreljme/compilerbug/__Link__;
-	; [__Link__ a, __Link__ a.prev] -> [__Link__ a, __Link__ a.prev, Object arg1]
+	; [__Link__ a, __Link__ a.prev] ->
+	;     [__Link__ a, __Link__ a.prev, Object arg1]
 	aload 1
-	; [__Link__ a,__Link__ a.prev, Object arg1] -> [__Link__ a, __Link__ a.prev, Object arg1, __Link__ this._next (#3)]
+	; [__Link__ a,__Link__ a.prev, Object arg1] ->
+	;     [__Link__ a, __Link__ a.prev, Object arg1, __Link__ this._next (#3)]
 	aload 3
-	; [__Link__ a, __Link__ a.prev, Object arg1, __Link__ this._next (#3)] -> [__Link__ a]
+	; [__Link__ a, __Link__ a.prev, Object arg1, __Link__ this._next (#3)] ->
+	;     [__Link__ a]
 	invokenonvirtual squirreljme/compilerbug/__Link__/<init>(Lsquirreljme/compilerbug/__Link__;Ljava/lang/Object;Lsquirreljme/compilerbug/__Link__;)V
 	; [__Link__ a] -> []
 	pop
@@ -147,13 +152,17 @@ notnull:
 	aload 0
 	; [this] -> [FakeLinkedList this.list]
 	getfield squirreljme/compilerbug/TestLLIAByteCode/list Lsquirreljme/compilerbug/FakeLinkedList;
-	; [FakeLinkedList this.list] -> [FakeLinkedList this.list, FakeLinkedList this.list]
+	; [FakeLinkedList this.list] ->
+	;     [FakeLinkedList this.list, FakeLinkedList this.list]
 	dup
-	; [FakeLinkedList this.list, FakeLinkedList this.list] -> [FakeLinkedList this.list, int this.list._size]
+	; [FakeLinkedList this.list, FakeLinkedList this.list] ->
+	;     [FakeLinkedList this.list, int this.list._size]
 	getfield squirreljme/compilerbug/FakeLinkedList/_size I
-	; [FakeLinkedList this.list, int this.list._size] -> [FakeLinkedList this.list, int this.list._size, 1]
+	; [FakeLinkedList this.list, int this.list._size] ->
+	;     [FakeLinkedList this.list, int this.list._size, 1]
 	iconst_1
-	; [FakeLinkedList this.list, int this.list._size, 1] -> [FakeLinkedList this.list, int this.list._size + 1]
+	; [FakeLinkedList this.list, int this.list._size, 1] ->
+	;     [FakeLinkedList this.list, int this.list._size + 1]
 	iadd
 	; [FakeLinkedList this.list, int this.list._size + 1] -> []
 	putfield squirreljme/compilerbug/FakeLinkedList/_size I
@@ -187,18 +196,21 @@ notnull:
 	; >> "LOAD_POOL:[[#5271(ACCESSED_FIELD):READ+INSTANCE+field
 	;    java/util/LinkedList::modCount I, 20]]"
 	; >> "MEM_HANDLE_OFF_LOAD_INTEGER_REG_JAVA:[[14, 13, 20]]"
-	; [this, FakeLinkedList list, FakeLinkedList list] -> [this, FakeLinkedList list, int list.modCount]
+	; [this, FakeLinkedList list, FakeLinkedList list] ->
+	;     [this, FakeLinkedList list, int list.modCount]
 	getfield squirreljme/compilerbug/FakeLinkedList/modCount I
 	
 	; >> "*** Java :114 ICONST_1@60 ***"
 	; >> "INTEGER_OR_CONST:[[0, 1, 15]]"
-	; [this, FakeLinkedList list, int list.modCount] -> [this, FakeLinkedList list, int list.modCount, 1]
+	; [this, FakeLinkedList list, int list.modCount] ->
+	;     [this, FakeLinkedList list, int list.modCount, 1]
 	iconst_1
 	
 	; >> "*** Java :114 IADD@61 ***"
 	; >> "INTEGER_ADD_REG:[[14, 15, 14]]"
 	;        #13                  #14                #15
-	; [this, FakeLinkedList list, int list.modCount, 1] -> [this, FakeLinkedList list, int list.modCount + 1]
+	; [this, FakeLinkedList list, int list.modCount, 1] ->
+	;     [this, FakeLinkedList list, int list.modCount + 1]
 	iadd
 	
 	; >> "*** Java :114 DUP_X1@62 ***"
@@ -239,7 +251,8 @@ notnull:
 	; >> "MEM_HANDLE_OFF_STORE_INTEGER_REG_JAVA:[[13, 13, 20]]"
 	;                                             ^ should be 14 (for list)!
 	; >> "IF_ICMP_NOT_EQUALS:[[3, 0, 1579]]"
-	; [this, int list.modCount + 1, FakeLinkedList list, int list.modCount + 1] -> [this, int list.modCount + 1]
+	; [this, int list.modCount + 1, FakeLinkedList list,
+	;     int list.modCount + 1] -> [this, int list.modCount + 1]
 	putfield squirreljme/compilerbug/FakeLinkedList/modCount I
 	
 	; >> "IF_ICMP_EQUALS:[[8, 0, 1133]]"

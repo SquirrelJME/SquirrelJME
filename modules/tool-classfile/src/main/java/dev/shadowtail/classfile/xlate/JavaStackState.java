@@ -10,14 +10,18 @@
 package dev.shadowtail.classfile.xlate;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.StackMapTableEntry;
@@ -27,7 +31,8 @@ import net.multiphasicapps.classfile.StackMapTableState;
  * This class contains the state of the Java stack, it is mostly used in
  * the generation of the register code as it handles caching as well.
  *
- * This class is immutable.
+ * This class is immutable, all operations create new copies of this class
+ * with the appropriate changes.
  *
  * @since 2019/03/30
  */
@@ -820,11 +825,112 @@ public final class JavaStackState
 		if (__Debug__.ENABLED)
 			Debugging.debugNote("Shuffle with: %s -> %s", __t, func);
 		
+		// Alternative implementation that uses the existing stack methods much
+		// more
+		if (true)
+		{
+			// Perform the push and pop operation all at once to determine
+			// what the resultant state of the stack is
+			JavaStackResult pushPop = this.doStack(func.in.max,
+				this.__shuffleCalcType(func,
+					this.doStack(func.in.logicalMax)));
+			
+			Debugging.debugNote("@@PUSHPOP: %s -> %s", func, pushPop);
+			
+			// Get the original enqueues, if a value is used it will get
+			// dropped off this list
+			Set<Integer> enqs = new LinkedHashSet<>(
+				IntegerArrayList.asList(pushPop.enqueue().registers()));
+			Set<Integer> dropEnq = new HashSet<>();
+			
+			// State operations that will be done first on copies and otherwise
+			// when reading/writing, done before copies and after copies
+			Set<StateOperation> preStateOps = new LinkedHashSet<>();
+			Set<StateOperation> postStateOps = new LinkedHashSet<>();
+			
+			// Pre-determine soft register ids for temporarily copied inputs
+			JavaStackResult.Input[] ins = pushPop.in();
+			SoftRegister[] softCopy = new SoftRegister[ins.length];
+			for (int i = 0; i < ins.length; i++)
+				softCopy[i] = SoftRegister.of(true, i);
+			
+			// Perform respective copies for the inputs and outputs
+			JavaStackResult.Output[] outs = pushPop.out();
+			for (int i = 0, n = outs.length; i < n; i++)
+			{
+				// Ignore any wides in the output
+				JavaStackResult.Output out = outs[i];
+				if (out.type.isTop())
+					continue;
+				
+				// Get the input variable associated with the given output
+				int inSlot = func.in.findVariableSlot(
+					func.out.logicalVariable(i));
+				JavaStackResult.Input in = ins[inSlot];
+				
+				// Debug
+				Debugging.debugNote("@@INOUT: %s -> %s", in, out);
+				
+				// If these point to the same register, we do not need to
+				// make a defensive copy at all
+				if (in.register == out.register)
+				{
+					// Drop garbage collection on this register so that it is
+					// not destroyed in value at all
+					dropEnq.add(in.register);
+					
+					continue;
+				}
+				
+				// Is this a wide operation?
+				boolean isWide = in.type.isWide();
+				
+				// This register is eligible for garbage collection
+				if (enqs.contains(in.register))
+				{
+					// We are going to copy this register, so add an additional
+					// count to it
+					preStateOps.add(StateOperation.count(
+						SoftRegister.of(false, in.register)));
+					
+					// Drop garbage collection on this, since it is used
+					dropEnq.add(in.register);
+				}
+				
+				// Copy to temporary register
+				preStateOps.add(StateOperation.copy(isWide,
+					SoftRegister.of(false, in.register),
+					softCopy[inSlot]));
+				
+				// Copy from temporary to target
+				postStateOps.add(StateOperation.copy(isWide,
+					softCopy[inSlot],
+					SoftRegister.of(false, out.register)));
+			}
+			
+			// Combine state operations into one
+			List<StateOperation> stateOps = new ArrayList<>();
+			stateOps.addAll(preStateOps);
+			stateOps.addAll(postStateOps);
+			
+			// Remove any enqueues we want to drop out
+			for (Integer i : dropEnq)
+				enqs.remove(i);
+			
+			// Build resultant stack operation
+			return new JavaStackResult(this,
+				new JavaStackState(this._locals,
+					pushPop.after._stack, pushPop.after.stacktop),
+				new JavaStackEnqueueList(enqs.size(), enqs),
+				new StateOperations(stateOps));
+		}
+		
 		// Determine stack properties of the pop
 		int maxPop = func.in.max;
+		int maxPush = func.out.max;
 		int baseTop = stackTop - maxPop;
 		
-		// Load section of stack to be popped
+		// Load section of stack to be popped 
 		List<Info> pops = new ArrayList<>(maxPop);
 		for (int i = baseTop; i < stackTop; i++)
 			pops.add(stack[i]);
@@ -861,10 +967,6 @@ public final class JavaStackState
 		// Initialize new stack
 		Info[] newStack = stack.clone();
 		int newStackTop = baseTop + pushCount;
-		
-		if (true)
-		{
-		}
 		
 		// Any enqueues and operations to perform
 		List<Integer> enqs = new ArrayList<>();
@@ -1437,6 +1539,38 @@ public final class JavaStackState
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Determines the types that are used to push to the stack for when the
+	 * stack shuffles are being calculated.
+	 * 
+	 * @param __func The function used.
+	 * @param __popOnly The stack to check.
+	 * @return The calculated Java Types of the entries to push.
+	 * @since 2021/07/04
+	 */
+	private JavaType[] __shuffleCalcType(JavaStackShuffleType.Function __func,
+		JavaStackResult __popOnly)
+		throws NullPointerException
+	{
+		if (__func == null || __popOnly == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JC50 Initial stack has output, it should have
+		// no output.}
+		if (__popOnly.outCount() != 0)
+			throw new IllegalArgumentException("JC50");
+		
+		JavaStackResult.Input[] in = __popOnly.in();
+		int inLen = in.length;
+		
+		// Read the input types
+		JavaType[] inType = new JavaType[inLen];
+		for (int i = 0; i < inLen; i++)
+			inType[i] = in[i].type;
+		
+		return __func.layerTypes(inType);
 	}
 	
 	/**
