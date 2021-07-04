@@ -81,7 +81,7 @@ public final class NativeCode
 	
 	/** Maximum number of registers possible to use. */
 	public static final int MAX_REGISTERS =
-		64;
+		128;
 	
 	/** This bit XORed NEG bit == set, means memory access is volatile. */
 	@Deprecated

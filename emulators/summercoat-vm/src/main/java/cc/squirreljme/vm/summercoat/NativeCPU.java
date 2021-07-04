@@ -57,7 +57,7 @@ public final class NativeCPU
 	
 	/** Maximum amount of CPU registers. */
 	public static final int MAX_REGISTERS =
-		64;
+		128;
 	
 	/** The number of execution slices to store. */
 	public static final int MAX_EXECUTION_SLICES =
