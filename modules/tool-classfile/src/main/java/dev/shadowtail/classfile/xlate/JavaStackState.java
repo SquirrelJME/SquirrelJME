@@ -833,13 +833,33 @@ public final class JavaStackState
 		// more
 		if (true)
 		{
+			// Debug
+			if (__Debug__.ENABLED)
+				Debugging.debugNote(">>>>>>>> PRE-DETERMINE");
+			
+			// Determine all of the types that should be pushed to the target
+			// operation
+			JavaType[] pushTypes = this.__shuffleCalcType(func,
+				this.doStack(func.in.logicalMax));
+				
+			// Debug
+			if (__Debug__.ENABLED)
+				Debugging.debugNote("@@PUSHTYPE: %s -> %s",
+					func, Arrays.asList(pushTypes));
+			
 			// Perform the push and pop operation all at once to determine
 			// what the resultant state of the stack is
-			JavaStackResult pushPop = this.doStack(func.in.max,
-				this.__shuffleCalcType(func,
-					this.doStack(func.in.logicalMax)));
+			JavaStackResult pushPop = this.doStack(func.in.logicalMax,
+				pushTypes);
+				
+			// Debug
+			if (__Debug__.ENABLED)
+				Debugging.debugNote("<<<<<<<< POST-DETERMINE");
 			
-			Debugging.debugNote("@@PUSHPOP: %s -> %s", func, pushPop);
+			// Debug
+			if (__Debug__.ENABLED)
+				Debugging.debugNote("@@PUSHPOP: %s -> %s",
+					func, pushPop);
 			
 			// Get the original enqueues, if a value is used it will get
 			// dropped off this list
@@ -873,7 +893,8 @@ public final class JavaStackState
 				JavaStackResult.Input in = ins[inSlot];
 				
 				// Debug
-				Debugging.debugNote("@@INOUT: %s -> %s", in, out);
+				if (__Debug__.ENABLED)
+					Debugging.debugNote("@@INOUT: %s -> %s", in, out);
 				
 				// If these point to the same register, we do not need to
 				// make a defensive copy at all
