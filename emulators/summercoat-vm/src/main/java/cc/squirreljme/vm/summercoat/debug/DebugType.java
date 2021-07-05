@@ -69,7 +69,9 @@ public class DebugType
 	@Override
 	public int flags(Object __which)
 	{
-		throw Debugging.todo();
+		MemHandle handle = DebugBase.handleType(__which);
+		
+		return this.getInteger(handle, StaticClassProperty.INT_CLASS_FLAGS);
 	}
 	
 	/**
