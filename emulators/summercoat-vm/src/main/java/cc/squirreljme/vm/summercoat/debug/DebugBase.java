@@ -12,8 +12,13 @@ package cc.squirreljme.vm.summercoat.debug;
 import cc.squirreljme.jdwp.views.JDWPView;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
+import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemoryInputStream;
+import cc.squirreljme.jvm.summercoat.ld.mem.WritableMemory;
 import cc.squirreljme.vm.summercoat.MachineState;
 import cc.squirreljme.vm.summercoat.MemHandle;
+import cc.squirreljme.vm.summercoat.VMMemoryAccessException;
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.lang.ref.Reference;
 
 /**
@@ -52,7 +57,7 @@ public abstract class DebugBase
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/05/11
 	 */
-	final MemHandle __getHandle(MemHandle __handle, int __dx)
+	public final MemHandle getHandle(MemHandle __handle, int __dx)
 		throws NullPointerException
 	{
 		return DebugBase.getHandle(this.__machine(), __handle, __dx);
@@ -67,10 +72,57 @@ public abstract class DebugBase
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/05/11
 	 */
-	final int __getInteger(MemHandle __handle, int __dx)
+	public final int getInteger(MemHandle __handle, int __dx)
 		throws NullPointerException
 	{
 		return DebugBase.getInteger(this.__machine(), __handle, __dx);
+	}
+	
+	/**
+	 * Returns the given long value from a handle.
+	 * 
+	 * @param __handle The handle to read from.
+	 * @param __dx The property, this should be the low value as these
+	 * properties are in low+high order.
+	 * @return The long value.
+	 * @since 2021/07/05
+	 */
+	public final long getLong(MemHandle __handle, int __dx)
+	{
+		return (this.getInteger(__handle, __dx) & 0xFFFFFFFFL) |
+			((this.getInteger(__handle, __dx + 1) & 0xFFFFFFFFL) << 32);
+	}
+	
+	/**
+	 * Safely reads a UTF-8 string value.
+	 * 
+	 * @param __addr The address to read from.
+	 * @return The read string.
+	 * @since 2021/07/05
+	 */
+	public String readUtfSafe(long __addr)
+	{
+		// Read length to figure out how long the string is
+		WritableMemory memory = this.__machine().memory();
+		int strlen = -1;
+		try
+		{
+			strlen = memory.memReadShort(__addr) & 0xFFFF;
+			
+			// Decode string data
+			try (DataInputStream dis = new DataInputStream(
+				new ReadableMemoryInputStream(memory, __addr,
+					strlen + 2)))
+			{
+				return dis.readUTF();
+			}
+		}
+		
+		// Could not read string, use some other string form
+		catch (IOException | VMMemoryAccessException e)
+		{
+			return String.format("@%08x/%d???", __addr, strlen);
+		}
 	}
 	
 	/**
@@ -112,6 +164,18 @@ public abstract class DebugBase
 					__which, __kind));
 		
 		return rv;
+	}
+	
+	/**
+	 * Checks to ensure this is a type based handle.
+	 * 
+	 * @param __which Object to get the handle of.
+	 * @return The type based handle.
+	 * @since 2021/07/05
+	 */
+	public static MemHandle handleType(Object __which)
+	{
+		return DebugBase.handle(__which, MemHandleKind.CLASS_INFO);
 	}
 	
 	/**

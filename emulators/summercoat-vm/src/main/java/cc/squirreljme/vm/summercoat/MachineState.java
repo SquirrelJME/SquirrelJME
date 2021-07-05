@@ -239,6 +239,17 @@ public final class MachineState
 	}
 	
 	/**
+	 * Returns the system memory.
+	 * 
+	 * @return The memory within the system.
+	 * @since 2021/07/05
+	 */
+	public final WritableMemory memory()
+	{
+		return this.memory;
+	}
+	
+	/**
 	 * Sets the static attributes handle.
 	 * 
 	 * @param __memHandle The handle where static attributes are.

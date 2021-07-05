@@ -53,7 +53,7 @@ public class DebugThreadGroup
 		Debugging.debugNote("allTypes(0x%08x)", __which);
 		
 		// Go through the entire class chain
-		MemHandle atClass = this.__getHandle(
+		MemHandle atClass = this.getHandle(
 			DebugBase.handle(__which, MemHandleKind.TASK),
 			TaskPropertyType.CLASS_FIRST);
 		while (atClass != null)
@@ -65,7 +65,7 @@ public class DebugThreadGroup
 			rv.add(atClass);
 			
 			// Go to the next class
-			atClass = this.__getHandle(atClass,
+			atClass = this.getHandle(atClass,
 				ClassProperty.TYPEBRACKET_LINK_CLASS_NEXT);
 		}
 		

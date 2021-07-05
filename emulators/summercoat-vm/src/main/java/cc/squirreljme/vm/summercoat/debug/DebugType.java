@@ -12,9 +12,12 @@ package cc.squirreljme.vm.summercoat.debug;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
 import cc.squirreljme.jdwp.views.JDWPViewType;
+import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
+import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.summercoat.MachineState;
+import cc.squirreljme.vm.summercoat.MemHandle;
 import java.lang.ref.Reference;
 
 /**
@@ -268,7 +271,14 @@ public class DebugType
 	@Override
 	public String signature(Object __which)
 	{
-		throw Debugging.todo();
+		MemHandle handle = DebugBase.handleType(__which);
+		
+		// Determine where this will be located
+		long romAddr = this.getLong(handle, ClassProperty.MEMPTR_ROM_CLASS_LO);
+		int offEmbName = this.getInteger(handle,
+			StaticClassProperty.OFFSETOF_DEBUG_SIGNATURE);
+		
+		return this.readUtfSafe(romAddr + offEmbName);
 	}
 	
 	/**

@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.summercoat.SummerCoatUtil;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.ld.mem.AbstractWritableMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.MemHandleReference;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**

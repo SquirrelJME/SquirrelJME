@@ -13,7 +13,6 @@ package dev.shadowtail.classfile.mini;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import dev.shadowtail.classfile.nncc.ArgumentFormat;
 import dev.shadowtail.classfile.nncc.InstructionFormat;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
@@ -178,6 +177,15 @@ public final class Minimizer
 		// Is this primitive?
 		properties[StaticClassProperty.BOOLEAN_IS_PRIMITIVE].setInt(
 			(input.thisName().isPrimitive() ? 1 : 0));
+		
+		// Debug signature, for JDWP
+		ChunkSection debugSig = output.addSection(
+			ChunkWriter.VARIABLE_SIZE, 4);
+		debugSig.writeUTF(input.thisName().field().toString());
+		properties[StaticClassProperty.OFFSETOF_DEBUG_SIGNATURE].set(
+			debugSig.futureAddress());
+		properties[StaticClassProperty.SIZEOF_DEBUG_SIGNATURE].set(
+			debugSig.futureSize());
 		
 		// name, superclass, and interfaces
 		properties[StaticClassProperty.SPOOL_THIS_CLASS_NAME].setInt(
