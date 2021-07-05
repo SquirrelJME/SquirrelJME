@@ -348,10 +348,18 @@ public final class JDWPController
 		if (__thread != null)
 			this.state.items.put(__thread);
 		
+		// Is this a special unconditional event
+		boolean unconditional = false;
+		if (__kind == EventKind.UNCONDITIONAL_BREAKPOINT)
+		{
+			unconditional = true;
+			__kind = EventKind.BREAKPOINT;
+		}
+		
 		// Go through all compatible events for this thread
 		boolean hit = false;
 		for (EventRequest request : this.eventManager.find(
-			this, __thread, __kind, __args))
+			this, __thread, unconditional, __kind, __args))
 		{
 			// Suspend all threads?
 			if (request.suspendPolicy == SuspendPolicy.ALL)

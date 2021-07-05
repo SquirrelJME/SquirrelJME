@@ -12,6 +12,7 @@ package cc.squirreljme.jdwp;
 import cc.squirreljme.jdwp.event.EventFilter;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -34,6 +35,24 @@ public final class EventManager
 	/** Event mapping by Id. */
 	private final Map<Integer, EventRequest> _eventById =
 		new HashMap<>();
+	
+	/** Unconditional events. */
+	private final Map<EventKind, EventRequest> _unconditional =
+		new EnumTypeMap<EventKind, EventRequest>(
+			EventKind.class, EventKind.values());
+	
+	/**
+	 * Initializes the event manager.
+	 * 
+	 * @since 2021/07/05
+	 */
+	public EventManager()
+	{
+		// Unconditional breakpoints
+		this._unconditional.put(EventKind.BREAKPOINT,
+			new EventRequest(0, EventKind.BREAKPOINT,
+				SuspendPolicy.EVENT_THREAD, -1, null));
+	}
 	
 	/**
 	 * Adds an event request for later event handling.
@@ -136,14 +155,17 @@ public final class EventManager
 	 * 
 	 * @param __controller The controller used.
 	 * @param __thread The context thread.
+	 * @param __unconditional Is this an unconditional event?
 	 * @param __kind The kind of event to look for.
 	 * @param __args The arguments to the event call.
-	 * @return The valid and found events.
+	 * @return The valid and found events, will be an empty list if none
+	 * were found.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/17
 	 */
 	protected Iterable<EventRequest> find(JDWPController __controller,
-		Object __thread, EventKind __kind, Object... __args)
+		Object __thread, boolean __unconditional,
+		EventKind __kind, Object... __args)
 		throws NullPointerException
 	{
 		if (__controller == null || __kind == null)
@@ -187,6 +209,21 @@ public final class EventManager
 				if (occurrencesLeft >= 0)
 					if ((--request._occurrencesLeft) <= 0)
 						iterator.remove();
+			}
+		}
+		
+		// If this is an unconditional request, use one for the given thread
+		// so it can still be triggered in the event no pre-existing event
+		// was found
+		if (__unconditional && (rv == null || rv.isEmpty()))
+		{
+			// Was this ever registered?
+			EventRequest request = this._unconditional.get(__kind);
+			if (request != null)
+			{
+				if (rv == null)
+					rv = new ArrayList<>();
+				rv.add(request);
 			}
 		}
 		

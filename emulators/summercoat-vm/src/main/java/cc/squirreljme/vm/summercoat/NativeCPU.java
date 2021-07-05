@@ -11,6 +11,11 @@ package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledThread;
 import cc.squirreljme.emulator.vm.VMException;
+import cc.squirreljme.jdwp.EventKind;
+import cc.squirreljme.jdwp.JDWPController;
+import cc.squirreljme.jdwp.JDWPThreadSuspension;
+import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
+import cc.squirreljme.jdwp.trips.JDWPTripThread;
 import cc.squirreljme.jvm.SupervisorPropertyIndex;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
@@ -108,6 +113,9 @@ public final class NativeCPU
 	/** The current thread information. */
 	protected final MemHandle threadInfo;
 	
+	/** Thread suspension, if debugging. */
+	protected final JDWPThreadSuspension jdwpSuspend;
+	
 	/**
 	 * Initializes the native CPU.
 	 *
@@ -128,6 +136,9 @@ public final class NativeCPU
 		this.profiler = (__ms.profiler == null ? null :
 			__ms.profiler.measureThread("cpu-" + __vCpuId));
 		this.threadInfo = __threadInfo;
+		
+		// Setup needed debugging stuff
+		this.jdwpSuspend = new JDWPThreadSuspension();
 	}
 	
 	/**
@@ -323,6 +334,23 @@ public final class NativeCPU
 			
 			// Spacer
 			System.err.println("********************************************");
+			
+			// Suspend before this thread just goes away
+			JDWPController controller = this.__state()._jdwp;
+			JDWPThreadSuspension jdwpSuspend = this.jdwpSuspend;
+			if (controller != null && jdwpSuspend != null)
+			{
+				// Signal an unconditional breakpoint
+				controller.trip(JDWPTripThread.class, JDWPGlobalTrip.THREAD)
+					.unconditionalBreakpoint(this);
+				
+				// Wait until execution continues before throwing the final
+				// exception
+				while (jdwpSuspend.await(controller, this))
+				{
+					Thread.yield();
+				}
+			}
 			
 			// {@squirreljme.error AE02 Virtual machine exception. (The failing
 			// instruction)}
