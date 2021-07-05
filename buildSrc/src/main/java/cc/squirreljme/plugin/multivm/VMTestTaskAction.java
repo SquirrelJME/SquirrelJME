@@ -177,7 +177,7 @@ public class VMTestTaskAction
 		{
 			// Determine the arguments that are used to spawn the JVM
 			JavaExecSpecFiller execSpec = specFactory.get();
-			vmType.spawnJvmArguments(__task, execSpec,
+			vmType.spawnJvmArguments(__task, true, execSpec,
 				VMHelpers.SINGLE_TEST_RUNNER, sysProps, classPath, classPath,
 				testName);
 			

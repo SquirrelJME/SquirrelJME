@@ -80,9 +80,9 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void spawnJvmArguments(Task __task,
-			JavaExecSpecFiller __execSpec,
-			String __mainClass, Map<String, String> __sysProps,
+		public void spawnJvmArguments(Task __task, boolean __debugEligible,
+			JavaExecSpecFiller __execSpec, String __mainClass,
+			Map<String, String> __sysProps,
 			Path[] __libPath, Path[] __classPath, String... __args)
 			throws NullPointerException
 		{
@@ -149,47 +149,52 @@ public enum VMType
 			// Debug
 			__task.getLogger().debug("Hosted ClassPath: {}", classPath);
 			
-			// Does this run have a debugger specified already?
-			// Prevent double debugger claim which would cause one to fail
-			// to listen and thus break debugging
-			boolean hasDebug = false;
-			for (String arg : __args)
-				if (arg.startsWith("-Xjdwp:"))
-				{
-					hasDebug = true;
-					break;
-				}
-			
-			// Enable debugging for the spawned hosted environment
-			// Use an alternative variable to allow for VMFactory to be
-			// debugged rather than just the emulated environment.
-			String xjdwpProp = System.getProperty("squirreljme.xjdwp");
-			String jdwpProp = (xjdwpProp != null ? xjdwpProp :
-				System.getProperty("squirreljme.jdwp"));
-			if ((xjdwpProp != null && !xjdwpProp.isEmpty()) ||
-				(!hasDebug && jdwpProp != null && !jdwpProp.isEmpty()))
+			// Is this eligible to be ran under a debugger?
+			if (__debugEligible)
 			{
-				// Figure the hostname/port split
-				int lastCol = jdwpProp.lastIndexOf(':');
-				if (lastCol >= 0)
+				// Does this run have a debugger specified already?
+				// Prevent double debugger claim which would cause one to fail
+				// to listen and thus break debugging
+				boolean hasDebug = false;
+				for (String arg : __args)
+					if (arg.startsWith("-Xjdwp:"))
+					{
+						hasDebug = true;
+						break;
+					}
+				
+				// Enable debugging for the spawned hosted environment
+				// Use an alternative variable to allow for VMFactory to be
+				// debugged rather than just the emulated environment.
+				String xjdwpProp = System.getProperty("squirreljme.xjdwp");
+				String jdwpProp = (xjdwpProp != null ? xjdwpProp :
+					System.getProperty("squirreljme.jdwp"));
+				if ((xjdwpProp != null && !xjdwpProp.isEmpty()) ||
+					(!hasDebug && jdwpProp != null && !jdwpProp.isEmpty()))
 				{
-					// Split hostname and port
-					String host = jdwpProp.substring(0, lastCol);
-					int port = Integer.parseInt(
-						jdwpProp.substring(lastCol + 1));
-					
-					// Listen on a given port?
-					if (host.isEmpty())
-						__execSpec.setJvmArgs(Arrays.asList(String.format(
-							"-agentlib:jdwp=transport=dt_socket," +
-							"server=y,suspend=y,address=%d", port)));
-					
-					// Connect to remote VM
-					else
-						__execSpec.setJvmArgs(Arrays.asList(String.format(
-							"-agentlib:jdwp=transport=dt_socket,server=n," +
-							"address=%s:%d,suspend=y," +
-							"onuncaught=y", host, port)));
+					// Figure the hostname/port split
+					int lastCol = jdwpProp.lastIndexOf(':');
+					if (lastCol >= 0)
+					{
+						// Split hostname and port
+						String host = jdwpProp.substring(0, lastCol);
+						int port = Integer.parseInt(
+							jdwpProp.substring(lastCol + 1));
+						
+						// Listen on a given port?
+						if (host.isEmpty())
+							__execSpec.setJvmArgs(Arrays.asList(String.format(
+								"-agentlib:jdwp=transport=dt_socket," +
+								"server=y,suspend=y,address=%d", port)));
+						
+						// Connect to remote VM
+						else
+							__execSpec.setJvmArgs(Arrays.asList(String.format(
+								"-agentlib:jdwp=transport=dt_socket," +
+								"server=n," +
+								"address=%s:%d,suspend=y," +
+								"onuncaught=y", host, port)));
+					}
 				}
 			}
 			
@@ -245,16 +250,16 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void spawnJvmArguments(Task __task,
-			JavaExecSpecFiller __execSpec,
-			String __mainClass, Map<String, String> __sysProps,
+		public void spawnJvmArguments(Task __task, boolean __debugEligible,
+			JavaExecSpecFiller __execSpec, String __mainClass,
+			Map<String, String> __sysProps,
 			Path[] __libPath, Path[] __classPath, String... __args)
 			throws NullPointerException
 		{
 			// Use a common handler to execute the VM as the VMs all have
 			// the same entry point handlers and otherwise
-			this.spawnVmViaFactory(__task, __execSpec, __mainClass,
-				__sysProps, __libPath, __classPath, __args);
+			this.spawnVmViaFactory(__task, __debugEligible, __execSpec,
+				__mainClass, __sysProps, __libPath, __classPath, __args);
 		}
 	},
 	
@@ -381,15 +386,16 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void spawnJvmArguments(Task __task, JavaExecSpecFiller __execSpec,
-			String __mainClass, Map<String, String> __sysProps,
+		public void spawnJvmArguments(Task __task, boolean __debugEligible,
+			JavaExecSpecFiller __execSpec, String __mainClass,
+			Map<String, String> __sysProps,
 			Path[] __libPath, Path[] __classPath, String... __args)
 			throws NullPointerException
 		{
 			// Use a common handler to execute the VM as the VMs all have
 			// the same entry point handlers and otherwise
-			this.spawnVmViaFactory(__task, __execSpec, __mainClass,
-				__sysProps, __libPath, __classPath, __args);
+			this.spawnVmViaFactory(__task, __debugEligible, __execSpec,
+				__mainClass, __sysProps, __libPath, __classPath, __args);
 		}
 	},
 	
@@ -521,6 +527,7 @@ public enum VMType
 	 * Spawns a virtual machine using the standard {@code VmFactory} class.
 	 * 
 	 * @param __task The task being executed, may be used as context.
+	 * @param __debugEligible Is this eligible to be ran under the debugger?
 	 * @param __execSpec The execution specification.
 	 * @param __mainClass The main class to execute.
 	 * @param __sysProps The system properties to define.
@@ -530,8 +537,9 @@ public enum VMType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	public void spawnVmViaFactory(Task __task, JavaExecSpecFiller __execSpec,
-		String __mainClass, Map<String, String> __sysProps, Path[] __libPath,
+	public void spawnVmViaFactory(Task __task, boolean __debugEligible,
+		JavaExecSpecFiller __execSpec, String __mainClass,
+		Map<String, String> __sysProps, Path[] __libPath,
 		Path[] __classPath, String[] __args)
 		throws NullPointerException
 	{
@@ -575,9 +583,12 @@ public enum VMType
 		vmArgs.add("-Xlibraries:" + VMHelpers.classpathAsString(__libPath));
 		
 		// Enable JDWP debugging?
-		String jdwpProp = System.getProperty("squirreljme.jdwp");
-		if (jdwpProp != null)
-			vmArgs.add("-Xjdwp:" + jdwpProp);
+		if (__debugEligible)
+		{
+			String jdwpProp = System.getProperty("squirreljme.jdwp");
+			if (jdwpProp != null)
+				vmArgs.add("-Xjdwp:" + jdwpProp);
+		}
 		
 		// Change threading model?
 		String threadModel = System.getProperty("squirreljme.thread");
@@ -621,7 +632,7 @@ public enum VMType
 		// Launching is effectively the same as the hosted run but with the
 		// VM here instead. System properties are passed through so that the
 		// holding VM and the sub-VM share the same properties.
-		VMType.HOSTED.spawnJvmArguments(__task, __execSpec,
+		VMType.HOSTED.spawnJvmArguments(__task, __debugEligible, __execSpec,
 			"cc.squirreljme.emulator.vm.VMFactory", __sysProps,
 			__libPath, classPath,
 			vmArgs.<String>toArray(new String[vmArgs.size()]));
@@ -693,7 +704,7 @@ public enum VMType
 			{
 				// Figure out the arguments to the JVM, it does not matter
 				// what the classpath is
-				VMType.HOSTED.spawnJvmArguments(__task,
+				VMType.HOSTED.spawnJvmArguments(__task, false,
 					new GradleJavaExecSpecFiller(__spec),
 					"cc.squirreljme.jvm.aot.Main",
 					Collections.emptyMap(),

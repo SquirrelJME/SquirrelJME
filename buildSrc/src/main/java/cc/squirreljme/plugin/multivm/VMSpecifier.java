@@ -141,6 +141,7 @@ public interface VMSpecifier
 	 *
 	 * @param __task The task used as a latch to obtain the needed virtual
 	 * machine and other details.
+	 * @param __debugEligible Is this eligible for debug?
 	 * @param __execSpec The execution spec to fill.
 	 * @param __mainClass The main class to execute.
 	 * @param __sysProps The system properties to define.
@@ -150,8 +151,9 @@ public interface VMSpecifier
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	void spawnJvmArguments(Task __task, JavaExecSpecFiller __execSpec,
-		String __mainClass, Map<String, String> __sysProps, Path[] __libPath,
+	void spawnJvmArguments(Task __task, boolean __debugEligible,
+		JavaExecSpecFiller __execSpec, String __mainClass,
+		Map<String, String> __sysProps, Path[] __libPath,
 		Path[] __classPath, String... __args)
 		throws NullPointerException;  
 	
