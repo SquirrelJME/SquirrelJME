@@ -10,11 +10,13 @@
 
 package cc.squirreljme.vm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -116,6 +118,16 @@ public final class ResourceBasedClassLibrary
 	public final String name()
 	{
 		return this.name;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/06/13
+	 */
+	@Override
+	public Path path()
+	{
+		return null;
 	}
 	
 	/**

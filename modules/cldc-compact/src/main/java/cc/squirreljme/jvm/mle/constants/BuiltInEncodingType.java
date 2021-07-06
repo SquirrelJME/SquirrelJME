@@ -40,7 +40,11 @@ public interface BuiltInEncodingType
 	byte ISO_8859_15 =
 		5;
 	
+	/** Shift-JIS. */
+	byte SHIFT_JIS =
+		6;
+	
 	/** The number of built-in encodings. */
 	byte NUM_BUILTIN_ENCODINGS =
-		6;
+		7;
 }

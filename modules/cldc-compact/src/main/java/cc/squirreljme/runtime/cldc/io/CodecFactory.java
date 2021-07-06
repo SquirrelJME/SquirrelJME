@@ -61,6 +61,9 @@ public final class CodecFactory
 			case BuiltInEncodingType.ISO_8859_15:
 				return new ISO885915Decoder();
 			
+			case BuiltInEncodingType.SHIFT_JIS:
+				return new ShiftJisDecoder();
+			
 			case BuiltInEncodingType.UTF8:
 				return new UTF8Decoder();
 				
@@ -198,6 +201,7 @@ public final class CodecFactory
 			case "ibm037":		return BuiltInEncodingType.IBM037;
 			case "iso-8859-1":	return BuiltInEncodingType.ISO_8859_1;
 			case "iso-8859-15":	return BuiltInEncodingType.ISO_8859_15;
+			case "shift-jis":	return BuiltInEncodingType.SHIFT_JIS;
 			case "utf-8":		return BuiltInEncodingType.UTF8;
 			
 				// {@squirreljme.error ZZ01 Unknown encoding. (The input
@@ -225,6 +229,7 @@ public final class CodecFactory
 			case BuiltInEncodingType.IBM037:		return "ibm037";
 			case BuiltInEncodingType.ISO_8859_1:	return "iso-8859-1";
 			case BuiltInEncodingType.ISO_8859_15:	return "iso-8859-15";
+			case BuiltInEncodingType.SHIFT_JIS:		return "shift-jis";
 			case BuiltInEncodingType.UTF8:			return "utf-8";
 			
 				// {@squirreljme.error ZZ49 Invalid built-in encoding.
@@ -305,6 +310,13 @@ public final class CodecFactory
 			case "l1":
 			case "latin1":
 				return "iso-8859-1";
+				
+				// Shift-JIS
+			case "shift_jis":
+			case "shift_jisx0213":
+			case "shift-jis":
+			case "shift-jisx0213":
+				return "shift-jis";
 			
 				// UTF-8
 			case "unicode-1-1-utf-8":

@@ -60,6 +60,7 @@
             <option value="$PROJECT_DIR$/modules/meep-securityframework" />
             <option value="$PROJECT_DIR$/modules/meep-swm" />
             <option value="$PROJECT_DIR$/modules/midp-lcdui" />
+            <option value="$PROJECT_DIR$/modules/nttdocomo-api" />
             <option value="$PROJECT_DIR$/modules/opengles" />
             <option value="$PROJECT_DIR$/modules/profile-meep" />
             <option value="$PROJECT_DIR$/modules/squirrel-quarrel" />
