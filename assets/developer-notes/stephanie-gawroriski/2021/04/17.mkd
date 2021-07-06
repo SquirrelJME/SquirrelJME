@@ -1,0 +1,6 @@
+# 2021/04/17
+
+## 11:10
+
+I had this idea for event handling and such, basically for the event type
+catchers I will just combine into a single object and basically enable criteria of sorts.

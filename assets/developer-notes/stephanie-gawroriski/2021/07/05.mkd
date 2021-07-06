@@ -1,0 +1,7 @@
+# 2021/07/05
+
+## 18:42
+
+What I need is an unconditional breakpoint. Now that I have JDWP support, if the
+thread of a VM crashes I can just cause a breakpoint to be forced. This would
+be good as I can just stop whenever there is a hard failure I cannot stop from.

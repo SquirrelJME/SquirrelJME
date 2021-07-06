@@ -154,7 +154,8 @@ public final class SwingForm
 			// Remove all items from the form
 			List<SwingItem> items = this._items;
 			for (SwingItem item : items.toArray(new SwingItem[items.size()]))
-				this.itemRemove(item);
+				if (item != null)
+					this.itemRemove(item);
 		}
 	}
 	

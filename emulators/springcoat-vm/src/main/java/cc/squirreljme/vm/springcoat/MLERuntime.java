@@ -202,16 +202,16 @@ public enum MLERuntime
 					return "xer@multiphasicapps.net";
 					
 				case VMDescriptionType.VM_NAME:
-					return "SquirrelJME SpringCoat";
+					return __thread.machine.tasks.vmName();
+				
+				case VMDescriptionType.VM_VERSION:
+					return __thread.machine.tasks.vmVersion();
 				
 				case VMDescriptionType.VM_URL:
 					return "https://squirreljme.cc/";
 					
 				case VMDescriptionType.VM_VENDOR:
 					return "Stephanie Gawroriski";
-				
-				case VMDescriptionType.VM_VERSION:
-					return SquirrelJME.RUNTIME_VERSION;
 			}
 			
 			return null;

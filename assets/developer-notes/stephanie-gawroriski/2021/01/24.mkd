@@ -1,0 +1,18 @@
+# 2021/01/24
+
+## 11:44
+
+I am going to refactor the system call handling in SummerCoat's VM, but also
+do instructions themselves. Get rid of the big loop and use enumerations.
+
+## 21:41
+
+Okay so that has went well today, getting sleepy so going to relax more. But
+I did a bunch of refactoring to how new things are done and so far it is
+going very well. To think with the refactors it is making the code generator
+easier to understand which is very important. I could probably easily do
+instance field reads and writes, but then there are also VTables and ITables
+which will be slightly more complicated. However with the refactors and cleaner
+code it should not be too difficult. I suppose I am glad I stuck with the
+existing code base and decided to do a refactor like I did to SpringCoat. I
+want to at least get all the tests passing before I close out the branch.

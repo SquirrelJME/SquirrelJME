@@ -176,7 +176,7 @@ public class MidletMain
 		// Make sure the program list is showing
 		Displayable current = MidletMain._MAIN_DISPLAY.getCurrent();
 		if (current == null || (current instanceof SplashScreen))
-			MidletMain._MAIN_DISPLAY.setCurrent(programList);
+			MidletMain._MAIN_DISPLAY.setCurrent(this.programList);
 		
 		// Automatically launch a program?
 		String autoLaunch = this._autoLaunch;
