@@ -1,0 +1,11 @@
+# 2021/04/08
+
+## 19:37
+
+I added software floating point code, but looks like the signifcand is fine
+but the exponent gets trashed somehow. So will need to figure this out!
+
+## 19:48
+
+It was a single character typo, should be `(__sig == 0)` and not
+`(__sig != 0)` for `if ( ! sig ) exp = 0;`.

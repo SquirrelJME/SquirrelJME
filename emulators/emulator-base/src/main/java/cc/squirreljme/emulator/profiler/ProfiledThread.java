@@ -37,14 +37,16 @@ public final class ProfiledThread
 	private final Deque<ProfiledFrame> _stack =
 		new LinkedList<>();
 	
+	/** A reference to the current thread for time tracking. */
+	
 	/** Grand invocation total. */
 	long _invtotal;
 	
 	/** Total time. */
-	long _totaltime;
+	long _totalTime;
 	
 	/** CPU time. */
-	long _cputime;
+	long _cpuTime;
 	
 	/**
 	 * Initializes the thread information.
@@ -109,7 +111,8 @@ public final class ProfiledThread
 			this._frames : top._frames);
 		ProfiledFrame rv = frames.get(loc);
 		if (rv == null)
-			frames.put(loc, (rv = new ProfiledFrame(loc, stack.size() + 1)));
+			frames.put(loc,
+				(rv = new ProfiledFrame(loc, stack.size() + 1)));
 		
 		// Tell the top-most frame that we are in an invoke, so this removes
 		// self time accordingly
@@ -182,19 +185,33 @@ public final class ProfiledThread
 			throw new IllegalStateException("AH07");
 		
 		// Tell that popped frame we left
+		// returns: [0:total, 1:self, 2:self CPU, 3:sleepTime]
 		long[] times = rv.exitedFrame(__ns);
 		
+		// The total thread time is the cumulative of the self times
+		this._totalTime += Math.max(0, times[1]);
+		this._cpuTime += Math.max(0, times[2]);
+		
+		// Every frame that is set gets the cumulative time of the self time
+		// of the frame that just exited, so this way all parent frames will
+		// have times greater than or equal to the sub-frames
+		for (ProfiledFrame frame : stack)
+		{
+			frame._totalTime += Math.max(0, times[1]);
+			frame._totalCpuTime += Math.max(0, times[2]);
+		}
+		
 		// If we had a frame underneath, say the invocation has ended
-		ProfiledFrame newtop = stack.peek();
-		if (newtop != null)
-			newtop.invokeEnd(__ns);
+		ProfiledFrame newTop = stack.peek();
+		if (newTop != null)
+		{
+			// End the invocation
+			newTop.invokeEnd(__ns);
+		}
 		
 		// If all threads are out, count the times
 		else
 		{
-			this._totaltime += times[0];
-			this._cputime += times[2];
-			
 			// Invocation total goes up after each method ends
 			this._invtotal++;
 		}

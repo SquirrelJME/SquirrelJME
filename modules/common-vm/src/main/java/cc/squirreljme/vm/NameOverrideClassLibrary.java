@@ -9,8 +9,10 @@
 
 package cc.squirreljme.vm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 /**
  * This is just a {@link VMClassLibrary} which can have its name be
@@ -63,6 +65,16 @@ public class NameOverrideClassLibrary
 	public String name()
 	{
 		return this.name;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/06/13
+	 */
+	@Override
+	public Path path()
+	{
+		return this.base.path();
 	}
 	
 	/**

@@ -1,0 +1,12 @@
+# 2021/02/06
+
+## 20:15
+
+So I am getting `BC0u cc/squirreljme/runtime/cldc/io/Decoder`
+`averageSequenceLength:()D`. So this is a method from a super-interface
+and the Decoder is an interface itself. So I wonder.
+
+## 20:47
+
+Oh yes! Interfaces do not technically extend any other class other than `Object`
+so I have to look at other classes in the interfaces!

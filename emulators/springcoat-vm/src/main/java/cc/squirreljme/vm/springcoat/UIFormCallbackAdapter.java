@@ -76,7 +76,8 @@ public class UIFormCallbackAdapter
 				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
 				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
 				"I", "I", "I"),
-			new UIFormObject(__form), new UIItemObject(__item),
+			new UIFormObject(this.machine, __form), new UIItemObject(machine,
+				__item),
 			__event, __keyCode, __modifiers);
 	}
 	
@@ -93,7 +94,8 @@ public class UIFormCallbackAdapter
 				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
 				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
 				"I", "I", "I", "I", "I"),
-			new UIFormObject(__form), new UIItemObject(__item),
+			new UIFormObject(this.machine, __form), new UIItemObject(
+				this.machine, __item),
 			__event, __button, __x, __y, __modifiers);
 	}
 	
@@ -107,7 +109,7 @@ public class UIFormCallbackAdapter
 		UIFormCallbackAdapter.__callbackInvoke(this.machine, this.callback,
 			MethodNameAndType.ofArguments("exitRequest", null,
 			"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;"),
-			new UIFormObject(__form));
+			new UIFormObject(this.machine, __form));
 	}
 	
 	/**
@@ -125,7 +127,8 @@ public class UIFormCallbackAdapter
 				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
 				"I", "I", "I", "Ljava/lang/Object;", "I", "[I",
 				"I", "I", "I", "I", "I"),
-			new UIFormObject(__form), new UIItemObject(__item),
+			new UIFormObject(this.machine, __form), new UIItemObject(
+				this.machine, __item),
 			__pf, __bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh,
 			__special);
 	}
@@ -143,7 +146,8 @@ public class UIFormCallbackAdapter
 				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
 				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
 				"I", "I", "I", "I"),
-			new UIFormObject(__form), new UIItemObject(__item),
+			new UIFormObject(this.machine, __form), new UIItemObject(
+				this.machine, __item),
 			__intProp, __sub, __old, __new);
 	}
 	
@@ -160,7 +164,8 @@ public class UIFormCallbackAdapter
 				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
 				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
 				"I", "I", "Ljava/lang/String;", "Ljava/lang/String;"),
-			new UIFormObject(__form), new UIItemObject(__item),
+			new UIFormObject(this.machine, __form),
+			new UIItemObject(this.machine, __item),
 			__strProp, __sub, __old, __new);
 	}
 	

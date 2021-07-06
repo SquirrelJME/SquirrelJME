@@ -35,20 +35,24 @@ public final class SpringFieldStorage
 	/** Is this final? */
 	protected final boolean isfinal;
 	
+	/** The field index. */
+	protected final int fieldIndex;
+	
 	/** The value of the field. */
-	private Object _normalvalue;
+	private Object _normal;
 	
 	/** The volatile value of the field. */
-	private volatile Object _volatilevalue;
+	private volatile Object _volatile;
 	
 	/**
 	 * Initializes the static field.
 	 *
 	 * @param __f The field to store for.
+	 * @param __fieldDx The field index.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2108/09/09
 	 */
-	SpringFieldStorage(SpringField __f)
+	SpringFieldStorage(SpringField __f, int __fieldDx)
 		throws NullPointerException
 	{
 		if (__f == null)
@@ -56,6 +60,7 @@ public final class SpringFieldStorage
 		
 		// Used for debug
 		FieldNameAndType nameandtype;
+		this.fieldIndex = __fieldDx;
 		this.inclass = __f.inClass();
 		this.nameandtype = (nameandtype = __f.nameAndType());
 		
@@ -95,9 +100,9 @@ public final class SpringFieldStorage
 		
 		// Set initial value
 		if ((this.isvolatile = __f.flags().isVolatile()))
-			this._volatilevalue = init;
+			this._volatile = init;
 		else
-			this._normalvalue = init;
+			this._normal = init;
 		
 		this.isfinal = __f.flags().isFinal();
 	}
@@ -111,14 +116,10 @@ public final class SpringFieldStorage
 	public final Object get()
 	{
 		// Volatile field, use volatile field instead
-		if (this.isvolatile)
-			return this._volatilevalue;
-		
 		// Otherwise just set thread without worrying about any contention
-		else
-			return this._normalvalue;
+		return (this.isvolatile ? this._volatile : this._normal);
 	}
-	 
+	
 	/**
 	 * Sets the static field to the given value.
 	 *
@@ -137,13 +138,13 @@ public final class SpringFieldStorage
 	 * potentially.
 	 *
 	 * @param __v The value to set.
-	 * @param __writetofinal If true then final is overridden.
+	 * @param __writeFinal If true then final is overridden.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringIncompatibleClassChangeException If the field is final
 	 * and we are not allowed to write to final fields.
 	 * @since 2018/09/09
 	 */
-	public final void set(Object __v, boolean __writetofinal)
+	public final void set(Object __v, boolean __writeFinal)
 		throws SpringIncompatibleClassChangeException
 	{
 		if (__v == null)
@@ -154,16 +155,16 @@ public final class SpringFieldStorage
 			__v);*/
 		
 		// {@squirreljme.error BK18 Attempt to write to final field.}
-		if (this.isfinal && !__writetofinal)
+		if (this.isfinal && !__writeFinal)
 			throw new SpringIllegalAccessException("BK18");
 		
 		// Volatile field, use volatile field instead
 		if (this.isvolatile)
-			this._volatilevalue = __v;
+			this._volatile = __v;
 		
 		// Otherwise just set thread without worrying about any contention
 		else
-			this._normalvalue = __v;
+			this._normal = __v;
 	}
 }
 

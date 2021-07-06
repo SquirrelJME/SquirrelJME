@@ -70,7 +70,7 @@ public final class ByteCode
 	protected final boolean isinstance;
 	
 	/** The input attribute code, used for instruction lookup. */
-	private final byte[] _rawattributedata;
+	private final byte[] _rawByteCode;
 	
 	/** The stack map table data. */
 	private final byte[] _smtdata;
@@ -122,7 +122,7 @@ public final class ByteCode
 		
 		// Set
 		this._methodref = __mr;
-		this._rawattributedata = __ca;
+		this._rawByteCode = __ca;
 		this.issynchronized = __mf.isSynchronized();
 		this.isinstance = !__mf.isStatic();
 		
@@ -357,7 +357,7 @@ public final class ByteCode
 		
 		if (ref == null || null == (rv = ref.get()))
 			icache[__a] = new WeakReference<>((rv = new Instruction(
-				this._rawattributedata, this.pool, __a, this.exceptions,
+				this._rawByteCode, this.pool, __a, this.exceptions,
 				this.stackMapTable(), this.addressFollowing(__a))));
 		
 		return rv;
@@ -408,7 +408,9 @@ public final class ByteCode
 	}
 	
 	/**
-	 * Returns the number of instructions which are within this method.
+	 * Returns the number of instructions (valid addresses) which are within
+	 * this method. This will not match the byte code length unless all
+	 * byte codes were to be single-byte in length.
 	 *
 	 * @return The number of instructions which are in the method.
 	 * @since 2017/08/01
@@ -615,6 +617,17 @@ public final class ByteCode
 	}
 	
 	/**
+	 * Returns the raw byte code array.
+	 * 
+	 * @return The byte code as an array.
+	 * @since 2021/03/21
+	 */
+	public byte[] rawByteCode()
+	{
+		return this._rawByteCode.clone();
+	}
+	
+	/**
 	 * Reads an unsigned short from the raw byte code at the given address.
 	 *
 	 * @param __addr The address to read from.
@@ -631,7 +644,7 @@ public final class ByteCode
 			throw new IndexOutOfBoundsException(
 				String.format("JC23 %d", __addr));
 		
-		byte[] rad = this._rawattributedata;
+		byte[] rad = this._rawByteCode;
 		int d = __addr + ByteCode._CODE_OFFSET;
 		return ((rad[d] & 0xFF) << 8) |
 			(rad[d + 1] & 0xFF);
@@ -778,6 +791,17 @@ public final class ByteCode
 	public final MethodDescriptor type()
 	{
 		return this.methodtype;
+	}
+	
+	/**
+	 * Returns all of the valid addresses within this code.
+	 * 
+	 * @return The list of valid addresses.
+	 * @since 2021/03/14
+	 */
+	public final int[] validAddresses()
+	{
+		return this._index.clone();
 	}
 	
 	/**
