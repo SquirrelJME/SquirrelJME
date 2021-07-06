@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -168,6 +169,10 @@ public class VMTestTaskAction
 		// We only need to set the classpath once
 		Path[] classPath = VMHelpers.runClassPath(
 			(VMExecutableTask)__task, sourceSet, vmType);
+		
+		// Debug
+		__task.getLogger().debug("Testing ClassPath: {}",
+			Arrays.asList(classPath));
 		
 		// Execute the tests concurrently but up to the limit, as testing is
 		// very intense on CPU

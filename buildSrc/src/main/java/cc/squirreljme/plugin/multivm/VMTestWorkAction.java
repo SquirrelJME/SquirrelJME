@@ -65,6 +65,7 @@ public abstract class VMTestWorkAction
 		{
 			// Note this is running
 			System.err.printf("???? %s (%d/%d)%n", testName, count, total);
+			System.err.flush();
 			
 			// Clock the starting time
 			long clockStart = System.currentTimeMillis();
@@ -103,6 +104,7 @@ public abstract class VMTestWorkAction
 							// Note it
 							System.err.printf("TIME %s (%d/%d)%n", testName,
 								count, total);
+							System.err.flush();
 							
 							// The logic for interrupts is the same
 							throw new InterruptedException("Test Timeout");
@@ -120,6 +122,7 @@ public abstract class VMTestWorkAction
 				{
 					// Add note that this happened
 					System.err.printf("INTR %s%n", testName);
+					System.err.flush();
 					
 					// Stop the processes that are running
 					process.destroy();
@@ -137,6 +140,7 @@ public abstract class VMTestWorkAction
 			VMTestResult testResult = VMTestResult.valueOf(exitCode);
 			System.err.printf("%4s %s (%d/%d)%n", testResult, testName,
 				count, total);
+			System.err.flush();
 			
 			// Write the XML file
 			try (PrintStream out = new PrintStream(Files.newOutputStream(

@@ -147,6 +147,7 @@ public enum VMType
 				sysProps.put("squirreljme.orig." + e.getKey(), e.getValue());
 			
 			// Debug
+			__task.getLogger().debug("Hosted SupportPath: {}", vmSupportPath);
 			__task.getLogger().debug("Hosted ClassPath: {}", classPath);
 			
 			// Is this eligible to be ran under a debugger?
