@@ -1,0 +1,25 @@
+# 2021/06/16
+
+## 18:04
+
+So it looks like the code generation issue of many months ago is due to
+`DUP_X1` and `doStackShuffle()` not being the best.
+
+```
+DB: Preprocessing STACKSHUFFLE:[DUP_X1] (@62#DUP_X1~:[])
+DB: Shuffle with: DUP_X1 -> [[ba] -> [aba]]
+DB: Popped: [r13:Ljava/util/LinkedList;, r14:I]
+DB: Source map: {1=r13:Ljava/util/LinkedList;, 0=r14:I}
+DB: Pre 18 -> 13
+DB: Pre-copies: {14=18}
+DB: *** Stack Result ***
+DB: BEF: State:{L=[r8:Ljava/util/__LinkedListListIterator__;:RN, r9:Ljava/lang/Object;:RN, r10:I, r11:Ljava/util/__Link__;], S=[r8(12):Ljava/util/__LinkedListListIterator__;:N, r13:Ljava/util/LinkedList;, r14:I]}
+DB: AFT: State:{L=[r8:Ljava/util/__LinkedListListIterator__;:RN, r9:Ljava/lang/Object;:RN, r10:I, r11:Ljava/util/__Link__;], S=[r8(12):Ljava/util/__LinkedListListIterator__;:N, r13:I, r13(14):Ljava/util/LinkedList;:N, r13(15):I]}
+DB: IN : []
+DB: OUT: []
+DB: OPS: [COPY(14, 18), COPY(18, 13)]
+```
+
+As we can see here, the ordering is not correct and the values get trashed.
+So if this gets fixed then this issue should go away. Has been awhile since
+I looked at the code last but it should hopefully not be too difficult.

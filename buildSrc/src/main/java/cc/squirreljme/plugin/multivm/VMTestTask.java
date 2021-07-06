@@ -38,7 +38,6 @@ public class VMTestTask
 	 * Initializes the task.
 	 * 
 	 * @param __executor The executor for the task.
-	 * @param __execFactory This is a work around to use internal executions
 	 * for specifications needed to spawn VMs within workers.
 	 * @param __sourceSet The source set to use.
 	 * @param __vmType The virtual machine type.

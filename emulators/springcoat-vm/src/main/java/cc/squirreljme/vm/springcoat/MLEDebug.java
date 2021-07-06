@@ -12,7 +12,6 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
@@ -192,7 +191,7 @@ public enum MLEDebug
 			TracePointObject[] rv = new TracePointObject[n];
 			
 			for (int i = 0; i < n; i++)
-				rv[i] = new TracePointObject(trace[i]);
+				rv[i] = new TracePointObject(__thread.machine, trace[i]);
 			
 			return __thread.asVMObjectArray(__thread.loadClass(
 				"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;"),

@@ -32,6 +32,12 @@ public final class SpringField
 	/** The field index. */
 	protected final int index;
 	
+	/** Are we watching writes? */
+	volatile boolean _watchWrite;
+	
+	/** Are we watching reads? */
+	volatile boolean _watchRead;
+	
 	/**
 	 * Initializes the field.
 	 *
@@ -51,20 +57,15 @@ public final class SpringField
 		
 		this.inclass = __cl;
 		this.field = __f;
+		this.index = __dx;
 		
 		// Instance fields require an index
 		if (__f.flags().isInstance())
 		{
 			// {@squirreljme.error BK17 Negative field index.}
 			if (__dx < 0)
-				throw new IllegalArgumentException("BK17");	
-			
-			this.index = __dx;
+				throw new IllegalArgumentException("BK17");
 		}
-		
-		// Not used for statics
-		else
-			this.index = -1;
 	}
 	
 	/**
@@ -99,6 +100,20 @@ public final class SpringField
 	}
 	
 	/**
+	 * Are we doing debug watching?
+	 * 
+	 * @param __write Watch writes or reads?
+	 * @return If we are doing that kind of watching.
+	 * @since 2021/04/30
+	 */
+	protected boolean isDebugWatching(boolean __write)
+	{
+		if (__write)
+			return this._watchWrite;
+		return this._watchRead;
+	}
+	
+	/**
 	 * Is this a static field?
 	 *
 	 * @return If this is a static field.
@@ -117,6 +132,17 @@ public final class SpringField
 	public final FieldNameAndType nameAndType()
 	{
 		return this.field.nameAndType();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/19
+	 */
+	@Override
+	public String toString()
+	{
+		return String.format("Field %s:%s",
+			this.inclass, this.field);
 	}
 }
 

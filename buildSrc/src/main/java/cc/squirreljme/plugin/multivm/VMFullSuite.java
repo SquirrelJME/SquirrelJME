@@ -11,6 +11,7 @@ package cc.squirreljme.plugin.multivm;
 
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.tasks.SourceSet;
 
 /**
  * Task for running the full-suite of SquirrelJME.
@@ -19,7 +20,11 @@ import org.gradle.api.DefaultTask;
  */
 public class VMFullSuite
 	extends DefaultTask
+	implements VMExecutableTask
 {
+	/** The source set used. */
+	public final String sourceSet;
+	
 	/** The virtual machine type. */
 	public final VMSpecifier vmType;
 	
@@ -37,6 +42,7 @@ public class VMFullSuite
 		if (__vmType == null)
 			throw new NullPointerException("NARG");
 		
+		this.sourceSet = SourceSet.MAIN_SOURCE_SET_NAME;
 		this.vmType = __vmType;
 		
 		// Runs the entire API/Library suite of SquirrelJME to run a given
@@ -49,9 +55,20 @@ public class VMFullSuite
 		this.getOutputs().upToDateWhen(new AlwaysFalse());
 		
 		// This depends on everything!
-		this.dependsOn(new VMFullSuiteDepends(this, __vmType));
+		this.dependsOn(new VMFullSuiteDepends(this, __vmType),
+			new VMEmulatorDependencies(this, __vmType));
 		
 		// Actual running of everything
 		this.doLast(new VMFullSuiteTaskAction(__vmType));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/08
+	 */
+	@Override
+	public String getSourceSet()
+	{
+		return this.sourceSet;
 	}
 }

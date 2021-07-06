@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jdwp.JDWPFactory;
 import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.emulator.vm.VMException;
@@ -43,15 +44,22 @@ public class SpringCoatFactory
 	 */
 	@Override
 	protected VirtualMachine createVM(ProfilerSnapshot __ps,
-		VMSuiteManager __sm, VMClassLibrary[] __cp, String __maincl,
-		Map<String, String> __sprops, String[] __args)
+		JDWPFactory __jdwp, VMSuiteManager __sm,
+		VMClassLibrary[] __cp, String __maincl, Map<String, String> __sprops,
+		String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
-		// Create a new instance of the VM
+		// Setup the main task manager which runs everything
 		SpringTaskManager tm = new SpringTaskManager(__sm, __ps);
+		
+		// Bind this to the task manager which is the pure global state
+		if (__jdwp != null)
+			tm.jdwpController = __jdwp.open(tm); 
+		
+		// Spawn initial virtual machine task
 		return tm.startTask(__cp, __maincl, __args, __sprops,
 			TaskPipeRedirectType.TERMINAL, TaskPipeRedirectType.TERMINAL,
-			false);
+			false, true);
 	}
 }
 

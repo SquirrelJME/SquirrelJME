@@ -10,9 +10,7 @@
 package cc.squirreljme.vm.springcoat.brackets;
 
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
-import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.springcoat.AbstractGhostObject;
+import cc.squirreljme.vm.springcoat.SpringMachine;
 
 /**
  * This wraps a native {@link UIItemBracket}.
@@ -27,15 +25,16 @@ public final class UIItemObject
 	
 	/**
 	 * Initializes the item object.
-	 * 
+	 *
+	 * @param __machine The owning machine.
 	 * @param __item The item to wrap.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/18
 	 */
-	public UIItemObject(UIItemBracket __item)
+	public UIItemObject(SpringMachine __machine, UIItemBracket __item)
 		throws NullPointerException
 	{
-		super(UIItemBracket.class);
+		super(__machine, UIItemBracket.class);
 		
 		if (__item == null)
 			throw new NullPointerException("NARG");

@@ -195,6 +195,17 @@ public final class ThreadShelf
 		throws MLECallError;
 	
 	/**
+	 * Signals that the thread has ended and is no longer considered to be
+	 * alive.
+	 * 
+	 * @param __vmThread The virtual machine thread.
+	 * @throws MLECallError If {@code __vmThread} is null.
+	 * @since 2021/03/14
+	 */
+	public static native void vmThreadEnd(VMThreadBracket __vmThread)
+		throws MLECallError;
+	
+	/**
 	 * Returns the thread ID for the given thread.
 	 *
 	 * @param __vmThread The virtual machine thread.
