@@ -118,3 +118,69 @@ locations:
    * Upload all of the files into that directory.
    * Appropriately set the operating systems for the binaries.
 
+## Importing SquirrelJME Into Another Project
+
+Any one of SquirrelJME's modules can be used as a dependency for a project.
+Note that the versions that are used depend on if a release is being used or
+not, which is in the format of `M.m.r` for releases and `M.m.r-SNAPSHOT` for
+development versions. Note that even minor versions are releases (ex: `0.4.0`),
+and odd minor versions are development versions (ex: `0.3.0-SNAPSHOT`).
+
+### Snapshot Repository
+
+```xml
+<!-- Maven -->
+<project>
+    <repositories>
+        <repository>
+            <id>oss.sonatype.org-snapshot</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+</project>
+```
+
+```groovy
+// Gradle
+repositories {
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+}
+```
+
+# Debugging
+
+SquirrelJME's VMs may be debugged by having it connect to a debugger or
+waiting for a debug connection. Debugging happens purely over TCP/IP. It
+is not possible to use existing debuggers to debug SquirrelJME virtual machines
+there are debug interfaces available through standardized JDWP. Note that
+it is _not_ recommended for the debugger port to be open to the internet as
+it will allow the remote debugger to have access to all the virtual machine
+internals.
+
+Arguments to the virtual machines for _SpringCoat_, _SummerCoat_, etc.:
+
+ * Connect to remote debugger
+   * `-Dsquirreljme.jdwp=localhost:5005`
+ * Listen for a remote connection
+   * `-Dsquirreljme.jdwp=:5005`
+
+Instructions for specific debuggers:
+
+ * [jdb](
+   https://docs.oracle.com/javase/7/docs/technotes/tools/solaris/jdb.html)
+   * Connect:
+     * `jdb -connect com.sun.jdi.SocketAttach:hostname=localhost,port=5005`
+   * Listen:
+     * `jdb -connect com.sun.jdi.SocketListen:port=5005`
+ * [IntelliJ](
+   https://www.jetbrains.com/help/idea/attaching-to-local-process.html)
+ * [Eclipse](
+   https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php)

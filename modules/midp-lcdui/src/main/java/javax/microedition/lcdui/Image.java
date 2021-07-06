@@ -11,6 +11,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
@@ -68,7 +69,7 @@ public class Image
 		// If no alpha, set upper channel to full opaqueness
 		if (!__alpha)
 			for (int i = 0, n = __data.length; i < n; i++)
-				__data[i] |= 0xFF000000;
+				__data[i] |= 0xFF_000000;
 	}
 	
 	public final void getARGB16(short[] __data, int __off, int __scanlen,

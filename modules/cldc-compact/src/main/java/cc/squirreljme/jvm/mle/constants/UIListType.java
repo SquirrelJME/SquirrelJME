@@ -20,7 +20,10 @@ public interface UIListType
 	byte EXCLUSIVE =
 		0;
 	
-	/** The item that is focused is always the only one selected. */
+	/**
+	 * The item that is focused is always the only one selected, pressing an
+	 * action key (like enter/space) will activate the item.
+	 */
 	byte IMPLICIT =
 		1;
 	

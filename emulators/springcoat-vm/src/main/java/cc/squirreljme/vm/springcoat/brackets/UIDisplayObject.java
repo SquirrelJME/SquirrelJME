@@ -11,6 +11,7 @@ package cc.squirreljme.vm.springcoat.brackets;
 
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.vm.springcoat.AbstractGhostObject;
+import cc.squirreljme.vm.springcoat.SpringMachine;
 
 /**
  * Wraps a native {@link UIDisplayBracket}.
@@ -26,13 +27,16 @@ public final class UIDisplayObject
 	/**
 	 * Initializes the display object.
 	 * 
+	 * @param __machine The machine used.
 	 * @param __display The display to wrap.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/01
 	 */
-	public UIDisplayObject(UIDisplayBracket __display)
+	public UIDisplayObject(SpringMachine __machine, UIDisplayBracket __display)
 		throws NullPointerException
 	{
+		super(__machine, UIDisplayBracket.class);
+		
 		if (__display == null)
 			throw new NullPointerException("NARG");
 		

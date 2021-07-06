@@ -11,6 +11,7 @@ package cc.squirreljme.vm.springcoat.brackets;
 
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.vm.springcoat.AbstractGhostObject;
+import cc.squirreljme.vm.springcoat.SpringMachine;
 
 /**
  * Base class for widgets.
@@ -20,6 +21,21 @@ import cc.squirreljme.vm.springcoat.AbstractGhostObject;
 public abstract class UIWidgetObject
 	extends AbstractGhostObject
 {
+	/**
+	 * Initializes the base widget with the type it represents.
+	 *
+	 * @param __machine The machine used.
+	 * @param __rep The type this represents.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/03
+	 */
+	public UIWidgetObject(SpringMachine __machine,
+		Class<? extends UIWidgetBracket> __rep)
+		throws NullPointerException
+	{
+		super(__machine, __rep);
+	}
+	
 	/**
 	 * Returns the used widget.
 	 * 

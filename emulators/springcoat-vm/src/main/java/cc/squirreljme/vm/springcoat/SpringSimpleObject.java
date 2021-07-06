@@ -11,6 +11,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
+import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -34,7 +35,7 @@ public final class SpringSimpleObject
 		new RefLinkHolder();
 	
 	/** Field storage in the class. */
-	private final SpringFieldStorage[] _fields;
+	final SpringFieldStorage[] _fields;
 	
 	/** String representation. */
 	private Reference<String> _string;
@@ -63,7 +64,10 @@ public final class SpringSimpleObject
 		// Initialize variable for all fields
 		int i = 0;
 		for (SpringField f : __cl.fieldTable())
-			fields[i++] = new SpringFieldStorage(f);
+		{
+			int thisDx = i++;
+			fields[thisDx] = new SpringFieldStorage(f, f.index);
+		}
 	}
 	
 	/**
@@ -92,7 +96,15 @@ public final class SpringSimpleObject
 	 */
 	public final SpringFieldStorage fieldByIndex(int __dx)
 	{
-		return this._fields[__dx];
+		try
+		{
+			return this._fields[__dx];
+		}
+		catch (IndexOutOfBoundsException e)
+		{
+			throw new SpringVirtualMachineException(
+				"Invalid field index: " + __dx, e);
+		}
 	}
 	
 	/**

@@ -43,7 +43,7 @@ supports_no_game = "true"
 firmware_count = 1
 firmware0_desc = "squirreljme.sqc (SquirrelJME Compiled SummerCoat ROM)"
 firmware0_path = "squirreljme.sqc"
-firmware0_opt = "false"
+firmware0_opt = "true"
 
 # Additional notes:
 #notes = "(!) hash|(!) game rom|(^) continue|[1] notes|[^] continue|[*] list"

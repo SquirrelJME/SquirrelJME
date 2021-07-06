@@ -1,0 +1,17 @@
+# 2021/02/01
+
+## 15:17
+
+Some thoughts on invoking interfaces: Interfaces will get a hashcode
+associated with them. It will check the instance's interface table and try to
+see if it can quickly get the desired interface:
+
+```java
+XTable xTable = i2xTable[target.className().hashCode() &
+    (i2xTable.length - 1)];
+
+if (xTable == COLLISION)
+    xTable = linearScan(i2xTable, target);
+
+invokeXTable(xTable, methodId, args);
+```

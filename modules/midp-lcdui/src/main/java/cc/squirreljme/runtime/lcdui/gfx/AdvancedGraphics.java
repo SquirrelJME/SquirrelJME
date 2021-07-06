@@ -1336,7 +1336,7 @@ public class AdvancedGraphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/18
 	 */
-	private final void __drawRegion(Image __src, int __xsrc, int __ysrc,
+	private void __drawRegion(Image __src, int __xsrc, int __ysrc,
 		int __wsrc, int __hsrc, int __trans, int __xdest, int __ydest,
 		int __anch, int __wdest, int __hdest, boolean __dswap)
 		throws IllegalArgumentException, NullPointerException

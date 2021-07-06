@@ -51,7 +51,7 @@ public class TestListItemReset
 		// back just fine and it should be the same!
 		first._idCode = 0x1234_5678;
 		first._iconDimension = 16;
-		first._selected = true;
+		first._selected = false;
 		first._disabled = true;
 		first._font = FontUtilities.fontToSystemFont(Font.getDefaultFont());
 		first._label = "Cute Squirrel!";
@@ -79,7 +79,7 @@ public class TestListItemReset
 		second._idCode = 0x1834_5678;
 		second._iconDimension = 32;
 		second._selected = true;
-		second._disabled = true;
+		second._disabled = false;
 		second._font = FontUtilities.fontToSystemFont(Font.getFont(
 			Font.FACE_MONOSPACE, Font.STYLE_PLAIN, Font.SIZE_LARGE));
 		second._label = "Cute Squeak!";

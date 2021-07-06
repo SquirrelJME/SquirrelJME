@@ -18,11 +18,11 @@ import cc.squirreljme.emulator.vm.VirtualMachine;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -62,6 +62,10 @@ public final class SpringMachine
 	private static final MethodDescriptor _THREAD_NEW =
 		new MethodDescriptor("(Ljava/lang/String;)V");
 	
+	/** The next virtual machine ID. */
+	private static volatile int _nextVmNumber =
+		1; 
+	
 	/** The class loader. */
 	protected final SpringClassLoader classloader;
 	
@@ -86,6 +90,12 @@ public final class SpringMachine
 	/** The terminal pipe manager. */
 	protected final TerminalPipeManager terminalPipes;
 	
+	/** The virtual machine identifier. */
+	protected final String vmId;
+	
+	/** Is this the root virtual machine? */
+	protected final boolean rootVm;
+	
 	/** State for the callback threader. */
 	private final CallbackThreader _cbThreader =
 		new CallbackThreader();
@@ -93,10 +103,6 @@ public final class SpringMachine
 	/** Threads which are available. */
 	private final List<SpringThread> _threads =
 		new ArrayList<>();
-	
-	/** Static fields which exist within the virtual machine. */
-	private final Map<SpringField, SpringFieldStorage> _staticfields =
-		new HashMap<>();
 	
 	/** Global strings representing singular constants. */
 	private final Map<ConstantValueString, SpringObject> _strings =
@@ -144,6 +150,7 @@ public final class SpringMachine
 	 * @param __gs Global system state.
 	 * @param __pipes The terminal pipe manager, may be {@code null} in which
 	 * case it is initialized for the caller.
+	 * @param __rootVm Is this the root virtual machine?
 	 * @param __args Main entry point arguments.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/03
@@ -151,12 +158,16 @@ public final class SpringMachine
 	public SpringMachine(VMSuiteManager __sm, SpringClassLoader __cl,
 		SpringTaskManager __tm, String __bootcl, ProfilerSnapshot __profiler,
 		Map<String, String> __sprops, GlobalState __gs,
-		TerminalPipeManager __pipes, String... __args)
+		TerminalPipeManager __pipes, boolean __rootVm, String... __args)
 		throws NullPointerException
 	{
 		if (__cl == null || __sm == null || __pipes == null)
 			throw new NullPointerException("NARG");
 		
+		// Bind to this class class loader
+		__cl.__bind(this);
+		
+		this.rootVm = __rootVm;
 		this.suites = __sm;
 		this.classloader = __cl;
 		this.tasks = __tm;
@@ -171,6 +182,15 @@ public final class SpringMachine
 		
 		// Setup resource accessor
 		this.resourceaccessor = new VMResourceAccess(__sm);
+		
+		// Determine an ID for the VM, used for profiler information
+		synchronized (SpringMachine.class)
+		{
+			this.vmId = String.format("%s#%d@%08x",
+				__cl.bootLibrary().name(),
+				SpringMachine._nextVmNumber++,
+				System.identityHashCode(this));
+		}
 	}
 	
 	/**
@@ -207,11 +227,13 @@ public final class SpringMachine
 			// Initialize new thread
 			int v;
 			SpringThread rv = new SpringThread(
-				(v = ++this._nextthreadid), __main,
+				new WeakReference<>(this),
+				(v = ++this._nextthreadid),
+				this.tasks.nextThreadId(),
+				__main,
 				usedName,
-				this.profiler.measureThread(String.format("%s-vm%08x-%d-%s",
-				this.classloader.bootLibrary().name(),
-				System.identityHashCode(this), v, usedName)));
+				this.profiler.measureThread(String.format("VM_%s-%d-%s",
+				this.vmId, v, usedName)));
 			
 			// Signal that a major state has changed
 			this.notifyAll();
@@ -391,37 +413,6 @@ public final class SpringMachine
 	}
 	
 	/**
-	 * Returns the static field for the given field.
-	 *
-	 * @param __f The field to get the static field for.
-	 * @return The static field.
-	 * @throws NullPointerException On null arguments.
-	 * @throws SpringVirtualMachineException If the field does not exist.
-	 * @since 2018/09/09
-	 */
-	public final SpringFieldStorage lookupStaticField(SpringField __f)
-		throws NullPointerException
-	{
-		if (__f == null)
-			throw new NullPointerException("NARG");
-		
-		// Static fields may be added to when class loading is happening and
-		// as such there must be a lock to be given safe access
-		Map<SpringField, SpringFieldStorage> sfm = this._staticfields;
-		synchronized (this.classloader.classLoadingLock())
-		{
-			SpringFieldStorage rv = sfm.get(__f);
-			
-			// {@squirreljme.error BK19 Could not locate the static field
-			// storage?}
-			if (rv == null)
-				throw new SpringVirtualMachineException("BK19");
-			
-			return rv;
-		}
-	}
-	
-	/**
 	 * Returns if this task has exited.
 	 * 
 	 * @return If this task is exited.
@@ -461,11 +452,14 @@ public final class SpringMachine
 	public final CallbackThread obtainCallbackThread()
 		throws NullPointerException
 	{
+		CallbackThread rv = null;
+		
+		// This could deadlock on thread initialization, especially if this
+		// gets suspended by a debugger!
 		Collection<CallbackThread> cbThreads = this._cbThreads;
 		synchronized (this)
 		{
 			// Find the thread that can be opened
-			CallbackThread rv = null;
 			for (CallbackThread thread : cbThreads)
 				if (thread.canOpen())
 				{
@@ -479,26 +473,30 @@ public final class SpringMachine
 				rv.open();
 				return rv;
 			}
+		}
 			
-			// Setup new thread and its worker
-			String name = "callback#" + cbThreads.size();
-			SpringThread thread = this.createThread(name, false);
-			SpringThreadWorker worker = new SpringThreadWorker(this,
-				thread, false);
-			
-			// This always is a daemon thread
-			thread.setDaemon();
-			
-			// Enter blank thread so it is always at the ready
-			thread.enterBlankFrame();
-			
-			// Allocate thread object instance, this will get a VM thread
-			// created for it in the constructor and otherwise
-			SpringObject jvmThread = worker.newInstance(
-				SpringMachine._THREAD_CLASS, SpringMachine._THREAD_NEW,
-				worker.asVMObject(name));
-			thread.setThreadInstance(jvmThread);
-			
+		// Setup new thread and its worker
+		String name = "callback#" + cbThreads.size();
+		SpringThread thread = this.createThread(name, false);
+		SpringThreadWorker worker = new SpringThreadWorker(this,
+			thread, false);
+		
+		// This always is a daemon thread
+		thread.setDaemon();
+		
+		// Enter blank thread so it is always at the ready
+		thread.enterBlankFrame();
+		
+		// Allocate thread object instance, this will get a VM thread
+		// created for it in the constructor and otherwise
+		SpringObject jvmThread = worker.newInstance(
+			SpringMachine._THREAD_CLASS, SpringMachine._THREAD_NEW,
+			worker.asVMObject(name));
+		thread.setThreadInstance(jvmThread);
+		
+		// Register this callback thread since it was initialized
+		synchronized (this)
+		{
 			// Register this
 			rv = new CallbackThread(thread);
 			cbThreads.add(rv);
@@ -686,6 +684,16 @@ public final class SpringMachine
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public final String toString()
+	{
+		return this.vmId;
+	}
+	
+	/**
 	 * Splits long to integers.
 	 *
 	 * @param __dx The index.
@@ -719,17 +727,6 @@ public final class SpringMachine
 	final Map<SpringObject, ClassName> __classObjectToNameMap()
 	{
 		return this._namesbyclass;
-	}
-	
-	/**
-	 * Returns the map of static fields.
-	 *
-	 * @return The static field map.
-	 * @since 2018/09/08
-	 */
-	final Map<SpringField, SpringFieldStorage> __staticFieldMap()
-	{
-		return this._staticfields;
 	}
 	
 	/**

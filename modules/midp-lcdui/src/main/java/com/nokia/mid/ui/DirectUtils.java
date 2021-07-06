@@ -9,6 +9,7 @@
 
 package com.nokia.mid.ui;
 
+import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -88,7 +89,17 @@ public class DirectUtils
 		if (__g == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// If this is already a Nokia graphics, use it
+		if (__g instanceof DirectGraphics)
+			return (DirectGraphics)__g;
+		
+		// {@squirreljme.error EB3o Can only make a Nokia DirectGraphics from
+		// a PencilGraphics instance.}
+		if (!(__g instanceof PencilGraphics))
+			throw new RuntimeException("EB3o");
+		
+		// Otherwise wrap it
+		return new __NokiaGraphics__((PencilGraphics)__g);
 	}
 }
 

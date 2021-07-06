@@ -31,6 +31,14 @@ public class UIFormCallbackAdapter
 	private static final ClassName CALLBACK_CLASS =
 		new ClassName("cc/squirreljme/jvm/mle/callbacks/UIFormCallback");
 	
+	/** Printing of stack traces. */
+	private static final MethodNameAndType PRINTSTACKTRACE_NAT =
+		new MethodNameAndType("printStackTrace", "()V");
+	
+	/** Throwable classes. */
+	private static final ClassName THROWABLE_CLASS =
+		new ClassName("java/lang/Throwable");
+	
 	/** The object to call into. */
 	private final SpringObject callback;
 	
@@ -68,7 +76,8 @@ public class UIFormCallbackAdapter
 				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
 				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
 				"I", "I", "I"),
-			new UIFormObject(__form), new UIItemObject(__item),
+			new UIFormObject(this.machine, __form), new UIItemObject(machine,
+				__item),
 			__event, __keyCode, __modifiers);
 	}
 	
@@ -85,7 +94,8 @@ public class UIFormCallbackAdapter
 				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
 				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
 				"I", "I", "I", "I", "I"),
-			new UIFormObject(__form), new UIItemObject(__item),
+			new UIFormObject(this.machine, __form), new UIItemObject(
+				this.machine, __item),
 			__event, __button, __x, __y, __modifiers);
 	}
 	
@@ -99,7 +109,7 @@ public class UIFormCallbackAdapter
 		UIFormCallbackAdapter.__callbackInvoke(this.machine, this.callback,
 			MethodNameAndType.ofArguments("exitRequest", null,
 			"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;"),
-			new UIFormObject(__form));
+			new UIFormObject(this.machine, __form));
 	}
 	
 	/**
@@ -117,7 +127,8 @@ public class UIFormCallbackAdapter
 				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
 				"I", "I", "I", "Ljava/lang/Object;", "I", "[I",
 				"I", "I", "I", "I", "I"),
-			new UIFormObject(__form), new UIItemObject(__item),
+			new UIFormObject(this.machine, __form), new UIItemObject(
+				this.machine, __item),
 			__pf, __bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh,
 			__special);
 	}
@@ -135,7 +146,8 @@ public class UIFormCallbackAdapter
 				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
 				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
 				"I", "I", "I", "I"),
-			new UIFormObject(__form), new UIItemObject(__item),
+			new UIFormObject(this.machine, __form), new UIItemObject(
+				this.machine, __item),
 			__intProp, __sub, __old, __new);
 	}
 	
@@ -152,7 +164,8 @@ public class UIFormCallbackAdapter
 				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
 				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
 				"I", "I", "Ljava/lang/String;", "Ljava/lang/String;"),
-			new UIFormObject(__form), new UIItemObject(__item),
+			new UIFormObject(this.machine, __form),
+			new UIItemObject(this.machine, __item),
 			__strProp, __sub, __old, __new);
 	}
 	
@@ -187,8 +200,19 @@ public class UIFormCallbackAdapter
 				UIFormCallbackAdapter.CALLBACK_CLASS, __nat, callArgs);
 			
 			// Request failed, do not fail but eat the exception
-			if (fail != null)
-				Debugging.debugNote("Callback exception: %s", fail);
+			if (fail instanceof MethodInvokeException)
+			{
+				MethodInvokeException mie = (MethodInvokeException)fail;
+				
+				Debugging.debugNote("Callback exception: %s",
+					mie.exception);
+				
+				// Print stack trace through the VM if possible
+				cb.thread().invokeMethod(false,
+					UIFormCallbackAdapter.THROWABLE_CLASS,
+					UIFormCallbackAdapter.PRINTSTACKTRACE_NAT,
+					mie.exception);
+			}
 		}
 	}
 }

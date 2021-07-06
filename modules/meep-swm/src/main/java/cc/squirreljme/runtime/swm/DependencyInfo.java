@@ -49,7 +49,7 @@ public final class DependencyInfo
 	}
 	
 	/**
-	 * Initialzies the dependency information.
+	 * Initializes the dependency information.
 	 *
 	 * @param __deps The dependencies to use.
 	 * @throws NullPointerException On null arguments.

@@ -13,7 +13,14 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.emulator.terminal.TerminalPipeManager;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
+import cc.squirreljme.jdwp.JDWPBinding;
+import cc.squirreljme.jdwp.JDWPController;
+import cc.squirreljme.jdwp.JDWPState;
+import cc.squirreljme.jdwp.views.JDWPView;
+import cc.squirreljme.jdwp.views.JDWPViewKind;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
+import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
@@ -32,6 +39,7 @@ import java.util.Map;
  * @since 2018/11/04
  */
 public final class SpringTaskManager
+	implements JDWPBinding
 {
 	/** The manager for suites. */
 	protected final VMSuiteManager suites;
@@ -49,6 +57,12 @@ public final class SpringTaskManager
 	/** Machines that are running on the VM. */
 	private final Collection<Reference<SpringMachine>> _machines =
 		new LinkedList<>();
+	
+	/** Controller for JDWP Connections. */
+	protected JDWPController jdwpController;
+	
+	/** Next thread ID, for debugging. */
+	private volatile int _nextThreadId;
 	
 	/**
 	 * Initializes the task manager.
@@ -70,6 +84,72 @@ public final class SpringTaskManager
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/14
+	 */
+	@Override
+	public String[] debuggerLibraries()
+	{
+		return this.suites.listLibraryNames();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/10
+	 */
+	@Override
+	public Object[] debuggerThreadGroups()
+	{
+		return this.tasks();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/10
+	 */
+	@Override
+	public <V extends JDWPView> V debuggerView(Class<V> __type,
+		JDWPViewKind __kind, Reference<JDWPState> __state)
+		throws NullPointerException
+	{
+		// What do we want to view?
+		switch (__kind)
+		{
+			case FRAME:
+				return __type.cast(new DebugViewFrame(__state));
+			
+			case OBJECT:
+				return __type.cast(new DebugViewObject(__state));
+			
+			case THREAD:
+				return __type.cast(new DebugViewThread(__state));
+			
+			case THREAD_GROUP:
+				return __type.cast(new DebugViewThreadGroup(__state));
+			
+			case TYPE:
+				return __type.cast(new DebugViewType(__state));
+			
+			default:
+				throw Debugging.oops(__kind);
+		}
+	}
+	
+	/**
+	 * Return the next thread ID.
+	 * 
+	 * @return The next thread ID.
+	 * @since 2021/03/14
+	 */
+	protected int nextThreadId()
+	{
+		synchronized (this)
+		{
+			return ++this._nextThreadId;
+		}
+	}
+	
+	/**
 	 * Spawns a new task.
 	 * 
 	 * @param __classpath The classpath to use.
@@ -79,6 +159,7 @@ public final class SpringTaskManager
 	 * @param __stdOutMode Standard output mode.
 	 * @param __stdErrMode Standard error mode.
 	 * @param __forkThread Should the task be started on a new thread?
+	 * @param __rootVm Is this the root virtual machine?
 	 * @return The spawned machine.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/09
@@ -86,7 +167,7 @@ public final class SpringTaskManager
 	public SpringMachine startTask(VMClassLibrary[] __classpath,
 		String __mainClass, String[] __mainArgs,
 		Map<String, String> __sysProps, int __stdOutMode, int __stdErrMode,
-		boolean __forkThread)
+		boolean __forkThread, boolean __rootVm)
 		throws NullPointerException
 	{
 		if (__classpath == null || __mainClass == null || __mainArgs == null ||
@@ -105,7 +186,7 @@ public final class SpringTaskManager
 		SpringMachine machine = new SpringMachine(this.suites,
 			classloader, this, __mainClass,
 			this.profiler, new LinkedHashMap<>(__sysProps), this.globalState,
-			pipes, __mainArgs);
+			pipes, __rootVm, __mainArgs);
 		
 		// Register the machine, use garbage collector for the weak references
 		synchronized (this)
@@ -167,6 +248,36 @@ public final class SpringTaskManager
 		}
 		
 		return result.<SpringMachine>toArray(new SpringMachine[result.size()]);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public String vmDescription()
+	{
+		return "SquirrelJME SpringCoat " + SquirrelJME.RUNTIME_VERSION;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public String vmName()
+	{
+		return "SquirrelJME SpringCoat";
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/03/13
+	 */
+	@Override
+	public String vmVersion()
+	{
+		return SquirrelJME.RUNTIME_VERSION;
 	}
 }
 

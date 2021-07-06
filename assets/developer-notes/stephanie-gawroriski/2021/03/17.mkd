@@ -1,0 +1,11 @@
+# 2021/03/17
+
+## 20:14
+
+Okay so debugging is going well so far, however for events I am definitely
+finding that my current way of doing events is definitely going to reduce
+speed and complexity of implementation. I do a matcher and conditional kind
+of thing depending on the event context, however with the binding I should
+definitely add a means of linking stuff to events rather than doing signals
+or otherwise. I think this would be more performant but also simpler in a way
+especially when it comes to complex cases like locations and otherwise.

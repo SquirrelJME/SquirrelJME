@@ -9,8 +9,10 @@
 
 package cc.squirreljme.vm.springcoat.brackets;
 
+import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.vm.springcoat.AbstractGhostObject;
 import cc.squirreljme.vm.springcoat.SpringClass;
+import cc.squirreljme.vm.springcoat.SpringMachine;
 
 /**
  * Represents a type from within the VM.
@@ -26,13 +28,16 @@ public class TypeObject
 	/**
 	 * Initializes the type object.
 	 *
+	 * @param __machine The machine used.
 	 * @param __cl The class to use.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/04
 	 */
-	public TypeObject(SpringClass __cl)
+	public TypeObject(SpringMachine __machine, SpringClass __cl)
 		throws NullPointerException
 	{
+		super(__machine, TypeBracket.class);
+		
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		

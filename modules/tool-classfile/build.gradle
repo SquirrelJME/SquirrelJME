@@ -15,8 +15,8 @@ squirreljme
 
 dependencies
 {
-	implementation project(":modules:cldc-compact")
+	api project(":modules:cldc-compact")
 
-	implementation project(":modules:collections")
-	implementation project(":modules:io")
+	api project(":modules:collections")
+	api project(":modules:io")
 }

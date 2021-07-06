@@ -416,6 +416,23 @@ public final class SwingFormShelf
 	}
 	
 	/**
+	 * As {@link UIFormShelf#itemForm(UIItemBracket)}. 
+	 * 
+	 * @param __item The item to get.
+	 * @return The form the item is on.
+	 * @throws MLECallError If {@code __item} is {@code null}.
+	 * @since 2021/01/03
+	 */
+	public static UIFormBracket itemForm(UIItemBracket __item)
+		throws MLECallError
+	{
+		if (__item == null)
+			throw new MLECallError("Null item.");
+		
+		return ((SwingItem)__item)._form;
+	}
+	
+	/**
 	 * As {@link UIFormShelf#itemNew(int)}. 
 	 * 
 	 * @param __type The {@link UIItemType} to create.
@@ -559,6 +576,19 @@ public final class SwingFormShelf
 			case UIMetricType.COLOR_CANVAS_BACKGROUND:
 				return UIManager.getColor("desktop")
 					.getRGB() & SwingFormShelf._COLOR_MASK;
+				
+				// Vibration not supported
+			case UIMetricType.SUPPORTS_VIBRATION:
+				return 0;
+				
+				// Command and list height
+			case UIMetricType.COMMAND_BAR_HEIGHT:
+			case UIMetricType.LIST_ITEM_HEIGHT:
+				return 16;
+				
+				// Backlight control not supported
+			case UIMetricType.SUPPORTS_BACKLIGHT_CONTROL:
+				return 0;
 			
 			default:
 				throw new MLECallError("Unknown metric: " + __metricId);

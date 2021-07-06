@@ -241,9 +241,10 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 
 JNIEXPORT void JNICALL restrictedFunction(JNIEnv* env, jclass classy)
 {
-	fprintf(stderr, "Restricted function: %s.\n", __func__);
-	env->ThrowNew(env->FindClass("java/lang/Error"),
-		__func__);
+	// Call the oops method, so we can get a reasonable stack trace
+	env->Throw((jthrowable)forwardCallStaticObject(env,
+		"cc.squirreljme.runtime.cldc.debug.Debugging",
+		"oops", "()java/lang/Error"));
 }
 
 JNIEXPORT jint JNICALL Java_cc_squirreljme_emulator_NativeBinding__1_1bindMethods
@@ -263,6 +264,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_emulator_NativeBinding__1_1bindMethod
 	rv |= mleObjectInit(env, classy);
 	rv |= mlePencilInit(env, classy);
 	rv |= mleRuntimeInit(env, classy);
+	rv |= mleTaskInit(env, classy);
 	rv |= mleTerminalInit(env, classy);
 	rv |= mleThreadInit(env, classy);
 	

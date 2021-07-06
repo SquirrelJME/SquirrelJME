@@ -10,7 +10,7 @@
 
 package cc.squirreljme.runtime.launcher.ui;
 
-import javax.microedition.swm.Task;
+import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 
 /**
  * The currently active task.
@@ -20,6 +20,6 @@ import javax.microedition.swm.Task;
 final class __ActiveTask__
 {
 	/** The current task. */
-	volatile Task _task;
+	volatile TaskBracket _task;
 }
 

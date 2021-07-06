@@ -11,6 +11,7 @@ package cc.squirreljme.vm.springcoat.brackets;
 
 import cc.squirreljme.jvm.mle.brackets.RefLinkBracket;
 import cc.squirreljme.vm.springcoat.AbstractGhostObject;
+import cc.squirreljme.vm.springcoat.SpringMachine;
 import cc.squirreljme.vm.springcoat.SpringObject;
 
 /**
@@ -30,6 +31,17 @@ public final class RefLinkObject
 	
 	/** The previous link in the chain. */
 	volatile RefLinkObject _prev;
+	
+	/**
+	 * Initializes the ref link.
+	 *
+	 * @param __machine The machine used.
+	 * @since 2021/01/03
+	 */
+	public RefLinkObject(SpringMachine __machine)
+	{
+		super(__machine, RefLinkBracket.class);
+	}
 	
 	/**
 	 * Gets the next link.

@@ -19,9 +19,9 @@ squirreljme
 
 dependencies
 {
-	implementation project(":modules:cldc-compact")
+	api project(":modules:cldc-compact")
 
-	implementation project(":modules:tool-manifest-reader")
-	implementation project(":modules:strings")
-	implementation project(":modules:collections")
+	api project(":modules:tool-manifest-reader")
+	api project(":modules:strings")
+	api project(":modules:collections")
 }

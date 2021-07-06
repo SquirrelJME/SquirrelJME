@@ -10,7 +10,11 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.emulator.profiler.ProfiledThread;
+import cc.squirreljme.jdwp.JDWPStepTracker;
+import cc.squirreljme.jdwp.JDWPThreadSuspension;
+import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
@@ -49,9 +53,22 @@ public final class SpringThread
 	/** Profiler information. */
 	protected final ProfiledThread profiler;
 	
+	/** Tracker for debugging suspension. */
+	protected final JDWPThreadSuspension debuggerSuspension =
+		new JDWPThreadSuspension();
+	
+	/** The virtual machine reference. */
+	protected final Reference<SpringMachine> machineRef;
+	
+	/** Unique thread ID. */
+	protected final int uniqueId;
+	
 	/** The stack frames. */
 	private final List<SpringThread.Frame> _frames =
 		new ArrayList<>();
+	
+	/** The thread status. */
+	int _status;
 	
 	/** The thread's {@link Thread} instance. */
 	private SpringObject _threadInstance;
@@ -77,24 +94,31 @@ public final class SpringThread
 	/** Terminate the thread? */
 	private volatile boolean _terminate;
 	
+	/** Step tracker. */
+	volatile JDWPStepTracker _stepTracker;
+	
 	/**
 	 * Initializes the thread.
 	 *
+	 * @param __machRef The machine reference.
 	 * @param __id The thread ID.
+	 * @param __uniqueId Unique ID for debugging.
 	 * @param __main Is this a main thread.
 	 * @param __n The name of the thread.
 	 * @param __profiler Profiled storage.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/01
 	 */
-	SpringThread(int __id, boolean __main, String __n,
-		ProfiledThread __profiler)
+	SpringThread(Reference<SpringMachine> __machRef, int __id, int __uniqueId,
+		boolean __main, String __n, ProfiledThread __profiler)
 		throws NullPointerException
 	{
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
+		this.machineRef = __machRef;
 		this.id = __id;
+		this.uniqueId = __uniqueId;
 		this.main = __main;
 		this.name = __n;
 		this.profiler = __profiler;
@@ -120,7 +144,7 @@ public final class SpringThread
 	/**
 	 * Enters a blank frame to store data.
 	 *
-	 * @return The
+	 * @return The newly created frame.
 	 * @since 2018/09/20
 	 */
 	public final SpringThread.Frame enterBlankFrame()
@@ -138,15 +162,16 @@ public final class SpringThread
 		if (frames.size() >= SpringThread.MAX_STACK_DEPTH)
 			throw new SpringVirtualMachineException("BK1j");
 		
+		// Profile for this frame
+		/*rv._profiler = this.profiler.enterFrame(
+			"<blank>", "<blank>", "()V",
+			System.nanoTime());*/
+		
 		// Lock on frames as a new one is added
 		synchronized (this)
 		{
 			frames.add(rv);
 		}
-		
-		// Profile for this frame
-		this.profiler.enterFrame("<blank>", "<blank>", "()V",
-			System.nanoTime());
 		
 		// Had one frame (started)
 		this._hadoneframe = true;
@@ -200,10 +225,11 @@ public final class SpringThread
 		
 		// Create new frame
 		List<SpringThread.Frame> frames = this._frames;
-		Frame rv = new Frame(frames.size(), __m, vmArgs);
+		Frame rv = new Frame(frames.size(),
+			this._worker.loadClass(__m.inClass()), __m, vmArgs);
 		
 		// Profile for this frame
-		this.profiler.enterFrame(__m.inClass().toString(),
+		rv._profiler = this.profiler.enterFrame(__m.inClass().toString(),
 			__m.nameAndType().name().toString(),
 			__m.nameAndType().type().toString(), System.nanoTime());
 		
@@ -247,7 +273,7 @@ public final class SpringThread
 				// {@squirreljme.error BK1n Cannot enter a monitor of nothing
 				// or a non-object.}
 				Object argzero = __args[0];
-				if (!(argzero instanceof cc.squirreljme.vm.springcoat.SpringObject))
+				if (!(argzero instanceof SpringObject))
 					throw new SpringVirtualMachineException("BK1n");
 				
 				// Use this as the monitor
@@ -361,7 +387,7 @@ public final class SpringThread
 	{
 		SpringThreadWorker worker = this._worker;
 		if (worker == null)
-			throw new RuntimeException(
+			throw new IllegalStateException(
 				"Cannot interrupt thread with no worker.");
 		
 		// Signal the other thread or something else?
@@ -407,6 +433,18 @@ public final class SpringThread
 			throw new NullPointerException("NARG");
 		
 		return this._worker.invokeMethod(__static, __cl, __nat, __args);
+	}
+	
+	/**
+	 * Returns the machine that created this.
+	 * 
+	 * @return The machine that created this.
+	 * @since 2021/03/16
+	 */
+	public SpringMachine machine()
+	{
+		SpringThreadWorker worker = this._worker;
+		return (worker == null ? this.machineRef.get() : worker.machine);
 	}
 	
 	/**
@@ -492,9 +530,6 @@ public final class SpringThread
 	public final SpringThread.Frame popFrame()
 		throws SpringVirtualMachineException
 	{
-		// Exit the frame
-		this.profiler.exitFrame(System.nanoTime());
-		
 		// Pop from the stack
 		SpringThread.Frame rv;
 		List<SpringThread.Frame> frames = this._frames;
@@ -507,6 +542,10 @@ public final class SpringThread
 			
 			rv = frames.remove(n - 1);
 		}
+		
+		// Exit the frame, if not blank
+		if (!rv.isblank)
+			this.profiler.exitFrame(System.nanoTime());
 		
 		// If there is a monitor associated with this then leave it
 		SpringObject monitor = rv._monitor;
@@ -546,6 +585,20 @@ public final class SpringThread
 		synchronized (this)
 		{
 			this._daemon = true;
+		}
+	}
+	
+	/**
+	 * Sets the thread status.
+	 * 
+	 * @param __status The {@link ThreadStatusType} to set.
+	 * @since 2021/03/15
+	 */
+	public void setStatus(int __status)
+	{
+		synchronized (this)
+		{
+			this._status = __status;
 		}
 	}
 	
@@ -633,7 +686,7 @@ public final class SpringThread
 		}
 		
 		if (rv == null)
-			throw new IllegalStateException("Thread has no state.");
+			throw new IllegalStateException("Thread has no instance.");
 		
 		return rv;
 	}
@@ -678,11 +731,17 @@ public final class SpringThread
 		/** Is this frame blank? */
 		protected final boolean isblank;
 		
+		/** The class this is for. */
+		protected final SpringClass springClass;
+		
 		/** Local variables. */
 		private final Object[] _locals;
 		
 		/** The stack. */
 		private final Object[] _stack;
+		
+		/** Profiled frame. */
+		volatile ProfiledFrame _profiler;
 		
 		/** The top of the stack. */
 		private volatile int _stacktop;
@@ -700,7 +759,7 @@ public final class SpringThread
 		private SpringObject _tossedexception;
 		
 		/** Object which has a monitor for quicker unlock. */
-		private volatile SpringObject _monitor;
+		volatile SpringObject _monitor;
 		
 		/**
 		 * Initializes a blank guard frame.
@@ -708,10 +767,11 @@ public final class SpringThread
 		 * @param __level The frame depth.
 		 * @since 2018/09/20
 		 */
-		private Frame(int __level)
+		Frame(int __level)
 		{
 			this.level = __level;
 			this.method = null;
+			this.springClass = null;
 			this.code = null;
 			this.thisobject = null;
 			this.isblank = true;
@@ -723,15 +783,17 @@ public final class SpringThread
 		 * Initializes the frame.
 		 *
 		 * @param __level The frame depth.
+		 * @param __cl The class used.
 		 * @param __m The method used for the frame.
 		 * @param __args The frame arguments.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2018/09/03
 		 */
-		Frame(int __level, SpringMethod __m, Object... __args)
+		Frame(int __level, SpringClass __cl, SpringMethod __m,
+			Object... __args)
 			throws NullPointerException
 		{
-			if (__m == null)
+			if (__cl == null || __m == null)
 				throw new NullPointerException("NARG");
 			
 			__args = (__args == null ? new Object[0] : __args.clone());
@@ -739,6 +801,7 @@ public final class SpringThread
 			this.level = __level;
 			this.isblank = false;
 			this.method = __m;
+			this.springClass = __cl;
 			
 			// We will need to initialize the local and stack data from the
 			// information the byte code gives
@@ -892,6 +955,17 @@ public final class SpringThread
 		}
 		
 		/**
+		 * Returns the number of locals.
+		 * 
+		 * @return The number of locals.
+		 * @since 2021/04/14
+		 */
+		public final int numLocals()
+		{
+			return this._locals.length;
+		}
+		
+		/**
 		 * Returns the instruction counter.
 		 *
 		 * @return The instruction counter.
@@ -900,6 +974,22 @@ public final class SpringThread
 		public final int pc()
 		{
 			return this._pc;
+		}
+		
+		/**
+		 * Returns the PC index.
+		 * 
+		 * @return The PC index.
+		 * @since 2021/04/11
+		 */
+		public final int pcIndex()
+		{
+			ByteCode code = this.code;
+			if (code == null)
+				return this._pc;
+			
+			// These just use indexes, not true addresses
+			return code.addressToIndex(this._pc);
 		}
 		
 		/**
