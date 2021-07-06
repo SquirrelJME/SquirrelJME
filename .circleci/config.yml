@@ -38,7 +38,7 @@ jobs:
           # According to documentation, Gradle on Windows has trouble and tries
           # to make way too many workers which causes extreme resource.
           # contention --max-workers=2
-          command: gradlew build testHosted --console plain --continue --parallel
+          command: gradlew build testHosted -x javadoc -x javadocJar -x testFixturesJavaDoc -x sourcesJar --console plain --continue --parallel
       - run:
           shell: bash.exe
           name: Save test results
@@ -94,6 +94,16 @@ jobs:
       # Do not auto-update brew as this takes forever and we really just want
       # a single package
       HOMEBREW_NO_AUTO_UPDATE: 1
+
+      # Do not auto-clean brew, this wastes time and everything will be thrown
+      # out when the container finishes anyway
+      HOMEBREW_CLEANUP_MAX_AGE_DAYS: 730
+
+      # Do not send analytics
+      HOMEBREW_NO_ANALYTICS: 1
+
+      # Do not cleanup after installation
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
       - checkout
       - run:
@@ -103,7 +113,7 @@ jobs:
           command: brew install openjdk@11
       - run:
           name: Gradle Build and Test
-          command: ./gradlew build testHosted --console plain --continue --parallel
+          command: ./gradlew build testHosted -x javadoc -x javadocJar -x testFixturesJavaDoc -x sourcesJar --console plain --continue --parallel
       - run:
           name: Save test results
           command: |
@@ -149,6 +159,9 @@ jobs:
   ################################### LINUX ##################################
   build_linux:
     executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - run:
@@ -178,9 +191,28 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results
+
+  ### OSS SonaType Nexus
+  sonatype_publish:
+    executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Publish to OSS SonaType
+          command: ./gradlew publishMavenPublicationToMavenRepository --console plain --continue --parallel
+
+  ### RatufaCoat
   ratufacoat_build_linux:
     executor: buildenv
     resource_class: small
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - run:
@@ -201,8 +233,13 @@ jobs:
       - store_artifacts:
           path: ratufacoat/src/SquirrelJME
           destination: SquirrelJME
+
+  ### SpringCoat
   test_springcoat:
     executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - attach_workspace:
@@ -235,6 +272,9 @@ jobs:
           path: ~/test-results
   test_summercoat:
     executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - attach_workspace:
@@ -299,6 +339,9 @@ jobs:
   # when they need to use these JARs
   construct_testJars:
     executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - attach_workspace:
@@ -319,6 +362,9 @@ jobs:
   # for general ROM construction
   construct_libSummerCoat:
     executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - attach_workspace:
@@ -338,6 +384,9 @@ jobs:
   # All of the tests so that they can run from within SummerCoat
   construct_libTestSummerCoat:
     executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - attach_workspace:
@@ -357,6 +406,9 @@ jobs:
   # Constructs the standard SummerCoat ROM, could be uploaded later
   construct_romSummerCoat:
     executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - attach_workspace:
@@ -378,6 +430,9 @@ jobs:
   # it properly works.
   construct_romTestSummerCoat:
     executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
     steps:
       - checkout
       - attach_workspace:
@@ -409,23 +464,35 @@ workflows:
 
       # Mac OS X runs decently however the jobs for it have a higher cost, so
       # only perform builds and tests for trunk to lower costs.
-      - build_macosx:
-          requires:
-            - build_linux
-          filters:
-            branches:
-              only:
-                - trunk
+      # Currently have an overabundance of credits...
+      - build_macosx
+#          requires:
+#            - build_linux
+#          filters:
+#            branches:
+#              only:
+#                - trunk
 
       # Building on Windows is currently expensive and takes longer, so only
       # run these builds on trunk to lower costs.
-      - build_windows:
+      # Currently have an overabundance of credits...
+      - build_windows
+#          requires:
+#            - build_linux
+#          filters:
+#            branches:
+#              only:
+#                - trunk
+
+      # Publishing to OSS Sonatype Nexus (https://oss.sonatype.org)
+      - sonatype_publish:
           requires:
             - build_linux
           filters:
             branches:
               only:
                 - trunk
+                - wip-centralpublish
 
       ###################### LIBRARY AND ROM CONSTRUCTION #####################
       - construct_testJars:

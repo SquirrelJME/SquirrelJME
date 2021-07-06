@@ -1,0 +1,10 @@
+# 2021/03/13
+
+## 20:32
+
+I decided to take a break from SummerCoat and RatufaCoat I was working on
+to write support for debugging. At least initially it will be SpringCoat as I
+figure out the protocol and otherwise. But once it is fully working in
+SpringCoat and works with IntelliJ I could very well bring it to SummerCoat.
+At least with a debugger it will help with some more yuck parts of some
+software.

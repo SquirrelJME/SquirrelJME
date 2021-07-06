@@ -1,7 +1,7 @@
 import cc.squirreljme.plugin.swm.JavaMEConfiguration
 import cc.squirreljme.plugin.swm.JavaMEMidletType
 
-version = "1.8.${rootProject.ext.squirreljmeVMVersion}"
+version = "1.8.$squirreljmeVMVersion"
 description = "This is the standard Java ME 8 Connection " +
 	"Limited Device Configuration which contains the full set of classes " +
 	"used by JavaME."
@@ -18,5 +18,5 @@ squirreljme
 
 dependencies
 {
-	implementation project(":modules:cldc-compact")
+	api project(":modules:cldc-compact")
 }

@@ -1,0 +1,14 @@
+# 2021/01/31
+
+## 13:51
+
+
+I made progress the other day getting a banner printed for SummerCoat, now today
+is the launching of JARs. Also looks like for the super call to the constructor
+in a constructor is doing a class check... that should probably be changed.
+
+## 18:18
+
+Well, now I am at the point where I must implement interfaces and such. Have not
+had luck with interfaces before the big refactorings, but now I do have an idea
+of what I want to do with them and a nice way to handle it.

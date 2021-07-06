@@ -9,7 +9,9 @@
 
 package cc.squirreljme.vm.springcoat.brackets;
 
+import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
 import cc.squirreljme.vm.springcoat.AbstractGhostObject;
+import cc.squirreljme.vm.springcoat.SpringMachine;
 import cc.squirreljme.vm.springcoat.SpringThread;
 
 /**
@@ -26,13 +28,16 @@ public final class VMThreadObject
 	/**
 	 * Initializes the thread.
 	 *
+	 * @param __machine The machine used.
 	 * @param __thread The thread to target.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/17
 	 */
-	public VMThreadObject(SpringThread __thread)
+	public VMThreadObject(SpringMachine __machine, SpringThread __thread)
 		throws NullPointerException
 	{
+		super(__machine, VMThreadBracket.class);
+		
 		if (__thread == null)
 			throw new NullPointerException("NARG");
 		

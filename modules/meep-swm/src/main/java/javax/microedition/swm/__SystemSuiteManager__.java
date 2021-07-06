@@ -194,14 +194,13 @@ final class __SystemSuiteManager__
 	/**
 	 * Returns the suites which match the given dependency set.
 	 *
-	 * This is copied from the SquirrelJME build system.
-	 *
 	 * @param __set The set of dependencies to get.
 	 * @param __opt If {@code true} include optional dependencies.
-	 * @return Suites which statisfy the given dependencies.
+	 * @return Suites which satisfy the given dependencies.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/02
 	 */
+	@Deprecated
 	static Suite[] __matchDependencies(DependencyInfo __set, boolean __opt)
 		throws NullPointerException
 	{

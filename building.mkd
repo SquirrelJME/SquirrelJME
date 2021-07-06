@@ -192,6 +192,11 @@ is not able to reliably test within SquirrelJME.
 
 The following _System_ properties are available:
 
+ * `squirreljme.jdwp=[hostname]:port` -- Enable JDWP.
+   * Enables JDWP for the given virtual machine.
+   * If only `:port` is specified it will listen for incoming connections from
+     a debugger.
+   * If both `hostname:port` is specified it will connect to a remote debugger.
  * `squirreljme.midlet=value` -- The MIDlet to run, in the following order:
    * If `value` is a number and is `-1`, then no MIDlet will be selected and
      the `Main-Class` attribute will be force selected.
@@ -201,8 +206,14 @@ The following _System_ properties are available:
      with a matching case-insensitive title. 
    * Otherwise if `value` is a string, it will construct a virtual MIDlet
      which executes the given value as the name of a class within the JAR.
+ * `squirreljme.sysprop.<systemProperty>=value` -- Add system property.
+   * This allows any system properties that are prefixed with this to be
+     added into the target virtual machine when running.
+   * As an example `squirreljme.sysprop.favorite.animal=squirrel`:
+     * Will define system property `favorite.animal=squirrel` within the
+       virtual machine.
  * `test.single=classname` -- Run only the given test:
-   * Will be the test class to be ran.
+   * Will be the test class to be run.
    * Multi-parameter tests are in the form of `classname@parameter`, if a
      parameter is specified then only that one will be matched. Otherwise
      this will include all tests of that given parameter.

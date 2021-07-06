@@ -15,7 +15,9 @@ import cc.squirreljme.jvm.DeviceFeedbackType;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.constants.UIInputFlag;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
@@ -1047,14 +1049,13 @@ public class Display
 		if (__d < 0)
 			throw new IllegalArgumentException("EB1n");
 		
-		// Clear vibration
-		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
-			DeviceFeedbackType.VIBRATE, __d);
+		// Only perform the action if we can vibrate the device
+		UIBackend backend = UIBackendFactory.getInstance();
+		if (backend.metric(UIMetricType.SUPPORTS_VIBRATION) != 0)
+			throw Debugging.todo();
 		
-		// Only return true if no error was generated
-		return (SystemCallError.NO_ERROR ==
-			Assembly.sysCallV(SystemCallIndex.ERROR_GET,
-				SystemCallIndex.DEVICE_FEEDBACK));
+		// There is none, so we cannot say we control it
+		return false;
 	}
 	
 	/**
@@ -1069,38 +1070,35 @@ public class Display
 	private int __bestImageSize(int __e, boolean __h)
 		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
-		/*
 		// Depends
+		UIBackend backend = UIBackendFactory.getInstance();
 		switch (__e)
 		{
-			case Display.LIST_ELEMENT:
-				return StandardMetrics.LIST_ITEM_HEIGHT;
-				
 			case Display.CHOICE_GROUP_ELEMENT:
-				throw new todo.TODO();
+				throw Debugging.todo();
 				
 			case Display.ALERT:
-				throw new todo.TODO();
+				throw Debugging.todo();
 				
 			case Display.TAB:
-				throw new todo.TODO();
-				
-			case Display.COMMAND:
-				return StandardMetrics.COMMAND_BAR_HEIGHT;
+				throw Debugging.todo();
 				
 			case Display.NOTIFICATION:
-				throw new todo.TODO();
+				throw Debugging.todo();
+				
+			case Display.LIST_ELEMENT:
+				return backend.metric(UIMetricType.LIST_ITEM_HEIGHT);
 				
 			case Display.MENU:
-				return StandardMetrics.COMMAND_BAR_HEIGHT;
+			case Display.COMMAND:
+				return backend.metric(UIMetricType.COMMAND_BAR_HEIGHT);
 				
 				// {@squirreljme.error EB1o Cannot get the best image size of
 				// the specified element. (The element specifier)}
 			default:
 				throw new IllegalArgumentException(String.format("EB1o %d",
 					__e));
-		}*/
+		}
 	}
 	
 	/**
@@ -1161,9 +1159,11 @@ public class Display
 				StaticDisplayState.callback());
 		}
 		
-		// Show the form on the display
-		backend.displayShow(this._uiDisplay,
-			__show._uiForm);
+		// Show the form on the display, as long as it is not already on there
+		UIDisplayBracket uiDisplay = this._uiDisplay;
+		UIFormBracket wasForm = backend.displayCurrent(uiDisplay);
+		if (wasForm == null || !backend.equals(__show._uiForm, wasForm))
+			backend.displayShow(uiDisplay, __show._uiForm);
 		
 		// Set new parent
 		__show._display = this;

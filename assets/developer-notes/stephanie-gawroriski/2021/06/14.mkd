@@ -1,0 +1,36 @@
+# 2021/06/14
+
+## 19:05
+
+So the floating point values are wrong and these are the ten bad ones:
+
+```
+fxmaxmin        ! string:0x34ffffff string:0x7f800000
+fxminmax        ! string:0x34ffffff string:0x7f800000
+fxminmin        ! string:0x00000000 string:0x7f800000
+fxminneg        ! string:0x80000001 string:0xff800000
+fxminnrm        ! string:0x00000000 string:0x7f800000
+fxminone        ! string:0x00000001 string:0x7f800000
+fxnegmin        ! string:0x80000001 string:0xff800000
+fxnrmmin        ! string:0x00000000 string:0x7f800000
+fxonemin        ! string:0x00000001 string:0x7f800000
+```
+
+After running a first run in fixing I get these 6 bad ones:
+
+```
+fxmaxmin        ! string:0x34ffffff string:0x407fffe9
+fxminmax        ! string:0x34ffffff string:0x417fffe8
+fxminneg        ! string:0x80000001 string:0x80fffff5
+fxminone        ! string:0x00000001 string:0x00fffff5
+fxnegmin        ! string:0x80000001 string:0x807ffff5
+fxonemin        ! string:0x00000001 string:0x007ffff5
+```
+
+This is with exponent capping that at least gets a bit closer, but it feels
+like the fraction is a bit off still.
+
+## 19:50
+
+Then after much looking, turns out `__normSubnormalF32Sig()` was returning
+values in the wrong order, so this has been fixed! Yay!

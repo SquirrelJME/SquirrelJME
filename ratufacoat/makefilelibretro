@@ -88,11 +88,23 @@ ifeq ($(shell uname -a),)
 	system_platform = win
 else ifneq ($(findstring Darwin,$(shell uname -a)),)
 	system_platform = osx
-ifeq ($(shell uname -p),powerpc)
-	arch = ppc
-else
-	arch = intel
-endif
+
+	# Architecture is not defined?
+	ifeq ($(arch),)
+		# PowerPC?
+		ifeq ($(shell uname -p),powerpc)
+			arch = ppc
+		else
+			# ARM?
+			ifeq ($(shell uname -p),arm)
+				arch = arm
+
+			# Assume x86 otherwise
+			else
+				arch = intel
+			endif
+		endif
+	endif
 else ifneq ($(findstring MINGW,$(shell uname -a)),)
 	system_platform = win
 endif
@@ -134,9 +146,18 @@ else ifeq ($(platform), osx)
 	EXT    ?= dylib
 	TARGET := $(TARGET_NAME)_libretro.$(EXT)
 	fpic := -fPIC
+
 ifeq ($(arch),ppc)
 		CFLAGS += -D__ppc__ -DMSB_FIRST -DWORDS_BIGENDIAN=1
 endif
+
+ifeq ($(arch),arm)
+		CFLAGS += -target $(LIBRETRO_APPLE_PLATFORM) -isysroot $(LIBRETRO_APPLE_ISYSROOT)
+		CPPFLAGS += -target $(LIBRETRO_APPLE_PLATFORM) -isysroot $(LIBRETRO_APPLE_ISYSROOT)
+		CXXFLAGS += -target $(LIBRETRO_APPLE_PLATFORM) -isysroot $(LIBRETRO_APPLE_ISYSROOT)
+		LDFLAGS += -target $(LIBRETRO_APPLE_PLATFORM) -isysroot $(LIBRETRO_APPLE_ISYSROOT)
+endif
+
 	OSXVER = $(shell sw_vers -productVersion | cut -d. -f 2)
 	OSX_GT_MOJAVE = $(shell (( $(OSXVER) >= 14)) && echo "YES")
 ifneq ($(OSX_GT_MOJAVE),YES)
@@ -367,7 +388,7 @@ else ifeq ($(platform), wiiu)
 	TARGET := $(TARGET_NAME)_libretro_$(platform).$(EXT)
 	CC = $(DEVKITPPC)/bin/powerpc-eabi-gcc$(EXE_EXT)
 	AR = $(DEVKITPPC)/bin/powerpc-eabi-ar$(EXE_EXT)
-	CFLAGS += -DGEKKO -DHW_RVL -mwup -mcpu=750 -meabi -mhard-float -D__ppc__ -DMSB_FIRST -DWORDS_BIGENDIAN=1
+	CFLAGS += -DGEKKO -DHW_RVL -mcpu=750 -meabi -mhard-float -D__ppc__ -DMSB_FIRST -DWORDS_BIGENDIAN=1
 	CFLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
 	STATIC_LINKING = 1
 	STATIC_LINKING_LINK = 1
@@ -464,10 +485,10 @@ else ifeq ($(platform), xbox1_msvc2003)
 # PlayStation 2
 else ifeq ($(platform), ps2)
 	TARGET := $(TARGET_NAME)_libretro_$(platform).a
-	CC = ee-gcc$(EXE_EXT)
-	CXX = ee-g++$(EXE_EXT)
-	AR = ee-ar$(EXE_EXT)
-	CFLAGS += -Wall -DPS2 -DNO_UNALIGNED_ACCESS -DABGR1555 -DRENDER_GSKIT_PS2 -fsingle-precision-constant
+	CC = mips64r5900el-ps2-elf-gcc$(EXE_EXT)
+	CXX = mips64r5900el-ps2-elf-g++$(EXE_EXT)
+	AR = mips64r5900el-ps2-elf-ar$(EXE_EXT)
+	CFLAGS += -Wall -DPS2 -DABGR1555 -DRENDER_GSKIT_PS2 -fsingle-precision-constant
 	CFLAGS += -I$(PS2SDK)/ee/include -I$(PS2SDK)/common/include  -I$(PS2DEV)/gsKit/include
 	STATIC_LINKING = 1
 	STATIC_LINKING_LINK = 1
@@ -548,7 +569,7 @@ else
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
-	@echo "** BUILDING $(TARGET) FOR PLATFORM $(platform) **"
+	@echo "** BUILDING $(TARGET) FOR PLATFORM $(platform) $(arch) **"
 ifeq ($(platform), emscripten)
 	$(CC) $(CFLAGS) $(OBJOUT)$@ $^
 else ifeq ($(STATIC_LINKING_LINK), 1)

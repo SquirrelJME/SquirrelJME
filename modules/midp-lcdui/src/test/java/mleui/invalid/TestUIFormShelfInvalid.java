@@ -190,6 +190,10 @@ public class TestUIFormShelfInvalid
 					UIItemPosition.BODY);
 				break;
 			
+			case 24:
+				__backend.itemForm(null);
+				break;
+			
 			default:
 				return true;
 		}

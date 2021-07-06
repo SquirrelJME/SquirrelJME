@@ -9,6 +9,12 @@
 
 #include "squirreljme.h"
 
+JNIEXPORT void JNICALL Impl_mle_RuntimeShelf_garbageCollect(
+	JNIEnv* env, jclass classy)
+{
+	// Does nothing
+}
+
 JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_lineEnding(JNIEnv*, jclass)
 {
 #if defined(_WIN32)
@@ -26,6 +32,7 @@ JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_vmType(JNIEnv*, jclass)
 
 static const JNINativeMethod mleRuntimeMethods[] =
 {
+	{"garbageCollect", "()V", (void*)Impl_mle_RuntimeShelf_garbageCollect},
 	{"lineEnding", "()I", (void*)Impl_mle_RuntimeShelf_lineEnding},
 	{"vmType", "()I", (void*)Impl_mle_RuntimeShelf_vmType},
 };

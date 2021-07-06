@@ -11,7 +11,9 @@ package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import java.awt.AlphaComposite;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.lang.ref.Reference;
@@ -58,6 +60,11 @@ class __PaintingPanel__
 		// Must always be called to perform other operations
 		super.paintComponent(__g);
 		
+		// We always want to overwrite the alpha values and do no blending
+		Graphics2D gt = ((__g instanceof Graphics2D) ? (Graphics2D)__g : null);
+		if (gt != null)
+			gt.setComposite(AlphaComposite.SrcOver);
+		
 		// Get the panel size, used for drawing and such
 		int pW = this.getWidth();
 		int pH = this.getHeight();
@@ -66,8 +73,17 @@ class __PaintingPanel__
 		BufferedImage pixelImage = this._pixelImage;
 		if (pixelImage == null || pW != pixelImage.getWidth() ||
 			pH != pixelImage.getHeight())
+		{
+			// Set base image
 			this._pixelImage = (pixelImage = new BufferedImage(pW, pH,
-				BufferedImage.TYPE_INT_ARGB));
+				BufferedImage.TYPE_INT_RGB));
+			
+			// Fill the entire buffer with nothing
+			int[] buffer = ((DataBufferInt)pixelImage.getRaster()
+				.getDataBuffer()).getData();
+			for (int i = 0, n = buffer.length; i < n; i++)
+				buffer[i] = 0xFF_000000;
+		}
 		
 		// Send callback
 		SwingItem item = this.itemRef.get();
@@ -78,7 +94,7 @@ class __PaintingPanel__
 			{
 				UIFormCallback callback = form.callback();
 				if (callback != null)
-					callback.paint(form, item, UIPixelFormat.INT_RGBA8888,
+					callback.paint(form, item, UIPixelFormat.INT_RGB888,
 						pW, pH, ((DataBufferInt)pixelImage.getRaster()
 							.getDataBuffer()).getData(), 0,
 							null, 0, 0, pW, pH, 0);

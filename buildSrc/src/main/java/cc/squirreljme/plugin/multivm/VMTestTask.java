@@ -9,10 +9,10 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.util.SimpleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.SingleTaskOutputFile;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
-import org.gradle.process.internal.DslExecActionFactory;
 import org.gradle.workers.WorkerExecutor;
 
 /**
@@ -38,7 +38,6 @@ public class VMTestTask
 	 * Initializes the task.
 	 * 
 	 * @param __executor The executor for the task.
-	 * @param __execFactory This is a work around to use internal executions
 	 * for specifications needed to spawn VMs within workers.
 	 * @param __sourceSet The source set to use.
 	 * @param __vmType The virtual machine type.
@@ -47,12 +46,11 @@ public class VMTestTask
 	 * @since 2020/08/07
 	 */
 	@Inject
-	public VMTestTask(WorkerExecutor __executor,
-		@Deprecated DslExecActionFactory __execFactory, String __sourceSet,
+	public VMTestTask(WorkerExecutor __executor, String __sourceSet,
 		VMSpecifier __vmType, VMLibraryTask __libTask)
 		throws NullPointerException
 	{
-		if (__executor == null || __execFactory == null ||
+		if (__executor == null || 
 			__sourceSet == null || __vmType == null || __libTask == null)
 			throw new NullPointerException("NARG");
 			
@@ -92,7 +90,7 @@ public class VMTestTask
 		// future the rest of it is hidden from the class which does the
 		// actual task action
 		this.doLast(new VMTestTaskAction(__executor,
-			() -> __execFactory.newDecoratedJavaExecAction(), __sourceSet,
+			SimpleJavaExecSpecFiller::new, __sourceSet,
 			__vmType));
 	}
 	

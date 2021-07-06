@@ -23,7 +23,6 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JFrame;
@@ -151,6 +150,12 @@ public final class SwingForm
 			// Hide the current form
 			if (this._display != null)
 				this._display.show(null);
+			
+			// Remove all items from the form
+			List<SwingItem> items = this._items;
+			for (SwingItem item : items.toArray(new SwingItem[items.size()]))
+				if (item != null)
+					this.itemRemove(item);
 		}
 	}
 	
@@ -305,10 +310,7 @@ public final class SwingForm
 			// parts of the algorithm are normalized
 			if (normalPos == items.size())
 				items.add(null);
-			
-			// Just overwrite the item here
-			items.set(normalPos, __item);
-			
+				
 			// The old item's form will no longer be valid, we had this item
 			// here so we know it is safe to do this
 			if (old != null)
@@ -322,6 +324,9 @@ public final class SwingForm
 			if (itemForm != null && itemForm != this)
 				itemForm.itemRemove(itemForm.itemPosition(__item));
 			
+			// Just overwrite the item here
+			items.set(normalPos, __item);
+			
 			// Take claim over this item
 			__item._form = this;
 			
@@ -330,7 +335,11 @@ public final class SwingForm
 			{
 				// It was a special item, so just clear it
 				if (oldIndex < UIItemPosition.SPECIAL_SHIFT)
-					items.set(oldIndex, null);
+				{
+					// Only clear it if it was not in the same spot
+					if (oldIndex != normalPos)
+						items.set(oldIndex, null);
+				}
 				
 				// Remove the item at the old position, shift over
 				else

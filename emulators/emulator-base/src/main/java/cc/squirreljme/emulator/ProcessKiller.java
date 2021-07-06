@@ -2,40 +2,47 @@
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.emulator;
 
 /**
- * This is a virtual machine representation of a static method.
+ * Kills the process.
  *
- * @since 2018/11/20
+ * @since 2020/12/31
  */
-@Deprecated
-public final class SpringVMStaticMethod
-	extends AbstractGhostObject
+public class ProcessKiller
+	implements Runnable
 {
-	/** The method to execute. */
-	protected final SpringMethod method;
+	/** The process to be terminated. */
+	protected final Process process;
 	
 	/**
-	 * Initializes the static method.
-	 *
-	 * @param __m The method to execute.
+	 * Initializes the process killer.
+	 * 
+	 * @param __process The process to be terminated.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2018/11/20
+	 * @since 2020/12/31
 	 */
-	public SpringVMStaticMethod(SpringMethod __m)
+	public ProcessKiller(Process __process)
 		throws NullPointerException
 	{
-		if (__m == null)
+		if (__process == null)
 			throw new NullPointerException("NARG");
 		
-		this.method = __m;
+		this.process = __process;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/12/31
+	 */
+	@Override
+	public void run()
+	{
+		this.process.destroy();
 	}
 }
-

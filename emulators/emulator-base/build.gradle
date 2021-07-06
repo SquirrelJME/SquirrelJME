@@ -37,6 +37,7 @@ dependencies
 	compileClasspath project(":modules:io")
 	compileClasspath project(":modules:tac")
 	compileClasspath project(":modules:zip")
+	compileClasspath project(":modules:debug-jdwp")
 
 	// And for run-time to be able to be ran
 	runtimeClasspath project(":modules:cldc-compact")
@@ -44,6 +45,7 @@ dependencies
 	runtimeClasspath project(":modules:io")
 	runtimeClasspath project(":modules:tac")
 	runtimeClasspath project(":modules:zip")
+	runtimeClasspath project(":modules:debug-jdwp")
 }
 
 // We need the native library in the JAR before we can properly use it
@@ -68,7 +70,8 @@ java
 		"squirreljme.syscallparam",
 		"squirreljme.syscallreturn",
 		"squirreljme.tsiparam",
-		"squirreljme.configtype" ]
+		"squirreljme.configtype",
+		"squirreljme.uiwidgetparam" ]
 }
 
 // Improve debugging with native code compiles, these are only used by the

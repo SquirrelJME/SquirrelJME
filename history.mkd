@@ -302,7 +302,8 @@ projects.
 ## The First Release
 
 The first version of SquirrelJME was released along with Mu on
-December 25, 2018. The repository had 10,571 commits.
+December 25, 2018. The repository had 10,571 commits. This version spent
+two years in development.
 
 This release was mostly just a demo to show that SquirrelJME exists and that
 it is being worked on. It is very primitive and not much can be done with it.
@@ -312,7 +313,381 @@ are actively worked on.
 
 ## The Second Release
 
-To be written...
+This is the currently being developed release, it is expected to be at most
+in development for two years and six months in development.
 
  * [There is this article here you may read](assets/articles/anewvm.mkd)!
+
+### 2019
+
+The history from January to June was taken from a note, although it was never
+completed.
+
+#### January
+
+This is the month that was right after 0.2.0 was released. I started the
+initial work on SummerCoat which has taken pretty much the entire year and
+more to develop, it is a really complex system and it really shows. From
+this run I had the initial SCRF compiler which would eventually be thrown
+out and which would result in the current compiler that I wrote. I even
+had a base project setup for RatufaCoat at the middle of January. I also
+performed some refactoring of the compiler stuff as well making it cleaner
+because it did get a bit messy. I did get method processing put in but that
+was later split apart because wow it was complex. Also added a bunch of
+new tests and implemented parts of the class library since they were needed
+for the VM to function. I figured at this time that I should write a compiler
+which is not all that optimized to keep it simpler, although today I do have
+basic optimation in place. For CircleCI I put in JUnit reporting for the
+tests that ran which has been around for awhile now. Also for the tests that
+run within the VM, the profiler snapshots are stored as well so that way
+I can determine how fast stuff has been running accordingly. I defined an API
+level for 0.4.0 but eventually later in the year I determined that the API
+stuff is too complex, so I opted for the much simpler system call stuff.
+I added system properties support for SpringCoat since I needed to enable or
+disable debugging.
+
+#### February
+
+More work was done with SCRF. Added the ability to launch tasks with system
+properties and such. SummerCoat VM went through a slight refactor as well.
+Some of the stuff that I worked on this month have somewhat survived to the
+end of the year such as the stack map stuff which worked well. I mostly just
+implemented a ton of methods. Not much here this month.
+
+#### March
+
+This month was very rough for me because I had gotten laid off at the start of
+the month and it was devastating to me. I pretty much still worked on this
+project because it helped me get through the rough times and it also acted as
+a resume for me as well. I was in and out of depression so I did not exactly
+work on this every single day as I was job hunting as well.
+
+One big thing I did was remove `tool-scrf` and put it in `tool-classfile` and
+built it up from that. I know in 2020 I will be pretty much splitting that
+back out and writing a far more streamlined compiler which hopefully is faster
+and more efficient as well. This is where the `MinimizedClassFile` started
+from so it has quite been around. It is still around and it has always been
+improving from this point. SummerCoat had this class library kind of thing
+that basically cached single classes and such I believe in memory. I know with
+the compiler refactoring I brought stuff back in from SCRF since it still
+worked just fine. For the class file stuff I implemented more things that were
+missing such as the exception handler. I had all of the narrow and long stuff
+which was a bit confusing, I know later this eventually was removed because it
+was just impossible to handle while keeping things simpler. I know today that
+everything is 32-bit for the most part. I also worked on the graphics stuff
+too, which is interesting. This was even the advanced graphics stuff. This
+graphics stuff needs to be refactored but that will get done eventually.
+I also worked on Squirrel Quarrel when it was a Starcraft clone still, but now
+today it is more of its own original game that I have planned. You could kind
+of play it and command units I think and such. For graphics I added a
+serializer so that it could be done by the host VM, being faster. I may do
+that again for SummerCoat although it would be a bit more difficult. This
+was also when I was more going twords <https://squirreljme.cc/> instead of my
+standard domain that I use. I also am actually glad the complex type handling
+was removed from SummerCoat. Even reference queues and such were their own
+instructions, but now that is different.
+
+#### April
+
+At the start of this month I did some fixing of the class parser. I did lots
+more compiler work. More library methods were implemented.
+
+I renamed my Twitter and used my `MultiPhasicApps` handle for SquirrelJME
+stuff, which actually helped me much.
+
+I worked on the graphics stuff. Implemented some base record store stuff which
+was nice. Refactored XPM and PNG image loading. Added a Null Audio system.
+
+Lots of more compiler work.
+
+Later in the month I completely refactored SummerCoat, it pretty much should
+be the same as it is today just more worked on.
+
+Also corrected testing stuff.
+
+At the end of the month I put a bunch of work into the fonts too, I did so
+much with them! I actually still need to finish the symbol fonts a bunch too.
+
+Also kinda glad I do not have class IDs and such today as well.
+
+#### May
+
+More font stuff, yay!
+
+This month I added the concept of BootRAM and this has actually simplified
+things making things easier to load and such.
+
+Added some more implementations to methods as well and HTTP support!
+
+Also big refactor of the testing framework, which ended up going rather
+nicely. I also added my first sorting algorithm which was shell sort. But
+I guess now there is just block sort which does nothing? Oh wait no
+there is ShellSort.
+
+#### June
+
+The notes stopped before June, so this and anything following was written
+much later on at the end of 2020.
+
+This month there was much work done on RatufaCoat and SummerCoat since they
+are shared. The compiler has seen a number of changes as well. There was much
+going back and forth, fixing things, and debugging things. A compiler and
+virtual machine combination is very complex. Additionally at the end of the
+month SummerCoat got profiling output.
+
+#### July
+
+This was the month where I was hired for my second programming job, as such
+from work there has been a great reduction in available time to work on
+SquirrelJME. However money is important and I was a single month away before
+I would have ran out.
+
+At the start of the month I worked on Squirrel Quarrel a bit, I am assuming
+at this point I was to make it a turn based strategy although it may have
+been a real time strategy.
+
+I did port RatufaCoat partially to Palm OS however it was not really
+functional and there were a number of limitations. Other than that, there was
+more minor work on SummerCoat/RatufaCoat. I decided it would be best to
+split the constant pool into a static pool and a run-time pool, that is still
+here to this day but it is something that has simplified and reduced the
+need to load everything at once.
+
+But due to my new job, the month mostly just had progress at the start.
+
+#### August
+
+Due to my job, there was little progress this month. I worked a bit on the
+compiler, refactoring it and otherwise.
+
+#### September
+
+This month more work was done on the compiler, mostly with fixing bugs,
+making it better, and other such things. I did do much more than what I did
+the previous month however.
+
+Unrelated to other things, I did put in support for a demo that requires a
+proprietary JVM to run a game.
+
+#### October
+
+Worked more on SummerCoat and attempting to get it booting up and otherwise.
+This would prove to be very difficult for me to do.
+
+Otherwise, not much was done this month.
+
+#### November
+
+More work on SummerCoat and such, there were optimizations and fixes.
+
+Most of this was done during the holidays where there were few days off.
+
+#### December
+
+Very much this was more work on SummerCoat. It was much work and I was
+getting more and more burnt out from working on this.
+
+### 2020
+
+Virtually everyone who has spent some time in 2020 will know how rough the
+year has been, there were no exceptions for myself.
+
+#### January
+
+I worked a bit more on SummerCoat but slowed down greatly, I decided to
+implement some other classes and such.
+
+#### February
+
+This was a difficult month... my close friend Emily passed away at the start
+of the month. I was devastated and was broken from it, I remember being at
+work and hearing the news and I sunk in my chair. I remember going outside
+and sitting on the small bench employees went to for their break. I broke
+down and cried. I remember calling my fiance and asking her to pick me up
+early from work. I knew she could tell that something was very wrong. I
+stuttered to tell her. My fiance comforted me so much. I still think of Emily
+often and I feel an emptiness inside of me when I do so. Typing this is
+difficult, but... I will remember her always. She was a close friend to me
+and we would talk so often. I do know that she was very thankful to have me
+as a friend. I hope that she is resting in peace.
+
+Being devastated, I did my best to distract myself.
+
+I remember just sitting down and was thinking how many months have gone by
+working on SummerCoat and such, being in an endless loop. I decided to change
+how I was doing SquirrelJME to use more modern development tools. I had always
+previously wrote it using a basic terminal and a basic text editor. I decided
+to make the switch to IntelliJ, which I can definitely say made development
+much easier. The first most important thing to do was to setup the Gradle
+build system, which I was doing. I never went with Gradle in 2016 because
+it was too limited, however in 2020 it has gone far enough in development to
+where it could work well with SquirrelJME. I did major cleaning up and
+otherwise. Organizing things and setting up testing like I had before. I 
+setup a basic JNI wrapper for native calls since I need to do SquirrelJME
+things in Java SE to run them properly. I worked a bunch on the dependency
+system and otherwise, building a SquirrelJME plugin that could do everything
+I needed. I additionally started development in branches so I could do
+multiple things back and forth, this would help at times with ADHD.
+
+#### March
+
+SquirrelJME for the time was keeping me distracted much, my fiance was there
+for me as well. At the start of this month I married her, so from now on she
+is my wife. I know she has helped me get through this year so many times and
+I love her very much. We married the day before lockdown, we were very lucky.
+
+For SquirrelJME, I continued on the Gradle work. By the second I had already
+merged in all of Gradle changes. It did feel good the direction this was going
+and it was the start of taking a new path. I know there were many thoughts to
+when I started SquirrelJME, how it was basically started from the realization
+that I was going nowhere with my SummerCoat work. So that was shelved for
+awhile.
+
+I started work on bringing up SpringCoat. This would involve a large number
+of refactors and otherwise, to improve the old virtual machine I was intending
+to originally remove. I decided it would be best to keep SpringCoat because
+it is an additional vector into making sure things are operating. At least
+with the optimizations I have done it much quicker. I effectively continued
+it throughout the month. I made much progress. By the end of the month much
+was done but there was still a way to go.
+
+#### April
+
+This month started with continuing the refactoring and upbringing of
+SpringCoat. For the most part it was continuing but at a slower pace.
+
+#### May
+
+For the most part, I continued work on bringing up SpringCoat. However after
+about two months of working on it I realized that I was falling into the same
+pit as before with SummerCoat. So I decided to backpedal and start a new
+branch which was effectively cherry picking what I did. This was the second
+half of the month.
+
+I had previously rewritten TAC, which that was cherry picked. I picked up
+some other things, but I suppose a bunch of it was dropped. This is okay
+though. This cherry picking was merged into `trunk`.
+
+I additionally at the end of the month did a bunch of syntax and miscellaneous
+cleanup, this was a nice way to organize.
+
+At the very end of the month, I decided that I needed to do this another way.
+So SpringCoat was very high-level and SummerCoat was very low-level, but it
+was difficult to bridge these together. So I decided on an idea of having a
+Mid-Level Emulation (MLE) which would bridge the gap. This is still around
+to the time of writing, so it has definitely been a good decision.
+
+#### June
+
+The first half of the month, little progress was made as I was mostly thinking
+about the best way to do things. It was thinking from nothing again, but I
+eventually figured it out. I did so some refactorings and such naturally.
+
+However the second half of the month, I did much more work. I improved testing.
+I wrote new APIs for SpringCoat and put these on the emulation layer. I
+decided that it would be best if SpringCoat not do any `Assembly` stuff since
+that was complicated and I did not want to handle that for now. I did end
+up doing much work on SpringCoat as well. The speed increased more and it
+was much better.
+
+At the very end of the month, I worked on utilities to replace the old
+shell scripts so that I could develop purely on Windows rather than a Linux
+VM.
+
+I continued to do much more work on Mid-Level SpringCoat and eventually merged
+everything in accordingly! It was a very nice feeling.
+
+#### July
+
+This month was my birthday month but also I started work on Mid-Level LCDUI
+Refactoring and work on access control. Also the ability to launch tasks
+was added as well in the access control branch. Otherwise the Mid-Level LCDUI
+work is basically a complete refactoring of the LCDUI code. Before I had
+something that was too high and native while another that just used the
+framebuffer. So I decided to take a path that would allow both. For now it is
+based on Swing but it is very possible for it to be backed on a Framebuffer.
+Naturally for what is running on RetroArch will be using the framebuffer along
+with any system that lacks native widgets. However, for the systems that
+support it, it will effectively reduce the work that is needed to be done to
+make everything consistent to make it feel like it would be for that
+operating system.
+
+The access control stuff carried on a bit and I decided I could really use
+what I wrote via the tasks, so I forked off that branch and merged that into
+`trunk`. I then merged `trunk` into the other branch. So this way whatever
+work I done could be used. Since access control is not too important. But
+otherwise, I made improvements there.
+
+Near the end of the month I started on a slight refactor to RatufaCoat
+and switching it to CMake. Using CLion which is a very nice IDE, it should
+make it easier to work on it. It took about two days to do all of this so
+it was a really short-lived branch. But other than that, it did pave the way
+for refactoring of RatufaCoat. Regardless though I took a short break on
+the LCDUI stuff since I have been working on it for awhile.
+
+On the 28th, I spent a day working on a user guide and a FAQ to answer some
+questions. This gets synced to GitHub accordingly. Something I feel is
+important since people tend to ask a bunch of questions about this.
+
+#### August
+
+This month I continued work on the LCDUI refactoring. I also started a new
+branch for refactoring the handling of the many different virtual machines
+and the means for testing it. This work has been very helpful as I still use
+it and it is helping me progress and making sure everything is tested.
+
+I also additionally started work on refactoring RatufaCoat which is ongoing
+but that is expected as I wanted to start some of it through interest despite
+SummerCoat itself not being ready. Of course once SummerCoat is ready I will
+likely work on this.
+
+But majorly the month was spent on the build refactoring.
+
+#### September
+
+This continues the build refactoring and by the second week of the month I
+merged it in. It has been very beneficial. But from doing this and taking a
+break from the LCDUI work, I continued work on that. Pretty much the entire
+rest of the month was working on this.
+
+#### October
+
+This month continued the LCDUI work. At the start of the month I removed a
+bunch of the old code as it was no longer needed. Other than the LCDUI work
+I did some additional changes to the CI/CD pipelines. Progress on the LCDUI
+was scattered though and was generally slow to progress.
+
+#### November
+
+This month at the start was more of the same, working on the LCDUI. However
+after about half the month the branch was merged in. It was not 100% however
+it was at a level I was good with and I did not want to drag it on for more.
+So I took what I had and merged it in.
+
+By the end of the month I started work on building the SummerCoat ROM, this
+was a combined image file and otherwise that would be needed by SummerCoat.
+This was mostly just to get the tasks running but not a ROM that could actually
+be ran. However I did merge this in.
+
+After that, at the very end of the month I started working on Mid-Level
+SummerCoat. Like MLE SpringCoat, this was a refactor and simplification of
+SummerCoat so I could get things running again.
+
+#### December
+
+This month I continued work on Mid-Level SummerCoat, although work has been
+scattered. I have been making very good progress on this however, since
+whatever progress I make is good.
+
+Other than that, at the end of the month I started work on doing the completion
+counts which would be used to determine how far I am with standard API
+implementations and otherwise.
+
+Near the very end of the month, publishing was added to Maven Local, BinTray,
+and OSS SonaType. This would allow documentation to potentially be downloaded
+or browser, but will mean that SquirrelJME can be consumed by others.
+
+### 2021
+
+To be written...
 

@@ -16,7 +16,7 @@ squirreljme
 
 dependencies
 {
-	implementation project(":modules:cldc-compact")
+	api project(":modules:cldc-compact")
 
-	implementation project(":modules:meep-midlet")
+	api project(":modules:meep-midlet")
 }

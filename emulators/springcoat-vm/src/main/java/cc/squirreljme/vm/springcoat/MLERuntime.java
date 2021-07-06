@@ -71,6 +71,22 @@ public enum MLERuntime
 		}
 	},
 	
+	/** {@link RuntimeShelf#garbageCollect()}. */
+	GARBAGE_COLLECT("garbageCollect:()V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/01/04
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			// Use the system GC since it is the only suggestion we can make
+			Runtime.getRuntime().gc();
+			return null;
+		}
+	},
+	
 	/** {@link RuntimeShelf#lineEnding()}. */
 	LINE_ENDING("lineEnding:()I")
 	{
@@ -97,10 +113,15 @@ public enum MLERuntime
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			switch (System.getProperty("user.country"))
+			String country = System.getProperty("user.country",
+				"unknown");
+			String lang = System.getProperty("user.language",
+				"unknown");
+			
+			switch (country)
 			{
 				case "US":
-					switch (System.getProperty("user.language"))
+					switch (lang)
 					{
 						case "en":
 							return BuiltInLocaleType.ENGLISH_US;
@@ -181,16 +202,16 @@ public enum MLERuntime
 					return "xer@multiphasicapps.net";
 					
 				case VMDescriptionType.VM_NAME:
-					return "SquirrelJME SpringCoat";
+					return __thread.machine.tasks.vmName();
+				
+				case VMDescriptionType.VM_VERSION:
+					return __thread.machine.tasks.vmVersion();
 				
 				case VMDescriptionType.VM_URL:
 					return "https://squirreljme.cc/";
 					
 				case VMDescriptionType.VM_VENDOR:
 					return "Stephanie Gawroriski";
-				
-				case VMDescriptionType.VM_VERSION:
-					return SquirrelJME.RUNTIME_VERSION;
 			}
 			
 			return null;

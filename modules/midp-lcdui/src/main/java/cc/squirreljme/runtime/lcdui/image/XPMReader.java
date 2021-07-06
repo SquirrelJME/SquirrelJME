@@ -102,14 +102,18 @@ public class XPMReader
 	 */
 	private int __decodeColor(CharSequence __cs)
 	{
+		// Is the nothing color
+		if ("none".equalsIgnoreCase(__cs.toString()))
+			return 0x00_000000;
+		
 		// Too short?
 		int n = __cs.length();
 		if (n <= 0)
-			return 0x00_000000;
+			throw new NotAnXPMColorException(__cs.toString());
 		
 		// Must start with '#'
 		if (__cs.charAt(0) != '#')
-			return 0x00_000000;
+			throw new NotAnXPMColorException(__cs.toString());
 		
 		// Decode the first 8 digits
 		int[] dig = new int[8];
@@ -160,7 +164,7 @@ public class XPMReader
 		
 		// Unknown
 		else
-			return 0x00_000000;
+			throw new NotAnXPMColorException(__cs.toString());
 	}
 	
 	/**
@@ -222,21 +226,25 @@ public class XPMReader
 			// Find the last color key value
 			int s, e = n - 1;
 			while (e >= __pxchars && sb.charAt(e) <= ' ')
-			{
 				e--;
-				continue;
-			}
 			
 			// Find the start of the color key
 			s = e -1;
 			while (s >= __pxchars && sb.charAt(s) > ' ')
-			{
 				s--;
+			
+			// Decode color, detect if transparency is used
+			int col;
+			try
+			{
+				col = this.__decodeColor(sb.subSequence(s + 1, e + 1));
+			}
+			catch (NotAnXPMColorException ignored)
+			{
 				continue;
 			}
 			
-			// Decode color, detect if there is a transparent pixel
-			int col = this.__decodeColor(sb.subSequence(s + 1, e + 1));
+			// Is this an alpha pixel?
 			if ((col & 0xFF_000000) != 0xFF_000000)
 				hasalpha = true;
 			

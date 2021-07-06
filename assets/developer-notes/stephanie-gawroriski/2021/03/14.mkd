@@ -1,0 +1,6 @@
+# 2021/03/14
+
+## 14:00
+
+After getting things working in JDB, it actually now works in IntelliJ which
+is rather nice. There are still some oddities as I figure things out though.

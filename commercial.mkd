@@ -6,8 +6,8 @@ to involve the use of open source software.
 ## License Terms
 
 ```
-Copyright (C) 2013-2020 Stephanie Gawroriski
-Copyright (C) 2013-2020 Multi-Phasic Applications
+Copyright (C) 2013-2021 Stephanie Gawroriski
+Copyright (C) 2013-2021 Multi-Phasic Applications
 
 The above copyright notice and this notice with the others below shall be
 included in all copies or substantial portions of the Software.
@@ -20,7 +20,8 @@ RIGHTS OR LICENSES ON TOP. LICENSEE IS NOT PERMITTED TO MODIFY OR EXTEND THE
 SOFTWARE EXCEPT TO ALLOW IT TO RUN ON A GIVEN DEVICE, NO ADDITIONAL FEATURES OR
 OTHERWISE MAY BE ADDED.
 
-THE SOFTWARE CANNOT BE UPGRADED AND IS FIXED TO A SPECIFIC VERSION.
+THE SOFTWARE CANNOT BE UPGRADED AND IS FIXED TO A SPECIFIC VERSION, EXCEPT IN
+THE CASE OF SUB-RELEASE VERSIONS (M.m.s) FOR BUG FIXES AND SECURITY UPDATES.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -34,7 +35,7 @@ SOFTWARE.
 ## Pricing
 
 SquirrelJME has a flat-rate licensing depending on the license duration, the
-license allows you to use SquirrelJME and have it not under the GPLv3:
+license allows you to use SquirrelJME and have it not under the GPLv3. License
+price is negotiable.
 
- * **5-year duration license term**: _4,000 USD_
- * **Unlimited duration license term**: _7,000 USD_
+ * **Unlimited duration license term, fixed version.**: _7,000 USD_
