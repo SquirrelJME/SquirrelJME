@@ -9,24 +9,27 @@ is very easy to port to different hardware. For running on native hardware, a
 compiler handles the conversion of Java byte code to machine code (in an
 intermediate format). Any system specific APIs are accessed via standardized
 system calls that handle the logic the compiler cannot provide. An execution
-engine which is written in C is available and it offers a lightweight method
-of code execution.
+engine which is written in C, it offers a lightweight method of code
+execution.
 
 Additionally, there is a port of SquirrelJME to RetroArch which enables the
 ability to play older J2ME software and games designed for flip-phones.
 
  * Copyright (C) 2013-2021 Stephanie Gawroriski
    <xer@multiphasicapps.net>
- * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2020
+ * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2021
  * _Lex_ and The _SquirrelJME_ Logo were illustrated by...
    * Kat Adam-MacEwen
    * Kat@CMYKat Designs & Illustrations <http://www.cmykat-designs.com/>
 
 Please support me on [Patreon](https://www.patreon.com/SquirrelJME)!
 
-Dedicated to Emily (1998-2020), the developer of
+Dedicated to _Emily_ (1998-2020), the developer of
 [Mu](https://github.com/meepingsnesroms/Mu), you will not be forgotten.
 Rest in peace.
+
+Dedicated to _Near_ (2021), the developer of Higan, Ares, etc., may
+your soul rest in peace. You will not be forgotten.
 
 Badges:
 
@@ -78,7 +81,6 @@ Information:
  * _End-User Documents_
    * [Building](building.mkd)
    * [Changelog](changelog.mkd)
-     * Also see [Live Updates](https://updates.squirreljme.cc/)
    * [Compatibility](compatibility.mkd)
    * [History](history.mkd)
    * [Release Roadmap](route.mkd)
@@ -97,13 +99,14 @@ Information:
 
  * [Online repository](http://squirreljme.cc/)
    ([HTTPS](https://squirreljme.cc/),
-   [Tor (A)](http://hrkzpyi33og6j5z3anfpjuqkawvkw4kxyasrp64elg3i6dffihmdhxad.onion/),
-   [Tor (B)](http://squirrelmfbf2udn.onion/))
+   [Tor (A)](http://vzwveldr7djnlpg7ujslaqre632htbl3unkmfbltpgumevw63jn47dad.onion/),
+   [Tor (B)](http://hrkzpyi33og6j5z3anfpjuqkawvkw4kxyasrp64elg3i6dffihmdhxad.onion/))
  * SquirrelJME uses `fossil` <http://fossil-scm.org/>.
  * The repository may be cloned using Fossil:
    * One of these commands:
      * `fossil clone -u http://squirreljme.cc/ squirreljme.fossil`
      * `fossil clone -u https://squirreljme.cc/ squirreljme.fossil`
+     * `fossil clone -u http://vzwveldr7djnlpg7ujslaqre632htbl3unkmfbltpgumevw63jn47dad.onion/ squirreljme.fossil`
      * `fossil clone -u http://hrkzpyi33og6j5z3anfpjuqkawvkw4kxyasrp64elg3i6dffihmdhxad.onion/ squirreljme.fossil`
      * `fossil clone -u http://squirrelmfbf2udn.onion/ squirreljme.fossil`
    * `mkdir squirreljme`
