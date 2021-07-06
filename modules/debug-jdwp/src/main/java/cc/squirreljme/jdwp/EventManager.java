@@ -13,6 +13,7 @@ import cc.squirreljme.jdwp.event.EventFilter;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -174,7 +175,10 @@ public final class EventManager
 		// Go through all previously registered requests
 		List<EventRequest> requests = this._eventByKind.get(__kind);
 		if (requests == null)
-			return EmptyList.<EventRequest>empty();
+			if (__unconditional)
+				return this.__unconditional(__controller, __kind);
+			else
+				return EmptyList.<EventRequest>empty();
 		
 		// Lock since this could be used by many threads
 		List<EventRequest> rv = null;
@@ -182,7 +186,10 @@ public final class EventManager
 		{
 			// Nothing?
 			if (requests.isEmpty())
-				return EmptyList.<EventRequest>empty();
+				if (__unconditional)
+					return this.__unconditional(__controller, __kind);
+				else
+					return EmptyList.<EventRequest>empty();
 			
 			// Find matching events
 			for (Iterator<EventRequest> iterator = requests.iterator();
@@ -212,23 +219,43 @@ public final class EventManager
 			}
 		}
 		
-		// If this is an unconditional request, use one for the given thread
-		// so it can still be triggered in the event no pre-existing event
-		// was found
+		// Unconditional event?
 		if (__unconditional && (rv == null || rv.isEmpty()))
-		{
-			// Was this ever registered?
-			EventRequest request = this._unconditional.get(__kind);
-			if (request != null)
-			{
-				if (rv == null)
-					rv = new ArrayList<>();
-				rv.add(request);
-			}
-		}
+			return this.__unconditional(__controller, __kind);
 		
 		// If there are no found events, just use a single instance of the
 		// created empty list, otherwise use that given list
 		return (rv == null ? EmptyList.<EventRequest>empty() : rv);
+	}
+	
+	/**
+	 * Returns an unconditional event if one is available.
+	 * 
+	 * @param __controller The controller that is attached to the debugger.
+	 * @param __kind The kind of event to return.
+	 * @return The unconditional events.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/07/06
+	 */
+	private Iterable<EventRequest> __unconditional(JDWPController __controller,
+		EventKind __kind)
+		throws NullPointerException
+	{
+		if (__controller == null || __kind == null)
+			throw new NullPointerException("NARG");
+		
+		// Was this ever registered?
+		EventRequest request = this._unconditional.get(__kind);
+		if (request != null)
+		{
+			Collection<EventRequest> rv = new ArrayList<>();
+			
+			rv.add(request);
+			
+			return rv;
+		}
+		
+		// Just use this event
+		return EmptyList.<EventRequest>empty();
 	}
 }

@@ -153,6 +153,17 @@ public final class NativeCPU
 	}
 	
 	/**
+	 * Returns the debugger suspension.
+	 * 
+	 * @return The debugger suspension.
+	 * @since 2021/07/06
+	 */
+	public JDWPThreadSuspension debugSuspension()
+	{
+		return this.jdwpSuspend;
+	}
+	
+	/**
 	 * Enters the given frame for the given address.
 	 *
 	 * @param __movePool Move the pool register?

@@ -15,6 +15,7 @@ import cc.squirreljme.jdwp.JDWPBinding;
 import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.views.JDWPView;
+import cc.squirreljme.jdwp.views.JDWPViewFrame;
 import cc.squirreljme.jdwp.views.JDWPViewKind;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
@@ -24,6 +25,8 @@ import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.vm.summercoat.debug.DebugBase;
+import cc.squirreljme.vm.summercoat.debug.DebugFrame;
+import cc.squirreljme.vm.summercoat.debug.DebugThread;
 import cc.squirreljme.vm.summercoat.debug.DebugThreadGroup;
 import cc.squirreljme.vm.summercoat.debug.DebugType;
 import java.lang.ref.Reference;
@@ -185,15 +188,20 @@ public final class MachineState
 		if (__type == null || __kind == null || __state == null)
 			throw new NullPointerException("NARG");
 		
+		WeakReference<MachineState> self = new WeakReference<>(this);
 		switch (__kind)
 		{
+			case FRAME:
+				return __type.cast(new DebugFrame(self));
+			
+			case THREAD:
+				return __type.cast(new DebugThread(self));
+			
 			case THREAD_GROUP:
-				return __type.cast(new DebugThreadGroup(
-					new WeakReference<>(this)));
+				return __type.cast(new DebugThreadGroup(self));
 			
 			case TYPE:
-				return __type.cast(new DebugType(
-					new WeakReference<>(this)));
+				return __type.cast(new DebugType(self));
 			
 			default:
 				throw Debugging.oops(__kind);
