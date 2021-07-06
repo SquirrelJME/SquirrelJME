@@ -18,6 +18,7 @@ import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.summercoat.MachineState;
 import cc.squirreljme.vm.summercoat.MemHandle;
+import cc.squirreljme.vm.summercoat.VMUtils;
 import java.lang.ref.Reference;
 
 /**
@@ -233,6 +234,8 @@ public class DebugType
 	@Override
 	public String methodName(Object __which, int __methodDx)
 	{
+		MemHandle handle = DebugBase.handleType(__which);
+		
 		throw Debugging.todo();
 	}
 	
@@ -273,14 +276,8 @@ public class DebugType
 	@Override
 	public String signature(Object __which)
 	{
-		MemHandle handle = DebugBase.handleType(__which);
-		
-		// Determine where this will be located
-		long romAddr = this.getLong(handle, ClassProperty.MEMPTR_ROM_CLASS_LO);
-		int offEmbName = this.getInteger(handle,
-			StaticClassProperty.OFFSETOF_DEBUG_SIGNATURE);
-		
-		return this.readUtfSafe(romAddr + offEmbName);
+		return VMUtils.typeBracketName(this.__machine(),
+			DebugBase.handleType(__which));
 	}
 	
 	/**

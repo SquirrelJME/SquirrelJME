@@ -38,11 +38,14 @@ public final class CPUFrame
 	private final int[] _registers =
 		new int[NativeCPU.MAX_REGISTERS];
 	
+	/** Which method index is this in? */
+	int _inMethodIndex;
+	
 	/** The last native operation. */
 	int _lastNativeOp;
 	
 	/** The entry PC address. */
-	int _entrypc;
+	int _entryPc;
 	
 	/** The PC address for this frame. */
 	volatile int _pc;
@@ -51,28 +54,28 @@ public final class CPUFrame
 	int _lastpc;
 	
 	/** The executing class. */
-	String _inclass;
+	MemHandle _inClass;
 	
 	/** Executing class name pointer. */
-	int _inclassp;
+	int _inClassP;
 	
 	/** The executing method name. */
-	String _inmethodname;
+	String _inMethodName;
 	
 	/** Executing method name pointer. */
-	int _inmethodnamep;
+	int _inMethodNameP;
 	
 	/** The executing method type. */
-	String _inmethodtype;
+	String _inMethodType;
 	
 	/** Executing method type pointer. */
-	int _inmethodtypep;
+	int _inMethodTypeP;
 	
 	/** Source file. */
-	String _insourcefile;
+	String _inSourceFile;
 	
 	/** Source file pointer. */
-	int _insourcefilep;
+	int _inSourceFileP;
 	
 	/** The current line. */
 	int _inline;
@@ -114,6 +117,18 @@ public final class CPUFrame
 	}
 	
 	/**
+	 * Returns the relative address of this frame.
+	 * 
+	 * @return The relative address of this frame, this will always be a
+	 * positive number.
+	 * @since 2021/07/06
+	 */
+	public int atRelativeAddress()
+	{
+		return Math.max(0, this._pc - this._entryPc);
+	}
+	
+	/**
 	 * Returns the value of the given register.
 	 * 
 	 * @param __r The register to read from.
@@ -148,6 +163,28 @@ public final class CPUFrame
 	public int[] getRegisters()
 	{
 		return this._registers;
+	}
+	
+	/**
+	 * Returns the type bracket of the class this frame is in.
+	 * 
+	 * @return The class this is within.
+	 * @since 2021/07/06
+	 */
+	public MemHandle inClassHandle()
+	{
+		return this._inClass;
+	}
+	
+	/**
+	 * Returns the method index this frame is in.
+	 * 
+	 * @return The method index.
+	 * @since 2021/07/06
+	 */
+	public int inMethodIndex()
+	{
+		return this._inMethodIndex;
 	}
 	
 	/**

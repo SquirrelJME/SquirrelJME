@@ -52,8 +52,8 @@ public enum InstructionHandler
 			// Is there a stored note?
 			int noteId = (__op == NativeInstructionType
 				.BREAKPOINT_MARKED ? argVal[1] : 0);
-			String note = (noteId == 0 ? "" :
-				__cpu.__loadUtfString(__cache.nowFrame.pool(noteId)));
+			String note = (noteId == 0 ? "" : VMUtils.readUtfSafe(
+				__cpu.__state(), __cache.nowFrame.pool(noteId)));
 			
 			throw new VMException(String.format(
 				"Breakpoint Hit (%s: %s)!", mark, note));

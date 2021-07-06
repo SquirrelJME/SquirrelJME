@@ -11,14 +11,9 @@ package cc.squirreljme.vm.summercoat.debug;
 
 import cc.squirreljme.jdwp.views.JDWPView;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
-import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
-import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemoryInputStream;
-import cc.squirreljme.jvm.summercoat.ld.mem.WritableMemory;
 import cc.squirreljme.vm.summercoat.MachineState;
 import cc.squirreljme.vm.summercoat.MemHandle;
-import cc.squirreljme.vm.summercoat.VMMemoryAccessException;
-import java.io.DataInputStream;
-import java.io.IOException;
+import cc.squirreljme.vm.summercoat.VMUtils;
 import java.lang.ref.Reference;
 
 /**
@@ -75,7 +70,7 @@ public abstract class DebugBase
 	public final int getInteger(MemHandle __handle, int __dx)
 		throws NullPointerException
 	{
-		return DebugBase.getInteger(this.__machine(), __handle, __dx);
+		return VMUtils.getHandleInteger(this.__machine(), __handle, __dx);
 	}
 	
 	/**
@@ -89,40 +84,7 @@ public abstract class DebugBase
 	 */
 	public final long getLong(MemHandle __handle, int __dx)
 	{
-		return (this.getInteger(__handle, __dx) & 0xFFFFFFFFL) |
-			((this.getInteger(__handle, __dx + 1) & 0xFFFFFFFFL) << 32);
-	}
-	
-	/**
-	 * Safely reads a UTF-8 string value.
-	 * 
-	 * @param __addr The address to read from.
-	 * @return The read string.
-	 * @since 2021/07/05
-	 */
-	public String readUtfSafe(long __addr)
-	{
-		// Read length to figure out how long the string is
-		WritableMemory memory = this.__machine().memory();
-		int strlen = -1;
-		try
-		{
-			strlen = memory.memReadShort(__addr) & 0xFFFF;
-			
-			// Decode string data
-			try (DataInputStream dis = new DataInputStream(
-				new ReadableMemoryInputStream(memory, __addr,
-					strlen + 2)))
-			{
-				return dis.readUTF();
-			}
-		}
-		
-		// Could not read string, use some other string form
-		catch (IOException | VMMemoryAccessException e)
-		{
-			return String.format("@%08x/%d???", __addr, strlen);
-		}
+		return VMUtils.getHandleLong(this.__machine(), __handle, __dx);
 	}
 	
 	/**
@@ -196,32 +158,10 @@ public abstract class DebugBase
 			throw new NullPointerException("NARG");
 		
 		// Make sure this is valid
-		int id = DebugBase.getInteger(__machine, __handle, __dx);
+		int id = VMUtils.getHandleInteger(__machine, __handle, __dx);
 		if (id == 0)
 			return null;
 		
 		return __machine.memHandles().get(id);
-	}
-	
-	/**
-	 * Obtains an integer value.
-	 * 
-	 * @param __machine The machine used.
-	 * @param __handle The handle to read from.
-	 * @param __dx The index to read at.
-	 * @return The value.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/05/11
-	 */
-	public static int getInteger(MachineState __machine,
-		MemHandle __handle, int __dx)
-		throws NullPointerException
-	{
-		if (__machine == null || __handle == null)
-			throw new NullPointerException("NARG");
-		
-		// Read the list value
-		return __handle.memReadInt((4L * __dx) +
-			__machine.staticAttribute(StaticVmAttribute.SIZE_BASE_ARRAY));
 	}
 }

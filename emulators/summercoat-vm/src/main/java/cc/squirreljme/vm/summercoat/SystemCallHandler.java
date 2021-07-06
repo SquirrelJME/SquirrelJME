@@ -86,16 +86,16 @@ public enum SystemCallHandler
 			switch (__args[1])
 			{
 				case CallStackItem.CLASS_NAME:
-					return frame._inclassp;
+					return frame._inClassP;
 				
 				case CallStackItem.METHOD_NAME:
-					return frame._inmethodnamep;
+					return frame._inMethodNameP;
 				
 				case CallStackItem.METHOD_TYPE:
-					return frame._inmethodtypep;
+					return frame._inMethodTypeP;
 				
 				case CallStackItem.SOURCE_FILE:
-					return frame._insourcefilep;
+					return frame._inSourceFileP;
 				
 				case CallStackItem.SOURCE_LINE:
 					return frame._inline;

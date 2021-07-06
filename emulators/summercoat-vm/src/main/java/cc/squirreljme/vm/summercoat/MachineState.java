@@ -15,7 +15,6 @@ import cc.squirreljme.jdwp.JDWPBinding;
 import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.views.JDWPView;
-import cc.squirreljme.jdwp.views.JDWPViewFrame;
 import cc.squirreljme.jdwp.views.JDWPViewKind;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;

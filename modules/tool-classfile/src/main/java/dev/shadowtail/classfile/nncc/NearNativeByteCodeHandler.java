@@ -70,7 +70,6 @@ import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.MethodReference;
 import net.multiphasicapps.collections.AutoCloseableList;
-import net.multiphasicapps.collections.CloseableList;
 
 /**
  * This contains the handler for the near native byte code.
@@ -156,6 +155,9 @@ public final class NearNativeByteCodeHandler
 	/** The source file used for this class. */
 	protected final String sourceFile;
 	
+	/** The method index. */
+	protected final int methodIndex;
+	
 	/** Last registers enqueued. */
 	private JavaStackEnqueueList _lastenqueue;
 	
@@ -167,10 +169,12 @@ public final class NearNativeByteCodeHandler
 	 *
 	 * @param __bc The byte code.
 	 * @param __sourceFile The source file used for this method.
+	 * @param __methodIndex The method index.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/11
 	 */
-	public NearNativeByteCodeHandler(ByteCode __bc, String __sourceFile)
+	public NearNativeByteCodeHandler(ByteCode __bc, String __sourceFile,
+		int __methodIndex)
 		throws NullPointerException
 	{
 		if (__bc == null)
@@ -182,6 +186,7 @@ public final class NearNativeByteCodeHandler
 		this.issynchronized = __bc.isSynchronized();
 		this.isinstance = __bc.isInstance();
 		this.sourceFile = __sourceFile;
+		this.methodIndex = __methodIndex;
 		
 		// Determine monitor target register and the volatile base
 		int volbase = NativeCode.ARGUMENT_REGISTER_BASE + 2 +
@@ -1408,10 +1413,11 @@ public final class NearNativeByteCodeHandler
 		{
 			// Debug entry point
 			codebuilder.add(NativeInstructionType.DEBUG_ENTRY,
-				new NotedString(state.classname.toString()),
+				new TypeBracketPointer(state.classname),
 				new NotedString(state.methodname.toString()),
 				new NotedString(state.methodtype.toString()),
-				new NullPoolEntry());
+				new NullPoolEntry(),
+				this.methodIndex);
 			
 			// Setup monitor entry
 			if (this.issynchronized)

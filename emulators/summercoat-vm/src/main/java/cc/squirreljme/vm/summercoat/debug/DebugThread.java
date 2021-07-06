@@ -43,7 +43,7 @@ public class DebugThread
 	@Override
 	public Object[] frames(Object __which)
 	{
-		throw Debugging.todo();
+		return DebugThread.__cast(__which).frames();
 	}
 	
 	/**
@@ -123,7 +123,7 @@ public class DebugThread
 	@Override
 	public JDWPThreadSuspension suspension(Object __which)
 	{
-		return ((NativeCPU)__which).debugSuspension();
+		return DebugThread.__cast(__which).debugSuspension();
 	}
 	
 	/**
@@ -134,5 +134,17 @@ public class DebugThread
 	public int status(Object __which)
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Casts the object.
+	 * 
+	 * @param __which The object to cast.
+	 * @return The native CPU.
+	 * @since 2021/07/06
+	 */
+	private static NativeCPU __cast(Object __which)
+	{
+		return (NativeCPU)__which;
 	}
 }

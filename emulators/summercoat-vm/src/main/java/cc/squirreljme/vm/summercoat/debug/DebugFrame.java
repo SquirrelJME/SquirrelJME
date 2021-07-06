@@ -13,6 +13,7 @@ import cc.squirreljme.jdwp.views.JDWPViewFrame;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.summercoat.CPUFrame;
 import cc.squirreljme.vm.summercoat.MachineState;
+import cc.squirreljme.vm.summercoat.MemHandle;
 import java.lang.ref.Reference;
 
 /**
@@ -42,7 +43,9 @@ public class DebugFrame
 	@Override
 	public Object atClass(Object __which)
 	{
-		throw Debugging.todo();
+		CPUFrame frame = DebugFrame.__frame(__which);
+		
+		return frame.inClassHandle();
 	}
 	
 	/**
@@ -52,7 +55,9 @@ public class DebugFrame
 	@Override
 	public long atCodeIndex(Object __which)
 	{
-		throw Debugging.todo();
+		CPUFrame frame = DebugFrame.__frame(__which);
+		
+		return frame.atRelativeAddress();
 	}
 	
 	/**
@@ -72,7 +77,9 @@ public class DebugFrame
 	@Override
 	public int atMethodIndex(Object __which)
 	{
-		throw Debugging.todo();
+		CPUFrame frame = DebugFrame.__frame(__which);
+		
+		return frame.inMethodIndex();
 	}
 	
 	/**
@@ -103,5 +110,17 @@ public class DebugFrame
 	public int numValues(Object __which)
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the CPU frame.
+	 * 
+	 * @param __which Which object to cast.
+	 * @return The frame.
+	 * @since 2021/07/06
+	 */
+	static CPUFrame __frame(Object __which)
+	{
+		return (CPUFrame)__which;
 	}
 }

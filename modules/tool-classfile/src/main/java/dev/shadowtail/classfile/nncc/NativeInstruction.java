@@ -331,7 +331,7 @@ public final class NativeInstruction
 				return 4;
 				
 			case NativeInstructionType.DEBUG_ENTRY:
-				return 4;
+				return 5;
 			
 			case NativeInstructionType.ATOMIC_COMPARE_GET_AND_SET:
 				return 5;
@@ -641,7 +641,8 @@ public final class NativeInstruction
 					ArgumentFormat.VPOOL,
 					ArgumentFormat.VPOOL,
 					ArgumentFormat.VPOOL,
-					ArgumentFormat.VPOOL);
+					ArgumentFormat.VPOOL,
+					ArgumentFormat.VUINT);
 				
 				// [u16, u16, u16]
 			case NativeInstructionType.DEBUG_POINT:

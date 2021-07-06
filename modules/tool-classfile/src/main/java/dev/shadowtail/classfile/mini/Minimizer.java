@@ -498,10 +498,8 @@ public final class Minimizer
 			// Add method
 			MinimizedMethod q;
 			temp._methods.add((q = new MinimizedMethod(mf.toJavaBits(),
-				temp._count,
-				m.name(),
-				m.type(),
-				transcode)));
+				temp._count, m.name(), m.type(), transcode, 0,
+				m.methodIndex())));
 			
 			// Quick count for used methods
 			temp._count++;

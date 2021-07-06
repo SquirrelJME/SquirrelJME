@@ -11,7 +11,6 @@ package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledThread;
 import cc.squirreljme.emulator.vm.VMException;
-import cc.squirreljme.jdwp.EventKind;
 import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
 import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
@@ -19,8 +18,8 @@ import cc.squirreljme.jdwp.trips.JDWPTripThread;
 import cc.squirreljme.jvm.SupervisorPropertyIndex;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
+import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
-import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemoryInputStream;
 import cc.squirreljme.jvm.summercoat.ld.mem.WritableMemory;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
@@ -35,8 +34,6 @@ import dev.shadowtail.classfile.nncc.NativeInstructionType;
 import dev.shadowtail.classfile.xlate.CompareType;
 import dev.shadowtail.classfile.xlate.DataType;
 import dev.shadowtail.classfile.xlate.MathType;
-import java.io.DataInputStream;
-import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
@@ -196,7 +193,7 @@ public final class NativeCPU
 		CPUFrame rv = new CPUFrame(this.__state().memHandles,
 			this.__state().staticAttribute(StaticVmAttribute.SIZE_BASE_ARRAY));
 		rv._pc = __pc;
-		rv._entrypc = __pc;
+		rv._entryPc = __pc;
 		rv._lastpc = __pc;
 		
 		// Add to frame list
@@ -631,8 +628,9 @@ public final class NativeCPU
 					{
 						CallTraceUtils.printStackTrace(System.err,
 							String.format("PING! %04Xh: %s",
-								argRaw[0], (argRaw[1] == 0 ? "" :
-								this.__loadUtfString(nowframe.pool(argRaw[1])))),
+								argRaw[0], (argRaw[1] == 0 ? "" : VMUtils
+									.readUtfSafe(this.__state(),
+										nowframe.pool(argRaw[1])))),
 							this.trace(),
 							null, null, 0);
 					}
@@ -640,8 +638,8 @@ public final class NativeCPU
 				
 					// Debug entry point of method
 				case NativeInstructionType.DEBUG_ENTRY:
-					this.__debugEntry(nowframe, argRaw[0], argRaw[1], argRaw[2],
-						argRaw[3]);
+					this.__debugEntry(nowframe, argRaw[0], argRaw[1],
+						argRaw[2], argRaw[3], argRaw[4]);
 					break;
 					
 					// Debug exit of method
@@ -1292,12 +1290,15 @@ public final class NativeCPU
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
+		MemHandle inClass = __f._inClass;
+		
 		// Build trace
 		return new CallTraceElement(
-			__f._inclass,
-			__f._inmethodname,
-			__f._inmethodtype,
-			__f._pc, __f._insourcefile,
+			(inClass == null ? null :
+				VMUtils.typeBracketName(this.__state(), inClass)),
+			__f._inMethodName,
+			__f._inMethodType,
+			__f._pc, __f._inSourceFile,
 			__f._inline,
 			__f._injop,
 			__f._injpc,
@@ -1326,45 +1327,62 @@ public final class NativeCPU
 	 * Sets the frame information string from the given pool entries.
 	 *
 	 * @param __f The frame.
-	 * @param __pcl The class string from the pool.
+	 * @param __classBracket The type bracket of the class.
 	 * @param __pmn The method name from the pool.
 	 * @param __pmt The method type from the pool.
 	 * @param __psf The current source file.
+	 * @param __methodIndex The method index.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/15
 	 */
-	private void __debugEntry(CPUFrame __f, int __pcl, int __pmn,
-		int __pmt, int __psf)
+	private void __debugEntry(CPUFrame __f, int __classBracket, int __pmn,
+		int __pmt, int __psf, int __methodIndex)
 		throws NullPointerException
 	{
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
-		// Get the pool address
-		int poolAddr = __f.get(NativeCode.POOL_REGISTER);
+		// Load from the local pool what these refer to
+		int inClassBracketP = __f.pool(__classBracket);
+		int imn = __f.pool(__pmn);
+		int imt = __f.pool(__pmt);
+		int isf = __f.pool(__psf);
 		
-		int icl = __f.pool(__pcl),
-			imn = __f.pool(__pmn),
-			imt = __f.pool(__pmt),
-			isf = __f.pool(__psf);
+		// Get the truly owned bracket
+		MemHandle inClassBracket = null;
+		try
+		{
+			inClassBracket = this.__state().memHandles.get(inClassBracketP);
+			
+			// Make sure it is an actual class type
+			if (inClassBracket.kind() != MemHandleKind.CLASS_INFO)
+				inClassBracket = null;
+		}
+		catch (InvalidMemoryHandleException ignored)
+		{
+		}
 		
 		// Store in state
-		__f._inclassp = icl;
-		__f._inmethodnamep = imn;
-		__f._inmethodtypep = imt;
-		__f._insourcefilep = isf;
+		__f._inClass = inClassBracket;
+		__f._inClassP = inClassBracketP;
+		__f._inMethodIndex = __methodIndex;
+		__f._inMethodNameP = imn;
+		__f._inMethodTypeP = imt;
+		__f._inSourceFileP = isf;
+		
+		// Determine name of class
+		String scl = (inClassBracket == null ? "" :
+			VMUtils.typeBracketName(this.__state(), inClassBracket));
 		
 		// Load strings
-		String scl, smn, smt, ssf;
+		String smn, smt, ssf;
 		WritableMemory memory = this.__state().memory;
-		__f._inclass = 
-			(scl = (icl == 0 ? null : this.__loadUtfString(icl)));
-		__f._inmethodname = 
-			(smn = (imn == 0 ? null : this.__loadUtfString(imn)));
-		__f._inmethodtype = 
-			(smt = (imt == 0 ? null : this.__loadUtfString(imt)));
-		__f._insourcefile = 
-			(ssf = (isf == 0 ? null : this.__loadUtfString(isf)));
+		__f._inMethodName = 
+			(smn = (imn == 0 ? null : VMUtils.readUtfSafe(this.__state(), imn)));
+		__f._inMethodType = 
+			(smt = (imt == 0 ? null : VMUtils.readUtfSafe(this.__state(), imt)));
+		__f._inSourceFile = 
+			(ssf = (isf == 0 ? null : VMUtils.readUtfSafe(this.__state(), isf)));
 		
 		// Enter it on the profiler
 		ProfiledThread profiler = this.profiler;
@@ -1419,7 +1437,7 @@ public final class NativeCPU
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/15
 	 */
-	private final void __debugPoint(CPUFrame __f, int __sln, int __jop, int __jpc)
+	private void __debugPoint(CPUFrame __f, int __sln, int __jop, int __jpc)
 		throws NullPointerException
 	{
 		if (__f == null)
@@ -1447,38 +1465,6 @@ public final class NativeCPU
 		catch (VMMemoryAccessException e)
 		{
 			return __addr;
-		}
-	}
-	
-	/**
-	 * Loads a UTF string from the given memory address.
-	 *
-	 * @param __addr The address to read from.
-	 * @return The resulting string.
-	 * @since 2019/05/15
-	 */
-	final String __loadUtfString(int __addr)
-	{
-		// Read length to figure out how long the string is
-		WritableMemory memory = this.__state().memory;
-		int strlen = -1;
-		try
-		{
-			strlen = memory.memReadShort(__addr) & 0xFFFF;
-			
-			// Decode string data
-			try (DataInputStream dis = new DataInputStream(
-				new ReadableMemoryInputStream(memory, __addr,
-					strlen + 2)))
-			{
-				return dis.readUTF();
-			}
-		}
-		
-		// Could not read string, use some other string form
-		catch (IOException|VMMemoryAccessException e)
-		{
-			return String.format("@%08x/%d???", __addr, strlen);
 		}
 	}
 	
