@@ -32,10 +32,6 @@ sourceSets
 
 dependencies
 {
-	// We have some annotations we need the source for, but we do not want
-	// these to stay at run-time
-	compileOnly "org.testng:testng:7.1.0"
-
 	api project(":modules:cldc-compact")
 	api project(":modules:common-vm")
 	api project(":modules:io")
