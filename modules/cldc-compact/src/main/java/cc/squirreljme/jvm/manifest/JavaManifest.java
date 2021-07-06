@@ -83,7 +83,7 @@ public final class JavaManifest
 			throw new NullPointerException("NARG");
 			
 		// The backing map and temporary key/value pairs for each
-		// attiribute set
+		// attribute set
 		String curname = "";
 		Map<String, JavaManifestAttributes> backing = new LinkedHashMap<>();
 		Map<JavaManifestKey, String> working = new LinkedHashMap<>();

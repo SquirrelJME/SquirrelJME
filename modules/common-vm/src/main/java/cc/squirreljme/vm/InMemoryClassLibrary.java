@@ -10,10 +10,12 @@
 
 package cc.squirreljme.vm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,6 +73,16 @@ public final class InMemoryClassLibrary
 	public final String name()
 	{
 		return this.name;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/06/13
+	 */
+	@Override
+	public Path path()
+	{
+		return null;
 	}
 	
 	/**

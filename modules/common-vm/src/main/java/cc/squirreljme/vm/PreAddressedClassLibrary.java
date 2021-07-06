@@ -9,8 +9,10 @@
 
 package cc.squirreljme.vm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 /**
  * This is a class library that is pre-addressed at a fixed location.
@@ -69,6 +71,16 @@ public final class PreAddressedClassLibrary
 	public String name()
 	{
 		return this.name;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/06/14
+	 */
+	@Override
+	public Path path()
+	{
+		return null;
 	}
 	
 	/**

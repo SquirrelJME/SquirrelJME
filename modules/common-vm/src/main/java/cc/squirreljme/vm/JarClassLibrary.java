@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -76,6 +77,16 @@ public class JarClassLibrary
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/06/13
+	 */
+	@Override
+	public Path path()
+	{
+		return this.path;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/04/19
 	 */
 	@Override
@@ -83,6 +94,16 @@ public class JarClassLibrary
 		throws IOException, NullPointerException
 	{
 		return this.__load().resourceAsStream(__rc);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/06/13
+	 */
+	@Override
+	public final String toString()
+	{
+		return this.path.toString();
 	}
 	
 	/**
@@ -109,6 +130,40 @@ public class JarClassLibrary
 				path.getFileName().toString(), zip));
 			return rv;
 		}
+	}
+	
+	/**
+	 * Checks if this is a JAR or not.
+	 * 
+	 * @param __s The file name.
+	 * @return If this is a JAR.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/06/13
+	 */
+	public static boolean isJar(Path __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		return JarClassLibrary.isJar(__s.toString());
+	}
+	
+	/**
+	 * Checks if this is a JAR or not.
+	 * 
+	 * @param __s The file name.
+	 * @return If this is a JAR.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/06/13
+	 */
+	public static boolean isJar(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		return __s.endsWith(".jar") || __s.endsWith(".JAR");
 	}
 	
 	/**

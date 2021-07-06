@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
+import cc.squirreljme.jvm.mle.constants.ThreadModelType;
 import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
 
 /**
@@ -54,7 +55,11 @@ public interface RuntimeVmAttribute
 	byte LOCALE =
 		7;
 	
+	/** The {@link ThreadModelType} used. */
+	byte THREAD_MODEL =
+		8;
+	
 	/** The number of attributes. */
 	byte NUM_RUNTIME_ATTRIBUTES =
-		8;
+		9;
 }

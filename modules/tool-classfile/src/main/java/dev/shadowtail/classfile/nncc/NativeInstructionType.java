@@ -178,5 +178,9 @@ public interface NativeInstructionType
 	 */
 	short BREAKPOINT =
 		0xFF;
+	
+	/** Maximum instructions. */
+	short MAX_INSTRUCTIONS =
+		256;
 }
 

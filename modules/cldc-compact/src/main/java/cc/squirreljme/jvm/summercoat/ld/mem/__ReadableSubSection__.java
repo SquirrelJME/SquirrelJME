@@ -75,7 +75,7 @@ class __ReadableSubSection__
 	@Override
 	public int memReadByte(long __addr)
 	{
-		throw Debugging.todo();
+		return this.readable.memReadByte(this.__check(__addr, 1));
 	}
 	
 	/**
@@ -86,7 +86,18 @@ class __ReadableSubSection__
 	public void memReadBytes(long __addr, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Nothing to read?
+		if (__l == 0)
+			return;
+		
+		// Perform the actual read
+		this.readable.memReadBytes(this.__check(__addr, __l),
+			__b, __o, __l);
 	}
 	
 	/**
@@ -96,7 +107,7 @@ class __ReadableSubSection__
 	@Override
 	public MemHandleReference memReadHandle(long __addr)
 	{
-		throw Debugging.todo();
+		return new MemHandleReference(this.memReadInt(__addr));
 	}
 	
 	/**
@@ -106,7 +117,7 @@ class __ReadableSubSection__
 	@Override
 	public int memReadInt(long __addr)
 	{
-		throw Debugging.todo();
+		return this.readable.memReadInt(this.__check(__addr, 4));
 	}
 	
 	/**
@@ -116,7 +127,7 @@ class __ReadableSubSection__
 	@Override
 	public long memReadLong(long __addr)
 	{
-		throw Debugging.todo();
+		return this.readable.memReadLong(this.__check(__addr, 8));
 	}
 	
 	/**
@@ -126,7 +137,7 @@ class __ReadableSubSection__
 	@Override
 	public int memReadShort(long __addr)
 	{
-		throw Debugging.todo();
+		return this.readable.memReadShort(this.__check(__addr, 2));
 	}
 	
 	/**
@@ -158,5 +169,24 @@ class __ReadableSubSection__
 				"ZZ4q " + __base + " " + __len);
 		
 		return this.readable.subSection(this.base + __base, __len);
+	}
+	
+	/**
+	 * Checks that the read is valid.
+	 * 
+	 * @param __addr The address to read from.
+	 * @param __len The number of bytes to read.
+	 * @return The address to truly read from.
+	 * @since 2021/05/16
+	 */
+	private long __check(long __addr, int __len)
+	{
+		// {@squirreljme.error ZZ5a Access out of bounds. (The address;
+		// The requested length; The memory length)}
+		if (__addr < 0 || __len < 0 || __addr + __len > this.length)
+			throw new MemoryAccessException(__addr, String.format(
+				"ZZ5a %d + %d in %d", __addr, __len, this.length));
+		
+		return this.base + __addr;
 	}
 }

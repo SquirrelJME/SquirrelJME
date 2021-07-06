@@ -12,6 +12,7 @@ package cc.squirreljme.vm.summercoat;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.jvm.summercoat.SummerCoatUtil;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
+import cc.squirreljme.jvm.summercoat.ld.mem.MemHandleReference;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.summercoat.handles.MemHandleArray;
 import cc.squirreljme.vm.summercoat.handles.MemHandleArrayBoolean;
@@ -147,16 +148,32 @@ public final class MemHandleManager
 	 * 
 	 * @param __id The identifier of the handle.
 	 * @return The memory handle for the given item.
-	 * @throws VMException If the memory handle does not exist.
+	 * @throws InvalidMemoryHandleException If the memory handle does not
+	 * exist.
+	 * @since 2021/05/08
+	 */
+	public final MemHandle get(MemHandleReference __id)
+		throws InvalidMemoryHandleException
+	{
+		return this.get((__id == null ? 0 : __id.id));
+	}
+	
+	/**
+	 * Returns the given memory handle.
+	 * 
+	 * @param __id The identifier of the handle.
+	 * @return The memory handle for the given item.
+	 * @throws InvalidMemoryHandleException If the memory handle does not
+	 * exist.
 	 * @since 2020/11/28
 	 */
 	public final MemHandle get(int __id)
-		throws VMException
+		throws InvalidMemoryHandleException
 	{
 		MemHandle rv = this._handles.get(__id);
 		if (rv == null)
-			throw new VMMemoryAccessException("No handle for 0x" +
-				Integer.toUnsignedString(__id, 16));
+			throw new InvalidMemoryHandleException(__id,
+				String.format("No handle for 0x%x", __id));
 		
 		return rv;
 	}
@@ -165,7 +182,7 @@ public final class MemHandleManager
 	 * Wraps the given array into a handle.
 	 * 
 	 * @param __base The base array size.
-	 * @param __array The 
+	 * @param __array The array to wrap.
 	 * @return The allocated handle.
 	 * @throws IllegalArgumentException If the array base is negative or this
 	 * is not an array type.

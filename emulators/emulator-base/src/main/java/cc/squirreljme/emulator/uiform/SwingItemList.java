@@ -22,7 +22,9 @@ import java.awt.event.MouseListener;
 import java.util.Random;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -36,6 +38,9 @@ public class SwingItemList
 	extends SwingItem
 	implements ListSelectionListener, KeyListener, MouseListener
 {
+	/** Scrolling for the list. */
+	final JScrollPane _scroll;
+	
 	/** The model for the list. */
 	final DefaultListModel<ListEntry> _model;
 	
@@ -63,12 +68,20 @@ public class SwingItemList
 		
 		this._list = list;
 		
+		// Force the list to show vertically
+		list.setLayoutOrientation(JList.VERTICAL);
+		
 		// Register a listener for selection changes
 		list.addListSelectionListener(this);
 		
 		// Register listener to listen for enter/return to select an item
 		list.addKeyListener(this);
 		list.addMouseListener(this);
+		
+		// Setup scrolling for the list
+		this._scroll = new JScrollPane(list,
+			ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 	}
 	
 	/**
@@ -91,9 +104,10 @@ public class SwingItemList
 	 * @since 2020/07/18
 	 */
 	@Override
-	public JList<?> component()
+	public JScrollPane component()
 	{
-		return this._list;
+		// Use the scroll, so that we get that scrolling
+		return this._scroll;
 	}
 	
 	/**
@@ -189,7 +203,7 @@ public class SwingItemList
 	 * @since 2020/07/18
 	 */
 	@Override
-	public void property(int __id, int __sub, int __newValue)
+	public void property(int __intProp, int __sub, int __newValue)
 		throws MLECallError
 	{
 		DefaultListModel<ListEntry> model = this._model;
@@ -201,7 +215,7 @@ public class SwingItemList
 			ListEntry elem;
 			
 			// Depends on which action was performed
-			switch (__id)
+			switch (__intProp)
 			{
 				case UIWidgetProperty.INT_NUM_ELEMENTS:
 					if (__newValue < 0)
@@ -267,7 +281,7 @@ public class SwingItemList
 					break;
 				
 				default:
-					throw new MLECallError("" + __id);
+					throw new MLECallError("" + __intProp);
 			}
 		}
 		catch (IndexOutOfBoundsException e)
@@ -287,7 +301,7 @@ public class SwingItemList
 	 * @since 2020/07/18
 	 */
 	@Override
-	public void property(int __id, int __sub, String __newValue)
+	public void property(int __strProp, int __sub, String __newValue)
 	{
 		DefaultListModel<ListEntry> model = this._model;
 		JList<ListEntry> list = this._list;
@@ -295,14 +309,14 @@ public class SwingItemList
 		
 		try
 		{
-			switch (__id)
+			switch (__strProp)
 			{
 				case UIWidgetProperty.STRING_LIST_ITEM_LABEL:
 					model.get(__sub)._label = __newValue;
 					break;
 				
 				default:
-					throw new MLECallError("" + __id);
+					throw new MLECallError("" + __strProp);
 			}
 		}
 		catch (IndexOutOfBoundsException e)

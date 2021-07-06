@@ -207,7 +207,7 @@ public final class SoftFloat
 					SoftFloat.__packToF32UI(signZ, 0, 0));
 				
 			long normExpSig = SoftFloat.__normSubnormalF32Sig(sigA);
-			expA = Assembly.longUnpackHigh(normExpSig);
+			expA = (short)Assembly.longUnpackHigh(normExpSig);
 			sigA = Assembly.longUnpackLow(normExpSig);
 		}
 		
@@ -220,11 +220,11 @@ public final class SoftFloat
 					SoftFloat.__packToF32UI(signZ, 0, 0));
 				
 			long normExpSig = SoftFloat.__normSubnormalF32Sig(sigB);
-			expB = Assembly.longUnpackHigh(normExpSig);
+			expB = (short)Assembly.longUnpackHigh(normExpSig);
 			sigB = Assembly.longUnpackLow(normExpSig);
 		}
 		
-		int expZ = expA + expB - 0x7F;
+		int expZ = (short)(expA + expB - 0x7F);
 		sigA = (sigA | 0x0080_0000) << 7;
 		sigB = (sigB | 0x0080_0000) << 8;
 		
@@ -236,7 +236,7 @@ public final class SoftFloat
 		// if ( sigZ < 0x40000000 )
 		if (UnsignedInteger.compareUnsigned(sigZ, 0x4000_0000) < 0)
 		{
-			--expZ;
+			expZ = (short)(expZ - 1);
 			sigZ <<= 1;
 		}
 		
@@ -485,7 +485,8 @@ public final class SoftFloat
 		
 		// struct exp16_sig32 { int_fast16_t exp; uint_fast32_t sig; };
 		// exp = 1 - shiftDist ,, sig = sig<<shiftDist
-		return Assembly.longPack(1 - shiftDist, __sig << shiftDist);
+		return Assembly.longPack(__sig << shiftDist,
+			(short)(1 - shiftDist));
 	}
 	
 	/**

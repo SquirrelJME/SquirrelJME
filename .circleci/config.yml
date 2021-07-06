@@ -245,20 +245,6 @@ jobs:
       - store_artifacts:
           path: ~/test-results
 
-  ### BinTray Publishing
-  bintray_publish:
-    executor: buildenv
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Publish to BinTray
-          command: ./gradlew bintrayUpload bintrayPublish --no-daemon --console plain --continue --parallel
-
   ### OSS SonaType Nexus
   sonatype_publish:
     executor: buildenv
@@ -704,33 +690,25 @@ workflows:
 
       # Mac OS X runs decently however the jobs for it have a higher cost, so
       # only perform builds and tests for trunk to lower costs.
-      - build_macosx:
-          requires:
-            - build_linux
-          filters:
-            branches:
-              only:
-                - trunk
+      # Currently have an overabundance of credits...
+      - build_macosx
+#          requires:
+#            - build_linux
+#          filters:
+#            branches:
+#              only:
+#                - trunk
 
       # Building on Windows is currently expensive and takes longer, so only
       # run these builds on trunk to lower costs.
-      - build_windows:
-          requires:
-            - build_linux
-          filters:
-            branches:
-              only:
-                - trunk
-
-      # Publishing to BinTray for any releases
-      - bintray_publish:
-          requires:
-            - build_linux
-          filters:
-            tags:
-              only: /^[0-9]+.[0-9]+.[0-9]+$/
-            branches:
-              ignore: /.*/
+      # Currently have an overabundance of credits...
+      - build_windows
+#          requires:
+#            - build_linux
+#          filters:
+#            branches:
+#              only:
+#                - trunk
 
       # Publishing to OSS Sonatype Nexus (https://oss.sonatype.org)
       - sonatype_publish:

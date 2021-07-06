@@ -9,6 +9,9 @@
 
 package cc.squirreljme.jvm.summercoat.constants;
 
+import cc.squirreljme.jvm.mle.brackets.TaskBracket;
+import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
+
 /**
  * Constants to identify the kind of memory handle that an object is.
  *
@@ -100,7 +103,15 @@ public interface MemHandleKind
 	byte INTERFACE_XTABLE =
 		20;
 	
+	/** A {@link VMThreadBracket}. */
+	byte VM_THREAD =
+		21;
+	
+	/** A {@link TaskBracket}. */
+	byte TASK =
+		22;
+	
 	/** The number of kinds used. */
 	byte NUM_KINDS =
-		21;
+		23;
 }

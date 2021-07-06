@@ -39,6 +39,8 @@ public abstract class Register
 	 */
 	public IntValueRegister asIntValue()
 	{
+		if (this instanceof IntValueRegister)
+			return (IntValueRegister)this;
 		return IntValueRegister.of(this.register);
 	}
 	
@@ -50,6 +52,8 @@ public abstract class Register
 	 */
 	public final MemHandleRegister asMemHandle()
 	{
+		if (this instanceof MemHandleRegister)
+			return (MemHandleRegister)this;
 		return MemHandleRegister.of(this.register);
 	}
 	
@@ -63,7 +67,6 @@ public abstract class Register
 	{
 		if (this instanceof PlainRegister)
 			return (PlainRegister)this;
-		
 		return new PlainRegister(this.register);
 	}
 	

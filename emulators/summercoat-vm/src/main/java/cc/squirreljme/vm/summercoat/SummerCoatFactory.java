@@ -14,6 +14,7 @@ import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMFactory;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
+import cc.squirreljme.emulator.vm.VMThreadModel;
 import cc.squirreljme.emulator.vm.VirtualMachine;
 import cc.squirreljme.jdwp.JDWPFactory;
 import cc.squirreljme.jvm.summercoat.SummerCoatUtil;
@@ -24,6 +25,8 @@ import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
+import cc.squirreljme.jvm.summercoat.constants.StaticVmAttribute;
+import cc.squirreljme.jvm.summercoat.ld.mem.ByteArrayMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemoryInputStream;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -92,7 +95,8 @@ public class SummerCoatFactory
 	 */
 	@Override
 	protected VirtualMachine createVM(ProfilerSnapshot __ps,
-		JDWPFactory __jdwp, VMSuiteManager __sm, VMClassLibrary[] __cp,
+		JDWPFactory __jdwp, VMThreadModel __threadModel, VMSuiteManager __sm,
+		VMClassLibrary[] __cp,
 		String __maincl, Map<String, String> __sysProps, String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
@@ -103,7 +107,7 @@ public class SummerCoatFactory
 		int romBase = SummerCoatFactory.SUITE_BASE_ADDR;
 		
 		// Setup non-cpu VM state
-		MachineState ms = new MachineState(vMem, __ps, romBase);
+		MachineState ms = new MachineState(vMem, __ps, romBase, __threadModel);
 		MemHandleManager memHandles = ms.memHandles;
 		
 		// Load ROM file or generate dynamically for loaded classes
@@ -458,16 +462,28 @@ public class SummerCoatFactory
 		// Where are the static attributes?
 		int staticAttrib = bootJarHeader.get(
 			JarProperty.MEMHANDLEID_VM_ATTRIBUTES);
+		int arrayBase = bootJarHeader.get(JarProperty.SIZE_BASE_ARRAY);
+		ms.setStaticAttributes(virtHandles.get(staticAttrib),
+			arrayBase);
+		
+		// Find the initial thread and task
+		MemHandle initThread = memHandles.get(
+			ms.staticAttribute(StaticVmAttribute.MEMHANDLE_BOOT_THREAD));
 		
 		// Setup virtual execution CPU
-		NativeCPU cpu = new NativeCPU(ms, vMem, 0, __ps,
-			bootJarHeader.get(JarProperty.SIZE_BASE_ARRAY),
-			virtHandles.get(staticAttrib));
-		CPUFrame iframe = cpu.enterFrame(false,
-			startAddress, virtHandles.get(bootPool).id);
+		NativeCPU cpu = ms.createVmCpu(initThread);
+		cpu.enterFrame(false, startAddress,
+			virtHandles.get(bootPool).id);
+		
+		// Open debugging connection, if we are debugging
+		// We open it here since we know about our threads and otherwise and
+		// also the debugger will not ask us about things we do not yet know
+		// about as well.
+		if (__jdwp != null)
+			ms._jdwp = __jdwp.open(ms);
 		
 		// Setup virtual machine with initial thread
-		return new SummerCoatVirtualMachine(cpu);
+		return new SummerCoatVirtualMachine(ms, cpu);
 	}
 	
 	/**
@@ -552,31 +568,6 @@ public class SummerCoatFactory
 			
 			return sm;
 		}
-	}
-	
-	/**
-	 * Converts a class path to a string array.
-	 *
-	 * @param __cp The class path to convert.
-	 * @return The resulting string array.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/21
-	 */
-	public static String[] classPathToStringArray(VMClassLibrary... __cp)
-		throws NullPointerException
-	{
-		if (__cp == null)
-			throw new NullPointerException("NARG");
-		
-		int n = __cp.length;
-		String[] rv = new String[n];
-		for (int i = 0; i < n; i++)
-		{
-			String name = __cp[i].name();
-			rv[i] = (name.endsWith(".jar") ? name : name + ".jar");
-		}
-		
-		return rv;
 	}
 	
 	/**

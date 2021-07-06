@@ -10,13 +10,12 @@
 package cc.squirreljme.jvm.summercoat.ld.pack;
 
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.jvm.summercoat.SummerCoatUtil;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.constants.JarProperty;
 import cc.squirreljme.jvm.summercoat.constants.JarTocProperty;
+import cc.squirreljme.jvm.summercoat.ld.mem.MemoryUtils;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemoryInputStream;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -43,6 +42,9 @@ public class JarRom
 	/** Table of contents, dynamically loaded. */
 	private TableOfContents _toc;
 	
+	/** The names of the entries, dynamically loaded. */
+	private String[] _entries;
+	
 	/**
 	 * Initializes the Jar ROM.
 	 * 
@@ -64,55 +66,31 @@ public class JarRom
 	}
 	
 	/**
-	 * Opens a stream to the resource data.
+	 * Returns all of the entries within the JAR.
 	 * 
-	 * @param __rc The resource to load.
-	 * @return The input stream over the resource or {@code null} if not found.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/04/07
+	 * @return All of the entries within the JAR.
+	 * @since 2021/05/16
 	 */
-	public final InputStream openResource(String __rc)
-		throws NullPointerException
+	public final String[] entries()
 	{
-		if (__rc == null)
-			throw new NullPointerException("NARG");
-			
-		ReadableMemory data = this.data;
-		
-		// We need the hash code to do a quicker lookup of entries
-		int hash = __rc.hashCode();
+		// Already loaded?
+		String[] rv = this._entries;
+		if (rv != null)
+			return rv.clone();
 		
 		// Look through the TOC
 		TableOfContents toc = this.__toc();
+		ReadableMemory data = this.data;
+		rv = new String[toc.count()];
 		for (int i = 0, n = toc.count(); i < n; i++)
 		{
-			// Not this hash code?
-			if (hash != toc.get(i, JarTocProperty.INT_NAME_HASHCODE))
-				continue;
-			
-			// This is not the entry we are looking for?
-			if (0 != SummerCoatUtil.strCmp(__rc, data.absoluteAddress(
-					toc.get(i, JarTocProperty.OFFSET_NAME))))
-				continue;
-			
-			// Return a stream over the entry data
-			return new ReadableMemoryInputStream(data,
-				toc.get(i, JarTocProperty.OFFSET_DATA),
-				toc.get(i, JarTocProperty.SIZE_DATA));
+			rv[i] = MemoryUtils.loadString(data,
+				toc.get(i, JarTocProperty.OFFSET_NAME));
 		}
 		
-		// Not found, so return null for it
-		return null;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/04/06
-	 */
-	@Override
-	public final String toString()
-	{
-		return this.name;
+		// Cache it for later and use the calculated result
+		this._entries = rv;
+		return rv.clone();
 	}
 	
 	/**
@@ -122,7 +100,7 @@ public class JarRom
 	 * @throws InvalidRomException If the ROM is not valid.
 	 * @since 2021/04/07
 	 */
-	private HeaderStruct __header()
+	public HeaderStruct header()
 		throws InvalidRomException
 	{
 		HeaderStruct rv = this._header;
@@ -151,6 +129,115 @@ public class JarRom
 	}
 	
 	/**
+	 * Returns the index of the given resource
+	 * 
+	 * @param __rc The entry to look for.
+	 * @return The index of the given resource or a negative value if not
+	 * found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/05/16
+	 */
+	public final int indexOf(String __rc)
+		throws NullPointerException
+	{
+		if (__rc == null)
+			throw new NullPointerException("NARG");
+		
+		ReadableMemory data = this.data;
+		
+		// We need the hash code to do a quicker lookup of entries
+		int hash = __rc.hashCode();
+		
+		// Look through the TOC
+		TableOfContents toc = this.__toc();
+		for (int i = 0, n = toc.count(); i < n; i++)
+		{
+			// Not this hash code?
+			if (hash != toc.get(i, JarTocProperty.INT_NAME_HASHCODE))
+				continue;
+			
+			// This is not the entry we are looking for?
+			if (0 != MemoryUtils.strCmp(__rc, data, 
+					toc.get(i, JarTocProperty.OFFSET_NAME)))
+				continue;
+			
+			return i;
+		}
+		
+		// Not found
+		return -1;
+	}
+	
+	/**
+	 * Opens the resource by the given index.
+	 * 
+	 * @param __dx The entry to open.
+	 * @return The memory which makes up the given resource.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @since 2021/05/16
+	 */
+	public final ReadableMemory openResourceAsMemory(int __dx)
+		throws IndexOutOfBoundsException
+	{
+		// {@squirreljme.error ZZ59 Jar index out of bounds. (The index)}
+		TableOfContents toc = this.__toc();
+		if (__dx < 0 || __dx >= toc.count())
+			throw new IndexOutOfBoundsException("ZZ59 " + __dx);
+			
+		// Return a stream over the entry data
+		return this.data.subSection(
+			toc.get(__dx, JarTocProperty.OFFSET_DATA),
+			toc.get(__dx, JarTocProperty.SIZE_DATA));
+	}
+	
+	/**
+	 * Opens the resource by the given index.
+	 * 
+	 * @param __dx The entry to open.
+	 * @return An input stream for the given resource.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @since 2021/05/16
+	 */
+	public final InputStream openResourceAsStream(int __dx)
+		throws IndexOutOfBoundsException
+	{
+		return new ReadableMemoryInputStream(this.openResourceAsMemory(__dx));
+	}
+	
+	/**
+	 * Opens a stream to the resource data.
+	 * 
+	 * @param __rc The resource to load.
+	 * @return The input stream over the resource or {@code null} if not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/04/07
+	 */
+	public final InputStream openResourceAsStream(String __rc)
+		throws NullPointerException
+	{
+		if (__rc == null)
+			throw new NullPointerException("NARG");
+		
+		// Make sure the entry exists
+		int dx = this.indexOf(__rc);
+		if (dx < 0)
+			return null;
+		
+		// Open the data
+		return this.openResourceAsStream(dx);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/04/06
+	 */
+	@Override
+	public final String toString()
+	{
+		return this.name;
+	}
+	
+	/**
 	 * Potentially loads and returns the table of contents.
 	 * 
 	 * @return The table of contents.
@@ -164,7 +251,7 @@ public class JarRom
 			return rv;
 		
 		// Load the header
-		HeaderStruct header = this.__header();
+		HeaderStruct header = this.header();
 		
 		// Load in the table of contents
 		rv = new TableOfContents(this.data.subSection(

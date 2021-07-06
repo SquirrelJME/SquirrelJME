@@ -134,7 +134,7 @@ public final class LogicHandler
 	public static void gcMemHandle(int __p)
 	{
 		// TODO: Implement Garbage Collection of Memory Handles
-		Assembly.ping();
+		//Assembly.ping();
 		/*Assembly.breakpoint();
 		throw Debugging.todo();*/
 	}

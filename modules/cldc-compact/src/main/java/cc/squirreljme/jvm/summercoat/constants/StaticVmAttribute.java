@@ -48,7 +48,15 @@ public interface StaticVmAttribute
 	byte OFFSETOF_CLASS_TYPEBRACKET_FIELD =
 		6;
 	
+	/** The base size of arrays, as {@link JarProperty#SIZE_BASE_ARRAY}. */
+	byte SIZE_BASE_ARRAY =
+		7;
+	
+	/** The boot thread handle. */
+	byte MEMHANDLE_BOOT_THREAD =
+		8;
+	
 	/** The number of metrics used. */
 	byte NUM_METRICS =
-		7;
+		9;
 }

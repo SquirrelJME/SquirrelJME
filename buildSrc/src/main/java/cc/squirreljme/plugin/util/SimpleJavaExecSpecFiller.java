@@ -32,6 +32,10 @@ public class SimpleJavaExecSpecFiller
 	private final List<String> _args =
 		new ArrayList<>();
 	
+	/** Java virtual machine arguments. */
+	private final List<String> _jvmArgs =
+		new ArrayList<>();
+	
 	/** System properties. */
 	private final Map<String, String> _sysProps =
 		new LinkedHashMap<>();
@@ -94,6 +98,9 @@ public class SimpleJavaExecSpecFiller
 			result.add(String.format("-D%s=%s",
 				sysProp.getKey(), sysProp.getValue()));
 		
+		// Add JVM args
+		result.addAll(this._jvmArgs);
+		
 		// Main class to run
 		result.add(this._mainClass);
 		
@@ -118,12 +125,25 @@ public class SimpleJavaExecSpecFiller
 	 * @since 2020/12/26
 	 */
 	@Override
-	public void setArgs(Collection<String> __asList)
+	public void setArgs(Collection<String> __args)
 	{
 		List<String> args = this._args;
 		
 		args.clear();
-		args.addAll(__asList);
+		args.addAll(__args);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/06/18
+	 */
+	@Override
+	public void setJvmArgs(Collection<String> __args)
+	{
+		List<String> jvmArgs = this._jvmArgs;
+		
+		jvmArgs.clear();
+		jvmArgs.addAll(__args);
 	}
 	
 	/**

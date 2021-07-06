@@ -11,9 +11,6 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
-import cc.squirreljme.emulator.vm.VMException;
-import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.jdwp.JDWPClassStatus;
 import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.JDWPStepTracker;
@@ -24,6 +21,7 @@ import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
 import cc.squirreljme.jdwp.trips.JDWPTripClassStatus;
 import cc.squirreljme.jdwp.trips.JDWPTripField;
 import cc.squirreljme.jdwp.trips.JDWPTripThread;
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
@@ -3673,17 +3671,17 @@ public final class SpringThreadWorker
 		
 		// Resolve the method reference
 		SpringClass refClass = this.loadClass(ref.className());
-		SpringMethod refmethod = refClass.lookupMethod(false,
+		SpringMethod refMethod = refClass.lookupMethod(false,
 			ref.memberNameAndType());
 		
 		// {@squirreljme.error BK34 Could not access the target
 		// method for special invoke. (The target method)}
-		if (!this.checkAccess(refmethod))
+		if (!this.checkAccess(refMethod))
 			throw new SpringIncompatibleClassChangeException(
 				String.format("BK34 %s", ref));
 		
 		// Load arguments
-		int nargs = refmethod.nameAndType().type().
+		int nargs = refMethod.nameAndType().type().
 			argumentCount() + 1;
 		Object[] args = new Object[nargs];
 		for (int i = nargs - 1; i >= 0; i--)
@@ -3691,7 +3689,7 @@ public final class SpringThreadWorker
 		
 		// Get the class of the current method being executed, lookup depends
 		// on it
-		SpringClass currentclass = this.loadClass(
+		SpringClass currentClass = this.loadClass(
 			this.thread.currentFrame().method().inClass());
 		
 		// {@squirreljme.error BK35 Instance object for special invoke is
@@ -3701,24 +3699,33 @@ public final class SpringThreadWorker
 			throw new SpringNullPointerException("BK35");
 		
 		// These modify the action to be performed
-		boolean insame = (currentclass == refClass),
-			insuper = currentclass.isSuperClass(refClass),
-			isinit = refmethod.name().isInstanceInitializer(),
-			isprivate = refmethod.flags().isPrivate();
-		
-		// {@squirreljme.error BK36 Cannot call private method that is not
-		// in the same class. (The method reference)}
-		if (isprivate && !insame)
-			throw new SpringIncompatibleClassChangeException(
-				String.format("BK36 %s", ref));
+		boolean inSameClass = (currentClass == refClass);
+		boolean inSuper = currentClass.isSuperClass(refClass);
+		boolean isInit = refMethod.name().isInstanceInitializer();
+		boolean isPrivate = refMethod.flags().isPrivate();
+		boolean isPackagePrivate = refMethod.flags().isPackagePrivate();
 		
 		// Call superclass method instead?
-		else if (!isprivate && insuper && !isinit)
-			refmethod = currentclass.superClass().lookupMethod(false,
-				ref.memberNameAndType());
+		if ((!isPrivate && !isPackagePrivate) && inSuper && !isInit)
+			try
+			{
+				refMethod = currentClass.superClass()
+					.lookupMethod(false, ref.memberNameAndType());
+			}
+			catch (SpringNoSuchMethodException e)
+			{
+				throw new SpringIncompatibleClassChangeException(
+					String.format("No ref %s from %s", ref, currentClass), e);
+			}
+		
+		// {@squirreljme.error BK36 Cannot call private method that is not
+		// in the same class. (The method reference; Our current class)}
+		else if ((isPrivate || (isPackagePrivate && !isInit)) && !inSameClass)
+			throw new SpringIncompatibleClassChangeException(
+				String.format("BK36 %s %s", ref, currentClass));
 		
 		// Invoke this method
-		__t.enterFrame(refmethod, args);
+		__t.enterFrame(refMethod, args);
 	}
 	
 	/**

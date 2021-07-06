@@ -1026,7 +1026,7 @@ public final class NativeCodeBuilder
 			boolean didchange = false;
 			
 			// Arguments may be re-translated if they contain jumps
-			Object[] args = inst.arguments();
+			Object[] args = inst.arguments().toArray();
 			for (int j = 0, jn = args.length; j < jn; j++)
 			{
 				Object a = args[j];
@@ -1163,8 +1163,8 @@ public final class NativeCodeBuilder
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Needed for argument format check
-		ArgumentFormat[] afmt = NativeInstruction.argumentFormat(__op);
-		int fnar = afmt.length;
+		InstructionFormat afmt = NativeInstruction.argumentFormat(__op);
+		int fnar = afmt.size();
 		
 		// Build instruction
 		NativeInstruction rv = new NativeInstruction(__op, __args);
@@ -1193,7 +1193,7 @@ public final class NativeCodeBuilder
 					((o instanceof Number) ? ((Number)o).intValue() : -1));
 			
 			// Make sure values are good
-			switch (afmt[i])
+			switch (afmt.get(i))
 			{
 					// {@squirreljme.error JC0r Use of register which is out
 					// of range of the maximum register count.

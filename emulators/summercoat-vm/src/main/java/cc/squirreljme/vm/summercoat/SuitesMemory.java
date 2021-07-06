@@ -13,6 +13,7 @@ import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.ld.mem.AbstractReadableMemory;
+import cc.squirreljme.jvm.summercoat.ld.mem.ByteArrayMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.MemoryAccessException;
 import cc.squirreljme.jvm.summercoat.ld.mem.NotRealMemoryException;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;

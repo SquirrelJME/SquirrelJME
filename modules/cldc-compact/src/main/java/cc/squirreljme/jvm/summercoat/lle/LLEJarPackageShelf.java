@@ -125,7 +125,7 @@ public final class LLEJarPackageShelf
 		if (__jar == null || __rc == null)
 			throw new MLECallError("NARG");
 		
-		return LLEJarPackageShelf.__rom(__jar).openResource(__rc);
+		return LLEJarPackageShelf.__rom(__jar).openResourceAsStream(__rc);
 	}
 	
 	/**

@@ -87,6 +87,17 @@ public class MemHandle
 	}
 	
 	/**
+	 * Returns the handle kind.
+	 * 
+	 * @return The handle kind.
+	 * @since 2021/05/11
+	 */
+	public final int kind()
+	{
+		return this.kind;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2021/01/17
 	 */
@@ -94,7 +105,9 @@ public class MemHandle
 	public int memReadByte(long __addr)
 	{
 		if (__addr < 0 || __addr >= this.rawSize)
-			throw new VMMemoryAccessException("Invalid memReadByte: " + __addr);
+			throw new VMMemoryAccessException(
+				String.format("Invalid memReadByte: %d in (size=%d, raw=%d)",
+					__addr, this.size, this.rawSize));
 		
 		return this._bytes[(int)__addr] & 0xFF;
 	}
@@ -204,5 +217,16 @@ public class MemHandle
 	public final void setCount(int __count)
 	{
 		this._count.set(__count);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/05/11
+	 */
+	@Override
+	public String toString()
+	{
+		return String.format("MemHandle(id=0x%08x,kind=%d,size=%d)",
+			this.id, this.kind, this.size);
 	}
 }

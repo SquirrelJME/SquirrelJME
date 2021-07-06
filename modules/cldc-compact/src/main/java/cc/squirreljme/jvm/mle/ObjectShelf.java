@@ -238,6 +238,10 @@ public final class ObjectShelf
 	/**
 	 * Waits on the given monitor.
 	 * 
+	 * If the monitor will block and SquirrelJME is running in cooperative
+	 * single threaded mode, this will relinquish control of the current
+	 * thread.
+	 * 
 	 * @param __object The object to wait on.
 	 * @param __ms The milliseconds to wait.
 	 * @param __ns The nanoseconds to wait.

@@ -36,6 +36,11 @@ idea
 		excludeDirs += file("ratufacoat/cmake-build-debug")
 		excludeDirs += file("ratufacoat/cmake-build-release")
 		excludeDirs += file("ratufacoat/.sample")
+		
+		// IntelliJ's own dependency matrix output (in "out")
+		project.allprojects.each() { Project subProj ->
+			excludeDirs += subProj.projectDir.toPath().resolve("out").toFile()
+		}
 	}
 }
 

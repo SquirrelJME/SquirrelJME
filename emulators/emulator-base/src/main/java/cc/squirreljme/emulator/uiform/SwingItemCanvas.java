@@ -74,10 +74,10 @@ public class SwingItemCanvas
 	 * @since 2020/09/21
 	 */
 	@Override
-	public void property(int __id, int __sub, int __val)
+	public void property(int __intProp, int __sub, int __val)
 		throws MLECallError
 	{
-		switch (__id)
+		switch (__intProp)
 		{
 				// Request repaint of canvas
 			case UIWidgetProperty.INT_SIGNAL_REPAINT:
@@ -112,7 +112,7 @@ public class SwingItemCanvas
 				break;
 			
 			default:
-				throw new MLECallError("Unknown property: " + __id);
+				throw new MLECallError("Unknown property: " + __intProp);
 		}
 	}
 	
@@ -121,7 +121,7 @@ public class SwingItemCanvas
 	 * @since 2020/09/21
 	 */
 	@Override
-	public void property(int __id, int __sub, String __newValue)
+	public void property(int __strProp, int __sub, String __newValue)
 	{
 		throw Debugging.todo();
 	}

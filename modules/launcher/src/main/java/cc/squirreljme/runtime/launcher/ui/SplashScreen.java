@@ -54,6 +54,9 @@ public final class SplashScreen
 	 */
 	public SplashScreen(int __sw, int __sh)
 	{
+		// Set a nice title!
+		this.setTitle("SquirrelJME is Loading!");
+		
 		// Full-screen mode for the entire image
 		this.setFullScreenMode(true);
 		

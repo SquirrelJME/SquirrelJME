@@ -13,7 +13,7 @@ package dev.shadowtail.classfile.mini;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import dev.shadowtail.classfile.nncc.ArgumentFormat;
+import dev.shadowtail.classfile.nncc.InstructionFormat;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
 import dev.shadowtail.classfile.nncc.RegisterList;
@@ -177,6 +177,15 @@ public final class Minimizer
 		// Is this primitive?
 		properties[StaticClassProperty.BOOLEAN_IS_PRIMITIVE].setInt(
 			(input.thisName().isPrimitive() ? 1 : 0));
+		
+		// Debug signature, for JDWP
+		ChunkSection debugSig = output.addSection(
+			ChunkWriter.VARIABLE_SIZE, 4);
+		debugSig.writeUTF(input.thisName().field().toString());
+		properties[StaticClassProperty.OFFSETOF_DEBUG_SIGNATURE].set(
+			debugSig.futureAddress());
+		properties[StaticClassProperty.SIZEOF_DEBUG_SIGNATURE].set(
+			debugSig.futureSize());
 		
 		// name, superclass, and interfaces
 		properties[StaticClassProperty.SPOOL_THIS_CLASS_NAME].setInt(
@@ -489,10 +498,8 @@ public final class Minimizer
 			// Add method
 			MinimizedMethod q;
 			temp._methods.add((q = new MinimizedMethod(mf.toJavaBits(),
-				temp._count,
-				m.name(),
-				m.type(),
-				transcode)));
+				temp._count, m.name(), m.type(), transcode, 0,
+				m.methodIndex())));
 			
 			// Quick count for used methods
 			temp._count++;
@@ -547,15 +554,15 @@ public final class Minimizer
 			dos.write(op);
 			
 			// Encode arguments
-			ArgumentFormat[] format = i.argumentFormat();
+			InstructionFormat format = i.argumentFormat();
 			for (int a = 0, an = i.argumentCount(),
-				afn = format.length; a < an; a++)
+				afn = format.size(); a < an; a++)
 			{
 				// Read argument
 				Object v = i.argument(a);
 				
 				// Write the format
-				switch (format[a])
+				switch (format.get(a))
 				{
 						// Variable 16-bit unsigned integer
 					case VUINT:
@@ -564,7 +571,7 @@ public final class Minimizer
 					case VJUMP:
 						// Remap value
 						int vm = 0;
-						switch (format[a])
+						switch (format.get(a))
 						{
 							case VPOOL:
 								try

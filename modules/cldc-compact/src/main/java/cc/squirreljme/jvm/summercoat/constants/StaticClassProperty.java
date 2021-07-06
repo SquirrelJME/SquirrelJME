@@ -170,9 +170,17 @@ public interface StaticClassProperty
 	byte BOOLEAN_IS_PRIMITIVE =
 		36;
 	
+	/** Offset to the class name. */
+	byte OFFSETOF_DEBUG_SIGNATURE =
+		37;
+	
+	/** Size of the class name. */
+	byte SIZEOF_DEBUG_SIGNATURE =
+		38;
+	
 	/** The number of static properties. */
 	byte NUM_STATIC_PROPERTIES =
-		37;
+		39;
 	
 	/** Static field base index. */
 	@Deprecated

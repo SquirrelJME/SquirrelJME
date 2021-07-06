@@ -26,7 +26,9 @@ public interface JavaExecSpecFiller
 	
 	void setMain(String __mainClass);
 	
-	void setArgs(Collection<String> __asList);
+	void setArgs(Collection<String> __args);
+	
+	void setJvmArgs(Collection<String> __args);
 	
 	void systemProperties(Map<String, String> __sysProps);
 }
