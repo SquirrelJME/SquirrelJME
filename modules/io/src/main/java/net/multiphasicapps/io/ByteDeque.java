@@ -1169,7 +1169,7 @@ public class ByteDeque
 			left -= rc;
 		}
 		
-		// Return the nymber of bytes read
+		// Return the number of bytes read
 		return limit;
 	}
 }

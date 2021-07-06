@@ -12,6 +12,16 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.emulator.vm.VMException;
+import cc.squirreljme.jdwp.JDWPClassStatus;
+import cc.squirreljme.jdwp.JDWPController;
+import cc.squirreljme.jdwp.JDWPStepTracker;
+import cc.squirreljme.jdwp.JDWPThreadSuspension;
+import cc.squirreljme.jdwp.JDWPValue;
+import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
+import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
+import cc.squirreljme.jdwp.trips.JDWPTripClassStatus;
+import cc.squirreljme.jdwp.trips.JDWPTripField;
+import cc.squirreljme.jdwp.trips.JDWPTripThread;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -84,7 +94,7 @@ public final class SpringThreadWorker
 		new VerboseManager();
 	
 	/** The current step count. */
-	private volatile int _stepcount;
+	private volatile int _stepCount;
 	
 	/**
 	 * Initialize the worker.
@@ -482,7 +492,13 @@ public final class SpringThreadWorker
 				// information
 				rv = this.newInstance(classClass.name(), new MethodDescriptor(
 					"(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)V"),
-					new TypeObject(resClass));
+					new TypeObject(machine, resClass));
+				
+				// Store it
+				synchronized (classClass)
+				{
+					classClass._instance = rv;
+				}
 				
 				// Cache and use it
 				com.put(name, rv);
@@ -806,7 +822,7 @@ public final class SpringThreadWorker
 			// Print the thread trace
 			thread.printStackTrace(System.err);
 			
-			// Propogate up
+			// Propagate up
 			throw e;
 		}
 		
@@ -907,6 +923,11 @@ public final class SpringThreadWorker
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
+			
+		// If the class has already been initialized then the class is
+		// ready to be used
+		if (__cl.isInitialized())
+			return __cl;
 		
 		// Use the class loading lock to prevent other threads from loading or
 		// initializing classes while this thread does such things
@@ -914,8 +935,7 @@ public final class SpringThreadWorker
 		SpringClassLoader classloader = machine.classLoader();
 		synchronized (classloader.classLoadingLock())
 		{
-			// If the class has already been initialized then the class is
-			// ready to be used
+			// Check initialization again just in case
 			if (__cl.isInitialized())
 				return __cl;
 			
@@ -929,68 +949,80 @@ public final class SpringThreadWorker
 			// might be seen as initialized when it should not be. So this is
 			// to prevent bad things from happening.
 			__cl.setInitialized();
-			
-			// Initialize the static field map
-			Map<SpringField, SpringFieldStorage> sfm =
-				machine.__staticFieldMap();
-			for (SpringField f : __cl.fieldsOnlyThisClass())
-				if (f.isStatic())
-					sfm.put(f, new SpringFieldStorage(f));
-			
-			// Recursively call self to load the super class before this class
-			// is handled
-			SpringClass clsuper = __cl.superClass();
-			if (clsuper != null)
-				this.loadClass(clsuper);
-			
-			// Go through interfaces and do the same
-			for (SpringClass iface : __cl.interfaceClasses())
-				this.loadClass(iface);
-			
-			// Look for static constructor for this class to initialize it as
-			// needed
-			SpringMethod init;
-			try
-			{
-				// Verbosity?
-				if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
-					Debugging.debugNote("Lookup static init for %s.", 
-						__cl.name());
-				
-				init = __cl.lookupMethod(true,
-					new MethodNameAndType("<clinit>", "()V"));
-			}
-			
-			// No static initializer exists
-			catch (SpringNoSuchMethodException e)
-			{
-				init = null;
-				
-				// Verbosity?
-				if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
-					Debugging.debugNote("No static init for %s.", 
-						__cl.name());
-			}
-			
-			// Static initializer exists, setup a frame and call it
-			if (init != null)
-			{
-				// Verbosity?
-				if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
-					Debugging.debugNote("Calling static init for %s.", 
-						__cl.name());
-				
-				// Stop execution when the initializer exits
-				SpringThread thread = this.thread;
-				int frameLimit = thread.numFrames();
-				
-				// Enter the static initializer
-				thread.enterFrame(init);
-				
-				// Execute until it finishes
-				this.run(frameLimit);
-			}
 		}
+			
+		// Tell the debugger that this class is verified
+		JDWPController jdwp = this.machine.taskManager().jdwpController;
+		JDWPTripClassStatus classTrip = (jdwp == null ? null :
+			jdwp.trip(JDWPTripClassStatus.class,
+				JDWPGlobalTrip.CLASS_STATUS));
+		if (classTrip != null)
+			classTrip.classStatus(this.thread, __cl,
+				JDWPClassStatus.VERIFIED);
+		
+		// Recursively call self to load the super class before this class
+		// is handled
+		SpringClass clsuper = __cl.superClass();
+		if (clsuper != null)
+			this.loadClass(clsuper);
+		
+		// Go through interfaces and do the same
+		for (SpringClass iface : __cl.interfaceClasses())
+			this.loadClass(iface);
+		
+		// Look for static constructor for this class to initialize it as
+		// needed
+		SpringMethod init;
+		try
+		{
+			// Verbosity?
+			if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
+				Debugging.debugNote("Lookup static init for %s.", 
+					__cl.name());
+			
+			init = __cl.lookupMethod(true,
+				new MethodNameAndType("<clinit>", "()V"));
+		}
+		
+		// No static initializer exists
+		catch (SpringNoSuchMethodException e)
+		{
+			init = null;
+			
+			// Verbosity?
+			if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
+				Debugging.debugNote("No static init for %s.", 
+					__cl.name());
+		}
+		
+		// Tell the debugger that this class is prepared
+		if (classTrip != null)
+			classTrip.classStatus(this.thread, __cl,
+				JDWPClassStatus.PREPARED);
+		
+		// Static initializer exists, setup a frame and call it
+		if (init != null)
+		{
+			// Verbosity?
+			if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
+				Debugging.debugNote("Calling static init for %s.", 
+					__cl.name());
+			
+			// Stop execution when the initializer exits
+			SpringThread thread = this.thread;
+			int frameLimit = thread.numFrames();
+			
+			// Enter the static initializer
+			thread.enterFrame(init);
+			
+			// Execute until it finishes
+			this.run(frameLimit);
+		}
+		
+		// Tell the debugger that this class is fully initialized
+		if (classTrip != null)
+			classTrip.classStatus(this.thread, __cl,
+				JDWPClassStatus.INITIALIZED);
 		
 		// Return the input class
 		return __cl;
@@ -1541,6 +1573,8 @@ public final class SpringThreadWorker
 	 * Looks up the specified static field and returns the storage for it.
 	 *
 	 * @param __f The field to lookup.
+	 * @param __outField Output field, this is completely optional and may
+	 * be {@code null}.
 	 * @return The static field storage.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringIncompatibleClassChangeException If the target field is
@@ -1548,29 +1582,65 @@ public final class SpringThreadWorker
 	 * @throws SpringNoSuchFieldException If the field does not exist.
 	 * @since 2018/09/09
 	 */
-	private final SpringFieldStorage __lookupStaticField(FieldReference __f)
+	private SpringFieldStorage __lookupStaticField(FieldReference __f,
+		SpringField[] __outField)
 		throws NullPointerException, SpringIncompatibleClassChangeException,
 			SpringNoSuchFieldException
 	{
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BK2a Could not access the target class for
-		// static field access. (The field reference)}
-		SpringClass inclass = this.loadClass(__f.className());
-		if (!this.checkAccess(inclass))
-			throw new SpringIncompatibleClassChangeException(
-				String.format("BK2a %s", __f));
+		// Static fields can point to a parent class but truly exist in a
+		// super class
+		SpringClass inClass = this.loadClass(__f.className());
+		while (inClass != null)
+		{
+			// {@squirreljme.error BK2a Could not access the target class for
+			// static field access. (The field reference)}
+			if (!this.checkAccess(inClass))
+				throw new SpringIncompatibleClassChangeException(
+					String.format("BK2a %s", __f));
+			
+			// Try finding the field
+			SpringField field;
+			try
+			{
+				field = inClass.lookupField(
+					true, __f.memberNameAndType());
+			}
+			catch (SpringNoSuchFieldException ignored)
+			{
+				// Not found, so try the super class
+				inClass = inClass.superClass();
+				continue;
+			}
+			
+			// Record field if requested
+			if (__outField != null && __outField.length > 0)
+				__outField[0] = field;
+			
+			// {@squirreljme.error BK2b Could not access the target field for
+			// static field access. (The field reference)}
+			if (!this.checkAccess(field))
+				throw new SpringIncompatibleClassChangeException(
+					String.format("BK2b %s", __f));
+			
+			// Get the field index
+			int index = field.index;
+			
+			// Look into the class storage
+			SpringFieldStorage[] store = inClass._staticFields;
+			if (index >= inClass._staticFieldBase && index < store.length &&
+				store[index] != null)
+				return store[index];
+				
+			// Not found, so try the super class
+			inClass = inClass.superClass();
+		}
 		
-		// {@squirreljme.error BK2b Could not access the target field for
-		// static field access. (The field reference)}
-		SpringField field = inclass.lookupField(true, __f.memberNameAndType());
-		if (!this.checkAccess(field))
-			throw new SpringIncompatibleClassChangeException(
-				String.format("BK2b %s", __f));
-		
-		// Lookup the global static field
-		return this.machine.lookupStaticField(field);
+		// This should not hopefully happen
+		throw new SpringNoSuchFieldException(
+			String.format("Static field %s not found.", __f));
 	}
 	
 	/**
@@ -1606,11 +1676,63 @@ public final class SpringThreadWorker
 			throw e;
 		}
 		
-		// Increase the step count
-		this._stepcount++;
-		
+		// We need the current frame and byte code so that we can check on
+		// our breakpoints
 		SpringThread.Frame frame = thread.currentFrame();
+		SpringMethod method = frame.method();
 		ByteCode code = frame.byteCode();
+		
+		// Poll the JDWP debugger for any new debugging state
+		JDWPController jdwp = this.machine.tasks.jdwpController;
+		if (jdwp != null)
+		{
+			// Check for breakpoints to stop at first, because if our thread
+			// gets suspended we want to know before we check for suspension.
+			Map<Integer, JDWPTripBreakpoint> jdwpBreakpoints =
+				method.__breakpoints(false);
+			if (jdwpBreakpoints != null)
+			{
+				// See if we can trip on this
+				JDWPTripBreakpoint trip;
+				synchronized (jdwpBreakpoints)
+				{
+					trip = jdwpBreakpoints.get(frame.pc());
+				}
+				
+				// Perform the trip outside of the lock, so we do not deadlock
+				if (trip != null)
+					trip.breakpoint(thread);
+			}
+			
+			// Check if we are doing any single stepping
+			JDWPStepTracker stepTracker = thread._stepTracker;
+			if (stepTracker != null && stepTracker.inSteppingMode())
+			{
+				// Tick the current tracker and see if it will activate
+				// before we trigger this event
+				if (stepTracker.tick(jdwp, thread))
+					jdwp.trip(JDWPTripThread.class, JDWPGlobalTrip.THREAD)
+						.step(thread, stepTracker);
+			}
+			
+			// This only returns while we are suspended, but if it returns
+			// early then we were interrupted which means we need to signal
+			// that to whatever is running
+			boolean interrupted = false;
+			JDWPThreadSuspension suspension = thread.debuggerSuspension;
+			while (suspension.await(jdwp, thread))
+			{
+				interrupted = true;
+			}
+			
+			// The debugger released suspension so we can perform the
+			// interrupt now
+			if (interrupted)
+				thread.hardInterrupt();
+		}
+		
+		// Increase the step count
+		this._stepCount++;
 		
 		// Frame is execution
 		int iec = frame.incrementExecCount();
@@ -1625,7 +1747,6 @@ public final class SpringThreadWorker
 		// Are these certain kinds of initializers? Because final fields are
 		// writable during initialization accordingly
 		SpringClass currentclass = this.contextClass();
-		SpringMethod method = frame.method();
 		boolean isstaticinit = method.isStaticInitializer(),
 			isinstanceinit = method.isInstanceInitializer();
 		
@@ -2337,8 +2458,16 @@ public final class SpringThreadWorker
 						SpringSimpleObject sso = (SpringSimpleObject)ref;
 						
 						// Read and push to the stack
-						frame.pushToStack(this.asVMObject(
-							sso.fieldByIndex(ssf.index()).get()));
+						SpringFieldStorage store =
+							sso.fieldByIndex(ssf.index());
+						frame.pushToStack(this.asVMObject(store.get()));
+						
+						// Debug signal
+						if (jdwp != null && ssf.isDebugWatching(false))
+							jdwp.trip(JDWPTripField.class,
+								JDWPGlobalTrip.FIELD).field(thread,
+									this.loadClass(ssf.inclass),
+									ssf.index, false, ref, null);
 					}
 					break;
 					
@@ -2346,12 +2475,25 @@ public final class SpringThreadWorker
 				case InstructionIndex.GETSTATIC:
 					{
 						// Lookup field
-						SpringFieldStorage ssf = this.__lookupStaticField(
+						FieldReference fieldRef =
 							inst.<FieldReference>argument(0,
-							FieldReference.class));
+								FieldReference.class);
+						SpringField[] field = new SpringField[1];
+						SpringFieldStorage ssf = this.__lookupStaticField(
+							fieldRef, field);
 						
 						// Push read value to stack
-						frame.pushToStack(this.asVMObject(ssf.get()));
+						frame.pushToStack(this.asVMObject(
+							ssf.get()));
+						
+						// Debug signal
+						if (jdwp != null &&
+							field[0].isDebugWatching(false))
+							jdwp.trip(JDWPTripField.class,
+								JDWPGlobalTrip.FIELD).field(thread,
+									this.loadClass(ssf.inclass),
+									ssf.fieldIndex, false,
+									null, null);
 					}
 					break;
 					
@@ -3272,9 +3414,22 @@ public final class SpringThreadWorker
 							sso.type()))
 							throw new SpringClassCastException("BK2u");
 						
+						// Debug signal
+						if (jdwp != null && ssf.isDebugWatching(true))
+							try (JDWPValue jVal = jdwp.value())
+							{
+								jVal.set(
+									DebugViewObject.__normalizeNull(value));
+								jdwp.trip(JDWPTripField.class,
+									JDWPGlobalTrip.FIELD).field(thread,
+										this.loadClass(ssf.inclass),
+										ssf.index, true, ref, jVal);
+							}
+						
 						// Set
-						sso.fieldByIndex(ssf.index()).set(value,
-							isinstanceinit);
+						SpringFieldStorage store =
+							sso.fieldByIndex(ssf.index());
+						store.set(value, isinstanceinit);
 					}
 					break;
 				
@@ -3282,13 +3437,33 @@ public final class SpringThreadWorker
 				case InstructionIndex.PUTSTATIC:
 					{
 						// Lookup field
-						SpringFieldStorage ssf = this.__lookupStaticField(
+						FieldReference fieldRef =
 							inst.<FieldReference>argument(0,
-							FieldReference.class));
+								FieldReference.class);
+						SpringField[] field = new SpringField[1];
+						SpringFieldStorage ssf = this.__lookupStaticField(
+							fieldRef, field);
+						
+						// Read value
+						Object value = frame.popFromStack();
+						
+						// Debug signal
+						if (jdwp != null &&
+							field[0].isDebugWatching(true))
+							try (JDWPValue jVal = jdwp.value())
+							{
+								jVal.set(
+									DebugViewObject.__normalizeNull(value));
+								jdwp.trip(JDWPTripField.class,
+									JDWPGlobalTrip.FIELD).field(thread,
+										this.loadClass(ssf.inclass),
+										ssf.fieldIndex, true,
+										null, jVal);
+							}
 						
 						// Set value, note that static initializers can set
 						// static field values even if they are final
-						ssf.set(frame.popFromStack(), isstaticinit);
+						ssf.set(value, isstaticinit);
 					}
 					break;
 					
@@ -3581,25 +3756,40 @@ public final class SpringThreadWorker
 				ref.className().toString(),
 				ref.memberName().toString(), ref.memberType().toString());
 			
+			// Current framer
+			SpringThread.Frame currentFrame = this.thread.currentFrame();
+			
+			// Potential return value?
+			MethodDescriptor type = ref.memberType();
+			Object rv;
+			
 			// Now perform the actual call
+			ProfiledFrame oldFrame = currentFrame._profiler;
 			try
 			{
-				// Calculate result of method
-				MethodDescriptor type = ref.memberType();
-				Object rv = this.nativeMethod(ref.className(),
-					ref.memberNameAndType(), args);
+				// Replace frame for tracking
+				currentFrame._profiler = pFrame;
 				
-				// Push native object to the stack
-				if (type.hasReturnValue())
-					__f.pushToStack(this.asVMObject(rv, true));
+				// Perform call and get the result
+				rv = this.nativeMethod(ref.className(),
+					ref.memberNameAndType(), args);
 			}
 			
-			// Exit the profiler frame to it is no longer tracked
+			// Exit the profiler frame so it is no longer tracked
 			finally
 			{
 				if (pFrame.inCallCount() > 0)
 					this.thread.profiler.exitFrame();
+				
+				// Restore old frame
+				if (currentFrame._profiler == pFrame)
+					currentFrame._profiler = oldFrame;
 			}
+			
+			// Push result to the stack, if there is one. This is done here
+			// because this may cause other methods to be invoked
+			if (type.hasReturnValue())
+				__f.pushToStack(this.asVMObject(rv, true));
 		}
 		
 		// Real code that exists in class file format

@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat.brackets;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.vm.springcoat.AbstractGhostObject;
+import cc.squirreljme.vm.springcoat.SpringMachine;
 
 /**
  * This class stores anything that is within trace points and such.
@@ -27,14 +28,15 @@ public final class TracePointObject
 	/**
 	 * Initializes the trace point.
 	 *
+	 * @param __machine The machine used.
 	 * @param __trace The trace to wrap.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/14
 	 */
-	public TracePointObject(CallTraceElement __trace)
+	public TracePointObject(SpringMachine __machine, CallTraceElement __trace)
 		throws NullPointerException
 	{
-		super(TracePointBracket.class);
+		super(__machine, TracePointBracket.class);
 		
 		if (__trace == null)
 			throw new NullPointerException("NARG");

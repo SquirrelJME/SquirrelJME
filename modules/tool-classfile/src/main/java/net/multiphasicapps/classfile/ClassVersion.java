@@ -11,7 +11,7 @@
 package net.multiphasicapps.classfile;
 
 /**
- * This represents the class verion that a class may be.
+ * This represents the class version that a class may be.
  *
  * @since 2016/06/29
  */

@@ -1,0 +1,136 @@
+# 2021/07/04
+
+## 18:30
+
+So working on this stack shuffling method and looking at the original and
+the new one, this is what it looks like:
+
+```
+DB: ********************    NEW CODE (THIS OUTPUT IS WRONG)
+DB: Preprocessing STACKSHUFFLE:[DUP2] (@62#DUP2~:[])
+DB: Shuffle with: DUP2 -> [[A+] -> [A+A+]]
+DB: *** Stack Result ***
+DB: BEF: State:{L=[r8:Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMe
+mory;:RN, r9:J, r10:top-long, r11:[B:RN, r12:I, r13:I:R, r14:I], S=[r11(15):[B
+:N, r16:I, r8(17):Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory
+;:N, r9(18):J, r10(19):top-long]}
+DB: AFT: State:{L=[r8:Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMe
+mory;:RN, r9:J, r10:top-long, r11:[B:RN, r12:I, r13:I:R, r14:I], S=[r11(15):[B
+:N, r16:I, r8(17):Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory
+;:N]}
+DB: IN : [In:{r=r9, type=J, flags=}]
+DB: OUT: []
+
+DB: ********************    OLD CODE
+DB: Preprocessing STACKSHUFFLE:[DUP2] (@62#DUP2~:[])
+DB: Shuffle with: DUP2 -> [[A+] -> [A+A+]]
+DB: Popped: [r9(18):J, r10(19):top-long]
+DB: Source map: {0=r9(18):J}
+DB: Pre-copies: {}
+DB: *** Stack Result ***
+DB: BEF: State:{L=[r8:Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMe
+mory;:RN, r9:J, r10:top-long, r11:[B:RN, r12:I, r13:I:R, r14:I], S=[r11(15):[B
+:N, r16:I, r8(17):Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory
+;:N, r9(18):J, r10(19):top-long]}
+DB: AFT: State:{L=[r8:Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMe
+mory;:RN, r9:J, r10:top-long, r11:[B:RN, r12:I, r13:I:R, r14:I], S=[r11(15):[B
+:N, r16:I, r8(17):Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory
+;:N, r9(18):J, r10(19):top-long, r9(20):J, r10(21):top-long]}
+DB: IN : []
+DB: OUT: []
+DB: ********************
+```
+
+So I wonder what the pushed Java types are...
+
+Actually the correct new code result is this:
+
+```
+DB: ********************
+DB: Preprocessing STACKSHUFFLE:[DUP2] (@62#DUP2~:[])
+DB: Shuffle with: DUP2 -> [[A+] -> [A+A+]]
+DB: >>>>>>>> PRE-DETERMINE
+DB: *** Stack Result ***
+DB: BEF: State:{L=[r8:Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory;:RN, r9:J, r10:top-long, r11:[B:RN, r12:I, r13:I:R, r14:I], S=[r11(15):[B:N, r16:I, r8(17):Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory;:N, r9(18):J, r10(19):top-long]}
+DB: AFT: State:{L=[r8:Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory;:RN, r9:J, r10:top-long, r11:[B:RN, r12:I, r13:I:R, r14:I], S=[r11(15):[B:N, r16:I, r8(17):Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory;:N]}
+DB: IN : [In:{r=r9, type=J, flags=}]
+DB: OUT: []
+DB: ********************
+DB: @@PUSHTYPE: [[A+] -> [A+A+]] -> [J, J]
+DB: *** Stack Result ***
+DB: BEF: State:{L=[r8:Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory;:RN, r9:J, r10:top-long, r11:[B:RN, r12:I, r13:I:R, r14:I], S=[r11(15):[B:N, r16:I, r8(17):Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory;:N, r9(18):J, r10(19):top-long]}
+DB: AFT: State:{L=[r8:Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory;:RN, r9:J, r10:top-long, r11:[B:RN, r12:I, r13:I:R, r14:I], S=[r11(15):[B:N, r16:I, r17:J, r18:top-long, r19:J, r20:top-long]}
+DB: IN : [In:{r=r8, type=Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory;, flags=NC}, In:{r=r9, type=J, flags=}]
+DB: OUT: [Out:{r=r17, type=J, flags=}, Out:{r=r19, type=J, flags=}]
+DB: ********************
+DB: <<<<<<<< POST-DETERMINE
+DB: @@PUSHPOP: [[A+] -> [A+A+]] -> Result:{bef=State:{L=[r8:Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory;:RN, r9:J, r10:top-long, r11:[B:RN, r12:I, r13:I:R, r14:I], S=[r11(15):[B:N, r16:I, r8(17):Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory;:N, r9(18):J, r10(19):top-long]}, aft=State:{L=[r8:Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory;:RN, r9:J, r10:top-long, r11:[B:RN, r12:I, r13:I:R, r14:I], S=[r11(15):[B:N, r16:I, r17:J, r18:top-long, r19:J, r20:top-long]}, enq=ENQ[|], in=[In:{r=r8, type=Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory;, flags=NC}, In:{r=r9, type=J, flags=}], out=[Out:{r=r17, type=J, flags=}, Out:{r=r19, type=J, flags=}], ops=[]}
+DB: @@INOUT: In:{r=r8, type=Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory;, flags=NC} -> Out:{r=r17, type=J, flags=}
+DB: @@INOUT: In:{r=r8, type=Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory;, flags=NC} -> Out:{r=r19, type=J, flags=}
+DB: *** Stack Result ***
+DB: BEF: State:{L=[r8:Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory;:RN, r9:J, r10:top-long, r11:[B:RN, r12:I, r13:I:R, r14:I], S=[r11(15):[B:N, r16:I, r8(17):Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory;:N, r9(18):J, r10(19):top-long]}
+DB: AFT: State:{L=[r8:Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory;:RN, r9:J, r10:top-long, r11:[B:RN, r12:I, r13:I:R, r14:I], S=[r11(15):[B:N, r16:I, r17:J, r18:top-long, r19:J, r20:top-long]}
+DB: IN : []
+DB: OUT: []
+DB: OPS: [COPY(R8, T0), COPY(T0, R17), COPY(T0, R19)]
+DB: ********************
+```
+
+And I see it:
+
+```
+BEFORE:
+S=[r11(15):[B:N, r16:I, r8(17):Lcc/squirreljme/jvm/summercoat/ld/mem/AbstractReadableMemory;:N, r9(18):J, r10(19):top-long]}
+AFTER:
+S=[r11(15):[B:N, r16:I, r17:J, r18:top-long, r19:J, r20:top-long]}
+```
+
+That `AbstractReadableMemory` is just going poof for some reason.
+
+## 18:49
+
+Ah, I am mixing the maxes... the pops is logical but one has logical and
+the other has not... so after doing this basically it works and compiles
+the code? Now to see if it actually produces the right result.
+
+### 19:35
+
+Okay so looks to be correct, although the optimizations that I did have been
+tossed out the window, but oh well...
+
+```
+- "*** Java :113 IADD@61 ***"
+- "INTEGER_ADD_REG:[[14, 15, 14]]"
+- "*** Java :113 DUP_X1@62 ***"
+- "COPY:[[14, 20]]"
+- "IF_ICMP_EQUALS:[[13, 0, 7]]"
+- "MEM_HANDLE_COUNT_UP:[[13]]"
+- "COPY:[[13, 21]]"
+- "COPY:[[20, 13]]"
+- "COPY:[[21, 14]]"
+- "COPY:[[20, 15]]"
+- "*** Java :113 PUTFIELD@63 ***"
+- "COPY:[[14, 20]]"
+- "IF_ICMP_EQUALS:[[14, 0, 542]]"
+- "LOAD_POOL:[[#5271(ACCESSED_FIELD):NORMAL+INSTANCE+field java/util/LinkedLis
+  t::modCount I, 21]]"
+- "MEM_HANDLE_OFF_STORE_INTEGER_REG_JAVA:[[15, 14, 21]]"
+- "IF_ICMP_EQUALS:[[20, 0, 61]]"
+- "MEM_HANDLE_COUNT_DOWN:[[20, 21]]"
+- "IF_ICMP_GREATER_THAN:[[21, 0, 53]]"
+- "COPY:[[3, 22]]"
+- "COPY:[[0, 3]]"
+- "LOAD_POOL:[[#5(INVOKE_XTABLE):XTable:STATIC[cc/squirreljme/jvm/summercoat/L
+  ogicHandler], 23]]"
+- "LOAD_POOL:[[#19(INVOKED_METHOD):STATIC+cc/squirreljme/jvm/summercoat/LogicH
+  andler::gcMemHandle(I)V, 26]]"
+- "MEM_HANDLE_OFF_LOAD_INTEGER_REG_JAVA:[[24, 23, 26]]"
+- "INTEGER_ADD_CONST:[[26, 4, 26]]"
+- "MEM_HANDLE_OFF_LOAD_INTEGER_REG_JAVA:[[25, 23, 26]]"
+- "INVOKE_POINTER_AND_POOL:[[24, 25, R[20]]]"
+- "IF_ICMP_NOT_EQUALS:[[3, 0, 8]]"
+- "COPY:[[22, 3]]"
+- "IF_ICMP_NOT_EQUALS:[[3, 0, 1792]]"
+- "COPY:[[0, 20]]"
+- "IF_ICMP_NOT_EQUALS:[[3, 0, 1784]]"
+```

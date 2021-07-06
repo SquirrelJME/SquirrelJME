@@ -1,0 +1,15 @@
+# 2021/06/20
+
+## 15:26
+
+The stack shuffling stuff is just wrong, so not even working correctly for
+`DUP_X1`. Even forcing collisions gives the following which is very wrong.
+
+```
+R13 = List
+R14 = int
+OPS: [COPY(R14, R17), COPY(R13, R18), COPY(R17, R13),
+                                           R14 int  
+                                           COPY(R18, R14), COPY(R18, R15)]
+                                                R13 list        R13 list
+```

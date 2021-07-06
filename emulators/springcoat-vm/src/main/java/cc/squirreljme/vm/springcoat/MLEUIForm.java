@@ -15,7 +15,6 @@ import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.UIDisplayObject;
 import cc.squirreljme.vm.springcoat.brackets.UIFormObject;
 import cc.squirreljme.vm.springcoat.brackets.UIItemObject;
@@ -101,7 +100,7 @@ public enum MLEUIForm
 			int n = natives.length;
 			SpringObject[] result = new SpringObject[n];
 			for (int i = 0; i < n; i++)
-				result[i] = new UIDisplayObject(natives[i]);
+				result[i] = new UIDisplayObject(__thread.machine, natives[i]);
 			
 			// Use array as result
 			return __thread.asVMObjectArray(__thread.resolveClass(
@@ -125,7 +124,8 @@ public enum MLEUIForm
 			UIFormBracket form = UIFormShelf.displayCurrent(
 				MLEUIForm.__display(__args[0]).display);
 			
-			return (form == null ? null : new UIFormObject(form));
+			return (form == null ? null : new UIFormObject(__thread.machine,
+				form));
 		}
 	},
 	
@@ -259,7 +259,7 @@ public enum MLEUIForm
 			UIItemBracket rv = UIFormShelf.formItemAtPosition(
 				MLEUIForm.__form(__args[0]).form, (int)__args[1]);
 			
-			return (rv == null ? null : new UIItemObject(rv));
+			return (rv == null ? null : new UIItemObject(__thread.machine, rv));
 		}
 	},
 	
@@ -331,7 +331,7 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new UIItemObject(UIFormShelf.formItemRemove(
+			return new UIItemObject(__thread.machine, UIFormShelf.formItemRemove(
 				MLEUIForm.__form(__args[0]).form, (int)__args[1]));
 		}
 	},
@@ -346,7 +346,7 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new UIFormObject(UIFormShelf.formNew());
+			return new UIFormObject(__thread.machine, UIFormShelf.formNew());
 		}
 	},
 	
@@ -396,7 +396,8 @@ public enum MLEUIForm
 		{
 			UIFormBracket form = UIFormShelf.itemForm(
 				MLEUIForm.__item(__args[0]).item);
-			return (form == null ? null : new UIFormObject(form));
+			return (form == null ? null : new UIFormObject(__thread.machine,
+				form));
 		}
 	}, 
 	
@@ -411,7 +412,7 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new UIItemObject(UIFormShelf.itemNew((int)__args[0]));
+			return new UIItemObject(__thread.machine, UIFormShelf.itemNew((int)__args[0]));
 		}
 	},
 	
