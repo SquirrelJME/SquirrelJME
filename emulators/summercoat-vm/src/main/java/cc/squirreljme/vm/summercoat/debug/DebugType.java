@@ -236,6 +236,9 @@ public class DebugType
 	{
 		MemHandle handle = DebugBase.handleType(__which);
 		
+		Debugging.debugNote("methodName(%s, %d)",
+			this.signature(__which), __methodDx);
+		
 		throw Debugging.todo();
 	}
 	
