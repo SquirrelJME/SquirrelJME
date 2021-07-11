@@ -75,10 +75,12 @@ public interface StaticClassProperty
 		12;
 	
 	/** Static field data offset. */
+	@Deprecated
 	byte OFFSET_STATIC_FIELD_DATA =
 		13;
 	
 	/** Static field data size. */
+	@Deprecated
 	byte SIZE_STATIC_FIELD_DATA =
 		14;
 	
@@ -87,6 +89,7 @@ public interface StaticClassProperty
 		15;
 	
 	/** Instance field bytes. */
+	@Deprecated
 	byte INT_INSTANCE_FIELD_BYTES =
 		16;
 	
@@ -95,10 +98,12 @@ public interface StaticClassProperty
 		17;
 	
 	/** Instance field data offset. */
+	@Deprecated
 	byte OFFSET_INSTANCE_FIELD_DATA =
 		18;
 	
 	/** Instance field data size. */
+	@Deprecated
 	byte SIZE_INSTANCE_FIELD_DATA =
 		19;
 	
@@ -107,10 +112,12 @@ public interface StaticClassProperty
 		20;
 	
 	/** Static method data offset. */
+	@Deprecated
 	byte OFFSET_STATIC_METHOD_DATA =
 		21;
 	
 	/** Static method data size. */
+	@Deprecated
 	byte SIZE_STATIC_METHOD_DATA =
 		22;
 	
@@ -119,10 +126,12 @@ public interface StaticClassProperty
 		23;
 	
 	/** Instance method data offset. */
+	@Deprecated
 	byte OFFSET_INSTANCE_METHOD_DATA =
 		24;
 	
 	/** Instance method data size. */
+	@Deprecated
 	byte SIZE_INSTANCE_METHOD_DATA =
 		25;
 	
@@ -178,9 +187,25 @@ public interface StaticClassProperty
 	byte SIZEOF_DEBUG_SIGNATURE =
 		38;
 	
+	/** Offset to the field tread. */
+	byte OFFSETOF_FIELD_TREAD =
+		39;
+	
+	/** Size of the field tread. */
+	byte SIZEOF_FIELD_TREAD =
+		40;
+	
+	/** Offset to the method tread. */
+	byte OFFSETOF_METHOD_TREAD =
+		41;
+	
+	/** Size of the method tread. */
+	byte SIZEOF_METHOD_TREAD =
+		42;
+	
 	/** The number of static properties. */
 	byte NUM_STATIC_PROPERTIES =
-		39;
+		43;
 	
 	/** Static field base index. */
 	@Deprecated
