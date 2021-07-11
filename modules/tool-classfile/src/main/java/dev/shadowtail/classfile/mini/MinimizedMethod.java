@@ -23,7 +23,7 @@ import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
- * This represents a method which has been mimized.
+ * This represents a method which has been minimized.
  *
  * @since 2019/03/14
  */

@@ -149,7 +149,7 @@ public final class PackRom
 		Debugging.debugNote("TOC at %x (len %d)", tocBase, tocSize);
 		
 		// Setup new table of contents
-		this._toc = (rv = new TableOfContents(
+		this._toc = (rv = new TableOfContentsMemory(
 			this.rom.subSection(tocBase, tocSize)));
 		return rv;
 	}

@@ -254,7 +254,7 @@ public class JarRom
 		HeaderStruct header = this.header();
 		
 		// Load in the table of contents
-		rv = new TableOfContents(this.data.subSection(
+		rv = new TableOfContentsMemory(this.data.subSection(
 			header.getProperty(JarProperty.OFFSET_TOC),
 			header.getProperty(JarProperty.SIZE_TOC)));
 		
