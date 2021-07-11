@@ -70,6 +70,17 @@ public final class HeaderStruct
 	}
 	
 	/**
+	 * Returns the magic number of the structure.
+	 * 
+	 * @return The structure's magic number.
+	 * @since 2021/07/11
+	 */
+	public int magicNumber()
+	{
+		return this.magicNumber;
+	}
+	
+	/**
 	 * Returns the number of properties.
 	 * 
 	 * @return The number of properties.

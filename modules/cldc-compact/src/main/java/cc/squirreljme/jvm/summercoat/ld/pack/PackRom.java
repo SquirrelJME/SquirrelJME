@@ -174,7 +174,7 @@ public final class PackRom
 				PackProperty.NUM_PACK_PROPERTIES);
 			
 			// {@squirreljme.error ZZ43 Invalid ROM header. (Magic number)}
-			int romMagic = header.magicNumber;
+			int romMagic = header.magicNumber();
 			if (ClassInfoConstants.PACK_MAGIC_NUMBER != romMagic)
 				throw new InvalidRomException("ZZ43 " + romMagic);
 			

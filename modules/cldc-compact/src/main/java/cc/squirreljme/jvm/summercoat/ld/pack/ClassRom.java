@@ -9,8 +9,6 @@
 package cc.squirreljme.jvm.summercoat.ld.pack;
 
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
-import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
-import cc.squirreljme.jvm.summercoat.constants.JarProperty;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemoryInputStream;
@@ -66,7 +64,7 @@ public final class ClassRom
 			// {@squirreljme.error ZZ5c Invalid class magic number.}
 			rv = HeaderStruct.decode(in,
 				StaticClassProperty.NUM_STATIC_PROPERTIES);
-			if (rv.magicNumber != ClassInfoConstants.CLASS_MAGIC_NUMBER)
+			if (rv.magicNumber() != ClassInfoConstants.CLASS_MAGIC_NUMBER)
 				throw new InvalidRomException("ZZ5c");
 			
 			this._header = rv;

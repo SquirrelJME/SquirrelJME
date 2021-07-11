@@ -11,10 +11,10 @@ package dev.shadowtail.classfile.mini;
 
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
+import cc.squirreljme.jvm.summercoat.ld.pack.HeaderStruct;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 
 /**
@@ -24,35 +24,23 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
  */
 public final class MinimizedClassHeader
 {
-	/** The format version of the class. */
-	protected final short formatVersion;
-	
-	/** The properties of the class. */
-	private final int[] _properties;
+	/** The header structure for the class. */
+	protected final HeaderStruct struct;
 	
 	/**
 	 * Initializes the class header.
-	 *
-	 * @param __fVer The format version of the class.
-	 * @param __props The property values.
-	 * @throws IllegalArgumentException If there are too many properties.
+	 * 
+	 * @param __struct The structure used for this header.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/16
+	 * @since 2021/07/11
 	 */
-	public MinimizedClassHeader(short __fVer, int... __props)
-		throws IllegalArgumentException, NullPointerException
+	public MinimizedClassHeader(HeaderStruct __struct)
+		throws NullPointerException
 	{
-		if (__props == null)
+		if (__struct == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC4t Too many properties were passed to the
-		// class file.}
-		if (__props.length > StaticClassProperty.NUM_STATIC_PROPERTIES)
-			throw new IllegalArgumentException("JC4t " + __props.length);
-		
-		this.formatVersion = __fVer;
-		this._properties = Arrays.copyOf(__props,
-			StaticClassProperty.NUM_STATIC_PROPERTIES);
+		this.struct = __struct;
 	}
 	
 	/**
@@ -66,12 +54,7 @@ public final class MinimizedClassHeader
 	public final int get(int __property)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error JC4s Invalid class property. (The property)}
-		if (__property < 0 ||
-			__property >= StaticClassProperty.NUM_STATIC_PROPERTIES)
-			throw new IllegalArgumentException("JC4s " + __property);
-		
-		return this._properties[__property];
+		return this.struct.getProperty(__property);
 	}
 	
 	/** Class flags. */
@@ -243,7 +226,7 @@ public final class MinimizedClassHeader
 	 */
 	public final int numProperties()
 	{
-		return this._properties.length;
+		return this.struct.numProperties();
 	}
 	
 	/**
@@ -265,28 +248,21 @@ public final class MinimizedClassHeader
 		
 		DataInputStream dis = new DataInputStream(__is);
 		
+		// Decode the class structure
+		HeaderStruct struct = HeaderStruct.decode(dis,
+			StaticClassProperty.NUM_STATIC_PROPERTIES);
+		
 		// {@squirreljme.error JC04 Invalid minimized class magic number.
 		// (The magic number; The expected magic)}
 		int magic;
-		if (ClassInfoConstants.CLASS_MAGIC_NUMBER != (magic = dis.readInt()))
+		if (ClassInfoConstants.CLASS_MAGIC_NUMBER !=
+			(magic = struct.magicNumber()))
 			throw new InvalidClassFormatException(String.format(
 				"JC04 %08x %08x",
 				magic, ClassInfoConstants.CLASS_MAGIC_NUMBER));
 		
-		// {@squirreljme.error JC4u Cannot decode class because the version
-		// identifier is not known. (The format version of the class)}
-		int formatVersion = dis.readUnsignedShort();
-		if (formatVersion != ClassInfoConstants.CLASS_VERSION_20201129)
-			throw new RuntimeException("JC4u " + formatVersion);
-		
-		// Read in all the data
-		int numProperties = dis.readUnsignedShort();
-		int[] properties = new int[numProperties];
-		for (int i = 0; i < numProperties; i++)
-			properties[i] = dis.readInt();
-		
-		// Setup finalized class
-		return new MinimizedClassHeader((short)formatVersion, properties);
+		// Use the decoded structure
+		return new MinimizedClassHeader(struct);
 	}	
 }
 

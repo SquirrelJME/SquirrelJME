@@ -113,7 +113,7 @@ public class JarRom
 		{
 			// {@squirreljme.error ZZ5d Invalid JAR magic number.}
 			rv = HeaderStruct.decode(in, JarProperty.NUM_JAR_PROPERTIES);
-			if (rv.magicNumber != ClassInfoConstants.JAR_MAGIC_NUMBER)
+			if (rv.magicNumber() != ClassInfoConstants.JAR_MAGIC_NUMBER)
 				throw new InvalidRomException("ZZ5d");
 			
 			this._header = rv;
