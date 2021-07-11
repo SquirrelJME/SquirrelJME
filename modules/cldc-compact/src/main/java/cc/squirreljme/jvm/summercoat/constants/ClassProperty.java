@@ -137,7 +137,11 @@ public interface ClassProperty
 	byte TYPEBRACKET_LINK_CLASS_NEXT =
 		StaticClassProperty.NUM_STATIC_PROPERTIES + 29;
 	
+	/** Size of the ROM data. */
+	byte SIZEOF_ROM_CLASS =
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 30;
+	
 	/** The number of properties available. */
 	byte NUM_RUNTIME_PROPERTIES =
-		StaticClassProperty.NUM_STATIC_PROPERTIES + 30;
+		StaticClassProperty.NUM_STATIC_PROPERTIES + 31;
 }

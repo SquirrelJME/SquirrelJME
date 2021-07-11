@@ -563,9 +563,15 @@ public final class BootState
 		// Store the pointer to where the Class ROM exists in memory, but this
 		// is only valid for non-special classes
 		if (!__cl.isArray() && !__cl.isPrimitive())
+		{
+			ChunkSection classChunk = this._rawChunks.get(
+				classFile.thisName());
+			
 			classInfo.set(ClassProperty.MEMPTR_ROM_CLASS_LO,
-				new BootJarPointer(this._rawChunks
-					.get(classFile.thisName()).futureAddress()));
+				new BootJarPointer(classChunk.futureAddress()));
+			classInfo.set(ClassProperty.SIZEOF_ROM_CLASS,
+				classChunk.futureSize());
+		}
 		
 		// Need to determine if we are Object or our super class is Object
 		// that way there can be shortcuts on resolution

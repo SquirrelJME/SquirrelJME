@@ -111,10 +111,10 @@ public class JarRom
 		try (ReadableMemoryInputStream in =
 			new ReadableMemoryInputStream(this.data))
 		{
-			// {@squirreljme.error Invalid JAR magic number.}
+			// {@squirreljme.error ZZ5d Invalid JAR magic number.}
 			rv = HeaderStruct.decode(in, JarProperty.NUM_JAR_PROPERTIES);
 			if (rv.magicNumber != ClassInfoConstants.JAR_MAGIC_NUMBER)
-				throw new InvalidRomException("ZZ57");
+				throw new InvalidRomException("ZZ5d");
 			
 			this._header = rv;
 		}

@@ -15,10 +15,12 @@ import cc.squirreljme.jdwp.views.JDWPViewType;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
+import cc.squirreljme.jvm.summercoat.ld.pack.ClassRom;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.summercoat.MachineState;
 import cc.squirreljme.vm.summercoat.MemHandle;
 import cc.squirreljme.vm.summercoat.VMUtils;
+import dev.shadowtail.jarfile.BootJarPointer;
 import java.lang.ref.Reference;
 
 /**
@@ -234,7 +236,7 @@ public class DebugType
 	@Override
 	public String methodName(Object __which, int __methodDx)
 	{
-		MemHandle handle = DebugBase.handleType(__which);
+		ClassRom classRom = this.__classRom(DebugBase.handleType(__which));
 		
 		Debugging.debugNote("methodName(%s, %d)",
 			this.signature(__which), __methodDx);
@@ -301,5 +303,25 @@ public class DebugType
 	public Object superType(Object __which)
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the class ROM of the given memory handle.
+	 * 
+	 * @param __handle The handle to get the Class ROM of.
+	 * @return The Class ROM of the given type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/07/11
+	 */
+	ClassRom __classRom(MemHandle __handle)
+		throws NullPointerException
+	{
+		if (__handle == null)
+			throw new NullPointerException("NARG");
+		
+		long base = this.getLong(__handle, ClassProperty.MEMPTR_ROM_CLASS_LO);
+		int size = this.getInteger(__handle, ClassProperty.SIZEOF_ROM_CLASS);
+		
+		return new ClassRom(this.__machine().memory().subSection(base, size));
 	}
 }
