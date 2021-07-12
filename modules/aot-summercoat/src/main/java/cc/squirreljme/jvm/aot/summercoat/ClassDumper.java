@@ -12,7 +12,6 @@ package cc.squirreljme.jvm.aot.summercoat;
 import cc.squirreljme.jvm.summercoat.constants.JarProperty;
 import cc.squirreljme.jvm.summercoat.ld.pack.HeaderStruct;
 import cc.squirreljme.jvm.summercoat.ld.pack.JarRom;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.mini.DualPoolEncoder;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedClassHeader;
@@ -282,7 +281,8 @@ public final class ClassDumper
 		throws IOException
 	{
 		// Key
-		this.__print(__indent, String.format("- %s %s", __m.name, __m.type),
+		this.__print(__indent, String.format("- %s %s", __m.name(),
+			__m.type()),
 			"");
 		
 		// Flags
@@ -290,8 +290,7 @@ public final class ClassDumper
 		this.__printList(__indent + 2, __m.flags());
 		
 		// Other properties
-		this.__print(__indent + 1, "index", "%d",
-			__m.index);
+		this.__print(__indent + 1, "index", "%d", __m.instanceIndex());
 			
 		// Is there code to be dumped?
 		byte[] code = __m.code();

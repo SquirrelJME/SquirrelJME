@@ -218,7 +218,7 @@ public final class MinimizedClassFile
 			throw new NullPointerException("NARG");
 		
 		for (MinimizedMethod mm : (__static ? this._smethods : this._imethods))
-			if (mm.name.equals(__n) && (__t == null || mm.type.equals(__t)))
+			if (mm.name().equals(__n) && (__t == null || mm.type().equals(__t)))
 				return mm;
 		
 		// Not found
@@ -241,7 +241,7 @@ public final class MinimizedClassFile
 			throw new NullPointerException("NARG");
 		
 		for (MinimizedMethod mm : (__static ? this._smethods : this._imethods))
-			if (mm.name.equals(__nat.name()) && mm.type.equals(__nat.type()))
+			if (mm.name().equals(__nat.name()) && mm.type().equals(__nat.type()))
 				return mm;
 		
 		return null;

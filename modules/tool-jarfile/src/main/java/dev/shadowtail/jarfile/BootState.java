@@ -1479,7 +1479,7 @@ public final class BootState
 			return this.__calcMethodCodeAddr(this.loadClass(
 				BootState._OBJECT_CLASS), __static, __method);
 		
-		return new BootJarPointer(base + __method.codeoffset,
+		return new BootJarPointer(base + __method.codeOffset(),
 			this._rawChunks.get(__inClass.thisName).futureAddress());
 	}
 	
