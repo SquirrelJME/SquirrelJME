@@ -11,22 +11,42 @@ package cc.squirreljme.jvm.summercoat.ld.pack;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
- * Methods that exist within a {@link ClassRom}.
+ * Represents a method within the ROM.
  *
- * @since 2021/07/11
+ * @since 2021/07/12
  */
-public final class ClassRomMethods
+public final class ClassRomMethod
 {
 	/**
-	 * Returns the method by its method index.
+	 * Returns the code length of the given method.
 	 * 
-	 * @param __dx The index of the method.
-	 * @return The ROM method.
-	 * @throws IndexOutOfBoundsException If this is not a valid method index.
+	 * @return The code length of the given method, will return {@code -1}
+	 * if this method has no code ({@code abstract} or {@code native}).
 	 * @since 2021/07/12
 	 */
-	public ClassRomMethod get(int __dx)
-		throws IndexOutOfBoundsException
+	public final int codeLength()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the name of the method.
+	 * 
+	 * @return The name of the method.
+	 * @since 2021/07/12
+	 */
+	public final String name()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the method signature.
+	 * 
+	 * @return The method signature.
+	 * @since 2021/07/12
+	 */
+	public final String signature()
 	{
 		throw Debugging.todo();
 	}

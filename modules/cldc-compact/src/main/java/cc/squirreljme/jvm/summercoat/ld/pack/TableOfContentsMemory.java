@@ -12,12 +12,13 @@ import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
 
 /**
  * Represents a {@link TableOfContents} which is stored in the standard
- * format to be read by memory.
+ * format to be read via memory using a memory mapped file that is properly
+ * aligned.
  * 
  * Table of contents are in the following format: {@code
  *  - uint16_t entryCount
  *  - uint16_t entrySpan
- *  
+ * 
  * Then follows (entryCount * entrySpan) int32_t, each span of values
  * corresponds to a single index.
  * }

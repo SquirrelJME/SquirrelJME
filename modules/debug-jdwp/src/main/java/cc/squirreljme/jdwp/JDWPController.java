@@ -14,6 +14,7 @@ import cc.squirreljme.jdwp.event.EventFilter;
 import cc.squirreljme.jdwp.event.FieldOnly;
 import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.trips.JDWPTrip;
+import cc.squirreljme.jdwp.views.JDWPView;
 import cc.squirreljme.jdwp.views.JDWPViewFrame;
 import cc.squirreljme.jdwp.views.JDWPViewKind;
 import cc.squirreljme.jdwp.views.JDWPViewObject;
@@ -580,6 +581,22 @@ public final class JDWPController
 			//noinspection resource
 			return new JDWPValue(freeValues).__resetToOpen();
 		}
+	}
+	
+	/**
+	 * Returns the view of the given type.
+	 * 
+	 * @param <V> The type to view.
+	 * @param __type The type to view.
+	 * @param __kind The kind of viewer to use.
+	 * @return The view for the given type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/07/12
+	 */
+	public final <V extends JDWPView> V view(Class<V> __type,
+		JDWPViewKind __kind)
+	{
+		return this.state.<V>view(__type, __kind);
 	}
 	
 	/**

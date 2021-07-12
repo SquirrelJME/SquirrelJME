@@ -9,7 +9,7 @@
 package cc.squirreljme.jvm.summercoat.ld.pack;
 
 /**
- * Fields within a {@link ClassRom}.
+ * Fields that exist within a {@link ClassRom}.
  *
  * @since 2021/07/11
  */

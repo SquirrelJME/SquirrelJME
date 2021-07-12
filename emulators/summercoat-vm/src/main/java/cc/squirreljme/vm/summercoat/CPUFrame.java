@@ -119,13 +119,12 @@ public final class CPUFrame
 	/**
 	 * Returns the relative address of this frame.
 	 * 
-	 * @return The relative address of this frame, this will always be a
-	 * positive number.
+	 * @return The relative address of this frame.
 	 * @since 2021/07/06
 	 */
 	public int atRelativeAddress()
 	{
-		return Math.max(0, this._pc - this._entryPc);
+		return this._pc - this._entryPc;
 	}
 	
 	/**

@@ -235,6 +235,17 @@ public final class MachineState
 	}
 	
 	/**
+	 * Returns the JDWP controller.
+	 * 
+	 * @return The JDWP controller.
+	 * @since 2021/07/12
+	 */
+	public final JDWPController jdwpController()
+	{
+		return this._jdwp;
+	}
+	
+	/**
 	 * Returns the memory handle manager.
 	 * 
 	 * @return The memory handles.

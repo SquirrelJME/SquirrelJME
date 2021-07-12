@@ -12,6 +12,7 @@ import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemoryInputStream;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 /**
@@ -50,7 +51,7 @@ public final class ClassRom
 	 * @throws InvalidRomException If the ROM is not valid.
 	 * @since 2021/07/11
 	 */
-	public HeaderStruct header()
+	public final HeaderStruct header()
 		throws InvalidRomException
 	{
 		HeaderStruct rv = this._header;
@@ -77,5 +78,16 @@ public final class ClassRom
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the available methods within the class.
+	 * 
+	 * @return The methods that are available in the class ROM.
+	 * @since 2021/07/12
+	 */
+	public final ClassRomMethods methods()
+	{
+		throw Debugging.todo();
 	}
 }

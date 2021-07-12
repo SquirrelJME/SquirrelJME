@@ -10,6 +10,8 @@
 package cc.squirreljme.vm.summercoat.debug;
 
 import cc.squirreljme.jdwp.views.JDWPView;
+import cc.squirreljme.jdwp.views.JDWPViewKind;
+import cc.squirreljme.jdwp.views.JDWPViewType;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.vm.summercoat.MachineState;
 import cc.squirreljme.vm.summercoat.MemHandle;
@@ -101,6 +103,20 @@ public abstract class DebugBase
 		if (rv == null)
 			throw new IllegalStateException("Machine GCed.");
 		return rv;
+	}
+	
+	/**
+	 * Returns the given view.
+	 * 
+	 * @param <V> The type to return.
+	 * @param __cl The type to cast to.
+	 * @param __v The kind of view to obtain.
+	 * @return The given view.
+	 * @since 2021/07/12
+	 */
+	final <V extends JDWPView> V __view(Class<V> __cl, JDWPViewKind __v)
+	{
+		return this.__machine().jdwpController().view(__cl, __v);
 	}
 	
 	/**
