@@ -73,6 +73,10 @@ public class TestStableSort
 		// These must be equal
 		this.secondary("equal", Arrays.equals(array, list));
 		
+		// Extra insurance to make sure everything is as expected
+		this.secondary("sorted",
+			TestStableSort.isSorted(Arrays.asList(array)));
+		
 		// Extract all the extra values, which should be in a specific order
 		int[] extra = new int[TestStableSort.COUNT];
 		for (int i = 0; i < TestStableSort.COUNT; i++)
@@ -80,6 +84,32 @@ public class TestStableSort
 		
 		// Report these values
 		this.secondary("extra", extra);
+	}
+	
+	
+	/**
+	 * Checks if this list is sorted.
+	 * 
+	 * @param __list The list to check. 
+	 * @return If this is sorted.
+	 * @since 2021/07/12
+	 */
+	public static boolean isSorted(List<Item> __list)
+	{
+		// Each later number must be bigger than the earlier number
+		Item last = null;
+		for (int i = 0, n = __list.size(); i < n; i++)
+		{
+			Item now = __list.get(i);
+			
+			if (last != null && now.compareTo(last) < 0)
+				return false;
+			
+			last = now;
+		}
+		
+		// Must be sorted
+		return true;
 	}
 	
 	/**

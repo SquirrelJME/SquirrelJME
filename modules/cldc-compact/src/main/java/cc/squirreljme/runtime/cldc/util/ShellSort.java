@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -135,6 +136,11 @@ public class ShellSort
 			return;
 		}
 		
+		// Keep storage for indexes, this is used for an additional comparison
+		// to force sorts to be stable. Although it costs some extra memory
+		// it will try to use the most compact array possible.
+		IntegerArray index = ShellSort.__indexStore(n);
+		
 		// Work down from the highest gap to the lowest
 		for (int gap : ShellSort.gaps(n))
 		{
@@ -142,18 +148,65 @@ public class ShellSort
 			for (int i = gap; i < n; i++)
 			{
 				// Use this to make a hole
-				T temp = __a.get(__from + i);
+				int holeFrom = __from + i;
+				T temp = __a.get(holeFrom);
+				int tempDx = index.get(holeFrom);
 				
 				// Shift earlier gap elements down
 				int j;
-				for (j = i; j >= gap && __comp.compare(
-					__a.get(__from + (j - gap)), temp) > 0; j -= gap)
-					__a.set(__from + j, __a.get(__from + (j - gap)));
+				for (j = i; j >= gap; j -= gap)
+				{
+					int from = __from + (j - gap);
+					int to = __from + j;
+					
+					// This forces the sort to be stable by also taking into
+					// account the index of the entry if the values are equal
+					int comp = __comp.compare(__a.get(from), temp);
+					if (comp == 0)
+						comp = index.get(from) - tempDx;
+					
+					// Is the other value higher?
+					if (comp > 0)
+					{
+						__a.set(to, __a.get(from));
+						index.set(to, index.get(from));
+					}
+					else 
+						break;
+				}
 				
 				// Put in the correct position
-				__a.set(__from + j, temp);
+				int holeTo = __from + j;
+				__a.set(holeTo, temp);
+				index.set(holeTo, tempDx);
 			}
 		}
+	}
+	
+	/**
+	 * Generates storage for storing values up to a given amount
+	 * 
+	 * @param __n The number of elements to store.
+	 * @return A wrapped integer array to store the sorted items.
+	 * @since 2021/07/12
+	 */
+	@SuppressWarnings("MagicNumber")
+	private static IntegerArray __indexStore(int __n)
+	{
+		// Create an array that can store indexes for everything
+		IntegerArray rv;
+		if (__n < 256)
+			rv = new UnsignedByteIntegerArray(new byte[__n]);
+		else if (__n < 65536)
+			rv = new UnsignedShortIntegerArray(new short[__n]);
+		else
+			rv = new IntegerIntegerArray(new int[__n]);
+		
+		// Now fill all the values up, to remember the original indexes
+		for (int i = 0; i < __n; i++)
+			rv.set(i, i);
+		
+		return rv;
 	}
 	
 	/**
