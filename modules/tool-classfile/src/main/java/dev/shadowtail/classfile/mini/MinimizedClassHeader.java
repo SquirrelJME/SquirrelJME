@@ -54,7 +54,7 @@ public final class MinimizedClassHeader
 	public final int get(int __property)
 		throws IllegalArgumentException
 	{
-		return this.struct.getProperty(__property);
+		return this.struct.getInteger(__property);
 	}
 	
 	/** Class flags. */

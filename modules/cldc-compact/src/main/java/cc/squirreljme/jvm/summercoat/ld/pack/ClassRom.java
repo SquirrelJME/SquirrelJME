@@ -88,6 +88,8 @@ public final class ClassRom
 	 */
 	public final ClassRomMethods methods()
 	{
+		HeaderStruct.
+		
 		throw Debugging.todo();
 	}
 }

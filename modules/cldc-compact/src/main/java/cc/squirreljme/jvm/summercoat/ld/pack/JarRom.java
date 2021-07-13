@@ -255,8 +255,8 @@ public class JarRom
 		
 		// Load in the table of contents
 		rv = new TableOfContentsMemory(this.data.subSection(
-			header.getProperty(JarProperty.OFFSET_TOC),
-			header.getProperty(JarProperty.SIZE_TOC)));
+			header.getInteger(JarProperty.OFFSET_TOC),
+			header.getInteger(JarProperty.SIZE_TOC)));
 		
 		// Cache and use it
 		this._toc = rv;

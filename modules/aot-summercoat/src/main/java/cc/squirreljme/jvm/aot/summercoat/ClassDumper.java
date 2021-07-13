@@ -106,10 +106,10 @@ public final class ClassDumper
 		
 		// Decode the dual pool
 		DualClassRuntimePool dualPool = DualPoolEncoder.decode(__inGlob,
-			header.getProperty(JarProperty.OFFSET_STATIC_POOL),
-				header.getProperty(JarProperty.SIZE_STATIC_POOL),
-			header.getProperty(JarProperty.OFFSET_RUNTIME_POOL),
-				header.getProperty(JarProperty.SIZE_RUNTIME_POOL));
+			header.getInteger(JarProperty.OFFSET_STATIC_POOL),
+				header.getInteger(JarProperty.SIZE_STATIC_POOL),
+			header.getInteger(JarProperty.OFFSET_RUNTIME_POOL),
+				header.getInteger(JarProperty.SIZE_RUNTIME_POOL));
 		
 		// Dump the pool
 		/*this.__dumpPool(0, dualPool);*/
@@ -264,7 +264,7 @@ public final class ClassDumper
 		for (int i = 0, n = __header.numProperties(); i < n; i++)
 			this.__print(1,
 				__Utils__.jarPropertyToString(i),
-				"%#010x", __header.getProperty(i));
+				"%#010x", __header.getInteger(i));
 	}
 	
 	/**

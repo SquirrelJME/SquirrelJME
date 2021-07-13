@@ -137,8 +137,8 @@ public final class PackRom
 			return rv;
 		
 		// We need these to determine where to read the data
-		int tocBase = this.header.getProperty(PackProperty.OFFSET_TOC);
-		int tocSize = this.header.getProperty(PackProperty.SIZE_TOC);
+		int tocBase = this.header.getInteger(PackProperty.OFFSET_TOC);
+		int tocSize = this.header.getInteger(PackProperty.SIZE_TOC);
 		
 		// {@squirreljme.error ZZ4u ROM has invalid table of contents
 		// reference.}
@@ -179,7 +179,7 @@ public final class PackRom
 				throw new InvalidRomException("ZZ43 " + romMagic);
 			
 			// {@squirreljme.error ZZ46 PackROM size is not valid. (The size)}
-			int romSize = header.getProperty(PackProperty.ROM_SIZE);
+			int romSize = header.getInteger(PackProperty.ROM_SIZE);
 			if (romSize <= ClassInfoConstants.PACK_MAXIMUM_HEADER_SIZE)
 				throw new InvalidRomException("ZZ46 " + romSize);
 			
