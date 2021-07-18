@@ -22,7 +22,7 @@ public final class JavaManifestKey
 	protected final String string;
 	
 	/** The actual input string. */
-	protected final String inputstring;
+	protected final String inputString;
 	
 	/**
 	 * Initializes the manifest key using the given string.
@@ -45,7 +45,7 @@ public final class JavaManifestKey
 		this.string = sb.toString();
 		
 		// Remember input string for case purposes
-		this.inputstring = __s;
+		this.inputString = __s;
 	}
 	
 	/**
@@ -81,7 +81,7 @@ public final class JavaManifestKey
 	 */
 	public String inputString()
 	{
-		return this.inputstring;
+		return this.inputString;
 	}
 	
 	/**
