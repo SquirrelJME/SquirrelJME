@@ -343,7 +343,6 @@ public class Display
 			Assembly.sysCallV(SystemCallIndex.ERROR_GET,
 				SystemCallIndex.DEVICE_FEEDBACK));*/
 				
-		 */
 	}
 	
 	/**
