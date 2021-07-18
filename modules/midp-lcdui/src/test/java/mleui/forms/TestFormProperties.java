@@ -196,6 +196,10 @@ public class TestFormProperties
 				this.secondary("no-selection-lock", noEitherGet);
 				return;
 			
+			case UIWidgetProperty.STRING_FORM_TITLE:
+				this.secondary("has-form-title", !noEitherGet);
+				return;
+			
 			default:
 				throw new FailingExecution("Missing " + __property);
 		}
