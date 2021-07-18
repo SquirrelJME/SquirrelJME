@@ -806,13 +806,13 @@ public final class SpringThreadWorker
 			// Normal call
 			else
 			{
-				// Enter the method we really want to execute
-				framelimit = thread.numFrames();
-				execframe = thread.enterFrame(method, __args);
-				
-				// Execute this method
-				this.run(framelimit);
-			}
+			// Enter the method we really want to execute
+			framelimit = thread.numFrames();
+			execframe = thread.enterFrame(method, __args);
+			
+			// Execute this method
+			this.run(framelimit);
+		}
 		}
 		
 		// Exception when running which was not caught
@@ -3647,7 +3647,7 @@ public final class SpringThreadWorker
 		// Re-lookup the method since we need to the right one! Then invoke it
 		else
 			__t.enterFrame(objClass.lookupMethod(false,
-				ref.memberNameAndType()), args);
+			ref.memberNameAndType()), args);
 	}
 	
 	/**
@@ -3860,14 +3860,14 @@ public final class SpringThreadWorker
 		// Re-resolve method for this object's class
 		refmethod = instance.type().lookupMethod(false,
 			ref.memberNameAndType());
-			
+		
 		// Calling onto a proxy?
 		if (instance instanceof SpringProxyObject)
 			this.__invokeProxy(refmethod.nameAndType(), args);
 		
 		// Enter frame as like a static method
 		else
-			__t.enterFrame(refmethod, args);
+		__t.enterFrame(refmethod, args);
 	}
 	
 	/**
