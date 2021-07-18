@@ -7,33 +7,20 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.boot;
+package cc.squirreljme.jvm.mle.constants;
 
 /**
- * This is thrown when the bootstrap has errors.
+ * Specifies the byte order that is used.
  *
- * @since 2020/03/01
+ * @since 2021/02/09
  */
-public class BootstrapMachineError
-	extends VirtualMachineError
+public interface ByteOrderType
 {
-	/**
-	 * Initializes the exception with no message or cause.
-	 *
-	 * @since 2020/03/01
-	 */
-	public BootstrapMachineError()
-	{
-	}
-	
-	/**
-	 * Initializes the exception with the given message and no cause.
-	 *
-	 * @param __m The message.
-	 * @since 2020/03/01
-	 */
-	public BootstrapMachineError(String __m)
-	{
-		super(__m);
-	}
+	/** Big endian. */
+	byte BIG_ENDIAN =
+		0;
+		
+	/** Little endian. */
+	byte LITTLE_ENDIAN =
+		1;
 }

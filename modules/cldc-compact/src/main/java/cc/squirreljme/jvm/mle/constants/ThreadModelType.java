@@ -7,11 +7,28 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
+package cc.squirreljme.jvm.mle.constants;
+
 /**
- * This package contains the classes and utilities regarding client tasks.
+ * This represents the thread model type.
  *
- * @since 2019/09/22
+ * @since 2021/05/07
  */
-
-package cc.squirreljme.jvm.boot.task;
-
+public interface ThreadModelType
+{
+	/** Invalid model. */
+	byte INVALID =
+		0;
+	
+	/** Single cooperatively threaded. */
+	byte SINGLE_COOP_THREAD =
+		1;
+	
+	/** Simultaneous Multi-threaded. */
+	byte SIMULTANEOUS_MULTI_THREAD =
+		2;
+	
+	/** The number of threading models. */
+	byte NUM_MODELS =
+		3;
+}

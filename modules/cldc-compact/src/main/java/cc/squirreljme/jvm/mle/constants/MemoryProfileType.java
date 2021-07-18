@@ -7,12 +7,20 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
+package cc.squirreljme.jvm.mle.constants;
+
 /**
- * This package contains the information and classes for handling the class
- * library within the SquirrelJME JVM instance.
+ * The type of memory profile that is used.
  *
- * @since 2019/09/22
+ * @since 2021/02/19
  */
-
-package cc.squirreljme.jvm.boot.lib;
-
+public interface MemoryProfileType
+{
+	/** Minimal memory. */
+	byte MINIMAL =
+		-1;
+	
+	/** Normal memory. */
+	byte NORMAL =
+		0;
+}
