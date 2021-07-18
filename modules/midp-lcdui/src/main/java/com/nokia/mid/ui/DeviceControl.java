@@ -9,10 +9,6 @@
 
 package com.nokia.mid.ui;
 
-import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.DeviceFeedbackType;
-import cc.squirreljme.jvm.Framebuffer;
-import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
@@ -45,8 +41,7 @@ public class DeviceControl
 		// Blink!
 		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
 			DeviceFeedbackType.BLINK_LED, ((__ms > (long)Integer.MAX_VALUE) ?
-				Integer.MAX_VALUE : (int)__ms));
-		 */
+				Integer.MAX_VALUE : (int)__ms));*/
 	}
 	
 	/**
@@ -80,6 +75,8 @@ public class DeviceControl
 		// Get maximum backlight level, stop if it is zero which means the
 		// property is not supported or there is no backlight that can be
 		// controlled
+		throw Debugging.todo();
+		/*
 		int max = Assembly.sysCallV(SystemCallIndex.FRAMEBUFFER,
 			Framebuffer.CONTROL_BACKLIGHT_LEVEL_MAX);
 		if (max == 0)
@@ -116,11 +113,12 @@ public class DeviceControl
 		throw Debugging.todo();
 		/*
 		// Vibrate!
+		throw Debugging.todo();
+		/*
 		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
 			DeviceFeedbackType.VIBRATE, ((__ms > (long)Integer.MAX_VALUE) ?
-				Integer.MAX_VALUE : (int)__ms));
+				Integer.MAX_VALUE : (int)__ms));*/
 				
-		 */
 	}
 	
 	/**
@@ -133,6 +131,8 @@ public class DeviceControl
 		throw Debugging.todo();
 		/*
 		// Clear vibration
+		throw Debugging.todo();
+		/*
 		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
 			DeviceFeedbackType.VIBRATE, 0);
 			

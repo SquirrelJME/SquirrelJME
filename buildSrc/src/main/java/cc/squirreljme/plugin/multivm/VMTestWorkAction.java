@@ -33,6 +33,10 @@ public abstract class VMTestWorkAction
 	private static final long _TEST_TIMEOUT =
 		360_000_000_000L;
 	
+	/** Skip sequence special. */
+	private static final byte[] _SKIP_SPECIAL =
+		new byte[]{'%', '!', 'S', 'k', 'O', 'n', 'T', 'i', '!', '%'};
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/07
@@ -92,23 +96,28 @@ public abstract class VMTestWorkAction
 			// Wait for the process to terminate, the exit code will contain
 			// the result of the test (pass, skip, fail)
 			int exitCode = -1;
+			boolean timeOutHit = false;
 			for (;;)
 				try
 				{
 					// Has the test run expired? Only when not debugging
 					if (!isDebugging)
 					{
-					long nsDur = System.nanoTime() - nsStart;
-					if (nsDur >= VMTestWorkAction._TEST_TIMEOUT)
-					{
-						// Note it
-						System.err.printf("TIME %s (%d/%d)%n", testName,
-							count, total);
-							System.err.flush();
-						
-						// The logic for interrupts is the same
-						throw new InterruptedException("Test Timeout");
-					}
+						long nsDur = System.nanoTime() - nsStart;
+						if (nsDur >= VMTestWorkAction._TEST_TIMEOUT)
+						{
+							// Note it
+							System.err.printf("TIME %s (%d/%d)%n", testName,
+								count, total);
+								System.err.flush();
+							
+							// Set timeout as being hit, used for special
+							// check
+							timeOutHit = true;
+							
+							// The logic for interrupts is the same
+							throw new InterruptedException("Test Timeout");
+						}
 					}
 					
 					// Wait for completion
@@ -136,6 +145,10 @@ public abstract class VMTestWorkAction
 			// Clock the ending time
 			long nsDur = System.nanoTime() - nsStart;
 			
+			byte[] stdErrBytes = stdErr.getBytes(stdErrThread);
+			if (timeOutHit && VMTestWorkAction.__findTimeoutSkip(stdErrBytes))
+				exitCode = VMTestResult.SKIP.exitCode;
+			
 			// Note this has finished
 			VMTestResult testResult = VMTestResult.valueOf(exitCode);
 			System.err.printf("%4s %s (%d/%d)%n", testResult, testName,
@@ -154,7 +167,7 @@ public abstract class VMTestWorkAction
 				VMTestWorkAction.__writeXml(out, testName, testResult,
 					parameters.getVmName().get(), clockStart, nsDur,
 					stdOut.getBytes(stdOutThread),
-					stdErr.getBytes(stdErrThread));
+					stdErrBytes);
 				
 				// Make sure everything is written
 				out.flush();
@@ -183,6 +196,47 @@ public abstract class VMTestWorkAction
 			if (stdErrThread != null)
 				stdErrThread.interrupt();
 		}
+	}
+	
+	/**
+	 * Finds the special timeout sequence if this has had a timeout, this is
+	 * used to detect if a test should just skip rather than causing a fail.
+	 * 
+	 * @param __stdErrBytes The standard error bytes.
+	 * @return If the sequence was found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/07/18
+	 */
+	private static boolean __findTimeoutSkip(byte[] __stdErrBytes)
+		throws NullPointerException
+	{
+		if (__stdErrBytes == null)
+			throw new NullPointerException("NARG");
+		
+		// Skip special sequence
+		byte[] skipSpecial = VMTestWorkAction._SKIP_SPECIAL;
+		byte firstByte = skipSpecial[0];
+		int skipLen = skipSpecial.length;
+		
+		// Find the sequence
+		for (int i = 0, n = Math.max(0, __stdErrBytes.length - skipLen);
+			i < n; i++)
+		{
+			// If the first byte is a match, then
+			byte quick = __stdErrBytes[i];
+			if (quick != firstByte)
+				continue;
+			
+			// Check if the entire sequence matched
+			for (int j = 0, q = i; j <= skipLen; j++, q++)
+				if (j == skipLen)
+					return true;
+				else if (__stdErrBytes[q] != skipSpecial[j])
+					break;
+		}
+		
+		// Not found
+		return false;
 	}
 	
 	/**

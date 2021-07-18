@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.emulator.vm.VMThreadModel;
 import cc.squirreljme.jdwp.JDWPFactory;
 import cc.squirreljme.jvm.config.ConfigRomKey;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -78,7 +79,7 @@ public class SummerCoatFactory
 	 */
 	@Override
 	protected VirtualMachine createVM(ProfilerSnapshot __ps,
-		JDWPFactory __jdwp, VMSuiteManager __sm,
+		JDWPFactory __jdwp, VMThreadModel __threadModel, VMSuiteManager __sm,
 		VMClassLibrary[] __cp, String __maincl, Map<String, String> __sprops,
 		String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException
