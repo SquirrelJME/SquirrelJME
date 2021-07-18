@@ -10,12 +10,12 @@
 package cc.squirreljme.runtime.cldc.util;
 
 /**
- * Wraps a short array to provide integer access to it.
+ * Wraps a short array to provide unsigned integer access to it.
  *
- * @see UnsignedShortIntegerArray
- * @since 2019/05/09
+ * @see ShortIntegerArray
+ * @since 2021/07/12
  */
-public final class ShortIntegerArray
+public final class UnsignedShortIntegerArray
 	implements IntegerArray
 {
 	/** The backed array. */
@@ -26,9 +26,9 @@ public final class ShortIntegerArray
 	 *
 	 * @param __a The array to wrap.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/05/09
+	 * @since 2021/07/12
 	 */
-	public ShortIntegerArray(short[] __a)
+	public UnsignedShortIntegerArray(short[] __a)
 		throws NullPointerException
 	{
 		if (__a == null)
@@ -39,17 +39,18 @@ public final class ShortIntegerArray
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2019/05/09
+	 * @since 2021/07/12
 	 */
+	@SuppressWarnings("MagicNumber")
 	@Override
 	public final int get(int __i)
 	{
-		return this.array[__i];
+		return this.array[__i] & 0xFFFF;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2019/05/09
+	 * @since 2021/07/12
 	 */
 	@Override
 	public final void set(int __i, int __v)
@@ -59,7 +60,7 @@ public final class ShortIntegerArray
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2019/05/09
+	 * @since 2021/07/12
 	 */
 	@Override
 	public final int size()

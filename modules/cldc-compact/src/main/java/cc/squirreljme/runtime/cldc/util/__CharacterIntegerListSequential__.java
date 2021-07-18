@@ -9,62 +9,56 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.AbstractSequentialList;
+import java.util.List;
+import java.util.ListIterator;
+
 /**
- * Wraps a short array to provide integer access to it.
+ * A character list as an integer list, sequentially.
  *
- * @see UnsignedShortIntegerArray
- * @since 2019/05/09
+ * @since 2021/02/25
  */
-public final class ShortIntegerArray
-	implements IntegerArray
+final class __CharacterIntegerListSequential__
+	extends AbstractSequentialList<Integer>
 {
-	/** The backed array. */
-	protected final short[] array;
+	/** The backing character array. */
+	protected final List<Character> chars;
 	
 	/**
-	 * Initializes the array wrapper.
-	 *
-	 * @param __a The array to wrap.
+	 * Initializes the list wrapper.
+	 * 
+	 * @param __chars The list to wrap.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/05/09
+	 * @since 2021/02/25
 	 */
-	public ShortIntegerArray(short[] __a)
+	__CharacterIntegerListSequential__(List<Character> __chars)
 		throws NullPointerException
 	{
-		if (__a == null)
+		if (__chars == null)
 			throw new NullPointerException("NARG");
 		
-		this.array = __a;
+		this.chars = __chars;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2019/05/09
+	 * @since 2021/02/25
 	 */
 	@Override
-	public final int get(int __i)
+	public ListIterator<Integer> listIterator(int __dx)
 	{
-		return this.array[__i];
+		return new __CharacterIntegerListIterator__(
+			this.chars.listIterator(__dx));
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2019/05/09
+	 * @since 2021/02/25
 	 */
 	@Override
-	public final void set(int __i, int __v)
+	public int size()
 	{
-		this.array[__i] = (short)__v;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/05/09
-	 */
-	@Override
-	public final int size()
-	{
-		return this.array.length;
+		return this.chars.size();
 	}
 }
-
