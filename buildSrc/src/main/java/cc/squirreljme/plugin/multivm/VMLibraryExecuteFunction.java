@@ -1,4 +1,3 @@
-// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -9,24 +8,30 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import org.gradle.api.Task;
-import org.gradle.api.specs.Spec;
 
 /**
- * This always evaluates to true.
+ * Not Described.
  *
- * @since 2020/10/07
+ * @since 2021/05/16
  */
-public class AlwaysTrue
-	implements Spec<Task>
+@FunctionalInterface
+public interface VMLibraryExecuteFunction
 {
 	/**
-	 * {@inheritDoc}
-	 * @since 2020/10/07
+	 * Performs the function as required.
+	 * 
+	 * @param __task The task used.
+	 * @param __isTest Is this a test?
+	 * @param __in The input stream.
+	 * @param __out The output stream.
+	 * @throws IOException Any read/write errors.
+	 * @since 2021/05/16
 	 */
-	@Override
-	public boolean isSatisfiedBy(Task __task)
-	{
-		return true;
-	}
+	void function(Task __task, boolean __isTest, InputStream __in,
+		OutputStream __out)
+		throws IOException;
 }
