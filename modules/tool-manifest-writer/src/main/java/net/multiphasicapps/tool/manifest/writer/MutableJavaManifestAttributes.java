@@ -14,8 +14,8 @@ import java.util.AbstractMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
-import net.multiphasicapps.tool.manifest.JavaManifestKey;
+import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
+import cc.squirreljme.jvm.manifest.JavaManifestKey;
 
 /**
  * This is a mutable set of attributes which exist within a manifest.

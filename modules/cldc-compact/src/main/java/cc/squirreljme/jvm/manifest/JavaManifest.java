@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.tool.manifest;
+package cc.squirreljme.jvm.manifest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,9 +17,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.AbstractMap;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import net.multiphasicapps.collections.UnmodifiableMap;
 
 /**
  * This contains decoders for the standard Java manifest format.
@@ -31,28 +31,8 @@ import net.multiphasicapps.collections.UnmodifiableMap;
 public final class JavaManifest
 	extends AbstractMap<String, JavaManifestAttributes>
 {
-	/** Read a key. */
-	private static final int _STAGE_KEY =
-		0;
-	
-	/** Read a value (start). */
-	private static final int _STAGE_VALUE_START =
-		1;
-	
-	/** Read a value (padding). */
-	private static final int _STAGE_VALUE_PADDING =
-		2;
-	
-	/** Read a value (length). */
-	private static final int _STAGE_VALUE_LINE =
-		3;
-	
-	/** Potentially may be a continuation of a line. */
-	private static final int _STAGE_VALUE_MIGHT_CONTINUE =
-		4;
-	
 	/** The attributes defined in this manifest file. */
-	protected final Map<String, JavaManifestAttributes> attributes;
+	private final Map<String, JavaManifestAttributes> _attributes;
 	
 	/**
 	 * Initializes a blank manifest.
@@ -62,13 +42,11 @@ public final class JavaManifest
 	public JavaManifest()
 	{
 		// Initialize a blank set of main attributes
-		Map<String, JavaManifestAttributes> backing =
-			new HashMap<>();
+		Map<String, JavaManifestAttributes> backing = new HashMap<>();
 		backing.put("", new JavaManifestAttributes());
 		
 		// Lock in the backing map
-		this.attributes = UnmodifiableMap.<String, JavaManifestAttributes>
-			of(backing);
+		this._attributes = backing;
 	}
 	
 	/**
@@ -84,7 +62,8 @@ public final class JavaManifest
 	public JavaManifest(InputStream __is)
 		throws IOException, JavaManifestException, NullPointerException
 	{
-		this(new BufferedReader(new InputStreamReader(__is, "utf-8")));
+		this(new BufferedReader(
+			new InputStreamReader(__is, "utf-8")));
 	}
 	
 	/**
@@ -104,10 +83,10 @@ public final class JavaManifest
 			throw new NullPointerException("NARG");
 			
 		// The backing map and temporary key/value pairs for each
-		// attiribute set
+		// attribute set
 		String curname = "";
-		Map<String, JavaManifestAttributes> backing = new HashMap<>();
-		Map<JavaManifestKey, String> working = new HashMap<>();
+		Map<String, JavaManifestAttributes> backing = new LinkedHashMap<>();
+		Map<JavaManifestKey, String> working = new LinkedHashMap<>();
 		
 		// Read input file line by line, since it is more efficient than
 		// character by character
@@ -224,8 +203,7 @@ public final class JavaManifest
 			backing.put(curname, new JavaManifestAttributes(working));
 		
 		// Lock in the backing map
-		this.attributes = UnmodifiableMap.<String, JavaManifestAttributes>
-			of(backing);
+		this._attributes = backing;
 	}
 	
 	/**
@@ -235,7 +213,7 @@ public final class JavaManifest
 	@Override
 	public boolean containsKey(Object __k)
 	{
-		return this.attributes.containsKey(__k);
+		return this._attributes.containsKey(__k);
 	}
 	
 	/**
@@ -245,7 +223,7 @@ public final class JavaManifest
 	@Override
 	public Set<Map.Entry<String, JavaManifestAttributes>> entrySet()
 	{
-		return this.attributes.entrySet();
+		return this._attributes.entrySet();
 	}
 	
 	/**
@@ -255,7 +233,7 @@ public final class JavaManifest
 	@Override
 	public JavaManifestAttributes get(Object __k)
 	{
-		return this.attributes.get(__k);
+		return this._attributes.get(__k);
 	}
 	
 	/**
@@ -266,7 +244,7 @@ public final class JavaManifest
 	 */
 	public JavaManifestAttributes getMainAttributes()
 	{
-		return this.attributes.get("");
+		return this._attributes.get("");
 	}
 	
 	/**
@@ -276,7 +254,7 @@ public final class JavaManifest
 	@Override
 	public int size()
 	{
-		return this.attributes.size();
+		return this._attributes.size();
 	}
 	
 	/**
@@ -305,19 +283,6 @@ public final class JavaManifest
 	private static boolean __isKeyChar(char __c)
 	{
 		return JavaManifest.__isAlphaNum(__c) || __c == '_' || __c == '-';
-	}
-	
-	/**
-	 * Returns {@code true} if the character is specified to be a newline
-	 * character.
-	 *
-	 * @param __c The character to check.
-	 * @return {@code true} if the character specifies the next line.
-	 * @since 2016/05/29
-	 */
-	private static boolean __isNewline(char __c)
-	{
-		return __c == '\r' || __c == '\n';
 	}
 }
 

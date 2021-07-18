@@ -23,8 +23,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import net.multiphasicapps.collections.EmptyIterator;
-import net.multiphasicapps.tool.manifest.JavaManifest;
-import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
+import cc.squirreljme.jvm.manifest.JavaManifest;
+import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 
 /**
  * This represents an application suite.
