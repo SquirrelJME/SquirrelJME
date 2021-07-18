@@ -88,7 +88,10 @@ public final class ClassRom
 	 */
 	public final ClassRomMethods methods()
 	{
-		HeaderStruct.
+		HeaderStruct header = this.header();
+		
+		int off = header.getInteger(StaticClassProperty.OFFSETOF_METHOD_TREAD);
+		int len = header.getInteger(StaticClassProperty.SIZEOF_METHOD_TREAD);
 		
 		throw Debugging.todo();
 	}
