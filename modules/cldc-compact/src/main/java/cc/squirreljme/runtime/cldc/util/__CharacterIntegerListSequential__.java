@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.AbstractSequentialList;
 import java.util.List;
 import java.util.ListIterator;

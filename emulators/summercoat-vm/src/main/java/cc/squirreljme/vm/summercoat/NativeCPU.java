@@ -9,13 +9,15 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.emulator.profiler.ProfiledThread;
+import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
+import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.jvm.CallStackItem;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SupervisorPropertyIndex;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
-import cc.squirreljme.emulator.vm.VMException;
 import dev.shadowtail.classfile.nncc.ArgumentFormat;
 import dev.shadowtail.classfile.nncc.InvalidInstructionException;
 import dev.shadowtail.classfile.nncc.NativeCode;
@@ -29,8 +31,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Deque;
 import java.util.LinkedList;
-import cc.squirreljme.emulator.profiler.ProfiledThread;
-import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 
 /**
  * This represents a native CPU which may run within its own thread to

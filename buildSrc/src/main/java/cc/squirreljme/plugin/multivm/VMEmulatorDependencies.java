@@ -10,10 +10,7 @@
 package cc.squirreljme.plugin.multivm;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import org.gradle.api.Project;
