@@ -326,13 +326,13 @@ public enum JavaStackShuffleType
 		}
 		
 		/**
-		 * Like {@link #variable(int)} but instead returns the index via the
-		 * logical slot.
+		 * Like {@link #logicalVariable(int)} but instead returns the index
+		 * via the logical slot.
 		 * 
 		 * @param __dx The index to obtain.
 		 * @return The variable type, this will never return a negative value
 		 * for the top type.
-		 * @see #variable(int). 
+		 * @see #logicalVariable(int) 
 		 * @since 2021/07/04
 		 */
 		public int logicalVariable(int __dx)
