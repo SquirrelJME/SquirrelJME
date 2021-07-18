@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
+import net.multiphasicapps.tac.UntestableException;
 
 /**
  * Tests that a canvas is full-screen via
@@ -34,6 +35,8 @@ public class TestCanvasFullScreen
 		for (int i = 0; i < 3; i++)
 			if (this.runSequence(__display, __platform))
 				return;
+		
+		throw new UntestableException("Ignoring full-screen test.");
 	}
 	
 	public boolean runSequence(Display __display, CanvasPlatform __platform)
