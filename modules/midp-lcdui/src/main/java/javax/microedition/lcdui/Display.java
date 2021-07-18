@@ -335,6 +335,8 @@ public class Display
 		if (__ms < 0)
 			throw new IllegalArgumentException("EB30");
 		
+		throw Debugging.todo();
+		/*
 		// Blink!
 		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
 			DeviceFeedbackType.BLINK_LED, __ms);
@@ -343,6 +345,8 @@ public class Display
 		return (SystemCallError.NO_ERROR ==
 			Assembly.sysCallV(SystemCallIndex.ERROR_GET,
 				SystemCallIndex.DEVICE_FEEDBACK));
+				
+		 */
 	}
 	
 	/**

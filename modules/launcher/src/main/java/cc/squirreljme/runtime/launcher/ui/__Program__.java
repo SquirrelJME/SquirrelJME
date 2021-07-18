@@ -17,7 +17,7 @@ import cc.squirreljme.runtime.swm.EntryPoint;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.lcdui.Image;
-import net.multiphasicapps.tool.manifest.JavaManifest;
+import cc.squirreljme.jvm.manifest.JavaManifest;
 
 /**
  * Stores the program information which is mapped to what is displayed.

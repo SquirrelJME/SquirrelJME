@@ -40,10 +40,13 @@ public class DeviceControl
 		if (__ms < 0)
 			throw new IllegalArgumentException("EB2z");
 		
+		throw Debugging.todo();
+		/*
 		// Blink!
 		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
 			DeviceFeedbackType.BLINK_LED, ((__ms > (long)Integer.MAX_VALUE) ?
 				Integer.MAX_VALUE : (int)__ms));
+		 */
 	}
 	
 	/**
@@ -110,10 +113,14 @@ public class DeviceControl
 		if (__freq < 0 || __freq > 100)
 			throw new IllegalArgumentException("EB34 " + __freq);
 		
+		throw Debugging.todo();
+		/*
 		// Vibrate!
 		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
 			DeviceFeedbackType.VIBRATE, ((__ms > (long)Integer.MAX_VALUE) ?
 				Integer.MAX_VALUE : (int)__ms));
+				
+		 */
 	}
 	
 	/**
@@ -123,9 +130,13 @@ public class DeviceControl
 	 */
 	public static void stopVibra()
 	{
+		throw Debugging.todo();
+		/*
 		// Clear vibration
 		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
 			DeviceFeedbackType.VIBRATE, 0);
+			
+		 */
 	}
 }
 

@@ -12,7 +12,7 @@ package net.multiphasicapps.squirrelquarrel.units;
 
 import java.io.IOException;
 import java.io.InputStream;
-import net.multiphasicapps.tool.manifest.JavaManifest;
+import cc.squirreljme.jvm.manifest.JavaManifest;
 
 /**
  * These are the units which are available in the game and what are actively

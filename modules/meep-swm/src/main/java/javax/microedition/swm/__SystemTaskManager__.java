@@ -191,7 +191,7 @@ final class __SystemTaskManager__
 		// SquirrelJME 0.3.0 allows system properties and alternative output
 		// streams to be specified as well
 		int tid;
-		if (ApiLevel.minimumLevel(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV))
+		if (true)
 		{
 			// Copy system properties to key/value pair array
 			int spn = __sprops.size();

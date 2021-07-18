@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import net.multiphasicapps.tool.manifest.JavaManifest;
+import cc.squirreljme.jvm.manifest.JavaManifest;
 
 /**
  * This is a scanner which can read all of the application groups that are
