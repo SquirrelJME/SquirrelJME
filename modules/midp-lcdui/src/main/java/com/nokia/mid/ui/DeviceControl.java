@@ -42,7 +42,6 @@ public class DeviceControl
 		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
 			DeviceFeedbackType.BLINK_LED, ((__ms > (long)Integer.MAX_VALUE) ?
 				Integer.MAX_VALUE : (int)__ms));*/
-		 */
 	}
 	
 	/**
@@ -119,8 +118,7 @@ public class DeviceControl
 		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
 			DeviceFeedbackType.VIBRATE, ((__ms > (long)Integer.MAX_VALUE) ?
 				Integer.MAX_VALUE : (int)__ms));*/
-				
-		 */
+			
 	}
 	
 	/**
@@ -136,7 +134,7 @@ public class DeviceControl
 		throw Debugging.todo();
 		/*
 		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
-			DeviceFeedbackType.VIBRATE, 0);*/
+			DeviceFeedbackType.VIBRATE, 0);
 			
 		 */
 	}
