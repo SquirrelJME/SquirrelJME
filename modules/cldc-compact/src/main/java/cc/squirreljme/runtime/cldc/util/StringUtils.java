@@ -11,6 +11,7 @@
 package cc.squirreljme.runtime.cldc.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 /**

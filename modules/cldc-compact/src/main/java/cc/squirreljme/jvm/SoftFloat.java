@@ -13,7 +13,7 @@ import cc.squirreljme.runtime.cldc.util.UnsignedInteger;
 
 /**
  * Software math operations on 32-bit floats.
- *
+ * 
  * This source file uses parts of the Berkeley SoftFloat Release 3e library,
  * converted into Java. See the 3rd party licenses documentation.
  *
@@ -686,7 +686,7 @@ public final class SoftFloat
     	return __a >>> __dist |
 			(((__a & ((1L << __dist) - 1)) != 0) ? 1 : 0);
 	}
-
+	
 	/**
 	 * Returns whether the sign bit is set.
 	 * 

@@ -157,7 +157,7 @@ public abstract class MIDlet
 				JarPackageBracket[] classPath =
 					JarPackageShelf.classPath();
 				JarPackageBracket ourJar = classPath[classPath.length - 1];
-		
+				
 				// Some application properties are inside of the manifest so
 				// check that
 				try (InputStream is = JarPackageShelf.openResource(

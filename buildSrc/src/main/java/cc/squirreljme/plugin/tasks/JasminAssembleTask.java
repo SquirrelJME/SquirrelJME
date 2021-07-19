@@ -69,9 +69,9 @@ public class JasminAssembleTask
 					ClassFile jasClass = new ClassFile();
 					try
 					{
-					jasClass.readJasmin(new BufferedInputStream(in),
-						output.input.relative.getFileName().toString(),
-						true);
+						jasClass.readJasmin(new BufferedInputStream(in),
+							output.input.relative.getFileName().toString(),
+							true);
 					}
 					
 					// This could fail

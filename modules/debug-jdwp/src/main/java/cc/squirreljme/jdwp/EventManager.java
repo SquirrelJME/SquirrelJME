@@ -178,7 +178,7 @@ public final class EventManager
 			if (__unconditional)
 				return this.__unconditional(__controller, __kind);
 			else
-			return EmptyList.<EventRequest>empty();
+				return EmptyList.<EventRequest>empty();
 		
 		// Lock since this could be used by many threads
 		List<EventRequest> rv = null;
@@ -189,7 +189,7 @@ public final class EventManager
 				if (__unconditional)
 					return this.__unconditional(__controller, __kind);
 				else
-				return EmptyList.<EventRequest>empty();
+					return EmptyList.<EventRequest>empty();
 			
 			// Find matching events
 			for (Iterator<EventRequest> iterator = requests.iterator();

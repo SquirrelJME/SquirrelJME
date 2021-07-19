@@ -93,7 +93,7 @@ public class SummerCoatLinkGlob
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(avail))
 		{
 			// Copy buffer
-			byte[] buf = new byte[4096];
+			byte[] buf = new byte[16384];
 			for (;;)
 			{
 				int rc = __data.read(buf);

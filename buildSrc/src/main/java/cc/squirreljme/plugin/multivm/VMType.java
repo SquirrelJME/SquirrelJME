@@ -114,7 +114,7 @@ public enum VMType
 			
 			// Start with the base emulator class path
 			List<Object> classPath = new ArrayList<>();
-			Set<Path> vmSupportPath = new LinkedHashSet<>(); 
+			Set<Path> vmSupportPath = new LinkedHashSet<>();
 			for (File file : VMHelpers.projectRuntimeClasspath(
 				__task.getProject().project(this.emulatorProject)))
 			{
@@ -296,12 +296,12 @@ public enum VMType
 		{
 			if (__task == null || __in == null || __out == null)
 				throw new NullPointerException("NARG");
-			
+				
 			// Need to access the config for ROM building
 			SquirrelJMEPluginConfiguration config =
 				SquirrelJMEPluginConfiguration
 				.configuration(__task.getProject());
-			
+				
 			// Potential extra arguments
 			Collection<String> args = new ArrayList<>();
 			
@@ -310,7 +310,7 @@ public enum VMType
 			// be loadable.
 			if (!__isTest && config.isBootLoader)
 				args.add("-boot");
-			
+				
 			// Run the specified command
 			this.__aotCommand(__task, __in, __out,
 				"compile", args);
@@ -369,14 +369,14 @@ public enum VMType
 		{
 			if (__task == null || __out == null || __libs == null)
 				throw new NullPointerException("NARG");
-			
+				
 			// Setup arguments for compilation
 			Collection<String> args = new ArrayList<>();
 			
 			// Put down paths to libraries to link together
 			for (Path path : __libs)
 				args.add(path.toString());
-			
+				
 			// Run the specified command
 			this.__aotCommand(__task, null, __out,
 				"rom", args);
@@ -586,9 +586,9 @@ public enum VMType
 		// Enable JDWP debugging?
 		if (__debugEligible)
 		{
-		String jdwpProp = System.getProperty("squirreljme.jdwp");
-		if (jdwpProp != null)
-			vmArgs.add("-Xjdwp:" + jdwpProp);
+			String jdwpProp = System.getProperty("squirreljme.jdwp");
+			if (jdwpProp != null)
+				vmArgs.add("-Xjdwp:" + jdwpProp);
 		}
 		
 		// Change threading model?
