@@ -10,7 +10,6 @@
 
 package cc.squirreljme.vm;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

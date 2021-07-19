@@ -1,0 +1,10 @@
+# 2021/07/11
+
+## 17:29
+
+I think now that have `TableOfContents` it would be beneficial for the fields
+and methods to also be structured with these. This will make it much more
+easier to recycle basic data structures and make a bunch of code more common.
+Of course that will simplify everything and the process of debugging. It is
+eventually hoped that the stuff in `tool-classfile` will go away at some point
+but no idea on that.

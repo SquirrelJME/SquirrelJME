@@ -18,7 +18,6 @@ import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UISpecialCode;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
-import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
@@ -448,28 +447,6 @@ public abstract class Canvas
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2019/05/17
-	 */
-	@ImplementationNote("This is in SquirrelJME only and is used to provide " +
-		"access to this flag.")
-	protected boolean isFullscreen()
-	{
-		return this._isFullScreen;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/05/17
-	 */
-	@ImplementationNote("This is in SquirrelJME only and is used to provide " +
-		"access to this flag.")
-	protected boolean isTransparent()
-	{
-		return this._transparent;
-	}
-	
-	/**
 	 * This is called when a key has been pressed.
 	 *
 	 * @param __code The key code, the character is not modified by modifiers.
@@ -664,8 +641,6 @@ public abstract class Canvas
 	 * which may enable accelerated drawing if supported by the underlying
 	 * display engine.
 	 *
-	 * Note that the fullscreen mode is treated
-	 *
 	 * @param __f If {@code true} then fullscreen mode should be used.
 	 * @since 2017/02/28
 	 */
@@ -683,6 +658,9 @@ public abstract class Canvas
 		UIBackend backend = UIBackendFactory.getInstance();
 		backend.formItemPosition(this._uiForm, this._uiCanvas, (__f ?
 			UIItemPosition.BODY : 0));
+		
+		// Update form title
+		this.__updateFormTitle(true, __f);
 	}
 	
 	/**
@@ -741,6 +719,20 @@ public abstract class Canvas
 			return;
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/06/24
+	 */
+	@Override
+	public void setTitle(String __t)
+	{
+		// Set the title
+		super.setTitle(__t);
+		
+		// Update the form's title
+		this.__updateFormTitle(true, this._isFullScreen);
 	}
 	
 	/**
