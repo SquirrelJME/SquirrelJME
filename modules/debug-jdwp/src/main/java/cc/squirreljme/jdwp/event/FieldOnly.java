@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jdwp.event;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Objects;
 
 /**

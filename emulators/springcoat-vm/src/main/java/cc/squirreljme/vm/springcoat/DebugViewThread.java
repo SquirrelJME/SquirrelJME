@@ -13,7 +13,6 @@ import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.JDWPStepTracker;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
 import cc.squirreljme.jdwp.views.JDWPViewThread;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.util.Arrays;
 import java.util.Collections;

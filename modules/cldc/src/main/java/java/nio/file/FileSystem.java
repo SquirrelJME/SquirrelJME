@@ -14,7 +14,6 @@ import cc.squirreljme.completion.Completion;
 import cc.squirreljme.completion.CompletionState;
 import cc.squirreljme.completion.Standard;
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.Set;
 
 @Standard

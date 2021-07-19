@@ -14,7 +14,6 @@ import cc.squirreljme.completion.Completion;
 import cc.squirreljme.completion.CompletionState;
 import cc.squirreljme.completion.Standard;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 @Standard
 public interface SeekableByteChannel

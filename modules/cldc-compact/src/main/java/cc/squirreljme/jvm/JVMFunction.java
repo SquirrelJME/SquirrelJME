@@ -345,9 +345,8 @@ public final class JVMFunction
 	public static final long jvmSystemCall(short __si, int __a, int __b,
 		int __c, int __d, int __e, int __f, int __g, int __h)
 	{
-		// Call pure form
-		return Assembly.sysCallPVL(__si, __a, __b, __c, __d, __e, __f, __g,
-			__h);
+		Assembly.breakpoint();
+		throw Debugging.todo();
 	}
 }
 
