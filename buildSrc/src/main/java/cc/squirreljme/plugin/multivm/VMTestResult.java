@@ -17,16 +17,30 @@ package cc.squirreljme.plugin.multivm;
 public enum VMTestResult
 {
 	/** Pass. */
-	PASS,
+	PASS(0),
 	
 	/** Fail. */
-	FAIL,
+	FAIL(1),
 	
 	/** Skip. */
-	SKIP,
+	SKIP(2),
 	
 	/* End. */
 	;
+	
+	/** The mapped exit code. */
+	public final int exitCode;
+	
+	/**
+	 * Initializes the result with the exit code.
+	 * 
+	 * @param __exitCode The exit code.
+	 * @since 2021/07/18
+	 */
+	VMTestResult(int __exitCode)
+	{
+		this.exitCode = __exitCode;
+	}
 	
 	/**
 	 * Decodes the exit value and returns the test result.
@@ -37,9 +51,9 @@ public enum VMTestResult
 	 */
 	public static VMTestResult valueOf(int __exitValue)
 	{
-		if (__exitValue == 0)
+		if (__exitValue == VMTestResult.PASS.exitCode)
 			return VMTestResult.PASS;
-		else if (__exitValue == 2)
+		else if (__exitValue == VMTestResult.SKIP.exitCode)
 			return VMTestResult.SKIP;
 		return VMTestResult.FAIL;
 	} 

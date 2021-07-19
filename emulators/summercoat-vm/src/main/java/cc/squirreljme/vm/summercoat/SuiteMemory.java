@@ -9,12 +9,10 @@
 
 package cc.squirreljme.vm.summercoat;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.SummerCoatJarLibrary;
-import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
-import dev.shadowtail.jarfile.JarMinimizer;
+import cc.squirreljme.vm.SummerCoatJarLibrary;
+import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
