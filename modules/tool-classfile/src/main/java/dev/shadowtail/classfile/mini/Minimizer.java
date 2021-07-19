@@ -837,36 +837,6 @@ public final class Minimizer
 	}
 	
 	/**
-	 * Minimizes the given class and returns the minimized version of it.
-	 *
-	 * @param __cf The class to minimize.
-	 * @return The resulting minimized class.
-	 * @throws InvalidClassFormatException If the class is not formatted
-	 * correctly.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/03/10
-	 */
-	public static MinimizedClassFile minimizeAndDecode(ClassFile __cf)
-		throws InvalidClassFormatException, NullPointerException
-	{
-		if (__cf == null)
-			throw new NullPointerException("NARG");
-		
-		// Minimize raw byte array
-		try
-		{
-			return MinimizedClassFile.decode(Minimizer.minimize(__cf));
-		}
-		
-		// {@squirreljme.error JC0m Could not minimize class due to a read
-		// or write error.}
-		catch (IOException e)
-		{
-			throw new RuntimeException("JC0m", e);
-		}
-	}
-	
-	/**
 	 * Writes variable size unsigned short, only 15-bits are possible to be
 	 * written.
 	 *

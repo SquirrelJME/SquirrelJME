@@ -15,10 +15,13 @@ import cc.squirreljme.jdwp.views.JDWPViewType;
 import cc.squirreljme.jvm.summercoat.constants.ClassProperty;
 import cc.squirreljme.jvm.summercoat.constants.MemHandleKind;
 import cc.squirreljme.jvm.summercoat.constants.StaticClassProperty;
+import cc.squirreljme.jvm.summercoat.ld.pack.ClassRom;
+import cc.squirreljme.jvm.summercoat.ld.pack.ClassRomMethod;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.summercoat.MachineState;
 import cc.squirreljme.vm.summercoat.MemHandle;
 import cc.squirreljme.vm.summercoat.VMUtils;
+import dev.shadowtail.jarfile.BootJarPointer;
 import java.lang.ref.Reference;
 
 /**
@@ -224,7 +227,11 @@ public class DebugType
 	@Override
 	public int methodLocationCount(Object __which, int __methodDx)
 	{
-		throw Debugging.todo();
+		ClassRomMethod method = this.__classMethod(__which, __methodDx);
+		
+		if (method == null)
+			return -1;
+		return method.codeLength();
 	}
 	
 	/**
@@ -234,9 +241,12 @@ public class DebugType
 	@Override
 	public String methodName(Object __which, int __methodDx)
 	{
-		MemHandle handle = DebugBase.handleType(__which);
+		ClassRomMethod method = this.__classMethod(__which, __methodDx);
 		
-		throw Debugging.todo();
+		if (method == null)
+			return String.format("invalidMethod_%08x_%d",
+				System.identityHashCode(__which), __methodDx);
+		return method.name();
 	}
 	
 	/**
@@ -256,7 +266,11 @@ public class DebugType
 	@Override
 	public String methodSignature(Object __which, int __methodDx)
 	{
-		throw Debugging.todo();
+		ClassRomMethod method = this.__classMethod(__which, __methodDx);
+		
+		if (method == null)
+			return "()V";
+		return method.signature();
 	}
 	
 	/**
@@ -298,5 +312,47 @@ public class DebugType
 	public Object superType(Object __which)
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the class ROM of the given memory handle.
+	 * 
+	 * @param __handle The handle to get the Class ROM of.
+	 * @return The Class ROM of the given type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/07/11
+	 */
+	final ClassRom __classRom(MemHandle __handle)
+		throws NullPointerException
+	{
+		if (__handle == null)
+			throw new NullPointerException("NARG");
+		
+		long base = this.getLong(__handle, ClassProperty.MEMPTR_ROM_CLASS_LO);
+		int size = this.getInteger(__handle, ClassProperty.SIZEOF_ROM_CLASS);
+		
+		return new ClassRom(this.__machine().memory().subSection(base, size));
+	}
+	
+	/**
+	 * Returns the class method.
+	 * 
+	 * @param __which The class to get the method from.
+	 * @param __methodDx The method index to get.
+	 * @return The method or {@code null} if it is not valid.
+	 * @since 2021/07/12
+	 */
+	final ClassRomMethod __classMethod(Object __which, int __methodDx)
+	{
+		ClassRom classRom = this.__classRom(DebugBase.handleType(__which));
+		
+		try
+		{
+			return classRom.methods().get(__methodDx);
+		}
+		catch (IndexOutOfBoundsException ignored)
+		{
+			return null;
+		}
 	}
 }

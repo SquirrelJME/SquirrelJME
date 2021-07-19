@@ -12,7 +12,6 @@ package cc.squirreljme.jvm.aot.summercoat;
 import cc.squirreljme.jvm.summercoat.constants.JarProperty;
 import cc.squirreljme.jvm.summercoat.ld.pack.HeaderStruct;
 import cc.squirreljme.jvm.summercoat.ld.pack.JarRom;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import dev.shadowtail.classfile.mini.DualPoolEncoder;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedClassHeader;
@@ -107,10 +106,10 @@ public final class ClassDumper
 		
 		// Decode the dual pool
 		DualClassRuntimePool dualPool = DualPoolEncoder.decode(__inGlob,
-			header.getProperty(JarProperty.OFFSET_STATIC_POOL),
-				header.getProperty(JarProperty.SIZE_STATIC_POOL),
-			header.getProperty(JarProperty.OFFSET_RUNTIME_POOL),
-				header.getProperty(JarProperty.SIZE_RUNTIME_POOL));
+			header.getInteger(JarProperty.OFFSET_STATIC_POOL),
+				header.getInteger(JarProperty.SIZE_STATIC_POOL),
+			header.getInteger(JarProperty.OFFSET_RUNTIME_POOL),
+				header.getInteger(JarProperty.SIZE_RUNTIME_POOL));
 		
 		// Dump the pool
 		/*this.__dumpPool(0, dualPool);*/
@@ -265,7 +264,7 @@ public final class ClassDumper
 		for (int i = 0, n = __header.numProperties(); i < n; i++)
 			this.__print(1,
 				__Utils__.jarPropertyToString(i),
-				"%#010x", __header.getProperty(i));
+				"%#010x", __header.getInteger(i));
 	}
 	
 	/**
@@ -282,7 +281,8 @@ public final class ClassDumper
 		throws IOException
 	{
 		// Key
-		this.__print(__indent, String.format("- %s %s", __m.name, __m.type),
+		this.__print(__indent, String.format("- %s %s", __m.name(),
+			__m.type()),
 			"");
 		
 		// Flags
@@ -290,8 +290,7 @@ public final class ClassDumper
 		this.__printList(__indent + 2, __m.flags());
 		
 		// Other properties
-		this.__print(__indent + 1, "index", "%d",
-			__m.index);
+		this.__print(__indent + 1, "index", "%d", __m.instanceIndex());
 			
 		// Is there code to be dumped?
 		byte[] code = __m.code();

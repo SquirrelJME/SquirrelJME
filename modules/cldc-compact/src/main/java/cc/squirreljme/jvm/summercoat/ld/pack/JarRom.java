@@ -111,10 +111,10 @@ public class JarRom
 		try (ReadableMemoryInputStream in =
 			new ReadableMemoryInputStream(this.data))
 		{
-			// {@squirreljme.error Invalid JAR magic number.}
+			// {@squirreljme.error ZZ5d Invalid JAR magic number.}
 			rv = HeaderStruct.decode(in, JarProperty.NUM_JAR_PROPERTIES);
-			if (rv.magicNumber != ClassInfoConstants.JAR_MAGIC_NUMBER)
-				throw new InvalidRomException("ZZ57");
+			if (rv.magicNumber() != ClassInfoConstants.JAR_MAGIC_NUMBER)
+				throw new InvalidRomException("ZZ5d");
 			
 			this._header = rv;
 		}
@@ -254,9 +254,9 @@ public class JarRom
 		HeaderStruct header = this.header();
 		
 		// Load in the table of contents
-		rv = new TableOfContents(this.data.subSection(
-			header.getProperty(JarProperty.OFFSET_TOC),
-			header.getProperty(JarProperty.SIZE_TOC)));
+		rv = new TableOfContentsMemory(this.data.subSection(
+			header.getInteger(JarProperty.OFFSET_TOC),
+			header.getInteger(JarProperty.SIZE_TOC)));
 		
 		// Cache and use it
 		this._toc = rv;

@@ -137,6 +137,16 @@ abstract class __CoreTest__
 		Object thrown;
 		try
 		{
+			// If skipping on timeout, add a sequence in to try to detect
+			// this. Print multiple times in the event of splicing.
+			String skipOnTimeout = otherKeys.get("skip-on-timeout");
+			if (Boolean.parseBoolean(skipOnTimeout))
+				for (int i = 0; i < 4; i++)
+				{
+					System.err.println("%!SkOnTi!%");
+					System.err.flush();
+				}
+			
 			// Determine the system that the test needs to be on, if one was
 			// ever specified in the results
 			int vmType = -1;

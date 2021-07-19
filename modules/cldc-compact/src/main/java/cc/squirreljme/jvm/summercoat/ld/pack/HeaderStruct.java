@@ -58,7 +58,7 @@ public final class HeaderStruct
 	 * @throws IndexOutOfBoundsException If the property is not within bounds.
 	 * @since 2021/04/07
 	 */
-	public int getProperty(int __prop)
+	public int getInteger(int __prop)
 		throws IndexOutOfBoundsException
 	{
 		// {@squirreljme.error ZZ55 Invalid property. (The property)}
@@ -67,6 +67,34 @@ public final class HeaderStruct
 			throw new IndexOutOfBoundsException("ZZ55 " + __prop);
 		
 		return properties[__prop];
+	}
+	
+	/**
+	 * Gets the long valued property.
+	 * 
+	 * @param __prop The property to get, the low value is first while the
+	 * high value is the next property.
+	 * @return The long value.
+	 * @throws IndexOutOfBoundsException If the property is not within bounds.
+	 * @since 2021/07/13
+	 */
+	@SuppressWarnings("MagicNumber")
+	public long getLong(int __prop)
+		throws IndexOutOfBoundsException
+	{
+		return (this.getInteger(__prop) & 0xFFFFFFFFL) |
+			((long)this.getInteger(__prop) << 32);
+	}
+	
+	/**
+	 * Returns the magic number of the structure.
+	 * 
+	 * @return The structure's magic number.
+	 * @since 2021/07/11
+	 */
+	public int magicNumber()
+	{
+		return this.magicNumber;
 	}
 	
 	/**

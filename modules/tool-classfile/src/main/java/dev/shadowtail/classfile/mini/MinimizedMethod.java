@@ -23,33 +23,29 @@ import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
- * This represents a method which has been mimized.
+ * This represents a method which has been minimized.
  *
  * @since 2019/03/14
  */
 public final class MinimizedMethod
 {
-	/** The size of encoded entries. */
-	public static final int ENCODE_ENTRY_SIZE =
-		20;
-	
 	/** Flags that are used for the method. */
-	public final int flags;
+	protected final int flags;
 	
 	/** The index of this method in the instance table. */
-	public final int index;
+	protected final int instanceIndex;
 	
 	/** The name of the method. */
-	public final MethodName name;
+	protected final MethodName name;
 	
 	/** The type of the method. */
-	public final MethodDescriptor type;
+	protected final MethodDescriptor type;
 	
 	/** The code offset. */
-	public final int codeoffset;
+	protected final int codeOffset;
 	
 	/** Internal method index. */
-	public final int methodIndex;
+	protected final int methodOrderIndex;
 	
 	/** Translated method code. */
 	final byte[] _code;
@@ -72,25 +68,25 @@ public final class MinimizedMethod
 	 * @param __t The method type.
 	 * @param __tc Transcoded instructions.
 	 * @param __co The code offset.
-	 * @param __methodIndex The method index.
+	 * @param __methodOrderIndex The method index.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/14
 	 */
 	public MinimizedMethod(int __f, int __o, MethodName __n,
 		MethodDescriptor __t, byte[] __tc, int __co,
-		int __methodIndex)
+		int __methodOrderIndex)
 		throws NullPointerException
 	{
 		if (__n == null || __t == null)
 			throw new NullPointerException("NARG");
 		
 		this.flags = __f;
-		this.index = __o;
+		this.instanceIndex = __o;
 		this.name = __n;
 		this.type = __t;
 		this._code = (__tc == null ? new byte[0] : __tc.clone());
-		this.codeoffset = __co;
-		this.methodIndex = __methodIndex;
+		this.codeOffset = __co;
+		this.methodOrderIndex = __methodOrderIndex;
 	}
 	
 	/**
@@ -102,6 +98,28 @@ public final class MinimizedMethod
 	public final byte[] code()
 	{
 		return this._code.clone();
+	}
+	
+	/**
+	 * Returns the code offset.
+	 *
+	 * @return The code offset.
+	 * @since 2021/07/12
+	 */
+	public int codeOffset()
+	{
+		return this.codeOffset;
+	}
+	
+	/**
+	 * Returns the raw flag bits.
+	 *
+	 * @return The raw flag bits.
+	 * @since 2021/07/12
+	 */
+	public int flagBits()
+	{
+		return this.flags;
 	}
 	
 	/**
@@ -117,9 +135,42 @@ public final class MinimizedMethod
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._flags = new WeakReference<>((rv =
-				new MethodFlags(this.flags)));
+				new MethodFlags(this.flagBits())));
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the index where this appears in tables.
+	 * 
+	 * @return The instance index.
+	 * @since 2021/07/12
+	 */
+	public int instanceIndex()
+	{
+		return this.instanceIndex;
+	}
+	
+	/**
+	 * Returns the method order index.
+	 * 
+	 * @return The method order index.
+	 * @since 2021/07/12
+	 */
+	public int methodOrderIndex()
+	{
+		return this.methodOrderIndex;
+	}
+	
+	/**
+	 * Returns the method name.
+	 * 
+	 * @return The method name.
+	 * @since 2021/07/12
+	 */
+	public MethodName name()
+	{
+		return this.name;
 	}
 	
 	/**
@@ -135,7 +186,7 @@ public final class MinimizedMethod
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._nat = new WeakReference<>(
-				(rv = new MethodNameAndType(this.name, this.type)));
+				(rv = new MethodNameAndType(this.name(), this.type())));
 		
 		return rv;
 	}
@@ -152,11 +203,22 @@ public final class MinimizedMethod
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = String.format(
-				"%s:%s{flags=%x, dx=%d, co=%d}",
-				this.name, this.type, this.flags, this.index,
-				this.codeoffset)));
+				"%s:%s{flags=%x, dx=%d, co=%d}", this.name(),
+				this.type(), this.flagBits(), this.instanceIndex(),
+				this.codeOffset())));
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the method type.
+	 *
+	 * @return The method type.
+	 * @since 2021/07/12
+	 */
+	public MethodDescriptor type()
+	{
+		return this.type;
 	}
 	
 	/**

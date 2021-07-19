@@ -10,6 +10,8 @@ package cc.squirreljme.vm.summercoat.debug;
 
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.views.JDWPViewFrame;
+import cc.squirreljme.jdwp.views.JDWPViewKind;
+import cc.squirreljme.jdwp.views.JDWPViewType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.summercoat.CPUFrame;
 import cc.squirreljme.vm.summercoat.MachineState;
@@ -57,7 +59,11 @@ public class DebugFrame
 	{
 		CPUFrame frame = DebugFrame.__frame(__which);
 		
-		return frame.atRelativeAddress();
+		// Always keep the code index within bounds of the method since the
+		// debugger might not understand this
+		return Math.min(Math.max(0, frame.atRelativeAddress()),
+			this.__view(DebugType.class,JDWPViewKind.TYPE)
+				.methodLocationCount(__which, frame.inMethodIndex()));
 	}
 	
 	/**

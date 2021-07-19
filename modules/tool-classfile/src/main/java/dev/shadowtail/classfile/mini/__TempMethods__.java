@@ -127,12 +127,12 @@ final class __TempMethods__
 				this._codeChunks.add(codesection);
 				
 				// Flags, name, and type
-				toc.writeInt(current.flags);
-				toc.writeUnsignedShortChecked(current.index);
+				toc.writeInt(current.flagBits());
+				toc.writeUnsignedShortChecked(current.instanceIndex());
 				toc.writeUnsignedShortChecked(
-					__pool.add(false, current.name.toString()).index);
+					__pool.add(false, current.name().toString()).index);
 				toc.writeUnsignedShortChecked(
-					__pool.add(false, current.type).index);
+					__pool.add(false, current.type()).index);
 				
 				// Code section if one exists
 				if (codesection != null)

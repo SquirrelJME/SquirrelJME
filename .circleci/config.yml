@@ -726,13 +726,13 @@ workflows:
             - build_linux
       - construct_libSummerCoat:
           requires:
-            - construct_testJars
+            - build_linux
       - construct_libTestSummerCoat:
           requires:
-            - construct_libSummerCoat
+            - construct_testJars
       - construct_romSummerCoat:
           requires:
-            - test_summercoat
+            - construct_libSummerCoat
       - construct_romTestSummerCoat:
           requires:
             - construct_romSummerCoat
@@ -746,8 +746,7 @@ workflows:
       - poke_RetroArch:
           requires:
             - ratufacoat_build_linux
-            - ratufacoat_build_windows
-            - ratufacoat_build_macosx
+            - construct_libTestSummerCoat
 
       ############################## RATUFACOAT ##############################
       - ratufacoat_build_linux:
