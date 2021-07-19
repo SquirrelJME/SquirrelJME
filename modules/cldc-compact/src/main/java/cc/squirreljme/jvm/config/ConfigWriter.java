@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.config;
 
-import cc.squirreljme.jvm.config.ConfigRomKey;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
