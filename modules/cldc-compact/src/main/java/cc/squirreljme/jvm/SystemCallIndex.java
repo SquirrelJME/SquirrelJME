@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm;
 
-import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
 import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.jvm.summercoat.SystemCall;
