@@ -129,21 +129,6 @@ public final class EventTranslate
 			case FullCanvas.KEY_SOFTKEY3:
 				return FullCanvas.KEY_SOFTKEY3;
 			
-				// Nokia Soft Key 1
-			case NonStandardKey.VGAME_COMMAND_LEFT:
-			case FullCanvas.KEY_SOFTKEY1:
-				return FullCanvas.KEY_SOFTKEY1;
-				
-				// Nokia Soft Key 2
-			case NonStandardKey.VGAME_COMMAND_CENTER:
-			case FullCanvas.KEY_SOFTKEY2:
-				return FullCanvas.KEY_SOFTKEY2;
-				
-				// Nokia Soft Key 3
-			case NonStandardKey.VGAME_COMMAND_RIGHT:
-			case FullCanvas.KEY_SOFTKEY3:
-				return FullCanvas.KEY_SOFTKEY3;
-			
 				// Invalid
 			default:
 				return 0;
