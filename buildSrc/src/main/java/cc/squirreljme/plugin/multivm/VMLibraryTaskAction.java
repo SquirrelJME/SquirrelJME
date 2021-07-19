@@ -16,7 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
-import java.util.function.Function;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.SourceSet;

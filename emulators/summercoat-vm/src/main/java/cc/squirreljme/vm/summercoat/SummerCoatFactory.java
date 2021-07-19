@@ -10,15 +10,16 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
+import cc.squirreljme.emulator.vm.VMException;
+import cc.squirreljme.emulator.vm.VMFactory;
+import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VMThreadModel;
+import cc.squirreljme.emulator.vm.VirtualMachine;
 import cc.squirreljme.jdwp.JDWPFactory;
 import cc.squirreljme.jvm.config.ConfigRomKey;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
-import cc.squirreljme.emulator.vm.VMException;
-import cc.squirreljme.emulator.vm.VMFactory;
-import cc.squirreljme.emulator.vm.VMSuiteManager;
-import cc.squirreljme.emulator.vm.VirtualMachine;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
 import dev.shadowtail.packfile.MinimizedPackHeader;
@@ -32,7 +33,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
-import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 
 /**
  * This is the factory which is capable of creating instances of the
