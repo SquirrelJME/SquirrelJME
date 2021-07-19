@@ -29,7 +29,8 @@ public class MethodInvokeException
 	
 	/**
 	 * Initializes the invoked exception.
-	 * 
+	 *
+	 * @param __message The message.
 	 * @param __message The message.
 	 * @param __message The message.
 	 * @param __exception The exception that was tossed.

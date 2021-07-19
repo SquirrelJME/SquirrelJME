@@ -113,7 +113,7 @@ public final class EventTranslate
 			case NonStandardKey.VGAME_B:		return Canvas.GAME_B;
 			case NonStandardKey.VGAME_C:		return Canvas.GAME_C;
 			case NonStandardKey.VGAME_D:		return Canvas.GAME_D;
-			
+				
 				// Nokia Soft Key 1
 			case NonStandardKey.VGAME_COMMAND_LEFT:
 			case FullCanvas.KEY_SOFTKEY1:

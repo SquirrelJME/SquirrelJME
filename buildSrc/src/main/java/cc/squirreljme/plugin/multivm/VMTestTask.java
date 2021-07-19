@@ -74,7 +74,7 @@ public class VMTestTask
 			this.getProject().provider(
 				new SingleTaskOutputFile(__libTask)),
 			this.getProject().provider(
-			new VMTestInputs(this, __sourceSet)));
+				new VMTestInputs(this, __sourceSet)));
 		
 		// All of the test results that are created
 		this.getOutputs().files(this.getProject().provider(

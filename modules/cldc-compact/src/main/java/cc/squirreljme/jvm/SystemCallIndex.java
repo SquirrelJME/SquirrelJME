@@ -416,7 +416,7 @@ public interface SystemCallIndex
 	
 	/**
 	 * Enables or disables selective verbosity.
-	 *
+	 * 
 	 * @squirreljme.syscallparam 1 The starting point on the stack trace,
 	 * should be zero or a negative number.
 	 * @squirreljme.syscallparam 2 The {@link VerboseDebugFlag} to use.
@@ -429,7 +429,7 @@ public interface SystemCallIndex
 	
 	/**
 	 * Flushes the given pipe descriptor.
-	 *
+	 * 
 	 * @squirreljme.syscallparam 1 The pipe descriptor.
 	 * @squirreljme.syscallreturn One of {@link PipeErrorType}.
 	 * @since 2021/04/03

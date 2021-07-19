@@ -364,7 +364,7 @@ public final class DataSerialization
 			{
 				if (i > 0)
 					sb.append(",");
-		
+				
 				Number val = list.get(i);
 				sb.append((val == null ? "null" : val.longValue()));
 			}
