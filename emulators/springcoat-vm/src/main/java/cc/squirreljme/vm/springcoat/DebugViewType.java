@@ -14,7 +14,6 @@ import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
 import cc.squirreljme.jdwp.views.JDWPViewType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
 import java.lang.ref.Reference;
@@ -318,7 +317,8 @@ public class DebugViewType
 		if (byteCode != null)
 			return byteCode.instructionCount();
 		
-		return 0;
+		// No locations are valid!
+		return -1;
 	}
 	
 	/**

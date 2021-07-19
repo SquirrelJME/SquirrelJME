@@ -9,13 +9,15 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.emulator.profiler.ProfiledThread;
+import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
+import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.jvm.CallStackItem;
 import cc.squirreljme.jvm.Constants;
 import cc.squirreljme.jvm.SupervisorPropertyIndex;
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
-import cc.squirreljme.emulator.vm.VMException;
 import dev.shadowtail.classfile.nncc.ArgumentFormat;
 import dev.shadowtail.classfile.nncc.InvalidInstructionException;
 import dev.shadowtail.classfile.nncc.NativeCode;
@@ -29,8 +31,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Deque;
 import java.util.LinkedList;
-import cc.squirreljme.emulator.profiler.ProfiledThread;
-import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 
 /**
  * This represents a native CPU which may run within its own thread to
@@ -943,8 +943,7 @@ public final class NativeCPU
 						Frame was = frames.getLast();
 						if ((was._taskid == 0 ||
 							syscallid == SystemCallIndex.EXCEPTION_LOAD ||
-							syscallid == SystemCallIndex.EXCEPTION_STORE) &&
-							syscallid != SystemCallIndex.IPC_CALL)
+							syscallid == SystemCallIndex.EXCEPTION_STORE))
 						{
 							// If profiling, profile the handling of the
 							// system call in a sub-frame
@@ -1263,8 +1262,6 @@ public final class NativeCPU
 						case SystemCallIndex.PD_WRITE_BYTE:
 						case SystemCallIndex.SLEEP:
 						case SystemCallIndex.SUPERVISOR_BOOT_OKAY:
-						case SystemCallIndex.SUPERVISOR_PROPERTY_GET:
-						case SystemCallIndex.SUPERVISOR_PROPERTY_SET:
 						case SystemCallIndex.TIME_MILLI_WALL:
 						case SystemCallIndex.TIME_NANO_MONO:
 						case SystemCallIndex.VMI_MEM_FREE:
@@ -1554,50 +1551,6 @@ public final class NativeCPU
 				err = 0;
 				break;
 				
-				// Get supervisor property
-			case SystemCallIndex.SUPERVISOR_PROPERTY_GET:
-				{
-					int dx = __args[0];
-					
-					// Out of range?
-					if (dx < 0 || dx >= SupervisorPropertyIndex.NUM_PROPERTIES)
-					{
-						rv = 0;
-						err = SystemCallError.VALUE_OUT_OF_RANGE;
-					}
-					
-					// Valid
-					else
-					{
-						rv = this._supervisorproperties[dx];
-						err = SystemCallError.NO_ERROR;
-					}
-				}
-				break;
-				
-				// Set supervisor property
-			case SystemCallIndex.SUPERVISOR_PROPERTY_SET:
-				{
-					int dx = __args[0];
-					
-					// Out of range?
-					if (dx < 0 || dx >= SupervisorPropertyIndex.NUM_PROPERTIES)
-					{
-						rv = 0;
-						err = SystemCallError.VALUE_OUT_OF_RANGE;
-					}
-					
-					// Valid
-					else
-					{
-						this._supervisorproperties[dx] = __args[1];
-						
-						rv = 0;
-						err = SystemCallError.NO_ERROR;
-					}
-				}
-				break;
-
 				// Current wall clock milliseconds.
 			case SystemCallIndex.TIME_MILLI_WALL:
 				{

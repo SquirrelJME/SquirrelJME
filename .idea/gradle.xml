@@ -68,7 +68,6 @@
             <option value="$PROJECT_DIR$/modules/tac" />
             <option value="$PROJECT_DIR$/modules/tool-classfile" />
             <option value="$PROJECT_DIR$/modules/tool-jarfile" />
-            <option value="$PROJECT_DIR$/modules/tool-manifest-reader" />
             <option value="$PROJECT_DIR$/modules/tool-manifest-writer" />
             <option value="$PROJECT_DIR$/modules/tool-packfile" />
             <option value="$PROJECT_DIR$/modules/vodafone-api" />

@@ -78,6 +78,8 @@
       <module name="squirreljme.modules.tool-jdwp.main" target="1.7" />
       <module name="squirreljme.modules.tool-jdwp.test" target="1.7" />
       <module name="squirreljme.modules.tool-jdwp.testFixtures" target="1.7" />
+      <module name="squirreljme.modules.tool-manifest-reader.main" target="1.7" />
+      <module name="squirreljme.modules.tool-manifest-reader.test" target="1.7" />
       <module name="squirreljme.modules.tool-manifest-reader.testFixtures" target="1.7" />
       <module name="squirreljme.modules.tool-manifest-writer.testFixtures" target="1.7" />
       <module name="squirreljme.modules.tool-packfile.testFixtures" target="1.7" />
