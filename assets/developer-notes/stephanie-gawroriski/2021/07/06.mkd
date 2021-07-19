@@ -1,0 +1,18 @@
+# 2021/07/06
+
+## 09:18
+
+Today is my birthday! It seems I cannot much from dependency issues, so
+_debug-jdwp_ is being pulled in properly but is not being depended on for
+building as a JAR since that is missing.
+
+## 09:35
+
+And I fixed it by adding the dependencies for the emulator JARs and otherwise
+so that should not be an issue in the future hopefully.
+
+## 12:55
+
+Okay so for debugging and debug notes, I am going to have the `DEBUG_ENTRY`
+point exactly to the class it is within rather than the name. This way the
+name and otherwise can be looked up via a handle.

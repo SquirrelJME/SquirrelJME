@@ -1,0 +1,9 @@
+# 2021/07/18
+
+## 20:42
+
+So today rather than working on SummerCoat, I did lots of cherry picking and
+plucked out all of the changes I did that were complete but not quite
+related to SummerCoat. So this definitely lowers the risk of that branch.
+At least now with it smaller, there is less weight on it. But I pulled out
+lots of good changes, so I am very happy with it! Yipee!

@@ -10,12 +10,7 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.jvm.Assembly;
-import cc.squirreljme.jvm.DeviceFeedbackType;
-import cc.squirreljme.jvm.SystemCallError;
-import cc.squirreljme.jvm.SystemCallIndex;
 import cc.squirreljme.jvm.mle.ThreadShelf;
-import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
@@ -335,14 +330,19 @@ public class Display
 		if (__ms < 0)
 			throw new IllegalArgumentException("EB30");
 		
+		throw Debugging.todo();
+		/*
 		// Blink!
+		throw Debugging.todo();
+		/*
 		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
 			DeviceFeedbackType.BLINK_LED, __ms);
 		
 		// Only return true if no error was generated
 		return (SystemCallError.NO_ERROR ==
 			Assembly.sysCallV(SystemCallIndex.ERROR_GET,
-				SystemCallIndex.DEVICE_FEEDBACK));
+				SystemCallIndex.DEVICE_FEEDBACK));*/
+				
 	}
 	
 	/**

@@ -13,12 +13,14 @@ import cc.squirreljme.jvm.aot.Backend;
 import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.RomSettings;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.packfile.PackMinimizer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Arrays;
 
 /**
@@ -53,6 +55,17 @@ public class SummerCoatBackend
 			
 			__out.write(buf, 0, rc);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/07/18
+	 */
+	@Override
+	public void dumpGlob(byte[] __inGlob, String __name, PrintStream __out)
+		throws IOException, NullPointerException
+	{
+		throw Debugging.todo();
 	}
 	
 	/**
