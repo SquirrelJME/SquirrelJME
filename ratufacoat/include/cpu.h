@@ -19,6 +19,7 @@
 #include "sjmerc.h"
 #include "error.h"
 #include "sjmecon.h"
+#include "jvm.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -115,6 +116,9 @@ typedef struct sjme_cpuMetrics
 	/** Total instruction count. */
 	sjme_jint totalinstructions;
 } sjme_cpuMetrics;
+
+sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
+	sjme_jint cycles);
 
 /*--------------------------------------------------------------------------*/
 

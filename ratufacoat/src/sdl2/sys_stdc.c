@@ -23,6 +23,7 @@
 #include "error.h"
 #include "native.h"
 #include "jvm.h"
+#include "debug.h"
 
 /** Screen size. */
 #define SJME_STDC_WIDTH 240
@@ -279,7 +280,10 @@ sjme_framebuffer* sjme_stdc_framebuffer(void)
 	rv->width = SJME_STDC_WIDTH;
 	rv->height = SJME_STDC_HEIGHT;
 	rv->scanlen = SJME_STDC_WIDTH;
+	sjme_todo("SDL2 Pixel Format");
+#if 0
 	rv->format = SJME_PIXELFORMAT_INTEGER_RGB888;
+#endif
 	rv->numpixels = SJME_STDC_VIDEORAMSIZE;
 	
 	return rv;

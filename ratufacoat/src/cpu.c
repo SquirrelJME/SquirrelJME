@@ -7,15 +7,16 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "jvm.h"
 #include "corefont.h"
 #include "cpu.h"
 #include "opcode.h"
 #include "sjmerc.h"
 #include "sjmecon.h"
-#include "jvm.h"
 #include "softmath.h"
 #include "oldstuff.h"
 #include "memory.h"
+#include "syscall.h"
 
 /**
  * Executes single CPU state.

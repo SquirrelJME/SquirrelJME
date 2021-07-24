@@ -15,7 +15,10 @@ add_executable(SquirrelJMETests
 
 # Additional includes
 target_include_directories(SquirrelJMETests PUBLIC
-	"${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
+	"${PROJECT_BINARY_DIR}"
+	"${PROJECT_SOURCE_DIR}/include"
+	"${CMAKE_CURRENT_BINARY_DIR}"		# Generated sources!
+	)
 
 # Link in core SquirrelJME, make it static so there are no dependencies
 target_link_libraries(SquirrelJMETests
@@ -24,6 +27,10 @@ target_link_libraries(SquirrelJMETests
 # Versioning information
 add_compile_definitions(SQUIRRELJME_VERSION="${SQUIRRELJME_VERSION}")
 add_compile_definitions(SQUIRRELJME_VERSION_ID="${SQUIRRELJME_VERSION_ID}")
+
+# Auto-generate tests
+configure_file(blank.h.in prototype.h)
+configure_file(blank.h.in listing.h)
 
 # Used to wrap for QEMU and otherwise
 if(DEFINED SQUIRRELJME_TEST_WRAPPER)
@@ -57,4 +64,11 @@ foreach(SQUIRRELJME_TEST_SOURCE ${SQUIRRELJME_TEST_SOURCES})
 	# Code for skipped tests
 	set_property(TEST ${SQUIRRELJME_TEST_SOURCE} PROPERTY SKIP_RETURN_CODE 42)
 	set_tests_properties(${SQUIRRELJME_TEST_SOURCE} PROPERTIES SKIP_RETURN_CODE 42)
+
+	# Add test to the generated sources, so that we need not manually store
+	# every test we know about
+	file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/prototype.h"
+		"SJME_TEST_PROTOTYPE(${SQUIRRELJME_TEST_SOURCE});\n")
+	file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/listing.h"
+		"SJME_TEST(${SQUIRRELJME_TEST_SOURCE}),\n")
 endforeach()

@@ -163,6 +163,30 @@ sjme_framebuffer* sjme_jvmFramebuffer(sjme_jvm* jvm);
  */
 sjme_nativefuncs* sjme_jvmNativeFuncs(sjme_jvm* jvm);
 
+/**
+ * Prints out a JVM error.
+ * 
+ * @param jvm The JVM to print to.
+ * @param error The error to print.
+ * @since 2021/07/24
+ */
+void sjme_printerror(sjme_jvm* jvm, sjme_error* error);
+
+/**
+ * Writes to the console screen and to the native method as well.
+ * 
+ * @param jvm The virtual machine to write under.
+ * @param writefunc The writing function to use.
+ * @param buf The buffer to print.
+ * @param off The offset into the buffer.
+ * @param len The length of the sequence to write.
+ * @param error The error state.
+ * @return If this was a success. 
+ */
+sjme_jint sjme_console_pipewrite(sjme_jvm* jvm,
+	sjme_jint (*writefunc)(sjme_jint b), sjme_jbyte* buf, sjme_jint off,
+	sjme_jint len, sjme_error* error);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

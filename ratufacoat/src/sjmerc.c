@@ -132,7 +132,6 @@ void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
 	}
 }
 
-/** Writes to the console screen and to the native method as well. */
 sjme_jint sjme_console_pipewrite(sjme_jvm* jvm,
 	sjme_jint (*writefunc)(sjme_jint b), sjme_jbyte* buf, sjme_jint off,
 	sjme_jint len, sjme_error* error)
@@ -235,7 +234,6 @@ sjme_jint sjme_console_pipewrite(sjme_jvm* jvm,
 	return len;
 }
 
-/** Prints the error to the console output. */
 void sjme_printerror(sjme_jvm* jvm, sjme_error* error)
 {
 #define ERROR_SIZE 256

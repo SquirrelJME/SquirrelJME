@@ -242,6 +242,8 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 			fbinfo->numpixels = fbinfo->scanlen * fbinfo->height;
 		
 		/* Bytes per pixel must be specified. */
+		sjme_todo("Bytes per pixel must be specified.");
+#if 0
 		if (fbinfo->bitsperpixel == 0)
 			switch (fbinfo->format)
 			{
@@ -270,6 +272,7 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 					fbinfo->bitsperpixel = 32;
 					break;
 			}
+#endif
 		
 		/* Scan line in bytes is based on the bytes per pixel. */
 		if (fbinfo->scanlenbytes == 0)
@@ -291,9 +294,12 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 	if (sjme_loadBootRom(rv, error))
 	{
 		/* Write the Boot failure message! */
+		sjme_todo("Write the Boot failure message!");
+#if 0
 		sjme_console_pipewrite(rv, (nativeFuncs != NULL ?
 			nativeFuncs->stderr_write : NULL), sjme_bootfailmessage, 0,
 			sjme_bootfailmessageSizeOf, error);
+#endif
 		
 		/* Force error to be on-screen. */
 		rv->supervisorokay = 0;
@@ -312,6 +318,8 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 	if (nativeFuncs->optional_jar != NULL)
 		if (nativeFuncs->optional_jar(&optionJar, &i) != 0)
 		{
+			sjme_todo("Memory map the option JAR, if available.");
+#if 0
 			rv->optionJar = sjme_vmmmap(vmem, 0, optionJar, i, error);
 			if (rv->rom == NULL)
 			{
@@ -321,6 +329,7 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 				
 				return SJME_RETURN_FAIL;
 			}
+#endif
 		}
 	
 	/* The JVM is ready to use. */
@@ -336,7 +345,10 @@ sjme_vmem* sjme_jvmVMem(sjme_jvm* jvm)
 
 sjme_cpuMetrics* sjme_jvmCpuMetrics(sjme_jvm* jvm)
 {
+	sjme_todo("sjme_jvmCpuMetrics");
+#if 0
 	return &jvm->metrics;
+#endif
 }
 
 sjme_jboolean sjme_jvmIsDebug(sjme_jvm* jvm)

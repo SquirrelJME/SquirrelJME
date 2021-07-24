@@ -69,6 +69,7 @@ cmake_install.cmake
 *.dll
 *.exe
 *.dylib
+cmake-build-debug
 
 # Fossil files
 _FOSSIL_

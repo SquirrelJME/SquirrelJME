@@ -20,6 +20,7 @@
 #include "lrlocal.h"
 #include "native.h"
 #include "jvm.h"
+#include "debug.h"
 
 /** Is the build in ROM used? */
 #if defined(SQUIRRELJME_HAS_BUILTIN)
@@ -322,7 +323,10 @@ sjme_framebuffer* sjme_retroarch_framebuffer(void)
 	rv->width = SJME_RETROARCH_WIDTH;
 	rv->height = SJME_RETROARCH_HEIGHT;
 	rv->scanlen = SJME_RETROARCH_WIDTH;
+	sjme_todo("RetroArch pixel format.");
+#if 0
 	rv->format = SJME_PIXELFORMAT_INTEGER_RGB888;
+#endif
 	rv->numpixels = SJME_RETROARCH_VIDEORAMSIZE;
 	
 	return rv;

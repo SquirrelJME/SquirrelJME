@@ -95,19 +95,7 @@ typedef struct sjme_singleTest
 /** Test table. */
 static const sjme_singleTest sjme_singleTests[] =
 {
-	SJME_TEST(testAtomic),
-	SJME_TEST(testJvmInit),
-	SJME_TEST(testJvmInvalid),
-	SJME_TEST(testMemHandleAccess),
-	SJME_TEST(testMemHandleCycle),
-	SJME_TEST(testMemHandleEndian),
-	SJME_TEST(testMemHandleInit),
-	SJME_TEST(testMemHandleInvalid),
-	SJME_TEST(testMemHandleMany),
-	SJME_TEST(testNothing),
-	SJME_TEST(testOpCodes),
-	SJME_TEST(testRandom),
-	SJME_TEST(testSkipped),
+	#include "listing.h"
 	
 	/* End of tests. */
 	{NULL, NULL}
