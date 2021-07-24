@@ -7,3 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "entry.h"
+
+sjme_jboolean bvm_main(int argc, char** argv)
+{
+	return sjme_false;
+}

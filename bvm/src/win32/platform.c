@@ -7,19 +7,21 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <windows.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include "entry.h"
 
+/**
+ * Main Windows entry point.
+ * 
+ * @param argc Argument count.
+ * @param argv Arguments.
+ * @return The exit status of the process.
+ * @since 2021/07/24
+ */
 int main(int argc, char** argv)
 {
-	int i;
-	
-	fprintf(stderr, "Args %d\r\n", argc);
-	for (i = 0; i < argc; i++)
-		fprintf(stderr, "Arg[%d]: %s\r\n", i, argv[i]);
-	fflush(stderr);
-	
+	if (bvm_main(argc, argv) == sjme_true)
+		return EXIT_SUCCESS;
 	return EXIT_FAILURE;
 }
 

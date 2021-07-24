@@ -21,6 +21,8 @@
  */
 typedef struct sjme_testShim
 {
+	/** The current error state. */
+	sjme_error error;
 } sjme_testShim;
 
 /**
@@ -40,6 +42,6 @@ typedef struct sjme_testShim
 #define SKIP_TEST() SJME_JINT_C(-65535)
 
 /* Available tests. */
-/*SJME_TEST_PROTOTYPE(testAtomic);*/
+#include "prototype.h"
 
 #endif /* SQUIRRELJME_TESTS_H */

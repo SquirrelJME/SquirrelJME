@@ -7,20 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <stdlib.h>
-#include "entry.h"
+#include "tests.h"
 
-/**
- * Main UNIX entry point.
- * 
- * @param argc Argument count.
- * @param argv Arguments.
- * @return The exit status of the process.
- * @since 2021/07/24
- */
-int main(int argc, char** argv)
+SJME_TEST_PROTOTYPE(testSkip)
 {
-	if (bvm_main(argc, argv) == sjme_true)
-		return EXIT_SUCCESS;
-	return EXIT_FAILURE;
+	return SKIP_TEST();
 }

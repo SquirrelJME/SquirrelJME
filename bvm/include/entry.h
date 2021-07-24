@@ -16,6 +16,8 @@
 #ifndef BUILDVM_ENTRY_H
 #define BUILDVM_ENTRY_H
 
+#include "sjmerc.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
@@ -27,6 +29,16 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+/**
+ * Main BVM entry point.
+ * 
+ * @param argc Argument count.
+ * @param argv Arguments.
+ * @return The exit status of the process.
+ * @since 2021/07/24
+ */
+sjme_jboolean bvm_main(int argc, char** argv);
 
 /*--------------------------------------------------------------------------*/
 

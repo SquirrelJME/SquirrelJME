@@ -66,7 +66,7 @@ typedef struct sjme_singleTest
 /** Test table. */
 static const sjme_singleTest sjme_singleTests[] =
 {
-	/*SJME_TEST(testAtomic),*/
+	#include "listing.h"
 	
 	/* End of tests. */
 	{NULL, NULL}
@@ -90,7 +90,7 @@ int main(int argc, char** argv)
 	sjme_jint errorBufLen;
 	
 	/* General test report. */
-	fprintf(stderr, "Testing SquirrelJME %s\n",
+	fprintf(stderr, "Testing SquirrelJME BootVM %s\n",
 		SQUIRRELJME_VERSION" ("SQUIRRELJME_VERSION_ID")");
 	fflush(stderr);
 	
@@ -159,18 +159,15 @@ int main(int argc, char** argv)
 			fflush(stderr);
 			
 			/* Note error code, if any. */
-			if (sjme_hasError(&shim->error))
+			if (shim->error.code != 0)
 			{
 				/* Reset error buffer. */
 				memset(errorBuf, 0, sizeof(errorBuf));
 				errorBufLen = ERROR_BUF_LEN;
 				
-				/* Describe it. */
-				sjme_describeJvmError(&shim->error, errorBuf, &errorBufLen);
-				
 				/* Print it. */
-				fprintf(stderr, "Test %s error: %s\n",
-					test->name, errorBuf);
+				fprintf(stderr, "Test %s error: %d %d\n",
+					test->name, shim->error.code, shim->error.value);
 				fflush(stderr);
 			}
 			

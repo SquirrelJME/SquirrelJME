@@ -15,7 +15,10 @@ add_executable(BuildVMTests
 
 # Additional includes
 target_include_directories(BuildVMTests PUBLIC
-	"${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
+	"${PROJECT_BINARY_DIR}"
+	"${PROJECT_SOURCE_DIR}/include"
+	"${CMAKE_CURRENT_BINARY_DIR}"		# Generated sources!
+	)
 
 # Link in core SquirrelJME, make it static so there are no dependencies
 target_link_libraries(BuildVMTests
@@ -24,6 +27,10 @@ target_link_libraries(BuildVMTests
 # Versioning information
 add_compile_definitions(SQUIRRELJME_VERSION="${SQUIRRELJME_VERSION}")
 add_compile_definitions(SQUIRRELJME_VERSION_ID="${SQUIRRELJME_VERSION_ID}")
+
+# Auto-generate tests
+configure_file(blank.h.in prototype.h)
+configure_file(blank.h.in listing.h)
 
 # Used to wrap for QEMU and otherwise
 if(DEFINED BUILDVM_TEST_WRAPPER)
@@ -48,13 +55,20 @@ foreach(BUILDVM_TEST_SOURCE ${BUILDVM_TEST_SOURCES})
 	message("Adding test ${BUILDVM_TEST_SOURCE}...")
 	if(DEFINED BUILDVM_TEST_WRAPPER)
 		add_test(NAME ${BUILDVM_TEST_SOURCE}
-			COMMAND "${BUILDVM_TEST_WRAPPER}" "$<TARGET_FILE:SquirrelJMETests>" ${BUILDVM_TEST_SOURCE})
+			COMMAND "${BUILDVM_TEST_WRAPPER}" "$<TARGET_FILE:BuildVMTests>" ${BUILDVM_TEST_SOURCE})
 	else()
 		add_test(NAME ${BUILDVM_TEST_SOURCE}
-			COMMAND SquirrelJMETests ${BUILDVM_TEST_SOURCE})
+			COMMAND BuildVMTests ${BUILDVM_TEST_SOURCE})
 	endif()
 
 	# Code for skipped tests
 	set_property(TEST ${BUILDVM_TEST_SOURCE} PROPERTY SKIP_RETURN_CODE 42)
 	set_tests_properties(${BUILDVM_TEST_SOURCE} PROPERTIES SKIP_RETURN_CODE 42)
+
+	# Add test to the generated sources, so that we need not manually store
+	# every test we know about
+	file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/prototype.h"
+		"SJME_TEST_PROTOTYPE(${BUILDVM_TEST_SOURCE});\n")
+	file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/listing.h"
+		"SJME_TEST(${BUILDVM_TEST_SOURCE}),\n")
 endforeach()
