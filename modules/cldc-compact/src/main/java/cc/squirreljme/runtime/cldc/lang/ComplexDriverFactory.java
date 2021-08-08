@@ -16,10 +16,9 @@ import java.util.ServiceLoader;
  * implementation, so the request for drivers is not by the actual
  * implementation class itself but one of the drivers instead.
  *
- * @param <D> The driver instance that is created.
  * @since 2021/08/05
  */
-public interface ComplexDriverFactory<D>
+public interface ComplexDriverFactory
 {
 	/** Minimum driver priority. */
 	int MIN_PRIORITY =
@@ -34,10 +33,12 @@ public interface ComplexDriverFactory<D>
 	 * be only single instances that can work together if in the event multiple
 	 * ones are created.
 	 * 
+	 * @param <I> The type of driver to create.
+	 * @param __class The type to cast to for this driver.
 	 * @return An instance of the given driver.
 	 * @since 2021/08/05
 	 */
-	D instance();
+	<I> I instance(Class<I> __class);
 	
 	/**
 	 * Returns the name of this driver.
@@ -54,12 +55,4 @@ public interface ComplexDriverFactory<D>
 	 * @since 2021/08/05
 	 */
 	int priority();
-	
-	/**
-	 * Returns the type of class this is a driver for.
-	 * 
-	 * @return The type of class this is a driver for.
-	 * @since 2021/08/05
-	 */
-	Class<D> type();
 }

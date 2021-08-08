@@ -125,7 +125,7 @@ public final class RuntimeShelf
 	/**
 	 * Returns a special virtual machine description.
 	 *
-	 * @param __type The {@link VMDescriptionType}.
+	 * @param __type One of {@link VMDescriptionType}.
 	 * @return The string for the given description or {@code null} if not
 	 * set.
 	 * @throws MLECallError If {@code __type} is not valid.
