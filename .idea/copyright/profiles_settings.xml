@@ -1,5 +1,8 @@
 <component name="CopyrightManager">
-  <settings default="DefaultCopyright">
+  <settings>
+    <module2copyright>
+      <element module="Non-Project Files" copyright="DefaultCopyright" />
+    </module2copyright>
     <LanguageOptions name="JAVA">
       <option name="fileTypeOverride" value="3" />
       <option name="block" value="false" />

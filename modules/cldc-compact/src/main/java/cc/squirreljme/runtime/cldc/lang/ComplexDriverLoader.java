@@ -59,7 +59,7 @@ public final class ComplexDriverLoader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/08/05
 	 */
-	public static <F extends ComplexDriverFactory> F factoryInstance(
+	public static <F extends ComplexDriverFactory> F factory(
 		Class<F> __class)
 		throws NullPointerException
 	{
@@ -295,12 +295,16 @@ public final class ComplexDriverLoader
 		if (result != null)
 			return result;
 		
+		// No actual drivers?
+		String rawList = RuntimeShelf.vmDescription(
+			VMDescriptionType.COMPLEX_DRIVER_LIST);
+		if (rawList == null || rawList.isEmpty())
+			return null;
+		
 		// Working result
 		List<ComplexDriverPair> working = new ArrayList<>();
 		
 		// Split the raw list accordingly to find services
-		String rawList = RuntimeShelf.vmDescription(
-			VMDescriptionType.COMPLEX_DRIVER_LIST);
 		for (int at = 0, n = rawList.length(); at < n;)
 		{
 			// Find the end of the string
