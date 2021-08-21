@@ -77,6 +77,18 @@ public enum VMType
 		
 		/**
 		 * {@inheritDoc}
+		 * @since 2020/11/27
+		 */
+		@Override
+		public void processRom(Task __task, OutputStream __out,
+			Collection<Path> __libs)
+			throws IOException, NullPointerException
+		{
+			throw new RuntimeException(this.name() + " is not ROM capable.");
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2020/08/15
 		 */
 		@Override
@@ -360,30 +372,6 @@ public enum VMType
 		
 		/**
 		 * {@inheritDoc}
-		 * @since 2020/11/27
-		 */
-		@Override
-		public void processRom(Task __task, OutputStream __out,
-			Collection<Path> __libs)
-			throws IOException, NullPointerException
-		{
-			if (__task == null || __out == null || __libs == null)
-				throw new NullPointerException("NARG");
-				
-			// Setup arguments for compilation
-			Collection<String> args = new ArrayList<>();
-			
-			// Put down paths to libraries to link together
-			for (Path path : __libs)
-				args.add(path.toString());
-				
-			// Run the specified command
-			this.__aotCommand(__task, null, __out,
-				"rom", args);
-		}
-		
-		/**
-		 * {@inheritDoc}
 		 * @since 2020/08/15
 		 */
 		@Override
@@ -465,7 +453,7 @@ public enum VMType
 	@Override
 	public final boolean hasRom()
 	{
-		return this == VMType.SUMMERCOAT;
+		return this != VMType.HOSTED;
 	}
 	
 	/**
@@ -521,7 +509,19 @@ public enum VMType
 		Collection<Path> __libs)
 		throws IOException, NullPointerException
 	{
-		throw new RuntimeException(this.name() + " is not ROM capable.");
+		if (__task == null || __out == null || __libs == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup arguments for compilation
+		Collection<String> args = new ArrayList<>();
+		
+		// Put down paths to libraries to link together
+		for (Path path : __libs)
+			args.add(path.toString());
+			
+		// Run the specified command
+		this.__aotCommand(__task, null, __out,
+			"rom", args);
 	}
 	
 	/**
@@ -664,6 +664,9 @@ public enum VMType
 	}
 	
 	/**
+	 * Returns the command that is used to execute the ahead of time
+	 * compiler interface.
+	 * 
 	 * @param __task The task being run for.
 	 * @param __in The input source (optional).
 	 * @param __out The output source (optional).
