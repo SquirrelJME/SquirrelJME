@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.tac.TestConsumer;
+import net.multiphasicapps.tac.UntestableException;
 
 /**
  * Tests that minimizing is performed properly.
@@ -30,6 +31,9 @@ public class TestMinimizer
 	public void test(String __class)
 		throws Throwable
 	{
+		if (true)
+			throw new UntestableException("Not currently running.");
+		
 		try (InputStream in = TestClassLoad.class.getResourceAsStream(__class);
 			ByteArrayOutputStream out = new ByteArrayOutputStream())
 		{
