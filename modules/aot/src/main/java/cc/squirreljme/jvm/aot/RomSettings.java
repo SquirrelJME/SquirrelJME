@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Deque;
 
 /**
@@ -39,14 +40,41 @@ public final class RomSettings
 			String arg = __args.removeFirst();
 			
 			// End of arguments? put it back and handle later
-			if (!arg.startsWith("-"))
+			if (!arg.startsWith("-") || arg.equals("--"))
 			{
 				__args.addFirst(arg);
 				break;
 			}
 			
+			// Arguments are in the following format:
+			
+			// Bootloader main class
+			// -XbootLoaderMainClass:cc.squirreljme.jvm.summercoat.Bootstrap
+			if (arg.startsWith("-XbootLoaderMainClass:"))
+				throw Debugging.todo();
+			
+			// Bootloader class path
+			// -XbootLoaderClassPath:0
+			else if (arg.startsWith("-XbootLoaderClassPath:"))
+				throw Debugging.todo();
+			
+			// Launcher main class
+			// -XlauncherMainClass:javax.microedition.midlet.__MainHandler__
+			else if (arg.startsWith("-XlauncherMainClass:"))
+				throw Debugging.todo();
+			
+			// Launcher arguments
+			// -XlauncherArgs:0:cc.squirreljme.runtime.launcher.ui.MidletMain
+			else if (arg.startsWith("-XlauncherArgs:"))
+				throw Debugging.todo();
+				
+			// -XlauncherClassPath:0,6,38,24,25,44,43,27
+			else if (arg.startsWith("-XlauncherClassPath:"))
+				throw Debugging.todo();
+			
 			// {@squirreljme.error AE07 Unknown argument. (The argument)}
-			throw new IllegalArgumentException("AE07 " + arg);
+			else
+				throw new IllegalArgumentException("AE07 " + arg);
 		}
 		
 		return new RomSettings();
