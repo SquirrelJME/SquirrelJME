@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.util.UnassistedLaunchEntry;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.util.FileLocation;
 import cc.squirreljme.plugin.util.TestDetection;
@@ -409,7 +410,7 @@ public final class VMHelpers
 		
 		// We either run the MIDlet or we do not
 		return (__midlet != null ?
-			"javax.microedition.midlet.__MainHandler__" :
+			UnassistedLaunchEntry.MIDLET_MAIN_CLASS :
 			Objects.requireNonNull(__cfg.mainClass,
 			"No main class in project."));
 	}
@@ -910,6 +911,34 @@ public final class VMHelpers
 			throw new NullPointerException("NARG");
 		
 		return Paths.get("RESULTS-" + __project.getName() + ".csv");
+	}
+	
+	/**
+	 * Returns the unassisted launch entry.
+	 * 
+	 * @param __cfg The configuration to get from.
+	 * @param __midlet The MIDlet to load.
+	 * @return The unassisted launch entry for the given MIDlet.
+	 * @throws NullPointerException If no configuration was specified.
+	 * @since 2021/08/22
+	 */
+	public static UnassistedLaunchEntry unassistedLaunch(
+		SquirrelJMEPluginConfiguration __cfg, JavaMEMidlet __midlet)
+		throws NullPointerException
+	{
+		if (__cfg == null)
+			throw new NullPointerException("NARG");
+		
+		// Starting arguments?
+		String[] args;
+		if (__midlet != null)
+			args = new String[]{__midlet.mainClass};
+		else
+			args = new String[0];
+		
+		return new UnassistedLaunchEntry(
+			VMHelpers.mainClass(__cfg, __midlet),
+			args);
 	}
 	
 	/**

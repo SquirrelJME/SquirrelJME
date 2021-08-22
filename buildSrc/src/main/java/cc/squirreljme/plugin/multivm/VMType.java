@@ -77,11 +77,23 @@ public enum VMType
 		
 		/**
 		 * {@inheritDoc}
+		 * @since 2020/11/21
+		 */
+		@Override
+		public Iterable<Task> processLibraryDependencies(
+			VMExecutableTask __task)
+			throws NullPointerException
+		{
+			return Collections.emptyList();
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2020/11/27
 		 */
 		@Override
 		public void processRom(Task __task, OutputStream __out,
-			Collection<Path> __libs)
+			RomBuildParameters __build, List<Path> __libs)
 			throws IOException, NullPointerException
 		{
 			throw new RuntimeException(this.name() + " is not ROM capable.");
@@ -330,48 +342,6 @@ public enum VMType
 		
 		/**
 		 * {@inheritDoc}
-		 * @since 2020/11/21
-		 */
-		@Override
-		public Iterable<Task> processLibraryDependencies(
-			VMExecutableTask __task)
-			throws NullPointerException
-		{
-			Project project = __task.getProject().getRootProject()
-				.project(":modules:aot-" +
-					this.vmName(VMNameFormat.LOWERCASE));
-			Project rootProject = project.getRootProject();
-			
-			// Make sure the AOT compiler is always up to date when this is
-			// ran, otherwise things can be very weird if it is not updated
-			// which would not be a good thing at all
-			Collection<Task> rv = new LinkedList<>();
-			for (ProjectAndTaskName task : VMHelpers.runClassTasks(project,
-				SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED))
-			{
-				Project taskProject = rootProject.project(task.project);
-				
-				// Depends on all of the classes, not just the libraries, for
-				// anything the AOT compiler uses. If the compiler changes we
-				// need to make sure the updated compiler is used!
-				rv.add(taskProject.getTasks().getByName("classes"));
-				rv.add(taskProject.getTasks().getByName("jar"));
-				
-				// The library that makes up the task is important
-				rv.add(taskProject.getTasks().getByName(task.task));
-			}
-			
-			// Make sure the hosted environment is working since it needs to
-			// be kept up to date as well
-			for (Task task : new VMEmulatorDependencies(__task,
-				VMType.HOSTED).call())
-				rv.add(task);
-			
-			return rv;
-		}
-		
-		/**
-		 * {@inheritDoc}
 		 * @since 2020/08/15
 		 */
 		@Override
@@ -497,7 +467,37 @@ public enum VMType
 		VMExecutableTask __task)
 		throws NullPointerException
 	{
-		return Collections.emptyList();
+		Project project = __task.getProject().getRootProject()
+			.project(":modules:aot-" +
+				this.vmName(VMNameFormat.LOWERCASE));
+		Project rootProject = project.getRootProject();
+		
+		// Make sure the AOT compiler is always up to date when this is
+		// ran, otherwise things can be very weird if it is not updated
+		// which would not be a good thing at all
+		Collection<Task> rv = new LinkedList<>();
+		for (ProjectAndTaskName task : VMHelpers.runClassTasks(project,
+			SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED))
+		{
+			Project taskProject = rootProject.project(task.project);
+			
+			// Depends on all of the classes, not just the libraries, for
+			// anything the AOT compiler uses. If the compiler changes we
+			// need to make sure the updated compiler is used!
+			rv.add(taskProject.getTasks().getByName("classes"));
+			rv.add(taskProject.getTasks().getByName("jar"));
+			
+			// The library that makes up the task is important
+			rv.add(taskProject.getTasks().getByName(task.task));
+		}
+		
+		// Make sure the hosted environment is working since it needs to
+		// be kept up to date as well
+		for (Task task : new VMEmulatorDependencies(__task,
+			VMType.HOSTED).call())
+			rv.add(task);
+		
+		return rv;
 	}
 	
 	/**
@@ -506,14 +506,47 @@ public enum VMType
 	 */
 	@Override
 	public void processRom(Task __task, OutputStream __out,
-		Collection<Path> __libs)
+		RomBuildParameters __build, List<Path> __libs)
 		throws IOException, NullPointerException
 	{
-		if (__task == null || __out == null || __libs == null)
+		if (__task == null || __out == null || __build == null ||
+			__libs == null)
 			throw new NullPointerException("NARG");
 		
-		// Setup arguments for compilation
-		Collection<String> args = new ArrayList<>();
+		// Build index mapping of the libraries accordingly
+		Map<Path, Integer> libIndex = new LinkedHashMap<>();
+		for (int i = 0, n = __libs.size(); i < n; i++)
+			libIndex.put(__libs.get(i), i);
+		
+		// Setup arguments for packing the ROM
+		List<String> args = new ArrayList<>();
+		
+		// Boot loader
+		if (__build.bootLoaderMainClass != null)
+			args.add("-XbootLoaderMainClass:" + __build.bootLoaderMainClass);
+		
+		// Boot loader class path
+		if (__build.bootLoaderClassPath != null)
+			args.add("-XbootLoaderClassPath:" +
+				VMType.__pathIndexList(libIndex, __build.bootLoaderClassPath));
+			
+		// Launcher main class
+		if (__build.launcherMainClass != null)
+			args.add("-XlauncherMainClass:" + __build.launcherMainClass);
+		
+		// Launcher arguments, these are a bit special
+		if (__build.launcherArgs != null)
+		{
+			String[] launcherArgs = __build.launcherArgs;
+			for (int i = 0, n = launcherArgs.length; i < n; i++)
+				args.add(String.format("-XlauncherArgs:%d:%s",
+					i, launcherArgs[i]));
+		}
+		
+		// Launcher class path
+		if (__build.launcherClassPath != null)
+			args.add("-XlauncherClassPath:" +
+				VMType.__pathIndexList(libIndex, __build.launcherClassPath));
 		
 		// Put down paths to libraries to link together
 		for (Path path : __libs)
@@ -770,5 +803,31 @@ public enum VMType
 				baseKey.substring(VMType._JVM_KEY_PREFIX.length()),
 				Objects.toString(prop.getValue()));
 		}
+	}
+	
+	/**
+	 * Maps paths to indexes, for flatification and simplification of
+	 * processes that take paths and refer to them multiple times.
+	 * 
+	 * @param __libIndex The library index.
+	 * @param __paths The paths to map.
+	 * @return A string which maps to the given indexes.
+	 * @since 2021/08/22
+	 */
+	private static String __pathIndexList(Map<Path, Integer> __libIndex,
+		Path... __paths)
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		for (Path p : __paths)
+		{
+			// Comma for the index?
+			if (sb.length() > 0)
+				sb.append(',');
+			
+			sb.append(__libIndex.get(p));
+		}
+		
+		return sb.toString();
 	}
 }

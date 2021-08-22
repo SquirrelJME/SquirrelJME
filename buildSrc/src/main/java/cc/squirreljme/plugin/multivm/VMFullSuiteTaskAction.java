@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.util.UnassistedLaunchEntry;
 import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.GuardedOutputStream;
 import java.io.File;
@@ -125,7 +126,7 @@ public class VMFullSuiteTaskAction
 				// Use filled JVM arguments
 				this.vmType.spawnJvmArguments(__task, false,
 					new GradleJavaExecSpecFiller(__spec),
-					"javax.microedition.midlet.__MainHandler__",
+					UnassistedLaunchEntry.MIDLET_MAIN_CLASS,
 					new LinkedHashMap<String, String>(),
 					libPath.<Path>toArray(new Path[libPath.size()]),
 					classPath.<Path>toArray(new Path[classPath.size()]),

@@ -26,6 +26,7 @@ squirreljme
 	
 	// This is considered a boot loader for SummerCoat
 	isBootLoader = true
+	bootLoaderMainClass = "cc.squirreljme.jvm.summercoat.Bootstrap"
 }
 
 java

@@ -13,6 +13,7 @@ squirreljme
 	swmName = "SquirrelJME Launcher (Graphical)"
 	swmVendor = "Stephanie Gawroriski"
 	ignoreInLauncher = true
+	isMainLauncher = true
 	midlets += new JavaMEMidlet("SquirrelJME Launcher (Graphical)", null,
 		"cc.squirreljme.runtime.launcher.ui.MidletMain")
 	tags += "j2me"

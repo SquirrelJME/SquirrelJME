@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -127,12 +128,14 @@ public interface VMSpecifier
 	 * 
 	 * @param __task The task running under.
 	 * @param __out The output of the given path.
+	 * @param __build Build parameters for the ROM.
 	 * @param __libs The libraries to link in.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/27
 	 */
-	void processRom(Task __task, OutputStream __out, Collection<Path> __libs)
+	void processRom(Task __task, OutputStream __out,
+		RomBuildParameters __build, List<Path> __libs)
 		throws IOException, NullPointerException;
 	
 	/**

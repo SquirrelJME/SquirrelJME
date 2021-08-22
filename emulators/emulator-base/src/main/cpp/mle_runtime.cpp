@@ -9,6 +9,10 @@
 
 #include "squirreljme.h"
 
+#define RUNTIME_CLASSNAME "cc/squirreljme/emulator/EmulatedRuntimeShelf"
+
+#define RUNTIME_VMDESCRIPTION_DESC "(I)Ljava/lang/String;"
+
 JNIEXPORT void JNICALL Impl_mle_RuntimeShelf_garbageCollect(
 	JNIEnv* env, jclass classy)
 {
@@ -24,6 +28,14 @@ JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_lineEnding(JNIEnv*, jclass)
 #endif
 }
 
+JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_vmDescription(
+	JNIEnv* env, jclass classy, jint id)
+{
+	return (jstring)forwardCallStaticObject(env, RUNTIME_CLASSNAME,
+		"vmDescription", RUNTIME_VMDESCRIPTION_DESC,
+		id);
+}
+
 JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_vmType(JNIEnv*, jclass)
 {
 	// The value 1 is Java SE type
@@ -34,6 +46,7 @@ static const JNINativeMethod mleRuntimeMethods[] =
 {
 	{"garbageCollect", "()V", (void*)Impl_mle_RuntimeShelf_garbageCollect},
 	{"lineEnding", "()I", (void*)Impl_mle_RuntimeShelf_lineEnding},
+	{"vmDescription", RUNTIME_VMDESCRIPTION_DESC, (void*)Impl_mle_RuntimeShelf_vmDescription},
 	{"vmType", "()I", (void*)Impl_mle_RuntimeShelf_vmType},
 };
 
