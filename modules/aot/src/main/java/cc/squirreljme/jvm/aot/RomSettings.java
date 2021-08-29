@@ -9,9 +9,10 @@
 
 package cc.squirreljme.jvm.aot;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * This class contains settings for ROM building.
@@ -131,42 +132,146 @@ public final class RomSettings
 	/**
 	 * Parses arguments.
 	 * 
+	 * Example: {@code -Xsquirrels:0:cute}.
+	 * 
 	 * @param __out The output list.
 	 * @param __arg The input argument.
 	 * @return A new list or {@code __out}.
+	 * @throws NullPointerException If {@code __arg} is {@code null}.
 	 * @since 2021/08/28
 	 */
 	private static List<String> __parseArgs(List<String> __out, String __arg)
+		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__arg == null)
+			throw new NullPointerException("NARG");
+			
+		// {@squirreljme.error AE0c Missing colon in argument. (The argument)}
+		int col = __arg.indexOf(':');
+		if (col < 0)
+			throw new IllegalArgumentException("AE0c " + __arg);
+			
+			
+		// {@squirreljme.error AE0d Missing second colon in argument.
+		// (The argument)}
+		int sec = __arg.indexOf(':', col + 1);
+		if (sec < 0)
+			throw new IllegalArgumentException("AE0d " + __arg);
+		
+		// Parse the index value
+		int index;
+		try
+		{
+			// {@squirreljme.error AE0g Index refers to a negative position.
+			// (The argument)}
+			index = Integer.parseInt(__arg.substring(col + 1, sec), 10);
+			if (index < 0)
+				throw new IllegalArgumentException("AE0g " + __arg);
+		}
+		catch (NumberFormatException e)
+		{
+			// {@squirreljme.error AE0e Could not parse number index.
+			// (The argument)}
+			throw new IllegalArgumentException("AE0e " + __arg);
+		}
+		
+		// Get the string to be stored
+		String value = __arg.substring(sec + 1);
+		
+		// If missing, make sure it gets created
+		if (__out == null)
+			__out = new ArrayList<>();
+		
+		// Fill with empty arguments until it is hit
+		while (__out.size() <= index)
+			__out.add("");
+		
+		// Set the value, since we could be replacing it!
+		__out.set(index, value);
+		
+		return __out;
 	}
 	
 	/**
 	 * Parses class path indexes.
 	 * 
+	 * Example: {@code -Xsquirrels:1,2,3,4}.
+	 * 
 	 * @param __arg The input argument.
 	 * @return The integer index list.
+	 * @throws NullPointerException If {@code __arg} is {@code null}.
 	 * @since 2021/08/28
 	 */
 	private static List<Integer> __parseClassPath(String __arg)
+		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__arg == null)
+			throw new NullPointerException("NARG");
+			
+		// {@squirreljme.error AE0a Missing colon in argument. (The argument)}
+		int col = __arg.indexOf(':');
+		if (col < 0)
+			throw new IllegalArgumentException("AE0a " + __arg);
+		
+		// Decode the integer list
+		List<Integer> result = new ArrayList<>();
+		for (int i = col + 1, n = __arg.length(); i < n;)
+		{
+			int seq = __arg.indexOf(',', i);
+			if (seq < 0)
+				seq = n;
+			
+			// Parse it and add
+			try
+			{
+				// {@squirreljme.error AE0f Index refers to a negative
+				// position. (The argument)}
+				int index = Integer.parseInt(__arg.substring(i, seq), 10);
+				if (index < 0)
+					throw new IllegalArgumentException("AE0f " + __arg);
+				
+				result.add(index);
+			}
+			catch (NumberFormatException e)
+			{
+				// {@squirreljme.error AE0b Could not parse integer value
+				// as it was not valid. (The argument)}
+				throw new IllegalArgumentException("AE0b " + __arg);
+			}
+			
+			// Skip to the next sequence
+			i = seq + 1;
+		}
+		
+		return UnmodifiableList.of(result);
 	}
 	
 	/**
 	 * Parses a single string.
 	 * 
+	 * Example: {@code -Xsquirrels:cute}.
+	 * 
 	 * @param __arg The input argument.
 	 * @return The single string.
+	 * @throws NullPointerException If {@code __arg} is {@code null}.
 	 * @since 2021/08/28
 	 */
 	private static String __parseString(String __arg)
+		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__arg == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AE09 Missing colon in argument. (The argument)}
+		int col = __arg.indexOf(':');
+		if (col < 0)
+			throw new IllegalArgumentException("AE09 " + __arg);
+		
+		return __arg.substring(col + 1);
 	}
 	
 	/**
-	 * Protectes the given list.
+	 * Protects the given list.
 	 * 
 	 * @param <T> The type of list to protect.
 	 * @param __list The list to protect.
@@ -175,6 +280,9 @@ public final class RomSettings
 	 */
 	private static <T> List<T> __protect(List<T> __list)
 	{
-		throw Debugging.todo();
+		if (__list == null)
+			return null;
+		
+		return UnmodifiableList.of(__list);
 	}
 }
