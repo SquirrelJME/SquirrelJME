@@ -27,4 +27,5 @@ dependencies
 	
 	api project(":modules:aot")
 	api project(":modules:common-vm")
+	api project(":modules:io")
 }

@@ -13,12 +13,17 @@ import cc.squirreljme.jvm.aot.Backend;
 import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.RomSettings;
+import cc.squirreljme.jvm.aot.summercoat.base.StandardPackWriter;
+import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
+import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import net.multiphasicapps.io.ChunkSection;
+import net.multiphasicapps.io.ChunkWriter;
 
 /**
  * Backend for SpringCoat operations.
@@ -87,6 +92,43 @@ public class SpringCoatBackend
 		if (__settings == null || __out == null || __libs == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// Setup chunk where everything is written to
+		ChunkWriter chunk = new ChunkWriter();
+		
+		// Sections for chunks
+		ChunkSection headerChunk = chunk.addSection(
+			ChunkWriter.VARIABLE_SIZE, 8);
+		ChunkSection tocChunk = chunk.addSection(
+			ChunkWriter.VARIABLE_SIZE, 8);
+		
+		// Start the base pack file accordingly
+		StandardPackWriter pack = new StandardPackWriter(
+			ClassInfoConstants.PACK_MAGIC_NUMBER,
+			PackProperty.NUM_PACK_PROPERTIES);
+		
+		// Write header information
+		if (true)
+			throw Debugging.todo();
+		
+		// Process each library
+		for (VMClassLibrary lib : __libs)
+		{
+			// Setup Jar chunk
+			ChunkSection jarChunk = chunk.addSection(
+				ChunkWriter.VARIABLE_SIZE, 8);
+			
+			// Add table of contents information on this JAR
+			if (true)
+				throw Debugging.todo();
+			
+			throw Debugging.todo();
+		}
+		
+		// Finalize the chunk
+		pack.writeTo(headerChunk, tocChunk);
+		
+		// Write to wherever our output is going
+		chunk.writeTo(__out);
+		__out.flush();
 	}
 }

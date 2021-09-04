@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.summercoat.ld.pack;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.constants.JarProperty;
+import cc.squirreljme.jvm.summercoat.constants.JarTocFlag;
 import cc.squirreljme.jvm.summercoat.constants.JarTocProperty;
 import cc.squirreljme.jvm.summercoat.ld.mem.MemoryUtils;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
@@ -30,7 +31,7 @@ public class JarRom
 	/** The JAR data. */
 	protected final ReadableMemory data;
 	
-	/** The JAR flags. */
+	/** The JAR {@link JarTocFlag}. */
 	protected final int flags;
 	
 	/** The JAR name. */

@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.summercoat.constants;
 
+import java.util.List;
+
 /**
  * Represents a property of a pack file.
  *
@@ -48,7 +50,23 @@ public interface PackProperty
 	byte ROM_SIZE =
 		7;
 	
+	/** The main class for the launcher. */
+	byte STRING_LAUNCHER_MAIN_CLASS =
+		8;
+	
+	/** The arguments to initialize the launcher. */
+	byte STRINGS_LAUNCHER_ARGS =
+		9;
+	
+	/** The class path to initialize the launcher. */
+	byte INTEGERS_LAUNCHER_CLASSPATH =
+		10;
+	
+	/** The number of class path entries for the launcher. */
+	byte COUNT_LAUNCHER_CLASSPATH =
+		11;
+	
 	/** The number of pack properties. */
 	byte NUM_PACK_PROPERTIES =
-		8;
+		12;
 }

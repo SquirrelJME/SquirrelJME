@@ -46,7 +46,7 @@ public class SummerCoatBackend
 			throw new NullPointerException("NARG");
 		
 		// Copy from the source to the destination
-		byte[] buf = new byte[4096];
+		byte[] buf = new byte[9182];
 		for (;;)
 		{
 			int rc = __in.read(buf);

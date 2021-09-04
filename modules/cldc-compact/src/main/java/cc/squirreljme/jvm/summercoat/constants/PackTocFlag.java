@@ -9,38 +9,20 @@
 
 package cc.squirreljme.jvm.summercoat.constants;
 
+import cc.squirreljme.jvm.summercoat.ld.pack.PackRom;
+import cc.squirreljme.jvm.summercoat.ld.pack.TableOfContents;
+
 /**
- * Properties for the pack file table of content entries.
+ * Flags for {@link TableOfContents} in {@link PackRom}.
  *
- * @since 2020/12/12
+ * @since 2021/09/03
  */
-public interface PackTocProperty
+public interface PackTocFlag
 {
-	/** Flags for the JAR, a set of {@link PackTocFlag}. */
-	byte INT_FLAGS =
-		0;
-	
-	/** Hash code of the entry. */
-	byte INT_NAME_HASHCODE =
+	/**
+	 * Resource item, not a JAR but a data file, this can be a manifest file
+	 * for i-Mode for example.
+	 */
+	byte RESOURCE =
 		1;
-	
-	/** The name of the library. */
-	byte OFFSET_NAME =
-		2;
-	
-	/** The size of the library name. */
-	byte SIZE_NAME =
-		3;
-	
-	/** Offset to the JAR data. */
-	byte OFFSET_DATA =
-		4;
-	
-	/** The size of the JAR data. */
-	byte SIZE_DATA =
-		5;
-	
-	/** The properties available. */
-	byte NUM_PACK_TOC_PROPERTIES =
-		6;
 }

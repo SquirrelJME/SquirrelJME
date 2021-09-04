@@ -7,35 +7,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.summercoat.constants;
+package cc.squirreljme.jvm.aot.summercoat.base;
 
-import cc.squirreljme.jvm.summercoat.ld.pack.JarRom;
 import cc.squirreljme.jvm.summercoat.ld.pack.TableOfContents;
 
 /**
- * Flags for {@link TableOfContents} in {@link JarRom}.
+ * Writer for {@link TableOfContents}.
  *
- * @since 2020/12/08
+ * @since 2021/09/03
  */
-public interface JarTocFlag
+public final class TableOfContentsWriter
 {
-	/** A class that can be executed. */
-	byte EXECUTABLE_CLASS =
-		1;
-	
-	/** A resource entry. */
-	byte RESOURCE =
-		2;
-	
-	/** Manifest resource. */
-	byte MANIFEST =
-		4;
-	
-	/** Is this a boot class? */
-	byte BOOT =
-		8;
-	
-	/** Is a standard class file and not a SummerCoat class. */
-	byte STANDARD_CLASS =
-		16;
 }
