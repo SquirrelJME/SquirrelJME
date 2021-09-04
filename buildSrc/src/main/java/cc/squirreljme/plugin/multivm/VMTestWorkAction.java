@@ -275,6 +275,9 @@ public abstract class VMTestWorkAction
 		String nowTimestamp = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(
 			LocalDateTime.ofInstant(Instant.ofEpochMilli(__clockStart),
 				ZoneId.systemDefault()));
+			
+		// Duration in seconds
+		double durationSeconds = __nsDur / 1_000_000_000D;
 		
 		// Open test suite
 		__out.printf("<testsuite name=\"%s\" tests=\"%d\" " +
@@ -282,7 +285,7 @@ public abstract class VMTestWorkAction
 			"timestamp=\"%s\" hostname=\"%s\" time=\"%.3f\" " +
 			">",
 			__testName, numTests, numSkipped, numFailed, numFailed,
-			nowTimestamp, __vmName, __nsDur / 1_000_000D);
+			nowTimestamp, __vmName, durationSeconds);
 		__out.println();
 		
 		// Begin properties
@@ -308,7 +311,7 @@ public abstract class VMTestWorkAction
 		// Begin test case
 		__out.printf("<testcase name=\"%s\" classname=\"%s\" " +
 			"time=\"%.3f\">",
-			__testName, __testName, __nsDur / 1_000_000D);
+			__testName, __testName, durationSeconds);
 		__out.println();
 		
 		// Failed tests use this tag accordingly, despite there being a
