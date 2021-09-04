@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.aot.summercoat.base;
 
 import cc.squirreljme.jvm.summercoat.ld.pack.HeaderStruct;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.io.ChunkForwardedFuture;
 import net.multiphasicapps.io.ChunkFuture;
 import net.multiphasicapps.io.ChunkFutureInteger;
@@ -40,7 +39,12 @@ public final class HeaderStructWriter
 		if (__numProperties <= 0)
 			throw new IllegalArgumentException("AJ02 " + __numProperties);
 		
-		this._properties = new ChunkForwardedFuture[__numProperties];
+		ChunkForwardedFuture[] properties =
+			new ChunkForwardedFuture[__numProperties];
+		for (int i = 0, n = properties.length; i < n; i++)
+			properties[i] = new ChunkForwardedFuture();
+		
+		this._properties = properties;
 	}
 	
 	/**
@@ -70,6 +74,6 @@ public final class HeaderStructWriter
 	public final void set(int __property, ChunkFuture __value)
 		throws IndexOutOfBoundsException
 	{
-		throw Debugging.todo();
+		this._properties[__property].set(__value);
 	}
 }

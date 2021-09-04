@@ -34,7 +34,13 @@ public interface PackProperty
 	byte SIZE_TOC =
 		3;
 	
-	/** The index of the boot JAR. */
+	/**
+	 * The index of the boot JAR.
+	 * 
+	 * @deprecated This is being replaced by better means of specifying the
+	 * boot JAR and otherwise.
+	 */
+	@Deprecated
 	byte INDEX_BOOT_JAR =
 		4;
 	
@@ -58,15 +64,31 @@ public interface PackProperty
 	byte STRINGS_LAUNCHER_ARGS =
 		9;
 	
+	/** The number of launcher args that exist. */
+	byte COUNT_LAUNCHER_ARGS =
+		10;
+	
 	/** The class path to initialize the launcher. */
 	byte INTEGERS_LAUNCHER_CLASSPATH =
-		10;
+		11;
 	
 	/** The number of class path entries for the launcher. */
 	byte COUNT_LAUNCHER_CLASSPATH =
-		11;
+		12;
+	
+	/** The main class for the boot loader. */
+	byte STRING_BOOTLOADER_MAIN_CLASS =
+		13;
+	
+	/** The class path for the boot loader. */
+	byte INTEGERS_BOOTLOADER_CLASSPATH =
+		14;
+	
+	/** The number of items in the boot loader class path. */
+	byte COUNT_BOOTLOADER_CLASSPATH =
+		15;
 	
 	/** The number of pack properties. */
 	byte NUM_PACK_PROPERTIES =
-		12;
+		16;
 }

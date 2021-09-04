@@ -12,11 +12,8 @@ package cc.squirreljme.jvm.aot.summercoat.base;
 import cc.squirreljme.jvm.summercoat.ld.pack.JarRom;
 import cc.squirreljme.jvm.summercoat.ld.pack.PackRom;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import net.multiphasicapps.io.ChunkSection;
-import net.multiphasicapps.io.ChunkWriter;
 
 /**
  * Writer that is capable of writing anything based on table of contents
@@ -74,7 +71,7 @@ public final class StandardPackWriter
 	{
 		if (__headerChunk == null || __tocChunk == null)
 			throw new NullPointerException("NARG");
-		
+			
 		throw Debugging.todo();
 	}
 }
