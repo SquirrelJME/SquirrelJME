@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.aot.Backend;
 import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.RomSettings;
+import cc.squirreljme.jvm.aot.summercoat.base.HeaderStructWriter;
 import cc.squirreljme.jvm.aot.summercoat.base.StandardPackWriter;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
@@ -107,6 +108,7 @@ public class SpringCoatBackend
 			PackProperty.NUM_PACK_PROPERTIES);
 		
 		// Write header information
+		HeaderStructWriter header = pack.header();
 		if (true)
 			throw Debugging.todo();
 		

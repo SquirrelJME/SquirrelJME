@@ -49,6 +49,17 @@ public final class StandardPackWriter
 	}
 	
 	/**
+	 * Returns the header for writing.
+	 * 
+	 * @return The header to write into.
+	 * @since 2021/09/03
+	 */
+	public HeaderStructWriter header()
+	{
+		return this.header;
+	}
+	
+	/**
 	 * Writes the data to the given output.
 	 * 
 	 * @param __headerChunk The header chunk.

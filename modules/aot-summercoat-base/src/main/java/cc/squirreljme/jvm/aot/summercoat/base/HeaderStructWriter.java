@@ -10,7 +10,10 @@
 package cc.squirreljme.jvm.aot.summercoat.base;
 
 import cc.squirreljme.jvm.summercoat.ld.pack.HeaderStruct;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.io.ChunkForwardedFuture;
+import net.multiphasicapps.io.ChunkFuture;
+import net.multiphasicapps.io.ChunkFutureInteger;
 
 /**
  * Writer for standard {@link HeaderStruct}.
@@ -38,5 +41,35 @@ public final class HeaderStructWriter
 			throw new IllegalArgumentException("AJ02 " + __numProperties);
 		
 		this._properties = new ChunkForwardedFuture[__numProperties];
+	}
+	
+	/**
+	 * Sets the given property.
+	 * 
+	 * @param __property The property to set.
+	 * @param __value The value to set.
+	 * @throws IndexOutOfBoundsException If this property is outside of the
+	 * set bounds.
+	 * @since 2021/09/03
+	 */
+	public final void set(int __property, int __value)
+		throws IndexOutOfBoundsException
+	{
+		this.set(__property, new ChunkFutureInteger(__value));
+	}
+	
+	/**
+	 * Sets the given property.
+	 * 
+	 * @param __property The property to set.
+	 * @param __value The value to set.
+	 * @throws IndexOutOfBoundsException If this property is outside of the
+	 * set bounds.
+	 * @since 2021/09/03
+	 */
+	public final void set(int __property, ChunkFuture __value)
+		throws IndexOutOfBoundsException
+	{
+		throw Debugging.todo();
 	}
 }
