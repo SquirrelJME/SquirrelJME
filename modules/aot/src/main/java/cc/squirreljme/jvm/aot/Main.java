@@ -305,8 +305,11 @@ public class Main
 		if (libs.isEmpty())
 			throw new IllegalArgumentException("AE08");
 		
+		// Extra arrays accordingly
+		VMClassLibrary[] vmLibs = libs.toArray(
+			new VMClassLibrary[libs.size()]);
+		
 		// Perform combined linking
-		__backend.rom(settings, __out,
-			libs.toArray(new VMClassLibrary[libs.size()]));
+		__backend.rom(settings, __out, vmLibs);
 	}
 }

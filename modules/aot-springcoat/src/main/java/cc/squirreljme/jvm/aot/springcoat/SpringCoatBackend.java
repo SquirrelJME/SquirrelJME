@@ -84,7 +84,8 @@ public class SpringCoatBackend
 		VMClassLibrary... __libs)
 		throws IOException, NullPointerException
 	{
-		
+		if (__settings == null || __out == null || __libs == null)
+			throw new NullPointerException("NARG");
 		
 		throw Debugging.todo();
 	}

@@ -10,23 +10,21 @@ import cc.squirreljme.plugin.swm.JavaMEConfiguration
 import cc.squirreljme.plugin.swm.JavaMEMidletType
 
 version = "1.8.$squirreljmeVMVersion"
-description = "SpringCoat ROM packaging."
+description = "Base support for SummerCoat AOT."
 
 squirreljme
 {
-	javaDocErrorCode = "AI"
+	javaDocErrorCode = "AJ"
 	swmType = JavaMEMidletType.API
-	swmName = "SpringCoat AOT"
+	swmName = "SummerCoat AOT Base Support"
 	swmVendor = "Stephanie Gawroriski"
 	definedConfigurations += new JavaMEConfiguration("CLDC-1.8")
-	tags += "aot-compiler"
-	tags += "compiler:springcoat"
-	mainClass = "cc.squirreljme.jvm.aot.Main"
 }
 
 dependencies
 {
 	api project(":modules:cldc")
 	
-	api project(":modules:aot-summercoat-base")
+	api project(":modules:aot")
+	api project(":modules:common-vm")
 }
