@@ -9,31 +9,41 @@
 
 package cc.squirreljme.jvm.aot.summercoat.base;
 
-import cc.squirreljme.jvm.summercoat.ld.pack.HeaderStruct;
+import net.multiphasicapps.io.ChunkForwardedFuture;
 import net.multiphasicapps.io.ChunkFuture;
+import net.multiphasicapps.io.ChunkFutureInteger;
 
 /**
- * Writer for standard {@link HeaderStruct}.
+ * Represents a single set of property spans.
  *
- * @since 2021/09/03
+ * @since 2021/09/05
  */
-public final class HeaderStructWriter
+public final class PropertySpan
 {
 	/** Properties to write. */
-	protected final PropertySpan properties;
+	private final ChunkForwardedFuture[] _properties;
 	
 	/**
-	 * Initializes the header struct writer.
+	 * Initializes the property span.
 	 * 
 	 * @param __numProperties The number of properties to store.
 	 * @throws IllegalArgumentException If the number of properties is
 	 * negative.
 	 * @since 2021/09/03
 	 */
-	public HeaderStructWriter(int __numProperties)
+	public PropertySpan(int __numProperties)
 		throws IllegalArgumentException
 	{
-		this.properties = new PropertySpan(__numProperties);
+		// {@squirreljme.error AJ02 Invalid number of properties.}
+		if (__numProperties <= 0)
+			throw new IllegalArgumentException("AJ02 " + __numProperties);
+		
+		ChunkForwardedFuture[] properties =
+			new ChunkForwardedFuture[__numProperties];
+		for (int i = 0, n = properties.length; i < n; i++)
+			properties[i] = new ChunkForwardedFuture();
+		
+		this._properties = properties;
 	}
 	
 	/**
@@ -48,7 +58,7 @@ public final class HeaderStructWriter
 	public final void set(int __property, int __value)
 		throws IndexOutOfBoundsException
 	{
-		this.properties.set(__property, __value);
+		this.set(__property, new ChunkFutureInteger(__value));
 	}
 	
 	/**
@@ -63,6 +73,6 @@ public final class HeaderStructWriter
 	public final void set(int __property, ChunkFuture __value)
 		throws IndexOutOfBoundsException
 	{
-		this.properties.set(__property, __value);
+		this._properties[__property].set(__value);
 	}
 }

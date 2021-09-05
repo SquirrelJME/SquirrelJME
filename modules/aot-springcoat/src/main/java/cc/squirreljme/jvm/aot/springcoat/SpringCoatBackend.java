@@ -16,8 +16,10 @@ import cc.squirreljme.jvm.aot.RomSettings;
 import cc.squirreljme.jvm.aot.summercoat.base.ChunkUtils;
 import cc.squirreljme.jvm.aot.summercoat.base.HeaderStructWriter;
 import cc.squirreljme.jvm.aot.summercoat.base.StandardPackWriter;
+import cc.squirreljme.jvm.aot.summercoat.base.TableOfContentsWriter;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
+import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.IOException;
@@ -106,13 +108,15 @@ public class SpringCoatBackend
 		// Start the base pack file accordingly
 		StandardPackWriter pack = new StandardPackWriter(
 			ClassInfoConstants.PACK_MAGIC_NUMBER,
-			PackProperty.NUM_PACK_PROPERTIES);
+			PackProperty.NUM_PACK_PROPERTIES,
+			PackTocProperty.NUM_PACK_TOC_PROPERTIES);
 		
 		// Write header information
 		HeaderStructWriter header = pack.header();
 		ChunkUtils.storeCommonHeader(chunk, __settings, header);
 		
 		// Process each library
+		TableOfContentsWriter toc = pack.toc();
 		for (VMClassLibrary lib : __libs)
 		{
 			// Setup Jar chunk

@@ -29,20 +29,27 @@ public final class StandardPackWriter
 	/** Header writer. */
 	protected final HeaderStructWriter header;
 	
+	/** The table of contents writer. */
+	protected final TableOfContentsWriter toc;
+	
 	/**
 	 * Writes a standard pack file.
 	 * 
 	 * @param __magic The magic number of the pack.
-	 * @param __numProperties The number of properties to store.
+	 * @param __numPackProperties The number of properties to store.
+	 * @param __numTocProperties The number of properties to store in a single
+	 * table of contents entry.
 	 * @throws IllegalArgumentException If the number of properties is zero
 	 * or negative.
 	 * @since 2021/09/03
 	 */
-	public StandardPackWriter(int __magic, int __numProperties)
+	public StandardPackWriter(int __magic, int __numPackProperties,
+		int __numTocProperties)
 		throws IllegalArgumentException
 	{
 		this.magic = __magic;
-		this.header = new HeaderStructWriter(__numProperties);
+		this.header = new HeaderStructWriter(__numPackProperties);
+		this.toc = new TableOfContentsWriter(__numTocProperties);
 	}
 	
 	/**
@@ -54,6 +61,17 @@ public final class StandardPackWriter
 	public HeaderStructWriter header()
 	{
 		return this.header;
+	}
+	
+	/**
+	 * Returns the table of contents.
+	 * 
+	 * @return The table of contents.
+	 * @since 2021/09/05
+	 */
+	public TableOfContentsWriter toc()
+	{
+		return this.toc;
 	}
 	
 	/**
