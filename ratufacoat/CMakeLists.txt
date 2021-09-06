@@ -14,6 +14,10 @@ file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/../squirreljme-version"
 	SQUIRRELJME_VERSION LIMIT_COUNT 1)
 message("Building for SquirrelJME ${SQUIRRELJME_VERSION}!")
 
+# Put down the configure time
+string(TIMESTAMP SQUIRRELJME_VERSION_ID_TIME "%Y-%m-%dT%H:%M:%SZ" UTC)
+message("Configure time is ${SQUIRRELJME_VERSION_ID_TIME}.")
+
 # Load Fossil manifest, if possible
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../manifest.uuid" AND
 	NOT IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../manifest.uuid")
@@ -33,11 +37,7 @@ else()
 	if("${SQUIRRELJME_VERSION_ID_GIT_CODE}" EQUAL 0)
 		set(SQUIRRELJME_VERSION_ID "git:${SQUIRRELJME_VERSION_ID_GIT}")
 	else()
-		# Otherwise use some ID
-		string(UUID SQUIRRELJME_VERSION_ID_TIME
-			NAMESPACE 00000000-0000-0000-0000-000000000000
-			NAME "squirreljme-build-id"
-			TYPE SHA1)
+		# Otherwise use a basic timestamp
 		set(SQUIRRELJME_VERSION_ID "unknown:${SQUIRRELJME_VERSION_ID_TIME}")
 	endif()
 endif()
