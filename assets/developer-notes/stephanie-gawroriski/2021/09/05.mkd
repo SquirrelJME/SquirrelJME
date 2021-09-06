@@ -1,0 +1,8 @@
+# 2021/09/05
+
+## 09:51
+
+It is a new month, but I have decided to pivot on RatufaCoat. It will for now
+be similar to SpringCoat and be interpreted. Then once I have things working
+and supported, I can devote more time to the compiler. Currently not too happy
+with what I have, it could be done much simpler!
