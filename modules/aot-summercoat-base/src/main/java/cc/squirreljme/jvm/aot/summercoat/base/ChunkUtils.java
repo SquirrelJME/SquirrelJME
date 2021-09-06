@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.aot.summercoat.base;
 import cc.squirreljme.jvm.aot.RomSettings;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.constants.JarProperty;
+import cc.squirreljme.jvm.summercoat.constants.JarTocFlag;
 import cc.squirreljme.jvm.summercoat.constants.JarTocProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackTocFlag;
@@ -96,7 +97,6 @@ public final class ChunkUtils
 			
 		// Get the used chunks.
 		ChunkWriter mainChunk = jar.mainChunk;
-		ChunkSection headerChunk = jar.headerChunk;
 		ChunkSection tocChunk = jar.tocChunk;
 		
 		// Write header information
@@ -106,6 +106,9 @@ public final class ChunkUtils
 		// Temporary buffer to use for data copy
 		byte[] tempBuf = StreamUtils.buffer(null);
 		
+		// Manifest position, if valid
+		int manifestIndex = -1;
+		
 		// Process each entry in the library
 		TableOfContentsWriter toc = jar.toc();
 		for (String resource : __lib.listResources())
@@ -113,6 +116,10 @@ public final class ChunkUtils
 			// Setup entry chunk
 			ChunkSection entryChunk = mainChunk.addSection(
 				ChunkWriter.VARIABLE_SIZE, 8);
+			
+			// Is this a manifest entry?
+			if (ChunkUtils.isJarManifest(resource))
+				manifestIndex = toc.currentCount();
 				
 			// Declare new entry
 			TableOfContentsEntry entry = toc.add();
@@ -127,11 +134,111 @@ public final class ChunkUtils
 		}
 		
 		// Prepare table of contents
-		ChunkUtils.storeCommonJarToc(toc, tocChunk, header);
+		ChunkUtils.storeCommonJarToc(toc, tocChunk, header, manifestIndex);
 		
 		// Write to wherever our output is going
 		mainChunk.writeTo(__jarChunk);
 		__jarChunk.flush();
+	}
+	
+	/**
+	 * Returns the default entry flags for a JAR resource.
+	 * 
+	 * @param __resource The resource name.
+	 * @return The default entry flags for this.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/09/06
+	 */
+	public static int defaultJarEntryFlags(String __resource)
+		throws NullPointerException
+	{
+		if (__resource == null)
+			throw new NullPointerException("NARG");
+		
+		// Manifest file?
+		if (ChunkUtils.isJarManifest(__resource))
+			return JarTocFlag.RESOURCE | JarTocFlag.MANIFEST;
+		
+		// Class file?
+		if (__resource.endsWith(".class"))
+		{
+			// There might be resources that are trying to cheat their way in 
+			int lastSlash = __resource.lastIndexOf('/');
+			int n = __resource.length() - ".class".length();
+			if (n == 0 || (lastSlash >= 0 && n == (lastSlash + 1)))
+				return JarTocFlag.RESOURCE;
+			
+			// Only compare the binary name (extension-less in ZIP) of the
+			// class to determine if it is a compiled class 
+			for (int i = 0; i < n; i++)
+			{				
+				char c = __resource.charAt(i);
+				
+				// Ignore slashes
+				if (c == '/')
+					continue;
+				
+				// Is this a valid character choice?
+				if (!ChunkUtils.isValidJavaIdentifierChar(i == 0, c))
+					return JarTocFlag.RESOURCE;
+			}
+			
+			// Would be a class here
+			return JarTocFlag.STANDARD_CLASS | JarTocFlag.EXECUTABLE_CLASS;
+		}
+		
+		// Otherwise a resource
+		return JarTocFlag.RESOURCE;
+	}
+	
+	/**
+	 * Is this a JAR manifest?
+	 * 
+	 * @param __resource The resource name.
+	 * @return If this is a JAR manifest.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/09/06
+	 */
+	public static boolean isJarManifest(String __resource)
+		throws NullPointerException
+	{
+		if (__resource == null)
+			throw new NullPointerException("NARG");
+		
+		return __resource.equals("META-INF/MANIFEST.MF");
+	}
+	
+	/**
+	 * Is this a valid Java identifier character?
+	 * 
+	 * @param __start Is this the starting character? 
+	 * @param __c The character to check.
+	 * @return If this is valid for a Java identifier.
+	 * @since 2021/09/06
+	 */
+	private static boolean isValidJavaIdentifierChar(boolean __start, char __c)
+	{
+		// TODO: Put in a better way to do this? Since we do not have
+		// TODO: Character.isJavaIdentifierStart/Part().
+		
+		// Numbers are valid after the start
+		if (!__start && Character.isDigit(__c))
+			return true;
+		
+		// Special characters that are always valid
+		if (__c == '$' || __c == '_')
+			return true;
+		
+		// Spaces are never valid
+		if (Character.isWhitespace(__c))
+			return false;
+		
+		// A letter
+		if (Character.isUpperCase(__c) || Character.isLowerCase(__c))
+			return true;
+		
+		// Not valid
+		return false;
 	}
 	
 	/**
@@ -167,18 +274,26 @@ public final class ChunkUtils
 	 * @param __toc The table of contents to write.
 	 * @param __tocChunk The chunk to target.
 	 * @param __header The pack header.
+	 * @param __manifestIndex The index of the manifest.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/06
 	 */
 	public static void storeCommonJarToc(TableOfContentsWriter __toc,
-		ChunkSection __tocChunk, HeaderStructWriter __header)
+		ChunkSection __tocChunk, HeaderStructWriter __header,
+		int __manifestIndex)
 		throws IOException, NullPointerException
 	{
+		if (__toc == null || __tocChunk == null || __header == null)
+			throw new NullPointerException("NARG");
+		
 		// How many and where is the TOC?
 		__header.set(JarProperty.COUNT_TOC, __toc.futureCount());
 		__header.set(JarProperty.OFFSET_TOC, __tocChunk.futureAddress());
 		__header.set(JarProperty.SIZE_TOC, __tocChunk.futureSize());
+		
+		// The manifest index
+		__header.set(JarProperty.RCDX_MANIFEST, __manifestIndex);
 		
 		// This is the same for everything else!
 		ChunkUtils.storeCommonSharedToc(__toc, __tocChunk);
@@ -202,6 +317,10 @@ public final class ChunkUtils
 		// Build name information
 		ChunkSection nameChunk = ChunkUtils.writeString(__mainChunk,
 			__resource);
+		
+		// Default entry flags for this entry
+		__entry.set(JarTocProperty.INT_FLAGS,
+			ChunkUtils.defaultJarEntryFlags(__resource));
 		
 		// Store the name info
 		__entry.set(JarTocProperty.HASHCODE_NAME, __resource.hashCode());

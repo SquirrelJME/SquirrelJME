@@ -106,7 +106,6 @@ public class SpringCoatBackend
 		
 		// Get the used chunks.
 		ChunkWriter mainChunk = pack.mainChunk;
-		ChunkSection headerChunk = pack.headerChunk;
 		ChunkSection tocChunk = pack.tocChunk;
 		
 		// Write header information
