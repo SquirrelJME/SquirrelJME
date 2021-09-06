@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.summercoat.base;
 
+import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.ld.pack.JarRom;
 import cc.squirreljme.jvm.summercoat.ld.pack.PackRom;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -72,24 +73,5 @@ public final class StandardPackWriter
 	public TableOfContentsWriter toc()
 	{
 		return this.toc;
-	}
-	
-	/**
-	 * Writes the data to the given output.
-	 * 
-	 * @param __headerChunk The header chunk.
-	 * @param __tocChunk The table of contents chunk.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/09/03
-	 */
-	public final void writeTo(ChunkSection __headerChunk,
-		ChunkSection __tocChunk)
-		throws IOException, NullPointerException
-	{
-		if (__headerChunk == null || __tocChunk == null)
-			throw new NullPointerException("NARG");
-			
-		throw Debugging.todo();
 	}
 }

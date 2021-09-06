@@ -25,8 +25,4 @@ public interface PackTocFlag
 	 */
 	byte RESOURCE =
 		1;
-	
-	/** Is a standard SummerCoat Jar ROM (SQC). */
-	byte SQC_ROM =
-		2;
 }

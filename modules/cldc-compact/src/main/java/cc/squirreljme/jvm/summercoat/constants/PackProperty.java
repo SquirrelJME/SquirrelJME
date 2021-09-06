@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.summercoat.constants;
 
-import java.util.List;
-
 /**
  * Represents a property of a pack file.
  *

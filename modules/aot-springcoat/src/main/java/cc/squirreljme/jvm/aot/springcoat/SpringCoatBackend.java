@@ -16,11 +16,12 @@ import cc.squirreljme.jvm.aot.RomSettings;
 import cc.squirreljme.jvm.aot.summercoat.base.ChunkUtils;
 import cc.squirreljme.jvm.aot.summercoat.base.HeaderStructWriter;
 import cc.squirreljme.jvm.aot.summercoat.base.StandardPackWriter;
+import cc.squirreljme.jvm.aot.summercoat.base.TableOfContentsEntry;
 import cc.squirreljme.jvm.aot.summercoat.base.TableOfContentsWriter;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.IOException;
 import java.io.InputStream;
@@ -97,12 +98,12 @@ public class SpringCoatBackend
 			throw new NullPointerException("NARG");
 		
 		// Setup chunk where everything is written to
-		ChunkWriter chunk = new ChunkWriter();
+		ChunkWriter mainChunk = new ChunkWriter();
 		
 		// Sections for chunks
-		ChunkSection headerChunk = chunk.addSection(
+		ChunkSection headerChunk = mainChunk.addSection(
 			ChunkWriter.VARIABLE_SIZE, 8);
-		ChunkSection tocChunk = chunk.addSection(
+		ChunkSection tocChunk = mainChunk.addSection(
 			ChunkWriter.VARIABLE_SIZE, 8);
 		
 		// Start the base pack file accordingly
@@ -113,28 +114,37 @@ public class SpringCoatBackend
 		
 		// Write header information
 		HeaderStructWriter header = pack.header();
-		ChunkUtils.storeCommonHeader(chunk, __settings, header);
+		ChunkUtils.storeCommonPackHeader(mainChunk, headerChunk, __settings,
+			header, pack);
 		
 		// Process each library
 		TableOfContentsWriter toc = pack.toc();
 		for (VMClassLibrary lib : __libs)
 		{
 			// Setup Jar chunk
-			ChunkSection jarChunk = chunk.addSection(
+			ChunkSection jarChunk = mainChunk.addSection(
 				ChunkWriter.VARIABLE_SIZE, 8);
 			
-			// Add table of contents information on this JAR
-			if (true)
-				throw Debugging.todo();
+			// Declare new entry
+			TableOfContentsEntry entry = toc.add();
+			ChunkUtils.storeCommonPackTocEntry(entry, lib, mainChunk,
+				jarChunk);
 			
-			throw Debugging.todo();
+			// Plain data container?
+			if (lib instanceof DataContainerLibrary)
+				ChunkUtils.copyDataContainer(
+					(DataContainerLibrary)lib, jarChunk, entry);
+			
+			// Copy plain class otherwise
+			else
+				ChunkUtils.copyPlainClass(lib, jarChunk, entry);
 		}
 		
-		// Finalize the chunk
-		pack.writeTo(headerChunk, tocChunk);
+		// Prepare table of contents
+		ChunkUtils.storeCommonPackToc(toc, tocChunk, header);
 		
 		// Write to wherever our output is going
-		chunk.writeTo(__out);
+		mainChunk.writeTo(__out);
 		__out.flush();
 	}
 }

@@ -10,6 +10,12 @@
 package cc.squirreljme.jvm.aot.summercoat.base;
 
 import cc.squirreljme.jvm.summercoat.ld.pack.TableOfContents;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import net.multiphasicapps.collections.UnmodifiableList;
+import net.multiphasicapps.io.ChunkFuture;
 
 /**
  * Writer for {@link TableOfContents}.
@@ -20,6 +26,10 @@ public final class TableOfContentsWriter
 {
 	/** The number of entries per table of contents entry. */ 
 	protected final int spanLength;
+	
+	/** Entries within the table of contents. */
+	private final List<TableOfContentsEntry> _entries =
+		new ArrayList<>();
 	
 	/**
 	 * Initializes the table of contents writer.
@@ -39,5 +49,87 @@ public final class TableOfContentsWriter
 			throw new IllegalArgumentException("AJ01");
 		
 		this.spanLength = __numTocProperties;
+	}
+	
+	/**
+	 * Adds a single entry to the table of contents.
+	 * 
+	 * @return The added entry.
+	 * @since 2021/09/05
+	 */
+	public TableOfContentsEntry add()
+	{
+		TableOfContentsEntry rv = new TableOfContentsEntry(this.spanLength);
+		
+		// Make sure this is done in a thread safe manner
+		synchronized (this)
+		{
+			this._entries.add(rv);
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the number of items in the table of contents.
+	 * 
+	 * @return The number of items in the table of contents.
+	 * @since 2021/09/06
+	 */
+	public int currentCount()
+	{
+		synchronized (this)
+		{
+			return this._entries.size();
+		}
+	}
+	
+	/**
+	 * Returns the table of contents entries.
+	 * 
+	 * @return The entries in the table of contents.
+	 * @since 2021/09/06
+	 */
+	public List<TableOfContentsEntry> entries()
+	{
+		synchronized (this)
+		{
+			List<TableOfContentsEntry> entries = this._entries;
+			return UnmodifiableList.of(Arrays.asList(
+				entries.toArray(new TableOfContentsEntry[entries.size()])));
+		}
+	}
+	
+	/**
+	 * Returns the number of future items in the table of contents.
+	 * 
+	 * @return The number of future items in the table of contents.
+	 * @since 2021/09/06
+	 */
+	public ChunkFuture futureCount()
+	{
+		return new __TocFutureCount__();
+	}
+	
+	/**
+	 * The future size for a chunk.
+	 * 
+	 * @since 2021/09/06
+	 */
+	private class __TocFutureCount__
+		implements ChunkFuture
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/09/06
+		 */
+		@Override
+		public int get()
+		{
+			synchronized (TableOfContentsWriter.this)
+			{
+				return TableOfContentsWriter.this._entries.size();
+			}
+		}
 	}
 }
