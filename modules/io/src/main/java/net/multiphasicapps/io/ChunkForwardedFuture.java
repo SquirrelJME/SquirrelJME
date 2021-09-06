@@ -17,6 +17,9 @@ package net.multiphasicapps.io;
 public final class ChunkForwardedFuture
 	implements ChunkFuture
 {
+	/** Initialized to zero? */
+	protected final boolean zeroInit;
+	
 	/** The future to get the value from. */
 	private volatile ChunkFuture _future;
 	
@@ -30,6 +33,18 @@ public final class ChunkForwardedFuture
 	 */
 	public ChunkForwardedFuture()
 	{
+		this(false);
+	}
+	
+	/**
+	 * Initialize the future to a value of zero?
+	 * 
+	 * @param __zeroInit Is this initialized to zero?
+	 * @since 2021/09/06
+	 */
+	public ChunkForwardedFuture(boolean __zeroInit)
+	{
+		this.zeroInit = __zeroInit;
 	}
 	
 	/**
@@ -43,6 +58,7 @@ public final class ChunkForwardedFuture
 	{
 		this._future = __future;
 		this._offset = __offset;
+		this.zeroInit = false;
 	}
 	
 	/**
@@ -54,10 +70,18 @@ public final class ChunkForwardedFuture
 	{
 		synchronized (this)
 		{
-			// {@squirreljme.error BD05 A future was never set.} 
+			// Ensure the future is actually set
 			ChunkFuture future = this._future;
 			if (future == null)
+			{
+				// If zero initializing, ignore any offset and just return
+				// zero
+				if (this.zeroInit)
+					return 0;
+					
+				// {@squirreljme.error BD05 A future was never set.}
 				throw new IllegalStateException("BD05");
+			}
 			
 			// Future with optional offset applied?
 			ChunkFuture offset = this._offset;

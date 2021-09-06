@@ -41,7 +41,7 @@ public final class PropertySpan
 		ChunkForwardedFuture[] properties =
 			new ChunkForwardedFuture[__numProperties];
 		for (int i = 0, n = properties.length; i < n; i++)
-			properties[i] = new ChunkForwardedFuture();
+			properties[i] = new ChunkForwardedFuture(true);
 		
 		this._properties = properties;
 	}
