@@ -16,5 +16,8 @@
  */
 SJME_TEST_PROTOTYPE(testSkipped)
 {
+	if (1)
+		return SKIP_TEST();
+	
 	return SKIP_TEST();
 }
