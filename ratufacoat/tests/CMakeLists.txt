@@ -24,10 +24,6 @@ target_include_directories(SquirrelJMETests PUBLIC
 target_link_libraries(SquirrelJMETests
 	SquirrelJMECore -static)
 
-# Versioning information
-add_compile_definitions(SQUIRRELJME_VERSION="${SQUIRRELJME_VERSION}")
-add_compile_definitions(SQUIRRELJME_VERSION_ID="${SQUIRRELJME_VERSION_ID}")
-
 # Auto-generate tests
 configure_file(blank.h.in prototype.h)
 configure_file(blank.h.in listing.h)
