@@ -13,10 +13,16 @@
 	#include <windows.h>
 #endif
 
+#if defined(__GNUC__)
+	#define MEMORY_ORDER __ATOMIC_SEQ_CST
+#endif
+
 sjme_jint sjme_atomicGet(sjme_atomicInt* atomic)
 {
 #if defined(SJME_ATOMIC_C11)
 	return atomic_load(&atomic->value);
+#elif defined(__GNUC__)
+	return __atomic_load_n(&atomic->value, MEMORY_ORDER);
 #else
 	return sjme_atomicGetAndAdd(atomic, 0);
 #endif
@@ -26,6 +32,8 @@ void sjme_atomicSet(sjme_atomicInt* atomic, sjme_jint value)
 {
 #if defined(SJME_ATOMIC_C11)
 	atomic_store(&atomic->value, value);
+#elif defined(__GNUC__)
+	__atomic_store_n(&atomic->value, value, MEMORY_ORDER);
 #elif defined(SJME_ATOMIC_WIN32)
 	InterlockedExchange((volatile long*)&atomic->value, value);
 #else
@@ -37,6 +45,8 @@ sjme_jint sjme_atomicGetAndAdd(sjme_atomicInt* atomic, sjme_jint add)
 {
 #if defined(SJME_ATOMIC_C11)
 	return atomic_fetch_add(&atomic->value, add);
+#elif defined(__GNUC__)
+	return __atomic_fetch_add(&atomic->value, add, MEMORY_ORDER);
 #elif defined(SJME_ATOMIC_WIN32)
 	/* This performs an add and get, however to do a get and add we need */
 	/* to subtract what we just added to get the original value. */
@@ -51,6 +61,11 @@ sjme_jboolean sjme_atomicCompareAndSet(sjme_atomicInt* atomic,
 {
 #if defined(SJME_ATOMIC_C11)
 	if (atomic_compare_exchange_strong(&atomic->value, &check, set))
+		return sjme_true;
+	return sjme_false;
+#elif defined(__GNUC__)
+	if (__atomic_compare_exchange_n(&atomic->value, &check, set, 0,
+		MEMORY_ORDER, MEMORY_ORDER))
 		return sjme_true;
 	return sjme_false;
 #elif defined(SJME_ATOMIC_WIN32)
