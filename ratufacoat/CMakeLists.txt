@@ -75,6 +75,17 @@ else()
 	set(SQUIRRELJME_BUILTIN_FILE)
 endif()
 
+# Does the static ROM file exist? If it does we can pack it into the binary
+if(SQUIRRELJME_HAS_BUILTIN)
+	message("Including built-in ROM!")
+	add_compile_definitions(SQUIRRELJME_HAS_BUILTIN=1)
+endif()
+
+# Versioning information
+add_compile_definitions(SQUIRRELJME_VERSION="${SQUIRRELJME_VERSION}")
+add_compile_definitions(SQUIRRELJME_VERSION_ID="${SQUIRRELJME_VERSION_ID}")
+add_compile_definitions(SQUIRRELJME_VERSION_ID_TIME="${SQUIRRELJME_VERSION_ID_TIME}")
+
 # Enable support for testing, this is needed here otherwise testing will not
 # work at all! Major headache this has caused...
 # From: https://cmake.org/cmake/help/v3.13/command/enable_testing.html

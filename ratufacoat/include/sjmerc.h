@@ -288,6 +288,7 @@ typedef enum sjme_returnFail
  */
 typedef struct sjme_returnNever
 {
+	int ignored;
 } sjme_returnNever;
 
 /**

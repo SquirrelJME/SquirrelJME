@@ -39,18 +39,15 @@ add_library(SquirrelJMECore STATIC
 target_include_directories(SquirrelJMECore PUBLIC
 	"${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
 
-# Does the static ROM file exist? If it does we can pack it into the binary
-message("Built-In? ${SQUIRRELJME_HAS_BUILTIN} ${SQUIRRELJME_BUILTIN_FILE}")
-if(SQUIRRELJME_HAS_BUILTIN)
-	add_compile_definitions(SQUIRRELJME_HAS_BUILTIN=1)
-endif()
-
-# Versioning information
-add_compile_definitions(SQUIRRELJME_VERSION="${SQUIRRELJME_VERSION}")
-add_compile_definitions(SQUIRRELJME_VERSION_ID="${SQUIRRELJME_VERSION_ID}")
+# Include all of our sub-fragments
+target_link_libraries(SquirrelJMECore
+	SquirrelJMEEngineCore)
 
 # Make this position independent so it can be linked into shared libraries
 set_property(TARGET SquirrelJMECore PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+# Engine implementation
+add_subdirectory(engine)
 
 # Add the SDL2 Implementation
 add_subdirectory(sdl2)

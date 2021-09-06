@@ -31,13 +31,20 @@ sjme_returnNever sjme_todo(const char* message, ...)
 	/* Exit and stop. */
 	exit(EXIT_FAILURE);
 	
-	/* These are totally not use. */
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "UnreachableCode"
-#pragma ide diagnostic ignored "UnusedLocalVariable"
+	/* These are totally not used. */
+#if defined(__clang__)
+	#pragma clang diagnostic push
+	#pragma ide diagnostic ignored "UnreachableCode"
+	#pragma ide diagnostic ignored "UnusedLocalVariable"
+#endif
 	{
-		sjme_returnNever fail = {};
+		sjme_returnNever fail;
+		
+		fail.ignored = 0;
+		
 		return fail;
 	}
-#pragma clang diagnostic pop
+#if defined(__clang__)
+	#pragma clang diagnostic pop
+#endif
 }
