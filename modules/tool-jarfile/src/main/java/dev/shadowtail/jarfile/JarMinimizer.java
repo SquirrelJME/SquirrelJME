@@ -192,7 +192,7 @@ public final class JarMinimizer
 			
 			// Resource to encode/copy
 			String rc = rcNames[i];
-			tocFill[JarTocProperty.INT_NAME_HASHCODE].setInt(rc.hashCode());
+			tocFill[JarTocProperty.HASHCODE_NAME].setInt(rc.hashCode());
 			
 			// Spill in name
 			ChunkSection utfName = out.addSection(

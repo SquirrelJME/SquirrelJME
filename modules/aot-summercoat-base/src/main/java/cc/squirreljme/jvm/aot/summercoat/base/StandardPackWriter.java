@@ -9,12 +9,14 @@
 
 package cc.squirreljme.jvm.aot.summercoat.base;
 
+import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.ld.pack.JarRom;
 import cc.squirreljme.jvm.summercoat.ld.pack.PackRom;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import net.multiphasicapps.io.ChunkSection;
+import net.multiphasicapps.io.ChunkWriter;
 
 /**
  * Writer that is capable of writing anything based on table of contents
@@ -32,6 +34,15 @@ public final class StandardPackWriter
 	
 	/** The table of contents writer. */
 	protected final TableOfContentsWriter toc;
+	
+	/** The main chunk. */
+	public final ChunkWriter mainChunk;
+	
+	/** The header chunk. */
+	public final ChunkSection headerChunk;
+	
+	/** The table of contents chunk. */
+	public final ChunkSection tocChunk;
 	
 	/**
 	 * Writes a standard pack file.
@@ -51,6 +62,16 @@ public final class StandardPackWriter
 		this.magic = __magic;
 		this.header = new HeaderStructWriter(__numPackProperties);
 		this.toc = new TableOfContentsWriter(__numTocProperties);
+		
+		// Setup chunk where everything is written to
+		ChunkWriter mainChunk = new ChunkWriter();
+		this.mainChunk = mainChunk;
+		
+		// Sections for chunks
+		this.headerChunk = mainChunk.addSection(
+			ChunkWriter.VARIABLE_SIZE, 8);
+		this.tocChunk = mainChunk.addSection(
+			ChunkWriter.VARIABLE_SIZE, 8);
 	}
 	
 	/**
@@ -62,6 +83,25 @@ public final class StandardPackWriter
 	public HeaderStructWriter header()
 	{
 		return this.header;
+	}
+	
+	/**
+	 * Initializes writing the pack file.
+	 * 
+	 * @throws IOException On write errors.
+	 * @since 2021/09/06
+	 */
+	public void initialize()
+		throws IOException
+	{
+		// Store shared header information
+		ChunkUtils.storeCommonSharedHeader(this.headerChunk,
+			this.magic,
+			ClassInfoConstants.CLASS_VERSION_20201129,
+			this.header.properties.count());
+		
+		// The first property is always the version
+		this.header.set(0, ClassInfoConstants.CLASS_VERSION_20201129);
 	}
 	
 	/**

@@ -21,7 +21,7 @@ public interface PackTocProperty
 		0;
 	
 	/** Hash code of the entry. */
-	byte INT_NAME_HASHCODE =
+	byte HASHCODE_NAME =
 		1;
 	
 	/** The name of the library. */

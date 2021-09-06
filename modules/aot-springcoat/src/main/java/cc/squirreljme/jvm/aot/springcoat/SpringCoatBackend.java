@@ -97,25 +97,22 @@ public class SpringCoatBackend
 		if (__settings == null || __out == null || __libs == null)
 			throw new NullPointerException("NARG");
 		
-		// Setup chunk where everything is written to
-		ChunkWriter mainChunk = new ChunkWriter();
-		
-		// Sections for chunks
-		ChunkSection headerChunk = mainChunk.addSection(
-			ChunkWriter.VARIABLE_SIZE, 8);
-		ChunkSection tocChunk = mainChunk.addSection(
-			ChunkWriter.VARIABLE_SIZE, 8);
-		
 		// Start the base pack file accordingly
 		StandardPackWriter pack = new StandardPackWriter(
 			ClassInfoConstants.PACK_MAGIC_NUMBER,
 			PackProperty.NUM_PACK_PROPERTIES,
 			PackTocProperty.NUM_PACK_TOC_PROPERTIES);
+		pack.initialize();
+		
+		// Get the used chunks.
+		ChunkWriter mainChunk = pack.mainChunk;
+		ChunkSection headerChunk = pack.headerChunk;
+		ChunkSection tocChunk = pack.tocChunk;
 		
 		// Write header information
 		HeaderStructWriter header = pack.header();
-		ChunkUtils.storeCommonPackHeader(mainChunk, headerChunk, __settings,
-			header, pack);
+		ChunkUtils.storeCommonPackHeader(mainChunk, __settings,
+			header);
 		
 		// Process each library
 		TableOfContentsWriter toc = pack.toc();

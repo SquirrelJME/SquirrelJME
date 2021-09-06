@@ -34,7 +34,7 @@ public final class StreamUtils
 	/**
 	 * Determines the best available buffer size.
 	 * 
-	 * @param __in The stream to read from.
+	 * @param __in The stream to read from, may be {@code null}.
 	 * @return The recommended buffer.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
@@ -43,9 +43,6 @@ public final class StreamUtils
 	public static byte[] buffer(InputStream __in)
 		throws IOException, NullPointerException
 	{
-		if (__in == null)
-			throw new NullPointerException("NARG");
-		
 		// Determine the initial buffer size
 		int initCap;
 		switch (RuntimeShelf.memoryProfile())
@@ -98,20 +95,39 @@ public final class StreamUtils
 		if (__in == null || __out == null)
 			throw new NullPointerException("NARG");
 		
-		// Determine the best copy level
-		byte[] buf = StreamUtils.buffer(__in);
-		int chunk = buf.length;
+		StreamUtils.copy(__in, __out, StreamUtils.buffer(__in));
+	}
+	
+	/**
+	 * Copies the given input stream to the given output stream using the
+	 * given buffer as the temporary storage area, the streams
+	 * are not closed by this method.
+	 * 
+	 * @param __in The input stream.
+	 * @param __out The output stream.
+	 * @param __tempBuf The temporary storage buffer.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/09/06
+	 */
+	public static void copy(InputStream __in, OutputStream __out,
+		byte[] __tempBuf)
+		throws IOException, NullPointerException
+	{
+		if (__in == null || __out == null || __tempBuf == null)
+			throw new NullPointerException("NARG");
 		
 		// Perform the copy
+		int chunk = __tempBuf.length;
 		for (;;)
 		{
-			int rc = __in.read(buf);
+			int rc = __in.read(__tempBuf);
 			
 			// EOF?
 			if (rc < 0)
 				break;
 			
-			__out.write(buf, 0, rc);
+			__out.write(__tempBuf, 0, rc);
 		}
 	}
 }

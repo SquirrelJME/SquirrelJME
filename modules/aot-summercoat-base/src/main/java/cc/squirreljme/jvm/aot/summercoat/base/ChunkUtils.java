@@ -11,9 +11,12 @@ package cc.squirreljme.jvm.aot.summercoat.base;
 
 import cc.squirreljme.jvm.aot.RomSettings;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
+import cc.squirreljme.jvm.summercoat.constants.JarProperty;
+import cc.squirreljme.jvm.summercoat.constants.JarTocProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackTocFlag;
 import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
+import cc.squirreljme.jvm.summercoat.ld.pack.JarRom;
 import cc.squirreljme.jvm.summercoat.ld.pack.PackRom;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.DataContainerLibrary;
@@ -85,7 +88,129 @@ public final class ChunkUtils
 		if (__lib == null || __jarChunk == null || __entry == null)
 			throw new NullPointerException("NARG");
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		// Start the base JAR file accordingly
+		StandardPackWriter jar = new StandardPackWriter(
+			ClassInfoConstants.JAR_MAGIC_NUMBER,
+			JarProperty.NUM_JAR_PROPERTIES,
+			JarTocProperty.NUM_JAR_TOC_PROPERTIES);
+			
+		// Get the used chunks.
+		ChunkWriter mainChunk = jar.mainChunk;
+		ChunkSection headerChunk = jar.headerChunk;
+		ChunkSection tocChunk = jar.tocChunk;
+		
+		// Write header information
+		HeaderStructWriter header = jar.header();
+		ChunkUtils.storeCommonJarHeader(mainChunk, header, __lib);
+		
+		// Temporary buffer to use for data copy
+		byte[] tempBuf = StreamUtils.buffer(null);
+		
+		// Process each entry in the library
+		TableOfContentsWriter toc = jar.toc();
+		for (String resource : __lib.listResources())
+		{
+			// Setup entry chunk
+			ChunkSection entryChunk = mainChunk.addSection(
+				ChunkWriter.VARIABLE_SIZE, 8);
+				
+			// Declare new entry
+			TableOfContentsEntry entry = toc.add();
+			ChunkUtils.storeCommonJarTocEntry(entry, resource, mainChunk,
+				entryChunk);
+			
+			// Copy the data accordingly
+			try (InputStream in = __lib.resourceAsStream(resource))
+			{
+				StreamUtils.copy(in, entryChunk, tempBuf);
+			}
+		}
+		
+		// Prepare table of contents
+		ChunkUtils.storeCommonJarToc(toc, tocChunk, header);
+		
+		// Write to wherever our output is going
+		mainChunk.writeTo(__jarChunk);
+		__jarChunk.flush();
+	}
+	
+	/**
+	 * Stores common JAR header information.
+	 * 
+	 * @param __mainChunk The main chunk.
+	 * @param __header The header data.
+	 * @param __lib The library used.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/09/06
+	 */
+	public static void storeCommonJarHeader(ChunkWriter __mainChunk,
+		HeaderStructWriter __header, VMClassLibrary __lib)
+		throws IOException, NullPointerException
+	{
+		if (__mainChunk == null || __header == null || __lib == null)
+			throw new NullPointerException("NARG");
+		
+		// Build name information
+		String name = __lib.name();
+		ChunkSection nameChunk = ChunkUtils.writeString(__mainChunk, name);
+		
+		// Store the name info
+		__header.set(JarProperty.HASHCODE_NAME, name.hashCode());
+		__header.set(JarProperty.OFFSET_NAME, nameChunk.futureAddress());
+		__header.set(JarProperty.SIZE_NAME, nameChunk.futureSize());
+	}
+	
+	/**
+	 * Stores common table of contents information for {@link JarRom}.
+	 * 
+	 * @param __toc The table of contents to write.
+	 * @param __tocChunk The chunk to target.
+	 * @param __header The pack header.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/09/06
+	 */
+	public static void storeCommonJarToc(TableOfContentsWriter __toc,
+		ChunkSection __tocChunk, HeaderStructWriter __header)
+		throws IOException, NullPointerException
+	{
+		// How many and where is the TOC?
+		__header.set(JarProperty.COUNT_TOC, __toc.futureCount());
+		__header.set(JarProperty.OFFSET_TOC, __tocChunk.futureAddress());
+		__header.set(JarProperty.SIZE_TOC, __tocChunk.futureSize());
+		
+		// This is the same for everything else!
+		ChunkUtils.storeCommonSharedToc(__toc, __tocChunk);
+	}
+	
+	/**
+	 * Stores the common JAR entry table of contents.
+	 * 
+	 * @param __entry The entry to set.
+	 * @param __resource The resource name.
+	 * @param __mainChunk The main chunk, used to add strings.
+	 * @param __entryChunk The entry chunk.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/09/06
+	 */
+	public static void storeCommonJarTocEntry(TableOfContentsEntry __entry,
+		String __resource, ChunkWriter __mainChunk, ChunkSection __entryChunk)
+		throws IOException, NullPointerException
+	{
+		// Build name information
+		ChunkSection nameChunk = ChunkUtils.writeString(__mainChunk,
+			__resource);
+		
+		// Store the name info
+		__entry.set(JarTocProperty.HASHCODE_NAME, __resource.hashCode());
+		__entry.set(JarTocProperty.OFFSET_NAME, nameChunk.futureAddress());
+		__entry.set(JarTocProperty.SIZE_NAME, nameChunk.futureSize());
+		
+		// Store data information
+		__entry.set(JarTocProperty.OFFSET_DATA, __entryChunk.futureAddress());
+		__entry.set(JarTocProperty.SIZE_DATA, __entryChunk.futureSize());
 	}
 	
 	/**
@@ -93,32 +218,18 @@ public final class ChunkUtils
 	 * default settings.
 	 * 
 	 * @param __chunk The output chunk.
-	 * @param __headerChunk The header chunk.
 	 * @param __settings The settings to store.
 	 * @param __header The header to write.
-	 * @param __pack The packing to use.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/04
 	 */
 	public static void storeCommonPackHeader(ChunkWriter __chunk,
-		ChunkSection __headerChunk, RomSettings __settings,
-		HeaderStructWriter __header, StandardPackWriter __pack)
+		RomSettings __settings, HeaderStructWriter __header)
 		throws IOException, NullPointerException
 	{
-		if (__chunk == null || __settings == null || __header == null ||
-			__pack == null)
+		if (__chunk == null || __settings == null || __header == null)
 			throw new NullPointerException("NARG");
-		
-		// Store shared header information
-		ChunkUtils.storeCommonSharedHeader(__headerChunk,
-			__pack.magic,
-			ClassInfoConstants.CLASS_VERSION_20201129,
-			__pack.header.properties.count());
-		
-		// Default version
-		__header.set(PackProperty.INT_PACK_VERSION_ID,
-			ClassInfoConstants.CLASS_VERSION_20201129);
 		
 		// Time and date of creation
 		long createTime = System.currentTimeMillis();
@@ -227,7 +338,7 @@ public final class ChunkUtils
 		ChunkSection nameChunk = ChunkUtils.writeString(__mainChunk, name);
 		
 		// Store the name info
-		__entry.set(PackTocProperty.INT_NAME_HASHCODE, name.hashCode());
+		__entry.set(PackTocProperty.HASHCODE_NAME, name.hashCode());
 		__entry.set(PackTocProperty.OFFSET_NAME, nameChunk.futureAddress());
 		__entry.set(PackTocProperty.SIZE_NAME, nameChunk.futureSize());
 		

@@ -154,7 +154,7 @@ public class JarRom
 		for (int i = 0, n = toc.count(); i < n; i++)
 		{
 			// Not this hash code?
-			if (hash != toc.get(i, JarTocProperty.INT_NAME_HASHCODE))
+			if (hash != toc.get(i, JarTocProperty.HASHCODE_NAME))
 				continue;
 			
 			// This is not the entry we are looking for?

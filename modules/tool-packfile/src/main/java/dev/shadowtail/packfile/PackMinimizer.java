@@ -162,7 +162,7 @@ public class PackMinimizer
 				properties[PackProperty.INDEX_BOOT_JAR].setInt(i);
 			
 			// Hash code for the JAR, to find it quicker potentially
-			tocFill[PackTocProperty.INT_NAME_HASHCODE].setInt(name.hashCode());
+			tocFill[PackTocProperty.HASHCODE_NAME].setInt(name.hashCode());
 			
 			// Spill in name
 			ChunkSection utfName = out.addSection(

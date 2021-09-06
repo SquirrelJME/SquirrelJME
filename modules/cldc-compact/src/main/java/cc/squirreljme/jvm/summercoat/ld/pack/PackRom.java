@@ -105,7 +105,7 @@ public final class PackRom
 			
 			// {@squirreljme.error ZZ51 Name does not match hashed named.}
 			if (name.hashCode() != toc.get(dx,
-				PackTocProperty.INT_NAME_HASHCODE))
+				PackTocProperty.HASHCODE_NAME))
 				throw new InvalidRomException("ZZ51");
 			
 			// The location in memory where the ROM is located
