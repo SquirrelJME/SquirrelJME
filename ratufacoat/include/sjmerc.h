@@ -51,10 +51,21 @@
 
 /** Possibly detect endianess. */
 #if !defined(SJME_BIG_ENDIAN) && !defined(SJME_LITTLE_ENDIAN)
+	/** GCC? */
+	#if defined(__GNUC__)
+		#include <endian.h>
+
+		/** Big endian? */
+		#if __BYTE_ORDER == __BIG_ENDIAN
+			#define SJME_BIG_ENDIAN
+		#endif
+	#endif
+
 	/** Defined by the system? */
 	#if !defined(SJME_BIG_ENDIAN)
 		#if defined(MSB_FIRST) || \
-			(defined(WORDS_BIGENDIAN) && WORDS_BIGENDIAN != 0)
+			(defined(WORDS_BIGENDIAN) && WORDS_BIGENDIAN != 0) || \
+			defined(BIG_ENDIAN)
 			#define SJME_BIG_ENDIAN
 		#endif
 	#endif
