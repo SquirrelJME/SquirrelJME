@@ -16,6 +16,10 @@
 #ifndef SQUIRRELJME_ATOMIC_H
 #define SQUIRRELJME_ATOMIC_H
 
+#if defined(__GNUC__)
+	#define SJME_ATOMIC_GCC
+#endif
+
 /* Which atomic set is being used? */
 #if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L && \
 	!defined(__STDC_NO_ATOMICS__)
@@ -24,11 +28,11 @@
 	#define SJME_ATOMIC_C11
 #elif defined(_WIN32) || defined(__WIN32__) || \
 	defined(__WIN32) || defined(_WINDOWS)
-	#define SJME_ATOMIC_WIN32 
-#elif defined(__GNUC__)
-	/* Not needed for GCC. */
+	#define SJME_ATOMIC_WIN32
 #else
-	#error No atomic available
+	#if !defined(SJME_ATOMIC_GCC)
+		#error No atomic available
+	#endif
 #endif
 
 #include "sjmerc.h"
