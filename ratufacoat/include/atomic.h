@@ -22,9 +22,11 @@
 	#include <stdatomic.h>
 
 	#define SJME_ATOMIC_C11
-#elif defined(_WIN32) || defined(__WIN32__) || defined(__WIN32) || \
-	defined(_WINDOWS)
+#elif defined(_WIN32) || defined(__WIN32__) || \
+	defined(__WIN32) || defined(_WINDOWS)
 	#define SJME_ATOMIC_WIN32 
+#elif defined(__GNUC__)
+	/* Not needed for GCC. */
 #else
 	#error No atomic available
 #endif
@@ -57,7 +59,7 @@ typedef struct sjme_atomicInt sjme_atomicInt;
 		/** Atomic value. */
 		_Atomic sjme_jint value;
 	};
-#elif defined(SJME_ATOMIC_WIN32)
+#elif defined(SJME_ATOMIC_WIN32) || defined(__GNUC__)
 	struct sjme_atomicInt
 	{
 		/** Atomic value. */
