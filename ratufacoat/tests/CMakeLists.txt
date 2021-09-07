@@ -35,14 +35,9 @@ endif()
 
 # Scan for tests
 foreach(SQUIRRELJME_TEST_SOURCE ${SQUIRRELJME_TEST_SOURCES})
-	# CMake 3.20 has cmake_path, so we can use that.
 	# We need to do this because on Windows, CLion+CMake just gives the full
 	# path which we really do not want as it will mess up with tests
-	if(${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.20)
-		cmake_path(GET "${SQUIRRELJME_TEST_SOURCE}" FILENAME ${SQUIRRELJME_TEST_SOURCE})
-	else()
-		get_filename_component(SQUIRRELJME_TEST_SOURCE "${SQUIRRELJME_TEST_SOURCE}" NAME)
-	endif()
+	get_filename_component(SQUIRRELJME_TEST_SOURCE "${SQUIRRELJME_TEST_SOURCE}" NAME)
 
 	# Remove the C to just get the base test
 	string(REPLACE ".c" "" SQUIRRELJME_TEST_SOURCE ${SQUIRRELJME_TEST_SOURCE})
