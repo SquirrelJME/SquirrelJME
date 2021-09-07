@@ -18,6 +18,10 @@
 
 #if defined(__GNUC__)
 	#define SJME_ATOMIC_GCC
+
+	#if !defined(SJME_HAS_ATOMIC)
+		#define SJME_HAS_ATOMIC
+	#endif
 #endif
 
 /* Which atomic set is being used? */
@@ -26,13 +30,22 @@
 	#include <stdatomic.h>
 
 	#define SJME_ATOMIC_C11
+
+	#if !defined(SJME_HAS_ATOMIC)
+		#define SJME_HAS_ATOMIC
+	#endif
 #elif defined(_WIN32) || defined(__WIN32__) || \
 	defined(__WIN32) || defined(_WINDOWS)
 	#define SJME_ATOMIC_WIN32
-#else
-	#if !defined(SJME_ATOMIC_GCC)
-		#error No atomic available
+
+	#if !defined(SJME_HAS_ATOMIC)
+		#define SJME_HAS_ATOMIC
 	#endif
+#endif
+
+/* Fail if missing. */
+#if !defined(SJME_HAS_ATOMIC)
+	#error No atomic available
 #endif
 
 #include "sjmerc.h"
@@ -63,14 +76,12 @@ typedef struct sjme_atomicInt sjme_atomicInt;
 		/** Atomic value. */
 		_Atomic sjme_jint value;
 	};
-#elif defined(SJME_ATOMIC_WIN32) || defined(__GNUC__)
+#else
 	struct sjme_atomicInt
 	{
 		/** Atomic value. */
 		volatile sjme_jint value;
 	};
-#else
-	#error No sjme_atomicInt
 #endif
 
 /**
