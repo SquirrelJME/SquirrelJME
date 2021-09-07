@@ -78,23 +78,26 @@ jobs:
           working_directory: ratufacoat
           shell: bash.exe
           command: |
-            "$PROGRAMFILES/CMake/bin/cmake.exe" .
+            "$PROGRAMFILES/CMake/bin/cmake.exe" . \
+                -G "Visual Studio 16 2019" \
+                -DCMAKE_BUILD_TYPE=Release
       - run:
           name: Compile CMake build
           working_directory: ratufacoat
           shell: bash.exe
           command: |
-            "$PROGRAMFILES/CMake/bin/cmake.exe" --build .
+            "$PROGRAMFILES/CMake/bin/cmake.exe" --build . --config Release
       - run:
           name: Test CMake Build
           working_directory: ratufacoat
           shell: bash.exe
           command: |
-            "$PROGRAMFILES/CMake/bin/ctest.exe" --extra-verbose -T Test .
+            "$PROGRAMFILES/CMake/bin/ctest.exe" --extra-verbose -T Test \
+                -C Release .
       - run:
           shell: bash.exe
           name: Convert CTest to JUnit XML
-          command: python3 ctest-to-junit.py < Testing/*/Test.xml
+          command: python ctest-to-junit.py < Testing/*/Test.xml
           working_directory: ratufacoat
           when: always
       - run:

@@ -22,7 +22,7 @@ target_include_directories(SquirrelJMETests PUBLIC
 
 # Link in core SquirrelJME, make it static so there are no dependencies
 target_link_libraries(SquirrelJMETests
-	SquirrelJMECore -static)
+	SquirrelJMECore)
 
 # Auto-generate tests
 configure_file(blank.h.in prototype.h)
