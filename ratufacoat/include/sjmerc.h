@@ -55,10 +55,6 @@
 	#if !defined(SJME_BIG_ENDIAN)
 		#if defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 			#define SJME_BIG_ENDIAN
-		#elif defined(MSB_FIRST) || \
-			(defined(WORDS_BIGENDIAN) && WORDS_BIGENDIAN != 0) || \
-			defined(BIG_ENDIAN) || defined(__BIG_ENDIAN__)
-			#define SJME_BIG_ENDIAN
 		#endif
 	#endif
 	
