@@ -27,6 +27,10 @@ stages:
     SQUIRRELJME_HAS_BUILTIN: 1
     SQUIRRELJME_ROM_URL: https://circleci.com/api/v1.1/project/github/SquirrelJME/SquirrelJME/$SQUIRRELJME_ROM_ID/artifacts
 
+    # CMake Settings
+    CMAKE_BASE_PATH: ratufacoat
+    EXTRA_PATH: src/libretro
+
 # SquirrelJME Support (Common)
 .squirreljme-support-common:
   # Only trigger from external triggers
@@ -60,13 +64,9 @@ include:
   - project: 'libretro-infrastructure/ci-templates'
     file: '/osx-arm64.yml'
 
-  # Windows 32-bit
+  # Windows 32-bit and 64-bit
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/windows-i686-mingw.yml'
-
-  # Windows 64-bit
-  - project: 'libretro-infrastructure/ci-templates'
-    file: '/windows-x64-mingw.yml'
+    file: '/windows-cmake-mingw.yml'
 
   ################################## CELLULAR ################################
   # Android
@@ -173,14 +173,14 @@ libretro-build-osx-arm64:
 # Windows 32-bit
 libretro-build-windows-i686:
   extends:
-    - .libretro-windows-i686-mingw-make-default
+    - .libretro-windows-cmake-x86
     - .core-defs
     - .squirreljme-support-common
 
 # Windows 64-bit
 libretro-build-windows-x64:
   extends:
-    - .libretro-windows-x64-mingw-make-default
+    - .libretro-windows-cmake-x86_64
     - .core-defs
     - .squirreljme-support-common
 
