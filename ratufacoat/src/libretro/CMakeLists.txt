@@ -7,8 +7,18 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: LibRetro CMake Layer, solely for IDE and quick testing purposes
 
+# Is the RetroArch build dynamic or static?
+# Some targets rely on a shared library
+if(LIBRETRO_STATIC)
+	set(SQUIRRELJME_LIBRETRO_TYPE STATIC)
+	set(SQUIRRELJME_LIBRETRO_STATIC ON)
+else()
+	set(SQUIRRELJME_LIBRETRO_TYPE SHARED)
+	set(SQUIRRELJME_LIBRETRO_STATIC OFF)
+endif()
+
 # Define shared library
-add_library(squirreljme_libretro SHARED
+add_library(squirreljme_libretro ${SQUIRRELJME_LIBRETRO_TYPE}
 	lraudio.c
 	lrcheat.c
 	lrfreeze.c
@@ -18,9 +28,15 @@ add_library(squirreljme_libretro SHARED
 	lrvfs.c
 	sys_libr.c)
 
-# Remove the "lib" prefix on Windows, it is incorrect
-if(CMAKE_SYSTEM_NAME STREQUAL Windows)
-	set_target_properties(squirreljme_libretro PROPERTIES PREFIX "")
+# Remove the "lib" prefix as it is not used by RetroArch
+set_target_properties(squirreljme_libretro PROPERTIES
+	PREFIX "")
+
+# Some LibRetro targets set a suffix at the end of the base name for the
+# library
+if(DEFINED LIBRETRO_SUFFIX AND NOT "${LIBRETRO_SUFFIX}" EQUAL "")
+	set_target_properties(squirreljme_libretro PROPERTIES
+		OUTPUT_NAME "squirreljme_libretro${LIBRETRO_SUFFIX}")
 endif()
 
 # Include all of these
