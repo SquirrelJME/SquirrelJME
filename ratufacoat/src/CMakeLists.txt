@@ -46,8 +46,9 @@ target_link_libraries(SquirrelJMECore
 # Make this position independent so it can be linked into shared libraries
 set_property(TARGET SquirrelJMECore PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-# Engine implementation
+# Internal support libraries and modules
 add_subdirectory(engine)
+add_subdirectory(format)
 
 # Add the SDL2 Implementation
 add_subdirectory(sdl2)

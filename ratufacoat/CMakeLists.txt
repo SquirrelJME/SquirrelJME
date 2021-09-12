@@ -52,6 +52,15 @@ project(SquirrelJME
 	HOMEPAGE_URL https://squirreljme.cc/
 	LANGUAGES C)
 
+# To Emily and Near...
+message("******************************")
+message("To my close friends who are not here today, your friendships were")
+message("very important to me. I hope that you are both resting in piece:")
+message("  * Emily, developer of Mu. (1998-2020)")
+message("  * Near, developer of Higan and Ares. (1983-2021)")
+message(" -- Your friend, Stephanie")
+message("******************************")
+
 # Build properties for SquirrelJME
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)

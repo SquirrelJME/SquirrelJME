@@ -5,24 +5,16 @@
 # SquirrelJME is under the GNU General Public License v3+, or later.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: Engine Base
+# DESCRIPTION: Format support
 
 # Define the library
-add_library(SquirrelJMEEngineCore STATIC
-		scaffold.c)
+add_library(SquirrelJMEFormat STATIC
+		sqc.c)
 
 # Dynamically generated and standard includes
-target_include_directories(SquirrelJMEEngineCore PUBLIC
+target_include_directories(SquirrelJMEFormat PUBLIC
 	"${PROJECT_BINARY_DIR}"
 	"${PROJECT_SOURCE_DIR}/include")
 
-# Include all of our engines
-target_link_libraries(SquirrelJMEEngineCore
-	SquirrelJMEEngineSpringCoat
-	SquirrelJMEFormat)
-
 # Make this position independent so it can be linked into shared libraries
-set_property(TARGET SquirrelJMECore PROPERTY POSITION_INDEPENDENT_CODE ON)
-
-# Engine implementations
-add_subdirectory(springcoat)
+set_property(TARGET SquirrelJMEFormat PROPERTY POSITION_INDEPENDENT_CODE ON)
