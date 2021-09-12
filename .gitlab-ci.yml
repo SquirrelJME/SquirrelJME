@@ -84,7 +84,7 @@ include:
 
   # Nintendo 3DS
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/ctr-static-cmake.yml'
+    file: '/ctr-static.yml'
 
   # Nintendo GameCube
   - project: 'libretro-infrastructure/ci-templates'
@@ -231,7 +231,7 @@ libretro-build-dingux:
 # Nintendo 3DS
 libretro-build-ctr:
   extends:
-    - .libretro-ctr-static-cmake-retroarch-master
+    - .libretro-ctr-static-retroarch-master
     - .core-defs
     - .squirreljme-support-common
 

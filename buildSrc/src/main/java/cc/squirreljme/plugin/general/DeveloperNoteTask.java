@@ -239,6 +239,9 @@ public class DeveloperNoteTask
 			// Store into the session bytes
 			__session._content = data.getBytes(StandardCharsets.UTF_8);
 			__session._saveCount++;
+			
+			// Note it down
+			System.out.println("Notes saved!");
 		}
 		
 		// All done?
