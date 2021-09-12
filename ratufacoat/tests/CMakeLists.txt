@@ -71,7 +71,6 @@ foreach(SQUIRRELJME_TEST_SOURCE ${SQUIRRELJME_TEST_SOURCES})
 		"SJME_TEST(${SQUIRRELJME_TEST_SOURCE}),\n")
 endforeach()
 
-
 # Go through an source-ize blobs so that they can be included, this can take
 # awhile to do especially on slower systems so use a cache to take care of
 # it accordingly. Although CMake has its own caching system we kinda just have
