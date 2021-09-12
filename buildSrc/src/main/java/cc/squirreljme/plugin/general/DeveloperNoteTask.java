@@ -109,6 +109,11 @@ public class DeveloperNoteTask
 			for (;;)
 				try
 				{
+					// Stop the loop if we were interrupted
+					if (Thread.interrupted())
+						break;
+					
+					// Otherwise wait for another packet
 					if (!server.next(this::__httpHandler))
 						break;
 				}
@@ -125,7 +130,7 @@ public class DeveloperNoteTask
 			throw new RuntimeException("Server read/write error.", e);
 		}
 		
-		// Store the note in the unversioned space, but only if saved
+		// Store the note in the un-versioned space, but only if saved
 		if (session._saveCount > 0)
 			exe.unversionedStoreBytes(filePath, session._content);
 		

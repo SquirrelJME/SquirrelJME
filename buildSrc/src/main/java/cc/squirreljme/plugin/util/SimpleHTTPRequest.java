@@ -203,9 +203,9 @@ public final class SimpleHTTPRequest
 			{
 				int rc = __in.read();
 				
-				// On EOF
+				// For EOF just treat as the end of the data
 				if (rc < 0)
-					throw new SimpleHTTPProtocolException("Got EOF?");
+					break;
 				
 				// New line?
 				if (rc == '\n')

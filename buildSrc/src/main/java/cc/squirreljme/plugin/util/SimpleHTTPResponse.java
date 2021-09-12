@@ -85,7 +85,7 @@ public final class SimpleHTTPResponse
 		
 		// Write response line
 		SimpleHTTPStatus status = this.status;
-		__out.write(String.format("HTTP/1.0 %d %s\r\n", status.code,
+		__out.write(String.format("HTTP/1.1 %d %s\r\n", status.code,
 			status.name()).getBytes(StandardCharsets.UTF_8));
 		
 		// Write headers
