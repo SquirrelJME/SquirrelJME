@@ -32,6 +32,12 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/** The SQC driver for multiple libraries. */
+extern const sjme_libraries_driver sjme_libraries_sqc_driver;
+
+/** The SQC driver for a single library. */
+extern const sjme_library_driver sjme_library_sqc_driver;
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

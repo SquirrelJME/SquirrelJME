@@ -8,3 +8,12 @@
 // -------------------------------------------------------------------------*/
 
 #include "format/libraries.h"
+#include "format/sqc.h"
+
+/** The libraries drivers which are available for usage. */
+const sjme_libraries_driver* sjme_libraries_drivers[] =
+{
+	&sjme_libraries_sqc_driver,
+	
+	NULL
+};

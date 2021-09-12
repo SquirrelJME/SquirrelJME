@@ -17,6 +17,7 @@
 #define SQUIRRELJME_LIBRARIES_H
 
 #include "sjmerc.h"
+#include "error.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -29,6 +30,26 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+/**
+ * This represents a library driver that is available for usage.
+ * 
+ * @since 2021/09/12
+ */
+typedef struct sjme_libraries_driver
+{
+	/**
+	 * Looks at the data and determines if it is appropriate for the given
+	 * type of driver.
+	 * 
+	 * @param data The pointer to the data section. 
+	 * @param size The length of the data section.
+	 * @param error Output for errors.
+	 * @return If this is a valid driver for the given data.
+	 * @since 2021/09/12
+	 */
+	sjme_jboolean (*detect)(void* data, sjme_jint size, sjme_error* error);
+} sjme_libraries_driver;
 
 /*--------------------------------------------------------------------------*/
 
