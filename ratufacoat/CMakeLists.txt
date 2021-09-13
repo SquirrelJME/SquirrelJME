@@ -54,11 +54,17 @@ endif()
 message("Version ID: ${SQUIRRELJME_VERSION_ID}")
 
 # Define the project and the versioning info
-project(SquirrelJME
-	VERSION ${SQUIRRELJME_VERSION}
-	DESCRIPTION "SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things devices."
-	HOMEPAGE_URL https://squirreljme.cc/
-	LANGUAGES C)
+if(NOT ${CMAKE_VERSION} VERSION_GREATER "3.12")
+	project(SquirrelJME
+		VERSION ${SQUIRRELJME_VERSION}
+		DESCRIPTION "SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things devices."
+		HOMEPAGE_URL https://squirreljme.cc/
+		LANGUAGES C)
+else()
+	project(SquirrelJME
+		VERSION ${SQUIRRELJME_VERSION}
+		LANGUAGES C)
+endif()
 
 # To Emily and Near...
 message("******************************")
