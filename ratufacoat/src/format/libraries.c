@@ -11,7 +11,7 @@
 #include "format/sqc.h"
 
 /** The libraries drivers which are available for usage. */
-const sjme_librariesDriver* sjme_librariesDrivers[] =
+const sjme_librariesDriver* const sjme_librariesDrivers[] =
 {
 	&sjme_librariesSqcDriver,
 	
