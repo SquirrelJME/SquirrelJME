@@ -106,7 +106,7 @@ foreach(SQUIRRELJME_BLOB_FILE ${SQUIRRELJME_BLOB_FILES})
 
 	# Notice, this can take awhile!
 	file(SIZE "${SQUIRRELJME_BLOB_FILE}" BLOB_FILE_LEN)
-	math(EXPR BLOB_FILE_LEN "${BLOB_FILE_LEN} / 2" OUTPUT_FORMAT DECIMAL)
+	math(EXPR BLOB_FILE_LEN "${BLOB_FILE_LEN} / 2")
 	message("Packing blob ${BLOB_BASENAME} (${BLOB_FILE_LEN} bytes)...")
 
 	# Read file as a hex string
@@ -122,7 +122,7 @@ foreach(SQUIRRELJME_BLOB_FILE ${SQUIRRELJME_BLOB_FILES})
 		"static const uint8_t blob_${BLOB_BASENAME}[] = {\n")
 
 	# The last index
-	math(EXPR BLOB_LAST "${BLOB_HEX_LEN} - 2" OUTPUT_FORMAT DECIMAL)
+	math(EXPR BLOB_LAST "${BLOB_HEX_LEN} - 2")
 
 	# Run all the C data conversion
 	set(BLOB_AT 0)
@@ -141,14 +141,14 @@ foreach(SQUIRRELJME_BLOB_FILE ${SQUIRRELJME_BLOB_FILES})
 		endif()
 
 		# Put on next row to make more easy to read
-		math(EXPR BLOB_DIV "${BLOB_AT} % 24" OUTPUT_FORMAT DECIMAL)
+		math(EXPR BLOB_DIV "${BLOB_AT} % 24")
 		if(BLOB_DIV EQUAL 0)
 			file(APPEND "${BLOB_TARGET_FILE}"
 				"\n")
 		endif()
 
 		# Count up
-		math(EXPR BLOB_AT "${BLOB_AT} + 2" OUTPUT_FORMAT DECIMAL)
+		math(EXPR BLOB_AT "${BLOB_AT} + 2")
 	endwhile()
 
 	# End C struct
