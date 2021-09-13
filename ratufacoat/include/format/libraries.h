@@ -18,6 +18,7 @@
 
 #include "sjmerc.h"
 #include "error.h"
+#include "format/detect.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -36,20 +37,11 @@ extern "C"
  * 
  * @since 2021/09/12
  */
-typedef struct sjme_libraries_driver
+typedef struct sjme_librariesDriver
 {
-	/**
-	 * Looks at the data and determines if it is appropriate for the given
-	 * type of driver.
-	 * 
-	 * @param data The pointer to the data section. 
-	 * @param size The length of the data section.
-	 * @param error Output for errors.
-	 * @return If this is a valid driver for the given data.
-	 * @since 2021/09/12
-	 */
-	sjme_jboolean (*detect)(void* data, sjme_jint size, sjme_error* error);
-} sjme_libraries_driver;
+	/** Is this for the given libraries driver? */
+	sjme_formatDetectFunction detect;
+} sjme_librariesDriver;
 
 /*--------------------------------------------------------------------------*/
 

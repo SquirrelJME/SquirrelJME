@@ -8,3 +8,21 @@
 // -------------------------------------------------------------------------*/
 
 #include "format/sqc.h"
+
+/** The magic number for pack libraries. */
+#define PACK_MAGIC_NUMBER UINT32_C(0x58455223)
+
+/** The magic number for individual JAR libraries. */
+#define JAR_MAGIC_NUMBER UINT32_C(0x00456570)
+
+/* ------------------------------- LIBRARIES ------------------------------- */
+
+const sjme_librariesDriver sjme_libraries_sqc_driver =
+{
+};
+
+/* -------------------------------- LIBRARY -------------------------------- */
+
+const sjme_libraryDriver sjme_library_sqc_driver =
+{
+};

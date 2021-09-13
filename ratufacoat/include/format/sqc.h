@@ -33,10 +33,10 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /** The SQC driver for multiple libraries. */
-extern const sjme_libraries_driver sjme_libraries_sqc_driver;
+extern const sjme_librariesDriver sjme_librariesSqcDriver;
 
 /** The SQC driver for a single library. */
-extern const sjme_library_driver sjme_library_sqc_driver;
+extern const sjme_libraryDriver sjme_librarySqcDriver;
 
 /*--------------------------------------------------------------------------*/
 

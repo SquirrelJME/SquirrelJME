@@ -31,7 +31,7 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /** The ZIP driver. */
-extern const sjme_library_driver sjme_library_zip_driver;
+extern const sjme_libraryDriver sjme_libraryZipDriver;
 
 /*--------------------------------------------------------------------------*/
 

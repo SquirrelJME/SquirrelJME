@@ -9,7 +9,11 @@
 
 # Define the library
 add_library(SquirrelJMEFormat STATIC
-		sqc.c)
+	detect.c
+	libraries.c
+	library.c
+	sqc.c
+	zip.c)
 
 # Dynamically generated and standard includes
 target_include_directories(SquirrelJMEFormat PUBLIC

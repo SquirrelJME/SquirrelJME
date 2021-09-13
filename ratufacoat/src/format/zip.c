@@ -8,3 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "format/zip.h"
+
+const sjme_libraryDriver sjme_libraryZipDriver =
+{
+};

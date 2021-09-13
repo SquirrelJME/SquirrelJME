@@ -7,13 +7,13 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "format/libraries.h"
-#include "format/sqc.h"
+#include "format/detect.h"
 
-/** The libraries drivers which are available for usage. */
-const sjme_librariesDriver* sjme_librariesDrivers[] =
+sjme_jboolean sjme_formatDetectMagicNumber(void* data, sjme_jint size,
+	sjme_jint magic, sjme_error* error)
 {
-	&sjme_librariesSqcDriver,
-	
-	NULL
-};
+	if (data == NULL || size < 0)
+	{
+		sjme_setError();
+	}
+}

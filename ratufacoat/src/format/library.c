@@ -12,10 +12,10 @@
 #include "format/zip.h"
 
 /** The library drivers which are available for usage. */
-const sjme_library_driver* sjme_library_drivers[] =
+const sjme_libraryDriver* sjme_libraryDrivers[] =
 {
-	&sjme_library_zip_driver,
-	&sjme_library_sqc_driver,
+	&sjme_libraryZipDriver,
+	&sjme_librarySqcDriver,
 	
 	NULL
 };
