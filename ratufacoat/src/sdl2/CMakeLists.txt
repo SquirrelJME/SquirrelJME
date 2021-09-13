@@ -16,7 +16,3 @@ target_include_directories(SquirrelJME PUBLIC
 
 target_link_libraries(SquirrelJME
 	SquirrelJMECore)
-
-# Versioning information
-add_compile_definitions(SQUIRRELJME_VERSION="${SQUIRRELJME_VERSION}")
-add_compile_definitions(SQUIRRELJME_VERSION_ID="${SQUIRRELJME_VERSION_ID}")

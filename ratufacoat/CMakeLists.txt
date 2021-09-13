@@ -98,6 +98,13 @@ else()
 	set(SQUIRRELJME_BUILTIN_FILE)
 endif()
 
+# This is not supported with older CMake versions
+if(${CMAKE_VERSION} VERSION_LESS "3.12")
+	function(add_compile_definitions ARG_DEFINITION)
+		add_definitions(-D${ARG_DEFINITION})
+	endfunction()
+endif()
+
 # Does the static ROM file exist? If it does we can pack it into the binary
 if(SQUIRRELJME_HAS_BUILTIN)
 	message("Including built-in ROM!")
