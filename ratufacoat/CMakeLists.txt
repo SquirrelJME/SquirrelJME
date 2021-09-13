@@ -6,8 +6,16 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# Needs to be this or older
-cmake_minimum_required (VERSION 3.13)
+# Needed for some ancient RetroArch toolchains
+if(${CMAKE_VERSION} VERSION_LESS "3.13")
+	message("Ancient CMake has been detected (${CMAKE_VERSION})")
+	cmake_minimum_required(VERSION 3.7)
+
+# Needs to be this or newer
+else()
+	message("Detected CMake (${CMAKE_VERSION})")
+	cmake_minimum_required(VERSION 3.13)
+endif()
 
 # Load version number
 file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/../squirreljme-version"
