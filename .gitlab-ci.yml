@@ -28,7 +28,6 @@ stages:
     SQUIRRELJME_ROM_URL: https://circleci.com/api/v1.1/project/github/SquirrelJME/SquirrelJME/$SQUIRRELJME_ROM_ID/artifacts
 
     # CMake Settings
-    CMAKE_VERBOSE_MAKEFILE: ON
     CMAKE_SOURCE_ROOT: ratufacoat
     EXTRA_PATH: src/libretro
 
@@ -231,6 +230,8 @@ libretro-build-dingux:
 
 # Nintendo 3DS
 libretro-build-ctr:
+  variables:
+    CMAKE_VERBOSE_MAKEFILE: 1
   extends:
     - .libretro-ctr-static-cmake-retroarch-master
     - .core-defs
