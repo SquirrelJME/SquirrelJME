@@ -6,6 +6,11 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
+# Verbosity?
+if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
+	set(CMAKE_VERBOSE_MAKEFILE $ENV{CMAKE_VERBOSE_MAKEFILE})
+endif()
+
 # Needed for some ancient RetroArch toolchains
 if(${CMAKE_VERSION} VERSION_LESS "3.13")
 	message("Ancient CMake has been detected (${CMAKE_VERSION})")

@@ -8,21 +8,21 @@
 # DESCRIPTION: Engine Base
 
 # Define the library
-add_library(SquirrelJMEEngineCore STATIC
+add_library(SquirrelJMEEngine STATIC
 		scaffold.c)
 
 # Dynamically generated and standard includes
-target_include_directories(SquirrelJMEEngineCore PUBLIC
+target_include_directories(SquirrelJMEEngine PUBLIC
 	"${PROJECT_BINARY_DIR}"
 	"${PROJECT_SOURCE_DIR}/include")
 
 # Include all of our engines
-target_link_libraries(SquirrelJMEEngineCore
-	SquirrelJMEEngineSpringCoat
-	SquirrelJMEFormat)
+target_link_libraries(SquirrelJMEEngine
+	SquirrelJMEEngineSpringCoat)
 
 # Make this position independent so it can be linked into shared libraries
-set_property(TARGET SquirrelJMECore PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET SquirrelJMEEngine
+	PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # Engine implementations
 add_subdirectory(springcoat)

@@ -17,4 +17,5 @@ target_include_directories(SquirrelJMEEngineSpringCoat PUBLIC
 	"${PROJECT_SOURCE_DIR}/include")
 
 # Make this position independent so it can be linked into shared libraries
-set_property(TARGET SquirrelJMECore PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET SquirrelJMEEngineSpringCoat
+	PROPERTY POSITION_INDEPENDENT_CODE ON)

@@ -41,10 +41,12 @@ target_include_directories(SquirrelJMECore PUBLIC
 
 # Include all of our sub-fragments
 target_link_libraries(SquirrelJMECore
-	SquirrelJMEEngineCore)
+	SquirrelJMEEngine
+	SquirrelJMEFormat)
 
 # Make this position independent so it can be linked into shared libraries
-set_property(TARGET SquirrelJMECore PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET SquirrelJMECore
+	PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # Internal support libraries and modules
 add_subdirectory(engine)

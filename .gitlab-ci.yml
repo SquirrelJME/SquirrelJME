@@ -28,6 +28,7 @@ stages:
     SQUIRRELJME_ROM_URL: https://circleci.com/api/v1.1/project/github/SquirrelJME/SquirrelJME/$SQUIRRELJME_ROM_ID/artifacts
 
     # CMake Settings
+    CMAKE_VERBOSE_MAKEFILE: ON
     CMAKE_SOURCE_ROOT: ratufacoat
     EXTRA_PATH: src/libretro
 

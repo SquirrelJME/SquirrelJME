@@ -51,7 +51,8 @@ target_link_libraries(squirreljme_libretro
 
 # RetroArch must be built with position independent code for any kind of
 # library.
-set_property(TARGET squirreljme_libretro PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET squirreljme_libretro
+	PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # Custom launching the core, tries to find RetroArch on the system
 ## Determine RetroArch directory
