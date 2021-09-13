@@ -8,12 +8,17 @@
 // -------------------------------------------------------------------------*/
 
 #include "format/detect.h"
+#include "debug.h"
 
-sjme_jboolean sjme_formatDetectMagicNumber(void* data, sjme_jint size,
+sjme_jboolean sjme_detectMagicNumber(void* data, sjme_jint size,
 	sjme_jint magic, sjme_error* error)
 {
+	/* Check parameters first. */
 	if (data == NULL || size < 0)
 	{
-		sjme_setError();
+		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
+		return sjme_false;
 	}
+	
+	sjme_todo("sjme_detectMagicNumber()");
 }

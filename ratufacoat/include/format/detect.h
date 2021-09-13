@@ -54,7 +54,7 @@ typedef sjme_jboolean (*sjme_formatDetectFunction)(void* data,
  * @return If this magic number was detected.
  * @since 2021/09/12
  */
-sjme_jboolean sjme_formatDetectMagicNumber(void* data, sjme_jint size,
+sjme_jboolean sjme_detectMagicNumber(void* data, sjme_jint size,
 	sjme_jint magic, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/

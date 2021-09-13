@@ -17,12 +17,44 @@
 
 /* ------------------------------- LIBRARIES ------------------------------- */
 
-const sjme_librariesDriver sjme_libraries_sqc_driver =
+/**
+ * Detects pack files.
+ * 
+ * @param data ROM data. 
+ * @param size ROM size.
+ * @param error Error output.
+ * @return If detected or not.
+ * @since 2021/09/12
+ */
+static sjme_jboolean sjme_detectPack(void* data, sjme_jint size,
+	sjme_error* error)
 {
+	return sjme_detectMagicNumber(data, size, PACK_MAGIC_NUMBER, error);
+}
+
+const sjme_librariesDriver sjme_librariesSqcDriver =
+{
+	.detect = sjme_detectPack,
 };
 
 /* -------------------------------- LIBRARY -------------------------------- */
 
-const sjme_libraryDriver sjme_library_sqc_driver =
+/**
+ * Detects library files.
+ * 
+ * @param data ROM data. 
+ * @param size ROM size.
+ * @param error Error output.
+ * @return If detected or not.
+ * @since 2021/09/12
+ */
+static sjme_jboolean sjme_detectLib(void* data, sjme_jint size,
+	sjme_error* error)
 {
+	return sjme_detectMagicNumber(data, size, JAR_MAGIC_NUMBER, error);
+}
+
+const sjme_libraryDriver sjme_librarySqcDriver =
+{
+	.detect = sjme_detectLib,
 };
