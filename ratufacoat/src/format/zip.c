@@ -8,7 +8,24 @@
 // -------------------------------------------------------------------------*/
 
 #include "format/zip.h"
+#include "debug.h"
+
+/**
+ * Detects library files.
+ * 
+ * @param data ROM data. 
+ * @param size ROM size.
+ * @param error Error output.
+ * @return If detected or not.
+ * @since 2021/09/12
+ */
+static sjme_jboolean sjme_detectZip(void* data, sjme_jint size,
+	sjme_error* error)
+{
+	sjme_todo("sjme_detectZip");
+}
 
 const sjme_libraryDriver sjme_libraryZipDriver =
 {
+	.detect = sjme_detectZip,
 };
