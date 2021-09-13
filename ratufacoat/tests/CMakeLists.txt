@@ -104,16 +104,15 @@ foreach(SQUIRRELJME_BLOB_FILE ${SQUIRRELJME_BLOB_FILES})
 		endif()
 	endif()
 
-	# Notice, this can take awhile!
-	file(SIZE "${SQUIRRELJME_BLOB_FILE}" BLOB_FILE_LEN)
-	math(EXPR BLOB_FILE_LEN "${BLOB_FILE_LEN} / 2")
-	message("Packing blob ${BLOB_BASENAME} (${BLOB_FILE_LEN} bytes)...")
-
 	# Read file as a hex string
 	file(READ "${SQUIRRELJME_BLOB_FILE}" BLOB_HEX)
 
 	# Length of the hex data
 	string(LENGTH "${BLOB_HEX}" BLOB_HEX_LEN)
+
+	# Notice, this can take awhile!
+	math(EXPR BLOB_FILE_LEN "${BLOB_HEX_LEN} / 2")
+	message("Packing blob ${BLOB_BASENAME} (${BLOB_FILE_LEN} bytes)...")
 
 	# Start C struct
 	file(APPEND "${BLOB_TARGET_FILE}"
