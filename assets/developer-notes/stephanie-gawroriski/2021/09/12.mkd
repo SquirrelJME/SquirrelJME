@@ -1,0 +1,11 @@
+# 2021/09/12
+
+## 15:19
+
+So first thing I am going to do with the RatufaCoat refactor is going to be
+support for loading ZIPs and SQCs. I think this is the most important first
+step since there is nothing really else to do that would be functional
+before these even exists. Of course slowly as well moving the RetroArch
+stuff that I can over to CMake, since there will be lots to do here regarding
+that. Of course there are some systems which are lacking support for that so
+I will need to add that to RetroArch.
