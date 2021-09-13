@@ -47,7 +47,7 @@ target_include_directories(squirreljme_libretro PUBLIC
 
 # Include the SquirrelJME Core as all of the JVM code is there
 target_link_libraries(squirreljme_libretro
-	SquirrelJMECore)
+	PUBLIC SquirrelJMECore)
 
 # RetroArch must be built with position independent code for any kind of
 # library.

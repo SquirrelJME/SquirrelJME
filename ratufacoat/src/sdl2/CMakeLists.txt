@@ -15,4 +15,4 @@ target_include_directories(SquirrelJME PUBLIC
 	"${PROJECT_SOURCE_DIR}/include")
 
 target_link_libraries(SquirrelJME
-	SquirrelJMECore)
+	PUBLIC SquirrelJMECore)
