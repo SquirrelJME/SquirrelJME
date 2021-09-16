@@ -91,6 +91,9 @@ public final class SplashScreen
 	@Override
 	public final void run()
 	{
+		// Print copyright to the console as well
+		System.err.println(SplashScreen.COPYRIGHT);
+		
 		// Image is completely operated with using raw data
 		int np = SplashScreen.WIDTH * SplashScreen.HEIGHT;
 		int[] image = new int[np];
