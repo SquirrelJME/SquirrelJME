@@ -31,8 +31,7 @@ will be destroyed.
 **CODE "ON THE CLOCK" OR UNDER CONTRACT, THEN THAT DEVELOPER MUST SEEK THE**
 **PERMISSION OF THE EMPLOYER.**
 
-	You grant Multi-Phasic Applications and Stephanie Gawroriski an irrevocable
-	license that:
+	You grant Stephanie Gawroriski an irrevocable license that:
 	
 	 1. Grants a patent license, as per the GNU GPLv3.
 	 2. The license of the code you are contributing is one of:
