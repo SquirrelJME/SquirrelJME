@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) 2013-2016 Stephanie Gawroriski <xer@multiphasicapps.net>
 //     Copyright (C) 2013-2016 Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
