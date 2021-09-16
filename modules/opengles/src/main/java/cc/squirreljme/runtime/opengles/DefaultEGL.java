@@ -388,7 +388,7 @@ public class DefaultEGL
 		{
 				// Vendor
 			case EGL10.EGL_VENDOR:
-				return "Stephanie Gawroriski (Multi-Phasic Applications)";
+				return "Stephanie Gawroriski";
 			
 				// Version
 			case EGL10.EGL_VERSION:

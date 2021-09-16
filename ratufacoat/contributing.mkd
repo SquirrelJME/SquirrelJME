@@ -37,7 +37,7 @@ will be destroyed.
 	 2. The license of the code you are contributing is one of:
 	    1. Public Domain
 	    2. GNU GPLv3, CC-BY-SA 4.0, or SIL OFL v1.1 appropriately.
-	    3. Granting Multi-Phasic Applications and Stephanie Gawroriski the
+	    3. Granting Stephanie Gawroriski the
 	       ability to re-license the work without any conditions and without
 	       any approval or notice. Effectively gifting your own code to the
 	       project and giving full freedom for that code.
