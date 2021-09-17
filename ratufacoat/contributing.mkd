@@ -32,31 +32,16 @@ will be destroyed.
 **PERMISSION OF THE EMPLOYER.**
 
 	You grant Stephanie Gawroriski an irrevocable license that:
-	
-	 1. Grants a patent license, as per the GNU GPLv3.
-	 2. The license of the code you are contributing is one of:
-	    1. Public Domain
-	    2. GNU GPLv3, CC-BY-SA 4.0, or SIL OFL v1.1 appropriately.
-	    3. Granting Stephanie Gawroriski the
-	       ability to re-license the work without any conditions and without
-	       any approval or notice. Effectively gifting your own code to the
-	       project and giving full freedom for that code.
-	 2. Specified that you have not derived your contribution and/or knowledge
-	    from the specified virtual machine implementations via direct
-	    source code or reverse engineering (but not limited to):
-	    * Android (Google)
-	    * Apache Harmony (Apache Foundation)
-	    * CVM (Sun Microsystems/Oracle)
-	    * Excelsior JET (Excelsior LLC)
-	    * GNU Classpath (Free Software Foundation)
-	    * GNU GCJ/GIJ (Free Software Foundation)
-	    * JamVM (Robert Lougher)
-	    * Microsoft Java Virtual Machine (Microsoft)
-	    * Microsoft .NET (Microsoft)
-	    * Mono (Microsoft)
-	    * OpenJDK (Sun Microsystems/Oracle)
-	    * PhoneME (Sun Microsystems/Oracle)
-	 3. If employed by a company, you have a right by that company to provide
+    
+	 1. That you own the contributing work.
+	 2. Grants a patent license, as per the GNU GPLv3.
+	 3. Granting Stephanie Gawroriski permission to redistribute, sell, lease,
+	    modify, transform, translate, and relicense the specified works. This
+	    is to simplify the licensing of the project and permit it to be
+	    consistent. Your contribution may be commercially licensed to other
+	    parties supporting the project through this means.
+	 4. If employed by a company, you have a right by that company to provide
 	    contributions to this project.
-	 4. Have pledged to follow the Code of Conduct.
+	 5. Have pledged to follow the Code of Conduct.
+	 6. Have read and understand the Ettiquite.
 
