@@ -52,8 +52,8 @@ Badges:
    * [![Discord](https://img.shields.io/discord/278929900893634560.svg?label=Discord%20Server)](
      https://discord.gg/9PkMMKt)
    * [![Twitter](
-     https://img.shields.io/twitter/follow/MultiPhasicApps.svg?label=Follow%20on%20Twitter)](
-     https://twitter.com/MultiPhasicApps)
+     https://img.shields.io/twitter/follow/SquirrelJME.svg?label=Follow%20on%20Twitter)](
+     https://twitter.com/SquirrelJME)
  * _Downloads and Activity_
    * ![Commit Activity](
      https://img.shields.io/github/commit-activity/w/SquirrelJME/SquirrelJME.svg?label=Code%20Commits)
@@ -126,7 +126,7 @@ Information:
 
  * [My Portfolio](https://shadowtail.dev/)
  * [My Public PGP Key](public-key.gpg.mkd)
- * [SquirrelJME Twitter](https://twitter.com/MultiPhasicApps)
+ * [SquirrelJME Twitter](https://twitter.com/SquirrelJME)
  * [SquirrelJME Mastodon](https://mastodon.online/@SquirrelJME)
  * Locations where you can get support:
    * [Discord](https://discord.gg/9PkMMKt)
@@ -137,7 +137,7 @@ Information:
    * [Reddit](https://reddit.com/r/SquirrelJME)
  * Front facing social media:
    * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA/)
-   * [Twitter](https://twitter.com/MultiPhasicApps)
+   * [Twitter](https://twitter.com/SquirrelJME)
  * [Docker Hub](https://hub.docker.com/r/xerthesquirrel/squirreljme)
  * [SourceForge](https://sourceforge.net/p/squirreljme/)
  * Personal Accounts (If you wish to contact me this way)
