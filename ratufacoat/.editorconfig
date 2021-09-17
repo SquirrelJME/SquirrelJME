@@ -1,11 +1,22 @@
+# ---------------------------------------------------------------------------
+# SquirrelJME
+#     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+# ---------------------------------------------------------------------------
+# SquirrelJME is under the GNU General Public License v3+, or later.
+# See license.mkd for licensing and copyright information.
+# ---------------------------------------------------------------------------
+# DESCRIPTION: EditorConfig Stylization <https://editorconfig.org/>
+
+### GLOBAL PROJECT SETTINGS ###
+root = true
+
 [*]
-charset = utf-8
 end_of_line = lf
-indent_size = 4
-indent_style = tab
-insert_final_newline = false
-max_line_length = 79
+insert_final_newline = true
 tab_width = 4
+indent_size = 4
+max_line_length = 79
+trim_trailing_whitespace = true
 ij_continuation_indent_size = 8
 ij_formatter_off_tag = @formatter:off
 ij_formatter_on_tag = @formatter:on
@@ -13,6 +24,49 @@ ij_formatter_tags_enabled = false
 ij_smart_tabs = false
 ij_visual_guides = 79
 ij_wrap_on_typing = false
+
+# Batch files are Windows specific
+[*.bat]
+end_of_line = crlf
+insert_final_newline = unset
+indent_style = unset
+
+# Standard source code
+[*.{md,mkd,c,cpp,h,java,js,json,j,sh,xpm,gradle}]
+charset = latin1
+indent_style = tab
+trim_trailing_whitespace = false
+curly_bracket_next_line = true
+spaces_around_operators = false
+spaces_around_brackets = false
+indent_brace_style = Allman
+wildcard_import_limit = 0
+
+# Markdown may be in UTF-8, but uses different indentation depending on context
+[*.{md,mkd}]
+charset = utf-8
+indent_style = unset
+
+# YAML uses a bit of a different format compared to the others
+[*.{yml,yaml}]
+indent_size = 2
+indent_style = tab
+
+# These files should _NEVER_ be re-formatted or touched
+[*.{svg,__mime,in,glyph,bitmap,gpl,gpg,properties,jar}]
+end_of_line = unset
+insert_final_newline = unset
+charset = unset
+indent_size = unset
+indent_style = unset
+tab_width = unset
+max_line_length = unset
+trim_trailing_whitespace = unset
+curly_bracket_next_line = unset
+spaces_around_operators = unset
+spaces_around_brackets = unset
+indent_brace_style = unset
+wildcard_import_limit = unset
 
 [*.css]
 indent_style = space

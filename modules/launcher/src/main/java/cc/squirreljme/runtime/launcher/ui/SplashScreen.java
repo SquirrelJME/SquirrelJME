@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -30,8 +30,9 @@ public final class SplashScreen
 	/** The copyright string. */
 	public static final String COPYRIGHT =
 		"https://squirreljme.cc/\n" +
-		"(C) 2013-2021 Stephanie Gawroriski\n" +
-		"Licensed under the GPLv3!\nDonate to me on Patreon:\n" +
+		"(C) 2013-2021 & TM 2016-2021 Stephanie Gawroriski\n" +
+		"Licensed under the GPLv3!\n" +
+		"Donate to me on Patreon:\n" +
 		"*** https://www.patreon.com/SquirrelJME! ***";
 	
 	/** The splash image width. */
@@ -90,6 +91,9 @@ public final class SplashScreen
 	@Override
 	public final void run()
 	{
+		// Print copyright to the console as well
+		System.err.println(SplashScreen.COPYRIGHT);
+		
 		// Image is completely operated with using raw data
 		int np = SplashScreen.WIDTH * SplashScreen.HEIGHT;
 		int[] image = new int[np];
