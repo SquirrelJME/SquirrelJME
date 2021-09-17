@@ -10,7 +10,8 @@ permitted by the GNU GPLv3.
 
 ```
 Copyright (C) 2013-2021 Stephanie Gawroriski <xerthesquirrel@gmail.com>
-Copyright (C) 2013-2021 Multi-Phasic Applications <https://squirreljme.cc/>
+
+"SquirrelJME" and "Lex" are trademarks of Stephanie Gawroriski 2016-2021.
 
 The above copyright notice and this notice with the others below shall be
 included in all copies or substantial portions of the Software.

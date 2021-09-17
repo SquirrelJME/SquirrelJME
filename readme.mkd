@@ -15,8 +15,7 @@ execution.
 Additionally, there is a port of SquirrelJME to RetroArch which enables the
 ability to play older J2ME software and games designed for flip-phones.
 
- * Copyright (C) 2013-2021 Stephanie Gawroriski
-   <xer@multiphasicapps.net>
+ * Copyright (C) 2013-2021 Stephanie Gawroriski <xer@multiphasicapps.net>
  * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2021
  * _Lex_ and The _SquirrelJME_ Logo were illustrated by...
    * Kat Adam-MacEwen
@@ -53,8 +52,8 @@ Badges:
    * [![Discord](https://img.shields.io/discord/278929900893634560.svg?label=Discord%20Server)](
      https://discord.gg/9PkMMKt)
    * [![Twitter](
-     https://img.shields.io/twitter/follow/MultiPhasicApps.svg?label=Follow%20on%20Twitter)](
-     https://twitter.com/MultiPhasicApps)
+     https://img.shields.io/twitter/follow/SquirrelJME.svg?label=Follow%20on%20Twitter)](
+     https://twitter.com/SquirrelJME)
  * _Downloads and Activity_
    * ![Commit Activity](
      https://img.shields.io/github/commit-activity/w/SquirrelJME/SquirrelJME.svg?label=Code%20Commits)
@@ -127,7 +126,7 @@ Information:
 
  * [My Portfolio](https://shadowtail.dev/)
  * [My Public PGP Key](public-key.gpg.mkd)
- * [SquirrelJME Twitter](https://twitter.com/MultiPhasicApps)
+ * [SquirrelJME Twitter](https://twitter.com/SquirrelJME)
  * [SquirrelJME Mastodon](https://mastodon.online/@SquirrelJME)
  * Locations where you can get support:
    * [Discord](https://discord.gg/9PkMMKt)
@@ -138,7 +137,7 @@ Information:
    * [Reddit](https://reddit.com/r/SquirrelJME)
  * Front facing social media:
    * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA/)
-   * [Twitter](https://twitter.com/MultiPhasicApps)
+   * [Twitter](https://twitter.com/SquirrelJME)
  * [Docker Hub](https://hub.docker.com/r/xerthesquirrel/squirreljme)
  * [SourceForge](https://sourceforge.net/p/squirreljme/)
  * Personal Accounts (If you wish to contact me this way)
@@ -204,16 +203,15 @@ purchasing of food items for consumption.
 ***JAVA AND ALL OTHER RELATED TRADEMARKS AND COPYRIGHTS ARE OWNED BY ORACLE
 CORPORATION <http://www.oracle.com/>.***
 
-***SQUIRRELJME IS NEITHER PRODUCED BY NOR ENDORSED BY ORACLE CORPORATION.***
+***SQUIRRELJME IS NEITHER PRODUCED BY, ENDORSED BY, NOR SUPPORTED BY
+_ORACLE CORPORATION_.***
 
 ***ALL SOURCE CODE IS WRITTEN BY MYSELF WITH FUNCTIONALITY DETERMINED BY THE
 DOCUMENTED APIS AND RUN-TIME BEHAVIOR. I HAVE NOT LOOKED AT THE SOURCE CODE FOR
 OTHER IMPLEMENTATIONS, NEITHER FREE SOFTWARE NOR PROPRIETARY IMPLEMENTATIONS.
 ESSENTIALLY SQUIRRELJME IS A CLEAN-ROOM IMPLEMENTATION OF THE DESIGN OF JAVA
-ME 8. THE IMPLEMENTATIONS OF THE JAVA ME 8
-APIS AND ASSOCIATED JSRS/JEPS IS CONSIDERED BY MYSELF TO BE IN THE FAIR USE
-(AND IT ALSO HELPS THE JAVA ECOSYSTEM BY PERMITTING IT TO RUN IN MORE PLACES
-WHERE IT IS NOT SUPPORTED BY ORACLE).***
+ME 8. THE IMPLEMENTATIONS OF THE JAVA ME 8 APIS AND ASSOCIATED JSRS/JEPS IS
+CONSIDERED BY MYSELF (STEPHANIE GAWRORISKI) TO BE IN THE FAIR USE.***
 
 ***THIS SOFTWARE IS INCOMPLETE AND IN ITS CURRENT STATE IS NOT CURRENTLY
 100% COMPATIBLE WITH JAVA ME 8. THERE ARE CURRENTLY NO STABLE RELEASED VERSIONS
