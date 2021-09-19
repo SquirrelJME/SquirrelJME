@@ -48,17 +48,13 @@ stages:
 # Inclusion templates, required for the build to work
 include:
   ################################## DESKTOPS ################################
-  # Linux 32-bit
+  # Linux 32-bit and 64-bit
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/linux-i686.yml'
+    file: '/linux-cmake.yml'
 
-  # Linux 64-bit
+  # MacOS 32-bit and 64-bit
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/linux-x64.yml'
-
-  # MacOS 64-bit
-  - project: 'libretro-infrastructure/ci-templates'
-    file: '/osx-x64.yml'
+    file: '/osx-cmake-x86.yml'
 
   # MacOS ARM 64-bit
   - project: 'libretro-infrastructure/ci-templates'
@@ -71,16 +67,20 @@ include:
   ################################## CELLULAR ################################
   # Android
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/android-jni.yml'
+    file: '/android-cmake.yml'
 
   # iOS 9
   - project: 'libretro-infrastructure/ci-templates'
     file: '/ios9.yml'
 
+  # tvOS
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/tvos-arm64.yml'
+
   ################################## CONSOLES ################################
   # Dingux (GCW Zero)
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/dingux-mips32.yml'
+    file: '/dingux-cmake.yml'
 
   # Nintendo 3DS
   - project: 'libretro-infrastructure/ci-templates'
@@ -102,9 +102,13 @@ include:
   - project: 'libretro-infrastructure/ci-templates'
     file: '/wiiu-static.yml'
 
-  # PLayStation 2
+  # PlayStation 2
   - project: 'libretro-infrastructure/ci-templates'
     file: '/ps2-static.yml'
+
+  # PlayStation Portable
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/psp-static.yml'
 
   # PlayStation Vita
   - project: 'libretro-infrastructure/ci-templates'
@@ -142,24 +146,31 @@ include:
 #    - ./gradlew :romSummerCoatRatufaCoat --full-stacktrace
 
 ################################### DESKTOPS #################################
-# Linux 32-bit
+# Linux 32-bit [CMake]
 libretro-build-linux-i686:
   extends:
-    - .libretro-linux-i686-make-default
+    - .libretro-linux-cmake-x86
     - .core-defs
     - .squirreljme-support-common
 
-# Linux 64-bit
+# Linux 64-bit [CMake]
 libretro-build-linux-x64:
   extends:
-    - .libretro-linux-x64-make-default
+    - .libretro-linux-cmake-x86_64
     - .core-defs
     - .squirreljme-support-common
 
-# MacOS 64-bit
+# MacOS 32-bit [CMake]
+libretro-build-osx-x86:
+  extends:
+    - .libretro-osx-cmake-x86
+    - .core-defs
+    - .squirreljme-support-common
+
+# MacOS 64-bit [CMake]
 libretro-build-osx-x64:
   extends:
-    - .libretro-osx-x64-make-default
+    - .libretro-osx-cmake-x86_64
     - .core-defs
     - .squirreljme-support-common
 
@@ -170,14 +181,14 @@ libretro-build-osx-arm64:
     - .core-defs
     - .squirreljme-support-common
 
-# Windows 32-bit
+# Windows 32-bit [CMake]
 libretro-build-windows-i686:
   extends:
     - .libretro-windows-cmake-x86
     - .core-defs
     - .squirreljme-support-common
 
-# Windows 64-bit
+# Windows 64-bit [CMake]
 libretro-build-windows-x64:
   extends:
     - .libretro-windows-cmake-x86_64
@@ -185,31 +196,39 @@ libretro-build-windows-x64:
     - .squirreljme-support-common
 
 ################################### CELLULAR #################################
-# Android ARMv7a
+# Android ARMv7a [CMake]
 android-armeabi-v7a:
+  variables:
+    CMAKE_VERBOSE_MAKEFILE: 1
   extends:
-    - .libretro-android-jni-armeabi-v7a
+    - .libretro-android-cmake-armeabi-v7a
     - .core-defs
     - .squirreljme-support-common
 
-# Android ARMv8a
+# Android ARMv8a [CMake]
 android-arm64-v8a:
+  variables:
+    CMAKE_VERBOSE_MAKEFILE: 1
   extends:
-    - .libretro-android-jni-arm64-v8a
+    - .libretro-android-cmake-arm64-v8a
     - .core-defs
     - .squirreljme-support-common
 
-# Android 64-bit x86
+# Android 64-bit x86 [CMake]
 android-x86_64:
+  variables:
+    CMAKE_VERBOSE_MAKEFILE: 1
   extends:
-    - .libretro-android-jni-x86_64
+    - .libretro-android-cmake-x86
     - .core-defs
     - .squirreljme-support-common
 
-# Android 32-bit x86
+# Android 32-bit x86 [CMake]
 android-x86:
+  variables:
+    CMAKE_VERBOSE_MAKEFILE: 1
   extends:
-    - .libretro-android-jni-x86
+    - .libretro-android-cmake-x86_64
     - .core-defs
     - .squirreljme-support-common
 
@@ -220,15 +239,22 @@ libretro-build-ios9:
     - .core-defs
     - .squirreljme-support-common
 
-################################### CONSOLES #################################
-# Dingux (GCW Zero)
-libretro-build-dingux:
+# tvOS
+libretro-build-tvos-arm64:
   extends:
-    - .libretro-dingux-mips32-make-default
+    - .libretro-tvos-arm64-make-default
     - .core-defs
     - .squirreljme-support-common
 
-# Nintendo 3DS
+################################### CONSOLES #################################
+# Dingux (GCW Zero) [CMake]
+libretro-build-dingux:
+  extends:
+    - .libretro-dingux-cmake-mips32
+    - .core-defs
+    - .squirreljme-support-common
+
+# Nintendo 3DS [CMake]
 libretro-build-ctr:
   variables:
     CMAKE_VERBOSE_MAKEFILE: 1
@@ -269,6 +295,13 @@ libretro-build-wiiu:
 libretro-build-ps2:
   extends:
     - .libretro-ps2-static-retroarch-master
+    - .core-defs
+    - .squirreljme-support-common
+
+# PlayStation Portable
+libretro-build-psp:
+  extends:
+    - .libretro-psp-static-retroarch-master
     - .core-defs
     - .squirreljme-support-common
 
