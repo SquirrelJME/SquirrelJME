@@ -7,11 +7,12 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Static Library
 
+# Load target objects
+get_property(SQUIRRELJMECORELIB_TARGET_OBJECTS
+	GLOBAL PROPERTY SquirrelJMECoreTargetObjects)
+
 # Core library for SquirrelJME as a static library, which includes all of
 # the objects together as one
 add_library(SquirrelJMECoreLib STATIC
 	blank.c
-	$<TARGET_OBJECTS:SquirrelJMEEngine>
-	$<TARGET_OBJECTS:SquirrelJMEFormat>
-	$<TARGET_OBJECTS:SquirrelJMEEngineSpringCoat>
-	$<TARGET_OBJECTS:SquirrelJMECore>)
+	${SQUIRRELJMECORELIB_TARGET_OBJECTS})

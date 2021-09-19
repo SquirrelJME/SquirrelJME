@@ -60,6 +60,13 @@ target_include_directories(SquirrelJMECore PUBLIC
 set_property(TARGET SquirrelJMECore
 	PROPERTY POSITION_INDEPENDENT_CODE ON)
 
+# Used to simplify sub-projects
+set_property(GLOBAL PROPERTY SquirrelJMECoreTargetObjects
+	$<TARGET_OBJECTS:SquirrelJMEEngine>
+	$<TARGET_OBJECTS:SquirrelJMEFormat>
+	$<TARGET_OBJECTS:SquirrelJMEEngineSpringCoat>
+	$<TARGET_OBJECTS:SquirrelJMECore>)
+
 # Static library
 add_subdirectory(lib)
 
