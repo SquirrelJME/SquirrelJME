@@ -13,6 +13,11 @@ if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
 endif()
 
 # Base core library
+# Note that OBJECT libraries are used to define groups of object files for
+# linking and otherwise. CMake does not support linking multiple static
+# libraries together into one, however using OBJECT libraries allows them
+# to include all the objects. We need to do this for RetroArch's static
+# targets since they are linked directly against RetroArch executables.
 add_library(SquirrelJMECore OBJECT
 	accelgfx.c
 	atomic.c
@@ -40,15 +45,13 @@ add_library(SquirrelJMECore OBJECT
 	syscall.c
 	video.c
 	xbuiltin.c
-	${SQUIRRELJME_BUILTIN_FILE})
+	${SQUIRRELJME_BUILTIN_FILE}
+	$<TARGET_OBJECTS:SquirrelJMEEngine>
+	$<TARGET_OBJECTS:SquirrelJMEFormat>)
+
 target_include_directories(SquirrelJMECore PUBLIC
 	"${PROJECT_BINARY_DIR}"
 	"${PROJECT_SOURCE_DIR}/include")
-
-# Include all of our sub-fragments
-target_link_libraries(SquirrelJMECore
-	PUBLIC SquirrelJMEEngine
-	PUBLIC SquirrelJMEFormat)
 
 # Make this position independent so it can be linked into shared libraries
 set_property(TARGET SquirrelJMECore
