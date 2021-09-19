@@ -58,7 +58,7 @@ if(DEFINED LIBRETRO_SUFFIX AND NOT "${LIBRETRO_SUFFIX}" EQUAL "")
 # On Android, any LibRetro target requires the _android suffix
 elseif(CMAKE_SYSTEM_NAME MATCHES "^(Android)$")
     set_target_properties(squirreljme_libretro PROPERTIES
-    	OUTPUT_NAME "squirreljme_libretro_android.so")
+    	OUTPUT_NAME "squirreljme_libretro_android")
 endif()
 
 # Include all of these
