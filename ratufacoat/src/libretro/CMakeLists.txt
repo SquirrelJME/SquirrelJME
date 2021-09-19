@@ -17,9 +17,15 @@ endif()
 if(LIBRETRO_STATIC)
 	set(SQUIRRELJME_LIBRETRO_TYPE STATIC)
 	set(SQUIRRELJME_LIBRETRO_STATIC ON)
+	set(SQUIRRELJME_LIBRETRO_CORELIB
+		$<TARGET_OBJECTS:SquirrelJMEEngine>
+		$<TARGET_OBJECTS:SquirrelJMEFormat>
+		$<TARGET_OBJECTS:SquirrelJMEEngineSpringCoat>
+		$<TARGET_OBJECTS:SquirrelJMECore>)
 else()
 	set(SQUIRRELJME_LIBRETRO_TYPE SHARED)
 	set(SQUIRRELJME_LIBRETRO_STATIC OFF)
+	set(SQUIRRELJME_LIBRETRO_CORELIB)
 endif()
 
 # Define shared library
@@ -32,11 +38,17 @@ add_library(squirreljme_libretro ${SQUIRRELJME_LIBRETRO_TYPE}
 	lrnet.c
 	lrvfs.c
 	sys_libr.c
-	$<TARGET_OBJECTS:SquirrelJMECore>)
+	${SQUIRRELJME_LIBRETRO_CORELIB})
 
 # Remove the "lib" prefix as it is not used by RetroArch
 set_target_properties(squirreljme_libretro PROPERTIES
 	PREFIX "")
+
+# If not static, then link against our own static library
+if(NOT SQUIRRELJME_LIBRETRO_STATIC)
+	target_link_libraries(squirreljme_libretro PUBLIC
+		SquirrelJMECore)
+endif()
 
 # Some LibRetro targets set a suffix at the end of the base name for the
 # library

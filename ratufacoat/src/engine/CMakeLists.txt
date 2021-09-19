@@ -14,8 +14,7 @@ endif()
 
 # Define the library
 add_library(SquirrelJMEEngine OBJECT
-		scaffold.c
-		$<TARGET_OBJECTS:SquirrelJMEEngineSpringCoat>)
+		scaffold.c)
 
 # Dynamically generated and standard includes
 target_include_directories(SquirrelJMEEngine PUBLIC

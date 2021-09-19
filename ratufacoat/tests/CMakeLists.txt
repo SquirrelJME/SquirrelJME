@@ -11,8 +11,7 @@
 file(GLOB SQUIRRELJME_TEST_SOURCES "test*.c")
 add_executable(SquirrelJMETests
     mainEntry.c
-	${SQUIRRELJME_TEST_SOURCES}
-	$<TARGET_OBJECTS:SquirrelJMECore>)
+	${SQUIRRELJME_TEST_SOURCES})
 
 # Additional includes
 target_include_directories(SquirrelJMETests PUBLIC
@@ -25,7 +24,11 @@ target_include_directories(SquirrelJMETests PUBLIC
 # Mac OS does not support static here, it will give an error that says:
 # ld: library not found for -lcrt0.o
 if(NOT APPLE)
-	target_link_libraries(SquirrelJMETests -static)
+	target_link_libraries(SquirrelJMETests -static
+		SquirrelJMECoreLib)
+else()
+	target_link_libraries(SquirrelJMETests -static
+		SquirrelJMECoreLib)
 endif()
 
 # Auto-generate tests

@@ -50,9 +50,7 @@ add_library(SquirrelJMECore OBJECT
 	syscall.c
 	video.c
 	xbuiltin.c
-	${SQUIRRELJME_BUILTIN_FILE}
-	$<TARGET_OBJECTS:SquirrelJMEEngine>
-	$<TARGET_OBJECTS:SquirrelJMEFormat>)
+	${SQUIRRELJME_BUILTIN_FILE})
 
 target_include_directories(SquirrelJMECore PUBLIC
 	"${PROJECT_BINARY_DIR}"
@@ -61,6 +59,9 @@ target_include_directories(SquirrelJMECore PUBLIC
 # Make this position independent so it can be linked into shared libraries
 set_property(TARGET SquirrelJMECore
 	PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+# Static library
+add_subdirectory(lib)
 
 # Internal support libraries and modules
 add_subdirectory(engine)

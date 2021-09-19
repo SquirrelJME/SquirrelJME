@@ -5,19 +5,13 @@
 # SquirrelJME is under the GNU General Public License v3+, or later.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: SDL2 front-end to SquirrelJME
+# DESCRIPTION: Static Library
 
-# Verbosity?
-if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
-	set(CMAKE_VERBOSE_MAKEFILE $ENV{CMAKE_VERBOSE_MAKEFILE})
-endif()
-
-add_executable(SquirrelJME
-	sys_stdc.c)
-
-target_include_directories(SquirrelJME PUBLIC
-	"${PROJECT_BINARY_DIR}"
-	"${PROJECT_SOURCE_DIR}/include")
-
-target_link_libraries(SquirrelJME PUBLIC
-	SquirrelJMECoreLib)
+# Core library for SquirrelJME as a static library, which includes all of
+# the objects together as one
+add_library(SquirrelJMECoreLib STATIC
+	blank.c
+	$<TARGET_OBJECTS:SquirrelJMEEngine>
+	$<TARGET_OBJECTS:SquirrelJMEFormat>
+	$<TARGET_OBJECTS:SquirrelJMEEngineSpringCoat>
+	$<TARGET_OBJECTS:SquirrelJMECore>)
