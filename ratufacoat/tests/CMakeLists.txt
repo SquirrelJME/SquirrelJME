@@ -7,11 +7,12 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Tests for SquirrelJME
 
-# Build executable just for testing
+# Build executable just for testing'
 file(GLOB SQUIRRELJME_TEST_SOURCES "test*.c")
 add_executable(SquirrelJMETests
     mainEntry.c
-	${SQUIRRELJME_TEST_SOURCES})
+	${SQUIRRELJME_TEST_SOURCES}
+	$<TARGET_OBJECTS:SquirrelJMECore>)
 
 # Additional includes
 target_include_directories(SquirrelJMETests PUBLIC
@@ -19,17 +20,6 @@ target_include_directories(SquirrelJMETests PUBLIC
 	"${PROJECT_SOURCE_DIR}/include"
 	"${CMAKE_CURRENT_BINARY_DIR}"		# Generated sources!
 	)
-
-# Link in core SquirrelJME, it is preferred for it to be static!
-if(NOT APPLE)
-	target_link_libraries(SquirrelJMETests
-		PUBLIC SquirrelJMECore -static)
-else()
-	# Mac OS does not support static here, it will give an error that says:
-	# ld: library not found for -lcrt0.o
-	target_link_libraries(SquirrelJMETests
-		PUBLIC SquirrelJMECore)
-endif()
 
 # Auto-generate tests
 configure_file(blank.h.in prototype.h)

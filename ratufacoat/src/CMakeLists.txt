@@ -18,6 +18,11 @@ endif()
 # libraries together into one, however using OBJECT libraries allows them
 # to include all the objects. We need to do this for RetroArch's static
 # targets since they are linked directly against RetroArch executables.
+# It also changes how linking is done completely:
+# CMake Error at tests/CMakeLists.txt:25 (target_link_libraries):
+#  Target "SquirrelJMECore" of type OBJECT_LIBRARY may not be linked into
+#  another target.  One may link only to STATIC or SHARED libraries, or to
+#  executables with the ENABLE_EXPORTS property set.
 add_library(SquirrelJMECore OBJECT
 	accelgfx.c
 	atomic.c
@@ -61,8 +66,6 @@ set_property(TARGET SquirrelJMECore
 add_subdirectory(engine)
 add_subdirectory(format)
 
-# Add the SDL2 Implementation
+# SDL2 and RetroArch Front-Ends
 add_subdirectory(sdl2)
-
-# And the libRetro Implementation (Testing)
 add_subdirectory(libretro)
