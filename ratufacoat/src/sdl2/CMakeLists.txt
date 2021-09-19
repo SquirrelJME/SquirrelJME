@@ -19,6 +19,3 @@ add_executable(SquirrelJME
 target_include_directories(SquirrelJME PUBLIC
 	"${PROJECT_BINARY_DIR}"
 	"${PROJECT_SOURCE_DIR}/include")
-
-target_link_libraries(SquirrelJME
-	PUBLIC SquirrelJMECore)
