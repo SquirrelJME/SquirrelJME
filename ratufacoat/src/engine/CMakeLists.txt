@@ -13,17 +13,14 @@ if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
 endif()
 
 # Define the library
-add_library(SquirrelJMEEngine STATIC
-		scaffold.c)
+add_library(SquirrelJMEEngine OBJECT
+		scaffold.c
+		$<TARGET_OBJECTS:SquirrelJMEEngineSpringCoat>)
 
 # Dynamically generated and standard includes
 target_include_directories(SquirrelJMEEngine PUBLIC
 	"${PROJECT_BINARY_DIR}"
 	"${PROJECT_SOURCE_DIR}/include")
-
-# Include all of our engines
-target_link_libraries(SquirrelJMEEngine
-	PUBLIC SquirrelJMEEngineSpringCoat)
 
 # Make this position independent so it can be linked into shared libraries
 set_property(TARGET SquirrelJMEEngine

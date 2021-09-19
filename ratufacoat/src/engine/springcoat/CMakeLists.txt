@@ -13,7 +13,7 @@ if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
 endif()
 
 # Declare base library
-add_library(SquirrelJMEEngineSpringCoat STATIC
+add_library(SquirrelJMEEngineSpringCoat OBJECT
 	springcoat.c)
 
 # Dynamically generated and standard includes

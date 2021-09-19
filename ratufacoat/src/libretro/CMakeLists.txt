@@ -31,7 +31,8 @@ add_library(squirreljme_libretro ${SQUIRRELJME_LIBRETRO_TYPE}
 	lrjoypad.c
 	lrnet.c
 	lrvfs.c
-	sys_libr.c)
+	sys_libr.c
+	$<TARGET_OBJECTS:SquirrelJMECore>)
 
 # Remove the "lib" prefix as it is not used by RetroArch
 set_target_properties(squirreljme_libretro PROPERTIES
@@ -49,10 +50,6 @@ target_include_directories(squirreljme_libretro PUBLIC
 	"${PROJECT_BINARY_DIR}"
 	"${PROJECT_SOURCE_DIR}/include"
 	"${PROJECT_SOURCE_DIR}/libretro")
-
-# Include the SquirrelJME Core as all of the JVM code is there
-target_link_libraries(squirreljme_libretro
-	PUBLIC SquirrelJMECore)
 
 # RetroArch must be built with position independent code for any kind of
 # library.

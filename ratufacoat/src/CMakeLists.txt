@@ -13,7 +13,7 @@ if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
 endif()
 
 # Base core library
-add_library(SquirrelJMECore STATIC
+add_library(SquirrelJMECore OBJECT
 	accelgfx.c
 	atomic.c
 	audio.c

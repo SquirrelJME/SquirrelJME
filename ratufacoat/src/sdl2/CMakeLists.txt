@@ -13,7 +13,8 @@ if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
 endif()
 
 add_executable(SquirrelJME
-	sys_stdc.c)
+	sys_stdc.c
+	$<TARGET_OBJECTS:SquirrelJMECore>)
 
 target_include_directories(SquirrelJME PUBLIC
 	"${PROJECT_BINARY_DIR}"

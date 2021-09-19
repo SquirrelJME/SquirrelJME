@@ -13,7 +13,7 @@ if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
 endif()
 
 # Define the library
-add_library(SquirrelJMEFormat STATIC
+add_library(SquirrelJMEFormat OBJECT
 	detect.c
 	libraries.c
 	library.c
