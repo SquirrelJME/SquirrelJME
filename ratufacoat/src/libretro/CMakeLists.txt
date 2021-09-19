@@ -7,6 +7,11 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: LibRetro CMake Layer, solely for IDE and quick testing purposes
 
+# Verbosity?
+if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
+	set(CMAKE_VERBOSE_MAKEFILE $ENV{CMAKE_VERBOSE_MAKEFILE})
+endif()
+
 # Is the RetroArch build dynamic or static?
 # Some targets rely on a shared library
 if(LIBRETRO_STATIC)

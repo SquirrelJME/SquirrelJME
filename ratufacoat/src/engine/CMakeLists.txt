@@ -7,6 +7,11 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Engine Base
 
+# Verbosity?
+if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
+	set(CMAKE_VERBOSE_MAKEFILE $ENV{CMAKE_VERBOSE_MAKEFILE})
+endif()
+
 # Define the library
 add_library(SquirrelJMEEngine STATIC
 		scaffold.c)

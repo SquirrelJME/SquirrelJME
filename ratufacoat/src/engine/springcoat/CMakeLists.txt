@@ -7,6 +7,11 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: SpringCoat Engine
 
+# Verbosity?
+if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
+	set(CMAKE_VERBOSE_MAKEFILE $ENV{CMAKE_VERBOSE_MAKEFILE})
+endif()
+
 # Declare base library
 add_library(SquirrelJMEEngineSpringCoat STATIC
 	springcoat.c)

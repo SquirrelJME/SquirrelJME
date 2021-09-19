@@ -7,6 +7,11 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Main project source code
 
+# Verbosity?
+if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
+	set(CMAKE_VERBOSE_MAKEFILE $ENV{CMAKE_VERBOSE_MAKEFILE})
+endif()
+
 # Base core library
 add_library(SquirrelJMECore STATIC
 	accelgfx.c

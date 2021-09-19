@@ -7,6 +7,11 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: SDL2 front-end to SquirrelJME
 
+# Verbosity?
+if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
+	set(CMAKE_VERBOSE_MAKEFILE $ENV{CMAKE_VERBOSE_MAKEFILE})
+endif()
+
 add_executable(SquirrelJME
 	sys_stdc.c)
 
