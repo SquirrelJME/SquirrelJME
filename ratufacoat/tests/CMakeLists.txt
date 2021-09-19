@@ -21,6 +21,13 @@ target_include_directories(SquirrelJMETests PUBLIC
 	"${CMAKE_CURRENT_BINARY_DIR}"		# Generated sources!
 	)
 
+# Link in core SquirrelJME, it is preferred for it to be static!
+# Mac OS does not support static here, it will give an error that says:
+# ld: library not found for -lcrt0.o
+if(NOT APPLE)
+	target_link_libraries(SquirrelJMETests -static)
+endif()
+
 # Auto-generate tests
 configure_file(blank.h.in prototype.h)
 configure_file(blank.h.in listing.h)
