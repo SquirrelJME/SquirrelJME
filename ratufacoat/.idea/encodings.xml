@@ -11,7 +11,11 @@
     <file url="file://$PROJECT_DIR$/include/corefont.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/cpu.h" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/include/debug.h" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/include/error.h" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/include/error.h" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/include/format/detect.h" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/include/format/library.h" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/include/format/pack.h" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/include/format/sqc.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/gpio.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/handles.h" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/include/ipnet.h" charset="ISO-8859-1" />
@@ -21,7 +25,7 @@
     <file url="file://$PROJECT_DIR$/include/oldstuff.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/opcode.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/sjmecon.h" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/include/sjmerc.h" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/include/sjmerc.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/sjmevdef.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/softmath.h" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/include/stringies.h" charset="ISO-8859-1" />
@@ -42,6 +46,11 @@
     <file url="file://$PROJECT_DIR$/src/cpu.c" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/debug.c" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/error.c" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/format/detect.c" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/format/library.c" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/format/pack.c" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/format/sqc.c" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/format/zip.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/gpio.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/handles.c" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/handles.cpp" charset="ISO-8859-1" />
@@ -84,6 +93,7 @@
     <file url="file://$PROJECT_DIR$/tests/testNothing.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/tests/testOpCodes.c" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/tests/testSkipped.c" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/tests/testSqcDetect.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/tests/testing.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/tests/tests.h" charset="UTF-8" />
   </component>

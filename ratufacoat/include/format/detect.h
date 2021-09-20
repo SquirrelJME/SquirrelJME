@@ -41,8 +41,26 @@ extern "C"
  * @return If this is a valid driver for the given data.
  * @since 2021/09/12
  */
-typedef sjme_jboolean (*sjme_formatDetectFunction)(void* data,
+typedef sjme_jboolean (*sjme_formatDetectFunction)(const void* data,
 	sjme_jint size, sjme_error* error);
+
+/**
+ * Runs detection on multiple drivers to see if the given block of data meets
+ * the criteria for that driver.
+ * 
+ * @param data The data block.
+ * @param size The size of the data block.
+ * @param outDriver The output driver, if one was found.
+ * @param choices The possible driver choices.
+ * @param offsetOfDetect The offset of the {@code sjme_formatDetectFunction}
+ * member. 
+ * @param error The resultant error.
+ * @return If a format was successfully detected or not.
+ * @since 2021/09/19
+ */
+sjme_jboolean sjme_detectFormat(const void* data, sjme_jint size,
+	const void** outDriver, const void (**choices), sjme_jint offsetOfDetect,
+	sjme_error* error);
 
 /**
  * Checks if the given magic number matches for a given block of data.
@@ -54,7 +72,7 @@ typedef sjme_jboolean (*sjme_formatDetectFunction)(void* data,
  * @return If this magic number was detected.
  * @since 2021/09/12
  */
-sjme_jboolean sjme_detectMagicNumber(void* data, sjme_jint size,
+sjme_jboolean sjme_detectMagicNumber(const void* data, sjme_jint size,
 	sjme_jint magic, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/

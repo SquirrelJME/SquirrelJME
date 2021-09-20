@@ -15,7 +15,7 @@
 /** The magic number for individual JAR libraries. */
 #define JAR_MAGIC_NUMBER UINT32_C(0x00456570)
 
-/* ------------------------------- LIBRARIES ------------------------------- */
+/* ---------------------------------- PACK --------------------------------- */
 
 /**
  * Detects pack files.
@@ -26,15 +26,15 @@
  * @return If detected or not.
  * @since 2021/09/12
  */
-static sjme_jboolean sjme_detectPack(void* data, sjme_jint size,
+static sjme_jboolean sjme_detectSqcPack(const void* data, sjme_jint size,
 	sjme_error* error)
 {
 	return sjme_detectMagicNumber(data, size, PACK_MAGIC_NUMBER, error);
 }
 
-const sjme_librariesDriver sjme_librariesSqcDriver =
+const sjme_packDriver sjme_packSqcDriver =
 {
-	.detect = sjme_detectPack,
+	.detect = sjme_detectSqcPack,
 };
 
 /* -------------------------------- LIBRARY -------------------------------- */
@@ -48,7 +48,7 @@ const sjme_librariesDriver sjme_librariesSqcDriver =
  * @return If detected or not.
  * @since 2021/09/12
  */
-static sjme_jboolean sjme_detectLib(void* data, sjme_jint size,
+static sjme_jboolean sjme_detectSqcLib(const void* data, sjme_jint size,
 	sjme_error* error)
 {
 	return sjme_detectMagicNumber(data, size, JAR_MAGIC_NUMBER, error);
@@ -56,5 +56,5 @@ static sjme_jboolean sjme_detectLib(void* data, sjme_jint size,
 
 const sjme_libraryDriver sjme_librarySqcDriver =
 {
-	.detect = sjme_detectLib,
+	.detect = sjme_detectSqcLib,
 };

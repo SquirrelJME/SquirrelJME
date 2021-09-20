@@ -43,6 +43,26 @@ typedef struct sjme_libraryDriver
 	sjme_formatDetectFunction detect;
 } sjme_libraryDriver;
 
+/**
+ * Instance of a library, is internally kept state.
+ * 
+ * @since 2021/09/19
+ */ 
+typedef struct sjme_libraryInstance sjme_libraryInstance;
+
+/**
+ * Opens the given library and makes an instance of it.
+ * 
+ * @param outInstance The output instance for returning.
+ * @param data The data block.
+ * @param size The size of the data block.
+ * @param error The error state on open.
+ * @return If this was successful or not.
+ * @since 2021/09/19
+ */
+sjme_jboolean sjme_libraryOpen(sjme_libraryInstance** outInstance,
+	const void* data, sjme_jint size, sjme_error* error);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

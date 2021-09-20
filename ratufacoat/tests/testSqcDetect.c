@@ -7,13 +7,32 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "format/libraries.h"
+#include "tests.h"
+#include "format/pack.h"
 #include "format/sqc.h"
+#include "builtin.h"
 
-/** The libraries drivers which are available for usage. */
-const sjme_librariesDriver* const sjme_librariesDrivers[] =
+/**
+ * Tests that SQCs can be detected and opened.
+ * 
+ * @since 2021/09/19
+ */
+SJME_TEST_PROTOTYPE(testSqcDetect)
 {
-	&sjme_librariesSqcDriver,
+	sjme_packInstance* pack;
 	
-	NULL
-};
+	/* Needs built-in ROM to work properly. */
+	if (sjme_builtInRomSize <= 0)
+		return SKIP_TEST();
+	
+	/* Try opening the pack file. */
+	if (!sjme_packOpen(&pack, sjme_builtInRomData, sjme_builtInRomSize,
+		NULL))
+		return FAIL_TEST(1);
+	
+	/* Wrong driver? */
+	if (pack->driver != &sjme_packSqcDriver)
+		return FAIL_TEST(2);
+	
+	return PASS_TEST();
+}

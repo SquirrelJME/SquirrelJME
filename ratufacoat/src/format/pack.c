@@ -7,41 +7,33 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "format/detect.h"
-#include "format/library.h"
-#include "format/sqc.h"
-#include "format/zip.h"
 #include "debug.h"
+#include "format/pack.h"
+#include "format/sqc.h"
 
-struct sjme_libraryInstance
+/** The pack drivers which are available for usage. */
+const sjme_packDriver* const sjme_packDrivers[] =
 {
-	/** The driver used to interact with the library. */
-	const sjme_libraryDriver* driver;
-};
-
-/** The library drivers which are available for usage. */
-const sjme_libraryDriver* const sjme_libraryDrivers[] =
-{
-	&sjme_libraryZipDriver,
-	&sjme_librarySqcDriver,
+	&sjme_packSqcDriver,
 	
 	NULL
 };
 
-sjme_jboolean sjme_libraryOpen(sjme_libraryInstance** outInstance,
+sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
 	const void* data, sjme_jint size, sjme_error* error)
 {
-	const sjme_libraryDriver* tryDriver;
+	const sjme_packDriver* tryDriver;
 	
 	/* Try to detect the format using the common means. */
 	if (!sjme_detectFormat(data, size,
-		(const void**)&tryDriver, (const void**)sjme_libraryDrivers,
-		offsetof(sjme_libraryDriver, detect), error))
+		(const void**)&tryDriver, (const void**)sjme_packDrivers,
+		offsetof(sjme_packDriver, detect), error))
 	{
-		sjme_setError(error, SJME_ERROR_UNKNOWN_LIBRARY_FORMAT, 0);
+		sjme_setError(error, SJME_ERROR_UNKNOWN_PACK_FORMAT,
+			0);
 		
 		return sjme_false;
 	}
 	
-	sjme_todo("TODO -- sjme_libraryOpen()");
+	sjme_todo("TODO -- sjme_packOpen()");
 }

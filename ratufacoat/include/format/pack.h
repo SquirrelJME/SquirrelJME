@@ -13,8 +13,8 @@
  * @since 2021/09/12
  */
 
-#ifndef SQUIRRELJME_LIBRARIES_H
-#define SQUIRRELJME_LIBRARIES_H
+#ifndef SQUIRRELJME_PACK_H
+#define SQUIRRELJME_PACK_H
 
 #include "sjmerc.h"
 #include "error.h"
@@ -24,7 +24,7 @@
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_LIBRARIES_H
+#define SJME_CXX_SQUIRRELJME_PACK_H
 extern "C"
 {
 #endif /* #ifdef SJME_CXX_IS_EXTERNED */
@@ -37,21 +37,45 @@ extern "C"
  * 
  * @since 2021/09/12
  */
-typedef struct sjme_librariesDriver
+typedef struct sjme_packDriver
 {
 	/** Is this for the given libraries driver? */
 	sjme_formatDetectFunction detect;
-} sjme_librariesDriver;
+} sjme_packDriver;
+
+/**
+ * Instance of a libraries, is internally kept state.
+ * 
+ * @since 2021/09/19
+ */ 
+typedef struct sjme_packInstance
+{
+	/** The driver used to interact with the library. */
+	const sjme_packDriver* driver;
+} sjme_packInstance;
+
+/**
+ * Opens the given pack and makes an instance of it.
+ * 
+ * @param outInstance The output instance for returning.
+ * @param data The data block.
+ * @param size The size of the data block.
+ * @param error The error state on open.
+ * @return If this was successful or not.
+ * @since 2021/09/19
+ */
+sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance, const void* data,
+	sjme_jint size, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_LIBRARIES_H
+#ifdef SJME_CXX_SQUIRRELJME_PACK_H
 }
-#undef SJME_CXX_SQUIRRELJME_LIBRARIES_H
+#undef SJME_CXX_SQUIRRELJME_PACK_H
 #undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_LIBRARIES_H */
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_PACK_H */
 #endif /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_LIBRARIES_H */
+#endif /* SQUIRRELJME_PACK_H */

@@ -17,7 +17,7 @@
 #ifndef SQUIRRELJME_SQC_H
 #define SQUIRRELJME_SQC_H
 
-#include "format/libraries.h"
+#include "format/pack.h"
 #include "format/library.h"
 
 /* Anti-C++. */
@@ -33,7 +33,7 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /** The SQC driver for multiple libraries. */
-extern const sjme_librariesDriver sjme_librariesSqcDriver;
+extern const sjme_packDriver sjme_packSqcDriver;
 
 /** The SQC driver for a single library. */
 extern const sjme_libraryDriver sjme_librarySqcDriver;

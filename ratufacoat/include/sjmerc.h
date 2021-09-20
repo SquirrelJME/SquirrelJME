@@ -388,6 +388,17 @@ typedef struct sjme_nativefilename sjme_nativefilename;
  */
 typedef struct sjme_nativefile sjme_nativefile;
 
+/**
+ * Reverses the operation of {@code offsetof} to access a member.
+ * 
+ * @param type The expected member type.
+ * @param offset The offset to the member.
+ * @param val The value to read from.
+ * @since 2021/09/19 
+ */
+#define sjme_unoffsetof(type, offset, val) \
+	(*((type*)((uintptr_t)(val) + (uintptr_t)(offset))))
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

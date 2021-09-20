@@ -147,6 +147,15 @@ typedef enum sjme_errorCode
 	
 	/** Invalid boot RAM. */
 	SJME_ERROR_INVALID_BOOTRAM,
+	
+	/** Unknown library. */
+	SJME_ERROR_UNKNOWN_LIBRARY_FORMAT,
+	
+	/** Driver not found. */
+	SJME_ERROR_DRIVER_NOT_FOUND,
+	
+	/** Unknown libraries format. */
+	SJME_ERROR_UNKNOWN_PACK_FORMAT,
 } sjme_errorCode; 
 
 /** This represents an error. */

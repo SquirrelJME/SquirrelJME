@@ -19,7 +19,7 @@
  * @return If detected or not.
  * @since 2021/09/12
  */
-static sjme_jboolean sjme_detectZip(void* data, sjme_jint size,
+static sjme_jboolean sjme_detectZip(const void* data, sjme_jint size,
 	sjme_error* error)
 {
 	sjme_todo("sjme_detectZip");
