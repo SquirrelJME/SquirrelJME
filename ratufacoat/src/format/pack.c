@@ -31,7 +31,6 @@ sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
 	{
 		sjme_setError(error, SJME_ERROR_UNKNOWN_PACK_FORMAT,
 			0);
-		
 		return sjme_false;
 	}
 	

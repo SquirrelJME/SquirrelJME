@@ -27,7 +27,7 @@ SJME_TEST_PROTOTYPE(testSqcDetect)
 	
 	/* Try opening the pack file. */
 	if (!sjme_packOpen(&pack, sjme_builtInRomData, sjme_builtInRomSize,
-		NULL))
+		&shim->error))
 		return FAIL_TEST(1);
 	
 	/* Wrong driver? */

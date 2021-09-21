@@ -65,6 +65,9 @@ static const sjme_jvmErrorString sjme_jvmErrorStrings[] =
 	{SJME_ERROR_INVALID_HANDLE, "Invalid memory handle"},
 	{SJME_ERROR_INVALID_DATATYPE, "Invalid data type"},
 	{SJME_ERROR_INVALID_BOOTRAM, "Invalid BootRAM"},
+	{SJME_ERROR_UNKNOWN_LIBRARY_FORMAT, "Unknown library format"},
+	{SJME_ERROR_DRIVER_NOT_FOUND, "Driver not found"},
+	{SJME_ERROR_UNKNOWN_PACK_FORMAT, "Unknown pack format"},
 	
 	{SJME_ERROR_NONE, NULL}
 };

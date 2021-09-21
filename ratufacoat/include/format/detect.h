@@ -67,13 +67,13 @@ sjme_jboolean sjme_detectFormat(const void* data, sjme_jint size,
  * 
  * @param data The data pointer.
  * @param size The length of the pointer.
- * @param magic The magic number to detect.
+ * @param wantMagic The magic number to detect.
  * @param error The error state.
  * @return If this magic number was detected.
  * @since 2021/09/12
  */
 sjme_jboolean sjme_detectMagicNumber(const void* data, sjme_jint size,
-	sjme_jint magic, sjme_error* error);
+	sjme_jint wantMagic, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

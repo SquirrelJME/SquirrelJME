@@ -9,10 +9,13 @@
 
 #include "format/detect.h"
 #include "debug.h"
+#include "memops.h"
 
 sjme_jboolean sjme_detectMagicNumber(const void* data, sjme_jint size,
-	sjme_jint magic, sjme_error* error)
+	sjme_jint wantMagic, sjme_error* error)
 {
+	sjme_jint val;
+	
 	/* Check parameters first. */
 	if (data == NULL || size < 0)
 	{
@@ -20,7 +23,19 @@ sjme_jboolean sjme_detectMagicNumber(const void* data, sjme_jint size,
 		return sjme_false;
 	}
 	
-	sjme_todo("sjme_detectMagicNumber()");
+	/* Too small to read from? */
+	if (size < 4)
+	{
+		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, size);
+		return sjme_false;
+	}
+	
+	/* Is this the magic for this format? */
+	val = sjme_memReadBigInt(data, 0);
+	if (val == wantMagic)
+		return sjme_true;
+	
+	return sjme_false;
 }
 
 sjme_jboolean sjme_detectFormat(const void* data, sjme_jint size,

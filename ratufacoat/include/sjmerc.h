@@ -399,6 +399,18 @@ typedef struct sjme_nativefile sjme_nativefile;
 #define sjme_unoffsetof(type, offset, val) \
 	(*((type*)((uintptr_t)(val) + (uintptr_t)(offset))))
 
+/** Inlining for Visual Studio. */
+#if defined(_MSC_VER)
+	/** Inlined function. */
+	#define inline __inline
+#endif
+
+/** Force inlining for GCC, but not under Mingw-w64. */
+#if defined(__GNUC__) && !defined(__forceinline)
+	/** Force inlining of function. */
+	#define __forceinline __attribute__((always_inline))
+#endif
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
