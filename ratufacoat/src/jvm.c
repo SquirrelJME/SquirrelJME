@@ -105,12 +105,12 @@ sjme_returnFail sjme_jvmDestroy(sjme_jvm* jvm, sjme_error* error)
 			
 			/* Free CPU state. */
 			if (oldcpu != &jvm->threads[i].state)
-				sjme_free(oldcpu);
+				sjme_free(oldcpu, NULL);
 		}
 	}
 	
 	/* Delete major JVM data areas. */
-	sjme_free(jvm);
+	sjme_free(jvm, NULL);
 	
 	/* Destroyed okay. */
 	return SJME_RETURN_SUCCESS;
@@ -203,10 +203,10 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 	}
 	
 	/* Allocate VM state. */
-	rv = sjme_malloc(sizeof(*rv));
+	rv = sjme_malloc(sizeof(*rv), NULL);
 	if (rv == NULL)
 	{
-		sjme_free(rv);
+		sjme_free(rv, NULL);
 		
 		sjme_setError(error, SJME_ERROR_NO_MEMORY, sizeof(*rv));
 		return SJME_RETURN_FAIL;
@@ -215,7 +215,7 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 	/* Initialize handle storage. */
 	if (sjme_memHandlesInit(&rv->handles, error))
 	{
-		sjme_free(rv);
+		sjme_free(rv, NULL);
 		
 		sjme_setError(error, SJME_ERROR_NO_MEMORY, sizeof(*rv));
 		return SJME_RETURN_FAIL;
@@ -307,7 +307,7 @@ sjme_returnFail sjme_jvmNew(sjme_jvm** outJvm, sjme_jvmoptions* options,
 		
 		/* Cleanup. */
 		sjme_memHandlesDestroy(rv->handles, error);
-		sjme_free(rv);
+		sjme_free(rv, NULL);
 		
 		if (!sjme_hasError(error));
 			sjme_setError(error, SJME_ERROR_INVALID_BOOTRAM, 0);

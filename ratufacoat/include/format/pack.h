@@ -32,6 +32,8 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+typedef struct sjme_packInstance sjme_packInstance;
+
 /**
  * This represents a library driver that is available for usage.
  * 
@@ -41,6 +43,15 @@ typedef struct sjme_packDriver
 {
 	/** Is this for the given libraries driver? */
 	sjme_formatDetectFunction detect;
+	
+	/**
+	 * Initializes the given instance.
+	 * 
+	 * @param instance The instance pointer. 
+	 * @return If this was successful or not.
+	 * @since 2021/09/22
+	 */
+	sjme_jboolean (*initInstance)(sjme_packInstance* instance); 
 } sjme_packDriver;
 
 /**
@@ -48,11 +59,17 @@ typedef struct sjme_packDriver
  * 
  * @since 2021/09/19
  */ 
-typedef struct sjme_packInstance
+struct sjme_packInstance
 {
 	/** The driver used to interact with the library. */
 	const sjme_packDriver* driver;
-} sjme_packInstance;
+	
+	/** The data block. */
+	const void* data;
+	
+	/** The size of the data block. */
+	sjme_jint size;
+};
 
 /**
  * Opens the given pack and makes an instance of it.

@@ -23,14 +23,25 @@
 
 #include "sjmerc.h"
 #include "memory.h"
+#include "error.h"
 
-void* sjme_malloc(sjme_jint size)
+void* sjme_malloc(sjme_jint size, sjme_error* error)
 {
 	void* rv;
 	
-	/* These will never allocate. */
-	if (size <= 0)
+	/* Considered an error. */
+	if (size < 0)
+	{
+		sjme_setError(error, SJME_ERROR_NEGATIVE_SIZE, size);
 		return NULL;
+	}
+	
+	/* These will never allocate. */
+	if (size == 0)
+	{
+		sjme_setError(error, SJME_ERROR_ZERO_MEMORY_ALLOCATION, size);
+		return NULL;
+	}
 	
 	/* Round size and include extra 4-bytes for size storage. */
 	size = ((size + SJME_JINT_C(3)) & (~SJME_JINT_C(3))) +
@@ -38,7 +49,10 @@ void* sjme_malloc(sjme_jint size)
 	
 	/* Exceeds maximum permitted allocation size? */
 	if (sizeof(sjme_jint) > sizeof(size_t) && size > (sjme_jint)SIZE_MAX)
+	{
+		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, size);
 		return NULL;
+	}
 	
 #if defined(__palmos__)
 	/* Palm OS, use glue to allow greater than 64K. */
@@ -50,7 +64,10 @@ void* sjme_malloc(sjme_jint size)
 
 	/* Did not allocate? */
 	if (rv == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NO_MEMORY, size);
 		return NULL;
+	}
 		
 #if defined(__palmos__)
 	/* Clear memory on Palm OS. */
@@ -67,7 +84,7 @@ void* sjme_malloc(sjme_jint size)
 	return SJME_POINTER_OFFSET_LONG(rv, 4);
 }
 
-void* sjme_realloc(void* ptr, sjme_jint size)
+void* sjme_realloc(void* ptr, sjme_jint size, sjme_error* error)
 {
 	void* rv;
 	sjme_jint oldSize;
@@ -77,15 +94,22 @@ void* sjme_realloc(void* ptr, sjme_jint size)
 	{
 		/* Free pointer? */
 		if (ptr != NULL)
-			sjme_free(ptr);
+			sjme_free(ptr, NULL);
+		
+		/* Considered an error. */
+		if (size < 0)
+			sjme_setError(error, SJME_ERROR_NEGATIVE_SIZE, size);
 		
 		return NULL;
 	}
 	
 	/* Allocate new pointer, keep old pointer if this failed. */
-	rv = sjme_malloc(size);
+	rv = sjme_malloc(size, NULL);
 	if (rv == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NO_MEMORY, size);
 		return NULL;
+	}
 	
 	/* Copy old data over? */
 	if (ptr != NULL)
@@ -97,20 +121,23 @@ void* sjme_realloc(void* ptr, sjme_jint size)
 		memmove(rv, ptr, (size > oldSize ? oldSize : size));
 		
 		/* Free the old pointer. */
-		sjme_free(ptr);
+		sjme_free(ptr, NULL);
 	}
 	
 	/* Return the new pointer. */
 	return rv;
 }
 
-void sjme_free(void* p)
+void sjme_free(void* p, sjme_error* error)
 {
 	void* baseP;
 	
 	/* Ignore null pointers. */
 	if (p == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
 		return;
+	}
 	
 	/* Base pointer which is size shifted. */
 	baseP = SJME_POINTER_OFFSET_LONG(p, -4);

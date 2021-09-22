@@ -18,6 +18,7 @@
 
 #include "sjmerc.h"
 #include "datatype.h"
+#include "error.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -35,26 +36,29 @@ extern "C"
  * Allocates the given number of bytes.
  *
  * @param size The number of bytes to allocate or @c NULL if that failed.
+ * @param error The error flag.
  * @since 2019/06/07
  */
-void* sjme_malloc(sjme_jint size);
+void* sjme_malloc(sjme_jint size, sjme_error* error);
 
 /**
  * Re-allocates the given pointer.
  *
  * @param ptr The pointer to change in size.
  * @param size The number of bytes to allocate or @c NULL if that failed.
+ * @param error The error flag.
  * @since 2021/03/08
  */
-void* sjme_realloc(void* ptr, sjme_jint size);
+void* sjme_realloc(void* ptr, sjme_jint size, sjme_error* error);
 
 /**
  * Frees the given pointer.
  *
  * @param p The pointer to free.
+ * @param error The error flag.
  * @since 2019/06/07
  */
-void sjme_free(void* p);
+void sjme_free(void* p, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

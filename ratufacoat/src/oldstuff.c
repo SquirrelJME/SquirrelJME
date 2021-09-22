@@ -41,7 +41,7 @@ sjme_vmem* sjme_vmmnew(sjme_error* error)
 	sjme_vmem* rv;
 	
 	/* Try to allocate space. */
-	rv = sjme_malloc(sizeof(*rv));
+	rv = sjme_malloc(sizeof(*rv), NULL);
 	if (rv == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NO_MEMORY, sizeof(*rv));
@@ -73,14 +73,14 @@ sjme_vmemmap* sjme_vmmmap(sjme_vmem* vmem, sjme_jint at, void* ptr,
 	}
 	
 	/* Allocate return value. */
-	rv = sjme_malloc(sizeof(*rv));
-	newmaps = sjme_malloc(sizeof(*newmaps) * (vmem->count + 1));
+	rv = sjme_malloc(sizeof(*rv), NULL);
+	newmaps = sjme_malloc(sizeof(*newmaps) * (vmem->count + 1), NULL);
 	if (rv == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NO_MEMORY, sizeof(*rv));
-		
-		sjme_free(rv);
-		sjme_free(newmaps);
+
+		sjme_free(rv, NULL);
+		sjme_free(newmaps, NULL);
 		
 		return NULL;
 	}
@@ -99,7 +99,7 @@ sjme_vmemmap* sjme_vmmmap(sjme_vmem* vmem, sjme_jint at, void* ptr,
 	vmem->nextaddr = (vmem->nextaddr + size + SJME_VIRTUAL_MEM_MASK) &
 		(~SJME_VIRTUAL_MEM_MASK);
 	vmem->count = vmem->count + 1;
-	sjme_free(vmem->maps);
+	sjme_free(vmem->maps, NULL);
 	vmem->maps = newmaps;
 	
 	return rv;

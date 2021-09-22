@@ -496,7 +496,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 			case SJME_OP_INVOKE:
 				{
 					/* Allocate to store old CPU state. */
-					oldcpu = sjme_malloc(sizeof(*oldcpu));
+					oldcpu = sjme_malloc(sizeof(*oldcpu), NULL);
 					if (oldcpu == NULL)
 					{
 						sjme_setError(error, SJME_ERROR_NO_MEMORY,
@@ -634,7 +634,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					nextpc = cpu->state.pc;
 					
 					/* Free the parent as it is not needed. */
-					sjme_free(oldcpu);
+					sjme_free(oldcpu, NULL);
 					
 #if defined(SJME_DEBUG)
 					fprintf(stderr, "Return: %d/%08x\n",
@@ -728,7 +728,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 					else
 					{
 						/* Allocate to store old CPU state. */
-						oldcpu = sjme_malloc(sizeof(*oldcpu));
+						oldcpu = sjme_malloc(sizeof(*oldcpu), NULL);
 						if (oldcpu == NULL)
 						{
 							sjme_setError(error, SJME_ERROR_NO_MEMORY,

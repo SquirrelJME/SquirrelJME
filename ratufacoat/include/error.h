@@ -156,6 +156,12 @@ typedef enum sjme_errorCode
 	
 	/** Unknown libraries format. */
 	SJME_ERROR_UNKNOWN_PACK_FORMAT,
+	
+	/** Zero memory allocation. */
+	SJME_ERROR_ZERO_MEMORY_ALLOCATION,
+	
+	/** Could not initialize driver. */
+	SJME_ERROR_BAD_DRIVER_INIT,
 } sjme_errorCode; 
 
 /** This represents an error. */

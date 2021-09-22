@@ -84,7 +84,7 @@ sjme_returnFail sjme_memHandlesInit(sjme_memHandles** out, sjme_error* error)
 	}
 	
 	/* Allocate, check if it was actually done. */
-	rv = sjme_malloc(sizeof(*rv));
+	rv = sjme_malloc(sizeof(*rv), NULL);
 	if (rv == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NO_MEMORY, sizeof(*rv));
@@ -96,7 +96,7 @@ sjme_returnFail sjme_memHandlesInit(sjme_memHandles** out, sjme_error* error)
 	seed.lo = SJME_POINTER_TO_JINT((void*)out);
 	if (sjme_randomSeed(&rv->random, seed, error))
 	{
-		sjme_free(rv);
+		sjme_free(rv, NULL);
 		
 		if (!sjme_hasError(error))
 			sjme_setError(error, SJME_ERROR_COULD_NOT_SEED,
@@ -105,10 +105,10 @@ sjme_returnFail sjme_memHandlesInit(sjme_memHandles** out, sjme_error* error)
 	}
 	
 	/* Allocate storage for all handles. */
-	handles = sjme_malloc(sizeof(sjme_memHandle*) * SJME_INIT_COUNT);
+	handles = sjme_malloc(sizeof(sjme_memHandle*) * SJME_INIT_COUNT, NULL);
 	if (handles == NULL)
 	{
-		sjme_free(rv);
+		sjme_free(rv, NULL);
 		
 		sjme_setError(error, SJME_ERROR_NO_MEMORY,
 			sizeof(sjme_memHandle*) * SJME_INIT_COUNT);
@@ -150,11 +150,11 @@ sjme_returnFail sjme_memHandlesDestroy(sjme_memHandles* handles,
 			}
 	
 	/* Clear handles array. */
-	sjme_free(handles->handles);
+	sjme_free(handles->handles, NULL);
 	
 	/* Wipe and then clear handles. */
 	memset(handles, 0, sizeof(*handles));
-	sjme_free(handles);
+	sjme_free(handles, NULL);
 	
 	/* Success! */
 	return SJME_RETURN_SUCCESS;
@@ -215,7 +215,7 @@ sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 	}
 	
 	/* Attempt to allocate the handle. */
-	rv = sjme_malloc(sizeof(*rv) + size);
+	rv = sjme_malloc(sizeof(*rv) + size, NULL);
 	if (rv == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NO_MEMORY, sizeof(*rv));
@@ -276,11 +276,11 @@ sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 		if (trySlot == handles->numHandles)
 		{
 			/* Allocate more space to store the handles. */
-			newHandles = sjme_realloc(handles->handles, 
-				sizeof(sjme_memHandle*) * (handles->numHandles << 1));
+			newHandles = sjme_realloc(handles->handles,
+				sizeof(sjme_memHandle*) * (handles->numHandles << 1), NULL);
 			if (newHandles == NULL)
 			{
-				sjme_free(rv);
+				sjme_free(rv, NULL);
 				
 				sjme_setError(error, SJME_ERROR_NO_MEMORY,
 					sizeof(sjme_memHandle*) *
@@ -329,7 +329,7 @@ sjme_returnFail sjme_memHandleNew(sjme_memHandles* handles,
 			/* Grab another ID. */
 			if (sjme_randomNextInt(&handles->random, &randId, error))
 			{
-				sjme_free(rv);
+				sjme_free(rv, NULL);
 				
 				sjme_setError(error, SJME_ERROR_COULD_NOT_SEED, tryId);
 				return SJME_RETURN_FAIL;
@@ -396,7 +396,7 @@ sjme_returnFail sjme_memHandleDelete(sjme_memHandles* handles,
 	
 	/* Destroy the handle data. */
 	memset(handle, 0, sizeof(*handle) + handle->length);
-	sjme_free(handle);
+	sjme_free(handle, NULL);
 	
 	return SJME_RETURN_SUCCESS;
 }
