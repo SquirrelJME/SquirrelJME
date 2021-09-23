@@ -19,7 +19,13 @@ out/
 .idea/uiDesigner.xml
 .idea/usage-statistics.xml
 .idea/workspace.xml
+.idea/modules/
+.idea/shelf/
+ratufacoat/.idea/discord.xml
+ratufacoat/.idea/gradle.xml
 ratufacoat/.idea/workspace.xml
+ratufacoat/.idea/modules/
+ratufacoat/.idea/shelf/
 file-*
 
 # IntelliJ Dependency Matrix
