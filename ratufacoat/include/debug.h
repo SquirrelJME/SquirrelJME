@@ -33,12 +33,26 @@ extern "C"
 /**
  * Indicates a To-Do and then terminates the program.
  * 
+ * @param file The file printing from.
+ * @param line The line printing from.
+ * @param func The function printing from.
  * @param message The @c printf style message.
  * @param ... Any @c printf style arguments.
  * @return Never returns.
  * @since 2021/02/28 
  */
-sjme_returnNever sjme_todo(const char* message, ...);
+sjme_returnNever sjme_todoR(const char* file, int line,
+	const char* func, const char* message, ...);
+
+/**
+ * Indicates a To-Do and then terminates the program.
+ * 
+ * @param message The @c printf style message.
+ * @param ... Any @c printf style arguments.
+ * @return Never returns.
+ * @since 2021/02/28 
+ */
+#define sjme_todo(...) sjme_todoR(__FILE__, __LINE__, __func__, __VA_ARGS__)
 
 /*--------------------------------------------------------------------------*/
 

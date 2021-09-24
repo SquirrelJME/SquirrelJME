@@ -15,7 +15,8 @@
 /** Debug buffer size for messages. */
 #define DEBUG_BUF 512
 
-sjme_returnNever sjme_todo(const char* message, ...)
+sjme_returnNever sjme_todoR(const char* file, int line,
+	const char* func, const char* message, ...)
 {
 	char buf[DEBUG_BUF];
 	va_list args;
@@ -26,7 +27,8 @@ sjme_returnNever sjme_todo(const char* message, ...)
 	va_end(args);
 	
 	/* Print output message. */
-	fprintf(stderr, "TD: TODO Hit: %s\n", buf);
+	fprintf(stderr, "TD: TODO Hit (%s:%d in %s()): %s\n",
+		file, line, func, buf);
 	
 	/* Exit and stop. */
 	exit(EXIT_FAILURE);

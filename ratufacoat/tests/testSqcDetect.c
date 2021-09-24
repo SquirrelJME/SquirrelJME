@@ -11,6 +11,7 @@
 #include "format/pack.h"
 #include "format/sqc.h"
 #include "builtin.h"
+#include "debug.h"
 
 /**
  * Tests that SQCs can be detected and opened.

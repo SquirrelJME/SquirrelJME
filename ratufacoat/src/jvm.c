@@ -22,6 +22,7 @@
 #include "memory.h"
 #include "debug.h"
 #include "handles.h"
+#include "debug.h"
 
 struct sjme_jvm
 {
