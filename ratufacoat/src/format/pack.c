@@ -50,9 +50,12 @@ sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
 	if (instance->driver->initInstance == NULL ||
 		!instance->driver->initInstance(instance))
 	{
+		/* Before we free, set this away. */
+		sjme_setError(error, SJME_ERROR_BAD_DRIVER_INIT,
+			instance->driver->initInstance == NULL);
+			
 		sjme_free(instance, error);
 		
-		sjme_setError(error, SJME_ERROR_BAD_DRIVER_INIT, 0);
 		return sjme_false;
 	}
 	

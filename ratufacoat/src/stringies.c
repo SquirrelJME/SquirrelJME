@@ -119,7 +119,7 @@ void sjme_describeJvmError(sjme_error* error,
 	
 	/* Build error string out. */
 	readLen = snprintf(destMessage, *destLen,
-		"JVM Error: %s (%d) %d/%x",
+		"JVM Error: %s (%d) %d/0x%x",
 		stringy->string,
 		error->code,
 		error->value,

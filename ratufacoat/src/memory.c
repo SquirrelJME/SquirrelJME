@@ -131,6 +131,7 @@ void* sjme_realloc(void* ptr, sjme_jint size, sjme_error* error)
 void sjme_free(void* p, sjme_error* error)
 {
 	void* baseP;
+	sjme_jint size;
 	
 	/* Ignore null pointers. */
 	if (p == NULL)
@@ -141,6 +142,10 @@ void sjme_free(void* p, sjme_error* error)
 	
 	/* Base pointer which is size shifted. */
 	baseP = SJME_POINTER_OFFSET_LONG(p, -4);
+	size = *((sjme_jint*)(baseP));
+	
+	/* Wipe memory that was here. */
+	memset(baseP, 0xBA, size);
 	
 #if defined(__palmos__)
 	/* Use Palm OS free. */
