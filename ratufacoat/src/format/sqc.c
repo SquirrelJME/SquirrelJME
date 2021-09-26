@@ -8,12 +8,15 @@
 // -------------------------------------------------------------------------*/
 
 #include "format/sqc.h"
+#include "debug.h"
 
 /** The magic number for pack libraries. */
 #define PACK_MAGIC_NUMBER UINT32_C(0x58455223)
 
 /** The magic number for individual JAR libraries. */
 #define JAR_MAGIC_NUMBER UINT32_C(0x00456570)
+
+/* --------------------------------- COMMON -------------------------------- */
 
 /* ---------------------------------- PACK --------------------------------- */
 
@@ -32,9 +35,15 @@ static sjme_jboolean sjme_detectSqcPack(const void* data, sjme_jint size,
 	return sjme_detectMagicNumber(data, size, PACK_MAGIC_NUMBER, error);
 }
 
+static sjme_jboolean sjme_initSqcPackInstance(sjme_packInstance* instance)
+{
+	sjme_todo("Init pack");
+}
+
 const sjme_packDriver sjme_packSqcDriver =
 {
 	.detect = sjme_detectSqcPack,
+	.initInstance = sjme_initSqcPackInstance,
 };
 
 /* -------------------------------- LIBRARY -------------------------------- */

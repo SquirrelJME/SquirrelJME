@@ -69,6 +69,9 @@ struct sjme_packInstance
 	
 	/** The size of the data block. */
 	sjme_jint size;
+	
+	/** Instance state for the current driver. */
+	void* state;
 };
 
 /**
