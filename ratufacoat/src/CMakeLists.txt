@@ -74,6 +74,5 @@ add_subdirectory(lib)
 add_subdirectory(engine)
 add_subdirectory(format)
 
-# SDL2 and RetroArch Front-Ends
-add_subdirectory(sdl2)
-add_subdirectory(libretro)
+# Front ends
+add_subdirectory(frontend)

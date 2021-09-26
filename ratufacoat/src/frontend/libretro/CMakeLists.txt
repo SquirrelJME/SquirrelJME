@@ -5,7 +5,7 @@
 # SquirrelJME is under the GNU General Public License v3+, or later.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: LibRetro CMake Layer, solely for IDE and quick testing purposes
+# DESCRIPTION: LibRetro CMake Layer!
 
 # Verbosity?
 if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
