@@ -20,6 +20,8 @@
     <file url="file://$PROJECT_DIR$/include/handles.h" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/include/ipnet.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/jvm.h" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/include/libretro/libretro.h" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/include/libretro/libretro.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/memops.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/memory.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/native.h" charset="ISO-8859-1" />
@@ -36,7 +38,6 @@
     <file url="file://$PROJECT_DIR$/include/todo.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/vfs.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/video.h" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/libretro/libretro.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/CMakeLists.txt" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/accelgfx.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/audio.c" charset="ISO-8859-1" />
