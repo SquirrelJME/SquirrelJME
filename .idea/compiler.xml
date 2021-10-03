@@ -7,6 +7,10 @@
       <module name="squirreljme.main" target="1.7" />
       <module name="squirreljme.modules.all-vms.main" target="1.7" />
       <module name="squirreljme.modules.all-vms.test" target="1.7" />
+      <module name="squirreljme.modules.aot-springcoat.main" target="1.7" />
+      <module name="squirreljme.modules.aot-springcoat.test" target="1.7" />
+      <module name="squirreljme.modules.aot-summercoat-base.main" target="1.7" />
+      <module name="squirreljme.modules.aot-summercoat-base.test" target="1.7" />
       <module name="squirreljme.modules.build.main" target="1.7" />
       <module name="squirreljme.modules.build.test" target="1.7" />
       <module name="squirreljme.modules.cldc-compact.testFixtures" target="1.7" />

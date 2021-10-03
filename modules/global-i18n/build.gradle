@@ -1,0 +1,30 @@
+// ---------------------------------------------------------------------------
+// SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the GNU General Public License v3+, or later.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+
+description = "This contains support for internationalization."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "ML"
+	swmType = JavaMEMidletType.API
+	swmName = "Mobile Internationalization API"
+	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("microedition.global;;")
+	tags += "j2me"
+	tags += "i18n"
+	tags += "jsr238"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+}
