@@ -63,6 +63,10 @@ foreach(SQUIRRELJME_TEST_SOURCE ${SQUIRRELJME_TEST_SOURCES})
 	set_property(TEST ${SQUIRRELJME_TEST_SOURCE} PROPERTY SKIP_RETURN_CODE 42)
 	set_tests_properties(${SQUIRRELJME_TEST_SOURCE} PROPERTIES SKIP_RETURN_CODE 42)
 
+	# Test timeout (to prevent infinite loops)
+	set_property(TEST ${SQUIRRELJME_TEST_SOURCE} PROPERTY TIMEOUT 180)
+	set_tests_properties(${SQUIRRELJME_TEST_SOURCE} PROPERTIES TIMEOUT 180)
+
 	# Add test to the generated sources, so that we need not manually store
 	# every test we know about
 	file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/prototype.h"
