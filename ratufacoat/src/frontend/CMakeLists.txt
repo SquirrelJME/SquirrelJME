@@ -10,3 +10,10 @@
 # SDL2 and RetroArch Front-Ends
 add_subdirectory(sdl2)
 add_subdirectory(libretro)
+
+# Universal Windows Platform
+if(MSVC AND NOT ${CMAKE_VERSION} VERSION_LESS "3.8")
+	add_subdirectory(uwp)
+else()
+	message("UWP is only supported with MSVC Compilers and CMake 3.8+!")
+endif()

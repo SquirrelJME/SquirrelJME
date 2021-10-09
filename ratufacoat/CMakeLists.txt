@@ -62,13 +62,13 @@ message("Version ID: ${SQUIRRELJME_VERSION_ID}")
 if(${CMAKE_VERSION} VERSION_LESS "3.12")
 	project(SquirrelJME
 		VERSION ${SQUIRRELJME_VERSION}
-		LANGUAGES C)
+		LANGUAGES C CXX)
 else()
 	project(SquirrelJME
 		VERSION ${SQUIRRELJME_VERSION}
 		DESCRIPTION "SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things devices."
 		HOMEPAGE_URL https://squirreljme.cc/
-		LANGUAGES C)
+		LANGUAGES C CXX)
 endif()
 
 # To Emily and Near...

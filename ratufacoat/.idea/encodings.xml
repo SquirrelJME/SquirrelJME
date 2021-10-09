@@ -21,7 +21,6 @@
     <file url="file://$PROJECT_DIR$/include/ipnet.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/jvm.h" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/include/libretro/libretro.h" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/include/libretro/libretro.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/memops.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/memory.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/native.h" charset="ISO-8859-1" />
@@ -66,6 +65,7 @@
     <file url="file://$PROJECT_DIR$/src/frontend/libretro/sys_libr.c" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/frontend/sdl2/CMakeLists.txt" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/frontend/sdl2/sys_stdc.c" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/frontend/uwp/main.cpp" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/gpio.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/handles.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/handles.cpp" charset="ISO-8859-1" />

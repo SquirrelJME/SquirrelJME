@@ -13,6 +13,9 @@ add_executable(SquirrelJMETests
     mainEntry.c
 	${SQUIRRELJME_TEST_SOURCES})
 
+# This is written only in C!
+set_target_properties(SquirrelJMETests PROPERTIES LINKER_LANGUAGE C)
+
 # Additional includes
 target_include_directories(SquirrelJMETests PUBLIC
 	"${PROJECT_BINARY_DIR}"

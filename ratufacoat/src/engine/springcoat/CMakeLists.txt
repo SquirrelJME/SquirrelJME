@@ -16,6 +16,9 @@ endif()
 add_library(SquirrelJMEEngineSpringCoat OBJECT
 	springcoat.c)
 
+# This is written only in C!
+set_target_properties(SquirrelJMEEngineSpringCoat PROPERTIES LINKER_LANGUAGE C)
+
 # Dynamically generated and standard includes
 target_include_directories(SquirrelJMEEngineSpringCoat PUBLIC
 	"${PROJECT_BINARY_DIR}"

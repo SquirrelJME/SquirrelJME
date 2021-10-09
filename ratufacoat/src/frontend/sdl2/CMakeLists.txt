@@ -15,6 +15,9 @@ endif()
 add_executable(SquirrelJME
 	sys_stdc.c)
 
+# This is written only in C!
+set_target_properties(SquirrelJME PROPERTIES LINKER_LANGUAGE C)
+
 target_include_directories(SquirrelJME PUBLIC
 	"${PROJECT_BINARY_DIR}"
 	"${PROJECT_SOURCE_DIR}/include")

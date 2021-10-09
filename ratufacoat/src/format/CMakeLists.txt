@@ -20,6 +20,9 @@ add_library(SquirrelJMEFormat OBJECT
 	sqc.c
 	zip.c)
 
+# This is written only in C!
+set_target_properties(SquirrelJMEFormat PROPERTIES LINKER_LANGUAGE C)
+
 # Dynamically generated and standard includes
 target_include_directories(SquirrelJMEFormat PUBLIC
 	"${PROJECT_BINARY_DIR}"

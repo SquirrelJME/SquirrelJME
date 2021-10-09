@@ -39,6 +39,9 @@ add_library(squirreljme_libretro ${SQUIRRELJME_LIBRETRO_TYPE}
 	sys_libr.c
 	${SQUIRRELJME_LIBRETRO_CORELIB})
 
+# This is written only in C!
+set_target_properties(squirreljme_libretro PROPERTIES LINKER_LANGUAGE C)
+
 # Remove the "lib" prefix as it is not used by RetroArch
 set_target_properties(squirreljme_libretro PROPERTIES
 	PREFIX "")
