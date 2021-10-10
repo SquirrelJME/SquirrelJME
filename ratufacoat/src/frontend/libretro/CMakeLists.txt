@@ -27,6 +27,11 @@ else()
 	set(SQUIRRELJME_LIBRETRO_CORELIB)
 endif()
 
+# Resource file on Windows
+if(WIN32)
+	set(SQUIRRELJME_LIBRETRO_RC "win32.rc")
+endif()
+
 # Define shared library
 add_library(squirreljme_libretro ${SQUIRRELJME_LIBRETRO_TYPE}
 	lraudio.c
@@ -37,6 +42,7 @@ add_library(squirreljme_libretro ${SQUIRRELJME_LIBRETRO_TYPE}
 	lrnet.c
 	lrvfs.c
 	sys_libr.c
+	${SQUIRRELJME_LIBRETRO_RC}
 	${SQUIRRELJME_LIBRETRO_CORELIB})
 
 # This is written only in C!

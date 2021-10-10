@@ -12,8 +12,14 @@ if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
 	set(CMAKE_VERBOSE_MAKEFILE $ENV{CMAKE_VERBOSE_MAKEFILE})
 endif()
 
+# Resource file on Windows
+if(WIN32)
+	set(SQUIRRELJME_SDL_RC "win32.rc")
+endif()
+
 add_executable(SquirrelJME
-	sys_stdc.c)
+	sys_stdc.c
+	${SQUIRRELJME_SDL_RC})
 
 # This is written only in C!
 set_target_properties(SquirrelJME PROPERTIES LINKER_LANGUAGE C)

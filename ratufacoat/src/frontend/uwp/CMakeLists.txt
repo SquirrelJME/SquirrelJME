@@ -17,7 +17,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED YES)
 
 # Setup platform executable
 add_executable(SquirrelJMEUWP WIN32
-	main.cpp)
+	main.cpp
+	SquirrelJME.appxmanifest)
 
 # This is a C++ Application
 set_target_properties(SquirrelJMEUWP PROPERTIES LINKER_LANGUAGE CXX)

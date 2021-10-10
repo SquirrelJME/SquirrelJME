@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
+  <Identity Name="29820StephanieGawroriski.SquirrelJME"
+            Version="0.3.0.0"
+            Publisher="CN=095D0524-710B-45DE-BB91-86465A9CBF77" />
+  <Properties>
+    <DisplayName>SquirrelJME</DisplayName>
+    <PublisherDisplayName>Stephanie Gawroriski</PublisherDisplayName>
+    <Logo></Logo>
+  </Properties>
+  <Prerequisites>
+    <OSMinVersion>10.0.10240.0</OSMinVersion>
+    <OSMaxVersionTested>10.0.17763.1</OSMaxVersionTested>
+  </Prerequisites>
+  <Resources>
+    <Resource Language="" />
+  </Resources>
+  <Applications>
+    <Application Id="" StartPage="">
+      <VisualElements DisplayName="" Description=""
+           Logo="" SmallLogo=""
+           ForegroundText="" BackgroundColor="">
+         <SplashScreen Image="" />
+      </VisualElements>
+    </Application>
+  </Applications>
+</Package>

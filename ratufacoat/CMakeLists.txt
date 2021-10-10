@@ -27,6 +27,11 @@ file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/../squirreljme-version"
 	SQUIRRELJME_VERSION LIMIT_COUNT 1)
 message("Building for SquirrelJME ${SQUIRRELJME_VERSION}!")
 
+# Make Windows compatible version
+set(SQUIRRELJME_VERSION_WINDOWS "${SQUIRRELJME_VERSION}.0")
+string(REGEX REPLACE "\\." "," SQUIRRELJME_VERSION_WINDOWS_RC
+	"${SQUIRRELJME_VERSION_WINDOWS}")
+
 # Put down the configure time
 string(TIMESTAMP SQUIRRELJME_VERSION_ID_TIME "%Y-%m-%dT%H:%M:%SZ" UTC)
 message("Configure time is ${SQUIRRELJME_VERSION_ID_TIME}.")
@@ -120,6 +125,12 @@ endif()
 add_compile_definitions(SQUIRRELJME_VERSION="${SQUIRRELJME_VERSION}")
 add_compile_definitions(SQUIRRELJME_VERSION_ID="${SQUIRRELJME_VERSION_ID}")
 add_compile_definitions(SQUIRRELJME_VERSION_ID_TIME="${SQUIRRELJME_VERSION_ID_TIME}")
+add_compile_definitions(SQUIRRELJME_VERSION_WINDOWS="${SQUIRRELJME_VERSION_WINDOWS}")
+add_compile_definitions(SQUIRRELJME_VERSION_WINDOWS_RC=${SQUIRRELJME_VERSION_WINDOWS_RC})
+
+# Windows definitions
+add_compile_definitions(SQUIRRELJME_WINDOWS_COPYRIGHT="Copyright 2015-2021 Stephanie Gawroriski")
+add_compile_definitions(SQUIRRELJME_WINDOWS_TRADEMARK="SquirrelJME, Lex The Squirrel and his likeness are Trademarks of Stephanie Gawroriski 2016-2021")
 
 # Enable support for testing, this is needed here otherwise testing will not
 # work at all! Major headache this has caused...
