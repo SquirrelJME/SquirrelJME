@@ -31,20 +31,21 @@ You may donate to SquirrelJME to which would be used by the author to keep the
 web server online, the purchasing of new hardware/software, and for the
 purchasing of food items for consumption.
 
- * [Ko-Fi](http://ko-fi.com/xerthesquirrel)
- * [Patreon](https://www.patreon.com/SquirrelJME)
- * BitCoin (**BTC/XBT**): [`3EjFDnmECNtL8C8up6R5DTNy1XDrWaaMw5`](
-   bitcoin:3EjFDnmECNtL8C8up6R5DTNy1XDrWaaMw5)
- * BitCoin Cash (**BCH**): [`qrgww4z9aalgxyyddh5ax8jyy34c89phxuklp3hcwd`](
-   bitcoincash:qrgww4z9aalgxyyddh5ax8jyy34c89phxuklp3hcwd)
- * Ethereum (**ETH**): [`0x7C2316f5336C63855C199784a6e145921145B74a`](
-   ethereum:0x7C2316f5336C63855C199784a6e145921145B74a)
- * Ethereum Classic (**ETC**): [`0x1b30e6411bd7da6dd72cA35dabD5b98BA25A0Ae7`](
-   ethereum:0x1b30e6411bd7da6dd72cA35dabD5b98BA25A0Ae7)
- * LiteCoin (**LTC**): [`MAogNXdjPQ7ZABtpeXztCHf4UXvfiwTuGX`](
-   litecoin:MAogNXdjPQ7ZABtpeXztCHf4UXvfiwTuGX)
- * Stellar Lumens (**XLM**):
-   `GB4O2MAMTINKS6GM6RH34KO32TJMF4QZKZTFJBE4HIPFMKRBXFQ7IAF6`.
+ * Traditional
+   * [Ko-Fi](http://ko-fi.com/xerthesquirrel)
+   * [Patreon](https://www.patreon.com/SquirrelJME)
+   * [Liberapay](https://liberapay.com/xershadowtail)
+ * Cryptocurrency
+   * _ALGO_: `TR5V27P33A2TH4CLHH2X3XQYV6WY4TYSDVUHUJDAINSMOJDNBB5BRTUKB4`
+   * _ATOM_: `cosmos1xe5l7exx4sm0p7rr7sx3max5zxp0zx7mpx9vfj`
+     * Always include this memo: `1523229`
+   * _BTC_: `3AxDtLvmEk7h61BFy7J2v2t4s9m9uzWVvY`
+   * _ETH_: `0x47B106506522f368c4c9110aF003a58dcD04beA1`
+   * _LTC_: `M9GY2KbonbYKspqX5mrys6yNNvFab4RMQX`
+   * _XLM_: `GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W37`
+     * Always include this memo: `2561990448`
+   * _XTZ_: `tz1efFabxYdvPqNtdndC5y4usGSTvCH3RuhK`
+   * _ZEC_: `t1cBD4dJYNWs5TQk1JKFNy1Qkg3TBx8noXQ`
 
 ## Important Statements
 

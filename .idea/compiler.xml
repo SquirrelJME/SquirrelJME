@@ -31,6 +31,8 @@
       <module name="squirreljme.modules.dio-watchdog.testFixtures" target="1.7" />
       <module name="squirreljme.modules.dio.testFixtures" target="1.7" />
       <module name="squirreljme.modules.gcf.testFixtures" target="1.7" />
+      <module name="squirreljme.modules.global-i18n.main" target="1.7" />
+      <module name="squirreljme.modules.global-i18n.test" target="1.7" />
       <module name="squirreljme.modules.io.testFixtures" target="1.7" />
       <module name="squirreljme.modules.jblend-api.testFixtures" target="1.7" />
       <module name="squirreljme.modules.launcher.testFixtures" target="1.7" />
