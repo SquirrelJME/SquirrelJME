@@ -201,15 +201,15 @@ sjme_jint sjme_console_pipewrite(sjme_jvm* jvm,
 						SJME_POINTER_OFFSET_LONG(sjme_jvmFramebuffer(jvm)->pixels,
 							sjme_font.pixelheight *
 							(sjme_jvmFramebuffer(jvm)->scanlenbytes)),
-						(sjme_jvmFramebuffer(jvm)->height - sjme_font.pixelheight) *
-							(sjme_jvmFramebuffer(jvm)->scanlenbytes));
+						(size_t)(sjme_jvmFramebuffer(jvm)->height - sjme_font.pixelheight) *
+							(size_t)(sjme_jvmFramebuffer(jvm)->scanlenbytes));
 					
 					/* Wipe bytes at the bottom. */
 					memset(
 						SJME_POINTER_OFFSET_LONG(sjme_jvmFramebuffer(jvm)->pixels,
 							(sjme_jvmFramebuffer(jvm)->height - sjme_font.pixelheight) *
 								(sjme_jvmFramebuffer(jvm)->scanlenbytes)), 0,
-						sjme_font.pixelheight * (sjme_jvmFramebuffer(jvm)->scanlenbytes));
+						(size_t)sjme_font.pixelheight * ((size_t)sjme_jvmFramebuffer(jvm)->scanlenbytes));
 					
 					/* Move the cursor up one line. */
 					sjme_jvmFramebuffer(jvm)->cony--;
