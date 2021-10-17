@@ -31,7 +31,7 @@ INCFLAGS := -I$(CORE_DIR)/include $(INCFLAGS) \
 # Compatibility with legacy RetroArch building, this file is auto-generated
 # on any CMake build for RetroArch purposes!
 SOURCES_C   :=
-include Makefile.legacy
+include $(BUILD_DIR)/Makefile.legacy
 
 SOURCES_C   := $(SOURCES_C) $(SQUIRRELJME_EXTRA_C_SOURCES)
 

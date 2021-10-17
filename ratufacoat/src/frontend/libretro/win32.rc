@@ -12,14 +12,17 @@ BEGIN
 		BEGIN
 			VALUE "CompanyName",      "Stephanie Gawroriski\0"
 			VALUE "FileDescription",  "Java ME 8 Virtual Machine.\0"
-			VALUE "FileVersion",      SQUIRRELJME_VERSION "\0"
 			VALUE "InternalName",     "SquirrelJME\0"
+			VALUE "OriginalFilename", "squirreljme_libretro.dll\0"
+			VALUE "ProductName",      "SquirrelJME\0"
+
+#if !defined(__GNUC__)
 			VALUE "LegalCopyright",   SQUIRRELJME_WINDOWS_COPYRIGHT
 			VALUE "LegalTrademarks1", SQUIRRELJME_WINDOWS_TRADEMARK
 			VALUE "LegalTrademarks2", SQUIRRELJME_WINDOWS_TRADEMARK
-			VALUE "OriginalFilename", "squirreljme_libretro.dll\0"
-			VALUE "ProductName",      "SquirrelJME\0"
-			VALUE "ProductVersion",   SQUIRRELJME_VERSION "\0"
+			VALUE "FileVersion",      SQUIRRELJME_VERSION"\0"
+			VALUE "ProductVersion",   SQUIRRELJME_VERSION"\0"
+#endif
 		END
 	END
 
