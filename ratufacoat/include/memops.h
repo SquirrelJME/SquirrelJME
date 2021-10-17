@@ -48,7 +48,20 @@ static inline sjme_jint sjme_swapInt(sjme_jint val)
 }
 
 /**
- * Read from memory using native endianess.
+ * Swaps the given short value.
+ * 
+ * @param val The value to swap.
+ * @return The swapped short value.
+ * @since 2021/10/17
+ */
+static inline sjme_jshort sjme_swapShort(sjme_jshort val)
+{
+	return ((val >> 8) & INT16_C(0x00FF)) |
+		((val << 8) & INT16_C(0xFF00));
+}
+
+/**
+ * Reads a native integer from memory.
  * 
  * @param ptr The pointer to read from.
  * @param off The offset into memory.
@@ -62,7 +75,21 @@ static inline sjme_jint sjme_memReadInt(const void* ptr,
 }
 
 /**
- * Read from memory using big endian.
+ * Reads a native integer from memory.
+ * 
+ * @param ptr The pointer to read from.
+ * @param off The offset into memory.
+ * @return The read value.
+ * @since 2021/10/17
+ */
+static inline sjme_jshort sjme_memReadShort(const void* ptr,
+	sjme_jint off)
+{
+	return *((sjme_jshort*)(((uintptr_t)ptr) + off));
+}
+
+/**
+ * Reads a big endian integer from memory.
  * 
  * @param ptr The pointer to read from.
  * @param off The offset into memory.
@@ -76,6 +103,24 @@ static inline sjme_jint sjme_memReadBigInt(const void* ptr,
 	return sjme_memReadInt(ptr, off);
 #else
 	return sjme_swapInt(sjme_memReadInt(ptr, off));
+#endif
+}
+
+/**
+ * Reads a big endian short from memory.
+ * 
+ * @param ptr The pointer to read from.
+ * @param off The offset into memory.
+ * @return The read value.
+ * @since 2021/10/17
+ */
+static inline sjme_jshort sjme_memReadBigShort(const void* ptr,
+	sjme_jint off)
+{
+#if defined(SJME_BIG_ENDIAN)
+	return sjme_memReadShort(ptr, off);
+#else
+	return sjme_swapShort(sjme_memReadShort(ptr, off));
 #endif
 }
 

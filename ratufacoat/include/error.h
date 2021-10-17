@@ -162,6 +162,9 @@ typedef enum sjme_errorCode
 	
 	/** Could not initialize driver. */
 	SJME_ERROR_BAD_DRIVER_INIT,
+	
+	/** Invalid class version. */
+	SJME_ERROR_INVALID_CLASS_VERSION,
 } sjme_errorCode; 
 
 /** This represents an error. */

@@ -43,12 +43,12 @@ sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
 	
 	/* Setup parameters for it. */
 	instance->driver = tryDriver;
-	instance->data = data;
-	instance->size = size;
+	instance->chunk.data = data;
+	instance->chunk.size = size;
 	
 	/* Try to initialize the driver, if that fails then oops. */
 	if (instance->driver->initInstance == NULL ||
-		!instance->driver->initInstance(instance))
+		!instance->driver->initInstance(instance, error))
 	{
 		/* Before we free, set this away. */
 		sjme_setError(error, SJME_ERROR_BAD_DRIVER_INIT,

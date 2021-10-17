@@ -22,10 +22,6 @@ SJME_TEST_PROTOTYPE(testSqcDetect)
 {
 	sjme_packInstance* pack;
 	
-	/* TODO: Remove this. */
-	if (1)
-		return SKIP_TEST();
-	
 	/* Needs built-in ROM to work properly. */
 	if (sjme_builtInRomSize <= 0)
 		return SKIP_TEST();

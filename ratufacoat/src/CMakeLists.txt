@@ -40,6 +40,7 @@ add_library(SquirrelJMECore OBJECT
 	ipnet.c
 	jdwp.c
 	jvm.c
+	memchunk.c
 	memory.c
 	oldstuff.c
 	opcode.c

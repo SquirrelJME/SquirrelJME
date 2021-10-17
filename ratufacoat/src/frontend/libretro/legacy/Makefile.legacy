@@ -32,6 +32,7 @@ SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/handles.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/ipnet.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/jdwp.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/jvm.c
+SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/memchunk.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/memory.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/oldstuff.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/opcode.c

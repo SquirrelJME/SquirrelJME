@@ -19,6 +19,7 @@
 #include "sjmerc.h"
 #include "error.h"
 #include "format/detect.h"
+#include "memchunk.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -48,10 +49,12 @@ typedef struct sjme_packDriver
 	 * Initializes the given instance.
 	 * 
 	 * @param instance The instance pointer. 
+	 * @param error The error value.
 	 * @return If this was successful or not.
 	 * @since 2021/09/22
 	 */
-	sjme_jboolean (*initInstance)(sjme_packInstance* instance); 
+	sjme_jboolean (*initInstance)(sjme_packInstance* instance,
+		sjme_error* error); 
 } sjme_packDriver;
 
 /**
@@ -64,11 +67,8 @@ struct sjme_packInstance
 	/** The driver used to interact with the library. */
 	const sjme_packDriver* driver;
 	
-	/** The data block. */
-	const void* data;
-	
-	/** The size of the data block. */
-	sjme_jint size;
+	/** Memory chunk. */
+	sjme_memChunk chunk;
 	
 	/** Instance state for the current driver. */
 	void* state;
