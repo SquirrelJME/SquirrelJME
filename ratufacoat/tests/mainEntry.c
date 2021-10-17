@@ -119,8 +119,9 @@ int main(int argc, char** argv)
 	sjme_jint errorBufLen;
 	
 	/* General test report. */
-	fprintf(stderr, "Testing SquirrelJME %s\n",
-		SQUIRRELJME_VERSION" ("SQUIRRELJME_VERSION_ID")");
+	fprintf(stderr, "Testing SquirrelJME %s (%s)\n",
+		SJME_STRINGIFY(SQUIRRELJME_VERSION),
+		SJME_STRINGIFY(SQUIRRELJME_VERSION_ID));
 	fprintf(stderr, "Built-In ROM is %s\n",
 		(sjme_builtInRomSize == 0 ? "Unavailable" : "Available"));
 	fflush(stderr);

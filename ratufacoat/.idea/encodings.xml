@@ -85,7 +85,7 @@
     <file url="file://$PROJECT_DIR$/src/xbuiltin.c" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/tests/CMakeLists.txt" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/tests/libcheck.c" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/tests/mainEntry.c" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tests/mainEntry.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/tests/shim.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/tests/shim.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/tests/testBoop.c" charset="ISO-8859-1" />
