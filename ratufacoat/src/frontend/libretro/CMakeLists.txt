@@ -125,7 +125,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/legacy/Makefile.legacy.in"
 message("Generating RetroArch Legacy Makefile (Temp ${LEGACY_TEMP})...")
 foreach(legacySource ${LEGACY_CORE_SOURCE} ${LEGACY_LIBRETRO_SOURCE})
 	file(APPEND "${LEGACY_TEMP}"
-		"SOURCES_C   := $(SOURCES_C) ${legacySource}\n")
+		"SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/${legacySource}\n")
 endforeach()
 
 # Include compile definitions for version IDs and otherwise, so that it
