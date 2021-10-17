@@ -1,4 +1,5 @@
 #include <windows.h>
+#include "win32/rc.h"
 
 VS_VERSION_INFO VERSIONINFO
 FILEVERSION SQUIRRELJME_VERSION_WINDOWS_RC
@@ -16,13 +17,11 @@ BEGIN
 			VALUE "OriginalFilename", "squirreljme_libretro.dll\0"
 			VALUE "ProductName",      "SquirrelJME\0"
 
-#if !defined(__GNUC__)
 			VALUE "LegalCopyright",   SQUIRRELJME_WINDOWS_COPYRIGHT
 			VALUE "LegalTrademarks1", SQUIRRELJME_WINDOWS_TRADEMARK
 			VALUE "LegalTrademarks2", SQUIRRELJME_WINDOWS_TRADEMARK
-			VALUE "FileVersion",      SQUIRRELJME_VERSION"\0"
-			VALUE "ProductVersion",   SQUIRRELJME_VERSION"\0"
-#endif
+			VALUE "FileVersion",      SJME_STRINGIFY(SQUIRRELJME_VERSION) "\0"
+			VALUE "ProductVersion",   SJME_STRINGIFY(SQUIRRELJME_VERSION) "\0"
 		END
 	END
 

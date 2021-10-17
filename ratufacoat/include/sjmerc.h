@@ -24,22 +24,28 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+/** Stringify. */
+#define SJME_STRINGIFY(x) SJME_INTERNAL_STRINGIFY_X(x)
+
+/** Stringify, do not use this internal one. */
+#define SJME_INTERNAL_STRINGIFY_X(x) #x
+
 /* Versioning identifier. */
 #if !defined(SQUIRRELJME_VERSION)
 	/** Version string. */
-	#define SQUIRRELJME_VERSION "0.3.0"
+	#define SQUIRRELJME_VERSION 0.3.0
 #endif
 
 /* Version ID. */
 #if !defined(SQUIRRELJME_VERSION_ID)
 	/** Version ID. */
-	#define SQUIRRELJME_VERSION_ID "unknown:"__DATE__""__TIME__
+	#define SQUIRRELJME_VERSION_ID unknown
 #endif
 
 /* Version time. */
 #if !defined(SQUIRRELJME_VERSION_ID_TIME)
 	/** Version ID. */
-	#define SQUIRRELJME_VERSION_ID_TIME __DATE__""__TIME__
+	#define SQUIRRELJME_VERSION_ID_TIME unknown
 #endif
 
 /** Is this a 64-bit system? */
