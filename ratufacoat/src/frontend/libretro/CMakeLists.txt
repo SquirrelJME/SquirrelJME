@@ -74,8 +74,7 @@ endif()
 # Include all of these
 target_include_directories(squirreljme_libretro PUBLIC
 	"${PROJECT_BINARY_DIR}"
-	"${PROJECT_SOURCE_DIR}/include"
-	"${PROJECT_SOURCE_DIR}/include/libretro")
+	"${PROJECT_SOURCE_DIR}/include")
 
 # RetroArch must be built with position independent code for any kind of
 # library.
