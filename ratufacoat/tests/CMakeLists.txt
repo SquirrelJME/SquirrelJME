@@ -35,8 +35,10 @@ else()
 endif()
 
 # Auto-generate tests
-configure_file(blank.h.in prototype.h)
-configure_file(blank.h.in listing.h)
+configure_file(blank.h.in prototype.h
+	NEWLINE_STYLE LF)
+configure_file(blank.h.in listing.h
+	NEWLINE_STYLE LF)
 
 # Used to wrap for QEMU and otherwise
 if(DEFINED SQUIRRELJME_TEST_WRAPPER)
@@ -88,7 +90,8 @@ foreach(SQUIRRELJME_BLOB_FILE ${SQUIRRELJME_BLOB_FILES})
 	# Target blob file
 	get_filename_component(BLOB_BASENAME "${SQUIRRELJME_BLOB_FILE}" NAME)
 	string(REPLACE ".blob" "" BLOB_BASENAME ${BLOB_BASENAME})
-	configure_file(blank.h.in "${BLOB_BASENAME}.h")
+	configure_file(blank.h.in "${BLOB_BASENAME}.h"
+		NEWLINE_STYLE LF)
 	set(BLOB_TARGET_FILE "${CMAKE_CURRENT_BINARY_DIR}/${BLOB_BASENAME}.h")
 
 	# Checksum file for quicker checking

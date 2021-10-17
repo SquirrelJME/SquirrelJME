@@ -120,7 +120,8 @@ string(RANDOM
 set(LEGACY_TEMP "${CMAKE_CURRENT_SOURCE_DIR}/legacy/Makefile.legacy.${GENX}.tmp")
 file(REMOVE "${LEGACY_TEMP}")
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/legacy/Makefile.legacy.in"
-	"${LEGACY_TEMP}")
+	"${LEGACY_TEMP}"
+	NEWLINE_STYLE LF)
 message("Generating RetroArch Legacy Makefile (Temp ${LEGACY_TEMP})...")
 foreach(legacySource ${LEGACY_CORE_SOURCE} ${LEGACY_LIBRETRO_SOURCE})
 	file(APPEND "${LEGACY_TEMP}"
