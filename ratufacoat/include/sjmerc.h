@@ -36,6 +36,12 @@
 	#define SQUIRRELJME_VERSION_ID "unknown:"__DATE__""__TIME__
 #endif
 
+/* Version time. */
+#if !defined(SQUIRRELJME_VERSION_ID_TIME)
+	/** Version ID. */
+	#define SQUIRRELJME_VERSION_ID_TIME __DATE__""__TIME__
+#endif
+
 /** Is this a 64-bit system? */
 #if !defined(SJME_BITS)
 	#if defined(_LP64) || defined(__LP64__) || defined(__x86_64__) || \

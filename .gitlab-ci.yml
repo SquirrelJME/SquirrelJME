@@ -174,12 +174,12 @@ libretro-build-osx-x64:
     - .core-defs
     - .squirreljme-support-common
 
-## MacOS ARM 64-bit
-#libretro-build-osx-arm64:
-#  extends:
-#    - .libretro-osx-arm64-make-default
-#    - .core-defs
-#    - .squirreljme-support-common
+## MacOS ARM 64-bit (TODO: Move to CMake)
+libretro-build-osx-arm64:
+  extends:
+    - .libretro-osx-arm64-make-default
+    - .core-defs
+    - .squirreljme-support-common
 
 # Windows 32-bit [CMake]
 libretro-build-windows-i686:
@@ -232,19 +232,19 @@ android-x86:
     - .core-defs
     - .squirreljme-support-common
 
-## iOS 9
-#libretro-build-ios9:
-#  extends:
-#    - .libretro-ios9-make-default
-#    - .core-defs
-#    - .squirreljme-support-common
+## iOS 9 (TODO: Move to CMake)
+libretro-build-ios9:
+  extends:
+    - .libretro-ios9-make-default
+    - .core-defs
+    - .squirreljme-support-common
 
-## tvOS
-#libretro-build-tvos-arm64:
-#  extends:
-#    - .libretro-tvos-arm64-make-default
-#    - .core-defs
-#    - .squirreljme-support-common
+## tvOS (TODO: Move to CMake)
+libretro-build-tvos-arm64:
+  extends:
+    - .libretro-tvos-arm64-make-default
+    - .core-defs
+    - .squirreljme-support-common
 
 ################################### CONSOLES #################################
 # Dingux (GCW Zero) [CMake]
@@ -263,59 +263,59 @@ libretro-build-ctr:
     - .core-defs
     - .squirreljme-support-common
 
-## Nintendo GameCube
-#libretro-build-ngc:
-#  extends:
-#    - .libretro-ngc-static-retroarch-master
-#    - .core-defs
-#    - .squirreljme-support-common
+## Nintendo GameCube (TODO: Move to CMake)
+libretro-build-ngc:
+  extends:
+    - .libretro-ngc-static-retroarch-master
+    - .core-defs
+    - .squirreljme-support-common
 
-## Nintendo Switch
-#libretro-build-libnx-aarch64:
-#  extends:
-#    - .libretro-libnx-static-retroarch-master
-#    - .core-defs
-#    - .squirreljme-support-common
+## Nintendo Switch (TODO: Move to CMake)
+libretro-build-libnx-aarch64:
+  extends:
+    - .libretro-libnx-static-retroarch-master
+    - .core-defs
+    - .squirreljme-support-common
 
-## Nintendo Wii
-#libretro-build-wii:
-#  extends:
-#    - .libretro-wii-static-retroarch-master
-#    - .core-defs
-#    - .squirreljme-support-common
+## Nintendo Wii (TODO: Move to CMake)
+libretro-build-wii:
+  extends:
+    - .libretro-wii-static-retroarch-master
+    - .core-defs
+    - .squirreljme-support-common
 
-## Nintendo Wii U
-#libretro-build-wiiu:
-#  extends:
-#    - .libretro-wiiu-static-retroarch-master
-#    - .core-defs
-#    - .squirreljme-support-common
+## Nintendo Wii U (TODO: Move to CMake)
+libretro-build-wiiu:
+  extends:
+    - .libretro-wiiu-static-retroarch-master
+    - .core-defs
+    - .squirreljme-support-common
 
-## PlayStation 2
-#libretro-build-ps2:
-#  extends:
-#    - .libretro-ps2-static-retroarch-master
-#    - .core-defs
-#    - .squirreljme-support-common
+## PlayStation 2 (TODO: Move to CMake)
+libretro-build-ps2:
+  extends:
+    - .libretro-ps2-static-retroarch-master
+    - .core-defs
+    - .squirreljme-support-common
 
-## PlayStation Portable
-#libretro-build-psp:
-#  extends:
-#    - .libretro-psp-static-retroarch-master
-#    - .core-defs
-#    - .squirreljme-support-common
+## PlayStation Portable (TODO: Move to CMake)
+libretro-build-psp:
+  extends:
+    - .libretro-psp-static-retroarch-master
+    - .core-defs
+    - .squirreljme-support-common
 
-## PlayStation Vita
-#libretro-build-vita:
-#  extends:
-#    - .libretro-vita-static-retroarch-master
-#    - .core-defs
-#    - .squirreljme-support-common
+## PlayStation Vita (TODO: Move to CMake)
+libretro-build-vita:
+  extends:
+    - .libretro-vita-static-retroarch-master
+    - .core-defs
+    - .squirreljme-support-common
 
 #################################### MISC ##################################
-## Emscripten
-#libretro-build-emscripten:
-#  extends:
-#    - .libretro-emscripten-static-retroarch-master
-#    - .core-defs
-#    - .squirreljme-support-common
+## Emscripten (TODO: Move to CMake)
+libretro-build-emscripten:
+  extends:
+    - .libretro-emscripten-static-retroarch-master
+    - .core-defs
+    - .squirreljme-support-common

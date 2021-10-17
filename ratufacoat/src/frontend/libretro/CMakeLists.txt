@@ -12,15 +12,16 @@ if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
 	set(CMAKE_VERBOSE_MAKEFILE $ENV{CMAKE_VERBOSE_MAKEFILE})
 endif()
 
+# Libraries that might be included in the build
+get_property(SQUIRRELJME_CORE_TARGET_OBJECTS
+	GLOBAL PROPERTY SquirrelJMECoreTargetObjects)
+
 # Is the RetroArch build dynamic or static?
 # Some targets rely on a shared library
 if(LIBRETRO_STATIC)
 	set(SQUIRRELJME_LIBRETRO_TYPE STATIC)
 	set(SQUIRRELJME_LIBRETRO_STATIC ON)
-
-	# Libraries to include in the build
-	get_property(SQUIRRELJME_LIBRETRO_CORELIB
-		GLOBAL PROPERTY SquirrelJMECoreTargetObjects)
+	set(SQUIRRELJME_LIBRETRO_CORELIB ${SQUIRRELJME_CORE_TARGET_OBJECTS})
 else()
 	set(SQUIRRELJME_LIBRETRO_TYPE SHARED)
 	set(SQUIRRELJME_LIBRETRO_STATIC OFF)
@@ -101,3 +102,37 @@ if(DEFINED SQUIRRELJME_LIBRETRO_DIR)
 		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
 		COMMENT "Starting RetroArch with SquirrelJME")
 endif()
+
+# Determine the objects and sources for the RetroArch build
+squirreljme_object_and_sources(SquirrelJMELibRetroTarget
+	squirreljme_libretro)
+
+# Get sources used for the legacy makefile
+get_property(LEGACY_CORE_SOURCE
+	GLOBAL PROPERTY SquirrelJMECoreTargetSources)
+get_property(LEGACY_LIBRETRO_SOURCE
+	GLOBAL PROPERTY SquirrelJMELibRetroTargetSources)
+
+# Generate legacy makefile sources
+string(RANDOM
+	LENGTH 4
+	ALPHABET qwertyuiopasdfghjklzxcvbnm1234567890
+	GENX)
+set(LEGACY_TEMP "${CMAKE_CURRENT_SOURCE_DIR}/legacy/Makefile.legacy.${GENX}.tmp")
+file(REMOVE "${LEGACY_TEMP}")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/legacy/Makefile.legacy.in"
+	"${LEGACY_TEMP}")
+message("Generating RetroArch Legacy Makefile (Temp ${LEGACY_TEMP})...")
+foreach(legacySource ${LEGACY_CORE_SOURCE} ${LEGACY_LIBRETRO_SOURCE})
+	file(APPEND "${LEGACY_TEMP}"
+		"SOURCES_C   := $(SOURCES_C) ${legacySource}\n")
+endforeach()
+
+# Include compile definitions for version IDs and otherwise, so that it
+# sticks in and otherwise with the build
+file(APPEND "${LEGACY_TEMP}"
+	"COREDEFINES := $(COREDEFINES) -DSQUIRRELJME_VERSION=\"${SQUIRRELJME_VERSION}\"\n")
+
+# Replace the file we just made!
+file(RENAME "${LEGACY_TEMP}"
+	"${CMAKE_CURRENT_SOURCE_DIR}/legacy/Makefile.legacy")

@@ -13,7 +13,7 @@
  * @since 2019/06/10
  */
 
-#include <libretro.h>
+#include <libretro/libretro.h>
 
 #include "sjmerc.h"
 #include "sjmecon.h"

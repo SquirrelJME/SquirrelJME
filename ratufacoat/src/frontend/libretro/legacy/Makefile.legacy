@@ -1,0 +1,53 @@
+# ---------------------------------------------------------------------------
+# SquirrelJME
+#     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+# ---------------------------------------------------------------------------
+# SquirrelJME is under the GNU General Public License v3, or later.
+# See license.mkd for licensing and copyright information.
+# ---------------------------------------------------------------------------
+# DESCRIPTION: Source for auto built legacy sources file, the output of this
+# file is AUTO-GENERATED!
+
+# Generation starts here:
+SOURCES_C   := $(SOURCES_C) src/engine/scaffold.c
+SOURCES_C   := $(SOURCES_C) src/format/detect.c
+SOURCES_C   := $(SOURCES_C) src/format/library.c
+SOURCES_C   := $(SOURCES_C) src/format/pack.c
+SOURCES_C   := $(SOURCES_C) src/format/sqc.c
+SOURCES_C   := $(SOURCES_C) src/format/zip.c
+SOURCES_C   := $(SOURCES_C) src/engine/springcoat/springcoat.c
+SOURCES_C   := $(SOURCES_C) src/accelgfx.c
+SOURCES_C   := $(SOURCES_C) src/atomic.c
+SOURCES_C   := $(SOURCES_C) src/audio.c
+SOURCES_C   := $(SOURCES_C) src/bootrom.c
+SOURCES_C   := $(SOURCES_C) src/btooth.c
+SOURCES_C   := $(SOURCES_C) src/cellfunc.c
+SOURCES_C   := $(SOURCES_C) src/corefont.c
+SOURCES_C   := $(SOURCES_C) src/cpu.c
+SOURCES_C   := $(SOURCES_C) src/datatype.c
+SOURCES_C   := $(SOURCES_C) src/debug.c
+SOURCES_C   := $(SOURCES_C) src/error.c
+SOURCES_C   := $(SOURCES_C) src/gpio.c
+SOURCES_C   := $(SOURCES_C) src/handles.c
+SOURCES_C   := $(SOURCES_C) src/ipnet.c
+SOURCES_C   := $(SOURCES_C) src/jdwp.c
+SOURCES_C   := $(SOURCES_C) src/jvm.c
+SOURCES_C   := $(SOURCES_C) src/memory.c
+SOURCES_C   := $(SOURCES_C) src/oldstuff.c
+SOURCES_C   := $(SOURCES_C) src/opcode.c
+SOURCES_C   := $(SOURCES_C) src/random.c
+SOURCES_C   := $(SOURCES_C) src/sjmerc.c
+SOURCES_C   := $(SOURCES_C) src/softmath.c
+SOURCES_C   := $(SOURCES_C) src/stringies.c
+SOURCES_C   := $(SOURCES_C) src/syscall.c
+SOURCES_C   := $(SOURCES_C) src/video.c
+SOURCES_C   := $(SOURCES_C) src/xbuiltin.c
+SOURCES_C   := $(SOURCES_C) src/frontend/libretro/lraudio.c
+SOURCES_C   := $(SOURCES_C) src/frontend/libretro/lrcheat.c
+SOURCES_C   := $(SOURCES_C) src/frontend/libretro/lrfreeze.c
+SOURCES_C   := $(SOURCES_C) src/frontend/libretro/lrinfo.c
+SOURCES_C   := $(SOURCES_C) src/frontend/libretro/lrjoypad.c
+SOURCES_C   := $(SOURCES_C) src/frontend/libretro/lrnet.c
+SOURCES_C   := $(SOURCES_C) src/frontend/libretro/lrvfs.c
+SOURCES_C   := $(SOURCES_C) src/frontend/libretro/sys_libr.c
+COREDEFINES := $(COREDEFINES) -DSQUIRRELJME_VERSION="0.3.0"

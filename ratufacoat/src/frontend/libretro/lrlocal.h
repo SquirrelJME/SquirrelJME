@@ -16,7 +16,7 @@
 #ifndef SQUIRRELJME_LRLOCAL_H
 #define SQUIRRELJME_LRLOCAL_H
 
-#include <libretro.h>
+#include <libretro/libretro.h>
 
 /* Anti-C++. */
 #ifdef __cplusplus

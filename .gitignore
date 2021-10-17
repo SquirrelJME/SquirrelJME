@@ -6,6 +6,9 @@ build/
 out/
 */out/
 
+# VSCode Files
+*~
+
 # IntelliJ (Shared but not used)
 .idea/aws.xml
 .idea/dbnavigator.xml
@@ -76,6 +79,7 @@ cmake_install.cmake
 *.exe
 *.dylib
 cmake-build-debug
+*.tmp
 
 # Fossil files
 _FOSSIL_
