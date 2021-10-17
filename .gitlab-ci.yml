@@ -29,7 +29,7 @@ stages:
 
     # CMake Settings
     CMAKE_SOURCE_ROOT: ratufacoat
-    EXTRA_PATH: src/libretro
+    EXTRA_PATH: src/frontend/libretro
 
 # SquirrelJME Support (Common)
 .squirreljme-support-common:
