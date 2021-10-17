@@ -134,5 +134,18 @@ file(APPEND "${LEGACY_TEMP}"
 	"COREDEFINES := $(COREDEFINES) -DSQUIRRELJME_VERSION=\"${SQUIRRELJME_VERSION}\"\n")
 
 # Replace the file we just made!
+#file(RENAME "${LEGACY_TEMP}"
+#	"${CMAKE_CURRENT_SOURCE_DIR}/legacy/Makefile.legacy")
+# file(APPEND) uses the system line endings (i.e. CRLF on Windows) so to get
+# around this, we just use a different configure file input and say we want
+# LFs used. This way whenever the CMake files are generated this will just
+# not cause newline and this file conversions every single time. Hopefully
+# however this does not cause issues with CLion trying to run CMake when this
+# file is changed.
 file(RENAME "${LEGACY_TEMP}"
-	"${CMAKE_CURRENT_SOURCE_DIR}/legacy/Makefile.legacy")
+	"${LEGACY_TEMP}.tmp")
+configure_file("${LEGACY_TEMP}.tmp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/legacy/Makefile.legacy"
+	NEWLINE_STYLE LF)
+file(REMOVE "${LEGACY_TEMP}")
+file(REMOVE "${LEGACY_TEMP}.tmp")
