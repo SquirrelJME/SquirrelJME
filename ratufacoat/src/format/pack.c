@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "debug.h"
+#include "format/format.h"
 #include "format/pack.h"
 #include "format/sqc.h"
 #include "memory.h"
@@ -20,46 +21,32 @@ const sjme_packDriver* const sjme_packDrivers[] =
 	NULL
 };
 
+/** Handler for pack formats. */
+const sjme_formatHandler sjme_packFormatHandler =
+{
+	.driverOffsetOfDetect = offsetof(sjme_packDriver, detect),
+	.driverOffsetOfInit = offsetof(sjme_packDriver, initInstance),
+	.driverList = (const void**)&sjme_packDrivers,
+	.sizeOfInstance = sizeof(sjme_packInstance),
+	.instanceOffsetOfFormat = offsetof(sjme_packInstance, format),
+	.instanceOffsetOfState = offsetof(sjme_packInstance, state),
+};
+
 sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
 	const void* data, sjme_jint size, sjme_error* error)
 {
-	const sjme_packDriver* tryDriver;
-	sjme_packInstance* instance;
-	
-	/* Try to detect the format using the common means. */
-	if (!sjme_detectFormat(data, size,
-		(const void**)&tryDriver, (const void**)sjme_packDrivers,
-		offsetof(sjme_packDriver, detect), error))
+	/* Use common format handler. */
+	if (!sjme_formatOpen(&sjme_packFormatHandler,
+		(void**)outInstance, data, size, error))
 	{
 		sjme_setError(error, SJME_ERROR_UNKNOWN_PACK_FORMAT,
-			0);
+			sjme_getError(error, SJME_ERROR_UNKNOWN));
 		return sjme_false;
 	}
 	
-	/* Allocate instance data. */
-	instance = sjme_malloc(sizeof(*instance), error);
-	if (instance == NULL)
-		return sjme_false;
+	/* Copy the driver down. */
+	(*outInstance)->driver = (*outInstance)->format.driver;
 	
-	/* Setup parameters for it. */
-	instance->driver = tryDriver;
-	instance->chunk.data = data;
-	instance->chunk.size = size;
-	
-	/* Try to initialize the driver, if that fails then oops. */
-	if (instance->driver->initInstance == NULL ||
-		!instance->driver->initInstance(instance, error))
-	{
-		/* Before we free, set this away. */
-		sjme_setError(error, SJME_ERROR_BAD_DRIVER_INIT,
-			instance->driver->initInstance == NULL);
-			
-		sjme_free(instance, error);
-		
-		return sjme_false;
-	}
-	
-	/* Use this instance. */
-	*outInstance = instance;
+	/* All ready! */
 	return sjme_true;
 }

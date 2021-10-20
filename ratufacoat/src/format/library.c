@@ -8,16 +8,11 @@
 // -------------------------------------------------------------------------*/
 
 #include "format/detect.h"
+#include "format/format.h"
 #include "format/library.h"
 #include "format/sqc.h"
 #include "format/zip.h"
 #include "debug.h"
-
-struct sjme_libraryInstance
-{
-	/** The driver used to interact with the library. */
-	const sjme_libraryDriver* driver;
-};
 
 /** The library drivers which are available for usage. */
 const sjme_libraryDriver* const sjme_libraryDrivers[] =
@@ -28,20 +23,32 @@ const sjme_libraryDriver* const sjme_libraryDrivers[] =
 	NULL
 };
 
+/** Handler for library formats. */
+const sjme_formatHandler sjme_libraryFormatHandler =
+{
+	.driverOffsetOfDetect = offsetof(sjme_libraryDriver, detect),
+	.driverOffsetOfInit = offsetof(sjme_libraryDriver, initInstance),
+	.driverList = (const void**)&sjme_libraryDrivers,
+	.sizeOfInstance = sizeof(sjme_libraryInstance),
+	.instanceOffsetOfFormat = offsetof(sjme_libraryInstance, format),
+	.instanceOffsetOfState = offsetof(sjme_libraryInstance, state),
+};
+
 sjme_jboolean sjme_libraryOpen(sjme_libraryInstance** outInstance,
 	const void* data, sjme_jint size, sjme_error* error)
 {
-	const sjme_libraryDriver* tryDriver;
-	
-	/* Try to detect the format using the common means. */
-	if (!sjme_detectFormat(data, size,
-		(const void**)&tryDriver, (const void**)sjme_libraryDrivers,
-		offsetof(sjme_libraryDriver, detect), error))
+	/* Use common format handler. */
+	if (!sjme_formatOpen(&sjme_libraryFormatHandler,
+		(void**)outInstance, data, size, error))
 	{
-		sjme_setError(error, SJME_ERROR_UNKNOWN_LIBRARY_FORMAT, 0);
-		
+		sjme_setError(error, SJME_ERROR_UNKNOWN_LIBRARY_FORMAT,
+			sjme_getError(error, SJME_ERROR_UNKNOWN));
 		return sjme_false;
 	}
 	
-	sjme_todo("TODO -- sjme_libraryOpen()");
+	/* Copy the driver down. */
+	(*outInstance)->driver = (*outInstance)->format.driver;
+	
+	/* All ready! */
+	return sjme_true;
 }

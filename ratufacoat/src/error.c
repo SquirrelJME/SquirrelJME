@@ -18,6 +18,13 @@ void sjme_clearError(sjme_error* error)
 	}
 }
 
+sjme_errorCode sjme_getError(sjme_error* error, sjme_errorCode ifMissing)
+{
+	if (error != NULL)
+		return error->code;
+	return ifMissing;
+}
+
 sjme_returnFail sjme_hasError(sjme_error* error)
 {
 	if (error != NULL && error->code != SJME_ERROR_NONE)

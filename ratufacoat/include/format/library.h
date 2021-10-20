@@ -19,6 +19,8 @@
 #include "sjmerc.h"
 #include "error.h"
 #include "format/detect.h"
+#include "format/format.h"
+#include "memchunk.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -32,6 +34,8 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+typedef struct sjme_libraryInstance sjme_libraryInstance;
+
 /**
  * This represents a library driver that is available for usage.
  * 
@@ -41,14 +45,27 @@ typedef struct sjme_libraryDriver
 {
 	/** Is this for the given library driver? */
 	sjme_formatDetectFunction detect;
+	
+	/** Initialization function. */
+	sjme_formatInitInstanceFunction initInstance;
 } sjme_libraryDriver;
 
 /**
- * Instance of a library, is internally kept state.
+ * Instance of a pack, is internally kept state.
  * 
  * @since 2021/09/19
  */ 
-typedef struct sjme_libraryInstance sjme_libraryInstance;
+struct sjme_libraryInstance
+{
+	/** The format instance. */
+	sjme_formatInstance format;
+	
+	/** The driver used for the library. */
+	const sjme_libraryDriver* driver;
+	
+	/** Instance state for the current driver. */
+	void* state;
+};
 
 /**
  * Opens the given library and makes an instance of it.

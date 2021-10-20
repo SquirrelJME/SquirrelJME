@@ -15,6 +15,7 @@ endif()
 # Define the library
 add_library(SquirrelJMEFormat OBJECT
 	detect.c
+	format.c
 	library.c
 	pack.c
 	sqc.c

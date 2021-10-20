@@ -18,9 +18,6 @@
 /** The magic number for individual JAR libraries. */
 #define JAR_MAGIC_NUMBER UINT32_C(0x00456570)
 
-/** The class version defined on 2020/11/29. */
-#define SQC_CLASS_VERSION_20201129 INT16_C(1)
-
 /** The class version offset. */
 #define SQC_CLASS_VERSION_OFFSET INT32_C(4)
 
@@ -29,19 +26,50 @@
 
 /* --------------------------------- COMMON ------------------------------- */
 
-/**
- * State for the SQC.
- * 
- * @since 2021/10/17
- */
-typedef struct sjme_sqcState
+static sjme_jboolean sjme_initSqcInstance(sjme_formatInstance* formatInstance,
+	void** sqcStatePtr, sjme_error* error)
 {
-	/** The class version. */
-	sjme_jshort classVersion;
+	sjme_sqcState* state;
+	sjme_jshort classVersion, numProperties;
 	
-	/** The number of properties in the SQC. */
-	sjme_jint numProperties;
-} sjme_sqcState;
+	/* Check. */
+	if (sqcStatePtr == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		return sjme_false;
+	}
+	
+	/* Read version info. */
+	if (!sjme_chunkReadBigShort(&formatInstance->chunk,
+		SQC_CLASS_VERSION_OFFSET, &classVersion, error))
+		return sjme_false;
+	
+	/* Only a specific version is valid for now. */
+	if (classVersion != SQC_CLASS_VERSION_20201129)
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_CLASS_VERSION,
+			classVersion);
+		return sjme_false;
+	}
+	
+	/* Read in the property count. */
+	if (!sjme_chunkReadBigShort(&formatInstance->chunk,
+		SQC_NUM_PROPERTIES_OFFSET, &numProperties, error))
+		return sjme_false;
+	
+	/* Allocate state. */
+	state = sjme_malloc(sizeof(*state), error);
+	if (state == NULL)
+		return sjme_false;
+	
+	/* Load state with SQC properties. */
+	state->classVersion = classVersion;
+	state->numProperties = ((sjme_jint)numProperties) & SJME_JINT_C(0xFFFF);
+	
+	/* Everything is okay. */
+	*sqcStatePtr = state;
+	return sjme_true;
+}
 
 /* ---------------------------------- PACK -------------------------------- */
 
@@ -60,47 +88,16 @@ static sjme_jboolean sjme_detectSqcPack(const void* data, sjme_jint size,
 	return sjme_detectMagicNumber(data, size, PACK_MAGIC_NUMBER, error);
 }
 
-static sjme_jboolean sjme_initSqcPackInstance(sjme_packInstance* instance,
+static sjme_jboolean sjme_initSqcPackInstance(void* instance,
 	sjme_error* error)
 {
-	sjme_sqcState* state;
-	sjme_jshort classVersion, numProperties;
+	sjme_packInstance* packInstance = instance;
 	
-	/* Check. */
-	if (instance == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		return sjme_false;
-	}
-	
-	/* Read version info. */
-	if (!sjme_chunkReadBigShort(&instance->chunk, SQC_CLASS_VERSION_OFFSET,
-		&classVersion, error))
+	/* Use common initialization sequence. */
+	if (!sjme_initSqcInstance(&packInstance->format, &packInstance->state,
+		error))
 		return sjme_false;
 	
-	/* Only a specific version is valid for now. */
-	if (classVersion != SQC_CLASS_VERSION_20201129)
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_CLASS_VERSION,
-			classVersion);
-		return sjme_false;
-	}
-	
-	/* Read in the property count. */
-	if (!sjme_chunkReadBigShort(&instance->chunk, SQC_NUM_PROPERTIES_OFFSET,
-		&numProperties, error))
-		return sjme_false;
-	
-	/* Allocate state. */
-	state = sjme_malloc(sizeof(*state), error);
-	if (state == NULL)
-		return sjme_false;
-	
-	/* Load state with SQC properties. */
-	state->classVersion = classVersion;
-	state->numProperties = ((sjme_jint)numProperties) & SJME_JINT_C(0xFFFF);
-	
-	/* Everything is okay. */
 	return sjme_true;
 }
 
@@ -127,7 +124,21 @@ static sjme_jboolean sjme_detectSqcLib(const void* data, sjme_jint size,
 	return sjme_detectMagicNumber(data, size, JAR_MAGIC_NUMBER, error);
 }
 
+static sjme_jboolean sjme_initSqcLibraryInstance(void* instance,
+	sjme_error* error)
+{
+	sjme_libraryInstance* libraryInstance = instance;
+	
+	/* Use common initialization sequence. */
+	if (!sjme_initSqcInstance(&libraryInstance->format,
+		&libraryInstance->state, error))
+		return sjme_false;
+	
+	return sjme_true;
+}
+
 const sjme_libraryDriver sjme_librarySqcDriver =
 {
 	.detect = sjme_detectSqcLib,
+	.initInstance = sjme_initSqcLibraryInstance,
 };

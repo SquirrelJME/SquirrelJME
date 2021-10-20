@@ -32,6 +32,23 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/** The class version defined on 2020/11/29. */
+#define SQC_CLASS_VERSION_20201129 INT16_C(1)
+
+/**
+ * State for the SQC.
+ * 
+ * @since 2021/10/17
+ */
+typedef struct sjme_sqcState
+{
+	/** The class version. */
+	sjme_jshort classVersion;
+	
+	/** The number of properties in the SQC. */
+	sjme_jint numProperties;
+} sjme_sqcState;
+
 /** The SQC driver for multiple libraries. */
 extern const sjme_packDriver sjme_packSqcDriver;
 

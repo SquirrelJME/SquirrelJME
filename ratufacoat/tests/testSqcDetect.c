@@ -21,6 +21,7 @@
 SJME_TEST_PROTOTYPE(testSqcDetect)
 {
 	sjme_packInstance* pack;
+	sjme_sqcState* sqcState;
 	
 	/* Needs built-in ROM to work properly. */
 	if (sjme_builtInRomSize <= 0)
@@ -34,6 +35,27 @@ SJME_TEST_PROTOTYPE(testSqcDetect)
 	/* Wrong driver? */
 	if (pack->driver != &sjme_packSqcDriver)
 		return FAIL_TEST(2);
+	
+	/* Must point to the chunk data. */
+	if (pack->format.chunk.data != sjme_builtInRomData)
+		return FAIL_TEST(3);
+	
+	/* And must match the given size. */
+	if (pack->format.chunk.size != sjme_builtInRomSize)
+		return FAIL_TEST(4);
+	
+	/* There needs to be a valid state. */
+	sqcState = pack->state;
+	if (sqcState == NULL)
+		return FAIL_TEST(5);
+	
+	/** Must be a valid class version. */
+	if (sqcState->classVersion != SQC_CLASS_VERSION_20201129)
+		return FAIL_TEST(6);
+	
+	/** Needs at least one property. */
+	if (sqcState->numProperties <= 0)
+		return FAIL_TEST(7);
 	
 	return PASS_TEST();
 }

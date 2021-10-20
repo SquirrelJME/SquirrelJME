@@ -154,7 +154,7 @@ typedef enum sjme_errorCode
 	/** Driver not found. */
 	SJME_ERROR_DRIVER_NOT_FOUND,
 	
-	/** Unknown libraries format. */
+	/** Unknown pack format. */
 	SJME_ERROR_UNKNOWN_PACK_FORMAT,
 	
 	/** Zero memory allocation. */
@@ -165,6 +165,9 @@ typedef enum sjme_errorCode
 	
 	/** Invalid class version. */
 	SJME_ERROR_INVALID_CLASS_VERSION,
+	
+	/** Unknown format. */
+	SJME_ERROR_UNKNOWN_FORMAT,
 } sjme_errorCode; 
 
 /** This represents an error. */
@@ -184,6 +187,16 @@ typedef struct sjme_error
  * @since 2021/03/04
  */
 void sjme_clearError(sjme_error* error);
+
+/**
+ * Gets an error from the error holder.
+ * 
+ * @param error The error to read from.
+ * @param ifMissing The value to return if missing.
+ * @return The error code or {@code ifMissing} if there is no error.
+ * @since 2021/10/09
+ */
+sjme_errorCode sjme_getError(sjme_error* error, sjme_errorCode ifMissing);
 
 /**
  * Checks if an error is present.
