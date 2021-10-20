@@ -23,7 +23,7 @@ sjme_jboolean sjme_formatOpen(const sjme_formatHandler* handler,
 	sjme_formatInitInstanceFunction initFunc;
 	
 	/* Try to detect the format using the common means. */
-	if (!sjme_detectFormat(data, size, (const void**)&tryDriver,
+	if (!sjme_detectFormat(data, size, &tryDriver,
 		handler->driverList, handler->driverOffsetOfDetect, error))
 	{
 		sjme_setError(error, SJME_ERROR_UNKNOWN_FORMAT,

@@ -15,7 +15,7 @@
 #include "debug.h"
 
 /** The library drivers which are available for usage. */
-const sjme_libraryDriver* const sjme_libraryDrivers[] =
+static const sjme_libraryDriver* const sjme_libraryDrivers[] =
 {
 	&sjme_libraryZipDriver,
 	&sjme_librarySqcDriver,
@@ -24,7 +24,7 @@ const sjme_libraryDriver* const sjme_libraryDrivers[] =
 };
 
 /** Handler for library formats. */
-const sjme_formatHandler sjme_libraryFormatHandler =
+static const sjme_formatHandler sjme_libraryFormatHandler =
 {
 	.driverOffsetOfDetect = offsetof(sjme_libraryDriver, detect),
 	.driverOffsetOfInit = offsetof(sjme_libraryDriver, initInstance),

@@ -11,10 +11,9 @@
 #include "format/format.h"
 #include "format/pack.h"
 #include "format/sqc.h"
-#include "memory.h"
 
 /** The pack drivers which are available for usage. */
-const sjme_packDriver* const sjme_packDrivers[] =
+static const sjme_packDriver* const sjme_packDrivers[] =
 {
 	&sjme_packSqcDriver,
 	
@@ -22,7 +21,7 @@ const sjme_packDriver* const sjme_packDrivers[] =
 };
 
 /** Handler for pack formats. */
-const sjme_formatHandler sjme_packFormatHandler =
+static const sjme_formatHandler sjme_packFormatHandler =
 {
 	.driverOffsetOfDetect = offsetof(sjme_packDriver, detect),
 	.driverOffsetOfInit = offsetof(sjme_packDriver, initInstance),

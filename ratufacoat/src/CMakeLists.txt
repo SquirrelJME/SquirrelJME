@@ -134,13 +134,6 @@ squirreljme_object_and_sources(SquirrelJMECoreTarget
 	SquirrelJMEEngineSpringCoat
 	SquirrelJMECore)
 
-# Used to simplify sub-projects
-#set_property(GLOBAL PROPERTY SquirrelJMECoreTargetObjects
-#	$<TARGET_OBJECTS:SquirrelJMEEngine>
-#	$<TARGET_OBJECTS:SquirrelJMEFormat>
-#	$<TARGET_OBJECTS:SquirrelJMEEngineSpringCoat>
-#	$<TARGET_OBJECTS:SquirrelJMECore>)
-
 # Static library
 add_subdirectory(lib)
 
