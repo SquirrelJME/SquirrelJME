@@ -17,31 +17,31 @@
 	#define MEMORY_ORDER __ATOMIC_SEQ_CST
 #endif
 
-sjme_jint sjme_atomicGet(sjme_atomicInt* atomic)
+sjme_jint sjme_atomicIntGet(sjme_atomicInt* atomic)
 {
 #if defined(SJME_ATOMIC_C11)
 	return atomic_load(&atomic->value);
 #elif defined(SJME_ATOMIC_GCC)
 	return __atomic_load_n(&atomic->value, MEMORY_ORDER);
 #else
-	return sjme_atomicGetAndAdd(atomic, 0);
+	return sjme_atomicIntGetAndAdd(atomic, 0);
 #endif
 }
 
-void sjme_atomicSet(sjme_atomicInt* atomic, sjme_jint value)
+void sjme_atomicIntSet(sjme_atomicInt* atomic, sjme_jint value)
 {
 #if defined(SJME_ATOMIC_C11)
 	atomic_store(&atomic->value, value);
 #elif defined(SJME_ATOMIC_GCC)
 	__atomic_store_n(&atomic->value, value, MEMORY_ORDER);
 #elif defined(SJME_ATOMIC_WIN32)
-	InterlockedExchange((volatile long*)&atomic->value, value);
+	InterlockedExchange((volatile LONG*)&atomic->value, value);
 #else
-	#error No sjme_atomicSet
+	#error No sjme_atomicIntSet
 #endif
 }
 
-sjme_jint sjme_atomicGetAndAdd(sjme_atomicInt* atomic, sjme_jint add)
+sjme_jint sjme_atomicIntGetAndAdd(sjme_atomicInt* atomic, sjme_jint add)
 {
 #if defined(SJME_ATOMIC_C11)
 	return atomic_fetch_add(&atomic->value, add);
@@ -50,13 +50,13 @@ sjme_jint sjme_atomicGetAndAdd(sjme_atomicInt* atomic, sjme_jint add)
 #elif defined(SJME_ATOMIC_WIN32)
 	/* This performs an add and get, however to do a get and add we need */
 	/* to subtract what we just added to get the original value. */
-	return InterlockedAdd((volatile long*)&atomic->value, add) - add;
+	return InterlockedAdd((volatile LONG*)&atomic->value, add) - add;
 #else
-	#error No sjme_atomicGetAndAdd
+	#error No sjme_atomicIntGetAndAdd
 #endif
 }
 
-sjme_jboolean sjme_atomicCompareAndSet(sjme_atomicInt* atomic,
+sjme_jboolean sjme_atomicIntCompareAndSet(sjme_atomicInt* atomic,
 	sjme_jint check, sjme_jint set)
 {
 #if defined(SJME_ATOMIC_C11)
@@ -72,14 +72,43 @@ sjme_jboolean sjme_atomicCompareAndSet(sjme_atomicInt* atomic,
 	LONG was;
 	
 	/* Returns the value that was stored here. */
-	was = InterlockedCompareExchange((volatile long*)&atomic->value,
+	was = InterlockedCompareExchange((volatile LONG*)&atomic->value,
 		set, check);
 	
 	if (was == check)
 		return sjme_true;
 	return sjme_false;
 #else
-	#error No sjme_atomicCompareAndSet
+	#error No sjme_atomicIntCompareAndSet
 #endif
 }
 
+void* sjme_atomicPointerGet(sjme_atomicPointer* atomic)
+{
+#if defined(SJME_ATOMIC_C11)
+	return atomic_load(&atomic->value);
+#elif defined(SJME_ATOMIC_GCC)
+	return __atomic_load_n(&atomic->value, MEMORY_ORDER);
+#elif defined(SJME_ATOMIC_WIN32)
+	#if SJME_BITS == 64
+		return (void*)InterlockedAdd64((volatile LONG64*)&atomic->value, 0);
+	#else
+		return (void*)InterlockedAdd((volatile LONG*)&atomic->value, 0);
+	#endif
+#else
+	return sjme_atomicIntGetAndAdd(atomic, 0);
+#endif
+}
+
+void sjme_atomicPointerSet(sjme_atomicPointer* atomic, void* value)
+{
+#if defined(SJME_ATOMIC_C11)
+	atomic_store(&atomic->value, value);
+#elif defined(SJME_ATOMIC_GCC)
+	__atomic_store_n(&atomic->value, value, MEMORY_ORDER);
+#elif defined(SJME_ATOMIC_WIN32)
+	InterlockedExchangePointer((volatile PVOID*)&atomic->value, (PVOID)value);
+#else
+	#error No sjme_atomicPointerSet
+#endif
+}

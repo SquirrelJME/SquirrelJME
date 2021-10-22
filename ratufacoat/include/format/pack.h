@@ -16,10 +16,12 @@
 #ifndef SQUIRRELJME_PACK_H
 #define SQUIRRELJME_PACK_H
 
+#include "atomic.h"
 #include "sjmerc.h"
 #include "error.h"
 #include "format/detect.h"
 #include "format/format.h"
+#include "format/library.h"
 #include "memchunk.h"
 
 /* Anti-C++. */
@@ -65,6 +67,12 @@ struct sjme_packInstance
 	
 	/** Instance state for the current driver. */
 	void* state;
+	
+	/** The number of available libraries. */
+	sjme_jint numLibraries;
+	
+	/** The set of cached packs in the library. */
+	sjme_atomicPointer* libraries;
 };
 
 /**

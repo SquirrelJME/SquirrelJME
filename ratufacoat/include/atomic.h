@@ -85,13 +85,34 @@ typedef struct sjme_atomicInt sjme_atomicInt;
 #endif
 
 /**
+ * Atomic pointer.
+ * 
+ * @since 2021/10/21
+ */
+typedef struct sjme_atomicPointer sjme_atomicPointer;
+
+#if defined(SJME_ATOMIC_C11)
+	struct sjme_atomicPointer
+	{
+		/** Atomic value. */
+		void* _Atomic value;
+	};
+#else
+	struct sjme_atomicPointer
+	{
+		/** Atomic value. */
+		volatile void* volatile value;
+	};
+#endif
+
+/**
  * Gets the value of the atomic.
  * 
  * @param atomic The atomic to read from.
  * @return The read value.
  * @since 2021/03/06
  */
-sjme_jint sjme_atomicGet(sjme_atomicInt* atomic);
+sjme_jint sjme_atomicIntGet(sjme_atomicInt* atomic);
 
 /**
  * Sets the given atomic value.
@@ -100,7 +121,7 @@ sjme_jint sjme_atomicGet(sjme_atomicInt* atomic);
  * @param value The value to set.
  * @since 2021/03/06
  */
-void sjme_atomicSet(sjme_atomicInt* atomic, sjme_jint value);
+void sjme_atomicIntSet(sjme_atomicInt* atomic, sjme_jint value);
 
 /**
  * Atomically reads the value then adds into the atomic.
@@ -110,7 +131,7 @@ void sjme_atomicSet(sjme_atomicInt* atomic, sjme_jint value);
  * @return The value before adding.
  * @since 2021/03/06
  */
-sjme_jint sjme_atomicGetAndAdd(sjme_atomicInt* atomic, sjme_jint add);
+sjme_jint sjme_atomicIntGetAndAdd(sjme_atomicInt* atomic, sjme_jint add);
 
 /**
  * Sets the value of the given atomic provided the check value is a match,
@@ -122,8 +143,37 @@ sjme_jint sjme_atomicGetAndAdd(sjme_atomicInt* atomic, sjme_jint add);
  * @return If @c check matched and the atomic is set.
  * @since 2021/03/06
  */
-sjme_jboolean sjme_atomicCompareAndSet(sjme_atomicInt* atomic,
+sjme_jboolean sjme_atomicIntCompareAndSet(sjme_atomicInt* atomic,
 	sjme_jint check, sjme_jint set);
+
+/**
+ * Gets the value of the atomic.
+ * 
+ * @param atomic The atomic to read from.
+ * @return The read value.
+ * @since 2021/10/21
+ */
+void* sjme_atomicPointerGet(sjme_atomicPointer* atomic);
+
+/**
+ * Reads an atomic pointer with the given type.
+ * 
+ * @param atomic The atomic to read from.
+ * @param type The type to read the value as.
+ * @return The read value.
+ * @since 2021/10/21
+ */
+#define sjme_atomicPointerGetType(atomic, type) \
+	((type)(sjme_atomicPointerGet(atomic)))
+
+/**
+ * Sets the given atomic value.
+ * 
+ * @param atomic The atomic to set. 
+ * @param value The value to set.
+ * @since 2021/10/21
+ */
+void sjme_atomicPointerSet(sjme_atomicPointer* atomic, void* value);
 
 /*--------------------------------------------------------------------------*/
 
