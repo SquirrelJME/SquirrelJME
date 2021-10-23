@@ -168,6 +168,12 @@ typedef enum sjme_errorCode
 	
 	/** Unknown format. */
 	SJME_ERROR_UNKNOWN_FORMAT,
+	
+	/** Invalid number of library entries. */
+	SJME_ERROR_INVALID_NUM_LIBRARIES,
+	
+	/** Could not close pack file. */
+	SJME_ERROR_FAILED_TO_CLOSE_PACK,
 } sjme_errorCode; 
 
 /** This represents an error. */

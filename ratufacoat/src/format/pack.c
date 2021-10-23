@@ -11,6 +11,7 @@
 #include "format/format.h"
 #include "format/pack.h"
 #include "format/sqc.h"
+#include "memory.h"
 
 /** The pack drivers which are available for usage. */
 static const sjme_packDriver* const sjme_packDrivers[] =
@@ -31,9 +32,18 @@ static const sjme_formatHandler sjme_packFormatHandler =
 	.instanceOffsetOfState = offsetof(sjme_packInstance, state),
 };
 
+sjme_jboolean sjme_packClose(sjme_packInstance* instance,
+	sjme_error* error)
+{
+	sjme_todo("Close?");
+}
+
 sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
 	const void* data, sjme_jint size, sjme_error* error)
 {
+	sjme_jint numLibs;
+	sjme_packInstance* instance;
+	
 	/* Use common format handler. */
 	if (!sjme_formatOpen(&sjme_packFormatHandler,
 		(void**)outInstance, data, size, error))
@@ -44,7 +54,31 @@ sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
 	}
 	
 	/* Copy the driver down. */
+	instance = (*outInstance);
 	(*outInstance)->driver = (*outInstance)->format.driver;
+	
+	/* Query the number of libraries to initialize the library cache. */
+	numLibs = (instance->driver->queryNumLibraries == NULL ? -1 :
+		instance->driver->queryNumLibraries(instance, error));
+	
+	/* Initialize the library cache. */
+	if (numLibs >= 0)
+		instance->libraries = sjme_malloc(
+			sizeof(*instance->libraries) * numLibs, error);
+	
+	/* Failed to initialize either? */
+	if (numLibs < 0 || instance->libraries == NULL)
+	{
+		if (!sjme_packClose(instance, error))
+			sjme_setError(error, SJME_ERROR_FAILED_TO_CLOSE_PACK,
+				-1);
+		
+		sjme_setError(error, (numLibs < 0 ?
+			SJME_ERROR_INVALID_NUM_LIBRARIES : SJME_ERROR_NO_MEMORY),
+			sjme_getError(error, 0));
+		
+		return sjme_false;
+	}
 	
 	/* All ready! */
 	return sjme_true;

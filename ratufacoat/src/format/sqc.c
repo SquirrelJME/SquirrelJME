@@ -71,7 +71,16 @@ static sjme_jboolean sjme_initSqcInstance(sjme_formatInstance* formatInstance,
 	return sjme_true;
 }
 
+static sjme_jboolean sjme_sqcGetProperty(sjme_sqcState* sqcState,
+	sjme_jint* out, sjme_error* error)
+{
+	sjme_todo("GetProperty(%p, %p, %p)", sqcState, out, error);
+}
+
 /* ---------------------------------- PACK -------------------------------- */
+
+/** The index to the table of contents count. */
+#define SJME_PACK_COUNT_TOC_INDEX SJME_JINT(1)
 
 /**
  * Detects pack files.
@@ -101,10 +110,37 @@ static sjme_jboolean sjme_initSqcPackInstance(void* instance,
 	return sjme_true;
 }
 
+static sjme_jint sjme_packQueryNumLibraries(sjme_packInstance* instance,
+	sjme_error* error)
+{
+	sjme_sqcState* sqcState;
+	sjme_jint value = -1;
+	
+	if (instance == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	/* Read the property. */
+	sqcState = (sjme_sqcState*)instance->state;
+	if (!sjme_sqcGetProperty(sqcState, &value, error) || value < 0)
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_NUM_LIBRARIES, value);
+		
+		return sjme_false;
+	}
+	
+	/* Use the resultant value. */
+	return value;
+}
+
 const sjme_packDriver sjme_packSqcDriver =
 {
 	.detect = sjme_detectSqcPack,
 	.initInstance = sjme_initSqcPackInstance,
+	.queryNumLibraries = sjme_packQueryNumLibraries,
 };
 
 /* -------------------------------- LIBRARY ------------------------------- */

@@ -49,13 +49,21 @@ SJME_TEST_PROTOTYPE(testSqcDetect)
 	if (sqcState == NULL)
 		return FAIL_TEST(5);
 	
-	/** Must be a valid class version. */
+	/* Must be a valid class version. */
 	if (sqcState->classVersion != SQC_CLASS_VERSION_20201129)
 		return FAIL_TEST(6);
 	
-	/** Needs at least one property. */
+	/* Needs at least one property. */
 	if (sqcState->numProperties <= 0)
 		return FAIL_TEST(7);
+	
+	/* Check for at least one library. */
+	if (pack->numLibraries <= 0)
+		return FAIL_TEST(8);
+	
+	/* Cleanup at the end. */
+	if (!sjme_packClose(pack, &shim->error))
+		return FAIL_TEST(99);
 	
 	return PASS_TEST();
 }

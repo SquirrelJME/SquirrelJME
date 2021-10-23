@@ -72,6 +72,8 @@ static const sjme_jvmErrorString sjme_jvmErrorStrings[] =
 	{SJME_ERROR_BAD_DRIVER_INIT, "Could not initialize driver"},
 	{SJME_ERROR_INVALID_CLASS_VERSION, "Invalid class version"},
 	{SJME_ERROR_UNKNOWN_FORMAT, "Unknown format"},
+	{SJME_ERROR_INVALID_NUM_LIBRARIES, "Invalid number of libraries"},
+	{SJME_ERROR_FAILED_TO_CLOSE_PACK, "Failed to close the pack file"},
 	
 	{SJME_ERROR_NONE, NULL}
 };

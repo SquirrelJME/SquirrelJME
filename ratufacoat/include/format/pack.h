@@ -50,6 +50,10 @@ typedef struct sjme_packDriver
 	
 	/** Initialization function. */
 	sjme_formatInitInstanceFunction initInstance;
+	
+	/** Queries the number of libraries in the pack file. */
+	sjme_jint (*queryNumLibraries)(sjme_packInstance* instance,
+		sjme_error* error);
 } sjme_packDriver;
 
 /**
@@ -71,9 +75,20 @@ struct sjme_packInstance
 	/** The number of available libraries. */
 	sjme_jint numLibraries;
 	
-	/** The set of cached packs in the library. */
+	/** The set of cached libraries in the pack. */
 	sjme_atomicPointer* libraries;
 };
+
+/**
+ * Closes the given pack instance.
+ * 
+ * @param instance The instance to close.
+ * @param error The error state.
+ * @return If closing was a success or not.
+ * @since 2021/10/23
+ */
+sjme_jboolean sjme_packClose(sjme_packInstance* instance,
+	sjme_error* error);
 
 /**
  * Opens the given pack and makes an instance of it.
