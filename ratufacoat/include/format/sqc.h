@@ -19,6 +19,7 @@
 
 #include "format/pack.h"
 #include "format/library.h"
+#include "memchunk.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -42,6 +43,9 @@ extern "C"
  */
 typedef struct sjme_sqcState
 {
+	/** The memory chunk used. */
+	const sjme_memChunk* chunk;
+	
 	/** The class version. */
 	sjme_jshort classVersion;
 	

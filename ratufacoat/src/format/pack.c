@@ -35,6 +35,13 @@ static const sjme_formatHandler sjme_packFormatHandler =
 sjme_jboolean sjme_packClose(sjme_packInstance* instance,
 	sjme_error* error)
 {
+	if (instance == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
 	sjme_todo("Close?");
 }
 

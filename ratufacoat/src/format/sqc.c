@@ -19,10 +19,16 @@
 #define JAR_MAGIC_NUMBER UINT32_C(0x00456570)
 
 /** The class version offset. */
-#define SQC_CLASS_VERSION_OFFSET INT32_C(4)
+#define SQC_CLASS_VERSION_OFFSET SJME_JINT_C(4)
 
 /** The offset for the number of properties. */
-#define SQC_NUM_PROPERTIES_OFFSET INT32_C(6)
+#define SQC_NUM_PROPERTIES_OFFSET SJME_JINT_C(6)
+
+/** The base offset for properties. */
+#define SQC_BASE_PROPERTY_OFFSET SJME_JINT_C(8)
+
+/** The size of each property. */
+#define SQC_BASE_PROPERTY_BYTES SJME_JINT_C(4)
 
 /* --------------------------------- COMMON ------------------------------- */
 
@@ -63,6 +69,7 @@ static sjme_jboolean sjme_initSqcInstance(sjme_formatInstance* formatInstance,
 		return sjme_false;
 	
 	/* Load state with SQC properties. */
+	state->chunk = &formatInstance->chunk;
 	state->classVersion = classVersion;
 	state->numProperties = ((sjme_jint)numProperties) & SJME_JINT_C(0xFFFF);
 	
@@ -71,16 +78,44 @@ static sjme_jboolean sjme_initSqcInstance(sjme_formatInstance* formatInstance,
 	return sjme_true;
 }
 
+/**
+ * Gets a property from the SQC.
+ * 
+ * @param sqcState The SQC to read from.
+ * @param index The property index to read from.
+ * @param out The read value.
+ * @param error The error state.
+ * @return If the read was successful.
+ * @since 2021/10/29
+ */
 static sjme_jboolean sjme_sqcGetProperty(sjme_sqcState* sqcState,
-	sjme_jint* out, sjme_error* error)
+	sjme_jint index, sjme_jint* out, sjme_error* error)
 {
-	sjme_todo("GetProperty(%p, %p, %p)", sqcState, out, error);
+	if (sqcState == NULL || out == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	/* Is the read in bounds? */
+	if (index < 0 || index >= sqcState->numProperties)
+	{
+		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, index);
+		
+		return sjme_false;
+	}
+	
+	/* Read in the property. */
+	return sjme_chunkReadBigInt(sqcState->chunk,
+		SQC_BASE_PROPERTY_OFFSET + (index * SQC_BASE_PROPERTY_BYTES),
+		out, error);
 }
 
 /* ---------------------------------- PACK -------------------------------- */
 
 /** The index to the table of contents count. */
-#define SJME_PACK_COUNT_TOC_INDEX SJME_JINT(1)
+#define SJME_PACK_COUNT_TOC_INDEX SJME_JINT_C(1)
 
 /**
  * Detects pack files.
@@ -125,7 +160,8 @@ static sjme_jint sjme_packQueryNumLibraries(sjme_packInstance* instance,
 	
 	/* Read the property. */
 	sqcState = (sjme_sqcState*)instance->state;
-	if (!sjme_sqcGetProperty(sqcState, &value, error) || value < 0)
+	if (!sjme_sqcGetProperty(sqcState, SJME_PACK_COUNT_TOC_INDEX, &value,
+		error) || value < 0)
 	{
 		sjme_setError(error, SJME_ERROR_INVALID_NUM_LIBRARIES, value);
 		

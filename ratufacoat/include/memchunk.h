@@ -55,11 +55,24 @@ typedef struct sjme_memChunk
  * @return If the chunk is within bounds or not.
  * @since 2021/10/17 
  */
-sjme_jboolean sjme_chunkCheckBound(sjme_memChunk* chunk, sjme_jint off,
+sjme_jboolean sjme_chunkCheckBound(const sjme_memChunk* chunk, sjme_jint off,
 	sjme_jint len, sjme_error* error);
 
 /**
- * Reads an unsigned short from the memory chunk. 
+ * Reads an integer from the memory chunk. 
+ * 
+ * @param chunk The chunk to read from.
+ * @param off The offset from within the chunk.
+ * @param value The output value.
+ * @param error The potential error.
+ * @return If this was a successful read or not.
+ * @since 2021/10/29
+ */
+sjme_jboolean sjme_chunkReadBigInt(const sjme_memChunk* chunk, sjme_jint off,
+	sjme_jint* value, sjme_error* error);
+
+/**
+ * Reads a short from the memory chunk. 
  * 
  * @param chunk The chunk to read from.
  * @param off The offset from within the chunk.
@@ -68,7 +81,7 @@ sjme_jboolean sjme_chunkCheckBound(sjme_memChunk* chunk, sjme_jint off,
  * @return If this was a successful read or not.
  * @since 2021/10/17
  */
-sjme_jboolean sjme_chunkReadBigShort(sjme_memChunk* chunk, sjme_jint off,
+sjme_jboolean sjme_chunkReadBigShort(const sjme_memChunk* chunk, sjme_jint off,
 	sjme_jshort* value, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/

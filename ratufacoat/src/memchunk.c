@@ -10,7 +10,7 @@
 #include "memchunk.h"
 #include "memops.h"
 
-sjme_jboolean sjme_chunkCheckBound(sjme_memChunk* chunk, sjme_jint off,
+sjme_jboolean sjme_chunkCheckBound(const sjme_memChunk* chunk, sjme_jint off,
 	sjme_jint len, sjme_error* error)
 {
 	/* Check. */
@@ -30,7 +30,24 @@ sjme_jboolean sjme_chunkCheckBound(sjme_memChunk* chunk, sjme_jint off,
 	return sjme_true;
 }
 
-sjme_jboolean sjme_chunkReadBigShort(sjme_memChunk* chunk, sjme_jint off,
+sjme_jboolean sjme_chunkReadBigInt(const sjme_memChunk* chunk, sjme_jint off,
+	sjme_jint* value, sjme_error* error)
+{
+	/* Check. */
+	if (chunk == NULL || value == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		return sjme_false;
+	}
+	
+	if (!sjme_chunkCheckBound(chunk, off, 4, error))
+		return sjme_false;
+	
+	*value = sjme_memReadBigInt(chunk->data, off);
+	return sjme_true;
+}
+
+sjme_jboolean sjme_chunkReadBigShort(const sjme_memChunk* chunk, sjme_jint off,
 	sjme_jshort* value, sjme_error* error)
 {
 	/* Check. */
