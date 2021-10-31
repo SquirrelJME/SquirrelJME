@@ -16,6 +16,7 @@
 sjme_jboolean sjme_formatClose(const sjme_formatHandler* handler,
 	void* instance, sjme_error* error)
 {
+	sjme_todo("Format close");
 }
 
 sjme_jboolean sjme_formatOpen(const sjme_formatHandler* handler,

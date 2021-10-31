@@ -74,7 +74,7 @@ sjme_jboolean sjme_packClose(sjme_packInstance* instance,
 		error);
 	
 	/* Has there been a close failure? */
-	return !failingLib && !badFree;
+	return !failingLib && !badFree && !badPackClose;
 }
 
 sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
