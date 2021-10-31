@@ -119,9 +119,10 @@ sjme_jint sjme_atomicIntGet(sjme_atomicInt* atomic);
  * 
  * @param atomic The atomic to set. 
  * @param value The value to set.
+ * @return The old value in the atomic.
  * @since 2021/03/06
  */
-void sjme_atomicIntSet(sjme_atomicInt* atomic, sjme_jint value);
+sjme_jint sjme_atomicIntSet(sjme_atomicInt* atomic, sjme_jint value);
 
 /**
  * Atomically reads the value then adds into the atomic.
@@ -171,9 +172,22 @@ void* sjme_atomicPointerGet(sjme_atomicPointer* atomic);
  * 
  * @param atomic The atomic to set. 
  * @param value The value to set.
+ * @return The former atomic value.
  * @since 2021/10/21
  */
-void sjme_atomicPointerSet(sjme_atomicPointer* atomic, void* value);
+void* sjme_atomicPointerSet(sjme_atomicPointer* atomic, void* value);
+
+/**
+ * Sets an atomic pointer with the given type.
+ * 
+ * @param atomic The atomic to set. 
+ * @param value The value to set.
+ * @param type The type to read the old value as.
+ * @return The old value.
+ * @since 2021/10/21
+ */
+#define sjme_atomicPointerSetType(atomic, value, type) \
+	((type)(sjme_atomicPointerSet(atomic, value)))
 
 /*--------------------------------------------------------------------------*/
 

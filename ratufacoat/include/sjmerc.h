@@ -30,6 +30,13 @@
 /** Stringify, do not use this internal one. */
 #define SJME_INTERNAL_STRINGIFY_X(x) #x
 
+/* Debugging? */
+#if !defined(SJME_DEBUG)
+	#if defined(DEBUG) || defined(_DEBUG)
+		#define SJME_DEBUG
+	#endif
+#endif
+
 /* Versioning identifier. */
 #if !defined(SQUIRRELJME_VERSION)
 	/** Version string. */

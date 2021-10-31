@@ -26,6 +26,7 @@ static const sjme_formatHandler sjme_packFormatHandler =
 {
 	.driverOffsetOfDetect = offsetof(sjme_packDriver, detect),
 	.driverOffsetOfInit = offsetof(sjme_packDriver, initInstance),
+	.driverOffsetOfDestroy = offsetof(sjme_packDriver, destroyInstance),
 	.driverList = (const void**)&sjme_packDrivers,
 	.sizeOfInstance = sizeof(sjme_packInstance),
 	.instanceOffsetOfFormat = offsetof(sjme_packInstance, format),
@@ -35,6 +36,11 @@ static const sjme_formatHandler sjme_packFormatHandler =
 sjme_jboolean sjme_packClose(sjme_packInstance* instance,
 	sjme_error* error)
 {
+	sjme_jboolean failingLib;
+	sjme_jboolean badFree;
+	sjme_jboolean badPackClose;
+	sjme_jint numLibs;
+	
 	if (instance == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
@@ -42,7 +48,33 @@ sjme_jboolean sjme_packClose(sjme_packInstance* instance,
 		return sjme_false;
 	}
 	
-	sjme_todo("Close?");
+	/* Close out any open libraries. */
+	numLibs = instance->numLibraries;
+	failingLib = sjme_false;
+	for (int i = 0; i < numLibs; i++)
+	{
+		/* Clear out the cache first. */
+		sjme_libraryInstance* library = sjme_atomicPointerSetType(
+			&instance->libraries[i], NULL, sjme_libraryInstance*);
+		if (library == NULL)
+			continue;
+		
+		/* Try closing the library. */
+		if (!sjme_libraryClose(library, error))
+			failingLib = sjme_true;
+	}
+	
+	/* Wipe out libraries. */
+	instance->numLibraries = -1;
+	badFree |= !sjme_free(instance->libraries, error);
+	instance->libraries = NULL;
+	
+	/* Perform normal pack close. */
+	badPackClose |= !sjme_formatClose(&sjme_packFormatHandler, instance,
+		error);
+	
+	/* Has there been a close failure? */
+	return !failingLib && !badFree;
 }
 
 sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
@@ -67,6 +99,7 @@ sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
 	/* Query the number of libraries to initialize the library cache. */
 	numLibs = (instance->driver->queryNumLibraries == NULL ? -1 :
 		instance->driver->queryNumLibraries(instance, error));
+	instance->numLibraries = numLibs;
 	
 	/* Initialize the library cache. */
 	if (numLibs >= 0)

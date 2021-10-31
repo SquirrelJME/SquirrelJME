@@ -31,6 +31,29 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Prints a debug message.
+ * 
+ * @param file The file printing from.
+ * @param line The line printing from.
+ * @param func The function printing from.
+ * @param message The @c printf style message.
+ * @param ... Any @c printf style arguments.
+ * @since 2021/10/31
+ */
+void sjme_messageR(const char* file, int line,
+	const char* func, const char* message, ...);
+	
+/**
+ * Prints a debug message
+ * 
+ * @param message The @c printf style message.
+ * @param ... Any @c printf style arguments.
+ * @since 2021/10/31 
+ */
+#define sjme_message(...) sjme_messageR(__FILE__, __LINE__, __func__, \
+	__VA_ARGS__)
+
+/**
  * Indicates a To-Do and then terminates the program.
  * 
  * @param file The file printing from.

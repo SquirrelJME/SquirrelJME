@@ -13,6 +13,11 @@
 #include "format/format.h"
 #include "memory.h"
 
+sjme_jboolean sjme_formatClose(const sjme_formatHandler* handler,
+	void* instance, sjme_error* error)
+{
+}
+
 sjme_jboolean sjme_formatOpen(const sjme_formatHandler* handler,
 	void** outInstance, const void* data, sjme_jint size,
 	sjme_error* error)

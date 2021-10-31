@@ -29,7 +29,9 @@ SJME_TEST_PROTOTYPE(testAtomic)
 	sjme_atomicInt integer;
 	sjme_atomicPointer pointer;
 	sjme_jint* pointerA;
+	sjme_jint* pointerB;
 	sjme_jint pointerValueA;
+	sjme_jint pointerValueB;
 	
 	/* Set value. */
 	sjme_atomicIntSet(&integer, VALUE_A);
@@ -46,45 +48,53 @@ SJME_TEST_PROTOTYPE(testAtomic)
 	if ((VALUE_A + ADD_VALUE) != sjme_atomicIntGet(&integer))
 		return FAIL_TEST(3);
 	
-	/* Revert value. */
-	sjme_atomicIntSet(&integer, VALUE_A);
+	/* Revert value, old should be the former value. */
+	if ((VALUE_A + ADD_VALUE) != sjme_atomicIntSet(&integer, VALUE_A))
+		return FAIL_TEST(4);
 	
 	/* Fail to change the conditional value. */
 	if (sjme_atomicIntCompareAndSet(&integer, VALUE_B, VALUE_A))
-		return FAIL_TEST(4);
+		return FAIL_TEST(5);
 	
 	/* Should still be the first value. */
 	if (VALUE_A != sjme_atomicIntGet(&integer))
-		return FAIL_TEST(5);
+		return FAIL_TEST(6);
 	
 	/* Successfully change the value. */
 	if (!sjme_atomicIntCompareAndSet(&integer, VALUE_A, VALUE_B))
-		return FAIL_TEST(6);
+		return FAIL_TEST(7);
 	
 	/* Should be the second value. */
 	if (VALUE_B != sjme_atomicIntGet(&integer))
-		return FAIL_TEST(7);
+		return FAIL_TEST(8);
 	
 	/* Setup integer value. */
 	pointerValueA = VALUE_A;
 	pointerA = &pointerValueA;
+	pointerValueB = VALUE_B;
+	pointerB = &pointerValueB;
 	
 	/* Set pointer value. */
 	sjme_atomicPointerSet(&pointer, pointerA);
 		
-	/** Read it back, it should be the same. */
+	/* Read it back, it should be the same. */
 	if (sjme_atomicPointerGet(&pointer) != pointerA)
-		return FAIL_TEST(8);
-	
-	/** Do the same but with a type specified. */
-	if (sjme_atomicPointerGetType(&pointer,
-		sjme_jint*) != pointerA)
 		return FAIL_TEST(9);
 	
-	/** Read from the value, it should be value A. */
+	/* Do the same but with a type specified. */
+	if (sjme_atomicPointerGetType(&pointer,
+		sjme_jint*) != pointerA)
+		return FAIL_TEST(10);
+	
+	/* Read from the value, it should be value A. */
 	if (*sjme_atomicPointerGetType(&pointer,
 		sjme_jint*) != VALUE_A)
-		return FAIL_TEST(10);
+		return FAIL_TEST(11);
+	
+	/* Setting the pointer should return the old value. */
+	if (pointerA != sjme_atomicPointerSetType(&pointer, pointerB,
+		sjme_jint*))
+		return FAIL_TEST(12);
 	
 	/* Everything is okay! */
 	return PASS_TEST();

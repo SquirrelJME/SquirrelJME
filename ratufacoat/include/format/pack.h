@@ -51,6 +51,9 @@ typedef struct sjme_packDriver
 	/** Initialization function. */
 	sjme_formatInitInstanceFunction initInstance;
 	
+	/** Destroy function. */
+	sjme_formatDestroyInstanceFunction destroyInstance;
+	
 	/** Queries the number of libraries in the pack file. */
 	sjme_jint (*queryNumLibraries)(sjme_packInstance* instance,
 		sjme_error* error);

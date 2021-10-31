@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "debug.h"
 #include "error.h"
 
 void sjme_clearError(sjme_error* error)
@@ -15,6 +16,9 @@ void sjme_clearError(sjme_error* error)
 	{
 		error->code = SJME_ERROR_NONE;
 		error->value = 0;
+		error->sourceFile = NULL;
+		error->sourceLine = 0;
+		error->sourceFunction = NULL;
 	}
 }
 
@@ -32,11 +36,21 @@ sjme_returnFail sjme_hasError(sjme_error* error)
 	return SJME_RETURN_SUCCESS;
 }
 
-void sjme_setError(sjme_error* error, sjme_errorCode code, sjme_jint value)
+void sjme_setErrorR(sjme_error* error, sjme_errorCode code, sjme_jint value,
+	const char* file, int line, const char* function)
 {
 	if (error != NULL)
 	{
 		error->code = code;
 		error->value = value;
+		error->sourceFile = file;
+		error->sourceLine = line;
+		error->sourceFunction = function;
 	}
+	
+	/* Print error state being set. */
+#if defined(SJME_DEBUG)
+	sjme_messageR(NULL, -1, NULL, "setError(%d, %d) at %s:%d (%s()).",
+		code, value, file, line, function);
+#endif
 }

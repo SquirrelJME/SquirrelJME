@@ -56,9 +56,10 @@ void* sjme_realloc(void* ptr, sjme_jint size, sjme_error* error);
  *
  * @param p The pointer to free.
  * @param error The error flag.
+ * @return if freeing was a success.
  * @since 2019/06/07
  */
-void sjme_free(void* p, sjme_error* error);
+sjme_jboolean sjme_free(void* p, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

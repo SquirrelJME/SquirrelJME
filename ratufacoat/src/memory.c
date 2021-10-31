@@ -128,7 +128,7 @@ void* sjme_realloc(void* ptr, sjme_jint size, sjme_error* error)
 	return rv;
 }
 
-void sjme_free(void* p, sjme_error* error)
+sjme_jboolean sjme_free(void* p, sjme_error* error)
 {
 	void* baseP;
 	sjme_jint size;
@@ -137,7 +137,7 @@ void sjme_free(void* p, sjme_error* error)
 	if (p == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		return;
+		return sjme_false;
 	}
 	
 	/* Base pointer which is size shifted. */
@@ -154,4 +154,6 @@ void sjme_free(void* p, sjme_error* error)
 	/* Use Standard C free. */
 	free(baseP);
 #endif
+	
+	return sjme_true;
 }

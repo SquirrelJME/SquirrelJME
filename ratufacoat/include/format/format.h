@@ -44,6 +44,9 @@ typedef struct sjme_formatHandler
 	/** Offset into the structure for initialization. */
 	sjme_jint driverOffsetOfInit;
 	
+	/** Offset into the structure for destruction. */
+	sjme_jint driverOffsetOfDestroy;
+	
 	/** List of drivers that are available. */
 	const void** driverList;
 	
@@ -72,13 +75,37 @@ typedef struct sjme_formatInstance
 } sjme_formatInstance;
 
 /**
+ * Function used for destroying instances.
+ * 
+ * @param instance The format instance used.
+ * @param error The error code.
+ * @return If successful or not.
+ * @since 2021/10/31
+ */
+typedef sjme_jboolean (*sjme_formatDestroyInstanceFunction)(
+	void* instance, sjme_error* error);
+
+/**
  * The function used for initializing instances.
  * 
  * @param instance The format instance used.
  * @param error The error code.
+ * @return If successful or not.
  * @since 2021/10/19
  */
 typedef sjme_jboolean (*sjme_formatInitInstanceFunction)(
+	void* instance, sjme_error* error);
+
+/**
+ * Closes the given format.
+ * 
+ * @param handler The handler used.
+ * @param instance The format instance.
+ * @param error The error state.
+ * @return If closing was a success or not.
+ * @since 2021/10/31
+ */
+sjme_jboolean sjme_formatClose(const sjme_formatHandler* handler,
 	void* instance, sjme_error* error);
 
 /**

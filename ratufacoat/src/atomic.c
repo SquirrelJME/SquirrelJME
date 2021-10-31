@@ -28,14 +28,15 @@ sjme_jint sjme_atomicIntGet(sjme_atomicInt* atomic)
 #endif
 }
 
-void sjme_atomicIntSet(sjme_atomicInt* atomic, sjme_jint value)
+sjme_jint sjme_atomicIntSet(sjme_atomicInt* atomic, sjme_jint value)
 {
 #if defined(SJME_ATOMIC_C11)
-	atomic_store(&atomic->value, value);
+	return atomic_exchange(&atomic->value, value);
 #elif defined(SJME_ATOMIC_GCC)
-	__atomic_store_n(&atomic->value, value, MEMORY_ORDER);
+	return __atomic_exchange_n(&atomic->value, value, MEMORY_ORDER);
 #elif defined(SJME_ATOMIC_WIN32)
-	InterlockedExchange((volatile LONG*)&atomic->value, value);
+	return (sjme_jint)InterlockedExchange(
+		(volatile LONG*)&atomic->value, value);
 #else
 	#error No sjme_atomicIntSet
 #endif
@@ -100,14 +101,15 @@ void* sjme_atomicPointerGet(sjme_atomicPointer* atomic)
 #endif
 }
 
-void sjme_atomicPointerSet(sjme_atomicPointer* atomic, void* value)
+void* sjme_atomicPointerSet(sjme_atomicPointer* atomic, void* value)
 {
 #if defined(SJME_ATOMIC_C11)
-	atomic_store(&atomic->value, value);
+	return atomic_exchange(&atomic->value, value);
 #elif defined(SJME_ATOMIC_GCC)
-	__atomic_store_n(&atomic->value, value, MEMORY_ORDER);
+	return __atomic_exchange_n(&atomic->value, value, MEMORY_ORDER);
 #elif defined(SJME_ATOMIC_WIN32)
-	InterlockedExchangePointer((volatile PVOID*)&atomic->value, (PVOID)value);
+	return (void*)InterlockedExchangePointer(
+		(volatile PVOID*)&atomic->value, (PVOID)value);
 #else
 	#error No sjme_atomicPointerSet
 #endif

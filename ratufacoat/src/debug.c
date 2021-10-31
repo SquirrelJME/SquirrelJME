@@ -15,6 +15,26 @@
 /** Debug buffer size for messages. */
 #define DEBUG_BUF 512
 
+void sjme_messageR(const char* file, int line,
+	const char* func, const char* message, ...)
+{
+	char buf[DEBUG_BUF];
+	va_list args;
+	
+	/* Load message buffer. */
+	va_start(args, message);
+	vsnprintf(buf, DEBUG_BUF, message, args);
+	va_end(args);
+	
+	/* Print output message. */
+	if (file != NULL || line > 0 || func != NULL) 
+		fprintf(stderr, "DB: (%s:%d in %s()): %s\n",
+			file, line, func, buf);
+	else
+		fprintf(stderr, "DB: %s\n",
+			buf);
+}
+
 sjme_returnNever sjme_todoR(const char* file, int line,
 	const char* func, const char* message, ...)
 {
@@ -27,8 +47,12 @@ sjme_returnNever sjme_todoR(const char* file, int line,
 	va_end(args);
 	
 	/* Print output message. */
-	fprintf(stderr, "TD: TODO Hit (%s:%d in %s()): %s\n",
-		file, line, func, buf);
+	if (file != NULL || line > 0 || func != NULL)
+		fprintf(stderr, "TD: TODO Hit (%s:%d in %s()): %s\n",
+			file, line, func, buf);
+	else
+		fprintf(stderr, "TD: TODO Hit: %s\n",
+			buf);
 	
 	/* Exit and stop. */
 	exit(EXIT_FAILURE);

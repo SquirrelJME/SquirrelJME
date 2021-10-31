@@ -184,6 +184,15 @@ typedef struct sjme_error
 	
 	/** The value of it. */
 	sjme_jint value;
+	
+	/** The source file. */
+	const char* sourceFile;
+	
+	/** The source line. */
+	sjme_jint sourceLine;
+	
+	/** The source function. */
+	const char* sourceFunction;
 } sjme_error;
 
 /**
@@ -219,9 +228,24 @@ sjme_returnFail sjme_hasError(sjme_error* error);
  * @param error The error to set.
  * @param code The error code.
  * @param value The error value.
+ * @param file The source file.
+ * @param line The source line.
+ * @param function The source function.
  * @since 2019/06/25
  */
-void sjme_setError(sjme_error* error, sjme_errorCode code, sjme_jint value);
+void sjme_setErrorR(sjme_error* error, sjme_errorCode code, sjme_jint value,
+	const char* file, int line, const char* function);
+
+/**
+ * Sets the error code using the current source position.
+ *
+ * @param error The error to set.
+ * @param code The error code.
+ * @param value The error value.
+ * @since 2019/06/25
+ */
+#define sjme_setError(error, code, value) \
+	sjme_setErrorR(error, code, value, __FILE__, __LINE__, __func__)
 
 /*--------------------------------------------------------------------------*/
 

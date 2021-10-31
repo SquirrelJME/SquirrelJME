@@ -48,6 +48,9 @@ typedef struct sjme_libraryDriver
 	
 	/** Initialization function. */
 	sjme_formatInitInstanceFunction initInstance;
+	
+	/** Destroy function. */
+	sjme_formatDestroyInstanceFunction destroyInstance;
 } sjme_libraryDriver;
 
 /**
@@ -66,6 +69,17 @@ struct sjme_libraryInstance
 	/** Instance state for the current driver. */
 	void* state;
 };
+
+/**
+ * Closes the given library instance.
+ * 
+ * @param instance The instance of the library to close. 
+ * @param error The error state if not closed.
+ * @return If the library was properly closed.
+ * @since 2021/10/31
+ */
+sjme_jboolean sjme_libraryClose(sjme_libraryInstance* instance,
+	sjme_error* error);
 
 /**
  * Opens the given library and makes an instance of it.

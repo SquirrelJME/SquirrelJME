@@ -28,11 +28,18 @@ static const sjme_formatHandler sjme_libraryFormatHandler =
 {
 	.driverOffsetOfDetect = offsetof(sjme_libraryDriver, detect),
 	.driverOffsetOfInit = offsetof(sjme_libraryDriver, initInstance),
+	.driverOffsetOfDestroy = offsetof(sjme_libraryDriver, destroyInstance),
 	.driverList = (const void**)&sjme_libraryDrivers,
 	.sizeOfInstance = sizeof(sjme_libraryInstance),
 	.instanceOffsetOfFormat = offsetof(sjme_libraryInstance, format),
 	.instanceOffsetOfState = offsetof(sjme_libraryInstance, state),
 };
+
+sjme_jboolean sjme_libraryClose(sjme_libraryInstance* instance,
+	sjme_error* error)
+{
+	sjme_todo("Close library?");
+}
 
 sjme_jboolean sjme_libraryOpen(sjme_libraryInstance** outInstance,
 	const void* data, sjme_jint size, sjme_error* error)
