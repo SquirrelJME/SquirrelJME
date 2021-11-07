@@ -54,7 +54,15 @@ typedef struct sjme_packDriver
 	/** Destroy function. */
 	sjme_formatDestroyInstanceFunction destroyInstance;
 	
-	/** Queries the number of libraries in the pack file. */
+	/**
+	 * Queries the number of libraries in the pack file.
+	 * 
+	 * @param instance The instance to query.
+	 * @param error The error state.
+	 * @return The number of libraries, will be a negative value if it could
+	 * not be assessed.
+	 * @since 2021/11/07
+	 */
 	sjme_jint (*queryNumLibraries)(sjme_packInstance* instance,
 		sjme_error* error);
 } sjme_packDriver;

@@ -31,7 +31,15 @@
 
 /* --------------------------------- COMMON ------------------------------- */
 
-static sjme_jboolean sjme_destroySqcInstance(sjme_sqcState** sqcInstancePtr,
+/**
+ * Destroys the SQC state and anything related to it.
+ * 
+ * @param sqcInstancePtr The instance to destroy. 
+ * @param error Any resultant error.
+ * @return If destruction was successful.
+ * @since 2021/11/07
+ */
+static sjme_jboolean sjme_sqcDestroy(sjme_sqcState** sqcInstancePtr,
 	sjme_error* error)
 {
 	if (sqcInstancePtr == NULL)
@@ -58,7 +66,16 @@ static sjme_jboolean sjme_destroySqcInstance(sjme_sqcState** sqcInstancePtr,
 	return sjme_true;
 }
 
-static sjme_jboolean sjme_initSqcInstance(sjme_formatInstance* formatInstance,
+/**
+ * Initializes the SQC instance.
+ * 
+ * @param formatInstance The format instance.
+ * @param sqcStatePtr The state pointer for the output.
+ * @param error The error state.
+ * @return If initializes was successful.
+ * @since 2021/11/07 
+ */
+static sjme_jboolean sjme_sqcInit(sjme_formatInstance* formatInstance,
 	void** sqcStatePtr, sjme_error* error)
 {
 	sjme_sqcState* state;
@@ -152,35 +169,59 @@ static sjme_jboolean sjme_sqcGetProperty(sjme_sqcState* sqcState,
  * @return If detected or not.
  * @since 2021/09/12
  */
-static sjme_jboolean sjme_detectSqcPack(const void* data, sjme_jint size,
+static sjme_jboolean sjme_sqcPackDetect(const void* data, sjme_jint size,
 	sjme_error* error)
 {
 	return sjme_detectMagicNumber(data, size, PACK_MAGIC_NUMBER, error);
 }
 
-static sjme_jboolean sjme_destroySqcPackInstance(void* instance,
+/**
+ * Destroys a pack library instance.
+ * 
+ * @param instance The instance to destroy.
+ * @param error The error state.
+ * @return If destruction was successful.
+ * @since 2021/11/07 
+ */
+static sjme_jboolean sjme_sqcPackDestroy(void* instance,
 	sjme_error* error)
 {
 	sjme_packInstance* libraryInstance = instance;
 	
-	return sjme_destroySqcInstance((sjme_sqcState**)&libraryInstance->state,
+	return sjme_sqcDestroy((sjme_sqcState**)&libraryInstance->state,
 		error); 
 }
 
-static sjme_jboolean sjme_initSqcPackInstance(void* instance,
+/**
+ * Initializes the SQC pack instance.
+ * 
+ * @param instance The instance to initialize.
+ * @param error The error state.
+ * @return If initialization was successful.
+ * @since 2021/11/07
+ */
+static sjme_jboolean sjme_sqcPackInit(void* instance,
 	sjme_error* error)
 {
 	sjme_packInstance* packInstance = instance;
 	
 	/* Use common initialization sequence. */
-	if (!sjme_initSqcInstance(&packInstance->format, &packInstance->state,
+	if (!sjme_sqcInit(&packInstance->format, &packInstance->state,
 		error))
 		return sjme_false;
 	
 	return sjme_true;
 }
 
-static sjme_jint sjme_packQueryNumLibraries(sjme_packInstance* instance,
+/**
+ * Queries the number of libraries which are in the SQC Pack file.
+ * 
+ * @param instance The instance to query. 
+ * @param error The error state.
+ * @return The number of queried libraries or {@code -1} on failure.
+ * @since 2021/11/07
+ */
+static sjme_jint sjme_sqcPackQueryNumLibraries(sjme_packInstance* instance,
 	sjme_error* error)
 {
 	sjme_sqcState* sqcState;
@@ -190,7 +231,7 @@ static sjme_jint sjme_packQueryNumLibraries(sjme_packInstance* instance,
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
 		
-		return sjme_false;
+		return -1;
 	}
 	
 	/* Read the property. */
@@ -200,7 +241,7 @@ static sjme_jint sjme_packQueryNumLibraries(sjme_packInstance* instance,
 	{
 		sjme_setError(error, SJME_ERROR_INVALID_NUM_LIBRARIES, value);
 		
-		return sjme_false;
+		return -1;
 	}
 	
 	/* Use the resultant value. */
@@ -209,10 +250,10 @@ static sjme_jint sjme_packQueryNumLibraries(sjme_packInstance* instance,
 
 const sjme_packDriver sjme_packSqcDriver =
 {
-	.detect = sjme_detectSqcPack,
-	.initInstance = sjme_initSqcPackInstance,
-	.destroyInstance = sjme_destroySqcPackInstance,
-	.queryNumLibraries = sjme_packQueryNumLibraries,
+	.detect = sjme_sqcPackDetect,
+	.initInstance = sjme_sqcPackInit,
+	.destroyInstance = sjme_sqcPackDestroy,
+	.queryNumLibraries = sjme_sqcPackQueryNumLibraries,
 };
 
 /* -------------------------------- LIBRARY ------------------------------- */
@@ -226,28 +267,44 @@ const sjme_packDriver sjme_packSqcDriver =
  * @return If detected or not.
  * @since 2021/09/12
  */
-static sjme_jboolean sjme_detectSqcLib(const void* data, sjme_jint size,
+static sjme_jboolean sjme_sqcLibraryDetect(const void* data, sjme_jint size,
 	sjme_error* error)
 {
 	return sjme_detectMagicNumber(data, size, JAR_MAGIC_NUMBER, error);
 }
 
-static sjme_jboolean sjme_destroySqcLibraryInstance(void* instance,
+/**
+ * Destroys a library instance of a SQC.
+ * 
+ * @param instance The target instance to destroy.
+ * @param error The error state.
+ * @return If destruction was successful.
+ * @since 2021/11/07
+ */
+static sjme_jboolean sjme_sqcLibraryDestroy(void* instance,
 	sjme_error* error)
 {
 	sjme_libraryInstance* libraryInstance = instance;
 	
-	return sjme_destroySqcInstance((sjme_sqcState**)&libraryInstance->state,
+	return sjme_sqcDestroy((sjme_sqcState**)&libraryInstance->state,
 		error); 
 }
 
-static sjme_jboolean sjme_initSqcLibraryInstance(void* instance,
+/**
+ * Initializes the state for an SQC Library.
+ * 
+ * @param instance The instance to initialize.
+ * @param error The error state.
+ * @return If initialization was successful.
+ * @since 2021/11/07
+ */
+static sjme_jboolean sjme_sqcLibraryInit(void* instance,
 	sjme_error* error)
 {
 	sjme_libraryInstance* libraryInstance = instance;
 	
 	/* Use common initialization sequence. */
-	if (!sjme_initSqcInstance(&libraryInstance->format,
+	if (!sjme_sqcInit(&libraryInstance->format,
 		&libraryInstance->state, error))
 		return sjme_false;
 	
@@ -256,7 +313,7 @@ static sjme_jboolean sjme_initSqcLibraryInstance(void* instance,
 
 const sjme_libraryDriver sjme_librarySqcDriver =
 {
-	.detect = sjme_detectSqcLib,
-	.initInstance = sjme_initSqcLibraryInstance,
-	.destroyInstance = sjme_destroySqcLibraryInstance,
+	.detect = sjme_sqcLibraryDetect,
+	.initInstance = sjme_sqcLibraryInit,
+	.destroyInstance = sjme_sqcLibraryDestroy,
 };
