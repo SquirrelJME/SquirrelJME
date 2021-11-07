@@ -8,7 +8,6 @@
 // -------------------------------------------------------------------------*/
 
 #include "format/sqc.h"
-#include "debug.h"
 #include "memory.h"
 #include "memchunk.h"
 
@@ -31,6 +30,33 @@
 #define SQC_BASE_PROPERTY_BYTES SJME_JINT_C(4)
 
 /* --------------------------------- COMMON ------------------------------- */
+
+static sjme_jboolean sjme_destroySqcInstance(sjme_sqcState** sqcInstancePtr,
+	sjme_error* error)
+{
+	if (sqcInstancePtr == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	/* This should not have already been cleared. */
+	if ((*sqcInstancePtr) == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_FORMAT_STATE, 0);
+		
+		return sjme_false;
+	}
+	
+	/* Cleanup. */
+	if (!sjme_free(*sqcInstancePtr, error))
+		return sjme_false;
+	
+	/* Destroy the reference to this. */ 
+	*sqcInstancePtr = NULL;
+	return sjme_true;
+}
 
 static sjme_jboolean sjme_initSqcInstance(sjme_formatInstance* formatInstance,
 	void** sqcStatePtr, sjme_error* error)
@@ -132,6 +158,15 @@ static sjme_jboolean sjme_detectSqcPack(const void* data, sjme_jint size,
 	return sjme_detectMagicNumber(data, size, PACK_MAGIC_NUMBER, error);
 }
 
+static sjme_jboolean sjme_destroySqcPackInstance(void* instance,
+	sjme_error* error)
+{
+	sjme_packInstance* libraryInstance = instance;
+	
+	return sjme_destroySqcInstance((sjme_sqcState**)&libraryInstance->state,
+		error); 
+}
+
 static sjme_jboolean sjme_initSqcPackInstance(void* instance,
 	sjme_error* error)
 {
@@ -176,6 +211,7 @@ const sjme_packDriver sjme_packSqcDriver =
 {
 	.detect = sjme_detectSqcPack,
 	.initInstance = sjme_initSqcPackInstance,
+	.destroyInstance = sjme_destroySqcPackInstance,
 	.queryNumLibraries = sjme_packQueryNumLibraries,
 };
 
@@ -196,6 +232,15 @@ static sjme_jboolean sjme_detectSqcLib(const void* data, sjme_jint size,
 	return sjme_detectMagicNumber(data, size, JAR_MAGIC_NUMBER, error);
 }
 
+static sjme_jboolean sjme_destroySqcLibraryInstance(void* instance,
+	sjme_error* error)
+{
+	sjme_libraryInstance* libraryInstance = instance;
+	
+	return sjme_destroySqcInstance((sjme_sqcState**)&libraryInstance->state,
+		error); 
+}
+
 static sjme_jboolean sjme_initSqcLibraryInstance(void* instance,
 	sjme_error* error)
 {
@@ -213,4 +258,5 @@ const sjme_libraryDriver sjme_librarySqcDriver =
 {
 	.detect = sjme_detectSqcLib,
 	.initInstance = sjme_initSqcLibraryInstance,
+	.destroyInstance = sjme_destroySqcLibraryInstance,
 };
