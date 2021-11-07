@@ -88,6 +88,9 @@ struct sjme_packInstance
 	
 	/** The set of cached libraries in the pack. */
 	sjme_atomicPointer* libraries;
+	
+	/** Counter for the pack instance. */
+	sjme_counter counter;
 };
 
 /**
@@ -113,6 +116,19 @@ sjme_jboolean sjme_packClose(sjme_packInstance* instance,
  */
 sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance, const void* data,
 	sjme_jint size, sjme_error* error);
+
+/**
+ * Opens a library within a pack file.
+ * 
+ * @param packInstance The instance of the pack file.
+ * @param outLibrary The output instance of the given library.
+ * @param index The index of the library to open.
+ * @param error The error state.
+ * @return If opening the library was successful.
+ * @since 2021/11/07
+ */
+sjme_jboolean sjme_packOpenLibrary(sjme_packInstance* packInstance,
+	sjme_libraryInstance** outLibrary, sjme_jint index, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

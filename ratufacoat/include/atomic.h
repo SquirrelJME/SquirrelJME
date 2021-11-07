@@ -132,7 +132,7 @@ sjme_jint sjme_atomicIntSet(sjme_atomicInt* atomic, sjme_jint value);
  * @return The value before adding.
  * @since 2021/03/06
  */
-sjme_jint sjme_atomicIntGetAndAdd(sjme_atomicInt* atomic, sjme_jint add);
+sjme_jint sjme_atomicIntGetThenAdd(sjme_atomicInt* atomic, sjme_jint add);
 
 /**
  * Sets the value of the given atomic provided the check value is a match,
@@ -144,7 +144,7 @@ sjme_jint sjme_atomicIntGetAndAdd(sjme_atomicInt* atomic, sjme_jint add);
  * @return If @c check matched and the atomic is set.
  * @since 2021/03/06
  */
-sjme_jboolean sjme_atomicIntCompareAndSet(sjme_atomicInt* atomic,
+sjme_jboolean sjme_atomicIntCompareThenSet(sjme_atomicInt* atomic,
 	sjme_jint check, sjme_jint set);
 
 /**

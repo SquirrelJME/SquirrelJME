@@ -17,8 +17,8 @@
 /** The library drivers which are available for usage. */
 static const sjme_libraryDriver* const sjme_libraryDrivers[] =
 {
-	&sjme_libraryZipDriver,
 	&sjme_librarySqcDriver,
+	&sjme_libraryZipDriver,
 	
 	NULL
 };
@@ -35,6 +35,28 @@ static const sjme_formatHandler sjme_libraryFormatHandler =
 	.instanceOffsetOfState = offsetof(sjme_libraryInstance, state),
 };
 
+
+/**
+ * Performs library garbage collection.
+ * 
+ * @param counter The counter used.
+ * @param error The error state.
+ * @return If collection was successful.
+ * @since 2021/11/07
+ */
+static sjme_jboolean sjme_libraryCollect(sjme_counter* counter,
+	sjme_error* error)
+{
+	if (counter == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	return sjme_libraryClose(counter->collectData, error);
+}
+
 sjme_jboolean sjme_libraryClose(sjme_libraryInstance* instance,
 	sjme_error* error)
 {
@@ -44,6 +66,8 @@ sjme_jboolean sjme_libraryClose(sjme_libraryInstance* instance,
 sjme_jboolean sjme_libraryOpen(sjme_libraryInstance** outInstance,
 	const void* data, sjme_jint size, sjme_error* error)
 {
+	sjme_libraryInstance* instance;
+	
 	/* Use common format handler. */
 	if (!sjme_formatOpen(&sjme_libraryFormatHandler,
 		(void**)outInstance, data, size, error))
@@ -54,7 +78,13 @@ sjme_jboolean sjme_libraryOpen(sjme_libraryInstance** outInstance,
 	}
 	
 	/* Copy the driver down. */
+	instance = (*outInstance);
 	(*outInstance)->driver = (*outInstance)->format.driver;
+	
+	/* Initialize the counter for garbage collection. */
+	instance->counter.collect = sjme_libraryCollect;
+	instance->counter.collectData = instance;
+	sjme_atomicIntGetThenAdd(&instance->counter.count, 1);
 	
 	/* All ready! */
 	return sjme_true;

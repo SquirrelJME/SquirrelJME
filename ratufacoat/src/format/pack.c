@@ -33,6 +33,26 @@ static const sjme_formatHandler sjme_packFormatHandler =
 	.instanceOffsetOfState = offsetof(sjme_packInstance, state),
 };
 
+/**
+ * Performs pack garbage collection.
+ * 
+ * @param counter The counter used.
+ * @param error The error state.
+ * @return If collection was successful.
+ * @since 2021/11/07
+ */
+static sjme_jboolean sjme_packCollect(sjme_counter* counter, sjme_error* error)
+{
+	if (counter == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	return sjme_packClose(counter->collectData, error);
+}
+
 sjme_jboolean sjme_packClose(sjme_packInstance* instance,
 	sjme_error* error)
 {
@@ -123,6 +143,17 @@ sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
 		return sjme_false;
 	}
 	
+	/* Initialize the counter for garbage collection. */
+	instance->counter.collect = sjme_packCollect;
+	instance->counter.collectData = instance;
+	sjme_atomicIntGetThenAdd(&instance->counter.count, 1);
+	
 	/* All ready! */
 	return sjme_true;
+}
+
+sjme_jboolean sjme_packOpenLibrary(sjme_packInstance* packInstance,
+	sjme_libraryInstance** outLibrary, sjme_jint index, sjme_error* error)
+{
+	sjme_todo("Open library?");
 }

@@ -24,7 +24,7 @@ sjme_jint sjme_atomicIntGet(sjme_atomicInt* atomic)
 #elif defined(SJME_ATOMIC_GCC)
 	return __atomic_load_n(&atomic->value, MEMORY_ORDER);
 #else
-	return sjme_atomicIntGetAndAdd(atomic, 0);
+	return sjme_atomicIntGetThenAdd(atomic, 0);
 #endif
 }
 
@@ -42,7 +42,7 @@ sjme_jint sjme_atomicIntSet(sjme_atomicInt* atomic, sjme_jint value)
 #endif
 }
 
-sjme_jint sjme_atomicIntGetAndAdd(sjme_atomicInt* atomic, sjme_jint add)
+sjme_jint sjme_atomicIntGetThenAdd(sjme_atomicInt* atomic, sjme_jint add)
 {
 #if defined(SJME_ATOMIC_C11)
 	return atomic_fetch_add(&atomic->value, add);
@@ -57,7 +57,7 @@ sjme_jint sjme_atomicIntGetAndAdd(sjme_atomicInt* atomic, sjme_jint add)
 #endif
 }
 
-sjme_jboolean sjme_atomicIntCompareAndSet(sjme_atomicInt* atomic,
+sjme_jboolean sjme_atomicIntCompareThenSet(sjme_atomicInt* atomic,
 	sjme_jint check, sjme_jint set)
 {
 #if defined(SJME_ATOMIC_C11)

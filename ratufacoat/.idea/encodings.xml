@@ -10,6 +10,7 @@
     <file url="file://$PROJECT_DIR$/include/builtin.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/cellfunc.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/corefont.h" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/include/counter.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/cpu.h" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/include/debug.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/error.h" charset="ISO-8859-1" />
@@ -49,6 +50,7 @@
     <file url="file://$PROJECT_DIR$/src/btooth.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/cellfunc.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/corefont.c" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/counter.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/cpu.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/debug.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/error.c" charset="ISO-8859-1" />

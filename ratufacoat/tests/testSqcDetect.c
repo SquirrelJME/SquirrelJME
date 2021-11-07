@@ -12,6 +12,7 @@
 #include "format/sqc.h"
 #include "builtin.h"
 #include "debug.h"
+#include "counter.h"
 
 /**
  * Tests that SQCs can be detected and opened.
@@ -22,6 +23,9 @@ SJME_TEST_PROTOTYPE(testSqcDetect)
 {
 	sjme_packInstance* pack;
 	sjme_sqcState* sqcState;
+	sjme_jint i;
+	sjme_libraryInstance* lib;
+	sjme_jboolean outActive;
 	
 	/* Needs built-in ROM to work properly. */
 	if (sjme_builtInRomSize <= 0)
@@ -60,6 +64,36 @@ SJME_TEST_PROTOTYPE(testSqcDetect)
 	/* Check for at least one library. */
 	if (pack->numLibraries <= 0)
 		return FAIL_TEST(8);
+	
+	/* Go through an open every library, to check that it is valid. */
+	for (i = 0; i < pack->numLibraries; i++)
+	{
+		/* Open the library. */
+		lib = NULL;
+		if (!sjme_packOpenLibrary(pack, &lib, i, &shim->error))
+			return FAIL_TEST(100 + i);
+		
+		/* Must have been set. */
+		if (lib == NULL)
+			return FAIL_TEST(200 + i);
+		
+		/* Must be at this index. */
+		if (lib->packIndex != i)
+			return FAIL_TEST(300 + i);
+		
+		/* Must be within this pack. */
+		if (lib->packOwner != pack)
+			return FAIL_TEST(400 + i);
+		
+		/* Clear up the library usage. */
+		outActive = sjme_true;
+		if (!sjme_counterDown(&lib->counter, &outActive, &shim->error))
+			return FAIL_TEST(500 + i);
+		
+		/* Must be inactive, since we only used this once. */
+		if (outActive != sjme_false)
+			return FAIL_TEST(600 + i);
+	}
 	
 	/* Cleanup at the end. */
 	if (!sjme_packClose(pack, &shim->error))

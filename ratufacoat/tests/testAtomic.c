@@ -41,7 +41,7 @@ SJME_TEST_PROTOTYPE(testAtomic)
 		return FAIL_TEST(1);
 	
 	/* Adding should return the old value but update it. */
-	if (VALUE_A != sjme_atomicIntGetAndAdd(&integer, ADD_VALUE))
+	if (VALUE_A != sjme_atomicIntGetThenAdd(&integer, ADD_VALUE))
 		return FAIL_TEST(2);
 	
 	/* Getting it should match the add plus the old value. */
@@ -53,7 +53,7 @@ SJME_TEST_PROTOTYPE(testAtomic)
 		return FAIL_TEST(4);
 	
 	/* Fail to change the conditional value. */
-	if (sjme_atomicIntCompareAndSet(&integer, VALUE_B, VALUE_A))
+	if (sjme_atomicIntCompareThenSet(&integer, VALUE_B, VALUE_A))
 		return FAIL_TEST(5);
 	
 	/* Should still be the first value. */
@@ -61,7 +61,7 @@ SJME_TEST_PROTOTYPE(testAtomic)
 		return FAIL_TEST(6);
 	
 	/* Successfully change the value. */
-	if (!sjme_atomicIntCompareAndSet(&integer, VALUE_A, VALUE_B))
+	if (!sjme_atomicIntCompareThenSet(&integer, VALUE_A, VALUE_B))
 		return FAIL_TEST(7);
 	
 	/* Should be the second value. */

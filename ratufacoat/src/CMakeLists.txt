@@ -31,6 +31,7 @@ add_library(SquirrelJMECore OBJECT
 	btooth.c
 	cellfunc.c
 	corefont.c
+	counter.c
 	cpu.c
 	datatype.c
 	debug.c

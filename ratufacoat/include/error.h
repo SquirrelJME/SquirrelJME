@@ -177,6 +177,9 @@ typedef enum sjme_errorCode
 	
 	/** The format is not within a valid state. */
 	SJME_ERROR_INVALID_FORMAT_STATE,
+	
+	/** Invalid counter state. */
+	SJME_ERROR_INVALID_COUNTER_STATE,
 } sjme_errorCode; 
 
 /** This represents an error. */

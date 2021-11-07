@@ -75,6 +75,7 @@ static const sjme_jvmErrorString sjme_jvmErrorStrings[] =
 	{SJME_ERROR_INVALID_NUM_LIBRARIES, "Invalid number of libraries"},
 	{SJME_ERROR_FAILED_TO_CLOSE_PACK, "Failed to close the pack file"},
 	{SJME_ERROR_INVALID_FORMAT_STATE, "The format is not within a valid state"},
+	{SJME_ERROR_INVALID_COUNTER_STATE, "Invalid counter state"},
 	
 	{SJME_ERROR_NONE, NULL}
 };

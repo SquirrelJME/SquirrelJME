@@ -17,6 +17,7 @@
 #define SQUIRRELJME_LIBRARY_H
 
 #include "sjmerc.h"
+#include "counter.h"
 #include "error.h"
 #include "format/detect.h"
 #include "format/format.h"
@@ -68,6 +69,15 @@ struct sjme_libraryInstance
 	
 	/** Instance state for the current driver. */
 	void* state;
+	
+	/** Counter for the library instance. */
+	sjme_counter counter;
+	
+	/** The pointer to the pack this is within, will be {@code NULL} if not. */
+	void* packOwner;
+	
+	/** The index within the pack file, will be {@code -1} if not in a pack. */
+	sjme_jint packIndex;
 };
 
 /**
