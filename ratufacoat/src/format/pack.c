@@ -48,9 +48,11 @@ sjme_jboolean sjme_packClose(sjme_packInstance* instance,
 		return sjme_false;
 	}
 	
+	/* Make sure these are cleared! */
+	failingLib = badFree = badPackClose = sjme_false;
+	
 	/* Close out any open libraries. */
 	numLibs = instance->numLibraries;
-	failingLib = sjme_false;
 	for (int i = 0; i < numLibs; i++)
 	{
 		/* Clear out the cache first. */
