@@ -101,10 +101,11 @@ sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
 		instance->driver->queryNumLibraries(instance, error));
 	instance->numLibraries = numLibs;
 	
-	/* Initialize the library cache. */
+	/* Initialize the library cache, keep a minimum of a single byte as
+	 * we cannot just allocate otherwise if there is nothing... */
 	if (numLibs >= 0)
 		instance->libraries = sjme_malloc(
-			sizeof(*instance->libraries) * numLibs, error);
+			max(1, sizeof(*instance->libraries) * numLibs), error);
 	
 	/* Failed to initialize either? */
 	if (numLibs < 0 || instance->libraries == NULL)

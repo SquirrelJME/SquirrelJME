@@ -63,7 +63,7 @@ SJME_TEST_PROTOTYPE(testSqcDetect)
 	
 	/* Cleanup at the end. */
 	if (!sjme_packClose(pack, &shim->error))
-		return FAIL_TEST(99);
+		return FAIL_TEST(9);
 	
 	return PASS_TEST();
 }

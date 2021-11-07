@@ -472,13 +472,13 @@ public final class ChunkUtils
 	 * @param __chunk The chunk to write to.
 	 * @param __magic The magic number.
 	 * @param __formatVersion The format version.
-	 * @param __propertyCount The number of properties to store.
+	 * @param __properties The properties to store.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/06
 	 */
 	public static void storeCommonSharedHeader(ChunkSection __chunk,
-		int __magic, int __formatVersion, int __propertyCount)
+		int __magic, int __formatVersion, PropertySpan __properties)
 		throws IOException, NullPointerException
 	{
 		if (__chunk == null)
@@ -489,7 +489,7 @@ public final class ChunkUtils
 		
 		// How the format is laid out and the number of used properties
 		__chunk.writeUnsignedShortChecked(__formatVersion);
-		__chunk.writeUnsignedShortChecked(__propertyCount);
+		__chunk.writeUnsignedShortChecked(__properties.count());
 	}
 	
 	/**

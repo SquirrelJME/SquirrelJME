@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.summercoat.ld.pack.JarRom;
 import cc.squirreljme.jvm.summercoat.ld.pack.PackRom;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
+import net.multiphasicapps.io.ChunkDataType;
 import net.multiphasicapps.io.ChunkSection;
 import net.multiphasicapps.io.ChunkWriter;
 
@@ -94,14 +95,21 @@ public final class StandardPackWriter
 	public void initialize()
 		throws IOException
 	{
+		PropertySpan properties = this.header.properties;
+		ChunkSection headerChunk = this.headerChunk;
+		
 		// Store shared header information
-		ChunkUtils.storeCommonSharedHeader(this.headerChunk,
+		ChunkUtils.storeCommonSharedHeader(headerChunk,
 			this.magic,
-			ClassInfoConstants.CLASS_VERSION_20201129,
-			this.header.properties.count());
+			ClassInfoConstants.CLASS_VERSION_20201129, properties);
 		
 		// The first property is always the version
 		this.header.set(0, ClassInfoConstants.CLASS_VERSION_20201129);
+		
+		// Write all of the place holder for future for the property table
+		for (int i = 0, n = properties.count(); i < n; i++)
+			headerChunk.writeFuture(ChunkDataType.INTEGER,
+				properties.get(i));
 	}
 	
 	/**

@@ -16,7 +16,43 @@
 sjme_jboolean sjme_formatClose(const sjme_formatHandler* handler,
 	void* instance, sjme_error* error)
 {
-	sjme_todo("Format close");
+	sjme_formatInstance* formatInstance;
+	sjme_formatDestroyInstanceFunction destroyFunc;
+	
+	if (handler == NULL || instance == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	/* Format instance. */
+	formatInstance = &sjme_unoffsetof(sjme_formatInstance,
+		handler->instanceOffsetOfFormat, instance);
+	if (formatInstance == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_FORMAT_STATE, 1);
+		
+		return sjme_false;
+	}
+	
+	/* Perform destruction, if available. */
+	destroyFunc = sjme_unoffsetof(sjme_formatDestroyInstanceFunction,
+		handler->driverOffsetOfDestroy, formatInstance->driver);
+	if (destroyFunc != NULL)
+		if (!destroyFunc(instance, error))
+		{
+			sjme_setError(error, SJME_ERROR_INVALID_FORMAT_STATE, 2);
+			
+			return sjme_false;
+		}
+	
+	/* Try to clear the instance up. */
+	if (!sjme_free(instance, error))
+		return sjme_false;
+	
+	/* Is okay otherwise. */
+	return sjme_true;
 }
 
 sjme_jboolean sjme_formatOpen(const sjme_formatHandler* handler,

@@ -174,6 +174,9 @@ typedef enum sjme_errorCode
 	
 	/** Could not close pack file. */
 	SJME_ERROR_FAILED_TO_CLOSE_PACK,
+	
+	/** The format is not within a valid state. */
+	SJME_ERROR_INVALID_FORMAT_STATE,
 } sjme_errorCode; 
 
 /** This represents an error. */

@@ -10,9 +10,9 @@
 package cc.squirreljme.jvm.aot.summercoat.base;
 
 import cc.squirreljme.jvm.summercoat.ld.pack.TableOfContents;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import net.multiphasicapps.collections.UnmodifiableList;
 import net.multiphasicapps.io.ChunkFuture;
@@ -28,7 +28,7 @@ public final class TableOfContentsWriter
 	protected final int spanLength;
 	
 	/** Entries within the table of contents. */
-	private final List<TableOfContentsEntry> _entries =
+	final List<TableOfContentsEntry> _entries =
 		new ArrayList<>();
 	
 	/**
@@ -108,28 +108,7 @@ public final class TableOfContentsWriter
 	 */
 	public ChunkFuture futureCount()
 	{
-		return new __TocFutureCount__();
-	}
-	
-	/**
-	 * The future size for a chunk.
-	 * 
-	 * @since 2021/09/06
-	 */
-	private class __TocFutureCount__
-		implements ChunkFuture
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/09/06
-		 */
-		@Override
-		public int get()
-		{
-			synchronized (TableOfContentsWriter.this)
-			{
-				return TableOfContentsWriter.this._entries.size();
-			}
-		}
+		Debugging.debugNote("FUTURE Made?");
+		return new __TocFutureCount__(this);
 	}
 }
