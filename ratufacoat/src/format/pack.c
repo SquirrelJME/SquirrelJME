@@ -25,8 +25,8 @@ static const sjme_packDriver* const sjme_packDrivers[] =
 static const sjme_formatHandler sjme_packFormatHandler =
 {
 	.driverOffsetOfDetect = offsetof(sjme_packDriver, detect),
-	.driverOffsetOfInit = offsetof(sjme_packDriver, initInstance),
-	.driverOffsetOfDestroy = offsetof(sjme_packDriver, destroyInstance),
+	.driverOffsetOfInit = offsetof(sjme_packDriver, init),
+	.driverOffsetOfDestroy = offsetof(sjme_packDriver, destroy),
 	.driverList = (const void**)&sjme_packDrivers,
 	.sizeOfInstance = sizeof(sjme_packInstance),
 	.instanceOffsetOfFormat = offsetof(sjme_packInstance, format),

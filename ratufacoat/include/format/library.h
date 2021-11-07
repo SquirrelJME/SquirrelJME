@@ -47,10 +47,10 @@ typedef struct sjme_libraryDriver
 	sjme_formatDetectFunction detect;
 	
 	/** Initialization function. */
-	sjme_formatInitInstanceFunction initInstance;
+	sjme_formatInitFunction init;
 	
 	/** Destroy function. */
-	sjme_formatDestroyInstanceFunction destroyInstance;
+	sjme_formatDestroyFunction destroy;
 } sjme_libraryDriver;
 
 /**

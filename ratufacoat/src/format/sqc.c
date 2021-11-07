@@ -251,8 +251,8 @@ static sjme_jint sjme_sqcPackQueryNumLibraries(sjme_packInstance* instance,
 const sjme_packDriver sjme_packSqcDriver =
 {
 	.detect = sjme_sqcPackDetect,
-	.initInstance = sjme_sqcPackInit,
-	.destroyInstance = sjme_sqcPackDestroy,
+	.init = sjme_sqcPackInit,
+	.destroy = sjme_sqcPackDestroy,
 	.queryNumLibraries = sjme_sqcPackQueryNumLibraries,
 };
 
@@ -314,6 +314,6 @@ static sjme_jboolean sjme_sqcLibraryInit(void* instance,
 const sjme_libraryDriver sjme_librarySqcDriver =
 {
 	.detect = sjme_sqcLibraryDetect,
-	.initInstance = sjme_sqcLibraryInit,
-	.destroyInstance = sjme_sqcLibraryDestroy,
+	.init = sjme_sqcLibraryInit,
+	.destroy = sjme_sqcLibraryDestroy,
 };

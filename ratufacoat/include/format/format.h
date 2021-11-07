@@ -82,7 +82,7 @@ typedef struct sjme_formatInstance
  * @return If successful or not.
  * @since 2021/10/31
  */
-typedef sjme_jboolean (*sjme_formatDestroyInstanceFunction)(
+typedef sjme_jboolean (*sjme_formatDestroyFunction)(
 	void* instance, sjme_error* error);
 
 /**
@@ -93,7 +93,7 @@ typedef sjme_jboolean (*sjme_formatDestroyInstanceFunction)(
  * @return If successful or not.
  * @since 2021/10/19
  */
-typedef sjme_jboolean (*sjme_formatInitInstanceFunction)(
+typedef sjme_jboolean (*sjme_formatInitFunction)(
 	void* instance, sjme_error* error);
 
 /**

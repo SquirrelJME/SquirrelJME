@@ -17,7 +17,7 @@ sjme_jboolean sjme_formatClose(const sjme_formatHandler* handler,
 	void* instance, sjme_error* error)
 {
 	sjme_formatInstance* formatInstance;
-	sjme_formatDestroyInstanceFunction destroyFunc;
+	sjme_formatDestroyFunction destroyFunc;
 	
 	if (handler == NULL || instance == NULL)
 	{
@@ -37,7 +37,7 @@ sjme_jboolean sjme_formatClose(const sjme_formatHandler* handler,
 	}
 	
 	/* Perform destruction, if available. */
-	destroyFunc = sjme_unoffsetof(sjme_formatDestroyInstanceFunction,
+	destroyFunc = sjme_unoffsetof(sjme_formatDestroyFunction,
 		handler->driverOffsetOfDestroy, formatInstance->driver);
 	if (destroyFunc != NULL)
 		if (!destroyFunc(instance, error))
@@ -62,7 +62,7 @@ sjme_jboolean sjme_formatOpen(const sjme_formatHandler* handler,
 	const void* tryDriver;
 	void* instance;
 	sjme_formatInstance* formatInstance;
-	sjme_formatInitInstanceFunction initFunc;
+	sjme_formatInitFunction initFunc;
 	
 	/* Try to detect the format using the common means. */
 	if (!sjme_detectFormat(data, size, &tryDriver,
@@ -86,7 +86,7 @@ sjme_jboolean sjme_formatOpen(const sjme_formatHandler* handler,
 	formatInstance->chunk.size = size;
 	
 	/* Get the function used for initialization. */
-	initFunc = sjme_unoffsetof(sjme_formatInitInstanceFunction,
+	initFunc = sjme_unoffsetof(sjme_formatInitFunction,
 		handler->driverOffsetOfInit, tryDriver);
 	
 	/* Try to initialize the driver, if that fails then oops. */

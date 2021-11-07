@@ -27,8 +27,8 @@ static const sjme_libraryDriver* const sjme_libraryDrivers[] =
 static const sjme_formatHandler sjme_libraryFormatHandler =
 {
 	.driverOffsetOfDetect = offsetof(sjme_libraryDriver, detect),
-	.driverOffsetOfInit = offsetof(sjme_libraryDriver, initInstance),
-	.driverOffsetOfDestroy = offsetof(sjme_libraryDriver, destroyInstance),
+	.driverOffsetOfInit = offsetof(sjme_libraryDriver, init),
+	.driverOffsetOfDestroy = offsetof(sjme_libraryDriver, destroy),
 	.driverList = (const void**)&sjme_libraryDrivers,
 	.sizeOfInstance = sizeof(sjme_libraryInstance),
 	.instanceOffsetOfFormat = offsetof(sjme_libraryInstance, format),

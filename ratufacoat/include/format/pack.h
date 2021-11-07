@@ -49,10 +49,10 @@ typedef struct sjme_packDriver
 	sjme_formatDetectFunction detect;
 	
 	/** Initialization function. */
-	sjme_formatInitInstanceFunction initInstance;
+	sjme_formatInitFunction init;
 	
 	/** Destroy function. */
-	sjme_formatDestroyInstanceFunction destroyInstance;
+	sjme_formatDestroyFunction destroy;
 	
 	/**
 	 * Queries the number of libraries in the pack file.
