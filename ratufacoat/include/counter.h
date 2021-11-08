@@ -79,6 +79,16 @@ struct sjme_counter
 sjme_jboolean sjme_counterDown(sjme_counter* counter, sjme_jboolean* outActive,
 	sjme_error* error); 
 
+/**
+ * Increases the reference counter.
+ * 
+ * @param counter The counter to increment.
+ * @param error The error state.
+ * @return If the counter was successfully incremented.
+ * @since 2021/11/07
+ */
+sjme_jboolean sjme_counterUp(sjme_counter* counter, sjme_error* error);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

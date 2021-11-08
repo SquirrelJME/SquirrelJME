@@ -9,6 +9,9 @@
 
 #include "counter.h"
 
+/** Value to set for invalid counter values. */
+#define SJME_INVALID_COUNTER_VALUE SJME_JINT_C(-200)
+
 sjme_jboolean sjme_counterDown(sjme_counter* counter, sjme_jboolean* outActive,
 	sjme_error* error)
 {
@@ -46,7 +49,7 @@ sjme_jboolean sjme_counterDown(sjme_counter* counter, sjme_jboolean* outActive,
 				return sjme_false;
 		
 		/* Invalidate the state. */
-		sjme_atomicIntSet(&counter->count, -200);
+		sjme_atomicIntSet(&counter->count, SJME_INVALID_COUNTER_VALUE);
 		counter->collectData = NULL;
 		counter->collect = NULL;
 		
@@ -57,5 +60,32 @@ sjme_jboolean sjme_counterDown(sjme_counter* counter, sjme_jboolean* outActive,
 	/* It has not. */
 	if (outActive != NULL)
 		*outActive = sjme_true;
+	return sjme_true;
+}
+
+sjme_jboolean sjme_counterUp(sjme_counter* counter, sjme_error* error)
+{
+	sjme_jint oldCount;
+	
+	if (counter == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	/* Count up! Ensure the counter is not in an invalid state. */
+	oldCount = sjme_atomicIntGetThenAdd(&counter->count, 1);
+	if (oldCount <= 0)
+	{
+		/* Invalidate the counter. */
+		sjme_atomicIntSet(&counter->count, SJME_INVALID_COUNTER_VALUE);
+		
+		sjme_setError(error, SJME_ERROR_INVALID_COUNTER_STATE, oldCount);
+		
+		return sjme_false;
+	}
+	
+	/* Count up was successful. */
 	return sjme_true;
 }

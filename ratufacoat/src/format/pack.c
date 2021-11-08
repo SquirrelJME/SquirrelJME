@@ -155,5 +155,63 @@ sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
 sjme_jboolean sjme_packOpenLibrary(sjme_packInstance* packInstance,
 	sjme_libraryInstance** outLibrary, sjme_jint index, sjme_error* error)
 {
-	sjme_todo("Open library?");
+	sjme_libraryInstance* lib;
+	sjme_libraryInstance* oldLib;
+	sjme_memChunk chunk;
+	
+	if (packInstance == NULL || outLibrary == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	/* Attempting to open an invalid library? */
+	if (index < 0 || index >= packInstance->numLibraries)
+	{
+		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
+		
+		return sjme_false;
+	}
+	
+	/* Has this library already been cached? */
+	lib = sjme_atomicPointerGet(&packInstance->libraries[index]);
+	if (lib != NULL)
+	{
+		/* Reference the library and count it up, we are using it. */
+		*outLibrary = lib;
+		if (!sjme_counterUp(&lib->counter, error))
+			return sjme_false;
+		
+		return sjme_true;
+	}
+	
+	/* Attempt to load the given library. */
+	memset(&chunk, 0, sizeof(chunk));
+	if (packInstance->driver->locateChunk != NULL &&
+		!packInstance->driver->locateChunk(packInstance, &chunk, index, error))
+	{
+		if (!sjme_hasError(error))
+			sjme_setError(error, SJME_ERROR_BAD_LOAD_LIBRARY, index);
+		
+		return sjme_false;
+	}
+	
+	/* Open the library from the chunk. */
+	if (!sjme_libraryOpen(&lib, chunk.data, chunk.size, error))
+	{
+		if (!sjme_hasError(error))
+			sjme_setError(error, SJME_ERROR_BAD_LOAD_LIBRARY, -index);
+		
+		return sjme_false;
+	}
+	
+	/* Cache the chunk for later usage. */
+	oldLib = sjme_atomicPointerSet(&packInstance->libraries[index], lib);
+	if (oldLib != NULL)
+		sjme_message("There was an old library used here: %p?", oldLib);
+	
+	/* This library is available for usage. */
+	*outLibrary = lib;
+	return sjme_true;
 }

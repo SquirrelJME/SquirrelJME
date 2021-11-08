@@ -65,6 +65,20 @@ typedef struct sjme_packDriver
 	 */
 	sjme_jint (*queryNumLibraries)(sjme_packInstance* instance,
 		sjme_error* error);
+	
+	/**
+	 * Attempts to locate a chunk for the given library, so that it may be
+	 * read accordingly.
+	 * 
+	 * @param instance The pack instance we are loading for.
+	 * @param chunk The chunk to be read.
+	 * @param index The index to locate.
+	 * @param error The error state.
+	 * @return If the chunk was located.
+	 * @since 2021/11/07
+	 */
+	sjme_jboolean (*locateChunk)(sjme_packInstance* instance,
+		sjme_memChunk* chunk, sjme_jint index, sjme_error* error);
 } sjme_packDriver;
 
 /**

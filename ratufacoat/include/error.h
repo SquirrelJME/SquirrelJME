@@ -180,6 +180,9 @@ typedef enum sjme_errorCode
 	
 	/** Invalid counter state. */
 	SJME_ERROR_INVALID_COUNTER_STATE,
+	
+	/** Invalid load of a library. */
+	SJME_ERROR_BAD_LOAD_LIBRARY,
 } sjme_errorCode; 
 
 /** This represents an error. */
