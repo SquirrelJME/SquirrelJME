@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "debug.h"
 #include "format/sqc.h"
 #include "memory.h"
 #include "memchunk.h"
@@ -39,7 +40,7 @@
  * @return If destruction was successful.
  * @since 2021/11/07
  */
-static sjme_jboolean sjme_sqcDestroy(sjme_sqcState** sqcInstancePtr,
+static sjme_jboolean sjme_sqcDestroy(sjme_sqcState* sqcInstancePtr,
 	sjme_error* error)
 {
 	if (sqcInstancePtr == NULL)
@@ -49,20 +50,7 @@ static sjme_jboolean sjme_sqcDestroy(sjme_sqcState** sqcInstancePtr,
 		return sjme_false;
 	}
 	
-	/* This should not have already been cleared. */
-	if ((*sqcInstancePtr) == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_FORMAT_STATE, 0);
-		
-		return sjme_false;
-	}
-	
-	/* Cleanup. */
-	if (!sjme_free(*sqcInstancePtr, error))
-		return sjme_false;
-	
-	/* Destroy the reference to this. */ 
-	*sqcInstancePtr = NULL;
+	/* Finished destruction. */
 	return sjme_true;
 }
 
@@ -70,19 +58,18 @@ static sjme_jboolean sjme_sqcDestroy(sjme_sqcState** sqcInstancePtr,
  * Initializes the SQC instance.
  * 
  * @param formatInstance The format instance.
- * @param sqcStatePtr The state pointer for the output.
+ * @param sqcState The state pointer for the output.
  * @param error The error state.
  * @return If initializes was successful.
  * @since 2021/11/07 
  */
 static sjme_jboolean sjme_sqcInit(sjme_formatInstance* formatInstance,
-	void** sqcStatePtr, sjme_error* error)
+	sjme_sqcState* sqcState, sjme_error* error)
 {
-	sjme_sqcState* state;
 	sjme_jshort classVersion, numProperties;
 	
 	/* Check. */
-	if (sqcStatePtr == NULL)
+	if (sqcState == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
 		return sjme_false;
@@ -106,18 +93,13 @@ static sjme_jboolean sjme_sqcInit(sjme_formatInstance* formatInstance,
 		SQC_NUM_PROPERTIES_OFFSET, &numProperties, error))
 		return sjme_false;
 	
-	/* Allocate state. */
-	state = sjme_malloc(sizeof(*state), error);
-	if (state == NULL)
-		return sjme_false;
-	
 	/* Load state with SQC properties. */
-	state->chunk = &formatInstance->chunk;
-	state->classVersion = classVersion;
-	state->numProperties = ((sjme_jint)numProperties) & SJME_JINT_C(0xFFFF);
+	sqcState->chunk = &formatInstance->chunk;
+	sqcState->classVersion = classVersion;
+	sqcState->numProperties = ((sjme_jint)numProperties) &
+		SJME_JINT_C(0xFFFF);
 	
 	/* Everything is okay. */
-	*sqcStatePtr = state;
 	return sjme_true;
 }
 
@@ -186,10 +168,19 @@ static sjme_jboolean sjme_sqcPackDetect(const void* data, sjme_jint size,
 static sjme_jboolean sjme_sqcPackDestroy(void* instance,
 	sjme_error* error)
 {
-	sjme_packInstance* libraryInstance = instance;
+	sjme_packInstance* packInstance = instance;
+	sjme_sqcPackState* sqcPackState = packInstance->state;
 	
-	return sjme_sqcDestroy((sjme_sqcState**)&libraryInstance->state,
-		error); 
+	/* Destroy the base SQC state. */
+	if (!sjme_sqcDestroy(&sqcPackState->sqcState, error))
+		return sjme_false;
+	
+	/* Finish destroying the pack. */
+	if (!sjme_free(packInstance->state, error))
+		return sjme_false;
+	
+	/* Destruction happened. */
+	return sjme_true;
 }
 
 /**
@@ -204,13 +195,53 @@ static sjme_jboolean sjme_sqcPackInit(void* instance,
 	sjme_error* error)
 {
 	sjme_packInstance* packInstance = instance;
+	sjme_sqcPackState* sqcPackState;
+	
+	/* Allocate state storage. */
+	sqcPackState = sjme_malloc(sizeof(*sqcPackState), error);
+	if (sqcPackState == NULL)
+		return sjme_false;
+	
+	/* Set instance used. */
+	packInstance->state = sqcPackState;
 	
 	/* Use common initialization sequence. */
-	if (!sjme_sqcInit(&packInstance->format, &packInstance->state,
+	if (!sjme_sqcInit(&packInstance->format, &sqcPackState->sqcState,
 		error))
 		return sjme_false;
 	
 	return sjme_true;
+}
+
+/**
+ * Locates the SQC chunk within a pack.
+ * 
+ * @param instance The instance to load from.
+ * @param outChunk The resultant chunk.
+ * @param index The index of the chunk to lookup.
+ * @param error The error state.
+ * @return If the chunk was successfully located.
+ * @since 2021/11/07
+ */
+sjme_jboolean sjme_sqcPackLocateChunk(sjme_packInstance* instance,
+	sjme_memChunk* outChunk, sjme_jint index, sjme_error* error)
+{
+	if (instance == NULL || outChunk == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	/* Out of bounds? */
+	if (index < 0 || index > instance->numLibraries)
+	{
+		sjme_setError(error, SJME_ERROR_INVALIDARG, index);
+		
+		return sjme_false;
+	}
+	
+	sjme_todo("Locate chunk??");
 }
 
 /**
@@ -224,7 +255,7 @@ static sjme_jboolean sjme_sqcPackInit(void* instance,
 static sjme_jint sjme_sqcPackQueryNumLibraries(sjme_packInstance* instance,
 	sjme_error* error)
 {
-	sjme_sqcState* sqcState;
+	sjme_sqcPackState* sqcPackState;
 	sjme_jint value = -1;
 	
 	if (instance == NULL)
@@ -234,10 +265,12 @@ static sjme_jint sjme_sqcPackQueryNumLibraries(sjme_packInstance* instance,
 		return -1;
 	}
 	
+	/* Get the pack state. */
+	sqcPackState = instance->state;
+	
 	/* Read the property. */
-	sqcState = (sjme_sqcState*)instance->state;
-	if (!sjme_sqcGetProperty(sqcState, SJME_PACK_COUNT_TOC_INDEX, &value,
-		error) || value < 0)
+	if (!sjme_sqcGetProperty(&sqcPackState->sqcState,
+		SJME_PACK_COUNT_TOC_INDEX, &value, error) || value < 0)
 	{
 		sjme_setError(error, SJME_ERROR_INVALID_NUM_LIBRARIES, value);
 		
@@ -254,6 +287,7 @@ const sjme_packDriver sjme_packSqcDriver =
 	.init = sjme_sqcPackInit,
 	.destroy = sjme_sqcPackDestroy,
 	.queryNumLibraries = sjme_sqcPackQueryNumLibraries,
+	.locateChunk = sjme_sqcPackLocateChunk,
 };
 
 /* -------------------------------- LIBRARY ------------------------------- */
@@ -285,9 +319,18 @@ static sjme_jboolean sjme_sqcLibraryDestroy(void* instance,
 	sjme_error* error)
 {
 	sjme_libraryInstance* libraryInstance = instance;
+	sjme_sqcLibraryState* sqcLibraryState = libraryInstance->state;
 	
-	return sjme_sqcDestroy((sjme_sqcState**)&libraryInstance->state,
-		error); 
+	/* Destroy the base SQC state. */
+	if (!sjme_sqcDestroy(&sqcLibraryState->sqcState, error))
+		return sjme_false;
+	
+	/* Finish destroying the library. */
+	if (!sjme_free(libraryInstance->state, error))
+		return sjme_false;
+	
+	/* Destruction happened. */
+	return sjme_true;
 }
 
 /**
@@ -302,10 +345,19 @@ static sjme_jboolean sjme_sqcLibraryInit(void* instance,
 	sjme_error* error)
 {
 	sjme_libraryInstance* libraryInstance = instance;
+	sjme_sqcLibraryState* sqcLibraryState;
+	
+	/* Allocate state storage. */
+	sqcLibraryState = sjme_malloc(sizeof(*sqcLibraryState), error);
+	if (sqcLibraryState == NULL)
+		return sjme_false;
+		
+	/* Set instance used. */
+	libraryInstance->state = sqcLibraryState;
 	
 	/* Use common initialization sequence. */
 	if (!sjme_sqcInit(&libraryInstance->format,
-		&libraryInstance->state, error))
+		&sqcLibraryState->sqcState, error))
 		return sjme_false;
 	
 	return sjme_true;

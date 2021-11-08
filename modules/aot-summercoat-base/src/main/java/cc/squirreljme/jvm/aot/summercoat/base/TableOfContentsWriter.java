@@ -108,7 +108,6 @@ public final class TableOfContentsWriter
 	 */
 	public ChunkFuture futureCount()
 	{
-		Debugging.debugNote("FUTURE Made?");
 		return new __TocFutureCount__(this);
 	}
 }

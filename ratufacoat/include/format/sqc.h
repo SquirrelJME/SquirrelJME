@@ -53,6 +53,46 @@ typedef struct sjme_sqcState
 	sjme_jint numProperties;
 } sjme_sqcState;
 
+/**
+ * This contains the information on the table of contents within an SQC, note
+ * that there may be multiple table of contents depending on the items used.
+ * 
+ * @since 2021/11/07
+ */
+typedef struct sjme_sqcToc
+{
+	/** The table of contents chunk, where this chunk is in memory. */
+	sjme_memChunk chunk;
+	
+	/** The number of entries within this TOC. */
+	sjme_jint numEntries;
+	
+	/** The span of the entries within this TOC. */
+	sjme_jint span;
+} sjme_sqcToc;
+
+/**
+ * Holds the state of the pack file accordingly.
+ * 
+ * @since 2021/11/07
+ */
+typedef struct sjme_sqcPackState
+{
+	/** The state of the SQC file. */
+	sjme_sqcState sqcState;
+} sjme_sqcPackState;
+
+/**
+ * The state of the SQC library. 
+ * 
+ * @since 2021/11/07
+ */
+typedef struct sjme_sqcLibraryState
+{
+	/** The base SQC file state. */
+	sjme_sqcState sqcState;
+} sjme_sqcLibraryState;
+
 /** The SQC driver for multiple libraries. */
 extern const sjme_packDriver sjme_packSqcDriver;
 

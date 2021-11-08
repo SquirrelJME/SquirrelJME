@@ -197,6 +197,14 @@ sjme_jboolean sjme_packOpenLibrary(sjme_packInstance* packInstance,
 		return sjme_false;
 	}
 	
+	/* There was no actual data for this chunk, we cannot load it! */
+	if (chunk.data == NULL || chunk.size <= 0)
+	{
+		sjme_setError(error, SJME_ERROR_BAD_LOAD_LIBRARY, index);
+		
+		return sjme_false;
+	}
+	
 	/* Open the library from the chunk. */
 	if (!sjme_libraryOpen(&lib, chunk.data, chunk.size, error))
 	{

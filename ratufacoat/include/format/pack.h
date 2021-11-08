@@ -71,14 +71,14 @@ typedef struct sjme_packDriver
 	 * read accordingly.
 	 * 
 	 * @param instance The pack instance we are loading for.
-	 * @param chunk The chunk to be read.
+	 * @param outChunk The chunk to be read.
 	 * @param index The index to locate.
 	 * @param error The error state.
 	 * @return If the chunk was located.
 	 * @since 2021/11/07
 	 */
 	sjme_jboolean (*locateChunk)(sjme_packInstance* instance,
-		sjme_memChunk* chunk, sjme_jint index, sjme_error* error);
+		sjme_memChunk* outChunk, sjme_jint index, sjme_error* error);
 } sjme_packDriver;
 
 /**

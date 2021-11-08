@@ -42,7 +42,6 @@ class __TocFutureCount__
 	@Override
 	public int get()
 	{
-		Debugging.debugNote("FUTURE Count is %d!",
 			this.writer.currentCount());
 		return this.writer.currentCount();
 	}

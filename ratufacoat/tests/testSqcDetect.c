@@ -22,7 +22,8 @@
 SJME_TEST_PROTOTYPE(testSqcDetect)
 {
 	sjme_packInstance* pack;
-	sjme_sqcState* sqcState;
+	sjme_sqcPackState* sqcPackState;
+	sjme_sqcState* rawSqcState;
 	sjme_jint i;
 	sjme_libraryInstance* lib;
 	sjme_jboolean outActive;
@@ -47,23 +48,28 @@ SJME_TEST_PROTOTYPE(testSqcDetect)
 	/* And must match the given size. */
 	if (pack->format.chunk.size != sjme_builtInRomSize)
 		return FAIL_TEST(4);
-	
-	/* There needs to be a valid state. */
-	sqcState = pack->state;
-	if (sqcState == NULL)
+		
+	/* There must be a base pack state. */
+	sqcPackState = pack->state;
+	if (sqcPackState == NULL)
 		return FAIL_TEST(5);
 	
-	/* Must be a valid class version. */
-	if (sqcState->classVersion != SQC_CLASS_VERSION_20201129)
+	/* There needs to be a valid SQC state. */
+	rawSqcState = &sqcPackState->sqcState;
+	if (rawSqcState == NULL)
 		return FAIL_TEST(6);
 	
-	/* Needs at least one property. */
-	if (sqcState->numProperties <= 0)
+	/* Must be a valid class version. */
+	if (rawSqcState->classVersion != SQC_CLASS_VERSION_20201129)
 		return FAIL_TEST(7);
+	
+	/* Needs at least one property. */
+	if (rawSqcState->numProperties <= 0)
+		return FAIL_TEST(8);
 	
 	/* Check for at least one library. */
 	if (pack->numLibraries <= 0)
-		return FAIL_TEST(8);
+		return FAIL_TEST(9);
 	
 	/* Go through an open every library, to check that it is valid. */
 	for (i = 0; i < pack->numLibraries; i++)
@@ -97,7 +103,7 @@ SJME_TEST_PROTOTYPE(testSqcDetect)
 	
 	/* Cleanup at the end. */
 	if (!sjme_packClose(pack, &shim->error))
-		return FAIL_TEST(9);
+		return FAIL_TEST(999);
 	
 	return PASS_TEST();
 }
