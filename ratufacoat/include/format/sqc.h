@@ -115,9 +115,23 @@ extern const sjme_libraryDriver sjme_librarySqcDriver;
  * @return If initialization of the TOC was successful.
  * @since 2021/11/09
  */
-sjme_jboolean sjme_sqcInitToc(sjme_sqcState* sqcState, sjme_sqcToc* outToc,
-	sjme_jint pdxCount, sjme_jint pdxOffset, sjme_jint pdxSize,
-	sjme_error* error);
+sjme_jboolean sjme_sqcInitToc(const sjme_sqcState* sqcState,
+	sjme_sqcToc* outToc, sjme_jint pdxCount, sjme_jint pdxOffset,
+	sjme_jint pdxSize, sjme_error* error);
+
+/**
+ * Reads a value from the given SQC table of contents.
+ * 
+ * @param sqcToc The SQC to read from.
+ * @param outValue The read value.
+ * @param rowIndex The major row index to read from.
+ * @param itemInSpan The item within the row to read.
+ * @param error The error state.
+ * @return If reading the value was successful.
+ * @since 2021/11/09
+ */
+sjme_jboolean sjme_sqcTocGet(const sjme_sqcToc* sqcToc, sjme_jint* outValue,
+	sjme_jint rowIndex, sjme_jint itemInSpan, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

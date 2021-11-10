@@ -189,6 +189,9 @@ typedef enum sjme_errorCode
 	
 	/** The TOC has been corrupted. */
 	SJME_ERROR_CORRUPT_TOC,
+	
+	/** An entry within a Pack is corrupt. */
+	SJME_ERROR_CORRUPT_PACK_ENTRY,
 } sjme_errorCode; 
 
 /** This represents an error. */

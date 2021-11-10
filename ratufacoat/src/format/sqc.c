@@ -7,7 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <stdbool.h>
 #include "debug.h"
 #include "format/sqc.h"
 #include "memory.h"
@@ -40,7 +39,7 @@
 #define SQC_TOC_SPAN_OFFSET SJME_JINT_C(2)
 
 /** The base offset for TOC entries. */
-#define SQC_TOC_ENTRY_BASE SJME_JINT_C(4)
+#define SQC_TOC_ENTRY_BASE_OFFSET SJME_JINT_C(4)
 
 /** The size of a single entry within the TOC. */
 #define SQC_TOC_ENTRY_SIZE SJME_JINT_C(4)
@@ -150,9 +149,9 @@ static sjme_jboolean sjme_sqcGetProperty(sjme_sqcState* sqcState,
 		out, error);
 }
 
-sjme_jboolean sjme_sqcInitToc(sjme_sqcState* sqcState, sjme_sqcToc* outToc,
-	sjme_jint pdxCount, sjme_jint pdxOffset, sjme_jint pdxSize,
-	sjme_error* error)
+sjme_jboolean sjme_sqcInitToc(const sjme_sqcState* sqcState,
+	sjme_sqcToc* outToc, sjme_jint pdxCount, sjme_jint pdxOffset,
+	sjme_jint pdxSize, sjme_error* error)
 {
 	sjme_jint sqcTocCount;
 	sjme_jint sqcTocOffset;
@@ -204,7 +203,7 @@ sjme_jboolean sjme_sqcInitToc(sjme_sqcState* sqcState, sjme_sqcToc* outToc,
 	
 	/* Has the TOC been somehow corrupted? It's qualities are different? */
 	if (outToc->numEntries != sqcTocCount ||
-		sqcTocSize != (SQC_TOC_ENTRY_BASE +
+		sqcTocSize != (SQC_TOC_ENTRY_BASE_OFFSET +
 			(SQC_TOC_ENTRY_SIZE * outToc->numEntries * outToc->span)) ||
 		((sqcTocSize % 4) != 0))
 	{
@@ -217,6 +216,33 @@ sjme_jboolean sjme_sqcInitToc(sjme_sqcState* sqcState, sjme_sqcToc* outToc,
 	return sjme_true;
 }
 
+sjme_jboolean sjme_sqcTocGet(const sjme_sqcToc* sqcToc, sjme_jint* outValue,
+	sjme_jint rowIndex, sjme_jint itemInSpan, sjme_error* error)
+{
+	if (sqcToc == NULL || outValue == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	/* Reading an invalid item? */
+	if (rowIndex < 0 || itemInSpan < 0 ||
+		rowIndex >= sqcToc->numEntries || itemInSpan >= sqcToc->span)
+	{
+		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, rowIndex);
+		
+		return sjme_false;
+	}
+	
+	/* Read the value from the TOC, which are in row major order. */
+	return sjme_chunkReadBigInt(&sqcToc->chunk,
+		SQC_TOC_ENTRY_BASE_OFFSET +
+			(rowIndex * (SQC_TOC_ENTRY_SIZE * sqcToc->span)) +
+			(SQC_TOC_ENTRY_SIZE * itemInSpan),
+		outValue, error);
+}
+
 /* ---------------------------------- PACK -------------------------------- */
 
 /** The index to the table of contents count. */
@@ -227,6 +253,12 @@ sjme_jboolean sjme_sqcInitToc(sjme_sqcState* sqcState, sjme_sqcToc* outToc,
 
 /** The index which indicates the size of the TOC. */
 #define SJME_PACK_SIZE_TOC_INDEX SJME_JINT_C(3)
+
+/** The index of the offset to the JAR data. */
+#define SJME_TOC_PACK_OFFSET_DATA_INDEX SJME_JINT_C(4)
+
+/** The index of the size of the JAR data. */
+#define SJME_TOC_PACK_SIZE_DATA_INDEX SJME_JINT_C(5)
 
 /**
  * Detects pack files.
@@ -318,6 +350,10 @@ static sjme_jboolean sjme_sqcPackInit(void* instance,
 sjme_jboolean sjme_sqcPackLocateChunk(sjme_packInstance* instance,
 	sjme_memChunk* outChunk, sjme_jint index, sjme_error* error)
 {
+	sjme_sqcPackState* pack;
+	sjme_jint jarOffset;
+	sjme_jint jarSize;
+	
 	if (instance == NULL || outChunk == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
@@ -325,15 +361,40 @@ sjme_jboolean sjme_sqcPackLocateChunk(sjme_packInstance* instance,
 		return sjme_false;
 	}
 	
+	/* We need this one. */
+	pack = instance->state;
+	
 	/* Out of bounds? */
-	if (index < 0 || index > instance->numLibraries)
+	if (index < 0 || index >= instance->numLibraries)
 	{
 		sjme_setError(error, SJME_ERROR_INVALIDARG, index);
 		
 		return sjme_false;
 	}
 	
-	sjme_todo("Locate chunk??");
+	/* Read the position of the JAR. */
+	jarOffset = jarSize = -1;
+	if (!sjme_sqcTocGet(&pack->libToc, &jarOffset, index,
+			SJME_TOC_PACK_OFFSET_DATA_INDEX, error) ||
+		!sjme_sqcTocGet(&pack->libToc, &jarSize, index,
+			SJME_TOC_PACK_SIZE_DATA_INDEX, error))
+	{
+		sjme_setError(error, SJME_ERROR_CORRUPT_PACK_ENTRY, 1);
+		
+		return sjme_false;
+	}
+	
+	/* Is this an impossibly placed JAR? */
+	if (jarOffset < 0 || jarSize < 0)
+	{
+		sjme_setError(error, SJME_ERROR_CORRUPT_PACK_ENTRY, 2);
+		
+		return sjme_false;
+	}
+	
+	/* Get the chunk where the entry belongs. */
+	return sjme_chunkSubChunk(pack->sqcState.chunk, outChunk, jarOffset,
+		jarSize, error);
 }
 
 /**
