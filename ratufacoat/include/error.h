@@ -192,6 +192,9 @@ typedef enum sjme_errorCode
 	
 	/** An entry within a Pack is corrupt. */
 	SJME_ERROR_CORRUPT_PACK_ENTRY,
+	
+	/** Reverse closing of library failed from within a pack. */
+	SJME_ERROR_BAD_PACK_LIB_CLOSE,
 } sjme_errorCode; 
 
 /** This represents an error. */

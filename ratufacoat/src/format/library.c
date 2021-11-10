@@ -64,7 +64,45 @@ static sjme_jboolean sjme_libraryCollect(sjme_counter* counter,
 sjme_jboolean sjme_libraryClose(sjme_libraryInstance* instance,
 	sjme_error* error)
 {
+	sjme_packInstance* packOwner;
+	sjme_jint packIndex;
+	
+	if (instance == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	/* Perform initial close of library. */
+	packOwner = instance->packOwner;
+	packIndex = instance->packIndex;
+	if (packOwner != NULL)
+		if (!sjme_packLibraryMarkClosed(packOwner, packIndex,
+			sjme_false, error))
+		{
+			sjme_setError(error, sjme_getError(error,
+				SJME_ERROR_BAD_PACK_LIB_CLOSE), 0);
+			
+			return sjme_false;
+		}
+	
 	sjme_todo("Close library?");
+	
+	/* After doing everything, perform a post complete to the pack to free
+	 * any potential resources. */
+	if (packOwner != NULL)
+		if (!sjme_packLibraryMarkClosed(packOwner, packIndex,
+			sjme_true, error))
+		{
+			sjme_setError(error, sjme_getError(error,
+				SJME_ERROR_BAD_PACK_LIB_CLOSE), 0);
+			
+			return sjme_false;
+		}
+	
+	/* Closing complete. */
+	return sjme_true;
 }
 
 sjme_jboolean sjme_libraryOpen(sjme_libraryInstance** outInstance,

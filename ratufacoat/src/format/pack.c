@@ -152,7 +152,27 @@ sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
 	return sjme_true;
 }
 
-sjme_jboolean sjme_packOpenLibrary(sjme_packInstance* packInstance,
+sjme_jboolean sjme_packLibraryMarkClosed(sjme_packInstance* instance,
+	sjme_jint index, sjme_jboolean postComplete, sjme_error* error)
+{
+	if (instance == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	if (index < 0 || index >= instance->numLibraries)
+	{
+		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, index);
+		
+		return sjme_false;
+	}
+	
+	sjme_todo("Implement this?");
+}
+
+sjme_jboolean sjme_packLibraryOpen(sjme_packInstance* packInstance,
 	sjme_libraryInstance** outLibrary, sjme_jint index, sjme_error* error)
 {
 	sjme_libraryInstance* lib;

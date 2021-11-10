@@ -80,6 +80,7 @@ static const sjme_jvmErrorString sjme_jvmErrorStrings[] =
 	{SJME_ERROR_INVALID_PACK_FILE, "Invalid pack file"},
 	{SJME_ERROR_CORRUPT_TOC, "The TOC has been corrupted"},
 	{SJME_ERROR_CORRUPT_PACK_ENTRY, "An entry within the Pack is corrupt"},
+	{SJME_ERROR_BAD_PACK_LIB_CLOSE, "Could not close the library via the pack"},
 	
 	{SJME_ERROR_NONE, NULL}
 };

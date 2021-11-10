@@ -132,6 +132,19 @@ sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance, const void* data,
 	sjme_jint size, sjme_error* error);
 
 /**
+ * Marks this library as being closed to perform any cleanup as needed.
+ * 
+ * @param instance The pack instance this belongs to.
+ * @param index The library index being closed.
+ * @param postComplete Is this being called post library removal?
+ * @param error The error state.
+ * @return If this was successful or not.
+ * @since 2021/11/09
+ */
+sjme_jboolean sjme_packLibraryMarkClosed(sjme_packInstance* instance,
+	sjme_jint index, sjme_jboolean postComplete, sjme_error* error);
+
+/**
  * Opens a library within a pack file.
  * 
  * @param packInstance The instance of the pack file.
@@ -141,7 +154,7 @@ sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance, const void* data,
  * @return If opening the library was successful.
  * @since 2021/11/07
  */
-sjme_jboolean sjme_packOpenLibrary(sjme_packInstance* packInstance,
+sjme_jboolean sjme_packLibraryOpen(sjme_packInstance* packInstance,
 	sjme_libraryInstance** outLibrary, sjme_jint index, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
