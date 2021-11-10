@@ -94,6 +94,7 @@ public final class ChunkUtils
 			ClassInfoConstants.JAR_MAGIC_NUMBER,
 			JarProperty.NUM_JAR_PROPERTIES,
 			JarTocProperty.NUM_JAR_TOC_PROPERTIES);
+		jar.initialize();
 			
 		// Get the used chunks.
 		ChunkWriter mainChunk = jar.mainChunk;
