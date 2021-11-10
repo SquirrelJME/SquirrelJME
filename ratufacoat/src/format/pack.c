@@ -214,6 +214,10 @@ sjme_jboolean sjme_packOpenLibrary(sjme_packInstance* packInstance,
 		return sjme_false;
 	}
 	
+	/* Initialize references back to this pack in the library. */
+	lib->packOwner = packInstance;
+	lib->packIndex = index;
+	
 	/* Cache the chunk for later usage. */
 	oldLib = sjme_atomicPointerSet(&packInstance->libraries[index], lib);
 	if (oldLib != NULL)
