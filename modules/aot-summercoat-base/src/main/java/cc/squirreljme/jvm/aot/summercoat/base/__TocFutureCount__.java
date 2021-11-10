@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.aot.summercoat.base;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.io.ChunkFuture;
 
 /**
@@ -42,7 +41,6 @@ class __TocFutureCount__
 	@Override
 	public int get()
 	{
-			this.writer.currentCount());
 		return this.writer.currentCount();
 	}
 }

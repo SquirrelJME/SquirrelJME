@@ -33,6 +33,18 @@
 
 /* --------------------------------- COMMON ------------------------------- */
 
+/** The offset for the TOC count. */
+#define SQC_TOC_COUNT_OFFSET SJME_JINT_C(0)
+
+/** The offset for the TOC span. */
+#define SQC_TOC_SPAN_OFFSET SJME_JINT_C(2)
+
+/** The base offset for TOC entries. */
+#define SQC_TOC_ENTRY_BASE SJME_JINT_C(4)
+
+/** The size of a single entry within the TOC. */
+#define SQC_TOC_ENTRY_SIZE SJME_JINT_C(4)
+
 /**
  * Destroys the SQC state and anything related to it.
  * 
@@ -142,9 +154,11 @@ sjme_jboolean sjme_sqcInitToc(sjme_sqcState* sqcState, sjme_sqcToc* outToc,
 	sjme_jint pdxCount, sjme_jint pdxOffset, sjme_jint pdxSize,
 	sjme_error* error)
 {
-	sjme_jint tocCount;
-	sjme_jint tocOffset;
-	sjme_jint tocSize;
+	sjme_jint sqcTocCount;
+	sjme_jint sqcTocOffset;
+	sjme_jint sqcTocSize;
+	sjme_jshort tocTocCount;
+	sjme_jshort tocTocSpan;
 	
 	if (sqcState == NULL || outToc == NULL)
 	{
@@ -154,10 +168,10 @@ sjme_jboolean sjme_sqcInitToc(sjme_sqcState* sqcState, sjme_sqcToc* outToc,
 	}
 	
 	/* Get the properties to determine where our actual TOC exists. */
-	tocCount = tocOffset = tocSize = -1;
-	if (!sjme_sqcGetProperty(sqcState, pdxCount, &tocCount, error) ||
-		!sjme_sqcGetProperty(sqcState, pdxOffset, &tocOffset, error) ||
-		!sjme_sqcGetProperty(sqcState, pdxSize, &tocSize, error))
+	sqcTocCount = sqcTocOffset = sqcTocSize = -1;
+	if (!sjme_sqcGetProperty(sqcState, pdxCount, &sqcTocCount, error) ||
+		!sjme_sqcGetProperty(sqcState, pdxOffset, &sqcTocOffset, error) ||
+		!sjme_sqcGetProperty(sqcState, pdxSize, &sqcTocSize, error))
 	{
 		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 1);
 		
@@ -165,15 +179,42 @@ sjme_jboolean sjme_sqcInitToc(sjme_sqcState* sqcState, sjme_sqcToc* outToc,
 	}
 	
 	/* Get the chunk region where the TOC exists. */
-	if (!sjme_chunkSubChunk(sqcState->chunk, &outToc->chunk, tocOffset,
-		tocSize, error))
+	if (!sjme_chunkSubChunk(sqcState->chunk, &outToc->chunk, sqcTocOffset,
+		sqcTocSize, error))
 	{
 		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 1);
 		
 		return sjme_false;
 	}
 	
-	sjme_todo("Write this");
+	/* Read the actual count and span the TOC gives us. */
+	if (!sjme_chunkReadBigShort(&outToc->chunk, SQC_TOC_COUNT_OFFSET,
+			&tocTocCount, error) ||
+		!sjme_chunkReadBigShort(&outToc->chunk, SQC_TOC_SPAN_OFFSET,
+			&tocTocSpan, error))
+	{
+		sjme_setError(error, SJME_ERROR_CORRUPT_TOC, 0);
+		
+		return sjme_false;
+	}
+	
+	/* These values are unsigned. */
+	outToc->numEntries = tocTocCount & SJME_JINT_C(0xFFFF);
+	outToc->span = tocTocSpan & SJME_JINT_C(0xFFFF);
+	
+	/* Has the TOC been somehow corrupted? It's qualities are different? */
+	if (outToc->numEntries != sqcTocCount ||
+		sqcTocSize != (SQC_TOC_ENTRY_BASE +
+			(SQC_TOC_ENTRY_SIZE * outToc->numEntries * outToc->span)) ||
+		((sqcTocSize % 4) != 0))
+	{
+		sjme_setError(error, SJME_ERROR_CORRUPT_TOC, 1);
+		
+		return sjme_false;
+	}
+	
+	/* Everything is okay! */
+	return sjme_true;
 }
 
 /* ---------------------------------- PACK -------------------------------- */
@@ -291,8 +332,6 @@ sjme_jboolean sjme_sqcPackLocateChunk(sjme_packInstance* instance,
 		
 		return sjme_false;
 	}
-	
-	
 	
 	sjme_todo("Locate chunk??");
 }

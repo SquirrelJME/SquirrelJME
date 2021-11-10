@@ -186,6 +186,9 @@ typedef enum sjme_errorCode
 	
 	/** Invalid pack file format. */
 	SJME_ERROR_INVALID_PACK_FILE,
+	
+	/** The TOC has been corrupted. */
+	SJME_ERROR_CORRUPT_TOC,
 } sjme_errorCode; 
 
 /** This represents an error. */
