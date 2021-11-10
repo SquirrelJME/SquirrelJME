@@ -82,7 +82,7 @@ public final class ChunkUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/06
 	 */
-	public static void copyPlainClass(VMClassLibrary __lib,
+	public static void copyPlainJarClasses(VMClassLibrary __lib,
 		ChunkSection __jarChunk, TableOfContentsEntry __entry)
 		throws IOException, NullPointerException
 	{

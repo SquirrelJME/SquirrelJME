@@ -17,6 +17,7 @@
     <file url="file://$PROJECT_DIR$/include/format/detect.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/format/format.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/format/library.h" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/include/format/memfile.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/format/pack.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/format/sqc.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/gpio.h" charset="ISO-8859-1" />
@@ -57,6 +58,7 @@
     <file url="file://$PROJECT_DIR$/src/format/detect.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/format/format.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/format/library.c" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/format/memfile.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/format/pack.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/format/sqc.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/format/zip.c" charset="ISO-8859-1" />

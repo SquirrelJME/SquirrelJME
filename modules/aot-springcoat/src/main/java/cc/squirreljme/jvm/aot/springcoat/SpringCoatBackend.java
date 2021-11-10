@@ -131,9 +131,9 @@ public class SpringCoatBackend
 				ChunkUtils.copyDataContainer(
 					(DataContainerLibrary)lib, jarChunk, entry);
 			
-			// Copy plain class otherwise
+			// Copy plain JAR class otherwise
 			else
-				ChunkUtils.copyPlainClass(lib, jarChunk, entry);
+				ChunkUtils.copyPlainJarClasses(lib, jarChunk, entry);
 		}
 		
 		// Prepare table of contents

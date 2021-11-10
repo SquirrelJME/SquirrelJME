@@ -10,6 +10,7 @@
 #include "format/detect.h"
 #include "format/format.h"
 #include "format/library.h"
+#include "format/memfile.h"
 #include "format/sqc.h"
 #include "format/zip.h"
 #include "debug.h"
@@ -19,6 +20,9 @@ static const sjme_libraryDriver* const sjme_libraryDrivers[] =
 {
 	&sjme_librarySqcDriver,
 	&sjme_libraryZipDriver,
+	
+	/* Fallback driver, so anything that fails above is a plain file. */
+	&sjme_libraryMemFileDriver,
 	
 	NULL
 };

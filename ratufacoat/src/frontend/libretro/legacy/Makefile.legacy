@@ -13,6 +13,7 @@ SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/engine/scaffold.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/format/detect.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/format/format.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/format/library.c
+SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/format/memfile.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/format/pack.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/format/sqc.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/format/zip.c
