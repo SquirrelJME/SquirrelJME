@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <stdbool.h>
 #include "debug.h"
 #include "format/sqc.h"
 #include "memory.h"
@@ -137,10 +138,54 @@ static sjme_jboolean sjme_sqcGetProperty(sjme_sqcState* sqcState,
 		out, error);
 }
 
+sjme_jboolean sjme_sqcInitToc(sjme_sqcState* sqcState, sjme_sqcToc* outToc,
+	sjme_jint pdxCount, sjme_jint pdxOffset, sjme_jint pdxSize,
+	sjme_error* error)
+{
+	sjme_jint tocCount;
+	sjme_jint tocOffset;
+	sjme_jint tocSize;
+	
+	if (sqcState == NULL || outToc == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	/* Get the properties to determine where our actual TOC exists. */
+	tocCount = tocOffset = tocSize = -1;
+	if (!sjme_sqcGetProperty(sqcState, pdxCount, &tocCount, error) ||
+		!sjme_sqcGetProperty(sqcState, pdxOffset, &tocOffset, error) ||
+		!sjme_sqcGetProperty(sqcState, pdxSize, &tocSize, error))
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 1);
+		
+		return sjme_false;
+	}
+	
+	/* Get the chunk region where the TOC exists. */
+	if (!sjme_chunkSubChunk(sqcState->chunk, &outToc->chunk, tocOffset,
+		tocSize, error))
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 1);
+		
+		return sjme_false;
+	}
+	
+	sjme_todo("Write this");
+}
+
 /* ---------------------------------- PACK -------------------------------- */
 
 /** The index to the table of contents count. */
 #define SJME_PACK_COUNT_TOC_INDEX SJME_JINT_C(1)
+
+/** The index where the TOC offset is located. */
+#define SJME_PACK_OFFSET_TOC_INDEX SJME_JINT_C(2)
+
+/** The index which indicates the size of the TOC. */
+#define SJME_PACK_SIZE_TOC_INDEX SJME_JINT_C(3)
 
 /**
  * Detects pack files.
@@ -210,6 +255,12 @@ static sjme_jboolean sjme_sqcPackInit(void* instance,
 		error))
 		return sjme_false;
 	
+	/* Initialize the table of contents for the various libraries. */
+	if (!sjme_sqcInitToc(&sqcPackState->sqcState, &sqcPackState->libToc,
+		SJME_PACK_COUNT_TOC_INDEX, SJME_PACK_OFFSET_TOC_INDEX,
+		SJME_PACK_SIZE_TOC_INDEX, error))
+		return sjme_false;
+	
 	return sjme_true;
 }
 
@@ -240,6 +291,8 @@ sjme_jboolean sjme_sqcPackLocateChunk(sjme_packInstance* instance,
 		
 		return sjme_false;
 	}
+	
+	
 	
 	sjme_todo("Locate chunk??");
 }

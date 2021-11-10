@@ -183,6 +183,9 @@ typedef enum sjme_errorCode
 	
 	/** Invalid load of a library. */
 	SJME_ERROR_BAD_LOAD_LIBRARY,
+	
+	/** Invalid pack file format. */
+	SJME_ERROR_INVALID_PACK_FILE,
 } sjme_errorCode; 
 
 /** This represents an error. */

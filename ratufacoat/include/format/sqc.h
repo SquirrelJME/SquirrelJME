@@ -80,6 +80,9 @@ typedef struct sjme_sqcPackState
 {
 	/** The state of the SQC file. */
 	sjme_sqcState sqcState;
+	
+	/** Table of contents for the various libraries. */
+	sjme_sqcToc libToc;
 } sjme_sqcPackState;
 
 /**
@@ -98,6 +101,23 @@ extern const sjme_packDriver sjme_packSqcDriver;
 
 /** The SQC driver for a single library. */
 extern const sjme_libraryDriver sjme_librarySqcDriver;
+
+/**
+ * Initializes and loads basic information from the table of contents within
+ * a SQC.
+ * 
+ * @param sqcState The state of the SQC.
+ * @param outToc The output for the TOC.
+ * @param pdxCount The property index for the table of contents count.
+ * @param pdxOffset The property index for the table of contents offset.
+ * @param pdxSize The property index for the table of contents size.
+ * @param error The error state.
+ * @return If initialization of the TOC was successful.
+ * @since 2021/11/09
+ */
+sjme_jboolean sjme_sqcInitToc(sjme_sqcState* sqcState, sjme_sqcToc* outToc,
+	sjme_jint pdxCount, sjme_jint pdxOffset, sjme_jint pdxSize,
+	sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

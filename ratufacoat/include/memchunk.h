@@ -84,6 +84,21 @@ sjme_jboolean sjme_chunkReadBigInt(const sjme_memChunk* chunk, sjme_jint off,
 sjme_jboolean sjme_chunkReadBigShort(const sjme_memChunk* chunk, sjme_jint off,
 	sjme_jshort* value, sjme_error* error);
 
+/**
+ * Obtains a sub-chunk from the given chunk and returns it.
+ * 
+ * @param chunk The chunk to get the sub chunk from.
+ * @param outSubChunk The output chunk.
+ * @param off The offset into the chunk.
+ * @param size The size of the sub-chunk.
+ * @param error The error state.
+ * @return If the sub chunk was successfully determined. 
+ * @since 2021/11/09
+ */
+sjme_jboolean sjme_chunkSubChunk(const sjme_memChunk* chunk,
+	sjme_memChunk* outSubChunk, sjme_jint off, sjme_jint size,
+	sjme_error* error);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
