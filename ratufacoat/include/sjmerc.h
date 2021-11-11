@@ -430,6 +430,9 @@ typedef struct sjme_nativefile sjme_nativefile;
 	#define __forceinline __attribute__((always_inline))
 #endif
 
+/** Max constant macro. */
+#define sjme_max(a, b) ((a) >= (b) ? (a) : (b))
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
