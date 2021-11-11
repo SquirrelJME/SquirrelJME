@@ -73,10 +73,10 @@ struct sjme_libraryInstance
 	/** Counter for the library instance. */
 	sjme_counter counter;
 	
-	/** The pointer to the pack this is within, will be {@code NULL} if not. */
+	/** The pointer to the pack this is within, will be @c NULL if not. */
 	void* packOwner;
 	
-	/** The index within the pack file, will be {@code -1} if not in a pack. */
+	/** The index within the pack file, will be @c -1 if not in a pack. */
 	sjme_jint packIndex;
 };
 

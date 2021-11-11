@@ -53,7 +53,7 @@ typedef struct sjme_formatHandler
 	/** The size of the instance. */
 	sjme_jint sizeOfInstance;
 	
-	/** Offset in the instance to {@code sjme_formatInstance}. */
+	/** Offset in the instance to @c sjme_formatInstance. */
 	sjme_jint instanceOffsetOfFormat;
 	
 	/** Offset of the instance state. */

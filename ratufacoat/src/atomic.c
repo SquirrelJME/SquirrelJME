@@ -17,6 +17,33 @@
 	#define MEMORY_ORDER __ATOMIC_SEQ_CST
 #endif
 
+sjme_jboolean sjme_atomicIntCompareThenSet(sjme_atomicInt* atomic,
+	sjme_jint check, sjme_jint set)
+{
+#if defined(SJME_ATOMIC_C11)
+	if (atomic_compare_exchange_strong(&atomic->value, &check, set))
+		return sjme_true;
+	return sjme_false;
+#elif defined(SJME_ATOMIC_GCC)
+	if (__atomic_compare_exchange_n(&atomic->value, &check, set, 0,
+		MEMORY_ORDER, MEMORY_ORDER))
+		return sjme_true;
+	return sjme_false;
+#elif defined(SJME_ATOMIC_WIN32)
+	LONG was;
+	
+	/* Returns the value that was stored here. */
+	was = InterlockedCompareExchange((volatile LONG*)&atomic->value,
+		set, check);
+	
+	if (was == check)
+		return sjme_true;
+	return sjme_false;
+#else
+	#error No sjme_atomicIntCompareAndSet
+#endif
+}
+
 sjme_jint sjme_atomicIntGet(sjme_atomicInt* atomic)
 {
 #if defined(SJME_ATOMIC_C11)
@@ -57,8 +84,8 @@ sjme_jint sjme_atomicIntGetThenAdd(sjme_atomicInt* atomic, sjme_jint add)
 #endif
 }
 
-sjme_jboolean sjme_atomicIntCompareThenSet(sjme_atomicInt* atomic,
-	sjme_jint check, sjme_jint set)
+sjme_jboolean sjme_atomicPointerCompareThenSet(sjme_atomicPointer* atomic,
+	void* check, void* set)
 {
 #if defined(SJME_ATOMIC_C11)
 	if (atomic_compare_exchange_strong(&atomic->value, &check, set))
@@ -70,11 +97,11 @@ sjme_jboolean sjme_atomicIntCompareThenSet(sjme_atomicInt* atomic,
 		return sjme_true;
 	return sjme_false;
 #elif defined(SJME_ATOMIC_WIN32)
-	LONG was;
+	void* was;
 	
 	/* Returns the value that was stored here. */
-	was = InterlockedCompareExchange((volatile LONG*)&atomic->value,
-		set, check);
+	was = (void*)InterlockedCompareExchangePointer(
+		(volatile PVOID*)&atomic->value, set, (PVOID)check);
 	
 	if (was == check)
 		return sjme_true;

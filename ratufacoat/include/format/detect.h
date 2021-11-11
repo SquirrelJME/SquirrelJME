@@ -52,7 +52,7 @@ typedef sjme_jboolean (*sjme_formatDetectFunction)(const void* data,
  * @param size The size of the data block.
  * @param outDriver The output driver, if one was found.
  * @param choices The possible driver choices.
- * @param offsetOfDetect The offset of the {@code sjme_formatDetectFunction}
+ * @param offsetOfDetect The offset of the @c sjme_formatDetectFunction
  * member. 
  * @param error The resultant error.
  * @return If a format was successfully detected or not.

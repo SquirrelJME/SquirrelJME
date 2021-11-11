@@ -11,12 +11,12 @@
 #include "format/memfile.h"
 
 /**
- * "Detects" a memory file by always returning {@code true}.
+ * "Detects" a memory file by always returning @c true.
  * 
  * @param data The data block.
  * @param size The size of the block.
  * @param error The error used.
- * @return Always {@code true}.
+ * @return Always @c true.
  * @since 2021/11/09
  */
 sjme_jboolean sjme_memFileLibraryDetect(const void* data, sjme_jint size,

@@ -70,7 +70,7 @@ struct sjme_counter
  * Counts down the counter, if it reaches zero it will be collected.
  * 
  * @param counter The counter to count.
- * @param outActive Output to if the value is still valid, may be {@code NULL}.
+ * @param outActive Output to if the value is still valid, may be @c NULL.
  * @param error The error state.
  * @return If counting down was successful, or when collection was successful
  * when this reached zero, 

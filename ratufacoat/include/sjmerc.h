@@ -199,22 +199,22 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-/** {@code byte} type. */
+/** @c byte type. */
 typedef int8_t sjme_jbyte;
 
-/** Unsigned {@code byte} type. */
+/** Unsigned @c byte type. */
 typedef uint8_t sjme_ubyte;
 
-/** {@code short} type. */
+/** @c short type. */
 typedef int16_t sjme_jshort;
 
-/** {@code char} type. */
+/** @c char type. */
 typedef uint16_t sjme_jchar;
 
-/** {@code int} type. */
+/** @c int type. */
 typedef int32_t sjme_jint;
 
-/** Unsigned {@code int} type. */
+/** Unsigned @c int type. */
 typedef uint32_t sjme_juint;
 
 /** Boolean type. */
@@ -408,7 +408,7 @@ typedef struct sjme_nativefilename sjme_nativefilename;
 typedef struct sjme_nativefile sjme_nativefile;
 
 /**
- * Reverses the operation of {@code offsetof} to access a member.
+ * Reverses the operation of @c offsetof to access a member.
  * 
  * @param type The expected member type.
  * @param offset The offset to the member.

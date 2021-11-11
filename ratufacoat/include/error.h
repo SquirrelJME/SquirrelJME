@@ -229,7 +229,7 @@ void sjme_clearError(sjme_error* error);
  * 
  * @param error The error to read from.
  * @param ifMissing The value to return if missing.
- * @return The error code or {@code ifMissing} if there is no error.
+ * @return The error code or @c ifMissing if there is no error.
  * @since 2021/10/09
  */
 sjme_errorCode sjme_getError(sjme_error* error, sjme_errorCode ifMissing);

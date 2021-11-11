@@ -79,6 +79,19 @@ typedef struct sjme_packDriver
 	 */
 	sjme_jboolean (*locateChunk)(sjme_packInstance* instance,
 		sjme_memChunk* outChunk, sjme_jint index, sjme_error* error);
+	
+	/**
+	 * Marks this library as being closed to perform any cleanup as needed.
+	 * 
+	 * @param instance The pack instance this belongs to.
+	 * @param index The library index being closed.
+	 * @param postComplete Is this being called post library removal?
+	 * @param error The error state.
+	 * @return If this was successful or not.
+	 * @since 2021/11/11
+	 */
+	sjme_jboolean (*libraryMarkClosed)(sjme_packInstance* instance,
+		sjme_jint index, sjme_jboolean postComplete, sjme_error* error);
 } sjme_packDriver;
 
 /**
@@ -134,15 +147,17 @@ sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance, const void* data,
 /**
  * Marks this library as being closed to perform any cleanup as needed.
  * 
- * @param instance The pack instance this belongs to.
+ * @param packInstance The pack instance this belongs to.
+ * @param libInstance The instance of the library being closed.
  * @param index The library index being closed.
  * @param postComplete Is this being called post library removal?
  * @param error The error state.
  * @return If this was successful or not.
  * @since 2021/11/09
  */
-sjme_jboolean sjme_packLibraryMarkClosed(sjme_packInstance* instance,
-	sjme_jint index, sjme_jboolean postComplete, sjme_error* error);
+sjme_jboolean sjme_packLibraryMarkClosed(sjme_packInstance* packInstance,
+	sjme_libraryInstance* libInstance, sjme_jint index,
+	sjme_jboolean postComplete, sjme_error* error);
 
 /**
  * Opens a library within a pack file.

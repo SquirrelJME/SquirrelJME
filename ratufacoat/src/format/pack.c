@@ -152,24 +152,48 @@ sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
 	return sjme_true;
 }
 
-sjme_jboolean sjme_packLibraryMarkClosed(sjme_packInstance* instance,
-	sjme_jint index, sjme_jboolean postComplete, sjme_error* error)
+sjme_jboolean sjme_packLibraryMarkClosed(sjme_packInstance* packInstance,
+	sjme_libraryInstance* libInstance, sjme_jint index,
+	sjme_jboolean postComplete, sjme_error* error)
 {
-	if (instance == NULL)
+	if (packInstance == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
 		
 		return sjme_false;
 	}
 	
-	if (index < 0 || index >= instance->numLibraries)
+	/* Within bounds? */
+	if (index < 0 || index >= packInstance->numLibraries)
 	{
 		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, index);
 		
 		return sjme_false;
 	}
 	
-	sjme_todo("Implement this?");
+	/* Operations before we perform destruction. */
+	if (!postComplete)
+	{
+		/* Remove the library from the cache list, if it matches.
+		 * If we have an instance, only clear the instance if it matches
+		 * since the library could have been opened just again.
+		 * We always clear this first since we are about to invalidate it,
+		 * if we happen to immediately open after we can just continue
+		 * along while we cleanup this one. */
+		if (libInstance != NULL)
+			sjme_atomicPointerCompareThenSet(&packInstance->libraries[index],
+				libInstance, NULL);
+		else
+			sjme_atomicPointerSet(&packInstance->libraries[index], NULL);
+	}
+	
+	/* If there is no function for marking closed, then just ignore this. */
+	if (packInstance->driver->libraryMarkClosed == NULL)
+		return sjme_true;
+	
+	/* Call the library handler. */
+	return packInstance->driver->libraryMarkClosed(packInstance, index,
+		postComplete, error);
 }
 
 sjme_jboolean sjme_packLibraryOpen(sjme_packInstance* packInstance,

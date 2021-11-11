@@ -402,7 +402,7 @@ sjme_jboolean sjme_sqcPackLocateChunk(sjme_packInstance* instance,
  * 
  * @param instance The instance to query. 
  * @param error The error state.
- * @return The number of queried libraries or {@code -1} on failure.
+ * @return The number of queried libraries or @c -1 on failure.
  * @since 2021/11/07
  */
 static sjme_jint sjme_sqcPackQueryNumLibraries(sjme_packInstance* instance,
@@ -441,6 +441,10 @@ const sjme_packDriver sjme_packSqcDriver =
 	.destroy = sjme_sqcPackDestroy,
 	.queryNumLibraries = sjme_sqcPackQueryNumLibraries,
 	.locateChunk = sjme_sqcPackLocateChunk,
+	
+	/* There is no need to close or free any RAM resources because all
+	 * libraries are within the SQC chunk in memory. */
+	.libraryMarkClosed = NULL,
 };
 
 /* -------------------------------- LIBRARY ------------------------------- */

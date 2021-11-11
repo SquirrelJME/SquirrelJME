@@ -106,6 +106,19 @@ typedef struct sjme_atomicPointer sjme_atomicPointer;
 #endif
 
 /**
+ * Sets the value of the given atomic provided the check value is a match,
+ * it then returns the old value atomically.
+ * 
+ * @param atomic The atomic to check and set.
+ * @param check The value to check against, which if equal will set @c set.
+ * @param set The value to set if @c check is equal.
+ * @return If @c check matched and the atomic is set.
+ * @since 2021/03/06
+ */
+sjme_jboolean sjme_atomicIntCompareThenSet(sjme_atomicInt* atomic,
+	sjme_jint check, sjme_jint set);
+
+/**
  * Gets the value of the atomic.
  * 
  * @param atomic The atomic to read from.
@@ -142,10 +155,10 @@ sjme_jint sjme_atomicIntGetThenAdd(sjme_atomicInt* atomic, sjme_jint add);
  * @param check The value to check against, which if equal will set @c set.
  * @param set The value to set if @c check is equal.
  * @return If @c check matched and the atomic is set.
- * @since 2021/03/06
+ * @since 2021/11/11
  */
-sjme_jboolean sjme_atomicIntCompareThenSet(sjme_atomicInt* atomic,
-	sjme_jint check, sjme_jint set);
+sjme_jboolean sjme_atomicPointerCompareThenSet(sjme_atomicPointer* atomic,
+	void* check, void* set);
 
 /**
  * Gets the value of the atomic.

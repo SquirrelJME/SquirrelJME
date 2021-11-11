@@ -16,6 +16,9 @@
 /** Second value. */
 #define VALUE_B SJME_JINT_C(0xCAFEBABE)
 
+/** Third value. */
+#define VALUE_C SJME_JINT_C(0xBEEEEEE5)
+
 /** The add value. */
 #define ADD_VALUE SJME_JINT_C(12)
 
@@ -30,8 +33,10 @@ SJME_TEST_PROTOTYPE(testAtomic)
 	sjme_atomicPointer pointer;
 	sjme_jint* pointerA;
 	sjme_jint* pointerB;
+	sjme_jint* pointerC;
 	sjme_jint pointerValueA;
 	sjme_jint pointerValueB;
+	sjme_jint pointerValueC;
 	
 	/* Set value. */
 	sjme_atomicIntSet(&integer, VALUE_A);
@@ -73,6 +78,8 @@ SJME_TEST_PROTOTYPE(testAtomic)
 	pointerA = &pointerValueA;
 	pointerValueB = VALUE_B;
 	pointerB = &pointerValueB;
+	pointerValueC = VALUE_C;
+	pointerC = &pointerValueC;
 	
 	/* Set pointer value. */
 	sjme_atomicPointerSet(&pointer, pointerA);
@@ -95,6 +102,22 @@ SJME_TEST_PROTOTYPE(testAtomic)
 	if (pointerA != sjme_atomicPointerSetType(&pointer, pointerB,
 		sjme_jint*))
 		return FAIL_TEST(12);
+	
+	/* It should be value B here, we cannot set to C. */
+	if (sjme_atomicPointerCompareThenSet(&pointer, pointerA, pointerC))
+		return FAIL_TEST(13);
+	
+	/* It should be pointer B here still. */
+	if (sjme_atomicPointerGet(&pointer) != pointerB)
+		return FAIL_TEST(14);
+	
+	/* It should be value B here and we can change it to A. */
+	if (!sjme_atomicPointerCompareThenSet(&pointer, pointerB, pointerA))
+		return FAIL_TEST(15);
+	
+	/* It should be pointer A here. */
+	if (sjme_atomicPointerGet(&pointer) != pointerA)
+		return FAIL_TEST(16);
 	
 	/* Everything is okay! */
 	return PASS_TEST();

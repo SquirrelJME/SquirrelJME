@@ -66,6 +66,7 @@ sjme_jboolean sjme_libraryClose(sjme_libraryInstance* instance,
 {
 	sjme_packInstance* packOwner;
 	sjme_jint packIndex;
+	sjme_jboolean closeOkay;
 	
 	if (instance == NULL)
 	{
@@ -78,7 +79,7 @@ sjme_jboolean sjme_libraryClose(sjme_libraryInstance* instance,
 	packOwner = instance->packOwner;
 	packIndex = instance->packIndex;
 	if (packOwner != NULL)
-		if (!sjme_packLibraryMarkClosed(packOwner, packIndex,
+		if (!sjme_packLibraryMarkClosed(packOwner, instance, packIndex,
 			sjme_false, error))
 		{
 			sjme_setError(error, sjme_getError(error,
@@ -87,12 +88,13 @@ sjme_jboolean sjme_libraryClose(sjme_libraryInstance* instance,
 			return sjme_false;
 		}
 	
-	sjme_todo("Close library?");
+	/* Perform any closing required by the driver. */
+	closeOkay = sjme_formatClose(&sjme_libraryFormatHandler, instance, error);
 	
 	/* After doing everything, perform a post complete to the pack to free
 	 * any potential resources. */
 	if (packOwner != NULL)
-		if (!sjme_packLibraryMarkClosed(packOwner, packIndex,
+		if (!sjme_packLibraryMarkClosed(packOwner, NULL, packIndex,
 			sjme_true, error))
 		{
 			sjme_setError(error, sjme_getError(error,
@@ -101,8 +103,8 @@ sjme_jboolean sjme_libraryClose(sjme_libraryInstance* instance,
 			return sjme_false;
 		}
 	
-	/* Closing complete. */
-	return sjme_true;
+	/* Closing complete, assuming it even worked... */
+	return closeOkay;
 }
 
 sjme_jboolean sjme_libraryOpen(sjme_libraryInstance** outInstance,
