@@ -109,6 +109,7 @@
     <file url="file://$PROJECT_DIR$/tests/testOpCodes.c" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/tests/testSkipped.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/tests/testSqcDetect.c" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/tests/testSqcJarScan.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/tests/testing.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/tests/tests.h" charset="UTF-8" />
   </component>

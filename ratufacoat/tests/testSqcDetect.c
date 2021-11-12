@@ -24,7 +24,7 @@ SJME_TEST_PROTOTYPE(testSqcDetect)
 	sjme_packInstance* pack;
 	sjme_sqcPackState* sqcPackState;
 	sjme_sqcState* rawSqcState;
-	sjme_jint libDx, entryDx;
+	sjme_jint libDx;
 	sjme_libraryInstance* lib;
 	sjme_jboolean outActive;
 	
@@ -94,11 +94,6 @@ SJME_TEST_PROTOTYPE(testSqcDetect)
 		/* Should have at least one entry. */
 		if (lib->numEntries <= 0)
 			return FAIL_TEST(500 + libDx);
-		
-		/* Go through every entry and attempt loading the data contained. */	
-		for (entryDx = 0; entryDx < lib->numEntries; entryDx++)
-		{
-		}
 		
 		/* Clear up the library usage. */
 		outActive = sjme_true;
