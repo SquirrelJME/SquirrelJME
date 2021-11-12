@@ -24,7 +24,7 @@ SJME_TEST_PROTOTYPE(testSqcDetect)
 	sjme_packInstance* pack;
 	sjme_sqcPackState* sqcPackState;
 	sjme_sqcState* rawSqcState;
-	sjme_jint i;
+	sjme_jint libDx, entryDx;
 	sjme_libraryInstance* lib;
 	sjme_jboolean outActive;
 	
@@ -72,33 +72,42 @@ SJME_TEST_PROTOTYPE(testSqcDetect)
 		return FAIL_TEST(9);
 	
 	/* Go through an open every library, to check that it is valid. */
-	for (i = 0; i < pack->numLibraries; i++)
+	for (libDx = 0; libDx < pack->numLibraries; libDx++)
 	{
 		/* Open the library. */
 		lib = NULL;
-		if (!sjme_packLibraryOpen(pack, &lib, i, &shim->error))
-			return FAIL_TEST(100 + i);
+		if (!sjme_packLibraryOpen(pack, &lib, libDx, &shim->error))
+			return FAIL_TEST(100 + libDx);
 		
 		/* Must have been set. */
 		if (lib == NULL)
-			return FAIL_TEST(200 + i);
+			return FAIL_TEST(200 + libDx);
 		
 		/* Must be at this index. */
-		if (lib->packIndex != i)
-			return FAIL_TEST(300 + i);
+		if (lib->packIndex != libDx)
+			return FAIL_TEST(300 + libDx);
 		
 		/* Must be within this pack. */
 		if (lib->packOwner != pack)
-			return FAIL_TEST(400 + i);
+			return FAIL_TEST(400 + libDx);
+		
+		/* Should have at least one entry. */
+		if (lib->numEntries <= 0)
+			return FAIL_TEST(500 + libDx);
+		
+		/* Go through every entry and attempt loading the data contained. */	
+		for (entryDx = 0; entryDx < lib->numEntries; entryDx++)
+		{
+		}
 		
 		/* Clear up the library usage. */
 		outActive = sjme_true;
 		if (!sjme_counterDown(&lib->counter, &outActive, &shim->error))
-			return FAIL_TEST(500 + i);
+			return FAIL_TEST(600 + libDx);
 		
 		/* Must be inactive, since we only used this once. */
 		if (outActive != sjme_false)
-			return FAIL_TEST(600 + i);
+			return FAIL_TEST(700 + libDx);
 	}
 	
 	/* Cleanup at the end. */

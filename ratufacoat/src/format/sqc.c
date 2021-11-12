@@ -449,6 +449,9 @@ const sjme_packDriver sjme_packSqcDriver =
 
 /* -------------------------------- LIBRARY ------------------------------- */
 
+/** Index to the number of resources that exist within a JAR. */
+#define SJME_JAR_COUNT_TOC_INDEX SJME_JINT_C(1)
+
 /**
  * Detects library files.
  * 
@@ -503,6 +506,7 @@ static sjme_jboolean sjme_sqcLibraryInit(void* instance,
 {
 	sjme_libraryInstance* libraryInstance = instance;
 	sjme_sqcLibraryState* sqcLibraryState;
+	sjme_jint numEntries;
 	
 	/* Allocate state storage. */
 	sqcLibraryState = sjme_malloc(sizeof(*sqcLibraryState), error);
@@ -517,6 +521,21 @@ static sjme_jboolean sjme_sqcLibraryInit(void* instance,
 		&sqcLibraryState->sqcState, error))
 		return sjme_false;
 	
+	/* Determine the number of entries within the JAR. */
+	numEntries = -1;
+	if (!sjme_sqcGetProperty(&sqcLibraryState->sqcState,
+		SJME_JAR_COUNT_TOC_INDEX, &numEntries, error) ||
+		numEntries < 0)
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_JAR_FILE, numEntries);
+		
+		return sjme_false;
+	}
+	
+	/* Setup JAR properties. */
+	libraryInstance->numEntries = numEntries;
+	
+	/* Success! */
 	return sjme_true;
 }
 

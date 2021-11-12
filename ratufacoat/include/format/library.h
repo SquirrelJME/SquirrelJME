@@ -8,7 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Library support.
+ * Library (JAR) support.
  * 
  * @since 2021/09/12
  */
@@ -78,6 +78,9 @@ struct sjme_libraryInstance
 	
 	/** The index within the pack file, will be @c -1 if not in a pack. */
 	sjme_jint packIndex;
+	
+	/** The number of entries which are in this library. */
+	sjme_jint numEntries;
 };
 
 /**

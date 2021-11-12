@@ -1,7 +1,6 @@
 # ---------------------------------------------------------------------------
-# Multi-Phasic Applications: SquirrelJME
+# SquirrelJME
 #     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-#     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 # ---------------------------------------------------------------------------
 # SquirrelJME is under the GNU General Public License v3, or later.
 # For more information see license.txt.
@@ -20,7 +19,7 @@ print("Converting CTest from stdin...")
 squirreljmeGlobalTestTime = None
 
 # Resultant Variables for runs
-squirreljmeTestName = None
+testName = None
 squirreljmeTestResult = None
 squirreljmeNumSkipped = None
 squirreljmeNumFailed = None
@@ -64,7 +63,7 @@ for event, tree in Xml.iterparse(sys.stdin, events=("start", "end")):
 
         # Name of test
         elif tag == "Name":
-            squirreljmeTestName = text
+            testName = text
 
         # Time test took to execute (CTest ?? -> JUnit ms)
         elif (tag == "NamedMeasurement" and "name" in attrib and
@@ -90,6 +89,10 @@ for event, tree in Xml.iterparse(sys.stdin, events=("start", "end")):
 
     # End of a test tag, dump the XML, or end of entire file
     elif event == "end" and tag == 'Test' and "Status" in attrib:
+        # Make sure the name is always invalid, if missed try again
+        if testName is None:
+            testName = "InvalidTestName"
+
         # Force values to be set?
         if squirreljmeExecTime is None:
             squirreljmeExecTime = 0
@@ -101,8 +104,7 @@ for event, tree in Xml.iterparse(sys.stdin, events=("start", "end")):
             os.mkdir("build/junit")
 
         # Open output file
-        with open("build/junit/TEST-" + squirreljmeTestName + ".xml",
-                  "wt") as file:
+        with open("build/junit/TEST-" + testName + ".xml", "wt") as file:
             # XML Header
             file.write('<?xml version="1.0" encoding="UTF-8"?>')
             file.write('\n')
@@ -111,7 +113,7 @@ for event, tree in Xml.iterparse(sys.stdin, events=("start", "end")):
             file.write('<testsuite name="%s" tests="1" skipped="%d" '
                        'failures="%d" errors="%d" timestamp="%s" '
                        'hostname="CTest" time="%g">' %
-                       (squirreljmeTestName, squirreljmeNumSkipped,
+                       (testName, squirreljmeNumSkipped,
                         squirreljmeNumFailed, squirreljmeNumFailed,
                         squirreljmeGlobalTestTime, squirreljmeExecTime))
             file.write('\n')
@@ -119,14 +121,14 @@ for event, tree in Xml.iterparse(sys.stdin, events=("start", "end")):
             # Test Case (mostly the same)
             file.write('<testcase name="%s" '
                        'classname="%s" time="%g">' %
-                       (squirreljmeTestName, squirreljmeTestName,
+                       (testName, testName,
                         squirreljmeExecTime))
             file.write('\n')
 
             # Failure, needed for cases
             if squirreljmeNumFailed > 0:
                 file.write('<failure type="%s"><![CDATA[%s]]></failure>' %
-                           (squirreljmeTestName, squirreljmeStdErr))
+                           (testName, squirreljmeStdErr))
                 file.write('\n')
 
             # Standard output
@@ -144,7 +146,7 @@ for event, tree in Xml.iterparse(sys.stdin, events=("start", "end")):
             file.write('\n')
 
         # Reset all test state
-        squirreljmeTestName = None
+        testName = None
         squirreljmeTestResult = None
         squirreljmeNumSkipped = None
         squirreljmeNumFailed = None

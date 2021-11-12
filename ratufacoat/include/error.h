@@ -195,6 +195,9 @@ typedef enum sjme_errorCode
 	
 	/** Reverse closing of library failed from within a pack. */
 	SJME_ERROR_BAD_PACK_LIB_CLOSE,
+	
+	/** The JAR is not valid. */
+	SJME_ERROR_INVALID_JAR_FILE,
 } sjme_errorCode; 
 
 /** This represents an error. */
