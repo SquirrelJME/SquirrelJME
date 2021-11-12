@@ -48,6 +48,7 @@ add_library(SquirrelJMECore OBJECT
 	random.c
 	sjmerc.c
 	softmath.c
+	stream.c
 	stringies.c
 	syscall.c
 	video.c
