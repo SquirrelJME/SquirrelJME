@@ -19,10 +19,10 @@ import java.util.Map;
  *
  * @since 2016/07/16
  */
-final class __CRC32Table__
+public final class CRC32Table
 {
 	/** Static table reference. */
-	private static final Map<Integer, Reference<__CRC32Table__>> _TABLES =
+	private static final Map<Integer, Reference<CRC32Table>> _TABLES =
 		new HashMap<>();
 	
 	/** CRC table data. */
@@ -34,7 +34,8 @@ final class __CRC32Table__
 	 * @param __poly The polynomial.
 	 * @since 2016/07/16
 	 */
-	private __CRC32Table__(int __poly)
+	@SuppressWarnings("MagicNumber")
+	private CRC32Table(int __poly)
 	{
 		// Setup table;
 		int[] table = new int[256];
@@ -62,28 +63,43 @@ final class __CRC32Table__
 	}
 	
 	/**
+	 * Reads the given index from the CRC table.
+	 * 
+	 * @param __dx The index to get.
+	 * @return The value at the given index.
+	 * @throws IndexOutOfBoundsException If the index is not valid within the
+	 * table.
+	 * @since 2021/11/13
+	 */
+	public final int get(int __dx)
+		throws IndexOutOfBoundsException
+	{
+		return this._table[__dx]; 
+	}
+	
+	/**
 	 * Obtains the CRC table.
 	 *
 	 * @param __poly The polynomial.
 	 * @return The CRC table.
 	 * @since 2016/07/16
 	 */
-	static final __CRC32Table__ __table(int __poly)
+	public static CRC32Table calculateTable(int __poly)
 	{
 		// Lock
-		Map<Integer, Reference<__CRC32Table__>> tables =
-			__CRC32Table__._TABLES;
-		synchronized (tables)
+		Map<Integer, Reference<CRC32Table>> tables =
+			CRC32Table._TABLES;
+		synchronized (CRC32Table.class)
 		{
 			// Get
-			Integer i = Integer.valueOf(__poly);
-			Reference<__CRC32Table__> ref = tables.get(i);
-			__CRC32Table__ rv;
+			Integer i = __poly;
+			Reference<CRC32Table> ref = tables.get(i);
+			CRC32Table rv;
 		
 			// Cache?
 			if (ref == null || null == (rv = ref.get()))
 				tables.put(i,
-					new WeakReference<>((rv = new __CRC32Table__(__poly))));
+					new WeakReference<>((rv = new CRC32Table(__poly))));
 		
 			// Return
 			return rv;

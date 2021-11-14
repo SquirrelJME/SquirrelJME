@@ -16,6 +16,9 @@
 #ifndef SQUIRRELJME_STREAM_H
 #define SQUIRRELJME_STREAM_H
 
+#include "atomic.h"
+#include "counter.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
@@ -27,6 +30,20 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+/**
+ * This represents an individual data stream.
+ * 
+ * @since 2021/11/13
+ */
+typedef struct sjme_dataStream
+{
+	/** The number of bytes which have so far been read. */
+	sjme_atomicInt readBytes;
+	
+	/** Counter for garbage collection. */
+	sjme_counter count;
+} sjme_dataStream;
 
 /*--------------------------------------------------------------------------*/
 

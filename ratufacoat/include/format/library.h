@@ -22,6 +22,7 @@
 #include "format/detect.h"
 #include "format/format.h"
 #include "memchunk.h"
+#include "stream.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -93,6 +94,32 @@ struct sjme_libraryInstance
  */
 sjme_jboolean sjme_libraryClose(sjme_libraryInstance* instance,
 	sjme_error* error);
+
+/**
+ * Opens an entry within the library as a memory chunk.
+ * 
+ * @param libInstance The instance of the library to get the entry from.
+ * @param outChunk The output memory chunk where the data is located.
+ * @param index The index of the entry to load.
+ * @param error Any error state that occurs.
+ * @return If opening the entry was successful.
+ * @since 2021/11/13
+ */
+sjme_jboolean sjme_libraryEntryChunk(sjme_libraryInstance* libInstance,
+	sjme_countableMemChunk** outChunk, sjme_jint index, sjme_error* error);
+
+/**
+ * Opens an entry within the library as a data stream.
+ * 
+ * @param libInstance The instance of the library to get the entry from.
+ * @param outStream The output stream that is used to access the data.
+ * @param index The index of the entry to load.
+ * @param error Any error state that occurs.
+ * @return If opening the entry was successful.
+ * @since 2021/11/13
+ */
+sjme_jboolean sjme_libraryEntryStream(sjme_libraryInstance* libInstance,
+	sjme_dataStream** outStream, sjme_jint index, sjme_error* error);
 
 /**
  * Opens the given library and makes an instance of it.

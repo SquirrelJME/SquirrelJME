@@ -26,6 +26,7 @@ SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/btooth.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/cellfunc.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/corefont.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/counter.c
+SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/crc.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/cpu.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/datatype.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/debug.c

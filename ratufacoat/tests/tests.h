@@ -42,6 +42,14 @@ typedef struct sjme_testShim
 /** Fail test. */
 #define FAIL_TEST(n) ((SJME_JINT_C(n)) != 0 ? (SJME_JINT_C(n)) : -1)
 
+/** Fail test with sub value. */
+#define FAIL_TEST_SUB(n, y) ((FAIL_TEST(n) << 16) | \
+	((y) & SJME_JINT_C(0xFFFF)))
+
+/** Fail test with three markers. */
+#define FAIL_TEST_TRI(n, y, z) ((FAIL_TEST(n) << 24) | \
+	(((y) & SJME_JINT_C(0xFF)) << 16) | ((z) & SJME_JINT_C(0xFF)))
+
 /** Skip test. */
 #define SKIP_TEST() SJME_JINT_C(-65535)
 

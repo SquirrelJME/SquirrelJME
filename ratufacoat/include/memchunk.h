@@ -18,6 +18,7 @@
 
 #include "sjmerc.h"
 #include "error.h"
+#include "counter.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -44,6 +45,21 @@ typedef struct sjme_memChunk
 	/** The size of the data block. */
 	sjme_jint size;
 } sjme_memChunk;
+
+/**
+ * This is a memory chunk that can be counted, for example when data needs to
+ * be freed accordingly.
+ * 
+ * @since 2021/11/13
+ */
+typedef struct sjme_countableMemChunk
+{
+	/** The actual chunk data. */
+	sjme_memChunk chunk;
+	
+	/** The counter for this chunk. */
+	sjme_counter count;
+} sjme_countableMemChunk;
 
 /**
  * Checks if a given read or write would be within the chunk bounds.

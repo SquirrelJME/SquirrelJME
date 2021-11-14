@@ -77,32 +77,32 @@ SJME_TEST_PROTOTYPE(testSqcDetect)
 		/* Open the library. */
 		lib = NULL;
 		if (!sjme_packLibraryOpen(pack, &lib, libDx, &shim->error))
-			return FAIL_TEST(100 + libDx);
+			return FAIL_TEST_SUB(10, libDx);
 		
 		/* Must have been set. */
 		if (lib == NULL)
-			return FAIL_TEST(200 + libDx);
+			return FAIL_TEST_SUB(11, libDx);
 		
 		/* Must be at this index. */
 		if (lib->packIndex != libDx)
-			return FAIL_TEST(300 + libDx);
+			return FAIL_TEST_SUB(12, libDx);
 		
 		/* Must be within this pack. */
 		if (lib->packOwner != pack)
-			return FAIL_TEST(400 + libDx);
+			return FAIL_TEST_SUB(13, libDx);
 		
 		/* Should have at least one entry. */
 		if (lib->numEntries <= 0)
-			return FAIL_TEST(500 + libDx);
+			return FAIL_TEST_SUB(14, libDx);
 		
 		/* Clear up the library usage. */
 		outActive = sjme_true;
 		if (!sjme_counterDown(&lib->counter, &outActive, &shim->error))
-			return FAIL_TEST(600 + libDx);
+			return FAIL_TEST_SUB(15, libDx);
 		
 		/* Must be inactive, since we only used this once. */
 		if (outActive != sjme_false)
-			return FAIL_TEST(700 + libDx);
+			return FAIL_TEST_SUB(16, libDx);
 	}
 	
 	/* Cleanup at the end. */

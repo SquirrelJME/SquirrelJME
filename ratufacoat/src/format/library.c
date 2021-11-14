@@ -107,6 +107,18 @@ sjme_jboolean sjme_libraryClose(sjme_libraryInstance* instance,
 	return closeOkay;
 }
 
+sjme_jboolean sjme_libraryEntryChunk(sjme_libraryInstance* libInstance,
+	sjme_countableMemChunk** outChunk, sjme_jint index, sjme_error* error)
+{
+	sjme_todo("Implement this?");
+}
+
+sjme_jboolean sjme_libraryEntryStream(sjme_libraryInstance* libInstance,
+	sjme_dataStream** outStream, sjme_jint index, sjme_error* error)
+{
+	sjme_todo("Implement this?");
+}
+
 sjme_jboolean sjme_libraryOpen(sjme_libraryInstance** outInstance,
 	const void* data, sjme_jint size, sjme_error* error)
 {
