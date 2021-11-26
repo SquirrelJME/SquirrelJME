@@ -9,7 +9,10 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
 public class Form
 	extends Screen
@@ -17,6 +20,10 @@ public class Form
 	/** Items on the form. */
 	final __VolatileList__<Item> _items =
 		new __VolatileList__<>();
+		
+	/** The layout policy for this form. */
+	volatile FormLayoutPolicy _layout =
+		new __DefaultFormLayoutPolicy__(this);
 	
 	/**
 	 * Initializes an empty form with an optionally specified title.
@@ -99,8 +106,8 @@ public class Form
 		if (__i == null)
 			throw new NullPointerException("NARG");
 		
-		return this.append(new ImageItem(null, __i, ImageItem.LAYOUT_DEFAULT,
-			null));
+		return this.append(new ImageItem(null, __i,
+			ImageItem.LAYOUT_DEFAULT, null));
 	}
 	
 	/**
@@ -130,12 +137,9 @@ public class Form
 		int rv = items.append(__i);
 		
 		// Update display
-		throw Debugging.todo();
-		/*Display d = this._display;
-		if (d != null)
-			UIState.getInstance().repaint();
+		this.__update();
 		
-		return rv;*/
+		return rv;
 	}
 	
 	public void delete(int __a)
@@ -184,9 +188,20 @@ public class Form
 		return Displayable.__getHeight(this, null);
 	}
 	
+	/**
+	 * Returns the current layout policy for the form.
+	 * 
+	 * @return The form layout policy currently in effect, if there is none
+	 * this will be {@code null}.
+	 * @since 2021/11/26
+	 */
 	public FormLayoutPolicy getLayoutPolicy()
 	{
-		throw new todo.TODO();
+		FormLayoutPolicy layout = this._layout;
+		if (layout.getClass() == __DefaultFormLayoutPolicy__.class)
+			return null;
+		
+		return layout;
 	}
 	
 	/**
@@ -219,9 +234,19 @@ public class Form
 		throw new todo.TODO();
 	}
 	
-	public void setLayoutPolicy(FormLayoutPolicy __p)
+	/**
+	 * Sets the layout policy for the current form.
+	 * 
+	 * @param __layout The layout to set to, may be {@code null} to reset the
+	 * policy to the default.
+	 * @throws IllegalArgumentException If {@link FormLayoutPolicy#getForm()}
+	 * does not match this form.
+	 * @since 2021/11/26
+	 */
+	public void setLayoutPolicy(FormLayoutPolicy __layout)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		this.__setLayoutPolicy(__layout);
 	}
 	
 	/**
@@ -233,6 +258,70 @@ public class Form
 	public int size()
 	{
 		return this._items.size();
+	}
+	
+	/**
+	 * Sets the layout policy for the current form, this is the actual
+	 * implementation due to non-{@code final}.
+	 * 
+	 * @param __layout The layout to set to, may be {@code null} to reset the
+	 * policy to the default.
+	 * @throws IllegalArgumentException If {@link FormLayoutPolicy#getForm()}
+	 * does not match this form.
+	 * @since 2021/11/26
+	 */
+	private void __setLayoutPolicy(FormLayoutPolicy __layout)
+		throws IllegalArgumentException
+	{
+		// Initialize back to the default?
+		if (__layout == null)
+		{
+			if (this.getLayoutPolicy() != null)
+				this._layout = new __DefaultFormLayoutPolicy__(this);
+			
+			return;
+		}
+		
+		// {@squirreljme.error EB3p The layout belong to a different form.}
+		if (__layout.getForm() != this)
+			throw new IllegalArgumentException("EB3p");
+		
+		this._layout = __layout;
+	}
+	
+	/**
+	 * Updates the current form for the new set of items, this will perform
+	 * layout policy calculation and set all of the widgets accordingly.
+	 * 
+	 * @since 2021/11/26
+	 */
+	private void __update()
+	{
+		UIBackend backend = UIBackendFactory.getInstance();
+		UIFormBracket uiForm = this._uiForm;
+		FormLayoutPolicy layout = this._layout;
+		
+		try
+		{
+			if (true)
+				throw Debugging.todo();
+		}
+		catch (RuntimeException e)
+		{
+			// If this is the default, just throw the exception since we
+			// cannot do anything otherwise regarding this... would otherwise
+			// cause an infinite loop here and just not work at all.
+			if (layout.getClass() == __DefaultFormLayoutPolicy__.class)
+				throw e;
+			
+			// Return the policy to the default
+			this.__setLayoutPolicy(null);
+			
+			// Try laying out again
+			this.__update();
+		}
+		
+		throw Debugging.todo();
 	}
 }
 

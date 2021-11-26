@@ -9,19 +9,36 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 public abstract class FormLayoutPolicy
 {
+	/** Left to right direction. */
 	public static int DIRECTION_LTR =
 		0;
 	
+	/** Right to left direction. */
 	public static int DIRECTION_RTL =
 		1;
+		
+	/** The form this refers to. */
+	final Reference<Form> _form;
 	
-	protected FormLayoutPolicy(Form __f)
+	/**
+	 * Initializes the form layout policy.
+	 * 
+	 * @param __form The form this refers to.
+	 * @since 2021/11/26
+	 */
+	protected FormLayoutPolicy(Form __form)
 	{
-		throw new todo.TODO();
+		if (__form == null)
+			throw new NullPointerException("NARG");
+		
+		this._form = new WeakReference<>(__form);
 	}
 	
 	@SerializedEvent
@@ -30,9 +47,20 @@ public abstract class FormLayoutPolicy
 	
 	protected abstract Item getTraverse(Item __i, int __dir);
 	
+	/**
+	 * Returns the form this is providing a layout for.
+	 * 
+	 * @return The form this is providing a layout for.
+	 * @since 2021/11/26
+	 */
 	protected final Form getForm()
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB0a The form has been garbage collected.}
+		Form rv = this._form.get();
+		if (rv == null)
+			throw new IllegalStateException("EB0a");
+		
+		return rv;
 	}
 	
 	protected final int getHeight(Item __i)

@@ -22,7 +22,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  */
 public class Ticker
 {
-	/** Displayables this ticker is attached to. */
+	/** {@code Displayable}s this ticker is attached to. */
 	final __VolatileList__<Displayable> _displayables =
 		new __VolatileList__<>();
 	
