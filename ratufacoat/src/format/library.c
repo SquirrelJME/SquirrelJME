@@ -110,12 +110,40 @@ sjme_jboolean sjme_libraryClose(sjme_libraryInstance* instance,
 sjme_jboolean sjme_libraryEntryChunk(sjme_libraryInstance* libInstance,
 	sjme_countableMemChunk** outChunk, sjme_jint index, sjme_error* error)
 {
+	if (libInstance == NULL || outChunk == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	if (index < 0 || index >= libInstance->numEntries)
+	{
+		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, index);
+		
+		return sjme_false;
+	}
+	
 	sjme_todo("Implement this?");
 }
 
 sjme_jboolean sjme_libraryEntryStream(sjme_libraryInstance* libInstance,
 	sjme_dataStream** outStream, sjme_jint index, sjme_error* error)
 {
+	if (libInstance == NULL || outStream == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	if (index < 0 || index >= libInstance->numEntries)
+	{
+		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, index);
+		
+		return sjme_false;
+	}
+	
 	sjme_todo("Implement this?");
 }
 
