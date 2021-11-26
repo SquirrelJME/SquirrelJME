@@ -97,69 +97,91 @@ public abstract class Canvas
 	public static final int GAME_D =
 		12;
 	
+	/** Backspace keyboard key. */
 	public static final int KEY_BACKSPACE =
 		8;
 	
+	/** Delete keyboard key. */
 	public static final int KEY_DELETE =
 		127;
 	
+	/** Down arrow keyboard key. */
 	public static final int KEY_DOWN =
 		-2;
 	
+	/** Enter keyboard key. */
 	public static final int KEY_ENTER =
 		10;
 	
+	/** Escape keyboard key. */
 	public static final int KEY_ESCAPE =
 		27;
 	
+	/** Left arrow keyboard key. */
 	public static final int KEY_LEFT =
 		-3;
 	
+	/** Number pad zero keyboard key. */
 	public static final int KEY_NUM0 =
 		48;
 	
+	/** Number pad one keyboard key. */
 	public static final int KEY_NUM1 =
 		49;
 	
+	/** Number pad two keyboard key. */
 	public static final int KEY_NUM2 =
 		50;
 	
+	/** Number pad three keyboard key. */
 	public static final int KEY_NUM3 =
 		51;
 	
+	/** Number pad four keyboard key. */
 	public static final int KEY_NUM4 =
 		52;
 	
+	/** Number pad five keyboard key. */
 	public static final int KEY_NUM5 =
 		53;
 	
+	/** Number pad six keyboard key. */
 	public static final int KEY_NUM6 =
 		54;
 	
+	/** Number pad seven keyboard key. */
 	public static final int KEY_NUM7 =
 		55;
 	
+	/** Number pad eight keyboard key. */
 	public static final int KEY_NUM8 =
 		56;
 	
+	/** Number pad nine keyboard key. */
 	public static final int KEY_NUM9 =
 		57;
 	
+	/** Pound/hash keyboard key. */
 	public static final int KEY_POUND =
 		35;
 	
+	/** Right arrow keyboard key. */
 	public static final int KEY_RIGHT =
 		-4;
 	
+	/** The select key. */
 	public static final int KEY_SELECT =
 		-5;
 	
+	/** The space bar keyboard key. */
 	public static final int KEY_SPACE =
 		32;
 	
+	/** The star/asterisk keyboard key. */
 	public static final int KEY_STAR =
 		42;
 	
+	/** The horizontal tab keyboard key. */
 	public static final int KEY_TAB =
 		9;
 	
