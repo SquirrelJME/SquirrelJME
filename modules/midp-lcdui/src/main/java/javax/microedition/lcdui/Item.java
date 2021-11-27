@@ -69,17 +69,18 @@ public abstract class Item
 	volatile Displayable _displayable;
 	
 	/** The current layout of the item. */
-	volatile int _layout = Item.LAYOUT_DEFAULT;
+	volatile int _layout =
+		Item.LAYOUT_DEFAULT;
 	
 	/** The label of this item. */
 	volatile String _label;
 	
 	/** The preferred width. */
-	volatile int _preferredw =
+	volatile int _preferredW =
 		-1;
 	
 	/** The preferred height. */
-	volatile int _preferredh =
+	volatile int _preferredH =
 		-1;
 	
 	/**
@@ -167,7 +168,7 @@ public abstract class Item
 	 */
 	public int getPreferredHeight()
 	{
-		int rv = this._preferredh,
+		int rv = this._preferredH,
 			mn = this.getMinimumHeight();
 		return (mn > rv ? mn : rv);
 	}
@@ -180,7 +181,7 @@ public abstract class Item
 	 */
 	public int getPreferredWidth()
 	{
-		int rv = this._preferredw,
+		int rv = this._preferredW,
 			mn = this.getMinimumWidth();
 		return (mn > rv ? mn : rv);
 	}
@@ -272,8 +273,8 @@ public abstract class Item
 		if (this._displayable instanceof Alert)
 			throw new IllegalStateException("EB36");
 		
-		this._preferredw = __w;
-		this._preferredh = __h;
+		this._preferredW = __w;
+		this._preferredH = __h;
 	}
 }
 
