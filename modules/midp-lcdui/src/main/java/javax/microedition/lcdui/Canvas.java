@@ -594,13 +594,17 @@ public abstract class Canvas
 		
 		// Send repaint properties
 		instance.widgetProperty(this._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, UISpecialCode.REPAINT_KEY_X | __x);
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
+				UISpecialCode.REPAINT_KEY_X | __x);
 		instance.widgetProperty(this._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, UISpecialCode.REPAINT_KEY_Y | __y);
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
+				UISpecialCode.REPAINT_KEY_Y | __y);
 		instance.widgetProperty(this._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, UISpecialCode.REPAINT_KEY_WIDTH | __w);
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
+				UISpecialCode.REPAINT_KEY_WIDTH | __w);
 		instance.widgetProperty(this._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, UISpecialCode.REPAINT_KEY_HEIGHT | __h);
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
+				UISpecialCode.REPAINT_KEY_HEIGHT | __h);
 		
 		// Count pending paints up before we signal the final repaint
 		synchronized (Display.class)
@@ -631,24 +635,25 @@ public abstract class Canvas
 		if (display == null)
 			return;
 		
-		// This does nothing, but it used as a runner for waiting until our
-		// serial call has been completed.
-		__PaintWait__ wait = new __PaintWait__();
-		
-		// Lock on the Display class because the callSerially() does the
-		// waiting on this, so that becomes out barrier.
+		// Lock on display since that is where the main serialized event loop
+		// happens
 		synchronized (Display.class)
 		{
 			for (;;)
-			{
-				// No repaints are left to be performed, stop now
-				if (this._pendingPaints == 0)
-					return;
+				try
+				{
+					// No repaints are left to be performed, stop now
+					if (this._pendingPaints == 0)
+						return;
+					
+					// Otherwise wait for a signal on paints
+					Display.class.wait(1000);
+				}
 				
-				// Call this, as when it is complete the event loop would
-				// have completed a run
-				display.callSerially(wait);
-			}
+				// Ignore any interruptions and just continue waiting 
+				catch (InterruptedException ignored)
+				{
+				}
 		}
 	}
 	

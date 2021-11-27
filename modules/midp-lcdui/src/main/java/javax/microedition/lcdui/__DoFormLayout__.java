@@ -1,4 +1,3 @@
-// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -10,20 +9,39 @@
 package javax.microedition.lcdui;
 
 /**
- * This is used by {@link Canvas#serviceRepaints()} and is used to check
- * for paints.
+ * Performs form layout by calling {@link Form#__updateSerially()}.
  *
- * @since 2020/10/04
+ * @since 2021/11/27
  */
-final class __PaintWait__
+final class __DoFormLayout__
 	implements Runnable
 {
+	/** The form to be updated. */
+	private final Form _form;
+	
+	/**
+	 * Initializes the form update.
+	 * 
+	 * @param __form The form to update.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/11/27
+	 */
+	__DoFormLayout__(Form __form)
+		throws NullPointerException
+	{
+		if (__form == null)
+			throw new NullPointerException("NARG");
+		
+		this._form = __form;
+	}
+	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/10/04
+	 * @since 2021/1/27
 	 */
 	@Override
 	public void run()
 	{
+		this._form.__updateSerially();
 	}
 }

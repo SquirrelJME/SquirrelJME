@@ -369,6 +369,11 @@ public abstract class Displayable
 			
 			// Remove from display list
 			old._displayables.remove(this);
+			
+			// If this is a form, do the layout policy since the screen
+			// positions and otherwise could have changed. 
+			if (this instanceof Form)
+				((Form)this).__update();
 		}
 		
 		// Setting the same ticker?
@@ -385,10 +390,16 @@ public abstract class Displayable
 			this._ticker = __t;
 			
 			// Update display
-			throw Debugging.todo();
+			if (true)
+				throw Debugging.todo();
 			/*Display d = this._display;
 			if (d != null)
 				UIState.getInstance().repaint();*/
+			
+			// If this is a form, since we added a ticker, there might need
+			// to be layout updates
+			if (this instanceof Form)
+				((Form)this).__update();
 		}
 	}
 	
@@ -673,8 +684,8 @@ public abstract class Displayable
 	/**
 	 * Does internal work when a form is being shown.
 	 * 
+	 * @param __show The displayable being shown.
 	 * @since 2020/09/27
-	 * @param __show
 	 */
 	@SerializedEvent
 	final void __showNotify(Displayable __show)
@@ -690,6 +701,10 @@ public abstract class Displayable
 		// Inform canvases that they are now hidden
 		if (__show instanceof Canvas)
 			((Canvas)__show).showNotify();
+		
+		// Form layout policies are now in effect
+		else if (__show instanceof Form)
+			((Form)__show).__update();
 	}
 	
 	/**
@@ -725,6 +740,12 @@ public abstract class Displayable
 		// Set the form title
 		UIBackendFactory.getInstance().widgetProperty(this._uiForm,
 			UIWidgetProperty.STRING_FORM_TITLE, 0, useTitle);
+		
+		// If this is a form, since we updated the title we should update
+		// all of the layout since the title placement could cause the
+		// locations of items to change.
+		if (this instanceof Form)
+			((Form)this).__update();
 	}
 	
 	/**

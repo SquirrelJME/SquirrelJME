@@ -11,6 +11,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
@@ -290,19 +291,44 @@ public class Form
 	}
 	
 	/**
-	 * Updates the current form for the new set of items, this will perform
-	 * layout policy calculation and set all of the widgets accordingly.
+	 * Signals that {@link #__updateSerially()} is to be called at a later
+	 * date.
 	 * 
 	 * @since 2021/11/26
 	 */
-	private void __update()
+	void __update()
 	{
+		// Queue this up for later
+		Display display = this._display;
+		if (display != null)
+			display.__queueSerialRunner(
+				new __DoFormLayout__(this), false);
+	}
+	
+	/**
+	 * Updates the current form for the new set of items, this will perform
+	 * layout policy calculation and set all of the widgets accordingly.
+	 * 
+	 * This is called serially.
+	 * 
+	 * @since 2021/11/26
+	 */
+	@SerializedEvent
+	void __updateSerially()
+	{
+		// If this form is not on a display, do not calculate the layout as
+		// we might still be loading everything in
+		if (this._display == null)
+			return;
+		
 		UIBackend backend = UIBackendFactory.getInstance();
 		UIFormBracket uiForm = this._uiForm;
 		FormLayoutPolicy layout = this._layout;
 		
 		try
 		{
+			Item[] items = this._items.values();
+			
 			if (true)
 				throw Debugging.todo();
 		}
@@ -320,8 +346,6 @@ public class Form
 			// Try laying out again
 			this.__update();
 		}
-		
-		throw Debugging.todo();
 	}
 }
 
