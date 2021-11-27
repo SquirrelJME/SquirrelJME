@@ -586,9 +586,9 @@ public enum VMType
 		// Enable JDWP debugging?
 		if (__debugEligible)
 		{
-		String jdwpProp = System.getProperty("squirreljme.jdwp");
-		if (jdwpProp != null)
-			vmArgs.add("-Xjdwp:" + jdwpProp);
+			String jdwpProp = System.getProperty("squirreljme.jdwp");
+			if (jdwpProp != null)
+				vmArgs.add("-Xjdwp:" + jdwpProp);
 		}
 		
 		// Change threading model?

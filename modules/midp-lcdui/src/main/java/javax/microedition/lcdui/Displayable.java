@@ -42,6 +42,9 @@ public abstract class Displayable
 	/** The title of the form. */
 	final UIItemBracket _uiTitle;
 	
+	/** The item used for the ticker on this displayable. */
+	final UIItemBracket _uiTicker;
+	
 	/** Commands/Menus which have been added to the displayable. */
 	final __VolatileList__<__Action__> _actions =
 		new __VolatileList__<>();
@@ -77,17 +80,17 @@ public abstract class Displayable
 	 */
 	Displayable()
 	{
-		UIBackend instance = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance();
 		
 		// Create a new form for this displayable
-		UIFormBracket uiForm = instance.formNew();
+		UIFormBracket uiForm = backend.formNew();
 		this._uiForm = uiForm;
 		
 		// Register it with the global state
 		StaticDisplayState.register(this, uiForm);
 		
 		// Build the title item
-		UIItemBracket uiTitle = instance.itemNew(UIItemType.LABEL);
+		UIItemBracket uiTitle = backend.itemNew(UIItemType.LABEL);
 		this._uiTitle = uiTitle;
 		
 		// Use a default title for now
@@ -96,9 +99,12 @@ public abstract class Displayable
 		Debugging.debugNote("Default title: %s", title);
 		
 		// Setup the title item
-		instance.formItemPosition(uiForm, uiTitle, UIItemPosition.TITLE);
-		instance.widgetProperty(uiTitle, UIWidgetProperty.STRING_LABEL,
+		backend.formItemPosition(uiForm, uiTitle, UIItemPosition.TITLE);
+		backend.widgetProperty(uiTitle, UIWidgetProperty.STRING_LABEL,
 			0, title);
+		
+		// Each displayable has its own ticker
+		this._uiTicker = backend.itemNew(UIItemType.LABEL);
 	}
 	
 	/**
@@ -370,10 +376,8 @@ public abstract class Displayable
 			// Remove from display list
 			old._displayables.remove(this);
 			
-			// If this is a form, do the layout policy since the screen
-			// positions and otherwise could have changed. 
-			if (this instanceof Form)
-				((Form)this).__update();
+			// Perform ticker update
+			this.__updateTicker();
 		}
 		
 		// Setting the same ticker?
@@ -389,17 +393,8 @@ public abstract class Displayable
 			// Set
 			this._ticker = __t;
 			
-			// Update display
-			if (true)
-				throw Debugging.todo();
-			/*Display d = this._display;
-			if (d != null)
-				UIState.getInstance().repaint();*/
-			
-			// If this is a form, since we added a ticker, there might need
-			// to be layout updates
-			if (this instanceof Form)
-				((Form)this).__update();
+			// Perform ticker updates
+			this.__updateTicker();
 		}
 	}
 	
@@ -705,6 +700,9 @@ public abstract class Displayable
 		// Form layout policies are now in effect
 		else if (__show instanceof Form)
 			((Form)__show).__update();
+		
+		// Update the ticker for this so it is properly displayed
+		this.__updateTicker();
 	}
 	
 	/**
@@ -746,6 +744,62 @@ public abstract class Displayable
 		// locations of items to change.
 		if (this instanceof Form)
 			((Form)this).__update();
+	}
+	
+	/**
+	 * Updates the ticker that is displayed on this displayable.
+	 * 
+	 * @since 2021/11/27
+	 */
+	final void __updateTicker()
+	{
+		UIBackend backend = UIBackendFactory.getInstance();
+		UIFormBracket uiForm = this._uiForm;
+		
+		// Has this changed?
+		boolean hasChanged;
+		
+		// Is the ticker being removed?
+		Ticker ticker = this._ticker;
+		UIItemBracket uiTicker = this._uiTicker;
+		if (ticker == null)
+		{
+			// Remove the ticker if it is currently being displayed
+			hasChanged = backend.formItemAtPosition(uiForm,
+				UIItemPosition.TICKER) == uiTicker;
+			if (hasChanged)
+				backend.formItemRemove(uiForm, UIItemPosition.TICKER);
+		}
+		
+		// Setting or changing the string?
+		else
+		{
+			// If not already set, place it here
+			hasChanged = backend.formItemAtPosition(uiForm,
+				UIItemPosition.TICKER) != uiTicker;
+			if (hasChanged)
+				backend.formItemPosition(uiForm, uiTicker,
+					UIItemPosition.TICKER);
+			
+			// Is the string on the ticker changing at all?
+			String oldString = backend.widgetPropertyStr(uiTicker,
+				UIWidgetProperty.STRING_LABEL, 0);
+			String newString = ticker._text;
+			if (((oldString == null) != (newString == null)) ||
+				(oldString != null && !oldString.equals(newString)))
+			{
+				backend.widgetProperty(uiTicker, UIWidgetProperty.STRING_LABEL,
+					0, newString);
+			}
+		}
+		
+		// Did the state of this ticker change?
+		if (hasChanged)
+		{
+			// Request form update as sizes and such could have changed
+			if (this instanceof Form)
+				((Form)this).__update();
+		}
 	}
 	
 	/**

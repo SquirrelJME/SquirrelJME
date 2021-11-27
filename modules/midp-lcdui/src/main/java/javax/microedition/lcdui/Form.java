@@ -318,13 +318,16 @@ public class Form
 	{
 		// If this form is not on a display, do not calculate the layout as
 		// we might still be loading everything in
-		if (this._display == null)
+		Display display = this._display;
+		if (display == null)
 			return;
 		
 		UIBackend backend = UIBackendFactory.getInstance();
 		UIFormBracket uiForm = this._uiForm;
 		FormLayoutPolicy layout = this._layout;
 		
+		// Perform the update, revert to the default if there is an error
+		// with the layout policy
 		try
 		{
 			Item[] items = this._items.values();
