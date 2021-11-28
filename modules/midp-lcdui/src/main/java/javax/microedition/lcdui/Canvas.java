@@ -876,7 +876,7 @@ public abstract class Canvas
 				if (__new == 0)
 					this.hideNotify();
 				else
-					this.showNotify();
+					this.__showNotifyCanvas();
 				return true;
 			
 				// New width?
@@ -898,6 +898,22 @@ public abstract class Canvas
 			default:
 				return false;
 		}
+	}
+	
+	/**
+	 * Notifies that this canvas has been shown.
+	 * 
+	 * @since 2021/11/28
+	 */
+	final void __showNotifyCanvas()
+	{
+		// Signal focus on this canvas since it has been shown
+		UIBackend backend = UIBackendFactory.getInstance();
+		backend.widgetProperty(this._uiCanvas,
+			UIWidgetProperty.INT_SIGNAL_FOCUS, 0, 0);
+		
+		// Call the notification handler
+		this.showNotify();
 	}
 }
 

@@ -693,16 +693,16 @@ public abstract class Displayable
 		// display was shown
 		this.__layoutCommands();
 		
+		// Update the ticker for this so it is properly displayed
+		this.__updateTicker();
+		
 		// Inform canvases that they are now hidden
 		if (__show instanceof Canvas)
-			((Canvas)__show).showNotify();
+			((Canvas)__show).__showNotifyCanvas();
 		
 		// Form layout policies are now in effect
 		else if (__show instanceof Form)
 			((Form)__show).__update();
-		
-		// Update the ticker for this so it is properly displayed
-		this.__updateTicker();
 	}
 	
 	/**

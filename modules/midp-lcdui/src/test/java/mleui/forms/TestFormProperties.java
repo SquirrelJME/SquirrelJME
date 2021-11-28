@@ -199,6 +199,10 @@ public class TestFormProperties
 			case UIWidgetProperty.STRING_FORM_TITLE:
 				this.secondary("has-form-title", !noEitherGet);
 				return;
+				
+			case UIWidgetProperty.INT_SIGNAL_FOCUS:
+				this.secondary("no-signal-focus", noEitherGet);
+				return;
 			
 			default:
 				throw new FailingExecution("Missing " + __property);

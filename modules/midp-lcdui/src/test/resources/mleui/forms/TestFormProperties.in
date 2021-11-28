@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 result: NoResult
 thrown: NoExceptionThrown
-secondary-total: int:20
+secondary-total: int:21
 secondary-neg--fails: true
 secondary-null--fails: true
 secondary-pos--fails: true
@@ -24,3 +24,4 @@ secondary-no--list--font: true
 secondary-no--selection--lock: true
 secondary-is--form: true
 secondary-has--form--title: true
+secondary-no--signal--focus: true

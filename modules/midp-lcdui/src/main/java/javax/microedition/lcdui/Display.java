@@ -1164,7 +1164,7 @@ public class Display
 		this._current = __show;
 		
 		// Notify that it was shown
-		__show.__showNotify(__show);
+		this.__queueSerialRunner(new __NotifyShow__(__show), false);
 	}
 	
 	/**

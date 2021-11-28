@@ -111,7 +111,11 @@ public interface UIWidgetProperty
 	byte STRING_FORM_TITLE =
 		19;
 	
+	/** Signal focus on this item. */
+	byte INT_SIGNAL_FOCUS =
+		20;
+	
 	/** The number of properties. */
 	byte NUM_PROPERTIES =
-		20;
+		21;
 }
