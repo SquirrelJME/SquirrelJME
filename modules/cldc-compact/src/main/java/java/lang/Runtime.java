@@ -11,6 +11,7 @@ package java.lang;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This class contains information about the host memory environment along
@@ -48,6 +49,16 @@ public class Runtime
 	{
 		// Check that we can exit
 		System.getSecurityManager().checkExit(__v);
+		
+		// Indicate that the VM is exiting
+		try
+		{
+			Debugging.debugNote("Exiting VM with %d...", __v);
+			new Throwable().printStackTrace();
+		}
+		catch (Throwable ignored)
+		{
+		}
 		
 		// Then do the exit if no exception was thrown
 		RuntimeShelf.exit(__v);

@@ -49,12 +49,13 @@ public final class NativeThreadShelf
 		for (Thread thread : Thread.getAllStackTraces().keySet())
 		{
 			// Ignore daemon threads if we do not want them
-			if (!__includeDaemon && thread.isDaemon())
+			boolean isDaemon = thread.isDaemon();
+			if (!__includeDaemon && isDaemon)
 				continue;
 			
 			// Count living threads
 			if (thread.isAlive())
-				if (thread.isDaemon())
+				if (isDaemon)
 					daemon++;
 				else
 					nonDaemon++;

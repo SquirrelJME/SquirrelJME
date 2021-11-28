@@ -27,7 +27,7 @@ final class __MainHandler__
 	
 	/** Maximum settle time after starting. */
 	private static final long _SETTLE_NS =
-		1_000_000_000;
+		2_000_000_000;
 	
 	/**
 	 * Main entry point.
@@ -101,18 +101,24 @@ final class __MainHandler__
 			{
 				// Initialize the MIDlet
 				instance.startApp();
+				
+				// Debug
+				Debugging.debugNote("MIDlet started normally.");
 			}
 			catch (Throwable cause)
 			{
+				Debugging.debugNote("Exception was thrown!");
+				
 				throwable = cause;
 			}
 			
 			// After termination of the MIDlet wait for threads to settle
 			// before checking them
-			while (System.currentTimeMillis() < settledNs)
+			long lastTime;
+			while ((lastTime = System.nanoTime()) < settledNs)
 				try
 				{
-					Thread.sleep(__MainHandler__._MS_SECOND);
+					Thread.sleep((settledNs - lastTime) / 1_000_000L);
 				}
 				catch (InterruptedException ignored)
 				{
@@ -123,9 +129,17 @@ final class __MainHandler__
 			// So actually stop when the alive count goes to zero
 			// If the application did start graphics, then there will be
 			// a daemon graphics thread which we want to count as well.
-			while (ThreadShelf.aliveThreadCount(
-				false, true) > 0)
+			int lastCount = -1, currentCount;
+			while ((currentCount = ThreadShelf.aliveThreadCount(
+				false, true)) > 0)
+			{
+				lastCount = currentCount;
 				ThreadShelf.waitForUpdate(__MainHandler__._MS_SECOND);
+			}
+			
+			// Note exited
+			Debugging.debugNote("Application finished! (%d)",
+				lastCount);
 			
 			// If an exception was thrown then fail here
 			if (throwable != null)
@@ -146,13 +160,14 @@ final class __MainHandler__
 		}
 		finally
 		{
+			Debugging.debugNote("Cleaning up application...");
+			
 			// Always try to destroy the MIDlet
 			try
 			{
 				instance.destroyApp(true);
 			}
-			catch (@SuppressWarnings("deprecation")
-				MIDletStateChangeException e)
+			catch (MIDletStateChangeException e)
 			{
 				// Ignore, but still print a trace
 				e.printStackTrace(System.err);
