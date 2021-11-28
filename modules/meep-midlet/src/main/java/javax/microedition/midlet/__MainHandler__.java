@@ -107,9 +107,17 @@ final class __MainHandler__
 			}
 			catch (Throwable cause)
 			{
-				Debugging.debugNote("Exception was thrown!");
-				
 				throwable = cause;
+				
+				// Show a noisy banner to make this visible
+				System.err.println("****************************************");
+				System.err.println("MIDLET THREW EXCEPTION:");
+				
+				// Make sure the output is printed
+				throwable.printStackTrace(System.err);
+				
+				// End of banner
+				System.err.println("****************************************");
 			}
 			
 			// After termination of the MIDlet wait for threads to settle
@@ -152,20 +160,7 @@ final class __MainHandler__
 			
 			// If an exception was thrown then fail here
 			if (throwable != null)
-			{
-				// Show a noisy banner to make this visible
-				System.err.println("****************************************");
-				System.err.println("MIDLET THREW EXCEPTION:");
-				
-				// Make sure the output is printed
-				throwable.printStackTrace(System.err);
-				
-				// End of banner
-				System.err.println("****************************************");
-				
-				// Toss it
 				throw throwable;
-			}
 		}
 		finally
 		{
