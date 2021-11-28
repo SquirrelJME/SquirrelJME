@@ -46,6 +46,9 @@ public class SwingItemCanvas
 		panel.addComponentListener(new HandleComponentEvents(this));
 		panel.addKeyListener(new HandleKeyEvents(this));
 		
+		// We control all of the drawn pixels here
+		panel.setOpaque(true);
+		
 		// Allow this to be focused so it can have key events within
 		panel.setFocusable(true);
 		panel.setRequestFocusEnabled(true);

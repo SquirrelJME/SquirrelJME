@@ -35,7 +35,12 @@ public class SwingItemLabel
 	{
 		super(UIItemType.LABEL);
 		
-		this.label = new JLabel();
+		JLabel label = new JLabel();
+		this.label = label;
+		
+		// Labels can never be focused
+		label.setFocusable(false);
+		label.setRequestFocusEnabled(false);
 	}
 	
 	/**
