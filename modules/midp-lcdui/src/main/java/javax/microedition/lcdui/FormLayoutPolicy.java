@@ -13,6 +13,8 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.IdentityHashMap;
+import net.multiphasicapps.collections.IdentityHashSet;
 
 public abstract class FormLayoutPolicy
 {
@@ -23,9 +25,12 @@ public abstract class FormLayoutPolicy
 	/** Right to left direction. */
 	public static int DIRECTION_RTL =
 		1;
-		
+	
 	/** The form this refers to. */
 	final Reference<Form> _form;
+	
+	/** Are we in a layout update? */
+	volatile boolean _inUpdate;
 	
 	/**
 	 * Initializes the form layout policy.
@@ -106,6 +111,24 @@ public abstract class FormLayoutPolicy
 	public static final int getLayoutDirection()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Initializes the layout for the given items.
+	 * 
+	 * @param __items The items to initialize with.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/11/28
+	 */
+	final void __init(Item... __items)
+		throws NullPointerException
+	{
+		if (__items == null)
+			throw new NullPointerException("NARG");
+		
+		for (Item item : __item)
+		
+		throw Debugging.todo();
 	}
 }
 

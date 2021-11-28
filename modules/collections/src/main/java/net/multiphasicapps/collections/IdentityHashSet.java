@@ -29,7 +29,7 @@ public final class IdentityHashSet<T>
 	 */
 	public IdentityHashSet()
 	{
-		super(new HashSet<__IdentityWrapper__<T>>());
+		super(new HashSet<Identity<T>>());
 	}
 	
 	/**
@@ -42,7 +42,7 @@ public final class IdentityHashSet<T>
 	public IdentityHashSet(Collection<? extends T> __from)
 		throws NullPointerException
 	{
-		super(new HashSet<__IdentityWrapper__<T>>(), __from);
+		super(new HashSet<Identity<T>>(), __from);
 	}
 }
 

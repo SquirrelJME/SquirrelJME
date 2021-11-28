@@ -326,11 +326,23 @@ public class Form
 		UIFormBracket uiForm = this._uiForm;
 		FormLayoutPolicy layout = this._layout;
 		
+		// Indicate we are in an update
+		synchronized (layout)
+		{
+			// Do not double update
+			if (layout._inUpdate)
+				return;
+			
+			layout._inUpdate = true;
+		}
+		
 		// Perform the update, revert to the default if there is an error
 		// with the layout policy
 		try
 		{
-			Item[] items = this._items.values();
+			// Initialize the layout for these items
+			Item[] items = this._items.toArray(new Item[0]);
+			layout.__init(items);
 			
 			if (true)
 				throw Debugging.todo();
@@ -348,6 +360,14 @@ public class Form
 			
 			// Try laying out again
 			this.__update();
+		}
+		finally
+		{
+			// We are no longer in an update
+			synchronized (layout)
+			{
+				layout._inUpdate = false;
+			}
 		}
 	}
 }

@@ -22,20 +22,44 @@ final class __AbstractMapKeySet__<K, V>
 	/** The backing map. */
 	protected final Map<K, V> map;
 	
+	/** Is adding allowed? */
+	protected final boolean allowAdd;
+	
 	/**
 	 * Initializes the set.
 	 *
 	 * @param __map The backing map
+	 * @param __allowAdd Is adding allowed in the map?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/01
 	 */
-	__AbstractMapKeySet__(Map<K, V> __map)
+	__AbstractMapKeySet__(Map<K, V> __map, boolean __allowAdd)
 		throws NullPointerException
 	{
 		if (__map == null)
 			throw new NullPointerException("NARG");
 		
 		this.map = __map;
+		this.allowAdd = __allowAdd;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/11/28
+	 */
+	@Override
+	public boolean add(K __k)
+	{
+		if (!this.allowAdd)
+			throw new UnsupportedOperationException("RORO");
+		
+		// Store a null value here
+		Map<K, V> map = this.map;
+		boolean contained = map.containsKey(__k);
+		map.put(__k, null);
+		
+		// Only if it is actually contained here
+		return !contained;
 	}
 	
 	/**
@@ -55,7 +79,24 @@ final class __AbstractMapKeySet__<K, V>
 	@Override
 	public final Iterator<K> iterator()
 	{
-		return new __Iterator__<K, V>(this.map.entrySet().iterator());
+		return new __MapKeySetIterator__<K, V>(this.map.entrySet().iterator());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/11/28
+	 */
+	@SuppressWarnings("SuspiciousMethodCalls")
+	@Override
+	public boolean remove(Object __o)
+	{
+		// Remove the item from the map, but check to ensure it has it before
+		// that is actually done
+		Map<K, V> map = this.map;
+		boolean hasKey = map.containsKey(__o);
+		map.remove(__o);
+		
+		return hasKey;
 	}
 	
 	/**
@@ -66,67 +107,6 @@ final class __AbstractMapKeySet__<K, V>
 	public final int size()
 	{
 		return this.map.size();
-	}
-	
-	/**
-	 * This is the iterator over the map's key set.
-	 *
-	 * @param <K> The key type.
-	 * @param <V> The value type.
-	 * @since 2018/11/01
-	 */
-	static final class __Iterator__<K, V>
-		implements Iterator<K>
-	{
-		/** The entry set iterator. */
-		protected final Iterator<Map.Entry<K, V>> iterator;
-		
-		/**
-		 * Initializes the iterator.
-		 *
-		 * @param __it The backing iterator.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2018/11/01
-		 */
-		__Iterator__(Iterator<Map.Entry<K, V>> __it)
-			throws NullPointerException
-		{
-			if (__it == null)
-				throw new NullPointerException("NARG");
-			
-			this.iterator = __it;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2018/11/01
-		 */
-		@Override
-		public boolean hasNext()
-		{
-			return this.iterator.hasNext();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2018/11/01
-		 */
-		@Override
-		public K next()
-			throws NoSuchElementException
-		{
-			return this.iterator.next().getKey();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2018/11/01
-		 */
-		@Override
-		public void remove()
-		{
-			this.iterator.remove();
-		}
 	}
 }
 

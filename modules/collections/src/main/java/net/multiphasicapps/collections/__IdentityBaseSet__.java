@@ -24,7 +24,7 @@ abstract class __IdentityBaseSet__<T>
 	extends AbstractSet<T>
 {
 	/** The set to use as a backing storage. */
-	private final Set<__IdentityWrapper__<T>> _backing;
+	private final Set<Identity<T>> _backing;
 	
 	/**
 	 * Initializes the base set using the given backing set.
@@ -33,7 +33,7 @@ abstract class __IdentityBaseSet__<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/28
 	 */
-	__IdentityBaseSet__(Set<__IdentityWrapper__<T>> __back)
+	__IdentityBaseSet__(Set<Identity<T>> __back)
 		throws NullPointerException
 	{
 		if (__back == null)
@@ -50,7 +50,7 @@ abstract class __IdentityBaseSet__<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/28
 	 */
-	__IdentityBaseSet__(Set<__IdentityWrapper__<T>> __back,
+	__IdentityBaseSet__(Set<Identity<T>> __back,
 		Collection<? extends T> __from)
 		throws NullPointerException
 	{
@@ -70,7 +70,7 @@ abstract class __IdentityBaseSet__<T>
 	{
 		if (__t == null)
 			return this._backing.add(null);
-		return this._backing.add(new __IdentityWrapper__<T>(__t));
+		return this._backing.add(new Identity<T>(__t));
 	}
 	
 	/**
@@ -190,7 +190,7 @@ abstract class __IdentityBaseSet__<T>
 		implements Iterator<T>
 	{
 		/** The boxed iterator. */
-		protected final Iterator<__IdentityWrapper__<T>> boxed =
+		protected final Iterator<Identity<T>> boxed =
 			__IdentityBaseSet__.this._backing.iterator();
 		
 		/**
@@ -210,7 +210,7 @@ abstract class __IdentityBaseSet__<T>
 		@Override
 		public T next()
 		{
-			__IdentityWrapper__<T> rv = this.boxed.next();
+			Identity<T> rv = this.boxed.next();
 			if (rv == null)
 				return null;
 			return rv.get();

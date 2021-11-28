@@ -268,7 +268,7 @@ public class Hashtable<K, V>
 	@Override
 	public Set<K> keySet()
 	{
-		return new __AbstractMapKeySet__<K, V>(this);
+		return new __AbstractMapKeySet__<K, V>(this, false);
 	}
 	
 	/**
