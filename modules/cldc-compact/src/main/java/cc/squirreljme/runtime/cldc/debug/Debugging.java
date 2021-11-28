@@ -139,6 +139,10 @@ public final class Debugging
 			System.err.print(__c);
 			if (__d > 0)
 				System.err.print(__d);
+				
+			// If writing a newline force the stream to be flushed
+			if (__c == '\n' || __d == '\n')
+				System.err.flush();
 			
 			return;
 		}
@@ -150,6 +154,10 @@ public final class Debugging
 		if (__d > 0)
 			TerminalShelf.write(StandardPipeType.STDERR,
 				(__d > Debugging._BYTE_LIMIT ? '?' : __d));
+			
+		// If writing a newline force the stream to be flushed
+		if (__c == '\n' || __d == '\n')
+			TerminalShelf.flush(StandardPipeType.STDERR);
 	}
 	
 	/**

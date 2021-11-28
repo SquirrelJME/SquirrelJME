@@ -22,8 +22,8 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 final class __MainHandler__
 {
 	/** One second in milliseconds. */
-	private static final int _MS_SECOND =
-		1_000;
+	private static final int _TERM_WAIT_TIME =
+		30_000;
 	
 	/** Maximum settle time after starting. */
 	private static final long _SETTLE_NS =
@@ -120,7 +120,7 @@ final class __MainHandler__
 				{
 					Thread.sleep((settledNs - lastTime) / 1_000_000L);
 				}
-				catch (InterruptedException ignored)
+				catch (Throwable ignored)
 				{
 				}
 			
@@ -129,17 +129,26 @@ final class __MainHandler__
 			// So actually stop when the alive count goes to zero
 			// If the application did start graphics, then there will be
 			// a daemon graphics thread which we want to count as well.
-			int lastCount = -1, currentCount;
-			while ((currentCount = ThreadShelf.aliveThreadCount(
-				false, true)) > 0)
+			for (int currentCount = -1;;)
 			{
-				lastCount = currentCount;
-				ThreadShelf.waitForUpdate(__MainHandler__._MS_SECOND);
+				// Get the current thread count with daemon threads
+				currentCount = ThreadShelf.aliveThreadCount(
+					false, true);
+				
+				// Stopping?
+				if (currentCount <= 0)
+				{
+					// Note exited
+					Debugging.debugNote("Application finished! (%s)",
+						currentCount);
+					
+					break;
+				}
+				
+				// Wait for there to be an update to the thread state before
+				// checking again
+				ThreadShelf.waitForUpdate(__MainHandler__._TERM_WAIT_TIME);
 			}
-			
-			// Note exited
-			Debugging.debugNote("Application finished! (%d)",
-				lastCount);
 			
 			// If an exception was thrown then fail here
 			if (throwable != null)
