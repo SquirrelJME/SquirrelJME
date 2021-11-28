@@ -53,26 +53,6 @@ public class SwingItemCanvas
 		panel.setFocusable(true);
 		panel.setRequestFocusEnabled(true);
 		panel.setFocusTraversalKeysEnabled(true);
-		
-		new Thread() {
-			@Override
-			public void run()
-			{
-				for (;;)
-				{
-					if (panel.isVisible() && panel.isShowing())
-						System.err.printf("Has focus: %s%n", panel.hasFocus());
-					try
-					{
-						Thread.sleep(250);
-					}
-					catch (InterruptedException ignored)
-					{
-						break;
-					}
-				}
-			}
-		}.start();
 	}
 	
 	/**
