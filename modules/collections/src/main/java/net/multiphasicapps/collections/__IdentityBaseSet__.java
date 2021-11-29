@@ -87,20 +87,11 @@ abstract class __IdentityBaseSet__<T>
 	 * {@inheritDoc}
 	 * @since 2017/12/28
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public final boolean contains(Object __o)
 	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/12/28
-	 */
-	@Override
-	public final boolean containsAll(Collection<?> __c)
-	{
-		throw new todo.TODO();
+		return this._backing.contains(new Identity<T>((T)__o));
 	}
 	
 	/**
@@ -145,30 +136,11 @@ abstract class __IdentityBaseSet__<T>
 	 * {@inheritDoc}
 	 * @since 2017/12/28
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public final boolean remove(Object __o)
 	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/12/28
-	 */
-	@Override
-	public final boolean removeAll(Collection<?> __c)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/12/28
-	 */
-	@Override
-	public final boolean retainAll(Collection<?> __c)
-	{
-		throw new todo.TODO();
+		return this._backing.remove(new Identity<T>((T)__o));
 	}
 	
 	/**
