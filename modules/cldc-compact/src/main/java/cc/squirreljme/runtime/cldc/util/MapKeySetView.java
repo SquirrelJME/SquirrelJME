@@ -1,4 +1,3 @@
-// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -7,7 +6,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package java.util;
+package cc.squirreljme.runtime.cldc.util;
+
+import java.util.AbstractSet;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * This is the key set for an abstract map.
@@ -16,7 +19,7 @@ package java.util;
  * @param <V> The value stored.
  * @since 2018/10/10
  */
-final class __AbstractMapKeySet__<K, V>
+public final class MapKeySetView<K, V>
 	extends AbstractSet<K>
 {
 	/** The backing map. */
@@ -33,7 +36,7 @@ final class __AbstractMapKeySet__<K, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/01
 	 */
-	__AbstractMapKeySet__(Map<K, V> __map, boolean __allowAdd)
+	public MapKeySetView(Map<K, V> __map, boolean __allowAdd)
 		throws NullPointerException
 	{
 		if (__map == null)
@@ -66,6 +69,7 @@ final class __AbstractMapKeySet__<K, V>
 	 * {@inheritDoc}
 	 * @since 2018/11/01
 	 */
+	@SuppressWarnings("SuspiciousMethodCalls")
 	@Override
 	public final boolean contains(Object __o)
 	{

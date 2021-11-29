@@ -13,8 +13,12 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.IdentityHashMap;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import net.multiphasicapps.collections.Identity;
 import net.multiphasicapps.collections.IdentityHashSet;
+import net.multiphasicapps.collections.IdentityMap;
 
 public abstract class FormLayoutPolicy
 {
@@ -25,6 +29,10 @@ public abstract class FormLayoutPolicy
 	/** Right to left direction. */
 	public static int DIRECTION_RTL =
 		1;
+	
+	/** The items to be tracked in the map. */
+	final IdentityMap<Item, __LayoutItem__> _tracked =
+		new IdentityMap<>(new HashMap<Identity<Item>, __LayoutItem__>());
 	
 	/** The form this refers to. */
 	final Reference<Form> _form;
@@ -126,9 +134,25 @@ public abstract class FormLayoutPolicy
 		if (__items == null)
 			throw new NullPointerException("NARG");
 		
-		for (Item item : __item)
+		// Initialize the tracking state for each item
+		IdentityHashSet<Item> got = new IdentityHashSet<>();
+		IdentityMap<Item, __LayoutItem__> tracked = this._tracked;
+		for (Item item : __items)
+		{
+			// We did get this item
+			got.add(item);
+			
+			// Get the layout item for this, be sure to create it if it is
+			// missing so it can keep using the same one
+			__LayoutItem__ info = tracked.get(item);
+			if (info == null)
+				tracked.put(item, (info = new __LayoutItem__()));
+		}
 		
-		throw Debugging.todo();
+		// Remove the old tracking state for the item
+		for (Iterator<Item> it = tracked.keySet().iterator(); it.hasNext();)
+			if (!got.contains(it.next()))
+				it.remove();
 	}
 }
 

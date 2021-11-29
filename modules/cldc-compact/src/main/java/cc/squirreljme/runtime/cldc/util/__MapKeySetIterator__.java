@@ -6,7 +6,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package java.util;
+package cc.squirreljme.runtime.cldc.util;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
  * This is the iterator over the map's key set.
