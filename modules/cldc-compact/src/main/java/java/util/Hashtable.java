@@ -11,6 +11,7 @@ package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
+import cc.squirreljme.runtime.cldc.util.MapKeySetView;
 import cc.squirreljme.runtime.cldc.util.SynchronizedEntrySetNotNull;
 
 /**
@@ -268,7 +269,7 @@ public class Hashtable<K, V>
 	@Override
 	public Set<K> keySet()
 	{
-		return new __AbstractMapKeySet__<K, V>(this, false);
+		return new MapKeySetView<K, V>(this, false);
 	}
 	
 	/**
