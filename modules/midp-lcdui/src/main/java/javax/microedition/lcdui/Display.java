@@ -418,11 +418,7 @@ public class Display
 	public int getCapabilities()
 	{
 		// These are all standard and expected to always be supported
-		int rv = Display.SUPPORTS_COMMANDS | Display.SUPPORTS_FORMS |
-			Display.SUPPORTS_TICKER | Display.SUPPORTS_ALERTS |
-			Display.SUPPORTS_LISTS | Display.SUPPORTS_TEXTBOXES |
-			Display.SUPPORTS_FILESELECTORS | Display.SUPPORTS_TABBEDPANES |
-			Display.SUPPORTS_MENUS;
+		int rv = Display.__defaultCapabilities();
 			
 		UIBackend backend = UIBackendFactory.getInstance();
 		
@@ -1378,6 +1374,21 @@ public class Display
 		throws IllegalStateException, NullPointerException
 	{
 		StaticDisplayState.removeListener(__dl);
+	}
+	
+	/**
+	 * The default display capabilities.
+	 * 
+	 * @return The default display capabilities.
+	 * @since 2021/11/30
+	 */
+	static int __defaultCapabilities()
+	{
+		return Display.SUPPORTS_COMMANDS | Display.SUPPORTS_FORMS |
+			Display.SUPPORTS_TICKER | Display.SUPPORTS_ALERTS |
+			Display.SUPPORTS_LISTS | Display.SUPPORTS_TEXTBOXES |
+			Display.SUPPORTS_FILESELECTORS | Display.SUPPORTS_TABBEDPANES |
+			Display.SUPPORTS_MENUS;
 	}
 	
 	/**

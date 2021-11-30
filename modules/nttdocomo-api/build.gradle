@@ -28,4 +28,6 @@ squirreljme
 dependencies
 {
 	api project(":modules:cldc-compact")
+	api project(":modules:meep-midlet")
+	api project(":modules:midp-lcdui")
 }

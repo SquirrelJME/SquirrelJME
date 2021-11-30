@@ -65,7 +65,7 @@ public abstract class Displayable
 	volatile Ticker _ticker;
 	
 	/** The current layout, if valid this will be set. */
-	private __Layout__ _layout;
+	private volatile __Layout__ _layout;
 	
 	/** The layout policy of this displayable. */
 	private CommandLayoutPolicy _layoutPolicy;
@@ -129,7 +129,7 @@ public abstract class Displayable
 	
 	/**
 	 * Adds the specified command to this displayable, if it was already added
-	 * then there is no effect (object refefences are checked).
+	 * then there is no effect (object references are checked).
 	 *
 	 * @param __c The command to add.
 	 * @throws DisplayCapabilityException If this is being displayed and
@@ -315,9 +315,16 @@ public abstract class Displayable
 		this.__layoutActionSet(__c, __p);
 	}
 	
+	/**
+	 * Sets the command layout policy to use for any commands or menu items.
+	 * 
+	 * @param __p The policy to use, {@code null} will use the default one for
+	 * the display.
+	 * @since 2021/11/30
+	 */
 	public void setCommandLayoutPolicy(CommandLayoutPolicy __p)
 	{
-		throw new todo.TODO();
+		this._layoutPolicy = __p;
 	}
 	
 	/**
@@ -483,8 +490,9 @@ public abstract class Displayable
 		// {@squirreljme.error EB3i The current display does not support
 		// commands.}
 		Display display = this._display;
-		if (display == null ||
-			0 == (display.getCapabilities() & Display.SUPPORTS_COMMANDS))
+		int caps = (display == null ? Display.__defaultCapabilities() :
+			display.getCapabilities());
+		if (0 == (caps & Display.SUPPORTS_COMMANDS))
 			throw new IllegalArgumentException("EB3i");
 		
 		// {@squirreljme.error EB3h The current displayable is not getting
@@ -493,7 +501,8 @@ public abstract class Displayable
 		if (layout == null)
 			throw new IllegalStateException("EB3h");
 		
-		throw new todo.TODO();
+		// Forward to the layout
+		layout.set(__a, __p);
 	}
 	
 	/**
