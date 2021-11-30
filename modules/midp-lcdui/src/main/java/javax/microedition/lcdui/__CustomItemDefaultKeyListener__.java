@@ -13,7 +13,8 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 /**
- * Not Described.
+ * This is the default key listener for custom items if another one is
+ * not used at all.
  *
  * @since 2020/10/16
  */

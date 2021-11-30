@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Not Described.
+ * Used to execute a {@link Runnable} at some point in the future via the
+ * event loop.
  *
  * @since 2020/10/03
  */
