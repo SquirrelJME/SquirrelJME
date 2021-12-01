@@ -158,7 +158,7 @@ public class Image
 		if (__w <= 0 || __h <= 0)
 			return;
 		
-		// Scalable images must be rasterized
+		// Scalable images must be rasterized first
 		if (this.isScalable())
 			throw new todo.TODO();
 			
@@ -172,15 +172,15 @@ public class Image
 	
 		// {@squirreljme.error EB2a The absolute value of the scanline length
 		// exceeds the read width.}
-		int absl = Math.abs(__sl);
-		if (absl < __w)
+		int scanLen = Math.abs(__sl);
+		if (scanLen < __w)
 			throw new IllegalArgumentException("EB2a");
 		
 		// {@squirreljme.error EB2b Reading of RGB data would exceed the bounds
 		// out the output array.}
-		int srcarea = __w * __h;
-		int areasl = __sl * __h;
-		if (__o < 0 || (__o + areasl) > __b.length || (__o + areasl) < 0)
+		int areaPix = __w * __h;
+		int areaScan = __sl * __h;
+		if (__o < 0 || (__o + areaScan) > __b.length || (__o + areaScan) < 0)
 			throw new ArrayIndexOutOfBoundsException("EB2b");
 		
 		// {@squirreljme.error EB2c The area to read exceeds the bounds of the

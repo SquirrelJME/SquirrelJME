@@ -14,19 +14,54 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import javax.microedition.io.Connection;
-import javax.microedition.io.InputConnection;
-import javax.microedition.io.OutputConnection;
+import javax.microedition.io.StreamConnection;
 
 /**
  * Handles the scratch pad for i-mode/i-appli applications, this is a small
  * storage area within the application.
+ * 
+ * These are in the format of {@code scratchpad:///0;pos=0,length=0}.
  *
  * @since 2021/11/30
  */
 public class ScratchPadConnection
-	implements InputConnection, OutputConnection
+	implements StreamConnection
 {
+	/** The parameters for the scratch pad. */
+	private final __ScratchPadParams__ params;
+	
+	/** The byte area length. */
+	private final int length;
+	
+	/** The requested scratch pad. */
+	private final int pad;
+	
+	/** The position to start read/writes from. */
+	private final int pos;
+	
+	/**
+	 * Initializes the scratch pad connection.
+	 * 
+	 * @param __params The scratch pad parameters.
+	 * @param __pad The requested pad.
+	 * @param __pos The position.
+	 * @param __len The length.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/12/01
+	 */
+	public ScratchPadConnection(__ScratchPadParams__ __params, int __pad,
+		int __pos, int __len)
+		throws NullPointerException
+	{
+		if (__params == null)
+			throw new NullPointerException("NARG");
+		
+		this.params = __params;
+		this.pad = __pad;
+		this.pos = __pos;
+		this.length = __len;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/11/30
@@ -80,20 +115,5 @@ public class ScratchPadConnection
 		throws IOException
 	{
 		throw Debugging.todo();
-	}
-	
-	/**
-	 * @param __part The resource to be opened.
-	 * @return A connection to the i-appli storage area.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2021/11/30
-	 */
-	public static Connection open(String __part)
-		throws NullPointerException
-	{
-		if (__part == null)
-			throw new NullPointerException("NARG");
-		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
 	}
 }

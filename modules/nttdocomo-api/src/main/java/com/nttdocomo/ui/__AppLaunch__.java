@@ -33,9 +33,9 @@ final class __AppLaunch__
 		// otherwise are properly loaded
 		Poking.poke();
 		
-		// {@squirreljme.error AH01 No main i-mode class specified.}
+		// {@squirreljme.error AH04 No main i-mode class specified.}
 		if (__args == null || __args.length < 1 || __args[0] == null)
-			throw new IllegalArgumentException("AH01");
+			throw new IllegalArgumentException("AH04");
 		
 		// Are there any arguments to the application call?
 		int argLen = __args.length;

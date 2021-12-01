@@ -25,6 +25,30 @@ import javax.microedition.io.InputConnection;
 public class ResourceConnection
 	implements InputConnection
 {
+	/** The pivot class for resource lookup. */
+	private final Class<?> pivot;
+	
+	/** The name of the resource to open. */
+	private final String rcName;
+	
+	/**
+	 * Initializes the resource connection.
+	 * 
+	 * @param __pivot The pivot class.
+	 * @param __rcName The resource name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/12/01
+	 */
+	public ResourceConnection(Class<?> __pivot, String __rcName)
+		throws NullPointerException
+	{
+		if (__pivot == null || __rcName == null)
+			throw new NullPointerException("NARG");
+		
+		this.pivot = __pivot;
+		this.rcName = __rcName;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/11/30
@@ -33,7 +57,7 @@ public class ResourceConnection
 	public void close()
 		throws IOException
 	{
-		throw Debugging.todo();
+		// Does nothing
 	}
 	
 	/**
@@ -55,6 +79,6 @@ public class ResourceConnection
 	public InputStream openInputStream()
 		throws IOException
 	{
-		throw Debugging.todo();
+		return this.pivot.getResourceAsStream(this.rcName);
 	}
 }

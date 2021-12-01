@@ -14,10 +14,10 @@ import cc.squirreljme.runtime.lcdui.BacklightControl;
 public class PhoneSystem
 {
 	public static final int ATTR_BACKLIGHT_OFF =
-		1;
+		0;
 
 	public static final int ATTR_BACKLIGHT_ON =
-		0;
+		1;
 
 	public static final int DEV_BACKLIGHT =
 		0;

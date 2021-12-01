@@ -439,7 +439,7 @@ public class Connector
 		synchronized (Connector.class)
 		{
 			for (CustomConnectionFactory custom : Connector._SERVICES)
-				if (__uri.equalsIgnoreCase(custom.scheme()))
+				if (scheme.equalsIgnoreCase(custom.scheme()))
 					return custom.connect(part, __mode, __timeouts, __opts);
 		}
 		

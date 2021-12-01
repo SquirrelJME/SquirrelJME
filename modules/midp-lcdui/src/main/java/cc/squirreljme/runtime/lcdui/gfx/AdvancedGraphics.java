@@ -551,28 +551,30 @@ public class AdvancedGraphics
 		__y += this.transy;
 		
 		// Determine ending position
-		int ex = __x + __w,
-			ey = __y + __h;
+		int ex = __x + __w;
+		int ey = __y + __h;
 		
 		// Get clipping region
-		int clipsx = this.clipsx,
-			clipsy = this.clipsy,
-			clipex = this.clipex,
-			clipey = this.clipey;
+		int clipsx = this.clipsx;
+		int clipsy = this.clipsy;
+		int clipex = this.clipex;
+		int clipey = this.clipey;
 		
 		// Box is completely outside the bounds of the clip, do not draw
 		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
 			return;
 		
 		// Determine sub-clipping area
-		int subx = __x - clipsx,
-			suby = __y - clipsy;
+		int subX = __x - clipsx;
+		int subY = __y - clipsy;
 		
 		// Clip into bounds
-		if (__x < 0)
-			__x = 0;
-		if (__y < 0)
-			__y = 0;
+		if (__x < clipsx)
+			__x = clipsx;
+		if (__y < clipsy)
+			__y = clipsy;
+		
+		// Check end coordinate
 		if (ex >= clipex)
 			ex = clipex;
 		if (ey >= clipey)

@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.jvm.suite.InvalidSuiteException;
 import cc.squirreljme.jvm.suite.Profile;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -25,6 +26,10 @@ import java.util.Objects;
 public class IModeApplication
 	extends Application
 {
+	/** Property for the scratch pad sizes. */
+	public static final String SCRATCH_PAD_PROPERTY =
+		"cc.squirreljme.imode.scratchpads";
+	
 	/** Boot class. */
 	private static final String _BOOT_CLASS =
 		"com.nttdocomo.ui.__AppLaunch__";
@@ -56,6 +61,10 @@ public class IModeApplication
 	/** Application icon. */
 	private static final String _APP_ICON =
 		"AppIcon";
+	
+	/** Scratch pad sizes. */
+	private static final String _SP_SIZE =
+		"SPsize";
 	
 	/** ADF Properties. */
 	private final Map<String, String> _adfProps;
@@ -100,9 +109,10 @@ public class IModeApplication
 	@Override
 	public EntryPoint entryPoint()
 	{
+		Map<String, String> adfProps = this._adfProps;
 		return new EntryPoint(this.displayName(),
-			this._adfProps.get(IModeApplication._APP_CLASS),
-			this._adfProps.get(IModeApplication._APP_ICON),
+			adfProps.get(IModeApplication._APP_CLASS),
+			adfProps.get(IModeApplication._APP_ICON),
 			false); 
 	}
 	
@@ -114,10 +124,11 @@ public class IModeApplication
 	public DependencyInfo loaderDependencies()
 	{
 		// This determines which library set to load
+		Map<String, String> adfProps = this._adfProps;
 		String config = Objects.toString(
-			this._adfProps.get(IModeApplication._CONFIGURATION_VER),
-			this._adfProps.get(IModeApplication._KVM_VER));
-		String profile = this._adfProps.get(IModeApplication._PROFILE_VER);
+			adfProps.get(IModeApplication._CONFIGURATION_VER),
+			adfProps.get(IModeApplication._KVM_VER));
+		String profile = adfProps.get(IModeApplication._PROFILE_VER);
 		
 		// Default to old stuff
 		if (config == null || config.isEmpty())
@@ -142,6 +153,24 @@ public class IModeApplication
 		if (args == null)
 			return new String[]{entry.entryPoint()};
 		return new String[]{entry.entryPoint(), args};
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/12/01
+	 */
+	@Override
+	public Map<String, String> loaderSystemProperties()
+	{
+		Map<String, String> adfProps = this._adfProps;
+		Map<String, String> rv = new LinkedHashMap<>();
+		
+		// Scratch pad sizes
+		String spSize = adfProps.get(IModeApplication._SP_SIZE);
+		if (spSize != null && !spSize.isEmpty())
+			rv.put(IModeApplication.SCRATCH_PAD_PROPERTY, spSize);
+		
+		return rv;
 	}
 	
 	/**

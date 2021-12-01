@@ -76,7 +76,7 @@ public final class SpringThreadWorker
 	
 	/** Number of instructions which can be executed before warning. */
 	private static final int _EXECUTION_THRESHOLD =
-		200000;
+		4000000;
 	
 	/** The owning machine. */
 	protected final SpringMachine machine;

@@ -9,6 +9,9 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.microedition.io.Connector;
 
 public class MediaManager
 {
@@ -20,8 +23,24 @@ public class MediaManager
 	
 	@SuppressWarnings("FinalStaticMethod")
 	public static final MediaImage getImage(String __uri)
+		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__uri == null)
+			throw new NullPointerException("NARG");
+		
+		try (InputStream in = Connector.openInputStream(__uri))
+		{
+			return new __MIDPImage__(
+				javax.microedition.lcdui.Image.createImage(in));
+		}
+		catch (IOException __e)
+		{
+			UIException toss = new UIException(UIException.UNSUPPORTED_FORMAT);
+			
+			toss.initCause(__e);
+			
+			throw toss;
+		}
 	}
 	
 	@SuppressWarnings("FinalStaticMethod")
