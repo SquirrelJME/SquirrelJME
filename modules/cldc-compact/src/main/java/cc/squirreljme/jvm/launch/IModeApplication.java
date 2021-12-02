@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Describes an i-mode application and how to launch it.
+ * Describes an i-mode/i-appli application and how to launch it.
  *
  * @since 2021/06/13
  */
@@ -29,6 +29,14 @@ public class IModeApplication
 	/** Property for the scratch pad sizes. */
 	public static final String SCRATCH_PAD_PROPERTY =
 		"cc.squirreljme.imode.scratchpads";
+	
+	/** Property for the application name. */
+	public static final String NAME_PROPERTY =
+		"cc.squirreljme.imode.name";
+	
+	/** Property for the application vendor. */
+	public static final String VENDOR_PROPERTY =
+		"cc.squirreljme.imode.vendor";
 	
 	/** Boot class. */
 	private static final String _BOOT_CLASS =
@@ -164,6 +172,13 @@ public class IModeApplication
 	{
 		Map<String, String> adfProps = this._adfProps;
 		Map<String, String> rv = new LinkedHashMap<>();
+		
+		// Application name and vendor, needed for RMS
+		rv.put(IModeApplication.NAME_PROPERTY,
+			Objects.toString(adfProps.get(IModeApplication._APP_NAME),
+				adfProps.get(IModeApplication._APP_CLASS)));
+		rv.put(IModeApplication.VENDOR_PROPERTY,
+			adfProps.get("SquirrelJME-i-Mode"));
 		
 		// Scratch pad sizes
 		String spSize = adfProps.get(IModeApplication._SP_SIZE);

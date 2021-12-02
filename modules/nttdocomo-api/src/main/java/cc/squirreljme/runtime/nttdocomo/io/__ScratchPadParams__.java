@@ -66,7 +66,7 @@ final class __ScratchPadParams__
 	 * @throws IndexOutOfBoundsException If this is not a valid scratchpad.
 	 * @since 2021/12/01
 	 */
-	public int get(int __i)
+	public int getLength(int __i)
 		throws IndexOutOfBoundsException
 	{
 		return this._sizes[__i];

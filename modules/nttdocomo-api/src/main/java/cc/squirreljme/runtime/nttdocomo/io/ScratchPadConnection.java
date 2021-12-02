@@ -70,7 +70,7 @@ public class ScratchPadConnection
 	public void close()
 		throws IOException
 	{
-		throw Debugging.todo();
+		// Do nothing
 	}
 	
 	/**
@@ -103,7 +103,8 @@ public class ScratchPadConnection
 	public OutputStream openOutputStream()
 		throws IOException
 	{
-		throw Debugging.todo();
+		return __ScratchPadStore__.__open(this.pad, this.params)
+			.outputStream(this.pos, this.length);
 	}
 	
 	/**
@@ -114,6 +115,7 @@ public class ScratchPadConnection
 	public InputStream openInputStream()
 		throws IOException
 	{
-		throw Debugging.todo();
+		return __ScratchPadStore__.__open(this.pad, this.params)
+			.inputStream(this.pos, this.length);
 	}
 }

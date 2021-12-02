@@ -8,7 +8,10 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.jvm.launch.IModeApplication;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
+import cc.squirreljme.runtime.rms.SuiteIdentifier;
+import java.util.Objects;
 
 /**
  * Handles i-appli and i-mode applications for launching.
@@ -71,11 +74,21 @@ final class __IAppliInterface__
 		// Load application details
 		synchronized (IApplication.class)
 		{
-			IApplication._appArgs = this._args;
+			IApplication._appArgs = this._args;;
 		}
 		
-		// Locate the main class before we initialize it
+		// Main class for entry
 		String mainClass = this.mainClass;
+		
+		// Load the suite and vendor which is needed for RMS to properly
+		// identify our own records
+		String appName = System.getProperty(IModeApplication.NAME_PROPERTY);
+		String appVend = System.getProperty(IModeApplication.VENDOR_PROPERTY);
+		SuiteIdentifier.setNameAndVendor(
+			Objects.toString(appName, mainClass),
+			Objects.toString(appVend, "SquirrelJME-i-Mode"));
+		
+		// Locate the main class before we initialize it
 		Class<?> classType;
 		try
 		{

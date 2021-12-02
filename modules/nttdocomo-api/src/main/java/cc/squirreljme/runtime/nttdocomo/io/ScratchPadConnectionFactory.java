@@ -8,7 +8,6 @@
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import java.io.IOException;
@@ -130,15 +129,15 @@ public class ScratchPadConnectionFactory
 		
 		// Determine default max length
 		if (wantLen < 0)
-			wantLen = params.get(wantPad) - wantPos;
+			wantLen = params.getLength(wantPad) - wantPos;
 		
 		// {@squirreljme.error AH0h Requested position and length exceeds
 		// the bound of the scratch pad. (The URI part; The desired position;
 		// The desired length; The max length)}
-		if (wantPos + wantLen > params.get(wantPad))
+		if (wantPos + wantLen > params.getLength(wantPad))
 			throw new ConnectionNotFoundException(
 				String.format("AH0h %s %d %d %d", __part,
-					wantPos, wantLen, params.get(wantPad)));
+					wantPos, wantLen, params.getLength(wantPad)));
 		
 		// Initialize the connection
 		return new ScratchPadConnection(params, wantPad, wantPos, wantLen);

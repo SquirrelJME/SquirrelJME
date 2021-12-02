@@ -10,6 +10,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
@@ -374,11 +375,12 @@ public class Image
 		
 		// Load the entire image data into a buffer so that we can mark it
 		byte[] copy;
+		Debugging.todoNote("Use stream copy here!");
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
 			Math.max(__is.available(), 4096)))
 		{
 			// Copy the image data
-			byte[] buf = new byte[512];
+			byte[] buf = new byte[4096];
 			for (;;)
 			{
 				int rc = __is.read(buf);
