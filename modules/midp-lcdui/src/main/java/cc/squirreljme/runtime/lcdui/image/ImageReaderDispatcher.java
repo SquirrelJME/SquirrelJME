@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.image;
 
+import cc.squirreljme.runtime.cldc.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.lcdui.Image;
@@ -35,8 +36,28 @@ public class ImageReaderDispatcher
 	 * @param __is The stream to read from.
 	 * @return The parsed image data.
 	 * @throws IOException If it could not be parsed.
+	 * @since 2021/12/04
 	 */
 	public static Image parse(InputStream __is)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__is == null)
+			throw new NullPointerException("NARG");
+		
+		if (__is.markSupported())
+			return ImageReaderDispatcher.__parse(__is);
+		return ImageReaderDispatcher.__parse(new BufferedInputStream(__is));
+	}
+	
+	/**
+	 * Parses the image stream.
+	 *
+	 * @param __is The stream to read from.
+	 * @return The parsed image data.
+	 * @throws IOException If it could not be parsed.
+	 */
+	private static Image __parse(InputStream __is)
 		throws IOException, NullPointerException
 	{
 		// Check

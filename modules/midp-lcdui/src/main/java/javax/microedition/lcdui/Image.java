@@ -369,34 +369,8 @@ public class Image
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
-		// If marking is supported, directly use the stream
-		if (__is.markSupported())
-			return ImageReaderDispatcher.parse(__is);
-		
-		// Load the entire image data into a buffer so that we can mark it
-		byte[] copy;
-		Debugging.todoNote("Use stream copy here!");
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
-			Math.max(__is.available(), 4096)))
-		{
-			// Copy the image data
-			byte[] buf = new byte[4096];
-			for (;;)
-			{
-				int rc = __is.read(buf);
-				
-				if (rc < 0)
-					break;
-				
-				baos.write(buf, 0, rc);
-			}
-			
-			// Use copied data
-			copy = baos.toByteArray();
-		}
-		
-		// Parse the data now that it can be marked
-		return ImageReaderDispatcher.parse(new ByteArrayInputStream(copy));
+		// Parse the image
+		return ImageReaderDispatcher.parse(__is);
 	}
 	
 	/**
