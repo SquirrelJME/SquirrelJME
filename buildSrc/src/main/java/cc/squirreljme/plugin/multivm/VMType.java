@@ -82,7 +82,7 @@ public enum VMType
 		@Override
 		public void spawnJvmArguments(Task __task, boolean __debugEligible,
 			JavaExecSpecFiller __execSpec, String __mainClass,
-			Map<String, String> __sysProps,
+			String __commonName, Map<String, String> __sysProps,
 			Path[] __libPath, Path[] __classPath, String... __args)
 			throws NullPointerException
 		{
@@ -253,14 +253,15 @@ public enum VMType
 		@Override
 		public void spawnJvmArguments(Task __task, boolean __debugEligible,
 			JavaExecSpecFiller __execSpec, String __mainClass,
-			Map<String, String> __sysProps,
+			String __commonName, Map<String, String> __sysProps,
 			Path[] __libPath, Path[] __classPath, String... __args)
 			throws NullPointerException
 		{
 			// Use a common handler to execute the VM as the VMs all have
 			// the same entry point handlers and otherwise
 			this.spawnVmViaFactory(__task, __debugEligible, __execSpec,
-				__mainClass, __sysProps, __libPath, __classPath, __args);
+				__mainClass, __commonName, __sysProps, __libPath,
+				__classPath, __args);
 		}
 	},
 	
@@ -389,14 +390,15 @@ public enum VMType
 		@Override
 		public void spawnJvmArguments(Task __task, boolean __debugEligible,
 			JavaExecSpecFiller __execSpec, String __mainClass,
-			Map<String, String> __sysProps,
+			String __commonName, Map<String, String> __sysProps,
 			Path[] __libPath, Path[] __classPath, String... __args)
 			throws NullPointerException
 		{
 			// Use a common handler to execute the VM as the VMs all have
 			// the same entry point handlers and otherwise
 			this.spawnVmViaFactory(__task, __debugEligible, __execSpec,
-				__mainClass, __sysProps, __libPath, __classPath, __args);
+				__mainClass, __commonName, __sysProps, __libPath,
+				__classPath, __args);
 		}
 	},
 	
@@ -531,6 +533,8 @@ public enum VMType
 	 * @param __debugEligible Is this eligible to be ran under the debugger?
 	 * @param __execSpec The execution specification.
 	 * @param __mainClass The main class to execute.
+	 * @param __commonName The common name for the application, may be
+	 * {@code null}.
 	 * @param __sysProps The system properties to define.
 	 * @param __libPath The library path to use.
 	 * @param __classPath The class path of the execution target.
@@ -540,7 +544,7 @@ public enum VMType
 	 */
 	public void spawnVmViaFactory(Task __task, boolean __debugEligible,
 		JavaExecSpecFiller __execSpec, String __mainClass,
-		Map<String, String> __sysProps, Path[] __libPath,
+		String __commonName, Map<String, String> __sysProps, Path[] __libPath,
 		Path[] __classPath, String[] __args)
 		throws NullPointerException
 	{
@@ -607,7 +611,7 @@ public enum VMType
 		// named better
 		String profilerClass = (__mainClass.equals(
 			VMHelpers.SINGLE_TEST_RUNNER) && __args.length > 0 ?
-			__args[0] : __mainClass);
+			__args[0] : (__commonName != null ? __commonName : __mainClass));
 		vmArgs.add("-Xsnapshot:" + profilerDir.resolve(
 			__task.getProject().getName() + "_" +
 			profilerClass.replace('.', '-') + ".nps"));
@@ -634,8 +638,8 @@ public enum VMType
 		// VM here instead. System properties are passed through so that the
 		// holding VM and the sub-VM share the same properties.
 		VMType.HOSTED.spawnJvmArguments(__task, __debugEligible, __execSpec,
-			"cc.squirreljme.emulator.vm.VMFactory", __sysProps,
-			__libPath, classPath,
+			"cc.squirreljme.emulator.vm.VMFactory",
+			__commonName, __sysProps, __libPath, classPath,
 			vmArgs.<String>toArray(new String[vmArgs.size()]));
 	}
 	
@@ -707,8 +711,7 @@ public enum VMType
 				// what the classpath is
 				VMType.HOSTED.spawnJvmArguments(__task, false,
 					new GradleJavaExecSpecFiller(__spec),
-					"cc.squirreljme.jvm.aot.Main",
-					Collections.emptyMap(),
+					"cc.squirreljme.jvm.aot.Main", null, Collections.emptyMap(),
 					classPath,
 					classPath,
 					args.toArray(new String[args.size()]));
