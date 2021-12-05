@@ -9,7 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.image;
 
-import cc.squirreljme.runtime.cldc.io.BufferedInputStream;
+import cc.squirreljme.runtime.cldc.io.MarkableInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.lcdui.Image;
@@ -47,7 +47,7 @@ public class ImageReaderDispatcher
 		
 		if (__is.markSupported())
 			return ImageReaderDispatcher.__parse(__is);
-		return ImageReaderDispatcher.__parse(new BufferedInputStream(__is));
+		return ImageReaderDispatcher.__parse(new MarkableInputStream(__is));
 	}
 	
 	/**
@@ -77,9 +77,9 @@ public class ImageReaderDispatcher
 		// Reset for future read
 		__is.reset();
 		
-		// GIF?
+		// GIF? (GIF8)
 		if (magic == 0x47494638)
-			throw new todo.TODO();
+			return new GIFReader(__is).parse();
 		
 		// PNG?
 		else if (magic == 0x89504E47)

@@ -14,11 +14,11 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 /**
- * This is an input stream which allows for marking and buffering input.
+ * This is an input stream which allows for marking input.
  *
  * @since 2021/12/04
  */
-public class BufferedInputStream
+public class MarkableInputStream
 	extends InputStream
 {
 	/** The stream to wrap. */
@@ -53,7 +53,7 @@ public class BufferedInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/04
 	 */
-	public BufferedInputStream(InputStream __in)
+	public MarkableInputStream(InputStream __in)
 		throws NullPointerException
 	{
 		if (__in == null)
@@ -70,7 +70,12 @@ public class BufferedInputStream
 	public int available()
 		throws IOException
 	{
-		throw Debugging.todo();
+		// Our available is exactly what our buffer fits
+		if (this._readLimit > 0)
+			return this._writeAt - this._readAt;
+		
+		// Otherwise base it on the source stream
+		return this.in.available();
 	}
 	
 	/**
@@ -83,18 +88,40 @@ public class BufferedInputStream
 		// {@squirreljme.error ZZ4h Zero or negative read limit for mark.}
 		if (__readLimit <= 0)
 			throw new IllegalArgumentException("ZZ4h");
+			
+		// Remember the old cache, since we might re-allocate it
+		byte[] cache = this._cache;
+		byte[] oldCache = cache;
 		
 		// Grow the cache buffer size up to set a maximum read limit
-		byte[] cache = this._cache;
 		if (cache == null || this._cache.length < __readLimit)
 			this._cache = (cache = (cache == null ? new byte[__readLimit] :
-				Arrays.copyOf(cache, __readLimit))); 
+				Arrays.copyOf(cache, __readLimit)));
 		
-		if (true)
-			throw Debugging.todo();
+		// Move everything in the buffer over for the new marking
+		int oldReadLimit = this._readLimit;
+		int readAt = this._readAt;
+		int writeAt = this._writeAt;
+		if (oldReadLimit > 0)
+		{
+			// How many bytes are ready?
+			int oldLen = writeAt - readAt;
+			
+			// Slam all the bytes down
+			System.arraycopy((oldCache == null ? cache : oldCache), readAt,
+				cache, 0, oldLen);
+			
+			// Set new position parameters
+			this._writeAt = writeAt - oldLen;
+		}
 		
-		// Set new parameters
-		this._readLimit = __readLimit;
+		// Set new parameters, we will always use the highest read limit
+		// we requested so that we need not worry about dropping and
+		// chopping buffers or similar
+		this._readLimit = Math.max(oldReadLimit, __readLimit);
+		this._readAt = 0;
+		if (writeAt < 0)
+			this._writeAt = 0;
 	}
 	
 	/**
@@ -179,6 +206,50 @@ public class BufferedInputStream
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		throw Debugging.todo();
+		InputStream in = this.in;
+		
+		// If un-marked, just do a direct forwarding read without regarding
+		// if we are in a mark or not. Technically this means that the buffered
+		// input stream is not actually buffered but we really just want a
+		// markable one anyway.
+		int readLimit = this._readLimit;
+		if (readLimit <= 0)
+			return in.read(__b, __o, __l);
+			
+		// Read parameters
+		byte[] cache = this._cache;
+		int writeAt = this._writeAt;
+		int readAt = this._readAt;
+		int cacheReadLimit = writeAt - readAt;
+		boolean hitEOF = this._hitEOF;
+		
+		// If we have a mark, take from the mark buffer first
+		int outAt = __o;
+		int left = __l;
+		if (cacheReadLimit > 0)
+		{
+			// How much will we be copying in?
+			int copyLen = Math.min(cacheReadLimit, left);
+			
+			// Copy the buffer over
+			System.arraycopy(cache, readAt,
+				__b, outAt, copyLen);
+			
+			// Adjust parameters
+			outAt += copyLen;
+			readAt += copyLen;
+			left -= copyLen;
+		}
+		
+		// Read and copy in data accordingly
+		while (left > 0)
+		{
+			throw Debugging.todo();
+		}
+		
+		// Return the number of bytes we read in, make sure to give EOF if
+		// we really reached that state
+		int total = outAt - __o;
+		return (hitEOF && total <= 0 ? -1 : total);
 	}
 }
