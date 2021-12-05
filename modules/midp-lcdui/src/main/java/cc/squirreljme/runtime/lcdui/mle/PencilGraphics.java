@@ -85,7 +85,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void clipRect(int __x, int __y, int __w, int __h)
+	public void clipRect(int __x, int __y, int __w, int __h)
 	{
 		throw Debugging.todo();
 	}
@@ -95,7 +95,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void copyArea(int __sx, int __sy, int __w, int __h, int __dx,
+	public void copyArea(int __sx, int __sy, int __w, int __h, int __dx,
 		int __dy, int __anchor)
 		throws IllegalArgumentException, IllegalStateException
 	{
@@ -113,7 +113,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawArc(int __x, int __y, int __w, int __h, int __sa,
+	public void drawArc(int __x, int __y, int __w, int __h, int __sa,
 	 int __aa)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.DRAW_ARC))
@@ -130,7 +130,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawARGB16(short[] __data, int __off, int __scanlen,
+	public void drawARGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
@@ -149,7 +149,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawChar(char __s, int __x, int __y, int __anchor)
+	public void drawChar(char __s, int __x, int __y, int __anchor)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.FONT_TEXT))
 		{
@@ -165,7 +165,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawChars(char[] __s, int __o, int __l, int __x, int __y,
+	public void drawChars(char[] __s, int __o, int __l, int __x, int __y,
 		int __anchor)
 		throws NullPointerException
 	{
@@ -183,7 +183,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawImage(Image __i, int __x, int __y, int __anchor)
+	public void drawImage(Image __i, int __x, int __y, int __anchor)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (0 == (this.capabilities & PencilCapabilities.DRAW_XRGB32_REGION))
@@ -200,7 +200,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawLine(int __x1, int __y1, int __x2, int __y2)
+	public void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.DRAW_LINE))
 		{
@@ -216,7 +216,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawRGB(int[] __data, int __off, int __scanlen, int __x,
+	public void drawRGB(int[] __data, int __off, int __scanlen, int __x,
 		int __y, int __w, int __h, boolean __alpha)
 		throws NullPointerException
 	{
@@ -235,7 +235,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawRGB16(short[] __data, int __off, int __scanlen,
+	public void drawRGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
@@ -254,7 +254,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawRect(int __x, int __y, int __w, int __h)
+	public void drawRect(int __x, int __y, int __w, int __h)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.DRAW_RECT))
 		{
@@ -270,7 +270,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawRegion(Image __src, int __xsrc, int __ysrc,
+	public void drawRegion(Image __src, int __xsrc, int __ysrc,
 		int __wsrc, int __hsrc, int __trans, int __xdest, int __ydest,
 		int __anch)
 		throws IllegalArgumentException, NullPointerException
@@ -290,7 +290,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawRegion(Image __src, int __xsrc, int __ysrc,
+	public void drawRegion(Image __src, int __xsrc, int __ysrc,
 		int __wsrc, int __hsrc, int __trans, int __xdest, int __ydest,
 		int __anch, int __wdest, int __hdest)
 		throws IllegalArgumentException, NullPointerException
@@ -310,7 +310,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawRoundRect(int __x, int __y, int __w, int __h,
+	public void drawRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.DRAW_ROUND_RECT))
@@ -327,7 +327,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawString(String __s, int __x, int __y, int __anchor)
+	public void drawString(String __s, int __x, int __y, int __anchor)
 		throws NullPointerException
 	{
 		if (0 == (this.capabilities & PencilCapabilities.FONT_TEXT))
@@ -344,7 +344,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawSubstring(String __s, int __o, int __l,
+	public void drawSubstring(String __s, int __o, int __l,
 		int __x, int __y, int __anchor)
 		throws NullPointerException, StringIndexOutOfBoundsException
 	{
@@ -362,7 +362,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawText(Text __t, int __x, int __y)
+	public void drawText(Text __t, int __x, int __y)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.FONT_TEXT))
 		{
@@ -378,7 +378,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void fillArc(int __x, int __y, int __w, int __h, int __sa,
+	public void fillArc(int __x, int __y, int __w, int __h, int __sa,
 	 int __aa)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.FILL_ARC))
@@ -395,7 +395,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void fillRect(int __x, int __y, int __w, int __h)
+	public void fillRect(int __x, int __y, int __w, int __h)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.FILL_RECT))
 		{
@@ -411,7 +411,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void fillRoundRect(int __x, int __y, int __w, int __h,
+	public void fillRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.FILL_ROUND_RECT))
@@ -428,7 +428,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void fillTriangle(int __x1, int __y1, int __x2, int __y2,
+	public void fillTriangle(int __x1, int __y1, int __x2, int __y2,
 		int __x3, int __y3)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.FILL_TRIANGLE))
@@ -445,7 +445,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getAlpha()
+	public int getAlpha()
 	{
 		throw Debugging.todo();
 	}
@@ -455,7 +455,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getAlphaColor()
+	public int getAlphaColor()
 	{
 		throw Debugging.todo();
 	}
@@ -465,7 +465,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getBlendingMode()
+	public int getBlendingMode()
 	{
 		throw Debugging.todo();
 	}
@@ -475,7 +475,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getBlueComponent()
+	public int getBlueComponent()
 	{
 		throw Debugging.todo();
 	}
@@ -485,7 +485,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getClipHeight()
+	public int getClipHeight()
 	{
 		throw Debugging.todo();
 	}
@@ -495,7 +495,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getClipWidth()
+	public int getClipWidth()
 	{
 		throw Debugging.todo();
 	}
@@ -505,7 +505,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getClipX()
+	public int getClipX()
 	{
 		throw Debugging.todo();
 	}
@@ -515,7 +515,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getClipY()
+	public int getClipY()
 	{
 		throw Debugging.todo();
 	}
@@ -525,7 +525,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getColor()
+	public int getColor()
 	{
 		throw Debugging.todo();
 	}
@@ -535,7 +535,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getDisplayColor(int __rgb)
+	public int getDisplayColor(int __rgb)
 	{
 		throw Debugging.todo();
 	}
@@ -545,7 +545,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final Font getFont()
+	public Font getFont()
 	{
 		if (0 == (this.capabilities & PencilCapabilities.FONT_TEXT))
 			return this.software.getFont();
@@ -558,7 +558,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getGrayScale()
+	public int getGrayScale()
 	{
 		throw Debugging.todo();
 	}
@@ -568,7 +568,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getGreenComponent()
+	public int getGreenComponent()
 	{
 		throw Debugging.todo();
 	}
@@ -578,7 +578,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getRedComponent()
+	public int getRedComponent()
 	{
 		throw Debugging.todo();
 	}
@@ -588,7 +588,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getStrokeStyle()
+	public int getStrokeStyle()
 	{
 		throw Debugging.todo();
 	}
@@ -598,7 +598,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getTranslateX()
+	public int getTranslateX()
 	{
 		throw Debugging.todo();
 	}
@@ -608,7 +608,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getTranslateY()
+	public int getTranslateY()
 	{
 		throw Debugging.todo();
 	}
@@ -618,7 +618,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void setAlpha(int __a)
+	public void setAlpha(int __a)
 		throws IllegalArgumentException
 	{
 		throw Debugging.todo();
@@ -629,7 +629,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void setAlphaColor(int __argb)
+	public void setAlphaColor(int __argb)
 	{
 		throw Debugging.todo();
 	}
@@ -639,7 +639,26 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void setAlphaColor(int __a, int __r, int __g, int __b)
+	public void setAlphaColor(int __a, int __r, int __g, int __b)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error EB3t Color out of range. (Alpha; Red; Green;
+		// Blue)}
+		if (__a < 0 || __a > 255 || __r < 0 || __r > 255 ||
+			__g < 0 || __g > 255 || __b < 0 || __b > 255)
+			throw new IllegalArgumentException(String.format(
+				"EB3t %d %d %d %d", __a, __r, __g, __b));
+		
+		// Set
+		this.setAlphaColor((__a << 24) | (__r << 16) | (__g << 8) | __b);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/25
+	 */
+	@Override
+	public void setBlendingMode(int __m)
 		throws IllegalArgumentException
 	{
 		throw Debugging.todo();
@@ -650,10 +669,32 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void setBlendingMode(int __m)
+	public void setClip(int __x, int __y, int __w, int __h)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/25
+	 */
+	@SuppressWarnings("MagicNumber")
+	@Override
+	public void setColor(int __rgb)
+	{
+		this.setAlphaColor((this.getAlphaColor() & 0xFF_000000) |
+			(__rgb & 0x00_FFFFFF));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/25
+	 */
+	@Override
+	public void setColor(int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		this.setAlphaColor(this.getAlpha(), __r, __g, __b);
 	}
 	
 	/**
@@ -661,38 +702,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void setClip(int __x, int __y, int __w, int __h)
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/09/25
-	 */
-	@Override
-	public final void setColor(int __rgb)
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/09/25
-	 */
-	@Override
-	public final void setColor(int __r, int __g, int __b)
-		throws IllegalArgumentException
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/09/25
-	 */
-	@Override
-	public final void setFont(Font __font)
+	public void setFont(Font __font)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.FONT_TEXT))
 		{
@@ -708,9 +718,9 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void setGrayScale(int __v)
+	public void setGrayScale(int __v)
 	{
-		throw Debugging.todo();
+		this.setAlphaColor(this.getAlpha(), __v, __v, __v);
 	}
 	
 	/**
@@ -718,7 +728,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void setStrokeStyle(int __a)
+	public void setStrokeStyle(int __a)
 		throws IllegalArgumentException
 	{
 		throw Debugging.todo();
@@ -729,7 +739,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void translate(int __x, int __y)
+	public void translate(int __x, int __y)
 	{
 		throw Debugging.todo();
 	}
