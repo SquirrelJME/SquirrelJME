@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import javax.microedition.lcdui.Image;
+import net.multiphasicapps.io.ByteDeque;
 import net.multiphasicapps.io.CRC32Calculator;
 import net.multiphasicapps.io.ChecksumInputStream;
 import net.multiphasicapps.io.SizeLimitedInputStream;
@@ -737,82 +738,37 @@ public class PNGReader
 	 * Reads all the input data and returns a byte array for the data, so it
 	 * may be processed later.
 	 *
-	 * @param __dis The stream to read from.
+	 * @param __in The stream to read from.
 	 * @return The read data.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/14
 	 */
-	private static byte[] __chunkLater(InputStream __dis)
+	private static byte[] __chunkLater(InputStream __in)
 		throws IOException, NullPointerException
 	{
-		if (__dis == null)
+		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		// Read into as many chunks as needed into their own arrays
-		List<byte[]> glue = new LinkedList<>();
-		int glueBytes = 0;
-		
-		// Setup initial glue point
-		byte[] current = StreamUtils.buffer(__dis);
-		glue.add(current);
+		// The final glue point
+		ByteDeque glue = new ByteDeque();
 		
 		// Read in all the various chunks as much as possible
-		for (int currentAt = 0, currentLeft = current.length;;)
+		byte[] buf = StreamUtils.buffer(__in);
+		for (;;)
 		{
-			// No more room in the buffer, setup a new one
-			if (currentLeft <= 0)
-			{
-				// Create new buffer
-				current = StreamUtils.buffer(__dis);
-				currentLeft = current.length;
-				
-				// Add to the glue for later
-				glue.add(current);
-			}
-			
-			// Read in the compressed chunk data
-			int rc = __dis.read(current, currentAt, currentLeft);
+			// Read in the chunk data
+			int rc = __in.read(buf, 0, buf.length);
 			
 			// EOF?
 			if (rc < 0)
 				break;
 			
-			// Shift positions over
-			currentAt += rc;
-			currentLeft -= rc;
-			glueBytes += rc;
+			// Add to the buffer
+			glue.addLast(buf, 0, rc);
 		}
 		
-		// If we only are gluing one piece together, just use that directly
-		if (glue.size() == 1)
-		{
-			byte[] onlyGlue = glue.get(0);
-			
-			if (onlyGlue.length == glueBytes)
-				return onlyGlue;
-			return Arrays.copyOf(onlyGlue, glueBytes);
-		}
-		
-		// Copy everything in the glue parts into this array
-		byte[] rv = new byte[glueBytes];
-		int glueAt = 0;
-		int glueLeft = glueBytes;
-		for (byte[] gluePart : glue)
-		{
-			// How much do we copy into here?
-			int len = Math.min(glueLeft, gluePart.length);
-			
-			// Copy fragment
-			System.arraycopy(gluePart, 0,
-				rv, glueAt, len);
-			
-			// Move counters
-			glueAt += len;
-			glueLeft -= len;
-		}
-		
-		return rv;
+		return glue.toByteArray();
 	}
 }
 

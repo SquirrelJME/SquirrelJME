@@ -181,6 +181,10 @@ public class MarkableInputStream
 		if (this._isClosed)
 			throw new IOException("CLOS");
 		
+		// If we are outside of a mark or not in one, forward this read
+		if (this._readLimit <= 0)
+			return this.in.read();
+		
 		// Constantly try to read a single byte
 		for (byte[] singleByte = this._singleByte;;)
 		{
