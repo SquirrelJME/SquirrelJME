@@ -174,11 +174,11 @@ public class IModeApplication
 		Map<String, String> rv = new LinkedHashMap<>();
 		
 		// Application name and vendor, needed for RMS
-		rv.put(IModeApplication.NAME_PROPERTY,
-			Objects.toString(adfProps.get(IModeApplication._APP_NAME),
-				adfProps.get(IModeApplication._APP_CLASS)));
-		rv.put(IModeApplication.VENDOR_PROPERTY,
-			adfProps.get("SquirrelJME-i-Mode"));
+		String nameProp = Objects.toString(
+			adfProps.get(IModeApplication._APP_NAME),
+			adfProps.get(IModeApplication._APP_CLASS));
+		rv.put(IModeApplication.NAME_PROPERTY, nameProp);
+		rv.put(IModeApplication.VENDOR_PROPERTY, "SquirrelJME-i-Mode");
 		
 		// Scratch pad sizes
 		String spSize = adfProps.get(IModeApplication._SP_SIZE);
