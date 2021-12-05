@@ -67,7 +67,7 @@ public abstract class Graphics
 	
 	/**
 	 * The blending mode, the destination alpha becomes the source and as such
-	 * the operation is a copy.
+	 * the operation is a copy (or overwrite).
 	 */
 	public static final int SRC =
 		1;

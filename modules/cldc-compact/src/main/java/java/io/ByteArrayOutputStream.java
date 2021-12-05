@@ -136,7 +136,8 @@ public class ByteArrayOutputStream
 		{
 			// Not enough room? Increase buffer size
 			if (count == buf.length)
-				this.buf = (buf = Arrays.copyOf(buf, count + ByteArrayOutputStream._CAPACITY));
+				this.buf = (buf = Arrays.copyOf(buf,
+					count + ByteArrayOutputStream._CAPACITY));
 			
 			// Write byte at end position
 			buf[count] = (byte)__b;

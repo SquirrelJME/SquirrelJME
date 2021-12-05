@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -482,37 +483,18 @@ public final class Base64Decoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/04
 	 */
-	public static final byte[] decode(String __in, Base64Alphabet __ab,
+	public static byte[] decode(String __in, Base64Alphabet __ab,
 		boolean __ip)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__in == null || __ab == null)
 			throw new NullPointerException("NARG");
 		
-		// Wrap in a reader to decode
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+		// Loop handle bytes
+		try (InputStream in = new Base64Decoder(
+			new StringReader(__in), __ab, __ip))
 		{
-			byte[] buf = new byte[32];
-			
-			// Loop handle bytes
-			try (InputStream in = new Base64Decoder(
-				new StringReader(__in), __ab, __ip))
-			{
-				for (;;)
-				{
-					int rc = in.read(buf);
-					
-					// EOF?
-					if (rc < 0)
-						break;
-					
-					// Copy
-					baos.write(buf, 0, rc);
-				}
-			}
-			
-			// Return resulting byte array
-			return baos.toByteArray();
+			return StreamUtils.readAll(in);
 		}
 		
 		// {@squirreljme.error BD04 Could not decode the input string.}

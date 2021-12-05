@@ -10,8 +10,8 @@ package cc.squirreljme.runtime.cldc.util;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -42,6 +42,21 @@ public final class StreamUtils
 	 * @since 2021/09/06
 	 */
 	public static byte[] buffer(InputStream __in)
+		throws IOException, NullPointerException
+	{
+		return new byte[StreamUtils.bufferSize(__in)];
+	}
+	
+	/**
+	 * Determines the best available buffer size.
+	 * 
+	 * @param __in The stream to read from, may be {@code null}.
+	 * @return The recommended buffer size.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/12/05
+	 */
+	public static int bufferSize(InputStream __in)
 		throws IOException, NullPointerException
 	{
 		// Determine the initial buffer size
@@ -76,8 +91,8 @@ public final class StreamUtils
 		else
 			allocSize = Math.min(initCap, Integer.highestOneBit(avail + 1));
 		
-		// Use a fresh allocation of that
-		return new byte[allocSize];
+		// Use this size
+		return allocSize;
 	}
 	
 	/**
@@ -129,6 +144,45 @@ public final class StreamUtils
 				break;
 			
 			__out.write(__tempBuf, 0, rc);
+		}
+	}
+	
+	/**
+	 * Reads every byte within the input stream.
+	 * 
+	 * @param __in The stream to read from.
+	 * @return A byte array containing all of the stream bytes.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/12/05
+	 */
+	public static byte[] readAll(InputStream __in)
+		throws IOException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException();
+		
+		// Setup buffers for temporary copy
+		int bufLen = StreamUtils.bufferSize(__in);
+		byte[] buf = new byte[bufLen];
+		
+		// Write into our target buffer
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(bufLen))
+		{
+			for (;;)
+			{
+				int rc = __in.read(buf, 0, bufLen);
+				
+				// EOF?
+				if (rc < 0)
+					break;
+				
+				// Store within
+				baos.write(buf, 0, rc);
+			}
+		
+			// All done!
+			return baos.toByteArray();
 		}
 	}
 	

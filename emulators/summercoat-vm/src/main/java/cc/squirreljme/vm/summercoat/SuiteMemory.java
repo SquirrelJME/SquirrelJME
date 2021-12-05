@@ -11,10 +11,10 @@ package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -200,27 +200,14 @@ public final class SuiteMemory
 		// rather than recompiling everything over and over.
 		byte[] jf;
 		try (InputStream in = clib.resourceAsStream(
-				SummerCoatJarLibrary.ROM_CHUNK_RESOURCE);
-			ByteArrayOutputStream baos = new ByteArrayOutputStream())
+				SummerCoatJarLibrary.ROM_CHUNK_RESOURCE))
 		{
 			// No ROM actually exists?
 			if (in == null)
 				throw new VMException("JAR has no SummerCoat ROM: " + libname);
 			
-			// Copy ROM data
-			byte[] buf = new byte[4096];
-			for (;;)
-			{
-				int rc = in.read(buf);
-				
-				if (rc < 0)
-					break;
-				
-				baos.write(buf, 0, rc);
-			}
-			
 			// Use finalized ROM data
-			jf = baos.toByteArray();
+			jf = StreamUtils.readAll(in);
 		}
 		
 		// {@squirreljme.error AE09 Suite chunk size limit was exceeded.

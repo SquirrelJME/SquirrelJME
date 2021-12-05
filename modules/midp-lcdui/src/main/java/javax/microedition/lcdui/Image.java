@@ -10,12 +10,10 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -345,9 +343,11 @@ public class Image
 		int area = __w * __h;
 		int[] data = new int[area];
 		
-		// Fill with color
-		for (int i = 0; i < area; i++)
-			data[i] = __c;
+		// Fill with color, unless we asked for zero then nothing needs to
+		// actually be done
+		if (__c != 0)
+			for (int i = 0; i < area; i++)
+				data[i] = __c;
 		
 		// Create
 		return new Image(data, __w, __h, true, __alpha);

@@ -10,6 +10,8 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
+import cc.squirreljme.jvm.mle.constants.NativeImageLoadParameter;
+import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
 import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -66,4 +68,32 @@ public final class PencilShelf
 		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
 		int __sw, int __sh)
 		throws MLECallError;
+	
+	/**
+	 * Performs native image loading and returns a semi-modified RGB buffer
+	 * where the first values according to {@link NativeImageLoadParameter}
+	 * represent information about the image.
+	 * 
+	 * @param __type The {@link NativeImageLoadType} to load.
+	 * @param __b The buffer.
+	 * @param __o The offset.
+	 * @param __l The length.
+	 * @return The raw RGB for the image with starting parameters.
+	 * @throws MLECallError If the image could not be loaded.
+	 * @since 2021/12/05
+	 */
+	public static native int[] nativeImageLoadRGBA(int __type,
+		byte[] __b, int __o, int __l)
+		throws MLECallError;
+	
+	/**
+	 * Returns a bit field of {@link NativeImageLoadType} which indicates which
+	 * types of images are capable of being natively loaded on a platform
+	 * which requiring byte code to be executed for it.
+	 * 
+	 * @return The bit field of {@link NativeImageLoadType} that can be
+	 * natively loaded.
+	 * @since 2021/12/05
+	 */
+	public static native int nativeImageLoadTypes();
 }
