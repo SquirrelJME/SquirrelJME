@@ -147,7 +147,7 @@ public class MarkableInputStream
 				cache, 0, oldLen);
 			
 			// Set new position parameters
-			this._writeAt = writeAt - oldLen;
+			this._writeAt = writeAt - readAt;
 		}
 		
 		// Set new parameters, we will always use the highest read limit

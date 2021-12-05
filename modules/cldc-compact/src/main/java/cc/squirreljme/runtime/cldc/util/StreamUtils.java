@@ -139,7 +139,7 @@ public final class StreamUtils
 	 * 
 	 * @param __in The stream to read from.
 	 * @param __b The output buffer.
-	 * @return The number of bytes read.
+	 * @return The number of bytes read or {@code -1} on EOF.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/05
@@ -162,7 +162,7 @@ public final class StreamUtils
 	 * @param __b The output buffer.
 	 * @param __o The offset into the buffer.
 	 * @param __l The number of bytes to read.
-	 * @return The number of bytes read.
+	 * @return The number of bytes read or {@code -1} on EOF.
 	 * @throws IndexOutOfBoundsException If the offset and/or length are
 	 * negative or exceed the array bounds.
 	 * @throws IOException On read errors.
@@ -187,7 +187,11 @@ public final class StreamUtils
 			
 			// Reached EOF
 			if (rc < 0)
+			{
+				if (rv == 0)
+					return -1;
 				break;
+			}
 			
 			// These many bytes were read, we might try again
 			rv += rc;
