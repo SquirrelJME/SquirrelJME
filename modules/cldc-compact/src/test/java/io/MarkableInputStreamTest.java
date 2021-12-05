@@ -46,24 +46,33 @@ public class MarkableInputStreamTest
 		{
 			this.secondary("markable", in.markSupported());
 			
+			// Squirrels are cute!
+			
 			// Should be just fine
+				// [S]|quirrels are cute!
 			this.secondary("init1", (char)in.read());
+				// S[q]|uirrels are cute!
 			this.secondary("init2", (char)in.read());
 			
 			// Mark a few bytes and read twice, they should be the same
+				// Sq^|uirr<els are cute!
 			in.mark(MarkableInputStreamTest._COUNT);
 			
 			byte[] markA = new byte[MarkableInputStreamTest._COUNT];
 			
+				// Sq^[uirr]|els are cute!
 			this.secondary("mark1", StreamUtils.readMostly(in, markA));
 			
+				// Sq^|uirr<els are cute!
 			in.reset();
 			
 			byte[] markB = new byte[MarkableInputStreamTest._COUNT];
+				// Sq^[uirr]|els are cute!
 			this.secondary("mark2", StreamUtils.readMostly(in, markB));
 			this.secondary("marksame", Arrays.equals(markA, markB));
 			
 			// Read one more byte
+				// Squirr[e]|ls are cute!
 			this.secondary("after1", (char)in.read());
 			
 			// Resetting should not work here since we read past the amount
@@ -81,23 +90,39 @@ public class MarkableInputStreamTest
 			
 			// Mark some bytes then skip one, mark again to reset the counter
 			// then do a full read again and skip
+				// Squirre^|ls a<re cute!
 			in.mark(MarkableInputStreamTest._COUNT);
 			
+			byte[] undoA = new byte[MarkableInputStreamTest._COUNT];
+				// Squirre^|[ls a]<re cute!
+			this.secondary("undo", StreamUtils.readMostly(in, undoA));
+			
+				// Squirre^|ls a<re cute!
+			in.reset();
+			
+				// Squirre^[l]|s a<re cute!
 			this.secondary("skip1", (char)in.read());
 			
+				// Squirrel^|s ar<e cute!
 			in.mark(MarkableInputStreamTest._COUNT);
 			
 			byte[] skipA = new byte[MarkableInputStreamTest._COUNT];
-			this.secondary("skip1", StreamUtils.readMostly(in, skipA));
+				// Squirrel^[s ar]|e cute!
+			this.secondary("skip2", StreamUtils.readMostly(in, skipA));
+			this.secondary("skip2c", (char)skipA[0]);
 			
+				// Squirrel^|s are cute!
 			in.reset();
 			
 			byte[] skipB = new byte[MarkableInputStreamTest._COUNT];
-			this.secondary("skip2", StreamUtils.readMostly(in, skipB));
+				// Squirrel^[s ar]|e cute!
+			this.secondary("skip3", StreamUtils.readMostly(in, skipB));
+			this.secondary("skip3c", (char)skipB[0]);
 			this.secondary("skipsame", Arrays.equals(skipA, skipB));
 			
 			// Should be this character after
-			this.secondary("after", (char)in.read());
+				// Squirrels ar[e]| cute!
+			this.secondary("after2", (char)in.read());
 			
 			// Resetting should not work here since we read past the amount
 			try
@@ -112,18 +137,23 @@ public class MarkableInputStreamTest
 			this.secondary("didaresetafter", didAReset);
 			
 			// Mark for a large buffer, we will read up to EOF
+				// Squirrels are^| cute!<
 			in.mark(MarkableInputStreamTest._BYTES.length);
 			
 			byte[] restA = new byte[MarkableInputStreamTest._BYTES.length];
+				// Squirrels are^[ cute!]|< <-- 6
 			this.secondary("rest1", StreamUtils.readMostly(in, restA));
 			
+				// Squirrels are^| cute!<
 			in.reset();
 			
 			byte[] restB = new byte[MarkableInputStreamTest._BYTES.length];
+				// Squirrels are^[ cute!]|< <-- 6
 			this.secondary("rest2", StreamUtils.readMostly(in, restB));
 			this.secondary("restsame", Arrays.equals(restA, restB));
 			
 			// This should be EOF
+				// Squirrels are cute!| (-1)
 			this.secondary("eof", in.read() < 0);
 		}
 	}

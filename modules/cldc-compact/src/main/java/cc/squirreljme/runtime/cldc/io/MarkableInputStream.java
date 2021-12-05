@@ -46,6 +46,9 @@ public class MarkableInputStream
 	/** Was EOF hit when filling the buffer? */
 	private boolean _hitEOF;
 	
+	/** Are we closed? */
+	private boolean _isClosed;
+	
 	/**
 	 * Initializes the input stream that wraps another stream.
 	 * 
@@ -80,11 +83,43 @@ public class MarkableInputStream
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/12/05
+	 */
+	@Override
+	public void close()
+		throws IOException
+	{
+		if (this._isClosed)
+			return;
+		this._isClosed = true;
+		
+		// Close the stream
+		try
+		{
+			this.in.close();
+		}
+		
+		// Make sure everything is invalidated
+		finally
+		{
+			this._cache = null;
+			this._singleByte = null;
+			this._readAt = -1;
+			this._readLimit = -1;
+			this._writeAt = -1;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/12/04
 	 */
 	@Override
 	public void mark(int __readLimit)
 	{
+		if (this._isClosed)
+			return;
+		
 		// {@squirreljme.error ZZ4h Zero or negative read limit for mark.}
 		if (__readLimit <= 0)
 			throw new IllegalArgumentException("ZZ4h");
@@ -143,6 +178,9 @@ public class MarkableInputStream
 	public int read()
 		throws IOException
 	{
+		if (this._isClosed)
+			throw new IOException("CLOS");
+		
 		// Constantly try to read a single byte
 		for (byte[] singleByte = this._singleByte;;)
 		{
@@ -165,6 +203,9 @@ public class MarkableInputStream
 	public int read(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
+		if (this._isClosed)
+			throw new IOException("CLOS");
+			
 		return this.__read(__b, __o, __l);
 	}
 	
@@ -176,7 +217,10 @@ public class MarkableInputStream
 	public void reset()
 		throws IOException
 	{
-		// {@squirreljme.error ZZ4g No mark was previously.}
+		if (this._isClosed)
+			throw new IOException("CLOS");
+		
+		// {@squirreljme.error ZZ4g No mark was previously set.}
 		if (this._readLimit < 0)
 			throw new IOException("ZZ4g");
 		
@@ -221,6 +265,7 @@ public class MarkableInputStream
 		int writeAt = this._writeAt;
 		int readAt = this._readAt;
 		int cacheReadLimit = writeAt - readAt;
+		int cacheLeft = cache.length - writeAt;
 		boolean hitEOF = this._hitEOF;
 		
 		// If we have a mark, take from the mark buffer first
@@ -244,8 +289,61 @@ public class MarkableInputStream
 		// Read and copy in data accordingly
 		while (left > 0)
 		{
-			throw Debugging.todo();
+			// We ran this loop and we are out of cache space? Then our mark
+			// becomes invalid and we do not do that read.
+			if (cacheLeft <= 0)
+			{
+				// Invalidate
+				cacheLeft = -1;
+				readLimit = -1;
+				readAt = -1;
+				writeAt = -1;
+				
+				// Read directly into the buffer
+				int rc = in.read(__b, outAt, left);
+				
+				// Stop on EOF
+				if (rc < 0)
+				{
+					this._hitEOF = (hitEOF = true);
+					break;
+				}
+				
+				// Consume data
+				outAt += rc;
+				left -= rc;
+				
+				// Continue ahead so we do not do the normal buffering process
+				continue;
+			}
+			
+			// Read into the buffer at the write position
+			int rc = in.read(cache, writeAt, cacheLeft);
+			
+			// EOF?
+			if (rc < 0)
+			{
+				this._hitEOF = (hitEOF = true);
+				break;
+			}
+			
+			// Copy what we can into the target buffer
+			int copyLimit = Math.min(rc, left);
+			System.arraycopy(cache, readAt,
+				__b, outAt, copyLimit);
+			outAt += copyLimit; 
+			left -= copyLimit;
+			readAt += copyLimit;
+			
+			// Move the write pointer
+			writeAt += rc;
+			cacheLeft -= rc;
 		}
+		
+		// Record counts
+		this._readLimit = readLimit;
+		this._readAt = readAt;
+		this._writeAt = writeAt;
 		
 		// Return the number of bytes we read in, make sure to give EOF if
 		// we really reached that state
