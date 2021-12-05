@@ -535,11 +535,12 @@ public class BasicForwardingGraphics
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/10/10
+	 * @param __style
 	 */
 	@Override
-	public void setStrokeStyle(int __a)
+	public void setStrokeStyle(int __style)
 	{
-		this.graphics.setStrokeStyle(__a);
+		this.graphics.setStrokeStyle(__style);
 	}
 	
 	/**

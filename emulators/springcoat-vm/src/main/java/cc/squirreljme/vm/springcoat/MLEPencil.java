@@ -10,15 +10,20 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.PencilShelf;
+import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.constants.NativeImageLoadParameter;
 import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
+import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
+import cc.squirreljme.runtime.lcdui.mle.SoftwareGraphicsFactory;
+import cc.squirreljme.vm.springcoat.brackets.PencilObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 /**
@@ -44,9 +49,200 @@ public enum MLEPencil
 				throw new SpringMLECallError("Invalid pixel format: " +
 					pf);
 			
-			return 0;
+			return PencilCapabilities.MINIMUM |
+				PencilCapabilities.FILL_RECT |
+				PencilCapabilities.DRAW_LINE;
 		}
 	},
+	
+	/**
+	 * {@link PencilShelf#hardwareDrawLine(PencilBracket, int, int, int, int)}.
+	 */
+	HARDWARE_DRAW_LINE("hardwareDrawLine:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;IIII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/12/05
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEPencil.__graphics(__args[0])
+				.drawLine((Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3],
+					(Integer)__args[4]);
+			
+			return null;
+		}
+	}, 
+	
+	/**
+	 * {@link PencilShelf#hardwareFillRect(PencilBracket, int, int, int, int)}.
+	 */
+	HARDWARE_FILL_RECT("hardwareFillRect:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;IIII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/12/05
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEPencil.__graphics(__args[0])
+				.fillRect((Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3],
+					(Integer)__args[4]);
+			
+			return null;
+		}
+	}, 
+	
+	/**
+	 * {@link PencilShelf#hardwareGraphics(int, int, int, Object, int, int[],
+	 * int, int, int, int)}.
+	 */ 
+	HARDWARE_GRAPHICS("hardwareGraphics:(IIILjava/lang/Object;I[IIIII)" +
+		"Lcc/squirreljme/jvm/mle/brackets/PencilBracket;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/12/05
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			// Attempt to initialize the graphics
+			try
+			{
+				int __pf = (Integer)__args[0];
+				int __bw = (Integer)__args[1];
+				int __bh = (Integer)__args[2];
+				SpringArrayObject __buf =
+					SpringNullObject.<SpringArrayObject>checkCast(
+						SpringArrayObject.class, __args[3]);
+				int __offset = (Integer)__args[4];
+				SpringArrayObjectInteger __pal =
+					SpringNullObject.<SpringArrayObjectInteger>checkCast(
+						SpringArrayObjectInteger.class, __args[5]);
+				int __sx = (Integer)__args[6];
+				int __sy = (Integer)__args[7];
+				int __sw = (Integer)__args[8];
+				int __sh = (Integer)__args[9];
+				
+				return new PencilObject(__thread.machine,
+					SoftwareGraphicsFactory.softwareGraphics(
+						__pf, __bw, __bh,
+						(__buf != null ? __buf.array() : null),
+						__offset, (__pal != null ? __pal.array() : null),
+						__sx, __sy, __sw, __sh));
+			}
+			catch (ClassCastException|IllegalArgumentException|
+				NullPointerException __e)
+			{
+				throw new SpringMLECallError(__e);
+			}
+		}
+	},
+	
+	/** {@link PencilShelf#hardwareSetAlphaColor(PencilBracket, int)}. */
+	HARDWARE_SET_ALPHA_COLOR("hardwareSetAlphaColor:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;I)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/12/05
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEPencil.__graphics(__args[0])
+				.setAlphaColor((Integer)__args[1]);
+			
+			return null;
+		}
+	}, 
+	
+	/** {@link PencilShelf#hardwareSetBlendingMode(PencilBracket, int)}. */
+	HARDWARE_SET_BLENDING_MODE("hardwareSetBlendingMode:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;I)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/12/05
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEPencil.__graphics(__args[0])
+				.setBlendingMode((Integer)__args[1]);
+			
+			return null;
+		}
+	},
+	
+	/**
+	 * {@link PencilShelf#hardwareSetClip(PencilBracket, int, int, int, int)}.
+	 */
+	HARDWARE_SET_CLIP("hardwareSetClip:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;IIII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/12/05
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEPencil.__graphics(__args[0])
+				.setClip((Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3],
+					(Integer)__args[4]);
+			
+			return null;
+		}
+	}, 
+	
+	/** {@link PencilShelf#hardwareSetStrokeStyle(PencilBracket, int)}. */
+	HARDWARE_SET_STROKE_STYLE("hardwareSetStrokeStyle:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;I)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/12/05
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEPencil.__graphics(__args[0])
+				.setStrokeStyle((Integer)__args[1]);
+			
+			return null;
+		}
+	}, 
+	
+	/** {@link PencilShelf#hardwareTranslate(PencilBracket, int, int)}. */
+	HARDWARE_TRANSLATE("hardwareTranslate:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;II)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/12/05
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEPencil.__graphics(__args[0])
+				.translate((Integer)__args[1],
+					(Integer)__args[2]);
+			
+			return null;
+		}
+	}, 
 	
 	/** {@link PencilShelf#nativeImageLoadTypes()}. */
 	NATIVE_IMAGE_LOAD_TYPES("nativeImageLoadTypes:()I")
@@ -152,5 +348,23 @@ public enum MLEPencil
 	public String key()
 	{
 		return this.key;
+	}
+	
+	/**
+	 * Ensures that this is a {@link PencilObject} and returns the graphics
+	 * object for it.
+	 * 
+	 * @param __object The object to check.
+	 * @return As a {@link PencilObject}.
+	 * @throws SpringMLECallError If this is not one.
+	 * @since 2021/12/05
+	 */
+	static Graphics __graphics(Object __object)
+		throws SpringMLECallError
+	{
+		if (!(__object instanceof PencilObject))
+			throw new SpringMLECallError("Not a PencilObject.");
+		
+		return ((PencilObject)__object).graphics; 
 	}
 }

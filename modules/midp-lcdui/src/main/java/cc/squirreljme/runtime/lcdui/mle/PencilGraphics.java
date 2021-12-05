@@ -35,7 +35,7 @@ public final class PencilGraphics
 	protected final Graphics software;
 	
 	/** The hardware bracket reference. */
-	protected final PencilBracket bracket;
+	protected final PencilBracket hardware;
 	
 	/** The capabilities of the graphics hardware. */
 	protected final int capabilities;
@@ -46,6 +46,33 @@ public final class PencilGraphics
 	/** Surface height. */
 	protected final int surfaceH;
 	
+	/** The current alpha color. */
+	private int _argbColor;
+	
+	/** The current blending mode. */
+	private int _blendingMode;
+	
+	/** The clip height. */
+	private int _clipHeight;
+	
+	/** The clip width. */
+	private int _clipWidth;
+	
+	/** The clip X position. */
+	private int _clipX;
+	
+	/** The clip Y position. */
+	private int _clipY;
+	
+	/** The current stroke style. */
+	private int _strokeStyle;
+	
+	/** The current X translation. */
+	private int _transX;
+	
+	/** The current Y translation. */
+	private int _transY;
+	
 	/**
 	 * Initializes the pencil graphics system.
 	 *
@@ -54,17 +81,17 @@ public final class PencilGraphics
 	 * @param __software The fallback software graphics rasterizer.
 	 * @param __sw The surface width.
 	 * @param __sh The surface height.
-	 * @param __bracket The hardware bracket reference for drawing.
+	 * @param __hardware The hardware bracket reference for drawing.
 	 * @throws IllegalArgumentException If hardware graphics are not capable
 	 * enough to be used at all.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/25
 	 */
 	private PencilGraphics(int __caps, Graphics __software, int __sw, int __sh,
-		PencilBracket __bracket)
+		PencilBracket __hardware)
 		throws IllegalArgumentException, NullPointerException
 	{
-		if (__software == null || __bracket == null)
+		if (__software == null || __hardware == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error EB3g Hardware graphics not capable enough.}
@@ -72,12 +99,19 @@ public final class PencilGraphics
 			throw new IllegalArgumentException("EB3g " + __caps);
 		
 		this.software = __software;
-		this.bracket = __bracket;
+		this.hardware = __hardware;
 		this.capabilities = __caps;
 		
 		// These are used to manage the clip
 		this.surfaceW = __sw;
 		this.surfaceH = __sh;
+		
+		// Set initial parameters for the graphics and make sure they are
+		// properly forwarded as well
+		this.setAlphaColor(0xFF000000);
+		this.setBlendingMode(Graphics.SRC_OVER);
+		this.setStrokeStyle(Graphics.SOLID);
+		this.setFont(null);
 	}
 	
 	/**
@@ -208,7 +242,7 @@ public final class PencilGraphics
 			return;
 		}
 		
-		throw Debugging.todo();
+		PencilShelf.hardwareDrawLine(this.hardware, __x1, __y1, __x2, __y2);
 	}
 	
 	/**
@@ -403,7 +437,7 @@ public final class PencilGraphics
 			return;
 		}
 		
-		throw Debugging.todo();
+		PencilShelf.hardwareFillRect(this.hardware, __x, __y, __w, __h);
 	}
 	
 	/**
@@ -447,7 +481,7 @@ public final class PencilGraphics
 	@Override
 	public int getAlpha()
 	{
-		throw Debugging.todo();
+		return (this._argbColor >> 24) & 0xFF;
 	}
 	
 	/**
@@ -457,7 +491,7 @@ public final class PencilGraphics
 	@Override
 	public int getAlphaColor()
 	{
-		throw Debugging.todo();
+		return this._argbColor;
 	}
 	
 	/**
@@ -467,7 +501,7 @@ public final class PencilGraphics
 	@Override
 	public int getBlendingMode()
 	{
-		throw Debugging.todo();
+		return this._blendingMode;
 	}
 	
 	/**
@@ -477,7 +511,7 @@ public final class PencilGraphics
 	@Override
 	public int getBlueComponent()
 	{
-		throw Debugging.todo();
+		return (this._argbColor) & 0xFF;
 	}
 	
 	/**
@@ -487,7 +521,7 @@ public final class PencilGraphics
 	@Override
 	public int getClipHeight()
 	{
-		throw Debugging.todo();
+		return this._clipHeight;
 	}
 	
 	/**
@@ -497,7 +531,7 @@ public final class PencilGraphics
 	@Override
 	public int getClipWidth()
 	{
-		throw Debugging.todo();
+		return this._clipWidth;
 	}
 	
 	/**
@@ -507,7 +541,7 @@ public final class PencilGraphics
 	@Override
 	public int getClipX()
 	{
-		throw Debugging.todo();
+		return this._clipX - this._transX;
 	}
 	
 	/**
@@ -517,7 +551,7 @@ public final class PencilGraphics
 	@Override
 	public int getClipY()
 	{
-		throw Debugging.todo();
+		return this._clipY - this._transY;
 	}
 	
 	/**
@@ -527,7 +561,7 @@ public final class PencilGraphics
 	@Override
 	public int getColor()
 	{
-		throw Debugging.todo();
+		return this._argbColor & 0xFFFFFF;
 	}
 	
 	/**
@@ -537,7 +571,9 @@ public final class PencilGraphics
 	@Override
 	public int getDisplayColor(int __rgb)
 	{
-		throw Debugging.todo();
+		// We can just ask the software graphics for the color we are using
+		// since it should hopefully match the hardware one.
+		return this.software.getDisplayColor(__rgb);
 	}
 	
 	/**
@@ -560,7 +596,9 @@ public final class PencilGraphics
 	@Override
 	public int getGrayScale()
 	{
-		throw Debugging.todo();
+		return (((this._argbColor >> 16) & 0xFF) +
+			((this._argbColor >> 8) & 0xFF) +
+			((this._argbColor) & 0xFF)) / 3;
 	}
 	
 	/**
@@ -570,7 +608,7 @@ public final class PencilGraphics
 	@Override
 	public int getGreenComponent()
 	{
-		throw Debugging.todo();
+		return (this._argbColor >> 8) & 0xFF;
 	}
 	
 	/**
@@ -580,7 +618,7 @@ public final class PencilGraphics
 	@Override
 	public int getRedComponent()
 	{
-		throw Debugging.todo();
+		return (this._argbColor >> 16) & 0xFF;
 	}
 	
 	/**
@@ -590,7 +628,7 @@ public final class PencilGraphics
 	@Override
 	public int getStrokeStyle()
 	{
-		throw Debugging.todo();
+		return this._strokeStyle;
 	}
 	
 	/**
@@ -600,7 +638,7 @@ public final class PencilGraphics
 	@Override
 	public int getTranslateX()
 	{
-		throw Debugging.todo();
+		return this._transX;
 	}
 	
 	/**
@@ -610,7 +648,7 @@ public final class PencilGraphics
 	@Override
 	public int getTranslateY()
 	{
-		throw Debugging.todo();
+		return this._transY;
 	}
 	
 	/**
@@ -621,7 +659,10 @@ public final class PencilGraphics
 	public void setAlpha(int __a)
 		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		this.setAlphaColor(__a,
+			this.getRedComponent(),
+			this.getGreenComponent(),
+			this.getBlueComponent());
 	}
 	
 	/**
@@ -631,7 +672,12 @@ public final class PencilGraphics
 	@Override
 	public void setAlphaColor(int __argb)
 	{
-		throw Debugging.todo();
+		// Mirror locally
+		this._argbColor = __argb;
+		
+		// Set on the remote software and hardware graphics
+		this.software.setAlphaColor(__argb);
+		PencilShelf.hardwareSetAlphaColor(this.hardware, __argb);
 	}
 	
 	/**
@@ -661,7 +707,16 @@ public final class PencilGraphics
 	public void setBlendingMode(int __m)
 		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		// {@squirreljme.error EB3u Invalid blending mode. (The mode)}
+		if (__m != Graphics.SRC && __m != Graphics.SRC_OVER)
+			throw new IllegalArgumentException("EB3u " + __m);
+		
+		// Cache locally
+		this._blendingMode = __m;
+		
+		// Forward to both software and hardware graphics
+		this.software.setBlendingMode(__m);
+		PencilShelf.hardwareSetBlendingMode(this.hardware, __m);
 	}
 	
 	/**
@@ -671,7 +726,43 @@ public final class PencilGraphics
 	@Override
 	public void setClip(int __x, int __y, int __w, int __h)
 	{
-		throw Debugging.todo();
+		// Calculate the base clip coordinates
+		int startX = __x + this._transX;
+		int startY = __y + this._transY;
+		int endX = startX + __w;
+		int endY = startY + __h;
+		
+		// Normalize X
+		if (endX < startX)
+		{
+			int temp = endX;
+			endX = startX;
+			startX = temp;
+		}
+		
+		// Normalize Y
+		if (endY < startY)
+		{
+			int temp = endY;
+			endY = startY;
+			startY = temp;
+		}
+		
+		// Determine the bounds of all of these
+		int clipX = Math.min(this.surfaceW, Math.max(0, startX));
+		int clipY = Math.min(this.surfaceH, Math.max(0, startY));
+		int clipEndX = Math.min(this.surfaceW, Math.max(0, endX));
+		int clipEndY = Math.min(this.surfaceH, Math.max(0, endY));
+		
+		// Record internally
+		this._clipX = clipX;
+		this._clipY = clipY;
+		this._clipWidth = clipEndX - clipX;
+		this._clipHeight = clipEndY - clipY; 
+		
+		// Forward to both software and hardware graphics
+		this.software.setClip(__x, __y, __w, __h);
+		PencilShelf.hardwareSetClip(this.hardware, __x, __y, __w, __h);
 	}
 	
 	/**
@@ -728,10 +819,19 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public void setStrokeStyle(int __a)
+	public void setStrokeStyle(int __style)
 		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		// {@squirreljme.error EB3v Illegal stroke style.}
+		if (__style != Graphics.SOLID && __style != Graphics.DOTTED)
+			throw new IllegalArgumentException("EB3v");
+		
+		// Set
+		this._strokeStyle = __style;
+		
+		// Forward to both software and hardware graphics
+		this.software.setStrokeStyle(__style);
+		PencilShelf.hardwareSetStrokeStyle(this.hardware, __style);
 	}
 	
 	/**
@@ -741,7 +841,13 @@ public final class PencilGraphics
 	@Override
 	public void translate(int __x, int __y)
 	{
-		throw Debugging.todo();
+		// Set locally
+		this._transX += __x;
+		this._transY += __y;
+		
+		// Forward to both software and hardware graphics
+		this.software.translate(__x, __y);
+		PencilShelf.hardwareTranslate(this.hardware, __x, __y);
 	}
 	
 	/**

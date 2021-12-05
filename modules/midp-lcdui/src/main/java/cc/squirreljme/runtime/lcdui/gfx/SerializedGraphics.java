@@ -680,6 +680,7 @@ public abstract class SerializedGraphics
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/11/19
+	 * @param __s
 	 */
 	@Override
 	public void setStrokeStyle(int __s)

@@ -48,6 +48,36 @@ public final class PencilShelf
 		throws MLECallError;
 	
 	/**
+	 * Draws a line in hardware.
+	 * 
+	 * @param __g The hardware graphics to draw with.
+	 * @param __x1 The starting X coordinate.
+	 * @param __y1 The starting Y coordinate.
+	 * @param __x2 The ending X coordinate.
+	 * @param __y2 The ending Y coordinate.
+	 * @throws MLECallError On null arguments.
+	 * @since 2021/12/05
+	 */
+	public static native void hardwareDrawLine(PencilBracket __g,
+		int __x1, int __y1, int __x2, int __y2)
+		throws MLECallError;
+	
+	/**
+	 * Performs rectangular fill in hardware.
+	 * 
+	 * @param __g The hardware graphics to draw with.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @throws MLECallError On {@code null} arguments.
+	 * @since 2021/12/05
+	 */
+	public static native void hardwareFillRect(PencilBracket __g,
+		int __x, int __y, int __w, int __h)
+		throws MLECallError;
+	
+	/**
 	 * Creates a hardware reference bracket to the native hardware graphics.
 	 * 
 	 * @param __pf The {@link UIPixelFormat} used for the draw.
@@ -67,6 +97,70 @@ public final class PencilShelf
 	public static native PencilBracket hardwareGraphics(int __pf, int __bw,
 		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
 		int __sw, int __sh)
+		throws MLECallError;
+	
+	/**
+	 * Sets the alpha color for graphics.
+	 * 
+	 * @param __g The hardware graphics to draw with.
+	 * @param __argb The color to set.
+	 * @throws MLECallError On {@code null} arguments.
+	 * @since 2021/12/05
+	 */
+	public static native void hardwareSetAlphaColor(PencilBracket __g,
+		int __argb)
+		throws MLECallError;
+	
+	/**
+	 * Sets the blending mode to use.
+	 * 
+	 * @param __g The hardware graphics to draw with.
+	 * @param __mode The blending mode to use.
+	 * @throws MLECallError On {@code null} arguments.
+	 * @since 2021/12/05
+	 */
+	public static native void hardwareSetBlendingMode(PencilBracket __g,
+		int __mode)
+		throws MLECallError;
+	
+	/**
+	 * Sets the clipping rectangle position.
+	 * 
+	 * @param __g The hardware graphics to draw with.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @throws MLECallError On {@code null} arguments.
+	 * @since 2021/12/05
+	 */
+	public static native void hardwareSetClip(PencilBracket __g,
+		int __x, int __y, int __w, int __h)
+		throws MLECallError;
+	
+	/**
+	 * Sets the stroke style for the hardware graphics.
+	 * 
+	 * @param __g The hardware graphics to draw with.
+	 * @param __style The stroke type to set.
+	 * @throws MLECallError On {@code null} arguments.
+	 * @since 2021/12/05
+	 */
+	public static native void hardwareSetStrokeStyle(PencilBracket __g,
+		int __style)
+		throws MLECallError;
+	
+	/**
+	 * Translates drawing operations.
+	 * 
+	 * @param __g The hardware graphics to draw with.
+	 * @param __x The X translation.
+	 * @param __y The Y translation.
+	 * @throws MLECallError On {@code null} arguments.
+	 * @since 2021/12/05
+	 */
+	public static native void hardwareTranslate(PencilBracket __g, int __x,
+		int __y)
 		throws MLECallError;
 	
 	/**

@@ -750,16 +750,17 @@ public class ForwardingGraphics
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/10/10
+	 * @param __style
 	 */
 	@Override
-	public void setStrokeStyle(int __a)
+	public void setStrokeStyle(int __style)
 	{
 		Graphics graphics = this._graphics;
 		if (graphics != null)
-			graphics.setStrokeStyle(__a);
+			graphics.setStrokeStyle(__style);
 		
 		// Store
-		this._stroke = __a;
+		this._stroke = __style;
 	}
 	
 	/**

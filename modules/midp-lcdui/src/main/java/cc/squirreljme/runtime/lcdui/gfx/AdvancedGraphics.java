@@ -1256,18 +1256,19 @@ public class AdvancedGraphics
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/24
+	 * @param __style
 	 */
 	@Override
-	public void setStrokeStyle(int __a)
+	public void setStrokeStyle(int __style)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB0i Illegal stroke style.}
-		if (__a != Graphics.SOLID && __a != Graphics.DOTTED)
+		if (__style != Graphics.SOLID && __style != Graphics.DOTTED)
 			throw new IllegalArgumentException("EB0i");
 		
 		// Set
-		this.strokestyle = __a;
-		this.dotstroke = (__a == Graphics.DOTTED);
+		this.strokestyle = __style;
+		this.dotstroke = (__style == Graphics.DOTTED);
 		
 		// Update functions
 		this.__updateFunctions();
