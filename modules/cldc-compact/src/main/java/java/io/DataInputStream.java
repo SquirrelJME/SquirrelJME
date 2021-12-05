@@ -281,7 +281,7 @@ public class DataInputStream
 			if (rc < 0)
 				throw new EOFException("EOFF");
 			
-			// These many characters were read, we might try again
+			// These many bytes were read, we might try again
 			rv += rc;
 		}
 	}
