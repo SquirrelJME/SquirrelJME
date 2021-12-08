@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.MarkableInputStream;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.lcdui.Graphics;
@@ -93,7 +94,7 @@ public class ImageReaderDispatcher
 			if ((nativeLoad & NativeImageLoadType.LOAD_GIF) != 0)
 				return ImageReaderDispatcher.__native(
 					NativeImageLoadType.LOAD_GIF, __is);
-			return new GIFReader(__is).parse();
+			return new GIFReader(new DataInputStream(__is)).parse();
 		}
 		
 		// PNG?

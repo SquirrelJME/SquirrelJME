@@ -9,19 +9,19 @@
 package cc.squirreljme.runtime.lcdui.image;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import javax.microedition.lcdui.Image;
 
 /**
- * This class is used to read and process ZIP files into images.
+ * This class is used to read and parse GIF images.
  *
  * @since 2021/12/04
  */
 public class GIFReader
 {
 	/** The source data stream. */
-	protected final InputStream in;
+	protected final DataInputStream in;
 	
 	/**
 	 * Initializes the GIF reader.
@@ -30,7 +30,7 @@ public class GIFReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/04
 	 */
-	public GIFReader(InputStream __in)
+	public GIFReader(DataInputStream __in)
 		throws NullPointerException
 	{
 		if (__in == null)
@@ -49,6 +49,8 @@ public class GIFReader
 	protected Image parse()
 		throws IOException
 	{
+		
+		
 		throw Debugging.todo();
 	}
 }
