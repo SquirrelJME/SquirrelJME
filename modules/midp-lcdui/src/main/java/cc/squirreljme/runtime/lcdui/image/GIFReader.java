@@ -9,9 +9,9 @@
 package cc.squirreljme.runtime.lcdui.image;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.io.DataInputStream;
 import java.io.IOException;
 import javax.microedition.lcdui.Image;
+import net.multiphasicapps.io.ExtendedDataInputStream;
 
 /**
  * This class is used to read and parse GIF images.
@@ -21,7 +21,7 @@ import javax.microedition.lcdui.Image;
 public class GIFReader
 {
 	/** The source data stream. */
-	protected final DataInputStream in;
+	protected final ExtendedDataInputStream in;
 	
 	/**
 	 * Initializes the GIF reader.
@@ -30,7 +30,7 @@ public class GIFReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/04
 	 */
-	public GIFReader(DataInputStream __in)
+	public GIFReader(ExtendedDataInputStream __in)
 		throws NullPointerException
 	{
 		if (__in == null)

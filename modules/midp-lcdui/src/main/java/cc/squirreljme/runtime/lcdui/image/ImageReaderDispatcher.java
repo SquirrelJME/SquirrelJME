@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+import net.multiphasicapps.io.DataEndianess;
+import net.multiphasicapps.io.ExtendedDataInputStream;
 
 /**
  * This is used to dispatch to the correct parser when loading images.
@@ -94,7 +96,12 @@ public class ImageReaderDispatcher
 			if ((nativeLoad & NativeImageLoadType.LOAD_GIF) != 0)
 				return ImageReaderDispatcher.__native(
 					NativeImageLoadType.LOAD_GIF, __is);
-			return new GIFReader(new DataInputStream(__is)).parse();
+			
+			ExtendedDataInputStream in =
+				new ExtendedDataInputStream(__is);
+			in.setEndianess(DataEndianess.LITTLE);
+			
+			return new GIFReader(in).parse();
 		}
 		
 		// PNG?
