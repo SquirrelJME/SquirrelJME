@@ -145,6 +145,18 @@ final class __MLEUIThread__
 			}
 		}
 		
+		// Open the LCDUI inspector?
+		if (__event == UIKeyEventType.KEY_PRESSED) 
+			if (__keyCode == NonStandardKey.F12 ||
+				__keyCode == NonStandardKey.VGAME_LCDUI_INSPECTOR)
+			{
+				if (true)
+					throw Debugging.todo();
+				
+				// Consume this key
+				return;
+			}
+		
 		// Commands are special key events
 		if (__event == UIKeyEventType.COMMAND_ACTIVATED)
 		{
