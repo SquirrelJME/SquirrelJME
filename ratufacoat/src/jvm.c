@@ -33,7 +33,7 @@ struct sjme_jvm
 	sjme_vmemmap* optionJar;
 	
 	/** ROM Data. */
-	const sjme_ubyte* romData;
+	const sjme_jubyte* romData;
 	
 	/** ROM Size. */
 	sjme_jint romSize;

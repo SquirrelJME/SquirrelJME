@@ -73,7 +73,7 @@ typedef struct sjme_jvmargs
 typedef struct sjme_jvmoptions
 {
 	/** Preset ROM pointer, does not need loading? */
-	const sjme_ubyte* romData;
+	const sjme_jubyte* romData;
 	
 	/** Preset ROM size. */
 	sjme_jint romSize;

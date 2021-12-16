@@ -19,6 +19,6 @@
 const sjme_jbyte sjme_builtInRomId[] = {0};
 const sjme_jint sjme_builtInRomIdLen = 0;
 const sjme_jint sjme_builtInRomDate[] = {0, 0};
-const sjme_ubyte sjme_builtInRomData[] = {0};
+const sjme_jubyte sjme_builtInRomData[] = {0};
 const sjme_jint sjme_builtInRomSize = 0;
 #endif

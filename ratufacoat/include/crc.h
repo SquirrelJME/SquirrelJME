@@ -49,17 +49,17 @@ typedef struct sjme_crcState
 	sjme_jboolean reflectRemainder;
 	
 	/** The final XOR value. */
-	sjme_jint finalXor;
+	sjme_juint finalXor;
 	
 	/** The current working remainder. */
-	sjme_jint currentRemainder;
+	sjme_juint currentRemainder;
 	
 	/** The CRC data table to be used. */
-	const sjme_jint (*crcTable)[SJME_CRC_TABLE_SIZE];
+	const sjme_juint (*crcTable)[SJME_CRC_TABLE_SIZE];
 } sjme_crcState;
 
 /** The CRC table for ZIP files and their contents. */
-extern const sjme_jint sjme_crcTableZip[SJME_CRC_TABLE_SIZE];
+extern const sjme_juint sjme_crcTableZip[SJME_CRC_TABLE_SIZE];
 
 /**
  * Returns the calculated checksum.
@@ -71,7 +71,7 @@ extern const sjme_jint sjme_crcTableZip[SJME_CRC_TABLE_SIZE];
  * @since 2021/11/13
  */
 sjme_jboolean sjme_crcChecksum(sjme_crcState* crcState,
-	sjme_jint* outChecksum, sjme_error* error);
+	sjme_juint* outChecksum, sjme_error* error);
 
 /**
  * Initializes the CRC calculator with the same properties used for ZIP files.
@@ -109,7 +109,7 @@ sjme_jboolean sjme_crcOfferChunk(sjme_crcState* crcState,
  * @since 2021/11/13
  */
 sjme_jboolean sjme_crcOfferDirect(sjme_crcState* crcState,
-	void* data, sjme_jint len,
+	const void* data, sjme_jint len,
 	sjme_error* error);
 
 /**

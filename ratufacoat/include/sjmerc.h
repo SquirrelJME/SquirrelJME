@@ -207,7 +207,7 @@ extern "C"
 typedef int8_t sjme_jbyte;
 
 /** Unsigned @c byte type. */
-typedef uint8_t sjme_ubyte;
+typedef uint8_t sjme_jubyte;
 
 /** @c short type. */
 typedef int16_t sjme_jshort;

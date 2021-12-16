@@ -141,7 +141,7 @@ public class RatufaCoatBuiltInTaskAction
 				out.println();
 				
 				// Declare the type
-				out.println("const sjme_ubyte sjme_builtInRomData[] = {");
+				out.println("const sjme_jubyte sjme_builtInRomData[] = {");
 				
 				// Read in the entire ROM file since this is much faster
 				Path inputRom = __task.getInputs()

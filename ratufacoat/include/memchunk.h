@@ -101,6 +101,19 @@ sjme_jboolean sjme_chunkReadBigShort(const sjme_memChunk* chunk, sjme_jint off,
 	sjme_jshort* value, sjme_error* error);
 
 /**
+ * Returns the real pointer of the given memory chunk.
+ * 
+ * @param chunk The chunk to get the pointer from. 
+ * @param off The offset into the chunk.
+ * @param outPointer The output pointer.
+ * @param error On any errors.
+ * @return If getting the real pointer was successful or not.
+ * @since 2021/12/16
+ */
+sjme_jboolean sjme_chunkRealPointer(const sjme_memChunk* chunk, sjme_jint off,
+	void** outPointer, sjme_error* error);
+
+/**
  * Obtains a sub-chunk from the given chunk and returns it.
  * 
  * @param chunk The chunk to get the sub chunk from.

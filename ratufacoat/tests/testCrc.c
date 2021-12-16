@@ -16,7 +16,7 @@ static const uint8_t MESSAGE[] =
 	"The quick gray squirrel jumps over the lazy red panda!";
 
 /** The expected end result CRC. */
-#define EXPECTED_CRC SJME_JINT_C(-54524837)
+#define EXPECTED_CRC SJME_JUINT_C(0xFCC0045B)
 
 /**
  * Tests that CRC calculation is correct.
@@ -27,16 +27,16 @@ SJME_TEST_PROTOTYPE(testCrc)
 {
 	sjme_crcState crc;
 	sjme_memChunk chunk;
-	sjme_jint calcValue;
+	sjme_juint calcValue;
 	
 	/* Initialize CRC calculation. */
 	memset(&crc, 0, sizeof(crc));
 	if (!sjme_crcInitZip(&crc, &shim->error))
 		return FAIL_TEST(1);
 	
-	/* Perform the CRC calculation. */
+	/* Perform the CRC calculation, -1 to remove NUL. */
 	if (!sjme_crcOfferDirect(&crc, (void*)MESSAGE,
-		sizeof(MESSAGE), &shim->error))
+		sizeof(MESSAGE) - 1, &shim->error))
 		return FAIL_TEST(2);
 	
 	/* Get the calculated CRC value. */
@@ -47,12 +47,16 @@ SJME_TEST_PROTOTYPE(testCrc)
 	
 	/* Was the CRC value calculated incorrectly? */
 	if (calcValue != EXPECTED_CRC)
+	{
+		sjme_message("Wanted %08x but got %08x",
+			EXPECTED_CRC, calcValue);
 		return FAIL_TEST(4);
+	}
 		
 	/* Setup memory chunk for testing. */
 	memset(&chunk, 0, sizeof(chunk));
 	chunk.data = MESSAGE;
-	chunk.size = sizeof(MESSAGE);
+	chunk.size = sizeof(MESSAGE) - 1;
 	
 	/* Initialize CRC calculation for memory chunks. */
 	memset(&crc, 0, sizeof(crc));

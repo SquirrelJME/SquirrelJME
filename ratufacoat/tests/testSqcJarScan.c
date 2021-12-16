@@ -29,15 +29,15 @@ SJME_TEST_PROTOTYPE(testSqcJarScan)
 	sjme_countableMemChunk* chunk;
 	sjme_dataStream* stream;
 	sjme_crcState crc;
-	sjme_jint crcChunk, crcStream;
+	sjme_juint crcChunk, crcStream;
 
 	/* Needs built-in ROM to work properly. */
 	if (sjme_builtInRomSize <= 0)
 		return SKIP_TEST();
 	
 	/* Try opening the pack file. */
-	if (!sjme_packOpen(&pack, sjme_builtInRomData, sjme_builtInRomSize,
-		&shim->error))
+	if (!sjme_packOpen(&pack, sjme_builtInRomData,
+			sjme_builtInRomSize, &shim->error))
 		return FAIL_TEST(1);
 		
 	/* Go through an open every library, to check that it is valid. */
@@ -45,14 +45,16 @@ SJME_TEST_PROTOTYPE(testSqcJarScan)
 	{
 		/* Open the library. */
 		lib = NULL;
-		if (!sjme_packLibraryOpen(pack, &lib, libDx, &shim->error))
+		if (!sjme_packLibraryOpen(pack, &lib,
+			libDx, &shim->error))
 			return FAIL_TEST_SUB(2, libDx);
 		
 		/* Scan through each entry. */
 		for (entryDx = 0; entryDx < lib->numEntries; entryDx++)
 		{
 			/* Open the data as a memory chunk. */
-			if (!sjme_libraryEntryChunk(lib, &chunk, entryDx, &shim->error))
+			if (!sjme_libraryEntryChunk(lib, &chunk,
+				entryDx, &shim->error))
 				return FAIL_TEST_TRI(3, libDx, entryDx);
 			
 			/* Initialize CRC calculation. */
@@ -67,15 +69,18 @@ SJME_TEST_PROTOTYPE(testSqcJarScan)
 			
 			/* Get the calculated CRC value. */
 			crcChunk = -1;
-			if (!sjme_crcChecksum(&crc, &crcChunk, &shim->error))
+			if (!sjme_crcChecksum(&crc, &crcChunk, 
+					&shim->error))
 				return FAIL_TEST_TRI(6, libDx, entryDx);
 			
 			/* Close the memory chunk. */
-			if (!sjme_counterDown(&chunk->count, NULL, &shim->error))
+			if (!sjme_counterDown(&chunk->count, NULL,
+					&shim->error))
 				return FAIL_TEST_TRI(7, libDx, entryDx);
 			
 			/* Open the data as a data stream. */
-			if (!sjme_libraryEntryStream(lib, &stream, entryDx, &shim->error))
+			if (!sjme_libraryEntryStream(lib, &stream,
+					entryDx, &shim->error))
 				return FAIL_TEST_TRI(8, libDx, entryDx);
 				
 			/* Initialize CRC calculation. */
@@ -88,11 +93,13 @@ SJME_TEST_PROTOTYPE(testSqcJarScan)
 			
 			/* Get the calculated CRC value. */
 			crcStream = -2;
-			if (!sjme_crcChecksum(&crc, &crcStream, &shim->error))
+			if (!sjme_crcChecksum(&crc, &crcStream,
+					&shim->error))
 				return FAIL_TEST_TRI(11, libDx, entryDx);
 			
 			/* Close the data stream. */
-			if (!sjme_counterDown(&stream->count, NULL, &shim->error))
+			if (!sjme_counterDown(&stream->count, NULL,
+					&shim->error))
 				return FAIL_TEST_TRI(12, libDx, entryDx);
 			
 			/* These two CRCs should have been the same value. */
@@ -101,7 +108,8 @@ SJME_TEST_PROTOTYPE(testSqcJarScan)
 		}
 		
 		/* Clear up the library usage. */
-		if (!sjme_counterDown(&lib->counter, NULL, &shim->error))
+		if (!sjme_counterDown(&lib->counter, NULL,
+				&shim->error))
 			return FAIL_TEST_SUB(14, libDx);
 	}
 		
