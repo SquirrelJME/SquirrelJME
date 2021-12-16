@@ -39,6 +39,34 @@ extern "C"
 typedef struct sjme_libraryInstance sjme_libraryInstance;
 
 /**
+ * Opens an entry within the library as a memory chunk.
+ * 
+ * @param libInstance The instance of the library to get the entry from.
+ * @param outChunk The output memory chunk where the data is located.
+ * @param index The index of the entry to load.
+ * @param error Any error state that occurs.
+ * @return If opening the entry was successful.
+ * @since 2021/12/16
+ */
+typedef sjme_jboolean (*sjme_libraryEntryChunkFunction)(
+	sjme_libraryInstance* libInstance, sjme_countableMemChunk** outChunk,
+	sjme_jint index, sjme_error* error);
+	
+/**
+ * Opens an entry within the library as a data stream.
+ * 
+ * @param libInstance The instance of the library to get the entry from.
+ * @param outStream The output stream that is used to access the data.
+ * @param index The index of the entry to load.
+ * @param error Any error state that occurs.
+ * @return If opening the entry was successful.
+ * @since 2021/12/16
+ */
+typedef sjme_jboolean (*sjme_libraryEntryStreamFunction)(
+	sjme_libraryInstance* libInstance, sjme_dataStream** outStream,
+	sjme_jint index, sjme_error* error);
+
+/**
  * This represents a library driver that is available for usage.
  * 
  * @since 2021/09/12
@@ -53,6 +81,12 @@ typedef struct sjme_libraryDriver
 	
 	/** Destroy function. */
 	sjme_formatDestroyFunction destroy;
+	
+	/** Function for opening entries as chunks. */
+	sjme_libraryEntryChunkFunction entryChunk;
+	
+	/** Function for opening entries as streams. */
+	sjme_libraryEntryStreamFunction entryStream;
 } sjme_libraryDriver;
 
 /**

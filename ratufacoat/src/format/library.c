@@ -27,6 +27,12 @@ static const sjme_libraryDriver* const sjme_libraryDrivers[] =
 	NULL
 };
 
+sjme_jboolean sjme_libraryWrapStreamToChunk(sjme_libraryInstance* libInstance,
+	sjme_countableMemChunk** outChunk, sjme_jint index, sjme_error* error);
+
+sjme_jboolean sjme_libraryWrapChunkToStream(sjme_libraryInstance* libInstance,
+	sjme_dataStream** outStream, sjme_jint index, sjme_error* error);
+
 /** Handler for library formats. */
 static const sjme_formatHandler sjme_libraryFormatHandler =
 {
@@ -39,6 +45,87 @@ static const sjme_formatHandler sjme_libraryFormatHandler =
 	.instanceOffsetOfState = offsetof(sjme_libraryInstance, state),
 };
 
+/**
+ * Wraps a chunk to a stream.
+ * 
+ * @param libInstance The library.
+ * @param outStream The output stream.
+ * @param index The index to open.
+ * @param error The error state.
+ * @return If opening was a success or not.
+ * @since 2021/12/16
+ */
+static sjme_jboolean sjme_libraryWrapChunkToStream(
+	sjme_libraryInstance* libInstance, sjme_dataStream** outStream,
+	sjme_jint index, sjme_error* error)
+{
+	if (libInstance == NULL || outStream == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	if (index < 0 || index >= libInstance->numEntries)
+	{
+		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, index);
+		
+		return sjme_false;
+	}
+	
+	/* No ability to read chunks? Do not infinite recurse, just fail here. */
+	if (libInstance->driver->entryChunk == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NOT_IMPLEMENTED, 0);
+		
+		return sjme_false;
+	}
+	
+	sjme_todo("Implement this?");
+	
+	return sjme_false;
+}
+
+/**
+ * Wraps a stream to a chunk.
+ * 
+ * @param libInstance The library.
+ * @param outChunk The output chunk.
+ * @param index The index to open.
+ * @param error The error state.
+ * @return If opening was a success or not.
+ * @since 2021/12/16
+ */
+static sjme_jboolean sjme_libraryWrapStreamToChunk(
+	sjme_libraryInstance* libInstance, sjme_countableMemChunk** outChunk,
+	sjme_jint index, sjme_error* error)
+{
+	if (libInstance == NULL || outChunk == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	if (index < 0 || index >= libInstance->numEntries)
+	{
+		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, index);
+		
+		return sjme_false;
+	}
+	
+	/* No ability to read streams? Do not infinite recurse, just fail here. */
+	if (libInstance->driver->entryStream == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NOT_IMPLEMENTED, 0);
+		
+		return sjme_false;
+	}
+	
+	sjme_todo("Implement this?");
+	
+	return sjme_false;
+}
 
 /**
  * Performs library garbage collection.
@@ -79,7 +166,8 @@ sjme_jboolean sjme_libraryClose(sjme_libraryInstance* instance,
 	packOwner = instance->packOwner;
 	packIndex = instance->packIndex;
 	if (packOwner != NULL)
-		if (!sjme_packLibraryMarkClosed(packOwner, instance, packIndex,
+		if (!sjme_packLibraryMarkClosed(packOwner,
+			instance, packIndex,
 			sjme_false, error))
 		{
 			sjme_setError(error, sjme_getError(error,
@@ -89,13 +177,14 @@ sjme_jboolean sjme_libraryClose(sjme_libraryInstance* instance,
 		}
 	
 	/* Perform any closing required by the driver. */
-	closeOkay = sjme_formatClose(&sjme_libraryFormatHandler, instance, error);
+	closeOkay = sjme_formatClose(&sjme_libraryFormatHandler, instance,
+		error);
 	
 	/* After doing everything, perform a post complete to the pack to free
 	 * any potential resources. */
 	if (packOwner != NULL)
-		if (!sjme_packLibraryMarkClosed(packOwner, NULL, packIndex,
-			sjme_true, error))
+		if (!sjme_packLibraryMarkClosed(packOwner, NULL,
+			packIndex, sjme_true, error))
 		{
 			sjme_setError(error, sjme_getError(error,
 				SJME_ERROR_BAD_PACK_LIB_CLOSE), 0);
@@ -124,7 +213,14 @@ sjme_jboolean sjme_libraryEntryChunk(sjme_libraryInstance* libInstance,
 		return sjme_false;
 	}
 	
-	sjme_todo("Implement this?");
+	/* If not supported, go through a wrapper to get this entry. */
+	if (libInstance->driver->entryChunk == NULL)
+		return sjme_libraryWrapStreamToChunk(libInstance, outChunk,
+			index, error);
+	
+	/* Use library implementation of this function. */
+	return libInstance->driver->entryChunk(libInstance, outChunk,
+		index, error);
 }
 
 sjme_jboolean sjme_libraryEntryStream(sjme_libraryInstance* libInstance,
@@ -144,7 +240,14 @@ sjme_jboolean sjme_libraryEntryStream(sjme_libraryInstance* libInstance,
 		return sjme_false;
 	}
 	
-	sjme_todo("Implement this?");
+	/* If not supported, go through a wrapper to get this entry. */
+	if (libInstance->driver->entryStream == NULL)
+		return sjme_libraryWrapChunkToStream(libInstance, outStream,
+			index, error);
+	
+	/* Use library implementation of this function. */
+	return libInstance->driver->entryStream(libInstance, outStream,
+		index, error);
 }
 
 sjme_jboolean sjme_libraryOpen(sjme_libraryInstance** outInstance,

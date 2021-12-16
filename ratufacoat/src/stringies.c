@@ -82,6 +82,7 @@ static const sjme_jvmErrorString sjme_jvmErrorStrings[] =
 	{SJME_ERROR_CORRUPT_PACK_ENTRY, "An entry within the Pack is corrupt"},
 	{SJME_ERROR_BAD_PACK_LIB_CLOSE, "Could not close the library via the pack"},
 	{SJME_ERROR_INVALID_JAR_FILE, "The JAR has been corrupted"},
+	{SJME_ERROR_NOT_IMPLEMENTED, "Function not implemented"},
 	
 	{SJME_ERROR_NONE, NULL}
 };

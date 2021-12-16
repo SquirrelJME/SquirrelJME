@@ -10,6 +10,10 @@
 #include "debug.h"
 #include "crc.h"
 
+/**
+ * CRC Table for standard ZIPs, so we need not calculate these over and
+ * over accordingly.
+ */
 const sjme_jint sjme_crcTableZip[SJME_CRC_TABLE_SIZE] =
 {
 	SJME_JINT_C(0x00000000), SJME_JINT_C(0x04c11db7), 

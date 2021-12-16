@@ -125,7 +125,7 @@ static sjme_jboolean sjme_sqcInit(sjme_formatInstance* formatInstance,
  * @return If the read was successful.
  * @since 2021/10/29
  */
-static sjme_jboolean sjme_sqcGetProperty(sjme_sqcState* sqcState,
+static sjme_jboolean sjme_sqcGetProperty(const sjme_sqcState* sqcState,
 	sjme_jint index, sjme_jint* out, sjme_error* error)
 {
 	if (sqcState == NULL || out == NULL)
@@ -168,9 +168,12 @@ sjme_jboolean sjme_sqcInitToc(const sjme_sqcState* sqcState,
 	
 	/* Get the properties to determine where our actual TOC exists. */
 	sqcTocCount = sqcTocOffset = sqcTocSize = -1;
-	if (!sjme_sqcGetProperty(sqcState, pdxCount, &sqcTocCount, error) ||
-		!sjme_sqcGetProperty(sqcState, pdxOffset, &sqcTocOffset, error) ||
-		!sjme_sqcGetProperty(sqcState, pdxSize, &sqcTocSize, error))
+	if (!sjme_sqcGetProperty(sqcState, pdxCount,
+			&sqcTocCount, error) ||
+		!sjme_sqcGetProperty(sqcState, pdxOffset,
+			&sqcTocOffset, error) ||
+		!sjme_sqcGetProperty(sqcState, pdxSize,
+			&sqcTocSize, error))
 	{
 		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 1);
 		
@@ -178,8 +181,8 @@ sjme_jboolean sjme_sqcInitToc(const sjme_sqcState* sqcState,
 	}
 	
 	/* Get the chunk region where the TOC exists. */
-	if (!sjme_chunkSubChunk(sqcState->chunk, &outToc->chunk, sqcTocOffset,
-		sqcTocSize, error))
+	if (!sjme_chunkSubChunk(sqcState->chunk, &outToc->chunk,
+		sqcTocOffset, sqcTocSize, error))
 	{
 		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 1);
 		
@@ -464,7 +467,8 @@ const sjme_packDriver sjme_packSqcDriver =
 static sjme_jboolean sjme_sqcLibraryDetect(const void* data, sjme_jint size,
 	sjme_error* error)
 {
-	return sjme_detectMagicNumber(data, size, JAR_MAGIC_NUMBER, error);
+	return sjme_detectMagicNumber(data, size,
+		JAR_MAGIC_NUMBER, error);
 }
 
 /**
@@ -491,6 +495,40 @@ static sjme_jboolean sjme_sqcLibraryDestroy(void* instance,
 	
 	/* Destruction happened. */
 	return sjme_true;
+}
+
+/**
+ * Opens a single entry within the SQC as a chunk.
+ * 
+ * @param libInstance The instance of the library to get the entry from.
+ * @param outChunk The output memory chunk where the data is located.
+ * @param index The index of the entry to load.
+ * @param error Any error state that occurs.
+ * @return If opening the entry was successful.
+ * @since 2021/12/16
+ */
+static sjme_jboolean sjme_sqcLibraryEntryChunk(
+	sjme_libraryInstance* libInstance, sjme_countableMemChunk** outChunk,
+	sjme_jint index, sjme_error* error)
+{
+	
+	if (libInstance == NULL || outChunk == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	if (index < 0 || index >= libInstance->numEntries)
+	{
+		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, index);
+		
+		return sjme_false;
+	}
+	
+	
+	
+	sjme_todo("Implement this?");
 }
 
 /**
@@ -544,4 +582,5 @@ const sjme_libraryDriver sjme_librarySqcDriver =
 	.detect = sjme_sqcLibraryDetect,
 	.init = sjme_sqcLibraryInit,
 	.destroy = sjme_sqcLibraryDestroy,
+	.entryChunk = sjme_sqcLibraryEntryChunk,
 };

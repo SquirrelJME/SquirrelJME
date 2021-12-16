@@ -198,7 +198,10 @@ typedef enum sjme_errorCode
 	
 	/** The JAR is not valid. */
 	SJME_ERROR_INVALID_JAR_FILE,
-} sjme_errorCode; 
+	
+	/** Not implemented. */
+	SJME_ERROR_NOT_IMPLEMENTED,
+} sjme_errorCode;
 
 /** This represents an error. */
 typedef struct sjme_error
