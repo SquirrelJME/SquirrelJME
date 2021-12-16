@@ -94,6 +94,9 @@ typedef struct sjme_sqcLibraryState
 {
 	/** The base SQC file state. */
 	sjme_sqcState sqcState;
+	
+	/** The table of contents for the individual entries. */
+	sjme_sqcToc entryToc;
 } sjme_sqcLibraryState;
 
 /** The SQC driver for multiple libraries. */

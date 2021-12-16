@@ -38,4 +38,8 @@ public interface JarTocFlag
 	/** Is a standard class file and not a SummerCoat class. */
 	byte STANDARD_CLASS =
 		16;
+	
+	/** Compressed entry? */
+	byte COMPRESSED =
+		32;
 }

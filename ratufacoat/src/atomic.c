@@ -39,6 +39,14 @@ sjme_jboolean sjme_atomicIntCompareThenSet(sjme_atomicInt* atomic,
 	if (was == check)
 		return sjme_true;
 	return sjme_false;
+#elif defined(SJME_ATOMIC_RELAXED_NOT_ATOMIC)
+	if (atomic->value == check)
+	{
+		atomic->value = set;
+		return sjme_true;
+	}
+	
+	return sjme_false; 
 #else
 	#error No sjme_atomicIntCompareAndSet
 #endif
@@ -64,6 +72,12 @@ sjme_jint sjme_atomicIntSet(sjme_atomicInt* atomic, sjme_jint value)
 #elif defined(SJME_ATOMIC_WIN32)
 	return (sjme_jint)InterlockedExchange(
 		(volatile LONG*)&atomic->value, value);
+#elif defined(SJME_ATOMIC_RELAXED_NOT_ATOMIC)
+	sjme_jint oldValue = atomic->value;
+	
+	atomic->value = value;
+	
+	return oldValue; 
 #else
 	#error No sjme_atomicIntSet
 #endif
@@ -79,6 +93,12 @@ sjme_jint sjme_atomicIntGetThenAdd(sjme_atomicInt* atomic, sjme_jint add)
 	/* This performs an add and get, however to do a get and add we need */
 	/* to subtract what we just added to get the original value. */
 	return InterlockedAdd((volatile LONG*)&atomic->value, add) - add;
+#elif defined(SJME_ATOMIC_RELAXED_NOT_ATOMIC)
+	sjme_jint oldValue = atomic->value;
+	
+	atomic->value = oldValue + add;
+	
+	return oldValue;
 #else
 	#error No sjme_atomicIntGetAndAdd
 #endif
@@ -106,6 +126,14 @@ sjme_jboolean sjme_atomicPointerCompareThenSet(sjme_atomicPointer* atomic,
 	if (was == check)
 		return sjme_true;
 	return sjme_false;
+#elif defined(SJME_ATOMIC_RELAXED_NOT_ATOMIC)
+	if (atomic->value == check)
+	{
+		atomic->value = set;
+		return sjme_true;
+	}
+	
+	return sjme_false; 
 #else
 	#error No sjme_atomicIntCompareAndSet
 #endif
@@ -123,6 +151,8 @@ void* sjme_atomicPointerGet(sjme_atomicPointer* atomic)
 	#else
 		return (void*)InterlockedAdd((volatile LONG*)&atomic->value, 0);
 	#endif
+#elif defined(SJME_ATOMIC_RELAXED_NOT_ATOMIC)
+	return atomic->value;
 #else
 	return sjme_atomicIntGetAndAdd(atomic, 0);
 #endif
@@ -137,6 +167,12 @@ void* sjme_atomicPointerSet(sjme_atomicPointer* atomic, void* value)
 #elif defined(SJME_ATOMIC_WIN32)
 	return (void*)InterlockedExchangePointer(
 		(volatile PVOID*)&atomic->value, (PVOID)value);
+#elif defined(SJME_ATOMIC_RELAXED_NOT_ATOMIC)
+	sjme_jint oldValue = atomic->value;
+	
+	atomic->value = value;
+	
+	return oldValue; 
 #else
 	#error No sjme_atomicPointerSet
 #endif

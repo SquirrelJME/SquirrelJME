@@ -50,7 +50,7 @@ static sjme_jboolean sjme_packCollect(sjme_counter* counter, sjme_error* error)
 		return sjme_false;
 	}
 	
-	return sjme_packClose(counter->collectData, error);
+	return sjme_packClose(counter->dataPointer, error);
 }
 
 sjme_jboolean sjme_packClose(sjme_packInstance* instance,
@@ -144,9 +144,8 @@ sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
 	}
 	
 	/* Initialize the counter for garbage collection. */
-	instance->counter.collect = sjme_packCollect;
-	instance->counter.collectData = instance;
-	sjme_atomicIntGetThenAdd(&instance->counter.count, 1);
+	sjme_counterInit(&instance->counter, sjme_packCollect,
+		instance, 0, error);
 	
 	/* All ready! */
 	return sjme_true;

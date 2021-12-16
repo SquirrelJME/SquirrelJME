@@ -145,7 +145,7 @@ static sjme_jboolean sjme_libraryCollect(sjme_counter* counter,
 		return sjme_false;
 	}
 	
-	return sjme_libraryClose(counter->collectData, error);
+	return sjme_libraryClose(counter->dataPointer, error);
 }
 
 sjme_jboolean sjme_libraryClose(sjme_libraryInstance* instance,
@@ -269,9 +269,8 @@ sjme_jboolean sjme_libraryOpen(sjme_libraryInstance** outInstance,
 	(*outInstance)->driver = (*outInstance)->format.driver;
 	
 	/* Initialize the counter for garbage collection. */
-	instance->counter.collect = sjme_libraryCollect;
-	instance->counter.collectData = instance;
-	sjme_atomicIntGetThenAdd(&instance->counter.count, 1);
+	sjme_counterInit(&instance->counter, sjme_libraryCollect,
+		instance, 0, error);
 	
 	/* All ready! */
 	return sjme_true;

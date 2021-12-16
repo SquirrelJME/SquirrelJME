@@ -14,7 +14,7 @@
  */
 
 /* Palm OS Functions. */
-#if defined(__palmos__)
+#if defined(SQUIRRELJME_PALMOS)
 	#include <MemoryMgr.h>
 	#include <MemGlue.h>
 #else
@@ -54,7 +54,7 @@ void* sjme_malloc(sjme_jint size, sjme_error* error)
 		return NULL;
 	}
 	
-#if defined(__palmos__)
+#if defined(SQUIRRELJME_PALMOS)
 	/* Palm OS, use glue to allow greater than 64K. */
 	rv = MemGluePtrNew(size);
 #else
@@ -69,7 +69,7 @@ void* sjme_malloc(sjme_jint size, sjme_error* error)
 		return NULL;
 	}
 		
-#if defined(__palmos__)
+#if defined(SQUIRRELJME_PALMOS)
 	/* Clear memory on Palm OS. */
 	MemSet(rv, size, 0);
 #else
@@ -147,7 +147,7 @@ sjme_jboolean sjme_free(void* p, sjme_error* error)
 	/* Wipe memory that was here. */
 	memset(baseP, 0xBA, size);
 	
-#if defined(__palmos__)
+#if defined(SQUIRRELJME_PALMOS)
 	/* Use Palm OS free. */
 	MemPtrFree(baseP);
 #else

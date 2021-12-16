@@ -275,7 +275,8 @@ sjme_jboolean sjme_sqcTocGet(const sjme_sqcToc* sqcToc, sjme_jint* outValue,
 static sjme_jboolean sjme_sqcPackDetect(const void* data, sjme_jint size,
 	sjme_error* error)
 {
-	return sjme_detectMagicNumber(data, size, PACK_MAGIC_NUMBER, error);
+	return sjme_detectMagicNumber(data, size, PACK_MAGIC_NUMBER,
+		error);
 }
 
 /**
@@ -327,13 +328,14 @@ static sjme_jboolean sjme_sqcPackInit(void* instance,
 	packInstance->state = sqcPackState;
 	
 	/* Use common initialization sequence. */
-	if (!sjme_sqcInit(&packInstance->format, &sqcPackState->sqcState,
-		error))
+	if (!sjme_sqcInit(&packInstance->format,
+		&sqcPackState->sqcState, error))
 		return sjme_false;
 	
 	/* Initialize the table of contents for the various libraries. */
-	if (!sjme_sqcInitToc(&sqcPackState->sqcState, &sqcPackState->libToc,
-		SJME_PACK_COUNT_TOC_INDEX, SJME_PACK_OFFSET_TOC_INDEX,
+	if (!sjme_sqcInitToc(&sqcPackState->sqcState,
+		&sqcPackState->libToc, SJME_PACK_COUNT_TOC_INDEX,
+		SJME_PACK_OFFSET_TOC_INDEX,
 		SJME_PACK_SIZE_TOC_INDEX, error))
 		return sjme_false;
 	
@@ -455,6 +457,24 @@ const sjme_packDriver sjme_packSqcDriver =
 /** Index to the number of resources that exist within a JAR. */
 #define SJME_JAR_COUNT_TOC_INDEX SJME_JINT_C(1)
 
+/** The table of contents index within the JARs. */
+#define SJME_JAR_OFFSET_TOC_INDEX SJME_JINT_C(2)
+
+/** The table of contents size. */
+#define SJME_JAR_SIZE_TOC_INDEX SJME_JINT_C(3)
+
+/** Flags for the index within the TOC. */
+#define SJME_JAR_TOC_INT_FLAGS_INDEX SJME_JINT_C(0)
+
+/** Offset to the JAR resource data. */
+#define SJME_JAR_TOC_OFFSET_DATA_INDEX SJME_JINT_C(4)
+
+/** The size of the JAR resource data. */
+#define SJME_JAR_TOC_SIZE_DATA_INDEX SJME_JINT_C(5)
+
+/** Flag for compressed entries. */
+#define SJME_JAR_TOC_FLAG_COMPRESSED_FLAG SJME_JINT_C(32)
+
 /**
  * Detects library files.
  * 
@@ -498,6 +518,32 @@ static sjme_jboolean sjme_sqcLibraryDestroy(void* instance,
 }
 
 /**
+ * When an entry is closed, this will un-count the library as well.
+ * 
+ * @param counter The counter to collect.
+ * @param error The error state. 
+ * @return If collection was a success.
+ * @since 2021/12/6
+ */
+static sjme_jboolean sjme_sqcLibraryEntryChunkCollect(sjme_counter* counter,
+	sjme_error* error)
+{
+	sjme_libraryInstance* libInstance;
+	
+	if (counter == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+
+	/* Count down the instances of the library being used. */ 
+	libInstance = counter->dataPointer;
+	return sjme_counterDown(&libInstance->counter,
+		NULL, error);
+}
+
+/**
  * Opens a single entry within the SQC as a chunk.
  * 
  * @param libInstance The instance of the library to get the entry from.
@@ -511,6 +557,12 @@ static sjme_jboolean sjme_sqcLibraryEntryChunk(
 	sjme_libraryInstance* libInstance, sjme_countableMemChunk** outChunk,
 	sjme_jint index, sjme_error* error)
 {
+	sjme_jint entryFlags;
+	sjme_jint entryOffset;
+	sjme_jint entrySize;
+	sjme_sqcLibraryState* sqcLibraryState;
+	sjme_memChunk entryChunk;
+	sjme_countableMemChunk* result;
 	
 	if (libInstance == NULL || outChunk == NULL)
 	{
@@ -526,9 +578,74 @@ static sjme_jboolean sjme_sqcLibraryEntryChunk(
 		return sjme_false;
 	}
 	
+	sqcLibraryState = libInstance->state;
 	
+	/* Try to get the flags. */
+	entryFlags = 0;
+	if (!sjme_sqcTocGet(&sqcLibraryState->entryToc,
+			&entryFlags, index,
+			SJME_JAR_TOC_INT_FLAGS_INDEX, error))
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_JAR_FILE, index);
+		
+		return sjme_false;
+	}
 	
-	sjme_todo("Implement this?");
+	/* If this is compressed we need to treat it as a stream. */
+	if ((entryFlags & SJME_JAR_TOC_FLAG_COMPRESSED_FLAG) != 0)
+	{
+		sjme_todo("Implement compressed SQC JAR entries");
+		
+		return sjme_false;
+	}
+	
+	/* Read the entry position. */
+	entryOffset = -1;
+	entrySize = -1;
+	if (!sjme_sqcTocGet(&sqcLibraryState->entryToc,
+			&entryOffset, index,
+			SJME_JAR_TOC_OFFSET_DATA_INDEX, error) ||
+		!sjme_sqcTocGet(&sqcLibraryState->entryToc,
+			&entrySize, index,
+			SJME_JAR_TOC_SIZE_DATA_INDEX, error))
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_JAR_FILE, index);
+		
+		return sjme_false;
+	}
+	
+	/* Split off the chunk position. */
+	memset(&entryChunk, 0, sizeof(entryChunk));
+	if (!sjme_chunkSubChunk(sqcLibraryState->sqcState.chunk,
+		&entryChunk, entryOffset, entrySize, error))
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_JAR_FILE,
+			sjme_getError(error, index));
+		
+		return sjme_false;
+	}
+	
+	/* Allocate result. */
+	result = sjme_malloc(sizeof(*result), error);
+	if (result == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NO_MEMORY, index);
+		
+		return sjme_false;
+	}
+	
+	/* Setup count and chunk details and counter. */
+	result->chunk = entryChunk;
+	sjme_counterInit(&result->count,
+		sjme_sqcLibraryEntryChunkCollect, libInstance,
+		index, error);
+	
+	/* Count the library up as it is being used more. */
+	sjme_counterUp(&libInstance->counter, error);
+	
+	/* Use the calculated chunk. */
+	*outChunk = result;
+	return sjme_true;
 }
 
 /**
@@ -572,6 +689,13 @@ static sjme_jboolean sjme_sqcLibraryInit(void* instance,
 	
 	/* Setup JAR properties. */
 	libraryInstance->numEntries = numEntries;
+	
+	/* Load TOC for the library. */
+	if (!sjme_sqcInitToc(&sqcLibraryState->sqcState,
+		&sqcLibraryState->entryToc, SJME_JAR_COUNT_TOC_INDEX,
+		SJME_JAR_OFFSET_TOC_INDEX,
+		SJME_JAR_SIZE_TOC_INDEX, error))
+		return sjme_false;
 	
 	/* Success! */
 	return sjme_true;

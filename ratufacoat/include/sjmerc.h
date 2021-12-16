@@ -150,6 +150,10 @@
 	#define UINT32_C(x) x##UL
 	
 	#define SIZE_MAX UINT32_C(0xFFFFFFFF)
+	
+	#if !defined(SQUIRRELJME_PALMOS)
+		#define SQUIRRELJME_PALMOS
+	#endif
 
 /** Guessed otherwise. */
 #else

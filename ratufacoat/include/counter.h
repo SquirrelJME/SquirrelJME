@@ -62,8 +62,11 @@ struct sjme_counter
 	/** The collector if this is to be GCed. */
 	sjme_counterCollectFunction collect;
 	
-	/** The data pointer for collection. */
-	void* collectData;
+	/** A data pointer for collection. */
+	void* dataPointer;
+	
+	/** An integer value for collection. */
+	sjme_jint dataInteger;
 };
 
 /**
@@ -77,7 +80,22 @@ struct sjme_counter
  * @since 2021/11/07
  */
 sjme_jboolean sjme_counterDown(sjme_counter* counter, sjme_jboolean* outActive,
-	sjme_error* error); 
+	sjme_error* error);
+
+/**
+ * Initializes the given counter with the counter values.
+ * 
+ * @param counter The counter to initialize.
+ * @param collectFunc The collection function to use.
+ * @param dataPointer The data pointer, is optional and may be any value.
+ * @param dataInteger The data integer, is optional and may be any value.
+ * @param error The error state.
+ * @return If the counter was successfully incremented.
+ * @since 2021/12/16
+ */
+sjme_jboolean sjme_counterInit(sjme_counter* counter,
+	sjme_counterCollectFunction collectFunc,
+	void* dataPointer, int dataInteger, sjme_error* error);
 
 /**
  * Increases the reference counter.
@@ -85,7 +103,7 @@ sjme_jboolean sjme_counterDown(sjme_counter* counter, sjme_jboolean* outActive,
  * @param counter The counter to increment.
  * @param error The error state.
  * @return If the counter was successfully incremented.
- * @since 2021/11/07
+ * @since 2021/12/16
  */
 sjme_jboolean sjme_counterUp(sjme_counter* counter, sjme_error* error);
 
