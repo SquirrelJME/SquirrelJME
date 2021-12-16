@@ -42,8 +42,20 @@ extern "C"
  */
 typedef struct sjme_crcState
 {
+	/** Reflect data? */
+	sjme_jboolean reflectData;
+	
+	/** Reflect the remainder? */
+	sjme_jboolean reflectRemainder;
+	
+	/** The final XOR value. */
+	sjme_jint finalXor;
+	
+	/** The current working remainder. */
+	sjme_jint currentRemainder;
+	
 	/** The CRC data table to be used. */
-	const sjme_jbyte (*crcTable)[SJME_CRC_TABLE_SIZE];
+	const sjme_jint (*crcTable)[SJME_CRC_TABLE_SIZE];
 } sjme_crcState;
 
 /** The CRC table for ZIP files and their contents. */
@@ -60,16 +72,6 @@ extern const sjme_jint sjme_crcTableZip[SJME_CRC_TABLE_SIZE];
  */
 sjme_jboolean sjme_crcChecksum(sjme_crcState* crcState,
 	sjme_jint* outChecksum, sjme_error* error);
-
-/**
- * Initializes the CRC calculator.
- * 
- * @param outCrcState The output CRC state.
- * @param error The error state, if any.
- * @return If initialization was a success or not.
- * @since 2021/11/13 
- */
-sjme_jboolean sjme_crcInit(sjme_crcState* outCrcState, sjme_error* error);
 
 /**
  * Initializes the CRC calculator with the same properties used for ZIP files.

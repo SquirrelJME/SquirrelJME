@@ -35,13 +35,14 @@ SJME_TEST_PROTOTYPE(testCrc)
 		return FAIL_TEST(1);
 	
 	/* Perform the CRC calculation. */
-	if (!sjme_crcOfferDirect(&crc, (void*)MESSAGE, sizeof(MESSAGE),
-		&shim->error))
+	if (!sjme_crcOfferDirect(&crc, (void*)MESSAGE,
+		sizeof(MESSAGE), &shim->error))
 		return FAIL_TEST(2);
 	
 	/* Get the calculated CRC value. */
 	calcValue = -1;
-	if (!sjme_crcChecksum(&crc, &calcValue, &shim->error))
+	if (!sjme_crcChecksum(&crc, &calcValue,
+		&shim->error))
 		return FAIL_TEST(3);
 	
 	/* Was the CRC value calculated incorrectly? */
@@ -59,12 +60,14 @@ SJME_TEST_PROTOTYPE(testCrc)
 		return FAIL_TEST(5);
 		
 	/* Perform the CRC calculation. */
-	if (!sjme_crcOfferChunk(&crc, &chunk, 0, chunk.size, &shim->error))
+	if (!sjme_crcOfferChunk(&crc, &chunk, 0, chunk.size,
+		&shim->error))
 		return FAIL_TEST(6);
 	
 	/* Get the calculated CRC value. */
 	calcValue = -1;
-	if (!sjme_crcChecksum(&crc, &calcValue, &shim->error))
+	if (!sjme_crcChecksum(&crc, &calcValue,
+		&shim->error))
 		return FAIL_TEST(7);
 	
 	/* Was the CRC value calculated incorrectly? */

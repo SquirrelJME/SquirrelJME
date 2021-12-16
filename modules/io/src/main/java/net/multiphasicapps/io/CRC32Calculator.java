@@ -23,16 +23,16 @@ public class CRC32Calculator
 	protected final int polynomial;
 	
 	/** The final XOR value. */
-	protected final int finalxor;
+	protected final int finalXor;
 	
 	/** Reflect the data? */
 	protected final boolean reflectData;
 	
 	/** Reflect the remainder? */
-	protected final boolean reflectremainder;
+	protected final boolean reflectRemainder;
 	
 	/** The initial remainder. */
-	protected final int initremainder;
+	protected final int initRemainder;
 	
 	/** The CRC Table. */
 	final CRC32Table _table;
@@ -59,10 +59,10 @@ public class CRC32Calculator
 	{
 		// Set
 		this.reflectData = __rdata;
-		this.reflectremainder = __rrem;
+		this.reflectRemainder = __rrem;
 		this.polynomial = __poly;
-		this.finalxor = __fxor;
-		this.initremainder = __initrem;
+		this.finalXor = __fxor;
+		this.initRemainder = __initrem;
 		this._remainder = __initrem;
 		
 		// Setup table
@@ -78,8 +78,8 @@ public class CRC32Calculator
 	{
 		// Return the current CRC
 		int rem = this._remainder;
-		return (this.reflectremainder ? Integer.reverse(rem) : rem) ^
-			this.finalxor;
+		return (this.reflectRemainder ? Integer.reverse(rem) : rem) ^
+			this.finalXor;
 	}
 	
 	/**
@@ -148,7 +148,7 @@ public class CRC32Calculator
 	public final void reset()
 	{
 		// Only the remainder has to be updated
-		this._remainder = this.initremainder;
+		this._remainder = this.initRemainder;
 	}
 }
 

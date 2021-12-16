@@ -10,6 +10,15 @@
 #include "debug.h"
 #include "crc.h"
 
+/** The polynomial for ZIP files. */
+#define SJME_ZIP_POLYNOMIAL SJME_JINT_C(0x04C11DB7)
+
+/** The initial ZIP reminder. */
+#define SJME_ZIP_INITIAL_REMAINDER SJME_JINT_C(0xFFFFFFFF)
+
+/** The final XOR for the resultant value. */
+#define SJME_ZIP_FINAL_XOR SJME_JINT_C(0xFFFFFFFF)
+
 /**
  * CRC Table for standard ZIPs, so we need not calculate these over and
  * over accordingly.
@@ -146,20 +155,56 @@ const sjme_jint sjme_crcTableZip[SJME_CRC_TABLE_SIZE] =
 	SJME_JINT_C(0xb5365d03), SJME_JINT_C(0xb1f740b4)
 };
 
+/**
+ * Initializes the CRC calculator.
+ * 
+ * @param outCrcState The output CRC state.
+ * @param crcTable The CRC table to use.
+ * @param reflectData Reflect the CRC data?
+ * @param reflectRemainder Reflect the remainder value?
+ * @param initialRemainder The initial remainder value.
+ * @param finalXor The final XOR value.
+ * @param error The error state, if any.
+ * @return If initialization was a success or not.
+ * @since 2021/11/13 
+ */
+static sjme_jboolean sjme_crcInitInternal(sjme_crcState* outCrcState,
+	const sjme_jint *crcTable[SJME_CRC_TABLE_SIZE],
+	sjme_jboolean reflectData, sjme_jboolean reflectRemainder,
+	sjme_jint initialRemainder, sjme_jint finalXor,
+	sjme_error* error)
+{
+	if (outCrcState == NULL || crcTable == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	/* Clear the initial state. */
+	memset(outCrcState, 0, sizeof(*outCrcState));
+	
+	/* Setup values within. */
+	outCrcState->reflectData = reflectData;
+	outCrcState->reflectRemainder = reflectRemainder;
+	outCrcState->finalXor = finalXor;
+	outCrcState->currentRemainder = initialRemainder;
+	
+	return sjme_true;
+}
+
 sjme_jboolean sjme_crcChecksum(sjme_crcState* crcState,
 	sjme_jint* outChecksum, sjme_error* error)
 {
 	sjme_todo("Implement this?");
 }
 
-sjme_jboolean sjme_crcInit(sjme_crcState* outCrcState, sjme_error* error)
-{
-	sjme_todo("Implement this?");
-}
-
 sjme_jboolean sjme_crcInitZip(sjme_crcState* outCrcState, sjme_error* error)
 {
-	sjme_todo("Implement this?");
+	return sjme_crcInitInternal(outCrcState, &sjme_crcTableZip,
+		sjme_true, sjme_true,
+		SJME_ZIP_INITIAL_REMAINDER, SJME_ZIP_FINAL_XOR,
+		error);
 }
 
 sjme_jboolean sjme_crcOfferChunk(sjme_crcState* crcState,
