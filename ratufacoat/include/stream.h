@@ -18,6 +18,7 @@
 
 #include "atomic.h"
 #include "counter.h"
+#include "memchunk.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -44,6 +45,22 @@ typedef struct sjme_dataStream
 	/** Counter for garbage collection. */
 	sjme_counter count;
 } sjme_dataStream;
+
+/**
+ * Opens a stream from a counted memory chunk.
+ * 
+ * @param outStream The output stream.
+ * @param chunk The chunk to wrap.
+ * @param off The offset into the chunk to start reads from.
+ * @param len The number of bytes to read at most.
+ * @param countUp Should the chunk be counted up when this is initialized?
+ * @param error On any errors.
+ * @return If opening the stream was a success.
+ * @since 2021/12/17
+ */
+sjme_jboolean sjme_streamFromChunkCounted(sjme_dataStream** outStream,
+	sjme_countableMemChunk* chunk, sjme_jint off, sjme_jint len,
+	sjme_jboolean countUp, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

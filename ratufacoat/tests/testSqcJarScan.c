@@ -24,7 +24,7 @@
 SJME_TEST_PROTOTYPE(testSqcJarScan)
 {
 	sjme_packInstance* pack;
-	sjme_jint libDx, entryDx;
+	sjme_jint libDx, entryDx, entrySize;
 	sjme_libraryInstance* lib;
 	sjme_countableMemChunk* chunk;
 	sjme_dataStream* stream;
@@ -63,6 +63,7 @@ SJME_TEST_PROTOTYPE(testSqcJarScan)
 				return FAIL_TEST_TRI(4, libDx, entryDx);
 			
 			/* Perform the CRC calculation. */
+			entrySize = chunk->chunk.size;
 			if (!sjme_crcOfferChunk(&crc, &chunk->chunk, 0,
 				chunk->chunk.size, &shim->error))
 				return FAIL_TEST_TRI(5, libDx, entryDx);
@@ -89,28 +90,34 @@ SJME_TEST_PROTOTYPE(testSqcJarScan)
 				return FAIL_TEST_TRI(9, libDx, entryDx);
 			
 			/* Calculate the CRC of the chunk. */
-			sjme_todo("Calculate entry CRC by stream?");
+			if (!sjme_crcOfferStream(&crc, stream,
+				SJME_JINT_MAX_VALUE, &shim->error))
+				return FAIL_TEST_TRI(10, libDx, entryDx);
+			
+			/* Everything should have been read. */
+			if (sjme_atomicIntGet(&stream->readBytes) != entrySize)
+				return FAIL_TEST_TRI(11, libDx, entryDx);
 			
 			/* Get the calculated CRC value. */
 			crcStream = -2;
 			if (!sjme_crcChecksum(&crc, &crcStream,
 					&shim->error))
-				return FAIL_TEST_TRI(11, libDx, entryDx);
+				return FAIL_TEST_TRI(12, libDx, entryDx);
 			
 			/* Close the data stream. */
 			if (!sjme_counterDown(&stream->count, NULL,
 					&shim->error))
-				return FAIL_TEST_TRI(12, libDx, entryDx);
+				return FAIL_TEST_TRI(13, libDx, entryDx);
 			
 			/* These two CRCs should have been the same value. */
 			if (crcChunk != crcStream)
-				return FAIL_TEST_TRI(13, libDx, entryDx);
+				return FAIL_TEST_TRI(14, libDx, entryDx);
 		}
 		
 		/* Clear up the library usage. */
 		if (!sjme_counterDown(&lib->counter, NULL,
 				&shim->error))
-			return FAIL_TEST_SUB(14, libDx);
+			return FAIL_TEST_SUB(15, libDx);
 	}
 		
 	/* Cleanup at the end. */

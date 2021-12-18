@@ -59,6 +59,8 @@ static sjme_jboolean sjme_libraryWrapChunkToStream(
 	sjme_libraryInstance* libInstance, sjme_dataStream** outStream,
 	sjme_jint index, sjme_error* error)
 {
+	sjme_countableMemChunk* outChunk;
+	
 	if (libInstance == NULL || outStream == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
@@ -81,9 +83,19 @@ static sjme_jboolean sjme_libraryWrapChunkToStream(
 		return sjme_false;
 	}
 	
-	sjme_todo("Implement this?");
+	/* Open memory chunk to the entry data. */
+	outChunk = NULL;
+	if (!libInstance->driver->entryChunk(libInstance, &outChunk, index, error))
+	{
+		if (!sjme_hasError(error))
+			sjme_setError(error, SJME_ERROR_INVALID_JAR_FILE, index);
+		
+		return sjme_false;
+	}
 	
-	return sjme_false;
+	/* Wrap the chunk accordingly. */
+	return sjme_streamFromChunkCounted(outStream, outChunk, 0,
+		outChunk->chunk.size, sjme_false, error);
 }
 
 /**
