@@ -140,6 +140,11 @@ public class RatufaCoatBuiltInTaskAction
 				out.println("#if defined(SQUIRRELJME_HAS_BUILTIN)");
 				out.println();
 				
+				// Which source set was this created for?
+				out.print("const char* const sjme_builtInSourceSet = \"");
+				out.print(this.sourceSet);
+				out.println("\";");
+				
 				// Declare the type
 				out.println("const sjme_jubyte sjme_builtInRomData[] = {");
 				

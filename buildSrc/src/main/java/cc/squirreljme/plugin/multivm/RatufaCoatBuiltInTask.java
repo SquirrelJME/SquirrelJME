@@ -88,6 +88,7 @@ public class RatufaCoatBuiltInTask
 	{
 		return this.getProject().provider(() -> this.getProject().getRootDir()
 			.toPath().resolve("ratufacoat").resolve("build")
-			.resolve("builtin.c"));
+			.resolve(TaskInitialization
+				.task("builtin", this.sourceSet) + ".c"));
 	}
 }

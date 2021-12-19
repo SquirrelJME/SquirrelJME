@@ -21,4 +21,5 @@ const sjme_jint sjme_builtInRomIdLen = 0;
 const sjme_jint sjme_builtInRomDate[] = {0, 0};
 const sjme_jubyte sjme_builtInRomData[] = {0};
 const sjme_jint sjme_builtInRomSize = 0;
+const char* const sjme_builtInSourceSet = NULL;
 #endif

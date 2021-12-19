@@ -644,8 +644,26 @@ jobs:
             - '*/build/*'
             - '*/*/build/*'
 
-  # Constructs the Built-In ROM used for RatufaCoat
+  # Constructs the Built-In ROM used for RatufaCoat with tests
   construct_builtInRatufaCoatRom:
+    executor: buildenv
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Construct Built-In ROM for RatufaCoat (With Tests)
+          command: ./gradlew :romTestSpringCoatRatufaCoat --no-daemon --console plain --continue --parallel
+      - persist_to_workspace:
+          root: .
+          paths:
+            - 'ratufacoat/build/builtinTest.c'
+
+  # Constructs the Built-In ROM used for RatufaCoat without tests
+  construct_builtInRatufaCoatRomRelease:
     executor: buildenv
     environment:
       # Allow Gradle to be fully cached
@@ -743,16 +761,21 @@ workflows:
 #            - construct_romSummerCoat
 
       ### RetroArch ###
-      # The Built-In C File
+      # The Built-In C File (with tests)
       - construct_builtInRatufaCoatRom:
           requires:
             - build_linux
+
+      # Without tests, for release purposes
+      - construct_builtInRatufaCoatRomRelease:
+          requires:
+            - construct_builtInRatufaCoatRom
 
       # Only tell RetroArch to build if Linux went okay
       - poke_RetroArch:
           requires:
             - ratufacoat_build_linux
-            - construct_builtInRatufaCoatRom
+            - construct_builtInRatufaCoatRomRelease
 
       ############################## RATUFACOAT ##############################
       - ratufacoat_build_linux:

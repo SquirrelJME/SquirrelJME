@@ -17,5 +17,6 @@ extern const sjme_jint sjme_builtInRomIdLen;
 extern const sjme_jint sjme_builtInRomDate[];
 extern const sjme_jubyte sjme_builtInRomData[];
 extern const sjme_jint sjme_builtInRomSize;
+extern const char* const sjme_builtInSourceSet;
 
 #endif /* SQUIRRELJME_BUILTIN_H */
