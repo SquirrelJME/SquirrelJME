@@ -7,6 +7,13 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Tests for SquirrelJME
 
+# Locate valgrind so we can check for memory leaks if it is available
+# However, we cannot run valgrind under QEMU environments since that would
+# be rather unstable
+if(NOT DEFINED SQUIRRELJME_TEST_WRAPPER)
+	find_program(MEMORYCHECK_COMMAND valgrind)
+endif()
+
 # Build executable just for testing'
 file(GLOB SQUIRRELJME_TEST_SOURCES "test*.c")
 add_executable(SquirrelJMETests

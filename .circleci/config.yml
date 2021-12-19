@@ -272,7 +272,7 @@ jobs:
           name: Install required dependencies
           command: |
             apt-get update -y
-            apt-get install -y build-essential python3 git
+            apt-get install -y build-essential python3 git valgrind
             apt-get install -y -t buster-backports cmake
       - attach_workspace:
           at: .
@@ -287,7 +287,7 @@ jobs:
       - run:
           name: Test CMake Build
           working_directory: ratufacoat
-          command: ctest --extra-verbose -T Test .
+          command: ctest --extra-verbose -T Test -D MemoryCheck .
       - run:
           name: Convert CTest to JUnit XML
           command: python3 ctest-to-junit.py < Testing/*/Test.xml
@@ -441,8 +441,8 @@ jobs:
           at: .
       - run:
           name: SpringCoat Tests
-          command: timeout --foreground 15m ./gradlew testSpringCoat --no-daemon --console plain --continue --parallel
-          no_output_timeout: 15m
+          command: timeout --foreground 20m ./gradlew testSpringCoat --no-daemon --console plain --continue --parallel
+          no_output_timeout: 20m
       - run:
           name: Save test results
           command: |

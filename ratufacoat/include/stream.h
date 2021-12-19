@@ -32,19 +32,44 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+typedef struct sjme_dataStream sjme_dataStream;
+
+/**
+ * Performs a read of the data stream.
+ * 
+ * @param stream The stream that is being read from.
+ * @param dest The destination buffer.
+ * @param len The number of bytes to read.
+ * @param readLen The number of bytes read, will be @c -1 on EOF.
+ * @param error On any read errors.
+ * @return If the read was a success, @c readLen will be @c -1 on EOF.
+ * @since 2021/12/19
+ */
+typedef sjme_jboolean (*sjme_dataStreamReadFunction)(sjme_dataStream* stream,
+	void* dest, sjme_jint len, sjme_jint* readLen, sjme_error* error);
+
 /**
  * This represents an individual data stream.
  * 
  * @since 2021/11/13
  */
-typedef struct sjme_dataStream
+struct sjme_dataStream
 {
 	/** The number of bytes which have so far been read. */
 	sjme_atomicInt readBytes;
 	
 	/** Counter for garbage collection. */
 	sjme_counter count;
-} sjme_dataStream;
+	
+	/** The source used for the stream. */
+	void* streamSource;
+	
+	/** The linked counter source. */
+	sjme_counter* linkedCounter;
+	
+	/** The reading function for the stream. */
+	sjme_dataStreamReadFunction readFunction;
+};
 
 /**
  * Opens a stream from a counted memory chunk.
@@ -53,14 +78,14 @@ typedef struct sjme_dataStream
  * @param chunk The chunk to wrap.
  * @param off The offset into the chunk to start reads from.
  * @param len The number of bytes to read at most.
- * @param countUp Should the chunk be counted up when this is initialized?
+ * @param countUpChunk Should the chunk be counted up when this is initialized?
  * @param error On any errors.
  * @return If opening the stream was a success.
  * @since 2021/12/17
  */
 sjme_jboolean sjme_streamFromChunkCounted(sjme_dataStream** outStream,
 	sjme_countableMemChunk* chunk, sjme_jint off, sjme_jint len,
-	sjme_jboolean countUp, sjme_error* error);
+	sjme_jboolean countUpChunk, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

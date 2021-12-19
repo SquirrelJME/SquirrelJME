@@ -27,12 +27,6 @@ static const sjme_libraryDriver* const sjme_libraryDrivers[] =
 	NULL
 };
 
-sjme_jboolean sjme_libraryWrapStreamToChunk(sjme_libraryInstance* libInstance,
-	sjme_countableMemChunk** outChunk, sjme_jint index, sjme_error* error);
-
-sjme_jboolean sjme_libraryWrapChunkToStream(sjme_libraryInstance* libInstance,
-	sjme_dataStream** outStream, sjme_jint index, sjme_error* error);
-
 /** Handler for library formats. */
 static const sjme_formatHandler sjme_libraryFormatHandler =
 {
