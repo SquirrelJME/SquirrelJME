@@ -12,6 +12,7 @@
 # be rather unstable
 if(NOT DEFINED SQUIRRELJME_TEST_WRAPPER)
 	find_program(MEMORYCHECK_COMMAND valgrind)
+	set(MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full")
 endif()
 
 # Build executable just for testing'

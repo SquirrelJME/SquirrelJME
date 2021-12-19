@@ -287,7 +287,7 @@ jobs:
       - run:
           name: Test CMake Build
           working_directory: ratufacoat
-          command: ctest --extra-verbose -T Test -D MemoryCheck .
+          command: ctest --extra-verbose -T Test -D ExperimentalMemCheck -D .
       - run:
           name: Convert CTest to JUnit XML
           command: python3 ctest-to-junit.py < Testing/*/Test.xml
