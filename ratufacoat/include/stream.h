@@ -45,7 +45,7 @@ typedef struct sjme_dataStream sjme_dataStream;
  * @return If the read was a success, @c readLen will be @c -1 on EOF.
  * @since 2021/12/19
  */
-typedef sjme_jboolean (*sjme_dataStreamReadFunction)(sjme_dataStream* stream,
+typedef sjme_jboolean (*sjme_streamReadFunction)(sjme_dataStream* stream,
 	void* dest, sjme_jint len, sjme_jint* readLen, sjme_error* error);
 
 /**
@@ -68,7 +68,7 @@ struct sjme_dataStream
 	sjme_counter* linkedCounter;
 	
 	/** The reading function for the stream. */
-	sjme_dataStreamReadFunction readFunction;
+	sjme_streamReadFunction readFunction;
 };
 
 /**
@@ -86,6 +86,20 @@ struct sjme_dataStream
 sjme_jboolean sjme_streamFromChunkCounted(sjme_dataStream** outStream,
 	sjme_countableMemChunk* chunk, sjme_jint off, sjme_jint len,
 	sjme_jboolean countUpChunk, sjme_error* error);
+
+/**
+ * Performs a read of the data stream.
+ * 
+ * @param stream The stream that is being read from.
+ * @param dest The destination buffer.
+ * @param len The number of bytes to read.
+ * @param readLen The number of bytes read, will be @c -1 on EOF.
+ * @param error On any read errors.
+ * @return If the read was a success, @c readLen will be @c -1 on EOF.
+ * @since 2021/12/19
+ */
+sjme_jboolean sjme_streamRead(sjme_dataStream* stream,
+	void* dest, sjme_jint len, sjme_jint* readLen, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

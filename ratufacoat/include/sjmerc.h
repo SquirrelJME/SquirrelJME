@@ -286,6 +286,11 @@ typedef enum sjme_jboolean
 /** VMM Type: Java Integer. */
 #define SJME_VMMTYPE_JAVAINTEGER SJME_JINT_C(-5)
 
+#if !defined(SJME_MEMORYPROFILE_NORMAL) && !defined(SJME_MEMORYPROFILE_MINIMAL)
+	/** Normal memory profile. */
+	#define SJME_MEMORYPROFILE_NORMAL
+#endif
+
 /**
  * Marker that indicates that a method returns failure.
  *
@@ -433,6 +438,9 @@ typedef struct sjme_nativefile sjme_nativefile;
 	/** Force inlining of function. */
 	#define __forceinline __attribute__((always_inline))
 #endif
+
+/** Min constant macro. */
+#define sjme_min(a, b) ((a) <= (b) ? (a) : (b))
 
 /** Max constant macro. */
 #define sjme_max(a, b) ((a) >= (b) ? (a) : (b))

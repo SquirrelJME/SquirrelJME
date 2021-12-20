@@ -118,12 +118,14 @@ sjme_jboolean sjme_crcOfferDirect(sjme_crcState* crcState,
  * @param crcState The CRC state to use. 
  * @param stream The stream to read bytes from.
  * @param len The number of bytes to offer.
+ * @param readLen The number of bytes that have been read, @c -1 on EOF.
  * @param error The error state, if any.
  * @return If the data was successfully read for calculation.
  * @since 2021/11/13
  */
 sjme_jboolean sjme_crcOfferStream(sjme_crcState* crcState,
-	sjme_dataStream* stream, sjme_jint len, sjme_error* error);
+	sjme_dataStream* stream, sjme_jint len, sjme_jint* readLen,
+	sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

@@ -80,7 +80,7 @@ typedef enum sjme_errorCode
 	SJME_ERROR_NOJAVAWRITE,
 	
 	/** Read error. */
-	SJME_ERROR_READERROR,
+	SJME_ERROR_READ_ERROR,
 	
 	/** Early end of file reached. */
 	SJME_ERROR_EARLYEOF,
@@ -201,6 +201,12 @@ typedef enum sjme_errorCode
 	
 	/** Not implemented. */
 	SJME_ERROR_NOT_IMPLEMENTED,
+	
+	/** Invalid stream state. */
+	SJME_ERROR_INVALID_STREAM_STATE,
+	
+	/** Calculation error. */
+	SJME_ERROR_CALCULATE_ERROR,
 } sjme_errorCode;
 
 /** This represents an error. */

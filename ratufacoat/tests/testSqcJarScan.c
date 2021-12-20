@@ -24,7 +24,7 @@
 SJME_TEST_PROTOTYPE(testSqcJarScan)
 {
 	sjme_packInstance* pack;
-	sjme_jint libDx, entryDx, entrySize;
+	sjme_jint libDx, entryDx, entrySize, readLen, temp;
 	sjme_libraryInstance* lib;
 	sjme_countableMemChunk* chunk;
 	sjme_dataStream* stream;
@@ -90,13 +90,20 @@ SJME_TEST_PROTOTYPE(testSqcJarScan)
 				return FAIL_TEST_TRI(9, libDx, entryDx);
 			
 			/* Calculate the CRC of the chunk. */
+			readLen = -1;
 			if (!sjme_crcOfferStream(&crc, stream,
-				SJME_JINT_MAX_VALUE, &shim->error))
+				SJME_JINT_MAX_VALUE, &readLen, &shim->error))
 				return FAIL_TEST_TRI(10, libDx, entryDx);
 			
 			/* Everything should have been read. */
-			if (sjme_atomicIntGet(&stream->readBytes) != entrySize)
+			temp = sjme_atomicIntGet(&stream->readBytes);
+			if (temp != entrySize)
+			{
+				sjme_message("Expected read of %d but was %d",
+					entrySize, temp);
+				
 				return FAIL_TEST_TRI(11, libDx, entryDx);
+			}
 			
 			/* Get the calculated CRC value. */
 			crcStream = -2;
@@ -111,7 +118,12 @@ SJME_TEST_PROTOTYPE(testSqcJarScan)
 			
 			/* These two CRCs should have been the same value. */
 			if (crcChunk != crcStream)
+			{
+				sjme_message("Expected CRC %08x but was %08x.",
+					crcChunk, crcStream);
+				
 				return FAIL_TEST_TRI(14, libDx, entryDx);
+			}
 		}
 		
 		/* Clear up the library usage. */

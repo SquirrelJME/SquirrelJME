@@ -10,14 +10,19 @@
 #include "debug.h"
 #include "crc.h"
 
-/** The polynomial for ZIP files. */
-#define SJME_ZIP_POLYNOMIAL SJME_JINT_C(0x04C11DB7)
-
 /** The initial ZIP reminder. */
 #define SJME_ZIP_INITIAL_REMAINDER SJME_JUINT_C(0xFFFFFFFF)
 
 /** The final XOR for the resultant value. */
 #define SJME_ZIP_FINAL_XOR SJME_JUINT_C(0xFFFFFFFF)
+
+#if defined(SJME_MEMORYPROFILE_MINIMAL)
+	/** Offer a smaller set of bytes for CRC checks. */
+	#define SJME_CRC_OFFER_SIZE 512
+#else
+	/** Offer more bytes for CRC checks. */
+	#define SJME_CRC_OFFER_SIZE 4096
+#endif
 
 /**
  * CRC Table for standard ZIPs, so we need not calculate these over and
@@ -320,9 +325,13 @@ sjme_jboolean sjme_crcOfferDirect(sjme_crcState* crcState,
 }
 
 sjme_jboolean sjme_crcOfferStream(sjme_crcState* crcState,
-	sjme_dataStream* stream, sjme_jint len, sjme_error* error)
+	sjme_dataStream* stream, sjme_jint len, sjme_jint* readLen,
+	sjme_error* error)
 {
-	if (crcState == NULL || stream == NULL)
+	sjme_jubyte offerBuf[SJME_CRC_OFFER_SIZE];
+	sjme_jint bufRead, readLimit, readTotal;
+	
+	if (crcState == NULL || stream == NULL || readLen == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
 		
@@ -336,5 +345,42 @@ sjme_jboolean sjme_crcOfferStream(sjme_crcState* crcState,
 		return sjme_false;
 	}
 	
-	sjme_todo("Implement this?");
+	/* Continuously pump bytes in until EOF. */
+	readTotal = 0;
+	while (len > 0)
+	{
+		/* Setup for the next read. */
+		bufRead = -1;
+		readLimit = sjme_min(len, SJME_CRC_OFFER_SIZE);
+		memset(offerBuf, 0, sizeof(offerBuf));
+		
+		/* Perform the read. */
+		if (!sjme_streamRead(stream, offerBuf, readLimit,
+			&bufRead, error))
+		{
+			sjme_setError(error, SJME_ERROR_READ_ERROR, 0);
+			
+			return sjme_false;
+		}
+		
+		/* EOF? */
+		if (bufRead < 0)
+			break;
+		
+		/* Offer the data. */
+		if (!sjme_crcOfferDirect(crcState, offerBuf, bufRead, error))
+		{
+			sjme_setError(error, SJME_ERROR_CALCULATE_ERROR, 0);
+			
+			return sjme_false;
+		}
+		
+		/* Move data around. */
+		readTotal += bufRead;
+		len -= bufRead;
+	}
+	
+	/* Report the number of bytes read. */
+	*readLen = readTotal;
+	return sjme_true;
 }
