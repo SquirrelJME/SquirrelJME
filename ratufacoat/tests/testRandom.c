@@ -16,11 +16,16 @@
 /** Matching booleans. */
 static const sjme_jboolean matchBool[RANDOM_CYCLES] =
 	{
-		sjme_true, sjme_true, sjme_true, sjme_false, sjme_false, sjme_true,
-		sjme_true, sjme_true, sjme_true, sjme_false, sjme_false, sjme_true,
-		sjme_false, sjme_true, sjme_true, sjme_false, sjme_true, sjme_false,
-		sjme_false, sjme_false, sjme_true, sjme_false, sjme_false, sjme_true,
-		sjme_true, sjme_true, sjme_false, sjme_true, sjme_false, sjme_false,
+		sjme_true, sjme_true, sjme_true,
+		sjme_false, sjme_false, sjme_true,
+		sjme_true, sjme_true, sjme_true,
+		sjme_false, sjme_false, sjme_true,
+		sjme_false, sjme_true, sjme_true,
+		sjme_false, sjme_true, sjme_false,
+		sjme_false, sjme_false, sjme_true,
+		sjme_false, sjme_false, sjme_true,
+		sjme_true, sjme_true, sjme_false, 
+		sjme_true, sjme_false, sjme_false,
 		sjme_true, sjme_true
 	};
 

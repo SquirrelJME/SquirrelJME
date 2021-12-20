@@ -9,6 +9,7 @@
 
 #include "tests.h"
 
+/** @deprecated */
 SJME_TEST_PROTOTYPE(testOpCodes)
 {
 	if (1)

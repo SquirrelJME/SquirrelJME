@@ -14,6 +14,7 @@
 /**
  * Tests that the JVM initializes properly, requires built-in ROM.
  * 
+ * @deprecated
  * @since 2021/03/04 
  */
 SJME_TEST_PROTOTYPE(testJvmInit)

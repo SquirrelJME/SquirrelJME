@@ -14,6 +14,7 @@
 /**
  * Tests if the JVM tries to be initialized with invalid data.
  * 
+ * @deprecated
  * @since 2021/03/06 
  */
 SJME_TEST_PROTOTYPE(testJvmInvalid)
