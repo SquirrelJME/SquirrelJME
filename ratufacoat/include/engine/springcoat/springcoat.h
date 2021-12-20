@@ -8,21 +8,19 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Engine scaffolding.
+ * Main SpringCoat header.
  * 
- * @since 2021/09/06
+ * @since 2021/12/19
  */
 
-#ifndef SQUIRRELJME_SCAFFOLD_H
-#define SQUIRRELJME_SCAFFOLD_H
-
-#include "sjmerc.h"
+#ifndef SQUIRRELJME_SPRINGCOAT_H
+#define SQUIRRELJME_SPRINGCOAT_H
 
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_SCAFFOLD_H
+#define SJME_CXX_SQUIRRELJME_SPRINGCOAT_H
 extern "C"
 {
 #endif /* #ifdef SJME_CXX_IS_EXTERNED */
@@ -30,33 +28,15 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-/**
- * This is the scaffold for an engine between the common engine layer and the
- * specific engine implementation.
- * 
- * @since 2021/12/19
- */
-typedef struct sjme_engineScaffold
-{
-	/** The name of the engine. */
-	const char* const name;
-} sjme_engineScaffold;
-
-/** Scaffolds which are available for use. */
-extern const sjme_engineScaffold* const sjme_engineScaffolds[];
-
-/** SpringCoat engine. */
-extern const sjme_engineScaffold sjme_engineScaffoldSpringCoat;
-
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_SCAFFOLD_H
+#ifdef SJME_CXX_SQUIRRELJME_SPRINGCOAT_H
 }
-#undef SJME_CXX_SQUIRRELJME_SCAFFOLD_H
+#undef SJME_CXX_SQUIRRELJME_SPRINGCOAT_H
 #undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCAFFOLD_H */
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_SPRINGCOAT_H */
 #endif /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_SCAFFOLD_H */
+#endif /* SQUIRRELJME_SPRINGCOAT_H */

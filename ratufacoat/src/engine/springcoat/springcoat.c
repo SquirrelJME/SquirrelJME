@@ -7,3 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "engine/scaffold.h"
+#include "engine/springcoat/springcoat.h"
+
+const sjme_engineScaffold sjme_engineScaffoldSpringCoat =
+{
+	.name = "springcoat"
+};

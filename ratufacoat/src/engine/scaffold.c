@@ -7,3 +7,11 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "engine/scaffold.h"
+
+const sjme_engineScaffold* const sjme_engineScaffolds[] =
+{
+	&sjme_engineScaffoldSpringCoat,
+	
+	NULL
+};
