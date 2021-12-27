@@ -855,9 +855,8 @@ public class Arrays
 	{
 		if (__a == null)
 			throw new NullPointerException("NARG");
-		
-		for (int i = 0, n = __a.length; i < n; i++)
-			__a[i] = __v;
+			
+		ObjectShelf.arrayFill(__a, 0, __a.length, __v);
 	}
 	
 	/**
@@ -874,8 +873,7 @@ public class Arrays
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		for (int i = 0, n = __a.length; i < n; i++)
-			__a[i] = __v;
+		ObjectShelf.arrayFill(__a, 0, __a.length, __v);
 	}
 	
 	/**
@@ -892,8 +890,7 @@ public class Arrays
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		for (int i = 0, n = __a.length; i < n; i++)
-			__a[i] = __v;
+		ObjectShelf.arrayFill(__a, 0, __a.length, __v);
 	}
 	
 	/**
@@ -910,8 +907,7 @@ public class Arrays
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		for (int i = 0, n = __a.length; i < n; i++)
-			__a[i] = __v;
+		ObjectShelf.arrayFill(__a, 0, __a.length, __v);
 	}
 	
 	/**
@@ -928,8 +924,7 @@ public class Arrays
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		for (int i = 0, n = __a.length; i < n; i++)
-			__a[i] = __v;
+		ObjectShelf.arrayFill(__a, 0, __a.length, __v);
 	}
 	
 	/**
@@ -946,8 +941,7 @@ public class Arrays
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		for (int i = 0, n = __a.length; i < n; i++)
-			__a[i] = __v;
+		ObjectShelf.arrayFill(__a, 0, __a.length, __v);
 	}
 	
 	/**
@@ -964,8 +958,7 @@ public class Arrays
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		for (int i = 0, n = __a.length; i < n; i++)
-			__a[i] = __v;
+		ObjectShelf.arrayFill(__a, 0, __a.length, __v);
 	}
 	
 	/**
@@ -982,8 +975,7 @@ public class Arrays
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		for (int i = 0, n = __a.length; i < n; i++)
-			__a[i] = __v;
+		ObjectShelf.arrayFill(__a, 0, __a.length, __v);
 	}
 	
 	/**
@@ -1089,7 +1081,8 @@ public class Arrays
 			return;
 		
 		// Non-common sort, use a helper wrapper
-		ShellSort.<Long>sort(new LongArrayList(__a), __from, __to, null);
+		ShellSort.<Long>sort(new LongArrayList(__a),
+			__from, __to, null);
 	}
 	
 	/**

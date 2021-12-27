@@ -220,8 +220,7 @@ public class PNGReader
 		if (!this._hasalpha)
 		{
 			// Force all pixels to opaque
-			for (int i = 0, n = argb.length; i < n; i++)
-				argb[i] = 0xFF_000000;
+			Arrays.fill(argb, 0xFF_000000);
 			
 			// Make all pixels opaque in the palette
 			int[] palette = this._palette;

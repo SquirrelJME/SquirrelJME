@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 /**
@@ -514,8 +515,7 @@ public class InflaterInputStream
 		
 		// Cached, erase the data because later reads may have less
 		int[] rawlitdistlens = this._rawlitdistlens;
-		for (int i = 0, n = rawlitdistlens.length; i < n; i++)
-			rawlitdistlens[i] = 0;
+		Arrays.fill(rawlitdistlens, 0);
 		
 		// Read every code
 		try
@@ -559,8 +559,7 @@ public class InflaterInputStream
 		// around it is possible that less code lengths are read, so if the
 		// higher elements have previously been set they will be used
 		int[] rawcodelens = this._rawcodelens;
-		for (int i = 0, n = rawcodelens.length; i < n; i++)
-			rawcodelens[i] = 0;
+		Arrays.fill(rawcodelens, 0);
 		
 		// Read lengths, they are just 3 bits but their placement values are
 		// shuffled since some sequences are more common than others
@@ -1089,11 +1088,9 @@ public class InflaterInputStream
 		// Initialize both arrays with zero
 		int[] bl_count = this._blcount;
 		int[] next_code = this._nextcode;
-		for (int i = 0, n = bl_count.length; i < n; i++)
-		{
-			bl_count[i] = 0;
-			next_code[i] = 0;
-		}
+		
+		Arrays.fill(bl_count, 0);
+		Arrays.fill(next_code, 0);
 		
 		// Determine the bitlength count for all of the inputs
 		for (int i = 0, p = __o; i < __l; i++, p++)

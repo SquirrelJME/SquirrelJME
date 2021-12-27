@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.cldc.lang;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import java.util.Arrays;
 
 /**
  * This method contains the code which is able to initialize multi-dimensional
@@ -23,6 +24,10 @@ public final class ArrayUtils
 	/** Boolean array. */
 	public static final byte ARRAY_BOOLEAN =
 		1;
+		
+	/** The first array type. */
+	public static final byte FIRST_TYPE =
+		ArrayUtils.ARRAY_BOOLEAN;
 	
 	/** Byte array. */
 	public static final byte ARRAY_BYTE =
@@ -56,6 +61,10 @@ public final class ArrayUtils
 	public static final byte ARRAY_OBJECT =
 		9;
 	
+	/** The number of array types. */
+	public static final byte NUM_ARRAY_TYPES =
+		10;
+	
 	/**
 	 * Not used.
 	 *
@@ -63,6 +72,60 @@ public final class ArrayUtils
 	 */
 	private ArrayUtils()
 	{
+	}
+	
+	/**
+	 * Allocates a new array.
+	 * 
+	 * @param <T> The class to return as.
+	 * @param __class The class to return as.
+	 * @param __type The type of array to allocate.
+	 * @param __len The length of the array.
+	 * @return The type of array used.
+	 * @throws ClassCastException If the given type is not correct for the
+	 * given array.
+	 * @throws IllegalArgumentException If the type is not valid.
+	 * @throws IndexOutOfBoundsException If the array length is negative.
+	 * @since 2021/12/27
+	 */
+	public static <T> T arrayNew(Class<T> __class, int __type, int __len)
+		throws ClassCastException, IllegalArgumentException,
+			IndexOutOfBoundsException
+	{
+		switch (__type)
+		{
+			case ArrayUtils.ARRAY_BOOLEAN:
+				return __class.cast(new boolean[__len]);
+				
+			case ArrayUtils.ARRAY_BYTE:
+				return __class.cast(new byte[__len]);
+				
+			case ArrayUtils.ARRAY_SHORT:
+				return __class.cast(new short[__len]);
+			
+			case ArrayUtils.ARRAY_CHARACTER:
+				return __class.cast(new char[__len]);
+				
+			case ArrayUtils.ARRAY_INTEGER:
+				return __class.cast(new int[__len]);
+				
+			case ArrayUtils.ARRAY_LONG:
+				return __class.cast(new long[__len]);
+				
+			case ArrayUtils.ARRAY_FLOAT:
+				return __class.cast(new float[__len]);
+				
+			case ArrayUtils.ARRAY_DOUBLE:
+				return __class.cast(new double[__len]);
+				
+			case ArrayUtils.ARRAY_OBJECT:
+				return __class.cast(Arrays.copyOf(new Object[0], __len,
+					(Class<? extends Object[]>)((Object)__class)));
+			
+				// {@squirreljme.error ZZ5f Invalid array type.}
+			default:
+				throw new IllegalArgumentException("ZZ5f");
+		}
 	}
 	
 	/**
