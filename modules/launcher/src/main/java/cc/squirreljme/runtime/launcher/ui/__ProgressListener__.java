@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.launch.SuiteScanListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.List;
 
@@ -31,16 +32,25 @@ final class __ProgressListener__
 	/** The program list. */
 	protected final List programList;
 	
+	/** The canvas to refresh on updates. */
+	protected final SplashScreen refreshCanvas;
+	
+	/** The current refresh state. */
+	protected final __RefreshState__ refreshState;
+	
 	/**
 	 * Initializes the progress listener.
 	 * 
 	 * @param __programList The program list used.
 	 * @param __listedSuites The suites that are available.
+	 * @param __refreshCanvas The canvas to update on refreshes.
+	 * @param __refreshState The current refresh state.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/29
 	 */
 	public __ProgressListener__(List __programList,
-		Collection<Application> __listedSuites)
+		Collection<Application> __listedSuites, SplashScreen __refreshCanvas,
+		__RefreshState__ __refreshState)
 		throws NullPointerException
 	{
 		if (__programList == null || __listedSuites == null)
@@ -48,6 +58,8 @@ final class __ProgressListener__
 		
 		this.programList = __programList;
 		this.listedSuites = __listedSuites;
+		this.refreshCanvas = __refreshCanvas;
+		this.refreshState = __refreshState;
 	}
 	
 	/**
@@ -63,10 +75,18 @@ final class __ProgressListener__
 		
 		Collection<Application> listedSuites = this.listedSuites;
 		List programList = this.programList;
+		SplashScreen refreshCanvas = this.refreshCanvas;
+		__RefreshState__ refreshState = this.refreshState;
 		
 		// Update title to reflect this discovery
-		programList.setTitle(String.format(
-			"Querying Suites (Found %d of %d)...", __dx + 1, __total));
+		String updateMessage = String.format(
+			"Querying Suites (Found %d of %d)...", __dx + 1, __total);
+		programList.setTitle(updateMessage);
+		
+		// Update splash screen
+		refreshState.set(updateMessage, __dx + 1, __total);
+		if (refreshCanvas != null)
+			refreshCanvas.requestRepaint();
 		
 		// Remember this suite
 		listedSuites.add(__app);

@@ -75,6 +75,56 @@ public final class ArrayUtils
 	}
 	
 	/**
+	 * Checks if both arrays are equal
+	 * 
+	 * @param __a The first array.
+	 * @param __b The second array.
+	 * @return If the arrays are equal.
+	 * @since 2020/11/15
+	 */
+	public static boolean arrayEquals(Object __a, Object __b)
+	{
+		// Same exact array reference?
+		if (__a == __b)
+			return true;
+		
+		// Mismatch on nulls?
+		if ((__a == null) != (__b == null))
+			return false;
+		
+		// Check for object first
+		if (__a instanceof Object[])
+		{
+			if (!(__b instanceof Object[]))
+				return false;
+			
+			return Arrays.equals((Object[])__a, (Object[])__b);
+		}
+		
+		// Must be the same type otherwise
+		if (__a.getClass() != __b.getClass())
+			return false;
+		
+		// Otherwise, this depends on the type
+		if (__a instanceof boolean[])
+			return Arrays.equals((boolean[])__a, (boolean[])__b);
+		else if (__a instanceof byte[])
+			return Arrays.equals((byte[])__a, (byte[])__b);
+		else if (__a instanceof short[])
+			return Arrays.equals((short[])__a, (short[])__b);
+		else if (__a instanceof char[])
+			return Arrays.equals((char[])__a, (char[])__b);
+		else if (__a instanceof int[])
+			return Arrays.equals((int[])__a, (int[])__b);
+		else if (__a instanceof long[])
+			return Arrays.equals((long[])__a, (long[])__b);
+		else if (__a instanceof float[])
+			return Arrays.equals((float[])__a, (float[])__b);
+		else
+			return Arrays.equals((double[])__a, (double[])__b);
+	}
+	
+	/**
 	 * Allocates a new array.
 	 * 
 	 * @param <T> The class to return as.
@@ -176,11 +226,11 @@ public final class ArrayUtils
 				break;
 				
 			case ArrayUtils.ARRAY_BYTE:
-				((byte[])__a)[__dx] = (Byte)__v;
+				((byte[])__a)[__dx] = ((Number)__v).byteValue();
 				break;
 				
 			case ArrayUtils.ARRAY_SHORT:
-				((short[])__a)[__dx] = (Short)__v;
+				((short[])__a)[__dx] = ((Number)__v).shortValue();
 				break;
 				
 			case ArrayUtils.ARRAY_CHARACTER:
@@ -188,19 +238,19 @@ public final class ArrayUtils
 				break;
 				
 			case ArrayUtils.ARRAY_INTEGER:
-				((int[])__a)[__dx] = (Integer)__v;
+				((int[])__a)[__dx] = ((Number)__v).intValue();
 				break;
 				
 			case ArrayUtils.ARRAY_LONG:
-				((long[])__a)[__dx] = (Long)__v;
+				((long[])__a)[__dx] = ((Number)__v).longValue();
 				break;
 				
 			case ArrayUtils.ARRAY_FLOAT:
-				((float[])__a)[__dx] = (Float)__v;
+				((float[])__a)[__dx] = ((Number)__v).floatValue();
 				break;
 				
 			case ArrayUtils.ARRAY_DOUBLE:
-				((double[])__a)[__dx] = (Double)__v;
+				((double[])__a)[__dx] = ((Number)__v).doubleValue();
 				break;
 				
 			case ArrayUtils.ARRAY_OBJECT:

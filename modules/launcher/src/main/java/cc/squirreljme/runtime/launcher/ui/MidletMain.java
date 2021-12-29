@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Timer;
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -70,6 +71,10 @@ public class MidletMain
 	private final ArrayList<Application> _listedSuites =
 		new ArrayList<>();
 	
+	/** The current refresh state. */
+	private final __RefreshState__ _refreshState =
+		new __RefreshState__();
+	
 	/** The current end-time for the splash screen. */
 	private volatile long _endTime;
 	
@@ -106,9 +111,10 @@ public class MidletMain
 	/**
 	 * Refreshes the list.
 	 *
+	 * @param __refreshCanvas The canvas to optionally refresh on.
 	 * @since 2018/11/16
 	 */
-	public void refresh()
+	public void refresh(SplashScreen __refreshCanvas)
 	{
 		// Prevent double refresh
 		synchronized (this)
@@ -117,6 +123,8 @@ public class MidletMain
 				return;
 			this._refreshLock = true;
 		}
+		
+		__RefreshState__ refreshState = this._refreshState;
 		
 		// Used to clear the lock when done, always!
 		try
@@ -138,7 +146,8 @@ public class MidletMain
 				listedSuites.clear();
 				
 				// Used to add suites and indicate progress
-				handler = new __ProgressListener__(programList, listedSuites);
+				handler = new __ProgressListener__(programList, listedSuites,
+					__refreshCanvas, refreshState);
 			}
 			
 			// Scan all of the available suites for launching
@@ -216,13 +225,13 @@ public class MidletMain
 		this._endTime = System.nanoTime() + 1_000_000_000L;
 		
 		// Refresh the list in another thread
-		Thread refresher = new __Refresher__(this);
+		SplashScreen spl = new SplashScreen(
+			display.getWidth(), display.getHeight(), this._refreshState);
+		Thread refresher = new __Refresher__(this, spl);
 		refresher.start();
 		
 		// Instead of showing the program list early, just show a splash screen
 		// with a handsome Lex and the version information
-		SplashScreen spl = new SplashScreen(
-			display.getWidth(), display.getHeight());
 		if (display.getCurrent() == null)
 			display.setCurrent(spl);
 	}

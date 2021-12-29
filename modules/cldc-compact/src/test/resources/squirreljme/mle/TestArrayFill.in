@@ -1,4 +1,10 @@
 Manifest-Version: 1.0
 result: NoResult
 thrown: NoExceptionThrown
-secondary-key: string:value
+multi-parameters: BOOLEAN BYTE SHORT CHAR INT LONG FLOAT DOUBLE OBJECT
+secondary-nullarg: true
+secondary-oobnegoff: true
+secondary-oobneglen: true
+secondary-oobonright: true
+secondary-wholefill: true
+secondary-parfill: true
