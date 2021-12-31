@@ -17,6 +17,7 @@
 #define SQUIRRELJME_SCAFFOLD_H
 
 #include "sjmerc.h"
+#include "error.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -31,6 +32,26 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Indicates the reason why an engine is not available.
+ * 
+ * @since 2021/12/30
+ */
+typedef enum sjme_engineScaffoldUnavailableType
+{
+	/** It is actually available. */
+	SJME_ENGINE_SCAFFOLD_IS_AVAILABLE = 0,
+	
+	/** The ROM is missing. */
+	SJME_ENGINE_SCAFFOLD_MISSING_ROM,
+	
+	/** The ROM is not compatible with this engine. */
+	SJME_ENGINE_SCAFFOLD_INCOMPATIBLE_ROM,
+	
+	/** The number of these types. */
+	NUM_SJME_ENGINE_SCAFFOLD_UNAVAILABLE_TYPE
+} sjme_engineScaffoldUnavailableType;
+
+/**
  * This is the scaffold for an engine between the common engine layer and the
  * specific engine implementation.
  * 
@@ -40,6 +61,18 @@ typedef struct sjme_engineScaffold
 {
 	/** The name of the engine. */
 	const char* const name;
+	
+	/**
+	 * Checks if this scaffold and engine are available.
+	 * 
+	 * @param why Why is this engine not available, this is optional and may
+	 * be @c NULL .
+	 * @param error The error state.
+	 * @return Will return @c true if available, otherwise not. 
+	 * @since 2021/12/30
+	 */
+	sjme_jboolean (*isAvailable)(sjme_engineScaffoldUnavailableType* why,
+		sjme_error* error);
 } sjme_engineScaffold;
 
 /** Scaffolds which are available for use. */
