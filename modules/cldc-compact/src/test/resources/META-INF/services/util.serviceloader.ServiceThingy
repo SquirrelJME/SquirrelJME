@@ -1,3 +1,6 @@
-util.serviceloader.impls.CuteSquirrels
-util.serviceloader.impls.ComfortableDrey
+# This is a comment!
+
 util.serviceloader.impls.StashTheAcorns
+util.serviceloader.impls.CuteSquirrels     # and squirrels are very cute!
+    util.serviceloader.impls.ComfortableDrey
+         # Wasting extra space!

@@ -65,7 +65,11 @@ public interface VMDescriptionType
 	byte VM_SECURITY_POLICY =
 		10;
 	
+	/** The list of available complex drivers. */
+	byte COMPLEX_DRIVER_LIST =
+		11;
+	
 	/** The current number of properties. */
 	byte NUM_TYPES =
-		11;
+		12;
 }

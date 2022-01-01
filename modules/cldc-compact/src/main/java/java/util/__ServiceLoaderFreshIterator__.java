@@ -224,15 +224,16 @@ final class __ServiceLoaderFreshIterator__<S>
 					if (ln == null)
 						break;
 					
+					// 
+					int commentChar = ln.charAt('#');
+					if (commentChar >= 0)
+						ln = ln.substring(0, commentChar);
+					
 					// Trim the line to remove useless spaces
 					ln = ln.trim();
 					
 					// Ignore blank lines
 					if (ln.isEmpty())
-						continue;
-					
-					// Ignore comments
-					if (ln.charAt(0) == '#')
 						continue;
 					
 					// Add otherwise
