@@ -37,6 +37,7 @@ endif()
 add_library(squirreljme_libretro ${SQUIRRELJME_LIBRETRO_TYPE}
 	lraudio.c
 	lrcheat.c
+	lrenv.c
 	lrfreeze.c
 	lrinfo.c
 	lrjar.c

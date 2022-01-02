@@ -8,42 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "debug.h"
-#include "frontend/libretro/lrjoypad.h"
 #include "frontend/libretro/lrlocal.h"
-#include "frontend/libretro/lrvfs.h"
-
-/** Configuration options for the core. */
-const struct retro_variable sjme_libRetro_coreOptions[] =
-{
-	/* CPU and Timing. */
-	{"squirreljme_thread_model",
-		"Threading Model; "
-			"cooperative|simultaneous"},
-	{"squirreljme_coop_cycles",
-		"CPU Cycles Per Cooperative Frame (Higher = Faster); "
-			"1048576|2097152|4194304|8388608|"
-			"16384|32768|65536|131072|262144|524288"},
-	{"squirreljme_coop_locked_clock",
-		"Lock RTC to CPU Cycles; "
-			"disabled|enabled"},
-	
-	/* Graphics. */
-	{"squirreljme_display_size",
-		"Display Size; "
-			"240x320|320x480|480x640|640x480|96x65|"
-			"128x128|128x160|176x208|176x220"},
-	{"squirreljme_display_colors",
-		"Display Colors; "
-			"16777216|65536|256|16|4|2"},
-	
-	/* ROM Order. */
-	{"squirreljme_use_external_rom",
-		"ROM Order; "
-			"external first|internal first"},
-	
-	/* End. */
-	{NULL, NULL}
-};
 
 sjme_libRetroCallbacks g_libRetroCallbacks =
 {
@@ -215,17 +180,22 @@ SJME_GCC_USED void retro_init(void)
  */
 SJME_GCC_USED void retro_reset(void)
 {
+	sjme_libRetroState* newState;
+	
 	/* If we have a pre-existing state, destroy it so we have just one
 	 * instance ever total. */
 	if (g_libRetroState != NULL)
 		retro_deinit();
 	
 	/* Reset global state */
-	g_libRetroState = malloc(sizeof(*g_libRetroState));
-	memset(g_libRetroState, 0, sizeof(*g_libRetroState));
+	newState = malloc(sizeof(*newState));
+	memset(newState, 0, sizeof(*newState));
 	
 	
 	sjme_todo("More init?");
+	
+	/* Use this global state now that it is fully up. */
+	g_libRetroState = newState;
 
 #if 0
 	struct retro_log_callback logging;
@@ -334,37 +304,4 @@ SJME_GCC_USED void retro_run(void)
 		SJME_RETROARCH_WIDTH, SJME_RETROARCH_HEIGHT,
 		SJME_RETROARCH_WIDTH * sizeof(uint32_t));
 #endif
-}
-
-/**
- * Sets RetroArch environment information.
- * 
- * @param callback Callback for environment set.
- * @since 2021/01/02 
- */
-SJME_GCC_USED void retro_set_environment(retro_environment_t callback)
-{
-	bool noGameFlag;
-	struct retro_log_callback logging;
-	
-	/* Store the callback for later. */
-	g_libRetroCallbacks.environmentFunc = callback;
-	
-	/* Try to get a logger. */
-	callback(RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &logging);
-	if (logging.log != NULL)
-		g_libRetroCallbacks.loggingFunc = logging.log;
-	
-	/* Initialize the joypad control setup. */
-	sjme_libRetro_joyPadSetEnvironment(callback);
-	
-	/* Setup core configuration. */
-	callback(RETRO_ENVIRONMENT_SET_VARIABLES, sjme_libRetro_coreOptions);
-	
-	/* The core can launch without a game. */
-	noGameFlag = true;
-	callback(RETRO_ENVIRONMENT_SET_SUPPORT_NO_GAME, &noGameFlag);
-	
-	/* Initialize VFS callback. */
-	sjme_libRetro_vfsSetEnvironment(callback);
 }

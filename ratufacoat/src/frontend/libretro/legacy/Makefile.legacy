@@ -50,6 +50,7 @@ SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/video.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/xbuiltin.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/frontend/libretro/lraudio.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/frontend/libretro/lrcheat.c
+SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/frontend/libretro/lrenv.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/frontend/libretro/lrfreeze.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/frontend/libretro/lrinfo.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/frontend/libretro/lrjar.c
