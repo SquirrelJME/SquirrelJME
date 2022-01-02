@@ -13,7 +13,7 @@
  * @since 2021/02/27
  */
 
-#include "lrlocal.h"
+#include "frontend/libretro/lrlocal.h"
 
 /** Sets controller port device. */
 void retro_set_controller_port_device(unsigned port, unsigned device)

@@ -13,7 +13,7 @@
  * @since 2021/02/27
  */
 
-#include "lrlocal.h"
+#include "frontend/libretro/lrlocal.h"
 
 /** Serialize? */
 bool retro_serialize(void* data, size_t size)

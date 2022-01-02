@@ -17,7 +17,7 @@
 
 #include "sjmerc.h"
 #include "sjmecon.h"
-#include "lrlocal.h"
+#include "frontend/libretro/lrlocal.h"
 #include "native.h"
 #include "jvm.h"
 #include "debug.h"

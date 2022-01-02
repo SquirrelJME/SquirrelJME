@@ -7,3 +7,4 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "frontend/libretro/lrlocal.h"

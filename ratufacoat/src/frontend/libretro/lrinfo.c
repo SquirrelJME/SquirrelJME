@@ -15,7 +15,7 @@
 
 #include <string.h>
 
-#include "lrlocal.h"
+#include "frontend/libretro/lrlocal.h"
 #include "sjmerc.h"
 
 /** Returns the supported RetroArch version. */

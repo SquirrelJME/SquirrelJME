@@ -13,7 +13,7 @@
  * @since 2021/02/27
  */
 
-#include "lrlocal.h"
+#include "frontend/libretro/lrlocal.h"
 
 /** Set audio sample callback. */
 void retro_set_audio_sample(retro_audio_sample_t cb)

@@ -13,7 +13,7 @@
  * @since 2021/02/27
  */
 
-#include "lrlocal.h"
+#include "frontend/libretro/lrlocal.h"
 
 /** Reset cheat. */
 void retro_cheat_reset(void)
