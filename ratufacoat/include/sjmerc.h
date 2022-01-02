@@ -291,6 +291,14 @@ typedef enum sjme_jboolean
 	#define SJME_MEMORYPROFILE_NORMAL
 #endif
 
+#if defined(__GNUC__)
+	/** Function is actually used. */
+	#define SJME_GCC_USED __attribute__((unused))
+#else
+	/** Function is actually used. */
+	#define SJME_GCC_USED
+#endif
+
 /**
  * Marker that indicates that a method returns failure.
  *
@@ -355,6 +363,7 @@ typedef struct sjme_vmemmap
 /**
  * Represents the framebuffer for SquirrelJME.
  *
+ * @deprecated
  * @since 2019/06/20
  */
 typedef struct sjme_framebuffer

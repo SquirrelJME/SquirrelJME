@@ -17,6 +17,7 @@
 #define SQUIRRELJME_LRLOCAL_H
 
 #include <libretro/libretro.h>
+#include "sjmerc.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -31,12 +32,18 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
- * The held state for RetroArch.
+ * Callbacks for RetroArch.
  * 
- * @since 2021/02/27
+ * @since 2022/01/02
  */
-typedef struct sjme_libRetroState
+typedef struct sjme_libRetroCallbacks
 {
+	/** Callback for the environment. */
+	retro_environment_t environmentFunc;
+	
+	/** Callback for logging. */
+	retro_log_printf_t loggingFunc;
+
 	/** Input polling callback. */
 	retro_input_poll_t inputPollFunc;
 	
@@ -48,7 +55,43 @@ typedef struct sjme_libRetroState
 	
 	/** Audio sample callback. */
 	retro_audio_sample_t audioSampleFunc;
+	
+	/** VFS interface. */
+	struct retro_vfs_interface* vfs;
+} sjme_libRetroCallbacks;
+
+/**
+ * The held state for RetroArch.
+ * 
+ * @since 2021/02/27
+ */
+typedef struct sjme_libRetroState
+{
+	/** Video state. */
+	struct
+	{
+		/** Screen width. */
+		sjme_jint width;
+		
+		/** Screen height. */
+		sjme_jint height;
+		
+		/** Scanline width. */
+		sjme_jint scanline;
+		
+		/** The size of the pixel buffer, in pixels. */
+		sjme_jint pixelCount;
+		
+		/** The size of the pixel buffer, in bytes. */
+		sjme_jint pixelBytes;
+		
+		/** Screen pixel data. */
+		void* pixels;
+	} video;
 } sjme_libRetroState;
+
+/** Available callbacks. */
+extern sjme_libRetroCallbacks g_libRetroCallbacks;
 
 /** The global RetroArch State. */
 extern sjme_libRetroState* g_libRetroState;

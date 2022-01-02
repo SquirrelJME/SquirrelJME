@@ -52,6 +52,21 @@ typedef enum sjme_engineScaffoldUnavailableType
 } sjme_engineScaffoldUnavailableType;
 
 /**
+ * Configuration for an engine within SquirrelJME, this is used to initialize
+ * the virtual machine and everything it needs.
+ * 
+ * @since 2022/01/02
+ */
+typedef struct sjme_engineConfig
+{
+	/** The pointer to the ROM to use. */
+	void* romPointer;
+	
+	/** The size of the ROM that exists. */
+	sjme_jint romSize;
+} sjme_engineConfig;
+
+/**
  * This is the scaffold for an engine between the common engine layer and the
  * specific engine implementation.
  * 
@@ -65,14 +80,15 @@ typedef struct sjme_engineScaffold
 	/**
 	 * Checks if this scaffold and engine are available.
 	 * 
+	 * @param config The configuration of the engine.
 	 * @param why Why is this engine not available, this is optional and may
 	 * be @c NULL .
 	 * @param error The error state.
 	 * @return Will return @c true if available, otherwise not. 
 	 * @since 2021/12/30
 	 */
-	sjme_jboolean (*isAvailable)(sjme_engineScaffoldUnavailableType* why,
-		sjme_error* error);
+	sjme_jboolean (*isAvailable)(sjme_engineConfig* config,
+		sjme_engineScaffoldUnavailableType* why, sjme_error* error);
 } sjme_engineScaffold;
 
 /** Scaffolds which are available for use. */

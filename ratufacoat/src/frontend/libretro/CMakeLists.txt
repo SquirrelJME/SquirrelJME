@@ -39,11 +39,13 @@ add_library(squirreljme_libretro ${SQUIRRELJME_LIBRETRO_TYPE}
 	lrcheat.c
 	lrfreeze.c
 	lrinfo.c
+	lrjar.c
 	lrjoypad.c
+	lrloop.c
+	lrmemcard.c
 	lrnet.c
 	lrscreen.c
 	lrvfs.c
-	sys_libr.c
 	${SQUIRRELJME_LIBRETRO_RC}
 	${SQUIRRELJME_LIBRETRO_CORELIB})
 

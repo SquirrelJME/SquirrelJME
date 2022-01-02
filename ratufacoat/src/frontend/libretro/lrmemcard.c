@@ -7,22 +7,17 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-/**
- * RetroArch Audio and MIDI Support.
- * 
- * @since 2021/02/27
- */
-
 #include "frontend/libretro/lrlocal.h"
+#include "debug.h"
 
-/** Set audio sample callback. */
-SJME_GCC_USED void retro_set_audio_sample(retro_audio_sample_t cb)
+SJME_GCC_USED void* retro_get_memory_data(unsigned id)
 {
-	g_libRetroCallbacks.audioSampleFunc = cb;
+	sjme_todo("Get memory data?");
+	return NULL;
 }
 
-/** Set audio sample batching. */
-SJME_GCC_USED void retro_set_audio_sample_batch(retro_audio_sample_batch_t cb)
+SJME_GCC_USED size_t retro_get_memory_size(unsigned id)
 {
-	g_libRetroCallbacks.audioSampleBatchFunc = cb;
+	sjme_todo("Get memory size?");
+	return 0;
 }

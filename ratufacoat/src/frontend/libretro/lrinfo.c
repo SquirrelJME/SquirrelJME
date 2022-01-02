@@ -7,31 +7,25 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-/**
- * Basic information for RetroArch.
- * 
- * @since 2021/02/27
- */
-
 #include <string.h>
 
 #include "frontend/libretro/lrlocal.h"
 #include "sjmerc.h"
 
 /** Returns the supported RetroArch version. */
-unsigned retro_api_version(void)
+SJME_GCC_USED unsigned retro_api_version(void)
 {
 	return RETRO_API_VERSION;
 }
 
 /** Region. */
-unsigned retro_get_region(void)
+SJME_GCC_USED unsigned retro_get_region(void)
 {
 	return RETRO_REGION_NTSC;
 }
 
 /** Sets system information on RetroArch. */
-void retro_get_system_info(struct retro_system_info* info)
+SJME_GCC_USED void retro_get_system_info(struct retro_system_info* info)
 {
 	/* Wipe. */
 	memset(info, 0, sizeof(*info));
@@ -40,7 +34,7 @@ void retro_get_system_info(struct retro_system_info* info)
 	info->library_name = "squirreljme";
 	info->library_version = SJME_STRINGIFY(SQUIRRELJME_VERSION)
 		" (" SJME_STRINGIFY(SQUIRRELJME_VERSION_ID) ")";
-	info->valid_extensions = "jar";
+	info->valid_extensions = "jar|sqc|jam|jad|kjx";
 	
 	/* Full path is not needed, but game data may be specified!. */
 	info->need_fullpath = false;
