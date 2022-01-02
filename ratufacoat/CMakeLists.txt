@@ -130,6 +130,14 @@ if(SQUIRRELJME_HAS_BUILTIN)
 	add_compile_definitions(SQUIRRELJME_HAS_BUILTIN=1)
 endif()
 
+# Enable extra warnings since they are useful
+if(MSVC)
+	string(REGEX REPLACE "/W[3|4]" "/W4" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+	string(REGEX REPLACE "/W[3|4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+	add_compile_options(-Wall -Wextra -pedantic)
+endif()
+
 # Versioning information
 add_compile_definitions(SQUIRRELJME_VERSION=${SQUIRRELJME_VERSION})
 add_compile_definitions(SQUIRRELJME_VERSION_ID=${SQUIRRELJME_VERSION_ID})

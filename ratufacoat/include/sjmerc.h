@@ -294,6 +294,8 @@ typedef enum sjme_jboolean
 #if defined(__GNUC__)
 	/** Function is actually used. */
 	#define SJME_GCC_USED __attribute__((unused))
+#elif defined(_MSC_VER)
+	#define SJME_GCC_USED __pragma(warning(suppress: 4505))
 #else
 	/** Function is actually used. */
 	#define SJME_GCC_USED

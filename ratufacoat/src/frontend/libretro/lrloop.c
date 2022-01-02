@@ -344,7 +344,7 @@ SJME_GCC_USED void retro_run(void)
  */
 SJME_GCC_USED void retro_set_environment(retro_environment_t callback)
 {
-	bool gamelessFlag;
+	bool noGameFlag;
 	struct retro_log_callback logging;
 	
 	/* Store the callback for later. */
@@ -362,8 +362,8 @@ SJME_GCC_USED void retro_set_environment(retro_environment_t callback)
 	callback(RETRO_ENVIRONMENT_SET_VARIABLES, sjme_libRetro_coreOptions);
 	
 	/* The core can launch without a game. */
-	gamelessFlag = true;
-	callback(RETRO_ENVIRONMENT_SET_SUPPORT_NO_GAME, &gamelessFlag);
+	noGameFlag = true;
+	callback(RETRO_ENVIRONMENT_SET_SUPPORT_NO_GAME, &noGameFlag);
 	
 	/* Initialize VFS callback. */
 	sjme_libRetro_vfsSetEnvironment(callback);
