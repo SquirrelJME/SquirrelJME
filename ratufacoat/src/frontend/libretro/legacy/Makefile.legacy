@@ -54,6 +54,7 @@ SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/frontend/libretro/lrfreeze.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/frontend/libretro/lrinfo.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/frontend/libretro/lrjoypad.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/frontend/libretro/lrnet.c
+SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/frontend/libretro/lrscreen.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/frontend/libretro/lrvfs.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/frontend/libretro/sys_libr.c
 COREDEFINES := $(COREDEFINES) -DSQUIRRELJME_VERSION="0.3.0"
