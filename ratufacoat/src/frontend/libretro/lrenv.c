@@ -41,9 +41,12 @@ const struct retro_variable sjme_libRetro_coreOptions[] =
 			"16777216|65536|256|16|4|2"},
 	
 	/* ROM Order. */
-	{"squirreljme_use_external_rom",
+	{SJME_LIBRETRO_CONFIG_ROM_ORDER,
 		"ROM Order; "
-			"external first|internal first"},
+			SJME_LIBRETRO_CONFIG_ROM_ORDER_EXT_INT "|"
+			SJME_LIBRETRO_CONFIG_ROM_ORDER_INT_EXT "|"
+			SJME_LIBRETRO_CONFIG_ROM_ORDER_EXT "|"
+			SJME_LIBRETRO_CONFIG_ROM_ORDER_INT},
 	
 	/* End. */
 	{NULL, NULL}
@@ -55,7 +58,7 @@ const struct retro_variable sjme_libRetro_coreOptions[] =
  * @param level The log level. 
  * @param fmt The logging format.
  * @param ... Any parameters for the call.
- * @since 2021/01/02
+ * @since 2022/01/02
  */
 static void RETRO_CALLCONV sjme_libRetro_fallBackLog(
 	enum retro_log_level level, const char *message, ...)
@@ -65,6 +68,7 @@ static void RETRO_CALLCONV sjme_libRetro_fallBackLog(
 	
 	/* Load message buffer. */
 	va_start(args, message);
+	memset(buf, 0, sizeof(buf));
 	vsnprintf(buf, DEBUG_BUF, message, args);
 	va_end(args);
 	
@@ -77,7 +81,7 @@ static void RETRO_CALLCONV sjme_libRetro_fallBackLog(
  * Sets RetroArch environment information.
  * 
  * @param callback Callback for environment set.
- * @since 2021/01/02 
+ * @since 2022/01/02 
  */
 SJME_GCC_USED void retro_set_environment(retro_environment_t callback)
 {

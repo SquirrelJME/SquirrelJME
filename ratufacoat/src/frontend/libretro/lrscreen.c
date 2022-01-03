@@ -7,7 +7,12 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <stdarg.h>
+
 #include "frontend/libretro/lrlocal.h"
+
+/** Debug buffer size for messages. */
+#define DEBUG_BUF 512
 
 /** Recommended screen width. */
 #define SJME_RECOMMENDED_SCREEN_WIDTH 240
@@ -20,9 +25,6 @@
 
 /** Maximum screen height. */
 #define SJME_MAX_SCREEN_HEIGHT 640
-
-/** Video refresh callback. */
-static retro_video_refresh_t sjme_libRetro_videoRefresh = NULL;
 
 /**
  * Initializes the audio video information.
@@ -67,5 +69,65 @@ SJME_GCC_USED void retro_get_system_av_info(struct retro_system_av_info* info)
  */
 SJME_GCC_USED void retro_set_video_refresh(retro_video_refresh_t callback)
 {
-	sjme_libRetro_videoRefresh = callback;
+	g_libRetroCallbacks.videoFunc = callback;
+}
+
+void sjme_libRetro_message(sjme_jbyte percent, const char* const format, ...)
+{
+	char buf[DEBUG_BUF];
+	va_list args;
+	struct retro_message oldMessage;
+	struct retro_message_ext extMessage;
+	unsigned int messageVersion;
+	size_t messageLen;
+	
+	/* Load message buffer. */
+	va_start(args, format);
+	memset(buf, 0, sizeof(buf));
+	vsnprintf(buf, DEBUG_BUF, format, args);
+	va_end(args);
+	
+	/* Determine safe string length for the message to add a new line. */
+	buf[DEBUG_BUF - 1] = '\0';
+	buf[DEBUG_BUF - 2] = '\0';
+	buf[DEBUG_BUF - 3] = '\0';
+	messageLen = strlen(buf);
+#if defined(_WIN32)
+	buf[messageLen] = '\r';
+	buf[messageLen + 1] = '\n';
+#else
+	buf[messageLen] = '\n';
+#endif
+	
+	/* Which version of messages are we on? */
+	messageVersion = 0;
+	g_libRetroCallbacks.environmentFunc(
+		RETRO_ENVIRONMENT_GET_MESSAGE_INTERFACE_VERSION, &messageVersion);
+	
+	/* Print output message. */ 
+	g_libRetroCallbacks.loggingFunc(RETRO_LOG_INFO, buf);
+	
+	/* Setup screen message. */
+	memset(&oldMessage, 0, sizeof(oldMessage));
+	memset(&extMessage, 0, sizeof(extMessage));
+	oldMessage.msg = extMessage.msg = buf;
+	oldMessage.frames = extMessage.duration = 3000;
+	extMessage.level = RETRO_LOG_INFO;
+	extMessage.progress = (int8_t)(percent < 0 || percent > 100 ?
+		-1 : percent);
+	extMessage.priority = 100;
+	extMessage.target = RETRO_MESSAGE_TARGET_OSD;
+	extMessage.type = (percent < 0 || percent > 100 ?
+		RETRO_MESSAGE_TYPE_STATUS : RETRO_MESSAGE_TYPE_PROGRESS);
+	
+	/* We do not want to send the new line to the OSD. */
+	buf[messageLen] = '\0'; 
+	
+	/* Send to the screen to view. */
+	if (messageVersion >= 1)
+		g_libRetroCallbacks.environmentFunc(RETRO_ENVIRONMENT_SET_MESSAGE_EXT,
+			&oldMessage);
+	else
+		g_libRetroCallbacks.environmentFunc(RETRO_ENVIRONMENT_SET_MESSAGE,
+			&extMessage);
 }

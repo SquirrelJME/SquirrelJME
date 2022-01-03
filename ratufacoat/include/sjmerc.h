@@ -301,6 +301,11 @@ typedef enum sjme_jboolean
 	#define SJME_GCC_USED
 #endif
 
+#if !defined(PATH_MAX)
+	/** Maximum path size. */
+	#define PATH_MAX 4096
+#endif
+
 /**
  * Marker that indicates that a method returns failure.
  *

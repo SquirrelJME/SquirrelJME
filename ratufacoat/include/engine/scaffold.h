@@ -60,10 +60,13 @@ typedef enum sjme_engineScaffoldUnavailableType
 typedef struct sjme_engineConfig
 {
 	/** The pointer to the ROM to use. */
-	void* romPointer;
+	const sjme_jubyte* romPointer;
 	
 	/** The size of the ROM that exists. */
 	sjme_jint romSize;
+	
+	/** Is the ROM dynamically loaded? */
+	sjme_jboolean romIsAllocated;
 } sjme_engineConfig;
 
 /**

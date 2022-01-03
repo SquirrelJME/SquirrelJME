@@ -23,6 +23,7 @@ void sjme_messageR(const char* file, int line,
 	
 	/* Load message buffer. */
 	va_start(args, message);
+	memset(buf, 0, sizeof(buf));
 	vsnprintf(buf, DEBUG_BUF, message, args);
 	va_end(args);
 	
@@ -43,6 +44,7 @@ sjme_returnNever sjme_todoR(const char* file, int line,
 	
 	/* Load message buffer. */
 	va_start(args, message);
+	memset(buf, 0, sizeof(buf));
 	vsnprintf(buf, DEBUG_BUF, message, args);
 	va_end(args);
 	

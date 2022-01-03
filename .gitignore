@@ -73,6 +73,8 @@ ratufacoat/x64
 ratufacoat/out
 ratufacoat/Testing
 ratufacoat/Makefile
+ratufacoat/libretro-log.txt
+ratufacoat/file-*
 cmake_install.cmake
 *.o
 *.dll

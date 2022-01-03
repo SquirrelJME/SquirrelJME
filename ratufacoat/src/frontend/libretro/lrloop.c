@@ -8,7 +8,9 @@
 // -------------------------------------------------------------------------*/
 
 #include "debug.h"
+#include "frontend/libretro/lrjar.h"
 #include "frontend/libretro/lrlocal.h"
+#include "frontend/libretro/lrscreen.h"
 
 sjme_libRetroCallbacks g_libRetroCallbacks =
 {
@@ -31,10 +33,16 @@ SJME_GCC_USED void retro_deinit(void)
 	if (oldState == NULL)
 		return;
 	
+	/* Notice */
+	sjme_libRetro_message(0, "Destroying engine.");
+	
 	/* De-allocate the VM state. */
 	g_libRetroState = NULL;
 	memset(oldState, 0, sizeof(*oldState));
 	free(oldState);
+	
+	/* Notice. */
+	sjme_libRetro_message(100, "Engine destroyed.");
 }
 
 /**
@@ -173,71 +181,71 @@ SJME_GCC_USED void retro_init(void)
 #endif
 }
 
-/**
- * Resets the running system.
- * 
- * @since 2021/01/02
- */
 SJME_GCC_USED void retro_reset(void)
 {
 	sjme_libRetroState* newState;
+	sjme_jboolean okayInit;
 	
 	/* If we have a pre-existing state, destroy it so we have just one
 	 * instance ever total. */
 	if (g_libRetroState != NULL)
 		retro_deinit();
 	
+	/* Notice. */
+	sjme_libRetro_message(0, "Initializing engine.");
+	
 	/* Reset global state */
 	newState = malloc(sizeof(*newState));
 	memset(newState, 0, sizeof(*newState));
 	
+	/* Setup engine configuration from the settings. */
+	okayInit = sjme_true;
+	okayInit &= sjme_libRetro_selectRom(&newState->engineConfig);
 	
-	sjme_todo("More init?");
+	/* Did initialization fail? */
+	if (!okayInit)
+	{
+		/* Nope, de-init. */
+		free(newState);
+		
+		/* Emit a failure message. */
+		sjme_libRetro_message(-1,
+			"Could not initialize engine.");
+		
+		/* Fail. */
+		return;
+	}
+	
+	/* Notice. */
+	sjme_libRetro_message(100, "Initialization complete.");
 	
 	/* Use this global state now that it is fully up. */
 	g_libRetroState = newState;
-
-#if 0
-	struct retro_log_callback logging;
-	
-	/* Destroy the JVM, if it already exists. */
-	if (sjme_retroarch_jvm != NULL)
-		sjme_jvmDestroy(sjme_retroarch_jvm, NULL);
-	sjme_retroarch_jvm = NULL;
-	
-	/* Reset error code! */
-	memset(&sjme_retroarch_error, 0, sizeof(sjme_retroarch_error));
-	
-	/* Wipe the screen to the initial state, because it gets confusing. */
-	memset(&sjme_ratufacoat_videoram, 0, sizeof(sjme_ratufacoat_videoram));
-	
-	/* Initialize the JVM. */
-	sjme_retroarch_jvm = NULL;
-	if (sjme_jvmNew(&sjme_retroarch_jvm,
-		 &sjme_retroarch_options,
-		 &sjme_retroarch_nativefuncs,
-		 &sjme_retroarch_error))
-		 ;
-	
-	/* Try to get the logger again because for some reason RetroArch */
-	/* nukes our callback and then it never works again? */
-	environ_cb(RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &logging);
-	log_cb = (logging.log != NULL ? logging.log : fallback_log);
-	
-	/* Note it. */
-	log_cb((sjme_retroarch_error.code == SJME_ERROR_NONE ?
-		RETRO_LOG_INFO : RETRO_LOG_ERROR),
-		"SquirrelJME Init: %d/%08x %d/%08x\n",
-		(int)sjme_retroarch_error.code,
-		(unsigned)sjme_retroarch_error.code,
-		(int)sjme_retroarch_error.value,
-		(unsigned)sjme_retroarch_error.value);
-#endif
 }
 
 /** Runs single frame. */
 SJME_GCC_USED void retro_run(void)
 {
+	sjme_libRetroState* currentState;
+	sjme_jubyte badScreen[4];
+	
+	/* Poll for input because otherwise it prevents RetroArch from accessing */
+	/* the menu. */
+	g_libRetroCallbacks.inputPollFunc();
+	
+	/* Do nothing if there is no state. */
+	currentState = g_libRetroState;
+	if (currentState == NULL)
+	{
+		/* Draw a completely blank display since we need to show something,
+		 * otherwise RetroArch will freeze and not respond at all. */
+		memset(badScreen, 0, sizeof(badScreen));
+		g_libRetroCallbacks.videoFunc(badScreen,
+			1, 1, sizeof(badScreen));
+		
+		return;
+	}
+	
 	sjme_todo("Run single frame?");
 #if 0
 	static int died;

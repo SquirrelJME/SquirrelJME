@@ -17,6 +17,8 @@
 #define SQUIRRELJME_LRLOCAL_H
 
 #include <libretro/libretro.h>
+
+#include "engine/scaffold.h"
 #include "sjmerc.h"
 
 /* Anti-C++. */
@@ -56,6 +58,9 @@ typedef struct sjme_libRetroCallbacks
 	/** Audio sample callback. */
 	retro_audio_sample_t audioSampleFunc;
 	
+	/** Function for drawing video. */
+	retro_video_refresh_t videoFunc;
+	
 	/** VFS interface. */
 	struct retro_vfs_interface* vfs;
 } sjme_libRetroCallbacks;
@@ -67,6 +72,9 @@ typedef struct sjme_libRetroCallbacks
  */
 typedef struct sjme_libRetroState
 {
+	/** The engine configuration. */
+	sjme_engineConfig engineConfig;
+	
 	/** Video state. */
 	struct
 	{

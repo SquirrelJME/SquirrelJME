@@ -8,19 +8,19 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Environment setup.
+ * Screen related functions and interfaces.
  * 
  * @since 2022/01/02
  */
 
-#ifndef SQUIRRELJME_LRENV_H
-#define SQUIRRELJME_LRENV_H
+#ifndef SQUIRRELJME_LRSCREEN_H
+#define SQUIRRELJME_LRSCREEN_H
 
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_LRENV_H
+#define SJME_CXX_SQUIRRELJME_LRSCREEN_H
 extern "C"
 {
 #endif /* #ifdef SJME_CXX_IS_EXTERNED */
@@ -28,30 +28,26 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-/** ROM Order Key. */
-#define SJME_LIBRETRO_CONFIG_ROM_ORDER "squirreljme_rom_order"
-
-/** External/Internal ROM order. */
-#define SJME_LIBRETRO_CONFIG_ROM_ORDER_EXT_INT "external+internal"
-
-/** Internal/External ROM order. */
-#define SJME_LIBRETRO_CONFIG_ROM_ORDER_INT_EXT "internal+external"
-
-/** External ROM order. */
-#define SJME_LIBRETRO_CONFIG_ROM_ORDER_EXT "external"
-
-/** Internal ROM order. */
-#define SJME_LIBRETRO_CONFIG_ROM_ORDER_INT "internal"
+/**
+ * Emits a message to the console and screen.
+ * 
+ * @param percent Percentage of progress, if out of bounds of @c 0 to @c 100
+ * it is not considered valid.
+ * @param format The message format. 
+ * @param ... The specifiers.
+ * @since 2022/01/02
+ */
+void sjme_libRetro_message(sjme_jbyte percent, const char* const format, ...);
 
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_LRENV_H
+#ifdef SJME_CXX_SQUIRRELJME_LRSCREEN_H
 }
-#undef SJME_CXX_SQUIRRELJME_LRENV_H
+#undef SJME_CXX_SQUIRRELJME_LRSCREEN_H
 #undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_LRENV_H */
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_LRSCREEN_H */
 #endif /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_LRENV_H */
+#endif /* SQUIRRELJME_LRSCREEN_H */

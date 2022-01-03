@@ -104,26 +104,20 @@ SJME_GCC_USED void retro_set_controller_port_device(unsigned port,
  * @param cb The callback for input polling.
  * @since 2021/02/27
  */
-void retro_set_input_poll(retro_input_poll_t cb)
+SJME_GCC_USED void retro_set_input_poll(retro_input_poll_t cb)
 {
-	sjme_todo("Set input poller?");
-#if 0
-	g_libRetroState->inputPollFunc = cb;
-#endif
+	g_libRetroCallbacks.inputPollFunc = cb;
 }
 
 /**
  * Set input state callback.
  * 
- * @param cb The callback for input state.
+ * @param callback The callback for input state.
  * @since 2021/02/27
  */
-void retro_set_input_state(retro_input_state_t cb)
+SJME_GCC_USED void retro_set_input_state(retro_input_state_t callback)
 {
-	sjme_todo("Set input state?");
-#if 0
-	g_libRetroState->inputStateFunc = cb;
-#endif
+	g_libRetroCallbacks.inputStateFunc = callback;
 }
 
 void sjme_libRetro_joyPadSetEnvironment(retro_environment_t callback)
