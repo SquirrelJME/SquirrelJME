@@ -30,6 +30,15 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/** The port the joypad is on. */
+#define SJME_LIBRETRO_JOYPAD_PORT 0
+
+/** The port the pointer is on. */
+#define SJME_LIBRETRO_POINTER_PORT 1
+
+/** The port the light gun is on. */
+#define SJME_LIBRETRO_LIGHTGUN_PORT 2
+
 /**
  * Initializes the JoyPad environment set.
  * 
