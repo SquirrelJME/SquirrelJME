@@ -11,6 +11,7 @@
 #include "frontend/libretro/lrjar.h"
 #include "frontend/libretro/lrlocal.h"
 #include "frontend/libretro/lrscreen.h"
+#include "memory.h"
 
 sjme_libRetroCallbacks g_libRetroCallbacks =
 {
@@ -18,6 +19,25 @@ sjme_libRetroCallbacks g_libRetroCallbacks =
 };
 
 sjme_libRetroState* g_libRetroState = NULL;
+
+/**
+ * Destroys the given instance instance.
+ * 
+ * @param state The state to destroy.
+ * @since 2022/01/02
+ */
+void sjme_libRetro_deinit(sjme_libRetroState* state)
+{
+	/* Destroy Screen. */
+	if (state->video.pixels != NULL)
+	{
+		sjme_free(state->video.pixels, NULL);
+		state->video.pixels = NULL;
+	}
+	
+	/* De-allocate the VM state. */
+	sjme_free(state, NULL);
+}
 
 /**
  * Destroys the library instance.
@@ -36,10 +56,9 @@ SJME_GCC_USED void retro_deinit(void)
 	/* Notice */
 	sjme_libRetro_message(0, "Destroying engine.");
 	
-	/* De-allocate the VM state. */
+	/* Forward destruction. */
 	g_libRetroState = NULL;
-	memset(oldState, 0, sizeof(*oldState));
-	free(oldState);
+	sjme_libRetro_deinit(oldState);
 	
 	/* Notice. */
 	sjme_libRetro_message(100, "Engine destroyed.");
@@ -70,7 +89,7 @@ SJME_GCC_USED void retro_reset(void)
 	sjme_libRetro_message(0, "Initializing engine.");
 	
 	/* Reset global state */
-	newState = malloc(sizeof(*newState));
+	newState = sjme_malloc(sizeof(*newState), NULL);
 	memset(newState, 0, sizeof(*newState));
 	
 	/* Setup engine configuration from the settings. */
@@ -81,7 +100,7 @@ SJME_GCC_USED void retro_reset(void)
 	if (!okayInit)
 	{
 		/* Nope, de-init. */
-		free(newState);
+		sjme_libRetro_deinit(newState);
 		
 		/* Emit a failure message. */
 		sjme_libRetro_message(-1,
