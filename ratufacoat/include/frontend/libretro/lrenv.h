@@ -43,6 +43,42 @@ extern "C"
 /** Internal ROM order. */
 #define SJME_LIBRETRO_CONFIG_ROM_ORDER_INT "internal"
 
+/** Display size configuration key. */
+#define SJME_LIBRETRO_CONFIG_DISPLAY_SIZE "squirreljme_display_size"
+
+/** Pixel format configuration key. */
+#define SJME_LIBRETRO_CONFIG_PIXEL_FORMAT "squirreljme_pixel_format"
+
+/** Pixel format 24-bit RGBA8888. */
+#define SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_RGBA8888 "24-bit"
+
+/** Pixel format 16-bit RGBA4444. */
+#define SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_RGBA4444 "16-bit (RGBA4444)"
+
+/** Pixel format 16-bit RGB565. */
+#define SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_RGB565 "16-bit (RGB565)"
+
+/** Pixel format 15-bit RGB555. */
+#define SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_RGB555 "15-bit (RGB555)"
+
+/** Pixel format 16-bit ABGR1555 (PlayStation 2). */
+#define SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_ABGR1555 "15-bit (BGR555)"
+
+/** Pixel format indexed 16-bit color. */
+#define SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_65536I "65536 Indexed Colors"
+
+/** Pixel format indexed 8-bit color. */
+#define SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_256I "256 Indexed Colors"
+
+/** Pixel format indexed 4-bit color. */
+#define SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_4I "16 Indexed Colors"
+
+/** Pixel format indexed 2-bit color. */
+#define SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_2I "4 Indexed Colors"
+
+/** Pixel format indexed 1-bit color. */
+#define SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_1I "Monochrome"
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

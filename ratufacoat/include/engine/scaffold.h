@@ -18,6 +18,7 @@
 
 #include "sjmerc.h"
 #include "error.h"
+#include "video.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -67,6 +68,18 @@ typedef struct sjme_engineConfig
 	
 	/** Is the ROM dynamically loaded? */
 	sjme_jboolean romIsAllocated;
+	
+	/** Screen width. */
+	sjme_jint screenWidth;
+	
+	/** Screen height. */
+	sjme_jint screenHeight;
+	
+	/** The pixel format to use for the display. */
+	sjme_pixelFormat screenPixelFormat;
+	
+	/** Screen pixel data, if using an already existing buffer. */
+	void* screenPixels;
 } sjme_engineConfig;
 
 /**

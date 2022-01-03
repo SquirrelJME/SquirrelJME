@@ -8,8 +8,11 @@
 // -------------------------------------------------------------------------*/
 
 #include <stdarg.h>
+#include <stdlib.h>
 
 #include "frontend/libretro/lrlocal.h"
+#include "frontend/libretro/lrenv.h"
+#include "util.h"
 
 /** Debug buffer size for messages. */
 #define DEBUG_BUF 512
@@ -130,4 +133,91 @@ void sjme_libRetro_message(sjme_jbyte percent, const char* const format, ...)
 	else
 		g_libRetroCallbacks.environmentFunc(RETRO_ENVIRONMENT_SET_MESSAGE,
 			&extMessage);
+}
+
+sjme_jboolean sjme_libRetro_screenInit(sjme_engineConfig* config)
+{
+	struct retro_variable getVar;
+	const char* rawSize;
+	const char* rawFormat;
+	sjme_jint width, height;
+	sjme_jint split;
+	sjme_pixelFormat pixelFormat;
+	
+	/* Notice. */
+	sjme_libRetro_message(10, "Determining screen size.");
+	
+	/* Get screen size setting. */
+	memset(&getVar, 0, sizeof(getVar));
+	getVar.key = SJME_LIBRETRO_CONFIG_DISPLAY_SIZE;
+	rawSize = NULL;
+	if (g_libRetroCallbacks.environmentFunc(
+		RETRO_ENVIRONMENT_GET_VARIABLE, &getVar))
+		if (getVar.value != NULL)
+			rawSize = getVar.value;
+	
+	/* Decode screen size. */
+	width = height = -1;
+	if (rawSize != NULL)
+	{
+		/* Find where the x splitter is. */
+		split = sjme_strIndexOf(rawSize, 'x');
+		if (split >= 0)
+		{
+			width = strtol(rawSize, NULL, 10);
+			height = strtol(&rawSize[split + 1], NULL, 10);
+		}
+	}
+	
+	/* Default to certain sizes? */
+	if (width <= 0 || width >= SJME_MAX_SCREEN_WIDTH)
+		width = SJME_RECOMMENDED_SCREEN_WIDTH;
+	if (height <= 0 || height >= SJME_MAX_SCREEN_HEIGHT)
+		height = SJME_RECOMMENDED_SCREEN_HEIGHT;
+		
+	/* Get pixel format setting. */
+	memset(&getVar, 0, sizeof(getVar));
+	getVar.key = SJME_LIBRETRO_CONFIG_PIXEL_FORMAT;
+	rawFormat = NULL;
+	if (g_libRetroCallbacks.environmentFunc(
+		RETRO_ENVIRONMENT_GET_VARIABLE, &getVar))
+		if (getVar.value != NULL)
+			rawFormat = getVar.value;
+	
+	/* Fallback to a default if not set. */
+	if (rawFormat == NULL)
+		rawFormat = SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_RGBA8888;
+	
+	/* Determine which pixel format is used. */
+	if (0 == strcmp(rawFormat, SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_RGBA4444))
+		pixelFormat = SJME_PIXEL_FORMAT_SHORT_RGBA4444;
+	else if (0 == strcmp(rawFormat, SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_RGB565))
+		pixelFormat = SJME_PIXEL_FORMAT_SHORT_RGB565;
+	else if (0 == strcmp(rawFormat, SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_RGB555))
+		pixelFormat = SJME_PIXEL_FORMAT_SHORT_RGB555;
+	else if (0 == strcmp(rawFormat, SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_ABGR1555))
+		pixelFormat = SJME_PIXEL_FORMAT_SHORT_ABGR1555;
+	else if (0 == strcmp(rawFormat, SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_65536I))
+		pixelFormat = SJME_PIXEL_FORMAT_SHORT_INDEXED65536;
+	else if (0 == strcmp(rawFormat, SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_256I))
+		pixelFormat = SJME_PIXEL_FORMAT_BYTE_INDEXED256;
+	else if (0 == strcmp(rawFormat, SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_4I))
+		pixelFormat = SJME_PIXEL_FORMAT_PACKED_INDEXED4;
+	else if (0 == strcmp(rawFormat, SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_2I))
+		pixelFormat = SJME_PIXEL_FORMAT_PACKED_INDEXED2;
+	else if (0 == strcmp(rawFormat, SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_1I))
+		pixelFormat = SJME_PIXEL_FORMAT_PACKED_INDEXED1;
+	else
+		pixelFormat = SJME_PIXEL_FORMAT_INT_RGB888;
+	
+	/* Store screen size. */
+	config->screenWidth = width;
+	config->screenHeight = height;
+	config->screenPixelFormat = pixelFormat;
+	
+	/* Notice. */
+	sjme_libRetro_message(10, "Using %dx%d (%s #%d).",
+		width, height, rawFormat, pixelFormat);
+	
+	return sjme_true;
 }

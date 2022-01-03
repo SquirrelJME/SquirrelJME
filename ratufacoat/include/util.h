@@ -8,19 +8,21 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Screen related functions and interfaces.
+ * Miscellaneous utilities.
  * 
  * @since 2022/01/02
  */
 
-#ifndef SQUIRRELJME_LRSCREEN_H
-#define SQUIRRELJME_LRSCREEN_H
+#ifndef SQUIRRELJME_UTIL_H
+#define SQUIRRELJME_UTIL_H
+
+#include "sjmerc.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_LRSCREEN_H
+#define SJME_CXX_SQUIRRELJME_UTIL_H
 extern "C"
 {
 #endif /* #ifdef SJME_CXX_IS_EXTERNED */
@@ -29,34 +31,24 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
- * Emits a message to the console and screen.
+ * Searches the string for the given character.
  * 
- * @param percent Percentage of progress, if out of bounds of @c 0 to @c 100
- * it is not considered valid.
- * @param format The message format. 
- * @param ... The specifiers.
+ * @param string The string to search. 
+ * @param want The wanted character.
+ * @return The index of the character or @c -1 if not found.
  * @since 2022/01/02
  */
-void sjme_libRetro_message(sjme_jbyte percent, const char* const format, ...);
-
-/**
- * Initializes the screen settings.
- * 
- * @param config The configuration to set.
- * @return If initialization was a success.
- * @since 2022/01/02 
- */
-sjme_jboolean sjme_libRetro_screenInit(sjme_engineConfig* config);
+sjme_jint sjme_strIndexOf(const char* string, char want);
 
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_LRSCREEN_H
+#ifdef SJME_CXX_SQUIRRELJME_UTIL_H
 }
-#undef SJME_CXX_SQUIRRELJME_LRSCREEN_H
+#undef SJME_CXX_SQUIRRELJME_UTIL_H
 #undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_LRSCREEN_H */
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_UTIL_H */
 #endif /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_LRSCREEN_H */
+#endif /* SQUIRRELJME_UTIL_H */

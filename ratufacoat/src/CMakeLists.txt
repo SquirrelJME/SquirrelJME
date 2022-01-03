@@ -52,6 +52,7 @@ add_library(SquirrelJMECore OBJECT
 	stream.c
 	stringies.c
 	syscall.c
+	util.c
 	video.c
 	xbuiltin.c
 	${SQUIRRELJME_BUILTIN_FILE})

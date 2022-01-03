@@ -26,8 +26,6 @@
 #include "jvm.h"
 #include "debug.h"
 
-
-
 /** Draws single character onto the console. */
 void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
 	sjme_jbyte ch, sjme_error* error)

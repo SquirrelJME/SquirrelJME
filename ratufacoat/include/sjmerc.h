@@ -191,6 +191,11 @@
 	#endif
 #endif
 
+#if defined(PS2)
+	/** Building for the PlayStation 2. */
+	#define SQUIRRELJME_PS2
+#endif
+
 /* Anti-C++. */
 #ifdef _cplusplus
 #ifndef SJME_CXX_IS_EXTERNED

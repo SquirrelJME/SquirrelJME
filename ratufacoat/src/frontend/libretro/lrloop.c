@@ -75,7 +75,9 @@ SJME_GCC_USED void retro_init(void)
 	retro_reset();
 }
 
-SJME_GCC_USED void retro_reset(void)
+SJME_GCC_USED
+
+void retro_reset(void)
 {
 	sjme_libRetroState* newState;
 	sjme_jboolean okayInit;
@@ -95,6 +97,7 @@ SJME_GCC_USED void retro_reset(void)
 	/* Setup engine configuration from the settings. */
 	okayInit = sjme_true;
 	okayInit &= sjme_libRetro_selectRom(&newState->engineConfig);
+	okayInit &= sjme_libRetro_screenInit(&newState->engineConfig);
 	
 	/* Did initialization fail? */
 	if (!okayInit)
@@ -109,6 +112,9 @@ SJME_GCC_USED void retro_reset(void)
 		/* Fail. */
 		return;
 	}
+	
+	/* Notice. */
+	sjme_libRetro_message(50, "Configuration complete.");
 	
 	/* Notice. */
 	sjme_libRetro_message(100, "Initialization complete.");
