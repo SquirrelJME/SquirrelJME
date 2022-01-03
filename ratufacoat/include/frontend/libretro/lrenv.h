@@ -28,6 +28,18 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/** Threading model key. */
+#define SJME_LIBRETRO_CONFIG_THREAD_MODEL "squirreljme_thread_model"
+
+/** Cooperative threading model. */
+#define SJME_LIBRETRO_CONFIG_THREAD_MODEL_COOP "cooperative"
+
+/** Simultaneous threading model. */
+#define SJME_LIBRETRO_CONFIG_THREAD_MODEL_SMT "simultaneous"
+
+/** CPU Cycles key. */
+#define SJME_LIBRETRO_CONFIG_COOP_CYCLES "squirreljme_coop_cycles"
+
 /** ROM Order Key. */
 #define SJME_LIBRETRO_CONFIG_ROM_ORDER "squirreljme_rom_order"
 
@@ -53,7 +65,7 @@ extern "C"
 #define SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_RGBA8888 "24-bit"
 
 /** Pixel format 16-bit RGBA4444. */
-#define SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_RGBA4444 "16-bit (RGBA4444)"
+#define SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_RGBA4444 "16-bit (RGB444)"
 
 /** Pixel format 16-bit RGB565. */
 #define SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_RGB565 "16-bit (RGB565)"

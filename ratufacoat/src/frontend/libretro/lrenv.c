@@ -20,21 +20,21 @@
 const struct retro_variable sjme_libRetro_coreOptions[] =
 {
 	/* CPU and Timing. */
-	{"squirreljme_thread_model",
+	{SJME_LIBRETRO_CONFIG_THREAD_MODEL,
 		"Threading Model; "
-			"cooperative|simultaneous"},
-	{"squirreljme_coop_cycles",
-		"CPU Cycles Per Cooperative Frame (Higher = Faster); "
-			"1048576|2097152|4194304|8388608|"
-			"16384|32768|65536|131072|262144|524288"},
+			SJME_LIBRETRO_CONFIG_THREAD_MODEL_COOP "|"
+			SJME_LIBRETRO_CONFIG_THREAD_MODEL_SMT},
+	{SJME_LIBRETRO_CONFIG_COOP_CYCLES,
+		"CPU Speed (Co-Op); "
+			"60MHz|100MHz|300MHz|600MHz|1MHz|5MHz|10MHz|30MHz"},
 	{"squirreljme_coop_locked_clock",
-		"Lock RTC to CPU Cycles; "
+		"Lock RTC to CPU Cycles (Co-Op); "
 			"disabled|enabled"},
 	
 	/* Graphics. */
 	{SJME_LIBRETRO_CONFIG_DISPLAY_SIZE,
 		"Display Size; "
-			"240x320|320x480|480x640|640x480|96x65|"
+			"240x320|320x240|320x320|480x640|640x480|480x480|640x640|96x65|"
 			"128x128|128x160|176x208|176x220"},
 	{SJME_LIBRETRO_CONFIG_PIXEL_FORMAT,
 		"Pixel Format; "

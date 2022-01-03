@@ -135,7 +135,7 @@ SJME_GCC_USED void retro_run(void)
 	
 	/* Do nothing if there is no state. */
 	currentState = g_libRetroState;
-	if (currentState == NULL)
+	if (sjme_true || currentState == NULL)
 	{
 		/* Draw a completely blank display since we need to show something,
 		 * otherwise RetroArch will freeze and not respond at all. */
