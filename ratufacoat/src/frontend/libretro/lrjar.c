@@ -84,7 +84,7 @@ sjme_jboolean sjme_libRetro_selectRomExternal(sjme_engineConfig* config)
 	const char* systemDir;
 	char romPath[PATH_MAX];
 	struct retro_vfs_file_handle* romFile;
-	sjme_jint romSize, readAt, readCount;
+	sjme_jint romSize, readAt, readCount, loadPercent;
 	
 	/* Without the VFS, can we really load the ROM? No. */
 	if (g_libRetroCallbacks.vfs == NULL)
@@ -155,6 +155,11 @@ sjme_jboolean sjme_libRetro_selectRomExternal(sjme_engineConfig* config)
 		
 		/* Read this. */
 		readAt += readCount;
+		
+		/* Emit progress. */
+		loadPercent = sjme_min(100, sjme_max(0, (readAt * 100) / readAt));
+		sjme_libRetro_message(loadPercent, "Loading ROM: %d%%",
+			loadPercent);
 	}
 	
 	/* Close it. */

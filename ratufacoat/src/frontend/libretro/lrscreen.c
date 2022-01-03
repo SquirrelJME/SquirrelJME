@@ -99,13 +99,13 @@ void sjme_libRetro_message(sjme_jbyte percent, const char* const format, ...)
 	buf[messageLen] = '\n';
 #endif
 	
+	/* Print output message. */ 
+	g_libRetroCallbacks.loggingFunc(RETRO_LOG_INFO, buf);
+	
 	/* Which version of messages are we on? */
 	messageVersion = 0;
 	g_libRetroCallbacks.environmentFunc(
 		RETRO_ENVIRONMENT_GET_MESSAGE_INTERFACE_VERSION, &messageVersion);
-	
-	/* Print output message. */ 
-	g_libRetroCallbacks.loggingFunc(RETRO_LOG_INFO, buf);
 	
 	/* Setup screen message. */
 	memset(&oldMessage, 0, sizeof(oldMessage));
