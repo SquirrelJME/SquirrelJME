@@ -121,7 +121,7 @@ void sjme_libRetro_message(sjme_jbyte percent, const char* const format, ...)
 	extMessage.priority = 100;
 	extMessage.target = RETRO_MESSAGE_TARGET_OSD;
 	extMessage.type = (percent < 0 || percent > 100 ?
-		RETRO_MESSAGE_TYPE_STATUS : RETRO_MESSAGE_TYPE_PROGRESS);
+		RETRO_MESSAGE_TYPE_NOTIFICATION : RETRO_MESSAGE_TYPE_PROGRESS);
 	
 	/* We do not want to send the new line to the OSD. */
 	buf[messageLen] = '\0'; 
@@ -135,7 +135,7 @@ void sjme_libRetro_message(sjme_jbyte percent, const char* const format, ...)
 			&extMessage);
 }
 
-sjme_jboolean sjme_libRetro_screenInit(sjme_engineConfig* config)
+sjme_jboolean sjme_libRetro_screenConfig(sjme_engineConfig* config)
 {
 	struct retro_variable getVar;
 	const char* rawSize;
@@ -211,9 +211,10 @@ sjme_jboolean sjme_libRetro_screenInit(sjme_engineConfig* config)
 		pixelFormat = SJME_PIXEL_FORMAT_INT_RGB888;
 	
 	/* Store screen size. */
-	config->screenWidth = width;
-	config->screenHeight = height;
-	config->screenPixelFormat = pixelFormat;
+	config->numScreens = 1;
+	config->screens[0].width = width;
+	config->screens[0].height = height;
+	config->screens[0].pixelFormat = pixelFormat;
 	
 	/* Notice. */
 	sjme_libRetro_message(10, "Using %dx%d (%s #%d).",

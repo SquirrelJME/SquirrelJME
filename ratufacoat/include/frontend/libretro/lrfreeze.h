@@ -8,19 +8,21 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Screen related functions and interfaces.
+ * Support for freezing and save states.
  * 
- * @since 2022/01/02
+ * @since 2022/01/03
  */
 
-#ifndef SQUIRRELJME_LRSCREEN_H
-#define SQUIRRELJME_LRSCREEN_H
+#ifndef SQUIRRELJME_LRFREEZE_H
+#define SQUIRRELJME_LRFREEZE_H
+
+#include "lrlocal.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_LRSCREEN_H
+#define SJME_CXX_SQUIRRELJME_LRFREEZE_H
 extern "C"
 {
 #endif /* #ifdef SJME_CXX_IS_EXTERNED */
@@ -29,34 +31,22 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
- * Emits a message to the console and screen.
+ * Sets whether freezing is inhibited or not.
  * 
- * @param percent Percentage of progress, if out of bounds of @c 0 to @c 100
- * it is not considered valid.
- * @param format The message format. 
- * @param ... The specifiers.
- * @since 2022/01/02
+ * @param inhibit Should freezing be inhibited?
+ * @since 2022/01/03 
  */
-void sjme_libRetro_message(sjme_jbyte percent, const char* const format, ...);
-
-/**
- * Initializes the screen settings.
- * 
- * @param config The configuration to set.
- * @return If initialization was a success.
- * @since 2022/01/02 
- */
-sjme_jboolean sjme_libRetro_screenConfig(sjme_engineConfig* config);
+void sjme_libRetro_inhibitFastForward(sjme_jboolean inhibit);
 
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_LRSCREEN_H
+#ifdef SJME_CXX_SQUIRRELJME_LRFREEZE_H
 }
-#undef SJME_CXX_SQUIRRELJME_LRSCREEN_H
+#undef SJME_CXX_SQUIRRELJME_LRFREEZE_H
 #undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_LRSCREEN_H */
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_LRFREEZE_H */
 #endif /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_LRSCREEN_H */
+#endif /* SQUIRRELJME_LRFREEZE_H */

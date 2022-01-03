@@ -12,12 +12,12 @@
 
 SJME_GCC_USED void* retro_get_memory_data(unsigned id)
 {
-	sjme_todo("Get memory data?");
+	sjme_message("Get memory data?");
 	return NULL;
 }
 
 SJME_GCC_USED size_t retro_get_memory_size(unsigned id)
 {
-	sjme_todo("Get memory size?");
+	sjme_message("TODO: Get memory size?");
 	return 0;
 }

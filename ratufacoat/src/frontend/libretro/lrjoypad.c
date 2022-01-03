@@ -112,7 +112,7 @@ const struct retro_input_descriptor sjme_inputDesc[] =
 SJME_GCC_USED void retro_set_controller_port_device(unsigned port,
 	unsigned device)
 {
-	sjme_libRetro_message(0,
+	sjme_libRetro_message(-1,
 		"Set controller port? port=%d, device=%d",
 		port, device);
 }

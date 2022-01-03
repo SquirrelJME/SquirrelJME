@@ -72,8 +72,11 @@ typedef struct sjme_libRetroCallbacks
  */
 typedef struct sjme_libRetroState
 {
-	/** The engine configuration. */
-	sjme_engineConfig engineConfig;
+	/** The current engine configuration. */
+	sjme_engineConfig config;
+	
+	/** The state of the running engine. */
+	sjme_engineState* state;
 	
 	/** Video state. */
 	struct

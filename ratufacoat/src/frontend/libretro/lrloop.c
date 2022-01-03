@@ -12,6 +12,7 @@
 #include "frontend/libretro/lrlocal.h"
 #include "frontend/libretro/lrscreen.h"
 #include "memory.h"
+#include "frontend/libretro/lrfreeze.h"
 
 sjme_libRetroCallbacks g_libRetroCallbacks =
 {
@@ -96,8 +97,8 @@ void retro_reset(void)
 	
 	/* Setup engine configuration from the settings. */
 	okayInit = sjme_true;
-	okayInit &= sjme_libRetro_selectRom(&newState->engineConfig);
-	okayInit &= sjme_libRetro_screenInit(&newState->engineConfig);
+	okayInit &= sjme_libRetro_selectRom(&newState->config);
+	okayInit &= sjme_libRetro_screenConfig(&newState->config);
 	
 	/* Did initialization fail? */
 	if (!okayInit)
@@ -129,14 +130,17 @@ SJME_GCC_USED void retro_run(void)
 	sjme_libRetroState* currentState;
 	sjme_jubyte badScreen[4];
 	
-	/* Poll for input because otherwise it prevents RetroArch from accessing */
-	/* the menu. */
+	/* Poll for input because otherwise it prevents the user from accessing */
+	/* the RetroArch menu. */
 	g_libRetroCallbacks.inputPollFunc();
 	
 	/* Do nothing if there is no state. */
 	currentState = g_libRetroState;
 	if (sjme_true || currentState == NULL)
 	{
+		/* Nothing is running, so we cannot fast-forward. */
+		sjme_libRetro_inhibitFastForward(sjme_true);
+		
 		/* Draw a completely blank display since we need to show something,
 		 * otherwise RetroArch will freeze and not respond at all. */
 		memset(badScreen, 0, sizeof(badScreen));

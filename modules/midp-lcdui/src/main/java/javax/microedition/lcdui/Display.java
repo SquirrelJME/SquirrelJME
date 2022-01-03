@@ -211,7 +211,7 @@ public class Display
 		new HashMap<>();
 	
 	/** The native display instance. */ 
-	final cc.squirreljme.jvm.mle.brackets.UIDisplayBracket _uiDisplay;
+	final UIDisplayBracket _uiDisplay;
 	
 	/** The displayable to show. */
 	private volatile Displayable _current;
@@ -1295,7 +1295,7 @@ public class Display
 			Poking.poke();
 			
 			// Get the displays that are attached to the system
-			cc.squirreljme.jvm.mle.brackets.UIDisplayBracket[] uiDisplays =
+			UIDisplayBracket[] uiDisplays =
 				UIBackendFactory.getInstance().displays();
 			int n = uiDisplays.length;
 			
