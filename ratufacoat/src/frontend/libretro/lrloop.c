@@ -8,11 +8,12 @@
 // -------------------------------------------------------------------------*/
 
 #include "debug.h"
+#include "frontend/libretro/lrfreeze.h"
 #include "frontend/libretro/lrjar.h"
 #include "frontend/libretro/lrlocal.h"
+#include "frontend/libretro/lrloop.h"
 #include "frontend/libretro/lrscreen.h"
 #include "memory.h"
-#include "frontend/libretro/lrfreeze.h"
 
 sjme_libRetroCallbacks g_libRetroCallbacks =
 {
@@ -91,7 +92,7 @@ void retro_reset(void)
 	/* Notice. */
 	sjme_libRetro_message(0, "Initializing engine.");
 	
-	/* Reset global state */
+	/* Initialize a blank state. */
 	newState = sjme_malloc(sizeof(*newState), NULL);
 	memset(newState, 0, sizeof(*newState));
 	
@@ -99,6 +100,7 @@ void retro_reset(void)
 	okayInit = sjme_true;
 	okayInit &= sjme_libRetro_selectRom(&newState->config);
 	okayInit &= sjme_libRetro_screenConfig(&newState->config);
+	okayInit &= sjme_libRetro_loopConfig(&newState->config);
 	
 	/* Did initialization fail? */
 	if (!okayInit)
@@ -108,7 +110,7 @@ void retro_reset(void)
 		
 		/* Emit a failure message. */
 		sjme_libRetro_message(-1,
-			"Could not initialize engine.");
+			"Could not configure engine.");
 		
 		/* Fail. */
 		return;
@@ -151,4 +153,9 @@ SJME_GCC_USED void retro_run(void)
 	}
 	
 	sjme_todo("Run single frame?");
+}
+
+sjme_jboolean sjme_libRetro_loopConfig(sjme_engineConfig* config)
+{
+	return sjme_true;
 }
