@@ -23,25 +23,6 @@ sjme_libRetroCallbacks g_libRetroCallbacks =
 sjme_libRetroState* g_libRetroState = NULL;
 
 /**
- * Destroys the given instance instance.
- * 
- * @param state The state to destroy.
- * @since 2022/01/02
- */
-void sjme_libRetro_deinit(sjme_libRetroState* state)
-{
-	/* Destroy Screen. */
-	if (state->video.pixels != NULL)
-	{
-		sjme_free(state->video.pixels, NULL);
-		state->video.pixels = NULL;
-	}
-	
-	/* De-allocate the VM state. */
-	sjme_free(state, NULL);
-}
-
-/**
  * Destroys the library instance.
  * 
  * @since 2022/01/02
@@ -77,9 +58,7 @@ SJME_GCC_USED void retro_init(void)
 	retro_reset();
 }
 
-SJME_GCC_USED
-
-void retro_reset(void)
+SJME_GCC_USED void retro_reset(void)
 {
 	sjme_libRetroState* newState;
 	sjme_jboolean okayInit;
@@ -153,6 +132,19 @@ SJME_GCC_USED void retro_run(void)
 	}
 	
 	sjme_todo("Run single frame?");
+}
+
+void sjme_libRetro_deinit(sjme_libRetroState* state)
+{
+	/* Destroy Screen. */
+	if (state->video.pixels != NULL)
+	{
+		sjme_free(state->video.pixels, NULL);
+		state->video.pixels = NULL;
+	}
+	
+	/* De-allocate the VM state. */
+	sjme_free(state, NULL);
 }
 
 sjme_jboolean sjme_libRetro_loopConfig(sjme_engineConfig* config)

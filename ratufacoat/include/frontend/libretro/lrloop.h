@@ -29,6 +29,14 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Destroys the given instance instance.
+ * 
+ * @param state The state to destroy.
+ * @since 2022/01/02
+ */
+void sjme_libRetro_deinit(sjme_libRetroState* state);
+
+/**
  * Initializes the engine loop settings.
  * 
  * @param config The configuration to set.
