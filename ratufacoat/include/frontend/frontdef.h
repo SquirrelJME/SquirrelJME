@@ -8,19 +8,19 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * RetroArch loop.
+ * Front end definitions.
  * 
- * @since 2022/01/03
+ * @since 2022/01/05
  */
 
-#ifndef SQUIRRELJME_LRLOOP_H
-#define SQUIRRELJME_LRLOOP_H
+#ifndef SQUIRRELJME_FRONTDEF_H
+#define SQUIRRELJME_FRONTDEF_H
 
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_LRLOOP_H
+#define SJME_CXX_SQUIRRELJME_FRONTDEF_H
 extern "C"
 {
 #endif /* #ifdef SJME_CXX_IS_EXTERNED */
@@ -29,40 +29,23 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
- * Destroys the given instance instance.
+ * This is the interface that is used with SquirrelJME to interact with the
+ * front-end and contains the accordingly native functions for anything
+ * functionality which may be supported.
  * 
- * @param state The state to destroy.
- * @since 2022/01/02
- */
-void sjme_libRetro_deinit(sjme_libRetroState* state);
-
-/**
- * Initializes the engine loop settings.
- * 
- * @param config The configuration to set.
- * @return If initialization was a success.
- * @since 2022/01/02 
- */
-sjme_jboolean sjme_libRetro_loopConfig(sjme_engineConfig* config);
-
-/**
- * Performs an exit of the loop within RetroArch.
- * 
- * @param error The error state if this failed.
- * @return If exit was a success.
  * @since 2022/01/05
  */
-sjme_jboolean sjme_libRetro_loopExit(sjme_jint exitCode, sjme_error* error);
+typedef struct sjme_frontBridge sjme_frontBridge;
 
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_LRLOOP_H
+#ifdef SJME_CXX_SQUIRRELJME_FRONTDEF_H
 }
-#undef SJME_CXX_SQUIRRELJME_LRLOOP_H
+#undef SJME_CXX_SQUIRRELJME_FRONTDEF_H
 #undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_LRLOOP_H */
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_FRONTDEF_H */
 #endif /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_LRLOOP_H */
+#endif /* SQUIRRELJME_FRONTDEF_H */

@@ -8,19 +8,19 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * RetroArch loop.
+ * Scaffold definitions.
  * 
- * @since 2022/01/03
+ * @since 2022/01/05
  */
 
-#ifndef SQUIRRELJME_LRLOOP_H
-#define SQUIRRELJME_LRLOOP_H
+#ifndef SQUIRRELJME_SCAFDEF_H
+#define SQUIRRELJME_SCAFDEF_H
 
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_LRLOOP_H
+#define SJME_CXX_SQUIRRELJME_SCAFDEF_H
 extern "C"
 {
 #endif /* #ifdef SJME_CXX_IS_EXTERNED */
@@ -29,40 +29,28 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
- * Destroys the given instance instance.
+ * The state of any given engine.
  * 
- * @param state The state to destroy.
- * @since 2022/01/02
+ * @since 2022/01/03
  */
-void sjme_libRetro_deinit(sjme_libRetroState* state);
+typedef struct sjme_engineState sjme_engineState;
 
 /**
- * Initializes the engine loop settings.
+ * The state of a single thread within the engine.
  * 
- * @param config The configuration to set.
- * @return If initialization was a success.
- * @since 2022/01/02 
+ * @since 2022/01/03
  */
-sjme_jboolean sjme_libRetro_loopConfig(sjme_engineConfig* config);
-
-/**
- * Performs an exit of the loop within RetroArch.
- * 
- * @param error The error state if this failed.
- * @return If exit was a success.
- * @since 2022/01/05
- */
-sjme_jboolean sjme_libRetro_loopExit(sjme_jint exitCode, sjme_error* error);
+typedef struct sjme_engineThread sjme_engineThread;
 
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_LRLOOP_H
+#ifdef SJME_CXX_SQUIRRELJME_SCAFDEF_H
 }
-#undef SJME_CXX_SQUIRRELJME_LRLOOP_H
+#undef SJME_CXX_SQUIRRELJME_SCAFDEF_H
 #undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_LRLOOP_H */
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCAFDEF_H */
 #endif /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_LRLOOP_H */
+#endif /* SQUIRRELJME_SCAFDEF_H */

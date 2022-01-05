@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_LRENV_H
 #define SQUIRRELJME_LRENV_H
 
+#include "sjmerc.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
@@ -28,6 +30,9 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/** The frame rate of the core. */
+#define SJME_LIBRETRO_FRAME_RATE 60
+
 /** Threading model key. */
 #define SJME_LIBRETRO_CONFIG_THREAD_MODEL "squirreljme_thread_model"
 
@@ -39,6 +44,10 @@ extern "C"
 
 /** CPU Cycles key. */
 #define SJME_LIBRETRO_CONFIG_COOP_CYCLES "squirreljme_coop_cycles"
+
+/** Default CPU cycles. */
+#define SJME_LIBRETRO_CONFIG_DEFAULT_CYCLES \
+	SJME_STRINGIFY(SJME_LIBRETRO_FRAME_RATE)
 
 /** ROM Order Key. */
 #define SJME_LIBRETRO_CONFIG_ROM_ORDER "squirreljme_rom_order"

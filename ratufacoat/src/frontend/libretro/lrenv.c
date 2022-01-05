@@ -25,8 +25,8 @@ const struct retro_variable sjme_libRetro_coreOptions[] =
 			SJME_LIBRETRO_CONFIG_THREAD_MODEL_COOP "|"
 			SJME_LIBRETRO_CONFIG_THREAD_MODEL_SMT},
 	{SJME_LIBRETRO_CONFIG_COOP_CYCLES,
-		"CPU Speed (Co-Op); "
-			"60MHz|100MHz|300MHz|600MHz|1MHz|5MHz|10MHz|30MHz"},
+		"CPU Speed in MHz (Co-Op); "
+			SJME_LIBRETRO_CONFIG_DEFAULT_CYCLES "|100|300|600|1|5|10|30"},
 	{"squirreljme_coop_locked_clock",
 		"Lock RTC to CPU Cycles (Co-Op); "
 			"disabled|enabled"},

@@ -38,7 +38,7 @@
 SJME_GCC_USED void retro_get_system_av_info(struct retro_system_av_info* info)
 {
 	/* Always 60FPS at 48KHz. */
-	info->timing.fps = 60;
+	info->timing.fps = SJME_LIBRETRO_FRAME_RATE;
 	info->timing.sample_rate = 48000;
 	
 	/* If there is a global state, use the same video properties as that. */

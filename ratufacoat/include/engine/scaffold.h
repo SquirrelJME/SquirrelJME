@@ -16,8 +16,10 @@
 #ifndef SQUIRRELJME_SCAFFOLD_H
 #define SQUIRRELJME_SCAFFOLD_H
 
-#include "sjmerc.h"
+#include "engine/scafdef.h"
 #include "error.h"
+#include "frontend/frontdef.h"
+#include "sjmerc.h"
 #include "video.h"
 
 /* Anti-C++. */
@@ -86,6 +88,9 @@ typedef struct sjme_engineConfig
 	/** The threading model of the engine. */
 	sjme_engineThreadModel threadModel;
 	
+	/** The number of cycles to limit a single run when in co-op mode. */
+	sjme_jint coopCycleLimit;
+	
 	/** The pointer to the ROM to use. */
 	const sjme_jubyte* romPointer;
 	
@@ -94,6 +99,9 @@ typedef struct sjme_engineConfig
 	
 	/** Is the ROM dynamically loaded? */
 	sjme_jboolean romIsAllocated;
+	
+	/** The front-end bridge for native calls. */
+	const sjme_frontBridge* frontBridge; 
 	
 	/** The number of active terminals, if @c then there are none. */
 	sjme_jint numTerminals;
@@ -130,20 +138,6 @@ typedef struct sjme_engineConfig
 		void* pixels;
 	} screens[SJME_CONFIG_MAX_SCREENS];
 } sjme_engineConfig;
-
-/**
- * The state of any given engine.
- * 
- * @since 2022/01/03
- */
-typedef struct sjme_engineState sjme_engineState;
-
-/**
- * The state of a single thread within the engine.
- * 
- * @since 2022/01/03
- */
-typedef struct sjme_engineThread sjme_engineThread;
 
 /**
  * This is the scaffold for an engine between the common engine layer and the

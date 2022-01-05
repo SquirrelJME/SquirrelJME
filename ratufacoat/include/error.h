@@ -207,6 +207,9 @@ typedef enum sjme_errorCode
 	
 	/** Calculation error. */
 	SJME_ERROR_CALCULATE_ERROR,
+	
+	/** Not supported. */
+	SJME_ERROR_NOT_SUPPORTED,
 } sjme_errorCode;
 
 /** This represents an error. */

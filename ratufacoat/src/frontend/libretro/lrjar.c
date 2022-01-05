@@ -64,7 +64,7 @@ SJME_GCC_USED bool retro_load_game_special(unsigned type,
 /** Unload a game? */
 SJME_GCC_USED void retro_unload_game(void)
 {
-	sjme_todo("Unload game?");
+	sjme_message("Unload game?");
 #if 0
 	/* Remove. */
 	sjme_retroarch_optionjar.ptr = NULL;

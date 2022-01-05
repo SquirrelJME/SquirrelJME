@@ -10,6 +10,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
@@ -296,6 +297,20 @@ final class __MLEUIThread__
 				this._inPaint = false;
 			}
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/05
+	 */
+	@Override
+	public void paintDisplay(UIDisplayBracket __display, int __pf, int __bw,
+		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
+		int __sw, int __sh, int __special)
+	{
+		// Does nothing as at this point, software implementations of the UI
+		// would have handled the display callback here so no action is
+		// needed to be performed.
 	}
 	
 	/**

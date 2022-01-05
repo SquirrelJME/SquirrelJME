@@ -35,7 +35,7 @@ public final class SoftwareGraphicsFactory
 	 * purely software operations.
 	 * 
 	 * @param __pf The {@link UIPixelFormat} used for the draw.
-	 * @param __bw The buffer width.
+	 * @param __bw The buffer width, this is the scanline width of the buffer.
 	 * @param __bh The buffer height.
 	 * @param __buf The target buffer to draw to, this is cast to the correct
 	 * buffer format.
