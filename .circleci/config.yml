@@ -117,7 +117,7 @@ jobs:
   ################################# MAC OS X #################################
   build_macosx:
     macos:
-      xcode: 11.7.1
+      xcode: 11.7.0
     environment:
       # Do not auto-update brew as this takes forever and we really just want
       # a single package
