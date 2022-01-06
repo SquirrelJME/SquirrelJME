@@ -26,6 +26,10 @@ public final class SoftFloat
 	public static final int SIGN_MASK =
 		0b1000_0000_0000_0000__0000_0000_0000_0000;
 	
+	/** The zero check mask. */
+	public static final int ZERO_CHECK_MASK =
+		0x7FFFFFFF;
+	
 	/** Exponent Mask. */
 	public static final int EXPONENT_MASK =
 		0b0111_1111_1000_0000__0000_0000_0000_0000;

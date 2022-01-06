@@ -613,16 +613,16 @@ public enum MLEObject
 		throws MLECallError
 	{
 		if (__b == null || __v == null)
-			throw new MLECallError("NARG");
+			throw new SpringMLECallError("NARG");
 		
 		// Must be this type
 		if (!__type.isInstance(__b))
-			throw new ClassCastException("Not a " + __type);
+			throw new SpringMLECallError("Not a " + __type);
 		SpringArrayObject array = __type.cast(__b);
 		
 		// Check bounds
 		if (__o < 0 || __l < 0 || (__o + __l) > array.length())
-			throw new MLECallError("IOOB");
+			throw new SpringMLECallError("IOOB");
 		
 		// Perform the fill
 		for (int i = 0; i < __l; i++)

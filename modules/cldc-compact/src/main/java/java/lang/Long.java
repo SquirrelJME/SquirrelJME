@@ -61,10 +61,14 @@ public final class Long
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public byte byteValue()
 	{
-		throw new todo.TODO();
+		return (byte)this._value;
 	}
 	
 	@Override
@@ -73,10 +77,14 @@ public final class Long
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public double doubleValue()
 	{
-		throw new todo.TODO();
+		return (double)this._value;
 	}
 	
 	/**
@@ -95,22 +103,35 @@ public final class Long
 		return this._value == ((Long)__o)._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public float floatValue()
 	{
-		throw new todo.TODO();
+		return (float)this._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		long value = this._value;
+		return (int)(value ^ (value >>> 32));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public int intValue()
 	{
-		throw new todo.TODO();
+		return (int)this._value;
 	}
 	
 	/**
@@ -123,10 +144,14 @@ public final class Long
 		return this._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public short shortValue()
 	{
-		throw new todo.TODO();
+		return (short)this._value;
 	}
 	
 	/**
