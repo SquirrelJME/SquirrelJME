@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 result: NoResult
 thrown: NoExceptionThrown
-multi-parameters: BOOLEAN BYTE SHORT CHAR INT LONG FLOAT DOUBLE OBJECT
+multi-parameters: BOOLEAN BYTE SHORT CHAR INT LONG FLOAT DOUBLE
 secondary-nullarg: true
 secondary-oobnegoff: true
 secondary-oobneglen: true
 secondary-oobonright: true
-secondary-wholefill: true
-secondary-parfill: true
+secondary-wholefill: int:16
+secondary-partfill: int:4

@@ -179,6 +179,65 @@ public final class ArrayUtils
 	}
 	
 	/**
+	 * Reads from an array.
+	 * 
+	 * @param <T> The resultant boxed type.
+	 * @param __cast The type to cast to.
+	 * @param __type The array type.
+	 * @param __a The array.
+	 * @param __dx The index to read.
+	 * @return The read value.
+	 * @throws ArrayIndexOutOfBoundsException If the index is out of bounds.
+	 * @throws ClassCastException If the wrong class is used.
+	 * @throws IllegalArgumentException If the argument is invalid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/01/05
+	 */
+	public static <T> T arrayGet(Class<T> __cast,
+		int __type, Object __a, int __dx)
+		throws ArrayIndexOutOfBoundsException, ClassCastException,
+			IllegalArgumentException, NullPointerException
+	{
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends on the type
+		switch (__type)
+		{
+			case ArrayUtils.ARRAY_BOOLEAN:
+				return __cast.cast(((boolean[])__a)[__dx]);
+				
+			case ArrayUtils.ARRAY_BYTE:
+				return __cast.cast(((byte[])__a)[__dx]);
+				
+			case ArrayUtils.ARRAY_SHORT:
+				return __cast.cast(((short[])__a)[__dx]);
+				
+			case ArrayUtils.ARRAY_CHARACTER:
+				return __cast.cast(((char[])__a)[__dx]);
+				
+			case ArrayUtils.ARRAY_INTEGER:
+				return __cast.cast(((int[])__a)[__dx]);
+				
+			case ArrayUtils.ARRAY_LONG:
+				return __cast.cast(((long[])__a)[__dx]);
+				
+			case ArrayUtils.ARRAY_FLOAT:
+				return __cast.cast(((float[])__a)[__dx]);
+				
+			case ArrayUtils.ARRAY_DOUBLE:
+				return __cast.cast(((double[])__a)[__dx]);
+				
+			case ArrayUtils.ARRAY_OBJECT:
+				return __cast.cast(((Object[])__a)[__dx]);
+			
+				// {@squirreljme.error ZZf7 Invalid array type.}
+			default:
+				throw new IllegalArgumentException("ZZf7");
+		}
+	}
+	
+	/**
 	 * Sets the value in the array.
 	 *
 	 * @param __a The array.
