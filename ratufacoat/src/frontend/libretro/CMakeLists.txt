@@ -60,7 +60,7 @@ set_target_properties(squirreljme_libretro PROPERTIES
 # If not static, then link against our own static library
 if(NOT SQUIRRELJME_LIBRETRO_STATIC)
 	target_link_libraries(squirreljme_libretro PUBLIC
-		SquirrelJMECore)
+		SquirrelJMECoreLib)
 endif()
 
 # Some LibRetro targets set a suffix at the end of the base name for the

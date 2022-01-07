@@ -223,6 +223,29 @@ extern const sjme_engineScaffold* const sjme_engineScaffolds[];
 /** SpringCoat engine. */
 extern const sjme_engineScaffold sjme_engineScaffoldSpringCoat;
 
+/**
+ * Destroys the given engine.
+ * 
+ * @param state The state to destroy.
+ * @param error The error state, if any.
+ * @return If the engine was successfully destroyed.
+ * @since 2022/01/07
+ */
+sjme_jboolean sjme_engineDestroy(sjme_engineState* state, sjme_error* error);
+
+/**
+ * Initializes a new engine that is capable of running one of the various
+ * SquirrelJME engine.
+ * 
+ * @param config The configuration for the engine.
+ * @param outState The output engine state.
+ * @param error The error state, if any.
+ * @return If the engine was able to be initialized or not.
+ * @since 2022/01/07 
+ */
+sjme_jboolean sjme_engineNew(const sjme_engineConfig* config,
+	sjme_engineState** outState, sjme_error* error);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

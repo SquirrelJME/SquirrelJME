@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "debug.h"
+#include "engine/scaffold.h"
 #include "frontend/frontfunc.h"
 #include "frontend/libretro/lrfreeze.h"
 #include "frontend/libretro/lrjar.h"
@@ -16,6 +17,7 @@
 #include "frontend/libretro/lrscreen.h"
 #include "memory.h"
 #include "frontend/libretro/lrenv.h"
+#include "stringies.h"
 
 sjme_libRetroCallbacks g_libRetroCallbacks =
 {
@@ -68,8 +70,12 @@ SJME_GCC_USED void retro_init(void)
 
 SJME_GCC_USED void retro_reset(void)
 {
+#define BUF_LEN 512
 	sjme_libRetroState* newState;
 	sjme_jboolean okayInit;
+	sjme_error error;
+	sjme_jbyte buf[BUF_LEN];
+	sjme_jint bufLen;
 	
 	/* If we have a pre-existing state, destroy it so we have just one
 	 * instance ever total. */
@@ -108,12 +114,35 @@ SJME_GCC_USED void retro_reset(void)
 	
 	/* Notice. */
 	sjme_libRetro_message(50, "Configuration complete.");
+	sjme_libRetro_message(51, "Initializing engine complete.");
+	
+	/* Attempt engine initialization. */
+	memset(&error, 0, sizeof(error));
+	if (!sjme_engineNew(&newState->config, &newState->state,
+		&error))
+	{
+		/* Generate error message. */
+		memset(buf, 0, sizeof(buf));
+		bufLen = BUF_LEN;
+		sjme_describeJvmError(&error, buf, &bufLen);
+		
+		/* Emit it. */
+		sjme_libRetro_message(-1,
+			"Could not initialize engine: %s", buf);
+			
+		/* Nope, de-init. */
+		sjme_libRetro_deinit(newState);
+		
+		/* Fail. */
+		return;
+	}
 	
 	/* Notice. */
 	sjme_libRetro_message(100, "Initialization complete.");
 	
 	/* Use this global state now that it is fully up. */
 	g_libRetroState = newState;
+#undef BUF_LEN
 }
 
 /** Runs single frame. */
@@ -147,15 +176,31 @@ SJME_GCC_USED void retro_run(void)
 
 void sjme_libRetro_deinit(sjme_libRetroState* state)
 {
-	/* Destroy Screen. */
-	if (state->video.pixels != NULL)
+#define BUF_LEN 512
+	sjme_error error;
+	sjme_jbyte buf[BUF_LEN];
+	sjme_jint bufLen;
+	
+	/* Attempt engine destruction. */
+	memset(&error, 0, sizeof(error));
+	if (!sjme_engineDestroy(state->state, &error))
 	{
-		sjme_free(state->video.pixels, NULL);
-		state->video.pixels = NULL;
+		/* Generate error message. */
+		memset(buf, 0, sizeof(buf));
+		bufLen = BUF_LEN;
+		sjme_describeJvmError(&error, buf, &bufLen);
+		
+		/* Emit it. */
+		sjme_libRetro_message(-1,
+			"Could not destroy engine: %s", buf);
 	}
+	
+	/* Clear out. */
+	state->state = NULL;
 	
 	/* De-allocate the VM state. */
 	sjme_free(state, NULL);
+#undef BUF_LEN
 }
 
 sjme_jboolean sjme_libRetro_loopConfig(sjme_engineConfig* config)

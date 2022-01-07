@@ -37,15 +37,18 @@
  */
 SJME_GCC_USED void retro_get_system_av_info(struct retro_system_av_info* info)
 {
+	sjme_libRetroState* state;
+	
 	/* Always 60FPS at 48KHz. */
 	info->timing.fps = SJME_LIBRETRO_FRAME_RATE;
 	info->timing.sample_rate = 48000;
 	
 	/* If there is a global state, use the same video properties as that. */
-	if (g_libRetroState != NULL)
+	state = g_libRetroState;
+	if (state != NULL)
 	{
-		info->geometry.base_width = g_libRetroState->video.width;
-		info->geometry.base_width = g_libRetroState->video.height;
+		info->geometry.base_width = state->config.screens[0].width;
+		info->geometry.base_width = state->config.screens[0].height;
 	}
 	
 	/* Otherwise, assume some defaults. */

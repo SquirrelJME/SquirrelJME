@@ -133,10 +133,10 @@ endfunction()
 
 # Execute this with all of the targets we want to collect
 squirreljme_object_and_sources(SquirrelJMECoreTarget
+	SquirrelJMECore
 	SquirrelJMEEngine
-	SquirrelJMEFormat
 	SquirrelJMEEngineSpringCoat
-	SquirrelJMECore)
+	SquirrelJMEFormat)
 
 # Static library
 add_subdirectory(lib)

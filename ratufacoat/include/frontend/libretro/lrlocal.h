@@ -77,28 +77,6 @@ typedef struct sjme_libRetroState
 	
 	/** The state of the running engine. */
 	sjme_engineState* state;
-	
-	/** Video state. */
-	struct
-	{
-		/** Screen width. */
-		sjme_jint width;
-		
-		/** Screen height. */
-		sjme_jint height;
-		
-		/** Scanline width. */
-		sjme_jint scanline;
-		
-		/** The size of the pixel buffer, in pixels. */
-		sjme_jint pixelCount;
-		
-		/** The size of the pixel buffer, in bytes. */
-		sjme_jint pixelBytes;
-		
-		/** Screen pixel data. */
-		void* pixels;
-	} video;
 } sjme_libRetroState;
 
 /** Available callbacks. */
