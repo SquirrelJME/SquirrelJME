@@ -38,6 +38,9 @@ extern "C"
 
 typedef struct sjme_packInstance sjme_packInstance;
 
+/** Is this a SpringCoat Pack? */
+#define SJME_PACK_FLAG_IS_SPRINGCOAT INT32_C(0x1)
+
 /**
  * This represents a library driver that is available for usage.
  * 
@@ -64,6 +67,18 @@ typedef struct sjme_packDriver
 	 * @since 2021/11/07
 	 */
 	sjme_jint (*queryNumLibraries)(sjme_packInstance* instance,
+		sjme_error* error);
+	
+	/**
+	 * Queries the flags for the pack.
+	 * 
+	 * @param instance The instance to query.
+	 * @param error The error state.
+	 * @return The pack flags, if this could not be determined or is not valid
+	 * then @c 0 must be returned.
+	 * @since 2022/01/08
+	 */
+	sjme_jint (*queryPackFlags)(sjme_packInstance* instance,
 		sjme_error* error);
 	
 	/**
@@ -118,6 +133,9 @@ struct sjme_packInstance
 	
 	/** Counter for the pack instance. */
 	sjme_counter counter;
+	
+	/** Flags for the pack. */
+	sjme_jint flags;
 };
 
 /**

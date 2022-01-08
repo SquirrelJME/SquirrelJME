@@ -257,6 +257,9 @@ sjme_jboolean sjme_sqcTocGet(const sjme_sqcToc* sqcToc, sjme_jint* outValue,
 /** The index which indicates the size of the TOC. */
 #define SJME_PACK_SIZE_TOC_INDEX SJME_JINT_C(3)
 
+/** Index where the pack flags exist. */
+#define SJME_PACK_FLAGS_INDEX SJME_JINT_C(16)
+
 /** The index of the offset to the JAR data. */
 #define SJME_TOC_PACK_OFFSET_DATA_INDEX SJME_JINT_C(4)
 
@@ -439,12 +442,50 @@ static sjme_jint sjme_sqcPackQueryNumLibraries(sjme_packInstance* instance,
 	return value;
 }
 
+/**
+ * Queries the flags of the pack.
+ * 
+ * @param instance The instance to query. 
+ * @param error The error state.
+ * @return The number of queried libraries or @c 0 on failure.
+ * @since 2022/01/08
+ */
+static sjme_jint sjme_sqcPackQueryPackFlags(sjme_packInstance* instance,
+	sjme_error* error)
+{
+	sjme_sqcPackState* sqcPackState;
+	sjme_jint value = 0;
+	
+	if (instance == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return -1;
+	}
+	
+	/* Get the pack state. */
+	sqcPackState = instance->state;
+	
+	/* Read the property. */
+	if (!sjme_sqcGetProperty(&sqcPackState->sqcState,
+		SJME_PACK_FLAGS_INDEX, &value, error) || value == 0)
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, value);
+		
+		return 0;
+	}
+	
+	/* Use the resultant value. */
+	return value;
+}
+
 const sjme_packDriver sjme_packSqcDriver =
 {
 	.detect = sjme_sqcPackDetect,
 	.init = sjme_sqcPackInit,
 	.destroy = sjme_sqcPackDestroy,
 	.queryNumLibraries = sjme_sqcPackQueryNumLibraries,
+	.queryPackFlags = sjme_sqcPackQueryPackFlags,
 	.locateChunk = sjme_sqcPackLocateChunk,
 	
 	/* There is no need to close or free any RAM resources because all

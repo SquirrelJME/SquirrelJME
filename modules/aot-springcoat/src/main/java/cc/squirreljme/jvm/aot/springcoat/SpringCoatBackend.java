@@ -19,6 +19,7 @@ import cc.squirreljme.jvm.aot.summercoat.base.StandardPackWriter;
 import cc.squirreljme.jvm.aot.summercoat.base.TableOfContentsEntry;
 import cc.squirreljme.jvm.aot.summercoat.base.TableOfContentsWriter;
 import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
+import cc.squirreljme.jvm.summercoat.constants.PackFlag;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
 import cc.squirreljme.vm.DataContainerLibrary;
@@ -112,6 +113,10 @@ public class SpringCoatBackend
 		HeaderStructWriter header = pack.header();
 		ChunkUtils.storeCommonPackHeader(mainChunk, __settings,
 			header);
+		
+		// Our pack consists of regular Java classes
+		header.set(PackProperty.BITFIELD_PACK_FLAGS,
+			PackFlag.IS_SPRINGCOAT);
 		
 		// Process each library
 		TableOfContentsWriter toc = pack.toc();

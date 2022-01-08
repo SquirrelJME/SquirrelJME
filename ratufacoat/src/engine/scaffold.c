@@ -20,6 +20,8 @@ const sjme_engineScaffold* const sjme_engineScaffolds[] =
 
 sjme_jboolean sjme_engineDestroy(sjme_engineState* state, sjme_error* error)
 {
+	sjme_jboolean isOkay = sjme_true;
+	
 	if (state == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
@@ -27,8 +29,16 @@ sjme_jboolean sjme_engineDestroy(sjme_engineState* state, sjme_error* error)
 		return sjme_false;
 	}
 	
-	sjme_todo("Implement this?");
-	return sjme_false;
+	/* Count down the pack to hopefully destroy it. */
+	if (state->romPack != NULL)
+		isOkay &= sjme_counterDown(&state->romPack->counter,
+			NULL, error);
+	
+	/* Free the final engine pointer. */
+	isOkay &= sjme_free(state, error);
+	
+	/* Was destruction okay? */
+	return isOkay;
 }
 
 sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
@@ -55,6 +65,19 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 	/* Create a carbon copy of the config to use for everything. */
 	result->config = *inConfig;
 	
+	/* Load the pack file, this way the engines need not do it themselves. */
+	if (!sjme_packOpen(&result->romPack,
+		result->config.romPointer, result->config.romSize, error))
+	{
+		/* Clean out. */
+		sjme_engineDestroy(result, error);
+		
+		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE,
+			sjme_getError(error, 0));
+		
+		return sjme_false;
+	}
+	
 	/* Go through each scaffold and attempt to use it. */
 	for (i = 0;; i++)
 	{
@@ -73,7 +96,7 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 		whyUnavailable = SJME_ENGINE_SCAFFOLD_IS_AVAILABLE;
 		if (tryScaffold->isAvailable == NULL ||
 			!tryScaffold->isAvailable(&result->config, &whyUnavailable,
-				&subError))
+				result, &subError))
 			continue;
 		
 		/* Should be available so stop here. */
@@ -84,7 +107,7 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 	if (tryScaffold == NULL)
 	{
 		/* Clean out. */
-		sjme_free(result, error);
+		sjme_engineDestroy(result, error);
 		
 		sjme_setError(error, SJME_ERROR_ENGINE_NOT_FOUND,
 			sjme_getError(error, 0));

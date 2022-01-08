@@ -19,6 +19,7 @@
 #include "engine/scafdef.h"
 #include "error.h"
 #include "frontend/frontdef.h"
+#include "format/pack.h"
 #include "sjmerc.h"
 #include "video.h"
 
@@ -197,12 +198,14 @@ typedef struct sjme_engineScaffold
 	 * @param config The configuration of the engine.
 	 * @param why Why is this engine not available, this is optional and may
 	 * be @c NULL .
+	 * @param partialEngine Partially loaded engine state.
 	 * @param error The error state.
 	 * @return Will return @c true if available, otherwise not. 
 	 * @since 2021/12/30
 	 */
 	sjme_jboolean (*isAvailable)(sjme_engineConfig* config,
-		sjme_engineScaffoldUnavailableType* why, sjme_error* error);
+		sjme_engineScaffoldUnavailableType* why,
+		sjme_engineState* partialEngine, sjme_error* error);
 	
 	/**
 	 * Runs the engine in cooperative mode until a resting event potentially
@@ -245,6 +248,9 @@ struct sjme_engineState
 	
 	/** The scaffold that this engine uses, contains all the engine logic. */
 	const sjme_engineScaffold* scaffold;
+	
+	/** The ROM pack that is opened. */
+	sjme_packInstance* romPack;
 };
 
 /**

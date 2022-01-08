@@ -143,6 +143,10 @@ sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
 		return sjme_false;
 	}
 	
+	/* Load flags regarding the library. */
+	instance->flags = (instance->driver->queryPackFlags == NULL ? 0 :
+		instance->driver->queryPackFlags(instance, error));
+	
 	/* Initialize the counter for garbage collection. */
 	sjme_counterInit(&instance->counter, sjme_packCollect,
 		instance, 0, error);

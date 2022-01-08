@@ -86,7 +86,11 @@ public interface PackProperty
 	byte COUNT_BOOTLOADER_CLASSPATH =
 		15;
 	
+	/** One of {@link PackFlag}. */
+	byte BITFIELD_PACK_FLAGS =
+		16;
+	
 	/** The number of pack properties. */
 	byte NUM_PACK_PROPERTIES =
-		16;
+		17;
 }
