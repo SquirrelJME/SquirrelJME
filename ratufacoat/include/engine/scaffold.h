@@ -78,6 +78,20 @@ typedef enum sjme_engineThreadModel
 } sjme_engineThreadModel;
 
 /**
+ * Represents a system property that can be configured with the engine.
+ * 
+ * @since 2021/01/07
+ */
+typedef struct sjme_engineSystemProperty
+{
+	/** The key. */
+	const char* key;
+	
+	/** The value. */
+	const char* value;
+} sjme_engineSystemProperty;
+
+/**
  * Configuration for an engine within SquirrelJME, this is used to initialize
  * the virtual machine and everything it needs.
  * 
@@ -85,6 +99,9 @@ typedef enum sjme_engineThreadModel
  */
 typedef struct sjme_engineConfig
 {
+	/** The engine to attempt using. */
+	const char* engineName;
+	
 	/** The threading model of the engine. */
 	sjme_engineThreadModel threadModel;
 	
@@ -103,6 +120,24 @@ typedef struct sjme_engineConfig
 	/** The front-end bridge for native calls. */
 	const sjme_frontBridge* frontBridge; 
 	
+	/** System property count. */
+	sjme_jint sysPropCount;
+	
+	/** System properties. */
+	sjme_engineSystemProperty* sysProps;
+	
+	/** Use the launcher specified by the ROM for execution. */
+	sjme_jboolean useLauncher;
+	
+	/** Main class. */
+	const char* mainClass;
+	
+	/** Main argument count. */
+	sjme_jint mainArgCount;
+	
+	/** Main arguments. */
+	const char** mainArgs;
+	
 	/** The number of active terminals, if @c then there are none. */
 	sjme_jint numTerminals;
 	
@@ -117,6 +152,9 @@ typedef struct sjme_engineConfig
 		
 		/** Raw terminal display. */
 		void* symbols;
+		
+		/** Has this been dynamically allocated and needs freeing? */
+		sjme_jboolean isAllocated;
 	} terminals[SJME_CONFIG_MAX_TERMINALS];
 	
 	/** The number of active screens, if @c 0 then there are no displays. */
@@ -136,6 +174,9 @@ typedef struct sjme_engineConfig
 		
 		/** Screen pixel data, if using an already existing buffer. */
 		void* pixels;
+		
+		/** Has this been dynamically allocated and needs freeing? */
+		sjme_jboolean isAllocated;
 	} screens[SJME_CONFIG_MAX_SCREENS];
 } sjme_engineConfig;
 
@@ -237,13 +278,13 @@ sjme_jboolean sjme_engineDestroy(sjme_engineState* state, sjme_error* error);
  * Initializes a new engine that is capable of running one of the various
  * SquirrelJME engine.
  * 
- * @param config The configuration for the engine.
+ * @param inConfig The configuration for the engine.
  * @param outState The output engine state.
  * @param error The error state, if any.
  * @return If the engine was able to be initialized or not.
  * @since 2022/01/07 
  */
-sjme_jboolean sjme_engineNew(const sjme_engineConfig* config,
+sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 	sjme_engineState** outState, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/

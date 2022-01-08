@@ -249,6 +249,9 @@ sjme_jboolean sjme_libRetro_loopConfig(sjme_engineConfig* config)
 	cycles = strtol(cycleValue, NULL, 10);
 	config->coopCycleLimit = (cycles * 1000000) / SJME_LIBRETRO_FRAME_RATE;
 	
+	/** Always use the launcher when starting, otherwise users will be lost. */
+	config->useLauncher = sjme_true;
+	
 	/* Notice. */
 	sjme_libRetro_message(100, "Determined loop config.");
 	

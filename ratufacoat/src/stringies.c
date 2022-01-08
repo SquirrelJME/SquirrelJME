@@ -86,6 +86,7 @@ static const sjme_jvmErrorString sjme_jvmErrorStrings[] =
 	{SJME_ERROR_INVALID_STREAM_STATE, "Invalid stream state"},
 	{SJME_ERROR_CALCULATE_ERROR, "Calculate error"},
 	{SJME_ERROR_NOT_SUPPORTED, "Not supported"},
+	{SJME_ERROR_ENGINE_NOT_FOUND, "Engine not found"},
 	
 	{SJME_ERROR_NONE, NULL}
 };

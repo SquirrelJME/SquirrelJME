@@ -24,7 +24,7 @@ SJME_TEST_PROTOTYPE(testJvmInvalid)
 	
 	/* Setup options, use invalid ROM data here but specify it. */
 	memset(&options, 0, sizeof(options));
-	options.romData = malloc(1);
+	options.romData = sjme_malloc(1);
 	options.romSize = 1;
 	
 	/* Missing options. */

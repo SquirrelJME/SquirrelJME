@@ -210,6 +210,9 @@ typedef enum sjme_errorCode
 	
 	/** Not supported. */
 	SJME_ERROR_NOT_SUPPORTED,
+	
+	/** Engine not found. */
+	SJME_ERROR_ENGINE_NOT_FOUND,
 } sjme_errorCode;
 
 /** This represents an error. */
