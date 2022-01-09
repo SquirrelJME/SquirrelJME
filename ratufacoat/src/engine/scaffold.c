@@ -95,8 +95,8 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 		memset(&subError, 0, sizeof(subError));
 		whyUnavailable = SJME_ENGINE_SCAFFOLD_IS_AVAILABLE;
 		if (tryScaffold->isAvailable == NULL ||
-			!tryScaffold->isAvailable(&result->config, &whyUnavailable,
-				result, &subError))
+			tryScaffold->initEngine == NULL ||
+			!tryScaffold->isAvailable(&whyUnavailable, result, &subError))
 			continue;
 		
 		/* Should be available so stop here. */
@@ -115,6 +115,21 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 		return sjme_false;
 	}
 	
+	/* Perform base engine initialization. */
+	if (!tryScaffold->initEngine(result, error))
+	{
+		/* Clean out. */
+		sjme_engineDestroy(result, error);
+		
+		sjme_setError(error, SJME_ERROR_ENGINE_INIT_FAILURE,
+			sjme_getError(error, 0));
+		
+		return sjme_false;
+	}
+	
 	sjme_todo("Implement this?");
-	return sjme_false;
+	
+	/* Initialization complete! */
+	*outState = result;
+	return sjme_true;
 }

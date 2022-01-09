@@ -14,7 +14,9 @@ endif()
 
 # Define the library
 add_library(SquirrelJMEEngine OBJECT
-	scaffold.c)
+	pipe.c
+	scaffold.c
+	taskmanager.c)
 
 # This is written only in C!
 set_target_properties(SquirrelJMEEngine PROPERTIES LINKER_LANGUAGE C)

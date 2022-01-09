@@ -193,18 +193,28 @@ typedef struct sjme_engineScaffold
 	const char* const name;
 	
 	/**
+	 * Performs initialization of a given engine.
+	 * 
+	 * @param partialEngine The partially initialized engine state.
+	 * @param error The output error state.
+	 * @return Will return @c sjme_true if the engine was successfully
+	 * initialized. 
+	 * @since 2022/01/08
+	 */
+	sjme_jboolean (*initEngine)(sjme_engineState* partialEngine,
+		sjme_error* error);
+	
+	/**
 	 * Checks if this scaffold and engine are available.
 	 * 
-	 * @param config The configuration of the engine.
 	 * @param why Why is this engine not available, this is optional and may
 	 * be @c NULL .
 	 * @param partialEngine Partially loaded engine state.
 	 * @param error The error state.
-	 * @return Will return @c true if available, otherwise not. 
+	 * @return Will return @c sjme_true if available, otherwise not. 
 	 * @since 2021/12/30
 	 */
-	sjme_jboolean (*isAvailable)(sjme_engineConfig* config,
-		sjme_engineScaffoldUnavailableType* why,
+	sjme_jboolean (*isAvailable)(sjme_engineScaffoldUnavailableType* why,
 		sjme_engineState* partialEngine, sjme_error* error);
 	
 	/**

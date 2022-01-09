@@ -213,6 +213,9 @@ typedef enum sjme_errorCode
 	
 	/** Engine not found. */
 	SJME_ERROR_ENGINE_NOT_FOUND,
+	
+	/** Engine initialization failure. */
+	SJME_ERROR_ENGINE_INIT_FAILURE,
 } sjme_errorCode;
 
 /** This represents an error. */
