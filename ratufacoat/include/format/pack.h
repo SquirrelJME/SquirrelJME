@@ -19,6 +19,7 @@
 #include "atomic.h"
 #include "sjmerc.h"
 #include "error.h"
+#include "format/def.h"
 #include "format/detect.h"
 #include "format/format.h"
 #include "format/library.h"
@@ -35,8 +36,6 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
-
-typedef struct sjme_packInstance sjme_packInstance;
 
 /** Is this a SpringCoat Pack? */
 #define SJME_PACK_FLAG_IS_SPRINGCOAT INT32_C(0x1)
@@ -110,10 +109,11 @@ typedef struct sjme_packDriver
 } sjme_packDriver;
 
 /**
- * Instance of a pack, is internally kept state.
+ * Instance of a pack which is a singular ROM which contains multiple JARs or
+ * sets of classes.
  * 
  * @since 2021/09/19
- */ 
+ */
 struct sjme_packInstance
 {
 	/** The format instance. */
@@ -139,6 +139,19 @@ struct sjme_packInstance
 };
 
 /**
+ * Resolves a class path from a set of C strings.
+ * 
+ * @param pack The pack to look inside of for libraries.
+ * @param classPath The input class path to resolve.
+ * @param result The resultant class path.
+ * @param error Any potential error state.
+ * @return Will return @c sjme_true on success.
+ * @since 2022/01/09
+ */
+sjme_jboolean sjme_packClassPathFromCharStar(sjme_packInstance* pack,
+	const char** classPath, sjme_classPath** result, sjme_error* error);
+
+/**
  * Closes the given pack instance.
  * 
  * @param instance The instance to close.
@@ -148,6 +161,22 @@ struct sjme_packInstance
  */
 sjme_jboolean sjme_packClose(sjme_packInstance* instance,
 	sjme_error* error);
+
+/**
+ * Obtains the details to launch the inbuilt launcher, this information is
+ * contained within the ROM itself.
+ * 
+ * @param pack The pack to obtain the launcher details from.
+ * @param outMainClass The main entry point for the launcher.
+ * @param outArgs Output arguments for the launcher call.
+ * @param outClassPath The output class path for the launcher.
+ * @param error Any possible error state.
+ * @return If this was able to be obtained.
+ * @since 2022/01/09
+ */
+sjme_jboolean sjme_packGetLauncherDetail(sjme_packInstance* pack,
+	const char** outMainClass, sjme_mainArgs** outArgs,
+	sjme_classPath** outClassPath, sjme_error* error);
 
 /**
  * Opens the given pack and makes an instance of it.

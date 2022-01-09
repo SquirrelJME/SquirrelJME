@@ -19,6 +19,7 @@
 #include "sjmerc.h"
 #include "counter.h"
 #include "error.h"
+#include "format/def.h"
 #include "format/detect.h"
 #include "format/format.h"
 #include "memchunk.h"
@@ -35,8 +36,6 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
-
-typedef struct sjme_libraryInstance sjme_libraryInstance;
 
 /**
  * Opens an entry within the library as a memory chunk.
@@ -90,7 +89,7 @@ typedef struct sjme_libraryDriver
 } sjme_libraryDriver;
 
 /**
- * Instance of a pack, is internally kept state.
+ * Instance of a library which represents a single JAR or set of classes.
  * 
  * @since 2021/09/19
  */ 

@@ -12,6 +12,7 @@
 #include "format/pack.h"
 #include "format/sqc.h"
 #include "memory.h"
+#include "engine/scafdef.h"
 
 /** The pack drivers which are available for usage. */
 static const sjme_packDriver* const sjme_packDrivers[] =
@@ -51,6 +52,13 @@ static sjme_jboolean sjme_packCollect(sjme_counter* counter, sjme_error* error)
 	}
 	
 	return sjme_packClose(counter->dataPointer, error);
+}
+
+sjme_jboolean sjme_packClassPathFromCharStar(sjme_packInstance* pack,
+	const char** classPath, sjme_classPath** result, sjme_error* error)
+{
+	sjme_todo("Implement this?");
+	return sjme_false;
 }
 
 sjme_jboolean sjme_packClose(sjme_packInstance* instance,
@@ -97,6 +105,14 @@ sjme_jboolean sjme_packClose(sjme_packInstance* instance,
 	
 	/* Has there been a close failure? */
 	return !failingLib && !badFree && !badPackClose;
+}
+
+sjme_jboolean sjme_packGetLauncherDetail(sjme_packInstance* pack,
+	const char** outMainClass, sjme_mainArgs** outArgs,
+	sjme_classPath** outClassPath, sjme_error* error)
+{
+	sjme_todo("Implement this?");
+	return sjme_false;
 }
 
 sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,

@@ -9,6 +9,7 @@
 
 #include "debug.h"
 #include "engine/scaffold.h"
+#include "engine/taskmanager.h"
 #include "memory.h"
 
 const sjme_engineScaffold* const sjme_engineScaffolds[] =
@@ -39,6 +40,69 @@ sjme_jboolean sjme_engineDestroy(sjme_engineState* state, sjme_error* error)
 	
 	/* Was destruction okay? */
 	return isOkay;
+}
+
+/**
+ * Enters the main entry point of the engine, this can be a specific class or
+ * the specified main class on the command line.
+ * 
+ * @param engineState The state of the engine to load in.
+ * @param error The error state.
+ * @return If entering the main entry point was successful.
+ * @since 2022/01/09
+ */
+static sjme_jboolean sjme_engineEnterMain(sjme_engineState* engineState,
+	sjme_error* error)
+{
+	const char* mainClass;
+	sjme_mainArgs* mainArgs;
+	sjme_classPath* classPath;
+	
+	if (engineState == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	/* Use specific main class and starting arguments. */
+	if (engineState->config.mainClass != NULL)
+	{
+		mainClass = engineState->config.mainClass;
+		mainArgs = engineState->config.mainArgs;
+		
+		/* Resolve class path from a set of library strings. */
+		if (!sjme_packClassPathFromCharStar(engineState->romPack,
+			engineState->config.mainClassPath,
+			&classPath, error))
+		{
+			if (!sjme_hasError(error))
+				sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
+			
+			return sjme_false;
+		}
+	}
+	
+	/* Use built-in launcher. */
+	else
+	{
+		/* We need to resolve how we launch the launcher. */
+		if (!sjme_packGetLauncherDetail(engineState->romPack,
+			&mainClass, &mainArgs,
+			&classPath, error))
+		{
+			sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
+			
+			return sjme_false;
+		}
+	}
+	
+	/* Initialize the main entry task and thread. */
+	return sjme_engineTaskNew(engineState, classPath, mainClass,
+		mainArgs, engineState->config.sysProps,
+		SJME_TASK_PIPE_REDIRECT_TERMINAL, SJME_TASK_PIPE_REDIRECT_TERMINAL,
+		sjme_false, sjme_true,
+		&engineState->mainTask, &engineState->mainThread, error);
 }
 
 sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
@@ -115,8 +179,9 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 		return sjme_false;
 	}
 	
-	/* Perform base engine initialization. */
-	if (!tryScaffold->initEngine(result, error))
+	/* Perform base engine initialization and start the main task. */
+	if (!tryScaffold->initEngine(result, error) ||
+		!sjme_engineEnterMain(result, error))
 	{
 		/* Clean out. */
 		sjme_engineDestroy(result, error);
@@ -126,8 +191,6 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 		
 		return sjme_false;
 	}
-	
-	sjme_todo("Implement this?");
 	
 	/* Initialization complete! */
 	*outState = result;

@@ -7,13 +7,13 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "format/detect.h"
+#include "debug.h"
+#include "error.h"
 #include "format/format.h"
 #include "format/library.h"
 #include "format/memfile.h"
 #include "format/sqc.h"
 #include "format/zip.h"
-#include "debug.h"
 
 /** The library drivers which are available for usage. */
 static const sjme_libraryDriver* const sjme_libraryDrivers[] =

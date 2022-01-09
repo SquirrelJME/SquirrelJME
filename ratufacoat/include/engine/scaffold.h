@@ -93,6 +93,20 @@ typedef struct sjme_engineSystemProperty
 } sjme_engineSystemProperty;
 
 /**
+ * Represents a set of system properties.
+ * 
+ * @since 2022/01/09
+ */
+typedef struct sjme_engineSystemPropertySet
+{
+	/** The number of system properties. */
+	sjme_jint count;
+	
+	/** The defined system properties. */
+	sjme_engineSystemProperty properties[];
+} sjme_engineSystemPropertySet;
+
+/**
  * Configuration for an engine within SquirrelJME, this is used to initialize
  * the virtual machine and everything it needs.
  * 
@@ -121,11 +135,8 @@ typedef struct sjme_engineConfig
 	/** The front-end bridge for native calls. */
 	const sjme_frontBridge* frontBridge; 
 	
-	/** System property count. */
-	sjme_jint sysPropCount;
-	
 	/** System properties. */
-	sjme_engineSystemProperty* sysProps;
+	sjme_engineSystemPropertySet* sysProps;
 	
 	/** Use the launcher specified by the ROM for execution. */
 	sjme_jboolean useLauncher;
@@ -133,13 +144,13 @@ typedef struct sjme_engineConfig
 	/** Main class. */
 	const char* mainClass;
 	
-	/** Main argument count. */
-	sjme_jint mainArgCount;
-	
 	/** Main arguments. */
-	const char** mainArgs;
+	sjme_mainArgs* mainArgs;
 	
-	/** The number of active terminals, if @c then there are none. */
+	/** Main class path. */
+	const char** mainClassPath;
+	
+	/** The number of active terminals, if @c 0 then there are no terminals. */
 	sjme_jint numTerminals;
 	
 	/** The available terminals. */
@@ -261,6 +272,12 @@ struct sjme_engineState
 	
 	/** The ROM pack that is opened. */
 	sjme_packInstance* romPack;
+	
+	/** Main task. */
+	sjme_engineTask* mainTask;
+	
+	/** Main thread. */
+	sjme_engineThread* mainThread;
 };
 
 /**

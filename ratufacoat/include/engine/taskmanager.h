@@ -16,6 +16,9 @@
 #ifndef SQUIRRELJME_TASKMANAGER_H
 #define SQUIRRELJME_TASKMANAGER_H
 
+#include "sjmerc.h"
+#include "scaffold.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
@@ -48,6 +51,33 @@ typedef enum sjme_taskPipeRedirectType
 	/** The number of redirect types. */
 	NUM_SJME_TASK_PIPE_REDIRECTS = 3
 } sjme_taskPipeRedirectType;
+
+/**
+ * Spawns a new task within the virtual machine.
+ * 
+ * @param engineState The state of the engine where the task is created under.
+ * @param classPath The classpath to use.
+ * @param mainClass The main entry class.
+ * @param mainArgs The main arguments.
+ * @param sysProps The system properties.
+ * @param stdOutMode Standard output mode.
+ * @param stdErrMode Standard error mode.
+ * @param forkThread Should the task be started on a new thread?
+ * @param rootVm Is this the root virtual machine?
+ * @param outTask The output task which was created.
+ * @param outMainThread The output main thread which was created.
+ * @param error Any possible error state.
+ * @return Will return @c sjme_true if the task was created.
+ * @since 2022/01/09
+ */
+sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
+	sjme_classPath* classPath,
+	const char* mainClass, sjme_mainArgs* mainArgs,
+	sjme_engineSystemPropertySet* sysProps,
+	sjme_taskPipeRedirectType stdOutMode,
+	sjme_taskPipeRedirectType stdErrMode, sjme_jboolean forkThread,
+	sjme_jboolean rootVm, sjme_engineTask** outTask,
+	sjme_engineThread** outMainThread, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

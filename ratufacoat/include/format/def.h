@@ -8,13 +8,13 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Scaffold definitions.
+ * Defines for packs and libraries.
  * 
- * @since 2022/01/05
+ * @since 2022/01/09
  */
 
-#ifndef SQUIRRELJME_SCAFDEF_H
-#define SQUIRRELJME_SCAFDEF_H
+#ifndef SQUIRRELJME_FORMAT_DEF_H
+#define SQUIRRELJME_FORMAT_DEF_H
 
 #include "sjmerc.h"
 
@@ -22,7 +22,7 @@
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_SCAFDEF_H
+#define SJME_CXX_SQUIRRELJME_FORMAT_DEF_H
 extern "C"
 {
 #endif /* #ifdef SJME_CXX_IS_EXTERNED */
@@ -31,49 +31,43 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
- * The state of any given engine.
+ * Instance of a pack which is a singular ROM which contains multiple JARs or
+ * sets of classes.
  * 
- * @since 2022/01/03
+ * @since 2021/09/19
  */
-typedef struct sjme_engineState sjme_engineState;
+typedef struct sjme_packInstance sjme_packInstance;
 
 /**
- * The state of a single task within the engine.
+ * Instance of a library which represents a single JAR or set of classes.
+ * 
+ * @since 2021/09/19
+ */ 
+typedef struct sjme_libraryInstance sjme_libraryInstance;
+
+/**
+ * Represents a class path.
  * 
  * @since 2022/01/09
  */
-typedef struct sjme_engineTask sjme_engineTask;
-
-/**
- * The state of a single thread within the engine.
- * 
- * @since 2022/01/03
- */
-typedef struct sjme_engineThread sjme_engineThread;
-
-/**
- * Represents the main arguments to a program.
- * 
- * @since 2022/01/09
- */
-typedef struct sjme_mainArgs
+typedef struct sjme_classPath
 {
-	/** The number of arguments that exist. */
+	/** The number of libraries in the class path. */
 	sjme_jint count;
 	
-	/** The main arguments. */
-	const char* args[0];
-} sjme_mainArgs;
+	/** The libraries within the class path. */
+	sjme_libraryInstance* libraries[0];
+} sjme_classPath;
 
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_SCAFDEF_H
+#ifdef SJME_CXX_SQUIRRELJME_FORMAT_DEF_H
 }
-#undef SJME_CXX_SQUIRRELJME_SCAFDEF_H
+#undef SJME_CXX_SQUIRRELJME_FORMAT_DEF_H
 #undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCAFDEF_H */
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_FORMAT_DEF_H */
 #endif /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_SCAFDEF_H */
+#endif /* SQUIRRELJME_FORMAT_DEF_H */

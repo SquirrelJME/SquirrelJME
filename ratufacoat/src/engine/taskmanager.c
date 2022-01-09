@@ -7,4 +7,18 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "debug.h"
 #include "engine/taskmanager.h"
+
+sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
+	sjme_classPath* classPath,
+	const char* mainClass, sjme_mainArgs* mainArgs,
+	sjme_engineSystemPropertySet* sysProps,
+	sjme_taskPipeRedirectType stdOutMode,
+	sjme_taskPipeRedirectType stdErrMode, sjme_jboolean forkThread,
+	sjme_jboolean rootVm, sjme_engineTask** outTask,
+	sjme_engineThread** outMainThread, sjme_error* error)
+{
+	sjme_todo("Implement this?");
+	return sjme_false;
+}

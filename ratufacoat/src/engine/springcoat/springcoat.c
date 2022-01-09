@@ -44,10 +44,10 @@ static sjme_jboolean sjme_springCoat_initEngine(
  * @since 2022/01/08
  */
 static sjme_jboolean sjme_springCoat_isAvailable(
-		sjme_engineScaffoldUnavailableType* why,
-		sjme_engineState* partialEngine, sjme_error* error)
+	sjme_engineScaffoldUnavailableType* why,
+	sjme_engineState* partialEngine, sjme_error* error)
 {
-	if (config == NULL || partialEngine == NULL ||
+	if (partialEngine == NULL ||
 		partialEngine->romPack == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
