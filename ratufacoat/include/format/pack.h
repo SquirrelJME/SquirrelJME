@@ -19,6 +19,7 @@
 #include "atomic.h"
 #include "sjmerc.h"
 #include "error.h"
+#include "engine/scafdef.h"
 #include "format/def.h"
 #include "format/detect.h"
 #include "format/format.h"
