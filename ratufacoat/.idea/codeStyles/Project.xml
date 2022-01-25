@@ -86,6 +86,9 @@
         <pair source="cu" header="cuh" fileNamingConvention="LOWERCASE" />
       </extensions>
     </Objective-C-extensions>
+    <clangFormatSettings>
+      <option name="ENABLED" value="true" />
+    </clangFormatSettings>
     <codeStyleSettings language="CMake">
       <indentOptions>
         <option name="USE_TAB_CHARACTER" value="true" />
