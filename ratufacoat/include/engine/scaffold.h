@@ -270,6 +270,9 @@ struct sjme_engineState
 	/** The scaffold that this engine uses, contains all the engine logic. */
 	const sjme_engineScaffold* scaffold;
 	
+	/** The specific engine implementation state. */
+	void* implState;
+	
 	/** The ROM pack that is opened. */
 	sjme_packInstance* romPack;
 	

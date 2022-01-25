@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_SPRINGCOAT_H
 #define SQUIRRELJME_SPRINGCOAT_H
 
+#include "engine/scaffold.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
