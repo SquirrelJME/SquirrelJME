@@ -91,17 +91,38 @@ if(CMAKE_SYSTEM_NAME STREQUAL Windows)
 	set(SQUIRRELJME_LIBRETRO_EXTENSION ".exe")
 
 	if (EXISTS "$ENV{APPDATA}/RetroArch")
-		set(SQUIRRELJME_LIBRETRO_DIR "$ENV{APPDATA}/RetroArch")
+		set(SQUIRRELJME_LIBRETRO_COMMAND
+			"$ENV{APPDATA}/RetroArch/retroarch${SQUIRRELJME_LIBRETRO_EXTENSION}")
 	endif()
+
+# Check if RetroArch is somewhere in PATH (Linux and Mac OS)
 else()
 	set(SQUIRRELJME_LIBRETRO_EXTENSION "")
+
+	# Which snaps are available?
+	execute_process(COMMAND which retroarch
+		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+		ERROR_QUIET
+		RESULT_VARIABLE SQUIRRELJME_LIBRETRO_WHICH_RESULT
+		OUTPUT_VARIABLE SQUIRRELJME_LIBRETRO_WHICH_OUTPUT
+		ERROR_VARIABLE SQUIRRELJME_LIBRETRO_WHICH_ERROR
+		OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+	# It is somewhere in PATH? If it is, then use that path
+	# Call through /bin/bash because on Linux if RetroArch is in a snap
+	# package then if called by CLion all of our env vars are not passed in
+	# which breaks it working with X11.
+	if("${SQUIRRELJME_LIBRETRO_WHICH_RESULT}" EQUAL 0)
+		set(SQUIRRELJME_LIBRETRO_COMMAND
+			/bin/bash -c "${SQUIRRELJME_LIBRETRO_WHICH_OUTPUT}")
+	endif()
 endif()
 
 ## Target to run RetroArch with the SquirrelJME Core
-if(DEFINED SQUIRRELJME_LIBRETRO_DIR)
+if(DEFINED SQUIRRELJME_LIBRETRO_COMMAND)
 	add_custom_target(RetroArch
 		DEPENDS squirreljme_libretro
-		COMMAND "${SQUIRRELJME_LIBRETRO_DIR}/retroarch${SQUIRRELJME_LIBRETRO_EXTENSION}"
+		COMMAND echo ${SQUIRRELJME_LIBRETRO_COMMAND}
 			"--verbose" "--log-file" "${PROJECT_SOURCE_DIR}/libretro-log.txt"
 			"-L" "$<TARGET_FILE:squirreljme_libretro>"
 		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
