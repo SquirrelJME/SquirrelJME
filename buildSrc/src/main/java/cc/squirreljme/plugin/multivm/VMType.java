@@ -79,6 +79,7 @@ public enum VMType
 		 * {@inheritDoc}
 		 * @since 2020/08/15
 		 */
+		@SuppressWarnings("CallToSystemGetenv")
 		@Override
 		public void spawnJvmArguments(Task __task, boolean __debugEligible,
 			JavaExecSpecFiller __execSpec, String __mainClass,
@@ -97,6 +98,20 @@ public enum VMType
 				VMHelpers.classpathAsString(__libPath));
 			sysProps.put("squirreljme.hosted.classpath",
 				VMHelpers.classpathAsString(__classPath));
+			
+			// For Linux, if this variable is specified we can set the UI
+			// scale for Swing so that things are a bit bigger and not
+			// ultra-small...
+			String gdkScale = System.getenv("GDK_SCALE");
+			if (gdkScale != null)
+			{
+				System.err.printf("SCALING: %s%n", gdkScale);
+				
+				sysProps.put("sun.java2d.uiScale.enabled", "true");
+				sysProps.put("sun.java2d.uiScale", gdkScale);
+				sysProps.put("sun.java2d.win.uiScaleX", gdkScale);
+				sysProps.put("sun.java2d.win.uiScaleY", gdkScale);
+			}
 			
 			// Can we directly refer to the emulator library already?
 			// Only if it has not already been given, doing it here will enable
