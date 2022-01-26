@@ -109,12 +109,9 @@ else()
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 	# It is somewhere in PATH? If it is, then use that path
-	# Call through /bin/bash because on Linux if RetroArch is in a snap
-	# package then if called by CLion all of our env vars are not passed in
-	# which breaks it working with X11.
 	if("${SQUIRRELJME_LIBRETRO_WHICH_RESULT}" EQUAL 0)
 		set(SQUIRRELJME_LIBRETRO_COMMAND
-			/bin/bash -c "${SQUIRRELJME_LIBRETRO_WHICH_OUTPUT}")
+			"${SQUIRRELJME_LIBRETRO_WHICH_OUTPUT}")
 	endif()
 endif()
 
@@ -122,7 +119,7 @@ endif()
 if(DEFINED SQUIRRELJME_LIBRETRO_COMMAND)
 	add_custom_target(RetroArch
 		DEPENDS squirreljme_libretro
-		COMMAND echo ${SQUIRRELJME_LIBRETRO_COMMAND}
+		COMMAND ${SQUIRRELJME_LIBRETRO_COMMAND}
 			"--verbose" "--log-file" "${PROJECT_SOURCE_DIR}/libretro-log.txt"
 			"-L" "$<TARGET_FILE:squirreljme_libretro>"
 		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
