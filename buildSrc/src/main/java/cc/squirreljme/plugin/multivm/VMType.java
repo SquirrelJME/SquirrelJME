@@ -154,6 +154,27 @@ public enum VMType
 			sysProps.put("squirreljme.hosted.vm.classpath",
 				VMHelpers.classpathAsString(VMHelpers.resolvePath(classPath)));
 			
+			// Define Java ME Configuration
+			sysProps.put("microedition.configuration",
+				"CLDC-1.8");
+			sysProps.put("squirreljme.orig.microedition.configuration",
+				"CLDC-1.8");
+			
+			// Define Java ME Encoding
+			sysProps.put("microedition.encoding", "utf-8");
+			sysProps.put("squirreljme.orig.microedition.encoding",
+				"utf-8");
+			
+			// Define Java ME Locale
+			sysProps.put("microedition.locale", "en-US");
+			sysProps.put("squirreljme.orig.microedition.locale",
+				"en-US");
+			
+			// Define Java ME Platform
+			sysProps.put("microedition.platform", "SquirrelJME/0.3.0");
+			sysProps.put("squirreljme.orig.microedition.platform",
+				"SquirrelJME/0.3.0");
+			
 			// Declare system properties that are all the originally defined
 			// system properties
 			for (Map.Entry<String, String> e : __sysProps.entrySet())

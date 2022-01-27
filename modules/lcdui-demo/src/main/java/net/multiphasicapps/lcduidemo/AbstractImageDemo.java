@@ -118,6 +118,9 @@ public abstract class AbstractImageDemo
 				throw new NullPointerException("NARG");
 			
 			this.image = __i;
+			
+			// We do not draw over every pixel
+			this.setPaintMode(false);
 		}
 		
 		/**

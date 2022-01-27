@@ -196,7 +196,7 @@ public class Image
 		// If the alpha channel is not used then all RGB data is forced to
 		// be fully opaque
 		boolean alpha = this._alpha;
-		int opqmask = (this._alpha ? 0 : 0xFF_000000);
+		int opaqueMask = (this._alpha ? 0 : 0xFF_000000);
 		
 		// Read image data
 		int[] data = this._data;
@@ -213,10 +213,10 @@ public class Image
 				__b, dstoff, ex - __x);
 			
 			// If not using alpha, then force all pixels to have the given
-			// mask.
+			// alpha mask
 			if (!alpha)
-				for (int sx = __x, q = dstoff; sx < ex; sx++)
-					__b[q++] |= opqmask;
+				for (int sx = __x; sx < ex; sx++)
+					__b[dstoff++] |= opaqueMask;
 		}
 	}
 	
@@ -547,12 +547,14 @@ public class Image
 		else
 		{
 			int[] copy = new int[area];
-			for (int i = 0; i < area; i++)
-				copy[i] = __rgb[i];
+			
+			System.arraycopy(__rgb, 0,
+				copy, 0, area);
+			
 			__rgb = copy;
 		}
 		
-		// If there is no alpha channel, force all of it opaque
+		// If there is no alpha channel, force all of it to be opaque
 		if (!__alpha)
 			for (int i = 0; i < area; i++)
 				__rgb[i] |= 0xFF000000;

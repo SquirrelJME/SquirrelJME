@@ -269,7 +269,7 @@ public final class PencilGraphics
 		}
 		
 		// Forward Call
-		this.__drawRegion(__data, __off, __scanlen, false,
+		this.__drawRegion(__data, __off, __scanlen, __alpha,
 			0, 0, __w, __h, Sprite.TRANS_NONE,
 			__x, __y, Graphics.TOP | Graphics.LEFT, __w, __h);
 	}
