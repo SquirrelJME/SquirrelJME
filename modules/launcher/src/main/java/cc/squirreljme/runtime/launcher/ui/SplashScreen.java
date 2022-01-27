@@ -11,7 +11,6 @@ package cc.squirreljme.runtime.launcher.ui;
 
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,6 +70,13 @@ public final class SplashScreen
 		
 		// Full-screen mode for the entire image
 		this.setFullScreenMode(true);
+		
+		// Add command to exit the VM, so it does something
+		this.addCommand(MidletMain.EXIT_COMMAND);
+		
+		// Need to handle commands and such
+		__ExitHandler__ ch = new __ExitHandler__();
+		this.setCommandListener(ch);
 		
 		// Load the launcher image in a background thread so the splash screen
 		// can still display the copyright notice
@@ -257,4 +263,3 @@ public final class SplashScreen
 		}
 	}
 }
-
