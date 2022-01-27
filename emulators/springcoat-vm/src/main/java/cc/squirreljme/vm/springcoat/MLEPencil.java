@@ -15,7 +15,7 @@ import cc.squirreljme.jvm.mle.constants.NativeImageLoadParameter;
 import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
 import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
 import cc.squirreljme.runtime.lcdui.mle.SoftwareGraphicsFactory;
 import cc.squirreljme.vm.springcoat.brackets.PencilObject;
@@ -23,6 +23,7 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -51,7 +52,8 @@ public enum MLEPencil
 			
 			return PencilCapabilities.MINIMUM |
 				PencilCapabilities.FILL_RECT |
-				PencilCapabilities.DRAW_LINE;
+				PencilCapabilities.DRAW_LINE |
+				PencilCapabilities.DRAW_XRGB32_REGION;
 		}
 	},
 	
@@ -76,7 +78,95 @@ public enum MLEPencil
 			
 			return null;
 		}
-	}, 
+	},
+	
+	/**
+	 * {@link PencilShelf#hardwareDrawXRGB32Region(PencilBracket, int[], int,
+	 * int, boolean, int, int, int, int, int, int, int, int, int, int)}.
+	 */
+	HARDWARE_DRAW_XRGB32_REGION("hardwareDrawXRGB32Region:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;[IIIZIIIIIIIIII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/01/26
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			// Try to get our buffer
+			SpringArrayObjectInteger objBuf;
+			
+			try
+			{
+				objBuf = SpringNullObject.<SpringArrayObjectInteger>checkCast(
+						SpringArrayObjectInteger.class, __args[1]);
+				if (objBuf == null)
+					throw new MLECallError("Null arguments.");
+			}
+			catch (ClassCastException e)
+			{
+				throw new MLECallError("Wrong buffer type.", e);
+			}
+			
+			// Extract all the arguments
+			int[] __buf = objBuf.array();
+			int __off = (Integer)__args[2];
+			int __scanLen = (Integer)__args[3];
+			boolean __alpha = ((Integer)__args[4] != 0);
+			int __xSrc = (Integer)__args[5];
+			int __ySrc = (Integer)__args[6];
+			int __wSrc = (Integer)__args[7];
+			int __hSrc = (Integer)__args[8];
+			int __trans = (Integer)__args[9];
+			int __xDest = (Integer)__args[10];
+			int __yDest = (Integer)__args[11];
+			int __anch = (Integer)__args[12];
+			int __wDest = (Integer)__args[13];
+			int __hDest = (Integer)__args[14];
+			
+			// If the offset and/or the scan length is off, we need to correct
+			// and move this over for the plain region call
+			if (__off != 0 || __scanLen != __wSrc)
+			{
+				// Setup new buffer
+				int maxSize = __wSrc * __hSrc;
+				int[] newBuf = new int[maxSize];
+				
+				// Copy each scanline off
+				int xSrc = __off;
+				int xDst = 0;
+				for (int y = 0; y < __hSrc; y++)
+				{
+					// Copy row
+					System.arraycopy(__buf, xSrc,
+						newBuf, xDst, __wSrc);
+					
+					// Go to the next scan
+					xSrc += __scanLen;
+					xDst += __wSrc;
+				}
+				
+				// We un-quirked the image, so reset these
+				__buf = newBuf;
+				__off = 0;
+				__scanLen = __wSrc;
+			}
+			
+			// Load in source image
+			Image wrapped = Image.createRGBImage(__buf,
+				__wSrc, __hSrc, __alpha);
+			
+			// Forward to normal call and have our own graphics code handle
+			// this one
+			MLEPencil.__graphics(__args[0])
+				.drawRegion(wrapped, __xSrc, __ySrc, __wSrc, __hSrc, __trans,
+					__xDest, __yDest, __anch, __wDest, __hDest);
+			
+			// No result from this one
+			return null;
+		}
+	},
 	
 	/**
 	 * {@link PencilShelf#hardwareFillRect(PencilBracket, int, int, int, int)}.

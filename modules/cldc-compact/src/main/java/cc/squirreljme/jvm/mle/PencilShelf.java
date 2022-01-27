@@ -63,6 +63,34 @@ public final class PencilShelf
 		throws MLECallError;
 	
 	/**
+	 * Draws a region of 32-bit RGB data into the target.
+	 * 
+	 * @param __data The source buffer.
+	 * @param __off The offset into the buffer.
+	 * @param __scanLen The scanline length.
+	 * @param __alpha Drawing with the alpha channel?
+	 * @param __xSrc The source X position.
+	 * @param __ySrc The source Y position.
+	 * @param __wSrc The width of the source region.
+	 * @param __hSrc The height of the source region.
+	 * @param __trans Sprite translation and/or rotation, see
+	 * {@code javax.microedition.lcdui.game.Sprite}.
+	 * @param __xDest The destination X position, is translated.
+	 * @param __yDest The destination Y position, is translated.
+	 * @param __anch The anchor point.
+	 * @param __wDest The destination width.
+	 * @param __hDest The destination height.
+	 * @throws MLECallError On null arguments.
+	 * @since 2022/01/26
+	 */
+	public static native void hardwareDrawXRGB32Region(
+		PencilBracket __hardware,
+		int[] __data, int __off, int __scanLen, boolean __alpha, int __xSrc,
+		int __ySrc, int __wSrc, int __hSrc, int __trans,
+		int __xDest, int __yDest, int __anch, int __wDest, int __hDest)
+		throws MLECallError;
+	
+	/**
 	 * Performs rectangular fill in hardware.
 	 * 
 	 * @param __g The hardware graphics to draw with.

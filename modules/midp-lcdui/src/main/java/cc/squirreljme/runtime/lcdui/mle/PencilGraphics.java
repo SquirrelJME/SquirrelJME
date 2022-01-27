@@ -18,6 +18,7 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Text;
+import javax.microedition.lcdui.game.Sprite;
 
 /**
  * This delegates drawing operations to either the hardware graphics layer
@@ -229,13 +230,10 @@ public final class PencilGraphics
 	public void drawImage(Image __i, int __x, int __y, int __anchor)
 		throws IllegalArgumentException, NullPointerException
 	{
-		if (0 == (this.capabilities & PencilCapabilities.DRAW_XRGB32_REGION))
-		{
-			this.software.drawImage(__i, __x, __y, __anchor);
-			return;
-		}
-		
-		throw Debugging.todo();
+		// This is a duplicate function, so it gets forwarded
+		this.drawRegion(__i, 0, 0,
+			__i.getWidth(), __i.getHeight(), 0,
+			__x, __y, __anchor);
 	}
 	
 	/**
@@ -263,14 +261,17 @@ public final class PencilGraphics
 		int __y, int __w, int __h, boolean __alpha)
 		throws NullPointerException
 	{
-		if (0 == (this.capabilities & PencilCapabilities.DRAW_XRGB32_SIMPLE))
+		if (0 == (this.capabilities & PencilCapabilities.DRAW_XRGB32_REGION))
 		{
 			this.software.drawRGB(__data, __off, __scanlen, __x, __y, __w,
 				__h, __alpha);
 			return;
 		}
 		
-		throw Debugging.todo();
+		// Forward Call
+		this.__drawRegion(__data, __off, __scanlen, false,
+			0, 0, __w, __h, Sprite.TRANS_NONE,
+			__x, __y, Graphics.TOP | Graphics.LEFT, __w, __h);
 	}
 	
 	/**
@@ -318,14 +319,9 @@ public final class PencilGraphics
 		int __anch)
 		throws IllegalArgumentException, NullPointerException
 	{
-		if (0 == (this.capabilities & PencilCapabilities.DRAW_XRGB32_REGION))
-		{
-			this.software.drawRegion(__src, __xsrc, __ysrc, __wsrc, __hsrc,
-				__trans, __xdest, __ydest, __anch);
-			return;
-		}
-		
-		throw Debugging.todo();
+		// Forward call
+		this.drawRegion(__src, __xsrc, __ysrc, __wsrc, __hsrc,
+			__trans, __xdest, __ydest, __anch, __wsrc, __hsrc);
 	}
 	
 	/**
@@ -338,6 +334,9 @@ public final class PencilGraphics
 		int __anch, int __wdest, int __hdest)
 		throws IllegalArgumentException, NullPointerException
 	{
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		
 		if (0 == (this.capabilities & PencilCapabilities.DRAW_XRGB32_REGION))
 		{
 			this.software.drawRegion(__src, __xsrc, __ysrc, __wsrc, __hsrc,
@@ -345,7 +344,38 @@ public final class PencilGraphics
 			return;
 		}
 		
-		throw Debugging.todo();
+		// If the image is direct, use the buffer that is inside rather than
+		// a copy, so we do not waste time copying from it!
+		int[] buf;
+		int offset;
+		int scanLen;
+		if (false && __src.squirreljmeIsDirect())
+		{
+			buf = __src.squirreljmeDirectRGBInt();
+			offset = __src.squirreljmeDirectOffset();
+			scanLen = __src.squirreljmeDirectScanLen();
+		}
+		
+		// Image is not directly accessible, so get a copy of it
+		else
+		{
+			// Obtain image properties
+			int iW = __src.getWidth();
+			int iH = __src.getHeight();
+			int totalPixels = iW * iH;
+			
+			// Read RGB data
+			buf = new int[totalPixels];
+			offset = 0;
+			scanLen = iW;
+			__src.getRGB(buf, offset, scanLen, 0, 0, iW, iH);
+		}
+		
+		// Perform the internal draw
+		this.__drawRegion(buf, offset, scanLen, __src.hasAlpha(),
+			__xsrc, __ysrc, __wsrc, __hsrc, __trans,
+			__xdest, __ydest, __anch,
+			__wdest, __hdest);
 	}
 	
 	/**
@@ -858,6 +888,43 @@ public final class PencilGraphics
 		// Forward to both software and hardware graphics
 		this.software.translate(__x, __y);
 		PencilShelf.hardwareTranslate(this.hardware, __x, __y);
+	}
+	
+	/**
+	 * Draws a direct RGB region of an image.
+	 * 
+	 * @param __data The source buffer.
+	 * @param __off The offset into the buffer.
+	 * @param __scanlen The scanline length.
+	 * @param __alpha Drawing with the alpha channel?
+	 * @param __xsrc The source X position.
+	 * @param __ysrc The source Y position.
+	 * @param __wsrc The width of the source region.
+	 * @param __hsrc The height of the source region.
+	 * @param __trans Sprite translation and/or rotation, see {@link Sprite}.
+	 * @param __xdest The destination X position, is translated.
+	 * @param __ydest The destination Y position, is translated.
+	 * @param __anch The anchor point.
+	 * @param __wdest The destination width.
+	 * @param __hdest The destination height.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/01/26
+	 */
+	private void __drawRegion(int[] __data, int __off, int __scanlen,
+		boolean __alpha, int __xsrc, int __ysrc, int __wsrc, int __hsrc,
+		int __trans, int __xdest, int __ydest, int __anch,
+		int __wdest, int __hdest)
+		throws NullPointerException
+	{
+		if (__data == null)
+			throw new NullPointerException("NARG");
+		
+		// Forward to the native region drawing method
+		PencilShelf.hardwareDrawXRGB32Region(this.hardware,
+			__data, __off, __scanlen,
+			__alpha, __xsrc, __ysrc, __wsrc, __hsrc,
+			__trans, __xdest, __ydest, __anch,
+			__wdest, __hdest);
 	}
 	
 	/**

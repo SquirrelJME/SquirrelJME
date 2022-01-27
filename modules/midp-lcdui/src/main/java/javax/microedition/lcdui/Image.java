@@ -10,6 +10,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.runtime.lcdui.image.AccessibleImage;
 import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class Image
+	extends AccessibleImage
 {
 	/** The RGB image data. */
 	private final int[] _data;
@@ -193,6 +195,7 @@ public class Image
 		
 		// If the alpha channel is not used then all RGB data is forced to
 		// be fully opaque
+		boolean alpha = this._alpha;
 		int opqmask = (this._alpha ? 0 : 0xFF_000000);
 		
 		// Read image data
@@ -203,9 +206,17 @@ public class Image
 			int srcoff = (iw * sy) + __x;
 			int dstoff = __o + (wy * __sl);
 			
-			// Copy data
-			for (int sx = __x; sx < ex; sx++)
-				__b[dstoff++] = data[srcoff++] | opqmask;
+			// Copy data, arraycopy is much faster of an operation!
+			/*for (int sx = __x; sx < ex; sx++)
+				__b[dstoff++] = data[srcoff++] | opqmask;*/
+			System.arraycopy(data, srcoff,
+				__b, dstoff, ex - __x);
+			
+			// If not using alpha, then force all pixels to have the given
+			// mask.
+			if (!alpha)
+				for (int sx = __x, q = dstoff; sx < ex; sx++)
+					__b[q++] |= opqmask;
 		}
 	}
 	
@@ -268,6 +279,52 @@ public class Image
 	public final boolean isScalable()
 	{
 		return (this instanceof ScalableImage);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/26
+	 */
+	@Override
+	public final int squirreljmeDirectOffset()
+	{
+		if (this.squirreljmeIsDirect())
+			return 0;
+		return Integer.MIN_VALUE;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/26
+	 */
+	@Override
+	public final int[] squirreljmeDirectRGBInt()
+	{
+		if (this.squirreljmeIsDirect())
+			return this._data;
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/26
+	 */
+	@Override
+	public final int squirreljmeDirectScanLen()
+	{
+		if (this.squirreljmeIsDirect())
+			return this._width;
+		return Integer.MIN_VALUE;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/26
+	 */
+	@Override
+	public final boolean squirreljmeIsDirect()
+	{
+		return !(this.isScalable() || this.isAnimated());
 	}
 	
 	/**
