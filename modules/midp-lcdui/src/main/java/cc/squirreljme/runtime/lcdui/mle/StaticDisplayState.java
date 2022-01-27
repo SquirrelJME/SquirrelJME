@@ -439,6 +439,9 @@ public final class StaticDisplayState
 			Thread bgThread = StaticDisplayState._BACKGROUND_THREAD;
 			if (bgThread != null)
 				bgThread.interrupt();
+			
+			// Notify everyone of the state change
+			StaticDisplayState.class.notifyAll();
 		}
 	}
 }

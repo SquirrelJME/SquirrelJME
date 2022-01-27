@@ -20,6 +20,7 @@ out/
 .idea/usage-statistics.xml
 .idea/workspace.xml
 ratufacoat/.idea/workspace.xml
+ratufacoat/libretro-log.txt
 file-*
 
 # IntelliJ Dependency Matrix

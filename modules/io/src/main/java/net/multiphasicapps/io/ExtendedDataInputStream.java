@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.EOFException;
@@ -279,7 +280,7 @@ public class ExtendedDataInputStream
 			
 				// Unknown
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	
@@ -327,7 +328,7 @@ public class ExtendedDataInputStream
 			
 				// Unknown
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	
@@ -353,8 +354,22 @@ public class ExtendedDataInputStream
 			
 				// Unknown
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
+	}
+	
+	/**
+	 * Reads a signed three-byte integer.
+	 * 
+	 * @return The read value.
+	 * @throws IOException On read errors.
+	 * @since 2021/12/08
+	 */
+	public int readThree()
+		throws IOException
+	{
+		return ExtendedDataInputStream.__signExtendThree(
+			this.readUnsignedThree());
 	}
 	
 	/**
@@ -377,6 +392,35 @@ public class ExtendedDataInputStream
 		throws IOException
 	{
 		return this.readShort() & 0xFFFF;
+	}
+	
+	/**
+	 * Reads an unsigned three-byte integer.
+	 * 
+	 * @return The read value.
+	 * @throws IOException On read errors.
+	 * @since 2021/12/08
+	 */
+	public int readUnsignedThree()
+		throws IOException
+	{
+		DataInputStream in = this.input;
+		int a = in.readUnsignedByte();
+		int b = in.readUnsignedByte();
+		int c = in.readUnsignedByte();
+		
+		switch (this._endian)
+		{
+			case LITTLE:
+				return a | (b << 8) | (c << 16);
+			
+			case BIG:
+				return (a << 16) | (b << 8) | c;
+			
+				// Unknown
+			default:
+				throw Debugging.oops();
+		}
 	}
 	
 	/**
@@ -464,6 +508,21 @@ public class ExtendedDataInputStream
 		throws IOException
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Sign extends a three byte value.
+	 * 
+	 * @param __v The value to extend.
+	 * @return The sign extended three byte value.
+	 * @since 2021/12/08
+	 */
+	@SuppressWarnings("MagicNumber")
+	private static int __signExtendThree(int __v)
+	{
+		if ((__v & 0x800000) != 0)
+			return __v | 0xFF_000000;
+		return __v;
 	}
 }
 

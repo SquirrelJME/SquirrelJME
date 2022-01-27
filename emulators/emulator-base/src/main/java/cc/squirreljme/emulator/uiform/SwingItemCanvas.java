@@ -40,14 +40,19 @@ public class SwingItemCanvas
 	{
 		super(UIItemType.CANVAS);
 		
-		__PaintingPanel__ panel = new __PaintingPanel__(this);
+		final __PaintingPanel__ panel = new __PaintingPanel__(this);
 		this.panel = panel;
 		
 		panel.addComponentListener(new HandleComponentEvents(this));
 		panel.addKeyListener(new HandleKeyEvents(this));
 		
+		// We control all of the drawn pixels here
+		panel.setOpaque(true);
+		
 		// Allow this to be focused so it can have key events within
 		panel.setFocusable(true);
+		panel.setRequestFocusEnabled(true);
+		panel.setFocusTraversalKeysEnabled(true);
 	}
 	
 	/**
@@ -109,6 +114,13 @@ public class SwingItemCanvas
 						throw new MLECallError(
 							"Bad repaint signal: " + __val);
 				}
+				break;
+			
+				// Set focus on this canvas
+			case UIWidgetProperty.INT_SIGNAL_FOCUS:
+				Debugging.debugNote("Requesting Canvas focus...");
+			
+				this.panel.requestFocusInWindow();
 				break;
 			
 			default:

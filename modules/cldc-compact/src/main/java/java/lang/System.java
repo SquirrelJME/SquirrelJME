@@ -322,7 +322,6 @@ public final class System
 		System.getSecurityManager().checkPropertyAccess(__k);
 		
 		// Depends on the property
-		String rv;
 		switch (__k)
 		{
 				// SquirrelJME VM executable path

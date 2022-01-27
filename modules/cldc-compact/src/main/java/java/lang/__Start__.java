@@ -26,9 +26,9 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 final class __Start__
 {
-	/** One second in milliseconds. */
-	private static final int _MS_SECOND =
-		1_000;
+	/** The time to wait between each termination. */
+	private static final int _TERM_WAIT_TIME =
+		30_000;
 	
 	/** Exit code for un-handled main exceptions. */
 	private static final int _UNHANDLED_EXIT_CODE =
@@ -121,7 +121,7 @@ final class __Start__
 		// otherwise we might have trouble counting everything
 		while (ThreadShelf.aliveThreadCount(
 			false, false) > 0)
-			ThreadShelf.waitForUpdate(__Start__._MS_SECOND);
+			ThreadShelf.waitForUpdate(__Start__._TERM_WAIT_TIME);
 		
 		// Now that the main thread exited, use whatever exit code that was
 		// set. This should be zero in most cases.

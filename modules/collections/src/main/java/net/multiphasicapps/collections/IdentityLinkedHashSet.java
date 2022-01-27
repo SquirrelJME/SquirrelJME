@@ -30,7 +30,7 @@ public final class IdentityLinkedHashSet<T>
 	 */
 	public IdentityLinkedHashSet()
 	{
-		super(new LinkedHashSet<__IdentityWrapper__<T>>());
+		super(new LinkedHashSet<Identity<T>>());
 	}
 	
 	/**
@@ -43,7 +43,7 @@ public final class IdentityLinkedHashSet<T>
 	public IdentityLinkedHashSet(Collection<? extends T> __from)
 		throws NullPointerException
 	{
-		super(new LinkedHashSet<__IdentityWrapper__<T>>(), __from);
+		super(new LinkedHashSet<Identity<T>>(), __from);
 	}
 }
 

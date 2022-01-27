@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.aot;
 
 import cc.squirreljme.runtime.cldc.Poking;
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
@@ -164,25 +165,9 @@ public class Main
 		
 		// Read in the entire contents of the data
 		byte[] dump;
-		try (InputStream in = __inGlob;
-			ByteArrayOutputStream baos = new ByteArrayOutputStream(
-				Math.max(4096, __inGlob.available())))
+		try (InputStream in = __inGlob)
 		{
-			// Load in a copy
-			byte[] buf = new byte[8192];
-			for (;;)
-			{
-				int rc = in.read(buf);
-				
-				// EOF?
-				if (rc < 0)
-					break;
-				
-				baos.write(buf, 0, rc);
-			}
-			
-			// Write output
-			dump = baos.toByteArray();
+			dump = StreamUtils.readAll(in);
 		}
 		
 		// Dump the output

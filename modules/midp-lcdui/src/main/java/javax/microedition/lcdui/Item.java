@@ -9,7 +9,12 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.constants.UIItemType;
+import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
 public abstract class Item
 	extends __CommonWidget__
@@ -65,21 +70,25 @@ public abstract class Item
 	public static final int PLAIN =
 		0;
 	
+	/** The label item. */
+	final UIItemBracket _labelItem;
+	
 	/** The owning displayable. */
 	volatile Displayable _displayable;
 	
 	/** The current layout of the item. */
-	volatile int _layout = Item.LAYOUT_DEFAULT;
+	volatile int _layout =
+		Item.LAYOUT_DEFAULT;
 	
 	/** The label of this item. */
 	volatile String _label;
 	
 	/** The preferred width. */
-	volatile int _preferredw =
+	volatile int _preferredW =
 		-1;
 	
 	/** The preferred height. */
-	volatile int _preferredh =
+	volatile int _preferredH =
 		-1;
 	
 	/**
@@ -89,6 +98,7 @@ public abstract class Item
 	 */
 	Item()
 	{
+		this(null);
 	}
 	
 	/**
@@ -99,7 +109,12 @@ public abstract class Item
 	 */
 	Item(String __l)
 	{
-		this._label = __l;
+		// Setup label item
+		UIBackend backend = UIBackendFactory.getInstance();
+		this._labelItem = backend.itemNew(UIItemType.LABEL);
+		
+		// Set the label accordingly
+		this.__setLabel(__l);
 	}
 	
 	public void addCommand(Command __a)
@@ -167,7 +182,7 @@ public abstract class Item
 	 */
 	public int getPreferredHeight()
 	{
-		int rv = this._preferredh,
+		int rv = this._preferredH,
 			mn = this.getMinimumHeight();
 		return (mn > rv ? mn : rv);
 	}
@@ -180,7 +195,7 @@ public abstract class Item
 	 */
 	public int getPreferredWidth()
 	{
-		int rv = this._preferredw,
+		int rv = this._preferredW,
 			mn = this.getMinimumWidth();
 		return (mn > rv ? mn : rv);
 	}
@@ -219,17 +234,7 @@ public abstract class Item
 	 */
 	public void setLabel(String __l)
 	{
-		this._label = __l;
-		
-		throw Debugging.todo();
-		/*// Repaint the display
-		Displayable displayable = this._displayable;
-		if (displayable != null)
-		{
-			Display display = displayable._display;
-			if (display != null)
-				UIState.getInstance().repaint();
-		}*/
+		this.__setLabel(__l);
 	}
 	
 	/**
@@ -272,8 +277,30 @@ public abstract class Item
 		if (this._displayable instanceof Alert)
 			throw new IllegalStateException("EB36");
 		
-		this._preferredw = __w;
-		this._preferredh = __h;
+		this._preferredW = __w;
+		this._preferredH = __h;
+	}
+	
+	/**
+	 * Sets the label for this item.
+	 * 
+	 * @param __l The label to use, {@code null} will clear it.
+	 * @since 2021/11/27
+	 */
+	final void __setLabel(String __l)
+	{
+		// Record the string to be used
+		this._label = __l;
+		
+		// Update the label
+		UIBackend backend = UIBackendFactory.getInstance();
+		backend.widgetProperty(this._labelItem,
+			UIWidgetProperty.STRING_LABEL, 0, __l);
+		
+		// Perform an update on the form
+		Displayable displayable = this._displayable;
+		if (displayable instanceof Form)
+			((Form)displayable).__update();
 	}
 }
 

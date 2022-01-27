@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+secondary-markable: true
+secondary-init1: char:S
+secondary-init2: char:q
+secondary-mark1: int:4
+secondary-mark2: int:4
+secondary-marksame: true
+secondary-after1: char:e
+secondary-didareset: false
+secondary-undo: int:4
+secondary-skip1: char:l
+secondary-skip2: int:4
+secondary-skip2c: char:s
+secondary-skip3: int:4
+secondary-skip3c: char:s
+secondary-skipsame: true
+secondary-after2: char:e
+secondary-didaresetafter: false
+secondary-rest1: int:6
+secondary-rest2: int:6
+secondary-restsame: true
+secondary-eof: true
+

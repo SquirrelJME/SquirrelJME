@@ -25,7 +25,7 @@ import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.microedition.midlet.MIDlet;
@@ -208,7 +208,10 @@ public class Display
 	
 	/** Serial runs of this method. */
 	static final Map<Integer, Runnable> _SERIAL_RUNS =
-		new HashMap<>();
+		new LinkedHashMap<>();
+	
+	/** The number of times there has been a non-unique serial run. */
+	private static volatile int _NON_UNIQUE_SERIAL_RUNS;
 	
 	/** The native display instance. */ 
 	final cc.squirreljme.jvm.mle.brackets.UIDisplayBracket _uiDisplay;
@@ -265,36 +268,27 @@ public class Display
 	/**
 	 * Calls the given runner within the event handler serially.
 	 * 
-	 * Note that the Runnable.run() will be called as if it were serialized
-	 * like everything else with {@link SerializedEvent}.
+	 * Note that the {@link Runnable#run()} will be called as if it were
+	 * serialized like everything else with {@link SerializedEvent}.
+	 * 
+	 * Calls to this method will never block and wait for the {@link Runnable}
+	 * to complete.
 	 * 
 	 * @param __run The method to run.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/03
 	 */
-	@SuppressWarnings("MagicNumber")
 	public void callSerially(Runnable __run)
 		throws NullPointerException
 	{
-		if (__run == null)
-			throw new NullPointerException("NARG");
-		
-		// Get the identifiers for this display and the run call
-		int idDisplay = System.identityHashCode(StaticDisplayState.callback());
-		Integer idRunner = System.identityHashCode(__run);
-		
 		// Perform the serialization call
 		synchronized (Display.class)
 		{
-			// Store into the serial runner
-			Map<Integer, Runnable> serialRuns = Display._SERIAL_RUNS;
-			serialRuns.put(idRunner, __run);
-			
-			// Perform the call so it is done later
-			UIBackendFactory.getInstance().later(idDisplay, idRunner);
+			int idRunner = this.__queueSerialRunner(__run, false);
 			
 			// Constantly loop waiting for the call to be gone
-			for (;;)
+			/*
+			for (Map<Integer, Runnable> serialRuns = Display._SERIAL_RUNS;;)
 				try
 				{
 					// If this disappeared from the map then it was invoked
@@ -307,6 +301,7 @@ public class Display
 				catch (InterruptedException ignored)
 				{
 				}
+			 */
 		}
 	}
 	
@@ -423,11 +418,7 @@ public class Display
 	public int getCapabilities()
 	{
 		// These are all standard and expected to always be supported
-		int rv = Display.SUPPORTS_COMMANDS | Display.SUPPORTS_FORMS |
-			Display.SUPPORTS_TICKER | Display.SUPPORTS_ALERTS |
-			Display.SUPPORTS_LISTS | Display.SUPPORTS_TEXTBOXES |
-			Display.SUPPORTS_FILESELECTORS | Display.SUPPORTS_TABBEDPANES |
-			Display.SUPPORTS_MENUS;
+		int rv = Display.__defaultCapabilities();
 			
 		UIBackend backend = UIBackendFactory.getInstance();
 		
@@ -1169,7 +1160,7 @@ public class Display
 		this._current = __show;
 		
 		// Notify that it was shown
-		__show.__showNotify(__show);
+		this.__queueSerialRunner(new __NotifyShow__(__show), false);
 	}
 	
 	/**
@@ -1226,6 +1217,45 @@ public class Display
 			default:
 				throw Debugging.oops("Invalid orientation.");
 		}
+	}
+	
+	/**
+	 * Queues the serial runner.
+	 * 
+	 * @param __run The method to run.
+	 * @param __unique Is this a unique runner that can only be called only
+	 * once?
+	 * @return The identifier for the runner item.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/27
+	 */
+	@SuppressWarnings({"WrapperTypeMayBePrimitive"})
+	final int __queueSerialRunner(Runnable __run, boolean __unique)
+		throws NullPointerException
+	{
+		if (__run == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the identifiers for this display and the run call
+		int idDisplay = System.identityHashCode(StaticDisplayState.callback());
+		Integer idRunner;
+		
+		// Perform the serialization call
+		synchronized (Display.class)
+		{
+			idRunner = (__unique ? System.identityHashCode(__run) :
+				(++Display._NON_UNIQUE_SERIAL_RUNS));
+			
+			// Store into the serial runner
+			Map<Integer, Runnable> serialRuns = Display._SERIAL_RUNS;
+			serialRuns.put(idRunner, __run);
+			
+			// Perform the call so it is done later
+			UIBackendFactory.getInstance().later(idDisplay, idRunner);
+		}
+		
+		// This is the ID used to refer to this runner
+		return idRunner;
 	}
 	
 	/**
@@ -1344,6 +1374,21 @@ public class Display
 		throws IllegalStateException, NullPointerException
 	{
 		StaticDisplayState.removeListener(__dl);
+	}
+	
+	/**
+	 * The default display capabilities.
+	 * 
+	 * @return The default display capabilities.
+	 * @since 2021/11/30
+	 */
+	static int __defaultCapabilities()
+	{
+		return Display.SUPPORTS_COMMANDS | Display.SUPPORTS_FORMS |
+			Display.SUPPORTS_TICKER | Display.SUPPORTS_ALERTS |
+			Display.SUPPORTS_LISTS | Display.SUPPORTS_TEXTBOXES |
+			Display.SUPPORTS_FILESELECTORS | Display.SUPPORTS_TABBEDPANES |
+			Display.SUPPORTS_MENUS;
 	}
 	
 	/**

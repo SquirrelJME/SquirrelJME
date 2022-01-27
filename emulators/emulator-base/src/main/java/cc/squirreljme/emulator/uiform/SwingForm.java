@@ -700,13 +700,6 @@ public final class SwingForm
 			// Add the final form
 			formPanel.add(adjacent, BorderLayout.CENTER);
 			
-			// Focus on the body if we should do so
-			if (this._focusBody)
-			{
-				this._focusBody = false;
-				adjacent.requestFocus();
-			}
-			
 			// Request everything be redrawn
 			formPanel.validate();
 			formPanel.repaint();

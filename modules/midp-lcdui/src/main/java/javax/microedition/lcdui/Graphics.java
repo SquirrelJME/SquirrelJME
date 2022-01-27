@@ -67,7 +67,7 @@ public abstract class Graphics
 	
 	/**
 	 * The blending mode, the destination alpha becomes the source and as such
-	 * the operation is a copy.
+	 * the operation is a copy (or overwrite).
 	 */
 	public static final int SRC =
 		1;
@@ -567,11 +567,12 @@ public abstract class Graphics
 	/**
 	 * Sets the stroke style to use for lines.
 	 *
-	 * @param __a The stroke style, either {@link #SOLID} or {@link #DOTTED}.
+	 * @param __style The stroke style, either {@link #SOLID} or
+	 * {@link #DOTTED}.
 	 * @throws IllegalArgumentException If the stroke is not valid.
 	 * @since 2017/02/09
 	 */
-	public abstract void setStrokeStyle(int __a)
+	public abstract void setStrokeStyle(int __style)
 		throws IllegalArgumentException;
 	
 	/**

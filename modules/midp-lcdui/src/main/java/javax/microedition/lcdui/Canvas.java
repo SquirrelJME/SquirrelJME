@@ -97,69 +97,91 @@ public abstract class Canvas
 	public static final int GAME_D =
 		12;
 	
+	/** Backspace keyboard key. */
 	public static final int KEY_BACKSPACE =
 		8;
 	
+	/** Delete keyboard key. */
 	public static final int KEY_DELETE =
 		127;
 	
+	/** Down arrow keyboard key. */
 	public static final int KEY_DOWN =
 		-2;
 	
+	/** Enter keyboard key. */
 	public static final int KEY_ENTER =
 		10;
 	
+	/** Escape keyboard key. */
 	public static final int KEY_ESCAPE =
 		27;
 	
+	/** Left arrow keyboard key. */
 	public static final int KEY_LEFT =
 		-3;
 	
+	/** Number pad zero keyboard key. */
 	public static final int KEY_NUM0 =
 		48;
 	
+	/** Number pad one keyboard key. */
 	public static final int KEY_NUM1 =
 		49;
 	
+	/** Number pad two keyboard key. */
 	public static final int KEY_NUM2 =
 		50;
 	
+	/** Number pad three keyboard key. */
 	public static final int KEY_NUM3 =
 		51;
 	
+	/** Number pad four keyboard key. */
 	public static final int KEY_NUM4 =
 		52;
 	
+	/** Number pad five keyboard key. */
 	public static final int KEY_NUM5 =
 		53;
 	
+	/** Number pad six keyboard key. */
 	public static final int KEY_NUM6 =
 		54;
 	
+	/** Number pad seven keyboard key. */
 	public static final int KEY_NUM7 =
 		55;
 	
+	/** Number pad eight keyboard key. */
 	public static final int KEY_NUM8 =
 		56;
 	
+	/** Number pad nine keyboard key. */
 	public static final int KEY_NUM9 =
 		57;
 	
+	/** Pound/hash keyboard key. */
 	public static final int KEY_POUND =
 		35;
 	
+	/** Right arrow keyboard key. */
 	public static final int KEY_RIGHT =
 		-4;
 	
+	/** The select key. */
 	public static final int KEY_SELECT =
 		-5;
 	
+	/** The space bar keyboard key. */
 	public static final int KEY_SPACE =
 		32;
 	
+	/** The star/asterisk keyboard key. */
 	public static final int KEY_STAR =
 		42;
 	
+	/** The horizontal tab keyboard key. */
 	public static final int KEY_TAB =
 		9;
 	
@@ -572,13 +594,17 @@ public abstract class Canvas
 		
 		// Send repaint properties
 		instance.widgetProperty(this._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, UISpecialCode.REPAINT_KEY_X | __x);
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
+				UISpecialCode.REPAINT_KEY_X | __x);
 		instance.widgetProperty(this._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, UISpecialCode.REPAINT_KEY_Y | __y);
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
+				UISpecialCode.REPAINT_KEY_Y | __y);
 		instance.widgetProperty(this._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, UISpecialCode.REPAINT_KEY_WIDTH | __w);
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
+				UISpecialCode.REPAINT_KEY_WIDTH | __w);
 		instance.widgetProperty(this._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, UISpecialCode.REPAINT_KEY_HEIGHT | __h);
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
+				UISpecialCode.REPAINT_KEY_HEIGHT | __h);
 		
 		// Count pending paints up before we signal the final repaint
 		synchronized (Display.class)
@@ -609,24 +635,25 @@ public abstract class Canvas
 		if (display == null)
 			return;
 		
-		// This does nothing, but it used as a runner for waiting until our
-		// serial call has been completed.
-		__PaintWait__ wait = new __PaintWait__();
-		
-		// Lock on the Display class because the callSerially() does the
-		// waiting on this, so that becomes out barrier.
+		// Lock on display since that is where the main serialized event loop
+		// happens
 		synchronized (Display.class)
 		{
 			for (;;)
-			{
-				// No repaints are left to be performed, stop now
-				if (this._pendingPaints == 0)
-					return;
+				try
+				{
+					// No repaints are left to be performed, stop now
+					if (this._pendingPaints == 0)
+						return;
+					
+					// Otherwise wait for a signal on paints
+					Display.class.wait(1000);
+				}
 				
-				// Call this, as when it is complete the event loop would
-				// have completed a run
-				display.callSerially(wait);
-			}
+				// Ignore any interruptions and just continue waiting 
+				catch (InterruptedException ignored)
+				{
+				}
 		}
 	}
 	
@@ -792,8 +819,8 @@ public abstract class Canvas
 		if (!this._transparent)
 		{
 			int old = __gfx.getAlphaColor();
-			__gfx.setColor(UIBackendFactory.getInstance().metric(
-				UIMetricType.COLOR_CANVAS_BACKGROUND));
+			__gfx.setColor(UIBackendFactory.getInstance()
+				.metric(UIMetricType.COLOR_CANVAS_BACKGROUND));
 			
 			__gfx.fillRect(0, 0, __sw, __sh);
 			
@@ -849,7 +876,7 @@ public abstract class Canvas
 				if (__new == 0)
 					this.hideNotify();
 				else
-					this.showNotify();
+					this.__showNotifyCanvas();
 				return true;
 			
 				// New width?
@@ -871,6 +898,22 @@ public abstract class Canvas
 			default:
 				return false;
 		}
+	}
+	
+	/**
+	 * Notifies that this canvas has been shown.
+	 * 
+	 * @since 2021/11/28
+	 */
+	final void __showNotifyCanvas()
+	{
+		// Signal focus on this canvas since it has been shown
+		UIBackend backend = UIBackendFactory.getInstance();
+		backend.widgetProperty(this._uiCanvas,
+			UIWidgetProperty.INT_SIGNAL_FOCUS, 0, 0);
+		
+		// Call the notification handler
+		this.showNotify();
 	}
 }
 

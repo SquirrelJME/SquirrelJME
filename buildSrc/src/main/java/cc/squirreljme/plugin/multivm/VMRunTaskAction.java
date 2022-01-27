@@ -100,6 +100,7 @@ public class VMRunTaskAction
 				// Use filled JVM arguments
 				vmType.spawnJvmArguments(__task, true,
 					new GradleJavaExecSpecFiller(__spec), mainClass,
+					(midlet != null ? midlet.mainClass : mainClass),
 					Collections.<String, String>emptyMap(),
 					classPath, classPath,
 					args.<String>toArray(new String[args.size()]));

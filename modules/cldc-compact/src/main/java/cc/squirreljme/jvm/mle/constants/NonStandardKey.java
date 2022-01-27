@@ -156,9 +156,13 @@ public interface NonStandardKey
 	byte VGAME_COMMAND_CENTER =
 		-36;
 	
+	/** Game virtual open LCDUI inspector. */
+	byte VGAME_LCDUI_INSPECTOR =
+		-37;
+	
 	/** F24. */
 	byte F24 =
-		-37;
+		-40;
 	
 	/** F1. */
 	byte F1 =
@@ -171,6 +175,10 @@ public interface NonStandardKey
 	/** F3. */
 	byte F3 =
 		NonStandardKey.F1 + 2;
+	
+	/** F3. */
+	byte F12 =
+		NonStandardKey.F1 + 11;
 	
 	/** F13. */
 	byte F13 =

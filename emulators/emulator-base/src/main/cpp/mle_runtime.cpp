@@ -24,6 +24,12 @@ JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_lineEnding(JNIEnv*, jclass)
 #endif
 }
 
+JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_memoryProfile(JNIEnv*, jclass)
+{
+	// The value is normal
+	return 0;
+}
+
 JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_vmType(JNIEnv*, jclass)
 {
 	// The value 1 is Java SE type
@@ -34,6 +40,7 @@ static const JNINativeMethod mleRuntimeMethods[] =
 {
 	{"garbageCollect", "()V", (void*)Impl_mle_RuntimeShelf_garbageCollect},
 	{"lineEnding", "()I", (void*)Impl_mle_RuntimeShelf_lineEnding},
+	{"memoryProfile", "()I", (void*)Impl_mle_RuntimeShelf_memoryProfile},
 	{"vmType", "()I", (void*)Impl_mle_RuntimeShelf_vmType},
 };
 

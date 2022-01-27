@@ -267,7 +267,14 @@ public final class DataSerialization
 		
 		// Character
 		else if (__o instanceof Character)
-			return "char:" + (int)((Character)__o).charValue();
+		{
+			char c = (Character)__o;
+			
+			// Use digits for characters we cannot really represent
+			if (c <= 0x20 || c >= 0x7F || Character.isDigit(c))
+				return "char:" + (int)c;
+			return "char:" + c;
+		}
 		
 		// Integer
 		else if (__o instanceof Integer)

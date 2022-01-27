@@ -121,6 +121,7 @@ public class VMFullSuiteTaskAction
 				this.vmType.spawnJvmArguments(__task, true,
 					new GradleJavaExecSpecFiller(__spec),
 					"javax.microedition.midlet.__MainHandler__",
+					"fullSuite",
 					new LinkedHashMap<String, String>(),
 					libPath.<Path>toArray(new Path[libPath.size()]),
 					classPath.<Path>toArray(new Path[classPath.size()]),

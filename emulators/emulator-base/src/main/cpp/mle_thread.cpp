@@ -9,6 +9,8 @@
 
 #include "squirreljme.h"
 
+#define WAITFORUPDATE_DESC "(I)Z"
+
 JNIEXPORT jint JNICALL Impl_mle_ThreadShelf_aliveThreadCount(JNIEnv* env,
 	jclass classy, jboolean includeMain, jboolean includeDaemon)
 {
@@ -36,6 +38,16 @@ JNIEXPORT void JNICALL Impl_mle_ThreadShelf_setTrace(JNIEnv* env,
 {
 	// Has no effect
 }
+		
+JNIEXPORT jboolean JNICALL Impl_mle_ThreadShelf_waitForUpdate(JNIEnv* env,
+	jclass classy, jint msWait)
+{
+	// Has no effect
+	return forwardCallStaticBoolean(env,
+		"cc/squirreljme/emulator/NativeThreadShelf",
+		"waitForUpdate", WAITFORUPDATE_DESC,
+		msWait);
+}
 
 static const JNINativeMethod mleThreadMethods[] =
 {
@@ -47,6 +59,8 @@ static const JNINativeMethod mleThreadMethods[] =
 		(void*)Impl_mle_ThreadShelf_javaThreadSetDaemon},
 	{"setTrace", "(Ljava/lang/String;[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;)V",
 		(void*)Impl_mle_ThreadShelf_setTrace},
+	{"waitForUpdate", WAITFORUPDATE_DESC,
+		(void*)Impl_mle_ThreadShelf_waitForUpdate},
 };
 
 jint JNICALL mleThreadInit(JNIEnv* env, jclass classy)

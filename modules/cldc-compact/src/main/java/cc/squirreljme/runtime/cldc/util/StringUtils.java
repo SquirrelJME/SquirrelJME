@@ -58,7 +58,8 @@ public final class StringUtils
 			int c = (i == n ? -1 : __s.charAt(i));
 			
 			// Is this a delimeter
-			if (c == lastdelim || c == -1 || StringUtils.__indexOf(__delim, (char)c) >= 0)
+			if (c == lastdelim || c == -1 ||
+				StringUtils.__indexOf(__delim, (char)c) >= 0)
 			{
 				// Remember last delimeter for potential speed
 				lastdelim = c;

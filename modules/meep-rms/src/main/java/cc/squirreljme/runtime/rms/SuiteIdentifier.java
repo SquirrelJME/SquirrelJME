@@ -65,9 +65,13 @@ public final class SuiteIdentifier
 	 */
 	public static String currentName()
 	{
-		String rv = SuiteIdentifier._CURRENT_NAME;
-		if (rv != null)
-			return rv;
+		String rv;
+		synchronized (SuiteIdentifier.class)
+		{
+			rv = SuiteIdentifier._CURRENT_NAME;
+			if (rv != null)
+				return rv;
+		}
 		
 		// TODO: Better means of getting the current name
 		Debugging.todoNote("Better means of currentName()");
@@ -85,8 +89,11 @@ public final class SuiteIdentifier
 			rv = "UndefinedName";
 		
 		// Cache and return
-		SuiteIdentifier._CURRENT_NAME = rv;
-		return rv;
+		synchronized (SuiteIdentifier.class)
+		{
+			SuiteIdentifier._CURRENT_NAME = rv;
+			return rv;
+		}
 	}
 	
 	/**
@@ -97,9 +104,13 @@ public final class SuiteIdentifier
 	 */
 	public static String currentVendor()
 	{
-		String rv = SuiteIdentifier._CURRENT_VENDOR;
-		if (rv != null)
-			return rv;
+		String rv;
+		synchronized (SuiteIdentifier.class)
+		{
+			rv = SuiteIdentifier._CURRENT_VENDOR;
+			if (rv != null)
+				return rv;
+		}
 		
 		// TODO: Better means of getting the current name
 		Debugging.todoNote("Better means of currentVendor()");
@@ -117,8 +128,11 @@ public final class SuiteIdentifier
 			rv = "UndefinedVendor";
 		
 		// Cache and return
-		SuiteIdentifier._CURRENT_VENDOR = rv;
-		return rv;
+		synchronized (SuiteIdentifier.class)
+		{
+			SuiteIdentifier._CURRENT_VENDOR = rv;
+			return rv;
+		}
 	}
 	
 	/**
@@ -138,6 +152,27 @@ public final class SuiteIdentifier
 		
 		return ((((long)__vend.hashCode()) & 0xFFFFFFFFL) << 32) |
 			(((long)__suite.hashCode()) & 0xFFFFFFFFL);
+	}
+	
+	/**
+	 * Forces the set of the suite name and vendor.
+	 * 
+	 * @param __name The name to set.
+	 * @param __vend The vendor to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/12/02
+	 */
+	public static void setNameAndVendor(String __name, String __vend)
+		throws NullPointerException
+	{
+		if (__name == null || __vend == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (SuiteIdentifier.class)
+		{
+			SuiteIdentifier._CURRENT_NAME = __name;
+			SuiteIdentifier._CURRENT_VENDOR = __vend;
+		}
 	}
 }
 

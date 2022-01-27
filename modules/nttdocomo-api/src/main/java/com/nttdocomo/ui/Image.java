@@ -1,4 +1,3 @@
-// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -7,23 +6,32 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.microedition.lcdui;
+package com.nttdocomo.ui;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
- * This is used by {@link Canvas#serviceRepaints()} and is used to check
- * for paints.
+ * Represents a raster image.
  *
- * @since 2020/10/04
+ * @see javax.microedition.lcdui.Image
+ * @since 2021/11/30
  */
-final class __PaintWait__
-	implements Runnable
+@SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
+public abstract class Image
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/10/04
-	 */
-	@Override
-	public void run()
+	protected Image()
 	{
+	}
+	
+	public abstract void dispose();
+	
+	public int getHeight()
+	{
+		throw Debugging.todo();
+	}
+	
+	public int getWidth()
+	{
+		throw Debugging.todo();
 	}
 }

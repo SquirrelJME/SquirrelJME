@@ -36,9 +36,22 @@ public class TestCallSerially
 		__display.callSerially(run);
 		
 		// Then get the result of that, should be true
-		synchronized (run)
-		{
-			this.secondary("flagged", run._flag);
-		}
+		for (;;)
+			synchronized (run)
+			{
+				if (!run._flag)
+					try
+					{
+						run.wait(5000);
+						continue;
+					}
+					catch (InterruptedException ignored)
+					{
+						return;
+					}
+				
+				this.secondary("flagged", run._flag);
+				break;
+			}
 	}
 }

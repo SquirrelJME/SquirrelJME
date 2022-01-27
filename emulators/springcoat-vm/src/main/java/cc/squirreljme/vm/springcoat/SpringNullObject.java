@@ -64,5 +64,27 @@ public final class SpringNullObject
 	{
 		return null;
 	}
+	
+	/**
+	 * Checks the given type and return the value if it is not {@code null}.
+	 * 
+	 * @param <T> The type to check.
+	 * @param __type The type to check.
+	 * @param __arg The argument to check against.
+	 * @return Either {@code null} or {@code __arg} if not {@code null}.
+	 * @throws ClassCastException If the type is wrong.
+	 * @throws NullPointerException If {@code __type} is {@code null}.
+	 * @since 2021/12/05
+	 */
+	public static <T> T checkCast(Class<T> __type, Object __arg)
+		throws ClassCastException, NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		if (__arg == null || __arg == SpringNullObject.NULL)
+			return null;
+		return __type.cast(__arg);
+	}
 }
 

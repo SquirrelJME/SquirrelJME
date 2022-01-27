@@ -9,8 +9,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * A ticker contains an infinitely scrolling message.
  *
@@ -22,7 +20,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  */
 public class Ticker
 {
-	/** Displayables this ticker is attached to. */
+	/** {@code Displayable}s this ticker is attached to. */
 	final __VolatileList__<Displayable> _displayables =
 		new __VolatileList__<>();
 	
@@ -43,7 +41,7 @@ public class Ticker
 			throw new NullPointerException("NARG");
 		
 		// Use internal title set
-		this._text = __s;
+		this.__setString(__s);
 	}
 	
 	/**
@@ -70,21 +68,25 @@ public class Ticker
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
+		this.__setString(__s);
+	}
+	
+	/**
+	 * Sets the text to be displayed on the ticker and performs updating on
+	 * the form and otherwise.
+	 * 
+	 * @param __s The string to set.
+	 * @since 2021/11/27
+	 */
+	private void __setString(String __s)
+	{
 		// Set new
 		this._text = __s;
 		
-		// Find a displayable which is showing this
-		boolean isshown = false;
+		// Adjust the ticker item for all the displayables which are showing
+		// this ticker
 		for (Displayable di : this._displayables)
-		{
-			Display d = di._display;
-			if (d != null)
-				isshown = true;
-		}
-		
-		// If this is being shown, then force the view to repaint
-		throw Debugging.todo();
-		/*UIState.getInstance().repaint();*/
+			di.__updateTicker();
 	}
 }
 
