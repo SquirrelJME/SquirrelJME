@@ -135,6 +135,10 @@ public final class EmulatedTaskShelf
 			}
 		}
 		
+		// Load system property pairs
+		for (int i = 0, n = __sysPropPairs.length & (~1); i < n; i += 2)
+			sysProps.put(__sysPropPairs[i], __sysPropPairs[i + 1]);
+		
 		// We need the support path to determine how we are launching this
 		Path[] vmSupportPath = EmulatedTaskShelf.__classpathDecode(
 			System.getProperty(EmulatedTaskShelf.HOSTED_VM_SUPPORTPATH));

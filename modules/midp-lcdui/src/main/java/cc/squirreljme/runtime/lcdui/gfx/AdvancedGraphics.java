@@ -551,28 +551,30 @@ public class AdvancedGraphics
 		__y += this.transy;
 		
 		// Determine ending position
-		int ex = __x + __w,
-			ey = __y + __h;
+		int ex = __x + __w;
+		int ey = __y + __h;
 		
 		// Get clipping region
-		int clipsx = this.clipsx,
-			clipsy = this.clipsy,
-			clipex = this.clipex,
-			clipey = this.clipey;
+		int clipsx = this.clipsx;
+		int clipsy = this.clipsy;
+		int clipex = this.clipex;
+		int clipey = this.clipey;
 		
 		// Box is completely outside the bounds of the clip, do not draw
 		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
 			return;
 		
 		// Determine sub-clipping area
-		int subx = __x - clipsx,
-			suby = __y - clipsy;
+		int subX = Math.max(0, clipsx - __x);
+		int subY = Math.max(0, clipsy - __y);
 		
 		// Clip into bounds
-		if (__x < 0)
-			__x = 0;
-		if (__y < 0)
-			__y = 0;
+		if (__x < clipsx)
+			__x = clipsx;
+		if (__y < clipsy)
+			__y = clipsy;
+		
+		// Check end coordinate
 		if (ex >= clipex)
 			ex = clipex;
 		if (ey >= clipey)
@@ -586,11 +588,11 @@ public class AdvancedGraphics
 		// If __alpha is true then this is 32-bit RGBA!
 		if (__alpha)
 			this.funcargbtile.function(this,
-				new int[]{__off, __scanlen, __x, __y, tw, th},
+				new int[]{__off, __scanlen, __x, __y, tw, th, subX, subY},
 				new Object[]{__data});
 		else
 			this.funcrgbtile.function(this,
-				new int[]{__off, __scanlen, __x, __y, tw, th},
+				new int[]{__off, __scanlen, __x, __y, tw, th, subX, subY},
 				new Object[]{__data});
 	}
 	
@@ -934,8 +936,8 @@ public class AdvancedGraphics
 	@Override
 	public int getDisplayColor(int __rgb)
 	{
-		// Just use the original input color
-		return __rgb | 0xFF_000000;
+		// Just use the original input color, without the alpha channel
+		return __rgb & 0xFFFFFF;
 	}
 	
 	/**
@@ -1254,18 +1256,19 @@ public class AdvancedGraphics
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/24
+	 * @param __style
 	 */
 	@Override
-	public void setStrokeStyle(int __a)
+	public void setStrokeStyle(int __style)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB0i Illegal stroke style.}
-		if (__a != Graphics.SOLID && __a != Graphics.DOTTED)
+		if (__style != Graphics.SOLID && __style != Graphics.DOTTED)
 			throw new IllegalArgumentException("EB0i");
 		
 		// Set
-		this.strokestyle = __a;
-		this.dotstroke = (__a == Graphics.DOTTED);
+		this.strokestyle = __style;
+		this.dotstroke = (__style == Graphics.DOTTED);
 		
 		// Update functions
 		this.__updateFunctions();
@@ -1381,8 +1384,8 @@ public class AdvancedGraphics
 		// If this is non-stretched we can just use the standard RGB
 		// drawing function!
 		if (__wsrc == __wdest && __hsrc == __hdest)
-			this.drawRGB(data, 0, __wsrc, __xdest, __ydest, __wsrc, __hsrc,
-				alpha);
+			this.drawRGB(data, 0, __wsrc, __xdest, __ydest,
+				__wsrc, __hsrc, alpha);
 		
 		// Use stretchy draw
 		else

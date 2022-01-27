@@ -15,7 +15,7 @@ import java.io.OutputStream;
 import org.gradle.api.Task;
 
 /**
- * Not Described.
+ * Base interface for the execution of library based functions.
  *
  * @since 2021/05/16
  */

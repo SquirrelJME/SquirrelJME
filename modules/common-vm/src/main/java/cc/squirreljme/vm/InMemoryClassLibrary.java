@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm;
 
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -137,22 +138,7 @@ public final class InMemoryClassLibrary
 				break;
 			
 			// Copy data over
-			try (ByteArrayOutputStream baos =
-				new ByteArrayOutputStream(8192))
-			{
-				for (;;)
-				{
-					int rc = zse.read(buf);
-					
-					if (rc < 0)
-						break;
-					
-					baos.write(buf, 0, rc);
-				}
-				
-				// Cache
-				rv.put(zse.name(), baos.toByteArray());
-			}
+			rv.put(zse.name(), StreamUtils.readAll(zse));
 			
 			// Close
 			zse.close();

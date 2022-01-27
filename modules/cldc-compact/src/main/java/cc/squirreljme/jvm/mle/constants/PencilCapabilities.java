@@ -69,22 +69,22 @@ public interface PencilCapabilities
 		4;
 	
 	/**
-	 * Capable of the following:
-	 * - {@code drawRGB}. 
+	 * Reserved.
 	 */
-	byte DRAW_XRGB32_SIMPLE =
+	@Deprecated
+	byte RESERVED_8 =
 		8;
 	
 	/**
-	 * Capable of the following:
-	 * - {@code drawImage}. 
-	 * - {@code drawRegion}.
+	 * Reserved.
 	 */
-	byte DRAW_XRGB16_REGION =
+	@Deprecated
+	byte RESERVED_16 =
 		16;
 	
 	/**
 	 * Capable of the following:
+	 * - {@code drawRGB}.
 	 * - {@code drawImage}. 
 	 * - {@code drawRegion}.
 	 */

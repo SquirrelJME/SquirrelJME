@@ -17,6 +17,7 @@ import java.io.InputStream;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
 /**
  * This is the splash screen for the launcher which always shows.
@@ -30,7 +31,8 @@ public final class SplashScreen
 	/** The copyright string. */
 	public static final String COPYRIGHT =
 		"https://squirreljme.cc/\n" +
-		"(C) 2013-2021 TM 2016-2021 Stephanie Gawroriski\n" +
+		"(C) 2013-2022 Stephanie Gawroriski\n" +
+		"TM  2016-2021 Stephanie Gawroriski\n" +
 		"Licensed under the GPLv3!\n" +
 		"Donate to me on Patreon:\n" +
 		"*** https://www.patreon.com/SquirrelJME! ***";
@@ -42,6 +44,14 @@ public final class SplashScreen
 	/** The splash image height. */
 	public static final int HEIGHT =
 		320;
+	
+	/** The starting splash color. */
+	public static final int START_COLOR =
+		0x5BCEFA;
+	
+	/** The ending splash color. */
+	public static final int END_COLOR =
+		0xF5A9B8;
 	
 	/** Loading string X position. */
 	private final int _loadingStrX;
@@ -102,6 +112,13 @@ public final class SplashScreen
 		
 		// Full-screen mode for the entire image
 		this.setFullScreenMode(true);
+		
+		// Add command to exit the VM, so it does something
+		this.addCommand(MidletMain.EXIT_COMMAND);
+		
+		// Need to handle commands and such
+		__ExitHandler__ ch = new __ExitHandler__();
+		this.setCommandListener(ch);
 		
 		// Height of the screen
 		int width = SplashScreen.WIDTH;
@@ -246,39 +263,6 @@ public final class SplashScreen
 		int np = SplashScreen.WIDTH * SplashScreen.HEIGHT;
 		int[] image = new int[np];
 		
-		// Load splash image onto the data
-		try (InputStream in = SplashScreen.class.
-			getResourceAsStream("splash.raw"))
-		{
-			// If it exists, use it
-			if (in != null)
-			{
-				// Input raw pixels
-				int nr = SplashScreen.WIDTH * SplashScreen.HEIGHT * 3;
-				byte[] raw = new byte[nr];
-				
-				// Read in raw data
-				for (int read = 0; read < nr;)
-				{
-					int rc = in.read(raw, read, nr - read);
-					
-					if (rc < 0)
-						break;
-					
-					read += rc;
-				}
-				
-				// Translate RGB byte pixels to RGB int pixels
-				for (int o = 0, i = 0; o < np; o++)
-					image[o] = ((raw[i++] & 0xFF) << 16) |
-						((raw[i++] & 0xFF) << 8) |
-						(raw[i++] & 0xFF);
-			}
-		}
-		catch (IOException e)
-		{
-		}
-		
 		// Text will be drawn using the advanced graphics since it can
 		// operate on integer buffers directly
 		Graphics g = PencilGraphics.hardwareGraphics(
@@ -286,6 +270,38 @@ public final class SplashScreen
 			SplashScreen.WIDTH, SplashScreen.HEIGHT,
 			image, 0, null, 0, 0,
 			SplashScreen.WIDTH, SplashScreen.HEIGHT);
+		
+		// Load splash image onto the data
+		try (InputStream relaxedIn = SplashScreen.class
+				.getResourceAsStream("relaxedpixel.xpm");
+			InputStream logoIn = SplashScreen.class
+				.getResourceAsStream("logo.xpm"))
+		{
+			// Load in the relaxed pixel art of Lex and the logo
+			Image relaxedPixel = Image.createImage(relaxedIn);
+			Image logoPixel = Image.createImage(logoIn);
+			
+			// Draw gradient
+			this.__drawGradient(g,
+				SplashScreen.START_COLOR, SplashScreen.END_COLOR,
+				SplashScreen.WIDTH, SplashScreen.HEIGHT);
+			
+			// Draw into the pixel buffer
+			g.setBlendingMode(Graphics.SRC_OVER);
+			g.drawImage(relaxedPixel,
+				SplashScreen.WIDTH >> 1, SplashScreen.HEIGHT,
+				Graphics.BOTTOM | Graphics.HCENTER);
+			
+			// Draw the logo on top of everything
+			g.drawImage(logoPixel,
+				SplashScreen.WIDTH >> 1, 0,
+				Graphics.TOP | Graphics.HCENTER);
+		}
+		catch (IOException e)
+		{
+			// Print it but otherwise it is ignored
+			e.printStackTrace();
+		}
 		
 		// Draw copyright at the bottom
 		this.__copyright(g, false);
@@ -313,6 +329,7 @@ public final class SplashScreen
 			throw new NullPointerException("NARG");
 		
 		// Draw version number
+		__g.setAlphaColor(255, 0, 0, 0);
 		__g.setFont(this._verFont);
 		__g.drawString(SquirrelJME.RUNTIME_VERSION, 238, 48,
 			Graphics.RIGHT | Graphics.TOP);
@@ -352,5 +369,48 @@ public final class SplashScreen
 		__g.drawString(SplashScreen.COPYRIGHT, copyX, copyY,
 			Graphics.BOTTOM | Graphics.LEFT);
 	}
+	
+	/**
+	 * Draws a gradient.
+	 * 
+	 * @param __g The graphics to draw into.
+	 * @param __startColor The starting color.
+	 * @param __endColor The ending color.
+	 * @param __width The width.
+	 * @param __height The height.
+	 * @since 2022/01/26
+	 */
+	private static void __drawGradient(Graphics __g, int __startColor,
+		int __endColor, int __width, int __height)
+	{
+		// Decompose the starting color
+		int atR = ((__startColor >>> 16) & 0xFF) << 8;
+		int atG = ((__startColor >>> 8) & 0xFF) << 8;
+		int atB = ((__startColor) & 0xFF) << 8;
+		
+		// Determine the additive for the three colors
+		int addR = ((((__endColor >>> 16) & 0xFF) << 8) - atR) /
+			__height;
+		int addG = ((((__endColor >>> 8) & 0xFF) << 8) - atG) /
+			__height;
+		int addB = ((((__endColor) & 0xFF) << 8) - atB) /
+			__height;
+		
+		// Draw for each row height
+		for (int y = 0; y < __height; y++)
+		{
+			// Set the next color to use
+			__g.setAlphaColor(0xFF,
+				atR >>> 8, atG >>> 8, atB >>> 8);
+			
+			// Draw line
+			__g.drawLine(0, y,
+				__width, y);
+			
+			// Determine the next color to use
+			atR += addR;
+			atG += addG;
+			atB += addB;
+		}
+	}
 }
-

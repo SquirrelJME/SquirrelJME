@@ -25,6 +25,8 @@ squirreljme
 		"net.multiphasicapps.lcduidemo.PNGDemo")
 	midlets += new JavaMEMidlet("JPEG Image Demo", "image.xpm",
 		"net.multiphasicapps.lcduidemo.JPEGDemo")
+	midlets += new JavaMEMidlet("GIF Image Demo", "image.xpm",
+		"net.multiphasicapps.lcduidemo.GIFDemo")
 	tags += "demo"
 }
 

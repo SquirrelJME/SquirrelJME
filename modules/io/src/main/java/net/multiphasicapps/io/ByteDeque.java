@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -36,7 +38,8 @@ public class ByteDeque
 	 */
 	private static final int _BLOCK_SIZE =
 		Math.max(8, Integer.getInteger(
-			"net.multiphasicapps.util.datadeque.blocksize", 128));
+			"net.multiphasicapps.util.datadeque.blocksize",
+			ByteDeque.__dequeSliceSize()));
 	
 	/** The block size mask. */
 	private static final int _BLOCK_MASK =
@@ -1187,6 +1190,25 @@ public class ByteDeque
 		
 		// Return the number of bytes read
 		return limit;
+	}
+	
+	/**
+	 * Determines the slice size to use for deques.
+	 * 
+	 * @return The slice size.
+	 * @since 2021/12/05
+	 */
+	private static int __dequeSliceSize()
+	{
+		switch (RuntimeShelf.memoryProfile())
+		{
+			case MemoryProfileType.MINIMAL:
+				return 128;
+			
+			case MemoryProfileType.NORMAL:
+			default:
+				return 512;
+		}
 	}
 }
 

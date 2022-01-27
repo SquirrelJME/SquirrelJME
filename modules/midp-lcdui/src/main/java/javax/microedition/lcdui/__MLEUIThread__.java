@@ -40,7 +40,7 @@ final class __MLEUIThread__
 {
 	/** The time to sleep for between periodic checks. */
 	private static final long _SLEEP_TIME =
-		5_000;
+		30_000;
 	
 	/** Are we within a paint? */
 	private boolean _inPaint;
@@ -146,6 +146,18 @@ final class __MLEUIThread__
 			}
 		}
 		
+		// Open the LCDUI inspector?
+		if (__event == UIKeyEventType.KEY_PRESSED) 
+			if (__keyCode == NonStandardKey.F12 ||
+				__keyCode == NonStandardKey.VGAME_LCDUI_INSPECTOR)
+			{
+				if (true)
+					throw Debugging.todo();
+				
+				// Consume this key
+				return;
+			}
+		
 		// Commands are special key events
 		if (__event == UIKeyEventType.COMMAND_ACTIVATED)
 		{
@@ -189,8 +201,8 @@ final class __MLEUIThread__
 	public void exitRequest(UIFormBracket __form)
 	{
 		// Debug
-		/*Debugging.debugNote("exitRequest(%08x) @ %s",
-			System.identityHashCode(__form), Thread.currentThread());*/
+		Debugging.debugNote("exitRequest(%08x) @ %s",
+			System.identityHashCode(__form), Thread.currentThread());
 		
 		// Terminate the user interface
 		StaticDisplayState.terminate();
@@ -360,26 +372,24 @@ final class __MLEUIThread__
 	@Override
 	public void run()
 	{
-		// Get the backend calls will occur on
-		UIBackend backend = UIBackendFactory.getInstance();
-		
 		// Infinite UI loop, which performs periodic probes and background
 		// actions
 		for (;;)
-		{
-			// Stop if terminating
-			if (StaticDisplayState.isTerminating())
-				break;
-			
-			// Wait for the next run
-			try
+			synchronized (StaticDisplayState.class)
 			{
-				Thread.sleep(__MLEUIThread__._SLEEP_TIME);
+				// Stop if terminating
+				if (StaticDisplayState.isTerminating())
+					break;
+				
+				// Wait for the signal on the next run
+				try
+				{
+					StaticDisplayState.class.wait(__MLEUIThread__._SLEEP_TIME);
+				}
+				catch (InterruptedException ignored)
+				{
+				}
 			}
-			catch (InterruptedException ignored)
-			{
-			}
-		}
 		
 		// Debug
 		Debugging.debugNote("UI loop terminated.");

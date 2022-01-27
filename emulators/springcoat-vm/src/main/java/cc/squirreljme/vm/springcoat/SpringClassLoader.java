@@ -9,12 +9,12 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;
@@ -250,24 +250,7 @@ public final class SpringClassLoader
 					continue;
 				
 				// Read in the data
-				byte[] buf = new byte[512];
-				try (ByteArrayOutputStream baos =
-					new ByteArrayOutputStream(1024))
-				{
-					for (;;)
-					{
-						int rc = in.read(buf);
-						
-						if (rc < 0)
-						{
-							baos.flush();
-							data = baos.toByteArray();
-							break;
-						}
-						
-						baos.write(buf, 0, rc);
-					}
-				}
+				data = StreamUtils.readAll(in);
 				
 				// Record the binary
 				if (__ij != null && __ij.length > 0)

@@ -194,7 +194,7 @@ public class DebugViewType
 			DebugViewType.__field(__which, __fieldDx);
 			return true;
 		}
-		catch (SpringNoSuchFieldException |JDWPCommandException ignored)
+		catch (SpringNoSuchFieldException|JDWPCommandException ignored)
 		{
 			return false;
 		}

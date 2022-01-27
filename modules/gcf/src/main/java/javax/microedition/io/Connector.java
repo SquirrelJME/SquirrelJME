@@ -9,6 +9,7 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import cc.squirreljme.runtime.gcf.HTTPAddress;
 import cc.squirreljme.runtime.gcf.HTTPClientConnection;
 import cc.squirreljme.runtime.gcf.IPAddress;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.OutputStream;
+import java.util.ServiceLoader;
 
 /**
  * This class is used to create new connections via the generic connection
@@ -39,6 +41,10 @@ public class Connector
 	
 	/** Access mode to allow for read and writing from/to the stream. */
 	public static final int READ_WRITE = Connector.READ | Connector.WRITE;
+	
+	/** Services support. */
+	private static final ServiceLoader<CustomConnectionFactory> _SERVICES =
+		ServiceLoader.load(CustomConnectionFactory.class);
 	
 	/**
 	 * Not used.
@@ -109,6 +115,15 @@ public class Connector
 			
 				// Unknown
 			default:
+				// Is there a matching custom connector 
+				synchronized (Connector.class)
+				{
+					for (CustomConnectionFactory custom : Connector._SERVICES)
+						if (__uri.equalsIgnoreCase(custom.scheme()))
+							return true;
+				}
+				
+				// Not supported
 				return false;
 		}
 	}
@@ -418,12 +433,19 @@ public class Connector
 				// SSL/TLS TCP Socket
 			case "ssl":
 				throw new todo.TODO();
-				
-				// {@squirreljme.error EC12 Unhandled URI protocol. (The URI)}.
-			default:
-				throw new ConnectionNotFoundException(String.format("EC12 %s",
-					__uri));
 		}
+		
+		// Is there a matching custom connector 
+		synchronized (Connector.class)
+		{
+			for (CustomConnectionFactory custom : Connector._SERVICES)
+				if (scheme.equalsIgnoreCase(custom.scheme()))
+					return custom.connect(part, __mode, __timeouts, __opts);
+		}
+		
+		// {@squirreljme.error EC12 Unhandled URI protocol. (The URI)}.
+		throw new ConnectionNotFoundException(String.format("EC12 %s",
+			__uri));
 	}
 }
 

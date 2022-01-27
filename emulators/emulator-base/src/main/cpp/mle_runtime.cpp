@@ -29,18 +29,18 @@ JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_lineEnding(JNIEnv*, jclass)
 #endif
 }
 
-JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_memoryProfile(JNIEnv*, jclass)
-{
-	// Normal memory profile
-	return 0;
-}
-
 JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_vmDescription(
 	JNIEnv* env, jclass classy, jint id)
 {
 	return (jstring)forwardCallStaticObject(env, RUNTIME_CLASSNAME,
 		"vmDescription", RUNTIME_VMDESCRIPTION_DESC,
 		id);
+}
+
+JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_memoryProfile(JNIEnv*, jclass)
+{
+	// The value is normal
+	return 0;
 }
 
 JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_vmType(JNIEnv*, jclass)

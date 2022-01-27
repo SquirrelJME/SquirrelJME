@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.jvm.suite.SuiteInfo;
+import java.util.Map;
 
 /**
  * Represents a single application that can be launched.
@@ -126,5 +127,16 @@ public final class JavaApplication
 		if (entry.isMidlet())
 			return "javax.microedition.midlet.__MainHandler__";
 		return entry.entryPoint();
+	}
+	
+	/**
+	 * Returns the system properties to define for the application.
+	 * 
+	 * @return The system properties to use for the application.
+	 * @since 2021/12/01
+	 */
+	public Map<String, String> loaderSystemProperties()
+	{
+		return null;
 	}
 }

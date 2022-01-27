@@ -871,6 +871,7 @@ public final class EnforcedDrawingAreaGraphics
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/12/02
+	 * @param __s
 	 */
 	@Override
 	public final void setStrokeStyle(int __s)

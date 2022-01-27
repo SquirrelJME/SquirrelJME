@@ -1,0 +1,54 @@
+// ---------------------------------------------------------------------------
+// SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the GNU General Public License v3+, or later.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
+package cc.squirreljme.runtime.midlet;
+
+/**
+ * Handles differences in various types of applications so that they all
+ * have a uniform start and ending cycle.
+ *
+ * @param <A> The application controlling instance.
+ * @see ApplicationHandler
+ * @since 2021/11/30
+ */
+public interface ApplicationInterface<A>
+{
+	/**
+	 * Destroys the instance of the application.
+	 * 
+	 * @param __instance The instance that was previously created.
+	 * @param __thrown The thrown exception if any, for possible special
+	 * handle or failure handling.
+	 * @throws NullPointerException On null arguments.
+	 * @throws Throwable On any exception.
+	 * @since 2021/11/30
+	 */
+	void destroy(A __instance, Throwable __thrown)
+		throws NullPointerException, Throwable;
+	
+	/**
+	 * Creates a new instance of the application.
+	 * 
+	 * @return The created instance.
+	 * @throws Throwable On any exception.
+	 * @since 2021/11/30
+	 */
+	A newInstance()
+		throws Throwable;
+	
+	/**
+	 * Starts the application instance.
+	 * 
+	 * @param __instance The previously created instance.
+	 * @throws NullPointerException On null arguments.
+	 * @throws Throwable On any exception.
+	 * @since 2021/11/30
+	 */
+	void startApp(A __instance)
+		throws NullPointerException, Throwable;
+}

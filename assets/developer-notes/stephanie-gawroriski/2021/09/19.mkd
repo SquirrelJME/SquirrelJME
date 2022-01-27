@@ -1,0 +1,6 @@
+# 2021/09/19
+
+## 15:46
+
+Well, turns out CMake does not support merging static libraries, but at least
+there are `OBJECT` libraries which hopefully work!

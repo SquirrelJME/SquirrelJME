@@ -17,6 +17,7 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
+@SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
 public abstract class CustomItem
 	extends Item
 {

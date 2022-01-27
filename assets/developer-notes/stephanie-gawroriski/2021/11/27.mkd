@@ -1,0 +1,17 @@
+# 2021/11/27
+
+## 12:07
+
+So I suppose I will have to figure out how labels are attached to items and
+such. I could just do another widget and otherwise, and then track that
+accordingly. I can do it, but I suppose I just need to juggle this.
+
+## 22:13
+
+So the full hosted environment was having an issue with things returning early
+but as it turns out `ThreadShelf.waitForUpdate()` was not implemented in
+full hosted... So hopefully after I implement it the hosted environment just
+does not crash. Surprised it took this long find that although I spent like
+a bunch of hours today on it. But on the otherwise I did improve the timing of
+when programs actually exit and removed the big delay when that happens by
+using monitors!

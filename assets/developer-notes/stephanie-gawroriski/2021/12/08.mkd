@@ -1,0 +1,7 @@
+# 2021/12/08
+
+## 17:35
+
+Well, now I suppose to work on support for decoding GIF images. Hopefully
+it does not go too badly but it would be good because i-mode needs support for
+GIFs as pretty much all of the software uses it.

@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.util.MapKeySetView;
+
 public abstract class AbstractMap<K, V>
 	implements Map<K, V>
 {
@@ -94,7 +96,7 @@ public abstract class AbstractMap<K, V>
 	@Override
 	public Set<K> keySet()
 	{
-		return new __AbstractMapKeySet__<K, V>(this);
+		return new MapKeySetView<K, V>(this, false);
 	}
 	
 	@Override

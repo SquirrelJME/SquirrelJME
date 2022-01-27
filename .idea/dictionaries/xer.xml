@@ -5,6 +5,7 @@
       <w>accel</w>
       <w>aload</w>
       <w>anycoat</w>
+      <w>appli</w>
       <w>astore</w>
       <w>backlight</w>
       <w>baos</w>
@@ -78,6 +79,7 @@
       <w>nsee</w>
       <w>offsetof</w>
       <w>phasic</w>
+      <w>rasterized</w>
       <w>ratufa</w>
       <w>ratufacoat</w>
       <w>roro</w>

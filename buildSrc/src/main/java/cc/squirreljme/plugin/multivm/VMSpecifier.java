@@ -147,6 +147,7 @@ public interface VMSpecifier
 	 * @param __debugEligible Is this eligible for debug?
 	 * @param __execSpec The execution spec to fill.
 	 * @param __mainClass The main class to execute.
+	 * @param __commonName The common name for the program.
 	 * @param __sysProps The system properties to define.
 	 * @param __libPath The library path to use for the virtual machine.
 	 * @param __classPath The class path of the execution target.
@@ -156,7 +157,7 @@ public interface VMSpecifier
 	 */
 	void spawnJvmArguments(Task __task, boolean __debugEligible,
 		JavaExecSpecFiller __execSpec, String __mainClass,
-		Map<String, String> __sysProps, Path[] __libPath,
+		String __commonName, Map<String, String> __sysProps, Path[] __libPath,
 		Path[] __classPath, String... __args)
 		throws NullPointerException;  
 	

@@ -12,7 +12,7 @@ package cc.squirreljme.jdwp.event;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
- * Not Described.
+ * Represents a single step within the call stack.
  *
  * @since 2021/04/17
  */

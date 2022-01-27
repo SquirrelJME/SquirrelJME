@@ -13,11 +13,27 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public abstract class IApplication
 {
+	/** The last application created. */
+	static volatile IApplication _lastApp;
+	
+	/** Application args, these are injected within. */
+	static volatile String[] _appArgs;
+	
+	{
+		synchronized (IApplication.class)
+		{
+			IApplication._lastApp = this;
+		}
+	}
+	
 	public abstract void start();
 	
 	public String[] getArgs()
 	{
-		throw Debugging.todo();
+		synchronized (IApplication.class)
+		{
+			return IApplication._appArgs.clone();
+		}
 	}
 	
 	public final String getSourceUrl()
@@ -32,11 +48,15 @@ public abstract class IApplication
 	
 	public final void terminate()
 	{
-		throw Debugging.todo();
+		// Do nothing here as the application handler will handle our exit
+		// status accordingly.
 	}
 	
 	public static IApplication getCurrentApp()
 	{
-		throw Debugging.todo();
+		synchronized (IApplication.class)
+		{
+			return IApplication._lastApp;
+		}
 	}
 }

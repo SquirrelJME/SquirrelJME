@@ -10,7 +10,9 @@
 package cc.squirreljme.runtime.cldc;
 
 /**
- * Not Described
+ * Used to poke the virtual machine to make sure things are up and online.
+ * 
+ * This is mainly intended for the Java SE Hosted environment.
  *
  * @since 2020/02/29
  */

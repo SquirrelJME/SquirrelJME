@@ -15,7 +15,7 @@ package net.multiphasicapps.collections;
  * @param <T> The type of value to wrap.
  * @since 2017/12/28
  */
-final class __IdentityWrapper__<T>
+public final class Identity<T>
 {
 	/** The wrapped object. */
 	protected final T value;
@@ -27,7 +27,7 @@ final class __IdentityWrapper__<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/28
 	 */
-	__IdentityWrapper__(T __v)
+	public Identity(T __v)
 		throws NullPointerException
 	{
 		if (__v == null)
@@ -41,15 +41,15 @@ final class __IdentityWrapper__<T>
 	 * @since 2017/12/28
 	 */
 	@Override
-	public boolean equals(Object __o)
+	public final boolean equals(Object __o)
 	{
 		if (this == __o)
 			return true;
 		
-		if (!(__o instanceof __IdentityWrapper__))
+		if (!(__o instanceof Identity))
 			return false;
 		
-		return this.value == ((__IdentityWrapper__<?>)__o).value;
+		return this.value == ((Identity<?>)__o).value;
 	}
 	
 	/**
@@ -58,7 +58,7 @@ final class __IdentityWrapper__<T>
 	 * @return The wrapped object.
 	 * @since 2017/12/28
 	 */
-	public T get()
+	public final T get()
 	{
 		return this.value;
 	}
@@ -68,9 +68,19 @@ final class __IdentityWrapper__<T>
 	 * @since 2017/12/28
 	 */
 	@Override
-	public int hashCode()
+	public final int hashCode()
 	{
-		return this.value.hashCode();
+		return System.identityHashCode(this.value);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/11/28
+	 */
+	@Override
+	public final String toString()
+	{
+		return this.value.toString();
 	}
 }
 

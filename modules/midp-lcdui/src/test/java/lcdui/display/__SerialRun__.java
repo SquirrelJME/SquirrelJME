@@ -30,6 +30,8 @@ class __SerialRun__
 		synchronized (this)
 		{
 			this._flag = true;
+			
+			this.notifyAll();
 		}
 	}
 }

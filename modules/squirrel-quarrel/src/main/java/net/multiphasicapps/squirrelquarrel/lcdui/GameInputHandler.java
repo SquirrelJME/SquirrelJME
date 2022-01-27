@@ -14,7 +14,7 @@ import net.multiphasicapps.squirrelquarrel.world.Tile;
 
 /**
  * This handles the input for the game such as which keys are held down and
- * buttons for perfomring actions.
+ * buttons for performing actions.
  *
  * @since 2017/02/12
  */

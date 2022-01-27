@@ -61,9 +61,11 @@ final class __CommandWidget__
 		
 		this._uiItem = item;
 		
-		// Set item text
-		backend.widgetProperty(item, UIWidgetProperty.STRING_LABEL,
-			0, __action.__getLabel());
+		// Register with the command to get updates
+		__action.__register(this);
+		
+		// Perform an update of the used text/images
+		this.__update();
 	}
 	
 	/**
@@ -85,5 +87,18 @@ final class __CommandWidget__
 		
 		// Perform the command's action
 		listener.commandAction(this.action, owner);
+	}
+	
+	/**
+	 * Updates the state of the widget.
+	 * 
+	 * @since 2021/11/30
+	 */
+	final void __update()
+	{
+		// Set item text
+		UIBackend backend = UIBackendFactory.getInstance();
+		backend.widgetProperty(this._uiItem, UIWidgetProperty.STRING_LABEL,
+			0, this.action.__getLabel());
 	}
 }

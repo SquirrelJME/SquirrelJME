@@ -115,9 +115,6 @@ public abstract class VMFactory
 		// There always is a profiler being run, just differs if we save it
 		ProfilerSnapshot profilerSnapshot = new ProfilerSnapshot();
 		
-		// Is JDWP being used?
-		JDWPController jdwp = null;
-		
 		// Determine the path separator character
 		String sepString = System.getProperty("path.separator");
 		char sepChar = (sepString == null || sepString.isEmpty() ? ':' :
@@ -303,12 +300,9 @@ public abstract class VMFactory
 		try
 		{
 			// Debug
-			System.err.printf("Starting virtual machine (in %s)...%n",
+			Debugging.debugNote("Starting virtual machine (in %s)...",
 				mainClass);
-			/*System.err.printf(" * Libraries: %s%n",
-				VMFactory.__libraryNames(suites.values()));
-			System.err.printf(" * Classpath: %s%n",
-				classpath);*/
+			Debugging.debugNote("Args: %s", Arrays.asList(__args));
 			
 			// Run the VM
 			VirtualMachine vm = VMFactory.mainVm(vmName,
@@ -626,6 +620,8 @@ public abstract class VMFactory
 		try
 		{
 			// Create socket
+			Debugging.debugNote("Waiting for connection with %s:%d...",
+				__host, __port);
 			if (__host == null || __host.isEmpty())
 				socket = new ServerSocket(__port).accept();
 			else

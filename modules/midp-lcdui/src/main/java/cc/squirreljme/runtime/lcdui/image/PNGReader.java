@@ -9,13 +9,16 @@
 
 package cc.squirreljme.runtime.lcdui.image;
 
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import javax.microedition.lcdui.Image;
+import net.multiphasicapps.io.ByteDeque;
 import net.multiphasicapps.io.CRC32Calculator;
 import net.multiphasicapps.io.ChecksumInputStream;
 import net.multiphasicapps.io.SizeLimitedInputStream;
@@ -121,7 +124,7 @@ public class PNGReader
 		// contain a tRNS chunk after the IDAT chunk. This violates the PNG
 		// standard so the image chunk has to cached and process later,
 		// otherwise the images will be corrupt.
-		byte[] imagechunk = null;
+		byte[] imageChunk = null;
 		
 		// Keep reading chunks in the file
 		for (;;)
@@ -133,8 +136,8 @@ public class PNGReader
 			
 			// Setup data stream for reading packet data, do not propogate
 			// close
-			CRC32Calculator crc = new CRC32Calculator(true, true, 0x04C11DB7,
-				0xFFFFFFFF, 0xFFFFFFFF);
+			CRC32Calculator crc = new CRC32Calculator(true, true,
+				0x04C11DB7, 0xFFFFFFFF, 0xFFFFFFFF);
 			int lasttype = 0;
 			try (DataInputStream data = new DataInputStream(
 				new SizeLimitedInputStream(new ChecksumInputStream(crc, in),
@@ -166,7 +169,7 @@ public class PNGReader
 						// There may be multiple consecutive IDAT chunks which
 						// just continue where the previous one left off, so
 						// just smash them together
-						if (imagechunk != null)
+						if (imageChunk != null)
 						{
 							// Read chunk data, decompress the data
 							// additionally so that the decoder does not need
@@ -176,19 +179,21 @@ public class PNGReader
 							
 							// Setup new array which contains the original
 							// data but has more space
-							int gn = imagechunk.length,
+							int gn = imageChunk.length,
 								xn = xtrachunk.length,
 								nl = gn + xn;
-							imagechunk = Arrays.copyOf(imagechunk, nl);
+							imageChunk = Arrays.copyOf(imageChunk, nl);
 							
 							// Write in all the data
-							for (int i = 0, o = gn; i < xn; i++, o++)
-								imagechunk[o] = xtrachunk[i];
+							// for (int i = 0, o = gn; i < xn; i++, o++)
+							// 	imageChunk[o] = xtrachunk[i];
+							System.arraycopy(xtrachunk, 0,
+								imageChunk, gn, xn);
 						}
 						
 						// The first chunk
 						else
-							imagechunk = PNGReader.__chunkLater(data);
+							imageChunk = PNGReader.__chunkLater(data);
 						break;
 						
 						// Transparency information
@@ -245,7 +250,7 @@ public class PNGReader
 		// Process the image chunk now that the other information was read
 		// Note that the chunk needs to be unfiltered first
 		try (InputStream data = new ByteArrayInputStream(this.__unfilter(
-			new ZLibDecompressor(new ByteArrayInputStream(imagechunk)))))
+			new ZLibDecompressor(new ByteArrayInputStream(imageChunk)))))
 		{
 			int colortype = this._colortype;
 			
@@ -732,36 +737,37 @@ public class PNGReader
 	 * Reads all the input data and returns a byte array for the data, so it
 	 * may be processed later.
 	 *
-	 * @param __dis The stream to read from.
+	 * @param __in The stream to read from.
 	 * @return The read data.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/14
 	 */
-	private static final byte[] __chunkLater(InputStream __dis)
+	private static byte[] __chunkLater(InputStream __in)
 		throws IOException, NullPointerException
 	{
-		if (__dis == null)
+		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		// Read into this byte array
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(512))
+		// The final glue point
+		ByteDeque glue = new ByteDeque();
+		
+		// Read in all the various chunks as much as possible
+		byte[] buf = StreamUtils.buffer(__in);
+		for (;;)
 		{
-			// Read loop
-			byte[] buf = new byte[512];
-			for (;;)
-			{
-				int rc = __dis.read(buf);
-				
-				if (rc < 0)
-					break;
-				
-				baos.write(buf, 0, rc);
-			}
+			// Read in the chunk data
+			int rc = __in.read(buf, 0, buf.length);
 			
-			// Return the data
-			return baos.toByteArray();
+			// EOF?
+			if (rc < 0)
+				break;
+			
+			// Add to the buffer
+			glue.addLast(buf, 0, rc);
 		}
+		
+		return glue.toByteArray();
 	}
 }
 

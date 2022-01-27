@@ -10,7 +10,7 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.Poking;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.midlet.ApplicationHandler;
 
 /**
  * This class takes care of launching {@link IApplication}s.
@@ -28,18 +28,23 @@ final class __AppLaunch__
 	 */
 	public static void main(String... __args)
 		throws Throwable
-	{
-		// {@squirreljme.error AH01 No main i-mode class specified.}
-		if (__args == null || __args.length < 1 || __args[0] == null)
-			throw new IllegalArgumentException("AH01");
-		
-		// We might be on the emulator
+	{	
+		// We might be on the emulator, so ensure our native interfaces and
+		// otherwise are properly loaded
 		Poking.poke();
 		
-		// Debug where we are going in
-		Debugging.debugNote("Entering i-mode Application: %s",
-			__args[0]);
+		// {@squirreljme.error AH04 No main i-mode class specified.}
+		if (__args == null || __args.length < 1 || __args[0] == null)
+			throw new IllegalArgumentException("AH04");
 		
-		throw Debugging.todo();
+		// Are there any arguments to the application call?
+		int argLen = __args.length;
+		String[] appArgs = (argLen <= 1 ? new String[0] :
+			new String[argLen - 1]);
+		for (int i = 1, o = 0; i < argLen; i++, o++)
+			appArgs[o] = __args[i];
+		
+		// Call the common application handler
+		ApplicationHandler.main(new __IAppliInterface__(__args[0], appArgs));
 	}
 }
