@@ -46,6 +46,9 @@ public final class PencilGraphics
 	/** Surface height. */
 	protected final int surfaceH;
 	
+	/** Does this have alpha channel support? */
+	protected final boolean hasAlpha;
+	
 	/** The current alpha color. */
 	private int _argbColor;
 	
@@ -82,13 +85,14 @@ public final class PencilGraphics
 	 * @param __sw The surface width.
 	 * @param __sh The surface height.
 	 * @param __hardware The hardware bracket reference for drawing.
+	 * @param __pf The pixel format used.
 	 * @throws IllegalArgumentException If hardware graphics are not capable
 	 * enough to be used at all.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/25
 	 */
 	private PencilGraphics(int __caps, Graphics __software, int __sw, int __sh,
-		PencilBracket __hardware)
+		PencilBracket __hardware, int __pf)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__software == null || __hardware == null)
@@ -105,6 +109,11 @@ public final class PencilGraphics
 		// These are used to manage the clip
 		this.surfaceW = __sw;
 		this.surfaceH = __sh;
+		
+		// Does this use alpha?
+		this.hasAlpha = (__pf == UIPixelFormat.INT_RGBA8888 ||
+			__pf == UIPixelFormat.SHORT_ABGR1555 ||
+			__pf == UIPixelFormat.SHORT_RGBA4444);
 		
 		// Set initial parameters for the graphics and make sure they are
 		// properly forwarded as well
@@ -708,7 +717,8 @@ public final class PencilGraphics
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB3u Invalid blending mode. (The mode)}
-		if (__m != Graphics.SRC && __m != Graphics.SRC_OVER)
+		if ((__m != Graphics.SRC && __m != Graphics.SRC_OVER) ||
+			(__m == Graphics.SRC && !this.hasAlpha))
 			throw new IllegalArgumentException("EB3u " + __m);
 		
 		// Cache locally
@@ -885,6 +895,6 @@ public final class PencilGraphics
 		
 		return new PencilGraphics(caps, software, __sw, __sh,
 			PencilShelf.hardwareGraphics(__pf,
-			__bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh));
+			__bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh), __pf);
 	}
 }

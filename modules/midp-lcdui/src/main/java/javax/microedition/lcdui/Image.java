@@ -447,7 +447,7 @@ public class Image
 	}
 	
 	/**
-	 * Creates an image from the specified ARGB pixel array.
+	 * Creates an immutable image from the specified ARGB pixel array.
 	 *
 	 * @param __rgb The ARGB or RGB image data to use as the image data.
 	 * @param __w The width of the image.

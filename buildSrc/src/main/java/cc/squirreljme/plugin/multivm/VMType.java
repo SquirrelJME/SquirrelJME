@@ -105,8 +105,6 @@ public enum VMType
 			String gdkScale = System.getenv("GDK_SCALE");
 			if (gdkScale != null)
 			{
-				System.err.printf("SCALING: %s%n", gdkScale);
-				
 				sysProps.put("sun.java2d.uiScale.enabled", "true");
 				sysProps.put("sun.java2d.uiScale", gdkScale);
 				sysProps.put("sun.java2d.win.uiScaleX", gdkScale);

@@ -565,8 +565,8 @@ public class AdvancedGraphics
 			return;
 		
 		// Determine sub-clipping area
-		int subX = __x - clipsx;
-		int subY = __y - clipsy;
+		int subX = Math.max(0, clipsx - __x);
+		int subY = Math.max(0, clipsy - __y);
 		
 		// Clip into bounds
 		if (__x < clipsx)
@@ -588,11 +588,11 @@ public class AdvancedGraphics
 		// If __alpha is true then this is 32-bit RGBA!
 		if (__alpha)
 			this.funcargbtile.function(this,
-				new int[]{__off, __scanlen, __x, __y, tw, th},
+				new int[]{__off, __scanlen, __x, __y, tw, th, subX, subY},
 				new Object[]{__data});
 		else
 			this.funcrgbtile.function(this,
-				new int[]{__off, __scanlen, __x, __y, tw, th},
+				new int[]{__off, __scanlen, __x, __y, tw, th, subX, subY},
 				new Object[]{__data});
 	}
 	
@@ -936,8 +936,8 @@ public class AdvancedGraphics
 	@Override
 	public int getDisplayColor(int __rgb)
 	{
-		// Just use the original input color
-		return __rgb | 0xFF_000000;
+		// Just use the original input color, without the alpha channel
+		return __rgb & 0xFFFFFF;
 	}
 	
 	/**
@@ -1384,8 +1384,8 @@ public class AdvancedGraphics
 		// If this is non-stretched we can just use the standard RGB
 		// drawing function!
 		if (__wsrc == __wdest && __hsrc == __hdest)
-			this.drawRGB(data, 0, __wsrc, __xdest, __ydest, __wsrc, __hsrc,
-				alpha);
+			this.drawRGB(data, 0, __wsrc, __xdest, __ydest,
+				__wsrc, __hsrc, alpha);
 		
 		// Use stretchy draw
 		else
