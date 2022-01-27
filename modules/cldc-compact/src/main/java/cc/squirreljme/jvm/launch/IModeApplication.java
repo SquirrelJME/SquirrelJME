@@ -165,6 +165,17 @@ public class IModeApplication
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/06/13
+	 */
+	@Override
+	public String loaderEntryClass()
+	{
+		// Always use the application helper
+		return IModeApplication._BOOT_CLASS;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/12/01
 	 */
 	@Override
@@ -186,16 +197,5 @@ public class IModeApplication
 			rv.put(IModeApplication.SCRATCH_PAD_PROPERTY, spSize);
 		
 		return rv;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/06/13
-	 */
-	@Override
-	public String loaderEntryClass()
-	{
-		// Always use the application helper
-		return IModeApplication._BOOT_CLASS;
 	}
 }

@@ -1,6 +1,5 @@
-// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -11,6 +10,8 @@ package cc.squirreljme.runtime.cldc.util;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -41,6 +42,21 @@ public final class StreamUtils
 	 * @since 2021/09/06
 	 */
 	public static byte[] buffer(InputStream __in)
+		throws IOException, NullPointerException
+	{
+		return new byte[StreamUtils.bufferSize(__in)];
+	}
+	
+	/**
+	 * Determines the best available buffer size.
+	 * 
+	 * @param __in The stream to read from, may be {@code null}.
+	 * @return The recommended buffer size.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/12/05
+	 */
+	public static int bufferSize(InputStream __in)
 		throws IOException, NullPointerException
 	{
 		// Determine the initial buffer size
@@ -75,8 +91,8 @@ public final class StreamUtils
 		else
 			allocSize = Math.min(initCap, Integer.highestOneBit(avail + 1));
 		
-		// Use a fresh allocation of that
-		return new byte[allocSize];
+		// Use this size
+		return allocSize;
 	}
 	
 	/**
@@ -129,5 +145,112 @@ public final class StreamUtils
 			
 			__out.write(__tempBuf, 0, rc);
 		}
+	}
+	
+	/**
+	 * Reads every byte within the input stream.
+	 * 
+	 * @param __in The stream to read from.
+	 * @return A byte array containing all of the stream bytes.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/12/05
+	 */
+	public static byte[] readAll(InputStream __in)
+		throws IOException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException();
+		
+		// Setup buffers for temporary copy
+		int bufLen = StreamUtils.bufferSize(__in);
+		byte[] buf = new byte[bufLen];
+		
+		// Write into our target buffer
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(bufLen))
+		{
+			for (;;)
+			{
+				int rc = __in.read(buf, 0, bufLen);
+				
+				// EOF?
+				if (rc < 0)
+					break;
+				
+				// Store within
+				baos.write(buf, 0, rc);
+			}
+		
+			// All done!
+			return baos.toByteArray();
+		}
+	}
+	
+	/**
+	 * Similarly to {@link DataInputStream#readFully(byte[], int, int)} this
+	 * will read all of the bytes within the stream however this will return
+	 * a lower return value if EOF was reached.
+	 * 
+	 * @param __in The stream to read from.
+	 * @param __b The output buffer.
+	 * @return The number of bytes read or {@code -1} on EOF.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/12/05
+	 */
+	public static int readMostly(InputStream __in, byte[] __b)
+		throws IOException, NullPointerException
+	{
+		if (__in == null || __b == null)
+			throw new NullPointerException("NARG");
+		
+		return StreamUtils.readMostly(__in, __b, 0, __b.length);
+	}
+	
+	/**
+	 * Similarly to {@link DataInputStream#readFully(byte[], int, int)} this
+	 * will read all of the bytes within the stream however this will return
+	 * a lower return value if EOF was reached.
+	 * 
+	 * @param __in The stream to read from.
+	 * @param __b The output buffer.
+	 * @param __o The offset into the buffer.
+	 * @param __l The number of bytes to read.
+	 * @return The number of bytes read or {@code -1} on EOF.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/12/05
+	 */
+	public static int readMostly(InputStream __in, byte[] __b, int __o,
+		int __l)
+		throws IndexOutOfBoundsException, IOException, NullPointerException
+	{
+		if (__in == null || __b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Constantly read in as much as possible
+		int rv = 0;
+		while (rv < __l)
+		{
+			// Read entire chunk
+			int rc = __in.read(__b, __o + rv, __l - rv);
+			
+			// Reached EOF
+			if (rc < 0)
+			{
+				if (rv == 0)
+					return -1;
+				break;
+			}
+			
+			// These many bytes were read, we might try again
+			rv += rc;
+		}
+		
+		return rv;
 	}
 }
