@@ -89,7 +89,7 @@ jobs:
   ################################# MAC OS X #################################
   build_macosx:
     macos:
-      xcode: 11.3.0
+      xcode: 13.2.1
     environment:
       # Do not auto-update brew as this takes forever and we really just want
       # a single package
