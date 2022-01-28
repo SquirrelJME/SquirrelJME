@@ -41,7 +41,7 @@ public final class Bootstrap
 		// Introduction banner for the virtual machine itself
 		Debugging.notice("SquirrelJME %s",
 			SquirrelJME.RUNTIME_VERSION);
-		Debugging.notice("(C) 2013-2021 Stephanie Gawroriski");
+		Debugging.notice("(C) 2013-2022 Stephanie Gawroriski");
 		Debugging.notice("Licensed under the GPLv3!");
 		Debugging.notice("E-Mail : xerthesquirrel@gmail.com");
 		Debugging.notice("Website: https://squirreljme.cc/");

@@ -9,9 +9,9 @@ permitted by the GNU GPLv3.
 ## License Terms
 
 ```
-Copyright (C) 2013-2021 Stephanie Gawroriski <xerthesquirrel@gmail.com>
+Copyright (C) 2013-2022 Stephanie Gawroriski <xerthesquirrel@gmail.com>
 
-"SquirrelJME" and "Lex" are trademarks of Stephanie Gawroriski 2016-2021.
+"SquirrelJME" and "Lex" are trademarks of Stephanie Gawroriski 2016-2022.
 
 The above copyright notice and this notice with the others below shall be
 included in all copies or substantial portions of the Software.

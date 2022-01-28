@@ -36,12 +36,12 @@ extern "C"
 
 /** Copyright. */
 #define SQUIRRELJME_WINDOWS_COPYRIGHT \
-	"Copyright 2015-2021 Stephanie Gawroriski"
+	"Copyright 2015-2022 Stephanie Gawroriski"
 
 /** Trademark. */
 #define SQUIRRELJME_WINDOWS_TRADEMARK \
 	"SquirrelJME, Lex The Squirrel and his likeness " \
-	"are Trademarks of Stephanie Gawroriski 2016-2021"
+	"are Trademarks of Stephanie Gawroriski 2016-2022"
 
 /*--------------------------------------------------------------------------*/
 
