@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.font.SQFFont;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
@@ -581,19 +582,30 @@ public class AdvancedGraphics
 			ey = clipey;
 		
 		// New tile size
-		int tw = ex - __x,
-			th = ey - __y;
+		int tw = ex - __x;
+		int th = ey - __y;
 		
 		// We might have multiplied alpha blending, or just normal blending
 		// If __alpha is true then this is 32-bit RGBA!
-		if (__alpha)
-			this.funcargbtile.function(this,
-				new int[]{__off, __scanlen, __x, __y, tw, th, subX, subY},
-				new Object[]{__data});
-		else
-			this.funcrgbtile.function(this,
-				new int[]{__off, __scanlen, __x, __y, tw, th, subX, subY},
-				new Object[]{__data});
+		try
+		{
+			if (__alpha)
+				this.funcargbtile.function(this,
+					new int[]{__off, __scanlen, __x, __y, tw, th, subX, subY},
+					new Object[]{__data});
+			else
+				this.funcrgbtile.function(this,
+					new int[]{__off, __scanlen, __x, __y, tw, th, subX, subY},
+					new Object[]{__data});
+		}
+		catch (IndexOutOfBoundsException e)
+		{
+			Debugging.debugNote("drawRGBTile(w=%d, h=%d, off=%d, " +
+				"scanlen=%d, " +
+				"x=%d, y=%d, tw=%d, th=%d, subX=%d, subY=%d)",
+				__w, __h, __off, __scanlen, __x, __y, tw, th, subX, subY);
+			e.printStackTrace();
+		}
 	}
 	
 	/**

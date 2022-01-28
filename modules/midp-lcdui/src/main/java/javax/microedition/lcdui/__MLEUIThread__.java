@@ -59,6 +59,20 @@ final class __MLEUIThread__
 		
 		DisplayWidget widget = StaticDisplayState.locate(__item);
 		
+		// Commands are special key events
+		if (__event == UIKeyEventType.COMMAND_ACTIVATED)
+		{
+			// Command button widgets will activate the given command
+			if (widget instanceof __CommandWidget__)
+				((__CommandWidget__)widget).__activate();
+			
+			// List activations will activate the given list item
+			else if (widget instanceof List)
+				((List)widget).__selectCommand(__keyCode);
+			
+			return;
+		}
+		
 		// Get J2ME specific modifiers since we have extra ones undefined by
 		// J2ME
 		int javaMods = __modifiers & UIKeyModifier.J2ME_MASK;
@@ -156,18 +170,6 @@ final class __MLEUIThread__
 				// Consume this key
 				return;
 			}
-		
-		// Commands are special key events
-		if (__event == UIKeyEventType.COMMAND_ACTIVATED)
-		{
-			// Command button widgets will activate the given command
-			if (widget instanceof __CommandWidget__)
-				((__CommandWidget__)widget).__activate();
-			
-			// List activations will activate the given list item
-			else if (widget instanceof List)
-				((List)widget).__selectCommand(__keyCode);
-		}
 		
 		// Any Displayable which have standard key access
 		else if (widget instanceof Canvas)

@@ -29,7 +29,7 @@ public final class NaturalComparator<V>
 	 *
 	 * @since 2017/11/30
 	 */
-	public NaturalComparator()
+	private NaturalComparator()
 	{
 	}
 	
@@ -63,7 +63,7 @@ public final class NaturalComparator<V>
 	 * @return The instance of the natural comparator.
 	 * @since 2016/09/06
 	 */
-	@SuppressWarnings({"unchecked"})
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public static final <V> NaturalComparator<V> instance()
 	{
 		Reference<NaturalComparator> ref = NaturalComparator._REF;
@@ -71,7 +71,8 @@ public final class NaturalComparator<V>
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			NaturalComparator._REF = new WeakReference<>((rv = new NaturalComparator()));
+			NaturalComparator._REF = new WeakReference<>(
+				(rv = new NaturalComparator()));
 		
 		// Return it
 		return (NaturalComparator<V>)rv;

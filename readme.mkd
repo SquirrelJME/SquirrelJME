@@ -15,8 +15,8 @@ execution.
 Additionally, there is a port of SquirrelJME to RetroArch which enables the
 ability to play older J2ME software and games designed for flip-phones.
 
- * Copyright (C) 2013-2021 Stephanie Gawroriski <xer@multiphasicapps.net>
- * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2021
+ * Copyright (C) 2013-2022 Stephanie Gawroriski <xer@multiphasicapps.net>
+ * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2022
  * _Lex_ and The _SquirrelJME_ Logo were illustrated by...
    * Kat Adam-MacEwen
    * Kat@CMYKat Designs & Illustrations <http://www.cmykat-designs.com/>

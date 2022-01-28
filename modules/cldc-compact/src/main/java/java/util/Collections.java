@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.util.NaturalComparator;
 import cc.squirreljme.runtime.cldc.util.ShellSort;
 
 public class Collections
@@ -45,16 +46,101 @@ public class Collections
 		return __target.addAll(Arrays.asList(__v));
 	}
 	
-	public static <T> int binarySearch(List<? extends Comparable<? super T>>
-		__a, T __b)
+	/**
+	 * Performs a binary search of the given list to find the position in
+	 * the list where {@code __key} is located or where it would be located
+	 * 
+	 * @param <T> The type of value to find.
+	 * @param __list The list to search.
+	 * @param __key The key to search for.
+	 * @return The position of the item or {@code (-(insertion point) - 1)}
+	 * where it would be found.
+	 * @throws NullPointerException If there is no list specified.
+	 * @since 2022/01/28
+	 */
+	public static <T> int binarySearch(
+		List<? extends Comparable<? super T>> __list, T __key)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		return Collections.binarySearch(__list, __key, null);
 	}
 	
-	public static <T> int binarySearch(List<? extends T> __a, T __b,
-		Comparator<? super T> __c)
+	/**
+	 * Performs a binary search of the given list to find the position in
+	 * the list where {@code __key} is located or where it would be located
+	 * 
+	 * @param <T> The type of value to find.
+	 * @param __list The list to search.
+	 * @param __key The key to search for.
+	 * @param __compare The {@link Comparator} to use for sorting, if
+	 * {@code null} then this will use the natural {@link Comparator}.
+	 * @return The position of the item or {@code (-(insertion point) - 1)}
+	 * where it would be found.
+	 * @throws ClassCastException If the comparator is of the wrong type.
+	 * @throws NullPointerException If there is no list specified.
+	 * @since 2022/01/28
+	 */
+	public static <T> int binarySearch(List<? extends T> __list, T __key,
+		Comparator<? super T> __compare)
+		throws NullPointerException, ClassCastException
 	{
-		throw new todo.TODO();
+		// Check
+		if (__list == null)
+			throw new NullPointerException("NARG");
+		
+		int len = __list.size();
+		int __from = 0;
+		int __to = len;
+		
+		// If missing, get a comparator instance.
+		if (__compare == null)
+			__compare = NaturalComparator.<T>instance();
+		
+		// Empty list, will always be at the 0th index
+		if (len == 0)
+			return -1;
+		
+		// List has a single element, so only check that
+		else if (len == 1)
+		{
+			T pv = __list.get(__from);
+			
+			// Is same
+			if (__compare.compare(pv,__key) == 0)
+				return __from;
+			
+			// Value is either the 0th or 1st element
+			if (__compare.compare(pv, __key) < 0)
+				return -1;
+			else
+				return -2;
+		}
+		
+		// Use the same index
+		__to -= 1;
+		
+		// Search for element at the pivot first, stop if the from and to are
+		// at the same points
+		while (__from <= __to)
+		{
+			// Calculate the pivot and use its value
+			int p = __from + (((__to - __from) + 1) >> 1);
+			T pv = __list.get(p);
+			
+			// Left of pivot?
+			if (__compare.compare(__key, pv) < 0)
+				__to = p - 1;
+			
+			// Right of pivot?
+			else if (__compare.compare(__key, pv) > 0)
+				__from = p + 1;
+			
+			// Match
+			else
+				return p;
+		}
+		
+		return (-__from) - 1;
 	}
 	
 	public static <T> void copy(List<? super T> __a, List<? extends T> __b)

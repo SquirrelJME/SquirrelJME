@@ -6,8 +6,8 @@ included library into other programs such as RetroArch. A _SummerCoat Register_
 _Format_ ROM is required for this to operate, to which the SquirrelJME project
 must be referred to accordingly.
 
- * Copyright (C) 2013-2021 Stephanie Gawroriski <xer@multiphasicapps.net>
- * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2021
+ * Copyright (C) 2013-2022 Stephanie Gawroriski <xer@multiphasicapps.net>
+ * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2022
  * _Lex_ and The _SquirrelJME_ Logo were illustrated by...
    * Kat Adam-MacEwen
    * Kat@CMYKat Designs & Illustrations <http://www.cmykat-designs.com/>
