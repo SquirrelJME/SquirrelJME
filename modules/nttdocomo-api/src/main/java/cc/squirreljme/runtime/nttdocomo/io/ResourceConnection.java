@@ -18,7 +18,7 @@ import javax.microedition.io.InputConnection;
  * Connects to resources which are on the class path.
  * 
  * I am assuming that i-mode does not support or does not recommend that
- * {@link Class#getResource(String)} be used. 
+ * {@link Class#getResourceAsStream(String)} be used. 
  *
  * @since 2021/11/30
  */
