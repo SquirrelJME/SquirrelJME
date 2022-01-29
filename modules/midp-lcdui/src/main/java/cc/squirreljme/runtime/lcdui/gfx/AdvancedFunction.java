@@ -412,7 +412,7 @@ public enum AdvancedFunction
 			
 			// Draw tile data
 			int dest = __ag.offset + (__y * iw) + __x;
-			int src = __subX + (__subY * iw);
+			int src = __o + __subX + (__subY * iw);
 			int ey = __y + __h;
 			for (; __y < ey; __y++, dest += iw, src += eosa)
 				for (int spend = src + __w, dp = dest; src < spend;
@@ -450,7 +450,7 @@ public enum AdvancedFunction
 			
 			// Draw tile data
 			int dest = __ag.offset + (__y * iw) + __x;
-			int src = __subX + (__subY * iw);
+			int src = __o + __subX + (__subY * iw);
 			int ey = __y + __h;
 			for (; __y < ey; __y++, dest += iw, src += eosa)
 				for (int spend = src + __w, dp = dest; src < spend;
@@ -498,7 +498,7 @@ public enum AdvancedFunction
 			
 			// Draw tile data
 			int dest = __ag.offset + (__y * iw) + __x;
-			int src = __subX + (__subY * iw);
+			int src = __o + __subX + (__subY * iw);
 			int ey = __y + __h;
 			for (; __y < ey; __y++, dest += iw, src += eosa)
 				for (int spend = src + __w, dp = dest; src < spend;
@@ -548,7 +548,7 @@ public enum AdvancedFunction
 			
 			// Draw tile data
 			int dest = __ag.offset + (__y * iw) + __x;
-			int src = __subX + (__subY * iw);
+			int src = __o + __subX + (__subY * iw);
 			int ey = __y + __h;
 			for (; __y < ey; __y++, dest += iw, src += eosa)
 				for (int spend = src + __w, dp = dest; src < spend;

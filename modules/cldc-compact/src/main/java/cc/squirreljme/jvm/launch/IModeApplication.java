@@ -107,7 +107,12 @@ public class IModeApplication
 	@Override
 	public String displayName()
 	{
-		return this._adfProps.get("AppName");
+		String appName = this._adfProps.get(IModeApplication._APP_NAME);
+		String appClass = this._adfProps.get(IModeApplication._APP_CLASS);
+		
+		if (appName != null)
+			return appName;
+		return (appClass != null ? appClass : "Invalid i-mode Application");
 	}
 	
 	/**

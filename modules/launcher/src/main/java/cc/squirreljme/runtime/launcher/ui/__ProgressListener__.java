@@ -13,7 +13,9 @@ import cc.squirreljme.jvm.launch.Application;
 import cc.squirreljme.jvm.launch.SuiteScanListener;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.List;
@@ -27,10 +29,14 @@ final class __ProgressListener__
 	implements SuiteScanListener
 {
 	/** The suites that have been listed. */
-	protected final Collection<Application> listedSuites;
+	protected final ArrayList<Application> listedSuites;
 	
 	/** The program list. */
 	protected final List programList;
+	
+	/** Comparator for sorting applications. */
+	private final Comparator<Application> _comparator =
+		new __ApplicationComparator__();
 	
 	/** The canvas to refresh on updates. */
 	protected final SplashScreen refreshCanvas;
@@ -49,7 +55,7 @@ final class __ProgressListener__
 	 * @since 2020/12/29
 	 */
 	public __ProgressListener__(List __programList,
-		Collection<Application> __listedSuites, SplashScreen __refreshCanvas,
+		ArrayList<Application> __listedSuites, SplashScreen __refreshCanvas,
 		__RefreshState__ __refreshState)
 		throws NullPointerException
 	{
@@ -73,7 +79,7 @@ final class __ProgressListener__
 		if (__app.isNoLauncher())
 			return;
 		
-		Collection<Application> listedSuites = this.listedSuites;
+		ArrayList<Application> listedSuites = this.listedSuites;
 		List programList = this.programList;
 		SplashScreen refreshCanvas = this.refreshCanvas;
 		__RefreshState__ refreshState = this.refreshState;
@@ -88,8 +94,12 @@ final class __ProgressListener__
 		if (refreshCanvas != null)
 			refreshCanvas.requestRepaint();
 		
-		// Remember this suite
-		listedSuites.add(__app);
+		// Determine where this should go and remember the suite
+		int at = Collections.binarySearch(listedSuites, __app,
+			this._comparator);
+		if (at < 0)
+			at = -(at + 1);
+		listedSuites.add(at, __app);
 		
 		// Try to load the image for the application
 		Image icon = null;
@@ -104,6 +114,6 @@ final class __ProgressListener__
 		}
 		
 		// Add entry to the list
-		programList.append(__app.displayName(), icon);
+		programList.insert(at, __app.displayName(), icon);
 	}
 }
