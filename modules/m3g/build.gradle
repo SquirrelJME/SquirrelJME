@@ -1,4 +1,5 @@
 import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
 
 description = "This contains an implementation of the J2ME "
 	"Mobile 3D Graphics API. In SquirrelJME it utilizes OpenGL ES to " +
@@ -11,6 +12,7 @@ squirreljme
 	swmType = JavaMEMidletType.API
 	swmName = "Mobile 3D Graphics API"
 	swmVendor = "Stephanie Gawroriski"
+	definedStandards += new JavaMEStandard("microedition.m3g;;")
 	tags += "3d"
 	tags += "graphics"
 }
