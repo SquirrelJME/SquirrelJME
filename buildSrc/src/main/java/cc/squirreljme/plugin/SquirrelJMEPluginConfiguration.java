@@ -78,6 +78,9 @@ public class SquirrelJMEPluginConfiguration
 	/** Is this a bootloader? */
 	public boolean isBootLoader;
 	
+	/** Does this project count against total project completion? */
+	public boolean isCompletionCounted;
+	
 	/** System properties to be used by tests only. */
 	public Map<String, String> testSystemProperties =
 		new LinkedHashMap<>();

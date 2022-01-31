@@ -9,6 +9,9 @@
 
 package java.nio.file;
 
+import cc.squirreljme.completion.Standard;
+
+@Standard
 public interface CopyOption
 {
 }

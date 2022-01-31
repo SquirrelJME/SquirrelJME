@@ -1,24 +1,16 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// SquirrelJME
+// Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package java.nio.channels;
+/**
+ * This package contains the completion annotations.
+ *
+ * @since 2020/12/25
+ */
 
-import cc.squirreljme.completion.Completion;
-import cc.squirreljme.completion.CompletionState;
-import cc.squirreljme.completion.Standard;
-import java.io.Closeable;
-
-@Standard
-public interface Channel
-	extends Closeable
-{
-	@Completion(CompletionState.NOTHING)
-	boolean isOpen();
-}
-
+package cc.squirreljme.completion;
