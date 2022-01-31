@@ -56,11 +56,11 @@ public class FossilVersion
 			int sSpace = sub.indexOf(' ');
 			
 			// Try to find the sub index
-			int dx = Math.min(Math.min((sDot > 0 ? sDot : Integer.MAX_VALUE),
-				(sSlash > 0 ? sSlash : Integer.MAX_VALUE)),
-				(sSpace > 0 ? sSpace : Integer.MAX_VALUE));
+			int dx = Math.min(Math.min((sDot >= 0 ? sDot : Integer.MAX_VALUE),
+				(sSlash >= 0 ? sSlash : Integer.MAX_VALUE)),
+				(sSpace >= 0 ? sSpace : Integer.MAX_VALUE));
 			if (dx == Integer.MAX_VALUE)
-				throw new IllegalArgumentException("No minor version: " + __s);
+				dx = sub.length();
 			
 			// Parse that
 			minor = Integer.parseInt(sub.substring(0, dx));
