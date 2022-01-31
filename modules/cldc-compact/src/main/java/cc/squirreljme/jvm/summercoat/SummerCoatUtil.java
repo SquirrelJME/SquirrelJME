@@ -126,7 +126,7 @@ public final class SummerCoatUtil
 	{
 		return Objects.compare(
 			SummerCoatUtil.loadString(__utfP), __s,
-			new NaturalComparator<String>());
+			NaturalComparator.<String>instance());
 	}
 	
 	/**
@@ -141,6 +141,6 @@ public final class SummerCoatUtil
 	{
 		return Objects.compare(
 			__s, SummerCoatUtil.loadString(__utfP),
-			new NaturalComparator<String>());
+			NaturalComparator.<String>instance());
 	}
 }

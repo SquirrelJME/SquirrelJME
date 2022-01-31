@@ -95,6 +95,6 @@ public final class MemoryUtils
 	{
 		return Objects.compare(
 			__s, MemoryUtils.loadString(__data, __addr),
-			new NaturalComparator<String>());
+			NaturalComparator.<String>instance());
 	}
 }
