@@ -92,7 +92,7 @@ include:
 
   # Nintendo Switch
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/libnx-static.yml'
+    file: '/libnx-static-cmake.yml'
 
   # Nintendo Wii
   - project: 'libretro-infrastructure/ci-templates'
@@ -100,7 +100,7 @@ include:
 
   # Nintendo Wii U
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/wiiu-static.yml'
+    file: '/wiiu-static-cmake.yml'
 
   # PlayStation 2
   - project: 'libretro-infrastructure/ci-templates'
@@ -108,16 +108,16 @@ include:
 
   # PlayStation Portable
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/psp-static.yml'
+    file: '/psp-static-cmake.yml'
 
   # PlayStation Vita
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/vita-static.yml'
+    file: '/vita-static-cmake.yml'
 
   #################################### MISC ##################################
   # Emscripten
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/emscripten-static.yml'
+    file: '/emscripten-static-cmake.yml'
 
 ##############################################################################
 #################################### STAGES ##################################
@@ -270,10 +270,10 @@ libretro-build-ngc:
     - .core-defs
     - .squirreljme-support-common
 
-## Nintendo Switch (TODO: Move to CMake)
+## Nintendo Switch [CMake]
 libretro-build-libnx-aarch64:
   extends:
-    - .libretro-libnx-static-retroarch-master
+    - .libretro-libnx-static-cmake-retroarch-master
     - .core-defs
     - .squirreljme-support-common
 
@@ -284,10 +284,10 @@ libretro-build-wii:
     - .core-defs
     - .squirreljme-support-common
 
-## Nintendo Wii U (TODO: Move to CMake)
+## Nintendo Wii U [CMake]
 libretro-build-wiiu:
   extends:
-    - .libretro-wiiu-static-retroarch-master
+    - .libretro-wiiu-static-cmake-retroarch-master
     - .core-defs
     - .squirreljme-support-common
 
@@ -298,24 +298,24 @@ libretro-build-ps2:
     - .core-defs
     - .squirreljme-support-common
 
-## PlayStation Portable (TODO: Move to CMake)
+## PlayStation Portable [CMake]
 libretro-build-psp:
   extends:
-    - .libretro-psp-static-retroarch-master
+    - .libretro-psp-static-cmake-retroarch-master
     - .core-defs
     - .squirreljme-support-common
 
-## PlayStation Vita (TODO: Move to CMake)
+## PlayStation Vita [CMake]
 libretro-build-vita:
   extends:
-    - .libretro-vita-static-retroarch-master
+    - .libretro-vita-static-cmake-retroarch-master
     - .core-defs
     - .squirreljme-support-common
 
 #################################### MISC ##################################
-## Emscripten (TODO: Move to CMake)
+## Emscripten [CMake]
 libretro-build-emscripten:
   extends:
-    - .libretro-emscripten-static-retroarch-master
+    - .libretro-emscripten-static-cmake-retroarch-master
     - .core-defs
     - .squirreljme-support-common
