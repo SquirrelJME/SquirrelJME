@@ -85,6 +85,18 @@ message("  * Near, developer of Higan and Ares. (1983-2021)")
 message(" -- Your friend, Stephanie")
 message("******************************")
 
+# Ancient legacy system?
+if(PALMOS)
+	set(SQUIRRELJME_ANCIENT TRUE)
+
+	# You are doing whatever
+	message("SquirrelJME is building for an ancient legacy system!")
+	message("Not supported, compile and run at your own risk!")
+
+	# Debugging ancient stuff is made easier this way
+	set(CMAKE_VERBOSE_MAKEFILE TRUE)
+endif()
+
 # Build properties for SquirrelJME
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
@@ -154,9 +166,8 @@ enable_testing()
 
 # Include directories for the project
 add_subdirectory(src)
-target_include_directories(SquirrelJME PUBLIC
-	"${PROJECT_BINARY_DIR}" "include")
 
 # Testing
-add_subdirectory(tests)
-
+if(NOT SQUIRRELJME_ANCIENT)
+	add_subdirectory(tests)
+endif()

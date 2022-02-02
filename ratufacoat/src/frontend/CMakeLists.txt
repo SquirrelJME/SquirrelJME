@@ -7,9 +7,19 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Front ends
 
-# SDL2 and RetroArch Front-Ends
-add_subdirectory(sdl2)
-add_subdirectory(libretro)
+# SDL2
+if(NOT SQUIRRELJME_ANCIENT)
+	add_subdirectory(sdl2)
+else()
+	message("SDL2 is not supported for ancient systems.")
+endif()
+
+# RetroArch
+if(NOT SQUIRRELJME_ANCIENT)
+	add_subdirectory(libretro)
+else()
+	message("RetroArch is not supported for ancient systems.")
+endif()
 
 # Universal Windows Platform
 if(FALSE AND MSVC AND NOT ${CMAKE_VERSION} VERSION_LESS "3.8")
