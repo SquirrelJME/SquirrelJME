@@ -109,7 +109,7 @@ public class DeviceControl
 		if (__freq < 0 || __freq > 100)
 			throw new IllegalArgumentException("EB34 " + __freq);
 		
-		throw Debugging.todo();
+		Debugging.todoNote("startVibra(%d, %d)", __freq, __ms);
 		/*
 		// Vibrate!
 		throw Debugging.todo();
@@ -127,7 +127,7 @@ public class DeviceControl
 	 */
 	public static void stopVibra()
 	{
-		throw Debugging.todo();
+		Debugging.todoNote("stopVibra()");
 		/*
 		// Clear vibration
 		throw Debugging.todo();

@@ -16,5 +16,6 @@ dependencies
 {
 	api project(":modules:cldc-compact")
 
+	api project(":modules:media-api")
 	api project(":modules:midp-lcdui")
 }

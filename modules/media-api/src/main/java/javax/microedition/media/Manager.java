@@ -9,6 +9,7 @@
 
 package javax.microedition.media;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.media.NullPlayer;
 import cc.squirreljme.runtime.media.SystemNanoTimeBase;
 import java.io.IOException;
@@ -97,16 +98,11 @@ public final class Manager
 		return new SystemNanoTimeBase();
 	}
 	
-	public static void playTone(int __a, int __b, int __c)
-		throws MediaException
+	public static void playTone(int __note, int __duration, int __volume)
+		throws IllegalArgumentException, MediaException
 	{
-		todo.DEBUG.note("playTone(%d, %d, %d)%n", __a, __b, __c);
-		if (true)
-			throw new MediaException("TODO");
-		
-		if (false)
-			throw new MediaException();
-		throw new todo.TODO();
+		Debugging.todoNote("playTone(%d, %d, %d)",
+			__note, __duration, __volume);
 	}
 }
 
