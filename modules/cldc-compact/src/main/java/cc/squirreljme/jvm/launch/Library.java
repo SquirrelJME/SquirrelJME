@@ -78,4 +78,14 @@ public final class Library
 			this._provided = (rv = this.info.provided());
 		return rv;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/02/03
+	 */
+	@Override
+	public String toString()
+	{
+		return this.info.suite().toString();
+	}
 }

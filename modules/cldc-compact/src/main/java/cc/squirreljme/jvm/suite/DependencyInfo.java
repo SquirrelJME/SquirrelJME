@@ -10,6 +10,7 @@ package cc.squirreljme.jvm.suite;
 
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
+import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
@@ -25,6 +26,7 @@ import java.util.Set;
  * @since 2017/11/30
  */
 public final class DependencyInfo
+	implements Iterable<MarkedDependency>
 {
 	/** The dependencies. */
 	private final Set<MarkedDependency> _depends;
@@ -67,6 +69,17 @@ public final class DependencyInfo
 	}
 	
 	/**
+	 * Returns the number of dependencies in the set.
+	 * 
+	 * @return The number of dependencies.
+	 * @since 2022/02/03
+	 */
+	public int count()
+	{
+		return this._depends.size();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/12/31
 	 */
@@ -101,6 +114,16 @@ public final class DependencyInfo
 	public final boolean isEmpty()
 	{
 		return this._depends.isEmpty();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/02/03
+	 */
+	@Override
+	public Iterator<MarkedDependency> iterator()
+	{
+		return UnmodifiableIterator.of(this._depends.iterator());
 	}
 	
 	/**

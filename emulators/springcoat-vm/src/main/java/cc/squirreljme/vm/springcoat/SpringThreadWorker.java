@@ -116,7 +116,14 @@ public final class SpringThreadWorker
 		
 		// Set the thread's worker to this
 		if (__t._worker == null)
+		{
 			__t._worker = this;
+			
+			// Priority may be set before the thread is started
+			int setPriority = __t._initPriority;
+			if (setPriority >= 0)
+				this.setPriority(setPriority);
+		}
 		
 		// {@squirreljme.error BK1x Thread already has a worker associated
 		// with it.}

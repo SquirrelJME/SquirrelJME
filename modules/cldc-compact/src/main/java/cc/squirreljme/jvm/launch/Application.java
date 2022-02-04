@@ -16,7 +16,6 @@ import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.EntryPoint;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
