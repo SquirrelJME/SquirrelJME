@@ -6,4 +6,4 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-cc.squirreljme.runtime.nokia.NokiaEventTranslator
+cc.squirreljme.runtime.nokia.NokiaKeyCodeTranslator

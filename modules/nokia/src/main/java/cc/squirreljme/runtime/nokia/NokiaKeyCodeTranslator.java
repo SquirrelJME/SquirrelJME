@@ -9,7 +9,7 @@
 package cc.squirreljme.runtime.nokia;
 
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
-import cc.squirreljme.runtime.lcdui.event.EventTranslateAdapter;
+import cc.squirreljme.runtime.lcdui.event.KeyCodeTranslator;
 import com.nokia.mid.ui.FullCanvas;
 
 /**
@@ -17,8 +17,8 @@ import com.nokia.mid.ui.FullCanvas;
  * 
  * @since 2022/02/03
  */
-public class NokiaEventTranslator
-	implements EventTranslateAdapter
+public class NokiaKeyCodeTranslator
+	implements KeyCodeTranslator
 {
 	/**
 	 * {@inheritDoc}

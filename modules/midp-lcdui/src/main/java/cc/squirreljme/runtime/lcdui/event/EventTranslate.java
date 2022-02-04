@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.lcdui.event;
 
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
-import cc.squirreljme.runtime.cldc.util.UnmodifiableArrayIterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -25,7 +24,7 @@ import net.multiphasicapps.collections.UnmodifiableArrayList;
 public final class EventTranslate
 {
 	/** Event translators. */
-	private static volatile EventTranslateAdapter[] _TRANSLATORS;
+	private static volatile KeyCodeTranslator[] _TRANSLATORS;
 	
 	/**
 	 * Not used.
@@ -122,7 +121,7 @@ public final class EventTranslate
 		}
 		
 		// Check other translators
-		for (EventTranslateAdapter adapter : EventTranslate.translators())
+		for (KeyCodeTranslator adapter : EventTranslate.translators())
 		{
 			int result = adapter.keyCodeToGameAction(__kc);
 			if (result != 0)
@@ -139,21 +138,21 @@ public final class EventTranslate
 	 * @return The adapters which are available.
 	 * @since 2022/02/03
 	 */
-	public static Iterable<EventTranslateAdapter> translators()
+	public static Iterable<KeyCodeTranslator> translators()
 	{
 		// Already cached?
-		EventTranslateAdapter[] rv = EventTranslate._TRANSLATORS;
+		KeyCodeTranslator[] rv = EventTranslate._TRANSLATORS;
 		if (rv != null)
 			return UnmodifiableArrayList.of(rv);
 		
 		// Load them in
-		List<EventTranslateAdapter> found = new ArrayList<>();
-		for (EventTranslateAdapter adapter :
-			ServiceLoader.load(EventTranslateAdapter.class))
+		List<KeyCodeTranslator> found = new ArrayList<>();
+		for (KeyCodeTranslator adapter :
+			ServiceLoader.load(KeyCodeTranslator.class))
 			found.add(adapter);
 		
 		// Cache and use it
-		rv = found.toArray(new EventTranslateAdapter[found.size()]);
+		rv = found.toArray(new KeyCodeTranslator[found.size()]);
 		EventTranslate._TRANSLATORS = rv;
 		return UnmodifiableArrayList.of(rv);
 	}

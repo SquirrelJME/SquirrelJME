@@ -16,7 +16,7 @@ import java.util.ServiceLoader;
  * 
  * @since 2022/02/23
  */
-public interface EventTranslateAdapter
+public interface KeyCodeTranslator
 {
 	/**
 	 * Converts the key code to a game action.

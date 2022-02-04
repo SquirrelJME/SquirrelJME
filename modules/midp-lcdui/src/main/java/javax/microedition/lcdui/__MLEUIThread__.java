@@ -20,7 +20,7 @@ import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
 import cc.squirreljme.jvm.mle.constants.UIKeyModifier;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
-import cc.squirreljme.runtime.lcdui.event.EventTranslateAdapter;
+import cc.squirreljme.runtime.lcdui.event.KeyCodeTranslator;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
@@ -139,7 +139,7 @@ final class __MLEUIThread__
 			// Some APIs such as Nokia expose certain keys and actions as
 			// physical keys that can be pressed such that the left command
 			// key will emit itself as a keycode.
-			for (EventTranslateAdapter adapter : EventTranslate.translators())
+			for (KeyCodeTranslator adapter : EventTranslate.translators())
 			{
 				int result = adapter.normalizeKeyCode(__keyCode);
 				if (result != 0)
