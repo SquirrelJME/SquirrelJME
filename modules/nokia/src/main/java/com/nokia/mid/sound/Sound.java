@@ -18,7 +18,6 @@ import javax.microedition.media.MediaException;
  * 
  * All implementations must support tone based sounds.
  * 
- * @see javax.microedition.media
  * @since 2022/02/03
  */
 @ApiDefinedDeprecated
