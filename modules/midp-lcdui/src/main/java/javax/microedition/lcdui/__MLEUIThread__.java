@@ -19,13 +19,12 @@ import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
 import cc.squirreljme.jvm.mle.constants.UIKeyModifier;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.event.EventTranslate;
+import cc.squirreljme.runtime.lcdui.event.EventTranslateAdapter;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
-import com.nokia.mid.ui.FullCanvas;
 import java.util.Map;
 import javax.microedition.midlet.MIDlet;
 
@@ -137,25 +136,17 @@ final class __MLEUIThread__
 				}
 			}
 			
-			// Nokia exposes these as physical Key IDs, so do the same here
-			// Since most software is made for Nokia we pretty much the
-			// standard and as such have to support doing it this way.
-			switch (__keyCode)
+			// Some APIs such as Nokia expose certain keys and actions as
+			// physical keys that can be pressed such that the left command
+			// key will emit itself as a keycode.
+			for (EventTranslateAdapter adapter : EventTranslate.translators())
 			{
-				case NonStandardKey.F1:
-				case NonStandardKey.VGAME_COMMAND_LEFT:
-					__keyCode = FullCanvas.KEY_SOFTKEY1;
+				int result = adapter.normalizeKeyCode(__keyCode);
+				if (result != 0)
+				{
+					__keyCode = result;
 					break;
-					
-				case NonStandardKey.F2:
-				case NonStandardKey.VGAME_COMMAND_RIGHT:
-					__keyCode = FullCanvas.KEY_SOFTKEY2;
-					break;
-					
-				case NonStandardKey.F3:
-				case NonStandardKey.VGAME_COMMAND_CENTER:
-					__keyCode = FullCanvas.KEY_SOFTKEY3;
-					break;
+				}
 			}
 		}
 		

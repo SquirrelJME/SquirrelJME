@@ -16,7 +16,6 @@ squirreljme
 	definedStandards += new JavaMEStandard("microedition.lcdui;;")
 	tags += "graphics"
 	tags += "j2me"
-	tags += "nokia"
 }
 
 dependencies

@@ -1,4 +1,3 @@
-// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -25,15 +24,15 @@ public abstract class FullCanvas
 	extends Canvas
 {
 	/** Virtual soft key 1. */
-	private static final Command _SOFT1 =
+	static final Command _SOFT1 =
 		new Command("Soft1", Command.SCREEN, 0);
 		
 	/** Virtual soft key 2. */
-	private static final Command _SOFT2 =
+	static final Command _SOFT2 =
 		new Command("Soft2", Command.SCREEN, 1);
 		
 	/** Virtual soft key 3. */
-	private static final Command _SOFT3 =
+	static final Command _SOFT3 =
 		new Command("Soft3", Command.SCREEN, 2);
 	
 	/** Down arrow. */

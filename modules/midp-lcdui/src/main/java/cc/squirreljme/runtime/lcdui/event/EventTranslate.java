@@ -10,8 +10,12 @@
 package cc.squirreljme.runtime.lcdui.event;
 
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
-import com.nokia.mid.ui.FullCanvas;
+import cc.squirreljme.runtime.cldc.util.UnmodifiableArrayIterator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ServiceLoader;
 import javax.microedition.lcdui.Canvas;
+import net.multiphasicapps.collections.UnmodifiableArrayList;
 
 /**
  * Used to translate key events and such.
@@ -20,6 +24,9 @@ import javax.microedition.lcdui.Canvas;
  */
 public final class EventTranslate
 {
+	/** Event translators. */
+	private static volatile EventTranslateAdapter[] _TRANSLATORS;
+	
 	/**
 	 * Not used.
 	 *
@@ -112,25 +119,42 @@ public final class EventTranslate
 			case NonStandardKey.VGAME_B:		return Canvas.GAME_B;
 			case NonStandardKey.VGAME_C:		return Canvas.GAME_C;
 			case NonStandardKey.VGAME_D:		return Canvas.GAME_D;
-			
-				// Nokia Soft Key 1
-			case NonStandardKey.VGAME_COMMAND_LEFT:
-			case FullCanvas.KEY_SOFTKEY1:
-				return FullCanvas.KEY_SOFTKEY1;
-				
-				// Nokia Soft Key 2
-			case NonStandardKey.VGAME_COMMAND_CENTER:
-			case FullCanvas.KEY_SOFTKEY2:
-				return FullCanvas.KEY_SOFTKEY2;
-				
-				// Nokia Soft Key 3
-			case NonStandardKey.VGAME_COMMAND_RIGHT:
-			case FullCanvas.KEY_SOFTKEY3:
-				return FullCanvas.KEY_SOFTKEY3;
-			
-				// Invalid
-			default:
-				return 0;
 		}
+		
+		// Check other translators
+		for (EventTranslateAdapter adapter : EventTranslate.translators())
+		{
+			int result = adapter.keyCodeToGameAction(__kc);
+			if (result != 0)
+				return result;
+		}
+		
+		// Not valid
+		return 0;
+	}
+	
+	/**
+	 * Returns the event translation adapters which are available.
+	 * 
+	 * @return The adapters which are available.
+	 * @since 2022/02/03
+	 */
+	public static Iterable<EventTranslateAdapter> translators()
+	{
+		// Already cached?
+		EventTranslateAdapter[] rv = EventTranslate._TRANSLATORS;
+		if (rv != null)
+			return UnmodifiableArrayList.of(rv);
+		
+		// Load them in
+		List<EventTranslateAdapter> found = new ArrayList<>();
+		for (EventTranslateAdapter adapter :
+			ServiceLoader.load(EventTranslateAdapter.class))
+			found.add(adapter);
+		
+		// Cache and use it
+		rv = found.toArray(new EventTranslateAdapter[found.size()]);
+		EventTranslate._TRANSLATORS = rv;
+		return UnmodifiableArrayList.of(rv);
 	}
 }
