@@ -32,6 +32,14 @@ import javax.microedition.lcdui.game.Sprite;
 public final class PencilGraphics
 	extends Graphics
 {
+	/**
+	 * {@squirreljme.property cc.squirreljme.lcdui.software=boolean
+	 * If set to {@code true} then software graphics will be forced to be
+	 * used.}
+	 */
+	private static final String _FORCE_SOFTWARE_PROPERTY =
+		"cc.squirreljme.lcdui.software";
+	
 	/** Software graphics backend. */
 	protected final Graphics software;
 	
@@ -476,6 +484,7 @@ public final class PencilGraphics
 			return;
 		}
 		
+		// Forward to hardware
 		PencilShelf.hardwareFillRect(this.hardware, __x, __y, __w, __h);
 	}
 	
@@ -956,8 +965,10 @@ public final class PencilGraphics
 		
 		// Get the capabilities of the native system, if it is not supported
 		// then operations will purely be implemented in software
+		// It can also be disabled via a system property
 		int caps = PencilShelf.capabilities(__pf); 
-		if ((caps & PencilCapabilities.MINIMUM) == 0)
+		if (Boolean.getBoolean(PencilGraphics._FORCE_SOFTWARE_PROPERTY) ||
+			(caps & PencilCapabilities.MINIMUM) == 0)
 			return software;
 		
 		return new PencilGraphics(caps, software, __sw, __sh,
