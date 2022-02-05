@@ -785,7 +785,8 @@ public final class VMHelpers
 		
 		// If specifying a single test to run only specify that
 		String singleTest = System.getProperty(
-			VMTestTask.SINGLE_TEST_PROPERTY);
+			VMTestTask.SINGLE_TEST_PROPERTY,
+			System.getProperty(VMTestTask.SINGLE_TEST_PROPERTY_B));
 		if (singleTest != null)
 		{
 			// We need to check every test, since we may have multi-parameters

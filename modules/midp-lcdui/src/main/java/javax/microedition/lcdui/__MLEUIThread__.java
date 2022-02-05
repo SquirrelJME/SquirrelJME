@@ -151,19 +151,19 @@ final class __MLEUIThread__
 		}
 		
 		// Open the LCDUI inspector?
-		if (__event == UIKeyEventType.KEY_PRESSED) 
-			if (__keyCode == NonStandardKey.F12 ||
-				__keyCode == NonStandardKey.VGAME_LCDUI_INSPECTOR)
-			{
-				if (true)
-					throw Debugging.todo();
-				
-				// Consume this key
-				return;
-			}
+		if (__event == UIKeyEventType.KEY_PRESSED &&
+			(__keyCode == NonStandardKey.F12 ||
+			__keyCode == NonStandardKey.VGAME_LCDUI_INSPECTOR))
+		{
+			if (true)
+				throw Debugging.todo();
+			
+			// Consume this key
+			return;
+		}
 		
 		// Any Displayable which have standard key access
-		else if (widget instanceof Canvas)
+		if (widget instanceof Canvas)
 			this.__eventKey((Canvas)widget, null,
 				__event, __keyCode, javaMods);
 		else if (widget instanceof CustomItem)
