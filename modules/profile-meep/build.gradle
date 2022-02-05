@@ -18,11 +18,14 @@ squirreljme
 	definedProfiles += new JavaMEProfile("MEEP-8")
 	tags += "meep"
 	
+	// Some commonly used standard APIs
+	optionalDependencies += project(":modules:bluetooth")
+	optionalDependencies += project(":modules:m3g")
+	optionalDependencies += project(":modules:opengles")
+	
 	// Third Party APIs, which are optionally included
 	optionalDependencies += project(":modules:jblend-api")
-	optionalDependencies += project(":modules:m3g")
 	optionalDependencies += project(":modules:nokia")
-	optionalDependencies += project(":modules:opengles")
 	optionalDependencies += project(":modules:sprint-api")
 	optionalDependencies += project(":modules:vodafone-api")
 }
