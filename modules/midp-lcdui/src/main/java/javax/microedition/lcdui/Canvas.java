@@ -220,7 +220,8 @@ public abstract class Canvas
 	KeyListener _keyListener;
 	
 	/** Is the rendering transparent or opaque? */
-	boolean _transparent;
+	boolean _isOpaque =
+		true;
 	
 	/** Should this be ran full-screen? */
 	volatile boolean _isFullScreen;
@@ -720,7 +721,7 @@ public abstract class Canvas
 	 */
 	public void setPaintMode(boolean __opaque)
 	{
-		this._transparent = !__opaque;
+		this._isOpaque = __opaque;
 	}
 	
 	/**
@@ -816,17 +817,21 @@ public abstract class Canvas
 	final void __paint(Graphics __gfx, int __sw, int __sh, int __special)
 	{
 		// Draw background?
-		if (!this._transparent)
+		if (!this._isOpaque)
 		{
+			// Store old color for future operations
 			int old = __gfx.getAlphaColor();
 			
+			// Determine the color to draw
 			int bgColor = UIBackendFactory.getInstance()
 				.metric(UIMetricType.COLOR_CANVAS_BACKGROUND);
 			Debugging.debugNote("BGColor: %06x", bgColor);
 			__gfx.setAlphaColor(bgColor | 0xFF_000000);
 			
+			// Draw entire background
 			__gfx.fillRect(0, 0, __sw, __sh);
 			
+			// Restore the original graphics color
 			__gfx.setAlphaColor(old);
 		}
 		
