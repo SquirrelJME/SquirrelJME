@@ -23,6 +23,7 @@ squirreljme
 	optionalDependencies += project(":modules:m3g")
 	optionalDependencies += project(":modules:nokia")
 	optionalDependencies += project(":modules:opengles")
+	optionalDependencies += project(":modules:sprint-api")
 	optionalDependencies += project(":modules:vodafone-api")
 }
 

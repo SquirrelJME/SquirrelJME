@@ -50,7 +50,7 @@ final class __TimerThread__
 	{
 		List<TimerTask> tasks = this._tasks;
 		
-		// Constantly loop on our own look since we will mess with things
+		// Constantly loop on our own lock since we will mess with things
 		for (;;)
 			synchronized (this)
 			{

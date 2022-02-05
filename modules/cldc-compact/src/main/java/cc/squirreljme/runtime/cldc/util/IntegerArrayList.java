@@ -144,4 +144,19 @@ public class IntegerArrayList
 	{
 		return new IntegerArrayList(__array);
 	}
+	
+	/**
+	 * Returns the string representation of the given integer array.
+	 * 
+	 * @param __ints The array to represent as a string.
+	 * @return The array as a string or {@code "null"} if {@code null}.
+	 * @since 2022/02/04
+	 */
+	public static String toString(int... __ints)
+	{
+		if (__ints == null)
+			return "null";
+		
+		return IntegerArrayList.asList(__ints).toString();
+	}
 }

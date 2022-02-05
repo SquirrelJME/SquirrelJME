@@ -637,16 +637,16 @@ public abstract class Canvas
 		
 		// Lock on display since that is where the main serialized event loop
 		// happens
-		synchronized (Display.class)
-		{
-			for (;;)
+		for (;;)
+			synchronized (Display.class)
+			{
+				// No repaints are left to be performed, stop now
+				if (this._pendingPaints <= 0)
+					return;
+				
+				// Otherwise, wait for a signal on paints
 				try
 				{
-					// No repaints are left to be performed, stop now
-					if (this._pendingPaints == 0)
-						return;
-					
-					// Otherwise wait for a signal on paints
 					Display.class.wait(1000);
 				}
 				
@@ -654,7 +654,7 @@ public abstract class Canvas
 				catch (InterruptedException ignored)
 				{
 				}
-		}
+			}
 	}
 	
 	/**
