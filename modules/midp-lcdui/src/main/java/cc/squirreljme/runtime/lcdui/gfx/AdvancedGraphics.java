@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.font.SQFFont;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
@@ -600,11 +599,17 @@ public class AdvancedGraphics
 		}
 		catch (IndexOutOfBoundsException e)
 		{
-			Debugging.debugNote("drawRGBTile(w=%d, h=%d, off=%d, " +
+			new RuntimeException(String.format(
+				"drawRGBTile(buffer[%d]=%s, bufferlen=%d, w=%d, h=%d, " +
+				"pitch=%d, offset=%d -> " +
+				"data[%d]=%s, w=%d, h=%d, off=%d, " +
 				"scanlen=%d, " +
 				"x=%d, y=%d, tw=%d, th=%d, subX=%d, subY=%d)",
-				__w, __h, __off, __scanlen, __x, __y, tw, th, subX, subY);
-			e.printStackTrace();
+				this.buffer.length, this.buffer, this.bufferlen,
+				this.width, this.height, this.pitch, this.offset,
+				__data.length, __data, __w, __h, __off, __scanlen, __x, __y,
+				tw, th, subX, subY), e)
+				.printStackTrace();
 		}
 	}
 	
