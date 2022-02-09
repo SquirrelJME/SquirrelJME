@@ -64,9 +64,11 @@ public abstract class ReferenceBrush
 		int __sx, int __sy, int __sw, int __sh)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2z }
-		if (__offset < 0 || __length < 0 || __width <= 1 || __height <= 1 ||
-			__scanLen < __width)
+		// {@squirreljme.error EB2z Invalid image parameters.}
+		if (__offset < 0 || __length < 0 || __width <= 0 || __height <= 0 ||
+			__scanLen < __width || __sx < 0 || __sy < 0 ||
+			__sw <= 0 || __sh <= 0 ||
+			__sx + __sw > __width || __sy + __sh > __height)
 			throw new IllegalArgumentException("EB2z");
 		
 		// {@squirreljme.error EB2y Buffer cannot fit the image.}
@@ -83,6 +85,15 @@ public abstract class ReferenceBrush
 		this.windowWidth = __sw;
 		this.windowHeight = __sh;
 	}
+	
+	/**
+	 * Returns the true RGB color that would show up on the display.
+	 * 
+	 * @param __rgb The input color.
+	 * @return The true resultant RGB color.
+	 * @since 2022/02/09
+	 */
+	public abstract int getDisplayColor(int __rgb);
 	
 	/**
 	 * Returns the color at the given index.
@@ -128,10 +139,12 @@ public abstract class ReferenceBrush
 		throws IndexOutOfBoundsException
 	{
 		// {@squirreljme.error EB2x Pixel is outside image bounds.}
-		if (__x < 0 || __y < 0 || __x >= this.width || __y >= this.height)
+		if (__x < 0 || __y < 0 ||
+			__x >= this.windowWidth || __y >= this.windowHeight)
 			throw new IndexOutOfBoundsException("EB2x");
 		
-		return this.offset + (__y * this.scanLen) + __x;
+		return this.offset + ((this.windowY + __y) * this.scanLen) +
+			(__x + this.windowX);
 	}
 	
 	/**

@@ -8,6 +8,8 @@
 
 package cc.squirreljme.runtime.lcdui.gfx.ref;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This is a brush for RGB888 graphics.
  *
@@ -50,6 +52,16 @@ public class ARGB8888Brush
 			throw new NullPointerException("NARG");
 		
 		this.pixels = __pixels;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/02/09
+	 */
+	@Override
+	public int getDisplayColor(int __rgb)
+	{
+		return __rgb & 0xFFFFFF;
 	}
 	
 	/**

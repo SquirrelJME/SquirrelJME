@@ -375,7 +375,7 @@ public final class ReferenceGraphics
 	@Override
 	public int getDisplayColor(int __rgb)
 	{
-		throw Debugging.todo();
+		return this.brush.getDisplayColor(__rgb) & 0xFFFFFF;
 	}
 	
 	/**
@@ -395,7 +395,8 @@ public final class ReferenceGraphics
 	@Override
 	public int getGrayScale()
 	{
-		throw Debugging.todo();
+		return (this.getRedComponent() + this.getGreenComponent() + this
+			.getBlueComponent()) / 3;
 	}
 	
 	/**
@@ -405,7 +406,7 @@ public final class ReferenceGraphics
 	@Override
 	public int getGreenComponent()
 	{
-		throw Debugging.todo();
+		return (this.getColor() >> 8) & 0xFF;
 	}
 	
 	/**
@@ -415,7 +416,7 @@ public final class ReferenceGraphics
 	@Override
 	public int getRedComponent()
 	{
-		throw Debugging.todo();
+		return (this.getColor() >> 16) & 0xFF;
 	}
 	
 	/**
@@ -456,7 +457,10 @@ public final class ReferenceGraphics
 	public void setAlpha(int __a)
 		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		this.setAlphaColor(__a,
+			this.getRedComponent(),
+			this.getGreenComponent(),
+			this.getBlueComponent());
 	}
 	
 	/**
@@ -477,7 +481,15 @@ public final class ReferenceGraphics
 	public void setAlphaColor(int __a, int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		// {@squirreljme.error EB31 Color out of range. (Alpha; Red; Green;
+		// Blue)}
+		if (__a < 0 || __a > 255 || __r < 0 || __r > 255 ||
+			__g < 0 || __g > 255 || __b < 0 || __b > 255)
+			throw new IllegalArgumentException(String.format(
+				"EB31 %d %d %d %d", __a, __r, __g, __b));
+		
+		// Set
+		this.setAlphaColor((__a << 24) | (__r << 16) | (__g << 8) | __b);
 	}
 	
 	/**
@@ -508,7 +520,8 @@ public final class ReferenceGraphics
 	@Override
 	public void setColor(int __rgb)
 	{
-		throw Debugging.todo();
+		this.setAlphaColor((this.getAlphaColor() & 0xFF_000000) |
+			(__rgb & 0x00_FFFFFF));
 	}
 	
 	/**
@@ -519,7 +532,7 @@ public final class ReferenceGraphics
 	public void setColor(int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		this.setAlphaColor(this.getAlpha(), __r, __g, __b);
 	}
 	
 	/**
@@ -539,7 +552,7 @@ public final class ReferenceGraphics
 	@Override
 	public void setGrayScale(int __v)
 	{
-		throw Debugging.todo();
+		this.setAlphaColor(this.getAlpha(), __v, __v, __v);
 	}
 	
 	/**
