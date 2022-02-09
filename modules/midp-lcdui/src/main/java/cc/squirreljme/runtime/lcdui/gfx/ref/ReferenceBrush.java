@@ -31,6 +31,18 @@ public abstract class ReferenceBrush
 	/** The scanline length. */
 	protected final int scanLen;
 	
+	/** Window X position. */
+	protected final int windowX;
+	
+	/** Window Y position. */
+	protected final int windowY;
+	
+	/** Window width. */
+	protected final int windowWidth;
+	
+	/** Window height. */
+	protected final int windowHeight;
+	
 	/**
 	 * Initializes the base brush.
 	 * 
@@ -39,12 +51,17 @@ public abstract class ReferenceBrush
 	 * @param __width The image width.
 	 * @param __height The image height.
 	 * @param __scanLen The scanline length.
+	 * @param __sx Window X start.
+	 * @param __sy Window Y start.
+	 * @param __sw Window width.
+	 * @param __sh Window height.
 	 * @throws IllegalArgumentException If the image parameters are not
 	 * correct.
 	 * @since 2022/02/06
 	 */
 	protected ReferenceBrush(int __offset, int __length, int __width,
-		int __height, int __scanLen)
+		int __height, int __scanLen,
+		int __sx, int __sy, int __sw, int __sh)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB2z }
@@ -61,6 +78,10 @@ public abstract class ReferenceBrush
 		this.width = __width;
 		this.height = __height;
 		this.scanLen = __scanLen;
+		this.windowX = __sx;
+		this.windowY = __sy;
+		this.windowWidth = __sw;
+		this.windowHeight = __sh;
 	}
 	
 	/**
