@@ -209,7 +209,8 @@ public abstract class GameCanvas
 		// The fastest way to draw onto the screen is to do a direct draw
 		// from the RGB pixel data
 		int pw = buf._width;
-		__g.drawRGB(buf._pixels, 0, pw, 0, 0, pw, buf._height, false);
+		__g.drawRGB(buf._pixels, 0, pw, 0, 0,
+			pw, buf._height, false);
 	}
 	
 	/**

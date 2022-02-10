@@ -11,6 +11,10 @@ package cc.squirreljme.runtime.lcdui.mle;
 
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.lcdui.gfx.AdvancedGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.ReferenceGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.ref.ARGB8888Brush;
+import cc.squirreljme.runtime.lcdui.gfx.ref.RGB888Brush;
+import cc.squirreljme.runtime.lcdui.gfx.ref.ReferenceBrush;
 import javax.microedition.lcdui.Graphics;
 
 /**
@@ -58,24 +62,29 @@ public final class SoftwareGraphicsFactory
 		if (__buf == null)
 			throw new NullPointerException("NARG");
 		
+		// Determine the brush to use...
+		ReferenceBrush brush;
 		switch (__pf)
 		{
-				// 32-bit RGB(A)
 			case UIPixelFormat.INT_RGB888:
+				brush = new RGB888Brush((int[])__buf, __offset,
+					((int[])__buf).length, __bw, __bh, __bw, __sx, __sy,
+					__sw, __sh);
+				break;
+				
 			case UIPixelFormat.INT_RGBA8888:
-				return new AdvancedGraphics(
-					(int[])__buf,
-					(__pf == UIPixelFormat.INT_RGBA8888),
-					null,
-					__sw, __sh,
-					__bw,
-					__offset,
-					__sx, __sy);
+				brush = new ARGB8888Brush((int[])__buf, __offset,
+					((int[])__buf).length, __bw, __bh, __bw, __sx, __sy,
+					__sw, __sh);
+				break;
 			
 			// {@squirreljme.error EB3f Unsupported software pixel format.
 			// (The pixel format)}
 			default:
 				throw new IllegalArgumentException("EB3f " + __pf);
 		}
+		
+		// Setup reference graphics
+		return new ReferenceGraphics(brush);
 	}
 }
