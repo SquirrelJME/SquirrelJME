@@ -17,13 +17,13 @@ import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
+import cc.squirreljme.runtime.lcdui.image.NativeImageSerialize;
 import cc.squirreljme.runtime.lcdui.mle.SoftwareGraphicsFactory;
 import cc.squirreljme.vm.springcoat.brackets.PencilObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -372,33 +372,10 @@ public enum MLEPencil
 				// Load the image using our more native code, this will
 				// forward into our native handler which means that we will
 				// essentially get hyper accelerated images potentially
-				Image image = ImageReaderDispatcher.parse(in);
+				Image image = Image.createImage(in);
 				
-				// Extract image parameters
-				boolean useAlpha = image.hasAlpha();
-				int imageWidth = image.getWidth();
-				int imageHeight = image.getHeight();
-				int imageArea = imageWidth * imageHeight;
-				
-				// Setup resultant buffer
-				int[] result = new int[
-					NativeImageLoadParameter.NUM_PARAMETERS + imageArea];
-				
-				// Setup base result with parameters
-				result[NativeImageLoadParameter.STORED_PARAMETER_COUNT] =
-					NativeImageLoadParameter.NUM_PARAMETERS;
-				result[NativeImageLoadParameter.USE_ALPHA] =
-					(useAlpha ? 1 : 0);
-				result[NativeImageLoadParameter.WIDTH] = imageWidth;
-				result[NativeImageLoadParameter.HEIGHT] = imageHeight;
-				
-				// Load the RGB into the rest of the image
-				image.getRGB(result,
-					NativeImageLoadParameter.NUM_PARAMETERS, imageWidth,
-					0, 0, imageWidth, imageHeight);
-				
-				// Use this image array
-				return result;
+				// Serialize the given image.
+				return NativeImageSerialize.serialize(image);
 			}
 			catch (IndexOutOfBoundsException|IOException|
 				NullPointerException e)

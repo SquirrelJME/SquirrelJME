@@ -23,20 +23,25 @@ public class GIFReader
 	/** The source data stream. */
 	protected final ExtendedDataInputStream in;
 	
+	/** The factory used to create the final images. */
+	protected final ImageFactory factory;
+	
 	/**
 	 * Initializes the GIF reader.
 	 * 
 	 * @param __in The stream to read from.
+	 * @param __factory The factory used for creating images.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/04
 	 */
-	public GIFReader(ExtendedDataInputStream __in)
+	public GIFReader(ExtendedDataInputStream __in, ImageFactory __factory)
 		throws NullPointerException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
 		this.in = __in;
+		this.factory = __factory;
 	}
 	
 	/**

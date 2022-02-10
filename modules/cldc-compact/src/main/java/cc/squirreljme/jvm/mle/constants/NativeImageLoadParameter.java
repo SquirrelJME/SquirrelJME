@@ -35,7 +35,15 @@ public interface NativeImageLoadParameter
 	byte SCAN_LENGTH =
 		4;
 	
+	/** The number of frames used. */
+	byte FRAME_COUNT =
+		5;
+	
+	/** The number of times to loop. */
+	byte LOOP_COUNT =
+		6;
+	
 	/** The number of currently possible parameters. */
 	byte NUM_PARAMETERS =
-		5;
+		7;
 }
