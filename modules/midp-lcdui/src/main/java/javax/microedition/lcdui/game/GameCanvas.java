@@ -9,8 +9,10 @@
 
 package javax.microedition.lcdui.game;
 
+import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.lcdui.gfx.AdvancedGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.ForwardingGraphics;
+import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
@@ -181,8 +183,10 @@ public abstract class GameCanvas
 		}
 		
 		// Create graphics to wrap it, alpha is not used!
-		return new AdvancedGraphics(buf._pixels, false, null,
-			dw, dh, dw, 0, 0, 0);
+		return PencilGraphics.hardwareGraphics(UIPixelFormat.INT_RGB888,
+			buf._width, buf._height,
+			buf._pixels, 0, null,
+			0, 0, buf._width, buf._height);
 	}
 	
 	public int getKeyStates()
@@ -205,7 +209,8 @@ public abstract class GameCanvas
 		// The fastest way to draw onto the screen is to do a direct draw
 		// from the RGB pixel data
 		int pw = buf._width;
-		__g.drawRGB(buf._pixels, 0, pw, 0, 0, pw, buf._height, false);
+		__g.drawRGB(buf._pixels, 0, pw, 0, 0,
+			pw, buf._height, false);
 	}
 	
 	/**

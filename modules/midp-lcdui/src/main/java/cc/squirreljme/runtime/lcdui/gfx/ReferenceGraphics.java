@@ -28,6 +28,15 @@ public final class ReferenceGraphics
 	/** The brush for drawing graphics. */
 	protected final ReferenceBrush brush;
 	
+	/** The current drawing color. */
+	protected int drawColor;
+	
+	/** X translations. */
+	protected int translateX;
+	
+	/** Y translation. */
+	protected int translateY;
+	
 	/**
 	 * Initialize reference graphics.
 	 * 
@@ -285,7 +294,7 @@ public final class ReferenceGraphics
 	@Override
 	public int getAlpha()
 	{
-		throw Debugging.todo();
+		return (this.getAlphaColor() >> 24) & 0xFF;
 	}
 	
 	/**
@@ -295,7 +304,7 @@ public final class ReferenceGraphics
 	@Override
 	public int getAlphaColor()
 	{
-		throw Debugging.todo();
+		return this.drawColor;
 	}
 	
 	/**
@@ -315,7 +324,7 @@ public final class ReferenceGraphics
 	@Override
 	public int getBlueComponent()
 	{
-		throw Debugging.todo();
+		return (this.getColor()) & 0xFF;
 	}
 	
 	/**
@@ -365,7 +374,7 @@ public final class ReferenceGraphics
 	@Override
 	public int getColor()
 	{
-		throw Debugging.todo();
+		return this.getAlphaColor() & 0xFFFFFF;
 	}
 	
 	/**
@@ -470,7 +479,7 @@ public final class ReferenceGraphics
 	@Override
 	public void setAlphaColor(int __argb)
 	{
-		throw Debugging.todo();
+		this.drawColor = __argb;
 	}
 	
 	/**
@@ -573,6 +582,7 @@ public final class ReferenceGraphics
 	@Override
 	public void translate(int __x, int __y)
 	{
-		throw Debugging.todo();
+		this.translateX += __x;
+		this.translateY += __y;
 	}
 }
