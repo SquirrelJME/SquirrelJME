@@ -25,6 +25,8 @@ import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
+import cc.squirreljme.runtime.midlet.ApplicationHandler;
+import cc.squirreljme.runtime.midlet.ApplicationInterface;
 import java.util.Map;
 import javax.microedition.midlet.MIDlet;
 
@@ -189,29 +191,35 @@ final class __MLEUIThread__
 	 * {@inheritDoc}
 	 * @since 2020/09/12
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void exitRequest(UIFormBracket __form)
 	{
 		// Debug
 		Debugging.debugNote("exitRequest(%08x) @ %s",
 			System.identityHashCode(__form), Thread.currentThread());
-		
-		// Terminate the user interface
-		StaticDisplayState.terminate();
-		
-		// Have the MIDlet destroy itself
-		try
-		{
-			MIDlet midlet = ActiveMidlet.get();
 			
-			// Destroy the midlet
-			midlet.notifyDestroyed();
+		// Obtain the application we are actually running, since this
+		// could be done different for different ones
+		Object currentInstance = ApplicationHandler.currentInstance();
+		ApplicationInterface<Object> currentInterface =
+			(ApplicationInterface<Object>)
+				ApplicationHandler.currentInterface();
+		if (currentInstance == null || currentInterface == null)
+		{
+			Debugging.debugNote("No current Application?");
+			return;
 		}
 		
-		// No active MIDlet, ignore
-		catch (IllegalStateException ignored)
+		// Destroy the application
+		try
 		{
-			Debugging.debugNote("No current MIDlet?");
+			currentInterface.destroy(currentInstance, null);
+		}
+		catch (Throwable t)
+		{
+			// {@squirreljme.error EB0k Failed to terminate application.}
+			throw new Error("EB0k", t);
 		}
 	}
 	

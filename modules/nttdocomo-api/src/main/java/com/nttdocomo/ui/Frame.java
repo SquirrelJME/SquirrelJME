@@ -8,9 +8,11 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
+import java.lang.ref.WeakReference;
 import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 
 /**
@@ -37,6 +39,9 @@ public abstract class Frame
 	/** The actual soft key commands. */
 	final Command[] _softKeys;
 	
+	/** The background color of the display. */
+	final __BGColor__ _bgColor;
+	
 	/**
 	 * Base constructor.
 	 * 
@@ -48,8 +53,14 @@ public abstract class Frame
 		Command[] softKeys = new Command[Frame._NUM_SOFT_KEYS];
 		this._softKeys = softKeys;
 		
+		// Add them now
 		for (int i = 0; i < Frame._NUM_SOFT_KEYS; i++)
 			softKeys[i] = new Command("", Command.ITEM, i);
+		
+		// Use default background color
+		int defaultBgColor = UIBackendFactory.getInstance()
+				.metric(UIMetricType.COLOR_CANVAS_BACKGROUND) | 0xFF_000000;
+		this._bgColor = new __BGColor__(defaultBgColor);
 	}
 	
 	/**
@@ -119,5 +130,18 @@ public abstract class Frame
 		// It goes away
 		else
 			displayable.removeCommand(softKey);
+	}
+	
+	/**
+	 * Must be called after construction so SquirrelJME can implement more
+	 * operations.
+	 * 
+	 * @since 2022/02/14
+	 */
+	final void __postConstruct()
+	{
+		// Add the listener for commands
+		this.__displayable().setCommandListener(
+			new __ShoulderButtonEmitter__(new WeakReference<>(this)));
 	}
 }

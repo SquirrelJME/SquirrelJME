@@ -28,19 +28,7 @@ public class MediaManager
 		if (__uri == null)
 			throw new NullPointerException("NARG");
 		
-		try (InputStream in = Connector.openInputStream(__uri))
-		{
-			return new __MIDPImage__(
-				javax.microedition.lcdui.Image.createImage(in));
-		}
-		catch (IOException __e)
-		{
-			UIException toss = new UIException(UIException.UNSUPPORTED_FORMAT);
-			
-			toss.initCause(__e);
-			
-			throw toss;
-		}
+		return new __MIDPImage__(__uri);
 	}
 	
 	@SuppressWarnings("FinalStaticMethod")

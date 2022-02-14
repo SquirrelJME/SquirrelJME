@@ -8,12 +8,15 @@
 
 package cc.squirreljme.jvm.launch;
 
+import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.mle.constants.PhoneModelType;
 import cc.squirreljme.jvm.suite.Configuration;
 import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.jvm.suite.InvalidSuiteException;
 import cc.squirreljme.jvm.suite.Profile;
+import cc.squirreljme.runtime.cldc.SquirrelJME;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -189,6 +192,12 @@ public class IModeApplication
 		String spSize = adfProps.get(IModeApplication._SP_SIZE);
 		if (spSize != null && !spSize.isEmpty())
 			rv.put(IModeApplication.SCRATCH_PAD_PROPERTY, spSize);
+		
+		// If a specific phone model is used, set the platform property
+		// explicitly
+		if (RuntimeShelf.phoneModel() == PhoneModelType.GENERIC)
+			rv.put("microedition.platform",
+				SquirrelJME.platform(PhoneModelType.NTT_DOCOMO_D503I));
 		
 		return rv;
 	}

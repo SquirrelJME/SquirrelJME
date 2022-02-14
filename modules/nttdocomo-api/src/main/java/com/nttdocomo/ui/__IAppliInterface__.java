@@ -9,8 +9,9 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.jvm.launch.IModeApplication;
+import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
-import cc.squirreljme.runtime.rms.SuiteIdentifier;
+import cc.squirreljme.runtime.midlet.CleanupHandler;
 import java.util.Objects;
 
 /**
@@ -59,7 +60,10 @@ final class __IAppliInterface__
 		// Indicate termination
 		__instance.terminate();
 		
-		// We need to exit the VM ourself here
+		// Run all cleanup handlers
+		CleanupHandler.runAll();
+		
+		// We need to exit the VM ourselves here
 		System.exit((__thrown != null ? 1 : 0));
 	}
 	
@@ -84,7 +88,7 @@ final class __IAppliInterface__
 		// identify our own records
 		String appName = System.getProperty(IModeApplication.NAME_PROPERTY);
 		String appVend = System.getProperty(IModeApplication.VENDOR_PROPERTY);
-		SuiteIdentifier.setNameAndVendor(
+		ApplicationHandler.setNameAndVendor(
 			Objects.toString(appName, mainClass),
 			Objects.toString(appVend, "SquirrelJME-i-Mode"));
 		

@@ -10,6 +10,7 @@ package cc.squirreljme.runtime.lcdui.image;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
+import java.io.InputStream;
 import javax.microedition.lcdui.Image;
 import net.multiphasicapps.io.ExtendedDataInputStream;
 
@@ -49,8 +50,17 @@ public class GIFReader
 	protected Image parse()
 		throws IOException
 	{
+		// Skip header
+		ExtendedDataInputStream in = this.in;
+		for (int i = 0; i < 6; i++)
+			in.readByte();
 		
+		// Read "screen" size
+		int screenWidth = in.readUnsignedShort();
+		int screenHeight = in.readUnsignedShort();
 		
-		throw Debugging.todo();
+		// Build image
+		return Image.createImage(Image.createImage(screenWidth, screenHeight,
+			false, 0xFF00FF));
 	}
 }

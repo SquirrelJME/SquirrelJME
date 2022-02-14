@@ -9,7 +9,7 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import javax.microedition.lcdui.Displayable;
+import java.lang.ref.WeakReference;
 
 /**
  * Canvas for showing free-form raster graphics and otherwise.
@@ -17,12 +17,25 @@ import javax.microedition.lcdui.Displayable;
  * @see javax.microedition.lcdui.Canvas
  * @since 2021/11/30
  */
-public class Canvas
+public abstract class Canvas
 	extends Frame
 {
 	/** The native Java Canvas. */
 	final __MIDPCanvas__ _midpCanvas =
-		new __MIDPCanvas__();
+		new __MIDPCanvas__(new WeakReference<>(this));
+	
+	public abstract void paint(Graphics __g);
+	
+	/**
+	 * Initializes the base canvas.
+	 * 
+	 * @since 2022/02/14
+	 */
+	public Canvas()
+	{
+		// Needed to initialize the command listener 
+		this.__postConstruct();
+	}
 	
 	public Graphics getGraphics()
 	{
@@ -41,12 +54,12 @@ public class Canvas
 	
 	public void repaint()
 	{
-		throw Debugging.todo();
+		this.__displayable().repaint();
 	}
 	
 	public void repaint(int __x, int __y, int __w, int __h)
 	{
-		throw Debugging.todo();
+		this.__displayable().repaint(__x, __y, __w, __h);
 	}
 	
 	/**
@@ -54,7 +67,7 @@ public class Canvas
 	 * @since 2021/11/30
 	 */
 	@Override
-	Displayable __displayable()
+	__MIDPCanvas__ __displayable()
 	{
 		return this._midpCanvas;
 	}

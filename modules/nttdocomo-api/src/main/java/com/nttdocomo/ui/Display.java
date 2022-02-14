@@ -8,7 +8,8 @@
 
 package com.nttdocomo.ui;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jvm.mle.constants.NonStandardKey;
+import javax.microedition.lcdui.Canvas;
 
 /**
  * This represents a single display for an application, it is equivalent to
@@ -108,6 +109,12 @@ public class Display
 
 	public static final int UPDATE_VM_EVENT =
 		6;
+		
+	/** The backing MIDP Display. */
+	private static volatile javax.microedition.lcdui.Display _midpDisplay;
+	
+	/** The current frame being displayed. */
+	private static volatile Frame _currentFrame;
 	
 	/**
 	 * Internal only.
@@ -121,36 +128,116 @@ public class Display
 	@SuppressWarnings("FinalStaticMethod")
 	public static final Frame getCurrent()
 	{
-		throw Debugging.todo();
+		synchronized (Display.class)
+		{
+			return Display._currentFrame;
+		}
 	}
 	
 	@SuppressWarnings("FinalStaticMethod")
 	public static final int getHeight()
 	{
-		throw Debugging.todo();
+		return Display.__midpDisplay().getHeight();
 	}
 	
 	@SuppressWarnings("FinalStaticMethod")
 	public static final int getWidth()
 	{
-		throw Debugging.todo();
+		return Display.__midpDisplay().getWidth();
 	}
 	
 	@SuppressWarnings("FinalStaticMethod")
 	public static final boolean isColor()
 	{
-		throw Debugging.todo();
+		return Display.__midpDisplay().isColor();
 	}
 	
 	@SuppressWarnings("FinalStaticMethod")
 	public static final int numColors()
 	{
-		throw Debugging.todo();
+		return Display.__midpDisplay().numColors();
 	}
 	
 	@SuppressWarnings("FinalStaticMethod")
 	public static final void setCurrent(Frame __frame)
 	{
-		throw Debugging.todo();
+		synchronized (Display.class)
+		{
+			// Do nothing if this is the same
+			Frame currentFrame = Display._currentFrame;
+			if (currentFrame == __frame)
+				return;
+			
+			// Try changing the display first
+			javax.microedition.lcdui.Display display = Display.__midpDisplay();
+			display.setCurrent((__frame == null ? null :
+				__frame.__displayable()));
+			
+			// Is now the current frame
+			Display._currentFrame = __frame;
+		}
+	}
+	
+	/**
+	 * Returns the true display to use, only the first is used.
+	 * 
+	 * @return The true display to use.
+	 * @since 2022/02/14
+	 */
+	static javax.microedition.lcdui.Display __midpDisplay()
+	{
+		javax.microedition.lcdui.Display rv = Display._midpDisplay;
+		if (rv != null)
+			return rv;
+		
+		// {@squirreljme.error AH0n No native displays available.}
+		javax.microedition.lcdui.Display[] midpDisplays =
+			javax.microedition.lcdui.Display.getDisplays(0);
+		if (midpDisplays == null || midpDisplays.length == 0)
+			throw new IllegalStateException("AH0n");
+		
+		// Cache and use this display
+		Display._midpDisplay = (rv = midpDisplays[0]);
+		return rv;
+	}
+	
+	/**
+	 * Maps a MIDP Key to i-mode.
+	 * 
+	 * @param __code The code to map.
+	 * @return The mapped key.
+	 * @since 2022/02/14
+	 */
+	static int __mapKey(int __code)
+	{
+		switch (__code)
+		{
+			case Canvas.KEY_UP:			return Display.KEY_UP;
+			case Canvas.KEY_DOWN:		return Display.KEY_DOWN;
+			case Canvas.KEY_LEFT:		return Display.KEY_LEFT;
+			case Canvas.KEY_RIGHT:		return Display.KEY_RIGHT;
+			case Canvas.KEY_NUM0:		return Display.KEY_0;
+			case Canvas.KEY_NUM1:		return Display.KEY_1;
+			case Canvas.KEY_NUM2:		return Display.KEY_2;
+			case Canvas.KEY_NUM3:		return Display.KEY_3;
+			case Canvas.KEY_NUM4:		return Display.KEY_4;
+			case Canvas.KEY_NUM5:		return Display.KEY_5;
+			case Canvas.KEY_NUM6:		return Display.KEY_6;
+			case Canvas.KEY_NUM7:		return Display.KEY_7;
+			case Canvas.KEY_NUM8:		return Display.KEY_8;
+			case Canvas.KEY_NUM9:		return Display.KEY_9;
+			case Canvas.KEY_STAR:		return Display.KEY_ASTERISK;
+			case Canvas.KEY_POUND:		return Display.KEY_POUND;
+			
+			case Canvas.KEY_SELECT:
+			case Canvas.KEY_ENTER:		return Display.KEY_SELECT;
+			
+				// SquirrelJME specific keys
+			case NonStandardKey.F1:		return Display.KEY_SOFT1;
+			case NonStandardKey.F2:		return Display.KEY_SOFT2;
+		}
+		
+		// Unknown
+		return Display.MAX_VENDOR_KEY;
 	}
 }

@@ -10,9 +10,15 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.BacklightControl;
+import cc.squirreljme.runtime.lcdui.mle.Vibration;
+import cc.squirreljme.runtime.nttdocomo.ui.VendorPhoneSystem;
 
 public class PhoneSystem
 {
+	/** Maximum time for a steady vibration. */
+	private static final int _MAX_VIBRATION_TIME =
+		7_000;
+	
 	public static final int ATTR_BACKLIGHT_OFF =
 		0;
 
@@ -38,6 +44,23 @@ public class PhoneSystem
 				BacklightControl.setLevel(BacklightControl.MAX_LEVEL);
 			else if (__value == PhoneSystem.ATTR_BACKLIGHT_OFF)
 				BacklightControl.setLevel(BacklightControl.MIN_LEVEL);
+			
+			return;
+		}
+		
+		// Vibration
+		else if (__attr == VendorPhoneSystem.VIBRATE_ATTRIBUTE_F503I_SO503I ||
+			__attr == VendorPhoneSystem.VIBRATE_ATTRIBUTE_P503I)
+		{
+			// Different phones have different means of turning on the shake
+			boolean isOn;
+			if (__attr == VendorPhoneSystem.VIBRATE_ATTRIBUTE_P503I)
+				isOn = (__value == 1);
+			else
+				isOn = (__value == 1 || __value == 64);
+			
+			// Perform the vibration
+			Vibration.vibrate((isOn ? PhoneSystem._MAX_VIBRATION_TIME : 0));
 			
 			return;
 		}
