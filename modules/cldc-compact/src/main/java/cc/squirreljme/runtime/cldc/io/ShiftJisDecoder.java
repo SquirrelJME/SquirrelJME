@@ -9,6 +9,9 @@
 
 package cc.squirreljme.runtime.cldc.io;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * Decoder for Shift-JIS.
  * 
@@ -20,6 +23,9 @@ package cc.squirreljme.runtime.cldc.io;
 public class ShiftJisDecoder
 	implements Decoder
 {
+	/** The loaded Shift-JIS table. */
+	private static volatile DoubleByteTable _TABLE;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/06/13
@@ -48,7 +54,7 @@ public class ShiftJisDecoder
 			return -1;
 		
 		// Standard ASCII
-		int a = __b[0] & 0xFF;
+		int a = __b[__o] & 0xFF;
 		if (a <= 0x7F)
 		{
 			// Yen
@@ -73,11 +79,12 @@ public class ShiftJisDecoder
 			if (__l < 2)
 				return -1;
 			
-			// Unknown two-byte sequence
-			return 0xFFFD | 0x2_0000;
+			// Decode
+			int z = ShiftJisDecoder.loadTable().decode((byte)a, __b[__o + 1]);
+			return (z < 0 ? 0xFFFD : z) | 0x2_0000;
 		}
 		
-		// TODO: Decode more characters
+		// Unknown or invalid character
 		return 0xFFFD | 0x1_0000;
 	}
 	
@@ -179,5 +186,36 @@ public class ShiftJisDecoder
 		}
 		
 		return 0xFFFD;
+	}
+	
+	/**
+	 * Loads the table for Shift-JIS.
+	 * 
+	 * @return The read table.
+	 * @since 2022/02/14
+	 */
+	public static DoubleByteTable loadTable()
+	{
+		// Already read?
+		DoubleByteTable rv = ShiftJisDecoder._TABLE;
+		if (rv != null)
+			return rv;
+		
+		// Load in the table
+		try (InputStream in = DoubleByteTable.class.getResourceAsStream(
+			"shiftjis.double"))
+		{
+			// Load the table in
+			rv = DoubleByteTable.loadTable(in);
+			
+			// Cache and use it
+			ShiftJisDecoder._TABLE = rv;
+			return rv;
+		}
+		catch (IOException e)
+		{
+			// {@squirreljme.error ZZ4i Could not load the Shift-JIS table.}
+			throw new RuntimeException("ZZ4i", e);
+		}
 	}
 }

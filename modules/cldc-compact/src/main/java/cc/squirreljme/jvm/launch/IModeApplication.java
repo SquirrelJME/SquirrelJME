@@ -8,6 +8,7 @@
 
 package cc.squirreljme.jvm.launch;
 
+import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.constants.PhoneModelType;
@@ -114,7 +115,16 @@ public class IModeApplication
 		String appClass = this._adfProps.get(IModeApplication._APP_CLASS);
 		
 		if (appName != null)
+		{
+			// If the application name contains an invalid character then
+			// it is an unsupported character we do not know about
+			if (appName.indexOf(0xFFFD) >= 0)
+				return appName + " (" +
+					JarPackageShelf.libraryPath(this.jar) + ")";
+			
 			return appName;
+		}
+		
 		return (appClass != null ? appClass : "Invalid i-mode Application");
 	}
 	
