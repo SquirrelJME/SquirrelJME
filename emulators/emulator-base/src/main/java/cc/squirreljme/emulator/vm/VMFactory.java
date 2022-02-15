@@ -576,11 +576,14 @@ public abstract class VMFactory
 		
 		// Not a known extension or normalized type
 		if (!(__name.endsWith(".jar") || __name.endsWith(".JAR") ||
-			__name.endsWith(".sqc") || __name.endsWith(".SQC")))
+			__name.endsWith(".sqc") || __name.endsWith(".SQC") ||
+			__name.endsWith(".jam") || __name.endsWith(".JAM")))
 			return __name;
 		
 		// Get the base name of the JAR or SQC
-		__name = __name.substring(0, __name.length() - 4);
+		int lastDot = __name.lastIndexOf('.');
+		String ext = __name.substring(lastDot + 1);
+		__name = __name.substring(0, lastDot);
 		
 		// Chop down potential foo"-0.4.0" from the end
 		for (int n = __name.length(), i = n - 1; i >= 0; i--)
@@ -597,7 +600,7 @@ public abstract class VMFactory
 		}
 		
 		// Use this name
-		return __name.toLowerCase() + ".jar";
+		return __name + "." + ext;
 	}
 	
 	/**
