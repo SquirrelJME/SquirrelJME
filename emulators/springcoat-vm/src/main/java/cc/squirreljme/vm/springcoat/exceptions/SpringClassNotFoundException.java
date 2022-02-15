@@ -9,6 +9,8 @@
 
 package cc.squirreljme.vm.springcoat.exceptions;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.SpringConvertableThrowable;
 import cc.squirreljme.vm.springcoat.SpringException;
 import net.multiphasicapps.classfile.ClassName;
 
@@ -19,6 +21,7 @@ import net.multiphasicapps.classfile.ClassName;
  */
 public class SpringClassNotFoundException
 	extends SpringException
+	implements SpringConvertableThrowable
 {
 	/** The name of the class. */
 	protected final ClassName name;
@@ -107,6 +110,16 @@ public class SpringClassNotFoundException
 	public final ClassName name()
 	{
 		return this.name;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/02/15
+	 */
+	@Override
+	public String targetClass()
+	{
+		return "java/lang/NoClassDefFoundError";
 	}
 }
 

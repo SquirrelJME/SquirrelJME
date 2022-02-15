@@ -357,7 +357,7 @@ public final class PencilGraphics
 		int[] buf;
 		int offset;
 		int scanLen;
-		if (false && __src.squirreljmeIsDirect())
+		if (__src.squirreljmeIsDirect())
 		{
 			buf = __src.squirreljmeDirectRGBInt();
 			offset = __src.squirreljmeDirectOffset();
