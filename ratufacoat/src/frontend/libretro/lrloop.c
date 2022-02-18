@@ -114,7 +114,7 @@ SJME_GCC_USED void retro_reset(void)
 	
 	/* Notice. */
 	sjme_libRetro_message(50, "Configuration complete.");
-	sjme_libRetro_message(51, "Initializing engine complete.");
+	sjme_libRetro_message(51, "Initializing engine...");
 	
 	/* Attempt engine initialization. */
 	memset(&error, 0, sizeof(error));

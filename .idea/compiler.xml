@@ -54,10 +54,14 @@
       <module name="squirreljme.modules.meep-securityframework.testFixtures" target="1.7" />
       <module name="squirreljme.modules.meep-swm.testFixtures" target="1.7" />
       <module name="squirreljme.modules.midp-lcdui.testFixtures" target="1.7" />
+      <module name="squirreljme.modules.nokia.main" target="1.7" />
+      <module name="squirreljme.modules.nokia.test" target="1.7" />
       <module name="squirreljme.modules.opengles.testFixtures" target="1.7" />
       <module name="squirreljme.modules.profile-meep.testFixtures" target="1.7" />
       <module name="squirreljme.modules.springcoat-vm.main" target="1.7" />
       <module name="squirreljme.modules.springcoat-vm.test" target="1.7" />
+      <module name="squirreljme.modules.sprint-api.main" target="1.7" />
+      <module name="squirreljme.modules.sprint-api.test" target="1.7" />
       <module name="squirreljme.modules.squirrel-quarrel.testFixtures" target="1.7" />
       <module name="squirreljme.modules.strings.main" target="1.7" />
       <module name="squirreljme.modules.strings.test" target="1.7" />
