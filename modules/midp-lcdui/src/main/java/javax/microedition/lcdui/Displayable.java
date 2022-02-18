@@ -15,12 +15,14 @@ import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.jvm.suite.SuiteIdentifier;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
+import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import java.util.ArrayList;
 import java.util.List;
 import javax.microedition.midlet.MIDlet;
@@ -834,6 +836,11 @@ public abstract class Displayable
 			if (midClass != null)
 				return midClass;
 		}
+		
+		// Use basic name of the application, if there is one
+		String basicName = ApplicationHandler.currentName();
+		if (basicName != null)
+			return basicName;
 		
 		// Fallback to just using SquirrelJME
 		return "SquirrelJME";

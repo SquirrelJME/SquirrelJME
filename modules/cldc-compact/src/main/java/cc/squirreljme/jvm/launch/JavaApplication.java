@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.jvm.suite.SuiteInfo;
-import java.util.Map;
 
 /**
  * Represents a single application that can be launched.

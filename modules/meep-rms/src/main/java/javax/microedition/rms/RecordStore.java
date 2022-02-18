@@ -10,6 +10,7 @@
 package javax.microedition.rms;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.rms.SuiteIdentifier;
 import cc.squirreljme.runtime.rms.TemporaryVinylRecord;
 import cc.squirreljme.runtime.rms.VinylLock;
@@ -1047,7 +1048,7 @@ public class RecordStore
 			SecureRecordStoreException, SecurityException
 	{
 		return RecordStore.__openRecordStore(__n,
-			SuiteIdentifier.currentVendor(), SuiteIdentifier.currentName(),
+			ApplicationHandler.currentVendor(), ApplicationHandler.currentName(),
 			__create, __auth, __write, __pass);
 	}
 	

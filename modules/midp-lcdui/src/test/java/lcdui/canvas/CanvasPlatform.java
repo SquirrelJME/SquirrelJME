@@ -34,8 +34,11 @@ public class CanvasPlatform
 	@Override
 	protected void keyPressed(int __code)
 	{
-		this._keys.append('p');
-		this._keys.append(this.__mapKey(__code));
+		synchronized (this)
+		{
+			this._keys.append('p');
+			this._keys.append(this.__mapKey(__code));
+		}
 	}
 	
 	/**
@@ -45,8 +48,11 @@ public class CanvasPlatform
 	@Override
 	protected void keyReleased(int __code)
 	{
-		this._keys.append('r');
-		this._keys.append(this.__mapKey(__code));
+		synchronized (this)
+		{
+			this._keys.append('r');
+			this._keys.append(this.__mapKey(__code));
+		}
 	}
 	
 	/**
@@ -56,8 +62,11 @@ public class CanvasPlatform
 	@Override
 	protected void keyRepeated(int __code)
 	{
-		this._keys.append('d');
-		this._keys.append(this.__mapKey(__code));
+		synchronized (this)
+		{
+			this._keys.append('d');
+			this._keys.append(this.__mapKey(__code));
+		}
 	}
 	
 	/**
@@ -120,10 +129,9 @@ public class CanvasPlatform
 	 * @return The character for the code.
 	 * @since 2020/10/16
 	 */
-	private char __mapKey(int __code)
+	@Deprecated
+	private int __mapKey(int __code)
 	{
-		if (__code >= 0)
-			return (char)__code;
-		return (char)('@' + (-__code));
+		return __code;
 	}
 }

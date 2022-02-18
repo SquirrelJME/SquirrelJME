@@ -43,6 +43,12 @@ JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_memoryProfile(JNIEnv*, jclass)
 	return 0;
 }
 
+JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_phoneModel(JNIEnv*, jclass)
+{
+	// Just be a generic device here
+	return 0;
+};
+
 JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_vmType(JNIEnv*, jclass)
 {
 	// The value 1 is Java SE type
@@ -55,6 +61,7 @@ static const JNINativeMethod mleRuntimeMethods[] =
 	{"lineEnding", "()I", (void*)Impl_mle_RuntimeShelf_lineEnding},
 	{"memoryProfile", RUNTIME_MEMORYPROFILE_DESC, (void*)Impl_mle_RuntimeShelf_memoryProfile},
 	{"vmDescription", RUNTIME_VMDESCRIPTION_DESC, (void*)Impl_mle_RuntimeShelf_vmDescription},
+	{"phoneModel", "()I", (void*)Impl_mle_RuntimeShelf_phoneModel},
 	{"vmType", "()I", (void*)Impl_mle_RuntimeShelf_vmType},
 };
 

@@ -614,7 +614,10 @@ public enum MLEThread
 			// Try to set the priority
 			try
 			{
-				thread._worker.setPriority(priority);
+				if (thread._worker == null)
+					thread._initPriority = priority;
+				else
+					thread._worker.setPriority(priority);
 			}
 			catch (IllegalArgumentException|SecurityException e)
 			{

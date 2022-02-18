@@ -529,9 +529,8 @@ public class AdvancedGraphics
 		// Exception happened when drawing a line
 		catch (IndexOutOfBoundsException e)
 		{
-			todo.DEBUG.note("Line (%d, %d) -> (%d, %d)", __x1, __y1,
+			Debugging.debugNote("Line (%d, %d) -> (%d, %d)", __x1, __y1,
 				__x2, __y2);
-			e.printStackTrace();
 		}
 	}
 	
@@ -604,11 +603,16 @@ public class AdvancedGraphics
 		}
 		catch (IndexOutOfBoundsException e)
 		{
-			Debugging.debugNote("drawRGBTile(w=%d, h=%d, off=%d, " +
+			Debugging.debugNote(
+				"drawRGBTile(buffer[%d]=%s, bufferlen=%d, w=%d, h=%d, " +
+				"pitch=%d, offset=%d -> " +
+				"data[%d]=%s, w=%d, h=%d, off=%d, " +
 				"scanlen=%d, " +
 				"x=%d, y=%d, tw=%d, th=%d, subX=%d, subY=%d)",
-				__w, __h, __off, __scanlen, __x, __y, tw, th, subX, subY);
-			e.printStackTrace();
+				this.buffer.length, this.buffer, this.bufferlen,
+				this.width, this.height, this.pitch, this.offset,
+				__data.length, __data, __w, __h, __off, __scanlen, __x, __y,
+				tw, th, subX, subY);
 		}
 	}
 	

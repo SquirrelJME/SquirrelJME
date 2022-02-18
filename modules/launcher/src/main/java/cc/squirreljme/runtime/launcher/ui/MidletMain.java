@@ -126,6 +126,8 @@ public class MidletMain
 		
 		__RefreshState__ refreshState = this._refreshState;
 		
+		Display mainDisplay = MidletMain._MAIN_DISPLAY;
+		
 		// Used to clear the lock when done, always!
 		try
 		{
@@ -147,7 +149,7 @@ public class MidletMain
 				
 				// Used to add suites and indicate progress
 				handler = new __ProgressListener__(programList, listedSuites,
-					__refreshCanvas, refreshState);
+					__refreshCanvas, refreshState, mainDisplay);
 			}
 			
 			// Scan all of the available suites for launching
@@ -182,9 +184,9 @@ public class MidletMain
 			}
 		
 		// Make sure the program list is showing
-		Displayable current = MidletMain._MAIN_DISPLAY.getCurrent();
+		Displayable current = mainDisplay.getCurrent();
 		if (current == null || (current instanceof SplashScreen))
-			MidletMain._MAIN_DISPLAY.setCurrent(this.programList);
+			mainDisplay.setCurrent(this.programList);
 		
 		// Automatically launch a program?
 		String autoLaunch = this._autoLaunch;

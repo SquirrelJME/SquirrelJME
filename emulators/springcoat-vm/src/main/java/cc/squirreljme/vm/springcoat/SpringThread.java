@@ -66,6 +66,10 @@ public final class SpringThread
 	private final List<SpringThread.Frame> _frames =
 		new ArrayList<>();
 	
+	/** Initial priority to set. */
+	int _initPriority =
+		-1;
+	
 	/** The thread status. */
 	int _status;
 	

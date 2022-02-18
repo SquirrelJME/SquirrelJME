@@ -39,6 +39,14 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 public abstract class Canvas
 	extends Displayable
 {
+	/** The maximum number of times to wait when servicing repaints. */
+	private static final int _REPAINT_STOP =
+		5;
+	
+	/** The amount of time to wait when servicing repaints. */
+	private static final int _REPAINT_DELAY =
+		16;
+	
 	/**
 	 * Every button that is possibly available.
 	 * 
@@ -216,11 +224,16 @@ public abstract class Canvas
 	/** The native display instance. */
 	final UIItemBracket _uiCanvas;
 	
+	/** Lock for repaints and servicing repaints. */
+	private final Object _repaintLock =
+		new Object();
+	
 	/** The key listener to use. */
 	KeyListener _keyListener;
 	
 	/** Is the rendering transparent or opaque? */
-	boolean _transparent;
+	boolean _isOpaque =
+		true;
 	
 	/** Should this be ran full-screen? */
 	volatile boolean _isFullScreen;
@@ -607,14 +620,15 @@ public abstract class Canvas
 				UISpecialCode.REPAINT_KEY_HEIGHT | __h);
 		
 		// Count pending paints up before we signal the final repaint
-		synchronized (Display.class)
+		synchronized (this._repaintLock)
 		{
 			this._pendingPaints++;
 		}
 		
 		// Execute the paint
 		instance.widgetProperty(this._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, 0);
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
+			UISpecialCode.REPAINT_EXECUTE);
 	}
 	
 	/**
@@ -628,6 +642,7 @@ public abstract class Canvas
 	 *
 	 * @since 2019/04/14
 	 */
+	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	public final void serviceRepaints()
 	{
 		// If there is no current display then nothing can ever be repainted
@@ -636,25 +651,29 @@ public abstract class Canvas
 			return;
 		
 		// Lock on display since that is where the main serialized event loop
-		// happens
-		synchronized (Display.class)
-		{
-			for (;;)
+		// happens. Do stop after a number of runs in case we get a stuck
+		// repaint that never happens, sometimes a system repaint happens
+		// before we can really check to see that this really happened.
+		Object repaintLock = this._repaintLock;
+		for (int i = 0; i < Canvas._REPAINT_STOP; i++)
+			synchronized (repaintLock)
+			{
+				// No repaints are left to be performed, stop now
+				if (this._pendingPaints <= 0)
+					return;
+				
+				// Otherwise, wait for a signal on paints
 				try
 				{
-					// No repaints are left to be performed, stop now
-					if (this._pendingPaints == 0)
-						return;
-					
-					// Otherwise wait for a signal on paints
-					Display.class.wait(1000);
+					// 16ms is the number of time between frames at 60FPS
+					repaintLock.wait(Canvas._REPAINT_DELAY);
 				}
 				
 				// Ignore any interruptions and just continue waiting 
 				catch (InterruptedException ignored)
 				{
 				}
-		}
+			}
 	}
 	
 	/**
@@ -706,9 +725,9 @@ public abstract class Canvas
 	/**
 	 * Sets the painting mode of the canvas.
 	 *
-	 * If transparent mode is enabled, then the implementation (not the end
-	 * developer) will fill the background with a suitable color or image
-	 * (which is unspecified).
+	 * If transparent mode is enabled ({@code false}), then the implementation
+	 * (not the end developer) will fill the background with a suitable color
+	 * or image (which is unspecified).
 	 *
 	 * If opaque mode (which is the default) is enabled then it will be
 	 * assumed that {@link #repaint()} will cover every pixel and
@@ -720,7 +739,7 @@ public abstract class Canvas
 	 */
 	public void setPaintMode(boolean __opaque)
 	{
-		this._transparent = !__opaque;
+		this._isOpaque = __opaque;
 	}
 	
 	/**
@@ -812,18 +831,26 @@ public abstract class Canvas
 	 * {@inheritDoc}
 	 * @since 2020/09/21
 	 */
+	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	@Override
 	final void __paint(Graphics __gfx, int __sw, int __sh, int __special)
 	{
 		// Draw background?
-		if (!this._transparent)
+		if (!this._isOpaque)
 		{
+			// Store old color for future operations
 			int old = __gfx.getAlphaColor();
-			__gfx.setColor(UIBackendFactory.getInstance()
-				.metric(UIMetricType.COLOR_CANVAS_BACKGROUND));
 			
+			// Determine the color to draw
+			int bgColor = UIBackendFactory.getInstance()
+				.metric(UIMetricType.COLOR_CANVAS_BACKGROUND);
+			
+			__gfx.setAlphaColor(bgColor | 0xFF_000000);
+			
+			// Draw entire background
 			__gfx.fillRect(0, 0, __sw, __sh);
 			
+			// Restore the original graphics color
 			__gfx.setAlphaColor(old);
 		}
 		
@@ -837,7 +864,8 @@ public abstract class Canvas
 		finally
 		{
 			// We repainted the canvas, so reduce the pending paint counter
-			synchronized (Display.class)
+			Object repaintLock = this._repaintLock;
+			synchronized (repaintLock)
 			{
 				// Drop the count, if there is any
 				int pending = this._pendingPaints;
@@ -848,7 +876,7 @@ public abstract class Canvas
 					this._pendingPaints = 0;
 					
 					// Signal that a repaint was done
-					Display.class.notifyAll();
+					repaintLock.notifyAll();
 				}
 			}
 		}

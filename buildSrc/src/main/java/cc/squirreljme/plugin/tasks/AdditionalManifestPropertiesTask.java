@@ -104,6 +104,103 @@ public class AdditionalManifestPropertiesTask
 	}
 	
 	/**
+	 * Adds a single dependency to a given project.
+	 * 
+	 * @param __isOptional Is this an optional dependency?
+	 * @param __project The project to add.
+	 * @param __depCounter Dependency counter.
+	 * @param __attributes The output attributes.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/02/03
+	 */
+	private void __addDependency(boolean __isOptional, Project __project,
+		int[] __depCounter, Attributes __attributes)
+		throws NullPointerException
+	{
+		if (__project == null)
+			throw new NullPointerException("NARG");
+		
+		// Generation really depends on the application type
+		Project project = this.getProject();
+		SquirrelJMEPluginConfiguration config =
+			SquirrelJMEPluginConfiguration.configuration(project);
+		JavaMEMidletType type = config.swmType;
+		
+		// Which requirement level?
+		SuiteDependencyLevel requireLevel = (__isOptional ?
+			SuiteDependencyLevel.OPTIONAL : SuiteDependencyLevel.REQUIRED);
+		
+		// Get the project config
+		SquirrelJMEPluginConfiguration subConfig =
+			SquirrelJMEPluginConfiguration.configuration(__project);
+		
+		// The dependency being constructed (which might be added)
+		SuiteDependency suiteDependency = null;
+		boolean didDepend = false;
+		
+		// Nothing can depend on a MIDlet!
+		if (subConfig.swmType == JavaMEMidletType.APPLICATION)
+			throw new RuntimeException(String.format(
+				"Project %s cannot depend on application %s.",
+					project.getName(), __project.getName()));
+		
+		// This is another library
+		else if (subConfig.swmType == JavaMEMidletType.LIBRARY)
+			suiteDependency = new SuiteDependency(
+				SuiteDependencyType.LIBLET,
+				requireLevel,
+				new SuiteName(subConfig.swmName),
+				new SuiteVendor(subConfig.swmVendor),
+				SuiteVersionRange.exactly(new SuiteVersion(
+					__project.getVersion().toString())));
+		
+		// Is otherwise an API
+		else
+		{
+			// Configuration specified?
+			try
+			{
+				if (!config.noEmitConfiguration)
+					__attributes.putValue("Microedition-Configuration",
+						Collections.max(subConfig.definedConfigurations)
+							.toString());
+				didDepend = true;
+			}
+			catch (NoSuchElementException e)
+			{
+				// Ignore
+			}
+			
+			// Profile specified?
+			try
+			{
+				__attributes.putValue("Microedition-Profile",
+					Collections.max(subConfig.definedProfiles).toString());
+				didDepend = true;
+			}
+			catch (NoSuchElementException e)
+			{
+				// Ignore
+			}
+		}
+		
+		// Unknown, do a generic project dependency
+		if (!didDepend && suiteDependency == null)
+			suiteDependency = new SuiteDependency(
+				SuiteDependencyType.PROPRIETARY,
+				requireLevel,
+				new SuiteName("squirreljme.project@" +
+					__project.getName()),
+				null,
+				null);
+		
+		// Write out the dependency if one was requested
+		if (suiteDependency != null)
+			__attributes.putValue(type.dependencyKey(__depCounter[0]++),
+				suiteDependency.toString());
+	}
+	
+	/**
 	 * Performs the task actions.
 	 *
 	 * @since 2002/02/28
@@ -205,81 +302,16 @@ public class AdditionalManifestPropertiesTask
 				}
 		}
 		
-		// Put in as many dependencies as possible
-		int normalDep = 1;
+		// Put in standard required dependencies
+		int[] normalDep = new int[]{1};
 		for (ProjectDependency dependency : dependencies.values())
-		{
-			// Find the associated project
-			Project subProject = dependency.getDependencyProject();
-			
-			// Get the project config
-			SquirrelJMEPluginConfiguration subConfig =
-				SquirrelJMEPluginConfiguration.configuration(subProject);
-			
-			// The dependency being constructed (which might be added)
-			SuiteDependency suiteDependency = null;
-			boolean didDepend = false;
-			
-			// Nothing can depend on a MIDlet!
-			if (subConfig.swmType == JavaMEMidletType.APPLICATION)
-				throw new RuntimeException(String.format(
-					"Project %s cannot depend on application %s.",
-						project.getName(), subProject.getName()));
-			
-			// This is another library
-			else if (subConfig.swmType == JavaMEMidletType.LIBRARY)
-				suiteDependency = new SuiteDependency(
-					SuiteDependencyType.LIBLET,
-					SuiteDependencyLevel.REQUIRED,
-					new SuiteName(subConfig.swmName),
-					new SuiteVendor(subConfig.swmVendor),
-					SuiteVersionRange.exactly(new SuiteVersion(
-						subProject.getVersion().toString())));
-			
-			// Is otherwise an API
-			else
-			{
-				// Configuration specified?
-				try
-				{
-					attributes.putValue("Microedition-Configuration",
-						Collections.max(subConfig.definedConfigurations)
-							.toString());
-					didDepend = true;
-				}
-				catch (NoSuchElementException e)
-				{
-					// Ignore
-				}
-				
-				// Profile specified?
-				try
-				{
-					attributes.putValue("Microedition-Profile",
-						Collections.max(subConfig.definedProfiles).toString());
-					didDepend = true;
-				}
-				catch (NoSuchElementException e)
-				{
-					// Ignore
-				}
-			}
-			
-			// Unknown, do a generic project dependency
-			if (!didDepend && suiteDependency == null)
-				suiteDependency = new SuiteDependency(
-					SuiteDependencyType.PROPRIETARY,
-					SuiteDependencyLevel.REQUIRED,
-					new SuiteName("squirreljme.project@" +
-						subProject.getName()),
-					null,
-					null);
-			
-			// Write out the dependency if one was requested
-			if (suiteDependency != null)
-				attributes.putValue(type.dependencyKey(normalDep++),
-					suiteDependency.toString());
-		}
+			this.__addDependency(false,
+				dependency.getDependencyProject(), normalDep, attributes);
+		
+		// Add any optional dependencies now, which may or may not exist
+		for (Project dependency : config.optionalDependencies)
+			this.__addDependency(true,
+				dependency, normalDep, attributes);
 		
 		// Write the manifest output
 		try (OutputStream out = Files.newOutputStream(this.__taskOutput(),

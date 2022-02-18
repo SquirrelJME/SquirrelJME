@@ -28,6 +28,10 @@ public class VMTestTask
 	public static final String SINGLE_TEST_PROPERTY =
 		"test.single";
 	
+	/** Second property for test. */
+	public static final String SINGLE_TEST_PROPERTY_B =
+		"single.test";
+	
 	/** The source set used. */
 	protected final String sourceSet;
 	

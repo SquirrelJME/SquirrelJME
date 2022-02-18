@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.jvm.mle.constants.PhoneModelType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
@@ -418,6 +419,15 @@ public final class System
 				
 				// The current platform
 			case "microedition.platform":
+				// Allow this to be overridden by the user
+				String platformOverride = RuntimeShelf.systemProperty(__k);
+				if (platformOverride != null)
+					return platformOverride;
+			
+				// Try to use a specific platform
+				int phoneModel = RuntimeShelf.phoneModel();
+				if (phoneModel != PhoneModelType.GENERIC)
+					return SquirrelJME.platform(phoneModel);
 				return SquirrelJME.MICROEDITION_PLATFORM;
 				
 				// The operating system architecture

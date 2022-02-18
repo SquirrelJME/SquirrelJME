@@ -325,12 +325,6 @@ public class List
 		return this._items.get(__i)._selected;
 	}
 	
-	@Override
-	public void removeCommand(Command __a)
-	{
-		throw new todo.TODO();
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/11/14

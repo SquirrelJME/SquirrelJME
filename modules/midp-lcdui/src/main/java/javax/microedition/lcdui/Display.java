@@ -24,6 +24,7 @@ import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
+import cc.squirreljme.runtime.lcdui.mle.Vibration;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -1035,17 +1036,8 @@ public class Display
 	public boolean vibrate(int __d)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1n Cannot vibrate for a negative duration.}
-		if (__d < 0)
-			throw new IllegalArgumentException("EB1n");
-		
-		// Only perform the action if we can vibrate the device
-		UIBackend backend = UIBackendFactory.getInstance();
-		if (backend.metric(UIMetricType.SUPPORTS_VIBRATION) != 0)
-			throw Debugging.todo();
-		
-		// There is none, so we cannot say we control it
-		return false;
+		// Forward
+		return Vibration.vibrate(__d);
 	}
 	
 	/**

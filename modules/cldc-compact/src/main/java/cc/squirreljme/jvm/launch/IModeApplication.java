@@ -8,12 +8,16 @@
 
 package cc.squirreljme.jvm.launch;
 
+import cc.squirreljme.jvm.mle.JarPackageShelf;
+import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.mle.constants.PhoneModelType;
 import cc.squirreljme.jvm.suite.Configuration;
 import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.jvm.suite.InvalidSuiteException;
 import cc.squirreljme.jvm.suite.Profile;
+import cc.squirreljme.runtime.cldc.SquirrelJME;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -111,7 +115,16 @@ public class IModeApplication
 		String appClass = this._adfProps.get(IModeApplication._APP_CLASS);
 		
 		if (appName != null)
+		{
+			// If the application name contains an invalid character then
+			// it is an unsupported character we do not know about
+			if (appName.indexOf(0xFFFD) >= 0)
+				return appName + " (" +
+					JarPackageShelf.libraryPath(this.jar) + ")";
+			
 			return appName;
+		}
+		
 		return (appClass != null ? appClass : "Invalid i-mode Application");
 	}
 	
@@ -200,6 +213,12 @@ public class IModeApplication
 		String spSize = adfProps.get(IModeApplication._SP_SIZE);
 		if (spSize != null && !spSize.isEmpty())
 			rv.put(IModeApplication.SCRATCH_PAD_PROPERTY, spSize);
+		
+		// If a specific phone model is used, set the platform property
+		// explicitly
+		if (RuntimeShelf.phoneModel() == PhoneModelType.GENERIC)
+			rv.put("microedition.platform",
+				SquirrelJME.platform(PhoneModelType.NTT_DOCOMO_D503I));
 		
 		return rv;
 	}

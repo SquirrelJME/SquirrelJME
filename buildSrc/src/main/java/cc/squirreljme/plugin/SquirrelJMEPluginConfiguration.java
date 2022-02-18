@@ -87,6 +87,13 @@ public class SquirrelJMEPluginConfiguration
 	/** Do not run these tests in parallel. */
 	public boolean noParallelTests;
 	
+	/** Projects to have optional dependencies on. */
+	public List<Project> optionalDependencies =
+		new ArrayList<>();
+	
+	/** Do not emit {@code Microedition-Configuration}? */
+	public boolean noEmitConfiguration;
+	
 	/** Is this the main launcher? */
 	public boolean isMainLauncher;
 	

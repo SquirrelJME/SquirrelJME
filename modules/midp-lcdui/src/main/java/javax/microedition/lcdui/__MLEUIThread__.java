@@ -20,13 +20,14 @@ import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
 import cc.squirreljme.jvm.mle.constants.UIKeyModifier;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.event.EventTranslate;
+import cc.squirreljme.runtime.lcdui.event.KeyCodeTranslator;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
-import com.nokia.mid.ui.FullCanvas;
+import cc.squirreljme.runtime.midlet.ApplicationHandler;
+import cc.squirreljme.runtime.midlet.ApplicationInterface;
 import java.util.Map;
 import javax.microedition.midlet.MIDlet;
 
@@ -138,42 +139,34 @@ final class __MLEUIThread__
 				}
 			}
 			
-			// Nokia exposes these as physical Key IDs, so do the same here
-			// Since most software is made for Nokia we pretty much the
-			// standard and as such have to support doing it this way.
-			switch (__keyCode)
+			// Some APIs such as Nokia expose certain keys and actions as
+			// physical keys that can be pressed such that the left command
+			// key will emit itself as a keycode.
+			for (KeyCodeTranslator adapter : EventTranslate.translators())
 			{
-				case NonStandardKey.F1:
-				case NonStandardKey.VGAME_COMMAND_LEFT:
-					__keyCode = FullCanvas.KEY_SOFTKEY1;
+				int result = adapter.normalizeKeyCode(__keyCode);
+				if (result != 0)
+				{
+					__keyCode = result;
 					break;
-					
-				case NonStandardKey.F2:
-				case NonStandardKey.VGAME_COMMAND_RIGHT:
-					__keyCode = FullCanvas.KEY_SOFTKEY2;
-					break;
-					
-				case NonStandardKey.F3:
-				case NonStandardKey.VGAME_COMMAND_CENTER:
-					__keyCode = FullCanvas.KEY_SOFTKEY3;
-					break;
+				}
 			}
 		}
 		
 		// Open the LCDUI inspector?
-		if (__event == UIKeyEventType.KEY_PRESSED) 
-			if (__keyCode == NonStandardKey.F12 ||
-				__keyCode == NonStandardKey.VGAME_LCDUI_INSPECTOR)
-			{
-				if (true)
-					throw Debugging.todo();
-				
-				// Consume this key
-				return;
-			}
+		if (__event == UIKeyEventType.KEY_PRESSED &&
+			(__keyCode == NonStandardKey.F12 ||
+			__keyCode == NonStandardKey.VGAME_LCDUI_INSPECTOR))
+		{
+			if (true)
+				throw Debugging.todo();
+			
+			// Consume this key
+			return;
+		}
 		
 		// Any Displayable which have standard key access
-		else if (widget instanceof Canvas)
+		if (widget instanceof Canvas)
 			this.__eventKey((Canvas)widget, null,
 				__event, __keyCode, javaMods);
 		else if (widget instanceof CustomItem)
@@ -199,29 +192,35 @@ final class __MLEUIThread__
 	 * {@inheritDoc}
 	 * @since 2020/09/12
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void exitRequest(UIFormBracket __form)
 	{
 		// Debug
 		Debugging.debugNote("exitRequest(%08x) @ %s",
 			System.identityHashCode(__form), Thread.currentThread());
-		
-		// Terminate the user interface
-		StaticDisplayState.terminate();
-		
-		// Have the MIDlet destroy itself
-		try
-		{
-			MIDlet midlet = ActiveMidlet.get();
 			
-			// Destroy the midlet
-			midlet.notifyDestroyed();
+		// Obtain the application we are actually running, since this
+		// could be done different for different ones
+		Object currentInstance = ApplicationHandler.currentInstance();
+		ApplicationInterface<Object> currentInterface =
+			(ApplicationInterface<Object>)
+				ApplicationHandler.currentInterface();
+		if (currentInstance == null || currentInterface == null)
+		{
+			Debugging.debugNote("No current Application?");
+			return;
 		}
 		
-		// No active MIDlet, ignore
-		catch (IllegalStateException ignored)
+		// Destroy the application
+		try
 		{
-			Debugging.debugNote("No current MIDlet?");
+			currentInterface.destroy(currentInstance, null);
+		}
+		catch (Throwable t)
+		{
+			// {@squirreljme.error EB0k Failed to terminate application.}
+			throw new Error("EB0k", t);
 		}
 	}
 	

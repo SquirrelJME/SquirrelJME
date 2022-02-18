@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This contains the various functions that may be set by
  * {@link AdvancedGraphics} and called accordingly when needed.
@@ -417,7 +419,21 @@ public enum AdvancedFunction
 			for (; __y < ey; __y++, dest += iw, src += eosa)
 				for (int spend = src + __w, dp = dest; src < spend;
 					dp++, src++)
-					data[dp] = __b[src] | 0xFF_000000;
+					try
+					{
+						data[dp] = __b[src] | 0xFF_000000;
+					}
+					catch (IndexOutOfBoundsException e)
+					{
+						Debugging.debugNote("Oops: " +
+							"__o=%d, __l=%d, __x=%d, __y=%d, " +
+							"__w=%d, __h=%d, __subX=%d, __subY=%d, " +
+							"__b[%d]=%s, data[%d]=%s, iw=%d, eosa=%d, " +
+							"dest=%d, src=%d, ey=%d, spend=%d !!",
+							__o, __l, __x, __y, __w, __h, __subX, __subY,
+							__b.length, __b, data.length, data, iw, eosa,
+							dest, src, ey, spend);
+					}
 		}
 	},
 	

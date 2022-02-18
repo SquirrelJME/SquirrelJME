@@ -1,4 +1,3 @@
-// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -13,6 +12,7 @@ import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
+import cc.squirreljme.runtime.lcdui.mle.Vibration;
 
 /**
  * This is used to utilize special hardware that exists on the device for
@@ -110,15 +110,8 @@ public class DeviceControl
 		if (__freq < 0 || __freq > 100)
 			throw new IllegalArgumentException("EB34 " + __freq);
 		
-		throw Debugging.todo();
-		/*
-		// Vibrate!
-		throw Debugging.todo();
-		/*
-		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
-			DeviceFeedbackType.VIBRATE, ((__ms > (long)Integer.MAX_VALUE) ?
-				Integer.MAX_VALUE : (int)__ms));*/
-			
+		// Perform the vibration
+		Vibration.vibrate((int)Math.min(Integer.MAX_VALUE, __ms));
 	}
 	
 	/**
@@ -128,15 +121,7 @@ public class DeviceControl
 	 */
 	public static void stopVibra()
 	{
-		throw Debugging.todo();
-		/*
-		// Clear vibration
-		throw Debugging.todo();
-		/*
-		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
-			DeviceFeedbackType.VIBRATE, 0);
-			
-		 */
+		Vibration.vibrate(0);
 	}
 }
 

@@ -14,9 +14,11 @@ import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
+import cc.squirreljme.jvm.mle.constants.PhoneModelType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
@@ -175,6 +177,21 @@ public enum MLERuntime
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return System.nanoTime();
+		}
+	},
+	
+	/** {@link RuntimeShelf#phoneModel()}. */
+	PHONE_MODEL("phoneModel:()I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2022/02/14
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			// Just be a generic model
+			return PhoneModelType.GENERIC;
 		}
 	},
 	
