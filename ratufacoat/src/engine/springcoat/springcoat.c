@@ -30,8 +30,8 @@ static sjme_jboolean sjme_springCoat_initEngine(
 		return sjme_false;
 	}
 	
-	sjme_todo("Implement this?");
-	return sjme_false;
+	/* Currently, nothing need be done. */
+	return sjme_true;
 }
 
 /**

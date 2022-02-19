@@ -100,9 +100,11 @@ static sjme_jboolean sjme_engineEnterMain(sjme_engineState* engineState,
 	/* Initialize the main entry task and thread. */
 	return sjme_engineTaskNew(engineState, classPath, mainClass,
 		mainArgs, engineState->config.sysProps,
-		SJME_TASK_PIPE_REDIRECT_TERMINAL, SJME_TASK_PIPE_REDIRECT_TERMINAL,
+		SJME_TASK_PIPE_REDIRECT_TERMINAL,
+		SJME_TASK_PIPE_REDIRECT_TERMINAL,
 		sjme_false, sjme_true,
-		&engineState->mainTask, &engineState->mainThread, error);
+		&engineState->mainTask, &engineState->mainThread,
+		error);
 }
 
 sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
@@ -180,6 +182,7 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 	}
 	
 	/* Perform base engine initialization and start the main task. */
+	result->scaffold = tryScaffold;
 	if (!tryScaffold->initEngine(result, error) ||
 		!sjme_engineEnterMain(result, error))
 	{
