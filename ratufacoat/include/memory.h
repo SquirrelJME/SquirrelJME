@@ -17,6 +17,7 @@
 #define SQUIRRELJME_MEMORY_H
 
 #include "sjmerc.h"
+#include "atomic.h"
 #include "datatype.h"
 #include "error.h"
 
@@ -31,6 +32,31 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+/**
+ * This represents a single node within all of the memory that has been
+ * allocated and is being managed by SquirrelJME.
+ * 
+ * @since 2022/02/20
+ */
+typedef struct sjme_memNode sjme_memNode;
+
+/**
+ * Statistics on memory allocation.
+ * 
+ * @since 2022/02/20
+ */
+typedef struct sjme_memStat
+{
+	/** The number of nodes currently allocated. */
+	sjme_atomicInt totalNodes;
+	
+	/** The number of bytes currently allocated. */
+	sjme_atomicInt totalBytes;
+} sjme_memStat;
+
+/** The current global memory statistics. */
+extern sjme_memStat sjme_memStats;
 
 /**
  * Allocates the given number of bytes.

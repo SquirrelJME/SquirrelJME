@@ -22,8 +22,41 @@
 #endif
 
 #include "sjmerc.h"
+#include "atomic.h"
 #include "memory.h"
 #include "error.h"
+
+/**
+ * This represents a single node within all of the memory that has been
+ * allocated and is being managed by SquirrelJME.
+ * 
+ * @since 2022/02/20
+ */
+struct sjme_memNode
+{
+	/** The key to check if this is a valid node or not. */
+	sjme_jint key;
+	
+	/** The size of this node. */
+	sjme_juint size;
+	
+	/** The previous link (a @c sjme_memNode) in the chain. */
+	sjme_atomicPointer prev;
+	
+	/** The next link (a @c sjme_memNode) in the chain. */
+	sjme_atomicPointer next;
+	
+	/** The data stored within this node. */
+	sjme_jbyte bytes[];
+};
+
+/** Lock on memory operations to ensure that all of them are atomic. */
+static sjme_atomicInt sjme_memLock;
+
+/** The last @c sjme_atomicPointer in the memory chain. */
+static sjme_atomicPointer sjme_lastMemNode;
+
+sjme_memStat sjme_memStats = {{0}, {0}};
 
 void* sjme_malloc(sjme_jint size, sjme_error* error)
 {
