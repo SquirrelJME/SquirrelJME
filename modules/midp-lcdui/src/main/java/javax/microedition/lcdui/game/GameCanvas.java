@@ -51,7 +51,7 @@ public abstract class GameCanvas
 	
 	/** The double buffered image. */
 	private final DoubleBuffer _doubleBuffer =
-		new DoubleBuffer();
+		new DoubleBuffer(0xFFFFFFFF);
 	
 	/**
 	 * Initializes the game canvas.
@@ -64,7 +64,7 @@ public abstract class GameCanvas
 	 */
 	protected GameCanvas(boolean __suppressGameKeys)
 	{
-		this(__suppressGameKeys, true);
+		this(__suppressGameKeys, false);
 	}
 	
 	/**
@@ -171,7 +171,12 @@ public abstract class GameCanvas
 	private void __flip()
 	{
 		// Flush off-screen to on-screen
-		this._doubleBuffer.flush();
+		DoubleBuffer doubleBuffer = this._doubleBuffer;
+		doubleBuffer.flush();
+		
+		// If we are not preserving the buffer, clear to white
+		if (!this._preserveBuffer)
+			doubleBuffer.clear();
 		
 		// Signal and wait for refresh
 		super.repaint(0, 0, this.getWidth(), this.getHeight());

@@ -25,7 +25,7 @@ final class __MIDPCanvas__
 	
 	/** Double buffered image for drawing operations. */
 	final DoubleBuffer _doubleBuffer =
-		new DoubleBuffer();
+		new DoubleBuffer(0xFFFFFFFF);
 	
 	/**
 	 * Initializes the base canvas.

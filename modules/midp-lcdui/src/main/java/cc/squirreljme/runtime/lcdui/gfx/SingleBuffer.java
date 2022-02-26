@@ -9,7 +9,6 @@
 package cc.squirreljme.runtime.lcdui.gfx;
 
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import java.util.Arrays;
 import javax.microedition.lcdui.Graphics;
@@ -21,6 +20,9 @@ import javax.microedition.lcdui.Graphics;
  */
 public final class SingleBuffer
 {
+	/** The color to fill with on resizes. */
+	private final int fillColor;
+	
 	/** Available pixels. */
 	private volatile int[] _pixels =
 		new int[1];
@@ -32,6 +34,27 @@ public final class SingleBuffer
 	/** The height of the buffer. */
 	private volatile int _height =
 		1;
+	
+	/**
+	 * Initializes the single buffer.
+	 * 
+	 * @param __resizeFillColor The color to fill with when resizing.
+	 * @since 2022/02/25
+	 */
+	public SingleBuffer(int __resizeFillColor)
+	{
+		this.fillColor = __resizeFillColor;
+	}
+	
+	/**
+	 * Clears the buffer to the fill color.
+	 * 
+	 * @since 2022/02/25
+	 */
+	public void clear()
+	{
+		Arrays.fill(this._pixels, this.fillColor);
+	}
 	
 	/**
 	 * Copies from the source buffer.
@@ -95,7 +118,12 @@ public final class SingleBuffer
 		int currentLimit = pixels.length;
 		int wantedArea = __width * __height;
 		if (wantedArea > currentLimit)
-			this._pixels = (pixels = Arrays.copyOf(pixels, wantedArea));
+		{
+			this._pixels = (pixels = new int[wantedArea]);
+			
+			// Fill resized area accordingly
+			Arrays.fill(pixels, this.fillColor);
+		}
 		
 		// Set new parameters
 		this._width = __width;

@@ -25,12 +25,10 @@ public final class DoubleBuffer
 			.getGraphics());
 	
 	/** The off-screen buffer. */
-	private final SingleBuffer _offScreen =
-		new SingleBuffer();
+	private final SingleBuffer _offScreen;
 	
 	/** The on-screen buffer. */
-	private final SingleBuffer _onScreen =
-		new SingleBuffer();
+	private final SingleBuffer _onScreen;
 	
 	/** The last used width. */
 	private volatile int _lastWidth =
@@ -39,6 +37,29 @@ public final class DoubleBuffer
 	/** The last used height. */
 	private volatile int _lastHeight =
 		-1;
+	
+	/**
+	 * Initializes the double buffer.
+	 * 
+	 * @param __resizeFillColor The color to set when resizing, this is to
+	 * prevent skewed graphics from appearing.
+	 * @since 2022/02/25
+	 */
+	public DoubleBuffer(int __resizeFillColor)
+	{
+		this._offScreen = new SingleBuffer(__resizeFillColor);
+		this._onScreen = new SingleBuffer(0);
+	}
+	
+	/**
+	 * Clears the off-screen buffer.
+	 * 
+	 * @since 2022/02/25
+	 */
+	public void clear()
+	{
+		this._offScreen.clear();
+	}
 	
 	/**
 	 * Flushes the off-screen buffer to be on-screen.

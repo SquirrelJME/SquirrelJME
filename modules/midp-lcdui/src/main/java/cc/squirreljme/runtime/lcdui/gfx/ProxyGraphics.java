@@ -279,9 +279,9 @@ public final class ProxyGraphics
 	 * @since 2022/02/25
 	 */
 	@Override
-	public void fillRect(int __a, int __b, int __c, int __d)
+	public void fillRect(int __x, int __y, int __w, int __h)
 	{
-		this.__graphics().fillRect(__a, __b, __c, __d);
+		this.__graphics().fillRect(__x, __y, __w, __h);
 	}
 	
 	/**
