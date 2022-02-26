@@ -37,6 +37,7 @@ SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/softmath.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/stream.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/stringies.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/syscall.c
+SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/utf.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/util.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/video.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/xbuiltin.c

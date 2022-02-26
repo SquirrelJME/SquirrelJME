@@ -86,10 +86,10 @@ typedef enum sjme_engineThreadModel
 typedef struct sjme_engineSystemProperty
 {
 	/** The key. */
-	const char* key;
+	sjme_utfString* key;
 	
 	/** The value. */
-	const char* value;
+	sjme_utfString* value;
 } sjme_engineSystemProperty;
 
 /**

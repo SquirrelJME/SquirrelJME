@@ -217,6 +217,9 @@ typedef uint8_t sjme_jubyte;
 /** @c short type. */
 typedef int16_t sjme_jshort;
 
+/** Unsigned @c short type. */
+typedef uint16_t sjme_jushort;
+
 /** @c char type. */
 typedef uint16_t sjme_jchar;
 

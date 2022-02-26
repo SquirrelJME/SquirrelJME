@@ -54,7 +54,7 @@ sjme_jboolean sjme_engineDestroy(sjme_engineState* state, sjme_error* error)
 static sjme_jboolean sjme_engineEnterMain(sjme_engineState* engineState,
 	sjme_error* error)
 {
-	const char* mainClass;
+	sjme_utfString* mainClass;
 	sjme_mainArgs* mainArgs;
 	sjme_classPath* classPath;
 	
@@ -68,7 +68,10 @@ static sjme_jboolean sjme_engineEnterMain(sjme_engineState* engineState,
 	/* Use specific main class and starting arguments. */
 	if (engineState->config.mainClass != NULL)
 	{
-		mainClass = engineState->config.mainClass;
+		if (!sjme_charStarToUtf(&mainClass, 
+			engineState->config.mainClass, error))
+			return sjme_false;
+		
 		mainArgs = engineState->config.mainArgs;
 		
 		/* Resolve class path from a set of library strings. */

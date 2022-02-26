@@ -108,7 +108,7 @@ sjme_jboolean sjme_packClose(sjme_packInstance* instance,
 }
 
 sjme_jboolean sjme_packGetLauncherDetail(sjme_packInstance* pack,
-	const char** outMainClass, sjme_mainArgs** outArgs,
+	sjme_utfString** outMainClass, sjme_mainArgs** outArgs,
 	sjme_classPath** outClassPath, sjme_error* error)
 {
 	sjme_todo("Implement this?");

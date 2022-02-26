@@ -72,7 +72,7 @@ typedef enum sjme_taskPipeRedirectType
  */
 sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	sjme_classPath* classPath,
-	const char* mainClass, sjme_mainArgs* mainArgs,
+	sjme_utfString* mainClass, sjme_mainArgs* mainArgs,
 	sjme_engineSystemPropertySet* sysProps,
 	sjme_taskPipeRedirectType stdOutMode,
 	sjme_taskPipeRedirectType stdErrMode, sjme_jboolean forkThread,

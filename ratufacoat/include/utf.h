@@ -8,73 +8,65 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Scaffold definitions.
+ * Modified UTF String format.
  * 
- * @since 2022/01/05
+ * @since 2022/02/26
  */
 
-#ifndef SQUIRRELJME_SCAFDEF_H
-#define SQUIRRELJME_SCAFDEF_H
+#ifndef SQUIRRELJME_UTF_H
+#define SQUIRRELJME_UTF_H
 
 #include "sjmerc.h"
-#include "utf.h"
+#include "error.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_SCAFDEF_H
-extern "C"
-{
+#define SJME_CXX_SQUIRRELJME_UTF_H
+extern "C" {
 #endif /* #ifdef SJME_CXX_IS_EXTERNED */
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
 
+#include "pack/pack.h"
 /**
- * The state of any given engine.
+ * This represents a Java modified UTF-8 String.
  * 
- * @since 2022/01/03
+ * @since 2022/02/26
  */
-typedef struct sjme_engineState sjme_engineState;
-
-/**
- * The state of a single task within the engine.
- * 
- * @since 2022/01/09
- */
-typedef struct sjme_engineTask sjme_engineTask;
-
-/**
- * The state of a single thread within the engine.
- * 
- * @since 2022/01/03
- */
-typedef struct sjme_engineThread sjme_engineThread;
-
-/**
- * Represents the main arguments to a program.
- * 
- * @since 2022/01/09
- */
-typedef struct sjme_mainArgs
+typedef struct sjme_utfString
 {
-	/** The number of arguments that exist. */
-	sjme_jint count;
+	/** The length of the string. */
+	sjme_jushort length;
 	
-	/** The main arguments. */
-	sjme_utfString* args[0];
-} sjme_mainArgs;
+	/** The string data. */
+	sjme_jbyte chars[0];
+} sjme_utfString;
+#include "pack/unpack.h"
+
+/**
+ * Converts a standard C @c char* string to a Java modified UTF-8 string.
+ * 
+ * @param outUtfString The output modified UTF-8 string.
+ * @param inCharStar The input utf-8 string.
+ * @param error The possible error state.
+ * @return If the conversion has failed.
+ * @since 2022/02/26
+ */
+sjme_jboolean sjme_charStarToUtf(sjme_utfString** outUtfString,
+	const char* inCharStar, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_SCAFDEF_H
+#ifdef SJME_CXX_SQUIRRELJME_UTF_H
 }
-#undef SJME_CXX_SQUIRRELJME_SCAFDEF_H
+#undef SJME_CXX_SQUIRRELJME_UTF_H
 #undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCAFDEF_H */
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_UTF_H */
 #endif /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_SCAFDEF_H */
+#endif /* SQUIRRELJME_UTF_H */

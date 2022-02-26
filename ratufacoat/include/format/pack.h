@@ -25,6 +25,7 @@
 #include "format/format.h"
 #include "format/library.h"
 #include "memchunk.h"
+#include "utf.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -176,7 +177,7 @@ sjme_jboolean sjme_packClose(sjme_packInstance* instance,
  * @since 2022/01/09
  */
 sjme_jboolean sjme_packGetLauncherDetail(sjme_packInstance* pack,
-	const char** outMainClass, sjme_mainArgs** outArgs,
+										 sjme_utfString** outMainClass, sjme_mainArgs** outArgs,
 	sjme_classPath** outClassPath, sjme_error* error);
 
 /**

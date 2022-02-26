@@ -7,18 +7,14 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "debug.h"
-#include "engine/taskmanager.h"
+/**
+ * Unpacking structures.
+ * 
+ * @since 2022/02/26
+ */
 
-sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
-	sjme_classPath* classPath,
-	sjme_utfString* mainClass, sjme_mainArgs* mainArgs,
-	sjme_engineSystemPropertySet* sysProps,
-	sjme_taskPipeRedirectType stdOutMode,
-	sjme_taskPipeRedirectType stdErrMode, sjme_jboolean forkThread,
-	sjme_jboolean rootVm, sjme_engineTask** outTask,
-	sjme_engineThread** outMainThread, sjme_error* error)
-{
-	sjme_todo("Implement this?");
-	return sjme_false;
-}
+#if defined(__GNUC__) || defined(__clang__) || defined(_MSC_VER)
+	#pragma pack(pop)
+#else
+	#error No packing
+#endif
