@@ -8,9 +8,7 @@
 
 package com.nttdocomo.ui;
 
-import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
 /**
  * This is used for drawing graphics onto a raster surface.

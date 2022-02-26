@@ -10,6 +10,7 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.WeakReference;
+import javax.microedition.lcdui.Image;
 
 /**
  * Canvas for showing free-form raster graphics and otherwise.
@@ -37,9 +38,19 @@ public abstract class Canvas
 		this.__postConstruct();
 	}
 	
+	/**
+	 * Returns the graphics object that is used for drawing onto the canvas.
+	 * 
+	 * @return A {@link Graphics} object for drawing onto the canvas surface.
+	 * @since 2022/02/25
+	 */
 	public Graphics getGraphics()
 	{
-		throw Debugging.todo();
+		// Use the backing double buffered graphics, but without a draw
+		return new com.nttdocomo.ui.Graphics(
+			this._midpCanvas._doubleBuffer.getGraphics(
+				this.getWidth(), this.getHeight()),
+			this._bgColor);
 	}
 	
 	public int getKeypadState()

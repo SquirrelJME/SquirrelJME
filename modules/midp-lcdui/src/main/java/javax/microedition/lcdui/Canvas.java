@@ -845,12 +845,11 @@ public abstract class Canvas
 			int bgColor = UIBackendFactory.getInstance()
 				.metric(UIMetricType.COLOR_CANVAS_BACKGROUND);
 			
-			__gfx.setAlphaColor(bgColor | 0xFF_000000);
-			
 			// Draw entire background
+			__gfx.setAlphaColor(bgColor | 0xFF_000000);
 			__gfx.fillRect(0, 0, __sw, __sh);
 			
-			// Restore the original graphics color
+			// Restore the original drawing color
 			__gfx.setAlphaColor(old);
 		}
 		
