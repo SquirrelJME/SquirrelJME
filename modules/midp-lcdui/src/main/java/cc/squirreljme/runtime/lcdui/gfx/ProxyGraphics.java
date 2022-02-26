@@ -62,16 +62,21 @@ public final class ProxyGraphics
 	 * Initializes the proxy graphics with the given target.
 	 * 
 	 * @param __target The target graphics proxy.
+	 * @param __width The graphics width.
+	 * @param __height The graphics height.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/25
 	 */
-	public ProxyGraphics(ProxyGraphicsTarget __target)
+	public ProxyGraphics(ProxyGraphicsTarget __target, int __width,
+		int __height)
 		throws NullPointerException
 	{
 		if (__target == null)
 			throw new NullPointerException("NARG");
 		
 		this.target = __target;
+		this._clipWidth = __width;
+		this._clipHeight = __height;
 	}
 	
 	/**

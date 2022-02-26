@@ -22,15 +22,15 @@ import javax.microedition.lcdui.Graphics;
 public final class SingleBuffer
 {
 	/** Available pixels. */
-	private int[] _pixels =
+	private volatile int[] _pixels =
 		new int[1];
 	
 	/** The width of the buffer. */
-	private int _width =
+	private volatile int _width =
 		1;
 	
 	/** The height of the buffer. */
-	private int _height =
+	private volatile int _height =
 		1;
 	
 	/**

@@ -33,11 +33,11 @@ public final class DoubleBuffer
 		new SingleBuffer();
 	
 	/** The last used width. */
-	private int _lastWidth =
+	private volatile int _lastWidth =
 		-1;
 	
 	/** The last used height. */
-	private int _lastHeight =
+	private volatile int _lastHeight =
 		-1;
 	
 	/**
@@ -68,7 +68,7 @@ public final class DoubleBuffer
 		
 		// We use the proxy regardless	
 		ProxyGraphicsTarget proxy = this._offScreenProxy;
-		ProxyGraphics rv = new ProxyGraphics(proxy);
+		ProxyGraphics rv = new ProxyGraphics(proxy, __width, __height);
 		
 		// If the surface area has not changed, then we can freely use the same
 		// graphics object, this will help reduce load on double-buffered
