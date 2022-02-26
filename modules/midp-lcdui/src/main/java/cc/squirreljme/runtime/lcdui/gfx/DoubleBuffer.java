@@ -75,7 +75,7 @@ public final class DoubleBuffer
 		// operations
 		int lastWidth = this._lastWidth;
 		int lastHeight = this._lastHeight;
-		if (__width == lastWidth || __height == lastHeight)
+		if (__width == lastWidth && __height == lastHeight)
 			return rv;
 		
 		// Otherwise, remember our new screen space and use the graphics it
