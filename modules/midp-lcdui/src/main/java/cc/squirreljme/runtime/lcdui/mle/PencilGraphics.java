@@ -76,6 +76,9 @@ public final class PencilGraphics
 	/** The clip Y position. */
 	private int _clipY;
 	
+	/** The current font used. */
+	private Font _font;
+	
 	/** The current stroke style. */
 	private int _strokeStyle;
 	
@@ -634,7 +637,7 @@ public final class PencilGraphics
 		if (0 == (this.capabilities & PencilCapabilities.FONT_TEXT))
 			return this.software.getFont();
 		
-		throw Debugging.todo();
+		return this._font;
 	}
 	
 	/**
@@ -807,7 +810,7 @@ public final class PencilGraphics
 		this._clipX = clipX;
 		this._clipY = clipY;
 		this._clipWidth = clipEndX - clipX;
-		this._clipHeight = clipEndY - clipY; 
+		this._clipHeight = clipEndY - clipY;
 		
 		// Forward to both software and hardware graphics
 		this.software.setClip(__x, __y, __w, __h);
@@ -844,13 +847,15 @@ public final class PencilGraphics
 	@Override
 	public void setFont(Font __font)
 	{
-		if (0 == (this.capabilities & PencilCapabilities.FONT_TEXT))
-		{
-			this.software.setFont(__font);
-			return;
-		}
+		// Cache locally
+		this._font = __font;
 		
-		throw Debugging.todo();
+		// This is always set in software
+		this.software.setFont(__font);
+		
+		// If supported by hardware, set it here
+		if (0 != (this.capabilities & PencilCapabilities.FONT_TEXT))
+			throw Debugging.todo();
 	}
 	
 	/**

@@ -1,0 +1,100 @@
+// ---------------------------------------------------------------------------
+// SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the GNU General Public License v3+, or later.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
+package cc.squirreljme.runtime.lcdui.gfx;
+
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
+
+/**
+ * This class implements a double buffered image which may be used for
+ * graphics operations.
+ *
+ * @since 2022/02/25
+ */
+public final class DoubleBuffer
+{
+	/** The proxy for the off-screen graphics. */
+	private final ProxyGraphicsTarget _offScreenProxy =
+		new ProxyGraphicsTarget(Image.createImage(1, 1)
+			.getGraphics());
+	
+	/** The off-screen buffer. */
+	private final SingleBuffer _offScreen =
+		new SingleBuffer();
+	
+	/** The on-screen buffer. */
+	private final SingleBuffer _onScreen =
+		new SingleBuffer();
+	
+	/** The last used width. */
+	private int _lastWidth =
+		-1;
+	
+	/** The last used height. */
+	private int _lastHeight =
+		-1;
+	
+	/**
+	 * Flushes the off-screen buffer to be on-screen.
+	 * 
+	 * @since 2022/02/25
+	 */
+	public void flush()
+	{
+		this._onScreen.copyFrom(this._offScreen);
+	}
+	
+	/**
+	 * Returns a graphics object for drawing into the off-screen buffer.
+	 * 
+	 * @param __width The buffer width.
+	 * @param __height The buffer height.
+	 * @return The graphics to draw onto the image.
+	 * @throws IllegalArgumentException If the width and/or height are invalid.
+	 * @since 2022/02/25
+	 */
+	public Graphics getGraphics(int __width, int __height)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error EB32 Invalid buffer dimensions.}
+		if (__width <= 0 || __height <= 0)
+			throw new IllegalArgumentException("EB32");
+		
+		// We use the proxy regardless	
+		ProxyGraphicsTarget proxy = this._offScreenProxy;
+		ProxyGraphics rv = new ProxyGraphics(proxy);
+		
+		// If the surface area has not changed, then we can freely use the same
+		// graphics object, this will help reduce load on double-buffered
+		// operations
+		int lastWidth = this._lastWidth;
+		int lastHeight = this._lastHeight;
+		if (__width == lastWidth || __height == lastHeight)
+			return rv;
+		
+		// Otherwise, remember our new screen space and use the graphics it
+		// produces 
+		proxy.setGraphics(this._offScreen.getGraphics(__width, __height));
+		this._lastWidth = __width;
+		this._lastHeight = __height;
+		
+		return rv;
+	}
+	
+	/**
+	 * Paints the on-screen buffer onto the given graphics instance.
+	 * 
+	 * @param __g The graphics to paint onto.
+	 * @since 2022/02/25
+	 */
+	public void paint(Graphics __g)
+	{
+		this._onScreen.paint(__g);
+	}
+}

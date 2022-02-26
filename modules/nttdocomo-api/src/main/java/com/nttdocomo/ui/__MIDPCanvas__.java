@@ -8,7 +8,7 @@
 
 package com.nttdocomo.ui;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.gfx.DoubleBuffer;
 import java.lang.ref.Reference;
 import javax.microedition.lcdui.Graphics;
 
@@ -22,6 +22,10 @@ final class __MIDPCanvas__
 {
 	/** The canvas to forward to. */
 	private final Reference<Canvas> _imodeCanvas;
+	
+	/** Double buffered image for drawing operations. */
+	final DoubleBuffer _doubleBuffer =
+		new DoubleBuffer();
 	
 	/**
 	 * Initializes the base canvas.
@@ -95,7 +99,15 @@ final class __MIDPCanvas__
 		if (rv == null)
 			return;
 		
-		// Wrap paint operation with our graphics
-		rv.paint(new com.nttdocomo.ui.Graphics(__g, rv._bgColor));
+		// Perform a standard paint within i-mode using our double buffered
+		// image
+		DoubleBuffer doubleBuffer = this._doubleBuffer;
+		rv.paint(new com.nttdocomo.ui.Graphics(
+			doubleBuffer.getGraphics(rv.getWidth(), rv.getHeight()),
+			rv._bgColor));
+		
+		// Paint the buffer to the given target
+		doubleBuffer.flush();
+		doubleBuffer.paint(__g);
 	}
 }
