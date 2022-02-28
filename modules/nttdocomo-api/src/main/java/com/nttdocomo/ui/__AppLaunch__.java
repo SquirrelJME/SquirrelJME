@@ -11,9 +11,11 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
+import com.docomostar.StarApplication;
 
 /**
- * This class takes care of launching {@link IApplication}s.
+ * This class takes care of launching {@link IApplication} and
+ * {@link StarApplication}.
  *
  * @since 2021/06/13
  */

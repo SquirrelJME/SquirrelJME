@@ -9,9 +9,12 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.jvm.launch.IModeApplication;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
 import cc.squirreljme.runtime.midlet.CleanupHandler;
+import cc.squirreljme.runtime.nttdocomo.CommonDoJaApplication;
+import com.docomostar.StarApplication;
 import java.util.Objects;
 
 /**
@@ -20,7 +23,7 @@ import java.util.Objects;
  * @since 2021/11/30
  */
 final class __IAppliInterface__
-	implements ApplicationInterface<IApplication>
+	implements ApplicationInterface<CommonDoJaApplication>
 {
 	/** Main application class. */
 	protected final String mainClass;
@@ -51,7 +54,7 @@ final class __IAppliInterface__
 	 * @since 2021/11/30
 	 */
 	@Override
-	public void destroy(IApplication __instance, Throwable __thrown)
+	public void destroy(CommonDoJaApplication __instance, Throwable __thrown)
 		throws NullPointerException, Throwable
 	{
 		if (__instance == null)
@@ -72,13 +75,13 @@ final class __IAppliInterface__
 	 * @since 2021/11/30
 	 */
 	@Override
-	public IApplication newInstance()
+	public CommonDoJaApplication newInstance()
 		throws Throwable
 	{
 		// Load application details
 		synchronized (IApplication.class)
 		{
-			IApplication._appArgs = this._args;;
+			IApplication._appArgs = this._args;
 		}
 		
 		// Main class for entry
@@ -115,6 +118,8 @@ final class __IAppliInterface__
 			// instance is being created it will not be erroneously caught
 			try
 			{
+				if (rawInstance instanceof StarApplication)
+					return (StarApplication)rawInstance;
 				return (IApplication)rawInstance;
 			}
 			catch (ClassCastException e)
@@ -135,13 +140,17 @@ final class __IAppliInterface__
 	 * @since 2021/11/30
 	 */
 	@Override
-	public void startApp(IApplication __instance)
+	public void startApp(CommonDoJaApplication __instance)
 		throws NullPointerException, Throwable
 	{
 		if (__instance == null)
 			throw new NullPointerException("NARG");
 		
 		// Start the application
-		__instance.start();
+		if (__instance instanceof StarApplication)
+			((StarApplication)__instance).started(
+				(int)Debugging.todoObject());
+		else
+			((IApplication)__instance).start();
 	}
 }

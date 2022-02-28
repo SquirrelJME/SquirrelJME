@@ -266,9 +266,32 @@ public class Graphics
 		// Has no effect on SquirrelJME
 	}
 	
+	@SuppressWarnings("MagicNumber")
 	public static int getColorOfName(int __name)
+		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		switch (__name)
+		{
+			case Graphics.AQUA:		return 0x00FF00;
+			case Graphics.BLACK:	return 0x000000;
+			case Graphics.BLUE:		return 0x0000FF;
+			case Graphics.FUCHSIA:	return 0xFF0000;
+			case Graphics.GRAY:		return 0xFFFFFF;
+			case Graphics.GREEN:	return 0x000080;
+			case Graphics.LIME:		return 0x0000FF;
+			case Graphics.MAROON:	return 0x008080;
+			case Graphics.NAVY:		return 0x808080;
+			case Graphics.OLIVE:	return 0x808000;
+			case Graphics.PURPLE:	return 0x800080;
+			case Graphics.RED:		return 0x00FFFF;
+			case Graphics.SILVER:	return 0xC0C0C0;
+			case Graphics.TEAL:		return 0x008000;
+			case Graphics.WHITE:	return 0xFFFF00;
+			case Graphics.YELLOW:	return 0xFF00FF;
+		}
+		
+		// {@squirreljme.error AH0r Invalid color. (The color)}
+		throw new IllegalArgumentException("AH0r " + __name);
 	}
 	
 	public static int getColorOfRGB(int __r, int __g, int __b)

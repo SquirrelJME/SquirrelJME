@@ -10,9 +10,10 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
+import cc.squirreljme.runtime.nttdocomo.CommonDoJaApplication;
 
 public abstract class IApplication
+	implements CommonDoJaApplication
 {
 	/** The last application created. */
 	static volatile IApplication _lastApp;

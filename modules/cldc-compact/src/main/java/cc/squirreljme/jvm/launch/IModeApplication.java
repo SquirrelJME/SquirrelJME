@@ -42,6 +42,10 @@ public class IModeApplication
 	public static final String VENDOR_PROPERTY =
 		"cc.squirreljme.imode.vendor";
 	
+	/** The prefix for ADF properties. */
+	public static final String ADF_PROPERTY_PREFIX =
+		"cc.squirrlejme.imode.adf";
+	
 	/** Boot class. */
 	private static final String _BOOT_CLASS =
 		"com.nttdocomo.ui.__AppLaunch__";
@@ -77,6 +81,10 @@ public class IModeApplication
 	/** Scratch pad sizes. */
 	private static final String _SP_SIZE =
 		"SPsize";
+	
+	/** Draw area. */
+	private static final String _DRAW_AREA =
+		"DrawArea";
 	
 	/** ADF Properties. */
 	private final Map<String, String> _adfProps;
@@ -156,11 +164,19 @@ public class IModeApplication
 			adfProps.get(IModeApplication._KVM_VER));
 		String profile = adfProps.get(IModeApplication._PROFILE_VER);
 		
-		// Default to old stuff
+		// Used as heuristic for versioning
+		String drawArea = adfProps.get(IModeApplication._DRAW_AREA);
+		
+		// Try to guess a reasonable version to use
 		if (config == null || config.isEmpty())
-			config = "CLDC-1.0";
+			config = "CLDC-1.1";
 		if (profile == null || profile.isEmpty())
-			profile = "DoJa-1.0";
+		{
+			if (drawArea != null)
+				profile = "DoJa-2.0";
+			else
+				profile = "DoJa-1.0";
+		}
 		
 		return new DependencyInfo(new Configuration(config),
 			new Profile(profile));
@@ -208,6 +224,12 @@ public class IModeApplication
 		if (RuntimeShelf.phoneModel() == PhoneModelType.GENERIC)
 			rv.put("microedition.platform",
 				SquirrelJME.platform(PhoneModelType.NTT_DOCOMO_D503I));
+		
+		// Copy all ADF properties to system properties, it can be used in
+		// the future to access specific properties accordingly
+		for (Map.Entry<String, String> property : adfProps.entrySet())
+			rv.put(IModeApplication.ADF_PROPERTY_PREFIX + "." +
+				property.getKey(), property.getValue());
 		
 		return rv;
 	}
