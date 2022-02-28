@@ -75,6 +75,7 @@
             <option value="$PROJECT_DIR$/modules/tool-manifest-writer" />
             <option value="$PROJECT_DIR$/modules/tool-packfile" />
             <option value="$PROJECT_DIR$/modules/vodafone-api" />
+            <option value="$PROJECT_DIR$/modules/wireless-messaging" />
             <option value="$PROJECT_DIR$/modules/zip" />
             <option value="$PROJECT_DIR$/tools" />
             <option value="$PROJECT_DIR$/tools/pcf-to-sqf" />
