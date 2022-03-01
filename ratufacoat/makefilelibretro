@@ -224,33 +224,16 @@ else ifeq ($(platform), qnx)
 	AR = qcc -Vgcc_ntoarmv7le
 	CFLAGS += -D__BLACKBERRY_QNX__
 
-# PS3
-else ifeq ($(platform), ps3)
-	EXT = a
-	TARGET := $(TARGET_NAME)_libretro_ps3.$(EXT)
-	CC = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-gcc.exe
-	AR = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-ar.exe
-	CFLAGS += -D__ppc__ -DMSB_FIRST -DWORDS_BIGENDIAN=1
-	STATIC_LINKING = 1
-	STATIC_LINKING_LINK = 1
-
-# PS3 (SNC)
-else ifeq ($(platform), sncps3)
-	EXT = a
-	TARGET := $(TARGET_NAME)_libretro_ps3.$(EXT)
-	CC = $(CELL_SDK)/host-win32/sn/bin/ps3ppusnc.exe
-	AR = $(CELL_SDK)/host-win32/sn/bin/ps3snarl.exe
-	CFLAGS += -D__ppc__ -DMSB_FIRST -DWORDS_BIGENDIAN=1
-	STATIC_LINKING = 1
-	STATIC_LINKING_LINK = 1
-
 # Lightweight PS3 Homebrew SDK
-else ifeq ($(platform), psl1ght)
+else ifneq (,$(filter $(platform), ps3 psl1ght))
 	EXT = a
 	TARGET := $(TARGET_NAME)_libretro_$(platform).$(EXT)
-	CC = $(PS3DEV)/ppu/bin/ppu-gcc$(EXE_EXT)
-	AR = $(PS3DEV)/ppu/bin/ppu-ar$(EXE_EXT)
-	CFLAGS += -D__ppc__ -DMSB_FIRST -DWORDS_BIGENDIAN=1
+	CC = $(PS3DEV)/ppu/bin/ppu-$(COMMONLV)gcc$(EXE_EXT)
+	AR = $(PS3DEV)/ppu/bin/ppu-$(COMMONLV)ar$(EXE_EXT)
+	CFLAGS += -D__PS3__ -D__ppc__ -DMSB_FIRST -DWORDS_BIGENDIAN=1
+	ifeq ($(platform), psl1ght)
+		PLATFORM_DEFINES += -D__PSL1GHT__
+	endif
 	STATIC_LINKING = 1
 	STATIC_LINKING_LINK = 1
 
