@@ -79,6 +79,17 @@ public final class Profile
 	}
 	
 	/**
+	 * Returns the API name.
+	 * 
+	 * @return The API name.
+	 * @since 2022/02/28
+	 */
+	public APIName apiName()
+	{
+		return this.name;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/11/30
 	 */

@@ -13,7 +13,7 @@ import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 
 /**
- * This class takes care of launching {@link IApplication}s.
+ * This class takes care of launching {@link IApplication}.
  *
  * @since 2021/06/13
  */

@@ -64,8 +64,9 @@
             <option value="$PROJECT_DIR$/modules/meep-securityframework" />
             <option value="$PROJECT_DIR$/modules/meep-swm" />
             <option value="$PROJECT_DIR$/modules/midp-lcdui" />
-            <option value="$PROJECT_DIR$/modules/nokia" />
-            <option value="$PROJECT_DIR$/modules/nttdocomo-api" />
+            <option value="$PROJECT_DIR$/modules/nokia-api" />
+            <option value="$PROJECT_DIR$/modules/ntt-docomo-doja-api" />
+            <option value="$PROJECT_DIR$/modules/ntt-docomo-star-api" />
             <option value="$PROJECT_DIR$/modules/opengles" />
             <option value="$PROJECT_DIR$/modules/profile-meep" />
             <option value="$PROJECT_DIR$/modules/sprint-api" />
@@ -76,6 +77,7 @@
             <option value="$PROJECT_DIR$/modules/tool-manifest-writer" />
             <option value="$PROJECT_DIR$/modules/tool-packfile" />
             <option value="$PROJECT_DIR$/modules/vodafone-api" />
+            <option value="$PROJECT_DIR$/modules/wireless-messaging" />
             <option value="$PROJECT_DIR$/modules/zip" />
             <option value="$PROJECT_DIR$/tools" />
             <option value="$PROJECT_DIR$/tools/pcf-to-sqf" />

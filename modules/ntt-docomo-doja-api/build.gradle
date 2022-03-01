@@ -1,7 +1,7 @@
 import cc.squirreljme.plugin.swm.JavaMEMidletType
 import cc.squirreljme.plugin.swm.JavaMEProfile
 
-description = "Proprietary NTT Docomo/DoJa/i-mode API"
+description = "Proprietary NTT Docomo DoJa/i-mode API"
 version = rootProject.version
 
 squirreljme
