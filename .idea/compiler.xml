@@ -56,6 +56,8 @@
       <module name="squirreljme.modules.meep-securityframework.testFixtures" target="1.7" />
       <module name="squirreljme.modules.meep-swm.testFixtures" target="1.7" />
       <module name="squirreljme.modules.midp-lcdui.testFixtures" target="1.7" />
+      <module name="squirreljme.modules.nokia.main" target="1.7" />
+      <module name="squirreljme.modules.nokia.test" target="1.7" />
       <module name="squirreljme.modules.nttdocomo-api.main" target="1.7" />
       <module name="squirreljme.modules.nttdocomo-api.test" target="1.7" />
       <module name="squirreljme.modules.nttdocomo-doja-api.main" target="1.7" />

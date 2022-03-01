@@ -62,7 +62,7 @@
             <option value="$PROJECT_DIR$/modules/meep-securityframework" />
             <option value="$PROJECT_DIR$/modules/meep-swm" />
             <option value="$PROJECT_DIR$/modules/midp-lcdui" />
-            <option value="$PROJECT_DIR$/modules/nokia" />
+            <option value="$PROJECT_DIR$/modules/nokia-api" />
             <option value="$PROJECT_DIR$/modules/ntt-docomo-doja-api" />
             <option value="$PROJECT_DIR$/modules/ntt-docomo-star-api" />
             <option value="$PROJECT_DIR$/modules/opengles" />
