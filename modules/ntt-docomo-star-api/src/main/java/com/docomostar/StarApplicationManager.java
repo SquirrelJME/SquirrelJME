@@ -6,14 +6,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.nttdocomo;
+package com.docomostar;
 
-/**
- * Common interface for DoJa and Star applications.
- *
- * @since 2022/02/27
- */
-public interface CommonDoJaApplication
+public final class StarApplicationManager
 {
-	void terminate();
+	/** Launched application arguments. */
+	static String[] _appArgs;
 }

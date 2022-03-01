@@ -12,10 +12,12 @@ import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.constants.PhoneModelType;
+import cc.squirreljme.jvm.suite.APIName;
 import cc.squirreljme.jvm.suite.Configuration;
 import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.jvm.suite.InvalidSuiteException;
+import cc.squirreljme.jvm.suite.MarkedDependency;
 import cc.squirreljme.jvm.suite.Profile;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import java.util.LinkedHashMap;
@@ -46,9 +48,13 @@ public class IModeApplication
 	public static final String ADF_PROPERTY_PREFIX =
 		"cc.squirrlejme.imode.adf";
 	
-	/** Boot class. */
-	private static final String _BOOT_CLASS =
+	/** Boot class for DoJa. */
+	private static final String _DOJA_BOOT_CLASS =
 		"com.nttdocomo.ui.__AppLaunch__";
+	
+	/** Boot class for Star. */
+	private static final String _STAR_BOOT_CLASS =
+		"com.docomostar.__StarAppLaunch__";
 	
 	/** The application name. */
 	private static final String _APP_NAME =
@@ -61,6 +67,10 @@ public class IModeApplication
 	/** Application parameters. */
 	private static final String _APP_PARAMS =
 		"AppParam";
+	
+	/** Application type (Star). */
+	private static final String _APP_TYPE =
+		"AppType";
 	
 	/** The configuration to use. */
 	private static final String _CONFIGURATION_VER =
@@ -151,6 +161,25 @@ public class IModeApplication
 	}
 	
 	/**
+	 * Returns whether this is a Star application.
+	 * 
+	 * @return If this is a Star application.
+	 * @since 2022/02/28
+	 */
+	public boolean isStarApplication()
+	{
+		// Check if any dependency implements the Star APIs
+		APIName starApiName = new APIName("Star");
+		for (MarkedDependency dependency : this.loaderDependencies())
+			if (dependency instanceof Profile)
+				if (starApiName.equals(((Profile)dependency).apiName()))
+					return true;
+		
+		// Not one
+		return false;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2021/06/13
 	 */
@@ -163,6 +192,7 @@ public class IModeApplication
 			adfProps.get(IModeApplication._CONFIGURATION_VER),
 			adfProps.get(IModeApplication._KVM_VER));
 		String profile = adfProps.get(IModeApplication._PROFILE_VER);
+		String scratchPad = adfProps.get(IModeApplication._SP_SIZE);
 		
 		// Used as heuristic for versioning
 		String drawArea = adfProps.get(IModeApplication._DRAW_AREA);
@@ -172,7 +202,16 @@ public class IModeApplication
 			config = "CLDC-1.1";
 		if (profile == null || profile.isEmpty())
 		{
-			if (drawArea != null)
+			// The AppType property essentially specifies that this is a Star
+			// application, otherwise it will be a DoJa application
+			if (adfProps.get(IModeApplication._APP_TYPE) != null)
+				profile = "Star-1.0";
+			
+			// Based on which properties exist, try to guess the specific
+			// version of DoJa used...
+			else if (scratchPad != null && scratchPad.indexOf(',') > 0)
+				profile = "DoJa-3.0";
+			else if (drawArea != null)
 				profile = "DoJa-2.0";
 			else
 				profile = "DoJa-1.0";
@@ -242,6 +281,8 @@ public class IModeApplication
 	public String loaderEntryClass()
 	{
 		// Always use the application helper
-		return IModeApplication._BOOT_CLASS;
+		if (this.isStarApplication())
+			return IModeApplication._STAR_BOOT_CLASS;
+		return IModeApplication._DOJA_BOOT_CLASS;
 	}
 }

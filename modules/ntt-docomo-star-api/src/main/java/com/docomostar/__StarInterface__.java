@@ -6,24 +6,20 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package com.nttdocomo.ui;
+package com.docomostar;
 
 import cc.squirreljme.jvm.launch.IModeApplication;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
-import cc.squirreljme.runtime.midlet.CleanupHandler;
-import cc.squirreljme.runtime.nttdocomo.CommonDoJaApplication;
-import com.docomostar.StarApplication;
 import java.util.Objects;
 
 /**
- * Handles i-appli and i-mode applications for launching.
+ * Handles launching and handling of Star Applications.
  *
- * @since 2021/11/30
+ * @since 2022/02/28
  */
-final class __IAppliInterface__
-	implements ApplicationInterface<CommonDoJaApplication>
+final class __StarInterface__
+	implements ApplicationInterface<StarApplication>
 {
 	/** Main application class. */
 	protected final String mainClass;
@@ -32,14 +28,14 @@ final class __IAppliInterface__
 	private final String[] _args;
 	
 	/**
-	 * Initializes the i-application interface.
+	 * Initializes the Star interface.
 	 * 
 	 * @param __mainClass The main class.
 	 * @param __args The application arguments.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2021/11/30
+	 * @since 2022/02/28
 	 */
-	public __IAppliInterface__(String __mainClass, String... __args)
+	public __StarInterface__(String __mainClass, String... __args)
 		throws NullPointerException
 	{
 		if (__mainClass == null)
@@ -51,37 +47,33 @@ final class __IAppliInterface__
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2021/11/30
+	 * @since 2022/02/28
 	 */
 	@Override
-	public void destroy(CommonDoJaApplication __instance, Throwable __thrown)
+	public void destroy(StarApplication __instance, Throwable __thrown)
 		throws NullPointerException, Throwable
 	{
 		if (__instance == null)
 			throw new NullPointerException("NARG");
 		
-		// Indicate termination
+		// Unlike DoJa, the terminate handler must handle cleanup as it does
+		// the true application termination
+		__instance._terminateException = __thrown;
 		__instance.terminate();
-		
-		// Run all cleanup handlers
-		CleanupHandler.runAll();
-		
-		// We need to exit the VM ourselves here
-		System.exit((__thrown != null ? 1 : 0));
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2021/11/30
+	 * @since 2022/02/28
 	 */
 	@Override
-	public CommonDoJaApplication newInstance()
+	public StarApplication newInstance()
 		throws Throwable
 	{
 		// Load application details
-		synchronized (IApplication.class)
+		synchronized (StarApplicationManager.class)
 		{
-			IApplication._appArgs = this._args;
+			StarApplicationManager._appArgs = this._args;
 		}
 		
 		// Main class for entry
@@ -93,7 +85,7 @@ final class __IAppliInterface__
 		String appVend = System.getProperty(IModeApplication.VENDOR_PROPERTY);
 		ApplicationHandler.setNameAndVendor(
 			Objects.toString(appName, mainClass),
-			Objects.toString(appVend, "SquirrelJME-i-Mode"));
+			Objects.toString(appVend, "SquirrelJME-Star"));
 		
 		// Locate the main class before we initialize it
 		Class<?> classType;
@@ -103,9 +95,10 @@ final class __IAppliInterface__
 		}
 		catch (ClassNotFoundException e)
 		{
-			// {@squirreljme.error AH01 Could not find main i-appli. (Class)}
+			// {@squirreljme.error AN02 Could not find main Star class.
+			// (Class)}
 			throw new RuntimeException(String.format(
-				"AH01 %s", mainClass), e);
+				"AN02 %s", mainClass), e);
 		}
 		
 		// Create instance of the MIDlet
@@ -118,39 +111,34 @@ final class __IAppliInterface__
 			// instance is being created it will not be erroneously caught
 			try
 			{
-				if (rawInstance instanceof StarApplication)
-					return (StarApplication)rawInstance;
-				return (IApplication)rawInstance;
+				return (StarApplication)rawInstance;
 			}
 			catch (ClassCastException e)
 			{
-				// {@squirreljme.error AH02 Class not an i-appli.}
-				throw new RuntimeException("AH02", e);
+				// {@squirreljme.error AN04 Class not a StarApplication.}
+				throw new RuntimeException("AN04", e);
 			}
 		}
 		catch (IllegalAccessException|InstantiationException e)
 		{
-			// {@squirreljme.error AH03 Could not instantiate class.}
-			throw new RuntimeException("AH03", e);
+			// {@squirreljme.error AN03 Could not instantiate class.}
+			throw new RuntimeException("AN03", e);
 		}
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2021/11/30
+	 * @since 2022/02/28
 	 */
 	@Override
-	public void startApp(CommonDoJaApplication __instance)
+	public void startApp(StarApplication __instance)
 		throws NullPointerException, Throwable
 	{
 		if (__instance == null)
 			throw new NullPointerException("NARG");
 		
 		// Start the application
-		if (__instance instanceof StarApplication)
-			((StarApplication)__instance).started(
-				(int)Debugging.todoObject());
-		else
-			((IApplication)__instance).start();
+		__instance.started(StarApplication.LAUNCHED_FROM_LAUNCHER);
 	}
 }
+
