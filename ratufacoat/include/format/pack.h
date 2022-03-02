@@ -108,6 +108,42 @@ typedef struct sjme_packDriver
 	 */
 	sjme_jboolean (*libraryMarkClosed)(sjme_packInstance* instance,
 		sjme_jint index, sjme_jboolean postComplete, sjme_error* error);
+	
+	/**
+	 * Queries the main class.
+	 * 
+	 * @param instance The pack instance to query the parameter from.
+	 * @param outMainClass The output main class.
+	 * @param error Any resultant error state.
+	 * @return If the query was successful.
+	 * @since 2022/03/01
+	 */
+	sjme_jboolean (*queryLauncherClass)(sjme_packInstance* instance,
+		sjme_utfString** outMainClass, sjme_error* error);
+	
+	/**
+	 * Queries the main arguments that are used to start the launcher.
+	 * 
+	 * @param instance The pack instance to query the parameter from.
+	 * @param outArgs The output main arguments.
+	 * @param error Any resultant error state.
+	 * @return If the query was successful.
+	 * @since 2022/03/01
+	 */
+	sjme_jboolean (*queryLauncherArgs)(sjme_packInstance* instance,
+		sjme_mainArgs** outArgs, sjme_error* error);
+		
+	/**
+	 * Queries the class path that is used for the launcher process.
+	 * 
+	 * @param instance The pack instance to query the parameter from.
+	 * @param outClassPath The output class path.
+	 * @param error Any resultant error state.
+	 * @return If the query was successful.
+	 * @since 2022/03/01
+	 */
+	sjme_jboolean (*queryLauncherClassPath)(sjme_packInstance* instance,
+		sjme_classPath** outClassPath, sjme_error* error);
 } sjme_packDriver;
 
 /**
@@ -168,7 +204,7 @@ sjme_jboolean sjme_packClose(sjme_packInstance* instance,
  * Obtains the details to launch the inbuilt launcher, this information is
  * contained within the ROM itself.
  * 
- * @param pack The pack to obtain the launcher details from.
+ * @param packInstance The pack to obtain the launcher details from.
  * @param outMainClass The main entry point for the launcher.
  * @param outArgs Output arguments for the launcher call.
  * @param outClassPath The output class path for the launcher.
@@ -176,8 +212,8 @@ sjme_jboolean sjme_packClose(sjme_packInstance* instance,
  * @return If this was able to be obtained.
  * @since 2022/01/09
  */
-sjme_jboolean sjme_packGetLauncherDetail(sjme_packInstance* pack,
-										 sjme_utfString** outMainClass, sjme_mainArgs** outArgs,
+sjme_jboolean sjme_packGetLauncherDetail(sjme_packInstance* packInstance,
+	sjme_utfString** outMainClass, sjme_mainArgs** outArgs,
 	sjme_classPath** outClassPath, sjme_error* error);
 
 /**

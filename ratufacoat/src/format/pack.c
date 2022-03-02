@@ -107,12 +107,51 @@ sjme_jboolean sjme_packClose(sjme_packInstance* instance,
 	return !failingLib && !badFree && !badPackClose;
 }
 
-sjme_jboolean sjme_packGetLauncherDetail(sjme_packInstance* pack,
+sjme_jboolean sjme_packGetLauncherDetail(sjme_packInstance* packInstance,
 	sjme_utfString** outMainClass, sjme_mainArgs** outArgs,
 	sjme_classPath** outClassPath, sjme_error* error)
 {
-	sjme_todo("Implement this?");
-	return sjme_false;
+	if (packInstance == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		return sjme_false;
+	}
+	
+	/* Read the main class. */
+	if (outMainClass != NULL)
+		if (packInstance->driver->queryLauncherClass != NULL &&
+			!packInstance->driver->queryLauncherClass(packInstance,
+				outMainClass, error))
+		{
+			if (!sjme_hasError(error))
+				sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
+			return sjme_false;
+		}
+	
+	/* Read the arguments for the main class. */
+	if (outArgs != NULL)
+		if (packInstance->driver->queryLauncherArgs != NULL &&
+			!packInstance->driver->queryLauncherArgs(packInstance,
+				outArgs, error))
+		{
+			if (!sjme_hasError(error))
+				sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
+			return sjme_false;
+		}
+	
+	/* Read the class path for the main class. */
+	if (outClassPath != NULL)
+		if (packInstance->driver->queryLauncherClassPath != NULL &&
+			!packInstance->driver->queryLauncherClassPath(packInstance,
+				outClassPath, error))
+		{
+			if (!sjme_hasError(error))
+				sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
+			return sjme_false;
+		}
+	
+	/* Should have all read just fine. */
+	return sjme_true;
 }
 
 sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
@@ -200,10 +239,12 @@ sjme_jboolean sjme_packLibraryMarkClosed(sjme_packInstance* packInstance,
 		 * if we happen to immediately open after we can just continue
 		 * along while we cleanup this one. */
 		if (libInstance != NULL)
-			sjme_atomicPointerCompareThenSet(&packInstance->libraries[index],
+			sjme_atomicPointerCompareThenSet(
+				&packInstance->libraries[index],
 				libInstance, NULL);
 		else
-			sjme_atomicPointerSet(&packInstance->libraries[index], NULL);
+			sjme_atomicPointerSet(&packInstance->libraries[index],
+				NULL);
 	}
 	
 	/* If there is no function for marking closed, then just ignore this. */
@@ -269,7 +310,8 @@ sjme_jboolean sjme_packLibraryOpen(sjme_packInstance* packInstance,
 	}
 	
 	/* Open the library from the chunk. */
-	if (!sjme_libraryOpen(&lib, chunk.data, chunk.size, error))
+	if (!sjme_libraryOpen(&lib, chunk.data, chunk.size,
+		error))
 	{
 		if (!sjme_hasError(error))
 			sjme_setError(error, SJME_ERROR_BAD_LOAD_LIBRARY, -index);
@@ -282,7 +324,8 @@ sjme_jboolean sjme_packLibraryOpen(sjme_packInstance* packInstance,
 	lib->packIndex = index;
 	
 	/* Cache the chunk for later usage. */
-	oldLib = sjme_atomicPointerSet(&packInstance->libraries[index], lib);
+	oldLib = sjme_atomicPointerSet(&packInstance->libraries[index],
+		lib);
 	if (oldLib != NULL)
 		sjme_message("There was an old library used here: %p?", oldLib);
 	

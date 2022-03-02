@@ -703,6 +703,10 @@ public final class SwingFormShelf
 			.getDisplayModes())
 			rv = Math.max(rv, (__height ? mode.getHeight() : mode.getWidth()));
 		
-		return rv;
+		// Limit screen size to 320x240 here since when testing large displays
+		// cause issues
+		if (__height)
+			return Math.min(320, rv);
+		return Math.min(240, rv);
 	}
 }
