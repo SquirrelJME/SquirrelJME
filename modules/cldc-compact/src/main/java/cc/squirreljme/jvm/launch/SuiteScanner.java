@@ -98,7 +98,8 @@ public final class SuiteScanner
 			
 			// Ignore non-JARs
 			String libPath = JarPackageShelf.libraryPath(jar);
-			if (!libPath.endsWith(".jar") && !libPath.endsWith(".JAR"))
+			if (!libPath.endsWith(".jar") && !libPath.endsWith(".JAR") &&
+				!libPath.endsWith(".kjx") && !libPath.endsWith(".KJX"))
 				continue;
 			
 			// Debug

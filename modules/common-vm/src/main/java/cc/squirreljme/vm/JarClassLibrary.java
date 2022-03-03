@@ -162,7 +162,8 @@ public class JarClassLibrary
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		return __s.endsWith(".jar") || __s.endsWith(".JAR");
+		return __s.endsWith(".jar") || __s.endsWith(".JAR") ||
+			__s.endsWith(".kjx") || __s.endsWith(".KJX");
 	}
 	
 	/**
