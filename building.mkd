@@ -154,11 +154,20 @@ running the tests within the repository:
 
 ## RetroArch
 
+Building for RetrArch uses [CMake](https://cmake.org/) which is a
+cross-platform and portable build system.
+
+### Legacy Build
+
+For compatibility for systems which are not yet supported with CMake for
+building, there is the legacy makefile that may be used.
+
 Building for RetroArch uses the `makefilelibretro` makefile. As such building
 SquirrelJME for your current system involves using the alternative makefile.
 
- * `make`
- * Windows:
+ * Cygwin/Linux/Mac OS
+   * `make -f makefilelibretro`
+ * ReactOS/Windows:
    * `make -f makefilelibretro CC=i686-w64-mingw32-gcc platform=mingw_x86`
    * `make -f makefilelibretro CC=x86_64-w64-mingw32-gcc platform=mingw_x86_64`
 
@@ -232,6 +241,9 @@ The following _System_ properties are available:
 Full ROMs can be built with the following tasks, note that test ROMs contain
 all the testing libraries and are generally used to ensure things are working:
 
+ * _SpringCoat_
+   * `romSprintCoat`
+   * `romTestSpringCoat`
  * _SummerCoat_
    * `romSummerCoat`
    * `romTestSummerCoat`
