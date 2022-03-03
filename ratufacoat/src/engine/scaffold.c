@@ -100,6 +100,21 @@ static sjme_jboolean sjme_engineEnterMain(sjme_engineState* engineState,
 		}
 	}
 	
+	/* If no arguments were set, use a default parameter. */
+	if (mainArgs == NULL)
+	{
+		/* Attempt allocation. */
+		mainArgs = sjme_malloc(sizeof(*mainArgs), error);
+		if (mainArgs == NULL)
+		{
+			sjme_setError(error, SJME_ERROR_NO_MEMORY, 0);
+			return sjme_false;
+		}
+		
+		/* Set no actual arguments used. */
+		mainArgs->count = 0;
+	}
+	
 	/* Initialize the main entry task and thread. */
 	return sjme_engineTaskNew(engineState, classPath, mainClass,
 		mainArgs, engineState->config.sysProps,

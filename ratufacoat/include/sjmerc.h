@@ -32,7 +32,7 @@
 
 /* Debugging? */
 #if !defined(SJME_DEBUG)
-	#if defined(DEBUG) || defined(_DEBUG)
+	#if defined(DEBUG) || defined(_DEBUG) || !defined(NDEBUG)
 		#define SJME_DEBUG
 	#endif
 #endif

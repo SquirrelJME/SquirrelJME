@@ -19,6 +19,14 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	sjme_jboolean rootVm, sjme_engineTask** outTask,
 	sjme_engineThread** outMainThread, sjme_error* error)
 {
+	if (engineState == NULL || classPath == NULL || mainClass == NULL ||
+		mainArgs == NULL || sysProps == NULL || outTask == NULL ||
+		outMainThread == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		return sjme_false;
+	}
+	
 	sjme_todo("Implement this?");
 	return sjme_false;
 }
