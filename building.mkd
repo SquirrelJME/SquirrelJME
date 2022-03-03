@@ -152,6 +152,11 @@ running the tests within the repository:
 
  * `gradlew test`
 
+If using IntelliJ you may tap _Ctrl_ twice (_Ctrl_+_Ctrl_) and type in the
+following to run Gradle commands, it should automatically use the wrapper:
+
+ * `gradle`
+
 ## RetroArch
 
 Building for RetrArch uses [CMake](https://cmake.org/) which is a
