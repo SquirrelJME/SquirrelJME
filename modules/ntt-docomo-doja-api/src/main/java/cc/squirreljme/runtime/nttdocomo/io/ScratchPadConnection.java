@@ -8,7 +8,6 @@
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;

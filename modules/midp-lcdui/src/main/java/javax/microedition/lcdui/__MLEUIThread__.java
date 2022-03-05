@@ -25,11 +25,9 @@ import cc.squirreljme.runtime.lcdui.event.KeyCodeTranslator;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
-import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
 import java.util.Map;
-import javax.microedition.midlet.MIDlet;
 
 /**
  * This thread is responsible for handling graphics operations.

@@ -6,24 +6,21 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.lcduidemo;
+package cc.squirreljme.runtime.midlet;
+
+import cc.squirreljme.jvm.manifest.JavaManifest;
 
 /**
- * Demos a GIF.
+ * Represents a source for a manifest, if discovered.
  *
- * @since 2021/12/05
+ * @see ManifestSourceType
+ * @since 2022/03/04
  */
-public class GIFDemo
-	extends AbstractImageDemo
+public final class ManifestSource
 {
-	/**
-	 * Initializes the image demo.
-	 *
-	 * @since 2021/12/05
-	 */
-	public GIFDemo()
-		throws NullPointerException
-	{
-		super(GIFDemo.class.getResourceAsStream("image.gif"));
-	}
+	/** Is the manifest missing? */
+	public boolean isMissing;
+	
+	/** The actual manifest. */
+	public JavaManifest manifest;
 }

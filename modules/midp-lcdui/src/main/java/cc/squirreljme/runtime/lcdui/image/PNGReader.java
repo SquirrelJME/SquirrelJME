@@ -15,8 +15,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 import javax.microedition.lcdui.Image;
 import net.multiphasicapps.io.ByteDeque;
 import net.multiphasicapps.io.CRC32Calculator;

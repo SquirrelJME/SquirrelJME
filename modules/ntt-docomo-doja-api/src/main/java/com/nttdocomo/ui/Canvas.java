@@ -10,7 +10,6 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.WeakReference;
-import javax.microedition.lcdui.Image;
 
 /**
  * Canvas for showing free-form raster graphics and otherwise.

@@ -8,9 +8,7 @@
 
 package cc.squirreljme.runtime.lcdui.image;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
-import java.io.InputStream;
 import javax.microedition.lcdui.Image;
 import net.multiphasicapps.io.ExtendedDataInputStream;
 

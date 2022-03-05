@@ -575,9 +575,10 @@ public abstract class VMFactory
 		
 		// Not a known extension or normalized type
 		if (!(__name.endsWith(".jar") || __name.endsWith(".JAR") ||
+			__name.endsWith(".jad") || __name.endsWith(".JAD") ||
+			__name.endsWith(".jam") || __name.endsWith(".JAM") ||
 			__name.endsWith(".sqc") || __name.endsWith(".SQC") ||
-			__name.endsWith(".kjx") || __name.endsWith(".KJX") ||
-			__name.endsWith(".jam") || __name.endsWith(".JAM")))
+			__name.endsWith(".kjx") || __name.endsWith(".KJX")))
 			return __name;
 		
 		// Get the base name of the JAR or SQC

@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.cldc;
 
-import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.PhoneModelType;
 
 /**

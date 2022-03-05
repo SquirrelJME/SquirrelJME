@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.collections;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Map;
