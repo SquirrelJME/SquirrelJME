@@ -8,7 +8,6 @@
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import com.nttdocomo.ui.IApplication;
 import java.io.IOException;

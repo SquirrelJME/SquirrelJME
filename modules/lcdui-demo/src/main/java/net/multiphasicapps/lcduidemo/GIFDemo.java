@@ -8,8 +8,6 @@
 
 package net.multiphasicapps.lcduidemo;
 
-import java.io.InputStream;
-
 /**
  * Demos a GIF.
  *

@@ -9,13 +9,11 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import net.multiphasicapps.collections.Identity;
 import net.multiphasicapps.collections.IdentityHashSet;
 import net.multiphasicapps.collections.IdentityMap;

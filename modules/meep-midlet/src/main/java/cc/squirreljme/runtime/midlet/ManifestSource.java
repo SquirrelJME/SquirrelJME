@@ -9,7 +9,6 @@
 package cc.squirreljme.runtime.midlet;
 
 import cc.squirreljme.jvm.manifest.JavaManifest;
-import cc.squirreljme.runtime.midlet.ManifestSourceType;
 
 /**
  * Represents a source for a manifest, if discovered.

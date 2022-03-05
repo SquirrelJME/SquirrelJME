@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.MarkedDependency;
 import cc.squirreljme.jvm.suite.MatchResult;
 import cc.squirreljme.jvm.suite.SuiteInfo;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
