@@ -9,9 +9,12 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.emulator.EmulatedJarPackageBracket;
 import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
@@ -19,6 +22,9 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import net.multiphasicapps.classfile.MethodDescriptor;
 
 /**
@@ -170,7 +176,96 @@ public enum MLEJarPackage
 					"Failed to read resource", e);
 			}
 		}
-	}
+	},
+	
+	/**
+	 * {@link JarPackageShelf#rawData(JarPackageBracket, int, byte[], int,
+	 * int)}.
+	 */
+	RAW_DATA("rawData:(" +
+		"Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;I[BII)I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2022/03/05
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			if (__args[0] == null)
+				throw new SpringMLECallError("No JAR specified.");
+			
+			JarPackageObject __jar = MLEJarPackage.__jarObject(__args[0]);
+			int __jarOffset = (int)__args[1];
+			byte[] __b = ((SpringArrayObjectByte)__args[2]).array();
+			int __o = (int)__args[3];
+			int __l = (int)__args[4]; 
+			
+			if (__jarOffset < 0 || __b == null || __o < 0 || __l < 0 ||
+				__o + __l > __b.length)
+				throw new SpringMLECallError("Invalid parameters.");
+			
+			// Determine the path to the JAR
+			Path path = __jar.library().path();
+			if (path == null)
+				throw new SpringMLECallError(
+					"JAR is not physically backed.");
+			
+			// Seek through and find the data
+			try (InputStream in = Files.newInputStream(path,
+				StandardOpenOption.READ))
+			{
+				// Seek first, stop if EOF is hit
+				for (int at = 0; at < __jarOffset; at++)
+					if (in.read() < 0)
+						return -1;
+				
+				// Do a standard read here
+				return in.read(__b, __o, __l);
+			}
+			catch (IOException e)
+			{
+				throw new SpringMLECallError(
+					"Could not raw read JAR.", e);
+			}
+		}
+	},
+	
+	/** {@link JarPackageShelf#rawSize(JarPackageBracket)}. */ 
+	RAW_SIZE("rawSize:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;)I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2022/03/05
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			if (__args[0] == null)
+				throw new SpringMLECallError("No JAR specified.");
+			
+			// Determine the path to the JAR
+			JarPackageObject jar = MLEJarPackage.__jarObject(__args[0]);
+			Path path = jar.library().path();
+			if (path == null)
+				return -1;
+			
+			// Use the file size directly
+			try
+			{
+				return (int)Math.min(Integer.MAX_VALUE, Files.size(path));
+			}
+			
+			// Size is not valid?
+			catch (IOException e)
+			{
+				e.printStackTrace();
+				
+				return -1;
+			}
+		}
+	},
 	
 	/* End. */
 	;
