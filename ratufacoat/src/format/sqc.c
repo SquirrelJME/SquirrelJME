@@ -401,8 +401,31 @@ sjme_jboolean sjme_sqcPackLocateChunk(sjme_packInstance* instance,
 	}
 	
 	/* Get the chunk where the entry belongs. */
-	return sjme_chunkSubChunk(pack->sqcState.chunk, outChunk, jarOffset,
-		jarSize, error);
+	return sjme_chunkSubChunk(pack->sqcState.chunk, outChunk,
+		jarOffset, jarSize, error);
+}
+
+/**
+ * Queries the main class.
+ * 
+ * @param instance The pack instance to query the parameter from.
+ * @param outMainClass The output main class.
+ * @param error Any resultant error state.
+ * @return If the query was successful.
+ * @since 2022/03/09
+ */
+static sjme_jboolean sjme_sqcPackQueryLauncherClass(
+	sjme_packInstance* instance, sjme_utfString** outMainClass,
+	sjme_error* error)
+{
+	if (instance == NULL || outMainClass == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		return sjme_false;
+	}
+	
+	sjme_todo("Implement this?");
+	return sjme_false;
 }
 
 /**
@@ -484,6 +507,7 @@ const sjme_packDriver sjme_packSqcDriver =
 	.detect = sjme_sqcPackDetect,
 	.init = sjme_sqcPackInit,
 	.destroy = sjme_sqcPackDestroy,
+	.queryLauncherClass = sjme_sqcPackQueryLauncherClass,
 	.queryNumLibraries = sjme_sqcPackQueryNumLibraries,
 	.queryPackFlags = sjme_sqcPackQueryPackFlags,
 	.locateChunk = sjme_sqcPackLocateChunk,
