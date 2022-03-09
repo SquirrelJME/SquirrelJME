@@ -20,6 +20,8 @@ add_library(SquirrelJMEFormat OBJECT
 	memfile.c
 	pack.c
 	sqc.c
+	sqclib.c
+	sqcpack.c
 	zip.c)
 
 # This is written only in C!
