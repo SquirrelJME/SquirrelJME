@@ -110,18 +110,6 @@ typedef struct sjme_packDriver
 		sjme_jint index, sjme_jboolean postComplete, sjme_error* error);
 	
 	/**
-	 * Queries the main class.
-	 * 
-	 * @param instance The pack instance to query the parameter from.
-	 * @param outMainClass The output main class.
-	 * @param error Any resultant error state.
-	 * @return If the query was successful.
-	 * @since 2022/03/01
-	 */
-	sjme_jboolean (*queryLauncherClass)(sjme_packInstance* instance,
-		sjme_utfString** outMainClass, sjme_error* error);
-	
-	/**
 	 * Queries the main arguments that are used to start the launcher.
 	 * 
 	 * @param instance The pack instance to query the parameter from.
@@ -132,6 +120,18 @@ typedef struct sjme_packDriver
 	 */
 	sjme_jboolean (*queryLauncherArgs)(sjme_packInstance* instance,
 		sjme_mainArgs** outArgs, sjme_error* error);
+	
+	/**
+	 * Queries the main class.
+	 * 
+	 * @param instance The pack instance to query the parameter from.
+	 * @param outMainClass The output main class.
+	 * @param error Any resultant error state.
+	 * @return If the query was successful.
+	 * @since 2022/03/01
+	 */
+	sjme_jboolean (*queryLauncherClass)(sjme_packInstance* instance,
+		sjme_utfString** outMainClass, sjme_error* error);
 		
 	/**
 	 * Queries the class path that is used for the launcher process.

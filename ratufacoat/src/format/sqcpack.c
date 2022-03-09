@@ -172,6 +172,28 @@ sjme_jboolean sjme_sqcPackLocateChunk(sjme_packInstance* instance,
 }
 
 /**
+ * Queries the main arguments that are used to start the launcher.
+ * 
+ * @param instance The pack instance to query the parameter from.
+ * @param outArgs The output main arguments.
+ * @param error Any resultant error state.
+ * @return If the query was successful.
+ * @since 2022/03/09
+ */
+static sjme_jboolean sjme_sqcPackQueryLauncherArgs(sjme_packInstance* instance,
+	sjme_mainArgs** outArgs, sjme_error* error)
+{
+	if (instance == NULL || outArgs == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		return sjme_false;
+	}
+	
+	sjme_todo("Implement this?");
+	return sjme_false;
+}
+
+/**
  * Queries the main class.
  * 
  * @param instance The pack instance to query the parameter from.
@@ -185,6 +207,29 @@ static sjme_jboolean sjme_sqcPackQueryLauncherClass(
 	sjme_error* error)
 {
 	if (instance == NULL || outMainClass == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		return sjme_false;
+	}
+	
+	sjme_todo("Implement this?");
+	return sjme_false;
+}
+
+/**
+ * Queries the class path that is used for the launcher process.
+ * 
+ * @param instance The pack instance to query the parameter from.
+ * @param outClassPath The output class path.
+ * @param error Any resultant error state.
+ * @return If the query was successful.
+ * @since 2022/03/09
+ */
+static sjme_jboolean sjme_sqcPackQueryLauncherClassPath(
+	sjme_packInstance* instance, sjme_classPath** outClassPath,
+	sjme_error* error)
+{
+	if (instance == NULL || outClassPath == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
 		return sjme_false;
@@ -273,7 +318,10 @@ const sjme_packDriver sjme_packSqcDriver =
 	.detect = sjme_sqcPackDetect,
 	.init = sjme_sqcPackInit,
 	.destroy = sjme_sqcPackDestroy,
+	.queryLauncherArgs = sjme_sqcPackQueryLauncherArgs,
 	.queryLauncherClass = sjme_sqcPackQueryLauncherClass,
+	.queryLauncherClassPath =
+		sjme_sqcPackQueryLauncherClassPath,
 	.queryNumLibraries = sjme_sqcPackQueryNumLibraries,
 	.queryPackFlags = sjme_sqcPackQueryPackFlags,
 	.locateChunk = sjme_sqcPackLocateChunk,
