@@ -9,6 +9,7 @@
 
 #include "debug.h"
 #include "engine/taskmanager.h"
+#include "memory.h"
 
 sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	sjme_classPath* classPath,
@@ -20,7 +21,7 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	sjme_engineThread** outMainThread, sjme_error* error)
 {
 	if (engineState == NULL || classPath == NULL || mainClass == NULL ||
-		mainArgs == NULL || sysProps == NULL || outTask == NULL ||
+		mainArgs == NULL || outTask == NULL ||
 		outMainThread == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
@@ -32,6 +33,21 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	{
 		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
 		return sjme_false;
+	}
+	
+	/* If there are no system properties, just include nothing. */
+	if (sysProps == NULL)
+	{
+		/* Allocate a blank one. */
+		sysProps = sjme_malloc(SJME_SIZEOF_SYSTEM_PROPERTY_SET(0), error);
+		
+		/* Failed? */
+		if (sysProps == NULL)
+		{
+			sjme_setError(error, SJME_ERROR_NO_MEMORY, 0);
+			
+			return sjme_false;
+		}
 	}
 	
 	sjme_todo("Implement this?");

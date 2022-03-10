@@ -107,6 +107,17 @@ typedef struct sjme_engineSystemPropertySet
 } sjme_engineSystemPropertySet;
 
 /**
+ * Returns the size that would be used for @c sjme_engineSystemPropertySet.
+ * 
+ * @param count The number of system properties to be used.
+ * @return The allocated memory size for the type.
+ * @since 2022/03/09
+ */
+#define SJME_SIZEOF_SYSTEM_PROPERTY_SET(count) \
+	(sizeof(sjme_engineSystemPropertySet) + \
+	((count) * sizeof(sjme_engineSystemProperty)))
+
+/**
  * Configuration for an engine within SquirrelJME, this is used to initialize
  * the virtual machine and everything it needs.
  * 
