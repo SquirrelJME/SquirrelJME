@@ -32,6 +32,12 @@
 /** The index which indicates the number of launcher args that exist. */
 #define SJME_PACK_COUNT_LAUNCHER_ARGS_INDEX SJME_JINT_C(10)
 
+/** The index which indicates the class path to initialize the launcher. */
+#define SJME_PACK_INTEGERS_LAUNCHER_CLASSPATH SJME_JINT_C(11)
+
+/** The index which indicates the number of launcher class path entries. */
+#define SJME_PACK_COUNT_LAUNCHER_CLASSPATH SJME_JINT_C(12)
+
 /** Index where the pack flags exist. */
 #define SJME_PACK_FLAGS_INDEX SJME_JINT_C(16)
 
@@ -224,6 +230,7 @@ static sjme_jboolean sjme_sqcPackQueryLauncherArgs(sjme_packInstance* instance,
 	}
 	
 	/* Read the strings in. */
+	result->count = count;
 	if (!sjme_sqcGetPropertyStrings(&sqcPackState->sqcState,
 		SJME_PACK_STRINGS_LAUNCHER_ARGS_INDEX, count,
 		&result->args, error))
@@ -287,14 +294,51 @@ static sjme_jboolean sjme_sqcPackQueryLauncherClassPath(
 	sjme_packInstance* instance, sjme_classPath** outClassPath,
 	sjme_error* error)
 {
+	sjme_sqcPackState* sqcPackState;
+	sjme_classPath* result;
+	sjme_jint count, at;
+	
 	if (instance == NULL || outClassPath == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
 		return sjme_false;
 	}
 	
-	sjme_todo("Implement this?");
-	return sjme_false;
+	/* Get the pack state. */
+	sqcPackState = instance->state;
+	
+	/* Read count. */
+	count = -1;
+	if (!sjme_sqcGetProperty(&sqcPackState->sqcState,
+		SJME_PACK_COUNT_LAUNCHER_CLASSPATH, &count, error) ||
+		count < 0)
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
+		return sjme_false;
+	}
+	
+	/* Allocate result. */
+	result = sjme_malloc(SJME_SIZEOF_CLASS_PATH(count), error);
+	if (result == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NO_MEMORY, count);
+		return sjme_false;
+	}
+	
+	/* Read in and map class path values. */
+	result->count = count;
+	if (!sjme_sqcGetPropertyIntegers(&sqcPackState->sqcState,
+		SJME_PACK_INTEGERS_LAUNCHER_CLASSPATH, count,
+		(sjme_integerFunction)sjme_packClassPathMapper,
+		instance, result, error))
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
+		return sjme_false;
+	}
+	
+	/* Use these! */
+	*outClassPath = result;
+	return sjme_true;
 }
 
 /**

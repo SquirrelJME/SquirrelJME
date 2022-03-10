@@ -24,6 +24,7 @@
 #include "format/format.h"
 #include "memchunk.h"
 #include "stream.h"
+#include "utf.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -115,6 +116,9 @@ struct sjme_libraryInstance
 	
 	/** The number of entries which are in this library. */
 	sjme_jint numEntries;
+	
+	/** The name of this library. */
+	sjme_utfString* name;
 };
 
 /**

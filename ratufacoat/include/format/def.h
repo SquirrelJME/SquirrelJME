@@ -59,6 +59,16 @@ typedef struct sjme_classPath
 	sjme_libraryInstance* libraries[0];
 } sjme_classPath;
 
+/**
+ * Returns the size that would be used for @c sjme_classPath.
+ * 
+ * @param count The number of library instance references.
+ * @return The allocated memory size for the type.
+ * @since 2022/03/09
+ */
+#define SJME_SIZEOF_CLASS_PATH(count) (sizeof(sjme_classPath) + \
+	((count) * sizeof(sjme_libraryInstance*)))
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

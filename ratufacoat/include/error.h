@@ -216,6 +216,9 @@ typedef enum sjme_errorCode
 	
 	/** Engine initialization failure. */
 	SJME_ERROR_ENGINE_INIT_FAILURE,
+	
+	/** Invalid functional method. */
+	SJME_INVALID_FUNCTIONAL,
 } sjme_errorCode;
 
 /** This represents an error. */

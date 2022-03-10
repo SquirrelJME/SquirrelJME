@@ -62,14 +62,32 @@ static inline sjme_jshort sjme_swapShort(sjme_jshort val)
 
 #if defined(SJME_BIG_ENDIAN)
 	/**
+	 * Returns the value which represents the big endian @c sjme_jint.
+	 * 
+	 * @param x The big endian integer value
+	 * @return The actual value.
+	 * @since 2022/03/09
+	 */
+	#define sjme_bigInt(x) ((sjme_jint)(x))
+
+	/**
 	 * Returns the value which represents the big endian @c sjme_jshort.
 	 * 
 	 * @param x The big endian short value
 	 * @return The actual value.
 	 * @since 2022/03/09
 	 */
-	#define sjme_bigShort(x) (x)
+	#define sjme_bigShort(x) ((sjme_jshort)(x))
 #else
+	/**
+	 * Returns the value which represents the big endian @c sjme_jint.
+	 * 
+	 * @param x The big endian integer value
+	 * @return The actual value.
+	 * @since 2022/03/09
+	 */
+	#define sjme_bigInt(x) sjme_swapInt((x))
+
 	/**
 	 * Returns the value which represents the big endian @c sjme_jshort.
 	 * 

@@ -19,6 +19,7 @@
 
 #include "format/pack.h"
 #include "format/library.h"
+#include "function.h"
 #include "memchunk.h"
 
 /* Anti-C++. */
@@ -128,6 +129,25 @@ sjme_jboolean sjme_sqcDestroy(sjme_sqcState* sqcInstancePtr,
  */
 sjme_jboolean sjme_sqcGetProperty(const sjme_sqcState* sqcState,
 	sjme_jint index, sjme_jint* out, sjme_error* error);
+
+/**
+ * Reads a list of integers from an SQC property and calls the given integer
+ * function to accordingly map values.
+ * 
+ * @param sqcState The SQC to read from.
+ * @param index The index to read from.
+ * @param count The number of integers to read.
+ * @param intFunction The function which is called for each integer value.
+ * @param proxy The proxy value, which may be set for anything on the behalf
+ * of this function.
+ * @param data The data to pass to the function.
+ * @param error Any resultant error state.
+ * @return If the read was a success.
+ * @since 2022/03/09
+ */
+sjme_jboolean sjme_sqcGetPropertyIntegers(const sjme_sqcState* sqcState,
+	sjme_jint index, sjme_jint count, sjme_integerFunction intFunction,
+	void* proxy, void* data, sjme_error* error);
 
 /**
  * Gets a property relative pointer from the base of the SQC, this interprets

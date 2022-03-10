@@ -10,6 +10,7 @@
 #include "debug.h"
 #include "format/sqc.h"
 #include "memory.h"
+#include "utf.h"
 
 /** The magic number for individual JAR libraries. */
 #define JAR_MAGIC_NUMBER UINT32_C(0x00456570)
@@ -22,6 +23,9 @@
 
 /** The table of contents size. */
 #define SJME_JAR_SIZE_TOC_INDEX SJME_JINT_C(3)
+
+/** The index specifying the name of the JAR. */
+#define SJME_JAR_OFFSET_NAME_INDEX SJME_JINT_C(5)
 
 /** Flags for the index within the TOC. */
 #define SJME_JAR_TOC_INT_FLAGS_INDEX SJME_JINT_C(0)
@@ -249,6 +253,15 @@ static sjme_jboolean sjme_sqcLibraryInit(void* instance,
 	
 	/* Setup JAR properties. */
 	libraryInstance->numEntries = numEntries;
+	
+	/* Load the library name accordingly. */
+	if (!sjme_sqcGetPropertyPtr(&sqcLibraryState->sqcState,
+		SJME_JAR_OFFSET_NAME_INDEX,
+		(void**)&libraryInstance->name, error))
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_JAR_FILE, 0);
+		return sjme_false;
+	}
 	
 	/* Load TOC for the library. */
 	if (!sjme_sqcInitToc(&sqcLibraryState->sqcState,

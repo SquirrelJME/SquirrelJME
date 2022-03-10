@@ -210,6 +210,47 @@ sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
 	return sjme_true;
 }
 
+sjme_jboolean sjme_packClassPathMapper(sjme_packInstance* packInstance,
+	sjme_classPath* outClassPath, sjme_jint index, sjme_jint targetLibIndex,
+	sjme_error* error)
+{
+	sjme_libraryInstance* outLib;
+	
+	if (packInstance == NULL || outClassPath == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		return sjme_false;
+	}
+	
+	/* Debugging. */
+#if defined(SJME_DEBUG)
+	sjme_message("Mapping class path at %d to %d...",
+		index, targetLibIndex);
+#endif
+	
+	if (index < 0 || index >= outClassPath->count ||
+		targetLibIndex < 0 || targetLibIndex >= packInstance->numLibraries)
+	{
+		sjme_setError(error, SJME_ERROR_INVALIDARG, index + targetLibIndex);
+		return sjme_false;
+	}
+
+	/* Open the library that this belongs to. */
+	outLib = NULL;
+	if (!sjme_packLibraryOpen(packInstance, &outLib,
+		targetLibIndex, error))
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
+		return sjme_false;
+	}
+	
+	/* Since we have it, store it! */
+	outClassPath->libraries[index] = outLib;
+	
+	/* Success! */
+	return sjme_true;
+}
+
 sjme_jboolean sjme_packLibraryMarkClosed(sjme_packInstance* packInstance,
 	sjme_libraryInstance* libInstance, sjme_jint index,
 	sjme_jboolean postComplete, sjme_error* error)
@@ -328,6 +369,12 @@ sjme_jboolean sjme_packLibraryOpen(sjme_packInstance* packInstance,
 		lib);
 	if (oldLib != NULL)
 		sjme_message("There was an old library used here: %p?", oldLib);
+	
+	/* Debugging. */
+#if defined(SJME_DEBUG)
+	sjme_message("Opened non-cached library by index %d: %s",
+		lib->packIndex, (lib->name != NULL ? lib->name->chars : NULL));
+#endif
 	
 	/* This library is available for usage. */
 	*outLibrary = lib;

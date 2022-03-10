@@ -257,6 +257,22 @@ sjme_jboolean sjme_packLibraryMarkClosed(sjme_packInstance* packInstance,
 sjme_jboolean sjme_packLibraryOpen(sjme_packInstance* packInstance,
 	sjme_libraryInstance** outLibrary, sjme_jint index, sjme_error* error);
 
+/**
+ * Maps integer values to class path values.
+ * 
+ * @param packInstance The pack instance to read library values from.
+ * @param outClassPath The class path to load libraries into.
+ * @param index The index on the output classpath. 
+ * @param targetLibIndex The target library index, which is the library to
+ * use.
+ * @param error On any resultant error state.
+ * @return If the operation failed.
+ * @since 2022/03/09
+ */
+sjme_jboolean sjme_packClassPathMapper(sjme_packInstance* packInstance,
+	sjme_classPath* outClassPath, sjme_jint index, sjme_jint targetLibIndex,
+	sjme_error* error);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

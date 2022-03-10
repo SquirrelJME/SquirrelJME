@@ -76,6 +76,53 @@ sjme_jboolean sjme_sqcGetProperty(const sjme_sqcState* sqcState,
 		out, error);
 }
 
+sjme_jboolean sjme_sqcGetPropertyIntegers(const sjme_sqcState* sqcState,
+	sjme_jint index, sjme_jint count, sjme_integerFunction intFunction,
+	void* proxy, void* data, sjme_error* error)
+{
+	sjme_jint* seeker;
+	sjme_jint at, bigValue;
+	
+	if (sqcState == NULL || intFunction == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		return sjme_false;
+	}
+	
+	if (count < 0)
+	{
+		sjme_setError(error, SJME_ERROR_INVALIDARG, count);
+		return sjme_false;
+	}
+	
+	/* Get the base pointer where integers are. */
+	seeker = NULL;
+	if (!sjme_sqcGetPropertyPtr(sqcState, index, (void**)&seeker, error))
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
+		return sjme_false;
+	}
+	
+	/* Perform function for every integer value. */
+	for (at = 0; at < count; at++)
+	{
+		/* Perform the function call. */
+		bigValue = *seeker;
+		if (!intFunction(proxy, data, at, sjme_bigInt(bigValue), error))
+		{
+			if (!sjme_hasError(error))
+				sjme_setError(error, SJME_INVALID_FUNCTIONAL, at);
+			return sjme_false;
+		}
+		
+		/* Move the seeker up. */
+		seeker = SJME_POINTER_OFFSET_LONG(seeker, sizeof(sjme_jint));
+	}
+	
+	/* There were no failures, so this was a success. */
+	return sjme_true;
+}
+
 sjme_jboolean sjme_sqcGetPropertyPtr(const sjme_sqcState* sqcState,
 	sjme_jint index, void** out, sjme_error* error)
 {
