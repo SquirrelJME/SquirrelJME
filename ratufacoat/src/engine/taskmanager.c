@@ -27,6 +27,13 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 		return sjme_false;
 	}
 	
+	if (stdOutMode < 0 || stdOutMode >= NUM_SJME_TASK_PIPE_REDIRECTS ||
+		stdErrMode < 0 || stdErrMode >= NUM_SJME_TASK_PIPE_REDIRECTS)
+	{
+		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
+		return sjme_false;
+	}
+	
 	sjme_todo("Implement this?");
 	return sjme_false;
 }

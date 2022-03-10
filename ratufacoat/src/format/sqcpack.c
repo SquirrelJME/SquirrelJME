@@ -10,6 +10,7 @@
 #include "debug.h"
 #include "format/sqc.h"
 #include "memory.h"
+#include "memops.h"
 
 /** The magic number for pack libraries. */
 #define PACK_MAGIC_NUMBER UINT32_C(0x58455223)
@@ -22,6 +23,9 @@
 
 /** The index which indicates the size of the TOC. */
 #define SJME_PACK_SIZE_TOC_INDEX SJME_JINT_C(3)
+
+/** The index which indicates what the main launcher class is. */
+#define SJME_PACK_STRING_LAUNCHER_MAIN_CLASS_INDEX SJME_JINT_C(8)
 
 /** Index where the pack flags exist. */
 #define SJME_PACK_FLAGS_INDEX SJME_JINT_C(16)
@@ -206,14 +210,28 @@ static sjme_jboolean sjme_sqcPackQueryLauncherClass(
 	sjme_packInstance* instance, sjme_utfString** outMainClass,
 	sjme_error* error)
 {
+	sjme_sqcPackState* sqcPackState;
+	
 	if (instance == NULL || outMainClass == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
 		return sjme_false;
 	}
 	
-	sjme_todo("Implement this?");
-	return sjme_false;
+	/* Get the pack state. */
+	sqcPackState = instance->state;
+	
+	/* Read the property. */
+	if (!sjme_sqcGetPropertyPtr(&sqcPackState->sqcState, 
+		SJME_PACK_STRING_LAUNCHER_MAIN_CLASS_INDEX,
+			(void**)outMainClass, error))
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
+		return sjme_false;
+	}
+	
+	/* Read okay. */
+	return sjme_true;
 }
 
 /**

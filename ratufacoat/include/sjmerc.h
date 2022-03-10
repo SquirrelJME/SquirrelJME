@@ -252,18 +252,46 @@ typedef enum sjme_jboolean
 /** Unsigned short mask. */
 #define SJME_JINT_USHORT_MASK INT32_C(0xFFFF)
 
-/** Pointer conversion. */
+/** @deprecated Do not use, this is not safe! */
 #define SJME_POINTER_TO_JINT(x) ((sjme_jint)((uintptr_t)(x)))
+
+/** @deprecated Do not use, this is not safe! */
 #define SJME_JINT_TO_POINTER(x) ((void*)((uintptr_t)((sjme_jint)(x))))
 
+/**
+ * Casts a pointer to a memory address.
+ * 
+ * @param x The pointer to cast.
+ * @since 2022/03/09
+ */
 #define SJME_POINTER_TO_JMEM(x) (((uintptr_t)(x)))
+
+/**
+ * Casts a memory address to a pointer.
+ * 
+ * @param x The memory address to cast.
+ * @since 2022/03/09
+ */
 #define SJME_JMEM_TO_POINTER(x) ((void*)((uintptr_t)((x))))
 
-/** Pointer math. */
+/**
+ * Calculates the value from the given pointer offset.
+ * 
+ * @param p The pointer.
+ * @param o The offset.
+ * @deprecated Do not use, this is not safe!
+ * @since 2022/03/09
+ */
 #define SJME_POINTER_OFFSET(p, o) SJME_JINT_TO_POINTER( \
 	SJME_POINTER_TO_JINT(p) + ((sjme_jint)(o)))
 
-/** Pointer math, no precision loss. */
+/**
+ * Calculates the value from the given pointer offset.
+ * 
+ * @param p The pointer.
+ * @param o The offset.
+ * @since 2022/03/09
+ */
 #define SJME_POINTER_OFFSET_LONG(p, o) SJME_JMEM_TO_POINTER( \
 	SJME_POINTER_TO_JMEM(p) + ((intptr_t)(o)))
 

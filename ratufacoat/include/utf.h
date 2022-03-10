@@ -38,8 +38,8 @@ extern "C" {
  */
 typedef struct sjme_utfString
 {
-	/** The length of the string. */
-	sjme_jushort length;
+	/** The length of the string, this will be big endian. */
+	sjme_jushort bigLength;
 	
 	/** The string data. */
 	sjme_jbyte chars[0];

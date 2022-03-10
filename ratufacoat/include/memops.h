@@ -60,6 +60,26 @@ static inline sjme_jshort sjme_swapShort(sjme_jshort val)
 		((val << 8) & INT16_C(0xFF00));
 }
 
+#if defined(SJME_BIG_ENDIAN)
+	/**
+	 * Returns the value which represents the big endian @c sjme_jshort.
+	 * 
+	 * @param x The big endian short value
+	 * @return The actual value.
+	 * @since 2022/03/09
+	 */
+	#define sjme_bigShort(x) (x)
+#else
+	/**
+	 * Returns the value which represents the big endian @c sjme_jshort.
+	 * 
+	 * @param x The big endian short value
+	 * @return The actual value.
+	 * @since 2022/03/09
+	 */
+	#define sjme_bigShort(x) sjme_swapShort((x))
+#endif
+
 /**
  * Reads a native integer from memory.
  * 

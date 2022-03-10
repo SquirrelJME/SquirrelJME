@@ -117,6 +117,34 @@ sjme_jboolean sjme_sqcDestroy(sjme_sqcState* sqcInstancePtr,
 	sjme_error* error);
 
 /**
+ * Gets a property from the SQC.
+ * 
+ * @param sqcState The SQC to read from.
+ * @param index The property index to read from.
+ * @param out The read value.
+ * @param error The error state.
+ * @return If the read was successful.
+ * @since 2021/10/29
+ */
+sjme_jboolean sjme_sqcGetProperty(const sjme_sqcState* sqcState,
+	sjme_jint index, sjme_jint* out, sjme_error* error);
+
+/**
+ * Gets a property relative pointer from the base of the SQC, this interprets
+ * the read value as an offset which is then used to point within the SQC
+ * itself to read a pointed to value.
+ * 
+ * @param sqcState The SQC to read from.
+ * @param index The property index to read from.
+ * @param out The read value.
+ * @param error The error state.
+ * @return If the read was successful.
+ * @since 2022/03/09
+ */
+sjme_jboolean sjme_sqcGetPropertyPtr(const sjme_sqcState* sqcState,
+	sjme_jint index, void** out, sjme_error* error);
+
+/**
  * Initializes the SQC instance.
  * 
  * @param formatInstance The format instance.
@@ -144,19 +172,6 @@ sjme_jboolean sjme_sqcInit(sjme_formatInstance* formatInstance,
 sjme_jboolean sjme_sqcInitToc(const sjme_sqcState* sqcState,
 	sjme_sqcToc* outToc, sjme_jint pdxCount, sjme_jint pdxOffset,
 	sjme_jint pdxSize, sjme_error* error);
-
-/**
- * Gets a property from the SQC.
- * 
- * @param sqcState The SQC to read from.
- * @param index The property index to read from.
- * @param out The read value.
- * @param error The error state.
- * @return If the read was successful.
- * @since 2021/10/29
- */
-sjme_jboolean sjme_sqcGetProperty(const sjme_sqcState* sqcState,
-	sjme_jint index, sjme_jint* out, sjme_error* error);
 
 /**
  * Reads a value from the given SQC table of contents.

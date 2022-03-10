@@ -51,6 +51,52 @@ sjme_jboolean sjme_sqcDestroy(sjme_sqcState* sqcInstancePtr,
 	return sjme_true;
 }
 
+sjme_jboolean sjme_sqcGetProperty(const sjme_sqcState* sqcState,
+	sjme_jint index, sjme_jint* out, sjme_error* error)
+{
+	if (sqcState == NULL || out == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	/* Is the read in bounds? */
+	if (index < 0 || index >= sqcState->numProperties)
+	{
+		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, index);
+		
+		return sjme_false;
+	}
+	
+	/* Read in the property. */
+	return sjme_chunkReadBigInt(sqcState->chunk,
+		SQC_BASE_PROPERTY_OFFSET + (index * SQC_BASE_PROPERTY_BYTES),
+		out, error);
+}
+
+sjme_jboolean sjme_sqcGetPropertyPtr(const sjme_sqcState* sqcState,
+	sjme_jint index, void** out, sjme_error* error)
+{
+	sjme_jint val;
+	
+	/* Try to read the internal value first. */
+	val = 0;
+	if (!sjme_sqcGetProperty(sqcState, index, &val, error))
+		return sjme_false;
+	
+	/* Make sure the value is within the SQC chunk. */
+	if (val < 0 || val >= sqcState->chunk->size)
+	{
+		sjme_setError(error, SJME_ERROR_BADADDRESS, val);
+		return sjme_false;
+	}
+	
+	/* Calculate offset. */
+	*out = SJME_POINTER_OFFSET_LONG(sqcState->chunk->data, val);
+	return sjme_true;
+}
+
 sjme_jboolean sjme_sqcInit(sjme_formatInstance* formatInstance,
 	sjme_sqcState* sqcState, sjme_error* error)
 {
@@ -89,30 +135,6 @@ sjme_jboolean sjme_sqcInit(sjme_formatInstance* formatInstance,
 	
 	/* Everything is okay. */
 	return sjme_true;
-}
-
-sjme_jboolean sjme_sqcGetProperty(const sjme_sqcState* sqcState,
-	sjme_jint index, sjme_jint* out, sjme_error* error)
-{
-	if (sqcState == NULL || out == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
-	
-	/* Is the read in bounds? */
-	if (index < 0 || index >= sqcState->numProperties)
-	{
-		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, index);
-		
-		return sjme_false;
-	}
-	
-	/* Read in the property. */
-	return sjme_chunkReadBigInt(sqcState->chunk,
-		SQC_BASE_PROPERTY_OFFSET + (index * SQC_BASE_PROPERTY_BYTES),
-		out, error);
 }
 
 sjme_jboolean sjme_sqcInitToc(const sjme_sqcState* sqcState,
