@@ -10,6 +10,7 @@
 #include "debug.h"
 #include "format/sqc.h"
 #include "memchunk.h"
+#include "memops.h"
 
 /** The class version offset. */
 #define SQC_CLASS_VERSION_OFFSET SJME_JINT_C(4)
@@ -94,6 +95,51 @@ sjme_jboolean sjme_sqcGetPropertyPtr(const sjme_sqcState* sqcState,
 	
 	/* Calculate offset. */
 	*out = SJME_POINTER_OFFSET_LONG(sqcState->chunk->data, val);
+	return sjme_true;
+}
+
+sjme_jboolean sjme_sqcGetPropertyStrings(const sjme_sqcState* sqcState,
+	sjme_jint index, sjme_jint count, sjme_utfString* (*outStrings)[],
+	sjme_error* error)
+{
+	sjme_jint at;
+	sjme_utfString* seeker;
+	
+	if (count < 0)
+	{
+		sjme_setError(error, SJME_ERROR_INVALIDARG, count);
+		return sjme_false;
+	}
+	
+	/* Pointless? */
+	if (count == 0)
+		return sjme_true;
+	
+	/* Return the base pointer where the property is. */
+	seeker = NULL;
+	if (!sjme_sqcGetPropertyPtr(sqcState, index, (void**)&seeker, error))
+		return sjme_false;
+	
+	/* Read in all the resultant strings. */
+	for (at = 0; at < count; at++)
+	{
+		/* Set the string to this position. */
+		(*outStrings)[at] = seeker;
+		
+		/* Move the seeker to after this string. */
+		seeker = SJME_POINTER_OFFSET_LONG(seeker,
+			SJME_SIZEOF_UTF_STRING(sjme_bigShort(seeker->bigLength)));
+	}
+	
+	/* Debugging, for testing purposes. */
+#if defined(SJME_DEBUG)
+	for (at = 0; at < count; at++)
+		sjme_message("Strings[%d/%d]: (%d) %s\n",
+			at, count, sjme_bigShort((*outStrings)[at]->bigLength),
+			(*outStrings)[at]->chars);
+#endif
+	
+	/* Is okay! */
 	return sjme_true;
 }
 

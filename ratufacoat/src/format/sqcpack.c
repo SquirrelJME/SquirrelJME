@@ -10,7 +10,6 @@
 #include "debug.h"
 #include "format/sqc.h"
 #include "memory.h"
-#include "memops.h"
 
 /** The magic number for pack libraries. */
 #define PACK_MAGIC_NUMBER UINT32_C(0x58455223)
@@ -26,6 +25,12 @@
 
 /** The index which indicates what the main launcher class is. */
 #define SJME_PACK_STRING_LAUNCHER_MAIN_CLASS_INDEX SJME_JINT_C(8)
+
+/** The index which indicates the arguments to initialize the launcher. */
+#define SJME_PACK_STRINGS_LAUNCHER_ARGS_INDEX SJME_JINT_C(9)
+
+/** The index which indicates the number of launcher args that exist. */
+#define SJME_PACK_COUNT_LAUNCHER_ARGS_INDEX SJME_JINT_C(10)
 
 /** Index where the pack flags exist. */
 #define SJME_PACK_FLAGS_INDEX SJME_JINT_C(16)
@@ -187,14 +192,49 @@ sjme_jboolean sjme_sqcPackLocateChunk(sjme_packInstance* instance,
 static sjme_jboolean sjme_sqcPackQueryLauncherArgs(sjme_packInstance* instance,
 	sjme_mainArgs** outArgs, sjme_error* error)
 {
+	sjme_sqcPackState* sqcPackState;
+	sjme_mainArgs* result;
+	sjme_jint count;
+	
 	if (instance == NULL || outArgs == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
 		return sjme_false;
 	}
 	
-	sjme_todo("Implement this?");
-	return sjme_false;
+	/* Get the pack state. */
+	sqcPackState = instance->state;
+	
+	/* Read count. */
+	count = -1;
+	if (!sjme_sqcGetProperty(&sqcPackState->sqcState,
+		SJME_PACK_COUNT_LAUNCHER_ARGS_INDEX, &count, error) ||
+		count < 0)
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
+		return sjme_false;
+	}
+	
+	/* Allocate output. */
+	result = sjme_malloc(SJME_SIZEOF_MAIN_ARGS(count), error);
+	if (result == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NO_MEMORY, 0);
+		return sjme_false;
+	}
+	
+	/* Read the strings in. */
+	if (!sjme_sqcGetPropertyStrings(&sqcPackState->sqcState,
+		SJME_PACK_STRINGS_LAUNCHER_ARGS_INDEX, count,
+		&result->args, error))
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 1);
+		return sjme_false;
+	}
+	
+	/* Use what we calculated! */
+	*outArgs = result;
+	return sjme_true;
 }
 
 /**

@@ -66,6 +66,16 @@ typedef struct sjme_mainArgs
 	sjme_utfString* args[0];
 } sjme_mainArgs;
 
+/**
+ * Returns the size that would be used for @c sjme_mainArgs.
+ * 
+ * @param count The number of arguments to include.
+ * @return The allocated memory size for the type.
+ * @since 2022/03/09
+ */
+#define SJME_SIZEOF_MAIN_ARGS(count) (sizeof(sjme_mainArgs) + \
+	((count) * sizeof(sjme_utfString*)))
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

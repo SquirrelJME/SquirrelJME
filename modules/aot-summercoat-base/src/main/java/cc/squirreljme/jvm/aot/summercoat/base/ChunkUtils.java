@@ -392,7 +392,7 @@ public final class ChunkUtils
 		if (launcherArgs != null && !launcherArgs.isEmpty())
 		{
 			__header.set(PackProperty.COUNT_LAUNCHER_ARGS,
-				__chunk.futureSize());
+				launcherArgs.size());
 			__header.set(PackProperty.STRINGS_LAUNCHER_ARGS,
 				ChunkUtils.writeStrings(__chunk, launcherArgs)
 					.futureAddress());
@@ -403,7 +403,7 @@ public final class ChunkUtils
 		if (launcherClassPath != null && !launcherClassPath.isEmpty())
 		{
 			__header.set(PackProperty.COUNT_LAUNCHER_CLASSPATH,
-				__chunk.futureSize());
+				launcherClassPath.size());
 			__header.set(PackProperty.INTEGERS_LAUNCHER_CLASSPATH,
 				ChunkUtils.writeIntegers(__chunk, launcherClassPath)
 					.futureAddress());

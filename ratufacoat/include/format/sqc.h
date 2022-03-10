@@ -145,6 +145,22 @@ sjme_jboolean sjme_sqcGetPropertyPtr(const sjme_sqcState* sqcState,
 	sjme_jint index, void** out, sjme_error* error);
 
 /**
+ * Reads a string sequence property where all of the strings are sequentially
+ * stored with each other.
+ * 
+ * @param sqcState The SQC to read from.
+ * @param index The index to read from.
+ * @param count The number of strings to read.
+ * @param outStrings The output strings.
+ * @param error Any resultant error.
+ * @return If the read was successful.
+ * @since 2022/03/09
+ */
+sjme_jboolean sjme_sqcGetPropertyStrings(const sjme_sqcState* sqcState,
+	sjme_jint index, sjme_jint count, sjme_utfString* (*outStrings)[],
+	sjme_error* error);
+
+/**
  * Initializes the SQC instance.
  * 
  * @param formatInstance The format instance.

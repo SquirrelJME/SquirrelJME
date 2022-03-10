@@ -47,6 +47,16 @@ typedef struct sjme_utfString
 #include "pack/unpack.h"
 
 /**
+ * Returns the size that would be used for @c sjme_utfString.
+ * 
+ * @param length The number of used characters.
+ * @return The allocated memory size for the type.
+ * @since 2022/03/09
+ */
+#define SJME_SIZEOF_UTF_STRING(length) (sizeof(sjme_utfString) + \
+	((length) * sizeof(sjme_jbyte)))
+
+/**
  * Converts a standard C @c char* string to a Java modified UTF-8 string.
  * 
  * @param outUtfString The output modified UTF-8 string.
