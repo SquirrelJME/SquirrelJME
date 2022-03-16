@@ -8,3 +8,34 @@
 // -------------------------------------------------------------------------*/
 
 #include "engine/pipe.h"
+
+const sjme_pipeFunction sjme_pipeFunctions
+	[NUM_SJME_TASK_PIPE_REDIRECTS] =
+{
+	/** @c SJME_TASK_PIPE_REDIRECT_DISCARD . */
+	{
+		.close = NULL,
+		.flush = NULL,
+		.newInstance = NULL,
+		.read = NULL,
+		.write = NULL,
+	},
+	
+	/** @c SJME_TASK_PIPE_REDIRECT_BUFFER . */
+	{
+		.close = NULL,
+		.flush = NULL,
+		.newInstance = NULL,
+		.read = NULL,
+		.write = NULL,
+	},
+	
+	/** @c SJME_TASK_PIPE_REDIRECT_TERMINAL . */
+	{
+		.close = NULL,
+		.flush = NULL,
+		.newInstance = NULL,
+		.read = NULL,
+		.write = NULL,
+	},
+};

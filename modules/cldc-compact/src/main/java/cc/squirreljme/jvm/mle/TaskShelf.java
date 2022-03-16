@@ -120,7 +120,11 @@ public final class TaskShelf
 	 * otherwise.
 	 * 
 	 * The first JAR in the classpath must be the same as our current classpath
-	 * so as to prevent the CLDC library from being switched out.
+	 * to prevent the CLDC library from being switched out.
+	 * 
+	 * Note that the first task implicitly created by the virtual machine
+	 * will have its standard input be read from the standard input, whereas
+	 * for sub-tasks it will be sourced from a buffer.
 	 * 
 	 * @param __classPath The class path that the launched application should
 	 * use.

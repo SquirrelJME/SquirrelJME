@@ -16,6 +16,7 @@
 #ifndef SQUIRRELJME_TASKMANAGER_H
 #define SQUIRRELJME_TASKMANAGER_H
 
+#include "engine/pipe.h"
 #include "sjmerc.h"
 #include "scaffold.h"
 
@@ -30,27 +31,6 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
- 
-/**
- * This represents the types of redirects that may occur for a launched task
- * when it is given a pipe.
- *
- * @since 2020/07/02
- */
-typedef enum sjme_taskPipeRedirectType
-{
-	/** Discard all program output. */
-	SJME_TASK_PIPE_REDIRECT_DISCARD = 0,
-	
-	/** Buffer the resultant program's output. */
-	SJME_TASK_PIPE_REDIRECT_BUFFER = 1,
-	
-	/** Send the output to the virtual machine's terminal output. */
-	SJME_TASK_PIPE_REDIRECT_TERMINAL = 2,
-	
-	/** The number of redirect types. */
-	NUM_SJME_TASK_PIPE_REDIRECTS = 3
-} sjme_taskPipeRedirectType;
 
 /**
  * Spawns a new task within the virtual machine.
@@ -63,7 +43,8 @@ typedef enum sjme_taskPipeRedirectType
  * @param stdOutMode Standard output mode.
  * @param stdErrMode Standard error mode.
  * @param forkThread Should the task be started on a new thread?
- * @param rootVm Is this the root virtual machine?
+ * @param rootVm Is this the root virtual machine? If @c sjme_true then
+ * standard input will be a terminal, whereas otherwise it will be a buffer.
  * @param outTask The output task which was created.
  * @param outMainThread The output main thread which was created.
  * @param error Any possible error state.
