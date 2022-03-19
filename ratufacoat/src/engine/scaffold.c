@@ -120,7 +120,7 @@ static sjme_jboolean sjme_engineEnterMain(sjme_engineState* engineState,
 		mainArgs, engineState->config.sysProps,
 		SJME_TASK_PIPE_REDIRECT_TERMINAL,
 		SJME_TASK_PIPE_REDIRECT_TERMINAL,
-		sjme_false, sjme_true,
+		sjme_false, sjme_true, NULL,
 		&engineState->mainTask, &engineState->mainThread,
 		error);
 }

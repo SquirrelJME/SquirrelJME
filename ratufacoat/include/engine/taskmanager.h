@@ -19,6 +19,7 @@
 #include "engine/pipe.h"
 #include "sjmerc.h"
 #include "scaffold.h"
+#include "profiler.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -45,6 +46,8 @@ extern "C"
  * @param forkThread Should the task be started on a new thread?
  * @param rootVm Is this the root virtual machine? If @c sjme_true then
  * standard input will be a terminal, whereas otherwise it will be a buffer.
+ * @param profiler The profile snapshot that this run will write to, may be
+ * set to @c null in which case no profiling is performed.
  * @param outTask The output task which was created.
  * @param outMainThread The output main thread which was created.
  * @param error Any possible error state.
@@ -57,8 +60,9 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	sjme_engineSystemPropertySet* sysProps,
 	sjme_taskPipeRedirectType stdOutMode,
 	sjme_taskPipeRedirectType stdErrMode, sjme_jboolean forkThread,
-	sjme_jboolean rootVm, sjme_engineTask** outTask,
-	sjme_engineThread** outMainThread, sjme_error* error);
+	sjme_jboolean rootVm, sjme_profilerSnapshot* profiler,
+	sjme_engineTask** outTask, sjme_engineThread** outMainThread,
+	sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

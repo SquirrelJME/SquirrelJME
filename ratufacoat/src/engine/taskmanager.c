@@ -17,8 +17,9 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	sjme_engineSystemPropertySet* sysProps,
 	sjme_taskPipeRedirectType stdOutMode,
 	sjme_taskPipeRedirectType stdErrMode, sjme_jboolean forkThread,
-	sjme_jboolean rootVm, sjme_engineTask** outTask,
-	sjme_engineThread** outMainThread, sjme_error* error)
+	sjme_jboolean rootVm, sjme_profilerSnapshot* profiler,
+	sjme_engineTask** outTask, sjme_engineThread** outMainThread,
+	sjme_error* error)
 {
 	if (engineState == NULL || classPath == NULL || mainClass == NULL ||
 		mainArgs == NULL || outTask == NULL ||
@@ -48,6 +49,21 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 			
 			return sjme_false;
 		}
+	}
+	
+	/* Setup class path for our set of classes. */
+	sjme_todo("Setup class loader.");
+	
+	/* Setup actual task itself. */
+	sjme_todo("Setup task process.");
+	
+	/* Bind task to engine. */
+	sjme_todo("Bind task to engine.");
+	
+	/* If we are forking a thread, create it and start it, it runs always. */
+	if (forkThread)
+	{
+		sjme_todo("Fork thread?");
 	}
 	
 	sjme_todo("Implement this?");
