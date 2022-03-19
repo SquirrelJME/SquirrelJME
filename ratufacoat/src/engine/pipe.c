@@ -17,6 +17,9 @@ struct sjme_pipeInstance
 	
 	/** The functions used to handle this pipe. */
 	const sjme_pipeFunction* functions;
+	
+	/** Is the pipe closed? */
+	sjme_jboolean isClosed;
 };
 
 /* -------------------------------- DISCARD ------------------------------- */

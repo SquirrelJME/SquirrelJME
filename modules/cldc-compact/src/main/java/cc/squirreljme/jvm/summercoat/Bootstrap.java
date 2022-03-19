@@ -82,9 +82,10 @@ public final class Bootstrap
 			Debugging.debugNote("*** CRITICAL BOOT EXCEPTION");
 			Debugging.debugNote("Message: %s", __t.getMessage());
 			CallTraceUtils.printStackTrace(
-				new ConsoleOutputStream(StandardPipeType.STDERR),
-				__t, 0);
-			TerminalShelf.flush(StandardPipeType.STDERR);
+				new ConsoleOutputStream(StandardPipeType.STDERR,
+				true), __t, 0);
+			TerminalShelf.flush(TerminalShelf.fromStandard(
+				StandardPipeType.STDERR));
 			Debugging.debugNote("************************************");
 			
 			// Break if we can
