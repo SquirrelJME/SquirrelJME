@@ -93,7 +93,7 @@ public class Display
 	
 	/**
 	 * Displays are internally managed by this class and as such cannot be
-	 * constructed publically or by drivers.
+	 * constructed publicly or by drivers.
 	 *
 	 * @since 2016/10/08
 	 */

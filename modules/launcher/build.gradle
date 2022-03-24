@@ -25,6 +25,7 @@ dependencies
 	api project(":modules:cldc-compact")
 
 	api project(":modules:midp-lcdui")
+	api project(":modules:meep-lui")
 	api project(":modules:meep-midlet")
 	api project(":modules:meep-swm")
 }

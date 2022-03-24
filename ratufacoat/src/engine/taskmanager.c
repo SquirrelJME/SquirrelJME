@@ -11,6 +11,19 @@
 #include "engine/taskmanager.h"
 #include "memory.h"
 
+sjme_jboolean sjme_engineTaskDestroy(sjme_engineTask* task, sjme_error* error)
+{
+	if (task == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	sjme_todo("Implement this?");
+	return sjme_false;
+}
+
 sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	sjme_classPath* classPath,
 	sjme_utfString* mainClass, sjme_mainArgs* mainArgs,
@@ -21,6 +34,8 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	sjme_engineTask** outTask, sjme_engineThread** outMainThread,
 	sjme_error* error)
 {
+	sjme_engineTask* result;
+	
 	if (engineState == NULL || classPath == NULL || mainClass == NULL ||
 		mainArgs == NULL || outTask == NULL ||
 		outMainThread == NULL)
@@ -51,8 +66,22 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 		}
 	}
 	
+	/* Try to allocate the resultant object first. */
+	result = sjme_malloc(sizeof(*result), error);
+	if (result == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NO_MEMORY, 0);
+		return sjme_false;
+	}
+	
 	/* Setup class path for our set of classes. */
-	sjme_todo("Setup class loader.");
+	if (!sjme_classLoaderNew(&result->classLoader, classPath, error))
+	{
+		/* Cleanup always as good as we can! */
+		sjme_engineTaskDestroy(result, error);
+		
+		return sjme_false;
+	}
 	
 	/* Setup actual task itself. */
 	sjme_todo("Setup task process.");

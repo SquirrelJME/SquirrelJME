@@ -17,6 +17,7 @@
 #define SQUIRRELJME_TASKMANAGER_H
 
 #include "engine/pipe.h"
+#include "engine/classloader.h"
 #include "sjmerc.h"
 #include "scaffold.h"
 #include "profiler.h"
@@ -32,6 +33,22 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+struct sjme_engineTask
+{
+	/** The class loader used for this task. */
+	sjme_classLoader* classLoader;
+};
+
+/**
+ * Destroys the given task within the engine.
+ * 
+ * @param task The task to be destroyed.
+ * @param error Any resultant error state.
+ * @return If destruction was successful.
+ * @since 2022/03/23
+ */
+sjme_jboolean sjme_engineTaskDestroy(sjme_engineTask* task, sjme_error* error);
 
 /**
  * Spawns a new task within the virtual machine.

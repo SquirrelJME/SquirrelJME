@@ -16,6 +16,9 @@
 #ifndef SQUIRRELJME_CLASSLOADER_H
 #define SQUIRRELJME_CLASSLOADER_H
 
+#include "engine/scafdef.h"
+#include "format/def.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
@@ -26,6 +29,24 @@ extern "C" {
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+struct sjme_classLoader
+{
+	/** The class path to source JARs from. */
+	sjme_classPath* classPath;
+};
+
+/**
+ * Initializes the class loader instance.
+ * 
+ * @param outLoader The output class loader.
+ * @param classPath The class path to initialize with.
+ * @param error Any resultant error state.
+ * @return If creation was successful.
+ * @since 2022/03/23
+ */
+sjme_jboolean sjme_classLoaderNew(sjme_classLoader** outLoader,
+	sjme_classPath* classPath, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

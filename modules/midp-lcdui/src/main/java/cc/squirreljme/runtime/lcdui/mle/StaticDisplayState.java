@@ -169,7 +169,7 @@ public final class StaticDisplayState
 			throw new NullPointerException("NARG");
 		
 		// Would be previously cached
-		UIBackend instance = UIBackendFactory.getInstance();
+		UIBackend instance = UIBackendFactory.getInstance(true);
 		synchronized (StaticDisplayState.class)
 		{
 			for (Map.Entry<Reference<DisplayWidget>, UIWidgetBracket> e :
@@ -221,7 +221,7 @@ public final class StaticDisplayState
 			NullPointerException
 	{
 		return StaticDisplayState.locate(__widget, __type,
-			UIBackendFactory.getInstance());
+			UIBackendFactory.getInstance(true));
 	}
 	
 	/**
@@ -300,7 +300,7 @@ public final class StaticDisplayState
 				widgets.remove(ref);
 				
 				// Perform collection on it
-				UIBackend instance = UIBackendFactory.getInstance();
+				UIBackend instance = UIBackendFactory.getInstance(true);
 				if (widget instanceof UIFormBracket)
 					instance.formDelete((UIFormBracket)widget);
 				else if (widget instanceof UIItemBracket)

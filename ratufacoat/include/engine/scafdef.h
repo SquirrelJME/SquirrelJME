@@ -53,6 +53,13 @@ typedef struct sjme_engineTask sjme_engineTask;
 typedef struct sjme_engineThread sjme_engineThread;
 
 /**
+ * This contains the information for the class loader.
+ * 
+ * @since 2022/03/23
+ */
+typedef struct sjme_classLoader sjme_classLoader;
+
+/**
  * Represents the main arguments to a program.
  * 
  * @since 2022/01/09
