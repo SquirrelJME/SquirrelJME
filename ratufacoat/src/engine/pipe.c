@@ -9,11 +9,12 @@
 
 #include "debug.h"
 #include "engine/pipe.h"
+#include "engine/pipeintern.h"
 
 struct sjme_pipeInstance
 {
 	/** The type of pipe this is. */
-	sjme_taskPipeRedirectType type;
+	sjme_pipeRedirectType type;
 	
 	/** The functions used to handle this pipe. */
 	const sjme_pipeFunction* functions;
@@ -44,9 +45,9 @@ static sjme_jboolean sjme_discardPipeNewInstance(sjme_pipeInstance** outPipe,
 	sjme_todo("Implement this?");
 	return sjme_false;
 }
-	
+
 static sjme_jboolean sjme_discardPipeRead(sjme_pipeInstance* pipe,
-	sjme_taskPipeDirection direction, sjme_jbyte* buf,
+	sjme_pipeDirection direction, sjme_jbyte* buf,
 	sjme_jint off, sjme_jint len, sjme_jint* result, sjme_error* error)
 {
 	sjme_todo("Implement this?");
@@ -54,7 +55,7 @@ static sjme_jboolean sjme_discardPipeRead(sjme_pipeInstance* pipe,
 }
 	
 static sjme_jboolean sjme_discardPipeWrite(sjme_pipeInstance* pipe,
-	sjme_taskPipeDirection direction, sjme_jbyte* buf,
+	sjme_pipeDirection direction, sjme_jbyte* buf,
 	sjme_jint off, sjme_jint len, sjme_error* error)
 {
 	sjme_todo("Implement this?");
@@ -85,7 +86,7 @@ static sjme_jboolean sjme_bufferPipeNewInstance(sjme_pipeInstance** outPipe,
 }
 	
 static sjme_jboolean sjme_bufferPipeRead(sjme_pipeInstance* pipe,
-	sjme_taskPipeDirection direction, sjme_jbyte* buf,
+	sjme_pipeDirection direction, sjme_jbyte* buf,
 	sjme_jint off, sjme_jint len, sjme_jint* result, sjme_error* error)
 {
 	sjme_todo("Implement this?");
@@ -93,7 +94,7 @@ static sjme_jboolean sjme_bufferPipeRead(sjme_pipeInstance* pipe,
 }
 	
 static sjme_jboolean sjme_bufferPipeWrite(sjme_pipeInstance* pipe,
-	sjme_taskPipeDirection direction, sjme_jbyte* buf,
+	sjme_pipeDirection direction, sjme_jbyte* buf,
 	sjme_jint off, sjme_jint len, sjme_error* error)
 {
 	sjme_todo("Implement this?");
@@ -124,7 +125,7 @@ static sjme_jboolean sjme_terminalPipeNewInstance(sjme_pipeInstance** outPipe,
 }
 	
 static sjme_jboolean sjme_terminalPipeRead(sjme_pipeInstance* pipe,
-	sjme_taskPipeDirection direction, sjme_jbyte* buf,
+	sjme_pipeDirection direction, sjme_jbyte* buf,
 	sjme_jint off, sjme_jint len, sjme_jint* result, sjme_error* error)
 {
 	sjme_todo("Implement this?");
@@ -132,15 +133,15 @@ static sjme_jboolean sjme_terminalPipeRead(sjme_pipeInstance* pipe,
 }
 	
 static sjme_jboolean sjme_terminalPipeWrite(sjme_pipeInstance* pipe,
-	sjme_taskPipeDirection direction, sjme_jbyte* buf,
+	sjme_pipeDirection direction, sjme_jbyte* buf,
 	sjme_jint off, sjme_jint len, sjme_error* error)
 {
 	sjme_todo("Implement this?");
 	return sjme_false;
 }
 
-const sjme_pipeFunction sjme_pipeFunctions
-	[NUM_SJME_TASK_PIPE_REDIRECTS] =
+static const sjme_pipeFunction sjme_pipeFunctions
+	[NUM_SJME_PIPE_REDIRECTS] =
 {
 	/** @c SJME_TASK_PIPE_REDIRECT_DISCARD . */
 	{
@@ -169,3 +170,11 @@ const sjme_pipeFunction sjme_pipeFunctions
 		.write = sjme_terminalPipeWrite,
 	},
 };
+
+sjme_jboolean sjme_pipeNewInstance(sjme_pipeRedirectType type,
+	sjme_pipeInstance** outPipe, sjme_jint fd, sjme_jboolean isInput,
+	sjme_error* error)
+{
+	sjme_todo("Failed to initialize new instance.");
+	return sjme_false;
+}

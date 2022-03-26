@@ -36,8 +36,23 @@ extern "C"
 
 struct sjme_engineTask
 {
+	/** The ID of the task. */
+	sjme_jint id;
+	
 	/** The class loader used for this task. */
 	sjme_classLoader* classLoader;
+	
+	/** The profiler to use for any profiling that occurs. */
+	sjme_profilerSnapshot* profiler;
+	
+	/** Standard input. */
+	sjme_pipeInstance* stdIn;
+	
+	/** Standard output. */
+	sjme_pipeInstance* stdOut;
+	
+	/** Standard error. */
+	sjme_pipeInstance* stdErr;
 };
 
 /**
@@ -72,14 +87,12 @@ sjme_jboolean sjme_engineTaskDestroy(sjme_engineTask* task, sjme_error* error);
  * @since 2022/01/09
  */
 sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
-	sjme_classPath* classPath,
-	sjme_utfString* mainClass, sjme_mainArgs* mainArgs,
-	sjme_engineSystemPropertySet* sysProps,
-	sjme_taskPipeRedirectType stdOutMode,
-	sjme_taskPipeRedirectType stdErrMode, sjme_jboolean forkThread,
-	sjme_jboolean rootVm, sjme_profilerSnapshot* profiler,
-	sjme_engineTask** outTask, sjme_engineThread** outMainThread,
-	sjme_error* error);
+	sjme_classPath* classPath, sjme_utfString* mainClass,
+	sjme_mainArgs* mainArgs, sjme_systemPropertySet* sysProps,
+	sjme_pipeRedirectType stdInMode, sjme_pipeRedirectType stdOutMode,
+	sjme_pipeRedirectType stdErrMode, sjme_jboolean forkThread,
+	sjme_profilerSnapshot* profiler, sjme_engineTask** outTask,
+	sjme_engineThread** outMainThread, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

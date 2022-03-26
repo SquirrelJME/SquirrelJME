@@ -116,13 +116,13 @@ static sjme_jboolean sjme_engineEnterMain(sjme_engineState* engineState,
 	}
 	
 	/* Initialize the main entry task and thread. */
-	return sjme_engineTaskNew(engineState, classPath, mainClass,
-		mainArgs, engineState->config.sysProps,
-		SJME_TASK_PIPE_REDIRECT_TERMINAL,
-		SJME_TASK_PIPE_REDIRECT_TERMINAL,
-		sjme_false, sjme_true, NULL,
-		&engineState->mainTask, &engineState->mainThread,
-		error);
+	return sjme_engineTaskNew(engineState, classPath, mainClass, mainArgs,
+		engineState->config.sysProps,
+		SJME_PIPE_REDIRECT_TERMINAL,
+		SJME_PIPE_REDIRECT_TERMINAL,
+		SJME_PIPE_REDIRECT_TERMINAL,
+		sjme_false, NULL, &engineState->mainTask,
+		&engineState->mainThread, error);
 }
 
 sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
@@ -212,6 +212,9 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 		
 		return sjme_false;
 	}
+	
+	/* Set initial ID for tasks and threads, so they do not start at zero. */
+	sjme_atomicIntGetThenAdd(&result->nextTaskThreadId, 1);
 	
 	/* Initialization complete! */
 	*outState = result;

@@ -56,20 +56,20 @@ typedef enum sjme_standardPipeType
  * 
  * @since 2022/03/15
  */
-typedef enum sjme_taskPipeDirection
+typedef enum sjme_pipeDirection
 {
 	/** The direction that is from a task, on the client side. */
-	SJME_TASK_PIPE_DIRECTION_FROM_TASK,
+	SJME_PIPE_DIRECTION_FROM_TASK,
 	
 	/** The direction that is from the spawner of a tax, external. */
-	SJME_TASK_PIPE_DIRECTION_FROM_SPAWNER,
+	SJME_PIPE_DIRECTION_FROM_SPAWNER,
 	
 	/** A forced operation that does not check the direction. */
-	SJME_TASK_PIPE_DIRECTION_FORCED,
+	SJME_PIPE_DIRECTION_FORCED,
 	
 	/** The number of directions. */
-	NUM_SJME_TASK_PIPE_DIRECTION,
-} sjme_taskPipeDirection;
+	NUM_SJME_PIPE_DIRECTIONS,
+} sjme_pipeDirection;
 
 /**
  * This represents the types of redirects that may occur for a launched task
@@ -77,20 +77,20 @@ typedef enum sjme_taskPipeDirection
  *
  * @since 2020/07/02
  */
-typedef enum sjme_taskPipeRedirectType
+typedef enum sjme_pipeRedirectType
 {
 	/** Discard all program output. */
-	SJME_TASK_PIPE_REDIRECT_DISCARD = 0,
+	SJME_PIPE_REDIRECT_DISCARD = 0,
 	
 	/** Buffer the resultant program's output. */
-	SJME_TASK_PIPE_REDIRECT_BUFFER = 1,
+	SJME_PIPE_REDIRECT_BUFFER = 1,
 	
 	/** Send the output to the virtual machine's terminal output. */
-	SJME_TASK_PIPE_REDIRECT_TERMINAL = 2,
+	SJME_PIPE_REDIRECT_TERMINAL = 2,
 	
 	/** The number of redirect types. */
-	NUM_SJME_TASK_PIPE_REDIRECTS = 3
-} sjme_taskPipeRedirectType;
+	NUM_SJME_PIPE_REDIRECTS = 3
+} sjme_pipeRedirectType;
 
 /**
  * This represents a single instance of a pipe.
@@ -100,90 +100,21 @@ typedef enum sjme_taskPipeRedirectType
 typedef struct sjme_pipeInstance sjme_pipeInstance;
 
 /**
- * Used to implement pipe functions within the engine that modify where the
- * result goes and otherwise.
+ * Creates a new instance of the given type of pipe so that there can be
+ * communication between the OS and tasks accordingly.
  * 
- * @since 2022/03/15
+ * @param type The type of pipe to create.
+ * @param outPipe The output pipe instance.
+ * @param fd The file descriptor hint to use.
+ * @param isInput Is this an input pipe? An input pipe is one that is
+ * meant to be read from the task that is within.
+ * @param error Any possible resultant error state.
+ * @return If the pipe was successfully created.
+ * @since 2022/03/26
  */
-typedef struct sjme_pipeFunction
-{
-	/**
-	 * Closes the given pipe, meaning it cannot be read anymore.
-	 * 
-	 * @param pipe The pipe to close.
-	 * @param error If the pipe could not be closed.
-	 * @return If the close was a success or not.
-	 * @since 2022/03/15
-	 */
-	sjme_jboolean (*close)(sjme_pipeInstance* pipe, sjme_error* error);
-	
-	/**
-	 * Flushes the given pipe.
-	 * 
-	 * @param pipe The pipe to flush.
-	 * @param error If the pipe could not be flushed.
-	 * @return If the flush was a success or not.
-	 * @since 2022/03/15
-	 */
-	sjme_jboolean (*flush)(sjme_pipeInstance* pipe, sjme_error* error);
-	
-	/**
-	 * Creates a new instance of a given pipe.
-	 * 
-	 * @param outPipe The output pipe.
-	 * @param fd The file descriptor of the pipe, this can be used as a hint
-	 * to determine the action of a given pipe.
-	 * @param isInput Is this an input pipe? An input pipe is one that is
-	 * meant to be read from the task that is within.
-	 * @param error If the pipe could not be created.
-	 * @return If the instance was successfully created.
-	 * @since 2022/03/15
-	 */
-	sjme_jboolean (*newInstance)(sjme_pipeInstance** outPipe,
-		sjme_jint fd, sjme_jboolean isInput, sjme_error* error);
-	
-	/**
-	 * Reads from the given pipe, anything that is waiting within.
-	 * 
-	 * @param pipe The output pipe to write to.
-	 * @param direction The direction of the pipe read.
-	 * @param buf The buffer to read into.
-	 * @param off The offset into the buffer.
-	 * @param len The number of bytes to read.
-	 * @param result The result of the read, which will contain the number
-	 * of bytes read or @c -1 on end of file.
-	 * @param error If the write was not successful.
-	 * @return If the read was successful.
-	 * @since 2022/03/15
-	 */
-	sjme_jboolean (*read)(sjme_pipeInstance* pipe,
-		sjme_taskPipeDirection direction, sjme_jbyte* buf,
-		sjme_jint off, sjme_jint len, sjme_jint* result, sjme_error* error);
-	
-	/**
-	 * Writes to the given pipe.
-	 * 
-	 * @param pipe The output pipe to write to.
-	 * @param direction The direction of the pipe write.
-	 * @param buf The buffer to write.
-	 * @param off The offset into the buffer.
-	 * @param len The number of bytes to write.
-	 * @param error If the write was not successful.
-	 * @return If the write was successful.
-	 * @since 2022/03/15
-	 */
-	sjme_jboolean (*write)(sjme_pipeInstance* pipe,
-		sjme_taskPipeDirection direction, sjme_jbyte* buf,
-		sjme_jint off, sjme_jint len, sjme_error* error);
-} sjme_pipeFunction;
-
-/**
- * This is the set of pipe functions that implement a given pipe behavior.
- * 
- * @since 2022/03/15
- */
-extern const sjme_pipeFunction sjme_pipeFunctions
-	[NUM_SJME_TASK_PIPE_REDIRECTS];
+sjme_jboolean sjme_pipeNewInstance(sjme_pipeRedirectType type,
+	sjme_pipeInstance** outPipe, sjme_jint fd, sjme_jboolean isInput,
+	sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

@@ -221,7 +221,7 @@ public class MidletMain
 		}
 		
 		// We will need to access our own display to build the list of
-		// MIDlets that could actually be ran
+		// MIDlets that could actually be run
 		Display display = Display.getDisplay(this);
 		MidletMain._MAIN_DISPLAY = display;
 		

@@ -83,28 +83,28 @@ typedef enum sjme_engineThreadModel
  * 
  * @since 2021/01/07
  */
-typedef struct sjme_engineSystemProperty
+typedef struct sjme_systemProperty
 {
 	/** The key. */
 	sjme_utfString* key;
 	
 	/** The value. */
 	sjme_utfString* value;
-} sjme_engineSystemProperty;
+} sjme_systemProperty;
 
 /**
  * Represents a set of system properties.
  * 
  * @since 2022/01/09
  */
-typedef struct sjme_engineSystemPropertySet
+typedef struct sjme_systemPropertySet
 {
 	/** The number of system properties. */
 	sjme_jint count;
 	
 	/** The defined system properties. */
-	sjme_engineSystemProperty properties[];
-} sjme_engineSystemPropertySet;
+	sjme_systemProperty properties[];
+} sjme_systemPropertySet;
 
 /**
  * Returns the size that would be used for @c sjme_engineSystemPropertySet.
@@ -114,8 +114,8 @@ typedef struct sjme_engineSystemPropertySet
  * @since 2022/03/09
  */
 #define SJME_SIZEOF_SYSTEM_PROPERTY_SET(count) \
-	(sizeof(sjme_engineSystemPropertySet) + \
-	((count) * sizeof(sjme_engineSystemProperty)))
+	(sizeof(sjme_systemPropertySet) + \
+	((count) * sizeof(sjme_systemProperty)))
 
 /**
  * Configuration for an engine within SquirrelJME, this is used to initialize
@@ -147,7 +147,7 @@ typedef struct sjme_engineConfig
 	const sjme_frontBridge* frontBridge; 
 	
 	/** System properties. */
-	sjme_engineSystemPropertySet* sysProps;
+	sjme_systemPropertySet* sysProps;
 	
 	/** Use the launcher specified by the ROM for execution. */
 	sjme_jboolean useLauncher;
@@ -292,6 +292,9 @@ struct sjme_engineState
 	
 	/** Main thread. */
 	sjme_engineThread* mainThread;
+	
+	/** The next task/thread ID. */
+	sjme_atomicInt nextTaskThreadId;
 };
 
 /**
