@@ -248,7 +248,7 @@ libretro-build-tvos-arm64:
 
 ################################### CONSOLES #################################
 # Dingux (GCW Zero) [CMake]
-libretro-build-dingux:
+libretro-build-dingux-mips32:
   extends:
     - .libretro-dingux-cmake-mips32
     - .core-defs
