@@ -34,7 +34,7 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	sjme_engineTask** outTask, sjme_engineThread** outMainThread,
 	sjme_error* error)
 {
-	sjme_engineTask* result;
+	sjme_engineTask* createdTask;
 	
 	if (engineState == NULL || classPath == NULL || mainClass == NULL ||
 		mainArgs == NULL || outTask == NULL ||
@@ -67,18 +67,19 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	}
 	
 	/* Try to allocate the resultant object first. */
-	result = sjme_malloc(sizeof(*result), error);
-	if (result == NULL)
+	createdTask = sjme_malloc(sizeof(*createdTask), error);
+	if (createdTask == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NO_MEMORY, 0);
 		return sjme_false;
 	}
 	
 	/* Setup class path for our set of classes. */
-	if (!sjme_classLoaderNew(&result->classLoader, classPath, error))
+	if (!sjme_classLoaderNew(&createdTask->classLoader,
+		classPath, error))
 	{
 		/* Cleanup always as good as we can! */
-		sjme_engineTaskDestroy(result, error);
+		sjme_engineTaskDestroy(createdTask, error);
 		
 		return sjme_false;
 	}
@@ -88,6 +89,8 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	
 	/* Bind task to engine. */
 	sjme_todo("Bind task to engine.");
+	
+	/* Bind task into the VM. */
 	
 	/* If we are forking a thread, create it and start it, it runs always. */
 	if (forkThread)
