@@ -9,6 +9,9 @@
 # file is AUTO-GENERATED!
 
 # Generation starts here:
+SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/collections/arraylist.c
+SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/collections/collection.c
+SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/collections/hashmap.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/accelgfx.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/atomic.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/atomiclist.c

@@ -72,6 +72,7 @@ set_property(TARGET SquirrelJMECore
 	PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # Internal support libraries and modules
+add_subdirectory(collections)
 add_subdirectory(engine)
 add_subdirectory(format)
 
@@ -136,6 +137,7 @@ endfunction()
 
 # Execute this with all of the targets we want to collect
 squirreljme_object_and_sources(SquirrelJMECoreTarget
+	SquirrelJMECollections
 	SquirrelJMECore
 	SquirrelJMEEngine
 	SquirrelJMEEngineSpringCoat
