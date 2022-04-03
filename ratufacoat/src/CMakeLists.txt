@@ -26,6 +26,7 @@ endif()
 add_library(SquirrelJMECore OBJECT
 	accelgfx.c
 	atomic.c
+	atomiclist.c
 	audio.c
 	bootrom.c
 	btooth.c
@@ -42,6 +43,7 @@ add_library(SquirrelJMECore OBJECT
 	ipnet.c
 	jdwp.c
 	jvm.c
+	lock.c
 	memchunk.c
 	memory.c
 	oldstuff.c

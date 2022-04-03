@@ -219,6 +219,12 @@ typedef enum sjme_errorCode
 	
 	/** Invalid functional method. */
 	SJME_INVALID_FUNCTIONAL,
+	
+	/** Invalid unlock key. */
+	SJME_INVALID_UNLOCK_KEY,
+	
+	/** The lock owner is not valid. */
+	SJME_NOT_LOCK_OWNER,
 } sjme_errorCode;
 
 /** This represents an error. */

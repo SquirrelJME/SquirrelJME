@@ -11,6 +11,7 @@
 # Generation starts here:
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/accelgfx.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/atomic.c
+SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/atomiclist.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/audio.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/bootrom.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/btooth.c
@@ -27,6 +28,7 @@ SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/handles.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/ipnet.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/jdwp.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/jvm.c
+SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/lock.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/memchunk.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/memory.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/oldstuff.c

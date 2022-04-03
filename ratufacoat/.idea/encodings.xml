@@ -22,7 +22,6 @@
     <file url="file://$PROJECT_DIR$/include/format/pack.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/format/sqc.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/frontend/libretro/lrlocal.h" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/include/frontend/libretro/lrlocal.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/gpio.h" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/include/handles.h" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/include/ipnet.h" charset="ISO-8859-1" />
@@ -86,6 +85,7 @@
     <file url="file://$PROJECT_DIR$/src/ipnet.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/jvm.c" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/lib/blank.c" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/lock.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/memchunk.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/memory.c" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/oldstuff.c" charset="ISO-8859-1" />
