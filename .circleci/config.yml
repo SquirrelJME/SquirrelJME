@@ -15,7 +15,7 @@ version: 2.1
 executors:
   buildenv:
     docker:
-      - image: circleci/openjdk:8-jdk
+      - image: cimg/openjdk:8.0
   buster:
     docker:
       - image: debian:buster-backports
