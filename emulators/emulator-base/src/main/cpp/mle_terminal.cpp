@@ -50,7 +50,7 @@ JNIEXPORT jobject JNICALL Impl_mle_TerminalShelf_fromStandard(JNIEnv* env,
 	jclass classy, jint fd)
 {
 	return forwardCallStaticObject(env, TERMINAL_CLASSNAME,
-		"fromStandard", TERMINAL_FLUSH_DESC,
+		"fromStandard", TERMINAL_FROMSTANDARD_DESC,
 		fd);
 }
 
