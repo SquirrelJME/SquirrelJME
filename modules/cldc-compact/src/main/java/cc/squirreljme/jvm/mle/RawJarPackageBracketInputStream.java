@@ -47,6 +47,24 @@ public class RawJarPackageBracketInputStream
 	public RawJarPackageBracketInputStream(JarPackageBracket __jar)
 		throws IOException, NullPointerException
 	{
+		this(__jar, 0);
+	}
+	
+	/**
+	 * Initializes the input stream to read the raw JAR.
+	 * 
+	 * @param __jar The JAR to read raw data from.
+	 * @param __offset The initial read offset.
+	 * @throws IndexOutOfBoundsException If the offset is out of bounds.
+	 * @throws IOException If reading from the given JAR in its
+	 * raw data form is not possible.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/04/09
+	 */
+	public RawJarPackageBracketInputStream(JarPackageBracket __jar,
+		int __offset)
+		throws IndexOutOfBoundsException, IOException, NullPointerException
+	{
 		if (__jar == null)
 			throw new NullPointerException("NARG");
 		
@@ -57,9 +75,14 @@ public class RawJarPackageBracketInputStream
 			throw new IOException("ZZ3u " +
 				JarPackageShelf.libraryPath(__jar));
 		
+		// {@squirreljme.error ZZ4j Invalid offset into direct JAR.}
+		if (__offset < 0 || __offset > jarSize)
+			throw new IndexOutOfBoundsException("ZZ4j");
+		
 		// Set for later
 		this.jar = __jar;
 		this.jarSize = jarSize;
+		this._readPos = __offset;
 	}
 	
 	/**
