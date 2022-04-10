@@ -579,7 +579,9 @@ public abstract class VMFactory
 			__name.endsWith(".jad") || __name.endsWith(".JAD") ||
 			__name.endsWith(".jam") || __name.endsWith(".JAM") ||
 			__name.endsWith(".sqc") || __name.endsWith(".SQC") ||
-			__name.endsWith(".kjx") || __name.endsWith(".KJX")))
+			__name.endsWith(".kjx") || __name.endsWith(".KJX") ||
+			__name.endsWith(".prc") || __name.endsWith(".PRC") ||
+			__name.endsWith(".pdb") || __name.endsWith(".PDB")))
 			return __name;
 		
 		// Get the base name of the JAR or SQC

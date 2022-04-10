@@ -81,7 +81,9 @@ public final class PathSuiteManager
 					if (fn.endsWith(".jar") || fn.endsWith(".JAR") ||
 						fn.endsWith(".jad") || fn.endsWith(".JAD") ||
 						fn.endsWith(".jam") || fn.endsWith(".JAM") ||
-						fn.endsWith(".kjx") || fn.endsWith(".KJX"))
+						fn.endsWith(".kjx") || fn.endsWith(".KJX") ||
+						fn.endsWith(".prc") || fn.endsWith(".PRC") ||
+						fn.endsWith(".pdb") || fn.endsWith(".PDB"))
 						rv.add(fn);
 				}
 			}

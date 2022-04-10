@@ -56,7 +56,9 @@ public final class __JarWalker__
 		if (fn.endsWith(".jar") || fn.endsWith(".JAR") ||
 			fn.endsWith(".jad") || fn.endsWith(".JAD") ||
 			fn.endsWith(".jam") || fn.endsWith(".JAM") ||
-			fn.endsWith(".kjx") || fn.endsWith(".KJX"))
+			fn.endsWith(".kjx") || fn.endsWith(".KJX") ||
+			fn.endsWith(".prc") || fn.endsWith(".PRC") ||
+			fn.endsWith(".pdb") || fn.endsWith(".PDB"))
 			this._files.add(__path.toString());
 		
 		// The default way is to just handle it
