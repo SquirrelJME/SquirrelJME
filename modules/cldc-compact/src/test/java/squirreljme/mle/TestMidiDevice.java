@@ -22,10 +22,13 @@ import net.multiphasicapps.tac.TestRunnable;
 public class TestMidiDevice
 	extends TestRunnable
 {
-	/** MIDI note on and off event. */
-	private static final byte[] _MIDI_SEQUENCE =
-		new byte[]{(byte)0b1001_0000, 60, 24,
-			(byte)0b1000_0000, 60, 24};
+	/** MIDI note on event. */
+	private static final byte[] _MIDI_NOTE_ON =
+		new byte[]{(byte)0b1001_0000, 60, 127};
+	
+	/** MIDI note off event. */
+	private static final byte[] _MIDI_NOTE_OFF =
+		new byte[]{(byte)0b1000_0000, 60, 127};
 	
 	/**
 	 * {@inheritDoc}
@@ -63,8 +66,20 @@ public class TestMidiDevice
 							// Send the MIDI event over
 						case TRANSMIT:
 							MidiShelf.dataTransmit(port,
-								TestMidiDevice._MIDI_SEQUENCE, 0,
-								TestMidiDevice._MIDI_SEQUENCE.length);
+								TestMidiDevice._MIDI_NOTE_ON, 0,
+								TestMidiDevice._MIDI_NOTE_ON.length);
+							
+							try
+							{
+								Thread.sleep(1_000);
+							}
+							catch (InterruptedException e)
+							{
+							}
+							
+							MidiShelf.dataTransmit(port,
+								TestMidiDevice._MIDI_NOTE_OFF, 0,
+								TestMidiDevice._MIDI_NOTE_OFF.length);
 							break;
 					}
 				}
