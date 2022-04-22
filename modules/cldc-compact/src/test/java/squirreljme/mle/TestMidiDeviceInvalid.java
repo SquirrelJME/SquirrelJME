@@ -117,7 +117,7 @@ public class TestMidiDeviceInvalid
 						break;
 					
 					default:
-						break;
+						return;
 				}
 				
 				// Should not be reached

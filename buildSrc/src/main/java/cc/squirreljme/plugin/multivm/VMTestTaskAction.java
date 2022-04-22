@@ -133,7 +133,7 @@ public class VMTestTaskAction
 		
 		// Determine the number of tests
 		Set<String> testNames = VMHelpers.runningTests(
-			__task.getProject(), sourceSet).keySet();
+			__task.getProject(), sourceSet).tests.keySet();
 		int numTests = testNames.size();
 		
 		// Determine system properties to use for testing

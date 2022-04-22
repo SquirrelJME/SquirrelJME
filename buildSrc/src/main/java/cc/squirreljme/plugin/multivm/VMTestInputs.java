@@ -58,7 +58,7 @@ public class VMTestInputs
 		
 		// The source and result of the test make up the input
 		for (CandidateTestFiles file : VMHelpers.runningTests(
-			this.task.getProject(), this.sourceSet).values())
+			this.task.getProject(), this.sourceSet).tests.values())
 		{
 			result.add(file.sourceCode.absolute);
 			

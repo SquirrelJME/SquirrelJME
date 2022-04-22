@@ -85,9 +85,17 @@ public class VMTestTask
 			new VMTestOutputs(this, __sourceSet, __vmType)));
 		
 		// Add additional testing to see if our test run will not be up to
-		// date when we run these
-		this.getOutputs().upToDateWhen(
-			new VMRunUpToDateWhen(__sourceSet, __vmType));
+		// date when we run these. Also this is never up to date if
+		// test.single/single.test is used because we do not want to
+		// interfere with the caching or not running tests in such
+		// situations.
+		this.getOutputs().upToDateWhen((__task) ->
+			{
+				return new VMRunUpToDateWhen(__sourceSet, __vmType)
+						.isSatisfiedBy(__task) &&
+					!VMHelpers.runningTests(__task.getProject(),
+						this.sourceSet).isSingle;
+			});
 		
 		// Only run if there are actual tests to run
 		this.onlyIf(new CheckForTests(__sourceSet));
