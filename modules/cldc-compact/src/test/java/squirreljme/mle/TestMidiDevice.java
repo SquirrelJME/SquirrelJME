@@ -24,8 +24,8 @@ public class TestMidiDevice
 {
 	/** MIDI note on and off event. */
 	private static final byte[] _MIDI_SEQUENCE =
-		new byte[]{(byte)0b1001_0000, 60, 127,
-			(byte)0b1000_0000, 60, 127};
+		new byte[]{(byte)0b1001_0000, 60, 24,
+			(byte)0b1000_0000, 60, 24};
 	
 	/**
 	 * {@inheritDoc}
@@ -52,8 +52,7 @@ public class TestMidiDevice
 					switch (direction)
 					{
 						case RECEIVE:
-							if (true)
-								throw Debugging.todo();
+							Debugging.todoNote("Receive test?");
 							break;
 						
 							// Send the MIDI event over
