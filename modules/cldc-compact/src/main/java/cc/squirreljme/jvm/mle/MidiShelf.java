@@ -21,7 +21,8 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 public final class MidiShelf
 {
 	/**
-	 * This reads data that is incoming from
+	 * This reads data that is incoming from a MIDI device, it may not include
+	 * a full event and may only be in partial form.
 	 * 
 	 * @param __port The port to receive data from.
 	 * @param __b The buffer.
