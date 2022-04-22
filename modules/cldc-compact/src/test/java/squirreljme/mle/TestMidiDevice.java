@@ -49,6 +49,9 @@ public class TestMidiDevice
 				for (MidiPortBracket port : MidiShelf.ports(device,
 					direction.flag))
 				{
+					Debugging.debugNote("Ports: %s for %s%n",
+						port, direction);
+					
 					switch (direction)
 					{
 						case RECEIVE:

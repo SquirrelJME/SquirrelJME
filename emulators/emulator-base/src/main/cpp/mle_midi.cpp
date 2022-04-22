@@ -10,7 +10,7 @@
 #include "squirreljme.h"
 
 // The class to forward to
-#define TERMINAL_CLASSNAME "cc/squirreljme/emulator/EmulatedMidiShelf"
+#define MIDI_CLASSNAME "cc/squirreljme/emulator/EmulatedMidiShelf"
 
 #define MIDI_DATARECEIVE_DESC "(Lcc/squirreljme/jvm/mle/brackets/MidiPortBracket;[BII)I"
 #define MIDI_DATATRANSMIT_DESC "(Lcc/squirreljme/jvm/mle/brackets/MidiPortBracket;[BII)V"
@@ -21,7 +21,7 @@
 JNIEXPORT jint JNICALL Impl_mle_MidiShelf_dataReceive(JNIEnv* env,
 	jclass classy, jobject port, jbyteArray buf, jint off, jint len)
 {
-	return forwardCallStaticInteger(env, TERMINAL_CLASSNAME,
+	return forwardCallStaticInteger(env, MIDI_CLASSNAME,
 		"dataReceive", MIDI_DATARECEIVE_DESC,
 		port, buf, off, len);
 }
@@ -29,15 +29,15 @@ JNIEXPORT jint JNICALL Impl_mle_MidiShelf_dataReceive(JNIEnv* env,
 JNIEXPORT void JNICALL Impl_mle_MidiShelf_dataTransmit(JNIEnv* env,
 	jclass classy, jobject port, jbyteArray buf, jint off, jint len)
 {
-	forwardCallStaticVoid(env, TERMINAL_CLASSNAME,
-		"dataTransmit", MIDI_DATARECEIVE_DESC,
+	forwardCallStaticVoid(env, MIDI_CLASSNAME,
+		"dataTransmit", MIDI_DATATRANSMIT_DESC,
 		port, buf, off, len);
 }
 
 JNIEXPORT jstring JNICALL Impl_mle_MidiShelf_deviceName(JNIEnv* env,
 	jclass classy, jobject device)
 {
-	return (jstring)forwardCallStaticObject(env, TERMINAL_CLASSNAME,
+	return (jstring)forwardCallStaticObject(env, MIDI_CLASSNAME,
 		"deviceName", MIDI_DEVICENAME_DESC,
 		device);
 }
@@ -45,16 +45,16 @@ JNIEXPORT jstring JNICALL Impl_mle_MidiShelf_deviceName(JNIEnv* env,
 JNIEXPORT jobjectArray JNICALL Impl_mle_MidiShelf_devices(JNIEnv* env,
 	jclass classy)
 {
-	return (jobjectArray)forwardCallStaticObject(env, TERMINAL_CLASSNAME,
+	return (jobjectArray)forwardCallStaticObject(env, MIDI_CLASSNAME,
 		"devices", MIDI_DEVICES_DESC);
 }
 
 JNIEXPORT jobjectArray JNICALL Impl_mle_MidiShelf_ports(JNIEnv* env,
-	jclass classy, jobject device)
+	jclass classy, jobject device, jboolean transmit)
 {
-	return (jobjectArray)forwardCallStaticObject(env, TERMINAL_CLASSNAME,
+	return (jobjectArray)forwardCallStaticObject(env, MIDI_CLASSNAME,
 		"ports", MIDI_PORTS_DESC,
-		device);
+		device, transmit);
 }
 
 static const JNINativeMethod mleMidiMethods[] =

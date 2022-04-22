@@ -13,6 +13,13 @@ import cc.squirreljme.jvm.mle.brackets.MidiDeviceBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.ArrayList;
+import java.util.List;
+import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Receiver;
+import javax.sound.midi.Transmitter;
 
 /**
  * As {@link MidiShelf}.
@@ -39,7 +46,16 @@ public class EmulatedMidiShelf
 		byte[] __b, int __o, int __l)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__port == null || __b == null || __o < 0 || __l < 0 ||
+			(__o + __l) > __b.length)
+			throw new MLECallError("Invalid arguments.");
+		
+		EmulatedMidiPortBracket emul = (EmulatedMidiPortBracket)__port;
+		if (emul._receiver == null)
+			throw new MLECallError("Not a MIDI receiver.");
+		
+		Debugging.todoNote("Implement MIDI receive?");
+		return 0;
 	}
 	
 	/**
@@ -58,7 +74,22 @@ public class EmulatedMidiShelf
 		byte[] __b, int __o, int __l)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__port == null || __b == null || __o < 0 || __l < 0 ||
+			(__o + __l) > __b.length)
+			throw new MLECallError("Invalid arguments.");
+		
+		EmulatedMidiPortBracket emul = (EmulatedMidiPortBracket)__port;
+		if (emul._transmitter == null)
+			throw new MLECallError("Not a MIDI transmitter.");
+			
+		// Copy data into a new buffer
+		byte[] data = new byte[__l];
+		System.arraycopy(__b, __o,
+			data, 0, __l);
+		
+		// Send the data
+		emul._transmitter.getReceiver().send(
+			new BasicMidiMessage(data), -1);
 	}
 	
 	/**
@@ -72,7 +103,10 @@ public class EmulatedMidiShelf
 	public static String deviceName(MidiDeviceBracket __device)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__device == null)
+			throw new MLECallError("Null argument.");
+		
+		return ((EmulatedMidiDeviceBracket)__device)._info.getName();
 	}
 	
 	/**
@@ -84,7 +118,19 @@ public class EmulatedMidiShelf
 	 */
 	public static MidiDeviceBracket[] devices()
 	{
-		throw Debugging.todo();
+		List<EmulatedMidiDeviceBracket> result = new ArrayList<>();
+		
+		for (MidiDevice.Info info : MidiSystem.getMidiDeviceInfo())
+			try
+			{
+				result.add(new EmulatedMidiDeviceBracket(
+					MidiSystem.getMidiDevice(info), info));
+			}
+			catch (MidiUnavailableException|IllegalArgumentException ignored)
+			{
+			}
+		
+		return result.toArray(new EmulatedMidiDeviceBracket[result.size()]);
 	}
 	
 	/**
@@ -102,6 +148,53 @@ public class EmulatedMidiShelf
 		boolean __transmit)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__device == null)
+			throw new MLECallError("Null argument.");
+		
+		MidiPortBracket result = null;
+		EmulatedMidiDeviceBracket emul = (EmulatedMidiDeviceBracket)__device;
+		
+		// Transmitter?
+		try
+		{
+			// Does the device need to actually be opened?
+			if (!emul._device.isOpen())
+				emul._device.open();
+			
+			if (__transmit)
+			{
+				// Use already claimed one?
+				for (Transmitter transmitter : emul._device.getTransmitters())
+					result = new EmulatedMidiPortBracket(transmitter);
+				
+				// Make new one?
+				if (result == null)
+					result = new EmulatedMidiPortBracket(
+						emul._device.getTransmitter());
+			}
+			
+			// Receiver?
+			else
+			{
+				// Use already claimed one?
+				for (Receiver receiver : emul._device.getReceivers())
+					result = new EmulatedMidiPortBracket(receiver);
+				
+				// Make new one?
+				if (result == null)
+					result = new EmulatedMidiPortBracket(
+						emul._device.getReceiver());
+			}
+		}
+		catch (MidiUnavailableException e)
+		{
+			e.printStackTrace();
+		}
+		
+		// Use the ports that are used
+		if (result == null)
+			return new MidiPortBracket[0];
+		return new MidiPortBracket[]{result};
 	}
+	
 }
