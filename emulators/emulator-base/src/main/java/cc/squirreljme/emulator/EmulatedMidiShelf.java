@@ -23,6 +23,9 @@ import javax.sound.midi.Transmitter;
 
 /**
  * As {@link MidiShelf}.
+ * 
+ * Note that Java SE is the opposite when it comes to receivers and
+ * transmitters.
  *
  * @since 2022/04/21
  */
@@ -51,7 +54,7 @@ public class EmulatedMidiShelf
 			throw new MLECallError("Invalid arguments.");
 		
 		EmulatedMidiPortBracket emul = (EmulatedMidiPortBracket)__port;
-		if (emul._receiver == null)
+		if (emul._transmitter == null)
 			throw new MLECallError("Not a MIDI receiver.");
 		
 		Debugging.todoNote("Implement MIDI receive?");
@@ -79,7 +82,7 @@ public class EmulatedMidiShelf
 			throw new MLECallError("Invalid arguments.");
 		
 		EmulatedMidiPortBracket emul = (EmulatedMidiPortBracket)__port;
-		if (emul._transmitter == null)
+		if (emul._receiver == null)
 			throw new MLECallError("Not a MIDI transmitter.");
 			
 		// Copy data into a new buffer
@@ -88,7 +91,7 @@ public class EmulatedMidiShelf
 			data, 0, __l);
 		
 		// Send the data
-		emul._transmitter.getReceiver().send(
+		emul._receiver.send(
 			new BasicMidiMessage(data), -1);
 	}
 	
@@ -161,7 +164,7 @@ public class EmulatedMidiShelf
 			if (!emul._device.isOpen())
 				emul._device.open();
 			
-			if (__transmit)
+			if (!__transmit)
 			{
 				// Use already claimed one?
 				for (Transmitter transmitter : emul._device.getTransmitters())
