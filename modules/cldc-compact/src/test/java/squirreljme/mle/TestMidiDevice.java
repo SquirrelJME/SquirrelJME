@@ -52,7 +52,9 @@ public class TestMidiDevice
 					switch (direction)
 					{
 						case RECEIVE:
-							Debugging.todoNote("Receive test?");
+							// Call it but receive no actual data
+							MidiShelf.dataReceive(port,
+								new byte[0], 0, 0);
 							break;
 						
 							// Send the MIDI event over
