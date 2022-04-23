@@ -71,10 +71,17 @@ public class TestMidiDevice
 							
 							try
 							{
+								Debugging.debugNote("Resting %d...",
+									System.currentTimeMillis());
 								Thread.sleep(1_000);
 							}
 							catch (InterruptedException e)
 							{
+							}
+							finally
+							{
+								Debugging.debugNote("Finished %d!",
+									System.currentTimeMillis());
 							}
 							
 							MidiShelf.dataTransmit(port,
