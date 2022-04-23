@@ -106,21 +106,25 @@ public interface MIDIControl
 	int[] getProgram(int __channel)
 		throws IllegalArgumentException, IllegalStateException, MediaException;
 	
-	int[] getProgramList(int __a)
-		throws MediaException;
+	int[] getProgramList(int __bank)
+		throws IllegalArgumentException, IllegalStateException, MediaException;
 	
-	String getProgramName(int __a, int __b)
-		throws MediaException;
+	String getProgramName(int __bank, int __program)
+		throws IllegalArgumentException, IllegalStateException, MediaException;
 	
 	boolean isBankQuerySupported();
 	
-	int longMidiEvent(byte[] __a, int __b, int __c);
+	int longMidiEvent(byte[] __b, int __o, int __l)
+		throws IllegalArgumentException, IllegalStateException;
 	
-	void setChannelVolume(int __a, int __b);
+	void setChannelVolume(int __channel, int __volume)
+		throws IllegalArgumentException, IllegalStateException;
 	
-	void setProgram(int __a, int __b, int __c);
+	void setProgram(int __channel, int __bank, int __program)
+		throws IllegalArgumentException, IllegalStateException;
 	
-	void shortMidiEvent(int __a, int __b, int __c);
+	void shortMidiEvent(int __type, int __data1, int __data2)
+		throws IllegalArgumentException, IllegalStateException;
 }
 
 
