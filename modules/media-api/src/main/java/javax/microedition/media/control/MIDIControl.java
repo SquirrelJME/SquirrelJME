@@ -10,8 +10,21 @@
 package javax.microedition.media.control;
 
 import javax.microedition.media.Control;
+import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
+import javax.microedition.media.Player;
 
+/**
+ * This provides control over a MIDI device by permitting events and otherwise
+ * to be transmitted. To request a control you must call
+ * {@link Manager#createPlayer(String)} with
+ * {@link Manager#MIDI_DEVICE_LOCATOR}. Then you must call
+ * {@link Player#getControl(String)} with a value of
+ * {@code "javax.microedition.media.control.MIDIControl"} to gain access to
+ * this interface.
+ * 
+ * @since 2022/04/23
+ */
 public interface MIDIControl
 	extends Control
 {
@@ -23,16 +36,75 @@ public interface MIDIControl
 	int NOTE_ON =
 		144;
 	
-	int[] getBankList(boolean __a)
-		throws MediaException;
+	/**
+	 * Returns the list of installed banks, which may optionally include
+	 * custom ones.
+	 * 
+	 * @param __custom If set to {@code true} will return custom banks only,
+	 * otherwise every blank including custom ones will be returned when
+	 * {@code false}.
+	 * @return The list of banks, each bank will be a value of [0, 16383].
+	 * @throws IllegalStateException If the {@link Player} has not been
+	 * {@link Player#PREFETCHED}.
+	 * @throws MediaException If {@link #isBankQuerySupported()} is
+	 * {@code false}.
+	 * @since 2022/04/23
+	 */
+	int[] getBankList(boolean __custom)
+		throws IllegalStateException, MediaException;
 	
-	int getChannelVolume(int __a);
+	/**
+	 * Returns the volume for the given channel if it is possible, the
+	 * implementation may know the volume or keep track of it potentially.
+	 * 
+	 * @param __channel The channel to request, within [0, 15].
+	 * @return Will return the channel volume [0, 127], or {@code -1} if not
+	 * known.
+	 * @throws IllegalArgumentException If the channel is out of range.
+	 * @throws IllegalStateException If the {@link Player} has not been
+	 * {@link Player#PREFETCHED}.
+	 * @since 2022/04/23
+	 */
+	int getChannelVolume(int __channel)
+		throws IllegalArgumentException, IllegalStateException;
 	
-	String getKeyName(int __a, int __b, int __c)
-		throws MediaException;
+	/**
+	 * Returns the name of the given key within a bank and program.
+	 * 
+	 * @param __bank The bank, within [0, 16383].
+	 * @param __prog The program, within [0, 127].
+	 * @param __key The key, within [0, 127].
+	 * @return The name of the key or {@code null} if it is not mapped to
+	 * a sound, melodic banks which only play a single sound at a different
+	 * pitch will return {@code null}.
+	 * @throws IllegalArgumentException If the bank, program, or key is not
+	 * within bounds.
+	 * @throws IllegalStateException If the {@link Player} has not been
+	 * {@link Player#PREFETCHED}.
+	 * @throws MediaException If the given bank and program is not installed;
+	 * or if {@link #isBankQuerySupported()} is {@code false}.
+	 * @since 2022/04/23
+	 */
+	String getKeyName(int __bank, int __prog, int __key)
+		throws IllegalArgumentException, IllegalStateException, MediaException;
 	
-	int[] getProgram(int __a)
-		throws MediaException;
+	/**
+	 * Returns the program that is currently assigned to the given channel.
+	 * 
+	 * If the device is not initialized, this may return a default 
+	 * implementation defined value.
+	 * 
+	 * @param __channel The channel to query, within [0, 15].
+	 * @return An array specifying {@code [bank, program]}.
+	 * @throws IllegalArgumentException If the channel is out of range.
+	 * @throws IllegalStateException If the {@link Player} has not been
+	 * {@link Player#PREFETCHED}.
+	 * @throws MediaException If {@link #isBankQuerySupported()} is
+	 * {@code false}.
+	 * @since 2022/04/23
+	 */
+	int[] getProgram(int __channel)
+		throws IllegalArgumentException, IllegalStateException, MediaException;
 	
 	int[] getProgramList(int __a)
 		throws MediaException;

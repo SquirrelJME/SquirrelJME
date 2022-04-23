@@ -14,10 +14,14 @@ import cc.squirreljme.runtime.media.NullPlayer;
 import cc.squirreljme.runtime.media.SystemNanoTimeBase;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.microedition.media.control.MIDIControl;
 import javax.microedition.media.protocol.DataSource;
 
 public final class Manager
 {
+	/**
+	 * Special player which is used to allow access to a {@link MIDIControl}.
+	 */
 	public static final String MIDI_DEVICE_LOCATOR =
 		"device://midi";
 	
