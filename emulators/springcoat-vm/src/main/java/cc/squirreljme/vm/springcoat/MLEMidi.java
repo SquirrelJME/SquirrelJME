@@ -12,7 +12,6 @@ import cc.squirreljme.jvm.mle.MidiShelf;
 import cc.squirreljme.jvm.mle.brackets.MidiDeviceBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.MidiDeviceObject;
 import cc.squirreljme.vm.springcoat.brackets.MidiPortObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;

@@ -15,9 +15,11 @@ import javax.microedition.media.MediaException;
 public interface MIDIControl
 	extends Control
 {
+	/** The control change event. */
 	int CONTROL_CHANGE =
 		176;
 	
+	/** The note on event. */
 	int NOTE_ON =
 		144;
 	
