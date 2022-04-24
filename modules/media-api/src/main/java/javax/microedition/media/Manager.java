@@ -12,6 +12,7 @@ package javax.microedition.media;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.media.NullPlayer;
 import cc.squirreljme.runtime.media.SystemNanoTimeBase;
+import cc.squirreljme.runtime.media.midi.MidiControlPlayer;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.media.control.MIDIControl;
@@ -51,10 +52,21 @@ public final class Manager
 		throw new todo.TODO();
 	}
 	
-	public static Player createPlayer(String __a)
-		throws IOException, MediaException
+	public static Player createPlayer(String __locator)
+		throws IOException, MediaException, NullPointerException
 	{
-		todo.TODO.note("createPlayer(%s)%n", __a);
+		if (__locator == null)
+			throw new NullPointerException("NARG");
+		
+		// Using pre-defined locators?
+		switch (__locator)
+		{
+				// MIDI devices?
+			case Manager.MIDI_DEVICE_LOCATOR:
+				return MidiControlPlayer.newMidiPlayer();
+		}
+		
+		todo.TODO.note("createPlayer(%s)%n", __locator);
 		if (true)
 			return new NullPlayer("application/octet-stream");
 			

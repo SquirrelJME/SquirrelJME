@@ -12,7 +12,7 @@ package javax.microedition.media;
 
 public interface Controllable
 {
-	Control getControl(String __a);
+	Control getControl(String __control);
 	
 	Control[] getControls();
 }

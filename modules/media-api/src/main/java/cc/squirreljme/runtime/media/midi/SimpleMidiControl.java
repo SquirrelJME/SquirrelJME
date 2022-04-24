@@ -21,6 +21,10 @@ import javax.microedition.media.control.MIDIControl;
 public abstract class SimpleMidiControl
 	implements MIDIControl
 {
+	/** Short MIDI message buffer. */
+	private final byte[] _shortBuf =
+		new byte[3];
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/04/23
@@ -29,7 +33,7 @@ public abstract class SimpleMidiControl
 	public final int[] getBankList(boolean __custom)
 		throws IllegalStateException, MediaException
 	{
-		throw Debugging.todo();
+		throw new MediaException("NOPE");
 	}
 	
 	/**
@@ -51,7 +55,7 @@ public abstract class SimpleMidiControl
 	public final String getKeyName(int __bank, int __prog, int __key)
 		throws IllegalArgumentException, IllegalStateException, MediaException
 	{
-		throw Debugging.todo();
+		throw new MediaException("NOPE");
 	}
 	
 	/**
@@ -62,7 +66,7 @@ public abstract class SimpleMidiControl
 	public final int[] getProgram(int __channel)
 		throws IllegalArgumentException, IllegalStateException, MediaException
 	{
-		throw Debugging.todo();
+		throw new MediaException("NOPE");
 	}
 	
 	/**
@@ -73,7 +77,7 @@ public abstract class SimpleMidiControl
 	public final int[] getProgramList(int __bank)
 		throws IllegalArgumentException, IllegalStateException, MediaException
 	{
-		throw Debugging.todo();
+		throw new MediaException("NOPE");
 	}
 	
 	/**
@@ -84,7 +88,7 @@ public abstract class SimpleMidiControl
 	public final String getProgramName(int __bank, int __program)
 		throws IllegalArgumentException, IllegalStateException, MediaException
 	{
-		throw Debugging.todo();
+		throw new MediaException("NOPE");
 	}
 	
 	/**
@@ -94,7 +98,7 @@ public abstract class SimpleMidiControl
 	@Override
 	public final boolean isBankQuerySupported()
 	{
-		throw Debugging.todo();
+		return false;
 	}
 	
 	/**
@@ -127,6 +131,31 @@ public abstract class SimpleMidiControl
 	public final void shortMidiEvent(int __type, int __data1, int __data2)
 		throws IllegalArgumentException, IllegalStateException
 	{
-		throw Debugging.todo();
+		// {@squirreljme.error EA0a Invalid event type. (The event)}
+		if (!((__type >= 0x80 && __type < 0xF0) ||
+			(__type >= 0xF8 && __type <= 0xFF)))
+			throw new IllegalArgumentException("EA0a " + __type);
+		
+		// Need this so that we know how much data to actually send
+		int msgLen = MidiUtils.midiMessageLength(__type);
+		
+		// Check sub-event parameters
+		// {@squirreljme.error EA0b MIDI event out of range.}
+		if (msgLen >= 2 && (__data1 < 0 || __data1 > 127))
+			throw new IllegalArgumentException(
+				"EA0b " + __type + " " + __data1);
+		if (msgLen >= 3 && (__data2 < 0 || __data2 > 127))
+			throw new IllegalArgumentException(
+				"EA0b " + __type + " " + __data1 + " " + __data2);
+		
+		// Fill short buffer with the data, we use the same buffer over and
+		// over so we do not just keep allocating memory
+		byte[] shortBuf = this._shortBuf;
+		shortBuf[0] = (byte)__type;
+		shortBuf[1] = (byte)__data1;
+		shortBuf[2] = (byte)__data2;
+		
+		// Forward to long event handler which does no checking
+		this.longMidiEvent(shortBuf, 0, msgLen);
 	}
 }
