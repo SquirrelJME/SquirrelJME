@@ -10,9 +10,11 @@
 package javax.microedition.media;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.io.MarkableInputStream;
 import cc.squirreljme.runtime.media.NullPlayer;
 import cc.squirreljme.runtime.media.SystemNanoTimeBase;
 import cc.squirreljme.runtime.media.midi.MidiControlPlayer;
+import cc.squirreljme.runtime.media.midi.MidiPlayer;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.media.control.MIDIControl;
@@ -38,12 +40,35 @@ public final class Manager
 	{
 	}
 	
-	public static Player createPlayer(InputStream __a, String __b)
-		throws IOException, MediaException
+	public static Player createPlayer(InputStream __in, String __contentType)
+		throws IOException, MediaException, NullPointerException
 	{
-		todo.TODO.note("createPlayer(%s, %s)%n", __a, __b);
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Always make these streams markable
+		if (!__in.markSupported())
+			__in = new MarkableInputStream(__in);
+		
+		// Do we need to guess the content type for the stream?
+		if (__contentType == null)
+			__contentType = Manager.__guessContentType(__in);
+		
+		// Depends on the content type
+		switch (__contentType)
+		{
+				// MIDI
+			case "application/x-midi":
+			case "audio/midi":
+			case "audio/x-mid":
+			case "audio/x-midi":
+			case "music/crescendo":
+				return new MidiPlayer(__in);
+		}
+		
+		todo.TODO.note("createPlayer(%s, %s)%n", __in, __contentType);
 		if (true)
-			return new NullPlayer(__b);
+			return new NullPlayer(__contentType);
 		
 		if (false)
 			throw new IOException();
@@ -119,6 +144,38 @@ public final class Manager
 	{
 		Debugging.todoNote("playTone(%d, %d, %d)",
 			__note, __duration, __volume);
+	}
+	
+	/**
+	 * Attempts to guess the content type of the stream.
+	 * 
+	 * @param __in The stream to guess.
+	 * @return The guessed content type or {@code null} if it could not be
+	 * determined.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/04/24
+	 */
+	private static String __guessContentType(InputStream __in)
+		throws IOException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Read in header completely
+		__in.mark(4);
+		int a = __in.read();
+		int b = __in.read();
+		int c = __in.read();
+		int d = __in.read();
+		__in.reset();
+		
+		// MIDI (MThd)
+		if (a == 'M' && b == 'T' && c == 'h' && d == 'd')
+			return "audio/midi";
+		
+		// Unknown
+		return null;
 	}
 }
 

@@ -232,7 +232,7 @@ public class MidiControlPlayer
 			{
 				// Always set a fallback, as long as the device has at least
 				// one transmit port we can send data to
-				if (fallback == null && MidiShelf.ports(selectedDevice,
+				if (fallback == null && MidiShelf.ports(device,
 					true).length > 0)
 					fallback = device;
 				
