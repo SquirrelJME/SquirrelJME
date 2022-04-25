@@ -109,6 +109,17 @@ public class MidiPlayer
 		// Realize loads everything, so...
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/04/24
+	 */
+	@Override
+	protected void becomingStarted()
+		throws MediaException
+	{
+		throw Debugging.todo();
+	}
+	
 	@Override
 	public void close()
 	{
@@ -146,20 +157,7 @@ public class MidiPlayer
 	}
 	
 	@Override
-	public void setLoopCount(int __a)
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
 	public long setMediaTime(long __now)
-		throws MediaException
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public void start()
 		throws MediaException
 	{
 		throw Debugging.todo();

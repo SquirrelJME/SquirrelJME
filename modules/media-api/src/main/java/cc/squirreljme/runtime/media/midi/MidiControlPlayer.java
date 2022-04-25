@@ -151,7 +151,7 @@ public class MidiControlPlayer
 	}
 	
 	@Override
-	public void setLoopCount(int __a)
+	public void setLoopCount(int __count)
 	{
 		throw Debugging.todo();
 	}

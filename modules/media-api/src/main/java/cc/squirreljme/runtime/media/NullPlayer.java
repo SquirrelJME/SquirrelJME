@@ -56,6 +56,17 @@ public final class NullPlayer
 	 * @since 2022/04/24
 	 */
 	@Override
+	protected void becomingStarted()
+		throws MediaException
+	{
+		// Does nothing
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/04/24
+	 */
+	@Override
 	protected void becomingPrefetched()
 		throws MediaException
 	{
@@ -165,15 +176,6 @@ public final class NullPlayer
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/15
-	 */
-	@Override
-	public final void setLoopCount(int __a)
-	{
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/15
 	 * @param __now
 	 */
 	@Override
@@ -190,36 +192,6 @@ public final class NullPlayer
 			
 			return Player.TIME_UNKNOWN;
 		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/15
-	 */
-	@Override
-	public final void start()
-		throws MediaException
-	{
-		// {@squirreljme.error EA05 Null Player has been closed.}
-		int state = this.getState();
-		if (state == Player.CLOSED)
-			throw new IllegalStateException("EA05");
-		
-		// Ignore when started
-		if (state == Player.STARTED)
-			return;
-		
-		// The player needs to be prefetched first?
-		if (state == Player.UNREALIZED ||
-			state == Player.REALIZED)
-			this.prefetch();
-		
-		// Set new state
-		this.setState(Player.STARTED);
-		
-		// Send event
-		this.broadcastEvent(PlayerListener.STARTED,
-			this.getTimeBase().getTime());
 	}
 	
 	/**

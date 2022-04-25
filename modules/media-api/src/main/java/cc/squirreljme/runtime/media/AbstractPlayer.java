@@ -8,6 +8,7 @@
 
 package cc.squirreljme.runtime.media;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.LinkedList;
 import java.util.List;
 import javax.microedition.media.Manager;
@@ -35,6 +36,10 @@ public abstract class AbstractPlayer
 	private final TimeBase _defaultTimeBase =
 		Manager.getSystemTimeBase();
 	
+	/** The loop counter which controls how much the audio replays. */
+	protected volatile int loopCounter =
+		1;
+	
 	/** The state of the player. */
 	private volatile int _state =
 		Player.UNREALIZED;
@@ -59,6 +64,15 @@ public abstract class AbstractPlayer
 	}
 	
 	/**
+	 * This is called when the player is becoming prefetched.
+	 * 
+	 * @throws MediaException If the player cannot be prefetched.
+	 * @since 2022/04/24
+	 */
+	protected abstract void becomingPrefetched()
+		throws MediaException;
+	
+	/**
 	 * This is called when the player is becoming realized.
 	 * 
 	 * @throws MediaException If the player cannot be realized.
@@ -68,12 +82,12 @@ public abstract class AbstractPlayer
 		throws MediaException;
 	
 	/**
-	 * This is called when the player is becoming prefetched.
+	 * Indicates that the media is about to start.
 	 * 
-	 * @throws MediaException If the player cannot be prefetched.
+	 * @throws MediaException If the player could not be started.
 	 * @since 2022/04/24
 	 */
-	protected abstract void becomingPrefetched()
+	protected abstract void becomingStarted()
 		throws MediaException;
 	
 	/**
@@ -242,6 +256,28 @@ public abstract class AbstractPlayer
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2022/04/24
+	 */
+	@Override
+	public void setLoopCount(int __count)
+		throws IllegalArgumentException, IllegalStateException
+	{
+		// {@squirreljme.error EA0g Invalid loop count. (The count)}
+		if (__count == 0 || __count < -1)
+			throw new IllegalArgumentException("EA0g " + __count);
+		
+		// {@squirreljme.error EA0h Cannot set the loop count when the
+		// player has started or is closed.}
+		int state = this.getState();
+		if (state == Player.CLOSED || state == Player.STARTED)
+			throw new IllegalStateException("EA0h");
+		
+		// Set the internal loop counter
+		this.loopCounter = __count;
+	}
+	
+	/**
 	 * Sets the state.
 	 * 
 	 * @param __state The state to set.
@@ -275,5 +311,36 @@ public abstract class AbstractPlayer
 	public final void setTimeBase(TimeBase __timeBase)
 	{
 		this._currentTimebase = __timeBase;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/15
+	 */
+	@Override
+	public final void start()
+		throws MediaException
+	{
+		// {@squirreljme.error EA05 Null Player has been closed.}
+		int state = this.getState();
+		if (state == Player.CLOSED)
+			throw new IllegalStateException("EA05");
+		
+		// Ignore when started
+		if (state == Player.STARTED)
+			return;
+		
+		// The player needs to be prefetched first?
+		if (state == Player.UNREALIZED ||
+			state == Player.REALIZED)
+			this.prefetch();
+		
+		// Is being started now
+		this.becomingStarted();
+		this.setState(Player.STARTED);
+		
+		// Send event
+		this.broadcastEvent(PlayerListener.STARTED,
+			this.getTimeBase().getTime());
 	}
 }

@@ -54,7 +54,8 @@ public interface Player
 	
 	void removePlayerListener(PlayerListener __a);
 	
-	void setLoopCount(int __a);
+	void setLoopCount(int __count)
+		throws IllegalArgumentException, IllegalStateException;
 	
 	long setMediaTime(long __now)
 		throws MediaException;
