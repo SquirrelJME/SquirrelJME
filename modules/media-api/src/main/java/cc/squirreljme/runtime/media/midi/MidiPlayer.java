@@ -10,13 +10,13 @@ package cc.squirreljme.runtime.media.midi;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
+import cc.squirreljme.runtime.media.AbstractPlayer;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.media.Control;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
-import javax.microedition.media.PlayerListener;
 import javax.microedition.media.TimeBase;
 import javax.microedition.media.control.MIDIControl;
 
@@ -26,7 +26,7 @@ import javax.microedition.media.control.MIDIControl;
  * @since 2022/04/24
  */
 public class MidiPlayer
-	implements Player
+	extends AbstractPlayer
 {
 	/** The control used to emit MIDI sounds. */
 	protected final Control control;
@@ -46,6 +46,8 @@ public class MidiPlayer
 	public MidiPlayer(InputStream __in)
 		throws IOException, MediaException, NullPointerException
 	{
+		super("audio/midi");
+		
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
@@ -58,12 +60,6 @@ public class MidiPlayer
 	}
 	
 	@Override
-	public void addPlayerListener(PlayerListener __a)
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
 	public void close()
 	{
 		throw Debugging.todo();
@@ -71,12 +67,6 @@ public class MidiPlayer
 	
 	@Override
 	public void deallocate()
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public String getContentType()
 	{
 		throw Debugging.todo();
 	}
@@ -106,12 +96,6 @@ public class MidiPlayer
 	}
 	
 	@Override
-	public int getState()
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
 	public TimeBase getTimeBase()
 	{
 		throw Debugging.todo();
@@ -127,12 +111,6 @@ public class MidiPlayer
 	@Override
 	public void realize()
 		throws MediaException
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public void removePlayerListener(PlayerListener __a)
 	{
 		throw Debugging.todo();
 	}
