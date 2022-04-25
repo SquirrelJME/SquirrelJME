@@ -28,7 +28,7 @@ public class MidiPlayer
 	extends AbstractPlayer
 {
 	/** The control used to emit MIDI sounds. */
-	protected final Control control;
+	protected final MIDIControl midiControl;
 	
 	/** The un-realized input stream. */
 	protected volatile InputStream _unrealizedIn;
@@ -55,7 +55,8 @@ public class MidiPlayer
 		
 		// We need a player to emit the MIDI events to
 		Player midiPlayer = Manager.createPlayer(Manager.MIDI_DEVICE_LOCATOR);
-		this.control = midiPlayer.getControl(MIDIControl.class.getName());
+		this.midiControl = (MIDIControl)midiPlayer.getControl(
+			MIDIControl.class.getName());
 		
 		// For later realization
 		this._unrealizedIn = __in;
@@ -106,7 +107,7 @@ public class MidiPlayer
 	protected void becomingPrefetched()
 		throws MediaException
 	{
-		// Realize loads everything, so...
+		// Load more information about the MIDI, such as its length
 	}
 	
 	/**
@@ -138,10 +139,14 @@ public class MidiPlayer
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/04/24
+	 */
 	@Override
 	public Control[] getControls()
 	{
-		throw Debugging.todo();
+		return new Control[]{this.midiControl};
 	}
 	
 	@Override
