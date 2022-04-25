@@ -17,7 +17,6 @@ import javax.microedition.media.Control;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
-import javax.microedition.media.TimeBase;
 import javax.microedition.media.control.MIDIControl;
 
 /**
@@ -31,8 +30,11 @@ public class MidiPlayer
 	/** The control used to emit MIDI sounds. */
 	protected final Control control;
 	
+	/** The un-realized input stream. */
+	protected volatile InputStream _unrealizedIn;
+	
 	/** The MIDI track data. */
-	protected final byte[] data;
+	protected volatile byte[] _data;
 	
 	/**
 	 * Initializes the MIDI player.
@@ -55,8 +57,56 @@ public class MidiPlayer
 		Player midiPlayer = Manager.createPlayer(Manager.MIDI_DEVICE_LOCATOR);
 		this.control = midiPlayer.getControl(MIDIControl.class.getName());
 		
-		// Read in all of the MIDI data
-		this.data = StreamUtils.readAll(__in);
+		// For later realization
+		this._unrealizedIn = __in;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/04/24
+	 */
+	@Override
+	protected void becomingRealized()
+		throws MediaException
+	{
+		try
+		{
+			// If data is already here, stop
+			byte[] data = this._data;
+			if (data != null)
+				return;
+			
+			// Otherwise 
+			synchronized (this)
+			{
+				// Double check?
+				data = this._data;
+				if (data != null)
+					return;
+				
+				// Read in the data and drop the unrealized stream
+				this._data = StreamUtils.readAll(this._unrealizedIn);
+				this._unrealizedIn = null;
+			}
+		}
+		catch (IOException e)
+		{
+			// {@squirreljme.error EA0f Failed to realize MIDI data.}
+			MediaException toss = new MediaException("EA0f");
+			toss.initCause(e);
+			throw toss;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/04/24
+	 */
+	@Override
+	protected void becomingPrefetched()
+		throws MediaException
+	{
+		// Realize loads everything, so...
 	}
 	
 	@Override
@@ -96,26 +146,6 @@ public class MidiPlayer
 	}
 	
 	@Override
-	public TimeBase getTimeBase()
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public void prefetch()
-		throws MediaException
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public void realize()
-		throws MediaException
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
 	public void setLoopCount(int __a)
 	{
 		throw Debugging.todo();
@@ -123,13 +153,6 @@ public class MidiPlayer
 	
 	@Override
 	public long setMediaTime(long __now)
-		throws MediaException
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public void setTimeBase(TimeBase __a)
 		throws MediaException
 	{
 		throw Debugging.todo();

@@ -12,13 +12,18 @@ package cc.squirreljme.runtime.media;
 import javax.microedition.media.TimeBase;
 
 /**
- * This is a time base which uses the System nano-time clock.
+ * This is a time base which uses the System nano-time clock, the time is
+ * relative to the initialization of the class.
  *
  * @since 2019/04/15
  */
 public final class SystemNanoTimeBase
 	implements TimeBase
 {
+	/** Base nano time. */
+	private final long _baseTime =
+		System.nanoTime();
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/15
@@ -27,7 +32,7 @@ public final class SystemNanoTimeBase
 	public final long getTime()
 	{
 		// Measured in microseconds
-		return System.nanoTime() / 1000L;
+		return (System.nanoTime() - this._baseTime) / 1000L;
 	}
 }
 

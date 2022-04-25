@@ -164,7 +164,7 @@ public class MidiControlPlayer
 	}
 	
 	@Override
-	public void setTimeBase(TimeBase __a)
+	public void setTimeBase(TimeBase __timeBase)
 		throws MediaException
 	{
 		throw Debugging.todo();

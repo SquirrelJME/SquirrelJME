@@ -47,7 +47,7 @@ public interface Player
 	TimeBase getTimeBase();
 	
 	void prefetch()
-		throws MediaException;
+		throws IllegalStateException, MediaException, SecurityException;
 	
 	void realize()
 		throws MediaException;
@@ -59,7 +59,7 @@ public interface Player
 	long setMediaTime(long __now)
 		throws MediaException;
 	
-	void setTimeBase(TimeBase __a)
+	void setTimeBase(TimeBase __timeBase)
 		throws MediaException;
 	
 	void start()

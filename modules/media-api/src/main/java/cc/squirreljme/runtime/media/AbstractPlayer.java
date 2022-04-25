@@ -10,8 +10,11 @@ package cc.squirreljme.runtime.media;
 
 import java.util.LinkedList;
 import java.util.List;
+import javax.microedition.media.Manager;
+import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
+import javax.microedition.media.TimeBase;
 
 /**
  * Common implementation of players.
@@ -28,9 +31,16 @@ public abstract class AbstractPlayer
 	private final List<PlayerListener> _listeners =
 		new LinkedList<>();
 	
+	/** The default time base. */
+	private final TimeBase _defaultTimeBase =
+		Manager.getSystemTimeBase();
+	
 	/** The state of the player. */
 	private volatile int _state =
 		Player.UNREALIZED;
+	
+	/** The current timebase. */
+	private volatile TimeBase _currentTimebase;
 	
 	/**
 	 * Initializes the base player.
@@ -47,6 +57,24 @@ public abstract class AbstractPlayer
 		
 		this.mime = __mime;
 	}
+	
+	/**
+	 * This is called when the player is becoming realized.
+	 * 
+	 * @throws MediaException If the player cannot be realized.
+	 * @since 2022/04/24
+	 */
+	protected abstract void becomingRealized()
+		throws MediaException;
+	
+	/**
+	 * This is called when the player is becoming prefetched.
+	 * 
+	 * @throws MediaException If the player cannot be prefetched.
+	 * @since 2022/04/24
+	 */
+	protected abstract void becomingPrefetched()
+		throws MediaException;
 	
 	/**
 	 * {@inheritDoc}
@@ -122,8 +150,73 @@ public abstract class AbstractPlayer
 	{
 		synchronized (this)
 		{
-			return this.getState();
+			return this._state;
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/15
+	 */
+	@Override
+	public final TimeBase getTimeBase()
+	{
+		// Use the default time base, if there is no current one
+		TimeBase rv = this._currentTimebase;
+		if (rv == null)
+			return this._defaultTimeBase;
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/15
+	 */
+	@Override
+	public final void prefetch()
+		throws MediaException
+	{
+		int state = this.getState();
+		if (state == Player.CLOSED)
+			throw new IllegalStateException("EA0g");
+		
+		// Ignore when started or already prefetched
+		if (state == Player.STARTED ||
+			state == Player.PREFETCHED)
+			return;
+		
+		// Implicit realize, if not yet realized
+		if (state == Player.UNREALIZED)
+			this.realize();
+		
+		// Now becoming prefetched
+		this.becomingPrefetched();
+		this.setState(Player.PREFETCHED);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/15
+	 */
+	@Override
+	public final void realize()
+		throws MediaException
+	{
+		// {@squirreljme.error EA04 Player has been closed.}
+		int state = this.getState();
+		if (state == Player.CLOSED)
+			throw new IllegalStateException("EA04");
+		
+		// Ignore in these states
+		if (state == Player.REALIZED ||
+			state == Player.PREFETCHED ||
+			state == Player.STARTED)
+			return;
+		
+		// Now becoming realized
+		this.becomingRealized();
+		this.setState(Player.REALIZED);
 	}
 	
 	/**
@@ -172,5 +265,15 @@ public abstract class AbstractPlayer
 			default:
 				throw new IllegalArgumentException("EA0e " + __state);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/04/24
+	 */
+	@Override
+	public final void setTimeBase(TimeBase __timeBase)
+	{
+		this._currentTimebase = __timeBase;
 	}
 }

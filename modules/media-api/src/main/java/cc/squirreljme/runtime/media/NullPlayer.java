@@ -9,12 +9,11 @@
 
 package cc.squirreljme.runtime.media;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.media.Control;
-import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
-import javax.microedition.media.TimeBase;
 import javax.microedition.media.control.VolumeControl;
 
 /**
@@ -29,10 +28,6 @@ public final class NullPlayer
 	private final VolumeControl volumeControl =
 		new NullVolumeControl();
 	
-	/** The timebase. */
-	private volatile TimeBase _timebase =
-		Manager.getSystemTimeBase();
-	
 	/**
 	 * Initializes the player.
 	 *
@@ -44,6 +39,27 @@ public final class NullPlayer
 		throws NullPointerException
 	{
 		super(__mime);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/04/24
+	 */
+	@Override
+	protected void becomingRealized()
+	{
+		// Does nothing
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/04/24
+	 */
+	@Override
+	protected void becomingPrefetched()
+		throws MediaException
+	{
+		// Does nothing
 	}
 	
 	/**
@@ -151,43 +167,6 @@ public final class NullPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
-	public final TimeBase getTimeBase()
-	{
-		return this._timebase;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/15
-	 */
-	@Override
-	public final void prefetch()
-		throws MediaException
-	{
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/15
-	 */
-	@Override
-	public final void realize()
-		throws MediaException
-	{
-		// {@squirreljme.error EA04 Null Player has been closed.}
-		if (this.getState() == Player.CLOSED)
-			throw new IllegalStateException("EA04");
-		
-		// Become realized, otherwise everything is ignored
-		if (this.getState() == Player.UNREALIZED)
-			this.setState(Player.REALIZED);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/15
-	 */
-	@Override
 	public final void setLoopCount(int __a)
 	{
 	}
@@ -218,33 +197,29 @@ public final class NullPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
-	public final void setTimeBase(TimeBase __a)
-		throws MediaException
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/15
-	 */
-	@Override
 	public final void start()
 		throws MediaException
 	{
 		// {@squirreljme.error EA05 Null Player has been closed.}
-		if (this.getState() == Player.CLOSED)
+		int state = this.getState();
+		if (state == Player.CLOSED)
 			throw new IllegalStateException("EA05");
 		
-		if (this.getState() != Player.STARTED ||
-			this.getState() == Player.PREFETCHED)
-		{
-			this.setState(Player.STARTED);
-			
-			// Send event
-			this.broadcastEvent(PlayerListener.STARTED,
-				Long.valueOf(this._timebase.getTime()));
-		}
+		// Ignore when started
+		if (state == Player.STARTED)
+			return;
+		
+		// The player needs to be prefetched first?
+		if (state == Player.UNREALIZED ||
+			state == Player.REALIZED)
+			this.prefetch();
+		
+		// Set new state
+		this.setState(Player.STARTED);
+		
+		// Send event
+		this.broadcastEvent(PlayerListener.STARTED,
+			this.getTimeBase().getTime());
 	}
 	
 	/**
@@ -265,7 +240,7 @@ public final class NullPlayer
 			
 			// Send event
 			this.broadcastEvent(PlayerListener.STOPPED,
-				Long.valueOf(this._timebase.getTime()));
+				this.getTimeBase().getTime());
 		}
 	}
 }
