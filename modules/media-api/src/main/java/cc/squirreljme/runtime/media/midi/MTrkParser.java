@@ -8,6 +8,8 @@
 
 package cc.squirreljme.runtime.media.midi;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This is a parser for MIDI's {@code MTrk} which is a single MIDI track, it
  * is able to read events and wait for the next one accordingly.
@@ -24,6 +26,10 @@ public final class MTrkParser
 	
 	/** The length of the buffer. */
 	private final int _length;
+	
+	/** The tick division duration of the track. */
+	private int _tickDivDuration =
+		-1;
 	
 	/**
 	 * Initializes the parser for MIDI {@code MTrk}.
@@ -47,5 +53,33 @@ public final class MTrkParser
 		this._buffer = __b;
 		this._offset = __o;
 		this._length = __l;
+	}
+	
+	/**
+	 * Returns the total tick division duration for this given track.
+	 * 
+	 * @return The total tick division duration for this track.
+	 * @since 2022/04/25
+	 */
+	public final int tickDivDuration()
+	{
+		// Does the duration need to be figured out?
+		int deltaDuration = this._tickDivDuration;
+		if (deltaDuration < 0)
+			this._tickDivDuration =
+				(deltaDuration = this.__calculateTickDivDuration());
+		
+		return deltaDuration;
+	}
+	
+	/**
+	 * Calculates the tick division duration of the track.
+	 * 
+	 * @return The calculated tick division duration of the track.
+	 * @since 2022/04/24
+	 */
+	private int __calculateTickDivDuration()
+	{
+		throw Debugging.todo();
 	}
 }

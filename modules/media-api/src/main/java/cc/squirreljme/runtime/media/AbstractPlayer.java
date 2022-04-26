@@ -46,6 +46,10 @@ public abstract class AbstractPlayer
 	/** The current timebase. */
 	private volatile TimeBase _currentTimebase;
 	
+	/** The duration of the media. */
+	private volatile long _cachedDurationMicros =
+		Long.MIN_VALUE;
+	
 	/**
 	 * Initializes the base player.
 	 * 
@@ -87,6 +91,15 @@ public abstract class AbstractPlayer
 	 * @since 2022/04/24
 	 */
 	protected abstract void becomingStarted()
+		throws MediaException;
+	
+	/**
+	 * Determines the length of the media.
+	 * 
+	 * @return The media length.
+	 * @since 2022/04/25
+	 */
+	protected abstract long determineDuration()
 		throws MediaException;
 	
 	/**
@@ -152,6 +165,36 @@ public abstract class AbstractPlayer
 	public final String getContentType()
 	{
 		return this.mime;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/04/25
+	 */
+	@Override
+	public long getDuration()
+		throws IllegalStateException
+	{
+		// {@squirreljme.error EA0g Stream closed, cannot get duration.}
+		if (this.getState() == Player.CLOSED)
+			throw new IllegalStateException("EA0g");
+		
+		// Already has been cached?
+		long cachedDuration = this._cachedDurationMicros;
+		if (cachedDuration != Long.MIN_VALUE)
+			return cachedDuration;
+		
+		// Otherwise determine the duration
+		try
+		{
+			long newDuration = this.determineDuration();
+			this._cachedDurationMicros = newDuration;
+			return newDuration;
+		}
+		catch (MediaException e)
+		{
+			return Player.TIME_UNKNOWN;
+		}
 	}
 	
 	/**

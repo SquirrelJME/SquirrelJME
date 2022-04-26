@@ -38,7 +38,8 @@ public interface Player
 	
 	String getContentType();
 	
-	long getDuration();
+	long getDuration()
+		throws IllegalStateException;
 	
 	long getMediaTime();
 	

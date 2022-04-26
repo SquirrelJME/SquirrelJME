@@ -64,6 +64,17 @@ public final class NullPlayer
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2022/04/25
+	 */
+	@Override
+	protected long determineDuration()
+	{
+		// There is no duration for null media
+		return 0;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2022/04/24
 	 */
 	@Override
@@ -143,16 +154,6 @@ public final class NullPlayer
 	public final Control[] getControls()
 	{
 		return new Control[]{this.volumeControl};
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/15
-	 */
-	@Override
-	public final long getDuration()
-	{
-		throw new todo.TODO();
 	}
 	
 	/**

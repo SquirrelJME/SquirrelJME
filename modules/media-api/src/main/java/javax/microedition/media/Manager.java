@@ -31,6 +31,10 @@ public final class Manager
 	public static final String TONE_DEVICE_LOCATOR =
 		"device://tone";
 	
+	/** The system time base, used for song synchronization. */
+	private static final TimeBase _SYSTEM_TIME_BASE = 
+		new SystemNanoTimeBase();
+	
 	/**
 	 * Not used.
 	 *
@@ -136,7 +140,7 @@ public final class Manager
 	 */
 	public static TimeBase getSystemTimeBase()
 	{
-		return new SystemNanoTimeBase();
+		return Manager._SYSTEM_TIME_BASE;
 	}
 	
 	public static void playTone(int __note, int __duration, int __volume)
@@ -170,8 +174,9 @@ public final class Manager
 		int d = __in.read();
 		__in.reset();
 		
-		// MIDI (MThd)
-		if (a == 'M' && b == 'T' && c == 'h' && d == 'd')
+		// MIDI (MThd/MTrk)
+		if ((a == 'M' && b == 'T' && c == 'h' && d == 'd') ||
+			(a == 'M' && b == 'T' && c == 'r' && d == 'k'))
 			return "audio/midi";
 		
 		// Unknown
