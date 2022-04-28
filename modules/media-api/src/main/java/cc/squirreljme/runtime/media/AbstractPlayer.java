@@ -8,6 +8,7 @@
 
 package cc.squirreljme.runtime.media;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.LinkedList;
 import java.util.List;
 import javax.microedition.media.Manager;
@@ -24,6 +25,10 @@ import javax.microedition.media.TimeBase;
 public abstract class AbstractPlayer
 	implements Player
 {
+	/** The current track position. */
+	protected final TrackPosition trackPosition =
+		new TrackPosition();
+	
 	/** The mime type. */
 	private final String mime;
 	
@@ -91,6 +96,15 @@ public abstract class AbstractPlayer
 	 * @since 2022/04/24
 	 */
 	protected abstract void becomingStarted()
+		throws MediaException;
+	
+	/**
+	 * Indicates that the player is stopping.
+	 * 
+	 * @throws MediaException If the player could not be stopped.
+	 * @since 2022/04/24
+	 */
+	protected abstract void becomingStopped()
 		throws MediaException;
 	
 	/**
@@ -377,12 +391,47 @@ public abstract class AbstractPlayer
 			state == Player.REALIZED)
 			this.prefetch();
 		
+		// Set up the track position for starting
+		TrackPosition trackPosition = this.trackPosition;
+		TimeBase timeBase = this.getTimeBase();
+		trackPosition.timeBase = timeBase;
+		trackPosition.basisMicros = timeBase.getTime() -
+			trackPosition.stoppedMicros;
+		
 		// Is being started now
 		this.becomingStarted();
 		this.setState(Player.STARTED);
 		
 		// Send event
 		this.broadcastEvent(PlayerListener.STARTED,
+			timeBase.getTime());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/04/27
+	 */
+	@Override
+	public void stop()
+		throws MediaException
+	{
+		// {@squirreljme.error EA06 Null Player has been closed.}
+		int state = this.getState();
+		if (state == Player.CLOSED)
+			throw new IllegalStateException("EA06");
+		
+		// Ignore these
+		if (state == Player.UNREALIZED ||
+			state == Player.REALIZED ||
+			state == Player.PREFETCHED)
+			return;
+		
+		// Becoming stopped
+		this.becomingStopped();
+		this.setState(Player.PREFETCHED);
+		
+		// Send event
+		this.broadcastEvent(PlayerListener.STOPPED,
 			this.getTimeBase().getTime());
 	}
 }

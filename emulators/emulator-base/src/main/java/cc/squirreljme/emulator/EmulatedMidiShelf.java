@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;

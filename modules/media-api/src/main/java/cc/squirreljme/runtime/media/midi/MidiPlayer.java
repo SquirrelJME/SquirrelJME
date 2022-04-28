@@ -8,6 +8,7 @@
 
 package cc.squirreljme.runtime.media.midi;
 
+import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.runtime.media.AbstractPlayer;
@@ -32,6 +33,9 @@ import javax.microedition.media.control.MIDIControl;
 public class MidiPlayer
 	extends AbstractPlayer
 {
+	/** The tracker which plays MIDIs, one at a time. */
+	private static volatile MidiTracker _TRACKER;
+	
 	/** Magic number for MThd. */
 	private static final int MTHD_MAGIC =
 		0x4D546864;
@@ -237,7 +241,39 @@ public class MidiPlayer
 	protected void becomingStarted()
 		throws MediaException
 	{
-		throw Debugging.todo();
+		// We just need to set up the tracker
+		MidiPlayer.__createTracker(this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/04/27
+	 */
+	@Override
+	protected void becomingStopped()
+		throws MediaException
+	{
+		synchronized (MidiPlayer.class)
+		{
+			// Trying to stop something that was already stopped?
+			MidiTracker tracker = MidiPlayer._TRACKER;
+			if (tracker == null || tracker.player != this)
+				return;
+				
+			// Indicate to stop
+			tracker._stopPlayback = true;
+			
+			// Wake it up, if it is sleeping
+			synchronized (tracker)
+			{
+				tracker.interrupt();
+				tracker.notifyAll();
+			}
+			
+			// Remove it, when interrupted and stopped the thread will clean
+			// itself up
+			MidiPlayer._TRACKER = null;
+		}
 	}
 	
 	/**
@@ -303,10 +339,39 @@ public class MidiPlayer
 		throw Debugging.todo();
 	}
 	
-	@Override
-	public void stop()
-		throws MediaException
+	/**
+	 * Creates a MIDI tracker.
+	 * 
+	 * @return The resultant MIDI tracker.
+	 * @throws MediaException If the tracker cannot be created.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/04/27
+	 */
+	private static MidiTracker __createTracker(MidiPlayer __player)
+		throws MediaException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__player == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (MidiPlayer.class)
+		{
+			// Stop an existing track from playing, if any
+			MidiTracker tracker = MidiPlayer._TRACKER;
+			if (tracker != null)
+				tracker.player.stop();
+			
+			// Setup new tracker
+			tracker = new MidiTracker(__player);
+			
+			// Make sure it is a daemon thread, so it gets killed on exit
+			ThreadShelf.javaThreadSetDaemon(tracker);
+			
+			// Start it, yay!
+			tracker.start();
+			
+			// Use this tracker
+			MidiPlayer._TRACKER = tracker;
+			return tracker;
+		}
 	}
 }

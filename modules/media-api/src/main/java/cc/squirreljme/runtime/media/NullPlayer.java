@@ -64,6 +64,17 @@ public final class NullPlayer
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2022/04/27
+	 */
+	@Override
+	protected void becomingStopped()
+		throws MediaException
+	{
+		// Does nothing
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2022/04/25
 	 */
 	@Override
@@ -192,28 +203,6 @@ public final class NullPlayer
 				throw new IllegalStateException("EA09");
 			
 			return Player.TIME_UNKNOWN;
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/15
-	 */
-	@Override
-	public final void stop()
-		throws MediaException
-	{
-		// {@squirreljme.error EA06 Null Player has been closed.}
-		if (this.getState() == Player.CLOSED)
-			throw new IllegalStateException("EA06");
-		
-		if (this.getState() != Player.STARTED)
-		{
-			this.setState(Player.PREFETCHED);
-			
-			// Send event
-			this.broadcastEvent(PlayerListener.STOPPED,
-				this.getTimeBase().getTime());
 		}
 	}
 }

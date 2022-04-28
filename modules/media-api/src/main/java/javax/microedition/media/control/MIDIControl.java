@@ -30,7 +30,7 @@ public interface MIDIControl
 {
 	/** The control change event. */
 	int CONTROL_CHANGE =
-		176;
+		0b1011_0000;
 	
 	/** The note on event. */
 	int NOTE_ON =
