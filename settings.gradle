@@ -1,3 +1,46 @@
+import java.nio.file.Paths
+import java.nio.file.Files
+import java.util.regex.Pattern
+import java.util.stream.Collectors
+
+// If we have a really high Java version being used then the parameters
+// for -source and -target were likely removed, so as such we cannot rely on
+// the project being able to be built in such versions.
+if (JavaVersion.current() >= JavaVersion.VERSION_HIGHER ||
+	Boolean.getBoolean("force.ecj")) {
+	// Emit a warning to indicate that the version is quite new
+	logger.warn("The current Java version is quite new, " +
+		"if Eclipse Java Compiler (ECJ) exists on the system " +
+		"then it will be used to compile the modules instead.")
+	
+	// Fallback to ECJ on newer Java versions, if available
+	def envRawPathProperty = System.getenv("PATH")
+	def envPath = (envRawPathProperty != null ?
+		Arrays.asList(
+			envRawPathProperty.split(Pattern.quote(File.pathSeparator)))
+				.stream().<java.nio.file.Path>map({it -> Paths.get(it)})
+				.collect(Collectors.toList()) : null)
+	
+	// Does ECJ exist in the class path?
+	def foundEcjBinary = false
+	for (java.nio.file.Path path : envPath) {
+		if (Files.exists(path.resolve("ecj"))) {
+			foundEcjBinary = true
+		}
+	}
+	
+	// If we have the binary, use it
+	if (foundEcjBinary) {
+		logger.lifecycle("Found ECJ binary, using it!")
+		
+		gradle.beforeProject({proj ->
+			proj.ext.squirreljmeEcjEnabled = true
+		})
+	} else {
+		logger.warn("Could not find ECJ, build may fail!")
+	}
+}
+
 // Modules and available platforms
 include "modules"
 include "emulators"
