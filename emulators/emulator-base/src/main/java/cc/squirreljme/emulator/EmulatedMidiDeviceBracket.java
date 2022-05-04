@@ -9,6 +9,7 @@
 package cc.squirreljme.emulator;
 
 import cc.squirreljme.jvm.mle.brackets.MidiDeviceBracket;
+import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import javax.sound.midi.MidiDevice;
 
 /**
@@ -24,6 +25,12 @@ public final class EmulatedMidiDeviceBracket
 	
 	/** Device information. */
 	final MidiDevice.Info _info;
+	
+	/** Transmit ports. */
+	volatile MidiPortBracket[] _transmitPorts;
+	
+	/** Receive ports. */
+	volatile MidiPortBracket[] _receivePorts;
 	
 	/**
 	 * Initializes the MIDI device bracket.

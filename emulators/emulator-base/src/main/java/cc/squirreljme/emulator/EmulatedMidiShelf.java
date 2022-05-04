@@ -14,7 +14,6 @@ import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;
@@ -32,6 +31,9 @@ import javax.sound.midi.Transmitter;
  */
 public class EmulatedMidiShelf
 {
+	/** Cached MIDI devices. */
+	private static volatile MidiDeviceBracket[] _DEVICES;
+	
 	/**
 	 * This reads data that is incoming from a MIDI device, it may not include
 	 * a full event and may only be in partial form.
@@ -122,8 +124,13 @@ public class EmulatedMidiShelf
 	 */
 	public static MidiDeviceBracket[] devices()
 	{
-		List<EmulatedMidiDeviceBracket> result = new ArrayList<>();
+		// Pre-cached devices?
+		MidiDeviceBracket[] devices = EmulatedMidiShelf._DEVICES;
+		if (devices != null)
+			return devices.clone();
 		
+		// Locate new devices
+		List<EmulatedMidiDeviceBracket> result = new ArrayList<>();
 		for (MidiDevice.Info info : MidiSystem.getMidiDeviceInfo())
 			try
 			{
@@ -134,7 +141,9 @@ public class EmulatedMidiShelf
 			{
 			}
 		
-		return result.toArray(new EmulatedMidiDeviceBracket[result.size()]);
+		devices = result.toArray(new EmulatedMidiDeviceBracket[result.size()]);
+		EmulatedMidiShelf._DEVICES = devices;
+		return devices.clone();
 	}
 	
 	/**
@@ -158,6 +167,12 @@ public class EmulatedMidiShelf
 		MidiPortBracket result = null;
 		EmulatedMidiDeviceBracket emul = (EmulatedMidiDeviceBracket)__device;
 		
+		// Already cached?
+		if (!__transmit && emul._receivePorts != null)
+			return emul._receivePorts.clone();
+		else if (__transmit && emul._transmitPorts != null)
+			return emul._transmitPorts.clone();
+		
 		// Transmitter?
 		try
 		{
@@ -165,6 +180,7 @@ public class EmulatedMidiShelf
 			if (!emul._device.isOpen())
 				emul._device.open();
 			
+			// Java SE follows the opposite direction, so this is the receiver
 			if (!__transmit)
 			{
 				// Use already claimed one?
@@ -175,6 +191,9 @@ public class EmulatedMidiShelf
 				if (result == null)
 					result = new EmulatedMidiPortBracket(
 						emul._device.getTransmitter());
+				
+				// Debug
+				Debugging.debugNote("Found receiver: %s", result);
 			}
 			
 			// Receiver?
@@ -188,6 +207,9 @@ public class EmulatedMidiShelf
 				if (result == null)
 					result = new EmulatedMidiPortBracket(
 						emul._device.getReceiver());
+				
+				// Debug
+				Debugging.debugNote("Found transmitter: %s", result);
 			}
 		}
 		catch (MidiUnavailableException e)
@@ -196,9 +218,19 @@ public class EmulatedMidiShelf
 		}
 		
 		// Use the ports that are used
+		MidiPortBracket[] rv;
 		if (result == null)
-			return new MidiPortBracket[0];
-		return new MidiPortBracket[]{result};
+			rv = new MidiPortBracket[0];
+		else
+			rv = new MidiPortBracket[]{result};
+		
+		// Cache
+		if (!__transmit && emul._transmitPorts != null)
+			emul._transmitPorts = rv.clone();
+		else if (__transmit && emul._receivePorts != null)
+			emul._receivePorts = rv.clone();
+		
+		// Use result
+		return rv;
 	}
-	
 }

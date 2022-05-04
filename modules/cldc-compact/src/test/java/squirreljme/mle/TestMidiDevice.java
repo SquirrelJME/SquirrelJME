@@ -22,6 +22,10 @@ import net.multiphasicapps.tac.TestRunnable;
 public class TestMidiDevice
 	extends TestRunnable
 {
+	/** The number of notes to play. */
+	private static final byte _NOTE_COUNT =
+		5;
+	
 	/** MIDI note on event. */
 	private static final byte[] _MIDI_NOTE_ON =
 		new byte[]{(byte)0b1001_0000, 60, 127};
@@ -55,40 +59,57 @@ public class TestMidiDevice
 					Debugging.debugNote("Ports: %s for %s%n",
 						port, direction);
 					
-					switch (direction)
-					{
-						case RECEIVE:
-							// Call it but receive no actual data
-							MidiShelf.dataReceive(port,
-								new byte[0], 0, 0);
-							break;
-						
-							// Send the MIDI event over
-						case TRANSMIT:
-							MidiShelf.dataTransmit(port,
-								TestMidiDevice._MIDI_NOTE_ON, 0,
-								TestMidiDevice._MIDI_NOTE_ON.length);
+					
+					for (int at = 0; at < TestMidiDevice._NOTE_COUNT; at++)
+						switch (direction)
+						{
+							case RECEIVE:
+								// Call it but receive no actual data
+								MidiShelf.dataReceive(port,
+									new byte[0], 0, 0);
+								break;
 							
-							try
-							{
-								Debugging.debugNote("Resting %d...",
-									System.currentTimeMillis());
-								Thread.sleep(1_000);
-							}
-							catch (InterruptedException e)
-							{
-							}
-							finally
-							{
-								Debugging.debugNote("Finished %d!",
-									System.currentTimeMillis());
-							}
-							
-							MidiShelf.dataTransmit(port,
-								TestMidiDevice._MIDI_NOTE_OFF, 0,
-								TestMidiDevice._MIDI_NOTE_OFF.length);
-							break;
-					}
+								// Send the MIDI event over
+							case TRANSMIT:
+								MidiShelf.dataTransmit(port,
+									TestMidiDevice._MIDI_NOTE_ON, 0,
+									TestMidiDevice._MIDI_NOTE_ON.length);
+								
+								try
+								{
+									Debugging.debugNote("Resting %d...",
+										System.currentTimeMillis());
+									Thread.sleep(500);
+								}
+								catch (InterruptedException e)
+								{
+								}
+								finally
+								{
+									Debugging.debugNote("Finished %d!",
+										System.currentTimeMillis());
+								}
+								
+								MidiShelf.dataTransmit(port,
+									TestMidiDevice._MIDI_NOTE_OFF, 0,
+									TestMidiDevice._MIDI_NOTE_OFF.length);
+									
+								try
+								{
+									Debugging.debugNote("Resting %d...",
+										System.currentTimeMillis());
+									Thread.sleep(500);
+								}
+								catch (InterruptedException e)
+								{
+								}
+								finally
+								{
+									Debugging.debugNote("Finished %d!",
+										System.currentTimeMillis());
+								}
+								break;
+						}
 				}
 			}
 		}
