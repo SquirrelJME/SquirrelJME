@@ -46,7 +46,7 @@ public class TestMidiDevice
 		for (MidiDeviceBracket device : MidiShelf.devices())
 		{
 			// Try to get the device name
-			System.err.printf("MIDI Device: %s%n",
+			Debugging.debugNote("MIDI Device: %s",
 				MidiShelf.deviceName(device));
 			
 			// And for every direction for that device
@@ -56,9 +56,8 @@ public class TestMidiDevice
 				for (MidiPortBracket port : MidiShelf.ports(device,
 					direction.flag))
 				{
-					Debugging.debugNote("Ports: %s for %s%n",
+					Debugging.debugNote("Ports: %s for %s",
 						port, direction);
-					
 					
 					for (int at = 0; at < TestMidiDevice._NOTE_COUNT; at++)
 						switch (direction)
