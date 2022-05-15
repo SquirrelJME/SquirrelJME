@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
 import javax.inject.Inject;
+import lombok.Getter;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
@@ -23,6 +24,7 @@ import org.gradle.api.file.DirectoryTree;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.FileCopyDetails;
 import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.SourceSetOutput;
 import org.gradle.language.jvm.tasks.ProcessResources;
 
@@ -35,12 +37,18 @@ public abstract class AbstractResourceTask
 	extends DefaultTask
 {
 	/** The file extension. */
+	@Internal
+	@Getter
 	protected final String extension;
 	
 	/** The source set to modify. */
+	@Internal
+	@Getter
 	protected final String sourceSet;
 	
 	/** The output extension. */
+	@Internal
+	@Getter
 	protected final String outputExtension;
 	
 	/**

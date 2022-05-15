@@ -10,7 +10,9 @@
 package cc.squirreljme.plugin.multivm;
 
 import javax.inject.Inject;
+import lombok.Getter;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.SourceSet;
 
 /**
@@ -23,9 +25,13 @@ public class VMFullSuite
 	implements VMExecutableTask
 {
 	/** The source set used. */
+	@Internal
+	@Getter
 	public final String sourceSet;
 	
 	/** The virtual machine type. */
+	@Internal
+	@Getter
 	public final VMSpecifier vmType;
 	
 	/**
@@ -60,15 +66,5 @@ public class VMFullSuite
 		
 		// Actual running of everything
 		this.doLast(new VMFullSuiteTaskAction(__vmType));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/08
-	 */
-	@Override
-	public String getSourceSet()
-	{
-		return this.sourceSet;
 	}
 }

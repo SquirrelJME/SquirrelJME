@@ -11,9 +11,12 @@ package cc.squirreljme.plugin.multivm;
 
 import java.nio.file.Path;
 import javax.inject.Inject;
+import lombok.Getter;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Internal;
 import org.gradle.jvm.tasks.Jar;
 
 /**
@@ -27,9 +30,13 @@ public class VMLibraryTask
 	implements VMExecutableTask
 {
 	/** The source set used. */
+	@Internal
+	@Getter
 	public final String sourceSet;
 	
 	/** The virtual machine type. */
+	@Internal
+	@Getter
 	public final VMSpecifier vmType;
 	
 	/**
@@ -87,15 +94,5 @@ public class VMLibraryTask
 			this.getProject(), this.vmType, this.sourceSet).get()
 			.resolve(this.vmType.outputLibraryName(this.getProject(),
 			this.sourceSet)));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/10/17
-	 */
-	@Override
-	public String getSourceSet()
-	{
-		return this.sourceSet;
 	}
 }
