@@ -3,6 +3,36 @@ import java.nio.file.Files
 import java.util.regex.Pattern
 import java.util.stream.Collectors
 
+// Poking PATH is used by multiple systems
+def envRawPathProperty = System.getenv("PATH")
+def envPath = (envRawPathProperty != null ?
+	Arrays.asList(
+		envRawPathProperty.split(Pattern.quote(File.pathSeparator)))
+			.stream().<java.nio.file.Path>map({it -> Paths.get(it)})
+			.collect(Collectors.toList()) :
+			Collections.<java.nio.file.Path>emptyList())
+
+// Do we have Termux in our PATH?
+def foundTermuxRoot = false
+for (java.nio.file.Path path : envPath) {
+	def fullPath = path.toAbsolutePath();
+	if (fullPath.toString().startsWith("/data/data/com.termux/")) {
+		foundTermuxRoot = true;
+	}
+}
+
+// Did we find Termux in our PATH?
+if ((foundTermuxRoot && System.getProperty("force.termux") == null) ||
+	Boolean.getBoolean("force.termux")) {
+	// squirreljmeTermuxCompiler
+	logger.lifecycle("Appears we are in Termux, kludging compiler build...")
+	
+	// Enable it
+	gradle.beforeProject({proj ->
+		proj.ext.squirreljmeTermuxCompiler = true
+	})
+}
+
 // If we have a really high Java version being used then the parameters
 // for -source and -target were likely removed, so as such we cannot rely on
 // the project being able to be built in such versions.
@@ -13,15 +43,7 @@ if (JavaVersion.current() >= JavaVersion.VERSION_HIGHER ||
 		"if Eclipse Java Compiler (ECJ) exists on the system " +
 		"then it will be used to compile the modules instead.")
 	
-	// Fallback to ECJ on newer Java versions, if available
-	def envRawPathProperty = System.getenv("PATH")
-	def envPath = (envRawPathProperty != null ?
-		Arrays.asList(
-			envRawPathProperty.split(Pattern.quote(File.pathSeparator)))
-				.stream().<java.nio.file.Path>map({it -> Paths.get(it)})
-				.collect(Collectors.toList()) : null)
-	
-	// Does ECJ exist in the class path?
+	// Does ECJ exist in the system PATH?
 	def foundEcjBinary = false
 	for (java.nio.file.Path path : envPath) {
 		if (Files.exists(path.resolve("ecj"))) {
