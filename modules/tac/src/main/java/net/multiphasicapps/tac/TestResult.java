@@ -476,12 +476,13 @@ public final class TestResult
 			
 			// Parse values
 			long exp = Long.parseLong(__exp.substring(xfc + 1,
-				(xlc > 0 ? xlc : __exp.length())));
-			long fudge = Math.abs((xlc > 0 ?
+				(xlc >= 0 ? xlc : __exp.length())));
+			long fudge = Math.abs((xlc >= 0 ?
 				Long.parseLong(__exp.substring(xlc + 1)) : 0));
 			
 			// Matches as long as we are within the fudge range
-			return act == exp || (act >= (exp - fudge) && act <= (exp + fudge));
+			return act == exp ||
+				(act >= (exp - fudge) && act <= (exp + fudge));
 		}
 		
 		// Use normal string comparison
