@@ -70,8 +70,9 @@ public final class MidiTracker
 				
 				// For testing
 				System.err.printf("Emitting %s...%n", i);
-				control.shortMidiEvent((true ? 0b1001_0000 : 0b1000_0000),
-					60 + (i % 20), (true ? 127 : 0));
+				boolean emit = ((i & 1) == 0);
+				control.shortMidiEvent((emit ? 0b1001_0000 : 0b1000_0000),
+					60 + (i % 20), (emit ? 127 : 0));
 				
 				// For the next note to appear
 				try

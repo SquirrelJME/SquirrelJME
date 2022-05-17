@@ -199,16 +199,23 @@ public abstract class AbstractPlayer
 			return cachedDuration;
 		
 		// Otherwise determine the duration
+		long newDuration;
 		try
 		{
-			long newDuration = this.determineDuration();
+			newDuration = this.determineDuration();
 			this._cachedDurationMicros = newDuration;
-			return newDuration;
+			
 		}
 		catch (MediaException e)
 		{
 			return Player.TIME_UNKNOWN;
 		}
+		
+		// Indicate the duration is available now
+		this.broadcastEvent(PlayerListener.DURATION_UPDATED,
+			newDuration);
+		
+		return newDuration;
 	}
 	
 	/**
