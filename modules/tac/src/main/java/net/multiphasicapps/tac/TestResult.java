@@ -462,6 +462,18 @@ public final class TestResult
 			return !la.isEmpty();
 		}
 		
+		// Compare against long but ignoring whatever sign is used
+		else if (__act.startsWith("long:") &&
+			__exp.startsWith("long-ignore-sign:"))
+		{
+			// Parse values
+			long act = Long.parseLong(__act.substring("long:".length()));
+			long exp = Long.parseLong(
+				__exp.substring("long-ignore-sign:".length()));
+			
+			return (act & ~Long.MIN_VALUE) == (exp & ~Long.MIN_VALUE);
+		}
+		
 		// Comparing against fudged long value (which is a plus or minus value)
 		else if (__act.startsWith("long:") && __exp.startsWith("long-fudge:"))
 		{
