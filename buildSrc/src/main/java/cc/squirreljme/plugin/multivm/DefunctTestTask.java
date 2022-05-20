@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.multivm;
 
 import javax.inject.Inject;
+import org.gradle.api.DefaultTask;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.testing.Test;
 
@@ -34,8 +35,13 @@ public class DefunctTestTask
 		this.setGroup("defunct");
 		this.setDescription("Defunct test task, relies on another test task.");
 		
-		// Always runs
-		this.onlyIf(new AlwaysTrue());
+		// Never runs
+		this.onlyIf(new AlwaysFalse());
+		
+		// Depend on testHosted since all of the tests are there and those
+		// may assume as such
+		this.dependsOn(this.getProject()
+			.getTasks().findByName("testHosted"));
 		
 		// Make sure the task fails as quickly as possibles
 		this.doFirst(this::action);
