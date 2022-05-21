@@ -23,7 +23,12 @@ static VersionNumber normalizeMavenVersion(Object __inVersion) {
 
 // Every sub-project needs SquirrelJME specific pieces
 subprojects {
-	//apply plugin: "de.set.ecj"
+	// Apply ECJ for compilation? (Such as too new of Java)
+	if (project.hasProperty("squirreljmeEcjEnabled") &&
+		project.squirreljmeEcjEnabled) {
+		apply plugin: "de.set.ecj"
+	}
+	
 	apply plugin: "java-library"
 	apply plugin: "cc.squirreljme.plugin"
 	apply plugin: "idea"
@@ -39,6 +44,16 @@ subprojects {
 			// However, everything targets 1.7 otherwise
 			languageLevel = new IdeaLanguageLevel("1.7")
 			targetBytecodeVersion = JavaVersion.VERSION_1_7
+		}
+	}
+	
+	// Disable native header generation when using ECJ as it does not have
+	// the -h option. See:
+	// https://github.com/gradle/gradle/issues/12904#issuecomment-619212927
+	if (project.hasProperty("squirreljmeEcjEnabled") &&
+		project.squirreljmeEcjEnabled) {
+		tasks.withType(JavaCompile) {
+			options.headerOutputDirectory.convention((Directory)null)
 		}
 	}
 	

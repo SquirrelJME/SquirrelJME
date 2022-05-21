@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Runs all of the tests within the suite.
  *
@@ -24,6 +26,6 @@ public class MainSuiteRunner
 	 */
 	public static void main(String... __args)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

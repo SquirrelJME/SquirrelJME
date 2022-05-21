@@ -154,7 +154,9 @@ public final class TaskInitialization
 			throw new NullPointerException("NARG");
 		
 		for (VMType vmType : VMType.values())
-			TaskInitialization.initializeFullSuiteTask(__project, vmType);
+			for (String sourceSet : TaskInitialization._SOURCE_SETS)
+				TaskInitialization.initializeFullSuiteTask(__project,
+					sourceSet, vmType);
 	}
 	
 	/**
@@ -163,20 +165,22 @@ public final class TaskInitialization
 	 * launching.
 	 * 
 	 * @param __project The root project.
+	 * @param __sourceSet Source set used.
 	 * @param __vmType The virtual machine type.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/17
 	 */
 	private static void initializeFullSuiteTask(Project __project,
-		VMType __vmType)
+		String __sourceSet, VMType __vmType)
 		throws NullPointerException
 	{
-		if (__project == null || __vmType == null)
+		if (__project == null || __sourceSet == null || __vmType == null)
 			throw new NullPointerException("NARG");
 		
+		// Standard ROM
 		__project.getTasks().create(
-			TaskInitialization.task("full", "", __vmType),
-			VMFullSuite.class, __vmType);
+			TaskInitialization.task("full", __sourceSet, __vmType),
+			VMFullSuite.class, __sourceSet, __vmType);
 	}
 	
 	/**
@@ -225,6 +229,34 @@ public final class TaskInitialization
 	}
 	
 	/**
+	 * Builds a name for a task, without the virtual machine type.
+	 * 
+	 * @param __name The task name.
+	 * @param __sourceSet The source set for the task base.
+	 * @return A string representing the task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/12/19
+	 */
+	public static String task(String __name, String __sourceSet)
+		throws NullPointerException
+	{
+		if (__name == null || __sourceSet == null)
+			throw new NullPointerException("NARG");
+		
+		// If this is the main source set, never include the source set as
+		// it becomes implied. Additionally, if the name and the source set
+		// are the same, reduce the confusion so there is no "testTestHosted".
+		if (__sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME) ||
+			__sourceSet.equals(__name) || __sourceSet.isEmpty())
+			return __name;
+		
+		// Otherwise, include it
+		return __name +
+			Character.toUpperCase(__sourceSet.charAt(0)) +
+			__sourceSet.substring(1);
+	}
+	
+	/**
 	 * Builds a name for a task.
 	 * 
 	 * @param __name The task name.
@@ -241,17 +273,7 @@ public final class TaskInitialization
 		if (__name == null || __sourceSet == null || __vmType == null)
 			throw new NullPointerException("NARG");
 		
-		// If this is the main source set, never include the source set as
-		// it becomes implied. Additionally if the name and the source set
-		// are the same, reduce the confusion so there is no "testTestHosted".
-		if (__sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME) ||
-			__sourceSet.equals(__name) || __sourceSet.isEmpty())
-			return __name + __vmType.vmName(VMNameFormat.PROPER_NOUN);
-		
-		// Otherwise include it
-		return __name +
-			Character.toUpperCase(__sourceSet.charAt(0)) +
-			__sourceSet.substring(1) +
+		return TaskInitialization.task(__name, __sourceSet) +
 			__vmType.vmName(VMNameFormat.PROPER_NOUN);
 	}
 }

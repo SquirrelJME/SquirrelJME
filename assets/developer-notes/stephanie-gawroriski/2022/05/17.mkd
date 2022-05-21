@@ -1,0 +1,9 @@
+# 2022/05/17
+
+## 09:39
+
+When I implement `SoftDouble`, depending on the source library I am basing
+off if it uses `long` then I will use that for simplicity otherwise it will
+be split via `int`. This way when I do major shifting around I do not need
+to re-implement software `long` and instead just use it naturally as needed.
+It will work just fine this way.
