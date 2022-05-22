@@ -68,7 +68,7 @@ typedef struct sjme_pipeFunction
 	 * @return If the instance was successfully created.
 	 * @since 2022/03/15
 	 */
-	sjme_jboolean (*newInstance)(sjme_pipeInstance** outPipe,
+	sjme_jboolean (*newInstance)(sjme_pipeInstance* outPipe,
 		sjme_jint fd, sjme_jboolean isInput, sjme_error* error);
 	
 	/**

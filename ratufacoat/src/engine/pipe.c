@@ -10,6 +10,7 @@
 #include "debug.h"
 #include "engine/pipe.h"
 #include "engine/pipeintern.h"
+#include "memory.h"
 
 struct sjme_pipeInstance
 {
@@ -39,7 +40,7 @@ static sjme_jboolean sjme_discardPipeFlush(sjme_pipeInstance* pipe,
 	return sjme_false;
 }
 
-static sjme_jboolean sjme_discardPipeNewInstance(sjme_pipeInstance** outPipe,
+static sjme_jboolean sjme_discardPipeNewInstance(sjme_pipeInstance* outPipe,
 	sjme_jint fd, sjme_jboolean isInput, sjme_error* error)
 {
 	sjme_todo("Implement this?");
@@ -78,7 +79,7 @@ static sjme_jboolean sjme_bufferPipeFlush(sjme_pipeInstance* pipe,
 	return sjme_false;
 }
 
-static sjme_jboolean sjme_bufferPipeNewInstance(sjme_pipeInstance** outPipe,
+static sjme_jboolean sjme_bufferPipeNewInstance(sjme_pipeInstance* outPipe,
 	sjme_jint fd, sjme_jboolean isInput, sjme_error* error)
 {
 	sjme_todo("Implement this?");
@@ -117,7 +118,7 @@ static sjme_jboolean sjme_terminalPipeFlush(sjme_pipeInstance* pipe,
 	return sjme_false;
 }
 
-static sjme_jboolean sjme_terminalPipeNewInstance(sjme_pipeInstance** outPipe,
+static sjme_jboolean sjme_terminalPipeNewInstance(sjme_pipeInstance* outPipe,
 	sjme_jint fd, sjme_jboolean isInput, sjme_error* error)
 {
 	sjme_todo("Implement this?");
@@ -175,6 +176,43 @@ sjme_jboolean sjme_pipeNewInstance(sjme_pipeRedirectType type,
 	sjme_pipeInstance** outPipe, sjme_jint fd, sjme_jboolean isInput,
 	sjme_error* error)
 {
-	sjme_todo("Failed to initialize new instance.");
-	return sjme_false;
+	sjme_pipeInstance* result;
+	
+	if (outPipe == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		
+		return sjme_false;
+	}
+	
+	if (type < SJME_PIPE_REDIRECT_DISCARD || type >= NUM_SJME_PIPE_REDIRECTS)
+	{
+		sjme_setError(error, SJME_ERROR_INVALIDARG, type);
+		
+		return sjme_false;
+	}
+	
+	/* Try to allocate the result. */
+	result = sjme_malloc(sizeof(*result), error);
+	if (result == NULL)
+		return sjme_false;
+	
+	/* Initialize base info. */
+	result->type = type;
+	result->functions = &sjme_pipeFunctions[type];
+	
+	/* Call sub-initializer accordingly. */
+	if (!result->functions->newInstance(result, fd, isInput, error))
+	{
+		sjme_free(result, error);
+		
+		if (!sjme_hasError(error))
+			sjme_setError(error, SJME_ERROR_BAD_PIPE_INIT, 0);
+		
+		return sjme_false;
+	}
+	
+	/* Use this one! */
+	*outPipe = result;
+	return sjme_true;
 }

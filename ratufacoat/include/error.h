@@ -225,6 +225,9 @@ typedef enum sjme_errorCode
 	
 	/** The lock owner is not valid. */
 	SJME_NOT_LOCK_OWNER,
+	
+	/** Bad pipe initialize. */
+	SJME_ERROR_BAD_PIPE_INIT,
 } sjme_errorCode;
 
 /** This represents an error. */
