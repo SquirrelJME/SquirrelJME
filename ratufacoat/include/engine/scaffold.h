@@ -16,6 +16,7 @@
 #ifndef SQUIRRELJME_SCAFFOLD_H
 #define SQUIRRELJME_SCAFFOLD_H
 
+#include "engine/pipe.h"
 #include "engine/scafdef.h"
 #include "error.h"
 #include "frontend/frontdef.h"
@@ -295,6 +296,9 @@ struct sjme_engineState
 	
 	/** The next task/thread ID. */
 	sjme_atomicInt nextTaskThreadId;
+	
+	/** Global standard pipes for when terminal is requested. */
+	sjme_pipeInstance* stdPipes[SJME_NUM_STANDARD_PIPES];
 };
 
 /**

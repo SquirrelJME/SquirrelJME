@@ -45,14 +45,8 @@ struct sjme_engineTask
 	/** The profiler to use for any profiling that occurs. */
 	sjme_profilerSnapshot* profiler;
 	
-	/** Standard input. */
-	sjme_pipeInstance* stdIn;
-	
-	/** Standard output. */
-	sjme_pipeInstance* stdOut;
-	
-	/** Standard error. */
-	sjme_pipeInstance* stdErr;
+	/** The various standard pipe instances. */
+	sjme_pipeInstance* stdPipes[SJME_NUM_STANDARD_PIPES];
 };
 
 /**
@@ -80,6 +74,7 @@ sjme_jboolean sjme_engineTaskDestroy(sjme_engineTask* task, sjme_error* error);
  * standard input will be a terminal, whereas otherwise it will be a buffer.
  * @param profiler The profile snapshot that this run will write to, may be
  * set to @c null in which case no profiling is performed.
+ * @param rootVm Is this the root virtual machine?
  * @param outTask The output task which was created.
  * @param outMainThread The output main thread which was created.
  * @param error Any possible error state.
@@ -91,8 +86,9 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	sjme_mainArgs* mainArgs, sjme_systemPropertySet* sysProps,
 	sjme_pipeRedirectType stdInMode, sjme_pipeRedirectType stdOutMode,
 	sjme_pipeRedirectType stdErrMode, sjme_jboolean forkThread,
-	sjme_profilerSnapshot* profiler, sjme_engineTask** outTask,
-	sjme_engineThread** outMainThread, sjme_error* error);
+	sjme_profilerSnapshot* profiler, sjme_jboolean rootVm,
+	sjme_engineTask** outTask, sjme_engineThread** outMainThread,
+	sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

@@ -18,6 +18,8 @@
 
 #include "sjmerc.h"
 #include "error.h"
+#include "frontend/frontdef.h"
+#include "file.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -48,7 +50,7 @@ typedef enum sjme_standardPipeType
 	SJME_STANDARD_PIPE_STDERR = 2,
 	
 	/** The number of standard pipes. */
-	NUM_SJME_STANDARD_PIPES = 3,
+	SJME_NUM_STANDARD_PIPES = 3,
 } sjme_standardPipeType;
 
 /**
@@ -89,7 +91,7 @@ typedef enum sjme_pipeRedirectType
 	SJME_PIPE_REDIRECT_TERMINAL = 2,
 	
 	/** The number of redirect types. */
-	NUM_SJME_PIPE_REDIRECTS = 3
+	SJME_NUM_PIPE_REDIRECTS = 3
 } sjme_pipeRedirectType;
 
 /**
@@ -105,7 +107,7 @@ typedef struct sjme_pipeInstance sjme_pipeInstance;
  * 
  * @param type The type of pipe to create.
  * @param outPipe The output pipe instance.
- * @param fd The file descriptor hint to use.
+ * @param file The file to access, potentially.
  * @param isInput Is this an input pipe? An input pipe is one that is
  * meant to be read from the task that is within.
  * @param error Any possible resultant error state.
@@ -113,7 +115,7 @@ typedef struct sjme_pipeInstance sjme_pipeInstance;
  * @since 2022/03/26
  */
 sjme_jboolean sjme_pipeNewInstance(sjme_pipeRedirectType type,
-	sjme_pipeInstance** outPipe, sjme_jint fd, sjme_jboolean isInput,
+	sjme_pipeInstance** outPipe, sjme_file* file, sjme_jboolean isInput,
 	sjme_error* error);
 
 /*--------------------------------------------------------------------------*/

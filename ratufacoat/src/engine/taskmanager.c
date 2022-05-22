@@ -11,6 +11,86 @@
 #include "engine/taskmanager.h"
 #include "memory.h"
 
+/**
+ * Helper to initialize all of the standard pipes accordingly.
+ * 
+ * @param stdInMode The mode for standard input.
+ * @param stdOutMode The mode for standard output.
+ * @param stdErrMode The mode for standard error.
+ * @param error Any resultant error state.
+ * @return If everything was a success.
+ * @since 2022/05/22
+ */
+static sjme_jboolean sjme_taskManagerPipeInit(sjme_pipeRedirectType stdInMode,
+	sjme_pipeRedirectType stdOutMode, sjme_pipeRedirectType stdErrMode,
+	sjme_pipeInstance* (*terminalPipes)[SJME_NUM_STANDARD_PIPES],
+	sjme_pipeInstance* (*outputPipes)[SJME_NUM_STANDARD_PIPES],
+	sjme_error* error)
+{
+	sjme_pipeRedirectType redirects[SJME_NUM_PIPE_REDIRECTS];
+	sjme_jint i, j;
+	sjme_jboolean weInit[SJME_NUM_PIPE_REDIRECTS];
+	sjme_jboolean failing;
+	
+	/* Setup standard keyed redirect types. */
+	memset(redirects, 0, sizeof(redirects));
+	redirects[SJME_STANDARD_PIPE_STDIN] = stdInMode;
+	redirects[SJME_STANDARD_PIPE_STDOUT] = stdOutMode;
+	redirects[SJME_STANDARD_PIPE_STDERR] = stdErrMode;
+	
+	/* Initialize each instance in a loop. */
+	failing = sjme_false;
+	for (i = SJME_STANDARD_PIPE_STDIN; i < SJME_NUM_STANDARD_PIPES; i++)
+	{
+		/* If using terminal pipe, just use global pipe. */
+		if (redirects[i] == SJME_PIPE_REDIRECT_TERMINAL)
+		{
+			/* This should not occur at all. */
+			if ((*terminalPipes)[i] == NULL)
+			{
+				sjme_message("Missing terminalPipes[%d]?", i);
+				
+				failing = sjme_true;
+				break;
+			}
+			
+			(*outputPipes)[i] = (*terminalPipes)[i];
+			continue;
+		}
+		
+		/* Otherwise, set up a new instance. */
+		if (!sjme_pipeNewInstance(redirects[i],
+			&(*outputPipes)[i], NULL, sjme_false, error))
+		{
+			failing = sjme_true;
+			break;
+		}
+		
+		/* Set that we initialized it, for potential cleanup on failure. */
+		weInit[i] = sjme_true;
+	}
+	
+	/* Cleanup on failure? */
+	if (failing)
+	{
+		/* Wipe pipes we did not initialize. */
+		for (j = SJME_STANDARD_PIPE_STDIN;
+			j < SJME_NUM_STANDARD_PIPES; j++)
+		{
+			/* Skip pipes we did not initialize ourselves. */
+			if (!weInit[i])
+				continue;
+			
+			sjme_todo("Destroy pipe?");
+		}
+		
+		return sjme_false;
+	}
+	
+	/* Success! */
+	return sjme_true;
+}
+
 sjme_jboolean sjme_engineTaskDestroy(sjme_engineTask* task, sjme_error* error)
 {
 	if (task == NULL)
@@ -29,8 +109,9 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	sjme_mainArgs* mainArgs, sjme_systemPropertySet* sysProps,
 	sjme_pipeRedirectType stdInMode, sjme_pipeRedirectType stdOutMode,
 	sjme_pipeRedirectType stdErrMode, sjme_jboolean forkThread,
-	sjme_profilerSnapshot* profiler, sjme_engineTask** outTask,
-	sjme_engineThread** outMainThread, sjme_error* error)
+	sjme_profilerSnapshot* profiler, sjme_jboolean rootVm,
+	sjme_engineTask** outTask, sjme_engineThread** outMainThread,
+	sjme_error* error)
 {
 	sjme_engineTask* createdTask;
 	
@@ -42,9 +123,9 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 		return sjme_false;
 	}
 	
-	if (stdInMode < 0 || stdInMode >= NUM_SJME_PIPE_REDIRECTS ||
-		stdOutMode < 0 || stdOutMode >= NUM_SJME_PIPE_REDIRECTS ||
-		stdErrMode < 0 || stdErrMode >= NUM_SJME_PIPE_REDIRECTS)
+	if (stdInMode < 0 || stdInMode >= SJME_NUM_PIPE_REDIRECTS ||
+		stdOutMode < 0 || stdOutMode >= SJME_NUM_PIPE_REDIRECTS ||
+		stdErrMode < 0 || stdErrMode >= SJME_NUM_PIPE_REDIRECTS)
 	{
 		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
 		return sjme_false;
@@ -91,12 +172,9 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	createdTask->profiler = profiler;
 	
 	/* Setup every standard console pipe. */
-	if (!sjme_pipeNewInstance(stdInMode, &createdTask->stdIn,
-			SJME_STANDARD_PIPE_STDIN, sjme_true, error) ||
-		!sjme_pipeNewInstance(stdOutMode, &createdTask->stdOut,
-			SJME_STANDARD_PIPE_STDOUT, sjme_false, error) ||
-		!sjme_pipeNewInstance(stdErrMode, &createdTask->stdErr,
-			SJME_STANDARD_PIPE_STDERR, sjme_false, error))
+	if (!sjme_taskManagerPipeInit(stdInMode, stdOutMode, stdErrMode,
+		&engineState->stdPipes, &createdTask->stdPipes,
+		error))
 	{
 		/* Fail. */
 		sjme_engineTaskDestroy(createdTask, error);

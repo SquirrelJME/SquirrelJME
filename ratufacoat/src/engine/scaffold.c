@@ -121,8 +121,10 @@ static sjme_jboolean sjme_engineEnterMain(sjme_engineState* engineState,
 		SJME_PIPE_REDIRECT_TERMINAL,
 		SJME_PIPE_REDIRECT_TERMINAL,
 		SJME_PIPE_REDIRECT_TERMINAL,
-		sjme_false, NULL, &engineState->mainTask,
-		&engineState->mainThread, error);
+		sjme_false,
+		NULL, sjme_true, &engineState->mainTask,
+		&engineState->mainThread,
+		error);
 }
 
 sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
@@ -215,6 +217,11 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 	
 	/* Set initial ID for tasks and threads, so they do not start at zero. */
 	sjme_atomicIntGetThenAdd(&result->nextTaskThreadId, 1);
+	
+	/* Initialize the standard pipes for terminal pipe usage. */
+#if 0
+	sjme_pipeInstance* stdPipes[SJME_NUM_STANDARD_PIPES];
+#endif
 	
 	/* Initialization complete! */
 	*outState = result;

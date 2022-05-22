@@ -60,7 +60,7 @@ typedef struct sjme_pipeFunction
 	 * Creates a new instance of a given pipe.
 	 * 
 	 * @param outPipe The output pipe.
-	 * @param fd The file descriptor of the pipe, this can be used as a hint
+	 * @param file The file descriptor of the pipe, this can be used as a hint
 	 * to determine the action of a given pipe.
 	 * @param isInput Is this an input pipe? An input pipe is one that is
 	 * meant to be read from the task that is within.
@@ -68,8 +68,8 @@ typedef struct sjme_pipeFunction
 	 * @return If the instance was successfully created.
 	 * @since 2022/03/15
 	 */
-	sjme_jboolean (*newInstance)(sjme_pipeInstance* outPipe,
-		sjme_jint fd, sjme_jboolean isInput, sjme_error* error);
+	sjme_jboolean (*newInstance)(sjme_pipeInstance* outPipe, sjme_file* file,
+		sjme_jboolean isInput, sjme_error* error);
 	
 	/**
 	 * Reads from the given pipe, anything that is waiting within.

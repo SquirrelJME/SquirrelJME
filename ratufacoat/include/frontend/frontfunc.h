@@ -18,6 +18,8 @@
 #define SQUIRRELJME_FRONTFUNC_H
 
 #include "frontend/frontdef.h"
+#include "engine/file.h"
+#include "engine/pipe.h"
 #include "engine/scafdef.h"
 #include "softmath.h"
 #include "error.h"
@@ -79,6 +81,18 @@ struct sjme_frontBridge
 	 * @since 2022/01/05 
 	 */
 	sjme_jboolean (*nanoTime)(sjme_jlong* out, sjme_error* error);
+	
+	/**
+	 * Attempts to open the standard pipe as a file.
+	 * 
+	 * @param stdPipe The standard pipe to open.
+	 * @param outFile The output file, for said open file.
+	 * @param error On any error state.
+	 * @return If the open was successful or not.
+	 * @since 2022/05/22
+	 */
+	sjme_jboolean (*stdPipeOpen)(sjme_standardPipeType stdPipe,
+		sjme_file** outFile, sjme_error* error);
 };
 
 /*--------------------------------------------------------------------------*/

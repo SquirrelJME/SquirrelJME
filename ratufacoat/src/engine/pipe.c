@@ -41,8 +41,20 @@ static sjme_jboolean sjme_discardPipeFlush(sjme_pipeInstance* pipe,
 }
 
 static sjme_jboolean sjme_discardPipeNewInstance(sjme_pipeInstance* outPipe,
-	sjme_jint fd, sjme_jboolean isInput, sjme_error* error)
+	sjme_file* file, sjme_jboolean isInput, sjme_error* error)
 {
+	if (outPipe == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		return sjme_false;
+	}
+	
+	if (file != NULL)
+	{
+		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
+		return sjme_false;
+	}
+	
 	sjme_todo("Implement this?");
 	return sjme_false;
 }
@@ -80,8 +92,20 @@ static sjme_jboolean sjme_bufferPipeFlush(sjme_pipeInstance* pipe,
 }
 
 static sjme_jboolean sjme_bufferPipeNewInstance(sjme_pipeInstance* outPipe,
-	sjme_jint fd, sjme_jboolean isInput, sjme_error* error)
+	sjme_file* file, sjme_jboolean isInput, sjme_error* error)
 {
+	if (outPipe == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		return sjme_false;
+	}
+	
+	if (file != NULL)
+	{
+		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
+		return sjme_false;
+	}
+	
 	sjme_todo("Implement this?");
 	return sjme_false;
 }
@@ -119,8 +143,14 @@ static sjme_jboolean sjme_terminalPipeFlush(sjme_pipeInstance* pipe,
 }
 
 static sjme_jboolean sjme_terminalPipeNewInstance(sjme_pipeInstance* outPipe,
-	sjme_jint fd, sjme_jboolean isInput, sjme_error* error)
+	sjme_file* file, sjme_jboolean isInput, sjme_error* error)
 {
+	if (outPipe == NULL || file == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		return sjme_false;
+	}
+	
 	sjme_todo("Implement this?");
 	return sjme_false;
 }
@@ -142,7 +172,7 @@ static sjme_jboolean sjme_terminalPipeWrite(sjme_pipeInstance* pipe,
 }
 
 static const sjme_pipeFunction sjme_pipeFunctions
-	[NUM_SJME_PIPE_REDIRECTS] =
+	[SJME_NUM_PIPE_REDIRECTS] =
 {
 	/** @c SJME_TASK_PIPE_REDIRECT_DISCARD . */
 	{
@@ -173,7 +203,7 @@ static const sjme_pipeFunction sjme_pipeFunctions
 };
 
 sjme_jboolean sjme_pipeNewInstance(sjme_pipeRedirectType type,
-	sjme_pipeInstance** outPipe, sjme_jint fd, sjme_jboolean isInput,
+	sjme_pipeInstance** outPipe, sjme_file* file, sjme_jboolean isInput,
 	sjme_error* error)
 {
 	sjme_pipeInstance* result;
@@ -185,7 +215,7 @@ sjme_jboolean sjme_pipeNewInstance(sjme_pipeRedirectType type,
 		return sjme_false;
 	}
 	
-	if (type < SJME_PIPE_REDIRECT_DISCARD || type >= NUM_SJME_PIPE_REDIRECTS)
+	if (type < SJME_PIPE_REDIRECT_DISCARD || type >= SJME_NUM_PIPE_REDIRECTS)
 	{
 		sjme_setError(error, SJME_ERROR_INVALIDARG, type);
 		
@@ -202,7 +232,7 @@ sjme_jboolean sjme_pipeNewInstance(sjme_pipeRedirectType type,
 	result->functions = &sjme_pipeFunctions[type];
 	
 	/* Call sub-initializer accordingly. */
-	if (!result->functions->newInstance(result, fd, isInput, error))
+	if (!result->functions->newInstance(result, file, isInput, error))
 	{
 		sjme_free(result, error);
 		
