@@ -12,7 +12,9 @@ package cc.squirreljme.plugin.multivm;
 import cc.squirreljme.plugin.util.SimpleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.SingleTaskOutputFile;
 import javax.inject.Inject;
+import lombok.Getter;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.tasks.Internal;
 import org.gradle.workers.WorkerExecutor;
 
 /**
@@ -33,9 +35,13 @@ public class VMTestTask
 		"single.test";
 	
 	/** The source set used. */
+	@Internal
+	@Getter
 	protected final String sourceSet;
 	
 	/** The virtual machine type. */
+	@Internal
+	@Getter
 	protected final VMSpecifier vmType;
 	
 	/**
@@ -96,15 +102,5 @@ public class VMTestTask
 		this.doLast(new VMTestTaskAction(__executor,
 			SimpleJavaExecSpecFiller::new, __sourceSet,
 			__vmType));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/08/21
-	 */
-	@Override
-	public String getSourceSet()
-	{
-		return this.sourceSet;
 	}
 }

@@ -72,8 +72,8 @@ public final class TestExecution
 					this.testClass, this.result);
 				
 				// Print comparison to show what failed
-				this.expected.printComparison(System.err,
-					this.result);
+				this.result.printComparison(System.err,
+					this.expected);
 				break;
 			
 			case TEST_EXCEPTION:
