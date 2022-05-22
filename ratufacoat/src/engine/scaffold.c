@@ -135,6 +135,7 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 	sjme_jint i;
 	sjme_error subError;
 	sjme_engineScaffoldUnavailableType whyUnavailable;
+	sjme_jboolean didPipes;
 	
 	if (inConfig == NULL || outState == NULL)
 	{
@@ -201,9 +202,14 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 		return sjme_false;
 	}
 	
+	/* Initialize base pipes for the terminal output. */
+	didPipes = sjme_false;
+	sjme_todo("Initialize engine pipes for output terminal.");
+	
 	/* Perform base engine initialization and start the main task. */
 	result->scaffold = tryScaffold;
-	if (!tryScaffold->initEngine(result, error) ||
+	if (!didPipes ||
+		!tryScaffold->initEngine(result, error) ||
 		!sjme_engineEnterMain(result, error))
 	{
 		/* Clean out. */
