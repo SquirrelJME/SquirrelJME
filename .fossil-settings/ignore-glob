@@ -6,6 +6,13 @@ build/
 out/
 */out/
 
+# Eclipse
+.settings
+.classpath
+.project
+emulators/*/bin
+modules/*/bin
+
 # IntelliJ (Shared but not used)
 .idea/aws.xml
 .idea/dbnavigator.xml
@@ -40,6 +47,7 @@ modules/*/out/test/
 *-original-*
 
 # Binary Files
+*.class
 *.ico
 *.png
 *.sqc

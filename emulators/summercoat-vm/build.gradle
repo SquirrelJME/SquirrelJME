@@ -1,6 +1,7 @@
 plugins
 {
 	id "java-library"
+	id "eclipse"
 }
 
 description = "This is the SummerCoat VM which is a more " +

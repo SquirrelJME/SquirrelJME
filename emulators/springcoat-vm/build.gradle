@@ -1,6 +1,7 @@
 plugins
 {
 	id "java-library"
+	id "eclipse"
 }
 
 description = "This is a SpringCoat virtual machine which " +
