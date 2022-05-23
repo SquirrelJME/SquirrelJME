@@ -11,6 +11,7 @@
 #include "builtin.h"
 #include "jvm.h"
 #include "engine/scaffold.h"
+#include "enginestub.h"
 
 /**
  * Tests initialization of the engine initialization.
@@ -30,6 +31,7 @@ SJME_TEST_PROTOTYPE(testEngineInit)
 	memset(&config, 0, sizeof(config));
 	config.romPointer = sjme_builtInRomData;
 	config.romSize = sjme_builtInRomSize;
+	config.frontBridge = &sjme_testStubFrontBridge;
 	
 	/* Initialize engine. */
 	if (!sjme_engineNew(&config, &state,

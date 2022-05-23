@@ -50,7 +50,42 @@ typedef struct sjme_file
 {
 	/** The functions used to access this file. */
 	const sjme_fileFunctions* functions;
+	
+	/** Can read from this file? */
+	sjme_jboolean isReadable;
+	
+	/** Can write to this file? */
+	sjme_jboolean isWritable;
 } sjme_file;
+
+/**
+ * Represents a special file type.
+ * 
+ * @since 2022/05/22
+ */
+typedef enum sjme_specialFileType
+{
+	/** Discard output. */
+	SJME_SPECIAL_FILE_DISCARD_OUTPUT,
+	
+	/** Always EOF on read. */
+	SJME_SPECIAL_FILE_ALWAYS_EOF_INPUT,
+	
+	/** The number of special file type. */
+	SJME_NUM_SPECIAL_FILE_TYPES
+} sjme_specialFileType;
+
+/**
+ * Opens a special file that performs in a specific way.
+ * 
+ * @param fileType The type of special file to open.
+ * @param outFile The output file.
+ * @param error Any resultant error state.
+ * @return If opening the special file was a success.
+ * @since 2022/05/22
+ */
+sjme_jboolean sjme_newSpecialFile(sjme_specialFileType fileType,
+	sjme_file** outFile, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

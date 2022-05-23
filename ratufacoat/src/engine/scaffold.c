@@ -10,6 +10,7 @@
 #include "debug.h"
 #include "engine/scaffold.h"
 #include "engine/taskmanager.h"
+#include "frontend/frontfunc.h"
 #include "memory.h"
 
 const sjme_engineScaffold* const sjme_engineScaffolds[] =
@@ -132,12 +133,13 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 {
 	sjme_engineState* result;
 	const sjme_engineScaffold* tryScaffold;
-	sjme_jint i;
+	sjme_jint i, didPipes;
 	sjme_error subError;
 	sjme_engineScaffoldUnavailableType whyUnavailable;
-	sjme_jboolean didPipes;
+	sjme_file* file;
 	
-	if (inConfig == NULL || outState == NULL)
+	if (inConfig == NULL || outState == NULL ||
+		inConfig->frontBridge == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
 		
@@ -203,12 +205,34 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 	}
 	
 	/* Initialize base pipes for the terminal output. */
-	didPipes = sjme_false;
-	sjme_todo("Initialize engine pipes for output terminal.");
+	didPipes = 0;
+	for (i = 0; i < SJME_NUM_STANDARD_PIPES; i++)
+	{
+		/* Open standard pipe file. */
+		file = NULL;
+		if (result->config.frontBridge->stdPipeFileOpen == NULL ||
+			!result->config.frontBridge->stdPipeFileOpen(i,
+			&file, error) || file == NULL)
+		{
+			if (!sjme_hasError(error))
+				sjme_setError(error, SJME_ERROR_BAD_PIPE_INIT, i);
+			
+			break;
+		}
+		
+		/* Open terminal pipe accordingly. */
+		if (!sjme_pipeNewInstance(SJME_PIPE_REDIRECT_TERMINAL,
+			&result->stdPipes[i], file,
+			(i == SJME_STANDARD_PIPE_STDIN), error))
+			break;
+		
+		/* Success! */
+		didPipes++;
+	}
 	
 	/* Perform base engine initialization and start the main task. */
 	result->scaffold = tryScaffold;
-	if (!didPipes ||
+	if (didPipes != SJME_NUM_STANDARD_PIPES ||
 		!tryScaffold->initEngine(result, error) ||
 		!sjme_engineEnterMain(result, error))
 	{

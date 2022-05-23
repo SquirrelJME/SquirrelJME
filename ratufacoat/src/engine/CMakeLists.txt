@@ -15,6 +15,7 @@ endif()
 # Define the library
 add_library(SquirrelJMEEngine OBJECT
 	classloader.c
+	file.c
 	pipe.c
 	profiler.c
 	scaffold.c

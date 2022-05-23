@@ -19,6 +19,7 @@ endif()
 file(GLOB SQUIRRELJME_TEST_SOURCES "test*.c")
 add_executable(SquirrelJMETests
     mainEntry.c
+    enginestub.c
 	${SQUIRRELJME_TEST_SOURCES})
 
 # This is written only in C!
@@ -57,7 +58,8 @@ endif()
 foreach(SQUIRRELJME_TEST_SOURCE ${SQUIRRELJME_TEST_SOURCES})
 	# We need to do this because on Windows, CLion+CMake just gives the full
 	# path which we really do not want as it will mess up with tests
-	get_filename_component(SQUIRRELJME_TEST_SOURCE "${SQUIRRELJME_TEST_SOURCE}" NAME)
+	get_filename_component(SQUIRRELJME_TEST_SOURCE
+		"${SQUIRRELJME_TEST_SOURCE}" NAME)
 
 	# Remove the C to just get the base test
 	string(REPLACE ".c" "" SQUIRRELJME_TEST_SOURCE ${SQUIRRELJME_TEST_SOURCE})

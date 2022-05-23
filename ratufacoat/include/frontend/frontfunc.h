@@ -91,7 +91,7 @@ struct sjme_frontBridge
 	 * @return If the open was successful or not.
 	 * @since 2022/05/22
 	 */
-	sjme_jboolean (*stdPipeOpen)(sjme_standardPipeType stdPipe,
+	sjme_jboolean (*stdPipeFileOpen)(sjme_standardPipeType stdPipe,
 		sjme_file** outFile, sjme_error* error);
 };
 
