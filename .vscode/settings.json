@@ -3,5 +3,9 @@
 	79
 	],
 	"java.import.maven.enabled": false,
-	"java.configuration.updateBuildConfiguration": "automatic"
+	"java.configuration.updateBuildConfiguration": "automatic",
+	
+	"gradle.nestedProjects": true,
+	"gradle.autoDetect": true,
+	"gradle.allowParallelRun": true
 }

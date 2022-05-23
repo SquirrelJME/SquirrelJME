@@ -69,7 +69,9 @@ available.
  * Gentoo
    * See <https://wiki.gentoo.org/wiki/Java>
 
-### IntelliJ IDEA (Optional)
+### Running via IDEs
+
+#### IntelliJ IDEA
 
 SquirrelJME is developed on IntelliJ Ultimate, however Community Edition may
 still be used. This makes development easier and more integrated along with
@@ -77,6 +79,35 @@ whatever code you write or contribute will match the style that is set in
 SquirrelJME.
 
  * <https://www.jetbrains.com/idea/>
+
+#### VSCode
+
+The following extensions are required to build and run SquirrelJME in VSCode:
+
+ * [Extension Pack for Java](
+ https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack)
+   * `ext install vscjava.vscode-java-pack`
+ * [Gradle for Java](
+ https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-gradle)
+   * `ext install vscjava.vscode-gradle`
+
+Before running on VSCode you must run the following Gradle command, since this
+uses a similar code base that is borrowed from Eclipse:
+
+ * Setup Eclipse Project
+   * Windows: `gradlew eclipse`
+   * Linux/MacOS: `./gradlew eclipse`
+
+#### Eclipse
+
+Before running on Eclipse you must run the following Gradle command:
+
+ * Setup Eclipse Project
+   * Windows: `gradlew eclipse`
+   * Linux/MacOS: `./gradlew eclipse`
+
+Then following this you may _Import Existing Gradle Project_ and you will have
+access to the project for building.
 
 ## Installing C++ Compiler
 
