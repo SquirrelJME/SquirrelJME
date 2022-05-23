@@ -4,7 +4,6 @@ plugins
 	id "cpp-library"
 	id "java-library"
 	id "java-test-fixtures"
-	id "eclipse"
 }
 
 description = "This library provides the base support for testing and " +
