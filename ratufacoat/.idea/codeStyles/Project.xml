@@ -81,7 +81,7 @@
     <Objective-C-extensions>
       <option name="TAG_PREFIX_OF_LINE_COMMENT" value="AT" />
       <extensions>
-        <pair source="cpp" header="h" fileNamingConvention="LOWERCASE" />
+        <pair source="cxx" header="hxx" fileNamingConvention="LOWERCASE" />
         <pair source="c" header="h" fileNamingConvention="LOWERCASE" />
         <pair source="cu" header="cuh" fileNamingConvention="LOWERCASE" />
       </extensions>

@@ -74,6 +74,7 @@ set_property(TARGET SquirrelJMECore
 # Internal support libraries and modules
 add_subdirectory(collections)
 add_subdirectory(engine)
+add_subdirectory(enhanced)
 add_subdirectory(format)
 
 # Function to generate object files and sources for cross building
@@ -104,7 +105,8 @@ function(squirreljme_object_and_sources coreTargetVar)
 		foreach(cmakeTargetSource ${cmakeTargetSources})
 			get_filename_component(cmakeTargetSourceExt ${cmakeTargetSource}
 				EXT)
-			if(NOT "${cmakeTargetSourceExt}" STREQUAL ".c")
+			if(NOT "${cmakeTargetSourceExt}" STREQUAL ".c" AND
+				NOT "${cmakeTargetSourceExt}" STREQUAL ".cxx")
 				continue()
 			endif()
 
@@ -141,6 +143,7 @@ squirreljme_object_and_sources(SquirrelJMECoreTarget
 	SquirrelJMECore
 	SquirrelJMEEngine
 	SquirrelJMEEngineSpringCoat
+	SquirrelJMEEnhanced
 	SquirrelJMEFormat)
 
 # Static library

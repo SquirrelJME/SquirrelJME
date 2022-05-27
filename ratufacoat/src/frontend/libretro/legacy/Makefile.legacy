@@ -53,6 +53,7 @@ SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/engine/profiler.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/engine/scaffold.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/engine/taskmanager.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/engine/springcoat/springcoat.c
+SOURCES_CXX   := $(SOURCES_CXX) $(CORE_DIR)/src/enhanced/javatypes.cxx
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/format/detect.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/format/format.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/format/library.c

@@ -22,8 +22,8 @@ add_executable(SquirrelJMETests
     enginestub.c
 	${SQUIRRELJME_TEST_SOURCES})
 
-# This is written only in C!
-set_target_properties(SquirrelJMETests PROPERTIES LINKER_LANGUAGE C)
+# Can use C++!
+set_target_properties(SquirrelJMETests PROPERTIES LINKER_LANGUAGE CXX)
 
 # Additional includes
 target_include_directories(SquirrelJMETests PUBLIC
