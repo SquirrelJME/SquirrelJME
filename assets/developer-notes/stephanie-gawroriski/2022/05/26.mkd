@@ -1,0 +1,20 @@
+# 2022/05/26
+
+## 23:02
+
+I rather had an idea of things when it came to exception handling, smart
+pointers, and garbage collection in RatufaCoat. I could just as easily switch
+to C++ and just end it here and I might do that. But I could potentially setup
+a system with macros and otherwise that could work in C albeit it would be
+interesting to say the least and could work. It would very much abuse
+`setjmp` and `longjmp` to get things done as such. I could declare referenced
+and GC-able pointers within a `struct` that is `alloca` onto the stack. Every
+function would need cleanup handlers and such. I suppose what I can do is name
+the struct itself like `zone` then do `zone->whatever`. Would be crafty but
+I suppose at that point I am re-inventing C++. At that point I should just be
+using C++ honestly. Would just make things simpler to be honest and I have can
+strong and weak references, I can also have operators on atomic values and such.
+I just need to avoid crazy usage of templates since I can get into template
+hell. The only other unfortunate is RetroArch which for some platforms uses
+ancient compilers for things so that will fun stuff. Will have to figure that
+out, but I could at least have a utility library of sorts.
