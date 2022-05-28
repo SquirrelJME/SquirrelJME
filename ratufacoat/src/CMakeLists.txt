@@ -74,7 +74,6 @@ set_property(TARGET SquirrelJMECore
 # Internal support libraries and modules
 add_subdirectory(collections)
 add_subdirectory(engine)
-add_subdirectory(enhanced)
 add_subdirectory(format)
 
 # Function to generate object files and sources for cross building
@@ -143,7 +142,6 @@ squirreljme_object_and_sources(SquirrelJMECoreTarget
 	SquirrelJMECore
 	SquirrelJMEEngine
 	SquirrelJMEEngineSpringCoat
-	SquirrelJMEEnhanced
 	SquirrelJMEFormat)
 
 # Static library

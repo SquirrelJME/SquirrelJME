@@ -50,7 +50,7 @@ add_library(squirreljme_libretro ${SQUIRRELJME_LIBRETRO_TYPE}
 	${SQUIRRELJME_LIBRETRO_RC}
 	${SQUIRRELJME_LIBRETRO_CORELIB})
 
-# This is written only in C!
+# This is in C++!
 set_target_properties(squirreljme_libretro PROPERTIES LINKER_LANGUAGE CXX)
 
 # Remove the "lib" prefix as it is not used by RetroArch
