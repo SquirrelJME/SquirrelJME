@@ -96,7 +96,7 @@ SJME_EXTERN_C SJME_GCC_USED void retro_reset(void)
 	okayInit = sjme_true;
 	if (!sjme_libRetro_selectRom(&newState->config) ||
 		!sjme_libRetro_screenConfig(&newState->config) ||
-		!sjme_libRetro_loopConfig(&newState->config));
+		!sjme_libRetro_loopConfig(&newState->config))
 		okayInit = sjme_false;
 
 	/* Did initialization fail? */
