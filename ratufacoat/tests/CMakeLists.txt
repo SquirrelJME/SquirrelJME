@@ -15,8 +15,8 @@ if(NOT DEFINED SQUIRRELJME_TEST_WRAPPER)
 	set(MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full")
 endif()
 
-# Build executable just for testing'
-file(GLOB SQUIRRELJME_TEST_SOURCES "test*.c")
+# Build executable just for testing
+file(GLOB SQUIRRELJME_TEST_SOURCES "test*.c" "test*.cxx")
 add_executable(SquirrelJMETests
     mainEntry.c
     enginestub.c
@@ -61,7 +61,8 @@ foreach(SQUIRRELJME_TEST_SOURCE ${SQUIRRELJME_TEST_SOURCES})
 	get_filename_component(SQUIRRELJME_TEST_SOURCE
 		"${SQUIRRELJME_TEST_SOURCE}" NAME)
 
-	# Remove the C to just get the base test
+	# Remove the C/C++ to just get the base test
+	string(REPLACE ".cxx" "" SQUIRRELJME_TEST_SOURCE ${SQUIRRELJME_TEST_SOURCE})
 	string(REPLACE ".c" "" SQUIRRELJME_TEST_SOURCE ${SQUIRRELJME_TEST_SOURCE})
 
 	# Note it and register it accordingly
