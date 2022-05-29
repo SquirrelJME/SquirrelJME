@@ -17,25 +17,25 @@ static sjme_jboolean sjme_memStreamCollect(sjme_counter* counter,
 	sjme_dataStream* stream;
 	sjme_counter* linkedCounter;
 	sjme_jboolean isOkay;
-	
+
 	if (counter == NULL || counter->dataPointer == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* Get the stream. */
-	stream = counter->dataPointer;
-	
+	stream = (sjme_dataStream*)counter->dataPointer;
+
 	/* Count down the data chunk, if one is linked. */
 	linkedCounter = stream->linkedCounter;
 	isOkay = sjme_true;
 	if (linkedCounter != NULL)
 		isOkay = sjme_counterDown(linkedCounter, NULL, error);
-	
+
 	/* Perform final cleanup. */
-	return sjme_free(stream, error) && isOkay;
+	return (sjme_jboolean)(sjme_free(stream, error) && isOkay);
 }
 
 static sjme_jboolean sjme_memStreamRead(sjme_dataStream* stream,
@@ -44,30 +44,30 @@ static sjme_jboolean sjme_memStreamRead(sjme_dataStream* stream,
 	sjme_jint startRead, readLeft, copyLimit;
 	sjme_memChunk* memChunk;
 	void* realPointer;
-	
+
 	if (stream == NULL || dest == NULL || readLen == NULL ||
 		stream->streamSource == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
+
 		return sjme_false;
 	}
-	
+
 	if (len < 0)
 	{
 		sjme_setError(error, SJME_ERROR_INVALIDARG, len);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* We need this chunk. */
-	memChunk = stream->streamSource;
-	
+	memChunk = (sjme_memChunk*)stream->streamSource;
+
 	/* Determine how much data we can read. */
 	startRead = sjme_atomicIntGet(&stream->readBytes);
 	readLeft = memChunk->size - startRead;
 	copyLimit = sjme_min(readLeft, len);
-	
+
 	/* EOF reached? */
 	if (readLeft <= 0)
 	{
@@ -75,14 +75,14 @@ static sjme_jboolean sjme_memStreamRead(sjme_dataStream* stream,
 		if (readLeft < 0)
 		{
 			sjme_setError(error, SJME_ERROR_INVALID_STREAM_STATE, readLeft);
-			
+
 			return sjme_false;
 		}
-		
+
 		*readLen = -1;
 		return sjme_true;
 	}
-	
+
 	realPointer = NULL;
 	if (!sjme_chunkCheckBound(memChunk, startRead,
 			copyLimit, error) ||
@@ -90,16 +90,16 @@ static sjme_jboolean sjme_memStreamRead(sjme_dataStream* stream,
 			&realPointer, error))
 	{
 		sjme_setError(error, SJME_ERROR_INVALID_STREAM_STATE, 0);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* Copy as many bytes as we can over. */
 	memmove(dest, realPointer, copyLimit);
-	
+
 	/* Move pointers over. */
 	sjme_atomicIntGetThenAdd(&stream->readBytes, copyLimit);
-	
+
 	/* Successful read! */
 	*readLen = copyLimit;
 	return sjme_true;
@@ -110,19 +110,19 @@ sjme_jboolean sjme_streamFromChunkCounted(sjme_dataStream** outStream,
 	sjme_jboolean countUpChunk, sjme_error* error)
 {
 	sjme_dataStream* result;
-	
+
 	if (outStream == NULL || chunk == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* This needs to be allocated. */
-	result = sjme_malloc(sizeof(*result), error);
+	result = (sjme_dataStream*)sjme_malloc(sizeof(*result), error);
 	if (result == NULL)
 		return sjme_false;
-	
+
 	/* Initialize our stream. */
 	result->streamSource = &chunk->chunk;
 	result->readFunction = sjme_memStreamRead;
@@ -133,10 +133,10 @@ sjme_jboolean sjme_streamFromChunkCounted(sjme_dataStream** outStream,
 		(countUpChunk && !sjme_counterUp(&chunk->count, error)))
 	{
 		sjme_free(result, error);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* Use this. */
 	*outStream = result;
 	return sjme_true;
@@ -148,24 +148,24 @@ sjme_jboolean sjme_streamRead(sjme_dataStream* stream,
 	if (stream == NULL || dest == NULL || readLen == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
+
 		return sjme_false;
 	}
-	
+
 	if (len < 0)
 	{
 		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, 0);
-		
+
 		return sjme_false;
 	}
-	
+
 	if (stream->readFunction == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_INVALID_STREAM_STATE, 0);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* Forward to the general read. */
 	return stream->readFunction(stream, dest, len, readLen, error);
 }

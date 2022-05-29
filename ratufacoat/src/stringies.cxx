@@ -23,7 +23,7 @@ typedef struct sjme_jvmErrorString
 /** Unknown error description. */
 static const sjme_jvmErrorString sjme_jvmErrorUnknown =
 {
-	SJME_ERROR_UNKNOWN, 
+	SJME_ERROR_UNKNOWN,
 	"Unknown Error"
 };
 
@@ -92,28 +92,28 @@ static const sjme_jvmErrorString sjme_jvmErrorStrings[] =
 	{SJME_INVALID_UNLOCK_KEY, "Invalid unlock key"},
 	{SJME_NOT_LOCK_OWNER, "The lock owner is invalid"},
 	{SJME_ERROR_BAD_PIPE_INIT, "Bad pipe initialization"},
-	
+
 	{SJME_ERROR_NONE, NULL}
 };
 
 /**
  * Returns a pointer to the error string description
- * 
- * @param code The error code to look for. 
+ *
+ * @param code The error code to look for.
  * @return Pointer to the error string that is used, or NULL if not found.
  * @since 2020/08/09
  */
 const sjme_jvmErrorString* sjme_locateJvmErrorString(sjme_jint code)
 {
 	const struct sjme_jvmErrorString* at;
-	
+
 	/* Locate the error. */
 	for (at = sjme_jvmErrorStrings; at->code != SJME_ERROR_NONE; at++)
 	{
 		if (at->code == code)
 			return at;
 	}
-	
+
 	/* Not found at all. */
 	return NULL;
 }
@@ -123,30 +123,30 @@ void sjme_describeJvmError(sjme_error* error,
 {
 	const sjme_jvmErrorString* stringy;
 	int readLen;
-	
+
 	/* These conditions are not valid. */
 	if (error == NULL || destMessage == NULL || destLen == NULL)
 	{
 		/* Set zero length, if that is even possible. */
 		if (destLen != NULL)
 			*destLen = 0;
-			
+
 		return;
 	}
-	
+
 	/* Locate the string to seed with. */
 	stringy = sjme_locateJvmErrorString(error->code);
 	if (stringy == NULL)
 		stringy = &sjme_jvmErrorUnknown;
-	
+
 	/* Build error string out. */
-	readLen = snprintf(destMessage, *destLen,
+	readLen = snprintf((char*)destMessage, *destLen,
 		"JVM Error: %s (%d) %d/0x%x",
 		stringy->string,
 		error->code,
 		error->value,
 		error->value);
-	
+
 	if (readLen >= 0)
 		*destLen = readLen;
 }

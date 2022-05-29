@@ -18,7 +18,7 @@
 static const sjme_packDriver* const sjme_packDrivers[] =
 {
 	&sjme_packSqcDriver,
-	
+
 	NULL
 };
 
@@ -36,7 +36,7 @@ static const sjme_formatHandler sjme_packFormatHandler =
 
 /**
  * Performs pack garbage collection.
- * 
+ *
  * @param counter The counter used.
  * @param error The error state.
  * @return If collection was successful.
@@ -47,11 +47,12 @@ static sjme_jboolean sjme_packCollect(sjme_counter* counter, sjme_error* error)
 	if (counter == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
+
 		return sjme_false;
 	}
-	
-	return sjme_packClose(counter->dataPointer, error);
+
+	return sjme_packClose(
+		(sjme_packInstance*)counter->dataPointer, error);
 }
 
 sjme_jboolean sjme_packClassPathFromCharStar(sjme_packInstance* pack,
@@ -68,17 +69,17 @@ sjme_jboolean sjme_packClose(sjme_packInstance* instance,
 	sjme_jboolean badFree;
 	sjme_jboolean badPackClose;
 	sjme_jint numLibs;
-	
+
 	if (instance == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* Make sure these are cleared! */
 	failingLib = badFree = badPackClose = sjme_false;
-	
+
 	/* Close out any open libraries. */
 	numLibs = instance->numLibraries;
 	for (int i = 0; i < numLibs; i++)
@@ -88,23 +89,25 @@ sjme_jboolean sjme_packClose(sjme_packInstance* instance,
 			&instance->libraries[i], NULL, sjme_libraryInstance*);
 		if (library == NULL)
 			continue;
-		
+
 		/* Try closing the library. */
 		if (!sjme_libraryClose(library, error))
 			failingLib = sjme_true;
 	}
-	
+
 	/* Wipe out libraries. */
 	instance->numLibraries = -1;
-	badFree |= !sjme_free(instance->libraries, error);
+	if (!sjme_free(instance->libraries, error))
+		badFree = sjme_true;
 	instance->libraries = NULL;
-	
+
 	/* Perform normal pack close. */
-	badPackClose |= !sjme_formatClose(&sjme_packFormatHandler, instance,
-		error);
-	
+	if (!sjme_formatClose(&sjme_packFormatHandler, instance,
+		error))
+		badPackClose = sjme_true;
+
 	/* Has there been a close failure? */
-	return !failingLib && !badFree && !badPackClose;
+	return (sjme_jboolean)(!failingLib && !badFree && !badPackClose);
 }
 
 sjme_jboolean sjme_packGetLauncherDetail(sjme_packInstance* packInstance,
@@ -116,7 +119,7 @@ sjme_jboolean sjme_packGetLauncherDetail(sjme_packInstance* packInstance,
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
 		return sjme_false;
 	}
-	
+
 	/* Read the main class. */
 	if (outMainClass != NULL)
 		if (packInstance->driver->queryLauncherClass != NULL &&
@@ -127,7 +130,7 @@ sjme_jboolean sjme_packGetLauncherDetail(sjme_packInstance* packInstance,
 				sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
 			return sjme_false;
 		}
-	
+
 	/* Read the arguments for the main class. */
 	if (outArgs != NULL)
 		if (packInstance->driver->queryLauncherArgs != NULL &&
@@ -138,7 +141,7 @@ sjme_jboolean sjme_packGetLauncherDetail(sjme_packInstance* packInstance,
 				sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
 			return sjme_false;
 		}
-	
+
 	/* Read the class path for the main class. */
 	if (outClassPath != NULL)
 		if (packInstance->driver->queryLauncherClassPath != NULL &&
@@ -149,7 +152,7 @@ sjme_jboolean sjme_packGetLauncherDetail(sjme_packInstance* packInstance,
 				sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
 			return sjme_false;
 		}
-	
+
 	/* Should have all read just fine. */
 	return sjme_true;
 }
@@ -159,7 +162,7 @@ sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
 {
 	sjme_jint numLibs;
 	sjme_packInstance* instance;
-	
+
 	/* Use common format handler. */
 	if (!sjme_formatOpen(&sjme_packFormatHandler,
 		(void**)outInstance, data, size, error))
@@ -168,44 +171,45 @@ sjme_jboolean sjme_packOpen(sjme_packInstance** outInstance,
 			sjme_getError(error, SJME_ERROR_UNKNOWN));
 		return sjme_false;
 	}
-	
+
 	/* Copy the driver down. */
 	instance = (*outInstance);
-	(*outInstance)->driver = (*outInstance)->format.driver;
-	
+	(*outInstance)->driver =
+		(const sjme_packDriver*)(*outInstance)->format.driver;
+
 	/* Query the number of libraries to initialize the library cache. */
 	numLibs = (instance->driver->queryNumLibraries == NULL ? -1 :
 		instance->driver->queryNumLibraries(instance, error));
 	instance->numLibraries = numLibs;
-	
+
 	/* Initialize the library cache, keep a minimum of a single byte as
 	 * we cannot just allocate otherwise if there is nothing... */
 	if (numLibs >= 0)
-		instance->libraries = sjme_malloc(sjme_max(1,
-			sizeof(*instance->libraries) * numLibs), error);
-	
+		instance->libraries = (sjme_atomicPointer*)sjme_malloc(
+			sjme_max(1, sizeof(*instance->libraries) * numLibs), error);
+
 	/* Failed to initialize either? */
 	if (numLibs < 0 || instance->libraries == NULL)
 	{
 		if (!sjme_packClose(instance, error))
 			sjme_setError(error, SJME_ERROR_FAILED_TO_CLOSE_PACK,
 				-1);
-		
+
 		sjme_setError(error, (numLibs < 0 ?
 			SJME_ERROR_INVALID_NUM_LIBRARIES : SJME_ERROR_NO_MEMORY),
-			sjme_getError(error, 0));
-		
+			sjme_getError(error, (sjme_errorCode)0));
+
 		return sjme_false;
 	}
-	
+
 	/* Load flags regarding the library. */
 	instance->flags = (instance->driver->queryPackFlags == NULL ? 0 :
 		instance->driver->queryPackFlags(instance, error));
-	
+
 	/* Initialize the counter for garbage collection. */
 	sjme_counterInit(&instance->counter, sjme_packCollect,
 		instance, 0, error);
-	
+
 	/* All ready! */
 	return sjme_true;
 }
@@ -215,19 +219,19 @@ sjme_jboolean sjme_packClassPathMapper(sjme_packInstance* packInstance,
 	sjme_error* error)
 {
 	sjme_libraryInstance* outLib;
-	
+
 	if (packInstance == NULL || outClassPath == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
 		return sjme_false;
 	}
-	
+
 	/* Debugging. */
 #if defined(SJME_DEBUG)
 	sjme_message("Mapping class path at %d to %d...",
 		index, targetLibIndex);
 #endif
-	
+
 	if (index < 0 || index >= outClassPath->count ||
 		targetLibIndex < 0 || targetLibIndex >= packInstance->numLibraries)
 	{
@@ -243,10 +247,10 @@ sjme_jboolean sjme_packClassPathMapper(sjme_packInstance* packInstance,
 		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
 		return sjme_false;
 	}
-	
+
 	/* Since we have it, store it! */
 	outClassPath->libraries[index] = outLib;
-	
+
 	/* Success! */
 	return sjme_true;
 }
@@ -258,18 +262,18 @@ sjme_jboolean sjme_packLibraryMarkClosed(sjme_packInstance* packInstance,
 	if (packInstance == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* Within bounds? */
 	if (index < 0 || index >= packInstance->numLibraries)
 	{
 		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, index);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* Operations before we perform destruction. */
 	if (!postComplete)
 	{
@@ -287,11 +291,11 @@ sjme_jboolean sjme_packLibraryMarkClosed(sjme_packInstance* packInstance,
 			sjme_atomicPointerSet(&packInstance->libraries[index],
 				NULL);
 	}
-	
+
 	/* If there is no function for marking closed, then just ignore this. */
 	if (packInstance->driver->libraryMarkClosed == NULL)
 		return sjme_true;
-	
+
 	/* Call the library handler. */
 	return packInstance->driver->libraryMarkClosed(packInstance, index,
 		postComplete, error);
@@ -303,34 +307,35 @@ sjme_jboolean sjme_packLibraryOpen(sjme_packInstance* packInstance,
 	sjme_libraryInstance* lib;
 	sjme_libraryInstance* oldLib;
 	sjme_memChunk chunk;
-	
+
 	if (packInstance == NULL || outLibrary == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* Attempting to open an invalid library? */
 	if (index < 0 || index >= packInstance->numLibraries)
 	{
 		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* Has this library already been cached? */
-	lib = sjme_atomicPointerGet(&packInstance->libraries[index]);
+	lib = (sjme_libraryInstance*)sjme_atomicPointerGet(
+		&packInstance->libraries[index]);
 	if (lib != NULL)
 	{
 		/* Reference the library and count it up, we are using it. */
 		*outLibrary = lib;
 		if (!sjme_counterUp(&lib->counter, error))
 			return sjme_false;
-		
+
 		return sjme_true;
 	}
-	
+
 	/* Attempt to load the given library. */
 	memset(&chunk, 0, sizeof(chunk));
 	if (packInstance->driver->locateChunk != NULL &&
@@ -338,44 +343,44 @@ sjme_jboolean sjme_packLibraryOpen(sjme_packInstance* packInstance,
 	{
 		if (!sjme_hasError(error))
 			sjme_setError(error, SJME_ERROR_BAD_LOAD_LIBRARY, index);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* There was no actual data for this chunk, we cannot load it! */
 	if (chunk.data == NULL || chunk.size <= 0)
 	{
 		sjme_setError(error, SJME_ERROR_BAD_LOAD_LIBRARY, index);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* Open the library from the chunk. */
 	if (!sjme_libraryOpen(&lib, chunk.data, chunk.size,
 		error))
 	{
 		if (!sjme_hasError(error))
 			sjme_setError(error, SJME_ERROR_BAD_LOAD_LIBRARY, -index);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* Initialize references back to this pack in the library. */
 	lib->packOwner = packInstance;
 	lib->packIndex = index;
-	
+
 	/* Cache the chunk for later usage. */
-	oldLib = sjme_atomicPointerSet(&packInstance->libraries[index],
-		lib);
+	oldLib = (sjme_libraryInstance*)sjme_atomicPointerSet(
+		&packInstance->libraries[index], lib);
 	if (oldLib != NULL)
 		sjme_message("There was an old library used here: %p?", oldLib);
-	
+
 	/* Debugging. */
 #if defined(SJME_DEBUG)
 	sjme_message("Opened non-cached library by index %d: %s",
 		lib->packIndex, (lib->name != NULL ? lib->name->chars : NULL));
 #endif
-	
+
 	/* This library is available for usage. */
 	*outLibrary = lib;
 	return sjme_true;

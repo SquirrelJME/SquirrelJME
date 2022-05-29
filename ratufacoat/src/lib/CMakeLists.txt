@@ -14,7 +14,7 @@ get_property(SQUIRRELJMECORELIB_TARGET_OBJECTS
 # Core library for SquirrelJME as a static library, which includes all of
 # the objects together as one
 add_library(SquirrelJMECoreLib STATIC
-	blank.c
+	blank.cxx
 	${SQUIRRELJMECORELIB_TARGET_OBJECTS})
 
 # C++!

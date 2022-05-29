@@ -35,18 +35,18 @@ endif()
 
 # Define shared library
 add_library(squirreljme_libretro ${SQUIRRELJME_LIBRETRO_TYPE}
-	lraudio.c
-	lrcheat.c
-	lrenv.c
-	lrfreeze.c
-	lrinfo.c
-	lrjar.c
-	lrjoypad.c
-	lrloop.c
-	lrmemcard.c
-	lrnet.c
-	lrscreen.c
-	lrvfs.c
+	lraudio.cxx
+	lrcheat.cxx
+	lrenv.cxx
+	lrfreeze.cxx
+	lrinfo.cxx
+	lrjar.cxx
+	lrjoypad.cxx
+	lrloop.cxx
+	lrmemcard.cxx
+	lrnet.cxx
+	lrscreen.cxx
+	lrvfs.cxx
 	${SQUIRRELJME_LIBRETRO_RC}
 	${SQUIRRELJME_LIBRETRO_CORELIB})
 

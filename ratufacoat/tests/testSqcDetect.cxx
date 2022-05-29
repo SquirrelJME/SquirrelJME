@@ -16,7 +16,7 @@
 
 /**
  * Tests that SQCs can be detected and opened.
- * 
+ *
  * @since 2021/09/19
  */
 SJME_TEST_PROTOTYPE(testSqcDetect)
@@ -27,50 +27,50 @@ SJME_TEST_PROTOTYPE(testSqcDetect)
 	sjme_jint libDx;
 	sjme_libraryInstance* lib;
 	sjme_jboolean outActive;
-	
+
 	/* Needs built-in ROM to work properly. */
 	if (sjme_builtInRomSize <= 0)
 		return SKIP_TEST();
-	
+
 	/* Try opening the pack file. */
 	if (!sjme_packOpen(&pack, sjme_builtInRomData, sjme_builtInRomSize,
 		&shim->error))
 		return FAIL_TEST(1);
-	
+
 	/* Wrong driver? */
 	if (pack->driver != &sjme_packSqcDriver)
 		return FAIL_TEST(2);
-	
+
 	/* Must point to the chunk data. */
 	if (pack->format.chunk.data != sjme_builtInRomData)
 		return FAIL_TEST(3);
-	
+
 	/* And must match the given size. */
 	if (pack->format.chunk.size != sjme_builtInRomSize)
 		return FAIL_TEST(4);
-		
+
 	/* There must be a base pack state. */
-	sqcPackState = pack->state;
+	sqcPackState = (sjme_sqcPackState*)pack->state;
 	if (sqcPackState == NULL)
 		return FAIL_TEST(5);
-	
+
 	/* There needs to be a valid SQC state. */
 	rawSqcState = &sqcPackState->sqcState;
 	if (rawSqcState == NULL)
 		return FAIL_TEST(6);
-	
+
 	/* Must be a valid class version. */
 	if (rawSqcState->classVersion != SQC_CLASS_VERSION_20201129)
 		return FAIL_TEST(7);
-	
+
 	/* Needs at least one property. */
 	if (rawSqcState->numProperties <= 0)
 		return FAIL_TEST(8);
-	
+
 	/* Check for at least one library. */
 	if (pack->numLibraries <= 0)
 		return FAIL_TEST(9);
-	
+
 	/* Go through an open every library, to check that it is valid. */
 	for (libDx = 0; libDx < pack->numLibraries; libDx++)
 	{
@@ -78,36 +78,36 @@ SJME_TEST_PROTOTYPE(testSqcDetect)
 		lib = NULL;
 		if (!sjme_packLibraryOpen(pack, &lib, libDx, &shim->error))
 			return FAIL_TEST_SUB(10, libDx);
-		
+
 		/* Must have been set. */
 		if (lib == NULL)
 			return FAIL_TEST_SUB(11, libDx);
-		
+
 		/* Must be at this index. */
 		if (lib->packIndex != libDx)
 			return FAIL_TEST_SUB(12, libDx);
-		
+
 		/* Must be within this pack. */
 		if (lib->packOwner != pack)
 			return FAIL_TEST_SUB(13, libDx);
-		
+
 		/* Should have at least one entry. */
 		if (lib->numEntries <= 0)
 			return FAIL_TEST_SUB(14, libDx);
-		
+
 		/* Clear up the library usage. */
 		outActive = sjme_true;
 		if (!sjme_counterDown(&lib->counter, &outActive, &shim->error))
 			return FAIL_TEST_SUB(15, libDx);
-		
+
 		/* Must be inactive, since we only used this once. */
 		if (outActive != sjme_false)
 			return FAIL_TEST_SUB(16, libDx);
 	}
-	
+
 	/* Cleanup at the end. */
 	if (!sjme_packClose(pack, &shim->error))
 		return FAIL_TEST(999);
-	
+
 	return PASS_TEST();
 }

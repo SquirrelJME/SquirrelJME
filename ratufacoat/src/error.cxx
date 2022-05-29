@@ -47,7 +47,7 @@ void sjme_setErrorR(sjme_error* error, sjme_errorCode code, sjme_jint value,
 		error->sourceLine = line;
 		error->sourceFunction = function;
 	}
-	
+
 	/* Print error state being set. */
 #if defined(SJME_DEBUG)
 	sjme_messageR(NULL, -1, NULL, "setError(%d, %d) at %s:%d (%s()).",

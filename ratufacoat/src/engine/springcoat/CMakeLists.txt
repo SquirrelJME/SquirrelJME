@@ -14,7 +14,7 @@ endif()
 
 # Declare base library
 add_library(SquirrelJMEEngineSpringCoat OBJECT
-	springcoat.c)
+	springcoat.cxx)
 
 # C++!
 set_target_properties(SquirrelJMEEngineSpringCoat PROPERTIES LINKER_LANGUAGE CXX)

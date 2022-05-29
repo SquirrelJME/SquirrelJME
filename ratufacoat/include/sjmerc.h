@@ -298,8 +298,8 @@ typedef enum sjme_jboolean
  * @param o The offset.
  * @since 2022/03/09
  */
-#define SJME_POINTER_OFFSET_LONG(p, o) SJME_JMEM_TO_POINTER( \
-	SJME_POINTER_TO_JMEM(p) + ((intptr_t)(o)))
+#define SJME_POINTER_OFFSET_LONG(p, o) (SJME_JMEM_TO_POINTER( \
+	SJME_POINTER_TO_JMEM(p) + ((intptr_t)(o))))
 
 /** Standard C format for arguments. */
 #define SJME_JVMARG_FORMAT_STDC SJME_JINT_C(1)

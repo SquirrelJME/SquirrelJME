@@ -18,8 +18,8 @@ endif()
 # Build executable just for testing
 file(GLOB SQUIRRELJME_TEST_SOURCES "test*.c" "test*.cxx")
 add_executable(SquirrelJMETests
-    mainEntry.c
-    enginestub.c
+    mainEntry.cxx
+    enginestub.cxx
 	${SQUIRRELJME_TEST_SOURCES})
 
 # Can use C++!

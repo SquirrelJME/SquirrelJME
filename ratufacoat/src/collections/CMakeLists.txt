@@ -14,9 +14,9 @@ endif()
 
 # Declare base library
 add_library(SquirrelJMECollections OBJECT
-	arraylist.c
-	collection.c
-	hashmap.c)
+	arraylist.cxx
+	collection.cxx
+	hashmap.cxx)
 
 # C++!
 set_target_properties(SquirrelJMECollections PROPERTIES LINKER_LANGUAGE CXX)

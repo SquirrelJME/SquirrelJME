@@ -177,7 +177,7 @@ sjme_jboolean sjme_sqcGetPropertyPtr(const sjme_sqcState* sqcState,
  * @since 2022/03/09
  */
 sjme_jboolean sjme_sqcGetPropertyStrings(const sjme_sqcState* sqcState,
-	sjme_jint index, sjme_jint count, sjme_utfString* (*outStrings)[],
+	sjme_jint index, sjme_jint count, sjme_utfString** outStrings,
 	sjme_error* error);
 
 /**

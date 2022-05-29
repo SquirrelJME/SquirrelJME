@@ -49,8 +49,8 @@
 
 /**
  * Detects pack files.
- * 
- * @param data ROM data. 
+ *
+ * @param data ROM data.
  * @param size ROM size.
  * @param error Error output.
  * @return If detected or not.
@@ -65,33 +65,33 @@ static sjme_jboolean sjme_sqcPackDetect(const void* data, sjme_jint size,
 
 /**
  * Destroys a pack library instance.
- * 
+ *
  * @param instance The instance to destroy.
  * @param error The error state.
  * @return If destruction was successful.
- * @since 2021/11/07 
+ * @since 2021/11/07
  */
 static sjme_jboolean sjme_sqcPackDestroy(void* instance,
 	sjme_error* error)
 {
-	sjme_packInstance* packInstance = instance;
-	sjme_sqcPackState* sqcPackState = packInstance->state;
-	
+	sjme_packInstance* packInstance = (sjme_packInstance*)instance;
+	sjme_sqcPackState* sqcPackState = (sjme_sqcPackState*)packInstance->state;
+
 	/* Destroy the base SQC state. */
 	if (!sjme_sqcDestroy(&sqcPackState->sqcState, error))
 		return sjme_false;
-	
+
 	/* Finish destroying the pack. */
 	if (!sjme_free(packInstance->state, error))
 		return sjme_false;
-	
+
 	/* Destruction happened. */
 	return sjme_true;
 }
 
 /**
  * Initializes the SQC pack instance.
- * 
+ *
  * @param instance The instance to initialize.
  * @param error The error state.
  * @return If initialization was successful.
@@ -100,35 +100,36 @@ static sjme_jboolean sjme_sqcPackDestroy(void* instance,
 static sjme_jboolean sjme_sqcPackInit(void* instance,
 	sjme_error* error)
 {
-	sjme_packInstance* packInstance = instance;
+	sjme_packInstance* packInstance = (sjme_packInstance*)instance;
 	sjme_sqcPackState* sqcPackState;
-	
+
 	/* Allocate state storage. */
-	sqcPackState = sjme_malloc(sizeof(*sqcPackState), error);
+	sqcPackState =
+		(sjme_sqcPackState*)sjme_malloc(sizeof(*sqcPackState), error);
 	if (sqcPackState == NULL)
 		return sjme_false;
-	
+
 	/* Set instance used. */
 	packInstance->state = sqcPackState;
-	
+
 	/* Use common initialization sequence. */
 	if (!sjme_sqcInit(&packInstance->format,
 		&sqcPackState->sqcState, error))
 		return sjme_false;
-	
+
 	/* Initialize the table of contents for the various libraries. */
 	if (!sjme_sqcInitToc(&sqcPackState->sqcState,
 		&sqcPackState->libToc, SJME_PACK_COUNT_TOC_INDEX,
 		SJME_PACK_OFFSET_TOC_INDEX,
 		SJME_PACK_SIZE_TOC_INDEX, error))
 		return sjme_false;
-	
+
 	return sjme_true;
 }
 
 /**
  * Locates the SQC chunk within a pack.
- * 
+ *
  * @param instance The instance to load from.
  * @param outChunk The resultant chunk.
  * @param index The index of the chunk to lookup.
@@ -142,25 +143,25 @@ sjme_jboolean sjme_sqcPackLocateChunk(sjme_packInstance* instance,
 	sjme_sqcPackState* pack;
 	sjme_jint jarOffset;
 	sjme_jint jarSize;
-	
+
 	if (instance == NULL || outChunk == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* We need this one. */
-	pack = instance->state;
-	
+	pack = (sjme_sqcPackState*)instance->state;
+
 	/* Out of bounds? */
 	if (index < 0 || index >= instance->numLibraries)
 	{
 		sjme_setError(error, SJME_ERROR_INVALIDARG, index);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* Read the position of the JAR. */
 	jarOffset = jarSize = -1;
 	if (!sjme_sqcTocGet(&pack->libToc, &jarOffset, index,
@@ -169,18 +170,18 @@ sjme_jboolean sjme_sqcPackLocateChunk(sjme_packInstance* instance,
 			SJME_TOC_PACK_SIZE_DATA_INDEX, error))
 	{
 		sjme_setError(error, SJME_ERROR_CORRUPT_PACK_ENTRY, 1);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* Is this an impossibly placed JAR? */
 	if (jarOffset < 0 || jarSize < 0)
 	{
 		sjme_setError(error, SJME_ERROR_CORRUPT_PACK_ENTRY, 2);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* Get the chunk where the entry belongs. */
 	return sjme_chunkSubChunk(pack->sqcState.chunk, outChunk,
 		jarOffset, jarSize, error);
@@ -188,7 +189,7 @@ sjme_jboolean sjme_sqcPackLocateChunk(sjme_packInstance* instance,
 
 /**
  * Queries the main arguments that are used to start the launcher.
- * 
+ *
  * @param instance The pack instance to query the parameter from.
  * @param outArgs The output main arguments.
  * @param error Any resultant error state.
@@ -201,16 +202,16 @@ static sjme_jboolean sjme_sqcPackQueryLauncherArgs(sjme_packInstance* instance,
 	sjme_sqcPackState* sqcPackState;
 	sjme_mainArgs* result;
 	sjme_jint count;
-	
+
 	if (instance == NULL || outArgs == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
 		return sjme_false;
 	}
-	
+
 	/* Get the pack state. */
-	sqcPackState = instance->state;
-	
+	sqcPackState = (sjme_sqcPackState*)instance->state;
+
 	/* Read count. */
 	count = -1;
 	if (!sjme_sqcGetProperty(&sqcPackState->sqcState,
@@ -220,25 +221,25 @@ static sjme_jboolean sjme_sqcPackQueryLauncherArgs(sjme_packInstance* instance,
 		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
 		return sjme_false;
 	}
-	
+
 	/* Allocate output. */
-	result = sjme_malloc(SJME_SIZEOF_MAIN_ARGS(count), error);
+	result = (sjme_mainArgs*)sjme_malloc(SJME_SIZEOF_MAIN_ARGS(count), error);
 	if (result == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NO_MEMORY, 0);
 		return sjme_false;
 	}
-	
+
 	/* Read the strings in. */
 	result->count = count;
 	if (!sjme_sqcGetPropertyStrings(&sqcPackState->sqcState,
 		SJME_PACK_STRINGS_LAUNCHER_ARGS_INDEX, count,
-		&result->args, error))
+			result->args, error))
 	{
 		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 1);
 		return sjme_false;
 	}
-	
+
 	/* Use what we calculated! */
 	*outArgs = result;
 	return sjme_true;
@@ -246,7 +247,7 @@ static sjme_jboolean sjme_sqcPackQueryLauncherArgs(sjme_packInstance* instance,
 
 /**
  * Queries the main class.
- * 
+ *
  * @param instance The pack instance to query the parameter from.
  * @param outMainClass The output main class.
  * @param error Any resultant error state.
@@ -258,32 +259,32 @@ static sjme_jboolean sjme_sqcPackQueryLauncherClass(
 	sjme_error* error)
 {
 	sjme_sqcPackState* sqcPackState;
-	
+
 	if (instance == NULL || outMainClass == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
 		return sjme_false;
 	}
-	
+
 	/* Get the pack state. */
-	sqcPackState = instance->state;
-	
+	sqcPackState = (sjme_sqcPackState*)instance->state;
+
 	/* Read the property. */
-	if (!sjme_sqcGetPropertyPtr(&sqcPackState->sqcState, 
+	if (!sjme_sqcGetPropertyPtr(&sqcPackState->sqcState,
 		SJME_PACK_STRING_LAUNCHER_MAIN_CLASS_INDEX,
 			(void**)outMainClass, error))
 	{
 		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
 		return sjme_false;
 	}
-	
+
 	/* Read okay. */
 	return sjme_true;
 }
 
 /**
  * Queries the class path that is used for the launcher process.
- * 
+ *
  * @param instance The pack instance to query the parameter from.
  * @param outClassPath The output class path.
  * @param error Any resultant error state.
@@ -297,16 +298,16 @@ static sjme_jboolean sjme_sqcPackQueryLauncherClassPath(
 	sjme_sqcPackState* sqcPackState;
 	sjme_classPath* result;
 	sjme_jint count, at;
-	
+
 	if (instance == NULL || outClassPath == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
 		return sjme_false;
 	}
-	
+
 	/* Get the pack state. */
-	sqcPackState = instance->state;
-	
+	sqcPackState = (sjme_sqcPackState*)instance->state;
+
 	/* Read count. */
 	count = -1;
 	if (!sjme_sqcGetProperty(&sqcPackState->sqcState,
@@ -316,15 +317,16 @@ static sjme_jboolean sjme_sqcPackQueryLauncherClassPath(
 		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
 		return sjme_false;
 	}
-	
+
 	/* Allocate result. */
-	result = sjme_malloc(SJME_SIZEOF_CLASS_PATH(count), error);
+	result =
+		(sjme_classPath*)sjme_malloc(SJME_SIZEOF_CLASS_PATH(count), error);
 	if (result == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NO_MEMORY, count);
 		return sjme_false;
 	}
-	
+
 	/* Read in and map class path values. */
 	result->count = count;
 	if (!sjme_sqcGetPropertyIntegers(&sqcPackState->sqcState,
@@ -335,7 +337,7 @@ static sjme_jboolean sjme_sqcPackQueryLauncherClassPath(
 		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
 		return sjme_false;
 	}
-	
+
 	/* Use these! */
 	*outClassPath = result;
 	return sjme_true;
@@ -343,8 +345,8 @@ static sjme_jboolean sjme_sqcPackQueryLauncherClassPath(
 
 /**
  * Queries the number of libraries which are in the SQC Pack file.
- * 
- * @param instance The instance to query. 
+ *
+ * @param instance The instance to query.
  * @param error The error state.
  * @return The number of queried libraries or @c -1 on failure.
  * @since 2021/11/07
@@ -354,34 +356,34 @@ static sjme_jint sjme_sqcPackQueryNumLibraries(sjme_packInstance* instance,
 {
 	sjme_sqcPackState* sqcPackState;
 	sjme_jint value = -1;
-	
+
 	if (instance == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
+
 		return -1;
 	}
-	
+
 	/* Get the pack state. */
-	sqcPackState = instance->state;
-	
+	sqcPackState = (sjme_sqcPackState*)instance->state;
+
 	/* Read the property. */
 	if (!sjme_sqcGetProperty(&sqcPackState->sqcState,
 		SJME_PACK_COUNT_TOC_INDEX, &value, error) || value < 0)
 	{
 		sjme_setError(error, SJME_ERROR_INVALID_NUM_LIBRARIES, value);
-		
+
 		return -1;
 	}
-	
+
 	/* Use the resultant value. */
 	return value;
 }
 
 /**
  * Queries the flags of the pack.
- * 
- * @param instance The instance to query. 
+ *
+ * @param instance The instance to query.
  * @param error The error state.
  * @return The number of queried libraries or @c 0 on failure.
  * @since 2022/01/08
@@ -391,26 +393,26 @@ static sjme_jint sjme_sqcPackQueryPackFlags(sjme_packInstance* instance,
 {
 	sjme_sqcPackState* sqcPackState;
 	sjme_jint value = 0;
-	
+
 	if (instance == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
+
 		return -1;
 	}
-	
+
 	/* Get the pack state. */
-	sqcPackState = instance->state;
-	
+	sqcPackState = (sjme_sqcPackState*)instance->state;
+
 	/* Read the property. */
 	if (!sjme_sqcGetProperty(&sqcPackState->sqcState,
 		SJME_PACK_FLAGS_INDEX, &value, error) || value == 0)
 	{
 		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, value);
-		
+
 		return 0;
 	}
-	
+
 	/* Use the resultant value. */
 	return value;
 }
@@ -420,15 +422,16 @@ const sjme_packDriver sjme_packSqcDriver =
 	.detect = sjme_sqcPackDetect,
 	.init = sjme_sqcPackInit,
 	.destroy = sjme_sqcPackDestroy,
+	.queryNumLibraries = sjme_sqcPackQueryNumLibraries,
+	.queryPackFlags = sjme_sqcPackQueryPackFlags,
+	.locateChunk = sjme_sqcPackLocateChunk,
+
+	/* There is no need to close or free any RAM resources because all
+	 * libraries are within the SQC chunk in memory. */
+	.libraryMarkClosed = NULL,
+
 	.queryLauncherArgs = sjme_sqcPackQueryLauncherArgs,
 	.queryLauncherClass = sjme_sqcPackQueryLauncherClass,
 	.queryLauncherClassPath =
 		sjme_sqcPackQueryLauncherClassPath,
-	.queryNumLibraries = sjme_sqcPackQueryNumLibraries,
-	.queryPackFlags = sjme_sqcPackQueryPackFlags,
-	.locateChunk = sjme_sqcPackLocateChunk,
-	
-	/* There is no need to close or free any RAM resources because all
-	 * libraries are within the SQC chunk in memory. */
-	.libraryMarkClosed = NULL,
 };

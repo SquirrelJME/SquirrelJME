@@ -13,7 +13,7 @@
 
 /**
  * Helper to initialize all of the standard pipes accordingly.
- * 
+ *
  * @param stdInMode The mode for standard input.
  * @param stdOutMode The mode for standard output.
  * @param stdErrMode The mode for standard error.
@@ -31,13 +31,13 @@ static sjme_jboolean sjme_taskManagerPipeInit(sjme_pipeRedirectType stdInMode,
 	sjme_jint i, j;
 	sjme_jboolean weInit[SJME_NUM_PIPE_REDIRECTS];
 	sjme_jboolean failing;
-	
+
 	/* Setup standard keyed redirect types. */
 	memset(redirects, 0, sizeof(redirects));
 	redirects[SJME_STANDARD_PIPE_STDIN] = stdInMode;
 	redirects[SJME_STANDARD_PIPE_STDOUT] = stdOutMode;
 	redirects[SJME_STANDARD_PIPE_STDERR] = stdErrMode;
-	
+
 	/* Initialize each instance in a loop. */
 	failing = sjme_false;
 	for (i = SJME_STANDARD_PIPE_STDIN; i < SJME_NUM_STANDARD_PIPES; i++)
@@ -49,15 +49,15 @@ static sjme_jboolean sjme_taskManagerPipeInit(sjme_pipeRedirectType stdInMode,
 			if ((*terminalPipes)[i] == NULL)
 			{
 				sjme_message("Missing terminalPipes[%d]?", i);
-				
+
 				failing = sjme_true;
 				break;
 			}
-			
+
 			(*outputPipes)[i] = (*terminalPipes)[i];
 			continue;
 		}
-		
+
 		/* Otherwise, set up a new instance. */
 		if (!sjme_pipeNewInstance(redirects[i],
 			&(*outputPipes)[i], NULL, sjme_false, error))
@@ -65,11 +65,11 @@ static sjme_jboolean sjme_taskManagerPipeInit(sjme_pipeRedirectType stdInMode,
 			failing = sjme_true;
 			break;
 		}
-		
+
 		/* Set that we initialized it, for potential cleanup on failure. */
 		weInit[i] = sjme_true;
 	}
-	
+
 	/* Cleanup on failure? */
 	if (failing)
 	{
@@ -80,13 +80,13 @@ static sjme_jboolean sjme_taskManagerPipeInit(sjme_pipeRedirectType stdInMode,
 			/* Skip pipes we did not initialize ourselves. */
 			if (!weInit[i])
 				continue;
-			
+
 			sjme_todo("Destroy pipe?");
 		}
-		
+
 		return sjme_false;
 	}
-	
+
 	/* Success! */
 	return sjme_true;
 }
@@ -96,10 +96,10 @@ sjme_jboolean sjme_engineTaskDestroy(sjme_engineTask* task, sjme_error* error)
 	if (task == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
+
 		return sjme_false;
 	}
-	
+
 	sjme_todo("Implement this?");
 	return sjme_false;
 }
@@ -114,7 +114,7 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	sjme_error* error)
 {
 	sjme_engineTask* createdTask;
-	
+
 	if (engineState == NULL || classPath == NULL || mainClass == NULL ||
 		mainArgs == NULL || outTask == NULL ||
 		outMainThread == NULL)
@@ -122,7 +122,7 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
 		return sjme_false;
 	}
-	
+
 	if (stdInMode < 0 || stdInMode >= SJME_NUM_PIPE_REDIRECTS ||
 		stdOutMode < 0 || stdOutMode >= SJME_NUM_PIPE_REDIRECTS ||
 		stdErrMode < 0 || stdErrMode >= SJME_NUM_PIPE_REDIRECTS)
@@ -130,47 +130,48 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
 		return sjme_false;
 	}
-	
+
 	/* If there are no system properties, just include nothing. */
 	if (sysProps == NULL)
 	{
 		/* Allocate a blank one. */
-		sysProps = sjme_malloc(SJME_SIZEOF_SYSTEM_PROPERTY_SET(0), error);
-		
+		sysProps = (sjme_systemPropertySet*)sjme_malloc(
+			SJME_SIZEOF_SYSTEM_PROPERTY_SET(0), error);
+
 		/* Failed? */
 		if (sysProps == NULL)
 		{
 			sjme_setError(error, SJME_ERROR_NO_MEMORY, 0);
-			
+
 			return sjme_false;
 		}
 	}
-	
+
 	/* Try to allocate the resultant object first. */
-	createdTask = sjme_malloc(sizeof(*createdTask), error);
+	createdTask = (sjme_engineTask*)sjme_malloc(sizeof(*createdTask), error);
 	if (createdTask == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NO_MEMORY, 0);
 		return sjme_false;
 	}
-	
+
 	/* Setup class path for our set of classes. */
 	if (!sjme_classLoaderNew(&createdTask->classLoader,
 		classPath, error))
 	{
 		/* Cleanup always as good as we can! */
 		sjme_engineTaskDestroy(createdTask, error);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* Determine the ID for the task. */
 	createdTask->id = sjme_atomicIntGetThenAdd(
 		&engineState->nextTaskThreadId, 1);
-	
+
 	/* Use whatever profiler we specified. */
 	createdTask->profiler = profiler;
-	
+
 	/* Setup every standard console pipe. */
 	if (!sjme_taskManagerPipeInit(stdInMode, stdOutMode, stdErrMode,
 		&engineState->stdPipes, &createdTask->stdPipes,
@@ -178,24 +179,24 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	{
 		/* Fail. */
 		sjme_engineTaskDestroy(createdTask, error);
-		
+
 		return sjme_false;
 	}
-	
+
 	sjme_todo("Setup task process.");
-	
+
 	/* Spawn initial thread. */
 	sjme_todo("Spawn initial thread.");
-	
+
 	/* Bind task to engine. */
 	sjme_todo("Bind task to engine.");
-	
+
 	/* If we are forking a thread, create it and start it, it runs always. */
 	if (forkThread)
 	{
 		sjme_todo("Fork thread?");
 	}
-	
+
 	sjme_todo("Implement this?");
 	return sjme_false;
 }

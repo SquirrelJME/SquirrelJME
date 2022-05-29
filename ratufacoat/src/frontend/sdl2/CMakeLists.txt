@@ -18,7 +18,7 @@ if(WIN32)
 endif()
 
 add_executable(SquirrelJME
-	sys_stdc.c
+	sys_stdc.cxx
 	${SQUIRRELJME_SDL_RC})
 
 # This is written in C++!
