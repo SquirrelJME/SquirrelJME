@@ -17,5 +17,5 @@ add_library(SquirrelJMECoreLib STATIC
 	blank.c
 	${SQUIRRELJMECORELIB_TARGET_OBJECTS})
 
-# This is written only in C!
-set_target_properties(SquirrelJMECoreLib PROPERTIES LINKER_LANGUAGE C)
+# C++!
+set_target_properties(SquirrelJMECoreLib PROPERTIES LINKER_LANGUAGE CXX)

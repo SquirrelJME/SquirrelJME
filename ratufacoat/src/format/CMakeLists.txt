@@ -24,8 +24,8 @@ add_library(SquirrelJMEFormat OBJECT
 	sqcpack.c
 	zip.c)
 
-# This is written only in C!
-set_target_properties(SquirrelJMEFormat PROPERTIES LINKER_LANGUAGE C)
+# C++!
+set_target_properties(SquirrelJMEFormat PROPERTIES LINKER_LANGUAGE CXX)
 
 # Dynamically generated and standard includes
 target_include_directories(SquirrelJMEFormat PUBLIC

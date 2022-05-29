@@ -60,8 +60,8 @@ add_library(SquirrelJMECore OBJECT
 	xbuiltin.c
 	${SQUIRRELJME_BUILTIN_FILE})
 
-# This is written only in C!
-set_target_properties(SquirrelJMECore PROPERTIES LINKER_LANGUAGE C)
+# C++!
+set_target_properties(SquirrelJMECore PROPERTIES LINKER_LANGUAGE CXX)
 
 target_include_directories(SquirrelJMECore PUBLIC
 	"${PROJECT_BINARY_DIR}"

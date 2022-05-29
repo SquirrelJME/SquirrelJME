@@ -18,8 +18,8 @@ add_library(SquirrelJMECollections OBJECT
 	collection.c
 	hashmap.c)
 
-# This is written only in C!
-set_target_properties(SquirrelJMECollections PROPERTIES LINKER_LANGUAGE C)
+# C++!
+set_target_properties(SquirrelJMECollections PROPERTIES LINKER_LANGUAGE CXX)
 
 # Dynamically generated and standard includes
 target_include_directories(SquirrelJMECollections PUBLIC
