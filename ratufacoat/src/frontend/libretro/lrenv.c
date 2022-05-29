@@ -100,7 +100,7 @@ static void RETRO_CALLCONV sjme_libRetro_fallBackLog(
  * @param callback Callback for environment set.
  * @since 2022/01/02 
  */
-SJME_GCC_USED void retro_set_environment(retro_environment_t callback)
+SJME_EXTERN_C SJME_GCC_USED void retro_set_environment(retro_environment_t callback)
 {
 	bool noGameFlag, achievementFlag;
 	struct retro_log_callback logging;

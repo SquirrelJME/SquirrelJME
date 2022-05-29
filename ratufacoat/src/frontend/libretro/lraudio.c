@@ -16,13 +16,13 @@
 #include "frontend/libretro/lrlocal.h"
 
 /** Set audio sample callback. */
-SJME_GCC_USED void retro_set_audio_sample(retro_audio_sample_t cb)
+SJME_EXTERN_C SJME_GCC_USED void retro_set_audio_sample(retro_audio_sample_t cb)
 {
 	g_libRetroCallbacks.audioSampleFunc = cb;
 }
 
 /** Set audio sample batching. */
-SJME_GCC_USED void retro_set_audio_sample_batch(retro_audio_sample_batch_t cb)
+SJME_EXTERN_C SJME_GCC_USED void retro_set_audio_sample_batch(retro_audio_sample_batch_t cb)
 {
 	g_libRetroCallbacks.audioSampleBatchFunc = cb;
 }

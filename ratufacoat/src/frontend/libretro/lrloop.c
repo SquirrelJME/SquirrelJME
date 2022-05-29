@@ -37,7 +37,7 @@ static const sjme_frontBridge sjme_libRetro_frontBridge =
  * 
  * @since 2022/01/02
  */
-SJME_GCC_USED void retro_deinit(void)
+SJME_EXTERN_C SJME_GCC_USED void retro_deinit(void)
 {
 	sjme_libRetroState* oldState;
 	
@@ -62,13 +62,13 @@ SJME_GCC_USED void retro_deinit(void)
  * 
  * @since 2022/01/02
  */
-SJME_GCC_USED void retro_init(void)
+SJME_EXTERN_C SJME_GCC_USED void retro_init(void)
 {
 	/* Does the same action as resetting the system. */
 	retro_reset();
 }
 
-SJME_GCC_USED void retro_reset(void)
+SJME_EXTERN_C SJME_GCC_USED void retro_reset(void)
 {
 #define BUF_LEN 512
 	sjme_libRetroState* newState;
@@ -146,7 +146,7 @@ SJME_GCC_USED void retro_reset(void)
 }
 
 /** Runs single frame. */
-SJME_GCC_USED void retro_run(void)
+SJME_EXTERN_C SJME_GCC_USED void retro_run(void)
 {
 	sjme_libRetroState* currentState;
 	sjme_jubyte badScreen[4];

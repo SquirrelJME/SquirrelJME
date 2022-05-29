@@ -35,7 +35,7 @@
  * @param info Audio/Video information.
  * @since 2022/01/22 
  */
-SJME_GCC_USED void retro_get_system_av_info(struct retro_system_av_info* info)
+SJME_EXTERN_C SJME_GCC_USED void retro_get_system_av_info(struct retro_system_av_info* info)
 {
 	sjme_libRetroState* state;
 	
@@ -73,7 +73,7 @@ SJME_GCC_USED void retro_get_system_av_info(struct retro_system_av_info* info)
  * @param callback The callback function.
  * @since 2021/01/22
  */
-SJME_GCC_USED void retro_set_video_refresh(retro_video_refresh_t callback)
+SJME_EXTERN_C SJME_GCC_USED void retro_set_video_refresh(retro_video_refresh_t callback)
 {
 	g_libRetroCallbacks.videoFunc = callback;
 }

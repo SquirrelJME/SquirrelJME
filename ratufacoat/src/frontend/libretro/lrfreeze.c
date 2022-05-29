@@ -15,7 +15,7 @@
 /** Is there no support for fast-forward overrides? */
 static sjme_jboolean sjme_libRetro_noFastForwardOverride;
 
-SJME_GCC_USED bool retro_serialize(void* data, size_t size)
+SJME_EXTERN_C SJME_GCC_USED bool retro_serialize(void* data, size_t size)
 {
 	sjme_libRetroState* current = g_libRetroState;
 	
@@ -43,13 +43,13 @@ SJME_GCC_USED bool retro_serialize(void* data, size_t size)
 	return false;
 }
 
-SJME_GCC_USED size_t retro_serialize_size(void)
+SJME_EXTERN_C SJME_GCC_USED size_t retro_serialize_size(void)
 {
 	sjme_message("TODO: Use actual serialization size.");
 	return 1024;
 }
 
-SJME_GCC_USED bool retro_unserialize(const void* data, size_t size)
+SJME_EXTERN_C SJME_GCC_USED bool retro_unserialize(const void* data, size_t size)
 {
 	return false;
 }

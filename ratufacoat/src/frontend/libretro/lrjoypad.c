@@ -109,7 +109,7 @@ const struct retro_input_descriptor sjme_inputDesc[] =
 };
 
 /** Sets controller port device. */
-SJME_GCC_USED void retro_set_controller_port_device(unsigned port,
+SJME_EXTERN_C SJME_GCC_USED void retro_set_controller_port_device(unsigned port,
 	unsigned device)
 {
 	sjme_libRetro_message(-1,
@@ -123,7 +123,7 @@ SJME_GCC_USED void retro_set_controller_port_device(unsigned port,
  * @param cb The callback for input polling.
  * @since 2021/02/27
  */
-SJME_GCC_USED void retro_set_input_poll(retro_input_poll_t cb)
+SJME_EXTERN_C SJME_GCC_USED void retro_set_input_poll(retro_input_poll_t cb)
 {
 	g_libRetroCallbacks.inputPollFunc = cb;
 }
@@ -134,7 +134,7 @@ SJME_GCC_USED void retro_set_input_poll(retro_input_poll_t cb)
  * @param callback The callback for input state.
  * @since 2021/02/27
  */
-SJME_GCC_USED void retro_set_input_state(retro_input_state_t callback)
+SJME_EXTERN_C SJME_GCC_USED void retro_set_input_state(retro_input_state_t callback)
 {
 	g_libRetroCallbacks.inputStateFunc = callback;
 }

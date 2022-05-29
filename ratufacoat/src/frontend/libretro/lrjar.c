@@ -16,7 +16,7 @@
 #include "memory.h"
 
 /** Load a game? */
-SJME_GCC_USED bool retro_load_game(const struct retro_game_info* info)
+SJME_EXTERN_C SJME_GCC_USED bool retro_load_game(const struct retro_game_info* info)
 {
 	/* Ignore if null passed, because this means no content specified! */
 	/* True must always be returned, otherwise false will force RetroArch */
@@ -48,7 +48,7 @@ SJME_GCC_USED bool retro_load_game(const struct retro_game_info* info)
 }
 
 /** Load game special? */
-SJME_GCC_USED bool retro_load_game_special(unsigned type,
+SJME_EXTERN_C SJME_GCC_USED bool retro_load_game_special(unsigned type,
 	const struct retro_game_info* info, size_t num)
 {
 	sjme_todo("Special load game?");
@@ -62,7 +62,7 @@ SJME_GCC_USED bool retro_load_game_special(unsigned type,
 }
 
 /** Unload a game? */
-SJME_GCC_USED void retro_unload_game(void)
+SJME_EXTERN_C SJME_GCC_USED void retro_unload_game(void)
 {
 	sjme_message("Unload game?");
 #if 0

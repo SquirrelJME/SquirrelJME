@@ -196,6 +196,12 @@
 	#define SQUIRRELJME_PS2
 #endif
 
+#if defined(_cplusplus)
+	#define SJME_EXTERN_C extern "C"
+#else
+	#define SJME_EXTERN_C
+#endif
+
 /* Anti-C++. */
 #ifdef _cplusplus
 #ifndef SJME_CXX_IS_EXTERNED

@@ -13,19 +13,19 @@
 #include "sjmerc.h"
 
 /** Returns the supported RetroArch version. */
-SJME_GCC_USED unsigned retro_api_version(void)
+SJME_EXTERN_C SJME_GCC_USED unsigned retro_api_version(void)
 {
 	return RETRO_API_VERSION;
 }
 
 /** Region. */
-SJME_GCC_USED unsigned retro_get_region(void)
+SJME_EXTERN_C SJME_GCC_USED unsigned retro_get_region(void)
 {
 	return RETRO_REGION_NTSC;
 }
 
 /** Sets system information on RetroArch. */
-SJME_GCC_USED void retro_get_system_info(struct retro_system_info* info)
+SJME_EXTERN_C SJME_GCC_USED void retro_get_system_info(struct retro_system_info* info)
 {
 	/* Wipe. */
 	memset(info, 0, sizeof(*info));

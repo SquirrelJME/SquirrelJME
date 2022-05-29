@@ -16,11 +16,11 @@
 #include "frontend/libretro/lrlocal.h"
 
 /** Reset cheat. */
-void retro_cheat_reset(void)
+SJME_EXTERN_C void retro_cheat_reset(void)
 {
 }
 
 /** Set cheat. */
-void retro_cheat_set(unsigned index, bool enabled, const char* code)
+SJME_EXTERN_C void retro_cheat_set(unsigned index, bool enabled, const char* code)
 {
 }
