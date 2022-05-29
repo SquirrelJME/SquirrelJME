@@ -17,15 +17,6 @@
 #ifndef SQUIRRELJME_ATOMICLIST_H
 #define SQUIRRELJME_ATOMICLIST_H
 
-/* Anti-C++. */
-#ifdef __cplusplus
-	#ifndef SJME_CXX_IS_EXTERNED
-		#define SJME_CXX_IS_EXTERNED
-		#define SJME_CXX_SQUIRRELJME_ATOMICARRAYLIST_H
-extern "C" {
-	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif     /* #ifdef __cplusplus */
-
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -39,14 +30,5 @@ extern "C" {
 typedef struct sjme_atomicList sjme_atomicList;
 
 /*--------------------------------------------------------------------------*/
-
-/* Anti-C++. */
-#ifdef __cplusplus
-	#ifdef SJME_CXX_SQUIRRELJME_ATOMICARRAYLIST_H
-}
-		#undef SJME_CXX_SQUIRRELJME_ATOMICARRAYLIST_H
-		#undef SJME_CXX_IS_EXTERNED
-	#endif /* #ifdef SJME_CXX_SQUIRRELJME_ATOMICARRAYLIST_H */
-#endif     /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_ATOMICLIST_H */

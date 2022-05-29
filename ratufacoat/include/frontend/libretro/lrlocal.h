@@ -21,16 +21,6 @@
 #include "engine/scaffold.h"
 #include "sjmerc.h"
 
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifndef SJME_CXX_IS_EXTERNED
-#define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_LRLOCAL_H
-extern "C"
-{
-#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif /* #ifdef __cplusplus */
-
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -86,14 +76,5 @@ extern sjme_libRetroCallbacks g_libRetroCallbacks;
 extern sjme_libRetroState* g_libRetroState;
 
 /*--------------------------------------------------------------------------*/
-
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_LRLOCAL_H
-}
-#undef SJME_CXX_SQUIRRELJME_LRLOCAL_H
-#undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_LRLOCAL_H */
-#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_LRLOCAL_H */

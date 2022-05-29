@@ -19,15 +19,6 @@
 #include "sjmerc.h"
 #include "error.h"
 
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifndef SJME_CXX_IS_EXTERNED
-#define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_UTF_H
-extern "C" {
-#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif /* #ifdef __cplusplus */
-
 /*--------------------------------------------------------------------------*/
 
 #include "pack/pack.h"
@@ -69,14 +60,5 @@ sjme_jboolean sjme_charStarToUtf(sjme_utfString** outUtfString,
 	const char* inCharStar, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
-
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_UTF_H
-}
-#undef SJME_CXX_SQUIRRELJME_UTF_H
-#undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_UTF_H */
-#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_UTF_H */

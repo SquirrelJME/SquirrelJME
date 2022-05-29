@@ -18,16 +18,6 @@
 
 #include "sjmerc.h"
 
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifndef SJME_CXX_IS_EXTERNED
-#define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_FORMAT_DEF_H
-extern "C"
-{
-#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif /* #ifdef __cplusplus */
-
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -70,14 +60,5 @@ typedef struct sjme_classPath
 	((count) * sizeof(sjme_libraryInstance*)))
 
 /*--------------------------------------------------------------------------*/
-
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_FORMAT_DEF_H
-}
-#undef SJME_CXX_SQUIRRELJME_FORMAT_DEF_H
-#undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_FORMAT_DEF_H */
-#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_FORMAT_DEF_H */

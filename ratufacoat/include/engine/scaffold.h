@@ -24,16 +24,6 @@
 #include "sjmerc.h"
 #include "video.h"
 
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifndef SJME_CXX_IS_EXTERNED
-#define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_SCAFFOLD_H
-extern "C"
-{
-#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif /* #ifdef __cplusplus */
-
 /*--------------------------------------------------------------------------*/
 
 /** The maximum number of terminals that can be displayed. */
@@ -342,14 +332,5 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 	sjme_engineState** outState, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
-
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_SCAFFOLD_H
-}
-#undef SJME_CXX_SQUIRRELJME_SCAFFOLD_H
-#undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCAFFOLD_H */
-#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_SCAFFOLD_H */

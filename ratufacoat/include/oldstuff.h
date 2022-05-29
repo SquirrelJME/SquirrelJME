@@ -19,16 +19,6 @@
 #include "sjmerc.h"
 #include "error.h"
 
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifndef SJME_CXX_IS_EXTERNED
-#define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_OLDSTUFF_H
-extern "C"
-{
-#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif /* #ifdef __cplusplus */
-
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -171,14 +161,5 @@ sjme_jint sjme_vmmatomicintaddandget(sjme_vmem* vmem,
 	sjme_vmemptr ptr, sjme_jint off, sjme_jint add, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
-
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_OLDSTUFF_H
-}
-#undef SJME_CXX_SQUIRRELJME_OLDSTUFF_H
-#undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_OLDSTUFF_H */
-#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_OLDSTUFF_H */

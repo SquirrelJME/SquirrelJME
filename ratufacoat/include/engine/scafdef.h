@@ -19,16 +19,6 @@
 #include "sjmerc.h"
 #include "utf.h"
 
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifndef SJME_CXX_IS_EXTERNED
-#define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_SCAFDEF_H
-extern "C"
-{
-#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif /* #ifdef __cplusplus */
-
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -84,14 +74,5 @@ typedef struct sjme_mainArgs
 	((count) * sizeof(sjme_utfString*)))
 
 /*--------------------------------------------------------------------------*/
-
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_SCAFDEF_H
-}
-#undef SJME_CXX_SQUIRRELJME_SCAFDEF_H
-#undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCAFDEF_H */
-#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_SCAFDEF_H */

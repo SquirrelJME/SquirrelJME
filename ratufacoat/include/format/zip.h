@@ -18,30 +18,11 @@
 
 #include "format/library.h"
 
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifndef SJME_CXX_IS_EXTERNED
-#define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_ZIP_H
-extern "C"
-{
-#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif /* #ifdef __cplusplus */
-
 /*--------------------------------------------------------------------------*/
 
 /** The ZIP driver. */
 extern const sjme_libraryDriver sjme_libraryZipDriver;
 
 /*--------------------------------------------------------------------------*/
-
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_ZIP_H
-}
-#undef SJME_CXX_SQUIRRELJME_ZIP_H
-#undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_ZIP_H */
-#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_ZIP_H */

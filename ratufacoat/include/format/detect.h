@@ -19,16 +19,6 @@
 #include "sjmerc.h"
 #include "error.h"
 
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifndef SJME_CXX_IS_EXTERNED
-#define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_DETECT_H
-extern "C"
-{
-#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif /* #ifdef __cplusplus */
-
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -76,14 +66,5 @@ sjme_jboolean sjme_detectMagicNumber(const void* data, sjme_jint size,
 	sjme_jint wantMagic, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
-
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_DETECT_H
-}
-#undef SJME_CXX_SQUIRRELJME_DETECT_H
-#undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_DETECT_H */
-#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_DETECT_H */

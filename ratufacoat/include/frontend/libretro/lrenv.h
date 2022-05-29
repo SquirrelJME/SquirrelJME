@@ -18,16 +18,6 @@
 
 #include "sjmerc.h"
 
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifndef SJME_CXX_IS_EXTERNED
-#define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_LRENV_H
-extern "C"
-{
-#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif /* #ifdef __cplusplus */
-
 /*--------------------------------------------------------------------------*/
 
 /** The frame rate of the core. */
@@ -101,14 +91,5 @@ extern "C"
 #define SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_1I "Monochrome"
 
 /*--------------------------------------------------------------------------*/
-
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_LRENV_H
-}
-#undef SJME_CXX_SQUIRRELJME_LRENV_H
-#undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_LRENV_H */
-#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_LRENV_H */

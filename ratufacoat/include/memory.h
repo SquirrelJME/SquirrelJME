@@ -21,16 +21,6 @@
 #include "datatype.h"
 #include "error.h"
 
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifndef SJME_CXX_IS_EXTERNED
-#define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_MEMORY_H
-extern "C"
-{
-#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif /* #ifdef __cplusplus */
-
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -88,14 +78,5 @@ void* sjme_realloc(void* ptr, sjme_jint size, sjme_error* error);
 sjme_jboolean sjme_free(void* p, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
-
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_MEMORY_H
-}
-#undef SJME_CXX_SQUIRRELJME_MEMORY_H
-#undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_MEMORY_H */
-#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_MEMORY_H */

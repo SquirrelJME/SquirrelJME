@@ -22,16 +22,6 @@
 #include "datatype.h"
 #include "softmath.h"
 
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifndef SJME_CXX_IS_EXTERNED
-#define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_HANDLES_H
-extern "C"
-{
-#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif /* #ifdef __cplusplus */
-
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -249,14 +239,5 @@ sjme_returnFail sjme_memHandleAccessWide(sjme_memHandle* handle,
 	sjme_jint offset, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
-
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_HANDLES_H
-}
-#undef SJME_CXX_SQUIRRELJME_HANDLES_H
-#undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_HANDLES_H */
-#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_HANDLES_H */

@@ -202,16 +202,6 @@
 	#define SJME_EXTERN_C
 #endif
 
-/* Anti-C++. */
-#ifdef _cplusplus
-#ifndef SJME_CXX_IS_EXTERNED
-#define SJME_CXX_IS_EXTERNED
-#define SJME_cXRATUFACOATSJMERCHSJMERCH
-extern "C"
-{
-#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif /* #ifdef __cplusplus */
-
 /*--------------------------------------------------------------------------*/
 
 /** @c byte type. */
@@ -504,15 +494,6 @@ typedef struct sjme_nativefile sjme_nativefile;
 #define sjme_max(a, b) ((a) >= (b) ? (a) : (b))
 
 /*--------------------------------------------------------------------------*/
-
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifdef SJME_cXRATUFACOATSJMERCHSJMERCH
-}
-#undef SJME_cXRATUFACOATSJMERCHSJMERCH
-#undef SJME_CXX_IS_EXTERNED
-#endif /** #ifdef SJME_cXRATUFACOATSJMERCHSJMERCH */
-#endif /* #ifdef __cplusplus */
 
 /** Header guard. */
 #endif /* #ifndef SJME_hGRATUFACOATSJMERCHSJMERCH */

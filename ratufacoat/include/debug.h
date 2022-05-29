@@ -18,16 +18,6 @@
 
 #include "sjmerc.h"
 
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifndef SJME_CXX_IS_EXTERNED
-#define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_DEBUG_H
-extern "C"
-{
-#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif /* #ifdef __cplusplus */
-
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -78,14 +68,5 @@ sjme_returnNever sjme_todoR(const char* file, int line,
 #define sjme_todo(...) sjme_todoR(__FILE__, __LINE__, __func__, __VA_ARGS__)
 
 /*--------------------------------------------------------------------------*/
-
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_DEBUG_H
-}
-#undef SJME_CXX_SQUIRRELJME_DEBUG_H
-#undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_DEBUG_H */
-#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_DEBUG_H */

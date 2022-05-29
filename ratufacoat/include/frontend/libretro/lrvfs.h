@@ -18,16 +18,6 @@
 
 #include "lrlocal.h"
 
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifndef SJME_CXX_IS_EXTERNED
-#define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_LRVFS_H
-extern "C"
-{
-#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif /* #ifdef __cplusplus */
-
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -39,14 +29,5 @@ extern "C"
 void sjme_libRetro_vfsSetEnvironment(retro_environment_t callback);
 
 /*--------------------------------------------------------------------------*/
-
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_LRVFS_H
-}
-#undef SJME_CXX_SQUIRRELJME_LRVFS_H
-#undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_LRVFS_H */
-#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_LRVFS_H */

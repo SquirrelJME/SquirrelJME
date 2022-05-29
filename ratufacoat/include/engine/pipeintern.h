@@ -16,16 +16,6 @@
 #ifndef SQUIRRELJME_PIPEINTERN_H
 #define SQUIRRELJME_PIPEINTERN_H
 
-/* Anti-C++. */
-#include "pipe.h"
-#ifdef __cplusplus
-	#ifndef SJME_CXX_IS_EXTERNED
-		#define SJME_CXX_IS_EXTERNED
-		#define SJME_CXX_SQUIRRELJME_PIPEINTERN_H
-extern "C" {
-	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif     /* #ifdef __cplusplus */
-
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -107,14 +97,5 @@ typedef struct sjme_pipeFunction
 } sjme_pipeFunction;
 
 /*--------------------------------------------------------------------------*/
-
-/* Anti-C++. */
-#ifdef __cplusplus
-	#ifdef SJME_CXX_SQUIRRELJME_PIPEINTERN_H
-}
-		#undef SJME_CXX_SQUIRRELJME_PIPEINTERN_H
-		#undef SJME_CXX_IS_EXTERNED
-	#endif /* #ifdef SJME_CXX_SQUIRRELJME_PIPEINTERN_H */
-#endif     /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_PIPEINTERN_H */

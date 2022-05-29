@@ -21,16 +21,6 @@
 #include "cpu.h"
 #include "softmath.h"
 
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifndef SJME_CXX_IS_EXTERNED
-#define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_SYSCALL_H
-extern "C"
-{
-#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif /* #ifdef __cplusplus */
-
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -48,14 +38,5 @@ void sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	sjme_jshort callid, sjme_jint* args, sjme_jlong* rv);
 
 /*--------------------------------------------------------------------------*/
-
-/* Anti-C++. */
-#ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_SYSCALL_H
-}
-#undef SJME_CXX_SQUIRRELJME_SYSCALL_H
-#undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_SYSCALL_H */
-#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_SYSCALL_H */
