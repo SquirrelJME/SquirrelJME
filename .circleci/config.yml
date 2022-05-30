@@ -26,6 +26,7 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
+	resource_class: large
     environment:
       # Use a reduced amount of memory to all of the VMs so that it does not
       # try grabbing all the memory that is available to the system.
@@ -90,6 +91,7 @@ jobs:
   build_macosx:
     macos:
       xcode: 13.2.1
+	resource_class: large
     environment:
       # Do not auto-update brew as this takes forever and we really just want
       # a single package
@@ -159,6 +161,7 @@ jobs:
   ################################### LINUX ##################################
   build_linux:
     executor: buildenv
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
