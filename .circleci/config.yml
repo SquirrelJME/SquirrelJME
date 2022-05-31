@@ -92,7 +92,7 @@ jobs:
   build_macosx:
     macos:
       xcode: 13.2.1
-    resource_class: large
+    resource_class: macos.x86.medium.gen2
     environment:
       # Do not auto-update brew as this takes forever and we really just want
       # a single package
@@ -136,7 +136,7 @@ jobs:
   ratufacoat_build_macosx:
     macos:
       xcode: 11.3.0
-    resource_class: large
+    resource_class: macos.x86.medium.gen2
     environment:
       # Do not auto-update brew as this takes forever and we really just want
       # a single package
