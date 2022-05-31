@@ -26,7 +26,7 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
-    resource_class: large
+      size: xlarge
     environment:
       # Use a reduced amount of memory to all of the VMs so that it does not
       # try grabbing all the memory that is available to the system.
@@ -62,6 +62,7 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
+      size: xlarge
     steps:
       - checkout
       - attach_workspace:
@@ -135,6 +136,7 @@ jobs:
   ratufacoat_build_macosx:
     macos:
       xcode: 11.3.0
+    resource_class: large
     environment:
       # Do not auto-update brew as this takes forever and we really just want
       # a single package
@@ -198,6 +200,7 @@ jobs:
   ### OSS SonaType Nexus
   sonatype_publish:
     executor: buildenv
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -212,7 +215,7 @@ jobs:
   ### RatufaCoat
   ratufacoat_build_linux:
     executor: buildenv
-    resource_class: small
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -240,6 +243,7 @@ jobs:
   ### SpringCoat
   test_springcoat:
     executor: buildenv
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -275,6 +279,7 @@ jobs:
           path: ~/test-results
   test_summercoat:
     executor: buildenv
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -311,8 +316,8 @@ jobs:
 
   ################################### USERS ##################################
   export_user_guide:
-    resource_class: small
     executor: buildenv
+    resource_class: xlarge
     steps:
       - checkout
       - run:
@@ -342,6 +347,7 @@ jobs:
   # when they need to use these JARs
   construct_testJars:
     executor: buildenv
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -365,6 +371,7 @@ jobs:
   # for general ROM construction
   construct_libSummerCoat:
     executor: buildenv
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -387,6 +394,7 @@ jobs:
   # All of the tests so that they can run from within SummerCoat
   construct_libTestSummerCoat:
     executor: buildenv
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -409,6 +417,7 @@ jobs:
   # Constructs the standard SummerCoat ROM, could be uploaded later
   construct_romSummerCoat:
     executor: buildenv
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -433,6 +442,7 @@ jobs:
   # it properly works.
   construct_romTestSummerCoat:
     executor: buildenv
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
