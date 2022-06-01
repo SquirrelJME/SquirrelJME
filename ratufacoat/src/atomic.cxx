@@ -112,8 +112,8 @@ sjme_jboolean sjme_atomicPointerCompareThenSet(sjme_atomicPointer* atomic,
 		return sjme_true;
 	return sjme_false;
 #elif defined(SJME_ATOMIC_GCC)
-	if (__atomic_compare_exchange_n(&atomic->value, &check, set, 0,
-		MEMORY_ORDER, MEMORY_ORDER))
+	if (__atomic_compare_exchange_n(&atomic->value,
+		(volatile void**)&check, set, 0, MEMORY_ORDER, MEMORY_ORDER))
 		return sjme_true;
 	return sjme_false;
 #elif defined(SJME_ATOMIC_WIN32)

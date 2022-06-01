@@ -369,6 +369,38 @@ jobs:
           path: ratufacoat/src/sdl2/SquirrelJME
           destination: SquirrelJME
 
+  ### RatufaCoat (EmScripten/Browser)
+  ratufacoat_build_emscripten:
+    executor: buster
+    resource_class: xlarge
+    steps:
+      - checkout
+      - run:
+          name: Install required dependencies
+          command: |
+            apt-get update -y
+            apt-get install -y build-essential python3 git valgrind
+            apt-get install -y -t buster-backports cmake emscripten
+      - attach_workspace:
+          at: .
+      - run:
+          name: Setup CMake build
+          working_directory: ratufacoat
+          command: emcmake cmake .
+      - run:
+          name: Compile CMake build
+          working_directory: ratufacoat
+          command: emmake cmake --build .
+      - store_artifacts:
+          path: ratufacoat/src/sdl2/SquirrelJME.html
+          destination: SquirrelJME.html
+      - store_artifacts:
+          path: ratufacoat/src/sdl2/SquirrelJME.js
+          destination: SquirrelJME.js
+      - store_artifacts:
+          path: ratufacoat/src/sdl2/SquirrelJME.wasm
+          destination: SquirrelJME.wasm
+
   ### RatufaCoat (MIPS, Cross Arch Testing)
   ratufacoat_build_linux_mips:
     executor: buster
@@ -867,6 +899,9 @@ workflows:
           requires:
             - construct_builtInRatufaCoatRom
       - ratufacoat_build_macosx:
+          requires:
+            - construct_builtInRatufaCoatRom
+      - ratufacoat_build_emscripten:
           requires:
             - construct_builtInRatufaCoatRom
 
