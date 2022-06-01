@@ -16,8 +16,8 @@
 /** Debug buffer size for messages. */
 #define DEBUG_BUF 512
 
-ToDoException::ToDoException(const char* file, int line, const char* func,
-	const char* message)
+sjme_ToDoException::sjme_ToDoException(const char* file, int line,
+	const char* func, const char* message)
 {
 	this->file = file;
 	this->line = line;
@@ -25,7 +25,7 @@ ToDoException::ToDoException(const char* file, int line, const char* func,
 	this->message = (message == NULL ? NULL : strdup(message));
 }
 
-ToDoException::~ToDoException()
+sjme_ToDoException::~sjme_ToDoException()
 {
 	if (this->message != NULL)
 	{
@@ -76,5 +76,5 @@ sjme_returnNever sjme_todoR(const char* file, int line,
 			buf);
 
 	/* Throw exception. */
-	throw ToDoException(file, line, func, buf);
+	throw sjme_ToDoException(file, line, func, buf);
 }

@@ -26,7 +26,7 @@
  * 
  * @since 2022/06/01
  */
-class ToDoException : public std::exception
+class sjme_ToDoException : public std::exception
 {
 private:
 	const char* file;
@@ -44,7 +44,7 @@ public:
 	 * @param message The message to use.
 	 * @since 2022/06/01
 	 */
-	ToDoException(const char* file, int line, const char* func,
+	sjme_ToDoException(const char* file, int line, const char* func,
 		const char* message);
 	
 	/**
@@ -52,7 +52,7 @@ public:
 	 * 
 	 * @since 2022/06/01
 	 */
-	~ToDoException();
+	virtual ~sjme_ToDoException();
 };
 
 /**
