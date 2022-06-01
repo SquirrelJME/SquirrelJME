@@ -16,9 +16,44 @@
 #ifndef SQUIRRELJME_DEBUG_H
 #define SQUIRRELJME_DEBUG_H
 
+#include <exception>
 #include "sjmerc.h"
 
 /*--------------------------------------------------------------------------*/
+
+/**
+ * Represents a To Do exception that is thrown. 
+ * 
+ * @since 2022/06/01
+ */
+class ToDoException : public std::exception
+{
+private:
+	const char* file;
+	int line;
+	const char* func;
+	const char* message;
+	
+public:
+	/**
+	 * Initializes the exception.
+	 * 
+	 * @param file The file that threw the exception.
+	 * @param line The line that threw the exception.
+	 * @param func The function called from.
+	 * @param message The message to use.
+	 * @since 2022/06/01
+	 */
+	ToDoException(const char* file, int line, const char* func,
+		const char* message);
+	
+	/**
+	 * Destructs the exception.
+	 * 
+	 * @since 2022/06/01
+	 */
+	~ToDoException();
+};
 
 /**
  * Prints a debug message.

@@ -9,26 +9,45 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdlib.h>
 
 #include "debug.h"
 
 /** Debug buffer size for messages. */
 #define DEBUG_BUF 512
 
+ToDoException::ToDoException(const char* file, int line, const char* func,
+	const char* message)
+{
+	this->file = file;
+	this->line = line;
+	this->func = func;
+	this->message = (message == NULL ? NULL : strdup(message));
+}
+
+ToDoException::~ToDoException()
+{
+	if (this->message != NULL)
+	{
+		free((void*)this->message);
+		this->message = NULL;
+	}
+}
+
 void sjme_messageR(const char* file, int line,
 	const char* func, const char* message, ...)
 {
 	char buf[DEBUG_BUF];
 	va_list args;
-	
+
 	/* Load message buffer. */
 	va_start(args, message);
 	memset(buf, 0, sizeof(buf));
 	vsnprintf(buf, DEBUG_BUF, message, args);
 	va_end(args);
-	
+
 	/* Print output message. */
-	if (file != NULL || line > 0 || func != NULL) 
+	if (file != NULL || line > 0 || func != NULL)
 		fprintf(stderr, "DB: (%s:%d in %s()): %s\n",
 			file, line, func, buf);
 	else
@@ -41,13 +60,13 @@ sjme_returnNever sjme_todoR(const char* file, int line,
 {
 	char buf[DEBUG_BUF];
 	va_list args;
-	
+
 	/* Load message buffer. */
 	va_start(args, message);
 	memset(buf, 0, sizeof(buf));
 	vsnprintf(buf, DEBUG_BUF, message, args);
 	va_end(args);
-	
+
 	/* Print output message. */
 	if (file != NULL || line > 0 || func != NULL)
 		fprintf(stderr, "TD: TODO Hit (%s:%d in %s()): %s\n",
@@ -55,24 +74,7 @@ sjme_returnNever sjme_todoR(const char* file, int line,
 	else
 		fprintf(stderr, "TD: TODO Hit: %s\n",
 			buf);
-	
-	/* Exit and stop. */
-	exit(EXIT_FAILURE);
-	
-	/* These are totally not used. */
-#if defined(__clang__)
-	#pragma clang diagnostic push
-	#pragma ide diagnostic ignored "UnreachableCode"
-	#pragma ide diagnostic ignored "UnusedLocalVariable"
-#endif
-	{
-		sjme_returnNever fail;
-		
-		fail.ignored = 0;
-		
-		return fail;
-	}
-#if defined(__clang__)
-	#pragma clang diagnostic pop
-#endif
+
+	/* Throw exception. */
+	throw ToDoException(file, line, func, buf);
 }
