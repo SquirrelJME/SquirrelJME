@@ -67,6 +67,7 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
+      size: xlarge
     steps:
       - checkout
       - attach_workspace:
@@ -749,6 +750,7 @@ jobs:
   # Constructs the Built-In ROM used for RatufaCoat with tests
   construct_builtInRatufaCoatRom:
     executor: buildenv
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -767,6 +769,7 @@ jobs:
   # Constructs the Built-In ROM used for RatufaCoat without tests
   construct_builtInRatufaCoatRomRelease:
     executor: buildenv
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -785,6 +788,7 @@ jobs:
   # Poke RetroArch for building the cores
   poke_RetroArch:
     executor: buildenv
+    resource_class: small
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
