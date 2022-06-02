@@ -88,7 +88,7 @@ message("******************************")
 # For Emscripten generate an HTML
 if(EMSCRIPTEN)
 	message("Detected Emscripten...")
-	
+
 	set(CMAKE_EXECUTABLE_SUFFIX ".html")
 endif()
 
