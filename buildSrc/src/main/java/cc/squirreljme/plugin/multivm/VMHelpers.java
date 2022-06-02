@@ -651,8 +651,8 @@ public final class VMHelpers
 		// kept otherwise execution may be non-deterministic and could break.
 		Set<Path> classPath = new LinkedHashSet<>();
 		for (VMLibraryTask vmLib : tasks)
-			classPath.add(vmLib.getOutputs().getFiles().getSingleFile()
-				.toPath());
+			for (File file : vmLib.getOutputs().getFiles().getFiles())
+				classPath.add(file.toPath());
 		
 		return classPath.toArray(new Path[classPath.size()]);
 	}
