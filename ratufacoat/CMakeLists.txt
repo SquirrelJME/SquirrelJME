@@ -104,7 +104,7 @@ if(PALMOS)
 	set(CMAKE_VERBOSE_MAKEFILE TRUE)
 endif()
 
-# Build properties for SquirrelJME
+# Standard C and C++ versions
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 set(CMAKE_CXX_STANDARD 11)
@@ -155,8 +155,10 @@ endif()
 if(MSVC)
 	string(REGEX REPLACE "/W[3|4]" "/W4" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 	string(REGEX REPLACE "/W[3|4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+
+# Make GNU more pedantic
 elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-	add_compile_options(-Wall -Wextra -pedantic)
+	add_compile_options(-Wall -Wextra -pedantic -pedantic-errors)
 endif()
 
 # Versioning information

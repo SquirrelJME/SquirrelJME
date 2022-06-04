@@ -30,15 +30,15 @@ static const sjme_libraryDriver* const sjme_libraryDrivers[] =
 
 /** Handler for library formats. */
 static const sjme_formatHandler sjme_libraryFormatHandler =
-{
-	.driverOffsetOfDetect = offsetof(sjme_libraryDriver, detect),
-	.driverOffsetOfInit = offsetof(sjme_libraryDriver, init),
-	.driverOffsetOfDestroy = offsetof(sjme_libraryDriver, destroy),
-	.driverList = (const void**)&sjme_libraryDrivers,
-	.sizeOfInstance = sizeof(sjme_libraryInstance),
-	.instanceOffsetOfFormat = offsetof(sjme_libraryInstance, format),
-	.instanceOffsetOfState = offsetof(sjme_libraryInstance, state),
-};
+	SJME_DESIGNATED(sjme_formatHandler,
+		s_.driverOffsetOfDetect = offsetof(sjme_libraryDriver, detect),
+		s_.driverOffsetOfInit = offsetof(sjme_libraryDriver, init),
+		s_.driverOffsetOfDestroy = offsetof(sjme_libraryDriver, destroy),
+		s_.driverList = (const void**)&sjme_libraryDrivers,
+		s_.sizeOfInstance = sizeof(sjme_libraryInstance),
+		s_.instanceOffsetOfFormat = offsetof(sjme_libraryInstance, format),
+		s_.instanceOffsetOfState = offsetof(sjme_libraryInstance, state)
+	);
 
 /**
  * Wraps a chunk to a stream.

@@ -175,31 +175,31 @@ static const sjme_pipeFunction sjme_pipeFunctions
 	[SJME_NUM_PIPE_REDIRECTS] =
 {
 	/** @c SJME_TASK_PIPE_REDIRECT_DISCARD . */
-	{
-		.close = sjme_discardPipeClose,
-		.flush = sjme_discardPipeFlush,
-		.newInstance = sjme_discardPipeNewInstance,
-		.read = sjme_discardPipeRead,
-		.write = sjme_discardPipeWrite,
-	},
+	SJME_DESIGNATED(sjme_pipeFunction,
+		s_.close = sjme_discardPipeClose,
+		s_.flush = sjme_discardPipeFlush,
+		s_.newInstance = sjme_discardPipeNewInstance,
+		s_.read = sjme_discardPipeRead,
+		s_.write = sjme_discardPipeWrite
+	),
 
 	/** @c SJME_TASK_PIPE_REDIRECT_BUFFER . */
-	{
-		.close = sjme_bufferPipeClose,
-		.flush = sjme_bufferPipeFlush,
-		.newInstance = sjme_bufferPipeNewInstance,
-		.read = sjme_bufferPipeRead,
-		.write = sjme_bufferPipeWrite,
-	},
+	SJME_DESIGNATED(sjme_pipeFunction,
+		s_.close = sjme_bufferPipeClose,
+		s_.flush = sjme_bufferPipeFlush,
+		s_.newInstance = sjme_bufferPipeNewInstance,
+		s_.read = sjme_bufferPipeRead,
+		s_.write = sjme_bufferPipeWrite
+	),
 
 	/** @c SJME_TASK_PIPE_REDIRECT_TERMINAL . */
-	{
-		.close = sjme_terminalPipeClose,
-		.flush = sjme_terminalPipeFlush,
-		.newInstance = sjme_terminalPipeNewInstance,
-		.read = sjme_terminalPipeRead,
-		.write = sjme_terminalPipeWrite,
-	},
+	SJME_DESIGNATED(sjme_pipeFunction,
+		s_.close = sjme_terminalPipeClose,
+		s_.flush = sjme_terminalPipeFlush,
+		s_.newInstance = sjme_terminalPipeNewInstance,
+		s_.read = sjme_terminalPipeRead,
+		s_.write = sjme_terminalPipeWrite
+	),
 };
 
 sjme_jboolean sjme_pipeNewInstance(sjme_pipeRedirectType type,

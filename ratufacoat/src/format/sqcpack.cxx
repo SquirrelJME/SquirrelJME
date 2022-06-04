@@ -418,20 +418,20 @@ static sjme_jint sjme_sqcPackQueryPackFlags(sjme_packInstance* instance,
 }
 
 const sjme_packDriver sjme_packSqcDriver =
-{
-	.detect = sjme_sqcPackDetect,
-	.init = sjme_sqcPackInit,
-	.destroy = sjme_sqcPackDestroy,
-	.queryNumLibraries = sjme_sqcPackQueryNumLibraries,
-	.queryPackFlags = sjme_sqcPackQueryPackFlags,
-	.locateChunk = sjme_sqcPackLocateChunk,
+	SJME_DESIGNATED(sjme_packDriver,
+		s_.detect = sjme_sqcPackDetect,
+		s_.init = sjme_sqcPackInit,
+		s_.destroy = sjme_sqcPackDestroy,
+		s_.queryNumLibraries = sjme_sqcPackQueryNumLibraries,
+		s_.queryPackFlags = sjme_sqcPackQueryPackFlags,
+		s_.locateChunk = sjme_sqcPackLocateChunk,
 
-	/* There is no need to close or free any RAM resources because all
-	 * libraries are within the SQC chunk in memory. */
-	.libraryMarkClosed = NULL,
+		/* There is no need to close or free any RAM resources because all
+		 * libraries are within the SQC chunk in memory. */
+		s_.libraryMarkClosed = NULL,
 
-	.queryLauncherArgs = sjme_sqcPackQueryLauncherArgs,
-	.queryLauncherClass = sjme_sqcPackQueryLauncherClass,
-	.queryLauncherClassPath =
-		sjme_sqcPackQueryLauncherClassPath,
-};
+		s_.queryLauncherArgs = sjme_sqcPackQueryLauncherArgs,
+		s_.queryLauncherClass = sjme_sqcPackQueryLauncherClass,
+		s_.queryLauncherClassPath =
+			sjme_sqcPackQueryLauncherClassPath
+	);

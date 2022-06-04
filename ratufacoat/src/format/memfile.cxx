@@ -39,7 +39,7 @@ sjme_jboolean sjme_memFileLibraryInit(void* instance, sjme_error* error)
 }
 
 const sjme_libraryDriver sjme_libraryMemFileDriver =
-{
-	.detect = sjme_memFileLibraryDetect,
-	.init = sjme_memFileLibraryInit,
-};
+	SJME_DESIGNATED(sjme_libraryDriver,
+		s_.detect = sjme_memFileLibraryDetect,
+		s_.init = sjme_memFileLibraryInit
+	);

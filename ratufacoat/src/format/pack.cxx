@@ -24,15 +24,15 @@ static const sjme_packDriver* const sjme_packDrivers[] =
 
 /** Handler for pack formats. */
 static const sjme_formatHandler sjme_packFormatHandler =
-{
-	.driverOffsetOfDetect = offsetof(sjme_packDriver, detect),
-	.driverOffsetOfInit = offsetof(sjme_packDriver, init),
-	.driverOffsetOfDestroy = offsetof(sjme_packDriver, destroy),
-	.driverList = (const void**)&sjme_packDrivers,
-	.sizeOfInstance = sizeof(sjme_packInstance),
-	.instanceOffsetOfFormat = offsetof(sjme_packInstance, format),
-	.instanceOffsetOfState = offsetof(sjme_packInstance, state),
-};
+	SJME_DESIGNATED(sjme_formatHandler,
+		s_.driverOffsetOfDetect = offsetof(sjme_packDriver, detect),
+		s_.driverOffsetOfInit = offsetof(sjme_packDriver, init),
+		s_.driverOffsetOfDestroy = offsetof(sjme_packDriver, destroy),
+		s_.driverList = (const void**)&sjme_packDrivers,
+		s_.sizeOfInstance = sizeof(sjme_packInstance),
+		s_.instanceOffsetOfFormat = offsetof(sjme_packInstance, format),
+		s_.instanceOffsetOfState = offsetof(sjme_packInstance, state)
+	);
 
 /**
  * Performs pack garbage collection.

@@ -277,9 +277,9 @@ static sjme_jboolean sjme_sqcLibraryInit(void* instance,
 }
 
 const sjme_libraryDriver sjme_librarySqcDriver =
-{
-	.detect = sjme_sqcLibraryDetect,
-	.init = sjme_sqcLibraryInit,
-	.destroy = sjme_sqcLibraryDestroy,
-	.entryChunk = sjme_sqcLibraryEntryChunk,
-};
+	SJME_DESIGNATED(sjme_libraryDriver,
+		s_.detect = sjme_sqcLibraryDetect,
+		s_.init = sjme_sqcLibraryInit,
+		s_.destroy = sjme_sqcLibraryDestroy,
+		s_.entryChunk = sjme_sqcLibraryEntryChunk
+	);

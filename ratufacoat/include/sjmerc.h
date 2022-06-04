@@ -493,6 +493,11 @@ typedef struct sjme_nativefile sjme_nativefile;
 /** Max constant macro. */
 #define sjme_max(a, b) ((a) >= (b) ? (a) : (b))
 
+/** For designated initializers since C++11 lacks support. */
+#define SJME_DESIGNATED(CPPType, ...) \
+	([]{ CPPType s_ {}; \
+	__VA_ARGS__; return s_; }())
+
 /*--------------------------------------------------------------------------*/
 
 /** Header guard. */

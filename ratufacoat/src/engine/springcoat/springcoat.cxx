@@ -74,8 +74,8 @@ static sjme_jboolean sjme_springCoat_isAvailable(
 }
 
 const sjme_engineScaffold sjme_engineScaffoldSpringCoat =
-{
-	.name = "springcoat",
-	.initEngine = sjme_springCoat_initEngine,
-	.isAvailable = sjme_springCoat_isAvailable,
-};
+	SJME_DESIGNATED(sjme_engineScaffold,
+		s_.name = "springcoat",
+		s_.initEngine = sjme_springCoat_initEngine,
+		s_.isAvailable = sjme_springCoat_isAvailable
+	);

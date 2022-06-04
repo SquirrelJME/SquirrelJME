@@ -203,7 +203,7 @@ typedef struct sjme_engineConfig
 typedef struct sjme_engineScaffold
 {
 	/** The name of the engine. */
-	const char* const name;
+	const char* name;
 	
 	/**
 	 * Performs initialization of a given engine.
