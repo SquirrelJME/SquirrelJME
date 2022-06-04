@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
+/* -*- Mode: C++; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -9,7 +9,7 @@
 
 /**
  * Software Math.
- * 
+ *
  * @since 2021/02/27
  */
 
@@ -56,17 +56,17 @@ static const sjme_jint sjme_ushrIntMask[32] =
 sjme_jlong sjme_addLongF(sjme_jlong a, sjme_jint bLo, sjme_jint bHi)
 {
 	sjme_jlong c;
-	
+
 	/* Add the higher/lower parts */
 	c.hi = a.hi + bHi;
 	c.lo = a.lo + bLo;
-	
+
 	/* If the low addition carried a bit over, then set that bit in the */
 	/* high part */
 	if ((c.lo + SJME_JINT_C(0x80000000)) <
 		(a.lo + SJME_JINT_C(0x80000000)))
 		c.hi++;
-	
+
 	/* Return result */
 	return c;
 }
@@ -94,45 +94,45 @@ sjme_jint_div sjme_divInt(sjme_jint anum, sjme_jint aden)
 	} interm = {0, 0};
 	sjme_juint i;
 	sjme_jbyte isneg;
-	
+
 	/* Disallow division by zero */
 	if (aden == 0)
 		return rv;
-	
+
 	/* Negative? */
 	isneg = 0;
 	if ((anum < 0 && aden >= 0) || (anum >= 0 && aden < 0))
 		isneg |= 1;
-	
+
 	/* Force Positive */
 	anum = (anum < 0 ? -anum : anum);
 	aden = (aden < 0 ? -aden : aden);
-	
+
 	/* Perform Math */
 	for (i = SJME_JUINT_C(31);; i--)
 	{
 		interm.rem <<= SJME_JUINT_C(1);
 		interm.rem &= SJME_JUINT_C(0xFFFFFFFE);
 		interm.rem |= (((sjme_juint)anum) >> i) & SJME_JUINT_C(1);
-		
+
 		if (interm.rem >= (sjme_juint)aden)
 		{
 			interm.rem -= (sjme_juint)aden;
 			interm.quot |= (SJME_JUINT_C(1) << i);
 		}
-		
+
 		if (i == 0)
 			break;
 	}
-	
+
 	/* Restore Integers */
 	rv.quot = interm.quot;
 	rv.rem = interm.rem;
-	
+
 	/* Make Negative */
 	if (isneg & 1)
 		rv.quot = -rv.quot;
-	
+
 	/* Return */
 	return rv;
 }
@@ -146,7 +146,7 @@ sjme_jlong sjme_mulLong(sjme_jlong a, sjme_jlong b)
 	int64_t bb = (((int64_t)b.hi) << 32) |
 		(((int64_t)b.lo) & UINT64_C(0xFFFFFFFF));
 	int64_t cc = aa * bb;
-	
+
 	rv.hi = (sjme_jint)(cc >> 32);
 	rv.lo = (sjme_jint)(cc);
 	return rv;
@@ -155,10 +155,10 @@ sjme_jlong sjme_mulLong(sjme_jlong a, sjme_jlong b)
 sjme_jlong sjme_mulLongF(sjme_jlong a, sjme_jint bLo, sjme_jint bHi)
 {
 	sjme_jlong b;
-	
+
 	b.hi = bHi;
 	b.lo = bLo;
-	
+
 	return sjme_mulLong(a, b);
 }
 

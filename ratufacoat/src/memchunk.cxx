@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
+/* -*- Mode: C++; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -20,14 +20,14 @@ sjme_jboolean sjme_chunkCheckBound(const sjme_memChunk* chunk, sjme_jint off,
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
 		return sjme_false;
 	}
-	
+
 	/* Check the bounds. */
 	if (off < 0 || len < 0 || (off + len) < 0 || (off + len) > chunk->size)
 	{
 		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, 0);
 		return sjme_false;
 	}
-		
+
 	return sjme_true;
 }
 
@@ -40,10 +40,10 @@ sjme_jboolean sjme_chunkReadBigInt(const sjme_memChunk* chunk, sjme_jint off,
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
 		return sjme_false;
 	}
-	
+
 	if (!sjme_chunkCheckBound(chunk, off, 4, error))
 		return sjme_false;
-	
+
 	*value = sjme_memReadBigInt(chunk->data, off);
 	return sjme_true;
 }
@@ -57,10 +57,10 @@ sjme_jboolean sjme_chunkReadBigShort(const sjme_memChunk* chunk, sjme_jint off,
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
 		return sjme_false;
 	}
-	
+
 	if (!sjme_chunkCheckBound(chunk, off, 2, error))
 		return sjme_false;
-	
+
 	*value = sjme_memReadBigShort(chunk->data, off);
 	return sjme_true;
 }
@@ -71,18 +71,18 @@ sjme_jboolean sjme_chunkRealPointer(const sjme_memChunk* chunk, sjme_jint off,
 	if (chunk == NULL || outPointer == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* Out of bounds? */
 	if (off < 0 || off > chunk->size)
 	{
 		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, off);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* Use the resultant pointer. */
 	*outPointer = (void*)(((uintptr_t)chunk->data) + off);
 	return sjme_true;
@@ -93,30 +93,30 @@ sjme_jboolean sjme_chunkSubChunk(const sjme_memChunk* chunk,
 	sjme_error* error)
 {
 	void* splicePoint;
-	
+
 	if (chunk == NULL || outSubChunk == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* Out of bounds? */
 	if (off < 0 || size < 0 || off + size > chunk->size)
 	{
 		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, off);
-		
+
 		return sjme_false;
 	}
-	
+
 	/* Determine the splice point. */
 	splicePoint = NULL;
 	if (!sjme_chunkRealPointer(chunk, off, &splicePoint, error))
 		return sjme_false;
-	 
+
 	/* Subsection this chunk. */
 	outSubChunk->data = splicePoint;
 	outSubChunk->size = size;
-	
+
 	return sjme_true;
 }

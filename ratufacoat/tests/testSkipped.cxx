@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
+/* -*- Mode: C++; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -11,13 +11,13 @@
 
 /**
  * Tests that skipping works, this should always result in a skip.
- * 
+ *
  * @since 2021/03/04
  */
 SJME_TEST_PROTOTYPE(testSkipped)
 {
 	if (1)
 		return SKIP_TEST();
-	
+
 	return SKIP_TEST();
 }

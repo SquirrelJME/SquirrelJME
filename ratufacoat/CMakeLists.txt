@@ -107,6 +107,8 @@ endif()
 # Build properties for SquirrelJME
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Does the static ROM file exist? If it does we can pack it into the binary
 option(SQUIRRELJME_USE_BUILTIN "Use Built-In ROM (If Detected)" ON)

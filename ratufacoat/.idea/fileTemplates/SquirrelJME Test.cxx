@@ -1,4 +1,4 @@
-#parse("C File Header.h")
+#parse("CXX File Header.h")
 
 #[[#include]]# "tests.h"
 

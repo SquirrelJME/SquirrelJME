@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
+/* -*- Mode: C++; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -25,7 +25,7 @@ sjme_ToDoException::sjme_ToDoException(const char* file, int line,
 	this->message = (message == NULL ? NULL : strdup(message));
 }
 
-sjme_ToDoException::~sjme_ToDoException()
+sjme_ToDoException::~sjme_ToDoException() noexcept
 {
 	if (this->message != NULL)
 	{

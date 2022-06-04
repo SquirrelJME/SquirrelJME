@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
+/* -*- Mode: C++; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -9,7 +9,7 @@
 
 /**
  * Video support.
- * 
+ *
  * @since 2021/02/27
  */
 

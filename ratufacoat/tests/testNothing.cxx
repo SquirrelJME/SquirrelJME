@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
+/* -*- Mode: C++; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -11,8 +11,8 @@
 
 /**
  * Tests that doing nothing works, sanity check for the test framework.
- * 
- * @since 2021/03/04 
+ *
+ * @since 2021/03/04
  */
 SJME_TEST_PROTOTYPE(testNothing)
 {

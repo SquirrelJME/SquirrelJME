@@ -52,7 +52,7 @@ public:
 	 * 
 	 * @since 2022/06/01
 	 */
-	virtual ~sjme_ToDoException();
+	~sjme_ToDoException() noexcept override;
 };
 
 /**

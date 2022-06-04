@@ -336,8 +336,7 @@ jobs:
           name: Install required dependencies
           command: |
             apt-get update -y
-            apt-get install -y build-essential python3 git valgrind
-            apt-get install -y -t cmake
+            apt-get install -y build-essential python3 git valgrind cmake
       - attach_workspace:
           at: .
       - run:
@@ -380,8 +379,7 @@ jobs:
           name: Install required dependencies
           command: |
             apt-get update -y
-            apt-get install -y build-essential python3 git valgrind
-            apt-get install -y -t cmake emscripten
+            apt-get install -y build-essential python3 git valgrind cmake emscripten
       - attach_workspace:
           at: .
       - run:
@@ -412,8 +410,7 @@ jobs:
           name: Install required dependencies
           command: |
             apt-get update -y
-            apt-get install -y build-essential gcc-mips-linux-gnu binutils-mips-linux-gnu python3 git
-            apt-get install -y -t cmake qemu-user-static
+            apt-get install -y build-essential gcc-mips-linux-gnu binutils-mips-linux-gnu python3 git cmake qemu-user-static
       - attach_workspace:
           at: .
       - run:
@@ -453,8 +450,7 @@ jobs:
           name: Install required dependencies
           command: |
             apt-get update -y
-            apt-get install -y build-essential gcc-powerpc-linux-gnu binutils-powerpc-linux-gnu python3 git
-            apt-get install -y -t cmake qemu-user-static
+            apt-get install -y build-essential gcc-powerpc-linux-gnu binutils-powerpc-linux-gnu python3 git cmake qemu-user-static
       - attach_workspace:
           at: .
       - run:
@@ -494,8 +490,7 @@ jobs:
           name: Install required dependencies
           command: |
             apt-get update -y
-            apt-get install -y build-essential gcc-sparc64-linux-gnu binutils-sparc64-linux-gnu python3 git
-            apt-get install -y -t cmake qemu-user-static
+            apt-get install -y build-essential gcc-sparc64-linux-gnu binutils-sparc64-linux-gnu python3 git cmake qemu-user-static
       - attach_workspace:
           at: .
       - run:

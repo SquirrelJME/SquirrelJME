@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
+/* -*- Mode: C++; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -24,7 +24,7 @@ static const sjme_jboolean matchBool[RANDOM_CYCLES] =
 		sjme_false, sjme_true, sjme_false,
 		sjme_false, sjme_false, sjme_true,
 		sjme_false, sjme_false, sjme_true,
-		sjme_true, sjme_true, sjme_false, 
+		sjme_true, sjme_true, sjme_false,
 		sjme_true, sjme_false, sjme_false,
 		sjme_true, sjme_true
 	};
@@ -52,7 +52,7 @@ static const sjme_jint matchInt[RANDOM_CYCLES] =
 
 /**
  * Tests that random works properly.
- * 
+ *
  * @since 2021/03/07
  */
 SJME_TEST_PROTOTYPE(testRandom)
@@ -61,19 +61,19 @@ SJME_TEST_PROTOTYPE(testRandom)
 	sjme_jlong seed;
 	sjme_jboolean jboolean;
 	sjme_jint jint;
-	
+
 	/* Seed the RNG. */
 	seed.hi = SJME_JINT_C(0xFFFFFFFF);
 	seed.lo = SJME_JINT_C(0xCAFEBABE);
 	if (sjme_randomSeed(&random, seed, &shim->error))
 		return FAIL_TEST(1);
-	
+
 	/* Check booleans. */
 	for (int i = 0; i < RANDOM_CYCLES; i++)
 	{
 		if (sjme_randomNextBoolean(&random, &jboolean, &shim->error))
 			return FAIL_TEST(100 + i);
-		
+
 		if (matchBool[i] != jboolean)
 		{
 			fprintf(stderr, "%i: want=%d != got=%d\n",
@@ -81,13 +81,13 @@ SJME_TEST_PROTOTYPE(testRandom)
 			return FAIL_TEST(200 + i);
 		}
 	}
-	
+
 	/* Check integers. */
 	for (int i = 0; i < RANDOM_CYCLES; i++)
 	{
 		if (sjme_randomNextInt(&random, &jint, &shim->error))
 			return FAIL_TEST(300 + i);
-		
+
 		if (matchInt[i] != jint)
 		{
 			fprintf(stderr, "%i: want=%d != got=%d\n",
@@ -95,6 +95,6 @@ SJME_TEST_PROTOTYPE(testRandom)
 			return FAIL_TEST(400 + i);
 		}
 	}
-	
+
 	return PASS_TEST();
 }

@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
+/* -*- Mode: C++; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -31,18 +31,18 @@
 
 /**
  * Initializes the audio video information.
- * 
+ *
  * @param info Audio/Video information.
- * @since 2022/01/22 
+ * @since 2022/01/22
  */
 SJME_EXTERN_C SJME_GCC_USED void retro_get_system_av_info(struct retro_system_av_info* info)
 {
 	sjme_libRetroState* state;
-	
+
 	/* Always 60FPS at 48KHz. */
 	info->timing.fps = SJME_LIBRETRO_FRAME_RATE;
 	info->timing.sample_rate = 48000;
-	
+
 	/* If there is a global state, use the same video properties as that. */
 	state = g_libRetroState;
 	if (state != NULL)
@@ -50,18 +50,18 @@ SJME_EXTERN_C SJME_GCC_USED void retro_get_system_av_info(struct retro_system_av
 		info->geometry.base_width = state->config.screens[0].width;
 		info->geometry.base_width = state->config.screens[0].height;
 	}
-	
+
 	/* Otherwise, assume some defaults. */
 	else
 	{
 		info->geometry.base_width = SJME_RECOMMENDED_SCREEN_WIDTH;
 		info->geometry.base_width = SJME_RECOMMENDED_SCREEN_HEIGHT;
 	}
-	
+
 	/* Absolute possible maximums? */
 	info->geometry.max_width = SJME_MAX_SCREEN_WIDTH;
 	info->geometry.max_height = SJME_MAX_SCREEN_HEIGHT;
-	
+
 	/* Keep 1:1 pixels. */
 	info->geometry.aspect_ratio =
 		(float)info->geometry.base_width / (float)info->geometry.base_height;
@@ -69,7 +69,7 @@ SJME_EXTERN_C SJME_GCC_USED void retro_get_system_av_info(struct retro_system_av
 
 /**
  * Sets the video refresh callback.
- * 
+ *
  * @param callback The callback function.
  * @since 2021/01/22
  */
@@ -86,13 +86,13 @@ void sjme_libRetro_message(sjme_jbyte percent, const char* const format, ...)
 	struct retro_message_ext extMessage;
 	unsigned int messageVersion;
 	size_t messageLen;
-	
+
 	/* Load message buffer. */
 	va_start(args, format);
 	memset(buf, 0, sizeof(buf));
 	vsnprintf(buf, DEBUG_BUF, format, args);
 	va_end(args);
-	
+
 	/* Determine safe string length for the message to add a new line. */
 	buf[DEBUG_BUF - 1] = '\0';
 	buf[DEBUG_BUF - 2] = '\0';
@@ -104,15 +104,15 @@ void sjme_libRetro_message(sjme_jbyte percent, const char* const format, ...)
 #else
 	buf[messageLen] = '\n';
 #endif
-	
-	/* Print output message. */ 
+
+	/* Print output message. */
 	g_libRetroCallbacks.loggingFunc(RETRO_LOG_INFO, buf);
-	
+
 	/* Which version of messages are we on? */
 	messageVersion = 0;
 	g_libRetroCallbacks.environmentFunc(
 		RETRO_ENVIRONMENT_GET_MESSAGE_INTERFACE_VERSION, &messageVersion);
-	
+
 	/* Setup screen message. */
 	memset(&oldMessage, 0, sizeof(oldMessage));
 	memset(&extMessage, 0, sizeof(extMessage));
@@ -125,10 +125,10 @@ void sjme_libRetro_message(sjme_jbyte percent, const char* const format, ...)
 	extMessage.target = RETRO_MESSAGE_TARGET_OSD;
 	extMessage.type = (percent < 0 || percent > 100 ?
 		RETRO_MESSAGE_TYPE_NOTIFICATION : RETRO_MESSAGE_TYPE_PROGRESS);
-	
+
 	/* We do not want to send the new line to the OSD. */
-	buf[messageLen] = '\0'; 
-	
+	buf[messageLen] = '\0';
+
 	/* Send to the screen to view. */
 	if (messageVersion >= 1)
 		g_libRetroCallbacks.environmentFunc(RETRO_ENVIRONMENT_SET_MESSAGE_EXT,
@@ -146,10 +146,10 @@ sjme_jboolean sjme_libRetro_screenConfig(sjme_engineConfig* config)
 	sjme_jint width, height;
 	sjme_jint split;
 	sjme_pixelFormat pixelFormat;
-	
+
 	/* Notice. */
 	sjme_libRetro_message(10, "Determining screen size.");
-	
+
 	/* Get screen size setting. */
 	memset(&getVar, 0, sizeof(getVar));
 	getVar.key = SJME_LIBRETRO_CONFIG_DISPLAY_SIZE;
@@ -158,7 +158,7 @@ sjme_jboolean sjme_libRetro_screenConfig(sjme_engineConfig* config)
 		RETRO_ENVIRONMENT_GET_VARIABLE, &getVar))
 		if (getVar.value != NULL)
 			rawSize = getVar.value;
-	
+
 	/* Decode screen size. */
 	width = height = -1;
 	if (rawSize != NULL)
@@ -171,13 +171,13 @@ sjme_jboolean sjme_libRetro_screenConfig(sjme_engineConfig* config)
 			height = strtol(&rawSize[split + 1], NULL, 10);
 		}
 	}
-	
+
 	/* Default to certain sizes? */
 	if (width <= 0 || width >= SJME_MAX_SCREEN_WIDTH)
 		width = SJME_RECOMMENDED_SCREEN_WIDTH;
 	if (height <= 0 || height >= SJME_MAX_SCREEN_HEIGHT)
 		height = SJME_RECOMMENDED_SCREEN_HEIGHT;
-		
+
 	/* Get pixel format setting. */
 	memset(&getVar, 0, sizeof(getVar));
 	getVar.key = SJME_LIBRETRO_CONFIG_PIXEL_FORMAT;
@@ -186,11 +186,11 @@ sjme_jboolean sjme_libRetro_screenConfig(sjme_engineConfig* config)
 		RETRO_ENVIRONMENT_GET_VARIABLE, &getVar))
 		if (getVar.value != NULL)
 			rawFormat = getVar.value;
-	
+
 	/* Fallback to a default if not set. */
 	if (rawFormat == NULL)
 		rawFormat = SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_RGBA8888;
-	
+
 	/* Determine which pixel format is used. */
 	if (0 == strcmp(rawFormat, SJME_LIBRETRO_CONFIG_PIXEL_FORMAT_RGBA4444))
 		pixelFormat = SJME_PIXEL_FORMAT_SHORT_RGBA4444;
@@ -212,16 +212,16 @@ sjme_jboolean sjme_libRetro_screenConfig(sjme_engineConfig* config)
 		pixelFormat = SJME_PIXEL_FORMAT_PACKED_INDEXED1;
 	else
 		pixelFormat = SJME_PIXEL_FORMAT_INT_RGB888;
-	
+
 	/* Store screen size. */
 	config->numScreens = 1;
 	config->screens[0].width = width;
 	config->screens[0].height = height;
 	config->screens[0].pixelFormat = pixelFormat;
-	
+
 	/* Notice. */
 	sjme_libRetro_message(10, "Using %dx%d (%s #%d).",
 		width, height, rawFormat, pixelFormat);
-	
+
 	return sjme_true;
 }
