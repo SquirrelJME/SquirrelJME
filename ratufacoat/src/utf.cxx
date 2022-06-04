@@ -7,13 +7,50 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "utf.h"
 #include "debug.h"
+#include "jexception.hxx"
+#include "memory.h"
+#include "utf.h"
 
-sjme_jboolean sjme_charStarToUtf(sjme_utfString** outUtfString,
-	const char* inCharStar, sjme_error* error)
+sjme_utfString::sjme_utfString(void* memAddr, intptr_t memOffset)
 {
-	sjme_todo("sjme_charStarToUtf(%p, %s, %p)",
-		outUtfString, inCharStar, error);
-	return sjme_false;
+	sjme_todo("Implement this?");
+}
+
+sjme_utfString::sjme_utfString(const char* text)
+{
+	if (format == nullptr)
+		throw sjme_jNullPointerException(nullptr);
+
+	sjme_todo("Implement this?");
+}
+
+sjme_utfString::sjme_utfString(const sjme_utfString& other)
+{
+	sjme_todo("Implement this?");
+}
+
+sjme_utfString::~sjme_utfString()
+{
+	if (this->wasAllocated)
+		sjme_free(this->rawData, nullptr);
+	this->rawData = nullptr;
+}
+
+sjme_jchar sjme_utfString::charAt(sjme_jint index)
+{
+	sjme_todo("Implement this?");
+	return 0;
+}
+
+sjme_jint sjme_utfString::length()
+{
+	sjme_todo("Implement this?");
+	return 0;
+}
+
+sjme_utfString sjme_utfString::format(const char* format, ...)
+{
+	sjme_todo("Implement this?");
+	return sjme_utfString(nullptr);
 }

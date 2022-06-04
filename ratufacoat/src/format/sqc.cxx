@@ -150,6 +150,9 @@ sjme_jboolean sjme_sqcGetPropertyStrings(const sjme_sqcState* sqcState,
 	sjme_jint index, sjme_jint count, sjme_utfString** outStrings,
 	sjme_error* error)
 {
+	sjme_todo("Implement this again?");
+	return sjme_false;
+#if 0
 	sjme_jint at;
 	sjme_utfString* seeker;
 
@@ -189,6 +192,7 @@ sjme_jboolean sjme_sqcGetPropertyStrings(const sjme_sqcState* sqcState,
 
 	/* Is okay! */
 	return sjme_true;
+#endif
 }
 
 sjme_jboolean sjme_sqcInit(sjme_formatInstance* formatInstance,

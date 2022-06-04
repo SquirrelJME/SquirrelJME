@@ -41,7 +41,9 @@ add_library(SquirrelJMECore OBJECT
 	gpio.cxx
 	handles.cxx
 	ipnet.cxx
+	jcharsequence.cxx
 	jdwp.cxx
+	jexception.cxx
 	jvm.cxx
 	lock.cxx
 	memchunk.cxx

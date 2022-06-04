@@ -71,10 +71,7 @@ static sjme_jboolean sjme_engineEnterMain(sjme_engineState* engineState,
 	/* Use specific main class and starting arguments. */
 	if (engineState->config.mainClass != NULL)
 	{
-		if (!sjme_charStarToUtf(&mainClass,
-			engineState->config.mainClass, error))
-			return sjme_false;
-
+		mainClass = new sjme_utfString(engineState->config.mainClass);
 		mainArgs = engineState->config.mainArgs;
 
 		/* Resolve class path from a set of library strings. */

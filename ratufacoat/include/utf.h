@@ -18,46 +18,40 @@
 
 #include "sjmerc.h"
 #include "error.h"
+#include "jcharsequence.hxx"
 
 /*--------------------------------------------------------------------------*/
 
-#include "pack/pack.h"
 /**
- * This represents a Java modified UTF-8 String.
+ * This represents a Java modified UTF-8 String, it points somewhere into
+ * memory.
  * 
  * @since 2022/02/26
  */
-typedef struct sjme_utfString
+class sjme_utfString : public sjme_jCharSequence
 {
-	/** The length of the string, this will be big endian. */
-	sjme_jushort bigLength;
+private:
+	/** Raw UTF pointer data. */
+	void* rawData;
 	
-	/** The string data. */
-	sjme_jbyte chars[0];
-} sjme_utfString;
-#include "pack/unpack.h"
-
-/**
- * Returns the size that would be used for @c sjme_utfString.
- * 
- * @param length The number of used characters.
- * @return The allocated memory size for the type.
- * @since 2022/03/09
- */
-#define SJME_SIZEOF_UTF_STRING(length) (sizeof(sjme_utfString) + \
-	((length) * sizeof(sjme_jbyte)))
-
-/**
- * Converts a standard C @c char* string to a Java modified UTF-8 string.
- * 
- * @param outUtfString The output modified UTF-8 string.
- * @param inCharStar The input utf-8 string.
- * @param error The possible error state.
- * @return If the conversion has failed.
- * @since 2022/02/26
- */
-sjme_jboolean sjme_charStarToUtf(sjme_utfString** outUtfString,
-	const char* inCharStar, sjme_error* error);
+	/** Was this string allocated in memory, or does it point to one? */
+	bool wasAllocated;
+	
+public:
+	sjme_utfString(const sjme_utfString& other);
+	
+	sjme_utfString(void* memAddr, intptr_t memOffset);
+	
+	explicit sjme_utfString(const char* text);
+	
+	~sjme_utfString();
+	
+	sjme_jchar charAt(sjme_jint index) override;
+	
+	sjme_jint length() override;
+	
+	static sjme_utfString format(const char* format, ...);
+};
 
 /*--------------------------------------------------------------------------*/
 

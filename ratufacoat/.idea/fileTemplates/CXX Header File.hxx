@@ -1,4 +1,4 @@
-#parse("CXX File Header.h")
+#parse("CXX File Header.hxx")
 
 /**
  * Describe this.
