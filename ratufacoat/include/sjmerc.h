@@ -476,7 +476,7 @@ typedef struct sjme_nativefile sjme_nativefile;
 	(*((type*)((uintptr_t)(val) + (uintptr_t)(offset))))
 
 /** Inlining for Visual Studio. */
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && !defined(__cplusplus)
 	/** Inlined function. */
 	#define inline __inline
 #endif
