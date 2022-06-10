@@ -28,7 +28,7 @@ sjme_jboolean sjme_classLoaderNew(sjme_classLoader** outLoader,
 	/* Allocate resultant structure. */
 	result = (sjme_classLoader*)sjme_malloc(sizeof(*result), error);
 	dupPath = (sjme_classPath*)sjme_malloc(
-		SJME_SIZEOF_CLASS_PATH(classPath->count), error);
+		SJME_SIZEOF_CLASS_PATH(classPath), error);
 	if (result == NULL || dupPath == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NO_MEMORY, 0);

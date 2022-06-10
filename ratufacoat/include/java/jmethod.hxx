@@ -1,4 +1,4 @@
-/* -*- Mode: C++; indent-tabs-mode: t; tab-width: 4 -*-
+/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -7,26 +7,28 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "atomic.h"
-#include "atomiclist.h"
-#include "sjmerc.h"
+/**
+ * Represents a single Java method.
+ *
+ * @since 2022/06/07
+ */
+
+#ifndef SQUIRRELJME_JMETHOD_HXX
+#define SQUIRRELJME_JMETHOD_HXX
+
+#include "memchunk.h"
+
+/*--------------------------------------------------------------------------*/
 
 /**
- * This represents a tread within an atomic list which may change accordingly
- * when the size of the list changes.
+ * Represents a Java method.
  *
- * @since 2022/03/27
+ * @since 2022/06/07
  */
-typedef struct sjme_atomicListTread
+class sjme_jmethod
 {
-	/** The length of this tread. */
-	sjme_jint length;
-
-	/** Values within this tread. */
-	sjme_atomicPointer values[0];
-} sjme_atomicListTread;
-
-struct sjme_atomicList
-{
-	sjme_atomicListTread tread;
 };
+
+/*--------------------------------------------------------------------------*/
+
+#endif /* SQUIRRELJME_JMETHOD_HXX */

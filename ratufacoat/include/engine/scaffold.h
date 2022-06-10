@@ -16,6 +16,7 @@
 #ifndef SQUIRRELJME_SCAFFOLD_H
 #define SQUIRRELJME_SCAFFOLD_H
 
+#include <list>
 #include "engine/pipe.h"
 #include "engine/scafdef.h"
 #include "error.h"
@@ -74,28 +75,23 @@ typedef enum sjme_engineThreadModel
  * 
  * @since 2021/01/07
  */
-typedef struct sjme_systemProperty
+class sjme_systemProperty
 {
 	/** The key. */
-	sjme_utfString* key;
+	sjme_utfString key;
 	
 	/** The value. */
-	sjme_utfString* value;
-} sjme_systemProperty;
+	sjme_utfString value;
+};
 
 /**
  * Represents a set of system properties.
  * 
  * @since 2022/01/09
  */
-typedef struct sjme_systemPropertySet
+class sjme_systemPropertySet : std::list<sjme_systemProperty>
 {
-	/** The number of system properties. */
-	sjme_jint count;
-	
-	/** The defined system properties. */
-	sjme_systemProperty properties[];
-} sjme_systemPropertySet;
+};
 
 /**
  * Returns the size that would be used for @c sjme_engineSystemPropertySet.

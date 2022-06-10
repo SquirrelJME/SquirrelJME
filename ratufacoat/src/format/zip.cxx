@@ -26,6 +26,6 @@ static sjme_jboolean sjme_detectZip(const void* data, sjme_jint size,
 }
 
 const sjme_libraryDriver sjme_libraryZipDriver =
-{
-	.detect = sjme_detectZip,
-};
+	SJME_DESIGNATED(sjme_libraryDriver,
+		s_.detect = sjme_detectZip
+	);

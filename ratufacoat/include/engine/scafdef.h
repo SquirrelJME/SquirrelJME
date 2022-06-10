@@ -16,6 +16,7 @@
 #ifndef SQUIRRELJME_SCAFDEF_H
 #define SQUIRRELJME_SCAFDEF_H
 
+#include <list>
 #include "sjmerc.h"
 #include "utf.h"
 
@@ -54,24 +55,9 @@ typedef struct sjme_classLoader sjme_classLoader;
  * 
  * @since 2022/01/09
  */
-typedef struct sjme_mainArgs
+class sjme_mainArgs : std::list<sjme_utfString>
 {
-	/** The number of arguments that exist. */
-	sjme_jint count;
-	
-	/** The main arguments. */
-	sjme_utfString* args[0];
-} sjme_mainArgs;
-
-/**
- * Returns the size that would be used for @c sjme_mainArgs.
- * 
- * @param count The number of arguments to include.
- * @return The allocated memory size for the type.
- * @since 2022/03/09
- */
-#define SJME_SIZEOF_MAIN_ARGS(count) (sizeof(sjme_mainArgs) + \
-	((count) * sizeof(sjme_utfString*)))
+};
 
 /*--------------------------------------------------------------------------*/
 

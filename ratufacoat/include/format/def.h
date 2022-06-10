@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_FORMAT_DEF_H
 #define SQUIRRELJME_FORMAT_DEF_H
 
+#include <list>
+#include <memory>
 #include "sjmerc.h"
 
 /*--------------------------------------------------------------------------*/
@@ -40,24 +42,11 @@ typedef struct sjme_libraryInstance sjme_libraryInstance;
  * 
  * @since 2022/01/09
  */
-typedef struct sjme_classPath
+class sjme_classPath : std::list<std::shared_ptr<sjme_libraryInstance>>
 {
-	/** The number of libraries in the class path. */
-	sjme_jint count;
+public:
 	
-	/** The libraries within the class path. */
-	sjme_libraryInstance* libraries[0];
-} sjme_classPath;
-
-/**
- * Returns the size that would be used for @c sjme_classPath.
- * 
- * @param count The number of library instance references.
- * @return The allocated memory size for the type.
- * @since 2022/03/09
- */
-#define SJME_SIZEOF_CLASS_PATH(count) (sizeof(sjme_classPath) + \
-	((count) * sizeof(sjme_libraryInstance*)))
+};
 
 /*--------------------------------------------------------------------------*/
 
