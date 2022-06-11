@@ -45,7 +45,6 @@ typedef struct sjme_libraryInstance sjme_libraryInstance;
 class sjme_classPath : std::list<std::shared_ptr<sjme_libraryInstance>>
 {
 public:
-	
 };
 
 /*--------------------------------------------------------------------------*/
