@@ -30,7 +30,7 @@
  * Y-7   A-3
  *    B-9   
  */
-const struct retro_input_descriptor sjme_inputDesc[] =
+struct retro_input_descriptor sjme_inputDesc[] =
 {
 	/* SOFT LEFT. */
 	{SJME_LIBRETRO_JOYPAD_PORT, RETRO_DEVICE_JOYPAD, 0,

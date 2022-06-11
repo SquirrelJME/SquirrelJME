@@ -17,5 +17,10 @@ add_library(SquirrelJMECoreLib STATIC
 	blank.c
 	${SQUIRRELJMECORELIB_TARGET_OBJECTS})
 
+# Needed includes
+target_include_directories(SquirrelJMECoreLib PUBLIC
+	"${PROJECT_BINARY_DIR}"
+	"${PROJECT_SOURCE_DIR}/include")
+
 # This is written only in C!
 set_target_properties(SquirrelJMECoreLib PROPERTIES LINKER_LANGUAGE C)

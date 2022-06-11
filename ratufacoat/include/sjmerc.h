@@ -196,6 +196,13 @@
 	#define SQUIRRELJME_PS2
 #endif
 
+/** Force as C. */
+#if defined(_cplusplus)
+	#define SJME_EXTERN_C extern "C"
+#else
+	#define SJME_EXTERN_C
+#endif
+
 /* Anti-C++. */
 #ifdef _cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
@@ -292,8 +299,8 @@ typedef enum sjme_jboolean
  * @param o The offset.
  * @since 2022/03/09
  */
-#define SJME_POINTER_OFFSET_LONG(p, o) SJME_JMEM_TO_POINTER( \
-	SJME_POINTER_TO_JMEM(p) + ((intptr_t)(o)))
+#define SJME_POINTER_OFFSET_LONG(p, o) (SJME_JMEM_TO_POINTER( \
+	SJME_POINTER_TO_JMEM(p) + ((intptr_t)(o))))
 
 /** Standard C format for arguments. */
 #define SJME_JVMARG_FORMAT_STDC SJME_JINT_C(1)
@@ -496,6 +503,10 @@ typedef struct sjme_nativefile sjme_nativefile;
 
 /** Max constant macro. */
 #define sjme_max(a, b) ((a) >= (b) ? (a) : (b))
+
+/** Translation units (sources) cannot be empty. */
+#define SJME_EMPTY_TRANSLATION_UNIT \
+	static SJME_GCC_USED void sjme_emptyTranslationUnitDoIgnore(void) {}
 
 /*--------------------------------------------------------------------------*/
 

@@ -104,7 +104,8 @@ function(squirreljme_object_and_sources coreTargetVar)
 		foreach(cmakeTargetSource ${cmakeTargetSources})
 			get_filename_component(cmakeTargetSourceExt ${cmakeTargetSource}
 				EXT)
-			if(NOT "${cmakeTargetSourceExt}" STREQUAL ".c")
+			if(NOT "${cmakeTargetSourceExt}" STREQUAL ".c" AND
+				NOT "${cmakeTargetSourceExt}" STREQUAL ".cxx")
 				continue()
 			endif()
 

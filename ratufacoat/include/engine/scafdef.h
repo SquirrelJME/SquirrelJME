@@ -70,7 +70,7 @@ typedef struct sjme_mainArgs
 	sjme_jint count;
 	
 	/** The main arguments. */
-	sjme_utfString* args[0];
+	sjme_utfString* args[];
 } sjme_mainArgs;
 
 /**

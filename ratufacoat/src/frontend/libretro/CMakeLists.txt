@@ -148,8 +148,21 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/legacy/Makefile.legacy.in"
 	NEWLINE_STYLE LF)
 message("Generating RetroArch Legacy Makefile (Temp ${LEGACY_TEMP})...")
 foreach(legacySource ${LEGACY_CORE_SOURCE} ${LEGACY_LIBRETRO_SOURCE})
+	get_filename_component(legacyExtension ${legacySource} EXT)
+
+	if("${legacyExtension}" STREQUAL ".cxx")
+		file(APPEND "${LEGACY_TEMP}"
+			"SOURCES_CXX   := $(SOURCES_CXX) $(CORE_DIR)/${legacySource}\n")
+	else()
+		file(APPEND "${LEGACY_TEMP}"
+			"SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/${legacySource}\n")
+	endif()
+endforeach()
+
+# C++
+foreach(legacySource ${LEGACY_CORE_SOURCE_CXX} ${LEGACY_LIBRETRO_SOURCE_CXX})
 	file(APPEND "${LEGACY_TEMP}"
-		"SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/${legacySource}\n")
+		"SOURCES_CXX   := $(SOURCES_CXX) $(CORE_DIR)/${legacySource}\n")
 endforeach()
 
 # Include compile definitions for version IDs and otherwise, so that it

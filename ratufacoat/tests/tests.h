@@ -34,7 +34,8 @@ typedef struct sjme_testShim
  *
  * @param name The name of the test to wrap.
  */
-#define SJME_TEST_PROTOTYPE(name) sjme_jint name(sjme_testShim* shim)
+#define SJME_TEST_PROTOTYPE(name) \
+	SJME_EXTERN_C sjme_jint name(sjme_testShim* shim)
 
 /** Pass test. */
 #define PASS_TEST() SJME_JINT_C(0)

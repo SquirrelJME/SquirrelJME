@@ -34,18 +34,18 @@
 static sjme_jint sjme_ratufacoat_videoram[SJME_STDC_VIDEORAMSIZE];
 
 /** File name structure. */
-typedef struct sjme_nativefilename
+struct sjme_nativefilename
 {
 	/** Native path. */
 	char* filename;
-} sjme_nativefilename;
+};
 
 /** Open file. */
-typedef struct sjme_nativefile
+struct sjme_nativefile
 {
 	/** File opened. */
 	FILE* file;
-} sjme_nativefile;
+};
 
 /** Standard C functions. */
 static sjme_nativefuncs stdcfuncs;

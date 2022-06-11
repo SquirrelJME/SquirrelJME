@@ -23,10 +23,6 @@ typedef struct sjme_atomicListTread
 	sjme_jint length;
 	
 	/** Values within this tread. */
-	sjme_atomicPointer values[0];
+	sjme_atomicPointer values[];
 } sjme_atomicListTread;
 
-struct sjme_atomicList
-{
-	sjme_atomicListTread tread;
-};

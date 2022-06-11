@@ -7,4 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjmerc.h"
+
 /** Blank file needed for CMake to build on some platforms. */
+SJME_EMPTY_TRANSLATION_UNIT

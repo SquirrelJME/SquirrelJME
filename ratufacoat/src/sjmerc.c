@@ -32,7 +32,7 @@ void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
 {
 	sjme_jint r, c, cv, i, fontw, fonth, xform;
 	sjme_vmemptr sp;
-	sjme_jbyte* mp;
+	const sjme_jbyte* mp;
 	sjme_jbyte bits;
 	sjme_jint bpp, pq, at, mask;
 	

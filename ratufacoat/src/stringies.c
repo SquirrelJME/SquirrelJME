@@ -140,7 +140,7 @@ void sjme_describeJvmError(sjme_error* error,
 		stringy = &sjme_jvmErrorUnknown;
 	
 	/* Build error string out. */
-	readLen = snprintf(destMessage, *destLen,
+	readLen = snprintf((char*)destMessage, *destLen,
 		"JVM Error: %s (%d) %d/0x%x",
 		stringy->string,
 		error->code,

@@ -42,7 +42,7 @@ typedef struct sjme_utfString
 	sjme_jushort bigLength;
 	
 	/** The string data. */
-	sjme_jbyte chars[0];
+	sjme_jbyte chars[];
 } sjme_utfString;
 #include "pack/unpack.h"
 

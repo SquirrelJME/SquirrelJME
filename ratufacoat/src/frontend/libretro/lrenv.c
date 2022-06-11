@@ -17,7 +17,7 @@
 #define DEBUG_BUF 512
 
 /** Configuration options for the core. */
-const struct retro_variable sjme_libRetro_coreOptions[] =
+struct retro_variable sjme_libRetro_coreOptions[] =
 {
 	/* CPU and Timing. */
 	{SJME_LIBRETRO_CONFIG_THREAD_MODEL,

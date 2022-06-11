@@ -12,11 +12,35 @@
 
 #include "sjmerc.h"
 
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_BUILTIN_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
+
+/*--------------------------------------------------------------------------*/
+
 extern const sjme_jbyte sjme_builtInRomId[];
 extern const sjme_jint sjme_builtInRomIdLen;
 extern const sjme_jint sjme_builtInRomDate[];
 extern const sjme_jubyte sjme_builtInRomData[];
 extern const sjme_jint sjme_builtInRomSize;
 extern const char* const sjme_builtInSourceSet;
+
+/*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_BUILTIN_H
+}
+#undef SJME_CXX_SQUIRRELJME_BUILTIN_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_BUILTIN_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_BUILTIN_H */

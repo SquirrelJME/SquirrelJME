@@ -144,7 +144,7 @@ void* sjme_atomicPointerGet(sjme_atomicPointer* atomic)
 #if defined(SJME_ATOMIC_C11)
 	return atomic_load(&atomic->value);
 #elif defined(SJME_ATOMIC_GCC)
-	return __atomic_load_n(&atomic->value, MEMORY_ORDER);
+	return (void*)__atomic_load_n(&atomic->value, MEMORY_ORDER);
 #elif defined(SJME_ATOMIC_WIN32)
 	#if SJME_BITS == 64
 		return (void*)InterlockedAdd64((volatile LONG64*)&atomic->value, 0);
@@ -163,7 +163,7 @@ void* sjme_atomicPointerSet(sjme_atomicPointer* atomic, void* value)
 #if defined(SJME_ATOMIC_C11)
 	return atomic_exchange(&atomic->value, value);
 #elif defined(SJME_ATOMIC_GCC)
-	return __atomic_exchange_n(&atomic->value, value, MEMORY_ORDER);
+	return (void*)__atomic_exchange_n(&atomic->value, value, MEMORY_ORDER);
 #elif defined(SJME_ATOMIC_WIN32)
 	return (void*)InterlockedExchangePointer(
 		(volatile PVOID*)&atomic->value, (PVOID)value);

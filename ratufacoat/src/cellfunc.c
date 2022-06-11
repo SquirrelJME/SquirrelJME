@@ -7,4 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjmerc.h"
 #include "cellfunc.h"
+
+SJME_EMPTY_TRANSLATION_UNIT

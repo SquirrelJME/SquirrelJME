@@ -56,7 +56,7 @@ typedef struct sjme_classPath
 	sjme_jint count;
 	
 	/** The libraries within the class path. */
-	sjme_libraryInstance* libraries[0];
+	sjme_libraryInstance* libraries[];
 } sjme_classPath;
 
 /**

@@ -28,6 +28,7 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+#if 0
 /**
  * This is an atomic list, which can be used when multiple threads need
  * to access a list structure where there may be potential contention between
@@ -37,6 +38,7 @@ extern "C" {
  * @since 2022/03/27
  */
 typedef struct sjme_atomicList sjme_atomicList;
+#endif
 
 /*--------------------------------------------------------------------------*/
 
