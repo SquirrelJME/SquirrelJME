@@ -18,6 +18,16 @@
 
 #include "error.h"
 
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_OPCODE_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 /** Encoding mask. */
@@ -168,5 +178,14 @@ sjme_jint sjme_opdecodejmp(sjme_vmem* vmem, sjme_vmemptr* ptr,
 	sjme_error* error);
 	
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_OPCODE_H
+}
+#undef SJME_CXX_SQUIRRELJME_OPCODE_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_OPCODE_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_OPCODE_H */

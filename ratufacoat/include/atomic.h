@@ -51,6 +51,16 @@
 #include "sjmerc.h"
 #include "error.h"
 
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_ATOMIC_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -193,5 +203,14 @@ void* sjme_atomicPointerSet(sjme_atomicPointer* atomic, void* value);
 	((type)(sjme_atomicPointerSet(atomic, value)))
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_ATOMIC_H
+}
+#undef SJME_CXX_SQUIRRELJME_ATOMIC_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_ATOMIC_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_ATOMIC_H */

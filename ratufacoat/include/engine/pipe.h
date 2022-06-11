@@ -21,6 +21,16 @@
 #include "frontend/frontdef.h"
 #include "file.h"
 
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_PIPE_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -109,5 +119,14 @@ sjme_jboolean sjme_pipeNewInstance(sjme_pipeRedirectType type,
 	sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_PIPE_H
+}
+#undef SJME_CXX_SQUIRRELJME_PIPE_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_PIPE_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_PIPE_H */

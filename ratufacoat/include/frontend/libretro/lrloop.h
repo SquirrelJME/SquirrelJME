@@ -16,6 +16,16 @@
 #ifndef SQUIRRELJME_LRLOOP_H
 #define SQUIRRELJME_LRLOOP_H
 
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_LRLOOP_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -45,5 +55,14 @@ sjme_jboolean sjme_libRetro_loopConfig(sjme_engineConfig* config);
 sjme_jboolean sjme_libRetro_loopExit(sjme_jint exitCode, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_LRLOOP_H
+}
+#undef SJME_CXX_SQUIRRELJME_LRLOOP_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_LRLOOP_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_LRLOOP_H */

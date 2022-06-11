@@ -14,18 +14,18 @@ endif()
 
 # Define the library
 add_library(SquirrelJMEFormat OBJECT
-	detect.cxx
-	format.cxx
-	library.cxx
-	memfile.cxx
-	pack.cxx
-	sqc.cxx
-	sqclib.cxx
-	sqcpack.cxx
-	zip.cxx)
+	detect.c
+	format.c
+	library.c
+	memfile.c
+	pack.c
+	sqc.c
+	sqclib.c
+	sqcpack.c
+	zip.c)
 
-# C++!
-set_target_properties(SquirrelJMEFormat PROPERTIES LINKER_LANGUAGE CXX)
+# This is written only in C!
+set_target_properties(SquirrelJMEFormat PROPERTIES LINKER_LANGUAGE C)
 
 # Dynamically generated and standard includes
 target_include_directories(SquirrelJMEFormat PUBLIC

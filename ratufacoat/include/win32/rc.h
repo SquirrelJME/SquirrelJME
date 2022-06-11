@@ -16,6 +16,16 @@
 #ifndef SQUIRRELJME_RC_H
 #define SQUIRRELJME_RC_H
 
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_RC_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 /** Stringify. */
@@ -34,5 +44,14 @@
 	"are Trademarks of Stephanie Gawroriski 2016-2022"
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_RC_H
+}
+#undef SJME_CXX_SQUIRRELJME_RC_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_RC_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_RC_H */

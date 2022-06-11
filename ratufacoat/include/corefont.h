@@ -19,6 +19,16 @@
 
 #include "sjmerc.h"
 
+/* Anti-C++. */
+#ifdef _cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_cXRATUFACOATSJMFHSJMEBSQFH
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -84,6 +94,15 @@ extern const sjme_jint sjme_bootfailmessageSizeOf;
 extern const sjme_sqf sjme_font;
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_cXRATUFACOATSJMFHSJMEBSQFH
+}
+#undef SJME_cXRATUFACOATSJMFHSJMEBSQFH
+#undef SJME_CXX_IS_EXTERNED
+#endif /** #ifdef SJME_cXRATUFACOATSJMFHSJMEBSQFH */
+#endif /* #ifdef __cplusplus */
 
 /** Header guard. */
 #endif /* #ifndef SJME_hGRATUFACOATSJMFHSJMEBSQFH */

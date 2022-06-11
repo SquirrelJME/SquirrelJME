@@ -19,6 +19,16 @@
 #include "sjmerc.h"
 #include "memchunk.h"
 
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_FORMAT_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -114,5 +124,14 @@ sjme_jboolean sjme_formatOpen(const sjme_formatHandler* handler,
 	sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_FORMAT_H
+}
+#undef SJME_CXX_SQUIRRELJME_FORMAT_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_FORMAT_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_FORMAT_H */

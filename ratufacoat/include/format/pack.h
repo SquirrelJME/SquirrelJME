@@ -27,6 +27,16 @@
 #include "memchunk.h"
 #include "utf.h"
 
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_PACK_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 /** Is this a SpringCoat Pack? */
@@ -264,5 +274,14 @@ sjme_jboolean sjme_packClassPathMapper(sjme_packInstance* packInstance,
 	sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_PACK_H
+}
+#undef SJME_CXX_SQUIRRELJME_PACK_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_PACK_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_PACK_H */

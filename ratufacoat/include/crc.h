@@ -20,6 +20,16 @@
 #include "memchunk.h"
 #include "stream.h"
 
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_CRC_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 /** The size of the CRC table. */
@@ -118,5 +128,14 @@ sjme_jboolean sjme_crcOfferStream(sjme_crcState* crcState,
 	sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_CRC_H
+}
+#undef SJME_CXX_SQUIRRELJME_CRC_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_CRC_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_CRC_H */

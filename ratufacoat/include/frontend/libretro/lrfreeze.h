@@ -18,6 +18,16 @@
 
 #include "lrlocal.h"
 
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_LRFREEZE_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -29,5 +39,14 @@
 void sjme_libRetro_inhibitFastForward(sjme_jboolean inhibit);
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_LRFREEZE_H
+}
+#undef SJME_CXX_SQUIRRELJME_LRFREEZE_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_LRFREEZE_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_LRFREEZE_H */

@@ -18,6 +18,16 @@
 
 #include "sjmerc.h"
 
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_ERROR_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -292,5 +302,14 @@ void sjme_setErrorR(sjme_error* error, sjme_errorCode code, sjme_jint value,
 	sjme_setErrorR(error, code, value, __FILE__, __LINE__, __func__)
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_ERROR_H
+}
+#undef SJME_CXX_SQUIRRELJME_ERROR_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_ERROR_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_ERROR_H */

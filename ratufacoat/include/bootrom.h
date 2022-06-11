@@ -20,6 +20,16 @@
 #include "error.h"
 #include "jvm.h"
 
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_cXRATUFACOATSJMONHSJMECONH
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 /** Version used for classes and otherwise. */
@@ -38,5 +48,14 @@
 sjme_returnFail sjme_loadBootRom(sjme_jvm* jvm, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_cXRATUFACOATSJMONHSJMECONH
+}
+#undef SJME_cXRATUFACOATSJMONHSJMECONH
+#undef SJME_CXX_IS_EXTERNED
+#endif /** #ifdef SJME_cXRATUFACOATSJMONHSJMECONH */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_BOOTROM_H */

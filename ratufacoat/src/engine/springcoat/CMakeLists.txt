@@ -14,10 +14,10 @@ endif()
 
 # Declare base library
 add_library(SquirrelJMEEngineSpringCoat OBJECT
-	springcoat.cxx)
+	springcoat.c)
 
-# C++!
-set_target_properties(SquirrelJMEEngineSpringCoat PROPERTIES LINKER_LANGUAGE CXX)
+# This is written only in C!
+set_target_properties(SquirrelJMEEngineSpringCoat PROPERTIES LINKER_LANGUAGE C)
 
 # Dynamically generated and standard includes
 target_include_directories(SquirrelJMEEngineSpringCoat PUBLIC

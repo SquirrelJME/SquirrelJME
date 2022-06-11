@@ -24,6 +24,16 @@
 #include "softmath.h"
 #include "error.h"
 
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_FRONTFUNC_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -86,5 +96,14 @@ struct sjme_frontBridge
 };
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_FRONTFUNC_H
+}
+#undef SJME_CXX_SQUIRRELJME_FRONTFUNC_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_FRONTFUNC_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_FRONTFUNC_H */

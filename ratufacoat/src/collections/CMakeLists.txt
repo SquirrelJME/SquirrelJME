@@ -14,12 +14,12 @@ endif()
 
 # Declare base library
 add_library(SquirrelJMECollections OBJECT
-	arraylist.cxx
-	collection.cxx
-	hashmap.cxx)
+	arraylist.c
+	collection.c
+	hashmap.c)
 
-# C++!
-set_target_properties(SquirrelJMECollections PROPERTIES LINKER_LANGUAGE CXX)
+# This is written only in C!
+set_target_properties(SquirrelJMECollections PROPERTIES LINKER_LANGUAGE C)
 
 # Dynamically generated and standard includes
 target_include_directories(SquirrelJMECollections PUBLIC

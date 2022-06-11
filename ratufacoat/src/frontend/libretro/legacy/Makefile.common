@@ -35,7 +35,7 @@ include $(BUILD_DIR)/Makefile.legacy
 
 SOURCES_C   := $(SOURCES_C) $(SQUIRRELJME_EXTRA_C_SOURCES)
 
-SOURCES_CXX := $(SOURCES_CXX) $(SQUIRRELJME_EXTRA_CXX_SOURCES)
+SOURCES_CXX := $(NOTHING)
 
 SOURCES_ASM := $(NOTHING)
 ##################################

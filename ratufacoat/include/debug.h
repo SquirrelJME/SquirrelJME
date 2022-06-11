@@ -16,44 +16,19 @@
 #ifndef SQUIRRELJME_DEBUG_H
 #define SQUIRRELJME_DEBUG_H
 
-#include <exception>
 #include "sjmerc.h"
 
-/*--------------------------------------------------------------------------*/
-
-/**
- * Represents a To Do exception that is thrown. 
- * 
- * @since 2022/06/01
- */
-class sjme_ToDoException : public std::exception
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_DEBUG_H
+extern "C"
 {
-private:
-	const char* file;
-	int line;
-	const char* func;
-	const char* message;
-	
-public:
-	/**
-	 * Initializes the exception.
-	 * 
-	 * @param file The file that threw the exception.
-	 * @param line The line that threw the exception.
-	 * @param func The function called from.
-	 * @param message The message to use.
-	 * @since 2022/06/01
-	 */
-	sjme_ToDoException(const char* file, int line, const char* func,
-		const char* message);
-	
-	/**
-	 * Destructs the exception.
-	 * 
-	 * @since 2022/06/01
-	 */
-	~sjme_ToDoException() noexcept override;
-};
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
+/*--------------------------------------------------------------------------*/
 
 /**
  * Prints a debug message.
@@ -103,5 +78,14 @@ sjme_returnNever sjme_todoR(const char* file, int line,
 #define sjme_todo(...) sjme_todoR(__FILE__, __LINE__, __func__, __VA_ARGS__)
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_DEBUG_H
+}
+#undef SJME_CXX_SQUIRRELJME_DEBUG_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_DEBUG_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_DEBUG_H */

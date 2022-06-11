@@ -104,11 +104,9 @@ if(PALMOS)
 	set(CMAKE_VERBOSE_MAKEFILE TRUE)
 endif()
 
-# Standard C and C++ versions
+# Build properties for SquirrelJME
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Does the static ROM file exist? If it does we can pack it into the binary
 option(SQUIRRELJME_USE_BUILTIN "Use Built-In ROM (If Detected)" ON)
@@ -155,10 +153,8 @@ endif()
 if(MSVC)
 	string(REGEX REPLACE "/W[3|4]" "/W4" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 	string(REGEX REPLACE "/W[3|4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-
-# Make GNU more pedantic
 elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-	add_compile_options(-Wall -Wextra -pedantic -pedantic-errors)
+	add_compile_options(-Wall -Wextra -pedantic)
 endif()
 
 # Versioning information

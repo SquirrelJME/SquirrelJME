@@ -16,9 +16,18 @@
 #ifndef SQUIRRELJME_SCAFDEF_H
 #define SQUIRRELJME_SCAFDEF_H
 
-#include <list>
 #include "sjmerc.h"
 #include "utf.h"
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_SCAFDEF_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
 
@@ -55,10 +64,34 @@ typedef struct sjme_classLoader sjme_classLoader;
  * 
  * @since 2022/01/09
  */
-class sjme_mainArgs : std::list<sjme_utfString>
+typedef struct sjme_mainArgs
 {
-};
+	/** The number of arguments that exist. */
+	sjme_jint count;
+	
+	/** The main arguments. */
+	sjme_utfString* args[0];
+} sjme_mainArgs;
+
+/**
+ * Returns the size that would be used for @c sjme_mainArgs.
+ * 
+ * @param count The number of arguments to include.
+ * @return The allocated memory size for the type.
+ * @since 2022/03/09
+ */
+#define SJME_SIZEOF_MAIN_ARGS(count) (sizeof(sjme_mainArgs) + \
+	((count) * sizeof(sjme_utfString*)))
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_SCAFDEF_H
+}
+#undef SJME_CXX_SQUIRRELJME_SCAFDEF_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCAFDEF_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_SCAFDEF_H */

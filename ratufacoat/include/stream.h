@@ -20,6 +20,16 @@
 #include "counter.h"
 #include "memchunk.h"
 
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_STREAM_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 typedef struct sjme_dataStream sjme_dataStream;
@@ -92,5 +102,14 @@ sjme_jboolean sjme_streamRead(sjme_dataStream* stream,
 	void* dest, sjme_jint len, sjme_jint* readLen, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_STREAM_H
+}
+#undef SJME_CXX_SQUIRRELJME_STREAM_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_STREAM_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_STREAM_H */

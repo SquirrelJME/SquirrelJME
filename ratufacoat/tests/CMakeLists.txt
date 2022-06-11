@@ -15,15 +15,15 @@ if(NOT DEFINED SQUIRRELJME_TEST_WRAPPER)
 	set(MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full")
 endif()
 
-# Build executable just for testing
-file(GLOB SQUIRRELJME_TEST_SOURCES "test*.c" "test*.cxx")
+# Build executable just for testing'
+file(GLOB SQUIRRELJME_TEST_SOURCES "test*.c")
 add_executable(SquirrelJMETests
-    mainEntry.cxx
-    enginestub.cxx
+    mainEntry.c
+    enginestub.c
 	${SQUIRRELJME_TEST_SOURCES})
 
-# Can use C++!
-set_target_properties(SquirrelJMETests PROPERTIES LINKER_LANGUAGE CXX)
+# This is written only in C!
+set_target_properties(SquirrelJMETests PROPERTIES LINKER_LANGUAGE C)
 
 # Additional includes
 target_include_directories(SquirrelJMETests PUBLIC
@@ -61,8 +61,7 @@ foreach(SQUIRRELJME_TEST_SOURCE ${SQUIRRELJME_TEST_SOURCES})
 	get_filename_component(SQUIRRELJME_TEST_SOURCE
 		"${SQUIRRELJME_TEST_SOURCE}" NAME)
 
-	# Remove the C/C++ to just get the base test
-	string(REPLACE ".cxx" "" SQUIRRELJME_TEST_SOURCE ${SQUIRRELJME_TEST_SOURCE})
+	# Remove the C to just get the base test
 	string(REPLACE ".c" "" SQUIRRELJME_TEST_SOURCE ${SQUIRRELJME_TEST_SOURCE})
 
 	# Note it and register it accordingly

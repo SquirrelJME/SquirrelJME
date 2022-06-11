@@ -24,45 +24,44 @@ endif()
 #  another target.  One may link only to STATIC or SHARED libraries, or to
 #  executables with the ENABLE_EXPORTS property set.
 add_library(SquirrelJMECore OBJECT
-	accelgfx.cxx
-	atomic.cxx
-	audio.cxx
-	bootrom.cxx
-	btooth.cxx
-	cellfunc.cxx
-	corefont.cxx
-	counter.cxx
-	crc.cxx
-	cpu.cxx
-	datatype.cxx
-	debug.cxx
-	error.cxx
-	gpio.cxx
-	handles.cxx
-	ipnet.cxx
-	jcharsequence.cxx
-	jdwp.cxx
-	jexception.cxx
-	jvm.cxx
-	lock.cxx
-	memchunk.cxx
-	memory.cxx
-	oldstuff.cxx
-	opcode.cxx
-	random.cxx
-	sjmerc.cxx
-	softmath.cxx
-	stream.cxx
-	stringies.cxx
-	syscall.cxx
-	utf.cxx
-	util.cxx
-	video.cxx
-	xbuiltin.cxx
+	accelgfx.c
+	atomic.c
+	atomiclist.c
+	audio.c
+	bootrom.c
+	btooth.c
+	cellfunc.c
+	corefont.c
+	counter.c
+	crc.c
+	cpu.c
+	datatype.c
+	debug.c
+	error.c
+	gpio.c
+	handles.c
+	ipnet.c
+	jdwp.c
+	jvm.c
+	lock.c
+	memchunk.c
+	memory.c
+	oldstuff.c
+	opcode.c
+	random.c
+	sjmerc.c
+	softmath.c
+	stream.c
+	stringies.c
+	syscall.c
+	utf.c
+	util.c
+	video.c
+	xbuiltin.c
 	${SQUIRRELJME_BUILTIN_FILE})
 
-# C++!
-set_target_properties(SquirrelJMECore PROPERTIES LINKER_LANGUAGE CXX)
+# This is written only in C!
+set_target_properties(SquirrelJMECore PROPERTIES LINKER_LANGUAGE C)
 
 target_include_directories(SquirrelJMECore PUBLIC
 	"${PROJECT_BINARY_DIR}"
@@ -76,7 +75,6 @@ set_property(TARGET SquirrelJMECore
 add_subdirectory(collections)
 add_subdirectory(engine)
 add_subdirectory(format)
-add_subdirectory(java)
 
 # Function to generate object files and sources for cross building
 function(squirreljme_object_and_sources coreTargetVar)
@@ -106,8 +104,7 @@ function(squirreljme_object_and_sources coreTargetVar)
 		foreach(cmakeTargetSource ${cmakeTargetSources})
 			get_filename_component(cmakeTargetSourceExt ${cmakeTargetSource}
 				EXT)
-			if(NOT "${cmakeTargetSourceExt}" STREQUAL ".c" AND
-				NOT "${cmakeTargetSourceExt}" STREQUAL ".cxx")
+			if(NOT "${cmakeTargetSourceExt}" STREQUAL ".c")
 				continue()
 			endif()
 
@@ -144,8 +141,7 @@ squirreljme_object_and_sources(SquirrelJMECoreTarget
 	SquirrelJMECore
 	SquirrelJMEEngine
 	SquirrelJMEEngineSpringCoat
-	SquirrelJMEFormat
-	SquirrelJMEJava)
+	SquirrelJMEFormat)
 
 # Static library
 add_subdirectory(lib)

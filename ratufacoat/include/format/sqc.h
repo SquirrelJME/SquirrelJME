@@ -22,6 +22,16 @@
 #include "function.h"
 #include "memchunk.h"
 
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_SQC_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 /** The class version defined on 2020/11/29. */
@@ -167,7 +177,7 @@ sjme_jboolean sjme_sqcGetPropertyPtr(const sjme_sqcState* sqcState,
  * @since 2022/03/09
  */
 sjme_jboolean sjme_sqcGetPropertyStrings(const sjme_sqcState* sqcState,
-	sjme_jint index, sjme_jint count, sjme_utfString** outStrings,
+	sjme_jint index, sjme_jint count, sjme_utfString* (*outStrings)[],
 	sjme_error* error);
 
 /**
@@ -214,5 +224,14 @@ sjme_jboolean sjme_sqcTocGet(const sjme_sqcToc* sqcToc, sjme_jint* outValue,
 	sjme_jint rowIndex, sjme_jint itemInSpan, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_SQC_H
+}
+#undef SJME_CXX_SQUIRRELJME_SQC_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_SQC_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_SQC_H */

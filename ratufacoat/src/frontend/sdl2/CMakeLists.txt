@@ -21,7 +21,7 @@ if(WIN32)
 endif()
 
 add_executable(SquirrelJME
-	sys_stdc.cxx
+	sys_stdc.c
 	${SQUIRRELJME_SDL_RC})
 
 # Try to find SDL2
@@ -31,8 +31,8 @@ else()
 	find_package(SDL2 REQUIRED)
 endif()
 
-# This is written in C++!
-set_target_properties(SquirrelJME PROPERTIES LINKER_LANGUAGE CXX)
+# This is written only in C!
+set_target_properties(SquirrelJME PROPERTIES LINKER_LANGUAGE C)
 
 target_include_directories(SquirrelJME PUBLIC
 	"${PROJECT_BINARY_DIR}"

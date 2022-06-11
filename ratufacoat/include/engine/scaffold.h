@@ -16,7 +16,6 @@
 #ifndef SQUIRRELJME_SCAFFOLD_H
 #define SQUIRRELJME_SCAFFOLD_H
 
-#include <list>
 #include "engine/pipe.h"
 #include "engine/scafdef.h"
 #include "error.h"
@@ -24,6 +23,16 @@
 #include "format/pack.h"
 #include "sjmerc.h"
 #include "video.h"
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_SCAFFOLD_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
 
@@ -75,23 +84,28 @@ typedef enum sjme_engineThreadModel
  * 
  * @since 2021/01/07
  */
-class sjme_systemProperty
+typedef struct sjme_systemProperty
 {
 	/** The key. */
-	sjme_utfString key;
+	sjme_utfString* key;
 	
 	/** The value. */
-	sjme_utfString value;
-};
+	sjme_utfString* value;
+} sjme_systemProperty;
 
 /**
  * Represents a set of system properties.
  * 
  * @since 2022/01/09
  */
-class sjme_systemPropertySet : std::list<sjme_systemProperty>
+typedef struct sjme_systemPropertySet
 {
-};
+	/** The number of system properties. */
+	sjme_jint count;
+	
+	/** The defined system properties. */
+	sjme_systemProperty properties[];
+} sjme_systemPropertySet;
 
 /**
  * Returns the size that would be used for @c sjme_engineSystemPropertySet.
@@ -199,7 +213,7 @@ typedef struct sjme_engineConfig
 typedef struct sjme_engineScaffold
 {
 	/** The name of the engine. */
-	const char* name;
+	const char* const name;
 	
 	/**
 	 * Performs initialization of a given engine.
@@ -328,5 +342,14 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 	sjme_engineState** outState, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_SCAFFOLD_H
+}
+#undef SJME_CXX_SQUIRRELJME_SCAFFOLD_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCAFFOLD_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_SCAFFOLD_H */

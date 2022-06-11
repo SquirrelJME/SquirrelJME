@@ -26,6 +26,16 @@
 #include "stream.h"
 #include "utf.h"
 
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_LIBRARY_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -162,5 +172,14 @@ sjme_jboolean sjme_libraryOpen(sjme_libraryInstance** outInstance,
 	const void* data, sjme_jint size, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_LIBRARY_H
+}
+#undef SJME_CXX_SQUIRRELJME_LIBRARY_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_LIBRARY_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_LIBRARY_H */

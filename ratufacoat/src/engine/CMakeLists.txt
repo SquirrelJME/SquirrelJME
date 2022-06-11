@@ -14,15 +14,15 @@ endif()
 
 # Define the library
 add_library(SquirrelJMEEngine OBJECT
-	classloader.cxx
-	file.cxx
-	pipe.cxx
-	profiler.cxx
-	scaffold.cxx
-	taskmanager.cxx)
+	classloader.c
+	file.c
+	pipe.c
+	profiler.c
+	scaffold.c
+	taskmanager.c)
 
-# C++!
-set_target_properties(SquirrelJMEEngine PROPERTIES LINKER_LANGUAGE CXX)
+# This is written only in C!
+set_target_properties(SquirrelJMEEngine PROPERTIES LINKER_LANGUAGE C)
 
 # Dynamically generated and standard includes
 target_include_directories(SquirrelJMEEngine PUBLIC

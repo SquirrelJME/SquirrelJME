@@ -19,6 +19,16 @@
 #include "softmath.h"
 #include "error.h"
 
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_RANDOM_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -79,5 +89,14 @@ sjme_returnFail sjme_randomNextBits(sjme_randomState* random, sjme_jint* out,
 	sjme_jint bits, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_RANDOM_H
+}
+#undef SJME_CXX_SQUIRRELJME_RANDOM_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_RANDOM_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_RANDOM_H */

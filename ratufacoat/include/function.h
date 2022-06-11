@@ -18,6 +18,15 @@
 
 #include "sjmerc.h"
 
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_FUNCTION_H
+extern "C" {
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -37,5 +46,14 @@ typedef sjme_jboolean (*sjme_integerFunction)(void* proxy, void* data,
 	sjme_jint index, sjme_jint value, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_FUNCTION_H
+}
+#undef SJME_CXX_SQUIRRELJME_FUNCTION_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_FUNCTION_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_FUNCTION_H */

@@ -16,6 +16,16 @@
 #ifndef SQUIRRELJME_LRSCREEN_H
 #define SQUIRRELJME_LRSCREEN_H
 
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_LRSCREEN_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -39,5 +49,14 @@ void sjme_libRetro_message(sjme_jbyte percent, const char* const format, ...);
 sjme_jboolean sjme_libRetro_screenConfig(sjme_engineConfig* config);
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_LRSCREEN_H
+}
+#undef SJME_CXX_SQUIRRELJME_LRSCREEN_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_LRSCREEN_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_LRSCREEN_H */

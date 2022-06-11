@@ -18,11 +18,29 @@
 
 #include "frontend/frontfunc.h"
 
+/* Anti-C++. */
+#ifdef __cplusplus
+	#ifndef SJME_CXX_IS_EXTERNED
+		#define SJME_CXX_IS_EXTERNED
+		#define SJME_CXX_SQUIRRELJME_ENGINESTUB_H
+extern "C" {
+	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif     /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 /** Front function stubs. */
 extern const sjme_frontBridge sjme_testStubFrontBridge; 
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+	#ifdef SJME_CXX_SQUIRRELJME_ENGINESTUB_H
+}
+		#undef SJME_CXX_SQUIRRELJME_ENGINESTUB_H
+		#undef SJME_CXX_IS_EXTERNED
+	#endif /* #ifdef SJME_CXX_SQUIRRELJME_ENGINESTUB_H */
+#endif     /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_ENGINESTUB_H */

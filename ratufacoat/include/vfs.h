@@ -16,8 +16,27 @@
 #ifndef SQUIRRELJME_VFS_H
 #define SQUIRRELJME_VFS_H
 
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_VFS_H
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
 /*--------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_VFS_H
+}
+#undef SJME_CXX_SQUIRRELJME_VFS_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_VFS_H */
+#endif /* #ifdef __cplusplus */
 
 #endif /* SQUIRRELJME_VFS_H */

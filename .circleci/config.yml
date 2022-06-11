@@ -16,9 +16,9 @@ executors:
   buildenv:
     docker:
       - image: cimg/openjdk:11.0
-  debian:
+  buster:
     docker:
-      - image: debian:bullseye-backports
+      - image: debian:buster-backports
 
 orbs:
   win: circleci/windows@2.4.0
@@ -328,7 +328,7 @@ jobs:
 
   ### RatufaCoat
   ratufacoat_build_linux:
-    executor: debian
+    executor: buster
     resource_class: xlarge
     steps:
       - checkout
@@ -336,7 +336,8 @@ jobs:
           name: Install required dependencies
           command: |
             apt-get update -y
-            apt-get install -y build-essential python3 git valgrind cmake
+            apt-get install -y build-essential python3 git valgrind
+            apt-get install -y -t buster-backports cmake
       - attach_workspace:
           at: .
       - run:
@@ -371,7 +372,7 @@ jobs:
 
   ### RatufaCoat (EmScripten/Browser)
   ratufacoat_build_emscripten:
-    executor: debian
+    executor: buster
     resource_class: xlarge
     steps:
       - checkout
@@ -379,7 +380,8 @@ jobs:
           name: Install required dependencies
           command: |
             apt-get update -y
-            apt-get install -y build-essential python3 git valgrind cmake emscripten
+            apt-get install -y build-essential python3 git valgrind
+            apt-get install -y -t buster-backports cmake emscripten
       - attach_workspace:
           at: .
       - run:
@@ -402,7 +404,7 @@ jobs:
 
   ### RatufaCoat (MIPS, Cross Arch Testing)
   ratufacoat_build_linux_mips:
-    executor: debian
+    executor: buster
     resource_class: small
     steps:
       - checkout
@@ -410,7 +412,8 @@ jobs:
           name: Install required dependencies
           command: |
             apt-get update -y
-            apt-get install -y build-essential gcc-mips-linux-gnu binutils-mips-linux-gnu python3 git cmake qemu-user-static
+            apt-get install -y build-essential gcc-mips-linux-gnu binutils-mips-linux-gnu python3 git
+            apt-get install -y -t buster-backports cmake qemu-user-static
       - attach_workspace:
           at: .
       - run:
@@ -442,7 +445,7 @@ jobs:
 
   ### RatufaCoat (PowerPC, Cross Arch Testing)
   ratufacoat_build_linux_powerpc:
-    executor: debian
+    executor: buster
     resource_class: small
     steps:
       - checkout
@@ -450,7 +453,8 @@ jobs:
           name: Install required dependencies
           command: |
             apt-get update -y
-            apt-get install -y build-essential gcc-powerpc-linux-gnu binutils-powerpc-linux-gnu python3 git cmake qemu-user-static
+            apt-get install -y build-essential gcc-powerpc-linux-gnu binutils-powerpc-linux-gnu python3 git
+            apt-get install -y -t buster-backports cmake qemu-user-static
       - attach_workspace:
           at: .
       - run:
@@ -482,7 +486,7 @@ jobs:
 
   ### RatufaCoat (SPARC64, Cross Arch Testing)
   ratufacoat_build_linux_sparc64:
-    executor: debian
+    executor: buster
     resource_class: small
     steps:
       - checkout
@@ -490,7 +494,8 @@ jobs:
           name: Install required dependencies
           command: |
             apt-get update -y
-            apt-get install -y build-essential gcc-sparc64-linux-gnu binutils-sparc64-linux-gnu python3 git cmake qemu-user-static
+            apt-get install -y build-essential gcc-sparc64-linux-gnu binutils-sparc64-linux-gnu python3 git
+            apt-get install -y -t buster-backports cmake qemu-user-static
       - attach_workspace:
           at: .
       - run:
