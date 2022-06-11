@@ -95,6 +95,7 @@ cmake-build-debug
 # Fossil files
 _FOSSIL_
 ci-comment-*.txt
+ci-comment-*.txt.save
 in-*0
 in-*1
 in-*2
