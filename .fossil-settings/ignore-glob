@@ -94,6 +94,7 @@ cmake-build-debug
 
 # Fossil files
 _FOSSIL_
+.fslckout
 ci-comment-*.txt
 ci-comment-*.txt.save
 in-*0
