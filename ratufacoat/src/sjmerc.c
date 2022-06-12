@@ -13,18 +13,19 @@
  * @since 2019/06/02
  */
 
+#include <stdarg.h>
 #include "sjmerc.h"
-#include "sjmecon.h"
 #include "corefont.h"
 #include "stringies.h"
-#include "softmath.h"
 #include "error.h"
 #include "native.h"
 #include "oldstuff.h"
-#include "cpu.h"
-#include "memory.h"
 #include "jvm.h"
 #include "debug.h"
+
+/************************** EVERYTHING OLD IS BELOW *************************/
+/************************** EVERYTHING OLD IS BELOW *************************/
+/************************** EVERYTHING OLD IS BELOW *************************/
 
 /** Draws single character onto the console. */
 void sjme_console_drawplate(sjme_jvm* jvm, sjme_jint x, sjme_jint y,
