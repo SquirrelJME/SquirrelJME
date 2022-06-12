@@ -22,7 +22,7 @@ SquirrelJME has three types of files which fall under different licenses:
  * Fonts:
    * **SIL Open Font License Version 1.1**
 
-[Commercial licenses are available under the commercial terms](commercial.mkd).
+[Non-GPLv3 license requests are located here](commercial.mkd).
 
 Contributors must agree to the [contributor license](contributing.mkd) before
 their code may be accepted.
