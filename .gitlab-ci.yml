@@ -173,7 +173,7 @@ libretro-build-ios9:
 
 ################################### CONSOLES #################################
 # Dingux (GCW Zero)
-libretro-build-dingux:
+libretro-build-dingux-mips32:
   extends:
     - .libretro-dingux-mips32-make-default
     - .core-defs
