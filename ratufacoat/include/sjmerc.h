@@ -24,6 +24,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+/** Variable counting. */
+#include "varcount.h"
+
 /** Stringify. */
 #define SJME_STRINGIFY(x) SJME_INTERNAL_STRINGIFY_X(x)
 
