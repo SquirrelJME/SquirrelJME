@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.launch.SuiteScanListener;
 import cc.squirreljme.jvm.launch.SuiteScanner;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,6 +71,10 @@ public class MidletMain
 	private final ArrayList<Application> _listedSuites =
 		new ArrayList<>();
 	
+	/** The current refresh state. */
+	private final __RefreshState__ _refreshState =
+		new __RefreshState__();
+	
 	/** The current end-time for the splash screen. */
 	private volatile long _endTime;
 	
@@ -106,9 +111,10 @@ public class MidletMain
 	/**
 	 * Refreshes the list.
 	 *
+	 * @param __refreshCanvas The canvas to optionally refresh on.
 	 * @since 2018/11/16
 	 */
-	public void refresh()
+	public void refresh(SplashScreen __refreshCanvas)
 	{
 		// Prevent double refresh
 		synchronized (this)
@@ -117,6 +123,8 @@ public class MidletMain
 				return;
 			this._refreshLock = true;
 		}
+		
+		__RefreshState__ refreshState = this._refreshState;
 		
 		Display mainDisplay = MidletMain._MAIN_DISPLAY;
 		
@@ -141,7 +149,7 @@ public class MidletMain
 				
 				// Used to add suites and indicate progress
 				handler = new __ProgressListener__(programList, listedSuites,
-					mainDisplay);
+					__refreshCanvas, refreshState, mainDisplay);
 			}
 			
 			// Scan all of the available suites for launching
@@ -201,8 +209,19 @@ public class MidletMain
 	@Override
 	protected void startApp()
 	{
+		// If the system lacks a display for LCDUI, instead use the LUI based
+		// launcher so that launching and otherwise is still very possible
+		try
+		{
+			UIBackendFactory.getInstance(false);
+		}
+		catch (IllegalArgumentException e)
+		{
+			throw Debugging.todo("Use LUI launcher instead!");
+		}
+		
 		// We will need to access our own display to build the list of
-		// MIDlets that could actually be ran
+		// MIDlets that could actually be run
 		Display display = Display.getDisplay(this);
 		MidletMain._MAIN_DISPLAY = display;
 		
@@ -219,13 +238,13 @@ public class MidletMain
 		this._endTime = System.nanoTime() + 1_000_000_000L;
 		
 		// Refresh the list in another thread
-		Thread refresher = new __Refresher__(this);
+		SplashScreen spl = new SplashScreen(
+			display.getWidth(), display.getHeight(), this._refreshState);
+		Thread refresher = new __Refresher__(this, spl);
 		refresher.start();
 		
 		// Instead of showing the program list early, just show a splash screen
 		// with a handsome Lex and the version information
-		SplashScreen spl = new SplashScreen(
-			display.getWidth(), display.getHeight());
 		if (display.getCurrent() == null)
 			display.setCurrent(spl);
 	}

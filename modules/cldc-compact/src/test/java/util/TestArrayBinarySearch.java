@@ -34,12 +34,12 @@ public class TestArrayBinarySearch
 		long rv = 0;
 		
 		// Setup array with values
-		int[] values = new int[LENGTH];
-		for (int i = 0; i < LENGTH; i++)
+		int[] values = new int[TestArrayBinarySearch.LENGTH];
+		for (int i = 0; i < TestArrayBinarySearch.LENGTH; i++)
 			values[i] = i * 2;
 		
 		// Search for all values
-		for (int i = 0; i < LENGTH * 2; i++)
+		for (int i = 0; i < TestArrayBinarySearch.LENGTH * 2; i++)
 		{
 			// Find the value
 			int res = Arrays.binarySearch(values, i);

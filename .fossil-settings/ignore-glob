@@ -6,6 +6,9 @@ build/
 out/
 */out/
 
+# VSCode Files
+*~
+
 # Eclipse
 .settings
 .classpath

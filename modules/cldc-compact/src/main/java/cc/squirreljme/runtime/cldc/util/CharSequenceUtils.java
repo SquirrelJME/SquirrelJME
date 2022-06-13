@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.cldc.util;
 
 import java.util.Arrays;
-import cc.squirreljme.runtime.cldc.util.IntegerList;
 
 /**
  * This contains utilities which operate on character sequences.

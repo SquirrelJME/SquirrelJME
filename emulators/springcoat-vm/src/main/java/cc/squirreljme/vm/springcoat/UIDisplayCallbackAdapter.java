@@ -9,7 +9,9 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
@@ -56,5 +58,24 @@ public class UIDisplayCallbackAdapter
 			MethodNameAndType.ofArguments("later", null,
 				"I", "I"),
 			__displayId, __serialId);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2021/01/05
+	 */
+	@Override
+	public void paintDisplay(UIDisplayBracket __display, int __pf, int __bw,
+		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
+		int __sw, int __sh, int __special)
+	{
+		UIFormCallbackAdapter.__callbackInvoke(this.machine, this.callback,
+			MethodNameAndType.ofArguments("paintDisplay", null,
+				"Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;",
+				"I", "I",
+				"I", "Ljava/lang/Object;", "I", "[I", "I", "I",
+				"I", "I", "I"),
+			__display, __pf, __bw, __bh, __buf, __offset, __pal,
+			__sx, __sy, __sw, __sh, __special);
 	}
 }

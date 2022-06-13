@@ -81,7 +81,7 @@ public abstract class Displayable
 	 */
 	Displayable()
 	{
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		
 		// Create a new form for this displayable
 		UIFormBracket uiForm = backend.formNew();
@@ -427,7 +427,7 @@ public abstract class Displayable
 		
 		// We can always set the title for the widget as the form should be
 		// allocated
-		UIBackendFactory.getInstance().widgetProperty(this._uiTitle,
+		UIBackendFactory.getInstance(true).widgetProperty(this._uiTitle,
 			UIWidgetProperty.STRING_LABEL, 0, __t);
 		
 		// Update the form title
@@ -462,7 +462,7 @@ public abstract class Displayable
 		
 		// When checking if shown, actually probe the current form on the
 		// display as another task may have taken the display from us
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		return backend.equals(this._uiForm,
 			backend.displayCurrent(display._uiDisplay));
 	}
@@ -658,7 +658,7 @@ public abstract class Displayable
 			throw new NullPointerException("NARG");
 		
 		UIFormBracket form = this._uiForm;
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		
 		// If there is nothing here, clear it
 		__Action__ action = __layout.get(__from);
@@ -746,7 +746,7 @@ public abstract class Displayable
 			useTitle = this._displayTitle;
 		
 		// Set the form title
-		UIBackendFactory.getInstance().widgetProperty(this._uiForm,
+		UIBackendFactory.getInstance(true).widgetProperty(this._uiForm,
 			UIWidgetProperty.STRING_FORM_TITLE, 0, useTitle);
 		
 		// If this is a form, since we updated the title we should update
@@ -763,7 +763,7 @@ public abstract class Displayable
 	 */
 	final void __updateTicker()
 	{
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		UIFormBracket uiForm = this._uiForm;
 		
 		// Has this changed?
@@ -866,7 +866,7 @@ public abstract class Displayable
 			return Display.getDisplays(0)[0].getHeight();
 		
 		// Get current form size
-		return UIBackendFactory.getInstance().widgetPropertyInt(
+		return UIBackendFactory.getInstance(true).widgetPropertyInt(
 			(__alt != null ? __alt : __d._uiForm),
 			UIWidgetProperty.INT_HEIGHT, 0);
 	}
@@ -891,7 +891,7 @@ public abstract class Displayable
 			return Display.getDisplays(0)[0].getWidth();
 		
 		// Get current form size
-		return UIBackendFactory.getInstance().widgetPropertyInt(
+		return UIBackendFactory.getInstance(true).widgetPropertyInt(
 			(__alt != null ? __alt : __d._uiForm),
 			UIWidgetProperty.INT_WIDTH, 0);
 	}

@@ -18,6 +18,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import javax.swing.JPanel;
 
 /**
@@ -81,8 +82,8 @@ class __PaintingPanel__
 			// Fill the entire buffer with nothing
 			int[] buffer = ((DataBufferInt)pixelImage.getRaster()
 				.getDataBuffer()).getData();
-			for (int i = 0, n = buffer.length; i < n; i++)
-				buffer[i] = 0xFF_000000;
+			
+			Arrays.fill(buffer, 0xFF_000000);
 		}
 		
 		// Send callback

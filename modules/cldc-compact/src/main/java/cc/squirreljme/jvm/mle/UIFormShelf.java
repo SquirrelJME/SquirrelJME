@@ -50,6 +50,7 @@ public final class UIFormShelf
 	 * then this becomes invalidated.
 	 * @param __dc The display callback to use.
 	 * @throws MLECallError On null arguments.
+	 * @see UIDisplayCallback
 	 * @since 2020/10/03
 	 */
 	public static native void callback(Object __ref, UIDisplayCallback __dc)
@@ -62,6 +63,7 @@ public final class UIFormShelf
 	 * @param __form The form that the callback will act under.
 	 * @param __callback The callback to register.
 	 * @throws MLECallError If {@code __form} is {@code null}.
+	 * @see UIFormCallback
 	 * @since 2020/07/03
 	 */
 	public static native void callback(UIFormBracket __form,

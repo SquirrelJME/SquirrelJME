@@ -355,7 +355,10 @@ public final class Integer
 	}
 	
 	/**
-	 * Returns the highest one bit of the given number.
+	 * Returns the highest one bit of the given number, the value returned
+	 * only has the greatest bit set.
+	 * 
+	 * {@code 0b0101} returns {@code 0b0100}.
 	 * 
 	 * @param __v The value to get.
 	 * @return The highest one bit of the given number.

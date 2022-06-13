@@ -32,16 +32,16 @@ import java.io.PrintStream;
 public final class System
 {
 	/** Standard error stream (stderr). */
-	@SuppressWarnings("resource")
 	public static final PrintStream err =
 		new __CanSetPrintStream__(new PrintStream(
-			new ConsoleOutputStream(StandardPipeType.STDERR), true));
+			new ConsoleOutputStream(StandardPipeType.STDERR,
+				true), true));
 	
 	/** Standard output stream (stdout). */
-	@SuppressWarnings("resource")
 	public static final PrintStream out =
 		new __CanSetPrintStream__(new PrintStream(
-			new ConsoleOutputStream(StandardPipeType.STDOUT), true));
+			new ConsoleOutputStream(StandardPipeType.STDOUT,
+				false), true));
 	
 	/**
 	 * Not used.

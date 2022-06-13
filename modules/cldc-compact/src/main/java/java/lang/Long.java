@@ -9,6 +9,7 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
@@ -61,10 +62,14 @@ public final class Long
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public byte byteValue()
 	{
-		throw new todo.TODO();
+		return (byte)this._value;
 	}
 	
 	@Override
@@ -73,10 +78,14 @@ public final class Long
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public double doubleValue()
 	{
-		throw new todo.TODO();
+		return (double)this._value;
 	}
 	
 	/**
@@ -95,22 +104,35 @@ public final class Long
 		return this._value == ((Long)__o)._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public float floatValue()
 	{
-		throw new todo.TODO();
+		return (float)this._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		long value = this._value;
+		return (int)(value ^ (value >>> 32));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public int intValue()
 	{
-		throw new todo.TODO();
+		return (int)this._value;
 	}
 	
 	/**
@@ -123,10 +145,14 @@ public final class Long
 		return this._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public short shortValue()
 	{
-		throw new todo.TODO();
+		return (short)this._value;
 	}
 	
 	/**
@@ -276,9 +302,20 @@ public final class Long
 		return Long.parseLong(__v, 10);
 	}
 	
-	public static long reverse(long __a)
+	/**
+	 * Reverses all of the bits in the given integer.
+	 *
+	 * @param __l The input value.
+	 * @return The integer but with the bits reversed.
+	 * @since 2022/01/07
+	 */
+	public static long reverse(long __l)
 	{
-		throw new todo.TODO();
+		int hi = Assembly.longUnpackHigh(__l);
+		int lo = Assembly.longUnpackLow(__l);
+		
+		// Hi is placed lo, and lo is placed hi
+		return Assembly.longPack(Integer.reverse(hi), Integer.reverse(lo));
 	}
 	
 	/**
@@ -439,20 +476,34 @@ public final class Long
 		return Long.toString(__v, 10);
 	}
 	
-	public static Long valueOf(String __a, int __b)
+	/**
+	 * Returns the value of the specified string using the given radix.
+	 *
+	 * @param __v The String to decode.
+	 * @param __r The radix to use.
+	 * @return The boxed value.
+	 * @throws NumberFormatException If the string is not valid or the radix
+	 * is outside of the valid bounds.
+	 * @since 2022/01/07
+	 */
+	public static Long valueOf(String __v, int __r)
 		throws NumberFormatException
 	{
-		if (false)
-			throw new NumberFormatException();
-		throw new todo.TODO();
+		return Long.parseLong(__v, __r);
 	}
 	
-	public static Long valueOf(String __a)
+	/**
+	 * Returns the value of the specified string.
+	 *
+	 * @param __v The String to decode.
+	 * @return The boxed value.
+	 * @throws NumberFormatException If the string is not valid.
+	 * @since 2022/01/07
+	 */
+	public static Long valueOf(String __v)
 		throws NumberFormatException
 	{
-		if (false)
-			throw new NumberFormatException();
-		throw new todo.TODO();
+		return Long.parseLong(__v, 10);
 	}
 	
 	/**

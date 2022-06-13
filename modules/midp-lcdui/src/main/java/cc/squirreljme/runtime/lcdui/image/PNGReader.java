@@ -223,8 +223,7 @@ public class PNGReader
 		if (!this._hasalpha)
 		{
 			// Force all pixels to opaque
-			for (int i = 0, n = argb.length; i < n; i++)
-				argb[i] = 0xFF_000000;
+			Arrays.fill(argb, 0xFF_000000);
 			
 			// Make all pixels opaque in the palette
 			int[] palette = this._palette;
@@ -663,16 +662,16 @@ public class PNGReader
 				// treated as zero.
 				
 				// The current byte being filtered
-				int x = __in.read() & 0xFF,
+				int x = __in.read() & 0xFF;
 				
 				// The byte to the left of (x, y) [-1, 0]
-					a = (dx <= 0 ? 0 : rv[di - 1]) & 0xFF,
+				int a = (dx <= 0 ? 0 : rv[di - 1]) & 0xFF;
 				
 				// The byte to the top of (x, y) [0, -1]
-					b = (dy <= 0 ? 0 : rv[di - scanlen]) & 0xFF,
+				int b = (dy <= 0 ? 0 : rv[di - scanlen]) & 0xFF;
 				
 				// The byte to the top and left of (x, y) [-1, -1]
-					c = ((dx <= 0 || dy <= 0) ? 0 :
+				int c = ((dx <= 0 || dy <= 0) ? 0 :
 						rv[(di - scanlen) - 1]) & 0xFF;
 				
 				// Depends on the decoding algorithm
@@ -703,10 +702,10 @@ public class PNGReader
 					case 4:
 						{
 							// Calculate these
-							int p = a + b - c,
-								pa = p - a,
-								pb = p - b,
-								pc = p - c;
+							int p = a + b - c;
+							int pa = p - a;
+							int pb = p - b;
+							int pc = p - c;
 							
 							// Absolute values
 							pa = (pa < 0 ? -pa : pa);

@@ -63,7 +63,7 @@ public final class ThreadShelf
 	
 	/**
 	 * Returns the current virtual machine thread.
-	 *
+	 * 
 	 * @return The current virtual machine thread.
 	 * @since 2021/05/08
 	 */

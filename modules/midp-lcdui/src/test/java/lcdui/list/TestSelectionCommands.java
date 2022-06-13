@@ -56,7 +56,7 @@ public class TestSelectionCommands
 			__list.append(Character.toString((char)('a' + i)), null);
 		
 		// Native holders for the widgets
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		UIFormBracket form = (UIFormBracket)StaticDisplayState.locate(__list,
 			UIItemType.FORM, backend);
 		UIItemBracket item = (UIItemBracket)StaticDisplayState.locate(__list,

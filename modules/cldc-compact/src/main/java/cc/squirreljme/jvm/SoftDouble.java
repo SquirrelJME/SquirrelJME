@@ -16,6 +16,14 @@ package cc.squirreljme.jvm;
  */
 public class SoftDouble
 {
+	/** The zero check mask. */
+	public static final long ZERO_CHECK_MASK =
+		0x7FFFFFFFFFFFFFFFL;
+	
+	/** The mask for NaN values. */
+	public static final long NAN_MASK =
+		0b0111111111111000000000000000000000000000000000000000000000000000L;
+	
 	/**
 	 * Not used.
 	 *
@@ -87,6 +95,18 @@ public class SoftDouble
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Is this Not a Number?
+	 * 
+	 * @param __a The value to check.
+	 * @return If this is not a number.
+	 * @since 2022/01/06
+	 */
+	public static boolean isNaN(long __a)
+	{
+		return SoftDouble.NAN_MASK == (__a & SoftDouble.NAN_MASK);
 	}
 	
 	/**

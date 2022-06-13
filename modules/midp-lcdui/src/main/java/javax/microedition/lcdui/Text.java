@@ -881,7 +881,7 @@ public class Text
 	{
 		if (!this._dirty)
 			return;
-		
+			
 		// Undirty state
 		__TextUndirtyState__ ts = new __TextUndirtyState__();
 		
@@ -932,7 +932,7 @@ public class Text
 		// used for each character
 		int linedxstart = 0;
 		int linedxend = 0;
-			
+		
 		// Redo handling of the current character, this will happen if
 		// the line overflows
 		boolean redo = false;

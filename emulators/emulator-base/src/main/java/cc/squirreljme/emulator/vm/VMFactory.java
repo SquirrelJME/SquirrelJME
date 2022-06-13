@@ -254,8 +254,7 @@ public abstract class VMFactory
 		// to be part of the library path
 		libraries.addAll(suiteClasspath);
 		
-		// Determine any suites that are available in the suite library but
-		// are not available to
+		// Determine any suites that are available in the suite library
 		Map<String, VMClassLibrary> suites = new LinkedHashMap<>();
 		for (String library : libraries)
 		{

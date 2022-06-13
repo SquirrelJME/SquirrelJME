@@ -49,11 +49,12 @@ public final class UIBackendFactory
 	/**
 	 * Gets an instance of the UI engine.
 	 * 
+	 * @param __allowHeadless Allow a headless display to be used?
 	 * @return The instance of the engine to use.
 	 * @since 2020/06/30
 	 */
 	@SuppressWarnings("StaticVariableUsedBeforeInitialization")
-	public static UIBackend getInstance()
+	public static UIBackend getInstance(boolean __allowHeadless)
 	{
 		// If this was already cached, use that
 		UIBackend rv = UIBackendFactory._DEFAULT;
@@ -76,13 +77,25 @@ public final class UIBackendFactory
 			!isForcing)
 			rv = new NativeUIBackend();
 		
-		// Otherwise use the fallback implementation (raw framebuffer)
+		// Otherwise, use the fallback implementation (raw framebuffer)
 		else
 		{
+			// TODO: For now only force headless as FB UI is not implemented
+			if (!forceHeadless)
+			{
+				Debugging.todoNote("Undo force of headless for FB UI.");
+				forceHeadless = true;
+			}
+			
 			// Use a headless interface? This is if we have no framebuffer
 			// and the only have to have graphics is to fake it
 			if (forceHeadless)
 			{
+				// {@squirreljme.error EB33 Headless display not permitted
+				// at this current time.}
+				if (!__allowHeadless)
+					throw new IllegalStateException("EB33");
+				
 				// Emit a notice
 				Debugging.notice("Framebuffer either does not exist " +
 					"or is disabled, attaching without a head.");

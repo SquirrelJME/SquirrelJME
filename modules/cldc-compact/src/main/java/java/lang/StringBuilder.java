@@ -9,7 +9,6 @@
 
 package java.lang;
 
-import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import java.util.Arrays;
 
