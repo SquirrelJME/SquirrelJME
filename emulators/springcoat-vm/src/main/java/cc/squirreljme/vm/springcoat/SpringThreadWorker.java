@@ -156,7 +156,7 @@ public final class SpringThreadWorker
 		
 		// Verbose debug?
 		if (this.verboseCheck(VerboseDebugFlag.ALLOCATION))
-			this.verboseEmit("Allocate array: %s[%i]",
+			this.verboseEmit("Allocate array: %s[%d]",
 				__cl.name, __l);
 		
 		// Depends on the type to be allocated

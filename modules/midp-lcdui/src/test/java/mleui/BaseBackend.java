@@ -51,16 +51,8 @@ public abstract class BaseBackend
 		throws Throwable
 	{
 		// Debugging
-		DebugShelf.verbose(VerboseDebugFlag.METHOD_ENTRY |
-			VerboseDebugFlag.MONITOR_ENTER | VerboseDebugFlag.MONITOR_EXIT |
-			VerboseDebugFlag.MONITOR_WAIT | VerboseDebugFlag.MONITOR_NOTIFY |
-			VerboseDebugFlag.INHERIT_VERBOSE_FLAGS |
-			VerboseDebugFlag.THREAD_NEW);
-		DebugShelf.verboseInternalThread(VerboseDebugFlag.METHOD_ENTRY |
-			VerboseDebugFlag.MONITOR_ENTER | VerboseDebugFlag.MONITOR_EXIT |
-			VerboseDebugFlag.MONITOR_WAIT | VerboseDebugFlag.MONITOR_NOTIFY |
-			VerboseDebugFlag.INHERIT_VERBOSE_FLAGS |
-			VerboseDebugFlag.THREAD_NEW);
+		/*DebugShelf.verbose(VerboseDebugFlag.ALL);
+		DebugShelf.verboseInternalThread(VerboseDebugFlag.ALL);*/
 		
 		UIBackend backend = BaseBackend.__getBackend(__backend);
 		this.test(backend, backend.displays()[0]);
