@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot.base;
+package cc.squirreljme.jvm.aot.pack;
 
 import net.multiphasicapps.io.ChunkFuture;
 
