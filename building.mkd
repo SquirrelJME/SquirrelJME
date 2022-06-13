@@ -216,9 +216,6 @@ to be ran accordingly.
  * SpringCoat
    * `:modules:<name>:runSpringCoat` (running)
    * `:modules:<name>:testSpringCoat` (testing)
- * SummerCoat
-   * `:modules:<name>:runSummerCoat` (running)
-   * `:modules:<name>:testSummerCoat` (testing)
  * Native (runs on the host Java SE)
    * `:modules:<name>:runHosted` (running)
    * `:modules:<name>:testHosted` (testing)
@@ -267,10 +264,6 @@ The following _System_ properties are available:
 
 Full ROMs can be built with the following tasks, note that test ROMs contain
 all the testing libraries and are generally used to ensure things are working:
-
- * _SummerCoat_
-   * `romSummerCoat`
-   * `romTestSummerCoat`
 
 # Full Suite Virtual Machines
 
