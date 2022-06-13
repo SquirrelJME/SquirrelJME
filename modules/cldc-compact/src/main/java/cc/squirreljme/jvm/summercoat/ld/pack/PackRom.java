@@ -10,17 +10,11 @@
 package cc.squirreljme.jvm.summercoat.ld.pack;
 
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.summercoat.SummerCoatUtil;
-import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
-import cc.squirreljme.jvm.summercoat.ld.mem.AbstractReadableMemory;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
-import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemoryInputStream;
-import cc.squirreljme.jvm.summercoat.ld.mem.RealMemory;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.io.IOException;
 
 /**
  * This class is used to access the pack ROM.
@@ -152,49 +146,5 @@ public final class PackRom
 		this._toc = (rv = new TableOfContentsMemory(
 			this.rom.subSection(tocBase, tocSize)));
 		return rv;
-	}
-	
-	/**
-	 * Loads the PackRom from the given address.
-	 * 
-	 * @param __memAddr The memory address where the ROM is located.
-	 * @return The pack ROM of the given address.
-	 * @since 2021/02/14
-	 */
-	public static PackRom load(long __memAddr)
-	{
-		// Parse the header for the pack file
-		AbstractReadableMemory headerMem = new RealMemory(__memAddr,
-			ClassInfoConstants.PACK_MAXIMUM_HEADER_SIZE,
-			ByteOrderType.BIG_ENDIAN);
-		try (ReadableMemoryInputStream in = headerMem.inputStream())
-		{
-			// Decode the header
-			HeaderStruct header = HeaderStruct.decode(in,
-				PackProperty.NUM_PACK_PROPERTIES);
-			
-			// {@squirreljme.error ZZ43 Invalid ROM header. (Magic number)}
-			int romMagic = header.magicNumber();
-			if (ClassInfoConstants.PACK_MAGIC_NUMBER != romMagic)
-				throw new InvalidRomException("ZZ43 " + romMagic);
-			
-			// {@squirreljme.error ZZ46 PackROM size is not valid. (The size)}
-			int romSize = header.getInteger(PackProperty.ROM_SIZE);
-			if (romSize <= ClassInfoConstants.PACK_MAXIMUM_HEADER_SIZE)
-				throw new InvalidRomException("ZZ46 " + romSize);
-			
-			// Debug
-			Debugging.debugNote("ROM Size: %d (%xh)", romSize, romSize);
-			
-			// Build the final PackROM
-			return new PackRom(new RealMemory(__memAddr, romSize,
-				ByteOrderType.BIG_ENDIAN), header);
-		}
-		
-		// {@squirreljme.error ZZ42 The ROM is corrupted.}
-		catch (IOException __e)
-		{
-			throw new InvalidRomException("ZZ42", __e); 
-		}
 	}
 }
