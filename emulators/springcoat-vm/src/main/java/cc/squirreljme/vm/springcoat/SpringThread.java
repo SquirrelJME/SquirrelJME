@@ -66,6 +66,9 @@ public final class SpringThread
 	private final List<SpringThread.Frame> _frames =
 		new ArrayList<>();
 	
+	/** Inherited verbose flags to use. */
+	int _initVerboseFlags;
+	
 	/** Initial priority to set. */
 	int _initPriority =
 		-1;

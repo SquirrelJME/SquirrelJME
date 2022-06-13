@@ -136,8 +136,8 @@ public final class String
 		
 		// Copy characters
 		char[] copy = new char[__l];
-		for (int i = __o, o = 0; o < __l; i++, o++)
-			copy[o] = __c[i];
+		System.arraycopy(__c, __o,
+			copy, 0, __l);
 		
 		// Just use the copied buffer
 		this._chars = copy;

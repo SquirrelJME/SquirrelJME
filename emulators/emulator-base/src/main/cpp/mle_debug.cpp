@@ -44,6 +44,8 @@ static const JNINativeMethod mleDebugMethods[] =
 		(void*)Impl_mle_DebugShelf_traceStack},
 	{"verbose", "(I)I",
 		(void*)Impl_mle_DebugShelf_verbose},
+	{"verboseInternalThread", "(I)I",
+		(void*)Impl_mle_DebugShelf_verbose},
 	{"verboseStop", "(I)V",
 		(void*)Impl_mle_DebugShelf_verboseStop},
 };
