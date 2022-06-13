@@ -67,7 +67,7 @@ public class MLECallError
 	/**
 	 * Initializes system call exception.
 	 * 
-	 * @param __callId The call index.
+	 * @param __callId The call ID.
 	 * @param __code The {@link SystemCallError}.
 	 * @since 2020/11/29
 	 */
