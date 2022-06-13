@@ -17,6 +17,8 @@
       <module name="squirreljme.main" target="1.7" />
       <module name="squirreljme.modules.all-vms.main" target="1.7" />
       <module name="squirreljme.modules.all-vms.test" target="1.7" />
+      <module name="squirreljme.modules.aot-summercoat-base.main" target="1.7" />
+      <module name="squirreljme.modules.aot-summercoat-base.test" target="1.7" />
       <module name="squirreljme.modules.aot-summercoat.main" target="1.7" />
       <module name="squirreljme.modules.aot-summercoat.test" target="1.7" />
       <module name="squirreljme.modules.build.main" target="1.7" />

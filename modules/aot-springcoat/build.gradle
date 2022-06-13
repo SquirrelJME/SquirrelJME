@@ -26,7 +26,5 @@ squirreljme
 
 dependencies
 {
-	api project(":modules:cldc")
-	
-	api project(":modules:aot-summercoat-base")
+	api project(":modules:aot")
 }
