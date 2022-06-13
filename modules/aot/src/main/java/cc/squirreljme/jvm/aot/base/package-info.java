@@ -13,4 +13,4 @@
  * @since 2021/09/03
  */
 
-package cc.squirreljme.jvm.aot.summercoat.base;
+package cc.squirreljme.jvm.aot.base;

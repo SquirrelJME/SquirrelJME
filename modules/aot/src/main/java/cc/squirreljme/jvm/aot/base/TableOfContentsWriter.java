@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot.summercoat.base;
+package cc.squirreljme.jvm.aot.base;
 
 import cc.squirreljme.jvm.pack.ld.pack.TableOfContents;
 import java.util.ArrayList;
