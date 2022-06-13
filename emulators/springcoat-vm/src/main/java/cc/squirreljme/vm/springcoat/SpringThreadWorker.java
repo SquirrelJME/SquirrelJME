@@ -156,7 +156,7 @@ public final class SpringThreadWorker
 		
 		// Verbose debug?
 		if (this.verboseCheck(VerboseDebugFlag.ALLOCATION))
-			Debugging.debugNote("Allocate array: %s[%i]",
+			this.verboseEmit("Allocate array: %s[%i]",
 				__cl.name, __l);
 		
 		// Depends on the type to be allocated
@@ -217,7 +217,7 @@ public final class SpringThreadWorker
 		
 		// Verbose debug?
 		if (this.verboseCheck(VerboseDebugFlag.ALLOCATION))
-			Debugging.debugNote("Allocate object: %s", __cl);
+			this.verboseEmit("Allocate object: %s", __cl);
 		
 		// The called constructor will allocate the space needed to store
 		// this object
@@ -946,7 +946,7 @@ public final class SpringThreadWorker
 			
 			// Verbosity?
 			if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
-				Debugging.debugNote("Need to initialize %s.", 
+				this.verboseEmit("Need to initialize %s.", 
 					__cl.name());
 			
 			// Set the class as initialized early to prevent loops, because
@@ -982,7 +982,7 @@ public final class SpringThreadWorker
 		{
 			// Verbosity?
 			if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
-				Debugging.debugNote("Lookup static init for %s.", 
+				this.verboseEmit("Lookup static init for %s.", 
 					__cl.name());
 			
 			init = __cl.lookupMethod(true,
@@ -996,7 +996,7 @@ public final class SpringThreadWorker
 			
 			// Verbosity?
 			if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
-				Debugging.debugNote("No static init for %s.", 
+				this.verboseEmit("No static init for %s.", 
 					__cl.name());
 		}
 		
@@ -1010,7 +1010,7 @@ public final class SpringThreadWorker
 		{
 			// Verbosity?
 			if (this.verboseCheck(VerboseDebugFlag.CLASS_INITIALIZE))
-				Debugging.debugNote("Calling static init for %s.", 
+				this.verboseEmit("Calling static init for %s.", 
 					__cl.name());
 			
 			// Stop execution when the initializer exits
@@ -1375,6 +1375,20 @@ public final class SpringThreadWorker
 	}
 	
 	/**
+	 * Emits a verbose debug message.
+	 * 
+	 * @param __format The format used.
+	 * @param __args The arguments to the format.
+	 * @since 2022/06/12
+	 */
+	public void verboseEmit(String __format, Object... __args)
+	{
+		Debugging.debugNote("[%s] %s",
+			this.thread.toString(),
+			String.format(__format, __args));
+	}
+	
+	/**
 	 * Checks if an exception is being thrown and sets up the state from it.
 	 *
 	 * @return True if an exception was detected.
@@ -1431,7 +1445,7 @@ public final class SpringThreadWorker
 		
 		// Verbose debug?
 		if (this.verboseCheck(VerboseDebugFlag.VM_EXCEPTION))
-			Debugging.debugNote("Handling exception: %s",
+			this.verboseEmit("Handling exception: %s",
 				__o.type().name);
 			
 		// Are we exiting in the middle of an exception throwing?
@@ -1461,7 +1475,7 @@ public final class SpringThreadWorker
 		
 		// Verbose debug?
 		if (this.verboseCheck(VerboseDebugFlag.VM_EXCEPTION))
-			Debugging.debugNote("Frame handles %s? %b",
+			this.verboseEmit("Frame handles %s? %b",
 				__o.type().name, useeh != null);
 		
 		// No handler for this exception, so just go up the
@@ -1778,8 +1792,8 @@ public final class SpringThreadWorker
 		frame.setLastExecutedPc(pc);
 		
 		// Debugging instructions?
-		if (this._verbose.check(frame.level, VerboseDebugFlag.INSTRUCTIONS))
-			Debugging.debugNote("step(%s %s::%s) -> %s", thread.name(),
+		if (this.verboseCheck(VerboseDebugFlag.INSTRUCTIONS))
+			this.verboseEmit("step(%s %s::%s) -> %s", thread.name(),
 				method.inClass(), method.nameAndType(), inst);
 		
 		// Used to detect the next instruction of execution following this,
@@ -2930,7 +2944,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.INVOKEINTERFACE:
 					// Verbose debug?
 					if (this.verboseCheck(VerboseDebugFlag.METHOD_ENTRY))
-						Debugging.debugNote("Interface: %s", inst);
+						this.verboseEmit("Interface: %s", inst);
 				
 					this.__vmInvokeInterface(inst, thread, frame);
 					
@@ -2944,7 +2958,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.INVOKESPECIAL:
 					// Verbose debug?
 					if (this.verboseCheck(VerboseDebugFlag.METHOD_ENTRY))
-						Debugging.debugNote("Special: %s", inst);
+						this.verboseEmit("Special: %s", inst);
 					
 					this.__vmInvokeSpecial(inst, thread, frame);
 					
@@ -2958,7 +2972,7 @@ public final class SpringThreadWorker
 					// Verbose debug?
 					if (this.verboseCheck(VerboseDebugFlag.METHOD_ENTRY |
 							VerboseDebugFlag.INVOKE_STATIC))
-						Debugging.debugNote("Static: %s", inst);
+						this.verboseEmit("Static: %s", inst);
 					
 					this.__vmInvokeStatic(inst, thread, frame);
 					
@@ -2971,7 +2985,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.INVOKEVIRTUAL:
 					// Verbose debug?
 					if (this.verboseCheck(VerboseDebugFlag.METHOD_ENTRY))
-						Debugging.debugNote("Virtual: %s", inst);
+						this.verboseEmit("Virtual: %s", inst);
 					
 					this.__vmInvokeVirtual(inst, thread, frame);
 					
@@ -3291,14 +3305,34 @@ public final class SpringThreadWorker
 					
 					// Enter monitor
 				case InstructionIndex.MONITORENTER:
-					frame.<SpringObject>popFromStack(SpringObject.class).
-						monitor().enter(thread);
+					{
+						SpringObject object = frame.
+							<SpringObject>popFromStack(SpringObject.class);
+						
+						// Verbose debug?
+						if (this.verboseCheck(VerboseDebugFlag.MONITOR_ENTER))
+							this.verboseEmit(
+								"Monitor Enter: %s on %s",
+								object, thread);
+						
+						object.monitor().enter(thread);
+					}
 					break;
 					
 					// Exit monitor
 				case InstructionIndex.MONITOREXIT:
-					frame.<SpringObject>popFromStack(SpringObject.class).
-						monitor().exit(thread, true);
+					{
+						SpringObject object = frame.
+							<SpringObject>popFromStack(SpringObject.class);
+						
+						// Verbose debug?
+						if (this.verboseCheck(VerboseDebugFlag.MONITOR_EXIT))
+							this.verboseEmit(
+								"Monitor Exit: %s on %s",
+								object, thread);
+						
+						object.monitor().exit(thread, true);
+					}
 					break;
 					
 					// Allocate multi-dimensional array
@@ -3535,13 +3569,13 @@ public final class SpringThreadWorker
 			// Verbose debug?
 			if (this.verboseCheck(VerboseDebugFlag.VM_EXCEPTION))
 			{
-				Debugging.debugNote("-------------------------------");
-				Debugging.debugNote("Exception, %s: %s",
+				this.verboseEmit("-------------------------------");
+				this.verboseEmit("Exception, %s: %s",
 					e.getClass().getName(), e.getMessage());
 				
 				e.printStackTrace();
 				
-				Debugging.debugNote("-------------------------------");
+				this.verboseEmit("-------------------------------");
 			}
 			
 			// Do not add causes or do anything if this was already thrown
@@ -3927,7 +3961,7 @@ public final class SpringThreadWorker
 			
 		// Verbose debug?
 		if (this.verboseCheck(VerboseDebugFlag.METHOD_EXIT))
-			Debugging.debugNote("Exiting frame.");
+			this.verboseEmit("Exiting frame.");
 		
 		// Push the value to the current frame
 		SpringThread.Frame cur = __thread.currentFrame();

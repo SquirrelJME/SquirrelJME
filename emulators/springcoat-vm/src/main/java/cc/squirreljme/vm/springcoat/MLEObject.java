@@ -11,6 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
@@ -496,7 +497,13 @@ public enum MLEObject
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			SpringObject target = MLEType.__notNullObject(__args[0]);
-			boolean notifyAll = (int)__args[1] != 0; 
+			boolean notifyAll = (int)__args[1] != 0;
+			
+			// Verbose debug?
+			if (__thread.verboseCheck(VerboseDebugFlag.MONITOR_NOTIFY))
+				__thread.verboseEmit(
+					"Monitor Notify: %s on %s (%s)",
+					target, __thread, (notifyAll ? "all" : "once"));
 			
 			// Signal the monitor
 			return target.monitor().monitorNotify(__thread.thread, notifyAll);
@@ -516,6 +523,12 @@ public enum MLEObject
 			SpringObject target = MLEType.__notNullObject(__args[0]);
 			long ms = (long)__args[1];
 			int ns = (int)__args[2];
+			
+			// Verbose debug?
+			if (__thread.verboseCheck(VerboseDebugFlag.MONITOR_WAIT))
+				__thread.verboseEmit(
+					"Monitor Wait: %s on %s (for %d ms %d ns)",
+					target, __thread, ms, ns);
 			
 			return target.monitor().monitorWait(__thread.thread, ms, ns);
 		}
