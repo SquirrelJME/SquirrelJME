@@ -10,15 +10,15 @@
 package cc.squirreljme.jvm.aot.summercoat.base;
 
 import cc.squirreljme.jvm.aot.RomSettings;
-import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
-import cc.squirreljme.jvm.summercoat.constants.JarProperty;
-import cc.squirreljme.jvm.summercoat.constants.JarTocFlag;
-import cc.squirreljme.jvm.summercoat.constants.JarTocProperty;
-import cc.squirreljme.jvm.summercoat.constants.PackProperty;
-import cc.squirreljme.jvm.summercoat.constants.PackTocFlag;
-import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
-import cc.squirreljme.jvm.summercoat.ld.pack.JarRom;
-import cc.squirreljme.jvm.summercoat.ld.pack.PackRom;
+import cc.squirreljme.jvm.pack.constants.ClassInfoConstants;
+import cc.squirreljme.jvm.pack.constants.JarProperty;
+import cc.squirreljme.jvm.pack.constants.JarTocFlag;
+import cc.squirreljme.jvm.pack.constants.JarTocProperty;
+import cc.squirreljme.jvm.pack.constants.PackProperty;
+import cc.squirreljme.jvm.pack.constants.PackTocFlag;
+import cc.squirreljme.jvm.pack.constants.PackTocProperty;
+import cc.squirreljme.jvm.pack.ld.pack.JarRom;
+import cc.squirreljme.jvm.pack.ld.pack.PackRom;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.VMClassLibrary;

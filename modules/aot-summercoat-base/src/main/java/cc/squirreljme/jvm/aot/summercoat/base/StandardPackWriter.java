@@ -9,11 +9,9 @@
 
 package cc.squirreljme.jvm.aot.summercoat.base;
 
-import cc.squirreljme.jvm.summercoat.constants.ClassInfoConstants;
-import cc.squirreljme.jvm.summercoat.constants.PackProperty;
-import cc.squirreljme.jvm.summercoat.ld.pack.JarRom;
-import cc.squirreljme.jvm.summercoat.ld.pack.PackRom;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jvm.pack.constants.ClassInfoConstants;
+import cc.squirreljme.jvm.pack.ld.pack.JarRom;
+import cc.squirreljme.jvm.pack.ld.pack.PackRom;
 import java.io.IOException;
 import net.multiphasicapps.io.ChunkDataType;
 import net.multiphasicapps.io.ChunkSection;

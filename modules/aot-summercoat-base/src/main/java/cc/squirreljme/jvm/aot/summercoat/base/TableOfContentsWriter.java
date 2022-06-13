@@ -9,8 +9,7 @@
 
 package cc.squirreljme.jvm.aot.summercoat.base;
 
-import cc.squirreljme.jvm.summercoat.ld.pack.TableOfContents;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.jvm.pack.ld.pack.TableOfContents;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

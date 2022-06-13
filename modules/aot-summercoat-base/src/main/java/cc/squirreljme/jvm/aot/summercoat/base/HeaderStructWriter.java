@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jvm.aot.summercoat.base;
 
-import cc.squirreljme.jvm.summercoat.ld.pack.HeaderStruct;
+import cc.squirreljme.jvm.pack.ld.pack.HeaderStruct;
 import net.multiphasicapps.io.ChunkFuture;
 
 /**
