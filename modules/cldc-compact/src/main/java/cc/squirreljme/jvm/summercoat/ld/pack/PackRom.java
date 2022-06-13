@@ -10,9 +10,9 @@
 package cc.squirreljme.jvm.summercoat.ld.pack;
 
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.jvm.summercoat.SummerCoatUtil;
 import cc.squirreljme.jvm.summercoat.constants.PackProperty;
 import cc.squirreljme.jvm.summercoat.constants.PackTocProperty;
+import cc.squirreljme.jvm.summercoat.ld.mem.MemoryUtils;
 import cc.squirreljme.jvm.summercoat.ld.mem.ReadableMemory;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -90,8 +90,8 @@ public final class PackRom
 			int flags = toc.get(dx, PackTocProperty.INT_FLAGS);
 			
 			// Load in the JAR name
-			String name = SummerCoatUtil.loadString(
-				rom.absoluteAddress(toc.get(dx, PackTocProperty.OFFSET_NAME)));
+			String name = MemoryUtils.loadString(
+				rom, toc.get(dx, PackTocProperty.OFFSET_NAME));
 			
 			// {@squirreljme.error ZZ52 JAR has no name?}
 			if (name == null)
