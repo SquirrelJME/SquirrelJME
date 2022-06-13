@@ -323,77 +323,6 @@ public enum VMType
 		}
 	},
 	
-	/** SummerCoat virtual machine. */
-	SUMMERCOAT("SummerCoat", "sqc",
-		":emulators:summercoat-vm")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/05/16
-		 */
-		@Override
-		public void dumpLibrary(Task __task, boolean __isTest,
-			InputStream __in, OutputStream __out)
-			throws IOException, NullPointerException
-		{
-			if (__task == null || __in == null || __out == null)
-				throw new NullPointerException("NARG");
-			
-			// Run the specified command
-			this.__aotCommand(__task, __in, __out,
-				"dumpCompile", null);
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/08/15
-		 */
-		@Override
-		public void processLibrary(Task __task, boolean __isTest,
-			InputStream __in, OutputStream __out)
-			throws NullPointerException
-		{
-			if (__task == null || __in == null || __out == null)
-				throw new NullPointerException("NARG");
-				
-			// Need to access the config for ROM building
-			SquirrelJMEPluginConfiguration config =
-				SquirrelJMEPluginConfiguration
-				.configuration(__task.getProject());
-				
-			// Potential extra arguments
-			Collection<String> args = new ArrayList<>();
-			
-			// Is this a boot loader? This is never valid for tests as they
-			// are just extra libraries, it does not make sense to have them
-			// be loadable.
-			if (!__isTest && config.isBootLoader)
-				args.add("-boot");
-				
-			// Run the specified command
-			this.__aotCommand(__task, __in, __out,
-				"compile", args);
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/08/15
-		 */
-		@Override
-		public void spawnJvmArguments(Task __task, boolean __debugEligible,
-			JavaExecSpecFiller __execSpec, String __mainClass,
-			String __commonName, Map<String, String> __sysProps,
-			Path[] __libPath, Path[] __classPath, String... __args)
-			throws NullPointerException
-		{
-			// Use a common handler to execute the VM as the VMs all have
-			// the same entry point handlers and otherwise
-			this.spawnVmViaFactory(__task, __debugEligible, __execSpec,
-				__mainClass, __commonName, __sysProps, __libPath,
-				__classPath, __args);
-		}
-	},
-	
 	/* End. */
 	;
 	
@@ -449,7 +378,7 @@ public enum VMType
 	@Override
 	public boolean hasDumping()
 	{
-		return this == VMType.SUMMERCOAT;
+		return false;/*this == VMType.SUMMERCOAT*/
 	}
 	
 	/**
