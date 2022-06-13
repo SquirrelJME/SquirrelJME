@@ -9,8 +9,8 @@
 
 package cc.squirreljme.jvm.pack.constants;
 
-import cc.squirreljme.jvm.pack.ld.pack.PackRom;
-import cc.squirreljme.jvm.pack.ld.pack.TableOfContents;
+import cc.squirreljme.jvm.pack.pack.PackRom;
+import cc.squirreljme.jvm.pack.pack.TableOfContents;
 
 /**
  * Flags for {@link TableOfContents} in {@link PackRom}.

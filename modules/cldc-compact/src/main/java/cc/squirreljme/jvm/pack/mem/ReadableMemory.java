@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.pack.ld.mem;
+package cc.squirreljme.jvm.pack.mem;
 
 /**
  * This interface is used to represent anything which provides memory which

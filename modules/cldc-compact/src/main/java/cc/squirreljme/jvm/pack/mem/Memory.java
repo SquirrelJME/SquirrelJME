@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.pack.ld.mem;
+package cc.squirreljme.jvm.pack.mem;
 
 /**
  * This represents the starting region of memory.

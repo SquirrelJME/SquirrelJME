@@ -10,8 +10,8 @@
 package cc.squirreljme.jvm.aot.pack;
 
 import cc.squirreljme.jvm.pack.constants.ClassInfoConstants;
-import cc.squirreljme.jvm.pack.ld.pack.JarRom;
-import cc.squirreljme.jvm.pack.ld.pack.PackRom;
+import cc.squirreljme.jvm.pack.pack.JarRom;
+import cc.squirreljme.jvm.pack.pack.PackRom;
 import java.io.IOException;
 import net.multiphasicapps.io.ChunkDataType;
 import net.multiphasicapps.io.ChunkSection;

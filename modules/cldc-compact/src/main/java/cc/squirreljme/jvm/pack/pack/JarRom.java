@@ -7,16 +7,16 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.pack.ld.pack;
+package cc.squirreljme.jvm.pack.pack;
 
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.pack.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.pack.constants.JarProperty;
 import cc.squirreljme.jvm.pack.constants.JarTocFlag;
 import cc.squirreljme.jvm.pack.constants.JarTocProperty;
-import cc.squirreljme.jvm.pack.ld.mem.MemoryUtils;
-import cc.squirreljme.jvm.pack.ld.mem.ReadableMemory;
-import cc.squirreljme.jvm.pack.ld.mem.ReadableMemoryInputStream;
+import cc.squirreljme.jvm.pack.mem.MemoryUtils;
+import cc.squirreljme.jvm.pack.mem.ReadableMemory;
+import cc.squirreljme.jvm.pack.mem.ReadableMemoryInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 

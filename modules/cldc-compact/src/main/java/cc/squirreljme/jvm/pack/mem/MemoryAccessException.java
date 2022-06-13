@@ -7,26 +7,30 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.pack.ld.mem;
+package cc.squirreljme.jvm.pack.mem;
 
 /**
- * This is thrown when the given memory is not mappable to real memory in
- * any way.
+ * This is thrown when there is an error accessing memory.
  *
- * @since 2021/04/03
+ * @since 2021/02/18
  */
-public class NotRealMemoryException
-	extends MemoryAccessException
+public class MemoryAccessException
+	extends RuntimeException
 {
+	/** The address. */
+	public final long address;
+	
 	/**
 	 * Initializes the exception.
 	 * 
 	 * @param __addr The address.
-	 * @since 2021/04/03
+	 * @since 2021/02/18
 	 */
-	public NotRealMemoryException(long __addr)
+	public MemoryAccessException(long __addr)
 	{
-		super(__addr);
+		super(Long.toString(__addr, 16));
+		
+		this.address = __addr;
 	}
 	
 	/**
@@ -36,9 +40,11 @@ public class NotRealMemoryException
 	 * @param __m The message.
 	 * @since 2021/04/03
 	 */
-	public NotRealMemoryException(long __addr, String __m)
+	public MemoryAccessException(long __addr, String __m)
 	{
-		super(__addr, __m);
+		super(__m);
+		
+		this.address = __addr;
 	}
 	
 	/**
@@ -46,10 +52,12 @@ public class NotRealMemoryException
 	 * 
 	 * @param __addr The address.
 	 * @param __c The cause.
-	 * @since 2021/04/03
+	 * @since 2021/02/18
 	 */
-	public NotRealMemoryException(long __addr, Throwable __c)
+	public MemoryAccessException(long __addr, Throwable __c)
 	{
-		super(__addr, __c);
+		super(Long.toString(__addr, 16), __c);
+		
+		this.address = __addr;
 	}
 }

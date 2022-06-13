@@ -7,10 +7,22 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains helpers for memory based operations and reading.
- *
- * @since 2021/02/09
- */
+package cc.squirreljme.jvm.pack.mem;
 
-package cc.squirreljme.jvm.pack.ld.mem;
+import cc.squirreljme.jvm.mle.constants.ByteOrderType;
+
+/**
+ * Interface used to describe any memory that has a byte order.
+ *
+ * @since 2021/02/14
+ */
+public interface HasByteOrder
+{
+	/**
+	 * Returns the {@link ByteOrderType} of the memory.
+	 * 
+	 * @return The {@link ByteOrderType} of the memory.
+	 * @since 2021/02/14
+	 */
+	int byteOrder();
+}

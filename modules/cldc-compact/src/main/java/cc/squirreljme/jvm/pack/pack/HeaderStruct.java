@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.pack.ld.pack;
+package cc.squirreljme.jvm.pack.pack;
 
 import cc.squirreljme.jvm.pack.constants.ClassInfoConstants;
 import java.io.DataInput;

@@ -7,12 +7,29 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains support for managing and loading ROM files.
- * 
- * ROMs are also known as Packfiles.
- *
- * @since 2021/02/09
- */
+package cc.squirreljme.jvm.pack.mem;
 
-package cc.squirreljme.jvm.pack.ld.pack;
+/**
+ * A stream of memory access, used to calculate the address and otherwise.
+ *
+ * @since 2021/02/14
+ */
+public interface MemoryStream
+{
+	/**
+	 * Returns the address the stream is located at.
+	 * 
+	 * @return The address the stream is located at.
+	 * @since 2021/02/14
+	 */
+	long address();
+	
+	/**
+	 * Returns the address the stream is located at relative to the start of
+	 * the stream.
+	 * 
+	 * @return The relative stream offset.
+	 * @since 2021/02/14
+	 */
+	int offset();
+}

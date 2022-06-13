@@ -7,29 +7,36 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.pack.ld.mem;
+package cc.squirreljme.jvm.pack.pack;
 
 /**
- * A stream of memory access, used to calculate the address and otherwise.
+ * This is thrown when the ROM is not valid.
  *
- * @since 2021/02/14
+ * @since 2021/04/03
  */
-public interface MemoryStream
+public class InvalidRomException
+	extends RuntimeException
 {
 	/**
-	 * Returns the address the stream is located at.
-	 * 
-	 * @return The address the stream is located at.
-	 * @since 2021/02/14
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2021/04/03
 	 */
-	long address();
+	public InvalidRomException(String __m)
+	{
+		super(__m);
+	}
 	
 	/**
-	 * Returns the address the stream is located at relative to the start of
-	 * the stream.
-	 * 
-	 * @return The relative stream offset.
-	 * @since 2021/02/14
+	 * Initializes the exception with the given message and cause.
+	 *
+	 * @param __m The message.
+	 * @param __t The cause.
+	 * @since 2021/04/03
 	 */
-	int offset();
+	public InvalidRomException(String __m, Throwable __t)
+	{
+		super(__m, __t);
+	}
 }

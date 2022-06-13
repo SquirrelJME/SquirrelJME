@@ -8,11 +8,9 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This contains the Class Loader for SummerCoat.
- * 
- * This is used by SummerCoat and the initial bootstrap engine.
+ * This package contains helpers for memory based operations and reading.
  *
- * @since 2021/01/19
+ * @since 2021/02/09
  */
 
-package cc.squirreljme.jvm.pack.ld;
+package cc.squirreljme.jvm.pack.mem;

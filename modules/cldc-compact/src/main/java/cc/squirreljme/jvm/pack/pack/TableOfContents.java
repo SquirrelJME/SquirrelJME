@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.pack.ld.pack;
+package cc.squirreljme.jvm.pack.pack;
 
 /**
  * This represents a table of contents which is used to provide a mapping

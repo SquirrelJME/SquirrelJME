@@ -7,22 +7,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.pack.ld.mem;
-
-import cc.squirreljme.jvm.mle.constants.ByteOrderType;
-
 /**
- * Interface used to describe any memory that has a byte order.
+ * This package contains support for managing and loading ROM files.
+ * 
+ * ROMs are also known as Packfiles.
  *
- * @since 2021/02/14
+ * @since 2021/02/09
  */
-public interface HasByteOrder
-{
-	/**
-	 * Returns the {@link ByteOrderType} of the memory.
-	 * 
-	 * @return The {@link ByteOrderType} of the memory.
-	 * @since 2021/02/14
-	 */
-	int byteOrder();
-}
+
+package cc.squirreljme.jvm.pack.pack;

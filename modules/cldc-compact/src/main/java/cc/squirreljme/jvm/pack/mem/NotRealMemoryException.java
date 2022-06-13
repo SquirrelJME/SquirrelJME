@@ -7,36 +7,49 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.pack.ld.pack;
+package cc.squirreljme.jvm.pack.mem;
 
 /**
- * This is thrown when the ROM is not valid.
+ * This is thrown when the given memory is not mappable to real memory in
+ * any way.
  *
  * @since 2021/04/03
  */
-public class InvalidRomException
-	extends RuntimeException
+public class NotRealMemoryException
+	extends MemoryAccessException
 {
 	/**
-	 * Initializes the exception with the given message and no cause.
-	 *
-	 * @param __m The message.
+	 * Initializes the exception.
+	 * 
+	 * @param __addr The address.
 	 * @since 2021/04/03
 	 */
-	public InvalidRomException(String __m)
+	public NotRealMemoryException(long __addr)
 	{
-		super(__m);
+		super(__addr);
 	}
 	
 	/**
-	 * Initializes the exception with the given message and cause.
-	 *
+	 * Initializes the exception.
+	 * 
+	 * @param __addr The address.
 	 * @param __m The message.
-	 * @param __t The cause.
 	 * @since 2021/04/03
 	 */
-	public InvalidRomException(String __m, Throwable __t)
+	public NotRealMemoryException(long __addr, String __m)
 	{
-		super(__m, __t);
+		super(__addr, __m);
+	}
+	
+	/**
+	 * Initializes the exception.
+	 * 
+	 * @param __addr The address.
+	 * @param __c The cause.
+	 * @since 2021/04/03
+	 */
+	public NotRealMemoryException(long __addr, Throwable __c)
+	{
+		super(__addr, __c);
 	}
 }

@@ -6,9 +6,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.pack.ld.pack;
+package cc.squirreljme.jvm.pack.pack;
 
-import cc.squirreljme.jvm.pack.ld.mem.ReadableMemory;
+import cc.squirreljme.jvm.pack.mem.ReadableMemory;
 
 /**
  * Represents a {@link TableOfContents} which is stored in the standard
