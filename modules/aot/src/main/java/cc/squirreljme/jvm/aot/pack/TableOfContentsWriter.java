@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jvm.aot.pack;
 
-import cc.squirreljme.jvm.pack.pack.TableOfContents;
+import cc.squirreljme.jvm.pack.TableOfContents;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

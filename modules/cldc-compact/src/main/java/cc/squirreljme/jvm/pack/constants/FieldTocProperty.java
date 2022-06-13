@@ -8,7 +8,7 @@
 
 package cc.squirreljme.jvm.pack.constants;
 
-import cc.squirreljme.jvm.pack.pack.TableOfContents;
+import cc.squirreljme.jvm.pack.TableOfContents;
 
 /**
  * Properties for a field {@link TableOfContents}.

@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jvm.aot.pack;
 
-import cc.squirreljme.jvm.pack.pack.HeaderStruct;
+import cc.squirreljme.jvm.pack.HeaderStruct;
 import net.multiphasicapps.io.ChunkFuture;
 
 /**

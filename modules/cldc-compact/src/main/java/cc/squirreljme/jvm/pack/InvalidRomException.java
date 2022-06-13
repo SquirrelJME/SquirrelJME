@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.pack.pack;
+package cc.squirreljme.jvm.pack;
 
 /**
  * This is thrown when the ROM is not valid.

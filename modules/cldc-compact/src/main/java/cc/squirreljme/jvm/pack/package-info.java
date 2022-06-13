@@ -8,7 +8,7 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the support for SummerCoat.
+ * This package contains the support for SquirrelJME Pack Files.
  *
  * @since 2020/11/27
  */
