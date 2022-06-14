@@ -76,12 +76,9 @@ jobs:
           shell: bash.exe
           name: Construct Standalone
           command: ./gradlew :emulators:standalone:shadowJar --console plain --continue --parallel
-      - run:
-          shell: bash.exe
-          name: Move standalone down
-          command: cp emulators/standalone/build/libs/squirreljme-standalone-*.jar .
       - store_artifacts:
-          path: squirreljme-standalone-*.jar
+          path: emulators/standalone/build/libs/
+          destination: .
 
   ratufacoat_build_windows:
     executor:
@@ -189,11 +186,9 @@ jobs:
       - run:
           name: Construct Standalone
           command: ./gradlew :emulators:standalone:shadowJar --console plain --continue --parallel
-      - run:
-          name: Move standalone down
-          command: cp emulators/standalone/build/libs/squirreljme-standalone-*.jar .
       - store_artifacts:
-          path: squirreljme-standalone-*.jar
+          path: emulators/standalone/build/libs/
+          destination: .
 
   ratufacoat_build_macosx:
     macos:
@@ -271,11 +266,9 @@ jobs:
       - run:
           name: Construct Standalone
           command: ./gradlew :emulators:standalone:shadowJar --console plain --continue --parallel
-      - run:
-          name: Move standalone down
-          command: cp emulators/standalone/build/libs/squirreljme-standalone-*.jar .
       - store_artifacts:
-          path: squirreljme-standalone-*.jar
+          path: emulators/standalone/build/libs/
+          destination: .
 
   ### OSS SonaType Nexus
   sonatype_publish:
