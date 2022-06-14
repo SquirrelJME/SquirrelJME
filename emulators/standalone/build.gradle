@@ -188,8 +188,6 @@ task collateResourceJars {
 
 // Jar Configuration
 jar {
-	dependsOn processResources, collateResourceJars
-	
 	// We need to set specific manifest properties
 	manifest {
 		attributes \
