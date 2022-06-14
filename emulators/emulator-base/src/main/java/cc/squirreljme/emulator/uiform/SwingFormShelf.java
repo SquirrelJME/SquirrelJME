@@ -574,7 +574,7 @@ public final class SwingFormShelf
 			
 				// Background for canvases
 			case UIMetricType.COLOR_CANVAS_BACKGROUND:
-				return UIManager.getColor("desktop")
+				return UIManager.getColor("Panel.background")
 					.getRGB() & SwingFormShelf._COLOR_MASK;
 				
 				// Vibration not supported
