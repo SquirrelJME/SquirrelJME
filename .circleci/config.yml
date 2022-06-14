@@ -76,6 +76,10 @@ jobs:
           shell: bash.exe
           name: Construct Standalone
           command: ./gradlew :emulators:standalone:shadowJar --no-daemon --console plain --continue --parallel
+      - run:
+          shell: bash.exe
+          name: Remove distracting JAR, if any
+          command: rm emulators/standalone/build/libs/standalone-*.jar
       - store_artifacts:
           path: emulators/standalone/build/libs/
           destination: .
@@ -186,6 +190,9 @@ jobs:
       - run:
           name: Construct Standalone
           command: ./gradlew :emulators:standalone:shadowJar --no-daemon --console plain --continue --parallel
+      - run:
+          name: Remove distracting JAR, if any
+          command: rm emulators/standalone/build/libs/standalone-*.jar
       - store_artifacts:
           path: emulators/standalone/build/libs/
           destination: .
@@ -266,6 +273,9 @@ jobs:
       - run:
           name: Construct Standalone
           command: ./gradlew :emulators:standalone:shadowJar --no-daemon --console plain --continue --parallel
+      - run:
+          name: Remove distracting JAR, if any
+          command: rm emulators/standalone/build/libs/standalone-*.jar
       - store_artifacts:
           path: emulators/standalone/build/libs/
           destination: .
