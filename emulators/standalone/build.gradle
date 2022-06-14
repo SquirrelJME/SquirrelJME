@@ -57,6 +57,15 @@ static String flatClasspath(Project project) {
 			VMType.SPRINGCOAT) as List<Path>))
 }
 
+static java.nio.file.Path nameToDiskFile(java.nio.file.Path jarOut,
+	String name) {
+	java.nio.file.Path diskFile = jarOut
+	for (String splice : name.split("[\\\\/]"))
+		diskFile = diskFile.resolve(splice)
+		
+	return diskFile
+}
+
 // Prefix for included JAR resources
 String MERGED_PREFIX = "SQUIRRELJME.SQC"
 
@@ -72,7 +81,46 @@ task collateResourceJars {
 	// Inputs for this, it is just all of the input JARs and such
 	inputs.files(project.provider({ -> VMHelpers.fullSuiteLibraries(
 		rootProject.tasks.getByName("fullSpringCoat")) as Iterable<Path>}))
-	//outputs.file(processResources.getOutputs().files.getSingleFile())
+	outputs.files(project.provider({ ->
+			java.nio.file.Path outBase = processResources.getOutputs().
+				files.getSingleFile().toPath().resolve(MERGED_PREFIX)
+				
+			Set<java.nio.file.Path> result = new LinkedHashSet<>()
+			
+			// Suites list
+			result.add(outBase.resolve("suites.list"))
+			
+			// Process each JAR
+			for (File jarFile : collateResourceJars.getInputs()
+				.files.asList()) {
+				java.nio.file.Path jarPath = jarFile.toPath()
+				java.nio.file.Path jarName = jarPath.getFileName()
+				java.nio.file.Path jarOut = outBase.resolve(jarName)
+				
+				// JAR contents
+				result.add(jarOut.resolve("META-INF")
+					.resolve("squirreljme").resolve("resources.list"))
+				
+				// Contents of the JAR
+				try (InputStream jarIn = Files.newInputStream(jarPath,
+						StandardOpenOption.READ);
+					ZipInputStream jar = new ZipInputStream(jarIn)) {
+					for (;;) {
+						ZipEntry entry = jar.getNextEntry()
+						if (entry == null)
+							break
+						
+						if (entry.isDirectory())
+							continue
+						
+						// Where is this file going?
+						result.add(nameToDiskFile(jarOut, name))
+					}
+				}
+			}
+			
+			return result
+		}))
 	
 	// Up to date when dependencies are updated
 	outputs.upToDateWhen(new VMRunUpToDateWhen(
@@ -133,7 +181,7 @@ task collateResourceJars {
 			Files.createDirectories(jarOut)
 			
 			// Read the ZIP and process
-			List<String> jarContent = new ArrayList<>();
+			List<String> jarContent = new ArrayList<>()
 			try (InputStream jarIn = Files.newInputStream(jarPath,
 					StandardOpenOption.READ);
 				ZipInputStream jar = new ZipInputStream(jarIn)) {
@@ -150,9 +198,7 @@ task collateResourceJars {
 					jarContent.add(name)
 					
 					// Find where it goes
-					java.nio.file.Path diskFile = jarOut;
-					for (String splice : name.split("[\\\\/]"))
-						diskFile = diskFile.resolve(splice)
+					java.nio.file.Path diskFile = nameToDiskFile(jarOut, name)
 					
 					// Setup parent
 					Files.createDirectories(diskFile.getParent())
