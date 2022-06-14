@@ -289,3 +289,10 @@ With regard to <https://github.com/SquirrelJME/SquirrelJME/issues/6> if in
 the event this occurs, building with Gradle will attempt to use the
 Eclipse Java Compiler to compile the project. It may be forced by passing
 to Gradle `-Dforce.ecj=true`.
+
+# Standalone Java Based Emulators
+
+A standalone Java emulator Jar which contains all of the available test
+virtual machine implementations is available when calling the task:
+
+ * `:emulators:standalone:shadowJar`
