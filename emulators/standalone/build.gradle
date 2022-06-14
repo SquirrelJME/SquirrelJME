@@ -25,9 +25,12 @@ dependencies {
 }
 
 java {
-	// Use Java 8
-	compileJava.sourceCompatibility = JavaVersion.VERSION_1_8
-	compileJava.targetCompatibility = JavaVersion.VERSION_1_8
+	// Use a fixed version of the JVM
+	compileJava
+	{
+		sourceCompatibility = JavaVersion.VERSION_1_8
+		targetCompatibility = JavaVersion.VERSION_1_8
+	}
 }
 
 // Mapper for Jar names on files to straight file names

@@ -3,7 +3,6 @@ plugins
 	// C++ needs to be first otherwise the build will break
 	id "cpp-library"
 	id "java-library"
-	id "java-test-fixtures"
 }
 
 description = "This library provides the base support for testing and " +
@@ -19,14 +18,6 @@ if (project.hasProperty("squirreljmeTermuxCompiler") &&
 	library {
 			targetMachines.add(machines.linux.x86_64)
 	}
-}
-
-// Although it would be useful to use Java 8, we have to stay on Java 7
-// because SquirrelJME is a Java 7 VM.
-compileJava
-{
-	sourceCompatibility = JavaVersion.VERSION_1_7
-	targetCompatibility = JavaVersion.VERSION_1_7
 }
 
 // Due to the combination of C++ and Java these dependencies have to be very
@@ -67,9 +58,12 @@ jar {
 }
 
 java {
-	// Use Java 8
-	compileJava.sourceCompatibility = JavaVersion.VERSION_1_8
-	compileJava.targetCompatibility = JavaVersion.VERSION_1_8
+	// Use a fixed version of the JVM
+	compileJava
+	{
+		sourceCompatibility = JavaVersion.VERSION_1_8
+		targetCompatibility = JavaVersion.VERSION_1_8
+	}
 	
 	javadoc.options.tags = [ "squirreljme.property",
 		"squirreljme.env",
