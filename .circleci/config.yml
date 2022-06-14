@@ -187,11 +187,9 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          shell: bash.exe
           name: Construct Standalone
           command: ./gradlew :emulators:standalone:shadowJar --console plain --continue --parallel
       - run:
-          shell: bash.exe
           name: Move standalone down
           command: cp emulators/standalone/build/lib/squirreljme-standalone-*.jar .
       - store_artifacts:
