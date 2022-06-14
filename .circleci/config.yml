@@ -58,6 +58,31 @@ jobs:
           path: c:\users\circleci\test-results
       - store_artifacts:
           path: c:\users\circleci\test-results
+
+  build_windows_standalone:
+    executor:
+      name: win/default
+      shell: cmd.exe
+      size: xlarge
+    environment:
+      # Use a reduced amount of memory to all of the VMs so that it does not
+      # try grabbing all the memory that is available to the system.
+      JAVA_OPTS: -Xmx3g
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          shell: bash.exe
+          name: Construct Standalone
+          command: ./gradlew :emulators:standalone --console plain --continue --parallel
+      - run:
+          shell: bash.exe
+          name: Move standalone down
+          command: cp emulators/standalone/build/lib/squirreljme-standalone-*.jar .
+      - store_artifacts:
+          path: squirreljme-standalone-*.jar
+
   ratufacoat_build_windows:
     executor:
       name: win/default
@@ -133,6 +158,45 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results
+
+  build_macosx_standalone:
+    macos:
+      xcode: 13.2.1
+    resource_class: macos.x86.medium.gen2
+    environment:
+      # Do not auto-update brew as this takes forever and we really just want
+      # a single package
+      HOMEBREW_NO_AUTO_UPDATE: 1
+
+      # Do not auto-clean brew, this wastes time and everything will be thrown
+      # out when the container finishes anyway
+      HOMEBREW_CLEANUP_MAX_AGE_DAYS: 730
+
+      # Do not send analytics
+      HOMEBREW_NO_ANALYTICS: 1
+
+      # Do not cleanup after installation
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
+    steps:
+      - checkout
+      - run:
+          # Only OpenJDK is required, Gradle always uses Gradle wrapper so
+          # we do not need that
+          name: Install OpenJDK 11
+          command: brew install openjdk@11
+      - attach_workspace:
+          at: .
+      - run:
+          shell: bash.exe
+          name: Construct Standalone
+          command: ./gradlew :emulators:standalone --console plain --continue --parallel
+      - run:
+          shell: bash.exe
+          name: Move standalone down
+          command: cp emulators/standalone/build/lib/squirreljme-standalone-*.jar .
+      - store_artifacts:
+          path: squirreljme-standalone-*.jar
+
   ratufacoat_build_macosx:
     macos:
       xcode: 11.3.0
@@ -196,6 +260,24 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results
+  build_linux_standalone:
+    executor: buildenv
+    resource_class: xlarge
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Construct Standalone
+          command: ./gradlew :emulators:standalone --console plain --continue --parallel
+      - run:
+          name: Move standalone down
+          command: cp emulators/standalone/build/lib/squirreljme-standalone-*.jar .
+      - store_artifacts:
+          path: squirreljme-standalone-*.jar
 
   ### OSS SonaType Nexus
   sonatype_publish:
@@ -474,6 +556,9 @@ workflows:
 #      - test_summercoat:
 #          requires:
 #            - construct_libTestSummerCoat
+      - build_linux_standalone:
+           requires:
+             - build_linux
 
       # Mac OS X runs decently however the jobs for it have a higher cost, so
       # only perform builds and tests for trunk to lower costs.
@@ -485,6 +570,9 @@ workflows:
 #            branches:
 #              only:
 #                - trunk
+      - build_macosx_standalone:
+           requires:
+             - build_macosx
 
       # Building on Windows is currently expensive and takes longer, so only
       # run these builds on trunk to lower costs.
@@ -496,6 +584,9 @@ workflows:
 #            branches:
 #              only:
 #                - trunk
+      - build_windows_standalone:
+           requires:
+             - build_windows
 
       # Publishing to OSS Sonatype Nexus (https://oss.sonatype.org)
       - sonatype_publish:

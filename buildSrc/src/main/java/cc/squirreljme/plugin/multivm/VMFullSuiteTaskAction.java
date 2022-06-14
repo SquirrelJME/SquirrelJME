@@ -73,16 +73,7 @@ public class VMFullSuiteTaskAction
 		Project root = __task.getProject().getRootProject();
 		
 		// We need all of the libraries to load and to be available
-		Collection<Path> libPath = new LinkedHashSet<>();
-		for (Task dep : __task.getTaskDependencies().getDependencies(__task))
-		{
-			//System.err.printf("Task: %s %s%n", dep, dep.getClass());
-			
-			// Load executable library tasks from our own VM
-			if (dep instanceof VMExecutableTask)
-				for (File file : dep.getOutputs().getFiles())
-					libPath.add(file.toPath());
-		}
+		Collection<Path> libPath = VMHelpers.fullSuiteLibraries(__task);
 		
 		// Additional items onto the library set?
 		String exLib = System.getProperty(
