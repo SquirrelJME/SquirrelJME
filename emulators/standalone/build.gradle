@@ -24,6 +24,12 @@ dependencies {
 	implementation project(":emulators:springcoat-vm")
 }
 
+java {
+	// Use Java 8
+	compileJava.sourceCompatibility = JavaVersion.VERSION_1_8
+	compileJava.targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 // Mapper for Jar names on files to straight file names
 static Iterable<java.nio.file.Path> mapBaseNameP(Iterable<Path> input) {
 	List<java.nio.file.Path> result = new ArrayList<>()
