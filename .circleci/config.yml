@@ -79,7 +79,7 @@ jobs:
       - run:
           shell: bash.exe
           name: Move standalone down
-          command: cp emulators/standalone/build/lib/squirreljme-standalone-*.jar .
+          command: cp emulators/standalone/build/libs/squirreljme-standalone-*.jar .
       - store_artifacts:
           path: squirreljme-standalone-*.jar
 
@@ -191,7 +191,7 @@ jobs:
           command: ./gradlew :emulators:standalone:shadowJar --console plain --continue --parallel
       - run:
           name: Move standalone down
-          command: cp emulators/standalone/build/lib/squirreljme-standalone-*.jar .
+          command: cp emulators/standalone/build/libs/squirreljme-standalone-*.jar .
       - store_artifacts:
           path: squirreljme-standalone-*.jar
 
@@ -273,7 +273,7 @@ jobs:
           command: ./gradlew :emulators:standalone:shadowJar --console plain --continue --parallel
       - run:
           name: Move standalone down
-          command: cp emulators/standalone/build/lib/squirreljme-standalone-*.jar .
+          command: cp emulators/standalone/build/libs/squirreljme-standalone-*.jar .
       - store_artifacts:
           path: squirreljme-standalone-*.jar
 
