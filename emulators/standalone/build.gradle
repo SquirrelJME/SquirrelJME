@@ -75,6 +75,28 @@ task collateResourceJars {
 		
 		// Delete old directory set first since it will have a bunch of
 		// old files in it and such...
+		Set<java.nio.file.Path> deleteFiles = new LinkedHashSet<>()
+		Set<java.nio.file.Path> deleteDirs = new LinkedHashSet<>()
+		Files.walk(outBase).forEach({
+				if (Files.isDirectory(it))
+					deleteDirs.add(it)
+				else
+					deleteFiles.add(it)
+			})
+		for (Set<java.nio.file.Path> rawByes : [deleteFiles, deleteDirs]) {
+			List<java.nio.file.Path> byes = new ArrayList<>(rawByes)
+			Collections.reverse(byes)
+			
+			for (java.nio.file.Path bye : byes) {
+				logger.lifecycle(String.format("Cleanup up %s...", bye))
+				
+				try {
+					Files.deleteIfExists(bye)
+				} catch (IOException e) {
+					e.printStackTrace()
+				}
+			}
+		}
 		
 		// Make sure it exists
 		Files.createDirectories(outBase)
@@ -122,6 +144,10 @@ task collateResourceJars {
 					
 					// Setup parent
 					Files.createDirectories(diskFile.getParent())
+					
+					// Note it
+					logger.lifecycle(String.format("Adding %s...",
+						outBase.relativize(diskFile)))
 					
 					// Copy down file
 					try (OutputStream out = Files.newOutputStream(diskFile,
