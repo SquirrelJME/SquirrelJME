@@ -39,7 +39,7 @@ jobs:
           # According to documentation, Gradle on Windows has trouble and tries
           # to make way too many workers which causes extreme resource.
           # contention --max-workers=2
-          command: gradlew build testHosted -x javadoc -x javadocJar -x testFixturesJavaDoc -x sourcesJar --console plain --continue --parallel
+          command: gradlew build testHosted -x javadoc -x javadocJar -x sourcesJar --console plain --continue --parallel
       - run:
           shell: bash.exe
           name: Save test results
@@ -150,7 +150,7 @@ jobs:
           command: brew install openjdk@11
       - run:
           name: Gradle Build and Test
-          command: ./gradlew build testHosted -x javadoc -x javadocJar -x testFixturesJavaDoc -x sourcesJar --console plain --continue --parallel
+          command: ./gradlew build testHosted -x javadoc -x javadocJar -x sourcesJar --console plain --continue --parallel
       - persist_to_workspace:
           root: .
           paths:
