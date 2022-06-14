@@ -657,9 +657,6 @@ public final class SwingFormShelf
 		if (__widget == null)
 			throw new MLECallError("No widget.");
 		
-		Debugging.debugNote("widgetPropertyInt(%s, %d, %d)",
-			__widget, __intProp, __sub);
-		
 		// Special property to get the type of item the widget is
 		if (__intProp == UIWidgetProperty.INT_UIITEM_TYPE)
 			return ((__widget instanceof SwingForm) ? UIItemType.FORM :
