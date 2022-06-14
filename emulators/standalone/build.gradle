@@ -61,8 +61,9 @@ static String flatClasspath(Project project) {
 String MERGED_PREFIX = "SQUIRRELJME.SQC"
 
 task collateResourceJars {
-	dependsOn processResources, new VMFullSuiteDepends(collateResourceJars,
+	dependsOn new VMFullSuiteDepends(collateResourceJars,
 		SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT)
+	mustRunAfter processResources
 	
 	// About this task
 	group "squirreljme"
@@ -98,7 +99,7 @@ task collateResourceJars {
 				Collections.reverse(byes)
 				
 				for (java.nio.file.Path bye : byes) {
-					logger.lifecycle(String.format("Cleanup up %s...", bye))
+					logger.lifecycle(String.format("Cleaning %s...", bye))
 					
 					try {
 						Files.deleteIfExists(bye)
@@ -197,6 +198,9 @@ task collateResourceJars {
 
 // Jar Configuration
 jar {
+	dependsOn processResources, collateResourceJars
+	mustRunAfter collateResourceJars
+	
 	// We need to set specific manifest properties
 	manifest {
 		attributes \
@@ -221,6 +225,7 @@ jar {
 // Configuration for ShadowJar
 shadowJar {
 	dependsOn collateResourceJars
+	mustRunAfter collateResourceJars
 	
 	// Always SquirrelJME
 	archiveBaseName.set("squirreljme-standalone")
