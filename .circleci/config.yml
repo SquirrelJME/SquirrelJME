@@ -54,6 +54,14 @@ jobs:
             mkdir -p /c/users/circleci/test-results/csv-windows
             /usr/bin/find . -type f -regex '.*/vm-test-hosted/csv/.*\.csv' -exec cp {} /c/users/circleci/test-results/csv-windows/ \;
           when: always
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
       - store_test_results:
           path: c:\users\circleci\test-results
       - store_artifacts:
@@ -143,6 +151,14 @@ jobs:
       - run:
           name: Gradle Build and Test
           command: ./gradlew build testHosted -x javadoc -x javadocJar -x testFixturesJavaDoc -x sourcesJar --console plain --continue --parallel
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
       - run:
           name: Save test results
           command: |
