@@ -690,6 +690,9 @@ public class PNGReader
 			// Go through each byte in the scanline
 			for (int dx = 0; dx < scanLen; dx++)
 			{
+				// Virtual X position
+				int vX = dx / __bpp;
+				
 				// The current position in the buffer
 				int di = ibase + dx;
 				
@@ -703,14 +706,14 @@ public class PNGReader
 				int x = __in.read() & 0xFF;
 				
 				// The byte to the left of (x, y) [-1, 0]
-				int a = (dx <= 0 || di - __bpp < 0 ?
+				int a = (vX <= 0 ?
 					0 : rv[di - __bpp]) & 0xFF;
 				
 				// The byte to the top of (x, y) [0, -1]
 				int b = (dy <= 0 ? 0 : rv[di - scanLen]) & 0xFF;
 				
 				// The byte to the top and left of (x, y) [-1, -1]
-				int c = ((dx <= 0 || dy <= 0 || (di - scanLen) - __bpp < 0) ?
+				int c = (vX <= 0 || dy <= 0 ?
 					0 : rv[(di - scanLen) - __bpp]) & 0xFF;
 				
 				// Depends on the decoding algorithm
