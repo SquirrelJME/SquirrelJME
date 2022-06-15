@@ -301,7 +301,7 @@ public class PNGReader
 			case 6:
 				return PNGReader.__roundNumBitsToByte(bitDepth * 4);
 			
-				// YA (Grayscale + Alpha)
+				// YA (Grayscale + Alpha), aka 4
 			default:
 				return PNGReader.__roundNumBitsToByte(bitDepth * 2);
 		}
@@ -505,21 +505,21 @@ public class PNGReader
 		if (this._colorType != 3)
 			return;
 		
-		// Read color color
-		int numcolors = __len / 3,
-			maxcolors = 1 << this._bitDepth;
-		if (numcolors > maxcolors)
-			numcolors = maxcolors;
+		// Determine the number of colors
+		int numColors = __len / 3;
+		int maxColors = 1 << this._bitDepth;
+		if (numColors > maxColors)
+			numColors = maxColors;
 		
 		// Set
-		this._numcolors = numcolors;
-		this._maxcolors = maxcolors;
+		this._numcolors = numColors;
+		this._maxcolors = maxColors;
 		
 		// Load palette data, any remaining colors are left uninitialized and
 		// are fully transparent or just black
-		int[] palette = new int[maxcolors];
+		int[] palette = new int[maxColors];
 		this._palette = palette;
-		for (int i = 0; i < numcolors; i++)
+		for (int i = 0; i < numColors; i++)
 		{
 			int r = __in.readUnsignedByte(),
 				g = __in.readUnsignedByte(),
@@ -737,7 +737,7 @@ public class PNGReader
 						
 						// Average
 					case 3:
-						res = x + ((a + b) >>> 2);
+						res = x + ((a + b) >>> 1);
 						break;
 						
 						// Paeth, this probably is not correct
