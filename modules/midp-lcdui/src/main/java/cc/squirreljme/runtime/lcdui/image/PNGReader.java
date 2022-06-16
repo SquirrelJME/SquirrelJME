@@ -740,7 +740,7 @@ public class PNGReader
 						res = x + ((a + b) >>> 1);
 						break;
 						
-						// Paeth, this probably is not correct
+						// Paeth
 					case 4:
 						{
 							// Calculate these
