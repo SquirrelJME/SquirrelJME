@@ -1,0 +1,9 @@
+# 2022/06/13
+
+## 09:36
+
+I think I want to fork off the current SummerCoat stuff and then just delete
+all of it from the branch to concentrate on SpringCoat only like I am currently
+doing. There is a bunch of stuff that is not needed at all and I think a smaller
+patch would be more beneficial. Of course nothing would be lost just shoved
+into another branch.

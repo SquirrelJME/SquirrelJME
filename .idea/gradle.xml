@@ -16,6 +16,7 @@
             <option value="$PROJECT_DIR$/emulators" />
             <option value="$PROJECT_DIR$/emulators/emulator-base" />
             <option value="$PROJECT_DIR$/emulators/springcoat-vm" />
+            <option value="$PROJECT_DIR$/emulators/standalone" />
             <option value="$PROJECT_DIR$/modules" />
             <option value="$PROJECT_DIR$/modules/aot" />
             <option value="$PROJECT_DIR$/modules/aot-springcoat" />

@@ -340,6 +340,30 @@ public final class VMHelpers
 	}
 	
 	/**
+	 * Returns the full suite libraries for a given task.
+	 * 
+	 * @param __task The task to get.
+	 * @return The path for the full suite libraries.
+	 * @since 2022/06/13
+	 */
+	public static Collection<Path> fullSuiteLibraries(Task __task)
+		throws NullPointerException
+	{
+		Collection<Path> libPath = new LinkedHashSet<>();
+		for (Task dep : __task.getTaskDependencies().getDependencies(__task))
+		{
+			//System.err.printf("Task: %s %s%n", dep, dep.getClass());
+			
+			// Load executable library tasks from our own VM
+			if (dep instanceof VMExecutableTask)
+				for (File file : dep.getOutputs().getFiles())
+					libPath.add(file.toPath());
+		}
+		
+		return libPath;
+	}
+	
+	/**
 	 * Gets the extension from the given path.
 	 * 
 	 * @param __path The path to get from.
@@ -598,8 +622,13 @@ public final class VMHelpers
 		
 		// Map projects and tasks back into tasks
 		for (ProjectAndTaskName depend : __in)
-			result.add(__class.cast(__project.project(depend.project)
-				.getTasks().getByName(depend.task)));
+		{
+			T task = __class.cast(__project.project(depend.project)
+				.getTasks().findByName(depend.task));
+			
+			if (task != null)
+				result.add(task);
+		}
 		
 		return Collections.unmodifiableCollection(result);
 	}
