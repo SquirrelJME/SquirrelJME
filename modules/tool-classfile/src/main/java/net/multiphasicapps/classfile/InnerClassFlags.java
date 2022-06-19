@@ -10,6 +10,7 @@
 package net.multiphasicapps.classfile;
 
 import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 
 /**
@@ -116,7 +117,7 @@ public final class InnerClassFlags
 					mask |= v.javaBitMask();
 			}
 			
-			this._cflags = new WeakReference<>((rv = new ClassFlags(mask)));
+			this._cflags = new SoftReference<>((rv = new ClassFlags(mask)));
 		}
 		
 		return rv;
