@@ -322,7 +322,7 @@ public class Form
 		if (display == null)
 			return;
 		
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		UIFormBracket uiForm = this._uiForm;
 		FormLayoutPolicy layout = this._layout;
 		

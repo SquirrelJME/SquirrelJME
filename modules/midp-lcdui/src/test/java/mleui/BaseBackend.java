@@ -9,10 +9,12 @@
 
 package mleui;
 
+import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.fb.FBUIBackend;
 import cc.squirreljme.runtime.lcdui.mle.headless.HeadlessAttachment;
@@ -48,6 +50,10 @@ public abstract class BaseBackend
 	public void test(String __backend)
 		throws Throwable
 	{
+		// Debugging
+		/*DebugShelf.verbose(VerboseDebugFlag.ALL);
+		DebugShelf.verboseInternalThread(VerboseDebugFlag.ALL);*/
+		
 		UIBackend backend = BaseBackend.__getBackend(__backend);
 		this.test(backend, backend.displays()[0]);
 	}

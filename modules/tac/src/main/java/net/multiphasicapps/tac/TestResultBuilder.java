@@ -125,10 +125,10 @@ public final class TestResultBuilder
 		{
 			// Use formatted values
 			secondary.put(__key.toLowerCase(), __val);
-			
-			// Debug
-			Debugging.debugNote("SET %s=%s", __key, __val);
 		}
+		
+		// Debug
+		Debugging.debugNote("SET %s=%s", __key, __val);
 	}
 	
 	/**

@@ -13,7 +13,7 @@ import cc.squirreljme.runtime.cldc.util.UnsignedInteger;
 
 /**
  * Software math operations on 32-bit floats.
- *
+ * 
  * This source file uses parts of the Berkeley SoftFloat Release 3e library,
  * converted into Java. See the 3rd party licenses documentation.
  *
@@ -25,6 +25,10 @@ public final class SoftFloat
 	/** The sign mask. */
 	public static final int SIGN_MASK =
 		0b1000_0000_0000_0000__0000_0000_0000_0000;
+	
+	/** The zero check mask. */
+	public static final int ZERO_CHECK_MASK =
+		0x7FFFFFFF;
 	
 	/** Exponent Mask. */
 	public static final int EXPONENT_MASK =
@@ -686,7 +690,7 @@ public final class SoftFloat
     	return __a >>> __dist |
 			(((__a & ((1L << __dist) - 1)) != 0) ? 1 : 0);
 	}
-
+	
 	/**
 	 * Returns whether the sign bit is set.
 	 * 

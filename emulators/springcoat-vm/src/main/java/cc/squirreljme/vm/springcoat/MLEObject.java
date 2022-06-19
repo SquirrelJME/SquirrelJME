@@ -11,6 +11,8 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import net.multiphasicapps.classfile.MethodDescriptor;
@@ -214,6 +216,142 @@ public enum MLEObject
 		}
 	},
 	
+	/** {@link ObjectShelf#arrayFill(boolean[], int, int, boolean)}. */
+	ARRAY_FILL_BOOLEAN("arrayFill:([ZIIZ)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/12/26
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEObject.__arrayFill(SpringArrayObjectBoolean.class,
+				__args[0], (int)__args[1], (int)__args[2], __args[3]);
+			
+			return null;
+		}
+	},
+	
+	/** {@link ObjectShelf#arrayFill(byte[], int, int, byte)}. */
+	ARRAY_FILL_BYTE("arrayFill:([BIIB)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/12/26
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEObject.__arrayFill(SpringArrayObjectByte.class,
+				__args[0], (int)__args[1], (int)__args[2], __args[3]);
+			
+			return null;
+		}
+	},
+	
+	/** {@link ObjectShelf#arrayFill(short[], int, int, short)}. */
+	ARRAY_FILL_SHORT("arrayFill:([SIIS)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/12/26
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEObject.__arrayFill(SpringArrayObjectShort.class,
+				__args[0], (int)__args[1], (int)__args[2], __args[3]);
+			
+			return null;
+		}
+	},
+	
+	/** {@link ObjectShelf#arrayFill(char[], int, int, char)}. */
+	ARRAY_FILL_CHAR("arrayFill:([CIIC)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/12/26
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEObject.__arrayFill(SpringArrayObjectChar.class,
+				__args[0], (int)__args[1], (int)__args[2], __args[3]);
+			
+			return null;
+		}
+	},
+	
+	/** {@link ObjectShelf#arrayFill(int[], int, int, int)}. */
+	ARRAY_FILL_INT("arrayFill:([IIII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/12/26
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEObject.__arrayFill(SpringArrayObjectInteger.class,
+				__args[0], (int)__args[1], (int)__args[2], __args[3]);
+			
+			return null;
+		}
+	},
+	
+	/** {@link ObjectShelf#arrayFill(long[], int, int, long)}. */
+	ARRAY_FILL_LONG("arrayFill:([JIIJ)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/12/26
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEObject.__arrayFill(SpringArrayObjectLong.class,
+				__args[0], (int)__args[1], (int)__args[2], __args[3]);
+			
+			return null;
+		}
+	},
+	
+	/** {@link ObjectShelf#arrayFill(float[], int, int, float)}. */
+	ARRAY_FILL_FLOAT("arrayFill:([FIIF)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/12/26
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEObject.__arrayFill(SpringArrayObjectFloat.class,
+				__args[0], (int)__args[1], (int)__args[2], __args[3]);
+			
+			return null;
+		}
+	},
+	
+	/** {@link ObjectShelf#arrayFill(double[], int, int, double)}. */
+	ARRAY_FILL_DOUBLE("arrayFill:([DIID)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/12/26
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEObject.__arrayFill(SpringArrayObjectDouble.class,
+				__args[0], (int)__args[1], (int)__args[2], __args[3]);
+			
+			return null;
+		}
+	},
+	
 	/** {@link ObjectShelf#arrayLength(Object)}. */
 	ARRAY_LENGTH("arrayLength:(Ljava/lang/Object;)I")
 	{
@@ -359,7 +497,13 @@ public enum MLEObject
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			SpringObject target = MLEType.__notNullObject(__args[0]);
-			boolean notifyAll = (int)__args[1] != 0; 
+			boolean notifyAll = (int)__args[1] != 0;
+			
+			// Verbose debug?
+			if (__thread.verboseCheck(VerboseDebugFlag.MONITOR_NOTIFY))
+				__thread.verboseEmit(
+					"Monitor Notify: %s on %s (%s)",
+					target, __thread, (notifyAll ? "all" : "once"));
 			
 			// Signal the monitor
 			return target.monitor().monitorNotify(__thread.thread, notifyAll);
@@ -379,6 +523,12 @@ public enum MLEObject
 			SpringObject target = MLEType.__notNullObject(__args[0]);
 			long ms = (long)__args[1];
 			int ns = (int)__args[2];
+			
+			// Verbose debug?
+			if (__thread.verboseCheck(VerboseDebugFlag.MONITOR_WAIT))
+				__thread.verboseEmit(
+					"Monitor Wait: %s on %s (for %d ms %d ns)",
+					target, __thread, ms, ns);
 			
 			return target.monitor().monitorWait(__thread.thread, ms, ns);
 		}
@@ -456,5 +606,39 @@ public enum MLEObject
 		{
 			throw new SpringMLECallError("Invalid copy.", e);
 		}
+	}
+	
+	/**
+	 * Fills the array with the given data.
+	 * 
+	 * @param <A> The type of data to fill with.
+	 * @param __type The type of array to fill.
+	 * @param __b The buffer.
+	 * @param __o The offset.
+	 * @param __l The length.
+	 * @param __v The value to set.
+	 * @throws MLECallError On null or incorrect arguments, or if the offset
+	 * and/or length are outside of the array bounds.
+	 * @since 2021/12/26
+	 */
+	static <A extends SpringArrayObject> void __arrayFill(Class<A> __type,
+		Object __b, int __o, int __l, Object __v)
+		throws MLECallError
+	{
+		if (__b == null || __v == null)
+			throw new SpringMLECallError("NARG");
+		
+		// Must be this type
+		if (!__type.isInstance(__b))
+			throw new SpringMLECallError("Not a " + __type);
+		SpringArrayObject array = __type.cast(__b);
+		
+		// Check bounds
+		if (__o < 0 || __l < 0 || (__o + __l) > array.length())
+			throw new SpringMLECallError("IOOB");
+		
+		// Perform the fill
+		for (int i = 0; i < __l; i++)
+			array.set(__o + i, __v);
 	}
 }

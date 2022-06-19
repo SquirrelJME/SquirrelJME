@@ -23,6 +23,8 @@ import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.util.Map;
 import java.util.TreeMap;
@@ -184,6 +186,15 @@ public enum MLEDispatcher
 				"Unknown MLE Shelf Function: %s::%s", __class, __func));
 		
 		// Call it
-		return target.handle(__thread, __args);
+		try
+		{
+			return target.handle(__thread, __args);
+		}
+		catch (MLECallError e)
+		{
+			throw new SpringMLECallError(
+				String.format("Unwrapped MLECallError calling %s:%s",
+					__class, __func), e);
+		}
 	}
 }

@@ -9,7 +9,7 @@
 
 package javax.microedition.rms;
 
-import cc.squirreljme.runtime.cldc.lang.ImplementationClass;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.rms.SuiteIdentifier;
 import cc.squirreljme.runtime.rms.TemporaryVinylRecord;
@@ -85,8 +85,8 @@ public class RecordStore
 		VinylRecord vr;
 		try
 		{
-			String vclass = ImplementationClass.implementationClass(
-				VinylRecord.class.getName());
+			Debugging.todoNote("Implement storage backed RMS.");
+			String vclass = null;//Debugging.<String>todoObject();
 			vr = (vclass == null ? new TemporaryVinylRecord() :
 				(VinylRecord)Class.forName(vclass).newInstance());
 		}

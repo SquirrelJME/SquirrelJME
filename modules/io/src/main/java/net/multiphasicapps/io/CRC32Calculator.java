@@ -19,35 +19,27 @@ package net.multiphasicapps.io;
 public class CRC32Calculator
 	implements Checksum
 {
-	/** Working buffer size. */
-	private static final int _WORK_BUFFER =
-		32;
-	
 	/** The polynomial to use. */
 	protected final int polynomial;
 	
 	/** The final XOR value. */
-	protected final int finalxor;
+	protected final int finalXor;
 	
 	/** Reflect the data? */
-	protected final boolean reflectdata;
+	protected final boolean reflectData;
 	
 	/** Reflect the remainder? */
-	protected final boolean reflectremainder;
+	protected final boolean reflectRemainder;
 	
 	/** The initial remainder. */
-	protected final int initremainder;
+	protected final int initRemainder;
 	
 	/** The CRC Table. */
-	final __CRC32Table__ _table;
+	final CRC32Table _table;
 	
 	/** Solo buffer. */
 	private final byte[] _solo =
 		new byte[1];
-	
-	/** The work buffer. */
-	private final byte[] _work =
-		new byte[CRC32Calculator._WORK_BUFFER];
 	
 	/** The current CRC value (remainder). */
 	private volatile int _remainder;
@@ -66,15 +58,15 @@ public class CRC32Calculator
 		int __initrem, int __fxor)
 	{
 		// Set
-		this.reflectdata = __rdata;
-		this.reflectremainder = __rrem;
+		this.reflectData = __rdata;
+		this.reflectRemainder = __rrem;
 		this.polynomial = __poly;
-		this.finalxor = __fxor;
-		this.initremainder = __initrem;
+		this.finalXor = __fxor;
+		this.initRemainder = __initrem;
 		this._remainder = __initrem;
 		
 		// Setup table
-		this._table = __CRC32Table__.__table(__poly);
+		this._table = CRC32Table.calculateTable(__poly);
 	}
 	
 	/**
@@ -86,8 +78,8 @@ public class CRC32Calculator
 	{
 		// Return the current CRC
 		int rem = this._remainder;
-		return (this.reflectremainder ? Integer.reverse(rem) : rem) ^
-			this.finalxor;
+		return (this.reflectRemainder ? Integer.reverse(rem) : rem) ^
+			this.finalXor;
 	}
 	
 	/**
@@ -128,7 +120,7 @@ public class CRC32Calculator
 			throw new ArrayIndexOutOfBoundsException("BAOB");
 		
 		// Read data into the work buffer
-		boolean reflectdata = this.reflectdata;
+		boolean reflectData = this.reflectData;
 		int remainder = this._remainder;
 		int[] table = this._table._table;
 		for (int i = __o, end = __o + __l; i < end; i++)
@@ -137,7 +129,7 @@ public class CRC32Calculator
 			int val = __b[i] & 0xFF;
 		
 			// Reflect the data?
-			if (reflectdata)
+			if (reflectData)
 				val = Integer.reverse(val) >>> 24;
 		
 			int d = (val ^ (remainder >>> 24));
@@ -156,7 +148,7 @@ public class CRC32Calculator
 	public final void reset()
 	{
 		// Only the remainder has to be updated
-		this._remainder = this.initremainder;
+		this._remainder = this.initRemainder;
 	}
 }
 

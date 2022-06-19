@@ -53,7 +53,7 @@ final class __CommandWidget__
 		this.action = __action;
 		this.owner = new WeakReference<>(__owner);
 		
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 
 		// Setup and register new item
 		UIItemBracket item = backend.itemNew(UIItemType.BUTTON);
@@ -97,7 +97,7 @@ final class __CommandWidget__
 	final void __update()
 	{
 		// Set item text
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		backend.widgetProperty(this._uiItem, UIWidgetProperty.STRING_LABEL,
 			0, this.action.__getLabel());
 	}

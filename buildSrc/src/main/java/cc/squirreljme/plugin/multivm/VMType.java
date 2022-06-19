@@ -299,143 +299,6 @@ public enum VMType
 		}
 	},
 	
-	/** SummerCoat virtual machine. */
-	SUMMERCOAT("SummerCoat", "sqc",
-		":emulators:summercoat-vm")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2021/05/16
-		 */
-		@Override
-		public void dumpLibrary(Task __task, boolean __isTest,
-			InputStream __in, OutputStream __out)
-			throws IOException, NullPointerException
-		{
-			if (__task == null || __in == null || __out == null)
-				throw new NullPointerException("NARG");
-			
-			// Run the specified command
-			this.__aotCommand(__task, __in, __out,
-				"dumpCompile", null);
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/08/15
-		 */
-		@Override
-		public void processLibrary(Task __task, boolean __isTest,
-			InputStream __in, OutputStream __out)
-			throws NullPointerException
-		{
-			if (__task == null || __in == null || __out == null)
-				throw new NullPointerException("NARG");
-			
-			// Need to access the config for ROM building
-			SquirrelJMEPluginConfiguration config =
-				SquirrelJMEPluginConfiguration
-				.configuration(__task.getProject());
-			
-			// Potential extra arguments
-			Collection<String> args = new ArrayList<>();
-			
-			// Is this a boot loader? This is never valid for tests as they
-			// are just extra libraries, it does not make sense to have them
-			// be loadable.
-			if (!__isTest && config.isBootLoader)
-				args.add("-boot");
-			
-			// Run the specified command
-			this.__aotCommand(__task, __in, __out,
-				"compile", args);
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/11/21
-		 */
-		@Override
-		public Iterable<Task> processLibraryDependencies(
-			VMExecutableTask __task)
-			throws NullPointerException
-		{
-			Project project = __task.getProject().getRootProject()
-				.project(":modules:aot-" +
-					this.vmName(VMNameFormat.LOWERCASE));
-			Project rootProject = project.getRootProject();
-			
-			// Make sure the AOT compiler is always up to date when this is
-			// ran, otherwise things can be very weird if it is not updated
-			// which would not be a good thing at all
-			Collection<Task> rv = new LinkedList<>();
-			for (ProjectAndTaskName task : VMHelpers.runClassTasks(project,
-				SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED))
-			{
-				Project taskProject = rootProject.project(task.project);
-				
-				// Depends on all of the classes, not just the libraries, for
-				// anything the AOT compiler uses. If the compiler changes we
-				// need to make sure the updated compiler is used!
-				rv.add(taskProject.getTasks().getByName("classes"));
-				rv.add(taskProject.getTasks().getByName("jar"));
-				
-				// The library that makes up the task is important
-				rv.add(taskProject.getTasks().getByName(task.task));
-			}
-			
-			// Make sure the hosted environment is working since it needs to
-			// be kept up to date as well
-			for (Task task : new VMEmulatorDependencies(__task,
-				VMType.HOSTED).call())
-				rv.add(task);
-			
-			return rv;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/11/27
-		 */
-		@Override
-		public void processRom(Task __task, OutputStream __out,
-			Collection<Path> __libs)
-			throws IOException, NullPointerException
-		{
-			if (__task == null || __out == null || __libs == null)
-				throw new NullPointerException("NARG");
-			
-			// Setup arguments for compilation
-			Collection<String> args = new ArrayList<>();
-			
-			// Put down paths to libraries to link together
-			for (Path path : __libs)
-				args.add(path.toString());
-			
-			// Run the specified command
-			this.__aotCommand(__task, null, __out,
-				"rom", args);
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/08/15
-		 */
-		@Override
-		public void spawnJvmArguments(Task __task, boolean __debugEligible,
-			JavaExecSpecFiller __execSpec, String __mainClass,
-			String __commonName, Map<String, String> __sysProps,
-			Path[] __libPath, Path[] __classPath, String... __args)
-			throws NullPointerException
-		{
-			// Use a common handler to execute the VM as the VMs all have
-			// the same entry point handlers and otherwise
-			this.spawnVmViaFactory(__task, __debugEligible, __execSpec,
-				__mainClass, __commonName, __sysProps, __libPath,
-				__classPath, __args);
-		}
-	},
-	
 	/* End. */
 	;
 	
@@ -491,7 +354,7 @@ public enum VMType
 	@Override
 	public boolean hasDumping()
 	{
-		return this == VMType.SUMMERCOAT;
+		return false;/*this == VMType.SUMMERCOAT;*/
 	}
 	
 	/**
@@ -501,7 +364,7 @@ public enum VMType
 	@Override
 	public final boolean hasRom()
 	{
-		return this == VMType.SUMMERCOAT;
+		return false;/*this == VMType.SUMMERCOAT;*/
 	}
 	
 	/**

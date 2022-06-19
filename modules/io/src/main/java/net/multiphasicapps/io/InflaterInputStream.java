@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 /**
@@ -32,28 +33,28 @@ public class InflaterInputStream
 		32768;
 	
 	/** No compression. */
-	static final int _TYPE_NO_COMPRESSION =
+	static final byte _TYPE_NO_COMPRESSION =
 		0b00;
 	
 	/** Fixed huffman table compression. */
-	static final int _TYPE_FIXED_HUFFMAN =
+	static final byte _TYPE_FIXED_HUFFMAN =
 		0b01;
 	
 	/** Dynamic huffman table compression. */
-	static final int _TYPE_DYNAMIC_HUFFMAN =
+	static final byte _TYPE_DYNAMIC_HUFFMAN =
 		0b10;
 	
 	/** An error. */
-	static final int _TYPE_ERROR =
+	static final byte _TYPE_ERROR =
 		0b11;
 	
 	/** The maximum number of bits in the code length tree. */
-	private static final int _MAX_BITS =
+	private static final byte _MAX_BITS =
 		15;
 	
 	/** Shuffled bit values when reading values. */
-	private static final int[] _SHUFFLE_BITS =
-		new int[]
+	private static final byte[] _SHUFFLE_BITS =
+		new byte[]
 		{
 			16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15
 		};
@@ -514,8 +515,7 @@ public class InflaterInputStream
 		
 		// Cached, erase the data because later reads may have less
 		int[] rawlitdistlens = this._rawlitdistlens;
-		for (int i = 0, n = rawlitdistlens.length; i < n; i++)
-			rawlitdistlens[i] = 0;
+		Arrays.fill(rawlitdistlens, 0);
 		
 		// Read every code
 		try
@@ -559,12 +559,11 @@ public class InflaterInputStream
 		// around it is possible that less code lengths are read, so if the
 		// higher elements have previously been set they will be used
 		int[] rawcodelens = this._rawcodelens;
-		for (int i = 0, n = rawcodelens.length; i < n; i++)
-			rawcodelens[i] = 0;
+		Arrays.fill(rawcodelens, 0);
 		
 		// Read lengths, they are just 3 bits but their placement values are
 		// shuffled since some sequences are more common than others
-		int[] hsbits = InflaterInputStream._SHUFFLE_BITS;
+		byte[] hsbits = InflaterInputStream._SHUFFLE_BITS;
 		for (int next = 0; next < __dhclen; next++)
 			rawcodelens[hsbits[next]] = this.__readBits(3, false);
 		
@@ -1089,11 +1088,9 @@ public class InflaterInputStream
 		// Initialize both arrays with zero
 		int[] bl_count = this._blcount;
 		int[] next_code = this._nextcode;
-		for (int i = 0, n = bl_count.length; i < n; i++)
-		{
-			bl_count[i] = 0;
-			next_code[i] = 0;
-		}
+		
+		Arrays.fill(bl_count, 0);
+		Arrays.fill(next_code, 0);
 		
 		// Determine the bitlength count for all of the inputs
 		for (int i = 0, p = __o; i < __l; i++, p++)

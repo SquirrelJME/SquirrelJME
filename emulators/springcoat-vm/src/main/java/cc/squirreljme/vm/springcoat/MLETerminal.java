@@ -11,7 +11,11 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.MLECallWouldFail;
 import cc.squirreljme.jvm.mle.TerminalShelf;
+import cc.squirreljme.jvm.mle.brackets.PipeBracket;
+import cc.squirreljme.jvm.mle.constants.PipeErrorType;
+import cc.squirreljme.vm.springcoat.brackets.PipeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
+import java.io.IOException;
 
 /**
  * Functions for {@link MLETerminal}.
@@ -21,8 +25,8 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 public enum MLETerminal
 	implements MLEFunction
 {
-	/** {@link TerminalShelf#close(int)}. */
-	CLOSE("close:(I)I")
+	/** {@link TerminalShelf#close(PipeBracket)}. */
+	CLOSE("close:(Lcc/squirreljme/jvm/mle/brackets/PipeBracket;)I")
 	{
 		/**
 		 * {@inheritDoc}
@@ -33,19 +37,19 @@ public enum MLETerminal
 		{
 			try
 			{
-				int fd = (int)__args[0];
+				MLETerminal.__pipe(__args[0]).pipe.close();
 				
-				return __thread.machine.terminalPipes.mleClose(fd);
+				return null;
 			}
-			catch (MLECallWouldFail e)
+			catch (IOException|MLECallWouldFail e)
 			{
 				throw new SpringMLECallError(e.getMessage(), e);
 			}
 		}
 	}, 
 	
-	/** {@link TerminalShelf#flush(int)}. */
-	FLUSH("flush:(I)I")
+	/** {@link TerminalShelf#flush(PipeBracket)}. */
+	FLUSH("flush:(Lcc/squirreljme/jvm/mle/brackets/PipeBracket;)I")
 	{
 		/**
 		 * {@inheritDoc}
@@ -56,19 +60,42 @@ public enum MLETerminal
 		{
 			try
 			{
-				int fd = (int)__args[0];
+				MLETerminal.__pipe(__args[0]).pipe.flush();
 				
-				return __thread.machine.terminalPipes.mleFlush(fd);
+				return PipeErrorType.NO_ERROR;
 			}
-			catch (MLECallWouldFail e)
+			catch (IOException|MLECallWouldFail e)
 			{
 				throw new SpringMLECallError(e.getMessage(), e);
 			}
 		}
 	},
 	
-	/** {@link TerminalShelf#write(int, int)}. */
-	WRITE_BYTE("write:(II)I")
+	/** {@link TerminalShelf#fromStandard(int)}. */
+	FROM_STANDARD("fromStandard:(I)" +
+		"Lcc/squirreljme/jvm/mle/brackets/PipeBracket;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2022/03/19
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				return new PipeObject(__thread.machine,
+					__thread.machine.terminalPipes.mleGet((int)__args[0]));
+			}
+			catch (MLECallWouldFail e)
+			{
+				throw new SpringMLECallError(e);
+			}
+		}
+	}, 
+	
+	/** {@link TerminalShelf#write(PipeBracket, int)}. */
+	WRITE_BYTE("write:(Lcc/squirreljme/jvm/mle/brackets/PipeBracket;I)I")
 	{
 		/**
 		 * {@inheritDoc}
@@ -79,20 +106,21 @@ public enum MLETerminal
 		{
 			try
 			{
-				int fd = (int)__args[0];
-				int value = (int)__args[1];
+				MLETerminal.__pipe(__args[0]).pipe
+					.write((int)__args[1]);
 				
-				return __thread.machine.terminalPipes.mleWrite(fd, value);
+				return 1;
 			}
-			catch (MLECallWouldFail e)
+			catch (IOException|MLECallWouldFail e)
 			{
 				throw new SpringMLECallError(e.getMessage(), e);
 			}
 		}
 	},
 	
-	/** {@link TerminalShelf#write(int, byte[], int, int)}. */
-	WRITE_BYTES("write:(I[BII)I")
+	/** {@link TerminalShelf#write(PipeBracket, byte[], int, int)}. */
+	WRITE_BYTES("write:(Lcc/squirreljme/jvm/mle/brackets/PipeBracket;" +
+		"[BII)I")
 	{
 		/**
 		 * {@inheritDoc}
@@ -106,15 +134,15 @@ public enum MLETerminal
 				if (!(__args[1] instanceof SpringArrayObjectByte))
 					throw new SpringMLECallError("Not a byte array.");
 				
-				int fd = (int)__args[0];
 				SpringArrayObjectByte buf = (SpringArrayObjectByte)__args[1];
 				int off = (int)__args[2];
 				int len = (int)__args[3];
 				
-				return __thread.machine.terminalPipes
-					.mleWrite(fd, buf.array(), off, len);
+				MLETerminal.__pipe(__args[0]).pipe
+					.write(buf.array(), off, len);
+				return len;
 			}
-			catch (MLECallWouldFail e)
+			catch (IOException|MLECallWouldFail e)
 			{
 				throw new SpringMLECallError(e.getMessage(), e);
 			}
@@ -151,5 +179,22 @@ public enum MLETerminal
 	public String key()
 	{
 		return this.key;
+	}
+	
+	/**
+	 * Ensures that this is a {@link PipeObject}.
+	 * 
+	 * @param __object The object to check.
+	 * @return As a {@link PipeObject}.
+	 * @throws SpringMLECallError If this is not one.
+	 * @since 2022/03/19
+	 */
+	static PipeObject __pipe(Object __object)
+		throws SpringMLECallError
+	{
+		if (!(__object instanceof PipeObject))
+			throw new SpringMLECallError("Not a PipeObject.");
+		
+		return (PipeObject)__object; 
 	}
 }

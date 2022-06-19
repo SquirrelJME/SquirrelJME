@@ -102,8 +102,13 @@ public final class SpringArrayObjectBoolean
 		// Try setting
 		try
 		{
-			this._elements[__dx] =
-				((((((Integer)__v).intValue()) & 0x1) != 0) ? true : false);
+			boolean v;
+			if (__v instanceof Integer)
+				v = (((int)__v) & 0x1) != 0;
+			else
+				v = ((boolean)__v);
+			
+			this._elements[__dx] = v;
 		}
 		
 		// {@squirreljme.error BK03 Could not set the index in the boolean

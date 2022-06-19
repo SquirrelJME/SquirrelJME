@@ -587,6 +587,10 @@ public class AdvancedGraphics
 		int tw = ex - __x;
 		int th = ey - __y;
 		
+		// Make sure the sub coordinates are in bound
+		subX = Math.min(tw, subX);
+		subY = Math.min(th, subY);
+		
 		// We might have multiplied alpha blending, or just normal blending
 		// If __alpha is true then this is 32-bit RGBA!
 		try

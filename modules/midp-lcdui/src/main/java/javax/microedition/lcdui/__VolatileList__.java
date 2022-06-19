@@ -219,7 +219,8 @@ final class __VolatileList__<T>
 	 * bounds.
 	 * @since 2020/11/21
 	 */
-	public __ChoiceEntry__ remove(int __dx)
+	@SuppressWarnings("unchecked")
+	public T remove(int __dx)
 		throws IndexOutOfBoundsException
 	{
 		Object[] values = this._values;
@@ -243,7 +244,7 @@ final class __VolatileList__<T>
 		this._values = newValues;
 		
 		// Return the old value
-		return (__ChoiceEntry__)values[__dx];
+		return (T)values[__dx];
 	}
 	
 	/**

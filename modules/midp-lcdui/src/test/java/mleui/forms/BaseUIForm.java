@@ -45,9 +45,7 @@ public abstract class BaseUIForm
 	@Override
 	public final void test(UIBackend __backend, UIDisplayBracket __display)
 		throws Throwable
-	{	
-		DebugShelf.verbose(VerboseDebugFlag.METHOD_ENTRY);
-		
+	{
 		UIFormBracket form = __backend.formNew();
 		try
 		{

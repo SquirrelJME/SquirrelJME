@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Arrays;
 
 /**
  * This decodes the base64 character set, ignoring invalid characters, and
@@ -182,8 +183,7 @@ public final class Base64Decoder
 		
 		// Build ASCII map for quick in-range character lookup
 		byte[] ascii = new byte[128];
-		for (int i = 0; i < 128; i++)
-			ascii[i] = -1;
+		Arrays.fill(ascii, (byte)-1);
 		for (int i = 0; i < 65; i++)
 		{
 			int dx = __chars[i];

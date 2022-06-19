@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.launcher.ui;
 
+import javax.microedition.lcdui.Canvas;
+
 /**
  * This is a running thread that refreshes the launcher's state.
  *
@@ -20,14 +22,18 @@ class __Refresher__
 	/** The main midlet to access. */
 	protected final MidletMain midletMain;
 	
+	/** The canvas to repaint on refresh. */
+	protected final SplashScreen refreshCanvas;
+	
 	/**
 	 * Initializes the refresher.
 	 * 
 	 * @param __midletMain The main MIDlet.
+	 * @param __canvas Optional canvas to repaint on refresh.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/17
 	 */
-	public __Refresher__(MidletMain __midletMain)
+	public __Refresher__(MidletMain __midletMain, SplashScreen __canvas)
 	{
 		super("LauncherRefresh");
 		
@@ -35,6 +41,7 @@ class __Refresher__
 			throw new NullPointerException("NARG");
 		
 		this.midletMain = __midletMain;
+		this.refreshCanvas = __canvas;
 	}
 	
 	/**
@@ -44,6 +51,6 @@ class __Refresher__
 	@Override
 	public final void run()
 	{
-		this.midletMain.refresh();
+		this.midletMain.refresh(this.refreshCanvas);
 	}
 }

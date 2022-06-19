@@ -65,8 +65,8 @@ public class VMRunUpToDateWhen
 			taskOuts.add(Instant.ofEpochMilli(f.lastModified()));
 		
 		// Determine if any of our parent dependencies were out of date
-		for (Path dep : VMHelpers.runClassPath((VMExecutableTask)__task,
-			this.sourceSet, this.vmType))
+		for (Path dep : VMHelpers.runClassPath(__task, this.sourceSet,
+			this.vmType))
 		{
 			Instant fileTime;
 			try

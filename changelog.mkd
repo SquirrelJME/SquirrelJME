@@ -8,10 +8,6 @@ dear friend of mine. Rest in piece, you will not be forgotten.
 This release existed through both the previous release plan and the now
 current goal oriented releases.
 
-Now SquirrelJME has the SummerCoat virtual machine which is much lighter and
-faster than SpringCoat. There should definitely be very noticeable performance
-increases.
-
 SquirrelJME is also available on RetroArch since the implementation of
 RatufaCoat which is written in C and is capable of using the SquirrelJME
 Runtime.
@@ -167,11 +163,8 @@ More detailed changes:
      * Profiler thread lists are easier to read because the main suite is
        listed instead of the VM identifier.
      * Refactored greatly to be much leaner and simplified.
-   * SummerCoat
-     * New Virtual Machine, register based.
-     * Vast improvements over SpringCoat, faster and slimmer.
    * RatufaCoat
-     * New Virtual Machine, based off SummerCoat.
+     * New Virtual Machine.
      * Fast and slim, written in C.
  * Cleanup
    * Removed the `test.sh` script, it was empty.

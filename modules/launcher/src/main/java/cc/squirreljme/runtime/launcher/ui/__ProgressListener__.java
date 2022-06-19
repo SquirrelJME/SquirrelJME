@@ -49,17 +49,26 @@ final class __ProgressListener__
 	private final Comparator<Application> _comparator =
 		new __ApplicationComparator__();
 	
+	/** The canvas to refresh on updates. */
+	protected final SplashScreen refreshCanvas;
+	
+	/** The current refresh state. */
+	protected final __RefreshState__ refreshState;
+	
 	/**
 	 * Initializes the progress listener.
 	 * 
 	 * @param __programList The program list used.
 	 * @param __listedSuites The suites that are available.
+	 * @param __refreshCanvas The canvas to update on refreshes.
+	 * @param __refreshState The current refresh state.
 	 * @param __mainDisplay The main display.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/29
 	 */
 	public __ProgressListener__(List __programList,
-		ArrayList<Application> __listedSuites, Display __mainDisplay)
+		ArrayList<Application> __listedSuites, SplashScreen __refreshCanvas,
+		__RefreshState__ __refreshState, Display __mainDisplay)
 		throws NullPointerException
 	{
 		if (__programList == null || __listedSuites == null)
@@ -67,6 +76,8 @@ final class __ProgressListener__
 		
 		this.programList = __programList;
 		this.listedSuites = __listedSuites;
+		this.refreshCanvas = __refreshCanvas;
+		this.refreshState = __refreshState;
 		this.mainDisplay = __mainDisplay;
 	}
 	
@@ -83,10 +94,18 @@ final class __ProgressListener__
 		
 		ArrayList<Application> listedSuites = this.listedSuites;
 		List programList = this.programList;
+		SplashScreen refreshCanvas = this.refreshCanvas;
+		__RefreshState__ refreshState = this.refreshState;
 		
 		// Update title to reflect this discovery
-		programList.setTitle(String.format(
-			"Querying Suites (Found %d of %d)...", __dx + 1, __total));
+		String updateMessage = String.format(
+			"Querying Suites (Found %d of %d)...", __dx + 1, __total);
+		programList.setTitle(updateMessage);
+		
+		// Update splash screen
+		refreshState.set(updateMessage, __dx + 1, __total);
+		if (refreshCanvas != null)
+			refreshCanvas.requestRepaint();
 		
 		// Determine where this should go and remember the suite
 		int at = Collections.binarySearch(listedSuites, __app,

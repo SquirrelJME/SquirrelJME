@@ -42,6 +42,10 @@ public final class PathCleanup
 	@Override
 	public final void run()
 	{
+		// Notice
+		System.err.println("Cleaning up temporary libraries...");
+		
+		// Cleanup
 		for (Path p : this._paths)
 			try
 			{

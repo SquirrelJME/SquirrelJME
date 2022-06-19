@@ -155,6 +155,126 @@ public final class ObjectShelf
 		double[] __dest, int __destOff, int __len);
 	
 	/**
+	 * Fills part of the given array with the specified value.
+	 * 
+	 * @param __b The buffer to fill.
+	 * @param __o The offset into the buffer.
+	 * @param __l The length of the bytes to fill.
+	 * @param __v The value to store into the buffer.
+	 * @throws MLECallError If any argument is {@code null}, or the offset
+	 * and/or length exceed the array bounds.
+	 * @since 2021/12/26
+	 */
+	public static native void arrayFill(boolean[] __b, int __o, int __l,
+		boolean __v)
+		throws MLECallError;
+		
+	/**
+	 * Fills part of the given array with the specified value.
+	 * 
+	 * @param __b The buffer to fill.
+	 * @param __o The offset into the buffer.
+	 * @param __l The length of the bytes to fill.
+	 * @param __v The value to store into the buffer.
+	 * @throws MLECallError If any argument is {@code null}, or the offset
+	 * and/or length exceed the array bounds.
+	 * @since 2021/12/26
+	 */
+	public static native void arrayFill(byte[] __b, int __o, int __l,
+		byte __v)
+		throws MLECallError;
+		
+	/**
+	 * Fills part of the given array with the specified value.
+	 * 
+	 * @param __b The buffer to fill.
+	 * @param __o The offset into the buffer.
+	 * @param __l The length of the bytes to fill.
+	 * @param __v The value to store into the buffer.
+	 * @throws MLECallError If any argument is {@code null}, or the offset
+	 * and/or length exceed the array bounds.
+	 * @since 2021/12/26
+	 */
+	public static native void arrayFill(short[] __b, int __o, int __l,
+		short __v)
+		throws MLECallError;
+		
+	/**
+	 * Fills part of the given array with the specified value.
+	 * 
+	 * @param __b The buffer to fill.
+	 * @param __o The offset into the buffer.
+	 * @param __l The length of the bytes to fill.
+	 * @param __v The value to store into the buffer.
+	 * @throws MLECallError If any argument is {@code null}, or the offset
+	 * and/or length exceed the array bounds.
+	 * @since 2021/12/26
+	 */
+	public static native void arrayFill(char[] __b, int __o, int __l,
+		char __v)
+		throws MLECallError;
+		
+	/**
+	 * Fills part of the given array with the specified value.
+	 * 
+	 * @param __b The buffer to fill.
+	 * @param __o The offset into the buffer.
+	 * @param __l The length of the bytes to fill.
+	 * @param __v The value to store into the buffer.
+	 * @throws MLECallError If any argument is {@code null}, or the offset
+	 * and/or length exceed the array bounds.
+	 * @since 2021/12/26
+	 */
+	public static native void arrayFill(int[] __b, int __o, int __l,
+		int __v)
+		throws MLECallError;
+		
+	/**
+	 * Fills part of the given array with the specified value.
+	 * 
+	 * @param __b The buffer to fill.
+	 * @param __o The offset into the buffer.
+	 * @param __l The length of the bytes to fill.
+	 * @param __v The value to store into the buffer.
+	 * @throws MLECallError If any argument is {@code null}, or the offset
+	 * and/or length exceed the array bounds.
+	 * @since 2021/12/26
+	 */
+	public static native void arrayFill(long[] __b, int __o, int __l,
+		long __v)
+		throws MLECallError;
+		
+	/**
+	 * Fills part of the given array with the specified value.
+	 * 
+	 * @param __b The buffer to fill.
+	 * @param __o The offset into the buffer.
+	 * @param __l The length of the bytes to fill.
+	 * @param __v The value to store into the buffer.
+	 * @throws MLECallError If any argument is {@code null}, or the offset
+	 * and/or length exceed the array bounds.
+	 * @since 2021/12/26
+	 */
+	public static native void arrayFill(float[] __b, int __o, int __l,
+		float __v)
+		throws MLECallError;
+	
+	/**
+	 * Fills part of the given array with the specified value.
+	 * 
+	 * @param __b The buffer to fill.
+	 * @param __o The offset into the buffer.
+	 * @param __l The length of the bytes to fill.
+	 * @param __v The value to store into the buffer.
+	 * @throws MLECallError If any argument is {@code null}, or the offset
+	 * and/or length exceed the array bounds.
+	 * @since 2021/12/26
+	 */
+	public static native void arrayFill(double[] __b, int __o, int __l,
+		double __v)
+		throws MLECallError;
+	
+	/**
 	 * Returns the length of the array if this object is an array.
 	 *
 	 * @param __object The object to get the length of.

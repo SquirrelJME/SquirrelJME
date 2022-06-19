@@ -255,7 +255,7 @@ public abstract class Canvas
 	protected Canvas()
 	{
 		// Build new canvas
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		UIItemBracket uiCanvas = backend.itemNew(UIItemType.CANVAS);
 		this._uiCanvas = uiCanvas;
 		
@@ -369,7 +369,7 @@ public abstract class Canvas
 			__sk != Display._SOFTKEY_RIGHT_COMMAND))
 			throw new IllegalArgumentException("EB17 " + __sk);
 		
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		
 		// Use the item's actual position
 		int uiPos = Display.__layoutSoftKeyToPos(__sk);
@@ -603,7 +603,7 @@ public abstract class Canvas
 			return;
 		
 		// Request repainting
-		UIBackend instance = UIBackendFactory.getInstance();
+		UIBackend instance = UIBackendFactory.getInstance(true);
 		
 		// Send repaint properties
 		instance.widgetProperty(this._uiCanvas,
@@ -700,7 +700,7 @@ public abstract class Canvas
 		
 		// Depending on full-screen either choose the first position or the
 		// full-screen body of the form
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		backend.formItemPosition(this._uiForm, this._uiCanvas, (__f ?
 			UIItemPosition.BODY : 0));
 		
@@ -842,7 +842,7 @@ public abstract class Canvas
 			int old = __gfx.getAlphaColor();
 			
 			// Determine the color to draw
-			int bgColor = UIBackendFactory.getInstance()
+			int bgColor = UIBackendFactory.getInstance(true)
 				.metric(UIMetricType.COLOR_CANVAS_BACKGROUND);
 			
 			// Draw entire background
@@ -889,7 +889,7 @@ public abstract class Canvas
 	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __intProp, int __sub, int __old, int __new)
 	{
-		UIBackend instance = UIBackendFactory.getInstance();
+		UIBackend instance = UIBackendFactory.getInstance(true);
 		
 		// Only act on the canvas item
 		if (!instance.equals(__item, this._uiCanvas))
@@ -935,7 +935,7 @@ public abstract class Canvas
 	final void __showNotifyCanvas()
 	{
 		// Signal focus on this canvas since it has been shown
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		backend.widgetProperty(this._uiCanvas,
 			UIWidgetProperty.INT_SIGNAL_FOCUS, 0, 0);
 		

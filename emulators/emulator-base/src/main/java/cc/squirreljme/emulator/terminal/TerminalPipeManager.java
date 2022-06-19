@@ -95,53 +95,6 @@ public final class TerminalPipeManager
 	}
 	
 	/**
-	 * As {@link TerminalShelf#close(int)}. 
-	 * 
-	 * @param __fd As called.
-	 * @return As called.
-	 * @throws MLECallWouldFail As called.
-	 * @since 2020/07/06
-	 */
-	public final int mleClose(int __fd)
-		throws MLECallWouldFail
-	{
-		try
-		{
-			this.mleGet(__fd).close();
-			
-			return PipeErrorType.NO_ERROR;
-		}
-		catch (IOException e)
-		{
-			return PipeErrorType.IO_EXCEPTION;
-		}
-	}
-	
-	/**
-	 * As {@link TerminalShelf#flush(int)}
-	 * 
-	 * @param __fd As called.
-	 * @return As called.
-	 * @throws MLECallWouldFail As called.
-	 * @since 2020/07/06
-	 */
-	@SuppressWarnings("resource")
-	public final int mleFlush(int __fd)
-		throws MLECallWouldFail
-	{
-		try
-		{
-			this.mleGet(__fd).flush();
-			
-			return PipeErrorType.NO_ERROR;
-		}
-		catch (IOException e)
-		{
-			return PipeErrorType.IO_EXCEPTION;
-		}
-	}
-	
-	/**
 	 * Gets the given file descriptor.
 	 * 
 	 * @param __fd The file descriptor.
@@ -189,58 +142,6 @@ public final class TerminalPipeManager
 		{
 			return PipeErrorType.IO_EXCEPTION;
 		} 
-	}
-	
-	/**
-	 * As {@link TerminalShelf#write(int, int)}. 
-	 * 
-	 * @param __fd As called.
-	 * @param __b As called.
-	 * @return As called.
-	 * @throws MLECallWouldFail As called.
-	 * @since 2020/07/06
-	 */
-	@SuppressWarnings("resource")
-	public final int mleWrite(int __fd, int __b)
-		throws MLECallWouldFail
-	{
-		try
-		{
-			this.mleGet(__fd).write(__b);
-			
-			return 1;
-		}
-		catch (IOException e)
-		{
-			return PipeErrorType.IO_EXCEPTION;
-		}
-	}
-	
-	/**
-	 * As {@link TerminalShelf#write(int, byte[], int, int)}. 
-	 * 
-	 * @param __fd As called.
-	 * @param __b As called.
-	 * @param __o As called.
-	 * @param __l As called.
-	 * @return As called.
-	 * @throws MLECallWouldFail As called.
-	 * @since 2020/07/06
-	 */
-	@SuppressWarnings("resource")
-	public final int mleWrite(int __fd, byte[] __b, int __o, int __l)
-		throws MLECallWouldFail
-	{
-		try
-		{
-			this.mleGet(__fd).write(__b, __o, __l);
-			
-			return __l;
-		}
-		catch (IOException e)
-		{
-			return PipeErrorType.IO_EXCEPTION;
-		}
 	}
 	
 	/**
