@@ -72,8 +72,16 @@ public abstract class Reference<T>
 		try
 		{
 			// Spinlock on the GC
-			for (int c = 0; (0 == (key = AtomicShelf.gcLock())); c++)
-				AtomicShelf.spinLock(c);
+			for (int cycle = 0;; cycle++)
+			{
+				// Obtain key
+				key = AtomicShelf.gcLock();
+				if (key != 0)
+					break;
+				
+				// Lock
+				AtomicShelf.spinLock(cycle);
+			}
 			
 			// If the object has an existing link, then we need to chain links
 			RefLinkBracket oldLink = ReferenceShelf.objectGet(__v);
@@ -108,8 +116,16 @@ public abstract class Reference<T>
 		try
 		{
 			// Spinlock on the GC
-			for (int c = 0; (0 == (key = AtomicShelf.gcLock())); c++)
-				AtomicShelf.spinLock(c);
+			for (int cycle = 0;; cycle++)
+			{
+				// Obtain key
+				key = AtomicShelf.gcLock();
+				if (key != 0)
+					break;
+				
+				// Lock
+				AtomicShelf.spinLock(cycle);
+			}
 			
 			// Only unlink once
 			if (!this._enqueued)
@@ -158,8 +174,16 @@ public abstract class Reference<T>
 		try
 		{
 			// Spinlock on the GC
-			for (int c = 0; (0 == (key = AtomicShelf.gcLock())); c++)
-				AtomicShelf.spinLock(c);
+			for (int cycle = 0;; cycle++)
+			{
+				// Obtain key
+				key = AtomicShelf.gcLock();
+				if (key != 0)
+					break;
+				
+				// Lock
+				AtomicShelf.spinLock(cycle);
+			}
 			
 			// Placing this in the queue invalidates it
 			pushToQueue = !this._enqueued;
@@ -199,8 +223,16 @@ public abstract class Reference<T>
 		try
 		{
 			// Spinlock on the GC
-			for (int c = 0; (0 == (key = AtomicShelf.gcLock())); c++)
-				AtomicShelf.spinLock(c);
+			for (int cycle = 0;; cycle++)
+			{
+				// Obtain key
+				key = AtomicShelf.gcLock();
+				if (key != 0)
+					break;
+				
+				// Lock
+				AtomicShelf.spinLock(cycle);
+			}
 			
 			// If this was enqueued, then just return nothing
 			if (this._enqueued)
