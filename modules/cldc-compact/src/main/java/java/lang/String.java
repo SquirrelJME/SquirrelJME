@@ -18,11 +18,8 @@ import cc.squirreljme.runtime.cldc.io.Encoder;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Formatter;
-import java.util.Iterator;
 
 /**
  * A {@link String} represents a sequence of characters which make up a group
@@ -50,16 +47,20 @@ public final class String
 		' ';
 	
 	/** Is this string already lowercased? */
-	private static final short _QUICK_ISLOWER =
-		0b0000_0000__0000_0001;
+	private static final byte _QUICK_ISLOWER =
+		0b0000_0001;
 	
 	/** Is this string already uppercased? */
-	private static final short _QUICK_ISUPPER =
-		0b0000_0000__0000_0010;
+	private static final byte _QUICK_ISUPPER =
+		0b0000_0010;
 	
 	/** String is already interned? */
-	static final short _QUICK_INTERN =
-		0b0000_0000__0000_0100;
+	static final byte _QUICK_INTERN =
+		0b0000_0100;
+	
+	/** String is already trimmed? */
+	static final byte _QUICK_ALREADY_TRIMMED =
+		0b0000_1000;
 	
 	/** Basic intern hash table. */
 	private static final __InternMini__[] _INTERNS =
@@ -1341,13 +1342,21 @@ public final class String
 	 * start or end in whitespace then {@code this} is returned.
 	 * @since 2016/04/20
 	 */
+	@SuppressWarnings("StatementWithEmptyBody")
 	public String trim()
 	{
+		// This string is already considered trim
+		if ((this._quickFlags & String._QUICK_ALREADY_TRIMMED) != 0)
+			return this;
+		
 		// Empty strings do not need trimming
 		char[] ch = this._chars;
 		int n = ch.length;
 		if (n <= 0)
+		{
+			this._quickFlags |= String._QUICK_ALREADY_TRIMMED;
 			return this;
+		}
 		
 		// Find starting trim position
 		int s;
@@ -1358,6 +1367,13 @@ public final class String
 		int e;
 		for (e = n; e > s && ch[e - 1] <= String._MIN_TRIM_CHAR; e--)
 			;
+		
+		// Already considered trim?
+		if (s == 0 && e == n)
+		{
+			this._quickFlags |= String._QUICK_ALREADY_TRIMMED;
+			return this;
+		}
 		
 		// Return trimmed variant of it
 		return this.substring(s, e);

@@ -26,12 +26,15 @@ public class TestStringTrim
 	@Override
 	public void test()
 	{
-		this.secondary("a", "squirrels are cute".trim());
+		String cute = "squirrels are cute";
+		
+		this.secondary("a", cute.trim());
 		this.secondary("b", "  \t      squirrels are cute".trim());
 		this.secondary("c", "squirrels are cute    \t".trim());
 		this.secondary("d", "       \tsquirrels are cute \t    ".trim());
 		this.secondary("e", "           ".trim());
 		this.secondary("f", "           ".trim());
+		this.secondary("g", cute.trim());
 	}
 }
 
