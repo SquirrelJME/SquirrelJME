@@ -9,6 +9,7 @@
 
 package jdk.dio.i2cbus;
 
+import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -23,13 +24,13 @@ public final class I2CDeviceConfig
 	public static final int ADDR_SIZE_7 =
 		7;
 	
-	@Deprecated
+	@ApiDefinedDeprecated
 	public I2CDeviceConfig(int __a, int __b, int __c, int __d)
 	{
 		throw new todo.TODO();
 	}
 	
-	@Deprecated
+	@ApiDefinedDeprecated
 	public I2CDeviceConfig(String __a, int __b, int __c, int __d)
 	{
 		throw new todo.TODO();

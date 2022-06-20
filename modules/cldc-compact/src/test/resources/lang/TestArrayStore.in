@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+secondary-number--object: true
+secondary-number--integer: false
+secondary-number--long: false
+secondary-number--string: true
+secondary-similar--object: true
+secondary-similar--stringbuilder: false
+secondary-similar--stringbuffer: true
+secondary-similar--string: true
+secondary-exception--object: true
+secondary-exception--throwable: true
+secondary-exception--exception: false
+secondary-exception--rtexception: false
+secondary-exception--error: true

@@ -9,6 +9,7 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.rms.SuiteIdentifier;
@@ -641,7 +642,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2016/02/26
 	 */
-	@Deprecated
+	@ApiDefinedDeprecated
 	public int getSize()
 		throws RecordStoreNotOpenException
 	{
@@ -657,7 +658,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2016/02/26
 	 */
-	@Deprecated
+	@ApiDefinedDeprecated
 	public int getSizeAvailable()
 		throws RecordStoreNotOpenException
 	{
