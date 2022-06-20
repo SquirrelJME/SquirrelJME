@@ -340,7 +340,7 @@ public final class TableSectionOutputStream
 	 *
 	 * @since 2019/08/25
 	 */
-	private final void __undirty()
+	private void __undirty()
 	{
 		// There is no need to calculate if this is not dirty at all
 		__Dirty__ dirty = this._dirty;

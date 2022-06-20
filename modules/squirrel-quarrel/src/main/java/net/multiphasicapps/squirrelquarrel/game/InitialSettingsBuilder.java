@@ -135,8 +135,7 @@ public class InitialSettingsBuilder
 		// Store input values first
 		int[] teams = this._teams;
 		int n = __t.length;
-		for (int i = 0; i < n; i++)
-			teams[i] = __t[i];
+		System.arraycopy(__t, 0, teams, 0, n);
 		for (int i = n; i < PlayerColor.MAX_PLAYERS; i++)
 			teams[i] = i;
 		

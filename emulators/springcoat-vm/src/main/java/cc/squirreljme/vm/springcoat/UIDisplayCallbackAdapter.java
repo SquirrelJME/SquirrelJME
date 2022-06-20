@@ -11,7 +11,6 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**

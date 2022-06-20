@@ -11,7 +11,6 @@ package net.multiphasicapps.classfile;
 
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 
 /**
  * This represents a set of flags which are used as modifiers to inner classes.

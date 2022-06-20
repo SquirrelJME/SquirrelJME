@@ -90,7 +90,7 @@ public final class ProvidedInfo
 	@Override
 	public final int hashCode()
 	{
-		return this._provided.hashCode();
+		return Arrays.asList(this._provided).hashCode();
 	}
 	
 	/**

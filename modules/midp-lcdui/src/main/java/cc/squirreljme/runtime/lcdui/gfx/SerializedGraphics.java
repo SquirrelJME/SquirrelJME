@@ -710,7 +710,7 @@ public abstract class SerializedGraphics
 	 * @return The target clipping.
 	 * @since 2020/01/10
 	 */
-	private final int __getClipX()
+	private int __getClipX()
 	{
 		return (Integer)this.serialize(GraphicsFunction.GET_CLIP_X);
 	}
@@ -721,7 +721,7 @@ public abstract class SerializedGraphics
 	 * @return The target clipping.
 	 * @since 2020/01/10
 	 */
-	private final int __getClipY()
+	private int __getClipY()
 	{
 		return (Integer)this.serialize(GraphicsFunction.GET_CLIP_Y);
 	}

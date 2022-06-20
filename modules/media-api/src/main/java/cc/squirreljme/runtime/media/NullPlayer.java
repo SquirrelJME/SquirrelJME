@@ -355,7 +355,7 @@ public final class NullPlayer
 	 * @param __val The value used.
 	 * @since 2019/06/28
 	 */
-	private final void __event(String __key, Object __val)
+	private void __event(String __key, Object __val)
 	{
 		PlayerListener[] poke;
 		

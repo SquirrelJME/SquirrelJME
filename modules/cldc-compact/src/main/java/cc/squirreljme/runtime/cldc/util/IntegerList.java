@@ -400,8 +400,7 @@ public final class IntegerList
 		
 		// Copy values
 		int[] rv = new int[size];
-		for (int i = 0; i < size; i++)
-			rv[i] = values[i];
+		System.arraycopy(values, 0, rv, 0, size);
 		return rv;
 	}
 }

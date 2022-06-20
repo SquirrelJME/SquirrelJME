@@ -198,8 +198,7 @@ final class __VolatileList__<T>
 		
 		// Setup new array and copy all elements before and after
 		Object[] newvalues = new Object[n - 1];
-		for (int i = 0; i < dx; i++)
-			newvalues[i] = values[i];
+		System.arraycopy(values, 0, newvalues, 0, dx);
 		for (int i = dx + 1, o = dx; i < n; i++, o++)
 			newvalues[o] = values[i];
 			

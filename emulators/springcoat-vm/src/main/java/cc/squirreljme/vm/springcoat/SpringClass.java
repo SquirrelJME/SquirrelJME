@@ -258,8 +258,9 @@ public final class SpringClass
 		if (__super != null)
 		{
 			SpringField[] supertable = __super._fieldtable;
-			for (int i = 0; i < superFieldCount; i++)
-				fieldtable[i] = supertable[i];
+			if (superFieldCount >= 0)
+				System.arraycopy(supertable, 0, fieldtable, 0,
+					superFieldCount);
 		}
 		
 		// Store all of the instance fields

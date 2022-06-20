@@ -410,7 +410,7 @@ public class ZipStreamWriter
 	 *
 	 * @since 2016/07/15
 	 */
-	private abstract class __BaseOutputStream__
+	private abstract static class __BaseOutputStream__
 		extends OutputStream
 	{
 		/** The wrapped stream. */

@@ -81,7 +81,7 @@ public class Main
 				ua = sa / 8;
 			
 			// Write PBM header, use P4 format
-			ps.printf("P4\n");
+			ps.print("P4\n");
 			ps.printf("%d %d\n", iw, ih);
 			
 			// Create image to contain a buffer for a single line, it is not

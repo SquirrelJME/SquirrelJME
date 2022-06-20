@@ -13,7 +13,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
 

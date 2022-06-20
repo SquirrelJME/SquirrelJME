@@ -876,7 +876,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If it is not open.
 	 * @since 2019/04/15
 	 */
-	private final void __checkOpen()
+	private void __checkOpen()
 		throws RecordStoreNotOpenException
 	{
 		// {@squirreljme.error DC07 This record store is not open.
@@ -910,7 +910,7 @@ public class RecordStore
 	 * @return The listeners.
 	 * @since 2019/04/15
 	 */
-	private final RecordListener[] __listeners()
+	private RecordListener[] __listeners()
 	{
 		Set<RecordListener> listeners = this._listeners;
 		return listeners.<RecordListener>toArray(
@@ -1172,7 +1172,7 @@ public class RecordStore
 	 * @throws RecordStoreException If there is an error.
 	 * @since 2019/05/01
 	 */
-	private static final void __checkError(int __id)
+	private static void __checkError(int __id)
 		throws RecordStoreException
 	{
 		// Error was detected

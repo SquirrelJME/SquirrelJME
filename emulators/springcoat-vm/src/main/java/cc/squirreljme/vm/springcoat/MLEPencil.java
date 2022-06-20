@@ -23,7 +23,6 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 

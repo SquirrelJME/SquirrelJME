@@ -336,7 +336,7 @@ final class __VolumeEnumeration__
 	 * @throws IllegalStateException If this was destroyed.
 	 * @since 2019/05/13
 	 */
-	private final void __checkDestroy()
+	private void __checkDestroy()
 		throws IllegalStateException
 	{
 		// {@squirreljme.error DC0h Record store enumeration has been
@@ -351,7 +351,7 @@ final class __VolumeEnumeration__
 	 * @throws IllegalStateException If the update check could not be made.
 	 * @since 2019/05/13
 	 */
-	private final void __checkRebuild()
+	private void __checkRebuild()
 		throws IllegalStateException
 	{
 		// Could fail

@@ -10,8 +10,6 @@
 package cc.squirreljme.jvm.mle.callbacks;
 
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
-import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
-import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 
 /**

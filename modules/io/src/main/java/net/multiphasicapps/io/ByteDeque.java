@@ -1094,7 +1094,7 @@ public class ByteDeque
 	 * @return The number of bytes read.
 	 * @since 2016/08/04
 	 */
-	private final int __getOrSetVia(boolean __last, int __a, byte[] __b,
+	private int __getOrSetVia(boolean __last, int __a, byte[] __b,
 		int __o, int __l, boolean __set)
 	{
 		// Get some things
