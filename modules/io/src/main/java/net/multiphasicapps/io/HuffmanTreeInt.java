@@ -351,7 +351,9 @@ public class HuffmanTreeInt
 		int[] becomes = new int[rv + 2];
 		
 		// Copy the old array over
-		System.arraycopy(table, 0, becomes, 0, rv);
+		if (table != null)
+			System.arraycopy(table, 0,
+				becomes, 0, rv);
 		
 		// The end bits become invalidated
 		becomes[rv] = Integer.MAX_VALUE;
@@ -380,7 +382,9 @@ public class HuffmanTreeInt
 		int[] becomes = new int[rv + 1];
 		
 		// Copy the old array over
-		System.arraycopy(values, 0, becomes, 0, rv);
+		if (values != null)
+			System.arraycopy(values, 0,
+				becomes, 0, rv);
 		
 		// Set new table
 		this._values = becomes;
