@@ -40,6 +40,9 @@ public final class PencilGraphics
 	private static final String _FORCE_SOFTWARE_PROPERTY =
 		"cc.squirreljme.lcdui.software";
 	
+	/** Forcing software rasterization */
+	private static final boolean _IS_FORCE_SOFTWARE;
+	
 	/** Software graphics backend. */
 	protected final Graphics software;
 	
@@ -87,6 +90,12 @@ public final class PencilGraphics
 	
 	/** The current Y translation. */
 	private int _transY;
+	
+	static
+	{
+		_IS_FORCE_SOFTWARE =
+			Boolean.getBoolean(PencilGraphics._FORCE_SOFTWARE_PROPERTY);
+	}
 	
 	/**
 	 * Initializes the pencil graphics system.
@@ -972,7 +981,7 @@ public final class PencilGraphics
 		// then operations will purely be implemented in software
 		// It can also be disabled via a system property
 		int caps = PencilShelf.capabilities(__pf); 
-		if (Boolean.getBoolean(PencilGraphics._FORCE_SOFTWARE_PROPERTY) ||
+		if (PencilGraphics._IS_FORCE_SOFTWARE ||
 			(caps & PencilCapabilities.MINIMUM) == 0)
 			return software;
 		

@@ -9,10 +9,8 @@
 
 package mleui.forms;
 
-import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
-import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import mleui.BaseBackend;

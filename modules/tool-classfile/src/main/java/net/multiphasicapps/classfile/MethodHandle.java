@@ -10,6 +10,7 @@
 package net.multiphasicapps.classfile;
 
 import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 
 /**
@@ -171,7 +172,7 @@ public final class MethodHandle
 		MethodNameAndType rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._nat = new WeakReference<>((rv = new MethodNameAndType(
+			this._nat = new SoftReference<>((rv = new MethodNameAndType(
 				this.name, this.descriptor)));
 		
 		return rv;

@@ -196,7 +196,7 @@ public final class NoteCalendarGenerator
 				
 				// Not on this month? Ignore it
 				if (calendarDay.getMonthValue() != __month.month)
-					__out.printf("`--` ");
+					__out.print("`--` ");
 				
 				// Print day, with possible note
 				else

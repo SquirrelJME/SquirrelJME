@@ -249,10 +249,10 @@ public final class Formatter
 				// It is simpler to handle the parsing of the specifier in
 				// another method due to loops and variables
 				__PrintFState__ pf = new __PrintFState__(pg);
-				next = this.__specifier(pf, i, __fmt);
+				next = __specifier(pf, i, __fmt);
 				
 				// Handle output of the specifier
-				this.__output(out, pf);
+				__output(out, pf);
 			}
 		}
 		

@@ -10,7 +10,6 @@
 package cc.squirreljme.plugin.multivm;
 
 import javax.inject.Inject;
-import org.gradle.api.DefaultTask;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.testing.Test;
 

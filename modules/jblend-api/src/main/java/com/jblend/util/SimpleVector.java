@@ -81,7 +81,7 @@ public final class SimpleVector
 		throw new todo.TODO();
 	}
 
-    final class SimpleVectorEnumerator implements Enumeration {
+    static final class SimpleVectorEnumerator implements Enumeration {
         @Override
 		public boolean hasMoreElements()
 		{

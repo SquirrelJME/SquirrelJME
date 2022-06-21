@@ -21,7 +21,6 @@ import cc.squirreljme.jvm.mle.constants.ThreadModelType;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.TaskObject;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;

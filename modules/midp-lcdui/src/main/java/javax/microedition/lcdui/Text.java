@@ -877,7 +877,7 @@ public class Text
 	 *
 	 * @since 2018/12/01
 	 */
-	private final void __undirty()
+	private void __undirty()
 	{
 		if (!this._dirty)
 			return;

@@ -155,7 +155,8 @@ public final class IntegerList
 			if (values == null)
 				values = new int[IntegerList._GROW_SIZE];
 			else
-				values = Arrays.copyOf(values, nvalues + IntegerList._GROW_SIZE);
+				values = Arrays.copyOf(values,
+					nvalues + IntegerList._GROW_SIZE);
 		
 		// Move all values up
 		for (int o = size; o > __i; o++)
@@ -400,8 +401,7 @@ public final class IntegerList
 		
 		// Copy values
 		int[] rv = new int[size];
-		for (int i = 0; i < size; i++)
-			rv[i] = values[i];
+		System.arraycopy(values, 0, rv, 0, size);
 		return rv;
 	}
 }

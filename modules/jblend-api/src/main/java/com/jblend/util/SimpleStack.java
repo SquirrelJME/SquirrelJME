@@ -56,7 +56,7 @@ public final class SimpleStack
 		throw new todo.TODO();
 	}
 
-    final class SimpleStackEnumerator implements Enumeration {
+    static final class SimpleStackEnumerator implements Enumeration {
         @Override
 		public boolean hasMoreElements()
 		{

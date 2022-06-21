@@ -327,7 +327,7 @@ public final class MIMEFileDecoder
 		 * @throws IOException On read errors.
 		 * @since 2018/11/25
 		 */
-		private final void __readHeader()
+		private void __readHeader()
 			throws IOException
 		{
 			BufferedReader in = this.in;
@@ -372,7 +372,7 @@ public final class MIMEFileDecoder
 		 * @throws IOException On read errors.
 		 * @since 2018/11/25
 		 */
-		private final boolean __readNext()
+		private boolean __readNext()
 			throws IOException
 		{
 			// {@squirreljme.error BD1m Unexpected EOF while read the MIME

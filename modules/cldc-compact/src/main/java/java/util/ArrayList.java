@@ -114,8 +114,7 @@ public class ArrayList<E>
 			elements = (E[])new Object[newcap];
 			
 			// Copy old stuff over, but only up to the index as needed
-			for (int i = 0; i < __i; i++)
-				elements[i] = source[i];
+			System.arraycopy(source, 0, elements, 0, __i);
 		}
 		
 		// Move down to fit
@@ -191,8 +190,7 @@ public class ArrayList<E>
 		
 		// Copy values over
 		E[] extra = (E[])new Object[__n];
-		for (int i = 0; i < nowl; i++)
-			extra[i] = elements[i];
+		System.arraycopy(elements, 0, extra, 0, nowl);
 		
 		// Set
 		this._elements = extra;

@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.cldc.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -357,7 +356,7 @@ public final class StringUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/23
 	 */
-	private static final int __indexOf(char[] __a, char __c)
+	private static int __indexOf(char[] __a, char __c)
 		throws NullPointerException
 	{
 		if (__a == null)

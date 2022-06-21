@@ -100,7 +100,7 @@ public class Main
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/20
 	 */
-	private static final void __dumpBytes(PrintStream __ps, String __name,
+	private static void __dumpBytes(PrintStream __ps, String __name,
 		byte[] __b)
 		throws NullPointerException
 	{

@@ -9,6 +9,7 @@
 
 package jdk.dio.atcmd;
 
+import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import java.io.IOException;
 import jdk.dio.ClosedDeviceException;
 import jdk.dio.Device;
@@ -17,12 +18,12 @@ import jdk.dio.UnavailableDeviceException;
 public interface ATDevice
 	extends Device<ATDevice>
 {
-	@Deprecated
+	@ApiDefinedDeprecated
 	void abortCommand(String __a)
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;
 	
-	@Deprecated
+	@ApiDefinedDeprecated
 	void escapeToCommandMode()
 		throws IOException, UnavailableDeviceException, 
 			ClosedDeviceException;

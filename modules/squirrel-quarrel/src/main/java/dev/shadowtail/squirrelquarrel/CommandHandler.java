@@ -77,7 +77,7 @@ public final class CommandHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/25
 	 */
-	private final Displayable __makeStatusMenu(GameInterface __gi)
+	private Displayable __makeStatusMenu(GameInterface __gi)
 		throws NullPointerException
 	{
 		if (__gi == null)

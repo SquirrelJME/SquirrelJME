@@ -645,7 +645,7 @@ public class PrintStream
 	 *
 	 * @since 2018/09/21
 	 */
-	private final void __flush()
+	private void __flush()
 	{
 		// Nothing to be written at all?
 		int bat = this._bat;
@@ -723,7 +723,7 @@ public class PrintStream
 	 * @throws NullPointerException If no format was specified.
 	 * @since 2018/09/23
 	 */
-	private final PrintStream __printf(String __fmt, Object... __args)
+	private PrintStream __printf(String __fmt, Object... __args)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__fmt == null)

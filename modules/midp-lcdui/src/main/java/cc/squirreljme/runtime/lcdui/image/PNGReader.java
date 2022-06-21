@@ -539,7 +539,7 @@ public class PNGReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/15
 	 */
-	private final void __pixelIndexed(InputStream __dis, boolean __idx)
+	private void __pixelIndexed(InputStream __dis, boolean __idx)
 		throws IOException, NullPointerException
 	{
 		if (__dis == null)
@@ -579,7 +579,7 @@ public class PNGReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/15
 	 */
-	private final void __pixelsRGB(InputStream __dis, boolean __alpha)
+	private void __pixelsRGB(InputStream __dis, boolean __alpha)
 		throws IOException, NullPointerException
 	{
 		if (__dis == null)
@@ -618,7 +618,7 @@ public class PNGReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/15
 	 */
-	private final void __pixelsYA(InputStream __dis)
+	private void __pixelsYA(InputStream __dis)
 		throws IOException, NullPointerException
 	{
 		if (__dis == null)
@@ -657,7 +657,7 @@ public class PNGReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/15
 	 */
-	private final byte[] __unfilter(InputStream __in, int __bpp)
+	private byte[] __unfilter(InputStream __in, int __bpp)
 		throws IOException, NullPointerException
 	{
 		if (__in == null)

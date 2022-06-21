@@ -295,7 +295,7 @@ public final class ZipBlockEntry
 	 * @throws ZipException If the ZIP is malformed.
 	 * @since 2017/01/03
 	 */
-	private final String __internalToString()
+	private String __internalToString()
 		throws IOException, ZipException
 	{
 		Reference<String> ref = this._name;

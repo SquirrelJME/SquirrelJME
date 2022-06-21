@@ -260,6 +260,38 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results
+  build_macosx_m1:
+    machine: true
+    resource_class: squirreljme/squirreljme-macos-m1
+    steps:
+      - checkout
+      - run:
+          name: Gradle Build and Test
+          command: ./gradlew build testHosted -x javadoc -x javadocJar -x sourcesJar --console plain --continue --parallel
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit-macosx/
+            find . -type f -regex '.*/vm-test-hosted/junit/.*\.xml' -exec cp {} ~/test-results/junit-macosx/ \;
+          when: always
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/csv-macosx/
+            find . -type f -regex '.*/vm-test-hosted/csv/.*\.csv' -exec cp {} ~/test-results/csv-macosx/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-results
 
   build_macosx_standalone:
     macos:
@@ -286,6 +318,22 @@ jobs:
           # we do not need that
           name: Install OpenJDK 11
           command: brew install openjdk@11
+      - attach_workspace:
+          at: .
+      - run:
+          name: Construct Standalone
+          command: ./gradlew :emulators:standalone:shadowJar --no-daemon --console plain --continue --parallel
+      - run:
+          name: Remove distracting JAR, if any
+          command: rm emulators/standalone/build/libs/standalone-*.jar
+      - store_artifacts:
+          path: emulators/standalone/build/libs/
+          destination: .
+  build_macosx_m1_standalone:
+    machine: true
+    resource_class: squirreljme/squirreljme-macos-m1
+    steps:
+      - checkout
       - attach_workspace:
           at: .
       - run:
@@ -913,10 +961,13 @@ workflows:
 
       # Mac OS X runs decently however the jobs for it have a higher cost, so
       # only perform builds and tests for trunk to lower costs.
-      # Currently have an overabundance of credits...
+      # Currently I have an overabundance of credits...
       - build_macosx
-#          requires:
-#            - build_linux
+#          filters:
+#            branches:
+#              only:
+#                - trunk
+      - build_macosx_m1
 #          filters:
 #            branches:
 #              only:
@@ -924,6 +975,9 @@ workflows:
       - build_macosx_standalone:
            requires:
              - build_macosx
+      - build_macosx_m1_standalone:
+           requires:
+             - build_macosx_m1
 
       # Building on Windows is currently expensive and takes longer, so only
       # run these builds on trunk to lower costs.

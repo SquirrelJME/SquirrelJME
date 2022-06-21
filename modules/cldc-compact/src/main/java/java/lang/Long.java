@@ -528,7 +528,7 @@ public final class Long
 	 * @return The resulting string.
 	 * @since 2019/12/25
 	 */
-	private static final String __unsignedString(long __v, int __b)
+	private static String __unsignedString(long __v, int __b)
 	{
 		throw new todo.TODO();
 	}

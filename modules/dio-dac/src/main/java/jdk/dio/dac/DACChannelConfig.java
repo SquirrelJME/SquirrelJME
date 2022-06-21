@@ -9,6 +9,7 @@
 
 package jdk.dio.dac;
 
+import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,13 +18,13 @@ import jdk.dio.DeviceConfig;
 public final class DACChannelConfig
 	implements DeviceConfig<DACChannel>, DeviceConfig.HardwareAddressing
 {
-	@Deprecated
+	@ApiDefinedDeprecated
 	public DACChannelConfig(int __a, int __b, int __c, int __d)
 	{
 		throw new todo.TODO();
 	}
 	
-	@Deprecated
+	@ApiDefinedDeprecated
 	public DACChannelConfig(String __a, int __b, int __c, int __d)
 	{
 		throw new todo.TODO();

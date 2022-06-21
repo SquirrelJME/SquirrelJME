@@ -34,7 +34,7 @@ public class TestBitCount
 		Random rand = new Random(0xDEADBEEF);
 		
 		int rv = 0;
-		for (int i = 0; i < COUNT; i++)
+		for (int i = 0; i < TestBitCount.COUNT; i++)
 		{
 			int test = rand.nextInt(),
 				bits = Integer.bitCount(test);

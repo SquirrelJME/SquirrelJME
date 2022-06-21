@@ -370,7 +370,7 @@ public final strictfp class FDMLMath
 	 * @return The double value.
 	 * @since 2018/11/03
 	 */
-	private static final strictfp double __compose(int __hi, int __lo)
+	private static strictfp double __compose(int __hi, int __lo)
 	{
 		return Double.longBitsToDouble(
 			(((long)__hi & 0xFFFFFFFFL) << 32) |
@@ -384,7 +384,7 @@ public final strictfp class FDMLMath
 	 * @return The high word of the double.
 	 * @since 2018/11/03
 	 */
-	private static final strictfp int __hi(double __v)
+	private static strictfp int __hi(double __v)
 	{
 		return (int)(Double.doubleToRawLongBits(__v) >>> 32);
 	}
@@ -396,7 +396,7 @@ public final strictfp class FDMLMath
 	 * @return The low word of the double.
 	 * @since 2018/11/03
 	 */
-	private static final strictfp int __lo(double __v)
+	private static strictfp int __lo(double __v)
 	{
 		return (int)(Double.doubleToRawLongBits(__v));
 	}
