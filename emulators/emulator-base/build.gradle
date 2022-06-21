@@ -20,6 +20,15 @@ if (project.hasProperty("squirreljmeTermuxCompiler") &&
 	}
 }
 
+// Gradle does not support C++ compilation on M1 Macs currently, so this
+// is a bit of a workaround
+if (project.hasProperty("squirreljmeMacOsArmCpp") &&
+	project.squirreljmeMacOsArmCpp) {
+	library {
+		targetMachines.add(machines.macOS.x86_64)
+	}
+}
+
 // Due to the combination of C++ and Java these dependencies have to be very
 // specific in that they only refer to the Java or C++ portion. So
 // "implementation" and "compile" cannot be used because the C++ library will
@@ -91,6 +100,17 @@ tasks.withType(CppCompile).configureEach() {item ->
 	
 	// Additional compiler options for each compiler
 	item.compilerArgs.addAll toolChain.map { toolChain ->
+		// Clang on Mac OS M1
+		if ("clang".equalsIgnoreCase(toolChain.name) && 
+			project.hasProperty("squirreljmeMacOsArmCpp") &&
+			project.squirreljmeMacOsArmCpp) {
+			return [
+				// Force ARM mode
+				"-arch",
+				"arm64"
+				]
+		}
+		
 		// Microsoft Visual C++
 		if ("visualCpp".equalsIgnoreCase(toolChain.name)) {
 			return [
