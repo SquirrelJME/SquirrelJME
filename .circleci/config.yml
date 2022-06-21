@@ -571,7 +571,7 @@ jobs:
       - run:
           name: Compile CMake build
           working_directory: ratufacoat
-          command: emcmake cmake --build .
+          command: emmake cmake --build .
       - store_artifacts:
           path: ratufacoat/src/sdl2/SquirrelJME.html
           destination: SquirrelJME.html
