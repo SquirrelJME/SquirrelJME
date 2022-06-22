@@ -567,11 +567,11 @@ jobs:
       - run:
           name: Setup CMake build
           working_directory: ratufacoat
-          command: emcmake cmake .
+          command: emcmake cmake -G "Unix Makefiles" .
       - run:
           name: Compile CMake build
           working_directory: ratufacoat
-          command: emmake cmake --build .
+          command: emmake make .
       - store_artifacts:
           path: ratufacoat/src/sdl2/SquirrelJME.html
           destination: SquirrelJME.html
