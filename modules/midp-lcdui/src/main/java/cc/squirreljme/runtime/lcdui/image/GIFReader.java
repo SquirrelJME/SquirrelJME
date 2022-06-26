@@ -63,6 +63,21 @@ public class GIFReader
 		int screenWidth = in.readUnsignedShort();
 		int screenHeight = in.readUnsignedShort();
 		
+		// Flags regarding the image
+		__GIFFlags__ imageFlags = new __GIFFlags__(in.readUnsignedByte());
+		
+		// Background color index
+		int bgColorIndex = in.readUnsignedByte();
+		
+		// Pixel aspect ratio
+		int aspectRatio = in.readUnsignedByte();
+		
+		// Read in the global color table
+		__GIFPalette__ globalPalette = null;
+		if (imageFlags.hasGlobalColorTable)
+			globalPalette = __GIFPalette__.__parseGlobal(
+				in, imageFlags.globalColorTableSize);
+		
 		// Build image
 		return Image.createImage(Image.createImage(screenWidth, screenHeight,
 			false, 0xFF00FF));
