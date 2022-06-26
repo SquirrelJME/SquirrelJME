@@ -31,7 +31,7 @@ public class TestNewInstance
 	}
 	
 	/**
-	 * The class to be spawed.
+	 * The class to be spawned.
 	 *
 	 * @since 2018/12/04
 	 */

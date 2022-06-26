@@ -9,6 +9,7 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import java.util.Arrays;
 
@@ -676,8 +677,8 @@ public final class StringBuilder
 		
 		// Erase old characters in the buffer (security?)
 		char[] buffer = this._buffer;
-		for (int i = __nl, n = buffer.length; i < n; i++)
-			buffer[i] = '\0';
+		ObjectShelf.arrayFill(buffer, __nl, buffer.length - __nl,
+			'\0');
 	}
 	
 	/**

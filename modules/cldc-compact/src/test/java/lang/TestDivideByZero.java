@@ -23,6 +23,7 @@ public class TestDivideByZero
 	 * {@inheritDoc}
 	 * @since 2018/12/04
 	 */
+	@SuppressWarnings({"NumericOverflow", "divzero"})
 	@Override
 	public Integer test()
 	{
