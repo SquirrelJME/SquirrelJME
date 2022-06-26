@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -589,7 +590,7 @@ public final class Formatter
 				// {@squirreljme.error ZZ2n Unimplemented conversion.
 				// (The conversion)}
 			default:
-				throw new todo.TODO("ZZ2n " + conv);
+				throw Debugging.todo("ZZ2n " + conv);
 		}
 		
 		// Convert to uppercase

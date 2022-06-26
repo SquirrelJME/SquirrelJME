@@ -9,6 +9,8 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class Notification
 {
 	/** Cache of the used label. */
@@ -44,13 +46,13 @@ public class Notification
 	
 	public void post(boolean __s)
 	{
-		todo.TODO.note("Update mutable image on post.");
+		Debugging.todoNote("Update mutable image on post.", new Object[] {});
 		throw new todo.TODO();
 	}
 	
 	public void post(boolean __s, int __dur)
 	{
-		todo.TODO.note("Update mutable image on post.");
+		Debugging.todoNote("Update mutable image on post.", new Object[] {});
 		throw new todo.TODO();
 	}
 	

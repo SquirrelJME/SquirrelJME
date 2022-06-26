@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.image;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import javax.microedition.lcdui.Image;
@@ -49,7 +50,7 @@ public final class JPEGReader
 	{
 		DataInputStream in = this.in;
 		
-		todo.TODO.note("Implement JPEG decoding");
+		Debugging.todoNote("Implement JPEG decoding", new Object[] {});
 		return Image.createRGBImage(new int[16], 4, 4, false);
 	}
 }

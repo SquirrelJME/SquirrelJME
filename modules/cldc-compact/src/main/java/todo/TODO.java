@@ -34,18 +34,6 @@ public class TODO
 	}
 	
 	/**
-	 * Initializes the exception, prints the trace, and exits the program.
-	 *
-	 * @param __s Message input.
-	 * @since 2018/09/29
-	 */
-	@Deprecated
-	public TODO(String __s)
-	{
-		throw Debugging.todo(__s);
-	}
-	
-	/**
 	 * Specifies that the integer value is missing.
 	 *
 	 * @return An integer, but is not returned from.
@@ -70,17 +58,5 @@ public class TODO
 		throw Debugging.todo();
 	}
 	
-	/**
-	 * Prints a note to standard error about something that is incomplete.
-	 *
-	 * @param __fmt The format string.
-	 * @param __args The arguments to the call.
-	 * @since 2018/04/02
-	 */
-	@Deprecated
-	public static void note(String __fmt, Object... __args)
-	{
-		Debugging.todoNote(__fmt, __args);
-	}
 }
 

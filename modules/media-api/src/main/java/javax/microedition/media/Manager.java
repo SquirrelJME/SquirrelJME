@@ -36,7 +36,7 @@ public final class Manager
 	public static Player createPlayer(InputStream __a, String __b)
 		throws IOException, MediaException
 	{
-		todo.TODO.note("createPlayer(%s, %s)%n", __a, __b);
+		Debugging.todoNote("createPlayer(%s, %s)%n", __a, __b);
 		if (true)
 			return new NullPlayer(__b);
 		
@@ -50,7 +50,7 @@ public final class Manager
 	public static Player createPlayer(String __a)
 		throws IOException, MediaException
 	{
-		todo.TODO.note("createPlayer(%s)%n", __a);
+		Debugging.todoNote("createPlayer(%s)%n", __a);
 		if (true)
 			return new NullPlayer("application/octet-stream");
 			
@@ -64,7 +64,7 @@ public final class Manager
 	public static Player createPlayer(DataSource __a)
 		throws IOException, MediaException
 	{
-		todo.TODO.note("createPlayer(%s)%n", __a);
+		Debugging.todoNote("createPlayer(%s)%n", __a);
 		if (true)
 			return new NullPlayer(__a.getContentType());
 		
