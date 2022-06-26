@@ -10,7 +10,6 @@
 package lang;
 
 import net.multiphasicapps.tac.TestConsumer;
-import net.multiphasicapps.tac.TestRunnable;
 
 /**
  * Tests that arrays of negative sizes cannot be made.

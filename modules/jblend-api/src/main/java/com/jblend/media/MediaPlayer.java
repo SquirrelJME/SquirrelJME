@@ -11,7 +11,6 @@ package com.jblend.media;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.jblend.io.j2me.events.NativeMediaEventDispatcher;
-import java.io.PrintStream;
 
 public abstract class MediaPlayer
 {

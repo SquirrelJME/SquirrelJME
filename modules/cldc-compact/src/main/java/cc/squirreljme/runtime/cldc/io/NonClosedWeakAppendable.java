@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.io;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.ref.Reference;

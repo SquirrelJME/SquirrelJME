@@ -142,6 +142,7 @@ public class Hashtable<K, V>
 	 * @return If the map contains the value or not.
 	 * @since 2019/05/05
 	 */
+	@SuppressWarnings("RedundantCollectionOperation")
 	public boolean contains(Object __v)
 	{
 		synchronized (this)
@@ -167,6 +168,7 @@ public class Hashtable<K, V>
 	 * {@inheritDoc}
 	 * @since 2019/05/05
 	 */
+	@SuppressWarnings("RedundantCollectionOperation")
 	@Override
 	public boolean containsValue(Object __v)
 	{

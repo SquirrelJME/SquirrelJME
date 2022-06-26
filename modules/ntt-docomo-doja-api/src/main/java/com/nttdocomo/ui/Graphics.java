@@ -273,22 +273,22 @@ public class Graphics
 	{
 		switch (__name)
 		{
-			case Graphics.AQUA:		return 0x00FF00;
+			case Graphics.AQUA:		return 0x00FFFF;
 			case Graphics.BLACK:	return 0x000000;
 			case Graphics.BLUE:		return 0x0000FF;
-			case Graphics.FUCHSIA:	return 0xFF0000;
-			case Graphics.GRAY:		return 0xFFFFFF;
-			case Graphics.GREEN:	return 0x000080;
-			case Graphics.LIME:		return 0x0000FF;
-			case Graphics.MAROON:	return 0x008080;
-			case Graphics.NAVY:		return 0x808080;
+			case Graphics.FUCHSIA:	return 0xFF00FF;
+			case Graphics.GRAY:		return 0x808080;
+			case Graphics.GREEN:	return 0x008000;
+			case Graphics.LIME:		return 0x00FF00;
+			case Graphics.MAROON:	return 0x800000;
+			case Graphics.NAVY:		return 0x000080;
 			case Graphics.OLIVE:	return 0x808000;
 			case Graphics.PURPLE:	return 0x800080;
-			case Graphics.RED:		return 0x00FFFF;
+			case Graphics.RED:		return 0xFF0000;
 			case Graphics.SILVER:	return 0xC0C0C0;
-			case Graphics.TEAL:		return 0x008000;
-			case Graphics.WHITE:	return 0xFFFF00;
-			case Graphics.YELLOW:	return 0xFF00FF;
+			case Graphics.TEAL:		return 0x008080;
+			case Graphics.WHITE:	return 0xFFFFFF;
+			case Graphics.YELLOW:	return 0xFFFF00;
 		}
 		
 		// {@squirreljme.error AH0r Invalid color. (The color)}
