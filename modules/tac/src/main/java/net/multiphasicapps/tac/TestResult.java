@@ -12,6 +12,7 @@ package net.multiphasicapps.tac;
 import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.manifest.JavaManifestKey;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import java.io.IOException;
@@ -455,7 +456,7 @@ public final class TestResult
 			List<String> la = TestResult.throwableList(__act),
 				lb = TestResult.throwableList(__exp);
 			
-			todo.DEBUG.note("%s ~~= %s", la, lb);
+			Debugging.debugNote("%s ~~= %s", la, lb);
 			
 			// These are considered equal if they have anything in common
 			la.retainAll(lb);

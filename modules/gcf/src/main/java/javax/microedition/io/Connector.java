@@ -236,7 +236,7 @@ public class Connector
 			IOException, NullPointerException, SecurityException
 	{
 		// Debug
-		todo.DEBUG.note("Open %s", __uri);
+		Debugging.debugNote("Open %s", __uri);
 		
 		// Used to debug connections
 		try

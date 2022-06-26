@@ -286,7 +286,7 @@ public abstract class MIDlet
 			return true;
 		
 		// Debug
-		todo.DEBUG.note("Platform request: %s", __url);
+		Debugging.debugNote("Platform request: %s", __url);
 		
 		throw Debugging.todo();
 	}

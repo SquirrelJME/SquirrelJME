@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.vm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.IOException;
 import java.io.InputStream;
@@ -146,7 +147,7 @@ public final class VMResourceAccess
 			rv = lib.resourceAsStream(__rc);
 			
 			// Debug
-			todo.DEBUG.note("rAS(%s, %s) = %b", __jar, __rc, rv != null);
+			Debugging.debugNote("rAS(%s, %s) = %b", __jar, __rc, rv != null);
 			
 			if (rv == null)
 				return -1;

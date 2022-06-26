@@ -126,7 +126,7 @@ public class PCFFont
 		int readptr = 8 + (numtables * 16);
 		
 		// Debug
-		todo.DEBUG.note("Table: %s, ended at %d", tables, readptr);
+		Debugging.debugNote("Table: %s, ended at %d", tables, readptr);
 		
 		// Parsed fields
 		PCFProperties pcfp = null;
@@ -158,7 +158,7 @@ public class PCFFont
 				throw new IOException("AP03");
 			
 			// Debug
-			todo.DEBUG.note("Read entry %s", te);
+			Debugging.debugNote("Read entry %s", te);
 			
 			// Read in data that makes up this section, but the entries could
 			// be clipped short and have a size larger than the file. So just
@@ -254,7 +254,8 @@ public class PCFFont
 					// BDF Accelerators
 				case 256:
 					// Debug
-					todo.DEBUG.note("Ignoring BDF Accelerators");
+					Debugging.debugNote("Ignoring BDF Accelerators",
+						new Object[] {});
 					break;
 					
 					// {@squirreljme.error AP04 Unknown PCF type. (The type)}

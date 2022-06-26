@@ -183,7 +183,7 @@ final class __SystemTaskManager__
 		names[n] = __s._name;
 		
 		// Debug
-		todo.DEBUG.note("Suites: %s", Arrays.<String>asList(names));
+		Debugging.debugNote("Suites: %s", Arrays.<String>asList(names));
 		
 		throw Debugging.todo();
 		/*

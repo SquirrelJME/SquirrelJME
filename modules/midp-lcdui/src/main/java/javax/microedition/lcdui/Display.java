@@ -911,7 +911,7 @@ public class Display
 			throw new IllegalStateException("EB1k");
 		
 		// Debug
-		todo.DEBUG.note("Showing alert \"%s\"", __show._message);
+		Debugging.debugNote("Showing alert \"%s\"", __show._message);
 		
 		// Perform call on this display
 		throw Debugging.todo();

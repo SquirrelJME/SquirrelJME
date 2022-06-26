@@ -77,13 +77,13 @@ public final class Manager
 	
 	public static String[] getSupportedContentTypes(String __a)
 	{
-		todo.DEBUG.note("getSupportedContentTypes(%s)%n", __a);
+		Debugging.debugNote("getSupportedContentTypes(%s)%n", __a);
 		throw Debugging.todo();
 	}
 	
 	public static String[] getSupportedProtocols(String __a)
 	{
-		todo.DEBUG.note("getSupportedProtocols(%s)%n", __a);
+		Debugging.debugNote("getSupportedProtocols(%s)%n", __a);
 		throw Debugging.todo();
 	}
 	

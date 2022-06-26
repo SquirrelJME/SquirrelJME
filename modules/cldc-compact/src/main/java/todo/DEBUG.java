@@ -9,8 +9,6 @@
 
 package todo;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * This class contains static methods for debug printing messages as needed.
  *
@@ -27,20 +25,6 @@ public final class DEBUG
 	@Deprecated
 	private DEBUG()
 	{
-	}
-	
-	/**
-	 * Prints a debug note to standard error about something that is
-	 * incomplete.
-	 *
-	 * @param __fmt The format string.
-	 * @param __args The arguments to the call.
-	 * @since 2018/04/09
-	 */
-	@Deprecated
-	public static void note(String __fmt, Object... __args)
-	{
-		Debugging.debugNote(__fmt, __args);
 	}
 }
 

@@ -9,6 +9,7 @@
 
 package java.nio.file;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.full.NullFileSystem;
 
 /**
@@ -37,7 +38,7 @@ public final class FileSystems
 	 */
 	public static FileSystem getDefault()
 	{
-		todo.DEBUG.note("Implement FileSystem support!");
+		Debugging.debugNote("Implement FileSystem support!", new Object[] {});
 		return NullFileSystem.INSTANCE;
 	}
 }

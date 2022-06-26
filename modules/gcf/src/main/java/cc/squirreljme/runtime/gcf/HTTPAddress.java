@@ -106,7 +106,7 @@ public final class HTTPAddress
 		__p = __p.substring(2);
 		
 		// Debug
-		todo.DEBUG.note("Decode %s", __p);
+		Debugging.debugNote("Decode %s", __p);
 		
 		// Only contains the host part
 		int sl = __p.indexOf('/');
