@@ -187,7 +187,7 @@ public final class SourceError
 	 */
 	public static String indexToString(int __index)
 	{
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder(4);
 		
 		sb.append(Character.toLowerCase(Character.forDigit(
 			__index / Character.MAX_RADIX, Character.MAX_RADIX)));
