@@ -32,31 +32,5 @@ public class TODO
 	{
 		throw Debugging.todo();
 	}
-	
-	/**
-	 * Specifies that the integer value is missing.
-	 *
-	 * @return An integer, but is not returned from.
-	 * @since 2017/10/27
-	 */
-	@Deprecated
-	public static int missingInteger()
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * Specifies that the object value is missing.
-	 *
-	 * @param <T> The object to miss.
-	 * @return Should return that object, but never does.
-	 * @since 2017/10/24
-	 */
-	@Deprecated
-	public static <T> T missingObject()
-	{
-		throw Debugging.todo();
-	}
-	
 }
 

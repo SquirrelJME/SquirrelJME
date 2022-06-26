@@ -9,6 +9,7 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -16,10 +17,10 @@ import java.io.PrintStream;
 public final class Log
 {
     public static final PrintStream out =
-    	todo.TODO.<PrintStream>missingObject();
+    	Debugging.<PrintStream>todoObject();
     	
     public static final PrintStream err =
-    	todo.TODO.<PrintStream>missingObject();
+    	Debugging.<PrintStream>todoObject();
 
     public Log()
 	{

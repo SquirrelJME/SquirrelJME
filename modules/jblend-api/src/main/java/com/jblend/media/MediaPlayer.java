@@ -9,7 +9,9 @@
 
 package com.jblend.media;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.jblend.io.j2me.events.NativeMediaEventDispatcher;
+import java.io.PrintStream;
 
 public abstract class MediaPlayer
 {
@@ -20,10 +22,10 @@ public abstract class MediaPlayer
     public static final int ERROR = 65536;
     
     protected static final int REAL_WIDTH =
-    	todo.TODO.missingInteger();
+    	Debugging.<Integer>todoObject();
     	
     protected static final int REAL_HEIGHT =
-    	todo.TODO.missingInteger();
+    	Debugging.<Integer>todoObject();
 
     public MediaPlayer()
 	{
