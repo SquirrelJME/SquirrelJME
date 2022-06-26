@@ -580,6 +580,11 @@ public final class Formatter
 				append = __pf.<Object>__argument(Object.class, "null").
 					toString();
 				break;
+				
+				// Percent sign
+			case PERCENT:
+				append = "%";
+				break;
 			
 				// {@squirreljme.error ZZ2n Unimplemented conversion.
 				// (The conversion)}
