@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.cldc.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This class provides a decoder for UTF-8 bytes.
  *
@@ -83,7 +85,7 @@ public final class UTF8Decoder
 				
 				// Should not occur
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	

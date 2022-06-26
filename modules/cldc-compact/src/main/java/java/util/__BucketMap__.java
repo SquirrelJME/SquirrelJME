@@ -727,7 +727,7 @@ final class __BucketMap__<K, V>
 			// Remove from the map but we never unlinked it, so if there is
 			// a link it will be scanned and removed accordingly
 			if (__BucketMap__.this.removeEntry(last.getKey(), false) != last)
-				throw new todo.OOPS();
+				throw Debugging.oops();
 			
 			// The map likely was structurally modified so use the new state
 			this._atmod = __BucketMap__.this._modcount;
@@ -817,7 +817,7 @@ final class __BucketMap__<K, V>
 			// The entry being mismatched to the key should not happen ever
 			// but if it does then something is very wrong
 			if (__BucketMap__.this.removeEntry(last.getKey(), true) != last)
-				throw new todo.OOPS();
+				throw Debugging.oops();
 			
 			// The map likely was structurally modified so use the new state
 			this._atmod = __BucketMap__.this._modcount;

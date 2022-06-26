@@ -303,7 +303,7 @@ public class Suite
 				
 				// Unknown
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	

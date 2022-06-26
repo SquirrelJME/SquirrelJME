@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.zip;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This contains methods for converting from the IBM 437 codepage to the UTF-16
  * which Java uses.
@@ -193,7 +195,7 @@ public final class IBM437CodePage
 			
 				// Should not occur but in case it does
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	

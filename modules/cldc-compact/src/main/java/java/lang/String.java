@@ -1444,7 +1444,7 @@ public final class String
 				
 				// Should not occur
 				if (sz < 0)
-					throw new todo.OOPS();
+					throw Debugging.oops();
 				
 				baos.write(seq, 0, sz);
 			}
@@ -1456,7 +1456,7 @@ public final class String
 		// Should not occur
 		catch (IOException e)
 		{
-			throw new todo.OOPS();
+			throw Debugging.oops();
 		}
 	}
 	

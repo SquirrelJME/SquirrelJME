@@ -8,6 +8,8 @@
 
 package cc.squirreljme.jvm.suite;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This represents the level of the dependency.
  *
@@ -59,7 +61,7 @@ public enum SuiteDependencyLevel
 			case REQUIRED:	return "required";
 			case OPTIONAL:	return "optional";
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	

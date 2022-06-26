@@ -588,7 +588,7 @@ final class __Sub__<V>
 		
 		// Otherwise remove it
 		if (!this._deque.remove(__v))
-			throw new todo.OOPS();
+			throw Debugging.oops();
 		
 		// Remove from set
 		set.remove(__v);

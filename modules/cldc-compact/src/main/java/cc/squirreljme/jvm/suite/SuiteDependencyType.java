@@ -8,6 +8,8 @@
 
 package cc.squirreljme.jvm.suite;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This represents the type of the dependency that is to be included.
  *
@@ -46,7 +48,7 @@ public enum SuiteDependencyType
 			case PROPRIETARY:	return "proprietary";
 			
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	

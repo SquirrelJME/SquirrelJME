@@ -377,7 +377,7 @@ public class ByteDeque
 			// Should never occur, because that means the end is lower
 			// than the start
 			if (rc < 0)
-				throw new todo.OOPS();
+				throw Debugging.oops();
 			
 			// Erase data
 			for (int i = 0; i < rc; i++)
@@ -885,7 +885,7 @@ public class ByteDeque
 		// If this occurs then the number of bytes deleted was not the
 		// same as the number of bytes which were read.
 		if (rva != rvb)
-			throw new todo.OOPS();
+			throw Debugging.oops();
 		
 		// Return the read count
 		return rva;

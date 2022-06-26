@@ -449,7 +449,7 @@ public class HTTPClientConnection
 			
 				// Should not occur
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	

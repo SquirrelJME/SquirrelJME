@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -1026,7 +1027,7 @@ public abstract class SerializedGraphics
 				return 0;
 			
 			default:
-				throw new todo.OOPS("" + __func);
+				throw Debugging.oops(__func);
 		}
 	}
 	

@@ -31,17 +31,5 @@ public class OOPS
 	{
 		throw Debugging.todo();
 	}
-	
-	/**
-	 * Generates an oops with the given message.
-	 *
-	 * @param __m The message to use.
-	 * @since 2018/11/25
-	 */
-	@Deprecated
-	public OOPS(String __m)
-	{
-		throw Debugging.todo(__m);
-	}
 }
 
