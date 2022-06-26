@@ -9,6 +9,7 @@
 
 package com.jblend.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 public class SimpleSerializeException
@@ -16,7 +17,7 @@ public class SimpleSerializeException
 {
     public SimpleSerializeException(String var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

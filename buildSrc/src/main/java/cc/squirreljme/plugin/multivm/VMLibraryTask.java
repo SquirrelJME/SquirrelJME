@@ -11,9 +11,12 @@ package cc.squirreljme.plugin.multivm;
 
 import java.nio.file.Path;
 import javax.inject.Inject;
+import lombok.Getter;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.Internal;
 import org.gradle.jvm.tasks.Jar;
 
 /**
@@ -27,10 +30,19 @@ public class VMLibraryTask
 	implements VMExecutableTask
 {
 	/** The source set used. */
+	@Internal
+	@Getter
 	public final String sourceSet;
 	
 	/** The virtual machine type. */
+	@Internal
+	@Getter
 	public final VMSpecifier vmType;
+	
+	/** The base JAR. */
+	@Internal
+	@Getter
+	public final Jar baseJar;
 	
 	/**
 	 * Initializes the library creation task.
@@ -50,6 +62,7 @@ public class VMLibraryTask
 			
 		Project project = this.getProject();
 		Jar baseJar = VMHelpers.jarTask(project, __sourceSet);
+		this.baseJar = baseJar;
 		
 		// These are used at the build stage
 		this.sourceSet = __sourceSet;
@@ -63,16 +76,32 @@ public class VMLibraryTask
 		this.dependsOn(baseJar,
 			new VMLibraryTaskDependencies(this, this.vmType));
 		
+		// Only run if the JAR would run
+		this.onlyIf(this::onlyIf);
+		
 		// The input of this task is the JAR that was created
 		this.getInputs().file(baseJar.getArchiveFile());
 		
 		// The output depends on the task and its source set
-		this.getOutputs().file(this.outputPath());
+		this.getOutputs().files(
+			this.getProject().provider(() -> this.__taskOutputFile()));
 		this.getOutputs().upToDateWhen(
 			new VMLibraryTaskUpToDate(this.vmType));
 		
 		// Performs the action of the task
 		this.doLast(new VMLibraryTaskAction(__sourceSet, __vmType));
+	}
+	
+	/**
+	 * When should this run?
+	 * 
+	 * @param __task The task to check.
+	 * @return If this should run.
+	 * @since 2022/05/20
+	 */
+	private boolean onlyIf(Task __task)
+	{
+		return this.baseJar.getOnlyIf().isSatisfiedBy(this.baseJar);
 	}
 	
 	/**
@@ -90,12 +119,15 @@ public class VMLibraryTask
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2020/10/17
+	 * Returns the output file for this task.
+	 * 
+	 * @return The output file for this task.
+	 * @since 2022/05/20
 	 */
-	@Override
-	public String getSourceSet()
+	private Object __taskOutputFile()
 	{
-		return this.sourceSet;
+		if (this.onlyIf(this))
+			return this.outputPath();
+		return null;
 	}
 }

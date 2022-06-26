@@ -9,13 +9,14 @@
 
 package java.security;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Enumeration;
 
 public abstract class PermissionCollection
 {
 	public PermissionCollection()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public abstract void add(Permission __a);
@@ -26,18 +27,18 @@ public abstract class PermissionCollection
 	
 	public boolean isReadOnly()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setReadOnly()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

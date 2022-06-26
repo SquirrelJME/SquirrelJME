@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -60,6 +61,9 @@ public class SimpleHTTPServer<S>
 		ServerSocket socket;
 		this._socket = (socket = new ServerSocket(0,
 			SimpleHTTPServer._BACKLOG, InetAddress.getLoopbackAddress()));
+		
+		// Set timeout for any connections accordingly to not hang forever
+		socket.setSoTimeout(5_000);
 		
 		// Where do we connect?
 		this.hostname = this._socket.getInetAddress().getHostName();
@@ -134,6 +138,12 @@ public class SimpleHTTPServer<S>
 			// Stop the loop now?
 			if (stopHandling)
 				return false;
+		}
+		
+		// Could not read, so ignore and try again later
+		catch (InterruptedIOException ignored)
+		{
+			return true;
 		}
 		
 		// Request was handled and one was returned

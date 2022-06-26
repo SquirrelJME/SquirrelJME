@@ -10,7 +10,9 @@
 package cc.squirreljme.plugin.multivm;
 
 import javax.inject.Inject;
+import lombok.Getter;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.tasks.Internal;
 
 /**
  * Used to run the virtual machine.
@@ -22,9 +24,13 @@ public class VMRunTask
 	implements VMExecutableTask
 {
 	/** The source set used. */
+	@Internal
+	@Getter
 	protected final String sourceSet;
 	
 	/** The virtual machine type. */
+	@Internal
+	@Getter
 	protected final VMSpecifier vmType;
 	
 	/**
@@ -64,15 +70,5 @@ public class VMRunTask
 		
 		// Performs the action of the task
 		this.doLast(new VMRunTaskAction(__sourceSet, __vmType));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/08/21
-	 */
-	@Override
-	public String getSourceSet()
-	{
-		return this.sourceSet;
 	}
 }

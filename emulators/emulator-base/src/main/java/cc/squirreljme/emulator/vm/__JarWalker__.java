@@ -53,7 +53,10 @@ public final class __JarWalker__
 	{
 		// If this is a JAR, we will grab it
 		String fn = __path.getFileName().toString();
-		if (fn.endsWith(".jar") || fn.endsWith(".JAR"))
+		if (fn.endsWith(".jar") || fn.endsWith(".JAR") ||
+			fn.endsWith(".jad") || fn.endsWith(".JAD") ||
+			fn.endsWith(".jam") || fn.endsWith(".JAM") ||
+			fn.endsWith(".kjx") || fn.endsWith(".KJX"))
 			this._files.add(__path.toString());
 		
 		// The default way is to just handle it

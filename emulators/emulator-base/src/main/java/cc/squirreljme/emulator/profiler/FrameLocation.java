@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.profiler;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -63,7 +64,7 @@ public final class FrameLocation
 	@Override
 	public final int compareTo(FrameLocation __o)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

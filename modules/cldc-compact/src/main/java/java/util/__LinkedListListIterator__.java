@@ -9,7 +9,6 @@
 
 package java.util;
 
-
 /**
  * The list iterator for this linked list.
  *
@@ -298,7 +297,7 @@ final class __LinkedListListIterator__<E>
 	 * @throws ConcurrentModificationException If it was modified.
 	 * @since 2018/10/29
 	 */
-	private final void __checkConcurrent()
+	private void __checkConcurrent()
 		throws ConcurrentModificationException
 	{
 		// {@squirreljme.error ZZ2w List has been concurrently modified.}

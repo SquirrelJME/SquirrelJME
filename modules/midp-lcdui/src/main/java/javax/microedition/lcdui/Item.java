@@ -110,7 +110,7 @@ public abstract class Item
 	Item(String __l)
 	{
 		// Setup label item
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		this._labelItem = backend.itemNew(UIItemType.LABEL);
 		
 		// Set the label accordingly
@@ -119,12 +119,12 @@ public abstract class Item
 	
 	public void addCommand(Command __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Command[] getCommands()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -140,12 +140,12 @@ public abstract class Item
 	
 	public int getLayout()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public ItemLayoutHint getLayoutHint()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -202,27 +202,27 @@ public abstract class Item
 	
 	public void notifyStateChanged()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void removeCommand(Command __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setCommand(Command __c, int __p)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setDefaultCommand(Command __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setItemCommandListener(ItemCommandListener __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -250,7 +250,7 @@ public abstract class Item
 	
 	public void setLayoutHint(ItemLayoutHint __h)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -293,7 +293,7 @@ public abstract class Item
 		this._label = __l;
 		
 		// Update the label
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		backend.widgetProperty(this._labelItem,
 			UIWidgetProperty.STRING_LABEL, 0, __l);
 		

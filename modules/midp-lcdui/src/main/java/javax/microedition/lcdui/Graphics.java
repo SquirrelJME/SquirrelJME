@@ -517,6 +517,10 @@ public abstract class Graphics
 	 * Sets the new clipping area of the destination image. The previous
 	 * clipping area is replaced.
 	 *
+	 * To set the absolute position of the clip the following may be
+	 * performed:
+	 * {@code setClip(__x - getTranslateX(), __y - getTranslateY(), __w, __h)}.
+	 *
 	 * @param __x The X coordinate, will be translated.
 	 * @param __y The Y coordinate, will be translated.
 	 * @param __w The width.
@@ -581,7 +585,7 @@ public abstract class Graphics
 	 *
 	 * To set the absolute position of the translation the following may be
 	 * performed:
-	 * {@code translate(ax - getTranslateX(), ay - getTranslateY())}.
+	 * {@code translate(__x - getTranslateX(), __y - getTranslateY())}.
 	 *
 	 * The clipping area, if set, will not be transformed.
 	 *

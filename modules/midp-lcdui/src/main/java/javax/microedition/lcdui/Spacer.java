@@ -9,12 +9,14 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class Spacer
 	extends Item
 {
 	public Spacer(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -65,7 +67,7 @@ public class Spacer
 	
 	public void setMinimumSize(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

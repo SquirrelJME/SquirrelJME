@@ -78,7 +78,10 @@ public final class PathSuiteManager
 						continue;
 					
 					String fn = p.getFileName().toString();
-					if (fn.endsWith(".jar") || fn.endsWith(".JAR"))
+					if (fn.endsWith(".jar") || fn.endsWith(".JAR") ||
+						fn.endsWith(".jad") || fn.endsWith(".JAD") ||
+						fn.endsWith(".jam") || fn.endsWith(".JAM") ||
+						fn.endsWith(".kjx") || fn.endsWith(".KJX"))
 						rv.add(fn);
 				}
 			}

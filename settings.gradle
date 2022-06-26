@@ -1,3 +1,81 @@
+import java.nio.file.Paths
+import java.nio.file.Files
+import java.util.regex.Pattern
+import java.util.stream.Collectors
+
+// Poking PATH is used by multiple systems
+def envRawPathProperty = System.getenv("PATH")
+def envPath = (envRawPathProperty != null ?
+	Arrays.asList(
+		envRawPathProperty.split(Pattern.quote(File.pathSeparator)))
+			.stream().<java.nio.file.Path>map({it -> Paths.get(it)})
+			.collect(Collectors.toList()) :
+			Collections.<java.nio.file.Path>emptyList())
+
+// Do we have Termux in our PATH?
+def foundTermuxRoot = false
+for (java.nio.file.Path path : envPath) {
+	def fullPath = path.toAbsolutePath();
+	if (fullPath.toString().startsWith("/data/data/com.termux/")) {
+		foundTermuxRoot = true;
+	}
+}
+
+// Did we find Termux in our PATH?
+if ((foundTermuxRoot && System.getProperty("force.termux") == null) ||
+	Boolean.getBoolean("force.termux")) {
+	// squirreljmeTermuxCompiler
+	logger.lifecycle("Appears we are in Termux, kludging compiler build...")
+	
+	// Enable it
+	gradle.beforeProject({proj ->
+		proj.ext.squirreljmeTermuxCompiler = true
+	})
+}
+
+// If we are on M1 Macs, perform some modifications so that Gradle can compile
+// C++ code
+def osName = System.getProperty("os.name")
+def osArch = System.getProperty("os.arch")  
+if (osName.equalsIgnoreCase('Mac OS X') &&
+	(osArch.equalsIgnoreCase('aarch64') || osArch.equalsIgnoreCase('arm64') ||
+	osArch.equalsIgnoreCase('arm64-v8'))) {
+	
+	gradle.beforeProject({proj ->
+		proj.ext.squirreljmeMacOsArmCpp = true
+	})
+}
+
+// If we have a really high Java version being used then the parameters
+// for -source and -target were likely removed, so as such we cannot rely on
+// the project being able to be built in such versions.
+if (JavaVersion.current() >= JavaVersion.VERSION_HIGHER ||
+	Boolean.getBoolean("force.ecj")) {
+	// Emit a warning to indicate that the version is quite new
+	logger.warn("The current Java version is quite new, " +
+		"if Eclipse Java Compiler (ECJ) exists on the system " +
+		"then it will be used to compile the modules instead.")
+	
+	// Does ECJ exist in the system PATH?
+	def foundEcjBinary = false
+	for (java.nio.file.Path path : envPath) {
+		if (Files.exists(path.resolve("ecj"))) {
+			foundEcjBinary = true
+		}
+	}
+	
+	// If we have the binary, use it
+	if (foundEcjBinary) {
+		logger.lifecycle("Found ECJ binary, using it!")
+		
+		gradle.beforeProject({proj ->
+			proj.ext.squirreljmeEcjEnabled = true
+		})
+	} else {
+		logger.warn("Could not find ECJ, build may fail!")
+	}
+}
+
 // Modules and available platforms
 include "modules"
 include "emulators"

@@ -574,7 +574,7 @@ public final class SwingFormShelf
 			
 				// Background for canvases
 			case UIMetricType.COLOR_CANVAS_BACKGROUND:
-				return UIManager.getColor("desktop")
+				return UIManager.getColor("Panel.background")
 					.getRGB() & SwingFormShelf._COLOR_MASK;
 				
 				// Vibration not supported
@@ -703,6 +703,10 @@ public final class SwingFormShelf
 			.getDisplayModes())
 			rv = Math.max(rv, (__height ? mode.getHeight() : mode.getWidth()));
 		
-		return rv;
+		// Limit screen size to 320x240 here since when testing large displays
+		// cause issues
+		if (__height)
+			return Math.min(320, rv);
+		return Math.min(240, rv);
 	}
 }

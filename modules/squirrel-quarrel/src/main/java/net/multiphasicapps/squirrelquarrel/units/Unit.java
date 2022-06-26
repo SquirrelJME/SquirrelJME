@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.squirrelquarrel.units;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 
 /**
@@ -128,7 +129,7 @@ public final class Unit
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		// {@squirreljme.error BE0a Cannot morph a linked unit.}
 		if (this._islinked)
@@ -175,7 +176,7 @@ public final class Unit
 	 */
 	public final UnitReference reference()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -191,7 +192,7 @@ public final class Unit
 		if (this._deleted)
 			return true;
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		// Do not think for units which are not linked, but do not delete them
 		if (!this._islinked)

@@ -9,6 +9,7 @@
 
 package com.vodafone.v10.sound;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 public class Sound
@@ -18,21 +19,21 @@ public class Sound
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public Sound(byte[] var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getSize()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getUseTracks()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

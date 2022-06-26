@@ -10,6 +10,7 @@
 package java.lang;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -52,43 +53,43 @@ public final class Short
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public byte byteValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int compareTo(Short __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public double doubleValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public float floatValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -143,7 +144,7 @@ public final class Short
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static short parseShort(String __a, int __b)
@@ -151,7 +152,7 @@ public final class Short
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static short parseShort(String __a)
@@ -159,7 +160,7 @@ public final class Short
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -192,7 +193,7 @@ public final class Short
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Short valueOf(String __a)
@@ -200,7 +201,7 @@ public final class Short
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

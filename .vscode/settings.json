@@ -3,5 +3,11 @@
 	79
 	],
 	"java.import.maven.enabled": false,
-	"java.configuration.updateBuildConfiguration": "automatic"
+	"java.configuration.updateBuildConfiguration": "automatic",
+	
+	"gradle.nestedProjects": true,
+	"gradle.autoDetect": true,
+	"gradle.allowParallelRun": true,
+	"cmake.sourceDirectory": "${workspaceFolder}/ratufacoat",
+	"java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx4G -Xms100m"
 }

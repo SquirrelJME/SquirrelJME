@@ -9,13 +9,15 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public final class TableLayoutPolicy
 	extends FormLayoutPolicy
 {
 	public TableLayoutPolicy(Form __f, int __cols)
 	{
 		super(__f);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -26,12 +28,12 @@ public final class TableLayoutPolicy
 	protected void doLayout(int __vpx, int __vpy, int __vpw,
 		int __vph, int[] __ts)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getColumns()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -41,7 +43,7 @@ public final class TableLayoutPolicy
 	@Override
 	protected Item getTraverse(Item __i, int __dir)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

@@ -9,6 +9,7 @@
 
 package jdk.dio.uart;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import jdk.dio.DeviceEvent;
 
 public class UARTEvent
@@ -34,17 +35,17 @@ public class UARTEvent
 	
 	public UARTEvent(UART __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public UARTEvent(UART __a, int __b, long __c, int __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getID()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

@@ -9,6 +9,8 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public final class NotificationType
 {
 	public static final NotificationType CALL =
@@ -31,7 +33,7 @@ public final class NotificationType
 	
 	public NotificationType(String __dl, Image __di)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

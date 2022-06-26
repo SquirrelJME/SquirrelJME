@@ -10,6 +10,7 @@
 package net.multiphasicapps.classfile;
 
 import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -150,7 +151,7 @@ public final class BinaryName
 				sb.append(identifier[i]);
 			}
 			
-			this._package = new WeakReference<>(
+			this._package = new SoftReference<>(
 				(rv = new BinaryName(sb.toString())));
 		}
 		

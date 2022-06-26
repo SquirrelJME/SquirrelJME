@@ -56,7 +56,7 @@ public interface Player
 	
 	void setLoopCount(int __a);
 	
-	long setMediaTime(long __a)
+	long setMediaTime(long __now)
 		throws MediaException;
 	
 	void setTimeBase(TimeBase __a)

@@ -28,6 +28,23 @@ public final class VerboseManager
 	private int _nextCode;
 	
 	/**
+	 * Returns all the active verbose flags.
+	 * 
+	 * @return The active verbose flags.
+	 * @since 2022/06/12
+	 */
+	public int activeFlags()
+	{
+		int rv = 0;
+		
+		for (Integer i : this._levels.keySet())
+			if (i != null)
+				rv |= i;
+			
+		return rv;
+	}
+	
+	/**
 	 * Adds verbosity at the given frame point.
 	 * 
 	 * @param __numFrames The frame count to limit at.

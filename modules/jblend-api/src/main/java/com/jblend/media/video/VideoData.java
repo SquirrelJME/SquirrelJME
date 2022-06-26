@@ -9,6 +9,7 @@
 
 package com.jblend.media.video;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.jblend.media.MediaData;
 import java.io.IOException;
 
@@ -26,23 +27,23 @@ public class VideoData extends MediaData {
 
     public int getWidth()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getHeight()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public String getMediaType()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public void setData(byte[] var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

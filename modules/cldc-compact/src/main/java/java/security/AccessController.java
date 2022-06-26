@@ -11,6 +11,7 @@ package java.security;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This is used for access control on resources that may be available at
@@ -62,7 +63,7 @@ public final class AccessController
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		todo.TODO.note("Check permission: %s", __p);
+		Debugging.todoNote("Check permission: %s", __p);
 	}
 }
 

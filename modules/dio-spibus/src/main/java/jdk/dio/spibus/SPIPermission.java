@@ -9,6 +9,7 @@
 
 package jdk.dio.spibus;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import jdk.dio.DevicePermission;
 
 public class SPIPermission
@@ -17,13 +18,13 @@ public class SPIPermission
 	public SPIPermission(String __a)
 	{
 		super((String)null);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public SPIPermission(String __a, String __b)
 	{
 		super((String)null);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

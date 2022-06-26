@@ -9,6 +9,7 @@
 
 package com.jblend.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -19,21 +20,21 @@ public class SimpleObjectOutputStream
     public SimpleObjectOutputStream(OutputStream var1) {
         super((OutputStream)null);
         
-        throw new todo.TODO();
+        throw Debugging.todo();
     }
 
     public void write(String var1) throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void write(SimpleSerializable var1) throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void dispatchWriteCommand(Object var1) throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

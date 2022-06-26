@@ -55,4 +55,28 @@ public interface VerboseDebugFlag
 	/** Class lookup failures. */
 	short MISSING_CLASS =
 		0x100;
+	
+	/** Monitor entry. */
+	short MONITOR_ENTER =
+		0x200;
+	
+	/** Monitor exit. */
+	short MONITOR_EXIT =
+		0x400;
+	
+	/** Wait on monitor. */
+	short MONITOR_WAIT =
+		0x800;
+	
+	/** Notify on a monitor. */
+	short MONITOR_NOTIFY =
+		0x1000;
+	
+	/** Inherit the current verbose checks to another thread. */
+	short INHERIT_VERBOSE_FLAGS =
+		0x2000;
+	
+	/** New thread is created. */
+	short THREAD_NEW =
+		0x4000;
 }

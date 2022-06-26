@@ -60,7 +60,7 @@ public class StringItem
 	
 	public int getAppearanceMode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -118,12 +118,12 @@ public class StringItem
 	
 	public void setFont(Font __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setText(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

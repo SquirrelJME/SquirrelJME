@@ -9,7 +9,9 @@
 
 package javax.microedition.rms;
 
-import cc.squirreljme.runtime.cldc.lang.ImplementationClass;
+import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.rms.SuiteIdentifier;
 import cc.squirreljme.runtime.rms.TemporaryVinylRecord;
 import cc.squirreljme.runtime.rms.VinylLock;
@@ -84,8 +86,8 @@ public class RecordStore
 		VinylRecord vr;
 		try
 		{
-			String vclass = ImplementationClass.implementationClass(
-				VinylRecord.class.getName());
+			Debugging.todoNote("Implement storage backed RMS.");
+			String vclass = null;//Debugging.<String>todoObject();
 			vr = (vclass == null ? new TemporaryVinylRecord() :
 				(VinylRecord)Class.forName(vclass).newInstance());
 		}
@@ -640,7 +642,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2016/02/26
 	 */
-	@Deprecated
+	@ApiDefinedDeprecated
 	public int getSize()
 		throws RecordStoreNotOpenException
 	{
@@ -656,7 +658,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2016/02/26
 	 */
-	@Deprecated
+	@ApiDefinedDeprecated
 	public int getSizeAvailable()
 		throws RecordStoreNotOpenException
 	{
@@ -788,7 +790,7 @@ public class RecordStore
 		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 	
@@ -874,7 +876,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If it is not open.
 	 * @since 2019/04/15
 	 */
-	private final void __checkOpen()
+	private void __checkOpen()
 		throws RecordStoreNotOpenException
 	{
 		// {@squirreljme.error DC07 This record store is not open.
@@ -908,7 +910,7 @@ public class RecordStore
 	 * @return The listeners.
 	 * @since 2019/04/15
 	 */
-	private final RecordListener[] __listeners()
+	private RecordListener[] __listeners()
 	{
 		Set<RecordListener> listeners = this._listeners;
 		return listeners.<RecordListener>toArray(
@@ -966,7 +968,7 @@ public class RecordStore
 			if (got == -1)
 				throw new RecordStoreNotFoundException("DC08 " + __n);
 			
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 	
@@ -1047,7 +1049,7 @@ public class RecordStore
 			SecureRecordStoreException, SecurityException
 	{
 		return RecordStore.__openRecordStore(__n,
-			SuiteIdentifier.currentVendor(), SuiteIdentifier.currentName(),
+			ApplicationHandler.currentVendor(), ApplicationHandler.currentName(),
 			__create, __auth, __write, __pass);
 	}
 	
@@ -1170,7 +1172,7 @@ public class RecordStore
 	 * @throws RecordStoreException If there is an error.
 	 * @since 2019/05/01
 	 */
-	private static final void __checkError(int __id)
+	private static void __checkError(int __id)
 		throws RecordStoreException
 	{
 		// Error was detected

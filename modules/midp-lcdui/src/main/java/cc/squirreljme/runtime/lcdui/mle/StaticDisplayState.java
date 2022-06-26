@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.runtime.midlet.CleanupHandler;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
@@ -55,6 +56,9 @@ public final class StaticDisplayState
 	
 	/** The callback used for form events. */
 	private static UIFormCallback _CALLBACK;
+	
+	/** Did we add the cleanup handler yet? */
+	private static volatile boolean _addedCleanup;
 	
 	/** Is this terminating? */
 	private static volatile boolean _IS_TERMINATING;
@@ -165,7 +169,7 @@ public final class StaticDisplayState
 			throw new NullPointerException("NARG");
 		
 		// Would be previously cached
-		UIBackend instance = UIBackendFactory.getInstance();
+		UIBackend instance = UIBackendFactory.getInstance(true);
 		synchronized (StaticDisplayState.class)
 		{
 			for (Map.Entry<Reference<DisplayWidget>, UIWidgetBracket> e :
@@ -217,7 +221,7 @@ public final class StaticDisplayState
 			NullPointerException
 	{
 		return StaticDisplayState.locate(__widget, __type,
-			UIBackendFactory.getInstance());
+			UIBackendFactory.getInstance(true));
 	}
 	
 	/**
@@ -296,7 +300,7 @@ public final class StaticDisplayState
 				widgets.remove(ref);
 				
 				// Perform collection on it
-				UIBackend instance = UIBackendFactory.getInstance();
+				UIBackend instance = UIBackendFactory.getInstance(true);
 				if (widget instanceof UIFormBracket)
 					instance.formDelete((UIFormBracket)widget);
 				else if (widget instanceof UIItemBracket)
@@ -349,6 +353,15 @@ public final class StaticDisplayState
 		// Prevent thread mishaps between threads doing this
 		synchronized (StaticDisplayState.class)
 		{
+			// When terminating, destroy and cleanup all the display state
+			if (!StaticDisplayState._addedCleanup)
+			{
+				CleanupHandler.add(new __TerminateDisplay__());
+				
+				// This should only be done once!
+				StaticDisplayState._addedCleanup = true;
+			}
+			
 			// Perform quick garbage collection on forms in the event any
 			// have gone away
 			StaticDisplayState.gc();

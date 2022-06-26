@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.squirrelquarrel.game;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.InputStream;
 import java.io.OutputStream;
 import net.multiphasicapps.squirrelquarrel.ui.FrameSync;
@@ -125,7 +126,7 @@ public final class GameLooper
 			game.run();
 			
 			// Debug
-			todo.DEBUG.note("Ran %d", nowframe);
+			Debugging.debugNote("Ran %d", nowframe);
 			
 			// Request a repaint if there is enough time to draw
 			long exit = System.nanoTime();

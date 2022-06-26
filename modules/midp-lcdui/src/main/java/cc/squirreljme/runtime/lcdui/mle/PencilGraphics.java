@@ -40,6 +40,9 @@ public final class PencilGraphics
 	private static final String _FORCE_SOFTWARE_PROPERTY =
 		"cc.squirreljme.lcdui.software";
 	
+	/** Forcing software rasterization */
+	private static final boolean _IS_FORCE_SOFTWARE;
+	
 	/** Software graphics backend. */
 	protected final Graphics software;
 	
@@ -76,6 +79,9 @@ public final class PencilGraphics
 	/** The clip Y position. */
 	private int _clipY;
 	
+	/** The current font used. */
+	private Font _font;
+	
 	/** The current stroke style. */
 	private int _strokeStyle;
 	
@@ -84,6 +90,12 @@ public final class PencilGraphics
 	
 	/** The current Y translation. */
 	private int _transY;
+	
+	static
+	{
+		_IS_FORCE_SOFTWARE =
+			Boolean.getBoolean(PencilGraphics._FORCE_SOFTWARE_PROPERTY);
+	}
 	
 	/**
 	 * Initializes the pencil graphics system.
@@ -357,7 +369,7 @@ public final class PencilGraphics
 		int[] buf;
 		int offset;
 		int scanLen;
-		if (false && __src.squirreljmeIsDirect())
+		if (__src.squirreljmeIsDirect())
 		{
 			buf = __src.squirreljmeDirectRGBInt();
 			offset = __src.squirreljmeDirectOffset();
@@ -634,7 +646,7 @@ public final class PencilGraphics
 		if (0 == (this.capabilities & PencilCapabilities.FONT_TEXT))
 			return this.software.getFont();
 		
-		throw Debugging.todo();
+		return this._font;
 	}
 	
 	/**
@@ -807,7 +819,7 @@ public final class PencilGraphics
 		this._clipX = clipX;
 		this._clipY = clipY;
 		this._clipWidth = clipEndX - clipX;
-		this._clipHeight = clipEndY - clipY; 
+		this._clipHeight = clipEndY - clipY;
 		
 		// Forward to both software and hardware graphics
 		this.software.setClip(__x, __y, __w, __h);
@@ -844,13 +856,15 @@ public final class PencilGraphics
 	@Override
 	public void setFont(Font __font)
 	{
-		if (0 == (this.capabilities & PencilCapabilities.FONT_TEXT))
-		{
-			this.software.setFont(__font);
-			return;
-		}
+		// Cache locally
+		this._font = __font;
 		
-		throw Debugging.todo();
+		// This is always set in software
+		this.software.setFont(__font);
+		
+		// If supported by hardware, set it here
+		if (0 != (this.capabilities & PencilCapabilities.FONT_TEXT))
+			throw Debugging.todo();
 	}
 	
 	/**
@@ -941,7 +955,7 @@ public final class PencilGraphics
 	 * supported, but falling back to software level graphics.
 	 * 
 	 * @param __pf The {@link UIPixelFormat} used for the draw.
-	 * @param __bw The buffer width.
+	 * @param __bw The buffer width, this is the scanline width of the buffer.
 	 * @param __bh The buffer height.
 	 * @param __buf The target buffer to draw to, this is cast to the correct
 	 * buffer format.
@@ -967,7 +981,7 @@ public final class PencilGraphics
 		// then operations will purely be implemented in software
 		// It can also be disabled via a system property
 		int caps = PencilShelf.capabilities(__pf); 
-		if (Boolean.getBoolean(PencilGraphics._FORCE_SOFTWARE_PROPERTY) ||
+		if (PencilGraphics._IS_FORCE_SOFTWARE ||
 			(caps & PencilCapabilities.MINIMUM) == 0)
 			return software;
 		

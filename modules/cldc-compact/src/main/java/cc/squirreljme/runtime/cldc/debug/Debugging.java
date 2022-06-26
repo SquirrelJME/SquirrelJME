@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMType;
@@ -148,16 +149,17 @@ public final class Debugging
 		}
 		
 		// Use standard SquirrelJME output
-		TerminalShelf.write(StandardPipeType.STDERR,
+		PipeBracket err = TerminalShelf.fromStandard(StandardPipeType.STDERR);
+		TerminalShelf.write(err,
 			(__c > Debugging._BYTE_LIMIT ? '?' : __c));
 		
 		if (__d > 0)
-			TerminalShelf.write(StandardPipeType.STDERR,
+			TerminalShelf.write(err,
 				(__d > Debugging._BYTE_LIMIT ? '?' : __d));
 			
 		// If writing a newline force the stream to be flushed
 		if (__c == '\n' || __d == '\n')
-			TerminalShelf.flush(StandardPipeType.STDERR);
+			TerminalShelf.flush(err);
 	}
 	
 	/**
@@ -218,7 +220,8 @@ public final class Debugging
 				// possibly get trashed
 				TracePointBracket[] trace = DebugShelf.traceStack();
 				CallTraceUtils.printStackTrace(
-					new ConsoleOutputStream(StandardPipeType.STDERR),
+					new ConsoleOutputStream(StandardPipeType.STDERR,
+						true),
 					"INCOMPLETE CODE", trace,
 					null, null, 0);
 					
@@ -269,7 +272,8 @@ public final class Debugging
 				
 				// Try to print the trace
 				CallTraceUtils.printStackTrace(
-					new ConsoleOutputStream(StandardPipeType.STDERR),
+					new ConsoleOutputStream(StandardPipeType.STDERR,
+						true),
 					t, 0);
 			}
 			
@@ -591,11 +595,12 @@ public final class Debugging
 		}
 		
 		// Use standard SquirrelJME output
-		TerminalShelf.write(StandardPipeType.STDERR,
+		PipeBracket err = TerminalShelf.fromStandard(StandardPipeType.STDERR);
+		TerminalShelf.write(err,
 			(__c > Debugging._BYTE_LIMIT ? '?' : __c));
 		
 		if (__d > 0)
-			TerminalShelf.write(StandardPipeType.STDERR,
+			TerminalShelf.write(err,
 				(__d > Debugging._BYTE_LIMIT ? '?' : __d));
 	}
 	

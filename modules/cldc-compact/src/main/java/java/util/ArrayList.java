@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This is a resizeable list which is backed by an array.
  *
@@ -114,8 +116,7 @@ public class ArrayList<E>
 			elements = (E[])new Object[newcap];
 			
 			// Copy old stuff over, but only up to the index as needed
-			for (int i = 0; i < __i; i++)
-				elements[i] = source[i];
+			System.arraycopy(source, 0, elements, 0, __i);
 		}
 		
 		// Move down to fit
@@ -191,8 +192,7 @@ public class ArrayList<E>
 		
 		// Copy values over
 		E[] extra = (E[])new Object[__n];
-		for (int i = 0; i < nowl; i++)
-			extra[i] = elements[i];
+		System.arraycopy(elements, 0, extra, 0, nowl);
 		
 		// Set
 		this._elements = extra;
@@ -247,7 +247,7 @@ public class ArrayList<E>
 	@Override
 	protected void removeRange(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -285,7 +285,7 @@ public class ArrayList<E>
 	
 	public void trimToSize()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

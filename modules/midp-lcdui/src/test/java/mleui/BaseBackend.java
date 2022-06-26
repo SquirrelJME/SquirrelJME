@@ -48,6 +48,10 @@ public abstract class BaseBackend
 	public void test(String __backend)
 		throws Throwable
 	{
+		// Debugging
+		/*DebugShelf.verbose(VerboseDebugFlag.ALL);
+		DebugShelf.verboseInternalThread(VerboseDebugFlag.ALL);*/
+		
 		UIBackend backend = BaseBackend.__getBackend(__backend);
 		this.test(backend, backend.displays()[0]);
 	}

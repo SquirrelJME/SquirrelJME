@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.zip.streamwriter;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -131,7 +132,7 @@ public class ZipStreamWriter
 		// The current time all entries will use for their date
 		// 0bhhhhh_mmmmmm_sssss
 		// 0byyyyyy_mmmm_ddddd
-		todo.TODO.note("Implement correct timestamp.");
+		Debugging.todoNote("Implement correct timestamp.", new Object[] {});
 		int time = 0b01111_011110_00000,
 			date = 0b100110_0011_01000;
 		
@@ -410,7 +411,7 @@ public class ZipStreamWriter
 	 *
 	 * @since 2016/07/15
 	 */
-	private abstract class __BaseOutputStream__
+	private abstract static class __BaseOutputStream__
 		extends OutputStream
 	{
 		/** The wrapped stream. */

@@ -10,6 +10,8 @@
 package javax.microedition.m3g;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class Camera
 	extends Node
 {
@@ -24,32 +26,32 @@ public class Camera
 	
 	public Camera()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getProjection(float[] __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getProjection(Transform __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setGeneric(Transform __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setParallel(float __a, float __b, float __c, float __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setPerspective(float __a, float __b, float __c, float __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

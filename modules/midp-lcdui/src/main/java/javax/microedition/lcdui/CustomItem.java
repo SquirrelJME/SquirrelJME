@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
@@ -68,7 +69,7 @@ public abstract class CustomItem
 	
 	protected CustomItem(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@SerializedEvent
@@ -103,17 +104,17 @@ public abstract class CustomItem
 	
 	public int getGameAction(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	protected final int getInteractionModes()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getKeyCode(int __action)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -131,53 +132,53 @@ public abstract class CustomItem
 	
 	protected final void invalidate()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@SerializedEvent
 	protected void keyPressed(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@SerializedEvent
 	protected void keyReleased(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@SerializedEvent
 	protected void keyRepeated(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@SerializedEvent
 	protected void pointerDragged(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@SerializedEvent
 	protected void pointerPressed(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@SerializedEvent
 	protected void pointerReleased(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	protected final void repaint()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	protected final void repaint(int __a, int __b, int __c, int __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -223,19 +224,19 @@ public abstract class CustomItem
 	@SerializedEvent
 	protected void sizeChanged(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@SerializedEvent
 	protected boolean traverse(int __a, int __b, int __c, int[] __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@SerializedEvent
 	protected void traverseOut()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -253,7 +254,7 @@ public abstract class CustomItem
 		if (!this._transparent)
 		{
 			int old = __gfx.getAlphaColor();
-			__gfx.setColor(UIBackendFactory.getInstance().metric(
+			__gfx.setColor(UIBackendFactory.getInstance(true).metric(
 				UIMetricType.COLOR_CANVAS_BACKGROUND));
 			
 			__gfx.fillRect(0, 0, __sw, __sh);
@@ -289,7 +290,7 @@ public abstract class CustomItem
 	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __intProp, int __sub, int __old, int __new)
 	{
-		UIBackend instance = UIBackendFactory.getInstance();
+		UIBackend instance = UIBackendFactory.getInstance(true);
 		
 		// Only act on the canvas item
 		if (!instance.equals(__item, this._uiCanvas))

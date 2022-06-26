@@ -9,6 +9,8 @@
 
 package jdk.dio.i2cbus;
 
+import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -23,65 +25,65 @@ public final class I2CDeviceConfig
 	public static final int ADDR_SIZE_7 =
 		7;
 	
-	@Deprecated
+	@ApiDefinedDeprecated
 	public I2CDeviceConfig(int __a, int __b, int __c, int __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	@Deprecated
+	@ApiDefinedDeprecated
 	public I2CDeviceConfig(String __a, int __b, int __c, int __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getAddress()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getAddressSize()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getClockFrequency()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public String getControllerName()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int getControllerNumber()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getInputBufferSize()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getOutputBufferSize()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
@@ -90,7 +92,7 @@ public final class I2CDeviceConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static I2CDeviceConfig deserialize(InputStream __a)
@@ -98,49 +100,49 @@ public final class I2CDeviceConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static final class Builder
 	{
 		public Builder()
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public I2CDeviceConfig build()
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setAddress(int __a, int __b)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setClockFrequency(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setControllerName(String __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setControllerNumber(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setInputBufferSize(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setOutputBufferSize(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 }

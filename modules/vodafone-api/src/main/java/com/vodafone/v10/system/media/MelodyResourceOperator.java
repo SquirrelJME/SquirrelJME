@@ -9,60 +9,62 @@
 
 package com.vodafone.v10.system.media;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 class MelodyResourceOperator
 	implements ResourceOperator
 {
     @Override
 	public int getResourceType()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public int getResourceCount()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public int getResourceID(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public String getResourceName(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public String[] getResourceNames()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public void setResourceByID(MediaPlayer var1, int var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public void setResourceByTitle(MediaPlayer var1, String var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public void setResource(MediaPlayer var1, int var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public int getIndexOfResource(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

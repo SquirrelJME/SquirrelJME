@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This is a bucket map which acts as the raw internal hash table
  * implementation.
@@ -168,7 +170,7 @@ final class __BucketMap__<K, V>
 			{
 				// In access order?
 				if (this.accessorder)
-					throw new todo.TODO();	
+					throw Debugging.todo();	
 				
 				return e;
 			}
@@ -251,8 +253,7 @@ final class __BucketMap__<K, V>
 							__BucketMap__.<K, V>__newChain(cn + 1);
 						
 						// Copy all the old chain stuff over
-						for (int j = 0; j < cn; j++)
-							newnewchain[j] = newchain[j];
+						System.arraycopy(newchain, 0, newnewchain, 0, cn);
 						
 						// Use this chain
 						newchain = newnewchain;
@@ -346,8 +347,7 @@ final class __BucketMap__<K, V>
 			// Copy the old chain over
 			__BucketMapEntry__<K, V>[] dup =
 				__BucketMap__.<K, V>__newChain(n + 1);
-			for (int i = 0; i < n; i++)
-				dup[i] = chain[i];
+			System.arraycopy(chain, 0, dup, 0, n);
 			
 			// Set at end
 			dup[n] = (rv = new __BucketMapEntry__<K, V>(__k));
@@ -727,7 +727,7 @@ final class __BucketMap__<K, V>
 			// Remove from the map but we never unlinked it, so if there is
 			// a link it will be scanned and removed accordingly
 			if (__BucketMap__.this.removeEntry(last.getKey(), false) != last)
-				throw new todo.OOPS();
+				throw Debugging.oops();
 			
 			// The map likely was structurally modified so use the new state
 			this._atmod = __BucketMap__.this._modcount;
@@ -817,7 +817,7 @@ final class __BucketMap__<K, V>
 			// The entry being mismatched to the key should not happen ever
 			// but if it does then something is very wrong
 			if (__BucketMap__.this.removeEntry(last.getKey(), true) != last)
-				throw new todo.OOPS();
+				throw Debugging.oops();
 			
 			// The map likely was structurally modified so use the new state
 			this._atmod = __BucketMap__.this._modcount;

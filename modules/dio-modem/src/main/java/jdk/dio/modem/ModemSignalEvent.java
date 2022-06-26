@@ -9,6 +9,7 @@
 
 package jdk.dio.modem;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import jdk.dio.Device;
 import jdk.dio.DeviceEvent;
 
@@ -21,22 +22,22 @@ public class ModemSignalEvent<P extends Device<? super P>>
 	
 	public ModemSignalEvent(P __a, int __b, boolean __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public ModemSignalEvent(P __a, int __b, boolean __c, long __d, int __e)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getSignalID()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean getSignalState()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

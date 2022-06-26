@@ -9,6 +9,7 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Enumeration;
 
 public final class SimpleStack
@@ -18,55 +19,55 @@ public final class SimpleStack
 
     public SimpleStack()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public SimpleStack(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public Object push(Object var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public Object pop()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public Object peek()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int size()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public boolean empty()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public Enumeration elements()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
-    final class SimpleStackEnumerator implements Enumeration {
+    static final class SimpleStackEnumerator implements Enumeration {
         @Override
 		public boolean hasMoreElements()
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 
         @Override
 		public Object nextElement()
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
     }
 }

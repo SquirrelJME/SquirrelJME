@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This is an address which represents a file.
  *
@@ -84,7 +86,7 @@ public final class FileAddress
 			// Percent encoded
 			else if (c == '%')
 			{
-				throw new todo.TODO();
+				throw Debugging.todo();
 			}
 			
 			// Directly usable

@@ -19,6 +19,7 @@ import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
 import cc.squirreljme.jvm.mle.constants.ThreadModelType;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
+import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.vm.springcoat.brackets.TaskObject;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
@@ -130,6 +131,14 @@ public enum MLEThread
 				if (target == null)
 					target = machine.createThread(null, false);
 			}
+			
+			// New thread?
+			if (__thread.verboseCheck(VerboseDebugFlag.THREAD_NEW))
+				__thread.verboseEmit("New Thread: %s", target);
+			
+			// Inherit verbose flags for this new thread?
+			if (__thread.verboseCheck(VerboseDebugFlag.INHERIT_VERBOSE_FLAGS))
+				target._initVerboseFlags = __thread.verbose().activeFlags();
 			
 			// Create object with this attached thread
 			VMThreadObject vmThread = new VMThreadObject(machine, target);
@@ -645,6 +654,10 @@ public enum MLEThread
 			// Create worker for thread and start it
 			SpringThreadWorker worker = new SpringThreadWorker(
 				__thread.machine, target, false);
+			
+			// Inherited verbose flags for this new thread?
+			if (target._initVerboseFlags != 0)
+				worker.verbose().add(0, target._initVerboseFlags);
 			
 			// Enter the base setup frame
 			target.enterFrame(worker.loadClass(MLEThread._START_CLASS)

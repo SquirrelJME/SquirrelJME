@@ -1,3 +1,4 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -8,7 +9,6 @@
 
 package net.multiphasicapps.collections;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Map;
 
 /**

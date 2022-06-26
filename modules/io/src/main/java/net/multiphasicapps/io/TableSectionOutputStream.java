@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
@@ -340,7 +341,7 @@ public final class TableSectionOutputStream
 	 *
 	 * @since 2019/08/25
 	 */
-	private final void __undirty()
+	private void __undirty()
 	{
 		// There is no need to calculate if this is not dirty at all
 		__Dirty__ dirty = this._dirty;
@@ -596,7 +597,7 @@ public final class TableSectionOutputStream
 			if (__n == 1)
 				return 0;
 			
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		/**
@@ -607,7 +608,7 @@ public final class TableSectionOutputStream
 		public final void writeBoolean(boolean __v)
 			throws IOException
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		/**

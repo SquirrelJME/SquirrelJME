@@ -9,6 +9,7 @@
 
 package jdk.dio;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.nio.channels.ClosedChannelException;
 
 public class ClosedDeviceException
@@ -16,7 +17,7 @@ public class ClosedDeviceException
 {
 	public ClosedDeviceException()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

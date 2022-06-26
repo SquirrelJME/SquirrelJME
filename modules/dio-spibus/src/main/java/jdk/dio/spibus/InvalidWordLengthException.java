@@ -10,17 +10,19 @@
 package jdk.dio.spibus;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class InvalidWordLengthException
 	extends RuntimeException
 {
 	public InvalidWordLengthException()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public InvalidWordLengthException(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

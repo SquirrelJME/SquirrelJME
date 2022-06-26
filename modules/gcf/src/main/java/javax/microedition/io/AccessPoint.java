@@ -9,18 +9,19 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 public class AccessPoint
 {
 	public AccessPoint()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void addListener(AccessPointListener __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean connect()
@@ -28,7 +29,7 @@ public class AccessPoint
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean disconnect()
@@ -36,77 +37,77 @@ public class AccessPoint
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getName()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public NetworkInterface getNetworkInterface()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getProperty(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String[] getPropertyNames()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String[] getPropertyValues(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getTimeout()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getType()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isConnected()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isRemovable()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void removeListener(AccessPointListener __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setTimeout(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static AccessPoint[] getAccessPoints(boolean __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static AccessPoint of(String __a, ConnectionOption... __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static boolean remove(AccessPoint __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -85,7 +86,7 @@ public class HTTPClientConnection
 	public final AccessPoint getAccessPoint()
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -96,7 +97,7 @@ public class HTTPClientConnection
 	public final long getDate()
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -106,7 +107,7 @@ public class HTTPClientConnection
 	@Override
 	public final String getEncoding()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -117,7 +118,7 @@ public class HTTPClientConnection
 	public final long getExpiration()
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -127,7 +128,7 @@ public class HTTPClientConnection
 	@Override
 	public final String getFile()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -138,7 +139,7 @@ public class HTTPClientConnection
 	public final String getHeaderField(String __a)
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -149,7 +150,7 @@ public class HTTPClientConnection
 	public final String getHeaderField(int __a)
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -160,7 +161,7 @@ public class HTTPClientConnection
 	public final long getHeaderFieldDate(String __a, long __b)
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -171,7 +172,7 @@ public class HTTPClientConnection
 	public final int getHeaderFieldInt(String __a, int __b)
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -182,7 +183,7 @@ public class HTTPClientConnection
 	public final String getHeaderFieldKey(int __a)
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -192,7 +193,7 @@ public class HTTPClientConnection
 	@Override
 	public final String getHost()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -203,7 +204,7 @@ public class HTTPClientConnection
 	public final long getLastModified()
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -213,7 +214,7 @@ public class HTTPClientConnection
 	@Override
 	public final long getLength()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -223,7 +224,7 @@ public class HTTPClientConnection
 	@Override
 	public final int getPort()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -233,7 +234,7 @@ public class HTTPClientConnection
 	@Override
 	public final String getProtocol()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -243,7 +244,7 @@ public class HTTPClientConnection
 	@Override
 	public final String getQuery()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -253,7 +254,7 @@ public class HTTPClientConnection
 	@Override
 	public final String getRef()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -263,7 +264,7 @@ public class HTTPClientConnection
 	@Override
 	public final String getRequestMethod()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -273,7 +274,7 @@ public class HTTPClientConnection
 	@Override
 	public final String getRequestProperty(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -305,7 +306,7 @@ public class HTTPClientConnection
 	@Override
 	public final String getType()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -315,7 +316,7 @@ public class HTTPClientConnection
 	@Override
 	public final String getURL()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -402,7 +403,7 @@ public class HTTPClientConnection
 	 * state.
 	 * @since 2019/05/13
 	 */
-	private final HTTPRequestBuilder __request()
+	private HTTPRequestBuilder __request()
 		throws IOException
 	{
 		// {@squirreljme.error EC03 Cannot access the request
@@ -448,7 +449,7 @@ public class HTTPClientConnection
 			
 				// Should not occur
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	

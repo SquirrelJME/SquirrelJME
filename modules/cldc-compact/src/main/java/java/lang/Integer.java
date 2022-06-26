@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -355,7 +356,10 @@ public final class Integer
 	}
 	
 	/**
-	 * Returns the highest one bit of the given number.
+	 * Returns the highest one bit of the given number, the value returned
+	 * only has the greatest bit set.
+	 * 
+	 * {@code 0b0101} returns {@code 0b0100}.
 	 * 
 	 * @param __v The value to get.
 	 * @return The highest one bit of the given number.
@@ -562,12 +566,12 @@ public final class Integer
 	
 	public static int rotateLeft(int __i, int __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int rotateRight(int __i, int __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -591,17 +595,17 @@ public final class Integer
 	
 	public static String toBinaryString(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static String toHexString(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static String toOctalString(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

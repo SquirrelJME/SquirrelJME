@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -710,7 +711,7 @@ public abstract class SerializedGraphics
 	 * @return The target clipping.
 	 * @since 2020/01/10
 	 */
-	private final int __getClipX()
+	private int __getClipX()
 	{
 		return (Integer)this.serialize(GraphicsFunction.GET_CLIP_X);
 	}
@@ -721,7 +722,7 @@ public abstract class SerializedGraphics
 	 * @return The target clipping.
 	 * @since 2020/01/10
 	 */
-	private final int __getClipY()
+	private int __getClipY()
 	{
 		return (Integer)this.serialize(GraphicsFunction.GET_CLIP_Y);
 	}
@@ -1026,7 +1027,7 @@ public abstract class SerializedGraphics
 				return 0;
 			
 			default:
-				throw new todo.OOPS("" + __func);
+				throw Debugging.oops(__func);
 		}
 	}
 	

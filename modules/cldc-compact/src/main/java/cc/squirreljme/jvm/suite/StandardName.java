@@ -1,3 +1,4 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -7,6 +8,8 @@
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.jvm.suite;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This represents the name of a standard.
@@ -30,7 +33,7 @@ public final class StandardName
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -40,7 +43,7 @@ public final class StandardName
 	@Override
 	public int compareTo(StandardName __o)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -50,7 +53,7 @@ public final class StandardName
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -60,7 +63,7 @@ public final class StandardName
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -70,7 +73,7 @@ public final class StandardName
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

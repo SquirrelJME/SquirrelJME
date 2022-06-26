@@ -1,0 +1,15 @@
+# 2022/02/27
+
+## 11:32
+
+Rather wanting to support `.kjx` files, however adding support for that would
+mean adding it in the Java emulators and RatufaCoat as well. So I suppose
+what I should do then is add a kind of emulator layer handler that can access
+given files or otherwise as if they were libraries and otherwise. I would say
+that I would have to implement it like service loaders and wrap on top of the
+existing shelves and such. I suppose if a `JarPackageBracket` is indicated to
+be in software it can be forwarded to the software layer. Of course SquirrelJME
+really only needs the `openResource()` to be implemented. Implementing it for
+the Java emulators would probably mean writing my own `ClassLoader` possibly
+or just loading the entirety of the JAR? Not sure there yet, but I should design
+it with SpringCoat and RatufaCoat in mind first.

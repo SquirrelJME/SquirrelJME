@@ -9,20 +9,22 @@
 
 package com.vodafone.v10.graphics.j3d;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class Util3D
 {
     public static final  int sqrt(int var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static final  int sin(int var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static final  int cos(int var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

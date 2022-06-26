@@ -9,6 +9,8 @@
 
 package javax.microedition.midlet;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public final class MIDletIdentity
 {
 	public static final String IDENTIFIED_THIRD_PARTY =
@@ -30,27 +32,27 @@ public final class MIDletIdentity
 	 */
 	MIDletIdentity()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getClient()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getName()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getVendor()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getVersion()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -60,7 +62,7 @@ public final class MIDletIdentity
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

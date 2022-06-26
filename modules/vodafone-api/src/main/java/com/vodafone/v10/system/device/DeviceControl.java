@@ -9,6 +9,8 @@
 
 package com.vodafone.v10.system.device;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class DeviceControl {
     public static final int BATTERY = 1;
     public static final int FIELD_INTENSITY = 2;
@@ -19,56 +21,56 @@ public class DeviceControl {
 
     public static final  DeviceControl getDefaultDeviceControl()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getDeviceState(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public boolean isDeviceActive(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public boolean setDeviceActive(int var1, boolean var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void blink(int var1, int var2, int var3)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public boolean setKeyRepeatState(int var1, boolean var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public boolean getKeyRepeatState(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static  void setMailListener(MailListener var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static  void setScheduledAlarmListener(ScheduledAlarmListener var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static  void setTelephonyListener(TelephonyListener var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static  void setRingStateListener(RingStateListener var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

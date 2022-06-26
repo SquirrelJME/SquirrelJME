@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -240,7 +241,7 @@ public class ExtendedDataOutputStream
 	public final void writeBytes(String __s)
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -452,7 +453,7 @@ public class ExtendedDataOutputStream
 	public final void writeUTF(String __s)
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

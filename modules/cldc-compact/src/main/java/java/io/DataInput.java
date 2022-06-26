@@ -50,7 +50,7 @@ public interface DataInput
 	int readUnsignedShort()
 		throws IOException;
 	
-	int skipBytes(int __a)
+	int skipBytes(int __n)
 		throws IOException;
 }
 

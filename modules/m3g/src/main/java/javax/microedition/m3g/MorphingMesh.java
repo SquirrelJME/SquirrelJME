@@ -10,6 +10,8 @@
 package javax.microedition.m3g;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class MorphingMesh
 	extends Mesh
 {
@@ -18,7 +20,7 @@ public class MorphingMesh
 	{
 		super((VertexBuffer)null, (IndexBuffer[])null, (Appearance[])null
 			);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public MorphingMesh(VertexBuffer __a, VertexBuffer[] __b, IndexBuffer __c
@@ -26,27 +28,27 @@ public class MorphingMesh
 	{
 		super((VertexBuffer)null, (IndexBuffer[])null, (Appearance[])null
 			);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public VertexBuffer getMorphTarget(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getMorphTargetCount()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void getWeights(float[] __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setWeights(float[] __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

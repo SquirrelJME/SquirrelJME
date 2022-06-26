@@ -9,9 +9,9 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.util.UnassistedLaunchEntry;
 import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.GuardedOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,23 +38,28 @@ public class VMFullSuiteTaskAction
 	public static final String LIBRARIES_PROPERTY =
 		"full.libraries";
 	
+	/** The source set used. */
+	public final String sourceSet;
+	
 	/** The virtual machine creating for. */
 	protected final VMSpecifier vmType;
 	
 	/**
 	 * Initializes the task.
 	 * 
+	 * @param __sourceSet The source set.
 	 * @param __vmType The VM to make a ROM for.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/17
 	 */
-	public VMFullSuiteTaskAction(VMSpecifier __vmType)
+	public VMFullSuiteTaskAction(String __sourceSet, VMSpecifier __vmType)
 		throws NullPointerException
 	{
-		if (__vmType == null)
+		if (__vmType == null || __sourceSet == null)
 			throw new NullPointerException("NARG");
 		
 		this.vmType = __vmType;
+		this.sourceSet = __sourceSet;
 	}
 	
 	/**
@@ -67,16 +72,7 @@ public class VMFullSuiteTaskAction
 		Project root = __task.getProject().getRootProject();
 		
 		// We need all of the libraries to load and to be available
-		Collection<Path> libPath = new LinkedHashSet<>();
-		for (Task dep : __task.getTaskDependencies().getDependencies(__task))
-		{
-			//System.err.printf("Task: %s %s%n", dep, dep.getClass());
-			
-			// Load executable library tasks from our own VM
-			if (dep instanceof VMExecutableTask)
-				for (File file : dep.getOutputs().getFiles())
-					libPath.add(file.toPath());
-		}
+		Collection<Path> libPath = VMHelpers.fullSuiteLibraries(__task);
 		
 		// Additional items onto the library set?
 		String exLib = System.getProperty(
@@ -120,7 +116,7 @@ public class VMFullSuiteTaskAction
 				// Use filled JVM arguments
 				this.vmType.spawnJvmArguments(__task, true,
 					new GradleJavaExecSpecFiller(__spec),
-					"javax.microedition.midlet.__MainHandler__",
+					UnassistedLaunchEntry.MIDLET_MAIN_CLASS,
 					"fullSuite",
 					new LinkedHashMap<String, String>(),
 					libPath.<Path>toArray(new Path[libPath.size()]),

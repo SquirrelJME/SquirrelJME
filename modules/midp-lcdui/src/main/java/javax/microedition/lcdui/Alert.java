@@ -9,6 +9,8 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class Alert
 	extends Screen
 {
@@ -71,12 +73,12 @@ public class Alert
 	@Override
 	public void addCommand(Command __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getDefaultTimeout()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -86,7 +88,7 @@ public class Alert
 	@Override
 	public int getHeight()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		return this.__defaultHeight();
 		*/
@@ -94,27 +96,27 @@ public class Alert
 	
 	public Image getImage()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Gauge getIndicator()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getTimeout()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public AlertType getType()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -124,7 +126,7 @@ public class Alert
 	@Override
 	public int getWidth()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		return this.__defaultWidth();
 		*/
@@ -133,13 +135,13 @@ public class Alert
 	@Override
 	public void removeCommand(Command __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public void setCommandListener(CommandListener __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -155,7 +157,7 @@ public class Alert
 	 */
 	public void setImage(Image __i)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		Image clone = (__i != null && __i.isMutable() ?
 			Image.createImage(__i) : __i);
@@ -168,7 +170,7 @@ public class Alert
 	
 	public void setIndicator(Gauge __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -179,7 +181,7 @@ public class Alert
 	 */
 	public void setString(String __s)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		this._message = __s;
 		
@@ -216,7 +218,7 @@ public class Alert
 	 */
 	public void setType(AlertType __t)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		this._type = __t;
 		*/

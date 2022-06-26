@@ -9,12 +9,10 @@
 
 package net.multiphasicapps.classfile;
 
-import dev.shadowtail.classfile.nncc.NativeCode;
-import dev.shadowtail.classfile.nncc.NearNativeByteCodeHandler;
-import dev.shadowtail.classfile.xlate.ByteCodeProcessor;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
@@ -60,9 +58,6 @@ public final class Method
 	
 	/** The method byte code. */
 	private Reference<ByteCode> _bytecode;
-	
-	/** Native code. */
-	private Reference<NativeCode> _regcode;
 	
 	/** Name and type reference. */
 	private Reference<MethodNameAndType> _nameandtype;
@@ -138,7 +133,7 @@ public final class Method
 		ByteCode rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._bytecode = new WeakReference<>((rv = new ByteCode(
+			this._bytecode = new SoftReference<>((rv = new ByteCode(
 				new WeakReference<>(this), this._rawcodeattr,
 				this.classname, this.methodflags)));
 		
@@ -167,7 +162,7 @@ public final class Method
 		MethodHandle rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._index = new WeakReference<>(rv = new MethodHandle(
+			this._index = new SoftReference<>(rv = new MethodHandle(
 				this.classname, this.methodname, this.methodtype));
 		
 		return rv;
@@ -229,53 +224,8 @@ public final class Method
 		MethodNameAndType rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._nameandtype = new WeakReference<>(
+			this._nameandtype = new SoftReference<>(
 				rv = new MethodNameAndType(this.methodname, this.methodtype));
-		
-		return rv;
-	}
-	
-	/**
-	 * Returns the code of this method in a register based format that is
-	 * more efficient than pure Java byte code.
-	 *
-	 * @return The code of this method in a register based format.
-	 * @since 2019/03/09
-	 */
-	public final NativeCode nativeCode()
-	{
-		// Abstract and native methods have no code
-		if (!this.hascode)
-			return null;
-		
-		// Cache it
-		Reference<NativeCode> ref = this._regcode;
-		NativeCode rv;
-		
-		if (ref == null || null == (rv = ref.get()))
-		{
-			ByteCode bc = this.byteCode();
-			
-			// Process Code
-			try
-			{
-				NearNativeByteCodeHandler nnbc =
-					new NearNativeByteCodeHandler(bc);
-				new ByteCodeProcessor(bc, nnbc).process();
-				
-				// Cache the result of it
-				this._regcode = new WeakReference<>((rv = nnbc.result()));
-			}
-			
-			// {@squirreljme.error JC3e Could not compile the native code for
-			// the given method. (The class; Method name; Method type)}
-			catch (InvalidClassFormatException e)
-			{
-				throw new InvalidClassFormatException(
-					String.format("JC3e %s %s %s", this.classname,
-						this.methodname, this.methodtype), e);
-			}
-		}
 		
 		return rv;
 	}

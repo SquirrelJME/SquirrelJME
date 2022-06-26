@@ -9,9 +9,7 @@
 
 package javax.microedition.midlet;
 
-import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.runtime.cldc.Poking;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 
 /**

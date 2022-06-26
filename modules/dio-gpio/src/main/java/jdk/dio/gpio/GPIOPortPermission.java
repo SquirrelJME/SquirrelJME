@@ -9,6 +9,7 @@
 
 package jdk.dio.gpio;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import jdk.dio.DevicePermission;
 
 public class GPIOPortPermission
@@ -20,19 +21,19 @@ public class GPIOPortPermission
 	public GPIOPortPermission(String __a)
 	{
 		super((String)null);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public GPIOPortPermission(String __a, String __b)
 	{
 		super((String)null);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public String getActions()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

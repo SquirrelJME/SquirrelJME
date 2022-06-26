@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Display;
 
 /**
@@ -48,7 +49,7 @@ public enum DisplayOrientation
 			case PORTRAIT:		return Display.ORIENTATION_PORTRAIT;
 			case PORTRAIT_180:	return Display.ORIENTATION_PORTRAIT_180;
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 }

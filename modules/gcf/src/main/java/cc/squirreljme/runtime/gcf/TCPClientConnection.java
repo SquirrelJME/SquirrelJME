@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -167,7 +168,7 @@ public abstract class TCPClientConnection
 	public final AccessPoint getAccessPoint()
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -178,7 +179,7 @@ public abstract class TCPClientConnection
 	public final String getAddress()
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -189,7 +190,7 @@ public abstract class TCPClientConnection
 	public final String getLocalAddress()
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -200,7 +201,7 @@ public abstract class TCPClientConnection
 	public final int getLocalPort()
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -211,7 +212,7 @@ public abstract class TCPClientConnection
 	public final int getPort()
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -222,7 +223,7 @@ public abstract class TCPClientConnection
 	public final int getSocketOption(byte __o)
 		throws IllegalArgumentException, IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

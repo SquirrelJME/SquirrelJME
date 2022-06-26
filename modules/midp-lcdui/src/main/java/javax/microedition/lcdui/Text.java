@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.common.TextStorage;
 
@@ -288,7 +289,7 @@ public class Text
 	
 	public int getCharIndex(int __x, int __y)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -575,12 +576,12 @@ public class Text
 	
 	public int lastRenderedIndex()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void moveCaret(int __nl)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -630,7 +631,7 @@ public class Text
 			return;
 		}
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -764,7 +765,7 @@ public class Text
 			return;
 		}
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -877,11 +878,11 @@ public class Text
 	 *
 	 * @since 2018/12/01
 	 */
-	private final void __undirty()
+	private void __undirty()
 	{
 		if (!this._dirty)
 			return;
-		
+			
 		// Undirty state
 		__TextUndirtyState__ ts = new __TextUndirtyState__();
 		
@@ -932,7 +933,7 @@ public class Text
 		// used for each character
 		int linedxstart = 0;
 		int linedxend = 0;
-			
+		
 		// Redo handling of the current character, this will happen if
 		// the line overflows
 		boolean redo = false;
@@ -1092,7 +1093,7 @@ public class Text
 				if ((dortl && ts.align != Text.ALIGN_RIGHT) ||
 					(!dortl && ts.align != Text.ALIGN_LEFT))
 				{
-					throw new todo.TODO();
+					throw Debugging.todo();
 				}
 				
 				// A line was here so the line count goes up

@@ -63,7 +63,7 @@ public abstract class BaseCanvas
 				platform.serviceRepaints();
 				
 				// Flush events to settle these
-				UIBackendFactory.getInstance().flushEvents();
+				UIBackendFactory.getInstance(true).flushEvents();
 				
 				// Sleep a bit
 				try

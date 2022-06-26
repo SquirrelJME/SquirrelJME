@@ -9,10 +9,8 @@
 
 package mleui.forms;
 
-import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
-import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import mleui.BaseBackend;
@@ -45,9 +43,7 @@ public abstract class BaseUIForm
 	@Override
 	public final void test(UIBackend __backend, UIDisplayBracket __display)
 		throws Throwable
-	{	
-		DebugShelf.verbose(VerboseDebugFlag.METHOD_ENTRY);
-		
+	{
 		UIFormBracket form = __backend.formNew();
 		try
 		{

@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Software math operations on 64-bit integer types.
  *
@@ -300,7 +302,7 @@ public final class SoftLong
 	public static double toDouble(int __al, int __ah)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -314,7 +316,7 @@ public final class SoftLong
 	public static float toFloat(int __al, int __ah)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

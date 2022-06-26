@@ -1,3 +1,4 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -515,7 +516,7 @@ public final class SuiteDependency
 	 * @throws InvalidSuiteException If the input parameters are not valid.
 	 * @since 2017/11/26
 	 */
-	private static final void __check(SuiteDependencyType __type,
+	private static void __check(SuiteDependencyType __type,
 		SuiteDependencyLevel __level, SuiteName __name,
 		SuiteVendor __vendor, SuiteVersionRange __version)
 		throws InvalidSuiteException

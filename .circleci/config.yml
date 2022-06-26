@@ -15,7 +15,7 @@ version: 2.1
 executors:
   buildenv:
     docker:
-      - image: circleci/openjdk:8-jdk
+      - image: circleci/openjdk:11-jdk
 
 orbs:
   win: circleci/windows@2.4.0
@@ -26,6 +26,7 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
+      size: xlarge
     environment:
       # Use a reduced amount of memory to all of the VMs so that it does not
       # try grabbing all the memory that is available to the system.
@@ -38,7 +39,7 @@ jobs:
           # According to documentation, Gradle on Windows has trouble and tries
           # to make way too many workers which causes extreme resource.
           # contention --max-workers=2
-          command: gradlew build testHosted -x javadoc -x javadocJar -x testFixturesJavaDoc -x sourcesJar --console plain --continue --parallel
+          command: gradlew build testHosted -x javadoc -x javadocJar -x sourcesJar --console plain --continue --parallel
       - run:
           shell: bash.exe
           name: Save test results
@@ -53,14 +54,49 @@ jobs:
             mkdir -p /c/users/circleci/test-results/csv-windows
             /usr/bin/find . -type f -regex '.*/vm-test-hosted/csv/.*\.csv' -exec cp {} /c/users/circleci/test-results/csv-windows/ \;
           when: always
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
       - store_test_results:
           path: c:\users\circleci\test-results
       - store_artifacts:
           path: c:\users\circleci\test-results
+
+  build_windows_standalone:
+    executor:
+      name: win/default
+      shell: cmd.exe
+      size: xlarge
+    environment:
+      # Use a reduced amount of memory to all of the VMs so that it does not
+      # try grabbing all the memory that is available to the system.
+      JAVA_OPTS: -Xmx3g
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          shell: bash.exe
+          name: Construct Standalone
+          command: ./gradlew :emulators:standalone:shadowJar --no-daemon --console plain --continue --parallel
+      - run:
+          shell: bash.exe
+          name: Remove distracting JAR, if any
+          command: rm emulators/standalone/build/libs/standalone-*.jar
+      - store_artifacts:
+          path: emulators/standalone/build/libs/
+          destination: .
+
   ratufacoat_build_windows:
     executor:
       name: win/default
       shell: cmd.exe
+      size: xlarge
     steps:
       - checkout
       - attach_workspace:
@@ -90,6 +126,7 @@ jobs:
   build_macosx:
     macos:
       xcode: 13.2.1
+    resource_class: macos.x86.medium.gen2
     environment:
       # Do not auto-update brew as this takes forever and we really just want
       # a single package
@@ -113,7 +150,15 @@ jobs:
           command: brew install openjdk@11
       - run:
           name: Gradle Build and Test
-          command: ./gradlew build testHosted -x javadoc -x javadocJar -x testFixturesJavaDoc -x sourcesJar --console plain --continue --parallel
+          command: ./gradlew build testHosted -x javadoc -x javadocJar -x sourcesJar --console plain --continue --parallel
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
       - run:
           name: Save test results
           command: |
@@ -130,9 +175,96 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results
+  build_macosx_m1:
+    machine: true
+    resource_class: squirreljme/squirreljme-macos-m1
+    steps:
+      - checkout
+      - run:
+          name: Gradle Build and Test
+          command: ./gradlew build testHosted -x javadoc -x javadocJar -x sourcesJar --console plain --continue --parallel
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit-macosx/
+            find . -type f -regex '.*/vm-test-hosted/junit/.*\.xml' -exec cp {} ~/test-results/junit-macosx/ \;
+          when: always
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/csv-macosx/
+            find . -type f -regex '.*/vm-test-hosted/csv/.*\.csv' -exec cp {} ~/test-results/csv-macosx/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-results
+
+  build_macosx_standalone:
+    macos:
+      xcode: 13.2.1
+    resource_class: macos.x86.medium.gen2
+    environment:
+      # Do not auto-update brew as this takes forever and we really just want
+      # a single package
+      HOMEBREW_NO_AUTO_UPDATE: 1
+
+      # Do not auto-clean brew, this wastes time and everything will be thrown
+      # out when the container finishes anyway
+      HOMEBREW_CLEANUP_MAX_AGE_DAYS: 730
+
+      # Do not send analytics
+      HOMEBREW_NO_ANALYTICS: 1
+
+      # Do not cleanup after installation
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
+    steps:
+      - checkout
+      - run:
+          # Only OpenJDK is required, Gradle always uses Gradle wrapper so
+          # we do not need that
+          name: Install OpenJDK 11
+          command: brew install openjdk@11
+      - attach_workspace:
+          at: .
+      - run:
+          name: Construct Standalone
+          command: ./gradlew :emulators:standalone:shadowJar --no-daemon --console plain --continue --parallel
+      - run:
+          name: Remove distracting JAR, if any
+          command: rm emulators/standalone/build/libs/standalone-*.jar
+      - store_artifacts:
+          path: emulators/standalone/build/libs/
+          destination: .
+  build_macosx_m1_standalone:
+    machine: true
+    resource_class: squirreljme/squirreljme-macos-m1
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Construct Standalone
+          command: ./gradlew :emulators:standalone:shadowJar --no-daemon --console plain --continue --parallel
+      - run:
+          name: Remove distracting JAR, if any
+          command: rm emulators/standalone/build/libs/standalone-*.jar
+      - store_artifacts:
+          path: emulators/standalone/build/libs/
+          destination: .
+
   ratufacoat_build_macosx:
     macos:
       xcode: 11.3.0
+    resource_class: macos.x86.medium.gen2
     environment:
       # Do not auto-update brew as this takes forever and we really just want
       # a single package
@@ -159,6 +291,7 @@ jobs:
   ################################### LINUX ##################################
   build_linux:
     executor: buildenv
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -191,10 +324,30 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results
+  build_linux_standalone:
+    executor: buildenv
+    resource_class: xlarge
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Construct Standalone
+          command: ./gradlew :emulators:standalone:shadowJar --no-daemon --console plain --continue --parallel
+      - run:
+          name: Remove distracting JAR, if any
+          command: rm emulators/standalone/build/libs/standalone-*.jar
+      - store_artifacts:
+          path: emulators/standalone/build/libs/
+          destination: .
 
   ### OSS SonaType Nexus
   sonatype_publish:
     executor: buildenv
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -209,7 +362,7 @@ jobs:
   ### RatufaCoat
   ratufacoat_build_linux:
     executor: buildenv
-    resource_class: small
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -237,6 +390,7 @@ jobs:
   ### SpringCoat
   test_springcoat:
     executor: buildenv
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -272,6 +426,7 @@ jobs:
           path: ~/test-results
   test_summercoat:
     executor: buildenv
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -308,8 +463,8 @@ jobs:
 
   ################################### USERS ##################################
   export_user_guide:
-    resource_class: small
     executor: buildenv
+    resource_class: xlarge
     steps:
       - checkout
       - run:
@@ -339,6 +494,7 @@ jobs:
   # when they need to use these JARs
   construct_testJars:
     executor: buildenv
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -362,6 +518,7 @@ jobs:
   # for general ROM construction
   construct_libSummerCoat:
     executor: buildenv
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -384,6 +541,7 @@ jobs:
   # All of the tests so that they can run from within SummerCoat
   construct_libTestSummerCoat:
     executor: buildenv
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -406,6 +564,7 @@ jobs:
   # Constructs the standard SummerCoat ROM, could be uploaded later
   construct_romSummerCoat:
     executor: buildenv
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -430,6 +589,7 @@ jobs:
   # it properly works.
   construct_romTestSummerCoat:
     executor: buildenv
+    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -461,17 +621,29 @@ workflows:
 #      - test_summercoat:
 #          requires:
 #            - construct_libTestSummerCoat
+      - build_linux_standalone:
+           requires:
+             - build_linux
 
       # Mac OS X runs decently however the jobs for it have a higher cost, so
       # only perform builds and tests for trunk to lower costs.
-      # Currently have an overabundance of credits...
+      # Currently I have an overabundance of credits...
       - build_macosx
-#          requires:
-#            - build_linux
 #          filters:
 #            branches:
 #              only:
 #                - trunk
+      - build_macosx_m1
+#          filters:
+#            branches:
+#              only:
+#                - trunk
+      - build_macosx_standalone:
+           requires:
+             - build_macosx
+      - build_macosx_m1_standalone:
+           requires:
+             - build_macosx_m1
 
       # Building on Windows is currently expensive and takes longer, so only
       # run these builds on trunk to lower costs.
@@ -483,6 +655,9 @@ workflows:
 #            branches:
 #              only:
 #                - trunk
+      - build_windows_standalone:
+           requires:
+             - build_windows
 
       # Publishing to OSS Sonatype Nexus (https://oss.sonatype.org)
       - sonatype_publish:

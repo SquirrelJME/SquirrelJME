@@ -106,7 +106,7 @@ public final class GameInterface
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/07/02
 	 */
-	private final void __drawTiles(Graphics __g, int __cw, int __ch,
+	private void __drawTiles(Graphics __g, int __cw, int __ch,
 		TileMap __tilemap)
 		throws NullPointerException
 	{
@@ -212,7 +212,7 @@ public final class GameInterface
 	 * @param __kc The key code to handle.
 	 * @since 2019/07/02
 	 */
-	private final void __inputKey(int __kc)
+	private void __inputKey(int __kc)
 	{
 		// Prefer pure game actions, if those are not available fallback to
 		// the dial pad. Match traditional SquirrelJME game layout.

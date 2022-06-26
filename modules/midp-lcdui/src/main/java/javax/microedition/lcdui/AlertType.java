@@ -9,6 +9,8 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This is used as a modifier to alerts to specify the type of message it is
  * along with potentially providing a default sound or icon set.
@@ -54,7 +56,7 @@ public class AlertType
 	
 	public boolean playSound(Display __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

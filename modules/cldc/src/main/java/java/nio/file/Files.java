@@ -9,6 +9,7 @@
 
 package java.nio.file;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -23,7 +24,7 @@ public final class Files
 {
 	private Files()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Path copy(Path __a, Path __b, CopyOption... __c)
@@ -31,7 +32,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Path createDirectories(Path __a, FileAttribute<?>... __b)
@@ -39,7 +40,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Path createDirectory(Path __a, FileAttribute<?>... __b)
@@ -47,7 +48,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Path createFile(Path __a, FileAttribute<?>... __b)
@@ -55,7 +56,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Path createTempDirectory(Path __a, String __b,
@@ -64,7 +65,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Path createTempDirectory(String __a, FileAttribute<?>...
@@ -73,7 +74,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Path createTempFile(Path __a, String __b, String __c,
@@ -82,7 +83,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Path createTempFile(String __a, String __b, FileAttribute
@@ -91,7 +92,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static void delete(Path __a)
@@ -99,7 +100,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static boolean deleteIfExists(Path __a)
@@ -107,12 +108,12 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static boolean exists(Path __a, LinkOption... __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Object getAttribute(Path __a, String __b, LinkOption... __c
@@ -121,7 +122,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static FileStore getFileStore(Path __a)
@@ -129,7 +130,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static FileTime getLastModifiedTime(Path __a, LinkOption... __b)
@@ -137,12 +138,12 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static boolean isDirectory(Path __a, LinkOption... __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static boolean isHidden(Path __a)
@@ -150,17 +151,17 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static boolean isReadable(Path __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static boolean isRegularFile(Path __p)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static boolean isSameFile(Path __a, Path __b)
@@ -168,12 +169,12 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static boolean isWritable(Path __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Path move(Path __a, Path __b, CopyOption... __c)
@@ -181,7 +182,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static SeekableByteChannel newByteChannel(Path __a, Set<? extends
@@ -190,7 +191,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static SeekableByteChannel newByteChannel(Path __a, OpenOption...
@@ -199,7 +200,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static DirectoryStream<Path> newDirectoryStream(Path __a)
@@ -207,7 +208,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static DirectoryStream<Path> newDirectoryStream(Path __a, String
@@ -216,7 +217,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static DirectoryStream<Path> newDirectoryStream(Path __a,
@@ -225,7 +226,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static InputStream newInputStream(Path __a, OpenOption... __b)
@@ -233,7 +234,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static OutputStream newOutputStream(Path __a, OpenOption... __b)
@@ -241,12 +242,12 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static boolean notExists(Path __a, LinkOption... __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <A extends BasicFileAttributes> A readAttributes(Path __a,
@@ -255,7 +256,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Map<String, Object> readAttributes(Path __a, String __b,
@@ -264,7 +265,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Path setAttribute(Path __a, String __b, Object __c,
@@ -273,7 +274,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Path setLastModifiedTime(Path __a, FileTime __b)
@@ -281,7 +282,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static long size(Path __a)
@@ -289,7 +290,7 @@ public final class Files
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

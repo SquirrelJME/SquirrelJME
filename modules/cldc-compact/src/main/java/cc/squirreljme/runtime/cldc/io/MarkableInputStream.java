@@ -1,3 +1,4 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -8,7 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.io;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;

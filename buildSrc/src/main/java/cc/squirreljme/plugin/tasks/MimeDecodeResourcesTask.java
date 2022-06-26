@@ -37,7 +37,8 @@ public class MimeDecodeResourcesTask
 	public MimeDecodeResourcesTask(String __sourceSet,
 		ProcessResources __prTask)
 	{
-		super(MimeDecodeResourcesTask.EXTENSION, "", __sourceSet, __prTask);
+		super(MimeDecodeResourcesTask.EXTENSION, "",
+			__sourceSet, __prTask);
 		
 		// Set details of this task
 		this.setGroup("squirreljme");

@@ -10,6 +10,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
@@ -24,9 +25,9 @@ import cc.squirreljme.runtime.lcdui.event.KeyCodeTranslator;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
-import cc.squirreljme.runtime.midlet.ActiveMidlet;
+import cc.squirreljme.runtime.midlet.ApplicationHandler;
+import cc.squirreljme.runtime.midlet.ApplicationInterface;
 import java.util.Map;
-import javax.microedition.midlet.MIDlet;
 
 /**
  * This thread is responsible for handling graphics operations.
@@ -189,29 +190,35 @@ final class __MLEUIThread__
 	 * {@inheritDoc}
 	 * @since 2020/09/12
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void exitRequest(UIFormBracket __form)
 	{
 		// Debug
 		Debugging.debugNote("exitRequest(%08x) @ %s",
 			System.identityHashCode(__form), Thread.currentThread());
-		
-		// Terminate the user interface
-		StaticDisplayState.terminate();
-		
-		// Have the MIDlet destroy itself
-		try
-		{
-			MIDlet midlet = ActiveMidlet.get();
 			
-			// Destroy the midlet
-			midlet.notifyDestroyed();
+		// Obtain the application we are actually running, since this
+		// could be done different for different ones
+		Object currentInstance = ApplicationHandler.currentInstance();
+		ApplicationInterface<Object> currentInterface =
+			(ApplicationInterface<Object>)
+				ApplicationHandler.currentInterface();
+		if (currentInstance == null || currentInterface == null)
+		{
+			Debugging.debugNote("No current Application?");
+			return;
 		}
 		
-		// No active MIDlet, ignore
-		catch (IllegalStateException ignored)
+		// Destroy the application
+		try
 		{
-			Debugging.debugNote("No current MIDlet?");
+			currentInterface.destroy(currentInstance, null);
+		}
+		catch (Throwable t)
+		{
+			// {@squirreljme.error EB0k Failed to terminate application.}
+			throw new Error("EB0k", t);
 		}
 	}
 	
@@ -301,6 +308,20 @@ final class __MLEUIThread__
 				this._inPaint = false;
 			}
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/05
+	 */
+	@Override
+	public void paintDisplay(UIDisplayBracket __display, int __pf, int __bw,
+		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
+		int __sw, int __sh, int __special)
+	{
+		// Does nothing as at this point, software implementations of the UI
+		// would have handled the display callback here so no action is
+		// needed to be performed.
 	}
 	
 	/**

@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Software math operations on 64-bit double.
  *
@@ -16,6 +18,14 @@ package cc.squirreljme.jvm;
  */
 public class SoftDouble
 {
+	/** The zero check mask. */
+	public static final long ZERO_CHECK_MASK =
+		0x7FFFFFFFFFFFFFFFL;
+	
+	/** The mask for NaN values. */
+	public static final long NAN_MASK =
+		0b0111111111111000000000000000000000000000000000000000000000000000L;
+	
 	/**
 	 * Not used.
 	 *
@@ -38,7 +48,7 @@ public class SoftDouble
 	public static double add(int __al, int __ah, int __bl, int __bh)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -54,7 +64,7 @@ public class SoftDouble
 	public static int cmpl(int __al, int __ah, int __bl, int __bh)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -70,7 +80,7 @@ public class SoftDouble
 	public static int cmpg(int __al, int __ah, int __bl, int __bh)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -86,7 +96,19 @@ public class SoftDouble
 	public static double div(int __al, int __ah, int __bl, int __bh)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Is this Not a Number?
+	 * 
+	 * @param __a The value to check.
+	 * @return If this is not a number.
+	 * @since 2022/01/06
+	 */
+	public static boolean isNaN(long __a)
+	{
+		return SoftDouble.NAN_MASK == (__a & SoftDouble.NAN_MASK);
 	}
 	
 	/**
@@ -102,7 +124,7 @@ public class SoftDouble
 	public static double mul(int __al, int __ah, int __bl, int __bh)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -116,7 +138,7 @@ public class SoftDouble
 	public static double neg(int __al, int __ah)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -147,7 +169,7 @@ public class SoftDouble
 	public static double rem(int __al, int __ah, int __bl, int __bh)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -163,7 +185,7 @@ public class SoftDouble
 	public static double sub(int __al, int __ah, int __bl, int __bh)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -177,7 +199,7 @@ public class SoftDouble
 	public static float toFloat(int __al, int __ah)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -191,7 +213,7 @@ public class SoftDouble
 	public static int toInteger(int __al, int __ah)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -205,7 +227,7 @@ public class SoftDouble
 	public static long toLong(int __al, int __ah)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

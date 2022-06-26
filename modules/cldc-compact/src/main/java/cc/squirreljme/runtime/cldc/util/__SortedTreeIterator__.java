@@ -110,7 +110,7 @@ class __SortedTreeIterator__<K, V>
 	 * @throws NullPointerException On null arguments. 
 	 * @since 2017/03/30
 	 */
-	private final __SortedTreeData__<K, V> __detect(
+	private __SortedTreeData__<K, V> __detect(
 		__SortedTreeData__<K, V> __data)
 		throws ConcurrentModificationException, NullPointerException
 	{

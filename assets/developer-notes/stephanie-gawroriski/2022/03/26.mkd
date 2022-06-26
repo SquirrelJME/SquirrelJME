@@ -1,0 +1,6 @@
+# 2022/03/26
+
+## 10:28
+
+I definitely need like an atomic or thread safe list so I can do threads and
+otherwise. I suppose I can build these on top of the existing atomics.

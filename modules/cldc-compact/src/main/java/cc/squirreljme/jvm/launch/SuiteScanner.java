@@ -1,3 +1,4 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -98,7 +99,8 @@ public final class SuiteScanner
 			
 			// Ignore non-JARs
 			String libPath = JarPackageShelf.libraryPath(jar);
-			if (!libPath.endsWith(".jar") && !libPath.endsWith(".JAR"))
+			if (!libPath.endsWith(".jar") && !libPath.endsWith(".JAR") &&
+				!libPath.endsWith(".kjx") && !libPath.endsWith(".KJX"))
 				continue;
 			
 			// Debug

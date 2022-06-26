@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.cldc.lang;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import java.util.Arrays;
 
 /**
  * This method contains the code which is able to initialize multi-dimensional
@@ -23,6 +24,10 @@ public final class ArrayUtils
 	/** Boolean array. */
 	public static final byte ARRAY_BOOLEAN =
 		1;
+		
+	/** The first array type. */
+	public static final byte FIRST_TYPE =
+		ArrayUtils.ARRAY_BOOLEAN;
 	
 	/** Byte array. */
 	public static final byte ARRAY_BYTE =
@@ -56,6 +61,10 @@ public final class ArrayUtils
 	public static final byte ARRAY_OBJECT =
 		9;
 	
+	/** The number of array types. */
+	public static final byte NUM_ARRAY_TYPES =
+		10;
+	
 	/**
 	 * Not used.
 	 *
@@ -63,6 +72,169 @@ public final class ArrayUtils
 	 */
 	private ArrayUtils()
 	{
+	}
+	
+	/**
+	 * Checks if both arrays are equal
+	 * 
+	 * @param __a The first array.
+	 * @param __b The second array.
+	 * @return If the arrays are equal.
+	 * @since 2020/11/15
+	 */
+	public static boolean arrayEquals(Object __a, Object __b)
+	{
+		// Same exact array reference?
+		if (__a == __b)
+			return true;
+		
+		// Mismatch on nulls?
+		if ((__a == null) != (__b == null))
+			return false;
+		
+		// Check for object first
+		if (__a instanceof Object[])
+		{
+			if (!(__b instanceof Object[]))
+				return false;
+			
+			return Arrays.equals((Object[])__a, (Object[])__b);
+		}
+		
+		// Must be the same type otherwise
+		if (__a.getClass() != __b.getClass())
+			return false;
+		
+		// Otherwise, this depends on the type
+		if (__a instanceof boolean[])
+			return Arrays.equals((boolean[])__a, (boolean[])__b);
+		else if (__a instanceof byte[])
+			return Arrays.equals((byte[])__a, (byte[])__b);
+		else if (__a instanceof short[])
+			return Arrays.equals((short[])__a, (short[])__b);
+		else if (__a instanceof char[])
+			return Arrays.equals((char[])__a, (char[])__b);
+		else if (__a instanceof int[])
+			return Arrays.equals((int[])__a, (int[])__b);
+		else if (__a instanceof long[])
+			return Arrays.equals((long[])__a, (long[])__b);
+		else if (__a instanceof float[])
+			return Arrays.equals((float[])__a, (float[])__b);
+		else
+			return Arrays.equals((double[])__a, (double[])__b);
+	}
+	
+	/**
+	 * Allocates a new array.
+	 * 
+	 * @param <T> The class to return as.
+	 * @param __class The class to return as.
+	 * @param __type The type of array to allocate.
+	 * @param __len The length of the array.
+	 * @return The type of array used.
+	 * @throws ClassCastException If the given type is not correct for the
+	 * given array.
+	 * @throws IllegalArgumentException If the type is not valid.
+	 * @throws IndexOutOfBoundsException If the array length is negative.
+	 * @since 2021/12/27
+	 */
+	public static <T> T arrayNew(Class<T> __class, int __type, int __len)
+		throws ClassCastException, IllegalArgumentException,
+			IndexOutOfBoundsException
+	{
+		switch (__type)
+		{
+			case ArrayUtils.ARRAY_BOOLEAN:
+				return __class.cast(new boolean[__len]);
+				
+			case ArrayUtils.ARRAY_BYTE:
+				return __class.cast(new byte[__len]);
+				
+			case ArrayUtils.ARRAY_SHORT:
+				return __class.cast(new short[__len]);
+			
+			case ArrayUtils.ARRAY_CHARACTER:
+				return __class.cast(new char[__len]);
+				
+			case ArrayUtils.ARRAY_INTEGER:
+				return __class.cast(new int[__len]);
+				
+			case ArrayUtils.ARRAY_LONG:
+				return __class.cast(new long[__len]);
+				
+			case ArrayUtils.ARRAY_FLOAT:
+				return __class.cast(new float[__len]);
+				
+			case ArrayUtils.ARRAY_DOUBLE:
+				return __class.cast(new double[__len]);
+				
+			case ArrayUtils.ARRAY_OBJECT:
+				return __class.cast(Arrays.copyOf(new Object[0], __len,
+					(Class<? extends Object[]>)((Object)__class)));
+			
+				// {@squirreljme.error ZZ5f Invalid array type.}
+			default:
+				throw new IllegalArgumentException("ZZ5f");
+		}
+	}
+	
+	/**
+	 * Reads from an array.
+	 * 
+	 * @param <T> The resultant boxed type.
+	 * @param __cast The type to cast to.
+	 * @param __type The array type.
+	 * @param __a The array.
+	 * @param __dx The index to read.
+	 * @return The read value.
+	 * @throws ArrayIndexOutOfBoundsException If the index is out of bounds.
+	 * @throws ClassCastException If the wrong class is used.
+	 * @throws IllegalArgumentException If the argument is invalid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/01/05
+	 */
+	public static <T> T arrayGet(Class<T> __cast,
+		int __type, Object __a, int __dx)
+		throws ArrayIndexOutOfBoundsException, ClassCastException,
+			IllegalArgumentException, NullPointerException
+	{
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends on the type
+		switch (__type)
+		{
+			case ArrayUtils.ARRAY_BOOLEAN:
+				return __cast.cast(((boolean[])__a)[__dx]);
+				
+			case ArrayUtils.ARRAY_BYTE:
+				return __cast.cast(((byte[])__a)[__dx]);
+				
+			case ArrayUtils.ARRAY_SHORT:
+				return __cast.cast(((short[])__a)[__dx]);
+				
+			case ArrayUtils.ARRAY_CHARACTER:
+				return __cast.cast(((char[])__a)[__dx]);
+				
+			case ArrayUtils.ARRAY_INTEGER:
+				return __cast.cast(((int[])__a)[__dx]);
+				
+			case ArrayUtils.ARRAY_LONG:
+				return __cast.cast(((long[])__a)[__dx]);
+				
+			case ArrayUtils.ARRAY_FLOAT:
+				return __cast.cast(((float[])__a)[__dx]);
+				
+			case ArrayUtils.ARRAY_DOUBLE:
+				return __cast.cast(((double[])__a)[__dx]);
+				
+			case ArrayUtils.ARRAY_OBJECT:
+				return __cast.cast(((Object[])__a)[__dx]);
+			
+				// {@squirreljme.error ZZf7 Invalid array type.}
+			default:
+				throw new IllegalArgumentException("ZZf7");
+		}
 	}
 	
 	/**
@@ -113,11 +285,11 @@ public final class ArrayUtils
 				break;
 				
 			case ArrayUtils.ARRAY_BYTE:
-				((byte[])__a)[__dx] = (Byte)__v;
+				((byte[])__a)[__dx] = ((Number)__v).byteValue();
 				break;
 				
 			case ArrayUtils.ARRAY_SHORT:
-				((short[])__a)[__dx] = (Short)__v;
+				((short[])__a)[__dx] = ((Number)__v).shortValue();
 				break;
 				
 			case ArrayUtils.ARRAY_CHARACTER:
@@ -125,19 +297,19 @@ public final class ArrayUtils
 				break;
 				
 			case ArrayUtils.ARRAY_INTEGER:
-				((int[])__a)[__dx] = (Integer)__v;
+				((int[])__a)[__dx] = ((Number)__v).intValue();
 				break;
 				
 			case ArrayUtils.ARRAY_LONG:
-				((long[])__a)[__dx] = (Long)__v;
+				((long[])__a)[__dx] = ((Number)__v).longValue();
 				break;
 				
 			case ArrayUtils.ARRAY_FLOAT:
-				((float[])__a)[__dx] = (Float)__v;
+				((float[])__a)[__dx] = ((Number)__v).floatValue();
 				break;
 				
 			case ArrayUtils.ARRAY_DOUBLE:
-				((double[])__a)[__dx] = (Double)__v;
+				((double[])__a)[__dx] = ((Number)__v).doubleValue();
 				break;
 				
 			case ArrayUtils.ARRAY_OBJECT:

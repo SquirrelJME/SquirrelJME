@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This class provides utility methods which are usually able to handle null
  * values.
@@ -24,7 +26,7 @@ public final class Objects
 	 */
 	private Objects()
 	{
-		throw new todo.OOPS();
+		throw Debugging.oops();
 	}
 	
 	/**

@@ -9,6 +9,8 @@
 
 package com.vodafone.v10.graphics.j3d;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class Vector3D
 {
     public int x;
@@ -17,71 +19,71 @@ public class Vector3D
 
     public Vector3D()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public Vector3D(int var1, int var2, int var3)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getX()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getY()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getZ()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void setX(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void setY(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void setZ(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void set(int var1, int var2, int var3)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void unit()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int innerProduct(Vector3D var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void outerProduct(Vector3D var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static  int innerProduct(Vector3D var0, Vector3D var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static  Vector3D outerProduct(Vector3D var0, Vector3D var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

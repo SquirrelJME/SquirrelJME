@@ -10,6 +10,7 @@
 package squirreljme.mle.errors;
 
 import cc.squirreljme.jvm.mle.TerminalShelf;
+import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 
@@ -29,52 +30,54 @@ public class TestTerminalShelfInvalid
 	public boolean test(int __index)
 		throws MLECallError
 	{
+		PipeBracket err = TerminalShelf.fromStandard(StandardPipeType.STDERR);
+		
 		switch (__index)
 		{
 			case 0:
-				TerminalShelf.flush(-1);
+				TerminalShelf.flush(null);
 				break;
 			
 			case 1:
-				TerminalShelf.write(-1, 0);
+				TerminalShelf.write(null, 0);
 				break;
 			
 			case 2:
-				TerminalShelf.write(-1, null, 0, 0);
+				TerminalShelf.write(null, null, 0, 0);
 				break;
 			
 			case 3:
-				TerminalShelf.write(StandardPipeType.STDERR,
+				TerminalShelf.write(err,
 					null, 0, 0);
 				break;
 			
 			case 4:
-				TerminalShelf.write(StandardPipeType.STDERR,
+				TerminalShelf.write(err,
 					new byte[12], -2, 14);
 				break;
 			
 			case 5:
-				TerminalShelf.write(StandardPipeType.STDERR,
+				TerminalShelf.write(err,
 					new byte[12], 2, 12);
 				break;
 			
 			case 6:
-				TerminalShelf.write(StandardPipeType.STDERR,
+				TerminalShelf.write(err,
 					new byte[12], 0, 14);
 				break;
 			
 			case 7:
-				TerminalShelf.write(StandardPipeType.STDERR,
+				TerminalShelf.write(err,
 					new byte[12], 2, -14);
 				break;
 			
 			case 8:
-				TerminalShelf.write(-1,
+				TerminalShelf.write(null,
 					new byte[12], 0, 12);
 				break;
 			
 			case 9:
-				TerminalShelf.close(-1);
+				TerminalShelf.close(null);
 				break;
 			
 			default:

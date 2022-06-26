@@ -10,12 +10,14 @@
 package javax.microedition.m3g;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public abstract class IndexBuffer
 	extends Object3D
 {
 	IndexBuffer()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public abstract int getIndexCount();

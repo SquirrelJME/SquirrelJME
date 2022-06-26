@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Represents the category of the conversion.
  *
@@ -72,7 +74,7 @@ enum __PrintFCategory__
 				return false;
 				
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	

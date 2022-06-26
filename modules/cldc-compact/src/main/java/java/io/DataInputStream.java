@@ -21,7 +21,7 @@ public class DataInputStream
 	implements DataInput
 {
 	/** The wrapped stream. */
-	protected final InputStream in;	
+	protected final InputStream in;
 	
 	/**
 	 * Wraps the specified stream.

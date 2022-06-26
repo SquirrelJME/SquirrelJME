@@ -9,6 +9,8 @@
 
 package java.nio.file;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public enum StandardOpenOption
 	implements OpenOption
 {
@@ -37,7 +39,7 @@ public enum StandardOpenOption
 	
 	StandardOpenOption()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

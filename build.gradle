@@ -1,4 +1,8 @@
+import java.nio.file.Files
+import java.nio.file.StandardOpenOption
+
 apply plugin: 'idea'
+apply plugin: 'eclipse'
 apply plugin: 'cc.squirreljme.plugin.general'
 
 group = "cc.squirreljme"
@@ -22,6 +26,7 @@ idea
 		excludeDirs += file(".github")
 		excludeDirs += file(".idea")
 		excludeDirs += file(".vscode")
+		excludeDirs += file(".settings")
 		excludeDirs += file("assets")
 		excludeDirs += file("config")
 		excludeDirs += file("gradle")
@@ -31,18 +36,84 @@ idea
 		excludeDirs += file("manifest")
 		excludeDirs += file("manifest.uuid")
 		
+		// RatufaCoat files
+		excludeDirs += file("ratufacoat/build")
+		excludeDirs += file("ratufacoat/cmake-build-debug")
+		excludeDirs += file("ratufacoat/cmake-build-release")
+		excludeDirs += file("ratufacoat/.sample")
+		
 		// IntelliJ's own dependency matrix output (in "out")
 		project.allprojects.each() { Project subProj ->
 			excludeDirs += subProj.projectDir.toPath().resolve("out").toFile()
+			
+			// Eclipse Junk
+			excludeDirs += subProj.projectDir.toPath().resolve(".settings").toFile()
+			excludeDirs += subProj.projectDir.toPath().resolve("bin").toFile()
 		}
 	}
 }
 
-allprojects
-{
+allprojects {
+	apply plugin: 'eclipse'
+	
 	repositories
 	{
 		mavenCentral()
-		jcenter()
+	}
+	
+	// Eclipse IDE
+	plugins.withType(JavaPlugin) {
+		def settingsDir = projectDir.toPath().resolve(".settings")
+		def buildShipPrefs = settingsDir.resolve("org.eclipse.buildship.core.prefs")
+		def pathToRoot = projectDir.toPath().relativize(rootDir.toPath())
+		
+		// Fix build
+		task eclipseFixBuild {
+			group "squirreljme"
+			description "Fixes Eclipse build due to missing expected files."
+			
+			doFirst {
+				// Setup settings directory first
+				Files.createDirectories(settingsDir)
+				
+				// Write missing Eclipse file
+				Files.write(
+					buildShipPrefs,
+					Arrays.asList(
+						"connection.project.dir=" + pathToRoot,
+						"eclipse.preferences.version=1"),
+					StandardOpenOption.CREATE,
+					StandardOpenOption.WRITE,
+					StandardOpenOption.TRUNCATE_EXISTING)
+			}
+		}
+		
+		// Clean fix
+		task cleanEclipseFixBuild {
+			group "squirreljme"
+			description "Cleans up after build fixes."
+			
+			doFirst {
+				// Just delete the buildship preferences
+				Files.deleteIfExists(buildShipPrefs)
+			}
+		}
+		
+		// Fix for cyclic dependencies
+		eclipse.jdt {
+			// We are a Java 8 project
+			sourceCompatibility = 1.8
+			targetCompatibility = 1.8
+			
+			// Fix for Eclipse and VSCode breaking on "circular" dependencies
+			file.withProperties { properties ->
+				properties["org.eclipse.jdt.core.builder.invalidClasspath"] = "warning"
+				properties["org.eclipse.jdt.core.circularClasspath"] = "warning"
+				properties["org.eclipse.jdt.core.classpath.outputOverlappingAnotherSource"] = "warning"
+			}
+		}
+		
+		eclipseJdt.finalizedBy(eclipseFixBuild)
+		cleanEclipseJdt.finalizedBy(cleanEclipseFixBuild)
 	}
 }

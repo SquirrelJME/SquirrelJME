@@ -1,0 +1,17 @@
+# 2022/06/12
+
+## 18:56
+
+Okay so one thing I want to do is make some kind of garbage collection or
+smart pointer cleanup stuff in C. I figure I can do this with macros and
+otherwise. Could probably get away with using `alloca()` to allocate information
+on what needs to be cleaned up. I also want to add a base form of exception
+handling so I can escape from the method and do things like this accordingly.
+Of course that would be macro heavy and pretty much required to do it like this
+but I think I could use it.
+
+## 21:49
+
+Okay so the Ratufa Refactor branch has some good things I want to cherry pick
+so it is smaller and that is the pipes for input/output which is way better
+and also the array filling.

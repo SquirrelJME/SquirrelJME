@@ -10,29 +10,31 @@
 package javax.microedition.m3g;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class TriangleStripArray
 	extends IndexBuffer
 {
 	public TriangleStripArray(int[] __a, int[] __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public TriangleStripArray(int __a, int[] __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int getIndexCount()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public void getIndices(int[] __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

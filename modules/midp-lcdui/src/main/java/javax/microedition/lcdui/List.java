@@ -93,7 +93,7 @@ public class List
 		this._type = __type;
 		
 		// Build new list
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		UIItemBracket uiList = backend.itemNew(UIItemType.LIST);
 		this._uiList = uiList;
 		
@@ -176,7 +176,7 @@ public class List
 	@Override
 	public int getFitPolicy()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -362,7 +362,7 @@ public class List
 	@Override
 	public void setFitPolicy(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -385,7 +385,7 @@ public class List
 	
 	public void setSelectCommand(Command __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -539,7 +539,7 @@ public class List
 	private void __refresh()
 	{
 		UIItemBracket uiList = this._uiList;
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		java.util.List<__ChoiceEntry__> choices = this._items.valuesAsList();
 		
 		// Set new size of the list

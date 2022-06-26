@@ -10,17 +10,19 @@
 package jdk.dio;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class UnsupportedAccessModeException
 	extends DeviceException
 {
 	public UnsupportedAccessModeException()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public UnsupportedAccessModeException(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

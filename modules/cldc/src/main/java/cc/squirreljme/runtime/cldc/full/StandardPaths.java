@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.cldc.full;
 
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
 import cc.squirreljme.runtime.cldc.asm.SystemProperties;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.file.Path;
@@ -219,7 +220,7 @@ public final class StandardPaths
 		Path userdir = StandardPaths.__getPropertyPath("user.dir");
 		
 		if (true)
-			throw new todo.TODO();
+			throw Debugging.todo();
 		
 		// Unix systems
 		if (false)

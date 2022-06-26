@@ -1,3 +1,4 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -7,8 +8,6 @@
 // ---------------------------------------------------------------------------
 
 package net.multiphasicapps.lcduidemo;
-
-import java.io.InputStream;
 
 /**
  * Demos a GIF.

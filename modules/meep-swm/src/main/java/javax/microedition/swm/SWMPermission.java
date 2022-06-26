@@ -9,6 +9,7 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.security.BasicPermission;
 
 /**
@@ -47,7 +48,7 @@ public final class SWMPermission
 		if (__scope == null || __actions == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

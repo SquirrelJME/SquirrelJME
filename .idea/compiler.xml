@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.24/13a394eed5c4f9efb2a6d956e2086f1d81e857d9/lombok-1.18.24.jar" />
+        </processorPath>
+        <module name="squirreljme.buildSrc.main" />
+      </profile>
+    </annotationProcessing>
     <bytecodeTargetLevel target="11">
       <module name="squirreljme.emulators.emulator-runner.main" target="8" />
       <module name="squirreljme.emulators.emulator-runner.test" target="8" />
       <module name="squirreljme.main" target="1.7" />
       <module name="squirreljme.modules.all-vms.main" target="1.7" />
       <module name="squirreljme.modules.all-vms.test" target="1.7" />
-      <module name="squirreljme.modules.aot-springcoat.main" target="1.7" />
-      <module name="squirreljme.modules.aot-springcoat.test" target="1.7" />
+      <module name="squirreljme.modules.aot-springcoat.main" target="1.8" />
+      <module name="squirreljme.modules.aot-springcoat.test" target="1.8" />
       <module name="squirreljme.modules.aot-summercoat-base.main" target="1.7" />
       <module name="squirreljme.modules.aot-summercoat-base.test" target="1.7" />
+      <module name="squirreljme.modules.aot-summercoat.main" target="1.7" />
+      <module name="squirreljme.modules.aot-summercoat.test" target="1.7" />
       <module name="squirreljme.modules.build.main" target="1.7" />
       <module name="squirreljme.modules.build.test" target="1.7" />
       <module name="squirreljme.modules.cldc-compact.testFixtures" target="1.7" />
@@ -56,11 +68,19 @@
       <module name="squirreljme.modules.meep-securityframework.testFixtures" target="1.7" />
       <module name="squirreljme.modules.meep-swm.testFixtures" target="1.7" />
       <module name="squirreljme.modules.midp-lcdui.testFixtures" target="1.7" />
+      <module name="squirreljme.modules.nokia.main" target="1.7" />
+      <module name="squirreljme.modules.nokia.test" target="1.7" />
+      <module name="squirreljme.modules.nttdocomo-api.main" target="1.7" />
+      <module name="squirreljme.modules.nttdocomo-api.test" target="1.7" />
+      <module name="squirreljme.modules.nttdocomo-doja-api.main" target="1.7" />
+      <module name="squirreljme.modules.nttdocomo-doja-api.test" target="1.7" />
       <module name="squirreljme.modules.opengles.testFixtures" target="1.7" />
       <module name="squirreljme.modules.profile-meep.testFixtures" target="1.7" />
       <module name="squirreljme.modules.springcoat-vm.main" target="1.7" />
       <module name="squirreljme.modules.springcoat-vm.test" target="1.7" />
       <module name="squirreljme.modules.squirrel-quarrel.testFixtures" target="1.7" />
+      <module name="squirreljme.modules.strings.main" target="1.7" />
+      <module name="squirreljme.modules.strings.test" target="1.7" />
       <module name="squirreljme.modules.strings.testFixtures" target="1.7" />
       <module name="squirreljme.modules.summercoat-vm.main" target="1.7" />
       <module name="squirreljme.modules.summercoat-vm.test" target="1.7" />
@@ -76,6 +96,8 @@
       <module name="squirreljme.modules.tool-compiler.main" target="1.7" />
       <module name="squirreljme.modules.tool-compiler.test" target="1.7" />
       <module name="squirreljme.modules.tool-compiler.testFixtures" target="1.7" />
+      <module name="squirreljme.modules.tool-jarfile.main" target="1.7" />
+      <module name="squirreljme.modules.tool-jarfile.test" target="1.7" />
       <module name="squirreljme.modules.tool-jarfile.testFixtures" target="1.7" />
       <module name="squirreljme.modules.tool-jdwp.main" target="1.7" />
       <module name="squirreljme.modules.tool-jdwp.test" target="1.7" />
@@ -84,6 +106,8 @@
       <module name="squirreljme.modules.tool-manifest-reader.test" target="1.7" />
       <module name="squirreljme.modules.tool-manifest-reader.testFixtures" target="1.7" />
       <module name="squirreljme.modules.tool-manifest-writer.testFixtures" target="1.7" />
+      <module name="squirreljme.modules.tool-packfile.main" target="1.7" />
+      <module name="squirreljme.modules.tool-packfile.test" target="1.7" />
       <module name="squirreljme.modules.tool-packfile.testFixtures" target="1.7" />
       <module name="squirreljme.modules.tool-profiler.main" target="1.7" />
       <module name="squirreljme.modules.tool-profiler.test" target="1.7" />

@@ -9,6 +9,7 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.security.Permission;
 import java.security.PermissionCollection;
 
@@ -18,23 +19,23 @@ public abstract class GCFPermission
 	public GCFPermission(String __a)
 	{
 		super((String)null);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getProtocol()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getURI()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public PermissionCollection newPermissionCollection()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

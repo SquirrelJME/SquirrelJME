@@ -9,6 +9,7 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.jblend.io.SimpleObjectInputStream;
 import com.jblend.io.SimpleObjectOutputStream;
 import com.jblend.io.SimpleSerializable;
@@ -21,25 +22,25 @@ public class Vector
     public Vector() {
         super(0, 0);
         
-        throw new todo.TODO();
+        throw Debugging.todo();
     }
 
     public Vector(int var1) {
         super(0, 0);
         
-        throw new todo.TODO();
+        throw Debugging.todo();
     }
 
     @Override
 	public void writeObject(SimpleObjectOutputStream var1) throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public void readObject(SimpleObjectInputStream var1) throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

@@ -3,19 +3,30 @@ plugins
 	// C++ needs to be first otherwise the build will break
 	id "cpp-library"
 	id "java-library"
-	id "java-test-fixtures"
 }
 
 description = "This library provides the base support for testing and " +
 	"running SquirrelJME on a Java SE host, which is normally not " +
 	"capable of doing as such."
 
-// Although it would be useful to use Java 8, we have to stay on Java 7
-// because SquirrelJME is a Java 7 VM.
-compileJava
-{
-	sourceCompatibility = JavaVersion.VERSION_1_7
-	targetCompatibility = JavaVersion.VERSION_1_7
+// If running on Termux on Android, we need to do some changes accordingly
+// so that the C compiler is found and things link... We technically are not
+// on x86_64 but it really does not matter anyway as long as it passes
+// -m64 correctly when on Android.
+if (project.hasProperty("squirreljmeTermuxCompiler") &&
+	project.squirreljmeTermuxCompiler) {
+	library {
+			targetMachines.add(machines.linux.x86_64)
+	}
+}
+
+// Gradle does not support C++ compilation on M1 Macs currently, so this
+// is a bit of a workaround
+if (project.hasProperty("squirreljmeMacOsArmCpp") &&
+	project.squirreljmeMacOsArmCpp) {
+	library {
+		targetMachines.add(machines.macOS.x86_64)
+	}
 }
 
 // Due to the combination of C++ and Java these dependencies have to be very
@@ -55,8 +66,17 @@ jar {
 	into "/"
 }
 
-java
-{
+java {
+	// Use a fixed version of the JVM
+	compileJava
+	{
+		sourceCompatibility = JavaVersion.VERSION_1_8
+		targetCompatibility = JavaVersion.VERSION_1_8
+		
+		// Use the default bootstrap classpath
+		options.bootstrapClasspath = null
+	}
+	
 	javadoc.options.tags = [ "squirreljme.property",
 		"squirreljme.env",
 		"squirreljme.error",
@@ -80,6 +100,17 @@ tasks.withType(CppCompile).configureEach() {item ->
 	
 	// Additional compiler options for each compiler
 	item.compilerArgs.addAll toolChain.map { toolChain ->
+		// Clang on Mac OS M1
+		if ("clang".equalsIgnoreCase(toolChain.name) && 
+			project.hasProperty("squirreljmeMacOsArmCpp") &&
+			project.squirreljmeMacOsArmCpp) {
+			return [
+				// Force ARM mode
+				"-arch",
+				"arm64"
+				]
+		}
+		
 		// Microsoft Visual C++
 		if ("visualCpp".equalsIgnoreCase(toolChain.name)) {
 			return [
