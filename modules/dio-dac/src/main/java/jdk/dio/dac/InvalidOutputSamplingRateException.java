@@ -10,17 +10,19 @@
 package jdk.dio.dac;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class InvalidOutputSamplingRateException
 	extends RuntimeException
 {
 	public InvalidOutputSamplingRateException()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public InvalidOutputSamplingRateException(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

@@ -166,7 +166,7 @@ public abstract class Displayable
 	
 	public Command getCommand(int __p)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -220,7 +220,7 @@ public abstract class Displayable
 	
 	public Menu getMenu(int __p)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -292,7 +292,7 @@ public abstract class Displayable
 	
 	public void removeCommandOrMenu(int __p)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

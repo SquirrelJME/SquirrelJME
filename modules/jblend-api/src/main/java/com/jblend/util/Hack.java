@@ -9,55 +9,57 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public final class Hack
 {
     public Hack()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static final void disableDispatch()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static final void enableDispatch()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static final void initializeDispatch()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static final void expandTimeslice(int var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static final void setTimeslice(int var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
     public static final void dumpTheHeap()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static final void traceMethod(boolean var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static final void printAllThreadStatus()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static final boolean isSomeoneWaiting(Object var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

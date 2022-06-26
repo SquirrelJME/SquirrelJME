@@ -9,6 +9,8 @@
 
 package java.nio.file;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public enum LinkOption
 	implements OpenOption, CopyOption
 {
@@ -19,7 +21,7 @@ public enum LinkOption
 	
 	LinkOption()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

@@ -9,6 +9,7 @@
 
 package jdk.dio.adc;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import jdk.dio.DevicePermission;
 
 public class ADCPermission
@@ -17,13 +18,13 @@ public class ADCPermission
 	public ADCPermission(String __a)
 	{
 		super((String)null);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public ADCPermission(String __a, String __b)
 	{
 		super((String)null);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

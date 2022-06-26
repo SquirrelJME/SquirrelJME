@@ -9,6 +9,8 @@
 
 package java.nio;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This represents the byte order that data may be in.
  *
@@ -60,7 +62,7 @@ public final class ByteOrder
 	
 	public static ByteOrder nativeOrder()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

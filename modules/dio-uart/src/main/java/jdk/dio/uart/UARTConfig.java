@@ -10,6 +10,7 @@
 package jdk.dio.uart;
 
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -76,92 +77,92 @@ public final class UARTConfig
 	public UARTConfig(int __a, int __b, int __c, int __d, int __e, int __f, 
 		int __g)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@ApiDefinedDeprecated
 	public UARTConfig(int __a, int __b, int __c, int __d, int __e, int __f, 
 		int __g, int __h, int __i)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@ApiDefinedDeprecated
 	public UARTConfig(String __a, int __b, int __c, int __d, int __e, int __f
 		, int __g)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@ApiDefinedDeprecated
 	public UARTConfig(String __a, int __b, int __c, int __d, int __e, int __f
 		, int __g, int __h, int __i)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getBaudRate()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getChannelNumber()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public String getControllerName()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int getControllerNumber()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getDataBits()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getFlowControlMode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getInputBufferSize()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getOutputBufferSize()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getParity()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getStopBits()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
@@ -170,7 +171,7 @@ public final class UARTConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static UARTConfig deserialize(InputStream __a)
@@ -178,69 +179,69 @@ public final class UARTConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static final class Builder
 	{
 		public Builder()
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public UARTConfig build()
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setBaudRate(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setChannelNumber(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setControllerName(String __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setControllerNumber(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setDataBits(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setFlowControlMode(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setInputBufferSize(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setOutputBufferSize(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setParity(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setStopBits(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 }

@@ -9,6 +9,7 @@
 
 package jdk.dio.watchdog;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import jdk.dio.DevicePermission;
 
 public class WatchdogTimerPermission
@@ -17,13 +18,13 @@ public class WatchdogTimerPermission
 	public WatchdogTimerPermission(String __a)
 	{
 		super((String)null);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public WatchdogTimerPermission(String __a, String __b)
 	{
 		super((String)null);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

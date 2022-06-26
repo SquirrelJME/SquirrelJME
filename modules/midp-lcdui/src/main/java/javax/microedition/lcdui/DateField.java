@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -64,22 +65,22 @@ public class DateField
 	
 	public Date getDate()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getInputMode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setDate(Date __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setInputMode(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

@@ -9,6 +9,7 @@
 
 package jdk.dio.adc;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import jdk.dio.DeviceEvent;
 
 public class MonitoringEvent
@@ -22,23 +23,23 @@ public class MonitoringEvent
 	
 	public MonitoringEvent(ADCChannel __a, int __b, int __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public MonitoringEvent(ADCChannel __a, int __b, int __c, long __d, int 
 		__e)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getType()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

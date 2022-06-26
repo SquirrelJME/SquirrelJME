@@ -12,6 +12,7 @@ package java.lang;
 import cc.squirreljme.jvm.SoftDouble;
 import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public final class Double
 	extends Number
@@ -68,7 +69,7 @@ public final class Double
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -84,7 +85,7 @@ public final class Double
 	@Override
 	public int compareTo(Double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -161,7 +162,7 @@ public final class Double
 	
 	public boolean isInfinite()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -198,12 +199,12 @@ public final class Double
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int compare(double __a, double __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -239,7 +240,7 @@ public final class Double
 	
 	public static boolean isInfinite(double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -275,12 +276,12 @@ public final class Double
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static String toString(double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Double valueOf(String __a)
@@ -288,7 +289,7 @@ public final class Double
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

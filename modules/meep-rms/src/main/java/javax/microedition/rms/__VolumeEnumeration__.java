@@ -9,6 +9,7 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,7 +104,7 @@ final class __VolumeEnumeration__
 		// Check for rebuild
 		this.__checkRebuild();
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -119,7 +120,7 @@ final class __VolumeEnumeration__
 		// Check for rebuild
 		this.__checkRebuild();
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -135,7 +136,7 @@ final class __VolumeEnumeration__
 		// Check for rebuild
 		this.__checkRebuild();
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -176,7 +177,7 @@ final class __VolumeEnumeration__
 		// Check for rebuild
 		this.__checkRebuild();
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -193,7 +194,7 @@ final class __VolumeEnumeration__
 		// Check for rebuild
 		this.__checkRebuild();
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -203,7 +204,7 @@ final class __VolumeEnumeration__
 	@Override
 	public final int numRecords()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -221,7 +222,7 @@ final class __VolumeEnumeration__
 		// Check for rebuild
 		this.__checkRebuild();
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -238,7 +239,7 @@ final class __VolumeEnumeration__
 		// Check for rebuild
 		this.__checkRebuild();
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -295,12 +296,12 @@ final class __VolumeEnumeration__
 				
 				// Filter this?
 				if (filter != null)
-					throw new todo.TODO();
+					throw Debugging.todo();
 			}
 			
 			// Sort the input pages by their data?
 			if (comparator != null)
-				throw new todo.TODO();
+				throw Debugging.todo();
 			
 			// Set new version
 			this._pages = pages;
@@ -327,7 +328,7 @@ final class __VolumeEnumeration__
 		// Check for rebuild
 		this.__checkRebuild();
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

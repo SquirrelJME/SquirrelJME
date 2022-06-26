@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public abstract class Calendar
 	implements Cloneable, Comparable<Calendar>
 {
@@ -147,7 +149,7 @@ public abstract class Calendar
 	
 	protected Calendar()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public abstract void add(int __a, int __b);
@@ -168,178 +170,178 @@ public abstract class Calendar
 	
 	public boolean after(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean before(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final void clear()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final void clear(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public Object clone()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int compareTo(Calendar __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	protected void complete()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int get(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getActualMaximum(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getActualMinimum(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getFirstDayOfWeek()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getMinimalDaysInFirstWeek()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final Date getTime()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public long getTimeInMillis()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public TimeZone getTimeZone()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	protected final int internalGet(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isLenient()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final boolean isSet(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void roll(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void set(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final void set(int __a, int __b, int __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final void set(int __a, int __b, int __c, int __d, int __e)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final void set(int __a, int __b, int __c, int __d, int __e, int
 		__f)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setFirstDayOfWeek(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setLenient(boolean __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setMinimalDaysInFirstWeek(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final void setTime(Date __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setTimeInMillis(long __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setTimeZone(TimeZone __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Calendar getInstance()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Calendar getInstance(TimeZone __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

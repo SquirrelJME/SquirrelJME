@@ -9,6 +9,7 @@
 
 package jdk.dio.spi;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import jdk.dio.ClosedDeviceException;
 import jdk.dio.Device;
@@ -20,13 +21,13 @@ public abstract class AbstractDevice<P extends Device<? super P>>
 {
 	public AbstractDevice()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public final <U extends P> DeviceDescriptor<U> getDescriptor()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
@@ -40,7 +41,7 @@ public abstract class AbstractDevice<P extends Device<? super P>>
 			throw new ClosedDeviceException();
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
@@ -49,7 +50,7 @@ public abstract class AbstractDevice<P extends Device<? super P>>
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

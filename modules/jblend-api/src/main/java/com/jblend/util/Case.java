@@ -9,15 +9,17 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public final class Case
 {
     public static final String toLower(String var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static final String toUpper(String var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

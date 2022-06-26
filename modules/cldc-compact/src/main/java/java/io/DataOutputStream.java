@@ -9,6 +9,8 @@
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This stream is capable of writing binary data to an output stream.
  *
@@ -141,7 +143,7 @@ public class DataOutputStream
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -154,7 +156,7 @@ public class DataOutputStream
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -167,7 +169,7 @@ public class DataOutputStream
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

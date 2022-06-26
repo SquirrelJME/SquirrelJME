@@ -9,13 +9,15 @@
 
 package java.nio;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public abstract class FloatBuffer
 	extends Buffer
 	implements Comparable<FloatBuffer>
 {
 	FloatBuffer()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public abstract float get();
@@ -36,78 +38,78 @@ public abstract class FloatBuffer
 	@SuppressWarnings({"override"})
 	public final float[] array()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@SuppressWarnings({"override"})
 	public final int arrayOffset()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int compareTo(FloatBuffer __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public FloatBuffer get(float[] __a, int __b, int __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public FloatBuffer get(float[] __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@SuppressWarnings({"override"})
 	public final boolean hasArray()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public FloatBuffer put(FloatBuffer __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public FloatBuffer put(float[] __a, int __b, int __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final FloatBuffer put(float[] __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static FloatBuffer wrap(float[] __a, int __b, int __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static FloatBuffer wrap(float[] __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

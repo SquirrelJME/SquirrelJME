@@ -9,6 +9,8 @@
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public abstract class Writer
 	implements Appendable, Closeable
 {
@@ -16,12 +18,12 @@ public abstract class Writer
 	
 	protected Writer()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	protected Writer(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
@@ -40,7 +42,7 @@ public abstract class Writer
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
@@ -49,7 +51,7 @@ public abstract class Writer
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
@@ -58,7 +60,7 @@ public abstract class Writer
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void write(int __a)
@@ -66,7 +68,7 @@ public abstract class Writer
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void write(char[] __a)
@@ -74,7 +76,7 @@ public abstract class Writer
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void write(String __a)
@@ -82,7 +84,7 @@ public abstract class Writer
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void write(String __a, int __b, int __c)
@@ -90,7 +92,7 @@ public abstract class Writer
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

@@ -10,6 +10,7 @@
 package java.lang;
 
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import cc.squirreljme.runtime.cldc.i18n.Locale;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
@@ -743,7 +744,7 @@ public final class String
 	
 	public void getChars(int __a, int __b, char[] __c, int __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -962,7 +963,7 @@ public final class String
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

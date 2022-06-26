@@ -11,6 +11,7 @@ package net.multiphasicapps.io;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -180,7 +181,7 @@ public class ByteDeque
 		int nb = blocks.size();
 		int head = this._head, tail = this._tail;
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -945,7 +946,7 @@ public class ByteDeque
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -1077,7 +1078,7 @@ public class ByteDeque
 		if (__os == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

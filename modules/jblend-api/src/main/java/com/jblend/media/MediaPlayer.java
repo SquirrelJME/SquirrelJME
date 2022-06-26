@@ -29,7 +29,7 @@ public abstract class MediaPlayer
 
     public MediaPlayer()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public abstract void setData(MediaData var1);
@@ -54,6 +54,6 @@ public abstract class MediaPlayer
 
     protected static void addNativeMediaEventDispatcher(NativeMediaEventDispatcher var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

@@ -367,13 +367,13 @@ public class DeflaterOutputStream
 		// Compress with fixed table
 		if (hufftype == 1)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		// Compress with dynamically generated table
 		else if (hufftype == 2)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		// No compression used

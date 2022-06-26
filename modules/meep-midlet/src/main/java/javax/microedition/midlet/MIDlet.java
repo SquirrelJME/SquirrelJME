@@ -288,7 +288,7 @@ public abstract class MIDlet
 		// Debug
 		todo.DEBUG.note("Platform request: %s", __url);
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -310,7 +310,7 @@ public abstract class MIDlet
 		if (__attrname == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

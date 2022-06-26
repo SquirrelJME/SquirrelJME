@@ -10,17 +10,19 @@
 package javax.microedition.io.file;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class IllegalModeException
 	extends RuntimeException
 {
 	public IllegalModeException()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public IllegalModeException(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

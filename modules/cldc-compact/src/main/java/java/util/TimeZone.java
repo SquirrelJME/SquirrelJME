@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public abstract class TimeZone
 	implements Cloneable
 {
@@ -20,7 +22,7 @@ public abstract class TimeZone
 	
 	public TimeZone()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public abstract int getOffset(int __a, int __b, int __c, int __d, int __e
@@ -37,49 +39,49 @@ public abstract class TimeZone
 	@Override
 	public Object clone()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getDSTSavings()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final String getDisplayName()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final String getDisplayName(boolean __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getID()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getOffset(long __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean hasSameRules(TimeZone __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setID(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static String[] getAvailableIDs(int __a)
 	{
 		synchronized (TimeZone.class)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 	
@@ -87,26 +89,26 @@ public abstract class TimeZone
 	{
 		synchronized (TimeZone.class)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 	
 	public static TimeZone getDefault()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static TimeZone getTimeZone(String __a)
 	{
 		synchronized (TimeZone.class)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 	
 	public static void setDefault(TimeZone __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

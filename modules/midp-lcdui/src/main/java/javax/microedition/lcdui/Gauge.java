@@ -9,6 +9,8 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class Gauge
 	extends Item
 {
@@ -77,32 +79,32 @@ public class Gauge
 	
 	public int getIncrementValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getMaxValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getMinValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isInteractive()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setIncrementValue(int __v)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -126,17 +128,17 @@ public class Gauge
 	
 	public void setMaxValue(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setMinValue(int __v)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setValue(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

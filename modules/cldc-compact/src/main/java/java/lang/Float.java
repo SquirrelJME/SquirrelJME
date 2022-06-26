@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.SoftFloat;
 import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public final class Float
 	extends Number
@@ -66,7 +67,7 @@ public final class Float
 	
 	public Float(double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Float(String __a)
@@ -74,7 +75,7 @@ public final class Float
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -90,7 +91,7 @@ public final class Float
 	@Override
 	public int compareTo(Float __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -168,7 +169,7 @@ public final class Float
 	
 	public boolean isInfinite()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -205,12 +206,12 @@ public final class Float
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int compare(float __a, float __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -262,7 +263,7 @@ public final class Float
 	
 	public static boolean isInfinite(float __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -282,12 +283,12 @@ public final class Float
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static String toString(float __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Float valueOf(String __a)
@@ -295,7 +296,7 @@ public final class Float
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

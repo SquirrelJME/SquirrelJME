@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -335,7 +336,7 @@ public final class IntegerList
 	@Override
 	public Integer remove(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
@@ -596,7 +597,7 @@ public final class TableSectionOutputStream
 			if (__n == 1)
 				return 0;
 			
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		/**
@@ -607,7 +608,7 @@ public final class TableSectionOutputStream
 		public final void writeBoolean(boolean __v)
 			throws IOException
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		/**

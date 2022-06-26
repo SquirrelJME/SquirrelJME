@@ -123,7 +123,7 @@ public class ImageReaderDispatcher
 		
 		// SVG?
 		else if (first == '<')
-			throw new todo.TODO();
+			throw Debugging.todo();
 		
 		// XPM?
 		else if (first == '/')

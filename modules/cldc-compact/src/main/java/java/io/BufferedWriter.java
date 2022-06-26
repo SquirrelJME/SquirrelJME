@@ -10,6 +10,7 @@
 package java.io;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This class buffers characters into an internal buffer so that they can be
@@ -80,7 +81,7 @@ public class BufferedWriter
 		if (__bs <= 0)
 			throw new IllegalArgumentException(String.format("ZZ0h %d", __bs));
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -93,7 +94,7 @@ public class BufferedWriter
 	public void close()
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -104,7 +105,7 @@ public class BufferedWriter
 	public void flush()
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -117,7 +118,7 @@ public class BufferedWriter
 	public void newLine()
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -130,7 +131,7 @@ public class BufferedWriter
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -147,7 +148,7 @@ public class BufferedWriter
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -160,7 +161,7 @@ public class BufferedWriter
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

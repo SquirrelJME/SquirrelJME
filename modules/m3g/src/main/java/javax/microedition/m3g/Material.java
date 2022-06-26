@@ -10,6 +10,8 @@
 package javax.microedition.m3g;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class Material
 	extends Object3D
 {
@@ -27,37 +29,37 @@ public class Material
 	
 	public Material()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getColor(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public float getShininess()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isVertexColorTrackingEnabled()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setColor(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setShininess(float __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setVertexColorTrackingEnable(boolean __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

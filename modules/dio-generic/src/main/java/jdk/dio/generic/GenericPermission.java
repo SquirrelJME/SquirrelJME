@@ -9,6 +9,7 @@
 
 package jdk.dio.generic;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import jdk.dio.DevicePermission;
 
 public class GenericPermission
@@ -17,13 +18,13 @@ public class GenericPermission
 	public GenericPermission(String __a)
 	{
 		super((String)null);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public GenericPermission(String __a, String __b)
 	{
 		super((String)null);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

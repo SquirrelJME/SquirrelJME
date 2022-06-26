@@ -10,6 +10,7 @@
 package jdk.dio.adc;
 
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,67 +22,67 @@ public final class ADCChannelConfig
 	@ApiDefinedDeprecated
 	public ADCChannelConfig(int __a, int __b, int __c, int __d, int __e)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@ApiDefinedDeprecated
 	public ADCChannelConfig(String __a, int __b, int __c, int __d, int __e)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getChannelNumber()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public String getControllerName()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int getControllerNumber()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getInputBufferSize()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getResolution()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getSamplingInterval()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getSamplingTime()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public double getScaleFactor()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
@@ -90,7 +91,7 @@ public final class ADCChannelConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static ADCChannelConfig deserialize(InputStream __a)
@@ -98,59 +99,59 @@ public final class ADCChannelConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static final class Builder
 	{
 		public Builder()
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public ADCChannelConfig build()
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setChannelNumber(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setControllerName(String __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setControllerNumber(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setInputBufferSize(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setResolution(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setSamplingInterval(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setSamplingTime(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setScaleFactor(double __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 }

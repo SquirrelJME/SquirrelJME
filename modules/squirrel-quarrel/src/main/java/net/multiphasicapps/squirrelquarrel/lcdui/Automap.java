@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.squirrelquarrel.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import net.multiphasicapps.squirrelquarrel.ui.Viewport;
@@ -62,7 +63,7 @@ public class Automap
 	public Automap(Viewport __v, int __w, int __h)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		// Check
 		if (__gi == null)
@@ -112,7 +113,7 @@ public class Automap
 	 */
 	public Image update()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		GameInterface gameinterface = this.gameinterface;
 		Image terrain = this.terrain;
@@ -178,7 +179,7 @@ public class Automap
 	private void __drawLayer(Graphics __g, boolean __fog)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		// Check
 		if (__g == null)

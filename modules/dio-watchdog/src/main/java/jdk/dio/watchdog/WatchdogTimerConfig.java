@@ -9,6 +9,7 @@
 
 package jdk.dio.watchdog;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -19,41 +20,41 @@ public final class WatchdogTimerConfig
 {
 	public WatchdogTimerConfig(String __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public WatchdogTimerConfig(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public String getControllerName()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int getControllerNumber()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getTimerNumber()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
@@ -62,7 +63,7 @@ public final class WatchdogTimerConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static WatchdogTimerConfig deserialize(InputStream __a)
@@ -70,7 +71,7 @@ public final class WatchdogTimerConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

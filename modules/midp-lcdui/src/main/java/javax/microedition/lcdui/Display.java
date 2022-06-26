@@ -349,7 +349,7 @@ public class Display
 	 */
 	public int getActivityMode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -402,7 +402,7 @@ public class Display
 	
 	public int getBorderStyle(boolean __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -539,7 +539,7 @@ public class Display
 	
 	public int getDisplayState()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -554,7 +554,7 @@ public class Display
 	 */
 	public int getDotPitch()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -614,7 +614,7 @@ public class Display
 	 */
 	public int getHardwareState()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		if (__EventCallback__._CALLBACK._registered)
 			return DISPLAY_HARDWARE_ENABLED;
@@ -636,7 +636,7 @@ public class Display
 	
 	public IdleItem getIdleItem()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -744,7 +744,7 @@ public class Display
 	 */
 	public boolean isBuiltIn()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -859,11 +859,11 @@ public class Display
 	{
 		// Active?
 		if (__m == Display.MODE_ACTIVE)
-			throw new todo.TODO();
+			throw Debugging.todo();
 	
 		// Normal
 		else if (__m == Display.MODE_NORMAL)
-			throw new todo.TODO();
+			throw Debugging.todo();
 	
 		// {@squirreljme.error EB1i Unknown activity mode specified.}
 		else
@@ -872,7 +872,7 @@ public class Display
 	
 	public void setCommandLayoutPolicy(CommandLayoutPolicy __clp)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -1000,17 +1000,17 @@ public class Display
 	
 	public void setCurrentItem(Item __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setIdleItem(IdleItem __i)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setPreferredOrientation(int __o)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

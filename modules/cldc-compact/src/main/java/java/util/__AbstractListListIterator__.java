@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * List iterator which can go forwards and backwards through this abstract
  * list. Indexed elements are used here, not sequential lists.
@@ -65,7 +67,7 @@ final class __AbstractListListIterator__<E>
 		// Check modification
 		this.__checkConcurrent();
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -218,7 +220,7 @@ final class __AbstractListListIterator__<E>
 		// Check modification
 		this.__checkConcurrent();
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

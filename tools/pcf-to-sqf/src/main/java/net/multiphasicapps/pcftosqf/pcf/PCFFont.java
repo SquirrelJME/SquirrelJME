@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.pcftosqf.pcf;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -220,7 +221,7 @@ public class PCFFont
 					// Ink Metrics (NOT USED???)
 				case 16:
 					if (true)
-						throw new todo.TODO();
+						throw Debugging.todo();
 					break;
 					
 					// BDF Encodings

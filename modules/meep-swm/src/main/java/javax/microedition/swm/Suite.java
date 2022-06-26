@@ -119,7 +119,7 @@ public class Suite
 	 */
 	public Iterator<String> getAttributes()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		Library program = this._library;
 		if (program == null)
@@ -165,7 +165,7 @@ public class Suite
 	 */
 	public Iterator<Suite> getDependencies()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		Library program = this._library;
 		if (program == null)
@@ -209,7 +209,7 @@ public class Suite
 	 */
 	public String getDownloadUrl()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		Library program = this._library;
 		if (program == null)
@@ -360,7 +360,7 @@ public class Suite
 	 */
 	public boolean isInstalled()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		Library program = this._library;
 		if (program == null)
@@ -380,7 +380,7 @@ public class Suite
 	 */
 	public boolean isSuiteState(SuiteStateFlag __f)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		// Null is never true
 		if (__f == null)
@@ -415,7 +415,7 @@ public class Suite
 	 */
 	public boolean isTrusted()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		Library program = this._library;
 		if (program == null)
@@ -449,7 +449,7 @@ public class Suite
 		if (__f == null)
 			return;
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		// {@squirreljme.error DG0q The current suite has been removed.}
 		if (!isInstalled())

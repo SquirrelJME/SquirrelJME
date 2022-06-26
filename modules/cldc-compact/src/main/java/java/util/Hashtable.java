@@ -10,6 +10,7 @@
 package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
 import cc.squirreljme.runtime.cldc.util.MapKeySetView;
 import cc.squirreljme.runtime.cldc.util.SynchronizedEntrySetNotNull;
@@ -208,7 +209,7 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 	

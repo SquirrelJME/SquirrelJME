@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.common.EditableText;
 
 public class TextBox
@@ -43,22 +44,22 @@ public class TextBox
 	
 	public void delete(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getCaretPosition()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getChars(char[] __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getConstraints()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -68,7 +69,7 @@ public class TextBox
 	@Override
 	public int getHeight()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		return this.__defaultHeight();
 		*/
@@ -76,12 +77,12 @@ public class TextBox
 	
 	public int getMaxSize()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -91,7 +92,7 @@ public class TextBox
 	@Override
 	public int getWidth()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		return this.__defaultWidth();
 		*/
@@ -99,52 +100,52 @@ public class TextBox
 	
 	public void insert(char[] __a, int __b, int __c, int __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void insert(String __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setCaret(int __i)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setChars(char[] __a, int __b, int __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setConstraints(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setHighlight(int __i, int __l)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setInitialInputMode(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int setMaxSize(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setString(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int size()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

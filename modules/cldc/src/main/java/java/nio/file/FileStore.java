@@ -9,13 +9,14 @@
 
 package java.nio.file;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 public abstract class FileStore
 {
 	protected FileStore()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public abstract Object getAttribute(String __a)

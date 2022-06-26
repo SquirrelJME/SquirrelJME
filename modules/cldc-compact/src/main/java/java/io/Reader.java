@@ -10,6 +10,7 @@
 package java.io;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public abstract class Reader
 	implements Closeable
@@ -72,12 +73,12 @@ public abstract class Reader
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean markSupported()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -131,7 +132,7 @@ public abstract class Reader
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void reset()
@@ -139,7 +140,7 @@ public abstract class Reader
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public long skip(long __a)
@@ -150,7 +151,7 @@ public abstract class Reader
 		{
 			if (false)
 				throw new IOException();
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 	

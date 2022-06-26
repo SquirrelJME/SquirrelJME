@@ -790,7 +790,7 @@ public class RecordStore
 		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 	
@@ -968,7 +968,7 @@ public class RecordStore
 			if (got == -1)
 				throw new RecordStoreNotFoundException("DC08 " + __n);
 			
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 	

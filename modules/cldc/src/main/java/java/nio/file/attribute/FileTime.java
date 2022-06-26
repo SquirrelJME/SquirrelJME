@@ -9,46 +9,48 @@
 
 package java.nio.file.attribute;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public final class FileTime
 	implements Comparable<FileTime>
 {
 	private FileTime()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int compareTo(FileTime __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public long toMillis()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static FileTime fromMillis(long __v)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

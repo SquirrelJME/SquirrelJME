@@ -41,7 +41,7 @@ final class __SystemTaskManager__
 	@Override
 	public void addTaskListener(TaskListener __tl)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -51,7 +51,7 @@ final class __SystemTaskManager__
 	@Override
 	public Task getCurrentTask()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		return this.__byId(APIAccessor.chores().currentId());
 		*/
@@ -64,7 +64,7 @@ final class __SystemTaskManager__
 	@Override
 	public List<Task> getTaskList(boolean __incsys)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		// Lock so that the task list is always up to date
 		Task[] rv;
@@ -91,7 +91,7 @@ final class __SystemTaskManager__
 	@Override
 	public void removeTaskListener(TaskListener __tl)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -102,7 +102,7 @@ final class __SystemTaskManager__
 	public boolean setForeground(Task __t)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -113,7 +113,7 @@ final class __SystemTaskManager__
 	public boolean setPriority(Task __t, TaskPriority __p)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -242,7 +242,7 @@ final class __SystemTaskManager__
 	public boolean stopTask(Task __t)
 		throws IllegalArgumentException, IllegalStateException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

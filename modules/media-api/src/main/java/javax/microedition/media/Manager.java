@@ -44,7 +44,7 @@ public final class Manager
 			throw new IOException();
 		if (false)
 			throw new MediaException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Player createPlayer(String __a)
@@ -58,7 +58,7 @@ public final class Manager
 			throw new IOException();
 		if (false)
 			throw new MediaException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Player createPlayer(DataSource __a)
@@ -72,19 +72,19 @@ public final class Manager
 			throw new IOException();
 		if (false)
 			throw new MediaException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static String[] getSupportedContentTypes(String __a)
 	{
 		todo.DEBUG.note("getSupportedContentTypes(%s)%n", __a);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static String[] getSupportedProtocols(String __a)
 	{
 		todo.DEBUG.note("getSupportedProtocols(%s)%n", __a);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

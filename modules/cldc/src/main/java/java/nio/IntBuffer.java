@@ -9,13 +9,15 @@
 
 package java.nio;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public abstract class IntBuffer
 	extends Buffer
 	implements Comparable<IntBuffer>
 {
 	IntBuffer()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public abstract int get();
@@ -36,78 +38,78 @@ public abstract class IntBuffer
 	@SuppressWarnings({"override"})
 	public final int[] array()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@SuppressWarnings({"override"})
 	public final int arrayOffset()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int compareTo(IntBuffer __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public IntBuffer get(int[] __a, int __b, int __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public IntBuffer get(int[] __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@SuppressWarnings({"override"})
 	public final boolean hasArray()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@SuppressWarnings({"override"})
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public IntBuffer put(IntBuffer __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public IntBuffer put(int[] __a, int __b, int __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final IntBuffer put(int[] __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static IntBuffer wrap(int[] __a, int __b, int __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static IntBuffer wrap(int[] __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

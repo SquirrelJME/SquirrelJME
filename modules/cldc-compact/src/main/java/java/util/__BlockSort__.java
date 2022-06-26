@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This class provides the block sort algorithm used to sort items.
  *
@@ -36,7 +38,7 @@ final class __BlockSort__
 		if (__a == null || __comp == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

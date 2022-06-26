@@ -11,6 +11,7 @@ package java.io;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This is a reader which is backed by a buffer which should increase the
@@ -115,7 +116,7 @@ public class BufferedReader
 		
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -420,7 +421,7 @@ public class BufferedReader
 		
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

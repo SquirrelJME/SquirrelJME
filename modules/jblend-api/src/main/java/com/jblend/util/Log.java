@@ -24,24 +24,24 @@ public final class Log
 
     public Log()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static final void out(String var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static final void err(String var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     private static final class PrivateOutputStream extends OutputStream {
         @Override
 		public void write(int var1) throws IOException
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
     }
 }

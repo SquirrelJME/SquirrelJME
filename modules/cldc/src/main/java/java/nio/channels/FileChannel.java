@@ -9,6 +9,7 @@
 
 package java.nio.channels;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.OpenOption;
@@ -21,7 +22,7 @@ public abstract class FileChannel
 {
 	protected FileChannel()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public abstract void force(boolean __a)
@@ -47,7 +48,7 @@ public abstract class FileChannel
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static FileChannel open(Path __a, OpenOption... __b)
@@ -55,7 +56,7 @@ public abstract class FileChannel
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

@@ -10,62 +10,64 @@
 package javax.microedition.m3g;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class AnimationController
 	extends Object3D
 {
 	public AnimationController()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getActiveIntervalEnd()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getActiveIntervalStart()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public float getPosition(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getRefWorldTime()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public float getSpeed()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public float getWeight()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setActiveInterval(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setPosition(float __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setSpeed(float __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setWeight(float __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

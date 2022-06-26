@@ -10,16 +10,18 @@
 package javax.microedition.media.protocol;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class ContentDescriptor
 {
 	public ContentDescriptor(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getContentType()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

@@ -9,42 +9,44 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class ScalableImage
 	extends Image
 {
 	ScalableImage()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final int getViewportHeight()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final int getViewportWidth()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final void setHeight(int __h, boolean __mar)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final void setWidth(int __w, boolean __mar)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final void unbind()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static ScalableImage bind(Object __esi)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

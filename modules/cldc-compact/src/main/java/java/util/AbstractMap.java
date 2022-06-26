@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.MapKeySetView;
 
 public abstract class AbstractMap<K, V>
@@ -45,25 +46,25 @@ public abstract class AbstractMap<K, V>
 	@Override
 	public boolean containsKey(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public boolean containsValue(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public V get(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -102,7 +103,7 @@ public abstract class AbstractMap<K, V>
 	@Override
 	public V put(K __a, V __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

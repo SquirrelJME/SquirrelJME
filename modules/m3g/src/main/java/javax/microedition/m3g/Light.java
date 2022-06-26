@@ -10,6 +10,8 @@
 package javax.microedition.m3g;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class Light
 	extends Node
 {
@@ -27,77 +29,77 @@ public class Light
 	
 	public Light()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getColor()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public float getConstantAttenuation()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public float getIntensity()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public float getLinearAttenuation()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getMode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public float getQuadraticAttenuation()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public float getSpotAngle()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public float getSpotExponent()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setAttenuation(float __a, float __b, float __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setColor(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setIntensity(float __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setMode(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setSpotAngle(float __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setSpotExponent(float __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

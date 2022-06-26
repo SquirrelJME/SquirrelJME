@@ -21,44 +21,44 @@ public class Notification
 	
 	public Notification(NotificationType __t)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Notification(NotificationType __t, String __l)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Notification(NotificationType __t, String __l, Image __i)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public long getTimeStamp()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public NotificationType getType()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void post(boolean __s)
 	{
 		Debugging.todoNote("Update mutable image on post.", new Object[] {});
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void post(boolean __s, int __dur)
 	{
 		Debugging.todoNote("Update mutable image on post.", new Object[] {});
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void remove()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -73,7 +73,7 @@ public class Notification
 	 */
 	public void setImage(Image __i)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		Image clone = (__i != null && __i.isMutable() ?
 			Image.createImage(__i) : __i);
@@ -86,12 +86,12 @@ public class Notification
 	
 	public void setLabel(String __l)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setListener(NotificationListener __nl)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

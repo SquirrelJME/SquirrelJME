@@ -340,7 +340,7 @@ public enum AdvancedFunction
 				color = __ag.paintalphacolor,
 				dest = __ag.offset + (iw * __y1) + __x1;
 			
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	},
 	
@@ -381,7 +381,7 @@ public enum AdvancedFunction
 				color = __ag.paintalphacolor,
 				dest = __ag.offset + (iw * __y1) + __x1;
 			
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	},
 	

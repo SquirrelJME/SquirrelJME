@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This is a bucket map which acts as the raw internal hash table
  * implementation.
@@ -168,7 +170,7 @@ final class __BucketMap__<K, V>
 			{
 				// In access order?
 				if (this.accessorder)
-					throw new todo.TODO();	
+					throw Debugging.todo();	
 				
 				return e;
 			}

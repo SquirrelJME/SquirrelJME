@@ -9,6 +9,7 @@
 
 package com.vodafone.v10.midlet;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.vodafone.v10.system.device.MailListener;
 import com.vodafone.v10.system.device.RingStateListener;
 import com.vodafone.v10.system.device.ScheduledAlarmListener;
@@ -22,7 +23,7 @@ public abstract class ResidentMIDlet
 {
     protected ResidentMIDlet()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

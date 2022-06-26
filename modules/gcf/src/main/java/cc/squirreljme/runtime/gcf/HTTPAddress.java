@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This represents an IP address.
  *
@@ -59,7 +61,7 @@ public final class HTTPAddress
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -69,7 +71,7 @@ public final class HTTPAddress
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -79,7 +81,7 @@ public final class HTTPAddress
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -122,7 +124,7 @@ public final class HTTPAddress
 		String fragment;
 		int fl = __p.indexOf('#');
 		if (fl >= 0)
-			throw new todo.TODO();
+			throw Debugging.todo();
 		
 		// No fragment used
 		else
@@ -132,7 +134,7 @@ public final class HTTPAddress
 		String query;
 		int ql = __p.indexOf('?');
 		if (ql >= 0)
-			throw new todo.TODO();
+			throw Debugging.todo();
 		
 		// No query used
 		else

@@ -364,7 +364,7 @@ public final class Formatter
 		
 		// Use local digit grouping
 		if (__pf.__hasFlag(__PrintFFlag__.LOCALE_GROUPING))
-			throw new todo.TODO();
+			throw Debugging.todo();
 		
 		// Negative values can have flags (note negatives are always signed)
 		boolean signed = neg;
@@ -721,7 +721,7 @@ public final class Formatter
 			// Parse precision
 			c = __fmt.charAt(at);
 			if (c == '.')
-				throw new todo.TODO();
+				throw Debugging.todo();
 			
 			// Parse the conversion
 			c = __fmt.charAt(at);
