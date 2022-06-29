@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.CharArrayCharSequence;
+import cc.squirreljme.runtime.cldc.util.CharSequenceUtils;
 import java.util.Arrays;
 
 /**
@@ -36,9 +37,6 @@ public final class StringBuilder
 	
 	/** The characters which are in the buffer. */
 	private int _at;
-	
-	/** The limit of the string buffer. */
-	private int _limit;
 	
 	/**
 	 * Initializes with the default capacity.
@@ -68,7 +66,6 @@ public final class StringBuilder
 		
 		// Initialize buffer
 		this._buffer = new char[__c];
-		this._limit = __c;
 	}
 	
 	/**
@@ -191,8 +188,8 @@ public final class StringBuilder
 		int len = __e - __s;
 		
 		// Get buffer properties
-		int limit = this._limit,
-			at = this._at;
+		int limit = this._buffer.length;
+		int at = this._at;
 		char[] buffer = (at + len > limit ? this.__buffer(len) : this._buffer);
 		
 		// Place input characters at this point
@@ -239,8 +236,8 @@ public final class StringBuilder
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Get buffer properties
-		int limit = this._limit,
-			at = this._at;
+		int limit = this._buffer.length;
+		int at = this._at;
 		char[] buffer = (at + __l > limit ? this.__buffer(__l) : this._buffer);
 		
 		// Place input characters at this point
@@ -273,8 +270,8 @@ public final class StringBuilder
 	public StringBuilder append(char __v)
 	{
 		// Before we go deeper check if the buffer needs to grow
-		int limit = this._limit,
-			at = this._at;
+		int limit = this._buffer.length;
+		int at = this._at;
 		char[] buffer = (at + 1 > limit ? this.__buffer(1) : this._buffer);
 		
 		// Add to the end
@@ -374,9 +371,23 @@ public final class StringBuilder
 		throw Debugging.todo();
 	}
 	
-	public void ensureCapacity(int __a)
+	/**
+	 * Ensures that the given capacity is made available to the buffer if the
+	 * current capacity is less than the specified {@code __minCapacity}.
+	 * 
+	 * @param __minCapacity The capacity to check against, if too small then
+	 * the capacity {@code max(__minCapacity, (capacity() * 2) + 2)} is used.
+	 * @since 2022/06/29
+	 */
+	public void ensureCapacity(int __minCapacity)
 	{
-		throw Debugging.todo();
+		// Pointless
+		if (__minCapacity <= 0)
+			return;
+		
+		int limit = this._buffer.length;
+		if (limit < __minCapacity)
+			this.__buffer(Math.max(__minCapacity, (limit << 1) + 2));
 	}
 	
 	public void getChars(int __a, int __b, char[] __c, int __d)
@@ -384,14 +395,35 @@ public final class StringBuilder
 		throw Debugging.todo();
 	}
 	
-	public int indexOf(String __a)
+	/**
+	 * Returns the position where the given string is found.
+	 *
+	 * @param __s The sequence to find.
+	 * @return The index of the sequence or {@code -1} if it is not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/06/29
+	 */
+	public int indexOf(String __s)
+		throws NullPointerException
 	{
-		throw Debugging.todo();
+		return this.indexOf(__s, 0);
 	}
 	
-	public int indexOf(String __a, int __b)
+	/**
+	 * Returns the position where the given string is found.
+	 *
+	 * @param __s The sequence to find.
+	 * @param __index The starting index.
+	 * @return The index of the sequence or {@code -1} if it is not found.
+	 * @since 2022/06/29
+	 */
+	public int indexOf(String __s, int __index)
+		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		return CharSequenceUtils.indexOf(this, __s, __index);
 	}
 	
 	/**
@@ -505,8 +537,8 @@ public final class StringBuilder
 		int len = __e - __s;
 		
 		// Get buffer properties
-		int limit = this._limit,
-			at = this._at;
+		int limit = this._buffer.length;
+		int at = this._at;
 		char[] buffer = (at + len > limit ? this.__buffer(len) : this._buffer);
 		
 		// {@squirreljme.error ZZ1q The index of insertion exceeds the
@@ -563,8 +595,8 @@ public final class StringBuilder
 			throw new IndexOutOfBoundsException("ZZ1r");
 		
 		// Before we go deeper check if the buffer needs to grow
-		int limit = this._limit,
-			at = this._at;
+		int limit = this._buffer.length;
+		int at = this._at;
 		char[] buffer = (at + 1 > limit ? this.__buffer(1) : this._buffer);
 		
 		// {@squirreljme.error ZZ1s The index of insertion exceeds the
@@ -831,13 +863,10 @@ public final class StringBuilder
 	{
 		char[] buffer = this._buffer;
 		int at = this._at;
-		int limit = this._limit;
+		int limit = buffer.length;
 		
 		if (limit > at)
-		{
 			this._buffer = Arrays.copyOf(buffer, at);
-			this._limit = at;
-		}
 	}
 	
 	/**
@@ -852,7 +881,7 @@ public final class StringBuilder
 	{
 		// Get buffer properties
 		char[] buffer = this._buffer;
-		int limit = this._limit;
+		int limit = buffer.length;
 		int at = this._at;
 		
 		// Need to resize the buffer to fit this?
@@ -870,7 +899,6 @@ public final class StringBuilder
 			
 			// Store the new buffer
 			this._buffer = (buffer = extra);
-			this._limit = newCapacity;
 		}
 		
 		return buffer;

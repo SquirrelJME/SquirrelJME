@@ -45,7 +45,7 @@ public final class SuiteVersion
 	 *
 	 * @param __v The value to parse.
 	 * @throws IllegalArgumentException If there are too many or too little
-	 * version fields, they contain illegal charactes, or have an out of range
+	 * version fields, they contain illegal characters, or have an out of range
 	 * value.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
