@@ -120,7 +120,7 @@ final class __ScratchPadStore__
 		throws IndexOutOfBoundsException
 	{
 		byte[] data = this._data;
-		if (__pos < 0 || __length < 0 || (__pos + __length) > data.length)
+		if (__pos < 0 || __length < 0 || (__pos + __length) < 0 || (__pos + __length) > data.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		return new ByteArrayInputStream(data, __pos, __length);
@@ -142,7 +142,7 @@ final class __ScratchPadStore__
 		throws IndexOutOfBoundsException, IOException
 	{
 		byte[] data = this._data;
-		if (__pos < 0 || __len < 0 || (__pos + __len) > data.length)
+		if (__pos < 0 || __len < 0 || (__pos + __len) < 0 || (__pos + __len) > data.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		return new __ScratchPadOutputTransaction__(this, __pos, __len);
