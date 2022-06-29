@@ -142,6 +142,7 @@ public final class StringBuilder
 	 * @return {@code this}.
 	 * @since 2018/09/22 
 	 */
+	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	public StringBuilder append(StringBuffer __v)
 	{
 		// Is null, cannot lock on it so just forward
@@ -393,9 +394,20 @@ public final class StringBuilder
 		throw Debugging.todo();
 	}
 	
-	public StringBuilder insert(int __a, char[] __b, int __c, int __d)
+	/**
+	 * Inserts the given value at the given position.
+	 *
+	 * @param __dx The index to insert at.
+	 * @param __c The characters to insert.
+	 * @param __o The offset into the array.
+	 * @param __l The number of characters to insert.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the index is out of bounds.
+	 * @since 2022/06/29
+	 */
+	public StringBuilder insert(int __dx, char[] __c, int __o, int __l)
 	{
-		throw Debugging.todo();
+		return this.insert(__dx, new CharArrayCharSequence(__c, __o, __l));
 	}
 	
 	/**
@@ -519,9 +531,18 @@ public final class StringBuilder
 		return this;
 	}
 	
-	public StringBuilder insert(int __a, boolean __b)
+	/**
+	 * Inserts the given boolean into the string at the given index.
+	 *
+	 * @param __dx The index to insert at.
+	 * @param __v The value to insert.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @since 2022/06/29
+	 */
+	public StringBuilder insert(int __dx, boolean __v)
 	{
-		throw Debugging.todo();
+		return this.insert(__dx, Boolean.valueOf(__v).toString());
 	}
 	
 	/**
@@ -595,22 +616,40 @@ public final class StringBuilder
 		return this.insert(__dx, Long.valueOf(__v).toString());
 	}
 	
-	public StringBuilder insert(int __a, float __b)
+	/**
+	 * Inserts the given value into the string at the given index.
+	 *
+	 * @param __dx The index to insert at.
+	 * @param __v The value to insert.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @since 2022/06/29
+	 */
+	public StringBuilder insert(int __dx, float __v)
 	{
-		throw Debugging.todo();
+		return this.insert(__dx, Float.valueOf(__v).toString());
 	}
 	
-	public StringBuilder insert(int __a, double __b)
+	/**
+	 * Inserts the given value into the string at the given index.
+	 *
+	 * @param __dx The index to insert at.
+	 * @param __v The value to insert.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @since 2022/06/29
+	 */
+	public StringBuilder insert(int __dx, double __v)
 	{
-		throw Debugging.todo();
+		return this.insert(__dx, Double.valueOf(__v).toString());
 	}
 	
-	public int lastIndexOf(String __a)
+	public int lastIndexOf(String __s)
 	{
-		throw Debugging.todo();
+		return this.lastIndexOf(__s, Integer.MAX_VALUE);
 	}
 	
-	public int lastIndexOf(String __a, int __b)
+	public int lastIndexOf(String __s, int __fromDx)
 	{
 		throw Debugging.todo();
 	}
@@ -657,9 +696,25 @@ public final class StringBuilder
 		return this;
 	}
 	
+	/**
+	 * Sets the character at the given index.
+	 * 
+	 * @param __dx The index to set, must be {@code [0, length)}.
+	 * @param __c The character to set.
+	 * @throws IndexOutOfBoundsException If the index is not within the bounds
+	 * of this {@link StringBuilder}.
+	 * @since 2022/06/29
+	 */
 	public void setCharAt(int __dx, char __c)
+		throws IndexOutOfBoundsException
 	{
-		throw Debugging.todo();
+		// Check the bounds first
+		int at = this._at;
+		if (__dx < 0 || __dx >= at)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Now set it
+		this._buffer[__dx] = __c;
 	}
 	
 	/**
@@ -766,9 +821,23 @@ public final class StringBuilder
 		return new String(this._buffer, 0, this._at);
 	}
 	
+	/**
+	 * Trims the internal buffer to the size that is needed to store the
+	 * string.
+	 * 
+	 * @since 2022/06/29
+	 */
 	public void trimToSize()
 	{
-		throw Debugging.todo();
+		char[] buffer = this._buffer;
+		int at = this._at;
+		int limit = this._limit;
+		
+		if (limit > at)
+		{
+			this._buffer = Arrays.copyOf(buffer, at);
+			this._limit = at;
+		}
 	}
 	
 	/**
@@ -783,8 +852,8 @@ public final class StringBuilder
 	{
 		// Get buffer properties
 		char[] buffer = this._buffer;
-		int limit = this._limit,
-			at = this._at;
+		int limit = this._limit;
+		int at = this._at;
 		
 		// Need to resize the buffer to fit this?
 		int nextAt = at + __l;
