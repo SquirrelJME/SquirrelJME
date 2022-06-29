@@ -12,6 +12,7 @@ package java.lang;
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.CharArrayCharSequence;
 import java.util.Arrays;
 
 /**
@@ -233,7 +234,7 @@ public final class StringBuilder
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
-		if (__o < 0 || __l < 0 || (__o + __l) > __c.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __c.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Get buffer properties
@@ -426,9 +427,23 @@ public final class StringBuilder
 		return this.insert(__dx, (CharSequence)__v);
 	}
 	
-	public StringBuilder insert(int __a, char[] __b)
+	/**
+	 * Inserts the given value at the given position.
+	 *
+	 * @param __dx The index to insert at.
+	 * @param __chars The value to insert.
+	 * @return {@code this}.
+	 * @throws StringIndexOutOfBoundsException If the index is out of bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/06/29
+	 */
+	public StringBuilder insert(int __dx, char[] __chars)
+		throws StringIndexOutOfBoundsException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__chars == null)
+			throw new NullPointerException("NARG");
+		
+		return this.insert(__dx, new CharArrayCharSequence(__chars));
 	}
 	
 	/**
