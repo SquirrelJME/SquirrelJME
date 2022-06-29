@@ -11,6 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
@@ -19,31 +20,27 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  * @since 2020/10/03
  */
 public class UIDisplayCallbackAdapter
+	extends SpringCallbackAdapter
 	implements UIDisplayCallback
 {
-	/** The object to call into. */
-	private final SpringObject callback;
-	
-	/** The machine to call for when callbacks occur. */
-	private final SpringMachine machine;
+	/** The class used to call back. */
+	private static final ClassName CALLBACK_CLASS =
+		new ClassName(
+			"cc/squirreljme/jvm/mle/callbacks/UIDisplayCallback");
 	
 	/**
 	 * Initializes the callback.
 	 * 
 	 * @param __machine The machine to refer to.
-	 * @param __cb The callback to forward to.
+	 * @param __callback The callback to forward to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/03
 	 */
 	public UIDisplayCallbackAdapter(SpringMachine __machine,
-		SpringObject __cb)
+		SpringObject __callback)
 		throws NullPointerException
 	{
-		if (__machine == null || __cb == null)
-			throw new NullPointerException("NARG");
-		
-		this.machine = __machine;
-		this.callback = __cb;
+		super(UIDisplayCallbackAdapter.CALLBACK_CLASS, __machine, __callback);
 	}
 	
 	/**
@@ -53,7 +50,7 @@ public class UIDisplayCallbackAdapter
 	@Override
 	public void later(int __displayId, int __serialId)
 	{
-		UIFormCallbackAdapter.__callbackInvoke(this.machine, this.callback,
+		this.invokeCallback(
 			MethodNameAndType.ofArguments("later", null,
 				"I", "I"),
 			__displayId, __serialId);
@@ -68,7 +65,7 @@ public class UIDisplayCallbackAdapter
 		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
 		int __sw, int __sh, int __special)
 	{
-		UIFormCallbackAdapter.__callbackInvoke(this.machine, this.callback,
+		this.invokeCallback(
 			MethodNameAndType.ofArguments("paintDisplay", null,
 				"Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;",
 				"I", "I",

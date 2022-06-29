@@ -133,14 +133,15 @@ public class ImageReaderDispatcher
 		byte[] rawData = StreamUtils.readAll(__in);
 		
 		// Do the native image load
-		int[] imageData;
+		Object result;
 		try
 		{
-			imageData = PencilShelf.nativeImageLoadRGBA(__type,
-				rawData, 0, rawData.length);
+			result = PencilShelf.nativeImageLoadRGBA(__type,
+				rawData, 0, rawData.length,
+				new __NativeLoadHandler__(__factory));
 			
 			// {@squirreljme.error EB3r Could not load the native image.}
-			if (imageData == null)
+			if (!(result instanceof Image))
 				throw new IOException("EB3r");
 		}
 		
@@ -150,9 +151,8 @@ public class ImageReaderDispatcher
 			throw new IOException("EB3q", __e);
 		}
 		
-		// Use standard deserialization
-		return NativeImageSerialize.deserialize(
-			imageData, 0, imageData.length, __factory);
+		// Use the resultant decoded image
+		return (Image)result;
 	}
 	
 	/**

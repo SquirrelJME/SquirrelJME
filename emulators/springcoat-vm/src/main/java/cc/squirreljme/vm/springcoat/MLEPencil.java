@@ -11,21 +11,21 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
-import cc.squirreljme.jvm.mle.constants.NativeImageLoadParameter;
 import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
 import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
-import cc.squirreljme.runtime.lcdui.image.NativeImageSerialize;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.SoftwareGraphicsFactory;
 import cc.squirreljme.vm.springcoat.brackets.PencilObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.microedition.lcdui.AnimatedImage;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.ScalableImage;
 
 /**
  * Handling for {@link PencilShelf}.
@@ -349,8 +349,13 @@ public enum MLEPencil
 		}
 	},
 	
-	/** {@link PencilShelf#nativeImageLoadRGBA(int, byte[], int, int)}. */
-	NATIVE_IMAGE_LOAD_RGBA("nativeImageLoadRGBA:(I[BII)[I")
+	/**
+	 * {@link PencilShelf#nativeImageLoadRGBA(int, byte[], int, int,
+	 * cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback)}.
+	 */
+	NATIVE_IMAGE_LOAD_RGBA("nativeImageLoadRGBA:(I[BII" +
+		"Lcc/squirreljme/jvm/mle/callbacks/NativeImageLoadCallback;)" +
+		"Ljava/lang/Object;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -364,6 +369,17 @@ public enum MLEPencil
 			SpringArrayObjectByte buf = (SpringArrayObjectByte)__args[1];
 			int off = (Integer)__args[2];
 			int len = (Integer)__args[3];
+			SpringObject callbackRaw = (SpringObject)__args[4];
+			
+			if (buf == null || callbackRaw == null)
+				throw new SpringMLECallError("No buf or callback.");
+			if (off < 0 || len < 0 || (off + len) > buf.length())
+				throw new SpringMLECallError("Out of bounds data.");
+			
+			// Callback for image loading
+			NativeImageLoadCallbackAdapter callback =
+				new NativeImageLoadCallbackAdapter(__thread.machine,
+					callbackRaw);
 			
 			// Read from our image
 			try (InputStream in = new ByteArrayInputStream(
@@ -374,8 +390,45 @@ public enum MLEPencil
 				// essentially get hyper accelerated images potentially
 				Image image = Image.createImage(in);
 				
-				// Serialize the given image.
-				return NativeImageSerialize.serialize(image);
+				// Send initial image parameters
+				callback.initialize(image.getWidth(),
+					image.getHeight(),
+					image.isAnimated(),
+					image.isScalable());
+				
+				// Scalable image
+				if (image instanceof ScalableImage)
+					throw Debugging.todo();
+				
+				// Processing depends on the type of image this is
+				else if (image instanceof AnimatedImage)
+				{
+					// Set up the loop count of the image
+					AnimatedImage animated = (AnimatedImage)image;
+					callback.setLoopCount(animated.getLoopCount());
+					
+					for (int i = 0; i >= 0; i++)
+						try
+						{
+							MLEPencil.__addImage(callback,
+								animated.getFrame(i),
+								animated.getFrameDelay(i));
+						}
+						catch (IndexOutOfBoundsException ignored)
+						{
+							break;
+						}
+				}
+				
+				// Still image
+				else
+					MLEPencil.__addImage(callback, image, -1);
+				
+				// Should finish as a SpringObject
+				Object finished = callback.finish();
+				if (!(finished instanceof SpringObject))
+					throw new SpringMLECallError("Not an object?");
+				return finished;
 			}
 			catch (IndexOutOfBoundsException|IOException|
 				NullPointerException e)
@@ -415,6 +468,48 @@ public enum MLEPencil
 	public String key()
 	{
 		return this.key;
+	}
+	
+	/**
+	 * Adds an image to be passed to the image loading callback.
+	 * 
+	 * @param __callback The callback to send to.
+	 * @param __frame The frame.
+	 * @param __frameDelay The frame delay.
+	 * @since 2022/06/28
+	 */
+	static void __addImage(NativeImageLoadCallbackAdapter __callback,
+		Image __frame, int __frameDelay)
+		throws NullPointerException
+	{
+		if (__callback == null || __frame == null)
+			throw new NullPointerException("NARG");
+		
+		// Try to get a direct RGB buffer from the image, this is faster
+		// than doing an RGB copy of it
+		int[] buf;
+		int off, len;
+		if (__frame.squirreljmeIsDirect())
+		{
+			buf = __frame.squirreljmeDirectRGBInt();
+			off = __frame.squirreljmeDirectOffset();
+			len = __frame.squirreljmeDirectScanLen() * __frame.getHeight();
+		}
+		
+		// Otherwise, we need to load the RGB data from the image
+		else
+		{
+			buf = new int[__frame.getWidth() * __frame.getHeight()];
+			off = 0;
+			len = buf.length;
+			
+			// Read in all the data
+			__frame.getRGB(buf, 0, __frame.getWidth(),
+				0, 0, __frame.getWidth(), __frame.getHeight());
+		}
+		
+		// Send to the callback
+		__callback.addImage(buf, off, len, __frameDelay, __frame.hasAlpha());
 	}
 	
 	/**

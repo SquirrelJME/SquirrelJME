@@ -216,12 +216,13 @@ public class Image
 		
 		// {@squirreljme.error EB2c The area to read exceeds the bounds of the
 		// image.}
-		int ex = __x + __w,
-			ey = __y + __h;
-		int iw = this._width,
-			ih = this._height;
+		int ex = __x + __w;
+		int ey = __y + __h;
+		int iw = this._width;
+		int ih = this._height;
 		if (ex > iw || ey > ih)
-			throw new IllegalArgumentException("EB2c");
+			throw new IllegalArgumentException(String.format(
+				"EB2c (%d, %d) <> (%d, %d)", ex, ey, iw, ih));
 		
 		// If the alpha channel is not used then all RGB data is forced to
 		// be fully opaque
