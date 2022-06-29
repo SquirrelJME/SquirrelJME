@@ -80,14 +80,16 @@ public final class PencilShelf
 	 * @param __anch The anchor point.
 	 * @param __wDest The destination width.
 	 * @param __hDest The destination height.
+	 * @param __origImgWidth Original image width.
+	 * @param __origImgHeight Original image height.
 	 * @throws MLECallError On null arguments.
 	 * @since 2022/01/26
 	 */
 	public static native void hardwareDrawXRGB32Region(
-		PencilBracket __hardware,
-		int[] __data, int __off, int __scanLen, boolean __alpha, int __xSrc,
-		int __ySrc, int __wSrc, int __hSrc, int __trans,
-		int __xDest, int __yDest, int __anch, int __wDest, int __hDest)
+		PencilBracket __hardware, int[] __data, int __off, int __scanLen,
+		boolean __alpha, int __xSrc, int __ySrc, int __wSrc, int __hSrc,
+		int __trans, int __xDest, int __yDest, int __anch, int __wDest,
+		int __hDest, int __origImgWidth, int __origImgHeight)
 		throws MLECallError;
 	
 	/**

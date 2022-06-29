@@ -566,13 +566,14 @@ public class Image
 				__w, __h));
 		
 		// {@squirreljme.error EB2h The input integer buffer is shorter than
-		// the specified area.}
-		int rgblen;
-		if ((rgblen = __rgb.length) < area)
-			throw new IndexOutOfBoundsException("EB2h");
+		// the specified image area.}
+		int rgbLen = __rgb.length;
+		if (rgbLen < area)
+			throw new IndexOutOfBoundsException(String.format(
+				"EB2h %d < %d", rgbLen, area));
 		
 		// Use a cloned copy of the pixel data?
-		if (rgblen == area)
+		if (rgbLen == area)
 			__rgb = __rgb.clone();
 		
 		// Otherwise initialize a new one
