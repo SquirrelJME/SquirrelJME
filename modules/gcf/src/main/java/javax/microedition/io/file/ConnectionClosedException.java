@@ -10,17 +10,19 @@
 package javax.microedition.io.file;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class ConnectionClosedException
 	extends RuntimeException
 {
 	public ConnectionClosedException()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public ConnectionClosedException(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

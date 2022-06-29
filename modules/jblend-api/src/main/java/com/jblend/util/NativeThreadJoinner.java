@@ -9,55 +9,57 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public final class NativeThreadJoinner
 	{
     public static NativeThreadJoinner createInstance()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static void destroyInstance(NativeThreadJoinner var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void reset()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getId()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public synchronized int getCause()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public synchronized int getOption()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public synchronized void join() throws InterruptedException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public synchronized void join(long var1) throws InterruptedException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public boolean causeContains(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public synchronized void joinNotify(int var1, int var2, int var3)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

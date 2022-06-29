@@ -9,13 +9,14 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 public class NetworkInterface
 {
 	public NetworkInterface()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void connect(AccessPoint __a)
@@ -23,7 +24,7 @@ public class NetworkInterface
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean disconnect(AccessPoint __a)
@@ -31,7 +32,7 @@ public class NetworkInterface
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean disconnectAll()
@@ -39,42 +40,42 @@ public class NetworkInterface
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public AccessPoint[] getConnectedAccessPoints()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getName()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getType()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isRoaming()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean supportsConcurrentAccessPoints()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static NetworkInterface[] getNetworkInterfaces(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static String[] getNetworkTypes()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

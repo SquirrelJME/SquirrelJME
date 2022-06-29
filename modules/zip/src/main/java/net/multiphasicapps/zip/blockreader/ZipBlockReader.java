@@ -361,7 +361,7 @@ public class ZipBlockReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/29
 	 */
-	private static final long __locateCentralDirEnd(BlockAccessor __b,
+	private static long __locateCentralDirEnd(BlockAccessor __b,
 		byte[] __db)
 		throws IOException, NullPointerException
 	{

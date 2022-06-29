@@ -11,6 +11,7 @@ package net.multiphasicapps.io;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -180,7 +181,7 @@ public class ByteDeque
 		int nb = blocks.size();
 		int head = this._head, tail = this._tail;
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -376,7 +377,7 @@ public class ByteDeque
 			// Should never occur, because that means the end is lower
 			// than the start
 			if (rc < 0)
-				throw new todo.OOPS();
+				throw Debugging.oops();
 			
 			// Erase data
 			for (int i = 0; i < rc; i++)
@@ -884,7 +885,7 @@ public class ByteDeque
 		// If this occurs then the number of bytes deleted was not the
 		// same as the number of bytes which were read.
 		if (rva != rvb)
-			throw new todo.OOPS();
+			throw Debugging.oops();
 		
 		// Return the read count
 		return rva;
@@ -945,7 +946,7 @@ public class ByteDeque
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -1077,7 +1078,7 @@ public class ByteDeque
 		if (__os == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -1094,7 +1095,7 @@ public class ByteDeque
 	 * @return The number of bytes read.
 	 * @since 2016/08/04
 	 */
-	private final int __getOrSetVia(boolean __last, int __a, byte[] __b,
+	private int __getOrSetVia(boolean __last, int __a, byte[] __b,
 		int __o, int __l, boolean __set)
 	{
 		// Get some things

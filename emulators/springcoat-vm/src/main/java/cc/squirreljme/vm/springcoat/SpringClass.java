@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeException;
@@ -258,8 +259,9 @@ public final class SpringClass
 		if (__super != null)
 		{
 			SpringField[] supertable = __super._fieldtable;
-			for (int i = 0; i < superFieldCount; i++)
-				fieldtable[i] = supertable[i];
+			if (superFieldCount >= 0)
+				System.arraycopy(supertable, 0, fieldtable, 0,
+					superFieldCount);
 		}
 		
 		// Store all of the instance fields
@@ -571,7 +573,7 @@ public final class SpringClass
 					return (__v instanceof Double);
 				
 				default:
-					throw new todo.OOPS();
+					throw Debugging.oops();
 			}
 			
 		// Would be an assignable reference
@@ -584,7 +586,7 @@ public final class SpringClass
 		
 		// Unknown
 		else
-			throw new todo.OOPS();
+			throw Debugging.oops();
 	}
 	
 	/**

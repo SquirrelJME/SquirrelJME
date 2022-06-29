@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.gcf;
 
 import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -104,7 +105,7 @@ public final class HTTPRequestBuilder
 			throw new IOException("EC04");
 		
 		// Note
-		todo.TODO.note("Implement HTTP Flush");
+		Debugging.todoNote("Implement HTTP Flush", new Object[] {});
 	}
 	
 	/**

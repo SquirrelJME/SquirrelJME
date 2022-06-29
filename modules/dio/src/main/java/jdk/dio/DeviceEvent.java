@@ -10,6 +10,8 @@
 package jdk.dio;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public abstract class DeviceEvent<P extends Device<? super P>>
 {
 	protected int count;
@@ -26,37 +28,37 @@ public abstract class DeviceEvent<P extends Device<? super P>>
 	
 	public DeviceEvent()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final int getCount()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final P getDevice()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final long getLastTimeStamp()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final int getLastTimeStampMicros()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final long getTimeStamp()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final int getTimeStampMicros()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

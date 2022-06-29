@@ -9,6 +9,7 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Hashtable;
 
 public class StringKeyHashtable
@@ -17,34 +18,34 @@ public class StringKeyHashtable
     public StringKeyHashtable() {
         super(0, 0.0F);
         
-        throw new todo.TODO();
+        throw Debugging.todo();
     }
 
     public StringKeyHashtable(int var1) {
         super(0, 0.0F);
         
-        throw new todo.TODO();
+        throw Debugging.todo();
     }
 
     public final Object get(String var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public final boolean containsKey(String var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public final Object put(Object var1, Object var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	protected final void rehash()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

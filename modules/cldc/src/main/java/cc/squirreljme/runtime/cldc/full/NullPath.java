@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.full;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.LinkOption;
@@ -38,7 +39,7 @@ public class NullPath
 	@Override
 	public final int compareTo(Path __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -48,7 +49,7 @@ public class NullPath
 	@Override
 	public final boolean endsWith(Path __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -58,7 +59,7 @@ public class NullPath
 	@Override
 	public final boolean endsWith(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -68,7 +69,7 @@ public class NullPath
 	@Override
 	public final boolean equals(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -78,7 +79,7 @@ public class NullPath
 	@Override
 	public final Path getFileName()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -98,7 +99,7 @@ public class NullPath
 	@Override
 	public final Path getName(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -108,7 +109,7 @@ public class NullPath
 	@Override
 	public final int getNameCount()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -118,7 +119,7 @@ public class NullPath
 	@Override
 	public final Path getParent()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -128,7 +129,7 @@ public class NullPath
 	@Override
 	public final Path getRoot()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -138,7 +139,7 @@ public class NullPath
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -148,7 +149,7 @@ public class NullPath
 	@Override
 	public final boolean isAbsolute()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -158,7 +159,7 @@ public class NullPath
 	@Override
 	public final Iterator<Path> iterator()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -168,7 +169,7 @@ public class NullPath
 	@Override
 	public final Path normalize()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -178,7 +179,7 @@ public class NullPath
 	@Override
 	public final Path relativize(Path __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -188,7 +189,7 @@ public class NullPath
 	@Override
 	public final Path resolve(Path __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -198,7 +199,7 @@ public class NullPath
 	@Override
 	public final Path resolve(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -208,7 +209,7 @@ public class NullPath
 	@Override
 	public final Path resolveSibling(Path __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -218,7 +219,7 @@ public class NullPath
 	@Override
 	public final Path resolveSibling(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -228,7 +229,7 @@ public class NullPath
 	@Override
 	public final boolean startsWith(Path __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -238,7 +239,7 @@ public class NullPath
 	@Override
 	public final boolean startsWith(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -248,7 +249,7 @@ public class NullPath
 	@Override
 	public final Path subpath(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -258,7 +259,7 @@ public class NullPath
 	@Override
 	public final Path toAbsolutePath()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -269,7 +270,7 @@ public class NullPath
 	public final Path toRealPath(LinkOption... __a)
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -279,7 +280,7 @@ public class NullPath
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

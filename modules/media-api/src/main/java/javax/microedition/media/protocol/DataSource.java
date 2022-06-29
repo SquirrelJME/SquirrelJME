@@ -9,6 +9,7 @@
 
 package javax.microedition.media.protocol;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import javax.microedition.media.Controllable;
 
@@ -17,7 +18,7 @@ public abstract class DataSource
 {
 	public DataSource(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public abstract void connect()
@@ -37,7 +38,7 @@ public abstract class DataSource
 	
 	public String getLocator()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

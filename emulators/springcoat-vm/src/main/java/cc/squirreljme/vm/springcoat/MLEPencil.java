@@ -23,7 +23,6 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -82,10 +81,11 @@ public enum MLEPencil
 	
 	/**
 	 * {@link PencilShelf#hardwareDrawXRGB32Region(PencilBracket, int[], int,
-	 * int, boolean, int, int, int, int, int, int, int, int, int, int)}.
+	 * int, boolean, int, int, int, int, int, int, int, int, int, int, int,
+	 * int)}.
 	 */
 	HARDWARE_DRAW_XRGB32_REGION("hardwareDrawXRGB32Region:" +
-		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;[IIIZIIIIIIIIII)V")
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;[IIIZIIIIIIIIIIII)V")
 	{
 		/**
 		 * {@inheritDoc}
@@ -124,44 +124,48 @@ public enum MLEPencil
 			int __anch = (Integer)__args[12];
 			int __wDest = (Integer)__args[13];
 			int __hDest = (Integer)__args[14];
+			int __origImgWidth = (Integer)__args[15];
+			int __origImgHeight = (Integer)__args[16];
 			
 			// If the offset and/or the scan length is off, we need to correct
 			// and move this over for the plain region call
-			if (__off != 0 || __scanLen != __wSrc)
+			boolean booped = false;
+			if (__off != 0 || __scanLen != __origImgWidth)
 			{
 				// Setup new buffer
-				int maxSize = __wSrc * __hSrc;
+				int maxSize = __origImgWidth * __origImgHeight;
 				int[] newBuf = new int[maxSize];
 				
 				// Copy each scanline off
 				int xSrc = __off;
 				int xDst = 0;
-				for (int y = 0; y < __hSrc; y++)
+				for (int y = 0; y < __origImgHeight; y++)
 				{
 					// Copy row
 					System.arraycopy(__buf, xSrc,
-						newBuf, xDst, __wSrc);
+						newBuf, xDst, __origImgWidth);
 					
 					// Go to the next scan
 					xSrc += __scanLen;
-					xDst += __wSrc;
+					xDst += __origImgWidth;
 				}
 				
 				// We un-quirked the image, so reset these
 				__buf = newBuf;
 				__off = 0;
-				__scanLen = __wSrc;
+				__scanLen = __origImgWidth;
+				booped = true;
 			}
 			
 			// Load in source image
 			Image wrapped = Image.createRGBImage(__buf,
-				__wSrc, __hSrc, __alpha);
+				__origImgWidth, __origImgHeight, __alpha);
 			
 			// Forward to normal call and have our own graphics code handle
 			// this one
 			MLEPencil.__graphics(__args[0])
-				.drawRegion(wrapped, __xSrc, __ySrc, __wSrc, __hSrc, __trans,
-					__xDest, __yDest, __anch, __wDest, __hDest);
+				.drawRegion(wrapped, __xSrc, __ySrc, __wSrc, __hSrc,
+					__trans, __xDest, __yDest, __anch, __wDest, __hDest);
 			
 			// No result from this one
 			return null;

@@ -9,15 +9,17 @@
 
 package com.jblend.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class ConnectorImpl
 {
     public static synchronized Class getProtocol(String var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static synchronized void setProtocol(String var0, String var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

@@ -9,6 +9,7 @@
 
 package jdk.dio.gpio;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import jdk.dio.DeviceEvent;
 
 public class PortEvent
@@ -16,17 +17,17 @@ public class PortEvent
 {
 	public PortEvent(GPIOPort __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public PortEvent(GPIOPort __a, int __b, long __c, int __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

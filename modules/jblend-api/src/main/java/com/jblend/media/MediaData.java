@@ -9,24 +9,25 @@
 
 package com.jblend.media;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 public abstract class MediaData
 {
     public MediaData()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public MediaData(String var1)
     	throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public MediaData(byte[] var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public abstract String getMediaType();

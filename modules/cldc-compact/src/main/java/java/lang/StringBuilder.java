@@ -9,7 +9,9 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Arrays;
 
 /**
@@ -362,37 +364,37 @@ public final class StringBuilder
 	
 	public StringBuilder delete(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public StringBuilder deleteCharAt(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void ensureCapacity(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void getChars(int __a, int __b, char[] __c, int __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int indexOf(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int indexOf(String __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public StringBuilder insert(int __a, char[] __b, int __c, int __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -426,7 +428,7 @@ public final class StringBuilder
 	
 	public StringBuilder insert(int __a, char[] __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -504,7 +506,7 @@ public final class StringBuilder
 	
 	public StringBuilder insert(int __a, boolean __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -580,22 +582,22 @@ public final class StringBuilder
 	
 	public StringBuilder insert(int __a, float __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public StringBuilder insert(int __a, double __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int lastIndexOf(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int lastIndexOf(String __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -612,7 +614,7 @@ public final class StringBuilder
 	
 	public StringBuilder replace(int __a, int __b, String __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -642,7 +644,7 @@ public final class StringBuilder
 	
 	public void setCharAt(int __dx, char __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -676,8 +678,8 @@ public final class StringBuilder
 		
 		// Erase old characters in the buffer (security?)
 		char[] buffer = this._buffer;
-		for (int i = __nl, n = buffer.length; i < n; i++)
-			buffer[i] = '\0';
+		ObjectShelf.arrayFill(buffer, __nl, buffer.length - __nl,
+			'\0');
 	}
 	
 	/**
@@ -751,7 +753,7 @@ public final class StringBuilder
 	
 	public void trimToSize()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

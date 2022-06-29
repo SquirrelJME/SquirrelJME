@@ -10,7 +10,6 @@
 package cc.squirreljme.plugin.multivm;
 
 import java.nio.file.Path;
-import java.util.function.Supplier;
 import javax.inject.Inject;
 import lombok.Getter;
 import org.gradle.api.DefaultTask;

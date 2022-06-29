@@ -186,7 +186,7 @@ public abstract class AbstractPlayer
 	 * @since 2022/04/25
 	 */
 	@Override
-	public long getDuration()
+	public final long getDuration()
 		throws IllegalStateException
 	{
 		// {@squirreljme.error EA0g Stream closed, cannot get duration.}
@@ -419,7 +419,7 @@ public abstract class AbstractPlayer
 	 * @since 2022/04/27
 	 */
 	@Override
-	public void stop()
+	public final void stop()
 		throws MediaException
 	{
 		// {@squirreljme.error EA06 Null Player has been closed.}

@@ -10,47 +10,49 @@
 package javax.microedition.m3g;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class VertexArray
 	extends Object3D
 {
 	public VertexArray(int __a, int __b, int __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void get(int __a, int __b, byte[] __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void get(int __a, int __b, short[] __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getComponentCount()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getComponentType()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getVertexCount()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void set(int __a, int __b, byte[] __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void set(int __a, int __b, short[] __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

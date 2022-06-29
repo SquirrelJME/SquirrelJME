@@ -1,3 +1,4 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -90,7 +91,7 @@ public final class ProvidedInfo
 	@Override
 	public final int hashCode()
 	{
-		return this._provided.hashCode();
+		return Arrays.asList(this._provided).hashCode();
 	}
 	
 	/**

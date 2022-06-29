@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
@@ -118,12 +119,12 @@ public abstract class Item
 	
 	public void addCommand(Command __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Command[] getCommands()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -139,12 +140,12 @@ public abstract class Item
 	
 	public int getLayout()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public ItemLayoutHint getLayoutHint()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -201,27 +202,27 @@ public abstract class Item
 	
 	public void notifyStateChanged()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void removeCommand(Command __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setCommand(Command __c, int __p)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setDefaultCommand(Command __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setItemCommandListener(ItemCommandListener __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -249,7 +250,7 @@ public abstract class Item
 	
 	public void setLayoutHint(ItemLayoutHint __h)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

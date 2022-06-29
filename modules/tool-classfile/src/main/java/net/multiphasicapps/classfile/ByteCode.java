@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -355,7 +356,7 @@ public final class ByteCode
 		Instruction rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			icache[__a] = new WeakReference<>((rv = new Instruction(
+			icache[__a] = new SoftReference<>((rv = new Instruction(
 				this._rawByteCode, this.pool, __a, this.exceptions,
 				this.stackMapTable(), this.addressFollowing(__a))));
 		
@@ -729,7 +730,7 @@ public final class ByteCode
 		StackMapTable rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._smt = new WeakReference<>(rv = new __StackMapParser__(
+			this._smt = new SoftReference<>(rv = new __StackMapParser__(
 				this.pool, this.__method(), this._newsmtdata, this._smtdata,
 				this, new JavaType(this.thistype)).get());
 		

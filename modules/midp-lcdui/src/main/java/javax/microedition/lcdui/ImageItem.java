@@ -9,6 +9,8 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class ImageItem
 	extends Item
 {
@@ -86,22 +88,22 @@ public class ImageItem
 	
 	public String getAltText()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getAppearanceMode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Image getImage()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setAltText(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -117,7 +119,7 @@ public class ImageItem
 	 */
 	public void setImage(Image __i)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		Image clone = (__i != null && __i.isMutable() ?
 			Image.createImage(__i) : __i);

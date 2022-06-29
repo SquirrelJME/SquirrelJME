@@ -11,6 +11,7 @@ package java.util;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.ByteIntegerArray;
 import cc.squirreljme.runtime.cldc.util.CharacterIntegerArray;
 import cc.squirreljme.runtime.cldc.util.DoubleArrayList;
@@ -65,12 +66,12 @@ public class Arrays
 	
 	public static int binarySearch(long[] __a, long __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int binarySearch(long[] __a, int __b, int __c, long __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -250,44 +251,44 @@ public class Arrays
 	
 	public static int binarySearch(double[] __a, double __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int binarySearch(double[] __a, int __b, int __c, double __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int binarySearch(float[] __a, float __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int binarySearch(float[] __a, int __b, int __c, float __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int binarySearch(Object[] __a, Object __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int binarySearch(Object[] __a, int __b, int __c, Object __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <T> int binarySearch(T[] __a, T __b, Comparator<? super T>
 		__c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <T> int binarySearch(T[] __a, int __b, int __c, T __d,
 		Comparator<? super T> __e)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

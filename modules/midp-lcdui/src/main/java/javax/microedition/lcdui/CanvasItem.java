@@ -9,66 +9,68 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public abstract class CanvasItem
 {
 	public int getHeight()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Object getParent()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getPositionX()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getPositionY()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getWidth()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getZPosition()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setParent(Object __p)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setPositionX(int __x)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setPositionY(int __y)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setSize(int __w, int __h)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setVisible(boolean __v)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setZPosition(int __z)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

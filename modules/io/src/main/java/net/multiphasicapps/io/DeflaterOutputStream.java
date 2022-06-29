@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -88,7 +89,8 @@ public class DeflaterOutputStream
 		
 		// Since compression is not actually implemented, say it should
 		// actually be done here!
-		todo.TODO.note("Implement fixed and dynamic huffman!");
+		Debugging.todoNote("Implement fixed and dynamic huffman!",
+			new Object[] {});
 	}
 	
 	/**
@@ -365,13 +367,13 @@ public class DeflaterOutputStream
 		// Compress with fixed table
 		if (hufftype == 1)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		// Compress with dynamically generated table
 		else if (hufftype == 2)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		// No compression used

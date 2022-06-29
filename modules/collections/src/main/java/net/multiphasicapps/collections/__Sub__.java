@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.collections;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
@@ -109,7 +110,7 @@ final class __Sub__<V>
 	@Override
 	public void addFirst(V __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
 	/**
@@ -146,7 +147,7 @@ final class __Sub__<V>
 	@Override
 	public void clear()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
 	/**
@@ -166,7 +167,7 @@ final class __Sub__<V>
 	@Override
 	public boolean containsAll(Collection<?> __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
 	/**
@@ -176,7 +177,7 @@ final class __Sub__<V>
 	@Override
 	public Iterator<V> descendingIterator()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
 	/**
@@ -197,7 +198,7 @@ final class __Sub__<V>
 	public boolean equals(Object __a)
 	{
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
 	/**
@@ -223,7 +224,7 @@ final class __Sub__<V>
 	@Override
 	public V getLast()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
 	/**
@@ -243,7 +244,7 @@ final class __Sub__<V>
 	@Override
 	public boolean isEmpty()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
 	/**
@@ -253,7 +254,7 @@ final class __Sub__<V>
 	@Override
 	public Iterator<V> iterator()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -429,7 +430,7 @@ final class __Sub__<V>
 	@Override
 	public boolean remove(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
 	/**
@@ -449,7 +450,7 @@ final class __Sub__<V>
 	@Override
 	public boolean removeAll(Collection<?> __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
 	/**
@@ -486,7 +487,7 @@ final class __Sub__<V>
 	@Override
 	public boolean removeFirstOccurrence(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
 	/**
@@ -497,7 +498,7 @@ final class __Sub__<V>
 	public V removeLast()
 		throws NoSuchElementException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
 	/**
@@ -507,7 +508,7 @@ final class __Sub__<V>
 	@Override
 	public boolean removeLastOccurrence(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
 	/**
@@ -517,7 +518,7 @@ final class __Sub__<V>
 	@Override
 	public boolean retainAll(Collection<?> __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
 	/**
@@ -587,7 +588,7 @@ final class __Sub__<V>
 		
 		// Otherwise remove it
 		if (!this._deque.remove(__v))
-			throw new todo.OOPS();
+			throw Debugging.oops();
 		
 		// Remove from set
 		set.remove(__v);

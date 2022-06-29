@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.squirrelquarrel.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -73,7 +74,7 @@ public final class Rectangle
 	public Rectangle(String __s)
 		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

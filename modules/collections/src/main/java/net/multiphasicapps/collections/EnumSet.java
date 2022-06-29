@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.collections;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Iterator;
@@ -98,7 +99,7 @@ public final class EnumSet<T extends Enum<T>>
 		
 		// Need a place to store
 		if (true)
-			throw new todo.TODO();
+			throw Debugging.todo();
 		
 		// Determine bit position
 		int bit = __v.ordinal(),
@@ -146,7 +147,7 @@ public final class EnumSet<T extends Enum<T>>
 	@Override
 	public final Iterator<T> iterator()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -156,7 +157,7 @@ public final class EnumSet<T extends Enum<T>>
 	@Override
 	public final boolean remove(Object __v)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -166,7 +167,7 @@ public final class EnumSet<T extends Enum<T>>
 	@Override
 	public final int size()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

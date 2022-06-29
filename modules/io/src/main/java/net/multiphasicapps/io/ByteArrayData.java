@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This provides random access to data in the given byte array.
  *
@@ -90,7 +92,7 @@ public class ByteArrayData
 	public void read(int __p, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -101,7 +103,7 @@ public class ByteArrayData
 	public int readByte(int __p)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -112,7 +114,7 @@ public class ByteArrayData
 	public double readDouble(int __p)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -123,7 +125,7 @@ public class ByteArrayData
 	public double readFloat(int __p)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -134,7 +136,7 @@ public class ByteArrayData
 	public int readInt(int __p)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -145,7 +147,7 @@ public class ByteArrayData
 	public long readLong(int __p)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -156,7 +158,7 @@ public class ByteArrayData
 	public int readShort(int __p)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -167,7 +169,7 @@ public class ByteArrayData
 	public int readUnsignedByte(int __p)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -178,7 +180,7 @@ public class ByteArrayData
 	public int readUnsignedShort(int __p)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

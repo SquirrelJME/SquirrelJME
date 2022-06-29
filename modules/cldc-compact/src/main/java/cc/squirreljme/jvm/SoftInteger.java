@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Software integer operations.
  *
@@ -36,7 +38,7 @@ public class SoftInteger
 	public static double toDouble(int __a)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

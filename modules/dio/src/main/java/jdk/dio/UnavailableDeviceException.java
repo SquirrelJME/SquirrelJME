@@ -10,17 +10,19 @@
 package jdk.dio;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class UnavailableDeviceException
 	extends DeviceException
 {
 	public UnavailableDeviceException()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public UnavailableDeviceException(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

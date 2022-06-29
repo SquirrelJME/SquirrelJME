@@ -9,6 +9,7 @@
 
 package java.nio.channels;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 public class ClosedChannelException
@@ -16,6 +17,6 @@ public class ClosedChannelException
 {
 	public ClosedChannelException()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

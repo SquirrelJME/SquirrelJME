@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.media;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.media.Control;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
@@ -188,7 +187,6 @@ public final class NullPlayer
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/15
-	 * @param __now
 	 */
 	@Override
 	public final long setMediaTime(long __now)
@@ -198,8 +196,7 @@ public final class NullPlayer
 		{
 			// {@squirreljme.error EA09 Cannot set the media time on a null
 			// stream.}
-			if (this.getState() == Player.CLOSED ||
-				this.getState() == Player.UNREALIZED)
+			if (this.getState() == Player.CLOSED || this.getState() == Player.UNREALIZED)
 				throw new IllegalStateException("EA09");
 			
 			return Player.TIME_UNKNOWN;

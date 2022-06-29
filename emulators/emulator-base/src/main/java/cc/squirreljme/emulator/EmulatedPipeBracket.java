@@ -10,12 +10,10 @@
 package cc.squirreljme.emulator;
 
 import cc.squirreljme.jvm.mle.brackets.PipeBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 
 /**
  * Not Described.

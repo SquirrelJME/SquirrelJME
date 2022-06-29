@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This is a sub-list of an abstract list
  *
@@ -46,39 +48,39 @@ final class __AbstractListSubList__<E>
 		if (__from < 0 || __to > size)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public final void add(int __a, E __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public final E get(int __i)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public final E set(int __i, E __v)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public final E remove(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public final int size()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

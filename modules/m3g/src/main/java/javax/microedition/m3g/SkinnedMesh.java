@@ -10,6 +10,8 @@
 package javax.microedition.m3g;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class SkinnedMesh
 	extends Mesh
 {
@@ -18,7 +20,7 @@ public class SkinnedMesh
 	{
 		super((VertexBuffer)null, (IndexBuffer[])null, (Appearance[])null
 			);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public SkinnedMesh(VertexBuffer __a, IndexBuffer __b, Appearance __c, 
@@ -26,27 +28,27 @@ public class SkinnedMesh
 	{
 		super((VertexBuffer)null, (IndexBuffer[])null, (Appearance[])null
 			);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void addTransform(Node __a, int __b, int __c, int __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void getBoneTransform(Node __a, Transform __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getBoneVertices(Node __a, int[] __b, float[] __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Group getSkeleton()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

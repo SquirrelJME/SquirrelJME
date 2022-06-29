@@ -9,6 +9,7 @@
 
 package jdk.dio;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 public class DeviceException
@@ -16,12 +17,12 @@ public class DeviceException
 {
 	public DeviceException()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public DeviceException(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

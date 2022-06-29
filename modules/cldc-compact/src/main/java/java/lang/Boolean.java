@@ -20,10 +20,12 @@ public final class Boolean
 	implements Comparable<Boolean>
 {
 	/** The false value. */
+	@SuppressWarnings("UnnecessaryBoxing")
 	public static final Boolean FALSE =
 		new Boolean(false);
 	
 	/** The true value. */
+	@SuppressWarnings("UnnecessaryBoxing")
 	public static final Boolean TRUE =
 		new Boolean(true);
 	
@@ -78,10 +80,9 @@ public final class Boolean
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		boolean a = this._value,
-			b = __o._value;
+		boolean a = this._value;
 		
-		if (a == b)
+		if (a == __o._value)
 			return 0;
 		else if (a)
 			return 1;

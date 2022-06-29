@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.squirrelquarrel.units;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This is a reference which points to a unit, it is used to allow units to
  * refer to other units and having it where they can be referenced without
@@ -79,7 +81,7 @@ public final class UnitReference
 	 */
 	public final Unit get()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -89,7 +91,7 @@ public final class UnitReference
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

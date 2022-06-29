@@ -10,17 +10,19 @@
 package jdk.dio;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class UnsupportedByteOrderException
 	extends DeviceException
 {
 	public UnsupportedByteOrderException()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public UnsupportedByteOrderException(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

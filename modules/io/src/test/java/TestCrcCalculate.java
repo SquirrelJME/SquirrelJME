@@ -7,7 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.io.CRC32Calculator;
 import net.multiphasicapps.tac.TestSupplier;
 import net.multiphasicapps.zip.ZipCRCConstants;

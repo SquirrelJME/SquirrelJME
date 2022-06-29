@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.squirrelquarrel.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Graphics;
 import net.multiphasicapps.squirrelquarrel.game.GameLooper;
 import net.multiphasicapps.squirrelquarrel.player.Player;
@@ -198,7 +199,7 @@ public final class Renderer
 	 */
 	private void __drawUnits(Graphics __g, MegaTile __mt)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		// Store the old clip
 		int oldcx = __g.getClipX(),

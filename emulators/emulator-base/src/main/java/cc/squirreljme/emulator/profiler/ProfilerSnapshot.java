@@ -241,7 +241,7 @@ public final class ProfilerSnapshot
 	 * @return The table of instrumented methods.
 	 * @since 2018/11/11
 	 */
-	private final Map<FrameLocation, Integer> __doMethodTable()
+	private Map<FrameLocation, Integer> __doMethodTable()
 	{
 		// The table and the ID, which must be passable to sub-builders
 		Map<FrameLocation, Integer> rv = new LinkedHashMap<>();
@@ -274,7 +274,7 @@ public final class ProfilerSnapshot
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/11
 	 */
-	private final Map<FrameLocation, Integer> __doMethodTableSub(
+	private Map<FrameLocation, Integer> __doMethodTableSub(
 		Map<FrameLocation, Integer> __rv,
 		int[] __nid, Iterable<ProfiledFrame> __fs)
 		throws NullPointerException
@@ -317,7 +317,7 @@ public final class ProfilerSnapshot
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/11
 	 */
-	private final void __doWriteThread(DataOutputStream __cpu,
+	private void __doWriteThread(DataOutputStream __cpu,
 		ProfiledThread __t, Map<FrameLocation, Integer> __mids)
 		throws IOException, NullPointerException
 	{
@@ -381,7 +381,7 @@ public final class ProfilerSnapshot
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/11
 	 */
-	private static final void __dumpFrames(PrintStream __ps, int __tab,
+	private static void __dumpFrames(PrintStream __ps, int __tab,
 		Iterable<ProfiledFrame> __fs)
 		throws NullPointerException
 	{

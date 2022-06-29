@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+result: ExceptionThrown
+thrown: throwable:NegativeArraySizeException
+multi-parameters: BOOLEAN BYTE SHORT CHAR INT LONG FLOAT DOUBLE OBJECT

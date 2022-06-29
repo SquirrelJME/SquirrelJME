@@ -667,7 +667,7 @@ public final class SpringThreadWorker
 		
 		// This should not occur
 		else
-			throw new todo.OOPS();
+			throw Debugging.oops();
 		
 		// No access permitted
 		return false;
@@ -1573,7 +1573,7 @@ public final class SpringThreadWorker
 	 * @throws SpringNoSuchFieldException If the field does not exist.
 	 * @since 2018/09/16
 	 */
-	private final SpringField __lookupInstanceField(FieldReference __f)
+	private SpringField __lookupInstanceField(FieldReference __f)
 		throws NullPointerException, SpringIncompatibleClassChangeException,
 			SpringNoSuchFieldException
 	{
@@ -3777,7 +3777,7 @@ public final class SpringThreadWorker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/15
 	 */
-	private final void __vmInvokeStatic(Instruction __i, SpringThread __t,
+	private void __vmInvokeStatic(Instruction __i, SpringThread __t,
 		SpringThread.Frame __f)
 		throws NullPointerException
 	{
@@ -3864,7 +3864,7 @@ public final class SpringThreadWorker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/16
 	 */
-	private final void __vmInvokeVirtual(Instruction __i, SpringThread __t,
+	private void __vmInvokeVirtual(Instruction __i, SpringThread __t,
 		SpringThread.Frame __f)
 		throws NullPointerException
 	{
@@ -3949,7 +3949,7 @@ public final class SpringThreadWorker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/16
 	 */
-	private final void __vmReturn(SpringThread __thread, Object __value)
+	private void __vmReturn(SpringThread __thread, Object __value)
 		throws NullPointerException
 	{
 		if (__thread == null || __value == null)

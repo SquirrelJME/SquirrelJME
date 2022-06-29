@@ -10,17 +10,19 @@
 package jdk.dio;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class DeviceNotFoundException
 	extends DeviceException
 {
 	public DeviceNotFoundException()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public DeviceNotFoundException(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

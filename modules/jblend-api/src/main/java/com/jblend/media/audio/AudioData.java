@@ -9,6 +9,7 @@
 
 package com.jblend.media.audio;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.jblend.media.MediaData;
 import java.io.IOException;
 
@@ -19,29 +20,29 @@ public class AudioData
 
     public AudioData()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public AudioData(String var1)
     	throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public AudioData(byte[] var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public String getMediaType()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public void setData(byte[] var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

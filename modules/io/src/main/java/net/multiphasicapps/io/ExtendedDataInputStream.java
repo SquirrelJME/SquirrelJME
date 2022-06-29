@@ -80,7 +80,7 @@ public class ExtendedDataInputStream
 	public int available()
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -159,7 +159,7 @@ public class ExtendedDataInputStream
 	public int read(byte[] __b)
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -170,7 +170,7 @@ public class ExtendedDataInputStream
 	public int read(byte[] __b, int __o, int __l)
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -181,7 +181,7 @@ public class ExtendedDataInputStream
 	public boolean readBoolean()
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -303,7 +303,7 @@ public class ExtendedDataInputStream
 	public String readLine()
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -431,7 +431,7 @@ public class ExtendedDataInputStream
 	public String readUTF()
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -496,7 +496,7 @@ public class ExtendedDataInputStream
 	public long skip(long __n)
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -507,7 +507,7 @@ public class ExtendedDataInputStream
 	public int skipBytes(int __n)
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

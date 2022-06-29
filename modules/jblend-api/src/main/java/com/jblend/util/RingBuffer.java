@@ -9,62 +9,63 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 public final class RingBuffer
 {
     public RingBuffer()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public RingBuffer(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public RingBuffer(int var1, int var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void write(Object var1) throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void write(Object[] var1) throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public Object read() throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void read(Object[] var1) throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public Object peek() throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void peek(Object[] var1) throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int available()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getFreeArea()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

@@ -9,6 +9,7 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Enumeration;
 
 public final class SimpleVector
@@ -18,80 +19,80 @@ public final class SimpleVector
 
     public SimpleVector()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public SimpleVector(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void addElement(Object var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public boolean removeElement(Object var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int size()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public Object elementAt(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public Object lastElement()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public boolean contains(Object var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int indexOf(Object var1, int var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void removeElementAt(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void insertElementAt(Object var1, int var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void removeAllElements()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public Enumeration elements()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
-    final class SimpleVectorEnumerator implements Enumeration {
+    static final class SimpleVectorEnumerator implements Enumeration {
         @Override
 		public boolean hasMoreElements()
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 
         @Override
 		public Object nextElement()
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
     }
 }

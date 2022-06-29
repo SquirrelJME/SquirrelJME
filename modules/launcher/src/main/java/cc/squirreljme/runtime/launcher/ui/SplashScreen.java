@@ -282,7 +282,7 @@ public final class SplashScreen
 			Image logoPixel = Image.createImage(logoIn);
 			
 			// Draw gradient
-			this.__drawGradient(g,
+			__drawGradient(g,
 				SplashScreen.START_COLOR, SplashScreen.END_COLOR,
 				SplashScreen.WIDTH, SplashScreen.HEIGHT);
 			

@@ -9,6 +9,8 @@
 
 package com.jblend.graphics;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class WindowSystem
 {
     public final int real_width;
@@ -23,11 +25,11 @@ public class WindowSystem
     
     public WindowSystem()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static WindowSystem getDefaultWindowSystem()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

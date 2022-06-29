@@ -9,28 +9,29 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 public class PushRegistry
 {
 	public PushRegistry()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static String getFilter(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static String getMIDlet(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static String[] listConnections(boolean __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static long registerAlarm(String __a, long __b)
@@ -40,7 +41,7 @@ public class PushRegistry
 			throw new ClassNotFoundException();
 		if (false)
 			throw new ConnectionNotFoundException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static void registerConnection(String __a, String __b, String __c)
@@ -50,12 +51,12 @@ public class PushRegistry
 			throw new ClassNotFoundException();
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static boolean unregisterConnection(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

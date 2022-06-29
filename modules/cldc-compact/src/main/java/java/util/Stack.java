@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This is a last-in-first-out, this uses {@link Vector} as a base and provides
  * operations for pushing and popping.
@@ -23,27 +25,27 @@ public class Stack<E>
 {
 	public boolean empty()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public E peek()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public E pop()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public E push(E __item)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int search(Object __o)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

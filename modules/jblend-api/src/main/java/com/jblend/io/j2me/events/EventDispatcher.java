@@ -9,78 +9,79 @@
 
 package com.jblend.io.j2me.events;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.midlet.MIDlet;
 
 public class EventDispatcher
 {
     public EventDispatcher()
     {
-    	throw new todo.TODO();
+    	throw Debugging.todo();
     }
 
     public static Thread getEventThread()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static void start()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static void setCurrentMIDlet(MIDlet var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static void setJoclEventDispatcherInterface(EventDispatcherInterface var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static UiEventDispatcherInterface setUiEventDispatcherInterface(UiEventDispatcherInterface var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static void setMIDletEventDispatcherInterface(EventDispatcherInterface var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static void setMediaEventDispatcherInterface(EventDispatcherInterface var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static void setSmafEventDispatcherInterface(EventDispatcherInterface var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static void setPhraseEventDispatcherInterface(EventDispatcherInterface var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static void setDialEventDispatcherInterface(EventDispatcherInterface var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static synchronized int setOptionalEventDispatcher(EventDispatcherInterface var0, int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static int setOptionalEventDispatcher(EventDispatcherInterface var0, int var1, String var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static synchronized void dispatchEvent()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

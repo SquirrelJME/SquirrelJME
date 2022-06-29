@@ -9,8 +9,8 @@
 
 package java.lang;
 
-import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import cc.squirreljme.runtime.cldc.i18n.Locale;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
@@ -19,13 +19,8 @@ import cc.squirreljme.runtime.cldc.io.Encoder;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Formatter;
-import java.util.Iterator;
-import java.util.LinkedList;
 
 /**
  * A {@link String} represents a sequence of characters which make up a group
@@ -40,31 +35,43 @@ import java.util.LinkedList;
 public final class String
 	implements Comparable<String>, CharSequence
 {
+	/** The size of the major intern table. */
+	private static final int _MAJOR_TABLE_SIZE =
+		64;
+	
+	/** The mask of the major intern table. */
+	private static final int _MAJOR_TABLE_MASK =
+		63;
+	
 	/** The minimum trim character. */
 	private static final char _MIN_TRIM_CHAR =
 		' ';
 	
 	/** Is this string already lowercased? */
-	private static final short _QUICK_ISLOWER =
-		0b0000_0000__0000_0001;
+	private static final byte _QUICK_ISLOWER =
+		0b0000_0001;
 	
 	/** Is this string already uppercased? */
-	private static final short _QUICK_ISUPPER =
-		0b0000_0000__0000_0010;
+	private static final byte _QUICK_ISUPPER =
+		0b0000_0010;
 	
 	/** String is already interned? */
-	private static final short _QUICK_INTERN =
-		0b0000_0000__0000_0100;
+	static final byte _QUICK_INTERN =
+		0b0000_0100;
 	
-	/** Intern string table, weakly cached to reduce memory use. */
-	private static final Collection<Reference<String>> _INTERNS =
-		new LinkedList<>();
+	/** String is already trimmed? */
+	static final byte _QUICK_ALREADY_TRIMMED =
+		0b0000_1000;
+	
+	/** Basic intern hash table. */
+	private static final __InternMini__[] _INTERNS =
+		new __InternMini__[String._MAJOR_TABLE_SIZE];
 	
 	/** String character data. */
 	private final char[] _chars;
 	
 	/** Quick determination flags for speedy operations. */
-	private volatile short _quickflags;
+	volatile short _quickFlags;
 	
 	/** The hash code for this string, is cached. */
 	private int _hashcode;
@@ -77,7 +84,7 @@ public final class String
 	public String()
 	{
 		this._chars = new char[0];
-		this._quickflags = String._QUICK_ISLOWER | String._QUICK_ISUPPER;
+		this._quickFlags = String._QUICK_ISLOWER | String._QUICK_ISUPPER;
 		this._hashcode = 0;
 	}
 	
@@ -96,7 +103,7 @@ public final class String
 		
 		// Just copies all the fields since they were pre-calculated already
 		this._chars = __s._chars;
-		this._quickflags = ((short)(__s._quickflags & (~String._QUICK_INTERN)));
+		this._quickFlags = ((short)(__s._quickFlags & (~String._QUICK_INTERN)));
 		this._hashcode = __s._hashcode;
 	}
 	
@@ -314,7 +321,7 @@ public final class String
 			throw new NullPointerException("NARG");
 		
 		this._chars = __c;
-		this._quickflags = __qf;
+		this._quickFlags = __qf;
 	}
 	
 	/**
@@ -737,7 +744,7 @@ public final class String
 	
 	public void getChars(int __a, int __b, char[] __c, int __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -844,60 +851,39 @@ public final class String
 	 * The purpose of this method is for potential optimizations where there
 	 * are a large number of long-term string objects in memory which may be
 	 * duplicated in many places (such as in a database). As such, only
-	 * persistant strings should be interned, never short lived strings.
+	 * persistent strings should be interned, never short-lived strings.
 	 *
 	 * Although this may be used for {@code ==} to work, it is not recommended
-	 * to use this method for such things.
+	 * using this method for such things.
 	 *
 	 * @return The unique string instance.
 	 * @since 2016/04/01
 	 */
-	@ImplementationNote("This method is a bit slow in SquirrelJME as it " +
-		"will search a list of weak reference to string. So despite this " +
-		"being a O(n) search it will allow any strings to be garbage " +
-		"collected when no longer used. Also the collection is a LinkedList " +
-		"since the __BucketMap__ is a complicated class. But do note that " +
-		"String.equals() checks the hashCode() so in-depth searches will " +
-		"only be performed for strings with the same hashCode().")
 	public String intern()
 	{
-		// If this string is already interned then use this one instead
-		// of searching through the map
-		if ((this._quickflags & String._QUICK_INTERN) != 0)
+		// If this string is already the interned target then use this one
+		// instead of searching through the map
+		if ((this._quickFlags & String._QUICK_INTERN) != 0)
 			return this;
 		
-		// Search for string in the collection
-		Collection<Reference<String>> interns = String._INTERNS;
-		synchronized (interns)
+		// We need to calculate our current hash code so we can determine
+		// the index in the hash table we are to use.
+		int hashCode = this.hashCode();
+		int tableKey = hashCode & String._MAJOR_TABLE_MASK;
+		
+		// Look for the intern table we are in, so we can lock on that one
+		// specifically
+		__InternMini__[] interns = String._INTERNS;
+		__InternMini__ intern;
+		synchronized (__InternMini__.class)
 		{
-			// Same string that was internalized?
-			Iterator<Reference<String>> it = interns.iterator();
-			while (it.hasNext())
-			{
-				Reference<String> ref = it.next();
-				
-				// If the reference has been cleared, then delete it
-				String oth = ref.get();
-				if (oth == null)
-				{
-					it.remove();
-					continue;
-				}
-				
-				// If this matches the string, use that one
-				if (this.equals(oth))
-					return oth;
-			}
-			
-			// Not in the table, so add it
-			interns.add(new WeakReference<>(this));
-			
-			// Also flag that this has been interned
-			this._quickflags |= String._QUICK_INTERN;
-			
-			// This will be the intern string
-			return this;
+			intern = interns[tableKey];
+			if (intern == null)
+				 interns[tableKey] = (intern = new __InternMini__());
 		}
+		
+		// Perform intern logic in the table handler
+		return intern.__intern(hashCode, this);
 	}
 	
 	/**
@@ -977,7 +963,7 @@ public final class String
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -1247,7 +1233,7 @@ public final class String
 	public String toLowerCase()
 	{
 		// If this string is lowercased already do not mess with it
-		if ((this._quickflags & String._QUICK_ISLOWER) != 0)
+		if ((this._quickFlags & String._QUICK_ISLOWER) != 0)
 			return this;
 		
 		// Needed for case conversion
@@ -1276,7 +1262,7 @@ public final class String
 		// set that the string is lowercase
 		if (!changed)
 		{
-			this._quickflags |= String._QUICK_ISLOWER;
+			this._quickFlags |= String._QUICK_ISLOWER;
 			return this;
 		}
 		
@@ -1307,7 +1293,7 @@ public final class String
 	public String toUpperCase()
 	{
 		// If this string is uppercased already do not mess with it
-		if ((this._quickflags & String._QUICK_ISUPPER) != 0)
+		if ((this._quickFlags & String._QUICK_ISUPPER) != 0)
 			return this;
 		
 		// Needed for case conversion
@@ -1336,7 +1322,7 @@ public final class String
 		// set that the string is lowercase
 		if (!changed)
 		{
-			this._quickflags |= String._QUICK_ISUPPER;
+			this._quickFlags |= String._QUICK_ISUPPER;
 			return this;
 		}
 		
@@ -1357,13 +1343,21 @@ public final class String
 	 * start or end in whitespace then {@code this} is returned.
 	 * @since 2016/04/20
 	 */
+	@SuppressWarnings("StatementWithEmptyBody")
 	public String trim()
 	{
+		// This string is already considered trim
+		if ((this._quickFlags & String._QUICK_ALREADY_TRIMMED) != 0)
+			return this;
+		
 		// Empty strings do not need trimming
 		char[] ch = this._chars;
 		int n = ch.length;
 		if (n <= 0)
+		{
+			this._quickFlags |= String._QUICK_ALREADY_TRIMMED;
 			return this;
+		}
 		
 		// Find starting trim position
 		int s;
@@ -1374,6 +1368,13 @@ public final class String
 		int e;
 		for (e = n; e > s && ch[e - 1] <= String._MIN_TRIM_CHAR; e--)
 			;
+		
+		// Already considered trim?
+		if (s == 0 && e == n)
+		{
+			this._quickFlags |= String._QUICK_ALREADY_TRIMMED;
+			return this;
+		}
 		
 		// Return trimmed variant of it
 		return this.substring(s, e);
@@ -1387,7 +1388,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/15
 	 */
-	private final boolean __contentEquals(CharSequence __s)
+	private boolean __contentEquals(CharSequence __s)
 		throws NullPointerException
 	{
 		// Check
@@ -1418,7 +1419,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/08
 	 */
-	private final byte[] __getBytes(Encoder __e)
+	private byte[] __getBytes(Encoder __e)
 		throws NullPointerException
 	{
 		if (__e == null)
@@ -1443,7 +1444,7 @@ public final class String
 				
 				// Should not occur
 				if (sz < 0)
-					throw new todo.OOPS();
+					throw Debugging.oops();
 				
 				baos.write(seq, 0, sz);
 			}
@@ -1455,7 +1456,7 @@ public final class String
 		// Should not occur
 		catch (IOException e)
 		{
-			throw new todo.OOPS();
+			throw Debugging.oops();
 		}
 	}
 	
@@ -1467,7 +1468,7 @@ public final class String
 	 * @return The index of the sequence or {@code -1} if it is not found.
 	 * @since 2019/05/14
 	 */
-	private final int __indexOf(CharSequence __b, int __i)
+	private int __indexOf(CharSequence __b, int __i)
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");

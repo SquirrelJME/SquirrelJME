@@ -9,17 +9,19 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public final class Debug
 {
     public static final boolean WATCH_TIME = false;
 
     public Debug()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static void trace(Object var0, String var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

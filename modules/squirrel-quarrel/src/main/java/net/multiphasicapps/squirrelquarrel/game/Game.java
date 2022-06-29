@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.squirrelquarrel.game;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.squirrelquarrel.player.Player;
 import net.multiphasicapps.squirrelquarrel.player.PlayerColor;
 import net.multiphasicapps.squirrelquarrel.player.Players;
@@ -146,7 +147,7 @@ public class Game
 	 *
 	 * @since 2019/03/24
 	 */
-	private final void __boot()
+	private void __boot()
 	{
 		Units units = this.units;
 		Players players = this.players;
@@ -164,7 +165,7 @@ public class Game
 					64 + (128 * i), 64);
 				
 				// Create workers from the building
-				todo.TODO.note("Spawn workers!");
+				Debugging.todoNote("Spawn workers!", new Object[] {});
 			}
 		}
 	}

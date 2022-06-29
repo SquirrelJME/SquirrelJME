@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.launcher.ui;
 
-import javax.microedition.lcdui.Canvas;
-
 /**
  * This is a running thread that refreshes the launcher's state.
  *

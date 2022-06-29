@@ -9,6 +9,7 @@
 
 package jdk.dio;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.EventObject;
 
 public class RegistrationEvent<P extends Device<? super P>>
@@ -17,23 +18,23 @@ public class RegistrationEvent<P extends Device<? super P>>
 	public RegistrationEvent(String __a, DeviceDescriptor<P> __b)
 	{
 		super((Object)null);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public RegistrationEvent(DeviceDescriptor<P> __a)
 	{
 		super((Object)null);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public DeviceDescriptor<P> getDescriptor()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getInitiator()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

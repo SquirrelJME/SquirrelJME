@@ -9,6 +9,7 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.swm.JarStreamSupplier;
 import java.util.Set;
 
@@ -101,7 +102,7 @@ final class __SuiteTracker__
 		{
 			try
 			{
-				throw new todo.TODO();
+				throw Debugging.todo();
 				/*
 				// Read the JAR data stream 
 				byte[] data;

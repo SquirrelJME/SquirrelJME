@@ -40,6 +40,9 @@ public final class PencilGraphics
 	private static final String _FORCE_SOFTWARE_PROPERTY =
 		"cc.squirreljme.lcdui.software";
 	
+	/** Forcing software rasterization */
+	private static final boolean _IS_FORCE_SOFTWARE;
+	
 	/** Software graphics backend. */
 	protected final Graphics software;
 	
@@ -87,6 +90,12 @@ public final class PencilGraphics
 	
 	/** The current Y translation. */
 	private int _transY;
+	
+	static
+	{
+		_IS_FORCE_SOFTWARE =
+			Boolean.getBoolean(PencilGraphics._FORCE_SOFTWARE_PROPERTY);
+	}
 	
 	/**
 	 * Initializes the pencil graphics system.
@@ -282,7 +291,8 @@ public final class PencilGraphics
 		// Forward Call
 		this.__drawRegion(__data, __off, __scanlen, __alpha,
 			0, 0, __w, __h, Sprite.TRANS_NONE,
-			__x, __y, Graphics.TOP | Graphics.LEFT, __w, __h);
+			__x, __y, Graphics.TOP | Graphics.LEFT, __w, __h,
+			__scanlen, (__data.length - __off) / __scanlen);
 	}
 	
 	/**
@@ -386,7 +396,7 @@ public final class PencilGraphics
 		this.__drawRegion(buf, offset, scanLen, __src.hasAlpha(),
 			__xsrc, __ysrc, __wsrc, __hsrc, __trans,
 			__xdest, __ydest, __anch,
-			__wdest, __hdest);
+			__wdest, __hdest, __src.getWidth(), __src.getHeight());
 	}
 	
 	/**
@@ -921,13 +931,15 @@ public final class PencilGraphics
 	 * @param __anch The anchor point.
 	 * @param __wdest The destination width.
 	 * @param __hdest The destination height.
+	 * @param __origImgWidth Original image width.
+	 * @param __origImgHeight Original image height.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/01/26
 	 */
 	private void __drawRegion(int[] __data, int __off, int __scanlen,
 		boolean __alpha, int __xsrc, int __ysrc, int __wsrc, int __hsrc,
-		int __trans, int __xdest, int __ydest, int __anch,
-		int __wdest, int __hdest)
+		int __trans, int __xdest, int __ydest, int __anch, int __wdest,
+		int __hdest, int __origImgWidth, int __origImgHeight)
 		throws NullPointerException
 	{
 		if (__data == null)
@@ -938,7 +950,7 @@ public final class PencilGraphics
 			__data, __off, __scanlen,
 			__alpha, __xsrc, __ysrc, __wsrc, __hsrc,
 			__trans, __xdest, __ydest, __anch,
-			__wdest, __hdest);
+			__wdest, __hdest, __origImgWidth, __origImgHeight);
 	}
 	
 	/**
@@ -972,7 +984,7 @@ public final class PencilGraphics
 		// then operations will purely be implemented in software
 		// It can also be disabled via a system property
 		int caps = PencilShelf.capabilities(__pf); 
-		if (Boolean.getBoolean(PencilGraphics._FORCE_SOFTWARE_PROPERTY) ||
+		if (PencilGraphics._IS_FORCE_SOFTWARE ||
 			(caps & PencilCapabilities.MINIMUM) == 0)
 			return software;
 		

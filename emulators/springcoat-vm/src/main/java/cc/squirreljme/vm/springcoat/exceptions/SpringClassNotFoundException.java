@@ -9,7 +9,6 @@
 
 package cc.squirreljme.vm.springcoat.exceptions;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.SpringConvertableThrowable;
 import cc.squirreljme.vm.springcoat.SpringException;
 import net.multiphasicapps.classfile.ClassName;
