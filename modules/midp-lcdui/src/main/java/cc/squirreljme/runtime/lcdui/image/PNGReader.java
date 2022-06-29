@@ -39,6 +39,9 @@ public class PNGReader
 	/** The input source. */
 	protected final DataInputStream in;
 	
+	/** The factory used to create the final image. */
+	private final ImageFactory factory;
+	
 	/** Image width. */
 	private int _width;
 	
@@ -82,10 +85,11 @@ public class PNGReader
 	 * Initializes the PNG parser.
 	 *
 	 * @param __in The input stream.
+	 * @param __factory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
 	 */
-	public PNGReader(InputStream __in)
+	public PNGReader(InputStream __in, ImageFactory __factory)
 		throws NullPointerException
 	{
 		// Check
@@ -94,6 +98,7 @@ public class PNGReader
 		
 		// Set
 		this.in = new DataInputStream(__in);
+		this.factory = __factory;
 	}
 	
 	/**
@@ -267,8 +272,8 @@ public class PNGReader
 		}
 		
 		// Create image
-		return Image.createRGBImage(argb, this._width, this._height,
-			this._hasalpha);
+		return this.factory.stillImage(argb, 0, argb.length,
+			false, this._hasalpha, this._width, this._height);
 	}
 	
 	/**

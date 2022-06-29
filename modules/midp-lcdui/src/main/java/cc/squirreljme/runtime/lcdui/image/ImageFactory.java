@@ -37,7 +37,9 @@ public interface ImageFactory
 	/**
 	 * Initializes a basic still image.
 	 * 
-	 * @param __b The buffer data.
+	 * @param __b The buffer data, this should be used directly regardless if
+	 * the image is mutable or not so that there is no copy of a buffer on
+	 * initialization.
 	 * @param __o The offset into the buffer.
 	 * @param __l The length of the data to use.
 	 * @param __mut Is this mutable?

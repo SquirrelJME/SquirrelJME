@@ -9,7 +9,10 @@
 
 package cc.squirreljme.runtime.lcdui.image;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.microedition.lcdui.Image;
 import net.multiphasicapps.io.ExtendedDataInputStream;
 
@@ -25,6 +28,10 @@ public class GIFReader
 	
 	/** The factory used to create the final images. */
 	protected final ImageFactory factory;
+	
+	/** The number of images available. */
+	protected final List<Image> subImages =
+		new ArrayList<>();
 	
 	/**
 	 * Initializes the GIF reader.
@@ -78,8 +85,21 @@ public class GIFReader
 			globalPalette = __GIFPalette__.__parseGlobal(
 				in, imageFlags.globalColorTableSize);
 		
-		// Build image
-		return Image.createImage(Image.createImage(screenWidth, screenHeight,
-			false, 0xFF00FF));
+		// Image parsing loop
+		
+		// Build image, which may be animated or not!
+		ImageFactory imageFactory = this.factory;
+		List<Image> subImages = this.subImages;
+		
+		// Fallback blank image?
+		if (subImages.isEmpty())
+		{
+			int[] rgb = new int[screenWidth * screenHeight];
+			
+			return imageFactory.stillImage(rgb, 0, rgb.length,
+				false, false, screenWidth, screenHeight);
+		}
+		
+		throw Debugging.todo();
 	}
 }

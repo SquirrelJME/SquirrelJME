@@ -41,6 +41,6 @@ final class __ImageFactory__
 		throws IllegalArgumentException, IndexOutOfBoundsException,
 			NullPointerException
 	{
-		throw Debugging.todo();
+		return new Image(__b, __o, __l, __w, __h, __mut, __alpha);
 	}
 }

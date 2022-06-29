@@ -193,7 +193,7 @@ public class ImageReaderDispatcher
 		
 				// PNG?
 			case NativeImageLoadType.LOAD_PNG:
-				return new PNGReader(__is).parse();
+				return new PNGReader(__is, __factory).parse();
 		
 				// JPEG?
 			case NativeImageLoadType.LOAD_JPEG:
@@ -205,7 +205,7 @@ public class ImageReaderDispatcher
 		
 				// XPM?
 			case NativeImageLoadType.LOAD_XPM:
-				return new XPMReader(__is).parse();
+				return new XPMReader(__is, __factory).parse();
 		
 				// {@squirreljme.error EB0s Unsupported image format.}
 			default:

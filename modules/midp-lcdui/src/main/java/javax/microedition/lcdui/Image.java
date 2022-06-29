@@ -25,6 +25,9 @@ public class Image
 	/** The RGB image data. */
 	private final int[] _data;
 	
+	/** Offset into the array. */
+	private final int _offset;
+	
 	/** Image width. */
 	private final int _width;
 	
@@ -54,13 +57,39 @@ public class Image
 	 * @since 2017/02/10
 	 */
 	Image(int[] __data, int __w, int __h, boolean __mut, boolean __alpha)
+		throws NullPointerException
+	{
+		this(__data, 0, __data.length, __w, __h, __mut, __alpha);
+	}
+	
+	/**
+	 * Initializes the image with the given settings.
+	 *
+	 * @param __data The image data, this is used directly.
+	 * @param __o The offset into the buffer.
+	 * @param __l The length of the buffer.
+	 * @param __w The image width.
+	 * @param __h The image height.
+	 * @param __mut If this image is mutable
+	 * @param __alpha If this image has an alpha channel.
+	 * @throws IndexOutOfBoundsException If the image buffer is out of bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/06/28
+	 */
+	Image(int[] __data, int __o, int __l, int __w, int __h, boolean __mut,
+		boolean __alpha)
+		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
 		if (__data == null)
 			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __data.length ||
+			(__w * __h) > __l)
+			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Set
 		this._data = __data;
+		this._offset = __o;
 		this._width = __w;
 		this._height = __h;
 		this._mutable = __mut && !this.isAnimated() && !this.isScalable();
@@ -110,7 +139,7 @@ public class Image
 			(this._alpha ? UIPixelFormat.INT_RGBA8888 :
 				UIPixelFormat.INT_RGB888),
 			this._width, this._height,
-			this._data, 0, null,
+			this._data, this._offset, null,
 			0, 0, this._width, this._height);
 	}
 	
@@ -201,10 +230,11 @@ public class Image
 		
 		// Read image data
 		int[] data = this._data;
+		int dataOffset = this._offset;
 		for (int sy = __y, wy = 0; sy < ey; sy++, wy++)
 		{
 			// Calculate offsets
-			int srcoff = (iw * sy) + __x;
+			int srcoff = dataOffset + (iw * sy) + __x;
 			int dstoff = __o + (wy * __sl);
 			
 			// Copy data, arraycopy is much faster of an operation!
@@ -290,7 +320,7 @@ public class Image
 	public final int squirreljmeDirectOffset()
 	{
 		if (this.squirreljmeIsDirect())
-			return 0;
+			return this._offset;
 		return Integer.MIN_VALUE;
 	}
 	
