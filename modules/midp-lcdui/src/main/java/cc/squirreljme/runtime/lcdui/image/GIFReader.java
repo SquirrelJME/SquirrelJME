@@ -100,6 +100,11 @@ public class GIFReader
 				false, false, screenWidth, screenHeight);
 		}
 		
+		// Single image, use it directly
+		else if (subImages.size() == 1)
+			return subImages.get(0);
+		
+		// Animated images
 		throw Debugging.todo();
 	}
 }
