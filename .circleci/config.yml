@@ -567,7 +567,7 @@ jobs:
       - run:
           name: Setup CMake build
           working_directory: ratufacoat
-          command: emcmake cmake -G "Unix Makefiles" .
+          command: emcmake cmake -G "Unix Makefiles" . && emcmake cmake -G "Unix Makefiles" .
       - run:
           name: Compile CMake build
           working_directory: ratufacoat
@@ -576,6 +576,7 @@ jobs:
           name: Where are all the files?
           working_directory: ratufacoat
           command: find -type f
+          when: always
       - store_artifacts:
           path: ratufacoat/src/sdl2/SquirrelJME.html
           destination: SquirrelJME.html
