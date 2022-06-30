@@ -196,7 +196,8 @@ public final class NullPlayer
 		{
 			// {@squirreljme.error EA09 Cannot set the media time on a null
 			// stream.}
-			if (this.getState() == Player.CLOSED || this.getState() == Player.UNREALIZED)
+			if (this.getState() == Player.CLOSED ||
+				this.getState() == Player.UNREALIZED)
 				throw new IllegalStateException("EA09");
 			
 			return Player.TIME_UNKNOWN;

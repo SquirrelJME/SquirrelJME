@@ -78,7 +78,7 @@ public class CommentReader
 	public int read(char[] __c, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException
 	{
-		if (__o < 0 || __l < 0 || (__o + __l) > __c.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __c.length)
 			throw new IndexOutOfBoundsException();
 		
 		BufferedReader source = this.source;
