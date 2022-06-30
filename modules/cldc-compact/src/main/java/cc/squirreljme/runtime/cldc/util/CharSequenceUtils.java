@@ -28,6 +28,54 @@ public final class CharSequenceUtils
 	}
 	
 	/**
+	 * Returns the position where the given string is found.
+	 *
+	 * @param __src The sequence to look within.
+	 * @param __lookFor The sequence to find.
+	 * @param __index The starting index.
+	 * @return The index of the sequence or {@code -1} if it is not found.
+	 * @since 2019/05/14
+	 */
+	public static int indexOf(CharSequence __src, CharSequence __lookFor,
+		int __index)
+	{
+		if (__src == null || __lookFor == null)
+			throw new NullPointerException("NARG");
+		
+		// Normalize position
+		if (__index < 0)
+			__index = 0;
+		
+		// If the sequence is empty, then it will always be a match
+		int an = __src.length();
+		int bn = __lookFor.length();
+		if (bn <= 0)
+			return __index;
+		
+		// If the string is longer than ours, then it will never be a match
+		if (bn > an - __index)
+			return -1;
+		
+		// Do a long complicated loop matching, but we only need to check
+		// for as long as the sequence can actually fit
+__outer:
+		for (int a = __index, lim = an - bn; a < lim; a++)
+		{
+			// Check sequence characters
+			for (int x = a, b = 0; b < bn; x++, b++)
+				if (__src.charAt(x) != __lookFor.charAt(b))
+					continue __outer;
+			
+			// Since the inner loop continues to the outer, if this was reached
+			// then we know the full sequence was matched
+			return a;
+		}
+		
+		// Otherwise, nothing was found because we tried every character
+		return -1;
+	}
+	
+	/**
 	 * Splits the specified character sequence using the given delimeter and
 	 * returns all of the fields which are contained within. Extra whitespace
 	 * within fields are not trimmed.

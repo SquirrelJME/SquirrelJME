@@ -79,19 +79,20 @@ public final class System
 		// specified. (The source offset; The destination offset; The copy
 		// length)}
 		if (__srcOff < 0 || __destOff < 0 || __copyLen < 0)
-			throw new IndexOutOfBoundsException(String.format("ZZ1w %d %d %d",
-				__srcOff, __destOff, __copyLen));
+			throw new IndexOutOfBoundsException(
+				String.format("ZZ1w %d %d %d",
+					__srcOff, __destOff, __copyLen));
 		
 		// {@squirreljme.error ZZ1x Copy operation would exceed the bounds of
 		// the array. (Source offset; Source length; Destination offset;
 		// Destination length; The copy length)}
-		int srcLen = ObjectShelf.arrayLength(__src),
-			destLen = ObjectShelf.arrayLength(__dest);
-		if (__srcOff + __copyLen > srcLen ||
-			__destOff + __copyLen > destLen)
+		int srcLen = ObjectShelf.arrayLength(__src);
+		int destLen = ObjectShelf.arrayLength(__dest);
+		if (__srcOff + __copyLen < 0 || __srcOff + __copyLen > srcLen ||
+			__destOff + __copyLen < 0 || __destOff + __copyLen > destLen)
 			throw new IndexOutOfBoundsException(String.format(
-				"ZZ1x %d %d %d %d %d", __srcOff, srcLen, __destOff, destLen,
-				__copyLen));
+				"ZZ1x %d %d %d %d %d", __srcOff, srcLen,
+					__destOff, destLen, __copyLen));
 		
 		// Get both respective classes
 		Class<?> srcClass = __src.getClass();

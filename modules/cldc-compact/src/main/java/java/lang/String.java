@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.cldc.i18n.Locale;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.Decoder;
 import cc.squirreljme.runtime.cldc.io.Encoder;
+import cc.squirreljme.runtime.cldc.util.CharSequenceUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -138,7 +139,7 @@ public final class String
 	{
 		if (__c == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __c.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __c.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Copy characters
@@ -520,7 +521,7 @@ public final class String
 			throw new NullPointerException("NARG");
 		
 		// This is the same operation
-		return this.__indexOf(__b, 0) >= 0;
+		return CharSequenceUtils.indexOf(this, __b, 0) >= 0;
 	}
 	
 	/**
@@ -825,7 +826,7 @@ public final class String
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		return this.__indexOf(__b, 0);
+		return CharSequenceUtils.indexOf(this, __b, 0);
 	}
 	
 	/**
@@ -841,7 +842,7 @@ public final class String
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		return this.__indexOf(__b, __i);
+		return CharSequenceUtils.indexOf(this, __b, __i);
 	}
 	
 	/**
@@ -911,14 +912,14 @@ public final class String
 	}
 	
 	/**
-	 * Returns the last occurance of the given character going backwards from
+	 * Returns the last occurrence of the given character going backwards from
 	 * the given index.
 	 *
 	 * @param __c The character to find.
 	 * @param __dx The index to start at, this is clipped to within the
 	 * string bounds accordingly although if it is negative no searching is
 	 * done.
-	 * @return The last occurance of the character or {@code -1} if it was
+	 * @return The last occurrence of the character or {@code -1} if it was
 	 * not found.
 	 * @since 2018/09/29
 	 */
@@ -943,7 +944,7 @@ public final class String
 	}
 	
 	/**
-	 * Returns the last occurance of the given string.
+	 * Returns the last occurrence of the given string.
 	 *
 	 * @param __s The string to find.
 	 * @return The last occurance of the string or {@code -1} if it was
@@ -1458,53 +1459,6 @@ public final class String
 		{
 			throw Debugging.oops();
 		}
-	}
-	
-	/**
-	 * Returns the position where the given string is found.
-	 *
-	 * @param __b The sequence to find.
-	 * @param __i The starting index.
-	 * @return The index of the sequence or {@code -1} if it is not found.
-	 * @since 2019/05/14
-	 */
-	private int __indexOf(CharSequence __b, int __i)
-	{
-		if (__b == null)
-			throw new NullPointerException("NARG");
-		
-		// Normalize position
-		if (__i < 0)
-			__i = 0;
-		
-		// If the sequence is empty, then it will always be a match
-		char[] ca = this._chars;
-		int an = ca.length,
-			bn = __b.length();
-		if (bn <= 0)
-			return __i;
-		
-		// If the string is longer than ours, then it will never be a match
-		if (bn > an - __i)
-			return -1;
-		
-		// Do a long complicated loop matching, but we only need to check
-		// for as long as the sequence can actually fit
-__outer:
-		for (int a = __i, lim = an - bn; a < lim; a++)
-		{
-			// Check sequence characters
-			for (int x = a, b = 0; b < bn; x++, b++)
-				if (ca[x] != __b.charAt(b))
-					continue __outer;
-			
-			// Since the inner loop continues to the outer, if this was reached
-			// then we know the full sequence was matched
-			return a;
-		}
-		
-		// Otherwise nothing was found because we tried every character
-		return -1;
 	}
 	
 	/**

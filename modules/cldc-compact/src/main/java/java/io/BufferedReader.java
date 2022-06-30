@@ -185,7 +185,7 @@ public class BufferedReader
 	{
 		if (__c == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __c.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __c.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Has been closed?
