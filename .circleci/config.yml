@@ -571,7 +571,7 @@ jobs:
       - run:
           name: Compile CMake build
           working_directory: ratufacoat
-          command: emmake make all
+          command: emmake make
       - run:
           name: Where are all the files?
           working_directory: ratufacoat
