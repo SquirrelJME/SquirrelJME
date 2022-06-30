@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutput;
@@ -308,7 +309,7 @@ public final class ChunkSection
 		if (__n == 1)
 			return 0;
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -319,7 +320,7 @@ public final class ChunkSection
 	public final void writeBoolean(boolean __v)
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
