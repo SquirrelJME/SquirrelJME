@@ -87,16 +87,29 @@ set_property(TARGET squirreljme_libretro
 
 # Custom launching the core, tries to find RetroArch on the system
 ## Determine RetroArch directory
-if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+if(NOT DEFINED SQUIRRELJME_LIBRETRO_COMMAND AND
+	CMAKE_SYSTEM_NAME STREQUAL Windows)
 	set(SQUIRRELJME_LIBRETRO_EXTENSION ".exe")
 
 	if (EXISTS "$ENV{APPDATA}/RetroArch")
 		set(SQUIRRELJME_LIBRETRO_COMMAND
 			"$ENV{APPDATA}/RetroArch/retroarch${SQUIRRELJME_LIBRETRO_EXTENSION}")
 	endif()
+endif()
+
+# Mac OS Standard Install
+if(NOT DEFINED SQUIRRELJME_LIBRETRO_COMMAND AND
+	APPLE)
+	set(SQUIRRELJME_POSSIBLE_RETROARCH
+		"/Applications/RetroArch.app/Contents/MacOS/RetroArch")
+
+	if (EXISTS "${SQUIRRELJME_POSSIBLE_RETROARCH}")
+		set(SQUIRRELJME_LIBRETRO_COMMAND "${SQUIRRELJME_POSSIBLE_RETROARCH}")
+	endif()
+endif()
 
 # Check if RetroArch is somewhere in PATH (Linux and Mac OS)
-else()
+if(NOT DEFINED SQUIRRELJME_LIBRETRO_COMMAND)
 	set(SQUIRRELJME_LIBRETRO_EXTENSION "")
 
 	# Which snaps are available?
