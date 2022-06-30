@@ -9,6 +9,7 @@
 
 package javax.microedition.lui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Iterator;
 
 /**
@@ -99,7 +100,7 @@ public class Display
 	 */
 	Display()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -114,7 +115,7 @@ public class Display
 	 */
 	public DisplayColor getBackgroundColor()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -125,7 +126,7 @@ public class Display
 	 */
 	public int getCharacterNumberPerLine()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -151,7 +152,7 @@ public class Display
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -178,7 +179,7 @@ public class Display
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -190,7 +191,7 @@ public class Display
 	 */
 	public DisplayColor getCurrentTextColor()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -201,7 +202,7 @@ public class Display
 	 */
 	public DisplayColor getDefaultBackgroundColor()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -212,7 +213,7 @@ public class Display
 	 */
 	public DisplayColor getDefaultLightingColor()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -223,7 +224,7 @@ public class Display
 	 */
 	public DisplayColor getDefaultTextColor()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -242,7 +243,7 @@ public class Display
 	public int getHorizontalScrollingInterval(int __l)
 		throws ArrayIndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -255,7 +256,7 @@ public class Display
 	 */
 	public String getId()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -267,7 +268,7 @@ public class Display
 	 */
 	public DisplayColor getLightingColor()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -278,7 +279,7 @@ public class Display
 	 */
 	public int getNumberOfLines()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -289,7 +290,7 @@ public class Display
 	 */
 	public String getText()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -304,7 +305,7 @@ public class Display
 	public String getText(int __l)
 		throws ArrayIndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -317,7 +318,7 @@ public class Display
 	 */
 	public int getVerticalScrollingInterval()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -328,7 +329,7 @@ public class Display
 	 */
 	public boolean isBackgroundColorsSupported()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -341,7 +342,7 @@ public class Display
 	 */
 	public boolean isBuiltIn()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -355,7 +356,7 @@ public class Display
 	 */
 	public boolean isHardwareAssigned()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -373,7 +374,7 @@ public class Display
 	public boolean isHorizontalScrollingEnabled(int __l)
 		throws ArrayIndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -385,7 +386,7 @@ public class Display
 	 */
 	public boolean isHorizontalScrollingSupported()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -396,7 +397,7 @@ public class Display
 	 */
 	public boolean isLightingColorsSupported()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -407,7 +408,7 @@ public class Display
 	 */
 	public boolean isLightingSupported()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -418,7 +419,7 @@ public class Display
 	 */
 	public boolean isTextColorsSupported()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -429,7 +430,7 @@ public class Display
 	 */
 	public boolean isVerticalScrollingEnabled()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -440,7 +441,7 @@ public class Display
 	 */
 	public boolean isVerticalScrollingSupported()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -457,7 +458,7 @@ public class Display
 	 */
 	public DisplayColor setBackgroundColor(DisplayColor __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -492,7 +493,7 @@ public class Display
 		boolean __inverse)
 		throws ArrayIndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -531,7 +532,7 @@ public class Display
 		boolean __blink, boolean __inverse)
 		throws ArrayIndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -543,7 +544,7 @@ public class Display
 	 */
 	public DisplayColor setCurrentTextColor(DisplayColor __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -556,7 +557,7 @@ public class Display
 	 */
 	public void setHardwareAssigned(boolean __h)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -574,7 +575,7 @@ public class Display
 	public void setHorizontalScrolling(int __l, boolean __e)
 		throws ArrayIndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -591,7 +592,7 @@ public class Display
 	public void setHorizontalScrolling(int __l, boolean __e, boolean __dir)
 		throws ArrayIndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -609,7 +610,7 @@ public class Display
 	public void setHorizontalScrollingInterval(int __l, int __i)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -624,7 +625,7 @@ public class Display
 	 */
 	public DisplayColor setLightingColor(DisplayColor __l)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -648,7 +649,7 @@ public class Display
 	 */
 	public void setText(String __t, boolean __blink, boolean __inverse)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -681,7 +682,7 @@ public class Display
 		boolean __inverse)
 		throws ArrayIndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -694,7 +695,7 @@ public class Display
 	 */
 	public void setVerticalScrolling(boolean __e)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -707,7 +708,7 @@ public class Display
 	 */
 	public void setVerticalScrolling(boolean __e, boolean __dir)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -723,7 +724,7 @@ public class Display
 	public void setVerticalScrollingInterval(int __ms)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -742,7 +743,7 @@ public class Display
 		if (__l == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -764,7 +765,7 @@ public class Display
 	 */
 	public static Iterator<Display> getDisplays(boolean __ks)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -783,7 +784,7 @@ public class Display
 		if (__l == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

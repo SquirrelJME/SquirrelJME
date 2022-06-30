@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This represents the compression level, which is based on how fast things
  * are.
@@ -66,7 +68,7 @@ public enum CompressionLevel
 			case SLOWEST:	return 1024;
 			
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	

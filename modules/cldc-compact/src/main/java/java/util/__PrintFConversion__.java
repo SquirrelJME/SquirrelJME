@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This represents a conversion that can be used for formatted printing.
  *
@@ -200,7 +202,7 @@ enum __PrintFConversion__
 				return __PrintFCategory__.DATE_TIME;
 				
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	

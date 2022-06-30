@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.full;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
@@ -48,7 +49,7 @@ public final class NullFileSystem
 	@Override
 	public final Iterable<FileStore> getFileStores()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

@@ -10,42 +10,44 @@
 package javax.microedition.m3g;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class Mesh
 	extends Node
 {
 	public Mesh(VertexBuffer __a, IndexBuffer[] __b, Appearance[] __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Mesh(VertexBuffer __a, IndexBuffer __b, Appearance __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Appearance getAppearance(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public IndexBuffer getIndexBuffer(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getSubmeshCount()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public VertexBuffer getVertexBuffer()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setAppearance(int __a, Appearance __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

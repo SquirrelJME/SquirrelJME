@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This represents a simplified time and date.
  *
@@ -129,7 +131,7 @@ public class Date
 	{
 		// "dow mon dd hh:mm:ss zzz yyyy"
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

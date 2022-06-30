@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.security.BasicPermission;
 import java.security.Permission;
 import java.security.PermissionCollection;
@@ -115,31 +116,31 @@ public final class PropertyPermission
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public String getActions()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public boolean implies(Permission __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public PermissionCollection newPermissionCollection()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

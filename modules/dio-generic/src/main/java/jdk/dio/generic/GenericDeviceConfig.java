@@ -10,6 +10,7 @@
 package jdk.dio.generic;
 
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,52 +22,52 @@ public final class GenericDeviceConfig
 	@ApiDefinedDeprecated
 	public GenericDeviceConfig(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@ApiDefinedDeprecated
 	public GenericDeviceConfig(String __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getChannelNumber()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public String getControllerName()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int getControllerNumber()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getInputBufferSize()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getOutputBufferSize()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
@@ -75,7 +76,7 @@ public final class GenericDeviceConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static GenericDeviceConfig deserialize(InputStream __a)
@@ -83,44 +84,44 @@ public final class GenericDeviceConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static final class Builder
 	{
 		public Builder()
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public GenericDeviceConfig build()
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setChannelNumber(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setControllerName(String __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setControllerNumber(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setInputBufferSize(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setOutputBufferSize(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 }

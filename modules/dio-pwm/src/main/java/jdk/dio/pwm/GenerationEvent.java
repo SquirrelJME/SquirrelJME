@@ -9,6 +9,7 @@
 
 package jdk.dio.pwm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import jdk.dio.DeviceEvent;
 
 public class GenerationEvent
@@ -16,17 +17,17 @@ public class GenerationEvent
 {
 	public GenerationEvent(PWMChannel __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public GenerationEvent(PWMChannel __a, int __b, long __c, int __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getPulseCount()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

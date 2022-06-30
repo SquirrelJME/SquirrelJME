@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui.game;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.gfx.DoubleBuffer;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
@@ -149,7 +150,7 @@ public abstract class GameCanvas
 	
 	public int getKeyStates()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

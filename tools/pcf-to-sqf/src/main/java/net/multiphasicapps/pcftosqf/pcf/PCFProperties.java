@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.pcftosqf.pcf;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -104,7 +105,7 @@ public final class PCFProperties
 		}
 		
 		// Debug
-		todo.DEBUG.note("format=%d, props=%s", format, values);
+		Debugging.debugNote("format=%d, props=%s", format, values);
 		
 		// Finish properties
 		return new PCFProperties(format, values);

@@ -9,62 +9,63 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 public final class ByteRingBuffer
 {
     public ByteRingBuffer()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public ByteRingBuffer(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public ByteRingBuffer(int var1, int var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void write(byte var1) throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void write(byte[] var1) throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public byte read() throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void read(byte[] var1) throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public byte peek() throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void peek(byte[] var1) throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int available()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getFreeArea()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

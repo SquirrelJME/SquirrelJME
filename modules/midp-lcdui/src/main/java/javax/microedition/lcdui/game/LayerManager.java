@@ -9,48 +9,49 @@
 
 package javax.microedition.lcdui.game;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Graphics;
 
 public class LayerManager
 {
 	public LayerManager()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void append(Layer __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Layer getLayerAt(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getSize()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void insert(Layer __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void paint(Graphics __a, int __b, int __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void remove(Layer __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setViewWindow(int __a, int __b, int __c, int __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

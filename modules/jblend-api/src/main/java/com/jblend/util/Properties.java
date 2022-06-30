@@ -9,6 +9,7 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Enumeration;
 
 public class Properties
@@ -18,51 +19,51 @@ public class Properties
 
     public Properties()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public Properties(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public Properties(Properties var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public synchronized String getProperty(String var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public synchronized Integer getIntegerProperty(String var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public synchronized String getProperty(String var1, String var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public synchronized Integer getIntegerProperty(String var1, Integer var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public synchronized String setProperty(String var1, String var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public synchronized Integer setProperty(String var1, Integer var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public synchronized Enumeration propertyNames()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

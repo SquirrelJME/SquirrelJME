@@ -10,6 +10,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.image.AccessibleImage;
 import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
@@ -38,7 +39,7 @@ public class Image
 	
 	Image()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -74,7 +75,7 @@ public class Image
 	public final void getARGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -161,7 +162,7 @@ public class Image
 		
 		// Scalable images must be rasterized first
 		if (this.isScalable())
-			throw new todo.TODO();
+			throw Debugging.todo();
 			
 		// Check
 		if (__b == null)
@@ -223,7 +224,7 @@ public class Image
 	public final void getRGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -479,7 +480,7 @@ public class Image
 		
 		// Needs to be rendered
 		if (__i instanceof ScalableImage)
-			throw new todo.TODO();
+			throw Debugging.todo();
 		
 		// Same otherwise
 		else if (!__i._mutable)
@@ -500,7 +501,7 @@ public class Image
 	public static Image createImage(Image __i, int __x, int __y, int __w,
 		int __h, int __trans, int __iw, int __ih)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -534,13 +535,14 @@ public class Image
 				__w, __h));
 		
 		// {@squirreljme.error EB2h The input integer buffer is shorter than
-		// the specified area.}
-		int rgblen;
-		if ((rgblen = __rgb.length) < area)
-			throw new IndexOutOfBoundsException("EB2h");
+		// the specified image area.}
+		int rgbLen = __rgb.length;
+		if (rgbLen < area)
+			throw new IndexOutOfBoundsException(String.format(
+				"EB2h %d < %d", rgbLen, area));
 		
 		// Use a cloned copy of the pixel data?
-		if (rgblen == area)
+		if (rgbLen == area)
 			__rgb = __rgb.clone();
 		
 		// Otherwise initialize a new one

@@ -9,6 +9,7 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import cc.squirreljme.runtime.gcf.HTTPAddress;
 import cc.squirreljme.runtime.gcf.HTTPClientConnection;
@@ -60,7 +61,7 @@ public class Connector
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static long getBytesWritten(Connection __a)
@@ -68,7 +69,7 @@ public class Connector
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -235,7 +236,7 @@ public class Connector
 			IOException, NullPointerException, SecurityException
 	{
 		// Debug
-		todo.DEBUG.note("Open %s", __uri);
+		Debugging.debugNote("Open %s", __uri);
 		
 		// Used to debug connections
 		try
@@ -381,19 +382,19 @@ public class Connector
 		{
 				// Communication port, which may be a modem
 			case "comm":
-				throw new todo.TODO();
+				throw Debugging.todo();
 				
 				// UDP datagrams
 			case "datagram":
-				throw new todo.TODO();
+				throw Debugging.todo();
 				
 				// SSL UDP datagrams
 			case "dtls":
-				throw new todo.TODO();
+				throw Debugging.todo();
 				
 				// Local Files
 			case "file":
-				throw new todo.TODO();
+				throw Debugging.todo();
 				
 				// HTTP
 			case "http":
@@ -402,15 +403,15 @@ public class Connector
 				
 				// HTTPS
 			case "https":
-				throw new todo.TODO();
+				throw Debugging.todo();
 				
 				// Intermidlet communication
 			case "imc":
-				throw new todo.TODO();
+				throw Debugging.todo();
 				
 				// UDP Multicast
 			case "multicast":
-				throw new todo.TODO();
+				throw Debugging.todo();
 				
 				// TCP Socket
 			case "socket":
@@ -420,7 +421,7 @@ public class Connector
 					
 					// Creating server
 					if (addr.isServer())
-						throw new todo.TODO();
+						throw Debugging.todo();
 					
 					// Creating client
 					else
@@ -432,7 +433,7 @@ public class Connector
 				
 				// SSL/TLS TCP Socket
 			case "ssl":
-				throw new todo.TODO();
+				throw Debugging.todo();
 		}
 		
 		// Is there a matching custom connector 

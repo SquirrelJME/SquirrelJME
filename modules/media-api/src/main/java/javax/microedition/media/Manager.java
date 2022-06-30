@@ -36,7 +36,7 @@ public final class Manager
 	public static Player createPlayer(InputStream __a, String __b)
 		throws IOException, MediaException
 	{
-		todo.TODO.note("createPlayer(%s, %s)%n", __a, __b);
+		Debugging.todoNote("createPlayer(%s, %s)%n", __a, __b);
 		if (true)
 			return new NullPlayer(__b);
 		
@@ -44,13 +44,13 @@ public final class Manager
 			throw new IOException();
 		if (false)
 			throw new MediaException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Player createPlayer(String __a)
 		throws IOException, MediaException
 	{
-		todo.TODO.note("createPlayer(%s)%n", __a);
+		Debugging.todoNote("createPlayer(%s)%n", __a);
 		if (true)
 			return new NullPlayer("application/octet-stream");
 			
@@ -58,13 +58,13 @@ public final class Manager
 			throw new IOException();
 		if (false)
 			throw new MediaException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Player createPlayer(DataSource __a)
 		throws IOException, MediaException
 	{
-		todo.TODO.note("createPlayer(%s)%n", __a);
+		Debugging.todoNote("createPlayer(%s)%n", __a);
 		if (true)
 			return new NullPlayer(__a.getContentType());
 		
@@ -72,19 +72,19 @@ public final class Manager
 			throw new IOException();
 		if (false)
 			throw new MediaException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static String[] getSupportedContentTypes(String __a)
 	{
-		todo.DEBUG.note("getSupportedContentTypes(%s)%n", __a);
-		throw new todo.TODO();
+		Debugging.debugNote("getSupportedContentTypes(%s)%n", __a);
+		throw Debugging.todo();
 	}
 	
 	public static String[] getSupportedProtocols(String __a)
 	{
-		todo.DEBUG.note("getSupportedProtocols(%s)%n", __a);
-		throw new todo.TODO();
+		Debugging.debugNote("getSupportedProtocols(%s)%n", __a);
+		throw Debugging.todo();
 	}
 	
 	/**

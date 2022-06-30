@@ -1,3 +1,12 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the GNU General Public License v3+, or later.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
 package cc.squirreljme.plugin;
 
 import java.nio.file.Path;
@@ -187,7 +196,7 @@ public final class SourceError
 	 */
 	public static String indexToString(int __index)
 	{
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder(4);
 		
 		sb.append(Character.toLowerCase(Character.forDigit(
 			__index / Character.MAX_RADIX, Character.MAX_RADIX)));

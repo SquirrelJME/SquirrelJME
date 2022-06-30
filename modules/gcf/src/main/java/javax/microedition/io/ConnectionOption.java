@@ -10,21 +10,23 @@
 package javax.microedition.io;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class ConnectionOption<T>
 {
 	public ConnectionOption(String __a, T __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getName()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public T getValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

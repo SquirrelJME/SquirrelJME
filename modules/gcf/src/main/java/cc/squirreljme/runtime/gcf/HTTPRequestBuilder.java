@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.gcf;
 
 import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -104,7 +105,7 @@ public final class HTTPRequestBuilder
 			throw new IOException("EC04");
 		
 		// Note
-		todo.TODO.note("Implement HTTP Flush");
+		Debugging.todoNote("Implement HTTP Flush", new Object[] {});
 	}
 	
 	/**
@@ -253,7 +254,7 @@ public final class HTTPRequestBuilder
 		// Check
 		if (__a == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __a.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __a.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// {@squirreljme.error EC06 Cannot write more HTTP data.}

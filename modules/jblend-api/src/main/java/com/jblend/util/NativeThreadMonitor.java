@@ -9,18 +9,20 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class NativeThreadMonitor
 	extends Thread
 {
     public static void reset()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public void run()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

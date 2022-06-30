@@ -9,6 +9,7 @@
 
 package com.jblend.media.video;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.jblend.media.MediaData;
 import com.jblend.media.MediaImageOperator;
 import com.jblend.media.MediaPlayer;
@@ -19,152 +20,152 @@ public class VideoPlayer
 	implements MediaImageOperator {
     public VideoPlayer()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public VideoPlayer(VideoData var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public VideoPlayer(byte[] var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static int checkData(byte[] var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void setData(VideoData var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public void setData(MediaData var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public int getX()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public int getY()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public int getWidth()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public int getHeight()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public void setBounds(int var1, int var2, int var3, int var4)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public int getOriginX()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public int getOriginY()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public void setOrigin(int var1, int var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public int getMediaWidth()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public int getMediaHeight()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void repaintCurrent()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public void play()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public void play(boolean var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public void play(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public void stop()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public void pause()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public void resume()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public int getState()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public void addMediaPlayerListener(MediaPlayerListener var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public void removeMediaPlayerListener(MediaPlayerListener var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -154,7 +155,7 @@ public final class HTTPResponse
 		}
 		
 		// Debug
-		todo.DEBUG.note(" <- %d", bytes.length);
+		Debugging.debugNote(" <- %d", bytes.length);
 		
 		// Build response
 		return new HTTPResponse(header, bytes);

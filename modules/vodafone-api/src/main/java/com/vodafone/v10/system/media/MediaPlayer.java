@@ -9,6 +9,7 @@
 
 package com.vodafone.v10.system.media;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
@@ -28,92 +29,92 @@ public class MediaPlayer extends Canvas {
 
     public void setMediaData(byte[] var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void setMediaData(String var1) throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getState()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getMediaWidth()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getMediaHeight()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public int getWidth()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public int getHeight()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void setContentPos(int var1, int var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void play()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void play(boolean var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void stop()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void pause()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void resume()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void setMediaPlayerListener(MediaPlayerListener var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	protected  void paint(Graphics var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	protected  void showNotify()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	protected  void hideNotify()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

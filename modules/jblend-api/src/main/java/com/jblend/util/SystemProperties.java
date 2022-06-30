@@ -9,15 +9,17 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class SystemProperties
 {
     public SystemProperties()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static Properties getSystemProperties()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

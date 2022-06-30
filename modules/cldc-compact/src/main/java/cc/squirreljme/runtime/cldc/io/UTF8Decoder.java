@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.cldc.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This class provides a decoder for UTF-8 bytes.
  *
@@ -37,7 +39,7 @@ public final class UTF8Decoder
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Not enough to decode a character
@@ -83,7 +85,7 @@ public final class UTF8Decoder
 				
 				// Should not occur
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	

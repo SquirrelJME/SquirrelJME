@@ -10,6 +10,8 @@
 package javax.microedition.m3g;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class AnimationTrack
 	extends Object3D
 {
@@ -78,27 +80,27 @@ public class AnimationTrack
 	
 	public AnimationTrack(KeyframeSequence __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public AnimationController getController()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public KeyframeSequence getKeyframeSequence()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getTargetProperty()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setController(AnimationController __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

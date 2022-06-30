@@ -10,6 +10,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
@@ -195,7 +196,7 @@ public class Command
 	
 	public boolean getEnabled()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -207,7 +208,7 @@ public class Command
 	 */
 	public Font getFont()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		return this._font;
 		*/
@@ -225,7 +226,7 @@ public class Command
 		if (this._implspec)
 			return null;
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -293,7 +294,7 @@ public class Command
 		if (this._implspec)
 			return;
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -309,7 +310,7 @@ public class Command
 		if (this._implspec)
 			return;
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		// Just cache the font but do nothing as it is not supported in
 		// SquirrelJME (it would complicate command handling) although it
@@ -332,7 +333,7 @@ public class Command
 	 */
 	public void setImage(Image __i)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		// Do nothing for implementation specific commands
 		if (this._implspec)

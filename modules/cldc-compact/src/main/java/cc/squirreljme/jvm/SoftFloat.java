@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.UnsignedInteger;
 
 /**
@@ -82,7 +83,7 @@ public final class SoftFloat
 	public static float add(int __a, int __b)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -130,7 +131,7 @@ public final class SoftFloat
 	public static float div(int __a, int __b)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -258,7 +259,7 @@ public final class SoftFloat
 	public static float neg(int __a)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -285,7 +286,7 @@ public final class SoftFloat
 	public static float rem(int __a, int __b)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -299,7 +300,7 @@ public final class SoftFloat
 	public static float sub(int __a, int __b)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -312,7 +313,7 @@ public final class SoftFloat
 	public static double toDouble(int __a)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -351,7 +352,7 @@ public final class SoftFloat
 	public static long toLong(int __a)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

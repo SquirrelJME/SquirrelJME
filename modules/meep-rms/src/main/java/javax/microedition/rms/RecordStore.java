@@ -149,7 +149,7 @@ public class RecordStore
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
 		// {@squirreljme.error DC01 Cannot write record to read-only store.}
@@ -790,7 +790,7 @@ public class RecordStore
 		VinylRecord vinyl = RecordStore._VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 	
@@ -820,7 +820,7 @@ public class RecordStore
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
 		// {@squirreljme.error DC06 Cannot write record to read-only store.}
@@ -968,7 +968,7 @@ public class RecordStore
 			if (got == -1)
 				throw new RecordStoreNotFoundException("DC08 " + __n);
 			
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 	

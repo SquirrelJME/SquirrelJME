@@ -9,41 +9,43 @@
 
 package com.jblend.net;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class HttpUrlParser
 {
     public HttpUrlParser(String var1)
     	throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public String getFile()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public String getHost()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getPort()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public String getQuery()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public String getRef()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public String getRequestUri()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

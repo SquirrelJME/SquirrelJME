@@ -176,7 +176,7 @@ public class List
 	@Override
 	public int getFitPolicy()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -362,7 +362,7 @@ public class List
 	@Override
 	public void setFitPolicy(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -385,7 +385,7 @@ public class List
 	
 	public void setSelectCommand(Command __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

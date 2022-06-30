@@ -10,32 +10,34 @@
 package javax.microedition.m3g;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class World
 	extends Group
 {
 	public World()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Camera getActiveCamera()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Background getBackground()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setActiveCamera(Camera __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setBackground(Background __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

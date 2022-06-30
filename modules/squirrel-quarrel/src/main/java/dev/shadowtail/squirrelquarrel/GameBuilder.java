@@ -9,6 +9,7 @@
 
 package dev.shadowtail.squirrelquarrel;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Random;
@@ -115,7 +116,7 @@ public final class GameBuilder
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

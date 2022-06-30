@@ -9,6 +9,7 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.security.BasicPermission;
 import java.security.Permission;
 
@@ -18,13 +19,13 @@ public final class AccessPointPermission
 	public AccessPointPermission(String __a)
 	{
 		super((String)null);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public boolean implies(Permission __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.squirrelquarrel.world;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This represents an index into a megatile.
  *
@@ -85,7 +87,7 @@ public final class MegaTileIndex
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -98,7 +100,7 @@ public final class MegaTileIndex
 	 */
 	public static final int positionToOrdinal(int __x, int __y)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

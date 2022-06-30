@@ -9,6 +9,8 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class AnimatedImage
 	extends Image
 {
@@ -16,18 +18,18 @@ public class AnimatedImage
 		throws IndexOutOfBoundsException
 		
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getFrameDelay(int __i)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getLoopCount()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

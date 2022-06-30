@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Software math operations on 64-bit double.
  *
@@ -46,7 +48,7 @@ public class SoftDouble
 	public static double add(int __al, int __ah, int __bl, int __bh)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -62,7 +64,7 @@ public class SoftDouble
 	public static int cmpl(int __al, int __ah, int __bl, int __bh)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -78,7 +80,7 @@ public class SoftDouble
 	public static int cmpg(int __al, int __ah, int __bl, int __bh)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -94,7 +96,7 @@ public class SoftDouble
 	public static double div(int __al, int __ah, int __bl, int __bh)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -122,7 +124,7 @@ public class SoftDouble
 	public static double mul(int __al, int __ah, int __bl, int __bh)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -136,7 +138,7 @@ public class SoftDouble
 	public static double neg(int __al, int __ah)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -167,7 +169,7 @@ public class SoftDouble
 	public static double rem(int __al, int __ah, int __bl, int __bh)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -183,7 +185,7 @@ public class SoftDouble
 	public static double sub(int __al, int __ah, int __bl, int __bh)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -197,7 +199,7 @@ public class SoftDouble
 	public static float toFloat(int __al, int __ah)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -211,7 +213,7 @@ public class SoftDouble
 	public static int toInteger(int __al, int __ah)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -225,7 +227,7 @@ public class SoftDouble
 	public static long toLong(int __al, int __ah)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

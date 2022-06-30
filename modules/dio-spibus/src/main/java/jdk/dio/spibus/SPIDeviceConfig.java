@@ -10,6 +10,7 @@
 package jdk.dio.spibus;
 
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -31,92 +32,92 @@ public final class SPIDeviceConfig
 	public SPIDeviceConfig(int __a, int __b, int __c, int __d, int __e, int 
 		__f)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@ApiDefinedDeprecated
 	public SPIDeviceConfig(int __a, int __b, int __c, int __d, int __e, int 
 		__f, int __g)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@ApiDefinedDeprecated
 	public SPIDeviceConfig(String __a, int __b, int __c, int __d, int __e, 
 		int __f)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@ApiDefinedDeprecated
 	public SPIDeviceConfig(String __a, int __b, int __c, int __d, int __e, 
 		int __f, int __g)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getAddress()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getBitOrdering()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getCSActiveLevel()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getClockFrequency()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getClockMode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public String getControllerName()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int getControllerNumber()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getInputBufferSize()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getOutputBufferSize()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getWordLength()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
@@ -125,7 +126,7 @@ public final class SPIDeviceConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static SPIDeviceConfig deserialize(InputStream __a)
@@ -133,69 +134,69 @@ public final class SPIDeviceConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static final class Builder
 	{
 		public Builder()
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public SPIDeviceConfig build()
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setAddress(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setBitOrdering(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setCSActiveLevel(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setClockFrequency(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setClockMode(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setControllerName(String __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setControllerNumber(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setInputBufferSize(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setOutputBufferSize(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 		
 		public Builder setWordLength(int __a)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 }

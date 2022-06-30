@@ -667,7 +667,7 @@ public final class SpringThreadWorker
 		
 		// This should not occur
 		else
-			throw new todo.OOPS();
+			throw Debugging.oops();
 		
 		// No access permitted
 		return false;

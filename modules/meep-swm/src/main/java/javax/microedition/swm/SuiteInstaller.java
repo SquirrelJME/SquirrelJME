@@ -9,6 +9,7 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.swm.JarStreamSupplier;
 import java.util.Set;
 import net.multiphasicapps.collections.IdentityLinkedHashSet;
@@ -66,7 +67,7 @@ public final class SuiteInstaller
 	 */
 	public final void cancel()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

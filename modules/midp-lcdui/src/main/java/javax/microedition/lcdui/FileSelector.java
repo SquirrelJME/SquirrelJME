@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.StreamConnection;
@@ -41,12 +42,12 @@ public class FileSelector
 	
 	public FileSelector(String __title, int __mode)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String[] getFilterExtensions()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -56,7 +57,7 @@ public class FileSelector
 	@Override
 	public int getHeight()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		return this.__defaultHeight();
 		*/
@@ -64,12 +65,12 @@ public class FileSelector
 	
 	public int getMode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getURL()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -79,7 +80,7 @@ public class FileSelector
 	@Override
 	public int getWidth()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		return this.__defaultWidth();
 		*/
@@ -88,23 +89,23 @@ public class FileSelector
 	public StreamConnection open(int __mode, boolean __to)
 		throws ConnectionNotFoundException, IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setFilterExtensions(String[] __ext)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setMode(int __m)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setURL(String __u)
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

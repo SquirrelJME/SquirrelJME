@@ -145,12 +145,12 @@ public class Form
 	
 	public void delete(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void deleteAll()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -176,7 +176,7 @@ public class Form
 	 */
 	public Item getCurrent()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -217,22 +217,22 @@ public class Form
 	
 	public void insert(int __a, Item __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void set(int __a, Item __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setItemStateListener(ItemStateListener __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setItemTraversalListener(ItemTraversalListener __itl)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

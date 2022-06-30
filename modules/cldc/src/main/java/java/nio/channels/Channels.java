@@ -9,6 +9,7 @@
 
 package java.nio.channels;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -16,27 +17,27 @@ public final class Channels
 {
 	private Channels()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static ReadableByteChannel newChannel(InputStream __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static WritableByteChannel newChannel(OutputStream __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static InputStream newInputStream(ReadableByteChannel __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static OutputStream newOutputStream(WritableByteChannel __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

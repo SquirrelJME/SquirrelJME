@@ -47,7 +47,7 @@ public final class UnmodifiableArrayIterator<T>
 	{
 		if (__a == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __a.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __a.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
 		this.limit = __o + __l;
@@ -134,7 +134,7 @@ public final class UnmodifiableArrayIterator<T>
 	{
 		if (__a == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __a.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __a.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
 		return new UnmodifiableArrayIterator<T>(__a, __o, __l);

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.media;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.LinkedList;
 import java.util.List;
 import javax.microedition.media.Control;
@@ -159,7 +160,7 @@ public final class NullPlayer
 	@Override
 	public final Control[] getControls()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -169,7 +170,7 @@ public final class NullPlayer
 	@Override
 	public final long getDuration()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -301,7 +302,7 @@ public final class NullPlayer
 	public final void setTimeBase(TimeBase __a)
 		throws MediaException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

@@ -763,7 +763,7 @@ public abstract class Canvas
 		if (!this.hasPointerEvents())
 			return;
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

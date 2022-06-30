@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.NaturalComparator;
 import cc.squirreljme.runtime.cldc.util.ShellSort;
 
@@ -16,7 +17,7 @@ public class Collections
 {
 	private Collections()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -145,101 +146,101 @@ public class Collections
 	
 	public static <T> void copy(List<? super T> __a, List<? extends T> __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static boolean disjoint(Collection<?> __a, Collection<?> __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <T> Enumeration<T> enumeration(Collection<T> __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <T> void fill(List<? super T> __a, T __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int frequency(Collection<?> __a, Object __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int indexOfSubList(List<?> __a, List<?> __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int lastIndexOfSubList(List<?> __a, List<?> __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <T> ArrayList<T> list(Enumeration<T> __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <T extends Object & Comparable<? super T>> T max(Collection
 		<? extends T> __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <T> T max(Collection<? extends T> __a, Comparator<? super T
 		> __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <T extends Object & Comparable<? super T>> T min(Collection
 		<? extends T> __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <T> T min(Collection<? extends T> __a, Comparator<? super T
 		> __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <T> boolean replaceAll(List<T> __a, T __b, T __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static void reverse(List<?> __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <T> Comparator<T> reverseOrder()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <T> Comparator<T> reverseOrder(Comparator<T> __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static void rotate(List<?> __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static void shuffle(List<?> __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static void shuffle(List<?> __a, Random __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -279,7 +280,7 @@ public class Collections
 	
 	public static void swap(List<?> __a, int __b, int __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

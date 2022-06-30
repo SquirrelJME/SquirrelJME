@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.common;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.TextField;
 
 /**
@@ -256,7 +257,7 @@ public final class EditableText
 			
 				// Unknown
 			default:
-				throw new todo.TODO();
+				throw Debugging.todo();
 		}
 	}
 }

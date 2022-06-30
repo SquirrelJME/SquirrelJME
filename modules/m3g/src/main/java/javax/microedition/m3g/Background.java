@@ -10,6 +10,8 @@
 package javax.microedition.m3g;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class Background
 	extends Object3D
 {
@@ -21,87 +23,87 @@ public class Background
 	
 	public Background()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getColor()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getCropHeight()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getCropWidth()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getCropX()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getCropY()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Image2D getImage()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getImageModeX()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getImageModeY()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isColorClearEnabled()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isDepthClearEnabled()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setColor(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setColorClearEnable(boolean __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setCrop(int __a, int __b, int __c, int __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setDepthClearEnable(boolean __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setImage(Image2D __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setImageMode(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

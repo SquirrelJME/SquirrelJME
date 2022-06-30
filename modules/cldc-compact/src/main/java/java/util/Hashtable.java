@@ -10,6 +10,7 @@
 package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
 import cc.squirreljme.runtime.cldc.util.MapKeySetView;
 import cc.squirreljme.runtime.cldc.util.SynchronizedEntrySetNotNull;
@@ -141,6 +142,7 @@ public class Hashtable<K, V>
 	 * @return If the map contains the value or not.
 	 * @since 2019/05/05
 	 */
+	@SuppressWarnings("RedundantCollectionOperation")
 	public boolean contains(Object __v)
 	{
 		synchronized (this)
@@ -166,6 +168,7 @@ public class Hashtable<K, V>
 	 * {@inheritDoc}
 	 * @since 2019/05/05
 	 */
+	@SuppressWarnings("RedundantCollectionOperation")
 	@Override
 	public boolean containsValue(Object __v)
 	{
@@ -208,7 +211,7 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 	

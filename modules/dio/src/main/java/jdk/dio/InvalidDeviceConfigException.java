@@ -10,17 +10,19 @@
 package jdk.dio;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class InvalidDeviceConfigException
 	extends DeviceException
 {
 	public InvalidDeviceConfigException()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public InvalidDeviceConfigException(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

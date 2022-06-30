@@ -9,13 +9,14 @@
 
 package javax.microedition.m3g;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 public class Loader
 {
 	private Loader()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Object3D[] load(byte[] __a, int __b)
@@ -23,7 +24,7 @@ public class Loader
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Object3D[] load(String __a)
@@ -31,7 +32,7 @@ public class Loader
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

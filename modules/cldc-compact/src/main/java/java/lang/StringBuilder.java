@@ -9,7 +9,11 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.CharArrayCharSequence;
+import cc.squirreljme.runtime.cldc.util.CharSequenceUtils;
 import java.util.Arrays;
 
 /**
@@ -33,9 +37,6 @@ public final class StringBuilder
 	
 	/** The characters which are in the buffer. */
 	private int _at;
-	
-	/** The limit of the string buffer. */
-	private int _limit;
 	
 	/**
 	 * Initializes with the default capacity.
@@ -65,7 +66,6 @@ public final class StringBuilder
 		
 		// Initialize buffer
 		this._buffer = new char[__c];
-		this._limit = __c;
 	}
 	
 	/**
@@ -139,6 +139,7 @@ public final class StringBuilder
 	 * @return {@code this}.
 	 * @since 2018/09/22 
 	 */
+	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	public StringBuilder append(StringBuffer __v)
 	{
 		// Is null, cannot lock on it so just forward
@@ -187,8 +188,8 @@ public final class StringBuilder
 		int len = __e - __s;
 		
 		// Get buffer properties
-		int limit = this._limit,
-			at = this._at;
+		int limit = this._buffer.length;
+		int at = this._at;
 		char[] buffer = (at + len > limit ? this.__buffer(len) : this._buffer);
 		
 		// Place input characters at this point
@@ -230,23 +231,7 @@ public final class StringBuilder
 	public StringBuilder append(char[] __c, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		// Check
-		if (__o < 0 || __l < 0 || (__o + __l) > __c.length)
-			throw new IndexOutOfBoundsException("IOOB");
-		
-		// Get buffer properties
-		int limit = this._limit,
-			at = this._at;
-		char[] buffer = (at + __l > limit ? this.__buffer(__l) : this._buffer);
-		
-		// Place input characters at this point
-		for (int i = 0; i < __l; i++)
-			buffer[at++] = __c[__o++];
-		
-		// Set new size
-		this._at = at;
-		
-		return this;
+		return this.insert(this._at, __c, __o, __l);
 	}
 	
 	/**
@@ -269,8 +254,8 @@ public final class StringBuilder
 	public StringBuilder append(char __v)
 	{
 		// Before we go deeper check if the buffer needs to grow
-		int limit = this._limit,
-			at = this._at;
+		int limit = this._buffer.length;
+		int at = this._at;
 		char[] buffer = (at + 1 > limit ? this.__buffer(1) : this._buffer);
 		
 		// Add to the end
@@ -360,39 +345,138 @@ public final class StringBuilder
 		return this._buffer[__dx];
 	}
 	
-	public StringBuilder delete(int __a, int __b)
+	/**
+	 * Deletes the given indexes from the string.
+	 * 
+	 * @param __fromInclusive The index to start from, inclusive.
+	 * @param __toExclusive The index to end at, exclusive.
+	 * @return {@code this}.
+	 * @throws StringIndexOutOfBoundsException If {@code __fromInclusive} is
+	 * negative, greater than {@link #length()}, or greater than
+	 * {@code __toExclusive}.
+	 * @since 2022/06/29
+	 */
+	public StringBuilder delete(int __fromInclusive, int __toExclusive)
+		throws StringIndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		int at = this._at;
+		if (__fromInclusive < 0 || __fromInclusive > __toExclusive ||
+			__fromInclusive > at)
+			throw new StringIndexOutOfBoundsException("IOOB");
+		
+		int realEnd = Math.min(at, __toExclusive);
+		int deleteLen = realEnd - __fromInclusive;
+		
+		// Pointless deletion?
+		if (__fromInclusive == __toExclusive || deleteLen == 0)
+			return this;
+		
+		// Move everything down from above, if any
+		char[] buffer = this._buffer;
+		System.arraycopy(buffer, realEnd,
+			buffer, __fromInclusive, at - deleteLen);
+		at -= deleteLen;
+		
+		// Wipe everything at the end (security?)
+		ObjectShelf.arrayFill(buffer, at, buffer.length - at, '\0');
+		
+		// Set new position
+		this._at = at;
+		
+		// And then just returns self
+		return this;
 	}
 	
-	public StringBuilder deleteCharAt(int __a)
+	/**
+	 * Deletes the character at the given index.
+	 * 
+	 * @param __dx The index to delete.
+	 * @return {@code this}.
+	 * @throws StringIndexOutOfBoundsException If the index if outside of
+	 * the string bounds.
+	 * @since 2022/06/29
+	 */
+	public StringBuilder deleteCharAt(int __dx)
+		throws StringIndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		if (__dx < 0 || __dx >= this._at)
+			throw new StringIndexOutOfBoundsException("IOOB");
+		
+		// This handles all the deletion logic
+		this.delete(__dx, __dx + 1);
+		
+		return this;
 	}
 	
-	public void ensureCapacity(int __a)
+	/**
+	 * Ensures that the given capacity is made available to the buffer if the
+	 * current capacity is less than the specified {@code __minCapacity}.
+	 * 
+	 * @param __minCapacity The capacity to check against, if too small then
+	 * the capacity {@code max(__minCapacity, (capacity() * 2) + 2)} is used.
+	 * @since 2022/06/29
+	 */
+	public void ensureCapacity(int __minCapacity)
 	{
-		throw new todo.TODO();
+		// Pointless
+		if (__minCapacity <= 0)
+			return;
+		
+		int limit = this._buffer.length;
+		if (limit < __minCapacity)
+			this.__buffer(Math.max(__minCapacity, (limit << 1) + 2));
 	}
 	
 	public void getChars(int __a, int __b, char[] __c, int __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public int indexOf(String __a)
+	/**
+	 * Returns the position where the given string is found.
+	 *
+	 * @param __s The sequence to find.
+	 * @return The index of the sequence or {@code -1} if it is not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/06/29
+	 */
+	public int indexOf(String __s)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		return this.indexOf(__s, 0);
 	}
 	
-	public int indexOf(String __a, int __b)
+	/**
+	 * Returns the position where the given string is found.
+	 *
+	 * @param __s The sequence to find.
+	 * @param __index The starting index.
+	 * @return The index of the sequence or {@code -1} if it is not found.
+	 * @since 2022/06/29
+	 */
+	public int indexOf(String __s, int __index)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		return CharSequenceUtils.indexOf(this, __s, __index);
 	}
 	
-	public StringBuilder insert(int __a, char[] __b, int __c, int __d)
+	/**
+	 * Inserts the given value at the given position.
+	 *
+	 * @param __dx The index to insert at.
+	 * @param __c The characters to insert.
+	 * @param __o The offset into the array.
+	 * @param __l The number of characters to insert.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the index is out of bounds.
+	 * @since 2022/06/29
+	 */
+	public StringBuilder insert(int __dx, char[] __c, int __o, int __l)
 	{
-		throw new todo.TODO();
+		return this.insert(__dx, new CharArrayCharSequence(__c, __o, __l));
 	}
 	
 	/**
@@ -424,9 +508,23 @@ public final class StringBuilder
 		return this.insert(__dx, (CharSequence)__v);
 	}
 	
-	public StringBuilder insert(int __a, char[] __b)
+	/**
+	 * Inserts the given value at the given position.
+	 *
+	 * @param __dx The index to insert at.
+	 * @param __chars The value to insert.
+	 * @return {@code this}.
+	 * @throws StringIndexOutOfBoundsException If the index is out of bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/06/29
+	 */
+	public StringBuilder insert(int __dx, char[] __chars)
+		throws StringIndexOutOfBoundsException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__chars == null)
+			throw new NullPointerException("NARG");
+		
+		return this.insert(__dx, new CharArrayCharSequence(__chars));
 	}
 	
 	/**
@@ -476,21 +574,23 @@ public final class StringBuilder
 		int len = __e - __s;
 		
 		// Get buffer properties
-		int limit = this._limit,
-			at = this._at;
+		int limit = this._buffer.length;
+		int at = this._at;
 		char[] buffer = (at + len > limit ? this.__buffer(len) : this._buffer);
 		
 		// {@squirreljme.error ZZ1q The index of insertion exceeds the
 		// length of the current string. (The insertion index; The string
 		// length)}
 		if (__dx > at)
-			throw new IndexOutOfBoundsException(String.format("ZZ1q %d %d",
-				__dx, at));
+			throw new IndexOutOfBoundsException(
+				String.format("ZZ1q %d %d", __dx, at));
 		
 		// First move all characters on the right to the end so that this can
 		// properly fit
-		for (int i = at - 1, o = i + len; i >= __dx; i--, o--)
-			buffer[o] = buffer[i];
+		System.arraycopy(buffer, __dx,
+			buffer, __dx + len, at - __dx);
+		/*for (int i = at - 1, o = i + len; i >= __dx; i--, o--)
+			buffer[o] = buffer[i];*/
 		
 		// Place input characters at this point
 		while (__s < __e)
@@ -502,9 +602,18 @@ public final class StringBuilder
 		return this;
 	}
 	
-	public StringBuilder insert(int __a, boolean __b)
+	/**
+	 * Inserts the given boolean into the string at the given index.
+	 *
+	 * @param __dx The index to insert at.
+	 * @param __v The value to insert.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @since 2022/06/29
+	 */
+	public StringBuilder insert(int __dx, boolean __v)
 	{
-		throw new todo.TODO();
+		return this.insert(__dx, Boolean.valueOf(__v).toString());
 	}
 	
 	/**
@@ -525,21 +634,23 @@ public final class StringBuilder
 			throw new IndexOutOfBoundsException("ZZ1r");
 		
 		// Before we go deeper check if the buffer needs to grow
-		int limit = this._limit,
-			at = this._at;
+		int limit = this._buffer.length;
+		int at = this._at;
 		char[] buffer = (at + 1 > limit ? this.__buffer(1) : this._buffer);
 		
 		// {@squirreljme.error ZZ1s The index of insertion exceeds the
 		// length of the current string. (The insertion index; The string
 		// length)}
 		if (__dx > at)
-			throw new IndexOutOfBoundsException(String.format("ZZ1s %d %d",
-				__dx, at));
+			throw new IndexOutOfBoundsException(String.format(
+				"ZZ1s %d %d", __dx, at));
 		
 		// First move all characters on the right to the end so that this can
 		// properly fit
-		for (int i = at - 1, o = i + 1; i >= __dx; i--, o--)
-			buffer[o] = buffer[i];
+		System.arraycopy(buffer, __dx,
+			buffer, __dx + 1, at - __dx);
+		/*for (int i = at - 1, o = i + 1; i >= __dx; i--, o--)
+			buffer[o] = buffer[i];*/
 		
 		// Place input characters at this point
 		buffer[__dx] = __v;
@@ -578,24 +689,42 @@ public final class StringBuilder
 		return this.insert(__dx, Long.valueOf(__v).toString());
 	}
 	
-	public StringBuilder insert(int __a, float __b)
+	/**
+	 * Inserts the given value into the string at the given index.
+	 *
+	 * @param __dx The index to insert at.
+	 * @param __v The value to insert.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @since 2022/06/29
+	 */
+	public StringBuilder insert(int __dx, float __v)
 	{
-		throw new todo.TODO();
+		return this.insert(__dx, Float.valueOf(__v).toString());
 	}
 	
-	public StringBuilder insert(int __a, double __b)
+	/**
+	 * Inserts the given value into the string at the given index.
+	 *
+	 * @param __dx The index to insert at.
+	 * @param __v The value to insert.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @since 2022/06/29
+	 */
+	public StringBuilder insert(int __dx, double __v)
 	{
-		throw new todo.TODO();
+		return this.insert(__dx, Double.valueOf(__v).toString());
 	}
 	
-	public int lastIndexOf(String __a)
+	public int lastIndexOf(String __s)
 	{
-		throw new todo.TODO();
+		return this.lastIndexOf(__s, Integer.MAX_VALUE);
 	}
 	
-	public int lastIndexOf(String __a, int __b)
+	public int lastIndexOf(String __s, int __fromDx)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -612,7 +741,7 @@ public final class StringBuilder
 	
 	public StringBuilder replace(int __a, int __b, String __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -640,9 +769,25 @@ public final class StringBuilder
 		return this;
 	}
 	
+	/**
+	 * Sets the character at the given index.
+	 * 
+	 * @param __dx The index to set, must be {@code [0, length)}.
+	 * @param __c The character to set.
+	 * @throws IndexOutOfBoundsException If the index is not within the bounds
+	 * of this {@link StringBuilder}.
+	 * @since 2022/06/29
+	 */
 	public void setCharAt(int __dx, char __c)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		// Check the bounds first
+		int at = this._at;
+		if (__dx < 0 || __dx >= at)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Now set it
+		this._buffer[__dx] = __c;
 	}
 	
 	/**
@@ -676,8 +821,8 @@ public final class StringBuilder
 		
 		// Erase old characters in the buffer (security?)
 		char[] buffer = this._buffer;
-		for (int i = __nl, n = buffer.length; i < n; i++)
-			buffer[i] = '\0';
+		ObjectShelf.arrayFill(buffer, __nl, buffer.length - __nl,
+			'\0');
 	}
 	
 	/**
@@ -749,9 +894,20 @@ public final class StringBuilder
 		return new String(this._buffer, 0, this._at);
 	}
 	
+	/**
+	 * Trims the internal buffer to the size that is needed to store the
+	 * string.
+	 * 
+	 * @since 2022/06/29
+	 */
 	public void trimToSize()
 	{
-		throw new todo.TODO();
+		char[] buffer = this._buffer;
+		int at = this._at;
+		int limit = buffer.length;
+		
+		if (limit > at)
+			this._buffer = Arrays.copyOf(buffer, at);
 	}
 	
 	/**
@@ -766,8 +922,8 @@ public final class StringBuilder
 	{
 		// Get buffer properties
 		char[] buffer = this._buffer;
-		int limit = this._limit,
-			at = this._at;
+		int limit = buffer.length;
+		int at = this._at;
 		
 		// Need to resize the buffer to fit this?
 		int nextAt = at + __l;
@@ -779,12 +935,10 @@ public final class StringBuilder
 			char[] extra = Arrays.copyOf(buffer, newCapacity);
 			
 			// Erase the old buffer (security?)
-			for (int i = 0, n = buffer.length; i < n; i++)
-				buffer[i] = '\0';
+			ObjectShelf.arrayFill(buffer, 0, buffer.length, '\0');
 			
 			// Store the new buffer
 			this._buffer = (buffer = extra);
-			this._limit = newCapacity;
 		}
 		
 		return buffer;

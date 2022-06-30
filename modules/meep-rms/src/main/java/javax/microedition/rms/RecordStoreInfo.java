@@ -9,6 +9,7 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.rms.VinylLock;
 import cc.squirreljme.runtime.rms.VinylRecord;
 
@@ -45,7 +46,7 @@ public final class RecordStoreInfo
 	public int getAuthMode()
 		throws RecordStoreNotOpenException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -60,7 +61,7 @@ public final class RecordStoreInfo
 	public long getSize()
 		throws RecordStoreNotOpenException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -94,7 +95,7 @@ public final class RecordStoreInfo
 	public boolean isEncrypted()
 		throws RecordStoreNotOpenException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -110,7 +111,7 @@ public final class RecordStoreInfo
 	public boolean isWriteable()
 		throws RecordStoreNotOpenException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

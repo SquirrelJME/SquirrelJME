@@ -9,6 +9,8 @@
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class OutputStreamWriter
 	extends Writer
 {
@@ -17,12 +19,12 @@ public class OutputStreamWriter
 	{
 		if (false)
 			throw new UnsupportedEncodingException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public OutputStreamWriter(OutputStream __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
@@ -31,7 +33,7 @@ public class OutputStreamWriter
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
@@ -40,12 +42,12 @@ public class OutputStreamWriter
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getEncoding()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
@@ -54,7 +56,7 @@ public class OutputStreamWriter
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
@@ -63,7 +65,7 @@ public class OutputStreamWriter
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
@@ -72,7 +74,7 @@ public class OutputStreamWriter
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

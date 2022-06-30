@@ -9,55 +9,56 @@
 
 package javax.microedition.lcdui.game;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Graphics;
 
 public abstract class Layer
 {
 	Layer()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public abstract void paint(Graphics __a);
 	
 	public final int getHeight()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final int getWidth()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final int getX()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final int getY()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final boolean isVisible()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void move(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setPosition(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setVisible(boolean __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

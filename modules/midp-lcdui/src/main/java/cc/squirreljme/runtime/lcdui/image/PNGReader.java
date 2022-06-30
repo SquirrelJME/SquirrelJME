@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.image;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -406,7 +407,7 @@ public class PNGReader
 		this._height = height;
 		
 		// Debug
-		todo.DEBUG.note("Size: %dx%d%n", width, height);
+		Debugging.debugNote("Size: %dx%d%n", width, height);
 		
 		// Read the bit depth and the color type
 		int bitdepth = __in.readUnsignedByte(),

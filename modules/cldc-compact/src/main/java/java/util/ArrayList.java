@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This is a resizeable list which is backed by an array.
  *
@@ -245,7 +247,7 @@ public class ArrayList<E>
 	@Override
 	protected void removeRange(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -283,7 +285,7 @@ public class ArrayList<E>
 	
 	public void trimToSize()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

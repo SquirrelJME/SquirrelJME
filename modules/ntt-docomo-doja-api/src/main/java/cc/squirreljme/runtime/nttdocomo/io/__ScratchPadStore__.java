@@ -1,3 +1,4 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -119,7 +120,7 @@ final class __ScratchPadStore__
 		throws IndexOutOfBoundsException
 	{
 		byte[] data = this._data;
-		if (__pos < 0 || __length < 0 || (__pos + __length) > data.length)
+		if (__pos < 0 || __length < 0 || (__pos + __length) < 0 || (__pos + __length) > data.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		return new ByteArrayInputStream(data, __pos, __length);
@@ -141,7 +142,7 @@ final class __ScratchPadStore__
 		throws IndexOutOfBoundsException, IOException
 	{
 		byte[] data = this._data;
-		if (__pos < 0 || __len < 0 || (__pos + __len) > data.length)
+		if (__pos < 0 || __len < 0 || (__pos + __len) < 0 || (__pos + __len) > data.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		return new __ScratchPadOutputTransaction__(this, __pos, __len);
@@ -164,7 +165,7 @@ final class __ScratchPadStore__
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Perform the copy

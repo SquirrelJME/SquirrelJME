@@ -458,7 +458,7 @@ public class Vector<E>
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 	

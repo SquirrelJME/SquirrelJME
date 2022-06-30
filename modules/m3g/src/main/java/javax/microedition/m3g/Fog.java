@@ -10,6 +10,8 @@
 package javax.microedition.m3g;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class Fog
 	extends Object3D
 {
@@ -21,52 +23,52 @@ public class Fog
 	
 	public Fog()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getColor()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public float getDensity()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public float getFarDistance()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getMode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public float getNearDistance()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setColor(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setDensity(float __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setLinear(float __a, float __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setMode(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

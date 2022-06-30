@@ -9,6 +9,8 @@
 
 package com.vodafone.v10.system.media;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class ResourceOperatorManager
 {
     public static final int MELODY_RESOURCE = 0;
@@ -16,11 +18,11 @@ public class ResourceOperatorManager
 
     public ResourceOperatorManager()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static  ResourceOperator getResourceOperator(int var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

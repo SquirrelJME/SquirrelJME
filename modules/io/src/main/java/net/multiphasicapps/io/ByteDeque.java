@@ -11,6 +11,7 @@ package net.multiphasicapps.io;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -162,7 +163,7 @@ public class ByteDeque
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
 		// No bytes to add, do nothing
@@ -181,7 +182,7 @@ public class ByteDeque
 		int nb = blocks.size();
 		int head = this._head, tail = this._tail;
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -235,7 +236,7 @@ public class ByteDeque
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
 		// No bytes to add, do nothing
@@ -381,7 +382,7 @@ public class ByteDeque
 			// Should never occur, because that means the end is lower
 			// than the start
 			if (rc < 0)
-				throw new todo.OOPS();
+				throw Debugging.oops();
 			
 			// Erase data
 			for (int i = 0; i < rc; i++)
@@ -483,7 +484,7 @@ public class ByteDeque
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
 		// If there are no bytes, all reads do nothing
@@ -870,7 +871,7 @@ public class ByteDeque
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
 		// If nothing to remove, do nothing
@@ -889,7 +890,7 @@ public class ByteDeque
 		// If this occurs then the number of bytes deleted was not the
 		// same as the number of bytes which were read.
 		if (rva != rvb)
-			throw new todo.OOPS();
+			throw Debugging.oops();
 		
 		// Return the read count
 		return rva;
@@ -947,10 +948,10 @@ public class ByteDeque
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -1022,7 +1023,7 @@ public class ByteDeque
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
 		// {@squirreljme.error BD2h The requested address is outside of
@@ -1082,7 +1083,7 @@ public class ByteDeque
 		if (__os == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

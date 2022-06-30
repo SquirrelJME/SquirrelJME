@@ -631,7 +631,7 @@ public class PrintStream
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		synchronized (this)
@@ -729,20 +729,8 @@ public class PrintStream
 		if (__fmt == null)
 			throw new NullPointerException("NARG");
 		
-		// Generate text to write into a string builder
-		StringBuilder sb = new StringBuilder();
-		try (Formatter f = new Formatter(sb))
-		{
-			f.format(__fmt, __args);
-		}
-		
-		// Dump characters that were written into the string but without
-		// turning it into an actual string, for memory purposes
-		synchronized (this)
-		{
-			for (int i = 0, n = sb.length(); i < n; i++)
-				this.__writeChar(sb.charAt(i));
-		}
+		// Generate formatter and write to ourselves
+		new Formatter(this).format(__fmt, __args);
 		
 		return this;
 	}
@@ -790,7 +778,7 @@ public class PrintStream
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Our current buffer state

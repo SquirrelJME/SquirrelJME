@@ -9,54 +9,56 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class StringTokenizer
 	implements Enumeration<Object>
 {
 	public StringTokenizer(String __a, String __b, boolean __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public StringTokenizer(String __a, String __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public StringTokenizer(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int countTokens()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public boolean hasMoreElements()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean hasMoreTokens()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public Object nextElement()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String nextToken()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String nextToken(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

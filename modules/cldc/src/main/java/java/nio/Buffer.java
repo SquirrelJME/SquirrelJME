@@ -9,61 +9,63 @@
 
 package java.nio;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public abstract class Buffer
 {
 	Buffer()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final int capacity()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final Buffer clear()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final Buffer flip()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final boolean hasRemaining()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final int limit()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final Buffer limit(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final int position()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final Buffer position(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final int remaining()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final Buffer rewind()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

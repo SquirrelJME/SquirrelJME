@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -53,7 +54,7 @@ public final class SecureByteArrayOutputStream
 		if (__os == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

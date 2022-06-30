@@ -10,21 +10,23 @@
 package jdk.dio.generic;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class GenericDeviceControl<T>
 {
 	public GenericDeviceControl(int __a, Class<T> __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getID()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Class<T> getType()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

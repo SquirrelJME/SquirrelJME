@@ -9,6 +9,7 @@
 
 package javax.microedition.midlet;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.security.BasicPermission;
 import java.security.Permission;
 
@@ -18,12 +19,12 @@ public final class AutoStartPermission
 	public AutoStartPermission()
 	{
 		super(null);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
 	@Override
 	public boolean implies(Permission __p)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

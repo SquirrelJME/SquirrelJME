@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 public abstract class IdleItem
@@ -17,19 +18,19 @@ public abstract class IdleItem
 	protected IdleItem(String __label)
 	{
 		super(__label);
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@SerializedEvent
 	protected void addedToDisplay(Display __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@SerializedEvent
 	protected void removedFromDisplay(Display __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 
