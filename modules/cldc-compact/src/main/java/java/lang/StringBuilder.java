@@ -231,23 +231,7 @@ public final class StringBuilder
 	public StringBuilder append(char[] __c, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		// Check
-		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __c.length)
-			throw new IndexOutOfBoundsException("IOOB");
-		
-		// Get buffer properties
-		int limit = this._buffer.length;
-		int at = this._at;
-		char[] buffer = (at + __l > limit ? this.__buffer(__l) : this._buffer);
-		
-		// Place input characters at this point
-		for (int i = 0; i < __l; i++)
-			buffer[at++] = __c[__o++];
-		
-		// Set new size
-		this._at = at;
-		
-		return this;
+		return this.insert(this._at, __c, __o, __l);
 	}
 	
 	/**
@@ -361,14 +345,67 @@ public final class StringBuilder
 		return this._buffer[__dx];
 	}
 	
-	public StringBuilder delete(int __a, int __b)
+	/**
+	 * Deletes the given indexes from the string.
+	 * 
+	 * @param __fromInclusive The index to start from, inclusive.
+	 * @param __toExclusive The index to end at, exclusive.
+	 * @return {@code this}.
+	 * @throws StringIndexOutOfBoundsException If {@code __fromInclusive} is
+	 * negative, greater than {@link #length()}, or greater than
+	 * {@code __toExclusive}.
+	 * @since 2022/06/29
+	 */
+	public StringBuilder delete(int __fromInclusive, int __toExclusive)
+		throws StringIndexOutOfBoundsException
 	{
-		throw Debugging.todo();
+		int at = this._at;
+		if (__fromInclusive < 0 || __fromInclusive > __toExclusive ||
+			__fromInclusive > at)
+			throw new StringIndexOutOfBoundsException("IOOB");
+		
+		int realEnd = Math.min(at, __toExclusive);
+		int deleteLen = realEnd - __fromInclusive;
+		
+		// Pointless deletion?
+		if (__fromInclusive == __toExclusive || deleteLen == 0)
+			return this;
+		
+		// Move everything down from above, if any
+		char[] buffer = this._buffer;
+		System.arraycopy(buffer, realEnd,
+			buffer, __fromInclusive, at - deleteLen);
+		at -= deleteLen;
+		
+		// Wipe everything at the end (security?)
+		ObjectShelf.arrayFill(buffer, at, buffer.length - at, '\0');
+		
+		// Set new position
+		this._at = at;
+		
+		// And then just returns self
+		return this;
 	}
 	
-	public StringBuilder deleteCharAt(int __a)
+	/**
+	 * Deletes the character at the given index.
+	 * 
+	 * @param __dx The index to delete.
+	 * @return {@code this}.
+	 * @throws StringIndexOutOfBoundsException If the index if outside of
+	 * the string bounds.
+	 * @since 2022/06/29
+	 */
+	public StringBuilder deleteCharAt(int __dx)
+		throws StringIndexOutOfBoundsException
 	{
-		throw Debugging.todo();
+		if (__dx < 0 || __dx >= this._at)
+			throw new StringIndexOutOfBoundsException("IOOB");
+		
+		// This handles all the deletion logic
+		this.delete(__dx, __dx + 1);
+		
+		return this;
 	}
 	
 	/**
@@ -545,13 +582,15 @@ public final class StringBuilder
 		// length of the current string. (The insertion index; The string
 		// length)}
 		if (__dx > at)
-			throw new IndexOutOfBoundsException(String.format("ZZ1q %d %d",
-				__dx, at));
+			throw new IndexOutOfBoundsException(
+				String.format("ZZ1q %d %d", __dx, at));
 		
 		// First move all characters on the right to the end so that this can
 		// properly fit
-		for (int i = at - 1, o = i + len; i >= __dx; i--, o--)
-			buffer[o] = buffer[i];
+		System.arraycopy(buffer, __dx,
+			buffer, __dx + len, at - __dx);
+		/*for (int i = at - 1, o = i + len; i >= __dx; i--, o--)
+			buffer[o] = buffer[i];*/
 		
 		// Place input characters at this point
 		while (__s < __e)
@@ -603,13 +642,15 @@ public final class StringBuilder
 		// length of the current string. (The insertion index; The string
 		// length)}
 		if (__dx > at)
-			throw new IndexOutOfBoundsException(String.format("ZZ1s %d %d",
-				__dx, at));
+			throw new IndexOutOfBoundsException(String.format(
+				"ZZ1s %d %d", __dx, at));
 		
 		// First move all characters on the right to the end so that this can
 		// properly fit
-		for (int i = at - 1, o = i + 1; i >= __dx; i--, o--)
-			buffer[o] = buffer[i];
+		System.arraycopy(buffer, __dx,
+			buffer, __dx + 1, at - __dx);
+		/*for (int i = at - 1, o = i + 1; i >= __dx; i--, o--)
+			buffer[o] = buffer[i];*/
 		
 		// Place input characters at this point
 		buffer[__dx] = __v;
@@ -894,8 +935,7 @@ public final class StringBuilder
 			char[] extra = Arrays.copyOf(buffer, newCapacity);
 			
 			// Erase the old buffer (security?)
-			for (int i = 0, n = buffer.length; i < n; i++)
-				buffer[i] = '\0';
+			ObjectShelf.arrayFill(buffer, 0, buffer.length, '\0');
 			
 			// Store the new buffer
 			this._buffer = (buffer = extra);

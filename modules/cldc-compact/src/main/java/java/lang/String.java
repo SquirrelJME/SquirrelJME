@@ -912,14 +912,14 @@ public final class String
 	}
 	
 	/**
-	 * Returns the last occurance of the given character going backwards from
+	 * Returns the last occurrence of the given character going backwards from
 	 * the given index.
 	 *
 	 * @param __c The character to find.
 	 * @param __dx The index to start at, this is clipped to within the
 	 * string bounds accordingly although if it is negative no searching is
 	 * done.
-	 * @return The last occurance of the character or {@code -1} if it was
+	 * @return The last occurrence of the character or {@code -1} if it was
 	 * not found.
 	 * @since 2018/09/29
 	 */
@@ -944,7 +944,7 @@ public final class String
 	}
 	
 	/**
-	 * Returns the last occurance of the given string.
+	 * Returns the last occurrence of the given string.
 	 *
 	 * @param __s The string to find.
 	 * @return The last occurance of the string or {@code -1} if it was
