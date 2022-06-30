@@ -132,7 +132,7 @@ endif()
 if(DEFINED SQUIRRELJME_LIBRETRO_COMMAND)
 	add_custom_target(RetroArch
 		DEPENDS squirreljme_libretro
-		COMMAND ${SQUIRRELJME_LIBRETRO_COMMAND}
+		COMMAND "${SQUIRRELJME_LIBRETRO_COMMAND}"
 			"--verbose" "--log-file" "${PROJECT_SOURCE_DIR}/libretro-log.txt"
 			"-L" "$<TARGET_FILE:squirreljme_libretro>"
 		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
