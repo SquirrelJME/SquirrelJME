@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.util.GradleLoggerOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
@@ -17,7 +18,10 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import org.gradle.api.logging.LogLevel;
 import org.gradle.workers.WorkAction;
 
 /**
@@ -29,6 +33,10 @@ import org.gradle.workers.WorkAction;
 public abstract class VMTestWorkAction
 	implements WorkAction<VMTestParameters>
 {
+	/** Logger storage. */
+	static final Map<String, __LogHolder__> _LOGGERS =
+		new ConcurrentHashMap<>();
+	
 	/** The timeout for tests. */
 	private static final long _TEST_TIMEOUT =
 		360_000_000_000L;
@@ -48,6 +56,10 @@ public abstract class VMTestWorkAction
 		// Determine the name of the test
 		VMTestParameters parameters = this.getParameters();
 		String testName = parameters.getTestName().get();
+		
+		// Get the log holder
+		__LogHolder__ logHolder = VMTestWorkAction._LOGGERS.get(
+			parameters.getUniqueId().get());
 		
 		// Threads for processing stream data
 		Thread stdOutThread = null;
@@ -75,15 +87,24 @@ public abstract class VMTestWorkAction
 			long clockStart = System.currentTimeMillis();
 			long nsStart = System.nanoTime();
 			
+			// Setup output handler
+			ProcessBuilder processBuilder = new ProcessBuilder(
+				parameters.getCommandLine().get().toArray(new String[0]));
+			processBuilder.redirectOutput(ProcessBuilder.Redirect.PIPE);
+			processBuilder.redirectError(ProcessBuilder.Redirect.PIPE);
+			
 			// Start the process with the command line that was pre-determined
-			process = new ProcessBuilder(parameters.getCommandLine()
-				.get().toArray(new String[0])).start();
+			process = processBuilder.start();
 			
 			// Setup listening buffer threads
 			VMTestOutputBuffer stdOut = new VMTestOutputBuffer(
-				process.getInputStream(), System.out, false);
+				process.getInputStream(), new GradleLoggerOutputStream(
+				logHolder.logger, LogLevel.LIFECYCLE, count, total),
+				false);
 			VMTestOutputBuffer stdErr = new VMTestOutputBuffer(
-				process.getErrorStream(), System.err, true);
+				process.getErrorStream(), new GradleLoggerOutputStream(
+				logHolder.logger, LogLevel.ERROR, count, total), 
+				true);
 			
 			// Setup threads for reading standard output and standard error
 			stdOutThread = new Thread(stdOut, "stdOutReader");

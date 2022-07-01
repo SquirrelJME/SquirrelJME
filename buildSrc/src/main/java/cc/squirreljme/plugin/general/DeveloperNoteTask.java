@@ -103,7 +103,7 @@ public class DeveloperNoteTask
 			__task.getLogger().lifecycle("Server opened at " + url);
 			
 			// Launch a web browser
-			DeveloperNoteTask.__launchBrowser(url);
+			DeveloperNoteTask.__launchBrowser(__task, url);
 			
 			// Continuous handling loop
 			for (;;)
@@ -271,15 +271,20 @@ public class DeveloperNoteTask
 	/**
 	 * Attempts to launch a browser.
 	 * 
+	 * @param __task The task used.
 	 * @param __url The URL to launch.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/27
 	 */
-	private static void __launchBrowser(String __url)
+	private static void __launchBrowser(Task __task, String __url)
 		throws NullPointerException
 	{
 		if (__url == null)
 			throw new NullPointerException("NARG");
+		
+		// Inform on the terminal what the URL is for the server
+		__task.getLogger().lifecycle(String.format(
+			"Notes URL is at %s !", __url));
 		
 		// Try to use normal AWT stuff?
 		try
