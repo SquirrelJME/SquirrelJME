@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import org.gradle.api.logging.LogLevel;
+import org.gradle.api.logging.Logger;
 import org.gradle.workers.WorkAction;
 
 /**
@@ -60,6 +61,7 @@ public abstract class VMTestWorkAction
 		// Get the log holder
 		__LogHolder__ logHolder = VMTestWorkAction._LOGGERS.get(
 			parameters.getUniqueId().get());
+		Logger logger = logHolder.logger;
 		
 		// Threads for processing stream data
 		Thread stdOutThread = null;
@@ -80,8 +82,8 @@ public abstract class VMTestWorkAction
 		try
 		{
 			// Note this is running
-			System.err.printf("???? %s (%d/%d)%n", testName, count, total);
-			System.err.flush();
+			logger.lifecycle(String.format("???? %s (%d/%d)",
+				testName, count, total));
 			
 			// Clock the starting time
 			long clockStart = System.currentTimeMillis();
@@ -98,12 +100,12 @@ public abstract class VMTestWorkAction
 			
 			// Setup listening buffer threads
 			VMTestOutputBuffer stdOut = new VMTestOutputBuffer(
-				process.getInputStream(), new GradleLoggerOutputStream(
-				logHolder.logger, LogLevel.LIFECYCLE, count, total),
+				process.getInputStream(), new GradleLoggerOutputStream(logger
+				, LogLevel.LIFECYCLE, count, total),
 				false);
 			VMTestOutputBuffer stdErr = new VMTestOutputBuffer(
-				process.getErrorStream(), new GradleLoggerOutputStream(
-				logHolder.logger, LogLevel.ERROR, count, total), 
+				process.getErrorStream(), new GradleLoggerOutputStream(logger
+				, LogLevel.ERROR, count, total), 
 				true);
 			
 			// Setup threads for reading standard output and standard error
@@ -128,9 +130,8 @@ public abstract class VMTestWorkAction
 						if (nsDur >= VMTestWorkAction._TEST_TIMEOUT)
 						{
 							// Note it
-							System.err.printf("TIME %s (%d/%d)%n", testName,
-								count, total);
-								System.err.flush();
+							logger.error(String.format("TIME %s (%d/%d)",
+								testName, count, total));
 							
 							// Set timeout as being hit, used for special
 							// check
@@ -151,8 +152,7 @@ public abstract class VMTestWorkAction
 				catch (InterruptedException e)
 				{
 					// Add note that this happened
-					System.err.printf("INTR %s%n", testName);
-					System.err.flush();
+					logger.error(String.format("INTR %s", testName));
 					
 					// Stop the processes that are running
 					process.destroy();
@@ -172,9 +172,8 @@ public abstract class VMTestWorkAction
 			
 			// Note this has finished
 			VMTestResult testResult = VMTestResult.valueOf(exitCode);
-			System.err.printf("%4s %s (%d/%d)%n", testResult, testName,
-				count, total);
-			System.err.flush();
+			logger.lifecycle(String.format("%4s %s (%d/%d)",
+				testResult, testName, count, total));
 			
 			// Write the XML file
 			try (PrintStream out = new PrintStream(Files.newOutputStream(
