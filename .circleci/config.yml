@@ -13,9 +13,6 @@
 
 version: 2.1
 
-parameters:
-  WINDOWS_RESOURCE_CLASS: medium
-
 executors:
   build-on-linux:
     docker:
@@ -30,7 +27,7 @@ executors:
 #    windows:
 #      name: win/default
 #      shell: cmd.exe
-#    resource_class: << pipeline.parameters.WINDOWS_RESOURCE_CLASS >>
+#    resource_class: medium
 #    environment:
 #      # Use a reduced amount of memory to all the VMs so that it does not
 #      # try grabbing all the memory that is available to the system.
@@ -68,7 +65,7 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
-      size: << pipeline.parameters.WINDOWS_RESOURCE_CLASS >>
+      size: medium
     environment:
       # Use a reduced amount of memory to all the VMs so that it does not
       # try grabbing all the memory that is available to the system.
@@ -113,7 +110,7 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
-      size: << pipeline.parameters.WINDOWS_RESOURCE_CLASS >>
+      size: medium
     environment:
       # Use a reduced amount of memory to all the VMs so that it does not
       # try grabbing all the memory that is available to the system.
@@ -138,7 +135,7 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
-      size: << pipeline.parameters.WINDOWS_RESOURCE_CLASS >>
+      size: medium
     environment:
       # Use a reduced amount of memory to all the VMs so that it does not
       # try grabbing all the memory that is available to the system.
