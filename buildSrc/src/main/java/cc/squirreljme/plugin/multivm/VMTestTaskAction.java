@@ -27,9 +27,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.UUID;
 import java.util.function.Supplier;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
+import org.gradle.api.logging.Logger;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
 
@@ -104,7 +106,8 @@ public class VMTestTaskAction
 	public void execute(Task __task)
 	{
 		// Debug
-		__task.getLogger().debug("Tests: {}", VMHelpers.runningTests(
+		Logger logger = __task.getLogger();
+		logger.debug("Tests: {}", VMHelpers.runningTests(
 			__task.getProject(), this.sourceSet));
 		
 		// We want our tasks to run from within Gradle
@@ -121,7 +124,7 @@ public class VMTestTaskAction
 		Path resultDir = VMHelpers.testResultXmlDir(__task.getProject(),
 			vmType, sourceSet).get();
 		
-		// All of the result files will be read afterwards to determine whether
+		// All the result files will be read afterwards to determine whether
 		// this task will pass or fail
 		Map<String, Path> xmlResults = new TreeMap<>();
 		
@@ -171,8 +174,15 @@ public class VMTestTaskAction
 			(VMExecutableTask)__task, sourceSet, vmType);
 		
 		// Debug
-		__task.getLogger().debug("Testing ClassPath: {}",
+		logger.debug("Testing ClassPath: {}",
 			Arrays.asList(classPath));
+		
+		// Make unique ID for logger binding for this session
+		String uniqueID = UUID.randomUUID().toString();
+		
+		// Setup logger for this session
+		__LogHolder__ logHolder = new __LogHolder__(logger);
+		VMTestWorkAction._LOGGERS.put(uniqueID, logHolder);
 		
 		// Execute the tests concurrently but up to the limit, as testing is
 		// very intense on CPU
@@ -198,6 +208,9 @@ public class VMTestTaskAction
 			// to the limitations of Gradle workers
 			queue.submit(VMTestWorkAction.class, __params ->
 				{
+					// The logger used
+					__params.getUniqueId().set(uniqueID);
+					
 					// The test and where the results will go
 					__params.getTestName().set(testName);
 					__params.getResultFile().set(xmlResult.toFile());
@@ -240,7 +253,7 @@ public class VMTestTaskAction
 			{
 				failedTests.add(test.name);
 				
-				__task.getLogger().error("Failed test: {}", test.name);
+				logger.error("Failed test: {}", test.name);
 			}
 			
 		// Determine and ensure the directory where CSVs go exist
@@ -291,6 +304,9 @@ public class VMTestTaskAction
 		{
 			e.printStackTrace();
 		}
+		
+		// Wipe logger session
+		VMTestWorkAction._LOGGERS.remove(uniqueID);
 		
 		// If there were failures, then fail this task with an exception
 		if (!failedTests.isEmpty())

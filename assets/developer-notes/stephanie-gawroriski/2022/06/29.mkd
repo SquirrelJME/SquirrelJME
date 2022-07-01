@@ -1,0 +1,9 @@
+# 2022/06/29
+
+## 20:15
+
+So implementing `StringBuilder.delete()` since some software uses it and I
+am quite glad that I decided to test cases where the string being deleted
+from is at capacity or also over capacity since there is a specific test
+case that fails. So always is a reminder to make sure that your testing
+covers multiple scenarios!

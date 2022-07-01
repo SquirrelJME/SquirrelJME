@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.multivm;
 
 import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.logging.Logger;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.workers.WorkParameters;
@@ -70,4 +71,12 @@ public interface VMTestParameters
 	 * @since 2020/09/07
 	 */
 	Property<String> getVmName();
+	
+	/**
+	 * Returns the unique ID of the task run.
+	 * 
+	 * @return The unique ID of the task run.
+	 * @since 2022/07/01
+	 */
+	Property<String> getUniqueId();
 }
