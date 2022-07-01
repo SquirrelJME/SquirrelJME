@@ -13,6 +13,9 @@
 
 version: 2.1
 
+parameters:
+  WINDOWS_RESOURCE_CLASS: medium
+
 executors:
   build-on-linux:
     docker:
@@ -22,15 +25,16 @@ executors:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
 
-  build-on-windows:
-    windows:
-      name: win/default
-      shell: cmd.exe
-    resource_class: medium
-    environment:
-      # Use a reduced amount of memory to all the VMs so that it does not
-      # try grabbing all the memory that is available to the system.
-      JAVA_OPTS: -Xmx3g
+# This is in the documentation but does not actually work, new feature?
+#  build-on-windows:
+#    windows:
+#      name: win/default
+#      shell: cmd.exe
+#    resource_class: << pipeline.parameters.WINDOWS_RESOURCE_CLASS >>
+#    environment:
+#      # Use a reduced amount of memory to all the VMs so that it does not
+#      # try grabbing all the memory that is available to the system.
+#      JAVA_OPTS: -Xmx3g
 
   build-on-macos:
     macos:
@@ -61,7 +65,14 @@ orbs:
 jobs:
   ################################## WINDOWS #################################
   build_windows:
-    executor: build-on-windows
+    executor:
+      name: win/default
+      shell: cmd.exe
+      size: << pipeline.parameters.WINDOWS_RESOURCE_CLASS >>
+    environment:
+      # Use a reduced amount of memory to all the VMs so that it does not
+      # try grabbing all the memory that is available to the system.
+      JAVA_OPTS: -Xmx3g
     steps:
       - checkout
       - run:
@@ -99,7 +110,14 @@ jobs:
           path: c:\users\circleci\test-results
 
   build_windows_standalone:
-    executor: build-on-windows
+    executor:
+      name: win/default
+      shell: cmd.exe
+      size: << pipeline.parameters.WINDOWS_RESOURCE_CLASS >>
+    environment:
+      # Use a reduced amount of memory to all the VMs so that it does not
+      # try grabbing all the memory that is available to the system.
+      JAVA_OPTS: -Xmx3g
     steps:
       - checkout
       - attach_workspace:
@@ -117,7 +135,14 @@ jobs:
           destination: .
 
   ratufacoat_build_windows:
-    executor: build-on-windows
+    executor:
+      name: win/default
+      shell: cmd.exe
+      size: << pipeline.parameters.WINDOWS_RESOURCE_CLASS >>
+    environment:
+      # Use a reduced amount of memory to all the VMs so that it does not
+      # try grabbing all the memory that is available to the system.
+      JAVA_OPTS: -Xmx3g
     steps:
       - checkout
       - attach_workspace:
