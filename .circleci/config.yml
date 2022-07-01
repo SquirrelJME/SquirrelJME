@@ -12,16 +12,109 @@
 # CircleCI Reference: https://circleci.com/docs/2.0/env-vars/
 
 version: 2.1
+
 executors:
-  buildenv:
+  build-on-linux:
     docker:
       - image: cimg/openjdk:11.0
-  debian:
+    resource_class: medium
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+  build-on-linux-ratufacoat:
     docker:
       - image: debian:bullseye-backports
+    resource_class: medium
+
+# This is in the documentation but does not actually work, new feature?
+#  build-on-windows:
+#    windows:
+#      name: win/default
+#      shell: cmd.exe
+#    resource_class: medium
+#    environment:
+#      # Use a reduced amount of memory to all the VMs so that it does not
+#      # try grabbing all the memory that is available to the system.
+#      JAVA_OPTS: -Xmx3g
+
+  build-on-macos:
+    macos:
+      xcode: 13.2.1
+    resource_class: macos.x86.medium.gen2
+    environment:
+      # Do not auto-update brew as this takes forever, and we really just want
+      # a single package
+      HOMEBREW_NO_AUTO_UPDATE: 1
+
+      # Do not auto-clean brew, this wastes time and everything will be thrown
+      # out when the container finishes anyway
+      HOMEBREW_CLEANUP_MAX_AGE_DAYS: 730
+
+      # Do not send analytics
+      HOMEBREW_NO_ANALYTICS: 1
+
+      # Do not clean up after installation
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
+
+  build-on-macos-m1:
+    machine: true
+    resource_class: squirreljme/squirreljme-macos-m1
 
 orbs:
   win: circleci/windows@2.4.0
+
+commands:
+  # Cross architecture building, since it is all the same
+  ratufacoat_cross_arch_template:
+    description: Performs common cross-archicture testing of RatufaCoat.
+    parameters:
+      debian-packages:
+        type: string
+      qemu-binary:
+        type: string
+      gcc-binary:
+        type: string
+      gpp-binary:
+        type: string
+      ar-binary:
+        type: string
+      ld-binary:
+        type: string
+    steps:
+      - checkout
+      - run:
+          name: Install required dependencies
+          command: |
+            apt-get update -y
+            apt-get install -y build-essential python3 git cmake qemu-user-static <<parameters.debian-packages>>
+      - attach_workspace:
+          at: .
+      - run:
+          name: Setup CMake build
+          working_directory: ratufacoat
+          command: cmake -DSQUIRRELJME_TEST_WRAPPER="$(which <<parameters.qemu-binary>>)" -DCMAKE_C_COMPILER="$(which <<parameters.gcc-binary>>)" -DCMAKE_CXX_COMPILER="$(which <<parameters.gpp-binary>>)" -DCMAKE_AR="$(which <<parameters.ar-binary>>)" -DCMAKE_LINKER="$(which <<parameters.ld-binary>>)" .
+      - run:
+          name: Compile CMake build
+          working_directory: ratufacoat
+          command: cmake --build .
+      - run:
+          name: Test CMake Build
+          working_directory: ratufacoat
+          command: ctest --extra-verbose -T Test .
+      - run:
+          name: Convert CTest to JUnit XML
+          command: python3 ctest-to-junit.py < Testing/*/Test.xml
+          working_directory: ratufacoat
+          when: always
+      - run:
+          name: Save test results
+          working_directory: ratufacoat
+          command: |
+            mkdir -p ~/test-results/junit-linux/
+            find . -type f -regex '.*/build/junit/.*\.xml' -exec cp {} ~/test-results/junit-linux/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
 
 jobs:
   ################################## WINDOWS #################################
@@ -29,9 +122,9 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
-      size: xlarge
+      size: medium
     environment:
-      # Use a reduced amount of memory to all of the VMs so that it does not
+      # Use a reduced amount of memory to all the VMs so that it does not
       # try grabbing all the memory that is available to the system.
       JAVA_OPTS: -Xmx3g
     steps:
@@ -186,9 +279,9 @@ jobs:
     executor:
       name: win/default
       shell: cmd.exe
-      size: xlarge
+      size: medium
     environment:
-      # Use a reduced amount of memory to all of the VMs so that it does not
+      # Use a reduced amount of memory to all the VMs so that it does not
       # try grabbing all the memory that is available to the system.
       JAVA_OPTS: -Xmx3g
     steps:
@@ -209,23 +302,7 @@ jobs:
 
   ################################# MAC OS X #################################
   build_macosx:
-    macos:
-      xcode: 13.4.0
-    resource_class: macos.x86.medium.gen2
-    environment:
-      # Do not auto-update brew as this takes forever and we really just want
-      # a single package
-      HOMEBREW_NO_AUTO_UPDATE: 1
-
-      # Do not auto-clean brew, this wastes time and everything will be thrown
-      # out when the container finishes anyway
-      HOMEBREW_CLEANUP_MAX_AGE_DAYS: 730
-
-      # Do not send analytics
-      HOMEBREW_NO_ANALYTICS: 1
-
-      # Do not cleanup after installation
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
+    executor: build-on-macos
     steps:
       - checkout
       - run:
@@ -261,8 +338,7 @@ jobs:
       - store_artifacts:
           path: ~/test-results
   build_macosx_m1:
-    machine: true
-    resource_class: squirreljme/squirreljme-macos-m1
+    executor: build-on-macos-m1
     steps:
       - checkout
       - run:
@@ -294,23 +370,7 @@ jobs:
           path: ~/test-results
 
   build_macosx_standalone:
-    macos:
-      xcode: 13.2.1
-    resource_class: macos.x86.medium.gen2
-    environment:
-      # Do not auto-update brew as this takes forever and we really just want
-      # a single package
-      HOMEBREW_NO_AUTO_UPDATE: 1
-
-      # Do not auto-clean brew, this wastes time and everything will be thrown
-      # out when the container finishes anyway
-      HOMEBREW_CLEANUP_MAX_AGE_DAYS: 730
-
-      # Do not send analytics
-      HOMEBREW_NO_ANALYTICS: 1
-
-      # Do not cleanup after installation
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
+    executor: build-on-macos
     steps:
       - checkout
       - run:
@@ -330,8 +390,7 @@ jobs:
           path: emulators/standalone/build/libs/
           destination: .
   build_macosx_m1_standalone:
-    machine: true
-    resource_class: squirreljme/squirreljme-macos-m1
+    executor: build-on-macos-m1
     steps:
       - checkout
       - attach_workspace:
@@ -347,23 +406,7 @@ jobs:
           destination: .
 
   ratufacoat_build_macosx:
-    macos:
-      xcode: 13.4.0
-    resource_class: macos.x86.medium.gen2
-    environment:
-      # Do not auto-update brew as this takes forever and we really just want
-      # a single package
-      HOMEBREW_NO_AUTO_UPDATE: 1
-
-      # Do not auto-clean brew, this wastes time and everything will be thrown
-      # out when the container finishes anyway
-      HOMEBREW_CLEANUP_MAX_AGE_DAYS: 730
-
-      # Do not send analytics
-      HOMEBREW_NO_ANALYTICS: 1
-
-      # Do not cleanup after installation
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
+    executor: build-on-macos
     steps:
       - checkout
       - run:
@@ -401,8 +444,7 @@ jobs:
           path: ratufacoat/src/sdl2/SquirrelJME
           destination: SquirrelJME
   ratufacoat_build_macosx_m1:
-    machine: true
-    resource_class: squirreljme/squirreljme-macos-m1
+    executor: build-on-macos-m1
     steps:
       - checkout
       - attach_workspace:
@@ -439,11 +481,7 @@ jobs:
 
   ################################### LINUX ##################################
   build_linux:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - run:
@@ -474,11 +512,7 @@ jobs:
       - store_artifacts:
           path: ~/test-results
   build_linux_standalone:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - attach_workspace:
@@ -495,23 +529,18 @@ jobs:
 
   ### OSS SonaType Nexus
   sonatype_publish:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - attach_workspace:
           at: .
       - run:
           name: Publish to OSS SonaType
-          command: ./gradlew publishMavenPublicationToMavenRepository --no-daemon --console plain --continue --parallel
+          command: ./gradlew publishMavenPublicationToMavenRepository --no-daemon --console plain --continue --parallel || circleci-agent step halt
 
   ### RatufaCoat
   ratufacoat_build_linux:
-    executor: debian
-    resource_class: xlarge
+    executor: build-on-linux-ratufacoat
     steps:
       - checkout
       - run:
@@ -553,8 +582,7 @@ jobs:
 
   ### RatufaCoat (EmScripten/Browser)
   ratufacoat_build_emscripten:
-    executor: debian
-    resource_class: xlarge
+    executor: build-on-linux-ratufacoat
     steps:
       - checkout
       - run:
@@ -587,133 +615,93 @@ jobs:
           path: ratufacoat/src/sdl2/SquirrelJME.wasm
           destination: SquirrelJME.wasm
 
+  ### RatufaCoat (m68k, Cross Arch Testing)
+  ratufacoat_build_linux_m68k:
+    executor: build-on-linux-ratufacoat
+    steps:
+      - ratufacoat_cross_arch_template:
+          debian-packages: gcc-m68k-linux-gnu g++-m68k-linux-gnu binutils-m68k-linux-gnu
+          qemu-binary: qemu-m68k-static
+          gcc-binary: m68k-linux-gnu-gcc
+          gpp-binary: m68k-linux-gnu-g++
+          ar-binary: m68k-linux-gnu-ar
+          ld-binary: m68k-linux-gnu-ld
+
   ### RatufaCoat (MIPS, Cross Arch Testing)
   ratufacoat_build_linux_mips:
-    executor: debian
-    resource_class: small
+    executor: build-on-linux-ratufacoat
     steps:
-      - checkout
-      - run:
-          name: Install required dependencies
-          command: |
-            apt-get update -y
-            apt-get install -y build-essential gcc-mips-linux-gnu binutils-mips-linux-gnu python3 git cmake qemu-user-static
-      - attach_workspace:
-          at: .
-      - run:
-          name: Setup CMake build
-          working_directory: ratufacoat
-          command: cmake -DSQUIRRELJME_TEST_WRAPPER="$(which qemu-mips-static)" -DCMAKE_C_COMPILER="$(which mips-linux-gnu-gcc)" -DCMAKE_AR="$(which mips-linux-gnu-gcc-ar)" -DCMAKE_LINKER="$(which mips-linux-gnu-ld)" .
-      - run:
-          name: Compile CMake build
-          working_directory: ratufacoat
-          command: cmake --build .
-      - run:
-          name: Test CMake Build
-          working_directory: ratufacoat
-          command: ctest --extra-verbose -T Test .
-      - run:
-          name: Convert CTest to JUnit XML
-          command: python3 ctest-to-junit.py < Testing/*/Test.xml
-          working_directory: ratufacoat
-          when: always
-      - run:
-          name: Save test results
-          working_directory: ratufacoat
-          command: |
-            mkdir -p ~/test-results/junit-linux/
-            find . -type f -regex '.*/build/junit/.*\.xml' -exec cp {} ~/test-results/junit-linux/ \;
-          when: always
-      - store_test_results:
-          path: ~/test-results
+      - ratufacoat_cross_arch_template:
+          debian-packages: gcc-mips-linux-gnu g++-mips-linux-gnu binutils-mips-linux-gnu
+          qemu-binary: qemu-mips-static
+          gcc-binary: mips-linux-gnu-gcc
+          gpp-binary: mips-linux-gnu-g++
+          ar-binary: mips-linux-gnu-ar
+          ld-binary: mips-linux-gnu-ld
+
+  ### RatufaCoat (MIPS 64-bit, Cross Arch Testing)
+  ratufacoat_build_linux_mips64:
+    executor: build-on-linux-ratufacoat
+    steps:
+      - ratufacoat_cross_arch_template:
+          debian-packages: gcc-mips64-linux-gnu g++-mips64-linux-gnu binutils-mips64-linux-gnu
+          qemu-binary: qemu-mips64-static
+          gcc-binary: mips64-linux-gnu-gcc
+          gpp-binary: mips64-linux-gnu-g++
+          ar-binary: mips64-linux-gnu-ar
+          ld-binary: mips64-linux-gnu-ld
 
   ### RatufaCoat (PowerPC, Cross Arch Testing)
   ratufacoat_build_linux_powerpc:
-    executor: debian
-    resource_class: small
+    executor: build-on-linux-ratufacoat
     steps:
-      - checkout
-      - run:
-          name: Install required dependencies
-          command: |
-            apt-get update -y
-            apt-get install -y build-essential gcc-powerpc-linux-gnu binutils-powerpc-linux-gnu python3 git cmake qemu-user-static
-      - attach_workspace:
-          at: .
-      - run:
-          name: Setup CMake build
-          working_directory: ratufacoat
-          command: cmake -DSQUIRRELJME_TEST_WRAPPER="$(which qemu-ppc-static)" -DCMAKE_C_COMPILER="$(which powerpc-linux-gnu-gcc)" -DCMAKE_AR="$(which powerpc-linux-gnu-gcc-ar)" -DCMAKE_LINKER="$(which powerpc-linux-gnu-ld)" .
-      - run:
-          name: Compile CMake build
-          working_directory: ratufacoat
-          command: cmake --build .
-      - run:
-          name: Test CMake Build
-          working_directory: ratufacoat
-          command: ctest --extra-verbose -T Test .
-      - run:
-          name: Convert CTest to JUnit XML
-          command: python3 ctest-to-junit.py < Testing/*/Test.xml
-          working_directory: ratufacoat
-          when: always
-      - run:
-          name: Save test results
-          working_directory: ratufacoat
-          command: |
-            mkdir -p ~/test-results/junit-linux/
-            find . -type f -regex '.*/build/junit/.*\.xml' -exec cp {} ~/test-results/junit-linux/ \;
-          when: always
-      - store_test_results:
-          path: ~/test-results
+      - ratufacoat_cross_arch_template:
+          debian-packages: gcc-powerpc-linux-gnu g++-powerpc-linux-gnu binutils-powerpc-linux-gnu
+          qemu-binary: qemu-ppc-static
+          gcc-binary: powerpc-linux-gnu-gcc
+          gpp-binary: powerpc-linux-gnu-g++
+          ar-binary: powerpc-linux-gnu-ar
+          ld-binary: powerpc-linux-gnu-ld
 
-  ### RatufaCoat (SPARC64, Cross Arch Testing)
-  ratufacoat_build_linux_sparc64:
-    executor: debian
-    resource_class: small
+  ### RatufaCoat (PowerPC 64-bit, Cross Arch Testing)
+  ratufacoat_build_linux_powerpc64:
+    executor: build-on-linux-ratufacoat
     steps:
-      - checkout
-      - run:
-          name: Install required dependencies
-          command: |
-            apt-get update -y
-            apt-get install -y build-essential gcc-sparc64-linux-gnu binutils-sparc64-linux-gnu python3 git cmake qemu-user-static
-      - attach_workspace:
-          at: .
-      - run:
-          name: Setup CMake build
-          working_directory: ratufacoat
-          command: cmake -DSQUIRRELJME_TEST_WRAPPER="$(which qemu-sparc64-static)" -DCMAKE_C_COMPILER="$(which sparc64-linux-gnu-gcc)" -DCMAKE_AR="$(which sparc64-linux-gnu-gcc-ar)" -DCMAKE_LINKER="$(which sparc64-linux-gnu-ld)" .
-      - run:
-          name: Compile CMake build
-          working_directory: ratufacoat
-          command: cmake --build .
-      - run:
-          name: Test CMake Build
-          working_directory: ratufacoat
-          command: ctest --extra-verbose -T Test .
-      - run:
-          name: Convert CTest to JUnit XML
-          command: python3 ctest-to-junit.py < Testing/*/Test.xml
-          working_directory: ratufacoat
-          when: always
-      - run:
-          name: Save test results
-          working_directory: ratufacoat
-          command: |
-            mkdir -p ~/test-results/junit-linux/
-            find . -type f -regex '.*/build/junit/.*\.xml' -exec cp {} ~/test-results/junit-linux/ \;
-          when: always
-      - store_test_results:
-          path: ~/test-results
+      - ratufacoat_cross_arch_template:
+          debian-packages: gcc-powerpc64-linux-gnu g++-powerpc64-linux-gnu binutils-powerpc64-linux-gnu
+          qemu-binary: qemu-ppc64-static
+          gcc-binary: powerpc64-linux-gnu-gcc
+          gpp-binary: powerpc64-linux-gnu-g++
+          ar-binary: powerpc64-linux-gnu-ar
+          ld-binary: powerpc64-linux-gnu-ld
+
+  ### RatufaCoat (SH4, Cross Arch Testing)
+  ratufacoat_build_linux_sh4:
+    executor: build-on-linux-ratufacoat
+    steps:
+      - ratufacoat_cross_arch_template:
+          debian-packages: gcc-sh4-linux-gnu g++-sh4-linux-gnu binutils-sh4-linux-gnu
+          qemu-binary: qemu-sh4-static
+          gcc-binary: sh4-linux-gnu-gcc
+          gpp-binary: sh4-linux-gnu-g++
+          ar-binary: sh4-linux-gnu-ar
+          ld-binary: sh4-linux-gnu-ld
+
+  ### RatufaCoat (SPARC 64-bit, Cross Arch Testing)
+  ratufacoat_build_linux_sparc64:
+    executor: build-on-linux-ratufacoat
+    steps:
+      - ratufacoat_cross_arch_template:
+          debian-packages: gcc-sparc64-linux-gnu g++-sparc64-linux-gnu binutils-sparc64-linux-gnu
+          qemu-binary: qemu-sparc64-static
+          gcc-binary: sparc64-linux-gnu-gcc
+          gpp-binary: sparc64-linux-gnu-g++
+          ar-binary: sparc64-linux-gnu-ar
+          ld-binary: sparc64-linux-gnu-ld
 
   ### SpringCoat
   test_springcoat:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - attach_workspace:
@@ -745,11 +733,7 @@ jobs:
       - store_artifacts:
           path: ~/test-results
   test_summercoat:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - attach_workspace:
@@ -783,8 +767,7 @@ jobs:
 
   ################################### USERS ##################################
   export_user_guide:
-    executor: buildenv
-    resource_class: xlarge
+    executor: build-on-linux
     steps:
       - checkout
       - run:
@@ -813,11 +796,7 @@ jobs:
   # Runs the `testJar` task so any operations following this will run faster
   # when they need to use these JARs
   construct_testJars:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - attach_workspace:
@@ -837,11 +816,7 @@ jobs:
   # Constructs the ROM fragment libraries for SummerCoat, since they are used
   # for general ROM construction
   construct_libSummerCoat:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - attach_workspace:
@@ -858,13 +833,9 @@ jobs:
             - '*/build/*'
             - '*/*/build/*'
 
-  # All of the tests so that they can run from within SummerCoat
+  # All the tests so that they can run from within SummerCoat
   construct_libTestSummerCoat:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - attach_workspace:
@@ -883,11 +854,7 @@ jobs:
 
   # Constructs the standard SummerCoat ROM, could be uploaded later
   construct_romSummerCoat:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - attach_workspace:
@@ -908,11 +875,7 @@ jobs:
   # that any RatufaCoats have an actual ROM that can be tested to ensure that
   # it properly works.
   construct_romTestSummerCoat:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - attach_workspace:
@@ -932,7 +895,6 @@ jobs:
   # Constructs the Built-In ROM used for RatufaCoat with tests
   construct_builtInRatufaCoatRom:
     executor: buildenv
-    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -951,7 +913,6 @@ jobs:
   # Constructs the Built-In ROM used for RatufaCoat without tests
   construct_builtInRatufaCoatRomRelease:
     executor: buildenv
-    resource_class: xlarge
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -970,7 +931,6 @@ jobs:
   # Poke RetroArch for building the cores
   poke_RetroArch:
     executor: buildenv
-    resource_class: small
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -1084,10 +1044,22 @@ workflows:
       - ratufacoat_build_linux:
           requires:
             - construct_builtInRatufaCoatRom
+      - ratufacoat_build_linux_m68k:
+          requires:
+            - ratufacoat_build_linux
       - ratufacoat_build_linux_mips:
           requires:
             - ratufacoat_build_linux
+      - ratufacoat_build_linux_mips64:
+          requires:
+            - ratufacoat_build_linux
       - ratufacoat_build_linux_powerpc:
+          requires:
+            - ratufacoat_build_linux
+      - ratufacoat_build_linux_powerpc64:
+          requires:
+            - ratufacoat_build_linux
+      - ratufacoat_build_linux_sh4:
           requires:
             - ratufacoat_build_linux
       - ratufacoat_build_linux_sparc64:
