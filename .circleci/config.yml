@@ -12,10 +12,48 @@
 # CircleCI Reference: https://circleci.com/docs/2.0/env-vars/
 
 version: 2.1
+
 executors:
-  buildenv:
+  build-on-linux:
     docker:
       - image: circleci/openjdk:11-jdk
+    resource_class: medium #xlarge
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+
+  build-on-windows:
+    windows:
+      name: win/default
+      shell: cmd.exe
+    resource_class: medium
+    environment:
+      # Use a reduced amount of memory to all the VMs so that it does not
+      # try grabbing all the memory that is available to the system.
+      JAVA_OPTS: -Xmx3g
+
+  build-on-macos:
+    macos:
+      xcode: 13.2.1
+    resource_class: macos.x86.medium.gen2
+    environment:
+      # Do not auto-update brew as this takes forever, and we really just want
+      # a single package
+      HOMEBREW_NO_AUTO_UPDATE: 1
+
+      # Do not auto-clean brew, this wastes time and everything will be thrown
+      # out when the container finishes anyway
+      HOMEBREW_CLEANUP_MAX_AGE_DAYS: 730
+
+      # Do not send analytics
+      HOMEBREW_NO_ANALYTICS: 1
+
+      # Do not clean up after installation
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
+
+  build-on-macos-m1:
+    machine: true
+    resource_class: squirreljme/squirreljme-macos-m1
 
 orbs:
   win: circleci/windows@2.4.0
@@ -23,14 +61,7 @@ orbs:
 jobs:
   ################################## WINDOWS #################################
   build_windows:
-    executor:
-      name: win/default
-      shell: cmd.exe
-      size: xlarge
-    environment:
-      # Use a reduced amount of memory to all of the VMs so that it does not
-      # try grabbing all the memory that is available to the system.
-      JAVA_OPTS: -Xmx3g
+    executor: build-on-windows
     steps:
       - checkout
       - run:
@@ -68,14 +99,7 @@ jobs:
           path: c:\users\circleci\test-results
 
   build_windows_standalone:
-    executor:
-      name: win/default
-      shell: cmd.exe
-      size: xlarge
-    environment:
-      # Use a reduced amount of memory to all of the VMs so that it does not
-      # try grabbing all the memory that is available to the system.
-      JAVA_OPTS: -Xmx3g
+    executor: build-on-windows
     steps:
       - checkout
       - attach_workspace:
@@ -93,10 +117,7 @@ jobs:
           destination: .
 
   ratufacoat_build_windows:
-    executor:
-      name: win/default
-      shell: cmd.exe
-      size: xlarge
+    executor: build-on-windows
     steps:
       - checkout
       - attach_workspace:
@@ -124,23 +145,7 @@ jobs:
 
   ################################# MAC OS X #################################
   build_macosx:
-    macos:
-      xcode: 13.2.1
-    resource_class: macos.x86.medium.gen2
-    environment:
-      # Do not auto-update brew as this takes forever and we really just want
-      # a single package
-      HOMEBREW_NO_AUTO_UPDATE: 1
-
-      # Do not auto-clean brew, this wastes time and everything will be thrown
-      # out when the container finishes anyway
-      HOMEBREW_CLEANUP_MAX_AGE_DAYS: 730
-
-      # Do not send analytics
-      HOMEBREW_NO_ANALYTICS: 1
-
-      # Do not cleanup after installation
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
+    executor: build-on-macos
     steps:
       - checkout
       - run:
@@ -176,8 +181,7 @@ jobs:
       - store_artifacts:
           path: ~/test-results
   build_macosx_m1:
-    machine: true
-    resource_class: squirreljme/squirreljme-macos-m1
+    executor: build-on-macos-m1
     steps:
       - checkout
       - run:
@@ -209,23 +213,7 @@ jobs:
           path: ~/test-results
 
   build_macosx_standalone:
-    macos:
-      xcode: 13.2.1
-    resource_class: macos.x86.medium.gen2
-    environment:
-      # Do not auto-update brew as this takes forever and we really just want
-      # a single package
-      HOMEBREW_NO_AUTO_UPDATE: 1
-
-      # Do not auto-clean brew, this wastes time and everything will be thrown
-      # out when the container finishes anyway
-      HOMEBREW_CLEANUP_MAX_AGE_DAYS: 730
-
-      # Do not send analytics
-      HOMEBREW_NO_ANALYTICS: 1
-
-      # Do not cleanup after installation
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
+    executor: build-on-macos
     steps:
       - checkout
       - run:
@@ -245,8 +233,7 @@ jobs:
           path: emulators/standalone/build/libs/
           destination: .
   build_macosx_m1_standalone:
-    machine: true
-    resource_class: squirreljme/squirreljme-macos-m1
+    executor: build-on-macos-m1
     steps:
       - checkout
       - attach_workspace:
@@ -262,13 +249,7 @@ jobs:
           destination: .
 
   ratufacoat_build_macosx:
-    macos:
-      xcode: 11.3.0
-    resource_class: macos.x86.medium.gen2
-    environment:
-      # Do not auto-update brew as this takes forever and we really just want
-      # a single package
-      HOMEBREW_NO_AUTO_UPDATE: 1
+    executor: build-on-macos
     steps:
       - checkout
       - run:
@@ -290,11 +271,7 @@ jobs:
 
   ################################### LINUX ##################################
   build_linux:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - run:
@@ -325,11 +302,7 @@ jobs:
       - store_artifacts:
           path: ~/test-results
   build_linux_standalone:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - attach_workspace:
@@ -346,26 +319,18 @@ jobs:
 
   ### OSS SonaType Nexus
   sonatype_publish:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - attach_workspace:
           at: .
       - run:
           name: Publish to OSS SonaType
-          command: ./gradlew publishMavenPublicationToMavenRepository --console plain --continue --parallel
+          command: ./gradlew publishMavenPublicationToMavenRepository --console plain --continue --parallel || circleci-agent step halt
 
   ### RatufaCoat
   ratufacoat_build_linux:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - run:
@@ -389,19 +354,15 @@ jobs:
 
   ### SpringCoat
   test_springcoat:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - attach_workspace:
           at: .
       - run:
           name: SpringCoat Tests
-          command: timeout --foreground 15m ./gradlew testSpringCoat --console plain --continue --parallel
-          no_output_timeout: 15m
+          command: timeout --foreground 17m ./gradlew testSpringCoat --console plain --continue --parallel
+          no_output_timeout: 17m
       - run:
           name: Save test results
           command: |
@@ -425,11 +386,7 @@ jobs:
       - store_artifacts:
           path: ~/test-results
   test_summercoat:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - attach_workspace:
@@ -463,8 +420,7 @@ jobs:
 
   ################################### USERS ##################################
   export_user_guide:
-    executor: buildenv
-    resource_class: xlarge
+    executor: build-on-linux
     steps:
       - checkout
       - run:
@@ -493,11 +449,7 @@ jobs:
   # Runs the `testJar` task so any operations following this will run faster
   # when they need to use these JARs
   construct_testJars:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - attach_workspace:
@@ -517,11 +469,7 @@ jobs:
   # Constructs the ROM fragment libraries for SummerCoat, since they are used
   # for general ROM construction
   construct_libSummerCoat:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - attach_workspace:
@@ -538,13 +486,9 @@ jobs:
             - '*/build/*'
             - '*/*/build/*'
 
-  # All of the tests so that they can run from within SummerCoat
+  # All the tests so that they can run from within SummerCoat
   construct_libTestSummerCoat:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - attach_workspace:
@@ -563,11 +507,7 @@ jobs:
 
   # Constructs the standard SummerCoat ROM, could be uploaded later
   construct_romSummerCoat:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - attach_workspace:
@@ -588,11 +528,7 @@ jobs:
   # that any RatufaCoats have an actual ROM that can be tested to ensure that
   # it properly works.
   construct_romTestSummerCoat:
-    executor: buildenv
-    resource_class: xlarge
-    environment:
-      # Allow Gradle to be fully cached
-      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    executor: build-on-linux
     steps:
       - checkout
       - attach_workspace:
