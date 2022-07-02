@@ -10,7 +10,10 @@
 package cc.squirreljme.runtime.lcdui.image;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.IntegerList;
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import javax.microedition.lcdui.Image;
@@ -23,6 +26,26 @@ import net.multiphasicapps.io.ExtendedDataInputStream;
  */
 public class GIFReader
 {
+	/** Extension. */
+	public static final byte BLOCK_EXTENSION =
+		0x21;
+	
+	/** Image. */
+	public static final byte BLOCK_IMAGE =
+		0x2C;
+	
+	/** End of GIF. */
+	public static final byte BLOCK_FILE_TERMINATION =
+		0x3B;
+	
+	/** Comment extension. */
+	public static final byte EXTENSION_COMMENT =
+		(byte)0xFE;
+	
+	/** Graphics control extension. */
+	public static final byte EXTENSION_GRAPHICS_CONTROL =
+		(byte)0xF9;
+	
 	/** The source data stream. */
 	protected final ExtendedDataInputStream in;
 	
@@ -32,6 +55,17 @@ public class GIFReader
 	/** The number of images available. */
 	protected final List<Image> subImages =
 		new ArrayList<>();
+	
+	/** Sub-delay times for images. */
+	protected final IntegerList subFrameTimes =
+		new IntegerList();
+	
+	/** The global color table. */
+	private __GIFPalette__ _gct;
+	
+	/** The number of times to loop through the image. */
+	private int _loopCount =
+		-1;
 	
 	/**
 	 * Initializes the GIF reader.
@@ -84,8 +118,11 @@ public class GIFReader
 		if (imageFlags.hasGlobalColorTable)
 			globalPalette = __GIFPalette__.__parseGlobal(
 				in, imageFlags.globalColorTableSize);
+		this._gct = globalPalette;
 		
-		// Image parsing loop
+		// Image parsing loop, stop when termination was reached
+		for (int lastId = -1; lastId != GIFReader.BLOCK_FILE_TERMINATION;)
+			lastId = this.__decodeBlock();
 		
 		// Build image, which may be animated or not!
 		ImageFactory imageFactory = this.factory;
@@ -105,6 +142,80 @@ public class GIFReader
 			return subImages.get(0);
 		
 		// Animated images
-		throw Debugging.todo();
+		IntegerList subFrameTimes = this.subFrameTimes;
+		return imageFactory.animatedImage(
+			subImages.toArray(new Image[subImages.size()]),
+			subFrameTimes.toIntegerArray(),
+			Math.max(1, this._loopCount));
+	}
+	
+	/**
+	 * Decodes a GIF block.
+	 * 
+	 * @return The read block ID.
+	 * @throws IOException On read errors.
+	 * @since 2022/07/02
+	 */
+	private byte __decodeBlock()
+		throws IOException
+	{
+		byte blockId = this.in.readByte();
+		switch (blockId)
+		{
+				// Extension
+			case GIFReader.BLOCK_EXTENSION:
+				this.__decodeExtension();
+				break;
+			
+				// Image
+			case GIFReader.BLOCK_IMAGE:
+				throw Debugging.todo();
+			
+				// End of GIF
+			case GIFReader.BLOCK_FILE_TERMINATION:
+				break;
+			
+				// {@squirreljme.error EB3a Unknown GIF block type.
+				// (The block)}
+			default:
+				throw new IOException("EB3a " + blockId);
+		}
+		
+		return blockId;
+	}
+	
+	/**
+	 * Decodes an extension block.
+	 * 
+	 * @throws IOException On read errors.
+	 * @since 2022/07/02
+	 */
+	private void __decodeExtension()
+		throws IOException
+	{
+		byte blockId = this.in.readByte();
+		switch (blockId)
+		{
+				// Comment, this is completely ignored
+			case GIFReader.EXTENSION_COMMENT:
+				// Closing will automatically advance the stream
+				try (InputStream in =
+					new __GIFDataSubBlockInputStream__(this.in))
+				{
+					Debugging.debugNote("GIF Comment: %s",
+						new String(StreamUtils.readAll(in),
+							"utf-8"));
+				}
+				break;
+			
+				// Graphics control
+			case GIFReader.EXTENSION_GRAPHICS_CONTROL:
+				throw Debugging.todo();
+			
+				// {@squirreljme.error EB3o Unknown GIF block type.
+				// (The block)}
+			default:
+				throw new IOException("EB3o " + blockId);
+		}
 	}
 }

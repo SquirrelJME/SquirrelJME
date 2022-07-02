@@ -206,11 +206,12 @@ public final class Debugging
 				"*****************************************");
 			Debugging.todoNote("INCOMPLETE CODE HAS BEEN REACHED: ");
 			
-			// If running on Java SE use it's method of printing traces
+			// If running on Java SE use its method of printing traces
 			// because the SquirrelJME trace support may be missing
 			if (RuntimeShelf.vmType() == VMType.JAVA_SE)
 			{
-				new Throwable("INCOMPLETE CODE").printStackTrace(System.err);
+				new Throwable("INCOMPLETE CODE")
+					.printStackTrace(System.err);
 			}
 			
 			// Use SquirrelJME's method
