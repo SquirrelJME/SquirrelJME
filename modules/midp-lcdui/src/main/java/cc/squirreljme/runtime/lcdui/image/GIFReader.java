@@ -38,6 +38,10 @@ public class GIFReader
 	public static final byte BLOCK_FILE_TERMINATION =
 		0x3B;
 	
+	/** Application extension. */
+	public static final byte EXTENSION_APPLICATION =
+		(byte)0xFF;
+	
 	/** Comment extension. */
 	public static final byte EXTENSION_COMMENT =
 		(byte)0xFE;
@@ -196,26 +200,79 @@ public class GIFReader
 		byte blockId = this.in.readByte();
 		switch (blockId)
 		{
+				// Application extension, this is ignored
+			case GIFReader.EXTENSION_APPLICATION:
+				this.__handleApplicationExtension();
+				break;
+			
 				// Comment, this is completely ignored
 			case GIFReader.EXTENSION_COMMENT:
-				// Closing will automatically advance the stream
-				try (InputStream in =
-					new __GIFDataSubBlockInputStream__(this.in))
-				{
-					Debugging.debugNote("GIF Comment: %s",
-						new String(StreamUtils.readAll(in),
-							"utf-8"));
-				}
+				this.__handleComment();
 				break;
 			
 				// Graphics control
 			case GIFReader.EXTENSION_GRAPHICS_CONTROL:
-				throw Debugging.todo();
+				this.__handleExtensionControl();
+				break;
 			
 				// {@squirreljme.error EB3o Unknown GIF block type.
 				// (The block)}
 			default:
-				throw new IOException("EB3o " + blockId);
+				throw new IOException(
+					"EB3o 0x" + (blockId & 0xFF));
+		}
+	}
+	
+	/**
+	 * Handles the application extension, which is ignored by SquirrelJME.
+	 * 
+	 * @throws IOException On read errors.
+	 * @since 2022/07/03
+	 */
+	private void __handleApplicationExtension()
+		throws IOException
+	{
+		ExtendedDataInputStream in = this.in;
+		
+		// The next field just contains the number of bytes in the application
+		// ID and otherwise, should always be 11 but could be more?
+		// {@squirreljme.error EB3s Malformed application extension.}
+		int preDataBlockSize = in.readUnsignedByte();
+		if (preDataBlockSize != in.skipBytes(preDataBlockSize))
+			throw new IOException("EB3s");
+		
+		// Read the application data, but just ignore it
+		new __GIFDataSubBlockInputStream__(this.in).close();
+	}
+	
+	/**
+	 * Handles Graphics Extension Control.
+	 * 
+	 * @throws IOException On read errors.
+	 * @since 2022/07/03
+	 */
+	private void __handleExtensionControl()
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Handles GIF comments, essentially they are ignored.
+	 * 
+	 * @throws IOException On read errors.
+	 * @since 2022/07/03
+	 */
+	private void __handleComment()
+		throws IOException
+	{
+		// Closing will automatically advance the stream
+		try (InputStream in =
+			new __GIFDataSubBlockInputStream__(this.in))
+		{
+			Debugging.debugNote("GIF Comment: %s",
+				new String(StreamUtils.readAll(in),
+					"utf-8"));
 		}
 	}
 }

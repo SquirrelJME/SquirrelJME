@@ -507,7 +507,14 @@ public class ExtendedDataInputStream
 	public int skipBytes(int __n)
 		throws IOException
 	{
-		throw Debugging.todo();
+		// Try to read as many bytes as possible
+		InputStream in = this.input;
+		for (int i = 0; i < __n; i++)
+			if (in.read() < 0)
+				return i;
+		
+		// Read all the bytes
+		return __n;
 	}
 	
 	/**
