@@ -212,7 +212,7 @@ public class GIFReader
 			
 				// Graphics control
 			case GIFReader.EXTENSION_GRAPHICS_CONTROL:
-				this.__handleExtensionControl();
+				this.__handleExtensionGraphicsControl();
 				break;
 			
 				// {@squirreljme.error EB3o Unknown GIF block type.
@@ -251,7 +251,7 @@ public class GIFReader
 	 * @throws IOException On read errors.
 	 * @since 2022/07/03
 	 */
-	private void __handleExtensionControl()
+	private void __handleExtensionGraphicsControl()
 		throws IOException
 	{
 		throw Debugging.todo();
