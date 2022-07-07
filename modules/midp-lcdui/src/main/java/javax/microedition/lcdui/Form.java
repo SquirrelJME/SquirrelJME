@@ -128,7 +128,7 @@ public class Form
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error EB23 Cannot append an item which has already
-		// be associated with a form.}
+		// been associated with a form.}
 		if (__i._displayable != null)
 			throw new IllegalStateException("EB23");
 		__i._displayable = this;
@@ -143,9 +143,21 @@ public class Form
 		return rv;
 	}
 	
-	public void delete(int __a)
+	/**
+	 * Deletes the specified index in the form.
+	 * 
+	 * @param __i The index to delete.
+	 * @throws IndexOutOfBoundsException If the item is not valid.
+	 * @since 2022/07/07
+	 */
+	public void delete(int __i)
+		throws IndexOutOfBoundsException
 	{
-		throw Debugging.todo();
+		// Delete item
+		this._items.remove(__i);
+		
+		// Update display
+		this.__update();
 	}
 	
 	public void deleteAll()
