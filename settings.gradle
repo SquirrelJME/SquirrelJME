@@ -33,9 +33,16 @@ if ((foundTermuxRoot && System.getProperty("force.termux") == null) ||
 	})
 }
 
+// Is this Mac OS?
+def osName = System.getProperty("os.name")
+if (osName.equalsIgnoreCase('Mac OS X')) {
+	gradle.beforeProject({proj ->
+		proj.ext.squirreljmeIsOnMacOs = true
+	})
+}
+
 // If we are on M1 Macs, perform some modifications so that Gradle can compile
 // C++ code
-def osName = System.getProperty("os.name")
 def osArch = System.getProperty("os.arch")  
 if (osName.equalsIgnoreCase('Mac OS X') &&
 	(osArch.equalsIgnoreCase('aarch64') || osArch.equalsIgnoreCase('arm64') ||
