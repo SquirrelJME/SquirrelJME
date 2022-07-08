@@ -12,11 +12,13 @@ package cc.squirreljme.runtime.lcdui.image;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IntegerList;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import javax.microedition.lcdui.Image;
+import net.multiphasicapps.io.DataEndianess;
 import net.multiphasicapps.io.ExtendedDataInputStream;
 
 /**
@@ -70,6 +72,9 @@ public class GIFReader
 	/** The number of times to loop through the image. */
 	private int _loopCount =
 		-1;
+	
+	/** The current frame control, if any. */
+	private __GIFFrameControl__ _frameControl;
 	
 	/**
 	 * Initializes the GIF reader.
@@ -254,7 +259,35 @@ public class GIFReader
 	private void __handleExtensionGraphicsControl()
 		throws IOException
 	{
-		throw Debugging.todo();
+		ExtendedDataInputStream in = this.in;
+		
+		// Read in the data block
+		int blockSize = in.readUnsignedByte();
+		byte[] blockData = new byte[blockSize];
+		in.readFully(blockData);
+		
+		// Handle the data within and parse 
+		try (ExtendedDataInputStream data = new ExtendedDataInputStream(
+			new ByteArrayInputStream(blockData), DataEndianess.LITTLE))
+		{
+			// Read the frame control information
+			__GIFFrameControl__ frameControl = new __GIFFrameControl__(
+				data.readUnsignedByte(),
+				data.readUnsignedShort(),
+				data.readUnsignedByte());
+			this._frameControl = frameControl;
+			
+			// Set the last frame's delay to the delay specified in this one
+			// since this indicates the amount of time to wait _before_
+			// showing the current frame
+			IntegerList subFrameTimes = this.subFrameTimes;
+			if (!subFrameTimes.isEmpty())
+				subFrameTimes.setInteger(
+					subFrameTimes.size() - 1, frameControl.delayMilli);
+		}
+		
+		// There is technically a data block here, but we just ignore it
+		new __GIFDataSubBlockInputStream__(in).close();
 	}
 	
 	/**

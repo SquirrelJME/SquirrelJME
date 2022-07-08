@@ -233,26 +233,7 @@ public class DataInputStream
 	public final void readFully(byte[] __b)
 		throws EOFException, IOException, NullPointerException
 	{
-		if (__b == null)
-			throw new NullPointerException("NARG");
-		
-		int rv = 0,
-			bl = __b.length;
-		
-		// Constantly read in as many chunks as possible
-		InputStream in = this.in;
-		while (rv < bl)
-		{
-			// Read entire chunk
-			int rc = in.read(__b, rv, bl - rv);
-			
-			// Reached EOF
-			if (rc < 0)
-				throw new EOFException("EOFF");
-			
-			// These many characters were read, we might try again
-			rv += rc;
-		}
+		this.__readFully(__b, 0, __b.length);
 	}
 	
 	/**
@@ -263,27 +244,7 @@ public class DataInputStream
 	public final void readFully(byte[] __b, int __o, int __l)
 		throws EOFException, IOException
 	{
-		if (__b == null)
-			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
-			throw new IndexOutOfBoundsException("IOOB");
-		
-		int rv = 0;
-		
-		// Constantly read in as many chunks as possible
-		InputStream in = this.in;
-		while (rv < __l)
-		{
-			// Read entire chunk
-			int rc = in.read(__b, __o + rv, __l - rv);
-			
-			// Reached EOF
-			if (rc < 0)
-				throw new EOFException("EOFF");
-			
-			// These many bytes were read, we might try again
-			rv += rc;
-		}
+		this.__readFully(__b, __o, __l);
 	}
 	
 	/**
@@ -462,6 +423,45 @@ public class DataInputStream
 		
 		// Read all the bytes
 		return __n;
+	}
+	
+	/**
+	 * Reads a full buffer from the stream, throwing {@link EOFException}
+	 * if not enough bytes were read.
+	 * 
+	 * @param __b The buffer to read into.
+	 * @param __o The offset.
+	 * @param __l The length.
+	 * @throws IndexOutOfBoundsException The offset and/or length are
+	 * negative or exceeds the array bounds.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/07/07
+	 */
+	private void __readFully(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, IOException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		int rv = 0;
+		
+		// Constantly read in as many chunks as possible
+		InputStream in = this.in;
+		while (rv < __l)
+		{
+			// Read entire chunk
+			int rc = in.read(__b, __o + rv, __l - rv);
+			
+			// Reached EOF
+			if (rc < 0)
+				throw new EOFException("EOFF");
+			
+			// These many bytes were read, we might try again
+			rv += rc;
+		}
 	}
 	
 	/**
