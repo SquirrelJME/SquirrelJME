@@ -66,12 +66,18 @@ public class GIFReader
 	protected final IntegerList subFrameTimes =
 		new IntegerList();
 	
+	/** The background color used. */
+	private short _bgColor;
+	
 	/** The global color table. */
 	private __GIFPalette__ _gct;
 	
 	/** The number of times to loop through the image. */
 	private int _loopCount =
 		-1;
+		
+	/** Has this had transparency? */
+	private boolean _hadTransparency;
 	
 	/** The current frame control, if any. */
 	private __GIFFrameControl__ _frameControl;
@@ -117,10 +123,10 @@ public class GIFReader
 		__GIFFlags__ imageFlags = new __GIFFlags__(in.readUnsignedByte());
 		
 		// Background color index
-		int bgColorIndex = in.readUnsignedByte();
+		this._bgColor = (short)in.readUnsignedByte();
 		
-		// Pixel aspect ratio
-		int aspectRatio = in.readUnsignedByte();
+		// Pixel aspect ratio, ignored
+		in.readUnsignedByte();
 		
 		// Read in the global color table
 		__GIFPalette__ globalPalette = null;
@@ -143,7 +149,8 @@ public class GIFReader
 			int[] rgb = new int[screenWidth * screenHeight];
 			
 			return imageFactory.stillImage(rgb, 0, rgb.length,
-				false, false, screenWidth, screenHeight);
+				false, this._hadTransparency,
+				screenWidth, screenHeight);
 		}
 		
 		// Single image, use it directly
@@ -284,6 +291,9 @@ public class GIFReader
 			if (!subFrameTimes.isEmpty())
 				subFrameTimes.setInteger(
 					subFrameTimes.size() - 1, frameControl.delayMilli);
+			
+			// Has this had transparency?
+			this._hadTransparency |= frameControl.hasTransColor;
 		}
 		
 		// There is technically a data block here, but we just ignore it
