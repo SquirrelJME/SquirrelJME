@@ -45,4 +45,25 @@ public enum __GIFDisposeMethod__
 	{
 		this.id = __id;
 	}
+	
+	/**
+	 * Determines the disposal method.
+	 * 
+	 * @param __i The value to get.
+	 * @return The value of the given index or {@link #NONE_SPECIFIED}
+	 * if it is the default or unknown.
+	 * @since 2022/07/09
+	 */
+	public static __GIFDisposeMethod__ valueOf(int __i)
+	{
+		switch (__i)
+		{
+			case 1: return __GIFDisposeMethod__.KEEP;
+			case 2: return __GIFDisposeMethod__.RESTORE_BACKGROUND_COLOR;
+			case 3: return __GIFDisposeMethod__.RESTORE_PREVIOUS_FRAME;
+		}
+		
+		// Default to none otherwise
+		return __GIFDisposeMethod__.NONE_SPECIFIED;
+	}
 }
