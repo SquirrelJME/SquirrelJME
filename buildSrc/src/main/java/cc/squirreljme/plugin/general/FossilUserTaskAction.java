@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// SquirrelJME
+// Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,30 +9,27 @@
 
 package cc.squirreljme.plugin.general;
 
-import javax.inject.Inject;
-import org.gradle.api.DefaultTask;
+import cc.squirreljme.plugin.util.FossilExe;
+import org.gradle.api.Action;
+import org.gradle.api.Task;
 
 /**
- * Task which essentially just outputs the executable path to Fossil.
+ * The action for {@link FossilUserTask}.
  *
- * @since 2020/06/24
+ * @since 2022/07/10
  */
-public class FossilExeTask
-	extends DefaultTask
+class FossilUserTaskAction
+	implements Action<Task>
 {
 	/**
-	 * Initializes the task.
-	 * 
-	 * @since 2020/06/24
+	 * {@inheritDoc}
+	 *
+	 * @since 2022/07/10
 	 */
-	@Inject
-	public FossilExeTask()
+	@Override
+	public void execute(Task __task)
 	{
-		// Set details of this task
-		this.setGroup("squirreljmeGeneral");
-		this.setDescription("Prints the Fossil executable path.");
-		
-		// Action to perform
-		this.doLast(new FossilExeTaskAction());
+		__task.getLogger().lifecycle(
+			"Fossil user is: " + FossilExe.instance().currentUser());
 	}
 }
