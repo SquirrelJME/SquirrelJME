@@ -70,7 +70,7 @@ public class GIFReader
 	private short _bgColor;
 	
 	/** The global color table. */
-	private __GIFPalette__ _gct;
+	private __GIFPalette__ _globalPalette;
 	
 	/** The number of times to loop through the image. */
 	private int _loopCount =
@@ -133,7 +133,7 @@ public class GIFReader
 		if (imageFlags.hasGlobalColorTable)
 			globalPalette = __GIFPalette__.__parseGlobal(
 				in, imageFlags.globalColorTableSize);
-		this._gct = globalPalette;
+		this._globalPalette = globalPalette;
 		
 		// Image parsing loop, stop when termination was reached
 		for (int lastId = -1; lastId != GIFReader.BLOCK_FILE_TERMINATION;)
@@ -185,7 +185,8 @@ public class GIFReader
 			
 				// Image
 			case GIFReader.BLOCK_IMAGE:
-				throw Debugging.todo();
+				this.__handleImage();
+				break;
 			
 				// End of GIF
 			case GIFReader.BLOCK_FILE_TERMINATION:
@@ -236,7 +237,8 @@ public class GIFReader
 	}
 	
 	/**
-	 * Handles the application extension, which is ignored by SquirrelJME.
+	 * Handles the application extension, the only really useful one is the
+	 * Netscape extension which allows for looping.
 	 * 
 	 * @throws IOException On read errors.
 	 * @since 2022/07/03
@@ -247,14 +249,58 @@ public class GIFReader
 		ExtendedDataInputStream in = this.in;
 		
 		// The next field just contains the number of bytes in the application
-		// ID and otherwise, should always be 11 but could be more?
+		// ID and otherwise, should always be 11.
 		// {@squirreljme.error EB3s Malformed application extension.}
-		int preDataBlockSize = in.readUnsignedByte();
-		if (preDataBlockSize != in.skipBytes(preDataBlockSize))
+		if (in.readUnsignedByte() != 11)
 			throw new IOException("EB3s");
 		
-		// Read the application data, but just ignore it
-		new __GIFDataSubBlockInputStream__(this.in).close();
+		// Read the application ID and authentication code as one chunk
+		byte[] rawApp = new byte[11];
+		in.readFully(rawApp);
+		String app = new String(rawApp, "ascii");
+		
+		// Action depends on the application ID
+		try (ExtendedDataInputStream appData = new ExtendedDataInputStream(
+			new __GIFDataSubBlockInputStream__(this.in), DataEndianess.LITTLE))
+		{
+			switch (app)
+			{
+					// Netscape/Animation extension, these are the same, and
+					// I am assuming ANIMEXTS probably comes from someone
+					// or something hating Netscape being in there.
+				case "NETSCAPE2.0":
+				case "ANIMEXTS1.0":
+					// Ignored, always 1??
+					appData.readByte();
+					
+					// Loop count
+					this._loopCount = appData.readUnsignedShort();
+					break;
+				
+					// Unknown, ignore
+				default:
+					break;
+			}
+		}
+	}
+	
+	/**
+	 * Handles GIF comments, essentially they are ignored.
+	 *
+	 * @throws IOException On read errors.
+	 * @since 2022/07/03
+	 */
+	private void __handleComment()
+		throws IOException
+	{
+		// Closing will automatically advance the stream
+		try (InputStream in =
+				 new __GIFDataSubBlockInputStream__(this.in))
+		{
+			Debugging.debugNote("GIF Comment: %s",
+				new String(StreamUtils.readAll(in),
+					"utf-8"));
+		}
 	}
 	
 	/**
@@ -301,21 +347,28 @@ public class GIFReader
 	}
 	
 	/**
-	 * Handles GIF comments, essentially they are ignored.
+	 * Handles the loading of images.
 	 * 
 	 * @throws IOException On read errors.
-	 * @since 2022/07/03
+	 * @since 2022/07/09
 	 */
-	private void __handleComment()
+	private void __handleImage()
 		throws IOException
 	{
-		// Closing will automatically advance the stream
-		try (InputStream in =
-			new __GIFDataSubBlockInputStream__(this.in))
-		{
-			Debugging.debugNote("GIF Comment: %s",
-				new String(StreamUtils.readAll(in),
-					"utf-8"));
-		}
+		ExtendedDataInputStream in = this.in;
+		__GIFFrameControl__ frameControl = this._frameControl;
+		
+		// Image position
+		int imgX = in.readUnsignedShort();
+		int imgY = in.readUnsignedShort();
+		
+		// Image size
+		int imgW = in.readUnsignedShort();
+		int imgH = in.readUnsignedShort();
+		
+		// Image flags
+		int flags = in.readUnsignedByte();
+		
+		throw Debugging.todo();
 	}
 }
