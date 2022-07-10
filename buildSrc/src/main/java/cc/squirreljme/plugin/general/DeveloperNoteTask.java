@@ -11,12 +11,9 @@ package cc.squirreljme.plugin.general;
 
 import cc.squirreljme.plugin.multivm.AlwaysFalse;
 import cc.squirreljme.plugin.util.FossilExe;
-import cc.squirreljme.plugin.util.NoteCalendarGenerator;
-import cc.squirreljme.plugin.util.SimpleHTTPProtocolException;
 import cc.squirreljme.plugin.util.SimpleHTTPRequest;
 import cc.squirreljme.plugin.util.SimpleHTTPResponse;
 import cc.squirreljme.plugin.util.SimpleHTTPResponseBuilder;
-import cc.squirreljme.plugin.util.SimpleHTTPServer;
 import cc.squirreljme.plugin.util.SimpleHTTPStatus;
 import java.awt.Desktop;
 import java.awt.HeadlessException;
@@ -67,94 +64,7 @@ public class DeveloperNoteTask
 		this.getOutputs().upToDateWhen(new AlwaysFalse());
 		
 		// Action to perform
-		this.doLast(this::action);
-	}
-	
-	/**
-	 * Performs the task action.
-	 * 
-	 * @param __task The called task.
-	 * @since 2020/06/26
-	 */
-	private void action(Task __task)
-	{
-		// Setup session
-		LocalDateTime now = LocalDateTime.now();
-		String filePath = this.__blogFilePath(now.toLocalDate());
-		__DeveloperNoteSession__ session = new __DeveloperNoteSession__(
-			filePath);
-		
-		// Load pre-existing blog
-		FossilExe exe = FossilExe.instance();
-		byte[] content = exe.unversionCatBytes(filePath);
-		boolean doCreate = (content == null);
-		if (doCreate)
-			content = DeveloperNoteTask.__template(now);
-		session._content = content;
-		
-		// Open server
-		try (SimpleHTTPServer<__DeveloperNoteSession__> server =
-			new SimpleHTTPServer<>(session))
-		{
-			// Note on where to get it
-			String url = String.format("http://%s:%d/", server.hostname,
-				server.port);
-			__task.getLogger().lifecycle("Editing " + filePath);
-			__task.getLogger().lifecycle("Server opened at " + url);
-			
-			// Launch a web browser
-			DeveloperNoteTask.__launchBrowser(__task, url);
-			
-			// Continuous handling loop
-			for (;;)
-				try
-				{
-					// Stop the loop if we were interrupted
-					if (Thread.interrupted())
-						break;
-					
-					// Otherwise wait for another packet
-					if (!server.next(this::__httpHandler))
-						break;
-				}
-				catch (SimpleHTTPProtocolException e)
-				{
-					e.printStackTrace();
-				}
-		}
-		
-		// Problem with the server
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			throw new RuntimeException("Server read/write error.", e);
-		}
-		
-		// Store the note in the un-versioned space, but only if saved
-		if (session._saveCount > 0)
-			exe.unversionedStoreBytes(filePath, session._content);
-		
-		// Recreate the calendar
-		if (doCreate)
-			try
-			{
-				NoteCalendarGenerator.generateAndStore(exe);
-			}
-			catch (IOException e)
-			{
-				throw new RuntimeException("Could not generate calendar.", e);
-			}
-	}
-	
-	/**
-	 * Returns the blog file path.
-	 * 
-	 * @return The path to the blog file.
-	 * @since 2020/06/27
-	 */
-	private String __blogFilePath()
-	{
-		return this.__blogFilePath(LocalDate.now());
+		this.doLast(new DeveloperNoteTaskAction());
 	}
 	
 	/**
@@ -165,10 +75,10 @@ public class DeveloperNoteTask
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/27
 	 */
-	private String __blogFilePath(LocalDate __date)
+	static String __blogFilePath(LocalDate __date)
 		throws NullPointerException
 	{
-		return this.__blogFilePath(__date,
+		return DeveloperNoteTask.__blogFilePath(__date,
 			FossilExe.instance().currentUser());
 	}
 	
@@ -181,7 +91,7 @@ public class DeveloperNoteTask
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/27
 	 */
-	private String __blogFilePath(LocalDate __date, String __user)
+	private static String __blogFilePath(LocalDate __date, String __user)
 		throws NullPointerException
 	{
 		if (__date == null || __user == null)
@@ -202,8 +112,8 @@ public class DeveloperNoteTask
 	 * @since 2020/06/26
 	 */
 	@SuppressWarnings("FeatureEnvy")
-	private SimpleHTTPResponse __httpHandler(
-		__DeveloperNoteSession__ __session, SimpleHTTPRequest __request)
+	static SimpleHTTPResponse __httpHandler(__DeveloperNoteSession__ __session,
+		SimpleHTTPRequest __request)
 		throws NullPointerException
 	{
 		if (__session == null || __request == null)
@@ -276,7 +186,7 @@ public class DeveloperNoteTask
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/27
 	 */
-	private static void __launchBrowser(Task __task, String __url)
+	static void __launchBrowser(Task __task, String __url)
 		throws NullPointerException
 	{
 		if (__url == null)
@@ -319,7 +229,7 @@ public class DeveloperNoteTask
 	 * @since 2020/06/27
 	 */
 	@SuppressWarnings("resource")
-	private static byte[] __template(LocalDateTime __at)
+	static byte[] __template(LocalDateTime __at)
 		throws NullPointerException
 	{
 		if (__at == null)

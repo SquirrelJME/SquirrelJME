@@ -44,24 +44,6 @@ public class RecreateDeveloperNoteCalendarTask
 		this.onlyIf(__task -> FossilExe.isAvailable(true));
 		
 		// Action to perform
-		this.doLast(this::action);
-	}
-	
-	/**
-	 * Performs the task action.
-	 * 
-	 * @param __task The called task.
-	 * @since 2020/06/26
-	 */
-	private void action(Task __task)
-	{
-		try
-		{
-			NoteCalendarGenerator.generateAndStore(FossilExe.instance());
-		}
-		catch (IOException e)
-		{
-			throw new RuntimeException("Could not generate calendar.", e);
-		}
+		this.doLast(new RecreateDeveloperNoteCalendarTaskAction());
 	}
 }
