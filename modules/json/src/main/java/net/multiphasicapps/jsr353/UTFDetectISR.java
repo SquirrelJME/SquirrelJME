@@ -9,13 +9,12 @@
 
 package net.multiphasicapps.jsr353;
 
-import java.io.BufferedInputStream;
+import cc.squirreljme.runtime.cldc.io.MarkableInputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.nio.charset.Charset;
 
 /**
  * This is a stream is auto detects the first four bytes of the input stream
@@ -38,7 +37,7 @@ public class UTFDetectISR extends Reader
 	private final Object _lock = new Object();
 	
 	/** Buffer for input stream. */
-	private BufferedInputStream _bix;
+	private MarkableInputStream _bix;
 	
 	/** Wrapped input, which is correctly determined. */
 	private InputStreamReader _wrk;
@@ -56,7 +55,7 @@ public class UTFDetectISR extends Reader
 			throw new NullPointerException("No input stream specified.");
 		
 		// Init stream
-		this._bix = new BufferedInputStream(__i);
+		this._bix = new MarkableInputStream(__i);
 	}
 	
 	/**
@@ -98,26 +97,8 @@ public class UTFDetectISR extends Reader
 				else
 					css = "UTF-8";
 				
-				// Choose character set (note that UTF-32 might not be
-				// supported by the host VM).
-				Charset cs = null;
-				try
-				{
-					cs = Charset.forName(css);
-					if (cs == null)
-						throw new IllegalArgumentException();
-				}
-				
-				// Whoops
-				catch (IllegalArgumentException iae)
-				{
-					throw new IOException(String.format(
-						"Input stream uses unsupported " +
-						"character set \"%1$s\".", css));
-				}
-				
 				// Init using specified charset
-				this._wrk = new InputStreamReader(this._bix, cs);
+				this._wrk = new InputStreamReader(this._bix, css);
 			}
 			
 			// Read from work stream

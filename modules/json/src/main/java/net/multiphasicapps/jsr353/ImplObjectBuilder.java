@@ -9,11 +9,6 @@
 
 package net.multiphasicapps.jsr353;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import com.oracle.json.JsonArray;
 import com.oracle.json.JsonArrayBuilder;
 import com.oracle.json.JsonNumber;
@@ -21,6 +16,10 @@ import com.oracle.json.JsonObject;
 import com.oracle.json.JsonObjectBuilder;
 import com.oracle.json.JsonString;
 import com.oracle.json.JsonValue;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import net.multiphasicapps.collections.UnmodifiableMap;
 
 /**
  * This class builds objects.
@@ -41,53 +40,8 @@ public class ImplObjectBuilder
 	 */
 	public ImplObjectBuilder()
 	{
-		
 		// Order init
 		this._order = new LinkedHashMap<String, JsonValue>();
-	}
-	
-	/**
-	 * Adds a {@link JsonNumber} with the specified value and associates it
-	 * with the given key.
-	 *
-	 * If the key is already set with a value, it is replaced.
-	 *
-	 * @param __n Name of the key pair to add.
-	 * @param __v Value of the key pair to add.
-	 * @return {@code this}.
-	 * @throws NullPointerException If {@code __n} or {@code __v} are
-	 * {@code null}.
-	 * @since 2014/08/02
-	 */
-	@Override
-	public JsonObjectBuilder add(String __n, BigDecimal __v)
-	{
-		synchronized (this.lock)
-		{
-			return this.add(__n, new ImplValueNumber(__v));
-		}
-	}
-	
-	/**
-	 * Adds a {@link JsonNumber} with the specified value and associates it
-	 * with the given key.
-	 *
-	 * If the key is already set with a value, it is replaced.
-	 *
-	 * @param __n Name of the key pair to add.
-	 * @param __v Value of the key pair to add.
-	 * @return {@code this}.
-	 * @throws NullPointerException If {@code __n} or {@code __v} are
-	 * {@code null}.
-	 * @since 2014/08/02
-	 */
-	@Override
-	public JsonObjectBuilder add(String __n, BigInteger __v)
-	{
-		synchronized (this.lock)
-		{
-			return this.add(__n, new ImplValueNumber(new BigDecimal(__v)));
-		}
 	}
 	
 	/**
@@ -128,7 +82,7 @@ public class ImplObjectBuilder
 	{
 		synchronized (this.lock)
 		{
-			return this.add(__n, new ImplValueNumber(new BigDecimal(__v)));
+			return this.add(__n, new ImplValueNumber(__v));
 		}
 	}
 	
@@ -149,7 +103,7 @@ public class ImplObjectBuilder
 	{
 		synchronized (this.lock)
 		{
-			return this.add(__n, new ImplValueNumber(new BigDecimal(__v)));
+			return this.add(__n, new ImplValueNumber(__v));
 		}
 	}
 	
@@ -255,7 +209,7 @@ public class ImplObjectBuilder
 	{
 		synchronized (this.lock)
 		{
-			return this.add(__n, new ImplValueNumber(new BigDecimal(__v)));
+			return this.add(__n, new ImplValueNumber(__v));
 		}
 	}
 	
@@ -313,9 +267,9 @@ public class ImplObjectBuilder
 		synchronized (this.lock)
 		{
 			// As a map
-			return new ImplValueObject(Collections.<String, JsonValue>
-				unmodifiableMap(new LinkedHashMap<String, JsonValue>(
-				this._order)));
+			return new ImplValueObject(
+				UnmodifiableMap.of(new LinkedHashMap<String, JsonValue>(
+					this._order)));
 		}
 	}
 }

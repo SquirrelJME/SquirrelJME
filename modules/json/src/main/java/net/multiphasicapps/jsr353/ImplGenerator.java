@@ -9,14 +9,6 @@
 
 package net.multiphasicapps.jsr353;
 
-import java.io.PrintWriter;
-import java.io.Writer;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
 import com.oracle.json.JsonArray;
 import com.oracle.json.JsonException;
 import com.oracle.json.JsonNumber;
@@ -25,6 +17,11 @@ import com.oracle.json.JsonString;
 import com.oracle.json.JsonValue;
 import com.oracle.json.stream.JsonGenerationException;
 import com.oracle.json.stream.JsonGenerator;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This has the capability to write JSON data to an output stream.
@@ -34,10 +31,6 @@ import com.oracle.json.stream.JsonGenerator;
 public class ImplGenerator
 	implements JsonGenerator
 {
-	/** Bundle for this class. */
-	static final ResourceBundle BUN =
-		ResourceBundle.getBundle(ReaderInput.class.getName());
-	
 	/** Indentation level. */
 	public static final int INDENT = 2;
 	
@@ -45,7 +38,7 @@ public class ImplGenerator
 	private final Object _lock;
 	
 	/** Stream to print to. */
-	private final PrintWriter _pw;
+	private final Writer _pw;
 	
 	/** Indent writer for pretty printing .*/
 	private final IndentedWriter _iw;
@@ -61,6 +54,9 @@ public class ImplGenerator
 	
 	/** Scope counts in specified element. */
 	private List<Integer> _sc;
+	
+	/** Did this {@link IOException}? */
+	private volatile boolean _didFail;
 	
 	/**
 	 * Initializes the generator to write the specified output stream.
@@ -82,7 +78,7 @@ public class ImplGenerator
 			this._iw = null;
 		
 		// Create writer
-		this._pw = new PrintWriter((this._iw == null ? __w : this._iw), true);
+		this._pw = (this._iw == null ? __w : this._iw);
 		
 		// Init lock
 		this._lock = new Object();
@@ -107,11 +103,18 @@ public class ImplGenerator
 			
 			// Close
 			this._closed = true;
-			this._pw.close();
+			try
+			{
+				this._pw.close();
+			}
+			catch (IOException ignored)
+			{
+				this._didFail = true;
+			}
 			
 			// Possible there were some errors in it.
-			if (this._pw.checkError())
-				throw new JsonException("There were PrintWriter error.");
+			if (this._didFail)
+				throw new JsonException("There were Writer errors.");
 		}
 	}
 	
@@ -129,7 +132,7 @@ public class ImplGenerator
 				throw new JsonException("Generator has been closed.");
 			
 			// Flush substream
-			this._pw.flush();
+			this.__flush();
 		}
 	}
 	
@@ -148,9 +151,9 @@ public class ImplGenerator
 			// Prepend comma
 			if (this._sc.get(0) > 0)
 			{
-				this._pw.print(',');
+				this.__print(',');
 				if (this._iw != null)
-					this._pw.println();
+					this.__printLn();
 			}
 			
 			// Increase count
@@ -211,7 +214,7 @@ public class ImplGenerator
 			throw new NullPointerException("No key name specified.");
 		
 		// Print it
-		this._pw.printf("\"%s\":", ImplValueString.escapedForm(__n));
+		this.__printf("\"%s\":", ImplValueString.escapedForm(__n));
 	}
 	
 	/**
@@ -229,28 +232,29 @@ public class ImplGenerator
 		
 		// True
 		if (__v == JsonValue.TRUE)
-			this._pw.print("true");
+			this.__print("true");
 		
 		// False
 		else if (__v == JsonValue.FALSE)
-			this._pw.print("false");
+			this.__print("false");
 		
 		// Null
 		else if (__v == JsonValue.NULL)
-			this._pw.print("null");
+			this.__print("null");
 		
 		// Number
 		else if (__v instanceof JsonNumber)
 		{
 			JsonNumber jv = (JsonNumber)__v;
-			this._pw.print(jv.toString());
+			this.__print(jv.toString());
 		}
 		
 		// String
 		else if (__v instanceof JsonString)
 		{
 			JsonString jv = (JsonString)__v;
-			this._pw.printf("\"%s\"", ImplValueString.escapedForm(jv.getString()));
+			this.__printf("\"%s\"",
+				ImplValueString.escapedForm(jv.getString()));
 		}
 		
 		// Array
@@ -295,34 +299,6 @@ public class ImplGenerator
 	 * @since 2014/08/07
 	 */
 	@Override
-	public JsonGenerator write(BigDecimal __v)
-	{
-		synchronized (this._lock)
-		{
-			// Write as normalized value
-			return this.write(new ImplValueNumber(__v));
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2014/08/07
-	 */
-	@Override
-	public JsonGenerator write(BigInteger __v)
-	{
-		synchronized (this._lock)
-		{
-			// Write as normalized value
-			return this.write(new ImplValueNumber(new BigDecimal(__v)));
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2014/08/07
-	 */
-	@Override
 	public JsonGenerator write(boolean __v)
 	{
 		synchronized (this._lock)
@@ -341,7 +317,7 @@ public class ImplGenerator
 		synchronized (this._lock)
 		{
 			// Write as normalized value
-			return this.write(new ImplValueNumber(new BigDecimal(__v)));
+			return this.write(new ImplValueNumber(__v));
 		}
 	}
 	
@@ -355,7 +331,7 @@ public class ImplGenerator
 		synchronized (this._lock)
 		{
 			// Write as normalized value
-			return this.write(new ImplValueNumber(new BigDecimal(__v)));
+			return this.write(new ImplValueNumber(__v));
 		}
 	}
 	
@@ -398,7 +374,7 @@ public class ImplGenerator
 		synchronized (this._lock)
 		{
 			// Write as normalized value
-			return this.write(new ImplValueNumber(new BigDecimal(__v)));
+			return this.write(new ImplValueNumber(__v));
 		}
 	}
 	
@@ -412,34 +388,6 @@ public class ImplGenerator
 		synchronized (this._lock)
 		{
 			return this.write(new ImplValueString(__v));
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2014/08/07
-	 */
-	@Override
-	public JsonGenerator write(String __n, BigDecimal __v)
-	{
-		synchronized (this._lock)
-		{
-			// Write as normalized value
-			return this.write(__n, new ImplValueNumber(__v));
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2014/08/07
-	 */
-	@Override
-	public JsonGenerator write(String __n, BigInteger __v)
-	{
-		synchronized (this._lock)
-		{
-			// Write as normalized value
-			return this.write(__n, new ImplValueNumber(new BigDecimal(__v)));
 		}
 	}
 	
@@ -466,7 +414,7 @@ public class ImplGenerator
 		synchronized (this._lock)
 		{
 			// Write as normalized value
-			return this.write(__n, new ImplValueNumber(new BigDecimal(__v)));
+			return this.write(__n, new ImplValueNumber(__v));
 		}
 	}
 	
@@ -480,7 +428,7 @@ public class ImplGenerator
 		synchronized (this._lock)
 		{
 			// Write as normalized value
-			return this.write(__n, new ImplValueNumber(new BigDecimal(__v)));
+			return this.write(__n, new ImplValueNumber(__v));
 		}
 	}
 	
@@ -526,7 +474,7 @@ public class ImplGenerator
 		synchronized (this._lock)
 		{
 			// Write as normalized value
-			return this.write(__n, new ImplValueNumber(new BigDecimal(__v)));
+			return this.write(__n, new ImplValueNumber(__v));
 		}
 	}
 	
@@ -563,9 +511,9 @@ public class ImplGenerator
 			if (this._iw != null)
 			{
 				this._iw.addIndent(-ImplGenerator.INDENT);
-				this._pw.println();
+				this.__printLn();
 			}
-			this._pw.print(e);
+			this.__print(e);
 			
 			// Down the stack
 			this._ss.remove(0);
@@ -578,12 +526,12 @@ public class ImplGenerator
 			
 				// Ending newline
 				if (this._iw != null)
-					this._pw.println();
+					this.__printLn();
 			}
 			
 			// Must be flushed, otherwise the printwriter will just hold
 			// onto some data
-			this._pw.flush();
+			this.__flush();
 		
 			// Self
 			return this.__check();
@@ -632,11 +580,11 @@ public class ImplGenerator
 		// Print
 		if (__n != null)
 			this.putKeyName(__n);
-		this._pw.print((__s == Scope.ARRAY ? '[' : '{'));
+		this.__print((__s == Scope.ARRAY ? '[' : '{'));
 		if (this._iw != null)
 		{
 			this._iw.addIndent(ImplGenerator.INDENT);
-			this._pw.println();
+			this.__printLn();
 		}
 	
 		// Push in
@@ -644,7 +592,7 @@ public class ImplGenerator
 		this._sc.add(0, 0);
 	
 		// Error?
-		if (this._pw.checkError())
+		if (this._didFail)
 			throw new JsonException("Error in output stream.");
 	
 		// Self
@@ -661,7 +609,8 @@ public class ImplGenerator
 	private JsonGenerator writeStartX(Scope __s)
 	{
 		// Check context
-		if (this._done || (!this._ss.isEmpty() && this._ss.get(0) != Scope.ARRAY))
+		if (this._done || (!this._ss.isEmpty() &&
+			this._ss.get(0) != Scope.ARRAY))
 			throw new JsonGenerationException("Not within valid context.");
 		
 		// Need to increase count or add comma
@@ -682,7 +631,8 @@ public class ImplGenerator
 	private JsonGenerator writeStartKeyedX(String __n, Scope __s)
 	{
 		// Must be in object
-		if (this._done || this._ss.isEmpty() || this._ss.get(0) != Scope.OBJECT)
+		if (this._done || this._ss.isEmpty() ||
+			this._ss.get(0) != Scope.OBJECT)
 			throw new JsonGenerationException("Not within valid context.");
 		
 		// Need to increase count or add comma
@@ -762,11 +712,82 @@ public class ImplGenerator
 	 */
 	private JsonGenerator __check()
 	{
-		if (this._pw.checkError())
-			throw new JsonException(ImplGenerator.BUN.getString("pwerr"));
+		if (this._didFail)
+			throw new JsonException("pwerr");
 		
 		// Self
 		return this;
+	}
+	
+	/**
+	 * Flushes the stream.
+	 * 
+	 * @since 2022/07/12
+	 */
+	private void __flush()
+	{
+		try
+		{
+			this._pw.flush();
+		}
+		catch (IOException ignored)
+		{
+			this._didFail = true;
+		}
+	}
+	
+	/**
+	 * Prints the given value.
+	 * 
+	 * @param __v The value to print.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/07/12
+	 */
+	private void __print(Object __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		try
+		{
+			this._pw.append(__v.toString());
+		}
+		catch (IOException ignored)
+		{
+			this._didFail = true;
+		}
+	}
+	
+	/**
+	 * Prints the given formatted string.
+	 * 
+	 * @param __fmt The value to print.
+	 * @param __args The arguments to the formatter.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/07/12
+	 */
+	private void __printf(String __fmt, Object... __args)
+		throws NullPointerException
+	{
+		this.__print(String.format(__fmt, __args));
+	}
+	
+	/**
+	 * Prints a line to the writer.
+	 * 
+	 * @since 2022/07/12
+	 */
+	private void __printLn()
+	{
+		try
+		{
+			this._pw.append(System.getProperty("line.ending"));
+		}
+		catch (IOException ignored)
+		{
+			this._didFail = true;
+		}
 	}
 	
 	/**

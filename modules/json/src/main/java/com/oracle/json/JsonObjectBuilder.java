@@ -9,9 +9,6 @@
 
 package com.oracle.json;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 /**
  * This is a builder which is able to generate {@link JsonObject}s, it also
  * makes it possible to chain them together as successive object calls (most
@@ -23,36 +20,6 @@ import java.math.BigInteger;
  */
 public interface JsonObjectBuilder
 {
-	/**
-	 * Adds a {@link JsonNumber} with the specified value and associates it
-	 * with the given key.
-	 *
-	 * If the key is already set with a value, it is replaced.
-	 *
-	 * @param __n Name of the key pair to add.
-	 * @param __v Value of the key pair to add.
-	 * @return {@code this}.
-	 * @throws NullPointerException If {@code __n} or {@code __v} are
-	 * {@code null}.
-	 * @since 2014/07/25
-	 */
-	JsonObjectBuilder add(String __n, BigDecimal __v);
-	
-	/**
-	 * Adds a {@link JsonNumber} with the specified value and associates it
-	 * with the given key.
-	 *
-	 * If the key is already set with a value, it is replaced.
-	 *
-	 * @param __n Name of the key pair to add.
-	 * @param __v Value of the key pair to add.
-	 * @return {@code this}.
-	 * @throws NullPointerException If {@code __n} or {@code __v} are
-	 * {@code null}.
-	 * @since 2014/07/25
-	 */
-	JsonObjectBuilder add(String __n, BigInteger __v);
-	
 	/**
 	 * Adds either {@link JsonValue#TRUE} or {@link JsonValue#FALSE} and
 	 * associates it with the given key.

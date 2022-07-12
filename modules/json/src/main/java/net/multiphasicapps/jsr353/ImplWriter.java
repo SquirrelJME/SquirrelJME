@@ -9,15 +9,14 @@
 
 package net.multiphasicapps.jsr353;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.concurrent.atomic.AtomicBoolean;
 import com.oracle.json.JsonArray;
 import com.oracle.json.JsonException;
 import com.oracle.json.JsonObject;
 import com.oracle.json.JsonStructure;
 import com.oracle.json.JsonWriter;
 import com.oracle.json.stream.JsonGenerator;
+import java.io.IOException;
+import java.io.Writer;
 
 /**
  * This writes output JSON to the specified output writer, whatever it is.
@@ -37,8 +36,7 @@ public class ImplWriter
 	private final Object _lock;
 	
 	/** Did already. */
-	private final AtomicBoolean _did =
-		new AtomicBoolean();
+	private volatile boolean _did;
 	
 	/**
 	 * Initializes the writer implementation.
@@ -99,10 +97,11 @@ public class ImplWriter
 		synchronized (this._lock)
 		{
 			// Already closed or did already
-			if (this._closed || !this._did.compareAndSet(false, true))
+			if (this._closed || this._did)
 				throw new IllegalStateException(
 					"Stream was closed or already " +
 					"performed an operation.");
+			this._did = true;
 			
 			// Write object
 			this._jg.write(__v);

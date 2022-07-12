@@ -11,7 +11,7 @@ package com.oracle.json;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.nio.charset.Charset;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
@@ -40,9 +40,12 @@ public interface JsonReaderFactory
 	 * @param __i Stream to read from.
 	 * @param __cs Character encoding of the stream.
 	 * @return A JSON reader.
+	 * @throws UnsupportedEncodingException If the character set is not
+	 * supported.
 	 * @since 2014/07/25
 	 */
-	JsonReader createReader(InputStream __i, Charset __cs);
+	JsonReader createReader(InputStream __i, String __cs)
+		throws UnsupportedEncodingException;
 
 	/**
 	 * Creates a JSON reader from the specified stream, the factory

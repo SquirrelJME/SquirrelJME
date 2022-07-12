@@ -9,15 +9,12 @@
 
 package net.multiphasicapps.jsr353;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.Reader;
-import java.text.MessageFormat;
-import java.util.ResourceBundle;
-import java.util.logging.Logger;
 import com.oracle.json.JsonException;
 import com.oracle.json.stream.JsonLocation;
 import com.oracle.json.stream.JsonParsingException;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.Reader;
 
 /**
  * This reads input from a {@link Reader}.
@@ -28,14 +25,6 @@ public class ReaderInput
 	extends BaseDecoder.Input
 	implements Closeable
 {
-	/** Logger class. */
-	static final Logger LOG =
-		Logger.getLogger(ReaderInput.class.getName());
-	
-	/** Bundle for this class. */
-	static final ResourceBundle BUN =
-		ResourceBundle.getBundle(ReaderInput.class.getName());
-	
 	/** Internal reader capable of handling lines and columns. */
 	protected final LineColumnReader lcr;
 	
@@ -57,7 +46,7 @@ public class ReaderInput
 		
 		// Cannot be null
 		if (__r == null)
-			throw new NullPointerException(ReaderInput.BUN.getString("noin"));
+			throw new NullPointerException("noin");
 		
 		// Use line reader as the base
 		this.lcr = new LineColumnReader(__r, LineColumnReader.DEFAULT);
@@ -76,7 +65,7 @@ public class ReaderInput
 		{
 			// Cannot have been closed
 			if (this._closed)
-				throw new IllegalStateException(ReaderInput.BUN.getString("closedin"));
+				throw new IllegalStateException("closedin");
 		
 			// Replaced by sub-classes if they support this.
 			return new SomeLocation(this.lcr.getLineNumber() + 1L, this.lcr.getColumnNumber());
@@ -110,7 +99,7 @@ public class ReaderInput
 			// Oops
 			catch (IOException ioe)
 			{
-				throw new JsonException(ReaderInput.BUN.getString("clioe"), ioe);
+				throw new JsonException("clioe", ioe);
 			}
 		}
 	}
@@ -131,7 +120,7 @@ public class ReaderInput
 		{
 			// Cannot have been closed
 			if (this._closed)
-				throw new IllegalStateException(ReaderInput.BUN.getString("closedin"));
+				throw new IllegalStateException("closedin");
 			
 			// Obtain the next one
 			try
@@ -142,7 +131,7 @@ public class ReaderInput
 			// Error reading from stream.
 			catch (IOException ioe)
 			{
-				throw new JsonException(ReaderInput.BUN.getString("clioe"), ioe);
+				throw new JsonException("clioe", ioe);
 			}
 		}
 	}
@@ -201,7 +190,7 @@ public class ReaderInput
 					
 					// Cannot be EOF or any non-space whitespace
 					if (c < 0 || c == '\t' || c == '\r' || c == '\n')
-						throw new JsonParsingException(ReaderInput.BUN.getString("seol"),
+						throw new JsonParsingException("seol",
 							jl);
 					
 					// Escaped
@@ -216,16 +205,16 @@ public class ReaderInput
 								// Read char, cannot be EOF
 								if ((hex[i] = this.__read()) < 0)
 									throw new JsonParsingException(
-										ReaderInput.BUN.getString("ueof"), jl);
+										"ueof", jl);
 								
 								// Read hex digit
-								int dig = Character.digit(hex[i], 16);
+								int dig = Character.digit(
+									(char)hex[i], 16);
 								
 								// Not a digit
 								if (dig < 0)
 									throw new JsonParsingException(
-										MessageFormat.format(ReaderInput.BUN.getString(
-										"bx"), hex[i]), jl);
+										String.format("bx", hex[i]), jl);
 								
 								// Shrunk down
 								hex[i] = dig;
@@ -250,8 +239,7 @@ public class ReaderInput
 								case 't': c = '\t'; break;
 								default:
 									throw new JsonParsingException(
-										MessageFormat.format(ReaderInput.BUN.getString(
-										"illesc"), c), jl);
+										String.format("illesc", c), jl);
 							}
 						
 						// Append normal and stop escaping
@@ -303,14 +291,14 @@ public class ReaderInput
 				{
 					// Reached EOF
 					if (c < 0)
-						throw new JsonParsingException(ReaderInput.BUN.getString("eoflit"),
+						throw new JsonParsingException("eoflit",
 							jl);
 					
 					// Bad character
 					if (!(c == '-' || c == '+' || (c >= '0' && c <= '9') ||
 						c == 'e' || c == 'E' || c == '.'))
-						throw new JsonParsingException(MessageFormat.format(
-							ReaderInput.BUN.getString("illgnum"), (char)c), jl);
+						throw new JsonParsingException(String.format(
+							"illgnum", (char)c), jl);
 					
 					// Add
 					sb.append((char)c);
@@ -329,7 +317,7 @@ public class ReaderInput
 						if (c == '-' || c == '+')
 						{
 							if (!cansign)
-								throw new JsonParsingException(ReaderInput.BUN.getString("badnumsign"), jl);
+								throw new JsonParsingException("badnumsign", jl);
 							cansign = false;
 						}
 						
@@ -341,7 +329,7 @@ public class ReaderInput
 						if (c == 'e')
 						{
 							if (didexpo)
-								throw new JsonParsingException(ReaderInput.BUN.getString("mulexpo"), jl);
+								throw new JsonParsingException("mulexpo", jl);
 							didexpo = true;
 							
 							// Could sign
@@ -352,7 +340,7 @@ public class ReaderInput
 						if (c == '.')
 						{
 							if (diddeci)
-								throw new JsonParsingException(ReaderInput.BUN.getString("muldeci"), jl);
+								throw new JsonParsingException("muldeci", jl);
 							diddeci = true;
 						}
 						
@@ -387,7 +375,7 @@ public class ReaderInput
 				{
 					// Read
 					if ((c = this.__read()) < 0)
-						throw new JsonParsingException(ReaderInput.BUN.getString("eoflit"), jl);
+						throw new JsonParsingException("eoflit", jl);
 					
 					// Append
 					sb.append((char)c);
@@ -400,7 +388,7 @@ public class ReaderInput
 				if (!ls.equals("true") && !ls.equals("false") &&
 					!ls.equals("null"))
 					throw new JsonParsingException(
-						MessageFormat.format(ReaderInput.BUN.getString("illlit"), ls),
+						String.format("illlit", ls),
 						jl);
 				
 				// A literal
@@ -409,8 +397,8 @@ public class ReaderInput
 			
 			// Unknown
 			else
-				throw new JsonParsingException(MessageFormat.format(
-					ReaderInput.BUN.getString("illchart"), (char)c), jl);
+				throw new JsonParsingException(String.format(
+					"illchart", (char)c), jl);
 		}
 	}
 	

@@ -9,17 +9,7 @@
 
 package net.multiphasicapps.jsr353;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
-import java.nio.charset.Charset;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.oracle.json.JsonArray;
 import com.oracle.json.JsonArrayBuilder;
 import com.oracle.json.JsonBuilderFactory;
@@ -34,6 +24,18 @@ import com.oracle.json.stream.JsonGenerator;
 import com.oracle.json.stream.JsonGeneratorFactory;
 import com.oracle.json.stream.JsonParser;
 import com.oracle.json.stream.JsonParserFactory;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import net.multiphasicapps.collections.UnmodifiableMap;
 
 /**
  * This class provides all the factory-ish methods combined into one since they
@@ -90,7 +92,7 @@ public class ImplMegaFactory
 	@Override
 	public final Map<String, ?> getConfigInUse()
 	{
-		return Collections.<String, Object>unmodifiableMap(this._iopts);
+		return UnmodifiableMap.of(this._iopts);
 	}
 	
 	/**
@@ -140,16 +142,12 @@ public class ImplMegaFactory
 	}
 	
 	/**
-	 * Creates a JSON reader from the specified stream using the specified
-	 * character encoding, the factory configuration is used.
-	 *
-	 * @param __i Stream to read from.
-	 * @param __cs Character encoding of the stream.
-	 * @return A JSON reader.
+	 * {@inheritDoc}
 	 * @since 2014/08/01
 	 */
 	@Override
-	public final JsonReader createReader(InputStream __i, Charset __cs)
+	public final JsonReader createReader(InputStream __i, String __cs)
+		throws UnsupportedEncodingException
 	{
 		// Cannot be null
 		if (__i == null || __cs == null)
@@ -191,22 +189,25 @@ public class ImplMegaFactory
 	@Override
 	public final JsonWriter createWriter(OutputStream __o)
 	{
-		return this.createWriter(__o, Charset.forName("UTF-8"));
+		try
+		{
+			return this.createWriter(__o, "utf-8");
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			throw Debugging.oops(e);
+		}
 	}
 	
 	/**
-	 * Creates a writer to output JSON to the specified stream, with the
-	 * specified character encoding, the specified configuration is used.
-	 *
-	 * @param __o Stream to write data to.
-	 * @param __cs Character encoding to use.
-	 * @return A {@link JsonWriter}.
+	 * {@inheritDoc}
 	 * @since 2014/08/01
 	 */
 	@Override
-	public final JsonWriter createWriter(OutputStream __o, Charset __cs)
+	public final JsonWriter createWriter(OutputStream __o, String __charSet)
+		throws UnsupportedEncodingException
 	{
-		return this.createWriter(new OutputStreamWriter(__o, __cs));
+		return this.createWriter(new OutputStreamWriter(__o, __charSet));
 	}
 	
 	/**
@@ -234,7 +235,14 @@ public class ImplMegaFactory
 	@Override
 	public final JsonGenerator createGenerator(OutputStream __o)
 	{
-		return this.createGenerator(__o, Charset.forName("UTF-8"));
+		try
+		{
+			return this.createGenerator(__o, "utf-8");
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			throw Debugging.oops(e);
+		}
 	}
 	
 	/**
@@ -243,14 +251,16 @@ public class ImplMegaFactory
 	 * character set.
 	 *
 	 * @param __o Stream to write to.
-	 * @param __c Character encoding to write as.
+	 * @param __charSet Character encoding to write as.
 	 * @return A new generator.
 	 * @since 2014/08/01
 	 */
 	@Override
-	public final JsonGenerator createGenerator(OutputStream __o, Charset __c)
+	public final JsonGenerator createGenerator(OutputStream __o,
+		String __charSet)
+		throws UnsupportedEncodingException
 	{
-		return this.createGenerator(new OutputStreamWriter(__o, __c));
+		return this.createGenerator(new OutputStreamWriter(__o, __charSet));
 	}
 	
 	/**
@@ -283,7 +293,7 @@ public class ImplMegaFactory
 		if (__i == null)
 			throw new NullPointerException("No input stream specified.");
 		
-		// Return auto detection stream, sort of
+		// Return auto-detection stream, sort of
 		return this.createParser(new UTFDetectISR(__i));
 	}
 	
@@ -292,21 +302,22 @@ public class ImplMegaFactory
 	 * encoding, the factory configuration is used.
 	 *
 	 * @param __i Stream to read data from.
-	 * @param __cs Character encoding of the data.
+	 * @param __charSet Character encoding of the data.
 	 * @return A parser for JSON.
 	 * @since 2014/08/01
 	 */
 	@Override
-	public final JsonParser createParser(InputStream __i, Charset __cs)
+	public final JsonParser createParser(InputStream __i, String __charSet)
+		throws UnsupportedEncodingException
 	{
 		// Cannot be null
-		if (__i == null || __cs == null)
+		if (__i == null || __charSet == null)
 			throw new NullPointerException(String.format(
 				"Null arguments: %1$s %2$s.",
-				(__i == null ? "__i" : ""), (__cs == null ? "__cs" : "")));
+				(__i == null ? "__i" : ""), (__charSet == null ? "__cs" : "")));
 		
 		// Return in a stream
-		return this.createParser(new InputStreamReader(__i, __cs));
+		return this.createParser(new InputStreamReader(__i, __charSet));
 	}
 	
 	/**

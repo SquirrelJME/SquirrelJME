@@ -9,17 +9,21 @@
 
 package net.multiphasicapps.jsr353;
 
-import java.io.StringWriter;
-import java.util.AbstractMap;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.oracle.json.JsonArray;
 import com.oracle.json.JsonNumber;
 import com.oracle.json.JsonObject;
 import com.oracle.json.JsonString;
 import com.oracle.json.JsonValue;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+import net.multiphasicapps.collections.UnmodifiableMap;
 
 /**
  * This represents an object which contains many key/value pairs.
@@ -56,7 +60,7 @@ public class ImplValueObject
 				m.put(e.getKey(), e.getValue());
 			
 			// Set map
-			this._im = Collections.<String, JsonValue>unmodifiableMap(m);
+			this._im = UnmodifiableMap.of(m);
 		}
 	}
 	
@@ -90,12 +94,22 @@ public class ImplValueObject
 	 * @return The value of this object represented as a string.
 	 * @since 2014/08/05
 	 */
+	@SuppressWarnings("StringOperationCanBeSimplified")
 	@Override
 	public String toString()
 	{
-		StringWriter sw = new StringWriter();
-		new ImplWriter(sw, false).write(this);
-		return sw.toString();
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			 OutputStreamWriter writer = new OutputStreamWriter(baos))
+		{
+			new ImplWriter(writer, false).write(this);
+			writer.flush();
+			
+			return new String(baos.toByteArray(), "utf-8");
+		}
+		catch (IOException e)
+		{
+			throw Debugging.oops(e);
+		}
 	}
 	
 	/**

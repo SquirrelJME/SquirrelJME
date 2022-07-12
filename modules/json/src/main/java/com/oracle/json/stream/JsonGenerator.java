@@ -12,10 +12,7 @@ package com.oracle.json.stream;
 import com.oracle.json.JsonException;
 import com.oracle.json.JsonValue;
 import java.io.Closeable;
-import java.io.Flushable;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 /**
  * This is a generator which writes JSON data in a stream like form in that
@@ -24,7 +21,7 @@ import java.math.BigInteger;
  * @since 2014/07/25
  */
 public interface JsonGenerator
-	extends Flushable, Closeable
+	extends Closeable
 {
 	/** Make the generated output nice looking, this must be supported. */
 	String PRETTY_PRINTING =
@@ -50,34 +47,7 @@ public interface JsonGenerator
 	 * wrapped in this exception.
 	 * @since 2014/07/25
 	 */
-	@Override
 	void flush();
-	
-	/**
-	 * Writes the specified number to the array, {@link BigDecimal#toString()}
-	 * is invoked.
-	 *
-	 * @param __v Value to add.
-	 * @return {@code this}.
-	 * @throws JsonException If an {@link IOException} occurs it will be
-	 * wrapped in this exception.
-	 * @throws JsonGenerationException If the current context is not an array.
-	 * @since 2014/07/25
-	 */
-	JsonGenerator write(BigDecimal __v);
-	
-	/**
-	 * Writes the specified number to the array, invokes
-	 * {@code new BigDecimal(__v).toString()}.
-	 *
-	 * @param __v Value to add.
-	 * @return {@code this}.
-	 * @throws JsonException If an {@link IOException} occurs it will be
-	 * wrapped in this exception.
-	 * @throws JsonGenerationException If the current context is not an array.
-	 * @since 2014/07/25
-	 */
-	JsonGenerator write(BigInteger __v);
 	
 	/**
 	 * Writes a boolean value to the output, it writes either {@code true} or
@@ -154,34 +124,6 @@ public interface JsonGenerator
 	 * @since 2014/07/25
 	 */
 	JsonGenerator write(String __v);
-	
-	/**
-	 * Writes the specified name and value to the object,
-	 * {@link BigDecimal#toString()} is used.
-	 *
-	 * @param __n The name of the key in the pair.
-	 * @param __v The value of the key in the pair.
-	 * @return {@code this}.
-	 * @throws JsonException If an {@link IOException} occurs it will be
-	 * wrapped in this exception.
-	 * @throws JsonGenerationException If the current context is not an object.
-	 * @since 2014/07/25
-	 */
-	JsonGenerator write(String __n, BigDecimal __v);
-	
-	/**
-	 * Writes the specified name and value to the object, it invokes
-	 * {@code new BigDecimal(__v).toString()}.
-	 *
-	 * @param __n The name of the key in the pair.
-	 * @param __v The value of the key in the pair.
-	 * @return {@code this}.
-	 * @throws JsonException If an {@link IOException} occurs it will be
-	 * wrapped in this exception.
-	 * @throws JsonGenerationException If the current context is not an object.
-	 * @since 2014/07/25
-	 */
-	JsonGenerator write(String __n, BigInteger __v);
 	
 	/**
 	 * Writes the specified name and value to the object, it either writes

@@ -9,11 +9,6 @@
 
 package net.multiphasicapps.jsr353;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import com.oracle.json.JsonArray;
 import com.oracle.json.JsonArrayBuilder;
 import com.oracle.json.JsonNumber;
@@ -21,6 +16,9 @@ import com.oracle.json.JsonObject;
 import com.oracle.json.JsonObjectBuilder;
 import com.oracle.json.JsonString;
 import com.oracle.json.JsonValue;
+import java.util.ArrayList;
+import java.util.List;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * This class builds arrays.
@@ -44,40 +42,6 @@ public class ImplArrayBuilder
 		
 		// Order init
 		this._order = new ArrayList<JsonValue>();
-	}
-	
-	/**
-	 * Adds a {@link JsonNumber}.
-	 *
-	 * @param __v The value to add.
-	 * @return {@code this}.
-	 * @throws NullPointerException If {@code __v} is null.
-	 * @since 2014/08/02
-	 */
-	@Override
-	public JsonArrayBuilder add(BigDecimal __v)
-	{
-		synchronized (this.lock)
-		{
-			return this.add(new ImplValueNumber(__v));
-		}
-	}
-	
-	/**
-	 * Adds a {@link JsonNumber}.
-	 *
-	 * @param __v The value to add.
-	 * @return {@code this}.
-	 * @throws NullPointerException If {@code __v} is null.
-	 * @since 2014/08/02
-	 */
-	@Override
-	public JsonArrayBuilder add(BigInteger __v)
-	{
-		synchronized (this.lock)
-		{
-			return this.add(new ImplValueNumber(new BigDecimal(__v)));
-		}
 	}
 	
 	/**
@@ -109,7 +73,7 @@ public class ImplArrayBuilder
 	{
 		synchronized (this.lock)
 		{
-			return this.add(new ImplValueNumber(new BigDecimal(__v)));
+			return this.add(new ImplValueNumber(__v));
 		}
 	}
 	
@@ -125,7 +89,7 @@ public class ImplArrayBuilder
 	{
 		synchronized (this.lock)
 		{
-			return this.add(new ImplValueNumber(new BigDecimal(__v)));
+			return this.add(new ImplValueNumber(__v));
 		}
 	}
 	
@@ -209,7 +173,7 @@ public class ImplArrayBuilder
 	{
 		synchronized (this.lock)
 		{
-			return this.add(new ImplValueNumber(new BigDecimal(__v)));
+			return this.add(new ImplValueNumber(__v));
 		}
 	}
 	
@@ -256,8 +220,7 @@ public class ImplArrayBuilder
 	{
 		synchronized (this.lock)
 		{
-			return new ImplValueArray(Collections.<JsonValue>
-				unmodifiableList(this._order));
+			return new ImplValueArray(UnmodifiableList.of(this._order));
 		}
 	}
 }

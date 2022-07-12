@@ -9,7 +9,7 @@
 
 package net.multiphasicapps.jsr353;
 
-import java.io.FilterWriter;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.Writer;
 
@@ -23,8 +23,11 @@ import java.io.Writer;
  * @since 2014/04/29
  */
 public class IndentedWriter
-	extends FilterWriter
+	extends Writer
 {
+	/** The stream to write to. */
+	protected final Writer out;
+	
 	/** Indentation count. */
 	private int _ic;
 	
@@ -59,8 +62,12 @@ public class IndentedWriter
 	 * @since 2014/04/29
 	 */
 	public IndentedWriter(Writer __w, char __pad, int __cnt)
+		throws NullPointerException
 	{
-		super(__w);
+		if (__w == null)
+			throw new NullPointerException("NARG");
+		
+		this.out = __w;
 		
 		// Set
 		this._ic = __cnt;
@@ -186,6 +193,13 @@ public class IndentedWriter
 		{
 			this.write(__s.toCharArray(), __off, __len);
 		}
+	}
+	
+	@Override
+	public void flush()
+		throws IOException
+	{
+		throw Debugging.todo();
 	}
 	
 	/**

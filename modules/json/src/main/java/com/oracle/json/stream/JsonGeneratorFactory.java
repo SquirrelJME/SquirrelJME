@@ -10,8 +10,8 @@
 package com.oracle.json.stream;
 
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.util.Map;
 
 /**
@@ -40,11 +40,12 @@ public interface JsonGeneratorFactory
 	 * character set.
 	 *
 	 * @param __o Stream to write to.
-	 * @param __c Character encoding to write as.
+	 * @param __charSet Character encoding to write as.
 	 * @return A new generator.
 	 * @since 2014/07/25
 	 */
-	JsonGenerator createGenerator(OutputStream __o, Charset __c);
+	JsonGenerator createGenerator(OutputStream __o, String __charSet)
+		throws UnsupportedEncodingException;
 	
 	/**
 	 * Creates a generator which writes JSON to the specified stream using the

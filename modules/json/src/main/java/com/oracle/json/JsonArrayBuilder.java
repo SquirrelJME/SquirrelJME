@@ -9,9 +9,6 @@
 
 package com.oracle.json;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 /**
  * This is a builder which is able to generate {@link JsonArray}s, it also
  * makes it possible to chain them together as successive object calls (most
@@ -21,26 +18,6 @@ import java.math.BigInteger;
  */
 public interface JsonArrayBuilder
 {
-	/**
-	 * Adds a {@link JsonNumber}.
-	 *
-	 * @param __v The value to add.
-	 * @return {@code this}.
-	 * @throws NullPointerException If {@code __v} is null.
-	 * @since 2014/07/25
-	 */
-	JsonArrayBuilder add(BigDecimal __v);
-	
-	/**
-	 * Adds a {@link JsonNumber}.
-	 *
-	 * @param __v The value to add.
-	 * @return {@code this}.
-	 * @throws NullPointerException If {@code __v} is null.
-	 * @since 2014/07/25
-	 */
-	JsonArrayBuilder add(BigInteger __v);
-	
 	/**
 	 * Adds {@link JsonValue#TRUE} or {@link JsonValue#FALSE}.
 	 *

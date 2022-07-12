@@ -10,11 +10,18 @@
 package com.oracle.json.spi;
 
 import com.oracle.json.JsonArray;
+import com.oracle.json.JsonArrayBuilder;
+import com.oracle.json.JsonBuilderFactory;
 import com.oracle.json.JsonObject;
+import com.oracle.json.JsonObjectBuilder;
 import com.oracle.json.JsonReader;
 import com.oracle.json.JsonReaderFactory;
 import com.oracle.json.JsonWriter;
+import com.oracle.json.JsonWriterFactory;
+import com.oracle.json.stream.JsonGenerator;
+import com.oracle.json.stream.JsonGeneratorFactory;
 import com.oracle.json.stream.JsonParser;
+import com.oracle.json.stream.JsonParserFactory;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
@@ -23,13 +30,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.ServiceLoader;
-import com.oracle.json.JsonArrayBuilder;
-import com.oracle.json.JsonBuilderFactory;
-import com.oracle.json.JsonObjectBuilder;
-import com.oracle.json.JsonWriterFactory;
-import com.oracle.json.stream.JsonGenerator;
-import com.oracle.json.stream.JsonGeneratorFactory;
-import com.oracle.json.stream.JsonParserFactory;
 
 /**
  * This provides a service which is able to allow processing of JSON data.
@@ -180,7 +180,7 @@ public abstract class JsonProvider
 	 *
 	 * Unsupported options should be ignored.
 	 *
-	 * @param __cnf Configyration settings for the reader, may be {@code null}.
+	 * @param __cnf Configuration settings for the reader, may be {@code null}.
 	 * @return A new JSON reader factory.
 	 * @since 2014/07/26
 	 */

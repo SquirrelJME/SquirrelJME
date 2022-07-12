@@ -15,9 +15,6 @@ import java.io.Reader;
  * Same as a {@link LineColumnReader} but includes source information so that
  * the origin file is known to whatever is using this.
  *
- * THIS IS INTERNAL PROPRIETARY API, IF YOU USE IT THEN YOUR CODE COULD BREAK
- * AT ANYTIME IF ANYTHING IS CHANGED, IN SHORT KEEP OUT UNLESS YOU OSDEV.
- *
  * @param <S> The type of source to use.
  * @since 2014/12/19
  */

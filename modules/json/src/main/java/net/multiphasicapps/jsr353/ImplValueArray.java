@@ -9,16 +9,19 @@
 
 package net.multiphasicapps.jsr353;
 
-import java.io.StringWriter;
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.oracle.json.JsonArray;
 import com.oracle.json.JsonNumber;
 import com.oracle.json.JsonObject;
 import com.oracle.json.JsonString;
 import com.oracle.json.JsonValue;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.List;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * This is an array of values.
@@ -52,7 +55,7 @@ public class ImplValueArray
 			List<JsonValue> n = new ArrayList<JsonValue>(__b);
 			
 			// Set internal list as read-only
-			this._il = Collections.<JsonValue>unmodifiableList(n); 
+			this._il = UnmodifiableList.of(n); 
 		}
 	}
 	
@@ -100,12 +103,22 @@ public class ImplValueArray
 	 * @return The value of this array represented as a string.
 	 * @since 2014/08/05
 	 */
+	@SuppressWarnings("StringOperationCanBeSimplified")
 	@Override
 	public String toString()
 	{
-		StringWriter sw = new StringWriter();
-		new ImplWriter(sw, false).write(this);
-		return sw.toString();
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			OutputStreamWriter writer = new OutputStreamWriter(baos))
+		{
+			new ImplWriter(writer, false).write(this);
+			writer.flush();
+			
+			return new String(baos.toByteArray(), "utf-8");
+		}
+		catch (IOException e)
+		{
+			throw Debugging.oops(e);
+		}
 	}
 	
 	/**
@@ -338,8 +351,8 @@ public class ImplValueArray
 				"Class does not extend JsonValue.");
 		
 		// Return it
-		return Unchecked.<List<JsonValue>, List<T>>cast(Collections.<JsonValue>
-			unmodifiableList(this));
+		return Unchecked.<List<JsonValue>, List<T>>cast(
+			UnmodifiableList.of(this));
 	}
 	
 	/**

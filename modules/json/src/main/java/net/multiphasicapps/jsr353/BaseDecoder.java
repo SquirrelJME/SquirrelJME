@@ -9,25 +9,21 @@
 
 package net.multiphasicapps.jsr353;
 
+import com.oracle.json.JsonException;
+import com.oracle.json.JsonValue;
+import com.oracle.json.stream.JsonLocation;
+import com.oracle.json.stream.JsonParsingException;
 import java.io.Closeable;
-import java.math.BigDecimal;
-import java.text.MessageFormat;
 import java.util.AbstractList;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashSet;
-import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.logging.Logger;
-import com.oracle.json.JsonException;
-import com.oracle.json.JsonValue;
-import com.oracle.json.stream.JsonLocation;
-import com.oracle.json.stream.JsonParsingException;
 
 /**
  * This is a basic class which takes very raw JSON data and decodes it into a
- * form more useable by Reader and Parser, the output of this class is assumed
+ * form more usable by Reader and Parser, the output of this class is assumed
  * and considered to be correct.
  *
  * @since 2014/08/03
@@ -35,14 +31,6 @@ import com.oracle.json.stream.JsonParsingException;
 public abstract class BaseDecoder
 	implements Closeable
 {
-	/** Logger class. */
-	static final Logger LOG =
-		Logger.getLogger(BaseDecoder.class.getName());
-	
-	/** Bundle for this class. */
-	static final ResourceBundle BUN =
-		ResourceBundle.getBundle(BaseDecoder.class.getName());
-	
 	/** Synchronization lock. */
 	protected final Object lock =
 		new Object();
@@ -74,7 +62,7 @@ public abstract class BaseDecoder
 	{
 		// Cannot be null
 		if (__i == null)
-			throw new NullPointerException(BaseDecoder.BUN.getString("noinp"));
+			throw new NullPointerException("noinp");
 		
 		// Set
 		this.input = __i;
@@ -157,7 +145,7 @@ public abstract class BaseDecoder
 	private final JsonParsingException __fail(Throwable __t, String __lstr,
 		Object... __args)
 	{
-		return new JsonParsingException(MessageFormat.format(BaseDecoder.BUN.getString(__lstr), __args) + " (" + this._scopes + ")", __t,
+		return new JsonParsingException(String.format(__lstr, __args) + " (" + this._scopes + ")", __t,
 			this.input.getLocation());
 	}
 	
@@ -246,7 +234,7 @@ public abstract class BaseDecoder
 					
 					// Unknown
 					else
-						throw new RuntimeException(BaseDecoder.BUN.getString("eounss"));
+						throw new RuntimeException("eounss");
 				}
 				
 				// Is not
@@ -274,7 +262,8 @@ public abstract class BaseDecoder
 				// End of an array
 			case END_ARRAY:
 				// Want end of object
-				if (this.__top().want(__Exp__.VALUE_OR_END) || this.__top().want(__Exp__.COMMA_OR_END))
+				if (this.__top().want(__Exp__.VALUE_OR_END) ||
+					this.__top().want(__Exp__.COMMA_OR_END))
 				{
 					// Must be an array
 					if (!this.__top().isArray())
@@ -310,7 +299,7 @@ public abstract class BaseDecoder
 					
 					// Unknown
 					else
-						throw new RuntimeException(BaseDecoder.BUN.getString("eaunss"));
+						throw new RuntimeException("eaunss");
 				}
 				
 				// Is not
@@ -321,7 +310,8 @@ public abstract class BaseDecoder
 				// A literal, either numerical or false/true/null
 			case LITERAL:
 				// Expecting a value
-				if (this.__top().want(__Exp__.VALUE) || this.__top().want(__Exp__.VALUE_OR_END))
+				if (this.__top().want(__Exp__.VALUE) ||
+					this.__top().want(__Exp__.VALUE_OR_END))
 				{
 					// Expected value type to use
 					char cz = ds.charAt(0);
@@ -330,7 +320,7 @@ public abstract class BaseDecoder
 					{
 						vv = (cz == 't' ? JsonValue.TRUE : (cz == 'f' ?
 							JsonValue.FALSE : (cz == 'n' ? JsonValue.NULL :
-							new ImplValueNumber(new BigDecimal(ds)))));
+							new ImplValueNumber(ds))));
 					}
 					
 					// Bad number
@@ -351,7 +341,7 @@ public abstract class BaseDecoder
 					
 					// Unknown
 					else
-						throw new RuntimeException(BaseDecoder.BUN.getString("unklitv"));
+						throw new RuntimeException("unklitv");
 					
 					// Expect comma or end
 					this.__top().need(__Exp__.COMMA_OR_END);
@@ -373,7 +363,7 @@ public abstract class BaseDecoder
 					
 					// Not a key!?
 					else
-						throw new RuntimeException(BaseDecoder.BUN.getString("incknoto"));
+						throw new RuntimeException("incknoto");
 					
 					// Want colon now, which after that is some kind of value
 					this.__top().need(__Exp__.COLON);
@@ -394,7 +384,7 @@ public abstract class BaseDecoder
 					
 					// Unknown
 					else
-						throw new RuntimeException(BaseDecoder.BUN.getString("unkvalv"));
+						throw new RuntimeException("unkvalv");
 					
 					// Comma or end
 					this.__top().need(__Exp__.COMMA_OR_END);
@@ -420,7 +410,7 @@ public abstract class BaseDecoder
 					
 					// Bad
 					else
-						throw new RuntimeException(BaseDecoder.BUN.getString("unkcolao"));
+						throw new RuntimeException("unkcolao");
 					
 					// Recursive self
 					this.__internalGet();
@@ -446,7 +436,7 @@ public abstract class BaseDecoder
 					
 					// Bad
 					else
-						throw new RuntimeException(BaseDecoder.BUN.getString("unkcomao"));
+						throw new RuntimeException("unkcomao");
 					
 					// Recourse to find next item
 					this.__internalGet();
@@ -462,8 +452,8 @@ public abstract class BaseDecoder
 			default:
 				// Unknown
 				if (dt != null && dt != Input.Type.END_OF_STREAM)
-					throw new RuntimeException(MessageFormat.format(
-						BaseDecoder.BUN.getString("unkt"), dt.name()));
+					throw new RuntimeException(String.format(
+						"unkt", dt.name()));
 				
 				// Cannot end when nothing was given or inside of a scope
 				if (this._emptied == 0)
@@ -476,7 +466,7 @@ public abstract class BaseDecoder
 		
 		// Cannot have remained empty
 		if (this._flush.isEmpty())
-			throw new IllegalStateException(BaseDecoder.BUN.getString("stillempty"));
+			throw new IllegalStateException("stillempty");
 	}
 	
 	/**
@@ -549,7 +539,7 @@ public abstract class BaseDecoder
 			// Check
 			if (__t != Input.Type.START_OBJECT &&
 				__t != Input.Type.START_ARRAY)
-				throw new IllegalArgumentException(BaseDecoder.BUN.getString("snsoa"));
+				throw new IllegalArgumentException("snsoa");
 			
 			// Set
 			this.type = __t;
@@ -569,8 +559,8 @@ public abstract class BaseDecoder
 				
 					// Unhandled
 				default:
-					throw new RuntimeException(MessageFormat.format(
-						BaseDecoder.BUN.getString("unhsct"), this.type.name()));
+					throw new RuntimeException(String.format(
+						"unhsct", this.type.name()));
 			}
 		}
 		
@@ -715,7 +705,7 @@ public abstract class BaseDecoder
 				// Check
 				if (__t == null || (__s == null && (__t == Type.STRING ||
 					__t == Type.LITERAL)))
-					throw new NullPointerException(BaseDecoder.BUN.getString("na"));
+					throw new NullPointerException("na");
 				
 				// Set
 				this.type = __t;
@@ -805,7 +795,7 @@ public abstract class BaseDecoder
 		 * @param __v Values, uses the input value rather than a copy.
 		 * @since 2014/08/04
 		 */
-		private Bit(Kind __k, Object... __v)
+		Bit(Kind __k, Object... __v)
 		{
 			// Cannot be null
 			if (__k == null)

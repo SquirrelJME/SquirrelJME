@@ -9,10 +9,9 @@
 
 package com.oracle.json.stream;
 
+import com.oracle.json.JsonException;
 import java.io.Closeable;
 import java.io.IOException;
-import java.math.BigDecimal;
-import com.oracle.json.JsonException;
 
 /**
  * This class provides a stream based reading of JSON data, it reads the input
@@ -36,17 +35,6 @@ public interface JsonParser
 	 */
 	@Override
 	void close();
-	
-	/**
-	 * When the event is {@link Event#VALUE_NUMBER}, this returns the decimal
-	 * value of it as if {@code new BigDecimal(getString())} were called.
-	 *
-	 * @return The decimal number the value is set to.
-	 * @throws IllegalStateException If the state is not
-	 * {@link Event#VALUE_NUMBER}.
-	 * @since 2014/07/25
-	 */
-	BigDecimal getBigDecimal();
 	
 	/**
 	 * When the event is {@link Event#VALUE_NUMBER}, this returns the integer

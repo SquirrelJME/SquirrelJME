@@ -9,21 +9,18 @@
 
 package net.multiphasicapps.jsr353;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.LineNumberReader;
 import java.io.Reader;
 
 /**
- * This is similar to {@link LineNumberReader} except that it also supports
+ * This is similar to {@code LineNumberReader} except that it also supports
  * reading of column numbers. Note that column numbers are zero based.
- *
- * THIS IS INTERNAL PROPRIETARY API, IF YOU USE IT THEN YOUR CODE COULD BREAK
- * AT ANYTIME IF ANYTHING IS CHANGED, IN SHORT KEEP OUT UNLESS YOU OSDEV.
  *
  * @since 2014/08/02
  */
 public class LineColumnReader
-	extends LineNumberReader
+	extends BufferedReader
 {
 	/** Default system wide tab character size. */
 	public static final int DEFAULT =
@@ -33,11 +30,14 @@ public class LineColumnReader
 	private static final int INTERNDEFTS =
 		8;
 	
-	/** The size of the tab character. */
-	protected int tabsize;
+	/** The current line. */
+	protected int line;
 	
 	/** The current read column. */
 	protected int column;
+	
+	/** The size of the tab character. */
+	protected int tabsize;
 	
 	/** Marked column. */
 	private int _mkdcol =
@@ -108,51 +108,39 @@ public class LineColumnReader
 	}
 	
 	/**
-	 * Sets the tab size, if {@link #DEFAULT} is used then the system
-	 * property "{@code tab.size}" is used if one is set, otherwise 8 is
-	 * used. Does nothing if the stream is closed.
+	 * Returns the current column number, zero indexed.
 	 *
-	 * @param __ts New tab size to set.
+	 * @return The current column number.
+	 * @throws IllegalStateException If the stream has been closed.
 	 * @since 2014/08/02
 	 */
-	public void setTabSize(int __ts)
+	public int getColumnNumber()
 	{
-		// Cannot be <= 0
-		if (__ts <= 0 && __ts != LineColumnReader.DEFAULT)
-			throw new IllegalArgumentException(String.format(
-				"Zero or negative tab size (%1$d).", __ts));
-		
 		synchronized (this.lock)
 		{
-			// Has been closed
+			// Closed
 			if (this.tabsize < 0)
-				return;
+				throw new IllegalStateException("Stream has been closed.");
 			
-			// Normal
-			if (__ts != LineColumnReader.DEFAULT)
-				this.tabsize = __ts;
+			return this.column;
+		}
+	}
+	
+	/**
+	 * Returns the line number.
+	 * 
+	 * @return The line number.
+	 * @since 2022/07/12
+	 */
+	public int getLineNumber()
+	{
+		synchronized (this.lock)
+		{
+			// Closed
+			if (this.tabsize < 0)
+				throw new IllegalStateException("CLOS");
 			
-			// Use system property
-			else
-			{
-				try
-				{
-					String swts = System.getProperty("tab.size");
-					
-					// If no property use default
-					if (swts == null)
-						throw new NumberFormatException();
-				
-					// As number
-					this.tabsize = Integer.valueOf(swts);
-				}
-			
-				// Not allowed; Not a number, or way out of range.
-				catch (SecurityException|NumberFormatException e)
-				{
-					this.tabsize = LineColumnReader.INTERNDEFTS;
-				}
-			}
+			return this.line;
 		}
 	}
 	
@@ -177,68 +165,29 @@ public class LineColumnReader
 	}
 	
 	/**
-	 * Returns the current column number, zero indexed.
+	 * Marks the stream to that it may later be {@link #reset()}.
 	 *
-	 * @return The current column number.
-	 * @throws IllegalStateException If the stream has been closed.
-	 * @since 2014/08/02
+	 * @param __ral Read-ahead limit, number of characters to mark.
+	 * @throws IOException If the stream could not be marked.
+	 * @since 2014/09/01
 	 */
-	public int getColumnNumber()
-	{
-		synchronized (this.lock)
-		{
-			// Closed
-			if (this.tabsize < 0)
-				throw new IllegalStateException("Stream has been closed.");
-			
-			return this.column;
-		}
-	}
-	
-	/**
-	 * Sets a new column number.
-	 *
-	 * @param __cn New column number to set.
-	 * @throws IllegalStateException If the stream has been closed.
-	 * @throws IllegalArgumentException If the column number is negative.
-	 * @since 2014/08/02
-	 */
-	public void setColumnNumber(int __cn)
+	@Override
+	public void mark(int __ral)
+		throws IOException
 	{
 		// Cannot be negative
-		if (__cn < 0)
+		if (__ral < 0)
 			throw new IllegalArgumentException(String.format(
-				"Negative column number %1$d.", __cn));
+				"Negative read-ahead of %1$d.", __ral));
 		
 		// Locked
 		synchronized (this.lock)
 		{
-			// Closed
-			if (this.tabsize < 0)
-				throw new IllegalStateException("Stream has been closed.");
+			// Remember column
+			this._mkdcol = this.column;
 			
-			// Set
-			this.column = __cn;
-		}
-	}
-	
-	/**
-	 * Reads a character from the input stream and returns it.
-	 *
-	 * @return The read character or {@code -1} on EOF.
-	 * @throws IOException On any I/O error.
-	 * @since 2014/08/02
-	 */
-	@Override
-	public int read()
-		throws IOException
-	{
-		synchronized (this.lock)
-		{
-			char[] b = new char[1];
-			if (this.read(b, 0, 1) == 1)
-				return b[0];
-			return -1;
+			// Mark super (does line number too)
+			super.mark(__ral);
 		}
 	}
 	
@@ -286,11 +235,15 @@ public class LineColumnReader
 			
 				// Tab
 				if (c == '\t')
-					this.column = (this.column - (this.column % this.tabsize)) + this.tabsize;
+					this.column = (this.column -
+						(this.column % this.tabsize)) + this.tabsize;
 			
 				// New line
 				else if (c == '\n')
+				{
 					this.column = 0;
+					this.line++;
+				}
 			
 				// Other character
 				else
@@ -307,29 +260,22 @@ public class LineColumnReader
 	}
 	
 	/**
-	 * Marks the stream to that it may later be {@link #reset()}.
+	 * Reads a character from the input stream and returns it.
 	 *
-	 * @param __ral Read-ahead limit, number of characters to mark.
-	 * @throws IOException If the stream could not be marked.
-	 * @since 2014/09/01
+	 * @return The read character or {@code -1} on EOF.
+	 * @throws IOException On any I/O error.
+	 * @since 2014/08/02
 	 */
 	@Override
-	public void mark(int __ral)
+	public int read()
 		throws IOException
 	{
-		// Cannot be negative
-		if (__ral < 0)
-			throw new IllegalArgumentException(String.format(
-				"Negative read-ahead of %1$d.", __ral));
-		
-		// Locked
 		synchronized (this.lock)
 		{
-			// Remember column
-			this._mkdcol = this.column;
-			
-			// Mark super (does line number too)
-			super.mark(__ral);
+			char[] b = new char[1];
+			if (this.read(b, 0, 1) == 1)
+				return b[0];
+			return -1;
 		}
 	}
 	
@@ -356,6 +302,82 @@ public class LineColumnReader
 			
 			// Reset super
 			super.reset();
+		}
+	}
+	
+	/**
+	 * Sets a new column number.
+	 *
+	 * @param __cn New column number to set.
+	 * @throws IllegalStateException If the stream has been closed.
+	 * @throws IllegalArgumentException If the column number is negative.
+	 * @since 2014/08/02
+	 */
+	public void setColumnNumber(int __cn)
+	{
+		// Cannot be negative
+		if (__cn < 0)
+			throw new IllegalArgumentException(String.format(
+				"Negative column number %1$d.", __cn));
+		
+		// Locked
+		synchronized (this.lock)
+		{
+			// Closed
+			if (this.tabsize < 0)
+				throw new IllegalStateException("Stream has been closed.");
+			
+			// Set
+			this.column = __cn;
+		}
+	}
+	
+	/**
+	 * Sets the tab size, if {@link #DEFAULT} is used then the system
+	 * property "{@code tab.size}" is used if one is set, otherwise 8 is
+	 * used. Does nothing if the stream is closed.
+	 *
+	 * @param __ts New tab size to set.
+	 * @since 2014/08/02
+	 */
+	public void setTabSize(int __ts)
+	{
+		// Cannot be <= 0
+		if (__ts <= 0 && __ts != LineColumnReader.DEFAULT)
+			throw new IllegalArgumentException(String.format(
+				"Zero or negative tab size (%1$d).", __ts));
+		
+		synchronized (this.lock)
+		{
+			// Has been closed
+			if (this.tabsize < 0)
+				return;
+			
+			// Normal
+			if (__ts != LineColumnReader.DEFAULT)
+				this.tabsize = __ts;
+			
+			// Use system property
+			else
+			{
+				try
+				{
+					String swts = System.getProperty("tab.size");
+					
+					// If no property use default
+					if (swts == null)
+						throw new NumberFormatException();
+				
+					// As number
+					this.tabsize = Integer.valueOf(swts);
+				}
+			
+				// Not allowed; Not a number, or way out of range.
+				catch (SecurityException|NumberFormatException e)
+				{
+					this.tabsize = LineColumnReader.INTERNDEFTS;
+				}
+			}
 		}
 	}
 }

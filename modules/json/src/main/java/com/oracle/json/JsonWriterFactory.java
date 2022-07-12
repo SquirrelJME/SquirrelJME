@@ -10,8 +10,8 @@
 package com.oracle.json;
 
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.util.Map;
 
 /**
@@ -37,11 +37,14 @@ public interface JsonWriterFactory
 	 * specified character encoding, the specified configuration is used.
 	 *
 	 * @param __o Stream to write data to.
-	 * @param __cs Character encoding to use.
+	 * @param __charSet Character encoding to use.
 	 * @return A {@link JsonWriter}.
+	 * @throws UnsupportedEncodingException If the character set is not
+	 * supported.
 	 * @since 2014/07/26
 	 */
-	JsonWriter createWriter(OutputStream __o, Charset __cs);
+	JsonWriter createWriter(OutputStream __o, String __charSet)
+		throws UnsupportedEncodingException;
 	
 	/**
 	 * Creates a writer to output JSON to the specified stream, the specified

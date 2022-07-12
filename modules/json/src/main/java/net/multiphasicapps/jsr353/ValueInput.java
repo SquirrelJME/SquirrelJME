@@ -9,10 +9,10 @@
 
 package net.multiphasicapps.jsr353;
 
-import java.io.Closeable;
 import com.oracle.json.JsonException;
 import com.oracle.json.JsonValue;
 import com.oracle.json.stream.JsonParsingException;
+import java.io.Closeable;
 
 /**
  * This reads input from an existing JSON object.

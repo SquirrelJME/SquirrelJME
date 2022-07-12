@@ -9,11 +9,6 @@
 
 package net.multiphasicapps.jsr353;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import com.oracle.json.JsonArray;
 import com.oracle.json.JsonArrayBuilder;
 import com.oracle.json.JsonException;
@@ -24,6 +19,10 @@ import com.oracle.json.JsonStructure;
 import com.oracle.json.JsonValue;
 import com.oracle.json.stream.JsonLocation;
 import com.oracle.json.stream.JsonParsingException;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This read a JSON Array or JSON Object from the specified input stream, this
@@ -35,9 +34,11 @@ public class ImplReader
 	extends BaseDecoder
 	implements JsonReader
 {
+	/** Closed? */
+	private volatile boolean _closed;
+	
 	/** Did this already? */
-	private volatile AtomicBoolean _did =
-		new AtomicBoolean();
+	private volatile boolean _did;
 	
 	/** Builder stack. */
 	private List<SomeBuilder> _bs;
@@ -74,14 +75,14 @@ public class ImplReader
 		synchronized (this.lock)
 		{
 			// Already closed
-			if (this._did == null)
+			if (this._closed)
 				return;
 			
 			// Close
 			super.close();
 		
 			// Clear working vars
-			this._did = null;
+			this._closed = true;
 			this._bs = null;
 			this._ks = null;
 		}
@@ -102,14 +103,15 @@ public class ImplReader
 		synchronized (this.lock)
 		{
 			// Already closed
-			if (this._did == null)
+			if (this._closed)
 				throw new JsonException(
 					"Stream has been closed.");
 			
-			// Already read a value
-			if (!this._did.compareAndSet(false, true))
+			// Already read a value?
+			if (this._did)
 				throw new JsonException(
 					"Data has already been read.");
+			this._did = true;
 			
 			// Read bits constantly
 			JsonStructure rv = null;

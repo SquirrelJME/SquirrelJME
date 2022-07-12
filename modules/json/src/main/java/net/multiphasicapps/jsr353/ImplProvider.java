@@ -9,11 +9,6 @@
 
 package net.multiphasicapps.jsr353;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
-import java.util.Map;
 import com.oracle.json.JsonArray;
 import com.oracle.json.JsonArrayBuilder;
 import com.oracle.json.JsonBuilderFactory;
@@ -28,6 +23,11 @@ import com.oracle.json.stream.JsonGenerator;
 import com.oracle.json.stream.JsonGeneratorFactory;
 import com.oracle.json.stream.JsonParser;
 import com.oracle.json.stream.JsonParserFactory;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.Map;
 
 /**
  * This class provides an implementation of JSR353 which is for the handling

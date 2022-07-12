@@ -14,7 +14,7 @@ import com.oracle.json.JsonException;
 import com.oracle.json.JsonObject;
 import java.io.InputStream;
 import java.io.Reader;
-import java.nio.charset.Charset;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
@@ -38,11 +38,12 @@ public interface JsonParserFactory
 	 * encoding, the factory configuration is used.
 	 *
 	 * @param __i Stream to read data from.
-	 * @param __cs Character encoding of the data.
+	 * @param __charSet Character encoding of the data.
 	 * @return A parser for JSON.
 	 * @since 2014/07/25
 	 */
-	JsonParser createParser(InputStream __i, Charset __cs);
+	JsonParser createParser(InputStream __i, String __charSet)
+		throws UnsupportedEncodingException;
 	
 	/**
 	 * Creates a JSON parser to parse the specified array, the factory

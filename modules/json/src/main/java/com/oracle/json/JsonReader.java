@@ -9,9 +9,9 @@
 
 package com.oracle.json;
 
+import com.oracle.json.stream.JsonParsingException;
 import java.io.Closeable;
 import java.io.IOException;
-import com.oracle.json.stream.JsonParsingException;
 
 /**
  * Reads a JSON object or array from an input source, this class is for reading

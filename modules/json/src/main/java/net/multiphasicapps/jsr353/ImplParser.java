@@ -9,14 +9,13 @@
 
 package net.multiphasicapps.jsr353;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.math.BigDecimal;
-import java.util.NoSuchElementException;
 import com.oracle.json.JsonException;
 import com.oracle.json.stream.JsonLocation;
 import com.oracle.json.stream.JsonParser;
 import com.oracle.json.stream.JsonParsingException;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.NoSuchElementException;
 
 /**
  * This is an event based parser which decodes JSON input data.
@@ -79,34 +78,6 @@ public class ImplParser
 	}
 	
 	/**
-	 * When the event is {@link Event#VALUE_NUMBER}, this returns the decimal
-	 * value of it as if {@code new BigDecimal(getString())} were called.
-	 *
-	 * @return The decimal number the value is set to.
-	 * @throws IllegalStateException If the state is not
-	 * {@link Event#VALUE_NUMBER}.
-	 * @since 2014/08/01
-	 */
-	@Override
-	public BigDecimal getBigDecimal()
-	{
-		synchronized (this.lock)
-		{
-			// Cannot be closed
-			if (this._closed)
-				throw new IllegalStateException("Parser has been closed.");
-			
-			// Invalid state
-			if (this._e != Event.VALUE_NUMBER)
-				throw new IllegalStateException(String.format(
-					"Invalid state: %1$s.", this._e));
-			
-			// Convert
-			return new BigDecimal(this.getString());
-		}
-	}
-	
-	/**
 	 * When the event is {@link Event#VALUE_NUMBER}, this returns the integer
 	 * value of it as if {@code new BigDecimal(getString()).intValue()} were
 	 * called. It is possible that information may be lost.
@@ -119,20 +90,7 @@ public class ImplParser
 	@Override
 	public int getInt()
 	{
-		synchronized (this.lock)
-		{
-			// Cannot be closed
-			if (this._closed)
-				throw new IllegalStateException("Parser has been closed.");
-			
-			// Invalid state
-			if (this._e != Event.VALUE_NUMBER)
-				throw new IllegalStateException(String.format(
-					"Invalid state: %1$s.", this._e));
-			
-			// Convert
-			return new BigDecimal(this.getString()).intValue();
-		}
+		return this.__getNumber().intValue();
 	}
 	
 	/**
@@ -170,20 +128,7 @@ public class ImplParser
 	@Override
 	public long getLong()
 	{
-		synchronized (this.lock)
-		{
-			// Cannot be closed
-			if (this._closed)
-				throw new IllegalStateException("Parser has been closed.");
-			
-			// Invalid state
-			if (this._e != Event.VALUE_NUMBER)
-				throw new IllegalStateException(String.format(
-					"Invalid state: %1$s.", this._e));
-			
-			// Return
-			return new BigDecimal(this.getString()).longValue();
-		}
+		return this.__getNumber().longValue();
 	}
 	
 	/**
@@ -207,7 +152,8 @@ public class ImplParser
 					"Parser has been closed.");
 			
 			// Invalid state
-			if (this._e != Event.VALUE_NUMBER && this._e != Event.VALUE_STRING && this._e != Event.KEY_NAME)
+			if (this._e != Event.VALUE_NUMBER &&
+				this._e != Event.VALUE_STRING && this._e != Event.KEY_NAME)
 				throw new IllegalStateException(String.format(
 					"Invalid state: %1$s.", this._e));
 			
@@ -253,31 +199,7 @@ public class ImplParser
 	@Override
 	public boolean isIntegralNumber()
 	{
-		synchronized (this.lock)
-		{
-			// Cannot be closed
-			if (this._closed)
-				throw new IllegalStateException(
-					"Parser has been closed.");
-			
-			// Invalid state
-			if (this._e != Event.VALUE_NUMBER)
-				throw new IllegalStateException(String.format(
-					"Invalid state: %1$s.", this._e));
-			
-			// Try conversion to a big integer.
-			try
-			{
-				this.getBigDecimal().toBigIntegerExact();
-				return true;
-			}
-			
-			// Has a decimal point
-			catch (ArithmeticException ae)
-			{
-				return false;
-			}
-		}
+		return new ImplValueNumber(this.__getNumber()).isIntegral();
 	}
 	
 	/**
@@ -306,5 +228,32 @@ public class ImplParser
 				"implemented.");
 		}
 	}
+	
+	/**
+	 * When the event is {@link Event#VALUE_NUMBER}, this returns the decimal
+	 * value of it as if {@code new BigDecimal(getString())} were called.
+	 *
+	 * @return The decimal number the value is set to.
+	 * @throws IllegalStateException If the state is not
+	 * {@link Event#VALUE_NUMBER}.
+	 * @since 2014/08/01
+	 */
+	private Number __getNumber()
+	{
+		synchronized (this.lock)
+		{
+			// Cannot be closed
+			if (this._closed)
+				throw new IllegalStateException("Parser has been closed.");
+			
+			// Invalid state
+			if (this._e != Event.VALUE_NUMBER)
+				throw new IllegalStateException(String.format(
+					"Invalid state: %1$s.", this._e));
+			
+			return ImplValueNumber.__parseNumber(this.getString());
+		}
+	}
+	
 }
 

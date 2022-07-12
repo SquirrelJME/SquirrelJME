@@ -10,15 +10,15 @@
 package com.oracle.json;
 
 import com.oracle.json.spi.JsonProvider;
+import com.oracle.json.stream.JsonGenerator;
+import com.oracle.json.stream.JsonGeneratorFactory;
 import com.oracle.json.stream.JsonParser;
+import com.oracle.json.stream.JsonParserFactory;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Map;
-import com.oracle.json.stream.JsonGenerator;
-import com.oracle.json.stream.JsonGeneratorFactory;
-import com.oracle.json.stream.JsonParserFactory;
 
 /**
  * This class provides a basic interface providing static methods which uses
