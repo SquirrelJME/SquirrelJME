@@ -1,0 +1,181 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the GNU General Public License v3+, or later.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
+package javax.json.stream;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.math.BigDecimal;
+import javax.json.JsonException;
+
+/**
+ * This class provides a stream based reading of JSON data, it reads the input
+ * in terms of events. This is used similar to a {@link java.util.Iterator} in
+ * that you use {@link #hasNext()} and {@link #next()} to obtain the next
+ * processed bits. This does not form any automatically structured objects or
+ * arrays.
+ *
+ * @since 2014/07/25
+ */
+public interface JsonParser
+	extends Closeable
+{
+	/**
+	 * Closes the parser and releases resources associated with it, the input
+	 * source is also closed.
+	 *
+	 * @throws JsonException If an {@link IOException}, it will be wrapped,
+	 * otherwise it is unspecified.
+	 * @since 2014/07/25
+	 */
+	@Override
+	void close();
+	
+	/**
+	 * When the event is {@link Event#VALUE_NUMBER}, this returns the decimal
+	 * value of it as if {@code new BigDecimal(getString())} were called.
+	 *
+	 * @return The decimal number the value is set to.
+	 * @throws IllegalStateException If the state is not
+	 * {@link Event#VALUE_NUMBER}.
+	 * @since 2014/07/25
+	 */
+	BigDecimal getBigDecimal();
+	
+	/**
+	 * When the event is {@link Event#VALUE_NUMBER}, this returns the integer
+	 * value of it as if {@code new BigDecimal(getString()).intValue()} were
+	 * called. It is possible that information may be lost.
+	 *
+	 * @return The integer value.
+	 * @throws IllegalStateException If the state is not
+	 * {@link Event#VALUE_NUMBER}.
+	 * @since 2014/07/25
+	 */
+	int getInt();
+	
+	/**
+	 * Returns information on the parser's current state within the JSON
+	 * stream, said information is only valid in the current state. If the
+	 * state is modified, the values here are invalid.
+	 *
+	 * @return A non-{@code null} location matching the current parser state.
+	 * @since 2014/07/25
+	 */
+	JsonLocation getLocation();
+	
+	/**
+	 * When the event is {@link Event#VALUE_NUMBER}, this returns the long
+	 * value of it as if {@code new BigDecimal(getString()).longValue()} were
+	 * called. It is possible that information may be lost.
+	 *
+	 * @return The long value.
+	 * @throws IllegalStateException If the state is not
+	 * {@link Event#VALUE_NUMBER}.
+	 * @since 2014/07/25
+	 */
+	long getLong();
+	
+	/**
+	 * Returns either the key name or a value if the parser is in the 
+	 * {@link Event#VALUE_NUMBER}, {@link Event#VALUE_STRING}, or
+	 * {@link Event#KEY_NAME} states.
+	 *
+	 * @throws IllegalStateException If the state is not
+	 * {@link Event#VALUE_NUMBER}, {@link Event#VALUE_STRING}, or
+	 * {@link Event#KEY_NAME}.
+	 * @since 2014/07/25
+	 */
+	String getString();
+	
+	/**
+	 * Returns {@code true} if there are more states to parse, otherwise
+	 * {@code false} will be returned at the end.
+	 *
+	 * @throws JsonException A standard error, {@link IOException} may be
+	 * wrapped if it occurs.
+	 * @throws JsonParsingException Invalid JSON data was detected.
+	 * @since 2014/07/25
+	 */
+	boolean hasNext();
+	
+	/**
+	 * Returns true if the specified numeric value is an integer (that is, it
+	 * has no fractional values).
+	 *
+	 * @return {@code true} if this number is integral.
+	 * @throws IllegalStateException If the state is not
+	 * {@link Event#VALUE_NUMBER}.
+	 * @since 2014/07/25
+	 */
+	boolean isIntegralNumber();
+	
+	/**
+	 * Advances to the next state returning the type of data read.
+	 *
+	 * @throws JsonException A standard error, {@link IOException} may be
+	 * wrapped if it occurs.
+	 * @throws JsonParsingException Invalid JSON data was detected.
+	 * @throws java.util.NoSuchElementException If there is nothing left.
+	 * @since 2014/07/25
+	 */
+	Event next();
+	
+	/**
+	 * This is an enumeration which represents the type of the fragment which
+	 * was just read.
+	 *
+	 * @since 2014/07/25
+	 */
+	enum Event
+	{
+		/** The start of an array, the parser sits after the '['. */
+		START_ARRAY,
+		
+		/** The start of an object, the parser sits after the '{'. */
+		START_OBJECT,
+		
+		/**
+		 * The name of an object key, the parser sits after the name,
+		 * to obtain the key use {@link JsonParser#getString()}.
+		 */
+		KEY_NAME,
+		
+		/**
+		 * The value of an object (a string), the parser sits after the value,
+		 * to obtain the value use {@link JsonParser#getString()}.
+		 */
+		VALUE_STRING,
+		
+		/**
+		 * The value of an object (a number), the parser sits after the value,
+		 * to obtain the value use {@link JsonParser#getBigDecimal()}.
+		 */
+		VALUE_NUMBER,
+		
+		/** The value is {@code true}, the parser sits after the literal. */
+		VALUE_TRUE,
+		
+		/** The value is {@code false}, the parser sits after the literal. */
+		VALUE_FALSE,
+		
+		/** The value is {@code null}, the parser sits after the literal. */
+		VALUE_NULL,
+		
+		/** End of an object, the parser sits after the '}'. */
+		END_OBJECT,
+		
+		/** End of an array, the parser sits after the ']'. */
+		END_ARRAY,
+		
+		/** End. */
+		;
+	}
+}
+

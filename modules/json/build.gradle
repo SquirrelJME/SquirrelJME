@@ -1,0 +1,19 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "Contains an implementation of JSR 353 which is for JSON access."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "DG"
+	swmType = JavaMEMidletType.API
+	swmName = "JSON API"
+	swmVendor = "Stephanie Gawroriski"
+	tags += "json"
+	tags += "jsr353"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+}
