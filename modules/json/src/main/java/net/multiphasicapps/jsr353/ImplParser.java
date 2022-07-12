@@ -13,10 +13,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.NoSuchElementException;
-import javax.json.JsonException;
-import javax.json.stream.JsonLocation;
-import javax.json.stream.JsonParser;
-import javax.json.stream.JsonParsingException;
+import com.oracle.json.JsonException;
+import com.oracle.json.stream.JsonLocation;
+import com.oracle.json.stream.JsonParser;
+import com.oracle.json.stream.JsonParsingException;
 
 /**
  * This is an event based parser which decodes JSON input data.

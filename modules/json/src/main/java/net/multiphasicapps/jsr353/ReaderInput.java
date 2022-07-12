@@ -15,9 +15,9 @@ import java.io.Reader;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
-import javax.json.JsonException;
-import javax.json.stream.JsonLocation;
-import javax.json.stream.JsonParsingException;
+import com.oracle.json.JsonException;
+import com.oracle.json.stream.JsonLocation;
+import com.oracle.json.stream.JsonParsingException;
 
 /**
  * This reads input from a {@link Reader}.

@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.json;
+package com.oracle.json;
 
 /**
  * This represents an immutable JSON value.

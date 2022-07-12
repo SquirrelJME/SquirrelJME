@@ -7,11 +7,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.json;
+package com.oracle.json;
 
 import java.io.Closeable;
 import java.io.IOException;
-import javax.json.stream.JsonParsingException;
+import com.oracle.json.stream.JsonParsingException;
 
 /**
  * Reads a JSON object or array from an input source, this class is for reading

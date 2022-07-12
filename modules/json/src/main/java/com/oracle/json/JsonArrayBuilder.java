@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.json;
+package com.oracle.json;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

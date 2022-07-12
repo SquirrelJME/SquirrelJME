@@ -7,15 +7,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.json.stream;
+package com.oracle.json.stream;
 
+import com.oracle.json.JsonArray;
+import com.oracle.json.JsonException;
+import com.oracle.json.JsonObject;
 import java.io.InputStream;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.Map;
-import javax.json.JsonArray;
-import javax.json.JsonException;
-import javax.json.JsonObject;
 
 /**
  * @since 2014/07/25

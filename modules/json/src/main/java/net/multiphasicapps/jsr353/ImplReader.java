@@ -14,16 +14,16 @@ import java.io.Reader;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonException;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonReader;
-import javax.json.JsonStructure;
-import javax.json.JsonValue;
-import javax.json.stream.JsonLocation;
-import javax.json.stream.JsonParsingException;
+import com.oracle.json.JsonArray;
+import com.oracle.json.JsonArrayBuilder;
+import com.oracle.json.JsonException;
+import com.oracle.json.JsonObject;
+import com.oracle.json.JsonObjectBuilder;
+import com.oracle.json.JsonReader;
+import com.oracle.json.JsonStructure;
+import com.oracle.json.JsonValue;
+import com.oracle.json.stream.JsonLocation;
+import com.oracle.json.stream.JsonParsingException;
 
 /**
  * This read a JSON Array or JSON Object from the specified input stream, this

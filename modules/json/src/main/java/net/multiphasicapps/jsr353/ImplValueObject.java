@@ -15,11 +15,11 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import javax.json.JsonArray;
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonString;
-import javax.json.JsonValue;
+import com.oracle.json.JsonArray;
+import com.oracle.json.JsonNumber;
+import com.oracle.json.JsonObject;
+import com.oracle.json.JsonString;
+import com.oracle.json.JsonValue;
 
 /**
  * This represents an object which contains many key/value pairs.

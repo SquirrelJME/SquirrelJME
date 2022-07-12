@@ -20,10 +20,10 @@ import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Logger;
-import javax.json.JsonException;
-import javax.json.JsonValue;
-import javax.json.stream.JsonLocation;
-import javax.json.stream.JsonParsingException;
+import com.oracle.json.JsonException;
+import com.oracle.json.JsonValue;
+import com.oracle.json.stream.JsonLocation;
+import com.oracle.json.stream.JsonParsingException;
 
 /**
  * This is a basic class which takes very raw JSON data and decodes it into a

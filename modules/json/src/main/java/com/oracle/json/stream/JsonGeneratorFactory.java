@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.json.stream;
+package com.oracle.json.stream;
 
 import java.io.OutputStream;
 import java.io.Writer;

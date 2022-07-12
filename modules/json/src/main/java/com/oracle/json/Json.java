@@ -7,18 +7,18 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.json;
+package com.oracle.json;
 
+import com.oracle.json.spi.JsonProvider;
+import com.oracle.json.stream.JsonParser;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Map;
-import javax.json.spi.JsonProvider;
-import javax.json.stream.JsonGenerator;
-import javax.json.stream.JsonGeneratorFactory;
-import javax.json.stream.JsonParser;
-import javax.json.stream.JsonParserFactory;
+import com.oracle.json.stream.JsonGenerator;
+import com.oracle.json.stream.JsonGeneratorFactory;
+import com.oracle.json.stream.JsonParserFactory;
 
 /**
  * This class provides a basic interface providing static methods which uses

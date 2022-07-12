@@ -7,9 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.json.stream;
+package com.oracle.json.stream;
 
-import javax.json.JsonException;
+import com.oracle.json.JsonException;
 
 /**
  * Indicates that invalid JSON is being parsed.

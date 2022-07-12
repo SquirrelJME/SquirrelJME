@@ -7,15 +7,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.json.stream;
+package com.oracle.json.stream;
 
+import com.oracle.json.JsonException;
+import com.oracle.json.JsonValue;
 import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import javax.json.JsonException;
-import javax.json.JsonValue;
 
 /**
  * This is a generator which writes JSON data in a stream like form in that

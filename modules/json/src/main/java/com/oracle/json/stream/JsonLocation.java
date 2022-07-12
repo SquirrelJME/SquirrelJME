@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.json.stream;
+package com.oracle.json.stream;
 
 /**
  * Provides location information on the source of the JSON data when an

@@ -5,5 +5,5 @@
  * @since 2014/07/25
  */
 
-package javax.json.stream;
+package com.oracle.json.stream;
 

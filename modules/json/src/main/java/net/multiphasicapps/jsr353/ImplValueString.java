@@ -9,7 +9,7 @@
 
 package net.multiphasicapps.jsr353;
 
-import javax.json.JsonString;
+import com.oracle.json.JsonString;
 
 /**
  * This represents a single string value used in an object.

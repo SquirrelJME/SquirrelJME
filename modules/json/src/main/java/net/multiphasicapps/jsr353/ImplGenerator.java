@@ -17,14 +17,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import javax.json.JsonArray;
-import javax.json.JsonException;
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonString;
-import javax.json.JsonValue;
-import javax.json.stream.JsonGenerationException;
-import javax.json.stream.JsonGenerator;
+import com.oracle.json.JsonArray;
+import com.oracle.json.JsonException;
+import com.oracle.json.JsonNumber;
+import com.oracle.json.JsonObject;
+import com.oracle.json.JsonString;
+import com.oracle.json.JsonValue;
+import com.oracle.json.stream.JsonGenerationException;
+import com.oracle.json.stream.JsonGenerator;
 
 /**
  * This has the capability to write JSON data to an output stream.

@@ -4,5 +4,5 @@
  *
  * @since 2014/07/25
  */
-package javax.json;
+package com.oracle.json;
 

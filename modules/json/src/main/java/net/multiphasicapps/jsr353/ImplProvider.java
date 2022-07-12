@@ -14,20 +14,20 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Map;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonBuilderFactory;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonReader;
-import javax.json.JsonReaderFactory;
-import javax.json.JsonWriter;
-import javax.json.JsonWriterFactory;
-import javax.json.spi.JsonProvider;
-import javax.json.stream.JsonGenerator;
-import javax.json.stream.JsonGeneratorFactory;
-import javax.json.stream.JsonParser;
-import javax.json.stream.JsonParserFactory;
+import com.oracle.json.JsonArray;
+import com.oracle.json.JsonArrayBuilder;
+import com.oracle.json.JsonBuilderFactory;
+import com.oracle.json.JsonObject;
+import com.oracle.json.JsonObjectBuilder;
+import com.oracle.json.JsonReader;
+import com.oracle.json.JsonReaderFactory;
+import com.oracle.json.JsonWriter;
+import com.oracle.json.JsonWriterFactory;
+import com.oracle.json.spi.JsonProvider;
+import com.oracle.json.stream.JsonGenerator;
+import com.oracle.json.stream.JsonGeneratorFactory;
+import com.oracle.json.stream.JsonParser;
+import com.oracle.json.stream.JsonParserFactory;
 
 /**
  * This class provides an implementation of JSR353 which is for the handling

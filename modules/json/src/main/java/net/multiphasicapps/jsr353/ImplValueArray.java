@@ -14,11 +14,11 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.json.JsonArray;
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonString;
-import javax.json.JsonValue;
+import com.oracle.json.JsonArray;
+import com.oracle.json.JsonNumber;
+import com.oracle.json.JsonObject;
+import com.oracle.json.JsonString;
+import com.oracle.json.JsonValue;
 
 /**
  * This is an array of values.

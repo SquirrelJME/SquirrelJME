@@ -9,7 +9,7 @@
 
 package net.multiphasicapps.jsr353;
 
-import javax.json.stream.JsonLocation;
+import com.oracle.json.stream.JsonLocation;
 
 /**
  * This implements {@link JsonLocation} with fields set by a constructor.

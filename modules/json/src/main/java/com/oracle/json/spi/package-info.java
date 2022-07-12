@@ -5,5 +5,5 @@
  * @since 2014/07/25
  */
  
-package javax.json.spi;
+package com.oracle.json.spi;
 

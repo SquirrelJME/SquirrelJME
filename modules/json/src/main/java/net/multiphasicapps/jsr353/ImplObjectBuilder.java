@@ -14,13 +14,13 @@ import java.math.BigInteger;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonString;
-import javax.json.JsonValue;
+import com.oracle.json.JsonArray;
+import com.oracle.json.JsonArrayBuilder;
+import com.oracle.json.JsonNumber;
+import com.oracle.json.JsonObject;
+import com.oracle.json.JsonObjectBuilder;
+import com.oracle.json.JsonString;
+import com.oracle.json.JsonValue;
 
 /**
  * This class builds objects.

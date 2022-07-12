@@ -11,7 +11,7 @@ package net.multiphasicapps.jsr353;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import javax.json.JsonNumber;
+import com.oracle.json.JsonNumber;
 
 /**
  * This represents a single numerical value.

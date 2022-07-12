@@ -7,12 +7,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.json.stream;
+package com.oracle.json.stream;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.math.BigDecimal;
-import javax.json.JsonException;
+import com.oracle.json.JsonException;
 
 /**
  * This class provides a stream based reading of JSON data, it reads the input

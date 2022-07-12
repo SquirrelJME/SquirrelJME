@@ -7,8 +7,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.json.spi;
+package com.oracle.json.spi;
 
+import com.oracle.json.JsonArray;
+import com.oracle.json.JsonObject;
+import com.oracle.json.JsonReader;
+import com.oracle.json.JsonReaderFactory;
+import com.oracle.json.JsonWriter;
+import com.oracle.json.stream.JsonParser;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
@@ -17,19 +23,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.ServiceLoader;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonBuilderFactory;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonReader;
-import javax.json.JsonReaderFactory;
-import javax.json.JsonWriter;
-import javax.json.JsonWriterFactory;
-import javax.json.stream.JsonGenerator;
-import javax.json.stream.JsonGeneratorFactory;
-import javax.json.stream.JsonParser;
-import javax.json.stream.JsonParserFactory;
+import com.oracle.json.JsonArrayBuilder;
+import com.oracle.json.JsonBuilderFactory;
+import com.oracle.json.JsonObjectBuilder;
+import com.oracle.json.JsonWriterFactory;
+import com.oracle.json.stream.JsonGenerator;
+import com.oracle.json.stream.JsonGeneratorFactory;
+import com.oracle.json.stream.JsonParserFactory;
 
 /**
  * This provides a service which is able to allow processing of JSON data.
@@ -37,7 +37,7 @@ import javax.json.stream.JsonParserFactory;
  * All methods are to be thread safe and useable by multiple threads.
  *
  * {@link ServiceLoader} is used to register implementations and thus use the
- * file {@code META-INF/services/javax.json.spi.JsonProvider} in your JAR to
+ * file {@code META-INF/services/com.oracle.spi.JsonProvider} in your JAR to
  * make your implementation visible.
  *
  * @since 2014/07/26

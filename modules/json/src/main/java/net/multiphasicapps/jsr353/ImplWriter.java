@@ -12,12 +12,12 @@ package net.multiphasicapps.jsr353;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.concurrent.atomic.AtomicBoolean;
-import javax.json.JsonArray;
-import javax.json.JsonException;
-import javax.json.JsonObject;
-import javax.json.JsonStructure;
-import javax.json.JsonWriter;
-import javax.json.stream.JsonGenerator;
+import com.oracle.json.JsonArray;
+import com.oracle.json.JsonException;
+import com.oracle.json.JsonObject;
+import com.oracle.json.JsonStructure;
+import com.oracle.json.JsonWriter;
+import com.oracle.json.stream.JsonGenerator;
 
 /**
  * This writes output JSON to the specified output writer, whatever it is.

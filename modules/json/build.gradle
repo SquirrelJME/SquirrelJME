@@ -1,6 +1,10 @@
 import cc.squirreljme.plugin.swm.JavaMEMidletType
 
-description = "Contains an implementation of JSR 353 which is for JSON access."
+// JavaDoc for the API, it is essentially JSR353 but without support for
+// BigDecimal and BigInteger.
+// https://docs.oracle.com/javame/config/cldc/opt-pkgs/api/json/api/index.html
+
+description = "Contains an implementation of the JSON API for CLDC."
 version = rootProject.version
 
 squirreljme
@@ -10,7 +14,6 @@ squirreljme
 	swmName = "JSON API"
 	swmVendor = "Stephanie Gawroriski"
 	tags += "json"
-	tags += "jsr353"
 }
 
 dependencies
