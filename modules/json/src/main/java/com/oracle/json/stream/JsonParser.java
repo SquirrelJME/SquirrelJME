@@ -143,7 +143,8 @@ public interface JsonParser
 		
 		/**
 		 * The value of an object (a number), the parser sits after the value,
-		 * to obtain the value use {@link JsonParser#getBigDecimal()}.
+		 * to obtain the value use {@link JsonParser#getInt()} or
+		 * {@link JsonParser#getLong()}.
 		 */
 		VALUE_NUMBER,
 		

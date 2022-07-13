@@ -151,7 +151,7 @@ public interface JsonArray
 	<T extends JsonValue> List<T> getValueAs(Class<T> __cl);
 	
 	/**
-	 * Returns {@code true} if the specified index is a {@link JsonValue@NULL}.
+	 * Returns {@code true} if the specified index is a {@link JsonValue#NULL}.
 	 *
 	 * @param __i Index into the array to look up.
 	 * @throws IndexOutOfBoundsException If the index is out of range.
