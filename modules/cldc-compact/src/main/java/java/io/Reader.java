@@ -11,6 +11,7 @@ package java.io;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.lang.ref.WeakReference;
 
 public abstract class Reader
 	implements Closeable
@@ -29,7 +30,7 @@ public abstract class Reader
 		"because it refers to itself.")
 	protected Reader()
 	{
-		this.lock = null;
+		this.lock = new WeakReference<>(this);
 	}
 	
 	/**
@@ -47,10 +48,6 @@ public abstract class Reader
 		
 		this.lock = __l;
 	}
-	
-	@Override
-	public abstract void close()
-		throws IOException;
 	
 	/**
 	 * Reads multiple characters.

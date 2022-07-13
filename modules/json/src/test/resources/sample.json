@@ -1,0 +1,18 @@
+{
+	"string": "string",
+	"false": false,
+	"true": true,
+	"int": 1234,
+	"long": 123412341234,
+	"null": null,
+	"array": ["string", false, true, 1234, 123412341234, null],
+	"object": {
+		"string": "string",
+		"false": false,
+		"true": true,
+		"int": 1234,
+		"long": 123412341234,
+		"null": null,
+		"array": ["string", false, true, 1234, 123412341234]
+	}
+}

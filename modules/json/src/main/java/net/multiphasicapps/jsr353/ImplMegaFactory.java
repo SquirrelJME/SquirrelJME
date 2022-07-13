@@ -137,7 +137,7 @@ public class ImplMegaFactory
 		if (__i == null)
 			throw new NullPointerException("No input stream specified.");
 		
-		// Return auto detection stream, sort of
+		// Return auto-detection stream, sort of
 		return this.createReader(new UTFDetectISR(__i));
 	}
 	

@@ -69,6 +69,7 @@ public class EmptyMap
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/05/12
+	 * @param __k
 	 */
 	@Override
 	public Object get(Object __k)

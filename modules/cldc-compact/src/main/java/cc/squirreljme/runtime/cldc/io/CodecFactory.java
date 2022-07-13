@@ -52,7 +52,7 @@ public final class CodecFactory
 				return new ASCIIDecoder();
 			
 			case BuiltInEncodingType.IBM037:
-				throw Debugging.todo();
+				return new IBM037Decoder();
 			
 			case BuiltInEncodingType.ISO_8859_1:
 				return new ISO88591Decoder();
@@ -153,6 +153,9 @@ public final class CodecFactory
 			
 			case BuiltInEncodingType.ISO_8859_15:
 				return new ISO885915Encoder();
+			
+			case BuiltInEncodingType.SHIFT_JIS:
+				return new ShiftJisEncoder();
 			
 			case BuiltInEncodingType.UTF8:
 				return new UTF8Encoder();
