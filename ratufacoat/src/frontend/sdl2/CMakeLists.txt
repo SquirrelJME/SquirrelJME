@@ -39,6 +39,8 @@ target_include_directories(SquirrelJME PUBLIC
 	"${PROJECT_SOURCE_DIR}/include"
 	"${SDL2_INCLUDE_DIRS}")
 
+target_link_directories(SquirrelJME PUBLIC
+	"${SDL2_LIBRARY_DIRS}")
 target_link_libraries(SquirrelJME PUBLIC
 	SquirrelJMECoreLib
 	"${SDL2_LIBRARIES}")
