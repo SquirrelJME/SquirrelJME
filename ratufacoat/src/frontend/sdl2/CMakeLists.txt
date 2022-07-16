@@ -34,13 +34,19 @@ endif()
 # This is written only in C!
 set_target_properties(SquirrelJME PROPERTIES LINKER_LANGUAGE C)
 
+# Includes for SDL2
 target_include_directories(SquirrelJME PUBLIC
 	"${PROJECT_BINARY_DIR}"
 	"${PROJECT_SOURCE_DIR}/include"
 	"${SDL2_INCLUDE_DIRS}")
 
-target_link_directories(SquirrelJME PUBLIC
-	"${SDL2_LIBRARY_DIRS}")
+# Directory where SDL library is, if outside of common areas
+if (NOT "${SDL2_LIBRARY_DIRS}" STREQUAL "")
+	target_link_directories(SquirrelJME PUBLIC
+		"${SDL2_LIBRARY_DIRS}")
+endif()
+
+# SDL2 Link target
 target_link_libraries(SquirrelJME PUBLIC
 	SquirrelJMECoreLib
 	"${SDL2_LIBRARIES}")
