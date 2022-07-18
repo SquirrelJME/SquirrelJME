@@ -1,0 +1,23 @@
+# 2022/07/10
+
+## 11:32
+
+I had an idea for SummerCoat's compilation passes. I will have it multi-layered
+but instead of going straight low level I will have a high level that could
+decode to a lower level. The high level will be closer to Java but have like
+removal of the stack and do stack caching. The low level will be closer to
+machine code and could optionally be used. The low level would not need to
+worry about stack caching only register caching if needed, but also the
+high level could be attached to compiler output and otherwise since if I want
+to support KaiOS I am going to have to output in Javascript. I also could
+output to C and write a Java compiler Java, so I can bootstrap compile
+SquirrelJME accordingly in the event a JDK is not available. It would be
+an additional layer, but going to Java to high level will be easier than
+going straight to low level. I think doing it all in a single step made it
+much more difficult to implement. So hoping this would work out better.
+
+## 11:36
+
+On the otherwise I am working on GIF support which they are used much for
+i-mode software rather than PNG for some reason. No idea, but once GIF is
+supported that really only leaves JPEG to remain for the most part.

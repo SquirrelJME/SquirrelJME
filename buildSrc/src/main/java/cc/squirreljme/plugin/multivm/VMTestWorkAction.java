@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.util.GradleLoggerOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
@@ -17,7 +18,11 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import org.gradle.api.logging.LogLevel;
+import org.gradle.api.logging.Logger;
 import org.gradle.workers.WorkAction;
 
 /**
@@ -29,6 +34,10 @@ import org.gradle.workers.WorkAction;
 public abstract class VMTestWorkAction
 	implements WorkAction<VMTestParameters>
 {
+	/** Logger storage. */
+	static final Map<String, __LogHolder__> _LOGGERS =
+		new ConcurrentHashMap<>();
+	
 	/** The timeout for tests. */
 	private static final long _TEST_TIMEOUT =
 		360_000_000_000L;
@@ -49,6 +58,11 @@ public abstract class VMTestWorkAction
 		VMTestParameters parameters = this.getParameters();
 		String testName = parameters.getTestName().get();
 		
+		// Get the log holder
+		__LogHolder__ logHolder = VMTestWorkAction._LOGGERS.get(
+			parameters.getUniqueId().get());
+		Logger logger = logHolder.logger;
+		
 		// Threads for processing stream data
 		Thread stdOutThread = null;
 		Thread stdErrThread = null;
@@ -68,22 +82,31 @@ public abstract class VMTestWorkAction
 		try
 		{
 			// Note this is running
-			System.err.printf("???? %s (%d/%d)%n", testName, count, total);
-			System.err.flush();
+			logger.lifecycle(String.format("???? %s (%d/%d)",
+				testName, count, total));
 			
 			// Clock the starting time
 			long clockStart = System.currentTimeMillis();
 			long nsStart = System.nanoTime();
 			
+			// Setup output handler
+			ProcessBuilder processBuilder = new ProcessBuilder(
+				parameters.getCommandLine().get().toArray(new String[0]));
+			processBuilder.redirectOutput(ProcessBuilder.Redirect.PIPE);
+			processBuilder.redirectError(ProcessBuilder.Redirect.PIPE);
+			
 			// Start the process with the command line that was pre-determined
-			process = new ProcessBuilder(parameters.getCommandLine()
-				.get().toArray(new String[0])).start();
+			process = processBuilder.start();
 			
 			// Setup listening buffer threads
 			VMTestOutputBuffer stdOut = new VMTestOutputBuffer(
-				process.getInputStream(), System.out, false);
+				process.getInputStream(), new GradleLoggerOutputStream(logger
+				, LogLevel.LIFECYCLE, count, total),
+				false);
 			VMTestOutputBuffer stdErr = new VMTestOutputBuffer(
-				process.getErrorStream(), System.err, true);
+				process.getErrorStream(), new GradleLoggerOutputStream(logger
+				, LogLevel.ERROR, count, total), 
+				true);
 			
 			// Setup threads for reading standard output and standard error
 			stdOutThread = new Thread(stdOut, "stdOutReader");
@@ -107,9 +130,8 @@ public abstract class VMTestWorkAction
 						if (nsDur >= VMTestWorkAction._TEST_TIMEOUT)
 						{
 							// Note it
-							System.err.printf("TIME %s (%d/%d)%n", testName,
-								count, total);
-								System.err.flush();
+							logger.error(String.format("TIME %s (%d/%d)",
+								testName, count, total));
 							
 							// Set timeout as being hit, used for special
 							// check
@@ -130,8 +152,7 @@ public abstract class VMTestWorkAction
 				catch (InterruptedException e)
 				{
 					// Add note that this happened
-					System.err.printf("INTR %s%n", testName);
-					System.err.flush();
+					logger.error(String.format("INTR %s", testName));
 					
 					// Stop the processes that are running
 					process.destroy();
@@ -151,9 +172,8 @@ public abstract class VMTestWorkAction
 			
 			// Note this has finished
 			VMTestResult testResult = VMTestResult.valueOf(exitCode);
-			System.err.printf("%4s %s (%d/%d)%n", testResult, testName,
-				count, total);
-			System.err.flush();
+			logger.lifecycle(String.format("%4s %s (%d/%d)",
+				testResult, testName, count, total));
 			
 			// Write the XML file
 			try (PrintStream out = new PrintStream(Files.newOutputStream(

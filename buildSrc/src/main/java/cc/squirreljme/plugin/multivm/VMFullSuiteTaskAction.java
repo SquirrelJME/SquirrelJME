@@ -9,9 +9,9 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.util.GradleLoggerOutputStream;
 import cc.squirreljme.plugin.util.UnassistedLaunchEntry;
 import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
-import cc.squirreljme.plugin.util.GuardedOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.logging.LogLevel;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.process.ExecResult;
 
@@ -124,8 +125,10 @@ public class VMFullSuiteTaskAction
 					"cc.squirreljme.runtime.launcher.ui.MidletMain");
 				
 				// Use these streams directly
-				__spec.setStandardOutput(new GuardedOutputStream(System.out));
-				__spec.setErrorOutput(new GuardedOutputStream(System.err));
+				__spec.setStandardOutput(new GradleLoggerOutputStream(
+					__task.getLogger(), LogLevel.LIFECYCLE, -1, -1));
+				__spec.setErrorOutput(new GradleLoggerOutputStream(
+					__task.getLogger(), LogLevel.ERROR, -1, -1));
 			});
 		
 		// Did the task fail?

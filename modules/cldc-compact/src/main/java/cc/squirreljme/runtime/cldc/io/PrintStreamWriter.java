@@ -122,6 +122,9 @@ public class PrintStreamWriter
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/08/12
+	 * @param __c
+	 * @param __o
+	 * @param __l
 	 */
 	@Override
 	public void write(char[] __c, int __o, int __l)
