@@ -350,8 +350,12 @@ public class Form
 		
 		// Perform the update, revert to the default if there is an error
 		// with the layout policy
+		__LayoutLock__ lock = layout._lock;
 		try
 		{
+			// Set the lock
+			lock.lock();
+			
 			// Initialize the layout for these items
 			Item[] items = this._items.toArray(new Item[0]);
 			layout.__init(items);
@@ -380,6 +384,9 @@ public class Form
 			{
 				layout._inUpdate = false;
 			}
+			
+			// Clear the lock
+			lock.unlock();
 		}
 	}
 }

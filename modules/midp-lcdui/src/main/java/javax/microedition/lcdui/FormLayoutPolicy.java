@@ -29,6 +29,10 @@ public abstract class FormLayoutPolicy
 	public static int DIRECTION_RTL =
 		1;
 	
+	/** Lock for the layout. */
+	final __LayoutLock__ _lock =
+		new __LayoutLock__();
+	
 	/** The items to be tracked in the map. */
 	final IdentityMap<Item, __LayoutItem__> _tracked =
 		new IdentityMap<>(new HashMap<Identity<Item>, __LayoutItem__>());
@@ -77,42 +81,66 @@ public abstract class FormLayoutPolicy
 	
 	protected final int getHeight(Item __i)
 	{
-		throw Debugging.todo();
+		try (__LayoutLock__ lock = this._lock.utilize())
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	protected final int getWidth(Item __i)
 	{
-		throw Debugging.todo();
+		try (__LayoutLock__ lock = this._lock.utilize())
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	protected final int getX(Item __i)
 	{
-		throw Debugging.todo();
+		try (__LayoutLock__ lock = this._lock.utilize())
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	protected final int getY(Item __i)
 	{
-		throw Debugging.todo();
+		try (__LayoutLock__ lock = this._lock.utilize())
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	protected final boolean isValid(Item __i)
 	{
-		throw Debugging.todo();
+		try (__LayoutLock__ lock = this._lock.utilize())
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	protected final void setPosition(Item __i, int __x, int __y)
 	{
-		throw Debugging.todo();
+		try (__LayoutLock__ lock = this._lock.utilize())
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	protected final void setSize(Item __i, int __w, int __h)
 	{
-		throw Debugging.todo();
+		try (__LayoutLock__ lock = this._lock.utilize())
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	protected final void setValid(Item __i)
 	{
-		throw Debugging.todo();
+		try (__LayoutLock__ lock = this._lock.utilize())
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	public static final int getLayoutDirection()
