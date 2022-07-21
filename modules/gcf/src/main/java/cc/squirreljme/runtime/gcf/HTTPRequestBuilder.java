@@ -307,7 +307,7 @@ public final class HTTPRequestBuilder
 				// Start of model details
 				result.append('(');
 				
-				// Cache: 999 bytes, is limited to 3 bytes?
+				// Cache: 999KiB, is limited to 3 bytes?
 				result.append("c999");
 				
 				// How is this being accessed?
