@@ -59,7 +59,7 @@ public abstract class Frame
 			softKeys[i] = new Command("", Command.ITEM, i);
 		
 		// Use default background color
-		int defaultBgColor = UIBackendFactory.getInstance(true)
+		int defaultBgColor = UIBackendFactory.getInstance()
 				.metric(UIMetricType.COLOR_CANVAS_BACKGROUND) | 0xFF_000000;
 		this._bgColor = new __BGColor__(defaultBgColor);
 	}

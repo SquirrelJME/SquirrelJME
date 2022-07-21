@@ -607,6 +607,10 @@ public final class SwingFormShelf
 			case UIMetricType.SUPPORTS_BACKLIGHT_CONTROL:
 				return 0;
 			
+				// We support everything
+			case UIMetricType.CANVAS_ONLY_SUPPORT:
+				return 0;
+			
 			default:
 				throw new MLECallError("Unknown metric: " + __metricId);
 		}

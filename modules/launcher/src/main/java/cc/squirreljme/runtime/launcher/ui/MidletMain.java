@@ -213,7 +213,7 @@ public class MidletMain
 		// launcher so that launching and otherwise is still very possible
 		try
 		{
-			UIBackendFactory.getInstance(false);
+			UIBackendFactory.getInstance();
 		}
 		catch (IllegalArgumentException e)
 		{

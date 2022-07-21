@@ -67,7 +67,7 @@ public class DeviceControl
 			throw new IllegalArgumentException("EB32 " + __lvl);
 		
 		// If controlling the backlight is supported, allow it to be changed
-		UIBackend backend = UIBackendFactory.getInstance(true);
+		UIBackend backend = UIBackendFactory.getInstance();
 		if (backend.metric(UIMetricType.SUPPORTS_BACKLIGHT_CONTROL) == 0)
 			return;
 		

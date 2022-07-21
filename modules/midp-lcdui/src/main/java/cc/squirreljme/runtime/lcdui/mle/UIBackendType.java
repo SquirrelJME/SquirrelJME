@@ -19,6 +19,9 @@ public enum UIBackendType
 	/** Native backend, uses system widgets if supported/possible. */
 	NATIVE,
 	
+	/** Canvas backend, uses MLE UI Canvas only. */
+	CANVAS,
+	
 	/** Framebuffer backend, uses a pre-existing image/graphics to draw on. */
 	FRAMEBUFFER,
 	

@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.fb.FBUIBackend;
 import cc.squirreljme.runtime.lcdui.mle.fb.NativeFBAttachment;
+import cc.squirreljme.runtime.lcdui.mle.fb.UIFormAttachment;
 import cc.squirreljme.runtime.lcdui.mle.headless.HeadlessAttachment;
 import cc.squirreljme.runtime.lcdui.mle.pure.NativeUIBackend;
 
@@ -26,92 +27,180 @@ import cc.squirreljme.runtime.lcdui.mle.pure.NativeUIBackend;
 public final class UIBackendFactory
 {
 	/**
-	 * {@squirreljme.property cc.squirreljme.runtime.lcdui.mle.fallback=bool
-	 * Force the usage of the fallback UIForm in the event that native form
-	 * handling should NOT be used.}
+	 * {@squirreljme.property cc.squirreljme.runtime.lcdui.mle.backend=type
+	 * Force a specific backend to be used, may be one of: native, canvas,
+	 * framebuffer, or headless.}
 	 */
-	public static final String FORCE_FALLBACK_PROPERTY =
-		"cc.squirreljme.runtime.lcdui.mle.fallback";
+	public static final String FORCE_BACKEND_PROPERTY =
+		"cc.squirreljme.runtime.lcdui.mle.backend";
+	
+	/** The default form type. */
+	private static volatile UIBackendType _defaultType;
+	
+	/** The current backend. */
+	private static volatile UIBackend _currentBackend;
 	
 	/**
-	 * {@squirreljme.property cc.squirreljme.runtime.lcdui.mle.headless=bool
-	 * Force that the headless UIForm be used, this will mean that nothing
-	 * will be displayed on the screen.}
+	 * Returns the default backend type.
+	 * 
+	 * @return The default type.
+	 * @since 2022/07/21
 	 */
-	public static final String FORCE_HEADLESS_PROPERTY =
-		"cc.squirreljme.runtime.lcdui.mle.headless";
-	
-	/** The instance of the form engine to be used. */
-	@SuppressWarnings({"StaticVariableMayNotBeInitialized", 
-		"NonConstantFieldWithUpperCaseName"})
-	private static UIBackend _DEFAULT;
+	public static UIBackendType defaultType()
+	{
+		synchronized (UIBackendFactory.class)
+		{
+			// Was one already specified?
+			UIBackendType defaultType = UIBackendFactory._defaultType;
+			if (defaultType != null)
+				return defaultType;
+			
+			// Is one being forced?
+			String forced = System.getProperty(
+				UIBackendFactory.FORCE_BACKEND_PROPERTY);
+			if (forced != null)
+				try
+				{
+					UIBackendType maybe =
+						UIBackendType.valueOf(forced.trim().toUpperCase());
+					if (UIBackendFactory.isSupported(maybe))
+						return maybe;
+				}
+				catch (IllegalArgumentException ignored)
+				{
+				}
+			
+			// Go through all and get the first one supported
+			for (UIBackendType type : UIBackendType.values())
+				if (UIBackendFactory.isSupported(type))
+					return type;
+		}
+		
+		// Should not be reached
+		throw Debugging.oops();
+	}
 	
 	/**
 	 * Gets an instance of the UI engine.
 	 * 
-	 * @param __allowHeadless Allow a headless display to be used?
 	 * @return The instance of the engine to use.
 	 * @since 2020/06/30
 	 */
-	@SuppressWarnings("StaticVariableUsedBeforeInitialization")
-	public static UIBackend getInstance(boolean __allowHeadless)
+	public static UIBackend getInstance()
 	{
-		// If this was already cached, use that
-		UIBackend rv = UIBackendFactory._DEFAULT;
-		if (rv != null)
-			return rv;
-		
-		// Debug
-		Debugging.debugNote("Initializing UIFormEngine...");
-		
-		// These are properties which determine which kind of engine can be
-		// returned
-		boolean forceFallback = Boolean.getBoolean(
-			UIBackendFactory.FORCE_FALLBACK_PROPERTY);
-		boolean forceHeadless = Boolean.getBoolean(
-			UIBackendFactory.FORCE_HEADLESS_PROPERTY);
-		boolean isForcing = (forceFallback || forceHeadless);
-		
-		// Use native forms if supported unless we are forcing other options
-		if (0 != UIFormShelf.metric(UIMetricType.UIFORMS_SUPPORTED) &&
-			!isForcing)
-			rv = new NativeUIBackend();
-		
-		// Otherwise, use the fallback implementation (raw framebuffer)
-		else
+		synchronized (UIBackendFactory.class)
 		{
-			// TODO: For now only force headless as FB UI is not implemented
-			if (!forceHeadless)
+			// If this was already cached, use that
+			UIBackend rv = UIBackendFactory._currentBackend;
+			if (rv != null)
+				return rv;
+			
+			// Get the default to use, make sure it sticks
+			UIBackendType type = UIBackendFactory.defaultType();
+			UIBackendFactory._defaultType = type;
+			
+			// Debug
+			Debugging.debugNote("Initializing UIFormEngine...");
+			
+			// Depends on the type
+			switch (type)
 			{
-				Debugging.todoNote("Undo force of headless for FB UI.");
-				forceHeadless = true;
+					// Native forms
+				case NATIVE:
+					rv = new NativeUIBackend();
+					break;
+					
+					// Attached to just a canvas
+				case CANVAS:
+					rv = new FBUIBackend(new UIFormAttachment());
+					break;
+					
+					// Attached to regular framebuffer
+				case FRAMEBUFFER:
+					rv = new FBUIBackend(new NativeFBAttachment());
+					break;
+					
+					// Headless, no display
+				case HEADLESS:
+					rv = new FBUIBackend(new HeadlessAttachment(
+						UIPixelFormat.INT_RGB888, 240, 320));
+					break;
+				
+				default:
+					throw Debugging.oops();
 			}
 			
-			// Use a headless interface? This is if we have no framebuffer
-			// and the only have to have graphics is to fake it
-			if (forceHeadless)
-			{
-				// {@squirreljme.error EB33 Headless display not permitted
-				// at this current time.}
-				if (!__allowHeadless)
-					throw new IllegalStateException("EB33");
-				
-				// Emit a notice
-				Debugging.notice("Framebuffer either does not exist " +
-					"or is disabled, attaching without a head.");
-				
-				// Create it
-				rv = new FBUIBackend(new HeadlessAttachment(
-					UIPixelFormat.INT_RGB888, 240, 320));
-			}
-			
-			// Use a method that uses the backing framebuffer here instead
-			else
-				rv = new FBUIBackend(new NativeFBAttachment());
+			// Cache and use
+			UIBackendFactory._currentBackend = rv;
+			return rv;
 		}
+	}
+	
+	/**
+	 * Checks if the given backend is supported.
+	 * 
+	 * @param __type The type to check.
+	 * @return If this is supported or not.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/07/21
+	 */
+	public static boolean isSupported(UIBackendType __type)
+		throws NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
 		
-		// Cache and use
-		UIBackendFactory._DEFAULT = rv;
-		return rv;
+		switch (__type)
+		{
+				// Native UI Forms
+			case NATIVE:
+				if (0 == UIFormShelf.metric(UIMetricType.UIFORMS_SUPPORTED))
+					return false;
+				
+				// If in canvas only mode, then do not use this
+				return 0 == UIFormShelf.metric(
+					UIMetricType.CANVAS_ONLY_SUPPORT);
+				
+				// Only on Native UI Canvas
+			case CANVAS:
+				return 0 != UIFormShelf.metric(UIMetricType.UIFORMS_SUPPORTED);
+				
+				// Is the framebuffer supported?
+			case FRAMEBUFFER:
+				Debugging.todoNote("Support native framebuffer.");
+				return false;
+				
+				// Headless is always supported
+			case HEADLESS:
+				return true;
+			
+			default:
+				throw Debugging.oops();
+		}
+	}
+	
+	/**
+	 * Sets the default backend factory to use.
+	 * 
+	 * @param __type The type to use.
+	 * @throws IllegalStateException If one was already set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/07/21
+	 */
+	public static void setDefault(UIBackendType __type)
+		throws IllegalStateException, NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (UIBackendFactory.class)
+		{
+			// {@squirreljme.error EB3a Default has already been set.}
+			if (UIBackendFactory._defaultType != null)
+				throw new IllegalStateException("EB3a");
+			
+			// Set it now
+			UIBackendFactory._defaultType = __type;
+		}
 	}
 }
