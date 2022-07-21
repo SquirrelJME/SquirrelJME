@@ -64,6 +64,24 @@ public interface UIFormCallback
 	void exitRequest(UIFormBracket __form);
 	
 	/**
+	 * Indicates that a form is being refreshed before items are about to be
+	 * placed onto the form.
+	 * 
+	 * If the size of the form is unknown, then {@code -1} should be used for
+	 * the form properties. Note that the form size is only an estimate and
+	 * might not be accurate.
+	 * 
+	 * @param __form The form being refreshed.
+	 * @param __sx Starting surface X coordinate.
+	 * @param __sy Starting surface Y coordinate.
+	 * @param __sw Surface width.
+	 * @param __sh Surface height.
+	 * @since 2022/07/20
+	 */
+	void formRefresh(UIFormBracket __form, int __sx, int __sy,
+		int __sw, int __sh);
+	
+	/**
 	 * Draw action for the given item.
 	 * 
 	 * @param __form The form to be acted on.

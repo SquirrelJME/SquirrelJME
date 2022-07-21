@@ -47,7 +47,8 @@ public abstract class AbstractSet<E>
 		if (this.size() != o.size())
 			return false;
 		
-		// Just check if this set contains everything in the other set
+		// Just check if this set contains everything in the other set, note
+		// that this only works if the sets are the same size
 		return this.containsAll(o);
 	}
 	

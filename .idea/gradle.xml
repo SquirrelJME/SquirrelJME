@@ -43,6 +43,7 @@
             <option value="$PROJECT_DIR$/modules/gcf" />
             <option value="$PROJECT_DIR$/modules/io" />
             <option value="$PROJECT_DIR$/modules/jblend-api" />
+            <option value="$PROJECT_DIR$/modules/json" />
             <option value="$PROJECT_DIR$/modules/launcher" />
             <option value="$PROJECT_DIR$/modules/lcdui-demo" />
             <option value="$PROJECT_DIR$/modules/m3g" />

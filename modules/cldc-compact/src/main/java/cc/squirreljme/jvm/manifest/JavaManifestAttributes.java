@@ -103,6 +103,7 @@ public final class JavaManifestAttributes
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/05/20
+	 * @param __o
 	 */
 	@Override
 	public String get(Object __o)

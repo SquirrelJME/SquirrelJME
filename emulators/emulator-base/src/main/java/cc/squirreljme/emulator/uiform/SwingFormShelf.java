@@ -386,6 +386,23 @@ public final class SwingFormShelf
 	}
 	
 	/**
+	 * Handles {@link UIFormShelf#formRefresh(UIFormBracket)}
+	 * 
+	 * @param __form The form to refresh.
+	 * @throws MLECallError On null arguments.
+	 * @since 2022/07/20
+	 */
+	public static void formNew(UIFormBracket __form)
+		throws MLECallError
+	{
+		if (__form == null)
+			throw new MLECallError("No form");
+		
+		// Does a call later, but does refreshes the form
+		((SwingForm)__form).refresh();
+	}
+	
+	/**
 	 * As {@link UIFormShelf#injector()}.
 	 * 
 	 * @return The injector for the shelf.

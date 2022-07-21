@@ -141,6 +141,9 @@ public class BufferedWriter
 	 *
 	 * {@inheritDoc}
 	 * @since 2018/09/18
+	 * @param __b
+	 * @param __o
+	 * @param __l
 	 */
 	@Override
 	public void write(char[] __b, int __o, int __l)
@@ -154,6 +157,9 @@ public class BufferedWriter
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/09/18
+	 * @param __s
+	 * @param __o
+	 * @param __l
 	 */
 	@Override
 	public void write(String __s, int __o, int __l)

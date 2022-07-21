@@ -1,0 +1,25 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+// JavaDoc for the API, it is essentially JSR353 but without support for
+// BigDecimal and BigInteger.
+// https://docs.oracle.com/javame/config/cldc/opt-pkgs/api/json/api/index.html
+
+description = "Contains an implementation of the JSON API for CLDC."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "DG"
+	swmType = JavaMEMidletType.API
+	swmName = "JSON API"
+	swmVendor = "Stephanie Gawroriski"
+	tags += "json"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+	
+	api project(":modules:collections")
+	api project(":modules:io")
+}

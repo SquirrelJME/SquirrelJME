@@ -91,6 +91,7 @@ final class __QuickTable__<I extends __IdNumbered__>
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/03/13
+	 * @param __key
 	 */
 	@Override
 	public I get(Object __key)
