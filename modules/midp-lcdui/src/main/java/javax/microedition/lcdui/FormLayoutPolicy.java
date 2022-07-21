@@ -57,9 +57,29 @@ public abstract class FormLayoutPolicy
 		this._form = new WeakReference<>(__form);
 	}
 	
+	/**
+	 * Performs the layout management, which should place all the items
+	 * on the form at a given position.
+	 * 
+	 * Items should not overlap in positions, otherwise that may cause
+	 * errors and invalid forms to be displayed.
+	 * 
+	 * The initial position of all items is {@code (0, 0)}.
+	 * 
+	 * @param __viewportX The X offset of the viewport.
+	 * @param __viewportY The Y offset of the viewport.
+	 * @param __viewportW The width of the viewport.
+	 * @param __viewportH The height of the viewport.
+	 * @param __totalSize The full width ({@code [0]}) and full height
+	 * ({@code [1]}) that 
+	 * @throws ArrayIndexOutOfBoundsException Should be thrown if
+	 * {@code __totalSize} has a length smaller than 2.
+	 * @since 2022/07/20
+	 */
 	@SerializedEvent
-	protected abstract void doLayout(int __vpx, int __vpy, int __vpw,
-		int __vph, int[] __ts);
+	protected abstract void doLayout(int __viewportX, int __viewportY,
+		int __viewportW, int __viewportH, int[] __totalSize)
+		throws ArrayIndexOutOfBoundsException;
 	
 	protected abstract Item getTraverse(Item __i, int __dir);
 	

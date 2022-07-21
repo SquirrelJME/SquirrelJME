@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
@@ -25,6 +26,9 @@ public class Form
 	/** The layout policy for this form. */
 	volatile FormLayoutPolicy _layout =
 		new __DefaultFormLayoutPolicy__(this);
+	
+	/** Is the layout considered stale? */
+	volatile boolean _staleLayout;
 	
 	/**
 	 * Initializes an empty form with an optionally specified title.
@@ -274,65 +278,24 @@ public class Form
 	}
 	
 	/**
-	 * Sets the layout policy for the current form, this is the actual
-	 * implementation due to non-{@code final}.
+	 * This is called so that the form layout is actually done.
 	 * 
-	 * @param __layout The layout to set to, may be {@code null} to reset the
-	 * policy to the default.
-	 * @throws IllegalArgumentException If {@link FormLayoutPolicy#getForm()}
-	 * does not match this form.
-	 * @since 2021/11/26
-	 */
-	private void __setLayoutPolicy(FormLayoutPolicy __layout)
-		throws IllegalArgumentException
-	{
-		// Initialize back to the default?
-		if (__layout == null)
-		{
-			if (this.getLayoutPolicy() != null)
-				this._layout = new __DefaultFormLayoutPolicy__(this);
-			
-			return;
-		}
-		
-		// {@squirreljme.error EB3p The layout belong to a different form.}
-		if (__layout.getForm() != this)
-			throw new IllegalArgumentException("EB3p");
-		
-		this._layout = __layout;
-	}
-	
-	/**
-	 * Signals that {@link #__updateSerially()} is to be called at a later
-	 * date.
-	 * 
-	 * @since 2021/11/26
-	 */
-	void __update()
-	{
-		// Queue this up for later
-		Display display = this._display;
-		if (display != null)
-			display.__queueSerialRunner(
-				new __DoFormLayout__(this), false);
-	}
-	
-	/**
-	 * Updates the current form for the new set of items, this will perform
-	 * layout policy calculation and set all of the widgets accordingly.
-	 * 
-	 * This is called serially.
-	 * 
-	 * @since 2021/11/26
+	 * @since 2022/07/20
 	 */
 	@SerializedEvent
-	void __updateSerially()
+	void __performLayout()
 	{
 		// If this form is not on a display, do not calculate the layout as
 		// we might still be loading everything in
 		Display display = this._display;
 		if (display == null)
 			return;
+		
+		// Only perform this if the current layout is stale and must be
+		// updated
+		if (!this._staleLayout)
+			return;
+		this._staleLayout = false;
 		
 		UIBackend backend = UIBackendFactory.getInstance(true);
 		UIFormBracket uiForm = this._uiForm;
@@ -359,6 +322,11 @@ public class Form
 			// Initialize the layout for these items
 			Item[] items = this._items.toArray(new Item[0]);
 			layout.__init(items);
+			
+			// Perform update traversal
+			/*layout.doLayout(
+			doLayout(int __viewportX, int __viewportY,
+				int __viewportW, int __viewportH, int[] __totalSize)*/
 			
 			if (true)
 				throw Debugging.todo();
@@ -388,6 +356,58 @@ public class Form
 			// Clear the lock
 			lock.unlock();
 		}
+	}
+	
+	/**
+	 * Sets the layout policy for the current form, this is the actual
+	 * implementation due to non-{@code final}.
+	 * 
+	 * @param __layout The layout to set to, may be {@code null} to reset the
+	 * policy to the default.
+	 * @throws IllegalArgumentException If {@link FormLayoutPolicy#getForm()}
+	 * does not match this form.
+	 * @since 2021/11/26
+	 */
+	private void __setLayoutPolicy(FormLayoutPolicy __layout)
+		throws IllegalArgumentException
+	{
+		// Initialize back to the default?
+		if (__layout == null)
+		{
+			if (this.getLayoutPolicy() != null)
+			{
+				this._layout = new __DefaultFormLayoutPolicy__(this);
+				this._staleLayout = true;
+			}
+			
+			return;
+		}
+		
+		// {@squirreljme.error EB3p The layout belong to a different form.}
+		if (__layout.getForm() != this)
+			throw new IllegalArgumentException("EB3p");
+		
+		// Set and make stale
+		this._layout = __layout;
+		this._staleLayout = true;
+	}
+	
+	/**
+	 * Signals that the form should be refreshed and update all of its
+	 * stored items accordingly.
+	 * 
+	 * @since 2021/11/26
+	 */
+	void __update()
+	{
+		// Indicate that the layout is now stale and must be updated
+		this._staleLayout = true;
+		
+		// Queue this up for later, so it is forced to be redrawn
+		Display display = this._display;
+		if (display != null)
+			UIBackendFactory.getInstance(true)
+				.formRefresh(this._uiForm);
 	}
 }
 

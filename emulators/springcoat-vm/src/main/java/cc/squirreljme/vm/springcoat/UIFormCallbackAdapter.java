@@ -114,6 +114,21 @@ public class UIFormCallbackAdapter
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2022/07/20
+	 */
+	@Override
+	public void formRefresh(UIFormBracket __form, int __sx, int __sy,
+		int __sw, int __sh)
+	{
+		UIFormCallbackAdapter.__callbackInvoke(this.machine, this.callback,
+			MethodNameAndType.ofArguments("formRefresh", null,
+			"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
+				"I", "I", "I", "I"),
+			new UIFormObject(this.machine, __form), __sx, __sy, __sw, __sh);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/09/13
 	 */
 	@Override

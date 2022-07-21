@@ -350,6 +350,22 @@ public enum MLEUIForm
 		}
 	},
 	
+	/** {@link UIFormShelf#formRefresh(UIFormBracket)}. */
+	FORM_REFRESH("formRefresh:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2022/07/20
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			UIFormShelf.formRefresh(MLEUIForm.__form(__args[0]).form);
+			return null;
+		}
+	},
+	
 	/** {@link UIFormShelf#injector()}. */
 	INJECTOR("injector:()Lcc/squirreljme/jvm/mle/callbacks/" +
 		"UIFormCallback;")

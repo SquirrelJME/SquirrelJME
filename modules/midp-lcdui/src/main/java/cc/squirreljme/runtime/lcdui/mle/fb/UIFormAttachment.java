@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// SquirrelJME
+// Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,12 +9,19 @@
 
 package cc.squirreljme.runtime.lcdui.mle.fb;
 
+import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.jvm.mle.constants.UIItemType;
+
 /**
- * This interface is used for any framebuffer like source, regardless of
- * where it is layered on top of.
+ * This is an attachment which bases itself on top of {@link UIFormBracket}
+ * via the {@link UIFormShelf}, it implements the simplest means of a
+ * framebuffer by initializing just a {@link UIItemType#CANVAS} as its
+ * display.
  *
- * @since 2020/10/09
+ * @since 2022/07/20
  */
-public interface FBAttachment
+public class UIFormAttachment
+	implements FBAttachment
 {
 }
