@@ -33,7 +33,11 @@ public enum MLEAtomic
 			synchronized (MLEAtomic.class)
 			{
 				// Generate a key which will be returned via the lock
-				int key = (int)MLEAtomic.TICK.handle(__thread);
+				int key;
+				do
+				{
+					key = (int)MLEAtomic.TICK.handle(__thread);
+				} while (key == 0);
 				
 				// When unlocked the lock will have zero, so we can set it to
 				// the key we generated... otherwise we fail here
