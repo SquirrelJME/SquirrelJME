@@ -9,9 +9,12 @@
 
 package lcdui.display;
 
+import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
+import javax.microedition.lcdui.List;
 import lcdui.BaseDisplay;
 import net.multiphasicapps.tac.OptionalFirstParameter;
 
@@ -32,7 +35,7 @@ public class TestSetRemoveCurrentDisplay
 	public void test(Display __display, String __param)
 	{
 		// Use any kind of thing
-		Displayable form = new Form(null);
+		Displayable form = new List("list", Choice.EXCLUSIVE);
 		
 		// Should not be our current item
 		this.secondary("not-form", form != __display.getCurrent());

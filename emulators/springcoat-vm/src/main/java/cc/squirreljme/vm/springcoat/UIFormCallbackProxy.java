@@ -22,7 +22,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
 public class UIFormCallbackProxy
 	extends SpringProxyObject
 {
-	/** The to act as a proxy for. */
+	/** The class to act as a proxy for. */
 	private static final ClassName _CLASS =
 		new ClassName("cc/squirreljme/jvm/mle/callbacks/UIFormCallback");
 	

@@ -56,6 +56,16 @@ public class ListCallback
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2022/07/21
+	 */
+	@Override
+	public void formRefresh(UIFormBracket __form, int __sx, int __sy,
+		int __sw, int __sh)
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/10/29
 	 */
 	@Override
