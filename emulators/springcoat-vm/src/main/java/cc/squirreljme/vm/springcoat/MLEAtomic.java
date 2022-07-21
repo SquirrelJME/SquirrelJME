@@ -30,14 +30,17 @@ public enum MLEAtomic
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			// Generate a key which will be returned in the lock
-			int key = (int)MLEAtomic.TICK.handle(__thread);
-			
-			// When unlocked the lock will have zero, so we can set it to the
-			// key we generated... otherwise we fail here
-			if (GlobalState.GC_LOCK.compareAndSet(0, key))
-				return key;
-			return 0;
+			synchronized (MLEAtomic.class)
+			{
+				// Generate a key which will be returned via the lock
+				int key = (int)MLEAtomic.TICK.handle(__thread);
+				
+				// When unlocked the lock will have zero, so we can set it to
+				// the key we generated... otherwise we fail here
+				if (GlobalState.GC_LOCK.compareAndSet(0, key))
+					return key;
+				return 0;
+			}
 		}
 	},
 	
@@ -51,12 +54,16 @@ public enum MLEAtomic
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			// Unlocking is simple and only works if we have the key used to
-			// lock the garbage collector
-			if (!GlobalState.GC_LOCK.compareAndSet((int)__args[0], 0))
-				throw new SpringMLECallError("Wrong lock code.");
-			
-			return null;
+			synchronized (MLEAtomic.class)
+			{
+				// Unlocking is simple and only works if we have the key used
+				// to lock the garbage collector
+				if (!GlobalState.GC_LOCK
+					.compareAndSet((int)__args[0], 0))
+					throw new SpringMLECallError("Wrong lock code.");
+				
+				return null;
+			}
 		}
 	},
 	
@@ -93,7 +100,10 @@ public enum MLEAtomic
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return GlobalState.TICKER.decrementAndGet();
+			synchronized (MLEAtomic.class)
+			{
+				return GlobalState.TICKER.decrementAndGet();
+			}
 		}
 	},
 	
