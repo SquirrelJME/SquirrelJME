@@ -9,14 +9,10 @@
 
 package mleui;
 
-import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
-import cc.squirreljme.jvm.mle.constants.UIMetricType;
-import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import cc.squirreljme.runtime.lcdui.mle.fb.FBUIBackend;
-import cc.squirreljme.runtime.lcdui.mle.headless.HeadlessAttachment;
-import cc.squirreljme.runtime.lcdui.mle.pure.NativeUIBackend;
+import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
+import cc.squirreljme.runtime.lcdui.mle.UIBackendType;
 import net.multiphasicapps.tac.TestConsumer;
 import net.multiphasicapps.tac.UntestableException;
 
@@ -68,19 +64,13 @@ public abstract class BaseBackend
 	private static UIBackend __getBackend(String __backend)
 		throws NullPointerException, UntestableException
 	{
-		switch (__backend)
-		{
-			case "NATIVE":
-				if (0 != UIFormShelf.metric(UIMetricType.UIFORMS_SUPPORTED))
-					return new NativeUIBackend();
-				throw new UntestableException(__backend);
-			
-			case "FRAMEBUFFER":
-				return new FBUIBackend(new HeadlessAttachment(
-					UIPixelFormat.INT_RGB888, 240, 320));
-			
-			default:
-				throw new IllegalArgumentException(__backend);
-		}
+		// Is this supported?
+		UIBackendType type = UIBackendType.valueOf(__backend);
+		if (!UIBackendFactory.isSupported(type))
+			throw new UntestableException(__backend);
+		
+		// Get instance of it
+		UIBackendFactory.setDefault(type);
+		return UIBackendFactory.getInstance();
 	}
 }
