@@ -18,6 +18,9 @@ import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This is a virtual user interface form backend which is backed on the
@@ -28,6 +31,10 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 public abstract class FBUIBackend
 	implements UIBackend
 {
+	/** Forms that are available to the display. */
+	private final List<FBUIForm> _forms =
+		new ArrayList<>();
+	
 	/** The current set of displays. */
 	private volatile FBDisplay[] _displays;
 	
@@ -115,7 +122,44 @@ public abstract class FBUIBackend
 		UIFormBracket __form)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__display == null)
+			throw new MLECallError("NARG");
+		
+		synchronized (this)
+		{
+			FBDisplay display = this.__checkDisplay(__display);
+			
+			// Hiding form?
+			if (__form == null)
+			{
+				// If no old form was shown then do nothing
+				FBUIForm oldShown = display._shownForm;
+				if (oldShown == null)
+					return;
+					
+				// Unlink
+				display.link(oldShown, false);
+				
+				// Done
+				return;
+			}
+			
+			// Check the form to make sure it is valid
+			FBUIForm form = this.__checkForm(__form);
+			
+			// If an old form is being shown, hide it first before we display
+			// the new one
+			FBUIForm oldShown = display._shownForm;
+			if (oldShown != null && oldShown != __form)
+				this.displayShow(display, null);
+			
+			// If the display is not yet enabled/displayed then prepare it
+			// for showing on the screen surface
+			display.activate();
+			
+			// Link the form to this display
+			display.link(form, true);
+		}
 	}
 	
 	/**
@@ -170,7 +214,10 @@ public abstract class FBUIBackend
 	public final void flushEvents()
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			// Does nothing currently
+		}
 	}
 	
 	/**
@@ -181,7 +228,32 @@ public abstract class FBUIBackend
 	public final void formDelete(UIFormBracket __form)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			FBUIForm form = this.__checkForm(__form);
+			
+			// {@squirreljme.error EB40 Form is currently attached to a
+			// display.}
+			if (form._display != null)
+				throw new MLECallError("EB40");
+			
+			// Find form to unlink
+			for (Iterator<FBUIForm> it = this._forms.iterator();
+				it.hasNext();)
+			{
+				// If this is our form, delete it
+				FBUIForm maybe = it.next();
+				if (maybe == form)
+				{
+					it.remove();
+					return;
+				}
+			}
+		}
+		
+		// {@squirreljme.error EB3z Form has already been deleted or is not
+		// valid.}
+		throw new MLECallError("EB3z");
 	}
 	
 	/**
@@ -250,7 +322,15 @@ public abstract class FBUIBackend
 	public final UIFormBracket formNew()
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			FBUIForm result = new FBUIForm();
+			
+			// Store it for later
+			this._forms.add(result);
+			
+			return result;
+		}
 	}
 	
 	/**
@@ -374,5 +454,64 @@ public abstract class FBUIBackend
 		throws MLECallError
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Checks that the display is valid and is owned by this framebuffer.
+	 * 
+	 * @param __display The display to check.
+	 * @return Will return a cast {@code __display} if valid.
+	 * @throws MLECallError If the display is not valid.
+	 * @since 2022/07/23
+	 */
+	private FBDisplay __checkDisplay(UIDisplayBracket __display)
+		throws MLECallError
+	{
+		if (!(__display instanceof FBDisplay))
+			throw new MLECallError("CAST");
+		
+		synchronized (this)
+		{
+			// {@squirreljme.error EB33 Displays not yet known.}
+			FBDisplay[] displays = this._displays;
+			if (displays == null)
+				throw new MLECallError("EB33");
+			
+			// Is the display here?
+			for (FBDisplay display : displays)
+				if (display == __display)
+					return (FBDisplay)__display;
+		}
+		
+		// {@squirreljme.error EB3o Display is not governed by this
+		// framebuffer.}
+		throw new MLECallError("EB3o");
+	}
+	
+	/**
+	 * Checks that the form is valid and is owned by this framebuffer.
+	 * 
+	 * @param __form The form to check.
+	 * @return The cast {@code __form} if valid.
+	 * @throws MLECallError If the form is not valid for this framebuffer.
+	 * @since 2022/07/23
+	 */
+	private FBUIForm __checkForm(UIFormBracket __form)
+		throws MLECallError
+	{
+		if (!(__form instanceof FBUIForm))
+			throw new MLECallError("CAST");
+		
+		synchronized (this)
+		{
+			// Is the form here?
+			for (FBUIForm form : this._forms)
+				if (form == __form)
+					return (FBUIForm)__form;
+		}
+		
+		// {@squirreljme.error EB3w Form is not governed by this
+		// framebuffer.}
+		throw new MLECallError("EB3w");
 	}
 }
