@@ -112,18 +112,18 @@ public final class UIBackendFactory
 					
 					// Attached to just a canvas
 				case CANVAS:
-					rv = new FBUIBackend(new UIFormAttachment());
+					rv = new UIFormAttachment();
 					break;
 					
 					// Attached to regular framebuffer
 				case FRAMEBUFFER:
-					rv = new FBUIBackend(new NativeFBAttachment());
+					rv = new NativeFBAttachment();
 					break;
 					
 					// Headless, no display
 				case HEADLESS:
-					rv = new FBUIBackend(new HeadlessAttachment(
-						UIPixelFormat.INT_RGB888, 240, 320));
+					rv = new HeadlessAttachment(
+						UIPixelFormat.INT_RGB888, 240, 320);
 					break;
 				
 				default:

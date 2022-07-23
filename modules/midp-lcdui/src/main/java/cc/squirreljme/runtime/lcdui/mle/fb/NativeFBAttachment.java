@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.lcdui.mle.fb;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * This is an attachment which interacts with the native framebuffer of the
  * system accordingly.
@@ -16,6 +18,15 @@ package cc.squirreljme.runtime.lcdui.mle.fb;
  * @since 2020/10/09
  */
 public class NativeFBAttachment
-	implements FBAttachment
-{
+	extends FBUIBackend
+{	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/07/23
+	 */
+	@Override
+	protected FBDisplay[] queryDisplays()
+	{
+		throw Debugging.todo();
+	}
 }
