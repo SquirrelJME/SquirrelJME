@@ -15,12 +15,17 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
+import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import net.multiphasicapps.collections.Identity;
+import net.multiphasicapps.collections.IdentityMap;
 
 /**
  * This is a virtual user interface form backend which is backed on the
@@ -34,6 +39,15 @@ public abstract class FBUIBackend
 	/** Forms that are available to the display. */
 	private final List<FBUIForm> _forms =
 		new ArrayList<>();
+	
+	/** Items that are available to the display. */
+	private final List<BaseFBUIItem> _items =
+		new ArrayList<>();
+	
+	/** Display callbacks. */
+	private final Map<Object, UIDisplayCallback> _displayCallbacks =
+		new IdentityMap<>(
+			new LinkedHashMap<Identity<Object>, UIDisplayCallback>());
 	
 	/** The current set of displays. */
 	private volatile FBDisplay[] _displays;
@@ -54,7 +68,14 @@ public abstract class FBUIBackend
 	public final void callback(Object __ref, UIDisplayCallback __dc)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__ref == null || __dc == null)
+			throw new MLECallError("NARG");
+		
+		// Register it
+		synchronized (this)
+		{
+			this._displayCallbacks.put(__ref, __dc);
+		}
 	}
 	
 	/**
@@ -385,7 +406,32 @@ public abstract class FBUIBackend
 	public final UIItemBracket itemNew(int __type)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		// Setup new item
+		BaseFBUIItem item;
+		switch (__type)
+		{
+			case UIItemType.CANVAS:
+				item = new FBUIItemCanvas();
+				break;
+			
+			case UIItemType.LABEL:
+				item = new FBUIItemLabel();
+				break;
+			
+				// {@squirreljme.error EB41 Invalid item type.}
+			default:
+				throw new MLECallError("EB41 " + __type);
+		}
+		
+		// Remember item
+		List<BaseFBUIItem> items = this._items;
+		synchronized (this)
+		{
+			items.add(item);
+		}
+		
+		// Return the new item
+		return item;
 	}
 	
 	/**

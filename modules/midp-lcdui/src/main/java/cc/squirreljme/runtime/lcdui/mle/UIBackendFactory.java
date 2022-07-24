@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.fb.FBUIBackend;
 import cc.squirreljme.runtime.lcdui.mle.fb.NativeFBAttachment;
 import cc.squirreljme.runtime.lcdui.mle.fb.UIFormAttachment;
 import cc.squirreljme.runtime.lcdui.mle.headless.HeadlessAttachment;
