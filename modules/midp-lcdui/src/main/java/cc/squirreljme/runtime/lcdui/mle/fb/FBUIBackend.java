@@ -35,7 +35,7 @@ public class FBUIBackend
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/09
 	 */
-	public FBUIBackend(FBAttachment __a)
+	public FBUIBackend(FBAttachment _comp_a)
 		throws NullPointerException
 	{
 		if (__a == null)
