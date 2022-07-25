@@ -19,4 +19,6 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 public abstract class FBUIItem
 	implements UIItemBracket
 {
+	/** The form that this is currently on. */
+	private volatile FBUIForm _form;
 }
