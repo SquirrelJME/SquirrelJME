@@ -16,7 +16,7 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
  *
  * @since 2022/07/24
  */
-public abstract class BaseFBUIItem
+public abstract class FBUIItem
 	implements UIItemBracket
 {
 }

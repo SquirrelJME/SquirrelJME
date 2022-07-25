@@ -17,6 +17,6 @@ import cc.squirreljme.jvm.mle.constants.UIItemType;
  * @since 2022/07/24
  */
 public class FBUIItemCanvas
-	extends BaseFBUIItem
+	extends FBUIItem
 {
 }

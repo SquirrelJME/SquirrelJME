@@ -41,7 +41,7 @@ public abstract class FBUIBackend
 		new ArrayList<>();
 	
 	/** Items that are available to the display. */
-	private final List<BaseFBUIItem> _items =
+	private final List<FBUIItem> _items =
 		new ArrayList<>();
 	
 	/** Display callbacks. */
@@ -480,7 +480,7 @@ public abstract class FBUIBackend
 		throws MLECallError
 	{
 		// Setup new item
-		BaseFBUIItem item;
+		FBUIItem item;
 		switch (__type)
 		{
 			case UIItemType.CANVAS:
@@ -497,7 +497,7 @@ public abstract class FBUIBackend
 		}
 		
 		// Remember item
-		List<BaseFBUIItem> items = this._items;
+		List<FBUIItem> items = this._items;
 		synchronized (this)
 		{
 			items.add(item);
@@ -660,18 +660,18 @@ public abstract class FBUIBackend
 	 * @throws MLECallError If the item is not valid for this framebuffer.
 	 * @since 2022/07/25
 	 */
-	private BaseFBUIItem __checkItem(UIItemBracket __item)
+	private FBUIItem __checkItem(UIItemBracket __item)
 		throws MLECallError
 	{
-		if (!(__item instanceof BaseFBUIItem))
+		if (!(__item instanceof FBUIItem))
 			throw new MLECallError("CAST");
 		
 		synchronized (this)
 		{
 			// Is the item here?
-			for (BaseFBUIItem item : this._items)
+			for (FBUIItem item : this._items)
 				if (item == __item)
-					return (BaseFBUIItem)__item;
+					return (FBUIItem)__item;
 		}
 		
 		// {@squirreljme.error EB42 Item is not governed by this
