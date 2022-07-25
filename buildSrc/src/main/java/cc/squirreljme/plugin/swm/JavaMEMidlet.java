@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.swm;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Defines a MIDlet that can be launched.
@@ -127,23 +128,52 @@ public final class JavaMEMidlet
 			if (number == -1 || __mids.isEmpty())
 				return null;
 			
-			// If out of range only use the first MIDlet
-			if (number < 0 || number >= __mids.size())
-				return __mids.get(0);
-			
-			// Return the exact MIDlet
-			return __mids.get(number);
+			// If in range, return the exact MIDlet
+			if (number >= 0 && number <= __mids.size())
+				return __mids.get(number);
 		}
 		
 		// String based search
 		if (string != null)
 		{
-			// Search for a matching case-insensitive title
+			// Search for an exact matching case-insensitive title
 			for (JavaMEMidlet midlet : __mids)
 				if (string.equalsIgnoreCase(midlet.title))
 					return midlet;
 			
-			// Otherwise construct a new MIDlet entry point
+			// Wildcard name matching
+			boolean wildStart = string.startsWith("*");
+			boolean wildEnd = string.endsWith("*");
+			if (wildStart || wildEnd)
+			{
+				// Remove the asterisks
+				String sequence = (wildStart ? (wildEnd ?
+						string.substring(1, string.length() - 1) :
+						string.substring(1)) :
+						string.substring(0, string.length() - 1))
+					.toLowerCase(Locale.ROOT);
+				
+				// Scan MIDlets
+				for (JavaMEMidlet midlet : __mids)
+				{
+					String title = midlet.title.toLowerCase(Locale.ROOT);
+					
+					// Does this match at all?
+					boolean matched;
+					if (wildStart && wildEnd)
+						matched = title.contains(sequence);
+					else if (wildStart)
+						matched = title.endsWith(sequence);
+					else
+						matched = title.startsWith(sequence);
+					
+					// If matched, use it
+					if (matched)
+						return midlet;
+				}
+			}
+			
+			// Otherwise, construct a new MIDlet entry point
 			return new JavaMEMidlet(string, null, string);
 		}
 		
