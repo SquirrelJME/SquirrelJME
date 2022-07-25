@@ -97,11 +97,9 @@ public interface UIBackend
 	 * @param __a The first.
 	 * @param __b The second.
 	 * @return If these are the same display.
-	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
-	boolean equals(UIDisplayBracket __a, UIDisplayBracket __b)
-		throws MLECallError;
+	boolean equals(UIDisplayBracket __a, UIDisplayBracket __b);
 	
 	/**
 	 * Checks if the two displays represent the same {@link UIFormBracket}.
@@ -109,11 +107,9 @@ public interface UIBackend
 	 * @param __a The first.
 	 * @param __b The second.
 	 * @return If these are the same form.
-	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
-	boolean equals(UIFormBracket __a, UIFormBracket __b)
-		throws MLECallError;
+	boolean equals(UIFormBracket __a, UIFormBracket __b);
 	
 	/**
 	 * Checks if the two displays represent the same {@link UIItemBracket}.
@@ -121,11 +117,9 @@ public interface UIBackend
 	 * @param __a The first.
 	 * @param __b The second.
 	 * @return If these are the same item.
-	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
-	boolean equals(UIItemBracket __a, UIItemBracket __b)
-		throws MLECallError;
+	boolean equals(UIItemBracket __a, UIItemBracket __b);
 	
 	/**
 	 * Checks if the two displays represent the same {@link UIWidgetBracket}.
@@ -133,11 +127,9 @@ public interface UIBackend
 	 * @param __a The first.
 	 * @param __b The second.
 	 * @return If these are the same item.
-	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/09/20
 	 */
-	boolean equals(UIWidgetBracket __a, UIWidgetBracket __b)
-		throws MLECallError;
+	boolean equals(UIWidgetBracket __a, UIWidgetBracket __b);
 	
 	/**
 	 * Flushes all of the events and forces them to be processed.

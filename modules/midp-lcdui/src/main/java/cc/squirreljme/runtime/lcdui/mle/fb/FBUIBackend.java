@@ -189,9 +189,21 @@ public abstract class FBUIBackend
 	 */
 	@Override
 	public final boolean equals(UIDisplayBracket __a, UIDisplayBracket __b)
-		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__a == null || __b == null)
+			return __a == __b;
+			
+		synchronized (this)
+		{
+			try
+			{
+				return this.__checkDisplay(__a) == this.__checkDisplay(__b);
+			}
+			catch (MLECallError ignored)
+			{
+				return false;
+			}
+		}
 	}
 	
 	/**
@@ -200,9 +212,21 @@ public abstract class FBUIBackend
 	 */
 	@Override
 	public final boolean equals(UIFormBracket __a, UIFormBracket __b)
-		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__a == null || __b == null)
+			return __a == __b;
+			
+		synchronized (this)
+		{
+			try
+			{
+				return this.__checkForm(__a) == this.__checkForm(__b);
+			}
+			catch (MLECallError ignored)
+			{
+				return false;
+			}
+		}
 	}
 	
 	/**
@@ -211,9 +235,21 @@ public abstract class FBUIBackend
 	 */
 	@Override
 	public final boolean equals(UIItemBracket __a, UIItemBracket __b)
-		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__a == null || __b == null)
+			return __a == __b;
+			
+		synchronized (this)
+		{
+			try
+			{
+				return this.__checkItem(__a) == this.__checkItem(__b);
+			}
+			catch (MLECallError ignored)
+			{
+				return false;
+			}
+		}
 	}
 	
 	/**
@@ -222,9 +258,19 @@ public abstract class FBUIBackend
 	 */
 	@Override
 	public final boolean equals(UIWidgetBracket __a, UIWidgetBracket __b)
-		throws MLECallError
 	{
-		throw Debugging.todo();
+		// Is item?
+		if ((__a instanceof UIItemBracket) &&
+			(__b instanceof UIItemBracket))
+			return this.equals((UIItemBracket)__a, (UIItemBracket)__b);
+		
+		// Is form?
+		else if ((__a instanceof UIFormBracket) &&
+			(__b instanceof UIFormBracket))
+			return this.equals((UIFormBracket)__a, (UIFormBracket)__b);
+		
+		// Cannot be a match
+		return false;
 	}
 	
 	/**
@@ -286,7 +332,10 @@ public abstract class FBUIBackend
 		int __pos)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -297,7 +346,10 @@ public abstract class FBUIBackend
 	public final int formItemCount(UIFormBracket __form)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -309,7 +361,10 @@ public abstract class FBUIBackend
 		UIItemBracket __item)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -321,7 +376,10 @@ public abstract class FBUIBackend
 		UIItemBracket __item, int __pos)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -332,7 +390,10 @@ public abstract class FBUIBackend
 	public final UIItemBracket formItemRemove(UIFormBracket __form, int __pos)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -362,7 +423,10 @@ public abstract class FBUIBackend
 	public final void formRefresh(UIFormBracket __form)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -373,7 +437,10 @@ public abstract class FBUIBackend
 	public final UIFormCallback injector()
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -384,7 +451,10 @@ public abstract class FBUIBackend
 	public final void itemDelete(UIItemBracket __item)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -395,7 +465,10 @@ public abstract class FBUIBackend
 	public final UIFormBracket itemForm(UIItemBracket __item)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -442,7 +515,10 @@ public abstract class FBUIBackend
 	public final void later(int __displayId, int __serialId)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -453,7 +529,10 @@ public abstract class FBUIBackend
 	public final int metric(int __metric)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -464,7 +543,10 @@ public abstract class FBUIBackend
 	public final void widgetProperty(UIWidgetBracket __item, int __intProp,
 		int __sub, int __newValue)
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -475,7 +557,10 @@ public abstract class FBUIBackend
 	public final void widgetProperty(UIWidgetBracket __item, int __strProp,
 		int __sub, String __newValue)
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -487,7 +572,10 @@ public abstract class FBUIBackend
 		int __sub)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -499,7 +587,10 @@ public abstract class FBUIBackend
 		int __strProp, int __sub)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -559,5 +650,32 @@ public abstract class FBUIBackend
 		// {@squirreljme.error EB3w Form is not governed by this
 		// framebuffer.}
 		throw new MLECallError("EB3w");
+	}
+	
+	/**
+	 * Checks that the item is valid and is owned by this framebuffer.
+	 * 
+	 * @param __item The item to check.
+	 * @return The cast {@code __item} if valid.
+	 * @throws MLECallError If the item is not valid for this framebuffer.
+	 * @since 2022/07/25
+	 */
+	private BaseFBUIItem __checkItem(UIItemBracket __item)
+		throws MLECallError
+	{
+		if (!(__item instanceof BaseFBUIItem))
+			throw new MLECallError("CAST");
+		
+		synchronized (this)
+		{
+			// Is the item here?
+			for (BaseFBUIItem item : this._items)
+				if (item == __item)
+					return (BaseFBUIItem)__item;
+		}
+		
+		// {@squirreljme.error EB42 Item is not governed by this
+		// framebuffer.}
+		throw new MLECallError("EB42");
 	}
 }
