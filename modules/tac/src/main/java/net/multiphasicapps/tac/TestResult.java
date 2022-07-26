@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.manifest.JavaManifestKey;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
+import cc.squirreljme.runtime.cldc.util.StringUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;

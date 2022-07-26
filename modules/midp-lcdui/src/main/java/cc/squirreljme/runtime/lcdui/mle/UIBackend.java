@@ -212,7 +212,7 @@ public interface UIBackend
 	 * @param __pos The position to set the item at, may be one of
 	 * {@link UIItemPosition}.
 	 * @throws MLECallError If the form or item are null, or the position
-	 * is not valid.
+	 * is not valid, or the item is on a different form than {@code __form}.
 	 * @see UIFormShelf#formItemPosition(UIFormBracket, UIItemBracket, int) 
 	 * @since 2020/07/18
 	 */

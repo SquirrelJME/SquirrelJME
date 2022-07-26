@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
+import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -376,11 +377,15 @@ public abstract class FBUIBackend
 		UIItemBracket __item, int __pos)
 		throws MLECallError
 	{
-		
+		if (__form == null || __item == null)
+			throw new MLECallError("NARG");
+		if (__pos < UIItemPosition.MIN_VALUE)
+			throw new MLECallError("IOOB");
 		
 		synchronized (this)
 		{
-			throw Debugging.todo();
+			this.__checkForm(__form)
+				.itemPosition(this.__checkItem(__item), __pos);
 		}
 	}
 	

@@ -75,11 +75,6 @@ public class TestUIFormShelfInvalid
 	public boolean test(UIBackend __backend, int __index)
 		throws MLECallError
 	{
-		// Check to see if forms are actually supported, if not then we cannot
-		// check if it is invalid
-		if (0 == __backend.metric(UIMetricType.UIFORMS_SUPPORTED))
-			throw new UntestableException("UIForms Not Supported!");
-		
 		UIItemBracket fake;
 		switch (__index)
 		{
@@ -90,106 +85,94 @@ public class TestUIFormShelfInvalid
 			case 1:
 				__backend.metric(UIMetricType.NUM_METRICS);
 				break;
-			
+						
 			case 2:
-				__backend.equals((UIDisplayBracket)null, null);
-				break;
-			
-			case 3:
-				__backend.equals((UIFormBracket)null, null);
-				break;
-			
-			case 4:
-				__backend.equals((UIItemBracket)null, null);
-				break;
-			
-			case 5:
 				__backend.displayCurrent(null);
 				break;
 			
-			case 6:
+			case 3:
 				__backend.displayShow(null, null);
 				break;
 			
-			case 7:
+			case 4:
 				__backend.callback(null, (UIDisplayCallback)null);
 				break;
 			
-			case 8:
+			case 5:
 				__backend.formDelete(null);
 				break;
 			
-			case 9:
+			case 6:
 				__backend.callback(null, (UIFormCallback)null);
 				break;
 			
-			case 10:
+			case 7:
 				__backend.itemNew(-1);
 				break;
 			
-			case 11:
+			case 8:
 				__backend.itemNew(UIItemType.NUM_TYPES);
 				break;
 			
-			case 12:
+			case 9:
 				__backend.itemDelete(null);
 				break;
 			
-			case 13:
+			case 10:
 				fake = __backend.itemNew(UIItemType.BUTTON);
 				__backend.itemDelete(fake);
 				__backend.itemDelete(fake);
 				break;
 			
-			case 14:
+			case 11:
 				__backend.formItemCount(null);
 				break;
 			
-			case 15:
+			case 12:
 				__backend.formItemRemove(null, 0);
 				break;
 			
-			case 16:
+			case 13:
 				__backend.formItemRemove(__backend.formNew(), 0);
 				break;
 			
-			case 17:
+			case 14:
 				__backend.formItemRemove(__backend.formNew(),
 					UIItemPosition.MIN_VALUE - 1);
 				break;
 			
-			case 18:
+			case 15:
 				__backend.formItemAtPosition(__backend.formNew(),
 					UIItemPosition.MIN_VALUE - 1);
 				break;
 			
-			case 19:
+			case 16:
 				__backend.formItemAtPosition(__backend.formNew(),
 					0);
 				break;
 			
-			case 20:
+			case 17:
 				__backend.formItemPosition(__backend.formNew(),
 					null, -1);
 				break;
 			
-			case 21:
+			case 18:
 				__backend.formItemPosition(__backend.formNew(),
 					__backend.itemNew(UIItemType.BUTTON), 1);
 				break;
 			
-			case 22:
+			case 19:
 				__backend.formItemPosition(__backend.formNew(),
 					__backend.itemNew(UIItemType.BUTTON),
 					UIItemPosition.MIN_VALUE - 1);
 				break;
 			
-			case 23:
+			case 20:
 				__backend.formItemRemove(__backend.formNew(),
 					UIItemPosition.BODY);
 				break;
 			
-			case 24:
+			case 21:
 				__backend.itemForm(null);
 				break;
 			
