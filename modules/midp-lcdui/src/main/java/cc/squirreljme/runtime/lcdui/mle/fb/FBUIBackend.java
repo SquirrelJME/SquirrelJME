@@ -384,8 +384,16 @@ public abstract class FBUIBackend
 		
 		synchronized (this)
 		{
-			this.__checkForm(__form)
-				.itemPosition(this.__checkItem(__item), __pos);
+			// Check if the item is on another form since items can only be
+			// added if on the same form or not on one
+			// {@squirreljme.error EB43 Item is on a different form.}
+			FBUIItem item = this.__checkItem(__item);
+			UIFormBracket itemForm = this.itemForm(item);
+			if (itemForm != null && !this.equals(__form, itemForm))
+				throw new MLECallError("EB43");
+			
+			// Do the logic
+			this.__checkForm(__form).itemPosition(item, __pos);
 		}
 	}
 	
@@ -472,9 +480,12 @@ public abstract class FBUIBackend
 	public final UIFormBracket itemForm(UIItemBracket __item)
 		throws MLECallError
 	{
+		if (__item == null)
+			throw new MLECallError("NARG");
+		
 		synchronized (this)
 		{
-			throw Debugging.todo();
+			return this.__checkItem(__item)._form;
 		}
 	}
 	
@@ -498,16 +509,19 @@ public abstract class FBUIBackend
 				item = new FBUIItemLabel();
 				break;
 			
+			case UIItemType.BUTTON:
+				item = new FBUIItemButton();
+				break;
+			
 				// {@squirreljme.error EB41 Invalid item type.}
 			default:
 				throw new MLECallError("EB41 " + __type);
 		}
 		
 		// Remember item
-		List<FBUIItem> items = this._items;
 		synchronized (this)
 		{
-			items.add(item);
+			this._items.add(item);
 		}
 		
 		// Return the new item

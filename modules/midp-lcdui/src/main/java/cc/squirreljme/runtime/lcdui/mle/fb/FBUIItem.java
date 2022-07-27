@@ -20,5 +20,5 @@ public abstract class FBUIItem
 	implements UIItemBracket
 {
 	/** The form that this is currently on. */
-	private volatile FBUIForm _form;
+	volatile FBUIForm _form;
 }
