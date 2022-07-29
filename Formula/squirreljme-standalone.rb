@@ -13,7 +13,7 @@
 class SquirreljmeStandalone < Formula
   desc 'Standalone Test Virtual Machine Jar, written purely in Java'
   homepage 'https://squirreljme.cc/'
-  url 'https://squirreljme.cc/tarball/trunk/squirreljme-trunk.tar.gz'
+  url 'https://squirreljme.cc/tarball/squirreljme-src.tar.gz?name=squirreljme-src&uuid=trunk'
   version '0.3.0'
   license 'GPL-3.0-or-later'
   head 'https://squirreljme.cc/', using: :fossil
