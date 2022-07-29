@@ -13,12 +13,12 @@
 __exeDir="$(dirname -- "$0")"
 
 # Output directory
-__binDir="$(readlink -f "$1")"
-__binBinTarget="$__jarDir/squirreljme-standalone"
+__binDir="$(readlink -f -- "$1")"
+__binBinTarget="$__binDir/squirreljme-standalone"
 __binJarTarget="$__binJarTarget.jar"
 
 # Jar directory
-__jarDir="$(readlink -f "$2")"
+__jarDir="$(readlink -f -- "$2")"
 
 # Install only the first highest versioned Jar
 find "$__jarDir" -type f | grep '\.jar$' | grep 'squirreljme-standalone' |

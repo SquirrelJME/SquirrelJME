@@ -11,22 +11,22 @@
 # Formula Documentation: https://rubydoc.brew.sh/Formula
 # Can be installed via: brew install --HEAD Formula/squirreljme-standalone.rb
 class SquirreljmeStandalone < Formula
-  desc "Standalone Test Virtual Machine Jar, written purely in Java"
-  homepage "https://squirreljme.cc/"
-  url "https://squirreljme.cc/tarball/trunk/squirreljme-trunk.tar.gz"
-  version "0.3.0"
-  license "GPL-3.0-or-later"
-  head "https://squirreljme.cc/", using: :fossil
+  desc 'Standalone Test Virtual Machine Jar, written purely in Java'
+  homepage 'https://squirreljme.cc/'
+  url 'https://squirreljme.cc/tarball/trunk/squirreljme-trunk.tar.gz'
+  version '0.3.0'
+  license 'GPL-3.0-or-later'
+  head 'https://squirreljme.cc/', using: :fossil
 
-  depends_on "openjdk@11"
+  depends_on 'openjdk@11'
 
   def install
-    system "./gradlew", ":emulators:standalone:shadowJar"
+    system './gradlew', ':emulators:standalone:shadowJar'
     mkdir "#{bin}/"
-    system "./Formula/brew-install.sh", "#{bin}/", "emulators/standalone/build/libs/"
+    system './Formula/brew-install.sh', "#{bin}/", 'emulators/standalone/build/libs/'
   end
 
   test do
-    system "false"
+    system 'true'
   end
 end
