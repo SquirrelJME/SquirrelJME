@@ -1,0 +1,13 @@
+# Installation Instructions
+
+These are instructions on how to install various versions of SquirrelJME.
+
+## Standalone Jar
+
+The Standalone Jar which contains the test virtual machines.
+
+### Mac OS
+
+With [Homebrew](https://brew.sh) via _tap_:
+
+ * `brew tap SquirrelJME/SquirrelJME`
