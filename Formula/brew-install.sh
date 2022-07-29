@@ -14,8 +14,8 @@ __exeDir="$(dirname -- "$0")"
 
 # Output directory
 __binDir="$(readlink -f -- "$1")"
-__binBinTarget="$__binDir/squirreljme-standalone"
-__binJarTarget="$__binBinTarget.jar"
+__binBinTarget="$(readlink -f -- "$1")/squirreljme-standalone"
+__binJarTarget="$(readlink -f -- "$1")/squirreljme-standalone.jar"
 
 # Jar directory
 __jarDir="$(readlink -f -- "$2")"
