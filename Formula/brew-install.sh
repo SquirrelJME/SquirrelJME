@@ -15,12 +15,13 @@ __exeDir="$(dirname -- "$0")"
 # Output directory
 __binDir="$(readlink -f -- "$1")"
 __binBinTarget="$__binDir/squirreljme-standalone"
-__binJarTarget="$__binJarTarget.jar"
+__binJarTarget="$__binBinTarget.jar"
 
 # Jar directory
 __jarDir="$(readlink -f -- "$2")"
 
 # Install only the first highest versioned Jar
+mkdir -p "$__binDir"
 find "$__jarDir" -type f | grep '\.jar$' | grep 'squirreljme-standalone' |
 	sort -r | head -n 1 | while read __jar
 do
@@ -33,8 +34,8 @@ do
 	# Add script to launch it
 	cat << EOF > "$__binBinTarget"
 #!/bin/sh
-java -jar "\$(dirname -- "$0")/squirreljme-standalone.jar" "$@"
-exit $?
+java -jar "\$(dirname -- "\$0")/squirreljme-standalone.jar" "\$@"
+exit \$?
 EOF
 	
 	# Make it executable
