@@ -10,8 +10,10 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.jvm.launch.IModeApplication;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
+import cc.squirreljme.runtime.midlet.ApplicationType;
 import cc.squirreljme.runtime.midlet.CleanupHandler;
 import java.util.Objects;
 
@@ -144,5 +146,15 @@ final class __IAppliInterface__
 		
 		// Start the application
 		__instance.start();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/07/21
+	 */
+	@Override
+	public ApplicationType type()
+	{
+		return ApplicationType.NTT_DOCOMO_DOJA;
 	}
 }
