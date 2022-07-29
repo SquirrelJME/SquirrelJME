@@ -12,3 +12,11 @@ With [Homebrew](https://brew.sh) via _tap_:
 
  * `brew tap SquirrelJME/SquirrelJME http://github.com/SquirrelJME/SquirrelJME`
  * `brew install squirreljme/squirreljme/squirreljme-standalone`
+
+To uninstall, perform:
+
+ * `brew uninstall squirreljme/squirreljme/squirreljme-standalone`
+
+To remove the added _tap_, perform:
+
+ * `brew untap SquirrelJME/SquirrelJME`
