@@ -25,8 +25,8 @@ public final class TableLayoutPolicy
 	 * @since 2016/10/07
 	 */
 	@Override
-	protected void doLayout(int __vpx, int __vpy, int __vpw,
-		int __vph, int[] __ts)
+	protected void doLayout(int __viewportX, int __viewportY, int __viewportW,
+		int __viewportH, int[] __totalSize)
 	{
 		throw Debugging.todo();
 	}

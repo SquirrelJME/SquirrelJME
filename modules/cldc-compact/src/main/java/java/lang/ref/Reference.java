@@ -238,7 +238,7 @@ public abstract class Reference<T>
 			if (this._enqueued)
 				return null;
 			
-			// Otherwise use what the link says our object is
+			// Otherwise, use what the link says our object is
 			rv = ReferenceShelf.linkGetObject(this._link);
 		}
 		finally

@@ -1,0 +1,9 @@
+# 2022/07/21
+
+## 00:18
+
+Okay so I am thinking of starting a branch to implement non-UIForm based
+drawing of widgets and otherwise since it will be needed by RatufaCoat and
+it would be pretty useless without. At least as a base I could base it on
+UIForms but have an additional property which checks if it is a canvas only
+implementation in which case it will use the framebuffer drawing.

@@ -833,8 +833,8 @@ public final class VMHelpers
 				return Collections.unmodifiableMap(singles);
 			
 			// If the test has no matching file, then just ignore it
-			__project.getLogger().warn("Could not find test {}, ignoring.",
-				singleTest);
+			throw new IllegalArgumentException(String.format(
+				"Could not find test %s, failing.", singleTest));
 		}
 		
 		// Is only valid if there is at least one test

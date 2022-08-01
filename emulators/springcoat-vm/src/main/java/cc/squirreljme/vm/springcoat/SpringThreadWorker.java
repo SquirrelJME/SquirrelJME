@@ -812,13 +812,13 @@ public final class SpringThreadWorker
 			// Normal call
 			else
 			{
-			// Enter the method we really want to execute
-			framelimit = thread.numFrames();
-			execframe = thread.enterFrame(method, __args);
-			
-			// Execute this method
-			this.run(framelimit);
-		}
+				// Enter the method we really want to execute
+				framelimit = thread.numFrames();
+				execframe = thread.enterFrame(method, __args);
+				
+				// Execute this method
+				this.run(framelimit);
+			}
 		}
 		
 		// Exception when running which was not caught

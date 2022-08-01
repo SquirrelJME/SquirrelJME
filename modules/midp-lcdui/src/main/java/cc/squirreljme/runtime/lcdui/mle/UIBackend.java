@@ -235,6 +235,16 @@ public interface UIBackend
 	 */
 	UIFormBracket formNew()
 		throws MLECallError;
+		
+	/**
+	 * Forces a form to be refreshed.
+	 * 
+	 * @param __form The form to refresh
+	 * @throws MLECallError On null arguments or the form is not valid.
+	 * @since 2022/07/20
+	 */
+	void formRefresh(UIFormBracket __form)
+		throws MLECallError;
 	
 	/**
 	 * Returns the injector for forms, which is used for testing purposes.

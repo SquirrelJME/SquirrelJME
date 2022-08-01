@@ -249,9 +249,12 @@ The following _System_ properties are available:
    * If `value` is a number and is `-1`, then no MIDlet will be selected and
      the `Main-Class` attribute will be force selected.
    * If `value` is a number, then it will be treated as an index. If the index
-     is not within the MIDlet bounds then it will run the first MIDlet.
+     is in bounds it will run the given MIDlet by index.
    * If `value` is a string, then a search will be performed for a MIDlet
-     with a matching case-insensitive title. 
+     with a matching case-insensitive title.
+   * If `value` is a string and starts or ends with an asterisk (`*`) then
+     it will find a midlet whose title contains the text with a
+     case-insensitive search.
    * Otherwise if `value` is a string, it will construct a virtual MIDlet
      which executes the given value as the name of a class within the JAR.
  * `squirreljme.sysprop.<systemProperty>=value` -- Add system property.
@@ -309,3 +312,10 @@ A standalone Java emulator Jar which contains all of the available test
 virtual machine implementations is available when calling the task:
 
  * `:emulators:standalone:shadowJar`
+
+## Mac OS
+
+This is used with [Homebrew](https://brew.sh/), with checked
+out source code the following can be run:
+
+ * brew install --HEAD Formula/squirreljme-standalone.rb`
