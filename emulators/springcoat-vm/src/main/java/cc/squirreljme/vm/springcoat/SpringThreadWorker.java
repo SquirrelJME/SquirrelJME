@@ -1056,7 +1056,7 @@ public final class SpringThreadWorker
 		// All low-level calls are considered invalid in SpringCoat because
 		// it does not have the given functionality.
 		if (__class.toString().startsWith("cc/squirreljme/jvm/Assembly") ||
-			__class.toString().startsWith("cc/squirreljme/jvm/summercoat/lle/"))
+			__class.toString().startsWith("cc/squirreljme/jvm/pack/lle/"))
 		{
 			// The only exception is made for packing/unpacking longs
 			if (__class.toString().startsWith("cc/squirreljme/jvm/Assembly"))

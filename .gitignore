@@ -6,6 +6,9 @@ build/
 out/
 */out/
 
+# VSCode Files
+*~
+
 # Eclipse
 .settings
 .classpath
@@ -26,7 +29,13 @@ modules/*/bin
 .idea/uiDesigner.xml
 .idea/usage-statistics.xml
 .idea/workspace.xml
+.idea/modules/
+.idea/shelf/
+ratufacoat/.idea/discord.xml
+ratufacoat/.idea/gradle.xml
 ratufacoat/.idea/workspace.xml
+ratufacoat/.idea/modules/
+ratufacoat/.idea/shelf/
 ratufacoat/libretro-log.txt
 file-*
 
@@ -60,23 +69,35 @@ modules/*/out/test/
 java_pid*.hprof
 
 # CMake
+CMakeFiles
+CTestTestfile.cmake
+CMakeCache.txt
 ratufacoat/cmake-build-release
 ratufacoat/cmake-build-debug
-ratufacoat/CMakeFiles
-ratufacoat/src/CMakeFiles
 ratufacoat/src/Debug
 ratufacoat/src/Release
 ratufacoat/src/SquirrelJME.dir
 ratufacoat/x86
 ratufacoat/x64
 ratufacoat/out
+ratufacoat/Testing
+ratufacoat/Makefile
+ratufacoat/libretro-log.txt
+ratufacoat/file-*
+cmake_install.cmake
 *.o
 *.dll
 *.exe
+*.dylib
+cmake-build-debug
+*.tmp
 
 # Fossil files
 _FOSSIL_
+.fslckout
 ci-comment-*.txtout-*1*
+ci-comment-*.txt
+ci-comment-*.txt.save
 out-*2*
 out-*3*
 out-*4*
