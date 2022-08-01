@@ -12,6 +12,7 @@ package cc.squirreljme.plugin.multivm;
 import javax.inject.Inject;
 import lombok.Getter;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.Internal;
 
 /**

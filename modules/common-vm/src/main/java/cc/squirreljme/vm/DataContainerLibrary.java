@@ -48,6 +48,19 @@ public class DataContainerLibrary
 	}
 	
 	/**
+	 * Opens a stream to the contained data.
+	 * 
+	 * @return The stream to the data.
+	 * @throws IOException If it could not be opened.
+	 * @since 2021/09/04
+	 */
+	public final InputStream asStream()
+		throws IOException
+	{
+		return this.resourceAsStream(DataContainerLibrary.RESOURCE_NAME);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2021/06/13
 	 */

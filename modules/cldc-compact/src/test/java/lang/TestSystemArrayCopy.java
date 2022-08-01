@@ -9,7 +9,7 @@
 
 package lang;
 
-import java.util.Arrays;
+import cc.squirreljme.runtime.cldc.lang.ArrayUtils;
 import java.util.Objects;
 import net.multiphasicapps.tac.TestConsumer;
 
@@ -52,7 +52,7 @@ public class TestSystemArrayCopy
 		System.arraycopy(a, 0,
 			fullCopy, 0, TestSystemArrayCopy.BASE_SIZE);
 		
-		this.secondary("full", TestSystemArrayCopy.equals(a, fullCopy));
+		this.secondary("full", ArrayUtils.arrayEquals(a, fullCopy));
 		
 		// Overlapping low to high
 		System.arraycopy(a, TestSystemArrayCopy.QUARTER_SIZE - 1,
@@ -148,36 +148,6 @@ public class TestSystemArrayCopy
 			default:
 				throw new IllegalArgumentException(__type);
 		}
-	}
-	
-	/**
-	 * Checks if both arrays are equal
-	 * 
-	 * @param __a A.
-	 * @param __b B.
-	 * @return If the arrays are equal.
-	 * @since 2020/11/15
-	 */
-	private static Object equals(Object __a, Object __b)
-	{
-		if (__a instanceof boolean[])
-			return Arrays.equals((boolean[])__a, (boolean[])__b);
-		else if (__a instanceof byte[])
-			return Arrays.equals((byte[])__a, (byte[])__b);
-		else if (__a instanceof short[])
-			return Arrays.equals((short[])__a, (short[])__b);
-		else if (__a instanceof char[])
-			return Arrays.equals((char[])__a, (char[])__b);
-		else if (__a instanceof int[])
-			return Arrays.equals((int[])__a, (int[])__b);
-		else if (__a instanceof long[])
-			return Arrays.equals((long[])__a, (long[])__b);
-		else if (__a instanceof float[])
-			return Arrays.equals((float[])__a, (float[])__b);
-		else if (__a instanceof double[])
-			return Arrays.equals((double[])__a, (double[])__b);
-		else
-			return Arrays.equals((Object[])__a, (Object[])__b);
 	}
 	
 	/**

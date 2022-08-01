@@ -398,7 +398,7 @@ public final class CallTraceElement
 				// Using space?
 				if (sp)
 					sb.append(' ');
-			
+				
 				// Write instruction
 				if (hasJInst)
 					sb.append(JavaOpCodeUtils.toString(jInst));
@@ -531,7 +531,7 @@ public final class CallTraceElement
 				// Using space?
 				if (sp)
 					sb.append(' ');
-			
+				
 				// Write instruction
 				if (hasjbcinst)
 					sb.append(JavaOpCodeUtils.toString(jbcinst));

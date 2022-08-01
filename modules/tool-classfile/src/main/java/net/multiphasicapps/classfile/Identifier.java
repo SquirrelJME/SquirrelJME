@@ -58,6 +58,9 @@ public abstract class Identifier
 	@Override
 	public boolean equals(Object __o)
 	{
+		if (this == __o)
+			return true;
+		
 		// Check
 		if (!(__o instanceof Identifier))
 			return false;

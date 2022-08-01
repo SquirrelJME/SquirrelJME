@@ -223,9 +223,16 @@ public final class TaskInitialization
 		
 		// Does the VM utilize ROMs?
 		if (__vmType.hasRom())
-			tasks.create(
-				TaskInitialization.task("rom", __sourceSet, __vmType),
+		{
+			String baseName = TaskInitialization.task("rom",
+				__sourceSet, __vmType);
+			VMRomTask rom = tasks.create(baseName,
 				VMRomTask.class, __sourceSet, __vmType);
+			
+			// Full RatufaCoat Built-In
+			__project.getTasks().create(baseName + "RatufaCoat",
+				RatufaCoatBuiltInTask.class,  __sourceSet, __vmType, rom);
+		}
 	}
 	
 	/**
