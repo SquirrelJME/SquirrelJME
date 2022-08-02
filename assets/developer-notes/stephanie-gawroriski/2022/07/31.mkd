@@ -1,0 +1,37 @@
+# 2022/07/31
+
+## 23:06
+
+Okay so I have an idea for the compiler backends and such, as has been in
+my mind for awhile I am going to do two layers: An upper layer which just
+makes Java byte code but is stack cached, `tableswitch`/`lookupswitch`
+translated to an code based LUT and lookup, and exception handling that is
+done by I suppose this time exception entry and exit so that I can have a
+generic exception handler and jump code. Also synchronized methods with their
+implicit code and such. This layer is called SummerCoat.
+
+The exception handler and jump code will just for the most part just be like
+an indicator that we care about some exceptions, then if any happen the
+exception stack or similar is checked for handling. At least with two stacks
+things seem a bit simpler to manager I suppose. Exception handling is really
+only the majorly complex bit of code. Then of course there are synchronized
+methods. Hopefully when an exception is handled this makes it easier rather
+than keeping exact track of all the exceptions that are handled. This will
+also handle state jumps and transitions between states, which was a very
+complicated part of SummerCoat... and I hope I can do it simpler and easier
+this time around.
+
+Then the second layer will be called AutumnCoat, it is responsible for turning
+the more-like-Java instructions and turning it into an intermediate language
+that is much closer to machine code but not quite there. Since the other
+layer manages exceptions, stack caching, and otherwise it should be simpler as
+the only thing that would need to be done is handling mappings of all the
+various live registers and ones sitting on the stack.
+
+Hopefully with these two layers things are much more simplified and the
+previous SummerCoat is not extremely complex because it was doing both at
+once. I would say simpler is better always.
+
+Of course this would be a new branch and work, but it should hopefully go
+fine and whatnot I hope. Hopefully it is much faster and is much simpler apart
+from some initial setup.
