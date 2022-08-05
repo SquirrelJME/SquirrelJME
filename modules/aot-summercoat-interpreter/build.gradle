@@ -2,21 +2,23 @@ import cc.squirreljme.plugin.swm.JavaMEConfiguration
 import cc.squirreljme.plugin.swm.JavaMEMidletType
 
 version = "1.8.$squirreljmeVMVersion"
-description = "Layer 1 SummerCoat compiler."
+description = "Interpreter for SummerCoat, used by test VMs and also " +
+	"compiled by the C output so that RatufaCoat is capable of " +
+	"interpreting SummerCoat libraries."
 
 squirreljme
 {
-	javaDocErrorCode = "RA"
+	javaDocErrorCode = "RC"
 	swmType = JavaMEMidletType.API
-	swmName = "Ahead-Of-Time Support: SummerCoat"
+	swmName = "Ahead-Of-Time Support: SummerCoat: Interpreter"
 	swmVendor = "Stephanie Gawroriski"
 	definedConfigurations += new JavaMEConfiguration("CLDC-1.8")
 	tags += "aot-compiler"
 	tags += "summercoat"
+	tags += "interpreter"
 }
 
 dependencies
 {
-	api project(":modules:aot")
-	api project(":modules:tool-classfile")
+	api project(":modules:aot-summercoat")
 }

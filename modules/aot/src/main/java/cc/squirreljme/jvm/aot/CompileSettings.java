@@ -18,13 +18,13 @@ import java.util.Deque;
  */
 public final class CompileSettings
 {
-	/** Is this a boot loader? */
+	/** Is this a bootloader? */
 	public final boolean isBootLoader;
 	
 	/**
 	 * Initializes the compilation settings.
 	 * 
-	 * @param __isBootLoader Is this a boot loader?
+	 * @param __isBootLoader Is this a bootloader?
 	 * @since 2020/11/23
 	 */
 	public CompileSettings(boolean __isBootLoader)
