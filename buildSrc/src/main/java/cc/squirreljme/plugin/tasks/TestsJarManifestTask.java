@@ -30,11 +30,13 @@ public class TestsJarManifestTask
 	 *
 	 * @param __jar The JAR task.
 	 * @param __pr The process resources task.
+	 * @param __sourceSet The source set used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/03/04
 	 */
 	@Inject
-	public TestsJarManifestTask(Jar __jar, ProcessResources __pr)
+	public TestsJarManifestTask(Jar __jar, ProcessResources __pr,
+		String __sourceSet)
 		throws NullPointerException
 	{
 		if (__jar == null || __pr == null)

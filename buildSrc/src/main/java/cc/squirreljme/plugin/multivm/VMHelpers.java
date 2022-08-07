@@ -48,6 +48,7 @@ import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.ProjectDependency;
+import org.gradle.api.capabilities.Capability;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.jvm.tasks.Jar;
@@ -63,6 +64,10 @@ public final class VMHelpers
 	/** The class used for single test runs. */
 	public static final String SINGLE_TEST_RUNNER =
 		"net.multiphasicapps.tac.MainSingleRunner";
+	
+	/** Source set name for test fixtures. */
+	public static final String TEST_FIXTURES_SOURCE_SET_NAME =
+		"testFixtures";
 	
 	/** Main configurations. */
 	private static final String[] _MAIN_CONFIGS =
@@ -410,6 +415,10 @@ public final class VMHelpers
 			case SourceSet.TEST_SOURCE_SET_NAME:
 				return (Jar)__project.getTasks().getByName("testJar");
 			
+			case VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME:
+				return (Jar)__project.getTasks()
+					.getByName("testFixturesJar");
+			
 			default:
 				throw new IllegalStateException("Unknown sourceSet: " +
 					__sourceSet);
@@ -730,7 +739,7 @@ public final class VMHelpers
 		if (__did == null)
 			__did = new HashSet<>();
 		
-		// If this process was already processed, ignore it
+		// If this was already processed, ignore it
 		ProjectAndTaskName selfProjectTask = ProjectAndTaskName.of(__project,
 			TaskInitialization.task("lib", __sourceSet, __vmType));
 		if (__did.contains(selfProjectTask))
@@ -770,8 +779,8 @@ public final class VMHelpers
 				if (!(depend instanceof ProjectDependency))
 					continue;
 				
-				Project sub = ((ProjectDependency)depend)
-					.getDependencyProject();
+				ProjectDependency projectDepend = (ProjectDependency)depend;
+				Project sub = projectDepend.getDependencyProject();
 				
 				// Only consider SquirrelJME projects
 				SquirrelJMEPluginConfiguration squirreljmeConf =
@@ -779,9 +788,23 @@ public final class VMHelpers
 				if (squirreljmeConf == null)
 					continue;
 				
+				// Does this depend on test fixtures?
+				boolean isTestFixture = false;
+				for (Capability capability :
+					projectDepend.getRequestedCapabilities())
+					if (capability.getName()
+						.equals(sub.getName() + "-test-fixtures"))
+						isTestFixture = true;
+				
 				// Otherwise, handle the dependencies
-				result.addAll(VMHelpers.runClassTasks(sub, 
-					SourceSet.MAIN_SOURCE_SET_NAME, __vmType, __did));
+				String targetSourceSet = (isTestFixture ?
+					VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME :
+					SourceSet.MAIN_SOURCE_SET_NAME);
+				Collection<ProjectAndTaskName> selected =
+					VMHelpers.runClassTasks(sub, targetSourceSet, __vmType,
+						__did);
+				
+				result.addAll(selected);
 			}
 		}
 		

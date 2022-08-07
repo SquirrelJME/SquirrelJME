@@ -9,6 +9,8 @@
 
 package cc.squirreljme.aot.java;
 
+import cc.squirreljme.jvm.aot.summercoat.SummerCoatBackend;
+import cc.squirreljme.jvm.aot.test.CompilePayload;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
@@ -26,6 +28,10 @@ public class TestClassInitPipe
 	@Override
 	public void test()
 	{
+		SummerCoatBackend backend = new SummerCoatBackend();
+		
+		CompilePayload payload = new CompilePayload();
+		
 		this.secondary("key", "value");
 	}
 }

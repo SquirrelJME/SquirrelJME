@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.tasks;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.multivm.TaskInitialization;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.swm.JavaMEMidletType;
 import cc.squirreljme.plugin.swm.SuiteDependency;
@@ -26,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.TreeMap;
@@ -40,6 +42,7 @@ import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.ProjectDependency;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.java.archives.Manifest;
+import org.gradle.api.tasks.SourceSet;
 import org.gradle.jvm.tasks.Jar;
 import org.gradle.language.jvm.tasks.ProcessResources;
 
@@ -56,11 +59,13 @@ public class AdditionalManifestPropertiesTask
 	 *
 	 * @param __jar The JAR Task.
 	 * @param __pr The process resources task.
+	 * @param __sourceSet The source set used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/02/28
 	 */
 	@Inject
-	public AdditionalManifestPropertiesTask(Jar __jar, ProcessResources __pr)
+	public AdditionalManifestPropertiesTask(Jar __jar, ProcessResources __pr,
+		String __sourceSet)
 		throws NullPointerException
 	{
 		if (__jar == null || __pr == null)
@@ -83,7 +88,8 @@ public class AdditionalManifestPropertiesTask
 				@Override
 				public void execute(Task __task)
 				{
-					AdditionalManifestPropertiesTask.this.__doLast(__task);
+					AdditionalManifestPropertiesTask.this
+						.__doLast(__task, __sourceSet);
 				}
 			});
 		
@@ -110,11 +116,12 @@ public class AdditionalManifestPropertiesTask
 	 * @param __project The project to add.
 	 * @param __depCounter Dependency counter.
 	 * @param __attributes The output attributes.
+	 * @param __isMain Is this the main set?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/03
 	 */
 	private void __addDependency(boolean __isOptional, Project __project,
-		int[] __depCounter, Attributes __attributes)
+		int[] __depCounter, Attributes __attributes, boolean __isMain)
 		throws NullPointerException
 	{
 		if (__project == null)
@@ -124,7 +131,8 @@ public class AdditionalManifestPropertiesTask
 		Project project = this.getProject();
 		SquirrelJMEPluginConfiguration config =
 			SquirrelJMEPluginConfiguration.configuration(project);
-		JavaMEMidletType type = config.swmType;
+		JavaMEMidletType type = (__isMain ? config.swmType : 
+			JavaMEMidletType.LIBRARY);
 		
 		// Which requirement level?
 		SuiteDependencyLevel requireLevel = (__isOptional ?
@@ -203,10 +211,15 @@ public class AdditionalManifestPropertiesTask
 	/**
 	 * Performs the task actions.
 	 *
+	 * @param __task The task this is being called for.
+	 * @param __sourceSet The source set to use for the task.
 	 * @since 2002/02/28
 	 */
-	void __doLast(Task __task)
+	void __doLast(Task __task, String __sourceSet)
 	{
+		// Is this the main source set?
+		boolean isMain = __sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME);
+		
 		// Get the project and the config details
 		Project project = this.getProject();
 		SquirrelJMEPluginConfiguration config =
@@ -219,15 +232,25 @@ public class AdditionalManifestPropertiesTask
 		// Set manifest to 1.0
 		attributes.put(Attributes.Name.MANIFEST_VERSION, "1.0");
 		
+		// Determine project name for lookup
+		String internalProjectName = project.getName();
+		if (!isMain)
+			internalProjectName += "-" + __sourceSet.toLowerCase(Locale.ROOT);
+		
 		// Project name is used internally for dependency lookup
 		attributes.putValue("X-SquirrelJME-InternalProjectName",
-			project.getName());
+			internalProjectName);
 		
 		// Generation really depends on the application type
-		JavaMEMidletType type = config.swmType;
+		// The main sources are whatever, but everything else such as
+		// text fixtures is considered a library dependency wise
+		JavaMEMidletType type = (isMain ? config.swmType :
+			JavaMEMidletType.LIBRARY);
 		
 		// Add common keys
-		attributes.putValue(type.nameKey(), config.swmName);
+		attributes.putValue(type.nameKey(), (isMain ? config.swmName :
+			TaskInitialization.uppercaseFirst(__sourceSet) + " for " +
+				config.swmName));
 		attributes.putValue(type.vendorKey(), config.swmVendor);
 		attributes.putValue(type.versionKey(),
 			new SuiteVersion(project.getVersion().toString()).toString());
@@ -306,12 +329,13 @@ public class AdditionalManifestPropertiesTask
 		int[] normalDep = new int[]{1};
 		for (ProjectDependency dependency : dependencies.values())
 			this.__addDependency(false,
-				dependency.getDependencyProject(), normalDep, attributes);
+				dependency.getDependencyProject(), normalDep, attributes,
+				isMain);
 		
 		// Add any optional dependencies now, which may or may not exist
 		for (Project dependency : config.optionalDependencies)
 			this.__addDependency(true,
-				dependency, normalDep, attributes);
+				dependency, normalDep, attributes, isMain);
 		
 		// Write the manifest output
 		try (OutputStream out = Files.newOutputStream(this.__taskOutput(),
