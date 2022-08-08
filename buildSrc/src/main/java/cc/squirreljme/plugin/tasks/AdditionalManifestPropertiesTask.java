@@ -9,40 +9,11 @@
 
 package cc.squirreljme.plugin.tasks;
 
-import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
-import cc.squirreljme.plugin.multivm.TaskInitialization;
-import cc.squirreljme.plugin.swm.JavaMEMidlet;
-import cc.squirreljme.plugin.swm.JavaMEMidletType;
-import cc.squirreljme.plugin.swm.SuiteDependency;
-import cc.squirreljme.plugin.swm.SuiteDependencyLevel;
-import cc.squirreljme.plugin.swm.SuiteDependencyType;
-import cc.squirreljme.plugin.swm.SuiteName;
-import cc.squirreljme.plugin.swm.SuiteVendor;
-import cc.squirreljme.plugin.swm.SuiteVersion;
-import cc.squirreljme.plugin.swm.SuiteVersionRange;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.TreeMap;
-import java.util.jar.Attributes;
 import javax.inject.Inject;
-import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
-import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.artifacts.Dependency;
-import org.gradle.api.artifacts.ProjectDependency;
 import org.gradle.api.file.FileCollection;
-import org.gradle.api.java.archives.Manifest;
-import org.gradle.api.tasks.SourceSet;
 import org.gradle.jvm.tasks.Jar;
 import org.gradle.language.jvm.tasks.ProcessResources;
 
@@ -54,6 +25,9 @@ import org.gradle.language.jvm.tasks.ProcessResources;
 public class AdditionalManifestPropertiesTask
 	extends DefaultTask
 {
+	/** The source set used. */
+	protected final String sourceSet;
+	
 	/**
 	 * Initializes the task.
 	 *
@@ -68,8 +42,10 @@ public class AdditionalManifestPropertiesTask
 		String __sourceSet)
 		throws NullPointerException
 	{
-		if (__jar == null || __pr == null)
+		if (__jar == null || __pr == null || __sourceSet == null)
 			throw new NullPointerException("No tasks specified");
+			
+		this.sourceSet = __sourceSet;
 		
 		// Set details of this task
 		this.setGroup("squirreljme");
@@ -103,8 +79,9 @@ public class AdditionalManifestPropertiesTask
 	 */
 	Path __taskOutput()
 	{
-		return this.getProject().getBuildDir().toPath().
-			resolve("SQUIRRELJME.MF");
+		return this.getProject().getBuildDir().toPath()
+			.resolve("squirreljme").resolve("manifests")
+			.resolve(this.sourceSet).resolve("SQUIRRELJME.MF");
 	}
 	
 	/**
