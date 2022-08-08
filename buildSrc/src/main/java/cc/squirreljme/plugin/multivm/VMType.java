@@ -786,11 +786,17 @@ public enum VMType
 		
 		for (Path p : __paths)
 		{
+			// This is an error if this occurs
+			Integer index = __libIndex.get(p);
+			if (p == null || index == null)
+				throw new IllegalStateException(
+					"Missing path or index for " + p);
+			
 			// Comma for the index?
 			if (sb.length() > 0)
 				sb.append(',');
 			
-			sb.append(__libIndex.get(p));
+			sb.append(index);
 		}
 		
 		return sb.toString();

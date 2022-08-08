@@ -162,14 +162,10 @@ public final class TaskInitialization
 			processResources);
 			
 		// Add SquirrelJME properties to the manifest
-		Class<? extends Task> propertyTask;
-		if (__sourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME))
-			propertyTask = TestsJarManifestTask.class;
-		else
-			propertyTask = AdditionalManifestPropertiesTask.class;
 		__project.getTasks().create(TaskInitialization.task(
 				"additional", __sourceSet, "jarProperties"),
-			propertyTask, jarTask, processResources, __sourceSet);
+			AdditionalManifestPropertiesTask.class, jarTask, processResources,
+			__sourceSet);
 		
 		// Initialize for each VM
 		for (VMType vmType : VMType.values())
@@ -319,7 +315,10 @@ public final class TaskInitialization
 		TaskContainer tasks = __project.getTasks();
 		
 		// Does the VM utilize ROMs?
-		if (__vmType.hasRom())
+		// Test fixtures are just for testing, so there is no test fixtures
+		// ROM variant...
+		if (__vmType.hasRom() &&
+			!__sourceSet.equals(VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME))
 		{
 			String baseName = TaskInitialization.task("rom",
 				__sourceSet, __vmType);

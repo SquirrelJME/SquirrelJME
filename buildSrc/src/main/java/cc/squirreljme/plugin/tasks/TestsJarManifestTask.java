@@ -20,8 +20,10 @@ import org.gradle.language.jvm.tasks.ProcessResources;
 /**
  * Adds additional properties to the manifest for the JAR.
  *
+ * @deprecated Move this to {@link AdditionalManifestPropertiesTask}.
  * @since 2020/03/04
  */
+@Deprecated
 public class TestsJarManifestTask
 	extends DefaultTask
 {
@@ -62,7 +64,7 @@ public class TestsJarManifestTask
 		
 		// When the JAR is created it gets additional manifests from us
 		__jar.manifest(
-			new TestJarManifestTaskManifestModifier(this.__taskOutput()));
+			new ManifestTaskModifier(this.__taskOutput()));
 			
 		// Jar and resources depend on this task
 		__jar.dependsOn(this);

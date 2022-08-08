@@ -10,10 +10,10 @@
 package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
-import cc.squirreljme.plugin.util.UnassistedLaunchEntry;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.util.FileLocation;
 import cc.squirreljme.plugin.util.TestDetection;
+import cc.squirreljme.plugin.util.UnassistedLaunchEntry;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +33,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -504,6 +505,31 @@ public final class VMHelpers
 	}
 	
 	/**
+	 * Returns the internal name via the source set.
+	 * 
+	 * @param __project The project.
+	 * @param __sourceSet The source set.
+	 * @return The internal name that is used by SquirrelJME.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/07
+	 */
+	public static String projectInternalNameViaSourceSet(Project __project,
+		String __sourceSet)
+		throws NullPointerException
+	{
+		if (__project == null || __sourceSet == null)
+			throw new NullPointerException("NARG");
+		
+		// If main project, just use the normal base name
+		if (__sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME))
+			return __project.getName();
+		
+		// Otherwise, append the source set
+		return String.format("%s-%s", __project.getName(),
+			__sourceSet.toLowerCase(Locale.ROOT));
+	}
+	
+	/**
 	 * Returns the project classpath.
 	 *
 	 * @param __project The project.
@@ -522,10 +548,39 @@ public final class VMHelpers
 	}
 	
 	/**
-	 * Reads all of the bytes from the stream.
+	 * Returns the name of the suite that should be used for the dependency.
+	 * 
+	 * @param __project The project to get for.
+	 * @param __sourceSet The source set used.
+	 * @return The suite name that should be used.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/07
+	 */
+	public static String projectSwmNameViaSourceSet(Project __project,
+		String __sourceSet)
+		throws NullPointerException
+	{
+		if (__project == null || __sourceSet == null)
+			throw new NullPointerException("NARG");
+		
+		// Need this to get the key
+		SquirrelJMEPluginConfiguration config =
+			SquirrelJMEPluginConfiguration.configuration(__project);
+		
+		// Just uses the set name
+		if (__sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME))
+			return config.swmName;
+		
+		// Otherwise, gets prefixed
+		return TaskInitialization.uppercaseFirst(__sourceSet) + " for " +
+			config.swmName;
+	}
+	
+	/**
+	 * Reads all the bytes from the stream.
 	 * 
 	 * @param __in The stream to read from.
-	 * @return All of the read bytes.
+	 * @return All the read bytes.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/07
@@ -808,7 +863,7 @@ public final class VMHelpers
 			}
 		}
 		
-		// Finally add our own library for usages
+		// Finally, add our own library for usages
 		result.add(selfProjectTask);
 		
 		// Ignore our own project

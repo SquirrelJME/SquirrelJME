@@ -28,8 +28,10 @@ import org.gradle.api.Task;
 /**
  * The action for {@link TestsJarManifestTask}.
  *
+ * @deprecated Move this to {@link AdditionalManifestPropertiesTask}.
  * @since 2022/07/10
  */
+@Deprecated
 public class TestJarManifestTaskAction
 	implements Action<Task>
 {
@@ -68,7 +70,8 @@ public class TestJarManifestTaskAction
 		attributes.put(Attributes.Name.MANIFEST_VERSION, "1.0");
 		
 		// MIDlet properties
-		attributes.putValue("MIDlet-Name", "Tests for " + project.getName());
+		attributes.putValue("MIDlet-Name",
+			"Tests for " + project.getName());
 		attributes.putValue("MIDlet-Version",
 			new SuiteVersion(project.getVersion().toString()).toString());
 		attributes.putValue("MIDlet-Vendor", config.swmVendor);

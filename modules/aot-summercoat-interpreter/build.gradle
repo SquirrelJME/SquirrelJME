@@ -10,7 +10,7 @@ squirreljme
 {
 	javaDocErrorCode = "RC"
 	swmType = JavaMEMidletType.API
-	swmName = "Ahead-Of-Time Support: SummerCoat: Interpreter"
+	swmName = "Ahead-Of-Time Support - SummerCoat - Interpreter"
 	swmVendor = "Stephanie Gawroriski"
 	definedConfigurations += new JavaMEConfiguration("CLDC-1.8")
 	tags += "aot-compiler"
