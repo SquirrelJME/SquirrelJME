@@ -19,5 +19,6 @@ squirreljme
 
 dependencies
 {
+	api project(":modules:aot-interpreter")
 	api project(":modules:aot-summercoat")
 }

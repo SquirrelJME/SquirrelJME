@@ -69,10 +69,13 @@ public class VMFullSuiteDepends
 		
 		// We need the emulator to be built and working before we can actually
 		// run our full suite accordingly
-		Task emulJar = root.project(this.vmType.emulatorProject()).getTasks()
-			.findByName("jar");
-		if (emulJar != null)
-			tasks.add(emulJar);
+		for (String emulatorProject : this.vmType.emulatorProjects())
+		{
+			Task emulJar = root.project(emulatorProject).getTasks()
+				.findByName("jar");
+			if (emulJar != null)
+				tasks.add(emulJar);
+		}
 		
 		// Which source sets should be used
 		List<String> sourceSets;

@@ -1,0 +1,22 @@
+import cc.squirreljme.plugin.swm.JavaMEConfiguration
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+version = "1.8.$squirreljmeVMVersion"
+description = "Base interpreter support for the AOT system, contains common " +
+	"interfaces and otherwise."
+
+squirreljme
+{
+	javaDocErrorCode = "RI"
+	swmType = JavaMEMidletType.API
+	swmName = "Ahead-Of-Time Support - Interpreter Support"
+	swmVendor = "Stephanie Gawroriski"
+	tags += "aot-interpreter"
+	tags += "interpreter"
+}
+
+dependencies
+{
+	api project(":modules:aot")
+	api project(":modules:debug-jdwp")
+}

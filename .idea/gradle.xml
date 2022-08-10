@@ -15,10 +15,12 @@
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/emulators" />
             <option value="$PROJECT_DIR$/emulators/emulator-base" />
+            <option value="$PROJECT_DIR$/emulators/interpreter-vm" />
             <option value="$PROJECT_DIR$/emulators/springcoat-vm" />
             <option value="$PROJECT_DIR$/emulators/standalone" />
             <option value="$PROJECT_DIR$/modules" />
             <option value="$PROJECT_DIR$/modules/aot" />
+            <option value="$PROJECT_DIR$/modules/aot-interpreter" />
             <option value="$PROJECT_DIR$/modules/aot-springcoat" />
             <option value="$PROJECT_DIR$/modules/aot-summercoat" />
             <option value="$PROJECT_DIR$/modules/aot-summercoat-c" />
