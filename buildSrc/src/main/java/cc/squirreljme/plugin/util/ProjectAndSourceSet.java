@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.util;
 
 import cc.squirreljme.plugin.multivm.VMHelpers;
+import lombok.ToString;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.ProjectDependency;
 import org.gradle.api.capabilities.Capability;
@@ -20,6 +21,7 @@ import org.gradle.api.tasks.SourceSet;
  *
  * @since 2022/08/07
  */
+@ToString
 public class ProjectAndSourceSet
 	implements Comparable<ProjectAndSourceSet>
 {

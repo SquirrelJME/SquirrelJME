@@ -24,6 +24,14 @@ import java.util.Objects;
 public final class JavaMEConfiguration
 	implements Comparable<JavaMEConfiguration>, MarkedDependency, MarkedProvided
 {
+	/** CDC Application. */
+	public static final APIName CDC_NAME =
+		new APIName("CDC");
+	
+	/** CLDC Application. */
+	public static final APIName CLDC_NAME =
+		new APIName("CLDC");
+	
 	/** Name. */
 	protected final APIName name;
 	
@@ -93,7 +101,15 @@ public final class JavaMEConfiguration
 	@Override
 	public int compareTo(JavaMEConfiguration __o)
 	{
-		int rv = this.name.compareTo(__o.name);
+		APIName aName = this.name;
+		APIName bName = __o.name;
+		
+		// CDC is always better than CLDC
+		if (aName.equals(JavaMEConfiguration.CDC_NAME) &&
+			!bName.equals(JavaMEConfiguration.CDC_NAME))
+			return 1;
+		
+		int rv = aName.compareTo(bName);
 		if (rv != 0)
 			return rv;
 		

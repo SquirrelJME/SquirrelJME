@@ -13,7 +13,6 @@ import cc.squirreljme.plugin.tasks.AdditionalManifestPropertiesTask;
 import cc.squirreljme.plugin.tasks.GenerateTestsListTask;
 import cc.squirreljme.plugin.tasks.JasminAssembleTask;
 import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask;
-import cc.squirreljme.plugin.tasks.TestsJarManifestTask;
 import cc.squirreljme.plugin.tasks.TestsJarTask;
 import java.util.ArrayList;
 import java.util.Iterator;

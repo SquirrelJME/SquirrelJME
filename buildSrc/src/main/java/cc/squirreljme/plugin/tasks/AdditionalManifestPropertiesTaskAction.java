@@ -12,8 +12,12 @@ package cc.squirreljme.plugin.tasks;
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.multivm.TaskInitialization;
 import cc.squirreljme.plugin.multivm.VMHelpers;
+import cc.squirreljme.plugin.swm.APIName;
+import cc.squirreljme.plugin.swm.JavaMEConfiguration;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.swm.JavaMEMidletType;
+import cc.squirreljme.plugin.swm.JavaMEProfile;
+import cc.squirreljme.plugin.swm.JavaMEStandard;
 import cc.squirreljme.plugin.swm.SuiteDependency;
 import cc.squirreljme.plugin.swm.SuiteDependencyLevel;
 import cc.squirreljme.plugin.swm.SuiteDependencyType;
@@ -29,7 +33,9 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.jar.Attributes;
@@ -184,6 +190,9 @@ public class AdditionalManifestPropertiesTaskAction
 		if (!sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME))
 			dependencies.add(new ProjectAndSourceSet(project,
 				SourceSet.MAIN_SOURCE_SET_NAME));
+			
+		System.err.printf(">> Depends (%s:%s) = %s%n",
+			project.getName(), sourceSet, dependencies);
 		
 		// Find dependencies based on their inclusion
 		for (String configGroup : Arrays.<String>asList(
@@ -268,6 +277,34 @@ public class AdditionalManifestPropertiesTaskAction
 		}
 		
 		return sb.toString();
+	}
+	
+	/**
+	 * Adds the given configuration to the configuration list.
+	 * 
+	 * @param __attributes The attributes to put into.
+	 * @param __config The configuration to add.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/09
+	 */
+	private static void __addConfiguration(Attributes __attributes,
+		JavaMEConfiguration __config)
+		throws NullPointerException
+	{
+		if (__attributes == null || __config == null)
+			throw new NullPointerException("NARG");
+		
+		// Do nothing if the configuration is older or the same as we always
+		// want the best
+		String existing =
+			__attributes.getValue("Microedition-Configuration"); 
+		if (existing != null &&
+			__config.compareTo(new JavaMEConfiguration(existing)) <= 0)
+			return;
+		
+		// Store it
+		__attributes.putValue("Microedition-Configuration",
+			__config.toString());
 	}
 	
 	/**
@@ -361,29 +398,54 @@ public class AdditionalManifestPropertiesTaskAction
 		else
 		{
 			// Configuration specified?
-			try
-			{
-				if (!config.noEmitConfiguration)
-					__attributes.putValue("Microedition-Configuration",
-						Collections.max(subConfig.definedConfigurations)
-							.toString());
-				didDepend = true;
-			}
-			catch (NoSuchElementException e)
-			{
-				// Ignore
-			}
+			if (subConfig.definedConfigurations != null &&
+				!subConfig.definedConfigurations.isEmpty())
+				try
+				{
+					if (!config.noEmitConfiguration)
+					{
+						AdditionalManifestPropertiesTaskAction
+							.__addConfiguration(__attributes,
+							Collections.max(subConfig.definedConfigurations));
+						didDepend = true;
+					}
+				}
+				catch (NoSuchElementException e)
+				{
+					// Ignore
+				}
 			
 			// Profile specified?
-			try
+			if (subConfig.definedProfiles != null &&
+				!subConfig.definedProfiles.isEmpty())
+				try
+				{
+					AdditionalManifestPropertiesTaskAction.__addProfile(
+						__attributes,
+						Collections.max(subConfig.definedProfiles));
+					didDepend = true;
+				}
+				catch (NoSuchElementException e)
+				{
+					// Ignore
+				}
+			
+			// Standard specified? Use that reference... but do not use one
+			// if in the event there was a configuration or profile used
+			if (!didDepend && subConfig.definedStandards != null &&
+				!subConfig.definedStandards.isEmpty())
 			{
-				__attributes.putValue("Microedition-Profile",
-					Collections.max(subConfig.definedProfiles).toString());
-				didDepend = true;
-			}
-			catch (NoSuchElementException e)
-			{
-				// Ignore
+				// Use the best standard
+				JavaMEStandard bestStandard = Collections.max(
+					subConfig.definedStandards);
+				suiteDependency = new SuiteDependency(
+					SuiteDependencyType.STANDARD,
+					requireLevel,
+					bestStandard.name(),
+					bestStandard.vendor(),
+					(bestStandard.version() != null ?
+						SuiteVersionRange.exactly(bestStandard.version()) :
+						null));
 			}
 		}
 		
@@ -400,7 +462,40 @@ public class AdditionalManifestPropertiesTaskAction
 		
 		// Write out the dependency if one was requested
 		if (suiteDependency != null)
+		{
+			System.err.printf(">> Putting %s%n", suiteDependency); 
 			__attributes.putValue(type.dependencyKey(__depCounter[0]++),
 				suiteDependency.toString());
+		}
+	}
+	
+	/**
+	 * Adds the given profile to the profile list.
+	 * 
+	 * @param __attributes The attributes to add into.
+	 * @param __profile The profile to add.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/09
+	 */
+	private static void __addProfile(Attributes __attributes,
+		JavaMEProfile __profile)
+		throws NullPointerException
+	{
+		if (__attributes == null || __profile == null)
+			throw new NullPointerException("NARG");
+		
+		// Load all the existing profiles
+		Set<JavaMEProfile> existing = new LinkedHashSet<>();
+		String rawExisting =
+			__attributes.getValue("Microedition-Profile");
+		if (rawExisting != null)
+			existing.addAll(JavaMEProfile.parseProfiles(rawExisting));
+		
+		// Add to profile set
+		existing.add(__profile);
+		
+		// Store all of them
+		__attributes.putValue("Microedition-Profile",
+			JavaMEProfile.toString(existing));
 	}
 }

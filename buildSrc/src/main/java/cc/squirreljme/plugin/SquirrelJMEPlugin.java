@@ -10,17 +10,9 @@
 package cc.squirreljme.plugin;
 
 import cc.squirreljme.plugin.multivm.TaskInitialization;
-import cc.squirreljme.plugin.tasks.AdditionalManifestPropertiesTask;
-import cc.squirreljme.plugin.tasks.GenerateTestsListTask;
-import cc.squirreljme.plugin.tasks.JasminAssembleTask;
-import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask;
-import cc.squirreljme.plugin.tasks.TestsJarManifestTask;
-import cc.squirreljme.plugin.tasks.TestsJarTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.tasks.SourceSet;
-import org.gradle.jvm.tasks.Jar;
 
 /**
  * Plugin for all SquirrelJME operations that are needed in Gradle in order

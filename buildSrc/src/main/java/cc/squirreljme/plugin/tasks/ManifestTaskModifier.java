@@ -15,7 +15,7 @@ import org.gradle.api.java.archives.Manifest;
 
 /**
  * The action for pulling in the actual manifest for
- * {@link TestsJarManifestTask} or {@link AdditionalManifestPropertiesTask}.
+ * {@link AdditionalManifestPropertiesTask}.
  *
  * @since 2022/07/10
  */
