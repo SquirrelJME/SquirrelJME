@@ -18,7 +18,6 @@ squirreljme
 	swmType = JavaMEMidletType.API
 	swmName = "SpringCoat AOT"
 	swmVendor = "Stephanie Gawroriski"
-	definedConfigurations += new JavaMEConfiguration("CLDC-1.8")
 	tags += "aot-compiler"
 	tags += "compiler:springcoat"
 	mainClass = "cc.squirreljme.jvm.aot.Main"

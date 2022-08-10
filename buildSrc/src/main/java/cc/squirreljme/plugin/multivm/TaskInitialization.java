@@ -9,12 +9,22 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.tasks.AdditionalManifestPropertiesTask;
+import cc.squirreljme.plugin.tasks.GenerateTestsListTask;
+import cc.squirreljme.plugin.tasks.JasminAssembleTask;
+import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask;
+import cc.squirreljme.plugin.tasks.TestsJarTask;
+import java.util.ArrayList;
 import java.util.Iterator;
+import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.UnknownDomainObjectException;
+import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskContainer;
+import org.gradle.jvm.tasks.Jar;
 
 /**
  * This is used to initialize the Gradle tasks for projects accordingly.
@@ -26,6 +36,7 @@ public final class TaskInitialization
 	/** Source sets that are used. */
 	private static final String[] _SOURCE_SETS =
 		new String[]{SourceSet.MAIN_SOURCE_SET_NAME,
+			VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME,
 			SourceSet.TEST_SOURCE_SET_NAME};
 	
 	/**
@@ -55,7 +66,15 @@ public final class TaskInitialization
 			TaskInitialization.initialize(__project, sourceSet);
 		
 		// Disable the test task, since it is non-functional
-		__project.getTasks().replace("test", DefunctTestTask.class);
+		// However this might fail
+		try
+		{
+			__project.getTasks().replace("test", DefunctTestTask.class);
+		}
+		catch (IllegalStateException|GradleException e)
+		{
+			__project.getLogger().debug("Could not defunct test task.", e);
+		}
 		
 		Task check = __project.getTasks().getByName("check");
 		for (Iterator<Object> it = check.getDependsOn().iterator();
@@ -90,6 +109,63 @@ public final class TaskInitialization
 		if (__project == null || __sourceSet == null)
 			throw new NullPointerException("NARG");
 		
+		// Used for Jasmin and Mime Decoding tasks
+		Task processResources = __project.getTasks()
+			.getByName(TaskInitialization.task(
+				"process", __sourceSet, "resources"));
+			
+		// Generate the list of tests that are available (only tests)
+		if (__sourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME))
+			__project.getTasks().create("generateTestsList",
+				GenerateTestsListTask.class, processResources);
+		
+		// The current Jar Task
+		String jarTaskName = TaskInitialization.task(
+			"", __sourceSet, "jar");
+		Jar jarTask = (Jar)__project.getTasks()
+			.findByName(jarTaskName);
+		
+		// If it does not exist, create it
+		if (jarTask == null)
+		{
+			// We need to know how to make the classes
+			Task classes = __project.getTasks()
+				.getByName(TaskInitialization.task(
+					"", __sourceSet, "classes"));
+			
+			// Create task for making the Jar
+			jarTask = (Jar)__project.getTasks()
+				.create("testJar", TestsJarTask.class,
+				classes, processResources);
+		}
+		
+		// Correct name of the Jar archive
+		String normalJarName;
+		if (__sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME))
+			normalJarName = __project.getName() + ".jar";
+		else
+			normalJarName = __project.getName() + "-" + __sourceSet + ".jar";
+		jarTask.getArchiveFileName().set(normalJarName);
+		
+		// Jasmin assembling
+		__project.getTasks().create(TaskInitialization.task(
+				"assemble", __sourceSet, "jasmin"),
+			JasminAssembleTask.class,
+			__sourceSet,
+			processResources);
+		
+		// Mime Decoding
+		__project.getTasks().create(TaskInitialization.task(
+				"mimeDecode", __sourceSet, "resources"),
+			MimeDecodeResourcesTask.class, SourceSet.MAIN_SOURCE_SET_NAME,
+			processResources);
+			
+		// Add SquirrelJME properties to the manifest
+		__project.getTasks().create(TaskInitialization.task(
+				"additional", __sourceSet, "jarProperties"),
+			AdditionalManifestPropertiesTask.class, jarTask, processResources,
+			__sourceSet);
+		
 		// Initialize for each VM
 		for (VMType vmType : VMType.values())
 			TaskInitialization.initialize(__project, __sourceSet, vmType);
@@ -113,6 +189,22 @@ public final class TaskInitialization
 		
 		// Everything will be working on these tasks
 		TaskContainer tasks = __project.getTasks();
+		
+		// Make sure the source set exists first
+		try
+		{
+			__project.getConvention().getPlugin(JavaPluginConvention.class)
+				.getSourceSets().getByName(__sourceSet);
+		}
+		catch (UnknownDomainObjectException e)
+		{
+			__project.getLogger().debug(String.format(
+				"Could not find sourceSet %s in project %s (available: %s)",
+				__sourceSet, __project.getPath(), new ArrayList<>(
+					__project.getConvention()
+					.getPlugin(JavaPluginConvention.class).getSourceSets())),
+				e);
+		}
 		
 		// Library that needs to be constructed so execution happens properly
 		VMLibraryTask libTask = tasks.create(
@@ -222,7 +314,10 @@ public final class TaskInitialization
 		TaskContainer tasks = __project.getTasks();
 		
 		// Does the VM utilize ROMs?
-		if (__vmType.hasRom())
+		// Test fixtures are just for testing, so there is no test fixtures
+		// ROM variant...
+		if (__vmType.hasRom() &&
+			!__sourceSet.equals(VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME))
 		{
 			String baseName = TaskInitialization.task("rom",
 				__sourceSet, __vmType);
@@ -247,20 +342,58 @@ public final class TaskInitialization
 	public static String task(String __name, String __sourceSet)
 		throws NullPointerException
 	{
-		if (__name == null || __sourceSet == null)
+		return TaskInitialization.task(__name, __sourceSet, "");
+	}
+	
+	/**
+	 * Builds a name for a task, without the virtual machine type.
+	 * 
+	 * @param __name The task name.
+	 * @param __sourceSet The source set for the task base.
+	 * @param __suffix The task suffix.
+	 * @return A string representing the task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/07
+	 */
+	public static String task(String __name, String __sourceSet,
+		String __suffix)
+		throws NullPointerException
+	{
+		if (__name == null || __sourceSet == null || __suffix == null)
 			throw new NullPointerException("NARG");
+		
+		// We need to later determine how the suffix works
+		String baseName;
 		
 		// If this is the main source set, never include the source set as
 		// it becomes implied. Additionally, if the name and the source set
 		// are the same, reduce the confusion so there is no "testTestHosted".
 		if (__sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME) ||
 			__sourceSet.equals(__name) || __sourceSet.isEmpty())
-			return __name;
+			baseName = __name;
 		
 		// Otherwise, include it
-		return __name +
-			Character.toUpperCase(__sourceSet.charAt(0)) +
-			__sourceSet.substring(1);
+		else
+		{
+			// If just the source set, then just keep that lowercase
+			if (__name.isEmpty())
+				baseName = __sourceSet;
+			else
+				baseName = __name +
+					TaskInitialization.uppercaseFirst(__sourceSet);
+		}
+		
+		// If there is no suffix, just return the base
+		if (__suffix.isEmpty())
+			return baseName;
+		
+		// If there is no base, just return the suffix
+		if (baseName.isEmpty())
+			return __suffix;
+		
+		// Otherwise, perform needed capitalization
+		// "additionalJarProperties" or "additionalTestJarProperties"
+		return baseName + TaskInitialization.uppercaseFirst(__suffix);
 	}
 	
 	/**
@@ -282,5 +415,26 @@ public final class TaskInitialization
 		
 		return TaskInitialization.task(__name, __sourceSet) +
 			__vmType.vmName(VMNameFormat.PROPER_NOUN);
+	}
+	
+	/**
+	 * Uppercases the first character of a string.
+	 * 
+	 * @param __input The input string.
+	 * @return The string with the first character uppercased.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/07
+	 */
+	public static String uppercaseFirst(String __input)
+		throws NullPointerException
+	{
+		if (__input == null)
+			throw new NullPointerException("NARG");
+		
+		if (__input.isEmpty())
+			return __input;
+		
+		return Character.toUpperCase(__input.charAt(0)) +
+			__input.substring(1);
 	}
 }

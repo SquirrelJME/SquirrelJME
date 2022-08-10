@@ -11,7 +11,7 @@
         <module name="squirreljme.buildSrc.main" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="11">
+    <bytecodeTargetLevel target="1.8">
       <module name="squirreljme.emulators.emulator-runner.main" target="8" />
       <module name="squirreljme.emulators.emulator-runner.test" target="8" />
       <module name="squirreljme.main" target="1.7" />
@@ -19,64 +19,19 @@
       <module name="squirreljme.modules.all-vms.test" target="1.7" />
       <module name="squirreljme.modules.aot-summercoat-base.main" target="1.7" />
       <module name="squirreljme.modules.aot-summercoat-base.test" target="1.7" />
-      <module name="squirreljme.modules.aot-summercoat.main" target="1.7" />
-      <module name="squirreljme.modules.aot-summercoat.test" target="1.7" />
       <module name="squirreljme.modules.build.main" target="1.7" />
       <module name="squirreljme.modules.build.test" target="1.7" />
-      <module name="squirreljme.modules.cldc-compact.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.cldc.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.collections.testFixtures" target="1.7" />
       <module name="squirreljme.modules.common-vm-stubs.main" target="1.7" />
       <module name="squirreljme.modules.common-vm-stubs.test" target="1.7" />
-      <module name="squirreljme.modules.common-vm.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.demo-hello.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.dio-adc.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.dio-atcmd.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.dio-counter.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.dio-dac.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.dio-generic.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.dio-gpio.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.dio-i2cbus.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.dio-mmio.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.dio-modem.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.dio-pwm.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.dio-spibus.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.dio-uart.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.dio-watchdog.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.dio.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.gcf.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.io.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.jblend-api.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.launcher.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.lcdui-demo.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.m3g.testFixtures" target="1.7" />
       <module name="squirreljme.modules.main" target="1.7" />
-      <module name="squirreljme.modules.markdown-writer.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.media-api.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.meep-cellular.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.meep-concurrency.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.meep-event.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.meep-key.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.meep-liblets.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.meep-lui.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.meep-midlet.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.meep-power.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.meep-provisioning.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.meep-rms.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.meep-securityframework.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.meep-swm.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.midp-lcdui.testFixtures" target="1.7" />
       <module name="squirreljme.modules.nokia.main" target="1.7" />
       <module name="squirreljme.modules.nokia.test" target="1.7" />
       <module name="squirreljme.modules.nttdocomo-api.main" target="1.7" />
       <module name="squirreljme.modules.nttdocomo-api.test" target="1.7" />
       <module name="squirreljme.modules.nttdocomo-doja-api.main" target="1.7" />
       <module name="squirreljme.modules.nttdocomo-doja-api.test" target="1.7" />
-      <module name="squirreljme.modules.opengles.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.profile-meep.testFixtures" target="1.7" />
       <module name="squirreljme.modules.springcoat-vm.main" target="1.7" />
       <module name="squirreljme.modules.springcoat-vm.test" target="1.7" />
-      <module name="squirreljme.modules.squirrel-quarrel.testFixtures" target="1.7" />
       <module name="squirreljme.modules.strings.main" target="1.7" />
       <module name="squirreljme.modules.strings.test" target="1.7" />
       <module name="squirreljme.modules.strings.testFixtures" target="1.7" />
@@ -88,9 +43,7 @@
       <module name="squirreljme.modules.tac-runner.main" target="1.7" />
       <module name="squirreljme.modules.tac-runner.test" target="1.7" />
       <module name="squirreljme.modules.tac-runner.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.tac.testFixtures" target="1.7" />
       <module name="squirreljme.modules.test" target="1.7" />
-      <module name="squirreljme.modules.tool-classfile.testFixtures" target="1.7" />
       <module name="squirreljme.modules.tool-compiler.main" target="1.7" />
       <module name="squirreljme.modules.tool-compiler.test" target="1.7" />
       <module name="squirreljme.modules.tool-compiler.testFixtures" target="1.7" />
@@ -103,15 +56,12 @@
       <module name="squirreljme.modules.tool-manifest-reader.main" target="1.7" />
       <module name="squirreljme.modules.tool-manifest-reader.test" target="1.7" />
       <module name="squirreljme.modules.tool-manifest-reader.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.tool-manifest-writer.testFixtures" target="1.7" />
       <module name="squirreljme.modules.tool-packfile.main" target="1.7" />
       <module name="squirreljme.modules.tool-packfile.test" target="1.7" />
       <module name="squirreljme.modules.tool-packfile.testFixtures" target="1.7" />
       <module name="squirreljme.modules.tool-profiler.main" target="1.7" />
       <module name="squirreljme.modules.tool-profiler.test" target="1.7" />
       <module name="squirreljme.modules.tool-profiler.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.vodafone-api.testFixtures" target="1.7" />
-      <module name="squirreljme.modules.zip.testFixtures" target="1.7" />
       <module name="squirreljme.test" target="1.7" />
       <module name="squirreljme.tools.dump-class.main" target="1.8" />
       <module name="squirreljme.tools.dump-class.test" target="1.8" />
