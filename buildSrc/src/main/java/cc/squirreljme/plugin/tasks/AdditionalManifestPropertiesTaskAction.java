@@ -191,9 +191,6 @@ public class AdditionalManifestPropertiesTaskAction
 			dependencies.add(new ProjectAndSourceSet(project,
 				SourceSet.MAIN_SOURCE_SET_NAME));
 			
-		System.err.printf(">> Depends (%s:%s) = %s%n",
-			project.getName(), sourceSet, dependencies);
-		
 		// Find dependencies based on their inclusion
 		for (String configGroup : Arrays.<String>asList(
 			"api", "implementation"))
@@ -463,7 +460,6 @@ public class AdditionalManifestPropertiesTaskAction
 		// Write out the dependency if one was requested
 		if (suiteDependency != null)
 		{
-			System.err.printf(">> Putting %s%n", suiteDependency); 
 			__attributes.putValue(type.dependencyKey(__depCounter[0]++),
 				suiteDependency.toString());
 		}

@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.file.FileCollection;
 import org.gradle.jvm.tasks.Jar;
 import org.gradle.language.jvm.tasks.ProcessResources;
@@ -34,15 +35,17 @@ public class AdditionalManifestPropertiesTask
 	 * @param __jar The JAR Task.
 	 * @param __pr The process resources task.
 	 * @param __sourceSet The source set used.
+	 * @param __cleanTask The clean task.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/02/28
 	 */
 	@Inject
 	public AdditionalManifestPropertiesTask(Jar __jar, ProcessResources __pr,
-		String __sourceSet)
+		String __sourceSet, Task __cleanTask)
 		throws NullPointerException
 	{
-		if (__jar == null || __pr == null || __sourceSet == null)
+		if (__jar == null || __pr == null || __sourceSet == null ||
+			__cleanTask == null)
 			throw new NullPointerException("No tasks specified");
 			
 		this.sourceSet = __sourceSet;
@@ -57,6 +60,9 @@ public class AdditionalManifestPropertiesTask
 			project.provider(project::getBuildFile));
 		this.getOutputs().files(
 			project.provider(this::__taskOutputAsFileCollection));
+		
+		// Clean must happen first
+		this.mustRunAfter(__cleanTask);
 		
 		// This action creates the actual manifest file
 		this.doLast(new AdditionalManifestPropertiesTaskAction(
