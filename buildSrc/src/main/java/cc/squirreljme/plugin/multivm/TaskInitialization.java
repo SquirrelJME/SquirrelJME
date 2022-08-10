@@ -113,11 +113,17 @@ public final class TaskInitialization
 		Task processResources = __project.getTasks()
 			.getByName(TaskInitialization.task(
 				"process", __sourceSet, "resources"));
+		
+		// Make sure process resources is run after any cleans so output is
+		// not destroyed after it is processed
+		Task clean = __project.getTasks().getByName("clean");
+		processResources.mustRunAfter(clean);
 			
 		// Generate the list of tests that are available (only tests)
 		if (__sourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME))
 			__project.getTasks().create("generateTestsList",
-				GenerateTestsListTask.class, processResources);
+				GenerateTestsListTask.class,
+				processResources, clean);
 		
 		// The current Jar Task
 		String jarTaskName = TaskInitialization.task(
@@ -151,20 +157,19 @@ public final class TaskInitialization
 		__project.getTasks().create(TaskInitialization.task(
 				"assemble", __sourceSet, "jasmin"),
 			JasminAssembleTask.class,
-			__sourceSet,
-			processResources);
+			__sourceSet, processResources, clean);
 		
 		// Mime Decoding
 		__project.getTasks().create(TaskInitialization.task(
 				"mimeDecode", __sourceSet, "resources"),
-			MimeDecodeResourcesTask.class, SourceSet.MAIN_SOURCE_SET_NAME,
-			processResources);
+			MimeDecodeResourcesTask.class,
+			__sourceSet, processResources, clean);
 			
 		// Add SquirrelJME properties to the manifest
 		__project.getTasks().create(TaskInitialization.task(
 				"additional", __sourceSet, "jarProperties"),
-			AdditionalManifestPropertiesTask.class, jarTask, processResources,
-			__sourceSet);
+			AdditionalManifestPropertiesTask.class,
+			jarTask, processResources, __sourceSet, clean);
 		
 		// Initialize for each VM
 		for (VMType vmType : VMType.values())

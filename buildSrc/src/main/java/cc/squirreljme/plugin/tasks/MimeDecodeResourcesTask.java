@@ -19,6 +19,12 @@ import javax.inject.Inject;
 import org.gradle.api.Task;
 import org.gradle.language.jvm.tasks.ProcessResources;
 
+/**
+ * This task decodes MIME encoded files into resources so that the SquirrelJME
+ * source can remain in pure ASCII.
+ * 
+ * @since 2020/02/28
+ */
 public class MimeDecodeResourcesTask
 	extends AbstractResourceTask
 {
@@ -31,14 +37,15 @@ public class MimeDecodeResourcesTask
 	 *
 	 * @param __sourceSet The source set to adjust.
 	 * @param __prTask The processing task.
+	 * @param __cleanTask The task for cleaning.
 	 * @since 2020/02/28
 	 */
 	@Inject
 	public MimeDecodeResourcesTask(String __sourceSet,
-		ProcessResources __prTask)
+		ProcessResources __prTask, Task __cleanTask)
 	{
 		super(MimeDecodeResourcesTask.EXTENSION, "",
-			__sourceSet, __prTask);
+			__sourceSet, __prTask, __cleanTask);
 		
 		// Set details of this task
 		this.setGroup("squirreljme");

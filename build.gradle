@@ -67,10 +67,25 @@ allprojects {
 		def buildShipPrefs = settingsDir.resolve("org.eclipse.buildship.core.prefs")
 		def pathToRoot = projectDir.toPath().relativize(rootDir.toPath())
 		
+		// Clean fix
+		task cleanEclipseFixBuild {
+			group "squirreljme"
+			description "Cleans up after build fixes."
+			
+			doFirst {
+				// Just delete the buildship preferences
+				Files.deleteIfExists(buildShipPrefs)
+			}
+		}
+		
 		// Fix build
 		task eclipseFixBuild {
 			group "squirreljme"
 			description "Fixes Eclipse build due to missing expected files."
+			
+			// If clean and such is ran, this must always be followed by it
+			// since we could accidentally destroy it
+			mustRunAfter cleanEclipseFixBuild, cleanEclipseJdt
 			
 			doFirst {
 				// Setup settings directory first
@@ -85,17 +100,6 @@ allprojects {
 					StandardOpenOption.CREATE,
 					StandardOpenOption.WRITE,
 					StandardOpenOption.TRUNCATE_EXISTING)
-			}
-		}
-		
-		// Clean fix
-		task cleanEclipseFixBuild {
-			group "squirreljme"
-			description "Cleans up after build fixes."
-			
-			doFirst {
-				// Just delete the buildship preferences
-				Files.deleteIfExists(buildShipPrefs)
 			}
 		}
 		

@@ -49,10 +49,12 @@ public class GenerateTestsListTask
 	 * Initializes the task.
 	 *
 	 * @param __processTask The resource task.
+	 * @param __cleanTask The clean task.
 	 * @since 2020/02/28
 	 */
 	@Inject
-	public GenerateTestsListTask(ProcessResources __processTask)
+	public GenerateTestsListTask(ProcessResources __processTask,
+		Task __cleanTask)
 	{
 		// Set details of this task
 		this.setGroup("squirreljme");
@@ -64,6 +66,9 @@ public class GenerateTestsListTask
 			project.provider(this::__taskInputsAsFileCollection));
 		this.getOutputs().files(
 			project.provider(this::__taskOutputsAsFileCollection));
+		
+		// Clean must happen first
+		this.mustRunAfter(__cleanTask);
 		
 		// Only run in this condition
 		this.onlyIf(this::__onlyIf);
