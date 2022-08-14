@@ -7,13 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot.test;
-
 /**
- * Payload to use for testing compilation.
+ * This package contains information on the SQC containers that can be used.
  *
- * @since 2022/08/07
+ * @since 2022/08/14
  */
-public class CompilePayload
-{
-}
+
+package cc.squirreljme.jvm.aot.summercoat.sqc;

@@ -19,4 +19,6 @@ dependencies
 	api project(":modules:zip")
 	api project(":modules:common-vm")
 	api project(":modules:io")
+	
+	testFixturesApi project(":modules:tac")
 }

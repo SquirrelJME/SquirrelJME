@@ -10,8 +10,9 @@
 package cc.squirreljme.aot.java;
 
 import cc.squirreljme.jvm.aot.summercoat.SummerCoatBackend;
-import cc.squirreljme.jvm.aot.test.CompilePayload;
-import net.multiphasicapps.tac.TestRunnable;
+import cc.squirreljme.jvm.aot.test.BaseCompilation;
+import cc.squirreljme.jvm.aot.test.ExampleClass;
+import java.io.IOException;
 
 /**
  * Tests that the class parsing pipe gets initialized and ran.
@@ -19,19 +20,28 @@ import net.multiphasicapps.tac.TestRunnable;
  * @since 2022/08/04
  */
 public class TestClassInitPipe
-	extends TestRunnable
+	extends BaseCompilation
 {
+	/**
+	 * Initializes the test.
+	 *
+	 * @since 2022/08/14
+	 */
+	public TestClassInitPipe()
+	{
+		super(new SummerCoatBackend());
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/08/04
 	 */
 	@Override
 	public void test()
+		throws IOException
 	{
-		SummerCoatBackend backend = new SummerCoatBackend();
+		byte[] data = this.compileClass(ExampleClass.BLANK);
 		
-		CompilePayload payload = new CompilePayload();
-		
-		this.secondary("key", "value");
+		this.secondary("len", data.length > 0);
 	}
 }
