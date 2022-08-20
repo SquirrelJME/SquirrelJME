@@ -33,21 +33,6 @@ public class JarProcessor
 	 * Initialize the Jar processor, which reads every class and resource
 	 * accordingly.
 	 * 
-	 * @param __input The stream to read Jar data from, treated as a Zip.
-	 * @param __handler The handler for Jar data.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2022/08/20
-	 */
-	public JarProcessor(InputStream __input, JarHandler __handler)
-		throws NullPointerException
-	{
-		this(new ZipStreamReader(__input), __handler);
-	}
-	
-	/**
-	 * Initialize the Jar processor, which reads every class and resource
-	 * accordingly.
-	 * 
 	 * @param __input The stream to read Jar data from.
 	 * @param __handler The handler for Jar data.
 	 * @throws NullPointerException On null arguments.
