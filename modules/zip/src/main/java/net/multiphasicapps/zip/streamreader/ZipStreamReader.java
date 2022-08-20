@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.zip.streamreader;
 
+import cc.squirreljme.runtime.cldc.archive.ArchiveStreamReader;
 import java.io.Closeable;
 import java.io.EOFException;
 import java.io.IOException;
@@ -32,7 +33,7 @@ import net.multiphasicapps.zip.ZipException;
  * @since 2016/07/19
  */
 public class ZipStreamReader
-	implements Closeable
+	implements ArchiveStreamReader, Closeable
 {
 	/** The maximum support version for extracting. */
 	private static final int _MAX_EXTRACT_VERSION =
@@ -125,6 +126,7 @@ public class ZipStreamReader
 	 * @throws IOException On read errors.
 	 * @since 2016/07/19
 	 */
+	@Override
 	public ZipStreamEntry nextEntry()
 		throws IOException
 	{

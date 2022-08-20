@@ -182,7 +182,7 @@ public abstract class InputStream
 	}
 	
 	/**
-	 * Attemps to skip over the given number of bytes.
+	 * Attempts to skip over the given number of bytes.
 	 *
 	 * It is not required for the actual number of bytes skipped to match the
 	 * input amount, this could be specific to the input stream implementation
