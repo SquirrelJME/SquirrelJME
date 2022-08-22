@@ -78,6 +78,7 @@ Information:
    * _Fonts_ : SIL Open Font License Version 1.1
    * [Third Party Licenses](third-party.mkd)
  * [Contributing to SquirrelJME](contributing.mkd)
+   * [Credits of Contributions](credits.mkd)
  * _End-User Documents_
    * [Building](building.mkd)
    * [Changelog](changelog.mkd)
