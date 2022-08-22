@@ -40,6 +40,11 @@ repository as a whole.
    * If there are linters or code style formatters that are not configured
      for the project for _SquirrelJME_'s code style, configure them for
      _SquirrelJME_ and add them to the repository.
+ * If any code is incomplete, for any execution path that leads to incomplete
+   code then `Debugging.todo()` must be used so that such incomplete code is
+   fail-fast and prevents continued operation.
+ * New code must have tests implemented, following the guide in the
+   [Test Writing](test-writing.mkd) document.
  * Make sure your code is well documented and has the JavaDoc for the
    library functions.
    * _Do not_ copy and paste from other Java libraries, it is not legal to do

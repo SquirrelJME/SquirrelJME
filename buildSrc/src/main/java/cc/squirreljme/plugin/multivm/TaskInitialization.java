@@ -61,10 +61,6 @@ public final class TaskInitialization
 		if (__project == null)
 			throw new NullPointerException("NARG");
 		
-		// Initialize or both main classes and such
-		for (String sourceSet : TaskInitialization._SOURCE_SETS)
-			TaskInitialization.initialize(__project, sourceSet);
-		
 		// Disable the test task, since it is non-functional
 		// However this might fail
 		try
@@ -93,6 +89,10 @@ public final class TaskInitialization
 			if ("test".equals(((Task)item).getName()))
 				it.remove();
 		}
+		
+		// Initialize or both main classes and such
+		for (String sourceSet : TaskInitialization._SOURCE_SETS)
+			TaskInitialization.initialize(__project, sourceSet);
 	}
 	
 	/**
@@ -230,9 +230,20 @@ public final class TaskInitialization
 		
 		// Testing the target
 		else if (__sourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME))
-			tasks.create(
+		{
+			Task vmTest = tasks.create(
 				TaskInitialization.task("test", __sourceSet, __vmType),
 				VMTestTask.class, __sourceSet, __vmType, libTask);
+			
+			// Make the standard test task depend on these two VM tasks
+			// so that way if it is ran, both are run accordingly
+			if (__vmType == VMType.HOSTED || __vmType == VMType.SPRINGCOAT)
+			{
+				Task test = __project.getTasks().getByName("test");
+				
+				test.dependsOn(vmTest);
+			}
+		}
 	}
 	
 	/**
