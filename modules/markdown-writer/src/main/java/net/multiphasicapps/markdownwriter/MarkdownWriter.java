@@ -48,6 +48,9 @@ public class MarkdownWriter
 	/** The current text column. */
 	volatile int _column;
 	
+	/** Do not create newlines. */
+	private volatile boolean _noNewlines;
+	
 	/**
 	 * Initializes the markdown writer.
 	 *
@@ -169,7 +172,8 @@ public class MarkdownWriter
 			throw new NullPointerException("NARG");
 		
 		// Setup section
-		__SectionHeader__ header = new __SectionHeader__(this, __abs, __level);
+		__SectionHeader__ header = new __SectionHeader__(
+			this, __abs, __level);
 		
 		// Print header text
 		this.append(__s);
@@ -355,12 +359,21 @@ public class MarkdownWriter
 		this.__put('\0', false);
 		
 		// Print it out
-		this.__put('[', true);
-		this.append(__text);
-		this.__put(']', true);
-		this.__put('(', true);
-		this.__unescapedURI(__uri);
-		this.__put(')', true);
+		try
+		{
+			this._noNewlines = true;
+			
+			this.__put('[', true);
+			this.append(__text);
+			this.__put(']', true);
+			this.__put('(', true);
+			this.__unescapedURI(__uri);
+			this.__put(')', true);
+		}
+		finally
+		{
+			this._noNewlines = false;
+		}
 	}
 	
 	/**
@@ -444,8 +457,9 @@ public class MarkdownWriter
 			else
 				this._column = (++column);
 			
-			// If at the end, go to the next line
-			if (column >= MarkdownWriter.RIGHT_COLUMN)
+			// If at the end, go to the next line, but if that was turned off
+			// then do not do that
+			if (!this._noNewlines && column >= MarkdownWriter.RIGHT_COLUMN)
 				this.__put('\n', true);
 			
 			// Done
@@ -487,7 +501,8 @@ public class MarkdownWriter
 			char c = __s.charAt(i);
 			
 			// Never escape underscore
-			if (this.__escaped(c) || c == '"' || MarkdownWriter.__isWhitespace(c))
+			if (this.__escaped(c) || c == '"' ||
+				MarkdownWriter.__isWhitespace(c))
 				if (c == '_')
 					this.__put(c, true);
 				
@@ -500,8 +515,10 @@ public class MarkdownWriter
 					for (int l = 0; l < q; l++)
 					{
 						byte d = b[l];
-						this.__put(Character.forDigit((d >>> 4) & 0xF, 16), false);
-						this.__put(Character.forDigit(d & 0xF, 16), false);
+						this.__put(Character.forDigit(
+							(d >>> 4) & 0xF, 16), false);
+						this.__put(Character.forDigit(
+							d & 0xF, 16), false);
 					}
 				}
 			

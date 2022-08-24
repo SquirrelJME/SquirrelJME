@@ -9,13 +9,13 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.tasks.AdditionalManifestPropertiesTask;
 import cc.squirreljme.plugin.tasks.GenerateTestsListTask;
 import cc.squirreljme.plugin.tasks.JasminAssembleTask;
 import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask;
 import cc.squirreljme.plugin.tasks.TestsJarTask;
 import java.io.File;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.gradle.api.GradleException;
@@ -28,6 +28,7 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.javadoc.Javadoc;
+import org.gradle.external.javadoc.CoreJavadocOptions;
 import org.gradle.external.javadoc.MinimalJavadocOptions;
 import org.gradle.jvm.tasks.Jar;
 
@@ -298,6 +299,10 @@ public final class TaskInitialization
 	{
 		if (__project == null)
 			throw new NullPointerException("NARG");
+		
+		// Configuration, for modifiers
+		SquirrelJMEPluginConfiguration squirreljmeConf =
+			SquirrelJMEPluginConfiguration.configurationOrNull(__project);
 			
 		// We need to evaluate the Doclet project first since we need
 		// the Jar task, which if we use normal evaluation does not exist
@@ -328,6 +333,11 @@ public final class TaskInitialization
 		Task classes = __project.getTasks().getByName(TaskInitialization.task(
 			"", SourceSet.MAIN_SOURCE_SET_NAME, "classes"));
 		
+		// Where do we find the JAR?
+		Provider<Task> jarProvider = __project.provider(() ->
+			__project.getRootProject().findProject(
+			":tools:markdown-javadoc").getTasks().getByName("shadowJar"));
+		
 		// Classes need to compile first, and we need the doclet Jar too
 		// However we do not know it exists yet
 		mdJavaDoc.dependsOn(classes);
@@ -335,18 +345,22 @@ public final class TaskInitialization
 			VMHelpers.<Task>resolveProjectTasks(
 			Task.class, __project, VMHelpers.runClassTasks(__project,
 			SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT))));
-		mdJavaDoc.dependsOn(__project.provider(() ->
-			__project.getRootProject().findProject(
-			":tools:markdown-javadoc").getTasks().getByName("jar")));
+		mdJavaDoc.dependsOn(jarProvider);
+		
+		// Where are the sources?
+		SourceSet sourceSet = __project.getConvention().getPlugin(
+			JavaPluginConvention.class).getSourceSets().getByName(
+			SourceSet.MAIN_SOURCE_SET_NAME);
 		
 		// Configure the JavaDoc task
 		mdJavaDoc.setDestinationDir(__project.getBuildDir().toPath()
 			.resolve("markdownJavaDoc").toFile());
-		mdJavaDoc.source(__project.getConvention()
-			.getPlugin(JavaPluginConvention.class)
-			.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME)
-			.getAllJava());
+		mdJavaDoc.source(sourceSet.getAllJava());
 		mdJavaDoc.setClasspath(useClassPath);
+		
+		if (squirreljmeConf != null)
+			mdJavaDoc.setTitle(squirreljmeConf.swmName);
+		
 		mdJavaDoc.options((MinimalJavadocOptions __options) ->
 				{
 					// We need to set the bootstrap class path otherwise
@@ -356,9 +370,7 @@ public final class TaskInitialization
 						.toArray(new File[0]));
 				
 					// We get this by forcing evaluation
-					Jar mdJavaDocletJar = (Jar)__project.getRootProject()
-						.findProject(":tools:markdown-javadoc")
-						.getTasks().getByName("jar");
+					Task mdJavaDocletJar = jarProvider.get();
 					
 					// Set other options
 					__options.showFromPrivate();
@@ -368,6 +380,12 @@ public final class TaskInitialization
 						.getFiles().getSingleFile());
 					__options.doclet(
 						"cc.squirreljme.doclet.MarkdownDoclet");
+					
+					// Used for completion counting
+					if (__options instanceof CoreJavadocOptions)
+						((CoreJavadocOptions)__options).addStringOption(
+							"squirreljmejavasources",
+							sourceSet.getAllJava().getAsPath());
 				});
 	}
 	

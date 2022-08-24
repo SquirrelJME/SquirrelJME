@@ -9,12 +9,17 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * This represents a binary name which consists of a class which is
@@ -23,7 +28,7 @@ import java.util.List;
  * @since 2017/09/27
  */
 public final class BinaryName
-	implements Comparable<BinaryName>
+	implements Comparable<BinaryName>, Iterable<ClassIdentifier>
 {
 	/** The identifiers in the name. */
 	private final ClassIdentifier[] _identifiers;
@@ -165,6 +170,17 @@ public final class BinaryName
 	}
 	
 	/**
+	 * Returns all of the identifiers for the binary name.
+	 * 
+	 * @return The identifiers for this binary name.
+	 * @since 2022/08/24
+	 */
+	public List<ClassIdentifier> identifiers()
+	{
+		return UnmodifiableList.of(Arrays.asList(this._identifiers));
+	}
+	
+	/**
 	 * Returns the binary name of the package this class is within.
 	 *
 	 * @return The binary name of the owning package.
@@ -192,6 +208,16 @@ public final class BinaryName
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/08/24
+	 */
+	@Override
+	public Iterator<ClassIdentifier> iterator()
+	{
+		return UnmodifiableIterator.of(this._identifiers);
 	}
 	
 	/**

@@ -1,14 +1,18 @@
 import org.gradle.plugins.ide.idea.model.IdeaLanguageLevel
 
-import java.nio.file.Files
 import java.nio.file.Paths
 
 plugins {
 	id "java-library"
 	id "idea"
+	id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
 jar {
+}
+
+shadowJar {
+	dependsOn jar
 }
 
 // Where do we get the module from?
@@ -47,5 +51,8 @@ if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
 }
 
 dependencies {
+	implementation project(":modules:tool-classfile")
 	implementation project(":modules:markdown-writer")
+	implementation project(":modules:json")
 }
+
