@@ -7,10 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * This contains the support for writing Markdown documents.
- *
- * @since 2022/08/23
- */
-
-package cc.squirreljme.markdown;
+module squirreljme.tools.markdown.javadoc.main {
+	requires jdk.javadoc;
+}

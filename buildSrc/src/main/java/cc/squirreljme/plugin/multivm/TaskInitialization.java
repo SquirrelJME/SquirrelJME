@@ -302,14 +302,21 @@ public final class TaskInitialization
 		// We need to evaluate the Doclet project first since we need
 		// the Jar task, which if we use normal evaluation does not exist
 		// yet...
-		__project.evaluationDependsOn(":tools:markdown-javadoc");
+		Project docletProject =
+			__project.evaluationDependsOn(":tools:markdown-javadoc");
 		
 		// Setup task for creating JavaDoc
 		Javadoc mdJavaDoc = __project.getTasks()
 			.create("markdownJavaDoc", Javadoc.class);
 		
+		// What does this do?
 		mdJavaDoc.setGroup("squirreljme");
 		mdJavaDoc.setDescription("Generates Markdown JavaDoc.");
+		
+		// This has a hard dependency and we do not want to get out of order
+		mdJavaDoc.mustRunAfter(
+			docletProject.getTasks().getByName("clean"),
+			docletProject.getTasks().getByName("jar"));
 		
 		// We are using a specific classpath, in this case it is just
 		// SpringCoat's libraries for runtime

@@ -9,11 +9,37 @@
 
 package cc.squirreljme.doclet;
 
+import com.sun.javadoc.RootDoc;
+
 /**
- * Not Described.
+ * This contains the older standard Doclet for API generation.
  *
  * @since 2022/08/23
  */
 public class MarkdownDoclet
+	implements Runnable
 {
+	/**
+	 * Initializes the doclet handler.
+	 * 
+	 * @param __rootDoc The root document to write into.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/23
+	 */
+	public MarkdownDoclet(RootDoc __rootDoc)
+		throws NullPointerException
+	{
+		if (__rootDoc == null)
+			throw new NullPointerException("NARG");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/08/23
+	 */
+	@Override
+	public void run()
+	{
+		throw new Error("TODO");
+	}
 }
