@@ -176,72 +176,6 @@ public final class TaskInitialization
 		// Initialize for each VM
 		for (VMType vmType : VMType.values())
 			TaskInitialization.initialize(__project, __sourceSet, vmType);
-		
-		// Markdown JavaDoc Task
-		if (__sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME))
-		{
-			// We need to evaluate the Doclet project first since we need
-			// the Jar task, which if we use normal evaluation does not exist
-			// yet...
-			__project.evaluationDependsOn(":tools:markdown-javadoc");
-			
-			// Setup task for creating JavaDoc
-			Javadoc mdJavaDoc = __project.getTasks()
-				.create("markdownJavaDoc", Javadoc.class);
-			
-			mdJavaDoc.setGroup("squirreljme");
-			mdJavaDoc.setDescription("Generates Markdown JavaDoc.");
-			
-			// We are using a specific classpath, in this case it is just
-			// SpringCoat's libraries for runtime
-			FileCollection useClassPath = __project.files(
-				(Object[])VMHelpers.runClassPath(__project,
-					SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT));
-			
-			System.err.printf("");
-			
-			// Classes need to compile first, and we need the doclet Jar too
-			// However we do not know it exists yet
-			mdJavaDoc.dependsOn(classes);
-			mdJavaDoc.dependsOn(__project.provider(() ->
-				VMHelpers.<Task>resolveProjectTasks(
-				Task.class, __project, VMHelpers.runClassTasks(__project,
-				SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT))));
-			mdJavaDoc.dependsOn(__project.provider(() ->
-				__project.getRootProject().findProject(
-				":tools:markdown-javadoc").getTasks().getByName("jar")));
-			
-			// Configure the JavaDoc task
-			mdJavaDoc.setDestinationDir(__project.getBuildDir().toPath()
-				.resolve("markdownJavaDoc").toFile());
-			mdJavaDoc.source(__project.getConvention()
-				.getPlugin(JavaPluginConvention.class)
-				.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME)
-				.getAllJava());
-			mdJavaDoc.setClasspath(useClassPath);
-			mdJavaDoc.options((MinimalJavadocOptions __options) ->
-					{
-						// We need to set the bootstrap class path otherwise
-						// we will get derivations from whatever JDK the system
-						// is using, and we definitely do not want that.
-						__options.bootClasspath(useClassPath.getFiles()
-							.toArray(new File[0]));
-					
-						// We get this by forcing evaluation
-						Jar mdJavaDocletJar = (Jar)__project.getRootProject()
-							.findProject(":tools:markdown-javadoc")
-							.getTasks().getByName("jar");
-						
-						// Set other options
-						__options.showFromPrivate();
-						__options.encoding("utf-8");
-						__options.locale("en_US");
-						__options.docletpath(mdJavaDocletJar.getOutputs()
-							.getFiles().getSingleFile());
-						__options.doclet(
-							"cc.squirreljme.doclet.MarkdownDoclet");
-					});
-		}
 	}
 	
 	/**
@@ -357,6 +291,77 @@ public final class TaskInitialization
 		__project.getTasks().create(
 			TaskInitialization.task("full", __sourceSet, __vmType),
 			VMFullSuite.class, __sourceSet, __vmType);
+	}
+	
+	public static void lateInitialize(Project __project)
+		throws NullPointerException
+	{
+		if (__project == null)
+			throw new NullPointerException("NARG");
+			
+		// We need to evaluate the Doclet project first since we need
+		// the Jar task, which if we use normal evaluation does not exist
+		// yet...
+		__project.evaluationDependsOn(":tools:markdown-javadoc");
+		
+		// Setup task for creating JavaDoc
+		Javadoc mdJavaDoc = __project.getTasks()
+			.create("markdownJavaDoc", Javadoc.class);
+		
+		mdJavaDoc.setGroup("squirreljme");
+		mdJavaDoc.setDescription("Generates Markdown JavaDoc.");
+		
+		// We are using a specific classpath, in this case it is just
+		// SpringCoat's libraries for runtime
+		FileCollection useClassPath = __project.files(
+			(Object[])VMHelpers.runClassPath(__project,
+				SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT));
+				
+		// We need to know how to make the classes
+		Task classes = __project.getTasks().getByName(TaskInitialization.task(
+			"", SourceSet.MAIN_SOURCE_SET_NAME, "classes"));
+		
+		// Classes need to compile first, and we need the doclet Jar too
+		// However we do not know it exists yet
+		mdJavaDoc.dependsOn(classes);
+		mdJavaDoc.dependsOn(__project.provider(() ->
+			VMHelpers.<Task>resolveProjectTasks(
+			Task.class, __project, VMHelpers.runClassTasks(__project,
+			SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT))));
+		mdJavaDoc.dependsOn(__project.provider(() ->
+			__project.getRootProject().findProject(
+			":tools:markdown-javadoc").getTasks().getByName("jar")));
+		
+		// Configure the JavaDoc task
+		mdJavaDoc.setDestinationDir(__project.getBuildDir().toPath()
+			.resolve("markdownJavaDoc").toFile());
+		mdJavaDoc.source(__project.getConvention()
+			.getPlugin(JavaPluginConvention.class)
+			.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME)
+			.getAllJava());
+		mdJavaDoc.setClasspath(useClassPath);
+		mdJavaDoc.options((MinimalJavadocOptions __options) ->
+				{
+					// We need to set the bootstrap class path otherwise
+					// we will get derivations from whatever JDK the system
+					// is using, and we definitely do not want that.
+					__options.bootClasspath(useClassPath.getFiles()
+						.toArray(new File[0]));
+				
+					// We get this by forcing evaluation
+					Jar mdJavaDocletJar = (Jar)__project.getRootProject()
+						.findProject(":tools:markdown-javadoc")
+						.getTasks().getByName("jar");
+					
+					// Set other options
+					__options.showFromPrivate();
+					__options.encoding("utf-8");
+					__options.locale("en_US");
+					__options.docletpath(mdJavaDocletJar.getOutputs()
+						.getFiles().getSingleFile());
+					__options.doclet(
+						"cc.squirreljme.doclet.MarkdownDoclet");
+				});
 	}
 	
 	/**

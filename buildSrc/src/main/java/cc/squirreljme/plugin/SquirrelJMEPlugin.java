@@ -54,5 +54,11 @@ public class SquirrelJMEPlugin
 		
 		// Initialize Virtual Machine tasks for the project
 		TaskInitialization.initialize(__project);
+		
+		// Late initialization, for stuff such as JavaDoc as it relies on
+		// essentially the entire project tree to already be known since it
+		// operates solely within the context of SquirrelJME and not another
+		// JDK we inherit from...
+		__project.afterEvaluate(TaskInitialization::lateInitialize);
 	}
 }
