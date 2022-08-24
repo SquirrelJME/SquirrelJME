@@ -453,7 +453,7 @@ public class MarkdownWriter
 			if (__c == '\n')
 				this._column = (column = 0);
 			
-			// Otherwise it goes up
+			// Otherwise, it goes up
 			else
 				this._column = (++column);
 			
@@ -509,7 +509,8 @@ public class MarkdownWriter
 				// Percent encode anything else
 				else
 				{
-					byte[] b = Character.toString(c).getBytes("utf-8");
+					byte[] b = Character.toString(c)
+						.getBytes("utf-8");
 					int q = b.length;
 					this.__put('%', false);
 					for (int l = 0; l < q; l++)

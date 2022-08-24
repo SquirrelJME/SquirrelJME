@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.file.Path;
-import java.util.Objects;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.markdownwriter.MarkdownWriter;
 
@@ -74,7 +73,12 @@ public final class ProcessedClass
 	 */
 	public String description()
 	{
-		return Objects.toString(this._description, "NOT DOCUMENTED");
+		String description = this._description;
+		
+		if (description == null || description.trim().isEmpty())
+			return "NOT DOCUMENTED";
+		
+		return description;
 	}
 	
 	/**
@@ -120,7 +124,7 @@ public final class ProcessedClass
 		MarkdownDoclet doclet = this.doclet();
 		
 		// Is there a description?
-		this._description = classDoc.commentText();
+		this._description = Utilities.neatText(classDoc.commentText());
 		
 		// Determine classes this is a parent of
 		ClassDoc[] innerClasses = classDoc.innerClasses(true);
