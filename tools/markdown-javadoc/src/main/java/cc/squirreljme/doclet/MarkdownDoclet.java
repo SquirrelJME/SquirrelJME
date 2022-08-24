@@ -218,7 +218,8 @@ public class MarkdownDoclet
 						writer.print(": ");
 						
 						// What is the purpose of this class?
-						writer.print(processed.description());
+						writer.print(Utilities.firstLine(
+							processed.description()));
 						writer.listNext();
 					}
 					
