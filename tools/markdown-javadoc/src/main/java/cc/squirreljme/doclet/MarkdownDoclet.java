@@ -210,7 +210,7 @@ public class MarkdownDoclet
 					for (ProcessedClass processed : entry.getValue())
 					{
 						// URI to the document
-						writer.uri(MarkdownDoclet.relativePath(
+						writer.uri(Utilities.relativePath(
 							tocPath, processed._documentPath),
 							processed.name.simpleName().identifier());
 						
@@ -309,38 +309,6 @@ public class MarkdownDoclet
 			default:
 				return 0;
 		}
-	}
-	
-	/**
-	 * Returns the relative path to another document.
-	 * 
-	 * @param __from The source path.
-	 * @param __to The target path.
-	 * @return The relative string to the path for usage in the document.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2022/08/24
-	 */
-	public static String relativePath(Path __from, Path __to)
-		throws NullPointerException
-	{
-		if (__from == null || __to == null)
-			throw new NullPointerException("NARG");
-		
-		// We want to stay in the same directory
-		if (!Files.isDirectory(__from))
-			__from = __from.getParent();
-		
-		// Build path
-		StringBuilder sb = new StringBuilder();
-		for (Path fragment : __from.relativize(__to))
-		{
-			if (sb.length() > 0)
-				sb.append('/');
-			
-			sb.append(fragment.getFileName());
-		}
-		
-		return sb.toString();
 	}
 	
 	/**

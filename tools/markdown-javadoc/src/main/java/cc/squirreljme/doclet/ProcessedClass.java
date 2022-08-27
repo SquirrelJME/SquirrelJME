@@ -9,12 +9,16 @@
 
 package cc.squirreljme.doclet;
 
+import cc.squirreljme.runtime.cldc.util.ReferenceList;
 import com.sun.javadoc.ClassDoc;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.collections.UnmodifiableList;
 import net.multiphasicapps.markdownwriter.MarkdownWriter;
 
 /**
@@ -35,6 +39,12 @@ public final class ProcessedClass
 	
 	/** The class that is the parent of this one. */
 	private volatile Reference<ProcessedClass> _parentClass;
+	
+	/** The super class. */
+	private volatile Reference<ProcessedClass> _superClass;
+	
+	/** Interface classes. */
+	private volatile ReferenceList<ProcessedClass> _interfaceClasses;
 	
 	/** Where is this document located? */
 	volatile Path _documentPath;
@@ -96,6 +106,22 @@ public final class ProcessedClass
 	}
 	
 	/**
+	 * Returns the interface classes which are used.
+	 * 
+	 * @return The interface classes.
+	 * @since 2022/08/27
+	 */
+	public List<ProcessedClass> interfaceClasses()
+	{
+		ReferenceList<ProcessedClass> interfaces = this._interfaceClasses;
+		
+		if (interfaces == null)
+			return null;
+		
+		return UnmodifiableList.of(interfaces);
+	}
+	
+	/**
 	 * Returns the parent of this class.
 	 * 
 	 * @return The parent class.
@@ -132,6 +158,43 @@ public final class ProcessedClass
 			for (ClassDoc innerClass : innerClasses)
 				doclet.processClass(innerClass)._parentClass =
 					new WeakReference<>(this);
+		
+		// Super class?
+		ClassDoc superClass = classDoc.superclass();
+		if (superClass != null)
+			this._superClass = new WeakReference<>(
+				doclet.processClass(superClass));
+		
+		// Interface classes
+		ClassDoc[] interfaces = classDoc.interfaces();
+		if (interfaces != null && interfaces.length > 0)
+		{
+			ReferenceList<ProcessedClass> result = ReferenceList.of(
+				new ArrayList<>(interfaces.length));
+			
+			for (ClassDoc classy : interfaces)
+				result.add(doclet.processClass(classy));
+			
+			this._interfaceClasses = result;
+		}
+	}
+	
+	/**
+	 * Returns the superclass of this class.
+	 * 
+	 * @return The super class.
+	 * @since 2022/08/27
+	 */
+	public ProcessedClass superClass()
+	{
+		Reference<ProcessedClass> ref = this._superClass;
+		if (ref == null)
+			return null;
+			
+		ProcessedClass superClass = ref.get();
+		if (superClass == null)
+			throw new Error("GCGC");
+		return superClass;
 	}
 	
 	/**
@@ -150,5 +213,64 @@ public final class ProcessedClass
 		
 		// The name of the class
 		__writer.header(true, 1, this.name.toRuntimeString());
+		
+		// For the next group...
+		ProcessedClass parent = this.parent();
+		ProcessedClass superClass = this.superClass();
+		List<ProcessedClass> interfaceClasses = this.interfaceClasses();
+		
+		// Super class, interfaces, and such
+		if (superClass != null || parent != null ||
+			(interfaceClasses != null && !interfaceClasses.isEmpty()))
+		{
+			__writer.listStart();
+			
+			// Super class?
+			if (superClass != null)
+			{
+				__writer.append(true, "Super: ");
+				Utilities.writerLinkTo(__writer, this, superClass);
+				
+				__writer.listNext();
+			}
+			
+			// Parent class?
+			if (parent != null)
+			{
+				__writer.append(true, "Parent: ");
+				Utilities.writerLinkTo(__writer, this, parent);
+				
+				__writer.listNext();
+			}
+			
+			// Interfaces?
+			if (interfaceClasses != null && !interfaceClasses.isEmpty())
+			{
+				// Note it
+				__writer.append(true, "Interfaces:");
+				
+				// Stop listing
+				__writer.listStart();
+				
+				// Write them all out
+				for (ProcessedClass classy : interfaceClasses)
+				{
+					Utilities.writerLinkTo(__writer, this, classy);
+					__writer.listNext();
+				}
+				
+				// End list
+				__writer.listEnd();
+			}
+			
+			// End 
+			__writer.listEnd();
+			
+			// Make sure paragraph follows
+			__writer.paragraph();
+		}
+		
+		// Write description of the class
+		__writer.print(true, this._description);
 	}
 }

@@ -9,6 +9,11 @@
 
 package cc.squirreljme.doclet;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import net.multiphasicapps.markdownwriter.MarkdownWriter;
+
 /**
  * Utilities for document generation.
  *
@@ -100,5 +105,65 @@ public final class Utilities
 		}
 		
 		return result.toString();
+	}
+	
+	/**
+	 * Returns the relative path to another document.
+	 * 
+	 * @param __from The source path.
+	 * @param __to The target path.
+	 * @return The relative string to the path for usage in the document.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/24
+	 */
+	public static String relativePath(Path __from, Path __to)
+		throws NullPointerException
+	{
+		if (__from == null || __to == null)
+			throw new NullPointerException("NARG");
+		
+		// We want to stay in the same directory
+		if (!Files.isDirectory(__from))
+			__from = __from.getParent();
+		
+		// Build path
+		StringBuilder sb = new StringBuilder();
+		for (Path fragment : __from.relativize(__to))
+		{
+			if (sb.length() > 0)
+				sb.append('/');
+			
+			sb.append(fragment.getFileName());
+		}
+		
+		return sb.toString();
+	}
+	
+	/**
+	 * Writes a link to another class.
+	 *
+	 * @param __writer The writer to write to.
+	 * @param __from The class we are coming from.
+	 * @param __class The class to target.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/27
+	 */
+	public static void writerLinkTo(MarkdownWriter __writer,
+		ProcessedClass __from, ProcessedClass __class)
+		throws IOException, NullPointerException
+	{
+		if (__writer == null || __from == null || __class == null)
+			throw new NullPointerException("NARG");
+		
+		// Is within our own documentation tree?
+		if (__class._implicit)
+			__writer.uri(Utilities.relativePath(__from._documentPath,
+				__class._documentPath), __class.name.simpleName().toString());
+		
+		// Points outside our documentation tree?
+		else
+			__writer.printf(true, "`%s`",
+				__class.name.simpleName());
 	}
 }
