@@ -40,6 +40,9 @@ public final class ProcessedClass
 	/** The class that is the parent of this one. */
 	private volatile Reference<ProcessedClass> _parentClass;
 	
+	/** Classes which are a children of this one. */
+	private volatile ReferenceList<ProcessedClass> _childrenClass;
+	
 	/** The super class. */
 	private volatile Reference<ProcessedClass> _superClass;
 	
@@ -92,6 +95,22 @@ public final class ProcessedClass
 	}
 	
 	/**
+	 * Returns the children classes which this contains.
+	 * 
+	 * @return The children classes.
+	 * @since 2022/08/27
+	 */
+	public List<ProcessedClass> childrenClasses()
+	{
+		ReferenceList<ProcessedClass> children = this._childrenClass;
+		
+		if (children == null)
+			return null;
+		
+		return UnmodifiableList.of(children);
+	}
+	
+	/**
 	 * Returns the doclet this is in.
 	 * 
 	 * @return The doclet this is in.
@@ -127,7 +146,7 @@ public final class ProcessedClass
 	 * @return The parent class.
 	 * @since 2022/08/24
 	 */
-	public ProcessedClass parent()
+	public ProcessedClass parentClass()
 	{
 		Reference<ProcessedClass> ref = this._parentClass;
 		if (ref == null)
@@ -155,9 +174,23 @@ public final class ProcessedClass
 		// Determine classes this is a parent of
 		ClassDoc[] innerClasses = classDoc.innerClasses(true);
 		if (innerClasses != null)
+		{
+			ReferenceList<ProcessedClass> childrenClasses = ReferenceList.of(
+				new ArrayList<>(innerClasses.length));
+			
+			// Link together children and parent
 			for (ClassDoc innerClass : innerClasses)
-				doclet.processClass(innerClass)._parentClass =
-					new WeakReference<>(this);
+			{
+				ProcessedClass child = doclet.processClass(innerClass);
+				
+				// Link the two
+				child._parentClass = new WeakReference<>(this);
+				childrenClasses.add(child);
+			}
+			
+			// Store known children
+			this._childrenClass = childrenClasses;
+		}
 		
 		// Super class?
 		ClassDoc superClass = classDoc.superclass();
@@ -215,13 +248,15 @@ public final class ProcessedClass
 		__writer.header(true, 1, this.name.toRuntimeString());
 		
 		// For the next group...
-		ProcessedClass parent = this.parent();
+		ProcessedClass parent = this.parentClass();
 		ProcessedClass superClass = this.superClass();
 		List<ProcessedClass> interfaceClasses = this.interfaceClasses();
+		List<ProcessedClass> childrenClasses = this.childrenClasses();
 		
 		// Super class, interfaces, and such
 		if (superClass != null || parent != null ||
-			(interfaceClasses != null && !interfaceClasses.isEmpty()))
+			(interfaceClasses != null && !interfaceClasses.isEmpty()) ||
+			(childrenClasses != null && !childrenClasses.isEmpty()))
 		{
 			__writer.listStart();
 			
@@ -250,17 +285,16 @@ public final class ProcessedClass
 				__writer.append(true, "Interfaces:");
 				
 				// Stop listing
-				__writer.listStart();
+				this.__writeClassList(__writer, interfaceClasses);
+			}
+			
+			// Children
+			if (childrenClasses != null && !childrenClasses.isEmpty())
+			{
+				// Note it
+				__writer.append(true, "Children:");
 				
-				// Write them all out
-				for (ProcessedClass classy : interfaceClasses)
-				{
-					Utilities.writerLinkTo(__writer, this, classy);
-					__writer.listNext();
-				}
-				
-				// End list
-				__writer.listEnd();
+				this.__writeClassList(__writer, childrenClasses);
 			}
 			
 			// End 
@@ -272,5 +306,31 @@ public final class ProcessedClass
 		
 		// Write description of the class
 		__writer.print(true, this._description);
+	}
+	
+	/**
+	 * Writes a list of classes.
+	 * 
+	 * @param __writer The writer to write to.
+	 * @param __classes The classes to write.
+	 * @throws IOException On write errors.
+	 * @since 2022/08/27
+	 */
+	private void __writeClassList(MarkdownWriter __writer,
+		List<ProcessedClass> __classes)
+		throws IOException
+	{
+		// Stop listing
+		__writer.listStart();
+		
+		// Write them all out
+		for (ProcessedClass classy : __classes)
+		{
+			Utilities.writerLinkTo(__writer, this, classy);
+			__writer.listNext();
+		}
+		
+		// End list
+		__writer.listEnd();
 	}
 }

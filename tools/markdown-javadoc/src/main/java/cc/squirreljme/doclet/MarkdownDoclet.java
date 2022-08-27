@@ -122,7 +122,7 @@ public class MarkdownDoclet
 			
 			// Store into table of contents for later, but only top-level
 			// classes
-			if (processedClass.parent() == null)
+			if (processedClass.parentClass() == null)
 			{
 				BinaryName inPackage = processedClass.name.inPackage();
 				Set<ProcessedClass> subToc = toc.get(inPackage);
