@@ -39,6 +39,10 @@ public class MarkdownWriter
 	/** Where text may be written to. */
 	protected final Appendable append;
 	
+	/** Formatted text buffer. */
+	protected final StringBuilder formatterBuffer =
+		new StringBuilder();
+	
 	/** Formatter to write output text. */
 	protected final Formatter formatter;
 	
@@ -69,7 +73,7 @@ public class MarkdownWriter
 		this.append = __a;
 		
 		// Setup formatter
-		this.formatter = new Formatter(this);
+		this.formatter = new Formatter(this.formatterBuffer);
 	}
 	
 	/**
@@ -92,7 +96,22 @@ public class MarkdownWriter
 	public MarkdownWriter append(CharSequence __cs)
 		throws IOException
 	{
-		return this.append(__cs, 0, __cs.length());
+		return this.append(false, __cs, 0, __cs.length());
+	}
+	
+	/**
+	 * Appends text to the buffer.
+	 * 
+	 * @param __wholeWords Print in whole words?
+	 * @param __cs The sequence to print.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @since 2022/08/26
+	 */
+	public MarkdownWriter append(boolean __wholeWords, CharSequence __cs)
+		throws IOException
+	{
+		return this.append(__wholeWords, __cs, 0, __cs.length());
 	}
 	
 	/**
@@ -101,11 +120,90 @@ public class MarkdownWriter
 	 */
 	@Override
 	public MarkdownWriter append(CharSequence __cs, int __s, int __e)
-		throws IOException
+		throws IndexOutOfBoundsException, IOException
 	{
-		for (int i = __s; i < __e; i++)
-			this.__put(__cs.charAt(i), false);
-		return this;
+		return this.append(false, __cs, __s, __e);
+	}
+	
+	/**
+	 * Appends text to the output.
+	 * 
+	 * @param __wholeWords Print in whole words?
+	 * @param __cs The sequence to append.
+	 * @param __s The start index.
+	 * @param __e The end index.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the start or end is outside of
+	 * the bounds of the sequence, or the start exceeds the end.
+	 * @since 2022/08/26
+	 */
+	public MarkdownWriter append(boolean __wholeWords, CharSequence __cs,
+		int __s, int __e)
+		throws IndexOutOfBoundsException, IOException
+	{
+		// Use actual sequence?
+		if (__cs == null)
+			__cs = "null";
+		
+		// Check bounds
+		int vn = __cs.length();
+		if (__s < 0 || __e < 0 || __e > vn || __s > __e)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// If not outputting whole words, we need not do much
+		if (!__wholeWords)
+		{
+			for (int i = __s; i < __e; i++)
+				this.__put(__cs.charAt(i), false);
+			
+			return this;
+		}
+		
+		// Keep track of the current state for later restoration
+		boolean originalState = this._noNewlines;
+		try
+		{
+			boolean currentState = originalState;
+			for (int i = __s; i < __e; i++)
+			{
+				char c = __cs.charAt(i);
+				
+				// Allow whitespace to break lines
+				if (Character.isWhitespace(c))
+				{
+					// If state changing, allow newlines and check for a new
+					// one...
+					if (currentState)
+					{
+						this._noNewlines = (currentState = false);
+						this.__checkNewline(true);
+					}
+				}
+				
+				// Otherwise, do not allow
+				else
+				{
+					// If state changing, allow newlines and check for a new
+					// one...
+					if (!currentState)
+					{
+						this._noNewlines = (currentState = true);
+						this.__checkNewline(true);
+					}
+				}
+				
+				// Put character
+				this.__put(c, false);
+			}
+			
+			return this;
+		}
+		
+		// Restore to old state
+		finally
+		{
+			this._noNewlines = originalState;
+		}
 	}
 	
 	/**
@@ -175,8 +273,17 @@ public class MarkdownWriter
 		__SectionHeader__ header = new __SectionHeader__(
 			this, __abs, __level);
 		
-		// Print header text
-		this.append(__s);
+		// Print header text, do not allow newlines for headers to happen
+		try
+		{
+			this._noNewlines = true;
+			
+			this.append(__s);
+		}
+		finally
+		{
+			this._noNewlines = false;
+		}
 		
 		// Enter paragraph mode
 		this.paragraph();
@@ -266,7 +373,21 @@ public class MarkdownWriter
 	public void print(Object __o)
 		throws IOException
 	{
-		this.append(Objects.toString(__o));
+		this.append(false, Objects.toString(__o));
+	}
+	
+	/**
+	 * Prints the specified object.
+	 *
+	 * @param __wholeWords Print in whole words?
+	 * @param __o The object to print.
+	 * @throws IOException On write errors.
+	 * @since 2022/08/26
+	 */
+	public void print(boolean __wholeWords, Object __o)
+		throws IOException
+	{
+		this.append(__wholeWords, Objects.toString(__o));
 	}
 	
 	/**
@@ -276,17 +397,40 @@ public class MarkdownWriter
 	 * @param __args The format arguments.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/13
+	 * @since 2022/08/26
 	 */
 	public void printf(String __f, Object... __args)
+		throws IOException, NullPointerException
+	{
+		this.printf(false, __f, __args);
+	}
+	
+	/**
+	 * Prints formatted text to the output.
+	 *
+	 * @param __wholeWords Print in whole words?
+	 * @param __f The format specifier.
+	 * @param __args The format arguments.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/13
+	 */
+	public void printf(boolean __wholeWords, String __f, Object... __args)
 		throws IOException, NullPointerException
 	{
 		// Check
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
-		// Format
+		// Setup buffer
+		StringBuilder buffer = this.formatterBuffer;
+		buffer.setLength(0);
+		
+		// Format into the buffer
 		this.formatter.format(__f, __args);
+		
+		// Append whatever was in the buffer
+		this.append(__wholeWords, buffer);
 	}
 	
 	/**
@@ -333,10 +477,19 @@ public class MarkdownWriter
 		// Prime
 		this.__put('\0', false);
 		
-		// Print it out
-		this.__put('<', true);
-		this.append(__uri);
-		this.__put('>', true);
+		try
+		{
+			this._noNewlines = true;
+			
+			// Print it out
+			this.__put('<', true);
+			this.append(__uri);
+			this.__put('>', true);
+		}
+		finally
+		{
+			this._noNewlines = false;
+		}
 	}
 	
 	/**
@@ -349,6 +502,23 @@ public class MarkdownWriter
 	 * @since 2016/10/01
 	 */
 	public void uri(String __uri, String __text)
+		throws IOException, NullPointerException
+	{
+		this.uri(__uri, __text, null);
+	}
+	
+	/**
+	 * Prints a URI to the output document with the given display text.
+	 *
+	 * @param __uri The URI to point to.
+	 * @param __text The display text for the URI.
+	 * @param __title The text text for the URI.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __title}.
+	 * @since 2016/10/01
+	 */
+	public void uri(String __uri, String __text, String __title)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -366,8 +536,21 @@ public class MarkdownWriter
 			this.__put('[', true);
 			this.append(__text);
 			this.__put(']', true);
+			
+			// A newline can happen here
+			this.__checkNewline(true);
+			
 			this.__put('(', true);
 			this.__unescapedURI(__uri);
+			
+			if (__title != null)
+			{
+				this.__put(' ', true);
+				this.__put('"', true);
+				this.append(__title);
+				this.__put('"', true);
+			}
+			
 			this.__put(')', true);
 		}
 		finally
@@ -377,36 +560,21 @@ public class MarkdownWriter
 	}
 	
 	/**
-	 * Prints a URI to the output document with the given display text.
-	 *
-	 * @param __uri The URI to point to.
-	 * @param __text The display text for the URI.
-	 * @param __title The text text for the URI.
+	 * Checks if a newline can be put down.
+	 * 
+	 * @param __allowAnyway Should a newline check be done anyway regardless
+	 * of {@link #_noNewlines}?
 	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/10/01
+	 * @since 2022/08/26
 	 */
-	public void uri(String __uri, String __text, String __title)
-		throws IOException, NullPointerException
+	private void __checkNewline(boolean __allowAnyway)
+		throws IOException
 	{
-		// Check
-		if (__uri == null || __text == null || __title == null)
-			throw new NullPointerException("NARG");
-		
-		// Prime
-		this.__put('\0', false);
-		
-		// Print it out
-		this.__put('[', true);
-		this.append(__text);
-		this.__put(']', true);
-		this.__put('(', true);
-		this.__unescapedURI(__uri);
-		this.__put(' ', true);
-		this.__put('"', true);
-		this.append(__title);
-		this.__put('"', true);
-		this.__put(')', true);
+		// If at the end, go to the next line, but if that was turned off
+		// then do not do that
+		if ((__allowAnyway || !this._noNewlines) &&
+			this._column >= MarkdownWriter.RIGHT_COLUMN)
+			this.__put('\n', true);
 	}
 	
 	/**
@@ -457,10 +625,8 @@ public class MarkdownWriter
 			else
 				this._column = (++column);
 			
-			// If at the end, go to the next line, but if that was turned off
-			// then do not do that
-			if (!this._noNewlines && column >= MarkdownWriter.RIGHT_COLUMN)
-				this.__put('\n', true);
+			// Do we need to put a newline?
+			this.__checkNewline(false);
 			
 			// Done
 			return;

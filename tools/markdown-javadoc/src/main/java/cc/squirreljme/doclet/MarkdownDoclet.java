@@ -200,7 +200,7 @@ public class MarkdownDoclet
 					toc.entrySet())
 				{
 					// Describe the package
-					writer.printf("`%s`",
+					writer.printf(true, "`%s`",
 						entry.getKey().toClass().toRuntimeString());
 					
 					// Start package list
@@ -215,10 +215,10 @@ public class MarkdownDoclet
 							processed.name.simpleName().identifier());
 						
 						// Dash for split
-						writer.print(": ");
+						writer.print(true, ": ");
 						
 						// What is the purpose of this class?
-						writer.print(Utilities.firstLine(
+						writer.print(true, Utilities.firstLine(
 							processed.description()));
 						writer.listNext();
 					}
