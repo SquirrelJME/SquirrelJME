@@ -10,6 +10,7 @@
 package cc.squirreljme.doclet;
 
 import cc.squirreljme.runtime.cldc.util.ReferenceList;
+import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import com.sun.javadoc.ClassDoc;
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -17,7 +18,10 @@ import java.lang.ref.WeakReference;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.FieldNameAndType;
+import net.multiphasicapps.classfile.MethodNameAndType;
 import net.multiphasicapps.collections.UnmodifiableList;
 import net.multiphasicapps.markdownwriter.MarkdownWriter;
 
@@ -36,6 +40,14 @@ public final class ProcessedClass
 	
 	/** The doclet this is a part of. */
 	private final Reference<MarkdownDoclet> _doclet;
+	
+	/** The fields available in the class. */
+	private final Map<FieldNameAndType, ProcessedField> _fields =
+		new SortedTreeMap<>();
+	
+	/** The methods available in the class. */
+	private final Map<MethodNameAndType, ProcessedMethod> _methods =
+		new SortedTreeMap<>();
 	
 	/** The class that is the parent of this one. */
 	private volatile Reference<ProcessedClass> _parentClass;
