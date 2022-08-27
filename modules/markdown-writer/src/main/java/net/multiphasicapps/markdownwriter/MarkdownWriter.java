@@ -189,6 +189,15 @@ public class MarkdownWriter
 					{
 						this._noNewlines = (currentState = true);
 						this.__checkNewline(true);
+						
+						// Determine where the next whitespace is for lookahead
+						int look = i;
+						for (; look < __e; look++)
+							if (Character.isWhitespace(__cs.charAt(look)))
+								break;
+						
+						// Determine if we need to newline to fit this
+						this.__checkNewlineLookAhead(look - i);
 					}
 				}
 				
@@ -537,9 +546,6 @@ public class MarkdownWriter
 			this.append(__text);
 			this.__put(']', true);
 			
-			// A newline can happen here
-			this.__checkNewline(true);
-			
 			this.__put('(', true);
 			this.__unescapedURI(__uri);
 			
@@ -575,6 +581,26 @@ public class MarkdownWriter
 		if ((__allowAnyway || !this._noNewlines) &&
 			this._column >= MarkdownWriter.RIGHT_COLUMN)
 			this.__put('\n', true);
+	}
+	
+	/**
+	 * Checks the count against the current column and determines if a newline
+	 * should be placed.
+	 * 
+	 * @param __count The number of characters to check.
+	 * @throws IllegalArgumentException If count is negative.
+	 * @throws IOException On write errors.
+	 * @since 2022/08/26
+	 */
+	private void __checkNewlineLookAhead(int __count)
+		throws IllegalArgumentException, IOException
+	{
+		if (__count < 0)
+			throw new IllegalArgumentException("IAEE");
+		
+		// Put a newline if we would exceed the column
+		if (this._column + __count >= MarkdownWriter.RIGHT_COLUMN)
+			 this.__put('\n', true);
 	}
 	
 	/**
