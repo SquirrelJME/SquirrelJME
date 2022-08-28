@@ -87,8 +87,7 @@ public enum CommandSetVirtualMachine
 				__controller.state.items.put(type);
 				
 				// Write the class type
-				rv.writeByte(JDWPUtils.classType(__controller, type).id);
-				rv.writeId(System.identityHashCode(type));
+				rv.writeTaggedId(__controller, type);
 				
 				// Classes are always loaded
 				rv.writeInt(CommandSetVirtualMachine._CLASS_INITIALIZED);
@@ -436,8 +435,7 @@ public enum CommandSetVirtualMachine
 			for (Object type : allTypes)
 			{
 				// The type ID
-				rv.writeByte(JDWPUtils.classType(__controller, type).id);
-				rv.writeId(System.identityHashCode(type));
+				rv.writeTaggedId(__controller, type);
 				
 				// The signatures, the generic is ignored
 				rv.writeString(viewType.signature(type));

@@ -401,9 +401,12 @@ public final class JDWPPacket
 			// Ensure this is open
 			this.__checkOpen();
 			
-			// Ignore the type tag, we do not need to know the
-			// difference between interfaces and classes
-			this.readByte();
+			// This identifies classes or interfaces except we do not need
+			// this distinction, however for exception handlers locations can
+			// be 0 for anything that is not handled.
+			int tag = this.readByte();
+			if (tag == 0)
+				return JDWPLocation.BLANK;
 			
 			// Make sure the type and method are valid
 			JDWPViewType viewType = __controller.viewType();
@@ -832,6 +835,14 @@ public final class JDWPPacket
 		JDWPLocation __location)
 		throws JDWPException, NullPointerException
 	{
+		// If this is the blank location, then write as blank
+		if (JDWPLocation.BLANK.equals(__location))
+		{
+			this.writeByte(0);
+			return;
+		}
+		
+		// Otherwise forward
 		this.writeLocation(__controller, __location.type,
 			__location.methodDx, __location.codeDx);
 	}
@@ -860,8 +871,7 @@ public final class JDWPPacket
 			this.__checkOpen();
 			
 			// Write class located within
-			this.writeByte(JDWPUtils.classType(__controller, __class).id);
-			this.writeId(System.identityHashCode(__class));
+			this.writeTaggedId(__controller, __class);
 			
 			// Write the method ID and the special index (address)
 			this.writeId(__atMethodIndex);
@@ -870,6 +880,24 @@ public final class JDWPPacket
 			// although such a high value should hopefully never be needed
 			// in SquirrelJME
 			this.writeLong(__atCodeIndex);
+		}
+	}
+	
+	/**
+	 * Writes a tagged object ID to the output.
+	 * 
+	 * @param __controller The controller used.
+	 * @param __object The object to write.
+	 * @throws JDWPException If it could not be written.
+	 * @since 2022/08/28
+	 */
+	public void writeTaggedId(JDWPController __controller, Object __object)
+		throws JDWPException
+	{
+		synchronized (this)
+		{
+			this.writeByte(JDWPUtils.classType(__controller, __object).id);
+			this.writeId(System.identityHashCode(__object));
 		}
 	}
 	

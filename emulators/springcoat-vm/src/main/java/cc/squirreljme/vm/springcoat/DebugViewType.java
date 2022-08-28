@@ -14,6 +14,7 @@ import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
 import cc.squirreljme.jdwp.views.JDWPViewType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
 import java.lang.ref.Reference;
@@ -44,6 +45,19 @@ public class DebugViewType
 			throw new NullPointerException("NARG");
 		
 		this.state = __state;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/08/28
+	 */
+	@Override
+	public boolean canCastTo(Object __fromWhich, Object __toWhich)
+	{
+		SpringClass from = DebugViewType.__class(__fromWhich);
+		SpringClass to = DebugViewType.__class(__toWhich);
+		
+		return to.isAssignableFrom(from);
 	}
 	
 	/**

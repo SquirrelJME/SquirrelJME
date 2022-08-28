@@ -11,6 +11,8 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.emulator.profiler.ProfiledThread;
+import cc.squirreljme.jdwp.EventKind;
+import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.JDWPStepTracker;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;

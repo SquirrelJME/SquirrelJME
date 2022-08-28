@@ -60,8 +60,7 @@ public enum CommandSetClassObjectReference
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write the class type and reference to that type
-			rv.writeByte(JDWPUtils.classType(__controller, found).id);
-			rv.writeId(System.identityHashCode(found));
+			rv.writeTaggedId(__controller, found);
 				
 			return rv;
 		}

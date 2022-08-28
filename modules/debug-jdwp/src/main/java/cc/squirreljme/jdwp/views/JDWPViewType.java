@@ -21,6 +21,16 @@ public interface JDWPViewType
 	extends JDWPViewValidObject
 {
 	/**
+	 * Checks if this type can cast to the other type.
+	 *
+	 * @param __fromWhich The type to cast from.
+	 * @param __toWhich The type to cast to.
+	 * @return If the cast is possible.
+	 * @since 2022/08/28
+	 */
+	boolean canCastTo(Object __fromWhich, Object __toWhich);
+	
+	/**
 	 * Returns the class loader used for the given type, note that there
 	 * should always only be a single class loader in Java ME per process.
 	 * 
