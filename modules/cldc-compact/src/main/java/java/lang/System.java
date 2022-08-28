@@ -573,21 +573,6 @@ public final class System
 	}
 	
 	/**
-	 * This is a vendor specific API method and must not be used by any
-	 * application, otherwise it will not be portable.
-	 * 
-	 * @param __uri This parameter is ignored.
-	 * @since 2022/08/28
-	 */
-	@ApiDefinedDeprecated
-	@VendorSpecificApi("Samsung Rant M540")
-	public static void setExitURI(String __uri)
-	{
-		// Does nothing, but still indicate where the URI goes
-		Debugging.debugNote("%s", __uri);
-	}
-	
-	/**
 	 * Sets the new destination for standard output.
 	 *
 	 * Note that the {@link System#out} field is not changed, a wrapper class
