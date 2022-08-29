@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// SquirrelJME
+// Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,30 +9,24 @@
 
 package cc.squirreljme.plugin.general;
 
-import javax.inject.Inject;
-import org.gradle.api.DefaultTask;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * Lists error prefixes for the task.
+ * Supplier for opening files.
  *
- * @since 2020/08/22
+ * @since 2022/08/29
  */
-public class ListErrorPrefixTask
-	extends DefaultTask
+@FunctionalInterface
+public interface JavaDocFileSupplier
 {
 	/**
-	 * Initializes the task.
+	 * Opens the given file.
 	 * 
-	 * @since 2020/08/22
+	 * @return The stream to the given file.
+	 * @throws IOException On read errors.
+	 * @since 2022/08/29
 	 */
-	@Inject
-	public ListErrorPrefixTask()
-	{
-		// Describe this one
-		this.setGroup("squirreljmeGeneral");
-		this.setDescription("Lists error prefixes.");
-		
-		// The action to perform
-		this.doLast(new ListErrorPrefixTaskAction());
-	}
+	InputStream open()
+		throws IOException;
 }

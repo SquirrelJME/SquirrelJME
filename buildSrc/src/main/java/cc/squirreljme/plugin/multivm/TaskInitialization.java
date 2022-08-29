@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.general.UpdateFossilJavaDoc;
 import cc.squirreljme.plugin.tasks.AdditionalManifestPropertiesTask;
 import cc.squirreljme.plugin.tasks.GenerateTestsListTask;
 import cc.squirreljme.plugin.tasks.JasminAssembleTask;
@@ -250,6 +251,33 @@ public final class TaskInitialization
 	}
 	
 	/**
+	 * Initializes the task which puts the entire Markdown documentation into
+	 * Fossil's versioned space.
+	 * 
+	 * @param __project The project to initialize for.
+	 * @param __javaDoc The JavaDoc Task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/29
+	 */
+	public static void initializeFossilMarkdownTask(Project __project,
+		Javadoc __javaDoc)
+		throws NullPointerException
+	{
+		if (__project == null || __javaDoc == null)
+			throw new NullPointerException("NARG");
+		
+		// Find existing task, create if it does not yet exist
+		UpdateFossilJavaDoc task = (UpdateFossilJavaDoc)__project.getTasks()
+			.findByName("updateFossilJavaDoc");
+		if (task == null)
+			task = (UpdateFossilJavaDoc)__project.getTasks()
+				.create("updateFossilJavaDoc", UpdateFossilJavaDoc.class);
+		
+		// Add dependency to the task for later usage
+		task.dependsOn(__javaDoc);
+	}
+	
+	/**
 	 * Initializes the full-suite run which selects every API and library
 	 * module available, along with allowing an external 3rd library classpath
 	 * launching.
@@ -294,6 +322,13 @@ public final class TaskInitialization
 			VMFullSuite.class, __sourceSet, __vmType);
 	}
 	
+	/**
+	 * Late initialization step.
+	 * 
+	 * @param __project The project to initialize.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/29
+	 */
 	public static void lateInitialize(Project __project)
 		throws NullPointerException
 	{
@@ -387,6 +422,10 @@ public final class TaskInitialization
 							"squirreljmejavasources",
 							sourceSet.getAllJava().getAsPath());
 				});
+			
+		// Add markdown task
+		TaskInitialization.initializeFossilMarkdownTask(
+			__project.getRootProject(), mdJavaDoc);
 	}
 	
 	/**

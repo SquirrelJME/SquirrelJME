@@ -41,7 +41,7 @@ public final class NoteCalendarFinder
 		NoteUsers users = new NoteUsers();
 		
 		// Determine which notes exist
-		for (String fileName : __exe.unversionedLs())
+		for (String fileName : __exe.unversionList())
 		{
 			// Not a notes files
 			if (!fileName.startsWith("developer-notes/"))
