@@ -338,7 +338,7 @@ public final class ProcessedClass
 		}
 		
 		// Write description of the class
-		__writer.print(true, this._description);
+		__writer.print(true, this.description());
 	}
 	
 	/**
