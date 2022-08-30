@@ -164,6 +164,6 @@ public final class Utilities
 		// Points outside our documentation tree?
 		else
 			__writer.printf(true, "`%s`",
-				__class.name.simpleName());
+				__class.name.toRuntimeString());
 	}
 }
