@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 import org.apache.tools.ant.taskdefs.Java;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
+import org.gradle.api.logging.Logger;
 import org.gradle.api.tasks.javadoc.Javadoc;
 
 /**
@@ -47,12 +48,14 @@ public class UpdateFossilJavaDocAction
 	@Override
 	public void execute(Task __task)
 	{
+		Logger logger = __task.getLogger();
+		
 		// Collect all unversioned files
 		Map<String, Map<String, JavaDocFile>> beforeModules =
 			this.__collectUnversioned();
 		
 		// Debugging
-		__task.getLogger().debug("Before: {}", beforeModules);
+		logger.debug("Before: {}", beforeModules);
 		
 		// Collect all task files
 		Map<String, Map<String, JavaDocFile>> afterModules = new TreeMap<>();
@@ -67,7 +70,7 @@ public class UpdateFossilJavaDocAction
 		}
 		
 		// Debugging
-		__task.getLogger().debug("After: {}", afterModules);
+		logger.debug("After: {}", afterModules);
 		
 		// Figure out all the modules that have existed and still exist
 		Set<String> modules = new TreeSet<>();
@@ -94,6 +97,9 @@ public class UpdateFossilJavaDocAction
 			// Handle each individual file
 			for (String file : files)
 			{
+				// Debug
+				logger.lifecycle("Processing {}/{}...", module, file);
+				
 				// Where is this file?
 				String unversionPath =
 					UpdateFossilJavaDocAction._FOSSIL_PREFIX +

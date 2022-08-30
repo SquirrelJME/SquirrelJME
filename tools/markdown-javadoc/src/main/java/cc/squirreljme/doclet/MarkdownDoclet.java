@@ -9,6 +9,7 @@
 
 package cc.squirreljme.doclet;
 
+import cc.squirreljme.io.file.SafeTemporaryFileOutputStream;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import com.sun.javadoc.ClassDoc;
@@ -16,11 +17,8 @@ import com.sun.javadoc.RootDoc;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.classfile.BinaryName;
@@ -136,56 +134,31 @@ public class MarkdownDoclet
 			Path documentPath = processedClass._documentPath;
 			
 			// Write document out
-			Path tempFile = null;
 			try
 			{
 				// Write document in a temporary file first
-				tempFile = Files.createTempFile(
-					"document", ".mkd");
-				try (OutputStream out  = Files.newOutputStream(tempFile,
-					StandardOpenOption.WRITE, StandardOpenOption.CREATE,
-					StandardOpenOption.TRUNCATE_EXISTING);
+				try (OutputStream out  = new SafeTemporaryFileOutputStream(
+						documentPath);
 					MarkdownWriter writer = new MarkdownWriter(
 						new OutputStreamWriter(out, "utf-8")))
 				{
 					processedClass.write(writer);
 				}
-				
-				// Move over
-				Files.createDirectories(documentPath.getParent());
-				Files.move(tempFile, documentPath,
-					StandardCopyOption.REPLACE_EXISTING);
 			}
 			catch (IOException e)
 			{
 				throw new Error(e);
 			}
-			finally
-			{
-				if (tempFile != null)
-					try
-					{
-						Files.deleteIfExists(tempFile);
-					}
-					catch (IOException ignored)
-					{
-					}
-			}
 		}
 		
 		// Write table of contents
-		Path tempFile = null;
 		try
 		{
 			// What is this called?
 			Path tocPath = outputDir.resolve("table-of-contents.mkd");
 			
 			// Write to table of contents
-			tempFile = Files.createTempFile(
-				"toc", ".mkd");
-			try (OutputStream out  = Files.newOutputStream(tempFile,
-				StandardOpenOption.WRITE, StandardOpenOption.CREATE,
-				StandardOpenOption.TRUNCATE_EXISTING);
+			try (OutputStream out = new SafeTemporaryFileOutputStream(tocPath);
 				MarkdownWriter writer = new MarkdownWriter(
 					new OutputStreamWriter(out, "utf-8")))
 			{
@@ -231,26 +204,10 @@ public class MarkdownDoclet
 				// End package list
 				writer.listEnd();
 			}
-			
-			// Move over
-			Files.createDirectories(tocPath.getParent());
-			Files.move(tempFile, tocPath,
-				StandardCopyOption.REPLACE_EXISTING);
 		}
 		catch (IOException e)
 		{
 			throw new Error(e);
-		}
-		finally
-		{
-			if (tempFile != null)
-				try
-				{
-					Files.deleteIfExists(tempFile);
-				}
-				catch (IOException ignored)
-				{
-				}
 		}
 	}
 	

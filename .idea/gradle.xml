@@ -43,6 +43,7 @@
             <option value="$PROJECT_DIR$/modules/dio-watchdog" />
             <option value="$PROJECT_DIR$/modules/gcf" />
             <option value="$PROJECT_DIR$/modules/io" />
+            <option value="$PROJECT_DIR$/modules/io-file" />
             <option value="$PROJECT_DIR$/modules/jblend-api" />
             <option value="$PROJECT_DIR$/modules/json" />
             <option value="$PROJECT_DIR$/modules/launcher" />

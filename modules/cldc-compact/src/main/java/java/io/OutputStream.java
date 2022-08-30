@@ -17,7 +17,6 @@ package java.io;
 public abstract class OutputStream
 	implements Closeable
 {
-	
 	/**
 	 * Writes a single byte to the output stream, the byte is in the range of
 	 * 0 and 255. If the byte exceeds that range, then it must take the low

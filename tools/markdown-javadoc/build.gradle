@@ -51,8 +51,9 @@ if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
 }
 
 dependencies {
-	implementation project(":modules:tool-classfile")
-	implementation project(":modules:markdown-writer")
+	implementation project(":modules:io-file")
 	implementation project(":modules:json")
+	implementation project(":modules:markdown-writer")
+	implementation project(":modules:tool-classfile")
 }
 
