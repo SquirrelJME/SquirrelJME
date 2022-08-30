@@ -55,6 +55,9 @@ public class MarkdownWriter
 	/** Do not create newlines. */
 	private volatile boolean _noNewlines;
 	
+	/** The number of zero sized lines. */
+	volatile int _zeroLines;
+	
 	/**
 	 * Initializes the markdown writer.
 	 *
@@ -645,7 +648,14 @@ public class MarkdownWriter
 			// Newline resets column
 			int column = this._column;
 			if (__c == '\n')
+			{
+				if (column == 0)
+					this._zeroLines++;
+				else
+					this._zeroLines = 0;
+				
 				this._column = (column = 0);
+			}
 			
 			// Otherwise, it goes up
 			else

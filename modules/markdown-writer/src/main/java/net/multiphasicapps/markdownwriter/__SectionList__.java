@@ -75,8 +75,12 @@ abstract class __SectionList__
 		MarkdownWriter writer = this.writer;
 		if (this._newitem)
 		{
-			// Add new line
-			writer.__put('\n', true);
+			// Do not write any more new items
+			this._newitem = false;
+			
+			// Add new line, if needed
+			if (writer._column > 0)
+				writer.__put('\n', true);
 			
 			// Indent with spaces first
 			int indent = this._indent;
@@ -86,11 +90,8 @@ abstract class __SectionList__
 			// Add list characters
 			this.__listCharacters();
 			
-			// Add sapce
+			// Add space
 			writer.__put(' ', true);
-			
-			// Do not write any more new items
-			this._newitem = false;
 		}
 		
 		// Indent?
