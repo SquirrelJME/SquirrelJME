@@ -451,7 +451,7 @@ public final class TaskInitialization
 					Task mdJavaDocletJar = jarProvider.get();
 					
 					// Set other options
-					__options.showFromPrivate();
+					__options.showFromProtected();
 					__options.encoding("utf-8");
 					__options.locale("en_US");
 					__options.docletpath(mdJavaDocletJar.getOutputs()
