@@ -19,6 +19,9 @@ import cc.squirreljme.plugin.tasks.TestsJarTask;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -373,14 +376,40 @@ public final class TaskInitialization
 			__project.getRootProject().findProject(
 			":tools:markdown-javadoc").getTasks().getByName("shadowJar"));
 		
+		// SpringCoat related tasks
+		Provider<Iterable<Task>> springCoatTasks = __project.provider(() ->
+			VMHelpers.<Task>resolveProjectTasks(
+			Task.class, __project, VMHelpers.runClassTasks(__project,
+			SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT)));
+		
 		// Classes need to compile first, and we need the doclet Jar too
 		// However we do not know it exists yet
 		mdJavaDoc.dependsOn(classes);
-		mdJavaDoc.dependsOn(__project.provider(() ->
-			VMHelpers.<Task>resolveProjectTasks(
-			Task.class, __project, VMHelpers.runClassTasks(__project,
-			SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT))));
+		mdJavaDoc.dependsOn(springCoatTasks);
 		mdJavaDoc.dependsOn(jarProvider);
+		
+		// We also need to depend on other markdownJavaDoc tasks of our
+		// dependencies... this is so we can do cross-project links with
+		// our JavaDoc generation
+		mdJavaDoc.dependsOn(__project.provider(() -> {
+				Map<String, Javadoc> result = new LinkedHashMap<>();
+				
+				for (Task task : springCoatTasks.get()) {
+					// Ignore our own project, otherwise recursive!
+					Project subProject = task.getProject();
+					if (subProject.equals(__project))
+						continue;
+					
+					// Only refer to projects once
+					String subName = subProject.getPath();
+					if (!result.containsKey(subName))
+						result.put(subName,
+							(Javadoc)subProject.getTasks()
+							.getByName("markdownJavaDoc"));
+				}
+				
+				return result.values();
+			}));
 		
 		// Where are the sources?
 		SourceSet sourceSet = __project.getConvention().getPlugin(
