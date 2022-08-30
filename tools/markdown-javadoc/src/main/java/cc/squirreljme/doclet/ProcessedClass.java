@@ -224,6 +224,13 @@ public final class ProcessedClass
 			this._superClass = new WeakReference<>(
 				doclet.processClass(superClass));
 		
+		// Enums do not actually extend off anything in JavaDoc, so make sure
+		// every enum does extend Enum
+		else if (classDoc.isEnum())
+			this._superClass = new WeakReference<>(
+				doclet.processClass(
+					doclet.rootDoc.classNamed("java.lang.Enum")));
+		
 		// Interface classes
 		ClassDoc[] interfaces = classDoc.interfaces();
 		if (interfaces != null && interfaces.length > 0)
