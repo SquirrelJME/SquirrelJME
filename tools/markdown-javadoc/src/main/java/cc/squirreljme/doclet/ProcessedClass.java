@@ -49,6 +49,9 @@ public final class ProcessedClass
 	private final Map<MethodNameAndType, ProcessedMethod> _methods =
 		new SortedTreeMap<>();
 	
+	/** Is this a visible class? */
+	volatile boolean _isVisible;
+	
 	/** The class that is the parent of this one. */
 	private volatile Reference<ProcessedClass> _parentClass;
 	
@@ -179,6 +182,9 @@ public final class ProcessedClass
 	{
 		ClassDoc classDoc = this.classDoc;
 		MarkdownDoclet doclet = this.doclet();
+		
+		// Is this a visible class to the JavaDoc?
+		this._isVisible = classDoc.isPublic() || classDoc.isProtected();
 		
 		// Is there a description?
 		this._description = Utilities.neatText(classDoc.commentText());

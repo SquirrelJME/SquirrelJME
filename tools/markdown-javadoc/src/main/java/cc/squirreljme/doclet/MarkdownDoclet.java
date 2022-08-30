@@ -120,6 +120,55 @@ public class MarkdownDoclet
 	}
 	
 	/**
+	 * Processes the given class.
+	 * 
+	 * @param __classDoc The class documentation.
+	 * @return The processed class file.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/24
+	 */
+	public ProcessedClass processClass(ClassDoc __classDoc)
+		throws NullPointerException
+	{
+		if (__classDoc == null)
+			throw new NullPointerException("NARG");
+		
+		// What is this class called?
+		ClassName name = new ClassName(__classDoc.qualifiedName()
+			.replace('.', '/'));
+		
+		// Has this class already been processed?
+		Map<ClassName, ProcessedClass> processed = this.processedClasses;
+		ProcessedClass result = processed.get(name);
+		if (result != null)
+			return result;
+		
+		// Otherwise, set up a process for it
+		result = new ProcessedClass(this, name, __classDoc);
+		processed.put(name, result);
+		
+		// Done processing
+		return result;
+	}
+	
+	/**
+	 * Returns an already processed class.
+	 * 
+	 * @param __className The name of the class.
+	 * @return The already processed class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/29
+	 */
+	public ProcessedClass processedClass(ClassName __className)
+		throws NullPointerException
+	{
+		if (__className == null)
+			throw new NullPointerException("NARG");
+		
+		return this.processedClasses.get(__className);
+	}
+	
+	/**
 	 * Attempts to locate a remote class for the project it belongs to.
 	 * 
 	 * @param __name The name of the class to get.
@@ -344,38 +393,6 @@ public class MarkdownDoclet
 		{
 			throw new Error(e);
 		}
-	}
-	
-	/**
-	 * Processes the given class.
-	 * 
-	 * @param __classDoc The class documentation.
-	 * @return The processed class file.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2022/08/24
-	 */
-	public ProcessedClass processClass(ClassDoc __classDoc)
-		throws NullPointerException
-	{
-		if (__classDoc == null)
-			throw new NullPointerException("NARG");
-		
-		// What is this class called?
-		ClassName name = new ClassName(__classDoc.qualifiedName()
-			.replace('.', '/'));
-		
-		// Has this class already been processed?
-		Map<ClassName, ProcessedClass> processed = this.processedClasses;
-		ProcessedClass result = processed.get(name);
-		if (result != null)
-			return result;
-		
-		// Otherwise, set up a process for it
-		result = new ProcessedClass(this, name, __classDoc);
-		processed.put(name, result);
-		
-		// Done processing
-		return result;
 	}
 	
 	/**

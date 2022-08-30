@@ -12,6 +12,7 @@ package cc.squirreljme.doclet;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.markdownwriter.MarkdownWriter;
 
 /**
@@ -155,6 +156,27 @@ public final class Utilities
 	{
 		if (__writer == null || __from == null || __class == null)
 			throw new NullPointerException("NARG");
+		
+		// If this class is invisible, then hide it from existence and go up
+		if (!__class._isVisible)
+		{
+			// Try going to the super class instead
+			ProcessedClass superClass = __class.superClass();
+			if (superClass != null)
+			{
+				Utilities.writerLinkTo(__writer, __from, superClass);
+				return;
+			}
+			
+			// Otherwise, refer to object if this is not object
+			else if (!__class.name.isObjectClass())
+			{
+				Utilities.writerLinkTo(__writer, __from,
+					__from.doclet().processClass(
+						__from.classDoc.findClass("java.lang.Object")));
+				return;
+			}
+		}
 		
 		// Is within our own documentation tree?
 		if (__class._implicit)
