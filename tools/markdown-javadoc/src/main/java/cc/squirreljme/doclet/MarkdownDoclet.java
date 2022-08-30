@@ -147,6 +147,10 @@ public class MarkdownDoclet
 		result = new ProcessedClass(this, name, __classDoc);
 		processed.put(name, result);
 		
+		// Perform stage one processing, since it should not have happened
+		// here yet
+		result.stageOne();
+		
 		// Done processing
 		return result;
 	}
@@ -267,9 +271,6 @@ public class MarkdownDoclet
 			processedClass._implicit = true;
 			processedClass._documentPath = MarkdownDoclet.__resolveDocPath(
 				outputDir, processedClass.name);
-			
-			// Perform stage one processing
-			processedClass.stageOne();
 		}
 		
 		// Table of contents, sorted by package

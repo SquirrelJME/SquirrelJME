@@ -73,6 +73,9 @@ public final class ProcessedClass
 	/** The class description. */
 	private volatile String _description;
 	
+	/** Did we do stage one? */
+	private volatile boolean _didStageOne;
+	
 	/**
 	 * Processes the given class.
 	 * 
@@ -180,6 +183,11 @@ public final class ProcessedClass
 	 */
 	public void stageOne()
 	{
+		// Only perform stage one, once
+		if (this._didStageOne)
+			return;
+		this._didStageOne = true;
+		
 		ClassDoc classDoc = this.classDoc;
 		MarkdownDoclet doclet = this.doclet();
 		
