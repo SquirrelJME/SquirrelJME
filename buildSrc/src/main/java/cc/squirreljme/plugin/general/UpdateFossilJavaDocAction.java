@@ -10,20 +10,22 @@
 package cc.squirreljme.plugin.general;
 
 import cc.squirreljme.plugin.util.FossilExe;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Stream;
-import org.apache.tools.ant.taskdefs.Java;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
@@ -38,7 +40,7 @@ public class UpdateFossilJavaDocAction
 	implements Action<Task>
 {
 	/** Prefix for fossil files. */
-	private static final String _FOSSIL_PREFIX =
+	private static final String _DOC_PREFIX =
 		"javadoc/";
 	
 	/**
@@ -102,7 +104,7 @@ public class UpdateFossilJavaDocAction
 				
 				// Where is this file?
 				String unversionPath =
-					UpdateFossilJavaDocAction._FOSSIL_PREFIX +
+					UpdateFossilJavaDocAction._DOC_PREFIX +
 					module + "/" + file;
 				
 				// Which files does this exist in?
@@ -144,11 +146,14 @@ public class UpdateFossilJavaDocAction
 			}
 		}
 		
-		// Write the by-project list.
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+		// Write the by-project list, while doing so build class table of
+		// contents.
+		Map<String, String> allClasses = new TreeMap<>();
+		try (ByteArrayOutputStream byProject = new ByteArrayOutputStream();
+			ByteArrayOutputStream byClass = new ByteArrayOutputStream())
 		{
-			// Print out
-			try (PrintStream printer = new PrintStream(baos,
+			// Print out by project
+			try (PrintStream printer = new PrintStream(byProject,
 				true, "utf-8"))
 			{
 				// Header
@@ -157,20 +162,79 @@ public class UpdateFossilJavaDocAction
 				
 				// Contents, for all the after modules
 				for (String module : modules)
+				{
+					// Print link to module
 					printer.printf(" * [%s](%s/table-of-contents.mkd)%n",
 						module, module);
+					
+					// This might not exist if there are no classes!
+					InputStream inClasses = fossil.unversionCat(
+						UpdateFossilJavaDocAction._DOC_PREFIX +
+						module + 
+						"/table-of-contents.csv");
+					
+					// Load in class files
+					if (inClasses != null)
+						try (BufferedReader reader = new BufferedReader(
+							new InputStreamReader(inClasses,
+								"utf-8")))
+						{
+							for (;;)
+							{
+								String ln = reader.readLine();
+								
+								// EOF?
+								if (ln == null)
+									break;
+								
+								// Skip blank lines
+								ln = ln.trim();
+								if (ln.isEmpty())
+									continue;
+								
+								// Split by first comma
+								int comma = ln.indexOf(',');
+								if (comma < 0)
+									continue;
+								
+								// Store class info
+								allClasses.put(ln.substring(0, comma),
+									module + "/" + ln.substring(comma + 1));
+							}
+						}
+				}
 				
-				// End spacer
+				// End spacer and finalize
+				printer.println();
+				printer.flush();
+			}
+			
+			// Print out by class
+			try (PrintStream printer = new PrintStream(byClass,
+				true, "utf-8"))
+			{
+				// Header
+				printer.println("# By Class");
 				printer.println();
 				
-				// Finalize
+				// Write every class
+				for (Map.Entry<String, String> entry : allClasses.entrySet())
+					printer.printf(" * [%s](%s)%n",
+						UpdateFossilJavaDocAction.__encode(entry.getKey()),
+						entry.getValue());
+				
+				// End spacer and finalize
+				printer.println();
 				printer.flush();
 			}
 			
 			// Record file bytes
 			fossil.unversionStoreBytes(
-				UpdateFossilJavaDocAction._FOSSIL_PREFIX +
-					"by-project.mkd", baos.toByteArray());
+				UpdateFossilJavaDocAction._DOC_PREFIX +
+					"by-project.mkd", byProject.toByteArray());
+			fossil.unversionStoreBytes(
+				UpdateFossilJavaDocAction._DOC_PREFIX +
+					"by-class.mkd", byClass.toByteArray());
 		}
 		catch (IOException e)
 		{
@@ -244,12 +308,12 @@ public class UpdateFossilJavaDocAction
 		for (String path : fossil.unversionList())
 		{
 			// Ignore anything outside the JavaDoc area
-			if (!path.startsWith(UpdateFossilJavaDocAction._FOSSIL_PREFIX))
+			if (!path.startsWith(UpdateFossilJavaDocAction._DOC_PREFIX))
 				continue;
 			
 			// Get relative path to the file
 			String relativePath = path.substring(
-				UpdateFossilJavaDocAction._FOSSIL_PREFIX.length());
+				UpdateFossilJavaDocAction._DOC_PREFIX.length());
 			
 			// Get module/file split
 			int firstSlash = relativePath.indexOf('/');
@@ -270,6 +334,38 @@ public class UpdateFossilJavaDocAction
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * Encodes the key for JavaDoc.
+	 * 
+	 * @param __key The key to encode.
+	 * @return The encoded key.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/29
+	 */
+	private static String __encode(String __key)
+		throws NullPointerException
+	{
+		if (__key == null)
+			throw new NullPointerException("NARG");
+		
+		// If there are no underscores, we do not have to wipe bold/italics
+		if (__key.indexOf('_') < 0)
+			return __key;
+		
+		StringBuilder sb = new StringBuilder();
+		
+		for (int i = 0, n = __key.length(); i < n; i++)
+		{
+			char c = __key.charAt(i);
+			
+			if (c == '_')
+				sb.append('\\');
+			sb.append(c);
+		}
+		
+		return sb.toString();
 	}
 	
 	/**

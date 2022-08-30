@@ -17,6 +17,7 @@ import com.sun.javadoc.RootDoc;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -156,11 +157,16 @@ public class MarkdownDoclet
 		{
 			// What is this called?
 			Path tocPath = outputDir.resolve("table-of-contents.mkd");
+			Path csvPath = outputDir.resolve("table-of-contents.csv");
 			
 			// Write to table of contents
-			try (OutputStream out = new SafeTemporaryFileOutputStream(tocPath);
-				MarkdownWriter writer = new MarkdownWriter(
-					new OutputStreamWriter(out, "utf-8")))
+			try (MarkdownWriter writer = new MarkdownWriter(
+					new OutputStreamWriter(
+						new SafeTemporaryFileOutputStream(tocPath),
+							"utf-8"));
+				PrintStream csv = new PrintStream(
+					new SafeTemporaryFileOutputStream(csvPath),
+						true, "utf-8"))
 			{
 				// Header for this library
 				writer.header(true, 1, this.documentTitle);
@@ -172,9 +178,12 @@ public class MarkdownDoclet
 				for (Map.Entry<BinaryName, Set<ProcessedClass>> entry :
 					toc.entrySet())
 				{
+					// Write CSV entry
+					String packageName = entry.getKey().toClass()
+						.toRuntimeString();
+					
 					// Describe the package
-					writer.printf(true, "`%s`",
-						entry.getKey().toClass().toRuntimeString());
+					writer.printf(true, "`%s`", packageName);
 					
 					// Start package list
 					writer.listStart();
@@ -182,9 +191,14 @@ public class MarkdownDoclet
 					// Go through each in the package
 					for (ProcessedClass processed : entry.getValue())
 					{
+						// Write class into the CSV
+						String docPath = Utilities.relativePath(tocPath,
+							processed._documentPath);
+						csv.printf("%s,%s%n",
+							processed.name.toRuntimeString(), docPath);
+						
 						// URI to the document
-						writer.uri(Utilities.relativePath(
-							tocPath, processed._documentPath),
+						writer.uri(docPath,
 							processed.name.simpleName().identifier());
 						
 						// Dash for split
