@@ -12,14 +12,22 @@ package cc.squirreljme.doclet;
 import cc.squirreljme.io.file.SafeTemporaryFileOutputStream;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
+import cc.squirreljme.runtime.cldc.util.StringUtils;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.RootDoc;
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.classfile.BinaryName;
@@ -55,6 +63,14 @@ public class MarkdownDoclet
 	public static final String SQUIRRELJME_JAVA_SOURCES =
 		"-squirreljmejavasources";
 	
+	/** Locations of other projects' Markdown JavaDoc in SquirrelJME. */
+	public static final String SQUIRRELJME_PROJECT_DOCS =
+		"-squirreljmeprojectmjd";
+	
+	/** The project name. */
+	public static final String SQUIRRELJME_PROJECT =
+		"-squirreljmeproject";
+	
 	/** The classes which have been processed. */
 	protected final Map<ClassName, ProcessedClass> processedClasses =
 		new SortedTreeMap<>();
@@ -68,25 +84,121 @@ public class MarkdownDoclet
 	/** The title of this document. */
 	protected final String documentTitle;
 	
+	/** The name of this project. */
+	protected final String projectName;
+	
+	/** Paths to every project that exists. */
+	private final List<Path> _allProjects;
+	
+	/** Classes which are remotely elsewhere. */
+	private volatile Map<String, RemoteClass> _remoteClasses;
+	
 	/**
 	 * Initializes the doclet handler.
 	 * 
 	 * @param __rootDoc The root document to write into.
 	 * @param __outputDir The directory where the output goes.
 	 * @param __docTitle The document title.
+	 * @param __allProjects All project paths.
+	 * @param __projectName
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/08/23
 	 */
 	public MarkdownDoclet(RootDoc __rootDoc, Path __outputDir,
-		String __docTitle)
+		String __docTitle, List<Path> __allProjects, String __projectName)
 		throws NullPointerException
 	{
-		if (__rootDoc == null || __outputDir == null)
+		if (__rootDoc == null || __outputDir == null ||
+			__allProjects == null || __projectName == null)
 			throw new NullPointerException("NARG");
 		
 		this.rootDoc = __rootDoc;
 		this.outputDir = __outputDir;
 		this.documentTitle = __docTitle;
+		this._allProjects = __allProjects;
+		this.projectName = __projectName;
+	}
+	
+	/**
+	 * Attempts to locate a remote class for the project it belongs to.
+	 * 
+	 * @param __name The name of the class to get.
+	 * @return The module for the remote class or {@code null} if not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/29
+	 */
+	public RemoteClass remoteClassProject(String __name)
+		throws NullPointerException
+	{
+		// Do we need to load all the remote classes?
+		Map<String, RemoteClass> remoteClasses = this._remoteClasses;
+		if (remoteClasses == null)
+		{
+			// Setup
+			remoteClasses = new SortedTreeMap<>();
+			
+			// Go through all known projects
+			for (Path projectPath : this._allProjects)
+			{
+				// CSV that contains the class links along with the project
+				// name
+				Path csvPath = projectPath.resolve("table-of-contents.csv");
+				Path namePath = projectPath.resolve("project.name");
+				if (!Files.exists(csvPath) || !Files.exists(namePath))
+					continue;
+				
+				// Read in the project name
+				String projectName = null;
+				try (BufferedReader reader = new BufferedReader(
+					new InputStreamReader(Files.newInputStream(namePath,
+						StandardOpenOption.READ), "utf-8")))
+				{
+					projectName = reader.readLine();
+				}
+				catch (IOException ignored)
+				{
+				}
+				
+				// Read everything in
+				try (BufferedReader reader = new BufferedReader(
+					new InputStreamReader(Files.newInputStream(csvPath,
+						StandardOpenOption.READ), "utf-8")))
+				{
+					for (;;)
+					{
+						// Read next line, check for EOF
+						String ln = reader.readLine();
+						if (ln == null)
+							break;
+						
+						// Ignore blank lines
+						ln = ln.trim();
+						if (ln.isEmpty())
+							continue;
+						
+						// Read in splitting comma
+						int comma = ln.indexOf(',');
+						if (comma < 0)
+							continue;
+						
+						// Split fields
+						String className = ln.substring(0, comma);
+						String markdownPath = ln.substring(comma + 1);
+						
+						// Store it
+						remoteClasses.put(className,
+							new RemoteClass(projectName, markdownPath,
+								className));
+					}
+				}
+				catch (IOException ignored)
+				{
+				}
+			} 
+		}
+		
+		// Locate it
+		return remoteClasses.get(__name);
 	}
 	
 	/**
@@ -158,6 +270,15 @@ public class MarkdownDoclet
 			// What is this called?
 			Path tocPath = outputDir.resolve("table-of-contents.mkd");
 			Path csvPath = outputDir.resolve("table-of-contents.csv");
+			Path namePath = outputDir.resolve("project.name");
+			
+			// Write project name
+			try (PrintStream printer = new PrintStream(
+				new SafeTemporaryFileOutputStream(namePath),
+					true, "utf-8"))
+			{
+				printer.println(this.projectName);
+			}
 			
 			// Write to table of contents
 			try (MarkdownWriter writer = new MarkdownWriter(
@@ -275,6 +396,8 @@ public class MarkdownDoclet
 			case MarkdownDoclet.OUTPUT_DIRECTORY_FLAG:
 			case MarkdownDoclet.WINDOW_TITLE_FLAG:
 			case MarkdownDoclet.SQUIRRELJME_JAVA_SOURCES:
+			case MarkdownDoclet.SQUIRRELJME_PROJECT_DOCS:
+			case MarkdownDoclet.SQUIRRELJME_PROJECT:
 				return 2;
 			
 			default:
@@ -298,12 +421,26 @@ public class MarkdownDoclet
 		// Process options
 		Path outputDir = null;
 		String docTitle = null;
+		List<Path> allProjects = new ArrayList<>();
+		String projectName = null;
 		for (String[] option : __rd.options())
 			switch (option[0])
 			{
 					// Where to place the output
 				case MarkdownDoclet.OUTPUT_DIRECTORY_FLAG:
 					outputDir = Paths.get(option[1]);
+					break;
+					
+					// Project directories to locate class CSVs
+				case MarkdownDoclet.SQUIRRELJME_PROJECT_DOCS:
+					for (String source : StringUtils.basicSplit(
+						File.pathSeparatorChar, option[1]))
+						allProjects.add(Paths.get(source));
+					break;
+					
+					// The name of the project
+				case MarkdownDoclet.SQUIRRELJME_PROJECT:
+					projectName = option[1];
 					break;
 					
 					// The title of the document
@@ -319,7 +456,8 @@ public class MarkdownDoclet
 		// Perform processing
 		try
 		{
-			new MarkdownDoclet(__rd, outputDir, docTitle).run();
+			new MarkdownDoclet(__rd, outputDir, docTitle, allProjects,
+				projectName).run();
 			return true;
 		}
 		

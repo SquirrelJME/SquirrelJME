@@ -158,12 +158,30 @@ public final class Utilities
 		
 		// Is within our own documentation tree?
 		if (__class._implicit)
+		{
+			// Write direct link to it
 			__writer.uri(Utilities.relativePath(__from._documentPath,
 				__class._documentPath), __class.name.simpleName().toString());
+			
+			return;
+		}
 		
-		// Points outside our documentation tree?
-		else
-			__writer.printf(true, "`%s`",
-				__class.name.toRuntimeString());
+		// Points outside our documentation tree? Try to locate it		
+		RemoteClass remoteClass = __from.doclet()
+			.remoteClassProject(__class.name.toRuntimeString());
+		if (remoteClass != null)
+		{
+			// Write longer relative link to it
+			__writer.uri(Utilities.relativePath(__from._documentPath,
+				__from.doclet().outputDir) + "/../" + remoteClass.projectName +
+				"/" + remoteClass.markdownPath,
+				__class.name.simpleName().toString());
+			
+			return;
+		}
+		
+		// Could not figure out the location, so just use the binary name
+		__writer.printf(true, "`%s`",
+			__class.name.toRuntimeString());
 	}
 }

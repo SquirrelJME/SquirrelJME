@@ -17,6 +17,7 @@ import cc.squirreljme.plugin.tasks.JasminAssembleTask;
 import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask;
 import cc.squirreljme.plugin.tasks.TestsJarTask;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -340,7 +341,7 @@ public final class TaskInitialization
 		
 		// Configuration, for modifiers
 		SquirrelJMEPluginConfiguration squirreljmeConf =
-			SquirrelJMEPluginConfiguration.configurationOrNull(__project);
+			SquirrelJMEPluginConfiguration.configuration(__project);
 			
 		// We need to evaluate the Doclet project first since we need
 		// the Jar task, which if we use normal evaluation does not exist
@@ -417,14 +418,27 @@ public final class TaskInitialization
 			SourceSet.MAIN_SOURCE_SET_NAME);
 		
 		// Configure the JavaDoc task
-		mdJavaDoc.setDestinationDir(__project.getBuildDir().toPath()
-			.resolve("markdownJavaDoc").toFile());
+		mdJavaDoc.setDestinationDir(TaskInitialization.markdownPath(__project)
+			.toFile());
 		mdJavaDoc.source(sourceSet.getAllJava());
 		mdJavaDoc.setClasspath(useClassPath);
+		mdJavaDoc.setTitle(squirreljmeConf.swmName);
 		
-		if (squirreljmeConf != null)
-			mdJavaDoc.setTitle(squirreljmeConf.swmName);
+		// Determine the paths where all markdown JavaDocs are being stored
+		List<Path> projectPaths = new ArrayList<>();
+		for (Project subProject : __project.getRootProject().getAllprojects())
+		{
+			// Only consider SquirrelJME projects
+			if (null ==
+				SquirrelJMEPluginConfiguration.configurationOrNull(subProject))
+				continue;
+			
+			// We just store this here, since we do not know what exists
+			// and does not exist
+			projectPaths.add(TaskInitialization.markdownPath(subProject));
+		}
 		
+		// Setup more advanced options
 		mdJavaDoc.options((MinimalJavadocOptions __options) ->
 				{
 					// We need to set the bootstrap class path otherwise
@@ -447,14 +461,47 @@ public final class TaskInitialization
 					
 					// Used for completion counting
 					if (__options instanceof CoreJavadocOptions)
-						((CoreJavadocOptions)__options).addStringOption(
+					{
+						CoreJavadocOptions coreOptions =
+							(CoreJavadocOptions)__options;
+						
+						// Where to find our own sources (for TODOs)
+						coreOptions.addStringOption(
 							"squirreljmejavasources",
 							sourceSet.getAllJava().getAsPath());
+						
+						// Directories to all the other markdown JavaDocs
+						coreOptions.addStringOption(
+							"squirreljmeprojectmjd",
+							VMHelpers.classpathAsString(projectPaths));
+						
+						// The name of the project
+						coreOptions.addStringOption(
+							"squirreljmeproject",
+							__project.getName());
+					}
 				});
 			
 		// Add markdown task
 		TaskInitialization.initializeFossilMarkdownTask(
 			__project.getRootProject(), mdJavaDoc);
+	}
+	
+	/**
+	 * Returns the path to the markdown JavaDoc for a project.
+	 * 
+	 * @param __project The project to get for.
+	 * @return The path to the project's markdown JavaDoc.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/29
+	 */
+	public static Path markdownPath(Project __project)
+		throws NullPointerException
+	{
+		if (__project == null)
+			throw new NullPointerException("NARG");
+		
+		return __project.getBuildDir().toPath().resolve("markdownJavaDoc");
 	}
 	
 	/**
