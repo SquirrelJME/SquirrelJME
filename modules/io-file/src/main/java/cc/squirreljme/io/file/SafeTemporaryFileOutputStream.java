@@ -9,6 +9,7 @@
 
 package cc.squirreljme.io.file;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -57,7 +58,7 @@ public final class SafeTemporaryFileOutputStream
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 
+	 * @since 2022/08/29
 	 */
 	@Override
 	public void close()
@@ -106,7 +107,30 @@ public final class SafeTemporaryFileOutputStream
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 
+	 * @since 2022/08/29
+	 */
+	@Override
+	public void flush()
+		throws IOException
+	{
+		// Ignore if closed
+		if (this._closed)
+			return;
+		
+		// Forward
+		try
+		{
+			this.__init().flush();
+		}
+		catch (Throwable t)
+		{
+			this.__throw(t);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/08/29
 	 */
 	@Override
 	public void write(int __b)
@@ -129,7 +153,7 @@ public final class SafeTemporaryFileOutputStream
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 
+	 * @since 2022/08/29
 	 */
 	@Override
 	public void write(byte[] __b)
@@ -152,7 +176,7 @@ public final class SafeTemporaryFileOutputStream
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 
+	 * @since 2022/08/29
 	 */
 	@Override
 	public void write(byte[] __b, int __o, int __l)
