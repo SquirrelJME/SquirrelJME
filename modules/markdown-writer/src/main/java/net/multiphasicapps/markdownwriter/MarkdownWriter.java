@@ -325,7 +325,7 @@ public class MarkdownWriter
 	/**
 	 * Go the next item in the list.
 	 *
-	 * @throws IOException On write errros.
+	 * @throws IOException On write errors.
 	 * @since 2016/10/01
 	 */
 	public void listNext()
@@ -351,7 +351,7 @@ public class MarkdownWriter
 	}
 	
 	/**
-	 * Enters paragraph mode which may be used .
+	 * Enters paragraph mode which may be used to start a new block of text.
 	 *
 	 * @throws IOException On write errors.
 	 * @since 2016/10/02
