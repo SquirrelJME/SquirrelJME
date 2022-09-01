@@ -726,7 +726,7 @@ public final class JDWPController
 	{
 		List<Object> allTypes = new LinkedList<>();
 		
-		// Using all of the known cached types
+		// Using all the known cached types
 		if (__cached)
 		{
 			JDWPViewType viewType = this.viewType();
@@ -746,10 +746,10 @@ public final class JDWPController
 	}
 	
 	/**
-	 * Returns all of the types within the given group.
+	 * Returns all the types within the given group.
 	 * 
 	 * @param __group The group to search.
-	 * @return All of the types within the group.
+	 * @return All the types within the group.
 	 * @since 2021/04/25
 	 */
 	private List<Object> __allTypes(Object __group)

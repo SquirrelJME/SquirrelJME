@@ -47,7 +47,7 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			__packet.writeId(System.identityHashCode(__thread));
+			__packet.writeObject(__controller, __thread);
 			__packet.writeLocation(__controller,
 				__controller.locationOf(__thread));
 		}
@@ -73,7 +73,7 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			__packet.writeId(System.identityHashCode(__thread));
+			__packet.writeObject(__controller, __thread);
 			__packet.writeLocation(__controller,
 				__controller.locationOf(__thread));
 		}
@@ -122,7 +122,7 @@ public enum EventKind
 			
 			// Where are we?
 			JDWPLocation tossLocation = __controller.locationOf(__thread);
-			__packet.writeId(System.identityHashCode(__thread));
+			__packet.writeObject(__controller, __thread);
 			__packet.writeLocation(__controller, tossLocation);
 			
 			// Object being tossed
@@ -169,7 +169,7 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			__packet.writeId(System.identityHashCode(__args[0]));
+			__packet.writeObject(__controller, __args[0]);
 		}
 	},
 	
@@ -186,7 +186,7 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			__packet.writeId(System.identityHashCode(__args[0]));
+			__packet.writeObject(__controller, __args[0]);
 		}
 	},
 	
@@ -211,7 +211,7 @@ public enum EventKind
 			JDWPClassStatus status = (JDWPClassStatus)__args[1];
 			
 			// Calling thread
-			__packet.writeId(System.identityHashCode(__thread));
+			__packet.writeObject(__controller, __thread);
 			
 			// The Class ID
 			__packet.writeTaggedId(__controller, cl);
@@ -361,7 +361,7 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			__packet.writeId(System.identityHashCode(__thread));
+			__packet.writeObject(__controller, __thread);
 			__packet.writeLocation(__controller,
 				__controller.locationOf(__thread));
 		}
@@ -387,7 +387,7 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			__packet.writeId(System.identityHashCode(__thread));
+			__packet.writeObject(__controller, __thread);
 			__packet.writeLocation(__controller,
 				__controller.locationOf(__thread));
 		}
@@ -409,12 +409,12 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			__packet.writeId(System.identityHashCode(__thread));
+			__packet.writeObject(__controller, __thread);
 			__packet.writeLocation(__controller,
 				__controller.locationOf(__thread));
 			
 			// Write down the value
-			__packet.writeValue(__args[0],
+			__packet.writeValue(__controller, __args[0],
 				JDWPValueTag.guessTypeRaw(__controller, __args[0]),
 				false);
 		}
@@ -680,7 +680,7 @@ public enum EventKind
 		JDWPValue newValue = (JDWPValue)__args[4];
 		
 		// Write current thread and location
-		__packet.writeId(System.identityHashCode(__thread));
+		__packet.writeObject(__controller, __thread);
 		JDWPLocation location = __controller.locationOf(__thread);
 		__packet.writeLocation(__controller,
 			__controller.locationOf(__thread));
@@ -707,7 +707,7 @@ public enum EventKind
 		__packet.writeId(fieldDx);
 		
 		// The object accessed, this is tagged oddly
-		__packet.writeValue(instance,
+		__packet.writeValue(__controller, instance,
 			JDWPValueTag.guessTypeRaw(__controller, instance), false);
 		if (instance != null)
 			items.put(instance);
@@ -721,7 +721,7 @@ public enum EventKind
 			JDWPValueTag tag = JDWPValueTag.fromSignature(fieldSig);
 			
 			// Write the value
-			__packet.writeValue(newValue, tag, false);
+			__packet.writeValue(__controller, newValue, tag, false);
 			
 			// Make sure this is a known object
 			Object itemVal = newValue.get();

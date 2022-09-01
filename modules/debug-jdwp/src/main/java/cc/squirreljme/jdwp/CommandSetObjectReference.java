@@ -100,7 +100,7 @@ public enum CommandSetObjectReference
 						value.set(tag.defaultValue);
 					
 					// Always write as tagged value
-					rv.writeValue(value, tag, false);
+					rv.writeValue(__controller, value, tag, false);
 					
 					// Store object for later use
 					if (value.get() != null && tag.isObject)

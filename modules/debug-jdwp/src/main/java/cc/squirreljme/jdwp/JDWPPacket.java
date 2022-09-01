@@ -499,7 +499,7 @@ public final class JDWPPacket
 			if (__nullable && object == null)
 				return null;
 			
-			// Fail with invalid thread
+			// Fail with invalid object
 			throw ErrorType.INVALID_OBJECT.toss(object, id);
 		}
 		
@@ -884,6 +884,42 @@ public final class JDWPPacket
 	}
 	
 	/**
+	 * Writes the object to the output.
+	 * 
+	 * @param __controller The controller used.
+	 * @param __instance The instance of the object.
+	 * @throws JDWPException If this is not an object.
+	 * @throws NullPointerException If {@code __controller} is {@code null}.
+	 * @since 2022/09/01
+	 */
+	public void writeObject(JDWPController __controller, Object __instance)
+		throws JDWPException, NullPointerException
+	{
+		if (__controller == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			// This must be a valid object type
+			if (__instance != null)
+				if (!__controller.viewObject().isValid(__instance) &&
+					!__controller.viewThread().isValid(__instance) &&
+					!__controller.viewType().isValid(__instance) &&
+					!__controller.viewFrame().isValid(__instance) &&
+					!__controller.viewThreadGroup().isValid(__instance))
+					throw ErrorType.INVALID_OBJECT.toss(__instance,
+						System.identityHashCode(__instance));
+			
+			// Forward to write ID
+			this.writeId(System.identityHashCode(__instance));
+			
+			// Store for later referencing, just in case
+			if (__instance != null)
+				__controller.state.items.put(__instance);
+		}
+	}
+	
+	/**
 	 * Writes a tagged object ID to the output.
 	 * 
 	 * @param __controller The controller used.
@@ -1024,7 +1060,8 @@ public final class JDWPPacket
 	
 	/**
 	 * Writes a value to the output.
-	 * 
+	 *
+	 * @param __controller The controller used.
 	 * @param __val The value to write.
 	 * @param __context Context value which may adjust how the value is
 	 * written, this may be {@code null}.
@@ -1032,14 +1069,15 @@ public final class JDWPPacket
 	 * @throws JDWPException If it failed to write.
 	 * @since 2021/04/11
 	 */
-	public void writeValue(Object __val, JDWPValueTag __context,
-		boolean __untag)
+	public void writeValue(JDWPController __controller, Object __val,
+		JDWPValueTag __context, boolean __untag)
 		throws JDWPException
 	{
 		// We really meant to write a value here
 		if (__val instanceof JDWPValue)
 		{
-			this.writeValue(((JDWPValue)__val).get(), __context, __untag);
+			this.writeValue(__controller,
+				((JDWPValue)__val).get(), __context, __untag);
 			return;
 		}
 		
@@ -1158,7 +1196,7 @@ public final class JDWPPacket
 							break;
 					}
 					
-					this.writeId(System.identityHashCode(__val));
+					this.writeObject(__controller, __val);
 					break;
 				
 				default:

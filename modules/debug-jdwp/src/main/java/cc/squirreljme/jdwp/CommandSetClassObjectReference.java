@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPViewObject;
 import cc.squirreljme.jdwp.views.JDWPViewType;
 
 /**
@@ -33,19 +34,39 @@ public enum CommandSetClassObjectReference
 		{
 			Object object = __packet.readObject(__controller, false);
 			
-			// Try to find the matching instance type
-			Object found = null;
+			// This must be Class<?>...
 			JDWPViewType viewType = __controller.viewType();
-			for (Object type : __controller.__allTypes(false))
+			JDWPViewObject viewObject = __controller.viewObject();
+			if (viewObject == null || !viewObject.isValid(viewObject))
 			{
-				// Is this a match?
-				Object maybe = viewType.instance(type);
-				if (maybe == object)
-				{
-					found = type;
-					break; 
-				}
+				Object objectType = __controller.viewObject().type(object);
+				
+				// Ensure this is correct
+				if (objectType == null || !viewType.isValid(objectType) ||
+					!"Ljava/lang/Class;"
+						.equals(viewType.signature(objectType)))
+					throw ErrorType.INVALID_OBJECT.toss(object,
+						System.identityHashCode(object),
+						new Throwable("Not a Class object."));
 			}
+			
+			// Ask the viewer to get the type for this Class reference
+			Object found = viewType.typeOfClassInstance(object);
+			if (found != null && viewType.isValid(found))
+				__controller.state.items.put(found);
+			
+			// Could not directly get, so search through all types to find
+			if (found == null || !viewType.isValid(found))
+				for (Object type : __controller.__allTypes(false))
+				{
+					// Is this a match?
+					Object maybe = viewType.instance(type);
+					if (maybe == object)
+					{
+						found = type;
+						break; 
+					}
+				}
 			
 			// Not found?
 			if (found == null || !viewType.isValid(found))

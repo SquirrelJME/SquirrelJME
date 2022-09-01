@@ -3641,8 +3641,14 @@ public final class SpringThreadWorker
 	 */
 	private void __debugSuspension()
 	{
-		JDWPController jdwp = this.machine.tasks.jdwpController;
 		SpringThread thread = this.thread;
+		
+		// Disallow any kind of debug suspend, for example if this thread
+		// is created by the debugger for certain tasks or running.
+		if (thread.noDebugSuspend)
+			return;
+		
+		JDWPController jdwp = this.machine.tasks.jdwpController;
 		
 		// This only returns while we are suspended, but if it returns
 		// early then we were interrupted which means we need to signal

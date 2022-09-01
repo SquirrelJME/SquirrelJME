@@ -118,7 +118,7 @@ public enum CommandSetVirtualMachine
 			// Write all thread references
 			rv.writeInt(threads.length);
 			for (Object thread : threads)
-				rv.writeId(System.identityHashCode(thread));
+				rv.writeObject(__controller, thread);
 			
 			return rv;
 		}
@@ -144,7 +144,7 @@ public enum CommandSetVirtualMachine
 			
 			rv.writeInt(groups.length);
 			for (Object group : groups)
-				rv.writeId(System.identityHashCode(group));
+				rv.writeObject(__controller, group);
 			
 			return rv;
 		}

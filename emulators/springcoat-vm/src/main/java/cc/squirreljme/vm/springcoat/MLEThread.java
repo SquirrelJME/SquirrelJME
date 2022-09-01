@@ -129,7 +129,7 @@ public enum MLEThread
 				// oops! We need to actually create one here and bind it
 				// accordingly!
 				if (target == null)
-					target = machine.createThread(null, false);
+					target = machine.createThread(null, false, false);
 			}
 			
 			// New thread?

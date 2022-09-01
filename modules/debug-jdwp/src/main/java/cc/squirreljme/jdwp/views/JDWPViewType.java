@@ -274,4 +274,14 @@ public interface JDWPViewType
 	 * @since 2021/04/12
 	 */
 	Object superType(Object __which);
+	
+	/**
+	 * Returns the type that the {@link Class} instance represents.
+	 * 
+	 * @param __object An instance of {@link Class}.
+	 * @return The type of the given {@link Class} or {@code null} if it is not
+	 * valid.
+	 * @since 2022/09/01
+	 */
+	Object typeOfClassInstance(Object __object);
 }

@@ -150,6 +150,16 @@ public final class SpringFieldStorage
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
+		// Storing something that should not go into a field?
+		if (!(__v instanceof SpringObject) &&
+			!(__v instanceof Boolean) &&
+			!(__v instanceof Integer) &&
+			!(__v instanceof Long) &&
+			!(__v instanceof Float) &&
+			!(__v instanceof Double))
+			throw new IllegalArgumentException(String.format(
+				"Attempting to store %s (a %s)?", __v, __v.getClass()));
+		
 		// Debug
 		/*todo.DEBUG.note("%s::%s = %s", this.inclass, this.nameandtype,
 			__v);*/

@@ -175,7 +175,7 @@ public enum CommandSetThreadReference
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write the thread group
-			rv.writeId(System.identityHashCode(parent));
+			rv.writeObject(__controller, parent);
 			
 			return rv;
 		}
@@ -220,7 +220,7 @@ public enum CommandSetThreadReference
 				__controller.state.items.put(frame);
 				
 				// Write frame ID
-				rv.writeId(System.identityHashCode(frame));
+				rv.writeObject(__controller, frame);
 				
 				// We need to store and cache the class for later reference
 				Object classy = viewFrame.atClass(frame);
