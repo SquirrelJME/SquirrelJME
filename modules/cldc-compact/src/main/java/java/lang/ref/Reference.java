@@ -83,19 +83,8 @@ public abstract class Reference<T>
 				AtomicShelf.spinLock(cycle);
 			}
 			
-			// If the object has an existing link, then we need to chain links
-			RefLinkBracket oldLink = ReferenceShelf.objectGet(__v);
-			if (oldLink != null)
-			{
-				// New link -> Old link
-				ReferenceShelf.linkSetNext(link, oldLink);
-				
-				// New link <- Old link
-				ReferenceShelf.linkSetPrev(oldLink, link);
-			}
-			
-			// The object uses the current link as the head now
-			ReferenceShelf.objectSet(__v, link);
+			// Link into existing object, if needed
+			ReferenceShelf.linkChain(link, __v);
 		}
 		finally
 		{
@@ -275,21 +264,8 @@ public abstract class Reference<T>
 	{
 		RefLinkBracket link = this._link;
 		
-		// Get the previous and next links to re-chain
-		RefLinkBracket prev = ReferenceShelf.linkGetPrev(link);
-		RefLinkBracket next = ReferenceShelf.linkGetNext(link);
-		
-		// Have the previous link point to our next
-		if (prev != null)
-			ReferenceShelf.linkSetNext(prev, next);
-		
-		// Have the next link point to our previous
-		if (next != null)
-			ReferenceShelf.linkSetPrev(next, prev);
-		
-		// Clear our links because they are no longer valid
-		ReferenceShelf.linkSetPrev(link, null);
-		ReferenceShelf.linkSetNext(link, null);
+		// Unchain all the connected links atomically
+		ReferenceShelf.linkUnchain(link);
 		
 		// Clear the object this links to
 		ReferenceShelf.linkSetObject(link, null);

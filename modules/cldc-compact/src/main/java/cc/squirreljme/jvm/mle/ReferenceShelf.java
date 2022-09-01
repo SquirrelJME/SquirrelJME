@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.RefLinkBracket;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 
 /**
  * This provides the interface for references which are used to weakly refer
@@ -36,6 +37,18 @@ public final class ReferenceShelf
 	 * @since 2020/05/30
 	 */
 	public static native void deleteLink(RefLinkBracket __link);
+	
+	/**
+	 * Chains this link into the given object atomically.
+	 * 
+	 * @param __thisLink The link to chain.
+	 * @param __forObject The object to chain into.
+	 * @throws MLECallError On null arguments.
+	 * @since 2022/09/01
+	 */
+	public static native void linkChain(RefLinkBracket __thisLink,
+		Object __forObject)
+		throws MLECallError;
 	
 	/**
 	 * Returns the link after the specified one.
@@ -93,6 +106,16 @@ public final class ReferenceShelf
 	 */
 	public static native void linkSetPrev(RefLinkBracket __link,
 		RefLinkBracket __prev);
+	
+	/**
+	 * Unchains the given link from the previous and next.
+	 * 
+	 * @param __link The link to unchain.
+	 * @throws MLECallError If the links could not be unchained.
+	 * @since 2022/09/01
+	 */
+	public static native void linkUnchain(RefLinkBracket __link)
+		throws MLECallError;
 	
 	/**
 	 * Creates a new reference link.
