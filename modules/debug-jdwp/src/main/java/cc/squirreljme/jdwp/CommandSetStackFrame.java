@@ -63,7 +63,7 @@ public enum CommandSetStackFrame
 					// Try to guess the used value
 					JDWPValueTag tag = JDWPValueTag.guessType(
 						__controller, value);
-					rv.writeValue(value, tag, false);
+					rv.writeValue(__controller, value, tag, false);
 					
 					// Store object for later use
 					if (value.get() != null && tag.isObject)
@@ -118,7 +118,7 @@ public enum CommandSetStackFrame
 					// Try to guess the used value
 					JDWPValueTag tag = JDWPValueTag.guessType(
 						__controller, value);
-					rv.writeValue(value, tag, false);
+					rv.writeValue(__controller, value, tag, false);
 					
 					// Store object for later use
 					if (value.get() != null && tag.isObject)

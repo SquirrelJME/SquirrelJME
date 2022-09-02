@@ -100,7 +100,7 @@ public enum CommandSetThreadGroupReference
 			// Record all of their IDs
 			for (Object thread : threads)
 			{	
-				rv.writeId(System.identityHashCode(thread));
+				rv.writeObject(__controller, thread);
 				
 				// Store for later referencing
 				__controller.state.items.put(thread);

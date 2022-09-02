@@ -56,8 +56,7 @@ public enum CommandSetClassLoader
 				if (type != null)
 					__controller.state.items.put(type);
 				
-				rv.writeByte(JDWPUtils.classType(__controller, type).id);
-				rv.writeId(System.identityHashCode(type));
+				rv.writeTaggedId(__controller, type);
 			}
 			
 			return rv;

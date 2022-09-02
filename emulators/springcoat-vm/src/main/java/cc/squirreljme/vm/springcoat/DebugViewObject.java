@@ -91,13 +91,12 @@ public class DebugViewObject
 		// the class details.
 		if (__which instanceof SpringSimpleObject)
 		{
-			SpringFieldStorage[] store = ((SpringSimpleObject)__which)._fields;
+			SpringSimpleObject which = (SpringSimpleObject)__which;
+			
+			SpringFieldStorage[] store = (which)._fields;
 			if (__index >= 0 && __index < store.length)
-			{
-				__out.set(DebugViewObject.__normalizeNull(
-					store[__index].get()));
-				return true;
-			}
+				return DebugViewType.__readValue(__out, store[__index],
+					which.type.classLoader().machine());
 		}
 		
 		// Not a valid object or one where a value can be read from

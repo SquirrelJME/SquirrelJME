@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPViewObject;
 import cc.squirreljme.jdwp.views.JDWPViewType;
 
 /**
@@ -50,7 +51,15 @@ public final class JDWPUtils
 		// If null or not valid, treat as an object
 		JDWPViewType viewType = __controller.viewType();
 		if (__class == null || !viewType.isValid(__class))
+		{
+			// If this was an object, then get the class of the object
+			JDWPViewObject viewObject = __controller.viewObject();
+			if (__class != null && viewObject.isValid(__class))
+				return JDWPUtils.classType(__controller,
+					viewObject.type(__class));
+			
 			return JDWPClassType.CLASS;
+		}
 		
 		// Array type?
 		if (viewType.signature(__class).startsWith("["))

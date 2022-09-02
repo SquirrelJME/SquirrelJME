@@ -30,7 +30,7 @@ public enum MLEAtomic
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			synchronized (MLEAtomic.class)
+			synchronized (GlobalState.class)
 			{
 				// Generate a key which will be returned via the lock
 				int key;
@@ -58,7 +58,7 @@ public enum MLEAtomic
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			synchronized (MLEAtomic.class)
+			synchronized (GlobalState.class)
 			{
 				// Unlocking is simple and only works if we have the key used
 				// to lock the garbage collector
@@ -104,7 +104,7 @@ public enum MLEAtomic
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			synchronized (MLEAtomic.class)
+			synchronized (GlobalState.class)
 			{
 				return GlobalState.TICKER.decrementAndGet();
 			}

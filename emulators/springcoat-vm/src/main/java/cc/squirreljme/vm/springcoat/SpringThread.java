@@ -66,6 +66,9 @@ public final class SpringThread
 	private final List<SpringThread.Frame> _frames =
 		new ArrayList<>();
 	
+	/** Do not allow debug suspension. */
+	public final boolean noDebugSuspend;
+	
 	/** Inherited verbose flags to use. */
 	int _initVerboseFlags;
 	
@@ -112,11 +115,14 @@ public final class SpringThread
 	 * @param __main Is this a main thread.
 	 * @param __n The name of the thread.
 	 * @param __profiler Profiled storage.
+	 * @param __noDebugSuspend Do not allow the debugger to suspend this
+	 * thread.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/01
 	 */
 	SpringThread(Reference<SpringMachine> __machRef, int __id, int __uniqueId,
-		boolean __main, String __n, ProfiledThread __profiler)
+		boolean __main, String __n, ProfiledThread __profiler,
+		boolean __noDebugSuspend)
 		throws NullPointerException
 	{
 		if (__n == null)
@@ -128,6 +134,7 @@ public final class SpringThread
 		this.main = __main;
 		this.name = __n;
 		this.profiler = __profiler;
+		this.noDebugSuspend = __noDebugSuspend;
 	}
 	
 	/**
