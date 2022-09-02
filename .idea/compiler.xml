@@ -12,6 +12,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
+      <module name="squirreljme.buildSrc.markdownJavaDoc" target="11" />
       <module name="squirreljme.emulators.emulator-runner.main" target="8" />
       <module name="squirreljme.emulators.emulator-runner.test" target="8" />
       <module name="squirreljme.emulators.interpreter-vm" target="11" />
