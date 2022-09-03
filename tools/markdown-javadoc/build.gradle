@@ -1,0 +1,59 @@
+import org.gradle.plugins.ide.idea.model.IdeaLanguageLevel
+
+import java.nio.file.Paths
+
+plugins {
+	id "java-library"
+	id "idea"
+	id "com.github.johnrengelman.shadow" version "7.1.2"
+}
+
+jar {
+}
+
+shadowJar {
+	dependsOn jar
+}
+
+// Where do we get the module from?
+FileCollection toolsJar
+if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
+	// Add directory that contains module-info.java so that it gets used
+	sourceSets.main.java.srcDirs += files(projectDir.toPath()
+		.resolve("src").resolve("java9"))
+	
+	// Say this is a Java 1 project
+	sourceCompatibility = JavaVersion.VERSION_11
+	targetCompatibility = JavaVersion.VERSION_11
+	
+	// We need to tell IntelliJ that this is a Java 9 module and not
+	// something else...
+	idea {
+		module {
+			jdkName = "11"
+			languageLevel = new IdeaLanguageLevel("11")
+			targetBytecodeVersion = JavaVersion.VERSION_11
+		}
+	}
+} else {
+	// On Java 8 we have tools.jar for this
+	toolsJar = files(Paths.get("${System.properties['java.home']}")
+		.getParent().resolve("lib").resolve("tools.jar"))
+	
+	// Say this is a Java 8 project
+	sourceCompatibility = JavaVersion.VERSION_1_8
+	targetCompatibility = JavaVersion.VERSION_1_8
+	
+	// Depend directly on tools.jar so it is brought in
+	dependencies {
+		implementation files(toolsJar)
+	}
+}
+
+dependencies {
+	implementation project(":modules:io-file")
+	implementation project(":modules:json")
+	implementation project(":modules:markdown-writer")
+	implementation project(":modules:tool-classfile")
+}
+

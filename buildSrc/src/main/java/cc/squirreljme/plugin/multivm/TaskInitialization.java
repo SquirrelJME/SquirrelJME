@@ -9,21 +9,32 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.general.UpdateFossilJavaDoc;
 import cc.squirreljme.plugin.tasks.AdditionalManifestPropertiesTask;
 import cc.squirreljme.plugin.tasks.GenerateTestsListTask;
 import cc.squirreljme.plugin.tasks.JasminAssembleTask;
 import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask;
 import cc.squirreljme.plugin.tasks.TestsJarTask;
+import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.UnknownDomainObjectException;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskContainer;
+import org.gradle.api.tasks.javadoc.Javadoc;
+import org.gradle.external.javadoc.CoreJavadocOptions;
+import org.gradle.external.javadoc.MinimalJavadocOptions;
 import org.gradle.jvm.tasks.Jar;
 
 /**
@@ -61,10 +72,6 @@ public final class TaskInitialization
 		if (__project == null)
 			throw new NullPointerException("NARG");
 		
-		// Initialize or both main classes and such
-		for (String sourceSet : TaskInitialization._SOURCE_SETS)
-			TaskInitialization.initialize(__project, sourceSet);
-		
 		// Disable the test task, since it is non-functional
 		// However this might fail
 		try
@@ -93,6 +100,10 @@ public final class TaskInitialization
 			if ("test".equals(((Task)item).getName()))
 				it.remove();
 		}
+		
+		// Initialize or both main classes and such
+		for (String sourceSet : TaskInitialization._SOURCE_SETS)
+			TaskInitialization.initialize(__project, sourceSet);
 	}
 	
 	/**
@@ -131,19 +142,16 @@ public final class TaskInitialization
 		Jar jarTask = (Jar)__project.getTasks()
 			.findByName(jarTaskName);
 		
+		// We need to know how to make the classes
+		Task classes = __project.getTasks()
+			.getByName(TaskInitialization.task(
+				"", __sourceSet, "classes"));
+		
 		// If it does not exist, create it
 		if (jarTask == null)
-		{
-			// We need to know how to make the classes
-			Task classes = __project.getTasks()
-				.getByName(TaskInitialization.task(
-					"", __sourceSet, "classes"));
-			
-			// Create task for making the Jar
 			jarTask = (Jar)__project.getTasks()
 				.create("testJar", TestsJarTask.class,
 				classes, processResources);
-		}
 		
 		// Correct name of the Jar archive
 		String normalJarName;
@@ -230,9 +238,47 @@ public final class TaskInitialization
 		
 		// Testing the target
 		else if (__sourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME))
-			tasks.create(
+		{
+			Task vmTest = tasks.create(
 				TaskInitialization.task("test", __sourceSet, __vmType),
 				VMTestTask.class, __sourceSet, __vmType, libTask);
+			
+			// Make the standard test task depend on these two VM tasks
+			// so that way if it is ran, both are run accordingly
+			if (__vmType == VMType.HOSTED || __vmType == VMType.SPRINGCOAT)
+			{
+				Task test = __project.getTasks().getByName("test");
+				
+				test.dependsOn(vmTest);
+			}
+		}
+	}
+	
+	/**
+	 * Initializes the task which puts the entire Markdown documentation into
+	 * Fossil's versioned space.
+	 * 
+	 * @param __project The project to initialize for.
+	 * @param __javaDoc The JavaDoc Task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/29
+	 */
+	public static void initializeFossilMarkdownTask(Project __project,
+		Javadoc __javaDoc)
+		throws NullPointerException
+	{
+		if (__project == null || __javaDoc == null)
+			throw new NullPointerException("NARG");
+		
+		// Find existing task, create if it does not yet exist
+		UpdateFossilJavaDoc task = (UpdateFossilJavaDoc)__project.getTasks()
+			.findByName("updateFossilJavaDoc");
+		if (task == null)
+			task = (UpdateFossilJavaDoc)__project.getTasks()
+				.create("updateFossilJavaDoc", UpdateFossilJavaDoc.class);
+		
+		// Add dependency to the task for later usage
+		task.dependsOn(__javaDoc);
 	}
 	
 	/**
@@ -278,6 +324,184 @@ public final class TaskInitialization
 		__project.getTasks().create(
 			TaskInitialization.task("full", __sourceSet, __vmType),
 			VMFullSuite.class, __sourceSet, __vmType);
+	}
+	
+	/**
+	 * Late initialization step.
+	 * 
+	 * @param __project The project to initialize.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/29
+	 */
+	public static void lateInitialize(Project __project)
+		throws NullPointerException
+	{
+		if (__project == null)
+			throw new NullPointerException("NARG");
+		
+		// Configuration, for modifiers
+		SquirrelJMEPluginConfiguration squirreljmeConf =
+			SquirrelJMEPluginConfiguration.configuration(__project);
+			
+		// We need to evaluate the Doclet project first since we need
+		// the Jar task, which if we use normal evaluation does not exist
+		// yet...
+		Project docletProject =
+			__project.evaluationDependsOn(":tools:markdown-javadoc");
+		
+		// Setup task for creating JavaDoc
+		Javadoc mdJavaDoc = __project.getTasks()
+			.create("markdownJavaDoc", Javadoc.class);
+		
+		// What does this do?
+		mdJavaDoc.setGroup("squirreljme");
+		mdJavaDoc.setDescription("Generates Markdown JavaDoc.");
+		
+		// This has a hard dependency and we do not want to get out of order
+		mdJavaDoc.mustRunAfter(
+			docletProject.getTasks().getByName("clean"),
+			docletProject.getTasks().getByName("jar"));
+		
+		// We are using a specific classpath, in this case it is just
+		// SpringCoat's libraries for runtime
+		FileCollection useClassPath = __project.files(
+			(Object[])VMHelpers.runClassPath(__project,
+				SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT));
+				
+		// We need to know how to make the classes
+		Task classes = __project.getTasks().getByName(TaskInitialization.task(
+			"", SourceSet.MAIN_SOURCE_SET_NAME, "classes"));
+		
+		// Where do we find the JAR?
+		Provider<Task> jarProvider = __project.provider(() ->
+			__project.getRootProject().findProject(
+			":tools:markdown-javadoc").getTasks().getByName("shadowJar"));
+		
+		// SpringCoat related tasks
+		Provider<Iterable<Task>> springCoatTasks = __project.provider(() ->
+			VMHelpers.<Task>resolveProjectTasks(
+			Task.class, __project, VMHelpers.runClassTasks(__project,
+			SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT)));
+		
+		// Classes need to compile first, and we need the doclet Jar too
+		// However we do not know it exists yet
+		mdJavaDoc.dependsOn(classes);
+		mdJavaDoc.dependsOn(springCoatTasks);
+		mdJavaDoc.dependsOn(jarProvider);
+		
+		// We also need to depend on other markdownJavaDoc tasks of our
+		// dependencies... this is so we can do cross-project links with
+		// our JavaDoc generation
+		mdJavaDoc.dependsOn(__project.provider(() -> {
+				Map<String, Javadoc> result = new LinkedHashMap<>();
+				
+				for (Task task : springCoatTasks.get()) {
+					// Ignore our own project, otherwise recursive!
+					Project subProject = task.getProject();
+					if (subProject.equals(__project))
+						continue;
+					
+					// Only refer to projects once
+					String subName = subProject.getPath();
+					if (!result.containsKey(subName))
+						result.put(subName,
+							(Javadoc)subProject.getTasks()
+							.getByName("markdownJavaDoc"));
+				}
+				
+				return result.values();
+			}));
+		
+		// Where are the sources?
+		SourceSet sourceSet = __project.getConvention().getPlugin(
+			JavaPluginConvention.class).getSourceSets().getByName(
+			SourceSet.MAIN_SOURCE_SET_NAME);
+		
+		// Configure the JavaDoc task
+		mdJavaDoc.setDestinationDir(TaskInitialization.markdownPath(__project)
+			.toFile());
+		mdJavaDoc.source(sourceSet.getAllJava());
+		mdJavaDoc.setClasspath(useClassPath);
+		mdJavaDoc.setTitle(squirreljmeConf.swmName);
+		
+		// Determine the paths where all markdown JavaDocs are being stored
+		List<Path> projectPaths = new ArrayList<>();
+		for (Project subProject : __project.getRootProject().getAllprojects())
+		{
+			// Only consider SquirrelJME projects
+			if (null ==
+				SquirrelJMEPluginConfiguration.configurationOrNull(subProject))
+				continue;
+			
+			// We just store this here, since we do not know what exists
+			// and does not exist
+			projectPaths.add(TaskInitialization.markdownPath(subProject));
+		}
+		
+		// Setup more advanced options
+		mdJavaDoc.options((MinimalJavadocOptions __options) ->
+				{
+					// We need to set the bootstrap class path otherwise
+					// we will get derivations from whatever JDK the system
+					// is using, and we definitely do not want that.
+					__options.bootClasspath(useClassPath.getFiles()
+						.toArray(new File[0]));
+				
+					// We get this by forcing evaluation
+					Task mdJavaDocletJar = jarProvider.get();
+					
+					// Set other options
+					__options.showFromProtected();
+					__options.encoding("utf-8");
+					__options.locale("en_US");
+					__options.docletpath(mdJavaDocletJar.getOutputs()
+						.getFiles().getSingleFile());
+					__options.doclet(
+						"cc.squirreljme.doclet.MarkdownDoclet");
+					
+					// Used for completion counting
+					if (__options instanceof CoreJavadocOptions)
+					{
+						CoreJavadocOptions coreOptions =
+							(CoreJavadocOptions)__options;
+						
+						// Where to find our own sources (for TODOs)
+						coreOptions.addStringOption(
+							"squirreljmejavasources",
+							sourceSet.getAllJava().getAsPath());
+						
+						// Directories to all the other markdown JavaDocs
+						coreOptions.addStringOption(
+							"squirreljmeprojectmjd",
+							VMHelpers.classpathAsString(projectPaths));
+						
+						// The name of the project
+						coreOptions.addStringOption(
+							"squirreljmeproject",
+							__project.getName());
+					}
+				});
+			
+		// Add markdown task
+		TaskInitialization.initializeFossilMarkdownTask(
+			__project.getRootProject(), mdJavaDoc);
+	}
+	
+	/**
+	 * Returns the path to the markdown JavaDoc for a project.
+	 * 
+	 * @param __project The project to get for.
+	 * @return The path to the project's markdown JavaDoc.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/29
+	 */
+	public static Path markdownPath(Project __project)
+		throws NullPointerException
+	{
+		if (__project == null)
+			throw new NullPointerException("NARG");
+		
+		return __project.getBuildDir().toPath().resolve("markdownJavaDoc");
 	}
 	
 	/**

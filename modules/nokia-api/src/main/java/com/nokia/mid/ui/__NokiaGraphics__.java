@@ -19,7 +19,7 @@ import javax.microedition.lcdui.Image;
  *
  * @since 2021/01/04
  */
-public class __NokiaGraphics__
+class __NokiaGraphics__
 	implements DirectGraphics
 {
 	/** The raw graphics to use. */

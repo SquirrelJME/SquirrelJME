@@ -29,7 +29,7 @@ public class ListErrorPrefixTask
 	public ListErrorPrefixTask()
 	{
 		// Describe this one
-		this.setGroup("squirreljme");
+		this.setGroup("squirreljmeGeneral");
 		this.setDescription("Lists error prefixes.");
 		
 		// The action to perform

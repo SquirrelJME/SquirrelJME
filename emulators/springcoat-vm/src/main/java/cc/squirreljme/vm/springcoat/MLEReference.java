@@ -33,8 +33,53 @@ public enum MLEReference
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			// Check it, but otherwise do nothing
-			MLEReference.__refLink(__args[0]);
+			synchronized (GlobalState.class)
+			{
+				// Check it, but otherwise do nothing
+				MLEReference.__refLink(__args[0]);
+			}
+			
+			return null;
+		}
+	},
+	
+	/** {@link ReferenceShelf#linkChain(RefLinkBracket, Object)}. */
+	LINK_CHAIN("linkChain:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"RefLinkBracket;Ljava/lang/Object;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2022/09/01
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			RefLinkObject link = MLEReference.__refLink(__args[0]);
+			
+			if (__args[1] == null)
+				throw new SpringMLECallError("Null object.");
+			if (!(__args[1] instanceof SpringSimpleObject))
+				throw new SpringMLECallError("Invalid object");
+			
+			SpringSimpleObject object = (SpringSimpleObject)__args[1];
+			
+			synchronized (GlobalState.class)
+			{
+				// If the object has an existing link, then we need to chain
+				// links
+				RefLinkObject oldLink = object.refLink().get();
+				if (oldLink != null)
+				{
+					// New link -> Old link
+					link.setNext(oldLink);
+					
+					// New link <- Old link
+					oldLink.setPrev(link);
+				}
+				
+				// The object uses the current link as the head now
+				object.refLink().set(link);
+			}
 			
 			return null;
 		}
@@ -51,7 +96,10 @@ public enum MLEReference
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return MLEReference.__refLink(__args[0]).getNext();
+			synchronized (GlobalState.class)
+			{
+				return MLEReference.__refLink(__args[0]).getNext();
+			}
 		}
 	},
 	
@@ -66,7 +114,10 @@ public enum MLEReference
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return MLEReference.__refLink(__args[0]).getObject();
+			synchronized (GlobalState.class)
+			{
+				return MLEReference.__refLink(__args[0]).getObject();
+			}
 		}
 	},
 	
@@ -81,7 +132,10 @@ public enum MLEReference
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return MLEReference.__refLink(__args[0]).getPrev();
+			synchronized (GlobalState.class)
+			{
+				return MLEReference.__refLink(__args[0]).getPrev();
+			}
 		}
 	},
 	
@@ -96,8 +150,12 @@ public enum MLEReference
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEReference.__refLink(__args[0]).setNext(
-				MLEReference.__refLink(__args[1]));
+			synchronized (GlobalState.class)
+			{
+				MLEReference.__refLink(__args[0]).setNext(
+					MLEReference.__refLink(__args[1]));
+			}
+			
 			return null;
 		}
 	},
@@ -113,8 +171,12 @@ public enum MLEReference
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEReference.__refLink(__args[0])
-				.setObject((SpringObject)__args[1]);
+			synchronized (GlobalState.class)
+			{
+				MLEReference.__refLink(__args[0])
+					.setObject((SpringObject)__args[1]);
+			}
+			
 			return null;
 		}
 	},
@@ -130,8 +192,48 @@ public enum MLEReference
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			MLEReference.__refLink(__args[0]).setPrev(
-				MLEReference.__refLink(__args[1]));
+			synchronized (GlobalState.class)
+			{
+				MLEReference.__refLink(__args[0]).setPrev(
+					MLEReference.__refLink(__args[1]));
+			}
+			
+			return null;
+		}
+	},
+	
+	/** {@link ReferenceShelf#linkUnchain(RefLinkBracket)}. */
+	LINK_UNCHAIN("linkUnchain:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"RefLinkBracket;Lcc/squirreljme/jvm/mle/brackets/RefLinkBracket;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2022/09/01
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			RefLinkObject thisLink = MLEReference.__refLink(__args[0]);
+			
+			synchronized (GlobalState.class)
+			{
+				// Get the previous and next links to re-chain
+				RefLinkObject prev = thisLink.getPrev();
+				RefLinkObject next = thisLink.getNext();
+				
+				// Have the previous link point to our next
+				if (prev != null)
+					prev.setNext(next);
+				
+				// Have the next link point to our previous
+				if (next != null)
+					next.setPrev(prev);
+				
+				// Clear our links because they are no longer valid
+				thisLink.setPrev(null);
+				thisLink.setNext(null);
+			}
+			
 			return null;
 		}
 	},
@@ -162,11 +264,14 @@ public enum MLEReference
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringObject object = (SpringObject)__args[0];
-			if (!(object instanceof SpringSimpleObject))
-				throw new SpringMLECallError("Invalid object"); 
-			
-			return object.refLink().get();
+			synchronized (GlobalState.class)
+			{
+				SpringObject object = (SpringObject)__args[0];
+				if (!(object instanceof SpringSimpleObject))
+					throw new SpringMLECallError("Invalid object"); 
+				
+				return object.refLink().get();
+			}
 		}
 	},
 	
@@ -181,11 +286,15 @@ public enum MLEReference
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringObject object = (SpringObject)__args[0];
-			if (!(object instanceof SpringSimpleObject))
-				throw new SpringMLECallError("Invalid object"); 
+			synchronized (GlobalState.class)
+			{
+				SpringObject object = (SpringObject)__args[0];
+				if (!(object instanceof SpringSimpleObject))
+					throw new SpringMLECallError("Invalid object"); 
+				
+				object.refLink().set(MLEReference.__refLink(__args[1]));
+			}
 			
-			object.refLink().set(MLEReference.__refLink(__args[1]));
 			return null;
 		}
 	}

@@ -1,0 +1,19 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "Provides file related helpers."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "IP"
+	swmType = JavaMEMidletType.LIBRARY
+	swmName = "Generic Input/Output with File Support"
+	swmVendor = "Stephanie Gawroriski"
+	tags += "extra"
+}
+
+dependencies
+{
+	api project(":modules:cldc")
+	api project(":modules:io")
+}

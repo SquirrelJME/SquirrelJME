@@ -49,7 +49,7 @@ public class RatufaCoatBuiltInTask
 		this.vmType = __vmType;
 		
 		// Set details of this task
-		this.setGroup("squirreljme");
+		this.setGroup("squirreljmeGeneral");
 		this.setDescription("Builds the combined ROM.");
 		
 		// Depends on the ROM being built

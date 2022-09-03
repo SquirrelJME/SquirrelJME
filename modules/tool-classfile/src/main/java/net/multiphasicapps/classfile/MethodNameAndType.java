@@ -89,7 +89,7 @@ public final class MethodNameAndType
 		int rv = this.name.compareTo(__o.name);
 		if (rv != 0)
 			return rv;
-		return this.type.toString().compareTo(__o.type.toString());
+		return this.type.compareTo(__o.type);
 	}
 	
 	/**

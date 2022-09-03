@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2020/10/16
  */
-public class __CustomItemDefaultKeyListener__
+class __CustomItemDefaultKeyListener__
 	implements KeyListener
 {
 	/** The item to reference. */
