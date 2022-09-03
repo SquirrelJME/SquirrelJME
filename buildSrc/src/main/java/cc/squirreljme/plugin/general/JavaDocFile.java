@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Locale;
-import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
 /**
  * Represents the JavaDoc file.
