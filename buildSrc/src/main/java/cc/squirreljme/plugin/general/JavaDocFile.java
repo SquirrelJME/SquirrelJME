@@ -31,7 +31,7 @@ public final class JavaDocFile
 	public final JavaDocFileSupplier supplier;
 	
 	/** The checksum. */
-	private volatile String _checksum;
+	private volatile byte[] _checksum;
 	
 	/**
 	 * Initializes the file reference.
@@ -57,14 +57,14 @@ public final class JavaDocFile
 	 * @return The file checksum.
 	 * @since 2022/08/29
 	 */
-	public String checkSum()
+	public byte[] checkSum()
 	{
 		// Has this already been calculated?
-		String checksum = this._checksum;
+		byte[] checksum = this._checksum;
 		if (checksum != null)
-			return checksum;
+			return checksum.clone();
 		
-		// Calcuate it
+		// Calculate it
 		try (InputStream in = this.supplier.open())
 		{
 			MessageDigest digest = MessageDigest.getInstance("sha-1");
@@ -81,10 +81,9 @@ public final class JavaDocFile
 				digest.update(buf, 0, rc);
 			}
 			
-			checksum = new HexBinaryAdapter().marshal(digest.digest())
-				.toLowerCase(Locale.ROOT);
+			checksum = digest.digest();
 			this._checksum = checksum;
-			return checksum;
+			return checksum.clone();
 		}
 		catch (IOException|NoSuchAlgorithmException e)
 		{

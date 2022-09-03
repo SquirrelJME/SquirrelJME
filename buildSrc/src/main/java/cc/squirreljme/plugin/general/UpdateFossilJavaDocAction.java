@@ -19,9 +19,9 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -129,11 +129,11 @@ public class UpdateFossilJavaDocAction
 				// Files exist in both, compare before replacement
 				else
 				{
-					String beforeSha = before.get(file).checkSum();
-					String afterSha = after.get(file).checkSum();
+					byte[] beforeSha = before.get(file).checkSum();
+					byte[] afterSha = after.get(file).checkSum();
 					
 					// Did the files actually change?
-					if (!beforeSha.equals(afterSha))
+					if (!Arrays.equals(beforeSha, afterSha))
 						try (InputStream in = after.get(file).supplier.open())
 						{
 							fossil.unversionStoreBytes(unversionPath, in);
