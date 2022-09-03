@@ -63,13 +63,16 @@ public class Runtime
 			Debugging.debugNote("Exiting VM with %d...", __v);
 			
 			// Print the trace where this exit is for debugging
-			TracePointBracket[] trace = DebugShelf.traceStack();
-			CallTraceUtils.printStackTrace(new PrintStream(
-					new NonClosedOutputStream(
-						new ConsoleOutputStream(StandardPipeType.STDERR,
-							true))),
-				"EXIT", trace,
-				null, null, 0);
+			if (__v != 0)
+			{
+				TracePointBracket[] trace = DebugShelf.traceStack();
+				CallTraceUtils.printStackTrace(new PrintStream(
+						new NonClosedOutputStream(
+							new ConsoleOutputStream(StandardPipeType.STDERR,
+								true))),
+					"EXIT", trace,
+					null, null, 0);
+			}
 		}
 		catch (Throwable ignored)
 		{
