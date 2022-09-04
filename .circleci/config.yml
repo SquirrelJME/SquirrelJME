@@ -59,6 +59,77 @@ executors:
 orbs:
   win: circleci/windows@2.4.0
 
+# Parameters to simplify commands
+parameters:
+  # Options to be used for any Gradle command, is faster this way
+  standard-gradle-options:
+    type: string
+    default: --console plain --continue --parallel --no-daemon
+
+  # Standard build for systems
+  standard-build-options:
+    type: string
+    default: build testHosted -x testSpringCoat -x javadoc -x javadocJar -x sourcesJar -x markdownJavaDoc
+
+# Commands that are used by almost everything
+commands:
+  # Save Gradle cache and such so subsequent builds are faster
+  persist-gradle:
+    steps:
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '.gradle/*'
+            - 'build/*'
+            - '*/.gradle/*'
+            - '*/build/*'
+            - '*/*/build/*'
+
+  # Saving of test results, since this is duplicated for many OSes
+  save-test-results:
+    parameters:
+      where:
+        type: string
+      os:
+        type: string
+      vm:
+        type: string
+      shell:
+        type: string
+        default: "/bin/bash"
+      home:
+        type: string
+        default: $HOME
+      store-home:
+        type: string
+        default: $HOME
+    steps:
+      - run:
+          shell: <<parameters.shell>
+          name: Save test results
+          command: |
+            mkdir -p "<<parameters.home>>/test-results/junit-<<parameters.os>>/"
+            find . -type f -regex '.*/'"<<parameters.where>>"'/junit/.*\.xml' -exec cp {} "<<parameters.home>>/test-results/junit-<<parameters.os>>/" \;
+          when: always
+      - run:
+          shell: <<parameters.shell>
+          name: Save test results
+          command: |
+            mkdir -p "<<parameters.home>>/test-results/csv-<<parameters.os>>/"
+            find . -type f -regex '.*/'"<<parameters.where>>"'/csv/.*\.csv' -exec cp {} "<<parameters.home>>/test-results/csv-<<parameters.os>>/" \;
+          when: always
+      - run:
+          shell: <<parameters.shell>
+          name: Save snapshots
+          command: |
+            mkdir -p "<<parameters.home>>/test-results/nps-<<parameters.vm>>-<<parameters.os>>/"
+            find . -type f -regex '.*/'"<<parameters.where>>"'/nps/.*\.nps' -exec cp {} "<<parameters.home>>/test-results/nps-<<parameters.vm>>-<<parameters.os>>/" \;
+          when: always
+      - store_test_results:
+          path: <<parameters.store-home>>/test-results
+      - store_artifacts:
+          path: <<parameters.store-home>>/test-results
+
 jobs:
   ################################## WINDOWS #################################
   build_windows:
@@ -78,33 +149,15 @@ jobs:
           # According to documentation, Gradle on Windows has trouble and tries
           # to make way too many workers which causes extreme resource.
           # contention --max-workers=2
-          command: gradlew build testHosted -x javadoc -x javadocJar -x sourcesJar --console plain --continue --parallel --no-daemon
-      - run:
+          command: gradlew << pipeline.parameters.standard-build-options >> << pipeline.parameters.standard-gradle-options >>
+      - persist-gradle
+      - save-test-results:
+          where: "vm-test-hosted"
+          os: "windows"
+          vm: "hosted"
           shell: bash.exe
-          name: Save test results
-          command: |
-            mkdir -p /c/users/circleci/test-results/junit-windows
-            /usr/bin/find . -type f -regex '.*/vm-test-hosted/junit/.*\.xml' -exec cp {} /c/users/circleci/test-results/junit-windows/ \;
-          when: always
-      - run:
-          shell: bash.exe
-          name: Save test results
-          command: |
-            mkdir -p /c/users/circleci/test-results/csv-windows
-            /usr/bin/find . -type f -regex '.*/vm-test-hosted/csv/.*\.csv' -exec cp {} /c/users/circleci/test-results/csv-windows/ \;
-          when: always
-      - persist_to_workspace:
-          root: .
-          paths:
-            - '.gradle/*'
-            - 'build/*'
-            - '*/.gradle/*'
-            - '*/build/*'
-            - '*/*/build/*'
-      - store_test_results:
-          path: c:\users\circleci\test-results
-      - store_artifacts:
-          path: c:\users\circleci\test-results
+          home: "/c/users/circleci/"
+          store-home: "c:/users/circleci/"
 
   build_windows_standalone:
     executor:
@@ -122,7 +175,7 @@ jobs:
       - run:
           shell: bash.exe
           name: Construct Standalone
-          command: ./gradlew :emulators:standalone:shadowJar --no-daemon --console plain --continue --parallel --no-daemon
+          command: ./gradlew :emulators:standalone:shadowJar << pipeline.parameters.standard-gradle-options >>
       - run:
           shell: bash.exe
           name: Remove distracting JAR, if any
@@ -177,62 +230,24 @@ jobs:
           command: brew install openjdk@11
       - run:
           name: Gradle Build and Test
-          command: ./gradlew build testHosted -x javadoc -x javadocJar -x sourcesJar --console plain --continue --parallel --no-daemon
-      - persist_to_workspace:
-          root: .
-          paths:
-            - '.gradle/*'
-            - 'build/*'
-            - '*/.gradle/*'
-            - '*/build/*'
-            - '*/*/build/*'
-      - run:
-          name: Save test results
-          command: |
-            mkdir -p ~/test-results/junit-macosx/
-            find . -type f -regex '.*/vm-test-hosted/junit/.*\.xml' -exec cp {} ~/test-results/junit-macosx/ \;
-          when: always
-      - run:
-          name: Save test results
-          command: |
-            mkdir -p ~/test-results/csv-macosx/
-            find . -type f -regex '.*/vm-test-hosted/csv/.*\.csv' -exec cp {} ~/test-results/csv-macosx/ \;
-          when: always
-      - store_test_results:
-          path: ~/test-results
-      - store_artifacts:
-          path: ~/test-results
+          command: ./gradlew << pipeline.parameters.standard-build-options >> << pipeline.parameters.standard-gradle-options >>
+      - persist-gradle
+      - save-test-results:
+          where: "vm-test-hosted"
+          os: "macosx"
+          vm: "hosted"
   build_macosx_m1:
     executor: build-on-macos-m1
     steps:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: ./gradlew build testHosted -x javadoc -x javadocJar -x sourcesJar --console plain --continue --parallel --no-daemon
-      - persist_to_workspace:
-          root: .
-          paths:
-            - '.gradle/*'
-            - 'build/*'
-            - '*/.gradle/*'
-            - '*/build/*'
-            - '*/*/build/*'
-      - run:
-          name: Save test results
-          command: |
-            mkdir -p ~/test-results/junit-macosx/
-            find . -type f -regex '.*/vm-test-hosted/junit/.*\.xml' -exec cp {} ~/test-results/junit-macosx/ \;
-          when: always
-      - run:
-          name: Save test results
-          command: |
-            mkdir -p ~/test-results/csv-macosx/
-            find . -type f -regex '.*/vm-test-hosted/csv/.*\.csv' -exec cp {} ~/test-results/csv-macosx/ \;
-          when: always
-      - store_test_results:
-          path: ~/test-results
-      - store_artifacts:
-          path: ~/test-results
+          command: ./gradlew << pipeline.parameters.standard-build-options >> << pipeline.parameters.standard-gradle-options >>
+      - persist-gradle
+      - save-test-results:
+          where: "vm-test-hosted"
+          os: "macosx-m1"
+          vm: "hosted"
 
   build_macosx_standalone:
     executor: build-on-macos
@@ -247,7 +262,7 @@ jobs:
           at: .
       - run:
           name: Construct Standalone
-          command: ./gradlew :emulators:standalone:shadowJar --no-daemon --console plain --continue --parallel
+          command: ./gradlew :emulators:standalone:shadowJar<< pipeline.parameters.standard-gradle-options >>
       - run:
           name: Remove distracting JAR, if any
           command: rm emulators/standalone/build/libs/standalone-*.jar
@@ -262,7 +277,7 @@ jobs:
           at: .
       - run:
           name: Construct Standalone
-          command: ./gradlew :emulators:standalone:shadowJar --no-daemon --console plain --continue --parallel
+          command: ./gradlew :emulators:standalone:shadowJar << pipeline.parameters.standard-gradle-options >>
       - run:
           name: Remove distracting JAR, if any
           command: rm emulators/standalone/build/libs/standalone-*.jar
@@ -298,31 +313,12 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: ./gradlew build testHosted --console plain --continue --parallel --no-daemon
-      - run:
-          name: Save test results
-          command: |
-            mkdir -p ~/test-results/junit-linux/
-            find . -type f -regex '.*/vm-test-hosted/junit/.*\.xml' -exec cp {} ~/test-results/junit-linux/ \;
-          when: always
-      - run:
-          name: Save test results
-          command: |
-            mkdir -p ~/test-results/csv-linux/
-            find . -type f -regex '.*/vm-test-hosted/csv/.*\.csv' -exec cp {} ~/test-results/csv-linux/ \;
-          when: always
-      - persist_to_workspace:
-          root: .
-          paths:
-            - '.gradle/*'
-            - 'build/*'
-            - '*/.gradle/*'
-            - '*/build/*'
-            - '*/*/build/*'
-      - store_test_results:
-          path: ~/test-results
-      - store_artifacts:
-          path: ~/test-results
+          command: ./gradlew << pipeline.parameters.standard-build-options >> << pipeline.parameters.standard-gradle-options >>
+      - save-test-results:
+          where: "vm-test-hosted"
+          os: "linux"
+          vm: "hosted"
+      - persist-gradle
   build_linux_standalone:
     executor: build-on-linux
     steps:
@@ -331,7 +327,7 @@ jobs:
           at: .
       - run:
           name: Construct Standalone
-          command: ./gradlew :emulators:standalone:shadowJar --no-daemon --console plain --continue --parallel
+          command: ./gradlew :emulators:standalone:shadowJar << pipeline.parameters.standard-gradle-options >>
       - run:
           name: Remove distracting JAR, if any
           command: rm emulators/standalone/build/libs/standalone-*.jar
@@ -348,7 +344,7 @@ jobs:
           at: .
       - run:
           name: Publish to OSS SonaType
-          command: ./gradlew publishMavenPublicationToMavenRepository --console plain --continue --parallel  --no-daemon || circleci-agent step halt
+          command: ./gradlew publishMavenPublicationToMavenRepository << pipeline.parameters.standard-gradle-options >> || circleci-agent step halt
 
   ### RatufaCoat
   ratufacoat_build_linux:
@@ -383,30 +379,12 @@ jobs:
           at: .
       - run:
           name: SpringCoat Tests
-          command: timeout --foreground 17m ./gradlew testSpringCoat --console plain --continue --parallel --no-daemon
+          command: timeout --foreground 17m ./gradlew testSpringCoat << pipeline.parameters.standard-gradle-options >>
           no_output_timeout: 17m
-      - run:
-          name: Save test results
-          command: |
-            mkdir -p ~/test-results/junit-springcoat/
-            find . -type f -regex '.*/vm-test-springcoat/junit/.*\.xml' -exec cp {} ~/test-results/junit-springcoat/ \;
-          when: always
-      - run:
-          name: Save snapshots
-          command: |
-            mkdir -p ~/test-results/nps-springcoat/
-            find . -type f -regex '.*/vm-test-springcoat/nps/.*\.nps' -exec cp {} ~/test-results/nps-springcoat/ \;
-          when: always
-      - run:
-          name: Save snapshots
-          command: |
-            mkdir -p ~/test-results/csv-springcoat/
-            find . -type f -regex '.*/vm-test-springcoat/csv/.*\.csv' -exec cp {} ~/test-results/csv-springcoat/ \;
-          when: always
-      - store_test_results:
-          path: ~/test-results
-      - store_artifacts:
-          path: ~/test-results
+      - save-test-results:
+          where: "vm-test-springcoat"
+          os: "linux"
+          vm: "springcoat"
   test_summercoat:
     executor: build-on-linux
     steps:
@@ -415,30 +393,12 @@ jobs:
           at: .
       - run:
           name: SummerCoat Tests
-          command: timeout --foreground 15m ./gradlew testSummerCoat --console plain --continue --parallel --no-daemon
+          command: timeout --foreground 15m ./gradlew testSummerCoat << pipeline.parameters.standard-gradle-options >>
           no_output_timeout: 15m
-      - run:
-          name: Save test results
-          command: |
-            mkdir -p ~/test-results/junit-summercoat/
-            find . -type f -regex '.*/vm-test-summercoat/junit/.*\.xml' -exec cp {} ~/test-results/junit-summercoat/ \;
-          when: always
-      - run:
-          name: Save snapshots
-          command: |
-            mkdir -p ~/test-results/nps-summercoat/
-            find . -type f -regex '.*/vm-test-summercoat/nps/.*\.nps' -exec cp {} ~/test-results/nps-summercoat/ \;
-          when: always
-      - run:
-          name: Save snapshots
-          command: |
-            mkdir -p ~/test-results/csv-summercoat/
-            find . -type f -regex '.*/vm-test-summercoat/csv/.*\.csv' -exec cp {} ~/test-results/csv-summercoat/ \;
-          when: always
-      - store_test_results:
-          path: ~/test-results
-      - store_artifacts:
-          path: ~/test-results
+      - save-test-results:
+          where: "vm-test-summercoat"
+          os: "linux"
+          vm: "summercoat"
 
   ################################### USERS ##################################
   export_user_guide:
@@ -478,15 +438,8 @@ jobs:
           at: .
       - run:
           name: Construct Test JARs
-          command: ./gradlew testJar --console plain --continue --parallel --no-daemon
-      - persist_to_workspace:
-          root: .
-          paths:
-            - '.gradle/*'
-            - 'build/*'
-            - '*/.gradle/*'
-            - '*/build/*'
-            - '*/*/build/*'
+          command: ./gradlew testJar << pipeline.parameters.standard-gradle-options >>
+      - persist-gradle
 
   # Constructs the ROM fragment libraries for SummerCoat, since they are used
   # for general ROM construction
@@ -498,15 +451,8 @@ jobs:
           at: .
       - run:
           name: Construct SummerCoat Libraries
-          command: ./gradlew libSummerCoat --console plain --continue --parallel --no-daemon
-      - persist_to_workspace:
-          root: .
-          paths:
-            - '.gradle/*'
-            - 'build/*'
-            - '*/.gradle/*'
-            - '*/build/*'
-            - '*/*/build/*'
+          command: ./gradlew libSummerCoat << pipeline.parameters.standard-gradle-options >>
+      - persist-gradle
 
   # All the tests so that they can run from within SummerCoat
   construct_libTestSummerCoat:
@@ -517,15 +463,8 @@ jobs:
           at: .
       - run:
           name: Construct Test SummerCoat Libraries
-          command: ./gradlew libTestSummerCoat --console plain --continue --parallel --no-daemon
-      - persist_to_workspace:
-          root: .
-          paths:
-            - '.gradle/*'
-            - 'build/*'
-            - '*/.gradle/*'
-            - '*/build/*'
-            - '*/*/build/*'
+          command: ./gradlew libTestSummerCoat << pipeline.parameters.standard-gradle-options >>
+      - persist-gradle
 
   # Constructs the standard SummerCoat ROM, could be uploaded later
   construct_romSummerCoat:
@@ -536,15 +475,8 @@ jobs:
           at: .
       - run:
           name: Construct SummerCoat ROM
-          command: ./gradlew romSummerCoat --console plain --continue --parallel --no-daemon
-      - persist_to_workspace:
-          root: .
-          paths:
-            - '.gradle/*'
-            - 'build/*'
-            - '*/.gradle/*'
-            - '*/build/*'
-            - '*/*/build/*'
+          command: ./gradlew romSummerCoat << pipeline.parameters.standard-gradle-options >>
+      - persist-gradle
 
   # Constructs the test SummerCoat ROM, could be uploaded later, this is so
   # that any RatufaCoats have an actual ROM that can be tested to ensure that
@@ -557,15 +489,8 @@ jobs:
           at: .
       - run:
           name: Construct Test SummerCoat ROM
-          command: ./gradlew romTestSummerCoat --console plain --continue --parallel --no-daemon
-      - persist_to_workspace:
-          root: .
-          paths:
-            - '.gradle/*'
-            - 'build/*'
-            - '*/.gradle/*'
-            - '*/build/*'
-            - '*/*/build/*'
+          command: ./gradlew romTestSummerCoat << pipeline.parameters.standard-gradle-options >>
+      - persist-gradle
 
 workflows:
   version: 2
