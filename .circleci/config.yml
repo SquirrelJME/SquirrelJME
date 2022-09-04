@@ -14,10 +14,17 @@
 version: 2.1
 
 executors:
-  build-on-linux:
+  build-on-linux-amd64:
     docker:
-      - image: circleci/openjdk:11-jdk
-    resource_class: medium #xlarge
+      - image: cimg/openjdk:11.0
+    resource_class: medium
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+  build-on-linux-arm64:
+    docker:
+      - image: cimg/ubuntu-2004:current
+    resource_class: arm.medium
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
@@ -100,6 +107,9 @@ commands:
       home:
         type: string
         default: ./.no-persist/
+      find:
+        type: string
+        default: find
       store-home:
         type: string
         default: ./.no-persist/
@@ -109,26 +119,36 @@ commands:
           name: Save test results
           command: |
             mkdir -p "<<parameters.home>>/test-results/junit-<<parameters.os>>/"
-            find . -type f -regex '.*/'"<<parameters.where>>"'/junit/.*\.xml' -exec cp {} "<<parameters.home>>/test-results/junit-<<parameters.os>>/" \;
+            <<parameters.find>> . -type f -regex '.*/'"<<parameters.where>>"'/junit/.*\.xml' -exec cp {} "<<parameters.home>>/test-results/junit-<<parameters.os>>/" \;
           when: always
       - run:
           shell: <<parameters.shell>>
           name: Save test results
           command: |
             mkdir -p "<<parameters.home>>/test-results/csv-<<parameters.os>>/"
-            find . -type f -regex '.*/'"<<parameters.where>>"'/csv/.*\.csv' -exec cp {} "<<parameters.home>>/test-results/csv-<<parameters.os>>/" \;
+            <<parameters.find>> . -type f -regex '.*/'"<<parameters.where>>"'/csv/.*\.csv' -exec cp {} "<<parameters.home>>/test-results/csv-<<parameters.os>>/" \;
           when: always
       - run:
           shell: <<parameters.shell>>
           name: Save snapshots
           command: |
             mkdir -p "<<parameters.home>>/test-results/nps-<<parameters.vm>>-<<parameters.os>>/"
-            find . -type f -regex '.*/'"<<parameters.where>>"'/nps/.*\.nps' -exec cp {} "<<parameters.home>>/test-results/nps-<<parameters.vm>>-<<parameters.os>>/" \;
+            <<parameters.find>> . -type f -regex '.*/'"<<parameters.where>>"'/nps/.*\.nps' -exec cp {} "<<parameters.home>>/test-results/nps-<<parameters.vm>>-<<parameters.os>>/" \;
           when: always
       - store_test_results:
           path: <<parameters.store-home>>/test-results
       - store_artifacts:
           path: <<parameters.store-home>>/test-results
+
+  # Install standard packages in Debian/Ubuntu
+  linux-install-required:
+    steps:
+      - run:
+          name: Update package lists
+          command: sudo apt-get update -y
+      - run:
+          name: Install required dependencies
+          command: sudo apt-get install -y --no-install-recommends cmake build-essential curl wget openjdk-11-jdk gcc g++ make
 
 jobs:
   ################################## WINDOWS #################################
@@ -156,6 +176,7 @@ jobs:
           os: "windows"
           vm: "hosted"
           shell: bash.exe
+          find: /usr/bin/find
           home: "/c/users/circleci/"
           store-home: "c:/users/circleci/"
 
@@ -307,22 +328,54 @@ jobs:
           destination: SquirrelJME
 
   ################################### LINUX ##################################
-  build_linux:
-    executor: build-on-linux
+  build_linux_amd64:
+    executor: build-on-linux-amd64
     steps:
       - checkout
+      - linux-install-required
       - run:
           name: Gradle Build and Test
           command: ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
       - save-test-results:
           where: "vm-test-hosted"
-          os: "linux"
+          os: "linux-amd64"
           vm: "hosted"
       - persist-gradle
-  build_linux_standalone:
-    executor: build-on-linux
+  build_linux_amd64_standalone:
+    executor: build-on-linux-amd64
     steps:
       - checkout
+      - linux-install-required
+      - attach_workspace:
+          at: .
+      - run:
+          name: Construct Standalone
+          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options>>
+      - run:
+          name: Remove distracting JAR, if any
+          command: rm emulators/standalone/build/libs/standalone-*.jar
+      - store_artifacts:
+          path: emulators/standalone/build/libs/
+          destination: .
+
+  build_linux_arm64:
+    executor: build-on-linux-arm64
+    steps:
+      - checkout
+      - linux-install-required
+      - run:
+          name: Gradle Build and Test
+          command: ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+      - save-test-results:
+          where: "vm-test-hosted"
+          os: "linux-arm64"
+          vm: "hosted"
+      - persist-gradle
+  build_linux_arm64_standalone:
+    executor: build-on-linux-arm64
+    steps:
+      - checkout
+      - linux-install-required
       - attach_workspace:
           at: .
       - run:
@@ -337,9 +390,10 @@ jobs:
 
   ### OSS SonaType Nexus
   sonatype_publish:
-    executor: build-on-linux
+    executor: build-on-linux-amd64
     steps:
       - checkout
+      - linux-install-required
       - attach_workspace:
           at: .
       - run:
@@ -348,14 +402,10 @@ jobs:
 
   ### RatufaCoat
   ratufacoat_build_linux:
-    executor: build-on-linux
+    executor: build-on-linux-amd64
     steps:
       - checkout
-      - run:
-          name: Install required dependencies
-          command: |
-            sudo apt-get update -y
-            sudo apt-get install -y cmake build-essential
+      - linux-install-required
       - attach_workspace:
           at: .
       - run:
@@ -372,9 +422,10 @@ jobs:
 
   ### SpringCoat
   test_springcoat:
-    executor: build-on-linux
+    executor: build-on-linux-amd64
     steps:
       - checkout
+      - linux-install-required
       - attach_workspace:
           at: .
       - run:
@@ -386,9 +437,10 @@ jobs:
           os: "linux"
           vm: "springcoat"
   test_summercoat:
-    executor: build-on-linux
+    executor: build-on-linux-amd64
     steps:
       - checkout
+      - linux-install-required
       - attach_workspace:
           at: .
       - run:
@@ -402,9 +454,10 @@ jobs:
 
   ################################### USERS ##################################
   export_user_guide:
-    executor: build-on-linux
+    executor: build-on-linux-amd64
     steps:
       - checkout
+      - linux-install-required
       - run:
           name: Checkout Wiki
           command: git clone git@github.com:SquirrelJME/SquirrelJME.wiki.git /tmp/wiki
@@ -431,9 +484,10 @@ jobs:
   # Runs the `testJar` task so any operations following this will run faster
   # when they need to use these JARs
   construct_testJars:
-    executor: build-on-linux
+    executor: build-on-linux-amd64
     steps:
       - checkout
+      - linux-install-required
       - attach_workspace:
           at: .
       - run:
@@ -444,9 +498,10 @@ jobs:
   # Constructs the ROM fragment libraries for SummerCoat, since they are used
   # for general ROM construction
   construct_libSummerCoat:
-    executor: build-on-linux
+    executor: build-on-linux-amd64
     steps:
       - checkout
+      - linux-install-required
       - attach_workspace:
           at: .
       - run:
@@ -456,9 +511,10 @@ jobs:
 
   # All the tests so that they can run from within SummerCoat
   construct_libTestSummerCoat:
-    executor: build-on-linux
+    executor: build-on-linux-amd64
     steps:
       - checkout
+      - linux-install-required
       - attach_workspace:
           at: .
       - run:
@@ -468,9 +524,10 @@ jobs:
 
   # Constructs the standard SummerCoat ROM, could be uploaded later
   construct_romSummerCoat:
-    executor: build-on-linux
+    executor: build-on-linux-amd64
     steps:
       - checkout
+      - linux-install-required
       - attach_workspace:
           at: .
       - run:
@@ -482,9 +539,10 @@ jobs:
   # that any RatufaCoats have an actual ROM that can be tested to ensure that
   # it properly works.
   construct_romTestSummerCoat:
-    executor: build-on-linux
+    executor: build-on-linux-amd64
     steps:
       - checkout
+      - linux-install-required
       - attach_workspace:
           at: .
       - run:
@@ -497,16 +555,20 @@ workflows:
   tests:
     jobs:
       ############################# STANDARD TESTS ############################
-      - build_linux
+      - build_linux_amd64
+      - build_linux_arm64
       - test_springcoat:
           requires:
             - construct_testJars
 #      - test_summercoat:
 #          requires:
 #            - construct_libTestSummerCoat
-      - build_linux_standalone:
+      - build_linux_amd64_standalone:
            requires:
-             - build_linux
+             - build_linux_amd64
+      - build_linux_arm64_standalone:
+          requires:
+            - build_linux_arm64
 
       # Mac OS X runs decently however the jobs for it have a higher cost, so
       # only perform builds and tests for trunk to lower costs.
@@ -545,7 +607,7 @@ workflows:
       # Publishing to OSS Sonatype Nexus (https://oss.sonatype.org)
       - sonatype_publish:
           requires:
-            - build_linux
+            - build_linux_amd64
           filters:
             branches:
               only:
@@ -555,10 +617,10 @@ workflows:
       ###################### LIBRARY AND ROM CONSTRUCTION #####################
       - construct_testJars:
           requires:
-            - build_linux
+            - build_linux_amd64
 #      - construct_libSummerCoat:
 #          requires:
-#            - build_linux
+#            - build_linux_amd64
 #      - construct_libTestSummerCoat:
 #          requires:
 #            - construct_testJars
@@ -576,7 +638,7 @@ workflows:
 #            - construct_romTestSummerCoat
 #      - ratufacoat_build_linux:
 #          requires:
-#            - build_linux
+#            - build_linux_amd64
 #            - construct_romTestSummerCoat
 #      - ratufacoat_build_macosx:
 #          requires:
