@@ -105,7 +105,7 @@ commands:
         default: $HOME
     steps:
       - run:
-          shell: <<parameters.shell>
+          shell: <<parameters.shell>>
           name: Save test results
           command: |
             mkdir -p "<<parameters.home>>/test-results/junit-<<parameters.os>>/"
