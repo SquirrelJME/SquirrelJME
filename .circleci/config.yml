@@ -99,10 +99,10 @@ commands:
         default: "/bin/bash"
       home:
         type: string
-        default: $HOME
+        default: ./.no-persist/
       store-home:
         type: string
-        default: $HOME
+        default: ./.no-persist/
     steps:
       - run:
           shell: <<parameters.shell>>
@@ -149,7 +149,7 @@ jobs:
           # According to documentation, Gradle on Windows has trouble and tries
           # to make way too many workers which causes extreme resource.
           # contention --max-workers=2
-          command: gradlew << pipeline.parameters.standard-build-options >> << pipeline.parameters.standard-gradle-options >>
+          command: gradlew <<pipeline.parameters.standard-build-options >> <<pipeline.parameters.standard-gradle-options >>
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted"
@@ -175,7 +175,7 @@ jobs:
       - run:
           shell: bash.exe
           name: Construct Standalone
-          command: ./gradlew :emulators:standalone:shadowJar << pipeline.parameters.standard-gradle-options >>
+          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options >>
       - run:
           shell: bash.exe
           name: Remove distracting JAR, if any
@@ -230,7 +230,7 @@ jobs:
           command: brew install openjdk@11
       - run:
           name: Gradle Build and Test
-          command: ./gradlew << pipeline.parameters.standard-build-options >> << pipeline.parameters.standard-gradle-options >>
+          command: ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted"
@@ -242,7 +242,7 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: ./gradlew << pipeline.parameters.standard-build-options >> << pipeline.parameters.standard-gradle-options >>
+          command: ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted"
@@ -262,7 +262,7 @@ jobs:
           at: .
       - run:
           name: Construct Standalone
-          command: ./gradlew :emulators:standalone:shadowJar<< pipeline.parameters.standard-gradle-options >>
+          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options>>
       - run:
           name: Remove distracting JAR, if any
           command: rm emulators/standalone/build/libs/standalone-*.jar
@@ -277,7 +277,7 @@ jobs:
           at: .
       - run:
           name: Construct Standalone
-          command: ./gradlew :emulators:standalone:shadowJar << pipeline.parameters.standard-gradle-options >>
+          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options>>
       - run:
           name: Remove distracting JAR, if any
           command: rm emulators/standalone/build/libs/standalone-*.jar
@@ -313,7 +313,7 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: ./gradlew << pipeline.parameters.standard-build-options >> << pipeline.parameters.standard-gradle-options >>
+          command: ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
       - save-test-results:
           where: "vm-test-hosted"
           os: "linux"
@@ -327,7 +327,7 @@ jobs:
           at: .
       - run:
           name: Construct Standalone
-          command: ./gradlew :emulators:standalone:shadowJar << pipeline.parameters.standard-gradle-options >>
+          command: ./gradlew :emulators:standalone:shadowJar <<pipeline.parameters.standard-gradle-options>>
       - run:
           name: Remove distracting JAR, if any
           command: rm emulators/standalone/build/libs/standalone-*.jar
@@ -344,7 +344,7 @@ jobs:
           at: .
       - run:
           name: Publish to OSS SonaType
-          command: ./gradlew publishMavenPublicationToMavenRepository << pipeline.parameters.standard-gradle-options >> || circleci-agent step halt
+          command: ./gradlew publishMavenPublicationToMavenRepository <<pipeline.parameters.standard-gradle-options>> || circleci-agent step halt
 
   ### RatufaCoat
   ratufacoat_build_linux:
@@ -379,7 +379,7 @@ jobs:
           at: .
       - run:
           name: SpringCoat Tests
-          command: timeout --foreground 17m ./gradlew testSpringCoat << pipeline.parameters.standard-gradle-options >>
+          command: timeout --foreground 17m ./gradlew testSpringCoat <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 17m
       - save-test-results:
           where: "vm-test-springcoat"
@@ -393,7 +393,7 @@ jobs:
           at: .
       - run:
           name: SummerCoat Tests
-          command: timeout --foreground 15m ./gradlew testSummerCoat << pipeline.parameters.standard-gradle-options >>
+          command: timeout --foreground 15m ./gradlew testSummerCoat <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 15m
       - save-test-results:
           where: "vm-test-summercoat"
@@ -438,7 +438,7 @@ jobs:
           at: .
       - run:
           name: Construct Test JARs
-          command: ./gradlew testJar << pipeline.parameters.standard-gradle-options >>
+          command: ./gradlew testJar <<pipeline.parameters.standard-gradle-options>>
       - persist-gradle
 
   # Constructs the ROM fragment libraries for SummerCoat, since they are used
@@ -451,7 +451,7 @@ jobs:
           at: .
       - run:
           name: Construct SummerCoat Libraries
-          command: ./gradlew libSummerCoat << pipeline.parameters.standard-gradle-options >>
+          command: ./gradlew libSummerCoat <<pipeline.parameters.standard-gradle-options>>
       - persist-gradle
 
   # All the tests so that they can run from within SummerCoat
@@ -463,7 +463,7 @@ jobs:
           at: .
       - run:
           name: Construct Test SummerCoat Libraries
-          command: ./gradlew libTestSummerCoat << pipeline.parameters.standard-gradle-options >>
+          command: ./gradlew libTestSummerCoat <<pipeline.parameters.standard-gradle-options>>
       - persist-gradle
 
   # Constructs the standard SummerCoat ROM, could be uploaded later
@@ -475,7 +475,7 @@ jobs:
           at: .
       - run:
           name: Construct SummerCoat ROM
-          command: ./gradlew romSummerCoat << pipeline.parameters.standard-gradle-options >>
+          command: ./gradlew romSummerCoat <<pipeline.parameters.standard-gradle-options>>
       - persist-gradle
 
   # Constructs the test SummerCoat ROM, could be uploaded later, this is so
@@ -489,7 +489,7 @@ jobs:
           at: .
       - run:
           name: Construct Test SummerCoat ROM
-          command: ./gradlew romTestSummerCoat << pipeline.parameters.standard-gradle-options >>
+          command: ./gradlew romTestSummerCoat <<pipeline.parameters.standard-gradle-options>>
       - persist-gradle
 
 workflows:
