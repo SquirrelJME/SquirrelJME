@@ -22,7 +22,6 @@ executors:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
   build-on-linux-arm64:
-    machine: true
     docker:
       - image: cimg/ubuntu-2004:current
     resource_class: arm.medium
@@ -557,7 +556,7 @@ workflows:
     jobs:
       ############################# STANDARD TESTS ############################
       - build_linux_amd64
-      - build_linux_arm64
+#      - build_linux_arm64
       - test_springcoat:
           requires:
             - construct_testJars
@@ -567,9 +566,9 @@ workflows:
       - build_linux_amd64_standalone:
            requires:
              - build_linux_amd64
-      - build_linux_arm64_standalone:
-          requires:
-            - build_linux_arm64
+#      - build_linux_arm64_standalone:
+#          requires:
+#            - build_linux_arm64
 
       # Mac OS X runs decently however the jobs for it have a higher cost, so
       # only perform builds and tests for trunk to lower costs.
