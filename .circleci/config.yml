@@ -22,6 +22,7 @@ executors:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
   build-on-linux-arm64:
+    machine: true
     docker:
       - image: cimg/ubuntu-2004:current
     resource_class: arm.medium
