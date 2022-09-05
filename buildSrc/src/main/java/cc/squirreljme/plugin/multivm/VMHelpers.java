@@ -1145,9 +1145,6 @@ public final class VMHelpers
 		if (candidate == null)
 			return new Manifest();
 		
-		// Debug
-		System.err.printf(">> LOAD EXPECTED: %s%n", __testName);
-		
 		// Load information gleaned from the source code
 		__SourceInfo__ info;
 		try (InputStream in = Files.newInputStream(
@@ -1167,9 +1164,6 @@ public final class VMHelpers
 			throw new RuntimeException("Could not parse source: " +
 				__testName, e);
 		}
-		
-		// Debug
-		System.err.printf(">> INFO: %s%n", info);
 		
 		// Read the current manifest
 		Manifest over;
