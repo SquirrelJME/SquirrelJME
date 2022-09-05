@@ -47,6 +47,6 @@ public class CheckForTests
 	public boolean isSatisfiedBy(Task __task)
 	{
 		return !VMHelpers.runningTests(__task.getProject(),
-			this.sourceSet).isEmpty();
+			this.sourceSet).tests.isEmpty();
 	}
 }

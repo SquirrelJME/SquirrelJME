@@ -880,15 +880,15 @@ public final class VMHelpers
 	}
 	
 	/**
-	 * Returns all of the tests to run.
+	 * Returns all the tests to run.
 	 * 
 	 * @param __project The project to check.
 	 * @param __sourceSet The source set to check.
-	 * @return All of the tests that should be ran.
+	 * @return All the tests that should be run.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/30
 	 */
-	public static Map<String, CandidateTestFiles> runningTests(
+	public static AvailableTests runningTests(
 		Project __project, String __sourceSet)
 		throws NullPointerException
 	{
@@ -912,7 +912,8 @@ public final class VMHelpers
 			// If we found at least one test then we can test those, there may
 			// be multiple ones due to multi-parameters
 			if (!singles.isEmpty())
-				return Collections.unmodifiableMap(singles);
+				return new AvailableTests(
+					Collections.unmodifiableMap(singles), true);
 			
 			// If the test has no matching file, then just ignore it
 			throw new IllegalArgumentException(String.format(
@@ -920,7 +921,7 @@ public final class VMHelpers
 		}
 		
 		// Is only valid if there is at least one test
-		return available;
+		return new AvailableTests(available, false);
 	}
 	
 	/**
