@@ -768,7 +768,7 @@ public final class VMHelpers
 	/**
 	 * Returns the path of the all the JARs which make up the classpath for
 	 * running an executable.
-	 * 
+	 *
 	 * @param __task The task to get for.
 	 * @param __sourceSet The source set used.
 	 * @param __vmType The virtual machine type.
@@ -778,16 +778,35 @@ public final class VMHelpers
 	 */
 	public static Path[] runClassPath(Task __task,
 		String __sourceSet, VMSpecifier __vmType)
-		throws NullPointerException
 	{
-		return VMHelpers.runClassPath(__task.getProject(),
-			__sourceSet, __vmType);
+		return VMHelpers.runClassPath(__task, __sourceSet, __vmType,
+			false);
 	}
 	
 	/**
 	 * Returns the path of the all the JARs which make up the classpath for
 	 * running an executable.
 	 * 
+	 * @param __task The task to get for.
+	 * @param __sourceSet The source set used.
+	 * @param __vmType The virtual machine type.
+	 * @param __optional use optional dependencies?
+	 * @return An array of paths containing the class path of execution.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/09/05
+	 */
+	public static Path[] runClassPath(Task __task,
+		String __sourceSet, VMSpecifier __vmType, boolean __optional)
+		throws NullPointerException
+	{
+		return VMHelpers.runClassPath(__task.getProject(),
+			__sourceSet, __vmType, __optional);
+	}
+	
+	/**
+	 * Returns the path of the all the JARs which make up the classpath for
+	 * running an executable.
+	 *
 	 * @param __project The project to get for.
 	 * @param __sourceSet The source set used.
 	 * @param __vmType The virtual machine type.
@@ -799,6 +818,26 @@ public final class VMHelpers
 		String __sourceSet, VMSpecifier __vmType)
 		throws NullPointerException
 	{
+		return VMHelpers.runClassPath(__project, __sourceSet, __vmType,
+			false);
+	}
+	
+	/**
+	 * Returns the path of the all the JARs which make up the classpath for
+	 * running an executable.
+	 * 
+	 * @param __project The project to get for.
+	 * @param __sourceSet The source set used.
+	 * @param __vmType The virtual machine type.
+	 * @param __optional use optional dependencies?
+	 * @return An array of paths containing the class path of execution.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/09/05
+	 */
+	public static Path[] runClassPath(Project __project,
+		String __sourceSet, VMSpecifier __vmType, boolean __optional)
+		throws NullPointerException
+	{
 		if (__project == null || __sourceSet == null || __vmType == null)
 			throw new NullPointerException("NARG");
 		
@@ -806,7 +845,8 @@ public final class VMHelpers
 		Iterable<VMLibraryTask> tasks =
 			VMHelpers.<VMLibraryTask>resolveProjectTasks(
 				VMLibraryTask.class, __project, VMHelpers
-					.runClassTasks(__project, __sourceSet, __vmType));
+					.runClassTasks(__project, __sourceSet, __vmType,
+						__optional));
 		
 		// Get the outputs of these, as they will be used. Ensure the order is
 		// kept otherwise execution may be non-deterministic and could break.
@@ -964,9 +1004,9 @@ public final class VMHelpers
 		if (__optional)
 			for (Project optional : VMHelpers.optionalDepends(__project,
 				__sourceSet))
-				VMHelpers.runClassTasks(optional,
+				result.addAll(VMHelpers.runClassTasks(optional,
 					SourceSet.MAIN_SOURCE_SET_NAME, __vmType, true,
-					__did);
+					__did));
 		
 		// Debug as needed
 		__project.getLogger().debug("Run Depends: {}", result);

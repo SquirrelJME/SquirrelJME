@@ -71,7 +71,7 @@ public class VMRunTaskAction
 		// SquirrelJME modules this depends on
 		VMSpecifier vmType = this.vmType;
 		Path[] classPath = VMHelpers.runClassPath(__task,
-			this.sourceSet, vmType);
+			this.sourceSet, vmType, true);
 		
 		// Debug
 		__task.getLogger().debug("Classpath: {}", Arrays.asList(classPath));
