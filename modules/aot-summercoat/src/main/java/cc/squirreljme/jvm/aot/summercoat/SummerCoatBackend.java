@@ -37,6 +37,10 @@ public class SummerCoatBackend
 		String __name, InputStream __in, OutputStream __out)
 		throws IOException, NullPointerException
 	{
+		if (__settings == null || __glob == null || __name == null ||
+			__in == null || __out == null)
+			throw new NullPointerException("NARG");
+		
 		throw Debugging.todo();
 	}
 	
@@ -60,6 +64,9 @@ public class SummerCoatBackend
 		OutputStream __out)
 		throws IOException, NullPointerException
 	{
+		if (__settings == null || __name == null || __out == null)
+			throw new NullPointerException("NARG");
+		
 		throw Debugging.todo();
 	}
 	
