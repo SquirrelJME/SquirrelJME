@@ -52,4 +52,12 @@ public interface ApplicationInterface<A>
 	 */
 	void startApp(A __instance)
 		throws NullPointerException, Throwable;
+	
+	/**
+	 * Returns the application type.
+	 * 
+	 * @return The application type.
+	 * @since 2022/07/21
+	 */
+	ApplicationType type();
 }

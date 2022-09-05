@@ -677,6 +677,13 @@ public final class SwingForm
 			adjacent.removeAll();
 			adjacent.setLayout(new GridBagLayout());
 			
+			// Call and inform that a refresh is happening on the form
+			UIFormCallback callback = this.callback();
+			if (callback != null)
+				callback.formRefresh(this,
+					adjacent.getX(), adjacent.getY(),
+					adjacent.getWidth(), adjacent.getHeight());
+			
 			// Setup constraints for all the items
 			GridBagConstraints cons = new GridBagConstraints();
 			cons.gridwidth = 1;

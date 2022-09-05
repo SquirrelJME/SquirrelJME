@@ -10,7 +10,8 @@
 package cc.squirreljme.runtime.lcdui.mle.fb;
 
 /**
- * This interface is used for any.
+ * This interface is used for any framebuffer like source, regardless of
+ * where it is layered on top of.
  *
  * @since 2020/10/09
  */

@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+multi-parameters: ascii utf-8 iso-8859-1 iso-8859-15
+disabled-multi-parameters: ibm037 shift-jis

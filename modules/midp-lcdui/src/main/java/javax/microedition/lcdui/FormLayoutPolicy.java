@@ -29,6 +29,10 @@ public abstract class FormLayoutPolicy
 	public static int DIRECTION_RTL =
 		1;
 	
+	/** Lock for the layout. */
+	final __LayoutLock__ _lock =
+		new __LayoutLock__();
+	
 	/** The items to be tracked in the map. */
 	final IdentityMap<Item, __LayoutItem__> _tracked =
 		new IdentityMap<>(new HashMap<Identity<Item>, __LayoutItem__>());
@@ -53,9 +57,29 @@ public abstract class FormLayoutPolicy
 		this._form = new WeakReference<>(__form);
 	}
 	
+	/**
+	 * Performs the layout management, which should place all the items
+	 * on the form at a given position.
+	 * 
+	 * Items should not overlap in positions, otherwise that may cause
+	 * errors and invalid forms to be displayed.
+	 * 
+	 * The initial position of all items is {@code (0, 0)}.
+	 * 
+	 * @param __viewportX The X offset of the viewport.
+	 * @param __viewportY The Y offset of the viewport.
+	 * @param __viewportW The width of the viewport.
+	 * @param __viewportH The height of the viewport.
+	 * @param __totalSize The full width ({@code [0]}) and full height
+	 * ({@code [1]}) that 
+	 * @throws ArrayIndexOutOfBoundsException Should be thrown if
+	 * {@code __totalSize} has a length smaller than 2.
+	 * @since 2022/07/20
+	 */
 	@SerializedEvent
-	protected abstract void doLayout(int __vpx, int __vpy, int __vpw,
-		int __vph, int[] __ts);
+	protected abstract void doLayout(int __viewportX, int __viewportY,
+		int __viewportW, int __viewportH, int[] __totalSize)
+		throws ArrayIndexOutOfBoundsException;
 	
 	protected abstract Item getTraverse(Item __i, int __dir);
 	
@@ -77,42 +101,66 @@ public abstract class FormLayoutPolicy
 	
 	protected final int getHeight(Item __i)
 	{
-		throw Debugging.todo();
+		try (__LayoutLock__ lock = this._lock.utilize())
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	protected final int getWidth(Item __i)
 	{
-		throw Debugging.todo();
+		try (__LayoutLock__ lock = this._lock.utilize())
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	protected final int getX(Item __i)
 	{
-		throw Debugging.todo();
+		try (__LayoutLock__ lock = this._lock.utilize())
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	protected final int getY(Item __i)
 	{
-		throw Debugging.todo();
+		try (__LayoutLock__ lock = this._lock.utilize())
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	protected final boolean isValid(Item __i)
 	{
-		throw Debugging.todo();
+		try (__LayoutLock__ lock = this._lock.utilize())
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	protected final void setPosition(Item __i, int __x, int __y)
 	{
-		throw Debugging.todo();
+		try (__LayoutLock__ lock = this._lock.utilize())
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	protected final void setSize(Item __i, int __w, int __h)
 	{
-		throw Debugging.todo();
+		try (__LayoutLock__ lock = this._lock.utilize())
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	protected final void setValid(Item __i)
 	{
-		throw Debugging.todo();
+		try (__LayoutLock__ lock = this._lock.utilize())
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	public static final int getLayoutDirection()

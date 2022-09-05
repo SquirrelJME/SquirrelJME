@@ -9,10 +9,8 @@
 
 package cc.squirreljme.plugin.general;
 
-import cc.squirreljme.plugin.util.FossilExe;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.Task;
 
 /**
  * Task which essentially just outputs the executable path to Fossil.
@@ -35,18 +33,6 @@ public class FossilExeTask
 		this.setDescription("Prints the Fossil executable path.");
 		
 		// Action to perform
-		this.doLast(this::action);
-	}
-	
-	/**
-	 * Performs the task action.
-	 * 
-	 * @param __task The called task.
-	 * @since 2020/06/24
-	 */
-	private void action(Task __task)
-	{
-		__task.getLogger().lifecycle(
-			FossilExe.instance().exePath().toString());
+		this.doLast(new FossilExeTaskAction());
 	}
 }

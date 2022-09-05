@@ -215,11 +215,14 @@ public final class SpringMachine
 	 * @param __n The name of the thread, may be {@code null} in which case
 	 * the thread will just get an ID number.
 	 * @param __main Is this a main thread?
+	 * @param __noDebugSuspend Do not allow the debugger to suspend this
+	 * thread.
 	 * @return The newly created thread.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/01
 	 */
-	public final SpringThread createThread(String __n, boolean __main)
+	public final SpringThread createThread(String __n, boolean __main,
+		boolean __noDebugSuspend)
 	{
 		// Store thread
 		List<SpringThread> threads = this._threads;
@@ -238,7 +241,8 @@ public final class SpringMachine
 				__main,
 				usedName,
 				this.profiler.measureThread(String.format("VM_%s-%d-%s",
-				this.vmId, v, usedName)));
+				this.vmId, v, usedName)),
+				__noDebugSuspend);
 			
 			// Signal that a major state has changed
 			this.notifyAll();
@@ -449,12 +453,14 @@ public final class SpringMachine
 	
 	/**
 	 * Obtains a temporary callback thread.
-	 * 
+	 *
+	 * @param __noDebugSuspend Do not allow the debugger to suspend this
+	 * thread.
 	 * @return The thread to be used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/15
 	 */
-	public final CallbackThread obtainCallbackThread()
+	public final CallbackThread obtainCallbackThread(boolean __noDebugSuspend)
 		throws NullPointerException
 	{
 		CallbackThread rv = null;
@@ -464,9 +470,11 @@ public final class SpringMachine
 		Collection<CallbackThread> cbThreads = this._cbThreads;
 		synchronized (this)
 		{
-			// Find the thread that can be opened
+			// Find the thread that can be opened, assuming it matches the
+			// suspension state kind...
 			for (CallbackThread thread : cbThreads)
-				if (thread.canOpen())
+				if (thread.canOpen() &&
+					thread.noDebugSuspend() == __noDebugSuspend)
 				{
 					rv = thread;
 					break;
@@ -482,7 +490,8 @@ public final class SpringMachine
 			
 		// Setup new thread and its worker
 		String name = "callback#" + cbThreads.size();
-		SpringThread thread = this.createThread(name, false);
+		SpringThread thread = this.createThread(name, false,
+			__noDebugSuspend);
 		SpringThreadWorker worker = new SpringThreadWorker(this,
 			thread, false);
 		
@@ -536,7 +545,7 @@ public final class SpringMachine
 	{
 		// Thread that will be used as the main thread of execution, also used
 		// to initialize classes when they are requested
-		SpringThread mainThread = this.createThread("main", true);
+		SpringThread mainThread = this.createThread("main", true, false);
 		
 		// We will be using the same logic in the thread worker if we need to
 		// initialize any objects or arguments

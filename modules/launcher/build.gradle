@@ -13,6 +13,7 @@ squirreljme
 	swmName = "SquirrelJME Launcher (Graphical)"
 	swmVendor = "Stephanie Gawroriski"
 	ignoreInLauncher = true
+	isMainLauncher = true
 	midlets += new JavaMEMidlet("SquirrelJME Launcher (Graphical)", null,
 		"cc.squirreljme.runtime.launcher.ui.MidletMain")
 	tags += "j2me"
@@ -24,6 +25,7 @@ dependencies
 	api project(":modules:cldc-compact")
 
 	api project(":modules:midp-lcdui")
+	api project(":modules:meep-lui")
 	api project(":modules:meep-midlet")
 	api project(":modules:meep-swm")
 }

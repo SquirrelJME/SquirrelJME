@@ -18,6 +18,18 @@ import cc.squirreljme.jvm.mle.constants.PhoneModelType;
  */
 public final class SquirrelJME
 {
+	/** The major version of SquirrelJME. */
+	public static final byte MAJOR_VERSION =
+		0;
+	
+	/** The minor version of SquirrelJME. */
+	public static final byte MINOR_VERSION =
+		3;
+	
+	/** The release version of SquirrelJME. */
+	public static final byte RELEASE_VERSION =
+		0;
+	
 	/** The version of this SquirrelJME runtime. */
 	public static final String RUNTIME_VERSION =
 		"0.3.0";

@@ -118,29 +118,29 @@ public class Main
 		try (InputStream in = new StandardInputStream();
 			OutputStream out = System.out)
 		{
-		// Which mode should occur?
-		switch (mode)
-		{
-				// Compile code
-			case "compile":
+			// Which mode should occur?
+			switch (mode)
+			{
+					// Compile code
+				case "compile":
 					Main.mainCompile(backend, in, out, name, args);
 					break;
 					
 					// Dump the result of "compile"
 				case "dumpCompile":
 					Main.dumpCompile(backend, in, out, name);
-				break;
-				
-				// Link multiple libraries into one
-			case "rom":
+					break;
+					
+					// Link multiple libraries into one
+				case "rom":
 					Main.mainRom(backend, out, args);
-				break;
-			
-			// {@squirreljme.error AE02 Unknown mode. (The mode)}
-			default:
-				throw new IllegalArgumentException("AE02 " + mode);
+					break;
+				
+				// {@squirreljme.error AE02 Unknown mode. (The mode)}
+				default:
+					throw new IllegalArgumentException("AE02 " + mode);
+			}
 		}
-	}
 	}
 	
 	/**
@@ -290,8 +290,11 @@ public class Main
 		if (libs.isEmpty())
 			throw new IllegalArgumentException("AE08");
 		
+		// Extra arrays accordingly
+		VMClassLibrary[] vmLibs = libs.toArray(
+			new VMClassLibrary[libs.size()]);
+		
 		// Perform combined linking
-		__backend.rom(settings, __out,
-			libs.toArray(new VMClassLibrary[libs.size()]));
+		__backend.rom(settings, __out, vmLibs);
 	}
 }

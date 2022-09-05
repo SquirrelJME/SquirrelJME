@@ -38,7 +38,7 @@ public abstract class VMTestWorkAction
 	static final Map<String, __LogHolder__> _LOGGERS =
 		new ConcurrentHashMap<>();
 	
-	/** The timeout for tests. */
+	/** The timeout for tests, in nanoseconds. */
 	private static final long _TEST_TIMEOUT =
 		360_000_000_000L;
 	
@@ -82,7 +82,7 @@ public abstract class VMTestWorkAction
 		try
 		{
 			// Note this is running
-			logger.lifecycle(String.format("???? %s (%d/%d)",
+			logger.lifecycle(String.format("???? %s [%d/%d]",
 				testName, count, total));
 			
 			// Clock the starting time
@@ -130,7 +130,7 @@ public abstract class VMTestWorkAction
 						if (nsDur >= VMTestWorkAction._TEST_TIMEOUT)
 						{
 							// Note it
-							logger.error(String.format("TIME %s (%d/%d)",
+							logger.error(String.format("TIME %s [%d/%d]",
 								testName, count, total));
 							
 							// Set timeout as being hit, used for special
@@ -172,7 +172,7 @@ public abstract class VMTestWorkAction
 			
 			// Note this has finished
 			VMTestResult testResult = VMTestResult.valueOf(exitCode);
-			logger.lifecycle(String.format("%4s %s (%d/%d)",
+			logger.lifecycle(String.format("%4s %s [%d/%d]",
 				testResult, testName, count, total));
 			
 			// Write the XML file

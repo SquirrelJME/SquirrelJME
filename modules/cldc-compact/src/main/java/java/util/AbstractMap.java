@@ -55,16 +55,40 @@ public abstract class AbstractMap<K, V>
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/07/12
+	 */
 	@Override
-	public boolean equals(Object __a)
+	public boolean equals(Object __o)
 	{
-		throw Debugging.todo();
+		// Quick?
+		if (this == __o)
+			return true;
+		
+		// Not another map?
+		if (!(__o instanceof Map))
+			return false;
+		
+		// Compares on the entry set
+		return this.entrySet().equals(((Map<?, ?>)__o).entrySet());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/07/12
+	 * @param __key
+	 */
 	@Override
-	public V get(Object __a)
+	public V get(Object __key)
 	{
-		throw Debugging.todo();
+		// Manual scan through to find it
+		for (Map.Entry<K, V> e : this.entrySet())
+			if (Objects.equals(e.getKey(), __key))
+				return e.getValue();
+		
+		// Not found
+		return null;
 	}
 	
 	/**

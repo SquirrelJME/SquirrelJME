@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.manifest.JavaManifestKey;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
+import cc.squirreljme.runtime.cldc.util.StringUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -22,7 +23,10 @@ import java.io.PrintStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -288,6 +292,41 @@ public final class TestResult
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
+			
+		// Multi-parameter set since multiples could be defined and declared
+		// accordingly in old and newer style
+		List<String> multiParams = null;
+		if (__multiParam != null)
+		{
+			Set<String> working = new LinkedHashSet<>();
+			String[] splits = StringUtils.basicSplit('@', __multiParam);
+			
+			// Add each individual split since there could be a regular
+			// parameter
+			working.addAll(Arrays.asList(splits));
+			
+			// Add growing splits i.e. a, a@b, a@b@c, etc.
+			for (int i = 0, n = splits.length; i < n; i++)
+			{
+				StringBuilder sb = new StringBuilder();
+				
+				for (int j = 0; j <= i; j++)
+				{
+					// Add split at the end to divide
+					if (sb.length() > 0)
+						sb.append('@');
+					
+					sb.append(splits[j]);
+				}
+				
+				working.add(sb.toString());
+			}
+			
+			// Reverse the working list so precise multi parameters take
+			// precedence before earlier ones
+			multiParams = new ArrayList<>(working);
+			Collections.reverse(multiParams);
+		}
 		
 		// We are going to recursively go up the class chain and load values
 		// from the manifest into our result
@@ -302,74 +341,15 @@ public final class TestResult
 			// Try to load multi-parameter and standard results, the multi
 			// parameters take precedence since they are more specific for
 			// tests
-			for (int i = 0; i < 2; i++)
-			{
-				// Skip first case if not for multi parameter
-				boolean isForMulti = (i == 0);
-				if (isForMulti && __multiParam == null)
-					continue;
-				
-				// Parse and handle manifest
-				JavaManifestAttributes attr;
-				try (InputStream in = at.getResourceAsStream(
-					(isForMulti ? atBase + "@" + __multiParam :
-					atBase) + ".in"))
+			if (multiParams != null && !multiParams.isEmpty())
+				for (String multiParam : multiParams)
 				{
-					// No manifest here, ignore
-					if (in == null)
-						continue;
-					
-					// Parse
-					attr = new JavaManifest(in).getMainAttributes();
+					TestResult.__extractResults(__otherKeys, rv, at,
+						atBase + "@" + multiParam);
 				}
-				
-				// Ignore
-				catch (IOException e)
-				{
-					continue;
-				}
-				
-				// Work with attributes and decode them
-				for (Map.Entry<JavaManifestKey, String> e : attr.entrySet())
-				{
-					String ekey = e.getKey().toString().toLowerCase(),
-						eval = e.getValue();
-					
-					// Depends on the encoded key
-					switch (ekey)
-					{
-							// Returned value
-						case "result":
-							if (rv.getReturn() == null)
-								rv.setReturnEncoded(eval);
-							break;
-						
-							// Thrown value
-						case "thrown":
-							if (rv.getThrown() == null)
-								rv.setThrownEncoded(eval);
-							break;
-							
-							// Possibly handle secondary values
-						default:
-							if (ekey.startsWith("secondary-"))
-							{
-								String skey = DataDeserialization.decodeKey(
-									ekey.substring(10));
-								
-								if (rv.getSecondary(skey) == null)
-									rv.putSecondaryEncoded(skey, eval);
-							}
-							
-							// Another key, put into the other map, but never
-							// replace values that already exist
-							else if (__otherKeys != null &&
-								!__otherKeys.containsKey(ekey))
-								__otherKeys.put(ekey, eval);
-							break;
-					}
-				}
-			}
+			
+			// Standard results last
+			TestResult.__extractResults(__otherKeys, rv, at, atBase);
 		}
 		
 		// Done
@@ -542,6 +522,79 @@ public final class TestResult
 		
 		// Is a match
 		return true;
+	}
+	
+	/**
+	 * Extracts results from test result JSONs.
+	 * 
+	 * @param __otherKeys The other keys to test.
+	 * @param __result The resultant test results.
+	 * @param __pivot The pivot for loading resources.
+	 * @param __baseName The base name for the resource.
+	 * @since 2022/07/26
+	 */
+	private static void __extractResults(Map<String, String> __otherKeys,
+		TestResultBuilder __result, Class<?> __pivot, String __baseName)
+	{
+		JavaManifestAttributes attr;
+		try (InputStream in = __pivot.getResourceAsStream(
+			__baseName + ".in"))
+		{
+			// No manifest here, ignore
+			if (in == null)
+				return;
+			
+			// Parse
+			attr = new JavaManifest(in).getMainAttributes();
+		}
+		
+		// Ignore
+		catch (IOException e)
+		{
+			return;
+		}
+		
+		// Work with attributes and decode them
+		for (Map.Entry<JavaManifestKey, String> e :
+			attr.entrySet())
+		{
+			String ekey = e.getKey().toString().toLowerCase(),
+				eval = e.getValue();
+			
+			// Depends on the encoded key
+			switch (ekey)
+			{
+					// Returned value
+				case "result":
+					if (__result.getReturn() == null)
+						__result.setReturnEncoded(eval);
+					break;
+				
+					// Thrown value
+				case "thrown":
+					if (__result.getThrown() == null)
+						__result.setThrownEncoded(eval);
+					break;
+					
+					// Possibly handle secondary values
+				default:
+					if (ekey.startsWith("secondary-"))
+					{
+						String skey = DataDeserialization
+							.decodeKey(ekey.substring(10));
+						
+						if (__result.getSecondary(skey) == null)
+							__result.putSecondaryEncoded(skey, eval);
+					}
+					
+					// Another key, put into the other map, but
+					// never replace values that already exist
+					else if (__otherKeys != null &&
+						!__otherKeys.containsKey(ekey))
+						__otherKeys.put(ekey, eval);
+					break;
+			}
+		}
 	}
 	
 	/**

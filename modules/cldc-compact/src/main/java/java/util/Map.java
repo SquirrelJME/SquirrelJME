@@ -22,7 +22,14 @@ public interface Map<K, V>
 	@Override
 	boolean equals(Object __a);
 	
-	V get(Object __a);
+	/**
+	 * Obtains the key from the given map.
+	 * 
+	 * @param __key The key to get.
+	 * @return The value of the given key or {@code null} if not found.
+	 * @since 2022/07/12
+	 */
+	V get(Object __key);
 	
 	@Override
 	int hashCode();

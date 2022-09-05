@@ -3,11 +3,12 @@
 
 dependencies
 {
-	// Needed to access all of the testing framework details
-	testImplementation project(":modules:cldc-compact")
-	testImplementation project(":modules:common-vm")
+	// All tests need and require the testing framework, which includes other
+	// dependencies accordingly...
 	testImplementation project(":modules:tac")
-	testImplementation project(":modules:meep-midlet")
+	
+	// This is not used at runtime, but is required for testing in the hosted
+	// environment to work as the emulator needs to exist.
 	testImplementation project(":emulators:emulator-base")
 }
 

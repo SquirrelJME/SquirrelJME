@@ -43,18 +43,6 @@ public class DefunctTestTask
 			.getTasks().findByName("testHosted"));
 		
 		// Make sure the task fails as quickly as possibles
-		this.doFirst(this::action);
-	}
-	
-	/**
-	 * This just fails the task.
-	 * 
-	 * @param __task The running task.
-	 * @since 2020/10/07
-	 */
-	private void action(Task __task)
-	{
-		throw new RuntimeException("The `test` task is defunct, " +
-			"the task `testHosted` must be used instead. Failing.");
+		this.doFirst(new DefunctTestTaskAction());
 	}
 }

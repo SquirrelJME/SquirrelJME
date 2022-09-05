@@ -9,6 +9,9 @@
 
 package cc.squirreljme.plugin.swm;
 
+import cc.squirreljme.plugin.multivm.VMHelpers;
+import org.gradle.api.tasks.SourceSet;
+
 /**
  * Represents the type of MIDlet a program is.
  *
@@ -49,6 +52,36 @@ public enum JavaMEMidletType
 	public final String nameKey()
 	{
 		return this.prefixKey() + "-Name";
+	}
+	
+	/**
+	 * Normalizes the type of MIDlet or otherwise this is based on the given
+	 * context of the source set.
+	 * 
+	 * @param __sourceSet The source set to get from.
+	 * @return The normalized MIDlet type.
+	 * @since 202/08/07
+	 */
+	public final JavaMEMidletType normalizeViaSourceSet(String __sourceSet)
+	{
+		switch (__sourceSet)
+		{
+				// Uses whatever this is
+			case SourceSet.MAIN_SOURCE_SET_NAME:
+				return this;
+				
+				// Always an application
+			case SourceSet.TEST_SOURCE_SET_NAME:
+				return JavaMEMidletType.APPLICATION;
+				
+				// Always a library
+			case VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME:
+				return JavaMEMidletType.LIBRARY;
+			
+			default:
+				throw new IllegalArgumentException("Unknown source set: " +
+					__sourceSet);
+		}
 	}
 	
 	/**

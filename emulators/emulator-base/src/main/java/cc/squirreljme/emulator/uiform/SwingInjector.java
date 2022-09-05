@@ -12,6 +12,7 @@ package cc.squirreljme.emulator.uiform;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Injector into Swing's code execution.
@@ -58,6 +59,19 @@ public class SwingInjector
 		UIFormCallback callback = ((SwingForm)__form).callback();
 		if (callback != null)
 			callback.exitRequest(__form);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/07/20
+	 */
+	@Override
+	public void formRefresh(UIFormBracket __form, int __sx, int __sy,
+		int __sw, int __sh)
+	{
+		UIFormCallback callback = ((SwingForm)__form).callback();
+		if (callback != null)
+			callback.formRefresh(__form, __sx, __sy, __sw, __sh);
 	}
 	
 	/**

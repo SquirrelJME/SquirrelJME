@@ -14,8 +14,9 @@ import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
- * This is a reader which is backed by a buffer which should increase the
- * efficiency of read operations by allowing for bulk reads for easily.
+ * This is a reader which is backed by a buffer which can read a larger block
+ * of characters at once which should increase the efficiency of operations,
+ * it additionally allows for marking.
  *
  * It is recommended to wrap these around {@link InputStreamReader} for
  * example due to that class not being efficient due to character conversions.

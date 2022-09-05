@@ -20,12 +20,12 @@ secondary-add8: true
 secondary-add9: true
 secondary-addempty: false
 secondary-addsize: int:4
-secondary-array: string[13]:Hello!,1,2,Xer!,6,8,10,11,13,14,16,17,Squi
- rrels!
-secondary-arrayover: string[30]:Hello!,1,2,Xer!,6,8,10,11,13,14,16,17,
- Squirrels!,\NULL,\NULL,\NULL,\NULL,\NULL,\NULL,\NULL,\NULL,\NULL,\NULL
- ,\NULL,\NULL,\NULL,\NULL,\NULL,\NULL,\NULL
-secondary-arrowgrow: string[13]:Hello!,1,2,Xer!,6,8,10,11,13,14,16,17,
+secondary-array: string[13]:Hello!,1,beep2,Xer!,6,8,10,11,13,14,16,17,
+ Squirrels!
+secondary-arrayover: string[30]:Hello!,1,beep2,Xer!,6,8,10,11,13,14,16,17,
+ Squirrels!,\NULL,\NULL,\NULL,\NULL,\NULL,\NULL,\NULL,\NULL,\NULL,\NULL,
+ \NULL,\NULL,\NULL,\NULL,\NULL,\NULL,\NULL
+secondary-arrowgrow: string[13]:Hello!,1,beep2,Xer!,6,8,10,11,13,14,16,17,
  Squirrels!
 secondary-bulkempty: false
 secondary-bulksize: int:19
@@ -94,5 +94,10 @@ secondary-removevalue: true
 secondary-set13: string:12
 secondary-set29: throwable:IndexOutOfBoundsException
 secondary-set6: string:5
-secondary-stringform: string:[Hello!,\_1,\_2,\_Xer!,\_6,\_8,\_10,\_11,
+secondary-stringform: string:[Hello!,\_1,\_beep2,\_Xer!,\_6,\_8,\_10,\_11,
  \_13,\_14,\_16,\_17,\_Squirrels!]
+secondary-listitremovebefore: throwable:IllegalStateException
+secondary-reversea: string[13]:Squirrels!,17,16,14,13,11,10,8,6,Xer!,beep2,1,
+ Hello!
+secondary-reverseb: string[13]:Hello!,1,beep2,Xer!,6,8,10,11,13,14,16,17,
+ Squirrels!

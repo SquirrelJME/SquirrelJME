@@ -224,6 +224,20 @@ final class __MLEUIThread__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2022/07/20
+	 */
+	@Override
+	public void formRefresh(UIFormBracket __form, int __sx, int __sy,
+	 int __sw,
+		int __sh)
+	{
+		DisplayWidget widget = StaticDisplayState.locate(__form);
+		if (widget instanceof Form)
+			((Form)widget).__performLayout();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/10/03
 	 */
 	@Override

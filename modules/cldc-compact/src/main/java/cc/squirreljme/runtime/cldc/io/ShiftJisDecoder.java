@@ -21,20 +21,11 @@ import java.io.InputStream;
  * @since 2021/06/13
  */
 public class ShiftJisDecoder
+	extends ShiftJisBase
 	implements Decoder
 {
 	/** The loaded Shift-JIS table. */
 	private static volatile DoubleByteTable _TABLE;
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/06/13
-	 */
-	@Override
-	public double averageSequenceLength()
-	{ 
-		return 2.0D;
-	}
 	
 	/**
 	 * {@inheritDoc}
@@ -70,7 +61,7 @@ public class ShiftJisDecoder
 		
 		// Single byte half-width Katakana
 		else if (a >= 0xA1 && a <= 0xDF)
-			return this.__singleByteHalfWidthKatakana(a) | 0x1_0000;
+			return ShiftJisDecoder.__singleByteHalfWidthKatakana(a) | 0x1_0000;
 		
 		// Two byte characters
 		else if ((a >= 0x81 && a <= 0x9F) || (a >= 0xE0 && a <= 0xEF))
@@ -89,26 +80,6 @@ public class ShiftJisDecoder
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2021/06/13
-	 */
-	@Override
-	public String encodingName()
-	{
-		return "shift-jis";
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/06/13
-	 */
-	@Override
-	public int maximumSequenceLength()
-	{
-		return 2;
-	}
-	
-	/**
 	 * Decodes a single byte half-width katakana character
 	 * 
 	 * @param __a The byte.
@@ -116,7 +87,7 @@ public class ShiftJisDecoder
 	 * @since 2022/02/14
 	 */
 	@SuppressWarnings("MagicNumber")
-	private int __singleByteHalfWidthKatakana(int __a)
+	private static int __singleByteHalfWidthKatakana(int __a)
 	{
 		switch (__a)
 		{

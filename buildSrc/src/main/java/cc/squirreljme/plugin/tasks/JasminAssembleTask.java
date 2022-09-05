@@ -37,13 +37,15 @@ public class JasminAssembleTask
 	 *
 	 * @param __sourceSet The source set to use.
 	 * @param __prTask The process resources task.
+	 * @param __cleanTask The task for cleaning.
 	 * @since 2020/04/04
 	 */
 	@Inject
-	public JasminAssembleTask(String __sourceSet, ProcessResources __prTask)
+	public JasminAssembleTask(String __sourceSet, ProcessResources __prTask,
+		Task __cleanTask)
 	{
 		super(JasminAssembleTask.EXTENSION, ".class",
-			__sourceSet, __prTask);
+			__sourceSet, __prTask, __cleanTask);
 		
 		// Set details of this task
 		this.setGroup("squirreljme");
@@ -69,9 +71,9 @@ public class JasminAssembleTask
 					ClassFile jasClass = new ClassFile();
 					try
 					{
-					jasClass.readJasmin(new BufferedInputStream(in),
-						output.input.relative.getFileName().toString(),
-						true);
+						jasClass.readJasmin(new BufferedInputStream(in),
+							output.input.relative.getFileName().toString(),
+							true);
 					}
 					
 					// This could fail

@@ -30,10 +30,15 @@ subprojects {
 	}
 	
 	apply plugin: "java-library"
+	apply plugin: "java-test-fixtures"
 	apply plugin: "cc.squirreljme.plugin"
 	apply plugin: "idea"
 	apply plugin: "maven-publish"
 	apply plugin: "signing"
+	
+	// The Java versions this works with
+	sourceCompatibility = 8
+	targetCompatibility = 8
 	
 	idea {
 		module
@@ -266,7 +271,5 @@ configure(subprojects
 	dependencies {
 		// All projects depend on the Compact CLDC Library
 		api project(":modules:cldc-compact")
-		
-		testImplementation project(":modules:cldc-compact")
 	}
 }

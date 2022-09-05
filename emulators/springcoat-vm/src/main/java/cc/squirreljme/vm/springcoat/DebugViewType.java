@@ -19,6 +19,7 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
 import java.lang.ref.Reference;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.ConstantValueString;
 
 /**
  * A viewer around class types.
@@ -44,6 +45,19 @@ public class DebugViewType
 			throw new NullPointerException("NARG");
 		
 		this.state = __state;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/08/28
+	 */
+	@Override
+	public boolean canCastTo(Object __fromWhich, Object __toWhich)
+	{
+		SpringClass from = DebugViewType.__class(__fromWhich);
+		SpringClass to = DebugViewType.__class(__toWhich);
+		
+		return to.isAssignableFrom(from);
 	}
 	
 	/**
@@ -376,11 +390,8 @@ public class DebugViewType
 		// Get the static field storage for the class
 		SpringFieldStorage[] store = classy._staticFields;
 		if (__index >= classy._staticFieldBase && __index < store.length)
-		{
-			__out.set(DebugViewObject.__normalizeNull(
-				store[__index].get()));
-			return true;
-		}
+			return DebugViewType.__readValue(__out, store[__index],
+				classy.classLoader().machine());
 		
 		// Not a valid static field
 		return false;
@@ -414,6 +425,34 @@ public class DebugViewType
 	public Object superType(Object __which)
 	{
 		return DebugViewType.__class(__which).superclass;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/01
+	 */
+	@Override
+	public Object typeOfClassInstance(Object __object)
+	{
+		// Invalid?
+		__object = DebugViewObject.__normalizeNull(__object);
+		if (!(__object instanceof SpringSimpleObject))
+			return null;
+		
+		// Not Class object?
+		SpringSimpleObject object = (SpringSimpleObject)__object;
+		if (!"java/lang/Class".equals(object.type().name.toString()))
+			return null;
+		
+		// Lookup the field for the type
+		SpringFieldStorage field = object.fieldByNameAndType(false,
+			"_type",
+			"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;");
+		if (field == null)
+			return null;
+		
+		// Read the value here
+		return MLEType.__type(field.get()).type();
 	}
 	
 	/**
@@ -480,5 +519,35 @@ public class DebugViewType
 			throw JDWPCommandException.tossInvalidMethod(
 				__which, __methodDx, e);
 		}
+	}
+	
+	/**
+	 * Reads from storage into the output value.
+	 * 
+	 * @param __out The output value.
+	 * @param __store The field storage.
+	 * @param __machine The machine used for potential object manipulation.
+	 * @return {@code true} on success.
+	 * @since 2022/09/01
+	 */
+	static boolean __readValue(JDWPValue __out, SpringFieldStorage __store,
+		SpringMachine __machine)
+	{
+		Object value = __store.get();
+		
+		// If this is a string, we need to intern it for the debugger otherwise
+		// it will fail
+		if ((value instanceof String) ||
+			(value instanceof ConstantValueString))
+			try (CallbackThread callback = __machine.obtainCallbackThread(
+				true))
+			{
+				value = callback.thread()._worker
+					.asVMObject(new ConstantValueString(value.toString()));
+			}
+		
+		__out.set(DebugViewObject.__normalizeNull(value));
+		
+		return true;
 	}
 }
