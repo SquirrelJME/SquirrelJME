@@ -118,44 +118,73 @@ public final class VMHelpers
 		// Mappings of both source and expected files
 		Set<String> names = new TreeSet<>();
 		Map<String, FileLocation> sources = new HashMap<>();
+		Map<String, FileLocation> secondarySources = new HashMap<>();
 		Map<String, FileLocation> expects = new HashMap<>();
 		
-		// Scan through every file and match sources and expected tests
-		for (FileLocation file :
-			TestDetection.sourceSetFiles(__project, __sourceSet))
+		// Setup initial set of sources and files for lookup
+		List<CandidateTestFileSource> everything = new ArrayList<>();
+		everything.add(new CandidateTestFileSource(true,
+			TestDetection.sourceSetFiles(__project, __sourceSet)));
+		
+		// Go through dependencies since we need to know about those test
+		// details and such
+		for (ProjectAndTaskName projectTask : VMHelpers.runClassTasks(
+			__project, __sourceSet, VMType.HOSTED))
 		{
-			// If this is a MIME encoded file, normalize the name so it does
-			// not include the mime extension as that is removed at JAR build
-			// time
-			Path normalized;
-			if ("__mime".equals(VMHelpers.getExtension(file.relative)))
-				normalized = VMHelpers.stripExtension(file.relative);
-			else
-				normalized = file.relative;
+			// Only consider actual projects
+			Project subProject = __project.project(projectTask.project);
+			Task subTask = subProject.getTasks().getByName(projectTask.task);
+			if (!(subTask instanceof VMExecutableTask))
+				continue;
 			
-			// Determine the name of the class, used to filter if this is
-			// a valid test or not at a later stage
-			String testName = VMHelpers.pathToString('.',
-					VMHelpers.stripExtension(normalized));
-			
-			// Always add the test now, since this could be a super class
-			// of a test but not something that should be called
-			names.add(testName);
-			
-			// Determine how this file is to be handled
-			switch (VMHelpers.getExtension(normalized))
+			// Add to be evaluated by everything
+			everything.add(new CandidateTestFileSource(false,
+				TestDetection.sourceSetFiles(subProject,
+					((VMExecutableTask)subTask).getSourceSet())));
+		}
+		
+		// Go through all the potential candidate sources
+		for (CandidateTestFileSource candidateSource : everything)
+		{
+			// Scan through every file and match sources and expected tests
+			for (FileLocation file : candidateSource.collection)
 			{
-					// Executable Classes
-				case "class":
-				case "java":
-				case "j":
-					sources.put(testName, file);
-					break;
+				// If this is a MIME encoded file, normalize the name, so it
+				// does not include the mime extension as that is removed at
+				// JAR build time
+				Path normalized;
+				if ("__mime".equals(VMHelpers.getExtension(file.relative)))
+					normalized = VMHelpers.stripExtension(file.relative);
+				else
+					normalized = file.relative;
 				
-					// Test expectations
-				case "in":
-					expects.put(testName, file);
-					break;
+				// Determine the name of the class, used to filter if this is
+				// a valid test or not at a later stage
+				String testName = VMHelpers.pathToString('.',
+						VMHelpers.stripExtension(normalized));
+				
+				// Always add the test now, since this could be a super class
+				// of a test but not something that should be called
+				names.add(testName);
+				
+				// Determine how this file is to be handled
+				switch (VMHelpers.getExtension(normalized))
+				{
+						// Executable Classes
+					case "class":
+					case "java":
+					case "j":
+						if (candidateSource.primary)
+							sources.put(testName, file);
+						else
+							secondarySources.put(testName, file);
+						break;
+					
+						// Test expectations
+					case "in":
+						expects.put(testName, file);
+						break;
+				}
 			}
 		}
 		
@@ -163,14 +192,16 @@ public final class VMHelpers
 		Map<String, CandidateTestFiles> fullSet = new TreeMap<>();
 		for (String testName : names)
 		{
-			// May be an abstract test?
+			// Maybe an abstract test?
 			FileLocation source = sources.get(testName);
-			if (source == null)
+			FileLocation secondarySource = secondarySources.get(testName);
+			if (source == null && secondarySource == null)
 				continue;
 			
 			// Store it
-			fullSet.put(testName,
-				new CandidateTestFiles(source, expects.get(testName)));
+			fullSet.put(testName, new CandidateTestFiles((source != null),
+				(source != null ? source : secondarySource),
+				expects.get(testName)));
 		}
 		
 		// Map tests and candidate sets to normal candidates
@@ -178,9 +209,15 @@ public final class VMHelpers
 		for (Map.Entry<String, CandidateTestFiles> entry : fullSet.entrySet())
 		{
 			String testName = entry.getKey();
+			CandidateTestFiles candidate = entry.getValue();
 			
 			// Ignore if this does not match the expected name form
 			if (!TestDetection.isTest(testName))
+				continue;
+			
+			// If this is not a primary test, then it does not get to be added
+			// to the test list nor do we need to do any processing for it
+			if (!candidate.primary)
 				continue;
 			
 			// Load the expected results and see if there multi-parameters
@@ -188,7 +225,6 @@ public final class VMHelpers
 				VMHelpers.__loadExpectedResults(testName, fullSet));
 			
 			// Single test, has no parameters
-			CandidateTestFiles candidate = entry.getValue();
 			if (multiParams == null || multiParams.isEmpty())
 				result.put(testName, candidate);
 			
@@ -1107,15 +1143,21 @@ public final class VMHelpers
 		// blank manifest to be parsed
 		CandidateTestFiles candidate = __candidates.get(__testName);
 		if (candidate == null)
-			return new Manifest(); 
+			return new Manifest();
+		
+		// Debug
+		System.err.printf(">> LOAD EXPECTED: %s%n", __testName);
 		
 		// Load information gleaned from the source code
 		__SourceInfo__ info;
 		try (InputStream in = Files.newInputStream(
 			candidate.sourceCode.absolute, StandardOpenOption.READ))
 		{
-			if ("j".equals(VMHelpers.getExtension(
-				candidate.sourceCode.absolute)))
+			String extension = VMHelpers.getExtension(
+				candidate.sourceCode.absolute);
+			if ("class".equals(extension))
+				info = __SourceInfo__.loadClass(in);
+			else if ("j".equals(extension))
 				info = __SourceInfo__.loadJasmin(in);
 			else
 				info = __SourceInfo__.loadJava(in);

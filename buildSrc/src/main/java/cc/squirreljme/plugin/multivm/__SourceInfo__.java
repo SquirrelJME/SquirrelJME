@@ -81,6 +81,24 @@ final class __SourceInfo__
 	}
 	
 	/**
+	 * Loads class information from a class file.
+	 *
+	 * @param __in The stream to from.
+	 * @return The implementing class information.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/09/05
+	 */
+	public static __SourceInfo__ loadClass(InputStream __in)
+		throws IOException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Loads information gleaned from source code in Jasmin.
 	 * 
 	 * @param __in The file to read from.
@@ -293,7 +311,8 @@ final class __SourceInfo__
 				}
 				
 				// Potential class statement?
-				else if (type == '{' && queue.contains("class"))
+				else if (type == '{' && (queue.contains("class") ||
+					queue.contains("interface")))
 				{
 					// If no package was found, then this will be the default
 					// package
@@ -302,7 +321,7 @@ final class __SourceInfo__
 					
 					// It may or may not be here on this line
 					String maybeClass = __SourceInfo__
-						.__follow(queue, "class");
+						.__follow(queue, "class", "interface");
 					String maybeExtend = __SourceInfo__
 						.__follow(queue, "extends");
 					
@@ -395,15 +414,15 @@ final class __SourceInfo__
 	 * return {@code "foo"}.
 	 * 
 	 * @param __seq The token sequence.
-	 * @param __token The token to follow from.
+	 * @param __tokens The tokens to follow from.
 	 * @return The following word.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/10
 	 */
-	private static String __follow(Deque<String> __seq, String __token)
+	private static String __follow(Deque<String> __seq, String... __tokens)
 		throws NullPointerException
 	{
-		if (__seq == null || __token == null)
+		if (__seq == null || __tokens == null || __tokens.length <= 0)
 			throw new NullPointerException("NARG");
 		
 		// Try to discover a match
@@ -414,8 +433,17 @@ final class __SourceInfo__
 			if (at == null)
 				break;
 			
+			// Find match for our token
+			String matching = null;
+			for (String maybe : __tokens)
+				if (maybe.equals(at))
+				{
+					matching = maybe;
+					break;
+				}
+			
 			// Did we match our token?
-			if (!__token.equals(at))
+			if (matching == null)
 				continue;
 			
 			// Return the follower if it is a valid identifier
