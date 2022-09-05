@@ -192,7 +192,7 @@ public final class VMHelpers
 			if (multiParams == null || multiParams.isEmpty())
 				result.put(testName, candidate);
 			
-			// Otherwise signify all the parameters within
+			// Otherwise, signify all the parameters within
 			else
 				for (String multiParam : multiParams)
 					result.put(testName + "@" + multiParam, candidate);
@@ -1126,6 +1126,9 @@ public final class VMHelpers
 				__testName, e);
 		}
 		
+		// Debug
+		System.err.printf(">> INFO: %s%n", info);
+		
 		// Read the current manifest
 		Manifest over;
 		if (candidate.expectedResult == null)
@@ -1147,19 +1150,40 @@ public final class VMHelpers
 		if (info.superClass == null)
 			return over;
 		
-		// Load the manifest that belongs to the super class if that is
-		// possible, a blank will be used if missing
-		Manifest under = VMHelpers.__loadExpectedResults(info.superClass,
+		Attributes overAttr = over.getMainAttributes();
+		
+		// Load super class information
+		VMHelpers.__loadExpectedResultsSub(overAttr, info.superClass,
+			__candidates);
+		
+		// And interfaces...
+		for (String implementsClass : info.implementsClasses)
+			VMHelpers.__loadExpectedResultsSub(overAttr, implementsClass,
+				__candidates);
+		
+		return over;
+	}
+	
+	/**
+	 * Loads the expected classes from the result.
+	 * 
+	 * @param __overAttr The attributes to potentially write over.
+	 * @param __class The class to check.
+	 * @param __candidates The candidates for finding the class.
+	 * @since 2022/09/05
+	 */
+	private static void __loadExpectedResultsSub(Attributes __overAttr,
+		String __class, Map<String, CandidateTestFiles> __candidates)
+	{
+		// Load the manifest that belongs to this class if it is possible
+		Manifest under = VMHelpers.__loadExpectedResults(__class,
 			__candidates);
 		
 		// Add the underlying manifest, provided it does not replace anything
 		// on the higher level
-		Attributes overAttr = over.getMainAttributes();
 		for (Map.Entry<Object, Object> e : under.getMainAttributes()
 			.entrySet())
-			overAttr.putIfAbsent(e.getKey(), e.getValue());
-		
-		return over;
+			__overAttr.putIfAbsent(e.getKey(), e.getValue());
 	}
 	
 	/**
