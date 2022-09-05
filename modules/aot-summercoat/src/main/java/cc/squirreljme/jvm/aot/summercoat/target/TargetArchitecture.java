@@ -9,13 +9,15 @@
 
 package cc.squirreljme.jvm.aot.summercoat.target;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Represents the name of a target architecture family.
  *
  * @since 2022/09/04
  */
 public enum TargetArchitecture
-	implements HasTargetVariant<TargetArchitectureVariant>
+	implements Banglet, HasTargetVariant<TargetArchitectureVariant>
 {
 	/** ARM. */
 	ARM,
@@ -58,4 +60,33 @@ public enum TargetArchitecture
 	
 	/* End. */
 	;
+	
+	/** The available variants. */
+	private final TargetArchitectureVariant[] _variants;
+	
+	/**
+	 * Initializes the architecture.
+	 * 
+	 * @param __variants The variants used, if none specified this defaults
+	 * to a single NONE.
+	 * @since 2022/09/06
+	 */
+	TargetArchitecture(TargetArchitectureVariant... __variants)
+	{
+		if (__variants == null || __variants.length <= 0)
+			this._variants = new TargetArchitectureVariant[]{
+				TargetArchitectureVariant.NONE};
+		else
+			this._variants = __variants;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/05
+	 */
+	@Override
+	public final TargetArchitectureVariant[] variants()
+	{
+		return this._variants.clone();
+	}
 }

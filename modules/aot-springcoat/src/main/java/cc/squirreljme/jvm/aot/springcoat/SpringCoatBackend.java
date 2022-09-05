@@ -46,8 +46,8 @@ public class SpringCoatBackend
 	 * @since 2021/08/21
 	 */
 	@Override
-	public void compileClass(CompileSettings __settings, LinkGlob __glob,
-		String __name, InputStream __in, OutputStream __out)
+	public void compileClass(LinkGlob __glob, String __name, InputStream __in,
+		OutputStream __out)
 		throws IOException, NullPointerException
 	{
 		throw new IllegalArgumentException("AI01");

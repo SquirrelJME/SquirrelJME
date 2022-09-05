@@ -29,7 +29,6 @@ public interface Backend
 	/**
 	 * Performs compilation of a single class.
 	 * 
-	 * @param __settings The settings for compilation.
 	 * @param __glob The compilation glob if this is needed by the source
 	 * compilation step.
 	 * @param __name The name of the class being compiled.
@@ -39,8 +38,8 @@ public interface Backend
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/22
 	 */
-	void compileClass(CompileSettings __settings, LinkGlob __glob,
-		String __name, InputStream __in, OutputStream __out)
+	void compileClass(LinkGlob __glob, String __name, InputStream __in,
+		OutputStream __out)
 		throws IOException, NullPointerException;
 	
 	/**

@@ -33,11 +33,11 @@ public class SummerCoatBackend
 	 * @since 2022/08/05
 	 */
 	@Override
-	public void compileClass(CompileSettings __settings, LinkGlob __glob,
-		String __name, InputStream __in, OutputStream __out)
+	public void compileClass(LinkGlob __glob, String __name, InputStream __in,
+		OutputStream __out)
 		throws IOException, NullPointerException
 	{
-		if (__settings == null || __glob == null || __name == null ||
+		if (__glob == null || __name == null ||
 			__in == null || __out == null)
 			throw new NullPointerException("NARG");
 		

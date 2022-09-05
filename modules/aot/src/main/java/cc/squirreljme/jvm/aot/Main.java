@@ -231,7 +231,7 @@ public class Main
 						new ByteArrayOutputStream())
 					{
 						// Perform compilation
-						__backend.compileClass(settings, glob,
+						__backend.compileClass(glob,
 							name.substring(0,
 								name.length() - ".class".length()),
 							entry, classBytes);

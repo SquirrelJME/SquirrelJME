@@ -10,14 +10,20 @@
 package cc.squirreljme.jvm.aot.summercoat.target;
 
 /**
- * Represents a variant of a target.
+ * Represents the "none" architecture variant.
  *
- * @since 2022/09/04
+ * @since 2022/09/05
  */
-public interface TargetArchitectureVariant
-	extends Banglet, TargetVariant
+final class __ArchitectureVariantNone__
+	implements TargetArchitectureVariant
 {
-	/** The None Variant. */
-	TargetArchitectureVariant NONE =
-		new __ArchitectureVariantNone__();
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/05
+	 */
+	@Override
+	public String name()
+	{
+		return "NONE";
+	}
 }

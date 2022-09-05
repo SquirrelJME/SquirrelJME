@@ -17,4 +17,11 @@ package cc.squirreljme.jvm.aot.summercoat.target;
  */
 public interface HasTargetVariant<V extends TargetVariant>
 {
+	/**
+	 * Returns the available variants.
+	 * 
+	 * @return The available variants.
+	 * @since 2022/09/05
+	 */
+	V[] variants();
 }

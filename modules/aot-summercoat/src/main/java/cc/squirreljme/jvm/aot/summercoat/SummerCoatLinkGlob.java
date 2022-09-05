@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.summercoat;
 
+import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
@@ -23,6 +24,35 @@ import java.io.InputStream;
 public final class SummerCoatLinkGlob
 	implements LinkGlob
 {
+	/** The compilation settings for this glob. */
+	protected final CompileSettings settings;
+	
+	/**
+	 * 
+	 * 
+	 * @param __settings The settings for this glob.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/09/05
+	 */
+	public SummerCoatLinkGlob(CompileSettings __settings)
+		throws NullPointerException
+	{
+		if (__settings == null)
+			throw new NullPointerException("NARG");
+		
+		this.settings = __settings;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/05
+	 */
+	@Override
+	public CompileSettings compileSettings()
+	{
+		return this.settings;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/09/04

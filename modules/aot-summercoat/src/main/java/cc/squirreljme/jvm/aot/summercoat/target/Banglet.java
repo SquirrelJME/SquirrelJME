@@ -10,14 +10,18 @@
 package cc.squirreljme.jvm.aot.summercoat.target;
 
 /**
- * Represents a variant of a target.
+ * Represents a banglet.
  *
- * @since 2022/09/04
+ * @since 2022/09/05
  */
-public interface TargetArchitectureVariant
-	extends Banglet, TargetVariant
+public interface Banglet
 {
-	/** The None Variant. */
-	TargetArchitectureVariant NONE =
-		new __ArchitectureVariantNone__();
+	/**
+	 * This is the name of the identifier in {@code enum} form, that is
+	 * uppercase letters with underscores and numbers.
+	 * 
+	 * @return The banglet name, matches an enumeration.
+	 * @since 2022/09/05
+	 */
+	String name();
 }

@@ -15,6 +15,9 @@ package cc.squirreljme.jvm.aot.summercoat.target;
  * @since 2022/09/04
  */
 public interface TargetOperatingSystemVariant
-	extends TargetVariant
+	extends Banglet, TargetVariant
 {
+	/** The None Variant. */
+	TargetOperatingSystemVariant NONE =
+		new __OperatingSystemVariantNone__();
 }

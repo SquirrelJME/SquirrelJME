@@ -54,7 +54,7 @@ public abstract class BaseCompilation
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
 		{
 			// This compiles to a byte array output
-			this.backend.compileClass(this.compileSettings, this.linkGlob,
+			this.backend.compileClass(this.linkGlob,
 				__name, __in, baos);
 			
 			return baos.toByteArray();

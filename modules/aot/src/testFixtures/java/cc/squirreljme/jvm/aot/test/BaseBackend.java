@@ -12,7 +12,6 @@ package cc.squirreljme.jvm.aot.test;
 import cc.squirreljme.jvm.aot.Backend;
 import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import net.multiphasicapps.tac.TestRunnable;
@@ -74,7 +73,7 @@ public abstract class BaseBackend
 	 */
 	public CompileSettings compileSettings()
 	{
-		return new CompileSettings(false);
+		return new CompileSettings(false, null);
 	}
 	
 	/**

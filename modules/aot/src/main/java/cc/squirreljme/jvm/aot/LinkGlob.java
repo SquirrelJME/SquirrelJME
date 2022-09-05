@@ -20,6 +20,14 @@ import java.io.InputStream;
 public interface LinkGlob
 {
 	/**
+	 * Returns the compilation settings used for the glob.
+	 * 
+	 * @return The compilation settings.
+	 * @since 2022/09/05
+	 */
+	CompileSettings compileSettings();
+	
+	/**
 	 * Indicates that compilation is complete and the final binary should
 	 * be output.
 	 * 
