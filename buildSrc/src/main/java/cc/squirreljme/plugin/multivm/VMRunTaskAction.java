@@ -108,9 +108,11 @@ public class VMRunTaskAction
 				
 				// Use these streams directly
 				__spec.setStandardOutput(new GradleLoggerOutputStream(
-					__task.getLogger(), LogLevel.LIFECYCLE, -1, -1));
+					__task.getLogger(), LogLevel.LIFECYCLE,
+					-1, -1));
 				__spec.setErrorOutput(new GradleLoggerOutputStream(
-					__task.getLogger(), LogLevel.ERROR, -1, -1));
+					__task.getLogger(), LogLevel.ERROR,
+					-1, -1));
 			});
 		
 		// Did the task fail?
