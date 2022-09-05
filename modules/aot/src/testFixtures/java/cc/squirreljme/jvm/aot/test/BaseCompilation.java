@@ -54,7 +54,7 @@ public abstract class BaseCompilation
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
 		{
 			// This compiles to a byte array output
-			this.backend.compileClass(this.linkGlob,
+			this.backend.compileClass(this.situationParameters().linkGlob,
 				__name, __in, baos);
 			
 			return baos.toByteArray();
@@ -100,7 +100,7 @@ public abstract class BaseCompilation
 		try (ByteArrayInputStream in = new ByteArrayInputStream(
 			this.compileClass(__name, __in)))
 		{
-			this.linkGlob.join(__name, false, in);
+			this.situationParameters().linkGlob.join(__name, false, in);
 		}
 	}
 	

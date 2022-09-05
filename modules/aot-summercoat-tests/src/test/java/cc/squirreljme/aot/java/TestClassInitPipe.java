@@ -11,7 +11,9 @@ package cc.squirreljme.aot.java;
 
 import cc.squirreljme.jvm.aot.summercoat.SummerCoatBackend;
 import cc.squirreljme.jvm.aot.test.BaseCompilation;
+import cc.squirreljme.jvm.aot.test.BasicTestPipeline;
 import cc.squirreljme.jvm.aot.test.ExampleClass;
+import cc.squirreljme.jvm.aot.test.SituationParameters;
 import java.io.IOException;
 
 /**
@@ -20,7 +22,7 @@ import java.io.IOException;
  * @since 2022/08/04
  */
 public class TestClassInitPipe
-	extends BaseCompilation
+	extends BasicTestPipeline
 {
 	/**
 	 * Initializes the test.
@@ -30,18 +32,5 @@ public class TestClassInitPipe
 	public TestClassInitPipe()
 	{
 		super(new SummerCoatBackend());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2022/08/04
-	 */
-	@Override
-	public void test()
-		throws IOException
-	{
-		byte[] data = this.compileClass(ExampleClass.BLANK);
-		
-		this.secondary("len", data.length > 0);
 	}
 }

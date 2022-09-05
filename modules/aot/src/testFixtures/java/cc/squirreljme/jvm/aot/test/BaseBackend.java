@@ -14,7 +14,7 @@ import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import net.multiphasicapps.tac.TestRunnable;
+import net.multiphasicapps.tac.TestConsumer;
 
 /**
  * Class which acts as a base backend.
@@ -22,20 +22,13 @@ import net.multiphasicapps.tac.TestRunnable;
  * @since 2022/08/14
  */
 public abstract class BaseBackend
-	extends TestRunnable
+	extends TestConsumer<String>
 {
 	/** The backend used. */
 	protected final Backend backend;
 	
-	/** The link glob to use. */
-	protected final LinkGlob linkGlob;
-	
-	/** The settings used for compilation. */
-	protected final CompileSettings compileSettings;
-	
-	/** The output stream where the link glob writes to. */
-	protected final ByteArrayOutputStream globOutput =
-		new ByteArrayOutputStream();
+	/** Parameters for the compilation situation. */
+	private volatile SituationParameters _parameters;
 	
 	/**
 	 * Initializes the base backend.
@@ -48,32 +41,71 @@ public abstract class BaseBackend
 		throws NullPointerException
 	{
 		this.backend = __backend;
-		
-		CompileSettings compileSettings = this.compileSettings();
-		this.compileSettings = compileSettings;
-		
-		// This could possibly fail
-		try
-		{
-			this.linkGlob = __backend.linkGlob(compileSettings,
-				BaseBackend.__name(this.getClass()), this.globOutput);
-		}
-		catch (IOException e)
-		{
-			throw new RuntimeException("IOIO", e);
-		}
 	}
+	
+	/**
+	 * Performs the testing.
+	 * 
+	 * @param __parameters The parameters to test with.
+	 * @throws Throwable On any throwable.
+	 * @since 2022/09/05
+	 */
+	public abstract void test(SituationParameters __parameters)
+		throws Throwable;
 	
 	/**
 	 * Returns the compilation settings to use, this is a default that may be
 	 * overridden in a test as needed.
 	 * 
+	 * @param __variant The variant used.
 	 * @return The compilation settings to use.
 	 * @since 2022/08/14
 	 */
-	public CompileSettings compileSettings()
+	public CompileSettings compileSettings(String __variant)
 	{
-		return new CompileSettings(false, null);
+		return new CompileSettings(false, __variant);
+	}
+	
+	/**
+	 * Returns the situation parameters for testing.
+	 * 
+	 * @return The situation parameters.
+	 * @since 2022/09/05
+	 */
+	public final SituationParameters situationParameters()
+	{
+		return this._parameters;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/05
+	 */
+	@Override
+	public final void test(String __variant)
+		throws Throwable
+	{
+		Backend backend = this.backend;
+		CompileSettings compileSettings = this.compileSettings(__variant);
+		ByteArrayOutputStream globOutput = new ByteArrayOutputStream();
+		
+		// This could possibly fail
+		LinkGlob linkGlob;
+		try
+		{
+			linkGlob = this.backend.linkGlob(compileSettings,
+				BaseBackend.__name(this.getClass()), globOutput);
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException("IOIO", e);
+		}
+		
+		// Run test
+		SituationParameters parameters = new SituationParameters(backend,
+			linkGlob, compileSettings, globOutput);
+		this._parameters = parameters;
+		this.test(parameters);
 	}
 	
 	/**

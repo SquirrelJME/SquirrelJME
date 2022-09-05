@@ -202,6 +202,7 @@
     </inspection_tool>
     <inspection_tool class="MisspelledHeader" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="CUSTOM_HEADERS">
+        <header value="hyper-parameters" />
         <header value="result" />
         <header value="secondary-key" />
         <header value="thrown" />

@@ -18,6 +18,4 @@ dependencies
 {
 	api project(":modules:aot")
 	api project(":modules:tool-classfile")
-	
-	testImplementation testFixtures(project(":modules:aot"))
 }

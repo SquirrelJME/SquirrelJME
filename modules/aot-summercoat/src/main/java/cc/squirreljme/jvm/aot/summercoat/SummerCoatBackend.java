@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.aot.Backend;
 import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.RomSettings;
+import cc.squirreljme.jvm.aot.summercoat.target.TargetBang;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.IOException;
@@ -66,6 +67,9 @@ public class SummerCoatBackend
 	{
 		if (__settings == null || __name == null || __out == null)
 			throw new NullPointerException("NARG");
+			
+		// Lookup the target bang, this specifies the target we are aiming for
+		TargetBang targetbang = new TargetBang(__settings.variant);
 		
 		throw Debugging.todo();
 	}
