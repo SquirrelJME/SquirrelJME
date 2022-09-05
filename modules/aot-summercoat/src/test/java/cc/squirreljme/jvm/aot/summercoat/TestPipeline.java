@@ -7,29 +7,25 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.aot.java;
+package cc.squirreljme.jvm.aot.summercoat;
 
-import cc.squirreljme.jvm.aot.summercoat.SummerCoatBackend;
-import cc.squirreljme.jvm.aot.test.BaseCompilation;
 import cc.squirreljme.jvm.aot.test.BasicTestPipeline;
-import cc.squirreljme.jvm.aot.test.ExampleClass;
-import cc.squirreljme.jvm.aot.test.SituationParameters;
-import java.io.IOException;
 
 /**
- * Tests that the class parsing pipe gets initialized and ran.
+ * Performs basic tests of all the pipelines for each variant.
  *
- * @since 2022/08/04
+ * @since 2022/09/05
  */
-public class TestClassInitPipe
+public class TestPipeline
 	extends BasicTestPipeline
+	implements AllSummerCoatTargetBangs
 {
 	/**
 	 * Initializes the test.
 	 *
 	 * @since 2022/08/14
 	 */
-	public TestClassInitPipe()
+	public TestPipeline()
 	{
 		super(new SummerCoatBackend());
 	}

@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.aot.test;
 
 import cc.squirreljme.jvm.aot.Backend;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Basic test of the test pipeline.

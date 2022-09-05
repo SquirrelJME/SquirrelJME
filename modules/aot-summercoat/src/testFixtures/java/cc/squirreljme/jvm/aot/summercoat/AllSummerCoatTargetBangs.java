@@ -7,10 +7,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * Tests for the Java processor.
- *
- * @since 2022/08/04
- */
+package cc.squirreljme.jvm.aot.summercoat;
 
-package cc.squirreljme.aot.java;
+/**
+ * Used by tests to indicate that multi-parameters should be run with all
+ * the supported target bangs.
+ *
+ * @since 2022/09/05
+ */
+public interface AllSummerCoatTargetBangs
+{
+}
