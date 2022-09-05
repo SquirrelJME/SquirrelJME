@@ -38,7 +38,7 @@ public abstract class VMTestWorkAction
 	static final Map<String, __LogHolder__> _LOGGERS =
 		new ConcurrentHashMap<>();
 	
-	/** The timeout for tests. */
+	/** The timeout for tests, in nanoseconds. */
 	private static final long _TEST_TIMEOUT =
 		360_000_000_000L;
 	

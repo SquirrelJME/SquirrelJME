@@ -78,6 +78,10 @@ public final class VMHelpers
 	private static final String[] _TEST_CONFIGS =
 		new String[]{"testImplementation", "testImplementation"};
 	
+	/** Declaration of hyper-test parameters. */
+	private static final String _HYPER_PARAMETERS_KEY =
+		"hyper-parameters";
+	
 	/** Declaration of multi-test parameters. */
 	private static final String _MULTI_PARAMETERS_KEY =
 		"multi-parameters";
@@ -1172,19 +1176,45 @@ public final class VMHelpers
 		if (__expected == null)
 			throw new NullPointerException("NARG");
 		
+		// Are there hyperparameters?
+		String hyperIn = __expected.getMainAttributes()
+			.getValue(VMHelpers._HYPER_PARAMETERS_KEY);
+		
 		// Get the possible parameter values
-		String value = __expected.getMainAttributes()
+		String multiIn = __expected.getMainAttributes()
 			.getValue(VMHelpers._MULTI_PARAMETERS_KEY);
-		if (value == null)
+			
+		// Do nothing if there is neither
+		if (hyperIn == null && multiIn == null)
 			return null;
 		
-		// Split fields, if there are zero then there are no parameters...
-		// however for at least one there might be disable parameters so always
-		// accept these as tests are expected these
-		String[] splice = value.split("[ \t]");
-		if (splice.length <= 0)
-			return null;
+		// Split fields,
+		String[] hyperSplit = (hyperIn == null ? new String[0] :
+			hyperIn.trim().split("[ \t]"));
+		String[] multiSplit = (multiIn == null ? new String[0] :
+			multiIn.trim().split("[ \t]"));
 		
-		return Arrays.asList(splice);
+		// Has both parameters
+		if (hyperSplit.length > 0 && multiSplit.length > 0)
+		{
+			List<String> result = new ArrayList<>(
+				hyperSplit.length * multiSplit.length);
+			
+			// Combine every possible variant of this
+			for (String hyper : hyperSplit)
+				for (String multi : multiSplit)
+					result.add(hyper + "@" + multi);
+			
+			return result;
+		}
+		
+		// Has only one
+		else if (hyperSplit.length > 0)
+			return Arrays.asList(hyperSplit);
+		else if (multiSplit.length > 0)
+			return Arrays.asList(multiSplit);
+		
+		// Has nothing
+		return null;
 	}
 }
