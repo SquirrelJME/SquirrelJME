@@ -9,8 +9,10 @@
 
 package util;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import net.multiphasicapps.tac.TestRunnable;
 
@@ -45,6 +47,7 @@ abstract class __TestList__
 	 * {@inheritDoc}
 	 * @since 2019/05/08
 	 */
+	@SuppressWarnings("ConstantConditions")
 	@Override
 	public void test()
 	{
@@ -55,7 +58,8 @@ abstract class __TestList__
 		this.secondary("initialisempty", list.isEmpty());
 		
 		// Initial list does not contain value
-		this.secondary("initialnocont", list.contains("Cutie squirrels!"));
+		this.secondary("initialnocont",
+			list.contains("Cutie squirrels!"));
 		
 		// Initial list throws IOOB
 		try
@@ -126,23 +130,41 @@ abstract class __TestList__
 		// Add another squirrels, then remove it
 		this.secondary("moresquirrels", list.add("Squirrels!"));
 		this.secondary("hasmoresquirrels", list.contains("Squirrels!"));
-		this.secondary("removemoresquirrels", list.remove("Squirrels!"));
-		this.secondary("hasmoresquirrelsstill", list.contains("Squirrels!"));
+		this.secondary("removemoresquirrels",
+			list.remove("Squirrels!"));
+		this.secondary("hasmoresquirrelsstill",
+			list.contains("Squirrels!"));
 		
 		// Hashcode
 		this.secondary("hashcode", list.hashCode());
 		
+		// Try to remove before everything is done
+		ListIterator<String> it = list.listIterator();
+		try
+		{
+			it.remove();
+			this.secondary("listitremovebefore", false);
+		}
+		catch (Throwable t)
+		{
+			this.secondary("listitremovebefore", t);
+		}
+		
 		// Go through and check iteration sequence
 		Object[] array = list.toArray();
-		ListIterator<String> it = list.listIterator();
 		for (int i = 0, n = array.length; i < n; i++)
 		{
 			// Must be equal
-			this.secondary("itequal" + i, Objects.equals(array[i], it.next()));
+			this.secondary("itequal" + i, Objects.equals(array[i],
+				it.next()));
 			
 			// Remove some elements
 			if (i == 3 || i == 7 || i == 12)
 				it.remove();
+			
+			// Set some elements
+			else if (i == 2 || i == 4)
+				it.set("beep" + i);
 		}
 		
 		// The iterator should be at the end
@@ -188,6 +210,14 @@ abstract class __TestList__
 		
 		// Check string result
 		this.secondary("stringform", list.toString());
+		
+		// Reverse the list twice to make sure it works property
+		Collections.reverse(list);
+		this.secondary("reversea",
+			list.<String>toArray(new String[list.size()]));
+		Collections.reverse(list);
+		this.secondary("reverseb",
+			list.<String>toArray(new String[list.size()]));
 		
 		// Clear and count size
 		list.clear();

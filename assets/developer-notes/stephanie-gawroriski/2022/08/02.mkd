@@ -1,0 +1,7 @@
+# 2022/08/02
+
+## 13:14
+
+Had an idea for SummerCoat, going to add way more tests to it to test
+individual bits rather than having it mostly untested except for the whole
+run. I suppose I will need a simulator of sorts as well.

@@ -299,3 +299,10 @@ A standalone Java emulator Jar which contains all of the available test
 virtual machine implementations is available when calling the task:
 
  * `:emulators:standalone:shadowJar`
+
+## Mac OS
+
+This is used with [Homebrew](https://brew.sh/), with checked
+out source code the following can be run:
+
+ * brew install --HEAD Formula/squirreljme-standalone.rb`

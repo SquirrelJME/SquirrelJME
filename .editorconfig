@@ -60,3 +60,10 @@ spaces_around_operators = unset
 spaces_around_brackets = unset
 indent_brace_style = unset
 wildcard_import_limit = unset
+
+# Ruby files
+[*.rb]
+tab_width = 2
+indent_size = 2
+indent_style = space
+

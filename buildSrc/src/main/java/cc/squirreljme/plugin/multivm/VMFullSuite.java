@@ -53,7 +53,7 @@ public class VMFullSuite
 		
 		// Runs the entire API/Library suite of SquirrelJME to run a given
 		// application
-		this.setGroup("squirreljme");
+		this.setGroup("squirreljmeGeneral");
 		this.setDescription("Runs the full suite of SquirrelJME Modules.");
 		
 		// This always runs, no matter what

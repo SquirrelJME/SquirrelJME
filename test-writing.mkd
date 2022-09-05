@@ -1,0 +1,229 @@
+# Test Writing
+
+As _SquirrelJME_ is its own virtual machine implementation it uses its own
+testing system that is different from _JUnit_ or _TestNG_ however it is simple
+and suits the needs of the project. The main intention of the test framework
+is to allow for the testing on various virtual machines, since _JUnit_ while
+it supports _Java SE_ it does not support _Java ME_. So as such there will be
+some differences as to how tests are written along with their expectations.
+
+# Placement of Tests
+
+Like standard Java tests, the tests are placed within the standard directory
+tree as like other _Gradle_ projects:
+
+ * `module/src/test/java` -- Source code for tests.
+   * `./TestCuteness.java` -- Test source.
+ * `module/src/test/resources` -- Expectations for _SquirrelJME_.
+   * `./TestCuteness.in` -- Test expectations for `TestCuteness`.
+
+# Base Test Classes
+
+All tests within _SquirrelJME_ extend from one of the base classes that
+exist depending on what is needed for a test, all of these `abstract` classes
+are declared in `net.multiphasicapps.tac`:
+
+ * `TestBiConsumer` -- Takes two arguments, provides no result.
+ * `TestBiFunction` -- Takes two arguments, provides a result.
+ * `TestBoolean` -- Takes no arguments, provides a `boolean`.
+ * `TestConsumer` -- Takes one argument, provides no result.
+ * `TestFunction` -- Takes one argument, provides a result.
+ * `TestInteger` -- Takes an `int` argument.
+ * `TestLong` -- Takes a `long` argument.
+ * `TestRunnable` -- Takes no arguments, provides no result.
+ * `TestSupplier` -- Takes no arguments, provides a result.
+
+# Results And Expectations
+
+One of the major differences is that _SquirrelJME_'s test expectations are
+written in an expectations file rather than as something that exists in
+source code. The manifest itself is in the following format, the keys and
+values are specified later on in the document. Since there are virtual machine
+tests and the test framework uses the project's own implementation of the API
+there can be potential cases where a test may falsely pass because of some
+event or condition within the project that is erroneous. As such, since the
+results are elsewhere and static they are for the most part compared via
+string representation apart from some special conditions.
+
+The manifest file is named the same as the test itself and is placed within
+the same package from within `resources`. The resources are accessed in the
+same manner as `Class.getResourceAsStream(classBaseName)` and as such
+is in the specific format:
+
+```manifest
+result: NoResult
+thrown: NoExceptionThrown
+secondary-int--value: int:1234
+```
+
+The `result` is formed as part of the return value of a method, if there is
+one. `thrown` is any exception that is thrown from the test method. Any
+secondary value is set by using `this.secondary(key, value)` from a test, the
+result is stored for later checking. Secondary keys may be any value however
+they are dash encoded for special characters.
+
+## Expectation Specifiers
+
+The following expectation specifiers are used for various values. Arrays are
+specified by `[length]` and the values within are split by `,`. Primitive
+type arrays may have the type followed by `*`, such as `byte*[length]`, if
+they indicate that the array is of a boxed type, such as `Byte[length]` rather
+than `byte[length]` in Java.
+
+Special specifiers for `result` and `thrown` are these:
+
+* `NoResult`
+    * Used only for `result`, specifies the return type is `void`.
+* `ExceptionThrown`
+    * Used in `result` when an exception is thrown.
+* `NoExceptionThrown`
+    * No exceptions are thrown from the method.
+
+The general value specifiers are:
+
+ * `true`
+   * True boolean value, which is `Boolean.TRUE`.
+ * `false`
+   * False boolean value, which is `Boolean.FALSE`.
+ * `boolean[<length>]:<arrayValues,>`
+   * Boolean array values, each is encoded as `T` for `true` and `f` for
+     false, and as such `[true, true, false]` encodes as `TTf`.
+ * `string:<encodedString>`
+   * Represents a single string.
+ * `string[<length>]:<asString:,>`
+   * An array of strings, which are encoded accordingly.
+ * `char:<printableNonDigitGlyph|integer>`
+   * A single character.
+   * For printable non-digit ASCII characters this will be the glyph.
+   * Otherwise, it will be an integer of the character code.
+ * `char[<length>]:<asChar:,>`
+   * An array of characters values.
+ * `byte:<integer>`
+   * An integral `byte` value, follows the rules of `Byte.valueOf(String)`.
+ * `byte[<length>]:<asByte:,>`
+   * An array of `byte` values.
+ * `short:<integer>`
+   * An integral `short` value, follows the rules of `Short.valueOf(String)`.
+ * `short[<length>]:<asShort:,>`
+   * An array of `short` values.
+ * `int:<integer>`
+   * An integral `int` value, follows the rules of `Integer.valueOf(String)`.
+ * `int[<length>]:<asInt:,>`
+   * An array of `int` values.
+ * `long:<integer>`
+   * An integral `long` value, follows the rules of `Long.valueOf(String)`.
+ * `long[<length>]:<asLong:,>`
+   * An array of `long` values.
+ * `long-fudge:<asLong>:<absoluteDifference>`
+   * Similar to `long:` except that the value may be within
+     `<absoluteDifference>` using the formula:
+     `expected - diff <= actual <= expected + diff`
+ * `long-ignore-sign:<asLong>`
+   * Similar to `long:` except that the sign bit is ignored.
+ * `throwable:<throwableType>`
+   * An exception that is thrown.
+   * Exceptions in `java.lang` are just the base class name such as
+     `throwable:IllegalArgumentException`.
+   * Otherwise, they are the fully qualified class name such as
+     `throwable:fully.Qualified`.
+ * `other:<encodedString>`
+   * Unknown value type, uses `Object.toString()`.
+
+## String Encoding
+
+For any `<encodedString>`, the characters are encoded as the following:
+
+ * `null` is encoded as `\NULL`.
+ * Double quote (`"`) is encoded as `\"`.
+ * Single quote (`'`) is encoded as `\'`.
+ * Space (` `) is encoded as `\_`.
+ * Newline (`\n`) is encoded as `\n`.
+ * Carriage return (`\r`) is encoded as `\r`.
+ * Tab (`\t`) is encoded as `\t`.
+ * Opening curly brace (`{`) is encoded as `\(`.
+ * Closing curly brace (`}`) is encoded as `\)`.
+ * Delete or `0x7F` is encoded as `\d`.
+ * `0x00` through `0x1F` are encoded as `\0` to `\9` then `A` through `\V`.
+ * Characters at or above 0x7F are encoded as `\@xxxx` with the character
+   hex digit representation.
+ * Otherwise, the ASCII glyph of the character.
+
+## Secondary Key Encoding
+
+The following characters map to the specified secondary key encoding:
+
+ * `-` = `--`
+ * `!` = `-x`
+ * `"` = `-q`
+ * `#` = `-h`
+ * `$` = `-m`
+ * `%` = `-c`
+ * `&` = `-e`
+ * `*` = `-s`
+ * `+` = `-p`
+ * `.` = `-d`
+ * `/` = `-l`
+ * `:` = `-o`
+ * `?` = `-u`
+ * `@` = `-a`
+ * `^` = `-r`
+ * `|` = `-i`
+ * `~` = `-t`
+
+# Example
+
+An example test with the test expectations:
+
+```java
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the GNU General Public License v3+, or later.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
+package lang;
+
+import net.multiphasicapps.tac.TestRunnable;
+
+/**
+ * Tests string trim.
+ *
+ * @since 2018/12/05
+ */
+public class TestStringTrim
+	extends TestRunnable
+{
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/05
+	 */
+	@Override
+	public void test()
+	{
+		String cute = "squirrels are cute";
+		
+		this.secondary("a", cute.trim());
+		this.secondary("b", "  \t      squirrels are cute".trim());
+		this.secondary("c", "squirrels are cute    \t".trim());
+		this.secondary("d", "       \tsquirrels are cute \t    ".trim());
+		this.secondary("e", "           ".trim());
+		this.secondary("f", "           ".trim());
+		this.secondary("g", cute.trim());
+	}
+}
+```
+
+```manifest
+result: NoResult
+thrown: NoExceptionThrown
+secondary-a: string:squirrels\_are\_cute
+secondary-b: string:squirrels\_are\_cute
+secondary-c: string:squirrels\_are\_cute
+secondary-d: string:squirrels\_are\_cute
+secondary-e: string:
+secondary-f: string:
+secondary-g: string:squirrels\_are\_cute
+```

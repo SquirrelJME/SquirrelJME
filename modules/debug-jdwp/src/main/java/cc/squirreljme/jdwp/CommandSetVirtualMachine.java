@@ -87,8 +87,7 @@ public enum CommandSetVirtualMachine
 				__controller.state.items.put(type);
 				
 				// Write the class type
-				rv.writeByte(JDWPUtils.classType(__controller, type).id);
-				rv.writeId(System.identityHashCode(type));
+				rv.writeTaggedId(__controller, type);
 				
 				// Classes are always loaded
 				rv.writeInt(CommandSetVirtualMachine._CLASS_INITIALIZED);
@@ -119,7 +118,7 @@ public enum CommandSetVirtualMachine
 			// Write all thread references
 			rv.writeInt(threads.length);
 			for (Object thread : threads)
-				rv.writeId(System.identityHashCode(thread));
+				rv.writeObject(__controller, thread);
 			
 			return rv;
 		}
@@ -145,7 +144,7 @@ public enum CommandSetVirtualMachine
 			
 			rv.writeInt(groups.length);
 			for (Object group : groups)
-				rv.writeId(System.identityHashCode(group));
+				rv.writeObject(__controller, group);
 			
 			return rv;
 		}
@@ -436,8 +435,7 @@ public enum CommandSetVirtualMachine
 			for (Object type : allTypes)
 			{
 				// The type ID
-				rv.writeByte(JDWPUtils.classType(__controller, type).id);
-				rv.writeId(System.identityHashCode(type));
+				rv.writeTaggedId(__controller, type);
 				
 				// The signatures, the generic is ignored
 				rv.writeString(viewType.signature(type));

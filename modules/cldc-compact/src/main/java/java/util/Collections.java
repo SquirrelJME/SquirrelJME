@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.NaturalComparator;
 import cc.squirreljme.runtime.cldc.util.ShellSort;
 
+@SuppressWarnings("ClassWithOnlyPrivateConstructors")
 public class Collections
 {
 	private Collections()
@@ -213,19 +214,79 @@ public class Collections
 		throw Debugging.todo();
 	}
 	
-	public static void reverse(List<?> __a)
+	/**
+	 * Reverses the specified list.
+	 * 
+	 * @param __list The list to reverse.
+	 * @throws UnsupportedOperationException If the
+	 * {@link List#set(int, Object)} method or {@link ListIterator#set(Object)}
+	 * is not supported.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/07/29
+	 */
+	@SuppressWarnings({"unchecked"})
+	public static void reverse(List<?> __list)
+		throws UnsupportedOperationException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__list == null)
+			throw new NullPointerException("NARG");
+		
+		// If the list is empty or only has a single element then there is
+		// no point in reversing the list
+		int size = __list.size();
+		if (size <= 1)
+			return;
+		
+		// Setup blank queue that will be used as a double bounce back when
+		// reversing elements
+		Deque<Object> elements = new ArrayDeque<>(size);
+		
+		// Use the same iterator for going forwards and backwards 
+		ListIterator<Object> it = (ListIterator<Object>)__list.listIterator();
+		
+		// Go forward and collect all items into the queue
+		while (it.hasNext())
+			elements.addLast(it.next());
+		
+		// Go back and drain the queue that was filled up
+		while (it.hasPrevious())
+		{
+			it.previous();
+			it.set(elements.removeFirst());
+		}
 	}
 	
+	/**
+	 * Returns a comparator that is a reverse of the natural comparator
+	 * order.
+	 * 
+	 * @param <T> The type to compare.
+	 * @return The comparator for reverse order.
+	 * @see NaturalComparator
+	 * @since 2022/07/29
+	 */
 	public static <T> Comparator<T> reverseOrder()
 	{
-		throw Debugging.todo();
+		return Collections.reverseOrder(null);
 	}
 	
-	public static <T> Comparator<T> reverseOrder(Comparator<T> __a)
+	/**
+	 * Returns a comparator that reverses the given comparator.
+	 * 
+	 * @param <T> The type to compare.
+	 * @param __comp The comparator to be reversed, if {@code null} then
+	 * the natural order comparator is used the same as
+	 * {@link Collections#reverseOrder()}.
+	 * @return A comparator that reverses the 
+	 */
+	public static <T> Comparator<T> reverseOrder(Comparator<T> __comp)
 	{
-		throw Debugging.todo();
+		// If this is a reversal of a reversal, then undo that
+		if (__comp instanceof __ReverseComparator__)
+			return ((__ReverseComparator__<T>)__comp)._comparator;
+		
+		return new __ReverseComparator__<T>((__comp == null ?
+			NaturalComparator.<T>instance() : __comp));
 	}
 	
 	public static void rotate(List<?> __a, int __b)

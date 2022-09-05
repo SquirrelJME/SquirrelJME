@@ -17,7 +17,7 @@ import java.util.ListIterator;
  *
  * @since 2021/02/25
  */
-public class __CharacterIntegerListIterator__
+class __CharacterIntegerListIterator__
 	implements ListIterator<Integer>
 {
 	/** The iterator to base off. */

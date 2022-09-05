@@ -1,0 +1,22 @@
+# 2022/08/07
+
+## 10:06
+
+I am realizing that a SummerCoat interpreter that can call into already native
+code would require the creation of essentially proxy abstract classes and
+proxy interfaces for when an interpreted class extends a native class. Which
+in this case would be needed for every class because they extend `Object`.
+It can be purely interpreted but that would be much slower and there would be
+a huge loss and waste of space and memory for code that was already compiled
+into a native code. Using reflection and creating classes at runtime is not
+an issue at all for Java SE, just RatufaCoat will need that functionality of
+sorts and otherwise for it to function properly. Of course the handling of these
+would be different, but essentially it would be like proxy interfaces with an
+invocation handler and such. This way I could minimize what is actually needed
+in the proxy classes. But if this works out, it basically means that RatufaCoat
+will be pretty fast and not much of it will be interpreted. It will kinda be
+like the Palm OS emulator in OS 5 but a bit more complicated I suppose as it
+can just do native code, whereas I have to basically build and inject a class
+at run-time just to handle something. Of course for any instance of the
+interpreter in SummerCoat, it will have just the current class path along with
+the instance of the interpreter always existing as such.

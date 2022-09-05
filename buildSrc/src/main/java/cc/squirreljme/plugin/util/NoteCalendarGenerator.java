@@ -125,7 +125,7 @@ public final class NoteCalendarGenerator
 	public static void generateAndStore(FossilExe __exe)
 		throws IOException, NullPointerException
 	{
-		__exe.unversionedStoreBytes("developer-notes/index.mkd",
+		__exe.unversionStoreBytes("developer-notes/index.mkd",
 			NoteCalendarGenerator.generate(__exe,
 			NoteCalendarFinder.findNotes(__exe)));
 	}

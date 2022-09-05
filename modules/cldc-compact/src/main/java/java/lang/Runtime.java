@@ -9,9 +9,16 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
+import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
+import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
+import cc.squirreljme.runtime.cldc.io.NonClosedOutputStream;
+import java.io.PrintStream;
 
 /**
  * This class contains information about the host memory environment along
@@ -54,7 +61,18 @@ public class Runtime
 		try
 		{
 			Debugging.debugNote("Exiting VM with %d...", __v);
-			new Throwable().printStackTrace();
+			
+			// Print the trace where this exit is for debugging
+			if (__v != 0)
+			{
+				TracePointBracket[] trace = DebugShelf.traceStack();
+				CallTraceUtils.printStackTrace(new PrintStream(
+						new NonClosedOutputStream(
+							new ConsoleOutputStream(StandardPipeType.STDERR,
+								true))),
+					"EXIT", trace,
+					null, null, 0);
+			}
 		}
 		catch (Throwable ignored)
 		{

@@ -13,6 +13,7 @@ import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.util.FileLocation;
 import cc.squirreljme.plugin.util.TestDetection;
+import cc.squirreljme.plugin.util.UnassistedLaunchEntry;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +33,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -47,6 +49,7 @@ import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.ProjectDependency;
+import org.gradle.api.capabilities.Capability;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.jvm.tasks.Jar;
@@ -62,6 +65,10 @@ public final class VMHelpers
 	/** The class used for single test runs. */
 	public static final String SINGLE_TEST_RUNNER =
 		"net.multiphasicapps.tac.MainSingleRunner";
+	
+	/** Source set name for test fixtures. */
+	public static final String TEST_FIXTURES_SOURCE_SET_NAME =
+		"testFixtures";
 	
 	/** Main configurations. */
 	private static final String[] _MAIN_CONFIGS =
@@ -413,6 +420,10 @@ public final class VMHelpers
 			case SourceSet.TEST_SOURCE_SET_NAME:
 				return (Jar)__project.getTasks().getByName("testJar");
 			
+			case VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME:
+				return (Jar)__project.getTasks()
+					.getByName("testFixturesJar");
+			
 			default:
 				throw new IllegalStateException("Unknown sourceSet: " +
 					__sourceSet);
@@ -437,7 +448,7 @@ public final class VMHelpers
 		
 		// We either run the MIDlet or we do not
 		return (__midlet != null ?
-			"javax.microedition.midlet.__MainHandler__" :
+			UnassistedLaunchEntry.MIDLET_MAIN_CLASS :
 			Objects.requireNonNull(__cfg.mainClass,
 			"No main class in project."));
 	}
@@ -498,6 +509,31 @@ public final class VMHelpers
 	}
 	
 	/**
+	 * Returns the internal name via the source set.
+	 * 
+	 * @param __project The project.
+	 * @param __sourceSet The source set.
+	 * @return The internal name that is used by SquirrelJME.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/07
+	 */
+	public static String projectInternalNameViaSourceSet(Project __project,
+		String __sourceSet)
+		throws NullPointerException
+	{
+		if (__project == null || __sourceSet == null)
+			throw new NullPointerException("NARG");
+		
+		// If main project, just use the normal base name
+		if (__sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME))
+			return __project.getName();
+		
+		// Otherwise, append the source set
+		return String.format("%s-%s", __project.getName(),
+			__sourceSet.toLowerCase(Locale.ROOT));
+	}
+	
+	/**
 	 * Returns the project classpath.
 	 *
 	 * @param __project The project.
@@ -516,10 +552,39 @@ public final class VMHelpers
 	}
 	
 	/**
-	 * Reads all of the bytes from the stream.
+	 * Returns the name of the suite that should be used for the dependency.
+	 * 
+	 * @param __project The project to get for.
+	 * @param __sourceSet The source set used.
+	 * @return The suite name that should be used.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/07
+	 */
+	public static String projectSwmNameViaSourceSet(Project __project,
+		String __sourceSet)
+		throws NullPointerException
+	{
+		if (__project == null || __sourceSet == null)
+			throw new NullPointerException("NARG");
+		
+		// Need this to get the key
+		SquirrelJMEPluginConfiguration config =
+			SquirrelJMEPluginConfiguration.configuration(__project);
+		
+		// Just uses the set name
+		if (__sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME))
+			return config.swmName;
+		
+		// Otherwise, gets prefixed
+		return TaskInitialization.uppercaseFirst(__sourceSet) + " for " +
+			config.swmName;
+	}
+	
+	/**
+	 * Reads all the bytes from the stream.
 	 * 
 	 * @param __in The stream to read from.
-	 * @return All of the read bytes.
+	 * @return All the read bytes.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/07
@@ -683,8 +748,8 @@ public final class VMHelpers
 		// kept otherwise execution may be non-deterministic and could break.
 		Set<Path> classPath = new LinkedHashSet<>();
 		for (VMLibraryTask vmLib : tasks)
-			classPath.add(vmLib.getOutputs().getFiles().getSingleFile()
-				.toPath());
+			for (File file : vmLib.getOutputs().getFiles().getFiles())
+				classPath.add(file.toPath());
 		
 		return classPath.toArray(new Path[classPath.size()]);
 	}
@@ -733,7 +798,7 @@ public final class VMHelpers
 		if (__did == null)
 			__did = new HashSet<>();
 		
-		// If this process was already processed, ignore it
+		// If this was already processed, ignore it
 		ProjectAndTaskName selfProjectTask = ProjectAndTaskName.of(__project,
 			TaskInitialization.task("lib", __sourceSet, __vmType));
 		if (__did.contains(selfProjectTask))
@@ -773,8 +838,8 @@ public final class VMHelpers
 				if (!(depend instanceof ProjectDependency))
 					continue;
 				
-				Project sub = ((ProjectDependency)depend)
-					.getDependencyProject();
+				ProjectDependency projectDepend = (ProjectDependency)depend;
+				Project sub = projectDepend.getDependencyProject();
 				
 				// Only consider SquirrelJME projects
 				SquirrelJMEPluginConfiguration squirreljmeConf =
@@ -782,13 +847,27 @@ public final class VMHelpers
 				if (squirreljmeConf == null)
 					continue;
 				
+				// Does this depend on test fixtures?
+				boolean isTestFixture = false;
+				for (Capability capability :
+					projectDepend.getRequestedCapabilities())
+					if (capability.getName()
+						.equals(sub.getName() + "-test-fixtures"))
+						isTestFixture = true;
+				
 				// Otherwise, handle the dependencies
-				result.addAll(VMHelpers.runClassTasks(sub, 
-					SourceSet.MAIN_SOURCE_SET_NAME, __vmType, __did));
+				String targetSourceSet = (isTestFixture ?
+					VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME :
+					SourceSet.MAIN_SOURCE_SET_NAME);
+				Collection<ProjectAndTaskName> selected =
+					VMHelpers.runClassTasks(sub, targetSourceSet, __vmType,
+						__did);
+				
+				result.addAll(selected);
 			}
 		}
 		
-		// Finally add our own library for usages
+		// Finally, add our own library for usages
 		result.add(selfProjectTask);
 		
 		// Ignore our own project
@@ -944,6 +1023,34 @@ public final class VMHelpers
 			throw new NullPointerException("NARG");
 		
 		return Paths.get("RESULTS-" + __project.getName() + ".csv");
+	}
+	
+	/**
+	 * Returns the unassisted launch entry.
+	 * 
+	 * @param __cfg The configuration to get from.
+	 * @param __midlet The MIDlet to load.
+	 * @return The unassisted launch entry for the given MIDlet.
+	 * @throws NullPointerException If no configuration was specified.
+	 * @since 2021/08/22
+	 */
+	public static UnassistedLaunchEntry unassistedLaunch(
+		SquirrelJMEPluginConfiguration __cfg, JavaMEMidlet __midlet)
+		throws NullPointerException
+	{
+		if (__cfg == null)
+			throw new NullPointerException("NARG");
+		
+		// Starting arguments?
+		String[] args;
+		if (__midlet != null)
+			args = new String[]{__midlet.mainClass};
+		else
+			args = new String[0];
+		
+		return new UnassistedLaunchEntry(
+			VMHelpers.mainClass(__cfg, __midlet),
+			args);
 	}
 	
 	/**
