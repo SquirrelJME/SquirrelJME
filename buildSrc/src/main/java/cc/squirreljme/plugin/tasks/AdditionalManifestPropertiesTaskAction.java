@@ -12,7 +12,6 @@ package cc.squirreljme.plugin.tasks;
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.multivm.TaskInitialization;
 import cc.squirreljme.plugin.multivm.VMHelpers;
-import cc.squirreljme.plugin.swm.APIName;
 import cc.squirreljme.plugin.swm.JavaMEConfiguration;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.swm.JavaMEMidletType;
@@ -33,9 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.jar.Attributes;
@@ -217,16 +214,16 @@ public class AdditionalManifestPropertiesTaskAction
 		
 		// Put in standard required dependencies
 		int[] normalDep = new int[]{1};
-		for (ProjectAndSourceSet dependency : dependencies)
+		for (ProjectAndSourceSet depend : dependencies)
 			AdditionalManifestPropertiesTaskAction.__addDependency(__task,
-				false, dependency, normalDep,
+				false, depend, normalDep,
 				attributes, this.sourceSet);
 		
 		// Add any optional dependencies now, which may or may not exist
-		for (Project dependency : config.optionalDependencies)
+		for (Project depend : VMHelpers.optionalDepends(project, sourceSet))
 			AdditionalManifestPropertiesTaskAction.__addDependency(__task,
 				true,
-				new ProjectAndSourceSet(dependency,
+				new ProjectAndSourceSet(depend,
 					SourceSet.MAIN_SOURCE_SET_NAME), normalDep, attributes,
 				this.sourceSet);
 		
