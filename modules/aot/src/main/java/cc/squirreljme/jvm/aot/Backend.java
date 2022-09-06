@@ -37,7 +37,8 @@ public interface Backend
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/22
 	 */
-	void compileClass(LinkGlob __glob, String __name, InputStream __inClass)
+	CompiledClassLink compileClass(LinkGlob __glob, String __name,
+		InputStream __inClass)
 		throws IOException, NullPointerException;
 	
 	/**

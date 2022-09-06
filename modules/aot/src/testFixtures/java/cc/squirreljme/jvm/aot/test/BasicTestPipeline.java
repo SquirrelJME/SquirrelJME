@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.aot.test;
 import cc.squirreljme.jvm.aot.Backend;
 import cc.squirreljme.jvm.aot.CompilationStatistic;
 import cc.squirreljme.jvm.aot.CompilationStatistics;
+import cc.squirreljme.jvm.aot.CompiledClassLink;
 
 /**
  * Basic test of the test pipeline.
@@ -47,7 +48,10 @@ public abstract class BasicTestPipeline
 		ExampleClass example = ExampleClass.valueOf(__argument);
 		
 		// Compile this class
-		this.compileClass(example);
+		CompiledClassLink compiledClassLink = this.compileClass(example);
+		
+		// Must not be null
+		this.secondary("has-link", compiledClassLink != null);
 		
 		// Check common statistics
 		CompilationStatistics statistics = __situation.linkGlob.statistics();

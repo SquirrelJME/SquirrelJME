@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.aot.springcoat;
 
 import cc.squirreljme.jvm.aot.Backend;
 import cc.squirreljme.jvm.aot.CompileSettings;
+import cc.squirreljme.jvm.aot.CompiledClassLink;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.RomSettings;
 import cc.squirreljme.jvm.aot.pack.ChunkUtils;
@@ -46,7 +47,7 @@ public class SpringCoatBackend
 	 * @since 2021/08/21
 	 */
 	@Override
-	public void compileClass(LinkGlob __glob, String __name,
+	public CompiledClassLink compileClass(LinkGlob __glob, String __name,
 		InputStream __inClass)
 		throws IOException, NullPointerException
 	{

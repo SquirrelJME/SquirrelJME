@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.aot.summercoat;
 
 import cc.squirreljme.jvm.aot.Backend;
 import cc.squirreljme.jvm.aot.CompileSettings;
+import cc.squirreljme.jvm.aot.CompiledClassLink;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.RomSettings;
 import cc.squirreljme.jvm.aot.summercoat.target.TargetBang;
@@ -35,7 +36,7 @@ public class SummerCoatBackend
 	 * @since 2022/08/05
 	 */
 	@Override
-	public void compileClass(LinkGlob __glob, String __name,
+	public CompiledClassLink compileClass(LinkGlob __glob, String __name,
 		InputStream __inClass)
 		throws IOException, NullPointerException
 	{

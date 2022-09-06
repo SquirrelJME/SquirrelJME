@@ -10,9 +10,7 @@
 package cc.squirreljme.jvm.aot.test;
 
 import cc.squirreljme.jvm.aot.Backend;
-import cc.squirreljme.jvm.aot.LinkGlob;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import cc.squirreljme.jvm.aot.CompiledClassLink;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -43,18 +41,20 @@ public abstract class BaseCompilation
 	 * 
 	 * @param __name The name of the class to compile.
 	 * @param __in The class byte data.
+	 * @return The link to the compiled class.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/08/14
 	 */
-	public final void compileClass(String __name, InputStream __in)
+	public final CompiledClassLink compileClass(String __name,
+		InputStream __in)
 		throws IOException, NullPointerException
 	{
 		if (__name == null || __in == null)
 			throw new NullPointerException("NARG");
 		
 		// Compile to the output
-		this.backend.compileClass(this.situationParameters().linkGlob,
+		return this.backend.compileClass(this.situationParameters().linkGlob,
 			__name, __in);
 	}
 	
@@ -63,11 +63,12 @@ public abstract class BaseCompilation
 	 * compilation.
 	 * 
 	 * @param __example The example class to compile.
+	 * @return The link to the compiled class.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/08/14
 	 */
-	public final void compileClass(ExampleClass __example)
+	public final CompiledClassLink compileClass(ExampleClass __example)
 		throws IOException, NullPointerException
 	{
 		if (__example == null)
@@ -75,7 +76,7 @@ public abstract class BaseCompilation
 			
 		try (InputStream in = __example.load())
 		{
-			this.compileClass(__example.className(), in);
+			return this.compileClass(__example.className(), in);
 		}
 	}
 }
