@@ -225,6 +225,18 @@ subprojects {
 				}
 			}
 		}
+		
+		// IntelliJ adjustments
+		idea {
+			module {
+				// Make testFixtures as part of tests so that in search and
+				// otherwise they appear as such
+				testSourceDirs += project.projectDir.toPath().resolve("src")
+					.resolve("testFixtures").resolve("java").toFile()
+				testResourceDirs += project.projectDir.toPath().resolve("src")
+					.resolve("testFixtures").resolve("resources").toFile()
+			}
+		}
 	}
 	
 	// Signing publications
