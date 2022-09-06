@@ -91,6 +91,14 @@ public class SquirrelJMEPluginConfiguration
 	public List<Project> optionalDependencies =
 		new ArrayList<>();
 	
+	/** For tests, projects to have optional dependencies on. */
+	public List<Project> optionalDependenciesTest =
+		new ArrayList<>();
+	
+	/** For test fixtures, projects to have optional dependencies on. */
+	public List<Project> optionalDependenciesTestFixtures =
+		new ArrayList<>();
+	
 	/** Do not emit {@code Microedition-Configuration}? */
 	public boolean noEmitConfiguration;
 	

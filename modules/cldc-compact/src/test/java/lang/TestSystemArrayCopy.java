@@ -21,6 +21,7 @@ import net.multiphasicapps.tac.TestConsumer;
  */
 public class TestSystemArrayCopy
 	extends TestConsumer<String>
+	implements ArrayTypeMultiParameters
 {
 	/** Base array size. */
 	public static final int BASE_SIZE =

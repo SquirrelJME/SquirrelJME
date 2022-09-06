@@ -43,7 +43,7 @@ public class TestsJarTask
 			"tests from within the VM.");
 		
 		// Setup the task
-		this.getArchiveClassifier().set("tests");
+		this.getArchiveClassifier().set("test");
 		this.from((Callable<FileCollection>)this::__from);
 		
 		// Only run if there are actual tests

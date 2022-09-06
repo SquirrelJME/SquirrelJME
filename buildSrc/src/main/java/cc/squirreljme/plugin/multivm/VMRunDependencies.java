@@ -61,6 +61,6 @@ public final class VMRunDependencies
 		return VMHelpers.<VMLibraryTask>resolveProjectTasks(
 			VMLibraryTask.class, task.getProject(),
 			VMHelpers.runClassTasks(this.task.getProject(),
-				this.sourceSet, this.vmType));
+				this.sourceSet, this.vmType, true));
 	}
 }

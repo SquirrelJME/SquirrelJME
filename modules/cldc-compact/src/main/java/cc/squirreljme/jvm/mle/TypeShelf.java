@@ -54,9 +54,11 @@ public final class TypeShelf
 	 *
 	 * @param __cl The class to get the type of.
 	 * @return The type of the given class.
+	 * @throws MLECallError On null arguments.
 	 * @since 2020/06/07
 	 */
-	public static native TypeBracket classToType(Class<?> __cl);
+	public static native TypeBracket classToType(Class<?> __cl)
+		throws MLECallError;
 	
 	/**
 	 * Returns the component type of the class.
@@ -335,7 +337,9 @@ public final class TypeShelf
 	 * @param <T> Ignored.
 	 * @param __type The type to get the class object of.
 	 * @return The class type for the given type.
+	 * @throws MLECallError On null arguments.
 	 * @since 2020/05/30
 	 */
-	public static native <T> Class<T> typeToClass(TypeBracket __type);
+	public static native <T> Class<T> typeToClass(TypeBracket __type)
+		throws MLECallError;
 }

@@ -186,6 +186,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_emulator_NativeBinding__1_1bindMethod
 	rv |= mleRuntimeInit(env, classy);
 	rv |= mleTaskInit(env, classy);
 	rv |= mleTerminalInit(env, classy);
+	rv |= mleTypeInit(env, classy);
 	rv |= mleThreadInit(env, classy);
 	
 	// It happened!

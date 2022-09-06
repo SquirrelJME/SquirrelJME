@@ -66,7 +66,7 @@ public class VMRunUpToDateWhen
 		
 		// Determine if any of our parent dependencies were out of date
 		for (Path dep : VMHelpers.runClassPath(__task, this.sourceSet,
-			this.vmType))
+			this.vmType, true))
 		{
 			Instant fileTime;
 			try

@@ -118,44 +118,73 @@ public final class VMHelpers
 		// Mappings of both source and expected files
 		Set<String> names = new TreeSet<>();
 		Map<String, FileLocation> sources = new HashMap<>();
+		Map<String, FileLocation> secondarySources = new HashMap<>();
 		Map<String, FileLocation> expects = new HashMap<>();
 		
-		// Scan through every file and match sources and expected tests
-		for (FileLocation file :
-			TestDetection.sourceSetFiles(__project, __sourceSet))
+		// Setup initial set of sources and files for lookup
+		List<CandidateTestFileSource> everything = new ArrayList<>();
+		everything.add(new CandidateTestFileSource(true,
+			TestDetection.sourceSetFiles(__project, __sourceSet)));
+		
+		// Go through dependencies since we need to know about those test
+		// details and such
+		for (ProjectAndTaskName projectTask : VMHelpers.runClassTasks(
+			__project, __sourceSet, VMType.HOSTED))
 		{
-			// If this is a MIME encoded file, normalize the name so it does
-			// not include the mime extension as that is removed at JAR build
-			// time
-			Path normalized;
-			if ("__mime".equals(VMHelpers.getExtension(file.relative)))
-				normalized = VMHelpers.stripExtension(file.relative);
-			else
-				normalized = file.relative;
+			// Only consider actual projects
+			Project subProject = __project.project(projectTask.project);
+			Task subTask = subProject.getTasks().getByName(projectTask.task);
+			if (!(subTask instanceof VMExecutableTask))
+				continue;
 			
-			// Determine the name of the class, used to filter if this is
-			// a valid test or not at a later stage
-			String testName = VMHelpers.pathToString('.',
-					VMHelpers.stripExtension(normalized));
-			
-			// Always add the test now, since this could be a super class
-			// of a test but not something that should be called
-			names.add(testName);
-			
-			// Determine how this file is to be handled
-			switch (VMHelpers.getExtension(normalized))
+			// Add to be evaluated by everything
+			everything.add(new CandidateTestFileSource(false,
+				TestDetection.sourceSetFiles(subProject,
+					((VMExecutableTask)subTask).getSourceSet())));
+		}
+		
+		// Go through all the potential candidate sources
+		for (CandidateTestFileSource candidateSource : everything)
+		{
+			// Scan through every file and match sources and expected tests
+			for (FileLocation file : candidateSource.collection)
 			{
-					// Executable Classes
-				case "class":
-				case "java":
-				case "j":
-					sources.put(testName, file);
-					break;
+				// If this is a MIME encoded file, normalize the name, so it
+				// does not include the mime extension as that is removed at
+				// JAR build time
+				Path normalized;
+				if ("__mime".equals(VMHelpers.getExtension(file.relative)))
+					normalized = VMHelpers.stripExtension(file.relative);
+				else
+					normalized = file.relative;
 				
-					// Test expectations
-				case "in":
-					expects.put(testName, file);
-					break;
+				// Determine the name of the class, used to filter if this is
+				// a valid test or not at a later stage
+				String testName = VMHelpers.pathToString('.',
+						VMHelpers.stripExtension(normalized));
+				
+				// Always add the test now, since this could be a super class
+				// of a test but not something that should be called
+				names.add(testName);
+				
+				// Determine how this file is to be handled
+				switch (VMHelpers.getExtension(normalized))
+				{
+						// Executable Classes
+					case "class":
+					case "java":
+					case "j":
+						if (candidateSource.primary)
+							sources.put(testName, file);
+						else
+							secondarySources.put(testName, file);
+						break;
+					
+						// Test expectations
+					case "in":
+						expects.put(testName, file);
+						break;
+				}
 			}
 		}
 		
@@ -163,14 +192,16 @@ public final class VMHelpers
 		Map<String, CandidateTestFiles> fullSet = new TreeMap<>();
 		for (String testName : names)
 		{
-			// May be an abstract test?
+			// Maybe an abstract test?
 			FileLocation source = sources.get(testName);
-			if (source == null)
+			FileLocation secondarySource = secondarySources.get(testName);
+			if (source == null && secondarySource == null)
 				continue;
 			
 			// Store it
-			fullSet.put(testName,
-				new CandidateTestFiles(source, expects.get(testName)));
+			fullSet.put(testName, new CandidateTestFiles((source != null),
+				(source != null ? source : secondarySource),
+				expects.get(testName)));
 		}
 		
 		// Map tests and candidate sets to normal candidates
@@ -178,9 +209,15 @@ public final class VMHelpers
 		for (Map.Entry<String, CandidateTestFiles> entry : fullSet.entrySet())
 		{
 			String testName = entry.getKey();
+			CandidateTestFiles candidate = entry.getValue();
 			
 			// Ignore if this does not match the expected name form
 			if (!TestDetection.isTest(testName))
+				continue;
+			
+			// If this is not a primary test, then it does not get to be added
+			// to the test list nor do we need to do any processing for it
+			if (!candidate.primary)
 				continue;
 			
 			// Load the expected results and see if there multi-parameters
@@ -188,11 +225,10 @@ public final class VMHelpers
 				VMHelpers.__loadExpectedResults(testName, fullSet));
 			
 			// Single test, has no parameters
-			CandidateTestFiles candidate = entry.getValue();
 			if (multiParams == null || multiParams.isEmpty())
 				result.put(testName, candidate);
 			
-			// Otherwise signify all the parameters within
+			// Otherwise, signify all the parameters within
 			else
 				for (String multiParam : multiParams)
 					result.put(testName + "@" + multiParam, candidate);
@@ -454,6 +490,34 @@ public final class VMHelpers
 	}
 	
 	/**
+	 * Returns the optional dependencies for a given project.
+	 * 
+	 * @param __project The project to get for.
+	 * @param __sourceSet The source set to look within.
+	 * @return The optional project dependencies or an empty list if unknown.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/09/05
+	 */
+	public static List<Project> optionalDepends(Project __project,
+		String __sourceSet)
+		throws NullPointerException
+	{
+		SquirrelJMEPluginConfiguration config =
+			SquirrelJMEPluginConfiguration.configurationOrNull(__project);
+		if (config == null)
+			return Collections.emptyList();
+		
+		if (__sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME))
+			return config.optionalDependencies;
+		else if (__sourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME))
+			return config.optionalDependenciesTest;
+		else if (__sourceSet.equals(VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME))
+			return config.optionalDependenciesTestFixtures;
+		
+		return Collections.emptyList();
+	}
+	
+	/**
 	 * Converts the given path to a String using the delimiter.
 	 * 
 	 * @param __delim The delimiter.
@@ -704,7 +768,7 @@ public final class VMHelpers
 	/**
 	 * Returns the path of the all the JARs which make up the classpath for
 	 * running an executable.
-	 * 
+	 *
 	 * @param __task The task to get for.
 	 * @param __sourceSet The source set used.
 	 * @param __vmType The virtual machine type.
@@ -714,16 +778,35 @@ public final class VMHelpers
 	 */
 	public static Path[] runClassPath(Task __task,
 		String __sourceSet, VMSpecifier __vmType)
-		throws NullPointerException
 	{
-		return VMHelpers.runClassPath(__task.getProject(),
-			__sourceSet, __vmType);
+		return VMHelpers.runClassPath(__task, __sourceSet, __vmType,
+			false);
 	}
 	
 	/**
 	 * Returns the path of the all the JARs which make up the classpath for
 	 * running an executable.
 	 * 
+	 * @param __task The task to get for.
+	 * @param __sourceSet The source set used.
+	 * @param __vmType The virtual machine type.
+	 * @param __optional use optional dependencies?
+	 * @return An array of paths containing the class path of execution.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/09/05
+	 */
+	public static Path[] runClassPath(Task __task,
+		String __sourceSet, VMSpecifier __vmType, boolean __optional)
+		throws NullPointerException
+	{
+		return VMHelpers.runClassPath(__task.getProject(),
+			__sourceSet, __vmType, __optional);
+	}
+	
+	/**
+	 * Returns the path of the all the JARs which make up the classpath for
+	 * running an executable.
+	 *
 	 * @param __project The project to get for.
 	 * @param __sourceSet The source set used.
 	 * @param __vmType The virtual machine type.
@@ -735,6 +818,26 @@ public final class VMHelpers
 		String __sourceSet, VMSpecifier __vmType)
 		throws NullPointerException
 	{
+		return VMHelpers.runClassPath(__project, __sourceSet, __vmType,
+			false);
+	}
+	
+	/**
+	 * Returns the path of the all the JARs which make up the classpath for
+	 * running an executable.
+	 * 
+	 * @param __project The project to get for.
+	 * @param __sourceSet The source set used.
+	 * @param __vmType The virtual machine type.
+	 * @param __optional use optional dependencies?
+	 * @return An array of paths containing the class path of execution.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/09/05
+	 */
+	public static Path[] runClassPath(Project __project,
+		String __sourceSet, VMSpecifier __vmType, boolean __optional)
+		throws NullPointerException
+	{
 		if (__project == null || __sourceSet == null || __vmType == null)
 			throw new NullPointerException("NARG");
 		
@@ -742,7 +845,8 @@ public final class VMHelpers
 		Iterable<VMLibraryTask> tasks =
 			VMHelpers.<VMLibraryTask>resolveProjectTasks(
 				VMLibraryTask.class, __project, VMHelpers
-					.runClassTasks(__project, __sourceSet, __vmType));
+					.runClassTasks(__project, __sourceSet, __vmType,
+						__optional));
 		
 		// Get the outputs of these, as they will be used. Ensure the order is
 		// kept otherwise execution may be non-deterministic and could break.
@@ -757,7 +861,7 @@ public final class VMHelpers
 	/**
 	 * Returns the task dependencies to get outputs from that would be
 	 * considered a part of the project's class path used at execution time.
-	 * 
+	 *
 	 * @param __project The task to get from.
 	 * @param __sourceSet The source set used.
 	 * @param __vmType The virtual machine information.
@@ -771,7 +875,7 @@ public final class VMHelpers
 		throws NullPointerException
 	{
 		return VMHelpers.runClassTasks(__project, __sourceSet, __vmType,
-			null);
+			false, null);
 	}
 	
 	/**
@@ -781,14 +885,36 @@ public final class VMHelpers
 	 * @param __project The task to get from.
 	 * @param __sourceSet The source set used.
 	 * @param __vmType The virtual machine information.
+	 * @param __optional Include optional dependencies?
+	 * @return The direct run dependencies for the task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/09/05
+	 */
+	public static Collection<ProjectAndTaskName> runClassTasks(
+		Project __project, String __sourceSet,
+		VMSpecifier __vmType, boolean __optional)
+		throws NullPointerException
+	{
+		return VMHelpers.runClassTasks(__project, __sourceSet, __vmType,
+			__optional, null);
+	}
+	
+	/**
+	 * Returns the task dependencies to get outputs from that would be
+	 * considered a part of the project's class path used at execution time.
+	 * 
+	 * @param __project The task to get from.
+	 * @param __sourceSet The source set used.
+	 * @param __vmType The virtual machine information.
+	 * @param __optional Include optional dependencies?
 	 * @param __did Projects that have been processed.
 	 * @return The direct run dependencies for the task.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
 	public static Collection<ProjectAndTaskName> runClassTasks(
-		Project __project, String __sourceSet,
-		VMSpecifier __vmType, Set<ProjectAndTaskName> __did)
+		Project __project, String __sourceSet, VMSpecifier __vmType,
+		boolean __optional, Set<ProjectAndTaskName> __did)
 		throws NullPointerException
 	{
 		if (__project == null || __sourceSet == null || __vmType == null)
@@ -814,11 +940,11 @@ public final class VMHelpers
 			// Depend on TAC
 			result.addAll(VMHelpers.runClassTasks(
 				__project.findProject(":modules:tac"),
-				SourceSet.MAIN_SOURCE_SET_NAME, __vmType, __did));
+				SourceSet.MAIN_SOURCE_SET_NAME, __vmType, __optional, __did));
 			
 			// Depend on our main project as we will be testing it
 			result.addAll(VMHelpers.runClassTasks(__project,
-				SourceSet.MAIN_SOURCE_SET_NAME, __vmType, __did));
+				SourceSet.MAIN_SOURCE_SET_NAME, __vmType, __optional, __did));
 		}
 		
 		// Go through the configurations to yank in the dependencies as needed
@@ -861,7 +987,7 @@ public final class VMHelpers
 					SourceSet.MAIN_SOURCE_SET_NAME);
 				Collection<ProjectAndTaskName> selected =
 					VMHelpers.runClassTasks(sub, targetSourceSet, __vmType,
-						__did);
+						__optional, __did);
 				
 				result.addAll(selected);
 			}
@@ -872,6 +998,15 @@ public final class VMHelpers
 		
 		// Ignore our own project
 		__did.add(selfProjectTask);
+		
+		// Include optional dependencies as well, so that they are actually
+		// used accordingly...
+		if (__optional)
+			for (Project optional : VMHelpers.optionalDepends(__project,
+				__sourceSet))
+				result.addAll(VMHelpers.runClassTasks(optional,
+					SourceSet.MAIN_SOURCE_SET_NAME, __vmType, true,
+					__did));
 		
 		// Debug as needed
 		__project.getLogger().debug("Run Depends: {}", result);
@@ -1107,15 +1242,18 @@ public final class VMHelpers
 		// blank manifest to be parsed
 		CandidateTestFiles candidate = __candidates.get(__testName);
 		if (candidate == null)
-			return new Manifest(); 
+			return new Manifest();
 		
 		// Load information gleaned from the source code
 		__SourceInfo__ info;
 		try (InputStream in = Files.newInputStream(
 			candidate.sourceCode.absolute, StandardOpenOption.READ))
 		{
-			if ("j".equals(VMHelpers.getExtension(
-				candidate.sourceCode.absolute)))
+			String extension = VMHelpers.getExtension(
+				candidate.sourceCode.absolute);
+			if ("class".equals(extension))
+				info = __SourceInfo__.loadClass(in);
+			else if ("j".equals(extension))
 				info = __SourceInfo__.loadJasmin(in);
 			else
 				info = __SourceInfo__.loadJava(in);
@@ -1147,19 +1285,40 @@ public final class VMHelpers
 		if (info.superClass == null)
 			return over;
 		
-		// Load the manifest that belongs to the super class if that is
-		// possible, a blank will be used if missing
-		Manifest under = VMHelpers.__loadExpectedResults(info.superClass,
+		Attributes overAttr = over.getMainAttributes();
+		
+		// Load super class information
+		VMHelpers.__loadExpectedResultsSub(overAttr, info.superClass,
+			__candidates);
+		
+		// And interfaces...
+		for (String implementsClass : info.implementsClasses)
+			VMHelpers.__loadExpectedResultsSub(overAttr, implementsClass,
+				__candidates);
+		
+		return over;
+	}
+	
+	/**
+	 * Loads the expected classes from the result.
+	 * 
+	 * @param __overAttr The attributes to potentially write over.
+	 * @param __class The class to check.
+	 * @param __candidates The candidates for finding the class.
+	 * @since 2022/09/05
+	 */
+	private static void __loadExpectedResultsSub(Attributes __overAttr,
+		String __class, Map<String, CandidateTestFiles> __candidates)
+	{
+		// Load the manifest that belongs to this class if it is possible
+		Manifest under = VMHelpers.__loadExpectedResults(__class,
 			__candidates);
 		
 		// Add the underlying manifest, provided it does not replace anything
 		// on the higher level
-		Attributes overAttr = over.getMainAttributes();
 		for (Map.Entry<Object, Object> e : under.getMainAttributes()
 			.entrySet())
-			overAttr.putIfAbsent(e.getKey(), e.getValue());
-		
-		return over;
+			__overAttr.putIfAbsent(e.getKey(), e.getValue());
 	}
 	
 	/**
