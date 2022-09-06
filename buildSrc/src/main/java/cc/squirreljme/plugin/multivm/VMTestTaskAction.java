@@ -136,7 +136,7 @@ public class VMTestTaskAction
 		
 		// Determine the number of tests
 		Set<String> testNames = VMHelpers.runningTests(
-			__task.getProject(), sourceSet).keySet();
+			__task.getProject(), sourceSet).tests.keySet();
 		int numTests = testNames.size();
 		
 		// Determine system properties to use for testing
@@ -171,7 +171,7 @@ public class VMTestTaskAction
 		
 		// We only need to set the classpath once
 		Path[] classPath = VMHelpers.runClassPath(
-			(VMExecutableTask)__task, sourceSet, vmType);
+			(VMExecutableTask)__task, sourceSet, vmType, true);
 		
 		// Debug
 		logger.debug("Testing ClassPath: {}",

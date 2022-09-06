@@ -27,21 +27,26 @@ public final class CandidateTestFiles
 	/** The expected test results. */
 	public final FileLocation expectedResult;
 	
+	/** Is this a primary test source? */
+	public final boolean primary;
+	
 	/**
 	 * Initializes the test.
 	 * 
+	 * @param __primary Is this a primary test source?
 	 * @param __sourceCode The source code for the test.
 	 * @param __expectedResult The expected result file.
 	 * @throws NullPointerException If {@code __sourceCode} is null.
 	 * @since 2020/09/06
 	 */
-	public CandidateTestFiles(FileLocation __sourceCode,
+	public CandidateTestFiles(boolean __primary, FileLocation __sourceCode,
 		FileLocation __expectedResult)
 		throws NullPointerException
 	{
 		if (__sourceCode == null)
 			throw new NullPointerException("NARG");
 		
+		this.primary = __primary;
 		this.sourceCode = __sourceCode;
 		this.expectedResult = __expectedResult;
 	}

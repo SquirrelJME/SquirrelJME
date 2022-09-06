@@ -12,6 +12,8 @@ package net.multiphasicapps.tac;
 import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.manifest.JavaManifestKey;
+import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
@@ -333,23 +335,14 @@ public final class TestResult
 		TestResultBuilder rv = new TestResultBuilder();
 		for (Class<?> at = __cl; at != null; at = at.getSuperclass())
 		{
-			// Determine base name of the class
-			String atName = at.getName();
-			int ld = atName.lastIndexOf('.');
-			String atBase = (ld < 0 ? atName : atName.substring(ld + 1));
+			// Load values for this class
+			TestResult.__loadClassValues(__otherKeys, multiParams, rv, at);
 			
-			// Try to load multi-parameter and standard results, the multi
-			// parameters take precedence since they are more specific for
-			// tests
-			if (multiParams != null && !multiParams.isEmpty())
-				for (String multiParam : multiParams)
-				{
-					TestResult.__extractResults(__otherKeys, rv, at,
-						atBase + "@" + multiParam);
-				}
-			
-			// Standard results last
-			TestResult.__extractResults(__otherKeys, rv, at, atBase);
+			// Then load any results that are specified in interfaces
+			for (TypeBracket implement :
+				TypeShelf.interfaces(TypeShelf.classToType(at)))
+				TestResult.__loadClassValues(__otherKeys, multiParams, rv,
+					TypeShelf.typeToClass(implement));
 		}
 		
 		// Done
@@ -595,6 +588,37 @@ public final class TestResult
 					break;
 			}
 		}
+	}
+	
+	/**
+	 * Loads class values for tests.
+	 *
+	 * @param __otherKeys The other keys.
+	 * @param __multiParams The current multi parameters.
+	 * @param __rv The result.
+	 * @param __at The current class to check.
+	 * @since 2022/09/05
+	 */
+	private static void __loadClassValues(Map<String, String> __otherKeys,
+		List<String> __multiParams, TestResultBuilder __rv, Class<?> __at)
+	{
+		// Determine base name of the class
+		String atName = __at.getName();
+		int ld = atName.lastIndexOf('.');
+		String atBase = (ld < 0 ? atName : atName.substring(ld + 1));
+		
+		// Try to load multi-parameter and standard results, the multi
+		// parameters take precedence since they are more specific for
+		// tests
+		if (__multiParams != null && !__multiParams.isEmpty())
+			for (String multiParam : __multiParams)
+			{
+				TestResult.__extractResults(__otherKeys, __rv, __at,
+					atBase + "@" + multiParam);
+			}
+		
+		// Standard results last
+		TestResult.__extractResults(__otherKeys, __rv, __at, atBase);
 	}
 	
 	/**

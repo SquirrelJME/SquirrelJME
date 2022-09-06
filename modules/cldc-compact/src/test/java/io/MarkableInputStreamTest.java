@@ -9,12 +9,14 @@
 
 package io;
 
+import cc.squirreljme.jvm.Framebuffer;
 import cc.squirreljme.runtime.cldc.io.MarkableInputStream;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.RandomAccess;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
@@ -24,6 +26,7 @@ import net.multiphasicapps.tac.TestRunnable;
  */
 public class MarkableInputStreamTest
 	extends TestRunnable
+	implements RandomAccess, cc.squirreljme.jvm.Framebuffer
 {
 	/** Byte message to read. */
 	private static final byte[] _BYTES =
