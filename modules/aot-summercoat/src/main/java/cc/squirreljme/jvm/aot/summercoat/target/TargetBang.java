@@ -120,7 +120,7 @@ public final class TargetBang
 				break;
 			}
 		
-		// {@squirreljme.error RA02 Invalid operating system variant.
+		// {@squirreljme.error RA03 Invalid operating system variant.
 		// (The variant)}
 		if (osVariant == null)
 			throw new IllegalArgumentException("RA03 " + split[3]);

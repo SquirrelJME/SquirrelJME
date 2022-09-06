@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.ServiceLoader;
 
 /**
  * Backend for SummerCoat compilation.
@@ -70,6 +71,21 @@ public class SummerCoatBackend
 			
 		// Lookup the target bang, this specifies the target we are aiming for
 		TargetBang targetbang = new TargetBang(__settings.variant);
+		
+		// Find handler for this target bang
+		SummerCoatHandlerFactory foundHandler = null;
+		for (SummerCoatHandlerFactory handler :
+			ServiceLoader.load(SummerCoatHandlerFactory.class))
+			if (handler.supportsBang(targetbang))
+			{
+				foundHandler = handler;
+				break;
+			}
+		
+		// {@squirreljme.error RA04 No handler supports the given target
+		// bang. (The target bang)}
+		if (foundHandler == null)
+			throw new IllegalArgumentException("RA04 " + targetbang);
 		
 		throw Debugging.todo();
 	}

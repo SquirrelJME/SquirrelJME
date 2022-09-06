@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.aot.summercoat;
 
-import cc.squirreljme.jvm.aot.CompileSettings;
-import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.summercoat.target.TargetBang;
 import java.util.ServiceLoader;
 
