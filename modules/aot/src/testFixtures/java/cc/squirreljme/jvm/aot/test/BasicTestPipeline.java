@@ -10,6 +10,8 @@
 package cc.squirreljme.jvm.aot.test;
 
 import cc.squirreljme.jvm.aot.Backend;
+import cc.squirreljme.jvm.aot.CompilationStatistic;
+import cc.squirreljme.jvm.aot.CompilationStatistics;
 
 /**
  * Basic test of the test pipeline.
@@ -45,9 +47,11 @@ public abstract class BasicTestPipeline
 		ExampleClass example = ExampleClass.valueOf(__argument);
 		
 		// Compile this class
-		byte[] data = this.compileClass(example);
+		this.compileClass(example);
 		
-		// There should be data
-		this.secondary("len", data.length > 0);
+		// Check common statistics
+		CompilationStatistics statistics = __situation.linkGlob.statistics();
+		this.secondary("classes-compiled",
+			statistics.getValue(CompilationStatistic.CLASSES_COMPILED));
 	}
 }

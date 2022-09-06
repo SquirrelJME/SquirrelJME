@@ -35,12 +35,11 @@ public class SummerCoatBackend
 	 * @since 2022/08/05
 	 */
 	@Override
-	public void compileClass(LinkGlob __glob, String __name, InputStream __in,
-		OutputStream __out)
+	public void compileClass(LinkGlob __glob, String __name,
+		InputStream __inClass)
 		throws IOException, NullPointerException
 	{
-		if (__glob == null || __name == null ||
-			__in == null || __out == null)
+		if (__glob == null || __name == null || __inClass == null)
 			throw new NullPointerException("NARG");
 		
 		throw Debugging.todo();
@@ -87,7 +86,8 @@ public class SummerCoatBackend
 		if (foundHandler == null)
 			throw new IllegalArgumentException("RA04 " + targetbang);
 		
-		throw Debugging.todo();
+		// Setup glob target
+		return new SummerCoatLinkGlob(__settings, foundHandler, __name, __out);
 	}
 	
 	/**

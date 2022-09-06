@@ -38,15 +38,22 @@ public interface LinkGlob
 		throws IOException;
 		
 	/**
-	 * Joins this into the linking structure.
+	 * Joins this resource into the linking structure.
 	 * 
-	 * @param __name The name of the object to link.
-	 * @param __isRc Is this a resource and not an executable?
-	 * @param __data The data to link in.
+	 * @param __name The name of the resource to link.
+	 * @param __data The data stream of the resource to link in.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/22
 	 */
-	void join(String __name, boolean __isRc, InputStream __data)
+	void joinResource(String __name, InputStream __data)
 		throws IOException, NullPointerException;
+	
+	/**
+	 * Counts compilation statistics.
+	 * 
+	 * @return The statistics counter.
+	 * @since 2022/09/06
+	 */
+	CompilationStatistics statistics();
 }

@@ -43,36 +43,31 @@ public abstract class BaseCompilation
 	 * 
 	 * @param __name The name of the class to compile.
 	 * @param __in The class byte data.
-	 * @return The compiled bytes for the class.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/08/14
 	 */
-	public final byte[] compileClass(String __name, InputStream __in)
+	public final void compileClass(String __name, InputStream __in)
 		throws IOException, NullPointerException
 	{
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
-		{
-			// This compiles to a byte array output
-			this.backend.compileClass(this.situationParameters().linkGlob,
-				__name, __in, baos);
-			
-			return baos.toByteArray();
-		} 
+		if (__name == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		// Compile to the output
+		this.backend.compileClass(this.situationParameters().linkGlob,
+			__name, __in);
 	}
-	
 	
 	/**
 	 * Compiles the given class and returns the resulting bytes of that
 	 * compilation.
 	 * 
 	 * @param __example The example class to compile.
-	 * @return The compiled bytes for the class.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/08/14
 	 */
-	public final byte[] compileClass(ExampleClass __example)
+	public final void compileClass(ExampleClass __example)
 		throws IOException, NullPointerException
 	{
 		if (__example == null)
@@ -80,47 +75,7 @@ public abstract class BaseCompilation
 			
 		try (InputStream in = __example.load())
 		{
-			return this.compileClass(__example.className(), in);
-		}
-	}
-	
-	/**
-	 * Compiles the given class and then joins it into the {@link LinkGlob}
-	 * so that it is a part of the output.
-	 * 
-	 * @param __name The name of the class to compile.
-	 * @param __in The class byte data.
-	 * @throws IOException On read/write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2022/08/14
-	 */
-	public final void compileClassAndJoin(String __name, InputStream __in)
-		throws IOException, NullPointerException
-	{
-		try (ByteArrayInputStream in = new ByteArrayInputStream(
-			this.compileClass(__name, __in)))
-		{
-			this.situationParameters().linkGlob.join(__name, false, in);
-		}
-	}
-	
-	/**
-	 * Compiles the given example and then joins it into the {@link LinkGlob}
-	 * so that it is a part of the output.
-	 * 
-	 * @throws IOException On read/write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2022/08/14
-	 */
-	public final void compileClassAndJoin(ExampleClass __example)
-		throws IOException, NullPointerException
-	{
-		if (__example == null)
-			throw new NullPointerException("NARG");
-			
-		try (InputStream in = __example.load())
-		{
-			this.compileClassAndJoin(__example.className(), in);
+			this.compileClass(__example.className(), in);
 		}
 	}
 }

@@ -32,14 +32,12 @@ public interface Backend
 	 * @param __glob The compilation glob if this is needed by the source
 	 * compilation step.
 	 * @param __name The name of the class being compiled.
-	 * @param __in The input stream.
-	 * @param __out The output stream.
+	 * @param __inClass The input stream.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/22
 	 */
-	void compileClass(LinkGlob __glob, String __name, InputStream __in,
-		OutputStream __out)
+	void compileClass(LinkGlob __glob, String __name, InputStream __inClass)
 		throws IOException, NullPointerException;
 	
 	/**
