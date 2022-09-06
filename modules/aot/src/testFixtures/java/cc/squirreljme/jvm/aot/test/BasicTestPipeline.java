@@ -18,6 +18,7 @@ import cc.squirreljme.jvm.aot.Backend;
  */
 public abstract class BasicTestPipeline
 	extends BaseCompilation
+	implements AllExampleClasses
 {
 	/**
 	 * Initializes the base compilation.
@@ -37,11 +38,16 @@ public abstract class BasicTestPipeline
 	 * @since 2022/09/05
 	 */
 	@Override
-	public final void test(SituationParameters __parameters)
+	public final void test(SituationParameters __situation,
+		String __argument)
 		throws Throwable
 	{
-		byte[] data = this.compileClass(ExampleClass.BLANK);
+		ExampleClass example = ExampleClass.valueOf(__argument);
 		
+		// Compile this class
+		byte[] data = this.compileClass(example);
+		
+		// There should be data
 		this.secondary("len", data.length > 0);
 	}
 }

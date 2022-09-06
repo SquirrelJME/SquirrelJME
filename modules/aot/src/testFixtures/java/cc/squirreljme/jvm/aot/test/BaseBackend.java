@@ -46,11 +46,13 @@ public abstract class BaseBackend
 	/**
 	 * Performs the testing.
 	 * 
-	 * @param __parameters The parameters to test with.
+	 * @param __situation The parameters to test with.
+	 * @param __argument Argument to the test call.
 	 * @throws Throwable On any throwable.
 	 * @since 2022/09/05
 	 */
-	public abstract void test(SituationParameters __parameters)
+	public abstract void test(SituationParameters __situation,
+		String __argument)
 		throws Throwable;
 	
 	/**
@@ -82,11 +84,20 @@ public abstract class BaseBackend
 	 * @since 2022/09/05
 	 */
 	@Override
-	public final void test(String __variant)
+	public final void test(String __variantAndParam)
 		throws Throwable
 	{
+		// Extract fields for testing purposes
+		int atSign = (__variantAndParam == null ? -1 :
+			__variantAndParam.indexOf('@'));
+		String variant = (atSign < 0 ? __variantAndParam :
+			__variantAndParam.substring(0, atSign));
+		String argument = (atSign < 0 ? __variantAndParam :
+			__variantAndParam.substring(atSign + 1));
+		
+		// Setup backend and various settings for compilation
 		Backend backend = this.backend;
-		CompileSettings compileSettings = this.compileSettings(__variant);
+		CompileSettings compileSettings = this.compileSettings(variant);
 		ByteArrayOutputStream globOutput = new ByteArrayOutputStream();
 		
 		// This could possibly fail
@@ -102,10 +113,10 @@ public abstract class BaseBackend
 		}
 		
 		// Run test
-		SituationParameters parameters = new SituationParameters(backend,
+		SituationParameters situation = new SituationParameters(backend,
 			linkGlob, compileSettings, globOutput);
-		this._parameters = parameters;
-		this.test(parameters);
+		this._parameters = situation;
+		this.test(situation, argument);
 	}
 	
 	/**
