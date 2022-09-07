@@ -12,6 +12,7 @@ package cc.squirreljme.emulator;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Emulation for {@link TypeShelf}.
@@ -33,6 +34,31 @@ public class EmulatedTypeShelf
 			throw new MLECallError("Null arguments.");
 		
 		return new EmulatedTypeBracket(__cl);
+	}
+	
+	/**
+	 * Finds a type by its name.
+	 *
+	 * @param __name The name of the type.
+	 * @return The type bracket for the type or {@code null} if none was
+	 * found.
+	 * @since 2020/06/02
+	 */
+	public static TypeBracket findType(String __name)
+		throws MLECallError
+	{
+		if (__name == null)
+			throw new MLECallError("No name specified.");
+		
+		try
+		{
+			return new EmulatedTypeBracket(
+				Class.forName(__name.replace('/', '.')));
+		}
+		catch (ClassNotFoundException __e)
+		{
+			throw new MLECallError("Class not found: " + __name, __e);
+		}
 	}
 	
 	/**

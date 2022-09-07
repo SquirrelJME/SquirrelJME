@@ -44,6 +44,7 @@ import java.util.function.Supplier;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
@@ -220,9 +221,23 @@ public final class VMHelpers
 			if (!candidate.primary)
 				continue;
 			
+			// Load in the manifest for the candidate
+			Manifest manifest = VMHelpers.__loadExpectedResults(testName,
+				fullSet);
+			
+			// Replace candidate entry with what is fully available here
+			Map<String, String> expectedValues = new LinkedHashMap<>();
+			for (Map.Entry<Object, Object> value : manifest.getMainAttributes()
+				.entrySet())
+				expectedValues.put(Objects.toString(value.getKey()),
+					Objects.toString(value.getValue()));
+			candidate = new CandidateTestFiles(candidate.primary,
+				candidate.sourceCode, candidate.expectedResult,
+				Collections.unmodifiableMap(expectedValues));
+			
 			// Load the expected results and see if there multi-parameters
 			Collection<String> multiParams = VMHelpers.__parseMultiParams(
-				VMHelpers.__loadExpectedResults(testName, fullSet));
+				manifest);
 			
 			// Single test, has no parameters
 			if (multiParams == null || multiParams.isEmpty())
