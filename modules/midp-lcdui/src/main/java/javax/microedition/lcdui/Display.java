@@ -17,7 +17,6 @@ import cc.squirreljme.jvm.mle.constants.UIInputFlag;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
-import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
@@ -1312,10 +1311,6 @@ public class Display
 		Display[] all = StaticDisplayState.DISPLAYS;
 		if (all == null)
 		{
-			// Poke the VM to initialize things potentially, this is just
-			// needed by the native emulator bindings
-			Poking.poke();
-			
 			// Get the displays that are attached to the system
 			UIDisplayBracket[] uiDisplays =
 				UIBackendFactory.getInstance(true).displays();

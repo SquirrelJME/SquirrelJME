@@ -2,14 +2,14 @@ import cc.squirreljme.plugin.swm.JavaMEConfiguration
 import cc.squirreljme.plugin.swm.JavaMEMidletType
 
 version = "1.8.$squirreljmeVMVersion"
-description = "Base interpreter support for the AOT system, contains common " +
-	"interfaces and otherwise."
+description = "Base hybrid interpreter support for the AOT system, contains " +
+	"common interfaces and otherwise to allow for reflected hybrid support."
 
 squirreljme
 {
 	javaDocErrorCode = "RI"
 	swmType = JavaMEMidletType.API
-	swmName = "Ahead-Of-Time Support - Interpreter Support"
+	swmName = "Ahead-Of-Time Support - Hybrid Interpreter Support"
 	swmVendor = "Stephanie Gawroriski"
 	tags += "aot-interpreter"
 	tags += "interpreter"

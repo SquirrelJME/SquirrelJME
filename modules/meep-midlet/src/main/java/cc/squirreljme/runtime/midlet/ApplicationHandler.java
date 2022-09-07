@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.midlet;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
-import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.midlet.MIDlet;
 
@@ -161,10 +160,6 @@ public final class ApplicationHandler
 	{
 		if (__ai == null)
 			throw new NullPointerException("NARG");
-		
-		// We might be on the emulator, so ensure our native interfaces and
-		// otherwise are properly loaded
-		Poking.poke();
 		
 		// Setup new instance of the application
 		T instance = __ai.<T>newInstance();

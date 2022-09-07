@@ -158,7 +158,7 @@ public final class ThreadShelf
 	public static native int model();
 	
 	/**
-	 * Runs the main entry point for the current process and gives it all of
+	 * Runs the main entry point for the current process and gives it all
 	 * the arguments that were specified on program initialization.
 	 *
 	 * @since 2020/06/17

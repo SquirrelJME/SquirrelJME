@@ -9,13 +9,18 @@
 
 package cc.squirreljme.emulator;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 
 /**
  * This class manages the native bindings.
@@ -75,6 +80,70 @@ public final class NativeBinding
 	 * @since 2020/02/26
 	 */
 	private static native int __bindMethods();
+	
+	/**
+	 * Main entry point for the hosted emulator.
+	 * 
+	 * @param __args The program arguments.
+	 * @throws Throwable On any exception.
+	 * @since 2022/09/07
+	 */
+	public static void main(String... __args)
+		throws Throwable
+	{
+		// Force this to be initialized
+		new NativeBinding();
+		
+		// Extract main method to call
+		String targetMain = __args[0];
+		String[] targetArgs =
+			Arrays.copyOfRange(__args, 1, __args.length);
+		
+		// Go into the class
+		Method mainMethod = null;
+		try
+		{
+			// Find class
+			Class<?> mainClass = Class.forName(targetMain);
+			
+			// Find main method
+			Method[] methods = mainClass.getMethods();
+			for (int i = methods.length - 1; i >= 0; i--)
+			{
+				Method maybe = methods[i];
+				int flags = maybe.getModifiers();
+				
+				// Needs to match everything
+				if ((flags & (Modifier.PUBLIC | Modifier.STATIC)) ==
+						(Modifier.PUBLIC | Modifier.STATIC) &&
+					"main".equals(maybe.getName()) &&
+					maybe.getReturnType() == Void.TYPE &&
+					maybe.getParameterCount() == 1 &&
+					String[].class == maybe.getParameterTypes()[0])
+				{
+					mainMethod = maybe;
+					break;
+				}
+			}
+			
+			// Not found?
+			if (mainMethod == null)
+				throw new Error("No public static void main(String[]) in " +
+					mainClass);
+				
+			// Invoke call
+			mainMethod.invoke(null, (Object)targetArgs);
+		}
+		catch (InvocationTargetException __e)
+		{
+			// Just throw what we wrapped around
+			throw __e.getTargetException();
+		}
+		catch (IllegalAccessException|ClassNotFoundException __e)
+		{
+			throw new Error(__e);
+		}
+	}
 	
 	/**
 	 * Checks to see if the preloaded library is available.

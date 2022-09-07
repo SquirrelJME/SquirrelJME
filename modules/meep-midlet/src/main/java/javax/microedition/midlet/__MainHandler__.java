@@ -9,7 +9,6 @@
 
 package javax.microedition.midlet;
 
-import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 
 /**
@@ -38,10 +37,6 @@ final class __MainHandler__
 	public static void main(String... __args)
 		throws Throwable
 	{
-		// We might be on the emulator, so ensure our native interfaces and
-		// otherwise are properly loaded
-		Poking.poke();
-		
 		// {@squirreljme.error AD02 No main MIDlet class specified.}
 		if (__args == null || __args.length < 1 || __args[0] == null)
 			throw new IllegalArgumentException("AD02");

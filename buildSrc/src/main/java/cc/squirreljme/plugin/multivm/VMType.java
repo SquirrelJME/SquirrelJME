@@ -255,15 +255,19 @@ public enum VMType
 				}
 			}
 			
+			List<String> trueArgs = new ArrayList<>(
+				1 + __args.length);
+			trueArgs.add(__mainClass);
+			trueArgs.addAll(Arrays.asList(__args));
+			
 			// Use the classpath we previously determined
 			__execSpec.classpath(classPath);
 			
-			// Main class was the directly specified class, we do not
-			// need to handle the standard VM factory launcher
-			__execSpec.setMain(__mainClass);
-			
-			// Use the passed arguments directly
-			__execSpec.setArgs(Arrays.asList(__args));
+			// Use special main handler which handles loading the required
+			// methods for the hosted environment to work correctly with
+			// SquirrelJME
+			__execSpec.setMain("cc.squirreljme.emulator.NativeBinding");
+			__execSpec.setArgs(trueArgs);
 			
 			// Any desired system properties
 			__execSpec.systemProperties(sysProps);
@@ -836,7 +840,7 @@ public enum VMType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/08
 	 */
-	private static void __copySysProps(Map<String, String> __sysProps)
+	static void __copySysProps(Map<String, String> __sysProps)
 		throws NullPointerException
 	{
 		if (__sysProps == null)
