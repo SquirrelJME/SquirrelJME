@@ -97,7 +97,7 @@ public final class ClassFile
 		
 		// {@squirreljme.error JC29 Either Object has a superclass which it
 		// cannot extend any class or any other class does not have a super
-		// class. Additionally primitive types cannot have a super class.
+		// class. Additionally, primitive types cannot have a super class.
 		// (The current class name; The super class name; Object class name;
 		// Is this primitive?)}
 		ClassName objectcn = new ClassName("java/lang/Object");

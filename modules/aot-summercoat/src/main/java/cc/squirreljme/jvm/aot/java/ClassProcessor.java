@@ -9,9 +9,13 @@
 
 package cc.squirreljme.jvm.aot.java;
 
+import cc.squirreljme.jvm.aot.CompilationException;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
 
 /**
  * Processes a single Java class.
@@ -53,6 +57,19 @@ public class ClassProcessor
 		if (__inClass == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// This could fail
+		try
+		{
+			// Decode the class file before we start processing it
+			ClassFile classFile = ClassFile.decode(__inClass);
+			
+			throw Debugging.todo();
+		}
+		
+		// Wrap this exception
+		catch (InvalidClassFormatException e)
+		{
+			throw new CompilationException(e);
+		}
 	}
 }
