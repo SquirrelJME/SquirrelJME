@@ -42,9 +42,10 @@ public abstract class TestConsumer<A>
 		if (this instanceof OptionalFirstParameter)
 			testArg = (__args.length == 0 ? null : __args[0]);
 		
-		// {@squirreljme.error BU05 Test takes one parameter.}
+		// {@squirreljme.error BU05 Test takes one parameter. (The number of
+		// passed parameters)}
 		else if (__args.length != 1)
-			throw new InvalidTestParameterException("BU05");
+			throw new InvalidTestParameterException("BU05 " + __args.length);
 		
 		// Load first argument
 		else

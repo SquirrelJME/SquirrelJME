@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.zip.streamreader;
 
+import cc.squirreljme.runtime.cldc.archive.ArchiveStreamEntry;
 import java.io.IOException;
 import java.io.InputStream;
 import net.multiphasicapps.io.CRC32Calculator;
@@ -28,6 +29,7 @@ import net.multiphasicapps.zip.ZipException;
  */
 public final class ZipStreamEntry
 	extends InputStream
+	implements ArchiveStreamEntry
 {
 	/** The maximum size the data descriptor can be (if there is one). */
 	private static final int _MAX_DESCRIPTOR_SIZE =
@@ -180,6 +182,7 @@ public final class ZipStreamEntry
 	 * @return The entry name.
 	 * @since 2016/07/19
 	 */
+	@Override
 	public String name()
 	{
 		return this.filename;

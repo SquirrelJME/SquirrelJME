@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestKey;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
@@ -41,10 +40,6 @@ public abstract class MIDlet
 	 */
 	protected MIDlet()
 	{
-		// We might be on an emulator, so do some poking to make sure
-		// everything is working okay
-		Poking.poke();
-		
 		// Set the active midlet to this one
 		ActiveMidlet.set(this);
 	}

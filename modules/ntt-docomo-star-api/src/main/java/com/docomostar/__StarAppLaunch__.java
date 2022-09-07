@@ -9,7 +9,6 @@
 
 package com.docomostar;
 
-import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 
 /**
@@ -28,11 +27,7 @@ final class __StarAppLaunch__
 	 */
 	public static void main(String... __args)
 		throws Throwable
-	{	
-		// We might be on the emulator, so ensure our native interfaces and
-		// otherwise are properly loaded
-		Poking.poke();
-		
+	{
 		// {@squirreljme.error AN01 No main Star class specified.}
 		if (__args == null || __args.length < 1 || __args[0] == null)
 			throw new IllegalArgumentException("AN01");

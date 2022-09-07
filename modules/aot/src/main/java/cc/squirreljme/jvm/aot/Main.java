@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.aot;
 
-import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
@@ -71,9 +70,6 @@ public class Main
 	public static void main(String... __args)
 		throws IOException
 	{
-		// Make sure the VM stuff is alive here
-		Poking.poke();
-		
 		// Push all arguments to the queue
 		Deque<String> args = new LinkedList<>(Arrays.asList(__args));
 		

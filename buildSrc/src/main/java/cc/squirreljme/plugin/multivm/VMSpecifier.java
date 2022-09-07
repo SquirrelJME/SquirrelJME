@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.gradle.api.Project;
@@ -70,7 +69,7 @@ public interface VMSpecifier
 	 * @return The project used for running the emulator.
 	 * @since 2020/08/16
 	 */
-	String emulatorProject();
+	List<String> emulatorProjects();
 	
 	/**
 	 * Determines the name of the library that the provider uses for what is

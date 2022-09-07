@@ -9,8 +9,6 @@
 
 package net.multiphasicapps.tac;
 
-import cc.squirreljme.runtime.cldc.Poking;
-
 /**
  * Runs a single test.
  *
@@ -26,10 +24,6 @@ public class MainSingleRunner
 	 */
 	public static void main(String... __args)
 	{
-		// Poke any native VM stuff as it is needed during hosted testing or
-		// potential other areas
-		Poking.poke();
-		
 		// {@squirreljme.error BU0b Expected single argument specifying the
 		// test to run.}
 		if (__args == null || __args.length != 1 || __args[0] == null)
