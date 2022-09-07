@@ -135,8 +135,9 @@ public class VMTestTaskAction
 				VMTestTaskAction._MAX_PARALLEL_TESTS));
 		
 		// Determine the number of tests
-		Set<String> testNames = VMHelpers.runningTests(
-			__task.getProject(), sourceSet).tests.keySet();
+		Map<String, CandidateTestFiles> tests = VMHelpers.runningTests(
+			__task.getProject(), sourceSet).tests;
+		Set<String> testNames = tests.keySet();
 		int numTests = testNames.size();
 		
 		// Determine system properties to use for testing
@@ -190,11 +191,24 @@ public class VMTestTaskAction
 		int submitCount = 0;
 		for (String testName : testNames)
 		{
+			// Default arguments, could be replaced by a proxy main
+			String mainClass = VMHelpers.SINGLE_TEST_RUNNER;
+			String[] mainArgs = new String[]{testName};
+			
+			// Are we going to use a different proxy main class for this?
+			CandidateTestFiles candidate = tests.get(testName);
+			String proxyMain = candidate.expectedValues.get("proxy-main");
+			if (proxyMain != null && !proxyMain.trim().isEmpty())
+			{
+				mainArgs = new String[]{mainClass, mainArgs[0]};
+				mainClass = proxyMain.trim();
+			}
+			
 			// Determine the arguments that are used to spawn the JVM
 			JavaExecSpecFiller execSpec = specFactory.get();
 			vmType.spawnJvmArguments(__task, true, execSpec,
-				VMHelpers.SINGLE_TEST_RUNNER, testName, sysProps, classPath,
-				classPath, testName);
+				mainClass, testName, sysProps, classPath,
+				classPath, mainArgs);
 			
 			// Where will the results be read from?
 			Path xmlResult = resultDir.resolve(

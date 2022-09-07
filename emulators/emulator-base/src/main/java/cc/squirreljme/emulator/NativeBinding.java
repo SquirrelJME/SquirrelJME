@@ -9,6 +9,8 @@
 
 package cc.squirreljme.emulator;
 
+import cc.squirreljme.jvm.mle.ReflectionShelf;
+import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
@@ -99,50 +101,8 @@ public final class NativeBinding
 		String[] targetArgs =
 			Arrays.copyOfRange(__args, 1, __args.length);
 		
-		// Go into the class
-		Method mainMethod = null;
-		try
-		{
-			// Find class
-			Class<?> mainClass = Class.forName(targetMain);
-			
-			// Find main method
-			Method[] methods = mainClass.getMethods();
-			for (int i = methods.length - 1; i >= 0; i--)
-			{
-				Method maybe = methods[i];
-				int flags = maybe.getModifiers();
-				
-				// Needs to match everything
-				if ((flags & (Modifier.PUBLIC | Modifier.STATIC)) ==
-						(Modifier.PUBLIC | Modifier.STATIC) &&
-					"main".equals(maybe.getName()) &&
-					maybe.getReturnType() == Void.TYPE &&
-					maybe.getParameterCount() == 1 &&
-					String[].class == maybe.getParameterTypes()[0])
-				{
-					mainMethod = maybe;
-					break;
-				}
-			}
-			
-			// Not found?
-			if (mainMethod == null)
-				throw new Error("No public static void main(String[]) in " +
-					mainClass);
-				
-			// Invoke call
-			mainMethod.invoke(null, (Object)targetArgs);
-		}
-		catch (InvocationTargetException __e)
-		{
-			// Just throw what we wrapped around
-			throw __e.getTargetException();
-		}
-		catch (IllegalAccessException|ClassNotFoundException __e)
-		{
-			throw new Error(__e);
-		}
+		// Call main
+		ReflectionShelf.invokeMain(TypeShelf.findType(targetMain), targetArgs);
 	}
 	
 	/**
