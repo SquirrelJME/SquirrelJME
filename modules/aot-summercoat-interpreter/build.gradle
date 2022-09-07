@@ -2,15 +2,18 @@ import cc.squirreljme.plugin.swm.JavaMEConfiguration
 import cc.squirreljme.plugin.swm.JavaMEMidletType
 
 version = "1.8.$squirreljmeVMVersion"
-description = "Interpreter for SummerCoat, used by test VMs and also " +
+description = "Hybrid Interpreter for SummerCoat, used by test VMs and also " +
 	"compiled by the C output so that RatufaCoat is capable of " +
-	"interpreting SummerCoat libraries."
+	"interpreting SummerCoat libraries. This uses SquirrelJME specific " +
+	"reflection shelves to call and bind to non-interpreted classes. This " +
+	"allows for a hybrid virtual machine which is interpreted but can call " +
+	"into natively compiled classes which tends to be quicker."
 
 squirreljme
 {
 	javaDocErrorCode = "RC"
 	swmType = JavaMEMidletType.API
-	swmName = "Ahead-Of-Time Support - SummerCoat - Interpreter"
+	swmName = "Ahead-Of-Time Support - SummerCoat - Hybrid Interpreter"
 	swmVendor = "Stephanie Gawroriski"
 	tags += "aot-compiler"
 	tags += "summercoat"

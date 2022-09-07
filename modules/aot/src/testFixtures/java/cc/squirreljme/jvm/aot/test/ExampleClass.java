@@ -21,6 +21,9 @@ public enum ExampleClass
 	/** Blank class which just contains an empty constructor. */
 	BLANK("Blank.class"),
 	
+	/** Contains a basic counting for loop. */
+	BASIC_FOR_LOOP("BasicForLoop.class"),
+	
 	/* End. */
 	;
 	
