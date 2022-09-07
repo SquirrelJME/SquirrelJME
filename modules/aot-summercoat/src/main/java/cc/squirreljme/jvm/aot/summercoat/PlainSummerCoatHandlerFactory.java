@@ -9,12 +9,13 @@
 
 package cc.squirreljme.jvm.aot.summercoat;
 
+import cc.squirreljme.jvm.aot.OutputStreamToGlobResource;
+import cc.squirreljme.jvm.aot.summercoat.sqc.SqcSerializer;
 import cc.squirreljme.jvm.aot.summercoat.target.TargetArchitecture;
 import cc.squirreljme.jvm.aot.summercoat.target.TargetArchitectureVariant;
 import cc.squirreljme.jvm.aot.summercoat.target.TargetBang;
 import cc.squirreljme.jvm.aot.summercoat.target.TargetOperatingSystem;
 import cc.squirreljme.jvm.aot.summercoat.target.TargetOperatingSystemVariant;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Plain SummerCoat handler, which just serializes the output.
@@ -29,10 +30,14 @@ public class PlainSummerCoatHandlerFactory
 	 * @since 2022/09/05
 	 */
 	@Override
-	public SummerCoatHandler handler(SummerCoatLinkGlob __glob)
+	public SummerCoatHandler handler(SummerCoatLinkGlob __glob, String __name)
 		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__glob == null || __name == null)
+			throw new NullPointerException("NARG");
+		
+		return new SqcSerializer(new OutputStreamToGlobResource(__glob,
+			SqcSerializer.RESOURCE_PREFIX + __name));
 	}
 	
 	/**

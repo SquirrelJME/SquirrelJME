@@ -7,14 +7,33 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot.java;
+package cc.squirreljme.jvm.aot;
 
 /**
- * Shared state within a single Jar.
+ * This is thrown when there is an error compiling.
  *
- * @since 2022/08/04
+ * @since 2022/09/07
  */
-@Deprecated
-public class JarState
+public class CompilationException
+	extends RuntimeException
 {
+	public CompilationException()
+	{
+		super();
+	}
+	
+	public CompilationException(String __m)
+	{
+		super(__m);
+	}
+	
+	public CompilationException(String __m, Throwable __c)
+	{
+		super(__m, __c);
+	}
+	
+	public CompilationException(Throwable __c)
+	{
+		super(__c);
+	}
 }

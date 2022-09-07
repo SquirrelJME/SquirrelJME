@@ -16,6 +16,7 @@ import net.multiphasicapps.classfile.ClassName;
  *
  * @since 2022/08/04
  */
+@Deprecated
 public interface JarHandler
 {
 	/**

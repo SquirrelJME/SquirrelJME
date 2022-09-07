@@ -9,7 +9,12 @@
 
 package cc.squirreljme.jvm.aot.summercoat.sqc;
 
+import cc.squirreljme.jvm.aot.CompilationException;
 import cc.squirreljme.jvm.aot.summercoat.SummerCoatHandler;
+import cc.squirreljme.jvm.aot.summercoat.pipe.SummerCoatClassLink;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.Closeable;
+import java.io.IOException;
 import java.io.OutputStream;
 
 /**
@@ -22,6 +27,13 @@ import java.io.OutputStream;
 public final class SqcSerializer
 	implements SummerCoatHandler
 {
+	/** The prefix for any resource that is a serialized SQC. */
+	public static final String RESOURCE_PREFIX =
+		"~.SQC!SeRiAlIzEd~/";
+	
+	/** The output where the serialized bytes go. */
+	protected final OutputStream out;
+	
 	/**
 	 * Initializes the serializer to write to the given output.
 	 * 
@@ -34,5 +46,34 @@ public final class SqcSerializer
 	{
 		if (__out == null)
 			throw new NullPointerException("NARG");
+		
+		this.out = __out;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/07
+	 */
+	@Override
+	public void close()
+	{
+		try
+		{
+			this.out.close();
+		}
+		catch (IOException e)
+		{
+			throw new CompilationException(e);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/07
+	 */
+	@Override
+	public SummerCoatClassLink compiledClassLink()
+	{
+		throw Debugging.todo();
 	}
 }

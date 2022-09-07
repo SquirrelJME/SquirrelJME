@@ -20,6 +20,7 @@ import net.multiphasicapps.zip.streamreader.ZipStreamReader;
  *
  * @since 2022/08/04
  */
+@Deprecated
 public class JarProcessor
 	implements Closeable
 {

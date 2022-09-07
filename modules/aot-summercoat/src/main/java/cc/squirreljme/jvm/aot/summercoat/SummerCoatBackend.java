@@ -10,10 +10,15 @@
 package cc.squirreljme.jvm.aot.summercoat;
 
 import cc.squirreljme.jvm.aot.Backend;
+import cc.squirreljme.jvm.aot.CompilationException;
+import cc.squirreljme.jvm.aot.CompilationStatistic;
 import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.CompiledClassLink;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.RomSettings;
+import cc.squirreljme.jvm.aot.java.ClassProcessor;
+import cc.squirreljme.jvm.aot.summercoat.pipe.JavaToSummerCoatHandler;
+import cc.squirreljme.jvm.aot.summercoat.pipe.SummerCoatClassLink;
 import cc.squirreljme.jvm.aot.summercoat.target.TargetBang;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
@@ -38,12 +43,33 @@ public class SummerCoatBackend
 	@Override
 	public CompiledClassLink compileClass(LinkGlob __glob, String __name,
 		InputStream __inClass)
-		throws IOException, NullPointerException
+		throws CompilationException, IOException, NullPointerException
 	{
 		if (__glob == null || __name == null || __inClass == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// Get a handler for SummerCoat
+		SummerCoatClassLink rv;
+		SummerCoatLinkGlob glob = (SummerCoatLinkGlob)__glob;
+		try (SummerCoatHandler handler = glob.handlerFactory.handler(glob,
+			__name))
+		{
+			// Setup handler for Java code to SummerCoat
+			JavaToSummerCoatHandler toSummerCoat =
+				new JavaToSummerCoatHandler(handler);
+			
+			// Process the class file
+			new ClassProcessor(toSummerCoat).process(__inClass);
+			
+			// Track compiled class
+			glob.statistics.increment(CompilationStatistic.CLASSES_COMPILED,
+				1);
+			
+			// Return the resultant link blob
+			rv = handler.compiledClassLink();
+		}
+		
+		return rv;
 	}
 	
 	/**

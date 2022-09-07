@@ -224,10 +224,6 @@ public class Main
 						// Link in the resource as-is however
 						glob.joinResource(name, entry);
 						
-						// Count it
-						statistics.increment(
-							CompilationStatistic.RESOURCES_ADDED, 1);
-						
 						continue;
 					}
 					
@@ -236,10 +232,6 @@ public class Main
 					__backend.compileClass(glob,
 						name.substring(0, name.length() - ".class".length()),
 						entry);
-						
-					// Count it
-					statistics.increment(
-						CompilationStatistic.CLASSES_COMPILED, 1);
 				}
 			
 			// Linking stage is finished

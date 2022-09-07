@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.aot.springcoat;
 
 import cc.squirreljme.jvm.aot.Backend;
+import cc.squirreljme.jvm.aot.CompilationException;
 import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.CompiledClassLink;
 import cc.squirreljme.jvm.aot.LinkGlob;
@@ -49,7 +50,7 @@ public class SpringCoatBackend
 	@Override
 	public CompiledClassLink compileClass(LinkGlob __glob, String __name,
 		InputStream __inClass)
-		throws IOException, NullPointerException
+		throws CompilationException, IOException, NullPointerException
 	{
 		throw new IllegalArgumentException("AI01");
 	}

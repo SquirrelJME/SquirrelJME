@@ -7,14 +7,16 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot.java;
+package cc.squirreljme.jvm.aot.summercoat.pipe;
+
+import cc.squirreljme.jvm.aot.CompiledClassLink;
 
 /**
- * Shared state within a single Jar.
+ * Represents the compiled class link for SummerCoat.
  *
- * @since 2022/08/04
+ * @since 2022/09/07
  */
-@Deprecated
-public class JarState
+public abstract class SummerCoatClassLink
+	implements CompiledClassLink
 {
 }

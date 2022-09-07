@@ -14,7 +14,6 @@ import cc.squirreljme.jvm.aot.summercoat.SummerCoatHandlerFactory;
 import cc.squirreljme.jvm.aot.summercoat.SummerCoatLinkGlob;
 import cc.squirreljme.jvm.aot.summercoat.target.SummerCoatArchitectureVariant;
 import cc.squirreljme.jvm.aot.summercoat.target.TargetArchitecture;
-import cc.squirreljme.jvm.aot.summercoat.target.TargetArchitectureVariant;
 import cc.squirreljme.jvm.aot.summercoat.target.TargetBang;
 import cc.squirreljme.jvm.aot.summercoat.target.TargetOperatingSystem;
 import cc.squirreljme.jvm.aot.summercoat.target.TargetOperatingSystemVariant;
@@ -33,7 +32,7 @@ public class CHandlerFactory
 	 * @since 2022/09/05
 	 */
 	@Override
-	public SummerCoatHandler handler(SummerCoatLinkGlob __glob)
+	public SummerCoatHandler handler(SummerCoatLinkGlob __glob, String __name)
 		throws NullPointerException
 	{
 		throw Debugging.todo();

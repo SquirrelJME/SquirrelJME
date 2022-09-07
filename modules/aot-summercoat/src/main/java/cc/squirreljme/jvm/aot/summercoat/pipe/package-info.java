@@ -7,14 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot.java;
-
 /**
- * Shared state within a single Jar.
+ * This package contains SummerCoat pipes.
  *
- * @since 2022/08/04
+ * @since 2022/09/07
  */
-@Deprecated
-public class JarState
-{
-}
+
+package cc.squirreljme.jvm.aot.summercoat.pipe;

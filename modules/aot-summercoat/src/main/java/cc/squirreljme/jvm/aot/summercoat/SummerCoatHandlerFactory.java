@@ -25,11 +25,12 @@ public interface SummerCoatHandlerFactory
 	 * Creates a handle to create for the known variant. 
 	 * 
 	 * @param __glob The glob to create for.
+	 * @param __name The name of the current class.
 	 * @return The created handler for the given glob.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/09/04
 	 */
-	SummerCoatHandler handler(SummerCoatLinkGlob __glob)
+	SummerCoatHandler handler(SummerCoatLinkGlob __glob, String __name)
 		throws NullPointerException;
 	
 	/**
