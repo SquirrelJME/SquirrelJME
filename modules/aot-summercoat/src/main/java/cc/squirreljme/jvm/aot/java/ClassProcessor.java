@@ -10,12 +10,12 @@
 package cc.squirreljme.jvm.aot.java;
 
 import cc.squirreljme.jvm.aot.CompilationException;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.Field;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.Method;
 
 /**
  * Processes a single Java class.
@@ -58,12 +58,35 @@ public class ClassProcessor
 			throw new NullPointerException("NARG");
 		
 		// This could fail
+		ClassHandler handler = this.handler;
 		try
 		{
 			// Decode the class file before we start processing it
 			ClassFile classFile = ClassFile.decode(__inClass);
 			
-			throw Debugging.todo();
+			// Basic class information
+			handler.startClass(classFile.flags(), classFile.thisName(),
+				classFile.superName(), classFile.interfaceNames().toArray());
+			
+			// Handle statics first before instance members
+			for (boolean isStatic : new boolean[]{false, true})
+			{
+				// Indicates that member processing is starting
+				handler.processMembers(isStatic);
+				
+				// Fields, static then instance
+				for (Field field : classFile.fields())
+					if (isStatic == field.flags().isStatic())
+						handler.processField(field);
+				
+				// Methods
+				for (Method method : classFile.methods())
+					if (isStatic == method.flags().isStatic())
+						handler.processMethod(method);
+			}
+			
+			// Finish the class
+			handler.finishClass();
 		}
 		
 		// Wrap this exception

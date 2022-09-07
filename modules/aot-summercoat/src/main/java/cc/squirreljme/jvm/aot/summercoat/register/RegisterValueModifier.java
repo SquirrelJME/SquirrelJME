@@ -26,6 +26,9 @@ public enum RegisterValueModifier
 	/** Value is within a given range of a value, it now has bounds. */
 	LIMIT,
 	
+	/** Value is from a future point jointing to a time previously. */
+	BACK_FROM_FUTURE,
+	
 	/* End. */
 	;
 }

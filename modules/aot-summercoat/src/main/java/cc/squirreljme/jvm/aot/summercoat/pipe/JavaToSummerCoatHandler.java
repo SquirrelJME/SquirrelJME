@@ -11,6 +11,11 @@ package cc.squirreljme.jvm.aot.summercoat.pipe;
 
 import cc.squirreljme.jvm.aot.java.ClassHandler;
 import cc.squirreljme.jvm.aot.summercoat.SummerCoatHandler;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import net.multiphasicapps.classfile.ClassFlags;
+import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.Field;
+import net.multiphasicapps.classfile.Method;
 
 /**
  * Takes any input byte code that is being processed and outputs it to
@@ -38,5 +43,59 @@ public class JavaToSummerCoatHandler
 			throw new NullPointerException("NARG");
 		
 		this.handler = __handler;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/07
+	 */
+	@Override
+	public void finishClass()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/07
+	 */
+	@Override
+	public void processField(Field __field)
+		throws NullPointerException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/07
+	 */
+	@Override
+	public void processMembers(boolean __isStatic)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/07
+	 */
+	@Override
+	public void processMethod(Method __method)
+		throws NullPointerException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/07
+	 */
+	@Override
+	public void startClass(ClassFlags __flags, ClassName __thisName,
+		ClassName __superName, ClassName... __interfaces)
+		throws NullPointerException
+	{
+		throw Debugging.todo();
 	}
 }
