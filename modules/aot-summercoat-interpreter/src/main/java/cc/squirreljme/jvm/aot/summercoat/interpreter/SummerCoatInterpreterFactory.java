@@ -9,14 +9,14 @@
 
 package cc.squirreljme.jvm.aot.summercoat.interpreter;
 
-import cc.squirreljme.jvm.aot.interpreter.AotInterpreter;
+import cc.squirreljme.jvm.aot.interpreter.AotInterpreterFactory;
 
 /**
- * Interpreter for SummerCoat.
+ * Factory for creating SummerCoat interpreters.
  *
- * @since 2022/09/08
+ * @since 2022/08/10
  */
-public class SummerCoatInterpreter
-	extends AotInterpreter
+public class SummerCoatInterpreterFactory
+	implements AotInterpreterFactory
 {
 }

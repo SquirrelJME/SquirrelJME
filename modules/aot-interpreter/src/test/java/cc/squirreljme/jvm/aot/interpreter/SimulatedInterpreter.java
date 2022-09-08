@@ -7,16 +7,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot.summercoat.interpreter;
-
-import cc.squirreljme.jvm.aot.interpreter.AotInterpreter;
+package cc.squirreljme.jvm.aot.interpreter;
 
 /**
- * Interpreter for SummerCoat.
+ * Interpreter that is used solely for testing purposes.
  *
  * @since 2022/09/08
  */
-public class SummerCoatInterpreter
+public class SimulatedInterpreter
 	extends AotInterpreter
 {
 }

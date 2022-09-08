@@ -7,16 +7,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot.summercoat.interpreter;
+package cc.squirreljme.jvm.aot.interpreter;
 
-import cc.squirreljme.jvm.aot.interpreter.AotInterpreter;
+import java.util.ServiceLoader;
 
 /**
- * Interpreter for SummerCoat.
+ * Interpreter factory class via {@link ServiceLoader}.
  *
- * @since 2022/09/08
+ * @since 2022/08/10
  */
-public class SummerCoatInterpreter
-	extends AotInterpreter
+public interface AotInterpreterFactory
 {
 }

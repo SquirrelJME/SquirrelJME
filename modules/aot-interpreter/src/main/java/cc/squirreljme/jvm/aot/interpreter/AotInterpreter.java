@@ -9,13 +9,11 @@
 
 package cc.squirreljme.jvm.aot.interpreter;
 
-import java.util.ServiceLoader;
-
 /**
- * Interpreter class via {@link ServiceLoader}.
+ * Base class for any interpreter implementation.
  *
- * @since 2022/08/10
+ * @since 2022/09/08
  */
-public interface AotInterpreter
+public abstract class AotInterpreter
 {
 }
