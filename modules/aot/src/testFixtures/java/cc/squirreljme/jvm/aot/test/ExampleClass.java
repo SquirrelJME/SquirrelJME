@@ -24,6 +24,9 @@ public enum ExampleClass
 	/** Contains a basic counting for loop. */
 	BASIC_FOR_LOOP("BasicForLoop.class"),
 	
+	/** Monitor enter then exit. */
+	MONITOR_ENTER_EXIT("MonitorEnterExit.class"),
+	
 	/* End. */
 	;
 	
