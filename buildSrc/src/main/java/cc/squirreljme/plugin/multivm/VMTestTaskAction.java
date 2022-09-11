@@ -133,9 +133,7 @@ public class VMTestTaskAction
 		
 		// How many tests should be run be at once?
 		int cpuCount = VMTestTaskAction.physicalProcessorCount();
-		int maxParallel = (cpuCount <= 1 ? 1 :
-			Math.min(Math.max(2, cpuCount),
-				VMTestTaskAction._MAX_PARALLEL_TESTS));
+		int maxParallel = VMTestTaskAction.maxParallelTests();
 		
 		// Determine the number of tests
 		Map<String, CandidateTestFiles> tests = VMHelpers.runningTests(
@@ -147,11 +145,6 @@ public class VMTestTaskAction
 		Map<String, String> sysProps = new LinkedHashMap<>();
 		if (Boolean.getBoolean("java.awt.headless"))
 			sysProps.put("java.awt.headless", "true");
-		
-		// If debugging, do not run in parallel
-		if (null != System.getProperty("squirreljme.xjdwp",
-			System.getProperty("squirreljme.jdwp")))
-			maxParallel = 1;
 		
 		// Any specific changes to how tests run
 		SquirrelJMEPluginConfiguration config =
@@ -416,6 +409,25 @@ public class VMTestTaskAction
 			}
 		
 		return result;
+	}
+	
+	/**
+	 * Sets the maximum number of parallel tests to run.
+	 * 
+	 * @return The max parallel tests to run at once.
+	 * @since 2022/09/11
+	 */
+	public static int maxParallelTests()
+	{
+		// If debugging, do not run in parallel
+		if (null != System.getProperty("squirreljme.xjdwp",
+			System.getProperty("squirreljme.jdwp")))
+			return 1;
+		
+		int cpuCount = VMTestTaskAction.physicalProcessorCount();
+		return (cpuCount <= 1 ? 1 :
+			Math.min(Math.max(2, cpuCount),
+				VMTestTaskAction._MAX_PARALLEL_TESTS));
 	}
 	
 	/**

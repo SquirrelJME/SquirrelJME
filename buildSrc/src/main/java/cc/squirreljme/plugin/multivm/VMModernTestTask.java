@@ -101,5 +101,8 @@ public class VMModernTestTask
 		
 		// Only run if there are actual tests to run
 		this.onlyIf(new CheckForTests(__sourceSet));
+		
+		// Maximum forks, limited accordingly
+		this.setMaxParallelForks(VMTestTaskAction.maxParallelTests());
 	}
 }
