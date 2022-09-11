@@ -75,19 +75,19 @@ public class VMModernTestTask
 		
 		// Add the entire JAR as input, so that if it changes for any reason
 		// then all tests should be considered invalid and rerun
-		// All of the input source files to be tested
+		// All the input source files to be tested
 		this.getInputs().files(
 			this.getProject().provider(
 				new SingleTaskOutputFile(__libTask)),
 			this.getProject().provider(
 				new VMTestInputs(this, __sourceSet)));
 		
-		// All of the test results that are created
+		// All the test results that are created
 		this.getOutputs().files(this.getProject().provider(
 			new VMTestOutputs(this, __sourceSet, __vmType)));
 		
-		// Add additional testing to see if our test run will not be up to
-		// date when we run these. Also this is never up to date if
+		// Add additional testing to see if our test run will not be up-to-
+		// date when we run these. Also, this is never up-to-date if
 		// test.single/single.test is used because we do not want to
 		// interfere with the caching or not running tests in such
 		// situations.

@@ -332,7 +332,7 @@ public class VMTestTaskAction
 	}
 	
 	/**
-	 * Goes through all of the XML files obtains the test results.
+	 * Goes through all the XML files obtains the test results.
 	 * 
 	 * @param __xmlResults The result paths for tests. 
 	 * @return The mapping of all tests.
