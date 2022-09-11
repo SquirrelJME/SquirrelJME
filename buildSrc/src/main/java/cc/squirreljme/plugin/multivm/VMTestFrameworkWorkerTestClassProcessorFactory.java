@@ -10,18 +10,43 @@
 package cc.squirreljme.plugin.multivm;
 
 import java.io.Serializable;
+import java.util.Map;
 import org.gradle.api.internal.tasks.testing.TestClassProcessor;
 import org.gradle.api.internal.tasks.testing.WorkerTestClassProcessorFactory;
+import org.gradle.internal.id.IdGenerator;
 import org.gradle.internal.service.ServiceRegistry;
 
 /**
  * Factory for creating test class processors?
+ * 
+ * This needs to be completely {@link Serializable} so Gradle can pass it to
+ * the worker.
  *
  * @since 2022/09/11
  */
 public class VMTestFrameworkWorkerTestClassProcessorFactory
 	implements WorkerTestClassProcessorFactory, Serializable
 {
+	/** The tests that are available. */
+	protected final Map<String, CandidateTestFiles> availableTests;
+	
+	/**
+	 * Initializes the processor factory.
+	 * 
+	 * @param __availableTests The tests that are available.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/09/11
+	 */
+	public VMTestFrameworkWorkerTestClassProcessorFactory(
+		Map<String, CandidateTestFiles> __availableTests)
+		throws NullPointerException
+	{
+		if (__availableTests == null)
+			throw new NullPointerException("NARG");
+		
+		this.availableTests = __availableTests;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/09/11
@@ -29,6 +54,7 @@ public class VMTestFrameworkWorkerTestClassProcessorFactory
 	@Override
 	public TestClassProcessor create(ServiceRegistry __serviceRegistry)
 	{
-		throw new Error("TODO");
+		return new VMTestFrameworkTestClassProcessor(this.availableTests,
+			__serviceRegistry.get(IdGenerator.class));
 	}
 }

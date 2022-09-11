@@ -74,7 +74,8 @@ public class VMTestTask
 		this.setDescription("Runs the various automated tests.");
 		
 		// Use our custom test framework
-		this.getTestFrameworkProperty().set(new VMTestFramework());
+		this.getTestFrameworkProperty().set(
+			new VMTestFramework(this, __sourceSet, __vmType));
 		
 		// Depends on the library to exist first along with the emulator
 		// itself
@@ -112,8 +113,8 @@ public class VMTestTask
 		this.onlyIf(new CheckForTests(__sourceSet));
 		
 		// Performs the action of the task
-		this.doLast(new VMTestTaskAction(__executor,
+		/*this.doLast(new VMTestTaskAction(__executor,
 			SimpleJavaExecSpecFiller::new, __sourceSet,
-			__vmType));
+			__vmType));*/
 	}
 }

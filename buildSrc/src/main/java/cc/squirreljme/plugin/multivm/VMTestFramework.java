@@ -12,6 +12,8 @@ package cc.squirreljme.plugin.multivm;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import javax.inject.Inject;
+import lombok.Getter;
 import org.gradle.api.Action;
 import org.gradle.api.internal.tasks.testing.TestFramework;
 import org.gradle.api.internal.tasks.testing.WorkerTestClassProcessorFactory;
@@ -37,6 +39,38 @@ public class VMTestFramework
 	public final boolean immutable =
 		false;
 	
+	/** The source set used. */
+	@Internal
+	@Getter
+	protected final String sourceSet;
+	
+	/** The virtual machine type. */
+	@Internal
+	@Getter
+	protected final VMSpecifier vmType;
+	
+	/** Our test task. */
+	@Internal
+	@Getter
+	protected final VMTestTask task;
+	
+	/**
+	 * Initializes the test framework.
+	 * 
+	 * @param __vmTestTask The test task we are using.
+	 * @param __sourceSet The source set used.
+	 * @param __vmType The virtual machine type.
+	 * @since 2022/09/11
+	 */
+	@Inject
+	public VMTestFramework(VMTestTask __vmTestTask, String __sourceSet,
+		VMSpecifier __vmType)
+	{
+		this.task = __vmTestTask;
+		this.sourceSet = __sourceSet;
+		this.vmType = __vmType;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/09/11
@@ -55,7 +89,8 @@ public class VMTestFramework
 	@Override
 	public TestFrameworkDetector getDetector()
 	{
-		return new VMTestFrameworkDetector();
+		return new VMTestFrameworkDetector(
+			VMHelpers.availableTests(this.task.getProject(), this.sourceSet));
 	}
 	
 	/**
@@ -86,7 +121,8 @@ public class VMTestFramework
 	@Override
 	public WorkerTestClassProcessorFactory getProcessorFactory()
 	{
-		return new VMTestFrameworkWorkerTestClassProcessorFactory();
+		return new VMTestFrameworkWorkerTestClassProcessorFactory(
+			VMHelpers.availableTests(this.task.getProject(), this.sourceSet));
 	}
 	
 	/**

@@ -9,13 +9,14 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.util.TestDetection;
 import java.io.File;
+import java.util.Map;
 import java.util.Set;
 import lombok.Setter;
 import org.gradle.api.internal.file.RelativeFile;
 import org.gradle.api.internal.tasks.testing.DefaultTestClassRunInfo;
 import org.gradle.api.internal.tasks.testing.TestClassProcessor;
-import org.gradle.api.internal.tasks.testing.TestClassRunInfo;
 import org.gradle.api.internal.tasks.testing.detection.TestFrameworkDetector;
 
 /**
@@ -34,16 +35,23 @@ public class VMTestFrameworkDetector
 	@Setter
 	protected Set<File> testClasspath;
 	
+	/** The tests which are available. */
+	protected final Map<String, CandidateTestFiles> tests;
+	
 	/**
-	 * {@inheritDoc}
+	 * Initializes the framework detector.
+	 * 
+	 * @param __tests The tests that are available.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2022/09/11
 	 */
-	@Override
-	public void startDetection(TestClassProcessor __processor)
+	public VMTestFrameworkDetector(Map<String, CandidateTestFiles> __tests)
+		throws NullPointerException
 	{
-		// Do we have to do anything here?
-		__processor.processTestClass(
-			new DefaultTestClassRunInfo("Okay"));
+		if (__tests == null)
+			throw new NullPointerException("NARG");
+		
+		this.tests = __tests;
 	}
 	
 	/**
@@ -51,8 +59,38 @@ public class VMTestFrameworkDetector
 	 * @since 2022/09/11
 	 */
 	@Override
+	public void startDetection(TestClassProcessor __processor)
+	{
+		// Go through the available tests and register each one individually
+		for (Map.Entry<String, CandidateTestFiles> test :
+			this.tests.entrySet())
+			__processor.processTestClass(
+				new DefaultTestClassRunInfo(test.getKey()));
+	}
+	
+	/**
+	 * This is asking if the given test is something that would be run by
+	 * this framework, in which case TAC is simple and is just prefixes and
+	 * such.
+	 * 
+	 * The actual output of this we probably do not really care for at all.
+	 * 
+	 * @param __testClassFile The test class.
+	 * @return If this is a test.
+	 * @since 2022/09/11
+	 */
+	@Override
 	public boolean processTestClass(RelativeFile __testClassFile)
 	{
-		throw new Error("TODO " + __testClassFile);
+		// This will give for example io/MarkableInputStreamTest.class
+		String path = __testClassFile.getRelativePath().getPathString();
+		
+		// Remove the suffix if there is any
+		if (path.endsWith(".class"))
+			path = path.substring(0, path.length() - ".class".length());
+		
+		// Normalize name for SquirrelJME, then check if this is something
+		// we care about
+		return TestDetection.isTest(path.replace('/', '.'));
 	}
 }

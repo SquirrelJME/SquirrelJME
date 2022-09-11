@@ -9,7 +9,13 @@
 
 package cc.squirreljme.plugin.util;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Source file and its input/output.
@@ -17,7 +23,12 @@ import java.nio.file.Path;
  * @since 2020/02/28
  */
 public final class FileLocation
+	implements Serializable
 {
+	/** Serialization ID. */
+	private static final long serialVersionUID =
+		12893674381423984L;
+	
 	/** The absolute path. */
 	public final Path absolute;
 	
@@ -79,5 +90,42 @@ public final class FileLocation
 	{
 		return String.format("{absolute=%s, relative=%s}",
 			this.absolute, this.relative);
+	}
+	
+	/**
+	 * Reads the serialization object.
+	 * 
+	 * @param __in The input object.
+	 * @throws NoSuchFieldException If the field does not exist.
+	 * @throws IOException On read errors.
+	 * @throws ClassNotFoundException If our class is not valid?
+	 * @throws IllegalAccessException If we cannot write a final field.
+	 * @since 2022/09/11
+	 */
+	private void readObject(ObjectInputStream __in)
+		throws NoSuchFieldException, IOException, ClassNotFoundException,
+			IllegalAccessException
+	{
+		Field absolute = this.getClass().getDeclaredField("absolute");
+		absolute.setAccessible(true);
+		absolute.set(this, Paths.get(__in.readObject().toString()));
+		
+		Field relative = this.getClass().getDeclaredField("relative");
+		relative.setAccessible(true);
+		relative.set(this, Paths.get(__in.readObject().toString()));
+	}
+	
+	/**
+	 * Serializes the paths.
+	 * 
+	 * @param __out The stream to write to.
+	 * @throws IOException On write errors.
+	 * @since 2022/09/11
+	 */
+	private void writeObject(ObjectOutputStream __out)
+		throws IOException
+	{
+		__out.writeObject(this.absolute.toString());
+		__out.writeObject(this.relative.toString());
 	}
 }

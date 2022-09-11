@@ -68,7 +68,5 @@ public class VMTestFrameworkWorkerConfigurationAction
 		__builder.setImplementationClasspath(
 			new ArrayList<>(classPathUrls));
 		__builder.applicationClasspath(classPath);
-		
-		System.err.printf(">> WORKER: %s %s%n", classPath, classPathUrls);
 	}
 }
