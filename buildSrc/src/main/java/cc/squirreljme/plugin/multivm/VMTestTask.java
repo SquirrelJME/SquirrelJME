@@ -14,7 +14,9 @@ import cc.squirreljme.plugin.util.SingleTaskOutputFile;
 import javax.inject.Inject;
 import lombok.Getter;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.internal.tasks.testing.TestFramework;
 import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.testing.Test;
 import org.gradle.workers.WorkerExecutor;
 
 /**
@@ -23,7 +25,7 @@ import org.gradle.workers.WorkerExecutor;
  * @since 2020/08/07
  */
 public class VMTestTask
-	extends DefaultTask
+	extends Test
 	implements VMExecutableTask
 {
 	/** Property for running single test. */
@@ -70,6 +72,9 @@ public class VMTestTask
 		// Set details of this task
 		this.setGroup("squirreljme");
 		this.setDescription("Runs the various automated tests.");
+		
+		// Use our custom test framework
+		this.getTestFrameworkProperty().set(new VMTestFramework());
 		
 		// Depends on the library to exist first along with the emulator
 		// itself

@@ -32,6 +32,7 @@ import java.util.function.Supplier;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
+import org.gradle.api.tasks.testing.Test;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
 
@@ -101,10 +102,12 @@ public class VMTestTaskAction
 	 * {@inheritDoc}
 	 * @since 2020/08/07
 	 */
-	@SuppressWarnings("UnstableApiUsage")
 	@Override
 	public void execute(Task __task)
 	{
+		// The task used for testing
+		Test testTask = (Test)__task;
+		
 		// Debug
 		Logger logger = __task.getLogger();
 		logger.debug("Tests: {}", VMHelpers.runningTests(
