@@ -30,21 +30,26 @@ public class VMTestFrameworkWorkerTestClassProcessorFactory
 	/** The tests that are available. */
 	protected final Map<String, CandidateTestFiles> availableTests;
 	
+	/** The name of the project. */
+	private final String projectName;
+	
 	/**
 	 * Initializes the processor factory.
 	 * 
 	 * @param __availableTests The tests that are available.
+	 * @param __projectName The name of the project.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/09/11
 	 */
 	public VMTestFrameworkWorkerTestClassProcessorFactory(
-		Map<String, CandidateTestFiles> __availableTests)
+		Map<String, CandidateTestFiles> __availableTests, String __projectName)
 		throws NullPointerException
 	{
-		if (__availableTests == null)
+		if (__availableTests == null || __projectName == null)
 			throw new NullPointerException("NARG");
 		
 		this.availableTests = __availableTests;
+		this.projectName = __projectName;
 	}
 	
 	/**
@@ -55,6 +60,6 @@ public class VMTestFrameworkWorkerTestClassProcessorFactory
 	public TestClassProcessor create(ServiceRegistry __serviceRegistry)
 	{
 		return new VMTestFrameworkTestClassProcessor(this.availableTests,
-			__serviceRegistry.get(IdGenerator.class));
+			__serviceRegistry.get(IdGenerator.class), this.projectName);
 	}
 }

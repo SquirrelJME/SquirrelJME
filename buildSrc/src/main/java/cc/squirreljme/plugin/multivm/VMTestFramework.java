@@ -122,7 +122,8 @@ public class VMTestFramework
 	public WorkerTestClassProcessorFactory getProcessorFactory()
 	{
 		return new VMTestFrameworkWorkerTestClassProcessorFactory(
-			VMHelpers.availableTests(this.task.getProject(), this.sourceSet));
+			VMHelpers.availableTests(this.task.getProject(), this.sourceSet),
+			this.task.getProject().getName());
 	}
 	
 	/**
