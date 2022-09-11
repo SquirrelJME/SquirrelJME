@@ -10,20 +10,23 @@
 package cc.squirreljme.jvm.aot.interpreter;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import net.multiphasicapps.tac.TestRunnable;
 
 /**
- * Base class for any interpreter implementation.
+ * Tests that an interpreted abstract class works.
  *
- * @since 2022/09/08
+ * @since 2022/09/11
  */
-public abstract class AotInterpreter
+public class TestRunnableAbstractClass
+	extends TestRunnable
 {
 	/**
-	 * Installs the interpreter.
-	 * 
+	 * {@inheritDoc}
 	 * @since 2022/09/11
 	 */
-	public final void install()
+	@Override
+	public void test()
+		throws Throwable
 	{
 		throw Debugging.todo();
 	}

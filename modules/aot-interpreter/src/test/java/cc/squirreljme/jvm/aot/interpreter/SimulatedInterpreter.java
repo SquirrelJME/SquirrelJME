@@ -9,6 +9,9 @@
 
 package cc.squirreljme.jvm.aot.interpreter;
 
+import cc.squirreljme.jvm.mle.ReflectionShelf;
+import cc.squirreljme.jvm.mle.TypeShelf;
+
 /**
  * Interpreter that is used solely for testing purposes.
  *
@@ -17,4 +20,28 @@ package cc.squirreljme.jvm.aot.interpreter;
 public class SimulatedInterpreter
 	extends AotInterpreter
 {
+	/**
+	 * Alternative main entry point to set up the interpreter.
+	 * 
+	 * @param __args The arguments to the main entry point.
+	 * @throws Throwable On anything that was thrown.
+	 * @since 2022/09/11
+	 */
+	public static void main(String... __args)
+		throws Throwable
+	{
+		// Setup and install our own interpreter
+		new SimulatedInterpreter().install();
+		
+		// Copy over
+		String mainClass = __args[0];
+		String[] mainArgs = new String[__args.length - 1];
+		System.arraycopy(__args, 1,
+			mainArgs, 0, __args.length - 1);
+		
+		// Forward to actual main
+		ReflectionShelf.invokeMain(
+			TypeShelf.findType(mainClass.replace('.', '/')),
+			mainArgs);
+	}
 }
