@@ -49,6 +49,12 @@ public class VMTestFrameworkTestClassProcessor
 	/** Test result output. */
 	private volatile TestResultProcessor _resultProcessor;
 	
+	/** The thread that is running tests. */
+	private volatile Thread _runningThread;
+	
+	/** Stop running tests? */
+	private volatile boolean _stopNow;
+	
 	/**
 	 * Initializes the processor.
 	 *
@@ -100,6 +106,12 @@ public class VMTestFrameworkTestClassProcessor
 	@Override
 	public void stop()
 	{
+		// Remember thread for later stop
+		synchronized (this)
+		{
+			this._runningThread = Thread.currentThread();
+		}
+		
 		// Stop is a bit of a misnomer, it means stop processing and then run
 		// all the tests...
 		Map<String, CandidateTestFiles> availableTests = this.availableTests;
@@ -108,7 +120,8 @@ public class VMTestFrameworkTestClassProcessor
 		// Suite for the entire project group
 		IdGenerator<?> idGenerator = this.idGenerator;
 		DefaultTestSuiteDescriptor suiteDesc =
-			new DefaultTestSuiteDescriptor(idGenerator.generateId(),
+			new DefaultTestSuiteDescriptor(
+				idGenerator.generateId(),
 				this.projectName);
 		
 		// Suite has started
@@ -119,6 +132,19 @@ public class VMTestFrameworkTestClassProcessor
 		TestResult.ResultType finalResult = TestResult.ResultType.SKIPPED;
 		for (String testName : this.runTests)
 		{
+			// Check to see if we are stopping testing
+			synchronized (this)
+			{
+				System.err.printf(">> Stopping now!%n");
+				
+				// If we are forcing a stop, mark as failure
+				if (this._stopNow)
+				{
+					finalResult = TestResult.ResultType.FAILURE;
+					break;
+				}
+			}
+			
 			System.err.printf(">> TEST: %s%n", testName);
 			System.err.flush();
 			
@@ -161,6 +187,11 @@ public class VMTestFrameworkTestClassProcessor
 					testResult));
 		}
 		
+		// If failed, emit a throwable
+		if (finalResult == TestResult.ResultType.FAILURE)
+			resultProcessor.failure(suiteDesc.getId(),
+				new Throwable("Tests failed."));
+		
 		// Use the final result from all the test runs
 		resultProcessor.completed(suiteDesc.getId(),
 			new TestCompleteEvent(System.currentTimeMillis(), finalResult));
@@ -173,6 +204,19 @@ public class VMTestFrameworkTestClassProcessor
 	@Override
 	public void stopNow()
 	{
-		throw new Error("TODO");
+		// Signal that tests should stop
+		synchronized (this)
+		{
+			// Interrupt thread quickly
+			Thread runningThread = this._runningThread;
+			if (runningThread != null)
+				runningThread.interrupt();
+			
+			// Do stop now
+			this._stopNow = true;
+			
+			// Make sure to notify on all monitors
+			this.notifyAll();
+		}
 	}
 }
