@@ -52,7 +52,7 @@ public class VMTestFramework
 	/** Our test task. */
 	@Internal
 	@Getter
-	protected final VMTestTask task;
+	protected final VMModernTestTask task;
 	
 	/**
 	 * Initializes the test framework.
@@ -63,7 +63,7 @@ public class VMTestFramework
 	 * @since 2022/09/11
 	 */
 	@Inject
-	public VMTestFramework(VMTestTask __vmTestTask, String __sourceSet,
+	public VMTestFramework(VMModernTestTask __vmTestTask, String __sourceSet,
 		VMSpecifier __vmType)
 	{
 		this.task = __vmTestTask;

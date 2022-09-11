@@ -44,7 +44,6 @@ import java.util.function.Supplier;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
@@ -1047,8 +1046,8 @@ public final class VMHelpers
 		
 		// If specifying a single test to run only specify that
 		String singleTest = System.getProperty(
-			VMTestTask.SINGLE_TEST_PROPERTY,
-			System.getProperty(VMTestTask.SINGLE_TEST_PROPERTY_B));
+			VMLegacyTestTask.SINGLE_TEST_PROPERTY,
+			System.getProperty(VMLegacyTestTask.SINGLE_TEST_PROPERTY_B));
 		if (singleTest != null)
 		{
 			// We need to check every test, since we may have multi-parameters
