@@ -9,6 +9,8 @@
 
 package cc.squirreljme.plugin.util;
 
+import cc.squirreljme.plugin.multivm.VMTestFrameworkTestClassProcessor;
+import java.util.concurrent.atomic.AtomicReference;
 import org.gradle.api.internal.tasks.testing.DefaultTestOutputEvent;
 import org.gradle.api.internal.tasks.testing.TestResultProcessor;
 import org.gradle.api.tasks.testing.TestOutputEvent;
@@ -23,7 +25,7 @@ public class TestResultOutputStream
 {
 	/** Line ending character. */
 	public static final String LINE_ENDING =
-		System.getProperty("line.ending");
+		System.getProperty("line.separator");
 	
 	/** The destination output. */
 	protected final TestOutputEvent.Destination destination;
@@ -32,7 +34,7 @@ public class TestResultOutputStream
 	protected final Object id;
 	
 	/** The processor for test results. */
-	protected final TestResultProcessor processor;
+	protected final AtomicReference<TestResultProcessor> processor;
 	
 	/**
 	 * Initializes the output stream for test result output.
@@ -43,7 +45,8 @@ public class TestResultOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/09/11
 	 */
-	public TestResultOutputStream(TestResultProcessor __processor, Object __id,
+	public TestResultOutputStream(
+		AtomicReference<TestResultProcessor> __processor, Object __id,
 		TestOutputEvent.Destination __destination)
 		throws NullPointerException
 	{
@@ -62,15 +65,12 @@ public class TestResultOutputStream
 	@Override
 	protected void push(String __string)
 	{
-		TestResultProcessor processor = this.processor;
 		Object id = this.id;
 		TestOutputEvent.Destination destination = this.destination;
 		
 		// Output string and the line ending
-		processor.output(id,
-			new DefaultTestOutputEvent(destination, __string));
-		processor.output(id,
-			new DefaultTestOutputEvent(destination,
-				TestResultOutputStream.LINE_ENDING));
+		VMTestFrameworkTestClassProcessor.resultAction(this.processor,
+			(__rp) -> __rp.output(id, new DefaultTestOutputEvent(destination,
+					__string + TestResultOutputStream.LINE_ENDING)));
 	}
 }
