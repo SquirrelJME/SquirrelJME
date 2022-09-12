@@ -11,10 +11,13 @@ package cc.squirreljme.plugin.multivm;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import lombok.Getter;
 import org.gradle.api.Action;
+import org.gradle.api.Task;
 import org.gradle.api.internal.tasks.testing.TestFramework;
 import org.gradle.api.internal.tasks.testing.WorkerTestClassProcessorFactory;
 import org.gradle.api.internal.tasks.testing.detection.TestFrameworkDetector;
@@ -79,7 +82,6 @@ public class VMTestFramework
 	public void close()
 		throws IOException
 	{
-		throw new Error("TODO");
 	}
 	
 	/**
@@ -90,7 +92,8 @@ public class VMTestFramework
 	public TestFrameworkDetector getDetector()
 	{
 		return new VMTestFrameworkDetector(
-			VMHelpers.availableTests(this.task.getProject(), this.sourceSet));
+			VMHelpers.runningTests(this.task.getProject(),
+				this.sourceSet).tests);
 	}
 	
 	/**
@@ -121,9 +124,25 @@ public class VMTestFramework
 	@Override
 	public WorkerTestClassProcessorFactory getProcessorFactory()
 	{
+		// Get the tests we are going to run, since we need to calculate how
+		// to run the test, and everything must be serialized through it
+		Map<String, CandidateTestFiles> tests = VMHelpers.runningTests(
+			this.task.getProject(), this.sourceSet).tests;
+		
+		// Determine setup for general suite runs
+		SuiteRunParameters runSuite = VMTestTaskAction.runSuite(this.task,
+			this.sourceSet, this.vmType);
+		
+		// Calculate run parameters for each test
+		Map<String, TestRunParameters> runParams = new LinkedHashMap<>();
+		for (Map.Entry<String, CandidateTestFiles> test : tests.entrySet())
+			runParams.put(test.getKey(), VMTestTaskAction.runTest(this.task,
+				this.sourceSet, this.vmType, runSuite, test.getKey(),
+				test.getValue()));
+		
+		// Run the processor, this must be serializable
 		return new VMTestFrameworkWorkerTestClassProcessorFactory(
-			VMHelpers.availableTests(this.task.getProject(), this.sourceSet),
-			this.task.getProject().getName());
+			tests, runParams, this.task.getProject().getName());
 	}
 	
 	/**

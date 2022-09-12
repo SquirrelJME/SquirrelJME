@@ -9,7 +9,6 @@
 
 package cc.squirreljme.plugin.multivm;
 
-import cc.squirreljme.plugin.util.SimpleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.SingleTaskOutputFile;
 import javax.inject.Inject;
 import lombok.Getter;
@@ -86,12 +85,12 @@ public class VMLegacyTestTask
 			this.getProject().provider(
 				new VMTestInputs(this, __sourceSet)));
 		
-		// All of the test results that are created
+		// All the test results that are created
 		this.getOutputs().files(this.getProject().provider(
 			new VMTestOutputs(this, __sourceSet, __vmType)));
 		
-		// Add additional testing to see if our test run will not be up to
-		// date when we run these. Also this is never up to date if
+		// Add additional testing to see if our test run will not be up-to-
+		// date when we run these. Also, this is never up-to-date if
 		// test.single/single.test is used because we do not want to
 		// interfere with the caching or not running tests in such
 		// situations.
@@ -107,8 +106,7 @@ public class VMLegacyTestTask
 		this.onlyIf(new CheckForTests(__sourceSet));
 		
 		// Performs the action of the task
-		this.doLast(new VMTestTaskAction(__executor,
-			SimpleJavaExecSpecFiller::new, __sourceSet,
+		this.doLast(new VMTestTaskAction(__executor, __sourceSet,
 			__vmType));
 	}
 }

@@ -43,6 +43,7 @@ import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -153,10 +154,10 @@ public final class VMHelpers
 				// does not include the mime extension as that is removed at
 				// JAR build time
 				Path normalized;
-				if ("__mime".equals(VMHelpers.getExtension(file.relative)))
-					normalized = VMHelpers.stripExtension(file.relative);
+				if ("__mime".equals(VMHelpers.getExtension(file.getRelative())))
+					normalized = VMHelpers.stripExtension(file.getRelative());
 				else
-					normalized = file.relative;
+					normalized = file.getRelative();
 				
 				// Determine the name of the class, used to filter if this is
 				// a valid test or not at a later stage
@@ -1133,7 +1134,9 @@ public final class VMHelpers
 		if (__testName == null)
 			throw new NullPointerException("NARG");
 		
-		return "TEST-" + __testName + ".xml";
+		// When Gradle normally makes a test, it encodes @ to #40.
+		return "TEST-" + __testName.replaceAll(Pattern.quote("@"),
+			Matcher.quoteReplacement("#40")) + ".xml";
 	}
 	
 	/**
@@ -1261,10 +1264,10 @@ public final class VMHelpers
 		// Load information gleaned from the source code
 		__SourceInfo__ info;
 		try (InputStream in = Files.newInputStream(
-			candidate.sourceCode.absolute, StandardOpenOption.READ))
+			candidate.sourceCode.getAbsolute(), StandardOpenOption.READ))
 		{
 			String extension = VMHelpers.getExtension(
-				candidate.sourceCode.absolute);
+				candidate.sourceCode.getAbsolute());
 			if ("class".equals(extension))
 				info = __SourceInfo__.loadClass(in);
 			else if ("j".equals(extension))
@@ -1284,7 +1287,7 @@ public final class VMHelpers
 			over = new Manifest();
 		else
 			try (InputStream in = Files.newInputStream(
-				candidate.expectedResult.absolute, StandardOpenOption.READ))
+				candidate.expectedResult.getAbsolute(), StandardOpenOption.READ))
 			{
 				over = new Manifest(in);
 			}

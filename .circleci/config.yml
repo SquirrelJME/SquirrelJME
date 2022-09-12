@@ -170,6 +170,7 @@ jobs:
           # to make way too many workers which causes extreme resource.
           # contention --max-workers=2
           command: gradlew <<pipeline.parameters.standard-build-options >> <<pipeline.parameters.standard-gradle-options >>
+          no_output_timeout: 7m
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted"
@@ -251,7 +252,8 @@ jobs:
           command: brew install openjdk@11
       - run:
           name: Gradle Build and Test
-          command: ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 7m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 7m
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted"
@@ -263,7 +265,8 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 7m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 7m
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted"
@@ -335,7 +338,8 @@ jobs:
       - linux-install-required
       - run:
           name: Gradle Build and Test
-          command: ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 7m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 7m
       - save-test-results:
           where: "vm-test-hosted"
           os: "linux-amd64"
@@ -365,7 +369,8 @@ jobs:
       - linux-install-required
       - run:
           name: Gradle Build and Test
-          command: ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 7m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 7m
       - save-test-results:
           where: "vm-test-hosted"
           os: "linux-arm64"

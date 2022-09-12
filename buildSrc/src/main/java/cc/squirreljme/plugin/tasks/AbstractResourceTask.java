@@ -219,7 +219,7 @@ public abstract class AbstractResourceTask
 	{
 		Collection<File> result = new LinkedList<>();
 		for (FileLocation file : this.taskInputs())
-			result.add(file.absolute.toFile());
+			result.add(file.getAbsolute().toFile());
 		
 		return this.getProject().files(result);
 	}
@@ -240,7 +240,7 @@ public abstract class AbstractResourceTask
 		Collection<__Output__> result = new LinkedList<>();
 		for (FileLocation input : this.taskInputs())
 			result.add(new __Output__(input, outDir.resolve(
-				this.removeExtension(input.relative) + outputExtension)));
+				this.removeExtension(input.getRelative()) + outputExtension)));
 		
 		return result;
 	}

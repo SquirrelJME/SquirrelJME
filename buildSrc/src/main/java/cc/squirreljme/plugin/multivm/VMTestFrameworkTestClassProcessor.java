@@ -9,12 +9,14 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.util.TestResultOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import org.gradle.api.internal.tasks.testing.DefaultTestDescriptor;
 import org.gradle.api.internal.tasks.testing.DefaultTestMethodDescriptor;
-import org.gradle.api.internal.tasks.testing.DefaultTestOutputEvent;
 import org.gradle.api.internal.tasks.testing.DefaultTestSuiteDescriptor;
 import org.gradle.api.internal.tasks.testing.TestClassProcessor;
 import org.gradle.api.internal.tasks.testing.TestClassRunInfo;
@@ -46,6 +48,9 @@ public class VMTestFrameworkTestClassProcessor
 	/** The name of this project. */
 	protected final String projectName;
 	
+	/** The run parameters. */
+	protected final Map<String, TestRunParameters> runParameters;
+	
 	/** Test result output. */
 	private volatile TestResultProcessor _resultProcessor;
 	
@@ -60,21 +65,24 @@ public class VMTestFrameworkTestClassProcessor
 	 *
 	 * @param __availableTests The tests that are available.
 	 * @param __projectName The name of the project.
+	 * @param __runParameters The run parameters.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/09/11
 	 */
 	public VMTestFrameworkTestClassProcessor(
 		Map<String, CandidateTestFiles> __availableTests,
-		IdGenerator<?> __idGenerator, String __projectName)
+		IdGenerator<?> __idGenerator, String __projectName,
+		Map<String, TestRunParameters> __runParameters)
 		throws NullPointerException
 	{
 		if (__availableTests == null || __idGenerator == null ||
-			__projectName == null)
+			__projectName == null || __runParameters == null)
 			throw new NullPointerException("NARG");
 		
 		this.availableTests = __availableTests;
 		this.idGenerator = __idGenerator;
 		this.projectName = __projectName;
+		this.runParameters = __runParameters;
 	}
 	
 	/**
@@ -103,18 +111,21 @@ public class VMTestFrameworkTestClassProcessor
 	 * {@inheritDoc}
 	 * @since 2022/09/11
 	 */
+	@SuppressWarnings("UseOfProcessBuilder")
 	@Override
 	public void stop()
 	{
+		// Stop is a bit of a misnomer, it means stop processing and then run
+		// all the tests...
+		
 		// Remember thread for later stop
 		synchronized (this)
 		{
 			this._runningThread = Thread.currentThread();
 		}
 		
-		// Stop is a bit of a misnomer, it means stop processing and then run
-		// all the tests...
 		Map<String, CandidateTestFiles> availableTests = this.availableTests;
+		Map<String, TestRunParameters> runParameters = this.runParameters;
 		TestResultProcessor resultProcessor = this._resultProcessor;
 		
 		// Suite for the entire project group
@@ -132,59 +143,171 @@ public class VMTestFrameworkTestClassProcessor
 		TestResult.ResultType finalResult = TestResult.ResultType.SKIPPED;
 		for (String testName : this.runTests)
 		{
-			// Check to see if we are stopping testing
-			synchronized (this)
+			// Threads for processing stream data
+			Process process = null;
+			Thread stdOutThread = null;
+			Thread stdErrThread = null;
+			
+			// Make sure process and thread are killed at the end
+			try
 			{
-				System.err.printf(">> Stopping now!%n");
-				
-				// If we are forcing a stop, mark as failure
-				if (this._stopNow)
+				// Check to see if we are stopping testing
+				synchronized (this)
 				{
-					finalResult = TestResult.ResultType.FAILURE;
-					break;
-				}
-			}
-			
-			System.err.printf(">> TEST: %s%n", testName);
-			System.err.flush();
-			
-			// Start test
-			DefaultTestDescriptor desc = new DefaultTestMethodDescriptor(
-				idGenerator.generateId(), testName, testName);
-			resultProcessor.started(desc,
-				new TestStartEvent(System.currentTimeMillis(),
-					suiteDesc.getId()));
-			
-			System.err.printf(">> RUN: %s%n", testName);
-			System.err.flush();
-			
-			// Test output
-			resultProcessor.output(desc.getId(),
-				new DefaultTestOutputEvent(TestOutputEvent.Destination.StdOut, 
-					"Boop"));
-			
-			// How did this test go?
-			TestResult.ResultType testResult = TestResult.ResultType.FAILURE;
-			
-			// Change the global suite test result here
-			switch (testResult)
-			{
-					// If current state is skipped, then make success
-				case SUCCESS:
-					if (finalResult == TestResult.ResultType.SKIPPED)
-						finalResult = testResult;
-					break;
+					System.err.printf(">> Stopping now!%n");
 					
-					// Otherwise, always mark failure
-				case FAILURE:
-					finalResult = testResult;
-					break;
+					// If we are forcing a stop, mark as failure
+					if (this._stopNow)
+					{
+						finalResult = TestResult.ResultType.FAILURE;
+						break;
+					}
+				}
+				
+				// Get parameters for this test run
+				TestRunParameters runTest = runParameters.get(testName);
+				
+				// Start test
+				DefaultTestDescriptor desc = new DefaultTestMethodDescriptor(
+					idGenerator.generateId(), testName, testName);
+				resultProcessor.started(desc,
+					new TestStartEvent(System.currentTimeMillis(),
+						suiteDesc.getId()));
+				
+				// Setup process to run
+				ProcessBuilder builder = new ProcessBuilder();
+				
+				// The command we are executing
+				builder.command(runTest.getCommandLine());
+				
+				// Redirect all the outputs we have
+				builder.redirectOutput(ProcessBuilder.Redirect.PIPE);
+				builder.redirectError(ProcessBuilder.Redirect.PIPE);
+				
+				// Start the process
+				try
+				{
+					process = builder.start();
+				}
+				
+				// Failed to start?
+				catch (IOException __e)
+				{
+					// Failed to start test
+					resultProcessor.failure(suiteDesc.getId(),
+						new Throwable("Failed to start test."));
+					
+					throw new RuntimeException(__e);
+				}
+				
+				// Setup listening buffer threads
+				VMTestOutputBuffer stdOut = new VMTestOutputBuffer(
+					process.getInputStream(),
+					new TestResultOutputStream(resultProcessor, desc.getId(),
+						TestOutputEvent.Destination.StdOut),
+					false);
+				VMTestOutputBuffer stdErr = new VMTestOutputBuffer(
+					process.getErrorStream(),
+					new TestResultOutputStream(resultProcessor, desc.getId(),
+						TestOutputEvent.Destination.StdErr),
+					true);
+				
+				// Setup threads for reading standard output and error
+				stdOutThread = new Thread(stdOut, "stdOutReader");
+				stdErrThread = new Thread(stdErr, "stdErrReader");
+				
+				// Start threads so console lines can be read as they appear
+				stdOutThread.start();
+				stdErrThread.start();
+				
+				// Run the test, default to failed exit code
+				int exitCode = -1;
+				try
+				{
+					// If are stopping, just stop at this point
+					if (this._stopNow)
+						exitCode = process.exitValue();
+					
+					// Wait for it to complete, with triggering a timeout
+					else if (process.waitFor(3, TimeUnit.MINUTES))
+						exitCode = process.exitValue();
+				}
+				
+				// We got interrupted, force continue on!
+				catch (IllegalThreadStateException|InterruptedException
+					ignored)
+				{
+					// Forcibly destroy the process if it is alive
+					if (process.isAlive())
+						process.destroyForcibly();
+					
+					// Make sure the threads process their output
+					stdOutThread.interrupt();
+					stdErrThread.interrupt();
+				}
+				
+				// Force completion of the read thread, we cannot continue if
+				// the other thread is currently working...
+				stdOut.getBytes(stdOutThread);
+				stdErr.getBytes(stdErrThread);
+				
+				// The result determines whether this succeeded, skipped, or
+				// failed
+				TestResult.ResultType testResult;
+				switch (exitCode)
+				{
+						// Success for zero
+					case 0:
+						testResult = TestResult.ResultType.SUCCESS;
+						break;
+						
+						// Skipped is just two
+					case 2:
+						testResult = TestResult.ResultType.SKIPPED;
+						break;
+						
+						// Treat anything else as failure
+					default:
+						testResult = TestResult.ResultType.FAILURE;
+						break;
+				}
+				
+				// Change the global suite test result here
+				switch (testResult)
+				{
+						// If current state is skipped, then make success
+					case SUCCESS:
+						if (finalResult == TestResult.ResultType.SKIPPED)
+							finalResult = testResult;
+						break;
+						
+						// Otherwise, always mark failure
+					case FAILURE:
+						finalResult = testResult;
+						break;
+				}
+				
+				// Mark as completed
+				resultProcessor.completed(desc.getId(),
+					new TestCompleteEvent(System.currentTimeMillis(),
+						testResult));
 			}
-			
-			// Just say it failed for now
-			resultProcessor.completed(desc.getId(),
-				new TestCompleteEvent(System.currentTimeMillis(),
-					testResult));
+			// Interrupt read/write threads
+			finally
+			{
+				// If our test process is still alive, stop it
+				if (process != null)
+					if (process.isAlive())
+						process.destroyForcibly();
+				
+				// Stop the standard output thread from running
+				if (stdOutThread != null)
+					stdOutThread.interrupt();
+				
+				// Stop the standard error thread from running
+				if (stdErrThread != null)
+					stdErrThread.interrupt();
+			}
 		}
 		
 		// If failed, emit a throwable
@@ -207,13 +330,13 @@ public class VMTestFrameworkTestClassProcessor
 		// Signal that tests should stop
 		synchronized (this)
 		{
+			// Do stop now
+			this._stopNow = true;
+			
 			// Interrupt thread quickly
 			Thread runningThread = this._runningThread;
 			if (runningThread != null)
 				runningThread.interrupt();
-			
-			// Do stop now
-			this._stopNow = true;
 			
 			// Make sure to notify on all monitors
 			this.notifyAll();

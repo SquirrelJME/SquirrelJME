@@ -12,8 +12,10 @@ package cc.squirreljme.plugin.multivm;
 import cc.squirreljme.plugin.util.SingleTaskOutputFile;
 import javax.inject.Inject;
 import lombok.Getter;
+import org.gradle.api.Project;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.testing.Test;
+import org.gradle.api.tasks.testing.TestTaskReports;
 import org.gradle.workers.WorkerExecutor;
 
 /**
@@ -103,5 +105,11 @@ public class VMModernTestTask
 		
 		// Maximum forks, limited accordingly
 		this.setMaxParallelForks(VMTestTaskAction.maxParallelTests());
+		
+		// Change location of JUnit XML reports, to match legacy output
+		TestTaskReports reports = this.getReports();
+		reports.getJunitXml().getOutputLocation().set(
+			VMHelpers.testResultXmlDir(this.getProject(), this.vmType,
+				this.sourceSet).get().toFile());
 	}
 }

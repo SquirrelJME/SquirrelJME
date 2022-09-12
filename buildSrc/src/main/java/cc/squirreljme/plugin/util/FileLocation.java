@@ -9,13 +9,8 @@
 
 package cc.squirreljme.plugin.util;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * Source file and its input/output.
@@ -25,15 +20,11 @@ import java.nio.file.Paths;
 public final class FileLocation
 	implements Serializable
 {
-	/** Serialization ID. */
-	private static final long serialVersionUID =
-		12893674381423984L;
-	
 	/** The absolute path. */
-	public final Path absolute;
+	private final SerializedPath absolute;
 	
 	/** The relative path. */
-	public final Path relative;
+	private final SerializedPath relative;
 	
 	/**
 	 * Initializes the file information.
@@ -49,8 +40,8 @@ public final class FileLocation
 		if (__absolute == null || __relative == null)
 			throw new NullPointerException();
 		
-		this.absolute = __absolute;
-		this.relative = __relative;
+		this.absolute = new SerializedPath(__absolute);
+		this.relative = new SerializedPath(__relative);
 	}
 	
 	/**
@@ -67,8 +58,30 @@ public final class FileLocation
 			return false;
 		
 		FileLocation o = (FileLocation)__o;
-		return this.relative.equals(o.relative) &&
-			this.absolute.equals(o.absolute);
+		return this.getRelative().equals(o.getRelative()) &&
+			this.getAbsolute().equals(o.getAbsolute());
+	}
+	
+	/**
+	 * Returns the absolute path.
+	 * 
+	 * @return The absolute path.
+	 * @since 2022/09/11
+	 */
+	public Path getAbsolute()
+	{
+		return this.absolute.path;
+	}
+	
+	/**
+	 * Returns the relative path.
+	 * 
+	 * @return The relative path.
+	 * @since 2022/09/11
+	 */
+	public Path getRelative()
+	{
+		return this.relative.path;
 	}
 	
 	/**
@@ -78,7 +91,7 @@ public final class FileLocation
 	@Override
 	public final int hashCode()
 	{
-		return this.absolute.hashCode() ^ this.relative.hashCode();
+		return this.getAbsolute().hashCode() ^ this.getRelative().hashCode();
 	}
 	
 	/**
@@ -88,44 +101,7 @@ public final class FileLocation
 	@Override
 	public final String toString()
 	{
-		return String.format("{absolute=%s, relative=%s}",
-			this.absolute, this.relative);
-	}
-	
-	/**
-	 * Reads the serialization object.
-	 * 
-	 * @param __in The input object.
-	 * @throws NoSuchFieldException If the field does not exist.
-	 * @throws IOException On read errors.
-	 * @throws ClassNotFoundException If our class is not valid?
-	 * @throws IllegalAccessException If we cannot write a final field.
-	 * @since 2022/09/11
-	 */
-	private void readObject(ObjectInputStream __in)
-		throws NoSuchFieldException, IOException, ClassNotFoundException,
-			IllegalAccessException
-	{
-		Field absolute = this.getClass().getDeclaredField("absolute");
-		absolute.setAccessible(true);
-		absolute.set(this, Paths.get(__in.readObject().toString()));
-		
-		Field relative = this.getClass().getDeclaredField("relative");
-		relative.setAccessible(true);
-		relative.set(this, Paths.get(__in.readObject().toString()));
-	}
-	
-	/**
-	 * Serializes the paths.
-	 * 
-	 * @param __out The stream to write to.
-	 * @throws IOException On write errors.
-	 * @since 2022/09/11
-	 */
-	private void writeObject(ObjectOutputStream __out)
-		throws IOException
-	{
-		__out.writeObject(this.absolute.toString());
-		__out.writeObject(this.relative.toString());
+		return String.format("{absolute=%s, relative=%s}", this.getAbsolute(),
+			this.getRelative());
 	}
 }
