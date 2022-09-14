@@ -252,14 +252,9 @@ public class VMTestFrameworkTestClassProcessor
 			// Check to see if we are stopping testing
 			synchronized (this)
 			{
-				System.err.printf(">> Stopping now!%n");
-				
 				// If we are forcing a stop, mark as failure
 				if (this._stopNow)
-				{
-					testResult = TestResult.ResultType.FAILURE;
-					return null;
-				}
+					return TestResult.ResultType.FAILURE;
 			}
 			
 			// Get parameters for this test run

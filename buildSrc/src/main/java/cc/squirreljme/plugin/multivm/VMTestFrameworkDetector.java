@@ -89,6 +89,17 @@ public class VMTestFrameworkDetector
 		if (path.endsWith(".class"))
 			path = path.substring(0, path.length() - ".class".length());
 		
+		// If there is an at sign in this test then remove it since
+		int lastSlash = path.lastIndexOf('/');
+		int atSign = path.lastIndexOf('@');
+		if (atSign >= 0 && atSign > lastSlash)
+			path = path.substring(0, atSign);
+		
+		// Remove the suffix if there is any, after @ removal since it may
+		// potentially appear twice
+		if (path.endsWith(".class"))
+			path = path.substring(0, path.length() - ".class".length());
+		
 		// Normalize name for SquirrelJME, then check if this is something
 		// we care about
 		return TestDetection.isTest(path.replace('/', '.'));
