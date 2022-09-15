@@ -353,29 +353,36 @@ public class VMTestFrameworkTestClassProcessor
 			
 			// Run the test, default to failed exit code
 			int exitCode = -1;
-			try
-			{
-				// If are stopping, just stop at this point
-				if (this._stopNow)
-					exitCode = process.exitValue();
+			for (long startTime = System.nanoTime();;)
+				try
+				{
+					// How much time is left?
+					long timeLeft = VMTestWorkAction.TEST_TIMEOUT -
+						(System.nanoTime() - startTime);
 					
-					// Wait for it to complete, with triggering a timeout
-				else if (process.waitFor(3, TimeUnit.MINUTES))
-					exitCode = process.exitValue();
-			}
-			
-			// We got interrupted, force continue on!
-			catch (IllegalThreadStateException|InterruptedException
-				ignored)
-			{
-				// Forcibly destroy the process if it is alive
-				if (process.isAlive())
-					process.destroyForcibly();
+					// Did we run out of time?
+					// Wait for however long this takes to complete
+					if (timeLeft <= 0 || this._stopNow ||
+						process.waitFor(timeLeft, TimeUnit.NANOSECONDS))
+					{
+						exitCode = process.exitValue();
+						break;
+					}
+				}
 				
-				// Make sure the threads process their output
-				stdOutThread.interrupt();
-				stdErrThread.interrupt();
-			}
+				// We got interrupted or ran out of time, make sure the process
+				// stops, and we continue with the result
+				catch (IllegalThreadStateException|InterruptedException
+					ignored)
+				{
+					// Forcibly destroy the process if it is alive
+					if (process.isAlive())
+						process.destroyForcibly();
+					
+					// Make sure the threads process their output
+					stdOutThread.interrupt();
+					stdErrThread.interrupt();
+				}
 			
 			// Force completion of the read thread, we cannot continue if
 			// the other thread is currently working...
@@ -417,7 +424,8 @@ public class VMTestFrameworkTestClassProcessor
 					new TestCompleteEvent(System.currentTimeMillis(),
 						finalResult)));
 		}
-		// Interrupt read/write threads
+		
+		// Interrupt read/write threads and kill the process if it is alive
 		finally
 		{
 			// If our test process is still alive, stop it
