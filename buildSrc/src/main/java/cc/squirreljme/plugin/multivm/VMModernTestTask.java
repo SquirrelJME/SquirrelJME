@@ -111,5 +111,18 @@ public class VMModernTestTask
 		reports.getJunitXml().getOutputLocation().set(
 			VMHelpers.testResultXmlDir(this.getProject(), this.vmType,
 				this.sourceSet).get().toFile());
+		
+		// Each individual test case has its own output, as is traditional for
+		// SquirrelJME. This ends up being easier to read and is much better
+		// when there are parameters to tests.
+		reports.getJunitXml().setOutputPerTestCase(true);
+		
+		// Always show streams
+		this.getTestLogging().setShowStandardStreams(true);
+		
+		// This can get printed out twice essentially
+		this.getTestLogging().setShowExceptions(false);
+		this.getTestLogging().setShowStackTraces(false);
+		this.getTestLogging().setShowCauses(false);
 	}
 }

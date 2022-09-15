@@ -11,12 +11,15 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.util.TestResultOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import org.gradle.api.internal.tasks.testing.DefaultTestClassDescriptor;
 import org.gradle.api.internal.tasks.testing.DefaultTestDescriptor;
 import org.gradle.api.internal.tasks.testing.DefaultTestMethodDescriptor;
 import org.gradle.api.internal.tasks.testing.DefaultTestSuiteDescriptor;
@@ -38,8 +41,8 @@ public class VMTestFrameworkTestClassProcessor
 	implements TestClassProcessor
 {
 	/** Tests to run. */
-	protected final List<String> runTests =
-		new ArrayList<>();
+	protected final Map<String, List<VMTestFrameworkTestClass>> runTests =
+		new TreeMap<>();
 	
 	/** Test result output. */
 	protected final AtomicReference<TestResultProcessor> resultProcessor =
@@ -113,8 +116,11 @@ public class VMTestFrameworkTestClassProcessor
 	@Override
 	public void processTestClass(TestClassRunInfo __testClass)
 	{
-		// Remember class for later
-		this.runTests.add(__testClass.getTestClassName());
+		// Remember class for later, sort by classes all together
+		VMTestFrameworkTestClass testClass =
+			new VMTestFrameworkTestClass(__testClass.getTestClassName());
+		this.runTests.computeIfAbsent(testClass.className,
+			(__k) -> new ArrayList<>()).add(testClass);
 	}
 	
 	/**
@@ -149,41 +155,66 @@ public class VMTestFrameworkTestClassProcessor
 			new TestStartEvent(System.currentTimeMillis())));
 		
 		// Go through and actually run all the tests
-		for (String testName : this.runTests)
+		for (Map.Entry<String, List<VMTestFrameworkTestClass>> byClass :
+			this.runTests.entrySet())
 		{
-			// Do not run any more tests?
+			// Do not run any more classes?
 			synchronized (this)
 			{
 				if (this._stopNow)
 					break;
 			}
 			
-			// Run test and get its result
-			TestResult.ResultType result = this.__runSingleTest(suiteDesc,
-				testName);
+			// Start class test
+			DefaultTestClassDescriptor classDesc =
+				new DefaultTestClassDescriptor(idGenerator.generateId(),
+					byClass.getKey(), byClass.getKey());
+			VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
+				(__rp) -> __rp.started(classDesc,
+					new TestStartEvent(System.currentTimeMillis(),
+						suiteDesc.getId())));
 			
-			// Change the global suite test result here
-			switch (result)
+			// Go through all tests in this class
+			TestResult.ResultType classResult = TestResult.ResultType.SKIPPED;
+			for (VMTestFrameworkTestClass testName : byClass.getValue())
 			{
-				// If current state is skipped, then make success
-				case SUCCESS:
-					if (this._finalResult == TestResult.ResultType.SKIPPED)
-						this._finalResult = result;
-					break;
+				// Do not run any more tests?
+				synchronized (this)
+				{
+					if (this._stopNow)
+						break;
+				}
 				
-				// Otherwise, always mark failure
-				case FAILURE:
-					this._finalResult = result;
-					break;
+				// Run test and get its result
+				TestResult.ResultType result = this.__runSingleTest(suiteDesc,
+					testName, classDesc);
+				
+				// Update class based result
+				classResult = VMTestFrameworkTestClassProcessor
+					.calculateResult(classResult, result);
+				
+				// Change the global suite test result here
+				this._finalResult = VMTestFrameworkTestClassProcessor
+					.calculateResult(this._finalResult, result);
 			}
+			
+			// Mark class as completed
+			TestResult.ResultType finalClassResult = classResult;
+			VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
+				(__rp) -> __rp.completed(classDesc.getId(),
+					new TestCompleteEvent(System.currentTimeMillis(),
+						finalClassResult)));
 		}
 		
-		// If failed, emit a throwable
+		// If failed, emit a throwable... if we do not do this then Gradle does
+		// not care if a test failed and will just continue on happily like
+		// nothing ever happened
 		TestResult.ResultType finalResult = this._finalResult;
 		if (finalResult == TestResult.ResultType.FAILURE)
 			VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
 				(__rp) -> __rp.failure(suiteDesc.getId(),
-					new Throwable("Tests failed.")));
+					VMTestFrameworkTestClassProcessor
+						.messageThrow("Tests have failed.")));
 		
 		// Use the final result from all the test runs
 		VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
@@ -226,12 +257,15 @@ public class VMTestFrameworkTestClassProcessor
 	 * 
 	 * @param __suiteDesc The suite descriptor.
 	 * @param __testName The name of the test.
+	 * @param __classDesc The owning class descriptor, since this is a group.
 	 * @return The result of the test.
 	 * @since 2022/09/11
 	 */
 	@SuppressWarnings("UseOfProcessBuilder")
 	private TestResult.ResultType __runSingleTest(
-		DefaultTestSuiteDescriptor __suiteDesc, String __testName)
+		DefaultTestSuiteDescriptor __suiteDesc,
+		VMTestFrameworkTestClass __testName,
+		DefaultTestClassDescriptor __classDesc)
 	{
 		Map<String, TestRunParameters> runParameters = this.runParameters;
 		AtomicReference<TestResultProcessor> resultProcessor =
@@ -258,15 +292,7 @@ public class VMTestFrameworkTestClassProcessor
 			}
 			
 			// Get parameters for this test run
-			TestRunParameters runTest = runParameters.get(__testName);
-			
-			// Start test
-			DefaultTestDescriptor desc = new DefaultTestMethodDescriptor(
-				idGenerator.generateId(), __testName, __testName);
-			VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
-				(__rp) -> __rp.started(desc,
-					new TestStartEvent(System.currentTimeMillis(),
-						__suiteDesc.getId())));
+			TestRunParameters runTest = runParameters.get(__testName.normal);
 			
 			// Setup process to run
 			ProcessBuilder builder = new ProcessBuilder();
@@ -277,6 +303,16 @@ public class VMTestFrameworkTestClassProcessor
 			// Redirect all the outputs we have
 			builder.redirectOutput(ProcessBuilder.Redirect.PIPE);
 			builder.redirectError(ProcessBuilder.Redirect.PIPE);
+			
+			// Start method test
+			DefaultTestDescriptor methodDesc = new DefaultTestMethodDescriptor(
+				idGenerator.generateId(), __testName.className, 
+				(__testName.variant == null ? "test" :
+					String.format("test[%s]", __testName.variant)));
+			VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
+				(__rp) -> __rp.started(methodDesc,
+					new TestStartEvent(System.currentTimeMillis(),
+						__classDesc.getId())));
 			
 			// Start the process
 			try
@@ -298,12 +334,12 @@ public class VMTestFrameworkTestClassProcessor
 			// Setup listening buffer threads
 			VMTestOutputBuffer stdOut = new VMTestOutputBuffer(
 				process.getInputStream(),
-				new TestResultOutputStream(resultProcessor, desc.getId(),
+				new TestResultOutputStream(resultProcessor, methodDesc.getId(),
 					TestOutputEvent.Destination.StdOut),
 				false);
 			VMTestOutputBuffer stdErr = new VMTestOutputBuffer(
 				process.getErrorStream(),
-				new TestResultOutputStream(resultProcessor, desc.getId(),
+				new TestResultOutputStream(resultProcessor, methodDesc.getId(),
 					TestOutputEvent.Destination.StdErr),
 				true);
 			
@@ -344,7 +380,7 @@ public class VMTestFrameworkTestClassProcessor
 			// Force completion of the read thread, we cannot continue if
 			// the other thread is currently working...
 			stdOut.getBytes(stdOutThread);
-			stdErr.getBytes(stdErrThread);
+			byte[] stdErrBytes = stdErr.getBytes(stdErrThread);
 			
 			// The result determines whether this succeeded, skipped, or
 			// failed
@@ -366,12 +402,20 @@ public class VMTestFrameworkTestClassProcessor
 					break;
 			}
 			
-			// Mark as completed
+			// If failed, emit a throwable...
 			TestResult.ResultType finalResult = testResult;
+			if (finalResult == TestResult.ResultType.FAILURE)
+				VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
+					(__rp) -> __rp.failure(methodDesc.getId(),
+						VMTestFrameworkTestClassProcessor 
+							.messageThrow("Test failed: " +
+								__testName.normal)));
+			
+			// Mark method as completed
 			VMTestFrameworkTestClassProcessor.resultAction(resultProcessor,
-				(__rp) -> __rp.completed(desc.getId(),
-				new TestCompleteEvent(System.currentTimeMillis(),
-					finalResult)));
+				(__rp) -> __rp.completed(methodDesc.getId(),
+					new TestCompleteEvent(System.currentTimeMillis(),
+						finalResult)));
 		}
 		// Interrupt read/write threads
 		finally
@@ -391,6 +435,67 @@ public class VMTestFrameworkTestClassProcessor
 		}
 		
 		return testResult;
+	}
+	
+	/**
+	 * Calculates the test result.
+	 * 
+	 * @param __input The input result.
+	 * @param __modifier The modifier to the result.
+	 * @return The new result that should be used.
+	 * @since 2022/09/14
+	 */
+	public static TestResult.ResultType calculateResult(
+		TestResult.ResultType __input, TestResult.ResultType __modifier)
+	{
+		if (__input == null || __modifier == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends on our target result
+		switch (__modifier)
+		{
+				// Keep the old state, this does not cause a change
+			case SKIPPED:
+				return __input;
+				
+				// Change skipped to success, but nothing else
+			case SUCCESS:
+				if (__input == TestResult.ResultType.SKIPPED)
+					return __modifier;
+				return __input;
+			
+				// Otherwise, always mark failure
+			case FAILURE:
+				return __modifier;
+		}
+		
+		throw new Error("OOPS");
+	}
+	
+	/**
+	 * Generates a throwable useful for printing the output.
+	 * 
+	 * @param __output The output.
+	 * @return The throwable to use for the message.
+	 * @since 2022/09/14
+	 */
+	public static Throwable messageThrow(byte[] __output)
+	{
+		return VMTestFrameworkTestClassProcessor.messageThrow(
+			(__output == null || __output.length <= 0 ? "" :
+				new String(__output, StandardCharsets.UTF_8)));
+	}
+	
+	/**
+	 * Generates a throwable useful for printing the output.
+	 *
+	 * @param __output The output.
+	 * @return The throwable to use for the message.
+	 * @since 2022/09/14
+	 */
+	private static Throwable messageThrow(String __output)
+	{
+		return new VMTestFrameworkThrowableOutput(__output);
 	}
 	
 	/**
