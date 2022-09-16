@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.tac;
 
+import org.junit.Test;
+
 /**
  * This represents a test which takes two parameters and returns a result.
  *
@@ -29,6 +31,7 @@ public abstract class TestBiFunction<A, B, R>
 	 * @throws Throwable On any thrown exception.
 	 * @since 2018/10/06
 	 */
+	@Test
 	public abstract R test(A __a, B __b)
 		throws Throwable;
 	

@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.tac;
 
+import org.junit.Test;
+
 /**
  * This is a test which returns a boolean.
  *
@@ -24,6 +26,7 @@ public abstract class TestBoolean
 	 * @throws Throwable On any thrown exception.
 	 * @since 2019/12/25
 	 */
+	@Test
 	public abstract boolean test()
 		throws Throwable;
 	
