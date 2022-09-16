@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.tac;
 
+import org.junit.Test;
+
 /**
  * This is a test which takes a single parameter and has no result.
  *
@@ -25,6 +27,7 @@ public abstract class TestConsumer<A>
 	 * @throws Throwable On any thrown exception.
 	 * @since 2018/10/06
 	 */
+	@Test
 	public abstract void test(A __a)
 		throws Throwable;
 	

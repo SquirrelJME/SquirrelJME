@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.tac;
 
+import org.junit.Test;
+
 /**
  * This is a test which returns an integer.
  *
@@ -24,6 +26,7 @@ public abstract class TestInteger
 	 * @throws Throwable On any thrown exception.
 	 * @since 2019/12/24
 	 */
+	@Test
 	public abstract int test()
 		throws Throwable;
 	

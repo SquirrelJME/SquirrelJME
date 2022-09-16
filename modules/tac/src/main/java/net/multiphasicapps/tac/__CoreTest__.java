@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.junit.Test;
 
 /**
  * This is the core test framework which handles reading test information and
@@ -48,6 +49,7 @@ abstract class __CoreTest__
 	 * @throws Throwable On any thrown exception.
 	 * @since 2018/10/06
 	 */
+	@Test
 	abstract Object __runTest(Object... __args)
 		throws Throwable;
 	

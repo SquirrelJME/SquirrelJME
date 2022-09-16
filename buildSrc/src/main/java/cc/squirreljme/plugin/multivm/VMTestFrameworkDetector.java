@@ -11,6 +11,7 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.util.TestDetection;
 import java.io.File;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import lombok.Setter;
@@ -62,10 +63,28 @@ public class VMTestFrameworkDetector
 	public void startDetection(TestClassProcessor __processor)
 	{
 		// Go through the available tests and register each one individually
-		for (Map.Entry<String, CandidateTestFiles> test :
-			this.tests.entrySet())
-			__processor.processTestClass(
-				new DefaultTestClassRunInfo(test.getKey()));
+		Set<String> didBaseTest = new HashSet<>();
+		for (String test : this.tests.keySet())
+		{
+			// If this is a variant of a test, include the base test so
+			// Gradle actually knows it exists
+			int atSign = test.lastIndexOf('@');
+			if (atSign >= 0)
+			{
+				String baseTest = test.substring(0, atSign);
+				
+				// If not added already, put it in
+				if (!didBaseTest.contains(baseTest))
+				{
+					__processor.processTestClass(
+						new DefaultTestClassRunInfo(baseTest));
+					didBaseTest.add(baseTest);
+				}
+			}
+			
+			// Add test
+			__processor.processTestClass(new DefaultTestClassRunInfo(test));
+		}
 	}
 	
 	/**

@@ -15,7 +15,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -41,7 +43,7 @@ public class VMTestFrameworkTestClassProcessor
 	implements TestClassProcessor
 {
 	/** Tests to run. */
-	protected final Map<String, List<VMTestFrameworkTestClass>> runTests =
+	protected final Map<String, Set<VMTestFrameworkTestClass>> runTests =
 		new TreeMap<>();
 	
 	/** Test result output. */
@@ -116,11 +118,39 @@ public class VMTestFrameworkTestClassProcessor
 	@Override
 	public void processTestClass(TestClassRunInfo __testClass)
 	{
-		// Remember class for later, sort by classes all together
+		// Build test name for later usage
+		String test = __testClass.getTestClassName();
 		VMTestFrameworkTestClass testClass =
-			new VMTestFrameworkTestClass(__testClass.getTestClassName());
-		this.runTests.computeIfAbsent(testClass.className,
-			(__k) -> new ArrayList<>()).add(testClass);
+			new VMTestFrameworkTestClass(test);
+		
+		// If there is no variant, we need to search to see if we are trying
+		// to run a test that has variants
+		Map<String, Set<VMTestFrameworkTestClass>> runTests = this.runTests;
+		if (testClass.variant == null)
+		{
+			for (String availableTest : this.availableTests.keySet())
+			{
+				VMTestFrameworkTestClass available =
+					new VMTestFrameworkTestClass(availableTest);
+				
+				// If this is the exact class use it, since it is not variant
+				// Or the base class name matches
+				if (testClass.normal.equals(available.normal) ||
+					testClass.className.equals(available.className))
+					runTests.computeIfAbsent(testClass.className,
+							(__k) -> new TreeSet<>())
+						.add(new VMTestFrameworkTestClass(availableTest));
+			}
+		}
+		
+		// Otherwise, always add this class since it has a known variant, and
+		// we want a precise test
+		else
+		{
+			// Remember class for later, sort by classes all together
+			runTests.computeIfAbsent(testClass.className,
+				(__k) -> new TreeSet<>()).add(testClass);
+		}
 	}
 	
 	/**
@@ -155,7 +185,7 @@ public class VMTestFrameworkTestClassProcessor
 			new TestStartEvent(System.currentTimeMillis())));
 		
 		// Go through and actually run all the tests
-		for (Map.Entry<String, List<VMTestFrameworkTestClass>> byClass :
+		for (Map.Entry<String, Set<VMTestFrameworkTestClass>> byClass :
 			this.runTests.entrySet())
 		{
 			// Do not run any more classes?
