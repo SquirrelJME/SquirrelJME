@@ -72,7 +72,7 @@ public class MimeDecodeResourcesTask
 				
 				// Copy decoded MIME data to the output file
 				try (MIMEFileDecoder in = new MIMEFileDecoder(
-					Files.newInputStream(output.input.absolute,
+					Files.newInputStream(output.input.getAbsolute(),
 							StandardOpenOption.READ));
 					OutputStream out = Files.newOutputStream(outPath,
 							StandardOpenOption.CREATE,

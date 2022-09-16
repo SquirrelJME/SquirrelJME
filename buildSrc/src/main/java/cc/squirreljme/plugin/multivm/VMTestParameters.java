@@ -9,8 +9,8 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import java.io.Serializable;
 import org.gradle.api.file.RegularFileProperty;
-import org.gradle.api.logging.Logger;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.workers.WorkParameters;
@@ -49,7 +49,7 @@ public interface VMTestParameters
 	RegularFileProperty getResultFile();
 	
 	/**
-	 * The test to be ran.
+	 * The test to be run.
 	 * 
 	 * @return The test to be ran.
 	 * @since 2020/09/06

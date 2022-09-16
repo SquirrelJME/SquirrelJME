@@ -44,6 +44,10 @@ import org.gradle.jvm.tasks.Jar;
  */
 public final class TaskInitialization
 {
+	/** Use legacy testing? */
+	public static final boolean LEGACY_TEST_FRAMEWORK =
+		Boolean.getBoolean("squirreljme.test.legacy");
+	
 	/** Source sets that are used. */
 	private static final String[] _SOURCE_SETS =
 		new String[]{SourceSet.MAIN_SOURCE_SET_NAME,
@@ -239,12 +243,21 @@ public final class TaskInitialization
 		// Testing the target
 		else if (__sourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME))
 		{
-			Task vmTest = tasks.create(
-				TaskInitialization.task("test", __sourceSet, __vmType),
-				VMTestTask.class, __sourceSet, __vmType, libTask);
+			Task vmTest;
+			String taskName = TaskInitialization.task("test",
+				__sourceSet, __vmType);
+			
+			// Creating the legacy or modern test task? Using the modern one
+			// is recommended if using IntelliJ or otherwise...
+			if (TaskInitialization.LEGACY_TEST_FRAMEWORK)
+				vmTest = tasks.create(taskName,
+					VMLegacyTestTask.class, __sourceSet, __vmType, libTask);
+			else
+				vmTest = tasks.create(taskName,
+					VMModernTestTask.class, __sourceSet, __vmType, libTask);
 			
 			// Make the standard test task depend on these two VM tasks
-			// so that way if it is ran, both are run accordingly
+			// so that way if it is run, both are run accordingly
 			if (__vmType == VMType.HOSTED || __vmType == VMType.SPRINGCOAT)
 			{
 				Task test = __project.getTasks().getByName("test");

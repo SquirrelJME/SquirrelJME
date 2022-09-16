@@ -169,7 +169,8 @@ jobs:
           # According to documentation, Gradle on Windows has trouble and tries
           # to make way too many workers which causes extreme resource.
           # contention --max-workers=2
-          command: gradlew <<pipeline.parameters.standard-build-options >> <<pipeline.parameters.standard-gradle-options >>
+          command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 7m
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted"
@@ -248,10 +249,11 @@ jobs:
           # Only OpenJDK is required, Gradle always uses Gradle wrapper so
           # we do not need that
           name: Install OpenJDK 11
-          command: brew install openjdk@11
+          command: brew install openjdk@11 coreutils
       - run:
           name: Gradle Build and Test
-          command: ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 7m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 7m
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted"
@@ -263,7 +265,8 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 7m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 7m
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted"
@@ -278,7 +281,7 @@ jobs:
           # Only OpenJDK is required, Gradle always uses Gradle wrapper so
           # we do not need that
           name: Install OpenJDK 11
-          command: brew install openjdk@11
+          command: brew install openjdk@11 coreutils
       - attach_workspace:
           at: .
       - run:
@@ -312,7 +315,7 @@ jobs:
       - checkout
       - run:
           name: Install CMake
-          command: brew install cmake
+          command: brew install cmake coreutils
       - attach_workspace:
           at: .
       - run:
@@ -335,7 +338,8 @@ jobs:
       - linux-install-required
       - run:
           name: Gradle Build and Test
-          command: ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 7m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 7m
       - save-test-results:
           where: "vm-test-hosted"
           os: "linux-amd64"
@@ -365,7 +369,8 @@ jobs:
       - linux-install-required
       - run:
           name: Gradle Build and Test
-          command: ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 7m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 7m
       - save-test-results:
           where: "vm-test-hosted"
           os: "linux-arm64"

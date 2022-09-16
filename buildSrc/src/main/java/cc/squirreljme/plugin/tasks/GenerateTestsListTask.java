@@ -193,7 +193,7 @@ public class GenerateTestsListTask
 	{
 		Collection<File> result = new LinkedList<>();
 		for (FileLocation file : this.__taskInputs())
-			result.add(file.absolute.toFile());
+			result.add(file.getAbsolute().toFile());
 		
 		return this.getProject().files(result);
 	}

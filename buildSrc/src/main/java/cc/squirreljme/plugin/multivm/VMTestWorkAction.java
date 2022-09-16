@@ -39,7 +39,7 @@ public abstract class VMTestWorkAction
 		new ConcurrentHashMap<>();
 	
 	/** The timeout for tests, in nanoseconds. */
-	private static final long _TEST_TIMEOUT =
+	public static final long TEST_TIMEOUT =
 		360_000_000_000L;
 	
 	/** Skip sequence special. */
@@ -73,9 +73,7 @@ public abstract class VMTestWorkAction
 		
 		// If we are debugging, we do not want to kill the test by a timeout
 		// if it takes forever because we might be very slow at debugging
-		String jdwpProp = System.getProperty("squirreljme.xjdwp",
-			System.getProperty("squirreljme.jdwp"));
-		boolean isDebugging = (jdwpProp != null && !jdwpProp.isEmpty());
+		boolean isDebugging = VMTestTaskAction.isDebugging();
 		
 		// The process might not be able to execute
 		Process process = null;
@@ -127,7 +125,7 @@ public abstract class VMTestWorkAction
 					if (!isDebugging)
 					{
 						long nsDur = System.nanoTime() - nsStart;
-						if (nsDur >= VMTestWorkAction._TEST_TIMEOUT)
+						if (nsDur >= VMTestWorkAction.TEST_TIMEOUT)
 						{
 							// Note it
 							logger.error(String.format("TIME %s [%d/%d]",

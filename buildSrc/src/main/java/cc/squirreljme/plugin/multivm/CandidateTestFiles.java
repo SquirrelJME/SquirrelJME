@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.util.FileLocation;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -23,6 +24,7 @@ import java.util.Objects;
  * @since 2020/09/06
  */
 public final class CandidateTestFiles
+	implements Serializable
 {
 	/** Source code for the test. */
 	public final FileLocation sourceCode;
