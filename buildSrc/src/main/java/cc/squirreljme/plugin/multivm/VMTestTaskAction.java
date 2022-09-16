@@ -370,6 +370,19 @@ public class VMTestTaskAction
 	}
 	
 	/**
+	 * Is debugging being used?
+	 * 
+	 * @return If debugging is being used.
+	 * @since 2022/09/15
+	 */
+	public static boolean isDebugging()
+	{
+		String jdwpProp = System.getProperty("squirreljme.xjdwp",
+			System.getProperty("squirreljme.jdwp"));
+		return (jdwpProp != null && !jdwpProp.isEmpty());
+	}
+	
+	/**
 	 * Sets the maximum number of parallel tests to run.
 	 * 
 	 * @return The max parallel tests to run at once.

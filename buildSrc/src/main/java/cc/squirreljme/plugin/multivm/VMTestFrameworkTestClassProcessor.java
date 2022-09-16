@@ -353,12 +353,15 @@ public class VMTestFrameworkTestClassProcessor
 			
 			// Run the test, default to failed exit code
 			int exitCode = -1;
+			boolean isDebugging = VMTestTaskAction.isDebugging();
 			for (long startTime = System.nanoTime();;)
 				try
 				{
-					// How much time is left?
-					long timeLeft = VMTestWorkAction.TEST_TIMEOUT -
-						(System.nanoTime() - startTime);
+					// How much time is left? If debugging time never runs
+					// out
+					long timeLeft = Math.max(VMTestWorkAction.TEST_TIMEOUT -
+						(System.nanoTime() - startTime),
+						(isDebugging ? 1000L : 0L));
 					
 					// Did we run out of time?
 					// Wait for however long this takes to complete
