@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -206,6 +207,17 @@ public enum VMType
 			__task.getLogger().debug("Hosted SupportPath: {}", vmSupportPath);
 			__task.getLogger().debug("Hosted ClassPath: {}", classPath);
 			
+			// Arguments for the JVM
+			List<String> jvmArgs = new ArrayList<>();
+			
+			// Copy any agent libraries which are not JDWP based ones, for
+			// example if IntelliJ is profiling
+			for (String mxArg : ManagementFactory.getRuntimeMXBean()
+				.getInputArguments())
+				if (mxArg.startsWith("-agentlib:") &&
+					!mxArg.startsWith("-agentlib:jdwp="))
+					jvmArgs.add(mxArg);
+			
 			// Is this eligible to be run under a debugger?
 			if (__debugEligible)
 			{
@@ -240,21 +252,26 @@ public enum VMType
 						
 						// Listen on a given port?
 						if (host.isEmpty())
-							__execSpec.setJvmArgs(Arrays.asList(String.format(
+							jvmArgs.add(String.format(
 								"-agentlib:jdwp=transport=dt_socket," +
-								"server=y,suspend=y,address=%d", port)));
+								"server=y,suspend=y,address=%d", port));
 						
 						// Connect to remote VM
 						else
-							__execSpec.setJvmArgs(Arrays.asList(String.format(
+							jvmArgs.add(String.format(
 								"-agentlib:jdwp=transport=dt_socket," +
 								"server=n," +
 								"address=%s:%d,suspend=y," +
-								"onuncaught=y", host, port)));
+								"onuncaught=y", host, port));
 					}
 				}
 			}
 			
+			// Add in the arguments
+			if (!jvmArgs.isEmpty())
+				__execSpec.setJvmArgs(jvmArgs);
+			
+			// Determine true arguments to use
 			List<String> trueArgs = new ArrayList<>(
 				1 + __args.length);
 			trueArgs.add(__mainClass);
@@ -783,13 +800,17 @@ public enum VMType
 		{
 			// Only match certain keys
 			String baseKey = Objects.toString(prop.getKey());
-			if (!baseKey.startsWith(VMType._JVM_KEY_PREFIX))
-				continue;
 			
-			// Add it in
-			__sysProps.put(
-				baseKey.substring(VMType._JVM_KEY_PREFIX.length()),
-				Objects.toString(prop.getValue()));
+			// Forward prefixed
+			if (baseKey.startsWith(VMType._JVM_KEY_PREFIX))
+				__sysProps.put(
+					baseKey.substring(VMType._JVM_KEY_PREFIX.length()),
+					Objects.toString(prop.getValue()));
+			
+			// IntelliJ Coverage
+			else if (baseKey.startsWith("coverage."))
+				__sysProps.put(Objects.toString(prop.getKey()),
+					Objects.toString(prop.getValue()));
 		}
 	}
 	
