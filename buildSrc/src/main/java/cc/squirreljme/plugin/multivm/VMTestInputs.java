@@ -60,11 +60,11 @@ public class VMTestInputs
 		for (CandidateTestFiles file : VMHelpers.runningTests(
 			this.task.getProject(), this.sourceSet).tests.values())
 		{
-			result.add(file.sourceCode.absolute);
+			result.add(file.sourceCode.getAbsolute());
 			
 			// The expected results are optional
 			if (file.expectedResult != null)
-				result.add(file.expectedResult.absolute);
+				result.add(file.expectedResult.getAbsolute());
 		}
 		
 		return result;

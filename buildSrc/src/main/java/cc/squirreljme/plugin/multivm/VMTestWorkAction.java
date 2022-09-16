@@ -39,7 +39,7 @@ public abstract class VMTestWorkAction
 		new ConcurrentHashMap<>();
 	
 	/** The timeout for tests, in nanoseconds. */
-	private static final long _TEST_TIMEOUT =
+	public static final long TEST_TIMEOUT =
 		360_000_000_000L;
 	
 	/** Skip sequence special. */
@@ -127,7 +127,7 @@ public abstract class VMTestWorkAction
 					if (!isDebugging)
 					{
 						long nsDur = System.nanoTime() - nsStart;
-						if (nsDur >= VMTestWorkAction._TEST_TIMEOUT)
+						if (nsDur >= VMTestWorkAction.TEST_TIMEOUT)
 						{
 							// Note it
 							logger.error(String.format("TIME %s [%d/%d]",

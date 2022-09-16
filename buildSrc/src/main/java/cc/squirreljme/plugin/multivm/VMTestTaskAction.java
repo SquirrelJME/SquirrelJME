@@ -11,6 +11,8 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.util.JavaExecSpecFiller;
+import cc.squirreljme.plugin.util.SerializedPath;
+import cc.squirreljme.plugin.util.SimpleJavaExecSpecFiller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -32,6 +34,7 @@ import java.util.function.Supplier;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
+import org.gradle.api.tasks.testing.Test;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
 
@@ -70,21 +73,16 @@ public class VMTestTaskAction
 	/** The virtual machine type. */
 	protected final VMSpecifier vmType;
 	
-	/** Factory for making specifications. */
-	protected final Supplier<JavaExecSpecFiller> specFactory;
-	
 	/**
 	 * Initializes the virtual machine task action.
 	 * 
 	 * @param __executor The executor for tasks.
-	 * @param __specFactory Factory for creating specifications.
 	 * @param __sourceSet The source set.
 	 * @param __vmType The virtual machine type used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/23
 	 */
-	public VMTestTaskAction(WorkerExecutor __executor,
-		Supplier<JavaExecSpecFiller> __specFactory, String __sourceSet,
+	public VMTestTaskAction(WorkerExecutor __executor, String __sourceSet,
 		VMSpecifier __vmType)
 		throws NullPointerException
 	{
@@ -92,7 +90,6 @@ public class VMTestTaskAction
 			throw new NullPointerException("NARG");
 		
 		this.executor = __executor;
-		this.specFactory = __specFactory;
 		this.sourceSet = __sourceSet;
 		this.vmType = __vmType;
 	}
@@ -101,10 +98,12 @@ public class VMTestTaskAction
 	 * {@inheritDoc}
 	 * @since 2020/08/07
 	 */
-	@SuppressWarnings("UnstableApiUsage")
 	@Override
 	public void execute(Task __task)
 	{
+		// The task used for testing
+		Test testTask = (Test)__task;
+		
 		// Debug
 		Logger logger = __task.getLogger();
 		logger.debug("Tests: {}", VMHelpers.runningTests(
@@ -112,11 +111,6 @@ public class VMTestTaskAction
 		
 		// We want our tasks to run from within Gradle
 		WorkQueue queue = this.executor.noIsolation();
-		
-		// We will need this as we cannot pass tasks for execution specs
-		// due to a serialization barrier, so we must only pass command line
-		// arguments
-		Supplier<JavaExecSpecFiller> specFactory = this.specFactory;
 		
 		// All results will go here
 		String sourceSet = this.sourceSet;
@@ -129,10 +123,7 @@ public class VMTestTaskAction
 		Map<String, Path> xmlResults = new TreeMap<>();
 		
 		// How many tests should be run be at once?
-		int cpuCount = VMTestTaskAction.physicalProcessorCount();
-		int maxParallel = (cpuCount <= 1 ? 1 :
-			Math.min(Math.max(2, cpuCount),
-				VMTestTaskAction._MAX_PARALLEL_TESTS));
+		int maxParallel = VMTestTaskAction.maxParallelTests();
 		
 		// Determine the number of tests
 		Map<String, CandidateTestFiles> tests = VMHelpers.runningTests(
@@ -140,46 +131,23 @@ public class VMTestTaskAction
 		Set<String> testNames = tests.keySet();
 		int numTests = testNames.size();
 		
-		// Determine system properties to use for testing
-		Map<String, String> sysProps = new LinkedHashMap<>();
-		if (Boolean.getBoolean("java.awt.headless"))
-			sysProps.put("java.awt.headless", "true");
+		// Calculate suite run parameters
+		SuiteRunParameters runSuite = VMTestTaskAction.runSuite(
+			__task, sourceSet, vmType);
 		
-		// If debugging, do not run in parallel
-		if (null != System.getProperty("squirreljme.xjdwp",
-			System.getProperty("squirreljme.jdwp")))
+		// Force non-parallel?
+		if (runSuite.noParallelTests)
 			maxParallel = 1;
 		
-		// Any specific changes to how tests run
-		SquirrelJMEPluginConfiguration config =
-			SquirrelJMEPluginConfiguration.configurationOrNull(
-				__task.getProject());
-		if (config != null)
-		{
-			// If we define any system properties specifically for tests then
-			// use them here. Could be used for debugging.
-			sysProps.putAll(config.testSystemProperties);
-			
-			// Disable parallelism for these tests?
-			if (config.noParallelTests)
-				maxParallel = 1;
-		}
-		
-		// Can we directly refer to the emulator library already?
-		Path emuLib = VMHelpers.findEmulatorLib(__task);
-		if (emuLib != null && Files.exists(emuLib))
-			sysProps.put("squirreljme.emulator.libpath", emuLib.toString());
-		
 		// We only need to set the classpath once
-		Path[] classPath = VMHelpers.runClassPath(
-			(VMExecutableTask)__task, sourceSet, vmType, true);
+		Path[] classPath = SerializedPath.unboxPaths(runSuite.classPath);
 		
 		// Debug
 		logger.debug("Testing ClassPath: {}",
 			Arrays.asList(classPath));
 		
 		// Make unique ID for logger binding for this session
-		String uniqueID = UUID.randomUUID().toString();
+		String uniqueID = runSuite.uniqueId;
 		
 		// Setup logger for this session
 		__LogHolder__ logHolder = new __LogHolder__(logger);
@@ -191,24 +159,10 @@ public class VMTestTaskAction
 		int submitCount = 0;
 		for (String testName : testNames)
 		{
-			// Default arguments, could be replaced by a proxy main
-			String mainClass = VMHelpers.SINGLE_TEST_RUNNER;
-			String[] mainArgs = new String[]{testName};
-			
-			// Are we going to use a different proxy main class for this?
+			// Calculate test running parameters
 			CandidateTestFiles candidate = tests.get(testName);
-			String proxyMain = candidate.expectedValues.get("proxy-main");
-			if (proxyMain != null && !proxyMain.trim().isEmpty())
-			{
-				mainArgs = new String[]{mainClass, mainArgs[0]};
-				mainClass = proxyMain.trim();
-			}
-			
-			// Determine the arguments that are used to spawn the JVM
-			JavaExecSpecFiller execSpec = specFactory.get();
-			vmType.spawnJvmArguments(__task, true, execSpec,
-				mainClass, testName, sysProps, classPath,
-				classPath, mainArgs);
+			TestRunParameters runTest = VMTestTaskAction.runTest(__task,
+				sourceSet, vmType, runSuite, testName, candidate);
 			
 			// Where will the results be read from?
 			Path xmlResult = resultDir.resolve(
@@ -230,7 +184,7 @@ public class VMTestTaskAction
 					__params.getResultFile().set(xmlResult.toFile());
 					
 					// The command line to execute
-					__params.getCommandLine().set(execSpec.getCommandLine());
+					__params.getCommandLine().set(runTest.getCommandLine());
 					
 					// Name of the VM for hostname setting
 					__params.getVmName()
@@ -329,7 +283,7 @@ public class VMTestTaskAction
 	}
 	
 	/**
-	 * Goes through all of the XML files obtains the test results.
+	 * Goes through all the XML files obtains the test results.
 	 * 
 	 * @param __xmlResults The result paths for tests. 
 	 * @return The mapping of all tests.
@@ -416,6 +370,25 @@ public class VMTestTaskAction
 	}
 	
 	/**
+	 * Sets the maximum number of parallel tests to run.
+	 * 
+	 * @return The max parallel tests to run at once.
+	 * @since 2022/09/11
+	 */
+	public static int maxParallelTests()
+	{
+		// If debugging, do not run in parallel
+		if (null != System.getProperty("squirreljme.xjdwp",
+			System.getProperty("squirreljme.jdwp")))
+			return 1;
+		
+		int cpuCount = VMTestTaskAction.physicalProcessorCount();
+		return (cpuCount <= 1 ? 1 :
+			Math.min(Math.max(2, cpuCount),
+				VMTestTaskAction._MAX_PARALLEL_TESTS));
+	}
+	
+	/**
 	 * Returns the physical processor count.
 	 * 
 	 * @return The physical processor count.
@@ -447,6 +420,119 @@ public class VMTestTaskAction
 		// Cache it and use it
 		VMTestTaskAction._CACHED_CPU_COUNT = rv;
 		return rv;
+	}
+	
+	/**
+	 * Initializes the suite parameters.
+	 *
+	 * @param __task The task.
+	 * @param __sourceSet The source set.
+	 * @param __vmType The virtual machine used.
+	 * @return The parameters to run all tests with.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/09/11
+	 */
+	public static SuiteRunParameters runSuite(Task __task, String __sourceSet,
+		VMSpecifier __vmType)
+		throws NullPointerException
+	{
+		if (__task == null || __sourceSet == null || __vmType == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup builder
+		SuiteRunParameters.SuiteRunParametersBuilder builder =
+			SuiteRunParameters.builder();
+		
+		// Determine system properties to use for testing
+		Map<String, String> sysProps = new LinkedHashMap<>();
+		if (Boolean.getBoolean("java.awt.headless"))
+			sysProps.put("java.awt.headless", "true");
+		
+		// Any specific changes to how tests run
+		SquirrelJMEPluginConfiguration config =
+			SquirrelJMEPluginConfiguration.configurationOrNull(
+				__task.getProject());
+		if (config != null)
+		{
+			// If we define any system properties specifically for tests then
+			// use them here. Could be used for debugging.
+			sysProps.putAll(config.testSystemProperties);
+			
+			// Disable parallelism for these tests?
+			builder.noParallelTests(config.noParallelTests);
+		}
+		
+		// Can we directly refer to the emulator library already?
+		Path emuLib = VMHelpers.findEmulatorLib(__task);
+		if (emuLib != null && Files.exists(emuLib))
+			sysProps.put("squirreljme.emulator.libpath", emuLib.toString());
+		
+		// Setup parameters and build
+		return builder
+			.sysProps(sysProps)
+			.emuLib(new SerializedPath(emuLib))
+			.uniqueId(UUID.randomUUID().toString())
+			.classPath(SerializedPath.boxPaths(VMHelpers.runClassPath(
+				__task, __sourceSet, __vmType, true)))
+			.build();
+	}
+	
+	/**
+	 * Determines the run parameters.
+	 * 
+	 * @param __task The task this is for.
+	 * @param __sourceSet The source set used.
+	 * @param __vmType The type of virtual machine this is.
+	 * @param __runSuite The existing run suite.
+	 * @param __testName The name of the test.
+	 * @param __candidate The test candidate, for test information.
+	 * @return The parameters for running this test.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/09/11
+	 */
+	public static TestRunParameters runTest(Task __task,
+		String __sourceSet, VMSpecifier __vmType,
+		SuiteRunParameters __runSuite, String __testName,
+		CandidateTestFiles __candidate)
+		throws NullPointerException
+	{
+		if (__task == null || __sourceSet == null || __vmType == null ||
+			__runSuite == null || __testName == null || __candidate == null)
+			throw new NullPointerException("NARG");
+		
+		TestRunParameters.TestRunParametersBuilder builder =
+			TestRunParameters.builder();
+		
+		// Default arguments, could be replaced by a proxy main
+		String mainClass = VMHelpers.SINGLE_TEST_RUNNER;
+		String[] mainArgs = new String[]{__testName};
+		
+		// Are we going to use a different proxy main class for this?
+		String proxyMain = __candidate.expectedValues.get("proxy-main");
+		if (proxyMain != null && !proxyMain.trim().isEmpty())
+		{
+			mainArgs = new String[]{mainClass, mainArgs[0]};
+			mainClass = proxyMain.trim();
+		}
+		
+		// Deserialize classpath
+		Path[] classPath = SerializedPath.unboxPaths(__runSuite.classPath);
+		
+		// Determine the arguments that are used to spawn the JVM
+		JavaExecSpecFiller execSpec = new SimpleJavaExecSpecFiller();
+		__vmType.spawnJvmArguments(__task, true, execSpec,
+			mainClass, __testName, __runSuite.getSysProps(), classPath,
+			classPath, mainArgs);
+		
+		// Get command line
+		List<String> commandLine = new ArrayList<>();
+		for (String arg : execSpec.getCommandLine())
+			commandLine.add(arg);
+		
+		// Build final result
+		return builder
+			.commandLine(commandLine)
+			.build();
 	}
 	
 	/**
@@ -522,7 +608,7 @@ public class VMTestTaskAction
 	/**
 	 * Returns the simple duration of the test.
 	 * 
-	 * @param __dur The nano seconds to map.
+	 * @param __dur The nanoseconds to map.
 	 * @return The simple duration string.
 	 * @since 2020/11/26
 	 */
