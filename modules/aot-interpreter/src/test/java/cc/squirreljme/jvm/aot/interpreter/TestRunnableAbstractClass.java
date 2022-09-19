@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.aot.interpreter;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
@@ -24,10 +23,27 @@ public class TestRunnableAbstractClass
 	 * {@inheritDoc}
 	 * @since 2022/09/11
 	 */
+	@SuppressWarnings("ConstantConditions")
 	@Override
 	public void test()
 		throws Throwable
 	{
-		throw Debugging.todo();
+		// Load the class
+		Class<?> interpretedClass = Class.forName("InterpretedAbstract");
+		
+		// Setup new instance
+		Object instance = interpretedClass.newInstance();
+		
+		// Should be this
+		this.secondary("is-instance",
+			(instance instanceof AbstractClass));
+		
+		// Cast
+		AbstractClass of = (AbstractClass)instance;
+		
+		// Perform some math operations accordingly...
+		this.secondary("abstract", of.abstractMethod(3, 7));
+		this.secondary("super", of.superMethod(4, 8));
+		this.secondary("final", of.finalMethod(5, 9));
 	}
 }
