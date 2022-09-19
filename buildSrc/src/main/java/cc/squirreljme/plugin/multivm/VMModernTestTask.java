@@ -120,9 +120,9 @@ public class VMModernTestTask
 		// Always show streams
 		this.getTestLogging().setShowStandardStreams(true);
 		
-		// This can get printed out twice essentially
-		this.getTestLogging().setShowExceptions(false);
-		this.getTestLogging().setShowStackTraces(false);
-		this.getTestLogging().setShowCauses(false);
+		// For extra debugging
+		this.getTestLogging().setShowExceptions(true);
+		this.getTestLogging().setShowStackTraces(true);
+		this.getTestLogging().setShowCauses(true);
 	}
 }

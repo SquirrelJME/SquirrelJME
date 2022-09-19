@@ -71,7 +71,7 @@ parameters:
   # Options to be used for any Gradle command, is faster this way
   standard-gradle-options:
     type: string
-    default: --console plain --continue --parallel --no-daemon
+    default: --console plain --continue --parallel --no-daemon --stacktrace
 
   # Standard build for systems
   standard-build-options:
