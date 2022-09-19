@@ -33,6 +33,7 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.javadoc.Javadoc;
+import org.gradle.api.tasks.testing.Test;
 import org.gradle.external.javadoc.CoreJavadocOptions;
 import org.gradle.external.javadoc.MinimalJavadocOptions;
 import org.gradle.jvm.tasks.Jar;
@@ -260,9 +261,16 @@ public final class TaskInitialization
 			// so that way if it is run, both are run accordingly
 			if (__vmType == VMType.HOSTED || __vmType == VMType.SPRINGCOAT)
 			{
-				Task test = __project.getTasks().getByName("test");
+				Test test = (Test)__project.getTasks().getByName("test");
 				
+				// Test needs this
 				test.dependsOn(vmTest);
+				
+				// Gradle will think these are JUnit tests and then fail
+				// so exclude everything
+				test.setScanForTestClasses(false);
+				test.include();
+				test.exclude("**");
 			}
 		}
 	}
