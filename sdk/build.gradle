@@ -1,0 +1,18 @@
+plugins {
+	id 'java-gradle-plugin'
+}
+
+description = "SquirrelJME SDK Gradle Plugin, SquirrelJME is a Java ME 8 " +
+	"virtual machine available at https://squirreljme.cc/."
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation gradleApi()
+
+	// Lombok for simpler getters/setters
+	implementation 'org.projectlombok:lombok:1.18.24'
+	annotationProcessor 'org.projectlombok:lombok:1.18.24'
+}

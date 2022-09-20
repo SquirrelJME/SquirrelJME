@@ -117,3 +117,6 @@ file(rootProject.projectDir.toPath().resolve("tools"))
 			include "tools:" + subdir.name
 		}
 	})
+
+// SDK
+include "sdk"
