@@ -715,7 +715,12 @@ public final class JDWPController
 			for (Object thread : threads)
 			{
 				state.items.put(thread);
-				state.items.put(threadView.instance(thread));
+				
+				// We could be at a point where the thread is initialized but
+				// the instance of that thread is not yet known
+				Object threadInstance = threadView.instance(thread);
+				if (threadInstance != null)
+					state.items.put(threadInstance);
 			}
 			
 			// Store into the list
