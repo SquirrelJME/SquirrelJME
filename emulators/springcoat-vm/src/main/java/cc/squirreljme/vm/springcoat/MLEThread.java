@@ -153,7 +153,7 @@ public enum MLEThread
 			
 			// If we are debugging, we are going to need to tell the debugger
 			// some important details
-			JDWPController jdwp = target.machineRef.get()
+			JDWPController jdwp = target.machine()
 				.taskManager().jdwpController;
 			if (jdwp != null)
 			{
@@ -545,7 +545,7 @@ public enum MLEThread
 			SpringThread thread = MLEThread.__vmThread(__args[0]).getThread();
 			
 			// If debugging, signal that the thread has ended
-			JDWPController jdwp = thread.machineRef.get()
+			JDWPController jdwp = thread.machine()
 				.taskManager().jdwpController;
 			if (jdwp != null)
 				jdwp.<JDWPTripThread>trip(JDWPTripThread.class,

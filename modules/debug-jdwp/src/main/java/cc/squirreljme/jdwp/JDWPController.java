@@ -256,7 +256,7 @@ public final class JDWPController
 					break;
 				
 				// Debug
-				if (true || JDWPController._DEBUG)
+				if (JDWPController._DEBUG)
 					Debugging.debugNote("JDWP: <- %s", packet);
 				
 				// Ignore any reply packet we received
