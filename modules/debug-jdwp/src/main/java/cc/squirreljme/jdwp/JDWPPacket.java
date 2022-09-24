@@ -757,9 +757,22 @@ public final class JDWPPacket
 			JDWPCommand command = (commandSet == null ? null :
 				commandSet.command(this._command));
 			
+			// Put in the actual packet data
+			int length = this._length;
+			byte[] data = this._data;
+			StringBuilder sb = new StringBuilder(length * 2);
+			for (int i = 0; i < length; i++)
+			{
+				byte b = data[i];
+				
+				sb.append(Character
+					.forDigit(((b & 0xF0) >>> 4) & 0xF, 16));
+				sb.append(Character.forDigit(b & 0xF, 16));
+			}
+			
 			int flags = this._flags;
-			return String.format("JDWPPacket[id=%08x,flags=%02x,len=%d]:%s",
-				this._id, flags, this._length,
+			return String.format("JDWPPacket[id=%08x,flags=%02x,len=%d]:%s:%s",
+				this._id, flags, length,
 				((flags & JDWPPacket.FLAG_REPLY) != 0 ?
 					(this._errorCode == ErrorType.NO_ERROR ? "" :
 						String.format("[error=%s]", this._errorCode)) :
@@ -767,7 +780,8 @@ public final class JDWPPacket
 						(commandSet == null ||
 							commandSet == JDWPCommandSet.UNKNOWN ?
 							this._commandSet : commandSet),
-						(command == null ? this._command : command))));
+						(command == null ? this._command : command))),
+				sb);
 		}
 	}
 	

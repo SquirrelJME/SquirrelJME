@@ -119,6 +119,8 @@ public enum CommandSetThreadReference
 				JDWPPacket rv = __controller.__reply(
 					__packet.id(), ErrorType.NO_ERROR);
 				
+				// Terminated and not suspended
+				rv.writeInt(0);
 				rv.writeInt(0);
 				
 				return rv;
