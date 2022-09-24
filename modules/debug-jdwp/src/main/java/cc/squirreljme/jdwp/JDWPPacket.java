@@ -900,6 +900,11 @@ public final class JDWPPacket
 		
 		synchronized (this)
 		{
+			// If this is the null object, invalidate it
+			if (__instance != null &&
+				__controller.viewObject().isNullObject(__instance))
+				__instance = null;
+			
 			// This must be a valid object type
 			if (__instance != null)
 				if (!__controller.viewObject().isValid(__instance) &&

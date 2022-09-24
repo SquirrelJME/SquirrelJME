@@ -106,6 +106,16 @@ public class DebugViewThread
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2022/09/23
+	 */
+	@Override
+	public boolean isDebugCallback(Object __thread)
+	{
+		return ((SpringThread)__thread).noDebugSuspend;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/04/19
 	 */
 	@Override

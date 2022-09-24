@@ -9,7 +9,10 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPViewThread;
 import cc.squirreljme.jdwp.views.JDWPViewThreadGroup;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Thread group reference commands.
@@ -84,7 +87,8 @@ public enum CommandSetThreadGroupReference
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			JDWPViewThreadGroup view = __controller.viewThreadGroup();
+			JDWPViewThreadGroup groupView = __controller.viewThreadGroup();
+			JDWPViewThread threadView = __controller.viewThread();
 			
 			// Is this valid?
 			Object group = __packet.readThreadGroup(
@@ -93,9 +97,16 @@ public enum CommandSetThreadGroupReference
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
+			// Filter out terminated, frameless, and debug threads (callbacks?)
+			List<Object> threads = new ArrayList<>();
+			for (Object thread : groupView.threads(group))
+				if ((!threadView.isTerminated(thread) &&
+					!threadView.isDebugCallback(thread) &&
+					threadView.frames(thread).length > 0))
+					threads.add(thread);
+			
 			// Write number of child threads
-			Object[] threads = view.threads(group);
-			rv.writeInt(threads.length);
+			rv.writeInt(threads.size());
 			
 			// Record all of their IDs
 			for (Object thread : threads)

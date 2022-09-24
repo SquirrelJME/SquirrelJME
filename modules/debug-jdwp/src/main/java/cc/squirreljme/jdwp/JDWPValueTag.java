@@ -184,7 +184,7 @@ public enum JDWPValueTag
 			throw new NullPointerException("NARG");
 		
 		// If null, assume an object type
-		if (__value == null)
+		if (__value == null || __controller.viewObject().isNullObject(__value))
 			return JDWPValueTag.OBJECT;
 		
 		// If this a valid object, try to get it from its type

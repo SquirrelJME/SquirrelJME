@@ -686,20 +686,29 @@ public final class JDWPController
 		// Current state
 		JDWPState state = this.state;
 		
+		// Get groups
+		JDWPViewThreadGroup groupView = state.view(
+			JDWPViewThreadGroup.class, JDWPViewKind.THREAD_GROUP);
+		JDWPViewThread threadView = state.view(
+			JDWPViewThread.class, JDWPViewKind.THREAD);
+		
 		// All available threads
 		ArrayList<Object> allThreads = new ArrayList<>(); 
 		
-		// Start from the root thread group and get all of the threads
+		// Start from the root thread group and get all the threads
 		// under them, since this is a machine to thread linkage
-		JDWPViewThreadGroup view = state.view(
-			JDWPViewThreadGroup.class, JDWPViewKind.THREAD_GROUP);
 		for (Object group : this.bind().debuggerThreadGroups())
 		{
 			// Register thread group
 			state.items.put(group);
 			
 			// Obtain all threads from this group
-			Object[] threads = view.threads(group);
+			List<Object> threads = new ArrayList<>();
+			for (Object thread : groupView.threads(group))
+				if ((!threadView.isTerminated(thread) &&
+					!threadView.isDebugCallback(thread) &&
+					threadView.frames(thread).length > 0))
+					threads.add(thread);
 			
 			// Register each thread
 			for (Object thread : threads)
@@ -707,8 +716,8 @@ public final class JDWPController
 			
 			// Store into the list
 			allThreads.ensureCapacity(
-				allThreads.size() + threads.length);
-			allThreads.addAll(Arrays.asList(threads));
+				allThreads.size() + threads.size());
+			allThreads.addAll(threads);
 		}
 		
 		return allThreads.toArray(new Object[allThreads.size()]);

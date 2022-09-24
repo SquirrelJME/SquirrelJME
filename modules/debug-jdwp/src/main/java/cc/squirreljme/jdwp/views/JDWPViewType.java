@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp.views;
 
+import cc.squirreljme.jdwp.JDWPLocalVariable;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
 
@@ -233,6 +234,17 @@ public interface JDWPViewType
 	 * @since 2021/04/14
 	 */
 	String methodSignature(Object __which, int __methodDx);
+	
+	/**
+	 * Returns the local variable table for the method.
+	 * 
+	 * @param __which Which class to get from?
+	 * @param __methodDx The method index.
+	 * @return The local variable table, if {@code null} or empty then it
+	 * is not considered valid.
+	 * @since 2022/09/21
+	 */
+	JDWPLocalVariable[] methodVariableTable(Object __which, int __methodDx);
 	
 	/**
 	 * Reads the value of an static field within the class.

@@ -66,7 +66,7 @@ public final class SpringThread
 	private final List<SpringThread.Frame> _frames =
 		new ArrayList<>();
 	
-	/** Do not allow debug suspension. */
+	/** Do not allow debug suspension, as in this is a debugger thread. */
 	public final boolean noDebugSuspend;
 	
 	/** Inherited verbose flags to use. */

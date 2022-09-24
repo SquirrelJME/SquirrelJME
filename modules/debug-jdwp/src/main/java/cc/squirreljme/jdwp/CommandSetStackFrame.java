@@ -38,12 +38,11 @@ public enum CommandSetStackFrame
 			// Read in the slot table
 			int numSlots = __packet.readInt();
 			int[] wantSlot = new int[numSlots];
+			byte[] wantTag = new byte[numSlots];
 			for (int i = 0; i < numSlots; i++)
 			{
 				wantSlot[i] = __packet.readInt();
-				
-				// Ignore the type that was requested
-				__packet.readByte();
+				wantTag[i] = __packet.readByte();
 			}
 			
 			// Always reply with the same number of slots

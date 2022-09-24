@@ -73,6 +73,10 @@ subprojects {
 
 		// Emit deprecation errors
 		compileJava.options.deprecation = true
+		
+		// Maximize debugging
+		compileJava.options.debug = true
+		compileJava.options.debugOptions.setDebugLevel("source,lines,vars")
 
 		// Copy to tests
 		compileTestJava.sourceCompatibility = compileJava.sourceCompatibility
@@ -80,6 +84,8 @@ subprojects {
 		compileTestJava.options.encoding = compileJava.options.encoding
 		compileTestJava.options.verbose = compileJava.options.verbose
 		compileTestJava.options.deprecation = compileJava.options.deprecation
+		compileTestJava.options.debug = compileJava.options.debug
+		compileTestJava.options.debugOptions = compileJava.options.debugOptions
 
 		// Copy to JavaDoc
 		javadoc.options.source = "1.7"

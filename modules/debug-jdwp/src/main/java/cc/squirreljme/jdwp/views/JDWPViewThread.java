@@ -49,6 +49,15 @@ public interface JDWPViewThread
 	void interrupt(Object __which);
 	
 	/**
+	 * Is this a debugger generated callback thread?
+	 *
+	 * @param __thread The thread to check.
+	 * @return Is this a debug callback thread?
+	 * @since 2022/09/23
+	 */
+	boolean isDebugCallback(Object __thread);
+	
+	/**
 	 * Returns the termination status of the thread.
 	 * 
 	 * @param __which Get the termination state of which thread?
