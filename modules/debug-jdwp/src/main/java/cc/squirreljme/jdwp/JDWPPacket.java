@@ -9,7 +9,11 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPViewHasInstance;
+import cc.squirreljme.jdwp.views.JDWPViewKind;
+import cc.squirreljme.jdwp.views.JDWPViewObject;
 import cc.squirreljme.jdwp.views.JDWPViewThread;
+import cc.squirreljme.jdwp.views.JDWPViewThreadGroup;
 import cc.squirreljme.jdwp.views.JDWPViewType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
@@ -38,6 +42,11 @@ public final class JDWPPacket
 	/** Grow size. */
 	private static final byte _GROW_SIZE =
 		32;
+	
+	/** Attempts to instance capture. */
+	private static final JDWPViewKind[] _INSTANCE_CAPTURE =
+		new JDWPViewKind[]{JDWPViewKind.THREAD, JDWPViewKind.THREAD_GROUP,
+			JDWPViewKind.TYPE};
 	
 	/** The queue where packets will go when done. */
 	private final Reference<Deque<JDWPPacket>> _queue;
@@ -482,6 +491,19 @@ public final class JDWPPacket
 				}
 			}
 			
+			// If this is a thread group, try to get the representative object
+			// of it, this should be the task
+			if (__controller.viewThreadGroup().isValid(object))
+			{
+				Object alt = __controller.viewThreadGroup().instance(object);
+				if (__controller.viewObject().isValid(alt))
+				{
+					// Make sure it is registered
+					__controller.state.items.put(alt);
+					return alt;
+				}
+			}
+			
 			// If this a valid class, bounce to the class instance object
 			if (__controller.viewType().isValid(object))
 			{
@@ -546,37 +568,59 @@ public final class JDWPPacket
 	 * Reads the given thread from the packet.
 	 * 
 	 * @param __controller The controller used.
-	 * @param __nullable Can this be null?
 	 * @return The object value.
 	 * @throws JDWPException If this does not refer to a valid thread.
 	 * @since 2021/04/11
 	 */
-	public final Object readThread(JDWPController __controller,
-		boolean __nullable)
+	public final Object readThread(JDWPController __controller)
 		throws JDWPException
 	{
+		JDWPViewObject viewObject = __controller.viewObject();
+		JDWPViewThread viewThread = __controller.viewThread();
+		JDWPViewType viewType = __controller.viewType();
+		
 		int id = this.readId();
 		Object thread = __controller.state.items.get(id);
 		
 		// Is this valid?
-		JDWPViewThread viewThread = __controller.viewThread();
 		if (!viewThread.isValid(thread))
 		{
 			// Threads may be aliased to objects, and as such if we try to
 			// read a thread that is aliased by an object we need to get
 			// the original thread back
 			// Scan through all threads and see if we can find it again
-			if (__controller.viewObject().isValid(thread))
-				for (Object check : __controller.__allThreads())
+			if (viewObject.isValid(thread))
+			{
+				// Try to find the actual owning thread
+				for (Object check : __controller.__allThreads(false))
 					if (thread == viewThread.instance(check))
 					{
 						// Make sure it is registered
 						__controller.state.items.put(check);
 						return check;
 					}
-			
-			if (__nullable && thread == null)
-				return null;
+				
+				// Try to get the internal thread this represents if we were
+				// unable to find an existing thread this is owned by... since
+				// perhaps the thread terminated and no longer exists
+				Object objType = viewObject.type(thread);
+				if ("Ljava/lang/Thread;".equals(viewType.signature(objType)))
+				{
+					// Find the field for this
+					int fieldId = JDWPUtils.findFieldId(viewType, objType,
+						"_vmThread",
+						"Lcc/squirreljme/jvm/mle/brackets/VMThreadBracket;");
+					
+					// Read from this field
+					if (fieldId >= 0)
+						try (JDWPValue value = __controller.value())
+						{
+							// If this is a valid object, then use it
+							if (viewObject.readValue(thread, fieldId, value))
+								return viewThread.fromBracket(value.get());
+						}
+				}
+			}
 			
 			// Fail with invalid thread
 			throw ErrorType.INVALID_THREAD.toss(thread, id);
@@ -602,8 +646,21 @@ public final class JDWPPacket
 		Object group = __controller.state.items.get(id);
 		
 		// Is this valid?
+		JDWPViewThreadGroup viewThreadGroup = __controller.viewThreadGroup();
 		if (!__controller.viewThreadGroup().isValid(group))
 		{
+			// Groups may be aliased to Objects, so if this is not one then
+			// we want to check all of our thread groups to see if we can
+			// find a match accordingly
+			if (__controller.viewObject().isValid(group))
+				for (Object check : __controller.__allThreadGroups())
+					if (group == viewThreadGroup.instance(check))
+					{
+						// Make sure it is registered
+						__controller.state.items.put(check);
+						return check;
+					}
+			
 			if (__nullable && group == null)
 				return null;
 			
@@ -901,19 +958,51 @@ public final class JDWPPacket
 		synchronized (this)
 		{
 			// If this is the null object, invalidate it
-			if (__instance != null &&
-				__controller.viewObject().isNullObject(__instance))
+			JDWPViewObject viewObject = __controller.viewObject();
+			if (__instance != null && viewObject.isNullObject(__instance))
 				__instance = null;
 			
-			// This must be a valid object type
+			// Try to remap the object to an instance type if possible
 			if (__instance != null)
-				if (!__controller.viewObject().isValid(__instance) &&
-					!__controller.viewThread().isValid(__instance) &&
+			{
+				// Try to capture the object instance of this?
+				for (JDWPViewKind captureKind : JDWPPacket._INSTANCE_CAPTURE)
+				{
+					JDWPViewHasInstance viewInstance = __controller
+						.view(JDWPViewHasInstance.class, captureKind);
+					
+					// Can only do this if it is valid to do it
+					if (viewInstance.isValid(__instance))
+					{
+						// It is possible that there is no actual instance
+						// type yet such as with types, so only replace if it
+						// does not lead to null
+						Object potential = viewInstance.instance(__instance);
+						if (potential != null &&
+							!viewObject.isNullObject(potential))
+						{
+							// We need to store both of these
+							__controller.state.items.put(__instance);
+							__controller.state.items.put(potential);
+							
+							// Use the new instance
+							__instance = potential;
+						
+							// Stop now
+							break;
+						}
+					}
+				}
+				
+				// Not valid at all?
+				if (!viewObject.isValid(__instance) &&
 					!__controller.viewType().isValid(__instance) &&
 					!__controller.viewFrame().isValid(__instance) &&
+					!__controller.viewThread().isValid(__instance) &&
 					!__controller.viewThreadGroup().isValid(__instance))
 					throw ErrorType.INVALID_OBJECT.toss(__instance,
 						System.identityHashCode(__instance));
+			}
 			
 			// Forward to write ID
 			this.writeId(System.identityHashCode(__instance));

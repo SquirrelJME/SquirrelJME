@@ -100,9 +100,7 @@ public enum CommandSetThreadGroupReference
 			// Filter out terminated, frameless, and debug threads (callbacks?)
 			List<Object> threads = new ArrayList<>();
 			for (Object thread : groupView.threads(group))
-				if ((!threadView.isTerminated(thread) &&
-					!threadView.isDebugCallback(thread) &&
-					threadView.frames(thread).length > 0))
+				if (JDWPUtils.isVisibleThread(threadView, thread))
 					threads.add(thread);
 			
 			// Write number of child threads
@@ -110,11 +108,13 @@ public enum CommandSetThreadGroupReference
 			
 			// Record all of their IDs
 			for (Object thread : threads)
-			{	
-				rv.writeObject(__controller, thread);
+			{
+				Object threadInstance = threadView.instance(thread);
+				rv.writeObject(__controller, threadInstance);
 				
 				// Store for later referencing
 				__controller.state.items.put(thread);
+				__controller.state.items.put(threadInstance);
 			}
 			
 			// There are never any child thread groups

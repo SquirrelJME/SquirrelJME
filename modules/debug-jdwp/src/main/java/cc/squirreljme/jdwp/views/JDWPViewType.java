@@ -19,7 +19,7 @@ import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
  * @since 2021/04/10
  */
 public interface JDWPViewType
-	extends JDWPViewValidObject
+	extends JDWPViewHasInstance, JDWPViewValidObject
 {
 	/**
 	 * Checks if this type can cast to the other type.
@@ -148,6 +148,7 @@ public interface JDWPViewType
 	 * @return The {@link Class} object instance.
 	 * @since 2021/04/19
 	 */
+	@Override
 	Object instance(Object __which);
 	
 	/**

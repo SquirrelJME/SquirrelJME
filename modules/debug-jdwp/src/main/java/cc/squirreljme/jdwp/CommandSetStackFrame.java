@@ -32,7 +32,7 @@ public enum CommandSetStackFrame
 			throws JDWPException
 		{
 			// Ignore the thread but check it, then read the frame
-			__packet.readThread(__controller, false);
+			__packet.readThread(__controller);
 			Object frame = __packet.readFrame(__controller, false);
 			
 			// Read in the slot table
@@ -86,7 +86,7 @@ public enum CommandSetStackFrame
 			throws JDWPException
 		{
 			// Ignore the thread but check it, then read the frame
-			__packet.readThread(__controller, false);
+			__packet.readThread(__controller);
 			Object frame = __packet.readFrame(__controller, false);
 			
 			// Where is this frame located?

@@ -364,7 +364,7 @@ public final class JDWPController
 		{
 			// Suspend all threads?
 			if (request.suspendPolicy == SuspendPolicy.ALL)
-				for (Object thread : this.__allThreads())
+				for (Object thread : this.__allThreads(false))
 					this.viewThread().suspension(thread).suspend();
 			
 			// Suspend only a single thread?
@@ -677,11 +677,12 @@ public final class JDWPController
 	
 	/**
 	 * Returns all threads.
-	 * 
+	 *
+	 * @param __filterVisible Filter visible threads?
 	 * @return All threads.
 	 * @since 2021/04/10
 	 */
-	final Object[] __allThreads()
+	final Object[] __allThreads(boolean __filterVisible)
 	{
 		// Current state
 		JDWPState state = this.state;
@@ -701,18 +702,21 @@ public final class JDWPController
 		{
 			// Register thread group
 			state.items.put(group);
+			state.items.put(groupView.instance(group));
 			
 			// Obtain all threads from this group
 			List<Object> threads = new ArrayList<>();
 			for (Object thread : groupView.threads(group))
-				if ((!threadView.isTerminated(thread) &&
-					!threadView.isDebugCallback(thread) &&
-					threadView.frames(thread).length > 0))
+				if (!__filterVisible ||
+					JDWPUtils.isVisibleThread(threadView, thread))
 					threads.add(thread);
 			
 			// Register each thread
 			for (Object thread : threads)
+			{
 				state.items.put(thread);
+				state.items.put(threadView.instance(thread));
+			}
 			
 			// Store into the list
 			allThreads.ensureCapacity(

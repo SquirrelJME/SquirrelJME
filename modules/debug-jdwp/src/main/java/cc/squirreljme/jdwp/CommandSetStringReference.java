@@ -45,14 +45,8 @@ public enum CommandSetStringReference
 					System.identityHashCode(object));
 			
 			// Locate the char field index
-			int charFieldDx = -1;
-			for (int fieldId : viewType.fields(type))
-				if (CommandSetStringReference._STRING_CHARS.equals(
-					viewType.fieldName(type, fieldId)))
-				{
-					charFieldDx = fieldId;
-					break;
-				}
+			int charFieldDx = JDWPUtils.findFieldId(viewType, type,
+				CommandSetStringReference._STRING_CHARS, "[C");
 			
 			// Is missing? We do not know how strings work then
 			if (charFieldDx < 0)

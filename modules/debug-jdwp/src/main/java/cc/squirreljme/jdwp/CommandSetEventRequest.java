@@ -91,7 +91,7 @@ public enum CommandSetEventRequest
 					
 					case THREAD_ONLY:
 						thread = __packet.readThread(
-							__controller, false);
+							__controller);
 						
 						if (thread != null)
 							__controller.state.items.put(thread);
@@ -143,7 +143,7 @@ public enum CommandSetEventRequest
 					
 					case CALL_STACK_STEPPING:
 						callStackStepping = new CallStackStepping(
-							__packet.readThread(__controller, false),
+							__packet.readThread(__controller),
 							StepSize.of(__packet.readInt()),
 							StepDepth.of(__packet.readInt()));
 						break;
