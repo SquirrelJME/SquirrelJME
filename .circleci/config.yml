@@ -882,6 +882,14 @@ jobs:
           command: ./gradlew romTestSummerCoat <<pipeline.parameters.standard-gradle-options>>
       - persist-gradle
 
+  # Construct the built-in ROM for RatufaCoat
+  construct_builtInRatufaCoatRom:
+    executor: build-on-linux-amd64
+    steps:
+      - run:
+          name: TODO
+          command: false
+
 workflows:
   version: 2
   tests:
