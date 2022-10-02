@@ -1,0 +1,28 @@
+# 2022/09/07
+
+## 15:03
+
+I would say what I should do from the start of this compiler run, instead of
+running it on normal classes with various different situations which was a huge
+mistake and error to do... I will instead build a bunch of basic sample classes
+with a single set of scenarios that I can implement and test for accordingly.
+Hopefully with these scenarios it will be easier and a more stable
+implementation with less guess work.
+
+## 16:25
+
+I actually got rid of `Poking.poke()` which makes things nicer. I do have
+another good idea and that is for TAC to have a potential alternative main
+for some tests, so if I want to test the interpreter I can by just having a
+slightly different main starting point.
+
+## 17:29
+
+Okay so I added support for proxy main in tests. I think what I should do next
+is implement a bunch of tests around the interpreter and also adding basic
+implementation for it just solely for tests. This way I could potentially
+actually run the target tests via the interpreted environment. If successful
+I would be one step closer to having SummerCoat be supported but also have it
+be a bit faster for stuff that is native level. So in the future when
+graphics functions are actual native code, they would not be as slow as a pure
+interpreter.

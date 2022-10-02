@@ -72,7 +72,7 @@ public class VMTestOutputs
 		
 		// The output of the task will be the test results
 		for (String testName :
-			VMHelpers.runningTests(project, sourceSet).keySet())
+			VMHelpers.runningTests(project, sourceSet).tests.keySet())
 			result.add(resultRoot.resolve(
 				VMHelpers.testResultXmlName(testName)));
 		

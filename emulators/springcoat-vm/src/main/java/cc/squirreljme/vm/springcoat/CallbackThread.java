@@ -80,6 +80,17 @@ public class CallbackThread
 	}
 	
 	/**
+	 * Indicates whether this callback does not suspend on debugging.
+	 * 
+	 * @return If this is no suspend on debugging.
+	 * @since 2022/09/01
+	 */
+	public boolean noDebugSuspend()
+	{
+		return this._thread.noDebugSuspend;
+	}
+	
+	/**
 	 * Opens the thread.
 	 * 
 	 * @throws IllegalStateException If this thread is already open.

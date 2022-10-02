@@ -20,7 +20,7 @@ import cc.squirreljme.runtime.cldc.util.UnsignedInteger;
  *
  * @since 2019/05/24
  */
-@SuppressWarnings({"CommentedOutCode", "MagicNumber"})
+@SuppressWarnings({"CommentedOutCode", "MagicNumber", "OverlyComplexClass"})
 public final class SoftFloat
 {
 	/** The sign mask. */

@@ -11,7 +11,6 @@ package cc.squirreljme.emulator.vm;
 
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.jdwp.JDWPFactory;
-import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.JarClassLibrary;
@@ -134,9 +133,6 @@ public abstract class VMFactory
 	 */
 	public static void main(String... __args)
 	{
-		// Poke the VM to initialize some probably important parts of it
-		Poking.poke();
-		
 		// Default settings
 		String vmName = "springcoat";
 		Path snapshotPath = null;

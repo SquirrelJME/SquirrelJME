@@ -15,11 +15,11 @@ import org.gradle.api.java.archives.Manifest;
 
 /**
  * The action for pulling in the actual manifest for
- * {@link TestsJarManifestTask}.
+ * {@link AdditionalManifestPropertiesTask}.
  *
  * @since 2022/07/10
  */
-public class TestJarManifestTaskManifestModifier
+public class ManifestTaskModifier
 	implements Action<Manifest>
 {
 	/** The task output. */
@@ -31,7 +31,7 @@ public class TestJarManifestTaskManifestModifier
 	 * @param __taskOutput The task output.
 	 * @since 2022/07/10
 	 */
-	public TestJarManifestTaskManifestModifier(Path __taskOutput)
+	public ManifestTaskModifier(Path __taskOutput)
 	{
 		this._taskOutput = __taskOutput;
 	}

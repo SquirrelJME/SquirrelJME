@@ -117,4 +117,17 @@ public final class JDWPLocation
 		return String.format("Location[%s.%s%s @%d",
 			this.type, this.name, this.descriptor, this.codeDx);
 	}
+	
+	/**
+	 * Returns a new location with the given code index.
+	 * 
+	 * @param __newCodeDx The new code index.
+	 * @return The new location.
+	 * @since 2022/08/28
+	 */
+	public JDWPLocation withCodeIndex(int __newCodeDx)
+	{
+		return new JDWPLocation(this.type, this.methodDx, __newCodeDx,
+			this.name, this.descriptor);
+	}
 }

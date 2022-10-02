@@ -90,7 +90,7 @@ class DeveloperNoteTaskAction
 		
 		// Store the note in the un-versioned space, but only if saved
 		if (session._saveCount > 0)
-			exe.unversionedStoreBytes(filePath, session._content);
+			exe.unversionStoreBytes(filePath, session._content);
 		
 		// Recreate the calendar
 		if (doCreate)

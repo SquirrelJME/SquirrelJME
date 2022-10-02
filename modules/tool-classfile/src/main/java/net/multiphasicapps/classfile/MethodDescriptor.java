@@ -10,6 +10,7 @@
 package net.multiphasicapps.classfile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ import java.util.List;
  * @since 2017/06/12
  */
 public final class MethodDescriptor
-	implements MemberDescriptor
+	implements Comparable<MethodDescriptor>, MemberDescriptor
 {
 	/** String representation of the descriptor. */
 	protected final String string;
@@ -186,7 +187,22 @@ public final class MethodDescriptor
 	}
 	
 	/**
-	 * Returns all of the arguments.
+	 * Returns the slot count for arguments.
+	 * 
+	 * @return The slot count for arguments.
+	 * @since 2022/09/21
+	 */
+	public int argumentSlotCount()
+	{
+		int total = 0;
+		for (FieldDescriptor desc : this._args)
+			total += (desc.isWide() ? 2 : 1);
+		
+		return total;
+	}
+	
+	/**
+	 * Returns all the arguments.
 	 *
 	 * @return The arguments.
 	 * @since 2019/04/14
@@ -205,6 +221,58 @@ public final class MethodDescriptor
 	public int argumentCount()
 	{
 		return this._args.length;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/08/27
+	 */
+	@Override
+	public int compareTo(MethodDescriptor __other)
+	{
+		if (__other == null)
+			throw new NullPointerException("NARG");
+		
+		FieldDescriptor[] aList = this._args;
+		FieldDescriptor[] bList = __other._args;
+		
+		// Compare by each index
+		int aLen = aList.length;
+		int bLen = bList.length;
+		for (int i = 0, n = Math.min(aLen, bLen); i < n; i++)
+		{
+			FieldDescriptor a = aList[i];
+			FieldDescriptor b = bList[i];
+			
+			// If these are different, then use that difference
+			int compare = a.compareTo(b);
+			if (compare != 0)
+				return compare;
+		}
+		
+		// Compare return types
+		FieldDescriptor aReturn = this.rvalue;
+		FieldDescriptor bReturn = __other.rvalue;
+		
+		// Null first
+		if ((aReturn == null) != (bReturn == null))
+		{
+			if (aReturn == null)
+				return -1;
+			else
+				return 1;
+		}
+		
+		// Do the compare if neither are null
+		if (aReturn != null)
+		{
+			int compare = aReturn.compareTo(bReturn);
+			if (compare != 0)
+				return compare;
+		}
+		
+		// Shorter lists come first
+		return bLen - aLen;
 	}
 	
 	/**

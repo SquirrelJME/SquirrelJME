@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.tac;
 
+import org.junit.Test;
+
 /**
  * This is a test which returns a result and has no parameters.
  *
@@ -25,6 +27,7 @@ public abstract class TestSupplier<R>
 	 * @throws Throwable On any thrown exception.
 	 * @since 2018/10/06
 	 */
+	@Test
 	public abstract R test()
 		throws Throwable;
 	

@@ -11,8 +11,11 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.emulator.profiler.ProfiledThread;
+import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.JDWPStepTracker;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
+import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
+import cc.squirreljme.jdwp.trips.JDWPTripThread;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
@@ -66,6 +69,9 @@ public final class SpringThread
 	private final List<SpringThread.Frame> _frames =
 		new ArrayList<>();
 	
+	/** Do not allow debug suspension, as in this is a debugger thread. */
+	public final boolean noDebugSuspend;
+	
 	/** Inherited verbose flags to use. */
 	int _initVerboseFlags;
 	
@@ -112,11 +118,14 @@ public final class SpringThread
 	 * @param __main Is this a main thread.
 	 * @param __n The name of the thread.
 	 * @param __profiler Profiled storage.
+	 * @param __noDebugSuspend Do not allow the debugger to suspend this
+	 * thread.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/01
 	 */
 	SpringThread(Reference<SpringMachine> __machRef, int __id, int __uniqueId,
-		boolean __main, String __n, ProfiledThread __profiler)
+		boolean __main, String __n, ProfiledThread __profiler,
+		boolean __noDebugSuspend)
 		throws NullPointerException
 	{
 		if (__n == null)
@@ -128,6 +137,7 @@ public final class SpringThread
 		this.main = __main;
 		this.name = __n;
 		this.profiler = __profiler;
+		this.noDebugSuspend = __noDebugSuspend;
 	}
 	
 	/**
@@ -673,6 +683,12 @@ public final class SpringThread
 		SpringThreadWorker worker = this._worker;
 		if (worker != null)
 			worker.machine.signalThreadTerminate(this);
+		
+		// If debugging, signal that the thread is no longer alive
+		JDWPController jdwp = this.machine().taskManager().jdwpController;
+		if (jdwp != null)
+			jdwp.<JDWPTripThread>trip(JDWPTripThread.class,
+				JDWPGlobalTrip.THREAD).alive(this, false);
 	}
 	
 	/**

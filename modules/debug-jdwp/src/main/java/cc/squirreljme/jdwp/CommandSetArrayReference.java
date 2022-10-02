@@ -93,7 +93,7 @@ public enum CommandSetArrayReference
 						value.set(tag.defaultValue);
 					
 					// Write as untagged if available
-					rv.writeValue(value, tag, true);
+					rv.writeValue(__controller, value, tag, true);
 					
 					// Store object for later use
 					if (value.get() != null && tag.isObject)

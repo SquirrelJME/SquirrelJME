@@ -58,15 +58,16 @@ public abstract class AbstractResourceTask
 	 * @param __outExt Output extension.
 	 * @param __sourceSet The source set.
 	 * @param __prTask The process resources task.
+	 * @param __cleanTask The task for cleaning.
 	 * @since 2020/04/04
 	 */
 	@Inject
 	public AbstractResourceTask(String __ext, String __outExt,
-		String __sourceSet, ProcessResources __prTask)
+		String __sourceSet, ProcessResources __prTask, Task __cleanTask)
 		throws NullPointerException
 	{
 		if (__ext == null || __outExt == null ||
-			__sourceSet == null || __prTask == null)
+			__sourceSet == null || __prTask == null || __cleanTask == null)
 			throw new NullPointerException("NARG");
 		
 		this.extension = __ext;
@@ -83,6 +84,9 @@ public abstract class AbstractResourceTask
 		
 		// The action to do
 		this.doLast(new __ActionTask__());
+		
+		// Clean must happen first
+		this.mustRunAfter(__cleanTask);
 		
 		// The process task depends on this task
 		__prTask.dependsOn(this);
@@ -215,7 +219,7 @@ public abstract class AbstractResourceTask
 	{
 		Collection<File> result = new LinkedList<>();
 		for (FileLocation file : this.taskInputs())
-			result.add(file.absolute.toFile());
+			result.add(file.getAbsolute().toFile());
 		
 		return this.getProject().files(result);
 	}
@@ -236,7 +240,7 @@ public abstract class AbstractResourceTask
 		Collection<__Output__> result = new LinkedList<>();
 		for (FileLocation input : this.taskInputs())
 			result.add(new __Output__(input, outDir.resolve(
-				this.removeExtension(input.relative) + outputExtension)));
+				this.removeExtension(input.getRelative()) + outputExtension)));
 		
 		return result;
 	}

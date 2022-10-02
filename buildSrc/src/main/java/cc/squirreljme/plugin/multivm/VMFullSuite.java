@@ -12,7 +12,6 @@ package cc.squirreljme.plugin.multivm;
 import javax.inject.Inject;
 import lombok.Getter;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.Internal;
 
 /**
@@ -54,7 +53,7 @@ public class VMFullSuite
 		
 		// Runs the entire API/Library suite of SquirrelJME to run a given
 		// application
-		this.setGroup("squirreljme");
+		this.setGroup("squirreljmeGeneral");
 		this.setDescription("Runs the full suite of SquirrelJME Modules.");
 		
 		// This always runs, no matter what

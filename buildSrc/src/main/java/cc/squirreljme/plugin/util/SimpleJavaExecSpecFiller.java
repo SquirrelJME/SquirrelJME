@@ -11,6 +11,7 @@ package cc.squirreljme.plugin.util;
 
 import cc.squirreljme.plugin.multivm.VMHelpers;
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.gradle.internal.os.OperatingSystem;
 
 /**
  * This is a simple Java execution specification filler which provides the
@@ -167,7 +169,24 @@ public class SimpleJavaExecSpecFiller
 	 */
 	private static Path __findJavaExe()
 	{
-		// TODO: This is somewhere in "java.home"
+		String javaHomeRaw = System.getProperty("java.home");
+		Path javaHome = (javaHomeRaw != null ? Paths.get(javaHomeRaw) : null);
+		
+		// Name differs per operating system
+		Path javaExeName;
+		if (OperatingSystem.current() == OperatingSystem.WINDOWS)
+			javaExeName = Paths.get("java.exe");
+		else
+			javaExeName = Paths.get("java");
+		
+		// Check to see if the Java executable exists here
+		Path binPath = (javaHome != null ? javaHome.resolve("bin")
+			.resolve(javaExeName) : null);
+		if (binPath != null && Files.exists(binPath) &&
+			Files.isExecutable(binPath))
+			return binPath;
+		
+		// Fallback to the system Java, assuming it exists
 		return Paths.get("java");
 	}
 }

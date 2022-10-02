@@ -18,6 +18,7 @@ import net.multiphasicapps.tac.TestConsumer;
  */
 public class TestArrayNegativeSize
 	extends TestConsumer<String>
+	implements ArrayTypeMultiParameters
 {
 	/**
 	 * {@inheritDoc}

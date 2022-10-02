@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.views.JDWPViewObject;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 
 /**
@@ -65,6 +66,16 @@ public class DebugViewObject
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2022/09/21
+	 */
+	@Override
+	public boolean isNullObject(Object __value)
+	{
+		return (__value == null || __value == SpringNullObject.NULL);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/04/11
 	 */
 	@Override
@@ -91,13 +102,12 @@ public class DebugViewObject
 		// the class details.
 		if (__which instanceof SpringSimpleObject)
 		{
-			SpringFieldStorage[] store = ((SpringSimpleObject)__which)._fields;
+			SpringSimpleObject which = (SpringSimpleObject)__which;
+			
+			SpringFieldStorage[] store = (which)._fields;
 			if (__index >= 0 && __index < store.length)
-			{
-				__out.set(DebugViewObject.__normalizeNull(
-					store[__index].get()));
-				return true;
-			}
+				return DebugViewType.__readValue(__out, store[__index],
+					which.type.classLoader().machine());
 		}
 		
 		// Not a valid object or one where a value can be read from

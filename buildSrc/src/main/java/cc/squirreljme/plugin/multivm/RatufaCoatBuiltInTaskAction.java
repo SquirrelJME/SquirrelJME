@@ -122,7 +122,7 @@ public class RatufaCoatBuiltInTaskAction
 				try (InputStream in = RatufaCoatBuiltInTaskAction.class
 					.getResourceAsStream("header.h"))
 				{
-					byte[] buf = new byte[8192];
+					byte[] buf = new byte[16384];
 					for (;;)
 					{
 						int rc = in.read(buf);

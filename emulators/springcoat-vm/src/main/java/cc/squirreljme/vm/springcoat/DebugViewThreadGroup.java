@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.views.JDWPViewThreadGroup;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import net.multiphasicapps.classfile.ClassName;
 
@@ -77,6 +78,18 @@ public class DebugViewThreadGroup
 	{
 		return ((SpringMachine)__which).classLoader()
 			.loadClass(new ClassName(__name));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/24
+	 */
+	@Override
+	public Object instance(Object __threadGroup)
+	{
+		// The context is always our own task object
+		return ((SpringMachine)__threadGroup)
+			.taskObject((SpringMachine)__threadGroup);
 	}
 	
 	/**

@@ -54,7 +54,7 @@ final class __TripVmState__
 			0))
 		{
 			// Write the initial starting thread
-			packet.writeId(System.identityHashCode(__bootThread));
+			packet.writeObject(controller, __bootThread);
 			
 			// Send it away!
 			controller.commLink.send(packet);

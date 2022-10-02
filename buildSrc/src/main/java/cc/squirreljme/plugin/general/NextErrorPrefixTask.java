@@ -29,7 +29,7 @@ public class NextErrorPrefixTask
 	public NextErrorPrefixTask()
 	{
 		// Describe this
-		this.setGroup("squirreljme");
+		this.setGroup("squirreljmeGeneral");
 		this.setDescription("Returns the next free error prefix.");
 		
 		// The action to perform
