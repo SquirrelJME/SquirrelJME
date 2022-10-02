@@ -890,6 +890,30 @@ jobs:
           name: TODO
           command: false
 
+  # Construct release ROM for RetroArch
+  construct_builtInRatufaCoatRomRelease:
+    executor: build-on-linux-amd64
+    steps:
+      - run:
+          name: TODO
+          command: false
+
+  # Poke RetroArch for building the cores
+  poke_RetroArch:
+    executor: build-on-linux-amd64
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - store_artifacts:
+          path: ratufacoat/build/builtin.c
+      - run:
+          name: Poking RetroArch CI/CD Platform
+          command: curl -X POST -F "token=$RETROARCH_GITLAB_TRIGGER_TOKEN" -F "ref=$CIRCLE_BRANCH" -F "variables[SQUIRRELJME_ROM_ID]=$CIRCLE_BUILD_NUM" https://git.libretro.com/api/v4/projects/120/trigger/pipeline
+
 workflows:
   version: 2
   tests:
@@ -1011,6 +1035,12 @@ workflows:
       - ratufacoat_build_emscripten:
           requires:
             - construct_builtInRatufaCoatRom
+
+      # RetroArch
+      - poke_RetroArch:
+          requires:
+            - ratufacoat_build_linux
+            - construct_builtInRatufaCoatRomRelease
 
   #################### TASKS TO INCREASE USER FRIENDLINESS ####################
   friendliness:
