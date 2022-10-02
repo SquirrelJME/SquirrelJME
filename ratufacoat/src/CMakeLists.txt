@@ -76,6 +76,7 @@ add_subdirectory(collections)
 add_subdirectory(engine)
 add_subdirectory(format)
 add_subdirectory(nuklear)
+add_subdirectory(miniz)
 
 # Function to generate object files and sources for cross building
 function(squirreljme_object_and_sources coreTargetVar)
@@ -144,7 +145,8 @@ squirreljme_object_and_sources(SquirrelJMECoreTarget
 	SquirrelJMEEngine
 	SquirrelJMEEngineSpringCoat
 	SquirrelJMEFormat
-	SquirrelJMENuklearUI)
+	SquirrelJMENuklearUI
+	SquirrelJMEMiniZ)
 
 # Static library
 add_subdirectory(lib)
