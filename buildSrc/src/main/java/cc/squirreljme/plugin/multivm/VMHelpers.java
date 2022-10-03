@@ -124,7 +124,7 @@ public final class VMHelpers
 		Map<String, FileLocation> expects = new HashMap<>();
 		
 		// Setup initial set of sources and files for lookup
-		List<CandidateTestFileSource> everything = new ArrayList<>();
+		Set<CandidateTestFileSource> everything = new LinkedHashSet<>();
 		everything.add(new CandidateTestFileSource(true,
 			TestDetection.sourceSetFiles(__project, __sourceSet)));
 		
@@ -156,7 +156,8 @@ public final class VMHelpers
 				// does not include the mime extension as that is removed at
 				// JAR build time
 				Path normalized;
-				if ("__mime".equals(VMHelpers.getExtension(file.getRelative())))
+				if ("__mime".equals(VMHelpers.getExtension(
+						file.getRelative())))
 					normalized = VMHelpers.stripExtension(file.getRelative());
 				else
 					normalized = file.getRelative();
@@ -247,8 +248,10 @@ public final class VMHelpers
 			
 			// Otherwise, signify all the parameters within
 			else
+			{
 				for (String multiParam : multiParams)
 					result.put(testName + "@" + multiParam, candidate);
+			}
 		}
 		
 		return Collections.unmodifiableMap(result);
