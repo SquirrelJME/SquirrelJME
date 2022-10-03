@@ -38,11 +38,13 @@ public final class ThreadShelf
 	 * Creates a virtual machine thread for the given Java thread.
 	 *
 	 * @param __javaThread The Java thread to create under.
+	 * @param __name The name of this thread.
 	 * @return The virtual machine thread.
 	 * @throws MLECallError If {@code __javaThread} is null.
 	 * @since 2020/06/17
 	 */
-	public static native VMThreadBracket createVMThread(Thread __javaThread)
+	public static native VMThreadBracket createVMThread(Thread __javaThread,
+		String __name)
 		throws MLECallError;
 	
 	/**

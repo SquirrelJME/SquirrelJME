@@ -187,6 +187,21 @@ public final class MethodDescriptor
 	}
 	
 	/**
+	 * Returns the slot count for arguments.
+	 * 
+	 * @return The slot count for arguments.
+	 * @since 2022/09/21
+	 */
+	public int argumentSlotCount()
+	{
+		int total = 0;
+		for (FieldDescriptor desc : this._args)
+			total += (desc.isWide() ? 2 : 1);
+		
+		return total;
+	}
+	
+	/**
 	 * Returns all the arguments.
 	 *
 	 * @return The arguments.

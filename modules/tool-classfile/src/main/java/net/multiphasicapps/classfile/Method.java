@@ -54,7 +54,7 @@ public final class Method
 	protected final int methodIndex;
 	
 	/** Annotated values. */
-	private final AnnotationTable annotations;
+	protected final AnnotationTable annotations;
 	
 	/** The code attribute data, which is optional. */
 	private final byte[] _rawcodeattr;
@@ -128,12 +128,12 @@ public final class Method
 	public final ByteCode byteCode()
 		throws InvalidClassFormatException
 	{
-		// If there is no code atribute there is no byte code
+		// If there is no code attribute there is no byte code
 		byte[] rawcodeattr = this._rawcodeattr;
 		if (!this.hascode)
 			return null;
 		
-		// Otherwise load a representation of it
+		// Otherwise, load a representation of it
 		Reference<ByteCode> ref = this._bytecode;
 		ByteCode rv;
 		

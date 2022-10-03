@@ -11,8 +11,11 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.emulator.profiler.ProfiledThread;
+import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.JDWPStepTracker;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
+import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
+import cc.squirreljme.jdwp.trips.JDWPTripThread;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
@@ -66,7 +69,7 @@ public final class SpringThread
 	private final List<SpringThread.Frame> _frames =
 		new ArrayList<>();
 	
-	/** Do not allow debug suspension. */
+	/** Do not allow debug suspension, as in this is a debugger thread. */
 	public final boolean noDebugSuspend;
 	
 	/** Inherited verbose flags to use. */
@@ -680,6 +683,12 @@ public final class SpringThread
 		SpringThreadWorker worker = this._worker;
 		if (worker != null)
 			worker.machine.signalThreadTerminate(this);
+		
+		// If debugging, signal that the thread is no longer alive
+		JDWPController jdwp = this.machine().taskManager().jdwpController;
+		if (jdwp != null)
+			jdwp.<JDWPTripThread>trip(JDWPTripThread.class,
+				JDWPGlobalTrip.THREAD).alive(this, false);
 	}
 	
 	/**

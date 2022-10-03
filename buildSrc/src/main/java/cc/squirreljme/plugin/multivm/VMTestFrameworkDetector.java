@@ -83,7 +83,9 @@ public class VMTestFrameworkDetector
 			}
 			
 			// Add test
-			__processor.processTestClass(new DefaultTestClassRunInfo(test));
+			else
+				__processor.processTestClass(
+					new DefaultTestClassRunInfo(test));
 		}
 	}
 	

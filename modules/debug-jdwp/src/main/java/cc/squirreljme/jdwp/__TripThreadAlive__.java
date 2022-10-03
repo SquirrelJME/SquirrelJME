@@ -62,6 +62,10 @@ final class __TripThreadAlive__
 	@Override
 	public void step(Object __which, JDWPStepTracker __stepTracker)
 	{
+		// Do we report this?
+		if (!this.__checkReport(__which))
+			return;
+		
 		JDWPController controller = this.__controller();
 		JDWPViewThread viewThread = controller.viewThread();
 		JDWPViewFrame viewFrame = controller.viewFrame();
@@ -94,6 +98,10 @@ final class __TripThreadAlive__
 	@Override
 	public void unconditionalBreakpoint(Object __thread)
 	{
+		// Do we report this?
+		if (!this.__checkReport(__thread))
+			return;
+		
 		if (JDWPController._DEBUG)
 			Debugging.debugNote("UNCONDITIONAL BREAKPOINT!");
 		
@@ -104,5 +112,21 @@ final class __TripThreadAlive__
 		
 		// Send the signal
 		controller.signal(__thread, EventKind.UNCONDITIONAL_BREAKPOINT);
+	}
+	
+	/**
+	 * Do we report on this thread?
+	 * 
+	 * @param __thread The thread to check.
+	 * @return Do we report on this thread?
+	 * @since 2022/09/23
+	 */
+	private final boolean __checkReport(Object __thread)
+	{
+		JDWPViewThread threadView = this.__controller().viewThread();
+		
+		return !threadView.isTerminated(__thread) &&
+			!threadView.isDebugCallback(__thread) &&
+			threadView.frames(__thread).length > 0;
 	}
 }

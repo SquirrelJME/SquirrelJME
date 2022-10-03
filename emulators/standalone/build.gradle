@@ -35,7 +35,16 @@ java {
 		
 		// Use the default bootstrap classpath
 		options.bootstrapClasspath = null
+		
 	}
+	
+	// Maximize debugging
+	compileJava.options.debug = true
+	compileJava.options.debugOptions.setDebugLevel("source,lines,vars")
+	
+	// Copy settings
+	compileTestJava.options.debug = compileJava.options.debug
+	compileTestJava.options.debugOptions = compileJava.options.debugOptions
 }
 
 // Mapper for Jar names on files to straight file names

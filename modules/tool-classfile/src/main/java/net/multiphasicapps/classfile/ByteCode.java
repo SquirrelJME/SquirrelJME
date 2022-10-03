@@ -69,6 +69,9 @@ public final class ByteCode
 	/** Is this an instance method? */
 	protected final boolean isinstance;
 	
+	/** Local variable table. */
+	protected final LocalVariableTable localVariables;
+	
 	/** The input attribute code, used for instruction lookup. */
 	private final byte[] _rawByteCode;
 	
@@ -251,6 +254,10 @@ public final class ByteCode
 					}
 				}
 			
+			// Parse local variables
+			LocalVariableTable localVariables =
+				LocalVariableTable.parse(pool, attrs);
+			
 			// Can set fields now
 			this.maxstack = maxstack;
 			this.maxlocals = maxlocals;
@@ -263,6 +270,7 @@ public final class ByteCode
 			this._lengths = lengths;
 			this._icache = ByteCode.__newCache(codelen);
 			this._linenumbertable = lnt;
+			this.localVariables = localVariables;
 			
 			// Store addresses for all the indexes
 			if (indexat == codelen)
@@ -570,6 +578,17 @@ public final class ByteCode
 		
 		// Not known
 		return -1;
+	}
+	
+	/**
+	 * Returns the local variable table.
+	 *
+	 * @return The local variable table.
+	 * @since 2022/09/21
+	 */
+	public LocalVariableTable localVariables()
+	{
+		return this.localVariables;
 	}
 	
 	/**

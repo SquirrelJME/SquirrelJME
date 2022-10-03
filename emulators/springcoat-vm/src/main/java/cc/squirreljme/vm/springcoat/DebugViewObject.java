@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.views.JDWPViewObject;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 
 /**
@@ -61,6 +62,16 @@ public class DebugViewObject
 		if (__which instanceof SpringArrayObject)
 			return ((SpringArrayObject)__which).length;
 		return -1;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/21
+	 */
+	@Override
+	public boolean isNullObject(Object __value)
+	{
+		return (__value == null || __value == SpringNullObject.NULL);
 	}
 	
 	/**
