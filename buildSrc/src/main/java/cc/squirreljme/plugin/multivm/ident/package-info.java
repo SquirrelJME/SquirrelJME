@@ -7,26 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot.summercoat.target;
-
 /**
- * SummerCoat architecture variant.
+ * This package contains common identifiers.
  *
- * @since 2022/09/05
+ * @since 2022/10/01
  */
-public enum SummerCoatArchitectureVariant
-	implements TargetArchitectureVariant
-{
-	/** C output. */
-	@SuppressWarnings("FieldNamingConvention")
-	C,
-	
-	/** Hybrid interpreted environment. */
-	HYBRID,
-	
-	/** Pure interpreted environment. */
-	PURE,
-	
-	/* End. */
-	;
-}
+
+package cc.squirreljme.plugin.multivm.ident;

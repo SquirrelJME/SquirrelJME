@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import java.util.concurrent.Callable;
 
 /**
@@ -23,31 +24,26 @@ public final class VMRunDependencies
 	/** The task executing under. */
 	protected final VMExecutableTask task;
 	
-	/** The source set working under. */
-	protected final String sourceSet;
-	
-	/** The virtual machine type. */
-	protected final VMSpecifier vmType;
+	/** The classifier used. */
+	protected final SourceTargetClassifier classifier;
 	
 	/**
 	 * Initializes the provider.
 	 * 
 	 * @param __task The task working under.
-	 * @param __sourceSet The current source set.
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	public VMRunDependencies(VMExecutableTask __task, String __sourceSet,
-		VMSpecifier __vmType)
+	public VMRunDependencies(VMExecutableTask __task,
+		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__task == null || __sourceSet == null || __vmType == null)
+		if (__task == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
 		this.task = __task;
-		this.sourceSet = __sourceSet;
-		this.vmType = __vmType;
+		this.classifier = __classifier;
 	}
 	
 	/**
@@ -61,6 +57,6 @@ public final class VMRunDependencies
 		return VMHelpers.<VMLibraryTask>resolveProjectTasks(
 			VMLibraryTask.class, task.getProject(),
 			VMHelpers.runClassTasks(this.task.getProject(),
-				this.sourceSet, this.vmType, true));
+				this.classifier, true));
 	}
 }

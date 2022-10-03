@@ -53,7 +53,8 @@ public enum TargetArchitecture
 	SUPERH,
 	
 	/** SummerCoat Virtual Machine. */
-	SUMMERCOAT(TargetArchitectureVariant.NONE,
+	SUMMERCOAT(SummerCoatArchitectureVariant.HYBRID,
+		SummerCoatArchitectureVariant.PURE,
 		SummerCoatArchitectureVariant.C),
 	
 	/** X86 Family. */
