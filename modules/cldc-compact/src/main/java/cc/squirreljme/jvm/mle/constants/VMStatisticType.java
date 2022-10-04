@@ -32,7 +32,11 @@ public interface VMStatisticType
 	byte MEM_USED =
 		3;
 	
+	/** The number of possible threads. */
+	byte CPU_THREAD_COUNT =
+		4;
+	
 	/** The number of statistics. */
 	byte NUM_STATISTICS =
-		4;
+		5;
 }

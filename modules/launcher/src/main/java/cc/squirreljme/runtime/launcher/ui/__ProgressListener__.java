@@ -104,21 +104,25 @@ final class __ProgressListener__
 		// Update title to reflect this discovery
 		String updateMessage = String.format(
 			"Querying Suites (Found %d of %d)...", __dx + 1, __total);
-		programList.setTitle(updateMessage);
+		synchronized (programList)
+		{
+			programList.setTitle(updateMessage);
+		}
 		
 		// Update splash screen
-		refreshState.set(updateMessage, __dx + 1, __total);
-		if (refreshCanvas != null)
-			refreshCanvas.requestRepaint();
-		
-		// Determine where this should go and remember the suite
-		int at = Collections.binarySearch(listedSuites, __app,
-			this._comparator);
-		if (at < 0)
-			at = -(at + 1);
-		listedSuites.add(at, __app);
+		synchronized (refreshState)
+		{
+			refreshState.set(updateMessage, __dx + 1, __total);
+			if (refreshCanvas != null)
+				synchronized (refreshCanvas)
+				{
+					refreshCanvas.requestRepaint();
+				}
+		}
 		
 		// Try to load the image for the application
+		// Do this first, so we can keep the application list update
+		// synchronized nicely...
 		Image icon = null;
 		try (InputStream iconData = __app.iconStream())
 		{
@@ -161,8 +165,21 @@ final class __ProgressListener__
 				}
 		}
 		
-		// Add entry to the list
-		programList.insert(at, __app.displayName(), icon);
+		// Determine where this should go and remember the suite
+		synchronized (listedSuites)
+		{
+			int at = Collections.binarySearch(listedSuites, __app,
+				this._comparator);
+			if (at < 0)
+				at = -(at + 1);
+			listedSuites.add(at, __app);
+			
+			// Add entry to the list
+			synchronized (programList)
+			{
+				programList.insert(at, __app.displayName(), icon);
+			}
+		}
 	}
 	
 	/**
