@@ -32,7 +32,11 @@ public interface VMStatisticType
 	byte MEM_USED =
 		3;
 	
-	/** The number of possible threads. */
+	/**
+	 * The number of possible threads, if the virtual machine is
+	 * {@link ThreadModelType#SINGLE_COOP_THREAD} then this should always
+	 * return 1.
+	 */
 	byte CPU_THREAD_COUNT =
 		4;
 	
