@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This is a scanner which can read all of the application groups that are
+ * This is a scanner which can read all the application groups that are
  * available.
  *
  * @since 2020/12/28
@@ -50,7 +50,7 @@ public final class SuiteScanner
 	}
 	
 	/**
-	 * Scans all of the available suites and returns imformation that is needed
+	 * Scans all the available suites and returns information that is needed
 	 * for them to properly launch.
 	 * 
 	 * @return The state of scanned suites.
@@ -62,7 +62,7 @@ public final class SuiteScanner
 	}
 	
 	/**
-	 * Scans all of the available suites and returns imformation that is needed
+	 * Scans all the available suites and returns information that is needed
 	 * for them to properly launch.
 	 * 
 	 * @param __listener The listener for suites as they are scanned, used to
@@ -72,7 +72,7 @@ public final class SuiteScanner
 	 */
 	public static AvailableSuites scanSuites(SuiteScanListener __listener)
 	{
-		// Get all of the available libraries
+		// Get all the available libraries
 		JarPackageBracket[] jars = JarPackageShelf.libraries();
 		int numJars = jars.length;
 		

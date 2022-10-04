@@ -19,6 +19,7 @@ import java.util.Comparator;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.List;
+import org.freedesktop.tango.TangoIconLoader;
 
 /**
  * This listens for when suites have been detected by the scanner.
@@ -54,6 +55,9 @@ final class __ProgressListener__
 	
 	/** The current refresh state. */
 	protected final __RefreshState__ refreshState;
+	
+	/** The default application icon, if one is missing. */
+	protected volatile Image _defaultIcon;
 	
 	/**
 	 * Initializes the progress listener.
@@ -120,6 +124,8 @@ final class __ProgressListener__
 		{
 			if (iconData != null)
 				icon = Image.createImage(iconData);
+			else
+				icon = this.__defaultIcon();
 		}
 		catch (IOException e)
 		{
@@ -139,8 +145,15 @@ final class __ProgressListener__
 				icon.getHeight() > prefH)
 				try
 				{
+					// If this is the default icon, we scale it only once!
+					boolean isDefault = (icon == this._defaultIcon);
+					
 					icon = __ProgressListener__.__scaleIcon(
 						icon, prefW, prefH);
+					
+					// Use new default if we did scale
+					if (isDefault)
+						this._defaultIcon = icon;
 				}
 				catch (IndexOutOfBoundsException e)
 				{
@@ -150,6 +163,33 @@ final class __ProgressListener__
 		
 		// Add entry to the list
 		programList.insert(at, __app.displayName(), icon);
+	}
+	
+	/**
+	 * Loads the default icon.
+	 * 
+	 * @return The default icon.
+	 * @throws IOException On read errors.
+	 * @since 2022/10/03
+	 */
+	private Image __defaultIcon()
+		throws IOException
+	{
+		// Already loaded?
+		Image defaultIcon = this._defaultIcon;
+		if (defaultIcon != null)
+			return defaultIcon;
+		
+		try (InputStream in = TangoIconLoader.loadIcon(
+			16, "application-x-executable"))
+		{
+			if (in == null)
+				return null;
+			
+			defaultIcon = Image.createImage(in);
+			this._defaultIcon = defaultIcon;
+			return defaultIcon;
+		}
 	}
 	
 	/**

@@ -28,4 +28,5 @@ dependencies
 	api project(":modules:meep-lui")
 	api project(":modules:meep-midlet")
 	api project(":modules:meep-swm")
+	api project(":modules:tango-icon-theme")
 }
