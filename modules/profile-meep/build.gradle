@@ -17,26 +17,39 @@ squirreljme
 	definedProfiles += new JavaMEProfile("MIDP-3.1")
 	definedProfiles += new JavaMEProfile("MEEP-8")
 	tags += "meep"
+	
+	// Parts that may exist as of this profile
+	optionalDependencies += project(":modules:media-api")
+	optionalDependencies += project(":modules:meep-cellular")
+	optionalDependencies += project(":modules:meep-concurrency")
+	optionalDependencies += project(":modules:meep-event")
+	optionalDependencies += project(":modules:meep-key")
+	optionalDependencies += project(":modules:meep-liblets")
+	optionalDependencies += project(":modules:meep-lui")
+	optionalDependencies += project(":modules:meep-power")
+	optionalDependencies += project(":modules:meep-provisioning")
+	optionalDependencies += project(":modules:meep-securityframework")
+	
+	// Some commonly used extra APIs
+	optionalDependencies += project(":modules:bluetooth")
+	optionalDependencies += project(":modules:m3g")
+	optionalDependencies += project(":modules:wireless-messaging")
+	optionalDependencies += project(":modules:opengles")
+	
+	// Third Party APIs, which are optionally included
+	optionalDependencies += project(":modules:jblend-api")
+	optionalDependencies += project(":modules:nokia-api")
+	optionalDependencies += project(":modules:sprint-api")
+	optionalDependencies += project(":modules:vodafone-api")
 }
 
 dependencies
 {
 	api project(":modules:cldc-compact")
-
-	api project(":modules:bluetooth")
+	
 	api project(":modules:gcf")
-	api project(":modules:media-api")
-	api project(":modules:meep-cellular")
-	api project(":modules:meep-concurrency")
-	api project(":modules:meep-event")
-	api project(":modules:meep-key")
-	api project(":modules:meep-liblets")
-	api project(":modules:meep-lui")
 	api project(":modules:meep-midlet")
-	api project(":modules:meep-power")
-	api project(":modules:meep-provisioning")
 	api project(":modules:meep-rms")
-	api project(":modules:meep-securityframework")
 	api project(":modules:meep-swm")
 	api project(":modules:midp-lcdui")
 }

@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -111,7 +111,11 @@ public interface UIWidgetProperty
 	byte STRING_FORM_TITLE =
 		19;
 	
+	/** Signal focus on this item. */
+	byte INT_SIGNAL_FOCUS =
+		20;
+	
 	/** The number of properties. */
 	byte NUM_PROPERTIES =
-		20;
+		21;
 }

@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -53,7 +52,7 @@ public final class CodecFactory
 				return new ASCIIDecoder();
 			
 			case BuiltInEncodingType.IBM037:
-				throw Debugging.todo();
+				return new IBM037Decoder();
 			
 			case BuiltInEncodingType.ISO_8859_1:
 				return new ISO88591Decoder();
@@ -154,6 +153,9 @@ public final class CodecFactory
 			
 			case BuiltInEncodingType.ISO_8859_15:
 				return new ISO885915Encoder();
+			
+			case BuiltInEncodingType.SHIFT_JIS:
+				return new ShiftJisEncoder();
 			
 			case BuiltInEncodingType.UTF8:
 				return new UTF8Encoder();

@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,7 @@
 
 package net.multiphasicapps.pcftosqf.pcf;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -105,7 +105,7 @@ public final class PCFProperties
 		}
 		
 		// Debug
-		todo.DEBUG.note("format=%d, props=%s", format, values);
+		Debugging.debugNote("format=%d, props=%s", format, values);
 		
 		// Finish properties
 		return new PCFProperties(format, values);

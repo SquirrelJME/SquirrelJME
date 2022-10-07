@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,8 @@
 
 package javax.microedition.m3g;
 
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class Camera
 	extends Node
@@ -25,32 +26,32 @@ public class Camera
 	
 	public Camera()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getProjection(float[] __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getProjection(Transform __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setGeneric(Transform __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setParallel(float __a, float __b, float __c, float __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setPerspective(float __a, float __b, float __c, float __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

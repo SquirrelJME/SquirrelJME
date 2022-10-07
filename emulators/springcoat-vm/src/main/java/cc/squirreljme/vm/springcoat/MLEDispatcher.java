@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -16,12 +16,15 @@ import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.ReferenceShelf;
+import cc.squirreljme.jvm.mle.ReflectionShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TaskShelf;
 import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.util.Map;
 import java.util.TreeMap;
@@ -63,6 +66,10 @@ public enum MLEDispatcher
 	/** {@link ReferenceShelf}. */
 	REFERENCE("cc/squirreljme/jvm/mle/ReferenceShelf",
 		MLEReference.values()),
+	
+	/** {@link ReflectionShelf}. */
+	REFLECTION("cc/squirreljme/jvm/mle/ReflectionShelf",
+		MLEReflection.values()),
 	
 	/** {@link RuntimeShelf}. */
 	RUNTIME("cc/squirreljme/jvm/mle/RuntimeShelf",
@@ -179,6 +186,15 @@ public enum MLEDispatcher
 				"Unknown MLE Shelf Function: %s::%s", __class, __func));
 		
 		// Call it
-		return target.handle(__thread, __args);
+		try
+		{
+			return target.handle(__thread, __args);
+		}
+		catch (MLECallError e)
+		{
+			throw new SpringMLECallError(
+				String.format("Unwrapped MLECallError calling %s:%s",
+					__class, __func), e);
+		}
 	}
 }

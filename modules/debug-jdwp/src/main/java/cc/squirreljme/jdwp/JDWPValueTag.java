@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -184,7 +184,7 @@ public enum JDWPValueTag
 			throw new NullPointerException("NARG");
 		
 		// If null, assume an object type
-		if (__value == null)
+		if (__value == null || __controller.viewObject().isNullObject(__value))
 			return JDWPValueTag.OBJECT;
 		
 		// If this a valid object, try to get it from its type

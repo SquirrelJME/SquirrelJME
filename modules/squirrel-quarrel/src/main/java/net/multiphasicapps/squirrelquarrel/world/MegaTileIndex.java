@@ -1,14 +1,15 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package net.multiphasicapps.squirrelquarrel.world;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This represents an index into a megatile.
@@ -86,7 +87,7 @@ public final class MegaTileIndex
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -99,7 +100,7 @@ public final class MegaTileIndex
 	 */
 	public static final int positionToOrdinal(int __x, int __y)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

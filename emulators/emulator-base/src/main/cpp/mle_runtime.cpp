@@ -1,6 +1,6 @@
 /* -*- Mode: C++; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -8,6 +8,12 @@
 // -------------------------------------------------------------------------*/
 
 #include "squirreljme.h"
+
+#define RUNTIME_CLASSNAME "cc/squirreljme/emulator/EmulatedRuntimeShelf"
+
+#define RUNTIME_MEMORYPROFILE_DESC "()I"
+#define RUNTIME_VMDESCRIPTION_DESC "(I)Ljava/lang/String;"
+#define RUNTIME_VMSTATISTIC_DESC "(I)J"
 
 JNIEXPORT void JNICALL Impl_mle_RuntimeShelf_garbageCollect(
 	JNIEnv* env, jclass classy)
@@ -24,6 +30,34 @@ JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_lineEnding(JNIEnv*, jclass)
 #endif
 }
 
+JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_vmDescription(
+	JNIEnv* env, jclass classy, jint id)
+{
+	return (jstring)forwardCallStaticObject(env, RUNTIME_CLASSNAME,
+		"vmDescription", RUNTIME_VMDESCRIPTION_DESC,
+		id);
+}
+
+JNIEXPORT jlong JNICALL Impl_mle_RuntimeShelf_vmStatistic(
+	JNIEnv* env, jclass classy, jint id)
+{
+	return forwardCallStaticLong(env, RUNTIME_CLASSNAME,
+		"vmStatistic", RUNTIME_VMSTATISTIC_DESC,
+		id);
+}
+
+JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_memoryProfile(JNIEnv*, jclass)
+{
+	// The value is normal
+	return 0;
+}
+
+JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_phoneModel(JNIEnv*, jclass)
+{
+	// Just be a generic device here
+	return 0;
+};
+
 JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_vmType(JNIEnv*, jclass)
 {
 	// The value 1 is Java SE type
@@ -34,6 +68,10 @@ static const JNINativeMethod mleRuntimeMethods[] =
 {
 	{"garbageCollect", "()V", (void*)Impl_mle_RuntimeShelf_garbageCollect},
 	{"lineEnding", "()I", (void*)Impl_mle_RuntimeShelf_lineEnding},
+	{"memoryProfile", RUNTIME_MEMORYPROFILE_DESC, (void*)Impl_mle_RuntimeShelf_memoryProfile},
+	{"vmDescription", RUNTIME_VMDESCRIPTION_DESC, (void*)Impl_mle_RuntimeShelf_vmDescription},
+	{"vmStatistic", RUNTIME_VMSTATISTIC_DESC, (void*)Impl_mle_RuntimeShelf_vmStatistic},
+	{"phoneModel", "()I", (void*)Impl_mle_RuntimeShelf_phoneModel},
 	{"vmType", "()I", (void*)Impl_mle_RuntimeShelf_vmType},
 };
 

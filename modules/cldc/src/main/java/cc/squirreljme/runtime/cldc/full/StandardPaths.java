@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -12,6 +11,7 @@ package cc.squirreljme.runtime.cldc.full;
 
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
 import cc.squirreljme.runtime.cldc.asm.SystemProperties;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.file.Path;
@@ -220,7 +220,7 @@ public final class StandardPaths
 		Path userdir = StandardPaths.__getPropertyPath("user.dir");
 		
 		if (true)
-			throw new todo.TODO();
+			throw Debugging.todo();
 		
 		// Unix systems
 		if (false)

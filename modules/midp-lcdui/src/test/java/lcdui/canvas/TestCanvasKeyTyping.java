@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -36,7 +36,7 @@ public class TestCanvasKeyTyping
 	public void test(Display __display, CanvasPlatform __platform)
 		throws Throwable
 	{
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		UIFormCallback injector = backend.injector();
 		
 		// We need to locate the canvas item before we can send events to it

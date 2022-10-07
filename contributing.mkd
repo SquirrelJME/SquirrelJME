@@ -19,7 +19,10 @@ system and as such it generally is expected that it is to be used. There also
 are [GitHub Pull Requests](https://github.com/SquirrelJME/SquirrelJME/pulls)
 however since the GitHub is a mirror of another repository it cannot be
 directly committed to as those commits will be erased, however Pull Requests
-can still be made. Continue reading below for a contributing guide.
+can still be made. Any pull requests made on GitHub will be converted to
+Fossil then merged in accordingly.
+
+Continue reading below for the contributing guide.
 
 ## Etiquette For Contributing
 
@@ -37,6 +40,11 @@ repository as a whole.
    * If there are linters or code style formatters that are not configured
      for the project for _SquirrelJME_'s code style, configure them for
      _SquirrelJME_ and add them to the repository.
+ * If any code is incomplete, for any execution path that leads to incomplete
+   code then `Debugging.todo()` must be used so that such incomplete code is
+   fail-fast and prevents continued operation.
+ * New code must have tests implemented, following the guide in the
+   [Test Writing](test-writing.mkd) document.
  * Make sure your code is well documented and has the JavaDoc for the
    library functions.
    * _Do not_ copy and paste from other Java libraries, it is not legal to do
@@ -45,7 +53,8 @@ repository as a whole.
  * Ensure that the tests pass.
    * Note that submissions on GitHub will automatically be run under CI/CD
      and if there are any issues arising from this, they must be addressed.
-   * You can run all of the tests with the `gradlew testHosted` command.
+   * You can run all the tests with the `gradlew testHosted` and
+     `gradlew testSpringCoat` command.
  * Do not perform mass automatic refactorings.
    * These mass refactorings can cause unintended side effects and as well
      may cause breakages. Also as well, these can cause merge conflicts and
@@ -82,8 +91,11 @@ are not permitted to contribute to this project due to potential poisoning:
  * _Oracle_/_Sun Microsystems_:
    * HotSpot
    * Java (eventually became OpenJDK)
-   * OpenJDK
+   * OpenJDK and any of its variants
    * PhoneME
+
+Additionally, for legal purposes, code that is derived from the source code
+from these projects cannot be used.
 
 ## Contributor Agreement
 
@@ -92,17 +104,15 @@ are not permitted to contribute to this project due to potential poisoning:
 **CODE "ON THE CLOCK" OR UNDER CONTRACT, THEN THAT DEVELOPER MUST SEEK THE**
 **PERMISSION OF THE EMPLOYER.**
 
-	You grant Stephanie Gawroriski (and Multi-Phasic Applications) an
-	irrevocable license that:
+	You grant Stephanie Gawroriski an irrevocable license that:
     
 	 1. That you own the contributing work.
 	 2. Grants a patent license, as per the GNU GPLv3.
-	 3. Granting Stephanie Gawroriski (and Multi-Phasic Applications)
-	    permission to redistribute, sell, lease, modify, transform, translate,
-	    and relicense the specified works. This is to simplify the licensing
-	    of the project and permit it to be consistent. Your contribution may
-	    be commercially licensed to other parties supporting the project
-	    through this means.
+	 3. Granting Stephanie Gawroriski permission to redistribute, sell, lease,
+	    modify, transform, translate, and relicense the specified works. This
+	    is to simplify the licensing of the project and permit it to be
+	    consistent. Your contribution may be commercially licensed to other
+	    parties supporting the project through this means.
 	 4. If employed by a company, you have a right by that company to provide
 	    contributions to this project.
 	 5. Have pledged to follow the Code of Conduct.

@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.mle.constants.LineEndingType;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
+import cc.squirreljme.jvm.mle.constants.PhoneModelType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
@@ -110,6 +111,14 @@ public final class RuntimeShelf
 	 * @since 2020/06/18
 	 */
 	public static native long nanoTime();
+	
+	/**
+	 * Returns the phone model that SquirrelJME is simulating itself as.
+	 * 
+	 * @return The {@link PhoneModelType}.
+	 * @since 2022/02/14
+	 */
+	public static native int phoneModel();
 	
 	/**
 	 * Returns the system property for the given key, if there is one.

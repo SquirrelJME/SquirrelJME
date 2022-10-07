@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -55,18 +54,18 @@ abstract class __Section__
 		this.writer = __mdw;
 		
 		// Is there anything above this?
-		__Section__ _sectionbefore = __mdw._section;
-		this._sectionbefore = _sectionbefore;
+		__Section__ sectionBefore = __mdw._section;
+		this._sectionbefore = sectionBefore;
 		
 		// If there is a section before this then end this
-		if (_sectionbefore != null)
-			_sectionbefore.__endSection();
+		if (sectionBefore != null)
+			sectionBefore.__endSection();
 		
 		// Set new section
 		__mdw._section = this;
 		
 		// Set some basic details
-		this._level = (_sectionbefore == null ? 1 : _sectionbefore._level);
+		this._level = (sectionBefore == null ? 1 : sectionBefore._level);
 	}
 	
 	/**

@@ -1,5 +1,6 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -121,6 +122,9 @@ public class PrintStreamWriter
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/08/12
+	 * @param __c
+	 * @param __o
+	 * @param __l
 	 */
 	@Override
 	public void write(char[] __c, int __o, int __l)

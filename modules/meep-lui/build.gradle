@@ -20,7 +20,8 @@ dependencies
 {
 	api project(":modules:cldc-compact")
 
-	api project(":modules:meep-key")
 	api project(":modules:collections")
 	api project(":modules:gcf")
+	api project(":modules:meep-key")
+	api project(":modules:midp-lcdui")
 }

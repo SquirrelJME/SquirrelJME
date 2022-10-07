@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,67 +9,68 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 public class IntRingBuffer
 {
     public IntRingBuffer()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public IntRingBuffer(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public IntRingBuffer(int var1, int var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void write(int var1) throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void write(int var1, int var2, int var3, int var4, int var5) throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void write(int[] var1) throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int read() throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void read(int[] var1) throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int peek() throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void peek(int[] var1) throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int available()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getFreeArea()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

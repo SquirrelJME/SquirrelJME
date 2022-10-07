@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -214,6 +213,7 @@ public final class DataDeserialization
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/06
 	 */
+	@SuppressWarnings("UnnecessaryBoxing")
 	public static Object deserialize(String __s)
 		throws InvalidTestParameterException, NullPointerException
 	{
@@ -262,8 +262,17 @@ public final class DataDeserialization
 			
 		// Char
 		else if (__s.startsWith("char:"))
+		{
+			// If there is just a single character and it is not a digit then
+			// treat it as that specific character
+			String sub = __s.substring(5);
+			if (sub.length() == 1 && !Character.isDigit(sub.charAt(0)))
+				return sub.charAt(0);
+			
+			// Otherwise decode it
 			return Character.valueOf(
-				(char)Integer.valueOf(__s.substring(5)).intValue());
+				(char)Integer.valueOf(sub).intValue());
+		}
 		
 		// Integer
 		else if (__s.startsWith("int:"))

@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -18,15 +17,15 @@ import cc.squirreljme.jvm.mle.constants.UIInputFlag;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
-import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
+import cc.squirreljme.runtime.lcdui.mle.Vibration;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.microedition.midlet.MIDlet;
@@ -209,10 +208,13 @@ public class Display
 	
 	/** Serial runs of this method. */
 	static final Map<Integer, Runnable> _SERIAL_RUNS =
-		new HashMap<>();
+		new LinkedHashMap<>();
+	
+	/** The number of times there has been a non-unique serial run. */
+	private static volatile int _NON_UNIQUE_SERIAL_RUNS;
 	
 	/** The native display instance. */ 
-	final cc.squirreljme.jvm.mle.brackets.UIDisplayBracket _uiDisplay;
+	final UIDisplayBracket _uiDisplay;
 	
 	/** The displayable to show. */
 	private volatile Displayable _current;
@@ -258,7 +260,7 @@ public class Display
 			}
 			
 			// Register the display for callbacks
-			UIBackendFactory.getInstance().callback(this,
+			UIBackendFactory.getInstance(true).callback(this,
 				(UIDisplayCallback)StaticDisplayState.callback());
 		}
 	}
@@ -266,36 +268,27 @@ public class Display
 	/**
 	 * Calls the given runner within the event handler serially.
 	 * 
-	 * Note that the Runnable.run() will be called as if it were serialized
-	 * like everything else with {@link SerializedEvent}.
+	 * Note that the {@link Runnable#run()} will be called as if it were
+	 * serialized like everything else with {@link SerializedEvent}.
+	 * 
+	 * Calls to this method will never block and wait for the {@link Runnable}
+	 * to complete.
 	 * 
 	 * @param __run The method to run.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/03
 	 */
-	@SuppressWarnings("MagicNumber")
 	public void callSerially(Runnable __run)
 		throws NullPointerException
 	{
-		if (__run == null)
-			throw new NullPointerException("NARG");
-		
-		// Get the identifiers for this display and the run call
-		int idDisplay = System.identityHashCode(StaticDisplayState.callback());
-		Integer idRunner = System.identityHashCode(__run);
-		
 		// Perform the serialization call
 		synchronized (Display.class)
 		{
-			// Store into the serial runner
-			Map<Integer, Runnable> serialRuns = Display._SERIAL_RUNS;
-			serialRuns.put(idRunner, __run);
-			
-			// Perform the call so it is done later
-			UIBackendFactory.getInstance().later(idDisplay, idRunner);
+			int idRunner = this.__queueSerialRunner(__run, false);
 			
 			// Constantly loop waiting for the call to be gone
-			for (;;)
+			/*
+			for (Map<Integer, Runnable> serialRuns = Display._SERIAL_RUNS;;)
 				try
 				{
 					// If this disappeared from the map then it was invoked
@@ -308,6 +301,7 @@ public class Display
 				catch (InterruptedException ignored)
 				{
 				}
+			 */
 		}
 	}
 	
@@ -354,7 +348,7 @@ public class Display
 	 */
 	public int getActivityMode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -407,7 +401,7 @@ public class Display
 	
 	public int getBorderStyle(boolean __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -424,13 +418,9 @@ public class Display
 	public int getCapabilities()
 	{
 		// These are all standard and expected to always be supported
-		int rv = Display.SUPPORTS_COMMANDS | Display.SUPPORTS_FORMS |
-			Display.SUPPORTS_TICKER | Display.SUPPORTS_ALERTS |
-			Display.SUPPORTS_LISTS | Display.SUPPORTS_TEXTBOXES |
-			Display.SUPPORTS_FILESELECTORS | Display.SUPPORTS_TABBEDPANES |
-			Display.SUPPORTS_MENUS;
+		int rv = Display.__defaultCapabilities();
 			
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		
 		// Supports any kind of input?
 		if (0 != backend.metric(UIMetricType.INPUT_FLAGS))
@@ -548,7 +538,7 @@ public class Display
 	
 	public int getDisplayState()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -563,7 +553,7 @@ public class Display
 	 */
 	public int getDotPitch()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -623,7 +613,7 @@ public class Display
 	 */
 	public int getHardwareState()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		if (__EventCallback__._CALLBACK._registered)
 			return DISPLAY_HARDWARE_ENABLED;
@@ -639,13 +629,13 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		return UIBackendFactory.getInstance()
+		return UIBackendFactory.getInstance(true)
 			.metric(UIMetricType.DISPLAY_MAX_HEIGHT);
 	}
 	
 	public IdleItem getIdleItem()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -714,7 +704,7 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		return UIBackendFactory.getInstance()
+		return UIBackendFactory.getInstance(true)
 			.metric(UIMetricType.DISPLAY_MAX_WIDTH);
 	}
 	
@@ -726,7 +716,7 @@ public class Display
 	 */
 	public boolean hasPointerEvents()
 	{
-		return (UIBackendFactory.getInstance().metric(
+		return (UIBackendFactory.getInstance(true).metric(
 			UIMetricType.INPUT_FLAGS) & UIInputFlag.POINTER) ==
 			(UIInputFlag.POINTER);
 	}
@@ -739,7 +729,7 @@ public class Display
 	 */
 	public boolean hasPointerMotionEvents()
 	{
-		return (UIBackendFactory.getInstance().metric(
+		return (UIBackendFactory.getInstance(true).metric(
 			UIMetricType.INPUT_FLAGS) &
 			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION)) ==
 			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION);
@@ -753,7 +743,7 @@ public class Display
 	 */
 	public boolean isBuiltIn()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -764,7 +754,7 @@ public class Display
 	 */
 	public boolean isColor()
 	{
-		return UIBackendFactory.getInstance().metric(
+		return UIBackendFactory.getInstance(true).metric(
 			UIMetricType.DISPLAY_MONOCHROMATIC) == 0;
 	}
 	
@@ -781,7 +771,7 @@ public class Display
 	@SuppressWarnings({"MagicNumber", "SwitchStatementWithTooFewBranches"})
 	public int numAlphaLevels()
 	{
-		switch (UIBackendFactory.getInstance().metric(
+		switch (UIBackendFactory.getInstance(true).metric(
 			UIMetricType.DISPLAY_PIXEL_FORMAT))
 		{
 				// If the display format is 16-bit, just use this here
@@ -809,7 +799,7 @@ public class Display
 	public int numColors()
 	{
 		int pf;
-		switch ((pf = UIBackendFactory.getInstance().metric(
+		switch ((pf = UIBackendFactory.getInstance(true).metric(
 			UIMetricType.DISPLAY_PIXEL_FORMAT)))
 		{
 			case UIPixelFormat.INT_RGB888:
@@ -868,11 +858,11 @@ public class Display
 	{
 		// Active?
 		if (__m == Display.MODE_ACTIVE)
-			throw new todo.TODO();
+			throw Debugging.todo();
 	
 		// Normal
 		else if (__m == Display.MODE_NORMAL)
-			throw new todo.TODO();
+			throw Debugging.todo();
 	
 		// {@squirreljme.error EB1i Unknown activity mode specified.}
 		else
@@ -881,7 +871,7 @@ public class Display
 	
 	public void setCommandLayoutPolicy(CommandLayoutPolicy __clp)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -920,7 +910,7 @@ public class Display
 			throw new IllegalStateException("EB1k");
 		
 		// Debug
-		todo.DEBUG.note("Showing alert \"%s\"", __show._message);
+		Debugging.debugNote("Showing alert \"%s\"", __show._message);
 		
 		// Perform call on this display
 		throw Debugging.todo();
@@ -1009,17 +999,17 @@ public class Display
 	
 	public void setCurrentItem(Item __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setIdleItem(IdleItem __i)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setPreferredOrientation(int __o)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -1045,17 +1035,8 @@ public class Display
 	public boolean vibrate(int __d)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1n Cannot vibrate for a negative duration.}
-		if (__d < 0)
-			throw new IllegalArgumentException("EB1n");
-		
-		// Only perform the action if we can vibrate the device
-		UIBackend backend = UIBackendFactory.getInstance();
-		if (backend.metric(UIMetricType.SUPPORTS_VIBRATION) != 0)
-			throw Debugging.todo();
-		
-		// There is none, so we cannot say we control it
-		return false;
+		// Forward
+		return Vibration.vibrate(__d);
 	}
 	
 	/**
@@ -1071,7 +1052,7 @@ public class Display
 		throws IllegalArgumentException
 	{
 		// Depends
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		switch (__e)
 		{
 			case Display.CHOICE_GROUP_ELEMENT:
@@ -1118,7 +1099,7 @@ public class Display
 		// as we do not want to un-hide another form being displayed if it
 		// is from another process
 		if (current.__isShown())
-			UIBackendFactory.getInstance()
+			UIBackendFactory.getInstance(true)
 				.displayShow(this._uiDisplay, null);
 		
 		// Unlink display
@@ -1149,7 +1130,7 @@ public class Display
 		Debugging.debugNote("Showing %s on display.", __show.getClass());
 		
 		// Get the backend to call on
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		
 		// Use the global callback thread
 		synchronized (StaticDisplayState.class)
@@ -1170,7 +1151,7 @@ public class Display
 		this._current = __show;
 		
 		// Notify that it was shown
-		__show.__showNotify(__show);
+		this.__queueSerialRunner(new __NotifyShow__(__show), false);
 	}
 	
 	/**
@@ -1227,6 +1208,45 @@ public class Display
 			default:
 				throw Debugging.oops("Invalid orientation.");
 		}
+	}
+	
+	/**
+	 * Queues the serial runner.
+	 * 
+	 * @param __run The method to run.
+	 * @param __unique Is this a unique runner that can only be called only
+	 * once?
+	 * @return The identifier for the runner item.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/11/27
+	 */
+	@SuppressWarnings({"WrapperTypeMayBePrimitive"})
+	final int __queueSerialRunner(Runnable __run, boolean __unique)
+		throws NullPointerException
+	{
+		if (__run == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the identifiers for this display and the run call
+		int idDisplay = System.identityHashCode(StaticDisplayState.callback());
+		Integer idRunner;
+		
+		// Perform the serialization call
+		synchronized (Display.class)
+		{
+			idRunner = (__unique ? System.identityHashCode(__run) :
+				(++Display._NON_UNIQUE_SERIAL_RUNS));
+			
+			// Store into the serial runner
+			Map<Integer, Runnable> serialRuns = Display._SERIAL_RUNS;
+			serialRuns.put(idRunner, __run);
+			
+			// Perform the call so it is done later
+			UIBackendFactory.getInstance(true).later(idDisplay, idRunner);
+		}
+		
+		// This is the ID used to refer to this runner
+		return idRunner;
 	}
 	
 	/**
@@ -1291,13 +1311,9 @@ public class Display
 		Display[] all = StaticDisplayState.DISPLAYS;
 		if (all == null)
 		{
-			// Poke the VM to initialize things potentially, this is just
-			// needed by the native emulator bindings
-			Poking.poke();
-			
 			// Get the displays that are attached to the system
-			cc.squirreljme.jvm.mle.brackets.UIDisplayBracket[] uiDisplays =
-				UIBackendFactory.getInstance().displays();
+			UIDisplayBracket[] uiDisplays =
+				UIBackendFactory.getInstance(true).displays();
 			int n = uiDisplays.length;
 			
 			// Initialize display instances
@@ -1345,6 +1361,21 @@ public class Display
 		throws IllegalStateException, NullPointerException
 	{
 		StaticDisplayState.removeListener(__dl);
+	}
+	
+	/**
+	 * The default display capabilities.
+	 * 
+	 * @return The default display capabilities.
+	 * @since 2021/11/30
+	 */
+	static int __defaultCapabilities()
+	{
+		return Display.SUPPORTS_COMMANDS | Display.SUPPORTS_FORMS |
+			Display.SUPPORTS_TICKER | Display.SUPPORTS_ALERTS |
+			Display.SUPPORTS_LISTS | Display.SUPPORTS_TEXTBOXES |
+			Display.SUPPORTS_FILESELECTORS | Display.SUPPORTS_TABBEDPANES |
+			Display.SUPPORTS_MENUS;
 	}
 	
 	/**

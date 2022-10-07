@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -199,8 +198,7 @@ final class __VolatileList__<T>
 		
 		// Setup new array and copy all elements before and after
 		Object[] newvalues = new Object[n - 1];
-		for (int i = 0; i < dx; i++)
-			newvalues[i] = values[i];
+		System.arraycopy(values, 0, newvalues, 0, dx);
 		for (int i = dx + 1, o = dx; i < n; i++, o++)
 			newvalues[o] = values[i];
 			
@@ -220,7 +218,8 @@ final class __VolatileList__<T>
 	 * bounds.
 	 * @since 2020/11/21
 	 */
-	public __ChoiceEntry__ remove(int __dx)
+	@SuppressWarnings("unchecked")
+	public T remove(int __dx)
 		throws IndexOutOfBoundsException
 	{
 		Object[] values = this._values;
@@ -244,7 +243,7 @@ final class __VolatileList__<T>
 		this._values = newValues;
 		
 		// Return the old value
-		return (__ChoiceEntry__)values[__dx];
+		return (T)values[__dx];
 	}
 	
 	/**

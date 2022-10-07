@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -22,7 +21,7 @@ public class DataInputStream
 	implements DataInput
 {
 	/** The wrapped stream. */
-	protected final InputStream in;	
+	protected final InputStream in;
 	
 	/**
 	 * Wraps the specified stream.
@@ -266,7 +265,7 @@ public class DataInputStream
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		int rv = 0;
@@ -282,7 +281,7 @@ public class DataInputStream
 			if (rc < 0)
 				throw new EOFException("EOFF");
 			
-			// These many characters were read, we might try again
+			// These many bytes were read, we might try again
 			rv += rc;
 		}
 	}

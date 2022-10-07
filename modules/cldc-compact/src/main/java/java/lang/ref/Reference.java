@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -73,22 +72,19 @@ public abstract class Reference<T>
 		try
 		{
 			// Spinlock on the GC
-			for (int c = 0; (0 == (key = AtomicShelf.gcLock())); c++)
-				AtomicShelf.spinLock(c);
-			
-			// If the object has an existing link, then we need to chain links
-			RefLinkBracket oldLink = ReferenceShelf.objectGet(__v);
-			if (oldLink != null)
+			for (int cycle = 0;; cycle++)
 			{
-				// New link -> Old link
-				ReferenceShelf.linkSetNext(link, oldLink);
+				// Obtain key
+				key = AtomicShelf.gcLock();
+				if (key != 0)
+					break;
 				
-				// New link <- Old link
-				ReferenceShelf.linkSetPrev(oldLink, link);
+				// Lock
+				AtomicShelf.spinLock(cycle);
 			}
 			
-			// The object uses the current link as the head now
-			ReferenceShelf.objectSet(__v, link);
+			// Link into existing object, if needed
+			ReferenceShelf.linkChain(link, __v);
 		}
 		finally
 		{
@@ -109,8 +105,16 @@ public abstract class Reference<T>
 		try
 		{
 			// Spinlock on the GC
-			for (int c = 0; (0 == (key = AtomicShelf.gcLock())); c++)
-				AtomicShelf.spinLock(c);
+			for (int cycle = 0;; cycle++)
+			{
+				// Obtain key
+				key = AtomicShelf.gcLock();
+				if (key != 0)
+					break;
+				
+				// Lock
+				AtomicShelf.spinLock(cycle);
+			}
 			
 			// Only unlink once
 			if (!this._enqueued)
@@ -159,8 +163,16 @@ public abstract class Reference<T>
 		try
 		{
 			// Spinlock on the GC
-			for (int c = 0; (0 == (key = AtomicShelf.gcLock())); c++)
-				AtomicShelf.spinLock(c);
+			for (int cycle = 0;; cycle++)
+			{
+				// Obtain key
+				key = AtomicShelf.gcLock();
+				if (key != 0)
+					break;
+				
+				// Lock
+				AtomicShelf.spinLock(cycle);
+			}
 			
 			// Placing this in the queue invalidates it
 			pushToQueue = !this._enqueued;
@@ -200,14 +212,22 @@ public abstract class Reference<T>
 		try
 		{
 			// Spinlock on the GC
-			for (int c = 0; (0 == (key = AtomicShelf.gcLock())); c++)
-				AtomicShelf.spinLock(c);
+			for (int cycle = 0;; cycle++)
+			{
+				// Obtain key
+				key = AtomicShelf.gcLock();
+				if (key != 0)
+					break;
+				
+				// Lock
+				AtomicShelf.spinLock(cycle);
+			}
 			
 			// If this was enqueued, then just return nothing
 			if (this._enqueued)
 				return null;
 			
-			// Otherwise use what the link says our object is
+			// Otherwise, use what the link says our object is
 			rv = ReferenceShelf.linkGetObject(this._link);
 		}
 		finally
@@ -244,21 +264,8 @@ public abstract class Reference<T>
 	{
 		RefLinkBracket link = this._link;
 		
-		// Get the previous and next links to re-chain
-		RefLinkBracket prev = ReferenceShelf.linkGetPrev(link);
-		RefLinkBracket next = ReferenceShelf.linkGetNext(link);
-		
-		// Have the previous link point to our next
-		if (prev != null)
-			ReferenceShelf.linkSetNext(prev, next);
-		
-		// Have the next link point to our previous
-		if (next != null)
-			ReferenceShelf.linkSetPrev(next, prev);
-		
-		// Clear our links because they are no longer valid
-		ReferenceShelf.linkSetPrev(link, null);
-		ReferenceShelf.linkSetNext(link, null);
+		// Unchain all the connected links atomically
+		ReferenceShelf.linkUnchain(link);
 		
 		// Clear the object this links to
 		ReferenceShelf.linkSetObject(link, null);

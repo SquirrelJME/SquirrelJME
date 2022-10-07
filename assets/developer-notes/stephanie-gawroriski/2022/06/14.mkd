@@ -1,0 +1,6 @@
+# 2022/06/14
+
+## 00:50
+
+Okay so I basically brought back the standalone JARs from 0.2.0 which is nice,
+it could be useful to show things off or have others test it accordingly.

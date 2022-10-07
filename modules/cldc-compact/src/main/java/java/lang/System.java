@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -14,9 +13,13 @@ import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.jvm.mle.constants.PhoneModelType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
+import cc.squirreljme.runtime.cldc.annotation.VendorSpecificApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
@@ -32,16 +35,16 @@ import java.io.PrintStream;
 public final class System
 {
 	/** Standard error stream (stderr). */
-	@SuppressWarnings("resource")
 	public static final PrintStream err =
 		new __CanSetPrintStream__(new PrintStream(
-			new ConsoleOutputStream(StandardPipeType.STDERR), true));
+			new ConsoleOutputStream(StandardPipeType.STDERR,
+				true), true));
 	
 	/** Standard output stream (stdout). */
-	@SuppressWarnings("resource")
 	public static final PrintStream out =
 		new __CanSetPrintStream__(new PrintStream(
-			new ConsoleOutputStream(StandardPipeType.STDOUT), true));
+			new ConsoleOutputStream(StandardPipeType.STDOUT,
+				false), true));
 	
 	/**
 	 * Not used.
@@ -79,19 +82,20 @@ public final class System
 		// specified. (The source offset; The destination offset; The copy
 		// length)}
 		if (__srcOff < 0 || __destOff < 0 || __copyLen < 0)
-			throw new IndexOutOfBoundsException(String.format("ZZ1w %d %d %d",
-				__srcOff, __destOff, __copyLen));
+			throw new IndexOutOfBoundsException(
+				String.format("ZZ1w %d %d %d",
+					__srcOff, __destOff, __copyLen));
 		
 		// {@squirreljme.error ZZ1x Copy operation would exceed the bounds of
 		// the array. (Source offset; Source length; Destination offset;
 		// Destination length; The copy length)}
-		int srcLen = ObjectShelf.arrayLength(__src),
-			destLen = ObjectShelf.arrayLength(__dest);
-		if (__srcOff + __copyLen > srcLen ||
-			__destOff + __copyLen > destLen)
+		int srcLen = ObjectShelf.arrayLength(__src);
+		int destLen = ObjectShelf.arrayLength(__dest);
+		if (__srcOff + __copyLen < 0 || __srcOff + __copyLen > srcLen ||
+			__destOff + __copyLen < 0 || __destOff + __copyLen > destLen)
 			throw new IndexOutOfBoundsException(String.format(
-				"ZZ1x %d %d %d %d %d", __srcOff, srcLen, __destOff, destLen,
-				__copyLen));
+				"ZZ1x %d %d %d %d %d", __srcOff, srcLen,
+					__destOff, destLen, __copyLen));
 		
 		// Get both respective classes
 		Class<?> srcClass = __src.getClass();
@@ -323,7 +327,6 @@ public final class System
 		System.getSecurityManager().checkPropertyAccess(__k);
 		
 		// Depends on the property
-		String rv;
 		switch (__k)
 		{
 				// SquirrelJME VM executable path
@@ -420,6 +423,15 @@ public final class System
 				
 				// The current platform
 			case "microedition.platform":
+				// Allow this to be overridden by the user
+				String platformOverride = RuntimeShelf.systemProperty(__k);
+				if (platformOverride != null)
+					return platformOverride;
+			
+				// Try to use a specific platform
+				int phoneModel = RuntimeShelf.phoneModel();
+				if (phoneModel != PhoneModelType.GENERIC)
+					return SquirrelJME.platform(phoneModel);
 				return SquirrelJME.MICROEDITION_PLATFORM;
 				
 				// The operating system architecture

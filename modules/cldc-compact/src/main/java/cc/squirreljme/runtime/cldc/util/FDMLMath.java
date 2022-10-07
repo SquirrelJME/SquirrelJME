@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -108,7 +107,7 @@ public final strictfp class FDMLMath
 	 * @since 2018/11/02
 	 */
 	@ImplementationNote("Source http://www.netlib.org/fdlibm/e_log.c")
-	public static double log(double __v)
+	public static strictfp double log(double __v)
 	{
 		double hfsq, f, s, z, r, w, t1, t2, dk;
 		int k, hx, i, j;
@@ -125,11 +124,11 @@ public final strictfp class FDMLMath
 		{
 			// log(+-0)=-inf
 			if (((hx & 0x7FFFFFFF) | uulx) == 0) 
-				return -FDMLMath._TWO54 / FDMLMath._ZERO;
+				return Double.NEGATIVE_INFINITY;
 			
 			// log(-#) = NaN
 			if (hx < 0)
-				return (__v - __v) / FDMLMath._ZERO;
+				return Double.NaN;
 			
 			// subnormal number, scale up __v
 			k -= 54;
@@ -211,7 +210,7 @@ public final strictfp class FDMLMath
 	 * @since 2018/11/02
 	 */
 	@ImplementationNote("Source: http://www.netlib.org/fdlibm/e_sqrt.c")
-	public static double sqrt(double __v)
+	public static strictfp double sqrt(double __v)
 	{
 		double z;
 		int uur, uut1, uus1, uuix1, uuq1;
@@ -371,7 +370,7 @@ public final strictfp class FDMLMath
 	 * @return The double value.
 	 * @since 2018/11/03
 	 */
-	private static final double __compose(int __hi, int __lo)
+	private static strictfp double __compose(int __hi, int __lo)
 	{
 		return Double.longBitsToDouble(
 			(((long)__hi & 0xFFFFFFFFL) << 32) |
@@ -385,7 +384,7 @@ public final strictfp class FDMLMath
 	 * @return The high word of the double.
 	 * @since 2018/11/03
 	 */
-	private static final int __hi(double __v)
+	private static strictfp int __hi(double __v)
 	{
 		return (int)(Double.doubleToRawLongBits(__v) >>> 32);
 	}
@@ -397,7 +396,7 @@ public final strictfp class FDMLMath
 	 * @return The low word of the double.
 	 * @since 2018/11/03
 	 */
-	private static final int __lo(double __v)
+	private static strictfp int __lo(double __v)
 	{
 		return (int)(Double.doubleToRawLongBits(__v));
 	}

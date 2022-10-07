@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,7 +65,7 @@ public final class HTTPAgent
 			throw new NullPointerException("NARG");
 		
 		// Debug
-		todo.DEBUG.note(" -> %d", __data.length);
+		Debugging.debugNote(" -> %d", __data.length);
 		
 		// Open connection to remote server
 		byte[] response;

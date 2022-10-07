@@ -4,9 +4,6 @@ import org.gradle.util.VersionNumber
 plugins {
 	id "de.set.ecj" version "1.4.1" apply false
 	id "idea"
-	
-	// For BinTray publishing, do not apply but it is used by sub-projects
-	id "com.jfrog.bintray" version "1.8.5" apply false
 }
 
 group = "cc.squirreljme.modules"
@@ -26,13 +23,22 @@ static VersionNumber normalizeMavenVersion(Object __inVersion) {
 
 // Every sub-project needs SquirrelJME specific pieces
 subprojects {
-	//apply plugin: "de.set.ecj"
+	// Apply ECJ for compilation? (Such as too new of Java)
+	if (project.hasProperty("squirreljmeEcjEnabled") &&
+		project.squirreljmeEcjEnabled) {
+		apply plugin: "de.set.ecj"
+	}
+	
 	apply plugin: "java-library"
+	apply plugin: "java-test-fixtures"
 	apply plugin: "cc.squirreljme.plugin"
 	apply plugin: "idea"
 	apply plugin: "maven-publish"
-	apply plugin: "com.jfrog.bintray"
 	apply plugin: "signing"
+	
+	// The Java versions this works with
+	sourceCompatibility = 8
+	targetCompatibility = 8
 	
 	idea {
 		module
@@ -46,17 +52,31 @@ subprojects {
 		}
 	}
 	
+	// Disable native header generation when using ECJ as it does not have
+	// the -h option. See:
+	// https://github.com/gradle/gradle/issues/12904#issuecomment-619212927
+	if (project.hasProperty("squirreljmeEcjEnabled") &&
+		project.squirreljmeEcjEnabled) {
+		tasks.withType(JavaCompile) {
+			options.headerOutputDirectory.convention((Directory)null)
+		}
+	}
+	
 	// Configure the compiler
 	java {
-		// Java ME 8 is effectively Java 7
+		// Java ME 8 is effectively Java 7, but use Java 8 here
         compileJava.sourceCompatibility = JavaVersion.VERSION_1_7
-		compileJava.targetCompatibility = JavaVersion.VERSION_1_7
+		compileJava.targetCompatibility = JavaVersion.VERSION_1_8
 
 		// All files are always in UTF-8 format
 		compileJava.options.encoding = "utf-8"
 
 		// Emit deprecation errors
 		compileJava.options.deprecation = true
+		
+		// Maximize debugging
+		compileJava.options.debug = true
+		compileJava.options.debugOptions.setDebugLevel("source,lines,vars")
 
 		// Copy to tests
 		compileTestJava.sourceCompatibility = compileJava.sourceCompatibility
@@ -64,6 +84,8 @@ subprojects {
 		compileTestJava.options.encoding = compileJava.options.encoding
 		compileTestJava.options.verbose = compileJava.options.verbose
 		compileTestJava.options.deprecation = compileJava.options.deprecation
+		compileTestJava.options.debug = compileJava.options.debug
+		compileTestJava.options.debugOptions = compileJava.options.debugOptions
 
 		// Copy to JavaDoc
 		javadoc.options.source = "1.7"
@@ -209,23 +231,16 @@ subprojects {
 				}
 			}
 		}
-	}
-	
-	// Publishing to BinTray
-	bintray {
-		user = findProperty("bintrayUser") ?: "bintray_user_unset!"
-		key = findProperty("bintrayKey") ?: "bintray_key_unset!"
 		
-		publications = ['maven']
-		
-		pkg {
-			repo = "SquirrelJME"
-			name = project.name
-			licenses = ['GPL-3.0']
-			vcsUrl = "https://squirreljme.cc/"
-			
-			version {
-				name = normalizeMavenVersion(rootProject.version)
+		// IntelliJ adjustments
+		idea {
+			module {
+				// Make testFixtures as part of tests so that in search and
+				// otherwise they appear as such
+				testSourceDirs += project.projectDir.toPath().resolve("src")
+					.resolve("testFixtures").resolve("java").toFile()
+				testResourceDirs += project.projectDir.toPath().resolve("src")
+					.resolve("testFixtures").resolve("resources").toFile()
 			}
 		}
 	}
@@ -274,7 +289,5 @@ configure(subprojects
 	dependencies {
 		// All projects depend on the Compact CLDC Library
 		api project(":modules:cldc-compact")
-		
-		testImplementation project(":modules:cldc-compact")
 	}
 }

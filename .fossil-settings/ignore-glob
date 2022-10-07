@@ -6,6 +6,16 @@ build/
 out/
 */out/
 
+# VSCode Files
+*~
+
+# Eclipse
+.settings
+.classpath
+.project
+emulators/*/bin
+modules/*/bin
+
 # IntelliJ (Shared but not used)
 .idea/aws.xml
 .idea/dbnavigator.xml
@@ -19,7 +29,14 @@ out/
 .idea/uiDesigner.xml
 .idea/usage-statistics.xml
 .idea/workspace.xml
+.idea/modules/
+.idea/shelf/
+ratufacoat/.idea/discord.xml
+ratufacoat/.idea/gradle.xml
 ratufacoat/.idea/workspace.xml
+ratufacoat/.idea/modules/
+ratufacoat/.idea/shelf/
+ratufacoat/libretro-log.txt
 file-*
 
 # IntelliJ Dependency Matrix
@@ -39,6 +56,7 @@ modules/*/out/test/
 *-original-*
 
 # Binary Files
+*.class
 *.ico
 *.png
 *.sqc
@@ -51,25 +69,34 @@ modules/*/out/test/
 java_pid*.hprof
 
 # CMake
+CMakeFiles
+CTestTestfile.cmake
+CMakeCache.txt
 ratufacoat/cmake-build-release
 ratufacoat/cmake-build-debug
-ratufacoat/CMakeFiles
-ratufacoat/src/CMakeFiles
 ratufacoat/src/Debug
 ratufacoat/src/Release
 ratufacoat/src/SquirrelJME.dir
 ratufacoat/x86
 ratufacoat/x64
 ratufacoat/out
+ratufacoat/Testing
+ratufacoat/Makefile
+ratufacoat/libretro-log.txt
+ratufacoat/file-*
+cmake_install.cmake
 *.o
 *.dll
 *.exe
-bvm/cmake-build-debug
-bvm/cmake-build-release
+*.dylib
+cmake-build-debug
+*.tmp
 
 # Fossil files
 _FOSSIL_
+.fslckout
 ci-comment-*.txt
+ci-comment-*.txt.save
 in-*0
 in-*1
 in-*2

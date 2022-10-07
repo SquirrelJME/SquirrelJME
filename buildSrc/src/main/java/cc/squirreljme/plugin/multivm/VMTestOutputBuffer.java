@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -68,7 +68,7 @@ public class VMTestOutputBuffer
 	 * Returns bytes that were read from the queue.
 	 * 
 	 * @param __thread The associated thread.
-	 * @return All of the read bytes.
+	 * @return All the read bytes.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/07
 	 */
@@ -106,9 +106,14 @@ public class VMTestOutputBuffer
 	{
 		// Constant reading of buffers
 		InputStream in = this.in;
-		for (byte[] buf = new byte[4096];;)
+		for (byte[] buf = new byte[32768];;)
 			try
 			{
+				// Check if we got interrupted before we read from the buffer
+				if (Thread.currentThread().isInterrupted())
+					throw new InterruptedException();
+				
+				// Read in
 				int rc = in.read(buf);
 				
 				// EOF?
@@ -120,7 +125,7 @@ public class VMTestOutputBuffer
 			}
 			
 			// Thread was interrupted, so probably want to stop doing this
-			catch (InterruptedIOException ignored)
+			catch (InterruptedIOException|InterruptedException ignored)
 			{
 				break;
 			}
@@ -150,7 +155,7 @@ public class VMTestOutputBuffer
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Nothing being written?
@@ -210,7 +215,7 @@ public class VMTestOutputBuffer
 		// If we ended in a newline, flush out the write buffer
 		else if (endingNewline)
 		{
-			// Send all of the bytes out
+			// Send all the bytes out
 			this.out.write(current.toByteArray());
 			
 			// Discard everything in the buffer

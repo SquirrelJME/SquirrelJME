@@ -1,3 +1,12 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the GNU General Public License v3+, or later.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
 package net.multiphasicapps.tac;
 
 import java.io.PrintStream;
@@ -72,8 +81,8 @@ public final class TestExecution
 					this.testClass, this.result);
 				
 				// Print comparison to show what failed
-				this.expected.printComparison(System.err,
-					this.result);
+				this.result.printComparison(System.err,
+					this.expected);
 				break;
 			
 			case TEST_EXCEPTION:

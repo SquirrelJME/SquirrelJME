@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,13 +9,15 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Software integer operations.
  *
  * @since 2019/05/27
  */
 @SuppressWarnings("MagicNumber")
-public class SoftInteger
+public final class SoftInteger
 {
 	/**
 	 * Not used.
@@ -36,7 +38,7 @@ public class SoftInteger
 	public static double toDouble(int __a)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -80,7 +82,7 @@ public class SoftInteger
 		if ((__a & 0x80000000) != 0)
 			return Assembly.longPack(__a, 0xFFFFFFFF);
 		
-		// Otherwise the top is just zero
+		// Otherwise, the top is just zero
 		else
 			return Assembly.longPack(__a, 0);
 	}

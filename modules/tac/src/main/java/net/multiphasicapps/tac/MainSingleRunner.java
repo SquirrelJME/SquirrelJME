@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -8,8 +8,6 @@
 // ---------------------------------------------------------------------------
 
 package net.multiphasicapps.tac;
-
-import cc.squirreljme.runtime.cldc.Poking;
 
 /**
  * Runs a single test.
@@ -26,10 +24,6 @@ public class MainSingleRunner
 	 */
 	public static void main(String... __args)
 	{
-		// Poke any native VM stuff as it is needed during hosted testing or
-		// potential other areas
-		Poking.poke();
-		
 		// {@squirreljme.error BU0b Expected single argument specifying the
 		// test to run.}
 		if (__args == null || __args.length != 1 || __args[0] == null)

@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,6 +9,8 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.util.UnassistedLaunchEntry;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -16,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import org.gradle.api.Action;
@@ -72,19 +75,70 @@ public class VMRomTaskAction
 			tempFile = Files.createTempFile(
 				this.vmType.vmName(VMNameFormat.LOWERCASE), sourceSet);
 			
+			// ROM building parameters
+			RomBuildParameters build = new RomBuildParameters();
+			
+			// The boot libraries which will be placed first always
+			Set<Path> bootPaths = new LinkedHashSet<>();
+			
 			// Get all of the libraries to translate
-			Set<Path> libPaths = new LinkedHashSet<>();
+			Set<Path> normalPaths = new LinkedHashSet<>();
 			for (VMLibraryTask task : VMRomDependencies.libraries(__task,
 				sourceSet, vmType))
+			{
+				// Determine the path set
+				Set<Path> pathSet = new LinkedHashSet<>();
 				for (File f : task.getOutputs().getFiles().getFiles())
-					libPaths.add(f.toPath());
+					pathSet.add(f.toPath());
+				
+				// Is this the boot loader library?
+				SquirrelJMEPluginConfiguration config =
+					SquirrelJMEPluginConfiguration.configurationOrNull(
+						task.getProject());
+				boolean isBootLoader = (config != null && config.isBootLoader);
+				boolean isMainLauncher = (config != null &&
+					config.isMainLauncher);
+				
+				// If this is the boot loader, add our paths
+				if (isBootLoader)
+				{
+					build.bootLoaderMainClass = config.bootLoaderMainClass;
+					build.bootLoaderClassPath = pathSet.toArray(
+						new Path[pathSet.size()]);
+				}
+				
+				// If this is the launcher, set the information needed to
+				// make sure it can actually be launched properly
+				if (isMainLauncher)
+				{
+					UnassistedLaunchEntry entry = config.primaryEntry();
+					
+					build.launcherMainClass = entry.mainClass;
+					build.launcherArgs = entry.args();
+					build.launcherClassPath = VMHelpers.runClassPath(
+						task, sourceSet, vmType);
+				}
+				
+				// Add to the correct set of paths
+				if (isBootLoader)
+					bootPaths.addAll(pathSet);
+				else
+					normalPaths.addAll(pathSet);
+			}
+			
+			// Make sure the boot libraries are always first
+			Set<Path> libPaths = new LinkedHashSet<>();
+			libPaths.addAll(bootPaths);
+			libPaths.addAll(normalPaths);
 			
 			// Setup output file for writing
 			try (OutputStream out = Files.newOutputStream(tempFile,
 				StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING,
 				StandardOpenOption.CREATE))
 			{
-				this.vmType.processRom(__task, out, libPaths);
+				// Run the ROM processing
+				this.vmType.processRom(__task, out, build,
+					new ArrayList<>(libPaths));
 			}
 			
 			// Move the file over

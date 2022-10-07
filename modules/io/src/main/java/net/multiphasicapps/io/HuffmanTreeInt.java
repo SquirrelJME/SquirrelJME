@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
@@ -180,7 +180,7 @@ public class HuffmanTreeInt
 		}
 		
 		// Should not occur
-		throw new todo.OOPS();
+		throw Debugging.oops();
 	}
 	
 	/**
@@ -352,8 +352,9 @@ public class HuffmanTreeInt
 		int[] becomes = new int[rv + 2];
 		
 		// Copy the old array over
-		for (int i = 0; i < rv; i++)
-			becomes[i] = table[i];
+		if (table != null)
+			System.arraycopy(table, 0,
+				becomes, 0, rv);
 		
 		// The end bits become invalidated
 		becomes[rv] = Integer.MAX_VALUE;
@@ -382,8 +383,9 @@ public class HuffmanTreeInt
 		int[] becomes = new int[rv + 1];
 		
 		// Copy the old array over
-		for (int i = 0; i < rv; i++)
-			becomes[i] = values[i];
+		if (values != null)
+			System.arraycopy(values, 0,
+				becomes, 0, rv);
 		
 		// Set new table
 		this._values = becomes;

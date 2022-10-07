@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -50,6 +50,7 @@ public final class UIFormShelf
 	 * then this becomes invalidated.
 	 * @param __dc The display callback to use.
 	 * @throws MLECallError On null arguments.
+	 * @see UIDisplayCallback
 	 * @since 2020/10/03
 	 */
 	public static native void callback(Object __ref, UIDisplayCallback __dc)
@@ -62,6 +63,7 @@ public final class UIFormShelf
 	 * @param __form The form that the callback will act under.
 	 * @param __callback The callback to register.
 	 * @throws MLECallError If {@code __form} is {@code null}.
+	 * @see UIFormCallback
 	 * @since 2020/07/03
 	 */
 	public static native void callback(UIFormBracket __form,
@@ -253,6 +255,16 @@ public final class UIFormShelf
 	 * @since 2020/07/01
 	 */
 	public static native UIFormBracket formNew()
+		throws MLECallError;
+	
+	/**
+	 * Forces a form to be refreshed.
+	 * 
+	 * @param __form The form to refresh
+	 * @throws MLECallError On null arguments or the form is not valid.
+	 * @since 2022/07/20
+	 */
+	public static native void formRefresh(UIFormBracket __form)
 		throws MLECallError;
 	
 	/**

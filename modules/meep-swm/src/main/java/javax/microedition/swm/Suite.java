@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -120,7 +119,7 @@ public class Suite
 	 */
 	public Iterator<String> getAttributes()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		Library program = this._library;
 		if (program == null)
@@ -166,7 +165,7 @@ public class Suite
 	 */
 	public Iterator<Suite> getDependencies()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		Library program = this._library;
 		if (program == null)
@@ -210,7 +209,7 @@ public class Suite
 	 */
 	public String getDownloadUrl()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		Library program = this._library;
 		if (program == null)
@@ -304,7 +303,7 @@ public class Suite
 				
 				// Unknown
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	
@@ -361,7 +360,7 @@ public class Suite
 	 */
 	public boolean isInstalled()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		Library program = this._library;
 		if (program == null)
@@ -381,7 +380,7 @@ public class Suite
 	 */
 	public boolean isSuiteState(SuiteStateFlag __f)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		// Null is never true
 		if (__f == null)
@@ -416,7 +415,7 @@ public class Suite
 	 */
 	public boolean isTrusted()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		Library program = this._library;
 		if (program == null)
@@ -450,7 +449,7 @@ public class Suite
 		if (__f == null)
 			return;
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		// {@squirreljme.error DG0q The current suite has been removed.}
 		if (!isInstalled())

@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,7 +9,7 @@
 
 package net.multiphasicapps.io;
 
-import java.io.ByteArrayOutputStream;
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -298,7 +297,7 @@ public final class Base64Decoder
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Did a previous read cause a padded EOF?
@@ -483,37 +482,18 @@ public final class Base64Decoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/04
 	 */
-	public static final byte[] decode(String __in, Base64Alphabet __ab,
+	public static byte[] decode(String __in, Base64Alphabet __ab,
 		boolean __ip)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__in == null || __ab == null)
 			throw new NullPointerException("NARG");
 		
-		// Wrap in a reader to decode
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+		// Loop handle bytes
+		try (InputStream in = new Base64Decoder(
+			new StringReader(__in), __ab, __ip))
 		{
-			byte[] buf = new byte[32];
-			
-			// Loop handle bytes
-			try (InputStream in = new Base64Decoder(
-				new StringReader(__in), __ab, __ip))
-			{
-				for (;;)
-				{
-					int rc = in.read(buf);
-					
-					// EOF?
-					if (rc < 0)
-						break;
-					
-					// Copy
-					baos.write(buf, 0, rc);
-				}
-			}
-			
-			// Return resulting byte array
-			return baos.toByteArray();
+			return StreamUtils.readAll(in);
 		}
 		
 		// {@squirreljme.error BD04 Could not decode the input string.}

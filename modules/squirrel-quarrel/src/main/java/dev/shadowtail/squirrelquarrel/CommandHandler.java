@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -77,7 +77,7 @@ public final class CommandHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/25
 	 */
-	private final Displayable __makeStatusMenu(GameInterface __gi)
+	private Displayable __makeStatusMenu(GameInterface __gi)
 		throws NullPointerException
 	{
 		if (__gi == null)

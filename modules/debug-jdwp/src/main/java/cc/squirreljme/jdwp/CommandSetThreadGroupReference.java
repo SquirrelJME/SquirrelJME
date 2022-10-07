@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,7 +9,10 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPViewThread;
 import cc.squirreljme.jdwp.views.JDWPViewThreadGroup;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Thread group reference commands.
@@ -84,7 +87,8 @@ public enum CommandSetThreadGroupReference
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			JDWPViewThreadGroup view = __controller.viewThreadGroup();
+			JDWPViewThreadGroup groupView = __controller.viewThreadGroup();
+			JDWPViewThread threadView = __controller.viewThread();
 			
 			// Is this valid?
 			Object group = __packet.readThreadGroup(
@@ -93,17 +97,24 @@ public enum CommandSetThreadGroupReference
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
+			// Filter out terminated, frameless, and debug threads (callbacks?)
+			List<Object> threads = new ArrayList<>();
+			for (Object thread : groupView.threads(group))
+				if (JDWPUtils.isVisibleThread(threadView, thread))
+					threads.add(thread);
+			
 			// Write number of child threads
-			Object[] threads = view.threads(group);
-			rv.writeInt(threads.length);
+			rv.writeInt(threads.size());
 			
 			// Record all of their IDs
 			for (Object thread : threads)
-			{	
-				rv.writeId(System.identityHashCode(thread));
+			{
+				Object threadInstance = threadView.instance(thread);
+				rv.writeObject(__controller, threadInstance);
 				
 				// Store for later referencing
 				__controller.state.items.put(thread);
+				__controller.state.items.put(threadInstance);
 			}
 			
 			// There are never any child thread groups

@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -130,6 +130,9 @@ public final class FossilExe
 		// Use this command
 		builder.command(command);
 		
+		// Standard output is always printed to the console, for debugging
+		builder.redirectError(ProcessBuilder.Redirect.INHERIT);
+		
 		// Force specific locales and otherwise
 		Map<String, String> env = builder.environment();
 		env.put("LC_ALL", "C");
@@ -212,8 +215,12 @@ public final class FossilExe
 			for (;;)
 				try
 				{
-					if (0 != process.waitFor())
-						throw new RuntimeException("Exited with failure.");
+					int exitCode = process.waitFor();
+					if (0 != exitCode)
+						throw new RuntimeException(String.format(
+							"Exited %s with failure %d: %d bytes",
+							Arrays.asList(__args), exitCode,
+							out.toByteArray().length));
 					break;
 				}
 				catch (InterruptedException ignored)
@@ -281,12 +288,28 @@ public final class FossilExe
 	}
 	
 	/**
+	 * Deletes the specified file.
+	 * 
+	 * @param __path The path to delete.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/29
+	 */
+	public void unversionDelete(String __path)
+		throws NullPointerException
+	{
+		if (__path == null)
+			throw new NullPointerException("NARG");
+		
+		this.runLineOutput("unversion", "rm", __path);
+	}
+	
+	/**
 	 * Returns the list of unversioned files.
 	 * 
 	 * @return The list of unversioned files.
 	 * @since 2020/06/25
 	 */
-	public final Collection<String> unversionedLs()
+	public final Collection<String> unversionList()
 	{
 		return this.runLineOutput("unversion", "ls");
 	}
@@ -299,7 +322,7 @@ public final class FossilExe
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/27
 	 */
-	public final void unversionedStoreBytes(String __fileName, byte[] __data)
+	public final void unversionStoreBytes(String __fileName, byte[] __data)
 		throws NullPointerException
 	{
 		if (__fileName == null || __data == null)
@@ -319,23 +342,9 @@ public final class FossilExe
 				StandardOpenOption.CREATE);
 			
 			// Store the file data
-			Process process = this.runCommand("unversion", "add",
+			this.runRawOutput("unversion", "add",
 				tempFile.toAbsolutePath().toString(),
 				"--as", __fileName);
-			
-			// Wait for process to complete
-			for (;;)
-				try
-				{
-					if (process.waitFor() != 0)
-						throw new RuntimeException(
-							"Process exited with: " + process.exitValue());
-					
-					return;
-				}
-				catch (InterruptedException ignored)
-				{
-				}
 		}
 		
 		// Could not write data
@@ -357,6 +366,46 @@ public final class FossilExe
 				{
 				}
 		}
+	}
+	
+	/**
+	 * Stores unversion bytes.
+	 * 
+	 * @param __fileName The file name.
+	 * @param __data The data to store.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/29
+	 */
+	public final void unversionStoreBytes(String __fileName,
+		InputStream __data)
+		throws IOException, NullPointerException
+	{
+		if (__fileName == null || __data == null)
+			throw new NullPointerException("NARG");
+		
+		byte[] bytes;
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+		{
+			// Copy over
+			byte[] buf = new byte[16384];
+			for (;;)
+			{
+				int rc = __data.read(buf);
+				
+				// EOF?
+				if (rc < 0)
+					break;
+				
+				baos.write(buf, 0, rc);
+			}
+			
+			// Get all the bytes
+			bytes = baos.toByteArray();
+		}
+		
+		// Forward to store call
+		this.unversionStoreBytes(__fileName, bytes);
 	}
 	
 	/**

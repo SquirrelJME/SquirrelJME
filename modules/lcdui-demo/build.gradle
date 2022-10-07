@@ -25,13 +25,13 @@ squirreljme
 		"net.multiphasicapps.lcduidemo.PNGDemo")
 	midlets += new JavaMEMidlet("JPEG Image Demo", "image.xpm",
 		"net.multiphasicapps.lcduidemo.JPEGDemo")
+	midlets += new JavaMEMidlet("GIF Image Demo", "image.xpm",
+		"net.multiphasicapps.lcduidemo.GIFDemo")
 	tags += "demo"
 }
 
 dependencies
 {
 	api project(":modules:cldc-compact")
-
-	api project(":modules:meep-midlet")
-	api project(":modules:midp-lcdui")
+	api project(":modules:profile-meep")
 }

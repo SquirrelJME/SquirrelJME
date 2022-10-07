@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -72,7 +72,7 @@ public class VMTestOutputs
 		
 		// The output of the task will be the test results
 		for (String testName :
-			VMHelpers.runningTests(project, sourceSet).keySet())
+			VMHelpers.runningTests(project, sourceSet).tests.keySet())
 			result.add(resultRoot.resolve(
 				VMHelpers.testResultXmlName(testName)));
 		

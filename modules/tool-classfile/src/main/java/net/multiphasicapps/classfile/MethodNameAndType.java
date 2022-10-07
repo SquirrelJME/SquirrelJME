@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -90,7 +89,7 @@ public final class MethodNameAndType
 		int rv = this.name.compareTo(__o.name);
 		if (rv != 0)
 			return rv;
-		return this.type.toString().compareTo(__o.type.toString());
+		return this.type.compareTo(__o.type);
 	}
 	
 	/**

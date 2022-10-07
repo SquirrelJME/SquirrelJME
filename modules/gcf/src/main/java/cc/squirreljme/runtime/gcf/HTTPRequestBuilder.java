@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -10,6 +10,10 @@
 package cc.squirreljme.runtime.gcf;
 
 import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.midlet.ApplicationHandler;
+import cc.squirreljme.runtime.midlet.ApplicationInterface;
+import cc.squirreljme.runtime.midlet.ApplicationType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -27,7 +31,7 @@ public final class HTTPRequestBuilder
 	extends OutputStream
 {
 	/** The user agent SquirrelJME uses. */
-	public static final String USER_AGENT =
+	private static final String _MIDLET_USER_AGENT =
 		"SquirrelJME/" + SquirrelJME.RUNTIME_VERSION + " " +
 		"Configuration/CLDC-1.0 Configuration/CLDC-1.1 " +
 		"Configuration/CLDC-1.8 Profile/MIDP-1.0 Profile/MIDP-2.0 " +
@@ -104,7 +108,7 @@ public final class HTTPRequestBuilder
 			throw new IOException("EC04");
 		
 		// Note
-		todo.TODO.note("Implement HTTP Flush");
+		Debugging.todoNote("Implement HTTP Flush", new Object[] {});
 	}
 	
 	/**
@@ -139,9 +143,7 @@ public final class HTTPRequestBuilder
 				
 				// If the user agent was specified, add to it or set one
 				String ua = rqp.get("user-agent");
-				rqp.put("user-agent", (ua == null ?
-					HTTPRequestBuilder.USER_AGENT :
-					ua + HTTPRequestBuilder.USER_AGENT));
+				rqp.put("user-agent", HTTPRequestBuilder.buildUserAgent(ua));
 				
 				// Is content being specified?
 				if (bytes != null)
@@ -253,7 +255,7 @@ public final class HTTPRequestBuilder
 		// Check
 		if (__a == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __a.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __a.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// {@squirreljme.error EC06 Cannot write more HTTP data.}
@@ -262,6 +264,82 @@ public final class HTTPRequestBuilder
 		
 		// Write to bytes
 		this._bytes.write(__a, __o, __l);
+	}
+	
+	/**
+	 * Builds a user agent string.
+	 * 
+	 * @param __existing The existing agent, is optional.
+	 * @return The resultant user agent.
+	 * @since 2022/07/21
+	 */
+	public static String buildUserAgent(String __existing)
+	{
+		// This really depends on our current interface
+		ApplicationInterface<?> appInterface =
+			ApplicationHandler.currentInterface();
+		ApplicationType appType = (appInterface == null ? null :
+			appInterface.type());
+		
+		// Depends on the application type
+		StringBuilder result = new StringBuilder(32);
+		switch ((appType == null ? ApplicationType.MIDLET : appType))
+		{
+				// NTT Docomo
+				// https://web.archive.org/web/20090523102511/
+				// http://www.nttdocomo.co.jp/service/imode/make/content/
+				// browser/browser2/useragent/index.html
+				// Example: "DoCoMo/2.0 DEVICE(c500;TB;W24H16)"
+				// SquirrelJME gives: "DoCoMo/2.0 SJME0M3R0(c999;TJ)"
+			case NTT_DOCOMO_DOJA:
+			case NTT_DOCOMO_STAR:
+				// Always starts with this
+				result.append("DoCoMo/2.0 ");
+				
+				// Model number of the phone
+				result.append("SJME");
+				result.append(SquirrelJME.MAJOR_VERSION);
+				result.append("M");
+				result.append(SquirrelJME.MINOR_VERSION);
+				result.append("R");
+				result.append(SquirrelJME.RELEASE_VERSION);
+				
+				// Start of model details
+				result.append('(');
+				
+				// Cache: 999KiB, is limited to 3 bytes?
+				result.append("c999");
+				
+				// How is this being accessed?
+				result.append(';');
+				if (appType == ApplicationType.NTT_DOCOMO_STAR)
+					result.append("SJ");
+				else
+					result.append("TJ");
+				
+				// The "W24H16" is the size of the terminal display in
+				// characters for when a browser is displaying a page, it is
+				// only used when the mode is TB or TC. Six bytes only so
+				// limited to 99x99.
+				
+				// End of model details
+				result.append(')');
+				break;
+			
+				// Midlet as a default
+			default:
+				if (__existing != null)
+				{
+					result.append(__existing);
+					result.append(' ');
+				}
+				
+				// Append default agent
+				result.append(HTTPRequestBuilder._MIDLET_USER_AGENT);
+				break;
+		}
+		
+		return result.toString();
 	}
 }
 

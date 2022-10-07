@@ -1,15 +1,15 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.collections;
+package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -336,7 +336,7 @@ public final class IntegerList
 	@Override
 	public Integer remove(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -401,8 +401,7 @@ public final class IntegerList
 		
 		// Copy values
 		int[] rv = new int[size];
-		for (int i = 0; i < size; i++)
-			rv[i] = values[i];
+		System.arraycopy(values, 0, rv, 0, size);
 		return rv;
 	}
 }

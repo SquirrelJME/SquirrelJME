@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,8 @@
 
 package jdk.dio.gpio;
 
+import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -32,40 +33,40 @@ public final class GPIOPortConfig
 	
 	public GPIOPortConfig(int __a, int __b, GPIOPinConfig... __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getDirection()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getInitValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public GPIOPinConfig[] getPinConfigs()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	@Deprecated
+	@ApiDefinedDeprecated
 	public GPIOPin[] getPins()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
@@ -74,7 +75,7 @@ public final class GPIOPortConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static GPIOPortConfig deserialize(InputStream __a)
@@ -82,7 +83,7 @@ public final class GPIOPortConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

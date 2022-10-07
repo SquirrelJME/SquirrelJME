@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -11,7 +10,9 @@
 package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
+import cc.squirreljme.runtime.cldc.util.MapKeySetView;
 import cc.squirreljme.runtime.cldc.util.SynchronizedEntrySetNotNull;
 
 /**
@@ -141,6 +142,7 @@ public class Hashtable<K, V>
 	 * @return If the map contains the value or not.
 	 * @since 2019/05/05
 	 */
+	@SuppressWarnings("RedundantCollectionOperation")
 	public boolean contains(Object __v)
 	{
 		synchronized (this)
@@ -166,6 +168,7 @@ public class Hashtable<K, V>
 	 * {@inheritDoc}
 	 * @since 2019/05/05
 	 */
+	@SuppressWarnings("RedundantCollectionOperation")
 	@Override
 	public boolean containsValue(Object __v)
 	{
@@ -208,7 +211,7 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 	
@@ -216,6 +219,7 @@ public class Hashtable<K, V>
 	 * {@inheritDoc}
 	 * @throws NullPointerException If the requested key is null.
 	 * @since 2019/05/05
+	 * @param __k
 	 */
 	@Override
 	public V get(Object __k)
@@ -269,7 +273,7 @@ public class Hashtable<K, V>
 	@Override
 	public Set<K> keySet()
 	{
-		return new __AbstractMapKeySet__<K, V>(this);
+		return new MapKeySetView<K, V>(this, false);
 	}
 	
 	/**

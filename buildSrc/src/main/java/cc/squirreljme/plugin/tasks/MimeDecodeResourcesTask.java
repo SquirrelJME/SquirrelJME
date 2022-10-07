@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -19,6 +19,12 @@ import javax.inject.Inject;
 import org.gradle.api.Task;
 import org.gradle.language.jvm.tasks.ProcessResources;
 
+/**
+ * This task decodes MIME encoded files into resources so that the SquirrelJME
+ * source can remain in pure ASCII.
+ * 
+ * @since 2020/02/28
+ */
 public class MimeDecodeResourcesTask
 	extends AbstractResourceTask
 {
@@ -31,13 +37,15 @@ public class MimeDecodeResourcesTask
 	 *
 	 * @param __sourceSet The source set to adjust.
 	 * @param __prTask The processing task.
+	 * @param __cleanTask The task for cleaning.
 	 * @since 2020/02/28
 	 */
 	@Inject
 	public MimeDecodeResourcesTask(String __sourceSet,
-		ProcessResources __prTask)
+		ProcessResources __prTask, Task __cleanTask)
 	{
-		super(MimeDecodeResourcesTask.EXTENSION, "", __sourceSet, __prTask);
+		super(MimeDecodeResourcesTask.EXTENSION, "",
+			__sourceSet, __prTask, __cleanTask);
 		
 		// Set details of this task
 		this.setGroup("squirreljme");
@@ -64,7 +72,7 @@ public class MimeDecodeResourcesTask
 				
 				// Copy decoded MIME data to the output file
 				try (MIMEFileDecoder in = new MIMEFileDecoder(
-					Files.newInputStream(output.input.absolute,
+					Files.newInputStream(output.input.getAbsolute(),
 							StandardOpenOption.READ));
 					OutputStream out = Files.newOutputStream(outPath,
 							StandardOpenOption.CREATE,

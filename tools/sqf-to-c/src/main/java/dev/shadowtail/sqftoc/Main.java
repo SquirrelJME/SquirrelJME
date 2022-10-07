@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -100,7 +100,7 @@ public class Main
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/20
 	 */
-	private static final void __dumpBytes(PrintStream __ps, String __name,
+	private static void __dumpBytes(PrintStream __ps, String __name,
 		byte[] __b)
 		throws NullPointerException
 	{

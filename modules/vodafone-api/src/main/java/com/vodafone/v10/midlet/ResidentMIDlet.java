@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,6 +9,7 @@
 
 package com.vodafone.v10.midlet;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.vodafone.v10.system.device.MailListener;
 import com.vodafone.v10.system.device.RingStateListener;
 import com.vodafone.v10.system.device.ScheduledAlarmListener;
@@ -22,7 +23,7 @@ public abstract class ResidentMIDlet
 {
     protected ResidentMIDlet()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

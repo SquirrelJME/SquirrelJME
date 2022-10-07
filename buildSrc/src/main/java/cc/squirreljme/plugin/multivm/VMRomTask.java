@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -11,8 +11,10 @@ package cc.squirreljme.plugin.multivm;
 
 import java.nio.file.Path;
 import javax.inject.Inject;
+import lombok.Getter;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.Internal;
 
 /**
  * This task is responsible for compiling a combined ROM, if a VM uses one.
@@ -24,9 +26,13 @@ public class VMRomTask
 	implements VMExecutableTask
 {
 	/** The source set used. */
+	@Internal
+	@Getter
 	public final String sourceSet;
 	
 	/** The virtual machine type. */
+	@Internal
+	@Getter
 	public final VMSpecifier vmType;
 	
 	/**
@@ -49,7 +55,7 @@ public class VMRomTask
 		this.vmType = __vmType;
 		
 		// Set details of this task
-		this.setGroup("squirreljme");
+		this.setGroup("squirreljmeGeneral");
 		this.setDescription("Builds the combined ROM.");
 		
 		// The JAR we are compiling has to be built first
@@ -68,16 +74,6 @@ public class VMRomTask
 		
 		// Action for performing the actual linkage of the ROM
 		this.doLast(new VMRomTaskAction(__sourceSet, __vmType));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/10/17
-	 */
-	@Override
-	public String getSourceSet()
-	{
-		return this.sourceSet;
 	}
 	
 	/**

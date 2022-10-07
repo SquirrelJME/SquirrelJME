@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------
-# Multi-Phasic Applications: SquirrelJME
+# SquirrelJME
 #     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 # ---------------------------------------------------------------------------
 # SquirrelJME is under the GNU General Public License v3, or later.
@@ -320,7 +320,6 @@ else ifeq ($(platform), rpi3)
 
 # Classic Platforms ####################
 # Platform affix = classic_<ISA>_<uARCH>
-# Help at https://modmyclassic.com/comp
 # (armv7 a7, hard point, neon based) ###
 # NESC, SNESC, C64 mini
 else ifeq ($(platform), classic_armv7_a7)

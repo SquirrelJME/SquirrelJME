@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -114,11 +113,11 @@ public abstract class UnmodifiableList<V>
 	 * @return An unmodifiable view of the list.
 	 * @since 2016/03/03
 	 */
-	public static <V> List<V> of(List<V> __l)
+	public static <V> UnmodifiableList<V> of(List<V> __l)
 	{
 		// If already one, return it
 		if (__l instanceof UnmodifiableList)
-			return __l;
+			return (UnmodifiableList<V>)__l;
 		
 		// Wrap, make sure that if the list being wrapped can be randomly
 		// accessed that it also carries the RandomAccess interface.

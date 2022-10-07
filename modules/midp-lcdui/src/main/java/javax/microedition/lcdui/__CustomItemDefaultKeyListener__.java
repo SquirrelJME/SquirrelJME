@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -13,11 +13,12 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 /**
- * Not Described.
+ * This is the default key listener for custom items if another one is
+ * not used at all.
  *
  * @since 2020/10/16
  */
-public class __CustomItemDefaultKeyListener__
+class __CustomItemDefaultKeyListener__
 	implements KeyListener
 {
 	/** The item to reference. */

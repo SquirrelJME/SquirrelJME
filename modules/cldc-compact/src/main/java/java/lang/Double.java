@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,8 +9,10 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.SoftDouble;
 import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public final class Double
 	extends Number
@@ -49,16 +50,18 @@ public final class Double
 	public static final Class<Double> TYPE =
 		TypeShelf.<Double>typeToClass(TypeShelf.typeOfDouble());
 	
-	/** The mask for NaN values. */
-	private static final long _NAN_MASK =
-		0b0111111111111000000000000000000000000000000000000000000000000000L;
-	
 	/** The value for this double. */
 	private final double _value;
 	
-	public Double(double __a)
+	/**
+	 * Initializes the double value.
+	 * 
+	 * @param __v The value to set.
+	 * @since 2022/01/06
+	 */
+	public Double(double __v)
 	{
-		throw new todo.TODO();
+		this._value = __v;
 	}
 	
 	public Double(String __a)
@@ -66,37 +69,74 @@ public final class Double
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public byte byteValue()
 	{
-		throw new todo.TODO();
+		return (byte)this._value;
 	}
 	
 	@Override
 	public int compareTo(Double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public double doubleValue()
 	{
-		throw new todo.TODO();
+		return this._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
-	public boolean equals(Object __a)
+	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof Double))
+			return false;
+		
+		double a = this._value;
+		double b = ((Double)__o)._value;
+		
+		// Both values are NaN, consider it equal
+		if (Double.isNaN(a) && Double.isNaN(b))
+			return true;
+		
+		// If both values are zero, the sign is not important
+		long ra = Double.doubleToRawLongBits(a);
+		long rb = Double.doubleToRawLongBits(b);
+		if ((ra & SoftDouble.ZERO_CHECK_MASK) == 0 &&
+			(rb & SoftDouble.ZERO_CHECK_MASK) == 0)
+			return ra == rb;
+		
+		// Otherwise standard comparison
+		return a == b;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public float floatValue()
 	{
-		throw new todo.TODO();
+		return (float)this._value;
 	}
 	
 	/**
@@ -106,47 +146,65 @@ public final class Double
 	@Override
 	public int hashCode()
 	{
-		long v = this.doubleToLongBits(this._value); 
+		long v = Double.doubleToLongBits(this._value); 
 		return (int)(v ^ (v >>> 32));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public int intValue()
 	{
-		throw new todo.TODO();
+		return (int)this._value;
 	}
 	
 	public boolean isInfinite()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
+	/**
+	 * Is this the NaN value.
+	 *
+	 * @return If this is the NaN value.
+	 * @since 2022/01/06
+	 */
 	public boolean isNaN()
 	{
-		throw new todo.TODO();
+		return Double.isNaN(this._value);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public long longValue()
 	{
-		throw new todo.TODO();
+		return (long)this._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public short shortValue()
 	{
-		throw new todo.TODO();
+		return (short)this._value;
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int compare(double __a, double __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -162,8 +220,8 @@ public final class Double
 		long raw = Double.doubleToRawLongBits(__v);
 		
 		// Collapse all NaN values to a single form
-		if ((raw & Double._NAN_MASK) == (Double._NAN_MASK))
-			return Double._NAN_MASK;
+		if ((raw & SoftDouble.NAN_MASK) == (SoftDouble.NAN_MASK))
+			return SoftDouble.NAN_MASK;
 		
 		return raw;
 	}
@@ -182,12 +240,19 @@ public final class Double
 	
 	public static boolean isInfinite(double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static boolean isNaN(double __a)
+	/**
+	 * Is the specified value a NaN?
+	 *
+	 * @param __v The value to check.
+	 * @return If it is NaN or not.
+	 * @since 2022/01/06
+	 */
+	public static boolean isNaN(double __v)
 	{
-		throw new todo.TODO();
+		return SoftDouble.isNaN(Double.doubleToRawLongBits(__v));
 	}
 	
 	/**
@@ -211,12 +276,12 @@ public final class Double
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static String toString(double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Double valueOf(String __a)
@@ -224,12 +289,20 @@ public final class Double
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static Double valueOf(double __a)
+	/**
+	 * Returns the boxed representation of the given double.
+	 *
+	 * @param __v The double value.
+	 * @return The boxed double.
+	 * @since 2022/01/06
+	 */
+	@SuppressWarnings("UnnecessaryBoxing")
+	public static Double valueOf(double __v)
 	{
-		throw new todo.TODO();
+		return new Double(__v);
 	}
 }
 

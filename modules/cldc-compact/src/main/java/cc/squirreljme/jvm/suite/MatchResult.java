@@ -1,5 +1,6 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -7,6 +8,8 @@
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.jvm.suite;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This class contains the results of a dependency match.
@@ -110,7 +113,7 @@ public final class MatchResult
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

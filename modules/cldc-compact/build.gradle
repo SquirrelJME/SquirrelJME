@@ -19,13 +19,16 @@ squirreljme
 	swmName = "Connection Limited Device Configuration (Compact)"
 	swmVendor = "Stephanie Gawroriski"
 	definedConfigurations += new JavaMEConfiguration("CLDC-1.8-Compact")
+	definedConfigurations += new JavaMEConfiguration("CLDC-1.1.1")
 	definedConfigurations += new JavaMEConfiguration("CLDC-1.1")
 	definedConfigurations += new JavaMEConfiguration("CLDC-1.0")
 	tags += "required"
 	tags += "lite"
+	noEmitConfiguration = true
 	
 	// This is considered a boot loader for SummerCoat
 	isBootLoader = true
+	bootLoaderMainClass = "cc.squirreljme.jvm.summercoat.Bootstrap"
 }
 
 java

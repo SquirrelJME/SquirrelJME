@@ -1,14 +1,15 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package net.multiphasicapps.zip;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This contains methods for converting from the IBM 437 codepage to the UTF-16
@@ -194,7 +195,7 @@ public final class IBM437CodePage
 			
 				// Should not occur but in case it does
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	

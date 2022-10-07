@@ -1,14 +1,15 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.lcdui.gfx;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This contains the various functions that may be set by
@@ -339,7 +340,7 @@ public enum AdvancedFunction
 				color = __ag.paintalphacolor,
 				dest = __ag.offset + (iw * __y1) + __x1;
 			
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	},
 	
@@ -380,7 +381,7 @@ public enum AdvancedFunction
 				color = __ag.paintalphacolor,
 				dest = __ag.offset + (iw * __y1) + __x1;
 			
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	},
 	
@@ -399,7 +400,9 @@ public enum AdvancedFunction
 				__x = __vi[2],
 				__y = __vi[3],
 				__w = __vi[4],
-				__h = __vi[5];
+				__h = __vi[5],
+				__subX = __vi[6],
+				__subY = __vi[7];
 			int[] __b = (int[])__va[0];
 			
 			int[] data = __ag.buffer;
@@ -410,11 +413,27 @@ public enum AdvancedFunction
 			int eosa = __l - __w;
 			
 			// Draw tile data
-			int dest = __ag.offset + (__y * iw) + __x, src = 0, ey = __y + __h;
+			int dest = __ag.offset + (__y * iw) + __x;
+			int src = __o + __subX + (__subY * iw);
+			int ey = __y + __h;
 			for (; __y < ey; __y++, dest += iw, src += eosa)
 				for (int spend = src + __w, dp = dest; src < spend;
 					dp++, src++)
-					data[dp] = __b[src] | 0xFF_000000;
+					try
+					{
+						data[dp] = __b[src] | 0xFF_000000;
+					}
+					catch (IndexOutOfBoundsException e)
+					{
+						Debugging.debugNote("Oops: " +
+							"__o=%d, __l=%d, __x=%d, __y=%d, " +
+							"__w=%d, __h=%d, __subX=%d, __subY=%d, " +
+							"__b[%d]=%s, data[%d]=%s, iw=%d, eosa=%d, " +
+							"dest=%d, src=%d, ey=%d, spend=%d !!",
+							__o, __l, __x, __y, __w, __h, __subX, __subY,
+							__b.length, __b, data.length, data, iw, eosa,
+							dest, src, ey, spend);
+					}
 		}
 	},
 	
@@ -433,7 +452,9 @@ public enum AdvancedFunction
 				__x = __vi[2],
 				__y = __vi[3],
 				__w = __vi[4],
-				__h = __vi[5];
+				__h = __vi[5],
+				__subX = __vi[6],
+				__subY = __vi[7];
 			int[] __b = (int[])__va[0];
 			
 			int[] data = __ag.buffer;
@@ -444,7 +465,9 @@ public enum AdvancedFunction
 			int eosa = __l - __w;
 			
 			// Draw tile data
-			int dest = __ag.offset + (__y * iw) + __x, src = 0, ey = __y + __h;
+			int dest = __ag.offset + (__y * iw) + __x;
+			int src = __o + __subX + (__subY * iw);
+			int ey = __y + __h;
 			for (; __y < ey; __y++, dest += iw, src += eosa)
 				for (int spend = src + __w, dp = dest; src < spend;
 					dp++, src++)
@@ -477,7 +500,9 @@ public enum AdvancedFunction
 				__x = __vi[2],
 				__y = __vi[3],
 				__w = __vi[4],
-				__h = __vi[5];
+				__h = __vi[5],
+				__subX = __vi[6],
+				__subY = __vi[7];
 			int[] __b = (int[])__va[0];
 			
 			int[] data = __ag.buffer;
@@ -488,7 +513,9 @@ public enum AdvancedFunction
 			int eosa = __l - __w;
 			
 			// Draw tile data
-			int dest = __ag.offset + (__y * iw) + __x, src = 0, ey = __y + __h;
+			int dest = __ag.offset + (__y * iw) + __x;
+			int src = __o + __subX + (__subY * iw);
+			int ey = __y + __h;
 			for (; __y < ey; __y++, dest += iw, src += eosa)
 				for (int spend = src + __w, dp = dest; src < spend;
 					dp++, src++)
@@ -523,7 +550,9 @@ public enum AdvancedFunction
 				__x = __vi[2],
 				__y = __vi[3],
 				__w = __vi[4],
-				__h = __vi[5];
+				__h = __vi[5],
+				__subX = __vi[6],
+				__subY = __vi[7];
 			int[] __b = (int[])__va[0];
 			
 			int[] data = __ag.buffer;
@@ -534,7 +563,9 @@ public enum AdvancedFunction
 			int eosa = __l - __w;
 			
 			// Draw tile data
-			int dest = __ag.offset + (__y * iw) + __x, src = 0, ey = __y + __h;
+			int dest = __ag.offset + (__y * iw) + __x;
+			int src = __o + __subX + (__subY * iw);
+			int ey = __y + __h;
 			for (; __y < ey; __y++, dest += iw, src += eosa)
 				for (int spend = src + __w, dp = dest; src < spend;
 					dp++, src++)

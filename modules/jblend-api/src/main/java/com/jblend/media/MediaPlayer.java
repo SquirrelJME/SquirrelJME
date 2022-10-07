@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,6 +9,7 @@
 
 package com.jblend.media;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.jblend.io.j2me.events.NativeMediaEventDispatcher;
 
 public abstract class MediaPlayer
@@ -20,14 +21,14 @@ public abstract class MediaPlayer
     public static final int ERROR = 65536;
     
     protected static final int REAL_WIDTH =
-    	todo.TODO.missingInteger();
+    	Debugging.<Integer>todoObject();
     	
     protected static final int REAL_HEIGHT =
-    	todo.TODO.missingInteger();
+    	Debugging.<Integer>todoObject();
 
     public MediaPlayer()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public abstract void setData(MediaData var1);
@@ -52,6 +53,6 @@ public abstract class MediaPlayer
 
     protected static void addNativeMediaEventDispatcher(NativeMediaEventDispatcher var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jvm.aot;
 
-import cc.squirreljme.runtime.cldc.Poking;
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
@@ -70,9 +70,6 @@ public class Main
 	public static void main(String... __args)
 		throws IOException
 	{
-		// Make sure the VM stuff is alive here
-		Poking.poke();
-		
 		// Push all arguments to the queue
 		Deque<String> args = new LinkedList<>(Arrays.asList(__args));
 		
@@ -117,29 +114,29 @@ public class Main
 		try (InputStream in = new StandardInputStream();
 			OutputStream out = System.out)
 		{
-		// Which mode should occur?
-		switch (mode)
-		{
-				// Compile code
-			case "compile":
+			// Which mode should occur?
+			switch (mode)
+			{
+					// Compile code
+				case "compile":
 					Main.mainCompile(backend, in, out, name, args);
 					break;
 					
 					// Dump the result of "compile"
 				case "dumpCompile":
 					Main.dumpCompile(backend, in, out, name);
-				break;
-				
-				// Link multiple libraries into one
-			case "rom":
+					break;
+					
+					// Link multiple libraries into one
+				case "rom":
 					Main.mainRom(backend, out, args);
-				break;
-			
-			// {@squirreljme.error AE02 Unknown mode. (The mode)}
-			default:
-				throw new IllegalArgumentException("AE02 " + mode);
+					break;
+				
+				// {@squirreljme.error AE02 Unknown mode. (The mode)}
+				default:
+					throw new IllegalArgumentException("AE02 " + mode);
+			}
 		}
-	}
 	}
 	
 	/**
@@ -164,25 +161,9 @@ public class Main
 		
 		// Read in the entire contents of the data
 		byte[] dump;
-		try (InputStream in = __inGlob;
-			ByteArrayOutputStream baos = new ByteArrayOutputStream(
-				Math.max(4096, __inGlob.available())))
+		try (InputStream in = __inGlob)
 		{
-			// Load in a copy
-			byte[] buf = new byte[8192];
-			for (;;)
-			{
-				int rc = in.read(buf);
-				
-				// EOF?
-				if (rc < 0)
-					break;
-				
-				baos.write(buf, 0, rc);
-			}
-			
-			// Write output
-			dump = baos.toByteArray();
+			dump = StreamUtils.readAll(in);
 		}
 		
 		// Dump the output
@@ -305,8 +286,11 @@ public class Main
 		if (libs.isEmpty())
 			throw new IllegalArgumentException("AE08");
 		
+		// Extra arrays accordingly
+		VMClassLibrary[] vmLibs = libs.toArray(
+			new VMClassLibrary[libs.size()]);
+		
 		// Perform combined linking
-		__backend.rom(settings, __out,
-			libs.toArray(new VMClassLibrary[libs.size()]));
+		__backend.rom(settings, __out, vmLibs);
 	}
 }

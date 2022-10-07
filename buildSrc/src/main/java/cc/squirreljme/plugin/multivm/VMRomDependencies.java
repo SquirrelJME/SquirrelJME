@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -10,8 +10,10 @@
 package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
-import java.util.Collection;
-import java.util.LinkedList;
+import cc.squirreljme.plugin.util.ProjectAndSourceSet;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -67,7 +69,7 @@ public class VMRomDependencies
 	}
 	
 	/**
-	 * Returns all of the libraries that should make up the ROM.
+	 * Returns all the libraries that should make up the ROM.
 	 * 
 	 * @param __task The task to get from.
 	 * @param __sourceSet The source set to use.
@@ -83,14 +85,47 @@ public class VMRomDependencies
 		if (__task == null || __sourceSet == null || __vmType == null)
 			throw new NullPointerException("NARG");
 		
+		// Where all the libraries will go
+		Map<ProjectAndSourceSet, VMLibraryTask> result =
+			new LinkedHashMap<>();
+		
+		// This could be recursive
+		VMRomDependencies.__libraries(__task, __sourceSet, __vmType, result);
+		
+		return new ArrayList<>(result.values());
+	}
+	
+	/**
+	 * Returns all the mapped libraries.
+	 * 
+	 * @param __task The task to add for.
+	 * @param __sourceSet The source set to add.
+	 * @param __vmType The current virtual machine type.
+	 * @param __result Where all the results are stored.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/07
+	 */
+	private static void __libraries(Task __task, String __sourceSet,
+		VMSpecifier __vmType,
+		Map<ProjectAndSourceSet, VMLibraryTask> __result)
+		throws NullPointerException
+	{
+		if (__task == null || __sourceSet == null || __vmType == null ||
+			__result == null)
+			throw new NullPointerException("NARG");
+		
 		// If we are not on the main source set, we need to include everything
 		// the main source set has. For tests for example, we need the main
 		// libraries to even test them properly.
-		Collection<VMLibraryTask> rv = new LinkedList<>();
 		if (!SourceSet.MAIN_SOURCE_SET_NAME.equals(__sourceSet))
-			for (VMLibraryTask task : VMRomDependencies.libraries(__task,
-				SourceSet.MAIN_SOURCE_SET_NAME, __vmType))
-				rv.add(task);
+			VMRomDependencies.__libraries(__task,
+				SourceSet.MAIN_SOURCE_SET_NAME, __vmType, __result);
+		
+		// If we are using tests, then we need to include all of the test
+		// fixtures as well
+		if (SourceSet.TEST_SOURCE_SET_NAME.equals(__sourceSet))
+			VMRomDependencies.__libraries(__task,
+				VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME, __vmType, __result);
 		
 		// Go through all projects and map dependencies
 		for (Project project : __task.getProject().getRootProject()
@@ -109,9 +144,8 @@ public class VMRomDependencies
 				continue;
 			
 			// Add the task
-			rv.add((VMLibraryTask)task);
+			__result.put(new ProjectAndSourceSet(
+				task.getProject(), __sourceSet), (VMLibraryTask)task);
 		}
-		
-		return rv;
 	}
 }

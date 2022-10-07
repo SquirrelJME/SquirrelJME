@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -64,12 +64,30 @@ public interface UIFormCallback
 	void exitRequest(UIFormBracket __form);
 	
 	/**
+	 * Indicates that a form is being refreshed before items are about to be
+	 * placed onto the form.
+	 * 
+	 * If the size of the form is unknown, then {@code -1} should be used for
+	 * the form properties. Note that the form size is only an estimate and
+	 * might not be accurate.
+	 * 
+	 * @param __form The form being refreshed.
+	 * @param __sx Starting surface X coordinate.
+	 * @param __sy Starting surface Y coordinate.
+	 * @param __sw Surface width.
+	 * @param __sh Surface height.
+	 * @since 2022/07/20
+	 */
+	void formRefresh(UIFormBracket __form, int __sx, int __sy,
+		int __sw, int __sh);
+	
+	/**
 	 * Draw action for the given item.
 	 * 
 	 * @param __form The form to be acted on.
 	 * @param __item The item to draw.
 	 * @param __pf The {@link UIPixelFormat} used for the draw.
-	 * @param __bw The buffer width.
+	 * @param __bw The buffer width, this is the scanline width of the buffer.
 	 * @param __bh The buffer height.
 	 * @param __buf The target buffer to draw to, this is cast to the correct
 	 * buffer format.

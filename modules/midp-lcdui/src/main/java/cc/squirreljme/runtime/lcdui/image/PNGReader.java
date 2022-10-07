@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,13 +9,15 @@
 
 package cc.squirreljme.runtime.lcdui.image;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import javax.microedition.lcdui.Image;
+import net.multiphasicapps.io.ByteDeque;
 import net.multiphasicapps.io.CRC32Calculator;
 import net.multiphasicapps.io.ChecksumInputStream;
 import net.multiphasicapps.io.SizeLimitedInputStream;
@@ -48,10 +49,10 @@ public class PNGReader
 	private int _height;
 	
 	/** The bit depth. */
-	private int _bitdepth;
+	private int _bitDepth;
 	
 	/** The color type. */
-	private int _colortype;
+	private int _colorType;
 	
 	/** Is adam7 interlacing being used? */
 	private boolean _adamseven;
@@ -122,7 +123,7 @@ public class PNGReader
 		// contain a tRNS chunk after the IDAT chunk. This violates the PNG
 		// standard so the image chunk has to cached and process later,
 		// otherwise the images will be corrupt.
-		byte[] imagechunk = null;
+		byte[] imageChunk = null;
 		
 		// Keep reading chunks in the file
 		for (;;)
@@ -134,8 +135,8 @@ public class PNGReader
 			
 			// Setup data stream for reading packet data, do not propogate
 			// close
-			CRC32Calculator crc = new CRC32Calculator(true, true, 0x04C11DB7,
-				0xFFFFFFFF, 0xFFFFFFFF);
+			CRC32Calculator crc = new CRC32Calculator(true, true,
+				0x04C11DB7, 0xFFFFFFFF, 0xFFFFFFFF);
 			int lasttype = 0;
 			try (DataInputStream data = new DataInputStream(
 				new SizeLimitedInputStream(new ChecksumInputStream(crc, in),
@@ -167,7 +168,7 @@ public class PNGReader
 						// There may be multiple consecutive IDAT chunks which
 						// just continue where the previous one left off, so
 						// just smash them together
-						if (imagechunk != null)
+						if (imageChunk != null)
 						{
 							// Read chunk data, decompress the data
 							// additionally so that the decoder does not need
@@ -177,19 +178,21 @@ public class PNGReader
 							
 							// Setup new array which contains the original
 							// data but has more space
-							int gn = imagechunk.length,
+							int gn = imageChunk.length,
 								xn = xtrachunk.length,
 								nl = gn + xn;
-							imagechunk = Arrays.copyOf(imagechunk, nl);
+							imageChunk = Arrays.copyOf(imageChunk, nl);
 							
 							// Write in all the data
-							for (int i = 0, o = gn; i < xn; i++, o++)
-								imagechunk[o] = xtrachunk[i];
+							// for (int i = 0, o = gn; i < xn; i++, o++)
+							// 	imageChunk[o] = xtrachunk[i];
+							System.arraycopy(xtrachunk, 0,
+								imageChunk, gn, xn);
 						}
 						
 						// The first chunk
 						else
-							imagechunk = PNGReader.__chunkLater(data);
+							imageChunk = PNGReader.__chunkLater(data);
 						break;
 						
 						// Transparency information
@@ -221,8 +224,7 @@ public class PNGReader
 		if (!this._hasalpha)
 		{
 			// Force all pixels to opaque
-			for (int i = 0, n = argb.length; i < n; i++)
-				argb[i] = 0xFF_000000;
+			Arrays.fill(argb, 0xFF_000000);
 			
 			// Make all pixels opaque in the palette
 			int[] palette = this._palette;
@@ -232,7 +234,7 @@ public class PNGReader
 		}
 		
 		// {@squirreljme.error EB0w Unsupported bit-depth. (The bitdepth)}
-		int bitdepth = this._bitdepth;
+		int bitdepth = this._bitDepth;
 		if (Integer.bitCount(bitdepth) != 1 || bitdepth > 8)
 			throw new IOException("EB0w " + bitdepth);
 		
@@ -241,23 +243,23 @@ public class PNGReader
 			throw new IOException("EB0x");
 		
 		// {@squirreljme.error EB0y Paletted PNG image has no palette.}
-		if (this._colortype == 3 && this._palette == null)
+		if (this._colorType == 3 && this._palette == null)
 			throw new IOException("EB0y");
 		
 		// Process the image chunk now that the other information was read
 		// Note that the chunk needs to be unfiltered first
+		int colorType = this._colorType;
 		try (InputStream data = new ByteArrayInputStream(this.__unfilter(
-			new ZLibDecompressor(new ByteArrayInputStream(imagechunk)))))
+			new ZLibDecompressor(new ByteArrayInputStream(imageChunk)),
+				this.__determineUnfilterBpp())))
 		{
-			int colortype = this._colortype;
-			
 			// Grayscale or Indexed
-			if (colortype == 0 || colortype == 3)
-				this.__pixelIndexed(data, (colortype == 3));
+			if (colorType == 0 || colorType == 3)
+				this.__pixelIndexed(data, (colorType == 3));
 			
 			// RGB(A)
-			else if (colortype == 2 || colortype == 6)
-				this.__pixelsRGB(data, (colortype == 6));
+			else if (colorType == 2 || colorType == 6)
+				this.__pixelsRGB(data, (colorType == 6));
 			
 			// YA (Grayscale + Alpha)
 			else
@@ -267,6 +269,43 @@ public class PNGReader
 		// Create image
 		return Image.createRGBImage(argb, this._width, this._height,
 			this._hasalpha);
+	}
+	
+	/**
+	 * Determines the total number of bytes that represent a single pixel,
+	 * rounded up.
+	 * 
+	 * @return The bytes per pixel.
+	 * @since 2022/06/14
+	 */
+	private int __determineUnfilterBpp()
+	{
+		// These are used in the calculations
+		int colorType = this._colorType;
+		int bitDepth = this._bitDepth;
+		
+		// Determine the number of bytes per pixel, needed for unfiltering
+		// Since these refer to previous pixels rather than previous bytes
+		// in the algorithm
+		switch (colorType)
+		{
+			// Grayscale or Indexed
+			case 0:
+			case 3:
+				return PNGReader.__roundNumBitsToByte(bitDepth);
+				
+				// RGB
+			case 2:
+				return PNGReader.__roundNumBitsToByte(bitDepth * 3);
+			
+				// RGBA
+			case 6:
+				return PNGReader.__roundNumBitsToByte(bitDepth * 4);
+			
+				// YA (Grayscale + Alpha), aka 4
+			default:
+				return PNGReader.__roundNumBitsToByte(bitDepth * 2);
+		}
 	}
 	
 	/**
@@ -286,7 +325,7 @@ public class PNGReader
 			throw new NullPointerException("NARG");
 		
 		int[] palette = this._palette;
-		int colortype = this._colortype,
+		int colortype = this._colorType,
 			numpals = (palette != null ? palette.length : 0),
 			numcolors = this._numcolors;
 		
@@ -368,7 +407,7 @@ public class PNGReader
 		this._height = height;
 		
 		// Debug
-		todo.DEBUG.note("Size: %dx%d%n", width, height);
+		Debugging.debugNote("Size: %dx%d%n", width, height);
 		
 		// Read the bit depth and the color type
 		int bitdepth = __in.readUnsignedByte(),
@@ -387,8 +426,8 @@ public class PNGReader
 				bitdepth));
 			
 		// Set
-		this._bitdepth = bitdepth;
-		this._colortype = colortype;
+		this._bitDepth = bitdepth;
+		this._colorType = colortype;
 		
 		// These two color types have alpha, this field may be set later on
 		// if a transparency chunk was found
@@ -464,24 +503,24 @@ public class PNGReader
 			throw new NullPointerException("NARG");
 		
 		// Ignore the palette if this is not an indexed image
-		if (this._colortype != 3)
+		if (this._colorType != 3)
 			return;
 		
-		// Read color color
-		int numcolors = __len / 3,
-			maxcolors = 1 << this._bitdepth;
-		if (numcolors > maxcolors)
-			numcolors = maxcolors;
+		// Determine the number of colors
+		int numColors = __len / 3;
+		int maxColors = 1 << this._bitDepth;
+		if (numColors > maxColors)
+			numColors = maxColors;
 		
 		// Set
-		this._numcolors = numcolors;
-		this._maxcolors = maxcolors;
+		this._numcolors = numColors;
+		this._maxcolors = maxColors;
 		
 		// Load palette data, any remaining colors are left uninitialized and
 		// are fully transparent or just black
-		int[] palette = new int[maxcolors];
+		int[] palette = new int[maxColors];
 		this._palette = palette;
-		for (int i = 0; i < numcolors; i++)
+		for (int i = 0; i < numColors; i++)
 		{
 			int r = __in.readUnsignedByte(),
 				g = __in.readUnsignedByte(),
@@ -501,7 +540,7 @@ public class PNGReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/15
 	 */
-	private final void __pixelIndexed(InputStream __dis, boolean __idx)
+	private void __pixelIndexed(InputStream __dis, boolean __idx)
 		throws IOException, NullPointerException
 	{
 		if (__dis == null)
@@ -512,7 +551,7 @@ public class PNGReader
 		int width = this._width,
 			height = this._height,
 			limit = width * height,
-			bitdepth = this._bitdepth,
+			bitdepth = this._bitDepth,
 			bitmask = (1 << bitdepth) - 1,
 			numpals = (palette != null ? palette.length : 0),
 			hishift = (8 - bitdepth),
@@ -541,7 +580,7 @@ public class PNGReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/15
 	 */
-	private final void __pixelsRGB(InputStream __dis, boolean __alpha)
+	private void __pixelsRGB(InputStream __dis, boolean __alpha)
 		throws IOException, NullPointerException
 	{
 		if (__dis == null)
@@ -580,7 +619,7 @@ public class PNGReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/15
 	 */
-	private final void __pixelsYA(InputStream __dis)
+	private void __pixelsYA(InputStream __dis)
 		throws IOException, NullPointerException
 	{
 		if (__dis == null)
@@ -613,30 +652,31 @@ public class PNGReader
 	 * Unfilters the PNG data.
 	 *
 	 * @param __in The stream to read from.
+	 * @param __bpp Rounded bytes per pixel.
 	 * @return The unfiltered data.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/15
 	 */
-	private final byte[] __unfilter(InputStream __in)
+	private byte[] __unfilter(InputStream __in, int __bpp)
 		throws IOException, NullPointerException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
 		// Need these
-		int scanlen = this._scanlen,
-			height = this._height;
+		int scanLen = this._scanlen;
+		int height = this._height;
 		
 		// Allocate buffer that will be returned, containing the unfiltered
 		// data
-		byte[] rv = new byte[scanlen * height];
+		byte[] rv = new byte[scanLen * height];
 		
 		// Read the image scanline by scanline and process it
 		for (int dy = 0; dy < height; dy++)
 		{
 			// Base output for this scanline
-			int ibase = scanlen * dy;
+			int ibase = scanLen * dy;
 			
 			// At the start of every scanline is the filter type, which
 			// describes how the data should be treated
@@ -646,11 +686,14 @@ public class PNGReader
 			if (type < 0 || type > 4)
 				throw new IOException(String.format(
 					"EB16 %d (%d, %d) %d [%d, %d]",
-					type, 0, dy, scanlen, this._width, height));
+					type, 0, dy, scanLen, this._width, height));
 			
 			// Go through each byte in the scanline
-			for (int dx = 0; dx < scanlen; dx++)
+			for (int dx = 0; dx < scanLen; dx++)
 			{
+				// Virtual X position
+				int vX = dx / __bpp;
+				
 				// The current position in the buffer
 				int di = ibase + dx;
 				
@@ -661,17 +704,18 @@ public class PNGReader
 				// treated as zero.
 				
 				// The current byte being filtered
-				int x = __in.read() & 0xFF,
+				int x = __in.read() & 0xFF;
 				
 				// The byte to the left of (x, y) [-1, 0]
-					a = (dx <= 0 ? 0 : rv[di - 1]) & 0xFF,
+				int a = (vX <= 0 ?
+					0 : rv[di - __bpp]) & 0xFF;
 				
 				// The byte to the top of (x, y) [0, -1]
-					b = (dy <= 0 ? 0 : rv[di - scanlen]) & 0xFF,
+				int b = (dy <= 0 ? 0 : rv[di - scanLen]) & 0xFF;
 				
 				// The byte to the top and left of (x, y) [-1, -1]
-					c = ((dx <= 0 || dy <= 0) ? 0 :
-						rv[(di - scanlen) - 1]) & 0xFF;
+				int c = (vX <= 0 || dy <= 0 ?
+					0 : rv[(di - scanLen) - __bpp]) & 0xFF;
 				
 				// Depends on the decoding algorithm
 				int res = 0;
@@ -694,17 +738,17 @@ public class PNGReader
 						
 						// Average
 					case 3:
-						res = x + ((a + b) >>> 2);
+						res = x + ((a + b) >>> 1);
 						break;
 						
-						// Paeth, this probably is not correct
+						// Paeth
 					case 4:
 						{
 							// Calculate these
-							int p = a + b - c,
-								pa = p - a,
-								pb = p - b,
-								pc = p - c;
+							int p = a + b - c;
+							int pa = p - a;
+							int pb = p - b;
+							int pc = p - c;
 							
 							// Absolute values
 							pa = (pa < 0 ? -pa : pa);
@@ -734,36 +778,50 @@ public class PNGReader
 	 * Reads all the input data and returns a byte array for the data, so it
 	 * may be processed later.
 	 *
-	 * @param __dis The stream to read from.
+	 * @param __in The stream to read from.
 	 * @return The read data.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/14
 	 */
-	private static final byte[] __chunkLater(InputStream __dis)
+	private static byte[] __chunkLater(InputStream __in)
 		throws IOException, NullPointerException
 	{
-		if (__dis == null)
+		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		// Read into this byte array
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(512))
+		// The final glue point
+		ByteDeque glue = new ByteDeque();
+		
+		// Read in all the various chunks as much as possible
+		byte[] buf = StreamUtils.buffer(__in);
+		for (;;)
 		{
-			// Read loop
-			byte[] buf = new byte[512];
-			for (;;)
-			{
-				int rc = __dis.read(buf);
-				
-				if (rc < 0)
-					break;
-				
-				baos.write(buf, 0, rc);
-			}
+			// Read in the chunk data
+			int rc = __in.read(buf, 0, buf.length);
 			
-			// Return the data
-			return baos.toByteArray();
+			// EOF?
+			if (rc < 0)
+				break;
+			
+			// Add to the buffer
+			glue.addLast(buf, 0, rc);
 		}
+		
+		return glue.toByteArray();
+	}
+	
+	/**
+	 * Rounds the number of bits to bytes according to the PNG specification.
+	 * 
+	 * @param __numBits The number of bits.
+	 * @return The number of bytes that represent the bits, rounded up.
+	 * @since 2022/06/14
+	 */
+	private static int __roundNumBitsToByte(int __numBits)
+	{
+		// Divide by 8 for bits, flooring... then round up for any other bits
+		return (__numBits >>> 3) + (((__numBits & 0b111) == 0) ? 0 : 1);
 	}
 }
 

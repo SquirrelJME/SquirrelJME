@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -280,7 +279,7 @@ public final class MIMEFileDecoder
 		{
 			if (__c == null)
 				throw new NullPointerException("NARG");
-			if (__o < 0 || __l < 0 || (__o + __l) > __c.length)
+			if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __c.length)
 				throw new IndexOutOfBoundsException("IOOB");
 			
 			// Read header?
@@ -328,7 +327,7 @@ public final class MIMEFileDecoder
 		 * @throws IOException On read errors.
 		 * @since 2018/11/25
 		 */
-		private final void __readHeader()
+		private void __readHeader()
 			throws IOException
 		{
 			BufferedReader in = this.in;
@@ -373,7 +372,7 @@ public final class MIMEFileDecoder
 		 * @throws IOException On read errors.
 		 * @since 2018/11/25
 		 */
-		private final boolean __readNext()
+		private boolean __readNext()
 			throws IOException
 		{
 			// {@squirreljme.error BD1m Unexpected EOF while read the MIME

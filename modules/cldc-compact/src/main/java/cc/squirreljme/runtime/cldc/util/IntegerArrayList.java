@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -60,7 +60,7 @@ public class IntegerArrayList
 	{
 		if (__a == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __a.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __a.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		this.array = __a;
@@ -143,5 +143,20 @@ public class IntegerArrayList
 	public static List<Integer> asList(int... __array)
 	{
 		return new IntegerArrayList(__array);
+	}
+	
+	/**
+	 * Returns the string representation of the given integer array.
+	 * 
+	 * @param __ints The array to represent as a string.
+	 * @return The array as a string or {@code "null"} if {@code null}.
+	 * @since 2022/02/04
+	 */
+	public static String toString(int... __ints)
+	{
+		if (__ints == null)
+			return "null";
+		
+		return IntegerArrayList.asList(__ints).toString();
 	}
 }

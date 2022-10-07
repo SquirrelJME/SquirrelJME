@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.media;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.LinkedList;
 import java.util.List;
 import javax.microedition.media.Control;
@@ -159,7 +160,7 @@ public final class NullPlayer
 	@Override
 	public final Control[] getControls()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -169,7 +170,7 @@ public final class NullPlayer
 	@Override
 	public final long getDuration()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -179,7 +180,15 @@ public final class NullPlayer
 	@Override
 	public final long getMediaTime()
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			// {@squirreljme.error EA08 Cannot obtain the media time for a
+			// closed null stream.}
+			if (this._state == Player.CLOSED)
+				throw new IllegalStateException("EA08");
+			
+			return Player.TIME_UNKNOWN;
+		}
 	}
 	
 	/**
@@ -227,7 +236,8 @@ public final class NullPlayer
 		if (this._state == Player.CLOSED)
 			throw new IllegalStateException("EA04");
 		
-		if (this._state != Player.UNREALIZED)
+		// Become realized, otherwise everything is ignored
+		if (this._state == Player.UNREALIZED)
 			this._state = Player.REALIZED;
 	}
 	
@@ -266,12 +276,22 @@ public final class NullPlayer
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/15
+	 * @param __now
 	 */
 	@Override
-	public final long setMediaTime(long __a)
+	public final long setMediaTime(long __now)
 		throws MediaException
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			// {@squirreljme.error EA09 Cannot set the media time on a null
+			// stream.}
+			if (this._state == Player.CLOSED ||
+				this._state == Player.UNREALIZED)
+				throw new IllegalStateException("EA09");
+			
+			return Player.TIME_UNKNOWN;
+		}
 	}
 	
 	/**
@@ -282,7 +302,7 @@ public final class NullPlayer
 	public final void setTimeBase(TimeBase __a)
 		throws MediaException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -336,7 +356,7 @@ public final class NullPlayer
 	 * @param __val The value used.
 	 * @since 2019/06/28
 	 */
-	private final void __event(String __key, Object __val)
+	private void __event(String __key, Object __val)
 	{
 		PlayerListener[] poke;
 		

@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -29,7 +29,7 @@ public class NextErrorPrefixTask
 	public NextErrorPrefixTask()
 	{
 		// Describe this
-		this.setGroup("squirreljme");
+		this.setGroup("squirreljmeGeneral");
 		this.setDescription("Returns the next free error prefix.");
 		
 		// The action to perform

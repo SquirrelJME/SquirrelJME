@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -12,6 +12,7 @@ package cc.squirreljme.plugin.util;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
 import org.gradle.api.Task;
+import org.gradle.api.file.FileCollection;
 
 /**
  * This takes the output of a task and provides a {@link Callable} so that
@@ -48,6 +49,11 @@ public class SingleTaskOutputFile
 	@Override
 	public Path call()
 	{
-		return this.task.getOutputs().getFiles().getSingleFile().toPath();
+		FileCollection files = this.task.getOutputs().getFiles();
+		
+		if (files.getFiles().isEmpty())
+			return null;
+		
+		return files.getSingleFile().toPath();
 	}
 }

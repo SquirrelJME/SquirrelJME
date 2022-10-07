@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,6 +9,8 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public final class Secure
 {
     public static final String javaPackageName = "java.";
@@ -16,11 +18,11 @@ public final class Secure
 
     public static void checkPackage()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static void checkPackage(String var0)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

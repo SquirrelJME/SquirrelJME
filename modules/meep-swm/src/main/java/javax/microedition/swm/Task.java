@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -84,7 +83,7 @@ public final class Task
 	 */
 	public int getHeapUse()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		// Make sure the amount of memory used does not overflow ever
 		long rv = this._task.metric(SystemTaskMetric.MEMORY_USED);
@@ -119,7 +118,7 @@ public final class Task
 	 */
 	public TaskPriority getPriority()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		long rv = this._task.metric(SystemTaskMetric.PRIORITY);
 		if (rv < 0L)

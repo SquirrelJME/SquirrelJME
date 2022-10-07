@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.EntryPoint;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -138,13 +139,41 @@ public abstract class Application
 			classPath[i] = libraries[i].jar;
 		classPath[numLibs] = this.jar;
 		
+		// Load in any system properties that can be used or declared by
+		// the application
+		Map<String, String> inSysProps = this.loaderSystemProperties();
+		String[] sysProps;
+		if (inSysProps == null)
+			sysProps = new String[0];
+		else
+		{
+			sysProps = new String[inSysProps.size() << 1];
+			int at = 0;
+			for (Map.Entry<String, String> e : inSysProps.entrySet())
+			{
+				sysProps[at++] = e.getKey();
+				sysProps[at++] = e.getValue();
+			}
+		}
+		
 		// Have the task launch itself
 		return TaskShelf.start(classPath,
 			this.loaderEntryClass(),
 			this.loaderEntryArgs(),
-			new String[0],
+			sysProps,
 			TaskPipeRedirectType.TERMINAL,
 			TaskPipeRedirectType.TERMINAL);
+	}
+	
+	/**
+	 * Returns the system properties to define for the application.
+	 * 
+	 * @return The system properties to use for the application.
+	 * @since 2021/12/01
+	 */
+	public Map<String, String> loaderSystemProperties()
+	{
+		return null;
 	}
 	
 	/**

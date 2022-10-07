@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,8 @@
 
 package javax.microedition.m3g;
 
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public abstract class Node
 	extends Transformable
@@ -31,77 +32,77 @@ public abstract class Node
 	
 	Node()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final void align(Node __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Node getAlignmentReference(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getAlignmentTarget(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public float getAlphaFactor()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Node getParent()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getScope()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean getTransformTo(Node __a, Transform __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isPickingEnabled()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isRenderingEnabled()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setAlignment(Node __a, int __b, Node __c, int __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setAlphaFactor(float __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setPickingEnable(boolean __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setRenderingEnable(boolean __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setScope(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

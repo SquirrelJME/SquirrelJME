@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -16,6 +16,8 @@ import net.multiphasicapps.tac.TestRunnable;
  *
  * @since 2019/05/24
  */
+@SuppressWarnings({"ConstantConditions", "StringEquality",
+	"StringOperationCanBeSimplified", "NewObjectEquality"})
 public class TestStringIntern
 	extends TestRunnable
 {
@@ -29,8 +31,10 @@ public class TestStringIntern
 		this.secondary("cca", "squirrel" == "acorn");
 		this.secondary("ccb", "squirrel" == "squirrel");
 		
-		this.secondary("cna", "squirrel" == new String("acorn"));
-		this.secondary("cnb", "squirrel" == new String("squirrel"));
+		this.secondary("cna",
+			"squirrel" == new String("acorn"));
+		this.secondary("cnb",
+			"squirrel" == new String("squirrel"));
 		
 		this.secondary("cia", "squirrel" == "acorn".intern());
 		this.secondary("cib", "squirrel" == "squirrel".intern());

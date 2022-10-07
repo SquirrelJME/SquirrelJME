@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -12,7 +12,7 @@ package cc.squirreljme.plugin.multivm;
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
-import cc.squirreljme.plugin.util.GuardedOutputStream;
+import cc.squirreljme.plugin.util.GradleLoggerOutputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
+import org.gradle.api.logging.LogLevel;
 import org.gradle.process.ExecResult;
 
 /**
@@ -69,8 +70,8 @@ public class VMRunTaskAction
 		// Gather the class path to use for target execution, this is all the
 		// SquirrelJME modules this depends on
 		VMSpecifier vmType = this.vmType;
-		Path[] classPath = VMHelpers.runClassPath(
-			(VMExecutableTask)__task, this.sourceSet, vmType);
+		Path[] classPath = VMHelpers.runClassPath(__task,
+			this.sourceSet, vmType, true);
 		
 		// Debug
 		__task.getLogger().debug("Classpath: {}", Arrays.asList(classPath));
@@ -100,13 +101,18 @@ public class VMRunTaskAction
 				// Use filled JVM arguments
 				vmType.spawnJvmArguments(__task, true,
 					new GradleJavaExecSpecFiller(__spec), mainClass,
+					(midlet != null ? midlet.mainClass : mainClass),
 					Collections.<String, String>emptyMap(),
 					classPath, classPath,
 					args.<String>toArray(new String[args.size()]));
 				
 				// Use these streams directly
-				__spec.setStandardOutput(new GuardedOutputStream(System.out));
-				__spec.setErrorOutput(new GuardedOutputStream(System.err));
+				__spec.setStandardOutput(new GradleLoggerOutputStream(
+					__task.getLogger(), LogLevel.LIFECYCLE,
+					-1, -1));
+				__spec.setErrorOutput(new GradleLoggerOutputStream(
+					__task.getLogger(), LogLevel.ERROR,
+					-1, -1));
 			});
 		
 		// Did the task fail?

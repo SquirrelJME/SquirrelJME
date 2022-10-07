@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -49,10 +49,12 @@ public class GenerateTestsListTask
 	 * Initializes the task.
 	 *
 	 * @param __processTask The resource task.
+	 * @param __cleanTask The clean task.
 	 * @since 2020/02/28
 	 */
 	@Inject
-	public GenerateTestsListTask(ProcessResources __processTask)
+	public GenerateTestsListTask(ProcessResources __processTask,
+		Task __cleanTask)
 	{
 		// Set details of this task
 		this.setGroup("squirreljme");
@@ -64,6 +66,9 @@ public class GenerateTestsListTask
 			project.provider(this::__taskInputsAsFileCollection));
 		this.getOutputs().files(
 			project.provider(this::__taskOutputsAsFileCollection));
+		
+		// Clean must happen first
+		this.mustRunAfter(__cleanTask);
 		
 		// Only run in this condition
 		this.onlyIf(this::__onlyIf);
@@ -188,7 +193,7 @@ public class GenerateTestsListTask
 	{
 		Collection<File> result = new LinkedList<>();
 		for (FileLocation file : this.__taskInputs())
-			result.add(file.absolute.toFile());
+			result.add(file.getAbsolute().toFile());
 		
 		return this.getProject().files(result);
 	}

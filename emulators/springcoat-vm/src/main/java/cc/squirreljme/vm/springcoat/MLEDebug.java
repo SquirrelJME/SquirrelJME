@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -212,7 +212,23 @@ public enum MLEDebug
 			return __thread.verbose().add(
 				__thread.thread.numFrames() - 1, (int)__args[0]);
 		}
-	}, 
+	},
+	
+	/** {@link DebugShelf#verboseInternalThread(int)} (int)}. */
+	VERBOSE_INTERNAL_THREAD("verboseInternalThread:(I)I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/07/11
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			__thread.machine._verboseInternal = (int)__args[0];
+			
+			return DebugShelf.INTERNAL_THREAD_VERBOSE_ID;
+		}
+	},
 	
 	/** {@link DebugShelf#verboseStop(int)}. */
 	VERBOSE_STOP("verboseStop:(I)V")
@@ -224,7 +240,13 @@ public enum MLEDebug
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			__thread.verbose().remove((int)__args[0]);
+			int id = (int)__args[0];
+			
+			if (id == DebugShelf.INTERNAL_THREAD_VERBOSE_ID)
+				__thread.machine._verboseInternal = 0;
+			else
+				__thread.verbose().remove(id);
+			
 			return null;
 		}
 	}, 

@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,13 +9,23 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Software math operations on 64-bit double.
  *
  * @since 2019/05/24
  */
-public class SoftDouble
+public final class SoftDouble
 {
+	/** The zero check mask. */
+	public static final long ZERO_CHECK_MASK =
+		0x7FFFFFFFFFFFFFFFL;
+	
+	/** The mask for NaN values. */
+	public static final long NAN_MASK =
+		0b0111111111111000000000000000000000000000000000000000000000000000L;
+	
 	/**
 	 * Not used.
 	 *
@@ -28,184 +38,176 @@ public class SoftDouble
 	/**
 	 * Adds two values.
 	 *
-	 * @param __al A low.
-	 * @param __ah A high.
-	 * @param __bl B low.
-	 * @param __bh B high.
+	 * @param __a A value.
+	 * @param __b B value.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static double add(int __al, int __ah, int __bl, int __bh)
+	public static double add(long __a, long __b)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
 	 * Compares two values.
 	 *
-	 * @param __al A low.
-	 * @param __ah A high.
-	 * @param __bl B low.
-	 * @param __bh B high.
+	 * @param __a A value.
+	 * @param __b B value.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static int cmpl(int __al, int __ah, int __bl, int __bh)
+	public static int cmpl(long __a, long __b)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
 	 * Compares two values.
 	 *
-	 * @param __al A low.
-	 * @param __ah A high.
-	 * @param __bl B low.
-	 * @param __bh B high.
+	 * @param __a A value.
+	 * @param __b B value.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static int cmpg(int __al, int __ah, int __bl, int __bh)
+	public static int cmpg(long __a, long __b)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
 	 * Divides two values.
 	 *
-	 * @param __al A low.
-	 * @param __ah A high.
-	 * @param __bl B low.
-	 * @param __bh B high.
+	 * @param __a A value.
+	 * @param __b B value.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static double div(int __al, int __ah, int __bl, int __bh)
+	public static double div(long __a, long __b)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Is this Not a Number?
+	 * 
+	 * @param __a The value to check.
+	 * @return If this is not a number.
+	 * @since 2022/01/06
+	 */
+	public static boolean isNaN(long __a)
+	{
+		return SoftDouble.NAN_MASK == (__a & SoftDouble.NAN_MASK);
 	}
 	
 	/**
 	 * Multiplies two values.
 	 *
-	 * @param __al A low.
-	 * @param __ah A high.
-	 * @param __bl B low.
-	 * @param __bh B high.
+	 * @param __a A value.
+	 * @param __b B value.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static double mul(int __al, int __ah, int __bl, int __bh)
+	public static double mul(long __a, long __b)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
 	 * Negates a value.
 	 *
-	 * @param __al A low.
-	 * @param __ah A high.
+	 * @param __a A value.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static double neg(int __al, int __ah)
+	public static double neg(long __a)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
 	 * ORs value, used for constants.
 	 *
-	 * @param __al A low.
-	 * @param __ah A high.
-	 * @param __bl B low.
-	 * @param __bh B high.
+	 * @param __a A value.
+	 * @param __b B value.
 	 * @return The result.
 	 * @since 2019/05/27
 	 */
-	public static double or(int __al, int __ah, int __bl, int __bh)
+	public static double or(long __a, long __b)
 	{
-		return Assembly.doublePack(__al | __bl, __ah | __bh);
+		return __a | __b;
 	}
 	
 	/**
 	 * Remainders a value.
 	 *
-	 * @param __al A low.
-	 * @param __ah A high.
-	 * @param __bl B low.
-	 * @param __bh B high.
+	 * @param __a A value.
+	 * @param __b B value.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static double rem(int __al, int __ah, int __bl, int __bh)
+	public static double rem(long __a, long __b)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
 	 * Subtracts values.
 	 *
-	 * @param __al A low.
-	 * @param __ah A high.
-	 * @param __bl B low.
-	 * @param __bh B high.
+	 * @param __a A value.
+	 * @param __b B value.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static double sub(int __al, int __ah, int __bl, int __bh)
+	public static double sub(long __a, long __b)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
 	 * Converts to float.
 	 *
-	 * @param __al A low.
-	 * @param __ah A high.
+	 * @param __a A value.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static float toFloat(int __al, int __ah)
+	public static float toFloat(long __a)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
 	 * Converts to integer.
 	 *
-	 * @param __al A low.
-	 * @param __ah A high.
+	 * @param __a A value.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static int toInteger(int __al, int __ah)
+	public static int toInteger(long __a)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
 	 * Converts to long.
 	 *
-	 * @param __al A low.
-	 * @param __ah A high.
+	 * @param __a A value.
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	public static long toLong(int __al, int __ah)
+	public static long toLong(long __a)
 	{
 		Assembly.breakpoint();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

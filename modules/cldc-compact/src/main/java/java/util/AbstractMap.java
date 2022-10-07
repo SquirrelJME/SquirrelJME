@@ -1,14 +1,16 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.MapKeySetView;
 
 public abstract class AbstractMap<K, V>
 	implements Map<K, V>
@@ -44,25 +46,49 @@ public abstract class AbstractMap<K, V>
 	@Override
 	public boolean containsKey(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public boolean containsValue(Object __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/07/12
+	 */
 	@Override
-	public boolean equals(Object __a)
+	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		// Quick?
+		if (this == __o)
+			return true;
+		
+		// Not another map?
+		if (!(__o instanceof Map))
+			return false;
+		
+		// Compares on the entry set
+		return this.entrySet().equals(((Map<?, ?>)__o).entrySet());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/07/12
+	 * @param __key
+	 */
 	@Override
-	public V get(Object __a)
+	public V get(Object __key)
 	{
-		throw new todo.TODO();
+		// Manual scan through to find it
+		for (Map.Entry<K, V> e : this.entrySet())
+			if (Objects.equals(e.getKey(), __key))
+				return e.getValue();
+		
+		// Not found
+		return null;
 	}
 	
 	/**
@@ -95,13 +121,13 @@ public abstract class AbstractMap<K, V>
 	@Override
 	public Set<K> keySet()
 	{
-		return new __AbstractMapKeySet__<K, V>(this);
+		return new MapKeySetView<K, V>(this, false);
 	}
 	
 	@Override
 	public V put(K __a, V __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

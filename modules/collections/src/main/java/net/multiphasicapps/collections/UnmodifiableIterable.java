@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.collections;
 
+import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 import java.util.Iterator;
 
 /**
@@ -50,7 +51,7 @@ public final class UnmodifiableIterable<T>
 	}
 	
 	/**
-	 * 
+	 * Returns an unmodifiable iterable from the given one.
 	 * 
 	 * @param <T> The type used.
 	 * @param __it The iterator to wrap.

@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -364,7 +364,7 @@ public final class JDWPController
 		{
 			// Suspend all threads?
 			if (request.suspendPolicy == SuspendPolicy.ALL)
-				for (Object thread : this.__allThreads())
+				for (Object thread : this.__allThreads(false))
 					this.viewThread().suspension(thread).suspend();
 			
 			// Suspend only a single thread?
@@ -677,38 +677,56 @@ public final class JDWPController
 	
 	/**
 	 * Returns all threads.
-	 * 
+	 *
+	 * @param __filterVisible Filter visible threads?
 	 * @return All threads.
 	 * @since 2021/04/10
 	 */
-	final Object[] __allThreads()
+	final Object[] __allThreads(boolean __filterVisible)
 	{
 		// Current state
 		JDWPState state = this.state;
 		
+		// Get groups
+		JDWPViewThreadGroup groupView = state.view(
+			JDWPViewThreadGroup.class, JDWPViewKind.THREAD_GROUP);
+		JDWPViewThread threadView = state.view(
+			JDWPViewThread.class, JDWPViewKind.THREAD);
+		
 		// All available threads
 		ArrayList<Object> allThreads = new ArrayList<>(); 
 		
-		// Start from the root thread group and get all of the threads
+		// Start from the root thread group and get all the threads
 		// under them, since this is a machine to thread linkage
-		JDWPViewThreadGroup view = state.view(
-			JDWPViewThreadGroup.class, JDWPViewKind.THREAD_GROUP);
 		for (Object group : this.bind().debuggerThreadGroups())
 		{
 			// Register thread group
 			state.items.put(group);
+			state.items.put(groupView.instance(group));
 			
 			// Obtain all threads from this group
-			Object[] threads = view.threads(group);
+			List<Object> threads = new ArrayList<>();
+			for (Object thread : groupView.threads(group))
+				if (!__filterVisible ||
+					JDWPUtils.isVisibleThread(threadView, thread))
+					threads.add(thread);
 			
 			// Register each thread
 			for (Object thread : threads)
+			{
 				state.items.put(thread);
+				
+				// We could be at a point where the thread is initialized but
+				// the instance of that thread is not yet known
+				Object threadInstance = threadView.instance(thread);
+				if (threadInstance != null)
+					state.items.put(threadInstance);
+			}
 			
 			// Store into the list
 			allThreads.ensureCapacity(
-				allThreads.size() + threads.length);
-			allThreads.addAll(Arrays.asList(threads));
+				allThreads.size() + threads.size());
+			allThreads.addAll(threads);
 		}
 		
 		return allThreads.toArray(new Object[allThreads.size()]);
@@ -726,7 +744,7 @@ public final class JDWPController
 	{
 		List<Object> allTypes = new LinkedList<>();
 		
-		// Using all of the known cached types
+		// Using all the known cached types
 		if (__cached)
 		{
 			JDWPViewType viewType = this.viewType();
@@ -746,10 +764,10 @@ public final class JDWPController
 	}
 	
 	/**
-	 * Returns all of the types within the given group.
+	 * Returns all the types within the given group.
 	 * 
 	 * @param __group The group to search.
-	 * @return All of the types within the group.
+	 * @return All the types within the group.
 	 * @since 2021/04/25
 	 */
 	private List<Object> __allTypes(Object __group)

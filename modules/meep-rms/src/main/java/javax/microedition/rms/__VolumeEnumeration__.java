@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,6 +9,7 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,7 +104,7 @@ final class __VolumeEnumeration__
 		// Check for rebuild
 		this.__checkRebuild();
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -119,7 +120,7 @@ final class __VolumeEnumeration__
 		// Check for rebuild
 		this.__checkRebuild();
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -135,7 +136,7 @@ final class __VolumeEnumeration__
 		// Check for rebuild
 		this.__checkRebuild();
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -176,7 +177,7 @@ final class __VolumeEnumeration__
 		// Check for rebuild
 		this.__checkRebuild();
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -193,7 +194,7 @@ final class __VolumeEnumeration__
 		// Check for rebuild
 		this.__checkRebuild();
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -203,7 +204,7 @@ final class __VolumeEnumeration__
 	@Override
 	public final int numRecords()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -221,7 +222,7 @@ final class __VolumeEnumeration__
 		// Check for rebuild
 		this.__checkRebuild();
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -238,7 +239,7 @@ final class __VolumeEnumeration__
 		// Check for rebuild
 		this.__checkRebuild();
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -295,12 +296,12 @@ final class __VolumeEnumeration__
 				
 				// Filter this?
 				if (filter != null)
-					throw new todo.TODO();
+					throw Debugging.todo();
 			}
 			
 			// Sort the input pages by their data?
 			if (comparator != null)
-				throw new todo.TODO();
+				throw Debugging.todo();
 			
 			// Set new version
 			this._pages = pages;
@@ -327,7 +328,7 @@ final class __VolumeEnumeration__
 		// Check for rebuild
 		this.__checkRebuild();
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -336,7 +337,7 @@ final class __VolumeEnumeration__
 	 * @throws IllegalStateException If this was destroyed.
 	 * @since 2019/05/13
 	 */
-	private final void __checkDestroy()
+	private void __checkDestroy()
 		throws IllegalStateException
 	{
 		// {@squirreljme.error DC0h Record store enumeration has been
@@ -351,7 +352,7 @@ final class __VolumeEnumeration__
 	 * @throws IllegalStateException If the update check could not be made.
 	 * @since 2019/05/13
 	 */
-	private final void __checkRebuild()
+	private void __checkRebuild()
 		throws IllegalStateException
 	{
 		// Could fail

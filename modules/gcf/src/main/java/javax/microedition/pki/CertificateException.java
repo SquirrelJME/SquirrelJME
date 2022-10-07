@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,7 @@
 
 package javax.microedition.pki;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 public class CertificateException
@@ -59,22 +59,22 @@ public class CertificateException
 	
 	public CertificateException(Certificate __a, byte __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public CertificateException(String __a, Certificate __b, byte __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Certificate getCertificate()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public byte getReason()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,7 @@
 
 package jdk.dio.counter;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import jdk.dio.DeviceEvent;
 
 public class CountingEvent
@@ -23,28 +23,28 @@ public class CountingEvent
 	
 	public CountingEvent(PulseCounter __a, int __b, int __c, long __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public CountingEvent(PulseCounter __a, int __b, int __c, long __d, long 
 		__e, int __f)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public long getInterval()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getType()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

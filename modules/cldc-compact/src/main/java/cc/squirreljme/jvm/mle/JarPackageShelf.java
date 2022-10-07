@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -76,5 +76,37 @@ public final class JarPackageShelf
 	 */
 	public static native InputStream openResource(JarPackageBracket __jar,
 		String __rc)
+		throws MLECallError;
+	
+	/**
+	 * Reads a section of a JAR representation, note that the format is not
+	 * necessarily in the format of a JAR or ZIP file but may exist in SQC
+	 * form.
+	 * 
+	 * @param __jar The library to read the raw data from.
+	 * @param __jarOffset The offset into the raw data.
+	 * @param __b The buffer to write into.
+	 * @param __o The offset into the buffer.
+	 * @param __l The length of the buffer.
+	 * @return The number of bytes read from the raw Jar data.
+	 * @throws MLECallError On null arguments or if the offset and/or length
+	 * exceed the array bounds.
+	 * @since 2022/03/04
+	 */
+	public static native int rawData(JarPackageBracket __jar,
+		int __jarOffset, byte[] __b, int __o, int __l)
+		throws MLECallError;
+	
+	/**
+	 * Returns the raw size of a given JAR, note that this may not be
+	 * the size of a JAR file but a compiled form such a SQC.
+	 * 
+	 * @param __jar The JAR to lookup.
+	 * @return The raw size of the JAR, this will be a negative value if the
+	 * JAR is virtual and its size is not known.
+	 * @throws MLECallError If {@code __jar} is null.
+	 * @since 2022/03/04
+	 */
+	public static native int rawSize(JarPackageBracket __jar)
 		throws MLECallError;
 }

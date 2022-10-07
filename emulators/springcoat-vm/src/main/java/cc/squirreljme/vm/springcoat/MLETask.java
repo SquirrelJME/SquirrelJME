@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -47,7 +47,7 @@ public enum MLETask
 			int n = tasks.length;
 			SpringObject[] result = new SpringObject[n];
 			for (int i = 0; i < n; i++)
-				result[i] = new TaskObject(__thread.machine);
+				result[i] = tasks[i].taskObject(__thread.machine);
 			
 			return __thread.asVMObjectArray(__thread.resolveClass(
 				"[Lcc/squirreljme/jvm/mle/brackets/TaskBracket;"), result);
@@ -64,7 +64,7 @@ public enum MLETask
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new TaskObject(__thread.machine);
+			return __thread.machine.taskObject(__thread.machine);
 		}
 	},
 	
@@ -273,9 +273,11 @@ public enum MLETask
 				sysPropsMap.put(sysProps[i], sysProps[i + 1]);
 			
 			// Spawn the task
-			return new TaskObject(__thread.machine.taskManager().startTask(
-				classpath, mainClass, mainArgs, sysPropsMap, stdOutMode,
-				stdErrMode, true, false));
+			SpringMachine newMachine =
+				__thread.machine.taskManager().startTask(classpath, mainClass,
+					mainArgs, sysPropsMap, stdOutMode, stdErrMode,
+					true, false);
+			return newMachine.taskObject(__thread.machine);
 		}
 	},
 	

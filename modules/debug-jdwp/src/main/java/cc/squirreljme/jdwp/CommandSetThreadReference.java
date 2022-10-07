@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -11,6 +11,7 @@ package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jdwp.views.JDWPViewFrame;
 import cc.squirreljme.jdwp.views.JDWPViewThread;
+import cc.squirreljme.jdwp.views.JDWPViewThreadGroup;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 
 /**
@@ -34,7 +35,7 @@ public enum CommandSetThreadReference
 			throws JDWPException
 		{
 			// Which thread do we want?
-			Object thread = __packet.readThread(__controller, false);
+			Object thread = __packet.readThread(__controller);
 			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
@@ -62,7 +63,7 @@ public enum CommandSetThreadReference
 			JDWPViewThread view = __controller.viewThread();
 			
 			// Which thread do we want?
-			Object thread = __packet.readThread(__controller, false);
+			Object thread = __packet.readThread(__controller);
 			
 			// Suspend the thread
 			view.suspension(thread).suspend();
@@ -86,7 +87,7 @@ public enum CommandSetThreadReference
 			JDWPViewThread view = __controller.viewThread();
 			
 			// Which thread do we want?
-			Object thread = __packet.readThread(__controller, false);
+			Object thread = __packet.readThread(__controller);
 			
 			// Suspend the thread
 			view.suspension(thread).resume();
@@ -109,8 +110,21 @@ public enum CommandSetThreadReference
 		{
 			JDWPViewThread view = __controller.viewThread();
 			
-			// Which thread do we want?
-			Object thread = __packet.readThread(__controller, false);
+			// Which thread do we want? Do not use filtering here
+			Object thread = __packet.readThread(__controller);
+			
+			// If the thread is not valid, then just stop
+			if (thread == null)
+			{
+				JDWPPacket rv = __controller.__reply(
+					__packet.id(), ErrorType.NO_ERROR);
+				
+				// Terminated and not suspended
+				rv.writeInt(0);
+				rv.writeInt(0);
+				
+				return rv;
+			}
 			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
@@ -162,20 +176,26 @@ public enum CommandSetThreadReference
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			JDWPViewThread view = __controller.viewThread();
+			JDWPViewThread viewThread = __controller.viewThread();
+			JDWPViewThreadGroup viewThreadGroup =
+				__controller.viewThreadGroup();
 			
 			// Which thread do we want?
-			Object thread = __packet.readThread(__controller, false);
+			Object thread = __packet.readThread(__controller);
 				
 			// Get the parent
-			Object parent = view.parentGroup(thread);
+			Object parent = viewThread.parentGroup(thread);
+			Object parentInstance = viewThreadGroup.instance(parent);
+			
+			// Make sure both parent representations are stored
 			__controller.state.items.put(parent);
+			__controller.state.items.put(parentInstance);
 			
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			// Write the thread group
-			rv.writeId(System.identityHashCode(parent));
+			rv.writeObject(__controller, parentInstance);
 			
 			return rv;
 		}
@@ -194,7 +214,7 @@ public enum CommandSetThreadReference
 			throws JDWPException
 		{
 			// Which thread do we want?
-			Object thread = __packet.readThread(__controller, false);
+			Object thread = __packet.readThread(__controller);
 			
 			// Input for the packet
 			int startFrame = __packet.readInt();
@@ -220,7 +240,7 @@ public enum CommandSetThreadReference
 				__controller.state.items.put(frame);
 				
 				// Write frame ID
-				rv.writeId(System.identityHashCode(frame));
+				rv.writeObject(__controller, frame);
 				
 				// We need to store and cache the class for later reference
 				Object classy = viewFrame.atClass(frame);
@@ -250,7 +270,7 @@ public enum CommandSetThreadReference
 			throws JDWPException
 		{
 			// Which thread do we want?
-			Object thread = __packet.readThread(__controller, false);
+			Object thread = __packet.readThread(__controller);
 				
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);
@@ -275,7 +295,7 @@ public enum CommandSetThreadReference
 			throws JDWPException
 		{
 			// Read the thread to check if valid, but otherwise do nothing
-			Object thread = __packet.readThread(__controller, false);
+			Object thread = __packet.readThread(__controller);
 			
 			// Always fail because this does not do anything
 			throw ErrorType.ILLEGAL_ARGUMENT.toss(thread,
@@ -297,7 +317,7 @@ public enum CommandSetThreadReference
 		{
 			// Which thread do we want?
 			JDWPViewThread view = __controller.viewThread();
-			Object thread = __packet.readThread(__controller, false);
+			Object thread = __packet.readThread(__controller);
 			
 			// Interrupt the thread
 			view.interrupt(thread);
@@ -321,7 +341,7 @@ public enum CommandSetThreadReference
 			JDWPViewThread view = __controller.viewThread();
 			
 			// Which thread do we want?
-			Object thread = __packet.readThread(__controller, false);
+			Object thread = __packet.readThread(__controller);
 				
 			JDWPPacket rv = __controller.__reply(
 				__packet.id(), ErrorType.NO_ERROR);

@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,8 @@
 
 package javax.microedition.m3g;
 
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class PolygonMode
 	extends Object3D
@@ -37,67 +38,67 @@ public class PolygonMode
 	
 	public PolygonMode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getCulling()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getShading()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getWinding()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isLocalCameraLightingEnabled()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isPerspectiveCorrectionEnabled()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isTwoSidedLightingEnabled()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setCulling(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setLocalCameraLightingEnable(boolean __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setPerspectiveCorrectionEnable(boolean __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setShading(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setTwoSidedLightingEnable(boolean __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setWinding(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,8 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import cc.squirreljme.runtime.gcf.HTTPAddress;
 import cc.squirreljme.runtime.gcf.HTTPClientConnection;
 import cc.squirreljme.runtime.gcf.IPAddress;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.OutputStream;
+import java.util.ServiceLoader;
 
 /**
  * This class is used to create new connections via the generic connection
@@ -41,6 +43,10 @@ public class Connector
 	/** Access mode to allow for read and writing from/to the stream. */
 	public static final int READ_WRITE = Connector.READ | Connector.WRITE;
 	
+	/** Services support. */
+	private static final ServiceLoader<CustomConnectionFactory> _SERVICES =
+		ServiceLoader.load(CustomConnectionFactory.class);
+	
 	/**
 	 * Not used.
 	 *
@@ -55,7 +61,7 @@ public class Connector
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static long getBytesWritten(Connection __a)
@@ -63,7 +69,7 @@ public class Connector
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -110,6 +116,15 @@ public class Connector
 			
 				// Unknown
 			default:
+				// Is there a matching custom connector 
+				synchronized (Connector.class)
+				{
+					for (CustomConnectionFactory custom : Connector._SERVICES)
+						if (__uri.equalsIgnoreCase(custom.scheme()))
+							return true;
+				}
+				
+				// Not supported
 				return false;
 		}
 	}
@@ -221,7 +236,7 @@ public class Connector
 			IOException, NullPointerException, SecurityException
 	{
 		// Debug
-		todo.DEBUG.note("Open %s", __uri);
+		Debugging.debugNote("Open %s", __uri);
 		
 		// Used to debug connections
 		try
@@ -367,19 +382,19 @@ public class Connector
 		{
 				// Communication port, which may be a modem
 			case "comm":
-				throw new todo.TODO();
+				throw Debugging.todo();
 				
 				// UDP datagrams
 			case "datagram":
-				throw new todo.TODO();
+				throw Debugging.todo();
 				
 				// SSL UDP datagrams
 			case "dtls":
-				throw new todo.TODO();
+				throw Debugging.todo();
 				
 				// Local Files
 			case "file":
-				throw new todo.TODO();
+				throw Debugging.todo();
 				
 				// HTTP
 			case "http":
@@ -388,15 +403,15 @@ public class Connector
 				
 				// HTTPS
 			case "https":
-				throw new todo.TODO();
+				throw Debugging.todo();
 				
 				// Intermidlet communication
 			case "imc":
-				throw new todo.TODO();
+				throw Debugging.todo();
 				
 				// UDP Multicast
 			case "multicast":
-				throw new todo.TODO();
+				throw Debugging.todo();
 				
 				// TCP Socket
 			case "socket":
@@ -406,7 +421,7 @@ public class Connector
 					
 					// Creating server
 					if (addr.isServer())
-						throw new todo.TODO();
+						throw Debugging.todo();
 					
 					// Creating client
 					else
@@ -418,13 +433,20 @@ public class Connector
 				
 				// SSL/TLS TCP Socket
 			case "ssl":
-				throw new todo.TODO();
-				
-				// {@squirreljme.error EC12 Unhandled URI protocol. (The URI)}.
-			default:
-				throw new ConnectionNotFoundException(String.format("EC12 %s",
-					__uri));
+				throw Debugging.todo();
 		}
+		
+		// Is there a matching custom connector 
+		synchronized (Connector.class)
+		{
+			for (CustomConnectionFactory custom : Connector._SERVICES)
+				if (scheme.equalsIgnoreCase(custom.scheme()))
+					return custom.connect(part, __mode, __timeouts, __opts);
+		}
+		
+		// {@squirreljme.error EC12 Unhandled URI protocol. (The URI)}.
+		throw new ConnectionNotFoundException(String.format("EC12 %s",
+			__uri));
 	}
 }
 

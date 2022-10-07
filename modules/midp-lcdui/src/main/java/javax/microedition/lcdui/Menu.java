@@ -1,14 +1,15 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.lcdui;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class Menu
 	extends __Action__
@@ -18,22 +19,22 @@ public class Menu
 	
 	public Menu(String __short, String __long, Image __i)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int append(Command __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int append(Menu __m)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Command getCommand(int __i)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -45,7 +46,7 @@ public class Menu
 	 */
 	public Font getFont()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -56,7 +57,7 @@ public class Menu
 	 */
 	public Image getImage()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -67,7 +68,7 @@ public class Menu
 	 */
 	public String getLabel()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -78,42 +79,42 @@ public class Menu
 	 */
 	public String getLongLabel()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Menu getMenu(int __i)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getMenuDepth()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void insert(int __i, Command __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void insert(int __i, Menu __m)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isCommand(int __i)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isEnabled()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isVisible()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -130,12 +131,12 @@ public class Menu
 	
 	public void remove(Command __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void remove(Menu __m)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -146,7 +147,7 @@ public class Menu
 	 */
 	public void setEnabled(boolean __e)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -158,7 +159,7 @@ public class Menu
 	 */
 	public void setFont(Font __f)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -174,7 +175,7 @@ public class Menu
 	 */
 	public void setImage(Image __i)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		Image clone = (__i != null && __i.isMutable() ?
 			Image.createImage(__i) : __i);
@@ -194,7 +195,7 @@ public class Menu
 	 */
 	public void setLabel(String __s)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		this.__setLabels(__s, this._longlabel, this._image);
 		*/
@@ -208,7 +209,7 @@ public class Menu
 	 */
 	public void setLongLabel(String __s)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		this.__setLabels(this._shortlabel, __s, this._image);
 		*/
@@ -216,12 +217,12 @@ public class Menu
 	
 	public int size()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int getMaxMenuDepth()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

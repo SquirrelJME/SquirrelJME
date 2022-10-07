@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -632,7 +631,7 @@ public class PrintStream
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		synchronized (this)
@@ -646,7 +645,7 @@ public class PrintStream
 	 *
 	 * @since 2018/09/21
 	 */
-	private final void __flush()
+	private void __flush()
 	{
 		// Nothing to be written at all?
 		int bat = this._bat;
@@ -724,26 +723,14 @@ public class PrintStream
 	 * @throws NullPointerException If no format was specified.
 	 * @since 2018/09/23
 	 */
-	private final PrintStream __printf(String __fmt, Object... __args)
+	private PrintStream __printf(String __fmt, Object... __args)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__fmt == null)
 			throw new NullPointerException("NARG");
 		
-		// Generate text to write into a string builder
-		StringBuilder sb = new StringBuilder();
-		try (Formatter f = new Formatter(sb))
-		{
-			f.format(__fmt, __args);
-		}
-		
-		// Dump characters that were written into the string but without
-		// turning it into an actual string, for memory purposes
-		synchronized (this)
-		{
-			for (int i = 0, n = sb.length(); i < n; i++)
-				this.__writeChar(sb.charAt(i));
-		}
+		// Generate formatter and write to ourselves
+		new Formatter(this).format(__fmt, __args);
 		
 		return this;
 	}
@@ -791,7 +778,7 @@ public class PrintStream
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Our current buffer state

@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -18,6 +18,7 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Text;
+import javax.microedition.lcdui.game.Sprite;
 
 /**
  * This delegates drawing operations to either the hardware graphics layer
@@ -31,11 +32,22 @@ import javax.microedition.lcdui.Text;
 public final class PencilGraphics
 	extends Graphics
 {
+	/**
+	 * {@squirreljme.property cc.squirreljme.lcdui.software=boolean
+	 * If set to {@code true} then software graphics will be forced to be
+	 * used.}
+	 */
+	private static final String _FORCE_SOFTWARE_PROPERTY =
+		"cc.squirreljme.lcdui.software";
+	
+	/** Forcing software rasterization */
+	private static final boolean _IS_FORCE_SOFTWARE;
+	
 	/** Software graphics backend. */
 	protected final Graphics software;
 	
 	/** The hardware bracket reference. */
-	protected final PencilBracket bracket;
+	protected final PencilBracket hardware;
 	
 	/** The capabilities of the graphics hardware. */
 	protected final int capabilities;
@@ -46,6 +58,45 @@ public final class PencilGraphics
 	/** Surface height. */
 	protected final int surfaceH;
 	
+	/** Does this have alpha channel support? */
+	protected final boolean hasAlpha;
+	
+	/** The current alpha color. */
+	private int _argbColor;
+	
+	/** The current blending mode. */
+	private int _blendingMode;
+	
+	/** The clip height. */
+	private int _clipHeight;
+	
+	/** The clip width. */
+	private int _clipWidth;
+	
+	/** The clip X position. */
+	private int _clipX;
+	
+	/** The clip Y position. */
+	private int _clipY;
+	
+	/** The current font used. */
+	private Font _font;
+	
+	/** The current stroke style. */
+	private int _strokeStyle;
+	
+	/** The current X translation. */
+	private int _transX;
+	
+	/** The current Y translation. */
+	private int _transY;
+	
+	static
+	{
+		_IS_FORCE_SOFTWARE =
+			Boolean.getBoolean(PencilGraphics._FORCE_SOFTWARE_PROPERTY);
+	}
+	
 	/**
 	 * Initializes the pencil graphics system.
 	 *
@@ -54,17 +105,18 @@ public final class PencilGraphics
 	 * @param __software The fallback software graphics rasterizer.
 	 * @param __sw The surface width.
 	 * @param __sh The surface height.
-	 * @param __bracket The hardware bracket reference for drawing.
+	 * @param __hardware The hardware bracket reference for drawing.
+	 * @param __pf The pixel format used.
 	 * @throws IllegalArgumentException If hardware graphics are not capable
 	 * enough to be used at all.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/25
 	 */
 	private PencilGraphics(int __caps, Graphics __software, int __sw, int __sh,
-		PencilBracket __bracket)
+		PencilBracket __hardware, int __pf)
 		throws IllegalArgumentException, NullPointerException
 	{
-		if (__software == null || __bracket == null)
+		if (__software == null || __hardware == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error EB3g Hardware graphics not capable enough.}
@@ -72,12 +124,24 @@ public final class PencilGraphics
 			throw new IllegalArgumentException("EB3g " + __caps);
 		
 		this.software = __software;
-		this.bracket = __bracket;
+		this.hardware = __hardware;
 		this.capabilities = __caps;
 		
 		// These are used to manage the clip
 		this.surfaceW = __sw;
 		this.surfaceH = __sh;
+		
+		// Does this use alpha?
+		this.hasAlpha = (__pf == UIPixelFormat.INT_RGBA8888 ||
+			__pf == UIPixelFormat.SHORT_ABGR1555 ||
+			__pf == UIPixelFormat.SHORT_RGBA4444);
+		
+		// Set initial parameters for the graphics and make sure they are
+		// properly forwarded as well
+		this.setAlphaColor(0xFF000000);
+		this.setBlendingMode(Graphics.SRC_OVER);
+		this.setStrokeStyle(Graphics.SOLID);
+		this.setFont(null);
 	}
 	
 	/**
@@ -85,7 +149,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void clipRect(int __x, int __y, int __w, int __h)
+	public void clipRect(int __x, int __y, int __w, int __h)
 	{
 		throw Debugging.todo();
 	}
@@ -95,7 +159,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void copyArea(int __sx, int __sy, int __w, int __h, int __dx,
+	public void copyArea(int __sx, int __sy, int __w, int __h, int __dx,
 		int __dy, int __anchor)
 		throws IllegalArgumentException, IllegalStateException
 	{
@@ -113,7 +177,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawArc(int __x, int __y, int __w, int __h, int __sa,
+	public void drawArc(int __x, int __y, int __w, int __h, int __sa,
 	 int __aa)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.DRAW_ARC))
@@ -130,7 +194,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawARGB16(short[] __data, int __off, int __scanlen,
+	public void drawARGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
@@ -149,7 +213,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawChar(char __s, int __x, int __y, int __anchor)
+	public void drawChar(char __s, int __x, int __y, int __anchor)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.FONT_TEXT))
 		{
@@ -165,7 +229,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawChars(char[] __s, int __o, int __l, int __x, int __y,
+	public void drawChars(char[] __s, int __o, int __l, int __x, int __y,
 		int __anchor)
 		throws NullPointerException
 	{
@@ -183,16 +247,13 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawImage(Image __i, int __x, int __y, int __anchor)
+	public void drawImage(Image __i, int __x, int __y, int __anchor)
 		throws IllegalArgumentException, NullPointerException
 	{
-		if (0 == (this.capabilities & PencilCapabilities.DRAW_XRGB32_REGION))
-		{
-			this.software.drawImage(__i, __x, __y, __anchor);
-			return;
-		}
-		
-		throw Debugging.todo();
+		// This is a duplicate function, so it gets forwarded
+		this.drawRegion(__i, 0, 0,
+			__i.getWidth(), __i.getHeight(), 0,
+			__x, __y, __anchor);
 	}
 	
 	/**
@@ -200,7 +261,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawLine(int __x1, int __y1, int __x2, int __y2)
+	public void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.DRAW_LINE))
 		{
@@ -208,7 +269,7 @@ public final class PencilGraphics
 			return;
 		}
 		
-		throw Debugging.todo();
+		PencilShelf.hardwareDrawLine(this.hardware, __x1, __y1, __x2, __y2);
 	}
 	
 	/**
@@ -216,18 +277,22 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawRGB(int[] __data, int __off, int __scanlen, int __x,
+	public void drawRGB(int[] __data, int __off, int __scanlen, int __x,
 		int __y, int __w, int __h, boolean __alpha)
 		throws NullPointerException
 	{
-		if (0 == (this.capabilities & PencilCapabilities.DRAW_XRGB32_SIMPLE))
+		if (0 == (this.capabilities & PencilCapabilities.DRAW_XRGB32_REGION))
 		{
 			this.software.drawRGB(__data, __off, __scanlen, __x, __y, __w,
 				__h, __alpha);
 			return;
 		}
 		
-		throw Debugging.todo();
+		// Forward Call
+		this.__drawRegion(__data, __off, __scanlen, __alpha,
+			0, 0, __w, __h, Sprite.TRANS_NONE,
+			__x, __y, Graphics.TOP | Graphics.LEFT, __w, __h,
+			__scanlen, (__data.length - __off) / __scanlen);
 	}
 	
 	/**
@@ -235,7 +300,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawRGB16(short[] __data, int __off, int __scanlen,
+	public void drawRGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
@@ -254,7 +319,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawRect(int __x, int __y, int __w, int __h)
+	public void drawRect(int __x, int __y, int __w, int __h)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.DRAW_RECT))
 		{
@@ -270,19 +335,14 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawRegion(Image __src, int __xsrc, int __ysrc,
+	public void drawRegion(Image __src, int __xsrc, int __ysrc,
 		int __wsrc, int __hsrc, int __trans, int __xdest, int __ydest,
 		int __anch)
 		throws IllegalArgumentException, NullPointerException
 	{
-		if (0 == (this.capabilities & PencilCapabilities.DRAW_XRGB32_REGION))
-		{
-			this.software.drawRegion(__src, __xsrc, __ysrc, __wsrc, __hsrc,
-				__trans, __xdest, __ydest, __anch);
-			return;
-		}
-		
-		throw Debugging.todo();
+		// Forward call
+		this.drawRegion(__src, __xsrc, __ysrc, __wsrc, __hsrc,
+			__trans, __xdest, __ydest, __anch, __wsrc, __hsrc);
 	}
 	
 	/**
@@ -290,11 +350,14 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawRegion(Image __src, int __xsrc, int __ysrc,
+	public void drawRegion(Image __src, int __xsrc, int __ysrc,
 		int __wsrc, int __hsrc, int __trans, int __xdest, int __ydest,
 		int __anch, int __wdest, int __hdest)
 		throws IllegalArgumentException, NullPointerException
 	{
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		
 		if (0 == (this.capabilities & PencilCapabilities.DRAW_XRGB32_REGION))
 		{
 			this.software.drawRegion(__src, __xsrc, __ysrc, __wsrc, __hsrc,
@@ -302,7 +365,38 @@ public final class PencilGraphics
 			return;
 		}
 		
-		throw Debugging.todo();
+		// If the image is direct, use the buffer that is inside rather than
+		// a copy, so we do not waste time copying from it!
+		int[] buf;
+		int offset;
+		int scanLen;
+		if (__src.squirreljmeIsDirect())
+		{
+			buf = __src.squirreljmeDirectRGBInt();
+			offset = __src.squirreljmeDirectOffset();
+			scanLen = __src.squirreljmeDirectScanLen();
+		}
+		
+		// Image is not directly accessible, so get a copy of it
+		else
+		{
+			// Obtain image properties
+			int iW = __src.getWidth();
+			int iH = __src.getHeight();
+			int totalPixels = iW * iH;
+			
+			// Read RGB data
+			buf = new int[totalPixels];
+			offset = 0;
+			scanLen = iW;
+			__src.getRGB(buf, offset, scanLen, 0, 0, iW, iH);
+		}
+		
+		// Perform the internal draw
+		this.__drawRegion(buf, offset, scanLen, __src.hasAlpha(),
+			__xsrc, __ysrc, __wsrc, __hsrc, __trans,
+			__xdest, __ydest, __anch,
+			__wdest, __hdest, __src.getWidth(), __src.getHeight());
 	}
 	
 	/**
@@ -310,7 +404,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawRoundRect(int __x, int __y, int __w, int __h,
+	public void drawRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.DRAW_ROUND_RECT))
@@ -327,7 +421,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawString(String __s, int __x, int __y, int __anchor)
+	public void drawString(String __s, int __x, int __y, int __anchor)
 		throws NullPointerException
 	{
 		if (0 == (this.capabilities & PencilCapabilities.FONT_TEXT))
@@ -344,7 +438,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawSubstring(String __s, int __o, int __l,
+	public void drawSubstring(String __s, int __o, int __l,
 		int __x, int __y, int __anchor)
 		throws NullPointerException, StringIndexOutOfBoundsException
 	{
@@ -362,7 +456,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void drawText(Text __t, int __x, int __y)
+	public void drawText(Text __t, int __x, int __y)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.FONT_TEXT))
 		{
@@ -378,7 +472,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void fillArc(int __x, int __y, int __w, int __h, int __sa,
+	public void fillArc(int __x, int __y, int __w, int __h, int __sa,
 	 int __aa)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.FILL_ARC))
@@ -395,7 +489,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void fillRect(int __x, int __y, int __w, int __h)
+	public void fillRect(int __x, int __y, int __w, int __h)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.FILL_RECT))
 		{
@@ -403,7 +497,8 @@ public final class PencilGraphics
 			return;
 		}
 		
-		throw Debugging.todo();
+		// Forward to hardware
+		PencilShelf.hardwareFillRect(this.hardware, __x, __y, __w, __h);
 	}
 	
 	/**
@@ -411,7 +506,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void fillRoundRect(int __x, int __y, int __w, int __h,
+	public void fillRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.FILL_ROUND_RECT))
@@ -428,7 +523,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void fillTriangle(int __x1, int __y1, int __x2, int __y2,
+	public void fillTriangle(int __x1, int __y1, int __x2, int __y2,
 		int __x3, int __y3)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.FILL_TRIANGLE))
@@ -445,9 +540,9 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getAlpha()
+	public int getAlpha()
 	{
-		throw Debugging.todo();
+		return (this._argbColor >> 24) & 0xFF;
 	}
 	
 	/**
@@ -455,9 +550,9 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getAlphaColor()
+	public int getAlphaColor()
 	{
-		throw Debugging.todo();
+		return this._argbColor;
 	}
 	
 	/**
@@ -465,9 +560,9 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getBlendingMode()
+	public int getBlendingMode()
 	{
-		throw Debugging.todo();
+		return this._blendingMode;
 	}
 	
 	/**
@@ -475,9 +570,9 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getBlueComponent()
+	public int getBlueComponent()
 	{
-		throw Debugging.todo();
+		return (this._argbColor) & 0xFF;
 	}
 	
 	/**
@@ -485,9 +580,9 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getClipHeight()
+	public int getClipHeight()
 	{
-		throw Debugging.todo();
+		return this._clipHeight;
 	}
 	
 	/**
@@ -495,9 +590,9 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getClipWidth()
+	public int getClipWidth()
 	{
-		throw Debugging.todo();
+		return this._clipWidth;
 	}
 	
 	/**
@@ -505,9 +600,9 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getClipX()
+	public int getClipX()
 	{
-		throw Debugging.todo();
+		return this._clipX - this._transX;
 	}
 	
 	/**
@@ -515,9 +610,9 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getClipY()
+	public int getClipY()
 	{
-		throw Debugging.todo();
+		return this._clipY - this._transY;
 	}
 	
 	/**
@@ -525,9 +620,9 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getColor()
+	public int getColor()
 	{
-		throw Debugging.todo();
+		return this._argbColor & 0xFFFFFF;
 	}
 	
 	/**
@@ -535,9 +630,11 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getDisplayColor(int __rgb)
+	public int getDisplayColor(int __rgb)
 	{
-		throw Debugging.todo();
+		// We can just ask the software graphics for the color we are using
+		// since it should hopefully match the hardware one.
+		return this.software.getDisplayColor(__rgb);
 	}
 	
 	/**
@@ -545,12 +642,12 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final Font getFont()
+	public Font getFont()
 	{
 		if (0 == (this.capabilities & PencilCapabilities.FONT_TEXT))
 			return this.software.getFont();
 		
-		throw Debugging.todo();
+		return this._font;
 	}
 	
 	/**
@@ -558,9 +655,11 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getGrayScale()
+	public int getGrayScale()
 	{
-		throw Debugging.todo();
+		return (((this._argbColor >> 16) & 0xFF) +
+			((this._argbColor >> 8) & 0xFF) +
+			((this._argbColor) & 0xFF)) / 3;
 	}
 	
 	/**
@@ -568,9 +667,9 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getGreenComponent()
+	public int getGreenComponent()
 	{
-		throw Debugging.todo();
+		return (this._argbColor >> 8) & 0xFF;
 	}
 	
 	/**
@@ -578,9 +677,9 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getRedComponent()
+	public int getRedComponent()
 	{
-		throw Debugging.todo();
+		return (this._argbColor >> 16) & 0xFF;
 	}
 	
 	/**
@@ -588,9 +687,9 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getStrokeStyle()
+	public int getStrokeStyle()
 	{
-		throw Debugging.todo();
+		return this._strokeStyle;
 	}
 	
 	/**
@@ -598,9 +697,9 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getTranslateX()
+	public int getTranslateX()
 	{
-		throw Debugging.todo();
+		return this._transX;
 	}
 	
 	/**
@@ -608,9 +707,9 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final int getTranslateY()
+	public int getTranslateY()
 	{
-		throw Debugging.todo();
+		return this._transY;
 	}
 	
 	/**
@@ -618,10 +717,13 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void setAlpha(int __a)
+	public void setAlpha(int __a)
 		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		this.setAlphaColor(__a,
+			this.getRedComponent(),
+			this.getGreenComponent(),
+			this.getBlueComponent());
 	}
 	
 	/**
@@ -629,9 +731,14 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void setAlphaColor(int __argb)
+	public void setAlphaColor(int __argb)
 	{
-		throw Debugging.todo();
+		// Mirror locally
+		this._argbColor = __argb;
+		
+		// Set on the remote software and hardware graphics
+		this.software.setAlphaColor(__argb);
+		PencilShelf.hardwareSetAlphaColor(this.hardware, __argb);
 	}
 	
 	/**
@@ -639,10 +746,18 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void setAlphaColor(int __a, int __r, int __g, int __b)
+	public void setAlphaColor(int __a, int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		// {@squirreljme.error EB3t Color out of range. (Alpha; Red; Green;
+		// Blue)}
+		if (__a < 0 || __a > 255 || __r < 0 || __r > 255 ||
+			__g < 0 || __g > 255 || __b < 0 || __b > 255)
+			throw new IllegalArgumentException(String.format(
+				"EB3t %d %d %d %d", __a, __r, __g, __b));
+		
+		// Set
+		this.setAlphaColor((__a << 24) | (__r << 16) | (__g << 8) | __b);
 	}
 	
 	/**
@@ -650,10 +765,20 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void setBlendingMode(int __m)
+	public void setBlendingMode(int __m)
 		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		// {@squirreljme.error EB3u Invalid blending mode. (The mode)}
+		if ((__m != Graphics.SRC && __m != Graphics.SRC_OVER) ||
+			(__m == Graphics.SRC && !this.hasAlpha))
+			throw new IllegalArgumentException("EB3u " + __m);
+		
+		// Cache locally
+		this._blendingMode = __m;
+		
+		// Forward to both software and hardware graphics
+		this.software.setBlendingMode(__m);
+		PencilShelf.hardwareSetBlendingMode(this.hardware, __m);
 	}
 	
 	/**
@@ -661,56 +786,57 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void setClip(int __x, int __y, int __w, int __h)
+	public void setClip(int __x, int __y, int __w, int __h)
 	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/09/25
-	 */
-	@Override
-	public final void setColor(int __rgb)
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/09/25
-	 */
-	@Override
-	public final void setColor(int __r, int __g, int __b)
-		throws IllegalArgumentException
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/09/25
-	 */
-	@Override
-	public final void setFont(Font __font)
-	{
-		if (0 == (this.capabilities & PencilCapabilities.FONT_TEXT))
+		// Calculate the base clip coordinates
+		int startX = __x + this._transX;
+		int startY = __y + this._transY;
+		int endX = startX + __w;
+		int endY = startY + __h;
+		
+		// Normalize X
+		if (endX < startX)
 		{
-			this.software.setFont(__font);
-			return;
+			int temp = endX;
+			endX = startX;
+			startX = temp;
 		}
 		
-		throw Debugging.todo();
+		// Normalize Y
+		if (endY < startY)
+		{
+			int temp = endY;
+			endY = startY;
+			startY = temp;
+		}
+		
+		// Determine the bounds of all of these
+		int clipX = Math.min(this.surfaceW, Math.max(0, startX));
+		int clipY = Math.min(this.surfaceH, Math.max(0, startY));
+		int clipEndX = Math.min(this.surfaceW, Math.max(0, endX));
+		int clipEndY = Math.min(this.surfaceH, Math.max(0, endY));
+		
+		// Record internally
+		this._clipX = clipX;
+		this._clipY = clipY;
+		this._clipWidth = clipEndX - clipX;
+		this._clipHeight = clipEndY - clipY;
+		
+		// Forward to both software and hardware graphics
+		this.software.setClip(__x, __y, __w, __h);
+		PencilShelf.hardwareSetClip(this.hardware, __x, __y, __w, __h);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
 	 */
+	@SuppressWarnings("MagicNumber")
 	@Override
-	public final void setGrayScale(int __v)
+	public void setColor(int __rgb)
 	{
-		throw Debugging.todo();
+		this.setAlphaColor((this.getAlphaColor() & 0xFF_000000) |
+			(__rgb & 0x00_FFFFFF));
 	}
 	
 	/**
@@ -718,10 +844,10 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void setStrokeStyle(int __a)
+	public void setColor(int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		this.setAlphaColor(this.getAlpha(), __r, __g, __b);
 	}
 	
 	/**
@@ -729,9 +855,102 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public final void translate(int __x, int __y)
+	public void setFont(Font __font)
 	{
-		throw Debugging.todo();
+		// Cache locally
+		this._font = __font;
+		
+		// This is always set in software
+		this.software.setFont(__font);
+		
+		// If supported by hardware, set it here
+		if (0 != (this.capabilities & PencilCapabilities.FONT_TEXT))
+			throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/25
+	 */
+	@Override
+	public void setGrayScale(int __v)
+	{
+		this.setAlphaColor(this.getAlpha(), __v, __v, __v);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/25
+	 */
+	@Override
+	public void setStrokeStyle(int __style)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error EB3v Illegal stroke style.}
+		if (__style != Graphics.SOLID && __style != Graphics.DOTTED)
+			throw new IllegalArgumentException("EB3v");
+		
+		// Set
+		this._strokeStyle = __style;
+		
+		// Forward to both software and hardware graphics
+		this.software.setStrokeStyle(__style);
+		PencilShelf.hardwareSetStrokeStyle(this.hardware, __style);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/25
+	 */
+	@Override
+	public void translate(int __x, int __y)
+	{
+		// Set locally
+		this._transX += __x;
+		this._transY += __y;
+		
+		// Forward to both software and hardware graphics
+		this.software.translate(__x, __y);
+		PencilShelf.hardwareTranslate(this.hardware, __x, __y);
+	}
+	
+	/**
+	 * Draws a direct RGB region of an image.
+	 * 
+	 * @param __data The source buffer.
+	 * @param __off The offset into the buffer.
+	 * @param __scanlen The scanline length.
+	 * @param __alpha Drawing with the alpha channel?
+	 * @param __xsrc The source X position.
+	 * @param __ysrc The source Y position.
+	 * @param __wsrc The width of the source region.
+	 * @param __hsrc The height of the source region.
+	 * @param __trans Sprite translation and/or rotation, see {@link Sprite}.
+	 * @param __xdest The destination X position, is translated.
+	 * @param __ydest The destination Y position, is translated.
+	 * @param __anch The anchor point.
+	 * @param __wdest The destination width.
+	 * @param __hdest The destination height.
+	 * @param __origImgWidth Original image width.
+	 * @param __origImgHeight Original image height.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/01/26
+	 */
+	private void __drawRegion(int[] __data, int __off, int __scanlen,
+		boolean __alpha, int __xsrc, int __ysrc, int __wsrc, int __hsrc,
+		int __trans, int __xdest, int __ydest, int __anch, int __wdest,
+		int __hdest, int __origImgWidth, int __origImgHeight)
+		throws NullPointerException
+	{
+		if (__data == null)
+			throw new NullPointerException("NARG");
+		
+		// Forward to the native region drawing method
+		PencilShelf.hardwareDrawXRGB32Region(this.hardware,
+			__data, __off, __scanlen,
+			__alpha, __xsrc, __ysrc, __wsrc, __hsrc,
+			__trans, __xdest, __ydest, __anch,
+			__wdest, __hdest, __origImgWidth, __origImgHeight);
 	}
 	
 	/**
@@ -739,7 +958,7 @@ public final class PencilGraphics
 	 * supported, but falling back to software level graphics.
 	 * 
 	 * @param __pf The {@link UIPixelFormat} used for the draw.
-	 * @param __bw The buffer width.
+	 * @param __bw The buffer width, this is the scanline width of the buffer.
 	 * @param __bh The buffer height.
 	 * @param __buf The target buffer to draw to, this is cast to the correct
 	 * buffer format.
@@ -763,12 +982,14 @@ public final class PencilGraphics
 		
 		// Get the capabilities of the native system, if it is not supported
 		// then operations will purely be implemented in software
+		// It can also be disabled via a system property
 		int caps = PencilShelf.capabilities(__pf); 
-		if ((caps & PencilCapabilities.MINIMUM) == 0)
+		if (PencilGraphics._IS_FORCE_SOFTWARE ||
+			(caps & PencilCapabilities.MINIMUM) == 0)
 			return software;
 		
 		return new PencilGraphics(caps, software, __sw, __sh,
 			PencilShelf.hardwareGraphics(__pf,
-			__bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh));
+			__bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh), __pf);
 	}
 }

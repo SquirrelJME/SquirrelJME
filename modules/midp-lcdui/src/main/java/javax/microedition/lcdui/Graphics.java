@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -68,7 +67,7 @@ public abstract class Graphics
 	
 	/**
 	 * The blending mode, the destination alpha becomes the source and as such
-	 * the operation is a copy.
+	 * the operation is a copy (or overwrite).
 	 */
 	public static final int SRC =
 		1;
@@ -518,6 +517,10 @@ public abstract class Graphics
 	 * Sets the new clipping area of the destination image. The previous
 	 * clipping area is replaced.
 	 *
+	 * To set the absolute position of the clip the following may be
+	 * performed:
+	 * {@code setClip(__x - getTranslateX(), __y - getTranslateY(), __w, __h)}.
+	 *
 	 * @param __x The X coordinate, will be translated.
 	 * @param __y The Y coordinate, will be translated.
 	 * @param __w The width.
@@ -568,11 +571,12 @@ public abstract class Graphics
 	/**
 	 * Sets the stroke style to use for lines.
 	 *
-	 * @param __a The stroke style, either {@link #SOLID} or {@link #DOTTED}.
+	 * @param __style The stroke style, either {@link #SOLID} or
+	 * {@link #DOTTED}.
 	 * @throws IllegalArgumentException If the stroke is not valid.
 	 * @since 2017/02/09
 	 */
-	public abstract void setStrokeStyle(int __a)
+	public abstract void setStrokeStyle(int __style)
 		throws IllegalArgumentException;
 	
 	/**
@@ -581,7 +585,7 @@ public abstract class Graphics
 	 *
 	 * To set the absolute position of the translation the following may be
 	 * performed:
-	 * {@code translate(ax - getTranslateX(), ay - getTranslateY())}.
+	 * {@code translate(__x - getTranslateX(), __y - getTranslateY())}.
 	 *
 	 * The clipping area, if set, will not be transformed.
 	 *

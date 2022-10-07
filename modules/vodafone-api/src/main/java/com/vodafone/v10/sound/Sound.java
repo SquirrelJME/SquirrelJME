@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,6 +9,7 @@
 
 package com.vodafone.v10.sound;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 public class Sound
@@ -18,21 +19,21 @@ public class Sound
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public Sound(byte[] var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getSize()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getUseTracks()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

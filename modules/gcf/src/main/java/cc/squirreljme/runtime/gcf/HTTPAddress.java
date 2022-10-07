@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -8,6 +8,8 @@
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.gcf;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This represents an IP address.
@@ -59,7 +61,7 @@ public final class HTTPAddress
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -69,7 +71,7 @@ public final class HTTPAddress
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -79,7 +81,7 @@ public final class HTTPAddress
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -104,7 +106,7 @@ public final class HTTPAddress
 		__p = __p.substring(2);
 		
 		// Debug
-		todo.DEBUG.note("Decode %s", __p);
+		Debugging.debugNote("Decode %s", __p);
 		
 		// Only contains the host part
 		int sl = __p.indexOf('/');
@@ -122,7 +124,7 @@ public final class HTTPAddress
 		String fragment;
 		int fl = __p.indexOf('#');
 		if (fl >= 0)
-			throw new todo.TODO();
+			throw Debugging.todo();
 		
 		// No fragment used
 		else
@@ -132,7 +134,7 @@ public final class HTTPAddress
 		String query;
 		int ql = __p.indexOf('?');
 		if (ql >= 0)
-			throw new todo.TODO();
+			throw Debugging.todo();
 		
 		// No query used
 		else

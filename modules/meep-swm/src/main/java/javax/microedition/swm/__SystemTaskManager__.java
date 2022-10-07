@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -42,7 +41,7 @@ final class __SystemTaskManager__
 	@Override
 	public void addTaskListener(TaskListener __tl)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -52,7 +51,7 @@ final class __SystemTaskManager__
 	@Override
 	public Task getCurrentTask()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		return this.__byId(APIAccessor.chores().currentId());
 		*/
@@ -65,7 +64,7 @@ final class __SystemTaskManager__
 	@Override
 	public List<Task> getTaskList(boolean __incsys)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		// Lock so that the task list is always up to date
 		Task[] rv;
@@ -92,7 +91,7 @@ final class __SystemTaskManager__
 	@Override
 	public void removeTaskListener(TaskListener __tl)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -103,7 +102,7 @@ final class __SystemTaskManager__
 	public boolean setForeground(Task __t)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -114,7 +113,7 @@ final class __SystemTaskManager__
 	public boolean setPriority(Task __t, TaskPriority __p)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -184,7 +183,7 @@ final class __SystemTaskManager__
 		names[n] = __s._name;
 		
 		// Debug
-		todo.DEBUG.note("Suites: %s", Arrays.<String>asList(names));
+		Debugging.debugNote("Suites: %s", Arrays.<String>asList(names));
 		
 		throw Debugging.todo();
 		/*
@@ -243,7 +242,7 @@ final class __SystemTaskManager__
 	public boolean stopTask(Task __t)
 		throws IllegalArgumentException, IllegalStateException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -270,7 +269,7 @@ final class __SystemTaskManager__
 			Integer k = __tid;
 			Task rv = tasks.get(k);
 			if (rv != null)
-				throw new todo.OOPS();
+				throw Debugging.oops();
 			
 			tasks.put(k, (rv = new Task(__tid, __s, __n)));
 			return rv;

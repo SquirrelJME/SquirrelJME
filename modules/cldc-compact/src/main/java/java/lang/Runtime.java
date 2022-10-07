@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,8 +9,16 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
+import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
+import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
+import cc.squirreljme.runtime.cldc.io.NonClosedOutputStream;
+import java.io.PrintStream;
 
 /**
  * This class contains information about the host memory environment along
@@ -49,6 +56,27 @@ public class Runtime
 	{
 		// Check that we can exit
 		System.getSecurityManager().checkExit(__v);
+		
+		// Indicate that the VM is exiting
+		try
+		{
+			Debugging.debugNote("Exiting VM with %d...", __v);
+			
+			// Print the trace where this exit is for debugging
+			if (__v != 0)
+			{
+				TracePointBracket[] trace = DebugShelf.traceStack();
+				CallTraceUtils.printStackTrace(new PrintStream(
+						new NonClosedOutputStream(
+							new ConsoleOutputStream(StandardPipeType.STDERR,
+								true))),
+					"EXIT", trace,
+					null, null, 0);
+			}
+		}
+		catch (Throwable ignored)
+		{
+		}
 		
 		// Then do the exit if no exception was thrown
 		RuntimeShelf.exit(__v);

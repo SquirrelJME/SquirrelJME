@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -18,7 +17,6 @@ package java.io;
 public abstract class OutputStream
 	implements Closeable
 {
-	
 	/**
 	 * Writes a single byte to the output stream, the byte is in the range of
 	 * 0 and 255. If the byte exceeds that range, then it must take the low
@@ -101,7 +99,7 @@ public abstract class OutputStream
 		// Check
 		if (__a == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __a.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __a.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Write all bytes

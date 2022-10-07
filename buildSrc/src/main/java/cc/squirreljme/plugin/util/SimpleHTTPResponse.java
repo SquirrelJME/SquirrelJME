@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -85,7 +85,7 @@ public final class SimpleHTTPResponse
 		
 		// Write response line
 		SimpleHTTPStatus status = this.status;
-		__out.write(String.format("HTTP/1.0 %d %s\r\n", status.code,
+		__out.write(String.format("HTTP/1.1 %d %s\r\n", status.code,
 			status.name()).getBytes(StandardCharsets.UTF_8));
 		
 		// Write headers

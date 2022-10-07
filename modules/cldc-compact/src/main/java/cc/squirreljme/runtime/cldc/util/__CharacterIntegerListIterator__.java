@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -17,7 +17,7 @@ import java.util.ListIterator;
  *
  * @since 2021/02/25
  */
-public class __CharacterIntegerListIterator__
+class __CharacterIntegerListIterator__
 	implements ListIterator<Integer>
 {
 	/** The iterator to base off. */

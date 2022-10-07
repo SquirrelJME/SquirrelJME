@@ -1,0 +1,35 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+secondary-str_--1_35: throwable:StringIndexOutOfBoundsException
+secondary-str_0_--5: throwable:StringIndexOutOfBoundsException
+secondary-str_--10_--5: throwable:StringIndexOutOfBoundsException
+secondary-str_--5_--10: throwable:StringIndexOutOfBoundsException
+secondary-str_0_0: string:Squirrels\_are\_so\_cute\_and\_adorable!
+secondary-str_0_2147483647: string:
+secondary-str_0_35: string:
+secondary-str_10_5: throwable:StringIndexOutOfBoundsException
+secondary-str_35_35: string:Squirrels\_are\_so\_cute\_and\_adorable!
+secondary-str_35_36: string:Squirrels\_are\_so\_cute\_and\_adorable!
+secondary-str_36_36: throwable:StringIndexOutOfBoundsException
+secondary-str_36_37: throwable:StringIndexOutOfBoundsException
+secondary-str_5_10: string:Squirare\_so\_cute\_and\_adorable!
+secondary-str_5_2147483647: string:Squir
+secondary-str_5_35: string:Squir
+secondary-str_--1_35_o: throwable:StringIndexOutOfBoundsException
+secondary-str_0_--5_o: throwable:StringIndexOutOfBoundsException
+secondary-str_--10_--5_o: throwable:StringIndexOutOfBoundsException
+secondary-str_--5_--10_o: throwable:StringIndexOutOfBoundsException
+secondary-str_0_0_o: string:Squirrels\_are\_so\_cute\_and\_adorable!
+secondary-str_0_2147483647_o: string:
+secondary-str_0_35_o: string:
+secondary-str_10_5_o: throwable:StringIndexOutOfBoundsException
+secondary-str_35_35_o: string:Squirrels\_are\_so\_cute\_and\_adorable!
+secondary-str_35_36_o: string:Squirrels\_are\_so\_cute\_and\_adorable!
+secondary-str_36_36_o: throwable:StringIndexOutOfBoundsException
+secondary-str_36_37_o: throwable:StringIndexOutOfBoundsException
+secondary-str_5_10_o: string:Squirare\_so\_cute\_and\_adorable!
+secondary-str_5_2147483647_o: string:Squir
+secondary-str_5_35_o: string:Squir
+
+

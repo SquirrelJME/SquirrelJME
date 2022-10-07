@@ -1,5 +1,6 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -76,6 +77,17 @@ public final class Profile
 			this.name = new APIName(__n.substring(0, dx));
 			this.version = new SuiteVersion(__n.substring(dx + 1));
 		}
+	}
+	
+	/**
+	 * Returns the API name.
+	 * 
+	 * @return The API name.
+	 * @since 2022/02/28
+	 */
+	public APIName apiName()
+	{
+		return this.name;
 	}
 	
 	/**

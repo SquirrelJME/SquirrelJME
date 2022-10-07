@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Not Described.
+ * Used to execute a {@link Runnable} at some point in the future via the
+ * event loop.
  *
  * @since 2020/10/03
  */

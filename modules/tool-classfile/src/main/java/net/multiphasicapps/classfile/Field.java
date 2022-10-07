@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -13,7 +12,7 @@ package net.multiphasicapps.classfile;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
+import java.lang.ref.SoftReference;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -130,7 +129,7 @@ public final class Field
 		FieldNameAndType rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._nameandtype = new WeakReference<>(
+			this._nameandtype = new SoftReference<>(
 				rv = new FieldNameAndType(this.name, this.type));
 		
 		return rv;

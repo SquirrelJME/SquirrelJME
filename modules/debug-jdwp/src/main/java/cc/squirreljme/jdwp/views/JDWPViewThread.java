@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -11,6 +11,7 @@ package cc.squirreljme.jdwp.views;
 
 import cc.squirreljme.jdwp.JDWPStepTracker;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
+import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 
 /**
@@ -19,7 +20,7 @@ import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
  * @since 2021/04/10
  */
 public interface JDWPViewThread
-	extends JDWPViewValidObject
+	extends JDWPViewHasInstance, JDWPViewValidObject
 {
 	/**
 	 * Returns the stack frame of the given thread.
@@ -32,12 +33,22 @@ public interface JDWPViewThread
 	Object[] frames(Object __which);
 	
 	/**
+	 * Returns the thread that belongs to the given thread bracket.
+	 * 
+	 * @param __bracket The {@link VMThreadBracket} to read from.
+	 * @return The thread from the given bracket.
+	 * @since 2022/09/24
+	 */
+	Object fromBracket(Object __bracket);
+	
+	/**
 	 * Gets the instance object of the given thread.
 	 * 
 	 * @param __which Get the instance object of which thread?
 	 * @return The instance object of the given thread.
 	 * @since 2021/04/18
 	 */
+	@Override
 	Object instance(Object __which);
 	
 	/**
@@ -47,6 +58,15 @@ public interface JDWPViewThread
 	 * @since 2021/04/30
 	 */
 	void interrupt(Object __which);
+	
+	/**
+	 * Is this a debugger generated callback thread?
+	 *
+	 * @param __thread The thread to check.
+	 * @return Is this a debug callback thread?
+	 * @since 2022/09/23
+	 */
+	boolean isDebugCallback(Object __thread);
 	
 	/**
 	 * Returns the termination status of the thread.

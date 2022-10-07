@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -85,7 +85,8 @@ public interface Backend
 	 * 
 	 * @param __settings ROM settings.
 	 * @param __out The stream to write to.
-	 * @param __libs The libraries to combined.
+	 * @param __libs The libraries to be combined, the first library should
+	 * always be the boot library {@code cldc-compact}.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/27

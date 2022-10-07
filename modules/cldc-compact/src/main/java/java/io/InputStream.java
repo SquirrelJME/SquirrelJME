@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -145,7 +144,7 @@ public abstract class InputStream
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// No bytes to read?
@@ -183,7 +182,7 @@ public abstract class InputStream
 	}
 	
 	/**
-	 * Attemps to skip over the given number of bytes.
+	 * Attempts to skip over the given number of bytes.
 	 *
 	 * It is not required for the actual number of bytes skipped to match the
 	 * input amount, this could be specific to the input stream implementation

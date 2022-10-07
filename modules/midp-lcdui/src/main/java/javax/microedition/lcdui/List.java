@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -94,7 +93,7 @@ public class List
 		this._type = __type;
 		
 		// Build new list
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		UIItemBracket uiList = backend.itemNew(UIItemType.LIST);
 		this._uiList = uiList;
 		
@@ -177,7 +176,7 @@ public class List
 	@Override
 	public int getFitPolicy()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -326,12 +325,6 @@ public class List
 		return this._items.get(__i)._selected;
 	}
 	
-	@Override
-	public void removeCommand(Command __a)
-	{
-		throw new todo.TODO();
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/11/14
@@ -369,7 +362,7 @@ public class List
 	@Override
 	public void setFitPolicy(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -392,7 +385,7 @@ public class List
 	
 	public void setSelectCommand(Command __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -546,7 +539,7 @@ public class List
 	private void __refresh()
 	{
 		UIItemBracket uiList = this._uiList;
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		java.util.List<__ChoiceEntry__> choices = this._items.valuesAsList();
 		
 		// Set new size of the list

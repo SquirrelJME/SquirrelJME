@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -11,6 +10,7 @@
 package net.multiphasicapps.classfile;
 
 import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 
 /**
@@ -90,7 +90,9 @@ public final class MethodHandle
 	@Override
 	public boolean equals(Object __o)
 	{
-		// Check
+		if (this == __o)
+			return true;
+		
 		if (!(__o instanceof MethodHandle))
 			return false;
 		
@@ -170,7 +172,7 @@ public final class MethodHandle
 		MethodNameAndType rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._nat = new WeakReference<>((rv = new MethodNameAndType(
+			this._nat = new SoftReference<>((rv = new MethodNameAndType(
 				this.name, this.descriptor)));
 		
 		return rv;

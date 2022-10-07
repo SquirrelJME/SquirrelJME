@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -11,7 +10,7 @@
 package net.multiphasicapps.classfile;
 
 import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
+import java.lang.ref.SoftReference;
 
 /**
  * This represents a set of flags which are used as modifiers to inner classes.
@@ -117,7 +116,7 @@ public final class InnerClassFlags
 					mask |= v.javaBitMask();
 			}
 			
-			this._cflags = new WeakReference<>((rv = new ClassFlags(mask)));
+			this._cflags = new SoftReference<>((rv = new ClassFlags(mask)));
 		}
 		
 		return rv;

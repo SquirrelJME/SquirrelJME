@@ -4,9 +4,11 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-        <option name="disableWrapperSourceDistributionNotification" value="true" />
+        <option name="delegatedBuild" value="true" />
+        <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleJvm" value="11.0.5" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
@@ -14,10 +16,10 @@
             <option value="$PROJECT_DIR$/emulators" />
             <option value="$PROJECT_DIR$/emulators/emulator-base" />
             <option value="$PROJECT_DIR$/emulators/springcoat-vm" />
-            <option value="$PROJECT_DIR$/emulators/summercoat-vm" />
+            <option value="$PROJECT_DIR$/emulators/standalone" />
             <option value="$PROJECT_DIR$/modules" />
             <option value="$PROJECT_DIR$/modules/aot" />
-            <option value="$PROJECT_DIR$/modules/aot-summercoat" />
+            <option value="$PROJECT_DIR$/modules/aot-springcoat" />
             <option value="$PROJECT_DIR$/modules/bluetooth" />
             <option value="$PROJECT_DIR$/modules/cldc" />
             <option value="$PROJECT_DIR$/modules/cldc-compact" />
@@ -41,7 +43,9 @@
             <option value="$PROJECT_DIR$/modules/dio-watchdog" />
             <option value="$PROJECT_DIR$/modules/gcf" />
             <option value="$PROJECT_DIR$/modules/io" />
+            <option value="$PROJECT_DIR$/modules/io-file" />
             <option value="$PROJECT_DIR$/modules/jblend-api" />
+            <option value="$PROJECT_DIR$/modules/json" />
             <option value="$PROJECT_DIR$/modules/launcher" />
             <option value="$PROJECT_DIR$/modules/lcdui-demo" />
             <option value="$PROJECT_DIR$/modules/m3g" />
@@ -60,19 +64,22 @@
             <option value="$PROJECT_DIR$/modules/meep-securityframework" />
             <option value="$PROJECT_DIR$/modules/meep-swm" />
             <option value="$PROJECT_DIR$/modules/midp-lcdui" />
-            <option value="$PROJECT_DIR$/modules/nttdocomo-api" />
+            <option value="$PROJECT_DIR$/modules/nokia-api" />
+            <option value="$PROJECT_DIR$/modules/ntt-docomo-doja-api" />
+            <option value="$PROJECT_DIR$/modules/ntt-docomo-star-api" />
             <option value="$PROJECT_DIR$/modules/opengles" />
             <option value="$PROJECT_DIR$/modules/profile-meep" />
+            <option value="$PROJECT_DIR$/modules/sprint-api" />
             <option value="$PROJECT_DIR$/modules/squirrel-quarrel" />
-            <option value="$PROJECT_DIR$/modules/strings" />
             <option value="$PROJECT_DIR$/modules/tac" />
+            <option value="$PROJECT_DIR$/modules/tango-icon-theme" />
             <option value="$PROJECT_DIR$/modules/tool-classfile" />
-            <option value="$PROJECT_DIR$/modules/tool-jarfile" />
             <option value="$PROJECT_DIR$/modules/tool-manifest-writer" />
-            <option value="$PROJECT_DIR$/modules/tool-packfile" />
             <option value="$PROJECT_DIR$/modules/vodafone-api" />
+            <option value="$PROJECT_DIR$/modules/wireless-messaging" />
             <option value="$PROJECT_DIR$/modules/zip" />
             <option value="$PROJECT_DIR$/tools" />
+            <option value="$PROJECT_DIR$/tools/markdown-javadoc" />
             <option value="$PROJECT_DIR$/tools/pcf-to-sqf" />
             <option value="$PROJECT_DIR$/tools/sqf-to-c" />
             <option value="$PROJECT_DIR$/tools/txt-to-pbm" />

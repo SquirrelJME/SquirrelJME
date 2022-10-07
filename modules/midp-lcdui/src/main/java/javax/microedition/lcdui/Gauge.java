@@ -1,14 +1,15 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.lcdui;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class Gauge
 	extends Item
@@ -78,32 +79,32 @@ public class Gauge
 	
 	public int getIncrementValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getMaxValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getMinValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isInteractive()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setIncrementValue(int __v)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -127,17 +128,17 @@ public class Gauge
 	
 	public void setMaxValue(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setMinValue(int __v)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setValue(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

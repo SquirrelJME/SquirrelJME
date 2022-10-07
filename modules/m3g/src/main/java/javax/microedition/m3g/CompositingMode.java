@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,8 @@
 
 package javax.microedition.m3g;
 
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class CompositingMode
 	extends Object3D
@@ -31,82 +32,82 @@ public class CompositingMode
 	
 	public CompositingMode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public float getAlphaThreshold()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getBlending()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public float getDepthOffsetFactor()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public float getDepthOffsetUnits()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isAlphaWriteEnabled()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isColorWriteEnabled()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isDepthTestEnabled()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isDepthWriteEnabled()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setAlphaThreshold(float __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setAlphaWriteEnable(boolean __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setBlending(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setColorWriteEnable(boolean __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setDepthOffset(float __a, float __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setDepthTestEnable(boolean __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setDepthWriteEnable(boolean __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

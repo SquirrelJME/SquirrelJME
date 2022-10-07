@@ -1,16 +1,20 @@
 # Commercial Licensing
 
-SquirrelJME has available a proprietary license for usages which do not wish
-to involve the use of open source software. This license only applies to
-SquirrelJME and not any forks or otherwise of the project. Any fork which
-claims to offer this licensing as their own is not within the grounds
-permitted by the GNU GPLv3.
+Commercial licensing is available as an extra form of donation and can be used
+by business entities to purchase specific versions of SquirrelJME for a fixed
+price. Copies of SquirrelJME licensed this way follow a different license that
+is not GPLv3, this is to ensure that the software remains open source.
 
-## License Terms
+## Commercial License
 
 ```
-Copyright (C) 2013-2021 Stephanie Gawroriski <xerthesquirrel@gmail.com>
-Copyright (C) 2013-2021 Multi-Phasic Applications <https://squirreljme.cc/>
+Copyright (C) 2013-2022 Stephanie Gawroriski
+
+ * <https://squirreljme.cc/>
+ * <xer@multiphasicapps.net>
+ * <xerthesquirrel@gmail.com>
+
+"SquirrelJME" and "Lex" are trademarks of Stephanie Gawroriski 2016-2022.
 
 The above copyright notice and this notice with the others below shall be
 included in all copies or substantial portions of the Software.
@@ -26,7 +30,8 @@ TERMS, NO ADDITIONAL FEATURES OR OTHERWISE MAY BE ADDED.
 THE SOFTWARE CANNOT BE UPGRADED AND IS FIXED TO A SPECIFIC VERSION, EXCEPT IN
 THE CASE OF SUB-RELEASE VERSIONS (M.m.s) FOR BUG FIXES AND SECURITY UPDATES.
 ONLY RELEASED VERSIONS (ex: 0.4.0, 0.6.0, 1.0.0, ANY OTHER EVEN MINOR VERSION
-NUMBER) ARE AVAILABLE FOR LICENSING.
+NUMBER) ARE AVAILABLE FOR LICENSING. FOR ANY BUG REPORTS OR SECURITY
+VULNERABILITIES PLEASE CONTACT Stephanie Gawroriski.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -46,10 +51,12 @@ THIS COPY OF SQUIRRELJME IS LICENSED TO:
  * <Web Site of Licensee>
 ```
 
-## Pricing
+## Versions
 
-SquirrelJME has a flat-rate licensing depending on the license duration, the
-license allows you to use SquirrelJME and have it not under the GPLv3. License
-price is negotiable.
+Each version of SquirrelJME has a difference price according to the version
+number, as time goes on as SquirrelJME is completed more and more the price
+will be increased.
 
- * **Unlimited duration license term, fixed version.**: _7,000 USD_
+### 0.2.0
+
+ * Price: _2,000 USD_

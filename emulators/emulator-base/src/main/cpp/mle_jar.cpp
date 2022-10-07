@@ -1,6 +1,6 @@
 /* -*- Mode: C++; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -16,6 +16,8 @@
 #define JARSHELF_LIBRARIES_DESC "()[Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;"
 #define JARSHELF_LIBRARYPATH_DESC "(Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;)Ljava/lang/String;"
 #define JARSHELF_OPENRESOURCE_DESC "(Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;Ljava/lang/String;)Ljava/io/InputStream;"
+#define JARSHELF_RAWDATA_DESC "(Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;I[BII)I"
+#define JARSHELF_RAWSIZE_DESC "(Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;)I"
 
 JNIEXPORT jobject JNICALL Impl_mle_JarShelf_classPath(JNIEnv* env,
 	jclass classy)
@@ -47,12 +49,31 @@ JNIEXPORT jobject JNICALL Impl_mle_JarShelf_openResource(JNIEnv* env,
 		jar, rcName);
 }
 
+JNIEXPORT jint JNICALL Impl_mle_JarShelf_rawData(JNIEnv* env,
+	jclass classy, jobject jar, jint jarOff,
+	jbyteArray buf, jint off, jint len)
+{
+	return forwardCallStaticInteger(env, JARSHELF_CLASSNAME,
+		"rawData", JARSHELF_RAWDATA_DESC,
+		jar, jarOff, buf, off, len);
+}
+
+JNIEXPORT jint JNICALL Impl_mle_JarShelf_rawSize(JNIEnv* env,
+	jclass classy, jobject jar)
+{
+	return forwardCallStaticInteger(env, JARSHELF_CLASSNAME,
+		"rawSize", JARSHELF_RAWSIZE_DESC,
+		jar);
+}
+
 static const JNINativeMethod mleJarMethods[] =
 {
 	{"classPath", JARSHELF_CLASSPATH_DESC, (void*)Impl_mle_JarShelf_classPath},
 	{"libraries", JARSHELF_LIBRARIES_DESC, (void*)Impl_mle_JarShelf_libraries},
 	{"libraryPath", JARSHELF_LIBRARYPATH_DESC, (void*)Impl_mle_JarShelf_libraryPath},
 	{"openResource", JARSHELF_OPENRESOURCE_DESC, (void*)Impl_mle_JarShelf_openResource},
+	{"rawData", JARSHELF_RAWDATA_DESC, (void*)Impl_mle_JarShelf_rawData},
+	{"rawSize", JARSHELF_RAWSIZE_DESC, (void*)Impl_mle_JarShelf_rawSize},
 };
 
 jint JNICALL mleJarInit(JNIEnv* env, jclass classy)

@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
-//     Copyright (C) 2013-2016 Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) 2013-2016 Multi-Phasic Applications <multiphasicapps.net>
+// SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // For more information see license.mkd.
@@ -201,7 +200,7 @@ public class SizeLimitedInputStream
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
 		// If the limit was reached, stop

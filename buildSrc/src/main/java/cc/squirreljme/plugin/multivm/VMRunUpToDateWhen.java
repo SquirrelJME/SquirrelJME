@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -65,8 +65,8 @@ public class VMRunUpToDateWhen
 			taskOuts.add(Instant.ofEpochMilli(f.lastModified()));
 		
 		// Determine if any of our parent dependencies were out of date
-		for (Path dep : VMHelpers.runClassPath((VMExecutableTask)__task,
-			this.sourceSet, this.vmType))
+		for (Path dep : VMHelpers.runClassPath(__task, this.sourceSet,
+			this.vmType, true))
 		{
 			Instant fileTime;
 			try

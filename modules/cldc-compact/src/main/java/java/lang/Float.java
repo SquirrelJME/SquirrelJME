@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -14,6 +13,7 @@ import cc.squirreljme.jvm.SoftFloat;
 import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public final class Float
 	extends Number
@@ -67,7 +67,7 @@ public final class Float
 	
 	public Float(double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Float(String __a)
@@ -75,25 +75,33 @@ public final class Float
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public byte byteValue()
 	{
-		throw new todo.TODO();
+		return (byte)this._value;
 	}
 	
 	@Override
 	public int compareTo(Float __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public double doubleValue()
 	{
-		throw new todo.TODO();
+		return this._value;
 	}
 	
 	/**
@@ -118,10 +126,11 @@ public final class Float
 		if (Float.isNaN(a) && Float.isNaN(b))
 			return true;
 		
-		// If both values are zero, the sign is important
+		// If both values are zero, the sign is not important
 		int ra = Float.floatToRawIntBits(a),
 			rb = Float.floatToRawIntBits(b);
-		if ((ra & 0x7FFFFFFF) == 0 && (rb & 0x7FFFFFFF) == 0)
+		if ((ra & SoftFloat.ZERO_CHECK_MASK) == 0 &&
+			(rb & SoftFloat.ZERO_CHECK_MASK) == 0)
 			return ra == rb;
 		
 		// Otherwise standard comparison
@@ -148,15 +157,19 @@ public final class Float
 		return Float.floatToIntBits(this._value);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public int intValue()
 	{
-		throw new todo.TODO();
+		return (int)this._value;
 	}
 	
 	public boolean isInfinite()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -170,27 +183,35 @@ public final class Float
 		return Float.isNaN(this._value);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public long longValue()
 	{
-		throw new todo.TODO();
+		return (long)this._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public short shortValue()
 	{
-		throw new todo.TODO();
+		return (short)this._value;
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int compare(float __a, float __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -242,7 +263,7 @@ public final class Float
 	
 	public static boolean isInfinite(float __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -262,12 +283,12 @@ public final class Float
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static String toString(float __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Float valueOf(String __a)
@@ -275,7 +296,7 @@ public final class Float
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

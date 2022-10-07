@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,6 +9,7 @@
 
 package com.vodafone.v10.graphics.sprite;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Canvas;
 
 public abstract class SpriteCanvas
@@ -16,66 +17,66 @@ public abstract class SpriteCanvas
 {
     public SpriteCanvas(int var1, int var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void createFrameBuffer(int var1, int var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void disposeFrameBuffer()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static  int getVirtualWidth()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static  int getVirtualHeight()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void setPalette(int var1, int var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void setPattern(int var1, byte[] var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static  short createCharacterCommand(int var0, boolean var1, int var2, boolean var3, boolean var4, int var5)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void drawSpriteChar(short var1, short var2, short var3)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void drawBackground(short var1, short var2, short var3)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void copyArea(int var1, int var2, int var3, int var4, int var5, int var6)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void copyFullScreen(int var1, int var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void drawFrameBuffer(int var1, int var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

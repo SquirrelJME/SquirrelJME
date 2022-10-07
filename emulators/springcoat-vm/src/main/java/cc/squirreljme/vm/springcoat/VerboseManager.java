@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -26,6 +26,23 @@ public final class VerboseManager
 	
 	/** The next code. */
 	private int _nextCode;
+	
+	/**
+	 * Returns all the active verbose flags.
+	 * 
+	 * @return The active verbose flags.
+	 * @since 2022/06/12
+	 */
+	public int activeFlags()
+	{
+		int rv = 0;
+		
+		for (Integer i : this._levels.keySet())
+			if (i != null)
+				rv |= i;
+			
+		return rv;
+	}
 	
 	/**
 	 * Adds verbosity at the given frame point.

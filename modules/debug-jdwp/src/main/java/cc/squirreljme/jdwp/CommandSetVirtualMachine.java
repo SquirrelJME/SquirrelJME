@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPViewHasInstance;
 import cc.squirreljme.jdwp.views.JDWPViewThread;
 import cc.squirreljme.jdwp.views.JDWPViewThreadGroup;
 import cc.squirreljme.jdwp.views.JDWPViewType;
@@ -87,8 +88,7 @@ public enum CommandSetVirtualMachine
 				__controller.state.items.put(type);
 				
 				// Write the class type
-				rv.writeByte(JDWPUtils.classType(__controller, type).id);
-				rv.writeId(System.identityHashCode(type));
+				rv.writeTaggedId(__controller, type);
 				
 				// Classes are always loaded
 				rv.writeInt(CommandSetVirtualMachine._CLASS_INITIALIZED);
@@ -110,18 +110,9 @@ public enum CommandSetVirtualMachine
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			Object[] threads = __controller.__allThreads();
-			
-			// Write result
-			JDWPPacket rv = __controller.__reply(
-				__packet.id(), ErrorType.NO_ERROR);
-			
-			// Write all thread references
-			rv.writeInt(threads.length);
-			for (Object thread : threads)
-				rv.writeId(System.identityHashCode(thread));
-			
-			return rv;
+			return CommandSetVirtualMachine.__writeInstances(__controller,
+				__packet, __controller.viewThread(),
+				__controller.__allThreads(true));
 		}
 	},
 	
@@ -137,17 +128,9 @@ public enum CommandSetVirtualMachine
 			JDWPPacket __packet)
 			throws JDWPException
 		{
-			Object[] groups = __controller.__allThreadGroups();
-			
-			// Write result
-			JDWPPacket rv = __controller.__reply(
-				__packet.id(), ErrorType.NO_ERROR);
-			
-			rv.writeInt(groups.length);
-			for (Object group : groups)
-				rv.writeId(System.identityHashCode(group));
-			
-			return rv;
+			return CommandSetVirtualMachine.__writeInstances(__controller, __packet,
+				__controller.viewThreadGroup(),
+				__controller.__allThreadGroups());
 		}
 	},
 	
@@ -177,7 +160,8 @@ public enum CommandSetVirtualMachine
 				{
 					// Force all threads to resume
 					JDWPViewThread viewThread = __controller.viewThread();
-					for (Object thread : __controller.__allThreads())
+					for (Object thread : __controller
+						.__allThreads(false))
 					{
 						JDWPThreadSuspension suspension =
 							viewThread.suspension(thread);
@@ -234,7 +218,7 @@ public enum CommandSetVirtualMachine
 		{
 			// Tell all threads to suspend
 			JDWPViewThread view = __controller.viewThread();
-			for (Object thread : __controller.__allThreads())
+			for (Object thread : __controller.__allThreads(false))
 				view.suspension(thread).suspend();
 			
 			return null;
@@ -255,7 +239,7 @@ public enum CommandSetVirtualMachine
 		{
 			// Tell all threads to resume
 			JDWPViewThread view = __controller.viewThread();
-			for (Object thread : __controller.__allThreads())
+			for (Object thread : __controller.__allThreads(false))
 				view.suspension(thread).resume();
 			
 			return null;
@@ -436,8 +420,7 @@ public enum CommandSetVirtualMachine
 			for (Object type : allTypes)
 			{
 				// The type ID
-				rv.writeByte(JDWPUtils.classType(__controller, type).id);
-				rv.writeId(System.identityHashCode(type));
+				rv.writeTaggedId(__controller, type);
 				
 				// The signatures, the generic is ignored
 				rv.writeString(viewType.signature(type));
@@ -568,6 +551,40 @@ public enum CommandSetVirtualMachine
 			// Reserved
 			for (int i = 22; i <= 32; i++)
 				rv.writeBoolean(false);
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * Writes all instances of the given view.
+	 * 
+	 * @param __controller The controller used.
+	 * @param __packet The target packet.
+	 * @param __viewInstance The view for instances.
+	 * @param __objects The objects to write.
+	 * @return The packet.
+	 * @since 2022/09/24
+	 */
+	static JDWPPacket __writeInstances(JDWPController __controller,
+		JDWPPacket __packet, JDWPViewHasInstance __viewInstance,
+		Object[] __objects)
+	{
+		// Write result
+		JDWPPacket rv = __controller.__reply(
+			__packet.id(), ErrorType.NO_ERROR);
+		
+		// Write it all out
+		rv.writeInt(__objects.length);
+		for (Object object : __objects)
+		{
+			Object objectInstance = __viewInstance.instance(object);
+			
+			rv.writeObject(__controller, objectInstance);
+			
+			// Store for later
+			__controller.state.items.put(object);
+			__controller.state.items.put(objectInstance);
 		}
 		
 		return rv;

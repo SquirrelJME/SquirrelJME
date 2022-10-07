@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,8 @@
 
 package jdk.dio;
 
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public abstract class DeviceEvent<P extends Device<? super P>>
 {
@@ -27,37 +28,37 @@ public abstract class DeviceEvent<P extends Device<? super P>>
 	
 	public DeviceEvent()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final int getCount()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final P getDevice()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final long getLastTimeStamp()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final int getLastTimeStampMicros()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final long getTimeStamp()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final int getTimeStampMicros()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

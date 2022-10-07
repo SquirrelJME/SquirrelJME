@@ -1,6 +1,6 @@
 /* -*- Mode: C++; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -35,6 +35,7 @@
 #define SWINGUIFORM_ITEMDELETE_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)V"
 #define SWINGUIFORM_ITEMFORM_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;"
 #define SWINGUIFORM_ITEMNEW_DESC "(I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;"
+#define SWINGUIFORM_FORMREFRESH_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V"
 #define SWINGUIFORM_LATER_DESC "(II)V"
 #define SWINGUIFORM_METRIC_DESC "(I)I"
 #define SWINGUIFORM_WIDGETPROPERTY_INT_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;III)V"
@@ -173,6 +174,13 @@ JNIEXPORT jobject JNICALL Impl_mle_FormShelf_formNew(JNIEnv* env,
 		"formNew", SWINGUIFORM_FORMNEW_DESC);
 }
 
+JNIEXPORT void JNICALL Impl_mle_FormShelf_formRefresh(JNIEnv* env,
+	jclass classy, jobject form)
+{
+	forwardCallStaticVoid(env, SWINGUIFORM_CLASSNAME,
+		"formRefresh", SWINGUIFORM_FORMREFRESH_DESC, form);
+}
+
 JNIEXPORT jobject JNICALL Impl_mle_FormShelf_injector(JNIEnv* env,
 	jclass classy)
 {
@@ -271,6 +279,7 @@ static const JNINativeMethod mleFormMethods[] =
 	{"formItemPosition", SWINGUIFORM_FORMITEMPOSITIONSET_DESC, (void*)Impl_mle_FormShelf_formItemPositionSet},
 	{"formItemRemove", SWINGUIFORM_FORMITEMREMOVE_DESC, (void*)Impl_mle_FormShelf_formItemRemove},
 	{"formNew", SWINGUIFORM_FORMNEW_DESC, (void*)Impl_mle_FormShelf_formNew},
+	{"formRefresh", SWINGUIFORM_FORMREFRESH_DESC, (void*)Impl_mle_FormShelf_formRefresh},
 	{"injector", SWINGUIFORM_INJECTOR_DESC, (void*)Impl_mle_FormShelf_injector},
 	{"itemDelete", SWINGUIFORM_ITEMDELETE_DESC, (void*)Impl_mle_FormShelf_itemDelete},
 	{"itemForm", SWINGUIFORM_ITEMFORM_DESC, (void*)Impl_mle_FormShelf_itemForm},

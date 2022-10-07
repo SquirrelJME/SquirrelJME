@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,8 @@
 
 package javax.microedition.m3g;
 
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class Image2D
 	extends Object3D
@@ -31,47 +32,47 @@ public class Image2D
 	
 	public Image2D(int __a, int __b, int __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Image2D(int __a, int __b, int __c, byte[] __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Image2D(int __a, int __b, int __c, byte[] __d, byte[] __e)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Image2D(int __a, Object __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getFormat()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getHeight()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getWidth()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isMutable()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void set(int __a, int __b, int __c, int __d, byte[] __e)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

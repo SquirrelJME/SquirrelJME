@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,8 +9,8 @@
 
 package cc.squirreljme.vm;
 
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -138,22 +137,7 @@ public final class InMemoryClassLibrary
 				break;
 			
 			// Copy data over
-			try (ByteArrayOutputStream baos =
-				new ByteArrayOutputStream(8192))
-			{
-				for (;;)
-				{
-					int rc = zse.read(buf);
-					
-					if (rc < 0)
-						break;
-					
-					baos.write(buf, 0, rc);
-				}
-				
-				// Cache
-				rv.put(zse.name(), baos.toByteArray());
-			}
+			rv.put(zse.name(), StreamUtils.readAll(zse));
 			
 			// Close
 			zse.close();

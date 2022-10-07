@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -8,6 +8,8 @@
 // ---------------------------------------------------------------------------
 
 package com.vodafone.v10.sound;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class SoundTrack
 {
@@ -18,96 +20,96 @@ public class SoundTrack
 
     public void setSound(Sound var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public Sound getSound()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void removeSound()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void play()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void play(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void stop()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void pause()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void resume()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void mute(boolean var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getState()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void setVolume(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getVolume()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void setPanpot(int var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getPanpot()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void setSubjectTo(SoundTrack var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public SoundTrack getSyncMaster()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public int getID()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public void setEventListener(SoundTrackListener var1)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public boolean isMute()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

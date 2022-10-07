@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -12,8 +12,12 @@ package net.multiphasicapps.tac;
 import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.manifest.JavaManifestKey;
+import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
+import cc.squirreljme.runtime.cldc.util.StringUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,7 +25,10 @@ import java.io.PrintStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -287,88 +294,55 @@ public final class TestResult
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
+			
+		// Multi-parameter set since multiples could be defined and declared
+		// accordingly in old and newer style
+		List<String> multiParams = null;
+		if (__multiParam != null)
+		{
+			Set<String> working = new LinkedHashSet<>();
+			String[] splits = StringUtils.basicSplit('@', __multiParam);
+			
+			// Add each individual split since there could be a regular
+			// parameter
+			working.addAll(Arrays.asList(splits));
+			
+			// Add growing splits i.e. a, a@b, a@b@c, etc.
+			for (int i = 0, n = splits.length; i < n; i++)
+			{
+				StringBuilder sb = new StringBuilder();
+				
+				for (int j = 0; j <= i; j++)
+				{
+					// Add split at the end to divide
+					if (sb.length() > 0)
+						sb.append('@');
+					
+					sb.append(splits[j]);
+				}
+				
+				working.add(sb.toString());
+			}
+			
+			// Reverse the working list so precise multi parameters take
+			// precedence before earlier ones
+			multiParams = new ArrayList<>(working);
+			Collections.reverse(multiParams);
+		}
 		
 		// We are going to recursively go up the class chain and load values
 		// from the manifest into our result
 		TestResultBuilder rv = new TestResultBuilder();
 		for (Class<?> at = __cl; at != null; at = at.getSuperclass())
 		{
-			// Determine base name of the class
-			String atName = at.getName();
-			int ld = atName.lastIndexOf('.');
-			String atBase = (ld < 0 ? atName : atName.substring(ld + 1));
+			// Load values for this class
+			TestResult.__loadClassValues(__otherKeys, multiParams, rv, at);
 			
-			// Try to load multi-parameter and standard results, the multi
-			// parameters take precedence since they are more specific for
-			// tests
-			for (int i = 0; i < 2; i++)
-			{
-				// Skip first case if not for multi parameter
-				boolean isForMulti = (i == 0);
-				if (isForMulti && __multiParam == null)
-					continue;
-				
-				// Parse and handle manifest
-				JavaManifestAttributes attr;
-				try (InputStream in = at.getResourceAsStream(
-					(isForMulti ? atBase + "@" + __multiParam :
-					atBase) + ".in"))
-				{
-					// No manifest here, ignore
-					if (in == null)
-						continue;
-					
-					// Parse
-					attr = new JavaManifest(in).getMainAttributes();
-				}
-				
-				// Ignore
-				catch (IOException e)
-				{
-					continue;
-				}
-				
-				// Work with attributes and decode them
-				for (Map.Entry<JavaManifestKey, String> e : attr.entrySet())
-				{
-					String ekey = e.getKey().toString().toLowerCase(),
-						eval = e.getValue();
-					
-					// Depends on the encoded key
-					switch (ekey)
-					{
-							// Returned value
-						case "result":
-							if (rv.getReturn() == null)
-								rv.setReturnEncoded(eval);
-							break;
-						
-							// Thrown value
-						case "thrown":
-							if (rv.getThrown() == null)
-								rv.setThrownEncoded(eval);
-							break;
-							
-							// Possibly handle secondary values
-						default:
-							if (ekey.startsWith("secondary-"))
-							{
-								String skey = DataDeserialization.decodeKey(
-									ekey.substring(10));
-								
-								if (rv.getSecondary(skey) == null)
-									rv.putSecondaryEncoded(skey, eval);
-							}
-							
-							// Another key, put into the other map, but never
-							// replace values that already exist
-							else if (__otherKeys != null &&
-								!__otherKeys.containsKey(ekey))
-								__otherKeys.put(ekey, eval);
-							break;
-					}
-				}
-			}
+			// Then load any results that are specified in interfaces
+			for (TypeBracket implement :
+				TypeShelf.interfaces(TypeShelf.classToType(at)))
+				TestResult.__loadClassValues(__otherKeys, multiParams, rv,
+					TypeShelf.typeToClass(implement));
 		}
 		
 		// Done
@@ -455,11 +429,23 @@ public final class TestResult
 			List<String> la = TestResult.throwableList(__act),
 				lb = TestResult.throwableList(__exp);
 			
-			todo.DEBUG.note("%s ~~= %s", la, lb);
+			Debugging.debugNote("%s ~~= %s", la, lb);
 			
 			// These are considered equal if they have anything in common
 			la.retainAll(lb);
 			return !la.isEmpty();
+		}
+		
+		// Compare against long but ignoring whatever sign is used
+		else if (__act.startsWith("long:") &&
+			__exp.startsWith("long-ignore-sign:"))
+		{
+			// Parse values
+			long act = Long.parseLong(__act.substring("long:".length()));
+			long exp = Long.parseLong(
+				__exp.substring("long-ignore-sign:".length()));
+			
+			return (act & ~Long.MIN_VALUE) == (exp & ~Long.MIN_VALUE);
 		}
 		
 		// Comparing against fudged long value (which is a plus or minus value)
@@ -476,12 +462,13 @@ public final class TestResult
 			
 			// Parse values
 			long exp = Long.parseLong(__exp.substring(xfc + 1,
-				(xlc > 0 ? xlc : __exp.length())));
-			long fudge = Math.abs((xlc > 0 ?
+				(xlc >= 0 ? xlc : __exp.length())));
+			long fudge = Math.abs((xlc >= 0 ?
 				Long.parseLong(__exp.substring(xlc + 1)) : 0));
 			
 			// Matches as long as we are within the fudge range
-			return act == exp || (act >= (exp - fudge) && act <= (exp + fudge));
+			return act == exp ||
+				(act >= (exp - fudge) && act <= (exp + fudge));
 		}
 		
 		// Use normal string comparison
@@ -528,6 +515,110 @@ public final class TestResult
 		
 		// Is a match
 		return true;
+	}
+	
+	/**
+	 * Extracts results from test result JSONs.
+	 * 
+	 * @param __otherKeys The other keys to test.
+	 * @param __result The resultant test results.
+	 * @param __pivot The pivot for loading resources.
+	 * @param __baseName The base name for the resource.
+	 * @since 2022/07/26
+	 */
+	private static void __extractResults(Map<String, String> __otherKeys,
+		TestResultBuilder __result, Class<?> __pivot, String __baseName)
+	{
+		JavaManifestAttributes attr;
+		try (InputStream in = __pivot.getResourceAsStream(
+			__baseName + ".in"))
+		{
+			// No manifest here, ignore
+			if (in == null)
+				return;
+			
+			// Parse
+			attr = new JavaManifest(in).getMainAttributes();
+		}
+		
+		// Ignore
+		catch (IOException e)
+		{
+			return;
+		}
+		
+		// Work with attributes and decode them
+		for (Map.Entry<JavaManifestKey, String> e :
+			attr.entrySet())
+		{
+			String ekey = e.getKey().toString().toLowerCase(),
+				eval = e.getValue();
+			
+			// Depends on the encoded key
+			switch (ekey)
+			{
+					// Returned value
+				case "result":
+					if (__result.getReturn() == null)
+						__result.setReturnEncoded(eval);
+					break;
+				
+					// Thrown value
+				case "thrown":
+					if (__result.getThrown() == null)
+						__result.setThrownEncoded(eval);
+					break;
+					
+					// Possibly handle secondary values
+				default:
+					if (ekey.startsWith("secondary-"))
+					{
+						String skey = DataDeserialization
+							.decodeKey(ekey.substring(10));
+						
+						if (__result.getSecondary(skey) == null)
+							__result.putSecondaryEncoded(skey, eval);
+					}
+					
+					// Another key, put into the other map, but
+					// never replace values that already exist
+					else if (__otherKeys != null &&
+						!__otherKeys.containsKey(ekey))
+						__otherKeys.put(ekey, eval);
+					break;
+			}
+		}
+	}
+	
+	/**
+	 * Loads class values for tests.
+	 *
+	 * @param __otherKeys The other keys.
+	 * @param __multiParams The current multi parameters.
+	 * @param __rv The result.
+	 * @param __at The current class to check.
+	 * @since 2022/09/05
+	 */
+	private static void __loadClassValues(Map<String, String> __otherKeys,
+		List<String> __multiParams, TestResultBuilder __rv, Class<?> __at)
+	{
+		// Determine base name of the class
+		String atName = __at.getName();
+		int ld = atName.lastIndexOf('.');
+		String atBase = (ld < 0 ? atName : atName.substring(ld + 1));
+		
+		// Try to load multi-parameter and standard results, the multi
+		// parameters take precedence since they are more specific for
+		// tests
+		if (__multiParams != null && !__multiParams.isEmpty())
+			for (String multiParam : __multiParams)
+			{
+				TestResult.__extractResults(__otherKeys, __rv, __at,
+					atBase + "@" + multiParam);
+			}
+		
+		// Standard results last
+		TestResult.__extractResults(__otherKeys, __rv, __at, atBase);
 	}
 	
 	/**

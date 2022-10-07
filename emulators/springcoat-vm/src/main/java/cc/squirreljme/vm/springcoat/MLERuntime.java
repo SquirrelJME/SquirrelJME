@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -14,9 +14,11 @@ import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
+import cc.squirreljme.jvm.mle.constants.PhoneModelType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
@@ -178,6 +180,21 @@ public enum MLERuntime
 		}
 	},
 	
+	/** {@link RuntimeShelf#phoneModel()}. */
+	PHONE_MODEL("phoneModel:()I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2022/02/14
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			// Just be a generic model
+			return PhoneModelType.GENERIC;
+		}
+	},
+	
 	/** {@link RuntimeShelf#systemProperty(String)}. */
 	SYSTEM_PROPERTY("systemProperty:(Ljava/lang/String;)" +
 		"Ljava/lang/String;")
@@ -263,19 +280,15 @@ public enum MLERuntime
 				throw new SpringMLECallError(
 					"Index out of range: " + index);
 			
-			switch (index)
+			// Forward to normal call
+			try
 			{
-				case VMStatisticType.MEM_FREE:
-					return Runtime.getRuntime().freeMemory();
-					
-				case VMStatisticType.MEM_MAX:
-					return Runtime.getRuntime().maxMemory();
-				
-				case VMStatisticType.MEM_USED:
-					return Runtime.getRuntime().totalMemory();
+				return RuntimeShelf.vmStatistic(index);
 			}
-			
-			return 0L;
+			catch (MLECallError e)
+			{
+				throw new SpringMLECallError(e.getMessage(), e);
+			}
 		}
 	},
 	

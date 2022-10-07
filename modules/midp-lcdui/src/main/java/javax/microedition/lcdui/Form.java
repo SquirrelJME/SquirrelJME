@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,7 +9,12 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
 public class Form
 	extends Screen
@@ -18,6 +22,13 @@ public class Form
 	/** Items on the form. */
 	final __VolatileList__<Item> _items =
 		new __VolatileList__<>();
+		
+	/** The layout policy for this form. */
+	volatile FormLayoutPolicy _layout =
+		new __DefaultFormLayoutPolicy__(this);
+	
+	/** Is the layout considered stale? */
+	volatile boolean _staleLayout;
 	
 	/**
 	 * Initializes an empty form with an optionally specified title.
@@ -100,8 +111,8 @@ public class Form
 		if (__i == null)
 			throw new NullPointerException("NARG");
 		
-		return this.append(new ImageItem(null, __i, ImageItem.LAYOUT_DEFAULT,
-			null));
+		return this.append(new ImageItem(null, __i,
+			ImageItem.LAYOUT_DEFAULT, null));
 	}
 	
 	/**
@@ -121,7 +132,7 @@ public class Form
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error EB23 Cannot append an item which has already
-		// be associated with a form.}
+		// been associated with a form.}
 		if (__i._displayable != null)
 			throw new IllegalStateException("EB23");
 		__i._displayable = this;
@@ -131,22 +142,31 @@ public class Form
 		int rv = items.append(__i);
 		
 		// Update display
-		throw Debugging.todo();
-		/*Display d = this._display;
-		if (d != null)
-			UIState.getInstance().repaint();
+		this.__update();
 		
-		return rv;*/
+		return rv;
 	}
 	
-	public void delete(int __a)
+	/**
+	 * Deletes the specified index in the form.
+	 * 
+	 * @param __i The index to delete.
+	 * @throws IndexOutOfBoundsException If the item is not valid.
+	 * @since 2022/07/07
+	 */
+	public void delete(int __i)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		// Delete item
+		this._items.remove(__i);
+		
+		// Update display
+		this.__update();
 	}
 	
 	public void deleteAll()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -172,7 +192,7 @@ public class Form
 	 */
 	public Item getCurrent()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -185,9 +205,20 @@ public class Form
 		return Displayable.__getHeight(this, null);
 	}
 	
+	/**
+	 * Returns the current layout policy for the form.
+	 * 
+	 * @return The form layout policy currently in effect, if there is none
+	 * this will be {@code null}.
+	 * @since 2021/11/26
+	 */
 	public FormLayoutPolicy getLayoutPolicy()
 	{
-		throw new todo.TODO();
+		FormLayoutPolicy layout = this._layout;
+		if (layout.getClass() == __DefaultFormLayoutPolicy__.class)
+			return null;
+		
+		return layout;
 	}
 	
 	/**
@@ -202,27 +233,37 @@ public class Form
 	
 	public void insert(int __a, Item __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void set(int __a, Item __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setItemStateListener(ItemStateListener __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setItemTraversalListener(ItemTraversalListener __itl)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public void setLayoutPolicy(FormLayoutPolicy __p)
+	/**
+	 * Sets the layout policy for the current form.
+	 * 
+	 * @param __layout The layout to set to, may be {@code null} to reset the
+	 * policy to the default.
+	 * @throws IllegalArgumentException If {@link FormLayoutPolicy#getForm()}
+	 * does not match this form.
+	 * @since 2021/11/26
+	 */
+	public void setLayoutPolicy(FormLayoutPolicy __layout)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		this.__setLayoutPolicy(__layout);
 	}
 	
 	/**
@@ -234,6 +275,139 @@ public class Form
 	public int size()
 	{
 		return this._items.size();
+	}
+	
+	/**
+	 * This is called so that the form layout is actually done.
+	 * 
+	 * @since 2022/07/20
+	 */
+	@SerializedEvent
+	void __performLayout()
+	{
+		// If this form is not on a display, do not calculate the layout as
+		// we might still be loading everything in
+		Display display = this._display;
+		if (display == null)
+			return;
+		
+		// Only perform this if the current layout is stale and must be
+		// updated
+		if (!this._staleLayout)
+			return;
+		this._staleLayout = false;
+		
+		UIBackend backend = UIBackendFactory.getInstance(true);
+		UIFormBracket uiForm = this._uiForm;
+		FormLayoutPolicy layout = this._layout;
+		
+		// Indicate we are in an update
+		synchronized (layout)
+		{
+			// Do not double update
+			if (layout._inUpdate)
+				return;
+			
+			layout._inUpdate = true;
+		}
+		
+		// Perform the update, revert to the default if there is an error
+		// with the layout policy
+		__LayoutLock__ lock = layout._lock;
+		try
+		{
+			// Set the lock
+			lock.lock();
+			
+			// Initialize the layout for these items
+			Item[] items = this._items.toArray(new Item[0]);
+			layout.__init(items);
+			
+			// Perform update traversal
+			/*layout.doLayout(
+			doLayout(int __viewportX, int __viewportY,
+				int __viewportW, int __viewportH, int[] __totalSize)*/
+			
+			if (true)
+				throw Debugging.todo();
+		}
+		catch (RuntimeException e)
+		{
+			// If this is the default, just throw the exception since we
+			// cannot do anything otherwise regarding this... would otherwise
+			// cause an infinite loop here and just not work at all.
+			if (layout.getClass() == __DefaultFormLayoutPolicy__.class)
+				throw e;
+			
+			// Return the policy to the default
+			this.__setLayoutPolicy(null);
+			
+			// Try laying out again
+			this.__update();
+		}
+		finally
+		{
+			// We are no longer in an update
+			synchronized (layout)
+			{
+				layout._inUpdate = false;
+			}
+			
+			// Clear the lock
+			lock.unlock();
+		}
+	}
+	
+	/**
+	 * Sets the layout policy for the current form, this is the actual
+	 * implementation due to non-{@code final}.
+	 * 
+	 * @param __layout The layout to set to, may be {@code null} to reset the
+	 * policy to the default.
+	 * @throws IllegalArgumentException If {@link FormLayoutPolicy#getForm()}
+	 * does not match this form.
+	 * @since 2021/11/26
+	 */
+	private void __setLayoutPolicy(FormLayoutPolicy __layout)
+		throws IllegalArgumentException
+	{
+		// Initialize back to the default?
+		if (__layout == null)
+		{
+			if (this.getLayoutPolicy() != null)
+			{
+				this._layout = new __DefaultFormLayoutPolicy__(this);
+				this._staleLayout = true;
+			}
+			
+			return;
+		}
+		
+		// {@squirreljme.error EB3p The layout belong to a different form.}
+		if (__layout.getForm() != this)
+			throw new IllegalArgumentException("EB3p");
+		
+		// Set and make stale
+		this._layout = __layout;
+		this._staleLayout = true;
+	}
+	
+	/**
+	 * Signals that the form should be refreshed and update all of its
+	 * stored items accordingly.
+	 * 
+	 * @since 2021/11/26
+	 */
+	void __update()
+	{
+		// Indicate that the layout is now stale and must be updated
+		this._staleLayout = true;
+		
+		// Queue this up for later, so it is forced to be redrawn
+		Display display = this._display;
+		if (display != null)
+			UIBackendFactory.getInstance(true)
+				.formRefresh(this._uiForm);
 	}
 }
 

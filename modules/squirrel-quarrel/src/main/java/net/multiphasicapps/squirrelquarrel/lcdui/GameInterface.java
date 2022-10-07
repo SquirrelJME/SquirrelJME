@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,7 @@
 
 package net.multiphasicapps.squirrelquarrel.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import net.multiphasicapps.squirrelquarrel.game.EventSource;
@@ -124,7 +124,7 @@ public final class GameInterface
 	@Override
 	protected void pointerDragged(int __x, int __y)
 	{
-		todo.DEBUG.note("pointerDragged(%d, %d)", __x, __y);
+		Debugging.debugNote("pointerDragged(%d, %d)", __x, __y);
 	}
 	
 	/**
@@ -134,7 +134,7 @@ public final class GameInterface
 	@Override
 	protected void pointerPressed(int __x, int __y)
 	{
-		todo.DEBUG.note("pointerPressed(%d, %d)", __x, __y);
+		Debugging.debugNote("pointerPressed(%d, %d)", __x, __y);
 	}
 	
 	/**
@@ -144,7 +144,7 @@ public final class GameInterface
 	@Override
 	protected void pointerReleased(int __x, int __y)
 	{
-		todo.DEBUG.note("pointerReleased(%d, %d)", __x, __y);
+		Debugging.debugNote("pointerReleased(%d, %d)", __x, __y);
 	}
 	
 	/**

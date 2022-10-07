@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -51,7 +50,7 @@ final class __TimerThread__
 	{
 		List<TimerTask> tasks = this._tasks;
 		
-		// Constantly loop on our own look since we will mess with things
+		// Constantly loop on our own lock since we will mess with things
 		for (;;)
 			synchronized (this)
 			{
@@ -78,7 +77,7 @@ final class __TimerThread__
 					if (tasks.isEmpty())
 						this.wait();
 					
-					// Otherwise see how long we need to wait
+					// Otherwise, see how long we need to wait
 					else
 					{
 						// Need to determine if we are running this task

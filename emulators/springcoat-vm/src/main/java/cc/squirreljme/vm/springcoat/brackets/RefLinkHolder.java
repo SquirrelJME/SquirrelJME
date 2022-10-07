@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -27,7 +27,10 @@ public final class RefLinkHolder
 	 */
 	public RefLinkObject get()
 	{
-		return this._link;
+		synchronized (this)
+		{
+			return this._link;
+		}
 	}
 	
 	/**
@@ -38,6 +41,9 @@ public final class RefLinkHolder
 	 */
 	public void set(RefLinkObject __link)
 	{
-		this._link = __link;
+		synchronized (this)
+		{
+			this._link = __link;
+		}
 	}
 }

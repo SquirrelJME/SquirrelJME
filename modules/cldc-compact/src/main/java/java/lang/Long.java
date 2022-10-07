@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,10 +9,12 @@
 
 package java.lang;
 
+import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -59,25 +60,33 @@ public final class Long
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public byte byteValue()
 	{
-		throw new todo.TODO();
+		return (byte)this._value;
 	}
 	
 	@Override
 	public int compareTo(Long __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public double doubleValue()
 	{
-		throw new todo.TODO();
+		return (double)this._value;
 	}
 	
 	/**
@@ -96,22 +105,35 @@ public final class Long
 		return this._value == ((Long)__o)._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public float floatValue()
 	{
-		throw new todo.TODO();
+		return (float)this._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		long value = this._value;
+		return (int)(value ^ (value >>> 32));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public int intValue()
 	{
-		throw new todo.TODO();
+		return (int)this._value;
 	}
 	
 	/**
@@ -124,10 +146,14 @@ public final class Long
 		return this._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/06
+	 */
 	@Override
 	public short shortValue()
 	{
-		throw new todo.TODO();
+		return (short)this._value;
 	}
 	
 	/**
@@ -154,7 +180,7 @@ public final class Long
 	
 	public static int bitCount(long __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Long decode(String __a)
@@ -162,42 +188,42 @@ public final class Long
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Long getLong(String __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Long getLong(String __a, long __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static Long getLong(String __a, Long __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static long highestOneBit(long __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static long lowestOneBit(long __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int numberOfLeadingZeros(long __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int numberOfTrailingZeros(long __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -277,9 +303,20 @@ public final class Long
 		return Long.parseLong(__v, 10);
 	}
 	
-	public static long reverse(long __a)
+	/**
+	 * Reverses all of the bits in the given integer.
+	 *
+	 * @param __l The input value.
+	 * @return The integer but with the bits reversed.
+	 * @since 2022/01/07
+	 */
+	public static long reverse(long __l)
 	{
-		throw new todo.TODO();
+		int hi = Assembly.longUnpackHigh(__l);
+		int lo = Assembly.longUnpackLow(__l);
+		
+		// Hi is placed lo, and lo is placed hi
+		return Assembly.longPack(Integer.reverse(hi), Integer.reverse(lo));
 	}
 	
 	/**
@@ -305,22 +342,22 @@ public final class Long
 	
 	public static long rotateLeft(long __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static long rotateRight(long __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int signum(long __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static long sum(long __a, long __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -440,20 +477,34 @@ public final class Long
 		return Long.toString(__v, 10);
 	}
 	
-	public static Long valueOf(String __a, int __b)
+	/**
+	 * Returns the value of the specified string using the given radix.
+	 *
+	 * @param __v The String to decode.
+	 * @param __r The radix to use.
+	 * @return The boxed value.
+	 * @throws NumberFormatException If the string is not valid or the radix
+	 * is outside of the valid bounds.
+	 * @since 2022/01/07
+	 */
+	public static Long valueOf(String __v, int __r)
 		throws NumberFormatException
 	{
-		if (false)
-			throw new NumberFormatException();
-		throw new todo.TODO();
+		return Long.parseLong(__v, __r);
 	}
 	
-	public static Long valueOf(String __a)
+	/**
+	 * Returns the value of the specified string.
+	 *
+	 * @param __v The String to decode.
+	 * @return The boxed value.
+	 * @throws NumberFormatException If the string is not valid.
+	 * @since 2022/01/07
+	 */
+	public static Long valueOf(String __v)
 		throws NumberFormatException
 	{
-		if (false)
-			throw new NumberFormatException();
-		throw new todo.TODO();
+		return Long.parseLong(__v, 10);
 	}
 	
 	/**
@@ -478,9 +529,9 @@ public final class Long
 	 * @return The resulting string.
 	 * @since 2019/12/25
 	 */
-	private static final String __unsignedString(long __v, int __b)
+	private static String __unsignedString(long __v, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

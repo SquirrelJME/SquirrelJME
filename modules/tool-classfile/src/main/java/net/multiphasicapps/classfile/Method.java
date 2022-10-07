@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,12 +9,10 @@
 
 package net.multiphasicapps.classfile;
 
-import dev.shadowtail.classfile.nncc.NativeCode;
-import dev.shadowtail.classfile.nncc.NearNativeByteCodeHandler;
-import dev.shadowtail.classfile.xlate.ByteCodeProcessor;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
@@ -53,17 +50,17 @@ public final class Method
 	/** Does this method have code? */
 	protected final boolean hascode;
 	
+	/** The method index. */
+	protected final int methodIndex;
+	
 	/** Annotated values. */
-	private final AnnotationTable annotations;
+	protected final AnnotationTable annotations;
 	
 	/** The code attribute data, which is optional. */
 	private final byte[] _rawcodeattr;
 	
 	/** The method byte code. */
 	private Reference<ByteCode> _bytecode;
-	
-	/** Native code. */
-	private Reference<NativeCode> _regcode;
 	
 	/** Name and type reference. */
 	private Reference<MethodNameAndType> _nameandtype;
@@ -84,12 +81,13 @@ public final class Method
 	 * @param __mc An optional byte array representing the code attribute, the
 	 * value is used directly.
 	 * @param __avs Annotations associated with this method.
+	 * @param __index The method index.
 	 * @throws NullPointerException On null arguments except for {@code __mc}.
 	 * @since 2017/09/30
 	 */
 	Method(ClassVersion __ver, ClassFlags __cf, ClassName __tn, Pool __pool,
 		MethodFlags __mf, MethodName __mn, MethodDescriptor __mt, byte[] __mc,
-		AnnotationTable __avs)
+		AnnotationTable __avs, int __index)
 		throws NullPointerException
 	{
 		if (__ver == null || __cf == null || __tn == null || __pool == null ||
@@ -107,6 +105,7 @@ public final class Method
 		this.annotations = __avs;
 		this._rawcodeattr = __mc;
 		this.hascode = !__mf.isNative() && !__mf.isAbstract();
+		this.methodIndex = __index;
 	}
 	
 	/**
@@ -129,17 +128,17 @@ public final class Method
 	public final ByteCode byteCode()
 		throws InvalidClassFormatException
 	{
-		// If there is no code atribute there is no byte code
+		// If there is no code attribute there is no byte code
 		byte[] rawcodeattr = this._rawcodeattr;
 		if (!this.hascode)
 			return null;
 		
-		// Otherwise load a representation of it
+		// Otherwise, load a representation of it
 		Reference<ByteCode> ref = this._bytecode;
 		ByteCode rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._bytecode = new WeakReference<>((rv = new ByteCode(
+			this._bytecode = new SoftReference<>((rv = new ByteCode(
 				new WeakReference<>(this), this._rawcodeattr,
 				this.classname, this.methodflags)));
 		
@@ -168,7 +167,7 @@ public final class Method
 		MethodHandle rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._index = new WeakReference<>(rv = new MethodHandle(
+			this._index = new SoftReference<>(rv = new MethodHandle(
 				this.classname, this.methodname, this.methodtype));
 		
 		return rv;
@@ -209,6 +208,17 @@ public final class Method
 	}
 	
 	/**
+	 * The method index.
+	 * 
+	 * @return The method index.
+	 * @since 2021/07/06
+	 */
+	public final int methodIndex()
+	{
+		return this.methodIndex;
+	}
+	
+	/**
 	 * Returns the name of the method.
 	 *
 	 * @return The method name.
@@ -230,53 +240,8 @@ public final class Method
 		MethodNameAndType rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._nameandtype = new WeakReference<>(
+			this._nameandtype = new SoftReference<>(
 				rv = new MethodNameAndType(this.methodname, this.methodtype));
-		
-		return rv;
-	}
-	
-	/**
-	 * Returns the code of this method in a register based format that is
-	 * more efficient than pure Java byte code.
-	 *
-	 * @return The code of this method in a register based format.
-	 * @since 2019/03/09
-	 */
-	public final NativeCode nativeCode()
-	{
-		// Abstract and native methods have no code
-		if (!this.hascode)
-			return null;
-		
-		// Cache it
-		Reference<NativeCode> ref = this._regcode;
-		NativeCode rv;
-		
-		if (ref == null || null == (rv = ref.get()))
-		{
-			ByteCode bc = this.byteCode();
-			
-			// Process Code
-			try
-			{
-				NearNativeByteCodeHandler nnbc =
-					new NearNativeByteCodeHandler(bc);
-				new ByteCodeProcessor(bc, nnbc).process();
-				
-				// Cache the result of it
-				this._regcode = new WeakReference<>((rv = nnbc.result()));
-			}
-			
-			// {@squirreljme.error JC3e Could not compile the native code for
-			// the given method. (The class; Method name; Method type)}
-			catch (InvalidClassFormatException e)
-			{
-				throw new InvalidClassFormatException(
-					String.format("JC3e %s %s %s", this.classname,
-						this.methodname, this.methodtype), e);
-			}
-		}
 		
 		return rv;
 	}
@@ -328,7 +293,7 @@ public final class Method
 		Method[] rv = new Method[nm];
 		Set<NameAndType> dup = new HashSet<>();
 		
-		// Parse fields
+		// Parse methods
 		for (int i = 0; i < nm; i++)
 		{
 			// Read the flags but do not initialize them yet
@@ -374,7 +339,7 @@ public final class Method
 			
 			// Create
 			rv[i] = new Method(__ver, __cf, __tn, __pool, flags, name, type,
-				code, annotations);
+				code, annotations, i);
 		}
 		
 		// All done!

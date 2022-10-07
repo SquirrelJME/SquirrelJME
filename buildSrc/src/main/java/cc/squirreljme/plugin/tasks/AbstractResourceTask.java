@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
 import javax.inject.Inject;
+import lombok.Getter;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
@@ -23,6 +24,7 @@ import org.gradle.api.file.DirectoryTree;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.FileCopyDetails;
 import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.SourceSetOutput;
 import org.gradle.language.jvm.tasks.ProcessResources;
 
@@ -35,12 +37,18 @@ public abstract class AbstractResourceTask
 	extends DefaultTask
 {
 	/** The file extension. */
+	@Internal
+	@Getter
 	protected final String extension;
 	
 	/** The source set to modify. */
+	@Internal
+	@Getter
 	protected final String sourceSet;
 	
 	/** The output extension. */
+	@Internal
+	@Getter
 	protected final String outputExtension;
 	
 	/**
@@ -50,15 +58,16 @@ public abstract class AbstractResourceTask
 	 * @param __outExt Output extension.
 	 * @param __sourceSet The source set.
 	 * @param __prTask The process resources task.
+	 * @param __cleanTask The task for cleaning.
 	 * @since 2020/04/04
 	 */
 	@Inject
 	public AbstractResourceTask(String __ext, String __outExt,
-		String __sourceSet, ProcessResources __prTask)
+		String __sourceSet, ProcessResources __prTask, Task __cleanTask)
 		throws NullPointerException
 	{
 		if (__ext == null || __outExt == null ||
-			__sourceSet == null || __prTask == null)
+			__sourceSet == null || __prTask == null || __cleanTask == null)
 			throw new NullPointerException("NARG");
 		
 		this.extension = __ext;
@@ -75,6 +84,9 @@ public abstract class AbstractResourceTask
 		
 		// The action to do
 		this.doLast(new __ActionTask__());
+		
+		// Clean must happen first
+		this.mustRunAfter(__cleanTask);
 		
 		// The process task depends on this task
 		__prTask.dependsOn(this);
@@ -207,7 +219,7 @@ public abstract class AbstractResourceTask
 	{
 		Collection<File> result = new LinkedList<>();
 		for (FileLocation file : this.taskInputs())
-			result.add(file.absolute.toFile());
+			result.add(file.getAbsolute().toFile());
 		
 		return this.getProject().files(result);
 	}
@@ -228,7 +240,7 @@ public abstract class AbstractResourceTask
 		Collection<__Output__> result = new LinkedList<>();
 		for (FileLocation input : this.taskInputs())
 			result.add(new __Output__(input, outDir.resolve(
-				this.removeExtension(input.relative) + outputExtension)));
+				this.removeExtension(input.getRelative()) + outputExtension)));
 		
 		return result;
 	}

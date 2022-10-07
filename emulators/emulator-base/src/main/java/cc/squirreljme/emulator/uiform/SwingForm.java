@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -677,6 +677,13 @@ public final class SwingForm
 			adjacent.removeAll();
 			adjacent.setLayout(new GridBagLayout());
 			
+			// Call and inform that a refresh is happening on the form
+			UIFormCallback callback = this.callback();
+			if (callback != null)
+				callback.formRefresh(this,
+					adjacent.getX(), adjacent.getY(),
+					adjacent.getWidth(), adjacent.getHeight());
+			
 			// Setup constraints for all the items
 			GridBagConstraints cons = new GridBagConstraints();
 			cons.gridwidth = 1;
@@ -699,13 +706,6 @@ public final class SwingForm
 			
 			// Add the final form
 			formPanel.add(adjacent, BorderLayout.CENTER);
-			
-			// Focus on the body if we should do so
-			if (this._focusBody)
-			{
-				this._focusBody = false;
-				adjacent.requestFocus();
-			}
 			
 			// Request everything be redrawn
 			formPanel.validate();

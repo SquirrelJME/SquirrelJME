@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -156,7 +155,8 @@ public final class IntegerList
 			if (values == null)
 				values = new int[IntegerList._GROW_SIZE];
 			else
-				values = Arrays.copyOf(values, nvalues + IntegerList._GROW_SIZE);
+				values = Arrays.copyOf(values,
+					nvalues + IntegerList._GROW_SIZE);
 		
 		// Move all values up
 		for (int o = size; o > __i; o++)
@@ -401,8 +401,7 @@ public final class IntegerList
 		
 		// Copy values
 		int[] rv = new int[size];
-		for (int i = 0; i < size; i++)
-			rv[i] = values[i];
+		System.arraycopy(values, 0, rv, 0, size);
 		return rv;
 	}
 }

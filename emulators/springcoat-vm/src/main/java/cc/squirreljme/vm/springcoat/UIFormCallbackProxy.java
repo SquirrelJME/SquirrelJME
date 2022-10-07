@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -22,7 +22,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
 public class UIFormCallbackProxy
 	extends SpringProxyObject
 {
-	/** The to act as a proxy for. */
+	/** The class to act as a proxy for. */
 	private static final ClassName _CLASS =
 		new ClassName("cc/squirreljme/jvm/mle/callbacks/UIFormCallback");
 	

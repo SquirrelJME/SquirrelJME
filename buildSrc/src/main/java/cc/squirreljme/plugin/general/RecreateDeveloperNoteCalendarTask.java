@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -44,24 +44,6 @@ public class RecreateDeveloperNoteCalendarTask
 		this.onlyIf(__task -> FossilExe.isAvailable(true));
 		
 		// Action to perform
-		this.doLast(this::action);
-	}
-	
-	/**
-	 * Performs the task action.
-	 * 
-	 * @param __task The called task.
-	 * @since 2020/06/26
-	 */
-	private void action(Task __task)
-	{
-		try
-		{
-			NoteCalendarGenerator.generateAndStore(FossilExe.instance());
-		}
-		catch (IOException e)
-		{
-			throw new RuntimeException("Could not generate calendar.", e);
-		}
+		this.doLast(new RecreateDeveloperNoteCalendarTaskAction());
 	}
 }

@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -31,7 +30,7 @@ public final class IdentityLinkedHashSet<T>
 	 */
 	public IdentityLinkedHashSet()
 	{
-		super(new LinkedHashSet<__IdentityWrapper__<T>>());
+		super(new LinkedHashSet<Identity<T>>());
 	}
 	
 	/**
@@ -44,7 +43,7 @@ public final class IdentityLinkedHashSet<T>
 	public IdentityLinkedHashSet(Collection<? extends T> __from)
 		throws NullPointerException
 	{
-		super(new LinkedHashSet<__IdentityWrapper__<T>>(), __from);
+		super(new LinkedHashSet<Identity<T>>(), __from);
 	}
 }
 

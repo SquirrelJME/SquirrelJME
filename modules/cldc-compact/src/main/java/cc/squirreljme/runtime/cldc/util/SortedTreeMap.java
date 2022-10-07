@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -167,6 +166,7 @@ public class SortedTreeMap<K, V>
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/07
+	 * @param __k
 	 */
 	@Override
 	public V get(Object __k)
@@ -321,7 +321,7 @@ public class SortedTreeMap<K, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/30
 	 */
-	private final void __flipColor(__SortedTreeNode__<K, V> __at)
+	private void __flipColor(__SortedTreeNode__<K, V> __at)
 		throws NullPointerException
 	{
 		// Check
@@ -346,7 +346,7 @@ public class SortedTreeMap<K, V>
 	 * will always return the root of the tree.
 	 * @since 2017/03/30
 	 */
-	private final __SortedTreeNode__<K, V> __insert(
+	private __SortedTreeNode__<K, V> __insert(
 		__SortedTreeNode__<K, V> __from,
 		__SortedTreeNode__<K, V> __at, __Found__ __found, K __k, V __v)
 	{
@@ -445,7 +445,7 @@ public class SortedTreeMap<K, V>
 	 * @return {@code true} if the node is red.
 	 * @since 2017/03/30
 	 */
-	private final boolean __isRed(__SortedTreeNode__<K, V> __n)
+	private boolean __isRed(__SortedTreeNode__<K, V> __n)
 	{
 		if (__n == null)
 			return false;
@@ -458,7 +458,7 @@ public class SortedTreeMap<K, V>
 	 * @return The minimum node.
 	 * @since 2017/03/30
 	 */
-	private final __SortedTreeNode__<K, V> __min(__SortedTreeNode__<K, V> __at)
+	private __SortedTreeNode__<K, V> __min(__SortedTreeNode__<K, V> __at)
 	{
 		while (__at._left != null)
 			__at = __at._left;
@@ -472,7 +472,7 @@ public class SortedTreeMap<K, V>
 	 * @return The node that is not a side node.
 	 * @since 2017/03/30
 	 */
-	private final __SortedTreeNode__<K, V> __moveRed(
+	private __SortedTreeNode__<K, V> __moveRed(
 		__SortedTreeNode__<K, V> __at, boolean __r)
 	{
 		// Flip the node color
@@ -514,7 +514,7 @@ public class SortedTreeMap<K, V>
 	 * @return The node at the top (will not be a leaf)
 	 * @since 2017/03/30
 	 */
-	private final __SortedTreeNode__<K, V> __remove(
+	private __SortedTreeNode__<K, V> __remove(
 		__SortedTreeNode__<K, V> __at,
 		__Found__ __found, K __k)
 	{
@@ -599,7 +599,7 @@ public class SortedTreeMap<K, V>
 	 * @return The top node.
 	 * @since 2017/03/30
 	 */
-	private final __SortedTreeNode__<K, V> __removeMin(
+	private __SortedTreeNode__<K, V> __removeMin(
 		__SortedTreeNode__<K, V> __at,
 		__Found__ __found, boolean __unlink)
 	{
@@ -634,7 +634,7 @@ public class SortedTreeMap<K, V>
 	 * @return The center node.
 	 * @since 2017/03/27
 	 */
-	private final __SortedTreeNode__<K, V> __rotate(
+	private __SortedTreeNode__<K, V> __rotate(
 		__SortedTreeNode__<K, V> __at, boolean __r)
 		throws NullPointerException
 	{
@@ -672,7 +672,7 @@ public class SortedTreeMap<K, V>
 	 * @param __found The found node data.
 	 * @since 2017/03/30
 	 */
-	private final void __unlink(__SortedTreeNode__<K, V> __at, __Found__ __found)
+	private void __unlink(__SortedTreeNode__<K, V> __at, __Found__ __found)
 	{
 		// Get the data to unlink
 		__SortedTreeData__<K, V> unlink = __at._data;

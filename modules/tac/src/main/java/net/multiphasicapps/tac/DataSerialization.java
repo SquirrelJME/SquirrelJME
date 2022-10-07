@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -180,7 +179,6 @@ public final class DataSerialization
 				case 0x0b:
 				case 0x0c:
 				case 0x0e:
-				case 0x1f:
 				case 0x10:
 				case 0x11:
 				case 0x12:
@@ -196,6 +194,7 @@ public final class DataSerialization
 				case 0x1c:
 				case 0x1d:
 				case 0x1e:
+				case 0x1f:
 					escape = true;
 					c = (char)((c < 10 ? '0' + c : 'A' + (c - 10)));
 					break;
@@ -268,7 +267,14 @@ public final class DataSerialization
 		
 		// Character
 		else if (__o instanceof Character)
-			return "char:" + (int)((Character)__o).charValue();
+		{
+			char c = (Character)__o;
+			
+			// Use digits for characters we cannot really represent
+			if (c <= 0x20 || c >= 0x7F || Character.isDigit(c))
+				return "char:" + (int)c;
+			return "char:" + c;
+		}
 		
 		// Integer
 		else if (__o instanceof Integer)
@@ -364,7 +370,7 @@ public final class DataSerialization
 			{
 				if (i > 0)
 					sb.append(",");
-		
+				
 				Number val = list.get(i);
 				sb.append((val == null ? "null" : val.longValue()));
 			}

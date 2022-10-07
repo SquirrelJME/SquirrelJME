@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -10,8 +10,9 @@
 package cc.squirreljme.plugin.multivm;
 
 import javax.inject.Inject;
+import lombok.Getter;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.Internal;
 
 /**
  * Task for running the full-suite of SquirrelJME.
@@ -23,31 +24,36 @@ public class VMFullSuite
 	implements VMExecutableTask
 {
 	/** The source set used. */
+	@Internal
+	@Getter
 	public final String sourceSet;
 	
 	/** The virtual machine type. */
+	@Internal
+	@Getter
 	public final VMSpecifier vmType;
 	
 	/**
 	 * Initializes the full suite task.
 	 * 
+	 * @param __sourceSet The source set used.
 	 * @param __vmType The virtual machine type.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/17
 	 */
 	@Inject
-	public VMFullSuite(VMSpecifier __vmType)
+	public VMFullSuite(String __sourceSet, VMSpecifier __vmType)
 		throws NullPointerException
 	{
-		if (__vmType == null)
+		if (__vmType == null || __sourceSet == null)
 			throw new NullPointerException("NARG");
 		
-		this.sourceSet = SourceSet.MAIN_SOURCE_SET_NAME;
+		this.sourceSet = __sourceSet;
 		this.vmType = __vmType;
 		
 		// Runs the entire API/Library suite of SquirrelJME to run a given
 		// application
-		this.setGroup("squirreljme");
+		this.setGroup("squirreljmeGeneral");
 		this.setDescription("Runs the full suite of SquirrelJME Modules.");
 		
 		// This always runs, no matter what
@@ -55,20 +61,11 @@ public class VMFullSuite
 		this.getOutputs().upToDateWhen(new AlwaysFalse());
 		
 		// This depends on everything!
-		this.dependsOn(new VMFullSuiteDepends(this, __vmType),
+		this.dependsOn(
+			new VMFullSuiteDepends(this, __sourceSet, __vmType),
 			new VMEmulatorDependencies(this, __vmType));
 		
 		// Actual running of everything
-		this.doLast(new VMFullSuiteTaskAction(__vmType));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/03/08
-	 */
-	@Override
-	public String getSourceSet()
-	{
-		return this.sourceSet;
+		this.doLast(new VMFullSuiteTaskAction(__sourceSet, __vmType));
 	}
 }

@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -12,6 +11,7 @@ package java.security;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This is used for access control on resources that may be available at
@@ -63,7 +63,7 @@ public final class AccessController
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		todo.TODO.note("Check permission: %s", __p);
+		Debugging.todoNote("Check permission: %s", __p);
 	}
 }
 

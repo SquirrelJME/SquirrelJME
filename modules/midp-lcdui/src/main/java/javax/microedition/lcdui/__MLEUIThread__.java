@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -10,6 +10,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
@@ -19,15 +20,14 @@ import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
 import cc.squirreljme.jvm.mle.constants.UIKeyModifier;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.event.EventTranslate;
+import cc.squirreljme.runtime.lcdui.event.KeyCodeTranslator;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
-import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
-import cc.squirreljme.runtime.midlet.ActiveMidlet;
-import com.nokia.mid.ui.FullCanvas;
+import cc.squirreljme.runtime.midlet.ApplicationHandler;
+import cc.squirreljme.runtime.midlet.ApplicationInterface;
 import java.util.Map;
-import javax.microedition.midlet.MIDlet;
 
 /**
  * This thread is responsible for handling graphics operations.
@@ -39,7 +39,7 @@ final class __MLEUIThread__
 {
 	/** The time to sleep for between periodic checks. */
 	private static final long _SLEEP_TIME =
-		5_000;
+		30_000;
 	
 	/** Are we within a paint? */
 	private boolean _inPaint;
@@ -58,6 +58,20 @@ final class __MLEUIThread__
 			__event, __keyCode, __modifiers);*/
 		
 		DisplayWidget widget = StaticDisplayState.locate(__item);
+		
+		// Commands are special key events
+		if (__event == UIKeyEventType.COMMAND_ACTIVATED)
+		{
+			// Command button widgets will activate the given command
+			if (widget instanceof __CommandWidget__)
+				((__CommandWidget__)widget).__activate();
+			
+			// List activations will activate the given list item
+			else if (widget instanceof List)
+				((List)widget).__selectCommand(__keyCode);
+			
+			return;
+		}
 		
 		// Get J2ME specific modifiers since we have extra ones undefined by
 		// J2ME
@@ -123,42 +137,34 @@ final class __MLEUIThread__
 				}
 			}
 			
-			// Nokia exposes these as physical Key IDs, so do the same here
-			// Since most software is made for Nokia we pretty much the
-			// standard and as such have to support doing it this way.
-			switch (__keyCode)
+			// Some APIs such as Nokia expose certain keys and actions as
+			// physical keys that can be pressed such that the left command
+			// key will emit itself as a keycode.
+			for (KeyCodeTranslator adapter : EventTranslate.translators())
 			{
-				case NonStandardKey.F1:
-				case NonStandardKey.VGAME_COMMAND_LEFT:
-					__keyCode = FullCanvas.KEY_SOFTKEY1;
+				int result = adapter.normalizeKeyCode(__keyCode);
+				if (result != 0)
+				{
+					__keyCode = result;
 					break;
-					
-				case NonStandardKey.F2:
-				case NonStandardKey.VGAME_COMMAND_RIGHT:
-					__keyCode = FullCanvas.KEY_SOFTKEY2;
-					break;
-					
-				case NonStandardKey.F3:
-				case NonStandardKey.VGAME_COMMAND_CENTER:
-					__keyCode = FullCanvas.KEY_SOFTKEY3;
-					break;
+				}
 			}
 		}
 		
-		// Commands are special key events
-		if (__event == UIKeyEventType.COMMAND_ACTIVATED)
+		// Open the LCDUI inspector?
+		if (__event == UIKeyEventType.KEY_PRESSED &&
+			(__keyCode == NonStandardKey.F12 ||
+			__keyCode == NonStandardKey.VGAME_LCDUI_INSPECTOR))
 		{
-			// Command button widgets will activate the given command
-			if (widget instanceof __CommandWidget__)
-				((__CommandWidget__)widget).__activate();
+			if (true)
+				throw Debugging.todo();
 			
-			// List activations will activate the given list item
-			else if (widget instanceof List)
-				((List)widget).__selectCommand(__keyCode);
+			// Consume this key
+			return;
 		}
 		
 		// Any Displayable which have standard key access
-		else if (widget instanceof Canvas)
+		if (widget instanceof Canvas)
 			this.__eventKey((Canvas)widget, null,
 				__event, __keyCode, javaMods);
 		else if (widget instanceof CustomItem)
@@ -184,30 +190,50 @@ final class __MLEUIThread__
 	 * {@inheritDoc}
 	 * @since 2020/09/12
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void exitRequest(UIFormBracket __form)
 	{
 		// Debug
-		/*Debugging.debugNote("exitRequest(%08x) @ %s",
-			System.identityHashCode(__form), Thread.currentThread());*/
+		Debugging.debugNote("exitRequest(%08x) @ %s",
+			System.identityHashCode(__form), Thread.currentThread());
+			
+		// Obtain the application we are actually running, since this
+		// could be done different for different ones
+		Object currentInstance = ApplicationHandler.currentInstance();
+		ApplicationInterface<Object> currentInterface =
+			(ApplicationInterface<Object>)
+				ApplicationHandler.currentInterface();
+		if (currentInstance == null || currentInterface == null)
+		{
+			Debugging.debugNote("No current Application?");
+			return;
+		}
 		
-		// Terminate the user interface
-		StaticDisplayState.terminate();
-		
-		// Have the MIDlet destroy itself
+		// Destroy the application
 		try
 		{
-			MIDlet midlet = ActiveMidlet.get();
-			
-			// Destroy the midlet
-			midlet.notifyDestroyed();
+			currentInterface.destroy(currentInstance, null);
 		}
-		
-		// No active MIDlet, ignore
-		catch (IllegalStateException ignored)
+		catch (Throwable t)
 		{
-			Debugging.debugNote("No current MIDlet?");
+			// {@squirreljme.error EB0k Failed to terminate application.}
+			throw new Error("EB0k", t);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/07/20
+	 */
+	@Override
+	public void formRefresh(UIFormBracket __form, int __sx, int __sy,
+	 int __sw,
+		int __sh)
+	{
+		DisplayWidget widget = StaticDisplayState.locate(__form);
+		if (widget instanceof Form)
+			((Form)widget).__performLayout();
 	}
 	
 	/**
@@ -300,6 +326,20 @@ final class __MLEUIThread__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2022/01/05
+	 */
+	@Override
+	public void paintDisplay(UIDisplayBracket __display, int __pf, int __bw,
+		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
+		int __sw, int __sh, int __special)
+	{
+		// Does nothing as at this point, software implementations of the UI
+		// would have handled the display callback here so no action is
+		// needed to be performed.
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/09/12
 	 */
 	@Override
@@ -345,26 +385,24 @@ final class __MLEUIThread__
 	@Override
 	public void run()
 	{
-		// Get the backend calls will occur on
-		UIBackend backend = UIBackendFactory.getInstance();
-		
 		// Infinite UI loop, which performs periodic probes and background
 		// actions
 		for (;;)
-		{
-			// Stop if terminating
-			if (StaticDisplayState.isTerminating())
-				break;
-			
-			// Wait for the next run
-			try
+			synchronized (StaticDisplayState.class)
 			{
-				Thread.sleep(__MLEUIThread__._SLEEP_TIME);
+				// Stop if terminating
+				if (StaticDisplayState.isTerminating())
+					break;
+				
+				// Wait for the signal on the next run
+				try
+				{
+					StaticDisplayState.class.wait(__MLEUIThread__._SLEEP_TIME);
+				}
+				catch (InterruptedException ignored)
+				{
+				}
 			}
-			catch (InterruptedException ignored)
-			{
-			}
-		}
 		
 		// Debug
 		Debugging.debugNote("UI loop terminated.");

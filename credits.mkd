@@ -1,0 +1,30 @@
+# Credits of Contributions
+
+This document marks down contributions that others have made to SquirrelJME as
+a credit to their work. It will be noted that this is not a copyright
+assignment to them for their work as SquirrelJME requires a copyright
+reassignment to the project owner for legal purposes. For
+[third party libraries](third-party.mkd) another [document](third-party.mkd)
+is used, refer to that for library bring-ins.
+
+ * Aaron Kling
+   * RatufaCoat updates related to LibRetro:
+     * Android Updates.
+     * Mingw cross compilation.
+ * _"crystalct"_
+   * RatufaCoat updates related to LibRetro:
+     * PS3 Toolchain updates.
+ * Francisco Javier Trujillo Mata
+   * RatufaCoat updates related to LibRetro:
+     * PS2 Toolchain updates.
+ * Sandy Vujaković
+   * Documentation:
+     * Contributing.
+   * VSCode:
+     * Initial configuration.
+ * Vladimir Serbinenko
+   * RatufaCoat updates related to LibRetro:
+     * Corrections to build rules for OpenDingux.
+ * Yoshi Sugawara
+   * RatufaCoat updates related to LibRetro:
+     * Support for building on tvOS.

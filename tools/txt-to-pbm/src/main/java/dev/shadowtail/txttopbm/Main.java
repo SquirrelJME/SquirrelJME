@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -81,7 +81,7 @@ public class Main
 				ua = sa / 8;
 			
 			// Write PBM header, use P4 format
-			ps.printf("P4\n");
+			ps.print("P4\n");
 			ps.printf("%d %d\n", iw, ih);
 			
 			// Create image to contain a buffer for a single line, it is not

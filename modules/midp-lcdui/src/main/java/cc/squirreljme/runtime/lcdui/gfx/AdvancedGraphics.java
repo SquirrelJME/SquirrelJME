@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.font.SQFFont;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
@@ -529,9 +529,8 @@ public class AdvancedGraphics
 		// Exception happened when drawing a line
 		catch (IndexOutOfBoundsException e)
 		{
-			todo.DEBUG.note("Line (%d, %d) -> (%d, %d)", __x1, __y1,
+			Debugging.debugNote("Line (%d, %d) -> (%d, %d)", __x1, __y1,
 				__x2, __y2);
-			e.printStackTrace();
 		}
 	}
 	
@@ -552,47 +551,65 @@ public class AdvancedGraphics
 		__y += this.transy;
 		
 		// Determine ending position
-		int ex = __x + __w,
-			ey = __y + __h;
+		int ex = __x + __w;
+		int ey = __y + __h;
 		
 		// Get clipping region
-		int clipsx = this.clipsx,
-			clipsy = this.clipsy,
-			clipex = this.clipex,
-			clipey = this.clipey;
+		int clipsx = this.clipsx;
+		int clipsy = this.clipsy;
+		int clipex = this.clipex;
+		int clipey = this.clipey;
 		
 		// Box is completely outside the bounds of the clip, do not draw
 		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
 			return;
 		
 		// Determine sub-clipping area
-		int subx = __x - clipsx,
-			suby = __y - clipsy;
+		int subX = Math.max(0, clipsx - __x);
+		int subY = Math.max(0, clipsy - __y);
 		
 		// Clip into bounds
-		if (__x < 0)
-			__x = 0;
-		if (__y < 0)
-			__y = 0;
+		if (__x < clipsx)
+			__x = clipsx;
+		if (__y < clipsy)
+			__y = clipsy;
+		
+		// Check end coordinate
 		if (ex >= clipex)
 			ex = clipex;
 		if (ey >= clipey)
 			ey = clipey;
 		
 		// New tile size
-		int tw = ex - __x,
-			th = ey - __y;
+		int tw = ex - __x;
+		int th = ey - __y;
 		
 		// We might have multiplied alpha blending, or just normal blending
 		// If __alpha is true then this is 32-bit RGBA!
-		if (__alpha)
-			this.funcargbtile.function(this,
-				new int[]{__off, __scanlen, __x, __y, tw, th},
-				new Object[]{__data});
-		else
-			this.funcrgbtile.function(this,
-				new int[]{__off, __scanlen, __x, __y, tw, th},
-				new Object[]{__data});
+		try
+		{
+			if (__alpha)
+				this.funcargbtile.function(this,
+					new int[]{__off, __scanlen, __x, __y, tw, th, subX, subY},
+					new Object[]{__data});
+			else
+				this.funcrgbtile.function(this,
+					new int[]{__off, __scanlen, __x, __y, tw, th, subX, subY},
+					new Object[]{__data});
+		}
+		catch (IndexOutOfBoundsException e)
+		{
+			Debugging.debugNote(
+				"drawRGBTile(buffer[%d]=%s, bufferlen=%d, w=%d, h=%d, " +
+				"pitch=%d, offset=%d -> " +
+				"data[%d]=%s, w=%d, h=%d, off=%d, " +
+				"scanlen=%d, " +
+				"x=%d, y=%d, tw=%d, th=%d, subX=%d, subY=%d)",
+				this.buffer.length, this.buffer, this.bufferlen,
+				this.width, this.height, this.pitch, this.offset,
+				__data.length, __data, __w, __h, __off, __scanlen, __x, __y,
+				tw, th, subX, subY);
+		}
 	}
 	
 	/**
@@ -935,8 +952,8 @@ public class AdvancedGraphics
 	@Override
 	public int getDisplayColor(int __rgb)
 	{
-		// Just use the original input color
-		return __rgb | 0xFF_000000;
+		// Just use the original input color, without the alpha channel
+		return __rgb & 0xFFFFFF;
 	}
 	
 	/**
@@ -1255,18 +1272,19 @@ public class AdvancedGraphics
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/24
+	 * @param __style
 	 */
 	@Override
-	public void setStrokeStyle(int __a)
+	public void setStrokeStyle(int __style)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB0i Illegal stroke style.}
-		if (__a != Graphics.SOLID && __a != Graphics.DOTTED)
+		if (__style != Graphics.SOLID && __style != Graphics.DOTTED)
 			throw new IllegalArgumentException("EB0i");
 		
 		// Set
-		this.strokestyle = __a;
-		this.dotstroke = (__a == Graphics.DOTTED);
+		this.strokestyle = __style;
+		this.dotstroke = (__style == Graphics.DOTTED);
 		
 		// Update functions
 		this.__updateFunctions();
@@ -1291,7 +1309,7 @@ public class AdvancedGraphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/29
 	 */
-	private final Text __buildText(String __s)
+	private Text __buildText(String __s)
 		throws NullPointerException
 	{
 		if (__s == null)
@@ -1354,7 +1372,7 @@ public class AdvancedGraphics
 		
 		// Perform the transformation, possibly returning a new data buffer
 		int[] transdim = new int[]{__wsrc, __hsrc, __wdest, __hdest};
-		data = this.__transform(__trans, data, __wsrc, __hsrc, transdim,
+		data = __transform(__trans, data, __wsrc, __hsrc, transdim,
 			__dswap);
 		
 		// Re-read the new image sizes!
@@ -1382,8 +1400,8 @@ public class AdvancedGraphics
 		// If this is non-stretched we can just use the standard RGB
 		// drawing function!
 		if (__wsrc == __wdest && __hsrc == __hdest)
-			this.drawRGB(data, 0, __wsrc, __xdest, __ydest, __wsrc, __hsrc,
-				alpha);
+			this.drawRGB(data, 0, __wsrc, __xdest, __ydest,
+				__wsrc, __hsrc, alpha);
 		
 		// Use stretchy draw
 		else
@@ -1615,7 +1633,7 @@ public class AdvancedGraphics
 	 * @param __txt The message text.
 	 * @since 2019/03/25
 	 */
-	private final void __unimplemented(int __x, int __y, String __txt)
+	private void __unimplemented(int __x, int __y, String __txt)
 		throws NullPointerException
 	{
 		if (__txt == null)
@@ -1632,7 +1650,7 @@ public class AdvancedGraphics
 	 *
 	 * @since 2019/03/24
 	 */
-	private final void __updateFunctions()
+	private void __updateFunctions()
 	{
 		boolean doblending = this.doblending,
 			dotstroke = this.dotstroke;
@@ -1693,7 +1711,7 @@ public class AdvancedGraphics
 	 * @return The clipping bit flags.
 	 * @since 2017/09/10
 	 */
-	private static final int __csOut(int __x, int __y, int __csx, int __csy,
+	private static int __csOut(int __x, int __y, int __csx, int __csy,
 		int __cex, int __cey)
 	{
 		int rv = 0;
@@ -1727,7 +1745,7 @@ public class AdvancedGraphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/15
 	 */
-	private static final int[] __transform(int __trans, int[] __data,
+	private static int[] __transform(int __trans, int[] __data,
 		int __wsrc, int __hsrc, int[] __dimout, boolean __dswap)
 		throws NullPointerException
 	{

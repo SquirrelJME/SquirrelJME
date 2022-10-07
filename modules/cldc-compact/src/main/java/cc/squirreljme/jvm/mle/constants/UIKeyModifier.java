@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -31,7 +31,7 @@ public interface UIKeyModifier
 	/** Left Command Button. (SquirrelJME). */
 	int MODIFIER_LEFT_COMMAND =
 		0x80000;
-		
+	
 	/** Right Command button. (SquirrelJME). */
 	int MODIFIER_RIGHT_COMMAND =
 		0x100000;
@@ -48,7 +48,7 @@ public interface UIKeyModifier
 	int MODIFIER_LEFT_RIGHT_COMMANDS =
 		UIKeyModifier.MODIFIER_LEFT_COMMAND |
 		UIKeyModifier.MODIFIER_RIGHT_COMMAND;
-	
+		
 	/** Mask specifically for the limits of J2ME. */
 	int J2ME_MASK =
 		UIKeyModifier.MODIFIER_ALT |

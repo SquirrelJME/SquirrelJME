@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -58,13 +58,13 @@ public class VMTestInputs
 		
 		// The source and result of the test make up the input
 		for (CandidateTestFiles file : VMHelpers.runningTests(
-			this.task.getProject(), this.sourceSet).values())
+			this.task.getProject(), this.sourceSet).tests.values())
 		{
-			result.add(file.sourceCode.absolute);
+			result.add(file.sourceCode.getAbsolute());
 			
 			// The expected results are optional
 			if (file.expectedResult != null)
-				result.add(file.expectedResult.absolute);
+				result.add(file.expectedResult.getAbsolute());
 		}
 		
 		return result;

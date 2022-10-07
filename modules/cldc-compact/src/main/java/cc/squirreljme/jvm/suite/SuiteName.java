@@ -1,5 +1,6 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -8,6 +9,7 @@
 
 package cc.squirreljme.jvm.suite;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 
 /**
@@ -35,11 +37,15 @@ public final class SuiteName
 		// Check
 		if (__v == null)
 			throw new NullPointerException("NARG");
+			
+		// Colon (':') is technically invalid, but so many JARs use it...
+		if (StringUtils.firstIndex(":", __v) >= 0)
+			Debugging.debugNote("Suite name has a colon: %s", __v);
 		
 		// {@squirreljme.error DG0e An illegal character was
 		// specified in the midlet suite name. (The midlet suite
 		// name)}
-		if (StringUtils.firstIndex("\0\r\n:;", __v) >= 0)
+		if (StringUtils.firstIndex("\0\r\n;", __v) >= 0)
 			throw new InvalidSuiteException(String.format("AR0e %s", __v));
 		
 		this.string = __v;

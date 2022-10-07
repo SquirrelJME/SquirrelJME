@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -69,7 +69,7 @@ public interface VMSpecifier
 	 * @return The project used for running the emulator.
 	 * @since 2020/08/16
 	 */
-	String emulatorProject();
+	List<String> emulatorProjects();
 	
 	/**
 	 * Determines the name of the library that the provider uses for what is
@@ -127,12 +127,14 @@ public interface VMSpecifier
 	 * 
 	 * @param __task The task running under.
 	 * @param __out The output of the given path.
+	 * @param __build Build parameters for the ROM.
 	 * @param __libs The libraries to link in.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/27
 	 */
-	void processRom(Task __task, OutputStream __out, Collection<Path> __libs)
+	void processRom(Task __task, OutputStream __out,
+		RomBuildParameters __build, List<Path> __libs)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -144,6 +146,7 @@ public interface VMSpecifier
 	 * @param __debugEligible Is this eligible for debug?
 	 * @param __execSpec The execution spec to fill.
 	 * @param __mainClass The main class to execute.
+	 * @param __commonName The common name for the program.
 	 * @param __sysProps The system properties to define.
 	 * @param __libPath The library path to use for the virtual machine.
 	 * @param __classPath The class path of the execution target.
@@ -153,7 +156,7 @@ public interface VMSpecifier
 	 */
 	void spawnJvmArguments(Task __task, boolean __debugEligible,
 		JavaExecSpecFiller __execSpec, String __mainClass,
-		Map<String, String> __sysProps, Path[] __libPath,
+		String __commonName, Map<String, String> __sysProps, Path[] __libPath,
 		Path[] __classPath, String... __args)
 		throws NullPointerException;  
 	

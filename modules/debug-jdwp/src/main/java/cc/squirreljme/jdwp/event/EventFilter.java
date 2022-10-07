@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -15,6 +15,7 @@ import cc.squirreljme.jdwp.JDWPLocation;
 import cc.squirreljme.jdwp.JDWPStepTracker;
 import cc.squirreljme.jdwp.JDWPUtils;
 import cc.squirreljme.jdwp.JDWPValue;
+import cc.squirreljme.jdwp.views.JDWPViewObject;
 import cc.squirreljme.jdwp.views.JDWPViewType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -124,10 +125,12 @@ public final class EventFilter
 		
 		// Check the general context for mis-matches
 		for (EventModContext context : __kind.contextGeneral())
-			if (!this.__context(__controller, __thread, context, null))
+			if (!this.__context(__controller, __thread, context, null,
+				null))
 				return false;
 		
 		// Handle each argument and find mismatches
+		Object[] ensnare = new Object[1];
 		for (int i = 0, n = __args.length; i < n; i++)
 		{
 			// Check that there is context here 
@@ -136,7 +139,8 @@ public final class EventFilter
 				continue;
 			
 			// Check the context if it is valid
-			if (!this.__context(__controller, __thread, context, __args[i]))
+			if (!this.__context(__controller, __thread, context, __args[i],
+				ensnare))
 				return false;
 		}
 		
@@ -212,23 +216,32 @@ public final class EventFilter
 	 * @param __thread The current thread.
 	 * @param __context The context to check for.
 	 * @param __on The object to test on.
+	 * @param __ensnare The ensnare storage.
 	 * @return If this is mismatched.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/25
 	 */
 	private boolean __context(JDWPController __controller, Object __thread,
-		EventModContext __context, Object __on)
+		EventModContext __context, Object __on, Object[] __ensnare)
 		throws NullPointerException
 	{
 		if (__controller == null || __context == null)
 			throw new NullPointerException("NARG");
 		
 		// Viewers
+		JDWPViewObject viewObject = __controller.viewObject();
 		JDWPViewType viewType = __controller.viewType();
 		
 		// Depends on the context
 		switch (__context)
 		{
+				// Ensnare the argument, so it can be used for later
+				// This is always valid.
+			case ENSNARE_ARGUMENT:
+				if (__ensnare != null && __ensnare.length > 0)
+					__ensnare[0] = __on;
+				break;
+				
 				// The current thread
 			case CURRENT_THREAD:
 				// Thread is only valid if it is set
@@ -349,7 +362,7 @@ public final class EventFilter
 				
 				// Forward to type check and see if that is used
 				if (!this.__context(__controller, __thread,
-					EventModContext.PARAMETER_TYPE, __on))
+					EventModContext.PARAMETER_TYPE, __on, __ensnare))
 					return false;
 				break;
 			
@@ -383,6 +396,41 @@ public final class EventFilter
 					if (__thread != stepping.thread ||
 						stepping.depth != stepTracker.depth())
 						return false;
+				}
+				break;
+			
+				// An exception has been tossed, is it caught or uncaught and
+				// is it the one we want?
+			case TOSSED_EXCEPTION:
+				if (this.exception != null)
+				{
+					ExceptionOnly exception = this.exception;
+					
+					// Caught/uncaught mismatch?
+					if (__on == null && !exception.uncaught)
+						return false;
+					else if (__on != null && !exception.caught)
+						return false;
+					
+					// Type mismatch?
+					if (__ensnare != null && __ensnare[0] != null &&
+						exception.optionalType != null)
+					{
+						Object object = __ensnare[0];
+						
+						// Do not know what this object is...
+						if (viewObject.isValid(object))
+							return false;
+						
+						// Do not know what type we are looking for...
+						if (viewType.isValid(exception.optionalType))
+							return false;
+						
+						// Cannot cast from this type, to the other type
+						if (!viewType.canCastTo(exception.optionalType,
+							viewObject.type(object)))
+							return false;
+					}
 				}
 				break;
 			

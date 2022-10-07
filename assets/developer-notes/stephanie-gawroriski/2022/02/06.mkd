@@ -1,0 +1,50 @@
+# 2022/02/06
+
+## 12:28
+
+Spoke at my first conference: 
+<https://fosdem.org/2022/schedule/event/squirrel/>
+I would say that it went rather well! Now I suppose I get back to work on
+SquirrelJME. There is `serviceRepaints()` which is causing a freeze in cases
+where it tries waiting for a repaint to happen but it never does! So I
+definitely need a better strategy for it, maybe I can use an actual timestamp
+for it to determine when something is happening.
+
+## 21:31
+
+There is a graphical issue with drawing RGB tiles where it is out of bounds. So
+the error details are:
+
+ * `Index 96 out of bounds for length 90`
+ * `buffer[576]=[I@2d4260b8`
+ * `bufferlen=576`
+ * `w=24`
+ * `h=24`
+ * `pitch=24`
+ * `offset=0`
+ * `data[90]=[I@58377072`
+ * `w=10`
+ * `h=9`
+ * `off=0`
+ * `scanlen=10`
+ * `x=7`
+ * `y=12`
+ * `tw=7`
+ * `th=1`
+ * `subX=0`
+ * `subY=4`
+
+Then I have:
+
+```
+DB: Oops: __o=0, __l=10, __x=7, __y=12, __w=7, __h=1,
+__subX=0, __subY=4, __b[90]=[I@34e4ea13,
+data[576]=[I@28828654, iw=24, eosa=3, dest=295, src=96, ey=13, spend=103 !!
+```
+
+Definitely would say this is quite the mess and it has been awhile so
+maybe I should just dive in and rewrite all the graphics functions. Since
+there are so many different graphics formats, maybe I should just make
+a kind of slower reference implementation just so I can figure out all of
+the various algorithms. There would be extreme method overhead but I think
+that is the way to go.

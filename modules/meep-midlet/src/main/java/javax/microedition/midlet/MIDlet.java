@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -14,13 +13,15 @@ import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestKey;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import cc.squirreljme.runtime.midlet.CleanupHandler;
+import cc.squirreljme.runtime.midlet.ManifestSource;
+import cc.squirreljme.runtime.midlet.ManifestSourceType;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public abstract class MIDlet
 {
@@ -28,11 +29,9 @@ public abstract class MIDlet
 	private static final String _APP_PROPERTY_OVERRIDE =
 		"cc.squirreljme.runtime.midlet.override.";
 	
-	/** The cached manifest for obtaining properties. */
-	private JavaManifest _manifest;
-	
-	/** Is there no manifest? */
-	private boolean _noManifest;
+	/** The source manifests that are available. */
+	private final ManifestSource[] _manifestSources =
+		new ManifestSource[ManifestSourceType.COUNT];
 	
 	/**
 	 * Initialize the MIDlet.
@@ -41,10 +40,6 @@ public abstract class MIDlet
 	 */
 	protected MIDlet()
 	{
-		// We might be on an emulator, so do some poking to make sure
-		// everything is working okay
-		Poking.poke();
-		
 		// Set the active midlet to this one
 		ActiveMidlet.set(this);
 	}
@@ -146,53 +141,64 @@ public abstract class MIDlet
 		if (val != null)
 			return val.trim();
 		
-		// If there is not manifest, ignore this step
-		if (!this._noManifest)
-		{
-			// Lookup JAR manifest
-			JavaManifest manifest = this._manifest;
-			if (manifest == null)
-			{
-				// Determine what our JAR is
-				JarPackageBracket[] classPath =
-					JarPackageShelf.classPath();
-				JarPackageBracket ourJar = classPath[classPath.length - 1];
+		// Determine what our JAR is
+		JarPackageBracket[] classPath =
+			JarPackageShelf.classPath();
+		JarPackageBracket ourJar = classPath[classPath.length - 1];
 		
-				// Some application properties are inside of the manifest so
-				// check that
-				try (InputStream is = JarPackageShelf.openResource(
-					ourJar, "META-INF/MANIFEST.MF"))
+		// Go through each type and try to determine what we can do
+		ManifestSource[] sources = this._manifestSources;
+		for (ManifestSourceType type : ManifestSourceType.VALUES)
+		{
+			// Get pre-existing source, if it exists
+			ManifestSource source = sources[type.ordinal()];
+			if (source == null)
+				sources[type.ordinal()] = (source = new ManifestSource());
+			
+			// Ignore manifests we know to be missing
+			if (source.isMissing)
+				continue;
+			
+			// Was a manifest already cached?
+			JavaManifest manifest = source.manifest;
+			if (manifest == null)
+				try (InputStream in = type.manifestStream(ourJar))
 				{
-					// Not found, force failure
-					if (is == null)
-						throw new IOException();
+					// {@squirreljme.error ZZ4j No manifest available for
+					// this current MIDlet of the given type. (The type)}
+					if (in == null)
+						throw new IOException("ZZ4j " + type);
 					
-					// Load it
-					manifest = new JavaManifest(is);
-					this._manifest = manifest;
-					
-					Debugging.debugNote("Attr: %s", manifest.getMainAttributes());
+					// Try loading it
+					manifest = new JavaManifest(
+						new InputStreamReader(in, type.encoding()));
 				}
-				
-				// Does not exist or failed to read
 				catch (IOException e)
 				{
-					this._noManifest = true;
-					manifest = null;
+					// It failed, so maybe give a reason why?
+					e.printStackTrace();
+					
+					source.isMissing = true;
 				}
-			}
 			
-			// Try to get key value
+			// Try reading a property from the manifest
 			if (manifest != null)
 			{
-				String rv = manifest.getMainAttributes().getValue(
-					new JavaManifestKey(__p));
+				String rv = manifest.getMainAttributes()
+					.getValue(new JavaManifestKey(__p));
 				if (rv != null)
-					return rv.trim();
+				{
+					// Debugging
+					Debugging.debugNote("getAppProperty(%s) @ %s -> %s",
+						__p, type, rv);
+					
+					// Use it
+					return rv;
+				}
 			}
 		}
 		
-		// Key not found or no manifest
+		// None found, so return nothing
 		return null;
 	}
 	
@@ -275,9 +281,9 @@ public abstract class MIDlet
 			return true;
 		
 		// Debug
-		todo.DEBUG.note("Platform request: %s", __url);
+		Debugging.debugNote("Platform request: %s", __url);
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -299,7 +305,7 @@ public abstract class MIDlet
 		if (__attrname == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

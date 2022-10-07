@@ -1,6 +1,6 @@
 /* -*- Mode: C++; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -14,6 +14,7 @@
 
 // Descriptors
 #define SWINGPENCIL_CAPABILITIES_DESC "(I)I"
+#define SWINGPENCIL_NATIVEIMAGELOADTYPES_DESC "()I"
 
 JNIEXPORT jint JNICALL Impl_mle_PencilShelf_capabilities(JNIEnv* env,
 	jclass classy, jint pixelFormat)
@@ -23,9 +24,17 @@ JNIEXPORT jint JNICALL Impl_mle_PencilShelf_capabilities(JNIEnv* env,
 		pixelFormat);
 }
 
+JNIEXPORT jint JNICALL Impl_mle_PencilShelf_nativeImageLoadTypes(JNIEnv* env,
+	jclass classy)
+{
+	// This is not supported anywhere!
+	return 0;
+}
+
 static const JNINativeMethod mlePencilMethods[] =
 {
 	{"capabilities", SWINGPENCIL_CAPABILITIES_DESC, (void*)Impl_mle_PencilShelf_capabilities},
+	{"nativeImageLoadTypes", SWINGPENCIL_NATIVEIMAGELOADTYPES_DESC, (void*)Impl_mle_PencilShelf_nativeImageLoadTypes},
 };
 
 jint JNICALL mlePencilInit(JNIEnv* env, jclass classy)

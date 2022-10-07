@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,7 @@
 
 package javax.microedition.lcdui.game;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -42,114 +42,114 @@ public class Sprite
 	
 	public Sprite(Image __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Sprite(Image __a, int __b, int __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Sprite(Sprite __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final boolean collidesWith(Image __a, int __b, int __c, boolean 
 		__d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final boolean collidesWith(Sprite __a, boolean __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final boolean collidesWith(TiledLayer __a, boolean __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void defineCollisionRectangle(int __a, int __b, int __c, int __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void defineReferencePixel(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public final int getFrame()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getFrameSequenceLength()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getRawFrameCount()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getRefPixelX()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getRefPixelY()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void nextFrame()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public final void paint(Graphics __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void prevFrame()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setCollisionAlpha(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setFrame(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setFrameSequence(int[] __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setImage(Image __a, int __b, int __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setRefPixelPosition(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setTransform(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

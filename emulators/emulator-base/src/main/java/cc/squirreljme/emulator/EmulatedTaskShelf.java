@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -135,6 +135,10 @@ public final class EmulatedTaskShelf
 			}
 		}
 		
+		// Load system property pairs
+		for (int i = 0, n = __sysPropPairs.length & (~1); i < n; i += 2)
+			sysProps.put(__sysPropPairs[i], __sysPropPairs[i + 1]);
+		
 		// We need the support path to determine how we are launching this
 		Path[] vmSupportPath = EmulatedTaskShelf.__classpathDecode(
 			System.getProperty(EmulatedTaskShelf.HOSTED_VM_SUPPORTPATH));
@@ -171,6 +175,13 @@ public final class EmulatedTaskShelf
 		for (Map.Entry<String, String> e : sysProps.entrySet())
 			args.add(String.format("-D%s=%s",
 				e.getKey(), e.getValue()));
+		
+		
+		// Use special main handler which handles loading the required
+		// methods for the hosted environment to work correctly with
+		// SquirrelJME... our sub-tasks need to have this in order to properly
+		// work
+		args.add("cc.squirreljme.emulator.NativeBinding");
 		
 		// The main class is our direct main class, we do not need special
 		// handling for it at all

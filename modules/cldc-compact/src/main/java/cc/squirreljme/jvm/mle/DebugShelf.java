@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -20,6 +20,10 @@ import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
  */
 public final class DebugShelf
 {
+	/** Verbose ID for internal threads. */
+	public static final int INTERNAL_THREAD_VERBOSE_ID =
+		Integer.MIN_VALUE;
+	
 	/**
 	 * Not used.
 	 *
@@ -128,16 +132,39 @@ public final class DebugShelf
 	 * it is not required. This is so that outer calls do not cause verbosity
 	 * to happen.
 	 * 
-	 * @param __flags The {@link VerboseDebugFlag}.
+	 * @param __flags The {@link VerboseDebugFlag}s.
 	 * @return An integer to be passed to {@link DebugShelf#verboseStop(int)}.
 	 * @since 2020/07/11
 	 */
 	public static native int verbose(int __flags);
 	
 	/**
+	 * Similar to {@link #verbose(int)} this will apply verbose flags to
+	 * threads that are created by the virtual machine internally such as
+	 * for UI callbacks and otherwise. Note that this there is only a single
+	 * state which affects all internally created threads, as such if this is
+	 * set again the previous verbosity will be removed. Additionally, it will
+	 * affect the entire state similarly to
+	 * {@link VerboseDebugFlag#INHERIT_VERBOSE_FLAGS}.
+	 * 
+	 * This method may or may not have an actual effect.
+	 * 
+	 * @param __flags The {@link VerboseDebugFlag}s.
+	 * @return Always returns {@link #INTERNAL_THREAD_VERBOSE_ID} which
+	 * can be passed to {@link DebugShelf#verboseStop(int)}.
+	 * @since 2022/06/12
+	 */
+	public static native int verboseInternalThread(int __flags);
+	
+	/**
 	 * Stops performing verbosity output.
 	 * 
-	 * @param __code The previous verbosity state.
+	 * If {@link #INTERNAL_THREAD_VERBOSE_ID} is used, this may only take
+	 * effect for newly created internal threads.
+	 * 
+	 * @param __code The previous verbosity state, or
+	 * {@link #INTERNAL_THREAD_VERBOSE_ID} to remove verbosity on internal
+	 * threads.
 	 * @since 2020/07/11
 	 */
 	public static native void verboseStop(int __code);

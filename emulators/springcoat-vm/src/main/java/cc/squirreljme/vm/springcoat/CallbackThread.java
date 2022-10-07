@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -77,6 +77,17 @@ public class CallbackThread
 			if (--this._openCount == 0)
 				this._openBy = null;
 		}
+	}
+	
+	/**
+	 * Indicates whether this callback does not suspend on debugging.
+	 * 
+	 * @return If this is no suspend on debugging.
+	 * @since 2022/09/01
+	 */
+	public boolean noDebugSuspend()
+	{
+		return this._thread.noDebugSuspend;
 	}
 	
 	/**

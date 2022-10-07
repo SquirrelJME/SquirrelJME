@@ -1,0 +1,35 @@
+# 2022/09/05
+
+## 15:25
+
+Okay so I am on vacation this week, so I will relax the best I can because I
+have an upcoming brain MRI... which can end up being different outcomes. On
+the otherwise, I am finding that in multiple branches I have test related
+changes which I merged some into `trunk`. What I want to do now is have it so
+that hyper-parameters can be inherited from super-classes. Of course this means
+that the test handling stuff is going to have to look a at a class and then
+look at a dependency of that class to figure out if there are any tests. So
+this will be somewhat recursive hunting for all of the potential various
+hyper-parameters so that it need not be actually duplicated across everything
+at once. I think also for expected parameters I should look at interfaces for
+every single class as well, although in CLDC you cannot get the interfaces from
+a class... so I am effectively going to have to make a shelf interface around
+it but that should not be difficult at all.
+
+## 15:56
+
+Okay so now TAC will look in interfaces for results, which this will be very
+nice for SummerCoat related tests since I only want to specify targets once.
+Now I need to handle multi-parameters and hyper-parameters for the actual test
+calling code, but probably after eating some food. If I do it this way I should
+then be able to avoid massive duplication of all the various targets because
+I really do not want to specify them dozens of times for the dozens of tests
+I will make for the compiler. This work will definitely save me time in the
+future.
+
+## 18:58
+
+Okay so that is very nice and simple, now what I need are optional dependencies
+except for test and testFixtures, so that all of the other testable modules
+can be just be brought in rather than duplicating test classes all over the
+place.

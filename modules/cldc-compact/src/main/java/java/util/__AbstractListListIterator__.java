@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -8,6 +8,8 @@
 // ---------------------------------------------------------------------------
 
 package java.util;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * List iterator which can go forwards and backwards through this abstract
@@ -28,8 +30,8 @@ final class __AbstractListListIterator__<E>
 	/** The current modification count, to detect modifications. */
 	private int _atmod;
 	
-	/** The index to be removed. */
-	private int _rmdx =
+	/** The index of the last next/previous, allows for removal. */
+	private int _lastNextPrevIndex =
 		-1;
 	
 	/**
@@ -65,7 +67,7 @@ final class __AbstractListListIterator__<E>
 		// Check modification
 		this.__checkConcurrent();
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -118,7 +120,7 @@ final class __AbstractListListIterator__<E>
 		
 		// Next one is after this, also the element to be removed is set
 		// by this method
-		this._rmdx = next;
+		this._lastNextPrevIndex = next;
 		this._next = next + 1;
 		
 		return rv;
@@ -159,7 +161,7 @@ final class __AbstractListListIterator__<E>
 		
 		// The element to remove is the one we just got and the next one
 		// is one down the list
-		this._rmdx = eldx;
+		this._lastNextPrevIndex = eldx;
 		this._next = eldx;
 		
 		return rv;
@@ -191,19 +193,19 @@ final class __AbstractListListIterator__<E>
 		
 		// {@squirreljme.error ZZ2c No previously returned element was
 		// iterated, it was already removed, or an element was added.}
-		int rmdx = this._rmdx;
+		int rmdx = this._lastNextPrevIndex;
 		if (rmdx < 0)
 			throw new IllegalStateException("ZZ2c");
 		
 		// Remove this index
-		this._rmdx = -1;
+		this._lastNextPrevIndex = -1;
 		this.owner.remove(rmdx);
 		
 		// Next element would be moved down
 		int next = this._next;
 		if (next > rmdx)
 			this._next = next - 1;
-		
+
 		// Set new modification count
 		this._atmod = this.owner.modCount;
 	}
@@ -218,7 +220,17 @@ final class __AbstractListListIterator__<E>
 		// Check modification
 		this.__checkConcurrent();
 		
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ3z No previous call to next or previous was
+		// performed.}
+		int index = this._lastNextPrevIndex;
+		if (index < 0)
+			throw new IllegalStateException("ZZ2c");
+		
+		// Set the item
+		this.owner.set(index, __v);
+		
+		// Set new modification count because the list has been changed
+		this._atmod = this.owner.modCount;
 	}
 	
 	/**
@@ -227,7 +239,7 @@ final class __AbstractListListIterator__<E>
 	 * @throws ConcurrentModificationException If it was modified.
 	 * @since 2018/10/29
 	 */
-	private final void __checkConcurrent()
+	private void __checkConcurrent()
 		throws ConcurrentModificationException
 	{
 		// {@squirreljme.error ZZ2d List has been concurrently modified.}

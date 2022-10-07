@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -347,6 +347,22 @@ public enum MLEUIForm
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return new UIFormObject(__thread.machine, UIFormShelf.formNew());
+		}
+	},
+	
+	/** {@link UIFormShelf#formRefresh(UIFormBracket)}. */
+	FORM_REFRESH("formRefresh:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2022/07/20
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			UIFormShelf.formRefresh(MLEUIForm.__form(__args[0]).form);
+			return null;
 		}
 	},
 	

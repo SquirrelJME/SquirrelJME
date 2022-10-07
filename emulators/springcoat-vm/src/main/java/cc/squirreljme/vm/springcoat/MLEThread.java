@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -19,8 +19,8 @@ import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
 import cc.squirreljme.jvm.mle.constants.ThreadModelType;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
+import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
-import cc.squirreljme.vm.springcoat.brackets.TaskObject;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import net.multiphasicapps.classfile.ClassName;
@@ -74,8 +74,9 @@ public enum MLEThread
 		}
 	},
 	
-	/** {@link ThreadShelf#createVMThread(Thread)}. */
-	CREATE_VM_THREAD( "createVMThread:(Ljava/lang/Thread;)Lcc/" +
+	/** {@link ThreadShelf#createVMThread(Thread, String)}. */
+	CREATE_VM_THREAD( "createVMThread:(Ljava/lang/Thread;" +
+		"Ljava/lang/String;)Lcc/" +
 		"squirreljme/jvm/mle/brackets/VMThreadBracket;")
 	{
 		/**
@@ -88,6 +89,9 @@ public enum MLEThread
 		{
 			SpringSimpleObject javaThread = MLEThread.__javaThread(__thread,
 				__args[0]);
+			String name = (__args[1] == null ||
+				__args[1] == SpringNullObject.NULL ? null :
+				__thread.<String>asNativeObject(String.class, __args[1]));
 			
 			// Find the thread which the given passed object is bound to, this
 			// is the target thread
@@ -128,8 +132,17 @@ public enum MLEThread
 				// oops! We need to actually create one here and bind it
 				// accordingly!
 				if (target == null)
-					target = machine.createThread(null, false);
+					target = machine.createThread(name,
+						false, false);
 			}
+			
+			// New thread?
+			if (__thread.verboseCheck(VerboseDebugFlag.THREAD_NEW))
+				__thread.verboseEmit("New Thread: %s", target);
+			
+			// Inherit verbose flags for this new thread?
+			if (__thread.verboseCheck(VerboseDebugFlag.INHERIT_VERBOSE_FLAGS))
+				target._initVerboseFlags = __thread.verbose().activeFlags();
 			
 			// Create object with this attached thread
 			VMThreadObject vmThread = new VMThreadObject(machine, target);
@@ -140,7 +153,7 @@ public enum MLEThread
 			
 			// If we are debugging, we are going to need to tell the debugger
 			// some important details
-			JDWPController jdwp = target.machineRef.get()
+			JDWPController jdwp = target.machine()
 				.taskManager().jdwpController;
 			if (jdwp != null)
 			{
@@ -532,7 +545,7 @@ public enum MLEThread
 			SpringThread thread = MLEThread.__vmThread(__args[0]).getThread();
 			
 			// If debugging, signal that the thread has ended
-			JDWPController jdwp = thread.machineRef.get()
+			JDWPController jdwp = thread.machine()
 				.taskManager().jdwpController;
 			if (jdwp != null)
 				jdwp.<JDWPTripThread>trip(JDWPTripThread.class,
@@ -614,7 +627,10 @@ public enum MLEThread
 			// Try to set the priority
 			try
 			{
-				thread._worker.setPriority(priority);
+				if (thread._worker == null)
+					thread._initPriority = priority;
+				else
+					thread._worker.setPriority(priority);
 			}
 			catch (IllegalArgumentException|SecurityException e)
 			{
@@ -642,6 +658,10 @@ public enum MLEThread
 			// Create worker for thread and start it
 			SpringThreadWorker worker = new SpringThreadWorker(
 				__thread.machine, target, false);
+			
+			// Inherited verbose flags for this new thread?
+			if (target._initVerboseFlags != 0)
+				worker.verbose().add(0, target._initVerboseFlags);
 			
 			// Enter the base setup frame
 			target.enterFrame(worker.loadClass(MLEThread._START_CLASS)
@@ -671,8 +691,8 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new TaskObject(MLEThread.__vmThread(__args[0]).getThread()
-				.machine());
+			return MLEThread.__vmThread(__args[0]).getThread()
+				.machine().taskObject(__thread.machine);
 		}
 	}, 
 	

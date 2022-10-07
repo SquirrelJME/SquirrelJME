@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -681,6 +681,7 @@ public abstract class SerializedGraphics
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/11/19
+	 * @param __s
 	 */
 	@Override
 	public void setStrokeStyle(int __s)
@@ -710,7 +711,7 @@ public abstract class SerializedGraphics
 	 * @return The target clipping.
 	 * @since 2020/01/10
 	 */
-	private final int __getClipX()
+	private int __getClipX()
 	{
 		return (Integer)this.serialize(GraphicsFunction.GET_CLIP_X);
 	}
@@ -721,7 +722,7 @@ public abstract class SerializedGraphics
 	 * @return The target clipping.
 	 * @since 2020/01/10
 	 */
-	private final int __getClipY()
+	private int __getClipY()
 	{
 		return (Integer)this.serialize(GraphicsFunction.GET_CLIP_Y);
 	}
@@ -1026,7 +1027,7 @@ public abstract class SerializedGraphics
 				return 0;
 			
 			default:
-				throw new todo.OOPS("" + __func);
+				throw Debugging.oops(__func);
 		}
 	}
 	

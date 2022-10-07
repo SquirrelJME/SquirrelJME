@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -64,6 +63,28 @@ public final class SpringNullObject
 	public final SpringClass type()
 	{
 		return null;
+	}
+	
+	/**
+	 * Checks the given type and return the value if it is not {@code null}.
+	 * 
+	 * @param <T> The type to check.
+	 * @param __type The type to check.
+	 * @param __arg The argument to check against.
+	 * @return Either {@code null} or {@code __arg} if not {@code null}.
+	 * @throws ClassCastException If the type is wrong.
+	 * @throws NullPointerException If {@code __type} is {@code null}.
+	 * @since 2021/12/05
+	 */
+	public static <T> T checkCast(Class<T> __type, Object __arg)
+		throws ClassCastException, NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		if (__arg == null || __arg == SpringNullObject.NULL)
+			return null;
+		return __type.cast(__arg);
 	}
 }
 

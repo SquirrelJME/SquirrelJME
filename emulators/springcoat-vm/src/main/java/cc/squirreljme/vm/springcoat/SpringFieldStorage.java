@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIllegalAccessException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeException;
 import net.multiphasicapps.classfile.ClassName;
@@ -29,17 +29,11 @@ public final class SpringFieldStorage
 	/** Name and type of the field. */
 	protected final FieldNameAndType nameandtype;
 	
-	/** Is this volatile? */
-	protected final boolean isvolatile;
-	
 	/** Is this final? */
-	protected final boolean isfinal;
+	protected final boolean isFinal;
 	
 	/** The field index. */
 	protected final int fieldIndex;
-	
-	/** The value of the field. */
-	private Object _normal;
 	
 	/** The volatile value of the field. */
 	private volatile Object _volatile;
@@ -90,7 +84,7 @@ public final class SpringFieldStorage
 			
 				// Should not occur
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 		
 		// If the field starts with a constant, it must be initialized
@@ -99,12 +93,12 @@ public final class SpringFieldStorage
 			init = cv.boxedValue();
 		
 		// Set initial value
-		if ((this.isvolatile = __f.flags().isVolatile()))
+		synchronized (this)
+		{
 			this._volatile = init;
-		else
-			this._normal = init;
+		}
 		
-		this.isfinal = __f.flags().isFinal();
+		this.isFinal = __f.flags().isFinal();
 	}
 	
 	/**
@@ -117,7 +111,10 @@ public final class SpringFieldStorage
 	{
 		// Volatile field, use volatile field instead
 		// Otherwise just set thread without worrying about any contention
-		return (this.isvolatile ? this._volatile : this._normal);
+		synchronized (this)
+		{
+			return this._volatile;
+		}
 	}
 	
 	/**
@@ -150,21 +147,29 @@ public final class SpringFieldStorage
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
+		// Storing something that should not go into a field?
+		if (!(__v instanceof SpringObject) &&
+			!(__v instanceof Boolean) &&
+			!(__v instanceof Integer) &&
+			!(__v instanceof Long) &&
+			!(__v instanceof Float) &&
+			!(__v instanceof Double))
+			throw new IllegalArgumentException(String.format(
+				"Attempting to store %s (a %s)?", __v, __v.getClass()));
+		
 		// Debug
 		/*todo.DEBUG.note("%s::%s = %s", this.inclass, this.nameandtype,
 			__v);*/
 		
 		// {@squirreljme.error BK18 Attempt to write to final field.}
-		if (this.isfinal && !__writeFinal)
+		if (this.isFinal && !__writeFinal)
 			throw new SpringIllegalAccessException("BK18");
 		
 		// Volatile field, use volatile field instead
-		if (this.isvolatile)
+		synchronized (this)
+		{
 			this._volatile = __v;
-		
-		// Otherwise just set thread without worrying about any contention
-		else
-			this._normal = __v;
+		}
 	}
 }
 

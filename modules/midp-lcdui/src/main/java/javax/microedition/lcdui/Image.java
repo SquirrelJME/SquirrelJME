@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -11,15 +10,17 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.image.AccessibleImage;
 import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class Image
+	extends AccessibleImage
 {
 	/** The RGB image data. */
 	private final int[] _data;
@@ -38,7 +39,7 @@ public class Image
 	
 	Image()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -74,7 +75,7 @@ public class Image
 	public final void getARGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -159,9 +160,9 @@ public class Image
 		if (__w <= 0 || __h <= 0)
 			return;
 		
-		// Scalable images must be rasterized
+		// Scalable images must be rasterized first
 		if (this.isScalable())
-			throw new todo.TODO();
+			throw Debugging.todo();
 			
 		// Check
 		if (__b == null)
@@ -173,15 +174,15 @@ public class Image
 	
 		// {@squirreljme.error EB2a The absolute value of the scanline length
 		// exceeds the read width.}
-		int absl = Math.abs(__sl);
-		if (absl < __w)
+		int scanLen = Math.abs(__sl);
+		if (scanLen < __w)
 			throw new IllegalArgumentException("EB2a");
 		
 		// {@squirreljme.error EB2b Reading of RGB data would exceed the bounds
 		// out the output array.}
-		int srcarea = __w * __h;
-		int areasl = __sl * __h;
-		if (__o < 0 || (__o + areasl) > __b.length || (__o + areasl) < 0)
+		int areaPix = __w * __h;
+		int areaScan = __sl * __h;
+		if (__o < 0 || (__o + areaScan) > __b.length || (__o + areaScan) < 0)
 			throw new ArrayIndexOutOfBoundsException("EB2b");
 		
 		// {@squirreljme.error EB2c The area to read exceeds the bounds of the
@@ -195,7 +196,8 @@ public class Image
 		
 		// If the alpha channel is not used then all RGB data is forced to
 		// be fully opaque
-		int opqmask = (this._alpha ? 0 : 0xFF_000000);
+		boolean alpha = this._alpha;
+		int opaqueMask = (this._alpha ? 0 : 0xFF_000000);
 		
 		// Read image data
 		int[] data = this._data;
@@ -205,16 +207,24 @@ public class Image
 			int srcoff = (iw * sy) + __x;
 			int dstoff = __o + (wy * __sl);
 			
-			// Copy data
-			for (int sx = __x; sx < ex; sx++)
-				__b[dstoff++] = data[srcoff++] | opqmask;
+			// Copy data, arraycopy is much faster of an operation!
+			/*for (int sx = __x; sx < ex; sx++)
+				__b[dstoff++] = data[srcoff++] | opqmask;*/
+			System.arraycopy(data, srcoff,
+				__b, dstoff, ex - __x);
+			
+			// If not using alpha, then force all pixels to have the given
+			// alpha mask
+			if (!alpha)
+				for (int sx = __x; sx < ex; sx++)
+					__b[dstoff++] |= opaqueMask;
 		}
 	}
 	
 	public final void getRGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -270,6 +280,52 @@ public class Image
 	public final boolean isScalable()
 	{
 		return (this instanceof ScalableImage);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/26
+	 */
+	@Override
+	public final int squirreljmeDirectOffset()
+	{
+		if (this.squirreljmeIsDirect())
+			return 0;
+		return Integer.MIN_VALUE;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/26
+	 */
+	@Override
+	public final int[] squirreljmeDirectRGBInt()
+	{
+		if (this.squirreljmeIsDirect())
+			return this._data;
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/26
+	 */
+	@Override
+	public final int squirreljmeDirectScanLen()
+	{
+		if (this.squirreljmeIsDirect())
+			return this._width;
+		return Integer.MIN_VALUE;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/01/26
+	 */
+	@Override
+	public final boolean squirreljmeIsDirect()
+	{
+		return !(this.isScalable() || this.isAnimated());
 	}
 	
 	/**
@@ -345,9 +401,11 @@ public class Image
 		int area = __w * __h;
 		int[] data = new int[area];
 		
-		// Fill with color
-		for (int i = 0; i < area; i++)
-			data[i] = __c;
+		// Fill with color, unless we asked for zero then nothing needs to
+		// actually be done
+		if (__c != 0)
+			for (int i = 0; i < area; i++)
+				data[i] = __c;
 		
 		// Create
 		return new Image(data, __w, __h, true, __alpha);
@@ -369,33 +427,8 @@ public class Image
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
-		// If marking is supported, directly use the stream
-		if (__is.markSupported())
-			return ImageReaderDispatcher.parse(__is);
-		
-		// Load the entire image data into a buffer so that we can mark it
-		byte[] copy;
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
-			Math.max(__is.available(), 4096)))
-		{
-			// Copy the image data
-			byte[] buf = new byte[512];
-			for (;;)
-			{
-				int rc = __is.read(buf);
-				
-				if (rc < 0)
-					break;
-				
-				baos.write(buf, 0, rc);
-			}
-			
-			// Use copied data
-			copy = baos.toByteArray();
-		}
-		
-		// Parse the data now that it can be marked
-		return ImageReaderDispatcher.parse(new ByteArrayInputStream(copy));
+		// Parse the image
+		return ImageReaderDispatcher.parse(__is);
 	}
 	
 	/**
@@ -447,7 +480,7 @@ public class Image
 		
 		// Needs to be rendered
 		if (__i instanceof ScalableImage)
-			throw new todo.TODO();
+			throw Debugging.todo();
 		
 		// Same otherwise
 		else if (!__i._mutable)
@@ -468,11 +501,11 @@ public class Image
 	public static Image createImage(Image __i, int __x, int __y, int __w,
 		int __h, int __trans, int __iw, int __ih)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
-	 * Creates an image from the specified ARGB pixel array.
+	 * Creates an immutable image from the specified ARGB pixel array.
 	 *
 	 * @param __rgb The ARGB or RGB image data to use as the image data.
 	 * @param __w The width of the image.
@@ -502,25 +535,28 @@ public class Image
 				__w, __h));
 		
 		// {@squirreljme.error EB2h The input integer buffer is shorter than
-		// the specified area.}
-		int rgblen;
-		if ((rgblen = __rgb.length) < area)
-			throw new IndexOutOfBoundsException("EB2h");
+		// the specified image area.}
+		int rgbLen = __rgb.length;
+		if (rgbLen < area)
+			throw new IndexOutOfBoundsException(String.format(
+				"EB2h %d < %d", rgbLen, area));
 		
 		// Use a cloned copy of the pixel data?
-		if (rgblen == area)
+		if (rgbLen == area)
 			__rgb = __rgb.clone();
 		
 		// Otherwise initialize a new one
 		else
 		{
 			int[] copy = new int[area];
-			for (int i = 0; i < area; i++)
-				copy[i] = __rgb[i];
+			
+			System.arraycopy(__rgb, 0,
+				copy, 0, area);
+			
 			__rgb = copy;
 		}
 		
-		// If there is no alpha channel, force all of it opaque
+		// If there is no alpha channel, force all of it to be opaque
 		if (!__alpha)
 			for (int i = 0; i < area; i++)
 				__rgb[i] |= 0xFF000000;

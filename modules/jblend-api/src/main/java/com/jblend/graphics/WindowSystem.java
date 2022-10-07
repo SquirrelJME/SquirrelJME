@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -8,6 +8,8 @@
 // ---------------------------------------------------------------------------
 
 package com.jblend.graphics;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class WindowSystem
 {
@@ -23,11 +25,11 @@ public class WindowSystem
     
     public WindowSystem()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     public static WindowSystem getDefaultWindowSystem()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

@@ -1,14 +1,15 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.midlet;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public final class MIDletIdentity
 {
@@ -31,27 +32,27 @@ public final class MIDletIdentity
 	 */
 	MIDletIdentity()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getClient()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getName()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getVendor()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getVersion()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -61,7 +62,7 @@ public final class MIDletIdentity
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

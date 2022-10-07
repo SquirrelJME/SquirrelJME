@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,12 +9,13 @@
 
 package net.multiphasicapps.squirrelquarrel.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.KeyListener;
 import net.multiphasicapps.squirrelquarrel.world.Tile;
 
 /**
  * This handles the input for the game such as which keys are held down and
- * buttons for perfomring actions.
+ * buttons for performing actions.
  *
  * @since 2017/02/12
  */
@@ -47,7 +47,7 @@ public class GameInputHandler
 	@Override
 	public void keyPressed(int __code, int __mods)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		// Parse key and set the game action as being pressed
 		try
@@ -70,7 +70,7 @@ public class GameInputHandler
 	@Override
 	public void keyReleased(int __code, int __mods)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		// Parse key and set the game action as being released
 		GameInterface gameinterface = this.gameinterface;
@@ -102,7 +102,7 @@ public class GameInputHandler
 	@Override
 	public void keyRepeated(int __code, int __mods)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -114,7 +114,7 @@ public class GameInputHandler
 	 */
 	protected void pointerDragged(int __x, int __y)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		__checkAutomapDrag(true, __x, __y);*/
 	}
@@ -128,7 +128,7 @@ public class GameInputHandler
 	 */
 	protected void pointerPressed(int __x, int __y)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		__checkAutomapDrag(false, __x, __y);*/
 	}
@@ -142,7 +142,7 @@ public class GameInputHandler
 	 */
 	protected void pointerReleased(int __x, int __y)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		// Cannot be dragging on the map
 		this._ondragmap = false;
@@ -156,7 +156,7 @@ public class GameInputHandler
 	@Override
 	public void run()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		GameInterface gameinterface = this.gameinterface;
 		boolean[] gamekeys = this.gamekeys;
@@ -180,7 +180,7 @@ public class GameInputHandler
 	 */
 	private void __checkAutomapDrag(boolean __drag, int __x, int __y)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		// Get the automap
 		GameInterface gameinterface = this.gameinterface;

@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,6 +9,7 @@
 
 package com.jblend.micro.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Graphics;
 
 public class CalendarImpl implements CalendarInterface {
@@ -16,24 +17,24 @@ public class CalendarImpl implements CalendarInterface {
 	@Override
 	public void initCalendarValues(int var1, int var2)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public void paint(Graphics var1, int var2, int var3, int var4, int var5, int var6, int var7)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public String getBackCommand()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 
     @Override
 	public String getSaveCommand()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }

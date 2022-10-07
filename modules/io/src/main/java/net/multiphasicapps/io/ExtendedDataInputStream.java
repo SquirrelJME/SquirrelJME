@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.EOFException;
@@ -80,7 +80,7 @@ public class ExtendedDataInputStream
 	public int available()
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -159,7 +159,7 @@ public class ExtendedDataInputStream
 	public int read(byte[] __b)
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -170,7 +170,7 @@ public class ExtendedDataInputStream
 	public int read(byte[] __b, int __o, int __l)
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -181,7 +181,7 @@ public class ExtendedDataInputStream
 	public boolean readBoolean()
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -280,7 +280,7 @@ public class ExtendedDataInputStream
 			
 				// Unknown
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	
@@ -303,7 +303,7 @@ public class ExtendedDataInputStream
 	public String readLine()
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -328,7 +328,7 @@ public class ExtendedDataInputStream
 			
 				// Unknown
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	
@@ -354,8 +354,22 @@ public class ExtendedDataInputStream
 			
 				// Unknown
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
+	}
+	
+	/**
+	 * Reads a signed three-byte integer.
+	 * 
+	 * @return The read value.
+	 * @throws IOException On read errors.
+	 * @since 2021/12/08
+	 */
+	public int readThree()
+		throws IOException
+	{
+		return ExtendedDataInputStream.__signExtendThree(
+			this.readUnsignedThree());
 	}
 	
 	/**
@@ -381,6 +395,35 @@ public class ExtendedDataInputStream
 	}
 	
 	/**
+	 * Reads an unsigned three-byte integer.
+	 * 
+	 * @return The read value.
+	 * @throws IOException On read errors.
+	 * @since 2021/12/08
+	 */
+	public int readUnsignedThree()
+		throws IOException
+	{
+		DataInputStream in = this.input;
+		int a = in.readUnsignedByte();
+		int b = in.readUnsignedByte();
+		int c = in.readUnsignedByte();
+		
+		switch (this._endian)
+		{
+			case LITTLE:
+				return a | (b << 8) | (c << 16);
+			
+			case BIG:
+				return (a << 16) | (b << 8) | c;
+			
+				// Unknown
+			default:
+				throw Debugging.oops();
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/10
 	 */
@@ -388,7 +431,7 @@ public class ExtendedDataInputStream
 	public String readUTF()
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -453,7 +496,7 @@ public class ExtendedDataInputStream
 	public long skip(long __n)
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -464,7 +507,22 @@ public class ExtendedDataInputStream
 	public int skipBytes(int __n)
 		throws IOException
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Sign extends a three byte value.
+	 * 
+	 * @param __v The value to extend.
+	 * @return The sign extended three byte value.
+	 * @since 2021/12/08
+	 */
+	@SuppressWarnings("MagicNumber")
+	private static int __signExtendThree(int __v)
+	{
+		if ((__v & 0x800000) != 0)
+			return __v | 0xFF_000000;
+		return __v;
 	}
 }
 

@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator;
 
+import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -34,7 +35,7 @@ public class EmulatedTerminalShelf
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2020/11/22
 	 */
-	public static int available(int __fd)
+	public static int available(PipeBracket __fd)
 		throws MLECallError
 	{
 		try
@@ -57,7 +58,7 @@ public class EmulatedTerminalShelf
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2020/07/02
 	 */
-	public static int close(int __fd)
+	public static int close(PipeBracket __fd)
 		throws MLECallError
 	{
 		try
@@ -82,7 +83,7 @@ public class EmulatedTerminalShelf
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2018/12/08
 	 */
-	public static int flush(int __fd)
+	public static int flush(PipeBracket __fd)
 		throws MLECallError
 	{
 		try
@@ -100,6 +101,35 @@ public class EmulatedTerminalShelf
 	}
 	
 	/**
+	 * Returns the pipe to a standardized input/output pipe that is shared
+	 * across many systems.
+	 * 
+	 * @param __fd The pipe to get the pipe of.
+	 * @return The pipe to the given pipe.
+	 * @throws MLECallError If the standard pipe does not exist or is not
+	 * valid.
+	 * @since 2022/03/19
+	 */
+	public static PipeBracket fromStandard(int __fd)
+		throws MLECallError
+	{
+		switch (__fd)
+		{
+			case StandardPipeType.STDIN:
+				return new EmulatedPipeBracket(System.in);
+			
+			case StandardPipeType.STDOUT:
+				return new EmulatedPipeBracket(System.out);
+			
+			case StandardPipeType.STDERR:
+				return new EmulatedPipeBracket(System.err);
+			
+			default:
+				throw new MLECallError("Invalid pipe: " + __fd);
+		}
+	}
+	
+	/**
 	 * Reads from the given pipe into the output buffer.
 	 *
 	 * @param __fd The {@link StandardPipeType} to read from.
@@ -112,7 +142,7 @@ public class EmulatedTerminalShelf
 	 * {@code null}.
 	 * @since 2018/12/05
 	 */
-	public static int read(int __fd, byte[] __b, int __o, int __l)
+	public static int read(PipeBracket __fd, byte[] __b, int __o, int __l)
 		throws MLECallError
 	{
 		if (__b == null || __o < 0 || __l < 0 || (__o + __l) > __b.length)
@@ -140,7 +170,7 @@ public class EmulatedTerminalShelf
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2018/09/21
 	 */
-	public static int write(int __fd, int __c)
+	public static int write(PipeBracket __fd, int __c)
 		throws MLECallError
 	{
 		try
@@ -169,7 +199,7 @@ public class EmulatedTerminalShelf
 	 * {@code null}.
 	 * @since 2018/12/05
 	 */
-	public static int write(int __fd, byte[] __b, int __o, int __l)
+	public static int write(PipeBracket __fd, byte[] __b, int __o, int __l)
 		throws MLECallError
 	{
 		if (__b == null || __o < 0 || __l < 0 || (__o + __l) > __b.length)
@@ -196,15 +226,11 @@ public class EmulatedTerminalShelf
 	 * @throws MLECallError If the stream is not valid.
 	 * @since 2020/11/21
 	 */
-	private static Closeable __any(int __fd)
+	private static Closeable __any(PipeBracket __fd)
 		throws MLECallError
 	{
-		if (__fd == StandardPipeType.STDIN)
-			return System.in;
-		else if (__fd == StandardPipeType.STDOUT)
-			return System.out;
-		else if (__fd == StandardPipeType.STDERR)
-			return System.err;
+		if (__fd instanceof EmulatedPipeBracket)
+			return (Closeable)__fd;
 		
 		throw new MLECallError("Invalid any: " + __fd);
 	}
@@ -217,11 +243,16 @@ public class EmulatedTerminalShelf
 	 * @throws MLECallError If the stream is not valid.
 	 * @since 2020/11/21
 	 */
-	private static InputStream __input(int __fd)
+	private static InputStream __input(PipeBracket __fd)
 		throws MLECallError
 	{
-		if (__fd == StandardPipeType.STDIN)
-			return System.in;
+		if (__fd instanceof EmulatedPipeBracket)
+		{
+			EmulatedPipeBracket emul = (EmulatedPipeBracket)__fd;
+			
+			if (emul._in != null)
+				return emul._in;
+		}
 		
 		throw new MLECallError("Invalid input: " + __fd);
 	}
@@ -234,13 +265,16 @@ public class EmulatedTerminalShelf
 	 * @throws MLECallError If the stream is not valid.
 	 * @since 2020/11/21
 	 */
-	private static OutputStream __output(int __fd)
+	private static OutputStream __output(PipeBracket __fd)
 		throws MLECallError
 	{
-		if (__fd == StandardPipeType.STDOUT)
-			return System.out;
-		else if (__fd == StandardPipeType.STDERR)
-			return System.err;
+		if (__fd instanceof EmulatedPipeBracket)
+		{
+			EmulatedPipeBracket emul = (EmulatedPipeBracket)__fd;
+			
+			if (emul._out != null)
+				return emul._out;
+		}
 		
 		throw new MLECallError("Invalid output: " + __fd);
 	}

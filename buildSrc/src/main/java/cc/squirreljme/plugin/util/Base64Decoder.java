@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -15,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Arrays;
 
 /**
  * This decodes the base64 character set, ignoring invalid characters, and
@@ -183,8 +183,7 @@ public final class Base64Decoder
 		
 		// Build ASCII map for quick in-range character lookup
 		byte[] ascii = new byte[128];
-		for (int i = 0; i < 128; i++)
-			ascii[i] = -1;
+		Arrays.fill(ascii, (byte)-1);
 		for (int i = 0; i < 65; i++)
 		{
 			int dx = __chars[i];
@@ -299,7 +298,7 @@ public final class Base64Decoder
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Did a previous read cause a padded EOF?

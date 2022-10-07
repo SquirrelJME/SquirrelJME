@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,8 @@
 
 package javax.microedition.m3g;
 
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class AnimationTrack
 	extends Object3D
@@ -79,27 +80,27 @@ public class AnimationTrack
 	
 	public AnimationTrack(KeyframeSequence __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public AnimationController getController()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public KeyframeSequence getKeyframeSequence()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getTargetProperty()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setController(AnimationController __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

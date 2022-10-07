@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,7 @@
 
 package net.multiphasicapps.squirrelquarrel.units;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.squirrelquarrel.game.InitialSettings;
@@ -97,7 +97,7 @@ public final class Units
 		// Morph this unit to the resulting type
 		rv.morph(__t);
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 		/*
 		// Setup unit
 		Unit rv = new Unit(this);

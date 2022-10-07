@@ -1,14 +1,15 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.cldc.util;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This class manages a boxed like representation of unsigned integers.
@@ -30,7 +31,7 @@ public final class UnsignedInteger
 	 */
 	public UnsignedInteger(int __v)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -50,7 +51,7 @@ public final class UnsignedInteger
 	@Override
 	public final double doubleValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -60,7 +61,7 @@ public final class UnsignedInteger
 	@Override
 	public final float floatValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -70,7 +71,7 @@ public final class UnsignedInteger
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -80,7 +81,7 @@ public final class UnsignedInteger
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -90,7 +91,7 @@ public final class UnsignedInteger
 	@Override
 	public final int intValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -100,7 +101,7 @@ public final class UnsignedInteger
 	@Override
 	public final long longValue()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -131,7 +132,7 @@ public final class UnsignedInteger
 	 */
 	public static final int compareSignedUnsigned(int __a, int __ub)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**

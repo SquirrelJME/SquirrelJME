@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -11,72 +10,74 @@
 package javax.microedition.m3g;
 
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 public class Appearance
 	extends Object3D
 {
 	public Appearance()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public CompositingMode getCompositingMode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Fog getFog()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getLayer()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Material getMaterial()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public PolygonMode getPolygonMode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Texture2D getTexture(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setCompositingMode(CompositingMode __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setFog(Fog __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setLayer(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setMaterial(Material __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setPolygonMode(PolygonMode __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setTexture(int __a, Texture2D __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

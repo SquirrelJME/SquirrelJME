@@ -1,6 +1,6 @@
 /* -*- Mode: C++; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -43,6 +43,8 @@ static const JNINativeMethod mleDebugMethods[] =
 	{"traceStack", "()[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;",
 		(void*)Impl_mle_DebugShelf_traceStack},
 	{"verbose", "(I)I",
+		(void*)Impl_mle_DebugShelf_verbose},
+	{"verboseInternalThread", "(I)I",
 		(void*)Impl_mle_DebugShelf_verbose},
 	{"verboseStop", "(I)V",
 		(void*)Impl_mle_DebugShelf_verboseStop},

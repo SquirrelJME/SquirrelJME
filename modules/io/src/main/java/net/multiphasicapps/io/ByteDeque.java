@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,9 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -37,10 +39,12 @@ public class ByteDeque
 	 */
 	private static final int _BLOCK_SIZE =
 		Math.max(8, Integer.getInteger(
-			"net.multiphasicapps.util.datadeque.blocksize", 128));
+			"net.multiphasicapps.util.datadeque.blocksize",
+			ByteDeque.__dequeSliceSize()));
 	
 	/** The block size mask. */
-	private static final int _BLOCK_MASK = ByteDeque._BLOCK_SIZE - 1;
+	private static final int _BLOCK_MASK =
+		ByteDeque._BLOCK_SIZE - 1;
 	
 	/** The shift to convert block based values. */
 	private static final int _BLOCK_SHIFT =
@@ -159,7 +163,7 @@ public class ByteDeque
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
 		// No bytes to add, do nothing
@@ -178,7 +182,7 @@ public class ByteDeque
 		int nb = blocks.size();
 		int head = this._head, tail = this._tail;
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -232,7 +236,7 @@ public class ByteDeque
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
 		// No bytes to add, do nothing
@@ -277,8 +281,12 @@ public class ByteDeque
 				limit = left;
 			
 			// Write data
-			for (int i = 0; i < limit; i++)
-				bl[tail++] = __b[at++];
+			System.arraycopy(__b, at,
+				bl, tail, limit);
+			tail += limit;
+			at += limit;
+			/*for (int i = 0; i < limit; i++)
+				bl[tail++] = __b[at++];*/
 			
 			// Masking is only needed after the write
 			tail &= bm;
@@ -374,7 +382,7 @@ public class ByteDeque
 			// Should never occur, because that means the end is lower
 			// than the start
 			if (rc < 0)
-				throw new todo.OOPS();
+				throw Debugging.oops();
 			
 			// Erase data
 			for (int i = 0; i < rc; i++)
@@ -476,7 +484,7 @@ public class ByteDeque
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
 		// If there are no bytes, all reads do nothing
@@ -863,7 +871,7 @@ public class ByteDeque
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
 		// If nothing to remove, do nothing
@@ -882,7 +890,7 @@ public class ByteDeque
 		// If this occurs then the number of bytes deleted was not the
 		// same as the number of bytes which were read.
 		if (rva != rvb)
-			throw new todo.OOPS();
+			throw Debugging.oops();
 		
 		// Return the read count
 		return rva;
@@ -940,10 +948,10 @@ public class ByteDeque
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -1015,7 +1023,7 @@ public class ByteDeque
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
 		// {@squirreljme.error BD2h The requested address is outside of
@@ -1075,7 +1083,7 @@ public class ByteDeque
 		if (__os == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -1092,7 +1100,7 @@ public class ByteDeque
 	 * @return The number of bytes read.
 	 * @since 2016/08/04
 	 */
-	private final int __getOrSetVia(boolean __last, int __a, byte[] __b,
+	private int __getOrSetVia(boolean __last, int __a, byte[] __b,
 		int __o, int __l, boolean __set)
 	{
 		// Get some things
@@ -1132,7 +1140,7 @@ public class ByteDeque
 		}
 		
 		// The initial read head starts where the actual data starts
-		// logicall in the buffer (if the head is 2 then address 42 is
+		// logically in the buffer (if the head is 2 then address 42 is
 		// 44 within the buffer).
 		int rhead = (head + __a) & bm;
 		
@@ -1154,13 +1162,25 @@ public class ByteDeque
 			
 			// Write the data
 			if (__set)
-				for (int i = 0; i < rc; i++)
-					bl[rhead++] = __b[at++];
+			{
+				System.arraycopy(__b, at,
+					bl, rhead, rc);
+				/*for (int i = 0; i < rc; i++)
+					bl[rhead++] = __b[at++];*/
+			}
 		
 			// Read the data
 			else
-				for (int i = 0; i < rc; i++)
-					__b[at++] = bl[rhead++];
+			{
+				System.arraycopy(bl, rhead,
+					__b, at, rc);
+				/*for (int i = 0; i < rc; i++)
+					__b[at++] = bl[rhead++];*/
+			}
+			
+			// Move up pointers
+			at += rc;
+			rhead += rc;
 			
 			// Reset head to zero for the next block read
 			rhead = 0;
@@ -1171,6 +1191,25 @@ public class ByteDeque
 		
 		// Return the number of bytes read
 		return limit;
+	}
+	
+	/**
+	 * Determines the slice size to use for deques.
+	 * 
+	 * @return The slice size.
+	 * @since 2021/12/05
+	 */
+	private static int __dequeSliceSize()
+	{
+		switch (RuntimeShelf.memoryProfile())
+		{
+			case MemoryProfileType.MINIMAL:
+				return 128;
+			
+			case MemoryProfileType.NORMAL:
+			default:
+				return 512;
+		}
 	}
 }
 

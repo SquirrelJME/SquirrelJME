@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -8,6 +8,8 @@
 // ---------------------------------------------------------------------------
 
 package java.util;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This is a last-in-first-out, this uses {@link Vector} as a base and provides
@@ -23,27 +25,27 @@ public class Stack<E>
 {
 	public boolean empty()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public E peek()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public E pop()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public E push(E __item)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int search(Object __o)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

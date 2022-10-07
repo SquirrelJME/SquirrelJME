@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,7 @@
 
 package net.multiphasicapps.zip.streamreader;
 
+import cc.squirreljme.runtime.cldc.archive.ArchiveStreamReader;
 import java.io.Closeable;
 import java.io.EOFException;
 import java.io.IOException;
@@ -33,7 +33,7 @@ import net.multiphasicapps.zip.ZipException;
  * @since 2016/07/19
  */
 public class ZipStreamReader
-	implements Closeable
+	implements ArchiveStreamReader, Closeable
 {
 	/** The maximum support version for extracting. */
 	private static final int _MAX_EXTRACT_VERSION =
@@ -126,6 +126,7 @@ public class ZipStreamReader
 	 * @throws IOException On read errors.
 	 * @since 2016/07/19
 	 */
+	@Override
 	public ZipStreamEntry nextEntry()
 		throws IOException
 	{

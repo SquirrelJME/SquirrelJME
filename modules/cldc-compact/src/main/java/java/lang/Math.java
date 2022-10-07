@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -11,6 +10,7 @@
 package java.lang;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.FDMLMath;
 
 /**
@@ -46,7 +46,7 @@ public final strictfp class Math
 	 * @return The absolute value.
 	 * @since 2019/04/14
 	 */
-	public static int abs(int __v)
+	public static strictfp int abs(int __v)
 	{
 		return (__v < 0 ? -__v : __v);
 	}
@@ -58,7 +58,7 @@ public final strictfp class Math
 	 * @return The absolute value.
 	 * @since 2019/04/14
 	 */
-	public static long abs(long __v)
+	public static strictfp long abs(long __v)
 	{
 		return (__v < 0 ? -__v : __v);
 	}
@@ -70,7 +70,7 @@ public final strictfp class Math
 	 * @return The absolute value.
 	 * @since 2019/04/14
 	 */
-	public static float abs(float __v)
+	public static strictfp float abs(float __v)
 	{
 		return Float.intBitsToFloat(0x7FFFFFFF & Float.floatToIntBits(__v));
 	}
@@ -82,65 +82,65 @@ public final strictfp class Math
 	 * @return The absolute value.
 	 * @since 2019/04/14
 	 */
-	public static double abs(double __v)
+	public static strictfp double abs(double __v)
 	{
 		return Double.longBitsToDouble(0x7FFFFFFFFFFFFFFFL &
 			Double.doubleToLongBits(__v));
 	}
 	
-	public static double acos(double __a)
+	public static strictfp double acos(double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static double asin(double __a)
+	public static strictfp double asin(double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static double atan(double __a)
+	public static strictfp double atan(double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static double atan2(double __a, double __b)
+	public static strictfp double atan2(double __a, double __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static double ceil(double __a)
+	public static strictfp double ceil(double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static double copySign(double __a, double __b)
+	public static strictfp double copySign(double __a, double __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static float copySign(float __a, float __b)
+	public static strictfp float copySign(float __a, float __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static double cos(double __a)
+	public static strictfp double cos(double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static double floor(double __a)
+	public static strictfp double floor(double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static int getExponent(float __a)
+	public static strictfp int getExponent(float __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static int getExponent(double __a)
+	public static strictfp int getExponent(double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -154,7 +154,7 @@ public final strictfp class Math
 	 */
 	@Deprecated
 	@ImplementationNote("This method does not exist in the CLDC library.")
-	public static double log(double __v)
+	public static strictfp double log(double __v)
 	{
 		return FDMLMath.log(__v);
 	}
@@ -168,26 +168,26 @@ public final strictfp class Math
 	 * @since 2018/09/29
 	 */
 	@SuppressWarnings("ManualMinMaxCalculation")
-	public static int max(int __a, int __b)
+	public static strictfp int max(int __a, int __b)
 	{
 		if (__a > __b)
 			return __a;
 		return __b;
 	}
 	
-	public static long max(long __a, long __b)
+	public static strictfp long max(long __a, long __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static float max(float __a, float __b)
+	public static strictfp float max(float __a, float __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static double max(double __a, double __b)
+	public static strictfp double max(double __a, double __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -199,7 +199,7 @@ public final strictfp class Math
 	 * @since 2018/09/29
 	 */
 	@SuppressWarnings("ManualMinMaxCalculation")
-	public static int min(int __a, int __b)
+	public static strictfp int min(int __a, int __b)
 	{
 		if (__a < __b)
 			return __a;
@@ -215,7 +215,7 @@ public final strictfp class Math
 	 * @since 2018/12/08
 	 */
 	@SuppressWarnings("ManualMinMaxCalculation")
-	public static long min(long __a, long __b)
+	public static strictfp long min(long __a, long __b)
 	{
 		if (__a < __b)
 			return __a;
@@ -231,7 +231,7 @@ public final strictfp class Math
 	 * @since 2018/12/08
 	 */
 	@SuppressWarnings("ManualMinMaxCalculation")
-	public static float min(float __a, float __b)
+	public static strictfp float min(float __a, float __b)
 	{
 		if (__a < __b)
 			return __a;
@@ -247,41 +247,41 @@ public final strictfp class Math
 	 * @since 2018/12/08
 	 */
 	@SuppressWarnings("ManualMinMaxCalculation")
-	public static double min(double __a, double __b)
+	public static strictfp double min(double __a, double __b)
 	{
 		if (__a < __b)
 			return __a;
 		return __b;
 	}
 	
-	public static double random()
+	public static strictfp double random()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static int round(float __a)
+	public static strictfp int round(float __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static long round(double __a)
+	public static strictfp long round(double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static double signum(double __a)
+	public static strictfp double signum(double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static float signum(float __a)
+	public static strictfp float signum(float __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static double sin(double __a)
+	public static strictfp double sin(double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -291,24 +291,24 @@ public final strictfp class Math
 	 * @return The square root.
 	 * @since 2018/11/03
 	 */
-	public static double sqrt(double __v)
+	public static strictfp double sqrt(double __v)
 	{
 		return FDMLMath.sqrt(__v);
 	}
 	
-	public static double tan(double __a)
+	public static strictfp double tan(double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static double toDegrees(double __a)
+	public static strictfp double toDegrees(double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static double toRadians(double __a)
+	public static strictfp double toRadians(double __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

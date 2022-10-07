@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -8,7 +8,6 @@
 // ---------------------------------------------------------------------------
 
 package java.util;
-
 
 /**
  * The list iterator for this linked list.
@@ -298,7 +297,7 @@ final class __LinkedListListIterator__<E>
 	 * @throws ConcurrentModificationException If it was modified.
 	 * @since 2018/10/29
 	 */
-	private final void __checkConcurrent()
+	private void __checkConcurrent()
 		throws ConcurrentModificationException
 	{
 		// {@squirreljme.error ZZ2w List has been concurrently modified.}

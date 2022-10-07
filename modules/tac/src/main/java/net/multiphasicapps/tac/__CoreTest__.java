@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -21,8 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.testng.SkipException;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * This is the core test framework which handles reading test information and
@@ -51,58 +49,9 @@ abstract class __CoreTest__
 	 * @throws Throwable On any thrown exception.
 	 * @since 2018/10/06
 	 */
+	@Test
 	abstract Object __runTest(Object... __args)
 		throws Throwable;
-	
-	/**
-	 * Runs the test for TestNG.
-	 *
-	 * @since 2020/02/23
-	 */
-	@Test
-	@Deprecated
-	public final void runForTestNG()
-	{
-		// Run our execution with the default arguments!
-		TestExecution execution = this.runExecution();
-		
-		// Always print the result
-		execution.print(System.err);
-		
-		// If running on Java SE, print the expected manifest
-		if (execution.status == TestStatus.FAILED)
-			if (RuntimeShelf.vmType() == VMType.JAVA_SE)
-			{
-				System.err.println("****************************************");
-				System.err.println("*** RESULTANT MANIFEST:");
-				
-				try
-				{
-					execution.result.writeAsManifest(System.err);
-				}
-				catch (IOException ignored)
-				{
-				}
-				
-				System.err.println("****************************************");
-			}
-		
-		// If the test did not pass, throw an exception
-		if (execution.status != TestStatus.SUCCESS)
-		{
-			// Only use as a cause if this is even valid
-			Object tossed = execution.tossed;
-			Throwable tossedThrown = ((tossed instanceof Throwable) ?
-				(Throwable)tossed : null);
-			
-			// If skippable, try throwing a TestNG skip exception if it exists
-			if (execution.status == TestStatus.UNTESTABLE)
-				throw new SkipException("SKIPPED", tossedThrown);
-			
-			// Fail otherwise
-			throw new ThrownTestExecution(execution, tossedThrown);
-		}
-	}
 	
 	/**
 	 * {@inheritDoc}

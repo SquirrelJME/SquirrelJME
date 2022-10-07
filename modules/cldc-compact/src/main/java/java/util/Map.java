@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -23,7 +22,14 @@ public interface Map<K, V>
 	@Override
 	boolean equals(Object __a);
 	
-	V get(Object __a);
+	/**
+	 * Obtains the key from the given map.
+	 * 
+	 * @param __key The key to get.
+	 * @return The value of the given key or {@code null} if not found.
+	 * @since 2022/07/12
+	 */
+	V get(Object __key);
 	
 	@Override
 	int hashCode();

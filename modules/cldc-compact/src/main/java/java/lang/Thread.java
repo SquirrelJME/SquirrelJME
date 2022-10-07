@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -78,11 +77,7 @@ public class Thread
 	 */
 	public Thread()
 	{
-		VMThreadBracket vmThread = ThreadShelf.createVMThread(this);
-		this._vmThread = vmThread;
-		
-		this._runnable = null;
-		this._name = Thread.__defaultName(null, vmThread);
+		this(null, false, null);
 	}
 	
 	/**
@@ -94,11 +89,7 @@ public class Thread
 	 */
 	public Thread(Runnable __r)
 	{
-		VMThreadBracket vmThread = ThreadShelf.createVMThread(this);
-		this._vmThread = vmThread;
-		
-		this._runnable = __r;
-		this._name = Thread.__defaultName(null, vmThread);
+		this(__r, false, null);
 	}
 	
 	/**
@@ -112,14 +103,7 @@ public class Thread
 	public Thread(String __n)
 		throws NullPointerException
 	{
-		if (__n == null)
-			throw new NullPointerException("NARG");
-		
-		VMThreadBracket vmThread = ThreadShelf.createVMThread(this);
-		this._vmThread = vmThread;
-		
-		this._runnable = null;
-		this._name = Thread.__defaultName(__n, vmThread);
+		this(null, true, __n);
 	}
 	
 	/**
@@ -134,14 +118,28 @@ public class Thread
 	public Thread(Runnable __r, String __n)
 		throws NullPointerException
 	{
-		if (__n == null)
+		this(__r, true, __n);
+	}
+	
+	/**
+	 * Initializes the thread.
+	 * 
+	 * @param __runnable The runnable to use.
+	 * @param __hasName Does this have a name?
+	 * @param __name The name of the thread.
+	 * @since 2022/09/24
+	 */
+	private Thread(Runnable __runnable, boolean __hasName, String __name)
+	{
+		if (__hasName && __name == null)
 			throw new NullPointerException("NARG");
 		
-		VMThreadBracket vmThread = ThreadShelf.createVMThread(this);
+		VMThreadBracket vmThread = ThreadShelf.createVMThread(this,
+			__name);
 		this._vmThread = vmThread;
 		
-		this._runnable = __r;
-		this._name = Thread.__defaultName(__n, vmThread);
+		this._runnable = __runnable;
+		this._name = Thread.__defaultName(__name, vmThread);
 	}
 	
 	/**
@@ -550,7 +548,7 @@ public class Thread
 		if (__name != null)
 			return __name;
 		
-		// Otherwise it is just the attached thread ID
+		// Otherwise, it is just the attached thread ID
 		return "Thread-" + ThreadShelf.vmThreadId(__vm);
 	}
 }

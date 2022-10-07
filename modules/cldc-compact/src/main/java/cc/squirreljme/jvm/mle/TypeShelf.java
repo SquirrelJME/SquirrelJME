@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -54,9 +54,11 @@ public final class TypeShelf
 	 *
 	 * @param __cl The class to get the type of.
 	 * @return The type of the given class.
+	 * @throws MLECallError On null arguments.
 	 * @since 2020/06/07
 	 */
-	public static native TypeBracket classToType(Class<?> __cl);
+	public static native TypeBracket classToType(Class<?> __cl)
+		throws MLECallError;
 	
 	/**
 	 * Returns the component type of the class.
@@ -121,14 +123,16 @@ public final class TypeShelf
 		throws MLECallError;
 	
 	/**
-	 * Finds a type by it's name.
+	 * Finds a type by its name.
 	 *
 	 * @param __name The name of the type.
 	 * @return The type bracket for the type or {@code null} if none was
 	 * found.
+	 * @throws MLECallError If no name was specified.
 	 * @since 2020/06/02
 	 */
-	public static native TypeBracket findType(String __name);
+	public static native TypeBracket findType(String __name)
+		throws MLECallError;
 	
 	/**
 	 * Initializes the given class.
@@ -335,7 +339,9 @@ public final class TypeShelf
 	 * @param <T> Ignored.
 	 * @param __type The type to get the class object of.
 	 * @return The class type for the given type.
+	 * @throws MLECallError On null arguments.
 	 * @since 2020/05/30
 	 */
-	public static native <T> Class<T> typeToClass(TypeBracket __type);
+	public static native <T> Class<T> typeToClass(TypeBracket __type)
+		throws MLECallError;
 }

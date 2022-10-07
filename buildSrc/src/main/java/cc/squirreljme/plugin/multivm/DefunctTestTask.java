@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -34,22 +34,15 @@ public class DefunctTestTask
 		this.setGroup("defunct");
 		this.setDescription("Defunct test task, relies on another test task.");
 		
-		// Always runs
-		this.onlyIf(new AlwaysTrue());
+		// Never runs
+		this.onlyIf(new AlwaysFalse());
+		
+		// Depend on testHosted since all of the tests are there and those
+		// may assume as such
+		this.dependsOn(this.getProject()
+			.getTasks().findByName("testHosted"));
 		
 		// Make sure the task fails as quickly as possibles
-		this.doFirst(this::action);
-	}
-	
-	/**
-	 * This just fails the task.
-	 * 
-	 * @param __task The running task.
-	 * @since 2020/10/07
-	 */
-	private void action(Task __task)
-	{
-		throw new RuntimeException("The `test` task is defunct, " +
-			"the task `testHosted` must be used instead. Failing.");
+		this.doFirst(new DefunctTestTaskAction());
 	}
 }

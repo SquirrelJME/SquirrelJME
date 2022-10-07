@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -198,6 +198,10 @@ public class TestFormProperties
 			
 			case UIWidgetProperty.STRING_FORM_TITLE:
 				this.secondary("has-form-title", !noEitherGet);
+				return;
+				
+			case UIWidgetProperty.INT_SIGNAL_FOCUS:
+				this.secondary("no-signal-focus", noEitherGet);
 				return;
 			
 			default:

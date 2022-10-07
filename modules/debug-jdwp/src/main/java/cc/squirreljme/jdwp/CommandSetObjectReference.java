@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -46,8 +46,7 @@ public enum CommandSetObjectReference
 				__packet.id(), ErrorType.NO_ERROR);
 				
 			// Write the details of this class
-			rv.writeByte(JDWPUtils.classType(__controller, type).id);
-			rv.writeId(System.identityHashCode(type));
+			rv.writeTaggedId(__controller, type);
 			
 			return rv;
 		}
@@ -101,7 +100,7 @@ public enum CommandSetObjectReference
 						value.set(tag.defaultValue);
 					
 					// Always write as tagged value
-					rv.writeValue(value, tag, false);
+					rv.writeValue(__controller, value, tag, false);
 					
 					// Store object for later use
 					if (value.get() != null && tag.isObject)

@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -12,10 +11,12 @@ package java.io;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
- * This is a reader which is backed by a buffer which should increase the
- * efficiency of read operations by allowing for bulk reads for easily.
+ * This is a reader which is backed by a buffer which can read a larger block
+ * of characters at once which should increase the efficiency of operations,
+ * it additionally allows for marking.
  *
  * It is recommended to wrap these around {@link InputStreamReader} for
  * example due to that class not being efficient due to character conversions.
@@ -116,7 +117,7 @@ public class BufferedReader
 		
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -185,7 +186,7 @@ public class BufferedReader
 	{
 		if (__c == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __c.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __c.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Has been closed?
@@ -421,7 +422,7 @@ public class BufferedReader
 		
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

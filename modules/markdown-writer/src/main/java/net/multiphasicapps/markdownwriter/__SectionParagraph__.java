@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -45,6 +44,9 @@ class __SectionParagraph__
 	void __endSection()
 		throws IOException
 	{
+		// Make sure we do the starting space
+		this.__justStarted();
+		
 		super.__endSection();
 		
 		// Add newline after the first column
@@ -64,14 +66,7 @@ class __SectionParagraph__
 		// If the paragraph just started then add a spacing newline before
 		// its content
 		MarkdownWriter writer = this.writer;
-		if (this._juststarted)
-		{
-			// Write line
-			writer.__put('\n', true);
-			
-			// No longer started
-			this._juststarted = false;
-		}
+		this.__justStarted();
 		
 		// If this is whitespace then do not print it on the first column ever
 		if (MarkdownWriter.__isWhitespace(__c) && writer._column == 0)
@@ -80,6 +75,29 @@ class __SectionParagraph__
 		// Write character
 		if (__c > 0)
 			writer.__put(__c, true);
+	}
+	
+	/**
+	 * Performs actions for when the paragraph was just started.
+	 * 
+	 * @throws IOException On write errors.
+	 * @since 2022/08/30
+	 */
+	private void __justStarted()
+		throws IOException
+	{
+		// If the paragraph just started then add a spacing newline before
+		// its content
+		MarkdownWriter writer = this.writer;
+		if (this._juststarted)
+		{
+			// Add blank lines before section
+			while (writer._zeroLines < 1) 
+				writer.__put('\n', true);
+			
+			// No longer started
+			this._juststarted = false;
+		}
 	}
 }
 

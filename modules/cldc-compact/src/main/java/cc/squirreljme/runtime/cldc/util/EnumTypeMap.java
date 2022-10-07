@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -68,6 +68,7 @@ public final class EnumTypeMap<E extends Enum<E>, V>
 	/**
 	 * {@inheritDoc}
 	 * @since 2021/03/13
+	 * @param __key
 	 */
 	@SuppressWarnings("unchecked")
 	@Override

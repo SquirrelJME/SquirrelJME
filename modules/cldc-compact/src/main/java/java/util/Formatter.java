@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,7 +9,7 @@
 
 package java.util;
 
-import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -65,7 +64,7 @@ import java.io.Writer;
  *
  * @since 2018/09/23
  */
-@ImplementationNote("")
+@SuppressWarnings("OverlyComplexClass")
 public final class Formatter
 	implements Closeable
 {
@@ -74,6 +73,9 @@ public final class Formatter
 	
 	/** The appendable to write to. */
 	private final Appendable _out;
+	
+	/** Internal string buffer, used to output in entire chunks at once. */
+	private final StringBuilder _buffer;
 	
 	/** Has this been closed? */
 	private volatile boolean _closed;
@@ -108,7 +110,7 @@ public final class Formatter
 	 */
 	public Formatter()
 	{
-		this._out = new StringBuilder();
+		this(new StringBuilder());
 	}
 	
 	/**
@@ -125,6 +127,11 @@ public final class Formatter
 			throw new NullPointerException("NARG");
 		
 		this._out = __a;
+		
+		// If the output is an actual StringBuilder then we do not need an
+		// internal mini buffer for entirely chunked output.
+		this._buffer = ((__a instanceof StringBuilder) ? null :
+			new StringBuilder());
 	}
 	
 	/**
@@ -231,8 +238,15 @@ public final class Formatter
 		// Writing to the appendable may cause an exception to occur
 		try
 		{
+			StringBuilder buffer = this._buffer;
+			Appendable finalOut = this._out;
+			Appendable workingOut = (buffer != null ? buffer : finalOut);
+			
+			// Wipe the temporary buffer
+			if (buffer != null)
+				buffer.setLength(0);
+			
 			// Process input characters
-			Appendable out = this._out;
 			for (int i = 0, n = __fmt.length(), next = 0; i < n; i = next)
 			{
 				char c = __fmt.charAt(i);
@@ -240,21 +254,26 @@ public final class Formatter
 				// Just a normal character
 				if (c != '%')
 				{
-					out.append(c);
+					workingOut.append(c);
 					
 					// Just skip the single character
-					next = i + 1;;
+					next = i + 1;
 					continue;
 				}
 				
 				// It is simpler to handle the parsing of the specifier in
 				// another method due to loops and variables
 				__PrintFState__ pf = new __PrintFState__(pg);
-				next = this.__specifier(pf, i, __fmt);
+				next = Formatter.__specifier(pf, i, __fmt);
 				
 				// Handle output of the specifier
-				this.__output(out, pf);
+				Formatter.__output(workingOut, pf);
 			}
+			
+			// Output the entire buffer here all at once so that I/O operations
+			// are reduced.
+			if (buffer != null)
+				finalOut.append(buffer);
 		}
 		
 		// Catch any exception
@@ -345,7 +364,7 @@ public final class Formatter
 		
 		// Use local digit grouping
 		if (__pf.__hasFlag(__PrintFFlag__.LOCALE_GROUPING))
-			throw new todo.TODO();
+			throw Debugging.todo();
 		
 		// Negative values can have flags (note negatives are always signed)
 		boolean signed = neg;
@@ -562,11 +581,16 @@ public final class Formatter
 				append = __pf.<Object>__argument(Object.class, "null").
 					toString();
 				break;
+				
+				// Percent sign
+			case PERCENT:
+				append = "%";
+				break;
 			
 				// {@squirreljme.error ZZ2n Unimplemented conversion.
 				// (The conversion)}
 			default:
-				throw new todo.TODO("ZZ2n " + conv);
+				throw Debugging.todo("ZZ2n " + conv);
 		}
 		
 		// Convert to uppercase
@@ -697,7 +721,7 @@ public final class Formatter
 			// Parse precision
 			c = __fmt.charAt(at);
 			if (c == '.')
-				throw new todo.TODO();
+				throw Debugging.todo();
 			
 			// Parse the conversion
 			c = __fmt.charAt(at);

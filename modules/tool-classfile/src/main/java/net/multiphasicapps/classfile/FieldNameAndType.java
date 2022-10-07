@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -49,6 +48,34 @@ public final class FieldNameAndType
 	}
 	
 	/**
+	 * Initializes the field name and type.
+	 *
+	 * @param __n The name of the field.
+	 * @param __t The type of the field.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/12
+	 */
+	public FieldNameAndType(String __n, String __t)
+		throws NullPointerException
+	{
+		this(new FieldName(__n), new FieldDescriptor(__t));
+	}
+	
+	/**
+	 * Initializes the field name and type.
+	 *
+	 * @param __n The name of the field.
+	 * @param __t The type of the field.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/01/12
+	 */
+	public FieldNameAndType(String __n, FieldDescriptor __t)
+		throws NullPointerException
+	{
+		this(new FieldName(__n), __t);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/10/12
 	 */
@@ -58,7 +85,7 @@ public final class FieldNameAndType
 		int rv = this.name.compareTo(__o.name);
 		if (rv != 0)
 			return rv;
-		return this.type.toString().compareTo(__o.type.toString());
+		return this.type.compareTo(__o.type);
 	}
 	
 	/**

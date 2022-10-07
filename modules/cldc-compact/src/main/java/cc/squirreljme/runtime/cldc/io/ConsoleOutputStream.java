@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -11,7 +10,9 @@
 package cc.squirreljme.runtime.cldc.io;
 
 import cc.squirreljme.jvm.mle.TerminalShelf;
+import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -27,17 +28,52 @@ public final class ConsoleOutputStream
 	implements Appendable
 {
 	/** the file descriptor to write to. */
-	protected final int fd;
+	protected final PipeBracket pipe;
+	
+	/** Is the output always flushed? */
+	protected final boolean alwaysFlush;
 	
 	/**
 	 * Initializes the output stream.
 	 *
-	 * @param __fd The descriptor to write to.
+	 * @param __fd The {@link StandardPipeType} to write to.
+	 * @param __alwaysFlush Is the pipe to be always flushed?
+	 * @throws IllegalArgumentException If the pipe is not valid.
+	 * @deprecated Use {@link PipeBracket} and otherwise.
 	 * @since 2018/12/08
 	 */
-	public ConsoleOutputStream(int __fd)
+	@Deprecated
+	public ConsoleOutputStream(int __fd, boolean __alwaysFlush)
+		throws IllegalArgumentException
 	{
-		this.fd = __fd;
+		try
+		{
+			this.pipe = TerminalShelf.fromStandard(__fd);
+			this.alwaysFlush = __alwaysFlush;
+		}
+		catch (MLECallError e)
+		{
+			// {@squirreljme.error ZZ5g The standard pipe is not valid.}
+			throw new IllegalArgumentException("ZZ5g", e);
+		}
+	}
+	
+	/**
+	 * Writes to the given output pipe.
+	 * 
+	 * @param __pipe The pipe to write to.
+	 * @param __alwaysFlush Is the pipe to be always flushed?
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/03/19
+	 */
+	public ConsoleOutputStream(PipeBracket __pipe, boolean __alwaysFlush)
+		throws NullPointerException
+	{
+		if (__pipe == null)
+			throw new NullPointerException("NARG");
+		
+		this.pipe = __pipe;
+		this.alwaysFlush = __alwaysFlush;
 	}
 	
 	/**
@@ -98,7 +134,7 @@ public final class ConsoleOutputStream
 		throws IOException
 	{
 		// {@squirreljme.error ZZ3y Could not close the terminal output.}
-		if (TerminalShelf.close(this.fd) < 0)
+		if (TerminalShelf.close(this.pipe) < 0)
 			throw new IOException("ZZ3y");
 	}
 	
@@ -111,7 +147,7 @@ public final class ConsoleOutputStream
 		throws IOException
 	{
 		// {@squirreljme.error ZZ05 Could not flush the console.}
-		if (TerminalShelf.flush(this.fd) < 0)
+		if (TerminalShelf.flush(this.pipe) < 0)
 			throw new IOException("ZZ05");
 	}
 	
@@ -124,11 +160,11 @@ public final class ConsoleOutputStream
 		throws IOException
 	{
 		// {@squirreljme.error ZZ06 Error writing to console.}
-		if (TerminalShelf.write(this.fd, __b) < 0)
+		if (TerminalShelf.write(this.pipe, __b) < 0)
 			throw new IOException("ZZ06");
 		
-		// Always flush standard error to force printing
-		if (this.fd == StandardPipeType.STDERR)
+		// Always flush to force printing
+		if (this.alwaysFlush)
 			this.flush();
 	}
 	
@@ -144,11 +180,11 @@ public final class ConsoleOutputStream
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error ZZ07 Error writing to console.}
-		if (TerminalShelf.write(this.fd, __b, 0, __b.length) < 0)
+		if (TerminalShelf.write(this.pipe, __b, 0, __b.length) < 0)
 			throw new IOException("ZZ07");
 		
-		// Always flush standard error to force printing
-		if (this.fd == StandardPipeType.STDERR)
+		// Always flush to force printing
+		if (this.alwaysFlush)
 			this.flush();
 	}
 	
@@ -162,15 +198,15 @@ public final class ConsoleOutputStream
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// {@squirreljme.error ZZ08 Error writing to console.}
-		if (TerminalShelf.write(this.fd, __b, __o, __l) < 0)
+		if (TerminalShelf.write(this.pipe, __b, __o, __l) < 0)
 			throw new IOException("ZZ08");
 		
-		// Always flush standard error to force printing
-		if (this.fd == StandardPipeType.STDERR)
+		// Always flush to force printing
+		if (this.alwaysFlush)
 			this.flush();
 	}
 }

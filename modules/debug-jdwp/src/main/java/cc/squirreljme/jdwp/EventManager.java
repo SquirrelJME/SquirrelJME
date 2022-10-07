@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -178,7 +178,7 @@ public final class EventManager
 			if (__unconditional)
 				return this.__unconditional(__controller, __kind);
 			else
-			return EmptyList.<EventRequest>empty();
+				return EmptyList.<EventRequest>empty();
 		
 		// Lock since this could be used by many threads
 		List<EventRequest> rv = null;
@@ -189,7 +189,7 @@ public final class EventManager
 				if (__unconditional)
 					return this.__unconditional(__controller, __kind);
 				else
-				return EmptyList.<EventRequest>empty();
+					return EmptyList.<EventRequest>empty();
 			
 			// Find matching events
 			for (Iterator<EventRequest> iterator = requests.iterator();

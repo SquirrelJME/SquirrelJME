@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,7 @@
 
 package jdk.dio;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.nio.Buffer;
 
 public class RoundCompletionEvent<P extends Device<? super P>, B extends 
@@ -18,38 +18,38 @@ public class RoundCompletionEvent<P extends Device<? super P>, B extends
 {
 	public RoundCompletionEvent(P __a, B __b, int __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public RoundCompletionEvent(P __a, B __b, int __c, long __d, int __e)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public RoundCompletionEvent(P __a, B __b, int __c, boolean __d)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public RoundCompletionEvent(P __a, B __b, int __c, boolean __d, long __e,
 		int __f)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public B getBuffer()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getNumber()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean isOnError()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

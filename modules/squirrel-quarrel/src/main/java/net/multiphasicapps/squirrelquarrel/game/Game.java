@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,7 @@
 
 package net.multiphasicapps.squirrelquarrel.game;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.squirrelquarrel.player.Player;
 import net.multiphasicapps.squirrelquarrel.player.PlayerColor;
 import net.multiphasicapps.squirrelquarrel.player.Players;
@@ -147,7 +147,7 @@ public class Game
 	 *
 	 * @since 2019/03/24
 	 */
-	private final void __boot()
+	private void __boot()
 	{
 		Units units = this.units;
 		Players players = this.players;
@@ -165,7 +165,7 @@ public class Game
 					64 + (128 * i), 64);
 				
 				// Create workers from the building
-				todo.TODO.note("Spawn workers!");
+				Debugging.todoNote("Spawn workers!", new Object[] {});
 			}
 		}
 	}

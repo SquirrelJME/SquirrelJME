@@ -1,5 +1,6 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -7,6 +8,8 @@
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.jvm.suite;
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This represents the type of the dependency that is to be included.
@@ -46,7 +49,7 @@ public enum SuiteDependencyType
 			case PROPRIETARY:	return "proprietary";
 			
 			default:
-				throw new todo.OOPS();
+				throw Debugging.oops();
 		}
 	}
 	

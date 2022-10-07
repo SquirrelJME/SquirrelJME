@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -34,19 +33,19 @@ public class TestRandom
 	{
 		Random rand = new Random(0xCAFEBABE);
 		
-		for (int i = 0; i < COUNT; i++)
+		for (int i = 0; i < TestRandom.COUNT; i++)
 			this.secondary(String.format("boolean-%02d", i),
 				rand.nextBoolean());
 		
-		for (int i = 0; i < COUNT; i++)
+		for (int i = 0; i < TestRandom.COUNT; i++)
 			this.secondary(String.format("int-%02d", i),
 				rand.nextInt());
 		
-		for (int i = 0; i < COUNT; i++)
+		for (int i = 0; i < TestRandom.COUNT; i++)
 			this.secondary(String.format("long-%02d", i),
 				rand.nextLong());
 			
-		for (int i = 0; i < COUNT; i++)
+		for (int i = 0; i < TestRandom.COUNT; i++)
 			this.secondary(String.format("range-%02d", i),
 				rand.nextInt(i + 1));
 	}

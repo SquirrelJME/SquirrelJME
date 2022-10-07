@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -11,6 +11,7 @@ package cc.squirreljme.jdwp;
 
 import cc.squirreljme.jdwp.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.trips.JDWPTripThread;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This class is used by threads to determine if a thread needs to halt
@@ -54,6 +55,9 @@ public final class JDWPThreadSuspension
 		if (__controller.viewThread().suspension(__thread) != this)
 			throw new IllegalStateException("AG0g");
 		
+		// Did we emit the suspension message?
+		boolean emitSuspend = false;
+		
 		// Loop around constantly, handle interrupts which will just do nothing
 		// on suspension
 		boolean amInterrupting = false;
@@ -84,6 +88,15 @@ public final class JDWPThreadSuspension
 					__controller.trip(JDWPTripThread.class,
 						JDWPGlobalTrip.THREAD)
 						.suspension(__thread, true);
+					
+					// Debug
+					if (!emitSuspend)
+					{
+						emitSuspend = true;
+						Debugging.debugNote(
+							"Thread %s is suspended via the debugger...",
+							__controller.viewThread().name(__thread));
+					}
 				}
 				
 				// If this is being interrupted then just stop here, although

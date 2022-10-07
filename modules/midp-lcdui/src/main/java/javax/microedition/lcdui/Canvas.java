@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -40,6 +39,14 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 public abstract class Canvas
 	extends Displayable
 {
+	/** The maximum number of times to wait when servicing repaints. */
+	private static final int _REPAINT_STOP =
+		5;
+	
+	/** The amount of time to wait when servicing repaints. */
+	private static final int _REPAINT_DELAY =
+		16;
+	
 	/**
 	 * Every button that is possibly available.
 	 * 
@@ -98,69 +105,91 @@ public abstract class Canvas
 	public static final int GAME_D =
 		12;
 	
+	/** Backspace keyboard key. */
 	public static final int KEY_BACKSPACE =
 		8;
 	
+	/** Delete keyboard key. */
 	public static final int KEY_DELETE =
 		127;
 	
+	/** Down arrow keyboard key. */
 	public static final int KEY_DOWN =
 		-2;
 	
+	/** Enter keyboard key. */
 	public static final int KEY_ENTER =
 		10;
 	
+	/** Escape keyboard key. */
 	public static final int KEY_ESCAPE =
 		27;
 	
+	/** Left arrow keyboard key. */
 	public static final int KEY_LEFT =
 		-3;
 	
+	/** Number pad zero keyboard key. */
 	public static final int KEY_NUM0 =
 		48;
 	
+	/** Number pad one keyboard key. */
 	public static final int KEY_NUM1 =
 		49;
 	
+	/** Number pad two keyboard key. */
 	public static final int KEY_NUM2 =
 		50;
 	
+	/** Number pad three keyboard key. */
 	public static final int KEY_NUM3 =
 		51;
 	
+	/** Number pad four keyboard key. */
 	public static final int KEY_NUM4 =
 		52;
 	
+	/** Number pad five keyboard key. */
 	public static final int KEY_NUM5 =
 		53;
 	
+	/** Number pad six keyboard key. */
 	public static final int KEY_NUM6 =
 		54;
 	
+	/** Number pad seven keyboard key. */
 	public static final int KEY_NUM7 =
 		55;
 	
+	/** Number pad eight keyboard key. */
 	public static final int KEY_NUM8 =
 		56;
 	
+	/** Number pad nine keyboard key. */
 	public static final int KEY_NUM9 =
 		57;
 	
+	/** Pound/hash keyboard key. */
 	public static final int KEY_POUND =
 		35;
 	
+	/** Right arrow keyboard key. */
 	public static final int KEY_RIGHT =
 		-4;
 	
+	/** The select key. */
 	public static final int KEY_SELECT =
 		-5;
 	
+	/** The space bar keyboard key. */
 	public static final int KEY_SPACE =
 		32;
 	
+	/** The star/asterisk keyboard key. */
 	public static final int KEY_STAR =
 		42;
 	
+	/** The horizontal tab keyboard key. */
 	public static final int KEY_TAB =
 		9;
 	
@@ -195,11 +224,16 @@ public abstract class Canvas
 	/** The native display instance. */
 	final UIItemBracket _uiCanvas;
 	
+	/** Lock for repaints and servicing repaints. */
+	private final Object _repaintLock =
+		new Object();
+	
 	/** The key listener to use. */
 	KeyListener _keyListener;
 	
 	/** Is the rendering transparent or opaque? */
-	boolean _transparent;
+	boolean _isOpaque =
+		true;
 	
 	/** Should this be ran full-screen? */
 	volatile boolean _isFullScreen;
@@ -221,7 +255,7 @@ public abstract class Canvas
 	protected Canvas()
 	{
 		// Build new canvas
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		UIItemBracket uiCanvas = backend.itemNew(UIItemType.CANVAS);
 		this._uiCanvas = uiCanvas;
 		
@@ -335,7 +369,7 @@ public abstract class Canvas
 			__sk != Display._SOFTKEY_RIGHT_COMMAND))
 			throw new IllegalArgumentException("EB17 " + __sk);
 		
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		
 		// Use the item's actual position
 		int uiPos = Display.__layoutSoftKeyToPos(__sk);
@@ -569,27 +603,32 @@ public abstract class Canvas
 			return;
 		
 		// Request repainting
-		UIBackend instance = UIBackendFactory.getInstance();
+		UIBackend instance = UIBackendFactory.getInstance(true);
 		
 		// Send repaint properties
 		instance.widgetProperty(this._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, UISpecialCode.REPAINT_KEY_X | __x);
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
+				UISpecialCode.REPAINT_KEY_X | __x);
 		instance.widgetProperty(this._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, UISpecialCode.REPAINT_KEY_Y | __y);
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
+				UISpecialCode.REPAINT_KEY_Y | __y);
 		instance.widgetProperty(this._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, UISpecialCode.REPAINT_KEY_WIDTH | __w);
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
+				UISpecialCode.REPAINT_KEY_WIDTH | __w);
 		instance.widgetProperty(this._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, UISpecialCode.REPAINT_KEY_HEIGHT | __h);
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
+				UISpecialCode.REPAINT_KEY_HEIGHT | __h);
 		
 		// Count pending paints up before we signal the final repaint
-		synchronized (Display.class)
+		synchronized (this._repaintLock)
 		{
 			this._pendingPaints++;
 		}
 		
 		// Execute the paint
 		instance.widgetProperty(this._uiCanvas,
-			UIWidgetProperty.INT_SIGNAL_REPAINT, 0, 0);
+			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
+			UISpecialCode.REPAINT_EXECUTE);
 	}
 	
 	/**
@@ -603,6 +642,7 @@ public abstract class Canvas
 	 *
 	 * @since 2019/04/14
 	 */
+	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	public final void serviceRepaints()
 	{
 		// If there is no current display then nothing can ever be repainted
@@ -610,25 +650,30 @@ public abstract class Canvas
 		if (display == null)
 			return;
 		
-		// This does nothing, but it used as a runner for waiting until our
-		// serial call has been completed.
-		__PaintWait__ wait = new __PaintWait__();
-		
-		// Lock on the Display class because the callSerially() does the
-		// waiting on this, so that becomes out barrier.
-		synchronized (Display.class)
-		{
-			for (;;)
+		// Lock on display since that is where the main serialized event loop
+		// happens. Do stop after a number of runs in case we get a stuck
+		// repaint that never happens, sometimes a system repaint happens
+		// before we can really check to see that this really happened.
+		Object repaintLock = this._repaintLock;
+		for (int i = 0; i < Canvas._REPAINT_STOP; i++)
+			synchronized (repaintLock)
 			{
 				// No repaints are left to be performed, stop now
-				if (this._pendingPaints == 0)
+				if (this._pendingPaints <= 0)
 					return;
 				
-				// Call this, as when it is complete the event loop would
-				// have completed a run
-				display.callSerially(wait);
+				// Otherwise, wait for a signal on paints
+				try
+				{
+					// 16ms is the number of time between frames at 60FPS
+					repaintLock.wait(Canvas._REPAINT_DELAY);
+				}
+				
+				// Ignore any interruptions and just continue waiting 
+				catch (InterruptedException ignored)
+				{
+				}
 			}
-		}
 	}
 	
 	/**
@@ -655,7 +700,7 @@ public abstract class Canvas
 		
 		// Depending on full-screen either choose the first position or the
 		// full-screen body of the form
-		UIBackend backend = UIBackendFactory.getInstance();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		backend.formItemPosition(this._uiForm, this._uiCanvas, (__f ?
 			UIItemPosition.BODY : 0));
 		
@@ -680,9 +725,9 @@ public abstract class Canvas
 	/**
 	 * Sets the painting mode of the canvas.
 	 *
-	 * If transparent mode is enabled, then the implementation (not the end
-	 * developer) will fill the background with a suitable color or image
-	 * (which is unspecified).
+	 * If transparent mode is enabled ({@code false}), then the implementation
+	 * (not the end developer) will fill the background with a suitable color
+	 * or image (which is unspecified).
 	 *
 	 * If opaque mode (which is the default) is enabled then it will be
 	 * assumed that {@link #repaint()} will cover every pixel and
@@ -694,7 +739,7 @@ public abstract class Canvas
 	 */
 	public void setPaintMode(boolean __opaque)
 	{
-		this._transparent = !__opaque;
+		this._isOpaque = __opaque;
 	}
 	
 	/**
@@ -718,7 +763,7 @@ public abstract class Canvas
 		if (!this.hasPointerEvents())
 			return;
 		
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -786,18 +831,25 @@ public abstract class Canvas
 	 * {@inheritDoc}
 	 * @since 2020/09/21
 	 */
+	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	@Override
 	final void __paint(Graphics __gfx, int __sw, int __sh, int __special)
 	{
 		// Draw background?
-		if (!this._transparent)
+		if (!this._isOpaque)
 		{
+			// Store old color for future operations
 			int old = __gfx.getAlphaColor();
-			__gfx.setColor(UIBackendFactory.getInstance().metric(
-				UIMetricType.COLOR_CANVAS_BACKGROUND));
 			
+			// Determine the color to draw
+			int bgColor = UIBackendFactory.getInstance(true)
+				.metric(UIMetricType.COLOR_CANVAS_BACKGROUND);
+			
+			// Draw entire background
+			__gfx.setAlphaColor(bgColor | 0xFF_000000);
 			__gfx.fillRect(0, 0, __sw, __sh);
 			
+			// Restore the original drawing color
 			__gfx.setAlphaColor(old);
 		}
 		
@@ -811,7 +863,8 @@ public abstract class Canvas
 		finally
 		{
 			// We repainted the canvas, so reduce the pending paint counter
-			synchronized (Display.class)
+			Object repaintLock = this._repaintLock;
+			synchronized (repaintLock)
 			{
 				// Drop the count, if there is any
 				int pending = this._pendingPaints;
@@ -822,7 +875,7 @@ public abstract class Canvas
 					this._pendingPaints = 0;
 					
 					// Signal that a repaint was done
-					Display.class.notifyAll();
+					repaintLock.notifyAll();
 				}
 			}
 		}
@@ -836,7 +889,7 @@ public abstract class Canvas
 	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __intProp, int __sub, int __old, int __new)
 	{
-		UIBackend instance = UIBackendFactory.getInstance();
+		UIBackend instance = UIBackendFactory.getInstance(true);
 		
 		// Only act on the canvas item
 		if (!instance.equals(__item, this._uiCanvas))
@@ -850,7 +903,7 @@ public abstract class Canvas
 				if (__new == 0)
 					this.hideNotify();
 				else
-					this.showNotify();
+					this.__showNotifyCanvas();
 				return true;
 			
 				// New width?
@@ -872,6 +925,22 @@ public abstract class Canvas
 			default:
 				return false;
 		}
+	}
+	
+	/**
+	 * Notifies that this canvas has been shown.
+	 * 
+	 * @since 2021/11/28
+	 */
+	final void __showNotifyCanvas()
+	{
+		// Signal focus on this canvas since it has been shown
+		UIBackend backend = UIBackendFactory.getInstance(true);
+		backend.widgetProperty(this._uiCanvas,
+			UIWidgetProperty.INT_SIGNAL_FOCUS, 0, 0);
+		
+		// Call the notification handler
+		this.showNotify();
 	}
 }
 

@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -14,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -68,6 +68,9 @@ public final class ByteCode
 	
 	/** Is this an instance method? */
 	protected final boolean isinstance;
+	
+	/** Local variable table. */
+	protected final LocalVariableTable localVariables;
 	
 	/** The input attribute code, used for instruction lookup. */
 	private final byte[] _rawByteCode;
@@ -251,6 +254,10 @@ public final class ByteCode
 					}
 				}
 			
+			// Parse local variables
+			LocalVariableTable localVariables =
+				LocalVariableTable.parse(pool, attrs);
+			
 			// Can set fields now
 			this.maxstack = maxstack;
 			this.maxlocals = maxlocals;
@@ -263,6 +270,7 @@ public final class ByteCode
 			this._lengths = lengths;
 			this._icache = ByteCode.__newCache(codelen);
 			this._linenumbertable = lnt;
+			this.localVariables = localVariables;
 			
 			// Store addresses for all the indexes
 			if (indexat == codelen)
@@ -356,7 +364,7 @@ public final class ByteCode
 		Instruction rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			icache[__a] = new WeakReference<>((rv = new Instruction(
+			icache[__a] = new SoftReference<>((rv = new Instruction(
 				this._rawByteCode, this.pool, __a, this.exceptions,
 				this.stackMapTable(), this.addressFollowing(__a))));
 		
@@ -573,6 +581,17 @@ public final class ByteCode
 	}
 	
 	/**
+	 * Returns the local variable table.
+	 *
+	 * @return The local variable table.
+	 * @since 2022/09/21
+	 */
+	public LocalVariableTable localVariables()
+	{
+		return this.localVariables;
+	}
+	
+	/**
 	 * Returns the maximum number of locals.
 	 *
 	 * @return The maximum number of locals.
@@ -730,7 +749,7 @@ public final class ByteCode
 		StackMapTable rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._smt = new WeakReference<>(rv = new __StackMapParser__(
+			this._smt = new SoftReference<>(rv = new __StackMapParser__(
 				this.pool, this.__method(), this._newsmtdata, this._smtdata,
 				this, new JavaType(this.thistype)).get());
 		

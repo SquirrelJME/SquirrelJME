@@ -152,14 +152,14 @@ shortly before this project ended.
 I never really got past the JIT stage in the project. It was also quite massive
 of a project.
 
-Anything that was made for documentation was written in LaTeX, which is far
-less friendly compared to Markdown.
+Anything that was made for the documentation was written in LaTeX, which is
+far less friendly compared to Markdown.
 
 ## k8/Squirrnix (2014/04/26 - 2016/02/25)
 
 This is the direct predecessor to SquirrelJME. Utilities and classes in
 SquirrelJME have been derived from this project. Generally if I find a class
-which is missing in SquirrelJME I check this project and copy all of the code
+which is missing in SquirrelJME I check this project and copy all the code
 from there since the bulk of it is just placeholder.
 
 This project had a massive number of commits: 9041.
@@ -194,7 +194,7 @@ never get anywhere because it had unrealistic goals that would be impossible
 for a single woman to obtain all by herself. I calculated that it could take
 perhaps up to a decade to implement the core classes of Java SE 8. By a
 decade's time, Java SE 8 would be obsolete and nobody would be using it anyway.
-So this compounded a wasted effort. Additionally being a third-party VM, there
+So this compounded a wasted effort. Additionally, being a third-party VM, there
 would quite literally be very little interest in it, so it could not be for
 fame. Basically it was too much and too ambitious of a project and sadly it
 took two years to realize that.
@@ -206,11 +206,11 @@ melting away into nothingness and worthlessness. I did not want to admit that
 the project was a failure and would be going nowhere, I was naive.
 
 In February of 2016 I watched Hack Summit 2016, it was pretty much the first
-online conference which I have visited. It was really exciting and it did move
-me a bit. But I think the one talk which really moved me was the one by
+online conference which I have visited. It was really exciting. It did move
+me a bit. However, I think the one talk which really moved me was the one by
 _Sarah Allen_ (you can see her on YouTube here:
-<https://www.youtube.com/watch?v=S1iYeThQO-g>). It really resonated with me and
-it has really given me the light shining through my own fog to realize that my
+<https://www.youtube.com/watch?v=S1iYeThQO-g>). It really resonated with me.
+It has really given me the light shining through my own fog to realize that my
 own project was ruining my life. After that I decided that my own project was
 not something I really wanted to do, that my ambitious goals were not even
 caring for myself. I decided that I should care more about myself and that I
@@ -221,7 +221,7 @@ write once and run anywhere, portability and virtual machines. I found Java to
 be very awesome. I knew that _k8_ would never fit on the systems I would have
 liked to target. I got the motivation to push Java as small as it can go. I
 knew the gigantic size of _k8_ was too much, so I decided to switch to the
-small scale. I remember my fascination with J2ME and I wanted to clone that
+small scale. I remember my fascination with J2ME, I wanted to clone that
 environment because I found it interesting. Java was seen as this gigantic
 bloated monster that ate so much CPU and so much memory. But working with the
 JVM so much made me realize how wrong it was. Java was in fact very small and
@@ -233,7 +233,7 @@ was not really a microscopic Java 8 VM it was Java 7, which was good enough.
 It added extra classes and was in general quite cool. JSR360, which is the
 specification for Java ME 8 was proposed on October 2, 2012. The final release
 was made on April 30, 2014. Java SE 8 being released on March 18, 2014. So
-Java ME 8 came out very shortly after Java SE 8. However with Android and iOS
+Java ME 8 came out very shortly after Java SE 8. However, with Android and iOS
 being everywhere it never really stood a chance and Java ME 8 never really got
 the chance to actually be anything.
 
@@ -313,8 +313,15 @@ are actively worked on.
 
 ## The Second Release
 
-This is the currently being developed release, it is expected to be at most
-in development for two years and six months in development.
+This is the currently being developed release. In 2019 without knowing the
+calamity of the year 2020, I put down here:
+
+> It is expected to be at most in development for two years and six months
+> in development.
+
+Naturally, as of this writing I am now at the two years and six months mark.
+Having lost probably a year of productivity during 2020, this will definitely
+mean this release gets pushed back.
 
  * [There is this article here you may read](assets/articles/anewvm.mkd)!
 
@@ -337,8 +344,8 @@ was later split apart because wow it was complex. Also added a bunch of
 new tests and implemented parts of the class library since they were needed
 for the VM to function. I figured at this time that I should write a compiler
 which is not all that optimized to keep it simpler, although today I do have
-basic optimation in place. For CircleCI I put in JUnit reporting for the
-tests that ran which has been around for awhile now. Also for the tests that
+basic optimization in place. For CircleCI I put in JUnit reporting for the
+tests that ran which has been around for awhile now. Also, for the tests that
 run within the VM, the profiler snapshots are stored as well so that way
 I can determine how fast stuff has been running accordingly. I defined an API
 level for 0.4.0 but eventually later in the year I determined that the API
@@ -420,7 +427,7 @@ things making things easier to load and such.
 Added some more implementations to methods as well and HTTP support!
 
 Also big refactor of the testing framework, which ended up going rather
-nicely. I also added my first sorting algorithm which was shell sort. But
+nicely. I also added my first sorting algorithm which was ShellSort. However,
 I guess now there is just block sort which does nothing? Oh wait no
 there is ShellSort.
 
@@ -432,15 +439,15 @@ much later on at the end of 2020.
 This month there was much work done on RatufaCoat and SummerCoat since they
 are shared. The compiler has seen a number of changes as well. There was much
 going back and forth, fixing things, and debugging things. A compiler and
-virtual machine combination is very complex. Additionally at the end of the
+virtual machine combination is very complex. Additionally, at the end of the
 month SummerCoat got profiling output.
 
 #### July
 
-This was the month where I was hired for my second programming job, as such
+This was the month when I was hired for my second programming job, as such
 from work there has been a great reduction in available time to work on
-SquirrelJME. However money is important and I was a single month away before
-I would have ran out.
+SquirrelJME. However money is important, I was a single month away before
+I would have ran out which would not have been good.
 
 At the start of the month I worked on Squirrel Quarrel a bit, I am assuming
 at this point I was to make it a turn based strategy although it may have
@@ -449,11 +456,11 @@ been a real time strategy.
 I did port RatufaCoat partially to Palm OS however it was not really
 functional and there were a number of limitations. Other than that, there was
 more minor work on SummerCoat/RatufaCoat. I decided it would be best to
-split the constant pool into a static pool and a run-time pool, that is still
-here to this day but it is something that has simplified and reduced the
+split the constant pool into a static pool with a run-time pool, that is still
+here to this day, however it is something that has simplified and reduced the
 need to load everything at once.
 
-But due to my new job, the month mostly just had progress at the start.
+However due to my new job, the month mostly just had progressed at the start.
 
 #### August
 
@@ -632,7 +639,7 @@ important since people tend to ask a bunch of questions about this.
 #### August
 
 This month I continued work on the LCDUI refactoring. I also started a new
-branch for refactoring the handling of the many different virtual machines
+branch for refactoring the handling of the many virtual machines
 and the means for testing it. This work has been very helpful as I still use
 it and it is helping me progress and making sure everything is tested.
 
@@ -671,7 +678,7 @@ be ran. However I did merge this in.
 
 After that, at the very end of the month I started working on Mid-Level
 SummerCoat. Like MLE SpringCoat, this was a refactor and simplification of
-SummerCoat so I could get things running again.
+SummerCoat, so I could get things running again.
 
 #### December
 
@@ -685,9 +692,132 @@ implementations and otherwise.
 
 Near the very end of the month, publishing was added to Maven Local, BinTray,
 and OSS SonaType. This would allow documentation to potentially be downloaded
-or browser, but will mean that SquirrelJME can be consumed by others.
+or browser, but will mean that SquirrelJME can be consumed by others. There
+were additional fixes to task launching.
 
 ### 2021
+
+To be written...
+
+#### January
+
+I finished up the end of the year fixes on launching on the first day of
+the month.
+
+I essentially spent this month working on mostly SummerCoat, would say good
+progress was made on this.
+
+There were minor fixes to the RetroArch build.
+
+I planted roots for better graphics handling that would allow for more
+accuracy and acceleration.
+
+#### February
+
+I started the month working on SummerCoat, but also decided I wanted to work
+on RatufaCoat as well. So half of the month was dedicated to each. Before
+this point, the RatufaCoat work was based on `trunk` but I then switched it
+to be based on the SummerCoat WIP since there would be no other way to
+reliably work on it. I also did major CMake work on this branch, since it is
+a very nice build system.
+
+#### March
+
+I continued work on the RatufaCoat branch, making good progress and cleaning
+up accordingly. 
+
+I discovered that there is an issue in SummerCoat, but it was disparaging to
+find and fix. There was not much motivation to do so. I needed a debugger
+first and foremost.
+
+I started work on shiny new JDWP support, which would help with finding issues
+and otherwise.
+
+I did attempt to cherry-pick the improved LCDUI event handling but that
+failed, however that eventually got brough in by a future cherry-picking in
+July.
+
+#### April
+
+This was a big month for the JDWP support, I finished the debugging support
+for SpringCoat which allowed me to find potential issues and otherwise.
+Being able to debug in IntelliJ was very useful as well, although it is not
+the only supported debugger (Eclipse and JDB are supported).
+
+Otherwise I worked on support for software `float`.
+
+#### May
+
+Base64 had some fixes and improvements, along with the addition of encoding
+to Base64.
+
+A class dumper was added so that I could debug the SummerCoat compilation
+issues that existed. There were bug fixes centered around this. From this
+a discovery was made that SummerCoat's handling of stack exchanges was
+incorrect. However, there was not much motivation to fix this, it just
+made a bad feeling in me.
+
+I made a WIP branch for an SDK, which will be a modern way to develop for
+SquirrelJME and J2ME.
+
+#### June
+
+Not much was done this month other than the detection of _i-Mode_ titles in
+the launcher. Previously I planned to have a separate launcher that did this
+but I decided against that since it would be better if it were all included
+at once. This should make it easier to use this software. It does though
+require the two files that are needed. In light of needing these additional
+support files, I improved support for non-JARs in the library pickups.
+
+Other than this, there was minor work and optimizations on SummerCoat.
+
+Fixes were made to LCDUI and the floating-point functions were corrected.
+
+At the very end of the month, one of my closest friends Near passed away. I
+will miss you lots, you helped me immensely, you will be missed always. It
+was an honor to be your friend.
+
+#### July
+
+I decided this month to celebrate my birthday for the first time in a very
+long time, since it has never really been a day I wanted to celebrate ever.
+I had a wonderful birthday with my wife, who makes me very happy. I decided
+to add an extra candle for both Emily and Near, since they never really
+were able to celebrate their own birthdays. I wanted to do this if at least
+in spirit.
+
+Additionally, at work I was placed on an important project, which at times I
+would be working overtime. So I am doing my best to maintain a work/life
+balance.
+
+By the end of the month I very heavily realized how long the SummerCoat branch
+has been going on for, since November 2020. I could not find the heart or
+feeling to work on anything in SquirrelJME because this branch was just too
+big, I made unrelated changes in it that were very important. Probably one of
+the biggest things I have done this month is cherry-picked into `trunk`
+from this branch.
+
+These cherry pickings include:
+ * All the various Gradle changes and fixes.
+ * Base64 fixes.
+ * Fixed event handling for LCDUI.
+ * LCDUI form related functions.
+ * MLE changes that I want to keep but both affect SpringCoat and SummerCoat.
+ * Fixes to SpringCoat.
+ * Optimized and corrected sorting algorithms (ShellSort).
+ * Software math support for `float` and `long`. 
+ * Additional tests which caused compilation issues within SummerCoat.
+ * Task improvements.
+
+Additionally, the WIP branches for BuildVM and RatufaCoat had an improvement
+for the automated tests. The list of lists are now dynamically generated
+rather than having to copy them into two separate locations, this will make
+it easier to use and otherwise.
+
+The long-standing SummerCoat issue was fixed and corrected this month with
+an unoptimized, but working, solution. 
+
+#### August
 
 To be written...
 

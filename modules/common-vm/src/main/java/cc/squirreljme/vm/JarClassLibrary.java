@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -162,7 +162,8 @@ public class JarClassLibrary
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		return __s.endsWith(".jar") || __s.endsWith(".JAR");
+		return __s.endsWith(".jar") || __s.endsWith(".JAR") ||
+			__s.endsWith(".kjx") || __s.endsWith(".KJX");
 	}
 	
 	/**

@@ -1,0 +1,28 @@
+# 2022/09/06
+
+## 14:46
+
+Okay so for compilation I have two ideas: returning compiled class reference 
+and
+a bigger one that is register handling. So I will have two classes of registers
+which are either `int` or `object`. Any floating point and long will be done
+with the software math libraries. There will be a later stack caching pipeline
+but on the first stage there will be no stack caching, this is so the first
+stage can be made simpler and I can add stack caching later on accordingly.
+At least then if I can make it so that register operations and otherwise are
+more simple. I should probably have explicit outputs for instructions and
+such rather than just none of that. There will be a special instruction called
+`drop` which will just mark a register as invalid, could be used by the stack
+cached stage. Also perhaps as well I should do unique registers and whatnot so
+that no registers are actually used and they all have sources, but they do have
+dependencies. Will see how it works, but it would simplify the later stack
+caching stage where dependencies are known. So like every value in a register
+will be transformed by previous instructions and otherwise so that way
+everything is essentially just a long list of past values. Then if a value
+is replaced of course that history is deleted. This would produce a very large
+number of registers but each one would be unique and have a formula that
+actually creates them. At least for the stack caching stage it could make it
+easier to do. I would also have to keep track of whether a value is a mutate
+or is bound to a specific range, for example to cache out `null` checks. So
+yeah each stage of instruction will track whether a register is `MUTATED`, 
+`COPIED`, or `LIMITED_VALUE`.

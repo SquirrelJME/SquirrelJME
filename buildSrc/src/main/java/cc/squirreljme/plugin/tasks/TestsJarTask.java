@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -43,8 +43,24 @@ public class TestsJarTask
 			"tests from within the VM.");
 		
 		// Setup the task
-		this.getArchiveClassifier().set("tests");
+		this.getArchiveClassifier().set("test");
 		this.from((Callable<FileCollection>)this::__from);
+		
+		// Only run if there are actual tests
+		this.onlyIf(this::__onlyIf);
+	}
+	
+	/**
+	 * Only run this task in this situation.
+	 * 
+	 * @param __task This task.
+	 * @return If this should run or not.
+	 * @since 2022/05/20
+	 */
+	private boolean __onlyIf(Task __task)
+	{
+		// Only run if there are files to actually be added
+		return !this.__from().getAsFileTree().getFiles().isEmpty();
 	}
 	
 	/**

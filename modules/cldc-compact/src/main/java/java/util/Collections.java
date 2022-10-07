@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,13 +9,16 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.NaturalComparator;
 import cc.squirreljme.runtime.cldc.util.ShellSort;
 
+@SuppressWarnings("ClassWithOnlyPrivateConstructors")
 public class Collections
 {
 	private Collections()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -46,115 +48,260 @@ public class Collections
 		return __target.addAll(Arrays.asList(__v));
 	}
 	
-	public static <T> int binarySearch(List<? extends Comparable<? super T>>
-		__a, T __b)
+	/**
+	 * Performs a binary search of the given list to find the position in
+	 * the list where {@code __key} is located or where it would be located
+	 * 
+	 * @param <T> The type of value to find.
+	 * @param __list The list to search.
+	 * @param __key The key to search for.
+	 * @return The position of the item or {@code (-(insertion point) - 1)}
+	 * where it would be found.
+	 * @throws NullPointerException If there is no list specified.
+	 * @since 2022/01/28
+	 */
+	public static <T> int binarySearch(
+		List<? extends Comparable<? super T>> __list, T __key)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		return Collections.binarySearch(__list, __key, null);
 	}
 	
-	public static <T> int binarySearch(List<? extends T> __a, T __b,
-		Comparator<? super T> __c)
+	/**
+	 * Performs a binary search of the given list to find the position in
+	 * the list where {@code __key} is located or where it would be located
+	 * 
+	 * @param <T> The type of value to find.
+	 * @param __list The list to search.
+	 * @param __key The key to search for.
+	 * @param __compare The {@link Comparator} to use for sorting, if
+	 * {@code null} then this will use the natural {@link Comparator}.
+	 * @return The position of the item or {@code (-(insertion point) - 1)}
+	 * where it would be found.
+	 * @throws ClassCastException If the comparator is of the wrong type.
+	 * @throws NullPointerException If there is no list specified.
+	 * @since 2022/01/28
+	 */
+	public static <T> int binarySearch(List<? extends T> __list, T __key,
+		Comparator<? super T> __compare)
+		throws NullPointerException, ClassCastException
 	{
-		throw new todo.TODO();
+		// Check
+		if (__list == null)
+			throw new NullPointerException("NARG");
+		
+		int len = __list.size();
+		int __from = 0;
+		int __to = len;
+		
+		// If missing, get a comparator instance.
+		if (__compare == null)
+			__compare = NaturalComparator.<T>instance();
+		
+		// Empty list, will always be at the 0th index
+		if (len == 0)
+			return -1;
+		
+		// List has a single element, so only check that
+		else if (len == 1)
+		{
+			T pv = __list.get(__from);
+			
+			// Is same
+			if (__compare.compare(pv,__key) == 0)
+				return __from;
+			
+			// Value is either the 0th or 1st element
+			if (__compare.compare(pv, __key) < 0)
+				return -1;
+			else
+				return -2;
+		}
+		
+		// Use the same index
+		__to -= 1;
+		
+		// Search for element at the pivot first, stop if the from and to are
+		// at the same points
+		while (__from <= __to)
+		{
+			// Calculate the pivot and use its value
+			int p = __from + (((__to - __from) + 1) >> 1);
+			T pv = __list.get(p);
+			
+			// Left of pivot?
+			if (__compare.compare(__key, pv) < 0)
+				__to = p - 1;
+			
+			// Right of pivot?
+			else if (__compare.compare(__key, pv) > 0)
+				__from = p + 1;
+			
+			// Match
+			else
+				return p;
+		}
+		
+		return (-__from) - 1;
 	}
 	
 	public static <T> void copy(List<? super T> __a, List<? extends T> __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static boolean disjoint(Collection<?> __a, Collection<?> __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <T> Enumeration<T> enumeration(Collection<T> __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <T> void fill(List<? super T> __a, T __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int frequency(Collection<?> __a, Object __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int indexOfSubList(List<?> __a, List<?> __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static int lastIndexOfSubList(List<?> __a, List<?> __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <T> ArrayList<T> list(Enumeration<T> __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <T extends Object & Comparable<? super T>> T max(Collection
 		<? extends T> __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <T> T max(Collection<? extends T> __a, Comparator<? super T
 		> __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <T extends Object & Comparable<? super T>> T min(Collection
 		<? extends T> __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <T> T min(Collection<? extends T> __a, Comparator<? super T
 		> __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static <T> boolean replaceAll(List<T> __a, T __b, T __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
-	public static void reverse(List<?> __a)
+	/**
+	 * Reverses the specified list.
+	 * 
+	 * @param __list The list to reverse.
+	 * @throws UnsupportedOperationException If the
+	 * {@link List#set(int, Object)} method or {@link ListIterator#set(Object)}
+	 * is not supported.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/07/29
+	 */
+	@SuppressWarnings({"unchecked"})
+	public static void reverse(List<?> __list)
+		throws UnsupportedOperationException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__list == null)
+			throw new NullPointerException("NARG");
+		
+		// If the list is empty or only has a single element then there is
+		// no point in reversing the list
+		int size = __list.size();
+		if (size <= 1)
+			return;
+		
+		// Setup blank queue that will be used as a double bounce back when
+		// reversing elements
+		Deque<Object> elements = new ArrayDeque<>(size);
+		
+		// Use the same iterator for going forwards and backwards 
+		ListIterator<Object> it = (ListIterator<Object>)__list.listIterator();
+		
+		// Go forward and collect all items into the queue
+		while (it.hasNext())
+			elements.addLast(it.next());
+		
+		// Go back and drain the queue that was filled up
+		while (it.hasPrevious())
+		{
+			it.previous();
+			it.set(elements.removeFirst());
+		}
 	}
 	
+	/**
+	 * Returns a comparator that is a reverse of the natural comparator
+	 * order.
+	 * 
+	 * @param <T> The type to compare.
+	 * @return The comparator for reverse order.
+	 * @see NaturalComparator
+	 * @since 2022/07/29
+	 */
 	public static <T> Comparator<T> reverseOrder()
 	{
-		throw new todo.TODO();
+		return Collections.reverseOrder(null);
 	}
 	
-	public static <T> Comparator<T> reverseOrder(Comparator<T> __a)
+	/**
+	 * Returns a comparator that reverses the given comparator.
+	 * 
+	 * @param <T> The type to compare.
+	 * @param __comp The comparator to be reversed, if {@code null} then
+	 * the natural order comparator is used the same as
+	 * {@link Collections#reverseOrder()}.
+	 * @return A comparator that reverses the 
+	 */
+	public static <T> Comparator<T> reverseOrder(Comparator<T> __comp)
 	{
-		throw new todo.TODO();
+		// If this is a reversal of a reversal, then undo that
+		if (__comp instanceof __ReverseComparator__)
+			return ((__ReverseComparator__<T>)__comp)._comparator;
+		
+		return new __ReverseComparator__<T>((__comp == null ?
+			NaturalComparator.<T>instance() : __comp));
 	}
 	
 	public static void rotate(List<?> __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static void shuffle(List<?> __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public static void shuffle(List<?> __a, Random __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -194,7 +341,7 @@ public class Collections
 	
 	public static void swap(List<?> __a, int __b, int __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

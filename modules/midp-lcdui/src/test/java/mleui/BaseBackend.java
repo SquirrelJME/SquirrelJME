@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -48,6 +48,10 @@ public abstract class BaseBackend
 	public void test(String __backend)
 		throws Throwable
 	{
+		// Debugging
+		/*DebugShelf.verbose(VerboseDebugFlag.ALL);
+		DebugShelf.verboseInternalThread(VerboseDebugFlag.ALL);*/
+		
 		UIBackend backend = BaseBackend.__getBackend(__backend);
 		this.test(backend, backend.displays()[0]);
 	}

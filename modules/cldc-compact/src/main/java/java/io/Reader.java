@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -11,6 +10,8 @@
 package java.io;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.lang.ref.WeakReference;
 
 public abstract class Reader
 	implements Closeable
@@ -29,7 +30,7 @@ public abstract class Reader
 		"because it refers to itself.")
 	protected Reader()
 	{
-		this.lock = null;
+		this.lock = new WeakReference<>(this);
 	}
 	
 	/**
@@ -47,10 +48,6 @@ public abstract class Reader
 		
 		this.lock = __l;
 	}
-	
-	@Override
-	public abstract void close()
-		throws IOException;
 	
 	/**
 	 * Reads multiple characters.
@@ -73,12 +70,12 @@ public abstract class Reader
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean markSupported()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -132,7 +129,7 @@ public abstract class Reader
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void reset()
@@ -140,7 +137,7 @@ public abstract class Reader
 	{
 		if (false)
 			throw new IOException();
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public long skip(long __a)
@@ -151,7 +148,7 @@ public abstract class Reader
 		{
 			if (false)
 				throw new IOException();
-			throw new todo.TODO();
+			throw Debugging.todo();
 		}
 	}
 	

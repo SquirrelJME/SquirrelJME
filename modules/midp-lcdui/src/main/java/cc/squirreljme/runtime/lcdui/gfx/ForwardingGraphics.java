@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -751,16 +750,17 @@ public class ForwardingGraphics
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/10/10
+	 * @param __style
 	 */
 	@Override
-	public void setStrokeStyle(int __a)
+	public void setStrokeStyle(int __style)
 	{
 		Graphics graphics = this._graphics;
 		if (graphics != null)
-			graphics.setStrokeStyle(__a);
+			graphics.setStrokeStyle(__style);
 		
 		// Store
-		this._stroke = __a;
+		this._stroke = __style;
 	}
 	
 	/**

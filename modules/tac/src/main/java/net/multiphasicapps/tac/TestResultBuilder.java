@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -125,10 +125,10 @@ public final class TestResultBuilder
 		{
 			// Use formatted values
 			secondary.put(__key.toLowerCase(), __val);
-			
-			// Debug
-			Debugging.debugNote("SET %s=%s", __key, __val);
 		}
+		
+		// Debug
+		Debugging.debugNote("SET %s=%s", __key, __val);
 	}
 	
 	/**

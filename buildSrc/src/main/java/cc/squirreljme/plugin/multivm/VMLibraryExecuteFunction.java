@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -15,7 +15,7 @@ import java.io.OutputStream;
 import org.gradle.api.Task;
 
 /**
- * Not Described.
+ * Base interface for the execution of library based functions.
  *
  * @since 2021/05/16
  */

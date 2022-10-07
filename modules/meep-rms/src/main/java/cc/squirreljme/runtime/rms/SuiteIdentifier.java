@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -9,9 +9,7 @@
 
 package cc.squirreljme.runtime.rms;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.midlet.ActiveMidlet;
-import javax.microedition.midlet.MIDlet;
+import cc.squirreljme.runtime.midlet.ApplicationHandler;
 
 /**
  * This is used to help identify suites and such.
@@ -22,12 +20,6 @@ public final class SuiteIdentifier
 {
 	/** The identifier for the current suite. */
 	private static long _CURRENT_ID;
-	
-	/** The current vendor. */
-	private static String _CURRENT_VENDOR;
-	
-	/** The current name. */
-	private static String _CURRENT_NAME;
 	
 	/**
 	 * Not used.
@@ -53,71 +45,7 @@ public final class SuiteIdentifier
 		
 		// Set, cache, and store
 		SuiteIdentifier._CURRENT_ID = (rv = SuiteIdentifier.identifier(
-			SuiteIdentifier.currentVendor(), SuiteIdentifier.currentName()));
-		return rv;
-	}
-	
-	/**
-	 * Returns the current name.
-	 *
-	 * @return The current name.
-	 * @since 2019/04/14
-	 */
-	public static String currentName()
-	{
-		String rv = SuiteIdentifier._CURRENT_NAME;
-		if (rv != null)
-			return rv;
-		
-		// TODO: Better means of getting the current name
-		Debugging.todoNote("Better means of currentName()");
-		
-		// Try through the current MIDlet properties
-		if (rv == null)
-		{
-			MIDlet mid = ActiveMidlet.optional();
-			if (mid != null)
-				rv = mid.getAppProperty("MIDlet-Name");
-		}
-		
-		// Fallback
-		if (rv == null)
-			rv = "UndefinedName";
-		
-		// Cache and return
-		SuiteIdentifier._CURRENT_NAME = rv;
-		return rv;
-	}
-	
-	/**
-	 * Returns the current vendor.
-	 *
-	 * @return The current vendor.
-	 * @since 2019/04/14
-	 */
-	public static String currentVendor()
-	{
-		String rv = SuiteIdentifier._CURRENT_VENDOR;
-		if (rv != null)
-			return rv;
-		
-		// TODO: Better means of getting the current name
-		Debugging.todoNote("Better means of currentVendor()");
-		
-		// Try through the current MIDlet properties
-		if (rv == null)
-		{
-			MIDlet mid = ActiveMidlet.optional();
-			if (mid != null)
-				rv = mid.getAppProperty("MIDlet-Vendor");
-		}
-		
-		// Fallback
-		if (rv == null)
-			rv = "UndefinedVendor";
-		
-		// Cache and return
-		SuiteIdentifier._CURRENT_VENDOR = rv;
+			ApplicationHandler.currentVendor(), ApplicationHandler.currentName()));
 		return rv;
 	}
 	

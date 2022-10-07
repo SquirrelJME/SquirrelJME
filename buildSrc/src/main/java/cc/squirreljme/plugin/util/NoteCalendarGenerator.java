@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -125,7 +125,7 @@ public final class NoteCalendarGenerator
 	public static void generateAndStore(FossilExe __exe)
 		throws IOException, NullPointerException
 	{
-		__exe.unversionedStoreBytes("developer-notes/index.mkd",
+		__exe.unversionStoreBytes("developer-notes/index.mkd",
 			NoteCalendarGenerator.generate(__exe,
 			NoteCalendarFinder.findNotes(__exe)));
 	}
@@ -196,7 +196,7 @@ public final class NoteCalendarGenerator
 				
 				// Not on this month? Ignore it
 				if (calendarDay.getMonthValue() != __month.month)
-					__out.printf("`--` ");
+					__out.print("`--` ");
 				
 				// Print day, with possible note
 				else

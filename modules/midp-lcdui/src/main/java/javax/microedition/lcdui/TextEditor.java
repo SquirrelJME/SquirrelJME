@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.common.EditableText;
 
 public class TextEditor
@@ -21,158 +21,158 @@ public class TextEditor
 	
 	public TextEditor(String __text, int __maxsz, int __cons, int __w, int __h)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void delete(int __o, int __l)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getBackgroundColor()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getCaretPosition()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getConstraints()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getContentHeight()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean getFocus()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public Font getFont()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getForegroundColor()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getHighlightColor()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getLineMarginHeight()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getMaxSize()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getSelection()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public String getString()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public boolean getVisible()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getVisibleContentPosition()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void insert(String __t, int __p)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setBackgroundColor(int __a, int __r, int __g, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setCaretPosition(int __i)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setConstraints(int __cons)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setFocus(boolean __f)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setFont(Font __f)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setForegroundColor(int __a, int __r, int __g, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setHighlightColor(int __a, int __r, int __g, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setInitialInputMode(String __cs)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int setMaxSize(int __sz)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setSelection(int __i, int __l)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setString(String __s)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setTextEditorListener(TextEditorChangeListener __cl)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	@Override
 	public void setVisible(boolean __v)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int size()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 

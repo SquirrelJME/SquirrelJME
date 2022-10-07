@@ -69,7 +69,9 @@ available.
  * Gentoo
    * See <https://wiki.gentoo.org/wiki/Java>
 
-### IntelliJ IDEA (Optional)
+### Running via IDEs
+
+#### IntelliJ IDEA
 
 SquirrelJME is developed on IntelliJ Ultimate, however Community Edition may
 still be used. This makes development easier and more integrated along with
@@ -77,6 +79,35 @@ whatever code you write or contribute will match the style that is set in
 SquirrelJME.
 
  * <https://www.jetbrains.com/idea/>
+
+#### VSCode
+
+The following extensions are required to build and run SquirrelJME in VSCode:
+
+ * [Extension Pack for Java](
+ https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack)
+   * `ext install vscjava.vscode-java-pack`
+ * [Gradle for Java](
+ https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-gradle)
+   * `ext install vscjava.vscode-gradle`
+
+Before running on VSCode you must run the following Gradle command, since this
+uses a similar code base that is borrowed from Eclipse:
+
+ * Setup Eclipse Project
+   * Windows: `gradlew eclipse`
+   * Linux/MacOS: `./gradlew eclipse`
+
+#### Eclipse
+
+Before running on Eclipse you must run the following Gradle command:
+
+ * Setup Eclipse Project
+   * Windows: `gradlew eclipse`
+   * Linux/MacOS: `./gradlew eclipse`
+
+Then following this you may _Import Existing Gradle Project_ and you will have
+access to the project for building.
 
 ## Installing C++ Compiler
 
@@ -152,6 +183,11 @@ running the tests within the repository:
 
  * `gradlew test`
 
+If using IntelliJ you may tap _Ctrl_ twice (_Ctrl_+_Ctrl_) and type in the
+following to run Gradle commands, it should automatically use the wrapper:
+
+ * `gradle`
+
 ## RetroArch
 
 Building for RetroArch uses the `makefilelibretro` makefile. As such building
@@ -180,9 +216,6 @@ to be ran accordingly.
  * SpringCoat
    * `:modules:<name>:runSpringCoat` (running)
    * `:modules:<name>:testSpringCoat` (testing)
- * SummerCoat
-   * `:modules:<name>:runSummerCoat` (running)
-   * `:modules:<name>:testSummerCoat` (testing)
  * Native (runs on the host Java SE)
    * `:modules:<name>:runHosted` (running)
    * `:modules:<name>:testHosted` (testing)
@@ -207,9 +240,12 @@ The following _System_ properties are available:
    * If `value` is a number and is `-1`, then no MIDlet will be selected and
      the `Main-Class` attribute will be force selected.
    * If `value` is a number, then it will be treated as an index. If the index
-     is not within the MIDlet bounds then it will run the first MIDlet.
+     is in bounds it will run the given MIDlet by index.
    * If `value` is a string, then a search will be performed for a MIDlet
-     with a matching case-insensitive title. 
+     with a matching case-insensitive title.
+   * If `value` is a string and starts or ends with an asterisk (`*`) then
+     it will find a midlet whose title contains the text with a
+     case-insensitive search.
    * Otherwise if `value` is a string, it will construct a virtual MIDlet
      which executes the given value as the name of a class within the JAR.
  * `squirreljme.sysprop.<systemProperty>=value` -- Add system property.
@@ -232,10 +268,6 @@ The following _System_ properties are available:
 Full ROMs can be built with the following tasks, note that test ROMs contain
 all the testing libraries and are generally used to ensure things are working:
 
- * _SummerCoat_
-   * `romSummerCoat`
-   * `romTestSummerCoat`
-
 # Full Suite Virtual Machines
 
 There is a task which initializes a full suite of SquirrelJME, including
@@ -253,3 +285,24 @@ the behavior:
    suite path.
    * Same format as the `-classpath` argument. On Windows this will use `;`
      as separators, while other systems will use `:`.
+
+# New Java Version Contingency
+
+With regard to <https://github.com/SquirrelJME/SquirrelJME/issues/6> if in
+the event this occurs, building with Gradle will attempt to use the
+Eclipse Java Compiler to compile the project. It may be forced by passing
+to Gradle `-Dforce.ecj=true`.
+
+# Standalone Java Based Emulators
+
+A standalone Java emulator Jar which contains all of the available test
+virtual machine implementations is available when calling the task:
+
+ * `:emulators:standalone:shadowJar`
+
+## Mac OS
+
+This is used with [Homebrew](https://brew.sh/), with checked
+out source code the following can be run:
+
+ * brew install --HEAD Formula/squirreljme-standalone.rb`

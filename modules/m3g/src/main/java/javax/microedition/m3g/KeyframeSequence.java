@@ -1,8 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// Multi-Phasic Applications: SquirrelJME
+// SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -10,6 +9,8 @@
 
 package javax.microedition.m3g;
 
+
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class KeyframeSequence
 	extends Object3D
@@ -37,67 +38,67 @@ public class KeyframeSequence
 	
 	public KeyframeSequence(int __a, int __b, int __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getComponentCount()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getDuration()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getInterpolationType()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getKeyframe(int __a, float[] __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getKeyframeCount()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getRepeatMode()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getValidRangeFirst()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public int getValidRangeLast()
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setDuration(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setKeyframe(int __a, int __b, float[] __c)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setRepeatMode(int __a)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 	
 	public void setValidRange(int __a, int __b)
 	{
-		throw new todo.TODO();
+		throw Debugging.todo();
 	}
 }
 
