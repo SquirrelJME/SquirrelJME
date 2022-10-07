@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
+import cc.squirreljme.jdwp.EventKind;
 import cc.squirreljme.jdwp.JDWPClassStatus;
 import cc.squirreljme.jdwp.JDWPController;
 import cc.squirreljme.jdwp.JDWPStepTracker;
@@ -23,6 +24,7 @@ import cc.squirreljme.jdwp.trips.JDWPTripThread;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.brackets.TaskObject;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArithmeticException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassCastException;
@@ -814,7 +816,7 @@ public final class SpringThreadWorker
 			{
 				// Enter the method we really want to execute
 				framelimit = thread.numFrames();
-				execframe = thread.enterFrame(method, __args);
+				this.__vmEnterFrame(method, __args);
 				
 				// Execute this method
 				this.run(framelimit);
@@ -1018,7 +1020,7 @@ public final class SpringThreadWorker
 			int frameLimit = thread.numFrames();
 			
 			// Enter the static initializer
-			thread.enterFrame(init);
+			this.__vmEnterFrame(init);
 			
 			// Execute until it finishes
 			this.run(frameLimit);
@@ -1056,7 +1058,7 @@ public final class SpringThreadWorker
 		// All low-level calls are considered invalid in SpringCoat because
 		// it does not have the given functionality.
 		if (__class.toString().startsWith("cc/squirreljme/jvm/Assembly") ||
-			__class.toString().startsWith("cc/squirreljme/jvm/summercoat/lle/"))
+			__class.toString().startsWith("cc/squirreljme/jvm/pack/lle/"))
 		{
 			// The only exception is made for packing/unpacking longs
 			if (__class.toString().startsWith("cc/squirreljme/jvm/Assembly"))
@@ -1160,7 +1162,7 @@ public final class SpringThreadWorker
 			callargs[o] = __args[i];
 		
 		// Enter the constructor
-		thread.enterFrame(cons, callargs);
+		this.__vmEnterFrame(cons, callargs);
 		
 		// Execute until it finishes
 		this.run(framelimit);
@@ -1478,6 +1480,19 @@ public final class SpringThreadWorker
 			this.verboseEmit("Frame handles %s? %b",
 				__o.type().name, useeh != null);
 		
+		// Signal that we caught an exception
+		JDWPController jdwp = this.machine.tasks.jdwpController;
+		if (jdwp != null) {
+			// Emit signal
+			jdwp.signal(this.thread, (useeh != null ?
+					EventKind.EXCEPTION_CATCH : EventKind.EXCEPTION),
+				__o, useeh);
+			
+			// Check to see if we are suspended, so we can stop here if we
+			// do happen to have stopped on this signal
+			this.__debugSuspension();
+		}
+		
 		// No handler for this exception, so just go up the
 		// stack and find a handler recursively up every frame
 		if (useeh == null)
@@ -1744,20 +1759,8 @@ public final class SpringThreadWorker
 						.step(thread, stepTracker);
 			}
 			
-			// This only returns while we are suspended, but if it returns
-			// early then we were interrupted which means we need to signal
-			// that to whatever is running
-			boolean interrupted = false;
-			JDWPThreadSuspension suspension = thread.debuggerSuspension;
-			while (suspension.await(jdwp, thread))
-			{
-				interrupted = true;
-			}
-			
-			// The debugger released suspension so we can perform the
-			// interrupt now
-			if (interrupted)
-				thread.hardInterrupt();
+			// Poll and block on suspension when debugging
+			this.__debugSuspension();
 		}
 		
 		// Increase the step count
@@ -1868,8 +1871,10 @@ public final class SpringThreadWorker
 					
 					// Return reference
 				case InstructionIndex.ARETURN:
+					SpringObject rvObject = frame.<SpringObject>popFromStack(
+						SpringObject.class);
 					this.__vmReturn(thread,
-						frame.<SpringObject>popFromStack(SpringObject.class));
+						(rvObject != null ? rvObject : SpringNullObject.NULL));
 					nextpc = Integer.MIN_VALUE;
 					break;
 					
@@ -3400,7 +3405,7 @@ public final class SpringThreadWorker
 					
 					// Return from method with no return value
 				case InstructionIndex.RETURN:
-					thread.popFrame();
+					this.__vmReturn(thread, null);
 					break;
 					
 					// Pop category 1 value
@@ -3631,6 +3636,38 @@ public final class SpringThreadWorker
 	}
 	
 	/**
+	 * Handles debug suspension and waiting.
+	 * 
+	 * @since 2022/08/28
+	 */
+	private void __debugSuspension()
+	{
+		SpringThread thread = this.thread;
+		
+		// Disallow any kind of debug suspend, for example if this thread
+		// is created by the debugger for certain tasks or running.
+		if (thread.noDebugSuspend)
+			return;
+		
+		JDWPController jdwp = this.machine.tasks.jdwpController;
+		
+		// This only returns while we are suspended, but if it returns
+		// early then we were interrupted which means we need to signal
+		// that to whatever is running
+		boolean interrupted = false;
+		JDWPThreadSuspension suspension = thread.debuggerSuspension;
+		while (suspension.await(jdwp, thread))
+		{
+			interrupted = true;
+		}
+		
+		// The debugger released suspension, so we can perform the
+		// interrupt now
+		if (interrupted)
+			thread.hardInterrupt();
+	}
+	
+	/**
 	 * Invokes a method in an interface.
 	 *
 	 * @param __i The instruction.
@@ -3686,8 +3723,7 @@ public final class SpringThreadWorker
 		
 		// Re-lookup the method since we need to the right one! Then invoke it
 		else
-			__t.enterFrame(objClass.lookupMethod(false,
-			ref.memberNameAndType()), args);
+			this.__vmEnterFrame(objClass.lookupMethod(false, ref.memberNameAndType()), args);
 	}
 	
 	/**
@@ -3765,7 +3801,7 @@ public final class SpringThreadWorker
 				String.format("BK36 %s %s", ref, currentClass));
 		
 		// Invoke this method
-		__t.enterFrame(refMethod, args);
+		this.__vmEnterFrame(refMethod, args);
 	}
 	
 	/**
@@ -3852,7 +3888,32 @@ public final class SpringThreadWorker
 		
 		// Real code that exists in class file format
 		else
-			__t.enterFrame(refmethod, args);
+			this.__vmEnterFrame(refmethod, args);
+	}
+	
+	/**
+	 * Enters the given frame within the virtual machine.
+	 * 
+	 * @param __target The target method.
+	 * @param __args The arguments to the method.
+	 * @since 2022/02/28
+	 */
+	private void __vmEnterFrame(SpringMethod __target, Object... __args)
+	{
+		// Perform the entry
+		this.thread.enterFrame(__target, __args);
+		
+		// Send signal after we enter to indicate that we just went into
+		// a method
+		JDWPController jdwp = this.machine.tasks.jdwpController;
+		if (jdwp != null)
+		{
+			// Signal that we went into a method
+			jdwp.signal(this.thread, EventKind.METHOD_ENTRY);
+			
+			// Debugger may have stopped here
+			this.__debugSuspension();
+		}
 	}
 	
 	/**
@@ -3907,7 +3968,7 @@ public final class SpringThreadWorker
 		
 		// Enter frame as like a static method
 		else
-		__t.enterFrame(refmethod, args);
+			this.__vmEnterFrame(refmethod, args);
 	}
 	
 	/**
@@ -3952,8 +4013,23 @@ public final class SpringThreadWorker
 	private void __vmReturn(SpringThread __thread, Object __value)
 		throws NullPointerException
 	{
-		if (__thread == null || __value == null)
+		if (__thread == null)
 			throw new NullPointerException("NARG");
+		
+		// Indicate exit with return value
+		JDWPController jdwp = this.machine.tasks.jdwpController;
+		if (jdwp != null)
+		{
+			// Signal that method exited
+			if (__value == null)
+				jdwp.signal(__thread, EventKind.METHOD_EXIT);
+			else
+				jdwp.signal(__thread, EventKind.METHOD_EXIT_WITH_RETURN_VALUE,
+					__value);
+			
+			// Debugger may have stopped here
+			this.__debugSuspension();
+		}
 		
 		// Pop our current frame
 		SpringThread.Frame old = __thread.popFrame();
@@ -3964,9 +4040,12 @@ public final class SpringThreadWorker
 			this.verboseEmit("Exiting frame.");
 		
 		// Push the value to the current frame
-		SpringThread.Frame cur = __thread.currentFrame();
-		if (cur != null)
-			cur.pushToStack(__value);
+		if (__value != null)
+		{
+			SpringThread.Frame cur = __thread.currentFrame();
+			if (cur != null)
+				cur.pushToStack(__value);
+		}
 		
 		/*System.err.printf("+++RETURN: %s%n", __value);
 		__thread.printStackTrace(System.err);*/

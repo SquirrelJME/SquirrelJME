@@ -214,6 +214,9 @@ public final class FieldDescriptor
 	@Override
 	public boolean equals(Object __o)
 	{
+		if (this == __o)
+			return true;
+		
 		// Check
 		if (!(__o instanceof FieldDescriptor))
 			return false;

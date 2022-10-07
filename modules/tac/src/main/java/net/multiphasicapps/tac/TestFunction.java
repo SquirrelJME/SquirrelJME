@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.tac;
 
+import org.junit.Test;
+
 /**
  * This represents a test which takes one parameter and returns a result.
  *
@@ -27,6 +29,7 @@ public abstract class TestFunction<A, R>
 	 * @throws Throwable On any thrown exception.
 	 * @since 2018/10/06
 	 */
+	@Test
 	public abstract R test(A __a)
 		throws Throwable;
 	

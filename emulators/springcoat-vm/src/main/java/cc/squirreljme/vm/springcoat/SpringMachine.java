@@ -16,10 +16,12 @@ import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VirtualMachine;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.brackets.TaskObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,6 +31,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.WeakHashMap;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValueString;
 import net.multiphasicapps.classfile.MethodDescriptor;
@@ -117,6 +120,10 @@ public final class SpringMachine
 	/** Class names by their objects. */
 	private final Map<SpringObject, ClassName> _namesbyclass =
 		new HashMap<>();
+	
+	/** The object that represents a given task, remains for the task. */
+	private final Map<SpringMachine, Reference<TaskObject>> _taskObject =
+		new WeakHashMap<>();
 	
 	/** Main entry point arguments. */
 	private final String[] _args;
@@ -215,11 +222,14 @@ public final class SpringMachine
 	 * @param __n The name of the thread, may be {@code null} in which case
 	 * the thread will just get an ID number.
 	 * @param __main Is this a main thread?
+	 * @param __noDebugSuspend Do not allow the debugger to suspend this
+	 * thread.
 	 * @return The newly created thread.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/01
 	 */
-	public final SpringThread createThread(String __n, boolean __main)
+	public final SpringThread createThread(String __n, boolean __main,
+		boolean __noDebugSuspend)
 	{
 		// Store thread
 		List<SpringThread> threads = this._threads;
@@ -238,7 +248,8 @@ public final class SpringMachine
 				__main,
 				usedName,
 				this.profiler.measureThread(String.format("VM_%s-%d-%s",
-				this.vmId, v, usedName)));
+				this.vmId, v, usedName)),
+				__noDebugSuspend);
 			
 			// Signal that a major state has changed
 			this.notifyAll();
@@ -449,12 +460,14 @@ public final class SpringMachine
 	
 	/**
 	 * Obtains a temporary callback thread.
-	 * 
+	 *
+	 * @param __noDebugSuspend Do not allow the debugger to suspend this
+	 * thread.
 	 * @return The thread to be used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/15
 	 */
-	public final CallbackThread obtainCallbackThread()
+	public final CallbackThread obtainCallbackThread(boolean __noDebugSuspend)
 		throws NullPointerException
 	{
 		CallbackThread rv = null;
@@ -464,9 +477,11 @@ public final class SpringMachine
 		Collection<CallbackThread> cbThreads = this._cbThreads;
 		synchronized (this)
 		{
-			// Find the thread that can be opened
+			// Find the thread that can be opened, assuming it matches the
+			// suspension state kind...
 			for (CallbackThread thread : cbThreads)
-				if (thread.canOpen())
+				if (thread.canOpen() &&
+					thread.noDebugSuspend() == __noDebugSuspend)
 				{
 					rv = thread;
 					break;
@@ -482,7 +497,8 @@ public final class SpringMachine
 			
 		// Setup new thread and its worker
 		String name = "callback#" + cbThreads.size();
-		SpringThread thread = this.createThread(name, false);
+		SpringThread thread = this.createThread(name, false,
+			__noDebugSuspend);
 		SpringThreadWorker worker = new SpringThreadWorker(this,
 			thread, false);
 		
@@ -536,7 +552,8 @@ public final class SpringMachine
 	{
 		// Thread that will be used as the main thread of execution, also used
 		// to initialize classes when they are requested
-		SpringThread mainThread = this.createThread("main", true);
+		SpringThread mainThread = this.createThread("main", true,
+			false);
 		
 		// We will be using the same logic in the thread worker if we need to
 		// initialize any objects or arguments
@@ -679,6 +696,39 @@ public final class SpringMachine
 	public final VMSuiteManager suiteManager()
 	{
 		return this.suites;
+	}
+	
+	/**
+	 * Returns the single instance task object that represents this machine
+	 * for the given machine so that each machine has a semi-singleton
+	 * reference to a machine.
+	 * 
+	 * @param __for The machine to get for.
+	 * @return The single instance task object that represents this machine for
+	 * the give machine task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/09/24
+	 */
+	public final TaskObject taskObject(SpringMachine __for)
+		throws NullPointerException
+	{
+		Map<SpringMachine, Reference<TaskObject>> taskObjects =
+			this._taskObject;
+		
+		// If the machine we are representing does not have one for this one,
+		// yet then we should make one
+		Reference<TaskObject> ref = taskObjects.get(__for);
+		TaskObject rv = (ref != null ? ref.get() : null);
+		if (rv == null)
+		{
+			// Always refers to _this_ machine!
+			rv = new TaskObject(this);
+			
+			// Store for later use
+			taskObjects.put(__for, new WeakReference<>(rv));
+		}
+		
+		return rv;
 	}
 	
 	/**

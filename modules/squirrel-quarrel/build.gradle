@@ -15,6 +15,9 @@ squirreljme
 		"dev.shadowtail.squirrelquarrel.MainMidlet")
 	tags += "games"
 	tags += "demo"
+	
+	// This game is currently incomplete so hide it in the launcher
+	ignoreInLauncher = true
 }
 
 dependencies

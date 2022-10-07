@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -69,7 +69,7 @@ public interface VMSpecifier
 	 * @return The project used for running the emulator.
 	 * @since 2020/08/16
 	 */
-	String emulatorProject();
+	List<String> emulatorProjects();
 	
 	/**
 	 * Determines the name of the library that the provider uses for what is
@@ -127,12 +127,14 @@ public interface VMSpecifier
 	 * 
 	 * @param __task The task running under.
 	 * @param __out The output of the given path.
+	 * @param __build Build parameters for the ROM.
 	 * @param __libs The libraries to link in.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/27
 	 */
-	void processRom(Task __task, OutputStream __out, Collection<Path> __libs)
+	void processRom(Task __task, OutputStream __out,
+		RomBuildParameters __build, List<Path> __libs)
 		throws IOException, NullPointerException;
 	
 	/**

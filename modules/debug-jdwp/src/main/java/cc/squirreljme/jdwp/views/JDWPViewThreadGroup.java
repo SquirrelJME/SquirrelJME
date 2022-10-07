@@ -15,10 +15,10 @@ package cc.squirreljme.jdwp.views;
  * @since 2021/04/10
  */
 public interface JDWPViewThreadGroup
-	extends JDWPViewValidObject
+	extends JDWPViewHasInstance, JDWPViewValidObject
 {
 	/**
-	 * Returns all of the types that are available.
+	 * Returns all the types that are available.
 	 * 
 	 * @param __which Which thread group?
 	 * @return All of the types that are known by this thread group.
@@ -44,6 +44,16 @@ public interface JDWPViewThreadGroup
 	 * @since 2021/04/18
 	 */
 	Object findType(Object __which, String __name);
+	
+	/**
+	 * Returns the instance object for this thread group.
+	 * 
+	 * @param __threadGroup The thread group.
+	 * @return The instance object of this group.
+	 * @since 2022/09/24
+	 */
+	@Override
+	Object instance(Object __threadGroup);
 	
 	/**
 	 * Returns the name of the thread group.

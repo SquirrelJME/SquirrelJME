@@ -1,0 +1,49 @@
+# 2022/08/05
+
+## 11:34
+
+I believe for when I want to be closer to machine code but not too close, I
+will use what JNI does like having regular functions that take `JNIEnv*`-alike
+as their first argument. This is to match how JNI works and the environment
+can contain information on state and such.
+
+## 11:38
+
+Maybe for RatufaCoat what I could instead do is compile SummerCoat to basically
+C with a kind of `SJMEEnv*` then for whatever target that exists that C code
+exists and I can use that for RetroArch. Then I can get away with whatever
+optimizations that are system specific and it would be much faster in the long
+run. Then that could help me get RatufaCoat up to embedded speed and such but
+I could use it as a base for AutumnCoat as well.
+
+## 11:47
+
+Instead of writing the interpreter multiple times, one for the Java tests and
+one for RatufaCoat... I can write the SummerCoat interpreter in Java and then
+have that compiled to C through SummerCoat. This way it is much less error
+prone and I only have to write the interpreter once. The same could eventually
+be done for SpringCoat potentially as a major refactor of sorts. I think in
+the long run, these choices would make sense because I would not have to
+rebuild my own wheel every time.
+
+Another thing, I do not want just `SJMEEnv*` but it would be better be called
+`SJMEThread*` and then also there should be a `SJMEProcessClass*` which
+contains the class state for the current class. This way the current class
+is always known and there is no need to guess where to find the class table
+and otherwise... I think this simplifies things.
+
+## 14:17
+
+For the stack caching code I should have two treads when it comes to variables
+and that would the `int` chain, also for `float`, `long`, and `double`, but
+then also an object chain for any object references. This would be easier
+I would say to translate since when I leave a method things will need to be
+counted down anyway and I could probably do an easier method exit when it
+comes to counting down rather than trying to track references and such in
+a more complex manner. This means method tear down would be a bit slower and
+would require a teardown call, but I suppose it could work.
+
+## 14:21
+
+I may as well have the same teardown for method calls regarding object counts
+like I do with objects.

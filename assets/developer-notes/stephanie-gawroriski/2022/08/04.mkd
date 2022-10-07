@@ -1,0 +1,19 @@
+# 2022/08/04
+
+## 13:08
+
+Okay so the AOT code will be in the `aot` package and then there will be a
+Java pipe handler in `java` that can read class files. When it comes to
+constant pools and such I will have that cachable but also when it comes to
+referencing to an upper pool instead of a pointer to one there will be an
+explicit internal storage type that says: _Go here instead_. I want to have it
+so I can rewrite constant pool entries for entire libraries as once and have
+if possible a global constant pool set that is shared for an entire ROM. At
+least with explicit references it makes things easier.
+
+## 13:18
+
+Also had another thought, instead of having method names and types for
+everything, I could do entire class references if this makes sense I suppose.
+Although maybe that is too much, I do not want to get too fancy but I also
+want to reduce size usage where possible.

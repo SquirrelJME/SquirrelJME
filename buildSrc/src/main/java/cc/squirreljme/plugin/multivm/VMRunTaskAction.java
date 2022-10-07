@@ -70,8 +70,8 @@ public class VMRunTaskAction
 		// Gather the class path to use for target execution, this is all the
 		// SquirrelJME modules this depends on
 		VMSpecifier vmType = this.vmType;
-		Path[] classPath = VMHelpers.runClassPath(
-			(VMExecutableTask)__task, this.sourceSet, vmType);
+		Path[] classPath = VMHelpers.runClassPath(__task,
+			this.sourceSet, vmType, true);
 		
 		// Debug
 		__task.getLogger().debug("Classpath: {}", Arrays.asList(classPath));
@@ -108,9 +108,11 @@ public class VMRunTaskAction
 				
 				// Use these streams directly
 				__spec.setStandardOutput(new GradleLoggerOutputStream(
-					__task.getLogger(), LogLevel.LIFECYCLE, -1, -1));
+					__task.getLogger(), LogLevel.LIFECYCLE,
+					-1, -1));
 				__spec.setErrorOutput(new GradleLoggerOutputStream(
-					__task.getLogger(), LogLevel.ERROR, -1, -1));
+					__task.getLogger(), LogLevel.ERROR,
+					-1, -1));
 			});
 		
 		// Did the task fail?

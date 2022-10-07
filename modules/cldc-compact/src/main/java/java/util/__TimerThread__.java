@@ -77,7 +77,7 @@ final class __TimerThread__
 					if (tasks.isEmpty())
 						this.wait();
 					
-					// Otherwise see how long we need to wait
+					// Otherwise, see how long we need to wait
 					else
 					{
 						// Need to determine if we are running this task

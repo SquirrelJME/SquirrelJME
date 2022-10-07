@@ -11,7 +11,6 @@ squirreljme
 	swmType = JavaMEMidletType.API
 	swmName = "Bluetooth API"
 	swmVendor = "Stephanie Gawroriski"
-	definedConfigurations += new JavaMEConfiguration("CLDC-1.1")
 	definedStandards += new JavaMEStandard("bluetooth.api", null, "1.0")
 	definedStandards += new JavaMEStandard("bluetooth.api", null, "1.1")
 	tags += "bluetooth"

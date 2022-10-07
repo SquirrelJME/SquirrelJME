@@ -9,7 +9,10 @@
 
 package javax.microedition.midlet;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
+import cc.squirreljme.runtime.midlet.ApplicationType;
 
 /**
  * Interface for MIDlet based applications.
@@ -123,5 +126,15 @@ final class __MIDletInterface__
 			throw new NullPointerException("NARG");
 		
 		__instance.startApp();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/07/21
+	 */
+	@Override
+	public ApplicationType type()
+	{
+		return ApplicationType.MIDLET;
 	}
 }

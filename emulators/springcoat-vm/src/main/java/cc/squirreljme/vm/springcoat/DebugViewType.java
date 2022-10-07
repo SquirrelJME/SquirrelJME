@@ -10,15 +10,26 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.JDWPCommandException;
+import cc.squirreljme.jdwp.JDWPLocalVariable;
 import cc.squirreljme.jdwp.JDWPState;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
 import cc.squirreljme.jdwp.views.JDWPViewType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
 import java.lang.ref.Reference;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.ConstantValueString;
+import net.multiphasicapps.classfile.LocalVariableInfo;
+import net.multiphasicapps.classfile.LocalVariableTable;
+import net.multiphasicapps.classfile.StackMapTable;
+import net.multiphasicapps.classfile.StackMapTableEntry;
+import net.multiphasicapps.classfile.StackMapTableState;
 
 /**
  * A viewer around class types.
@@ -44,6 +55,19 @@ public class DebugViewType
 			throw new NullPointerException("NARG");
 		
 		this.state = __state;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/08/28
+	 */
+	@Override
+	public boolean canCastTo(Object __fromWhich, Object __toWhich)
+	{
+		SpringClass from = DebugViewType.__class(__fromWhich);
+		SpringClass to = DebugViewType.__class(__toWhich);
+		
+		return to.isAssignableFrom(from);
 	}
 	
 	/**
@@ -344,6 +368,97 @@ public class DebugViewType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2022/09/21
+	 */
+	@Override
+	public JDWPLocalVariable[] methodVariableTable(Object __which,
+		int __methodDx)
+	{
+		SpringMethod method = DebugViewType.__method(__which,
+			__methodDx);
+		
+		// If there is no byte code then this is likely a native method
+		ByteCode byteCode = method.method.byteCode();
+		if (byteCode == null)
+			return null;
+		
+		// Resultant builder
+		List<JDWPLocalVariable> result = new ArrayList<>();
+		
+		// We can use both of these as a source for variables, although the
+		// StackMapTable is not precise
+		LocalVariableTable localVariables = byteCode.localVariables();
+		StackMapTable stackMap = byteCode.stackMapTable();
+		
+		// Build from debugged local variables
+		if (localVariables != null && localVariables.size() > 0)
+		{
+			// Direct copy over
+			for (LocalVariableInfo var : localVariables)
+				result.add(new JDWPLocalVariable(var.slot,
+					var.startPc, var.length, var.type.toString(),
+					var.name.toString()));
+		}
+		
+		// Otherwise, make up something based on the stack map
+		else if (stackMap != null)
+		{
+			// Needed to determine the end of the table
+			int codeLen = byteCode.length();
+			
+			// Determine gap lengths for each entry, so we can spread values
+			// around accordingly
+			Map<Integer, Integer> atLengths = new LinkedHashMap<>();
+			int lastAt = 0;
+			for (Map.Entry<Integer, StackMapTableState> entry : stackMap)
+			{
+				int at = entry.getKey();
+				
+				// Put in the length to the last one
+				Integer old = atLengths.get(lastAt);
+				atLengths.put(lastAt, (old == null ? 0 : old) + (at - lastAt));
+				
+				// New position
+				lastAt = at;
+			}
+			
+			// The final length is
+			atLengths.put(lastAt, codeLen - lastAt);
+			
+			// Go through and add entries for these
+			for (Map.Entry<Integer, StackMapTableState> entry : stackMap)
+			{
+				int at = entry.getKey();
+				StackMapTableState state = entry.getValue();
+				
+				// We need to actually go through each slot in this state
+				// to get the correct information
+				int maxLocals = state.maxLocals();
+				for (int slot = 0; slot < maxLocals; slot++)
+				{
+					StackMapTableEntry local = state.getLocal(slot);
+					
+					// Ignore uninitialized values as they have nothing that
+					// can be stored there
+					// We also do not know what top variables are
+					if (!local.isInitialized() || local.isTop())
+						continue;
+					
+					// Store this, assume 0 is always this
+					result.add(new JDWPLocalVariable(
+						slot, at, atLengths.get(at),
+						local.type().type().toString(),
+						(slot == 0 ? "this" :
+							String.format("var$%d@%d", slot, at))));
+				}
+			}
+		}
+		
+		return result.toArray(new JDWPLocalVariable[result.size()]);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/04/14
 	 */
 	@Override
@@ -376,11 +491,8 @@ public class DebugViewType
 		// Get the static field storage for the class
 		SpringFieldStorage[] store = classy._staticFields;
 		if (__index >= classy._staticFieldBase && __index < store.length)
-		{
-			__out.set(DebugViewObject.__normalizeNull(
-				store[__index].get()));
-			return true;
-		}
+			return DebugViewType.__readValue(__out, store[__index],
+				classy.classLoader().machine());
 		
 		// Not a valid static field
 		return false;
@@ -414,6 +526,34 @@ public class DebugViewType
 	public Object superType(Object __which)
 	{
 		return DebugViewType.__class(__which).superclass;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/01
+	 */
+	@Override
+	public Object typeOfClassInstance(Object __object)
+	{
+		// Invalid?
+		__object = DebugViewObject.__normalizeNull(__object);
+		if (!(__object instanceof SpringSimpleObject))
+			return null;
+		
+		// Not Class object?
+		SpringSimpleObject object = (SpringSimpleObject)__object;
+		if (!"java/lang/Class".equals(object.type().name.toString()))
+			return null;
+		
+		// Lookup the field for the type
+		SpringFieldStorage field = object.fieldByNameAndType(false,
+			"_type",
+			"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;");
+		if (field == null)
+			return null;
+		
+		// Read the value here
+		return MLEType.__type(field.get()).type();
 	}
 	
 	/**
@@ -480,5 +620,35 @@ public class DebugViewType
 			throw JDWPCommandException.tossInvalidMethod(
 				__which, __methodDx, e);
 		}
+	}
+	
+	/**
+	 * Reads from storage into the output value.
+	 * 
+	 * @param __out The output value.
+	 * @param __store The field storage.
+	 * @param __machine The machine used for potential object manipulation.
+	 * @return {@code true} on success.
+	 * @since 2022/09/01
+	 */
+	static boolean __readValue(JDWPValue __out, SpringFieldStorage __store,
+		SpringMachine __machine)
+	{
+		Object value = __store.get();
+		
+		// If this is a string, we need to intern it for the debugger otherwise
+		// it will fail
+		if ((value instanceof String) ||
+			(value instanceof ConstantValueString))
+			try (CallbackThread callback = __machine.obtainCallbackThread(
+				true))
+			{
+				value = callback.thread()._worker
+					.asVMObject(new ConstantValueString(value.toString()));
+			}
+		
+		__out.set(DebugViewObject.__normalizeNull(value));
+		
+		return true;
 	}
 }

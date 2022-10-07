@@ -44,7 +44,7 @@ public class TestThreadShelfInvalid
 				break;
 			
 			case 3:
-				ThreadShelf.createVMThread(null);
+				ThreadShelf.createVMThread(null, null);
 				break;
 			
 			case 4:

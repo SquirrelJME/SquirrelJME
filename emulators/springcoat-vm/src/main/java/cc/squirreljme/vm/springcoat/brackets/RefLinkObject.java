@@ -51,7 +51,10 @@ public final class RefLinkObject
 	 */
 	public RefLinkObject getNext()
 	{
-		return this._next;
+		synchronized (this)
+		{
+			return this._next;
+		}
 	}
 	
 	/**
@@ -62,7 +65,10 @@ public final class RefLinkObject
 	 */
 	public final SpringObject getObject()
 	{
-		return this._object;
+		synchronized (this)
+		{
+			return this._object;
+		}
 	}
 	
 	/**
@@ -73,7 +79,10 @@ public final class RefLinkObject
 	 */
 	public RefLinkObject getPrev()
 	{
-		return this._prev;
+		synchronized (this)
+		{
+			return this._prev;
+		}
 	}
 	
 	/**
@@ -84,7 +93,10 @@ public final class RefLinkObject
 	 */
 	public void setNext(RefLinkObject __next)
 	{
-		this._next = __next;
+		synchronized (this)
+		{
+			this._next = __next;
+		}
 	}
 	
 	/**
@@ -95,7 +107,10 @@ public final class RefLinkObject
 	 */
 	public void setObject(SpringObject __o)
 	{
-		this._object = __o;
+		synchronized (this)
+		{
+			this._object = __o;
+		}
 	}
 	
 	/**
@@ -106,6 +121,9 @@ public final class RefLinkObject
 	 */
 	public void setPrev(RefLinkObject __prev)
 	{
-		this._prev = __prev;
+		synchronized (this)
+		{
+			this._prev = __prev;
+		}
 	}
 }

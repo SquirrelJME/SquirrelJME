@@ -11,7 +11,10 @@ package cc.squirreljme.plugin.swm;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * This represents a profile that may be implemented, such as MIDP.
@@ -178,6 +181,53 @@ public final class JavaMEProfile
 	public SuiteVersion version()
 	{
 		return this.version;
+	}
+	
+	/**
+	 * Parses a list of profiles from the string.
+	 * 
+	 * @param __input The string to parse from.
+	 * @return The parsed profiles.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/09
+	 */
+	public static Set<JavaMEProfile> parseProfiles(String __input)
+		throws NullPointerException
+	{
+		if (__input == null)
+			throw new NullPointerException("NARG");
+		
+		Set<JavaMEProfile> result = new LinkedHashSet<>();
+		for (String value : __input.split(" \t"))
+			result.add(new JavaMEProfile(value));
+		
+		return result;
+	}
+	
+	/**
+	 * Converts the collection of profiles to a string used in property files.
+	 * 
+	 * @param __profiles The profile to convert.
+	 * @return The converted property string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/09
+	 */
+	public static String toString(Collection<JavaMEProfile> __profiles)
+		throws NullPointerException
+	{
+		if (__profiles == null)
+			throw new NullPointerException("NARG");
+		
+		StringBuilder sb = new StringBuilder();
+		for (JavaMEProfile profile : __profiles)
+		{
+			if (sb.length() > 0)
+				sb.append(' ');
+			
+			sb.append(profile);
+		}
+		
+		return sb.toString();
 	}
 }
 

@@ -43,7 +43,8 @@ public class ByteDeque
 			ByteDeque.__dequeSliceSize()));
 	
 	/** The block size mask. */
-	private static final int _BLOCK_MASK = ByteDeque._BLOCK_SIZE - 1;
+	private static final int _BLOCK_MASK =
+		ByteDeque._BLOCK_SIZE - 1;
 	
 	/** The shift to convert block based values. */
 	private static final int _BLOCK_SHIFT =
@@ -280,8 +281,12 @@ public class ByteDeque
 				limit = left;
 			
 			// Write data
-			for (int i = 0; i < limit; i++)
-				bl[tail++] = __b[at++];
+			System.arraycopy(__b, at,
+				bl, tail, limit);
+			tail += limit;
+			at += limit;
+			/*for (int i = 0; i < limit; i++)
+				bl[tail++] = __b[at++];*/
 			
 			// Masking is only needed after the write
 			tail &= bm;
@@ -1135,7 +1140,7 @@ public class ByteDeque
 		}
 		
 		// The initial read head starts where the actual data starts
-		// logicall in the buffer (if the head is 2 then address 42 is
+		// logically in the buffer (if the head is 2 then address 42 is
 		// 44 within the buffer).
 		int rhead = (head + __a) & bm;
 		
@@ -1157,13 +1162,25 @@ public class ByteDeque
 			
 			// Write the data
 			if (__set)
-				for (int i = 0; i < rc; i++)
-					bl[rhead++] = __b[at++];
+			{
+				System.arraycopy(__b, at,
+					bl, rhead, rc);
+				/*for (int i = 0; i < rc; i++)
+					bl[rhead++] = __b[at++];*/
+			}
 		
 			// Read the data
 			else
-				for (int i = 0; i < rc; i++)
-					__b[at++] = bl[rhead++];
+			{
+				System.arraycopy(bl, rhead,
+					__b, at, rc);
+				/*for (int i = 0; i < rc; i++)
+					__b[at++] = bl[rhead++];*/
+			}
+			
+			// Move up pointers
+			at += rc;
+			rhead += rc;
 			
 			// Reset head to zero for the next block read
 			rhead = 0;

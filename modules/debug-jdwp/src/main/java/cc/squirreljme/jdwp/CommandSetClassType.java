@@ -37,7 +37,7 @@ public enum CommandSetClassType
 				__packet.id(), ErrorType.NO_ERROR);
 			
 			Object superClass = __controller.viewType().superType(type);
-			rv.writeId(System.identityHashCode(superClass));
+			rv.writeObject(__controller, superClass);
 			
 			// Register the super class so it can be known
 			if (superClass != null)

@@ -1,16 +1,13 @@
-plugins
-{
+plugins {
 	id "java"
 }
 
-repositories
-{
+repositories {
 	mavenCentral()
 	jcenter()
 }
 
-dependencies
-{
+dependencies {
 	implementation gradleApi()
 
 	// Jasmin Sable (Java byte code assembler)

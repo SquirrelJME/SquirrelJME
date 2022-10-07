@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.aot;
 
-import cc.squirreljme.runtime.cldc.Poking;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
@@ -71,9 +70,6 @@ public class Main
 	public static void main(String... __args)
 		throws IOException
 	{
-		// Make sure the VM stuff is alive here
-		Poking.poke();
-		
 		// Push all arguments to the queue
 		Deque<String> args = new LinkedList<>(Arrays.asList(__args));
 		
@@ -118,29 +114,29 @@ public class Main
 		try (InputStream in = new StandardInputStream();
 			OutputStream out = System.out)
 		{
-		// Which mode should occur?
-		switch (mode)
-		{
-				// Compile code
-			case "compile":
+			// Which mode should occur?
+			switch (mode)
+			{
+					// Compile code
+				case "compile":
 					Main.mainCompile(backend, in, out, name, args);
 					break;
 					
 					// Dump the result of "compile"
 				case "dumpCompile":
 					Main.dumpCompile(backend, in, out, name);
-				break;
-				
-				// Link multiple libraries into one
-			case "rom":
+					break;
+					
+					// Link multiple libraries into one
+				case "rom":
 					Main.mainRom(backend, out, args);
-				break;
-			
-			// {@squirreljme.error AE02 Unknown mode. (The mode)}
-			default:
-				throw new IllegalArgumentException("AE02 " + mode);
+					break;
+				
+				// {@squirreljme.error AE02 Unknown mode. (The mode)}
+				default:
+					throw new IllegalArgumentException("AE02 " + mode);
+			}
 		}
-	}
 	}
 	
 	/**
@@ -290,8 +286,11 @@ public class Main
 		if (libs.isEmpty())
 			throw new IllegalArgumentException("AE08");
 		
+		// Extra arrays accordingly
+		VMClassLibrary[] vmLibs = libs.toArray(
+			new VMClassLibrary[libs.size()]);
+		
 		// Perform combined linking
-		__backend.rom(settings, __out,
-			libs.toArray(new VMClassLibrary[libs.size()]));
+		__backend.rom(settings, __out, vmLibs);
 	}
 }

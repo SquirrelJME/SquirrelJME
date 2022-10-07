@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp.views;
 
+import cc.squirreljme.jdwp.JDWPLocalVariable;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
 
@@ -18,8 +19,18 @@ import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
  * @since 2021/04/10
  */
 public interface JDWPViewType
-	extends JDWPViewValidObject
+	extends JDWPViewHasInstance, JDWPViewValidObject
 {
+	/**
+	 * Checks if this type can cast to the other type.
+	 *
+	 * @param __fromWhich The type to cast from.
+	 * @param __toWhich The type to cast to.
+	 * @return If the cast is possible.
+	 * @since 2022/08/28
+	 */
+	boolean canCastTo(Object __fromWhich, Object __toWhich);
+	
 	/**
 	 * Returns the class loader used for the given type, note that there
 	 * should always only be a single class loader in Java ME per process.
@@ -137,6 +148,7 @@ public interface JDWPViewType
 	 * @return The {@link Class} object instance.
 	 * @since 2021/04/19
 	 */
+	@Override
 	Object instance(Object __which);
 	
 	/**
@@ -225,6 +237,17 @@ public interface JDWPViewType
 	String methodSignature(Object __which, int __methodDx);
 	
 	/**
+	 * Returns the local variable table for the method.
+	 * 
+	 * @param __which Which class to get from?
+	 * @param __methodDx The method index.
+	 * @return The local variable table, if {@code null} or empty then it
+	 * is not considered valid.
+	 * @since 2022/09/21
+	 */
+	JDWPLocalVariable[] methodVariableTable(Object __which, int __methodDx);
+	
+	/**
 	 * Reads the value of an static field within the class.
 	 *
 	 * @param __which Which class to read from?
@@ -264,4 +287,14 @@ public interface JDWPViewType
 	 * @since 2021/04/12
 	 */
 	Object superType(Object __which);
+	
+	/**
+	 * Returns the type that the {@link Class} instance represents.
+	 * 
+	 * @param __object An instance of {@link Class}.
+	 * @return The type of the given {@link Class} or {@code null} if it is not
+	 * valid.
+	 * @since 2022/09/01
+	 */
+	Object typeOfClassInstance(Object __object);
 }

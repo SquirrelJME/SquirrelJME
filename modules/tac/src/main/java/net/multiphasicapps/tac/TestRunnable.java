@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.tac;
 
+import org.junit.Test;
+
 /**
  * This is a test which has no input and produces no output, it just runs.
  *
@@ -23,6 +25,7 @@ public abstract class TestRunnable
 	 * @throws Throwable On any thrown exception.
 	 * @since 2018/10/06
 	 */
+	@Test
 	public abstract void test()
 		throws Throwable;
 	

@@ -10,14 +10,14 @@ squirreljme
 	swmType = JavaMEMidletType.API
 	swmName = "Ahead-Of-Time Support"
 	swmVendor = "Stephanie Gawroriski"
-	definedConfigurations += new JavaMEConfiguration("CLDC-1.8")
 	tags += "aot-compiler"
 }
 
 dependencies
 {
-	api project(":modules:cldc-compact")
 	api project(":modules:cldc")
 	api project(":modules:zip")
 	api project(":modules:common-vm")
+	api project(":modules:io")
+	api project(":modules:collections")
 }

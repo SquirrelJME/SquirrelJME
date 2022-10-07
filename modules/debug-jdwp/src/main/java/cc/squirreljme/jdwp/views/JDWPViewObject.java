@@ -29,6 +29,15 @@ public interface JDWPViewObject
 	int arrayLength(Object __which);
 	
 	/**
+	 * Is this a null object?
+	 *
+	 * @param __value The object to check.
+	 * @return If it is {@code null} or not.
+	 * @since 2022/09/21
+	 */
+	boolean isNullObject(Object __value);
+	
+	/**
 	 * Reads the value of an array index within the object.
 	 *
 	 * @param __which What is being read from?

@@ -13,6 +13,7 @@ import cc.squirreljme.jdwp.event.EventModContext;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Arrays;
 import java.util.List;
+import net.multiphasicapps.classfile.ExceptionHandler;
 import net.multiphasicapps.collections.EmptyList;
 import net.multiphasicapps.collections.UnmodifiableIterable;
 import net.multiphasicapps.collections.UnmodifiableList;
@@ -46,7 +47,7 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			__packet.writeId(System.identityHashCode(__thread));
+			__packet.writeObject(__controller, __thread);
 			__packet.writeLocation(__controller,
 				__controller.locationOf(__thread));
 		}
@@ -72,7 +73,7 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			__packet.writeId(System.identityHashCode(__thread));
+			__packet.writeObject(__controller, __thread);
 			__packet.writeLocation(__controller,
 				__controller.locationOf(__thread));
 		}
@@ -98,7 +99,10 @@ public enum EventKind
 	},
 	
 	/** Exception. */
-	EXCEPTION(4, null, null,
+	EXCEPTION(4, null,
+		Arrays.asList(
+			EventModContext.ENSNARE_ARGUMENT,
+			EventModContext.TOSSED_EXCEPTION),
 		EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
 		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
 		EventModKind.LOCATION_ONLY, EventModKind.EXCEPTION_ONLY,
@@ -113,7 +117,23 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			throw Debugging.todo();
+			Object tossing = __args[0];
+			ExceptionHandler handler = (ExceptionHandler)__args[1];
+			
+			// Where are we?
+			JDWPLocation tossLocation = __controller.locationOf(__thread);
+			__packet.writeObject(__controller, __thread);
+			__packet.writeLocation(__controller, tossLocation);
+			
+			// Object being tossed
+			__packet.writeTaggedId(__controller, tossing);
+			
+			// Where is the exception handler, if there is one?
+			if (handler == null)
+				__packet.writeLocation(__controller, JDWPLocation.BLANK);
+			else
+				__packet.writeLocation(__controller,
+					tossLocation.withCodeIndex(handler.handlerAddress()));
 		}
 	},
 	
@@ -149,7 +169,7 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			__packet.writeId(System.identityHashCode(__args[0]));
+			__packet.writeObject(__controller, __args[0]);
 		}
 	},
 	
@@ -166,7 +186,7 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			__packet.writeId(System.identityHashCode(__args[0]));
+			__packet.writeObject(__controller, __args[0]);
 		}
 	},
 	
@@ -191,11 +211,10 @@ public enum EventKind
 			JDWPClassStatus status = (JDWPClassStatus)__args[1];
 			
 			// Calling thread
-			__packet.writeId(System.identityHashCode(__thread));
+			__packet.writeObject(__controller, __thread);
 			
 			// The Class ID
-			__packet.writeByte(JDWPUtils.classType(__controller, cl).id);
-			__packet.writeId(System.identityHashCode(cl));
+			__packet.writeTaggedId(__controller, cl);
 			
 			// The signature of the class
 			__packet.writeString(__controller.viewType().signature(cl));
@@ -298,7 +317,10 @@ public enum EventKind
 	},
 	
 	/** Exception catch. */
-	EXCEPTION_CATCH(30, null, null,
+	EXCEPTION_CATCH(30, null,
+		Arrays.asList(
+			EventModContext.ENSNARE_ARGUMENT,
+			EventModContext.TOSSED_EXCEPTION),
 		EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
 		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
 		EventModKind.LOCATION_ONLY, EventModKind.EXCEPTION_ONLY,
@@ -313,12 +335,19 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			throw Debugging.todo();
+			// Exceptions are always formatted the same regardless of
+			// whether they were caught or not
+			EventKind.EXCEPTION.write(__controller, __thread, __packet,
+				__args);
 		}
 	},
 	
 	/** Method entry. */
-	METHOD_ENTRY(40, null, null,
+	METHOD_ENTRY(40,
+		Arrays.asList(EventModContext.CURRENT_LOCATION,
+			EventModContext.CURRENT_INSTANCE,
+			EventModContext.CURRENT_TYPE),
+		null,
 		EventModKind.THREAD_ONLY, EventModKind.CLASS_ONLY,
 		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
 		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
@@ -332,12 +361,19 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			throw Debugging.todo();
+			__packet.writeObject(__controller, __thread);
+			__packet.writeLocation(__controller,
+				__controller.locationOf(__thread));
 		}
 	},
 	
 	/** Method exit. */
-	METHOD_EXIT(41, null, null, EventModKind.THREAD_ONLY,
+	METHOD_EXIT(41,
+		Arrays.asList(EventModContext.CURRENT_LOCATION,
+			EventModContext.CURRENT_INSTANCE,
+			EventModContext.CURRENT_TYPE),
+		null,
+		EventModKind.THREAD_ONLY,
 		EventModKind.CLASS_ONLY,
 		EventModKind.CLASS_MATCH_PATTERN, EventModKind.CLASS_EXCLUDE_PATTERN,
 		EventModKind.THIS_INSTANCE_ONLY, EventModKind.LIMIT_OCCURRENCES)
@@ -351,7 +387,9 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			throw Debugging.todo();
+			__packet.writeObject(__controller, __thread);
+			__packet.writeLocation(__controller,
+				__controller.locationOf(__thread));
 		}
 	},
 	
@@ -371,7 +409,14 @@ public enum EventKind
 			JDWPPacket __packet, Object... __args)
 			throws JDWPException
 		{
-			throw Debugging.todo();
+			__packet.writeObject(__controller, __thread);
+			__packet.writeLocation(__controller,
+				__controller.locationOf(__thread));
+			
+			// Write down the value
+			__packet.writeValue(__controller, __args[0],
+				JDWPValueTag.guessTypeRaw(__controller, __args[0]),
+				false);
 		}
 	},
 	
@@ -635,7 +680,7 @@ public enum EventKind
 		JDWPValue newValue = (JDWPValue)__args[4];
 		
 		// Write current thread and location
-		__packet.writeId(System.identityHashCode(__thread));
+		__packet.writeObject(__controller, __thread);
 		JDWPLocation location = __controller.locationOf(__thread);
 		__packet.writeLocation(__controller,
 			__controller.locationOf(__thread));
@@ -654,8 +699,7 @@ public enum EventKind
 		// how would we know which field we were even writing because the
 		// information is not elsewhere at all??? So this is a big guess.
 		// TODO: Was this guessed correctly???
-		__packet.writeByte(JDWPUtils.classType(__controller, type).id);
-		__packet.writeId(System.identityHashCode(type));
+		__packet.writeTaggedId(__controller, type);
 		if (type != null)
 			items.put(type);
 		
@@ -663,7 +707,7 @@ public enum EventKind
 		__packet.writeId(fieldDx);
 		
 		// The object accessed, this is tagged oddly
-		__packet.writeValue(instance,
+		__packet.writeValue(__controller, instance,
 			JDWPValueTag.guessTypeRaw(__controller, instance), false);
 		if (instance != null)
 			items.put(instance);
@@ -677,7 +721,7 @@ public enum EventKind
 			JDWPValueTag tag = JDWPValueTag.fromSignature(fieldSig);
 			
 			// Write the value
-			__packet.writeValue(newValue, tag, false);
+			__packet.writeValue(__controller, newValue, tag, false);
 			
 			// Make sure this is a known object
 			Object itemVal = newValue.get();

@@ -152,7 +152,7 @@ public class MidletMain
 					__refreshCanvas, refreshState, mainDisplay);
 			}
 			
-			// Scan all of the available suites for launching
+			// Scan all the available suites for launching
 			SuiteScanner.scanSuites(handler);
 			
 			// All done so, return the title back

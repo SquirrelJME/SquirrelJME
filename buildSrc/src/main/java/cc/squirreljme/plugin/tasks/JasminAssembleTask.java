@@ -37,13 +37,15 @@ public class JasminAssembleTask
 	 *
 	 * @param __sourceSet The source set to use.
 	 * @param __prTask The process resources task.
+	 * @param __cleanTask The task for cleaning.
 	 * @since 2020/04/04
 	 */
 	@Inject
-	public JasminAssembleTask(String __sourceSet, ProcessResources __prTask)
+	public JasminAssembleTask(String __sourceSet, ProcessResources __prTask,
+		Task __cleanTask)
 	{
 		super(JasminAssembleTask.EXTENSION, ".class",
-			__sourceSet, __prTask);
+			__sourceSet, __prTask, __cleanTask);
 		
 		// Set details of this task
 		this.setGroup("squirreljme");
@@ -63,15 +65,15 @@ public class JasminAssembleTask
 			{
 				// Assemble input file
 				try (InputStream in = Files.newInputStream(
-					output.input.absolute, StandardOpenOption.READ))
+					output.input.getAbsolute(), StandardOpenOption.READ))
 				{
 					// Assemble source
 					ClassFile jasClass = new ClassFile();
 					try
 					{
-					jasClass.readJasmin(new BufferedInputStream(in),
-						output.input.relative.getFileName().toString(),
-						true);
+						jasClass.readJasmin(new BufferedInputStream(in),
+							output.input.getRelative().getFileName().toString(),
+							true);
 					}
 					
 					// This could fail
@@ -79,7 +81,7 @@ public class JasminAssembleTask
 					{
 						throw new RuntimeException(String.format(
 							"Error assembling: %s (%d errors): %s",
-							output.input.absolute, jasClass.errorCount(),
+							output.input.getAbsolute(), jasClass.errorCount(),
 							e.getMessage()));
 					}
 					
@@ -87,7 +89,7 @@ public class JasminAssembleTask
 					if (jasClass.errorCount() > 0)
 						throw new RuntimeException(String.format(
 							"Error assembling: %s (%d errors)",
-							output.input.absolute, jasClass.errorCount()));
+							output.input.getAbsolute(), jasClass.errorCount()));
 					
 					// Write class file
 					jasClass.write(target);
@@ -110,7 +112,7 @@ public class JasminAssembleTask
 					throw (RuntimeException)e;
 				
 				throw new RuntimeException(String.format(
-					"Could not assemble %s: %s", output.input.absolute,
+					"Could not assemble %s: %s", output.input.getAbsolute(),
 					e.getMessage()), e);
 			}
 	}

@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jdwp;
 
+import cc.squirreljme.jdwp.views.JDWPViewObject;
+import cc.squirreljme.jdwp.views.JDWPViewThread;
 import cc.squirreljme.jdwp.views.JDWPViewType;
 
 /**
@@ -50,7 +52,15 @@ public final class JDWPUtils
 		// If null or not valid, treat as an object
 		JDWPViewType viewType = __controller.viewType();
 		if (__class == null || !viewType.isValid(__class))
+		{
+			// If this was an object, then get the class of the object
+			JDWPViewObject viewObject = __controller.viewObject();
+			if (__class != null && viewObject.isValid(__class))
+				return JDWPUtils.classType(__controller,
+					viewObject.type(__class));
+			
 			return JDWPClassType.CLASS;
+		}
 		
 		// Array type?
 		if (viewType.signature(__class).startsWith("["))
@@ -63,6 +73,51 @@ public final class JDWPUtils
 		
 		// Just a plain class
 		return JDWPClassType.CLASS;
+	}
+	
+	/**
+	 * Finds the field ID for the given type.
+	 * 
+	 * @param __viewType The type view.
+	 * @param __type The type to look in.
+	 * @param __fieldName The field name.
+	 * @param __fieldDesc The field descriptor.
+	 * @return The field ID for the given field or a negative if not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/09/24
+	 */
+	public static int findFieldId(JDWPViewType __viewType, Object __type,
+		String __fieldName, String __fieldDesc)
+		throws NullPointerException
+	{
+		if (__viewType == null || __type == null || __fieldName == null ||
+			__fieldDesc == null)
+			throw new NullPointerException("NARG");
+		
+		// Search through all fields
+		for (int fieldId : __viewType.fields(__type))
+			if (__fieldName.equals(__viewType.fieldName(__type, fieldId)) &&
+				__fieldDesc.equals(__viewType.fieldSignature(__type, fieldId)))
+				return fieldId;
+		
+		// Not found
+		return -1;
+	}
+	
+	/**
+	 * Is this a visible thread?
+	 * 
+	 * @param __view The view used.
+	 * @param __thread The thread.
+	 * @return If this thread is visible or not.
+	 * @since 2022/09/24
+	 */
+	public static boolean isVisibleThread(JDWPViewThread __view,
+		Object __thread)
+	{
+		return !__view.isTerminated(__thread) &&
+			!__view.isDebugCallback(__thread) &&
+			__view.frames(__thread).length > 0;
 	}
 	
 	/**

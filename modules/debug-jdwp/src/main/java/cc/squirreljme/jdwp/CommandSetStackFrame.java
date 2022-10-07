@@ -32,18 +32,17 @@ public enum CommandSetStackFrame
 			throws JDWPException
 		{
 			// Ignore the thread but check it, then read the frame
-			__packet.readThread(__controller, false);
+			__packet.readThread(__controller);
 			Object frame = __packet.readFrame(__controller, false);
 			
 			// Read in the slot table
 			int numSlots = __packet.readInt();
 			int[] wantSlot = new int[numSlots];
+			byte[] wantTag = new byte[numSlots];
 			for (int i = 0; i < numSlots; i++)
 			{
 				wantSlot[i] = __packet.readInt();
-				
-				// Ignore the type that was requested
-				__packet.readByte();
+				wantTag[i] = __packet.readByte();
 			}
 			
 			// Always reply with the same number of slots
@@ -63,7 +62,7 @@ public enum CommandSetStackFrame
 					// Try to guess the used value
 					JDWPValueTag tag = JDWPValueTag.guessType(
 						__controller, value);
-					rv.writeValue(value, tag, false);
+					rv.writeValue(__controller, value, tag, false);
 					
 					// Store object for later use
 					if (value.get() != null && tag.isObject)
@@ -87,7 +86,7 @@ public enum CommandSetStackFrame
 			throws JDWPException
 		{
 			// Ignore the thread but check it, then read the frame
-			__packet.readThread(__controller, false);
+			__packet.readThread(__controller);
 			Object frame = __packet.readFrame(__controller, false);
 			
 			// Where is this frame located?
@@ -118,7 +117,7 @@ public enum CommandSetStackFrame
 					// Try to guess the used value
 					JDWPValueTag tag = JDWPValueTag.guessType(
 						__controller, value);
-					rv.writeValue(value, tag, false);
+					rv.writeValue(__controller, value, tag, false);
 					
 					// Store object for later use
 					if (value.get() != null && tag.isObject)

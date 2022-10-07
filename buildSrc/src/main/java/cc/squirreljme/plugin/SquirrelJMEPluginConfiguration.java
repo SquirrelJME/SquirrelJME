@@ -9,11 +9,13 @@
 
 package cc.squirreljme.plugin;
 
+import cc.squirreljme.plugin.multivm.VMHelpers;
 import cc.squirreljme.plugin.swm.JavaMEConfiguration;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.swm.JavaMEMidletType;
 import cc.squirreljme.plugin.swm.JavaMEProfile;
 import cc.squirreljme.plugin.swm.JavaMEStandard;
+import cc.squirreljme.plugin.util.UnassistedLaunchEntry;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -89,8 +91,22 @@ public class SquirrelJMEPluginConfiguration
 	public List<Project> optionalDependencies =
 		new ArrayList<>();
 	
+	/** For tests, projects to have optional dependencies on. */
+	public List<Project> optionalDependenciesTest =
+		new ArrayList<>();
+	
+	/** For test fixtures, projects to have optional dependencies on. */
+	public List<Project> optionalDependenciesTestFixtures =
+		new ArrayList<>();
+	
 	/** Do not emit {@code Microedition-Configuration}? */
 	public boolean noEmitConfiguration;
+	
+	/** Is this the main launcher? */
+	public boolean isMainLauncher;
+	
+	/** The main class for the boot loader. */
+	public String bootLoaderMainClass;
 	
 	/**
 	 * Initializes the configuration with the contained project.
@@ -109,6 +125,22 @@ public class SquirrelJMEPluginConfiguration
 		
 		this.currentPlugin = __plugin;
 		this.currentProject = __project;
+	}
+	
+	/**
+	 * Returns the primary launch entry.
+	 * 
+	 * @return The primary launch entry.
+	 * @since 2021/08/22
+	 */
+	public final UnassistedLaunchEntry primaryEntry()
+	{
+		JavaMEMidlet firstMidlet = null;
+		List<JavaMEMidlet> midlets = this.midlets;
+		if (midlets != null && !midlets.isEmpty())
+			firstMidlet = midlets.get(0);
+		
+		return VMHelpers.unassistedLaunch(this, firstMidlet);
 	}
 	
 	/**

@@ -17,7 +17,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @since 2019/05/27
  */
 @SuppressWarnings("MagicNumber")
-public class SoftInteger
+public final class SoftInteger
 {
 	/**
 	 * Not used.
@@ -82,7 +82,7 @@ public class SoftInteger
 		if ((__a & 0x80000000) != 0)
 			return Assembly.longPack(__a, 0xFFFFFFFF);
 		
-		// Otherwise the top is just zero
+		// Otherwise, the top is just zero
 		else
 			return Assembly.longPack(__a, 0);
 	}

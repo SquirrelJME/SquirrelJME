@@ -239,6 +239,19 @@ public class IModeApplication
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2021/06/13
+	 */
+	@Override
+	public String loaderEntryClass()
+	{
+		// Always use the application helper
+		if (this.isStarApplication())
+			return IModeApplication._STAR_BOOT_CLASS;
+		return IModeApplication._DOJA_BOOT_CLASS;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/12/01
 	 */
 	@Override
@@ -272,18 +285,5 @@ public class IModeApplication
 				property.getKey(), property.getValue());
 		
 		return rv;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/06/13
-	 */
-	@Override
-	public String loaderEntryClass()
-	{
-		// Always use the application helper
-		if (this.isStarApplication())
-			return IModeApplication._STAR_BOOT_CLASS;
-		return IModeApplication._DOJA_BOOT_CLASS;
 	}
 }

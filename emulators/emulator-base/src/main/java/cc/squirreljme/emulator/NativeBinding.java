@@ -9,6 +9,8 @@
 
 package cc.squirreljme.emulator;
 
+import cc.squirreljme.jvm.mle.ReflectionShelf;
+import cc.squirreljme.jvm.mle.TypeShelf;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -16,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 
 /**
  * This class manages the native bindings.
@@ -75,6 +78,28 @@ public final class NativeBinding
 	 * @since 2020/02/26
 	 */
 	private static native int __bindMethods();
+	
+	/**
+	 * Main entry point for the hosted emulator.
+	 * 
+	 * @param __args The program arguments.
+	 * @throws Throwable On any exception.
+	 * @since 2022/09/07
+	 */
+	public static void main(String... __args)
+		throws Throwable
+	{
+		// Force this to be initialized
+		new NativeBinding();
+		
+		// Extract main method to call
+		String targetMain = __args[0];
+		String[] targetArgs =
+			Arrays.copyOfRange(__args, 1, __args.length);
+		
+		// Call main
+		ReflectionShelf.invokeMain(TypeShelf.findType(targetMain), targetArgs);
+	}
 	
 	/**
 	 * Checks to see if the preloaded library is available.

@@ -12,11 +12,14 @@ package cc.squirreljme.plugin.multivm;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StreamTokenizer;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Information on a source code file.
@@ -34,16 +37,21 @@ final class __SourceInfo__
 	/** The super-class of this one, if one is set. */
 	public final String superClass;
 	
+	/** The classes this implements. */
+	public final Set<String> implementsClasses;
+	
 	/**
 	 * Initializes the source information.
 	 * 
 	 * @param __inPackage The package this source is in.
 	 * @param __thisClass The current class.
 	 * @param __superClass The super class, may be {@code null}.
+	 * @param __implementsClasses The classes this implements.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/09
 	 */
-	__SourceInfo__(String __inPackage, String __thisClass, String __superClass)
+	__SourceInfo__(String __inPackage, String __thisClass, String __superClass,
+		Set<String> __implementsClasses)
 		throws NullPointerException
 	{
 		if (__inPackage == null || __thisClass == null)
@@ -52,6 +60,42 @@ final class __SourceInfo__
 		this.inPackage = __inPackage;
 		this.thisClass = __thisClass;
 		this.superClass = __superClass;
+		this.implementsClasses = (__implementsClasses == null ||
+			__implementsClasses.isEmpty() ? Collections.emptySet() :
+			Collections.unmodifiableSet(
+				new LinkedHashSet<>(__implementsClasses)));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/05
+	 */
+	@Override
+	public String toString()
+	{
+		return String.format(
+			"__SourceInfo__{inPackage='%s', thisClass='%s'," +
+				"superClass='%s', implementsClasses=%s}",
+			this.inPackage, this.thisClass, this.superClass,
+			this.implementsClasses);
+	}
+	
+	/**
+	 * Loads class information from a class file.
+	 *
+	 * @param __in The stream to from.
+	 * @return The implementing class information.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/09/05
+	 */
+	public static __SourceInfo__ loadClass(InputStream __in)
+		throws IOException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -91,6 +135,7 @@ final class __SourceInfo__
 		// Current state
 		String thisClass = null;
 		String superClass = null;
+		Set<String> implementsClasses = new LinkedHashSet<>();
 		
 		// Parse tokens
 		Deque<String> queue = new LinkedList<>();
@@ -104,8 +149,8 @@ final class __SourceInfo__
 			{
 				String first = queue.pollFirst();
 				
-				// Declares current class?
-				if (".class".equals(first))
+				// Declares current class or interface?
+				if (".class".equals(first) || ".interface".equals(first))
 				{
 					// Ignore any access specifiers before the class name
 					String second;
@@ -117,7 +162,7 @@ final class __SourceInfo__
 					
 					// The class name just follows these
 					if (second != null)
-						thisClass = second; 
+						thisClass = second.replace('/', '.'); 
 				}
 				
 				// Declares super class?
@@ -126,14 +171,24 @@ final class __SourceInfo__
 					// The super class just follows this
 					String second = queue.pollFirst();
 					if (second != null)
-						superClass = second;
+						superClass = second.replace('/', '.');
 				}
 				
-				// Stop on EOF of if we found both our class and super-class,
-				// the order could be swapped so we can only reliably stop on
-				// both conditions being true
-				if ((thisClass != null && superClass != null) ||
-					type == StreamTokenizer.TT_EOF)
+				// Declares implementing interface?
+				else if (".implements".equals(first))
+				{
+					// The super class just follows this
+					String second = queue.pollFirst();
+					if (second != null)
+						implementsClasses.add(
+							second.replace('/', '.'));
+				}
+				
+				// Stop on EOF, or if we hit a field or method as we know
+				// there will be nothing following this
+				if (type == StreamTokenizer.TT_EOF ||
+					".method".equals(first) ||
+					".field".equals(first))
 					break;
 				
 				// Clear the queue for the next run
@@ -148,6 +203,7 @@ final class __SourceInfo__
 			
 			// .class public foo/bar
 			// .super foo/bar
+			// .implements foo/bar
 		}
 		
 		// This should not happen, unless the source is malformed
@@ -156,15 +212,12 @@ final class __SourceInfo__
 		
 		// Determine the package we are in, which is just the package of our
 		// binary class name
-		int ls = thisClass.lastIndexOf('/');
-		String inPackage = (ls < 0 ? "" :
-			thisClass.substring(0, ls).replace('/', '.'));
+		int ls = thisClass.lastIndexOf('.');
+		String inPackage = (ls < 0 ? "" : thisClass.substring(0, ls));
 		
 		// Normalize to Java forms, as these all use binary names
 		return new __SourceInfo__(inPackage,
-			thisClass.replace('/', '.'),
-			(superClass == null ? null :
-				superClass.replace('/', '.')));
+			thisClass, superClass, implementsClasses);
 	}
 	
 	/**
@@ -198,11 +251,13 @@ final class __SourceInfo__
 		stream.ordinaryChar(';');
 		stream.ordinaryChar('{');
 		stream.ordinaryChar('}');
+		stream.ordinaryChar('?');
 		
 		// Parsed state
 		String inPackage = null;
 		String thisClass = null;
 		String superClass = null;
+		Set<String> implementsClasses = new LinkedHashSet<>();
 		Map<String, String> imports = new HashMap<>();
 		boolean foundClassName = false;
 		
@@ -256,7 +311,8 @@ final class __SourceInfo__
 				}
 				
 				// Potential class statement?
-				else if (type == '{' && queue.contains("class"))
+				else if (type == '{' && (queue.contains("class") ||
+					queue.contains("interface")))
 				{
 					// If no package was found, then this will be the default
 					// package
@@ -265,7 +321,7 @@ final class __SourceInfo__
 					
 					// It may or may not be here on this line
 					String maybeClass = __SourceInfo__
-						.__follow(queue, "class");
+						.__follow(queue, "class", "interface");
 					String maybeExtend = __SourceInfo__
 						.__follow(queue, "extends");
 					
@@ -288,11 +344,41 @@ final class __SourceInfo__
 						if (foundImport != null)
 							superClass = foundImport;
 						
-						// Otherwise assume it is in the same package as our
+						// Has dot, so is fully qualified
+						else if (maybeExtend.indexOf('.') >= 0)
+							superClass = maybeExtend;
+						
+						// Otherwise, assume it is in the same package as our
 						// current class
 						else
 							superClass = (inPackage.isEmpty() ? maybeExtend :
 								inPackage + "." + maybeExtend);
+					}
+					
+					// Handle implements? There may be multiple ones
+					for (int count = 0;; count++)
+					{
+						// Try to read the next interface, if any
+						String maybeImplements = __SourceInfo__.__follow(queue,
+							(count == 0 ? "implements" : ","));
+						if (maybeImplements == null)
+							break;
+						
+						// Implements class is from an import statement?
+						String foundImport = imports.get(maybeImplements);
+						if (foundImport != null)
+							implementsClasses.add(foundImport);
+							
+							// Has dot, so is fully qualified
+						else if (maybeImplements.indexOf('.') >= 0)
+							implementsClasses.add(maybeImplements);
+							
+						// Otherwise, assume it is in the same package as our
+						// current class
+						else
+							implementsClasses.add((inPackage.isEmpty() ?
+								maybeImplements :
+								inPackage + "." + maybeImplements));
 					}
 				}
 				
@@ -309,13 +395,16 @@ final class __SourceInfo__
 				queue.addLast(Double.toString(stream.nval));
 			else if (type == StreamTokenizer.TT_WORD)
 				queue.addLast(stream.sval);
+			else
+				queue.addLast(Character.toString((char)type));
 		}
 		
 		// This should not happen, unless the source is malformed
 		if (inPackage == null || thisClass == null)
 			throw new IOException("Java class has no package or name?");
 		
-		return new __SourceInfo__(inPackage, thisClass, superClass);
+		return new __SourceInfo__(inPackage, thisClass, superClass,
+			implementsClasses);
 	}
 	
 	/**
@@ -325,29 +414,60 @@ final class __SourceInfo__
 	 * return {@code "foo"}.
 	 * 
 	 * @param __seq The token sequence.
-	 * @param __token The token to follow from.
+	 * @param __tokens The tokens to follow from.
 	 * @return The following word.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/10
 	 */
-	private static String __follow(Iterable<String> __seq, String __token)
+	private static String __follow(Deque<String> __seq, String... __tokens)
 		throws NullPointerException
 	{
-		if (__seq == null || __token == null)
+		if (__seq == null || __tokens == null || __tokens.length <= 0)
 			throw new NullPointerException("NARG");
 		
 		// Try to discover a match
-		for (Iterator<String> it = __seq.iterator(); it.hasNext();)
+		for (;;)
 		{
+			// Try to find first valid token matching the word
+			String at = __seq.pollFirst();
+			if (at == null)
+				break;
+			
+			// Find match for our token
+			String matching = null;
+			for (String maybe : __tokens)
+				if (maybe.equals(at))
+				{
+					matching = maybe;
+					break;
+				}
+			
 			// Did we match our token?
-			String at = it.next();
-			if (!__token.equals(at))
+			if (matching == null)
 				continue;
 			
 			// Return the follower if it is a valid identifier
-			String follower = it.next();
+			String follower = __seq.pollFirst();
 			if (follower != null && __SourceInfo__.__isJavaWord(follower))
+			{
+				// Skip any < and > since we do not care for generics at all
+				String skip = __seq.peekFirst();
+				if ("<".equals(skip))
+				{
+					int count = 0;
+					do
+					{
+						String token = __seq.pollFirst();
+						
+						if ("<".equals(token))
+							count++;
+						else if (">".equals(token))
+							count--;
+					} while (count > 0);
+				}
+				
 				return follower;
+			}
 		}
 		
 		// No match found
@@ -432,6 +552,12 @@ final class __SourceInfo__
 		for (int i = 0; i < n; i++)
 		{
 			char c = __word.charAt(i);
+			
+			// Consider dots valid for fully qualified names
+			if (c == '.')
+				continue;
+			
+			// Otherwise, must be a valid character here
 			if ((i == 0 && !Character.isJavaIdentifierStart(c)) ||
 				(i > 0 && !Character.isJavaIdentifierPart(c)))
 				return false;

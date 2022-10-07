@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.GuardedOutputStream;
 import cc.squirreljme.plugin.util.JavaExecSpecFiller;
@@ -16,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -76,6 +78,30 @@ public enum VMType
 		
 		/**
 		 * {@inheritDoc}
+		 * @since 2020/11/21
+		 */
+		@Override
+		public Iterable<Task> processLibraryDependencies(
+			VMExecutableTask __task)
+			throws NullPointerException
+		{
+			return Collections.emptyList();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/11/27
+		 */
+		@Override
+		public void processRom(Task __task, OutputStream __out,
+			RomBuildParameters __build, List<Path> __libs)
+			throws IOException, NullPointerException
+		{
+			throw new RuntimeException(this.name() + " is not ROM capable.");
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2020/08/15
 		 */
 		@SuppressWarnings("CallToSystemGetenv")
@@ -124,20 +150,18 @@ public enum VMType
 			// Bring in any system defined properties we want to truly set?
 			VMType.__copySysProps(sysProps);
 			
-			// Start with the base emulator class path
+			// Make sure the base emulator is available as well
 			List<Object> classPath = new ArrayList<>();
-			Set<Path> vmSupportPath = new LinkedHashSet<>(); 
+			Set<Path> vmSupportPath = new LinkedHashSet<>();
 			for (File file : VMHelpers.projectRuntimeClasspath(
-				__task.getProject().project(this.emulatorProject)))
-			{
+				__task.getProject().findProject(":emulators:emulator-base")))
 				vmSupportPath.add(file.toPath());
-				classPath.add(file);
-			}
 			
-			// Add all of the emulator outputs
-			for (File file : __task.getProject().project(this.emulatorProject)
-				.getTasks().getByName("jar").getOutputs().getFiles())
-				vmSupportPath.add(file.toPath());
+			// Add all the emulator outputs
+			for (String emulatorProject : this.emulatorProjects)
+				for (File file : __task.getProject().project(emulatorProject)
+					.getTasks().getByName("jar").getOutputs().getFiles())
+					vmSupportPath.add(file.toPath());
 			
 			// Use all the supporting path
 			classPath.addAll(vmSupportPath);
@@ -146,7 +170,7 @@ public enum VMType
 			// will be running directly
 			classPath.addAll(Arrays.asList(__classPath));
 			
-			// Add the VM classpath so it can be recreated if we need to spawn
+			// Add the VM classpath, so it can be recreated if we need to spawn
 			// additional tasks such as by the launcher
 			sysProps.put("squirreljme.hosted.vm.supportpath",
 				VMHelpers.classpathAsString(vmSupportPath));
@@ -183,7 +207,18 @@ public enum VMType
 			__task.getLogger().debug("Hosted SupportPath: {}", vmSupportPath);
 			__task.getLogger().debug("Hosted ClassPath: {}", classPath);
 			
-			// Is this eligible to be ran under a debugger?
+			// Arguments for the JVM
+			List<String> jvmArgs = new ArrayList<>();
+			
+			// Copy any agent libraries which are not JDWP based ones, for
+			// example if IntelliJ is profiling
+			for (String mxArg : ManagementFactory.getRuntimeMXBean()
+				.getInputArguments())
+				if (mxArg.startsWith("-agentlib:") &&
+					!mxArg.startsWith("-agentlib:jdwp="))
+					jvmArgs.add(mxArg);
+			
+			// Is this eligible to be run under a debugger?
 			if (__debugEligible)
 			{
 				// Does this run have a debugger specified already?
@@ -217,30 +252,39 @@ public enum VMType
 						
 						// Listen on a given port?
 						if (host.isEmpty())
-							__execSpec.setJvmArgs(Arrays.asList(String.format(
+							jvmArgs.add(String.format(
 								"-agentlib:jdwp=transport=dt_socket," +
-								"server=y,suspend=y,address=%d", port)));
+								"server=y,suspend=y,address=%d", port));
 						
 						// Connect to remote VM
 						else
-							__execSpec.setJvmArgs(Arrays.asList(String.format(
+							jvmArgs.add(String.format(
 								"-agentlib:jdwp=transport=dt_socket," +
 								"server=n," +
 								"address=%s:%d,suspend=y," +
-								"onuncaught=y", host, port)));
+								"onuncaught=y", host, port));
 					}
 				}
 			}
 			
+			// Add in the arguments
+			if (!jvmArgs.isEmpty())
+				__execSpec.setJvmArgs(jvmArgs);
+			
+			// Determine true arguments to use
+			List<String> trueArgs = new ArrayList<>(
+				1 + __args.length);
+			trueArgs.add(__mainClass);
+			trueArgs.addAll(Arrays.asList(__args));
+			
 			// Use the classpath we previously determined
 			__execSpec.classpath(classPath);
 			
-			// Main class was the directly specified class, we do not
-			// need to handle the standard VM factory launcher
-			__execSpec.setMain(__mainClass);
-			
-			// Use the passed arguments directly
-			__execSpec.setArgs(Arrays.asList(__args));
+			// Use special main handler which handles loading the required
+			// methods for the hosted environment to work correctly with
+			// SquirrelJME
+			__execSpec.setMain("cc.squirreljme.emulator.NativeBinding");
+			__execSpec.setArgs(trueArgs);
 			
 			// Any desired system properties
 			__execSpec.systemProperties(sysProps);
@@ -312,10 +356,10 @@ public enum VMType
 	public final String extension;
 	
 	/** The project used for the emulator. */
-	public final String emulatorProject;
+	public final List<String> emulatorProjects;
 	
 	/**
-	 * Returns the proper name of the virtual machine.
+	 * Initializes the virtual machine type handler.
 	 * 
 	 * @param __properName The proper name of the VM.
 	 * @param __extension The library extension.
@@ -327,13 +371,30 @@ public enum VMType
 		String __emulatorProject)
 		throws NullPointerException
 	{
+		this(__properName, __extension, new String[]{__emulatorProject});
+	}
+	
+	/**
+	 * Initializes the virtual machine type handler.
+	 * 
+	 * @param __properName The proper name of the VM.
+	 * @param __extension The library extension.
+	 * @param __emulatorProject The project used for the emulator.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/08/10
+	 */
+	VMType(String __properName, String __extension,
+		String[] __emulatorProject)
+		throws NullPointerException
+	{
 		if (__properName == null || __extension == null ||
 			__emulatorProject == null)
 			throw new NullPointerException("NARG");
 		
 		this.properName = __properName;
 		this.extension = __extension;
-		this.emulatorProject = __emulatorProject;
+		this.emulatorProjects = Collections.unmodifiableList(
+			Arrays.asList(__emulatorProject.clone()));
 	}
 	
 	/**
@@ -341,9 +402,9 @@ public enum VMType
 	 * @since 2020/08/16
 	 */
 	@Override
-	public final String emulatorProject()
+	public final List<String> emulatorProjects()
 	{
-		return this.emulatorProject;
+		return this.emulatorProjects;
 	}
 	
 	/**
@@ -353,7 +414,7 @@ public enum VMType
 	@Override
 	public boolean hasDumping()
 	{
-		return false;/*this == VMType.SUMMERCOAT;*/
+		return false;/*this == VMType.SUMMERCOAT*/
 	}
 	
 	/**
@@ -363,7 +424,7 @@ public enum VMType
 	@Override
 	public final boolean hasRom()
 	{
-		return false;/*this == VMType.SUMMERCOAT;*/
+		return this != VMType.HOSTED;
 	}
 	
 	/**
@@ -407,7 +468,37 @@ public enum VMType
 		VMExecutableTask __task)
 		throws NullPointerException
 	{
-		return Collections.emptyList();
+		Project project = __task.getProject().getRootProject()
+			.project(":modules:aot-" +
+				this.vmName(VMNameFormat.LOWERCASE));
+		Project rootProject = project.getRootProject();
+		
+		// Make sure the AOT compiler is always up to date when this is
+		// ran, otherwise things can be very weird if it is not updated
+		// which would not be a good thing at all
+		Collection<Task> rv = new LinkedList<>();
+		for (ProjectAndTaskName task : VMHelpers.runClassTasks(project,
+			SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED))
+		{
+			Project taskProject = rootProject.project(task.project);
+			
+			// Depends on all of the classes, not just the libraries, for
+			// anything the AOT compiler uses. If the compiler changes we
+			// need to make sure the updated compiler is used!
+			rv.add(taskProject.getTasks().getByName("classes"));
+			rv.add(taskProject.getTasks().getByName("jar"));
+			
+			// The library that makes up the task is important
+			rv.add(taskProject.getTasks().getByName(task.task));
+		}
+		
+		// Make sure the hosted environment is working since it needs to
+		// be kept up to date as well
+		for (Task task : new VMEmulatorDependencies(__task,
+			VMType.HOSTED).call())
+			rv.add(task);
+		
+		return rv;
 	}
 	
 	/**
@@ -416,10 +507,55 @@ public enum VMType
 	 */
 	@Override
 	public void processRom(Task __task, OutputStream __out,
-		Collection<Path> __libs)
+		RomBuildParameters __build, List<Path> __libs)
 		throws IOException, NullPointerException
 	{
-		throw new RuntimeException(this.name() + " is not ROM capable.");
+		if (__task == null || __out == null || __build == null ||
+			__libs == null)
+			throw new NullPointerException("NARG");
+		
+		// Build index mapping of the libraries accordingly
+		Map<Path, Integer> libIndex = new LinkedHashMap<>();
+		for (int i = 0, n = __libs.size(); i < n; i++)
+			libIndex.put(__libs.get(i), i);
+		
+		// Setup arguments for packing the ROM
+		List<String> args = new ArrayList<>();
+		
+		// Boot loader
+		if (__build.bootLoaderMainClass != null)
+			args.add("-XbootLoaderMainClass:" + __build.bootLoaderMainClass);
+		
+		// Boot loader class path
+		if (__build.bootLoaderClassPath != null)
+			args.add("-XbootLoaderClassPath:" +
+				VMType.__pathIndexList(libIndex, __build.bootLoaderClassPath));
+			
+		// Launcher main class
+		if (__build.launcherMainClass != null)
+			args.add("-XlauncherMainClass:" + __build.launcherMainClass);
+		
+		// Launcher arguments, these are a bit special
+		if (__build.launcherArgs != null)
+		{
+			String[] launcherArgs = __build.launcherArgs;
+			for (int i = 0, n = launcherArgs.length; i < n; i++)
+				args.add(String.format("-XlauncherArgs:%d:%s",
+					i, launcherArgs[i]));
+		}
+		
+		// Launcher class path
+		if (__build.launcherClassPath != null)
+			args.add("-XlauncherClassPath:" +
+				VMType.__pathIndexList(libIndex, __build.launcherClassPath));
+		
+		// Put down paths to libraries to link together
+		for (Path path : __libs)
+			args.add(path.toString());
+			
+		// Run the specified command
+		this.__aotCommand(__task, null, __out,
+			"rom", args);
 	}
 	
 	/**
@@ -457,19 +593,21 @@ public enum VMType
 		
 		// Determine the class-path for the emulator
 		Set<Path> vmClassPath = new LinkedHashSet<>();
-		for (File file : VMHelpers.projectRuntimeClasspath(
-			__task.getProject().project(this.emulatorProject)))
-			vmClassPath.add(file.toPath());
+		for (String emulatorProject : this.emulatorProjects)
+			for (File file : VMHelpers.projectRuntimeClasspath(
+				__task.getProject().project(emulatorProject)))
+				vmClassPath.add(file.toPath());
 		
 		// Make sure the base emulator is available as well
 		for (File file : VMHelpers.projectRuntimeClasspath(
 			__task.getProject().findProject(":emulators:emulator-base")))
 			vmClassPath.add(file.toPath());
 		
-		// Add all of the emulator outputs
-		for (File file : __task.getProject().project(this.emulatorProject)
-			.getTasks().getByName("jar").getOutputs().getFiles())
-			vmClassPath.add(file.toPath());
+		// Add all the emulator outputs
+		for (String emulatorProject : this.emulatorProjects)
+			for (File file : __task.getProject().project(emulatorProject)
+				.getTasks().getByName("jar").getOutputs().getFiles())
+				vmClassPath.add(file.toPath());
 		
 		// Debug
 		__task.getLogger().debug("VM ClassPath: {}", vmClassPath);
@@ -564,6 +702,9 @@ public enum VMType
 	}
 	
 	/**
+	 * Returns the command that is used to execute the ahead of time
+	 * compiler interface.
+	 * 
 	 * @param __task The task being run for.
 	 * @param __in The input source (optional).
 	 * @param __out The output source (optional).
@@ -607,7 +748,8 @@ public enum VMType
 				// what the classpath is
 				VMType.HOSTED.spawnJvmArguments(__task, false,
 					new GradleJavaExecSpecFiller(__spec),
-					"cc.squirreljme.jvm.aot.Main", null, Collections.emptyMap(),
+					"cc.squirreljme.jvm.aot.Main",
+					null, Collections.emptyMap(),
 					classPath,
 					classPath,
 					args.toArray(new String[args.size()]));
@@ -646,7 +788,7 @@ public enum VMType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/08
 	 */
-	private static void __copySysProps(Map<String, String> __sysProps)
+	static void __copySysProps(Map<String, String> __sysProps)
 		throws NullPointerException
 	{
 		if (__sysProps == null)
@@ -658,13 +800,49 @@ public enum VMType
 		{
 			// Only match certain keys
 			String baseKey = Objects.toString(prop.getKey());
-			if (!baseKey.startsWith(VMType._JVM_KEY_PREFIX))
-				continue;
 			
-			// Add it in
-			__sysProps.put(
-				baseKey.substring(VMType._JVM_KEY_PREFIX.length()),
-				Objects.toString(prop.getValue()));
+			// Forward prefixed
+			if (baseKey.startsWith(VMType._JVM_KEY_PREFIX))
+				__sysProps.put(
+					baseKey.substring(VMType._JVM_KEY_PREFIX.length()),
+					Objects.toString(prop.getValue()));
+			
+			// IntelliJ Coverage
+			else if (baseKey.startsWith("coverage."))
+				__sysProps.put(Objects.toString(prop.getKey()),
+					Objects.toString(prop.getValue()));
 		}
+	}
+	
+	/**
+	 * Maps paths to indexes, for flatification and simplification of
+	 * processes that take paths and refer to them multiple times.
+	 * 
+	 * @param __libIndex The library index.
+	 * @param __paths The paths to map.
+	 * @return A string which maps to the given indexes.
+	 * @since 2021/08/22
+	 */
+	private static String __pathIndexList(Map<Path, Integer> __libIndex,
+		Path... __paths)
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		for (Path p : __paths)
+		{
+			// This is an error if this occurs
+			Integer index = __libIndex.get(p);
+			if (p == null || index == null)
+				throw new IllegalStateException(
+					"Missing path or index for " + p);
+			
+			// Comma for the index?
+			if (sb.length() > 0)
+				sb.append(',');
+			
+			sb.append(index);
+		}
+		
+		return sb.toString();
 	}
 }

@@ -13,6 +13,7 @@
 
 #define RUNTIME_MEMORYPROFILE_DESC "()I"
 #define RUNTIME_VMDESCRIPTION_DESC "(I)Ljava/lang/String;"
+#define RUNTIME_VMSTATISTIC_DESC "(I)J"
 
 JNIEXPORT void JNICALL Impl_mle_RuntimeShelf_garbageCollect(
 	JNIEnv* env, jclass classy)
@@ -34,6 +35,14 @@ JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_vmDescription(
 {
 	return (jstring)forwardCallStaticObject(env, RUNTIME_CLASSNAME,
 		"vmDescription", RUNTIME_VMDESCRIPTION_DESC,
+		id);
+}
+
+JNIEXPORT jlong JNICALL Impl_mle_RuntimeShelf_vmStatistic(
+	JNIEnv* env, jclass classy, jint id)
+{
+	return forwardCallStaticLong(env, RUNTIME_CLASSNAME,
+		"vmStatistic", RUNTIME_VMSTATISTIC_DESC,
 		id);
 }
 
@@ -61,6 +70,7 @@ static const JNINativeMethod mleRuntimeMethods[] =
 	{"lineEnding", "()I", (void*)Impl_mle_RuntimeShelf_lineEnding},
 	{"memoryProfile", RUNTIME_MEMORYPROFILE_DESC, (void*)Impl_mle_RuntimeShelf_memoryProfile},
 	{"vmDescription", RUNTIME_VMDESCRIPTION_DESC, (void*)Impl_mle_RuntimeShelf_vmDescription},
+	{"vmStatistic", RUNTIME_VMSTATISTIC_DESC, (void*)Impl_mle_RuntimeShelf_vmStatistic},
 	{"phoneModel", "()I", (void*)Impl_mle_RuntimeShelf_phoneModel},
 	{"vmType", "()I", (void*)Impl_mle_RuntimeShelf_vmType},
 };

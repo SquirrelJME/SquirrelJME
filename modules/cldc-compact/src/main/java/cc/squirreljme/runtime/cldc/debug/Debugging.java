@@ -18,6 +18,7 @@ import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
+import cc.squirreljme.runtime.cldc.io.NonClosedOutputStream;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.PrintStream;
 
@@ -220,13 +221,14 @@ public final class Debugging
 				// Print the stack trace first like this so it does not
 				// possibly get trashed
 				TracePointBracket[] trace = DebugShelf.traceStack();
-				CallTraceUtils.printStackTrace(
+				CallTraceUtils.printStackTrace(new PrintStream(
+					new NonClosedOutputStream(
 					new ConsoleOutputStream(StandardPipeType.STDERR,
-						true),
+						true))),
 					"INCOMPLETE CODE", trace,
 					null, null, 0);
 					
-				// Report the To-Do trace so it is known to another program
+				// Report the To-Do trace, so it is known to another program
 				ThreadShelf.setTrace("INCOMPLETE CODE", trace);
 			}
 			stackTracePrinted = true;

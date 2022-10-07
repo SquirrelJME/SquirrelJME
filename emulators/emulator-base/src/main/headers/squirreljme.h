@@ -18,9 +18,11 @@ jint JNICALL mleFormInit(JNIEnv* env, jclass classy);
 jint JNICALL mleJarInit(JNIEnv* env, jclass classy);
 jint JNICALL mleObjectInit(JNIEnv* env, jclass classy);
 jint JNICALL mlePencilInit(JNIEnv* env, jclass classy);
+jint JNICALL mleReflectionInit(JNIEnv* env, jclass classy);
 jint JNICALL mleRuntimeInit(JNIEnv* env, jclass classy);
 jint JNICALL mleTaskInit(JNIEnv* env, jclass classy);
 jint JNICALL mleTerminalInit(JNIEnv* env, jclass classy);
+jint JNICALL mleTypeInit(JNIEnv* env, jclass classy);
 jint JNICALL mleThreadInit(JNIEnv* env, jclass classy);
 
 /** Useful macros, structures, and functions for forwarding. */
@@ -40,6 +42,9 @@ void JNICALL forwardCallStaticVoid(JNIEnv* env,
 	const char* const classy, const char* const name, const char* const type,
 	...);
 jint JNICALL forwardCallStaticInteger(JNIEnv* env,
+	const char* const classy, const char* const name, const char* const type,
+	...);
+jlong JNICALL forwardCallStaticLong(JNIEnv* env,
 	const char* const classy, const char* const name, const char* const type,
 	...);
 jobject JNICALL forwardCallStaticObject(JNIEnv* env,

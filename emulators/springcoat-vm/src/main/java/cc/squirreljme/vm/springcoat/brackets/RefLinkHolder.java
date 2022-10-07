@@ -27,7 +27,10 @@ public final class RefLinkHolder
 	 */
 	public RefLinkObject get()
 	{
-		return this._link;
+		synchronized (this)
+		{
+			return this._link;
+		}
 	}
 	
 	/**
@@ -38,6 +41,9 @@ public final class RefLinkHolder
 	 */
 	public void set(RefLinkObject __link)
 	{
-		this._link = __link;
+		synchronized (this)
+		{
+			this._link = __link;
+		}
 	}
 }

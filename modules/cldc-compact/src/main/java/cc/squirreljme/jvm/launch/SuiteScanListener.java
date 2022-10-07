@@ -11,6 +11,9 @@ package cc.squirreljme.jvm.launch;
 
 /**
  * This is a listener which specifies when a suite has been scanned in.
+ * 
+ * Implementations must be thread safe as this may use multiple threads
+ * accordingly to speed up scanning on slower multi-CPU systems.
  *
  * @since 2020/12/29
  */
