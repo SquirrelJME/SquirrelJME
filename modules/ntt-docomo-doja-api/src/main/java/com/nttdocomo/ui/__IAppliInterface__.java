@@ -10,6 +10,8 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.jvm.launch.IModeApplication;
+import cc.squirreljme.jvm.mle.DebugShelf;
+import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
@@ -143,6 +145,9 @@ final class __IAppliInterface__
 	{
 		if (__instance == null)
 			throw new NullPointerException("NARG");
+		
+		// Set debug tracing for getting i-mode applications working
+		//DebugShelf.verbose(VerboseDebugFlag.ALLOCATION);
 		
 		// Start the application
 		__instance.start();

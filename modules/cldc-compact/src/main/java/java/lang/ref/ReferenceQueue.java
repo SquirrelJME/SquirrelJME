@@ -112,7 +112,7 @@ public class ReferenceQueue<T>
 				if (rv != null)
 					return rv;
 				
-				// Otherwise wait for a signal, InterruptedException is tossed
+				// Otherwise, wait for a signal, InterruptedException is tossed
 				// on the outside
 				queue.wait();
 			}

@@ -67,29 +67,8 @@ public abstract class Reference<T>
 		// Although there is an optimization
 		this._queue = __q;
 		
-		// Must lock the GC since we will be adding a chain to an object
-		int key = 0;
-		try
-		{
-			// Spinlock on the GC
-			for (int cycle = 0;; cycle++)
-			{
-				// Obtain key
-				key = AtomicShelf.gcLock();
-				if (key != 0)
-					break;
-				
-				// Lock
-				AtomicShelf.spinLock(cycle);
-			}
-			
-			// Link into existing object, if needed
-			ReferenceShelf.linkChain(link, __v);
-		}
-		finally
-		{
-			AtomicShelf.gcUnlock(key);
-		}
+		// Link into existing object, if needed
+		ReferenceShelf.linkChain(link, __v);
 	}
 	
 	/**

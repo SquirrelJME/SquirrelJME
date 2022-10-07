@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// SquirrelJME
+// Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -11,38 +11,41 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
-/**
- * Represents a raster image.
- *
- * @see javax.microedition.lcdui.Image
- * @since 2021/11/30
- */
-@SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
-public abstract class Image
+public final class ShortTimer
+	implements TimeKeeper
 {
-	protected Image()
-	{
-	}
-	
-	public abstract void dispose();
-	
-	public Graphics getGraphics()
-	{
-		// Only valid for Image.createGraphics(int, int, ...)
-		throw Debugging.todo();
-	}
-	
-	public int getHeight()
+	@Override
+	public void dispose()
 	{
 		throw Debugging.todo();
 	}
 	
-	public int getWidth()
+	@Override
+	public int getMinTimeInterval()
 	{
 		throw Debugging.todo();
 	}
 	
-	public static Image createImage(int __w, int __h)
+	@Override
+	public int getResolution()
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
+	public void start()
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
+	public void stop()
+	{
+		throw Debugging.todo();
+	}
+	
+	public static ShortTimer getShortTimer(Canvas __canvas, int __id,
+		int __time, boolean __repeat)
 	{
 		throw Debugging.todo();
 	}

@@ -36,9 +36,37 @@ public abstract class IApplication
 		}
 	}
 	
-	public final String getSourceUrl()
+	/**
+	 * Returns the value of a parameter that was used to launch the
+	 * application either from a web browser or another application.
+	 * 
+	 * @param __name The parameter name.
+	 * @return The value of the parameter or {@code null}.
+	 * @since 2022/10/07
+	 */
+	public String getParameter(String __name)
 	{
-		throw Debugging.todo();
+		Debugging.todoNote("getParameter(%s)", __name);
+		
+		return null;
+	}
+	
+	/**
+	 * Returns the location of where the application was downloaded from, this
+	 * may be used to access additional resources.
+	 * 
+	 * If the application was downloaded from
+	 * {@code https://squirreljme.cc/apps/example.jar} the return value will
+	 * be {@code https://squirreljme.cc/apps/}.
+	 * 
+	 * @return The URL where the application was downloaded.
+	 * @since 2022/10/07
+	 */
+	public final String getSourceURL()
+	{
+		// Our webroot is always non-networked, so we handle and potentially
+		// proxy all the various HTTP calls accordingly.
+		return "squirreljme+webroot://localhost/";
 	}
 	
 	public void resume()

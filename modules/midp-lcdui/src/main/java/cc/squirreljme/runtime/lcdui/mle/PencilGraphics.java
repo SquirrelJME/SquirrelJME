@@ -177,12 +177,12 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public void drawArc(int __x, int __y, int __w, int __h, int __sa,
-	 int __aa)
+	public void drawArc(int __x, int __y, int __w, int __h, int __startAngle,
+	 int __arcAngle)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.DRAW_ARC))
 		{
-			this.software.drawArc(__x, __y, __w, __h, __sa, __aa);
+			this.software.drawArc(__x, __y, __w, __h, __startAngle, __arcAngle);
 			return;
 		}
 		
@@ -472,12 +472,12 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public void fillArc(int __x, int __y, int __w, int __h, int __sa,
-	 int __aa)
+	public void fillArc(int __x, int __y, int __w, int __h, int __startAngle,
+	 int __arcAngle)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.FILL_ARC))
 		{
-			this.software.fillArc(__x, __y, __w, __h, __sa, __aa);
+			this.software.fillArc(__x, __y, __w, __h, __startAngle, __arcAngle);
 			return;
 		}
 		

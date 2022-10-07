@@ -79,4 +79,8 @@ public interface VerboseDebugFlag
 	/** New thread is created. */
 	short THREAD_NEW =
 		0x4000;
+	
+	/** Implicit exceptions being generated. */
+	int IMPLICIT_EXCEPTION =
+		0x8000;
 }

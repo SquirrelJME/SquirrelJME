@@ -208,7 +208,8 @@ public class Connector
 	public static Connection open(String __uri, int __mode, boolean __timeouts)
 		throws IOException
 	{
-		return Connector.open(__uri, __mode, __timeouts, (ConnectionOption<?>[])null);
+		return Connector.open(__uri, __mode, __timeouts,
+			(ConnectionOption<?>[])null);
 	}
 	
 	/**
@@ -398,7 +399,7 @@ public class Connector
 				
 				// HTTP
 			case "http":
-				return HTTPClientConnection.connect(
+				return HTTPClientConnection.connectDefault(
 					HTTPAddress.fromUriPart(part));
 				
 				// HTTPS
