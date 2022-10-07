@@ -176,6 +176,13 @@ public final class EmulatedTaskShelf
 			args.add(String.format("-D%s=%s",
 				e.getKey(), e.getValue()));
 		
+		
+		// Use special main handler which handles loading the required
+		// methods for the hosted environment to work correctly with
+		// SquirrelJME... our sub-tasks need to have this in order to properly
+		// work
+		args.add("cc.squirreljme.emulator.NativeBinding");
+		
 		// The main class is our direct main class, we do not need special
 		// handling for it at all
 		args.add(__mainClass);
