@@ -36,7 +36,7 @@ public class ReferenceQueue<T>
 	{
 		// Lock and remove
 		Deque<Reference<? extends T>> queue = this._queue;
-		synchronized (queue)
+		synchronized (this)
 		{
 			return queue.poll();
 		}
@@ -69,7 +69,7 @@ public class ReferenceQueue<T>
 		
 		// Lock on the queue
 		Deque<Reference<? extends T>> queue = this._queue;
-		synchronized (queue)
+		synchronized (this)
 		{
 			for (;;)
 			{
@@ -103,7 +103,7 @@ public class ReferenceQueue<T>
 	{
 		// Lock on the queue
 		Deque<Reference<? extends T>> queue = this._queue;
-		synchronized (queue)
+		synchronized (this)
 		{
 			for (;;)
 			{
@@ -112,7 +112,7 @@ public class ReferenceQueue<T>
 				if (rv != null)
 					return rv;
 				
-				// Otherwise wait for a signal, InterruptedException is tossed
+				// Otherwise, wait for a signal, InterruptedException is tossed
 				// on the outside
 				queue.wait();
 			}
@@ -134,7 +134,7 @@ public class ReferenceQueue<T>
 		
 		// Lock on the queue to add it
 		Deque<Reference<? extends T>> queue = this._queue;
-		synchronized (queue)
+		synchronized (this)
 		{
 			queue.add(__ref);
 			

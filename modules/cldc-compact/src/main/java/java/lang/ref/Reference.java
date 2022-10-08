@@ -9,7 +9,6 @@
 
 package java.lang.ref;
 
-import cc.squirreljme.jvm.mle.AtomicShelf;
 import cc.squirreljme.jvm.mle.ReferenceShelf;
 import cc.squirreljme.jvm.mle.brackets.RefLinkBracket;
 
@@ -67,29 +66,8 @@ public abstract class Reference<T>
 		// Although there is an optimization
 		this._queue = __q;
 		
-		// Must lock the GC since we will be adding a chain to an object
-		int key = 0;
-		try
-		{
-			// Spinlock on the GC
-			for (int cycle = 0;; cycle++)
-			{
-				// Obtain key
-				key = AtomicShelf.gcLock();
-				if (key != 0)
-					break;
-				
-				// Lock
-				AtomicShelf.spinLock(cycle);
-			}
-			
-			// Link into existing object, if needed
-			ReferenceShelf.linkChain(link, __v);
-		}
-		finally
-		{
-			AtomicShelf.gcUnlock(key);
-		}
+		// Link into existing object, if needed
+		ReferenceShelf.linkChain(link, __v);
 	}
 	
 	/**
@@ -99,36 +77,17 @@ public abstract class Reference<T>
 	 */
 	public void clear()
 	{
-		// Lock the GC just in case this link is being used that it does not
-		// mess up anything else
-		int key = 0;
-		try
+		// Only unlink once
+		synchronized (this)
 		{
-			// Spinlock on the GC
-			for (int cycle = 0;; cycle++)
-			{
-				// Obtain key
-				key = AtomicShelf.gcLock();
-				if (key != 0)
-					break;
-				
-				// Lock
-				AtomicShelf.spinLock(cycle);
-			}
-			
-			// Only unlink once
 			if (!this._enqueued)
 			{
 				// Un-link this link
-				this.__unLinkAndClear();
+				ReferenceShelf.linkUnlinkAndClear(this._link);
 				
 				// Mark this reference as enqueued
 				this._enqueued = true;
 			}
-		}
-		finally
-		{
-			AtomicShelf.gcUnlock(key);
 		}
 	}
 	
@@ -137,61 +96,43 @@ public abstract class Reference<T>
 	 * is no queue this will be the same as {@link #clear()}.
 	 *
 	 * @return If it was added to the queue then this will return true,
-	 * otherwise if there is no queue or it was already added this will
+	 * otherwise if there is no queue, or it was already added this will
 	 * return false.
 	 * @since 2018/09/23
 	 */
 	public boolean enqueue()
 	{
-		// If there is no queue then this has the same effect as clear
-		ReferenceQueue<? super T> queue = this._queue;
-		if (queue == null)
+		synchronized (this)
 		{
-			this.clear();
-			
-			// Was not actually pushed to the queue, but the reference is now
-			// invalid
-			return false;
-		}
-		
-		// Will this get pushed to the queue?
-		boolean pushToQueue;
-		
-		// Lock the GC just in case this link is being used that it does not
-		// mess up anything else
-		int key = 0;
-		try
-		{
-			// Spinlock on the GC
-			for (int cycle = 0;; cycle++)
+			// If there is no queue then this has the same effect as clear
+			ReferenceQueue<? super T> queue = this._queue;
+			if (queue == null)
 			{
-				// Obtain key
-				key = AtomicShelf.gcLock();
-				if (key != 0)
-					break;
+				this.clear();
 				
-				// Lock
-				AtomicShelf.spinLock(cycle);
+				// Was not actually pushed to the queue, but the reference is
+				// now invalid
+				return false;
 			}
+			
+			// Will this get pushed to the queue?
+			boolean pushToQueue;
 			
 			// Placing this in the queue invalidates it
 			pushToQueue = !this._enqueued;
 			if (pushToQueue)
 			{
 				// The reference no longer is valid
-				this.__unLinkAndClear();
+				
+				ReferenceShelf.linkUnlinkAndClear(this._link);
 				this._enqueued = true;
 			}
+			
+			// Only push to the queue if was requested
+			if (pushToQueue)
+				queue.__enqueue(this);
+			return pushToQueue;
 		}
-		finally
-		{
-			AtomicShelf.gcUnlock(key);
-		}
-		
-		// Only push to the queue if was requested
-		if (pushToQueue)
-			queue.__enqueue(this);
-		return pushToQueue;
 	}
 	
 	/**
@@ -208,31 +149,14 @@ public abstract class Reference<T>
 		
 		// Lock the GC just in case this link is being used that it does not
 		// mess up anything else
-		int key = 0;
-		try
+		synchronized (this)
 		{
-			// Spinlock on the GC
-			for (int cycle = 0;; cycle++)
-			{
-				// Obtain key
-				key = AtomicShelf.gcLock();
-				if (key != 0)
-					break;
-				
-				// Lock
-				AtomicShelf.spinLock(cycle);
-			}
-			
 			// If this was enqueued, then just return nothing
 			if (this._enqueued)
 				return null;
 			
 			// Otherwise, use what the link says our object is
 			rv = ReferenceShelf.linkGetObject(this._link);
-		}
-		finally
-		{
-			AtomicShelf.gcUnlock(key);
 		}
 		
 		// If no object was set or was cleared out (perhaps by unlink) then
@@ -253,26 +177,6 @@ public abstract class Reference<T>
 	public boolean isEnqueued()
 	{
 		return this._enqueued;
-	}
-	
-	/**
-	 * Un-links this chain.
-	 *
-	 * @since 2020/05/30
-	 */
-	private void __unLinkAndClear()
-	{
-		RefLinkBracket link = this._link;
-		
-		// Unchain all the connected links atomically
-		ReferenceShelf.linkUnchain(link);
-		
-		// Clear the object this links to
-		ReferenceShelf.linkSetObject(link, null);
-		
-		// We can delete our link now and free any associated memory because
-		// it is dangling and serves no purpose otherwise
-		ReferenceShelf.deleteLink(link);
-	}
+	}	
 }
 

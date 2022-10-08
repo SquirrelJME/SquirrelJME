@@ -83,8 +83,10 @@ public final class ReferenceShelf
 	 *
 	 * @param __link The link.
 	 * @param __next The new link to set, may be {@code null} to clear.
+	 * @deprecated Do not use.
 	 * @since 2020/05/30
 	 */
+	@Deprecated
 	public static native void linkSetNext(RefLinkBracket __link,
 		RefLinkBracket __next);
 	
@@ -115,6 +117,16 @@ public final class ReferenceShelf
 	 * @since 2022/09/01
 	 */
 	public static native void linkUnchain(RefLinkBracket __link)
+		throws MLECallError;
+	
+	/**
+	 * Unlinks and clears the links.
+	 * 
+	 * @param __link The link to clear.
+	 * @throws MLECallError If the link is null or could not be unchained.
+	 * @since 2022/10/08
+	 */
+	public static native void linkUnlinkAndClear(RefLinkBracket __link)
 		throws MLECallError;
 	
 	/**
