@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.standalone.main;
 
+import cc.squirreljme.emulator.NativeBinding;
 import cc.squirreljme.emulator.vm.VMFactory;
 
 /**
@@ -25,8 +26,15 @@ public class Main
 	 * @since 2022/06/13
 	 */
 	public static void main(String... __args)
+		throws Throwable
 	{
-		// Just forward straight to VMFactory since it does everything
-		VMFactory.main(__args);
+		// Setup arguments to wrap
+		String[] realArgs = new String[__args.length + 1];
+		System.arraycopy(__args, 0,
+			realArgs, 1, __args.length);
+		realArgs[0] = VMFactory.class.getName();
+		
+		// Forward to native binding handling
+		NativeBinding.main(realArgs);
 	}
 }

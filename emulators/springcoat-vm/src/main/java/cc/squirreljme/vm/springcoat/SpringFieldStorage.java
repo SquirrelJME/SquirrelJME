@@ -29,17 +29,11 @@ public final class SpringFieldStorage
 	/** Name and type of the field. */
 	protected final FieldNameAndType nameandtype;
 	
-	/** Is this volatile? */
-	protected final boolean isvolatile;
-	
 	/** Is this final? */
-	protected final boolean isfinal;
+	protected final boolean isFinal;
 	
 	/** The field index. */
 	protected final int fieldIndex;
-	
-	/** The value of the field. */
-	private Object _normal;
 	
 	/** The volatile value of the field. */
 	private volatile Object _volatile;
@@ -99,12 +93,12 @@ public final class SpringFieldStorage
 			init = cv.boxedValue();
 		
 		// Set initial value
-		if ((this.isvolatile = __f.flags().isVolatile()))
+		synchronized (this)
+		{
 			this._volatile = init;
-		else
-			this._normal = init;
+		}
 		
-		this.isfinal = __f.flags().isFinal();
+		this.isFinal = __f.flags().isFinal();
 	}
 	
 	/**
@@ -117,7 +111,10 @@ public final class SpringFieldStorage
 	{
 		// Volatile field, use volatile field instead
 		// Otherwise just set thread without worrying about any contention
-		return (this.isvolatile ? this._volatile : this._normal);
+		synchronized (this)
+		{
+			return this._volatile;
+		}
 	}
 	
 	/**
@@ -165,16 +162,14 @@ public final class SpringFieldStorage
 			__v);*/
 		
 		// {@squirreljme.error BK18 Attempt to write to final field.}
-		if (this.isfinal && !__writeFinal)
+		if (this.isFinal && !__writeFinal)
 			throw new SpringIllegalAccessException("BK18");
 		
 		// Volatile field, use volatile field instead
-		if (this.isvolatile)
+		synchronized (this)
+		{
 			this._volatile = __v;
-		
-		// Otherwise just set thread without worrying about any contention
-		else
-			this._normal = __v;
+		}
 	}
 }
 
