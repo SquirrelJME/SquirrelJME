@@ -10,6 +10,7 @@
 #include <string.h>
 
 #if defined(_WIN32) || defined(_WIN64)
+	#include <windows.h>
 	#include <libloaderapi.h>
 #elif defined(__APPLE__)
 	#include <mach-o/dyld.h>
