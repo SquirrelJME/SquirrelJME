@@ -162,7 +162,7 @@ public final class Objects
 	 *
 	 * @param __a The object to get the string of.
 	 * @param __b The value to return if {@code __a} is {@code null}.
-	 * @return The string represention of {@code __a} or else {@code __b} if
+	 * @return The string representation of {@code __a} or else {@code __b} if
 	 * the input is {@code null}.
 	 * @since 2016/04/12
 	 */

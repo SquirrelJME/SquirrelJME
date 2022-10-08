@@ -9,11 +9,13 @@
 
 package cc.squirreljme.emulator;
 
+import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TaskShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import cc.squirreljme.jvm.mle.constants.TaskStatusType;
+import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.File;
@@ -95,9 +97,10 @@ public final class EmulatedTaskShelf
 		ProcessBuilder builder = new ProcessBuilder();
 		List<String> args = new LinkedList<>();
 		
-		// We will be calling the Java executable
-		// TODO: This is somewhere in "java.home"
-		args.add("java");
+		// We will be calling the Java executable, if we cannot find one then
+		// assume it is just "java"
+		args.add(Objects.toString(RuntimeShelf.vmDescription(
+			VMDescriptionType.EXECUTABLE_PATH), "java"));
 		
 		// Determine which system properties we inherit from
 		Map<String, String> sysProps = new LinkedHashMap<>();

@@ -7,6 +7,18 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <string.h>
+
+#if defined(_WIN32) || defined(_WIN64)
+	#include <libloaderapi.h>
+#elif defined(__APPLE__)
+	#include <mach-o/dyld.h>
+	#include <stdint.h>
+#elif defined(__linux__) || defined(__linux)
+	#include <unistd.h>
+	#include <stdint.h>
+#endif
+
 #include "squirreljme.h"
 
 #define RUNTIME_CLASSNAME "cc/squirreljme/emulator/EmulatedRuntimeShelf"
@@ -33,9 +45,39 @@ JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_lineEnding(JNIEnv*, jclass)
 JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_vmDescription(
 	JNIEnv* env, jclass classy, jint id)
 {
+#define NATIVE_EXEC_PATH_LEN 768
+	char fileName[NATIVE_EXEC_PATH_LEN];
+#if defined(__APPLE__)
+	uint32_t fileNameLen;
+#endif
+	
+	// Executable path of the VM binary (EXECUTABLE_PATH)
+	if (id == 6)
+	{
+		// Clear buffer
+		memset(fileName, 0, sizeof(fileName));
+		
+#if defined(_WIN32) || defined(_WIN64)
+		GetModuleFileNameA(NULL, fileName, NATIVE_EXEC_PATH_LEN);
+#elif defined(__APPLE__)
+		fileNameLen = NATIVE_EXEC_PATH_LEN;
+		_NSGetExecutablePath(fileName, &fileNameLen);
+#elif defined(__linux__) || defined(__linux)
+		readlink("/proc/self/exe", fileName, NATIVE_EXEC_PATH_LEN);
+#endif
+	
+		// Convert to Java String if Valid
+		if (fileName[0] != 0)
+		{
+			fileName[NATIVE_EXEC_PATH_LEN - 1] = 0;
+			return env->NewStringUTF(fileName);
+		}
+	}
+	
 	return (jstring)forwardCallStaticObject(env, RUNTIME_CLASSNAME,
 		"vmDescription", RUNTIME_VMDESCRIPTION_DESC,
 		id);
+#undef NATIVE_EXEC_PATH_LEN
 }
 
 JNIEXPORT jlong JNICALL Impl_mle_RuntimeShelf_vmStatistic(
