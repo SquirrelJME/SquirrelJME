@@ -7,17 +7,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package com.nttdocomo.ui;
+package com.nttdocomo.util;
 
-public interface TimeKeeper
+import java.util.EventListener;
+
+public interface TimerListener
+	extends EventListener
 {
-	void dispose();
-	
-	int getMinTimeInterval();
-	
-	int getResolution();
-	
-	void start();
-	
-	void stop();
+	void timerExpired(Timer __source);
 }
