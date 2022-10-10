@@ -9,9 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.asm;
 
-import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
-
 /**
  * Access to suites and other suites which are available for usage.
  *
@@ -43,7 +40,6 @@ public class SuiteAccess
 	 * @since 2018/10/26
 	 */
 	@Deprecated
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native String[] availableSuites();
 	
 	/**
@@ -53,7 +49,6 @@ public class SuiteAccess
 	 * @since 2018/12/06
 	 */
 	@Deprecated
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native String[] currentClassPath();
 	
 	/**
@@ -66,7 +61,6 @@ public class SuiteAccess
 	 * @since 2019/04/17
 	 */
 	@Deprecated
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final native int installJar(int __wh, byte[] __data);
 	
 	/**
@@ -76,7 +70,6 @@ public class SuiteAccess
 	 * @since 2019/04/17
 	 */
 	@Deprecated
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final native int lastCompileError();
 }
 

@@ -9,8 +9,6 @@
 
 package com.sprintpcs.util;
 
-import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
-import cc.squirreljme.runtime.cldc.annotation.VendorSpecificApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.CleanupHandler;
 

@@ -16,9 +16,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates the API level of the native call.
+ * This indicates an actual API that is available for usage.
  *
- * @deprecated This is SquirrelJME specific and is no longer used. 
  * @since 2018/12/05
  */
 @Documented
@@ -26,10 +25,9 @@ import java.lang.annotation.Target;
 @Target(value={ElementType.CONSTRUCTOR, ElementType.FIELD,
 	ElementType.LOCAL_VARIABLE, ElementType.METHOD, ElementType.PACKAGE,
 	ElementType.PARAMETER, ElementType.TYPE})
-@Deprecated
 public @interface Api
 {
-	/** @return The API level. */
-	int value();
+	/** @return The API version. */
+	String value() default "";
 }
 
