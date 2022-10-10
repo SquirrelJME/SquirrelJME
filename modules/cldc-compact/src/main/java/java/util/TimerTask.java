@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This represents a tasks which can be run within a timer.
  *
@@ -58,6 +60,7 @@ public abstract class TimerTask
 	 * @return This will return true if a future execution was canceled.
 	 * @since 2018/12/11
 	 */
+	@Api
 	public boolean cancel()
 	{
 		// Was already canceled

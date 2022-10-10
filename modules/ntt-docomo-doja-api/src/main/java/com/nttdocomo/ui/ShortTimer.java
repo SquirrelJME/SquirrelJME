@@ -9,7 +9,6 @@
 
 package com.nttdocomo.ui;
 
-import cc.squirreljme.runtime.nttdocomo.util.TimerConstants;
 import com.nttdocomo.util.TimeKeeper;
 import com.nttdocomo.util.Timer;
 import com.nttdocomo.util.TimerListener;
@@ -103,7 +102,7 @@ public final class ShortTimer
 	@Override
 	public int getMinTimeInterval()
 	{
-		return TimerConstants.MIN_TIME_INTERVAL;
+		return this._timer.getMinTimeInterval();
 	}
 	
 	/**
@@ -113,7 +112,7 @@ public final class ShortTimer
 	@Override
 	public int getResolution()
 	{
-		return TimerConstants.TIMER_RESOLUTION;
+		return this._timer.getResolution();
 	}
 	
 	/**
