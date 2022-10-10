@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.constants.UIInputFlag;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
@@ -87,7 +88,8 @@ public class Display
 
 	public static final int DISPLAY_HARDWARE_DISABLED =
 		1;
-
+	
+	@Api
 	public static final int DISPLAY_HARDWARE_ENABLED =
 		0;
 
@@ -536,6 +538,7 @@ public class Display
 		return this._current;
 	}
 	
+	@Api
 	public int getDisplayState()
 	{
 		throw Debugging.todo();

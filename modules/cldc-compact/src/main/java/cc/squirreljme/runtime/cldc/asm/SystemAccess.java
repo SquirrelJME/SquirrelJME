@@ -9,9 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.asm;
 
-import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
-
 /**
  * Access to system related details.
  *
@@ -42,7 +39,6 @@ public final class SystemAccess
 	 * @since 2018/10/14
 	 */
 	@Deprecated
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native String getEnv(String __e);
 }
 
