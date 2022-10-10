@@ -10,7 +10,7 @@
 package cc.squirreljme.runtime.nttdocomo.util;
 
 import com.nttdocomo.ui.ShortTimer;
-import com.sun.webkit.Timer;
+import com.nttdocomo.util.Timer;
 
 /**
  * Constants for {@link ShortTimer} and {@link Timer}.
