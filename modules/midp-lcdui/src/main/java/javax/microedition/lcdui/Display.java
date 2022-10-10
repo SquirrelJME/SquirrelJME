@@ -284,24 +284,7 @@ public class Display
 		// Perform the serialization call
 		synchronized (Display.class)
 		{
-			int idRunner = this.__queueSerialRunner(__run, false);
-			
-			// Constantly loop waiting for the call to be gone
-			/*
-			for (Map<Integer, Runnable> serialRuns = Display._SERIAL_RUNS;;)
-				try
-				{
-					// If this disappeared from the map then it was invoked
-					if (!serialRuns.containsKey(idRunner))
-						break;
-					
-					// Wait for trigger or timeout
-					Display.class.wait(1_000L);
-				}
-				catch (InterruptedException ignored)
-				{
-				}
-			 */
+			this.__queueSerialRunner(__run, false);
 		}
 	}
 	

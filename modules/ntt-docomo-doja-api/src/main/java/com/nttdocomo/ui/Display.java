@@ -10,6 +10,7 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.lcdui.Canvas;
 
 /**

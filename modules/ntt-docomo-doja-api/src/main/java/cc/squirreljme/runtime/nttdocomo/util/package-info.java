@@ -7,23 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package com.nttdocomo.util;
-
-import java.util.EventListener;
-
 /**
- * This is a listener for any timer events.
- * 
+ * DoJa Utilities.
+ *
  * @since 2022/10/10
  */
-public interface TimerListener
-	extends EventListener
-{
-	/**
-	 * This method is called whenever the timer interval occurs.
-	 * 
-	 * @param __source The source timer.
-	 * @since 2022/10/10
-	 */
-	void timerExpired(Timer __source);
-}
+
+package cc.squirreljme.runtime.nttdocomo.util;

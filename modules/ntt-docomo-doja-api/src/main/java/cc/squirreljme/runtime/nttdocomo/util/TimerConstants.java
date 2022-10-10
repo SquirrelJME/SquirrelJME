@@ -7,23 +7,23 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package com.nttdocomo.util;
+package cc.squirreljme.runtime.nttdocomo.util;
 
-import java.util.EventListener;
+import com.nttdocomo.ui.ShortTimer;
+import com.sun.webkit.Timer;
 
 /**
- * This is a listener for any timer events.
- * 
+ * Constants for {@link ShortTimer} and {@link Timer}.
+ *
  * @since 2022/10/10
  */
-public interface TimerListener
-	extends EventListener
+public interface TimerConstants
 {
-	/**
-	 * This method is called whenever the timer interval occurs.
-	 * 
-	 * @param __source The source timer.
-	 * @since 2022/10/10
-	 */
-	void timerExpired(Timer __source);
+	/** The minimum supported time interval. */
+	byte MIN_TIME_INTERVAL =
+		1;
+	
+	/** The minimum supported timer resolution. */
+	byte TIMER_RESOLUTION =
+		1;
 }

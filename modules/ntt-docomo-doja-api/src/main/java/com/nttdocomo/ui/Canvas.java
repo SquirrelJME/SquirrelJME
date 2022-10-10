@@ -10,7 +10,10 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Canvas for showing free-form raster graphics and otherwise.
@@ -24,6 +27,10 @@ public abstract class Canvas
 	/** The native Java Canvas. */
 	final __MIDPCanvas__ _midpCanvas =
 		new __MIDPCanvas__(new WeakReference<>(this));
+	
+	/** The timers which are associated with the canvas. */
+	final Map<Integer, Reference<ShortTimer>> _shortTimers =
+		new LinkedHashMap<>();
 	
 	public abstract void paint(Graphics __g);
 	

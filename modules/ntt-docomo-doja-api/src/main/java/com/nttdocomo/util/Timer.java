@@ -10,6 +10,7 @@
 package com.nttdocomo.util;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.nttdocomo.util.TimerConstants;
 import com.nttdocomo.ui.Canvas;
 import com.nttdocomo.ui.ShortTimer;
 
@@ -24,22 +25,31 @@ import com.nttdocomo.ui.ShortTimer;
 public final class Timer
 	implements TimeKeeper
 {
+	
 	@Override
 	public void dispose()
 	{
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/10/10
+	 */
 	@Override
 	public int getMinTimeInterval()
 	{
-		throw Debugging.todo();
+		return TimerConstants.MIN_TIME_INTERVAL;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/10/10
+	 */
 	@Override
 	public int getResolution()
 	{
-		throw Debugging.todo();
+		return TimerConstants.TIMER_RESOLUTION;
 	}
 	
 	public void setListener(TimerListener __listener)
