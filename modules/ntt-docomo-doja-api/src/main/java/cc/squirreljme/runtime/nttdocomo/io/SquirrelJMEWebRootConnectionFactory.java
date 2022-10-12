@@ -9,11 +9,15 @@
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
+import cc.squirreljme.jvm.mle.JarPackageShelf;
+import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import cc.squirreljme.runtime.gcf.HTTPAddress;
 import cc.squirreljme.runtime.gcf.HTTPClientConnection;
 import java.io.IOException;
 import javax.microedition.io.Connection;
+import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.ConnectionOption;
 
 /**
@@ -30,6 +34,10 @@ public class SquirrelJMEWebRootConnectionFactory
 	/** The base scheme for this connection. */
 	public static final String URI_SCHEME =
 		"squirreljme+doja";
+	
+	/** Webroot suffix. */
+	public static final String WEBROOT_EXTENSION =
+		"webroot";
 	
 	/** Manager state. */
 	private static volatile SquirrelJMEWebRootManager _MANAGER;
@@ -49,8 +57,19 @@ public class SquirrelJMEWebRootConnectionFactory
 		{
 			manager = SquirrelJMEWebRootConnectionFactory._MANAGER;
 			if (manager == null)
+			{
+				// Attempt to locate the web root
+				JarPackageBracket jar =
+					SquirrelJMEWebRootConnectionFactory.__findWebRoot();
+				
+				// {@squirreljme.error AH0x There is no .webroot.jar for this
+				// software.}
+				if (jar == null)
+					throw new ConnectionNotFoundException("AH0x");
+				
 				SquirrelJMEWebRootConnectionFactory._MANAGER =
-					(manager = new SquirrelJMEWebRootManager());
+					(manager = new SquirrelJMEWebRootManager(jar));
+			}
 		}
 		
 		// Setup non-network traversing HTTP connection to the manager
@@ -71,6 +90,46 @@ public class SquirrelJMEWebRootConnectionFactory
 	}
 	
 	/**
+	 * Attempts to locate the webroot JAR to obtain resources from it.
+	 * 
+	 * @return The web root JAR or {@code null} if not found.
+	 * @since 2022/10/11
+	 */
+	private static JarPackageBracket __findWebRoot()
+	{
+		// Get the Jar we launched with
+		JarPackageBracket[] classPath = JarPackageShelf.classPath();
+		JarPackageBracket launchJar = classPath[classPath.length - 1];
+		
+		// If there is no launch path, we cannot find the web root
+		Debugging.todoNote("Add libraryName?");
+		String launchPath = JarPackageShelf.libraryPath(launchJar);
+		if (launchPath == null || launchPath.isEmpty())
+			return null;
+		
+		// We need to know the extension of this
+		int lastDot = launchPath.lastIndexOf('.');
+		if (lastDot < 0)
+			return null;
+		
+		// This is our extension
+		String extension = launchPath.substring(lastDot + 1);
+		
+		// Our desired webroot is out string plus that extension
+		String desirePath = launchPath.substring(0, lastDot) +
+			"." + SquirrelJMEWebRootConnectionFactory.WEBROOT_EXTENSION + "." +
+			extension;
+		
+		// Go through all the JARs and find this one
+		for (JarPackageBracket library : JarPackageShelf.libraries())
+			if (desirePath.equals(JarPackageShelf.libraryPath(library)))
+				return library;
+		
+		// Not found
+		return null;
+	}
+	
+	/**
 	 * Some SoJa software may be hardcoded in terms of character and address
 	 * lengths so that it is unable to figure out or determine the hostname
 	 * for an address.
@@ -78,12 +137,14 @@ public class SquirrelJMEWebRootConnectionFactory
 	 * @param __manager The manager used.
 	 * @param __part The URI part to decode.
 	 * @return The fixed or potentially normalized HTTP address.
+	 * @throws ConnectionNotFoundException If there is no valid address.
+	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/10/11
 	 */
 	private static HTTPAddress __fixAddress(
 		SquirrelJMEWebRootManager __manager, String __part)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		if (__manager == null || __part == null)
 			throw new NullPointerException("NARG");
@@ -99,6 +160,12 @@ public class SquirrelJMEWebRootConnectionFactory
 		// whatever resource we are trying to get.
 		if (added != null && __manager.pathExists(added.file))
 			return added;
-		return normal;
+		
+		// Normal path is valid
+		if (normal != null)
+			return normal;
+		
+		// {@squirreljme.error AH0y No path is valid. (The path)}
+		throw new ConnectionNotFoundException("AH0y " + __part);
 	}
 }

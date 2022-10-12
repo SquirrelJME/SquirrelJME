@@ -141,6 +141,20 @@ public final class HTTPAddress
 		// Parse remaining part, but keep the slash
 		__p = __p.substring(sl);
 		
+		// The file address can end at any of these points
+		int nextParam = __p.indexOf(';');
+		int nextQuery = __p.indexOf('?');
+		int nextFrag = __p.indexOf('#');
+	
+		// Extract the file parameter part
+		int endPos = (nextParam >= 0 ? nextParam :
+			(nextQuery >= 0 ? nextQuery :
+			(nextFrag >= 0 ? nextFrag : __p.length())));
+		FileAddress fileAddress = FileAddress.of(__p.substring(0, endPos));
+		
+		// Move to the end position
+		__p = __p.substring(endPos);
+		
 		// Parse parameter
 		List<String> parameters;
 		int el = __p.indexOf(';');
@@ -181,7 +195,7 @@ public final class HTTPAddress
 			fragment = null;
 		
 		// Build remaining address
-		return new HTTPAddress(ipaddr, FileAddress.of(__p), parameters, query,
+		return new HTTPAddress(ipaddr, fileAddress, parameters, query,
 			fragment);
 	}
 	
@@ -206,6 +220,8 @@ public final class HTTPAddress
 		}
 		catch (IllegalArgumentException e)
 		{
+			e.printStackTrace();
+			
 			return null;
 		}
 	}
