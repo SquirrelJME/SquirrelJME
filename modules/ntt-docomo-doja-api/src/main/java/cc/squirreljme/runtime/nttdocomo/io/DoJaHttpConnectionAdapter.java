@@ -227,9 +227,23 @@ public class DoJaHttpConnectionAdapter
 	 */
 	@Override
 	public void setRequestMethod(String __method)
-		throws IOException
+		throws IllegalArgumentException, IOException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__method == null)
+			throw new NullPointerException("NARG");
+		
+		// Only these methods are valid
+		switch (__method)
+		{
+			case "HEAD":
+			case "GET":
+			case "POST":
+				this.gcf.setRequestMethod(__method);
+				break;
+		}
+		
+		// {@squirreljme.error AH0z Invalid method specified.}
+		throw new IllegalArgumentException("AH0z");
 	}
 	
 	/**

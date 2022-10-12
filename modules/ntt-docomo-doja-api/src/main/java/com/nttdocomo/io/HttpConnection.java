@@ -34,8 +34,18 @@ public interface HttpConnection
 	
 	void setIfModifiedState(long __ifModifiedSince);
 	
+	/**
+	 * Sets the request method of the HTTP call.
+	 * 
+	 * @param __method The method to use, must be one of {@code HEAD},
+	 * {@code GET}, or {@code POST}.
+	 * @throws IllegalArgumentException If the method is invalid.
+	 * @throws IOException Any unspecified errors.
+	 * @throws NullPointerException If no method was specified.
+	 * @since 2022/10/11
+	 */
 	void setRequestMethod(String __method)
-		throws IOException;
+		throws IllegalArgumentException, IOException, NullPointerException;
 	
 	void setRequestProperty(String __key, String __value)
 		throws IOException;
