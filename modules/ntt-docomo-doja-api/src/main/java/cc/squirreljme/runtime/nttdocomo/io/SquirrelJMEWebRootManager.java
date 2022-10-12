@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
+import cc.squirreljme.runtime.gcf.FileAddress;
+
 /**
  * This acts as a virtual web root HTTP server that is used for DoJa based
  * titles to access their web based resources and otherwise. Since these titles
@@ -24,4 +26,20 @@ package cc.squirreljme.runtime.nttdocomo.io;
  */
 public class SquirrelJMEWebRootManager
 {
+	/**
+	 * Checks whether the given path exists within the virtual webroot.
+	 * 
+	 * @param __file The file to check.
+	 * @return If the path exists in the virtual webroot.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/10/11
+	 */
+	public boolean pathExists(FileAddress __file)
+		throws NullPointerException
+	{
+		if (__file == null)
+			throw new NullPointerException("NARG");
+		
+		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+	}
 }

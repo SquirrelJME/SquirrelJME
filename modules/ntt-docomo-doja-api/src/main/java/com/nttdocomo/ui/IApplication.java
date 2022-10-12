@@ -9,7 +9,9 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.nttdocomo.io.SquirrelJMEWebRootConnectionFactory;
 
 public abstract class IApplication
 {
@@ -28,6 +30,7 @@ public abstract class IApplication
 	
 	public abstract void start();
 	
+	@Api
 	public String[] getArgs()
 	{
 		synchronized (IApplication.class)
@@ -44,6 +47,7 @@ public abstract class IApplication
 	 * @return The value of the parameter or {@code null}.
 	 * @since 2022/10/07
 	 */
+	@Api
 	public String getParameter(String __name)
 	{
 		Debugging.todoNote("getParameter(%s)", __name);
@@ -62,13 +66,16 @@ public abstract class IApplication
 	 * @return The URL where the application was downloaded.
 	 * @since 2022/10/07
 	 */
+	@Api
 	public final String getSourceURL()
 	{
 		// Our webroot is always non-networked, so we handle and potentially
 		// proxy all the various HTTP calls accordingly.
-		return "squirreljme+webroot://localhost/";
+		return SquirrelJMEWebRootConnectionFactory.URI_SCHEME +
+			"://";
 	}
 	
+	@Api
 	public void resume()
 	{
 		throw Debugging.todo();
