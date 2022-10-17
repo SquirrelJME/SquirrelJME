@@ -51,6 +51,9 @@ public class SquirrelJMEWebRootConnectionFactory
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException
 	{
+		// Debug
+		Debugging.debugNote("DoJa connect(%s)", __part);
+		
 		// Get the existing manager, create one if not yet created
 		SquirrelJMEWebRootManager manager;
 		synchronized (SquirrelJMEWebRootConnectionFactory.class)
@@ -67,16 +70,26 @@ public class SquirrelJMEWebRootConnectionFactory
 				if (jar == null)
 					throw new ConnectionNotFoundException("AH0x");
 				
-				SquirrelJMEWebRootConnectionFactory._MANAGER =
-					(manager = new SquirrelJMEWebRootManager(jar));
+				manager = new SquirrelJMEWebRootManager(jar);
+				SquirrelJMEWebRootConnectionFactory._MANAGER = manager;
 			}
 		}
 		
 		// Setup non-network traversing HTTP connection to the manager
 		// Uses DoJa specific HttpConnection
-		return new DoJaHttpConnectionAdapter(new HTTPClientConnection(
-			SquirrelJMEWebRootConnectionFactory.__fixAddress(manager, __part),
-			new SquirrelJMEWebRootHTTPAgentConnector(manager)));
+		try
+		{
+			return new DoJaHttpConnectionAdapter(new HTTPClientConnection(
+				SquirrelJMEWebRootConnectionFactory.__fixAddress(manager,
+					__part),
+				new SquirrelJMEWebRootHTTPAgentConnector(manager)));
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			
+			throw e;
+		}
 	}
 	
 	/**
