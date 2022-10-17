@@ -85,6 +85,36 @@ target_include_directories(squirreljme_libretro PUBLIC
 set_property(TARGET squirreljme_libretro
 	PROPERTY POSITION_INDEPENDENT_CODE ON)
 
+# Check if Steam is a valid option
+message("System ${CMAKE_SYSTEM_NAME}...")
+if(APPLE OR "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+	# Note it
+	message("Checking if Steam exists...")
+
+	# Check to see if the script works
+	execute_process(COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/steam.sh"
+		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+		ERROR_QUIET
+		RESULT_VARIABLE STEAM_RESULT
+		OUTPUT_VARIABLE STEAM_OUTPUT
+		ERROR_VARIABLE STEAM_ERROR
+		OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+	# Script is valid, so use that
+	if("${STEAM_RESULT}" EQUAL 0)
+		set(STEAM_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/steam.sh")
+	else()
+		message("Steam script said: ${STEAM_OUTPUT} ${STEAM_ERROR}")
+	endif()
+endif()
+
+# Are we using the Steam helper?
+if(EXISTS "${STEAM_SCRIPT}")
+	message("Using Steam helper '${STEAM_SCRIPT}'.")
+else()
+	message("Steam does not appear to exist.")
+endif()
+
 # Custom launching the core, tries to find RetroArch on the system
 ## Determine RetroArch directory
 if(NOT DEFINED SQUIRRELJME_LIBRETRO_COMMAND AND
@@ -112,7 +142,7 @@ endif()
 if(NOT DEFINED SQUIRRELJME_LIBRETRO_COMMAND)
 	set(SQUIRRELJME_LIBRETRO_EXTENSION "")
 
-	# Which snaps are available?
+	# Which binaries are available?
 	execute_process(COMMAND which retroarch
 		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
 		ERROR_QUIET
@@ -129,12 +159,29 @@ if(NOT DEFINED SQUIRRELJME_LIBRETRO_COMMAND)
 endif()
 
 ## Target to run RetroArch with the SquirrelJME Core
+# The command is available on the system so we can just use that
 if(DEFINED SQUIRRELJME_LIBRETRO_COMMAND)
 	add_custom_target(RetroArch
 		DEPENDS squirreljme_libretro
 		COMMAND "${SQUIRRELJME_LIBRETRO_COMMAND}"
 			"--verbose" "--log-file" "${PROJECT_SOURCE_DIR}/libretro-log.txt"
 			"-L" "$<TARGET_FILE:squirreljme_libretro>"
+		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+		COMMENT "Starting RetroArch with SquirrelJME")
+
+# Is it possible that Steam can be used?
+elseif(EXISTS "${STEAM_SCRIPT}")
+	message("RetroArch launching via Steam...")
+
+	# We need to percent encode these arguments
+	get_target_property(OUTPUT_DIR squirreljme_libretro LIBRARY_OUTPUT_DIRECTORY_DEBUG)
+	message("Target ${OUTPUT_DIR}")
+
+	# Run helper script
+	add_custom_target(RetroArch
+		DEPENDS squirreljme_libretro
+		COMMAND "${STEAM_SCRIPT}"
+			"$<TARGET_FILE:squirreljme_libretro>"
 		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
 		COMMENT "Starting RetroArch with SquirrelJME")
 endif()
