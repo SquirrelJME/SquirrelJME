@@ -1,0 +1,18 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "Contains all the various tango icons."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "TI"
+	swmType = JavaMEMidletType.LIBRARY
+	swmName = "Tango Icon Theme"
+	swmVendor = "Stephanie Gawroriski"
+	tags += "tango-icon-theme"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+}

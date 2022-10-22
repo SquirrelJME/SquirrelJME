@@ -29,6 +29,6 @@ import java.lang.annotation.Target;
 	ElementType.PARAMETER, ElementType.TYPE})
 public @interface VendorSpecificApi
 {
-	/** The vendor this belongs to. */
+	/** The API this belongs to. */
 	String value() default "";
 }

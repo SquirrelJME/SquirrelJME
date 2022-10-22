@@ -9,9 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.asm;
 
-import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
-
 /**
  * Access to system properties.
  *
@@ -39,7 +36,6 @@ public final class SystemProperties
 	 * @since 2018/12/13
 	 */
 	@Deprecated
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static native String implementationClass(String __n);
 	
 	/**
@@ -49,7 +45,6 @@ public final class SystemProperties
 	 * @since 2018/10/14
 	 */
 	@Deprecated
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static native int operatingSystemType();
 }
 
