@@ -31,8 +31,18 @@ public final class NativeBinding
 	public static final String LIB_PRELOAD =
 		"squirreljme.emulator.libpath";
 	
+	/** Class loader for wrapping. */
+	public static final WrappedClassLoader WRAPPED_CLASS_LOADER;
+	
 	static
 	{
+		// Replace our own class loader with the wrapped one
+		WRAPPED_CLASS_LOADER = new WrappedClassLoader(
+			Thread.currentThread().getContextClassLoader());
+		Thread.currentThread().setContextClassLoader(
+			NativeBinding.WRAPPED_CLASS_LOADER);
+		
+		// Load native libraries
 		long loadNs = System.nanoTime();
 		try
 		{

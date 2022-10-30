@@ -12,6 +12,7 @@
 #define REFLECTION_CLASSNAME "cc/squirreljme/emulator/EmulatedReflectionShelf"
 
 #define INVOKEMAIN_DESC "(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;[Ljava/lang/String;)V"
+#define REGISTERLOADER_DESC "(Lcc/squirreljme/jvm/mle/callbacks/ReflectiveLoaderCallback;)V"
 
 JNIEXPORT void JNICALL Impl_mle_ReflectionShelf_invokeMain(JNIEnv* env,
 	jclass classy, jobject type, jobject args)
@@ -21,9 +22,18 @@ JNIEXPORT void JNICALL Impl_mle_ReflectionShelf_invokeMain(JNIEnv* env,
 		type, args);
 }
 
+JNIEXPORT void JNICALL Impl_mle_ReflectionShelf_registerLoader(JNIEnv* env,
+	jclass classy, jobject loader)
+{
+	forwardCallStaticVoid(env, REFLECTION_CLASSNAME,
+		"registerLoader", REGISTERLOADER_DESC,
+		loader);
+}
+
 static const JNINativeMethod mleReflectionMethods[] =
 {
 	{"invokeMain", INVOKEMAIN_DESC, (void*)Impl_mle_ReflectionShelf_invokeMain},
+	{"registerLoader", REGISTERLOADER_DESC, (void*)Impl_mle_ReflectionShelf_registerLoader},
 };
 
 jint JNICALL mleReflectionInit(JNIEnv* env, jclass classy)

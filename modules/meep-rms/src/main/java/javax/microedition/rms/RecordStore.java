@@ -96,6 +96,8 @@ public class RecordStore
 		catch (ClassNotFoundException|IllegalAccessException|
 			InstantiationException e)
 		{
+			e.printStackTrace();
+			
 			vr = new TemporaryVinylRecord();
 		}
 		

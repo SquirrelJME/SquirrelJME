@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle.callbacks;
 
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This callback is used for any calls the display system makes to applications
@@ -28,6 +29,7 @@ public interface UIDisplayCallback
 	 * @param __serialId The identity of the serialized call.
 	 * @since 2020/10/03
 	 */
+	@Api
 	void later(int __displayId, int __serialId);
 	
 	/**
@@ -50,6 +52,7 @@ public interface UIDisplayCallback
 	 * other value if it is meaningful to what is being painted.
 	 * @since 2022/01/05
 	 */
+	@Api
 	void paintDisplay(UIDisplayBracket __display, int __pf, int __bw,
 		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
 		int __sw, int __sh, int __special);

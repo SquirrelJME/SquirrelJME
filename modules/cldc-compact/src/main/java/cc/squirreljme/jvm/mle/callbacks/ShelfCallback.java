@@ -14,7 +14,6 @@ package cc.squirreljme.jvm.mle.callbacks;
  *
  * @since 2020/07/03
  */
-@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface ShelfCallback
 {
 }

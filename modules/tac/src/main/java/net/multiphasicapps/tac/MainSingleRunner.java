@@ -9,6 +9,9 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+
 /**
  * Runs a single test.
  *
@@ -52,9 +55,9 @@ public class MainSingleRunner
 		Class<?> type;
 		try
 		{
-			type = Class.forName(typeName);
+			type = TypeShelf.typeToClass(TypeShelf.findType(typeName));
 		}
-		catch (ClassNotFoundException e)
+		catch (MLECallError e)
 		{
 			// {@squirreljme.error BU0g Could not find main test class.
 			// (The class name)}

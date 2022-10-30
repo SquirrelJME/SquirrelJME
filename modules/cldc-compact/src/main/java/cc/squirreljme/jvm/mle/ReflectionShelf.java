@@ -10,13 +10,16 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.jvm.mle.callbacks.ReflectiveLoaderCallback;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * SquirrelJME specific reflection oriented methods.
  *
  * @since 2022/09/07
  */
+@Api
 public final class ReflectionShelf
 {
 	/**
@@ -37,7 +40,19 @@ public final class ReflectionShelf
 	 * @throws Throwable Any exception thrown by the target.
 	 * @since 2022/09/07
 	 */
+	@Api
 	public static native void invokeMain(TypeBracket __type,
 		String... __args)
 		throws MLECallError, Throwable;
+	
+	/**
+	 * Registers the given loader.
+	 * 
+	 * @param __cb The callback that contains the loader.
+	 * @throws MLECallError If {@code null} or loaders are not supported.
+	 * @since 2022/10/30
+	 */
+	@Api
+	public static native void registerLoader(ReflectiveLoaderCallback __cb)
+		throws MLECallError;
 }

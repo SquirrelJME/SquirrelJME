@@ -11,7 +11,9 @@ package cc.squirreljme.emulator;
 
 import cc.squirreljme.jvm.mle.ReflectionShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.jvm.mle.callbacks.ReflectiveLoaderCallback;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -32,6 +34,7 @@ public class EmulatedReflectionShelf
 	 * @throws Throwable Any exception thrown by the target.
 	 * @since 2022/09/07
 	 */
+	@Api
 	public static void invokeMain(TypeBracket __type,
 		String... __args)
 		throws MLECallError, Throwable
@@ -84,5 +87,23 @@ public class EmulatedReflectionShelf
 		{
 			throw new MLECallError("Cannot access main.", __e);
 		}
+	}
+	
+	/**
+	 * Registers the given loader.
+	 *
+	 * @param __cb The callback that contains the loader.
+	 * @throws MLECallError If {@code null} or loaders are not supported.
+	 * @since 2022/10/30
+	 */
+	@Api
+	public static void registerLoader(ReflectiveLoaderCallback __cb)
+		throws MLECallError
+	{
+		if (__cb == null)
+			throw new MLECallError("NARG");
+		
+		// Just forward the call
+		NativeBinding.WRAPPED_CLASS_LOADER.registerLoader(__cb);
 	}
 }

@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.aot.interpreter;
 
+import cc.squirreljme.jvm.mle.ReflectionShelf;
+import cc.squirreljme.jvm.mle.TypeShelf;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
@@ -29,7 +31,8 @@ public class TestRunnableAbstractClass
 		throws Throwable
 	{
 		// Load the class
-		Class<?> interpretedClass = Class.forName("InterpretedAbstract");
+		Class<?> interpretedClass = TypeShelf.typeToClass(
+			TypeShelf.findType("InterpretedAbstract"));
 		
 		// Setup new instance
 		Object instance = interpretedClass.newInstance();

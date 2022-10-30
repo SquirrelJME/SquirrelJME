@@ -10,6 +10,8 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.jvm.launch.IModeApplication;
+import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
@@ -99,9 +101,9 @@ final class __IAppliInterface__
 		Class<?> classType;
 		try
 		{
-			classType = Class.forName(mainClass);
+			classType = TypeShelf.typeToClass(TypeShelf.findType(mainClass));
 		}
-		catch (ClassNotFoundException e)
+		catch (MLECallError e)
 		{
 			// {@squirreljme.error AH01 Could not find main i-appli. (Class)}
 			throw new RuntimeException(String.format(

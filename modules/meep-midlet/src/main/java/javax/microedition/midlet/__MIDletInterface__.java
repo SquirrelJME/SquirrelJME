@@ -9,6 +9,8 @@
 
 package javax.microedition.midlet;
 
+import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
@@ -80,9 +82,9 @@ final class __MIDletInterface__
 		Class<?> classType;
 		try
 		{
-			classType = Class.forName(mainClass);
+			classType = TypeShelf.typeToClass(TypeShelf.findType(mainClass));
 		}
-		catch (ClassNotFoundException e)
+		catch (MLECallError e)
 		{
 			// {@squirreljme.error AD03 Could not find main MIDlet. (Class)}
 			throw new RuntimeException(String.format(

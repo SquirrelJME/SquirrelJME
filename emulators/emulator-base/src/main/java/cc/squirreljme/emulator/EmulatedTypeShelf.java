@@ -12,6 +12,7 @@ package cc.squirreljme.emulator;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -44,6 +45,7 @@ public class EmulatedTypeShelf
 	 * found.
 	 * @since 2020/06/02
 	 */
+	@Api
 	public static TypeBracket findType(String __name)
 		throws MLECallError
 	{
@@ -53,7 +55,8 @@ public class EmulatedTypeShelf
 		try
 		{
 			return new EmulatedTypeBracket(
-				Class.forName(__name.replace('/', '.')));
+				Thread.currentThread().getContextClassLoader()
+					.loadClass(__name.replace('/', '.')));
 		}
 		catch (ClassNotFoundException __e)
 		{
