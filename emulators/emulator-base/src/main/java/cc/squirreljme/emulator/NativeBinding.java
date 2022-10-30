@@ -88,8 +88,6 @@ public final class NativeBinding
 		{
 			// Replace our own class loader with the wrapped one
 			WRAPPED_CLASS_LOADER = new WrappedClassLoader(context);
-			Thread.currentThread().setContextClassLoader(
-				NativeBinding.WRAPPED_CLASS_LOADER);
 			
 			// Try to devilishly set the class loader
 			try
@@ -116,6 +114,10 @@ public final class NativeBinding
 		// Store it for later registrations
 		else
 			WRAPPED_CLASS_LOADER = (WrappedClassLoader)context;
+		
+		// Always set the thread class loader
+		Thread.currentThread().setContextClassLoader(
+			NativeBinding.WRAPPED_CLASS_LOADER);
 	}
 	
 	/**
