@@ -38,6 +38,8 @@ public class WrappedClassLoader
 	 */
 	public WrappedClassLoader(ClassLoader __parent)
 	{
+		super(__parent);
+		
 		// Use the parent if specified, but otherwise fallback to the system
 		// class loader accordingly
 		this.parent = (__parent != null ? __parent :

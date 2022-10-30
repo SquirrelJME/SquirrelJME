@@ -11,9 +11,11 @@ package cc.squirreljme.emulator;
 
 import cc.squirreljme.jvm.mle.ReflectionShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,12 +38,6 @@ public final class NativeBinding
 	
 	static
 	{
-		// Replace our own class loader with the wrapped one
-		WRAPPED_CLASS_LOADER = new WrappedClassLoader(
-			Thread.currentThread().getContextClassLoader());
-		Thread.currentThread().setContextClassLoader(
-			NativeBinding.WRAPPED_CLASS_LOADER);
-		
 		// Load native libraries
 		long loadNs = System.nanoTime();
 		try
@@ -80,6 +76,46 @@ public final class NativeBinding
 			System.err.printf("Java Over-Layer: Loading took %dms%n",
 				(System.nanoTime() - loadNs) / 1_000_000L);
 		}
+		
+		// Are we using the correct class loader?
+		ClassLoader context = Thread.currentThread().getContextClassLoader();
+		if (context == null)
+			context = ClassLoader.getSystemClassLoader();
+		
+		// Try to replace the current class loader, although it will likely
+		// not work out
+		if (!(context instanceof WrappedClassLoader))
+		{
+			// Replace our own class loader with the wrapped one
+			WRAPPED_CLASS_LOADER = new WrappedClassLoader(context);
+			Thread.currentThread().setContextClassLoader(
+				NativeBinding.WRAPPED_CLASS_LOADER);
+			
+			// Try to devilishly set the class loader
+			try
+			{
+				Field sysLoader = ClassLoader.class
+					.getDeclaredField("scl");
+				sysLoader.setAccessible(true);
+				sysLoader.set(null, NativeBinding.WRAPPED_CLASS_LOADER);
+				sysLoader.setAccessible(false);
+			}
+			catch (NoSuchFieldException|IllegalAccessException e)
+			{
+				// Just print it out
+				e.printStackTrace();
+			}
+			
+			// This will be broken, but we have no choice really
+			Debugging.debugNote("VM not called with correct class " +
+				"loader, some functions may not work properly. You may " +
+				"ignore the 'An illegal reflective access operation has " +
+				"occurred' message.");
+		}
+		
+		// Store it for later registrations
+		else
+			WRAPPED_CLASS_LOADER = (WrappedClassLoader)context;
 	}
 	
 	/**

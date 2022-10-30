@@ -61,6 +61,10 @@ public final class EmulatedTaskShelf
 	public static final String ORIGINAL_PROP_PREFIX =
 		"squirreljme.orig.";
 	
+	/** System class loader. */
+	public static final String SYSTEM_CLASS_LOADER =
+		"java.system.class.loader";
+	
 	/**
 	 * As {@link TaskShelf#start(JarPackageBracket[], String, String[],
 	 * String[], int, int)}. 
@@ -122,7 +126,7 @@ public final class EmulatedTaskShelf
 					Objects.toString(e.getValue(), ""));
 			}
 			
-			// Otherwise only initially inherit these specific properties
+			// Otherwise, only initially inherit these specific properties
 			else
 			{
 				switch (key)
@@ -131,6 +135,7 @@ public final class EmulatedTaskShelf
 					case EmulatedTaskShelf.RUN_CLASSPATH:
 					case EmulatedTaskShelf.HOSTED_VM_CLASSPATH:
 					case EmulatedTaskShelf.HOSTED_VM_SUPPORTPATH:
+					case EmulatedTaskShelf.SYSTEM_CLASS_LOADER:
 						sysProps.put(key,
 							Objects.toString(e.getValue(), ""));
 						break;

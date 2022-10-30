@@ -138,6 +138,11 @@ public enum VMType
 			sysProps.put("squirreljme.hosted.classpath",
 				VMHelpers.classpathAsString(__classPath));
 			
+			// Use different wrapped class loader, so we have full access to
+			// it accordingly
+			sysProps.put("java.system.class.loader",
+				"cc.squirreljme.emulator.WrappedClassLoader");
+			
 			// For Linux, if this variable is specified we can set the UI
 			// scale for Swing so that things are a bit bigger and not
 			// ultra-small...
