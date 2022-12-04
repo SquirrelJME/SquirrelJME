@@ -10,11 +10,13 @@
 package squirreljme.mle;
 
 import cc.squirreljme.jvm.mle.BusTransportShelf;
+import cc.squirreljme.jvm.mle.TaskShelf;
 import cc.squirreljme.jvm.mle.brackets.BusTransportBracket;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
- * Tests that the IPC pipe works properly.
+ * Tests that the IPC pipe works properly when communicating within the same
+ * task.
  *
  * @since 2022/12/03
  */
@@ -28,6 +30,10 @@ public class TestIpcPipe
 	@Override
 	public void test()
 	{
+		// Setup listening connection
+		BusTransportBracket listen =
+			BusTransportShelf.listen("test", 0);
+		
 		this.secondary("key", "value");
 	}
 }

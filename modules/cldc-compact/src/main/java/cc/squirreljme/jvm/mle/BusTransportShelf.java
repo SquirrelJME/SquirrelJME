@@ -88,7 +88,6 @@ public final class BusTransportShelf
 	 * @since 2022/10/18
 	 */
 	@Api
-	@Deprecated
 	public static native BusTransportBracket listen(String __service,
 		int __port)
 		throws MLECallError;
