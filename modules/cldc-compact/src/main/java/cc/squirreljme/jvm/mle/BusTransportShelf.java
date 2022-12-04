@@ -10,7 +10,7 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.BusTransportBracket;
-import cc.squirreljme.jvm.mle.brackets.PipeBracket;
+import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 
@@ -49,11 +49,40 @@ public final class BusTransportShelf
 		throws MLECallError;
 	
 	/**
+	 * Closes the given bus transport and any associated connections.
+	 * 
+	 * @param __bus The bus to close.
+	 * @throws MLECallError If the bus could not be closed or is {@code null}.
+	 * @since 2022/12/03
+	 */
+	@Api
+	public static native void close(BusTransportBracket __bus)
+		throws MLECallError;
+	
+	/**
+	 * Connects to the given service and port that another task is connecting
+	 * to.
+	 * 
+	 * @param __task The task to connect to.
+	 * @param __service The service to use for connecting.
+	 * @param __port The service port to connect on.
+	 * @return The transport to the given bus.
+	 * @throws MLECallError If a connection could not be established or any
+	 * argument is {@code null}.
+	 * @since 2022/12/03
+	 */
+	@Api
+	public static native BusTransportBracket connect(TaskBracket __task,
+		String __service, int __port)
+		throws MLECallError;
+	
+	/**
 	 * Listens on the given service for a given port.
 	 * 
 	 * @param __service The service to listen on.
 	 * @param __port The port of the service to listen on.
-	 * @return The bus transport for the given service.
+	 * @return The bus transport for the given service, this returns a
+	 * listening bus transport that cannot have data transmitted.
 	 * @throws MLECallError If the service already exists or none was
 	 * specified.
 	 * @since 2022/10/18
@@ -65,25 +94,17 @@ public final class BusTransportShelf
 		throws MLECallError;
 	
 	/**
-	 * Returns the pipe that is associated with the given bus, this is actually
-	 * used to send data over the channel.
+	 * Returns the task that is on the other side of the bus.
 	 * 
-	 * @param __bus The bus this is for.
-	 * @return The pipe for the given bus.
-	 * @throws MLECallError If the bus is not valid.
-	 * @since 2022/10/18
+	 * This should be called after {@link #accept(BusTransportBracket)} to
+	 * determine the task that is on the other side of the call.
+	 * 
+	 * @param __bus The bus to get the remote host from.
+	 * @return The task that is the host on the other side of the bus.
+	 * @throws MLECallError If the bus is not valid or {@code null}.
+	 * @since 2022/12/03
 	 */
 	@Api
-	public static native PipeBracket pipe(BusTransportBracket __bus)
+	public static native TaskBracket remoteHost(BusTransportBracket __bus)
 		throws MLECallError;
-	
-	/**
-	 * Returns the connection to the primary bus manager or if this is the
-	 * manager this will be the listener.
-	 * 
-	 * @return The connection to the primary bus manager or if this is the
-	 * manager this will be the listener.
-	 * @since 2022/10/18
-	 */
-	public static native BusTransportBracket primary();
 }

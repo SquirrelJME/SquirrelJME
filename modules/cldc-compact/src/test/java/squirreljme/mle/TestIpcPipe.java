@@ -28,9 +28,6 @@ public class TestIpcPipe
 	@Override
 	public void test()
 	{
-		// Obtain the bus first
-		BusTransportBracket primaryBus = BusTransportShelf.primary();
-		
 		this.secondary("key", "value");
 	}
 }
