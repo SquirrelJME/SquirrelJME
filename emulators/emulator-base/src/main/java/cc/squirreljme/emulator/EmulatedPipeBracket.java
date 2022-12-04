@@ -64,6 +64,24 @@ public class EmulatedPipeBracket
 	}
 	
 	/**
+	 * Initializes an emulated pipe bracket.
+	 *
+	 * @param __in The stream to read from.
+	 * @param __out The stream to write to.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/12/03
+	 */
+	public EmulatedPipeBracket(InputStream __in, OutputStream __out)
+		throws NullPointerException
+	{
+		if (__in == null || __out == null)
+			throw new NullPointerException("NARG");
+		
+		this._in = __in;
+		this._out = __out;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2022/03/19
 	 */

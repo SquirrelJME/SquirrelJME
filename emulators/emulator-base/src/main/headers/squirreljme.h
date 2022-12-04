@@ -13,6 +13,7 @@
 #include "jni.h"
 
 /** Initializing methods. */
+jint JNICALL mleBusTransportInit(JNIEnv* env, jclass classy);
 jint JNICALL mleDebugInit(JNIEnv* env, jclass classy);
 jint JNICALL mleFormInit(JNIEnv* env, jclass classy);
 jint JNICALL mleJarInit(JNIEnv* env, jclass classy);

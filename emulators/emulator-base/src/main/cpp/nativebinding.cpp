@@ -177,6 +177,7 @@ JNIEXPORT jint JNICALL Java_cc_squirreljme_emulator_NativeBinding__1_1bindMethod
 	rv |= env->RegisterNatives(env->FindClass("cc/squirreljme/jvm/Assembly"),
 		assemblyMethods, sizeof(assemblyMethods) / sizeof(JNINativeMethod));
 	
+	rv |= mleBusTransportInit(env, classy);
 	rv |= mleDebugInit(env, classy);
 	rv |= mleFormInit(env, classy);
 	rv |= mleJarInit(env, classy);
