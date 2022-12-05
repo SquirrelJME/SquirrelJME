@@ -1,0 +1,10 @@
+# 2022/12/04
+
+## 20:02
+
+I have been thinking for `wip-l1summercoat` that I am not going to do the C
+version of things because that would make save states a bit more difficult and
+additionally, TAS support. However, I will still do the hybrid interpreted
+environment to figure out the better compiler aspect of things so I do not
+need to implement an entire compiler and test it accordingly. I will of course
+test things piece by piece.
