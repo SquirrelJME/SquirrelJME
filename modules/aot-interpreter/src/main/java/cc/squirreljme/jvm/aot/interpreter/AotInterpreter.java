@@ -22,7 +22,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public abstract class AotInterpreter
 	implements ReflectiveLoaderCallback
 {
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/10/30

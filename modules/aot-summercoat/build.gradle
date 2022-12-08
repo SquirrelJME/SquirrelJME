@@ -17,7 +17,7 @@ squirreljme
 	// operating systems, along with any potential variants... This is so that
 	// these can be bulk tested with the same essential suite of tests. Note
 	// that these modules could implement their own unique tests accordingly. 
-	optionalDependenciesTest += project(":modules:aot-summercoat-c")
+	//optionalDependenciesTest += project(":modules:aot-summercoat-c")
 }
 
 dependencies
