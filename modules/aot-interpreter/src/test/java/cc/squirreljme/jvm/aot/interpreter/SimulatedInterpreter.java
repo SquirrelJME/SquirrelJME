@@ -11,6 +11,8 @@ package cc.squirreljme.jvm.aot.interpreter;
 
 import cc.squirreljme.jvm.mle.ReflectionShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import net.multiphasicapps.tac.UntestableException;
 
 /**
  * Interpreter that is used solely for testing purposes.
@@ -31,7 +33,14 @@ public class SimulatedInterpreter
 		throws Throwable
 	{
 		// Setup and install our own interpreter
-		new SimulatedInterpreter().install();
+		try
+		{
+			new SimulatedInterpreter().install();
+		}
+		catch (MLECallError e)
+		{
+			throw new UntestableException(e);
+		}
 		
 		// Copy over
 		String mainClass = __args[0];
