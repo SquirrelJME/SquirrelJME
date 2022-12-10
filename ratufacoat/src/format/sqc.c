@@ -111,7 +111,7 @@ sjme_jboolean sjme_sqcGetPropertyIntegers(const sjme_sqcState* sqcState,
 		if (!intFunction(proxy, data, at, sjme_bigInt(bigValue), error))
 		{
 			if (!sjme_hasError(error))
-				sjme_setError(error, SJME_INVALID_FUNCTIONAL, at);
+				sjme_setError(error, SJME_ERROR_INVALID_FUNCTIONAL, at);
 			return sjme_false;
 		}
 		

@@ -218,13 +218,16 @@ typedef enum sjme_errorCode
 	SJME_ERROR_ENGINE_INIT_FAILURE,
 	
 	/** Invalid functional method. */
-	SJME_INVALID_FUNCTIONAL,
+	SJME_ERROR_INVALID_FUNCTIONAL,
 	
 	/** Invalid unlock key. */
-	SJME_INVALID_UNLOCK_KEY,
+	SJME_ERROR_INVALID_UNLOCK_KEY,
 	
 	/** The lock owner is not valid. */
-	SJME_NOT_LOCK_OWNER,
+	SJME_ERROR_NOT_LOCK_OWNER,
+
+	/** Invalid lock. */
+	SJME_ERROR_INVALID_LOCK,
 	
 	/** Bad pipe initialize. */
 	SJME_ERROR_BAD_PIPE_INIT,

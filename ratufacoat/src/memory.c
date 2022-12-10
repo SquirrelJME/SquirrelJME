@@ -104,6 +104,8 @@ void* sjme_mallocGc(sjme_jint size, sjme_freeCallback freeCallback,
 	sjme_jint origSize;
 	sjme_memNode* result;
 	sjme_memNode* checkNode;
+	sjme_memNode* lastNode;
+	sjme_spinLockKey lockKey;
 	
 	/* Considered an error. */
 	if (size < 0)
@@ -169,7 +171,26 @@ void* sjme_mallocGc(sjme_jint size, sjme_freeCallback freeCallback,
 		sjme_todo("Node correction? %p %d", checkNode);
 	}
 
+	/* Lock to link in. */
+	if (!sjme_lock(&sjme_memLock, &lockKey, error))
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_LOCK, 1);
+		return NULL;
+	}
+
 	/* Link into the node tree. */
+	lastNode = sjme_atomicPointerGet(&sjme_lastMemNode);
+	sjme_atomicPointerSet(&result->next, lastNode);
+	if (lastNode != NULL)
+		sjme_atomicPointerSet(&lastNode->prev, result);
+	sjme_atomicPointerSet(&sjme_lastMemNode, result);
+
+	/* Unlock. */
+	if (!sjme_unlock(&sjme_memLock, &lockKey, error))
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_LOCK, 0);
+		return NULL;
+	}
 	
 	/* Return the adjusted pointer. */
 	return &result->bytes;
@@ -227,6 +248,10 @@ sjme_jboolean sjme_free(void* p, sjme_error* error)
 {
 	sjme_jint size;
 	sjme_memNode* node;
+	sjme_memNode* lastNode;
+	sjme_memNode* prevNode;
+	sjme_memNode* nextNode;
+	sjme_spinLockKey lockKey;
 	
 	/* Ignore null pointers. */
 	if (p == NULL)
@@ -245,6 +270,8 @@ sjme_jboolean sjme_free(void* p, sjme_error* error)
 
 	/* If there is a free function, call it. */
 	if (node->freeCallback != NULL)
+	{
+		/* Invoke the callback. */
 		if (!node->freeCallback(p, node, error))
 		{
 			if (!sjme_hasError(error))
@@ -252,7 +279,41 @@ sjme_jboolean sjme_free(void* p, sjme_error* error)
 			return sjme_false;
 		}
 
-	/* Wipe memory here. */
+		/* Already called it, so do not call again. */
+		node->freeCallback = NULL;
+	}
+
+	/* Unlink into the node tree. */
+	if (!sjme_lock(&sjme_memLock, &lockKey, error))
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_LOCK, 3);
+		return sjme_false;
+	}
+
+	/* Unlink from the node tree. */
+	prevNode = sjme_atomicPointerGet(&node->prev);
+	nextNode = sjme_atomicPointerGet(&node->next);
+
+	if (prevNode != NULL)
+		sjme_atomicPointerSet(&prevNode->next, nextNode);
+	if (nextNode != NULL)
+		sjme_atomicPointerSet(&nextNode->prev, prevNode);
+
+	sjme_atomicPointerSet(&node->prev, NULL);
+	sjme_atomicPointerSet(&node->next, NULL);
+
+	lastNode = sjme_atomicPointerGet(&sjme_lastMemNode);
+	if (lastNode == node)
+		sjme_atomicPointerSet(&sjme_lastMemNode, nextNode);
+
+	/* Unlock. */
+	if (!sjme_unlock(&sjme_memLock, &lockKey, error))
+	{
+		sjme_setError(error, SJME_ERROR_INVALID_LOCK, 2);
+		return sjme_false;
+	}
+
+	/* Wipe memory here, to invalidate it. */
 	memset(node, 0xBA, node->nodeSize);
 
 	/* Free memory used here. */

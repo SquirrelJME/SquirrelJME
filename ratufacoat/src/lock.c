@@ -125,7 +125,7 @@ sjme_jboolean sjme_unlock(sjme_spinLock* lock, sjme_spinLockKey* key,
 	useKey = key->key;
 	if (useKey == SJME_UNLOCKED)
 	{
-		sjme_setError(error, SJME_INVALID_UNLOCK_KEY, useKey);
+		sjme_setError(error, SJME_ERROR_INVALID_UNLOCK_KEY, useKey);
 		
 		return sjme_false;
 	}
@@ -133,7 +133,7 @@ sjme_jboolean sjme_unlock(sjme_spinLock* lock, sjme_spinLockKey* key,
 	/* Perform unlock. */
 	if (!sjme_lockShift(lock, useKey, SJME_UNLOCKED))
 	{
-		sjme_setError(error, SJME_NOT_LOCK_OWNER, useKey);
+		sjme_setError(error, SJME_ERROR_NOT_LOCK_OWNER, useKey);
 		
 		return sjme_false;
 	}

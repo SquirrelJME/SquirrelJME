@@ -88,10 +88,11 @@ static const sjme_jvmErrorString sjme_jvmErrorStrings[] =
 	{SJME_ERROR_NOT_SUPPORTED, "Not supported"},
 	{SJME_ERROR_ENGINE_NOT_FOUND, "Engine not found"},
 	{SJME_ERROR_ENGINE_INIT_FAILURE, "Engine initialization failure"},
-	{SJME_INVALID_FUNCTIONAL, "Invalid functional method"},
-	{SJME_INVALID_UNLOCK_KEY, "Invalid unlock key"},
-	{SJME_NOT_LOCK_OWNER, "The lock owner is invalid"},
+	{SJME_ERROR_INVALID_FUNCTIONAL, "Invalid functional method"},
+	{SJME_ERROR_INVALID_UNLOCK_KEY, "Invalid unlock key"},
+	{SJME_ERROR_NOT_LOCK_OWNER, "The lock owner is invalid"},
 	{SJME_ERROR_BAD_PIPE_INIT, "Bad pipe initialization"},
+	{SJME_ERROR_INVALID_LOCK, "Invalid lock."},
 	
 	{SJME_ERROR_NONE, NULL}
 };
