@@ -246,3 +246,32 @@ sjme_jboolean sjme_pipeNewInstance(sjme_pipeRedirectType type,
 	*outPipe = result;
 	return sjme_true;
 }
+
+sjme_jboolean sjme_pipeNewAlwaysEOF(sjme_pipeInstance** outPipe,
+	sjme_error* error)
+{
+	sjme_todo("Implement this?");
+	return sjme_false;
+}
+
+sjme_jboolean sjme_pipeNewBufferPair(sjme_pipeInstance** outReadEnd,
+	sjme_pipeInstance** outWriteEnd, sjme_jboolean bidirectional,
+	sjme_error* error)
+{
+	sjme_todo("Implement this?");
+	return sjme_false;
+}
+
+sjme_jboolean sjme_pipeNewDiscardWrites(sjme_pipeInstance** outPipe,
+	sjme_error* error)
+{
+	sjme_todo("Implement this?");
+	return sjme_false;
+}
+
+sjme_jboolean sjme_pipeNewStdPipe(sjme_standardPipeType stdPipe,
+	sjme_pipeInstance** outPipe, sjme_error* error)
+{
+	sjme_todo("Implement this?");
+	return sjme_false;
+}

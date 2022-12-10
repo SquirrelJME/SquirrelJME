@@ -55,10 +55,11 @@ typedef enum sjme_standardPipeType
 
 /**
  * Represents the direction of flow for a task.
- * 
+ *
+ * @deprecated Pipe direction not needed anymore.
  * @since 2022/03/15
  */
-typedef enum sjme_pipeDirection
+typedef enum SJME_DEPRECATED(sjme_pipeDirection)
 {
 	/** The direction that is from a task, on the client side. */
 	SJME_PIPE_DIRECTION_FROM_TASK,
@@ -71,15 +72,16 @@ typedef enum sjme_pipeDirection
 	
 	/** The number of directions. */
 	NUM_SJME_PIPE_DIRECTIONS,
-} sjme_pipeDirection;
+} SJME_DEPRECATED(sjme_pipeDirection);
 
 /**
  * This represents the types of redirects that may occur for a launched task
  * when it is given a pipe.
  *
+ * @deprecated Pipe redirect type no longer needed.
  * @since 2020/07/02
  */
-typedef enum sjme_pipeRedirectType
+typedef enum SJME_DEPRECATED(sjme_pipeRedirectType)
 {
 	/** Discard all program output. */
 	SJME_PIPE_REDIRECT_DISCARD = 0,
@@ -92,7 +94,7 @@ typedef enum sjme_pipeRedirectType
 	
 	/** The number of redirect types. */
 	SJME_NUM_PIPE_REDIRECTS = 3
-} sjme_pipeRedirectType;
+} SJME_DEPRECATED(sjme_pipeRedirectType);
 
 /**
  * This represents a single instance of a pipe.
@@ -112,11 +114,26 @@ typedef struct sjme_pipeInstance sjme_pipeInstance;
  * meant to be read from the task that is within.
  * @param error Any possible resultant error state.
  * @return If the pipe was successfully created.
+ * @deprecated Use the specific pipe methods instead, not this one. This
+ * function will be deleted.
  * @since 2022/03/26
  */
-sjme_jboolean sjme_pipeNewInstance(sjme_pipeRedirectType type,
+sjme_jboolean SJME_DEPRECATED(sjme_pipeNewInstance)(sjme_pipeRedirectType type,
 	sjme_pipeInstance** outPipe, sjme_file* file, sjme_jboolean isInput,
 	sjme_error* error);
+
+sjme_jboolean sjme_pipeNewAlwaysEOF(sjme_pipeInstance** outPipe,
+	sjme_error* error);
+
+sjme_jboolean sjme_pipeNewBufferPair(sjme_pipeInstance** outReadEnd,
+	sjme_pipeInstance** outWriteEnd, sjme_jboolean bidirectional,
+	sjme_error* error);
+
+sjme_jboolean sjme_pipeNewDiscardWrites(sjme_pipeInstance** outPipe,
+	sjme_error* error);
+
+sjme_jboolean sjme_pipeNewStdPipe(sjme_standardPipeType stdPipe,
+	sjme_pipeInstance** outPipe, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 
