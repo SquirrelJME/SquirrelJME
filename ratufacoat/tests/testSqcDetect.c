@@ -76,7 +76,8 @@ SJME_TEST_PROTOTYPE(testSqcDetect)
 	{
 		/* Open the library. */
 		lib = NULL;
-		if (!sjme_packLibraryOpen(pack, &lib, libDx, &shim->error))
+		if (!sjme_packLibraryOpen(pack, &lib, libDx,
+				&shim->error))
 			return FAIL_TEST_SUB(10, libDx);
 		
 		/* Must have been set. */
