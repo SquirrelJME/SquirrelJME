@@ -19,6 +19,9 @@
 #ifndef SQUIRRELJME_BUFFER_H
 #define SQUIRRELJME_BUFFER_H
 
+#include "error.h"
+#include "sjmerc.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
@@ -38,6 +41,20 @@ extern "C" {
  * @since 2022/12/09
  */
 typedef struct sjme_buffer sjme_buffer;
+
+/**
+ * Allocates a new buffer which can be used to read and write from in a thread
+ * safe manner.
+ *
+ * @param outBuffer The output buffer pointer.
+ * @param length The length of the buffer to allocate, may be @c -1 if the
+ * size of the buffer does not matter and a default will be used.
+ * @param error Any error state resulting in the creation of the buffer.
+ * @return If the allocation of the buffer was successful.
+ * @since 2022/12/10
+ */
+sjme_jboolean sjme_bufferNew(sjme_buffer** outBuffer, sjme_jint length,
+	sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

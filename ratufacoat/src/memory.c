@@ -39,6 +39,9 @@ struct sjme_memNode
 	
 	/** The size of this node. */
 	sjme_juint size;
+
+	/** The garbage collection count for this node. */
+	sjme_atomicInt gcCount;
 	
 	/** The previous link (a @c sjme_memNode) in the chain. */
 	sjme_atomicPointer prev;

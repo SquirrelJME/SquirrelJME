@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "debug.h"
+#include "engine/buffer.h"
 #include "engine/taskmanager.h"
 #include "memory.h"
 
@@ -25,19 +26,38 @@ static sjme_jboolean sjme_taskManagerPipeInit(sjme_pipeRedirectType stdInMode,
 	sjme_pipeRedirectType stdOutMode, sjme_pipeRedirectType stdErrMode,
 	sjme_pipeInstance* (*terminalPipes)[SJME_NUM_STANDARD_PIPES],
 	sjme_pipeInstance* (*outputPipes)[SJME_NUM_STANDARD_PIPES],
+	sjme_buffer* (*outputBuffers)[SJME_NUM_STANDARD_PIPES],
 	sjme_error* error)
 {
 	sjme_pipeRedirectType redirects[SJME_NUM_PIPE_REDIRECTS];
 	sjme_jint i, j;
 	sjme_jboolean weInit[SJME_NUM_PIPE_REDIRECTS];
 	sjme_jboolean failing;
+
+	/* These must be valid. */
+	if (terminalPipes == NULL || outputPipes == NULL || outputBuffers == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+
+		return sjme_false;
+	}
 	
 	/* Setup standard keyed redirect types. */
 	memset(redirects, 0, sizeof(redirects));
 	redirects[SJME_STANDARD_PIPE_STDIN] = stdInMode;
 	redirects[SJME_STANDARD_PIPE_STDOUT] = stdOutMode;
 	redirects[SJME_STANDARD_PIPE_STDERR] = stdErrMode;
-	
+
+	/* Invalid parameters? */
+	for (i = SJME_STANDARD_PIPE_STDIN; i < SJME_NUM_STANDARD_PIPES; i++)
+		if (redirects[i] < SJME_PIPE_REDIRECT_DISCARD ||
+			redirects[i] >= SJME_NUM_PIPE_REDIRECTS)
+		{
+			sjme_setError(error, SJME_ERROR_INVALIDARG, redirects[i]);
+
+			return sjme_false;
+		}
+
 	/* Initialize each instance in a loop. */
 	failing = sjme_false;
 	for (i = SJME_STANDARD_PIPE_STDIN; i < SJME_NUM_STANDARD_PIPES; i++)
@@ -57,13 +77,39 @@ static sjme_jboolean sjme_taskManagerPipeInit(sjme_pipeRedirectType stdInMode,
 			(*outputPipes)[i] = (*terminalPipes)[i];
 			continue;
 		}
-		
-		/* Otherwise, set up a new instance. */
-		if (!sjme_pipeNewInstance(redirects[i],
-			&(*outputPipes)[i], NULL, sjme_false, error))
+
+		/* Buffer pipes, will write to a given buffer accordingly. */
+		else if (redirects[i] == SJME_PIPE_REDIRECT_BUFFER)
 		{
-			failing = sjme_true;
-			break;
+			/* Allocate buffer? */
+			if (!sjme_bufferNew(&(*outputBuffers)[i], -1, error))
+			{
+				failing = sjme_true;
+				break;
+			}
+
+			/* Allocate pipe? */
+			if (!sjme_pipeNewFromBuffer((*outputBuffers)[i],
+					i == SJME_STANDARD_PIPE_STDIN,
+					i != SJME_STANDARD_PIPE_STDIN,
+					&(*outputPipes)[i], error))
+			{
+				failing = sjme_true;
+				break;
+			}
+		}
+
+		/* Discard? */
+		else if (redirects[i] == SJME_PIPE_REDIRECT_DISCARD)
+		{
+			/* Setup discard pipe. */
+			if (!sjme_pipeNewNull(i == SJME_STANDARD_PIPE_STDIN,
+				i != SJME_STANDARD_PIPE_STDIN,
+				&(*outputPipes)[i], error))
+			{
+				failing = sjme_true;
+				break;
+			}
 		}
 		
 		/* Set that we initialized it, for potential cleanup on failure. */
@@ -82,6 +128,7 @@ static sjme_jboolean sjme_taskManagerPipeInit(sjme_pipeRedirectType stdInMode,
 				continue;
 			
 			sjme_todo("Destroy pipe?");
+			sjme_todo("Destroy buffer?");
 		}
 		
 		return sjme_false;
@@ -174,7 +221,7 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	/* Setup every standard console pipe. */
 	if (!sjme_taskManagerPipeInit(stdInMode, stdOutMode, stdErrMode,
 		&engineState->stdPipes, &createdTask->stdPipes,
-		error))
+		&createdTask->stdBuffers, error))
 	{
 		/* Fail. */
 		sjme_engineTaskDestroy(createdTask, error);

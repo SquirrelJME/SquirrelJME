@@ -8,3 +8,11 @@
 // -------------------------------------------------------------------------*/
 
 #include "engine/buffer.h"
+#include "debug.h"
+
+sjme_jboolean sjme_bufferNew(sjme_buffer** outBuffer, sjme_jint length,
+	sjme_error* error)
+{
+	sjme_todo("Implement this?");
+	return sjme_false;
+}

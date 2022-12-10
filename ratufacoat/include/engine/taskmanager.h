@@ -34,6 +34,27 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/**
+ * This represents the types of redirects that may occur for a launched task
+ * when it is given a pipe.
+ *
+ * @since 2020/07/02
+ */
+typedef enum sjme_pipeRedirectType
+{
+	/** Discard all program output. */
+	SJME_PIPE_REDIRECT_DISCARD = 0,
+
+	/** Buffer the resultant program's output. */
+	SJME_PIPE_REDIRECT_BUFFER = 1,
+
+	/** Send the output to the virtual machine's terminal output. */
+	SJME_PIPE_REDIRECT_TERMINAL = 2,
+
+	/** The number of redirect types. */
+	SJME_NUM_PIPE_REDIRECTS = 3
+} sjme_pipeRedirectType;
+
 struct sjme_engineTask
 {
 	/** The ID of the task. */
@@ -47,6 +68,9 @@ struct sjme_engineTask
 	
 	/** The various standard pipe instances. */
 	sjme_pipeInstance* stdPipes[SJME_NUM_STANDARD_PIPES];
+
+	/** Standard buffers, which could be used to read/write task data. */
+	sjme_buffer* stdBuffers[SJME_NUM_STANDARD_PIPES];
 };
 
 /**

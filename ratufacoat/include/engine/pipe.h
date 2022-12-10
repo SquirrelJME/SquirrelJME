@@ -76,52 +76,11 @@ typedef enum SJME_DEPRECATED(sjme_pipeDirection)
 } SJME_DEPRECATED(sjme_pipeDirection);
 
 /**
- * This represents the types of redirects that may occur for a launched task
- * when it is given a pipe.
- *
- * @deprecated Pipe redirect type no longer needed.
- * @since 2020/07/02
- */
-typedef enum SJME_DEPRECATED(sjme_pipeRedirectType)
-{
-	/** Discard all program output. */
-	SJME_PIPE_REDIRECT_DISCARD = 0,
-	
-	/** Buffer the resultant program's output. */
-	SJME_PIPE_REDIRECT_BUFFER = 1,
-	
-	/** Send the output to the virtual machine's terminal output. */
-	SJME_PIPE_REDIRECT_TERMINAL = 2,
-	
-	/** The number of redirect types. */
-	SJME_NUM_PIPE_REDIRECTS = 3
-} SJME_DEPRECATED(sjme_pipeRedirectType);
-
-/**
  * This represents a single instance of a pipe.
  * 
  * @since 2022/03/15
  */
 typedef struct sjme_pipeInstance sjme_pipeInstance;
-
-/**
- * Creates a new instance of the given type of pipe so that there can be
- * communication between the OS and tasks accordingly.
- * 
- * @param type The type of pipe to create.
- * @param outPipe The output pipe instance.
- * @param file The file to access, potentially.
- * @param isInput Is this an input pipe? An input pipe is one that is
- * meant to be read from the task that is within.
- * @param error Any possible resultant error state.
- * @return If the pipe was successfully created.
- * @deprecated Use the specific pipe methods instead, not this one. This
- * function will be deleted.
- * @since 2022/03/26
- */
-sjme_jboolean SJME_DEPRECATED(sjme_pipeNewInstance)(sjme_pipeRedirectType type,
-	sjme_pipeInstance** outPipe, sjme_file* file, sjme_jboolean isInput,
-	sjme_error* error);
 
 /**
  * Deletes the given pipe.
@@ -135,19 +94,19 @@ sjme_jboolean sjme_pipeDelete(sjme_pipeInstance* inPipe,
 	sjme_error* error);
 
 /**
- * Creates a unidirectional pipe where data from one end will traverse to
- * the other end accordingly.
+ * Creates a pipe that may read and/or write into the given buffer.
  *
  * @param buffer The buffer that will be used for pipe communication.
- * @param outReadEnd The end of the pipe that reads from the other end.
- * @param outWriteEnd The end of the pipe where data will be written to.
+ * @param isReadable Can the buffer be read from via this pipe?
+ * @param isWritable Can the buffer be written to via this pipe?
+ * @param outPipe The resultant pipe.
  * @param error The error indicating why the pipe could not be created.
  * @return If the pipe was successfully created or not.
  * @since 2022/12/09
  */
 sjme_jboolean sjme_pipeNewFromBuffer(sjme_buffer* buffer,
-	sjme_pipeInstance** outReadEnd, sjme_pipeInstance** outWriteEnd,
-	sjme_error* error);
+	sjme_jboolean isReadable, sjme_jboolean isWritable,
+	sjme_pipeInstance** outPipe, sjme_error* error);
 
 /**
  * Creates a new pipe that may read and/or write to the given specified file.
