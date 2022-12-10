@@ -21,10 +21,11 @@
 	#include <string.h>
 #endif
 
-#include "sjmerc.h"
-#include "atomic.h"
 #include "memory.h"
+#include "atomic.h"
+#include "debug.h"
 #include "error.h"
+#include "sjmerc.h"
 
 /**
  * This represents a single node within all of the memory that has been
@@ -60,6 +61,13 @@ static sjme_atomicInt sjme_memLock;
 static sjme_atomicPointer sjme_lastMemNode;
 
 sjme_memStat sjme_memStats = {{0}, {0}};
+
+sjme_jboolean sjme_getMemNode(void* inPtr, sjme_memNode** outNode,
+	sjme_error* error)
+{
+	sjme_todo("Implement this?");
+	return sjme_false;
+}
 
 void* sjme_malloc(sjme_jint size, sjme_error* error)
 {

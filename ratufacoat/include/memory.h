@@ -59,6 +59,18 @@ typedef struct sjme_memStat
 extern sjme_memStat sjme_memStats;
 
 /**
+ * Returns the memory node from the given pointer.
+ *
+ * @param inPtr The pointer to get the node from.
+ * @param outNode The output node for the given pointer.
+ * @param error If it could not be obtained.
+ * @return If the node was successfully obtained.
+ * @since 2022/12/10
+ */
+sjme_jboolean sjme_getMemNode(void* inPtr, sjme_memNode** outNode,
+	sjme_error* error);
+
+/**
  * Allocates the given number of bytes.
  *
  * @param size The number of bytes to allocate or @c NULL if that failed.
