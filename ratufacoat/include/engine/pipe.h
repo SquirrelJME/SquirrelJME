@@ -20,6 +20,7 @@
 #include "error.h"
 #include "frontend/frontdef.h"
 #include "file.h"
+#include "engine/buffer.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -125,8 +126,9 @@ sjme_jboolean SJME_DEPRECATED(sjme_pipeNewInstance)(sjme_pipeRedirectType type,
 sjme_jboolean sjme_pipeNewAlwaysEOF(sjme_pipeInstance** outPipe,
 	sjme_error* error);
 
-sjme_jboolean sjme_pipeNewBufferPair(sjme_pipeInstance** outReadEnd,
-	sjme_pipeInstance** outWriteEnd, sjme_jboolean bidirectional,
+sjme_jboolean sjme_pipeNewBufferPair(sjme_buffer* buffer,
+	sjme_pipeInstance** outReadEnd, sjme_pipeInstance** outWriteEnd,
+	sjme_jboolean bidirectional,
 	sjme_error* error);
 
 sjme_jboolean sjme_pipeNewDiscardWrites(sjme_pipeInstance** outPipe,

@@ -254,9 +254,9 @@ sjme_jboolean sjme_pipeNewAlwaysEOF(sjme_pipeInstance** outPipe,
 	return sjme_false;
 }
 
-sjme_jboolean sjme_pipeNewBufferPair(sjme_pipeInstance** outReadEnd,
-	sjme_pipeInstance** outWriteEnd, sjme_jboolean bidirectional,
-	sjme_error* error)
+sjme_jboolean sjme_pipeNewBufferPair(sjme_buffer* buffer,
+	sjme_pipeInstance** outReadEnd, sjme_pipeInstance** outWriteEnd,
+	sjme_jboolean bidirectional, sjme_error* error)
 {
 	sjme_todo("Implement this?");
 	return sjme_false;

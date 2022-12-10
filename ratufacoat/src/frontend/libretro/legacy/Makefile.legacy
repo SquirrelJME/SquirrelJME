@@ -46,6 +46,7 @@ SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/utf.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/util.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/video.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/xbuiltin.c
+SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/engine/buffer.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/engine/classloader.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/engine/file.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/engine/pipe.c

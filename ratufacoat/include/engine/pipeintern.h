@@ -66,10 +66,11 @@ typedef struct sjme_pipeFunction
 	 * meant to be read from the task that is within.
 	 * @param error If the pipe could not be created.
 	 * @return If the instance was successfully created.
+	 * @deprecated Do not use this.
 	 * @since 2022/03/15
 	 */
-	sjme_jboolean (*newInstance)(sjme_pipeInstance* outPipe, sjme_file* file,
-		sjme_jboolean isInput, sjme_error* error);
+	sjme_jboolean (*SJME_DEPRECATED(newInstance))(sjme_pipeInstance* outPipe,
+		sjme_file* file, sjme_jboolean isInput, sjme_error* error);
 	
 	/**
 	 * Reads from the given pipe, anything that is waiting within.
