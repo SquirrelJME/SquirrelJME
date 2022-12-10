@@ -212,6 +212,19 @@ if(SQUIRRELJME_HAS_BUILTIN)
 	add_compile_definitions(SQUIRRELJME_HAS_BUILTIN=1)
 endif()
 
+# Use specific threading libraries?
+# For compatibility for Windows, do not use pthreads even if it is available
+find_package(Threads)
+if(WIN32)
+	add_compile_definitions(SQUIRRELJME_THREADS=1)
+	add_compile_definitions(SQUIRRELJME_THREADS_WIN32=1)
+elseif(Threads_FOUND)
+	if(CMAKE_USE_PTHREADS_INIT)
+		add_compile_definitions(SQUIRRELJME_THREADS=1)
+		add_compile_definitions(SQUIRRELJME_THREADS_PTHREAD=1)
+	endif()
+endif()
+
 # Enable extra warnings since they are useful
 if(MSVC)
 	string(REGEX REPLACE "/W[3|4]" "/W4" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")

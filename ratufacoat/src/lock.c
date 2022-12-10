@@ -7,6 +7,14 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#if defined(SQUIRRELJME_THREADS)
+	#if defined(SQUIRRELJME_THREADS_WIN32)
+		#include <windows.h>
+	#elif defined(SQUIRRELJME_THREADS_PTHREAD)
+		#include <pthread.h>
+	#endif
+#endif
+
 #include "debug.h"
 #include "lock.h"
 
@@ -15,6 +23,20 @@
 
 /** The next locking key to use. */
 static sjme_atomicInt sjme_nextLockKey;
+
+/**
+ * Attempts to create a memory barrier.
+ *
+ * @since 2022/12/10
+ */
+static void sjme_memoryBarrier(void)
+{
+#if defined(SQUIRRELJME_THREADS_WIN32)
+	MemoryBarrier();
+#elif defined(__GNUC__)
+	__sync_synchronize();
+#endif
+}
 
 /**
  * Attempts a lock shift.
@@ -28,8 +50,15 @@ static sjme_atomicInt sjme_nextLockKey;
 static sjme_jboolean sjme_lockShift(sjme_spinLock* lock,
 	sjme_jint keyFrom, sjme_jint keyTo)
 {
-	return sjme_atomicIntCompareThenSet(&lock->lock,
+	sjme_jint result;
+
+	/* Try shifting the lock now. */
+	sjme_memoryBarrier();
+	result = sjme_atomicIntCompareThenSet(&lock->lock,
 		keyFrom, keyTo);
+	sjme_memoryBarrier();
+
+	return result;
 }
 
 sjme_jboolean sjme_lock(sjme_spinLock* lock, sjme_spinLockKey* key,

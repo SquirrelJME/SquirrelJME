@@ -20,6 +20,7 @@ if(WIN32)
 	set(SQUIRRELJME_SDL_RC "win32.rc")
 endif()
 
+# Setup executable
 add_executable(SquirrelJME
 	sys_stdc.c
 	${SQUIRRELJME_SDL_RC})

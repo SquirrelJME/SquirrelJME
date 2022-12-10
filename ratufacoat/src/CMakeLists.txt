@@ -63,6 +63,7 @@ add_library(SquirrelJMECore OBJECT
 # This is written only in C!
 set_target_properties(SquirrelJMECore PROPERTIES LINKER_LANGUAGE C)
 
+# Includes as needed
 target_include_directories(SquirrelJMECore PUBLIC
 	"${PROJECT_BINARY_DIR}"
 	"${PROJECT_SOURCE_DIR}/include")
