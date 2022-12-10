@@ -17,6 +17,7 @@ endif()
 
 # Build executable just for testing
 file(GLOB SQUIRRELJME_TEST_SOURCES "test*.c" "test*.cxx")
+list(SORT SQUIRRELJME_TEST_SOURCES)
 add_executable(SquirrelJMETests
     mainEntry.c
     enginestub.c
