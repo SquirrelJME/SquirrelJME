@@ -69,7 +69,8 @@ sjme_jboolean sjme_getMemNode(void* inPtr, sjme_memNode** outNode,
 	return sjme_false;
 }
 
-void* sjme_malloc(sjme_jint size, sjme_error* error)
+void* sjme_mallocGc(sjme_jint size, sjme_freeCallback* callback,
+	sjme_error* error)
 {
 	void* rv;
 	

@@ -59,6 +59,19 @@ typedef struct sjme_memStat
 extern sjme_memStat sjme_memStats;
 
 /**
+ * This is called when a memory pointer is freed and it has a callback.
+ *
+ * @param memPtr The pointer being freed.
+ * @param memNode The memory node that refers to this pointer.
+ * @param error Any resultant error.
+ * @return If the free operation was a success, if this returns @c sjme_false
+ * then the sjme_free() call will be cancelled.
+ * @since 2022/12/10
+ */
+typedef sjme_jboolean (*sjme_freeCallback)(void* memPtr, sjme_memNode* memNode,
+	sjme_error* error);
+
+/**
  * Returns the memory node from the given pointer.
  *
  * @param inPtr The pointer to get the node from.
@@ -74,10 +87,22 @@ sjme_jboolean sjme_getMemNode(void* inPtr, sjme_memNode** outNode,
  * Allocates the given number of bytes.
  *
  * @param size The number of bytes to allocate or @c NULL if that failed.
+ * @param callback The callback that is called on free of the object, when
+ * the function sjme_free().
+ * @param error The error flag.
+ * @since 2022/12/10
+ */
+void* sjme_mallocGc(sjme_jint size, sjme_freeCallback* callback,
+	sjme_error* error);
+
+/**
+ * Allocates the given number of bytes.
+ *
+ * @param size The number of bytes to allocate or @c NULL if that failed.
  * @param error The error flag.
  * @since 2019/06/07
  */
-void* sjme_malloc(sjme_jint size, sjme_error* error);
+#define sjme_malloc(size, error) sjme_mallocGc(size, NULL, error)
 
 /**
  * Re-allocates the given pointer.
@@ -90,7 +115,9 @@ void* sjme_malloc(sjme_jint size, sjme_error* error);
 void* sjme_realloc(void* ptr, sjme_jint size, sjme_error* error);
 
 /**
- * Frees the given pointer.
+ * Frees the given pointer, if there is a callback specified in the allocation
+ * of the pointer then it will be called first before any actual freeing is
+ * performed.
  *
  * @param p The pointer to free.
  * @param error The error flag.
