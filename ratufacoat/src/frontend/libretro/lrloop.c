@@ -94,9 +94,29 @@ SJME_GCC_USED void retro_reset(void)
 	
 	/* Setup engine configuration from the settings. */
 	okayInit = sjme_true;
-	okayInit &= sjme_libRetro_selectRom(&newState->config);
-	okayInit &= sjme_libRetro_screenConfig(&newState->config);
-	okayInit &= sjme_libRetro_loopConfig(&newState->config);
+	if (!sjme_libRetro_selectRom(&newState->config))
+	{
+		okayInit = sjme_false;
+
+		sjme_libRetro_message(-1,
+			"Failed to select ROM.");
+	}
+
+	if (!sjme_libRetro_screenConfig(&newState->config))
+	{
+		okayInit = sjme_false;
+
+		sjme_libRetro_message(-1,
+			"Failed to select screen.");
+	}
+
+	if (!sjme_libRetro_loopConfig(&newState->config))
+	{
+		okayInit = sjme_false;
+
+		sjme_libRetro_message(-1,
+			"Failed to determine run method.");
+	}
 	
 	/* Did initialization fail? */
 	if (!okayInit)

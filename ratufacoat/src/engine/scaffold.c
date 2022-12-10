@@ -212,7 +212,7 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 		file = NULL;
 		if (result->config.frontBridge->stdPipeFileOpen == NULL ||
 			!result->config.frontBridge->stdPipeFileOpen(i,
-			&file, error) || file == NULL)
+				&file, error) || file == NULL)
 		{
 			if (!sjme_hasError(error))
 				sjme_setError(error, SJME_ERROR_BAD_PIPE_INIT, i);
@@ -223,7 +223,7 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 		/* Open terminal pipe accordingly. */
 		if (!sjme_pipeNewInstance(SJME_PIPE_REDIRECT_TERMINAL,
 			&result->stdPipes[i], file,
-			(i == SJME_STANDARD_PIPE_STDIN), error))
+				(i == SJME_STANDARD_PIPE_STDIN), error))
 			break;
 		
 		/* Success! */
