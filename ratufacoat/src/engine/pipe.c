@@ -18,7 +18,7 @@ struct sjme_pipeInstance
 	sjme_pipeRedirectType type;
 	
 	/** The functions used to handle this pipe. */
-	const sjme_pipeFunction* functions;
+	sjme_pipeFunction functions;
 	
 	/** Is the pipe closed? */
 	sjme_jboolean isClosed;
@@ -229,10 +229,10 @@ sjme_jboolean sjme_pipeNewInstance(sjme_pipeRedirectType type,
 	
 	/* Initialize base info. */
 	result->type = type;
-	result->functions = &sjme_pipeFunctions[type];
+	result->functions = sjme_pipeFunctions[type];
 	
 	/* Call sub-initializer accordingly. */
-	if (!result->functions->newInstance(result, file, isInput, error))
+	if (!result->functions.newInstance(result, file, isInput, error))
 	{
 		sjme_free(result, error);
 		
