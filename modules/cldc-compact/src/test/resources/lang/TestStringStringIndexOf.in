@@ -1,0 +1,11 @@
+result: NoResult
+thrown: NoExceptionThrown
+secondary-toobig: int:-1
+secondary-rel0: int:5
+secondary-rel2: int:5
+secondary-rel5: int:5
+secondary-rel6: int:-1
+secondary-uir0: int:2
+secondary-uir2: int:2
+secondary-uir3: int:-1
+secondary-dojastr: int:18

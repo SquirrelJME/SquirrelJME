@@ -18,6 +18,7 @@ import cc.squirreljme.jvm.mle.constants.PhoneModelType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
@@ -279,19 +280,15 @@ public enum MLERuntime
 				throw new SpringMLECallError(
 					"Index out of range: " + index);
 			
-			switch (index)
+			// Forward to normal call
+			try
 			{
-				case VMStatisticType.MEM_FREE:
-					return Runtime.getRuntime().freeMemory();
-					
-				case VMStatisticType.MEM_MAX:
-					return Runtime.getRuntime().maxMemory();
-				
-				case VMStatisticType.MEM_USED:
-					return Runtime.getRuntime().totalMemory();
+				return RuntimeShelf.vmStatistic(index);
 			}
-			
-			return 0L;
+			catch (MLECallError e)
+			{
+				throw new SpringMLECallError(e.getMessage(), e);
+			}
 		}
 	},
 	
