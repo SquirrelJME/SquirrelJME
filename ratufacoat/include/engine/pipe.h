@@ -123,22 +123,58 @@ sjme_jboolean SJME_DEPRECATED(sjme_pipeNewInstance)(sjme_pipeRedirectType type,
 	sjme_pipeInstance** outPipe, sjme_file* file, sjme_jboolean isInput,
 	sjme_error* error);
 
+/**
+ * Deletes the given pipe.
+ *
+ * @param inPipe The pipe to delete.
+ * @param error Any errors that may occur.
+ * @return If the pipe deletion was successful.
+ * @since 2022/12/09
+ */
 sjme_jboolean sjme_pipeDelete(sjme_pipeInstance* inPipe,
 	sjme_error* error);
 
-sjme_jboolean sjme_pipeNewAlwaysEOF(sjme_pipeInstance** outPipe,
-	sjme_error* error);
-
-sjme_jboolean sjme_pipeNewBufferPair(sjme_buffer* buffer,
+/**
+ * Creates a unidirectional pipe where data from one end will traverse to
+ * the other end accordingly.
+ *
+ * @param buffer The buffer that will be used for pipe communication.
+ * @param outReadEnd The end of the pipe that reads from the other end.
+ * @param outWriteEnd The end of the pipe where data will be written to.
+ * @param error The error indicating why the pipe could not be created.
+ * @return If the pipe was successfully created or not.
+ * @since 2022/12/09
+ */
+sjme_jboolean sjme_pipeNewFromBuffer(sjme_buffer* buffer,
 	sjme_pipeInstance** outReadEnd, sjme_pipeInstance** outWriteEnd,
-	sjme_jboolean bidirectional,
 	sjme_error* error);
 
-sjme_jboolean sjme_pipeNewDiscardWrites(sjme_pipeInstance** outPipe,
-	sjme_error* error);
-
-sjme_jboolean sjme_pipeNewStdPipe(sjme_standardPipeType stdPipe,
+/**
+ * Creates a new pipe that may read and/or write to the given specified file.
+ *
+ * @param file The file used to setup the pipe with, capability to read and/or
+ * write the pipe depends on the file.
+ * @param outPipe The resultant pipe.
+ * @param error The error indicating why the pipe could not be created.
+ * @return If the pipe was successfully created or not.
+ * @since 2022/12/09
+ */
+sjme_jboolean sjme_pipeNewFromFile(sjme_file* file,
 	sjme_pipeInstance** outPipe, sjme_error* error);
+
+/**
+ * Creates a new null pipe which does not contain any data nor keeps any
+ * information that is written to it.
+ *
+ * @param isReadable Should the pipe be readable, always producing EOF?
+ * @param isWritable Should the pipe be writable, always discarding data?
+ * @param outPipe The resultant pipe.
+ * @param error The error indicating why the pipe could not be created.
+ * @return If the pipe was successfully created or not.
+ * @since 2022/12/09
+ */
+sjme_jboolean sjme_pipeNewNull(sjme_jboolean isReadable,
+	sjme_jboolean isWritable, sjme_pipeInstance** outPipe, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

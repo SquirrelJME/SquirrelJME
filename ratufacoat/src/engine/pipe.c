@@ -247,6 +247,8 @@ sjme_jboolean sjme_pipeNewInstance(sjme_pipeRedirectType type,
 	return sjme_true;
 }
 
+/* -**************************************************************************/
+
 sjme_jboolean sjme_pipeDelete(sjme_pipeInstance* inPipe,
 	sjme_error* error)
 {
@@ -254,30 +256,23 @@ sjme_jboolean sjme_pipeDelete(sjme_pipeInstance* inPipe,
 	return sjme_false;
 }
 
-sjme_jboolean sjme_pipeNewAlwaysEOF(sjme_pipeInstance** outPipe,
-	sjme_error* error)
-{
-	sjme_todo("Implement this?");
-	return sjme_false;
-}
-
-sjme_jboolean sjme_pipeNewBufferPair(sjme_buffer* buffer,
+sjme_jboolean sjme_pipeNewFromBuffer(sjme_buffer* buffer,
 	sjme_pipeInstance** outReadEnd, sjme_pipeInstance** outWriteEnd,
-	sjme_jboolean bidirectional, sjme_error* error)
-{
-	sjme_todo("Implement this?");
-	return sjme_false;
-}
-
-sjme_jboolean sjme_pipeNewDiscardWrites(sjme_pipeInstance** outPipe,
 	sjme_error* error)
 {
 	sjme_todo("Implement this?");
 	return sjme_false;
 }
 
-sjme_jboolean sjme_pipeNewStdPipe(sjme_standardPipeType stdPipe,
+sjme_jboolean sjme_pipeNewFromFile(sjme_file* file,
 	sjme_pipeInstance** outPipe, sjme_error* error)
+{
+	sjme_todo("Implement this?");
+	return sjme_false;
+}
+
+sjme_jboolean sjme_pipeNewNull(sjme_jboolean isReadable,
+	sjme_jboolean isWritable, sjme_pipeInstance** outPipe, sjme_error* error)
 {
 	sjme_todo("Implement this?");
 	return sjme_false;

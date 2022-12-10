@@ -220,10 +220,8 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 			break;
 		}
 		
-		/* Open terminal pipe accordingly. */
-		if (!sjme_pipeNewInstance(SJME_PIPE_REDIRECT_TERMINAL,
-			&result->stdPipes[i], file,
-				(i == SJME_STANDARD_PIPE_STDIN), error))
+		/* Open pipe that is associated with the given file. */
+		if (!sjme_pipeNewFromFile(file, &result->stdPipes[i], error))
 			break;
 		
 		/* Success! */
