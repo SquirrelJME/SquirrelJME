@@ -265,9 +265,6 @@ typedef enum sjme_jboolean
 /** @deprecated Do not use, this is not safe! */
 #define SJME_POINTER_TO_JINT(x) ((sjme_jint)((uintptr_t)(x)))
 
-/** @deprecated Do not use, this is not safe! */
-#define SJME_JINT_TO_POINTER(x) ((void*)((uintptr_t)((sjme_jint)(x))))
-
 /**
  * Casts a pointer to a memory address.
  * 
@@ -283,17 +280,6 @@ typedef enum sjme_jboolean
  * @since 2022/03/09
  */
 #define SJME_JMEM_TO_POINTER(x) ((void*)((uintptr_t)((x))))
-
-/**
- * Calculates the value from the given pointer offset.
- * 
- * @param p The pointer.
- * @param o The offset.
- * @deprecated Do not use, this is not safe!
- * @since 2022/03/09
- */
-#define SJME_POINTER_OFFSET(p, o) SJME_JINT_TO_POINTER( \
-	SJME_POINTER_TO_JINT(p) + ((sjme_jint)(o)))
 
 /**
  * Calculates the value from the given pointer offset.

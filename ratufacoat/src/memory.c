@@ -25,7 +25,11 @@
 #include "atomic.h"
 #include "debug.h"
 #include "error.h"
+#include "lock.h"
 #include "sjmerc.h"
+
+/** The protection key. */
+#define SJME_MEM_NODE_KEY UINT32_C(0x58657221)
 
 /**
  * This represents a single node within all of the memory that has been
@@ -35,14 +39,20 @@
  */
 struct sjme_memNode
 {
-	/** The key to check if this is a valid node or not. */
+	/** The key to check if this is a valid node, is #SJME_MEM_NODE_KEY. */
 	sjme_jint key;
 	
 	/** The size of this node. */
-	sjme_juint size;
+	sjme_juint nodeSize;
+
+	/** The original allocation size. */
+	sjme_juint origSize;
 
 	/** The garbage collection count for this node. */
 	sjme_atomicInt gcCount;
+
+	/** The callback used for freeing. */
+	sjme_freeCallback freeCallback;
 	
 	/** The previous link (a @c sjme_memNode) in the chain. */
 	sjme_atomicPointer prev;
@@ -55,7 +65,7 @@ struct sjme_memNode
 };
 
 /** Lock on memory operations to ensure that all of them are atomic. */
-static sjme_atomicInt sjme_memLock;
+static sjme_spinLock sjme_memLock;
 
 /** The last @c sjme_atomicPointer in the memory chain. */
 static sjme_atomicPointer sjme_lastMemNode;
@@ -65,14 +75,35 @@ sjme_memStat sjme_memStats = {{0}, {0}};
 sjme_jboolean sjme_getMemNode(void* inPtr, sjme_memNode** outNode,
 	sjme_error* error)
 {
-	sjme_todo("Implement this?");
-	return sjme_false;
+	sjme_memNode* result;
+
+	/* Check. */
+	if (inPtr == NULL || outNode == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		return sjme_false;
+	}
+
+	/* Determine and check validity of the node. */
+	result = SJME_POINTER_OFFSET_LONG(inPtr, -sizeof(sjme_memNode));
+	if (result->key != SJME_MEM_NODE_KEY)
+	{
+		sjme_setError(error, SJME_ERROR_INVALIDARG, result->key);
+
+		return sjme_false;
+	}
+
+	/* Set and use it. */
+	*outNode = result;
+	return sjme_true;
 }
 
-void* sjme_mallocGc(sjme_jint size, sjme_freeCallback* callback,
+void* sjme_mallocGc(sjme_jint size, sjme_freeCallback freeCallback,
 	sjme_error* error)
 {
-	void* rv;
+	sjme_jint origSize;
+	sjme_memNode* result;
+	sjme_memNode* checkNode;
 	
 	/* Considered an error. */
 	if (size < 0)
@@ -89,8 +120,9 @@ void* sjme_mallocGc(sjme_jint size, sjme_freeCallback* callback,
 	}
 	
 	/* Round size and include extra 4-bytes for size storage. */
+	origSize = size;
 	size = ((size + SJME_JINT_C(3)) & (~SJME_JINT_C(3))) +
-		SJME_JINT_C(4);
+		SJME_JINT_C(4) + sizeof(sjme_memNode);
 	
 	/* Exceeds maximum permitted allocation size? */
 	if (sizeof(sjme_jint) > sizeof(size_t) && size > (sjme_jint)SIZE_MAX)
@@ -101,14 +133,14 @@ void* sjme_mallocGc(sjme_jint size, sjme_freeCallback* callback,
 	
 #if defined(SQUIRRELJME_PALMOS)
 	/* Palm OS, use glue to allow greater than 64K. */
-	rv = MemGluePtrNew(size);
+	result = MemGluePtrNew(size);
 #else
 	/* Use standard C function otherwise. */
-	rv = calloc(1, size);
+	result = calloc(1, size);
 #endif
 
 	/* Did not allocate? */
-	if (rv == NULL)
+	if (result == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NO_MEMORY, size);
 		return NULL;
@@ -116,21 +148,38 @@ void* sjme_mallocGc(sjme_jint size, sjme_freeCallback* callback,
 		
 #if defined(SQUIRRELJME_PALMOS)
 	/* Clear memory on Palm OS. */
-	MemSet(rv, size, 0);
+	MemSet(result, size, 0);
 #else
 	/* Clear values to zero. */
-	memset(rv, 0, size);
+	memset(result, 0, size);
 #endif
-	
-	/* Store the size into this memory block for later free. */
-	*((sjme_jint*)rv) = size;
+
+	/* Set block details. */
+	result->key = SJME_MEM_NODE_KEY;
+	sjme_atomicIntSet(&result->gcCount, 1);
+	result->freeCallback = freeCallback;
+	result->nodeSize = size;
+	result->origSize = origSize;
+
+	/* Sanity check. */
+	checkNode = NULL;
+	if (!sjme_getMemNode(&result->bytes, &checkNode, error) ||
+		checkNode != result)
+	{
+		sjme_todo("Node correction? %p %d", checkNode);
+	}
+
+	/* Link into the node tree. */
 	
 	/* Return the adjusted pointer. */
-	return SJME_POINTER_OFFSET_LONG(rv, 4);
+	return &result->bytes;
 }
 
 void* sjme_realloc(void* ptr, sjme_jint size, sjme_error* error)
 {
+	sjme_todo("Implement this?");
+	return NULL;
+#if 0
 	void* rv;
 	sjme_jint oldSize;
 	
@@ -171,12 +220,13 @@ void* sjme_realloc(void* ptr, sjme_jint size, sjme_error* error)
 	
 	/* Return the new pointer. */
 	return rv;
+#endif
 }
 
 sjme_jboolean sjme_free(void* p, sjme_error* error)
 {
-	void* baseP;
 	sjme_jint size;
+	sjme_memNode* node;
 	
 	/* Ignore null pointers. */
 	if (p == NULL)
@@ -184,21 +234,36 @@ sjme_jboolean sjme_free(void* p, sjme_error* error)
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
 		return sjme_false;
 	}
-	
-	/* Base pointer which is size shifted. */
-	baseP = SJME_POINTER_OFFSET_LONG(p, -4);
-	size = *((sjme_jint*)(baseP));
-	
-	/* Wipe memory that was here. */
-	memset(baseP, 0xBA, size);
-	
+
+	/* Get the actual node used. */
+	node = NULL;
+	if (!sjme_getMemNode(p, &node, error) || node == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
+		return sjme_false;
+	}
+
+	/* If there is a free function, call it. */
+	if (node->freeCallback != NULL)
+		if (!node->freeCallback(p, node, error))
+		{
+			if (!sjme_hasError(error))
+				sjme_setError(error, SJME_ERROR_INVALIDMEMTYPE, 0);
+			return sjme_false;
+		}
+
+	/* Wipe memory here. */
+	memset(node, 0xBA, node->nodeSize);
+
+	/* Free memory used here. */
 #if defined(SQUIRRELJME_PALMOS)
 	/* Use Palm OS free. */
 	MemPtrFree(baseP);
 #else
 	/* Use Standard C free. */
-	free(baseP);
+	free(node);
 #endif
-	
+
+	/* Success! */
 	return sjme_true;
 }

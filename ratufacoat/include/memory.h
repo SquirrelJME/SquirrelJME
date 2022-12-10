@@ -87,12 +87,12 @@ sjme_jboolean sjme_getMemNode(void* inPtr, sjme_memNode** outNode,
  * Allocates the given number of bytes.
  *
  * @param size The number of bytes to allocate or @c NULL if that failed.
- * @param callback The callback that is called on free of the object, when
- * the function sjme_free().
+ * @param freeCallback The freeCallback that is called on free of the object,
+ * when the function sjme_free() is called.
  * @param error The error flag.
  * @since 2022/12/10
  */
-void* sjme_mallocGc(sjme_jint size, sjme_freeCallback* callback,
+void* sjme_mallocGc(sjme_jint size, sjme_freeCallback freeCallback,
 	sjme_error* error);
 
 /**
