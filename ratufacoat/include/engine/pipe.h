@@ -123,6 +123,9 @@ sjme_jboolean SJME_DEPRECATED(sjme_pipeNewInstance)(sjme_pipeRedirectType type,
 	sjme_pipeInstance** outPipe, sjme_file* file, sjme_jboolean isInput,
 	sjme_error* error);
 
+sjme_jboolean sjme_pipeDelete(sjme_pipeInstance* inPipe,
+	sjme_error* error);
+
 sjme_jboolean sjme_pipeNewAlwaysEOF(sjme_pipeInstance** outPipe,
 	sjme_error* error);
 
