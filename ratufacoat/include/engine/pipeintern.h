@@ -69,8 +69,8 @@ typedef struct sjme_pipeFunction
 	 * @deprecated Do not use this.
 	 * @since 2022/03/15
 	 */
-	sjme_jboolean (*SJME_DEPRECATED(newInstance))(sjme_pipeInstance* outPipe,
-		sjme_file* file, sjme_jboolean isInput, sjme_error* error);
+	SJME_DEPRECATED(sjme_jboolean (*newInstance)(sjme_pipeInstance* outPipe,
+		sjme_file* file, sjme_jboolean isInput, sjme_error* error));
 	
 	/**
 	 * Reads from the given pipe, anything that is waiting within.
