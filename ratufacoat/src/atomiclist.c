@@ -7,9 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjmerc.h"
 #include "atomic.h"
 #include "atomiclist.h"
-#include "sjmerc.h"
 
 /**
  * This represents a tread within an atomic list which may change accordingly

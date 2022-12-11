@@ -16,12 +16,12 @@
 #ifndef SQUIRRELJME_SCAFFOLD_H
 #define SQUIRRELJME_SCAFFOLD_H
 
+#include "sjmerc.h"
 #include "engine/pipe.h"
 #include "engine/scafdef.h"
 #include "error.h"
 #include "frontend/frontdef.h"
 #include "format/pack.h"
-#include "sjmerc.h"
 #include "video.h"
 
 /* Anti-C++. */

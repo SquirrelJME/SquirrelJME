@@ -18,8 +18,8 @@
 
 #include <libretro/libretro.h>
 
-#include "engine/scaffold.h"
 #include "sjmerc.h"
+#include "engine/scaffold.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

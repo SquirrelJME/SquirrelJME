@@ -10,8 +10,6 @@
 #ifndef SQUIRRELJME_TESTS_H
 #define SQUIRRELJME_TESTS_H
 
-#include <stdlib.h>
-
 #include "sjmerc.h"
 #include "native.h"
 

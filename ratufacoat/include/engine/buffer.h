@@ -19,8 +19,8 @@
 #ifndef SQUIRRELJME_BUFFER_H
 #define SQUIRRELJME_BUFFER_H
 
-#include "error.h"
 #include "sjmerc.h"
+#include "error.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

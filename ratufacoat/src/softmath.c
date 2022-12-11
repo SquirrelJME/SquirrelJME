@@ -13,8 +13,8 @@
  * @since 2021/02/27
  */
 
-#include "debug.h"
 #include "sjmerc.h"
+#include "debug.h"
 #include "softmath.h"
 
 /** Unsigned shift right masks. */

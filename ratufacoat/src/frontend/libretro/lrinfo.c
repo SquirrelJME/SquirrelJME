@@ -9,8 +9,8 @@
 
 #include <string.h>
 
-#include "frontend/libretro/lrlocal.h"
 #include "sjmerc.h"
+#include "frontend/libretro/lrlocal.h"
 
 /** Returns the supported RetroArch version. */
 SJME_GCC_USED unsigned retro_api_version(void)

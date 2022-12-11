@@ -18,10 +18,10 @@
 #define SJME_hGRATUFACOATSJMERCHSJMERCH
 
 /** Standard Includes. */
+#include <stdlib.h>
 #include <stddef.h>
 #include <limits.h>
 #include <string.h>
-#include <stdlib.h>
 #include <stdio.h>
 
 /** Variable counting. */

@@ -16,8 +16,8 @@
 #ifndef SQUIRRELJME_LRJAR_H
 #define SQUIRRELJME_LRJAR_H
 
-#include "engine/scaffold.h"
 #include "sjmerc.h"
+#include "engine/scaffold.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

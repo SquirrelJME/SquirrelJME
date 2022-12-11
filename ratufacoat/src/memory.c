@@ -21,49 +21,14 @@
 	#include <string.h>
 #endif
 
+#include "sjmerc.h"
 #include "memory.h"
+#include "memoryintern.h"
 #include "atomic.h"
 #include "debug.h"
 #include "error.h"
 #include "lock.h"
-#include "sjmerc.h"
 #include "counter.h"
-
-/** The protection key. */
-#define SJME_MEM_NODE_KEY UINT32_C(0x58657221)
-
-/**
- * This represents a single node within all of the memory that has been
- * allocated and is being managed by SquirrelJME.
- * 
- * @since 2022/02/20
- */
-struct sjme_memNode
-{
-	/** The key to check if this is a valid node, is #SJME_MEM_NODE_KEY. */
-	sjme_jint key;
-	
-	/** The size of this node. */
-	sjme_juint nodeSize;
-
-	/** The original allocation size. */
-	sjme_juint origSize;
-
-	/** The garbage collection count for this node. */
-	sjme_counter gcCount;
-
-	/** The callback used for freeing. */
-	sjme_freeCallback freeCallback;
-	
-	/** The previous link (a @c sjme_memNode) in the chain. */
-	sjme_atomicPointer prev;
-	
-	/** The next link (a @c sjme_memNode) in the chain. */
-	sjme_atomicPointer next;
-	
-	/** The data stored within this node. */
-	sjme_jbyte bytes[];
-};
 
 /** Lock on memory operations to ensure that all of them are atomic. */
 static sjme_spinLock sjme_memLock;

@@ -14,6 +14,7 @@
  */
 
 #include <stdarg.h>
+
 #include "sjmerc.h"
 #include "corefont.h"
 #include "stringies.h"

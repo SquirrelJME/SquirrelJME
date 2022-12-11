@@ -16,9 +16,9 @@
 #ifndef SQUIRRELJME_TASKMANAGER_H
 #define SQUIRRELJME_TASKMANAGER_H
 
+#include "sjmerc.h"
 #include "engine/pipe.h"
 #include "engine/classloader.h"
-#include "sjmerc.h"
 #include "scaffold.h"
 #include "profiler.h"
 
