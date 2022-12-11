@@ -45,7 +45,7 @@ extern "C" {
  */
 sjme_jboolean sjme_refPtrCleanup__(void* refStruct, sjme_error* error);
 
-/* Clang gets messy here... */
+/* Clang format gets messy here... */
 /* clang-format off */
 
 #if defined(_MSC_VER)
@@ -81,12 +81,15 @@ sjme_jboolean sjme_refPtrCleanup__(void* refStruct, sjme_error* error);
         refs.detect__ = SJME_REF_DETECT__; \
         /* MSVC requires the memory here be initialized properly... */ \
 		memset(&refs, 0, sizeof(refs))
+
+	/** Get reference variable. */
+	#define SJME_UNREF(x) (*(refs.x.ptr))
 #else
 	/* Not supported so needs to be added. */
 	#error No RefPtr Implementation!
 #endif
 
-/* Start using clangformat again */
+/* Start using Clang format again */
 /* clang-format on */
 
 /** Reference pointer for @c sjme_jboolean. */

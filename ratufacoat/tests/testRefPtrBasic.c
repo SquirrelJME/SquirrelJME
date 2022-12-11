@@ -18,7 +18,7 @@ static sjme_jint localRefPtrFunc(sjme_error* error)
 
 	SJME_REFPTR_CODE_BEGIN()
 
-	*(refs.boop.ptr) = 2;
+	SJME_UNREF(boop) = 2;
 
 	SJME_REFPTR_CODE_END(error)
 }
