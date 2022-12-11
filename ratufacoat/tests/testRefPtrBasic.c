@@ -8,8 +8,20 @@
 // -------------------------------------------------------------------------*/
 
 #include "tests.h"
+#include "refptr/refptr.h"
+
+static sjme_jint localRefPtrFunc(void)
+{
+	SJME_REFPTR_BEGIN;
+
+
+
+	SJME_REFPTR_END;
+}
 
 SJME_TEST_PROTOTYPE(testRefPtrBasic)
 {
+	localRefPtrFunc();
+
 	return FAIL_TEST(1);
 }

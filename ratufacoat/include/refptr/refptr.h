@@ -8,13 +8,16 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Reference pointer header.
+ * Reference pointer implementation, using compiler specific magic to implement
+ * this with some required words.
  * 
  * @since 2022/12/11
  */
 
 #ifndef SQUIRRELJME_REFPTR_H
 #define SQUIRRELJME_REFPTR_H
+
+#include "sjmerc.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -26,6 +29,23 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+#if defined(_MSC_VER)
+	/* Microsoft Visual Studio implementation. */
+
+	/** Start of function for reference pointers */
+	#define SJME_REFPTR_BEGIN
+
+	/** End of function for reference pointers. */
+	#define SJME_REFPTR_END
+
+	/** Reference pointer variables. */
+	#define SJME_REFPTR_VARS(...) \
+		struct sjme_refptr_vars__ { __VA_ARGS__ }
+#else
+	/* Not supported so needs to be added. */
+	#error No RefPtr Implementation!
+#endif
 
 /*--------------------------------------------------------------------------*/
 
