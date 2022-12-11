@@ -80,15 +80,20 @@
     </Objective-C>
     <Objective-C-extensions>
       <option name="TAG_PREFIX_OF_LINE_COMMENT" value="AT" />
+    </Objective-C-extensions>
+    <Objective-C-extensions>
+      <option name="TAG_PREFIX_OF_LINE_COMMENT" value="AT" />
+    </Objective-C-extensions>
+    <clangFormatSettings>
+      <option name="ENABLED" value="true" />
+    </clangFormatSettings>
+    <files>
       <extensions>
         <pair source="cxx" header="hxx" fileNamingConvention="LOWERCASE" />
         <pair source="c" header="h" fileNamingConvention="LOWERCASE" />
         <pair source="cu" header="cuh" fileNamingConvention="LOWERCASE" />
       </extensions>
-    </Objective-C-extensions>
-    <clangFormatSettings>
-      <option name="ENABLED" value="true" />
-    </clangFormatSettings>
+    </files>
     <codeStyleSettings language="CMake">
       <indentOptions>
         <option name="CONTINUATION_INDENT_SIZE" value="4" />

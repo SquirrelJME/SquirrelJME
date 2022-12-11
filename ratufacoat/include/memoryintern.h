@@ -34,6 +34,24 @@ extern "C" {
 #define SJME_MEM_NODE_KEY UINT32_C(0x58657221)
 
 /**
+ * Owner list for reference pointers, all of these are shared with every
+ * reference that exists.
+ *
+ * @since 2022/12/11
+ */
+typedef struct sjme_refPtr_ownerList__
+{
+	/** Number of references to this owner list. */
+	sjme_atomicInt numRefs;
+
+	/** The current number of owners. */
+	sjme_atomicInt numOwners;
+
+	/** Array of owners. */
+	void* owners;
+} sjme_refPtr_ownerList__;
+
+/**
  * This represents a single node within all of the memory that has been
  * allocated and is being managed by SquirrelJME.
  *
@@ -55,6 +73,9 @@ struct sjme_memNode
 
 	/** The callback used for freeing. */
 	sjme_freeCallback freeCallback;
+
+	/** Set of owners for reference pointers. */
+	sjme_refPtr_ownerList__* owners;
 
 	/** The previous link (a @c sjme_memNode) in the chain. */
 	sjme_atomicPointer prev;
