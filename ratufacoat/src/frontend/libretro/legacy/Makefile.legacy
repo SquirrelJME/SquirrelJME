@@ -65,6 +65,7 @@ SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/format/sqcpack.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/format/zip.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/nuklear/nuklear.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/miniz/miniz.c
+SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/refptr/refptr.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/frontend/libretro/lraudio.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/frontend/libretro/lrcheat.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/frontend/libretro/lrenv.c
