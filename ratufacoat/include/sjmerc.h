@@ -25,6 +25,7 @@
 #include <stdio.h>
 
 /** Variable counting. */
+#include "jni/sjme_jni.h"
 #include "varcount.h"
 
 /** Stringify. */
