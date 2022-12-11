@@ -27,6 +27,7 @@
 #include "error.h"
 #include "lock.h"
 #include "sjmerc.h"
+#include "counter.h"
 
 /** The protection key. */
 #define SJME_MEM_NODE_KEY UINT32_C(0x58657221)
@@ -49,7 +50,7 @@ struct sjme_memNode
 	sjme_juint origSize;
 
 	/** The garbage collection count for this node. */
-	sjme_atomicInt gcCount;
+	sjme_counter gcCount;
 
 	/** The callback used for freeing. */
 	sjme_freeCallback freeCallback;
@@ -96,6 +97,24 @@ sjme_jboolean sjme_getMemNode(void* inPtr, sjme_memNode** outNode,
 	/* Set and use it. */
 	*outNode = result;
 	return sjme_true;
+}
+
+/**
+ * Handles garbage collection for memory when the node count reaches zero.
+ *
+ * @param counter The counter to clear.
+ * @param error Any potential error state.
+ * @return If the handle was successful.
+ * @since 2022/12/10
+ */
+static sjme_jboolean sjme_mallocGcHandle(sjme_counter* counter,
+	sjme_error* error)
+{
+	sjme_memNode* node;
+
+	/* Forward to free. */
+	node = counter->dataPointer;
+	return sjme_free(&node->bytes[0], error);
 }
 
 void* sjme_mallocGc(sjme_jint size, sjme_freeCallback freeCallback,
@@ -156,9 +175,17 @@ void* sjme_mallocGc(sjme_jint size, sjme_freeCallback freeCallback,
 	memset(result, 0, size);
 #endif
 
+	/* Initialize counter. */
+	if (!sjme_counterInit(&result->gcCount,
+		sjme_mallocGcHandle, result, 0, error))
+	{
+		if (!sjme_hasError(error))
+			sjme_setError(error, SJME_ERROR_INVALID_COUNTER_STATE, 0);
+		return NULL;
+	}
+
 	/* Set block details. */
 	result->key = SJME_MEM_NODE_KEY;
-	sjme_atomicIntSet(&result->gcCount, 1);
 	result->freeCallback = freeCallback;
 	result->nodeSize = size;
 	result->origSize = origSize;
