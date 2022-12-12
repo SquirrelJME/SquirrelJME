@@ -155,6 +155,12 @@ typedef struct JNINativeInterface* JNIEnv;
 /** Virtual machine state. */
 typedef struct JNIInvokeInterface* JavaVM;
 
+jint JNI_GetDefaultJavaVMInitArgs(void* vmArgs);
+
+jint JNI_GetCreatedJavaVMs(JavaVM** vmBuf, jsize bufLen, jsize* nVMs);
+
+jint JNI_CreateJavaVM(JavaVM** pVm, void** pEnv, void* vmArgs);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

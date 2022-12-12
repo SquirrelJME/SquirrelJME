@@ -537,6 +537,39 @@ struct sjme_vmFunctions
 /* Clear this. */
 #undef SJME_FUNC_PTR__
 
+/**
+ * Initializes the arguments with the defaults.
+ *
+ * @param vmArgs The arguments to fill.
+ * @return One of the interface error codes.
+ * @since 2022/12/11
+ */
+sjme_jint sjme_vmDefaultInitArgs(sjme_vmInitArgs* vmArgs);
+
+/**
+ * Returns all of the VMs which are active.
+ *
+ * @param vmBuf The output virtual machines.
+ * @param bufLen The length of the buffer.
+ * @param nVMs The number of written VMs.
+ * @return One of the interface error codes.
+ * @since 2022/12/11
+ */
+sjme_jint sjme_vmGetAllVms(sjme_vmState** vmBuf, sjme_jsize bufLen,
+	sjme_jsize* nVMs);
+
+/**
+ * Creates a virtual machine along with the functions and state for it.
+ *
+ * @param outVm The virtual machine output.
+ * @param outEnv The output function setup and environment.
+ * @param vmArgs The arguments to the virtual machine.
+ * @return One of the interface error codes.
+ * @since 2022/12/11
+ */
+sjme_jint sjme_vmNew(sjme_vmState** outVm, sjme_vmFunctions** outEnv,
+	sjme_vmInitArgs* vmArgs);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
