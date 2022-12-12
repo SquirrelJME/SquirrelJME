@@ -190,53 +190,53 @@ function,187,GetIntArrayElements,jint *,(JNIEnv *env,jintArray array, jboolean *
 function,188,GetLongArrayElements,jlong *,(JNIEnv *env,jlongArray array, jboolean *isCopy);
 function,189,GetFloatArrayElements,jfloat *,(JNIEnv *env,jfloatArray array, jboolean *isCopy);
 function,190,GetDoubleArrayElements,jdouble *,(JNIEnv *env,jdoubleArray array, jboolean *isCopy);
-function,191,ReleaseBooleanArrayElements,
-function,192,ReleaseByteArrayElements,
-function,193,ReleaseCharArrayElements,
-function,194,ReleaseShortArrayElements,
-function,195,ReleaseIntArrayElements,
-function,196,ReleaseLongArrayElements,
-function,197,ReleaseFloatArrayElements,
-function,198,ReleaseDoubleArrayElements,
-function,199,GetBooleanArrayRegion,
-function,200,GetByteArrayRegion,
-function,201,GetCharArrayRegion,
-function,202,GetShortArrayRegion,
-function,203,GetIntArrayRegion,
-function,204,GetLongArrayRegion,
-function,205,GetFloatArrayRegion,
-function,206,GetDoubleArrayRegion,
-function,207,SetBooleanArrayRegion,
-function,208,SetByteArrayRegion,
-function,209,SetCharArrayRegion,
-function,210,SetShortArrayRegion,
-function,211,SetIntArrayRegion,
-function,212,SetLongArrayRegion,
-function,213,SetFloatArrayRegion,
-function,214,SetDoubleArrayRegion,
-function,215,RegisterNatives,
-function,216,UnregisterNatives,
-function,217,MonitorEnter,
-function,218,MonitorExit,
-function,219,GetJavaVM,
-function,220,GetStringRegion,
-function,221,GetStringUTFRegion,
-function,222,GetPrimitiveArrayCritical,
-function,223,ReleasePrimitiveArrayCritical,
-function,224,GetStringCritical,
-function,225,ReleaseStringCritical,
-function,226,NewWeakGlobalRef,
-function,227,DeleteWeakGlobalRef,
-function,228,ExceptionCheck,
-function,229,NewDirectByteBuffer,
-function,230,GetDirectBufferAddress,
-function,231,GetDirectBufferCapacity,
-function,232,GetObjectRefType,
+function,191,ReleaseBooleanArrayElements,void ,(JNIEnv *env,jbooleanArray array, jboolean *elems, jint mode);
+function,192,ReleaseByteArrayElements,void ,(JNIEnv *env,jbyteArray array, jbyte *elems, jint mode);
+function,193,ReleaseCharArrayElements,void ,(JNIEnv *env,jcharArray array, jchar *elems, jint mode);
+function,194,ReleaseShortArrayElements,void ,(JNIEnv *env,jshortArray array, jshort *elems, jint mode);
+function,195,ReleaseIntArrayElements,void ,(JNIEnv *env,jintArray array, jint *elems, jint mode);
+function,196,ReleaseLongArrayElements,void ,(JNIEnv *env,jlongArray array, jlong *elems, jint mode);
+function,197,ReleaseFloatArrayElements,void ,(JNIEnv *env,jfloatArray array, jfloat *elems, jint mode);
+function,198,ReleaseDoubleArrayElements,void ,(JNIEnv *env,jdoubleArray array, jdouble *elems, jint mode);
+function,199,GetBooleanArrayRegion,void ,(JNIEnv *env, jbooleanArray array,jsize start, jsize len, jboolean *buf);
+function,200,GetByteArrayRegion,void ,(JNIEnv *env, jbyteArray array,jsize start, jsize len, jbyte *buf);
+function,201,GetCharArrayRegion,void ,(JNIEnv *env, jcharArray array,jsize start, jsize len, jchar *buf);
+function,202,GetShortArrayRegion,void ,(JNIEnv *env, jshortArray array,jsize start, jsize len, jshort *buf);
+function,203,GetIntArrayRegion,void ,(JNIEnv *env, jintArray array,jsize start, jsize len, jint *buf);
+function,204,GetLongArrayRegion,void ,(JNIEnv *env, jlongArray array,jsize start, jsize len, jlong *buf);
+function,205,GetFloatArrayRegion,void ,(JNIEnv *env, jfloatArray array,jsize start, jsize len, jfloat *buf);
+function,206,GetDoubleArrayRegion,void ,(JNIEnv *env, jdoubleArray array,jsize start, jsize len, jdouble *buf);
+function,207,SetBooleanArrayRegion,void,(JNIEnv *env, jbooleanArray array,jsize start, jsize len, const jboolean *buf);
+function,208,SetByteArrayRegion,void,(JNIEnv *env, jbyteArray array,jsize start, jsize len, const jbyte *buf);
+function,209,SetCharArrayRegion,void,(JNIEnv *env, jcharArray array,jsize start, jsize len, const jchar *buf);
+function,210,SetShortArrayRegion,void,(JNIEnv *env, jshortArray array,jsize start, jsize len, const jshort *buf);
+function,211,SetIntArrayRegion,void,(JNIEnv *env, jintArray array,jsize start, jsize len, const jint *buf);
+function,212,SetLongArrayRegion,void,(JNIEnv *env, jlongArray array,jsize start, jsize len, const jlong *buf);
+function,213,SetFloatArrayRegion,void,(JNIEnv *env, jfloatArray array,jsize start, jsize len, const jfloat *buf);
+function,214,SetDoubleArrayRegion,void,(JNIEnv *env, jdoubleArray array,jsize start, jsize len, const jdouble *buf);
+function,215,RegisterNatives,jint ,(JNIEnv *env, jclass clazz,const JNINativeMethod *methods, jint nMethods);
+function,216,UnregisterNatives,jint ,(JNIEnv *env, jclass clazz);
+function,217,MonitorEnter,jint ,(JNIEnv *env, jobject obj);
+function,218,MonitorExit,jint ,(JNIEnv *env, jobject obj);
+function,219,GetJavaVM,jint ,(JNIEnv *env, JavaVM **vm);
+function,220,GetStringRegion,void ,(JNIEnv *env, jstring str, jsize start, jsize len, jchar *buf);
+function,221,GetStringUTFRegion,void ,(JNIEnv *env, jstring str, jsize start, jsize len, char *buf);
+function,222,GetPrimitiveArrayCritical,void * ,(JNIEnv *env, jarray array, jboolean *isCopy);
+function,223,ReleasePrimitiveArrayCritical,void ,(JNIEnv *env, jarray array, void *carray, jint mode);
+function,224,GetStringCritical,const jchar * ,(JNIEnv *env, jstring string, jboolean *isCopy);
+function,225,ReleaseStringCritical,void ,(JNIEnv *env, jstring string, const jchar *carray);
+function,226,NewWeakGlobalRef,jweak ,(JNIEnv *env, jobject obj);
+function,227,DeleteWeakGlobalRef,void ,(JNIEnv *env, jweak obj);
+function,228,ExceptionCheck,jboolean ,(JNIEnv *env);
+function,229,NewDirectByteBuffer,jobject ,(JNIEnv* env, void* address, jlong capacity);
+function,230,GetDirectBufferAddress,void* ,(JNIEnv* env, jobject buf);
+function,231,GetDirectBufferCapacity,jlong ,(JNIEnv* env, jobject buf);
+function,232,GetObjectRefType,jobjectRefType ,(JNIEnv* env, jobject obj);
 interface,0,NULL,void,void
 interface,1,NULL,void,void
 interface,2,NULL,void,void
-interface,3,DestroyJavaVM,
-interface,4,AttachCurrentThread,
-interface,5,DetachCurrentThread,
-interface,6,GetEnv,
-interface,7,AttachCurrentThreadAsDaemon,
+interface,3,DestroyJavaVM,jint ,(JavaVM *vm);
+interface,4,AttachCurrentThread,jint ,(JavaVM *vm, void **p_env, void *thr_args);
+interface,5,DetachCurrentThread,jint ,(JavaVM *vm);
+interface,6,GetEnv,jint ,(JavaVM *vm, void **env, jint version);
+interface,7,AttachCurrentThreadAsDaemon,jint ,(JavaVM* vm, void** penv, void* args);

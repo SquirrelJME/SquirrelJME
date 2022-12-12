@@ -98,6 +98,9 @@ typedef sjme_jstring jstring;
 /** Throwable. */
 typedef sjme_jthrowable jthrowable;
 
+/** Weak reference. */
+typedef sjme_jweak jweak;
+
 /** Array type. */
 typedef sjme_jarray jarray;
 

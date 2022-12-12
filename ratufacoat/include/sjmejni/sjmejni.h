@@ -146,6 +146,9 @@ typedef struct sjme_jstring* sjme_jstring;
 /** Throwable. */
 typedef struct sjme_jthrowable* sjme_jthrowable;
 
+/** Weak reference. */
+typedef struct sjme_jweak* sjme_jweak;
+
 /** Array type. */
 typedef struct sjme_jarray* sjme_jarray;
 
