@@ -1,0 +1,242 @@
+table,index,function,returnType,arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11,arg12,arg13,arg14,arg15,
+function,0,NULL,void,void
+function,1,NULL,void,void
+function,2,NULL,void,void
+function,3,NULL,void,void
+function,4,GetVersion,jint,JNIEnv *env
+function,5,DefineClass,jclass,JNIEnv *env,const char *name,jobject loader,const jbyte *buf,jsize bufLen
+function,6,FindClass,jclass ,JNIEnv *env, const char *name
+function,7,FromReflectedMethod,jmethodID ,JNIEnv *env, jobject method
+function,8,FromReflectedField,jfieldID ,JNIEnv *env, jobject field
+function,9,ToReflectedMethod,jobject ,JNIEnv *env, jclass cls,jmethodID methodID, jboolean isStatic
+function,10,GetSuperclass,jclass ,JNIEnv *env, jclass clazz
+function,11,IsAssignableFrom,jboolean,JNIEnv *env, jclass clazz1,jclass clazz2
+function,12,ToReflectedField,jobject ,JNIEnv *env, jclass cls,jfieldID fieldID, jboolean isStatic
+function,13,Throw,jint ,(JNIEnv *env, jthrowable obj);
+function,14,ThrowNew,jint (JNIEnv *env, jclass clazz,const char *message);
+function,15,ExceptionOccurred,jthrowable ,(JNIEnv *env);
+function,16,ExceptionDescribe,void ,(JNIEnv *env);
+function,17,ExceptionClear,void ,(JNIEnv *env);
+function,18,FatalError,void ,(JNIEnv *env, const char *msg);
+function,19,PushLocalFrame,jint ,(JNIEnv *env, jint capacity);
+function,20,PopLocalFrame,jobject ,(JNIEnv *env, jobject result);
+function,21,NewGlobalRef,jobject ,(JNIEnv *env, jobject obj);
+function,22,DeleteGlobalRef,void ,(JNIEnv *env, jobject globalRef);
+function,23,DeleteLocalRef,void ,(JNIEnv *env, jobject localRef);
+function,24,IsSameObject,jboolean ,(JNIEnv *env, jobject ref1,jobject ref2);
+function,25,NewLocalRef,jobject ,(JNIEnv *env, jobject ref);
+function,26,EnsureLocalCapacity,jint ,(JNIEnv *env, jint capacity);
+function,27,AllocObject,jobject ,(JNIEnv *env, jclass clazz);
+function,28,NewObject,jobject ,(JNIEnv *env, jclass clazz,jmethodID methodID, ...);
+function,29,NewObjectV,jobject ,(JNIEnv *env, jclass clazz,jmethodID methodID, va_list args);
+function,30,NewObjectA,jobject ,(JNIEnv *env, jclass clazz,jmethodID methodID, const jvalue *args);
+function,31,GetObjectClass,jclass ,(JNIEnv *env, jobject obj);
+function,32,IsInstanceOf,jboolean ,(JNIEnv *env, jobject obj,jclass clazz);
+function,33,GetMethodID,jmethodID ,(JNIEnv *env, jclass clazz,const char *name, const char *sig);
+function,34,CallObjectMethod,jobject ,(JNIEnv *env, jobject obj,jmethodID methodID, ...);
+function,35,CallObjectMethodV,jobject ,(JNIEnv *env, jobject obj,jmethodID methodID, va_list args);
+function,36,CallObjectMethodA,jobject ,(JNIEnv *env, jobject obj,jmethodID methodID, const jvalue *args);
+function,37,CallBooleanMethod,jboolean ,(JNIEnv *env, jobject obj,jmethodID methodID, ...);
+function,38,CallBooleanMethodV,jboolean ,(JNIEnv *env, jobject obj,jmethodID methodID, va_list args);
+function,39,CallBooleanMethodA,jboolean ,(JNIEnv *env, jobject obj,jmethodID methodID, const jvalue *args);
+function,40,CallByteMethod,jbyte ,(JNIEnv *env, jobject obj,jmethodID methodID, ...);
+function,41,CallByteMethodV,jbyte ,(JNIEnv *env, jobject obj,jmethodID methodID, va_list args);
+function,42,CallByteMethodA,jbyte ,(JNIEnv *env, jobject obj,jmethodID methodID, const jvalue *args);
+function,43,CallCharMethod,jchar ,(JNIEnv *env, jobject obj,jmethodID methodID, ...);
+function,44,CallCharMethodV,jchar ,(JNIEnv *env, jobject obj,jmethodID methodID, va_list args);
+function,45,CallCharMethodA,jchar ,(JNIEnv *env, jobject obj,jmethodID methodID, const jvalue *args);
+function,46,CallShortMethod,jshort ,(JNIEnv *env, jobject obj,jmethodID methodID, ...);
+function,47,CallShortMethodV,jshort ,(JNIEnv *env, jobject obj,jmethodID methodID, va_list args);
+function,48,CallShortMethodA,jshort ,(JNIEnv *env, jobject obj,jmethodID methodID, const jvalue *args);
+function,49,CallIntMethod,jint ,(JNIEnv *env, jobject obj,jmethodID methodID, ...);
+function,50,CallIntMethodV,jint ,(JNIEnv *env, jobject obj,jmethodID methodID, va_list args);
+function,51,CallIntMethodA,jint ,(JNIEnv *env, jobject obj,jmethodID methodID, const jvalue *args);
+function,52,CallLongMethod,jlong ,(JNIEnv *env, jobject obj,jmethodID methodID, ...);
+function,53,CallLongMethodV,jlong ,(JNIEnv *env, jobject obj,jmethodID methodID, va_list args);
+function,54,CallLongMethodA,jlong ,(JNIEnv *env, jobject obj,jmethodID methodID, const jvalue *args);
+function,55,CallFloatMethod,jfloat ,(JNIEnv *env, jobject obj,jmethodID methodID, ...);
+function,56,CallFloatMethodV,jfloat ,(JNIEnv *env, jobject obj,jmethodID methodID, va_list args);
+function,57,CallFloatMethodA,jfloat ,(JNIEnv *env, jobject obj,jmethodID methodID, const jvalue *args);
+function,58,CallDoubleMethod,jdouble ,(JNIEnv *env, jobject obj,jmethodID methodID, ...);
+function,59,CallDoubleMethodV,jdouble ,(JNIEnv *env, jobject obj,jmethodID methodID, va_list args);
+function,60,CallDoubleMethodA,jdouble ,(JNIEnv *env, jobject obj,jmethodID methodID, const jvalue *args);
+function,61,CallVoidMethod,void ,(JNIEnv *env, jobject obj,jmethodID methodID, ...);
+function,62,CallVoidMethodV,void ,(JNIEnv *env, jobject obj,jmethodID methodID, va_list args);
+function,63,CallVoidMethodA,void ,(JNIEnv *env, jobject obj,jmethodID methodID, const jvalue *args);
+function,64,CallNonvirtualObjectMethod,jobject ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, ...);
+function,65,CallNonvirtualObjectMethodV,jobject ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, va_list args);
+function,66,CallNonvirtualObjectMethodA,jobject ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, const jvalue *args);
+function,67,CallNonvirtualBooleanMethod,jboolean ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, ...);
+function,68,CallNonvirtualBooleanMethodV,jboolean ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, va_list args);
+function,69,CallNonvirtualBooleanMethodA,jboolean ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, const jvalue *args);
+function,70,CallNonvirtualByteMethod,jbyte ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, ...);
+function,71,CallNonvirtualByteMethodV,jbyte ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, va_list args);
+function,72,CallNonvirtualByteMethodA,jbyte ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, const jvalue *args);
+function,73,CallNonvirtualCharMethod,jchar ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, ...);
+function,74,CallNonvirtualCharMethodV,jchar ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, va_list args);
+function,75,CallNonvirtualCharMethodA,jchar ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, const jvalue *args);
+function,76,CallNonvirtualShortMethod,jshort ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, ...);
+function,77,CallNonvirtualShortMethodV,jshort ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, va_list args);
+function,78,CallNonvirtualShortMethodA,jshort ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, const jvalue *args);
+function,79,CallNonvirtualIntMethod,jint ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, ...);
+function,80,CallNonvirtualIntMethodV,jint ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, va_list args);
+function,81,CallNonvirtualIntMethodA,jint ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, const jvalue *args);
+function,82,CallNonvirtualLongMethod,jlong ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, ...);
+function,83,CallNonvirtualLongMethodV,jlong ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, va_list args);
+function,84,CallNonvirtualLongMethodA,jlong ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, const jvalue *args);
+function,85,CallNonvirtualFloatMethod,jfloat ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, ...);
+function,86,CallNonvirtualFloatMethodV,jfloat ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, va_list args);
+function,87,CallNonvirtualFloatMethodA,jfloat ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, const jvalue *args);
+function,88,CallNonvirtualDoubleMethod,jdouble ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, ...);
+function,89,CallNonvirtualDoubleMethodV,jdouble ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, va_list args);
+function,90,CallNonvirtualDoubleMethodA,jdouble ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, const jvalue *args);
+function,91,CallNonvirtualVoidMethod,void ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, ...);
+function,92,CallNonvirtualVoidMethodV,void ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, va_list args);
+function,93,CallNonvirtualVoidMethodA,void ,(JNIEnv *env, jobject obj,jclass clazz, jmethodID methodID, const jvalue *args);
+function,94,GetFieldID,jfieldID ,(JNIEnv *env, jclass clazz,const char *name, const char *sig);
+function,95,GetObjectField,jobject ,(JNIEnv *env, jobject obj,jfieldID fieldID);
+function,96,GetBooleanField,jboolean ,(JNIEnv *env, jobject obj,jfieldID fieldID);
+function,97,GetByteField,jbyte ,(JNIEnv *env, jobject obj,jfieldID fieldID);
+function,98,GetCharField,jchar ,(JNIEnv *env, jobject obj,jfieldID fieldID);
+function,99,GetShortField,jshort ,(JNIEnv *env, jobject obj,jfieldID fieldID);
+function,100,GetIntField,jint ,(JNIEnv *env, jobject obj,jfieldID fieldID);
+function,101,GetLongField,jlong ,(JNIEnv *env, jobject obj,jfieldID fieldID);
+function,102,GetFloatField,jfloat ,(JNIEnv *env, jobject obj,jfieldID fieldID);
+function,103,GetDoubleField,jdouble ,(JNIEnv *env, jobject obj,jfieldID fieldID);
+function,104,SetObjectField,
+function,105,SetBooleanField,
+function,106,SetByteField,
+function,107,SetCharField,
+function,108,SetShortField,
+function,109,SetIntField,
+function,110,SetLongField,
+function,111,SetFloatField,
+function,112,SetDoubleField,
+function,113,GetStaticMethodID,
+function,114,CallStaticObjectMethod,
+function,115,CallStaticObjectMethodV,
+function,116,CallStaticObjectMethodA,
+function,117,CallStaticBooleanMethod,
+function,118,CallStaticBooleanMethodV,
+function,119,CallStaticBooleanMethodA,
+function,120,CallStaticByteMethod,
+function,121,CallStaticByteMethodV,
+function,122,CallStaticByteMethodA,
+function,123,CallStaticCharMethod,
+function,124,CallStaticCharMethodV,
+function,125,CallStaticCharMethodA,
+function,126,CallStaticShortMethod,
+function,127,CallStaticShortMethodV,
+function,128,CallStaticShortMethodA,
+function,129,CallStaticIntMethod,
+function,130,CallStaticIntMethodV,
+function,131,CallStaticIntMethodA,
+function,132,CallStaticLongMethod,
+function,133,CallStaticLongMethodV,
+function,134,CallStaticLongMethodA,
+function,135,CallStaticFloatMethod,
+function,136,CallStaticFloatMethodV,
+function,137,CallStaticFloatMethodA,
+function,138,CallStaticDoubleMethod,
+function,139,CallStaticDoubleMethodV,
+function,140,CallStaticDoubleMethodA,
+function,141,CallStaticVoidMethod,
+function,142,CallStaticVoidMethodV,
+function,143,CallStaticVoidMethodA,
+function,144,GetStaticFieldID,
+function,145,GetStaticObjectField,
+function,146,GetStaticBooleanField,
+function,147,GetStaticByteField,
+function,148,GetStaticCharField,
+function,149,GetStaticShortField,
+function,150,GetStaticIntField,
+function,151,GetStaticLongField,
+function,152,GetStaticFloatField,
+function,153,GetStaticDoubleField,
+function,154,SetStaticObjectField,
+function,155,SetStaticBooleanField,
+function,156,SetStaticByteField,
+function,157,SetStaticCharField,
+function,158,SetStaticShortField,
+function,159,SetStaticIntField,
+function,160,SetStaticLongField,
+function,161,SetStaticFloatField,
+function,162,SetStaticDoubleField,
+function,163,NewString,
+function,164,GetStringLength,
+function,165,GetStringChars,
+function,166,ReleaseStringChars,
+function,167,NewStringUTF,
+function,168,GetStringUTFLength,
+function,169,GetStringUTFChars,
+function,170,ReleaseStringUTFChars,
+function,171,GetArrayLength,
+function,172,NewObjectArray,
+function,173,GetObjectArrayElement,
+function,174,SetObjectArrayElement,
+function,175,NewBooleanArray,
+function,176,NewByteArray,
+function,177,NewCharArray,
+function,178,NewShortArray,
+function,179,NewIntArray,
+function,180,NewLongArray,
+function,181,NewFloatArray,
+function,182,NewDoubleArray,
+function,183,GetBooleanArrayElements,
+function,184,GetByteArrayElements,
+function,185,GetCharArrayElements,
+function,186,GetShortArrayElements,
+function,187,GetIntArrayElements,
+function,188,GetLongArrayElements,
+function,189,GetFloatArrayElements,
+function,190,GetDoubleArrayElements,
+function,191,ReleaseBooleanArrayElements,
+function,192,ReleaseByteArrayElements,
+function,193,ReleaseCharArrayElements,
+function,194,ReleaseShortArrayElements,
+function,195,ReleaseIntArrayElements,
+function,196,ReleaseLongArrayElements,
+function,197,ReleaseFloatArrayElements,
+function,198,ReleaseDoubleArrayElements,
+function,199,GetBooleanArrayRegion,
+function,200,GetByteArrayRegion,
+function,201,GetCharArrayRegion,
+function,202,GetShortArrayRegion,
+function,203,GetIntArrayRegion,
+function,204,GetLongArrayRegion,
+function,205,GetFloatArrayRegion,
+function,206,GetDoubleArrayRegion,
+function,207,SetBooleanArrayRegion,
+function,208,SetByteArrayRegion,
+function,209,SetCharArrayRegion,
+function,210,SetShortArrayRegion,
+function,211,SetIntArrayRegion,
+function,212,SetLongArrayRegion,
+function,213,SetFloatArrayRegion,
+function,214,SetDoubleArrayRegion,
+function,215,RegisterNatives,
+function,216,UnregisterNatives,
+function,217,MonitorEnter,
+function,218,MonitorExit,
+function,219,GetJavaVM,
+function,220,GetStringRegion,
+function,221,GetStringUTFRegion,
+function,222,GetPrimitiveArrayCritical,
+function,223,ReleasePrimitiveArrayCritical,
+function,224,GetStringCritical,
+function,225,ReleaseStringCritical,
+function,226,NewWeakGlobalRef,
+function,227,DeleteWeakGlobalRef,
+function,228,ExceptionCheck,
+function,229,NewDirectByteBuffer,
+function,230,GetDirectBufferAddress,
+function,231,GetDirectBufferCapacity,
+function,232,GetObjectRefType,
+interface,0,NULL,void,void
+interface,1,NULL,void,void
+interface,2,NULL,void,void
+interface,3,DestroyJavaVM,
+interface,4,AttachCurrentThread,
+interface,5,DetachCurrentThread,
+interface,6,GetEnv,
+interface,7,AttachCurrentThreadAsDaemon,
