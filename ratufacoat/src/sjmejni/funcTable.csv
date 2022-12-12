@@ -103,93 +103,93 @@ function,100,GetIntField,jint ,(JNIEnv *env, jobject obj,jfieldID fieldID);
 function,101,GetLongField,jlong ,(JNIEnv *env, jobject obj,jfieldID fieldID);
 function,102,GetFloatField,jfloat ,(JNIEnv *env, jobject obj,jfieldID fieldID);
 function,103,GetDoubleField,jdouble ,(JNIEnv *env, jobject obj,jfieldID fieldID);
-function,104,SetObjectField,
-function,105,SetBooleanField,
-function,106,SetByteField,
-function,107,SetCharField,
-function,108,SetShortField,
-function,109,SetIntField,
-function,110,SetLongField,
-function,111,SetFloatField,
-function,112,SetDoubleField,
-function,113,GetStaticMethodID,
-function,114,CallStaticObjectMethod,
-function,115,CallStaticObjectMethodV,
-function,116,CallStaticObjectMethodA,
-function,117,CallStaticBooleanMethod,
-function,118,CallStaticBooleanMethodV,
-function,119,CallStaticBooleanMethodA,
-function,120,CallStaticByteMethod,
-function,121,CallStaticByteMethodV,
-function,122,CallStaticByteMethodA,
-function,123,CallStaticCharMethod,
-function,124,CallStaticCharMethodV,
-function,125,CallStaticCharMethodA,
-function,126,CallStaticShortMethod,
-function,127,CallStaticShortMethodV,
-function,128,CallStaticShortMethodA,
-function,129,CallStaticIntMethod,
-function,130,CallStaticIntMethodV,
-function,131,CallStaticIntMethodA,
-function,132,CallStaticLongMethod,
-function,133,CallStaticLongMethodV,
-function,134,CallStaticLongMethodA,
-function,135,CallStaticFloatMethod,
-function,136,CallStaticFloatMethodV,
-function,137,CallStaticFloatMethodA,
-function,138,CallStaticDoubleMethod,
-function,139,CallStaticDoubleMethodV,
-function,140,CallStaticDoubleMethodA,
-function,141,CallStaticVoidMethod,
-function,142,CallStaticVoidMethodV,
-function,143,CallStaticVoidMethodA,
-function,144,GetStaticFieldID,
-function,145,GetStaticObjectField,
-function,146,GetStaticBooleanField,
-function,147,GetStaticByteField,
-function,148,GetStaticCharField,
-function,149,GetStaticShortField,
-function,150,GetStaticIntField,
-function,151,GetStaticLongField,
-function,152,GetStaticFloatField,
-function,153,GetStaticDoubleField,
-function,154,SetStaticObjectField,
-function,155,SetStaticBooleanField,
-function,156,SetStaticByteField,
-function,157,SetStaticCharField,
-function,158,SetStaticShortField,
-function,159,SetStaticIntField,
-function,160,SetStaticLongField,
-function,161,SetStaticFloatField,
-function,162,SetStaticDoubleField,
-function,163,NewString,
-function,164,GetStringLength,
-function,165,GetStringChars,
-function,166,ReleaseStringChars,
-function,167,NewStringUTF,
-function,168,GetStringUTFLength,
-function,169,GetStringUTFChars,
-function,170,ReleaseStringUTFChars,
-function,171,GetArrayLength,
-function,172,NewObjectArray,
-function,173,GetObjectArrayElement,
-function,174,SetObjectArrayElement,
-function,175,NewBooleanArray,
-function,176,NewByteArray,
-function,177,NewCharArray,
-function,178,NewShortArray,
-function,179,NewIntArray,
-function,180,NewLongArray,
-function,181,NewFloatArray,
-function,182,NewDoubleArray,
-function,183,GetBooleanArrayElements,
-function,184,GetByteArrayElements,
-function,185,GetCharArrayElements,
-function,186,GetShortArrayElements,
-function,187,GetIntArrayElements,
-function,188,GetLongArrayElements,
-function,189,GetFloatArrayElements,
-function,190,GetDoubleArrayElements,
+function,104,SetObjectField,void ,(JNIEnv *env, jobject obj, jfieldID fieldID,jobject value);
+function,105,SetBooleanField,void ,(JNIEnv *env, jobject obj, jfieldID fieldID,jboolean value);
+function,106,SetByteField,void ,(JNIEnv *env, jobject obj, jfieldID fieldID,jbyte value);
+function,107,SetCharField,void ,(JNIEnv *env, jobject obj, jfieldID fieldID,jchar value);
+function,108,SetShortField,void ,(JNIEnv *env, jobject obj, jfieldID fieldID,jshort value);
+function,109,SetIntField,void ,(JNIEnv *env, jobject obj, jfieldID fieldID,jint value);
+function,110,SetLongField,void ,(JNIEnv *env, jobject obj, jfieldID fieldID,jlong value);
+function,111,SetFloatField,void ,(JNIEnv *env, jobject obj, jfieldID fieldID,jfloat value);
+function,112,SetDoubleField,void ,(JNIEnv *env, jobject obj, jfieldID fieldID,jdouble value);
+function,113,GetStaticMethodID,jmethodID ,(JNIEnv *env, jclass clazz,const char *name, const char *sig);
+function,114,CallStaticObjectMethod,jobject ,(JNIEnv *env, jclass clazz,jmethodID methodID, ...);
+function,115,CallStaticObjectMethodV,jobject ,(JNIEnv *env, jclass clazz,jmethodID methodID, va_list args);
+function,116,CallStaticObjectMethodA,jobject ,(JNIEnv *env, jclass clazz,jmethodID methodID, jvalue *args);
+function,117,CallStaticBooleanMethod,jboolean ,(JNIEnv *env, jclass clazz,jmethodID methodID, ...);
+function,118,CallStaticBooleanMethodV,jboolean ,(JNIEnv *env, jclass clazz,jmethodID methodID, va_list args);
+function,119,CallStaticBooleanMethodA,jboolean ,(JNIEnv *env, jclass clazz,jmethodID methodID, jvalue *args);
+function,120,CallStaticByteMethod,jbyte ,(JNIEnv *env, jclass clazz,jmethodID methodID, ...);
+function,121,CallStaticByteMethodV,jbyte ,(JNIEnv *env, jclass clazz,jmethodID methodID, va_list args);
+function,122,CallStaticByteMethodA,jbyte ,(JNIEnv *env, jclass clazz,jmethodID methodID, jvalue *args);
+function,123,CallStaticCharMethod,jchar ,(JNIEnv *env, jclass clazz,jmethodID methodID, ...);
+function,124,CallStaticCharMethodV,jchar ,(JNIEnv *env, jclass clazz,jmethodID methodID, va_list args);
+function,125,CallStaticCharMethodA,jchar ,(JNIEnv *env, jclass clazz,jmethodID methodID, jvalue *args);
+function,126,CallStaticShortMethod,jshort ,(JNIEnv *env, jclass clazz,jmethodID methodID, ...);
+function,127,CallStaticShortMethodV,jshort ,(JNIEnv *env, jclass clazz,jmethodID methodID, va_list args);
+function,128,CallStaticShortMethodA,jshort ,(JNIEnv *env, jclass clazz,jmethodID methodID, jvalue *args);
+function,129,CallStaticIntMethod,jint ,(JNIEnv *env, jclass clazz,jmethodID methodID, ...);
+function,130,CallStaticIntMethodV,jint ,(JNIEnv *env, jclass clazz,jmethodID methodID, va_list args);
+function,131,CallStaticIntMethodA,jint ,(JNIEnv *env, jclass clazz,jmethodID methodID, jvalue *args);
+function,132,CallStaticLongMethod,jlong ,(JNIEnv *env, jclass clazz,jmethodID methodID, ...);
+function,133,CallStaticLongMethodV,jlong ,(JNIEnv *env, jclass clazz,jmethodID methodID, va_list args);
+function,134,CallStaticLongMethodA,jlong ,(JNIEnv *env, jclass clazz,jmethodID methodID, jvalue *args);
+function,135,CallStaticFloatMethod,jfloat ,(JNIEnv *env, jclass clazz,jmethodID methodID, ...);
+function,136,CallStaticFloatMethodV,jfloat ,(JNIEnv *env, jclass clazz,jmethodID methodID, va_list args);
+function,137,CallStaticFloatMethodA,jfloat ,(JNIEnv *env, jclass clazz,jmethodID methodID, jvalue *args);
+function,138,CallStaticDoubleMethod,jdouble ,(JNIEnv *env, jclass clazz,jmethodID methodID, ...);
+function,139,CallStaticDoubleMethodV,jdouble ,(JNIEnv *env, jclass clazz,jmethodID methodID, va_list args);
+function,140,CallStaticDoubleMethodA,jdouble ,(JNIEnv *env, jclass clazz,jmethodID methodID, jvalue *args);
+function,141,CallStaticVoidMethod,void ,(JNIEnv *env, jclass clazz,jmethodID methodID, ...);
+function,142,CallStaticVoidMethodV,void ,(JNIEnv *env, jclass clazz,jmethodID methodID, va_list args);
+function,143,CallStaticVoidMethodA,void ,(JNIEnv *env, jclass clazz,jmethodID methodID, jvalue *args);
+function,144,GetStaticFieldID,jfieldID ,(JNIEnv *env, jclass clazz,const char *name, const char *sig);
+function,145,GetStaticObjectField,jobject ,(JNIEnv *env, jclass clazz,jfieldID fieldID);
+function,146,GetStaticBooleanField,jboolean ,(JNIEnv *env, jclass clazz,jfieldID fieldID);
+function,147,GetStaticByteField,jbyte ,(JNIEnv *env, jclass clazz,jfieldID fieldID);
+function,148,GetStaticCharField,jchar ,(JNIEnv *env, jclass clazz,jfieldID fieldID);
+function,149,GetStaticShortField,jshort ,(JNIEnv *env, jclass clazz,jfieldID fieldID);
+function,150,GetStaticIntField,jint ,(JNIEnv *env, jclass clazz,jfieldID fieldID);
+function,151,GetStaticLongField,jlong ,(JNIEnv *env, jclass clazz,jfieldID fieldID);
+function,152,GetStaticFloatField,jfloat ,(JNIEnv *env, jclass clazz,jfieldID fieldID);
+function,153,GetStaticDoubleField,jfloat ,(JNIEnv *env, jclass clazz,jfieldID fieldID);
+function,154,SetStaticObjectField,void ,(JNIEnv *env, jclass clazz,jfieldID fieldID, jobject value);
+function,155,SetStaticBooleanField,void ,(JNIEnv *env, jclass clazz,jfieldID fieldID, jboolean value);
+function,156,SetStaticByteField,void ,(JNIEnv *env, jclass clazz,jfieldID fieldID, jbyte value);
+function,157,SetStaticCharField,void ,(JNIEnv *env, jclass clazz,jfieldID fieldID, jchar value);
+function,158,SetStaticShortField,void ,(JNIEnv *env, jclass clazz,jfieldID fieldID, jshort value);
+function,159,SetStaticIntField,void ,(JNIEnv *env, jclass clazz,jfieldID fieldID, jint value);
+function,160,SetStaticLongField,void ,(JNIEnv *env, jclass clazz,jfieldID fieldID, jlong value);
+function,161,SetStaticFloatField,void ,(JNIEnv *env, jclass clazz,jfieldID fieldID, jfloat value);
+function,162,SetStaticDoubleField,void ,(JNIEnv *env, jclass clazz,jfieldID fieldID, jdouble value);
+function,163,NewString,jstring ,(JNIEnv *env, const jchar *unicodeChars,jsize len);
+function,164,GetStringLength,jsize ,(JNIEnv *env, jstring string);
+function,165,GetStringChars,const jchar * ,(JNIEnv *env, jstring string,jboolean *isCopy);
+function,166,ReleaseStringChars,void ,(JNIEnv *env, jstring string,const jchar *chars);
+function,167,NewStringUTF,jstring ,(JNIEnv *env, const char *bytes);
+function,168,GetStringUTFLength,jsize ,(JNIEnv *env, jstring string);
+function,169,GetStringUTFChars,const char * ,(JNIEnv *env, jstring string,jboolean *isCopy);
+function,170,ReleaseStringUTFChars,void ,(JNIEnv *env, jstring string,const char *utf);
+function,171,GetArrayLength,jsize ,(JNIEnv *env, jarray array);
+function,172,NewObjectArray,jobjectArray ,(JNIEnv *env, jsize length,jclass elementClass, jobject initialElement);
+function,173,GetObjectArrayElement,jobject ,(JNIEnv *env,jobjectArray array, jsize index);
+function,174,SetObjectArrayElement,void ,(JNIEnv *env, jobjectArray array,jsize index, jobject value);
+function,175,NewBooleanArray,jbooleanArray,(JNIEnv *env, jsize length);
+function,176,NewByteArray,jbyteArray,(JNIEnv *env, jsize length);
+function,177,NewCharArray,jcharArray,(JNIEnv *env, jsize length);
+function,178,NewShortArray,jshortArray,(JNIEnv *env, jsize length);
+function,179,NewIntArray,jintArray,(JNIEnv *env, jsize length);
+function,180,NewLongArray,jlongArray,(JNIEnv *env, jsize length);
+function,181,NewFloatArray,jfloatArray,(JNIEnv *env, jsize length);
+function,182,NewDoubleArray,jdoubleArray,(JNIEnv *env, jsize length);
+function,183,GetBooleanArrayElements,jboolean *,(JNIEnv *env,jbooleanArray array, jboolean *isCopy);
+function,184,GetByteArrayElements,jbyte *,(JNIEnv *env,jbyteArray array, jboolean *isCopy);
+function,185,GetCharArrayElements,jchar *,(JNIEnv *env,jcharArray array, jboolean *isCopy);
+function,186,GetShortArrayElements,jshort *,(JNIEnv *env,jshortArray array, jboolean *isCopy);
+function,187,GetIntArrayElements,jint *,(JNIEnv *env,jintArray array, jboolean *isCopy);
+function,188,GetLongArrayElements,jlong *,(JNIEnv *env,jlongArray array, jboolean *isCopy);
+function,189,GetFloatArrayElements,jfloat *,(JNIEnv *env,jfloatArray array, jboolean *isCopy);
+function,190,GetDoubleArrayElements,jdouble *,(JNIEnv *env,jdoubleArray array, jboolean *isCopy);
 function,191,ReleaseBooleanArrayElements,
 function,192,ReleaseByteArrayElements,
 function,193,ReleaseCharArrayElements,
