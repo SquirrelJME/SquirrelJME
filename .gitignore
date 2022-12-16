@@ -150,3 +150,7 @@ out-*C
 out-*D
 out-*E
 out-*F
+
+# Python
+ratufacoat/venv
+venv
