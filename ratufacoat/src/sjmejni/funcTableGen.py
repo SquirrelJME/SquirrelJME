@@ -14,46 +14,64 @@ class FuncArg:
 	"""
 	Represents a function argument or return type.
 	"""
-	def __init__(self, in_str: str):
-		self.in_str = in_str.strip()
+	def __init__(self, in_str: str, in_mods: str = None, in_type: str = None, in_name: str = None, in_star: str = None):
+		if in_str is None or in_str == '':
+			self.mods = in_mods
+			self.type = in_type
+			self.name = in_name
+			self.star = in_star
 
-		if in_str.strip() == '...':
-			self.mods = ''
-			self.type = '...'
-			self.name = '...'
-			self.star = ''
 		else:
-			# Extract name first, if any
-			last_space = in_str.strip().rfind(" ")
-			if last_space >= 0:
-				self.name = in_str[last_space + 1:].strip()
-			else:
-				self.name = ''
-				last_space = len(in_str)
+			self.in_str = in_str.strip()
 
-			# Determine if there are pointer stars
-			type_side = in_str[0:last_space].strip()
-			first_pointer_star = type_side.find("*")
-
-			# Found pointer stars
-			if first_pointer_star >= 0:
-				self.type = type_side[0:first_pointer_star].strip()
-				self.star = type_side[first_pointer_star:].strip()
-
-			# There are none
-			else:
-				self.type = type_side
-				self.star = ''
-
-			# Remove const modifier
-			if self.type.startswith('const '):
-				self.type = self.type[6:].strip()
-				self.mods = 'const'
-			else:
+			if in_str.strip() == '...':
 				self.mods = ''
+				self.type = '...'
+				self.name = '...'
+				self.star = ''
+			else:
+				# Extract name first, if any
+				last_space = in_str.strip().rfind(" ")
+				if last_space >= 0:
+					self.name = in_str[last_space + 1:].strip()
+				else:
+					self.name = ''
+					last_space = len(in_str)
+
+				# Determine if there are pointer stars
+				type_side = in_str[0:last_space].strip()
+				first_pointer_star = type_side.find("*")
+
+				# Found pointer stars
+				if first_pointer_star >= 0:
+					self.type = type_side[0:first_pointer_star].strip()
+					self.star = type_side[first_pointer_star:].strip()
+
+				# There are none
+				else:
+					self.type = type_side
+					self.star = ''
+
+				# Remove const modifier
+				if self.type.startswith('const '):
+					self.type = self.type[6:].strip()
+					self.mods = 'const'
+				else:
+					self.mods = ''
 
 	def __repr__(self):
-		return str('%s|%s|%s|%s' % (self.mods, self.type, self.star, self.name))
+		typeish = self.type
+		nameish = self.name
+		starish = self.star
+
+		if self.mods is not None and self.mods != '':
+			modsish = '%s ' % self.mods
+		else:
+			modsish = ''
+
+		if nameish is not None and nameish != '':
+			return '%s%s%s %s' % (modsish, typeish, starish, nameish)
+		return '%s%s%s' % (modsish, typeish, starish)
 
 
 class FuncTableEntry:
@@ -85,7 +103,7 @@ class FuncTableEntry:
 					self.args])
 
 
-def convert_type(func_type: FuncArg) -> str:
+def convert_type(func_type: FuncArg) -> FuncArg:
 	"""
 	Converts the function argument and represents it with a SquirrelJME type
 	along with how it would be represented otherwise.
@@ -211,9 +229,7 @@ def convert_type(func_type: FuncArg) -> str:
 		case 'carray':
 			nameish = 'charArray'
 
-	if nameish is not None and nameish != '':
-		return '%s%s%s %s' % (modsish, typeish, starish, nameish)
-	return '%s%s%s' % (modsish, typeish, starish)
+	return FuncArg(None, modsish, typeish, nameish, starish)
 
 
 # Header start
@@ -298,7 +314,7 @@ for table_name in entries_by_tab_dex:
 
 					# Otherwise add argument
 					else:
-						built_args += convert_type(func_arg)
+						built_args += str(convert_type(func_arg))
 
 				# if empty, make it void since it accepts no arguments
 				if len(built_args) == 0:
@@ -306,9 +322,25 @@ for table_name in entries_by_tab_dex:
 
 				# Build prototype file
 				prototype_file = '' + header_intro
+
+				# Doxygen comment description
+				prototype_file += '/**\n'
+				prototype_file += ' * NOT DESCRIBED.\n'
+				prototype_file += ' * \n'
+
+				for func_arg in entry.args:
+					prototype_file += ' * @param %s NOT DESCRIBED\n' % convert_type(func_arg).name
+
+				if entry.returnType is not None and entry.returnType.type != 'void':
+					prototype_file += ' * @return NOT DESCRIBED\n'
+
+				prototype_file += ' * @since \n'
+				prototype_file += ' */\n'
+
+				# Function type
 				prototype_file += '%s SJME_FUNC_SURROUND(%s)(%s) ' \
 					'SJME_FUNC_SURROUND_SUFFIX\n\n' % \
-					(convert_type(entry.returnType),
+					(str(convert_type(entry.returnType)),
 					entry.function, built_args)
 
 				print(prototype_file)
