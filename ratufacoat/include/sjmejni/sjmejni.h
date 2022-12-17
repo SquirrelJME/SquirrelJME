@@ -222,7 +222,7 @@ typedef struct sjme_vmInitOption
  *
  * @since 2022/12/11
  */
-typedef struct sjme_vmInitArgs
+typedef struct sjme_vmCmdLine
 {
 	/** The requesting virtual machine version. */
 	sjme_jint version;
@@ -235,7 +235,7 @@ typedef struct sjme_vmInitArgs
 
 	/** Ignore unrecognized options? */
 	sjme_jboolean ignoreUnrecognized;
-} sjme_vmInitArgs;
+} sjme_vmCmdLine;
 
 /** Virtual machine functions. */
 typedef struct sjme_vmFunctions* sjme_vmFunctions;
@@ -538,13 +538,30 @@ struct sjme_vmFunctions
 #undef SJME_FUNC_PTR__
 
 /**
+ * Contains the functions which are used to interact with the system to
+ * implement the core virtual machine and all of the various shelf interfaces.
+ *
+ * @since 2022/12/16
+ */
+typedef struct sjme_vmSysApi
+{
+	/**
+	 * Returns the line ending type of the system.
+	 *
+	 * @return One of @c cc.squirreljme.jvm.mle.constants.LineEndingType .
+	 * @since 2022/12/16
+	 */
+	sjme_jint (*runtimeLineEnding)(void);
+} sjme_vmSysApi;
+
+/**
  * Initializes the arguments with the defaults.
  *
  * @param vmArgs The arguments to fill.
  * @return One of the interface error codes.
  * @since 2022/12/11
  */
-sjme_jint sjme_vmDefaultInitArgs(sjme_vmInitArgs* vmArgs);
+sjme_jint sjme_vmDefaultInitArgs(sjme_vmCmdLine* vmArgs);
 
 /**
  * Returns all of the VMs which are active.
@@ -564,11 +581,13 @@ sjme_jint sjme_vmGetAllVms(sjme_vmState** vmBuf, sjme_jsize bufLen,
  * @param outVm The virtual machine output.
  * @param outEnv The output function setup and environment.
  * @param vmArgs The arguments to the virtual machine.
+ * @param sysApi System API handles, interacts with the system for operations
+ * such as file access and the other shelves.
  * @return One of the interface error codes.
  * @since 2022/12/11
  */
 sjme_jint sjme_vmNew(sjme_vmState** outVm, sjme_vmFunctions** outEnv,
-	sjme_vmInitArgs* vmArgs);
+	sjme_vmCmdLine* vmArgs, sjme_vmSysApi* sysApi);
 
 /*--------------------------------------------------------------------------*/
 
