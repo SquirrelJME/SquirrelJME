@@ -84,6 +84,10 @@
     <Objective-C-extensions>
       <option name="TAG_PREFIX_OF_LINE_COMMENT" value="AT" />
     </Objective-C-extensions>
+    <Python>
+      <option name="ALIGN_COLLECTIONS_AND_COMPREHENSIONS" value="false" />
+      <option name="ALIGN_MULTILINE_IMPORTS" value="false" />
+    </Python>
     <clangFormatSettings>
       <option name="ENABLED" value="true" />
     </clangFormatSettings>
@@ -502,6 +506,8 @@
       </indentOptions>
     </codeStyleSettings>
     <codeStyleSettings language="Python">
+      <option name="ALIGN_MULTILINE_PARAMETERS" value="false" />
+      <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="false" />
       <indentOptions>
         <option name="USE_TAB_CHARACTER" value="true" />
       </indentOptions>

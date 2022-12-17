@@ -99,7 +99,7 @@ typedef sjme_jstring jstring;
 typedef sjme_jthrowable jthrowable;
 
 /** Weak reference. */
-typedef sjme_jweak jweak;
+typedef sjme_jweakReference jweak;
 
 /** Array type. */
 typedef sjme_jarray jarray;
@@ -132,10 +132,10 @@ typedef sjme_jdoubleArray jdoubleArray;
 typedef sjme_jobjectArray jobjectArray;
 
 /** Field Identifier. */
-typedef sjme_fieldId fieldID;
+typedef sjme_vmField fieldID;
 
 /** Method Identifier. */
-typedef sjme_methodId methodID;
+typedef sjme_vmMethod methodID;
 
 /** Virtual machine initialization arguments. */
 #define JavaVMInitArgs sjme_vmInitArgs
@@ -144,7 +144,7 @@ typedef sjme_methodId methodID;
 #define JavaVMOption sjme_vmInitOption
 
 /** Interface functions for the virtual machine. */
-#define JNINativeInterface sjme_vmFunctions
+#define JNINativeInterface sjme_vmThread
 
 /** Virtual machine interface. */
 typedef struct JNINativeInterface* JNIEnv;
@@ -154,6 +154,24 @@ typedef struct JNINativeInterface* JNIEnv;
 
 /** Virtual machine state. */
 typedef struct JNIInvokeInterface* JavaVM;
+
+/** Object reference types. */
+#define jobjectRefType sjme_jobjectReferenceType
+
+/** Invalid reference type. */
+#define JNIInvalidRefType SJME_JOBJECT_REF_TYPE_INVALID
+
+/** Local reference type. */
+#define JNILocalRefType SJME_JOBJECT_REF_TYPE_LOCAL
+
+/** Global reference type. */
+#define JNIGlobalRefType SJME_JOBJECT_REF_TYPE_GLOBAL
+
+/** Weak global reference type. */
+#define JNIWeakGlobalRefType SJME_JOBJECT_REF_TYPE_WEAK_GLOBAL
+
+/** Native registration. */
+#define JNINativeMethod sjme_vmRegisterNative
 
 jint JNI_GetDefaultJavaVMInitArgs(void* vmArgs);
 

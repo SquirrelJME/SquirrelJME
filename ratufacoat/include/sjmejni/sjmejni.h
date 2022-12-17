@@ -134,6 +134,26 @@ typedef sjme_jint sjme_jsize;
 /** True. */
 #define SJME_TRUE INT8_C(1)
 
+/**
+ * The reference type of an object.
+ *
+ * @since 2022/12/17
+ */
+typedef enum sjme_jobjectReferenceType
+{
+	/** Invalid reference type. */
+	SJME_JOBJECT_REF_TYPE_INVALID = 0,
+
+	/** Local reference type. */
+	SJME_JOBJECT_REF_TYPE_LOCAL = 1,
+
+	/** Global reference type. */
+	SJME_JOBJECT_REF_TYPE_GLOBAL = 2,
+
+	/** Weak global reference type. */
+	SJME_JOBJECT_REF_TYPE_WEAK_GLOBAL = 3
+} sjme_jobjectReferenceType;
+
 /** Object type. */
 typedef struct sjme_jobject* sjme_jobject;
 
@@ -147,7 +167,7 @@ typedef struct sjme_jstring* sjme_jstring;
 typedef struct sjme_jthrowable* sjme_jthrowable;
 
 /** Weak reference. */
-typedef struct sjme_jweak* sjme_jweak;
+typedef struct sjme_jweakReference* sjme_jweakReference;
 
 /** Array type. */
 typedef struct sjme_jarray* sjme_jarray;
@@ -197,11 +217,11 @@ typedef union sjme_jvalue
 	sjme_jobject l;
 } sjme_jvalue;
 
-/** Field identifier. */
-typedef struct sjme_fieldId* sjme_fieldId;
+/** Field within the VM. */
+typedef struct sjme_vmField* sjme_vmField;
 
-/** Method identifier. */
-typedef struct sjme_methodId* sjme_methodId;
+/** Method within the VM. */
+typedef struct sjme_vmMethod* sjme_vmMethod;
 
 /**
  * Virtual machine initialization options.
@@ -238,10 +258,27 @@ typedef struct sjme_vmCmdLine
 } sjme_vmCmdLine;
 
 /** Virtual machine functions. */
-typedef struct sjme_vmFunctions* sjme_vmFunctions;
+typedef struct sjme_vmThread* sjme_vmThread;
 
 /** Virtual machine state. */
 typedef struct sjme_vmState* sjme_vmState;
+
+/**
+ * Native method registration interface.
+ *
+ * @since 2022/12/17
+ */
+typedef struct sjme_vmRegisterNative
+{
+	/** The name of the method. */
+	char* name;
+
+	/** The type signature of the method. */
+	char* signature;
+
+	/** The function pointer of the method. */
+	void* fnPtr;
+} sjme_vmRegisterNative;
 
 /** Declare function pointer. */
 #define SJME_FUNC_PTR__(x) (*x)
@@ -287,7 +324,7 @@ struct sjme_vmState
  *
  * @since 2022/12/11
  */
-struct sjme_vmFunctions
+struct sjme_vmThread
 {
 	/** Reserved, do not use. */
 	void* reserved0;
@@ -579,14 +616,14 @@ sjme_jint sjme_vmGetAllVms(sjme_vmState** vmBuf, sjme_jsize bufLen,
  * Creates a virtual machine along with the functions and state for it.
  *
  * @param outVm The virtual machine output.
- * @param outEnv The output function setup and environment.
+ * @param outThread The output thread environment.
  * @param vmArgs The arguments to the virtual machine.
  * @param sysApi System API handles, interacts with the system for operations
  * such as file access and the other shelves.
  * @return One of the interface error codes.
  * @since 2022/12/11
  */
-sjme_jint sjme_vmNew(sjme_vmState** outVm, sjme_vmFunctions** outEnv,
+sjme_jint sjme_vmNew(sjme_vmState** outVm, sjme_vmThread** outThread,
 	sjme_vmCmdLine* vmArgs, sjme_vmSysApi* sysApi);
 
 /*--------------------------------------------------------------------------*/

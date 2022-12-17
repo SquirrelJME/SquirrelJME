@@ -12,9 +12,13 @@ if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
 	set(CMAKE_VERBOSE_MAKEFILE $ENV{CMAKE_VERBOSE_MAKEFILE})
 endif()
 
+# Globs for table functions
+file(GLOB SQUIRRELJME_TABLE_SOURCES "tables/*/def*.c")
+
 # Declare base library
 add_library(SquirrelJMEJNI OBJECT
-	init.c)
+	init.c
+	${SQUIRRELJME_TABLE_SOURCES})
 
 # This is written only in C!
 set_target_properties(SquirrelJMEJNI PROPERTIES LINKER_LANGUAGE C)
