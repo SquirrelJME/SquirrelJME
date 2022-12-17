@@ -164,7 +164,7 @@ function,161,SetStaticFloatField,void,JNIEnv* env,jclass clazz,jfieldID fieldID,
 function,162,SetStaticDoubleField,void,JNIEnv* env,jclass clazz,jfieldID fieldID,jdouble value
 function,163,NewString,jstring,JNIEnv* env,const jchar* unicodeChars,jsize len
 function,164,GetStringLength,jsize,JNIEnv* env,jstring string
-function,165,GetStringChars,const jchar*,JNIEnv* env,jstring string,jboolean* isCopy
+function,165,GetStringChars,const sjme_jchar*,JNIEnv* env,jstring string,jboolean* isCopy
 function,166,ReleaseStringChars,void,JNIEnv* env,jstring string,const jchar* chars
 function,167,NewStringUTF,jstring,JNIEnv* env,const char* bytes
 function,168,GetStringUTFLength,jsize,JNIEnv* env,jstring string
@@ -223,7 +223,7 @@ function,220,GetStringRegion,void,JNIEnv* env,jstring str,jsize start,jsize len,
 function,221,GetStringUTFRegion,void,JNIEnv* env,jstring str,jsize start,jsize len,char* buf
 function,222,GetPrimitiveArrayCritical,void*,JNIEnv* env,jarray array,jboolean* isCopy
 function,223,ReleasePrimitiveArrayCritical,void,JNIEnv* env,jarray array,void* carray,jint mode
-function,224,GetStringCritical,const jchar*,JNIEnv* env,jstring string,jboolean* isCopy
+function,224,GetStringCritical,const sjme_jchar*,JNIEnv* env,jstring string,jboolean* isCopy
 function,225,ReleaseStringCritical,void,JNIEnv* env,jstring string,const jchar* carray
 function,226,NewWeakGlobalRef,jweak,JNIEnv* env,jobject obj
 function,227,DeleteWeakGlobalRef,void,JNIEnv* env,jweak obj

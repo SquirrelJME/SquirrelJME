@@ -24,7 +24,10 @@
 #include <string.h>
 #include <stdio.h>
 
-/** Variable counting. */
+/* Java header */
+#include "sjmejni/sjmejni.h"
+
+/* Variable counting. */
 #include "varcount.h"
 
 /** Stringify. */
@@ -218,36 +221,40 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+#if 0
 /** @c byte type. */
 typedef int8_t sjme_jbyte;
 
-/** Unsigned @c byte type. */
-typedef uint8_t sjme_jubyte;
-
 /** @c short type. */
 typedef int16_t sjme_jshort;
-
-/** Unsigned @c short type. */
-typedef uint16_t sjme_jushort;
 
 /** @c char type. */
 typedef uint16_t sjme_jchar;
 
 /** @c int type. */
 typedef int32_t sjme_jint;
+#endif
+
+/** Unsigned @c byte type. */
+typedef uint8_t sjme_jubyte;
+
+/** Unsigned @c short type. */
+typedef uint16_t sjme_jushort;
 
 /** Unsigned @c int type. */
 typedef uint32_t sjme_juint;
 
+#if 0
 /** Boolean type. */
 typedef enum sjme_jboolean
 {
 	/** False. */
 	sjme_false = 0,
-	
+
 	/** True. */
 	sjme_true = 1,
 } sjme_jboolean;
+#endif
 
 /** Constant value macros. */
 #define SJME_JBYTE_C(x) INT8_C(x)

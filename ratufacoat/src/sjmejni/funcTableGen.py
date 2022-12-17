@@ -8,6 +8,7 @@
 # DESCRIPTION: Script that turns function table CSV to source code
 
 import csv
+import sys
 
 
 class FuncArg:
@@ -85,6 +86,8 @@ class FuncTableEntry:
 
 		if row_entry['returnType'] is not None and row_entry['returnType'] != '':
 			self.returnType: FuncArg = FuncArg(row_entry['returnType'])
+		else:
+			self.returnType: FuncArg = None
 
 		# Read in arguments
 		self.args: [FuncArg] = []
@@ -117,7 +120,7 @@ def convert_type(func_type: FuncArg) -> FuncArg:
 	starish = func_type.star
 
 	if func_type.mods is not None and func_type.mods != '':
-		modsish = '%s ' % func_type.mods
+		modsish = '%s' % func_type.mods
 	else:
 		modsish = ''
 
@@ -144,6 +147,8 @@ def convert_type(func_type: FuncArg) -> FuncArg:
 			typeish = 'sjme_jbyte'
 		case 'jchar':
 			typeish = 'sjme_jchar'
+		case 'const jchar':
+			typeish = 'const sjme_jchar'
 		case 'jshort':
 			typeish = 'sjme_jshort'
 		case 'jint':
@@ -164,7 +169,11 @@ def convert_type(func_type: FuncArg) -> FuncArg:
 			typeish = 'sjme_jthrowable'
 		case 'jweak':
 			typeish = 'sjme_jweakReference'
+		case 'jsize':
+			typeish = 'sjme_jsize'
 
+		case 'jarray':
+			typeish = 'sjme_jarray'
 		case 'jbooleanArray':
 			typeish = 'sjme_jbooleanArray'
 		case 'jbyteArray':
@@ -181,6 +190,8 @@ def convert_type(func_type: FuncArg) -> FuncArg:
 			typeish = 'sjme_jfloatArray'
 		case 'jdoubleArray':
 			typeish = 'sjme_jdoubleArray'
+		case 'jobjectArray':
+			typeish = 'sjme_jobjectArray'
 
 	# Remap name to SquirrelJME?
 	match nameish:
@@ -243,6 +254,12 @@ header_intro = '/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-\n\
 // -------------------------------------------------------------------------*/\n\
 \n'
 
+# If you really mean to!
+if len(sys.argv) < 2 or sys.argv[1] != 'yes':
+	print('If you really mean to run this, pass "yes" as the first argument!\n')
+	exit()
+	print('Just for sanity purposes...')
+
 # Setup file load
 csvfile = open('funcTable.csv', newline='')
 reader = csv.DictReader(csvfile)
@@ -267,11 +284,21 @@ for row in reader:
 for table_name in entries_by_tab_dex:
 	index_tables = entries_by_tab_dex[table_name]
 
+	# Header name for prototypes
+	header_struct_fields_file_name = 'sjmejni/tables/%sStructFields.h' % table_name
+	header_function_prototypes_file_name = 'sjmejni/tables/%sProtos.h' % table_name
+	assign_file_name = 'sjmejni/tables/%sAssign.h' % table_name
+
 	# Temporary strings for header/source files
 	header_function_prototypes = '' + header_intro
 	header_struct_fields = '' + header_intro
 
+	# Assignment file
+	assign_file = '' + header_intro
+
 	# Surround for function prototypes
+	header_function_prototypes += '#include "sjmejni/sjmejni.h"\n'
+	header_function_prototypes += '#include "debug.h"\n'
 	header_function_prototypes += '#include "sjmejni/tables/surround/surroundprotoh.h"\n\n'
 
 	# Surround for header struct entries
@@ -286,13 +313,19 @@ for table_name in entries_by_tab_dex:
 			# Nulls are blank specials
 			if entry.function == 'NULL':
 				header_struct_fields += '/** Do not use, reserved. */\n'
-				header_struct_fields += 'void* reserved%d,\n\n' % entry.index
+				header_struct_fields += 'void* reserved%d SJME_FUNC_SURROUND_SUFFIX\n\n' % entry.index
 
 			# Otherwise do normal generation logic
 			else:
 				# Location of the C include for the prototype
 				prototype_file_name = 'sjmejni/tables/%s/def%s.h' % \
 					(entry.table, entry.function)
+
+				source_file_name = 'tables/%s/def%s.c' % \
+					(entry.table, entry.function)
+
+				# Assignment file
+				assign_file += 'out->%s = sjme_impl%s;\n' % (entry.function, entry.function)
 
 				# Utilize the C include here
 				header_struct_fields += '#include "%s"\n' % prototype_file_name
@@ -329,10 +362,10 @@ for table_name in entries_by_tab_dex:
 				prototype_file += ' * \n'
 
 				for func_arg in entry.args:
-					prototype_file += ' * @param %s NOT DESCRIBED\n' % convert_type(func_arg).name
+					prototype_file += ' * @param %s NOT DESCRIBED.\n' % convert_type(func_arg).name
 
 				if entry.returnType is not None and entry.returnType.type != 'void':
-					prototype_file += ' * @return NOT DESCRIBED\n'
+					prototype_file += ' * @return NOT DESCRIBED.\n'
 
 				prototype_file += ' * @since \n'
 				prototype_file += ' */\n'
@@ -343,10 +376,66 @@ for table_name in entries_by_tab_dex:
 					(str(convert_type(entry.returnType)),
 					entry.function, built_args)
 
-				print(prototype_file)
+				# Source file for the method
+				source_file = '' + header_intro
+				source_file += '#include "sjmejni/sjmejni.h"\n'
+				source_file += '#include "%s"\n\n' % header_function_prototypes_file_name
+
+				source_file += '%s sjme_impl%s(%s)\n' % \
+					(str(convert_type(entry.returnType)),
+					entry.function, built_args)
+				source_file += '{\n'
+				source_file += '\tsjme_todo("Implement this?");\n'
+
+				# Return type used?
+				if entry.returnType.type != 'void' or entry.returnType.star != '':
+					match entry.returnType.type:
+						case 'jboolean':
+							returning = 'sjme_false'
+						case 'jbyte':
+							returning = '0'
+						case 'jchar':
+							returning = '0'
+						case 'jshort':
+							returning = '0'
+						case 'jint':
+							returning = '0'
+						case 'jlong':
+							returning = '0'
+						case 'jfloat':
+							returning = '0'
+						case 'jdouble':
+							returning = '0'
+						case 'jobjectRefType':
+							returning = '0'
+						case 'jsize':
+							returning = '0'
+						case _:
+							returning = 'NULL'
+
+					source_file += '\treturn %s;\n' % returning
+
+				source_file += '}\n'
+
+				source_file_out = open('../../include/' + prototype_file_name, 'w')
+				source_file_out.write(prototype_file)
+				source_file_out.close()
+
+				source_file_out = open(source_file_name, 'w')
+				source_file_out.write(source_file)
+				source_file_out.close()
 
 	except KeyError:
 		pass
 
-	print(header_struct_fields)
-	print(header_function_prototypes)
+	source_file_out = open('../../include/' + header_struct_fields_file_name, 'w')
+	source_file_out.write(header_struct_fields)
+	source_file_out.close()
+
+	source_file_out = open('../../include/' + header_function_prototypes_file_name, 'w')
+	source_file_out.write(header_function_prototypes)
+	source_file_out.close()
+
+	source_file_out = open('../../include/' + assign_file_name, 'w')
+	source_file_out.write(assign_file)
+	source_file_out.close()

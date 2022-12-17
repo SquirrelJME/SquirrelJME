@@ -78,10 +78,10 @@ typedef sjme_jdouble jdouble;
 typedef jint jsize;
 
 /** False. */
-#define JNI_FALSE SJME_FALSE
+#define JNI_FALSE sjme_false
 
 /** True. */
-#define JNI_TRUE SJME_TRUE
+#define JNI_TRUE sjme_true
 
 /** Value type. */
 typedef sjme_jvalue jvalue;

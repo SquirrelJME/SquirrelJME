@@ -10,6 +10,7 @@
 #include "tests.h"
 #include "handles.h"
 #include "datatype.h"
+#include "debug.h"
 
 /** Size of the test handle. */
 #define HANDLE_SIZE 8
@@ -50,6 +51,9 @@ static const enum sjme_dataType testTypesWide[] = {
  */
 SJME_TEST_PROTOTYPE(testMemHandleAccess)
 {
+	sjme_todo("Fix this?");
+	return FAIL_TEST(0);
+#if 0
 	sjme_memHandles* handles = NULL;
 	sjme_memHandle* handle = NULL;
 	sjme_jint readIn, writeOut;
@@ -217,4 +221,5 @@ SJME_TEST_PROTOTYPE(testMemHandleAccess)
 		return FAIL_TEST(10);
 	
 	return PASS_TEST();
+#endif
 }

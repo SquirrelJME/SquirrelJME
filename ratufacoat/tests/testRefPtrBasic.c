@@ -10,6 +10,7 @@
 #include "tests.h"
 #include "refptr/refptr.h"
 
+#if 0
 static sjme_jint localRefPtrFunc(sjme_error* error)
 {
 	SJME_REFPTR_VAR_BEGIN()
@@ -22,10 +23,13 @@ static sjme_jint localRefPtrFunc(sjme_error* error)
 
 	SJME_REFPTR_CODE_END(error)
 }
+#endif
 
 SJME_TEST_PROTOTYPE(testRefPtrBasic)
 {
+#if 0
 	localRefPtrFunc(&shim->error);
+#endif
 
 	return FAIL_TEST(1);
 }

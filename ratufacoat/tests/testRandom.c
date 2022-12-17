@@ -9,6 +9,7 @@
 
 #include "tests.h"
 #include "random.h"
+#include "debug.h"
 
 /** Random number of cycles. */
 #define RANDOM_CYCLES 32
@@ -57,6 +58,9 @@ static const sjme_jint matchInt[RANDOM_CYCLES] =
  */
 SJME_TEST_PROTOTYPE(testRandom)
 {
+	sjme_todo("Fix this?");
+	return FAIL_TEST(0);
+#if 0
 	sjme_randomState random;
 	sjme_jlong seed;
 	sjme_jboolean jboolean;
@@ -97,4 +101,5 @@ SJME_TEST_PROTOTYPE(testRandom)
 	}
 	
 	return PASS_TEST();
+#endif
 }

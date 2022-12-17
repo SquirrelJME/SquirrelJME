@@ -17,6 +17,8 @@
 #include "debug.h"
 #include "softmath.h"
 
+#if 0
+
 /** Unsigned shift right masks. */
 static const sjme_jint sjme_ushrIntMask[32] =
 	{
@@ -167,3 +169,5 @@ sjme_jint sjme_ushrInt(sjme_jint val, sjme_jint sh)
 	sh &= 31;
 	return (val >> sh) & sjme_ushrIntMask[sh];
 }
+
+#endif

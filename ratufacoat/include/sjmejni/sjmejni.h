@@ -22,6 +22,13 @@
 	#include <stdint.h>
 #endif
 
+/* Standard Includes. */
+#include <stdlib.h>
+#include <stddef.h>
+#include <limits.h>
+#include <string.h>
+#include <stdio.h>
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
@@ -129,10 +136,10 @@ extern "C" {
 typedef sjme_jint sjme_jsize;
 
 /** False. */
-#define SJME_FALSE INT8_C(0)
+#define sjme_false INT8_C(0)
 
 /** True. */
-#define SJME_TRUE INT8_C(1)
+#define sjme_true INT8_C(1)
 
 /**
  * The reference type of an object.
@@ -283,10 +290,6 @@ typedef struct sjme_vmRegisterNative
 /** Declare function pointer. */
 #define SJME_FUNC_PTR__(x) (*x)
 
-/** Function: Destroy Java VM. */
-#define SJME_FUNCTION_DESTROY_JAVA_VM(funcName) \
-	sjme_jint funcName(sjme_vmState* vm)
-
 /**
  * Virtual machine state.
  *
@@ -294,29 +297,9 @@ typedef struct sjme_vmRegisterNative
  */
 struct sjme_vmState
 {
-	/** Reserved, do not use. */
-	void* reserved0;
+	#include "sjmejni/tables/interfaceStructFields.h"
 
-	/** Reserved, do not use. */
-	void* reserved1;
-
-	/** Reserved, do not use. */
-	void* reserved2;
-
-	/**
-	 * Destroys the virtual machine.
-	 *
-	 * @param vm The virtual machine to destroy.
-	 * @return
-	 * @since 2022/12/11
-	 */
-	SJME_FUNCTION_DESTROY_JAVA_VM(SJME_FUNC_PTR__(DestroyJavaVM))
-#if 0
-	AttachCurrentThread,
-	DetachCurrentThread,
-	GetEnv,
-	AttachCurrentThreadAsDaemon
-#endif
+	void* reservedEnd;
 };
 
 /**
@@ -326,249 +309,7 @@ struct sjme_vmState
  */
 struct sjme_vmThread
 {
-	/** Reserved, do not use. */
-	void* reserved0;
-
-	/** Reserved, do not use. */
-	void* reserved1;
-
-	/** Reserved, do not use. */
-	void* reserved2;
-
-	/** Reserved, do not use. */
-	void* reserved3;
-
-#if 0
-	GetVersion,
-	DefineClass,
-	FindClass,
-	FromReflectedMethod,
-	FromReflectedField,
-	ToReflectedMethod,
-	GetSuperclass,
-	IsAssignableFrom,
-	ToReflectedField,
-	Throw,
-	ThrowNew,
-	ExceptionOccurred,
-	ExceptionDescribe,
-	ExceptionClear,
-	FatalError,
-	PushLocalFrame,
-	PopLocalFrame,
-	NewGlobalRef,
-	DeleteGlobalRef,
-	DeleteLocalRef,
-	IsSameObject,
-	NewLocalRef,
-	EnsureLocalCapacity,
-	AllocObject,
-	NewObject,
-	NewObjectV,
-	NewObjectA,
-	GetObjectClass,
-	IsInstanceOf,
-	GetMethodID,
-	CallObjectMethod,
-	CallObjectMethodV,
-	CallObjectMethodA,
-	CallBooleanMethod,
-	CallBooleanMethodV,
-	CallBooleanMethodA,
-	CallByteMethod,
-	CallByteMethodV,
-	CallByteMethodA,
-	CallCharMethod,
-	CallCharMethodV,
-	CallCharMethodA,
-	CallShortMethod,
-	CallShortMethodV,
-	CallShortMethodA,
-	CallIntMethod,
-	CallIntMethodV,
-	CallIntMethodA,
-	CallLongMethod,
-	CallLongMethodV,
-	CallLongMethodA,
-	CallFloatMethod,
-	CallFloatMethodV,
-	CallFloatMethodA,
-	CallDoubleMethod,
-	CallDoubleMethodV,
-	CallDoubleMethodA,
-	CallVoidMethod,
-	CallVoidMethodV,
-	CallVoidMethodA,
-	CallNonvirtualObjectMethod,
-	CallNonvirtualObjectMethodV,
-	CallNonvirtualObjectMethodA,
-	CallNonvirtualBooleanMethod,
-	CallNonvirtualBooleanMethodV,
-	CallNonvirtualBooleanMethodA,
-	CallNonvirtualByteMethod,
-	CallNonvirtualByteMethodV,
-	CallNonvirtualByteMethodA,
-	CallNonvirtualCharMethod,
-	CallNonvirtualCharMethodV,
-	CallNonvirtualCharMethodA,
-	CallNonvirtualShortMethod,
-	CallNonvirtualShortMethodV,
-	CallNonvirtualShortMethodA,
-	CallNonvirtualIntMethod,
-	CallNonvirtualIntMethodV,
-	CallNonvirtualIntMethodA,
-	CallNonvirtualLongMethod,
-	CallNonvirtualLongMethodV,
-	CallNonvirtualLongMethodA,
-	CallNonvirtualFloatMethod,
-	CallNonvirtualFloatMethodV,
-	CallNonvirtualFloatMethodA,
-	CallNonvirtualDoubleMethod,
-	CallNonvirtualDoubleMethodV,
-	CallNonvirtualDoubleMethodA,
-	CallNonvirtualVoidMethod,
-	CallNonvirtualVoidMethodV,
-	CallNonvirtualVoidMethodA,
-	GetFieldID,
-	GetObjectField,
-	GetBooleanField,
-	GetByteField,
-	GetCharField,
-	GetShortField,
-	GetIntField,
-	GetLongField,
-	GetFloatField,
-	GetDoubleField,
-	SetObjectField,
-	SetBooleanField,
-	SetByteField,
-	SetCharField,
-	SetShortField,
-	SetIntField,
-	SetLongField,
-	SetFloatField,
-	SetDoubleField,
-	GetStaticMethodID,
-	CallStaticObjectMethod,
-	CallStaticObjectMethodV,
-	CallStaticObjectMethodA,
-	CallStaticBooleanMethod,
-	CallStaticBooleanMethodV,
-	CallStaticBooleanMethodA,
-	CallStaticByteMethod,
-	CallStaticByteMethodV,
-	CallStaticByteMethodA,
-	CallStaticCharMethod,
-	CallStaticCharMethodV,
-	CallStaticCharMethodA,
-	CallStaticShortMethod,
-	CallStaticShortMethodV,
-	CallStaticShortMethodA,
-	CallStaticIntMethod,
-	CallStaticIntMethodV,
-	CallStaticIntMethodA,
-	CallStaticLongMethod,
-	CallStaticLongMethodV,
-	CallStaticLongMethodA,
-	CallStaticFloatMethod,
-	CallStaticFloatMethodV,
-	CallStaticFloatMethodA,
-	CallStaticDoubleMethod,
-	CallStaticDoubleMethodV,
-	CallStaticDoubleMethodA,
-	CallStaticVoidMethod,
-	CallStaticVoidMethodV,
-	CallStaticVoidMethodA,
-	GetStaticFieldID,
-	GetStaticObjectField,
-	GetStaticBooleanField,
-	GetStaticByteField,
-	GetStaticCharField,
-	GetStaticShortField,
-	GetStaticIntField,
-	GetStaticLongField,
-	GetStaticFloatField,
-	GetStaticDoubleField,
-	SetStaticObjectField,
-	SetStaticBooleanField,
-	SetStaticByteField,
-	SetStaticCharField,
-	SetStaticShortField,
-	SetStaticIntField,
-	SetStaticLongField,
-	SetStaticFloatField,
-	SetStaticDoubleField,
-	NewString,
-	GetStringLength,
-	GetStringChars,
-	ReleaseStringChars,
-	NewStringUTF,
-	GetStringUTFLength,
-	GetStringUTFChars,
-	ReleaseStringUTFChars,
-	GetArrayLength,
-	NewObjectArray,
-	GetObjectArrayElement,
-	SetObjectArrayElement,
-	NewBooleanArray,
-	NewByteArray,
-	NewCharArray,
-	NewShortArray,
-	NewIntArray,
-	NewLongArray,
-	NewFloatArray,
-	NewDoubleArray,
-	GetBooleanArrayElements,
-	GetByteArrayElements,
-	GetCharArrayElements,
-	GetShortArrayElements,
-	GetIntArrayElements,
-	GetLongArrayElements,
-	GetFloatArrayElements,
-	GetDoubleArrayElements,
-	ReleaseBooleanArrayElements,
-	ReleaseByteArrayElements,
-	ReleaseCharArrayElements,
-	ReleaseShortArrayElements,
-	ReleaseIntArrayElements,
-	ReleaseLongArrayElements,
-	ReleaseFloatArrayElements,
-	ReleaseDoubleArrayElements,
-	GetBooleanArrayRegion,
-	GetByteArrayRegion,
-	GetCharArrayRegion,
-	GetShortArrayRegion,
-	GetIntArrayRegion,
-	GetLongArrayRegion,
-	GetFloatArrayRegion,
-	GetDoubleArrayRegion,
-	SetBooleanArrayRegion,
-	SetByteArrayRegion,
-	SetCharArrayRegion,
-	SetShortArrayRegion,
-	SetIntArrayRegion,
-	SetLongArrayRegion,
-	SetFloatArrayRegion,
-	SetDoubleArrayRegion,
-	RegisterNatives,
-	UnregisterNatives,
-	MonitorEnter,
-	MonitorExit,
-	GetJavaVM,
-	GetStringRegion,
-	GetStringUTFRegion,
-	GetPrimitiveArrayCritical,
-	ReleasePrimitiveArrayCritical,
-	GetStringCritical,
-	ReleaseStringCritical,
-	NewWeakGlobalRef,
-	DeleteWeakGlobalRef,
-	ExceptionCheck,
-	NewDirectByteBuffer,
-	GetDirectBufferAddress,
-	GetDirectBufferCapacity,
-	GetObjectRefType
-#endif
+	#include "sjmejni/tables/functionStructFields.h"
 };
 
 /* Clear this. */

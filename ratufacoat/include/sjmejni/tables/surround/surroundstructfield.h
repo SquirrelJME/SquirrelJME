@@ -37,7 +37,7 @@ extern "C" {
 #define SJME_FUNC_SURROUND(x) (*x)
 
 /** End of line for struct entry. */
-#define SJME_FUNC_SURROUND_SUFFIX ,
+#define SJME_FUNC_SURROUND_SUFFIX ;
 
 /*--------------------------------------------------------------------------*/
 

@@ -72,6 +72,9 @@ struct sjme_memHandle
 
 sjme_returnFail sjme_memHandlesInit(sjme_memHandles** out, sjme_error* error)
 {
+	sjme_todo("Remove this.");
+	return sjme_false;
+#if 0
 	sjme_memHandles* rv = NULL;
 	sjme_memHandle** handles = NULL;
 	sjme_jlong seed;
@@ -124,6 +127,7 @@ sjme_returnFail sjme_memHandlesInit(sjme_memHandles** out, sjme_error* error)
 	/* It worked! So return the pointer. */
 	*out = rv;
 	return SJME_RETURN_SUCCESS;
+#endif
 }
 
 sjme_returnFail sjme_memHandlesDestroy(sjme_memHandles* handles,
@@ -426,6 +430,10 @@ sjme_returnFail sjme_memHandleAccess(sjme_memHandle* handle,
 	sjme_jboolean write, sjme_dataType type, sjme_jint* inOut,
 	sjme_jint offset, sjme_error* error)
 {
+	sjme_todo("Remove this");
+	return sjme_false;
+#if 0
+
 	/* Cannot be null. */
 	if (handle == NULL || inOut == NULL)
 	{
@@ -490,12 +498,17 @@ sjme_returnFail sjme_memHandleAccess(sjme_memHandle* handle,
 	
 	// Success
 	return SJME_RETURN_SUCCESS;
+#endif
 }
 
 sjme_returnFail sjme_memHandleAccessWide(sjme_memHandle* handle,
 	sjme_jboolean write, sjme_dataType type, sjme_jlong* inOut,
 	sjme_jint offset, sjme_error* error)
 {
+	sjme_todo("Remove this.");
+	return sjme_false;
+
+#if 0
 	/* Cannot be null. */
 	if (handle == NULL || inOut == NULL)
 	{
@@ -545,5 +558,6 @@ sjme_returnFail sjme_memHandleAccessWide(sjme_memHandle* handle,
 	
 	// Success
 	return SJME_RETURN_SUCCESS;
+#endif
 }
 

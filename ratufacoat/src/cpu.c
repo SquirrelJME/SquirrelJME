@@ -18,6 +18,8 @@
 #include "memory.h"
 #include "syscall.h"
 
+#if 0
+
 /**
  * Executes single CPU state.
  *
@@ -795,4 +797,6 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	/* Return remaining cycles. */
 	return cycles;
 }
+
+#endif
 

@@ -7,11 +7,15 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "debug.h"
 #include "random.h"
 
 sjme_returnFail sjme_randomSeed(sjme_randomState* random, sjme_jlong seed,
 	sjme_error* error)
 {
+	sjme_todo("Fix this");
+	return sjme_false;
+#if 0
 	/* Check. */
 	if (random == NULL)
 	{
@@ -28,6 +32,7 @@ sjme_returnFail sjme_randomSeed(sjme_randomState* random, sjme_jlong seed,
 	random->seed.lo = (seed.lo ^ SJME_JINT_C(0xDEECE66D));
 		
 	return SJME_RETURN_SUCCESS;
+#endif
 }
 
 sjme_returnFail sjme_randomNextBoolean(sjme_randomState* random,
@@ -79,6 +84,9 @@ sjme_returnFail sjme_randomNextInt(sjme_randomState* random, sjme_jint* out,
 sjme_returnFail sjme_randomNextBits(sjme_randomState* random, sjme_jint* out,
 	sjme_jint bits, sjme_error* error)
 {
+	sjme_todo("Fix this");
+	return sjme_false;
+#if 0
 	sjme_jlong seed;
 	sjme_jint sh;
 	
@@ -118,4 +126,5 @@ sjme_returnFail sjme_randomNextBits(sjme_randomState* random, sjme_jint* out,
 		*out = (seed.hi << (32 - sh)) | sjme_ushrInt(seed.lo, sh);
 	
 	return SJME_RETURN_SUCCESS;
+#endif
 }

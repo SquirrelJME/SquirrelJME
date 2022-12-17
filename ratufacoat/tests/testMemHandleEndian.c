@@ -9,6 +9,7 @@
 
 #include "tests.h"
 #include "handles.h"
+#include "debug.h"
 
 /** The size of the handle to test. */
 #define HANDLE_SIZE 8
@@ -47,6 +48,9 @@
  */
 SJME_TEST_PROTOTYPE(testMemHandleEndian)
 {
+	sjme_todo("Fix this?");
+	return FAIL_TEST(0);
+#if 0
 	sjme_memHandles* handles = NULL;
 	sjme_memHandle* handle = NULL;
 	sjme_jint readIn;
@@ -110,4 +114,5 @@ SJME_TEST_PROTOTYPE(testMemHandleEndian)
 		return FAIL_TEST(10);
 	
 	return PASS_TEST();
+#endif
 }

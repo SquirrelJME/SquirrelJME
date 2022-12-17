@@ -30,6 +30,7 @@ extern "C" {
 	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
 #endif     /* #ifdef __cplusplus */
 
+#if 0
 /*--------------------------------------------------------------------------*/
 
 /** Ref pointer detection key. */
@@ -114,6 +115,7 @@ SJME_REFPTR_MAKE(sjme_jint);
 SJME_REFPTR_MAKE(sjme_juint);
 
 /*--------------------------------------------------------------------------*/
+#endif
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -123,5 +125,6 @@ SJME_REFPTR_MAKE(sjme_juint);
 		#undef SJME_CXX_IS_EXTERNED
 	#endif /* #ifdef SJME_CXX_SQUIRRELJME_REFPTR_H */
 #endif     /* #ifdef __cplusplus */
+
 
 #endif /* SQUIRRELJME_REFPTR_H */

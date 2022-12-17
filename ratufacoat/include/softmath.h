@@ -28,6 +28,7 @@ extern "C"
 #endif /* #ifdef SJME_CXX_IS_EXTERNED */
 #endif /* #ifdef __cplusplus */
 
+#if 0
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -120,6 +121,7 @@ sjme_jlong sjme_mulLongF(sjme_jlong a, sjme_jint bLo, sjme_jint bHi);
 sjme_jint sjme_ushrInt(sjme_jint val, sjme_jint sh);
 
 /*--------------------------------------------------------------------------*/
+#endif
 
 /* Anti-C++. */
 #ifdef __cplusplus

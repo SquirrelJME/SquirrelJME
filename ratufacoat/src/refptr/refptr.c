@@ -10,6 +10,7 @@
 #include "refptr/refptr.h"
 #include "memoryintern.h"
 
+#if 0
 sjme_jboolean sjme_refPtrCleanup__(void* refStruct, sjme_error* error)
 {
 	if (refStruct == NULL)
@@ -22,3 +23,4 @@ sjme_jboolean sjme_refPtrCleanup__(void* refStruct, sjme_error* error)
 
 	return sjme_true;
 }
+#endif
