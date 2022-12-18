@@ -16,7 +16,7 @@
  */
 SJME_TEST_PROTOTYPE(testBooleanEnumSize)
 {
-	if (sizeof(sjme_jboolean) != 1)
+	if (sizeof(sjme_jboolean) != 1)	/* NOLINT */
 		return FAIL_TEST(sizeof(sjme_jboolean));
 	return PASS_TEST();
 }
