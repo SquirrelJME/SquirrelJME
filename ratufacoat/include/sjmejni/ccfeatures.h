@@ -50,6 +50,11 @@ extern "C" {
 	#endif
 #endif
 
+/* GCC. */
+#if defined(__GNUC__)
+	#define SJME_FEATURE_GCC
+#endif
+
 /* Is there <stdint.h>? */
 #if defined(SJME_FEATURE_C99) || \
 	defined(SJME_FEATURE_MSVC_HAS_STDINT) || \

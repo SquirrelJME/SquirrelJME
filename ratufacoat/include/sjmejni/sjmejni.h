@@ -41,9 +41,6 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 #if defined(SJME_HAS_STDINT_H)
-	/** Boolean. */
-	typedef uint8_t sjme_jboolean;
-
 	/** Byte. */
 	typedef int8_t sjme_jbyte;
 
@@ -66,9 +63,6 @@ extern "C" {
 	typedef double sjme_jdouble;
 
 #elif defined(SJME_FEATURE_MSVC)
-	/** Boolean. */
-	typedef unsigned __int8 sjme_jboolean;
-
 	/** Byte. */
 	typedef signed __int8 sjme_jbyte;
 
@@ -111,6 +105,33 @@ extern "C" {
 	#error No standard types are known.
 #endif
 
+#if defined(SJME_FEATURE_GCC)
+	typedef enum __attribute__((__packed__)) sjme_jboolean
+	{
+		/** False. */
+		sjme_false = INT8_C(0),
+
+		/** True. */
+		sjme_true = INT8_C(1)
+	} sjme_jboolean;
+#else
+	/** False. */
+	#define sjme_false INT8_C(0)
+
+	/** True. */
+	#define sjme_true INT8_C(1)
+
+	#if defined(SJME_HAS_STDINT_H)
+		/** Boolean. */
+		typedef uint8_t sjme_jboolean;
+	#elif defined(SJME_FEATURE_MSVC)
+		/** Boolean. */
+		typedef unsigned __int8 sjme_jboolean;
+	#else
+		#error Unknown boolean type.
+	#endif
+#endif
+
 /** Interface version 1.1. */
 #define SJME_INTERFACE_VERSION_1_1 INT32_C(0x00010001)
 
@@ -134,12 +155,6 @@ extern "C" {
 
 /** Size type. */
 typedef sjme_jint sjme_jsize;
-
-/** False. */
-#define sjme_false INT8_C(0)
-
-/** True. */
-#define sjme_true INT8_C(1)
 
 /**
  * The reference type of an object.
