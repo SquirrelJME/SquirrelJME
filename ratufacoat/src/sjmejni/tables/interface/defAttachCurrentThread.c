@@ -10,7 +10,8 @@
 #include "sjmejni/sjmejni.h"
 #include "sjmejni/tables/interfaceProtos.h"
 
-sjme_jint sjme_implAttachCurrentThread(sjme_vmState* vmState, void** vmThread, void* threadArgs)
+sjme_jint sjme_implAttachCurrentThread(sjme_vmState* vmState, void** vmThread,
+	void* threadArgs)
 {
 	sjme_todo("Implement this?");
 	return 0;

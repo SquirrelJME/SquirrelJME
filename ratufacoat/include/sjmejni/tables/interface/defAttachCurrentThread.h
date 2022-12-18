@@ -16,5 +16,6 @@
  * @return NOT DESCRIBED.
  * @since 
  */
-sjme_jint SJME_FUNC_SURROUND(AttachCurrentThread)(sjme_vmState* vmState, void** vmThread, void* threadArgs) SJME_FUNC_SURROUND_SUFFIX
+sjme_jint SJME_FUNC_SURROUND(AttachCurrentThread)(sjme_vmState* vmState,
+	void** vmThread, void* threadArgs) SJME_FUNC_SURROUND_SUFFIX
 

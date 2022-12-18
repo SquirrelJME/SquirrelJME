@@ -348,6 +348,44 @@ typedef struct sjme_vmSysApi
 } sjme_vmSysApi;
 
 /**
+ * Serialization function.
+ *
+ * @param buf The buffer containing bytes to write.
+ * @param off The offset into the buffer.
+ * @param len The number of bytes to write.
+ * @return If the write was successful.
+ * @since 2022/12/18
+ */
+typedef sjme_jboolean (*sjme_vmSerializeFunc)(const sjme_jbyte* buf,
+	sjme_jsize off, sjme_jsize len);
+
+/**
+ * Deserialization function.
+ *
+ * @param buf The buffer containing the buffer to read into.
+ * @param off The offset into the buffer.
+ * @param len The number of bytes to attempt read.
+ * @return The number of bytes read or @c -1 on success, other negative values
+ * are indicative of failure.
+ * @since 2022/12/18
+ */
+typedef sjme_jint (*sjme_vmDeserializeFunc)(sjme_jbyte* buf,
+	sjme_jsize off, sjme_jsize len);
+
+/**
+ * Called by the deserializer to attach to a given thread when the virtual
+ * machine has been deserialized, this should setup any threads and restore
+ * state accordingly.
+ *
+ * @param vm The virtual machine being utilized.
+ * @param thread The thread that needs to be attached.
+ * @return If thread attaching is successful.
+ * @since 2022/12/18
+ */
+typedef sjme_jboolean (*sjme_vmDeserializeThreadAttach)(sjme_vmState* vm,
+	sjme_vmThread* thread);
+
+/**
  * Initializes the arguments with the defaults.
  *
  * @param vmArgs The arguments to fill.
@@ -381,6 +419,43 @@ sjme_jint sjme_vmGetAllVms(sjme_vmState** vmBuf, sjme_jsize bufLen,
  */
 sjme_jint sjme_vmNew(sjme_vmState** outVm, sjme_vmThread** outThread,
 	sjme_vmCmdLine* vmArgs, sjme_vmSysApi* sysApi);
+
+/**
+ * Ticks the virtual machine executing any functions as needed and otherwise
+ * for execution.
+ *
+ * @param vm The virtual machine being ticked.
+ * @param thread The thread to be ticked
+ * @param count The number of times to tick before returning.
+ * @return If ticking was successful.
+ * @since 2022/12/18
+ */
+sjme_jboolean sjme_vmTick(sjme_vmState* vm, sjme_vmThread* thread,
+	sjme_jsize count);
+
+/**
+ * Serializes the virtual machine state into the given pointers.
+ *
+ * @param vmState The input virtual machine state.
+ * @param write The serialization function.
+ * @return If serialization was successful.
+ * @since 2022/128
+ */
+sjme_jboolean sjme_vmSerialize(sjme_vmState* vmState,
+	sjme_vmSerializeFunc write);
+
+/**
+ * Deserializes the virtual machine and sets up a virtual machine state.
+ *
+ * @param vmState The input virtual machine state.
+ * @param read The serialization function.
+ * @param threadAttach This is called after deserialization to attach all
+ * of the threads accordingly into the virtual machine.
+ * @return If serialization was successful.
+ * @since 2022/128
+ */
+sjme_jboolean sjme_vmDeserialize(sjme_vmState** vmState,
+	sjme_vmDeserializeFunc read, sjme_vmDeserializeThreadAttach threadAttach);
 
 /*--------------------------------------------------------------------------*/
 
