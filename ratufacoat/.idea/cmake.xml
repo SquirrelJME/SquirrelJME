@@ -3,9 +3,6 @@
   <component name="CMakeSharedSettings">
     <configurations>
       <configuration PROFILE_NAME="DebugDefault" ENABLED="true" CONFIG_NAME="Debug" />
-      <configuration PROFILE_NAME="DebugMSVC" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Visual Studio" />
-      <configuration PROFILE_NAME="DebugWSL" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="WSL" />
-      <configuration PROFILE_NAME="DebugMacOS" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="MacOS" />
     </configurations>
   </component>
 </project>
