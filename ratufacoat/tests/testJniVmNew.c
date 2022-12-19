@@ -8,11 +8,24 @@
 // -------------------------------------------------------------------------*/
 
 #include "debug.h"
-#include "sjmejni/sjmejni.h"
+#include "tests.h"
+#include "jnistub.h"
 
-sjme_jint sjme_vmNew(sjme_vmState** outVm, sjme_vmThread** outThread,
-	sjme_vmCmdLine* vmArgs, sjme_vmSysApi* sysApi)
+/**
+ * Tests initialization of a new virtual machine along with its teardown.
+ *
+ * @since 2022/12/18
+ */
+SJME_TEST_PROTOTYPE(testJniVmNew)
 {
+	sjme_vmState* vm = NULL;
+	sjme_vmThread* initThread = NULL;
+
+	/* Start new virtual machine. */
+	if (SJME_INTERFACE_ERROR_NONE != sjme_vmNew(&vm,
+		&initThread, NULL, shim->jniSysApi))
+		return FAIL_TEST(1);
+
 	sjme_todo("Implement this?");
-	return -1;
+	return FAIL_TEST(1);
 }

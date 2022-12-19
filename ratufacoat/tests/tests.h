@@ -12,6 +12,7 @@
 
 #include "sjmerc.h"
 #include "native.h"
+#include "jnistub.h"
 
 /**
  * Testing shim structure.
@@ -25,6 +26,9 @@ typedef struct sjme_testShim
 	
 	/** Native function support. */
 	sjme_nativefuncs* nativeFunctions;
+
+	/** JNI system API. */
+	sjme_vmSysApi* jniSysApi;
 } sjme_testShim;
 
 /**

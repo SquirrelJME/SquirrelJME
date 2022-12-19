@@ -356,7 +356,7 @@ typedef struct sjme_vmSysApi
  * @return If the write was successful.
  * @since 2022/12/18
  */
-typedef sjme_jboolean (*sjme_vmSerializeFunc)(const sjme_jbyte* buf,
+typedef sjme_jboolean (*sjme_vmSerializeDataWriteFunc)(const sjme_jbyte* buf,
 	sjme_jsize off, sjme_jsize len);
 
 /**
@@ -369,7 +369,7 @@ typedef sjme_jboolean (*sjme_vmSerializeFunc)(const sjme_jbyte* buf,
  * are indicative of failure.
  * @since 2022/12/18
  */
-typedef sjme_jint (*sjme_vmDeserializeFunc)(sjme_jbyte* buf,
+typedef sjme_jint (*sjme_vmDeserializeDataReadFunc)(sjme_jbyte* buf,
 	sjme_jsize off, sjme_jsize len);
 
 /**
@@ -442,7 +442,7 @@ sjme_jboolean sjme_vmTick(sjme_vmState* vm, sjme_vmThread* thread,
  * @since 2022/128
  */
 sjme_jboolean sjme_vmSerialize(sjme_vmState* vmState,
-	sjme_vmSerializeFunc write);
+	sjme_vmSerializeDataWriteFunc write);
 
 /**
  * Deserializes the virtual machine and sets up a virtual machine state.
@@ -455,7 +455,8 @@ sjme_jboolean sjme_vmSerialize(sjme_vmState* vmState,
  * @since 2022/128
  */
 sjme_jboolean sjme_vmDeserialize(sjme_vmState** vmState,
-	sjme_vmDeserializeFunc read, sjme_vmDeserializeThreadAttach threadAttach);
+	sjme_vmDeserializeDataReadFunc read,
+	sjme_vmDeserializeThreadAttach threadAttach);
 
 /*--------------------------------------------------------------------------*/
 

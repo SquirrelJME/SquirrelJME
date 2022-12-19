@@ -19,8 +19,9 @@ endif()
 file(GLOB SQUIRRELJME_TEST_SOURCES "test*.c" "test*.cxx")
 list(SORT SQUIRRELJME_TEST_SOURCES)
 add_executable(SquirrelJMETests
+	enginestub.c
+	jnistub.c
     mainEntry.c
-    enginestub.c
 	${SQUIRRELJME_TEST_SOURCES})
 
 # Can use C++!
