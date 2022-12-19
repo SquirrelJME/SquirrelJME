@@ -36,8 +36,8 @@ sjme_returnFail sjme_hasError(sjme_error* error)
 	return SJME_RETURN_SUCCESS;
 }
 
-void sjme_setErrorR(sjme_error* error, sjme_errorCode code, sjme_jint value,
-	const char* file, int line, const char* function)
+sjme_errorCode sjme_setErrorL(sjme_error* error, sjme_errorCode code,
+	sjme_jint value, const char* file, int line, const char* function)
 {
 	if (error != NULL)
 	{
@@ -50,7 +50,22 @@ void sjme_setErrorR(sjme_error* error, sjme_errorCode code, sjme_jint value,
 	
 	/* Print error state being set. */
 #if defined(SJME_DEBUG)
-	sjme_messageR(NULL, -1, NULL, "setError(%d, %d) at %s:%d (%s()).",
+	sjme_messageR(NULL, -1, NULL,
+		"setError(%d, %d) at %s:%d (%s()).",
 		code, value, file, line, function);
 #endif
+
+	/* Return the given error code. */
+	return code;
+}
+
+sjme_jboolean sjme_setErrorBL(sjme_jboolean returning, sjme_error* error,
+	sjme_errorCode code, sjme_jint value, const char* file, int line,
+	const char* function)
+{
+	/* Forward. */
+	sjme_setErrorL(error, code, value, file, line, function);
+
+	/* Then return this boolean. */
+	return returning;
 }
