@@ -302,9 +302,6 @@ typedef struct sjme_vmRegisterNative
 	void* fnPtr;
 } sjme_vmRegisterNative;
 
-/** Declare function pointer. */
-#define SJME_FUNC_PTR__(x) (*x)
-
 /**
  * Virtual machine state.
  *
@@ -313,8 +310,6 @@ typedef struct sjme_vmRegisterNative
 struct sjme_vmState
 {
 	#include "sjmejni/tables/interfaceStructFields.h"
-
-	void* reservedEnd;
 };
 
 /**
@@ -326,9 +321,6 @@ struct sjme_vmThread
 {
 	#include "sjmejni/tables/functionStructFields.h"
 };
-
-/* Clear this. */
-#undef SJME_FUNC_PTR__
 
 /**
  * Contains the functions which are used to interact with the system to

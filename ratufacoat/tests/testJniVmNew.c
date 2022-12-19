@@ -8,8 +8,9 @@
 // -------------------------------------------------------------------------*/
 
 #include "debug.h"
-#include "tests.h"
 #include "jnistub.h"
+#include "sjmejni/shadow.h"
+#include "tests.h"
 
 /**
  * Tests initialization of a new virtual machine along with its teardown.
@@ -19,13 +20,34 @@
 SJME_TEST_PROTOTYPE(testJniVmNew)
 {
 	sjme_vmState* vm = NULL;
-	sjme_vmThread* initThread = NULL;
+	sjme_vmThread* thread = NULL;
+	sjme_vmStateShadow* vmShadow = NULL;
+	sjme_vmThreadShadow* threadShadow = NULL;
 
 	/* Start new virtual machine. */
 	if (SJME_INTERFACE_ERROR_NONE != sjme_vmNew(&vm,
-		&initThread, NULL, shim->jniSysApi))
+		&thread, NULL, shim->jniSysApi))
 		return FAIL_TEST(1);
 
-	sjme_todo("Implement this?");
-	return FAIL_TEST(1);
+	/* The shadow of a virtual machine should be itself. */
+	vmShadow = sjme_vmGetStateShadow(vm);
+	if ((void*)(*vm) != (void*)vmShadow ||
+		(*vm) != vmShadow->functions)
+		return FAIL_TEST(2);
+
+	/* The shadow of a thread should be itself. */
+	threadShadow = sjme_vmGetThreadShadow(thread);
+	if ((void*)(*thread) != (void*)threadShadow ||
+		(*thread) != threadShadow->functions)
+		return FAIL_TEST(3);
+
+	/* The shadowed thread should also have the VM as its parent. */
+	if (threadShadow->parentVm != vmShadow)
+		return FAIL_TEST(4);
+
+	/* Immediately destroy the VM following. */
+	if (SJME_INTERFACE_ERROR_NONE != (*vm)->DestroyJavaVM(vm))
+		return FAIL_TEST(5);
+
+	return PASS_TEST();
 }
