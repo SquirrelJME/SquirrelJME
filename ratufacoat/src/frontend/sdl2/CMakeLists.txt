@@ -51,3 +51,9 @@ endif()
 target_link_libraries(SquirrelJME PUBLIC
 	SquirrelJMECoreLib
 	"${SDL2_LIBRARIES}")
+
+# Specify -v to the linker so we know it works
+if (APPLE)
+	target_link_options(SquirrelJME PUBLIC
+		"-v")
+endif()

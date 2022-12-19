@@ -117,8 +117,10 @@ typedef struct sjme_cpuMetrics
 	sjme_jint totalinstructions;
 } sjme_cpuMetrics;
 
+#if 0
 sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	sjme_jint cycles);
+#endif
 
 /*--------------------------------------------------------------------------*/
 

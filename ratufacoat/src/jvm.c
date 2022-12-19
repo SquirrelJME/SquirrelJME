@@ -155,9 +155,12 @@ sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_error* error, sjme_jint cycles)
 		cpu = &jvm->threads[threadid];
 		if (cpu->threadstate == SJME_THREAD_STATE_NONE)
 			continue;
-		
+
+		sjme_todo("Implement this?");
+#if 0
 		/* Execute CPU engine. */
 		cycles = sjme_cpuexec(jvm, cpu, error, cycles);
+#endif
 		
 		/* CPU fault, stop! */
 		if (error->code != SJME_ERROR_NONE)
