@@ -80,7 +80,7 @@ sjme_nativefile* sjme_stdc_fileopen(sjme_nativefilename* filename,
 	
 	if (filename == NULL)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, 0);
 		
 		return NULL;
 	}
@@ -123,7 +123,7 @@ void sjme_stdc_fileclose(sjme_nativefile* file, sjme_error* error)
 	/* Not closing a file? */
 	if (file == NULL)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, 0);
 		
 		return;
 	}
@@ -149,7 +149,7 @@ sjme_jint sjme_stdc_filesize(sjme_nativefile* file, sjme_error* error)
 	/* Not valid? */
 	if (file == NULL)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, 0);
 		
 		return SJME_JINT_C(-1);
 	}
@@ -201,7 +201,7 @@ sjme_jint sjme_stdc_fileread(sjme_nativefile* file, void* dest, sjme_jint len,
 	/* Invalid argument? */
 	if (file == NULL || dest == NULL || len < 0)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, 0);
 		
 		return SJME_JINT_C(-1);
 	}

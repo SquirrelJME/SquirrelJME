@@ -17,6 +17,7 @@
 #define SQUIRRELJME_SHADOW_H
 
 #include "sjmejni/sjmejni.h"
+#include "error.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -52,6 +53,9 @@ typedef struct sjme_vmThreadShadow
 
 	/** The parent virtual machine of this thread. */
 	sjme_vmStateShadow* parentVm;
+
+	/** The last error for this thread, will be set by operations. */
+	sjme_error lastError;
 } sjme_vmThreadShadow;
 
 /**

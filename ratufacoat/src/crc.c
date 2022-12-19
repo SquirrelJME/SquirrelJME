@@ -292,7 +292,7 @@ sjme_jboolean sjme_crcOfferDirect(sjme_crcState* crcState,
 	
 	if (len < 0)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, len);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, len);
 		
 		return sjme_false;
 	}
@@ -340,7 +340,7 @@ sjme_jboolean sjme_crcOfferStream(sjme_crcState* crcState,
 	
 	if (len < 0)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, len);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, len);
 		
 		return sjme_false;
 	}

@@ -25,7 +25,7 @@ sjme_returnFail sjme_loadBootRom(sjme_jvm* jvm, sjme_error* error)
 	/* Invalid arguments. */
 	if (jvm == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_seterror(error, SJME_ERROR_INVALID_ARGUMENT, 0);
 		
 		return 0;
 	}

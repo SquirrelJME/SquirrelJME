@@ -81,7 +81,7 @@ static sjme_jboolean sjme_engineEnterMain(sjme_engineState* engineState,
 			&classPath, error))
 		{
 			if (!sjme_hasError(error))
-				sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
+				sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, 0);
 			
 			return sjme_false;
 		}

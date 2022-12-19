@@ -45,7 +45,7 @@ sjme_jint sjme_cpuexec(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	/* Invalid argument? */
 	if (jvm == NULL || cpu == NULL)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, 0);
 		
 		return cycles;
 	}

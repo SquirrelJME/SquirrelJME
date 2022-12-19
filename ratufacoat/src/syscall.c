@@ -25,7 +25,7 @@ void sjme_syscall(sjme_jvm* jvm, sjme_cpu* cpu, sjme_error* error,
 	/* Called wrong? */
 	if (jvm == NULL || cpu == NULL || args == NULL || rv == NULL)
 	{
-		sjme_seterror(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_seterror(error, SJME_ERROR_INVALID_ARGUMENT, 0);
 		
 		return;
 	}

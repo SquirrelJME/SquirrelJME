@@ -54,7 +54,7 @@ sjme_jboolean sjme_getMemNode(void* inPtr, sjme_memNode** outNode,
 	result = SJME_POINTER_OFFSET_LONG(inPtr, -sizeof(sjme_memNode));
 	if (result->key != SJME_MEM_NODE_KEY)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, result->key);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, result->key);
 
 		return sjme_false;
 	}
@@ -256,7 +256,7 @@ sjme_jboolean sjme_free(void* p, sjme_error* error)
 	node = NULL;
 	if (!sjme_getMemNode(p, &node, error) || node == NULL)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, 0);
 		return sjme_false;
 	}
 

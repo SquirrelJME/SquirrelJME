@@ -55,7 +55,7 @@ static sjme_jboolean sjme_memStreamRead(sjme_dataStream* stream,
 	
 	if (len < 0)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, len);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, len);
 		
 		return sjme_false;
 	}

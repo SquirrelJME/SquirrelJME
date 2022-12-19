@@ -100,7 +100,7 @@ sjme_returnFail sjme_randomNextBits(sjme_randomState* random, sjme_jint* out,
 	/* Must be in 32-bit range. */
 	if (bits < 0 || bits > 32)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, bits);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, bits);
 		return SJME_RETURN_FAIL;
 	}
 	

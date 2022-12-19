@@ -25,8 +25,8 @@ SJME_TEST_PROTOTYPE(testJniVmNew)
 	sjme_vmThreadShadow* threadShadow = NULL;
 
 	/* Start new virtual machine. */
-	if (SJME_INTERFACE_ERROR_NONE != sjme_vmNew(&vm,
-		&thread, NULL, shim->jniSysApi))
+	if (!sjme_vmNew(&vm, &thread, NULL,
+		shim->jniSysApi, &shim->error))
 		return FAIL_TEST(1);
 
 	/* The shadow of a virtual machine should be itself. */
@@ -46,7 +46,7 @@ SJME_TEST_PROTOTYPE(testJniVmNew)
 		return FAIL_TEST(4);
 
 	/* Immediately destroy the VM following. */
-	if (SJME_INTERFACE_ERROR_NONE != (*vm)->DestroyJavaVM(vm))
+	if ((*vm)->DestroyJavaVM(vm) != SJME_ERROR_NONE)
 		return FAIL_TEST(5);
 
 	return PASS_TEST();

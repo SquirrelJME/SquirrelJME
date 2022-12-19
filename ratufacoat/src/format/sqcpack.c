@@ -156,7 +156,7 @@ sjme_jboolean sjme_sqcPackLocateChunk(sjme_packInstance* instance,
 	/* Out of bounds? */
 	if (index < 0 || index >= instance->numLibraries)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, index);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, index);
 		
 		return sjme_false;
 	}

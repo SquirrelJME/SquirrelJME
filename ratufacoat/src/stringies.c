@@ -31,7 +31,7 @@ static const sjme_jvmErrorString sjme_jvmErrorUnknown =
 static const sjme_jvmErrorString sjme_jvmErrorStrings[] =
 {
 	{SJME_ERROR_NOSUCHFILE,         "No such file"},
-	{SJME_ERROR_INVALIDARG,         "Invalid argument"},
+	{SJME_ERROR_INVALID_ARGUMENT,         "Invalid argument"},
 	{SJME_ERROR_ENDOFFILE,          "End of file"},
 	{SJME_ERROR_NO_MEMORY,          "No memory available"},
 	{SJME_ERROR_NONATIVEROM,        "No Native ROM specified"},

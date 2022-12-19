@@ -231,7 +231,7 @@ sjme_jboolean sjme_packClassPathMapper(sjme_packInstance* packInstance,
 	if (index < 0 || index >= outClassPath->count ||
 		targetLibIndex < 0 || targetLibIndex >= packInstance->numLibraries)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, index + targetLibIndex);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, index + targetLibIndex);
 		return sjme_false;
 	}
 
@@ -314,7 +314,7 @@ sjme_jboolean sjme_packLibraryOpen(sjme_packInstance* packInstance,
 	/* Attempting to open an invalid library? */
 	if (index < 0 || index >= packInstance->numLibraries)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, 0);
 		
 		return sjme_false;
 	}

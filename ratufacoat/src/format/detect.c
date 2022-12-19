@@ -19,7 +19,7 @@ sjme_jboolean sjme_detectMagicNumber(const void* data, sjme_jint size,
 	/* Check parameters first. */
 	if (data == NULL || size < 0)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, 0);
 		return sjme_false;
 	}
 	
@@ -50,7 +50,7 @@ sjme_jboolean sjme_detectFormat(const void* data, sjme_jint size,
 	if (data == NULL || size <= 0 || outDriver == NULL || choices == NULL ||
 		offsetOfDetect < 0)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, 0);
 		return sjme_false;
 	}
 	

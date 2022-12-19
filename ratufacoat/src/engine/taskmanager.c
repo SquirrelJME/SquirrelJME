@@ -53,7 +53,7 @@ static sjme_jboolean sjme_taskManagerPipeInit(sjme_pipeRedirectType stdInMode,
 		if (redirects[i] < SJME_PIPE_REDIRECT_DISCARD ||
 			redirects[i] >= SJME_NUM_PIPE_REDIRECTS)
 		{
-			sjme_setError(error, SJME_ERROR_INVALIDARG, redirects[i]);
+			sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, redirects[i]);
 
 			return sjme_false;
 		}
@@ -174,7 +174,7 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 		stdOutMode < 0 || stdOutMode >= SJME_NUM_PIPE_REDIRECTS ||
 		stdErrMode < 0 || stdErrMode >= SJME_NUM_PIPE_REDIRECTS)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, 0);
 		return sjme_false;
 	}
 	

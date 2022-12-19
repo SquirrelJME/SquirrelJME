@@ -42,13 +42,22 @@ extern "C" {
 #define JNI_VERSION_1_6 SJME_INTERFACE_VERSION_1_6
 
 /** No error. */
-#define JNI_OK SJME_INTERFACE_ERROR_NONE
+#define JNI_OK SJME_JNI_ERROR_NONE
+
+/** General JNI error. */
+#define JNI_ERR SJME_JNI_ERROR_UNKNOWN
 
 /** The virtual machine is detached. */
-#define JNI_EDETACHED SJME_INTERFACE_ERROR_DETACHED
+#define JNI_EDETACHED SJME_JNI_ERROR_DETACHED
 
 /** The virtual machine version is incorrect. */
-#define JNI_EVERSION SJME_INTERFACE_ERROR_INVALID_VERSION
+#define JNI_EVERSION SJME_JNI_ERROR_INVALID_VERSION
+
+/** No memory remains. */
+#define JNI_ENOMEM SJME_JNI_ERROR_NO_MEMORY
+
+/** Invalid argument. */
+#define JNI_EINVAL SJME_JNI_ERROR_VM_INVALID_ARGUMENT
 
 /** Boolean. */
 typedef sjme_jboolean jboolean;

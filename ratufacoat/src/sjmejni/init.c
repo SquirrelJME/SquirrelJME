@@ -8,11 +8,18 @@
 // -------------------------------------------------------------------------*/
 
 #include "debug.h"
+#include "error.h"
 #include "sjmejni/sjmejni.h"
 
-sjme_jint sjme_vmNew(sjme_vmState** outVm, sjme_vmThread** outThread,
-	sjme_vmCmdLine* vmArgs, const sjme_vmSysApi* sysApi)
+sjme_jboolean sjme_vmNew(sjme_vmState** outVm, sjme_vmThread** outThread,
+	sjme_vmCmdLine* vmArgs, const sjme_vmSysApi* sysApi, sjme_error* error)
 {
+	if (outVm == NULL || outThread == NULL || sysApi == NULL)
+	{
+		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
+		return sjme_false;
+	}
+
 	sjme_todo("Implement this?");
-	return -1;
+	return sjme_false;
 }

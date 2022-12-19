@@ -91,7 +91,7 @@ sjme_jboolean sjme_sqcGetPropertyIntegers(const sjme_sqcState* sqcState,
 	
 	if (count < 0)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, count);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, count);
 		return sjme_false;
 	}
 	
@@ -154,7 +154,7 @@ sjme_jboolean sjme_sqcGetPropertyStrings(const sjme_sqcState* sqcState,
 	
 	if (count < 0)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, count);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, count);
 		return sjme_false;
 	}
 	

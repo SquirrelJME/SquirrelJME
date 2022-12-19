@@ -81,7 +81,7 @@ sjme_returnFail sjme_jvmDestroy(sjme_jvm* jvm, sjme_error* error)
 	/* Missing this? */
 	if (jvm == NULL)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, 0);
 		
 		return SJME_RETURN_FAIL;
 	}
@@ -133,7 +133,7 @@ sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_error* error, sjme_jint cycles)
 	/* Do nothing. */
 	if (jvm == NULL)
 	{
-		sjme_setError(error, SJME_ERROR_INVALIDARG, 0);
+		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, 0);
 		
 		return 0;
 	}
