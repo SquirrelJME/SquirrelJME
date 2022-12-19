@@ -23,7 +23,7 @@ else()
 endif()
 
 # Load version number
-file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/../squirreljme-version"
+file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/squirreljme-version"
 	SQUIRRELJME_VERSION LIMIT_COUNT 1)
 message("Building for SquirrelJME ${SQUIRRELJME_VERSION}!")
 
