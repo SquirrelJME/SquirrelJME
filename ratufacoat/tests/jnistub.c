@@ -8,3 +8,8 @@
 // -------------------------------------------------------------------------*/
 
 #include "jnistub.h"
+
+const sjme_vmSysApi sjme_testingVmSysApi =
+{
+	.runtimeLineEnding = NULL,
+};

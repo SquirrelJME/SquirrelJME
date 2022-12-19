@@ -61,6 +61,9 @@ sjme_testShim* shimNew()
 	
 	/* Link native methods. */
 	rv->nativeFunctions->stderr_write = shimStdErrWrite;
+
+	/* System JNI support. */
+	rv->jniSysApi = &sjme_testingVmSysApi;
 	
 	/* Use this shim. */
 	return rv;

@@ -29,6 +29,9 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+/** Testing virtual machine system Api. */
+extern const sjme_vmSysApi sjme_testingVmSysApi;
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

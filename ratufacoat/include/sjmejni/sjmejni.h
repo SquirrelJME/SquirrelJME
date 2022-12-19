@@ -418,7 +418,7 @@ sjme_jint sjme_vmGetAllVms(sjme_vmState** vmBuf, sjme_jsize bufLen,
  * @since 2022/12/11
  */
 sjme_jint sjme_vmNew(sjme_vmState** outVm, sjme_vmThread** outThread,
-	sjme_vmCmdLine* vmArgs, sjme_vmSysApi* sysApi);
+	sjme_vmCmdLine* vmArgs, const sjme_vmSysApi* sysApi);
 
 /**
  * Ticks the virtual machine executing any functions as needed and otherwise

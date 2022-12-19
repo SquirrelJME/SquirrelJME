@@ -28,7 +28,7 @@ typedef struct sjme_testShim
 	sjme_nativefuncs* nativeFunctions;
 
 	/** JNI system API. */
-	sjme_vmSysApi* jniSysApi;
+	const sjme_vmSysApi* jniSysApi;
 } sjme_testShim;
 
 /**
