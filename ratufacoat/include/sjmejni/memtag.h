@@ -29,17 +29,6 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
-/**
- * Represents the type of tag that is used for memory.
- *
- * @since 2022/12/20
- */
-typedef enum sjme_memTagType
-{
-	/** Static memory, never dynamically free. */
-	SJME_MEM_TAG_STATIC,
-} sjme_memTagType;
-
 /** Declares a tagged reference. */
 #define SJME_DECL_TAGGED(x) typedef x* x##_tagged /* NOLINT */
 
@@ -118,7 +107,77 @@ SJME_DECL_TAGGED_ALIAS(sjme_jdoubleArray);
 /** Tagged Object array type. */
 SJME_DECL_TAGGED_ALIAS(sjme_jobjectArray);
 
-sjme_jboolean sjme_memNew(sjme_memTagType tagType, void** tag);
+/**
+ * Represents the type of tag that is used for memory.
+ *
+ * @since 2022/12/20
+ */
+typedef enum sjme_memTagType
+{
+	/** Static memory, never dynamically free. */
+	SJME_MEM_TAG_STATIC,
+} sjme_memTagType;
+
+/**
+ * Allocates memory directly, not using the tagging system.
+ *
+ * @param outPtr The output pointer.
+ * @param size The size to allocate.
+ * @param error The error if allocation failed.
+ * @return If the allocation succeeded or not.
+ * @since 2022/12/20
+ */
+sjme_jboolean sjme_memDirectNew(void** outPtr, sjme_jsize size,
+	sjme_error* error);
+
+/**
+ * Allocates tagged memory.
+ *
+ * @param outPtr The output pointer, should be a tagged pointer.
+ * @param size The size of the data to allocate,
+ * use @c sjme_memTaggedNewSizeOf().
+ * @param tagType The type of tag used, represents how the value is to be
+ * cached or otherwise.
+ * @param error The resultant error if allocation failed.
+ * @param protectA Should be @c sizeof(void*).
+ * @param protectB Should be @c sizeof(void*).
+ * @return If allocation was successful or not.
+ * @since 2022/12/20
+ */
+sjme_jboolean sjme_memTaggedNewZ(void*** outPtr, sjme_jsize size,
+	sjme_memTagType tagType, sjme_error* error, sjme_jsize protectA,
+	sjme_jsize protectB);
+
+/** Protector value for correct sizeof. */
+#define SJME_MEM_TAGGED_NEW_SIZE_OF_PROTECT INT32_C(0x80000000)
+
+/**
+ * Macro to ensure that for tagged types, @c sizeof() is not used.
+ *
+ * @param ref The reference to get the size of.
+ * @since 2022/12/20
+ */
+#define sjme_memTaggedNewSizeOf(ref) \
+	(((sjme_jsize)sizeof(**(ref))) ^ SJME_MEM_TAGGED_NEW_SIZE_OF_PROTECT)
+
+/**
+ * Allocates tagged memory.
+ *
+ * @param outPtr The output pointer, should be a tagged pointer.
+ * @param size The size of the data to allocate,
+ * use @c sjme_memTaggedNewSizeOf().
+ * @param tagType The type of tag used, represents how the value is to be
+ * cached or otherwise.
+ * @param error The resultant error if allocation failed.
+ * @return If allocation was successful or not.
+ * @since 2022/12/20
+ */
+#define sjme_memTaggedNew(outPtr, size, tagType, error) \
+	sjme_memTaggedNewZ((void***)(outPtr), size, tagType, error, \
+		sizeof(*(outPtr)), \
+		sizeof(**(outPtr))) /* NOLINT(bugprone-sizeof-expression) */
+
+sjme_jboolean sjme_memTaggedFree(void** out, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

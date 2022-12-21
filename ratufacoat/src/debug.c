@@ -34,6 +34,9 @@ void sjme_messageR(const char* file, int line,
 	else
 		fprintf(stderr, "DB: %s\n",
 			buf);
+
+	/* Make sure it gets written. */
+	fflush(stderr);
 }
 
 sjme_returnNever sjme_todoR(const char* file, int line,

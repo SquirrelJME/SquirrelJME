@@ -355,8 +355,17 @@ typedef enum sjme_errorCode
 	/** Bad pipe initialize. */
 	SJME_ERROR_BAD_PIPE_INIT = INT32_C(-67),
 
+	/** Protected tag pointer violation. */
+	SJME_ERROR_PROTECTED_TAG_VIOLATION = INT32_C(-68),
+
+	/** Wrong sizeof() type used. */
+	SJME_ERROR_TAGGED_WRONG_SIZE_OF = INT32_C(-69),
+
+	/** Tagged pointer was not NULL. */
+	SJME_ERROR_TAG_NOT_NULL = INT32_C(-70),
+
 	/** The lowest error code. */
-	SJME_ERROR_LOWEST_CODE = INT32_C(-68)
+	SJME_ERROR_LOWEST_CODE = INT32_C(-71)
 } sjme_errorCode;
 
 /** Size type. */
@@ -393,6 +402,8 @@ typedef sjme_jobject sjme_jstring;
 
 /** Throwable. */
 typedef sjme_jobject sjme_jthrowable;
+
+/** Reference type. */
 
 /** Weak reference. */
 typedef sjme_jobject sjme_jweakReference;
