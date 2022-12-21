@@ -8,7 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Tagged memory management.
+ * Tagged memory management, used for garbage collection and otherwise.
  * 
  * @since 2022/12/20
  */
