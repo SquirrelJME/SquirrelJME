@@ -107,6 +107,9 @@ SJME_DECL_TAGGED_ALIAS(sjme_jdoubleArray);
 /** Tagged Object array type. */
 SJME_DECL_TAGGED_ALIAS(sjme_jobjectArray);
 
+/** Opaque memory tag group. */
+typedef struct sjme_memTagGroup sjme_memTagGroup;
+
 /**
  * Represents the type of tag that is used for memory.
  *
@@ -130,6 +133,9 @@ typedef enum sjme_memTagType
 sjme_jboolean sjme_memDirectNew(void** outPtr, sjme_jsize size,
 	sjme_error* error);
 
+sjme_jboolean sjme_memTaggedNewGroup(sjme_memTagGroup** outPtr,
+	sjme_error* error);
+
 /**
  * Allocates tagged memory.
  *
@@ -144,9 +150,9 @@ sjme_jboolean sjme_memDirectNew(void** outPtr, sjme_jsize size,
  * @return If allocation was successful or not.
  * @since 2022/12/20
  */
-sjme_jboolean sjme_memTaggedNewZ(void*** outPtr, sjme_jsize size,
-	sjme_memTagType tagType, sjme_error* error, sjme_jsize protectA,
-	sjme_jsize protectB);
+sjme_jboolean sjme_memTaggedNewZ(sjme_memTagGroup* group, void*** outPtr,
+	sjme_jsize size, sjme_memTagType tagType, sjme_error* error,
+	sjme_jsize protectA, sjme_jsize protectB);
 
 /** Protector value for correct sizeof. */
 #define SJME_MEM_TAGGED_NEW_SIZE_OF_PROTECT INT32_C(0x80000000)
@@ -163,6 +169,7 @@ sjme_jboolean sjme_memTaggedNewZ(void*** outPtr, sjme_jsize size,
 /**
  * Allocates tagged memory.
  *
+ * @param group The group the tag belongs to.
  * @param outPtr The output pointer, should be a tagged pointer.
  * @param size The size of the data to allocate,
  * use @c sjme_memTaggedNewSizeOf().
@@ -172,8 +179,9 @@ sjme_jboolean sjme_memTaggedNewZ(void*** outPtr, sjme_jsize size,
  * @return If allocation was successful or not.
  * @since 2022/12/20
  */
-#define sjme_memTaggedNew(outPtr, size, tagType, error) \
-	sjme_memTaggedNewZ((void***)(outPtr), size, tagType, error, \
+#define sjme_memTaggedNew(group, outPtr, size, tagType, error) \
+	sjme_memTaggedNewZ((group), (void***)(outPtr), (size), (tagType), \
+		(error), \
 		sizeof(*(outPtr)), \
 		sizeof(**(outPtr))) /* NOLINT(bugprone-sizeof-expression) */
 

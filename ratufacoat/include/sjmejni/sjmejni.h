@@ -364,8 +364,11 @@ typedef enum sjme_errorCode
 	/** Tagged pointer was not NULL. */
 	SJME_ERROR_TAG_NOT_NULL = INT32_C(-70),
 
+	/** Pointer is not null or initialized. */
+	SJME_ERROR_POINTER_NOT_NULL = INT32_C(-71),
+
 	/** The lowest error code. */
-	SJME_ERROR_LOWEST_CODE = INT32_C(-71)
+	SJME_ERROR_LOWEST_CODE = INT32_C(-72)
 } sjme_errorCode;
 
 /** Size type. */
