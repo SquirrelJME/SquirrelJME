@@ -48,7 +48,7 @@ SJME_TEST_PROTOTYPE(testJniMemTags)
 
 	/* Setup tag group. */
 	tagGroup = NULL;
-	if (!sjme_memTaggedNewGroup(&tagGroup, &shim->error))
+	if (!sjme_memTaggedGroupNew(&tagGroup, &shim->error))
 		return FAIL_TEST(1);
 
 	/* Sizeof the base should be the same. */
@@ -96,6 +96,13 @@ SJME_TEST_PROTOTYPE(testJniMemTags)
 	if (!sjme_memTaggedNew(tagGroup, &alloc, sjme_memTaggedNewSizeOf(alloc),
 		SJME_MEM_TAG_STATIC, &shim->error))
 		return FAIL_TEST(7);
+
+	/* Access it. */
+	(*alloc)->a = 1;
+	(*alloc)->b = 2;
+	(*alloc)->c = 3;
+
+	sjme_todo("Implement rest of test.");
 
 	return PASS_TEST();
 }

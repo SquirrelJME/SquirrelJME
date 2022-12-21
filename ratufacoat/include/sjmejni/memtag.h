@@ -29,6 +29,9 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+/** Protector value for using @c sjme_memTaggedNewSizeOf and not @c sizeof. */
+#define SJME_MEM_TAGGED_NEW_SIZE_OF_PROTECT INT32_C(0x80000000)
+
 /** Declares a tagged reference. */
 #define SJME_DECL_TAGGED(x) typedef x* x##_tagged /* NOLINT */
 
@@ -107,7 +110,13 @@ SJME_DECL_TAGGED_ALIAS(sjme_jdoubleArray);
 /** Tagged Object array type. */
 SJME_DECL_TAGGED_ALIAS(sjme_jobjectArray);
 
-/** Opaque memory tag group. */
+/**
+ * Represents a memory tag group which is utilized by virtual machines to
+ * collect all of the various pointers and also perform garbage collection
+ * as needed.
+ *
+ * @since 2022/12/20
+ */
 typedef struct sjme_memTagGroup sjme_memTagGroup;
 
 /**
@@ -133,7 +142,28 @@ typedef enum sjme_memTagType
 sjme_jboolean sjme_memDirectNew(void** outPtr, sjme_jsize size,
 	sjme_error* error);
 
-sjme_jboolean sjme_memTaggedNewGroup(sjme_memTagGroup** outPtr,
+/**
+ * Allocates a group which contains tagged pointers which are used for
+ * collection multiple allocations together within a single virtual machine
+ * instance.
+ *
+ * @param outPtr The output for the group.
+ * @param error Any resultant error state.
+ * @return If the group was successfully allocated.
+ * @since 2022/12/20
+ */
+sjme_jboolean sjme_memTaggedGroupNew(sjme_memTagGroup** outPtr,
+	sjme_error* error);
+
+/**
+ * Frees a memory group and all of the memory that was previously allocated.
+ *
+ * @param inPtr The input group.
+ * @param error Any resultant error state.
+ * @return If the group was successfully freed.
+ * @since 2022/12/20
+ */
+sjme_jboolean sjme_memTaggedGroupFree(sjme_memTagGroup** inPtr,
 	sjme_error* error);
 
 /**
@@ -153,9 +183,6 @@ sjme_jboolean sjme_memTaggedNewGroup(sjme_memTagGroup** outPtr,
 sjme_jboolean sjme_memTaggedNewZ(sjme_memTagGroup* group, void*** outPtr,
 	sjme_jsize size, sjme_memTagType tagType, sjme_error* error,
 	sjme_jsize protectA, sjme_jsize protectB);
-
-/** Protector value for correct sizeof. */
-#define SJME_MEM_TAGGED_NEW_SIZE_OF_PROTECT INT32_C(0x80000000)
 
 /**
  * Macro to ensure that for tagged types, @c sizeof() is not used.
@@ -185,7 +212,31 @@ sjme_jboolean sjme_memTaggedNewZ(sjme_memTagGroup* group, void*** outPtr,
 		sizeof(*(outPtr)), \
 		sizeof(**(outPtr))) /* NOLINT(bugprone-sizeof-expression) */
 
-sjme_jboolean sjme_memTaggedFree(void** out, sjme_error* error);
+/**
+ * Frees the memory tag and its resultant indirection is cleared as well.
+ *
+ * @param inPtr The input pointer to be freed.
+ * @param error Any resultant error state.
+ * @param protectA Should be @c sizeof(void*).
+ * @param protectB Should be @c sizeof(void*).
+ * @return If freeing the tagged pointer was a success.
+ * @since 2022/12/20
+ */
+sjme_jboolean sjme_memTaggedFreeZ(void*** inPtr, sjme_error* error,
+	sjme_jsize protectA, sjme_jsize protectB);
+
+/**
+ * Frees the memory tag and its resultant indirection is cleared as well.
+ *
+ * @param inPtr The input pointer to be freed.
+ * @param error Any resultant error state.
+ * @return If freeing the tagged pointer was a success.
+ * @since 2022/12/20
+ */
+#define sjme_memTaggedFree(inPtr, error) \
+	sjme_memTaggedFreeZ(inPtr, error, \
+		sizeof(*(inPtr)), \
+		sizeof(**(inPtr))) /* NOLINT(bugprone-sizeof-expression) */
 
 /*--------------------------------------------------------------------------*/
 
