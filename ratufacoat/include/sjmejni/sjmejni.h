@@ -383,49 +383,49 @@ typedef enum sjme_jobjectReferenceType
 } sjme_jobjectReferenceType;
 
 /** Object type. */
-typedef struct sjme_jobject* sjme_jobject;
+typedef struct sjme_jobject_internal* sjme_jobject;
 
 /** Class type. */
-typedef struct sjme_jobject* sjme_jclass;
+typedef sjme_jobject sjme_jclass;
 
 /** String type. */
-typedef struct sjme_jstring* sjme_jstring;
+typedef sjme_jobject sjme_jstring;
 
 /** Throwable. */
-typedef struct sjme_jthrowable* sjme_jthrowable;
+typedef sjme_jobject sjme_jthrowable;
 
 /** Weak reference. */
-typedef struct sjme_jweakReference* sjme_jweakReference;
+typedef sjme_jobject sjme_jweakReference;
 
 /** Array type. */
-typedef struct sjme_jarray* sjme_jarray;
+typedef sjme_jobject sjme_jarray;
 
 /** Boolean array type. */
-typedef struct sjme_jbooleanArray* sjme_jbooleanArray;
+typedef sjme_jarray sjme_jbooleanArray;
 
 /** Byte array type. */
-typedef struct sjme_jbyteArray* sjme_jbyteArray;
+typedef sjme_jarray sjme_jbyteArray;
 
 /** Character array type. */
-typedef struct sjme_jcharArray* sjme_jcharArray;
+typedef sjme_jarray sjme_jcharArray;
 
 /** Short array type. */
-typedef struct sjme_jshortArray* sjme_jshortArray;
+typedef sjme_jarray sjme_jshortArray;
 
 /** Integer array type. */
-typedef struct sjme_jintArray* sjme_jintArray;
+typedef sjme_jarray sjme_jintArray;
 
 /** Long array type. */
-typedef struct sjme_jlongArray* sjme_jlongArray;
+typedef sjme_jarray sjme_jlongArray;
 
 /** Float array type. */
-typedef struct sjme_jfloatArray* sjme_jfloatArray;
+typedef sjme_jarray sjme_jfloatArray;
 
 /** Double array type. */
-typedef struct sjme_jdoubleArray* sjme_jdoubleArray;
+typedef sjme_jarray sjme_jdoubleArray;
 
 /** Object array type. */
-typedef struct sjme_jobjectArray* sjme_jobjectArray;
+typedef sjme_jarray sjme_jobjectArray;
 
 /**
  * Value type.
@@ -445,11 +445,11 @@ typedef union sjme_jvalue
 	sjme_jobject l;
 } sjme_jvalue;
 
-/** Field within the VM. */
-typedef struct sjme_vmField* sjme_vmField;
+/** Field within the VM, is tagged. */
+typedef struct sjme_vmField_internal* sjme_vmField;
 
-/** Method within the VM. */
-typedef struct sjme_vmMethod* sjme_vmMethod;
+/** Method within the VM, is tagged. */
+typedef struct sjme_vmMethod_internal* sjme_vmMethod;
 
 /** Stores error information. */
 typedef struct sjme_error sjme_error;
@@ -489,10 +489,10 @@ typedef struct sjme_vmCmdLine
 } sjme_vmCmdLine;
 
 /** Virtual machine functions. */
-typedef struct sjme_vmThread* sjme_vmThread;
+typedef struct sjme_vmThread_internal* sjme_vmThread;
 
 /** Virtual machine state. */
-typedef struct sjme_vmState* sjme_vmState;
+typedef struct sjme_vmState_internal* sjme_vmState;
 
 /**
  * Native method registration interface.
@@ -516,7 +516,7 @@ typedef struct sjme_vmRegisterNative
  *
  * @since 2022/12/11
  */
-struct sjme_vmState
+struct sjme_vmState_internal
 {
 	#include "sjmejni/tables/interfaceStructFields.h"
 };
@@ -526,7 +526,7 @@ struct sjme_vmState
  *
  * @since 2022/12/11
  */
-struct sjme_vmThread
+struct sjme_vmThread_internal
 {
 	#include "sjmejni/tables/functionStructFields.h"
 };

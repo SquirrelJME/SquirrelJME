@@ -15,7 +15,13 @@ endif()
 # Declare base library
 add_library(SquirrelJMEJNI OBJECT
 	init.c
+	memtag.c
+	shadow.c
 
+	# All of the various function implementations, all sources must be
+	# specified here without a wildcard so that the object targets in CMake
+	# are able to collect every source/object file for inclusion into certain
+	# targets such as RetroArch or JNI library
 	tables/function/defAllocObject.c
 	tables/function/defCallBooleanMethod.c
 	tables/function/defCallBooleanMethodA.c

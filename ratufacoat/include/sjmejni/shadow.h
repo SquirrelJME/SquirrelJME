@@ -37,8 +37,11 @@ extern "C" {
  */
 typedef struct sjme_vmStateShadow
 {
-	/** Pointer to self. */
-	struct sjme_vmState* functions;
+	/** Pointer to @c functions, keeps within the same block. */
+	struct sjme_vmState_internal* shadowPtr;
+
+	/** Function table. */
+	struct sjme_vmState_internal functions;
 } sjme_vmStateShadow;
 
 /**
@@ -48,8 +51,11 @@ typedef struct sjme_vmStateShadow
  */
 typedef struct sjme_vmThreadShadow
 {
-	/** Pointer to self. */
-	struct sjme_vmThread* functions;
+	/** Pointer to @c functions, keeps within the same block. */
+	struct sjme_vmThread_internal* shadowPtr;
+
+	/** Function table. */
+	struct sjme_vmThread_internal functions;
 
 	/** The parent virtual machine of this thread. */
 	sjme_vmStateShadow* parentVm;

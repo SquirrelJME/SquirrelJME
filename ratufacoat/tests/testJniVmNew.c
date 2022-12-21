@@ -32,13 +32,15 @@ SJME_TEST_PROTOTYPE(testJniVmNew)
 	/* The shadow of a virtual machine should be itself. */
 	vmShadow = sjme_vmGetStateShadow(vm);
 	if ((void*)(*vm) != (void*)vmShadow ||
-		(*vm) != vmShadow->functions)
+		vmShadow->shadowPtr != &vmShadow->functions ||
+		(*vm) != &vmShadow->functions)
 		return FAIL_TEST(2);
 
 	/* The shadow of a thread should be itself. */
 	threadShadow = sjme_vmGetThreadShadow(thread);
 	if ((void*)(*thread) != (void*)threadShadow ||
-		(*thread) != threadShadow->functions)
+		threadShadow->shadowPtr != &threadShadow->functions ||
+		(*thread) != &threadShadow->functions)
 		return FAIL_TEST(3);
 
 	/* The shadowed thread should also have the VM as its parent. */
