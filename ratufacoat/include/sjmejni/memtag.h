@@ -234,7 +234,7 @@ sjme_jboolean sjme_memTaggedFreeZ(void*** inPtr, sjme_error* error,
  * @since 2022/12/20
  */
 #define sjme_memTaggedFree(inPtr, error) \
-	sjme_memTaggedFreeZ(inPtr, error, \
+	sjme_memTaggedFreeZ((void***)inPtr, error, \
 		sizeof(*(inPtr)), \
 		sizeof(**(inPtr))) /* NOLINT(bugprone-sizeof-expression) */
 

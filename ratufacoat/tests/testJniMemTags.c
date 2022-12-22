@@ -11,6 +11,9 @@
 #include "sjmejni/memtag.h"
 #include "debug.h"
 
+/** The number of pointers to allocate. */
+#define TEST_NUM_POINTERS 16
+
 /**
  * Structure.
  *
@@ -39,10 +42,12 @@ SJME_DECL_TAGGED(testStruct);
 SJME_TEST_PROTOTYPE(testJniMemTags)
 {
 	sjme_memTagGroup* tagGroup;
+	sjme_jint i;
 	SJME_TAGGED(testStruct)* alloc;
 	SJME_TAGGED(testStruct)* nullIsh;
 	SJME_TAGGED(testStruct)* notValid = (void*)INT32_C(0xCAFE);
 	SJME_TAGGED(testStruct)* alreadySet;
+	SJME_TAGGED(testStruct)* set[TEST_NUM_POINTERS];
 
 	sjme_message("Deref: %d\n", sizeof(**(alloc)));
 
@@ -102,7 +107,26 @@ SJME_TEST_PROTOTYPE(testJniMemTags)
 	(*alloc)->b = 2;
 	(*alloc)->c = 3;
 
-	sjme_todo("Implement rest of test.");
+	/* Allocate sub-test pointers. */
+	memset(set, 0, sizeof(set));
+	for (i = 0; i < TEST_NUM_POINTERS; i++)
+		if (!sjme_memTaggedNew(tagGroup, &set[i],
+			sjme_memTaggedNewSizeOf(set[i]), SJME_MEM_TAG_STATIC,
+			&shim->error))
+			return FAIL_TEST_SUB(8, i);
+
+	/* Free only half of them. */
+	for (i = 0; i < TEST_NUM_POINTERS; i += 2)
+		if (!sjme_memTaggedFree(&set[i], &shim->error))
+			return FAIL_TEST_SUB(9, i);
+
+	/* Free the memory group, this should also free the pointer. */
+	if (!sjme_memTaggedGroupFree(&tagGroup, &shim->error))
+		return FAIL_TEST(10);
+
+	/* Pointer should be cleared here. */
+	if ((*alloc) != NULL)
+		return FAIL_TEST(11);
 
 	return PASS_TEST();
 }
