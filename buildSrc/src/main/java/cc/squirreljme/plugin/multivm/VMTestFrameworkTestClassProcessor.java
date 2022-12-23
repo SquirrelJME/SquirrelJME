@@ -123,29 +123,47 @@ public class VMTestFrameworkTestClassProcessor
 		VMTestFrameworkTestClass testClass =
 			new VMTestFrameworkTestClass(test);
 		
-		// If there is no variant, we need to search to see if we are trying
-		// to run a test that has variants
+		// Was there a match at all?
+		boolean match = false;
+		
 		Map<String, Set<VMTestFrameworkTestClass>> runTests = this.runTests;
-		if (testClass.variant == null)
+		for (String availableTest : this.availableTests.keySet())
 		{
-			for (String availableTest : this.availableTests.keySet())
-			{
-				VMTestFrameworkTestClass available =
-					new VMTestFrameworkTestClass(availableTest);
-				
-				// If this is the exact class use it, since it is not variant
-				// Or the base class name matches
-				if (testClass.normal.equals(available.normal) ||
-					testClass.className.equals(available.className))
-					runTests.computeIfAbsent(testClass.className,
-							(__k) -> new TreeSet<>())
-						.add(new VMTestFrameworkTestClass(availableTest));
-			}
+			VMTestFrameworkTestClass available =
+				new VMTestFrameworkTestClass(availableTest);
+			
+			// Belong to a different class, ignore completely
+			if (!testClass.className.equals(available.className))
+				continue;
+			
+			// Is this pure match?
+			boolean currentMatch = false;
+			currentMatch = testClass.normal.equals(available.normal);
+			
+			// Is there a variant match?
+			if (!currentMatch)
+				currentMatch = testClass.variant.equals(available.variant);
+			
+			// We have a primary sub-variant which matches, but we asked for no
+			// secondary sub-variant and there is one... we want to grab it
+			if (!currentMatch)
+				currentMatch = testClass.primarySubVariant
+					.equals(available.primarySubVariant) &&
+					testClass.secondarySubVariant == null &&
+					available.secondarySubVariant != null;
+			
+			// Matched, so add the test
+			if (currentMatch)
+				runTests.computeIfAbsent(testClass.className,
+						(__k) -> new TreeSet<>())
+					.add(new VMTestFrameworkTestClass(availableTest));
+			
+			// Matching emits a match
+			match |= currentMatch;
 		}
 		
-		// Otherwise, always add this class since it has a known variant, and
-		// we want a precise test
-		else
+		// If no match, maybe we had a unique variant or something else?
+		if (!match)
 		{
 			// Remember class for later, sort by classes all together
 			runTests.computeIfAbsent(testClass.className,
@@ -323,6 +341,9 @@ public class VMTestFrameworkTestClassProcessor
 			
 			// Get parameters for this test run
 			TestRunParameters runTest = runParameters.get(__testName.normal);
+			
+			if (runTest == null)
+				throw new RuntimeException(String.format(">>> %s -> %s (of %s)%n", __testName.normal, runTest, runParameters));
 			
 			// Setup process to run
 			ProcessBuilder builder = new ProcessBuilder();
