@@ -88,22 +88,4 @@ public class EmulatedReflectionShelf
 			throw new MLECallError("Cannot access main.", __e);
 		}
 	}
-	
-	/**
-	 * Registers the given loader.
-	 *
-	 * @param __cb The callback that contains the loader.
-	 * @throws MLECallError If {@code null} or loaders are not supported.
-	 * @since 2022/10/30
-	 */
-	@Api
-	public static void registerLoader(ReflectiveLoaderCallback __cb)
-		throws MLECallError
-	{
-		if (__cb == null)
-			throw new MLECallError("NARG");
-		
-		// Just forward the call
-		NativeBinding.WRAPPED_CLASS_LOADER.registerLoader(__cb);
-	}
 }

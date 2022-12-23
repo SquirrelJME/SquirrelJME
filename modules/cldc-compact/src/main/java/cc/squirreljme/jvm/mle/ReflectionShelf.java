@@ -44,15 +44,4 @@ public final class ReflectionShelf
 	public static native void invokeMain(TypeBracket __type,
 		String... __args)
 		throws MLECallError, Throwable;
-	
-	/**
-	 * Registers the given loader.
-	 * 
-	 * @param __cb The callback that contains the loader.
-	 * @throws MLECallError If {@code null} or loaders are not supported.
-	 * @since 2022/10/30
-	 */
-	@Api
-	public static native void registerLoader(ReflectiveLoaderCallback __cb)
-		throws MLECallError;
 }

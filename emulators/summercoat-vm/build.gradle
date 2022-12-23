@@ -1,0 +1,34 @@
+plugins
+	{
+		id "java-library"
+	}
+
+description = "SummerCoat testing virtual machine, layered on top of " +
+	"SpringCoat for complexity reduction."
+
+dependencies
+	{
+		api project(":emulators:springcoat-vm")
+		api project(":modules:aot-summercoat")
+	}
+
+java {
+	// Use a fixed version of the JVM
+	compileJava
+		{
+			sourceCompatibility = JavaVersion.VERSION_1_8
+			targetCompatibility = JavaVersion.VERSION_1_8
+
+			// Use the default bootstrap classpath
+			options.bootstrapClasspath = null
+		}
+
+	javadoc.options.tags = [ "squirreljme.property",
+							 "squirreljme.env",
+							 "squirreljme.error",
+							 "squirreljme.syscallparam",
+							 "squirreljme.syscallreturn",
+							 "squirreljme.tsiparam",
+							 "squirreljme.configtype",
+							 "squirreljme.uiwidgetparam" ]
+}

@@ -12,9 +12,6 @@ squirreljme
 	swmVendor = "Stephanie Gawroriski"
 	tags += "aot-compiler"
 	tags += "summercoat"
-
-	// Needed for testing
-	optionalDependenciesTest += project(":modules:aot-summercoat-interpreter")
 	
 	// Pull in all dependencies that provide support for architectures and
 	// operating systems, along with any potential variants... This is so that

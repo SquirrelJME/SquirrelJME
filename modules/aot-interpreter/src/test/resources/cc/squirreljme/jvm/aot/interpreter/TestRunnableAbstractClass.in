@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-result: NoResult
-thrown: NoExceptionThrown
-proxy-main: cc.squirreljme.jvm.aot.interpreter.SimulatedInterpreter
-secondary-is--instance: true
-secondary-abstract: int:10
-secondary-super: int:45
-secondary-final: int:23
