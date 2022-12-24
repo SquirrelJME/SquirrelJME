@@ -127,4 +127,38 @@ public class SourceTargetClassifier
 		// Is changed
 		return new SourceTargetClassifier(__sourceSet, this.targetClassifier);
 	}
+	
+	/**
+	 * Specifies an alternative virtual machine to use, but with the same
+	 * source set.
+	 * 
+	 * @param __vm The virtual machine to use instead.
+	 * @return The modified source target classifier.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/12/23
+	 */
+	public SourceTargetClassifier withVm(VMSpecifier __vm)
+		throws NullPointerException
+	{
+		if (__vm == null)
+			throw new NullPointerException("NARG");
+		
+		return new SourceTargetClassifier(this.sourceSet,
+			this.targetClassifier.withVm(__vm));
+	}
+	
+	/**
+	 * Returns the classifier to be used by the emulated JIT.
+	 * 
+	 * @return The classifier with the appropriate VM based on if it supports
+	 * emulated JIT.
+	 * @since 2022/12/23
+	 */
+	public SourceTargetClassifier withVmByEmulatedJit()
+	{
+		if (this.targetClassifier.getVmType().hasEmulatorJit())
+			return new SourceTargetClassifier(this.sourceSet,
+				this.targetClassifier.withVmByEmulatedJit());
+		return this;
+	}
 }

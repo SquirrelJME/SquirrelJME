@@ -71,8 +71,8 @@ public final class VMEmulatorDependencies
 		{
 			Project emuProject = root.project(emulatorProject);
 			TaskContainer emuTasks = emuProject.getTasks();
-			TaskContainer emuBase = root.project(":emulators:emulator-base")
-				.getTasks();
+			TaskContainer emuBase =
+				root.project(":emulators:emulator-base").getTasks();
 			
 			// Build projects that are needed to run the emulator
 			for (ProjectAndTaskName task : VMHelpers.runClassTasks(emuProject,

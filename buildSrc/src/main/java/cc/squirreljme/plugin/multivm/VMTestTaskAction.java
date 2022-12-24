@@ -486,7 +486,7 @@ public class VMTestTaskAction
 	}
 	
 	/**
-	 * Determines the run parameters.
+	 * Determines the command line that is used to run tests.
 	 * 
 	 * @param __task The task this is for.
 	 * @param __classifier The classifier used.

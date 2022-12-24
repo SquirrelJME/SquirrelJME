@@ -68,12 +68,17 @@ modules/*/out/test/
 # VisualVM files
 java_pid*.hprof
 
+# Python
+venv
+ratufacoat/venv
+
 # CMake
 CMakeFiles
 CTestTestfile.cmake
 CMakeCache.txt
 ratufacoat/cmake-build-release
 ratufacoat/cmake-build-debug
+ratufacoat/cmake-build-*
 ratufacoat/src/Debug
 ratufacoat/src/Release
 ratufacoat/src/SquirrelJME.dir
@@ -95,28 +100,8 @@ cmake-build-debug
 # Fossil files
 _FOSSIL_
 .fslckout
-ci-comment-*.txtout-*1*
 ci-comment-*.txt
 ci-comment-*.txt.save
-out-*2*
-out-*3*
-out-*4*
-out-*5*
-out-*6*
-out-*7*
-out-*8*
-out-*9*
-out-*0*
-in-*1*
-in-*2*
-in-*3*
-in-*4*
-in-*5*
-in-*6*
-in-*7*
-in-*8*
-in-*9*
-in-*0*
 in-*0
 in-*1
 in-*2

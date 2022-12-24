@@ -1,13 +1,13 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// SquirrelJME
+// Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vm.springcoat;
+package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.emulator.profiler.ProfilerSnapshot;
 import cc.squirreljme.emulator.vm.VMException;
@@ -16,31 +16,34 @@ import cc.squirreljme.emulator.vm.VMSuiteManager;
 import cc.squirreljme.emulator.vm.VMThreadModel;
 import cc.squirreljme.emulator.vm.VirtualMachine;
 import cc.squirreljme.jdwp.JDWPFactory;
-import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.vm.springcoat.SpringCoatFactory;
 import java.util.Map;
 
 /**
- * Factory which creates instances of the SpringCoat virtual machine.
+ * Factory for creating the SummerCoat test interpreter.
  *
- * @since 2018/11/17
+ * @since 2022/12/23
  */
-public class SpringCoatFactory
+public class SummerCoatFactory
 	extends VMFactory
 {
 	/**
 	 * Initializes the factory.
 	 *
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/17
 	 */
-	public SpringCoatFactory()
+	public SummerCoatFactory()
+		throws NullPointerException
 	{
-		super("springcoat");
+		super("summercoat");
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/11/17
+	 * @since 2022/12/23
 	 */
 	@Override
 	public VirtualMachine createVM(ProfilerSnapshot __ps,
@@ -49,17 +52,7 @@ public class SpringCoatFactory
 		String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
-		// Setup the main task manager which runs everything
-		SpringTaskManager tm = new SpringTaskManager(__sm, __ps);
-		
-		// Bind this to the task manager which is the pure global state
-		if (__jdwp != null)
-			tm.jdwpController = __jdwp.open(tm); 
-		
-		// Spawn initial virtual machine task
-		return tm.startTask(__cp, __maincl, __args, __sprops,
-			TaskPipeRedirectType.TERMINAL, TaskPipeRedirectType.TERMINAL,
-			false, true);
+		return new SpringCoatFactory().createVM(__ps, __jdwp, __threadModel,
+			__sm, __cp, __maincl, __sprops, __args);
 	}
 }
-

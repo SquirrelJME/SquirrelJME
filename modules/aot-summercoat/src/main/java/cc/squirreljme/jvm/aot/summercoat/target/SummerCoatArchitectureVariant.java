@@ -17,13 +17,6 @@ package cc.squirreljme.jvm.aot.summercoat.target;
 public enum SummerCoatArchitectureVariant
 	implements TargetArchitectureVariant
 {
-	/** C output. */
-	@SuppressWarnings("FieldNamingConvention")
-	C,
-	
-	/** Hybrid interpreted environment. */
-	HYBRID,
-	
 	/** Pure interpreted environment. */
 	PURE,
 	

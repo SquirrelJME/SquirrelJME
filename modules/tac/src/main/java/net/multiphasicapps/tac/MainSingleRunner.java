@@ -55,7 +55,8 @@ public class MainSingleRunner
 		Class<?> type;
 		try
 		{
-			type = TypeShelf.typeToClass(TypeShelf.findType(typeName));
+			type = TypeShelf.typeToClass(TypeShelf.findType(
+				typeName.replace('.', '/')));
 		}
 		catch (MLECallError e)
 		{

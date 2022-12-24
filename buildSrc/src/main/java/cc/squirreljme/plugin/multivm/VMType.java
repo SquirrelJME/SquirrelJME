@@ -374,8 +374,7 @@ public enum VMType
 	
 	/** SummerCoat virtual machine. */
 	SUMMERCOAT("SummerCoat", "sqc",
-		new String[]{":emulators:interpreter-vm",
-			":modules:aot-summercoat-interpreter"})
+		new String[]{":emulators:summercoat-vm", ":emulators:springcoat-vm"})
 	{
 		/**
 		 * {@inheritDoc}
@@ -407,6 +406,16 @@ public enum VMType
 		
 		/**
 		 * {@inheritDoc}
+		 * @since 2022/12/23
+		 */
+		@Override
+		public boolean hasEmulatorJit()
+		{
+			return true;
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2020/08/15
 		 */
 		@Override
@@ -425,7 +434,7 @@ public enum VMType
 			// Potential extra arguments
 			Collection<String> args = new ArrayList<>();
 			
-			// Is this a boot loader? This is never valid for tests as they
+			// Is this a bootloader? This is never valid for tests as they
 			// are just extra libraries, it does not make sense to have them
 			// be loadable.
 			if (!__isTest && config.isBootLoader)
@@ -540,6 +549,16 @@ public enum VMType
 	public boolean hasDumping()
 	{
 		return false;/*this == VMType.SUMMERCOAT*/
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/12/23
+	 */
+	@Override
+	public boolean hasEmulatorJit()
+	{
+		return false;
 	}
 	
 	/**

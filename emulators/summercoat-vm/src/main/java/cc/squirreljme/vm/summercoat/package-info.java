@@ -7,31 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.plugin.multivm;
-
-import lombok.AllArgsConstructor;
-
 /**
- * Default SummerCoat Variants.
+ * SummerCoat test interpreter.
  *
- * @since 2022/09/30
+ * @since 2022/12/23
  */
-@AllArgsConstructor
-public enum BangletVariant
-{
-	/** None. */
-	NONE("", "none:none:none:none"),
-	
-	/** Pure SummerCoat (only SummerCoat). */
-	SUMMERCOAT("Pure",
-		"summercoat:pure:summercoat:none"),
-	
-	/* End. */
-	;
-	
-	/** The title for this variant. */
-	public final String properNoun;
-	
-	/** The banglet for this variant. */
-	public final String banglet;
-}
+
+package cc.squirreljme.vm.summercoat;

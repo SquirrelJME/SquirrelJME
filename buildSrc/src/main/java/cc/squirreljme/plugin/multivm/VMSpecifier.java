@@ -64,6 +64,15 @@ public interface VMSpecifier
 	boolean hasDumping();
 	
 	/**
+	 * Is the emulator for this JIT capable, as in there does not need to be
+	 * a library or ROM compilation before running?
+	 * 
+	 * @return If this has a JIT.
+	 * @since 2022/12/23
+	 */
+	boolean hasEmulatorJit();
+	
+	/**
 	 * Is there a ROM task for the VM?
 	 * 
 	 * @param __variant The variant used.

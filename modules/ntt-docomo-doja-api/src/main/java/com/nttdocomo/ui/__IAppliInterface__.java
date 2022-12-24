@@ -101,7 +101,8 @@ final class __IAppliInterface__
 		Class<?> classType;
 		try
 		{
-			classType = TypeShelf.typeToClass(TypeShelf.findType(mainClass));
+			classType = TypeShelf.typeToClass(TypeShelf.findType(
+				mainClass.replace('.', '/')));
 		}
 		catch (MLECallError e)
 		{

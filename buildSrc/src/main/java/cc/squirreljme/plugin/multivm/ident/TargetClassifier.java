@@ -37,4 +37,37 @@ public class TargetClassifier
 	/** The banglet variant used. */
 	@NonNull
 	BangletVariant bangletVariant;
+	
+	/**
+	 * Specifies an alternative virtual machine to use, but with the same
+	 * banglet.
+	 *
+	 * @param __vm The virtual machine to use instead.
+	 * @return The modified target classifier.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/12/23
+	 */
+	public TargetClassifier withVm(VMSpecifier __vm)
+		throws NullPointerException
+	{
+		if (__vm == null)
+			throw new NullPointerException("NARG");
+		
+		return new TargetClassifier(__vm, this.bangletVariant);
+	}
+	
+	/**
+	 * Returns the classifier to be used by the emulated JIT.
+	 * 
+	 * @return The classifier with the appropriate VM based on if it supports
+	 * emulated JIT.
+	 * @since 2022/12/23
+	 */
+	public TargetClassifier withVmByEmulatedJit()
+	{
+		if (this.vmType.hasEmulatorJit())
+			return new TargetClassifier(VMType.SPRINGCOAT,
+				BangletVariant.NONE);
+		return this;
+	}
 }

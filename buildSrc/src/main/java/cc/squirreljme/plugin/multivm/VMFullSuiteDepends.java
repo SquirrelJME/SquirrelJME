@@ -97,13 +97,15 @@ public class VMFullSuiteDepends
 			{
 				// Find the associated library task
 				Task libTask = project.getTasks().findByName(TaskInitialization
-					.task("lib", this.classifier));
+					.task("lib",
+						this.classifier.withSourceSet(sourceSet)));
 				if (libTask == null)
 					continue;
 				
 				// Use all of their dependencies, if not yet added
 				for (VMLibraryTask subDep : new VMRunDependencies(
-					(VMExecutableTask)libTask, this.classifier)
+					(VMExecutableTask)libTask,
+						this.classifier.withSourceSet(sourceSet))
 					.call())
 					tasks.add(subDep);
 			}

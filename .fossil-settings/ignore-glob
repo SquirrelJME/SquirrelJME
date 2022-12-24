@@ -68,12 +68,17 @@ modules/*/out/test/
 # VisualVM files
 java_pid*.hprof
 
+# Python
+venv
+ratufacoat/venv
+
 # CMake
 CMakeFiles
 CTestTestfile.cmake
 CMakeCache.txt
 ratufacoat/cmake-build-release
 ratufacoat/cmake-build-debug
+ratufacoat/cmake-build-*
 ratufacoat/src/Debug
 ratufacoat/src/Release
 ratufacoat/src/SquirrelJME.dir

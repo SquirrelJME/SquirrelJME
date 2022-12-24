@@ -14,7 +14,10 @@ import java.util.concurrent.Callable;
 
 /**
  * This is the set of dependencies for {@link VMRunTask} which takes all
- * of the dependencies directly needed in order to run the program.
+ * the dependencies directly needed in order to run the program.
+ * 
+ * If the virtual machine is {@link VMSpecifier#hasEmulatorJit()} then
+ * SpringCoat libraries will be used instead of the ROM libraries for running.
  *
  * @since 2020/08/15
  */
@@ -54,6 +57,17 @@ public final class VMRunDependencies
 	public final Iterable<VMLibraryTask> call()
 	{
 		VMExecutableTask task = this.task;
+		
+		// If this is emulator that is JIT capable, instead for running
+		// load it with SpringCoat's library instead
+		boolean emuJit = this.classifier.getTargetClassifier().getVmType()
+			.hasEmulatorJit();
+		if (emuJit)
+			return VMHelpers.<VMLibraryTask>resolveProjectTasks(
+				VMLibraryTask.class, task.getProject(),
+				VMHelpers.runClassTasks(this.task.getProject(),
+					this.classifier.withVmByEmulatedJit(), true));
+		
 		return VMHelpers.<VMLibraryTask>resolveProjectTasks(
 			VMLibraryTask.class, task.getProject(),
 			VMHelpers.runClassTasks(this.task.getProject(),

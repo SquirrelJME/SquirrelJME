@@ -933,7 +933,8 @@ public final class VMHelpers
 		
 		// If this was already processed, ignore it
 		ProjectAndTaskName selfProjectTask = ProjectAndTaskName.of(__project,
-			TaskInitialization.task("lib", __classifier));
+			TaskInitialization.task("lib",
+				__classifier.withVmByEmulatedJit()));
 		if (__did.contains(selfProjectTask))
 			return Collections.emptySet();
 		
@@ -947,12 +948,14 @@ public final class VMHelpers
 			// Depend on TAC
 			result.addAll(VMHelpers.runClassTasks(
 				__project.findProject(":modules:tac"),
-				__classifier.withSourceSet(SourceSet.MAIN_SOURCE_SET_NAME),
+				__classifier.withSourceSet(SourceSet.MAIN_SOURCE_SET_NAME)
+					.withVmByEmulatedJit(),
 				__optional, __did));
 			
 			// Depend on our main project as we will be testing it
 			result.addAll(VMHelpers.runClassTasks(__project,
-				__classifier.withSourceSet(SourceSet.MAIN_SOURCE_SET_NAME),
+				__classifier.withSourceSet(SourceSet.MAIN_SOURCE_SET_NAME)
+					.withVmByEmulatedJit(),
 				__optional, __did));
 		}
 		
@@ -996,7 +999,8 @@ public final class VMHelpers
 					SourceSet.MAIN_SOURCE_SET_NAME);
 				Collection<ProjectAndTaskName> selected =
 					VMHelpers.runClassTasks(sub,
-						__classifier.withSourceSet(targetSourceSet),
+						__classifier.withSourceSet(targetSourceSet)
+							.withVmByEmulatedJit(),
 						__optional, __did);
 				
 				result.addAll(selected);
@@ -1015,7 +1019,8 @@ public final class VMHelpers
 			for (Project optional : VMHelpers.optionalDepends(__project,
 				__classifier.getSourceSet()))
 				result.addAll(VMHelpers.runClassTasks(optional,
-					__classifier.withSourceSet(SourceSet.MAIN_SOURCE_SET_NAME),
+					__classifier.withSourceSet(SourceSet.MAIN_SOURCE_SET_NAME)
+						.withVmByEmulatedJit(),
 						true, __did));
 		
 		// Debug as needed
