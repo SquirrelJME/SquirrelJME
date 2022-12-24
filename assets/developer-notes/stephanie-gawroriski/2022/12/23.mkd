@@ -1,0 +1,16 @@
+# 2022/12/23
+
+## 14:05
+
+I was thinking, if I am going for a hybrid SpringCoat/SummerCoat for RatufaCoat
+then why not just make it so SummerCoat is built on top of SpringCoat, but
+instead there can be multiple execution engines for the code. I would still
+need the compiler of course but for some testing, some classes could be read
+and executed over SummerCoat instead as a I build things out. Then when it
+comes to the interpreter stuff I can just delete it and not worry about that
+complication at all. Just for testing I will just need some way to have it
+to where SummerCoat gets classes compiled for it as I go along... like if
+compilation fails for SummerCoat then it just falls back to SpringCoat mode
+which is much slower. But definitely from this random thought that popped into
+my brain, I am needlessly complicating things. Of course there will need to be
+some changes around SpringCoat but it should work just fine.
