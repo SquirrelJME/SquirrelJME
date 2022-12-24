@@ -135,16 +135,6 @@ public final class TypeShelf
 		throws MLECallError;
 	
 	/**
-	 * Initializes the given class.
-	 * 
-	 * @param __info The class info to initialize.
-	 * @throws MLECallError If the class is {@code null}.
-	 * @since 2020/11/28
-	 */
-	public static native void initClass(TypeBracket __info)
-		throws MLECallError;
-	
-	/**
 	 * Returns the JAR that the type is within.
 	 *
 	 * @param __type The type to get the JAR of.
