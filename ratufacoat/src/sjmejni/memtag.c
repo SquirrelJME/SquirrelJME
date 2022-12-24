@@ -63,6 +63,18 @@ typedef struct sjme_memTagInternal
 	} swaps[SJME_NUM_MEM_TAG_SWAPS];
 } sjme_memTagInternal;
 
+struct sjme_memTagGroup
+{
+	/** Estimated memory used in total. */
+	sjme_jlong estimatedUsedSize;
+
+	/** The number of total tags allocated. */
+	sjme_atomicInt totalTags;
+
+	/** Counts for allocations under tags, used for GC checks. */
+	sjme_atomicInt tagCounts[SJME_NUM_MEM_TAG_TYPES];
+};
+
 sjme_jboolean sjme_memDirectNew(void** outPtr, sjme_jsize size,
 	sjme_error* error)
 {
@@ -96,12 +108,19 @@ sjme_jboolean sjme_memTaggedGroupFree(sjme_memTagGroup** inPtr,
 sjme_jboolean sjme_memTaggedGroupNew(sjme_memTagGroup** outPtr,
 	sjme_error* error)
 {
+	sjme_memTagGroup* result;
+
 	if (outPtr == NULL)
 		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 
 	/* Should be a zero initialized pointer. */
 	if (*outPtr != NULL)
 		return sjme_setErrorF(error, SJME_ERROR_POINTER_NOT_NULL, 0);
+
+	/* Allocate memory group. */
+	result = NULL;
+	if (!sjme_memDirectNew((void**)&result, sizeof(*result), error))
+		return sjme_setErrorF(error, SJME_ERROR_NO_MEMORY, 0);
 
 	sjme_todo("Implement this?");
 	return sjme_false;

@@ -128,6 +128,9 @@ typedef enum sjme_memTagType
 {
 	/** Static memory, never dynamically free. */
 	SJME_MEM_TAG_STATIC,
+
+	/** The number of available tags. */
+	SJME_NUM_MEM_TAG_TYPES
 } sjme_memTagType;
 
 /**
