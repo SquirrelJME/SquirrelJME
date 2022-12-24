@@ -19,6 +19,10 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
  */
 public class MainSingleRunner
 {
+	/** Perform the find type in a given VM instead. */
+	public static final String RUN_IN_VM_PROPERTY =
+		"cc.squirreljme.test.vm";
+	
 	/**
 	 * Main entry point for test running.
 	 *
@@ -56,7 +60,8 @@ public class MainSingleRunner
 		try
 		{
 			type = TypeShelf.typeToClass(TypeShelf.findType(
-				typeName.replace('.', '/')));
+				typeName.replace('.', '/'),
+				System.getProperty(MainSingleRunner.RUN_IN_VM_PROPERTY)));
 		}
 		catch (MLECallError e)
 		{

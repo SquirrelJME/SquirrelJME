@@ -13,6 +13,7 @@
 
 #define CLASSTOTYPE_DESC "(Ljava/lang/Class;)Lcc/squirreljme/jvm/mle/brackets/TypeBracket;"
 #define FINDTYPE_DESC "(Ljava/lang/String;)Lcc/squirreljme/jvm/mle/brackets/TypeBracket;"
+#define FINDTYPEVM_DESC "(Ljava/lang/String;Ljava/lang/String;)Lcc/squirreljme/jvm/mle/brackets/TypeBracket;"
 #define INTERFACES_DESC "(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)[Lcc/squirreljme/jvm/mle/brackets/TypeBracket;"
 #define TYPETOCLASS_DESC "(Lcc/squirreljme/jvm/mle/brackets/TypeBracket;)Ljava/lang/Class;"
 
@@ -30,6 +31,14 @@ JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_findType(JNIEnv* env,
 	return forwardCallStaticObject(env, TYPE_CLASSNAME,
 		"findType", FINDTYPE_DESC,
 		className);
+}
+
+JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_findTypeVm(JNIEnv* env,
+	jclass classy, jobject className, jobject inVm)
+{
+	return forwardCallStaticObject(env, TYPE_CLASSNAME,
+		"findType", FINDTYPEVM_DESC,
+		className, inVm);
 }
 
 JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_interfaces(JNIEnv* env,
@@ -52,6 +61,7 @@ static const JNINativeMethod mleTypeMethods[] =
 {
 	{"classToType", CLASSTOTYPE_DESC, (void*)Impl_mle_TypeShelf_classToType},
 	{"findType", FINDTYPE_DESC, (void*)Impl_mle_TypeShelf_findType},
+	{"findType", FINDTYPEVM_DESC, (void*)Impl_mle_TypeShelf_findTypeVm},
 	{"interfaces", INTERFACES_DESC, (void*)Impl_mle_TypeShelf_interfaces},
 	{"typeToClass", TYPETOCLASS_DESC, (void*)Impl_mle_TypeShelf_typeToClass},
 };

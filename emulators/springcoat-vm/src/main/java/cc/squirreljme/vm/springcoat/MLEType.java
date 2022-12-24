@@ -11,6 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
@@ -170,12 +171,33 @@ public enum MLEType
 	{
 		/**
 		 * {@inheritDoc}
+		 *
+		 * @since 2020/06/18
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return MLEType.FIND_TYPEVM.handle(__thread,
+				__args[0], SpringNullObject.NULL);
+		}
+	},
+	
+	/** {@link TypeShelf#findType(String)}. */
+	FIND_TYPEVM("findType:(Ljava/lang/String;Ljava/lang/String;)" +
+		"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;")
+	{
+		/**
+		 * {@inheritDoc}
 		 * @since 2020/06/18
 		 */
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			SpringObject name = MLEType.__notNullObject(__args[0]);
+			String inVm = __thread.<String>asNativeObject(String.class,
+				__args[1]);
+			
+			Debugging.debugNote("Attempt load via %s.", inVm);
 			
 			try
 			{

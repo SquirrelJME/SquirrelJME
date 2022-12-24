@@ -525,10 +525,17 @@ public class VMTestTaskAction
 		// Deserialize classpath
 		Path[] classPath = SerializedPath.unboxPaths(__runSuite.classPath);
 		
+		Map<String, String> sysProps = new LinkedHashMap<>(
+			__runSuite.getSysProps());
+		if (Boolean.parseBoolean(
+			__candidate.expectedValues.get("test-vm-target")))
+			sysProps.put("cc.squirreljme.test.vm",
+				__classifier.getBangletVariant().banglet);
+		
 		// Determine the arguments that are used to spawn the JVM
 		JavaExecSpecFiller execSpec = new SimpleJavaExecSpecFiller();
 		__classifier.getVmType().spawnJvmArguments(__task, true,
-			execSpec, mainClass, __testName, __runSuite.getSysProps(),
+			execSpec, mainClass, __testName, sysProps,
 			classPath, classPath, mainArgs);
 		
 		// Get command line

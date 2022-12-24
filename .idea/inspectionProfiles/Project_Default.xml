@@ -242,6 +242,7 @@
         <header value="hyper-parameters" />
         <header value="result" />
         <header value="secondary-key" />
+        <header value="test-vm-target" />
         <header value="thrown" />
       </option>
     </inspection_tool>
