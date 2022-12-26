@@ -7,9 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <stdio.h>
-#include <stdarg.h>
-
+#include "sjmejni/sjmejni.h"
 #include "debug.h"
 
 /** Debug buffer size for messages. */

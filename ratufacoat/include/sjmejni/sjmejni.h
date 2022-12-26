@@ -23,10 +23,16 @@
 #endif
 
 /* Standard Includes. */
-#include <stddef.h>
-#include <limits.h>
-#include <string.h>
-#include <stdio.h>
+#if !defined(SJME_BARE_METAL)
+	#include <stdlib.h>
+	#include <stddef.h>
+	#include <limits.h>
+	#include <string.h>
+	#include <stdio.h>
+	#include <stdarg.h>
+#else
+	#include <stdarg.h>
+#endif
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -117,12 +123,12 @@ extern "C" {
 	/** Long. */
 	typedef __INT64_TYPE__ sjme_jlong;
 
-	#if __SIZEOF_FLOAT == 4
+	#if __SIZEOF_FLOAT__ == 4
 		/** Float. */
 		typedef float sjme_jfloat;
 	#endif
 
-	#if __SIZEOF_DOUBLE == 8
+	#if __SIZEOF_DOUBLE__ == 8
 		/** Double. */
 		typedef double sjme_jdouble;
 	#endif
