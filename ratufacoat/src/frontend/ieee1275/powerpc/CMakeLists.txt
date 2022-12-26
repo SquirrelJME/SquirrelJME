@@ -12,51 +12,34 @@ if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
 	set(CMAKE_VERBOSE_MAKEFILE $ENV{CMAKE_VERBOSE_MAKEFILE})
 endif()
 
-# Find PowerPC Compiler
-find_program(IEEE1275_POWERPC_COMPILER powerpc-elf)
-if(NOT IEEE1275_POWERPC_COMPILER MATCHES ".*NOTFOUND.*")
-	find_program(IEEE1275_POWERPC_COMPILER powerpc-linux-gnu-gcc)
-endif()
+# Include both core sets of libraries
+get_property(SQUIRRELJME_IEEE1275_POWERPC_CORE
+	GLOBAL PROPERTY SquirrelJMECoreTargetObjects)
+get_property(SQUIRRELJME_IEEE1275_POWERPC_FRONTEND_IEEE1275
+	GLOBAL PROPERTY SquirrelJMEIEEE1275LibTargetObjects)
 
-# Setup custom project for compilation if found
-if(NOT IEEE1275_POWERPC_COMPILER MATCHES ".*NOTFOUND.*")
-	# For debugging
-	message("Found PowerPC compiler, enabling IEEE1275 PowerPC!")
+# Add executable here
+add_executable(SquirrelJMEIEEE1275PowerPC
+	boot.c
+	${SQUIRRELJME_IEEE1275_POWERPC_CORE}
+	${SQUIRRELJME_IEEE1275_POWERPC_FRONTEND_IEEE1275})
 
-	# Include both core sets of libraries
-	get_property(SQUIRRELJME_IEEE1275_POWERPC_CORE
-		GLOBAL PROPERTY SquirrelJMECoreTargetSources)
-	get_property(SQUIRRELJME_IEEE1275_POWERPC_LIBS
-		GLOBAL PROPERTY SquirrelJMEIEEE1275LibTargetSources)
+# This is written only in C!
+set_target_properties(SquirrelJMEIEEE1275PowerPC PROPERTIES LINKER_LANGUAGE C)
 
-	# Determine all of the paths to use for compilation
-	set(SQUIRRELJME_IEEE1275_POWERPC_SOURCES)
-	foreach(sourceItem ${SQUIRRELJME_IEEE1275_POWERPC_CORE}
-		${SQUIRRELJME_IEEE1275_POWERPC_LIBS})
-		list(APPEND SQUIRRELJME_IEEE1275_POWERPC_SOURCES
-			"${PROJECT_SOURCE_DIR}/${sourceItem}")
-	endforeach()
+# Position independent code always
+set_property(TARGET SquirrelJMEIEEE1275PowerPC
+	PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-	# Target for build
-	set(SQUIRRELJME_IEEE1275_POWERPC_BIN
-		"${PROJECT_BINARY_DIR}/squirreljme-ieee1275-powerpc.elf")
-	add_custom_target(SquirrelJMEIEEE1275PowerPC
-		COMMAND "${IEEE1275_POWERPC_COMPILER}"
-			-static -nostdlib -nostdinc
-			-I "${PROJECT_BINARY_DIR}"
-			-I "${PROJECT_SOURCE_DIR}/include"
-			-D SJME_BARE_METAL
-			-o "${SQUIRRELJME_IEEE1275_POWERPC_BIN}"
-			-T "${CMAKE_CURRENT_SOURCE_DIR}/linker.ld"
-			-ffixed-r25
-			${SQUIRRELJME_IEEE1275_POWERPC_SOURCES}
-		DEPENDS SquirrelJMECoreLib # Just to check compilation
-		WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
-		BYPRODUCTS "${SQUIRRELJME_IEEE1275_POWERPC_BIN}"
-		COMMAND_EXPAND_LISTS
-		VERBATIM
-		COMMENT "Calling cross-compiler for PowerPC GCC."
-		SOURCES ${SQUIRRELJME_IEEE1275_POWERPC_SOURCES})
+# Includes for target
+target_include_directories(SquirrelJMEIEEE1275PowerPC PUBLIC
+	"${PROJECT_BINARY_DIR}"
+	"${PROJECT_SOURCE_DIR}/include")
 
-	# Target for testing, requires QEMU to exist
-endif()
+# Need to use the linker script to generate all the code
+target_link_options(SquirrelJMEIEEE1275PowerPC PUBLIC
+	-static										# Static library
+	-nostdlib									# No standard libraries
+	-T "${CMAKE_CURRENT_SOURCE_DIR}/linker.ld"	# Linker script for entry
+	)
+

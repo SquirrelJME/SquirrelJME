@@ -10,8 +10,18 @@
 # We need package config!
 find_package(PkgConfig)
 
+if (NOT SQUIRRELJME_ANCIENT AND
+	NOT CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
+	set(SQUIRRELJME_ALLOW_SDL2 YES)
+	set(SQUIRRELJME_ALLOW_LIBRETRO YES)
+
+	if(FALSE AND MSVC AND NOT ${CMAKE_VERSION} VERSION_LESS "3.8")
+		set(SQUIRRELJME_ALLOW_UWP YES)
+	endif()
+endif()
+
 # SDL2
-if(NOT SQUIRRELJME_ANCIENT)
+if(SQUIRRELJME_ALLOW_SDL2)
 	# Try to find SDL2
 	if (PKG_CONFIG_FOUND)
 		pkg_search_module(SDL2 sdl2)
@@ -30,17 +40,19 @@ else()
 endif()
 
 # RetroArch
-if(NOT SQUIRRELJME_ANCIENT)
+if(SQUIRRELJME_ALLOW_LIBRETRO)
+	message("RetroArch: Enabled")
 	add_subdirectory(libretro)
 else()
-	message("RetroArch is not supported for ancient systems.")
+	message("RetroArch: Disabled")
 endif()
 
 # Universal Windows Platform
-if(FALSE AND MSVC AND NOT ${CMAKE_VERSION} VERSION_LESS "3.8")
+if(SQUIRRELJME_ALLOW_UWP)
+	message("UWP: Enabled")
 	add_subdirectory(uwp)
 else()
-	message("UWP is only supported with MSVC Compilers and CMake 3.8+!")
+	message("UWP: Disabled")
 endif()
 
 # IEEE1275: Open Firmware

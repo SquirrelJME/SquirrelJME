@@ -30,8 +30,6 @@
 	#include <string.h>
 	#include <stdio.h>
 	#include <stdarg.h>
-#else
-	#include <stdarg.h>
 #endif
 
 /* Anti-C++. */
@@ -45,9 +43,13 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+/* Fixed size types. */
 #if defined(SJME_HAS_STDINT_H)
 	/** Byte. */
 	typedef int8_t sjme_jbyte;
+
+	/** Unsigned Byte. */
+	typedef uint8_t sjme_jubyte;
 
 	/** Character. */
 	typedef uint16_t sjme_jchar;
@@ -58,8 +60,14 @@ extern "C" {
 	/** Integer. */
 	typedef int32_t sjme_jint;
 
+	/** Unsigned Integer. */
+	typedef uint32_t sjme_juint;
+
 	/** Long. */
 	typedef int64_t sjme_jlong;
+
+	/** Unsigned Long. */
+	typedef int64_t sjme_julong;
 
 	/** Float. */
 	typedef float sjme_jfloat;
@@ -67,9 +75,21 @@ extern "C" {
 	/** Double. */
 	typedef double sjme_jdouble;
 
+	/** Pointer. */
+	typedef intptr_t sjme_jpointer;
+
+	/** Unsigned Pointer. */
+	typedef uintptr_t sjme_jupointer;
+
 #elif defined(SJME_FEATURE_MSVC)
+	/** Define stdint types backwards. */
+	#define SJME_BACKWARDS_STDINT
+
 	/** Byte. */
 	typedef signed __int8 sjme_jbyte;
+
+	/** Unsigned Byte. */
+	typedef unsigned __int8 sjme_jubyte;
 
 	/** Character. */
 	typedef unsigned __int16 sjme_jchar;
@@ -80,14 +100,34 @@ extern "C" {
 	/** Integer. */
 	typedef signed __int32 sjme_jint;
 
+	/** Unsigned Integer. */
+	typedef unsigned __int32 sjme_juint;
+
 	/** Long. */
 	typedef signed __int64 sjme_jlong;
+
+	/** Unsigned Long. */
+	typedef unsigned __int64 sjme_julong;
 
 	/** Float. */
 	typedef float sjme_jfloat;
 
 	/** Double. */
 	typedef double sjme_jdouble;
+
+	#if defined(_M_X64) || defined(_M_AMD64) || defined(_WIN64)
+		/** Pointer. */
+		typedef sjme_jlong sjme_jpointer;
+
+		/** Unsigned pointer. */
+		typedef sjme_julong sjme_jupointer;
+	#else
+		/** Pointer. */
+		typedef sjme_jint sjme_jpointer;
+
+		/** Unsigned pointer. */
+		typedef sjme_juint sjme_jupointer;
+	#endif
 
 	/** Signed 8-bit constant. */
 	#define INT8_C(x) x
@@ -106,54 +146,12 @@ extern "C" {
 
 	/** Unsigned 32-bit constant. */
 	#define UINT32_C(x) x##U
-
-#elif defined(__GNUC__)
-	/** Byte. */
-	typedef __INT8_TYPE__ sjme_jbyte;
-
-	/** Character. */
-	typedef __UINT16_TYPE__ sjme_jchar;
-
-	/** Short. */
-	typedef __INT8_TYPE__ sjme_jshort;
-
-	/** Integer. */
-	typedef __INT32_TYPE__ sjme_jint;
-
-	/** Long. */
-	typedef __INT64_TYPE__ sjme_jlong;
-
-	#if __SIZEOF_FLOAT__ == 4
-		/** Float. */
-		typedef float sjme_jfloat;
-	#endif
-
-	#if __SIZEOF_DOUBLE__ == 8
-		/** Double. */
-		typedef double sjme_jdouble;
-	#endif
-
-	/** Signed 8-bit constant. */
-	#define __INT8_C(x) x
-
-	/** Signed 16-bit constant. */
-	#define __INT16_C(x) x
-
-	/** Signed 32-bit constant. */
-	#define __INT32_C(x) x
-
-	/** Unsigned 8-bit constant. */
-	#define __UINT8_C(x) x##U
-
-	/** Unsigned 16-bit constant. */
-	#define __UINT16_C(x) x##U
-
-	/** Unsigned 32-bit constant. */
-	#define __UINT32_C(x) x##U
-
 #else
 	#error No standard types are known.
 #endif
+
+/** Aliased unsigned short type. */
+typedef sjme_jchar sjme_jushort;
 
 #if defined(SJME_FEATURE_GCC)
 	typedef enum __attribute__((__packed__)) sjme_jboolean

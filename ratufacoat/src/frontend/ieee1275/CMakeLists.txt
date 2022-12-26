@@ -32,5 +32,49 @@ target_include_directories(SquirrelJMEIEEE1275Lib PUBLIC
 squirreljme_object_and_sources(SquirrelJMEIEEE1275LibTarget
 	SquirrelJMEIEEE1275Lib)
 
-# Include supported architectures
-add_subdirectory(powerpc)
+# Include directories for the build
+if(CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
+	# PowerPC
+	if (CMAKE_SYSTEM_PROCESSOR STREQUAL "powerpc")
+		message("IEEE1275: PowerPC")
+		add_subdirectory(powerpc)
+	endif()
+
+	# SPARC
+	if (CMAKE_SYSTEM_PROCESSOR STREQUAL "sparc")
+		message("IEEE1275: SPARC")
+		add_subdirectory(sparc)
+	endif()
+
+	# x86
+	if (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86")
+		message("IEEE1275: x86")
+		add_subdirectory(x86)
+	endif()
+else()
+	message("IEEE1275: Not in current build")
+
+	# Does the PowerPC ELF Compiler exist?
+	find_program(SQUIRRELJME_IEEE1275_POWERPC_COMPILER powerpc-elf-gcc)
+	if(SQUIRRELJME_IEEE1275_POWERPC_COMPILER)
+		# Otherwise recursive build for PowerPC
+		message("Recursively including IEEE1275 PowerPC")
+		execute_process(COMMAND "${CMAKE_COMMAND}"
+				-G "Unix Makefiles"
+				-S "${PROJECT_SOURCE_DIR}"
+				-B "${PROJECT_BINARY_DIR}/ieee1275-powerpc"
+				--toolchain "${CMAKE_CURRENT_SOURCE_DIR}/powerpc/ieee1275-powerpc.toolchain.cmake"
+			COMMAND_ECHO STDERR
+			COMMAND_ERROR_IS_FATAL ANY)
+
+		# Then add custom target for output of that build
+		add_custom_target(SquirrelJMEIEEE1275PowerPC
+			COMMAND "${CMAKE_COMMAND}"
+				--build "${PROJECT_BINARY_DIR}/ieee1275-powerpc"
+				-j "${CMAKE_BUILD_PARALLEL_LEVEL}"
+				-t "SquirrelJMEIEEE1275PowerPC"
+			VERBATIM COMMAND_EXPAND_LISTS)
+	else()
+		message("No powerpc-elf-gcc found, not supporting IEEE1275 PowerPC.")
+	endif()
+endif()

@@ -213,15 +213,17 @@ if(SQUIRRELJME_HAS_BUILTIN)
 endif()
 
 # Use specific threading libraries?
-# For compatibility for Windows, do not use pthreads even if it is available
-find_package(Threads)
-if(WIN32)
-	add_compile_definitions(SQUIRRELJME_THREADS=1)
-	add_compile_definitions(SQUIRRELJME_THREADS_WIN32=1)
-elseif(Threads_FOUND)
-	if(CMAKE_USE_PTHREADS_INIT)
+if(NOT CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
+	# For compatibility for Windows, do not use pthreads even if available
+	find_package(Threads)
+	if(WIN32)
 		add_compile_definitions(SQUIRRELJME_THREADS=1)
-		add_compile_definitions(SQUIRRELJME_THREADS_PTHREAD=1)
+		add_compile_definitions(SQUIRRELJME_THREADS_WIN32=1)
+	elseif(Threads_FOUND)
+		if(CMAKE_USE_PTHREADS_INIT)
+			add_compile_definitions(SQUIRRELJME_THREADS=1)
+			add_compile_definitions(SQUIRRELJME_THREADS_PTHREAD=1)
+		endif()
 	endif()
 endif()
 
@@ -230,7 +232,9 @@ if(MSVC)
 	string(REGEX REPLACE "/W[3|4]" "/W4" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 	string(REGEX REPLACE "/W[3|4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-	add_compile_options(-Wall -Wextra -pedantic -pedantic-errors)
+	if(NOT CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
+		add_compile_options(-Wall -Wextra -pedantic -pedantic-errors)
+	endif()
 endif()
 
 # Versioning information
@@ -240,17 +244,33 @@ add_compile_definitions(SQUIRRELJME_VERSION_ID_TIME=${SQUIRRELJME_VERSION_ID_TIM
 add_compile_definitions(SQUIRRELJME_VERSION_WINDOWS=${SQUIRRELJME_VERSION_WINDOWS})
 add_compile_definitions(SQUIRRELJME_VERSION_WINDOWS_RC=${SQUIRRELJME_VERSION_WINDOWS_RC})
 
+# Is testing allowed?
+if(NOT SQUIRRELJME_ANCIENT AND
+	NOT CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
+	message("Testing is permitted!")
+	set(SQUIRRELJME_ALLOW_TESTING YES)
+endif()
+
+# For IEEE1275, the platform header is needed
+if(CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
+	add_compile_definitions(SJME_SYSTEM_IEEE1275=1)
+	include_directories(
+		"${PROJECT_SOURCE_DIR}/include/frontend/ieee1275/platform")
+endif()
+
 # Enable support for testing, this is needed here otherwise testing will not
 # work at all! Major headache this has caused...
 # From: https://cmake.org/cmake/help/v3.13/command/enable_testing.html
 # > Note that ctest expects to find a test file in the build directory root.
 # > Therefore, this command should be in the source directory root.
-enable_testing()
+if(SQUIRRELJME_ALLOW_TESTING)
+	enable_testing()
+endif()
 
 # Include directories for the project
 add_subdirectory(src)
 
 # Testing
-if(NOT SQUIRRELJME_ANCIENT)
+if(SQUIRRELJME_ALLOW_TESTING)
 	add_subdirectory(tests)
 endif()

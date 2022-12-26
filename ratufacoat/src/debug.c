@@ -16,6 +16,7 @@
 void sjme_messageR(const char* file, int line,
 	const char* func, const char* message, ...)
 {
+#if defined(SJME_HAS_TERMINAL_OUTPUT)
 	char buf[DEBUG_BUF];
 	va_list args;
 	
@@ -35,6 +36,7 @@ void sjme_messageR(const char* file, int line,
 
 	/* Make sure it gets written. */
 	fflush(stderr);
+#endif
 }
 
 sjme_returnNever sjme_todoR(const char* file, int line,
@@ -42,7 +44,8 @@ sjme_returnNever sjme_todoR(const char* file, int line,
 {
 	char buf[DEBUG_BUF];
 	va_list args;
-	
+
+#if defined(SJME_HAS_TERMINAL_OUTPUT)
 	/* Load message buffer. */
 	va_start(args, message);
 	memset(buf, 0, sizeof(buf));
@@ -56,9 +59,14 @@ sjme_returnNever sjme_todoR(const char* file, int line,
 	else
 		fprintf(stderr, "TD: TODO Hit: %s\n",
 			buf);
+#endif
 	
 	/* Exit and stop. */
+#if defined(SJME_SYSTEM_IEEE1275)
+	for (;;);
+#else
 	exit(EXIT_FAILURE);
+#endif
 	
 	/* These are totally not used. */
 #if defined(__clang__)

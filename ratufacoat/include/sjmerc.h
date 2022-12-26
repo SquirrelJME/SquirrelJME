@@ -228,7 +228,6 @@ typedef uint16_t sjme_jchar;
 
 /** @c int type. */
 typedef int32_t sjme_jint;
-#endif
 
 /** Unsigned @c byte type. */
 typedef uint8_t sjme_jubyte;
@@ -238,6 +237,7 @@ typedef uint16_t sjme_jushort;
 
 /** Unsigned @c int type. */
 typedef uint32_t sjme_juint;
+#endif
 
 #if 0
 /** Boolean type. */

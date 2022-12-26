@@ -13,8 +13,6 @@
  * @since 2019/06/02
  */
 
-#include <stdarg.h>
-
 #include "sjmerc.h"
 #include "corefont.h"
 #include "stringies.h"

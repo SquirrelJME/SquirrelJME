@@ -65,6 +65,11 @@ extern "C" {
 	#define SJME_HAS_STDINT_H
 #endif
 
+/* Is there a terminal output? */
+#if !defined(SJME_SYSTEM_IEEE1275)
+	#define SJME_HAS_TERMINAL_OUTPUT
+#endif
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
