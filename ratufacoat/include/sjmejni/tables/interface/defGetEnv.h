@@ -16,5 +16,6 @@
  * @return NOT DESCRIBED.
  * @since 
  */
-sjme_jint SJME_FUNC_SURROUND(GetEnv)(sjme_vmState* vmState, void** vmThread, sjme_jint version) SJME_FUNC_SURROUND_SUFFIX
+sjme_jint SJME_FUNC_SURROUND(GetEnv)(sjme_vmState* vmState, void** vmThread,
+	sjme_jint version) SJME_FUNC_SURROUND_SUFFIX
 

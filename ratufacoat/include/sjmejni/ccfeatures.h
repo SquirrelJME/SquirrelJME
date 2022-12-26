@@ -56,11 +56,11 @@ extern "C" {
 #endif
 
 /* Is there <stdint.h>? */
-#if defined(SJME_FEATURE_C99) || \
+#if !defined(SQUIRRELJME_BARE_METAL) && (defined(SJME_FEATURE_C99) || \
 	defined(SJME_FEATURE_MSVC_HAS_STDINT) || \
 	(defined(__WATCOMC__) && __WATCOMC__ >= 1270) || \
 	(defined(__GNUC__) && __GNUC__ >= 4) || \
-	(defined(PSP) || defined(PS2))
+	(defined(PSP) || defined(PS2)))
 	/** <stdint.h> is available. */
 	#define SJME_HAS_STDINT_H
 #endif

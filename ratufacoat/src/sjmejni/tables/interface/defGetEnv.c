@@ -10,7 +10,8 @@
 #include "sjmejni/sjmejni.h"
 #include "sjmejni/tables/interfaceProtos.h"
 
-sjme_jint sjme_implGetEnv(sjme_vmState* vmState, void** vmThread, sjme_jint version)
+sjme_jint sjme_implGetEnv(sjme_vmState* vmState, void** vmThread,
+	sjme_jint version)
 {
 	sjme_todo("Implement this?");
 	return 0;

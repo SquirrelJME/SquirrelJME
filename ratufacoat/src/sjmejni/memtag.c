@@ -88,6 +88,7 @@ sjme_jboolean sjme_memDirectNew(void** outPtr, sjme_jsize size,
 	if (*outPtr != NULL)
 		return sjme_setErrorF(error, SJME_ERROR_POINTER_NOT_NULL, 0);
 
+
 	sjme_todo("Implement this?");
 	return sjme_false;
 }

@@ -23,7 +23,6 @@
 #endif
 
 /* Standard Includes. */
-#include <stdlib.h>
 #include <stddef.h>
 #include <limits.h>
 #include <string.h>
@@ -101,6 +100,51 @@ extern "C" {
 
 	/** Unsigned 32-bit constant. */
 	#define UINT32_C(x) x##U
+
+#elif defined(__GNUC__)
+	/** Byte. */
+	typedef __INT8_TYPE__ sjme_jbyte;
+
+	/** Character. */
+	typedef __UINT16_TYPE__ sjme_jchar;
+
+	/** Short. */
+	typedef __INT8_TYPE__ sjme_jshort;
+
+	/** Integer. */
+	typedef __INT32_TYPE__ sjme_jint;
+
+	/** Long. */
+	typedef __INT64_TYPE__ sjme_jlong;
+
+	#if __SIZEOF_FLOAT == 4
+		/** Float. */
+		typedef float sjme_jfloat;
+	#endif
+
+	#if __SIZEOF_DOUBLE == 8
+		/** Double. */
+		typedef double sjme_jdouble;
+	#endif
+
+	/** Signed 8-bit constant. */
+	#define __INT8_C(x) x
+
+	/** Signed 16-bit constant. */
+	#define __INT16_C(x) x
+
+	/** Signed 32-bit constant. */
+	#define __INT32_C(x) x
+
+	/** Unsigned 8-bit constant. */
+	#define __UINT8_C(x) x##U
+
+	/** Unsigned 16-bit constant. */
+	#define __UINT16_C(x) x##U
+
+	/** Unsigned 32-bit constant. */
+	#define __UINT32_C(x) x##U
+
 #else
 	#error No standard types are known.
 #endif
