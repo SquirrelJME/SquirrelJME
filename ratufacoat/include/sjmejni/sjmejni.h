@@ -23,14 +23,12 @@
 #endif
 
 /* Standard Includes. */
-#if !defined(SJME_BARE_METAL)
-	#include <stdlib.h>
-	#include <stddef.h>
-	#include <limits.h>
-	#include <string.h>
-	#include <stdio.h>
-	#include <stdarg.h>
-#endif
+#include <stdlib.h>
+#include <stddef.h>
+#include <limits.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdarg.h>
 
 /* Anti-C++. */
 #ifdef __cplusplus

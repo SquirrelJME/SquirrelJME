@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_STRING_H
 #define SQUIRRELJME_STRING_H
 
+#include <stddef.h>
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
@@ -26,6 +28,17 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+/**
+ * Sets memory within the given area.
+ *
+ * @param dest The destination buffer.
+ * @param value The value to set.
+ * @param size The number of bytes to set.
+ * @return Always @c dest .
+ * @since 2022/12/26
+ */
+void* memset(void* dest, int value, size_t size);
 
 /*--------------------------------------------------------------------------*/
 

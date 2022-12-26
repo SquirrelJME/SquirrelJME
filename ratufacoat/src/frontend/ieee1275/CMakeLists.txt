@@ -14,7 +14,8 @@ endif()
 
 # Setup executable
 add_library(SquirrelJMEIEEE1275Lib OBJECT
-	devtree.c)
+	devtree.c
+	stdc.c)
 
 # This is written only in C!
 set_target_properties(SquirrelJMEIEEE1275Lib PROPERTIES LINKER_LANGUAGE C)
@@ -22,6 +23,10 @@ set_target_properties(SquirrelJMEIEEE1275Lib PROPERTIES LINKER_LANGUAGE C)
 # Position independent code always
 set_property(TARGET SquirrelJMEIEEE1275Lib
 	PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+# Define this for just this target
+target_compile_definitions(SquirrelJMEIEEE1275Lib PUBLIC
+	SJME_SYSTEM_IEEE1275=1)
 
 # Includes for target
 target_include_directories(SquirrelJMEIEEE1275Lib PUBLIC
