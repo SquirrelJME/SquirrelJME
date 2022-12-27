@@ -7,21 +7,29 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 
-#if defined(SJME_SYSTEM_IEEE1275)
-/* ------------------------------------------------------------------------- */
+FILE* stdout;
 
-void* memset(void* dest, int value, size_t size)
+FILE* stderr;
+
+int fputs(const char* string, FILE* file)
 {
-	size_t i;
+	size_t len;
 
-	for (i = 0; i < size; i++)
-		((uint8_t*)dest)[i] = value;
-
-	return dest;
+	len = strlen(string);
+	return file->write(file, string, 0, len);
 }
 
-/* ------------------------------------------------------------------------- */
-#endif
+int puts(const char* string)
+{
+	int result;
+
+	/* Forward to fputs(). */
+	result = 0;
+	result |= fputs(string, stdout);
+	result |= fputs("\n", stdout);
+
+	return result;
+}

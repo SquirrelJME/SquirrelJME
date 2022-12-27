@@ -67,13 +67,13 @@ message("Version ID: ${SQUIRRELJME_VERSION_ID}")
 if(${CMAKE_VERSION} VERSION_LESS "3.12")
 	project(SquirrelJME
 		VERSION ${SQUIRRELJME_VERSION}
-		LANGUAGES C CXX)
+		LANGUAGES C )#CXX)
 else()
 	project(SquirrelJME
 		VERSION ${SQUIRRELJME_VERSION}
 		DESCRIPTION "SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things devices."
 		HOMEPAGE_URL https://squirreljme.cc/
-		LANGUAGES C CXX)
+		LANGUAGES C )#CXX)
 endif()
 
 # Mac OS Multi Architecture: PowerPC, x86, x86_64, and M1
@@ -165,14 +165,20 @@ if(PALMOS)
 	set(CMAKE_VERBOSE_MAKEFILE TRUE)
 endif()
 
+# Enable assembly for IEEE1275
+if(CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
+	enable_language(ASM)
+endif()
+
 # Standard C and C++ versions
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+#set(CMAKE_CXX_STANDARD 11)
+#set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Does the static ROM file exist? If it does we can pack it into the binary
 option(SQUIRRELJME_USE_BUILTIN "Use Built-In ROM (If Detected)" ON)
+
 set(SQUIRRELJME_BUILTIN_TEST_CHECK "${PROJECT_SOURCE_DIR}/build/builtinTest.c")
 set(SQUIRRELJME_BUILTIN_FILE_CHECK "${PROJECT_SOURCE_DIR}/build/builtin.c")
 	# Testing ROM
@@ -251,13 +257,6 @@ if(NOT SQUIRRELJME_ANCIENT AND
 	set(SQUIRRELJME_ALLOW_TESTING YES)
 endif()
 
-# For IEEE1275, the platform header is needed
-if(CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
-	add_compile_definitions(SJME_SYSTEM_IEEE1275=1)
-	include_directories(
-		"${PROJECT_SOURCE_DIR}/include/frontend/ieee1275/platform")
-endif()
-
 # Enable support for testing, this is needed here otherwise testing will not
 # work at all! Major headache this has caused...
 # From: https://cmake.org/cmake/help/v3.13/command/enable_testing.html
@@ -265,6 +264,27 @@ endif()
 # > Therefore, this command should be in the source directory root.
 if(SQUIRRELJME_ALLOW_TESTING)
 	enable_testing()
+endif()
+
+# Platform defines
+if(CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
+	add_compile_definitions(SJME_SYSTEM_IEEE1275=1)
+	set(SQUIRRELJME_BUNDLED_STDC YES)
+
+	# No built-in functions such as printf and such
+	add_compile_options(
+		-fno-builtin-fputs
+		-fno-builtin-fputc
+		-fno-builtin-puts
+		-fno-builtin-putc
+		-fno-builtin-strlen)
+endif()
+
+# Bundle our own C library?
+if(SQUIRRELJME_BUNDLED_STDC)
+	add_compile_definitions(SQUIRRELJME_BUNDLED_STDC=1)
+	include_directories(
+		"${PROJECT_SOURCE_DIR}/include/libstdc")
 endif()
 
 # Include directories for the project

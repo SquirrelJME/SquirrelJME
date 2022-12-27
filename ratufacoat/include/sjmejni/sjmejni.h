@@ -41,6 +41,12 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+/** Stringify. */
+#define SJME_STRINGIFY(x) SJME_INTERNAL_STRINGIFY_X(x)
+
+/** Stringify, do not use this internal one. */
+#define SJME_INTERNAL_STRINGIFY_X(x) #x
+
 /* Fixed size types. */
 #if defined(SJME_HAS_STDINT_H)
 	/** Byte. */

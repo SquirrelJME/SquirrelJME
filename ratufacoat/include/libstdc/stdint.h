@@ -16,6 +16,8 @@
 #ifndef SQUIRRELJME_STDINT_H
 #define SQUIRRELJME_STDINT_H
 
+#include <stddef.h>
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED

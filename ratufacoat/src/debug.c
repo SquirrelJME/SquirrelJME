@@ -62,11 +62,7 @@ sjme_returnNever sjme_todoR(const char* file, int line,
 #endif
 	
 	/* Exit and stop. */
-#if defined(SJME_SYSTEM_IEEE1275)
-	for (;;);
-#else
 	exit(EXIT_FAILURE);
-#endif
 	
 	/* These are totally not used. */
 #if defined(__clang__)

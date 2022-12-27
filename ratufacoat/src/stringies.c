@@ -134,7 +134,8 @@ void sjme_describeJvmError(sjme_error* error,
 			
 		return;
 	}
-	
+
+#if defined(SJME_HAS_TERMINAL_OUTPUT)
 	/* Locate the string to seed with. */
 	stringy = sjme_locateJvmErrorString(error->code);
 	if (stringy == NULL)
@@ -150,4 +151,11 @@ void sjme_describeJvmError(sjme_error* error,
 	
 	if (readLen >= 0)
 		*destLen = readLen;
+#else
+	/* Just write it with zero. */
+	if (*destLen > 0)
+		*destMessage = 0;
+
+	*destLen = 0;
+#endif
 }

@@ -23,12 +23,6 @@
 /* Variable counting. */
 #include "varcount.h"
 
-/** Stringify. */
-#define SJME_STRINGIFY(x) SJME_INTERNAL_STRINGIFY_X(x)
-
-/** Stringify, do not use this internal one. */
-#define SJME_INTERNAL_STRINGIFY_X(x) #x
-
 /* Debugging? */
 #if !defined(SJME_DEBUG)
 	#if defined(DEBUG) || defined(_DEBUG) || !defined(NDEBUG)

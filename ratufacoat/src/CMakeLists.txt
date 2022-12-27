@@ -72,6 +72,11 @@ target_include_directories(SquirrelJMECore PUBLIC
 set_property(TARGET SquirrelJMECore
 	PROPERTY POSITION_INDEPENDENT_CODE ON)
 
+# Bundled C library?
+if(SQUIRRELJME_BUNDLED_STDC)
+	add_subdirectory(libstdc)
+endif()
+
 # Internal support libraries and modules
 add_subdirectory(collections)
 add_subdirectory(engine)

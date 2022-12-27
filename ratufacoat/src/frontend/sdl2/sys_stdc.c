@@ -228,6 +228,9 @@ sjme_jint sjme_stdc_fileread(sjme_nativefile* file, void* dest, sjme_jint len,
 /** Writes single byte to standard output. */
 sjme_jint sjme_stdc_stdout_write(sjme_jint b)
 {
+	sjme_todo("Implement this?");
+	return 0;
+#if 0
 	sjme_jbyte v;
 	
 	/* Write. */
@@ -243,11 +246,15 @@ sjme_jint sjme_stdc_stdout_write(sjme_jint b)
 		return SJME_JINT_C(-1);
 	
 	return SJME_JINT_C(1);
+#endif
 }
 
 /** Writes single byte to standard error. */
 sjme_jint sjme_stdc_stderr_write(sjme_jint b)
 {
+	sjme_todo("Implement this?");
+	return 0;
+#if 0
 	sjme_jbyte v;
 	
 	/* Write. */
@@ -263,6 +270,7 @@ sjme_jint sjme_stdc_stderr_write(sjme_jint b)
 		return SJME_JINT_C(-1);
 	
 	return SJME_JINT_C(1);
+#endif
 }
 
 /** Returns a framebuffer structure. */

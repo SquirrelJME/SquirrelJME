@@ -70,6 +70,12 @@ extern "C" {
 	#define SJME_HAS_TERMINAL_OUTPUT
 #endif
 
+/* Is PowerPC available? */
+#if defined(__PPC) || defined(__PPC__) || defined(_ARCH_PPC)
+	/** Power PC is available. */
+	#define SJME_HAS_POWERPC
+#endif
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

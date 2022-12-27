@@ -25,7 +25,7 @@ add_executable(SquirrelJMETests
 	${SQUIRRELJME_TEST_SOURCES})
 
 # Can use C++!
-set_target_properties(SquirrelJMETests PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(SquirrelJMETests PROPERTIES LINKER_LANGUAGE C)
 
 # Additional includes
 target_include_directories(SquirrelJMETests PUBLIC

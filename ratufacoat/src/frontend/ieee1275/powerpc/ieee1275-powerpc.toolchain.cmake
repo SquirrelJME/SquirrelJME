@@ -12,13 +12,15 @@ set(CMAKE_SYSTEM_NAME ieee1275)
 set(CMAKE_SYSTEM_PROCESSOR powerpc)
 
 # Compilers to use
+find_program(CMAKE_ASM_COMPILER powerpc-elf-as)
 find_program(CMAKE_C_COMPILER powerpc-elf-gcc)
 #set(CMAKE_CXX_COMPILER powerpc-elf-g++)
 
 # Flags for compilation
 set(CMAKE_C_FLAGS
 	# Fixed Register 25 since it is IEEE1275 Specific
-	-ffixed-r25)
+	-ffixed-r25
+	)
 
 # Just try a static library as we have no C library
 set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")

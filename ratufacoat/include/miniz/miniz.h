@@ -142,7 +142,7 @@
    Note if MINIZ_NO_MALLOC is defined then the user must always provide custom user alloc/free/realloc
    callbacks to the zlib and archive API's, and a few stand-alone helper API's which don't provide custom user
    functions (such as tdefl_compress_mem_to_heap() and tinfl_decompress_mem_to_heap()) won't work. */
-/*#define MINIZ_NO_MALLOC */
+#define MINIZ_NO_MALLOC
 
 #if defined(__TINYC__) && (defined(__linux) || defined(__linux__))
 /* TODO: Work around "error: include file 'sys\utime.h' when compiling with tcc on Linux */

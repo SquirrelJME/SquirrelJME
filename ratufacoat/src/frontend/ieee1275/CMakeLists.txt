@@ -12,30 +12,39 @@ if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
 	set(CMAKE_VERBOSE_MAKEFILE $ENV{CMAKE_VERBOSE_MAKEFILE})
 endif()
 
-# Setup executable
-add_library(SquirrelJMEIEEE1275Lib OBJECT
-	devtree.c
-	stdc.c)
+# Only when actually using the IEEE1275 target
+if(CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
+	# Setup executable
+	add_library(SquirrelJMEIEEE1275Lib OBJECT
+		boot.c
+		devtree.c
+		ieee1275.c
+		io.c
+		stdc.c
+		)
 
-# This is written only in C!
-set_target_properties(SquirrelJMEIEEE1275Lib PROPERTIES LINKER_LANGUAGE C)
+	# This is written only in C!
+	set_target_properties(SquirrelJMEIEEE1275Lib PROPERTIES LINKER_LANGUAGE C)
 
-# Position independent code always
-set_property(TARGET SquirrelJMEIEEE1275Lib
-	PROPERTY POSITION_INDEPENDENT_CODE ON)
+	# Position independent code always
+	set_property(TARGET SquirrelJMEIEEE1275Lib
+		PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-# Define this for just this target
-target_compile_definitions(SquirrelJMEIEEE1275Lib PUBLIC
-	SJME_SYSTEM_IEEE1275=1)
+	# Includes for target
+	target_include_directories(SquirrelJMEIEEE1275Lib PUBLIC
+		"${PROJECT_BINARY_DIR}"
+		"${PROJECT_SOURCE_DIR}/include")
 
-# Includes for target
-target_include_directories(SquirrelJMEIEEE1275Lib PUBLIC
-	"${PROJECT_BINARY_DIR}"
-	"${PROJECT_SOURCE_DIR}/include")
-
-# Needed by sub-targets
-squirreljme_object_and_sources(SquirrelJMEIEEE1275LibTarget
-	SquirrelJMEIEEE1275Lib)
+	# Needed by platform specific targets
+	if(SQUIRRELJME_BUNDLED_STDC)
+		squirreljme_object_and_sources(SquirrelJMEIEEE1275LibTarget
+			SquirrelJMEIEEE1275Lib
+			SquirrelJMELibStdC)
+	else()
+		squirreljme_object_and_sources(SquirrelJMEIEEE1275LibTarget
+			SquirrelJMEIEEE1275Lib)
+	endif()
+endif()
 
 # Include directories for the build
 if(CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
@@ -79,6 +88,29 @@ else()
 				-j "${CMAKE_BUILD_PARALLEL_LEVEL}"
 				-t "SquirrelJMEIEEE1275PowerPC"
 			VERBATIM COMMAND_EXPAND_LISTS)
+
+		# Create ISO Image
+		find_program(SQUIRRELJME_IEEE1275_POWERPC_GENISOIMAGE genisoimage)
+		if(SQUIRRELJME_IEEE1275_POWERPC_GENISOIMAGE)
+			# Generate ISO Image
+			add_custom_target(SquirrelJMEIEEE1275PowerPCIso
+				COMMAND "${CMAKE_COMMAND}"
+				--build "${PROJECT_BINARY_DIR}/ieee1275-powerpc"
+				-j "${CMAKE_BUILD_PARALLEL_LEVEL}"
+				-t "SquirrelJMEIEEE1275PowerPCIso"
+				VERBATIM COMMAND_EXPAND_LISTS)
+
+			# Capable of running in QEMU, requires ISO to be created first
+			find_program(SQUIRRELJME_QEMU_POWERPC qemu-system-ppc)
+			if(SQUIRRELJME_QEMU_POWERPC)
+				add_custom_target(SquirrelJMEIEEE1275PowerPCQemu
+					COMMAND "${CMAKE_COMMAND}"
+					--build "${PROJECT_BINARY_DIR}/ieee1275-powerpc"
+					-j "${CMAKE_BUILD_PARALLEL_LEVEL}"
+					-t "SquirrelJMEIEEE1275PowerPCQemu"
+					VERBATIM COMMAND_EXPAND_LISTS)
+			endif()
+		endif()
 	else()
 		message("No powerpc-elf-gcc found, not supporting IEEE1275 PowerPC.")
 	endif()
