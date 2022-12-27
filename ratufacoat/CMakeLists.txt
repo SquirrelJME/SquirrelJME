@@ -271,13 +271,21 @@ if(CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
 	add_compile_definitions(SJME_SYSTEM_IEEE1275=1)
 	set(SQUIRRELJME_BUNDLED_STDC YES)
 
-	# No built-in functions such as printf and such
+	# Options needed for IEEE1275 that affects everything
 	add_compile_options(
+		# Do not use built-ins for methods
 		-fno-builtin-fputs
 		-fno-builtin-fputc
 		-fno-builtin-puts
 		-fno-builtin-putc
-		-fno-builtin-strlen)
+		-fno-builtin-strlen
+
+		# Freestanding environment
+		-ffreestanding
+
+		# Put every function within its own section
+		-ffunction-sections
+		)
 endif()
 
 # Bundle our own C library?

@@ -3,10 +3,11 @@ OUTPUT_FORMAT(elf32-powerpc)
 
 SECTIONS
 {
-	. = 0x0;
+	. = 0x20000;
 
 	.text : AT(ADDR(.text))
 	{
+		*(.text.start)
 		*(.text*)
 		*(.rodata*)
 	}
@@ -16,7 +17,7 @@ SECTIONS
 		*(.data)
 	}
 
-	.bss : AT(ADDR(.bss))
+	.bss ALIGN(0x1000) : AT(ADDR(.bss))
 	{
 		_sbss = .;
 		*(COMMON)

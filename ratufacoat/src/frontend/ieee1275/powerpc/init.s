@@ -7,6 +7,7 @@
 # -----------------------------------------------------------------------------
 # Start location for OFW on PowerPC systems
 
+.section .text.start
 .globl _start
 _start:
 
@@ -29,6 +30,11 @@ _start:
 	# Copy OFW initial register pieces to variables in memory somewhere
 	stw 2, -4(1)								# Put old r2 on stack
 
+	#lis 27, 0xCAFE
+	#ori 27, 27, 0xBABE
+	#lis 28, 0xCAFE
+	#ori 28, 28, 0xBABE
+
 	lis 2, sjme_ieee1275EntryFunc@ha				# Entry point
 	ori 2, 2, sjme_ieee1275EntryFunc@l
 	stw 5, 0(2)
@@ -44,8 +50,10 @@ _start:
 	lwz 2, -4(1)								# Restore old r2 from stack
 
 	# Jump to main platform code
+	#b sjme_ieee1275BootArch
 	bl sjme_ieee1275BootArch
 
 	# If this is reached =(
+.globl _die
 _die:
 	b _die

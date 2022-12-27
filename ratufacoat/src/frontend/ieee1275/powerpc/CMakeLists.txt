@@ -44,11 +44,17 @@ target_include_directories(SquirrelJMEIEEE1275PowerPC PUBLIC
 	"${PROJECT_BINARY_DIR}"
 	"${PROJECT_SOURCE_DIR}/include")
 
-# Need to use the linker script to generate all the code
+# We need to use the linker script
+set_target_properties(SquirrelJMEIEEE1275PowerPC PROPERTIES
+	LINK_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/linker.ld")
+
+# Options to use when linking
 target_link_options(SquirrelJMEIEEE1275PowerPC PUBLIC
 	-static										# Static library
 	-nostdlib									# No standard libraries
-	-T "${CMAKE_CURRENT_SOURCE_DIR}/linker.ld"	# Linker script for entry
+	-nostartfiles								# No startup files
+	-nodefaultlibs								# No default libraries
+	"-T${CMAKE_CURRENT_SOURCE_DIR}/linker.ld"	# Linker script for entry
 	)
 
 # ISO Target?
@@ -94,7 +100,7 @@ if(SQUIRRELJME_IEEE1275_POWERPC_GENISOIMAGE)
 		# Running in QEMU
 		add_custom_target(SquirrelJMEIEEE1275PowerPCQemu
 			COMMAND "${SQUIRRELJME_IEEE1275_POWERPC_QEMU}"
-				-s -S
+				#-s -S
 				-m 256
 				-M mac99,via=pmu
 				-cdrom "${SQUIRRELJME_IEEE1275_POWERPC_ISO}"
@@ -103,7 +109,7 @@ if(SQUIRRELJME_IEEE1275_POWERPC_GENISOIMAGE)
 				#-prom-env 'boot-device=/pci@f2000000/mac-io@c/ata-3@21000/cdrom@0:,\\:tbxi'
 				-boot d
 			DEPENDS SquirrelJMEIEEE1275PowerPCIso
-			COMMENT Running via QEMU, connect with GDB.
+			COMMENT "Running via QEMU."
 			VERBATIM COMMAND_EXPAND_LISTS)
 	endif()
 endif()
