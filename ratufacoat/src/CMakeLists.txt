@@ -25,8 +25,6 @@ endif()
 #  executables with the ENABLE_EXPORTS property set.
 add_library(SquirrelJMECore OBJECT
 	atomic.c
-	atomiclist.c
-	bootrom.c
 	corefont.c
 	counter.c
 	crc.c
@@ -38,7 +36,6 @@ add_library(SquirrelJMECore OBJECT
 	memory.c
 	oldstuff.c
 	random.c
-	sjmerc.c
 	softmath.c
 	stream.c
 	stringies.c

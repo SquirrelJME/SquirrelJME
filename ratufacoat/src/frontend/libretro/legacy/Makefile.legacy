@@ -10,8 +10,6 @@
 
 # Generation starts here:
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/atomic.c
-SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/atomiclist.c
-SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/bootrom.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/corefont.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/counter.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/crc.c
@@ -23,7 +21,6 @@ SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/memchunk.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/memory.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/oldstuff.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/random.c
-SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/sjmerc.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/softmath.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/stream.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/stringies.c
