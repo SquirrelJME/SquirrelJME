@@ -31,11 +31,8 @@ add_library(SquirrelJMECore OBJECT
 	counter.c
 	crc.c
 	cpu.c
-	datatype.c
 	debug.c
 	error.c
-	handles.c
-	jvm.c
 	lock.c
 	memchunk.c
 	memory.c
@@ -45,7 +42,6 @@ add_library(SquirrelJMECore OBJECT
 	softmath.c
 	stream.c
 	stringies.c
-	syscall.c
 	utf.c
 	util.c
 	xbuiltin.c

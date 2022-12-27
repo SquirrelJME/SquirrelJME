@@ -22,7 +22,6 @@
 #include "sjmerc.h"
 #include "error.h"
 #include "native.h"
-#include "jvm.h"
 #include "debug.h"
 
 /** Screen size. */
@@ -306,6 +305,9 @@ sjme_framebuffer* sjme_stdc_framebuffer(void)
  */
 int main(int argc, char** argv)
 {
+	sjme_todo("Implement this?");
+	return EXIT_FAILURE;
+#if 0
 	sjme_jvmoptions options;
 	sjme_jvm* jvm;
 	sjme_error error;
@@ -381,4 +383,5 @@ int main(int argc, char** argv)
 			(int)error.value, (unsigned int)error.value);
 	
 	return EXIT_SUCCESS;
+#endif
 }

@@ -18,7 +18,6 @@
 
 #include "sjmerc.h"
 #include "atomic.h"
-#include "datatype.h"
 #include "error.h"
 
 /* Anti-C++. */

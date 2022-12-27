@@ -19,7 +19,6 @@
 #include "sjmerc.h"
 #include "error.h"
 #include "sjmecon.h"
-#include "jvm.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

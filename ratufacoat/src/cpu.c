@@ -8,14 +8,12 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjmerc.h"
-#include "jvm.h"
 #include "corefont.h"
 #include "cpu.h"
 #include "sjmecon.h"
 #include "softmath.h"
 #include "oldstuff.h"
 #include "memory.h"
-#include "syscall.h"
 
 #if 0
 

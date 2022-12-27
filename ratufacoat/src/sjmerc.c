@@ -19,7 +19,6 @@
 #include "error.h"
 #include "native.h"
 #include "oldstuff.h"
-#include "jvm.h"
 #include "debug.h"
 
 /************************** EVERYTHING OLD IS BELOW *************************/
