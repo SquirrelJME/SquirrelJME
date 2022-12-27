@@ -11,7 +11,6 @@
 #include "jvm.h"
 #include "corefont.h"
 #include "cpu.h"
-#include "opcode.h"
 #include "sjmecon.h"
 #include "softmath.h"
 #include "oldstuff.h"

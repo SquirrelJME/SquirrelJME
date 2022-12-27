@@ -40,7 +40,6 @@ add_library(SquirrelJMECore OBJECT
 	memchunk.c
 	memory.c
 	oldstuff.c
-	opcode.c
 	random.c
 	sjmerc.c
 	softmath.c

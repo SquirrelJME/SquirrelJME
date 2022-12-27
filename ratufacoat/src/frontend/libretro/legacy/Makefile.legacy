@@ -25,7 +25,6 @@ SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/lock.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/memchunk.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/memory.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/oldstuff.c
-SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/opcode.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/random.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/sjmerc.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/softmath.c
