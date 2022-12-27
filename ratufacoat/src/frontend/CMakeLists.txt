@@ -20,6 +20,12 @@ if (NOT SQUIRRELJME_ANCIENT AND
 	endif()
 endif()
 
+# Static library
+add_subdirectory(libstatic)
+
+# Native library for Native JNI
+add_subdirectory(libjni)
+
 # SDL2
 if(SQUIRRELJME_ALLOW_SDL2)
 	# Try to find SDL2

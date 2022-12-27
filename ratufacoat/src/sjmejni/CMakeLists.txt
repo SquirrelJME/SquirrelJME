@@ -268,6 +268,3 @@ target_include_directories(SquirrelJMEJNI PUBLIC
 # Make this position independent so it can be linked into shared libraries
 set_property(TARGET SquirrelJMEJNI
 	PROPERTY POSITION_INDEPENDENT_CODE ON)
-
-# Native library for Native JNI
-add_subdirectory(jni)

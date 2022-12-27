@@ -16,7 +16,7 @@
 #ifndef SQUIRRELJME_LRLOCAL_H
 #define SQUIRRELJME_LRLOCAL_H
 
-#include <libretro/libretro.h>
+#include <libretro.h>
 
 #include "sjmerc.h"
 #include "engine/scaffold.h"

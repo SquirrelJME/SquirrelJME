@@ -13,13 +13,7 @@
  * @since 2019/06/25
  */
 
-/* Palm OS Functions. */
-#if defined(SQUIRRELJME_PALMOS)
-	#include <MemoryMgr.h>
-	#include <MemGlue.h>
-#else
-	#include <string.h>
-#endif
+#include <string.h>
 
 #include "sjmerc.h"
 #include "memory.h"
@@ -29,6 +23,7 @@
 #include "error.h"
 #include "lock.h"
 #include "counter.h"
+#include "sjmejni/memtag.h"
 
 /** Lock on memory operations to ensure that all of them are atomic. */
 static sjme_spinLock sjme_memLock;
@@ -116,29 +111,17 @@ void* sjme_mallocGc(sjme_jint size, sjme_freeCallback freeCallback,
 		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, size);
 		return NULL;
 	}
-	
-#if defined(SQUIRRELJME_PALMOS)
-	/* Palm OS, use glue to allow greater than 64K. */
-	result = MemGluePtrNew(size);
-#else
-	/* Use standard C function otherwise. */
-	result = calloc(1, size);
-#endif
 
 	/* Did not allocate? */
-	if (result == NULL)
+	result = NULL;
+	if (!sjme_memDirectNew((void**)&result, size, error))
 	{
 		sjme_setError(error, SJME_ERROR_NO_MEMORY, size);
 		return NULL;
 	}
-		
-#if defined(SQUIRRELJME_PALMOS)
-	/* Clear memory on Palm OS. */
-	MemSet(result, size, 0);
-#else
+
 	/* Clear values to zero. */
 	memset(result, 0, size);
-#endif
 
 	/* Initialize counter. */
 	if (!sjme_counterInit(&result->gcCount,
@@ -309,14 +292,5 @@ sjme_jboolean sjme_free(void* p, sjme_error* error)
 	memset(node, 0xBA, node->nodeSize);
 
 	/* Free memory used here. */
-#if defined(SQUIRRELJME_PALMOS)
-	/* Use Palm OS free. */
-	MemPtrFree(baseP);
-#else
-	/* Use Standard C free. */
-	free(node);
-#endif
-
-	/* Success! */
-	return sjme_true;
+	return sjme_memDirectFree((void**)&node, error);
 }

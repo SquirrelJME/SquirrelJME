@@ -24,13 +24,9 @@ endif()
 #  another target.  One may link only to STATIC or SHARED libraries, or to
 #  executables with the ENABLE_EXPORTS property set.
 add_library(SquirrelJMECore OBJECT
-	accelgfx.c
 	atomic.c
 	atomiclist.c
-	audio.c
 	bootrom.c
-	btooth.c
-	cellfunc.c
 	corefont.c
 	counter.c
 	crc.c
@@ -38,10 +34,7 @@ add_library(SquirrelJMECore OBJECT
 	datatype.c
 	debug.c
 	error.c
-	gpio.c
 	handles.c
-	ipnet.c
-	jdwp.c
 	jvm.c
 	lock.c
 	memchunk.c
@@ -56,7 +49,6 @@ add_library(SquirrelJMECore OBJECT
 	syscall.c
 	utf.c
 	util.c
-	video.c
 	xbuiltin.c
 	${SQUIRRELJME_BUILTIN_FILE})
 
@@ -78,12 +70,10 @@ if(SQUIRRELJME_BUNDLED_STDC)
 endif()
 
 # Internal support libraries and modules
-add_subdirectory(collections)
 add_subdirectory(engine)
 add_subdirectory(format)
 add_subdirectory(miniz)
 add_subdirectory(nuklear)
-add_subdirectory(refptr)
 add_subdirectory(sjmejni)
 
 # Function to generate object files and sources for cross building
@@ -148,18 +138,13 @@ endfunction()
 
 # Execute this with all of the targets we want to collect
 squirreljme_object_and_sources(SquirrelJMECoreTarget
-	SquirrelJMECollections
 	SquirrelJMECore
 	SquirrelJMEEngine
 	SquirrelJMEEngineSpringCoat
 	SquirrelJMEFormat
 	SquirrelJMENuklearUI
 	SquirrelJMEMiniZ
-	SquirrelJMERefPtr
 	SquirrelJMEJNI)
-
-# Static library
-add_subdirectory(lib)
 
 # Front ends
 add_subdirectory(frontend)

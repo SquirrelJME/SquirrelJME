@@ -9,16 +9,9 @@
 # file is AUTO-GENERATED!
 
 # Generation starts here:
-SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/collections/arraylist.c
-SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/collections/collection.c
-SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/collections/hashmap.c
-SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/accelgfx.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/atomic.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/atomiclist.c
-SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/audio.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/bootrom.c
-SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/btooth.c
-SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/cellfunc.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/corefont.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/counter.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/crc.c
@@ -26,10 +19,7 @@ SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/cpu.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/datatype.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/debug.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/error.c
-SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/gpio.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/handles.c
-SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/ipnet.c
-SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/jdwp.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/jvm.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/lock.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/memchunk.c
@@ -44,7 +34,6 @@ SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/stringies.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/syscall.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/utf.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/util.c
-SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/video.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/xbuiltin.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/engine/buffer.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/engine/classloader.c
@@ -65,7 +54,6 @@ SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/format/sqcpack.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/format/zip.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/nuklear/nuklear.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/miniz/miniz.c
-SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/refptr/refptr.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/sjmejni/init.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/sjmejni/memtag.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/sjmejni/shadow.c

@@ -5,30 +5,30 @@
 # SquirrelJME is under the GNU General Public License v3+, or later.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: SquirrelJME Native Java Native Interface wrapper
+# DESCRIPTION: Static Library
 
-# Verbosity?
-if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
-	set(CMAKE_VERBOSE_MAKEFILE $ENV{CMAKE_VERBOSE_MAKEFILE})
-endif()
-
-# Need all of the objects that make up the native JNI library
-get_property(SQUIRRELJMEJNILIB_TARGET_OBJECTS
+# Load target objects
+get_property(SQUIRRELJMECORELIB_TARGET_OBJECTS
 	GLOBAL PROPERTY SquirrelJMECoreTargetObjects)
 
-# Declare static library
-add_library(SquirrelJMENativeJNI STATIC
-	nativejni.c
+# Core library for SquirrelJME as a static library, which includes all of
+# the objects together as one
+add_library(SquirrelJMELibStatic STATIC
+	blank.c
 	${SQUIRRELJMECORELIB_TARGET_OBJECTS})
 
-# This is written only in C!
-set_target_properties(SquirrelJMENativeJNI PROPERTIES LINKER_LANGUAGE C)
+# Change the name of the library
+set_target_properties(SquirrelJMELibStatic PROPERTIES
+	OUTPUT_NAME "squirreljme")
 
-# Dynamically generated and standard includes
-target_include_directories(SquirrelJMENativeJNI PUBLIC
+# Needed includes
+target_include_directories(SquirrelJMELibStatic PUBLIC
 	"${PROJECT_BINARY_DIR}"
 	"${PROJECT_SOURCE_DIR}/include")
 
+# This is written only in C!
+set_target_properties(SquirrelJMELibStatic PROPERTIES LINKER_LANGUAGE C)
+
 # Make this position independent so it can be linked into shared libraries
-set_property(TARGET SquirrelJMENativeJNI
+set_property(TARGET SquirrelJMELibStatic
 	PROPERTY POSITION_INDEPENDENT_CODE ON)

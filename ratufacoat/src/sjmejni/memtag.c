@@ -75,6 +75,12 @@ struct sjme_memTagGroup
 	sjme_atomicInt tagCounts[SJME_NUM_MEM_TAG_TYPES];
 };
 
+sjme_jboolean sjme_memDirectFree(void** inPtr, sjme_error* error)
+{
+	sjme_todo("Implement this?");
+	return sjme_false;
+}
+
 sjme_jboolean sjme_memDirectNew(void** outPtr, sjme_jsize size,
 	sjme_error* error)
 {

@@ -25,5 +25,5 @@ set_target_properties(SquirrelJMEUWP PROPERTIES LINKER_LANGUAGE CXX)
 
 # Linking for UWP
 target_link_libraries(SquirrelJMEUWP
-	SquirrelJMECoreLib
+	SquirrelJMELibStatic
 	WindowsApp)

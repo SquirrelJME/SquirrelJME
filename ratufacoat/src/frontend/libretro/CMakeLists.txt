@@ -60,7 +60,7 @@ set_target_properties(squirreljme_libretro PROPERTIES
 # If not static, then link against our own static library
 if(NOT SQUIRRELJME_LIBRETRO_STATIC)
 	target_link_libraries(squirreljme_libretro PUBLIC
-		SquirrelJMECoreLib)
+		SquirrelJMELibStatic)
 endif()
 
 # Some LibRetro targets set a suffix at the end of the base name for the
@@ -78,7 +78,8 @@ endif()
 # Include all of these
 target_include_directories(squirreljme_libretro PUBLIC
 	"${PROJECT_BINARY_DIR}"
-	"${PROJECT_SOURCE_DIR}/include")
+	"${PROJECT_SOURCE_DIR}/include"
+	"${PROJECT_SOURCE_DIR}/include/frontend/libretro/api")
 
 # RetroArch must be built with position independent code for any kind of
 # library.
@@ -172,6 +173,12 @@ if(DEFINED SQUIRRELJME_LIBRETRO_COMMAND)
 		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
 		COMMENT "Starting RetroArch with SquirrelJME")
 
+	# Do not run this when "all" is done
+	set_target_properties(RetroArch PROPERTIES
+		EXCLUDE_FROM_DEFAULT_BUILD TRUE)
+	set_target_properties(RetroArch PROPERTIES
+		EXCLUDE_FROM_ALL TRUE)
+
 # Is it possible that Steam can be used?
 elseif(EXISTS "${STEAM_SCRIPT}")
 	message("RetroArch launching via Steam...")
@@ -187,6 +194,12 @@ elseif(EXISTS "${STEAM_SCRIPT}")
 			"$<TARGET_FILE:squirreljme_libretro>"
 		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
 		COMMENT "Starting RetroArch with SquirrelJME")
+
+	# Do not run this when "all" is done
+	set_target_properties(RetroArch PROPERTIES
+		EXCLUDE_FROM_DEFAULT_BUILD TRUE)
+	set_target_properties(RetroArch PROPERTIES
+		EXCLUDE_FROM_ALL TRUE)
 endif()
 
 # Determine the objects and sources for the RetroArch build

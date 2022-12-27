@@ -134,6 +134,16 @@ typedef enum sjme_memTagType
 } sjme_memTagType;
 
 /**
+ * Frees memory that was directly allocated through the tagging system.
+ *
+ * @param inPtr The pointer to free.
+ * @param error If free was not successful.
+ * @return If freeing was successful.
+ * @since 2022/12/27
+ */
+sjme_jboolean sjme_memDirectFree(void** inPtr, sjme_error* error);
+
+/**
  * Allocates memory directly, not using the tagging system.
  *
  * @param outPtr The output pointer.

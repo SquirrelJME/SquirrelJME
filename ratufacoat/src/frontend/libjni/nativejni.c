@@ -7,4 +7,4 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "vfs.h"
+#include "frontend/libjni/jni.h"

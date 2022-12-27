@@ -80,8 +80,8 @@ typedef sjme_jboolean (*sjme_freeCallback)(void* memPtr, sjme_memNode* memNode,
  * @return If the node was successfully obtained.
  * @since 2022/12/10
  */
-sjme_jboolean sjme_getMemNode(void* inPtr, sjme_memNode** outNode,
-	sjme_error* error);
+sjme_jboolean SJME_DEPRECATED(sjme_getMemNode)(void* inPtr,
+	sjme_memNode** outNode, sjme_error* error);
 
 /**
  * Allocates the given number of bytes.
@@ -92,8 +92,8 @@ sjme_jboolean sjme_getMemNode(void* inPtr, sjme_memNode** outNode,
  * @param error The error flag.
  * @since 2022/12/10
  */
-void* sjme_mallocGc(sjme_jint size, sjme_freeCallback freeCallback,
-	sjme_error* error);
+void* SJME_DEPRECATED(sjme_mallocGc)(sjme_jint size,
+	sjme_freeCallback freeCallback, sjme_error* error);
 
 /**
  * Allocates the given number of bytes.
@@ -112,7 +112,8 @@ void* sjme_mallocGc(sjme_jint size, sjme_freeCallback freeCallback,
  * @param error The error flag.
  * @since 2021/03/08
  */
-void* sjme_realloc(void* ptr, sjme_jint size, sjme_error* error);
+void* SJME_DEPRECATED(sjme_realloc)(void* ptr, sjme_jint size,
+	sjme_error* error);
 
 /**
  * Frees the given pointer, if there is a callback specified in the allocation
@@ -124,7 +125,7 @@ void* sjme_realloc(void* ptr, sjme_jint size, sjme_error* error);
  * @return if freeing was a success.
  * @since 2019/06/07
  */
-sjme_jboolean sjme_free(void* p, sjme_error* error);
+sjme_jboolean SJME_DEPRECATED(sjme_free)(void* p, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

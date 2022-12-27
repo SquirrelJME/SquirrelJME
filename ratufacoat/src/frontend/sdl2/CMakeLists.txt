@@ -49,7 +49,7 @@ endif()
 
 # SDL2 Link target
 target_link_libraries(SquirrelJME PUBLIC
-	SquirrelJMECoreLib
+	SquirrelJMELibStatic
 	"${SDL2_LIBRARIES}")
 
 # Specify -v to the linker so we know it works

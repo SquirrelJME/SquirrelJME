@@ -109,6 +109,12 @@ else()
 					-j "${CMAKE_BUILD_PARALLEL_LEVEL}"
 					-t "SquirrelJMEIEEE1275PowerPCQemu"
 					VERBATIM COMMAND_EXPAND_LISTS)
+
+				# Do not run this when "all" is done
+				set_target_properties(SquirrelJMEIEEE1275PowerPCQemu PROPERTIES
+					EXCLUDE_FROM_DEFAULT_BUILD TRUE)
+				set_target_properties(SquirrelJMEIEEE1275PowerPCQemu PROPERTIES
+					EXCLUDE_FROM_ALL TRUE)
 			endif()
 		endif()
 	else()
