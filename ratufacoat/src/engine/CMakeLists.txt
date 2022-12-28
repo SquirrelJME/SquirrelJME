@@ -32,7 +32,7 @@ target_include_directories(SquirrelJMEEngine PUBLIC
 
 # Make this position independent so it can be linked into shared libraries
 set_property(TARGET SquirrelJMEEngine
-	PROPERTY POSITION_INDEPENDENT_CODE ON)
+	PROPERTY POSITION_INDEPENDENT_CODE ${SQUIRRELJME_FPIC_MODE})
 
 # Engine implementations
 add_subdirectory(springcoat)

@@ -16,7 +16,9 @@
 #ifndef SQUIRRELJME_ATOMIC_H
 #define SQUIRRELJME_ATOMIC_H
 
-#if defined(__GNUC__)
+#include "sjmejni/ccfeatures.h"
+
+#if defined(__GNUC__) && !defined(SJME_HAS_SPARC)
 	#define SJME_ATOMIC_GCC
 
 	#if !defined(SJME_HAS_ATOMIC)
@@ -43,9 +45,9 @@
 	#endif
 #endif
 
-/* Fail if missing. */
+/* Fallback to non-atomic. */
 #if !defined(SJME_HAS_ATOMIC)
-	#error No atomic available
+	#define SJME_ATOMIC_RELAXED_NOT_ATOMIC
 #endif
 
 #include "sjmerc.h"

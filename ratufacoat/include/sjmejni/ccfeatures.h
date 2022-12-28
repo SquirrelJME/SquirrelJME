@@ -76,6 +76,12 @@ extern "C" {
 	#define SJME_HAS_POWERPC
 #endif
 
+/* Is SPARC available? */
+#if defined(__sparc__) || defined(__sparc)
+	/** SPARC is available. */
+	#define SJME_HAS_SPARC
+#endif
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

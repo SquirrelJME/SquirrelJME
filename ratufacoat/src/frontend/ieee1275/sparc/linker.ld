@@ -7,11 +7,11 @@
 // -------------------------------------------------------------------------*/
 
 ENTRY(_start)
-OUTPUT_FORMAT(elf32-powerpc)
+OUTPUT_FORMAT(elf32-sparc)
 
 SECTIONS
 {
-	. = 0x20000;
+	. = 0x4000;
 
 	.text : AT(ADDR(.text))
 	{
@@ -25,7 +25,7 @@ SECTIONS
 		*(.data)
 	}
 
-	.bss ALIGN(0x1000) : AT(ADDR(.bss))
+	.bss : AT(ADDR(.bss))
 	{
 		_sbss = .;
 		*(COMMON)

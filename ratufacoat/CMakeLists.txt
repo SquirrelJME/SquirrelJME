@@ -11,6 +11,18 @@ if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
 	set(CMAKE_VERBOSE_MAKEFILE $ENV{CMAKE_VERBOSE_MAKEFILE})
 endif()
 
+# Disable debugging for IEEE1275 SPARC because it is broken in CMake
+if(CMAKE_SYSTEM_NAME STREQUAL "ieee1275" AND
+	CMAKE_SYSTEM_PROCESSOR STREQUAL "sparc")
+	set(CMAKE_ASM_FLAGS "" CACHE STRING "ASM Flags" FORCE)
+	set(CMAKE_ASM_FLAGS_DEBUG "" CACHE STRING "ASM Flags Debug" FORCE)
+	set(CMAKE_ASM_FLAGS_DEBUG_INIT "" CACHE STRING "ASM Debug Init" FORCE)
+
+	set(CMAKE_ASM_FLAGS "")
+	set(CMAKE_ASM_FLAGS_DEBUG "")
+	set(CMAKE_ASM_FLAGS_DEBUG_INIT "")
+endif()
+
 # Needed for some ancient RetroArch toolchains
 if(${CMAKE_VERSION} VERSION_LESS "3.13")
 	message("Ancient CMake has been detected (${CMAKE_VERSION})")
@@ -168,6 +180,14 @@ endif()
 # Enable assembly for IEEE1275
 if(CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
 	enable_language(ASM)
+endif()
+
+# Disable FPIC on certain targets
+if(CMAKE_SYSTEM_NAME STREQUAL "ieee1275" AND
+	CMAKE_SYSTEM_PROCESSOR STREQUAL "sparc")
+	set_property(GLOBAL PROPERTY SQUIRRELJME_FPIC_MODE OFF)
+else()
+	set_property(GLOBAL PROPERTY SQUIRRELJME_FPIC_MODE ON)
 endif()
 
 # Standard C and C++ versions

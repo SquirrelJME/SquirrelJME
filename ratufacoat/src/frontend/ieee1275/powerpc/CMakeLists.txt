@@ -54,7 +54,7 @@ set_target_properties(SquirrelJMEIEEE1275PowerPC PROPERTIES
 
 # Position independent code always
 set_property(TARGET SquirrelJMEIEEE1275PowerPC
-	PROPERTY POSITION_INDEPENDENT_CODE ON)
+	PROPERTY POSITION_INDEPENDENT_CODE ${SQUIRRELJME_FPIC_MODE})
 
 # Needs the assembly code
 add_dependencies(SquirrelJMEIEEE1275PowerPC

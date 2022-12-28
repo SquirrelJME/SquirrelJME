@@ -27,7 +27,7 @@ target_include_directories(SquirrelJMEMiniZ PUBLIC
 
 # Make this position independent so it can be linked into shared libraries
 set_property(TARGET SquirrelJMEMiniZ
-	PROPERTY POSITION_INDEPENDENT_CODE ON)
+	PROPERTY POSITION_INDEPENDENT_CODE ${SQUIRRELJME_FPIC_MODE})
 
 # Disable warnings since this is a third party library we do not touch
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)

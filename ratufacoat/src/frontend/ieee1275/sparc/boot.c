@@ -7,4 +7,15 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "frontend/ieee1275/boot.h"
+#include "frontend/ieee1275/ieee1275.h"
 #include "sjmejni/sjmejni.h"
+
+void sjme_ieee1275BootArch(void)
+{
+	/* Enter IEEE1275 Mode. */
+	sjme_ieee1275Boot();
+
+	/* Exit system. */
+	sjme_ieee1275Exit();
+}

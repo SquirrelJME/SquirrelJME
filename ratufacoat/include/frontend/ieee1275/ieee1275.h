@@ -18,9 +18,14 @@
 
 #include "sjmejni/sjmejni.h"
 
-/* Include platform headers. */
+/* PowerPC platform?. */
 #if defined(SJME_HAS_POWERPC)
 	#include "frontend/ieee1275/powerpc/ieee1275platform.h"
+#endif
+
+/* SPARC platform? */
+#if defined(SJME_HAS_SPARC)
+	#include "frontend/ieee1275/sparc/ieee1275platform.h"
 #endif
 
 /* Anti-C++. */

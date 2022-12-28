@@ -31,4 +31,4 @@ set_target_properties(SquirrelJMELibStatic PROPERTIES LINKER_LANGUAGE C)
 
 # Make this position independent so it can be linked into shared libraries
 set_property(TARGET SquirrelJMELibStatic
-	PROPERTY POSITION_INDEPENDENT_CODE ON)
+	PROPERTY POSITION_INDEPENDENT_CODE ${SQUIRRELJME_FPIC_MODE})

@@ -5,7 +5,7 @@
 # SquirrelJME is under the GNU General Public License v3+, or later.
 # See license.mkd for licensing and copyright information.
 # -----------------------------------------------------------------------------
-# Start location for OFW on PowerPC systems
+# Start code for IEEE1275 PowerPC
 
 .globl _start
 .globl _die
@@ -15,6 +15,7 @@
 .globl sjme_ieee1275EntryNumArgs
 
 .section .text.start
+
 _start:
 
 	# Right now, the ELF is linked at a load-base of 0x200000, however, on any

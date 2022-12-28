@@ -267,4 +267,4 @@ target_include_directories(SquirrelJMEJNI PUBLIC
 
 # Make this position independent so it can be linked into shared libraries
 set_property(TARGET SquirrelJMEJNI
-	PROPERTY POSITION_INDEPENDENT_CODE ON)
+	PROPERTY POSITION_INDEPENDENT_CODE ${SQUIRRELJME_FPIC_MODE})

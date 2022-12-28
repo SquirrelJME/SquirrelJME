@@ -152,7 +152,7 @@ void* sjme_atomicPointerGet(sjme_atomicPointer* atomic)
 		return (void*)InterlockedAdd((volatile LONG*)&atomic->value, 0);
 	#endif
 #elif defined(SJME_ATOMIC_RELAXED_NOT_ATOMIC)
-	return atomic->value;
+	return (void*)atomic->value;
 #else
 	return sjme_atomicIntGetAndAdd(atomic, 0);
 #endif
@@ -168,11 +168,11 @@ void* sjme_atomicPointerSet(sjme_atomicPointer* atomic, void* value)
 	return (void*)InterlockedExchangePointer(
 		(volatile PVOID*)&atomic->value, (PVOID)value);
 #elif defined(SJME_ATOMIC_RELAXED_NOT_ATOMIC)
-	sjme_jint oldValue = atomic->value;
+	volatile void* oldValue = atomic->value;
 	
 	atomic->value = value;
 	
-	return oldValue; 
+	return (void*)oldValue;
 #else
 	#error No sjme_atomicPointerSet
 #endif

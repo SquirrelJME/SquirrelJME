@@ -28,7 +28,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
 
 	# Position independent code always
 	set_property(TARGET SquirrelJMEIEEE1275Lib
-		PROPERTY POSITION_INDEPENDENT_CODE ON)
+		PROPERTY POSITION_INDEPENDENT_CODE ${SQUIRRELJME_FPIC_MODE})
 
 	# Includes for target
 	target_include_directories(SquirrelJMEIEEE1275Lib PUBLIC
@@ -68,8 +68,18 @@ if(CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
 else()
 	message("IEEE1275: Not in current build")
 
-	# Does the PowerPC ELF Compiler exist?
+	# This is used by everything
+	find_program(SQUIRRELJME_IEEE1275_POWERPC_GENISOIMAGE genisoimage)
+
+	# Do these compilers exist?
 	find_program(SQUIRRELJME_IEEE1275_POWERPC_COMPILER powerpc-elf-gcc)
+	find_program(SQUIRRELJME_IEEE1275_SPARC_COMPILER sparc-elf-gcc)
+
+	# Do these QEMUs exist?
+	find_program(SQUIRRELJME_QEMU_POWERPC qemu-system-ppc)
+	find_program(SQUIRRELJME_QEMU_POWERPC qemu-system-sparc)
+
+	# PowerPC
 	if(SQUIRRELJME_IEEE1275_POWERPC_COMPILER)
 		# Otherwise recursive build for PowerPC
 		message("Recursively including IEEE1275 PowerPC")
@@ -90,7 +100,6 @@ else()
 			VERBATIM COMMAND_EXPAND_LISTS)
 
 		# Create ISO Image
-		find_program(SQUIRRELJME_IEEE1275_POWERPC_GENISOIMAGE genisoimage)
 		if(SQUIRRELJME_IEEE1275_POWERPC_GENISOIMAGE)
 			# Generate ISO Image
 			add_custom_target(SquirrelJMEIEEE1275PowerPCIso
@@ -101,7 +110,6 @@ else()
 				VERBATIM COMMAND_EXPAND_LISTS)
 
 			# Capable of running in QEMU, requires ISO to be created first
-			find_program(SQUIRRELJME_QEMU_POWERPC qemu-system-ppc)
 			if(SQUIRRELJME_QEMU_POWERPC)
 				add_custom_target(SquirrelJMEIEEE1275PowerPCQemu
 					COMMAND "${CMAKE_COMMAND}"
@@ -119,5 +127,55 @@ else()
 		endif()
 	else()
 		message("No powerpc-elf-gcc found, not supporting IEEE1275 PowerPC.")
+	endif()
+
+	# SPARC
+	if(SQUIRRELJME_IEEE1275_POWERPC_COMPILER)
+		# Otherwise recursive build for Sparc
+		message("Recursively including IEEE1275 Sparc")
+		execute_process(COMMAND "${CMAKE_COMMAND}"
+			-G "Unix Makefiles"
+			-S "${PROJECT_SOURCE_DIR}"
+			-B "${PROJECT_BINARY_DIR}/ieee1275-sparc"
+			--toolchain "${CMAKE_CURRENT_SOURCE_DIR}/sparc/ieee1275-sparc.toolchain.cmake"
+			COMMAND_ECHO STDERR
+			COMMAND_ERROR_IS_FATAL ANY)
+
+		# Then add custom target for output of that build
+		add_custom_target(SquirrelJMEIEEE1275Sparc
+			COMMAND "${CMAKE_COMMAND}"
+			--build "${PROJECT_BINARY_DIR}/ieee1275-sparc"
+			-j "${CMAKE_BUILD_PARALLEL_LEVEL}"
+			-t "SquirrelJMEIEEE1275Sparc"
+			VERBATIM COMMAND_EXPAND_LISTS)
+
+		# Create ISO Image
+		if(SQUIRRELJME_IEEE1275_POWERPC_GENISOIMAGE)
+			# Generate ISO Image
+			add_custom_target(SquirrelJMEIEEE1275SparcIso
+				COMMAND "${CMAKE_COMMAND}"
+				--build "${PROJECT_BINARY_DIR}/ieee1275-sparc"
+				-j "${CMAKE_BUILD_PARALLEL_LEVEL}"
+				-t "SquirrelJMEIEEE1275SparcIso"
+				VERBATIM COMMAND_EXPAND_LISTS)
+
+			# Capable of running in QEMU, requires ISO to be created first
+			if(SQUIRRELJME_QEMU_POWERPC)
+				add_custom_target(SquirrelJMEIEEE1275SparcQemu
+					COMMAND "${CMAKE_COMMAND}"
+					--build "${PROJECT_BINARY_DIR}/ieee1275-sparc"
+					-j "${CMAKE_BUILD_PARALLEL_LEVEL}"
+					-t "SquirrelJMEIEEE1275SparcQemu"
+					VERBATIM COMMAND_EXPAND_LISTS)
+
+				# Do not run this when "all" is done
+				set_target_properties(SquirrelJMEIEEE1275SparcQemu PROPERTIES
+					EXCLUDE_FROM_DEFAULT_BUILD TRUE)
+				set_target_properties(SquirrelJMEIEEE1275SparcQemu PROPERTIES
+					EXCLUDE_FROM_ALL TRUE)
+			endif()
+		endif()
+	else()
+		message("No sparc-elf-gcc found, not supporting IEEE1275 Sparc.")
 	endif()
 endif()

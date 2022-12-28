@@ -84,7 +84,7 @@ target_include_directories(squirreljme_libretro PUBLIC
 # RetroArch must be built with position independent code for any kind of
 # library.
 set_property(TARGET squirreljme_libretro
-	PROPERTY POSITION_INDEPENDENT_CODE ON)
+	PROPERTY POSITION_INDEPENDENT_CODE ${SQUIRRELJME_FPIC_MODE})
 
 # Check if Steam is a valid option
 message("System ${CMAKE_SYSTEM_NAME}...")

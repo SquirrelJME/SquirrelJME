@@ -26,7 +26,7 @@ target_include_directories(SquirrelJMENuklearUI PUBLIC
 
 # Make this position independent so it can be linked into shared libraries
 set_property(TARGET SquirrelJMENuklearUI
-	PROPERTY POSITION_INDEPENDENT_CODE ON)
+	PROPERTY POSITION_INDEPENDENT_CODE ${SQUIRRELJME_FPIC_MODE})
 
 # Disable warnings since this is a third party library we do not touch
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
