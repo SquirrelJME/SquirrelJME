@@ -36,7 +36,7 @@ public class TestCanvasKeyTyping
 	public void test(Display __display, CanvasPlatform __platform)
 		throws Throwable
 	{
-		UIBackend backend = UIBackendFactory.getInstance(true);
+		UIBackend backend = UIBackendFactory.getInstance();
 		UIFormCallback injector = backend.injector();
 		
 		// We need to locate the canvas item before we can send events to it

@@ -254,7 +254,7 @@ public abstract class CustomItem
 		if (!this._transparent)
 		{
 			int old = __gfx.getAlphaColor();
-			__gfx.setColor(UIBackendFactory.getInstance(true).metric(
+			__gfx.setColor(UIBackendFactory.getInstance().metric(
 				UIMetricType.COLOR_CANVAS_BACKGROUND));
 			
 			__gfx.fillRect(0, 0, __sw, __sh);
@@ -290,7 +290,7 @@ public abstract class CustomItem
 	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __intProp, int __sub, int __old, int __new)
 	{
-		UIBackend instance = UIBackendFactory.getInstance(true);
+		UIBackend instance = UIBackendFactory.getInstance();
 		
 		// Only act on the canvas item
 		if (!instance.equals(__item, this._uiCanvas))

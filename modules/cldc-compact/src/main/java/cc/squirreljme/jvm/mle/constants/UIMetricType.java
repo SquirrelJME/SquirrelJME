@@ -71,7 +71,11 @@ public interface UIMetricType
 	byte SUPPORTS_BACKLIGHT_CONTROL =
 		12;
 	
+	/** Is only a single canvas supported? */
+	byte CANVAS_ONLY_SUPPORT =
+		13;
+	
 	/** The number of supported metrics. */
 	byte NUM_METRICS =
-		13;
+		14;
 }

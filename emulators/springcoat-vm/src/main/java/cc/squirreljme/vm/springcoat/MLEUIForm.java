@@ -157,6 +157,12 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
+			// Check nulls
+			if (__args[0] == null && __args[1] == null)
+				return true;
+			if ((__args[0] == null) != (__args[1] == null))
+				return false;
+			
 			return UIFormShelf.equals(MLEUIForm.__display(__args[0]).display,
 				MLEUIForm.__display(__args[1]).display);
 		}
@@ -174,6 +180,12 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
+			// Check nulls
+			if (__args[0] == null && __args[1] == null)
+				return true;
+			if ((__args[0] == null) != (__args[1] == null))
+				return false;
+				
 			return UIFormShelf.equals(MLEUIForm.__form(__args[0]).form,
 				MLEUIForm.__form(__args[1]).form);
 		}
@@ -191,6 +203,12 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
+			// Check nulls
+			if (__args[0] == null && __args[1] == null)
+				return true;
+			if ((__args[0] == null) != (__args[1] == null))
+				return false;
+			
 			return UIFormShelf.equals(MLEUIForm.__item(__args[0]).item,
 				MLEUIForm.__item(__args[1]).item);
 		}
@@ -208,6 +226,12 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
+			// Check nulls
+			if (__args[0] == null && __args[1] == null)
+				return true;
+			if ((__args[0] == null) != (__args[1] == null))
+				return false;
+			
 			return UIFormShelf.equals(MLEUIForm.__widget(__args[0]).widget(),
 				MLEUIForm.__widget(__args[1]).widget());
 		}

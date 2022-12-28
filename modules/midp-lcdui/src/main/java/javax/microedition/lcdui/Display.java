@@ -262,7 +262,7 @@ public class Display
 			}
 			
 			// Register the display for callbacks
-			UIBackendFactory.getInstance(true).callback(this,
+			UIBackendFactory.getInstance().callback(this,
 				(UIDisplayCallback)StaticDisplayState.callback());
 		}
 	}
@@ -422,7 +422,7 @@ public class Display
 		// These are all standard and expected to always be supported
 		int rv = Display.__defaultCapabilities();
 			
-		UIBackend backend = UIBackendFactory.getInstance(true);
+		UIBackend backend = UIBackendFactory.getInstance();
 		
 		// Supports any kind of input?
 		if (0 != backend.metric(UIMetricType.INPUT_FLAGS))
@@ -632,7 +632,7 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		return UIBackendFactory.getInstance(true)
+		return UIBackendFactory.getInstance()
 			.metric(UIMetricType.DISPLAY_MAX_HEIGHT);
 	}
 	
@@ -707,7 +707,7 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		return UIBackendFactory.getInstance(true)
+		return UIBackendFactory.getInstance()
 			.metric(UIMetricType.DISPLAY_MAX_WIDTH);
 	}
 	
@@ -719,7 +719,7 @@ public class Display
 	 */
 	public boolean hasPointerEvents()
 	{
-		return (UIBackendFactory.getInstance(true).metric(
+		return (UIBackendFactory.getInstance().metric(
 			UIMetricType.INPUT_FLAGS) & UIInputFlag.POINTER) ==
 			(UIInputFlag.POINTER);
 	}
@@ -732,7 +732,7 @@ public class Display
 	 */
 	public boolean hasPointerMotionEvents()
 	{
-		return (UIBackendFactory.getInstance(true).metric(
+		return (UIBackendFactory.getInstance().metric(
 			UIMetricType.INPUT_FLAGS) &
 			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION)) ==
 			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION);
@@ -757,7 +757,7 @@ public class Display
 	 */
 	public boolean isColor()
 	{
-		return UIBackendFactory.getInstance(true).metric(
+		return UIBackendFactory.getInstance().metric(
 			UIMetricType.DISPLAY_MONOCHROMATIC) == 0;
 	}
 	
@@ -774,7 +774,7 @@ public class Display
 	@SuppressWarnings({"MagicNumber", "SwitchStatementWithTooFewBranches"})
 	public int numAlphaLevels()
 	{
-		switch (UIBackendFactory.getInstance(true).metric(
+		switch (UIBackendFactory.getInstance().metric(
 			UIMetricType.DISPLAY_PIXEL_FORMAT))
 		{
 				// If the display format is 16-bit, just use this here
@@ -802,7 +802,7 @@ public class Display
 	public int numColors()
 	{
 		int pf;
-		switch ((pf = UIBackendFactory.getInstance(true).metric(
+		switch ((pf = UIBackendFactory.getInstance().metric(
 			UIMetricType.DISPLAY_PIXEL_FORMAT)))
 		{
 			case UIPixelFormat.INT_RGB888:
@@ -1055,7 +1055,7 @@ public class Display
 		throws IllegalArgumentException
 	{
 		// Depends
-		UIBackend backend = UIBackendFactory.getInstance(true);
+		UIBackend backend = UIBackendFactory.getInstance();
 		switch (__e)
 		{
 			case Display.CHOICE_GROUP_ELEMENT:
@@ -1102,7 +1102,7 @@ public class Display
 		// as we do not want to un-hide another form being displayed if it
 		// is from another process
 		if (current.__isShown())
-			UIBackendFactory.getInstance(true)
+			UIBackendFactory.getInstance()
 				.displayShow(this._uiDisplay, null);
 		
 		// Unlink display
@@ -1133,7 +1133,7 @@ public class Display
 		Debugging.debugNote("Showing %s on display.", __show.getClass());
 		
 		// Get the backend to call on
-		UIBackend backend = UIBackendFactory.getInstance(true);
+		UIBackend backend = UIBackendFactory.getInstance();
 		
 		// Use the global callback thread
 		synchronized (StaticDisplayState.class)
@@ -1245,7 +1245,7 @@ public class Display
 			serialRuns.put(idRunner, __run);
 			
 			// Perform the call so it is done later
-			UIBackendFactory.getInstance(true).later(idDisplay, idRunner);
+			UIBackendFactory.getInstance().later(idDisplay, idRunner);
 		}
 		
 		// This is the ID used to refer to this runner
@@ -1316,7 +1316,7 @@ public class Display
 		{
 			// Get the displays that are attached to the system
 			UIDisplayBracket[] uiDisplays =
-				UIBackendFactory.getInstance(true).displays();
+				UIBackendFactory.getInstance().displays();
 			int n = uiDisplays.length;
 			
 			// Initialize display instances

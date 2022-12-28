@@ -165,15 +165,16 @@ public final class SwingFormShelf
 	 * @param __a The first.
 	 * @param __b The second.
 	 * @return If these are the same display.
-	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
 	public static boolean equals(UIDisplayBracket __a,
 		UIDisplayBracket __b)
-		throws MLECallError
 	{
-		if (__a == null || __b == null)
-			throw new MLECallError("Null arguments.");
+		// Check nulls
+		if (__a == null && __b == null)
+			return true;
+		if ((__a == null) != (__b == null))
+			return false;
 		
 		return __a == __b;
 	}
@@ -184,15 +185,16 @@ public final class SwingFormShelf
 	 * @param __a The first.
 	 * @param __b The second.
 	 * @return If these are the same form.
-	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
 	public static boolean equals(UIFormBracket __a,
 		UIFormBracket __b)
-		throws MLECallError
 	{
-		if (__a == null || __b == null)
-			throw new MLECallError("Null arguments.");
+		// Check nulls
+		if (__a == null && __b == null)
+			return true;
+		if ((__a == null) != (__b == null))
+			return false;
 		
 		return __a == __b;
 	}
@@ -203,15 +205,16 @@ public final class SwingFormShelf
 	 * @param __a The first.
 	 * @param __b The second.
 	 * @return If these are the same item.
-	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
 	public static boolean equals(UIItemBracket __a,
 		UIItemBracket __b)
-		throws MLECallError
 	{
-		if (__a == null || __b == null)
-			throw new MLECallError("Null arguments.");
+		// Check nulls
+		if (__a == null && __b == null)
+			return true;
+		if ((__a == null) != (__b == null))
+			return false;
 		
 		return __a == __b;
 	}
@@ -222,15 +225,16 @@ public final class SwingFormShelf
 	 * @param __a The first.
 	 * @param __b The second.
 	 * @return If these are the same item.
-	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/09/20
 	 */
 	public static boolean equals(UIWidgetBracket __a,
 		UIWidgetBracket __b)
-		throws MLECallError
 	{
-		if (__a == null || __b == null)
-			throw new MLECallError("Null arguments.");
+		// Check nulls
+		if (__a == null && __b == null)
+			return true;
+		if ((__a == null) != (__b == null))
+			return false;
 		
 		return __a == __b;
 	}
@@ -605,6 +609,10 @@ public final class SwingFormShelf
 				
 				// Backlight control not supported
 			case UIMetricType.SUPPORTS_BACKLIGHT_CONTROL:
+				return 0;
+			
+				// We support everything
+			case UIMetricType.CANVAS_ONLY_SUPPORT:
 				return 0;
 			
 			default:

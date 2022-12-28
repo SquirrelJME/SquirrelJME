@@ -46,7 +46,7 @@ public final class UIFormShelf
 	 * Registers a display callback that is to be called when information about
 	 * displays changes.
 	 * 
-	 * @param __ref The object this refers to, if it gets garbage collected
+	 * @param __ref The display this refers to, if it gets garbage collected
 	 * then this becomes invalidated.
 	 * @param __dc The display callback to use.
 	 * @throws MLECallError On null arguments.
@@ -61,7 +61,8 @@ public final class UIFormShelf
 	 * interface events and otherwise.
 	 * 
 	 * @param __form The form that the callback will act under.
-	 * @param __callback The callback to register.
+	 * @param __callback The callback to register, may be {@code null} to
+	 * remove the callback from the form.
 	 * @throws MLECallError If {@code __form} is {@code null}.
 	 * @see UIFormCallback
 	 * @since 2020/07/03
@@ -111,12 +112,10 @@ public final class UIFormShelf
 	 * @param __a The first.
 	 * @param __b The second.
 	 * @return If these are the same display.
-	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
 	public static native boolean equals(UIDisplayBracket __a,
-		UIDisplayBracket __b)
-		throws MLECallError;
+		UIDisplayBracket __b);
 	
 	/**
 	 * Checks if the two displays represent the same {@link UIFormBracket}.
@@ -124,12 +123,10 @@ public final class UIFormShelf
 	 * @param __a The first.
 	 * @param __b The second.
 	 * @return If these are the same form.
-	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
 	public static native boolean equals(UIFormBracket __a,
-		UIFormBracket __b)
-		throws MLECallError;
+		UIFormBracket __b);
 	
 	/**
 	 * Checks if the two displays represent the same {@link UIItemBracket}.
@@ -137,12 +134,10 @@ public final class UIFormShelf
 	 * @param __a The first.
 	 * @param __b The second.
 	 * @return If these are the same item.
-	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
 	public static native boolean equals(UIItemBracket __a,
-		UIItemBracket __b)
-		throws MLECallError;
+		UIItemBracket __b);
 	
 	/**
 	 * Checks if the two displays represent the same {@link UIWidgetBracket}.
@@ -150,15 +145,14 @@ public final class UIFormShelf
 	 * @param __a The first.
 	 * @param __b The second.
 	 * @return If these are the same item.
-	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/09/20
 	 */
 	public static native boolean equals(UIWidgetBracket __a,
-		UIWidgetBracket __b)
-		throws MLECallError;
+		UIWidgetBracket __b);
 	
 	/**
-	 * Flushes all of the events and forces them to be processed.
+	 * Flushes all the events and forces them to be processed, waiting until
+	 * all of them have been processed.
 	 * 
 	 * @throws MLECallError If events could not be flushed.
 	 * @since 2020/07/26
@@ -226,7 +220,7 @@ public final class UIFormShelf
 	 * @param __pos The position to set the item at, may be one of
 	 * {@link UIItemPosition}.
 	 * @throws MLECallError If the form or item are null, or the position
-	 * is not valid.
+	 * is not valid, or the item is on a different form than {@code __form}.
 	 * @since 2020/07/18
 	 */
 	public static native void formItemPosition(UIFormBracket __form,

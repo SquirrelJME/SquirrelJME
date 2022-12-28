@@ -110,7 +110,7 @@ public abstract class Item
 	Item(String __l)
 	{
 		// Setup label item
-		UIBackend backend = UIBackendFactory.getInstance(true);
+		UIBackend backend = UIBackendFactory.getInstance();
 		this._labelItem = backend.itemNew(UIItemType.LABEL);
 		
 		// Set the label accordingly
@@ -293,7 +293,7 @@ public abstract class Item
 		this._label = __l;
 		
 		// Update the label
-		UIBackend backend = UIBackendFactory.getInstance(true);
+		UIBackend backend = UIBackendFactory.getInstance();
 		backend.widgetProperty(this._labelItem,
 			UIWidgetProperty.STRING_LABEL, 0, __l);
 		

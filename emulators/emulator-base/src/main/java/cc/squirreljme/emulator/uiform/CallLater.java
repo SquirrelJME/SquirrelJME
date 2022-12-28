@@ -68,7 +68,7 @@ public class CallLater
 					continue;
 				}
 				
-				// Otherwise try a call later
+				// Otherwise, try a call later
 				candidates.add(entry.getValue());
 			}
 		}

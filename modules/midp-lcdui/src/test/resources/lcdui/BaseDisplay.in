@@ -1,4 +1,2 @@
 Manifest-Version: 1.0
-result: NoResult
-thrown: NoExceptionThrown
 hyper-parameters: NATIVE CANVAS FRAMEBUFFER HEADLESS

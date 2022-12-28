@@ -40,6 +40,7 @@ public interface UIBackend
 	 * then this becomes invalidated.
 	 * @param __dc The display callback to use.
 	 * @throws MLECallError On null arguments.
+	 * @see UIFormShelf#callback(Object, UIDisplayCallback)
 	 * @since 2020/10/03
 	 */
 	void callback(Object __ref, UIDisplayCallback __dc)
@@ -52,6 +53,7 @@ public interface UIBackend
 	 * @param __form The form that the callback will act under.
 	 * @param __callback The callback to register.
 	 * @throws MLECallError If {@code __form} is {@code null}.
+	 * @see UIFormShelf#callback(UIFormBracket, UIFormCallback) 
 	 * @since 2020/07/03
 	 */
 	void callback(UIFormBracket __form, UIFormCallback __callback)
@@ -63,6 +65,7 @@ public interface UIBackend
 	 * @return The display heads which are attached to a system, these objects
 	 * here represent physical displays.
 	 * @throws MLECallError If there are no displays.
+	 * @see UIFormShelf#displays() 
 	 * @since 2020/07/01
 	 */
 	UIDisplayBracket[] displays()
@@ -74,6 +77,7 @@ public interface UIBackend
 	 * @param __display The display to query.
 	 * @return The form that is currently shown or {@code null}.
 	 * @throws MLECallError On null arguments.
+	 * @see UIFormShelf#displayCurrent(UIDisplayBracket) 
 	 * @since 2020/07/01
 	 */
 	UIFormBracket displayCurrent(UIDisplayBracket __display)
@@ -86,6 +90,7 @@ public interface UIBackend
 	 * @param __form The form to display, if {@code null} then no item is
 	 * shown on the display.
 	 * @throws MLECallError On {@code __display} is {@code null}.
+	 * @see UIFormShelf#displayShow(UIDisplayBracket, UIFormBracket) 
 	 * @since 2020/07/01
 	 */
 	void displayShow(UIDisplayBracket __display, UIFormBracket __form)
@@ -97,11 +102,10 @@ public interface UIBackend
 	 * @param __a The first.
 	 * @param __b The second.
 	 * @return If these are the same display.
-	 * @throws MLECallError If either is {@code null}.
+	 * @see UIFormShelf#equals(UIDisplayBracket, UIDisplayBracket) 
 	 * @since 2020/07/01
 	 */
-	boolean equals(UIDisplayBracket __a, UIDisplayBracket __b)
-		throws MLECallError;
+	boolean equals(UIDisplayBracket __a, UIDisplayBracket __b);
 	
 	/**
 	 * Checks if the two displays represent the same {@link UIFormBracket}.
@@ -109,11 +113,10 @@ public interface UIBackend
 	 * @param __a The first.
 	 * @param __b The second.
 	 * @return If these are the same form.
-	 * @throws MLECallError If either is {@code null}.
+	 * @see UIFormShelf#equals(UIFormBracket, UIFormBracket) 
 	 * @since 2020/07/01
 	 */
-	boolean equals(UIFormBracket __a, UIFormBracket __b)
-		throws MLECallError;
+	boolean equals(UIFormBracket __a, UIFormBracket __b);
 	
 	/**
 	 * Checks if the two displays represent the same {@link UIItemBracket}.
@@ -121,11 +124,10 @@ public interface UIBackend
 	 * @param __a The first.
 	 * @param __b The second.
 	 * @return If these are the same item.
-	 * @throws MLECallError If either is {@code null}.
+	 * @see UIFormShelf#equals(UIItemBracket, UIItemBracket) 
 	 * @since 2020/07/01
 	 */
-	boolean equals(UIItemBracket __a, UIItemBracket __b)
-		throws MLECallError;
+	boolean equals(UIItemBracket __a, UIItemBracket __b);
 	
 	/**
 	 * Checks if the two displays represent the same {@link UIWidgetBracket}.
@@ -133,16 +135,16 @@ public interface UIBackend
 	 * @param __a The first.
 	 * @param __b The second.
 	 * @return If these are the same item.
-	 * @throws MLECallError If either is {@code null}.
+	 * @see UIFormShelf#equals(UIWidgetBracket, UIWidgetBracket) 
 	 * @since 2020/09/20
 	 */
-	boolean equals(UIWidgetBracket __a, UIWidgetBracket __b)
-		throws MLECallError;
+	boolean equals(UIWidgetBracket __a, UIWidgetBracket __b);
 	
 	/**
 	 * Flushes all of the events and forces them to be processed.
 	 * 
 	 * @throws MLECallError If events could not be flushed.
+	 * @see UIFormShelf#flushEvents() 
 	 * @since 2020/07/26
 	 */
 	void flushEvents()
@@ -153,6 +155,7 @@ public interface UIBackend
 	 * 
 	 * @param __form The form to delete.
 	 * @throws MLECallError On null arguments or the form could not be deleted.
+	 * @see UIFormShelf#formDelete(UIFormBracket) 
 	 * @since 2020/07/01
 	 */
 	void formDelete(UIFormBracket __form)
@@ -167,6 +170,7 @@ public interface UIBackend
 	 * there.
 	 * @throws MLECallError If the form is not valid or if the position is
 	 * not valid.
+	 * @see UIFormShelf#formItemAtPosition(UIFormBracket, int) 
 	 * @since 2020/07/19
 	 */
 	UIItemBracket formItemAtPosition(UIFormBracket __form, int __pos)
@@ -178,6 +182,7 @@ public interface UIBackend
 	 * @param __form The form to get the count from.
 	 * @return The number of normal items on the form.
 	 * @throws MLECallError If the form is null or not valid.
+	 * @see UIFormShelf#formItemCount(UIFormBracket) 
 	 * @since 2020/07/19
 	 */
 	int formItemCount(UIFormBracket __form)
@@ -193,6 +198,7 @@ public interface UIBackend
 	 * {@link UIItemPosition} or
 	 * {@link UIItemPosition#NOT_ON_FORM} if not on the form.
 	 * @throws MLECallError If the form and item are null.
+	 * @see UIFormShelf#formItemPosition(UIFormBracket, UIItemBracket) 
 	 * @since 2020/07/18
 	 */
 	int formItemPosition(UIFormBracket __form, UIItemBracket __item)
@@ -206,7 +212,8 @@ public interface UIBackend
 	 * @param __pos The position to set the item at, may be one of
 	 * {@link UIItemPosition}.
 	 * @throws MLECallError If the form or item are null, or the position
-	 * is not valid.
+	 * is not valid, or the item is on a different form than {@code __form}.
+	 * @see UIFormShelf#formItemPosition(UIFormBracket, UIItemBracket, int) 
 	 * @since 2020/07/18
 	 */
 	void formItemPosition(UIFormBracket __form, UIItemBracket __item,
@@ -221,6 +228,7 @@ public interface UIBackend
 	 * @return The item that was removed.
 	 * @throws MLECallError If the form or item are null, the position is
 	 * not valid, or there was no item at the position.
+	 * @see UIFormShelf#formItemRemove(UIFormBracket, int) 
 	 * @since 2020/07/18
 	 */
 	UIItemBracket formItemRemove(UIFormBracket __form, int __pos)
@@ -231,6 +239,7 @@ public interface UIBackend
 	 * 
 	 * @return The newly created form.
 	 * @throws MLECallError If the form could not be created.
+	 * @see UIFormShelf#formNew() 
 	 * @since 2020/07/01
 	 */
 	UIFormBracket formNew()
@@ -241,6 +250,7 @@ public interface UIBackend
 	 * 
 	 * @param __form The form to refresh
 	 * @throws MLECallError On null arguments or the form is not valid.
+	 * @see UIFormShelf#formRefresh(UIFormBracket) 
 	 * @since 2022/07/20
 	 */
 	void formRefresh(UIFormBracket __form)
@@ -251,6 +261,7 @@ public interface UIBackend
 	 * 
 	 * @return The injector for the shelf.
 	 * @throws MLECallError If injecting is not supported.
+	 * @see UIFormShelf#injector() 
 	 * @since 2020/07/26
 	 */
 	UIFormCallback injector()
@@ -263,6 +274,7 @@ public interface UIBackend
 	 * @throws MLECallError On null arguments, if the item could not be
 	 * deleted, if the item was already deleted, or if the item is currently
 	 * active within a form.
+	 * @see UIFormShelf#itemDelete(UIItemBracket) 
 	 * @since 2020/07/18
 	 */
 	void itemDelete(UIItemBracket __item)
@@ -274,6 +286,7 @@ public interface UIBackend
 	 * @param __item The item to get.
 	 * @return The form the item is on.
 	 * @throws MLECallError If {@code __item} is {@code null}.
+	 * @see UIFormShelf#itemForm(UIItemBracket) 
 	 * @since 2021/01/03
 	 */
 	UIFormBracket itemForm(UIItemBracket __item)
@@ -286,6 +299,7 @@ public interface UIBackend
 	 * @return The newly created item.
 	 * @throws MLECallError If the item could not be created or the type was
 	 * not valid.
+	 * @see UIFormShelf#itemNew(int) 
 	 * @since 2020/07/17
 	 */
 	UIItemBracket itemNew(int __type)
@@ -297,6 +311,7 @@ public interface UIBackend
 	 * @param __displayId The display identifier.
 	 * @param __serialId The serial identifier.
 	 * @throws MLECallError If the call is not valid.
+	 * @see UIFormShelf#later(int, int) 
 	 * @since 2020/10/03
 	 */
 	void later(int __displayId, int __serialId)
@@ -312,6 +327,7 @@ public interface UIBackend
 	 * @return The value of the metric.
 	 * @throws MLECallError If the metric is out of range or forms are not
 	 * supported and the metric is not {@link UIMetricType#UIFORMS_SUPPORTED}.
+	 * @see UIFormShelf#metric(int) 
 	 * @since 2020/06/30
 	 */
 	int metric(int __metric)
@@ -326,6 +342,7 @@ public interface UIBackend
 	 * @param __newValue The new value to set.
 	 * @throws MLECallError If the item is not valid or the property is not
 	 * valid or not an integer property.
+	 * @see UIFormShelf#widgetProperty(UIWidgetBracket, int, int, int) 
 	 * @since 2020/09/13
 	 */
 	void widgetProperty(UIWidgetBracket __item, int __intProp, int __sub,
@@ -340,6 +357,7 @@ public interface UIBackend
 	 * @param __newValue The new value to set.
 	 * @throws MLECallError If the item is not valid or the property is not
 	 * valid or not a string property.
+	 * @see UIFormShelf#widgetProperty(UIWidgetBracket, int, int, String) 
 	 * @since 2020/09/13
 	 */
 	void widgetProperty(UIWidgetBracket __item, int __strProp, int __sub,
@@ -353,6 +371,7 @@ public interface UIBackend
 	 * @param __sub The sub-index.
 	 * @return The value of the property.
 	 * @throws MLECallError If the widget or property is not valid.
+	 * @see UIFormShelf#widgetPropertyInt(UIWidgetBracket, int, int) 
 	 * @since 2020/09/21
 	 */
 	int widgetPropertyInt(UIWidgetBracket __widget, int __intProp, int __sub)
@@ -366,6 +385,7 @@ public interface UIBackend
 	 * @param __sub The sub-index.
 	 * @return The value of the property.
 	 * @throws MLECallError If the widget or property is not valid.
+	 * @see UIFormShelf#widgetPropertyStr(UIWidgetBracket, int, int) 
 	 * @since 2020/09/21
 	 */
 	String widgetPropertyStr(UIWidgetBracket __widget, int __strProp,

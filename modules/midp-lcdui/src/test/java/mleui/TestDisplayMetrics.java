@@ -168,6 +168,10 @@ public class TestDisplayMetrics
 				this.secondary("backlight", (bl == 0 || bl == 1));
 				break;
 			
+				// Do not care about this value
+			case UIMetricType.CANVAS_ONLY_SUPPORT:
+				break;
+			
 			default:
 				throw new FailingExecution("Missing " + __metric);
 		}

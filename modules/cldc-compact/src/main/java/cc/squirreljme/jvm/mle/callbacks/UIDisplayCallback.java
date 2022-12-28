@@ -48,8 +48,10 @@ public interface UIDisplayCallback
 	 * @param __sh Surface height.
 	 * @param __special Special value for painting, may be {@code 0} or any
 	 * other value if it is meaningful to what is being painted.
+	 * @deprecated Not needed, will be removed.
 	 * @since 2022/01/05
 	 */
+	@Deprecated
 	void paintDisplay(UIDisplayBracket __display, int __pf, int __bw,
 		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
 		int __sw, int __sh, int __special);

@@ -9,9 +9,8 @@
 
 package lcdui;
 
-import cc.squirreljme.jvm.mle.UIFormShelf;
-import cc.squirreljme.jvm.mle.constants.UIMetricType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
+import cc.squirreljme.runtime.lcdui.mle.UIBackendType;
 import javax.microedition.lcdui.Display;
 import net.multiphasicapps.tac.TestConsumer;
 import net.multiphasicapps.tac.UntestableException;
@@ -40,14 +39,33 @@ public abstract class BaseDisplay
 	 * @since 2020/07/26
 	 */
 	@Override
-	public final void test(String __param)
+	public final void test(String __backendAndTestParam)
 		throws Throwable
 	{
-		Debugging.todoNote("BaseDisplay::test() -- Headless check.");
-		if (0 == UIFormShelf.metric(UIMetricType.UIFORMS_SUPPORTED))
-			throw new UntestableException("Native forms not supported.");
+		// Split possibly
+		String backend;
+		String testParam;
+		int at = __backendAndTestParam.indexOf('@');
+		if (at < 0)
+		{
+			backend = __backendAndTestParam;
+			testParam = null;
+		}
+		else
+		{
+			backend = __backendAndTestParam.substring(0, at);
+			testParam = __backendAndTestParam.substring(at + 1);
+		}
+		
+		// Is this actually supported?
+		UIBackendType forceType = UIBackendType.valueOf(backend);
+		if (!UIBackendFactory.isSupported(forceType))
+			throw new UntestableException("Unsupported type: " + forceType);
+		
+		// Force the default
+		UIBackendFactory.setDefault(forceType);
 		
 		// Forward test
-		this.test(Display.getDisplays(0)[0], __param);
+		this.test(Display.getDisplays(0)[0], testParam);
 	}
 }

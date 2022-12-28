@@ -90,7 +90,6 @@ public class NativeUIBackend
 	 */
 	@Override
 	public boolean equals(UIDisplayBracket __a, UIDisplayBracket __b)
-		throws MLECallError
 	{
 		return UIFormShelf.equals(__a, __b);
 	}
@@ -101,7 +100,6 @@ public class NativeUIBackend
 	 */
 	@Override
 	public boolean equals(UIFormBracket __a, UIFormBracket __b)
-		throws MLECallError
 	{
 		return UIFormShelf.equals(__a, __b);
 	}
@@ -112,7 +110,6 @@ public class NativeUIBackend
 	 */
 	@Override
 	public boolean equals(UIItemBracket __a, UIItemBracket __b)
-		throws MLECallError
 	{
 		return UIFormShelf.equals(__a, __b);
 	}
@@ -123,7 +120,6 @@ public class NativeUIBackend
 	 */
 	@Override
 	public boolean equals(UIWidgetBracket __a, UIWidgetBracket __b)
-		throws MLECallError
 	{
 		return UIFormShelf.equals(__a, __b);
 	}

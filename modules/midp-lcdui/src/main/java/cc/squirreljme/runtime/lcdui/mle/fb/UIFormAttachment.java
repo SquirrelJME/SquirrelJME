@@ -10,8 +10,10 @@
 package cc.squirreljme.runtime.lcdui.mle.fb;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This is an attachment which bases itself on top of {@link UIFormBracket}
@@ -22,6 +24,23 @@ import cc.squirreljme.jvm.mle.constants.UIItemType;
  * @since 2022/07/20
  */
 public class UIFormAttachment
-	implements FBAttachment
+	extends FBUIBackend
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/07/23
+	 */
+	@Override
+	protected FBDisplay[] queryDisplays()
+	{
+		UIDisplayBracket[] uiDisplays = UIFormShelf.displays();
+		
+		// Wrap around existing displays
+		int n = uiDisplays.length;
+		UIFormFBDisplay[] result = new UIFormFBDisplay[n];
+		for (int i = 0; i < n; i++)
+			result[i] = new UIFormFBDisplay(uiDisplays[i]);
+		
+		return result;
+	}
 }

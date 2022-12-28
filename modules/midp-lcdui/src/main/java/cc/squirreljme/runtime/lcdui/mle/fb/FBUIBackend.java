@@ -15,9 +15,18 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
+import cc.squirreljme.jvm.mle.constants.UIItemPosition;
+import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import net.multiphasicapps.collections.Identity;
+import net.multiphasicapps.collections.IdentityMap;
 
 /**
  * This is a virtual user interface form backend which is backed on the
@@ -25,23 +34,49 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackend;
  *
  * @since 2020/07/19
  */
-public class FBUIBackend
+public abstract class FBUIBackend
 	implements UIBackend
 {
+	/** Forms that are available to the display. */
+	private final List<FBUIForm> _forms =
+		new ArrayList<>();
+	
+	/** Items that are available to the display. */
+	private final List<FBUIItem> _items =
+		new ArrayList<>();
+	
+	/** Display callbacks. */
+	private final Map<Object, UIDisplayCallback> _displayCallbacks =
+		new IdentityMap<>(
+			new LinkedHashMap<Identity<Object>, UIDisplayCallback>());
+	
+	/** The current set of displays. */
+	private volatile FBDisplay[] _displays;
+	
 	/**
-	 * Initializes the framebuffer backend with the given attachment.
+	 * Queries the displays that are available to the backend.
 	 * 
-	 * @param __a The attachment to use.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/10/09
+	 * @return The displays to query.
+	 * @since 2022/07/23
 	 */
-	public FBUIBackend(FBAttachment __a)
-		throws NullPointerException
+	protected abstract FBDisplay[] queryDisplays();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public final void callback(Object __ref, UIDisplayCallback __dc)
+		throws MLECallError
 	{
-		if (__a == null)
-			throw new NullPointerException("NARG");
+		if (__ref == null || __dc == null)
+			throw new MLECallError("NARG");
 		
-		throw Debugging.todo();
+		// Register it
+		synchronized (this)
+		{
+			this._displayCallbacks.put(__ref, __dc);
+		}
 	}
 	
 	/**
@@ -49,7 +84,7 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public void callback(Object __ref, UIDisplayCallback __dc)
+	public final void callback(UIFormBracket __form, UIFormCallback __callback)
 		throws MLECallError
 	{
 		throw Debugging.todo();
@@ -60,7 +95,41 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public void callback(UIFormBracket __form, UIFormCallback __callback)
+	public final UIDisplayBracket[] displays()
+		throws MLECallError
+	{
+		synchronized (this)
+		{
+			// Have we already cached all the displays?
+			FBDisplay[] displays = this._displays;
+			if (displays != null)
+				return displays.clone();
+			
+			// Get the available displays
+			displays = this.queryDisplays();
+			if (displays == null)
+				throw Debugging.oops();
+			
+			// Defensive copy
+			displays = displays.clone();
+			
+			// Check for correctness
+			for (FBDisplay display : displays)
+				if (display == null)
+					throw Debugging.oops();
+			
+			// Cache it and use it
+			this._displays = displays;
+			return displays.clone(); 
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public final UIFormBracket displayCurrent(UIDisplayBracket __display)
 		throws MLECallError
 	{
 		throw Debugging.todo();
@@ -71,10 +140,48 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public UIDisplayBracket[] displays()
+	public final void displayShow(UIDisplayBracket __display,
+		UIFormBracket __form)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__display == null)
+			throw new MLECallError("NARG");
+		
+		synchronized (this)
+		{
+			FBDisplay display = this.__checkDisplay(__display);
+			
+			// Hiding form?
+			if (__form == null)
+			{
+				// If no old form was shown then do nothing
+				FBUIForm oldShown = display._shownForm;
+				if (oldShown == null)
+					return;
+					
+				// Unlink
+				display.link(oldShown, false);
+				
+				// Done
+				return;
+			}
+			
+			// Check the form to make sure it is valid
+			FBUIForm form = this.__checkForm(__form);
+			
+			// If an old form is being shown, hide it first before we display
+			// the new one
+			FBUIForm oldShown = display._shownForm;
+			if (oldShown != null && oldShown != __form)
+				this.displayShow(display, null);
+			
+			// If the display is not yet enabled/displayed then prepare it
+			// for showing on the screen surface
+			display.activate();
+			
+			// Link the form to this display
+			display.link(form, true);
+		}
 	}
 	
 	/**
@@ -82,10 +189,22 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public UIFormBracket displayCurrent(UIDisplayBracket __display)
-		throws MLECallError
+	public final boolean equals(UIDisplayBracket __a, UIDisplayBracket __b)
 	{
-		throw Debugging.todo();
+		if (__a == null || __b == null)
+			return __a == __b;
+			
+		synchronized (this)
+		{
+			try
+			{
+				return this.__checkDisplay(__a) == this.__checkDisplay(__b);
+			}
+			catch (MLECallError ignored)
+			{
+				return false;
+			}
+		}
 	}
 	
 	/**
@@ -93,10 +212,22 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public void displayShow(UIDisplayBracket __display, UIFormBracket __form)
-		throws MLECallError
+	public final boolean equals(UIFormBracket __a, UIFormBracket __b)
 	{
-		throw Debugging.todo();
+		if (__a == null || __b == null)
+			return __a == __b;
+			
+		synchronized (this)
+		{
+			try
+			{
+				return this.__checkForm(__a) == this.__checkForm(__b);
+			}
+			catch (MLECallError ignored)
+			{
+				return false;
+			}
+		}
 	}
 	
 	/**
@@ -104,32 +235,22 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public boolean equals(UIDisplayBracket __a, UIDisplayBracket __b)
-		throws MLECallError
+	public final boolean equals(UIItemBracket __a, UIItemBracket __b)
 	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/07/19
-	 */
-	@Override
-	public boolean equals(UIFormBracket __a, UIFormBracket __b)
-		throws MLECallError
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/07/19
-	 */
-	@Override
-	public boolean equals(UIItemBracket __a, UIItemBracket __b)
-		throws MLECallError
-	{
-		throw Debugging.todo();
+		if (__a == null || __b == null)
+			return __a == __b;
+			
+		synchronized (this)
+		{
+			try
+			{
+				return this.__checkItem(__a) == this.__checkItem(__b);
+			}
+			catch (MLECallError ignored)
+			{
+				return false;
+			}
+		}
 	}
 	
 	/**
@@ -137,10 +258,20 @@ public class FBUIBackend
 	 * @since 2020/09/20
 	 */
 	@Override
-	public boolean equals(UIWidgetBracket __a, UIWidgetBracket __b)
-		throws MLECallError
+	public final boolean equals(UIWidgetBracket __a, UIWidgetBracket __b)
 	{
-		throw Debugging.todo();
+		// Is item?
+		if ((__a instanceof UIItemBracket) &&
+			(__b instanceof UIItemBracket))
+			return this.equals((UIItemBracket)__a, (UIItemBracket)__b);
+		
+		// Is form?
+		else if ((__a instanceof UIFormBracket) &&
+			(__b instanceof UIFormBracket))
+			return this.equals((UIFormBracket)__a, (UIFormBracket)__b);
+		
+		// Cannot be a match
+		return false;
 	}
 	
 	/**
@@ -148,10 +279,13 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public void flushEvents()
+	public final void flushEvents()
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			// Does nothing currently
+		}
 	}
 	
 	/**
@@ -159,10 +293,35 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public void formDelete(UIFormBracket __form)
+	public final void formDelete(UIFormBracket __form)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			FBUIForm form = this.__checkForm(__form);
+			
+			// {@squirreljme.error EB40 Form is currently attached to a
+			// display.}
+			if (form._display != null)
+				throw new MLECallError("EB40");
+			
+			// Find form to unlink
+			for (Iterator<FBUIForm> it = this._forms.iterator();
+				it.hasNext();)
+			{
+				// If this is our form, delete it
+				FBUIForm maybe = it.next();
+				if (maybe == form)
+				{
+					it.remove();
+					return;
+				}
+			}
+		}
+		
+		// {@squirreljme.error EB3z Form has already been deleted or is not
+		// valid.}
+		throw new MLECallError("EB3z");
 	}
 	
 	/**
@@ -170,44 +329,14 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public UIItemBracket formItemAtPosition(UIFormBracket __form, int __pos)
-		throws MLECallError
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/07/19
-	 */
-	@Override
-	public int formItemCount(UIFormBracket __form)
-		throws MLECallError
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/07/19
-	 */
-	@Override
-	public int formItemPosition(UIFormBracket __form, UIItemBracket __item)
-		throws MLECallError
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2020/07/19
-	 */
-	@Override
-	public void formItemPosition(UIFormBracket __form, UIItemBracket __item,
+	public final UIItemBracket formItemAtPosition(UIFormBracket __form,
 		int __pos)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -215,10 +344,13 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public UIItemBracket formItemRemove(UIFormBracket __form, int __pos)
+	public final int formItemCount(UIFormBracket __form)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -226,10 +358,76 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public UIFormBracket formNew()
+	public final int formItemPosition(UIFormBracket __form,
+		UIItemBracket __item)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public final void formItemPosition(UIFormBracket __form,
+		UIItemBracket __item, int __pos)
+		throws MLECallError
+	{
+		if (__form == null || __item == null)
+			throw new MLECallError("NARG");
+		if (__pos < UIItemPosition.MIN_VALUE)
+			throw new MLECallError("IOOB");
+		
+		synchronized (this)
+		{
+			// Check if the item is on another form since items can only be
+			// added if on the same form or not on one
+			// {@squirreljme.error EB43 Item is on a different form.}
+			FBUIItem item = this.__checkItem(__item);
+			UIFormBracket itemForm = this.itemForm(item);
+			if (itemForm != null && !this.equals(__form, itemForm))
+				throw new MLECallError("EB43");
+			
+			// Do the logic
+			this.__checkForm(__form).itemPosition(item, __pos);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public final UIItemBracket formItemRemove(UIFormBracket __form, int __pos)
+		throws MLECallError
+	{
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/07/19
+	 */
+	@Override
+	public final UIFormBracket formNew()
+		throws MLECallError
+	{
+		synchronized (this)
+		{
+			FBUIForm result = new FBUIForm();
+			
+			// Store it for later
+			this._forms.add(result);
+			
+			return result;
+		}
 	}
 	
 	/**
@@ -237,10 +435,13 @@ public class FBUIBackend
 	 * @since 2022/07/20
 	 */
 	@Override
-	public void formRefresh(UIFormBracket __form)
+	public final void formRefresh(UIFormBracket __form)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -248,10 +449,13 @@ public class FBUIBackend
 	 * @since 2020/07/26
 	 */
 	@Override
-	public UIFormCallback injector()
+	public final UIFormCallback injector()
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -259,10 +463,13 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public void itemDelete(UIItemBracket __item)
+	public final void itemDelete(UIItemBracket __item)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -270,10 +477,16 @@ public class FBUIBackend
 	 * @since 2021/01/03
 	 */
 	@Override
-	public UIFormBracket itemForm(UIItemBracket __item)
+	public final UIFormBracket itemForm(UIItemBracket __item)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__item == null)
+			throw new MLECallError("NARG");
+		
+		synchronized (this)
+		{
+			return this.__checkItem(__item)._form;
+		}
 	}
 	
 	/**
@@ -281,10 +494,38 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public UIItemBracket itemNew(int __type)
+	public final UIItemBracket itemNew(int __type)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		// Setup new item
+		FBUIItem item;
+		switch (__type)
+		{
+			case UIItemType.CANVAS:
+				item = new FBUIItemCanvas();
+				break;
+			
+			case UIItemType.LABEL:
+				item = new FBUIItemLabel();
+				break;
+			
+			case UIItemType.BUTTON:
+				item = new FBUIItemButton();
+				break;
+			
+				// {@squirreljme.error EB41 Invalid item type.}
+			default:
+				throw new MLECallError("EB41 " + __type);
+		}
+		
+		// Remember item
+		synchronized (this)
+		{
+			this._items.add(item);
+		}
+		
+		// Return the new item
+		return item;
 	}
 	
 	/**
@@ -292,10 +533,13 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public void later(int __displayId, int __serialId)
+	public final void later(int __displayId, int __serialId)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -303,10 +547,13 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public int metric(int __metric)
+	public final int metric(int __metric)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -314,10 +561,13 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public void widgetProperty(UIWidgetBracket __item, int __intProp,
+	public final void widgetProperty(UIWidgetBracket __item, int __intProp,
 		int __sub, int __newValue)
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -325,10 +575,13 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public void widgetProperty(UIWidgetBracket __item, int __strProp,
+	public final void widgetProperty(UIWidgetBracket __item, int __strProp,
 		int __sub, String __newValue)
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -336,11 +589,14 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public int widgetPropertyInt(UIWidgetBracket __widget, int __intProp,
+	public final int widgetPropertyInt(UIWidgetBracket __widget, int __intProp,
 		int __sub)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
 	}
 	
 	/**
@@ -348,10 +604,99 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public String widgetPropertyStr(UIWidgetBracket __widget, int __strProp,
-		int __sub)
+	public final String widgetPropertyStr(UIWidgetBracket __widget,
+		int __strProp, int __sub)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			throw Debugging.todo();
+		}
+	}
+	
+	/**
+	 * Checks that the display is valid and is owned by this framebuffer.
+	 * 
+	 * @param __display The display to check.
+	 * @return Will return a cast {@code __display} if valid.
+	 * @throws MLECallError If the display is not valid.
+	 * @since 2022/07/23
+	 */
+	private FBDisplay __checkDisplay(UIDisplayBracket __display)
+		throws MLECallError
+	{
+		if (!(__display instanceof FBDisplay))
+			throw new MLECallError("CAST");
+		
+		synchronized (this)
+		{
+			// {@squirreljme.error EB33 Displays not yet known.}
+			FBDisplay[] displays = this._displays;
+			if (displays == null)
+				throw new MLECallError("EB33");
+			
+			// Is the display here?
+			for (FBDisplay display : displays)
+				if (display == __display)
+					return (FBDisplay)__display;
+		}
+		
+		// {@squirreljme.error EB3o Display is not governed by this
+		// framebuffer.}
+		throw new MLECallError("EB3o");
+	}
+	
+	/**
+	 * Checks that the form is valid and is owned by this framebuffer.
+	 * 
+	 * @param __form The form to check.
+	 * @return The cast {@code __form} if valid.
+	 * @throws MLECallError If the form is not valid for this framebuffer.
+	 * @since 2022/07/23
+	 */
+	private FBUIForm __checkForm(UIFormBracket __form)
+		throws MLECallError
+	{
+		if (!(__form instanceof FBUIForm))
+			throw new MLECallError("CAST");
+		
+		synchronized (this)
+		{
+			// Is the form here?
+			for (FBUIForm form : this._forms)
+				if (form == __form)
+					return (FBUIForm)__form;
+		}
+		
+		// {@squirreljme.error EB3w Form is not governed by this
+		// framebuffer.}
+		throw new MLECallError("EB3w");
+	}
+	
+	/**
+	 * Checks that the item is valid and is owned by this framebuffer.
+	 * 
+	 * @param __item The item to check.
+	 * @return The cast {@code __item} if valid.
+	 * @throws MLECallError If the item is not valid for this framebuffer.
+	 * @since 2022/07/25
+	 */
+	private FBUIItem __checkItem(UIItemBracket __item)
+		throws MLECallError
+	{
+		if (!(__item instanceof FBUIItem))
+			throw new MLECallError("CAST");
+		
+		synchronized (this)
+		{
+			// Is the item here?
+			for (FBUIItem item : this._items)
+				if (item == __item)
+					return (FBUIItem)__item;
+		}
+		
+		// {@squirreljme.error EB42 Item is not governed by this
+		// framebuffer.}
+		throw new MLECallError("EB42");
 	}
 }

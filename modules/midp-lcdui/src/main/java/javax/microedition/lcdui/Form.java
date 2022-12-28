@@ -9,7 +9,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
@@ -297,7 +296,7 @@ public class Form
 			return;
 		this._staleLayout = false;
 		
-		UIBackend backend = UIBackendFactory.getInstance(true);
+		UIBackend backend = UIBackendFactory.getInstance();
 		UIFormBracket uiForm = this._uiForm;
 		FormLayoutPolicy layout = this._layout;
 		
@@ -406,7 +405,7 @@ public class Form
 		// Queue this up for later, so it is forced to be redrawn
 		Display display = this._display;
 		if (display != null)
-			UIBackendFactory.getInstance(true)
+			UIBackendFactory.getInstance()
 				.formRefresh(this._uiForm);
 	}
 }

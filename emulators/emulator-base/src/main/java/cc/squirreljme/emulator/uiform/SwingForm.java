@@ -302,6 +302,10 @@ public final class SwingForm
 			synchronized (__item)
 			{
 				itemForm = __item._form;
+				
+				// Cannot be on another form
+				if (itemForm != null && itemForm != this)
+					throw new MLECallError("Item is on another form.");
 			}
 			
 			// We need to know the old item's index if it is on this form
@@ -324,11 +328,6 @@ public final class SwingForm
 				{
 					old._form = null;
 				}
-			
-			// The item was on a form that was not our own, so clear that
-			// association from it
-			if (itemForm != null && itemForm != this)
-				itemForm.itemRemove(itemForm.itemPosition(__item));
 			
 			// Just overwrite the item here
 			items.set(normalPos, __item);

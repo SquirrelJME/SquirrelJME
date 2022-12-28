@@ -10,7 +10,8 @@
 package cc.squirreljme.runtime.lcdui.mle.headless;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.fb.FBAttachment;
+import cc.squirreljme.runtime.lcdui.mle.fb.FBDisplay;
+import cc.squirreljme.runtime.lcdui.mle.fb.FBUIBackend;
 
 /**
  * This is an attachment for headless framebuffer setups.
@@ -18,9 +19,19 @@ import cc.squirreljme.runtime.lcdui.mle.fb.FBAttachment;
  * @since 2020/10/09
  */
 public class HeadlessAttachment
-	implements FBAttachment
+	extends FBUIBackend
 {
 	public HeadlessAttachment(int __pf, int __w, int __h)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/07/23
+	 */
+	@Override
+	protected FBDisplay[] queryDisplays()
 	{
 		throw Debugging.todo();
 	}
