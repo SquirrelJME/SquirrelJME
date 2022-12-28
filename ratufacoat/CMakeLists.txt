@@ -271,21 +271,24 @@ if(CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
 	add_compile_definitions(SJME_SYSTEM_IEEE1275=1)
 	set(SQUIRRELJME_BUNDLED_STDC YES)
 
-	# Options needed for IEEE1275 that affects everything
-	add_compile_options(
+	# Options needed for IEEE1275 that affects everything, not for ASM)
 		# Do not use built-ins for methods
-		-fno-builtin-fputs
-		-fno-builtin-fputc
-		-fno-builtin-puts
-		-fno-builtin-putc
-		-fno-builtin-strlen
-
+	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-builtin-fputs>)
+	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-builtin-fputc>)
+	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-builtin-puts>)
+	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-builtin-putc>)
+	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-builtin-strlen>)
+	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-builtin-memset>)
+	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-builtin-memcpy>)
+	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-builtin-memmove>)
 		# Freestanding environment
-		-ffreestanding
-
+	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-ffreestanding>)
 		# Put every function within its own section
-		-ffunction-sections
-		)
+	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-ffunction-sections>)
+		# Disable exceptions and unwinding
+	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-exceptions>)
+	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-unwind-tables>)
+	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-asynchronous-unwind-tables>)
 endif()
 
 # Bundle our own C library?

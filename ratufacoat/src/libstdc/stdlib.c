@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include <stdlib.h>
+#include <string.h>
 #include "squirreljme/memoryimpl.h"
 
 void* calloc(size_t numElems, size_t elemSize)

@@ -12,18 +12,35 @@ if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
 	set(CMAKE_VERBOSE_MAKEFILE $ENV{CMAKE_VERBOSE_MAKEFILE})
 endif()
 
+# CMake really loves setting -fPIC on assembly code
+add_library(SquirrelJMEIEEE1275PowerPCAsmCode OBJECT
+	init.s)
+
+# Specify our own runs for position independent code, since CMake does not
+# set it correctly...
+set_property(TARGET SquirrelJMEIEEE1275PowerPCAsmCode
+	PROPERTY POSITION_INDEPENDENT_CODE OFF)
+set_target_properties(SquirrelJMEIEEE1275PowerPCAsmCode
+	PROPERTIES COMPILE_FLAGS "-K PIC")
+
+# Use our function to export the object so we can use it without -fPIC
+squirreljme_object_and_sources(SquirrelJMEIEEE1275PowerPCAsmCodeTarget
+	SquirrelJMEIEEE1275PowerPCAsmCode)
+
 # Include both core sets of libraries
 get_property(SQUIRRELJME_IEEE1275_POWERPC_CORE
 	GLOBAL PROPERTY SquirrelJMECoreTargetObjects)
 get_property(SQUIRRELJME_IEEE1275_POWERPC_FRONTEND_IEEE1275
 	GLOBAL PROPERTY SquirrelJMEIEEE1275LibTargetObjects)
+get_property(SQUIRRELJME_IEEE1275_POWERPC_ASM_CODE
+	GLOBAL PROPERTY SquirrelJMEIEEE1275PowerPCAsmCodeTargetObjects)
 
 # Add executable here
 add_executable(SquirrelJMEIEEE1275PowerPC
 	boot.c
-	init.s
 	${SQUIRRELJME_IEEE1275_POWERPC_CORE}
-	${SQUIRRELJME_IEEE1275_POWERPC_FRONTEND_IEEE1275})
+	${SQUIRRELJME_IEEE1275_POWERPC_FRONTEND_IEEE1275}
+	${SQUIRRELJME_IEEE1275_POWERPC_ASM_CODE})
 
 # Use a different name and directory for it, for ISO creation
 set_target_properties(SquirrelJMEIEEE1275PowerPC PROPERTIES
@@ -39,6 +56,10 @@ set_target_properties(SquirrelJMEIEEE1275PowerPC PROPERTIES
 set_property(TARGET SquirrelJMEIEEE1275PowerPC
 	PROPERTY POSITION_INDEPENDENT_CODE ON)
 
+# Needs the assembly code
+add_dependencies(SquirrelJMEIEEE1275PowerPC
+	SquirrelJMEIEEE1275PowerPCAsmCode)
+
 # Includes for target
 target_include_directories(SquirrelJMEIEEE1275PowerPC PUBLIC
 	"${PROJECT_BINARY_DIR}"
@@ -50,6 +71,7 @@ set_target_properties(SquirrelJMEIEEE1275PowerPC PROPERTIES
 
 # Options to use when linking
 target_link_options(SquirrelJMEIEEE1275PowerPC PUBLIC
+	-s											# Strip
 	-static										# Static library
 	-nostdlib									# No standard libraries
 	-nostartfiles								# No startup files

@@ -7,8 +7,14 @@
 # -----------------------------------------------------------------------------
 # Start location for OFW on PowerPC systems
 
-.section .text.start
 .globl _start
+.globl _die
+.globl sjme_ieee1275BootArch
+.globl sjme_ieee1275EntryFunc
+.globl sjme_ieee1275EntryArgs
+.globl sjme_ieee1275EntryNumArgs
+
+.section .text.start
 _start:
 
 	# Right now, the ELF is linked at a load-base of 0x200000, however, on any
@@ -54,6 +60,5 @@ _start:
 	bl sjme_ieee1275BootArch
 
 	# If this is reached =(
-.globl _die
 _die:
 	b _die

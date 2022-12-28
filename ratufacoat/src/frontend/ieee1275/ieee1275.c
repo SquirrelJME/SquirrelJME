@@ -28,7 +28,7 @@ sjme_jupointer sjme_ieee1275BaseCall(sjme_ieee1275EntryFuncDef entryFunc,
 #endif
 
 	/* Call Function */
-#if !defined(IEEE1275_OWNENTRY)
+#if !defined(SJME_IEEE1275_UNSAFESAFE_ENTRY_CALL)
 	/* Safe direct call. */
 	entryFunc(args);
 #else

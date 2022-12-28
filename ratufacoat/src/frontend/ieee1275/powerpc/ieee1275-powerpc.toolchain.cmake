@@ -21,6 +21,7 @@ set(CMAKE_C_FLAGS
 	# Fixed Register 25 since it is IEEE1275 Specific
 	-ffixed-r25
 	)
+set(CMAKE_ASM_FLAGS)
 
 # Just try a static library as we have no C library
 set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
