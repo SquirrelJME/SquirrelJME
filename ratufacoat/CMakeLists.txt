@@ -11,17 +11,18 @@ if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
 	set(CMAKE_VERBOSE_MAKEFILE $ENV{CMAKE_VERBOSE_MAKEFILE})
 endif()
 
-# Disable debugging for IEEE1275 SPARC because it is broken in CMake
-if(CMAKE_SYSTEM_NAME STREQUAL "ieee1275" AND
-	CMAKE_SYSTEM_PROCESSOR STREQUAL "sparc")
-	set(CMAKE_ASM_FLAGS "" CACHE STRING "ASM Flags" FORCE)
-	set(CMAKE_ASM_FLAGS_DEBUG "" CACHE STRING "ASM Flags Debug" FORCE)
-	set(CMAKE_ASM_FLAGS_DEBUG_INIT "" CACHE STRING "ASM Debug Init" FORCE)
+# Macro for include chunks
+	# Non-optional variant
+macro(squirreljme_include what)
+	include("${CMAKE_SOURCE_DIR}/cmake/${what}"
+		NO_POLICY_SCOPE)
+endmacro()
 
-	set(CMAKE_ASM_FLAGS "")
-	set(CMAKE_ASM_FLAGS_DEBUG "")
-	set(CMAKE_ASM_FLAGS_DEBUG_INIT "")
-endif()
+	# Optional variant
+macro(squirreljme_include_optional what)
+	include("${CMAKE_SOURCE_DIR}/cmake/${what}"
+		OPTIONAL NO_POLICY_SCOPE)
+endmacro()
 
 # Needed for some ancient RetroArch toolchains
 if(${CMAKE_VERSION} VERSION_LESS "3.13")
@@ -88,67 +89,6 @@ else()
 		LANGUAGES C )#CXX)
 endif()
 
-# Mac OS Multi Architecture: PowerPC, x86, x86_64, and M1
-# Can be overridden, so only auto-detect here if possible
-if(APPLE AND "${CMAKE_OSX_ARCHITECTURES}" STREQUAL "")
-	# Emit a notice to inform the user we are checking this
-	message("Checking available Mac OS architectures...")
-	message("If nothing is detected, the default host architecture is used.")
-
-	# Used for checking C compiler flags, need this for multi-arch
-	include(CheckCCompilerFlag)
-
-	# Remember old required flags for later restoration
-	if(DEFINED CMAKE_REQUIRED_LINK_OPTIONS)
-		set(ORIG_CMAKE_REQUIRED_LINK_OPTIONS "${CMAKE_REQUIRED_LINK_OPTIONS}")
-	endif()
-
-	# PowerPC
-	set(CMAKE_REQUIRED_LINK_OPTIONS "-arch;ppc")
-	check_c_compiler_flag("-arch ppc" SQUIRRELJME_CLANG_SUPPORTS_POWERPC)
-
-	# x86
-	set(CMAKE_REQUIRED_LINK_OPTIONS "-arch;i686")
-	check_c_compiler_flag("-arch i686" SQUIRRELJME_CLANG_SUPPORTS_X86)
-
-	# x86_64
-	set(CMAKE_REQUIRED_LINK_OPTIONS "-arch;x86_64")
-	check_c_compiler_flag("-arch x86_64" SQUIRRELJME_CLANG_SUPPORTS_X86_64)
-
-	# M1
-	set(CMAKE_REQUIRED_LINK_OPTIONS "-arch;arm64")
-	check_c_compiler_flag("-arch arm64" SQUIRRELJME_CLANG_SUPPORTS_ARM64)
-
-	# Restore old flags
-	if(DEFINED ORIG_CMAKE_REQUIRED_LINK_OPTIONS)
-		set(CMAKE_REQUIRED_LINK_OPTIONS "${ORIG_CMAKE_REQUIRED_LINK_OPTIONS}")
-	endif()
-
-	# PowerPC
-	if (SQUIRRELJME_CLANG_SUPPORTS_POWERPC)
-		message(" - Enabling PowerPC!")
-		list(APPEND CMAKE_OSX_ARCHITECTURES "ppc")
-	endif()
-
-	# x86
-	if (SQUIRRELJME_CLANG_SUPPORTS_X86)
-		message(" - Enabling x86!")
-		list(APPEND CMAKE_OSX_ARCHITECTURES "i686")
-	endif()
-
-	# x86_64
-	if (SQUIRRELJME_CLANG_SUPPORTS_X86_64)
-		message(" - Enabling x86_64!")
-		list(APPEND CMAKE_OSX_ARCHITECTURES "x86_64")
-	endif()
-
-	# ARM64
-	if (SQUIRRELJME_CLANG_SUPPORTS_ARM64)
-		message(" - Enabling ARM64!")
-		list(APPEND CMAKE_OSX_ARCHITECTURES "arm64")
-	endif()
-endif()
-
 # To Emily and Near...
 message("******************************")
 message("To my close friends who are not here today, your friendships were")
@@ -157,6 +97,18 @@ message("  * Emily, developer of Mu. (1998-2020)")
 message("  * Near, developer of Higan and Ares. (1983-2021)")
 message(" -- Your friend, Stephanie")
 message("******************************")
+
+# After project for both system and processor
+squirreljme_include_optional(
+	"after-project.${CMAKE_SYSTEM_NAME}.cmake")
+squirreljme_include_optional(
+	"after-project.${CMAKE_SYSTEM_NAME}.${CMAKE_SYSTEM_PROCESSOR}.cmake")
+
+# Mac OS Multi Architecture: PowerPC, x86, x86_64, and M1
+# Can be overridden, so only auto-detect here if possible
+if(APPLE AND "${CMAKE_OSX_ARCHITECTURES}" STREQUAL "")
+	squirreljme_include("apple-arch-detect.cmake")
+endif()
 
 # For Emscripten generate an HTML
 if(EMSCRIPTEN)
@@ -177,17 +129,10 @@ if(PALMOS)
 	set(CMAKE_VERBOSE_MAKEFILE TRUE)
 endif()
 
-# Enable assembly for IEEE1275
-if(CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
-	enable_language(ASM)
-endif()
-
-# Disable FPIC on certain targets
-if(CMAKE_SYSTEM_NAME STREQUAL "ieee1275" AND
-	CMAKE_SYSTEM_PROCESSOR STREQUAL "sparc")
-	set_property(GLOBAL PROPERTY SQUIRRELJME_FPIC_MODE OFF)
-else()
-	set_property(GLOBAL PROPERTY SQUIRRELJME_FPIC_MODE ON)
+# Default on for -fPIC
+if(NOT DEFINED SQUIRRELJME_FPIC_MODE)
+	message("Defaulting to ON for -fPIC.")
+	set(SQUIRRELJME_FPIC_MODE ON)
 endif()
 
 # Standard C and C++ versions
@@ -270,10 +215,9 @@ add_compile_definitions(SQUIRRELJME_VERSION_ID_TIME=${SQUIRRELJME_VERSION_ID_TIM
 add_compile_definitions(SQUIRRELJME_VERSION_WINDOWS=${SQUIRRELJME_VERSION_WINDOWS})
 add_compile_definitions(SQUIRRELJME_VERSION_WINDOWS_RC=${SQUIRRELJME_VERSION_WINDOWS_RC})
 
-# Is testing allowed?
-if(NOT SQUIRRELJME_ANCIENT AND
-	NOT CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
-	message("Testing is permitted!")
+# Enable testing by default, if not set
+if(NOT DEFINED SQUIRRELJME_ALLOW_TESTING)
+	message("Unit Tests: Permitted")
 	set(SQUIRRELJME_ALLOW_TESTING YES)
 endif()
 
@@ -286,30 +230,8 @@ if(SQUIRRELJME_ALLOW_TESTING)
 	enable_testing()
 endif()
 
-# Platform defines
-if(CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
-	add_compile_definitions(SJME_SYSTEM_IEEE1275=1)
-	set(SQUIRRELJME_BUNDLED_STDC YES)
-
-	# Options needed for IEEE1275 that affects everything, not for ASM)
-		# Do not use built-ins for methods
-	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-builtin-fputs>)
-	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-builtin-fputc>)
-	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-builtin-puts>)
-	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-builtin-putc>)
-	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-builtin-strlen>)
-	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-builtin-memset>)
-	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-builtin-memcpy>)
-	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-builtin-memmove>)
-		# Freestanding environment
-	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-ffreestanding>)
-		# Put every function within its own section
-	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-ffunction-sections>)
-		# Disable exceptions and unwinding
-	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-exceptions>)
-	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-unwind-tables>)
-	add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-fno-asynchronous-unwind-tables>)
-endif()
+# Helpful functions and macros
+squirreljme_include("macros-and-functions.cmake")
 
 # Bundle our own C library?
 if(SQUIRRELJME_BUNDLED_STDC)
