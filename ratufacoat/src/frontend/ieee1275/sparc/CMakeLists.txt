@@ -52,22 +52,15 @@ set_target_properties(SquirrelJMEIEEE1275Sparc PROPERTIES
 set_target_properties(SquirrelJMEIEEE1275Sparc PROPERTIES
 	OUTPUT_NAME "sjme.elf")
 
-# This is written only in C!
-set_target_properties(SquirrelJMEIEEE1275Sparc PROPERTIES
-	LINKER_LANGUAGE C)
+# Common C Directives
+squirreljme_common_c(SquirrelJMEIEEE1275Sparc)
 
 # Position independent code always
-set_property(TARGET SquirrelJMEIEEE1275Sparc
-	PROPERTY POSITION_INDEPENDENT_CODE ${SQUIRRELJME_FPIC_MODE})
+squirreljme_enable_pic(SquirrelJMEIEEE1275Sparc)
 
 # Needs the assembly code
 add_dependencies(SquirrelJMEIEEE1275Sparc
 	SquirrelJMEIEEE1275SparcAsmCode)
-
-# Includes for target
-target_include_directories(SquirrelJMEIEEE1275Sparc PUBLIC
-	"${PROJECT_BINARY_DIR}"
-	"${PROJECT_SOURCE_DIR}/include")
 
 # We need to use the linker script
 set_target_properties(SquirrelJMEIEEE1275Sparc PROPERTIES

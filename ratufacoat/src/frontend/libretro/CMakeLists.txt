@@ -50,8 +50,8 @@ add_library(squirreljme_libretro ${SQUIRRELJME_LIBRETRO_TYPE}
 	${SQUIRRELJME_LIBRETRO_RC}
 	${SQUIRRELJME_LIBRETRO_CORELIB})
 
-# This is written only in C!
-set_target_properties(squirreljme_libretro PROPERTIES LINKER_LANGUAGE C)
+# Common C Directives
+squirreljme_common_c(squirreljme_libretro)
 
 # Remove the "lib" prefix as it is not used by RetroArch
 set_target_properties(squirreljme_libretro PROPERTIES
@@ -77,14 +77,11 @@ endif()
 
 # Include all of these
 target_include_directories(squirreljme_libretro PUBLIC
-	"${PROJECT_BINARY_DIR}"
-	"${PROJECT_SOURCE_DIR}/include"
 	"${PROJECT_SOURCE_DIR}/include/frontend/libretro/api")
 
 # RetroArch must be built with position independent code for any kind of
 # library.
-set_property(TARGET squirreljme_libretro
-	PROPERTY POSITION_INDEPENDENT_CODE ${SQUIRRELJME_FPIC_MODE})
+squirreljme_enable_pic(squirreljme_libretro)
 
 # Check if Steam is a valid option
 message("System ${CMAKE_SYSTEM_NAME}...")

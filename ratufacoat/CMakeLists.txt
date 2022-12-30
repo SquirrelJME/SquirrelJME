@@ -11,18 +11,8 @@ if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
 	set(CMAKE_VERBOSE_MAKEFILE $ENV{CMAKE_VERBOSE_MAKEFILE})
 endif()
 
-# Macro for include chunks
-	# Non-optional variant
-macro(squirreljme_include what)
-	include("${CMAKE_SOURCE_DIR}/cmake/${what}"
-		NO_POLICY_SCOPE)
-endmacro()
-
-	# Optional variant
-macro(squirreljme_include_optional what)
-	include("${CMAKE_SOURCE_DIR}/cmake/${what}"
-		OPTIONAL NO_POLICY_SCOPE)
-endmacro()
+# Easier includes
+include("${CMAKE_SOURCE_DIR}/cmake/easier-includes.cmake" NO_POLICY_SCOPE)
 
 # Needed for some ancient RetroArch toolchains
 if(${CMAKE_VERSION} VERSION_LESS "3.13")
@@ -35,46 +25,8 @@ else()
 	cmake_minimum_required(VERSION 3.13)
 endif()
 
-# Load version number
-file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/squirreljme-version"
-	SQUIRRELJME_VERSION LIMIT_COUNT 1)
-message("Building for SquirrelJME ${SQUIRRELJME_VERSION}!")
-
-# Make Windows compatible version
-set(SQUIRRELJME_VERSION_WINDOWS "${SQUIRRELJME_VERSION}.0")
-string(REGEX REPLACE "\\." "," SQUIRRELJME_VERSION_WINDOWS_RC
-	"${SQUIRRELJME_VERSION_WINDOWS}")
-
-# Put down the configure time
-string(TIMESTAMP SQUIRRELJME_VERSION_ID_TIME "%Y-%m-%dT%H:%M:%SZ" UTC)
-message("Configure time is ${SQUIRRELJME_VERSION_ID_TIME}.")
-
-# Load Fossil manifest, if possible
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../manifest.uuid" AND
-	NOT IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../manifest.uuid")
-	file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/../manifest.uuid"
-		SQUIRRELJME_VERSION_ID_FOSSIL LIMIT_COUNT 1)
-	set(SQUIRRELJME_VERSION_ID "fossil:${SQUIRRELJME_VERSION_ID_FOSSIL}")
-else()
-	# Try to get version from Git Commit
-	execute_process(COMMAND git rev-parse HEAD
-		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
-		ERROR_QUIET
-		RESULT_VARIABLE SQUIRRELJME_VERSION_ID_GIT_CODE
-		OUTPUT_VARIABLE SQUIRRELJME_VERSION_ID_GIT
-		ERROR_VARIABLE SQUIRRELJME_VERSION_GIT_ERROR
-		OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-	if("${SQUIRRELJME_VERSION_ID_GIT_CODE}" EQUAL 0)
-		set(SQUIRRELJME_VERSION_ID "git:${SQUIRRELJME_VERSION_ID_GIT}")
-	else()
-		# Otherwise use a basic timestamp
-		set(SQUIRRELJME_VERSION_ID "unknown:${SQUIRRELJME_VERSION_ID_TIME}")
-	endif()
-endif()
-
-# Show ID version
-message("Version ID: ${SQUIRRELJME_VERSION_ID}")
+# Determine version information
+squirreljme_include("identify-squirreljme-version.cmake")
 
 # Define the project and the versioning info
 if(${CMAKE_VERSION} VERSION_LESS "3.12")
@@ -90,13 +42,7 @@ else()
 endif()
 
 # To Emily and Near...
-message("******************************")
-message("To my close friends who are not here today, your friendships were")
-message("very important to me. I hope that you are both resting in piece:")
-message("  * Emily, developer of Mu. (1998-2020)")
-message("  * Near, developer of Higan and Ares. (1983-2021)")
-message(" -- Your friend, Stephanie")
-message("******************************")
+squirreljme_include("i-miss-you.cmake")
 
 # After project for both system and processor
 squirreljme_include_optional(
@@ -108,13 +54,6 @@ squirreljme_include_optional(
 # Can be overridden, so only auto-detect here if possible
 if(APPLE AND "${CMAKE_OSX_ARCHITECTURES}" STREQUAL "")
 	squirreljme_include("apple-arch-detect.cmake")
-endif()
-
-# For Emscripten generate an HTML
-if(EMSCRIPTEN)
-	message("Detected Emscripten...")
-
-	set(CMAKE_EXECUTABLE_SUFFIX ".html")
 endif()
 
 # Ancient legacy system?
@@ -143,32 +82,7 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 
 # Does the static ROM file exist? If it does we can pack it into the binary
 option(SQUIRRELJME_USE_BUILTIN "Use Built-In ROM (If Detected)" ON)
-
-set(SQUIRRELJME_BUILTIN_TEST_CHECK "${PROJECT_SOURCE_DIR}/build/builtinTest.c")
-set(SQUIRRELJME_BUILTIN_FILE_CHECK "${PROJECT_SOURCE_DIR}/build/builtin.c")
-	# Testing ROM
-if(SQUIRRELJME_USE_BUILTIN AND EXISTS "${SQUIRRELJME_BUILTIN_TEST_CHECK}")
-	message("SquirrelJME: Including Built-In ROM (Testing).")
-
-	set(SQUIRRELJME_HAS_BUILTIN ON)
-	set(SQUIRRELJME_BUILTIN_FILE "${SQUIRRELJME_BUILTIN_TEST_CHECK}")
-
-	# Release ROM
-elseif(SQUIRRELJME_USE_BUILTIN AND EXISTS "${SQUIRRELJME_BUILTIN_FILE_CHECK}")
-	message("SquirrelJME: Including Built-In ROM.")
-
-	set(SQUIRRELJME_HAS_BUILTIN ON)
-	set(SQUIRRELJME_BUILTIN_FILE "${SQUIRRELJME_BUILTIN_FILE_CHECK}")
-else()
-	if(EXISTS "${SQUIRRELJME_BUILTIN_FILE_CHECK}")
-		message("SquirrelJME: Built-In ROM Available, but disabled.")
-	else()
-		message("SquirrelJME: No Built-In ROM Available.")
-	endif()
-
-	set(SQUIRRELJME_HAS_BUILTIN OFF)
-	set(SQUIRRELJME_BUILTIN_FILE)
-endif()
+squirreljme_include("built-in-rom.cmake")
 
 # This is not supported with older CMake versions
 if(${CMAKE_VERSION} VERSION_LESS "3.12")
@@ -203,9 +117,7 @@ if(MSVC)
 	string(REGEX REPLACE "/W[3|4]" "/W4" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 	string(REGEX REPLACE "/W[3|4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-	if(NOT CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
-		add_compile_options(-Wall -Wextra -pedantic -pedantic-errors)
-	endif()
+	add_compile_options(-Wall -Wextra -pedantic -pedantic-errors)
 endif()
 
 # Versioning information
@@ -233,11 +145,9 @@ endif()
 # Helpful functions and macros
 squirreljme_include("macros-and-functions.cmake")
 
-# Bundle our own C library?
+# Use bundled Standard C library?
 if(SQUIRRELJME_BUNDLED_STDC)
 	add_compile_definitions(SQUIRRELJME_BUNDLED_STDC=1)
-	include_directories(
-		"${PROJECT_SOURCE_DIR}/include/libstdc")
 endif()
 
 # Include directories for the project

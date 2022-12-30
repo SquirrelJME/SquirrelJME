@@ -48,22 +48,15 @@ set_target_properties(SquirrelJMEIEEE1275PowerPC PROPERTIES
 set_target_properties(SquirrelJMEIEEE1275PowerPC PROPERTIES
 	OUTPUT_NAME "squirreljme.elf")
 
-# This is written only in C!
-set_target_properties(SquirrelJMEIEEE1275PowerPC PROPERTIES
-	LINKER_LANGUAGE C)
+# Common C Directives
+squirreljme_common_c(SquirrelJMEIEEE1275PowerPC)
 
 # Position independent code always
-set_property(TARGET SquirrelJMEIEEE1275PowerPC
-	PROPERTY POSITION_INDEPENDENT_CODE ${SQUIRRELJME_FPIC_MODE})
+squirreljme_enable_pic(SquirrelJMEIEEE1275PowerPC)
 
 # Needs the assembly code
 add_dependencies(SquirrelJMEIEEE1275PowerPC
 	SquirrelJMEIEEE1275PowerPCAsmCode)
-
-# Includes for target
-target_include_directories(SquirrelJMEIEEE1275PowerPC PUBLIC
-	"${PROJECT_BINARY_DIR}"
-	"${PROJECT_SOURCE_DIR}/include")
 
 # We need to use the linker script
 set_target_properties(SquirrelJMEIEEE1275PowerPC PROPERTIES

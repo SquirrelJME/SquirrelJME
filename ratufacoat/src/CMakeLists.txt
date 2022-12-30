@@ -44,17 +44,11 @@ add_library(SquirrelJMECore OBJECT
 	xbuiltin.c
 	${SQUIRRELJME_BUILTIN_FILE})
 
-# This is written only in C!
-set_target_properties(SquirrelJMECore PROPERTIES LINKER_LANGUAGE C)
-
-# Includes as needed
-target_include_directories(SquirrelJMECore PUBLIC
-	"${PROJECT_BINARY_DIR}"
-	"${PROJECT_SOURCE_DIR}/include")
+# Common C Directives
+squirreljme_common_c(SquirrelJMECore)
 
 # Make this position independent so it can be linked into shared libraries
-set_property(TARGET SquirrelJMECore
-	PROPERTY POSITION_INDEPENDENT_CODE ${SQUIRRELJME_FPIC_MODE})
+squirreljme_enable_pic(SquirrelJMECore)
 
 # Bundled C library?
 if(SQUIRRELJME_BUNDLED_STDC)

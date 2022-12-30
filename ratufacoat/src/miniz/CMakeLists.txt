@@ -16,18 +16,15 @@ endif()
 add_library(SquirrelJMEMiniZ OBJECT
 	miniz.c)
 
-# This is written only in C!
-set_target_properties(SquirrelJMEMiniZ PROPERTIES LINKER_LANGUAGE C)
+# Common C Directives
+squirreljme_common_c(SquirrelJMEMiniZ)
 
 # Dynamically generated and standard includes
 target_include_directories(SquirrelJMEMiniZ PUBLIC
-	"${PROJECT_BINARY_DIR}"
-	"${PROJECT_SOURCE_DIR}/include"
 	"${PROJECT_SOURCE_DIR}/include/miniz")
 
 # Make this position independent so it can be linked into shared libraries
-set_property(TARGET SquirrelJMEMiniZ
-	PROPERTY POSITION_INDEPENDENT_CODE ${SQUIRRELJME_FPIC_MODE})
+squirreljme_enable_pic(SquirrelJMEMiniZ)
 
 # Disable warnings since this is a third party library we do not touch
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)

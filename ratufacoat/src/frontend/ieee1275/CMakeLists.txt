@@ -23,17 +23,11 @@ if(CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
 		stdc.c
 		)
 
-	# This is written only in C!
-	set_target_properties(SquirrelJMEIEEE1275Lib PROPERTIES LINKER_LANGUAGE C)
+	# Common C Directives
+	squirreljme_common_c(SquirrelJMEIEEE1275Lib)
 
 	# Position independent code always
-	set_property(TARGET SquirrelJMEIEEE1275Lib
-		PROPERTY POSITION_INDEPENDENT_CODE ${SQUIRRELJME_FPIC_MODE})
-
-	# Includes for target
-	target_include_directories(SquirrelJMEIEEE1275Lib PUBLIC
-		"${PROJECT_BINARY_DIR}"
-		"${PROJECT_SOURCE_DIR}/include")
+	squirreljme_enable_pic(SquirrelJMEIEEE1275Lib)
 
 	# Needed by platform specific targets
 	if(SQUIRRELJME_BUNDLED_STDC)

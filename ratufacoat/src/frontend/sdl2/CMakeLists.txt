@@ -32,13 +32,11 @@ else()
 	find_package(SDL2 REQUIRED)
 endif()
 
-# This is written only in C!
-set_target_properties(SquirrelJME PROPERTIES LINKER_LANGUAGE C)
+# Common C Directives
+squirreljme_common_c(SquirrelJME PROPERTIES)
 
 # Includes for SDL2
 target_include_directories(SquirrelJME PUBLIC
-	"${PROJECT_BINARY_DIR}"
-	"${PROJECT_SOURCE_DIR}/include"
 	"${SDL2_INCLUDE_DIRS}")
 
 # Directory where SDL library is, if outside of common areas

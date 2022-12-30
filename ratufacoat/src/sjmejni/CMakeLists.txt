@@ -257,14 +257,8 @@ add_library(SquirrelJMEJNI OBJECT
 	tables/interface/defDetachCurrentThread.c
 	tables/interface/defGetEnv.c)
 
-# This is written only in C!
-set_target_properties(SquirrelJMEJNI PROPERTIES LINKER_LANGUAGE C)
-
-# Dynamically generated and standard includes
-target_include_directories(SquirrelJMEJNI PUBLIC
-	"${PROJECT_BINARY_DIR}"
-	"${PROJECT_SOURCE_DIR}/include")
+# Common C Directives
+squirreljme_common_c(SquirrelJMEJNI)
 
 # Make this position independent so it can be linked into shared libraries
-set_property(TARGET SquirrelJMEJNI
-	PROPERTY POSITION_INDEPENDENT_CODE ${SQUIRRELJME_FPIC_MODE})
+squirreljme_enable_pic(SquirrelJMEJNI)

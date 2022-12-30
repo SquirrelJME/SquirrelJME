@@ -66,3 +66,32 @@ function(squirreljme_object_and_sources coreTargetVar)
 		message("Set ${coreTargetVar}Sources: ${CORE_SOURCES_CHECK}")
 	endif()
 endfunction()
+
+# Potentially and conditionally enable PIC mode?
+macro(squirreljme_enable_pic target)
+	# Enabled or default enabled
+	if(SQUIRRELJME_FPIC_MODE OR NOT DEFINED SQUIRRELJME_FPIC_MODE)
+		set_property(TARGET ${target}
+			PROPERTY POSITION_INDEPENDENT_CODE ON)
+	else()
+		set_property(TARGET ${target}
+			PROPERTY POSITION_INDEPENDENT_CODE OFF)
+	endif()
+endmacro()
+
+# Common settings for C projects
+macro(squirreljme_common_c target)
+	# C Language
+	set_target_properties(${target} PROPERTIES LINKER_LANGUAGE C)
+
+	# Standard includes
+	target_include_directories(${target} PUBLIC AFTER
+		"${PROJECT_BINARY_DIR}"
+		"${PROJECT_SOURCE_DIR}/include")
+
+	# Bundled with our own C library?
+	if(SQUIRRELJME_BUNDLED_STDC)
+		target_include_directories(${target} PUBLIC AFTER
+			"${PROJECT_SOURCE_DIR}/include/libstdc")
+	endif()
+endmacro()

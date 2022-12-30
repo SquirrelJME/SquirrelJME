@@ -22,17 +22,11 @@ add_library(SquirrelJMEEngine OBJECT
 	scaffold.c
 	taskmanager.c)
 
-# This is written only in C!
-set_target_properties(SquirrelJMEEngine PROPERTIES LINKER_LANGUAGE C)
-
-# Dynamically generated and standard includes
-target_include_directories(SquirrelJMEEngine PUBLIC
-	"${PROJECT_BINARY_DIR}"
-	"${PROJECT_SOURCE_DIR}/include")
+# Common C Directives
+squirreljme_common_c(SquirrelJMEEngine)
 
 # Make this position independent so it can be linked into shared libraries
-set_property(TARGET SquirrelJMEEngine
-	PROPERTY POSITION_INDEPENDENT_CODE ${SQUIRRELJME_FPIC_MODE})
+squirreljme_enable_pic(SquirrelJMEEngine)
 
 # Engine implementations
 add_subdirectory(springcoat)

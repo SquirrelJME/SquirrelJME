@@ -27,14 +27,8 @@ add_library(SquirrelJMELibJNI SHARED
 set_target_properties(SquirrelJMELibJNI PROPERTIES
 	OUTPUT_NAME "squirreljmejvmjni")
 
-# This is written only in C!
-set_target_properties(SquirrelJMELibJNI PROPERTIES LINKER_LANGUAGE C)
-
-# Dynamically generated and standard includes
-target_include_directories(SquirrelJMELibJNI PUBLIC
-	"${PROJECT_BINARY_DIR}"
-	"${PROJECT_SOURCE_DIR}/include")
+# Common C Directives
+squirreljme_common_c(SquirrelJMELibJNI)
 
 # Make this position independent so it can be linked into shared libraries
-set_property(TARGET SquirrelJMELibJNI
-	PROPERTY POSITION_INDEPENDENT_CODE ${SQUIRRELJME_FPIC_MODE})
+squirreljme_enable_pic(SquirrelJMELibJNI)

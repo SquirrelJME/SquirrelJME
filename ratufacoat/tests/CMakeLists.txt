@@ -24,13 +24,11 @@ add_executable(SquirrelJMETests
     mainEntry.c
 	${SQUIRRELJME_TEST_SOURCES})
 
-# Can use C++!
-set_target_properties(SquirrelJMETests PROPERTIES LINKER_LANGUAGE C)
+# Common C Directives
+squirreljme_common_c(SquirrelJMETests)
 
 # Additional includes
 target_include_directories(SquirrelJMETests PUBLIC
-	"${PROJECT_BINARY_DIR}"
-	"${PROJECT_SOURCE_DIR}/include"
 	"${CMAKE_CURRENT_BINARY_DIR}"		# Generated sources!
 	)
 

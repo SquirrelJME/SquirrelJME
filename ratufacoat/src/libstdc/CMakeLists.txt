@@ -18,16 +18,13 @@ add_library(SquirrelJMELibStdC OBJECT
 	stdlib.c
 	string.c)
 
-# This is written only in C!
-set_target_properties(SquirrelJMELibStdC PROPERTIES LINKER_LANGUAGE C)
+# Common C Directives
+squirreljme_common_c(SquirrelJMELibStdC)
 
 # Dynamically generated and standard includes
 target_include_directories(SquirrelJMELibStdC PUBLIC
-	"${PROJECT_BINARY_DIR}"
-	"${PROJECT_SOURCE_DIR}/include"
 	"${PROJECT_SOURCE_DIR}/include/libstdc")
 
 # Make this position independent so it can be linked into shared libraries
-set_property(TARGET SquirrelJMELibStdC
-	PROPERTY POSITION_INDEPENDENT_CODE ${SQUIRRELJME_FPIC_MODE})
+squirreljme_enable_pic(SquirrelJMELibStdC)
 

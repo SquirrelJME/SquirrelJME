@@ -16,17 +16,11 @@ endif()
 add_library(SquirrelJMENuklearUI OBJECT
 	nuklear.c)
 
-# This is written only in C!
-set_target_properties(SquirrelJMENuklearUI PROPERTIES LINKER_LANGUAGE C)
-
-# Dynamically generated and standard includes
-target_include_directories(SquirrelJMENuklearUI PUBLIC
-	"${PROJECT_BINARY_DIR}"
-	"${PROJECT_SOURCE_DIR}/include")
+# Common C Directives
+squirreljme_common_c(SquirrelJMENuklearUI)
 
 # Make this position independent so it can be linked into shared libraries
-set_property(TARGET SquirrelJMENuklearUI
-	PROPERTY POSITION_INDEPENDENT_CODE ${SQUIRRELJME_FPIC_MODE})
+squirreljme_enable_pic(SquirrelJMENuklearUI)
 
 # Disable warnings since this is a third party library we do not touch
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)

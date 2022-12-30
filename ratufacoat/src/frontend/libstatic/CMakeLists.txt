@@ -21,14 +21,8 @@ add_library(SquirrelJMELibStatic STATIC
 set_target_properties(SquirrelJMELibStatic PROPERTIES
 	OUTPUT_NAME "squirreljme")
 
-# Needed includes
-target_include_directories(SquirrelJMELibStatic PUBLIC
-	"${PROJECT_BINARY_DIR}"
-	"${PROJECT_SOURCE_DIR}/include")
-
-# This is written only in C!
-set_target_properties(SquirrelJMELibStatic PROPERTIES LINKER_LANGUAGE C)
+# Common C Directives
+squirreljme_common_c(SquirrelJMELibStatic)
 
 # Make this position independent so it can be linked into shared libraries
-set_property(TARGET SquirrelJMELibStatic
-	PROPERTY POSITION_INDEPENDENT_CODE ${SQUIRRELJME_FPIC_MODE})
+squirreljme_enable_pic(SquirrelJMELibStatic)
