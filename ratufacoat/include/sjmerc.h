@@ -362,103 +362,11 @@ typedef struct sjme_returnNever
 } sjme_returnNever;
 
 /**
- * Virtual memory information.
- *
- * @since 2019/06/25
- */
-typedef struct sjme_vmem sjme_vmem;
-
-/**
  * Virtual memory pointer.
  *
  * @since 2019/06/25
  */
 typedef sjme_jint sjme_vmemptr;
-
-/**
- * Virtual memory mapping.
- *
- * @since 2019/06/25
- */
-typedef struct sjme_vmemmap
-{
-	/** The real memory pointer. */
-	uintptr_t realptr;
-	
-	/** The fake memory pointer. */
-	sjme_jint fakeptr;
-	
-	/** The memory region size. */
-	sjme_jint size;
-	
-	/** Banked access function. */
-	uintptr_t (*bank)(sjme_jint* offset);
-} sjme_vmemmap;
-
-/**
- * Represents the framebuffer for SquirrelJME.
- *
- * @deprecated
- * @since 2019/06/20
- */
-typedef struct sjme_framebuffer
-{
-	/** Video pixels. */
-	sjme_jint* pixels;
-	
-	/** Screen width. */
-	sjme_jint width;
-	
-	/** Screen height. */
-	sjme_jint height;
-	
-	/** Scanline length. */
-	sjme_jint scanlen;
-	
-	/** Scanline length in bytes. */
-	sjme_jint scanlenbytes;
-	
-	/** The number of bits per pixel. */
-	sjme_jint bitsperpixel;
-	
-	/** The number of available pixels. */
-	sjme_jint numpixels;
-	
-	/** The pixel format used. */
-	sjme_jint format;
-	
-	/** Flush the framebuffer. */
-	void (*flush)(void);
-	
-	/** The frame buffer virtual memory. */
-	sjme_vmemmap* framebuffer;
-	
-	/** Console X position. */
-	sjme_jint conx;
-	
-	/** Console Y position. */
-	sjme_jint cony;
-	
-	/** Console width. */
-	sjme_jint conw;
-	
-	/** Console height. */
-	sjme_jint conh;
-} sjme_framebuffer;
-
-/**
- * This represents the name of a file in native form, system dependent.
- *
- * @since 2019/06/08
- */
-typedef struct sjme_nativefilename sjme_nativefilename;
-
-/**
- * Represents an open file.
- *
- * @since 2019/06/08
- */
-typedef struct sjme_nativefile sjme_nativefile;
 
 /**
  * Reverses the operation of @c offsetof to access a member.

@@ -54,13 +54,6 @@ sjme_testShim* shimNew()
 	/* Allocate shim. */
 	rv = malloc(sizeof(*rv));
 	memset(rv, 0, sizeof(*rv));
-	
-	/* Setup native methods. */
-	rv->nativeFunctions = malloc(sizeof(*rv->nativeFunctions));
-	memset(rv->nativeFunctions, 0, sizeof(*rv->nativeFunctions));
-	
-	/* Link native methods. */
-	rv->nativeFunctions->stderr_write = shimStdErrWrite;
 
 	/* System JNI support. */
 	rv->jniSysApi = &sjme_testingVmSysApi;
@@ -77,7 +70,6 @@ sjme_testShim* shimNew()
  */
 void shimDestroy(sjme_testShim* shim)
 {
-	free(shim->nativeFunctions);
 	free(shim);
 }
 

@@ -28,13 +28,11 @@ add_library(SquirrelJMECore OBJECT
 	corefont.c
 	counter.c
 	crc.c
-	cpu.c
 	debug.c
 	error.c
 	lock.c
 	memchunk.c
 	memory.c
-	oldstuff.c
 	random.c
 	softmath.c
 	stream.c

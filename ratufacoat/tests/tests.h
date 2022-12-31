@@ -11,7 +11,6 @@
 #define SQUIRRELJME_TESTS_H
 
 #include "sjmerc.h"
-#include "native.h"
 #include "jnistub.h"
 
 /**
@@ -23,9 +22,6 @@ typedef struct sjme_testShim
 {
 	/** Error state. */
 	sjme_error error;
-	
-	/** Native function support. */
-	sjme_nativefuncs* nativeFunctions;
 
 	/** JNI system API. */
 	const sjme_vmSysApi* jniSysApi;
