@@ -23,7 +23,7 @@ static const uint8_t MESSAGE[] =
  * 
  * @since 2021/11/13
  */
-SJME_TEST_PROTOTYPE(testMemIO_CRC)
+SJME_TEST_PROTOTYPE(testMemIo_CRC)
 {
 	sjme_crcState crc;
 	sjme_memChunk chunk;

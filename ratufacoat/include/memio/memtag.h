@@ -29,86 +29,86 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
-/** Protector value for using @c sjme_memTaggedNewSizeOf and not @c sizeof. */
-#define SJME_MEM_TAGGED_NEW_SIZE_OF_PROTECT INT32_C(0x80000000)
+/** Protector value for using @c sjme_memIo_taggedNewSizeOf and not @c sizeof. */
+#define SJME_MEMIO_NEW_TAGGED_PROTECT INT32_C(0x80000000)
 
 /** Declares a tagged reference. */
-#define SJME_DECL_TAGGED(x) typedef x* x##_tagged /* NOLINT */
+#define SJME_MEMIO_DECL_TAGGED(x) typedef x* x##_tagged /* NOLINT */
 
 /** Aliased tagged type, one that is always treated as tagged. */
-#define SJME_DECL_TAGGED_ALIAS(x) typedef x x##_tagged /* NOLINT */
+#define SJME_MEMIO_DECL_TAGGED_ALIAS(x) typedef x x##_tagged /* NOLINT */
 
 /** Utilizes a tagged type. */
-#define SJME_TAGGED(x) x##_tagged
+#define SJME_MEMIO_TAGGED(x) x##_tagged
 
 /** Tagged boolean. */
-SJME_DECL_TAGGED(sjme_jboolean);
+SJME_MEMIO_DECL_TAGGED(sjme_jboolean);
 
 /** Tagged byte. */
-SJME_DECL_TAGGED(sjme_jbyte);
+SJME_MEMIO_DECL_TAGGED(sjme_jbyte);
 
 /** Tagged character. */
-SJME_DECL_TAGGED(sjme_jchar);
+SJME_MEMIO_DECL_TAGGED(sjme_jchar);
 
 /** Tagged short. */
-SJME_DECL_TAGGED(sjme_jshort);
+SJME_MEMIO_DECL_TAGGED(sjme_jshort);
 
 /** Tagged integer. */
-SJME_DECL_TAGGED(sjme_jint);
+SJME_MEMIO_DECL_TAGGED(sjme_jint);
 
 /** Tagged long. */
-SJME_DECL_TAGGED(sjme_jlong);
+SJME_MEMIO_DECL_TAGGED(sjme_jlong);
 
 /** Tagged float. */
-SJME_DECL_TAGGED(sjme_jfloat);
+SJME_MEMIO_DECL_TAGGED(sjme_jfloat);
 
 /** Tagged double. */
-SJME_DECL_TAGGED(sjme_jdouble);
+SJME_MEMIO_DECL_TAGGED(sjme_jdouble);
 
 /** Object type. */
-SJME_DECL_TAGGED_ALIAS(sjme_jobject);
+SJME_MEMIO_DECL_TAGGED_ALIAS(sjme_jobject);
 
 /** Class type. */
-SJME_DECL_TAGGED_ALIAS(sjme_jclass);
+SJME_MEMIO_DECL_TAGGED_ALIAS(sjme_jclass);
 
 /** String type. */
-SJME_DECL_TAGGED_ALIAS(sjme_jstring);
+SJME_MEMIO_DECL_TAGGED_ALIAS(sjme_jstring);
 
 /** Tagged Throwable. */
-SJME_DECL_TAGGED_ALIAS(sjme_jthrowable);
+SJME_MEMIO_DECL_TAGGED_ALIAS(sjme_jthrowable);
 
 /** Tagged Weak reference. */
-SJME_DECL_TAGGED_ALIAS(sjme_jweakReference);
+SJME_MEMIO_DECL_TAGGED_ALIAS(sjme_jweakReference);
 
 /** Tagged Array type. */
-SJME_DECL_TAGGED_ALIAS(sjme_jarray);
+SJME_MEMIO_DECL_TAGGED_ALIAS(sjme_jarray);
 
 /** Tagged Boolean array type. */
-SJME_DECL_TAGGED_ALIAS(sjme_jbooleanArray);
+SJME_MEMIO_DECL_TAGGED_ALIAS(sjme_jbooleanArray);
 
 /** Tagged Byte array type. */
-SJME_DECL_TAGGED_ALIAS(sjme_jbyteArray);
+SJME_MEMIO_DECL_TAGGED_ALIAS(sjme_jbyteArray);
 
 /** Tagged Character array type. */
-SJME_DECL_TAGGED_ALIAS(sjme_jcharArray);
+SJME_MEMIO_DECL_TAGGED_ALIAS(sjme_jcharArray);
 
 /** Tagged Short array type. */
-SJME_DECL_TAGGED_ALIAS(sjme_jshortArray);
+SJME_MEMIO_DECL_TAGGED_ALIAS(sjme_jshortArray);
 
 /** Tagged Integer array type. */
-SJME_DECL_TAGGED_ALIAS(sjme_jintArray);
+SJME_MEMIO_DECL_TAGGED_ALIAS(sjme_jintArray);
 
 /** Tagged Long array type. */
-SJME_DECL_TAGGED_ALIAS(sjme_jlongArray);
+SJME_MEMIO_DECL_TAGGED_ALIAS(sjme_jlongArray);
 
 /** Tagged Float array type. */
-SJME_DECL_TAGGED_ALIAS(sjme_jfloatArray);
+SJME_MEMIO_DECL_TAGGED_ALIAS(sjme_jfloatArray);
 
 /** Tagged Double array type. */
-SJME_DECL_TAGGED_ALIAS(sjme_jdoubleArray);
+SJME_MEMIO_DECL_TAGGED_ALIAS(sjme_jdoubleArray);
 
 /** Tagged Object array type. */
-SJME_DECL_TAGGED_ALIAS(sjme_jobjectArray);
+SJME_MEMIO_DECL_TAGGED_ALIAS(sjme_jobjectArray);
 
 /**
  * Represents a memory tag group which is utilized by virtual machines to
@@ -117,21 +117,21 @@ SJME_DECL_TAGGED_ALIAS(sjme_jobjectArray);
  *
  * @since 2022/12/20
  */
-typedef struct sjme_memTagGroup sjme_memTagGroup;
+typedef struct sjme_memIo_tagGroup sjme_memIo_tagGroup;
 
 /**
  * Represents the type of tag that is used for memory.
  *
  * @since 2022/12/20
  */
-typedef enum sjme_memTagType
+typedef enum sjme_memIo_tagType
 {
 	/** Static memory, never dynamically free. */
 	SJME_MEM_TAG_STATIC,
 
 	/** The number of available tags. */
 	SJME_NUM_MEM_TAG_TYPES
-} sjme_memTagType;
+} sjme_memIo_tagType;
 
 /**
  * Frees memory that was directly allocated through the tagging system.
@@ -165,7 +165,7 @@ sjme_jboolean sjme_memDirectNew(void** outPtr, sjme_jsize size,
  * @return If the group was successfully allocated.
  * @since 2022/12/20
  */
-sjme_jboolean sjme_memTaggedGroupNew(sjme_memTagGroup** outPtr,
+sjme_jboolean sjme_memIo_taggedGroupNew(sjme_memIo_tagGroup** outPtr,
 	sjme_error* error);
 
 /**
@@ -176,7 +176,7 @@ sjme_jboolean sjme_memTaggedGroupNew(sjme_memTagGroup** outPtr,
  * @return If the group was successfully freed.
  * @since 2022/12/20
  */
-sjme_jboolean sjme_memTaggedGroupFree(sjme_memTagGroup** inPtr,
+sjme_jboolean sjme_memIo_taggedGroupFree(sjme_memIo_tagGroup** inPtr,
 	sjme_error* error);
 
 /**
@@ -184,7 +184,7 @@ sjme_jboolean sjme_memTaggedGroupFree(sjme_memTagGroup** inPtr,
  *
  * @param outPtr The output pointer, should be a tagged pointer.
  * @param size The size of the data to allocate,
- * use @c sjme_memTaggedNewSizeOf().
+ * use @c sjme_memIo_taggedNewSizeOf().
  * @param tagType The type of tag used, represents how the value is to be
  * cached or otherwise.
  * @param error The resultant error if allocation failed.
@@ -193,8 +193,8 @@ sjme_jboolean sjme_memTaggedGroupFree(sjme_memTagGroup** inPtr,
  * @return If allocation was successful or not.
  * @since 2022/12/20
  */
-sjme_jboolean sjme_memTaggedNewZ(sjme_memTagGroup* group, void*** outPtr,
-	sjme_jsize size, sjme_memTagType tagType, sjme_error* error,
+sjme_jboolean sjme_memIo_taggedNewZ(sjme_memIo_tagGroup* group, void*** outPtr,
+	sjme_jsize size, sjme_memIo_tagType tagType, sjme_error* error,
 	sjme_jsize protectA, sjme_jsize protectB);
 
 /**
@@ -203,8 +203,8 @@ sjme_jboolean sjme_memTaggedNewZ(sjme_memTagGroup* group, void*** outPtr,
  * @param ref The reference to get the size of.
  * @since 2022/12/20
  */
-#define sjme_memTaggedNewSizeOf(ref) \
-	(((sjme_jsize)sizeof(**(ref))) ^ SJME_MEM_TAGGED_NEW_SIZE_OF_PROTECT)
+#define sjme_memIo_taggedNewSizeOf(ref) \
+	(((sjme_jsize)sizeof(**(ref))) ^ SJME_MEMIO_NEW_TAGGED_PROTECT)
 
 /**
  * Allocates tagged memory.
@@ -212,15 +212,15 @@ sjme_jboolean sjme_memTaggedNewZ(sjme_memTagGroup* group, void*** outPtr,
  * @param group The group the tag belongs to.
  * @param outPtr The output pointer, should be a tagged pointer.
  * @param size The size of the data to allocate,
- * use @c sjme_memTaggedNewSizeOf().
+ * use @c sjme_memIo_taggedNewSizeOf().
  * @param tagType The type of tag used, represents how the value is to be
  * cached or otherwise.
  * @param error The resultant error if allocation failed.
  * @return If allocation was successful or not.
  * @since 2022/12/20
  */
-#define sjme_memTaggedNew(group, outPtr, size, tagType, error) \
-	sjme_memTaggedNewZ((group), (void***)(outPtr), (size), (tagType), \
+#define sjme_memIo_taggedNew(group, outPtr, size, tagType, error) \
+	sjme_memIo_taggedNewZ((group), (void***)(outPtr), (size), (tagType), \
 		(error), \
 		sizeof(*(outPtr)), \
 		sizeof(**(outPtr))) /* NOLINT(bugprone-sizeof-expression) */
@@ -235,7 +235,7 @@ sjme_jboolean sjme_memTaggedNewZ(sjme_memTagGroup* group, void*** outPtr,
  * @return If freeing the tagged pointer was a success.
  * @since 2022/12/20
  */
-sjme_jboolean sjme_memTaggedFreeZ(void*** inPtr, sjme_error* error,
+sjme_jboolean sjme_memIo_taggedFreeZ(void*** inPtr, sjme_error* error,
 	sjme_jsize protectA, sjme_jsize protectB);
 
 /**
@@ -246,8 +246,8 @@ sjme_jboolean sjme_memTaggedFreeZ(void*** inPtr, sjme_error* error,
  * @return If freeing the tagged pointer was a success.
  * @since 2022/12/20
  */
-#define sjme_memTaggedFree(inPtr, error) \
-	sjme_memTaggedFreeZ((void***)inPtr, error, \
+#define sjme_memIo_taggedFree(inPtr, error) \
+	sjme_memIo_taggedFreeZ((void***)inPtr, error, \
 		sizeof(*(inPtr)), \
 		sizeof(**(inPtr))) /* NOLINT(bugprone-sizeof-expression) */
 

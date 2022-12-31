@@ -13,7 +13,7 @@
 #include "atomic.h"
 
 /** Lower bit protection for the size. */
-#define SJME_MEM_TAGGED_NEW_SIZE_OF_PROTECT_LOW INT32_C(0x40000000)
+#define SJME_MEMIO_NEW_TAGGED_PROTECT_LOW INT32_C(0x40000000)
 
 /** The number of swaps for tag indicators, for indirections. */
 #define SJME_NUM_MEM_TAG_SWAPS 2
@@ -32,13 +32,13 @@ typedef struct sjme_memTagInternal
 	sjme_jint checkKey;
 
 	/** The group this tag is a part of. */
-	sjme_memTagGroup* group;
+	sjme_memIo_tagGroup* group;
 
 	/** The index of when this tag was allocated. */
 	sjme_atomicInt birthIndex;
 
 	/** The type of tag and allocation this uses. */
-	sjme_memTagType tagType;
+	sjme_memIo_tagType tagType;
 
 	/** The allocation size used currently. */
 	sjme_jsize allocSize;
@@ -63,7 +63,7 @@ typedef struct sjme_memTagInternal
 	} swaps[SJME_NUM_MEM_TAG_SWAPS];
 } sjme_memTagInternal;
 
-struct sjme_memTagGroup
+struct sjme_memIo_tagGroup
 {
 	/** Estimated memory used in total. */
 	sjme_jlong estimatedUsedSize;
@@ -99,7 +99,7 @@ sjme_jboolean sjme_memDirectNew(void** outPtr, sjme_jsize size,
 	return sjme_false;
 }
 
-sjme_jboolean sjme_memTaggedGroupFree(sjme_memTagGroup** inPtr,
+sjme_jboolean sjme_memIo_taggedGroupFree(sjme_memIo_tagGroup** inPtr,
 	sjme_error* error)
 {
 	if (inPtr == NULL)
@@ -112,10 +112,10 @@ sjme_jboolean sjme_memTaggedGroupFree(sjme_memTagGroup** inPtr,
 	return sjme_false;
 }
 
-sjme_jboolean sjme_memTaggedGroupNew(sjme_memTagGroup** outPtr,
+sjme_jboolean sjme_memIo_taggedGroupNew(sjme_memIo_tagGroup** outPtr,
 	sjme_error* error)
 {
-	sjme_memTagGroup* result;
+	sjme_memIo_tagGroup* result;
 
 	if (outPtr == NULL)
 		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
@@ -133,7 +133,7 @@ sjme_jboolean sjme_memTaggedGroupNew(sjme_memTagGroup** outPtr,
 	return sjme_false;
 }
 
-sjme_jboolean sjme_memTaggedFreeZ(void*** inPtr, sjme_error* error,
+sjme_jboolean sjme_memIo_taggedFreeZ(void*** inPtr, sjme_error* error,
 	sjme_jsize protectA, sjme_jsize protectB)
 {
 	if (inPtr == NULL)
@@ -152,8 +152,8 @@ sjme_jboolean sjme_memTaggedFreeZ(void*** inPtr, sjme_error* error,
 	return sjme_false;
 }
 
-sjme_jboolean sjme_memTaggedNewZ(sjme_memTagGroup* group, void*** outPtr,
-	sjme_jsize size, sjme_memTagType tagType, sjme_error* error,
+sjme_jboolean sjme_memIo_taggedNewZ(sjme_memIo_tagGroup* group, void*** outPtr,
+	sjme_jsize size, sjme_memIo_tagType tagType, sjme_error* error,
 	sjme_jsize protectA, sjme_jsize protectB)
 {
 	if (group == NULL || outPtr == NULL)
@@ -166,9 +166,9 @@ sjme_jboolean sjme_memTaggedNewZ(sjme_memTagGroup* group, void*** outPtr,
 
 	/* Make sure the correct sizeof() is used and that the value is not */
 	/* erroneously zero. */
-	if (((size & SJME_MEM_TAGGED_NEW_SIZE_OF_PROTECT) !=
-		SJME_MEM_TAGGED_NEW_SIZE_OF_PROTECT) ||
-		(size & SJME_MEM_TAGGED_NEW_SIZE_OF_PROTECT_LOW) != 0)
+	if (((size & SJME_MEMIO_NEW_TAGGED_PROTECT) !=
+		SJME_MEMIO_NEW_TAGGED_PROTECT) ||
+		(size & SJME_MEMIO_NEW_TAGGED_PROTECT_LOW) != 0)
 		return sjme_setErrorF(error, SJME_ERROR_TAGGED_WRONG_SIZE_OF, 0);
 
 	/* We should not smash a pointer that was here already. */
