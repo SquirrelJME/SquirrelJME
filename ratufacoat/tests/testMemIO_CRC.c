@@ -9,7 +9,7 @@
 
 #include "tests.h"
 #include "debug.h"
-#include "crc.h"
+#include "memio/crc.h"
 
 /** Test message. */
 static const uint8_t MESSAGE[] =
@@ -23,7 +23,7 @@ static const uint8_t MESSAGE[] =
  * 
  * @since 2021/11/13
  */
-SJME_TEST_PROTOTYPE(testCrc)
+SJME_TEST_PROTOTYPE(testMemIO_CRC)
 {
 	sjme_crcState crc;
 	sjme_memChunk chunk;

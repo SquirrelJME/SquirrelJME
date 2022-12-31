@@ -10,7 +10,7 @@
 #include "tests.h"
 #include "builtin.h"
 #include "debug.h"
-#include "crc.h"
+#include "memio/crc.h"
 #include "format/library.h"
 #include "format/pack.h"
 #include "format/sqc.h"

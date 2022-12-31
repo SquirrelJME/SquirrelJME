@@ -14,6 +14,7 @@ endif()
 
 # Define the library
 add_library(SquirrelJMEMemIO OBJECT
+	crc.c
 	memchunk.c
 	memtag.c
 	stream.c)

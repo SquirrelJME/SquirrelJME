@@ -8,7 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "debug.h"
-#include "crc.h"
+#include "memio/crc.h"
 
 /** The initial ZIP reminder. */
 #define SJME_ZIP_INITIAL_REMAINDER SJME_JUINT_C(0xFFFFFFFF)

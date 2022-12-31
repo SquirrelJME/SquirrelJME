@@ -27,7 +27,6 @@ add_library(SquirrelJMECore OBJECT
 	atomic.c
 	corefont.c
 	counter.c
-	crc.c
 	debug.c
 	error.c
 	lock.c
