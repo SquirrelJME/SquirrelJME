@@ -23,7 +23,7 @@
 #include "error.h"
 #include "lock.h"
 #include "counter.h"
-#include "sjmejni/memtag.h"
+#include "memio/memtag.h"
 
 /** Lock on memory operations to ensure that all of them are atomic. */
 static sjme_spinLock sjme_memLock;

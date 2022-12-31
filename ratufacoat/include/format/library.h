@@ -22,8 +22,8 @@
 #include "format/def.h"
 #include "format/detect.h"
 #include "format/format.h"
-#include "memchunk.h"
-#include "stream.h"
+#include "memio/memchunk.h"
+#include "memio/stream.h"
 #include "utf.h"
 
 /* Anti-C++. */

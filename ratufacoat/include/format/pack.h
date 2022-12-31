@@ -24,7 +24,7 @@
 #include "format/detect.h"
 #include "format/format.h"
 #include "format/library.h"
-#include "memchunk.h"
+#include "memio/memchunk.h"
 #include "utf.h"
 
 /* Anti-C++. */

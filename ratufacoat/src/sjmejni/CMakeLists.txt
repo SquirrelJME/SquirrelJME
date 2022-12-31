@@ -15,7 +15,6 @@ endif()
 # Declare base library
 add_library(SquirrelJMEJNI OBJECT
 	init.c
-	memtag.c
 	shadow.c
 
 	# All of the various function implementations, all sources must be

@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "sjmejni/memtag.h"
+#include "memio/memtag.h"
 #include "debug.h"
 #include "error.h"
 #include "atomic.h"

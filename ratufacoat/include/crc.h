@@ -17,8 +17,8 @@
 #define SQUIRRELJME_CRC_H
 
 #include "sjmerc.h"
-#include "memchunk.h"
-#include "stream.h"
+#include "memio/memchunk.h"
+#include "memio/stream.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

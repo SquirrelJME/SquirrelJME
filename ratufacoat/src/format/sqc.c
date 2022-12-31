@@ -9,7 +9,7 @@
 
 #include "debug.h"
 #include "format/sqc.h"
-#include "memchunk.h"
+#include "memio/memchunk.h"
 #include "memops.h"
 
 /** The class version offset. */

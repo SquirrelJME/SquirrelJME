@@ -8,7 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "debug.h"
-#include "memchunk.h"
+#include "memio/memchunk.h"
 #include "memops.h"
 
 sjme_jboolean sjme_chunkCheckBound(const sjme_memChunk* chunk, sjme_jint off,

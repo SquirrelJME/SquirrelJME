@@ -18,7 +18,7 @@
 
 #include "sjmejni/sjmejni.h"
 #include "error.h"
-#include "memtag.h"
+#include "memio/memtag.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

@@ -17,7 +17,7 @@
 #define SQUIRRELJME_FORMAT_H
 
 #include "sjmerc.h"
-#include "memchunk.h"
+#include "memio/memchunk.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

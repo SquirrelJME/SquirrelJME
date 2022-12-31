@@ -10,7 +10,7 @@
 #include <string.h>
 
 #include "tests.h"
-#include "memchunk.h"
+#include "memio/memchunk.h"
 
 /** Test message. */
 static const uint8_t MESSAGE[] =

@@ -9,7 +9,7 @@
 
 #include "debug.h"
 #include "memory.h"
-#include "stream.h"
+#include "memio/stream.h"
 
 static sjme_jboolean sjme_memStreamCollect(sjme_counter* counter,
 	sjme_error* error)

@@ -31,11 +31,9 @@ add_library(SquirrelJMECore OBJECT
 	debug.c
 	error.c
 	lock.c
-	memchunk.c
 	memory.c
 	random.c
 	softmath.c
-	stream.c
 	stringies.c
 	utf.c
 	util.c
@@ -60,6 +58,7 @@ add_subdirectory(libnuklear)
 # Internal support libraries and modules
 add_subdirectory(engine)
 add_subdirectory(format)
+add_subdirectory(memio)
 add_subdirectory(sjmejni)
 
 # Execute this with all of the targets we want to collect
@@ -68,9 +67,10 @@ squirreljme_object_and_sources(SquirrelJMECoreTarget
 	SquirrelJMEEngine
 	SquirrelJMEEngineSpringCoat
 	SquirrelJMEFormat
+	SquirrelJMEJNI
 	SquirrelJMELibNuklear
 	SquirrelJMELibMiniZ
-	SquirrelJMEJNI)
+	SquirrelJMEMemIO)
 
 # Front ends
 add_subdirectory(frontend)

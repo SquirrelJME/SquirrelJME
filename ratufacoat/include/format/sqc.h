@@ -20,7 +20,7 @@
 #include "format/pack.h"
 #include "format/library.h"
 #include "function.h"
-#include "memchunk.h"
+#include "memio/memchunk.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

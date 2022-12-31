@@ -8,7 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "tests.h"
-#include "sjmejni/memtag.h"
+#include "memio/memtag.h"
 #include "debug.h"
 
 /** The number of pointers to allocate. */
