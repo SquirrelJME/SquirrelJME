@@ -53,11 +53,13 @@ if(SQUIRRELJME_BUNDLED_STDC)
 	add_subdirectory(libstdc)
 endif()
 
+# Supporting UI libraries and whatnot, as needed
+add_subdirectory(libminiz)
+add_subdirectory(libnuklear)
+
 # Internal support libraries and modules
 add_subdirectory(engine)
 add_subdirectory(format)
-add_subdirectory(miniz)
-add_subdirectory(nuklear)
 add_subdirectory(sjmejni)
 
 # Execute this with all of the targets we want to collect
@@ -66,8 +68,8 @@ squirreljme_object_and_sources(SquirrelJMECoreTarget
 	SquirrelJMEEngine
 	SquirrelJMEEngineSpringCoat
 	SquirrelJMEFormat
-	SquirrelJMENuklearUI
-	SquirrelJMEMiniZ
+	SquirrelJMELibNuklear
+	SquirrelJMELibMiniZ
 	SquirrelJMEJNI)
 
 # Front ends

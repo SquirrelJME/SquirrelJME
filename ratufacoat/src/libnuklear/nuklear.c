@@ -7,18 +7,5 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "sjmejni/sjmejni.h"
-
-/* Needed for fixed size types. */
-#if !defined(NK_INCLUDE_FIXED_TYPES)
-	#define NK_INCLUDE_FIXED_TYPES
-#endif
-
-/* If bare metal, skip these. */
-#if defined(SJME_BARE_METAL)
-	/* Skip this. */
-	#define NK_INCLUDE_STANDARD_VARARGS
-#endif
-
-/* Include implementation header. */
-#include "nuklear/nuklear2.h"
+#define NK_IMPLEMENTATION
+#include "libnuklear/nuklear.h"

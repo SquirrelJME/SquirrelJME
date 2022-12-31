@@ -12,6 +12,7 @@
 
 #include "sjmerc.h"
 #include "jnistub.h"
+#include "error.h"
 
 /**
  * Testing shim structure.
