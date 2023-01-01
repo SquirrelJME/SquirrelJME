@@ -17,6 +17,7 @@ add_library(SquirrelJMEMemIO OBJECT
 	atomic.c
 	crc.c
 	memchunk.c
+	memdirect.c
 	memtag.c
 	stream.c)
 

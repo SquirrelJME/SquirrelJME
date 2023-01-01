@@ -137,7 +137,8 @@ sjme_jint sjme_memIo_atomicIntGet(sjme_memIo_atomicInt* atomic);
  * @return The old value in the atomic.
  * @since 2021/03/06
  */
-sjme_jint sjme_memIo_atomicIntSet(sjme_memIo_atomicInt* atomic, sjme_jint value);
+sjme_jint sjme_memIo_atomicIntSet(sjme_memIo_atomicInt* atomic,
+	sjme_jint value);
 
 /**
  * Atomically reads the value then adds into the atomic.
@@ -147,7 +148,8 @@ sjme_jint sjme_memIo_atomicIntSet(sjme_memIo_atomicInt* atomic, sjme_jint value)
  * @return The value before adding.
  * @since 2021/03/06
  */
-sjme_jint sjme_memIo_atomicIntGetThenAdd(sjme_memIo_atomicInt* atomic, sjme_jint add);
+sjme_jint sjme_memIo_atomicIntGetThenAdd(sjme_memIo_atomicInt* atomic,
+	sjme_jint add);
 
 /**
  * Sets the value of the given atomic provided the check value is a match,
@@ -159,8 +161,8 @@ sjme_jint sjme_memIo_atomicIntGetThenAdd(sjme_memIo_atomicInt* atomic, sjme_jint
  * @return If @c check matched and the atomic is set.
  * @since 2021/11/11
  */
-sjme_jboolean sjme_memIo_atomicPointerCompareThenSet(sjme_memIo_atomicPointer* atomic,
-	void* check, void* set);
+sjme_jboolean sjme_memIo_atomicPointerCompareThenSet(
+	sjme_memIo_atomicPointer* atomic, void* check, void* set);
 
 /**
  * Gets the value of the atomic.
@@ -190,7 +192,8 @@ void* sjme_memIo_atomicPointerGet(sjme_memIo_atomicPointer* atomic);
  * @return The former atomic value.
  * @since 2021/10/21
  */
-void* sjme_memIo_atomicPointerSet(sjme_memIo_atomicPointer* atomic, void* value);
+void* sjme_memIo_atomicPointerSet(sjme_memIo_atomicPointer* atomic,
+	void* value);
 
 /**
  * Sets an atomic pointer with the given type.

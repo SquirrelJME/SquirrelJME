@@ -29,7 +29,7 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
-/** Protector value for using @c sjme_memIo_taggedNewSizeOf and not @c sizeof. */
+/** Protector value for @c sjme_memIo_taggedNewSizeOf and not @c sizeof. */
 #define SJME_MEMIO_NEW_TAGGED_PROTECT INT32_C(0x80000000)
 
 /** Declares a tagged reference. */
@@ -132,28 +132,6 @@ typedef enum sjme_memIo_tagType
 	/** The number of available tags. */
 	SJME_NUM_MEM_TAG_TYPES
 } sjme_memIo_tagType;
-
-/**
- * Frees memory that was directly allocated through the tagging system.
- *
- * @param inPtr The pointer to free.
- * @param error If free was not successful.
- * @return If freeing was successful.
- * @since 2022/12/27
- */
-sjme_jboolean sjme_memDirectFree(void** inPtr, sjme_error* error);
-
-/**
- * Allocates memory directly, not using the tagging system.
- *
- * @param outPtr The output pointer.
- * @param size The size to allocate.
- * @param error The error if allocation failed.
- * @return If the allocation succeeded or not.
- * @since 2022/12/20
- */
-sjme_jboolean sjme_memDirectNew(void** outPtr, sjme_jsize size,
-	sjme_error* error);
 
 /**
  * Allocates a group which contains tagged pointers which are used for

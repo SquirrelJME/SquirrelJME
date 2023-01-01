@@ -75,30 +75,6 @@ struct sjme_memIo_tagGroup
 	sjme_memIo_atomicInt tagCounts[SJME_NUM_MEM_TAG_TYPES];
 };
 
-sjme_jboolean sjme_memDirectFree(void** inPtr, sjme_error* error)
-{
-	sjme_todo("Implement this?");
-	return sjme_false;
-}
-
-sjme_jboolean sjme_memDirectNew(void** outPtr, sjme_jsize size,
-	sjme_error* error)
-{
-	if (outPtr == NULL)
-		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
-
-	if (size <= 0)
-		return sjme_setErrorF(error, SJME_ERROR_NEGATIVE_SIZE, 0);
-
-	/* Should be a zero initialized pointer. */
-	if (*outPtr != NULL)
-		return sjme_setErrorF(error, SJME_ERROR_POINTER_NOT_NULL, 0);
-
-
-	sjme_todo("Implement this?");
-	return sjme_false;
-}
-
 sjme_jboolean sjme_memIo_taggedGroupFree(sjme_memIo_tagGroup** inPtr,
 	sjme_error* error)
 {
