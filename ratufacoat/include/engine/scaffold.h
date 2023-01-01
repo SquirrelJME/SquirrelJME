@@ -295,7 +295,7 @@ struct sjme_engineState
 	sjme_engineThread* mainThread;
 	
 	/** The next task/thread ID. */
-	sjme_atomicInt nextTaskThreadId;
+	sjme_memIo_atomicInt nextTaskThreadId;
 	
 	/** Global standard pipes for when terminal is requested. */
 	sjme_pipeInstance* stdPipes[SJME_NUM_STANDARD_PIPES];

@@ -64,7 +64,7 @@ static sjme_jboolean sjme_memStreamRead(sjme_dataStream* stream,
 	memChunk = stream->streamSource;
 	
 	/* Determine how much data we can read. */
-	startRead = sjme_atomicIntGet(&stream->readBytes);
+	startRead = sjme_memIo_atomicIntGet(&stream->readBytes);
 	readLeft = memChunk->size - startRead;
 	copyLimit = sjme_min(readLeft, len);
 	
@@ -98,7 +98,7 @@ static sjme_jboolean sjme_memStreamRead(sjme_dataStream* stream,
 	memmove(dest, realPointer, copyLimit);
 	
 	/* Move pointers over. */
-	sjme_atomicIntGetThenAdd(&stream->readBytes, copyLimit);
+	sjme_memIo_atomicIntGetThenAdd(&stream->readBytes, copyLimit);
 	
 	/* Successful read! */
 	*readLen = copyLimit;

@@ -48,10 +48,10 @@ typedef struct sjme_memNode sjme_memNode;
 typedef struct sjme_memStat
 {
 	/** The number of nodes currently allocated. */
-	sjme_atomicInt totalNodes;
+	sjme_memIo_atomicInt totalNodes;
 	
 	/** The number of bytes currently allocated. */
-	sjme_atomicInt totalBytes;
+	sjme_memIo_atomicInt totalBytes;
 } sjme_memStat;
 
 /** The current global memory statistics. */

@@ -244,7 +244,7 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 	}
 	
 	/* Set initial ID for tasks and threads, so they do not start at zero. */
-	sjme_atomicIntGetThenAdd(&result->nextTaskThreadId, 1);
+	sjme_memIo_atomicIntGetThenAdd(&result->nextTaskThreadId, 1);
 	
 	/* Initialize the standard pipes for terminal pipe usage. */
 #if 0

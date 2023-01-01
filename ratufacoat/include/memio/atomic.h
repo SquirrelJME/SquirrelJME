@@ -19,7 +19,7 @@
 #include "sjmejni/ccfeatures.h"
 
 #if defined(__GNUC__) && !defined(SJME_HAS_SPARC)
-	#define SJME_ATOMIC_GCC
+	#define SJME_MEMIO_ATOMIC_GCC
 
 	#if !defined(SJME_HAS_ATOMIC)
 		#define SJME_HAS_ATOMIC
@@ -31,14 +31,14 @@
 	!defined(__STDC_NO_ATOMICS__)
 	#include <stdatomic.h>
 
-	#define SJME_ATOMIC_C11
+	#define SJME_MEMIO_ATOMIC_C11
 
 	#if !defined(SJME_HAS_ATOMIC)
 		#define SJME_HAS_ATOMIC
 	#endif
 #elif defined(_WIN32) || defined(__WIN32__) || \
 	defined(__WIN32) || defined(_WINDOWS)
-	#define SJME_ATOMIC_WIN32
+	#define SJME_MEMIO_ATOMIC_WIN32
 
 	#if !defined(SJME_HAS_ATOMIC)
 		#define SJME_HAS_ATOMIC
@@ -47,7 +47,7 @@
 
 /* Fallback to non-atomic. */
 #if !defined(SJME_HAS_ATOMIC)
-	#define SJME_ATOMIC_RELAXED_NOT_ATOMIC
+	#define SJME_MEMIO_ATOMIC_RELAXED_NOT_ATOMIC
 #endif
 
 #include "sjmerc.h"
@@ -70,16 +70,16 @@ extern "C"
  * 
  * @since 2021/03/06
  */
-typedef struct sjme_atomicInt sjme_atomicInt;
+typedef struct sjme_memIo_atomicInt sjme_memIo_atomicInt;
 
-#if defined(SJME_ATOMIC_C11)
-	struct sjme_atomicInt
+#if defined(SJME_MEMIO_ATOMIC_C11)
+	struct sjme_memIo_atomicInt
 	{
 		/** Atomic value. */
 		_Atomic sjme_jint value;
 	};
 #else
-	struct sjme_atomicInt
+	struct sjme_memIo_atomicInt
 	{
 		/** Atomic value. */
 		volatile sjme_jint value;
@@ -91,16 +91,16 @@ typedef struct sjme_atomicInt sjme_atomicInt;
  * 
  * @since 2021/10/21
  */
-typedef struct sjme_atomicPointer sjme_atomicPointer;
+typedef struct sjme_memIo_atomicPointer sjme_memIo_atomicPointer;
 
-#if defined(SJME_ATOMIC_C11)
-	struct sjme_atomicPointer
+#if defined(SJME_MEMIO_ATOMIC_C11)
+	struct sjme_memIo_atomicPointer
 	{
 		/** Atomic value. */
 		void* _Atomic value;
 	};
 #else
-	struct sjme_atomicPointer
+	struct sjme_memIo_atomicPointer
 	{
 		/** Atomic value. */
 		volatile void* volatile value;
@@ -117,7 +117,7 @@ typedef struct sjme_atomicPointer sjme_atomicPointer;
  * @return If @c check matched and the atomic is set.
  * @since 2021/03/06
  */
-sjme_jboolean sjme_atomicIntCompareThenSet(sjme_atomicInt* atomic,
+sjme_jboolean sjme_memIo_atomicIntCompareThenSet(sjme_memIo_atomicInt* atomic,
 	sjme_jint check, sjme_jint set);
 
 /**
@@ -127,7 +127,7 @@ sjme_jboolean sjme_atomicIntCompareThenSet(sjme_atomicInt* atomic,
  * @return The read value.
  * @since 2021/03/06
  */
-sjme_jint sjme_atomicIntGet(sjme_atomicInt* atomic);
+sjme_jint sjme_memIo_atomicIntGet(sjme_memIo_atomicInt* atomic);
 
 /**
  * Sets the given atomic value.
@@ -137,7 +137,7 @@ sjme_jint sjme_atomicIntGet(sjme_atomicInt* atomic);
  * @return The old value in the atomic.
  * @since 2021/03/06
  */
-sjme_jint sjme_atomicIntSet(sjme_atomicInt* atomic, sjme_jint value);
+sjme_jint sjme_memIo_atomicIntSet(sjme_memIo_atomicInt* atomic, sjme_jint value);
 
 /**
  * Atomically reads the value then adds into the atomic.
@@ -147,7 +147,7 @@ sjme_jint sjme_atomicIntSet(sjme_atomicInt* atomic, sjme_jint value);
  * @return The value before adding.
  * @since 2021/03/06
  */
-sjme_jint sjme_atomicIntGetThenAdd(sjme_atomicInt* atomic, sjme_jint add);
+sjme_jint sjme_memIo_atomicIntGetThenAdd(sjme_memIo_atomicInt* atomic, sjme_jint add);
 
 /**
  * Sets the value of the given atomic provided the check value is a match,
@@ -159,7 +159,7 @@ sjme_jint sjme_atomicIntGetThenAdd(sjme_atomicInt* atomic, sjme_jint add);
  * @return If @c check matched and the atomic is set.
  * @since 2021/11/11
  */
-sjme_jboolean sjme_atomicPointerCompareThenSet(sjme_atomicPointer* atomic,
+sjme_jboolean sjme_memIo_atomicPointerCompareThenSet(sjme_memIo_atomicPointer* atomic,
 	void* check, void* set);
 
 /**
@@ -169,7 +169,7 @@ sjme_jboolean sjme_atomicPointerCompareThenSet(sjme_atomicPointer* atomic,
  * @return The read value.
  * @since 2021/10/21
  */
-void* sjme_atomicPointerGet(sjme_atomicPointer* atomic);
+void* sjme_memIo_atomicPointerGet(sjme_memIo_atomicPointer* atomic);
 
 /**
  * Reads an atomic pointer with the given type.
@@ -179,8 +179,8 @@ void* sjme_atomicPointerGet(sjme_atomicPointer* atomic);
  * @return The read value.
  * @since 2021/10/21
  */
-#define sjme_atomicPointerGetType(atomic, type) \
-	((type)(sjme_atomicPointerGet(atomic)))
+#define sjme_memIo_atomicPointerGetType(atomic, type) \
+	((type)(sjme_memIo_atomicPointerGet(atomic)))
 
 /**
  * Sets the given atomic value.
@@ -190,7 +190,7 @@ void* sjme_atomicPointerGet(sjme_atomicPointer* atomic);
  * @return The former atomic value.
  * @since 2021/10/21
  */
-void* sjme_atomicPointerSet(sjme_atomicPointer* atomic, void* value);
+void* sjme_memIo_atomicPointerSet(sjme_memIo_atomicPointer* atomic, void* value);
 
 /**
  * Sets an atomic pointer with the given type.
@@ -201,8 +201,8 @@ void* sjme_atomicPointerSet(sjme_atomicPointer* atomic, void* value);
  * @return The old value.
  * @since 2021/10/21
  */
-#define sjme_atomicPointerSetType(atomic, value, type) \
-	((type)(sjme_atomicPointerSet(atomic, value)))
+#define sjme_memIo_atomicPointerSetType(atomic, value, type) \
+	((type)(sjme_memIo_atomicPointerSet(atomic, value)))
 
 /*--------------------------------------------------------------------------*/
 

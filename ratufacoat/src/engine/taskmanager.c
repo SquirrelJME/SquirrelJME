@@ -212,7 +212,7 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	}
 	
 	/* Determine the ID for the task. */
-	createdTask->id = sjme_atomicIntGetThenAdd(
+	createdTask->id = sjme_memIo_atomicIntGetThenAdd(
 		&engineState->nextTaskThreadId, 1);
 	
 	/* Use whatever profiler we specified. */

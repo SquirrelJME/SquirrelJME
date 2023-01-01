@@ -56,7 +56,7 @@ typedef sjme_jboolean (*sjme_streamReadFunction)(sjme_dataStream* stream,
 struct sjme_dataStream
 {
 	/** The number of bytes which have so far been read. */
-	sjme_atomicInt readBytes;
+	sjme_memIo_atomicInt readBytes;
 	
 	/** Counter for garbage collection. */
 	sjme_counter count;

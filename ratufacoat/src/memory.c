@@ -28,8 +28,8 @@
 /** Lock on memory operations to ensure that all of them are atomic. */
 static sjme_spinLock sjme_memLock;
 
-/** The last @c sjme_atomicPointer in the memory chain. */
-static sjme_atomicPointer sjme_lastMemNode;
+/** The last @c sjme_memIo_atomicPointer in the memory chain. */
+static sjme_memIo_atomicPointer sjme_lastMemNode;
 
 sjme_memStat sjme_memStats = {{0}, {0}};
 
@@ -154,11 +154,11 @@ void* sjme_mallocGc(sjme_jint size, sjme_freeCallback freeCallback,
 	}
 
 	/* Link into the node tree. */
-	lastNode = sjme_atomicPointerGet(&sjme_lastMemNode);
-	sjme_atomicPointerSet(&result->next, lastNode);
+	lastNode = sjme_memIo_atomicPointerGet(&sjme_lastMemNode);
+	sjme_memIo_atomicPointerSet(&result->next, lastNode);
 	if (lastNode != NULL)
-		sjme_atomicPointerSet(&lastNode->prev, result);
-	sjme_atomicPointerSet(&sjme_lastMemNode, result);
+		sjme_memIo_atomicPointerSet(&lastNode->prev, result);
+	sjme_memIo_atomicPointerSet(&sjme_lastMemNode, result);
 
 	/* Unlock. */
 	if (!sjme_unlock(&sjme_memLock, &lockKey, error))
@@ -266,20 +266,20 @@ sjme_jboolean sjme_free(void* p, sjme_error* error)
 	}
 
 	/* Unlink from the node tree. */
-	prevNode = sjme_atomicPointerGet(&node->prev);
-	nextNode = sjme_atomicPointerGet(&node->next);
+	prevNode = sjme_memIo_atomicPointerGet(&node->prev);
+	nextNode = sjme_memIo_atomicPointerGet(&node->next);
 
 	if (prevNode != NULL)
-		sjme_atomicPointerSet(&prevNode->next, nextNode);
+		sjme_memIo_atomicPointerSet(&prevNode->next, nextNode);
 	if (nextNode != NULL)
-		sjme_atomicPointerSet(&nextNode->prev, prevNode);
+		sjme_memIo_atomicPointerSet(&nextNode->prev, prevNode);
 
-	sjme_atomicPointerSet(&node->prev, NULL);
-	sjme_atomicPointerSet(&node->next, NULL);
+	sjme_memIo_atomicPointerSet(&node->prev, NULL);
+	sjme_memIo_atomicPointerSet(&node->next, NULL);
 
-	lastNode = sjme_atomicPointerGet(&sjme_lastMemNode);
+	lastNode = sjme_memIo_atomicPointerGet(&sjme_lastMemNode);
 	if (lastNode == node)
-		sjme_atomicPointerSet(&sjme_lastMemNode, nextNode);
+		sjme_memIo_atomicPointerSet(&sjme_lastMemNode, nextNode);
 
 	/* Unlock. */
 	if (!sjme_unlock(&sjme_memLock, &lockKey, error))

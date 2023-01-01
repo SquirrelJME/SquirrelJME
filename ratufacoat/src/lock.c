@@ -22,7 +22,7 @@
 #define SJME_UNLOCKED SJME_JINT_C(0)
 
 /** The next locking key to use. */
-static sjme_atomicInt sjme_nextLockKey;
+static sjme_memIo_atomicInt sjme_nextLockKey;
 
 /**
  * Attempts to create a memory barrier.
@@ -54,7 +54,7 @@ static sjme_jboolean sjme_lockShift(sjme_spinLock* lock,
 
 	/* Try shifting the lock now. */
 	sjme_memoryBarrier();
-	result = sjme_atomicIntCompareThenSet(&lock->lock,
+	result = sjme_memIo_atomicIntCompareThenSet(&lock->lock,
 		keyFrom, keyTo);
 	sjme_memoryBarrier();
 
@@ -74,7 +74,7 @@ sjme_jboolean sjme_lock(sjme_spinLock* lock, sjme_spinLockKey* key,
 	}
 	
 	/* Get the next locking key to use. */
-	useKey = sjme_atomicIntGetThenAdd(&sjme_nextLockKey, 1) + 1;
+	useKey = sjme_memIo_atomicIntGetThenAdd(&sjme_nextLockKey, 1) + 1;
 	
 	/* Burn forever trying to use the given key. */
 	while (!sjme_lockShift(lock, SJME_UNLOCKED, useKey))
@@ -98,7 +98,7 @@ sjme_jboolean sjme_tryLock(sjme_spinLock* lock, sjme_spinLockKey* key,
 	}
 	
 	/* Get the next locking key to use. */
-	useKey = sjme_atomicIntGetThenAdd(&sjme_nextLockKey, 1) + 1;
+	useKey = sjme_memIo_atomicIntGetThenAdd(&sjme_nextLockKey, 1) + 1;
 	
 	/* Attempt only once to lock. */
 	if (!sjme_lockShift(lock, SJME_UNLOCKED, useKey))

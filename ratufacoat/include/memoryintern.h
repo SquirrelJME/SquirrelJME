@@ -42,10 +42,10 @@ extern "C" {
 typedef struct sjme_refPtr_ownerList__
 {
 	/** Number of references to this owner list. */
-	sjme_atomicInt numRefs;
+	sjme_memIo_atomicInt numRefs;
 
 	/** The current number of owners. */
-	sjme_atomicInt numOwners;
+	sjme_memIo_atomicInt numOwners;
 
 	/** Array of owners. */
 	void* owners;
@@ -78,10 +78,10 @@ struct sjme_memNode
 	sjme_refPtr_ownerList__* owners;
 
 	/** The previous link (a @c sjme_memNode) in the chain. */
-	sjme_atomicPointer prev;
+	sjme_memIo_atomicPointer prev;
 
 	/** The next link (a @c sjme_memNode) in the chain. */
-	sjme_atomicPointer next;
+	sjme_memIo_atomicPointer next;
 
 	/** The data stored within this node. */
 	sjme_jbyte bytes[];

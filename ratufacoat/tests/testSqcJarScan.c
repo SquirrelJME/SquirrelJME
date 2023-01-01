@@ -96,7 +96,7 @@ SJME_TEST_PROTOTYPE(testSqcJarScan)
 				return FAIL_TEST_TRI(10, libDx, entryDx);
 			
 			/* Everything should have been read. */
-			temp = sjme_atomicIntGet(&stream->readBytes);
+			temp = sjme_memIo_atomicIntGet(&stream->readBytes);
 			if (temp != entrySize)
 			{
 				sjme_message("Expected read of %d but was %d",

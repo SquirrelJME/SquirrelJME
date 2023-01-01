@@ -35,7 +35,7 @@ typedef struct sjme_memTagInternal
 	sjme_memIo_tagGroup* group;
 
 	/** The index of when this tag was allocated. */
-	sjme_atomicInt birthIndex;
+	sjme_memIo_atomicInt birthIndex;
 
 	/** The type of tag and allocation this uses. */
 	sjme_memIo_tagType tagType;
@@ -44,7 +44,7 @@ typedef struct sjme_memTagInternal
 	sjme_jsize allocSize;
 
 	/** The swap order to use. */
-	sjme_atomicInt currentSwap;
+	sjme_memIo_atomicInt currentSwap;
 
 	/**
 	 * Swaps are used to keep indirect pointers around without freeing them
@@ -59,7 +59,7 @@ typedef struct sjme_memTagInternal
 		uintptr_t swapDetectKey;
 
 		/** The pointer for the given swap, indirections point here. */
-		sjme_atomicPointer ptr;
+		sjme_memIo_atomicPointer ptr;
 	} swaps[SJME_NUM_MEM_TAG_SWAPS];
 } sjme_memTagInternal;
 
@@ -69,10 +69,10 @@ struct sjme_memIo_tagGroup
 	sjme_jlong estimatedUsedSize;
 
 	/** The number of total tags allocated. */
-	sjme_atomicInt totalTags;
+	sjme_memIo_atomicInt totalTags;
 
 	/** Counts for allocations under tags, used for GC checks. */
-	sjme_atomicInt tagCounts[SJME_NUM_MEM_TAG_TYPES];
+	sjme_memIo_atomicInt tagCounts[SJME_NUM_MEM_TAG_TYPES];
 };
 
 sjme_jboolean sjme_memDirectFree(void** inPtr, sjme_error* error)

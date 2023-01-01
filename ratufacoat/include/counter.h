@@ -57,7 +57,7 @@ typedef sjme_jboolean (*sjme_counterCollectFunction)(sjme_counter* counter,
 struct sjme_counter
 {
 	/** The current count. */
-	sjme_atomicInt count;
+	sjme_memIo_atomicInt count;
 	
 	/** The collector if this is to be GCed. */
 	sjme_counterCollectFunction collect;

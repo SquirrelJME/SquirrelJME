@@ -37,7 +37,7 @@ extern "C" {
 typedef struct sjme_spinLock
 {
 	/** The lock value. */
-	sjme_atomicInt lock;
+	sjme_memIo_atomicInt lock;
 } sjme_spinLock;
 
 /**

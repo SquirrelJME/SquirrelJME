@@ -167,7 +167,7 @@ struct sjme_packInstance
 	sjme_jint numLibraries;
 	
 	/** The set of cached libraries in the pack. */
-	sjme_atomicPointer* libraries;
+	sjme_memIo_atomicPointer* libraries;
 	
 	/** Counter for the pack instance. */
 	sjme_counter counter;

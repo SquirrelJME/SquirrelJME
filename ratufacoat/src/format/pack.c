@@ -84,7 +84,7 @@ sjme_jboolean sjme_packClose(sjme_packInstance* instance,
 	for (int i = 0; i < numLibs; i++)
 	{
 		/* Clear out the cache first. */
-		sjme_libraryInstance* library = sjme_atomicPointerSetType(
+		sjme_libraryInstance* library = sjme_memIo_atomicPointerSetType(
 			&instance->libraries[i], NULL, sjme_libraryInstance*);
 		if (library == NULL)
 			continue;
@@ -280,11 +280,11 @@ sjme_jboolean sjme_packLibraryMarkClosed(sjme_packInstance* packInstance,
 		 * if we happen to immediately open after we can just continue
 		 * along while we cleanup this one. */
 		if (libInstance != NULL)
-			sjme_atomicPointerCompareThenSet(
+			sjme_memIo_atomicPointerCompareThenSet(
 				&packInstance->libraries[index],
 				libInstance, NULL);
 		else
-			sjme_atomicPointerSet(&packInstance->libraries[index],
+			sjme_memIo_atomicPointerSet(&packInstance->libraries[index],
 				NULL);
 	}
 	
@@ -320,7 +320,7 @@ sjme_jboolean sjme_packLibraryOpen(sjme_packInstance* packInstance,
 	}
 	
 	/* Has this library already been cached? */
-	lib = sjme_atomicPointerGet(&packInstance->libraries[index]);
+	lib = sjme_memIo_atomicPointerGet(&packInstance->libraries[index]);
 	if (lib != NULL)
 	{
 		/* Reference the library and count it up, we are using it. */
@@ -365,7 +365,7 @@ sjme_jboolean sjme_packLibraryOpen(sjme_packInstance* packInstance,
 	lib->packIndex = index;
 	
 	/* Cache the chunk for later usage. */
-	oldLib = sjme_atomicPointerSet(&packInstance->libraries[index],
+	oldLib = sjme_memIo_atomicPointerSet(&packInstance->libraries[index],
 		lib);
 	if (oldLib != NULL)
 		sjme_message("There was an old library used here: %p?", oldLib);
