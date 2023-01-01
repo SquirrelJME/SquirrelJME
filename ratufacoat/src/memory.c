@@ -18,7 +18,7 @@
 #include "sjmerc.h"
 #include "memory.h"
 #include "memoryintern.h"
-#include "atomic.h"
+#include "memio/atomic.h"
 #include "debug.h"
 #include "error.h"
 #include "lock.h"

@@ -17,7 +17,7 @@
 #define SQUIRRELJME_COUNTER_H
 
 #include "sjmerc.h"
-#include "atomic.h"
+#include "memio/atomic.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

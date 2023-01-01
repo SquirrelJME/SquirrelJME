@@ -16,7 +16,7 @@
 #ifndef SQUIRRELJME_STREAM_H
 #define SQUIRRELJME_STREAM_H
 
-#include "atomic.h"
+#include "memio/atomic.h"
 #include "counter.h"
 #include "memchunk.h"
 

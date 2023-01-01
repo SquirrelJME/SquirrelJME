@@ -17,7 +17,7 @@
 #define SQUIRRELJME_PACK_H
 
 #include "sjmerc.h"
-#include "atomic.h"
+#include "memio/atomic.h"
 #include "error.h"
 #include "engine/scafdef.h"
 #include "format/def.h"

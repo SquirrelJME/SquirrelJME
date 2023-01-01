@@ -16,7 +16,7 @@
 #ifndef SQUIRRELJME_LOCK_H
 #define SQUIRRELJME_LOCK_H
 
-#include "atomic.h"
+#include "memio/atomic.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

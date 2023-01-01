@@ -17,7 +17,7 @@
 #define SQUIRRELJME_MEMORY_H
 
 #include "sjmerc.h"
-#include "atomic.h"
+#include "memio/atomic.h"
 #include "error.h"
 
 /* Anti-C++. */

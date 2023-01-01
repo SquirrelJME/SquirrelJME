@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "atomic.h"
+#include "memio/atomic.h"
 
 #if defined(SJME_ATOMIC_WIN32)
 	#include <windows.h>

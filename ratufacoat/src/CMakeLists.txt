@@ -24,7 +24,6 @@ endif()
 #  another target.  One may link only to STATIC or SHARED libraries, or to
 #  executables with the ENABLE_EXPORTS property set.
 add_library(SquirrelJMECore OBJECT
-	atomic.c
 	corefont.c
 	counter.c
 	debug.c

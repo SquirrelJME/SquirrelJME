@@ -10,7 +10,7 @@
 #include "memio/memtag.h"
 #include "debug.h"
 #include "error.h"
-#include "atomic.h"
+#include "memio/atomic.h"
 
 /** Lower bit protection for the size. */
 #define SJME_MEMIO_NEW_TAGGED_PROTECT_LOW INT32_C(0x40000000)

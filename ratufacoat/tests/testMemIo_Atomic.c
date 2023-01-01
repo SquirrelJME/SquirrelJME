@@ -8,7 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "tests.h"
-#include "atomic.h"
+#include "memio/atomic.h"
 
 /** First value. */
 #define VALUE_A SJME_JINT_C(0xDEADBEEF)
@@ -27,7 +27,7 @@
  * 
  * @since 2021/03/06
  */
-SJME_TEST_PROTOTYPE(testAtomic)
+SJME_TEST_PROTOTYPE(testMemIo_Atomic)
 {
 	sjme_atomicInt integer;
 	sjme_atomicPointer pointer;
