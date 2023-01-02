@@ -71,8 +71,8 @@ SJME_TEST_PROTOTYPE(testMemIo_memTags)
 
 	/* Allocating with sizeof() should fail. */
 	alloc = NULL;
-	if (sjme_memIo_taggedNew(tagGroup, &alloc, sizeof(alloc), SJME_MEM_TAG_STATIC,
-			&shim->error))
+	if (sjme_memIo_taggedNew(tagGroup, &alloc, sizeof(alloc),
+		SJME_MEM_TAG_STATIC, &shim->error))
 		return FAIL_TEST(4);
 
 	if (shim->error.code != SJME_ERROR_TAGGED_WRONG_SIZE_OF)
@@ -84,7 +84,7 @@ SJME_TEST_PROTOTYPE(testMemIo_memTags)
 			SJME_MEM_TAG_STATIC, &shim->error))
 		return FAIL_TEST(5);
 
-	if (shim->error.code != SJME_ERROR_PROTECTED_TAG_VIOLATION)
+	if (shim->error.code != SJME_ERROR_PROTECTED_MEM_VIOLATION)
 		return FAIL_TEST_SUB(5, 1);
 
 	/* Allocating over a pointer that already has something there. */
@@ -98,8 +98,8 @@ SJME_TEST_PROTOTYPE(testMemIo_memTags)
 		return FAIL_TEST_SUB(6, 1);
 
 	/* Try allocating memory. */
-	if (!sjme_memIo_taggedNew(tagGroup, &alloc, sjme_memIo_taggedNewSizeOf(alloc),
-		SJME_MEM_TAG_STATIC, &shim->error))
+	if (!sjme_memIo_taggedNew(tagGroup, &alloc,
+		sjme_memIo_taggedNewSizeOf(alloc), SJME_MEM_TAG_STATIC, &shim->error))
 		return FAIL_TEST(7);
 
 	/* Access it. */

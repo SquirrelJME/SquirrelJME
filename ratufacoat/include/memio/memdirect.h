@@ -45,11 +45,25 @@ sjme_jboolean sjme_memDirectFree(void** inPtr, sjme_error* error);
  * @param outPtr The output pointer.
  * @param size The size to allocate.
  * @param error The error if allocation failed.
+ * @param protect Protector value, must be size of pointer.
  * @return If the allocation succeeded or not.
  * @since 2022/12/20
  */
-sjme_jboolean sjme_memDirectNew(void** outPtr, sjme_jsize size,
-	sjme_error* error);
+sjme_jboolean sjme_memDirectNewR(void** outPtr, sjme_jsize size,
+	sjme_error* error, sjme_jsize protect);
+
+/**
+* Allocates memory directly, not using the tagging system.
+*
+* @param outPtr The output pointer.
+* @param size The size to allocate.
+* @param error The error if allocation failed.
+* @return If the allocation succeeded or not.
+* @since 2023/01/02
+*/
+#define sjme_memDirectNew(outPtr, size, error) \
+	sjme_memDirectNewR((void**)(outPtr), size, error, \
+		sizeof(*(outPtr))) /* NOLINT(bugprone-sizeof-expression) */
 
 /*--------------------------------------------------------------------------*/
 

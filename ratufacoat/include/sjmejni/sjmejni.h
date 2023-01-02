@@ -407,8 +407,8 @@ typedef enum sjme_errorCode
 	/** Bad pipe initialize. */
 	SJME_ERROR_BAD_PIPE_INIT = INT32_C(-67),
 
-	/** Protected tag pointer violation. */
-	SJME_ERROR_PROTECTED_TAG_VIOLATION = INT32_C(-68),
+	/** Protected memory pointer violation. */
+	SJME_ERROR_PROTECTED_MEM_VIOLATION = INT32_C(-68),
 
 	/** Wrong sizeof() type used. */
 	SJME_ERROR_TAGGED_WRONG_SIZE_OF = INT32_C(-69),

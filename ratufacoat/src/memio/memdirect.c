@@ -17,14 +17,20 @@ sjme_jboolean sjme_memDirectFree(void** inPtr, sjme_error* error)
 	return sjme_false;
 }
 
-sjme_jboolean sjme_memDirectNew(void** outPtr, sjme_jsize size,
-	sjme_error* error)
+sjme_jboolean sjme_memDirectNewR(void** outPtr, sjme_jsize size,
+	sjme_error* error, sjme_jsize protect)
 {
+	/* Cannot be null. */
 	if (outPtr == NULL)
 		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 
+	/* Cannot be zero or negative. */
 	if (size <= 0)
 		return sjme_setErrorF(error, SJME_ERROR_NEGATIVE_SIZE, 0);
+
+	/* Protector value should be sizeof pointer. */
+	if (protect != sizeof(void*))
+		return sjme_setErrorF(error, SJME_ERROR_PROTECTED_MEM_VIOLATION, 0);
 
 	/* Should be a zero initialized pointer. */
 	if (*outPtr != NULL)

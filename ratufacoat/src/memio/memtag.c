@@ -123,7 +123,7 @@ sjme_jboolean sjme_memIo_taggedFreeZ(void*** inPtr, sjme_error* error,
 	/* Protect values must be the same size as pointers, this is to detect */
 	/* cases where tag pointers are not used correctly. */
 	if (protectA != sizeof(void*) || protectB != sizeof(void*))
-		return sjme_setErrorF(error, SJME_ERROR_PROTECTED_TAG_VIOLATION, 0);
+		return sjme_setErrorF(error, SJME_ERROR_PROTECTED_MEM_VIOLATION, 0);
 
 	sjme_todo("Implement this?");
 	return sjme_false;
@@ -139,7 +139,7 @@ sjme_jboolean sjme_memIo_taggedNewZ(sjme_memIo_tagGroup* group, void*** outPtr,
 	/* Protect values must be the same size as pointers, this is to detect */
 	/* cases where tag pointers are not used correctly. */
 	if (protectA != sizeof(void*) || protectB != sizeof(void*))
-		return sjme_setErrorF(error, SJME_ERROR_PROTECTED_TAG_VIOLATION, 0);
+		return sjme_setErrorF(error, SJME_ERROR_PROTECTED_MEM_VIOLATION, 0);
 
 	/* Make sure the correct sizeof() is used and that the value is not */
 	/* erroneously zero. */

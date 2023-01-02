@@ -36,23 +36,34 @@ SJME_TEST_PROTOTYPE(testMemIo_direct)
 {
 	a_structure* result;
 
-	/* Allocate with null pointer. */
-	if (sjme_memDirectNew(NULL, 12, &shim->error))
-		return FAIL_TEST(1);
-
 	/* Try to allocate over a value. */
 	result = (void*)1234;
-	if (sjme_memDirectNew((void**)&result, sizeof(*result),
+	if (sjme_memDirectNew(&result, sizeof(*result),
 		&shim->error))
-		return FAIL_TEST(2);
+		return FAIL_TEST(1);
+
+	if (shim->error.code != SJME_ERROR_POINTER_NOT_NULL)
+		return FAIL_TEST_SUB(1, 1);
 
 	/* No size. */
 	result = NULL;
-	if (sjme_memDirectNew((void**)&result, 0, &shim->error))
+	if (sjme_memDirectNew(&result, 0, &shim->error))
+		return FAIL_TEST(2);
+
+	if (shim->error.code != SJME_ERROR_NEGATIVE_SIZE)
+		return FAIL_TEST_SUB(2, 1);
+
+	/* Protection violation, not using &var. */
+	result = (void*)1234;
+	if (sjme_memDirectNew(result, sizeof(*result), &shim->error))
 		return FAIL_TEST(3);
 
+	if (shim->error.code != SJME_ERROR_PROTECTED_MEM_VIOLATION)
+		return FAIL_TEST_SUB(3, 1);
+
 	/* Should allocate now. */
-	if (!sjme_memDirectNew((void**)&result, sizeof(*result),
+	result = NULL;
+	if (!sjme_memDirectNew(&result, sizeof(*result),
 		&shim->error))
 		return FAIL_TEST(4);
 
