@@ -15,15 +15,16 @@
 
 #include <string.h>
 
-#include "sjmerc.h"
-#include "memory.h"
-#include "memoryintern.h"
-#include "memio/atomic.h"
+#include "counter.h"
 #include "debug.h"
 #include "error.h"
 #include "lock.h"
-#include "counter.h"
+#include "memio/atomic.h"
+#include "memio/memdirect.h"
 #include "memio/memtag.h"
+#include "memory.h"
+#include "memoryintern.h"
+#include "sjmerc.h"
 
 /** Lock on memory operations to ensure that all of them are atomic. */
 static sjme_spinLock sjme_memLock;
