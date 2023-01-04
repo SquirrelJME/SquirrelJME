@@ -72,7 +72,7 @@ SJME_TEST_PROTOTYPE(testMemIo_direct)
 		return FAIL_TEST(5);
 
 	/* Free it. */
-	if (sjme_memDirectFree((void**)&result, &shim->error))
+	if (!sjme_memDirectFree((void**)&result, &shim->error))
 		return FAIL_TEST(6);
 
 	/* Should be cleared. */

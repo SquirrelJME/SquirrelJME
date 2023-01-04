@@ -11,15 +11,33 @@
 #include "debug.h"
 #include "error.h"
 
-sjme_jboolean sjme_memDirectFree(void** inPtr, sjme_error* error)
+sjme_jboolean sjme_memDirectFreeR(void** inPtr, sjme_error* error,
+	sjme_jsize protect)
 {
-	sjme_todo("Implement this?");
-	return sjme_false;
+	if (inPtr == NULL)
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
+
+	/* Protector value should be sizeof pointer. */
+	if (protect != sizeof(void*))
+		return sjme_setErrorF(error, SJME_ERROR_PROTECTED_MEM_VIOLATION, 0);
+
+	/* Cannot already be null. */
+	if (*inPtr == NULL)
+		return sjme_setErrorF(error, SJME_ERROR_POINTER_IS_NULL, 0);
+
+	/* Free it. */
+	free(*inPtr);
+
+	/* Remove old reference and be successful. */
+	*inPtr = NULL;
+	return sjme_true;
 }
 
 sjme_jboolean sjme_memDirectNewR(void** outPtr, sjme_jsize size,
 	sjme_error* error, sjme_jsize protect)
 {
+	void* result;
+
 	/* Cannot be null. */
 	if (outPtr == NULL)
 		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
@@ -36,8 +54,16 @@ sjme_jboolean sjme_memDirectNewR(void** outPtr, sjme_jsize size,
 	if (*outPtr != NULL)
 		return sjme_setErrorF(error, SJME_ERROR_POINTER_NOT_NULL, 0);
 
+	/* Attempt data allocation. */
+	result = malloc(size);
+	if (result == NULL)
+		return sjme_setErrorF(error, SJME_ERROR_NO_MEMORY, size);
 
-	sjme_todo("Implement this?");
-	return sjme_false;
+	/* Clear out memory. */
+	memset(result, 0, size);
+
+	/* Use result. */
+	*outPtr = result;
+	return sjme_true;
 }
 

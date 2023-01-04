@@ -34,10 +34,24 @@ extern "C" {
  *
  * @param inPtr The pointer to free.
  * @param error If free was not successful.
+ * @param protect Protector value.
  * @return If freeing was successful.
  * @since 2022/12/27
  */
-sjme_jboolean sjme_memDirectFree(void** inPtr, sjme_error* error);
+sjme_jboolean sjme_memDirectFreeR(void** inPtr, sjme_error* error,
+	sjme_jsize protect);
+
+/**
+ * Frees memory that was directly allocated through the tagging system.
+ *
+ * @param inPtr The pointer to free.
+ * @param error If free was not successful.
+ * @return If freeing was successful.
+ * @since 2023/01/04
+ */
+#define sjme_memDirectFree(inPtr, error) \
+	sjme_memDirectFreeR((void**)(inPtr), error, \
+	sizeof(*(inPtr))) /* NOLINT(bugprone-sizeof-expression) */
 
 /**
  * Allocates memory directly, not using the tagging system.
