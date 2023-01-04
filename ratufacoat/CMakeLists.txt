@@ -46,6 +46,8 @@ squirreljme_include("i-miss-you.cmake")
 
 # After project for both system and processor
 squirreljme_include_optional(
+	"after-project.cmake")
+squirreljme_include_optional(
 	"after-project.${CMAKE_SYSTEM_NAME}.cmake")
 squirreljme_include_optional(
 	"after-project.${CMAKE_SYSTEM_NAME}.${CMAKE_SYSTEM_PROCESSOR}.cmake")
