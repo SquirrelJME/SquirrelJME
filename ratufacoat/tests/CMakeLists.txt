@@ -33,7 +33,9 @@ target_include_directories(SquirrelJMETests PUBLIC
 	)
 
 # Link in core SquirrelJME, it is preferred for it to be static!
-if(APPLE OR SQUIRRELJME_ON_ANDROID_BUILD)
+if(APPLE OR SQUIRRELJME_ON_ANDROID_BUILD OR
+	CMAKE_SYSTEM_NAME STREQUAL "android" OR
+	CMAKE_SYSTEM_NAME STREQUAL "Android")
 	# Mac OS does not support static here, it will give an error that says:
 	# ld: library not found for -lcrt0.o
 	# Termux on Android has a similar issue with -lc not found...

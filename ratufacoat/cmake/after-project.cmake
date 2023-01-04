@@ -19,7 +19,7 @@ if(LINUX)
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 	# Was successful?
-	if("${SQUIRRELJME_UNAME_O_RESULT}" EQUAL 0)
+	if(SQUIRRELJME_UNAME_O_RESULT EQUAL 0)
 		# Is this running on an actual Android system, i.e. Termux?
 		if(SQUIRRELJME_UNAME_O_OUTPUT STREQUAL "android" OR
 			SQUIRRELJME_UNAME_O_OUTPUT STREQUAL "Android")
