@@ -40,7 +40,7 @@ extern "C" {
  */
 sjme_jboolean sjme_memIo_directFreeR(void** inPtr, sjme_error* error,
 	sjme_jsize protect)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /**
  * Frees memory that was directly allocated through the tagging system.
@@ -66,7 +66,7 @@ sjme_jboolean sjme_memIo_directFreeR(void** inPtr, sjme_error* error,
  */
 sjme_jboolean sjme_memIo_directNewR(void** outPtr, sjme_jsize size,
 	sjme_error* error, sjme_jsize protect)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /**
 * Allocates memory directly, not using the tagging system.

@@ -72,7 +72,7 @@ extern const sjme_juint sjme_crcTableZip[SJME_CRC_TABLE_SIZE];
  */
 sjme_jboolean sjme_crcChecksum(sjme_crcState* crcState,
 	sjme_juint* outChecksum, sjme_error* error)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /**
  * Initializes the CRC calculator with the same properties used for ZIP files.
@@ -83,7 +83,7 @@ sjme_jboolean sjme_crcChecksum(sjme_crcState* crcState,
  * @since 2021/11/13 
  */
 sjme_jboolean sjme_crcInitZip(sjme_crcState* outCrcState, sjme_error* error)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /**
  * Offers data from a memory chunk into the calculator.
@@ -99,7 +99,7 @@ sjme_jboolean sjme_crcInitZip(sjme_crcState* outCrcState, sjme_error* error)
 sjme_jboolean sjme_crcOfferChunk(sjme_crcState* crcState,
 	const sjme_memChunk* chunk, sjme_jint off, sjme_jint len,
 	sjme_error* error)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 	
 /**
  * Offers data from direct memory into the calculator.
@@ -114,7 +114,7 @@ sjme_jboolean sjme_crcOfferChunk(sjme_crcState* crcState,
 sjme_jboolean sjme_crcOfferDirect(sjme_crcState* crcState,
 	const void* data, sjme_jint len,
 	sjme_error* error)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /**
  * Offers data from a data stream into the calculator.
@@ -130,7 +130,7 @@ sjme_jboolean sjme_crcOfferDirect(sjme_crcState* crcState,
 sjme_jboolean sjme_crcOfferStream(sjme_crcState* crcState,
 	sjme_dataStream* stream, sjme_jint len, sjme_jint* readLen,
 	sjme_error* error)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /*--------------------------------------------------------------------------*/
 

@@ -37,7 +37,7 @@ extern "C" {
 #define SJME_FUNC_SURROUND(x) sjme_impl ## x
 
 /** End of line for prototype. */
-#define SJME_FUNC_SURROUND_SUFFIX ;
+#define SJME_FUNC_SURROUND_SUFFIX SJME_CODE_SECTION("sjmejni") ;
 
 /*--------------------------------------------------------------------------*/
 

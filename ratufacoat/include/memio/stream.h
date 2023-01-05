@@ -86,7 +86,7 @@ struct sjme_dataStream
 sjme_jboolean sjme_streamFromChunkCounted(sjme_dataStream** outStream,
 	sjme_countableMemChunk* chunk, sjme_jint off, sjme_jint len,
 	sjme_jboolean countUpChunk, sjme_error* error)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /**
  * Performs a read of the data stream.
@@ -101,7 +101,7 @@ sjme_jboolean sjme_streamFromChunkCounted(sjme_dataStream** outStream,
  */
 sjme_jboolean sjme_streamRead(sjme_dataStream* stream,
 	void* dest, sjme_jint len, sjme_jint* readLen, sjme_error* error)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /*--------------------------------------------------------------------------*/
 

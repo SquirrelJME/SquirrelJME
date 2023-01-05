@@ -73,7 +73,7 @@ typedef struct sjme_countableMemChunk
  */
 sjme_jboolean sjme_chunkCheckBound(const sjme_memChunk* chunk, sjme_jint off,
 	sjme_jint len, sjme_error* error)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /**
  * Reads an integer from the memory chunk. 
@@ -87,7 +87,7 @@ sjme_jboolean sjme_chunkCheckBound(const sjme_memChunk* chunk, sjme_jint off,
  */
 sjme_jboolean sjme_chunkReadBigInt(const sjme_memChunk* chunk, sjme_jint off,
 	sjme_jint* value, sjme_error* error)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /**
  * Reads a short from the memory chunk. 
@@ -101,7 +101,7 @@ sjme_jboolean sjme_chunkReadBigInt(const sjme_memChunk* chunk, sjme_jint off,
  */
 sjme_jboolean sjme_chunkReadBigShort(const sjme_memChunk* chunk, sjme_jint off,
 	sjme_jshort* value, sjme_error* error)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /**
  * Returns the real pointer of the given memory chunk.
@@ -115,7 +115,7 @@ sjme_jboolean sjme_chunkReadBigShort(const sjme_memChunk* chunk, sjme_jint off,
  */
 sjme_jboolean sjme_chunkRealPointer(const sjme_memChunk* chunk, sjme_jint off,
 	void** outPointer, sjme_error* error)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /**
  * Obtains a sub-chunk from the given chunk and returns it.
@@ -131,7 +131,7 @@ sjme_jboolean sjme_chunkRealPointer(const sjme_memChunk* chunk, sjme_jint off,
 sjme_jboolean sjme_chunkSubChunk(const sjme_memChunk* chunk,
 	sjme_memChunk* outSubChunk, sjme_jint off, sjme_jint size,
 	sjme_error* error)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /*--------------------------------------------------------------------------*/
 

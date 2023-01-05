@@ -120,7 +120,7 @@ typedef struct sjme_memIo_atomicPointer sjme_memIo_atomicPointer;
  */
 sjme_jboolean sjme_memIo_atomicIntCompareThenSet(sjme_memIo_atomicInt* atomic,
 	sjme_jint check, sjme_jint set)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /**
  * Gets the value of the atomic.
@@ -130,7 +130,7 @@ sjme_jboolean sjme_memIo_atomicIntCompareThenSet(sjme_memIo_atomicInt* atomic,
  * @since 2021/03/06
  */
 sjme_jint sjme_memIo_atomicIntGet(sjme_memIo_atomicInt* atomic)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /**
  * Sets the given atomic value.
@@ -142,7 +142,7 @@ sjme_jint sjme_memIo_atomicIntGet(sjme_memIo_atomicInt* atomic)
  */
 sjme_jint sjme_memIo_atomicIntSet(sjme_memIo_atomicInt* atomic,
 	sjme_jint value)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /**
  * Atomically reads the value then adds into the atomic.
@@ -154,7 +154,7 @@ sjme_jint sjme_memIo_atomicIntSet(sjme_memIo_atomicInt* atomic,
  */
 sjme_jint sjme_memIo_atomicIntGetThenAdd(sjme_memIo_atomicInt* atomic,
 	sjme_jint add)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /**
  * Sets the value of the given atomic provided the check value is a match,
@@ -168,7 +168,7 @@ sjme_jint sjme_memIo_atomicIntGetThenAdd(sjme_memIo_atomicInt* atomic,
  */
 sjme_jboolean sjme_memIo_atomicPointerCompareThenSet(
 	sjme_memIo_atomicPointer* atomic, void* check, void* set)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /**
  * Gets the value of the atomic.
@@ -178,7 +178,7 @@ sjme_jboolean sjme_memIo_atomicPointerCompareThenSet(
  * @since 2021/10/21
  */
 void* sjme_memIo_atomicPointerGet(sjme_memIo_atomicPointer* atomic)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /**
  * Reads an atomic pointer with the given type.
@@ -201,7 +201,7 @@ void* sjme_memIo_atomicPointerGet(sjme_memIo_atomicPointer* atomic)
  */
 void* sjme_memIo_atomicPointerSet(sjme_memIo_atomicPointer* atomic,
 	void* value)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /**
  * Sets an atomic pointer with the given type.

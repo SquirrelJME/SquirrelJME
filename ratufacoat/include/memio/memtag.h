@@ -215,7 +215,7 @@ sjme_jboolean sjme_memIo_taggedNewZ(sjme_memIo_tagGroup* group, void*** outPtr,
  */
 sjme_jboolean sjme_memIo_taggedFreeZ(void*** inPtr, sjme_error* error,
 	sjme_jsize protectA, sjme_jsize protectB)
-	SJME_CODE_SECTION("code.memio");
+	SJME_CODE_SECTION("memio");
 
 /**
  * Frees the memory tag and its resultant indirection is cleared as well.
