@@ -83,6 +83,12 @@ extern "C" {
 	#define SJME_HAS_SPARC
 #endif
 
+/* Synthetic long? */
+#if defined(__palmos__) && defined(__m68k__)
+	/** Synthetic long should be used. */
+	#define SJME_HAS_SYNTHETIC_LONG
+#endif
+
 /* Attempt detection of pointer sizes based on architecture? */
 #if (defined(__SIZEOF_POINTER__) && __SIZEOF_POINTER__ == 4) || \
 	defined(_ILP32) || defined(__ILP32__)
@@ -108,6 +114,20 @@ extern "C" {
 		/** Pointer size. */
 		#define SJME_POINTER 32
 	#endif
+#endif
+
+/* Is this a big endian system? */
+#if defined(__BIG_ENDIAN__) || defined(__ARMEB__) || defined(__THUMBEB__) || \
+	defined(__AARCH64EB__) || defined(_MIPSEB) || defined(__MIPSEB) || \
+	defined(__MIPSEB__) || \
+	(defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && \
+		__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__) || \
+	(defined(__palmos__) && defined(__m68k__))
+	/** Big Endian. */
+	#define SJME_ENDIAN_BIG
+#else
+	/** Little Endian. */
+	#define SJME_ENDIAN_LITTLE
 #endif
 
 /*--------------------------------------------------------------------------*/

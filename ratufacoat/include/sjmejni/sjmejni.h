@@ -72,11 +72,13 @@ extern "C" {
 	/** Unsigned Integer. */
 	typedef uint32_t sjme_juint;
 
-	/** Long. */
-	typedef int64_t sjme_jlong;
+	#if !defined(SJME_HAS_SYNTHETIC_LONG)
+		/** Long. */
+		typedef int64_t sjme_jlong;
 
-	/** Unsigned Long. */
-	typedef int64_t sjme_julong;
+		/** Unsigned Long. */
+		typedef int64_t sjme_julong;
+	#endif
 
 	/** Float. */
 	typedef float sjme_jfloat;
@@ -112,11 +114,13 @@ extern "C" {
 	/** Unsigned Integer. */
 	typedef unsigned __int32 sjme_juint;
 
-	/** Long. */
-	typedef signed __int64 sjme_jlong;
+	#if !defined(SJME_HAS_SYNTHETIC_LONG)
+		/** Long. */
+		typedef signed __int64 sjme_jlong;
 
-	/** Unsigned Long. */
-	typedef unsigned __int64 sjme_julong;
+		/** Unsigned Long. */
+		typedef unsigned __int64 sjme_julong;
+	#endif
 
 	/** Float. */
 	typedef float sjme_jfloat;
@@ -162,8 +166,86 @@ extern "C" {
 /** Aliased unsigned short type. */
 typedef sjme_jchar sjme_jushort;
 
+/* Alignment. */
+#if defined(SJME_FEATURE_C11)
+	#define SJME_ALIGN_POINTER alignas(void*)
+#else
+	#if defined(_MSC_VER)
+		#if SJME_POINTER == 64
+			/** Align field to pointer. */
+			#define SJME_ALIGN_POINTER __declspec(align(8))
+		#else
+			/** Align field to pointer. */
+			#define SJME_ALIGN_POINTER __declspec(align(4))
+		#endif
+	#elif defined(SJME_FEATURE_GCC)
+		#if SJME_POINTER == 64
+			/** Align field to pointer. */
+			#define SJME_ALIGN_POINTER __attribute__((aligned(8)))
+		#else
+			/** Align field to pointer. */
+			#define SJME_ALIGN_POINTER __attribute__((aligned(4)))
+		#endif
+	#endif
+#endif
+
+/** Fallback to nothing. */
+#if !defined(SJME_ALIGN_POINTER)
+	/** Align field to pointer. */
+	#define SJME_ALIGN_POINTER
+#endif
+
+/* Determine how to pack types? */
 #if defined(SJME_FEATURE_GCC)
-	typedef enum __attribute__((__packed__)) sjme_jboolean
+	/** Packed type. */
+	#define SJME_PACKED __attribute__((__packed__))
+#else
+	/** Packed type. */
+	#define SJME_PACKED
+#endif
+
+/* Synthetic long type, used when compiler lacks 64-bit type support? */
+#if defined(SJME_HAS_SYNTHETIC_LONG)
+	/** Long type. */
+	typedef struct SJME_PACKED sjme_jlong
+	{
+		#if defined(SJME_ENDIAN_BIG)
+		/** Upper bytes. */
+		sjme_jint hi;
+
+		/** Lower bytes. */
+		sjme_juint lo;
+		#else
+		/** Lower bytes. */
+		sjme_juint lo;
+
+		/** Upper bytes. */
+		sjme_jint hi;
+		#endif
+	} sjme_jong;
+
+	/** Unsigned long type. */
+	typedef struct SJME_PACKED sjme_julong
+	{
+		#if defined(SJME_ENDIAN_BIG)
+		/** Upper bytes. */
+		sjme_juint hi;
+
+		/** Lower bytes. */
+		sjme_juint lo;
+		#else
+		/** Lower bytes. */
+		sjme_juint lo;
+
+		/** Upper bytes. */
+		sjme_juint hi;
+		#endif
+	} sjme_juong;
+#endif
+
+/* Boolean type. */
+#if defined(SJME_FEATURE_GCC)
+	typedef enum SJME_PACKED sjme_jboolean
 	{
 		/** False. */
 		sjme_false = INT8_C(0),
@@ -179,43 +261,14 @@ typedef sjme_jchar sjme_jushort;
 	#define sjme_true INT8_C(1)
 
 	#if defined(SJME_HAS_STDINT_H)
-		/** Boolean. */
-		typedef uint8_t sjme_jboolean;
+/** Boolean. */
+typedef uint8_t sjme_jboolean;
 	#elif defined(SJME_FEATURE_MSVC)
-		/** Boolean. */
-		typedef unsigned __int8 sjme_jboolean;
+/** Boolean. */
+typedef unsigned __int8 sjme_jboolean;
 	#else
 		#error Unknown boolean type.
 	#endif
-#endif
-
-/* Alignment. */
-#if defined(SJME_FEATURE_C11)
-	#define SJME_ALIGN_POINTER alignas(void*)
-#else
-	#if defined(_MSC_VER)
-		#if SJME_POINTER == 64
-			/** Align field to pointer. */
-			#define SJME_ALIGN_POINTER __declspec(align(8))
-		#else
-			/** Align field to pointer. */
-			#define SJME_ALIGN_POINTER __declspec(align(4))
-		#endif
-	#elif defined(__GNUC__)
-		#if SJME_POINTER == 64
-			/** Align field to pointer. */
-			#define SJME_ALIGN_POINTER __attribute__((aligned(8)))
-		#else
-			/** Align field to pointer. */
-			#define SJME_ALIGN_POINTER __attribute__((aligned(4)))
-		#endif
-	#endif
-#endif
-
-/** Fallback to nothing. */
-#if !defined(SJME_ALIGN_POINTER)
-	/** Align field to pointer. */
-	#define SJME_ALIGN_POINTER
 #endif
 
 /** Interface version 1.1. */
