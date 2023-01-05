@@ -271,6 +271,15 @@ typedef unsigned __int8 sjme_jboolean;
 	#endif
 #endif
 
+/* Should the trailing struct array have an actual size? */
+#if defined(SJME_FEATURE_OLD_GCC)
+	/** Zero size array declaration. */
+	#define SJME_ZERO_SIZE_ARRAY 0
+#else
+	/** Zero size array declaration. */
+	#define SJME_ZERO_SIZE_ARRAY
+#endif
+
 /** Interface version 1.1. */
 #define SJME_INTERFACE_VERSION_1_1 INT32_C(0x00010001)
 

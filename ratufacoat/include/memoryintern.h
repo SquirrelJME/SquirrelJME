@@ -84,7 +84,7 @@ struct sjme_memNode
 	sjme_memIo_atomicPointer next;
 
 	/** The data stored within this node. */
-	sjme_jbyte bytes[];
+	sjme_jbyte bytes[SJME_ZERO_SIZE_ARRAY];
 };
 
 /*--------------------------------------------------------------------------*/

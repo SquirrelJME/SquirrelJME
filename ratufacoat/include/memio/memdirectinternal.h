@@ -46,7 +46,7 @@ typedef struct sjme_memIo_directChunk
 	sjme_jsize magic;
 
 	/** Data within the chunk, dynamically sized. */
-	SJME_ALIGN_POINTER sjme_jbyte data[];
+	SJME_ALIGN_POINTER sjme_jbyte data[SJME_ZERO_SIZE_ARRAY];
 } sjme_memIo_directChunk;
 
 /**

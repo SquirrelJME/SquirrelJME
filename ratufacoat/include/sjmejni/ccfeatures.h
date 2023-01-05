@@ -46,13 +46,20 @@ extern "C" {
 	#define SJME_FEATURE_MSVC
 
 	#if defined(_MSC_VER) && _MSC_VER >= 1600
+		/** MSVC has the <stdint.h> header. */
 		#define SJME_FEATURE_MSVC_HAS_STDINT
 	#endif
 #endif
 
 /* GCC. */
 #if defined(__GNUC__)
+	/** Using GCC. */
 	#define SJME_FEATURE_GCC
+
+	#if __GNUC__ <= 2
+		/** Old GCC is used. */
+		#define SJME_FEATURE_OLD_GCC
+	#endif
 #endif
 
 /* Is there <stdint.h>? */

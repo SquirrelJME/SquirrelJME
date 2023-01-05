@@ -104,7 +104,7 @@ typedef struct sjme_systemPropertySet
 	sjme_jint count;
 	
 	/** The defined system properties. */
-	sjme_systemProperty properties[];
+	sjme_systemProperty properties[SJME_ZERO_SIZE_ARRAY];
 } sjme_systemPropertySet;
 
 /**
