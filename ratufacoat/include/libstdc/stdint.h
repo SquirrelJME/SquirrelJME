@@ -58,9 +58,6 @@ extern "C" {
 	/** Unsigned Pointer. */
 	typedef uint32_t uintptr_t;
 
-	/** Size type. */
-	typedef uint32_t size_t;
-
 	/** Signed 8-bit constant. */
 	#define INT8_C(x) x
 
