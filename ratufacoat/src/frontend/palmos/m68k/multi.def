@@ -1,1 +1,3 @@
-multiple code { "debug", "error", "memio", "sjmejni" }
+application { "SquirrelJME" sJmE }
+
+multiple code { "debug" "error" "memio" "sjmejni" }
