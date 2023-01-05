@@ -178,7 +178,7 @@ typedef sjme_jchar sjme_jushort;
 			/** Align field to pointer. */
 			#define SJME_ALIGN_POINTER __declspec(align(4))
 		#endif
-	#elif defined(SJME_FEATURE_GCC)
+	#elif defined(SJME_FEATURE_GCC) && !defined(SJME_FEATURE_OLD_GCC)
 		#if SJME_POINTER == 64
 			/** Align field to pointer. */
 			#define SJME_ALIGN_POINTER __attribute__((aligned(8)))
