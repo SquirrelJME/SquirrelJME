@@ -100,7 +100,8 @@ if(SQUIRRELJME_HAS_BUILTIN)
 endif()
 
 # Use specific threading libraries?
-if(NOT CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
+if(NOT CMAKE_SYSTEM_NAME STREQUAL "ieee1275" AND
+	NOT CMAKE_SYSTEM_NAME STREQUAL "palmos")
 	# For compatibility for Windows, do not use pthreads even if available
 	find_package(Threads)
 	if(WIN32)

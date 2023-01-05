@@ -11,7 +11,8 @@
 find_package(PkgConfig)
 
 if (NOT SQUIRRELJME_ANCIENT AND
-	NOT CMAKE_SYSTEM_NAME STREQUAL "ieee1275")
+	NOT CMAKE_SYSTEM_NAME STREQUAL "ieee1275" AND
+	NOT CMAKE_SYSTEM_NAME STREQUAL "palmos")
 	set(SQUIRRELJME_ALLOW_SDL2 YES)
 	set(SQUIRRELJME_ALLOW_LIBRETRO YES)
 
@@ -62,4 +63,11 @@ else()
 endif()
 
 # IEEE1275: Open Firmware
-add_subdirectory(ieee1275)
+if(NOT SQUIRRELJME_ALLOW_PALMOS)
+	add_subdirectory(ieee1275)
+endif()
+
+# PalmOS
+if(SQUIRRELJME_ALLOW_PALMOS)
+	add_subdirectory(palmos)
+endif()
