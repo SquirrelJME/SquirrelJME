@@ -12,7 +12,8 @@ set(CMAKE_SYSTEM_NAME palmos)
 set(CMAKE_SYSTEM_PROCESSOR m68k)
 
 # Compilers to use
-find_program(CMAKE_ASM_COMPILER m68k-palmos-as)
+#find_program(CMAKE_ASM_COMPILER m68k-palmos-as)
+find_program(CMAKE_ASM_COMPILER m68k-palmos-gcc)
 find_program(CMAKE_C_COMPILER m68k-palmos-gcc)
 
 # Flags for compilation
