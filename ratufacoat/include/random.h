@@ -51,7 +51,7 @@ typedef struct sjme_randomState
  * @return If the RNG could not be seeded.
  * @since 2021/03/07
  */
-sjme_returnFail sjme_randomSeed(sjme_randomState* random, sjme_jlong seed,
+sjme_jboolean sjme_randomSeed(sjme_randomState* random, sjme_jlong seed,
 	sjme_error* error);
 
 /**
@@ -62,7 +62,7 @@ sjme_returnFail sjme_randomSeed(sjme_randomState* random, sjme_jlong seed,
  * @param error The error state.
  * @since 2021/03/07
  */
-sjme_returnFail sjme_randomNextBoolean(sjme_randomState* random,
+sjme_jboolean sjme_randomNextBoolean(sjme_randomState* random,
 	sjme_jboolean* out, sjme_error* error);
 
 /**
@@ -73,7 +73,7 @@ sjme_returnFail sjme_randomNextBoolean(sjme_randomState* random,
  * @param error The error state.
  * @since 2021/03/07
  */
-sjme_returnFail sjme_randomNextInt(sjme_randomState* random, sjme_jint* out,
+sjme_jboolean sjme_randomNextInt(sjme_randomState* random, sjme_jint* out,
 	sjme_error* error);
 
 /**
@@ -85,7 +85,7 @@ sjme_returnFail sjme_randomNextInt(sjme_randomState* random, sjme_jint* out,
  * @param error The error state.
  * @since 2021/03/07
  */
-sjme_returnFail sjme_randomNextBits(sjme_randomState* random, sjme_jint* out,
+sjme_jboolean sjme_randomNextBits(sjme_randomState* random, sjme_jint* out,
 	sjme_jint bits, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/

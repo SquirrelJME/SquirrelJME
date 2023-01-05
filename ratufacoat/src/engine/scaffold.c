@@ -25,11 +25,7 @@ sjme_jboolean sjme_engineDestroy(sjme_engineState* state, sjme_error* error)
 	sjme_jboolean isOkay = sjme_true;
 	
 	if (state == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Count down the pack to hopefully destroy it. */
 	if (state->romPack != NULL)
@@ -60,11 +56,7 @@ static sjme_jboolean sjme_engineEnterMain(sjme_engineState* engineState,
 	sjme_classPath* classPath;
 	
 	if (engineState == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Use specific main class and starting arguments. */
 	if (engineState->config.mainClass != NULL)
@@ -79,12 +71,7 @@ static sjme_jboolean sjme_engineEnterMain(sjme_engineState* engineState,
 		if (!sjme_packClassPathFromCharStar(engineState->romPack,
 			engineState->config.mainClassPath,
 			&classPath, error))
-		{
-			if (!sjme_hasError(error))
-				sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, 0);
-			
-			return sjme_false;
-		}
+			return sjme_keepErrorF(error, SJME_ERROR_INVALID_ARGUMENT, 0);
 	}
 	
 	/* Use built-in launcher. */
@@ -108,8 +95,7 @@ static sjme_jboolean sjme_engineEnterMain(sjme_engineState* engineState,
 		mainArgs = sjme_malloc(sizeof(*mainArgs), error);
 		if (mainArgs == NULL)
 		{
-			sjme_setError(error, SJME_ERROR_NO_MEMORY, 0);
-			return sjme_false;
+					return sjme_setErrorF(error, SJME_ERROR_NO_MEMORY, 0);
 		}
 		
 		/* Set no actual arguments used. */
@@ -140,11 +126,7 @@ sjme_jboolean sjme_engineNew(const sjme_engineConfig* inConfig,
 	
 	if (inConfig == NULL || outState == NULL ||
 		inConfig->frontBridge == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Allocate base. */
 	result = sjme_malloc(sizeof(*result), error);

@@ -19,11 +19,7 @@ sjme_jboolean sjme_classLoaderNew(sjme_classLoader** outLoader,
 	sjme_jint i;
 	
 	if (outLoader == NULL || classPath == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Allocate resultant structure. */
 	result = sjme_malloc(sizeof(*result), error);

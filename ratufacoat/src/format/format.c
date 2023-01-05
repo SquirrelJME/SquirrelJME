@@ -20,21 +20,13 @@ sjme_jboolean sjme_formatClose(const sjme_formatHandler* handler,
 	sjme_formatDestroyFunction destroyFunc;
 	
 	if (handler == NULL || instance == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Format instance. */
 	formatInstance = &sjme_unoffsetof(sjme_formatInstance,
 		handler->instanceOffsetOfFormat, instance);
 	if (formatInstance == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_FORMAT_STATE, 1);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_INVALID_FORMAT_STATE, 1);
 	
 	/* Perform destruction, if available. */
 	destroyFunc = sjme_unoffsetof(sjme_formatDestroyFunction,

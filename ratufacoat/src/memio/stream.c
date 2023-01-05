@@ -19,11 +19,7 @@ static sjme_jboolean sjme_memStreamCollect(sjme_counter* counter,
 	sjme_jboolean isOkay;
 	
 	if (counter == NULL || counter->dataPointer == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Get the stream. */
 	stream = counter->dataPointer;
@@ -47,18 +43,10 @@ static sjme_jboolean sjme_memStreamRead(sjme_dataStream* stream,
 	
 	if (stream == NULL || dest == NULL || readLen == NULL ||
 		stream->streamSource == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	if (len < 0)
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, len);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_INVALID_ARGUMENT, len);
 	
 	/* We need this chunk. */
 	memChunk = stream->streamSource;
@@ -88,11 +76,7 @@ static sjme_jboolean sjme_memStreamRead(sjme_dataStream* stream,
 			copyLimit, error) ||
 		!sjme_chunkRealPointer(memChunk, startRead,
 			&realPointer, error))
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_STREAM_STATE, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_INVALID_STREAM_STATE, 0);
 	
 	/* Copy as many bytes as we can over. */
 	memmove(dest, realPointer, copyLimit);
@@ -112,11 +96,7 @@ sjme_jboolean sjme_streamFromChunkCounted(sjme_dataStream** outStream,
 	sjme_dataStream* result;
 	
 	if (outStream == NULL || chunk == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* This needs to be allocated. */
 	result = sjme_malloc(sizeof(*result), error);
@@ -146,25 +126,13 @@ sjme_jboolean sjme_streamRead(sjme_dataStream* stream,
 	void* dest, sjme_jint len, sjme_jint* readLen, sjme_error* error)
 {
 	if (stream == NULL || dest == NULL || readLen == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	if (len < 0)
-	{
-		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_OUT_OF_BOUNDS, 0);
 	
 	if (stream->readFunction == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_STREAM_STATE, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_INVALID_STREAM_STATE, 0);
 	
 	/* Forward to the general read. */
 	return stream->readFunction(stream, dest, len, readLen, error);

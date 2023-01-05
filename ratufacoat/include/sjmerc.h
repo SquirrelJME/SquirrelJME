@@ -335,23 +335,6 @@ typedef enum sjme_jboolean
 #endif
 
 /**
- * Marker that indicates that a method returns failure.
- *
- * Will be one of @code SJME_RETURN_SUCCESS @endcode or
- * @code SJME_RETURN_FAIL @endcode.
- * 
- * @since 2021/02/27
- */
-typedef enum sjme_returnFail
-{
-	/** Method success. @typedef sjme_returnFail. */
-	SJME_RETURN_SUCCESS = 0,
-	
-	/** Method failure. @typedef sjme_returnFail. */
-	SJME_RETURN_FAIL = 1,
-} sjme_returnFail;
-
-/**
  * Marker indicating that the method never returns.
  * 
  * @since 2021/02/28

@@ -18,17 +18,11 @@ sjme_jboolean sjme_detectMagicNumber(const void* data, sjme_jint size,
 	
 	/* Check parameters first. */
 	if (data == NULL || size < 0)
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, 0);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_INVALID_ARGUMENT, 0);
 	
 	/* Too small to read from? */
 	if (size < 4)
-	{
-		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, size);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_OUT_OF_BOUNDS, size);
 	
 	/* Is this the magic for this format? */
 	val = sjme_memReadBigInt(data, 0);
@@ -49,10 +43,7 @@ sjme_jboolean sjme_detectFormat(const void* data, sjme_jint size,
 	/* Check arguments. */
 	if (data == NULL || size <= 0 || outDriver == NULL || choices == NULL ||
 		offsetOfDetect < 0)
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, 0);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_INVALID_ARGUMENT, 0);
 	
 	/* Scan through all of the drivers to find the one that matches. */
 	for (i = 0;; i++)
@@ -77,6 +68,5 @@ sjme_jboolean sjme_detectFormat(const void* data, sjme_jint size,
 	}
 	
 	/* Not found. */
-	sjme_setError(error, SJME_ERROR_DRIVER_NOT_FOUND, 0);
-	return sjme_false;
+			return sjme_setErrorF(error, SJME_ERROR_DRIVER_NOT_FOUND, 0);
 }

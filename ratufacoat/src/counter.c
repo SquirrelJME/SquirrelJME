@@ -18,11 +18,7 @@ sjme_jboolean sjme_counterDown(sjme_counter* counter, sjme_jboolean* outActive,
 	sjme_jint oldValue;
 	
 	if (counter == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Reduce the value then check for consistency. */
 	oldValue = sjme_memIo_atomicIntGetThenAdd(&counter->count, -1);
@@ -72,11 +68,7 @@ sjme_jboolean sjme_counterInit(sjme_counter* counter,
 	sjme_jint oldCount;
 	
 	if (counter == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* The initial count should always be zero! */
 	oldCount = sjme_memIo_atomicIntGetThenAdd(&counter->count, 1);
@@ -105,11 +97,7 @@ sjme_jboolean sjme_counterUp(sjme_counter* counter, sjme_error* error)
 	sjme_jint oldCount;
 	
 	if (counter == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Count up! Ensure the counter is not in an invalid state. */
 	oldCount = sjme_memIo_atomicIntGetThenAdd(&counter->count, 1);

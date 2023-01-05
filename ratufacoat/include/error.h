@@ -74,7 +74,53 @@ sjme_errorCode sjme_getError(sjme_error* error, sjme_errorCode ifMissing);
  * @return If there is an error present or not.
  * @since 2021/03/04
  */
-sjme_returnFail sjme_hasError(sjme_error* error);
+sjme_jboolean sjme_hasError(sjme_error* error);
+
+/**
+ * Keeps the error code if one has previously been set, otherwise sets it and
+ * returns a boolean.
+ *
+ * @param returning The error code to return.
+ * @param error The error to set.
+ * @param code The error code.
+ * @param value The error value.
+ * @param file The source file.
+ * @param line The source line.
+ * @param function The source function.
+ * @return Return @c returning.
+ * @since 2023/01/05
+ */
+sjme_jboolean sjme_keepErrorBL(sjme_jboolean returning, sjme_error* error,
+	sjme_errorCode code, sjme_jint value, const char* file, int line,
+	const char* function);
+
+/**
+ * Keeps the error code if one has previously been set, otherwise sets it
+ * using the current source position and returns a boolean.
+ *
+ * @param returning The boolean value to return.
+ * @param error The error to set.
+ * @param code The error code.
+ * @param value The error value.
+ * @return Returns @c returning.
+ * @since 2023/01/05
+ */
+#define sjme_keepErrorB(returning, error, code, value) \
+	sjme_keepErrorBL(returning, (error), (code), (value), __FILE__, __LINE__, \
+	__func__)
+
+/**
+ * Keeps the error code if one has previously been set, otherwise sets it
+ * using the current source position and returns @c sjme_false.
+ *
+ * @param error The error to set.
+ * @param code The error code.
+ * @param value The error value.
+ * @return Returns @c sjme_false.
+ * @since 2023/01/05
+ */
+#define sjme_keepErrorF(error, code, value) \
+    sjme_keepErrorB(sjme_false, (error), (code), (value))
 
 /**
  * Sets the error code.
@@ -119,7 +165,7 @@ sjme_jboolean sjme_setErrorBL(sjme_jboolean returning, sjme_error* error,
  * @since 2019/06/25
  */
 #define sjme_setError(error, code, value) \
-	sjme_setErrorL(error, code, value, __FILE__, __LINE__, __func__)
+	sjme_setErrorL((error), (code), (value), __FILE__, __LINE__, __func__)
 
 /**
  * Sets the error code using the current source position and returns a boolean.
@@ -132,7 +178,7 @@ sjme_jboolean sjme_setErrorBL(sjme_jboolean returning, sjme_error* error,
  * @since 2022/12/19
  */
 #define sjme_setErrorB(returning, error, code, value) \
-	sjme_setErrorBL(returning, error, code, value, __FILE__, __LINE__, \
+	sjme_setErrorBL(returning, (error), (code), (value), __FILE__, __LINE__, \
 		__func__)
 
 /**
@@ -146,8 +192,7 @@ sjme_jboolean sjme_setErrorBL(sjme_jboolean returning, sjme_error* error,
  * @since 2022/12/19
  */
 #define sjme_setErrorF(error, code, value) \
-	sjme_setErrorBL(sjme_false, error, code, value, __FILE__, __LINE__, \
-		__func__)
+	sjme_setErrorB(sjme_false, (error), (code), (value))
 
 /*--------------------------------------------------------------------------*/
 

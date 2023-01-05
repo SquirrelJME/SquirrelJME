@@ -67,11 +67,7 @@ sjme_jboolean sjme_lock(sjme_spinLock* lock, sjme_spinLockKey* key,
 	sjme_jint useKey;
 	
 	if (lock == NULL || key == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Get the next locking key to use. */
 	useKey = sjme_memIo_atomicIntGetThenAdd(&sjme_nextLockKey, 1) + 1;
@@ -91,11 +87,7 @@ sjme_jboolean sjme_tryLock(sjme_spinLock* lock, sjme_spinLockKey* key,
 	sjme_jint useKey;
 	
 	if (lock == NULL || key == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Get the next locking key to use. */
 	useKey = sjme_memIo_atomicIntGetThenAdd(&sjme_nextLockKey, 1) + 1;
@@ -115,11 +107,7 @@ sjme_jboolean sjme_unlock(sjme_spinLock* lock, sjme_spinLockKey* key,
 	sjme_jint useKey;
 	
 	if (lock == NULL || key == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Make sure the unlocking key is valid before we try using it. */
 	useKey = key->key;

@@ -56,36 +56,19 @@ static sjme_jboolean sjme_libraryWrapChunkToStream(
 	sjme_countableMemChunk* outChunk;
 	
 	if (libInstance == NULL || outStream == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	if (index < 0 || index >= libInstance->numEntries)
-	{
-		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, index);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_OUT_OF_BOUNDS, index);
 	
 	/* No ability to read chunks? Do not infinite recurse, just fail here. */
 	if (libInstance->driver->entryChunk == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NOT_IMPLEMENTED, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NOT_IMPLEMENTED, 0);
 	
 	/* Open memory chunk to the entry data. */
 	outChunk = NULL;
 	if (!libInstance->driver->entryChunk(libInstance, &outChunk, index, error))
-	{
-		if (!sjme_hasError(error))
-			sjme_setError(error, SJME_ERROR_INVALID_JAR_FILE, index);
-		
-		return sjme_false;
-	}
+		return sjme_keepErrorF(error, SJME_ERROR_INVALID_JAR_FILE, index);
 	
 	/* Wrap the chunk accordingly. */
 	return sjme_streamFromChunkCounted(outStream, outChunk, 0,
@@ -107,26 +90,14 @@ static sjme_jboolean sjme_libraryWrapStreamToChunk(
 	sjme_jint index, sjme_error* error)
 {
 	if (libInstance == NULL || outChunk == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	if (index < 0 || index >= libInstance->numEntries)
-	{
-		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, index);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_OUT_OF_BOUNDS, index);
 	
 	/* No ability to read streams? Do not infinite recurse, just fail here. */
 	if (libInstance->driver->entryStream == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NOT_IMPLEMENTED, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NOT_IMPLEMENTED, 0);
 	
 	sjme_todo("Implement this?");
 	
@@ -145,11 +116,7 @@ static sjme_jboolean sjme_libraryCollect(sjme_counter* counter,
 	sjme_error* error)
 {
 	if (counter == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	return sjme_libraryClose(counter->dataPointer, error);
 }
@@ -162,11 +129,7 @@ sjme_jboolean sjme_libraryClose(sjme_libraryInstance* instance,
 	sjme_jboolean closeOkay;
 	
 	if (instance == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Perform initial close of library. */
 	packOwner = instance->packOwner;
@@ -206,18 +169,10 @@ sjme_jboolean sjme_libraryEntryChunk(sjme_libraryInstance* libInstance,
 	sjme_countableMemChunk** outChunk, sjme_jint index, sjme_error* error)
 {
 	if (libInstance == NULL || outChunk == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	if (index < 0 || index >= libInstance->numEntries)
-	{
-		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, index);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_OUT_OF_BOUNDS, index);
 	
 	/* If not supported, go through a wrapper to get this entry. */
 	if (libInstance->driver->entryChunk == NULL)
@@ -233,18 +188,10 @@ sjme_jboolean sjme_libraryEntryStream(sjme_libraryInstance* libInstance,
 	sjme_dataStream** outStream, sjme_jint index, sjme_error* error)
 {
 	if (libInstance == NULL || outStream == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	if (index < 0 || index >= libInstance->numEntries)
-	{
-		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, index);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_OUT_OF_BOUNDS, index);
 	
 	/* If not supported, go through a wrapper to get this entry. */
 	if (libInstance->driver->entryStream == NULL)

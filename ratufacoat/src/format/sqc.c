@@ -42,11 +42,7 @@ sjme_jboolean sjme_sqcDestroy(sjme_sqcState* sqcInstancePtr,
 	sjme_error* error)
 {
 	if (sqcInstancePtr == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Finished destruction. */
 	return sjme_true;
@@ -56,19 +52,11 @@ sjme_jboolean sjme_sqcGetProperty(const sjme_sqcState* sqcState,
 	sjme_jint index, sjme_jint* out, sjme_error* error)
 {
 	if (sqcState == NULL || out == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Is the read in bounds? */
 	if (index < 0 || index >= sqcState->numProperties)
-	{
-		sjme_setError(error, SJME_ERROR_OUT_OF_BOUNDS, index);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_OUT_OF_BOUNDS, index);
 	
 	/* Read in the property. */
 	return sjme_chunkReadBigInt(sqcState->chunk,
@@ -84,24 +72,15 @@ sjme_jboolean sjme_sqcGetPropertyIntegers(const sjme_sqcState* sqcState,
 	sjme_jint at, bigValue;
 	
 	if (sqcState == NULL || intFunction == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	if (count < 0)
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, count);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_INVALID_ARGUMENT, count);
 	
 	/* Get the base pointer where integers are. */
 	seeker = NULL;
 	if (!sjme_sqcGetPropertyPtr(sqcState, index, (void**)&seeker, error))
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_INVALID_PACK_FILE, 0);
 	
 	/* Perform function for every integer value. */
 	for (at = 0; at < count; at++)
@@ -109,11 +88,7 @@ sjme_jboolean sjme_sqcGetPropertyIntegers(const sjme_sqcState* sqcState,
 		/* Perform the function call. */
 		bigValue = *seeker;
 		if (!intFunction(proxy, data, at, sjme_bigInt(bigValue), error))
-		{
-			if (!sjme_hasError(error))
-				sjme_setError(error, SJME_ERROR_INVALID_FUNCTIONAL, at);
-			return sjme_false;
-		}
+			return sjme_keepErrorF(error, SJME_ERROR_INVALID_FUNCTIONAL, at);
 		
 		/* Move the seeker up. */
 		seeker = SJME_POINTER_OFFSET_LONG(seeker, sizeof(sjme_jint));
@@ -135,10 +110,7 @@ sjme_jboolean sjme_sqcGetPropertyPtr(const sjme_sqcState* sqcState,
 	
 	/* Make sure the value is within the SQC chunk. */
 	if (val < 0 || val >= sqcState->chunk->size)
-	{
-		sjme_setError(error, SJME_ERROR_BADADDRESS, val);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_BADADDRESS, val);
 	
 	/* Calculate offset. */
 	*out = SJME_POINTER_OFFSET_LONG(sqcState->chunk->data, val);
@@ -153,10 +125,7 @@ sjme_jboolean sjme_sqcGetPropertyStrings(const sjme_sqcState* sqcState,
 	sjme_utfString* seeker;
 	
 	if (count < 0)
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, count);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_INVALID_ARGUMENT, count);
 	
 	/* Pointless? */
 	if (count == 0)
@@ -197,10 +166,7 @@ sjme_jboolean sjme_sqcInit(sjme_formatInstance* formatInstance,
 	
 	/* Check. */
 	if (sqcState == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Read version info. */
 	if (!sjme_chunkReadBigShort(&formatInstance->chunk,
@@ -241,11 +207,7 @@ sjme_jboolean sjme_sqcInitToc(const sjme_sqcState* sqcState,
 	sjme_jshort tocTocSpan;
 	
 	if (sqcState == NULL || outToc == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Get the properties to determine where our actual TOC exists. */
 	sqcTocCount = sqcTocOffset = sqcTocSize = -1;
@@ -255,31 +217,19 @@ sjme_jboolean sjme_sqcInitToc(const sjme_sqcState* sqcState,
 			&sqcTocOffset, error) ||
 		!sjme_sqcGetProperty(sqcState, pdxSize,
 			&sqcTocSize, error))
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 1);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_INVALID_PACK_FILE, 1);
 	
 	/* Get the chunk region where the TOC exists. */
 	if (!sjme_chunkSubChunk(sqcState->chunk, &outToc->chunk,
 		sqcTocOffset, sqcTocSize, error))
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 1);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_INVALID_PACK_FILE, 1);
 	
 	/* Read the actual count and span the TOC gives us. */
 	if (!sjme_chunkReadBigShort(&outToc->chunk, SQC_TOC_COUNT_OFFSET,
 			&tocTocCount, error) ||
 		!sjme_chunkReadBigShort(&outToc->chunk, SQC_TOC_SPAN_OFFSET,
 			&tocTocSpan, error))
-	{
-		sjme_setError(error, SJME_ERROR_CORRUPT_TOC, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_CORRUPT_TOC, 0);
 	
 	/* These values are unsigned. */
 	outToc->numEntries = tocTocCount & SJME_JINT_C(0xFFFF);
@@ -290,11 +240,7 @@ sjme_jboolean sjme_sqcInitToc(const sjme_sqcState* sqcState,
 		sqcTocSize != (SQC_TOC_ENTRY_BASE_OFFSET +
 			(SQC_TOC_ENTRY_SIZE * outToc->numEntries * outToc->span)) ||
 		((sqcTocSize % 4) != 0))
-	{
-		sjme_setError(error, SJME_ERROR_CORRUPT_TOC, 1);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_CORRUPT_TOC, 1);
 	
 	/* Everything is okay! */
 	return sjme_true;
@@ -304,11 +250,7 @@ sjme_jboolean sjme_sqcTocGet(const sjme_sqcToc* sqcToc, sjme_jint* outValue,
 	sjme_jint rowIndex, sjme_jint itemInSpan, sjme_error* error)
 {
 	if (sqcToc == NULL || outValue == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Reading an invalid item? */
 	if (rowIndex < 0 || itemInSpan < 0 ||

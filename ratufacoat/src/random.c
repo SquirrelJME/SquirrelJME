@@ -10,7 +10,7 @@
 #include "debug.h"
 #include "random.h"
 
-sjme_returnFail sjme_randomSeed(sjme_randomState* random, sjme_jlong seed,
+sjme_jboolean sjme_randomSeed(sjme_randomState* random, sjme_jlong seed,
 	sjme_error* error)
 {
 	sjme_todo("Fix this");
@@ -20,7 +20,7 @@ sjme_returnFail sjme_randomSeed(sjme_randomState* random, sjme_jlong seed,
 	if (random == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		return SJME_RETURN_FAIL;
+		return sjme_false;
 	}
 	
 	/* Wipe the random state. */
@@ -31,11 +31,11 @@ sjme_returnFail sjme_randomSeed(sjme_randomState* random, sjme_jlong seed,
 	random->seed.hi = (seed.hi ^ SJME_JINT_C(0x00000005)) & 0xFFFF;
 	random->seed.lo = (seed.lo ^ SJME_JINT_C(0xDEECE66D));
 		
-	return SJME_RETURN_SUCCESS;
+	return sjme_true;
 #endif
 }
 
-sjme_returnFail sjme_randomNextBoolean(sjme_randomState* random,
+sjme_jboolean sjme_randomNextBoolean(sjme_randomState* random,
 	sjme_jboolean* out, sjme_error* error)
 {
 	sjme_jint val;
@@ -43,22 +43,18 @@ sjme_returnFail sjme_randomNextBoolean(sjme_randomState* random,
 	if (out == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		return SJME_RETURN_FAIL;
+		return sjme_false;
 	}
 	
 	/* Get next value. */
 	if (sjme_randomNextBits(random, &val, 1, error))
-	{
-		if (!sjme_hasError(error))
-			sjme_setError(error, SJME_ERROR_COULD_NOT_SEED, 0);
-		return SJME_RETURN_FAIL;
-	}
+		return sjme_keepErrorF(error, SJME_ERROR_COULD_NOT_SEED, 0);
 	
 	*out = (val != 0 ? sjme_true : sjme_false);
-	return SJME_RETURN_SUCCESS;
+	return sjme_true;
 }
 
-sjme_returnFail sjme_randomNextInt(sjme_randomState* random, sjme_jint* out,
+sjme_jboolean sjme_randomNextInt(sjme_randomState* random, sjme_jint* out,
 	sjme_error* error)
 {
 	sjme_jint val;
@@ -66,22 +62,18 @@ sjme_returnFail sjme_randomNextInt(sjme_randomState* random, sjme_jint* out,
 	if (out == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		return SJME_RETURN_FAIL;
+		return sjme_false;
 	}
 	
 	/* Get next value. */
 	if (sjme_randomNextBits(random, &val, 32, error))
-	{
-		if (!sjme_hasError(error))
-			sjme_setError(error, SJME_ERROR_COULD_NOT_SEED, 0);
-		return SJME_RETURN_FAIL;
-	}
+		return sjme_keepErrorF(error, SJME_ERROR_COULD_NOT_SEED, 0);
 	
 	*out = val;
-	return SJME_RETURN_SUCCESS;
+	return sjme_true;
 }
 
-sjme_returnFail sjme_randomNextBits(sjme_randomState* random, sjme_jint* out,
+sjme_jboolean sjme_randomNextBits(sjme_randomState* random, sjme_jint* out,
 	sjme_jint bits, sjme_error* error)
 {
 	sjme_todo("Fix this");
@@ -94,14 +86,14 @@ sjme_returnFail sjme_randomNextBits(sjme_randomState* random, sjme_jint* out,
 	if (random == NULL || out == NULL)
 	{
 		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		return SJME_RETURN_FAIL;
+		return sjme_false;
 	}
 	
 	/* Must be in 32-bit range. */
 	if (bits < 0 || bits > 32)
 	{
 		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, bits);
-		return SJME_RETURN_FAIL;
+		return sjme_false;
 	}
 	
 	/* long seed = (this._seed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1); */
@@ -125,6 +117,6 @@ sjme_returnFail sjme_randomNextBits(sjme_randomState* random, sjme_jint* out,
 	else
 		*out = (seed.hi << (32 - sh)) | sjme_ushrInt(seed.lo, sh);
 	
-	return SJME_RETURN_SUCCESS;
+	return sjme_true;
 #endif
 }

@@ -24,11 +24,7 @@ static sjme_jboolean sjme_springCoat_initEngine(
 	sjme_engineState* partialEngine, sjme_error* error)
 {
 	if (partialEngine == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Currently, nothing need be done. */
 	return sjme_true;
@@ -49,11 +45,7 @@ static sjme_jboolean sjme_springCoat_isAvailable(
 {
 	if (partialEngine == NULL ||
 		partialEngine->romPack == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* If this was not flagged or is specifically marked as a SpringCoat
 	 * library, then use it. */

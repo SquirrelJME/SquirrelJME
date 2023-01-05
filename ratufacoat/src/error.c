@@ -29,11 +29,23 @@ sjme_errorCode sjme_getError(sjme_error* error, sjme_errorCode ifMissing)
 	return ifMissing;
 }
 
-sjme_returnFail sjme_hasError(sjme_error* error)
+sjme_jboolean sjme_hasError(sjme_error* error)
 {
 	if (error != NULL && error->code != SJME_ERROR_NONE)
-		return SJME_RETURN_FAIL;
-	return SJME_RETURN_SUCCESS;
+		return sjme_false;
+	return sjme_true;
+}
+
+sjme_jboolean sjme_keepErrorBL(sjme_jboolean returning, sjme_error* error,
+	sjme_errorCode code, sjme_jint value, const char* file, int line,
+	const char* function)
+{
+	/* Forward, if there is no error code already. */
+	if (!sjme_hasError(error))
+		sjme_setErrorL(error, code, value, file, line, function);
+
+	/* Then return this boolean. */
+	return returning;
 }
 
 sjme_errorCode sjme_setErrorL(sjme_error* error, sjme_errorCode code,

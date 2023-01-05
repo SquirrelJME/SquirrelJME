@@ -14,10 +14,7 @@ sjme_jboolean sjme_testStubStdFileOpen(sjme_standardPipeType stdPipe,
 	sjme_file** outFile, sjme_error* error)
 {
 	if (outFile == NULL || error == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Standard input is a bit different. */
 	if (stdPipe == SJME_STANDARD_PIPE_STDIN)

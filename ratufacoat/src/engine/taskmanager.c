@@ -141,11 +141,7 @@ static sjme_jboolean sjme_taskManagerPipeInit(sjme_pipeRedirectType stdInMode,
 sjme_jboolean sjme_engineTaskDestroy(sjme_engineTask* task, sjme_error* error)
 {
 	if (task == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	sjme_todo("Implement this?");
 	return sjme_false;
@@ -165,18 +161,12 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	if (engineState == NULL || classPath == NULL || mainClass == NULL ||
 		mainArgs == NULL || outTask == NULL ||
 		outMainThread == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	if (stdInMode < 0 || stdInMode >= SJME_NUM_PIPE_REDIRECTS ||
 		stdOutMode < 0 || stdOutMode >= SJME_NUM_PIPE_REDIRECTS ||
 		stdErrMode < 0 || stdErrMode >= SJME_NUM_PIPE_REDIRECTS)
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, 0);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_INVALID_ARGUMENT, 0);
 	
 	/* If there are no system properties, just include nothing. */
 	if (sysProps == NULL)
@@ -196,10 +186,7 @@ sjme_jboolean sjme_engineTaskNew(sjme_engineState* engineState,
 	/* Try to allocate the resultant object first. */
 	createdTask = sjme_malloc(sizeof(*createdTask), error);
 	if (createdTask == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NO_MEMORY, 0);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NO_MEMORY, 0);
 	
 	/* Setup class path for our set of classes. */
 	if (!sjme_classLoaderNew(&createdTask->classLoader,

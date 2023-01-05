@@ -180,11 +180,7 @@ static sjme_jboolean sjme_crcInitInternal(sjme_crcState* outCrcState,
 	sjme_error* error)
 {
 	if (outCrcState == NULL || crcTable == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Clear the initial state. */
 	memset(outCrcState, 0, sizeof(*outCrcState));
@@ -225,11 +221,7 @@ sjme_jboolean sjme_crcChecksum(sjme_crcState* crcState,
 	sjme_juint* outChecksum, sjme_error* error)
 {
 	if (crcState == NULL || outChecksum == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Return the calculated checksum with any reflections accordingly. */
 	*outChecksum = (crcState->reflectRemainder ?
@@ -253,11 +245,7 @@ sjme_jboolean sjme_crcOfferChunk(sjme_crcState* crcState,
 	void* realPointer;
 	
 	if (crcState == NULL || chunk == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Has to be within bounds! */
 	realPointer = NULL;
@@ -284,18 +272,10 @@ sjme_jboolean sjme_crcOfferDirect(sjme_crcState* crcState,
 	const sjme_juint *crcTable;
 	
 	if (crcState == NULL || data == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	if (len < 0)
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, len);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_INVALID_ARGUMENT, len);
 	
 	/* Setup state. */
 	uData = data;
@@ -332,18 +312,10 @@ sjme_jboolean sjme_crcOfferStream(sjme_crcState* crcState,
 	sjme_jint bufRead, readLimit, readTotal;
 	
 	if (crcState == NULL || stream == NULL || readLen == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	if (len < 0)
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, len);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_INVALID_ARGUMENT, len);
 	
 	/* Continuously pump bytes in until EOF. */
 	readTotal = 0;

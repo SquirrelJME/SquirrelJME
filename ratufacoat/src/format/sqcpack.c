@@ -144,22 +144,14 @@ sjme_jboolean sjme_sqcPackLocateChunk(sjme_packInstance* instance,
 	sjme_jint jarSize;
 	
 	if (instance == NULL || outChunk == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* We need this one. */
 	pack = instance->state;
 	
 	/* Out of bounds? */
 	if (index < 0 || index >= instance->numLibraries)
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_ARGUMENT, index);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_INVALID_ARGUMENT, index);
 	
 	/* Read the position of the JAR. */
 	jarOffset = jarSize = -1;
@@ -167,19 +159,11 @@ sjme_jboolean sjme_sqcPackLocateChunk(sjme_packInstance* instance,
 			SJME_TOC_PACK_OFFSET_DATA_INDEX, error) ||
 		!sjme_sqcTocGet(&pack->libToc, &jarSize, index,
 			SJME_TOC_PACK_SIZE_DATA_INDEX, error))
-	{
-		sjme_setError(error, SJME_ERROR_CORRUPT_PACK_ENTRY, 1);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_CORRUPT_PACK_ENTRY, 1);
 	
 	/* Is this an impossibly placed JAR? */
 	if (jarOffset < 0 || jarSize < 0)
-	{
-		sjme_setError(error, SJME_ERROR_CORRUPT_PACK_ENTRY, 2);
-		
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_CORRUPT_PACK_ENTRY, 2);
 	
 	/* Get the chunk where the entry belongs. */
 	return sjme_chunkSubChunk(pack->sqcState.chunk, outChunk,
@@ -203,10 +187,7 @@ static sjme_jboolean sjme_sqcPackQueryLauncherArgs(sjme_packInstance* instance,
 	sjme_jint count;
 	
 	if (instance == NULL || outArgs == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Get the pack state. */
 	sqcPackState = instance->state;
@@ -216,28 +197,19 @@ static sjme_jboolean sjme_sqcPackQueryLauncherArgs(sjme_packInstance* instance,
 	if (!sjme_sqcGetProperty(&sqcPackState->sqcState,
 		SJME_PACK_COUNT_LAUNCHER_ARGS_INDEX, &count, error) ||
 		count < 0)
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_INVALID_PACK_FILE, 0);
 	
 	/* Allocate output. */
 	result = sjme_malloc(SJME_SIZEOF_MAIN_ARGS(count), error);
 	if (result == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NO_MEMORY, 0);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NO_MEMORY, 0);
 	
 	/* Read the strings in. */
 	result->count = count;
 	if (!sjme_sqcGetPropertyStrings(&sqcPackState->sqcState,
 		SJME_PACK_STRINGS_LAUNCHER_ARGS_INDEX, count,
 		&result->args, error))
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 1);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_INVALID_PACK_FILE, 1);
 	
 	/* Use what we calculated! */
 	*outArgs = result;
@@ -260,10 +232,7 @@ static sjme_jboolean sjme_sqcPackQueryLauncherClass(
 	sjme_sqcPackState* sqcPackState;
 	
 	if (instance == NULL || outMainClass == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Get the pack state. */
 	sqcPackState = instance->state;
@@ -272,10 +241,7 @@ static sjme_jboolean sjme_sqcPackQueryLauncherClass(
 	if (!sjme_sqcGetPropertyPtr(&sqcPackState->sqcState, 
 		SJME_PACK_STRING_LAUNCHER_MAIN_CLASS_INDEX,
 			(void**)outMainClass, error))
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_INVALID_PACK_FILE, 0);
 	
 	/* Read okay. */
 	return sjme_true;
@@ -299,10 +265,7 @@ static sjme_jboolean sjme_sqcPackQueryLauncherClassPath(
 	sjme_jint count, at;
 	
 	if (instance == NULL || outClassPath == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NULLARGS, 0);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Get the pack state. */
 	sqcPackState = instance->state;
@@ -312,18 +275,12 @@ static sjme_jboolean sjme_sqcPackQueryLauncherClassPath(
 	if (!sjme_sqcGetProperty(&sqcPackState->sqcState,
 		SJME_PACK_COUNT_LAUNCHER_CLASSPATH, &count, error) ||
 		count < 0)
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_INVALID_PACK_FILE, 0);
 	
 	/* Allocate result. */
 	result = sjme_malloc(SJME_SIZEOF_CLASS_PATH(count), error);
 	if (result == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NO_MEMORY, count);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_NO_MEMORY, count);
 	
 	/* Read in and map class path values. */
 	result->count = count;
@@ -331,10 +288,7 @@ static sjme_jboolean sjme_sqcPackQueryLauncherClassPath(
 		SJME_PACK_INTEGERS_LAUNCHER_CLASSPATH, count,
 		(sjme_integerFunction)sjme_packClassPathMapper,
 		instance, result, error))
-	{
-		sjme_setError(error, SJME_ERROR_INVALID_PACK_FILE, 0);
-		return sjme_false;
-	}
+		return sjme_setErrorF(error, SJME_ERROR_INVALID_PACK_FILE, 0);
 	
 	/* Use these! */
 	*outClassPath = result;
