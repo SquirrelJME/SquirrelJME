@@ -120,11 +120,11 @@ if(MSVC)
 	string(REGEX REPLACE "/W[3|4]" "/W4" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 	string(REGEX REPLACE "/W[3|4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-	add_compile_options(-Wall -pedantic -pedantic-errors)
+	add_compile_options(-Wall)
 
 	# Only supported on newer compilers
 	if(CMAKE_C_COMPILER_VERSION VERSION_GREATER_EQUAL 3.0)
-		add_compile_options(-Wextra)
+		add_compile_options(-Wextra -pedantic -pedantic-errors)
 	endif()
 endif()
 
