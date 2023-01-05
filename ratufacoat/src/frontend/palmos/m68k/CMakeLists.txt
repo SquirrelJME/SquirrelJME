@@ -27,3 +27,6 @@ add_executable(SquirrelJMEPalmOsM68k
 # The ELF is not used at all, but it gets turned into a bunch of objects
 set_target_properties(SquirrelJMEPalmOsM68k PROPERTIES
 	OUTPUT_NAME "squirreljme.elf")
+
+# Common C Directives
+squirreljme_common_c(SquirrelJMEPalmOsM68k)
