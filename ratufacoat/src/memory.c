@@ -168,54 +168,6 @@ void* sjme_mallocGc(sjme_jint size, sjme_freeCallback freeCallback,
 	return &result->bytes;
 }
 
-void* sjme_realloc(void* ptr, sjme_jint size, sjme_error* error)
-{
-	sjme_todo("Implement this?");
-	return NULL;
-#if 0
-	void* rv;
-	sjme_jint oldSize;
-	
-	/* These will never allocate. */
-	if (size <= 0)
-	{
-		/* Free pointer? */
-		if (ptr != NULL)
-			sjme_free(ptr, NULL);
-		
-		/* Considered an error. */
-		if (size < 0)
-			sjme_setError(error, SJME_ERROR_NEGATIVE_SIZE, size);
-		
-		return NULL;
-	}
-	
-	/* Allocate new pointer, keep old pointer if this failed. */
-	rv = sjme_malloc(size, NULL);
-	if (rv == NULL)
-	{
-		sjme_setError(error, SJME_ERROR_NO_MEMORY, size);
-		return NULL;
-	}
-	
-	/* Copy old data over? */
-	if (ptr != NULL)
-	{
-		/* Get the old size, to copy the data around. */
-		oldSize = *((sjme_jint*)(SJME_POINTER_OFFSET_LONG(ptr, -4)));
-		
-		/* Only copy the smaller of size. */
-		memmove(rv, ptr, (size > oldSize ? oldSize : size));
-		
-		/* Free the old pointer. */
-		sjme_free(ptr, NULL);
-	}
-	
-	/* Return the new pointer. */
-	return rv;
-#endif
-}
-
 sjme_jboolean sjme_free(void* p, sjme_error* error)
 {
 	sjme_jint size;

@@ -104,17 +104,6 @@ void* SJME_DEPRECATED(sjme_mallocGc)(sjme_jint size,
 #define sjme_malloc(size, error) sjme_mallocGc(size, NULL, error)
 
 /**
- * Re-allocates the given pointer.
- *
- * @param ptr The pointer to change in size.
- * @param size The number of bytes to allocate or @c NULL if that failed.
- * @param error The error flag.
- * @since 2021/03/08
- */
-void* SJME_DEPRECATED(sjme_realloc)(void* ptr, sjme_jint size,
-	sjme_error* error);
-
-/**
  * Frees the given pointer, if there is a callback specified in the allocation
  * of the pointer then it will be called first before any actual freeing is
  * performed.
