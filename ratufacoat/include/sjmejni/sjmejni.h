@@ -222,7 +222,7 @@ typedef sjme_jchar sjme_jushort;
 		/** Upper bytes. */
 		sjme_jint hi;
 		#endif
-	} sjme_jong;
+	} sjme_jlong;
 
 	/** Unsigned long type. */
 	typedef struct SJME_PACKED sjme_julong
@@ -240,7 +240,7 @@ typedef sjme_jchar sjme_jushort;
 		/** Upper bytes. */
 		sjme_juint hi;
 		#endif
-	} sjme_juong;
+	} sjme_julong;
 #endif
 
 /* Boolean type. */
