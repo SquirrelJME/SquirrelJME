@@ -60,7 +60,8 @@ extern "C" {
 	defined(SJME_FEATURE_MSVC_HAS_STDINT) || \
 	(defined(__WATCOMC__) && __WATCOMC__ >= 1270) || \
 	(defined(__GNUC__) && __GNUC__ >= 4) || \
-	(defined(PSP) || defined(PS2)))
+	(defined(PSP) || defined(PS2)) || \
+	defined(SQUIRRELJME_BUNDLED_STDC))
 	/** <stdint.h> is available. */
 	#define SJME_HAS_STDINT_H
 #endif
