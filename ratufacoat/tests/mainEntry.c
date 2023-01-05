@@ -112,6 +112,7 @@ int main(int argc, char** argv)
 	const sjme_singleTest* test;
 	sjme_jbyte errorBuf[ERROR_BUF_LEN];
 	sjme_jint errorBufLen;
+	sjme_jint i;
 	
 	/* General test report. */
 	fprintf(stderr, "Testing SquirrelJME %s (%s)\n",
@@ -140,7 +141,7 @@ int main(int argc, char** argv)
 		/* Determine if this is a test to run */
 		execTest = allTests;
 		if (!allTests)
-			for (int i = 1; i < argc; i++)
+			for (i = 1; i < argc; i++)
 				if (strcmp(argv[i], test->name) == 0)
 				{
 					execTest = 1;

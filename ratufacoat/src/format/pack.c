@@ -64,6 +64,7 @@ sjme_jboolean sjme_packClose(sjme_packInstance* instance,
 	sjme_jboolean badFree;
 	sjme_jboolean badPackClose;
 	sjme_jint numLibs;
+	sjme_jint i;
 	
 	if (instance == NULL)
 		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
@@ -73,7 +74,7 @@ sjme_jboolean sjme_packClose(sjme_packInstance* instance,
 	
 	/* Close out any open libraries. */
 	numLibs = instance->numLibraries;
-	for (int i = 0; i < numLibs; i++)
+	for (i = 0; i < numLibs; i++)
 	{
 		/* Clear out the cache first. */
 		sjme_libraryInstance* library = sjme_memIo_atomicPointerSetType(
