@@ -30,6 +30,11 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+/* Alignment. */
+#if defined(SJME_FEATURE_C11)
+	#include <stdalign.h>
+#endif
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
@@ -182,6 +187,35 @@ typedef sjme_jchar sjme_jushort;
 	#else
 		#error Unknown boolean type.
 	#endif
+#endif
+
+/* Alignment. */
+#if defined(SJME_FEATURE_C11)
+	#define SJME_ALIGN_POINTER alignas(void*)
+#else
+	#if defined(_MSC_VER)
+		#if SJME_POINTER == 64
+			/** Align field to pointer. */
+			#define SJME_ALIGN_POINTER __declspec(align(8))
+		#else
+			/** Align field to pointer. */
+			#define SJME_ALIGN_POINTER __declspec(align(4))
+		#endif
+	#elif defined(__GNUC__)
+		#if SJME_POINTER == 64
+			/** Align field to pointer. */
+			#define SJME_ALIGN_POINTER __attribute__((aligned(8)))
+		#else
+			/** Align field to pointer. */
+			#define SJME_ALIGN_POINTER __attribute__((aligned(4)))
+		#endif
+	#endif
+#endif
+
+/** Fallback to nothing. */
+#if !defined(SJME_ALIGN_POINTER)
+	/** Align field to pointer. */
+	#define SJME_ALIGN_POINTER
 #endif
 
 /** Interface version 1.1. */

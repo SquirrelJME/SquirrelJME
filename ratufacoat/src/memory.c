@@ -115,7 +115,7 @@ void* sjme_mallocGc(sjme_jint size, sjme_freeCallback freeCallback,
 
 	/* Did not allocate? */
 	result = NULL;
-	if (!sjme_memDirectNew((void**)&result, size, error))
+	if (!sjme_memIo_directNew((void**)&result, size, error))
 	{
 		sjme_setError(error, SJME_ERROR_NO_MEMORY, size);
 		return NULL;
@@ -293,5 +293,5 @@ sjme_jboolean sjme_free(void* p, sjme_error* error)
 	memset(node, 0xBA, node->nodeSize);
 
 	/* Free memory used here. */
-	return sjme_memDirectFree((void**)&node, error);
+	return sjme_memIo_directFree((void**)&node, error);
 }

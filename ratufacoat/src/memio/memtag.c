@@ -103,7 +103,7 @@ sjme_jboolean sjme_memIo_taggedGroupNew(sjme_memIo_tagGroup** outPtr,
 
 	/* Allocate memory group. */
 	result = NULL;
-	if (!sjme_memDirectNew((void**)&result, sizeof(*result), error))
+	if (!sjme_memIo_directNew((void**)&result, sizeof(*result), error))
 		return sjme_setErrorF(error, SJME_ERROR_NO_MEMORY, 0);
 
 	sjme_todo("Implement this?");

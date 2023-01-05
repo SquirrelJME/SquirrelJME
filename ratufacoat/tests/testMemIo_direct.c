@@ -8,7 +8,8 @@
 // -------------------------------------------------------------------------*/
 
 #include "tests.h"
-#include "memio/memdirect.h"
+#include "debug.h"
+#include "memio/memdirectinternal.h"
 
 /**
  * A structure.
@@ -35,10 +36,11 @@ typedef struct a_structure
 SJME_TEST_PROTOTYPE(testMemIo_direct)
 {
 	a_structure* result;
+	sjme_memIo_directChunk badChunk;
 
 	/* Try to allocate over a value. */
 	result = (void*)1234;
-	if (sjme_memDirectNew(&result, sizeof(*result),
+	if (sjme_memIo_directNew(&result, sizeof(*result),
 		&shim->error))
 		return FAIL_TEST(1);
 
@@ -47,7 +49,7 @@ SJME_TEST_PROTOTYPE(testMemIo_direct)
 
 	/* No size. */
 	result = NULL;
-	if (sjme_memDirectNew(&result, 0, &shim->error))
+	if (sjme_memIo_directNew(&result, 0, &shim->error))
 		return FAIL_TEST(2);
 
 	if (shim->error.code != SJME_ERROR_NEGATIVE_SIZE)
@@ -55,7 +57,7 @@ SJME_TEST_PROTOTYPE(testMemIo_direct)
 
 	/* Protection violation, not using &var. */
 	result = (void*)1234;
-	if (sjme_memDirectNew(result, sizeof(*result), &shim->error))
+	if (sjme_memIo_directNew(result, sizeof(*result), &shim->error))
 		return FAIL_TEST(3);
 
 	if (shim->error.code != SJME_ERROR_PROTECTED_MEM_VIOLATION)
@@ -63,21 +65,39 @@ SJME_TEST_PROTOTYPE(testMemIo_direct)
 
 	/* Should allocate now. */
 	result = NULL;
-	if (!sjme_memDirectNew(&result, sizeof(*result),
+	if (!sjme_memIo_directNew(&result, sizeof(*result),
 		&shim->error))
 		return FAIL_TEST(4);
 
 	/* Should be allocated and zero initialized. */
 	if (result == NULL || result->a != 0 || result->b != 0 || result->c != 0)
+	{
+		sjme_message("[%x, %x, %x]", result->a, result->b, result->c);
 		return FAIL_TEST(5);
+	}
 
 	/* Free it. */
-	if (!sjme_memDirectFree((void**)&result, &shim->error))
+	if (!sjme_memIo_directFree(&result, &shim->error))
 		return FAIL_TEST(6);
 
 	/* Should be cleared. */
 	if (result != NULL)
 		return FAIL_TEST(7);
+
+	/* Try to free a bad chunk with invalid size. */
+	badChunk.size = -1234;
+	badChunk.magic = (sjme_jsize)(SJME_MEMIO_DIRECT_CHUNK_MAGIC ^
+		(~badChunk.size));
+	result = (void*)&badChunk.data[0];
+	if (sjme_memIo_directFree(&result, &shim->error))
+		return FAIL_TEST(8);
+
+	/* Try to free a bad chunk with invalid magic. */
+	badChunk.size = 1234;
+	badChunk.magic = 4321;
+	result = (void*)&badChunk.data[0];
+	if (sjme_memIo_directFree(&result, &shim->error))
+		return FAIL_TEST(9);
 
 	return PASS_TEST();
 }

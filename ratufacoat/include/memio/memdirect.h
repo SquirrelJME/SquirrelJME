@@ -38,7 +38,7 @@ extern "C" {
  * @return If freeing was successful.
  * @since 2022/12/27
  */
-sjme_jboolean sjme_memDirectFreeR(void** inPtr, sjme_error* error,
+sjme_jboolean sjme_memIo_directFreeR(void** inPtr, sjme_error* error,
 	sjme_jsize protect);
 
 /**
@@ -49,8 +49,8 @@ sjme_jboolean sjme_memDirectFreeR(void** inPtr, sjme_error* error,
  * @return If freeing was successful.
  * @since 2023/01/04
  */
-#define sjme_memDirectFree(inPtr, error) \
-	sjme_memDirectFreeR((void**)(inPtr), error, \
+#define sjme_memIo_directFree(inPtr, error) \
+	sjme_memIo_directFreeR((void**)(inPtr), error, \
 	sizeof(*(inPtr))) /* NOLINT(bugprone-sizeof-expression) */
 
 /**
@@ -63,7 +63,7 @@ sjme_jboolean sjme_memDirectFreeR(void** inPtr, sjme_error* error,
  * @return If the allocation succeeded or not.
  * @since 2022/12/20
  */
-sjme_jboolean sjme_memDirectNewR(void** outPtr, sjme_jsize size,
+sjme_jboolean sjme_memIo_directNewR(void** outPtr, sjme_jsize size,
 	sjme_error* error, sjme_jsize protect);
 
 /**
@@ -75,8 +75,8 @@ sjme_jboolean sjme_memDirectNewR(void** outPtr, sjme_jsize size,
 * @return If the allocation succeeded or not.
 * @since 2023/01/02
 */
-#define sjme_memDirectNew(outPtr, size, error) \
-	sjme_memDirectNewR((void**)(outPtr), size, error, \
+#define sjme_memIo_directNew(outPtr, size, error) \
+	sjme_memIo_directNewR((void**)(outPtr), size, error, \
 		sizeof(*(outPtr))) /* NOLINT(bugprone-sizeof-expression) */
 
 /*--------------------------------------------------------------------------*/
