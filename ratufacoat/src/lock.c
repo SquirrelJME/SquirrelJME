@@ -33,7 +33,7 @@ static void sjme_memoryBarrier(void)
 {
 #if defined(SQUIRRELJME_THREADS_WIN32)
 	MemoryBarrier();
-#elif defined(__GNUC__)
+#elif defined(SJME_FEATURE_GCC) && !defined(SJME_FEATURE_OLD_GCC)
 	__sync_synchronize();
 #endif
 }
