@@ -15,3 +15,7 @@ set(SQUIRRELJME_ALLOW_TESTING NO)
 
 # Use bundled LibStdC
 set(SQUIRRELJME_BUNDLED_STDC YES)
+
+# FPIC is not supported
+# cc1: -fPIC is not currently supported on the 68000 or 68010
+set(SQUIRRELJME_FPIC_MODE NO)
