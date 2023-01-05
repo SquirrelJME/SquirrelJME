@@ -16,9 +16,9 @@ find_program(CMAKE_ASM_COMPILER m68k-palmos-as)
 find_program(CMAKE_C_COMPILER m68k-palmos-gcc)
 
 # Flags for compilation
-set(CMAKE_C_FLAGS "")
-set(CMAKE_C_FLAGS_DEBUG "")
-set(CMAKE_C_FLAGS_DEBUG_INIT "")
+set(CMAKE_C_FLAGS "-std=gnu9x")
+set(CMAKE_C_FLAGS_DEBUG "-std=gnu9x")
+set(CMAKE_C_FLAGS_DEBUG_INIT "-std=gnu9x")
 set(CMAKE_ASM_FLAGS "")
 set(CMAKE_ASM_FLAGS_DEBUG "")
 set(CMAKE_ASM_FLAGS_DEBUG_INIT "")
