@@ -280,6 +280,18 @@ typedef unsigned __int8 sjme_jboolean;
 	#define SJME_ZERO_SIZE_ARRAY
 #endif
 
+/* Deprecated. */
+#if defined(SJME_FEATURE_GCC) && !defined(SJME_FEATURE_OLD_GCC)
+	/** Deprecated. */
+	#define SJME_DEPRECATED(x) __attribute__((deprecated)) x
+#elif defined(_MSC_VER)
+	/** Deprecated. */
+	#define SJME_DEPRECATED(x) __declspec(deprecated) x
+#else
+	/** Deprecated. */
+	#define SJME_DEPRECATED(x) x
+#endif
+
 /** Interface version 1.1. */
 #define SJME_INTERFACE_VERSION_1_1 INT32_C(0x00010001)
 

@@ -384,17 +384,6 @@ typedef sjme_jint sjme_vmemptr;
 #define SJME_EMPTY_TRANSLATION_UNIT \
 	static SJME_GCC_USED void sjme_emptyTranslationUnitDoIgnore(void) {}
 
-/* Deprecated. */
-#if defined(__GNUC__)
-	/** Deprecated. */
-	#define SJME_DEPRECATED(x) __attribute__((deprecated)) x
-#elif defined(_MSC_VER)
-	/** Deprecated. */
-	#define SJME_DEPRECATED(x) __declspec(deprecated) x
-#else
-	#define SJME_DEPRECATED(x) x
-#endif
-
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
