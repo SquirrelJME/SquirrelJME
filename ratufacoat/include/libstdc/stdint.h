@@ -52,6 +52,12 @@ extern "C" {
 	/** Unsigned integer. */
 	typedef UInt32 uint32_t;
 
+	/** Long. */
+	typedef signed long long int64_t;
+
+	/** Unsigned long. */
+	typedef unsigned long long uint64_t;
+
 	/** Pointer. */
 	typedef int32_t intptr_t;
 
@@ -75,6 +81,12 @@ extern "C" {
 
 	/** Unsigned 32-bit constant. */
 	#define UINT32_C(x) x##UL
+
+	/** Signed 64-bit constant. */
+	#define INT64_C(x) x##LL
+
+	/** Unsigned 64-bit constant. */
+	#define UINT64_C(x) x##ULL
 
 	#if !defined(SIZE_MAX)
 		/** Max size permitted. */

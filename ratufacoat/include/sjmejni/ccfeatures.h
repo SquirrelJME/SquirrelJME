@@ -91,9 +91,11 @@ extern "C" {
 #endif
 
 /* Synthetic long? */
+#if 0
 #if defined(__palmos__) && defined(__m68k__)
 	/** Synthetic long should be used. */
 	#define SJME_HAS_SYNTHETIC_LONG
+#endif
 #endif
 
 /* Attempt detection of pointer sizes based on architecture? */
