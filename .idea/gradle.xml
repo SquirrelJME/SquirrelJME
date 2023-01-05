@@ -57,6 +57,7 @@
             <option value="$PROJECT_DIR$/modules/meep-key" />
             <option value="$PROJECT_DIR$/modules/meep-liblets" />
             <option value="$PROJECT_DIR$/modules/meep-lui" />
+            <option value="$PROJECT_DIR$/modules/meep-lui-lcdui" />
             <option value="$PROJECT_DIR$/modules/meep-midlet" />
             <option value="$PROJECT_DIR$/modules/meep-power" />
             <option value="$PROJECT_DIR$/modules/meep-provisioning" />
