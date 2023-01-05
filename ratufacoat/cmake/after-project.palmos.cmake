@@ -25,3 +25,7 @@ set(SQUIRRELJME_BUNDLED_STDC YES)
 # FPIC is not supported
 # cc1: -fPIC is not currently supported on the 68000 or 68010
 set(SQUIRRELJME_FPIC_MODE NO)
+
+# Put every function within its own section, otherwise sections will overflow
+# and not be able to fit any code and such
+add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-ffunction-sections>)
