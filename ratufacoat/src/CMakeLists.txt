@@ -49,9 +49,29 @@ if(SQUIRRELJME_BUNDLED_STDC)
 	add_subdirectory(libstdc)
 endif()
 
-# Supporting UI libraries and whatnot, as needed
-add_subdirectory(libminiz)
-add_subdirectory(libnuklear)
+# Include MiniZ if permitted
+if(NOT SQUIRRELJME_BLOCK_LIBMINIZ)
+	message("MiniZ: Yes")
+
+	add_subdirectory(libminiz)
+	set(SQUIRRELJME_OBJANDSRC_LIBMINIZ SquirrelJMELibMiniZ)
+else()
+	message("MiniZ: No")
+
+	set(SQUIRRELJME_OBJANDSRC_LIBMINIZ)
+endif()
+
+# Include Nuklear if permitted
+if (NOT SQUIRRELJME_BLOCK_LIBNUKLEAR)
+	message("Nuklear: Yes")
+
+	add_subdirectory(libnuklear)
+	set(SQUIRRELJME_OBJANDSRC_LIBNUKLEAR SquirrelJMELibNuklear)
+else()
+	message("Nuklear: No")
+
+	set(SQUIRRELJME_OBJANDSRC_LIBNUKLEAR)
+endif()
 
 # Internal support libraries and modules
 add_subdirectory(engine)
@@ -66,8 +86,8 @@ squirreljme_object_and_sources(SquirrelJMECoreTarget
 	SquirrelJMEEngineSpringCoat
 	SquirrelJMEFormat
 	SquirrelJMEJNI
-	SquirrelJMELibNuklear
-	SquirrelJMELibMiniZ
+	${SQUIRRELJME_OBJANDSRC_LIBNUKLEAR}
+	${SQUIRRELJME_OBJANDSRC_LIBMINIZ}
 	SquirrelJMEMemIO)
 
 # Front ends

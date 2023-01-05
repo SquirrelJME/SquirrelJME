@@ -13,6 +13,12 @@ set(SQUIRRELJME_ALLOW_PALMOS YES)
 # Disable unit testing, we cannot reliably test on this platform
 set(SQUIRRELJME_ALLOW_TESTING NO)
 
+# Disallow MiniZ to be used
+set(SQUIRRELJME_BLOCK_LIBMINIZ YES)
+
+# Disallow Nuklear to be used
+set(SQUIRRELJME_BLOCK_LIBNUKLEAR YES)
+
 # Use bundled LibStdC
 set(SQUIRRELJME_BUNDLED_STDC YES)
 
