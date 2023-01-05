@@ -58,6 +58,9 @@ extern "C" {
 	/** Unsigned Pointer. */
 	typedef uint32_t uintptr_t;
 
+	/** Size type. */
+	typedef uint32_t size_t;
+
 	/** Signed 8-bit constant. */
 	#define INT8_C(x) x
 
@@ -75,6 +78,11 @@ extern "C" {
 
 	/** Unsigned 32-bit constant. */
 	#define UINT32_C(x) x##UL
+
+	#if !defined(SIZE_MAX)
+		/** Max size permitted. */
+		#define SIZE_MAX UINT32_C(0xFFFFFFFF)
+	#endif
 #else
 	#if defined(__INT8_TYPE__)
 		/** Byte. */
