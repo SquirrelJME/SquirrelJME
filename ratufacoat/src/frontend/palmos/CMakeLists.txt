@@ -29,5 +29,7 @@ squirreljme_object_and_sources(SquirrelJMEPalmOsLibTarget
 
 # m68k?
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL "m68k")
+	message("PalmOS: m68k")
+
 	add_subdirectory("m68k")
 endif()

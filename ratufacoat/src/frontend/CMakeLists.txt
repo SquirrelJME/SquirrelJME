@@ -69,5 +69,9 @@ endif()
 
 # PalmOS
 if(SQUIRRELJME_ALLOW_PALMOS)
+	message("PalmOS: Enabled")
+
 	add_subdirectory(palmos)
+else()
+	message("PalmOS: Disabled")
 endif()
