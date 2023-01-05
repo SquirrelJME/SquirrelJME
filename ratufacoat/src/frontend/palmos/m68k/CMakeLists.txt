@@ -17,9 +17,10 @@ add_custom_target(SquirrelJMEPalmOsM68kMultiGen
 	COMMAND "m68k-palmos-multigen"
 		-b "${CMAKE_CURRENT_BINARY_DIR}/multi"
 		"${CMAKE_CURRENT_SOURCE_DIR}/multi.def"
+	DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/multi.def"
 	BYPRODUCTS "${CMAKE_CURRENT_BINARY_DIR}/multi.s"
 		"${CMAKE_CURRENT_BINARY_DIR}/multi.ld"
-	COMMENT "Generating multi-section link script"
+	COMMENT "Generating multi-section binders."
 	COMMAND_EXPAND_LISTS VERBATIM)
 
 # Include both core sets of libraries

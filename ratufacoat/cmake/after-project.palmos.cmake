@@ -7,6 +7,9 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Palm OS Setup
 
+# Enable assembly for PalmOS, needed for multi-sections
+enable_language(ASM)
+
 # Allow PalmOS interface
 set(SQUIRRELJME_ALLOW_PALMOS YES)
 
