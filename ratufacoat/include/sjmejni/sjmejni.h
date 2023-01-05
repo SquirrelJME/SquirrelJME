@@ -292,6 +292,14 @@ typedef unsigned __int8 sjme_jboolean;
 	#define SJME_DEPRECATED(x) x
 #endif
 
+#if defined(__palmos__)
+	/** Alternative code section. */
+	#define SJME_CODE_SECTION(x) __attribute__((section(x)))
+#else
+	/** Alternative code section. */
+	#define SJME_CODE_SECTION(x)
+#endif
+
 /** Interface version 1.1. */
 #define SJME_INTERFACE_VERSION_1_1 INT32_C(0x00010001)
 

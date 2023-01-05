@@ -28,4 +28,5 @@ set(SQUIRRELJME_FPIC_MODE NO)
 
 # Put every function within its own section, otherwise sections will overflow
 # and not be able to fit any code and such
-add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-ffunction-sections>)
+# This is not actually supported by the multi-library linking...
+#add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-ffunction-sections>)

@@ -41,7 +41,8 @@ extern "C"
  * @since 2021/10/31
  */
 void sjme_messageR(const char* file, int line,
-	const char* func, const char* message, ...);
+	const char* func, const char* message, ...)
+	SJME_CODE_SECTION("code.debug");
 	
 /**
  * Prints a debug message
@@ -65,7 +66,8 @@ void sjme_messageR(const char* file, int line,
  * @since 2021/02/28 
  */
 sjme_returnNever sjme_todoR(const char* file, int line,
-	const char* func, const char* message, ...);
+	const char* func, const char* message, ...)
+	SJME_CODE_SECTION("code.debug");
 
 /**
  * Indicates a To-Do and then terminates the program.

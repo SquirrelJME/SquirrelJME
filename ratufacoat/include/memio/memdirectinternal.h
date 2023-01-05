@@ -59,7 +59,8 @@ typedef struct sjme_memIo_directChunk
  * @since 2023/01/04
  */
 sjme_jboolean sjme_memIo_directGetChunk(void* ptr,
-	sjme_memIo_directChunk** outChunk, sjme_error* error);
+	sjme_memIo_directChunk** outChunk, sjme_error* error)
+	SJME_CODE_SECTION("code.memio");
 
 /*--------------------------------------------------------------------------*/
 

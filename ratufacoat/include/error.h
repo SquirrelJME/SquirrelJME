@@ -65,7 +65,8 @@ void sjme_clearError(sjme_error* error);
  * @return The error code or @c ifMissing if there is no error.
  * @since 2021/10/09
  */
-sjme_errorCode sjme_getError(sjme_error* error, sjme_errorCode ifMissing);
+sjme_errorCode sjme_getError(sjme_error* error, sjme_errorCode ifMissing)
+	SJME_CODE_SECTION("code.error");
 
 /**
  * Checks if an error is present.
@@ -74,7 +75,8 @@ sjme_errorCode sjme_getError(sjme_error* error, sjme_errorCode ifMissing);
  * @return If there is an error present or not.
  * @since 2021/03/04
  */
-sjme_jboolean sjme_hasError(sjme_error* error);
+sjme_jboolean sjme_hasError(sjme_error* error)
+	SJME_CODE_SECTION("code.error");
 
 /**
  * Keeps the error code if one has previously been set, otherwise sets it and
@@ -92,7 +94,8 @@ sjme_jboolean sjme_hasError(sjme_error* error);
  */
 sjme_jboolean sjme_keepErrorBL(sjme_jboolean returning, sjme_error* error,
 	sjme_errorCode code, sjme_jint value, const char* file, int line,
-	const char* function);
+	const char* function)
+	SJME_CODE_SECTION("code.error");
 
 /**
  * Keeps the error code if one has previously been set, otherwise sets it
@@ -135,7 +138,8 @@ sjme_jboolean sjme_keepErrorBL(sjme_jboolean returning, sjme_error* error,
  * @since 2019/06/25
  */
 sjme_errorCode sjme_setErrorL(sjme_error* error, sjme_errorCode code,
-	sjme_jint value, const char* file, int line, const char* function);
+	sjme_jint value, const char* file, int line, const char* function)
+	SJME_CODE_SECTION("code.error");
 
 /**
  * Sets the error code and returns a boolean.
@@ -152,7 +156,8 @@ sjme_errorCode sjme_setErrorL(sjme_error* error, sjme_errorCode code,
  */
 sjme_jboolean sjme_setErrorBL(sjme_jboolean returning, sjme_error* error,
 	sjme_errorCode code, sjme_jint value, const char* file, int line,
-	const char* function);
+	const char* function)
+	SJME_CODE_SECTION("code.error");
 
 /**
  * Sets the error code using the current source position and returns the error

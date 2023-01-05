@@ -28,5 +28,10 @@ add_executable(SquirrelJMEPalmOsM68k
 set_target_properties(SquirrelJMEPalmOsM68k PROPERTIES
 	OUTPUT_NAME "squirreljme.elf")
 
+# Special link options
+target_link_options(SquirrelJMEPalmOsM68k PUBLIC
+	-T text_64k							# Use 64k code sections
+	)
+
 # Common C Directives
 squirreljme_common_c(SquirrelJMEPalmOsM68k)
