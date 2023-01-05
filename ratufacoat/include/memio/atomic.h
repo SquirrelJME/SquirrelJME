@@ -18,7 +18,8 @@
 
 #include "sjmejni/ccfeatures.h"
 
-#if defined(__GNUC__) && !defined(SJME_HAS_SPARC)
+#if defined(SJME_FEATURE_GCC) && !defined(SJME_HAS_SPARC) && \
+	!defined(SJME_FEATURE_OLD_GCC)
 	#define SJME_MEMIO_ATOMIC_GCC
 
 	#if !defined(SJME_HAS_ATOMIC)
