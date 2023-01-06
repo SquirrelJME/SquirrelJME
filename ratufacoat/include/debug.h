@@ -51,7 +51,7 @@ void sjme_messageR(const char* file, int line,
  * @param ... Any @c printf style arguments.
  * @since 2021/10/31 
  */
-#define sjme_message(...) sjme_messageR(__FILE__, __LINE__, __func__, \
+#define sjme_message(...) sjme_messageR(SJME_DEBUG_FILE_LINE_FUNC, \
 	__VA_ARGS__)
 
 /**
@@ -77,7 +77,7 @@ sjme_returnNever sjme_todoR(const char* file, int line,
  * @return Never returns.
  * @since 2021/02/28 
  */
-#define sjme_todo(...) sjme_todoR(__FILE__, __LINE__, __func__, __VA_ARGS__)
+#define sjme_todo(...) sjme_todoR(SJME_DEBUG_FILE_LINE_FUNC, __VA_ARGS__)
 
 /*--------------------------------------------------------------------------*/
 

@@ -300,6 +300,14 @@ typedef unsigned __int8 sjme_jboolean;
 	#define SJME_CODE_SECTION(x)
 #endif
 
+#if defined(SJME_REDUCE_WASTE)
+	/** File, line, and function. */
+	#define SJME_DEBUG_FILE_LINE_FUNC NULL, NULL, NULL
+#else
+	/** File, line, and function. */
+	#define SJME_DEBUG_FILE_LINE_FUNC __FILE__, __LINE__, __func__
+#endif
+
 /** Interface version 1.1. */
 #define SJME_INTERFACE_VERSION_1_1 INT32_C(0x00010001)
 
@@ -579,8 +587,6 @@ typedef sjme_jobject sjme_jstring;
 
 /** Throwable. */
 typedef sjme_jobject sjme_jthrowable;
-
-/** Reference type. */
 
 /** Weak reference. */
 typedef sjme_jobject sjme_jweakReference;

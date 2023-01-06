@@ -109,8 +109,8 @@ sjme_jboolean sjme_keepErrorBL(sjme_jboolean returning, sjme_error* error,
  * @since 2023/01/05
  */
 #define sjme_keepErrorB(returning, error, code, value) \
-	sjme_keepErrorBL(returning, (error), (code), (value), __FILE__, __LINE__, \
-	__func__)
+	sjme_keepErrorBL(returning, (error), (code), (value), \
+	SJME_DEBUG_FILE_LINE_FUNC)
 
 /**
  * Keeps the error code if one has previously been set, otherwise sets it
@@ -170,7 +170,7 @@ sjme_jboolean sjme_setErrorBL(sjme_jboolean returning, sjme_error* error,
  * @since 2019/06/25
  */
 #define sjme_setError(error, code, value) \
-	sjme_setErrorL((error), (code), (value), __FILE__, __LINE__, __func__)
+	sjme_setErrorL((error), (code), (value), SJME_DEBUG_FILE_LINE_FUNC)
 
 /**
  * Sets the error code using the current source position and returns a boolean.
@@ -183,8 +183,8 @@ sjme_jboolean sjme_setErrorBL(sjme_jboolean returning, sjme_error* error,
  * @since 2022/12/19
  */
 #define sjme_setErrorB(returning, error, code, value) \
-	sjme_setErrorBL(returning, (error), (code), (value), __FILE__, __LINE__, \
-		__func__)
+	sjme_setErrorBL(returning, (error), (code), (value), \
+	SJME_DEBUG_FILE_LINE_FUNC)
 
 /**
  * Sets the error code using the current source position and returns

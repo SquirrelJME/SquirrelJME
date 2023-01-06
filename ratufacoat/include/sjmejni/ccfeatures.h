@@ -139,6 +139,11 @@ extern "C" {
 	#define SJME_ENDIAN_LITTLE
 #endif
 
+/* Reduce waste? */
+#if defined(SJME_SYSTEM_PALMOS)
+	#define SJME_REDUCE_WASTE
+#endif
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
