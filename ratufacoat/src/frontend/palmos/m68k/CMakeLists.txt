@@ -63,7 +63,7 @@ squirreljme_common_c(SquirrelJMEPalmOsM68k)
 add_custom_target(SquirrelJMEPalmOsM68kPrc
 	COMMAND "build-prc"
 		-o "${CMAKE_CURRENT_BINARY_DIR}/squirreljme-m68k.prc"
-		-t "APPL"
+		-t "appl"
 		-c "sJmE"
 		-n "SquirrelJME"
 		-v "${SQUIRRELJME_VERSION}"
