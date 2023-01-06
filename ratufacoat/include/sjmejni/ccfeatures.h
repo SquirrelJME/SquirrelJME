@@ -74,7 +74,7 @@ extern "C" {
 #endif
 
 /* Is there a terminal output? */
-#if !defined(SJME_SYSTEM_IEEE1275)
+#if !defined(SJME_SYSTEM_IEEE1275) && !defined(SJME_SYSTEM_PALMOS)
 	#define SJME_HAS_TERMINAL_OUTPUT
 #endif
 
@@ -92,7 +92,7 @@ extern "C" {
 
 /* Synthetic long? */
 #if 0
-#if defined(__palmos__) && defined(__m68k__)
+#if defined(SJME_SYSTEM_PALMOS) && defined(__m68k__)
 	/** Synthetic long should be used. */
 	#define SJME_HAS_SYNTHETIC_LONG
 #endif
@@ -131,7 +131,7 @@ extern "C" {
 	defined(__MIPSEB__) || \
 	(defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && \
 		__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__) || \
-	(defined(__palmos__) && defined(__m68k__))
+	(defined(SJME_SYSTEM_PALMOS) && defined(__m68k__))
 	/** Big Endian. */
 	#define SJME_ENDIAN_BIG
 #else

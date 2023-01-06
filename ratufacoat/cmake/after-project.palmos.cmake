@@ -10,6 +10,9 @@
 # Enable assembly for PalmOS, needed for multi-sections
 enable_language(ASM)
 
+# Used for Palm OS
+add_compile_definitions(SJME_SYSTEM_PALMOS=1)
+
 # Allow PalmOS interface
 set(SQUIRRELJME_ALLOW_PALMOS YES)
 

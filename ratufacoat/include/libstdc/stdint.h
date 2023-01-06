@@ -18,7 +18,7 @@
 
 #include <stddef.h>
 
-#if defined(__palmos__)
+#if defined(SJME_SYSTEM_PALMOS)
 	#include <PalmTypes.h>
 #endif
 
@@ -33,7 +33,7 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
-#if defined(__palmos__) && defined(__m68k__)
+#if defined(SJME_SYSTEM_PALMOS) && defined(__m68k__)
 	/** Byte. */
 	typedef Int8 int8_t;
 

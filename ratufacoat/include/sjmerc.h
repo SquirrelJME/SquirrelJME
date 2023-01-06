@@ -121,7 +121,7 @@
 	#define UINT32_C(x) x##U
 
 /** Palm OS. */
-#elif defined(__palmos__)
+#elif defined(SJME_SYSTEM_PALMOS)
 	#include <PalmTypes.h>
 	
 	typedef Int8 int8_t;

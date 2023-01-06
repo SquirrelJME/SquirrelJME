@@ -292,7 +292,7 @@ typedef unsigned __int8 sjme_jboolean;
 	#define SJME_DEPRECATED(x) x
 #endif
 
-#if defined(__palmos__)
+#if defined(SJME_SYSTEM_PALMOS)
 	/** Alternative code section. */
 	#define SJME_CODE_SECTION(x) __attribute__((section(x)))
 #else

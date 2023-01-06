@@ -8,4 +8,17 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjmejni/sjmejni.h"
+#include "libstdc/squirreljme/memoryimpl.h"
 
+void sjme_stdcExit(int status)
+{
+}
+
+void sjme_stdcFree(void* ptr)
+{
+}
+
+void* sjme_stdcMalloc(size_t size)
+{
+	return NULL;
+}
