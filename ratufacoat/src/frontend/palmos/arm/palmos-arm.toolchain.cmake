@@ -5,16 +5,16 @@
 # SquirrelJME is under the GNU General Public License v3+, or later.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: m68k Palm OS
+# DESCRIPTION: ARM Palm OS (PNOlets)
 
 # Defines the system
 set(CMAKE_SYSTEM_NAME palmos)
-set(CMAKE_SYSTEM_PROCESSOR m68k)
+set(CMAKE_SYSTEM_PROCESSOR arm)
 
 # Compilers to use
-#find_program(CMAKE_ASM_COMPILER m68k-palmos-as)
-find_program(CMAKE_ASM_COMPILER m68k-palmos-gcc)
-find_program(CMAKE_C_COMPILER m68k-palmos-gcc)
+#find_program(CMAKE_ASM_COMPILER arm-palmos-as)
+find_program(CMAKE_ASM_COMPILER arm-palmos-gcc)
+find_program(CMAKE_C_COMPILER arm-palmos-gcc)
 
 # Flags for compilation
 set(CMAKE_C_FLAGS "-std=gnu9x -Os -g0")
