@@ -27,6 +27,20 @@ squirreljme_object_and_sources(SquirrelJMEPalmOsLibTarget
 	SquirrelJMEPalmOsLib
 	SquirrelJMELibStdC)
 
+# Compiles resources into a resource library
+set(SQUIRRELJME_PALMOS_RESOURCE_LIB_OUTPUT
+	"${CMAKE_CURRENT_BINARY_DIR}/squirreljme-rc.ro")
+add_custom_target(SquirrelJMEPalmOsResources
+	COMMAND "pilrc"
+		-ro
+		-o "${SQUIRRELJME_PALMOS_RESOURCE_LIB_OUTPUT}"
+		-D "SQUIRRELJME_VERSION=${SQUIRRELJME_VERSION}"
+		"${CMAKE_CURRENT_SOURCE_DIR}/palmos.rcp"
+	DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/palmos.rcp"
+	BYPRODUCTS "${SQUIRRELJME_PALMOS_RESOURCE_LIB_OUTPUT}"
+	COMMENT "Building PalmOS Resource Library."
+	COMMAND_EXPAND_LISTS VERBATIM)
+
 # m68k?
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL "m68k")
 	message("PalmOS: m68k")

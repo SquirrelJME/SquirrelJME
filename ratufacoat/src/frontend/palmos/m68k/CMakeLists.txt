@@ -13,6 +13,8 @@ if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
 endif()
 
 # Generate multi section linker and otherwise for sections and whatnot
+# SquirrelJME is a bit big for Palm OS with its entire API and whatnot, so
+# this is here to split it into multiple different regions
 add_custom_target(SquirrelJMEPalmOsM68kMultiGen
 	COMMAND "m68k-palmos-multigen"
 		-b "${CMAKE_CURRENT_BINARY_DIR}/multi"
@@ -41,7 +43,9 @@ add_dependencies(SquirrelJMEPalmOsM68k SquirrelJMEPalmOsM68kMultiGen)
 
 # The ELF is not used at all, but it gets turned into a bunch of objects
 set_target_properties(SquirrelJMEPalmOsM68k PROPERTIES
-	OUTPUT_NAME "squirreljme.elf")
+	RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
+set_target_properties(SquirrelJMEPalmOsM68k PROPERTIES
+	OUTPUT_NAME "squirreljme-bin")
 
 # Options to adjust when linking
 target_link_options(SquirrelJMEPalmOsM68k PUBLIC
@@ -54,3 +58,22 @@ set_target_properties(SquirrelJMEPalmOsM68k PROPERTIES
 
 # Common C Directives
 squirreljme_common_c(SquirrelJMEPalmOsM68k)
+
+# Builds the actual PRC that runs on PalmOS
+add_custom_target(SquirrelJMEPalmOsM68kPrc
+	COMMAND "build-prc"
+		-o "${CMAKE_CURRENT_BINARY_DIR}/squirreljme-m68k.prc"
+		-t "APPL"
+		-c "sJmE"
+		-n "SquirrelJME"
+		-v "${SQUIRRELJME_VERSION}"
+		--backup
+		--ok-to-install-newer
+		"${CMAKE_CURRENT_SOURCE_DIR}/multi.def"
+		"${CMAKE_CURRENT_BINARY_DIR}/squirreljme-bin"
+		"${SQUIRRELJME_PALMOS_RESOURCE_LIB_OUTPUT}"
+	DEPENDS SquirrelJMEPalmOsM68k SquirrelJMEPalmOsM68kMultiGen
+		SquirrelJMEPalmOsResources
+	BYPRODUCTS "${CMAKE_CURRENT_BINARY_DIR}/squirreljme-m68k.prc"
+	COMMENT "Building PRC."
+	COMMAND_EXPAND_LISTS VERBATIM)
