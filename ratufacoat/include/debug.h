@@ -42,7 +42,7 @@ extern "C"
  */
 void sjme_messageR(const char* file, int line,
 	const char* func, const char* message, ...)
-	SJME_CODE_SECTION("debug");
+	SJME_CODE_SECTION("moth");
 	
 /**
  * Prints a debug message
@@ -67,7 +67,7 @@ void sjme_messageR(const char* file, int line,
  */
 sjme_returnNever sjme_todoR(const char* file, int line,
 	const char* func, const char* message, ...)
-	SJME_CODE_SECTION("debug");
+	SJME_CODE_SECTION("moth");
 
 /**
  * Indicates a To-Do and then terminates the program.
