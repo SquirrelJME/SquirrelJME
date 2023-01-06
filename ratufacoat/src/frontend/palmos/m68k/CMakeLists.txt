@@ -43,6 +43,11 @@ add_dependencies(SquirrelJMEPalmOsM68k SquirrelJMEPalmOsM68kMultiGen)
 set_target_properties(SquirrelJMEPalmOsM68k PROPERTIES
 	OUTPUT_NAME "squirreljme.elf")
 
+# Options to adjust when linking
+target_link_options(SquirrelJMEPalmOsM68k PUBLIC
+	-s											# Strip
+	)
+
 # Need to use the multi-section link file here
 set_target_properties(SquirrelJMEPalmOsM68k PROPERTIES
 	LINK_DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/multi.ld")
