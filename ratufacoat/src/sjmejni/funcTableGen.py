@@ -287,19 +287,28 @@ for table_name in entries_by_tab_dex:
 	# Header name for prototypes
 	header_struct_fields_file_name = 'sjmejni/tables/%sStructFields.h' % table_name
 	header_function_prototypes_file_name = 'sjmejni/tables/%sProtos.h' % table_name
+	header_function_prototypes_proxy_file_name = 'sjmejni/tables/%sProtosProxy.h' % table_name
 	assign_file_name = 'sjmejni/tables/%sAssign.h' % table_name
+	assign_proxy_file_name = 'sjmejni/tables/%sAssignProxy.h' % table_name
 
 	# Temporary strings for header/source files
 	header_function_prototypes = '' + header_intro
+	header_function_proxy_prototypes = '' + header_intro
 	header_struct_fields = '' + header_intro
 
 	# Assignment file
 	assign_file = '' + header_intro
+	assign_proxy_file = '' + header_intro
 
 	# Surround for function prototypes
 	header_function_prototypes += '#include "sjmejni/sjmejni.h"\n'
 	header_function_prototypes += '#include "debug.h"\n'
 	header_function_prototypes += '#include "sjmejni/tables/surround/surroundprotoh.h"\n\n'
+
+	# Surround for function prototypes proxy
+	header_function_proxy_prototypes += '#include "sjmejni/sjmejni.h"\n'
+	header_function_proxy_prototypes += '#include "debug.h"\n'
+	header_function_proxy_prototypes += '#include "sjmejni/tables/surround/surroundprotoproxyh.h"\n\n'
 
 	# Surround for header struct entries
 	header_struct_fields += '#include "sjmejni/tables/surround/surroundstructfield.h"\n\n'
@@ -326,6 +335,7 @@ for table_name in entries_by_tab_dex:
 
 				# Assignment file
 				assign_file += 'out->%s = sjme_impl%s;\n' % (entry.function, entry.function)
+				assign_proxy_file += 'out->%s = sjme_proxy%s;\n' % (entry.function, entry.function)
 
 				# Utilize the C include here
 				header_struct_fields += '#include "%s"\n' % prototype_file_name
@@ -333,6 +343,8 @@ for table_name in entries_by_tab_dex:
 				# Include within prototypes
 				header_function_prototypes += '#include "%s"\n' % \
 					prototype_file_name
+				header_function_proxy_prototypes += '#include "%s"\n' % \
+											  prototype_file_name
 
 				# Build function arguments
 				built_args = ''
@@ -436,6 +448,14 @@ for table_name in entries_by_tab_dex:
 	source_file_out.write(header_function_prototypes)
 	source_file_out.close()
 
+	source_file_out = open('../../include/' + header_function_prototypes_proxy_file_name, 'w')
+	source_file_out.write(header_function_proxy_prototypes)
+	source_file_out.close()
+
 	source_file_out = open('../../include/' + assign_file_name, 'w')
 	source_file_out.write(assign_file)
+	source_file_out.close()
+
+	source_file_out = open('../../include/' + assign_proxy_file_name, 'w')
+	source_file_out.write(assign_proxy_file)
 	source_file_out.close()

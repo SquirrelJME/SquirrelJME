@@ -16,6 +16,7 @@ endif()
 add_library(SquirrelJMEJNI OBJECT
 	init.c
 	shadow.c
+	vaunwrap.c
 
 	# All of the various function implementations, all sources must be
 	# specified here without a wildcard so that the object targets in CMake

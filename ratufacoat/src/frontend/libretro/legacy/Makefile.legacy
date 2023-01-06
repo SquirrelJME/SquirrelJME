@@ -40,6 +40,7 @@ SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/format/sqcpack.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/format/zip.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/sjmejni/init.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/sjmejni/shadow.c
+SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/sjmejni/vaunwrap.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/sjmejni/tables/function/defAllocObject.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/sjmejni/tables/function/defCallBooleanMethod.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/sjmejni/tables/function/defCallBooleanMethodA.c
