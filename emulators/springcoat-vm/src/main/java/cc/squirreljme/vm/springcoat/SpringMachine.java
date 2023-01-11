@@ -562,7 +562,8 @@ public final class SpringMachine
 		mainThread._worker = worker;
 		
 		// Enter the main entry point which handles the thread logic
-		mainThread.enterFrame(worker.loadClass(SpringMachine._START_CLASS)
+		mainThread.enterFrame(worker.loadClass(SpringMachine._START_CLASS,
+				null)
 			.lookupMethod(true, SpringMachine._MAIN_THREAD_METHOD));
 		
 		// Initialize an instance of Thread for this thread, as this is

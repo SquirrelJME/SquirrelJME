@@ -160,7 +160,7 @@ public enum MLEJarPackage
 					
 					// Use this as the stream input
 					return __thread.newInstance(__thread.loadClass(
-						"java/io/ByteArrayInputStream"),
+						"java/io/ByteArrayInputStream", null),
 						new MethodDescriptor("([B)V"),
 						__thread.asVMObject(baos.toByteArray()));
 				}

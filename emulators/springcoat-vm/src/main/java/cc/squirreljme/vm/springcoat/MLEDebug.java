@@ -194,7 +194,7 @@ public enum MLEDebug
 				rv[i] = new TracePointObject(__thread.machine, trace[i]);
 			
 			return __thread.asVMObjectArray(__thread.loadClass(
-				"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;"),
+				"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;", null),
 				rv);
 		}
 	},

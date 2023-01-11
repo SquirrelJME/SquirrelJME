@@ -66,6 +66,9 @@ public final class SpringClass
 	/** The JAR this class is in. */
 	protected final VMClassLibrary inJar;
 	
+	/** The virtual machine to load in. */
+	protected final String inVm;
+	
 	/** Interface classes. */
 	private final SpringClass[] _interfaceclasses;
 	
@@ -120,12 +123,13 @@ public final class SpringClass
 	 * @param __ct The component type.
 	 * @param __inJar The JAR this class is in.
 	 * @param __loader The class loader which loaded this class.
+	 * @param __inVm The virtual machine to load in.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/07/21
 	 */
 	SpringClass(SpringClass __super, SpringClass[] __interfaces,
 		ClassFile __cf, SpringClass __ct, VMClassLibrary __inJar,
-		Reference<SpringClassLoader> __loader)
+		Reference<SpringClassLoader> __loader, String __inVm)
 		throws NullPointerException
 	{
 		if (__interfaces == null || __cf == null || __loader == null)
@@ -139,6 +143,7 @@ public final class SpringClass
 		this.component = __ct;
 		this.dimensions = name.dimensions();
 		this._classLoader = __loader;
+		this.inVm = __inVm;
 		
 		// Check
 		this._interfaceclasses = (__interfaces = __interfaces.clone());
@@ -172,7 +177,7 @@ public final class SpringClass
 			// Setup method
 			SpringMethod sm;
 			if (null != methods.put(m.nameAndType(),
-				(sm = new SpringMethod(name, m, filename, atIndex))))
+				(sm = new SpringMethod(name, m, filename, atIndex, __inVm))))
 			{
 				// {@squirreljme.error BK0t Duplicated method in class. (The
 				// method)}
