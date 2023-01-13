@@ -11,6 +11,7 @@ package cc.squirreljme.emulator.uiform;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
@@ -172,9 +173,22 @@ public final class SwingFormShelf
 		UIDisplayBracket __b)
 		throws MLECallError
 	{
-		if (__a == null || __b == null)
-			throw new MLECallError("Null arguments.");
-		
+		return __a == __b;
+	}
+	
+	/**
+	 * As {@link UIFormShelf#equals(UIDrawableBracket, UIDrawableBracket)}. 
+	 * 
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return If these are the same display.
+	 * @throws MLECallError If either is {@code null}.
+	 * @since 2023/01/13
+	 */
+	public static boolean equals(UIDrawableBracket __a,
+		UIDrawableBracket __b)
+		throws MLECallError
+	{
 		return __a == __b;
 	}
 	
@@ -191,9 +205,6 @@ public final class SwingFormShelf
 		UIFormBracket __b)
 		throws MLECallError
 	{
-		if (__a == null || __b == null)
-			throw new MLECallError("Null arguments.");
-		
 		return __a == __b;
 	}
 	
@@ -210,9 +221,6 @@ public final class SwingFormShelf
 		UIItemBracket __b)
 		throws MLECallError
 	{
-		if (__a == null || __b == null)
-			throw new MLECallError("Null arguments.");
-		
 		return __a == __b;
 	}
 	
@@ -229,9 +237,6 @@ public final class SwingFormShelf
 		UIWidgetBracket __b)
 		throws MLECallError
 	{
-		if (__a == null || __b == null)
-			throw new MLECallError("Null arguments.");
-		
 		return __a == __b;
 	}
 	

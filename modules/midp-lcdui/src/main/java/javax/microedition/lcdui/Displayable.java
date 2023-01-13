@@ -41,9 +41,11 @@ public abstract class Displayable
 	final UIFormBracket _uiForm;
 	
 	/** The title of the form. */
+	@Deprecated
 	final UIItemBracket _uiTitle;
 	
 	/** The item used for the ticker on this displayable. */
+	@Deprecated
 	final UIItemBracket _uiTicker;
 	
 	/** Commands/Menus which have been added to the displayable. */

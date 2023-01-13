@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.uiform;
 
+import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
@@ -79,13 +80,20 @@ public class SwingInjector
 	 * @since 2020/10/03
 	 */
 	@Override
-	public void paint(UIFormBracket __form, UIItemBracket __item, int __pf,
+	public void paint(UIDrawableBracket __drawable, int __pf,
 		int __bw, int __bh, Object __buf, int __offset, int[] __pal, int __sx,
 		int __sy, int __sw, int __sh, int __special)
 	{
-		UIFormCallback callback = ((SwingForm)__form).callback();
+		UIFormCallback callback;
+		if (__drawable instanceof SwingForm)
+			callback = ((SwingForm)__drawable).callback();
+		else if (__drawable instanceof SwingItem)
+			callback = ((SwingItem)__drawable).callback();
+		else
+			throw Debugging.todo();
+		
 		if (callback != null)
-			callback.paint(__form, __item, __pf, __bw, __bh, __buf, __offset,
+			callback.paint(__drawable, __pf, __bw, __bh, __buf, __offset,
 				__pal, __sx, __sy, __sw, __sh, __special);
 	}
 	

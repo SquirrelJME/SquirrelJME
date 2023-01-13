@@ -11,8 +11,10 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
@@ -276,7 +278,7 @@ final class __MLEUIThread__
 	 * @since 2020/09/12
 	 */
 	@Override
-	public void paint(UIFormBracket __form, UIItemBracket __item, int __pf,
+	public void paint(UIDrawableBracket __drawable, int __pf,
 		int __bw, int __bh, Object __buf, int __offset, int[] __pal, int __sx,
 		int __sy, int __sw, int __sh, int __special)
 	{
@@ -288,7 +290,15 @@ final class __MLEUIThread__
 			__pf, __bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh);
 		*/
 		
-		DisplayWidget widget = StaticDisplayState.locate(__form);
+		// Does nothing as at this point, software implementations of the UI
+		// would have handled the display callback here so no action is
+		// needed to be performed.
+		if (__drawable instanceof UIDisplayBracket)
+			return;
+		
+		// Assume otherwise that drawing is done for widgets
+		DisplayWidget widget =
+			StaticDisplayState.locate((UIWidgetBracket)__drawable);
 		if (widget instanceof __CommonWidget__)
 		{
 			// Ignore widgets which do not want the paint event
@@ -322,20 +332,6 @@ final class __MLEUIThread__
 				this._inPaint = false;
 			}
 		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2022/01/05
-	 */
-	@Override
-	public void paintDisplay(UIDisplayBracket __display, int __pf, int __bw,
-		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
-		int __sw, int __sh, int __special)
-	{
-		// Does nothing as at this point, software implementations of the UI
-		// would have handled the display callback here so no action is
-		// needed to be performed.
 	}
 	
 	/**

@@ -9,6 +9,8 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
@@ -116,18 +118,26 @@ public class UIFormCallbackAdapter
 	 * @since 2020/09/13
 	 */
 	@Override
-	public void paint(UIFormBracket __form, UIItemBracket __item, int __pf,
+	public void paint(UIDrawableBracket __drawable, int __pf,
 		int __bw, int __bh, Object __buf, int __offset, int[] __pal, int __sx,
 		int __sy, int __sw, int __sh, int __special)
 	{
+		Object fakeDrawable;
+		if (__drawable instanceof UIFormBracket)
+			fakeDrawable = new UIFormObject(this.machine,
+				(UIFormBracket)__drawable);
+		else if (__drawable instanceof UIItemBracket)
+			fakeDrawable = new UIItemObject(this.machine,
+				(UIItemBracket)__drawable);
+		else
+			throw Debugging.todo(__drawable.getClass().toString());
+		
 		this.invokeCallback(
 			MethodNameAndType.ofArguments("paint", null,
-				"Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;",
-				"Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;",
+				"Lcc/squirreljme/jvm/mle/brackets/UIDrawableBracket;",
 				"I", "I", "I", "Ljava/lang/Object;", "I", "[I",
 				"I", "I", "I", "I", "I"),
-			new UIFormObject(this.machine, __form), new UIItemObject(
-				this.machine, __item),
+			fakeDrawable,
 			__pf, __bw, __bh, __buf, __offset, __pal, __sx, __sy, __sw, __sh,
 			__special);
 	}

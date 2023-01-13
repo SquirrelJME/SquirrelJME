@@ -92,15 +92,18 @@ public class TestUIFormShelfInvalid
 				break;
 			
 			case 2:
-				__backend.equals((UIDisplayBracket)null, null);
+				__backend.formItemPosition(__backend.formNew(),
+					__backend.itemNew(UIItemType.BUTTON),
+					UIItemPosition.MIN_VALUE - 1);
 				break;
 			
 			case 3:
-				__backend.equals((UIFormBracket)null, null);
+				__backend.formItemRemove(__backend.formNew(),
+					UIItemPosition.BODY);
 				break;
 			
 			case 4:
-				__backend.equals((UIItemBracket)null, null);
+				__backend.itemForm(null);
 				break;
 			
 			case 5:
@@ -176,21 +179,6 @@ public class TestUIFormShelfInvalid
 			case 21:
 				__backend.formItemPosition(__backend.formNew(),
 					__backend.itemNew(UIItemType.BUTTON), 1);
-				break;
-			
-			case 22:
-				__backend.formItemPosition(__backend.formNew(),
-					__backend.itemNew(UIItemType.BUTTON),
-					UIItemPosition.MIN_VALUE - 1);
-				break;
-			
-			case 23:
-				__backend.formItemRemove(__backend.formNew(),
-					UIItemPosition.BODY);
-				break;
-			
-			case 24:
-				__backend.itemForm(null);
 				break;
 			
 			default:
