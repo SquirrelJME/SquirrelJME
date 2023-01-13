@@ -9,6 +9,7 @@
 
 package mleui.lists;
 
+import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
@@ -69,7 +70,7 @@ public class ListCallback
 	 * @since 2020/10/29
 	 */
 	@Override
-	public void paint(UIFormBracket __form, UIItemBracket __item, int __pf,
+	public void paint(UIDrawableBracket __drawable, int __pf,
 		int __bw, int __bh, Object __buf, int __offset, int[] __pal, int __sx,
 		int __sy, int __sw, int __sh, int __special)
 	{

@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.lcdui.mle.pure;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
@@ -90,6 +91,17 @@ public class NativeUIBackend
 	 */
 	@Override
 	public boolean equals(UIDisplayBracket __a, UIDisplayBracket __b)
+		throws MLECallError
+	{
+		return UIFormShelf.equals(__a, __b);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/01/13
+	 */
+	@Override
+	public boolean equals(UIDrawableBracket __a, UIDrawableBracket __b)
 		throws MLECallError
 	{
 		return UIFormShelf.equals(__a, __b);

@@ -95,7 +95,7 @@ class __PaintingPanel__
 			{
 				UIFormCallback callback = form.callback();
 				if (callback != null)
-					callback.paint(form, item, UIPixelFormat.INT_RGB888,
+					callback.paint(item, UIPixelFormat.INT_RGB888,
 						pW, pH, ((DataBufferInt)pixelImage.getRaster()
 							.getDataBuffer()).getData(), 0,
 							null, 0, 0, pW, pH, 0);
