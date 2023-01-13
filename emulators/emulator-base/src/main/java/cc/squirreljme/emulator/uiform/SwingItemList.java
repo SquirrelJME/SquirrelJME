@@ -473,7 +473,7 @@ public class SwingItemList
 		if (form == null || callback == null)
 			return;
 		
-		callback.eventKey(form, this,
+		callback.eventKey(this,
 			UIKeyEventType.COMMAND_ACTIVATED, 0, 0);
 	}
 	
