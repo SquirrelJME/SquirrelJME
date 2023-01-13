@@ -255,7 +255,7 @@ public abstract class CustomItem
 		{
 			int old = __gfx.getAlphaColor();
 			__gfx.setColor(UIBackendFactory.getInstance(true)
-				.metric(this._displayable._display._uiDisplay,
+				.metric(this._displayable._display._linkedDisplay.display,
 				UIMetricType.COLOR_CANVAS_BACKGROUND));
 			
 			__gfx.fillRect(0, 0, __sw, __sh);

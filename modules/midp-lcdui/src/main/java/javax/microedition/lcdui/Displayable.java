@@ -17,6 +17,12 @@ import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import cc.squirreljme.runtime.lcdui.mle.CurrentLinkedDisplay;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
+import cc.squirreljme.runtime.lcdui.mle.LinkedDisplay;
+import cc.squirreljme.runtime.lcdui.mle.LinkedDisplayState;
+import cc.squirreljme.runtime.lcdui.mle.LinkedDisplayStateCreator;
+import cc.squirreljme.runtime.lcdui.mle.PerDisplayMap;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
@@ -37,13 +43,19 @@ import javax.microedition.midlet.MIDlet;
 public abstract class Displayable
 	extends __CommonWidget__
 {
+	/** The current display to use. */
+	final CurrentLinkedDisplay _current;
+	
 	/** The native form instance. */
+	@Deprecated
 	final UIFormBracket _uiForm;
 	
 	/** The title of the form. */
+	@Deprecated
 	final UIItemBracket _uiTitle;
 	
 	/** The item used for the ticker on this displayable. */
+	@Deprecated
 	final UIItemBracket _uiTicker;
 	
 	/** Commands/Menus which have been added to the displayable. */
@@ -51,6 +63,7 @@ public abstract class Displayable
 		new __VolatileList__<>();
 	
 	/** The display this is attached to, if any. */
+	@Deprecated
 	volatile Display _display;
 	
 	/** The command listener to call into when commands are generated. */
@@ -77,35 +90,23 @@ public abstract class Displayable
 	/**
 	 * Initializes the base displayable object.
 	 *
+	 * @param __creator The display state creator to use.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/08
 	 */
-	Displayable()
+	Displayable(LinkedDisplayStateCreator __creator)
+		throws NullPointerException
 	{
-		UIBackend backend = UIBackendFactory.getInstance(true);
+		if (__creator == null)
+			throw new NullPointerException("NARG");
 		
-		// Create a new form for this displayable
-		UIFormBracket uiForm = backend.formNew();
-		this._uiForm = uiForm;
-		
-		// Register it with the global state
-		StaticDisplayState.register(this, uiForm);
-		
-		// Build the title item
-		UIItemBracket uiTitle = backend.itemNew(UIItemType.LABEL);
-		this._uiTitle = uiTitle;
+		// Setup current with its creator, for use later on
+		this._current = new CurrentLinkedDisplay(__creator);
 		
 		// Use a default title for now
 		String title = Displayable.__defaultTitle();
 		this._displayTitle = title;
 		Debugging.debugNote("Default title: %s", title);
-		
-		// Set up the title item
-		backend.formItemPosition(uiForm, uiTitle, UIItemPosition.TITLE);
-		backend.widgetProperty(uiTitle, UIWidgetProperty.STRING_LABEL,
-			0, title);
-		
-		// Each displayable has its own ticker
-		this._uiTicker = backend.itemNew(UIItemType.LABEL);
 	}
 	
 	/**
@@ -127,6 +128,25 @@ public abstract class Displayable
 	 * @since 2017/02/08
 	 */
 	public abstract int getWidth();
+	
+	/**
+	 * Returns the per display map for this display.
+	 * 
+	 * @param <W> The subtype that should be used.
+	 * @return The display map for each display.
+	 * @since 2023/01/12
+	 */
+	abstract <W> PerDisplayMap<W> __map(Class<? extends W> __type);
+	
+	/**
+	 * Initializes a widget display container.
+	 * 
+	 * @param <W> The type to initialize.
+	 * @param __display The display to initialize for.
+	 * @return The initialized object.
+	 * @since 2023/01/12
+	 */
+	abstract <W> W __mapInit(LinkedDisplay __display);
 	
 	/**
 	 * Adds the specified command to this displayable, if it was already added
@@ -464,7 +484,7 @@ public abstract class Displayable
 		// display as another task may have taken the display from us
 		UIBackend backend = UIBackendFactory.getInstance(true);
 		return backend.equals(this._uiForm,
-			backend.displayCurrent(display._uiDisplay));
+			backend.displayCurrent(display._linkedDisplay.display));
 	}
 	
 	/**
@@ -687,6 +707,21 @@ public abstract class Displayable
 	}
 	
 	/**
+	 * Returns the current map type for the current displayed item.
+	 * 
+	 * @param <W> The expectant type for maps.
+	 * @param __subType The subtype used.
+	 * @return The current storage for this map type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/01/12
+	 */
+	final <W> W __mapCurrent(Class<? extends W> __subType)
+		throws NullPointerException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * Does internal work when a form is being shown.
 	 * 
 	 * @param __show The displayable being shown.
@@ -894,6 +929,81 @@ public abstract class Displayable
 		return UIBackendFactory.getInstance(true).widgetPropertyInt(
 			(__alt != null ? __alt : __d._uiForm),
 			UIWidgetProperty.INT_WIDTH, 0);
+	}
+	
+	/**
+	 * Base widgets for any {@link Displayable}.
+	 * 
+	 * @since 2023/01/12
+	 */
+	abstract static class __DisplayableWidgets__
+		extends LinkedDisplayState
+	{
+		/** The native form instance. */
+		final UIFormBracket _uiForm;
+		
+		/** The title of the form. */
+		final UIItemBracket _uiTitle;
+		
+		/** The item used for the ticker on this displayable. */
+		final UIItemBracket _uiTicker;
+		
+		/**
+		 * Initializes the linked display.
+		 * 
+		 * @param __display The display used.
+		 * @since 2023/01/12
+		 */
+		__DisplayableWidgets__(LinkedDisplay __display)
+		{
+			super(__display);
+			
+			UIBackend backend = __display.backend;
+			
+			// Create a new form for this displayable
+			UIFormBracket uiForm = backend.formNew();
+			this._uiForm = uiForm;
+			
+			// Build the title item
+			UIItemBracket uiTitle = backend.itemNew(UIItemType.LABEL);
+			this._uiTitle = uiTitle;
+			
+			// Use a default title for now
+			String title = Displayable.__defaultTitle();
+			this._displayTitle = title;
+			Debugging.debugNote("Default title: %s", title);
+			
+			// Set up the title item
+			backend.formItemPosition(uiForm, uiTitle, UIItemPosition.TITLE);
+			backend.widgetProperty(uiTitle, UIWidgetProperty.STRING_LABEL,
+				0, "SquirrelJME");
+			
+			// Each displayable has its own ticker
+			this._uiTicker = backend.itemNew(UIItemType.LABEL);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/01/12
+		 */
+		@Override
+		public void onCurrent(DisplayWidget __widget, boolean __isCurrent)
+		{
+			if (!__isCurrent)
+				return;
+			
+			LinkedDisplay current = this.display;
+			UIBackend backend = current.backend;
+			Displayable displayable = (Displayable)__widget;
+			
+			// Register it with the global state for event handling
+			StaticDisplayState.register(__widget, this._uiForm);
+			
+			// Set the title of the display
+			backend.widgetProperty(this._uiTitle,
+				UIWidgetProperty.STRING_LABEL,
+				0, "SquirrelJME");
+		}
 	}
 }
 

@@ -24,7 +24,6 @@ import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.mle.LinkedDisplay;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import cc.squirreljme.runtime.lcdui.mle.Vibration;
 import cc.squirreljme.runtime.lcdui.mle.fb.FBUIBackend;
 import cc.squirreljme.runtime.lcdui.mle.fb.NativeFBAttachment;
@@ -219,11 +218,8 @@ public class Display
 	/** The number of times there has been a non-unique serial run. */
 	private static volatile int _NON_UNIQUE_SERIAL_RUNS;
 	
-	/** The native display instance. */ 
-	final UIDisplayBracket _uiDisplay;
-	
-	/** The backend to use for this display. */
-	final UIBackend _uiBackend;
+	/** The linked display. */
+	final LinkedDisplay _linkedDisplay;
 	
 	/** The displayable to show. */
 	private volatile Displayable _current;
@@ -248,8 +244,7 @@ public class Display
 		if (__linkedDisplay == null)
 			throw new NullPointerException("NARG");
 		
-		this._uiBackend = __uiBackend;
-		this._uiDisplay = __uiDisplay;
+		this._linkedDisplay = __linkedDisplay;
 		
 		// Check and ensure that the background thread exists
 		synchronized (StaticDisplayState.class)
@@ -271,7 +266,7 @@ public class Display
 			}
 			
 			// Register the display for callbacks
-			this._uiBackend.callback(this,
+			this._linkedDisplay.backend.callback(this,
 				(UIDisplayCallback)StaticDisplayState.callback());
 		}
 	}
@@ -431,10 +426,10 @@ public class Display
 		// These are all standard and expected to always be supported
 		int rv = Display.__defaultCapabilities();
 		
-		UIBackend backend = this._uiBackend;
+		UIBackend backend = this._linkedDisplay.backend;
 		
 		// Supports any kind of input?
-		if (0 != backend.metric(this._uiDisplay, UIMetricType.INPUT_FLAGS))
+		if (0 != backend.metric(this._linkedDisplay.display, UIMetricType.INPUT_FLAGS))
 			rv |= Display.SUPPORTS_INPUT_EVENTS;
 		
 		return rv;
@@ -641,7 +636,7 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		return this._uiBackend.metric(this._uiDisplay, UIMetricType.DISPLAY_MAX_HEIGHT);
+		return this._linkedDisplay.backend.metric(this._linkedDisplay.display, UIMetricType.DISPLAY_MAX_HEIGHT);
 	}
 	
 	public IdleItem getIdleItem()
@@ -715,7 +710,7 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		return this._uiBackend.metric(this._uiDisplay, UIMetricType.DISPLAY_MAX_WIDTH);
+		return this._linkedDisplay.backend.metric(this._linkedDisplay.display, UIMetricType.DISPLAY_MAX_WIDTH);
 	}
 	
 	/**
@@ -726,7 +721,7 @@ public class Display
 	 */
 	public boolean hasPointerEvents()
 	{
-		return (this._uiBackend.metric(this._uiDisplay,
+		return (this._linkedDisplay.backend.metric(this._linkedDisplay.display,
 			UIMetricType.INPUT_FLAGS) & UIInputFlag.POINTER) ==
 			(UIInputFlag.POINTER);
 	}
@@ -739,7 +734,7 @@ public class Display
 	 */
 	public boolean hasPointerMotionEvents()
 	{
-		return (this._uiBackend.metric(this._uiDisplay,
+		return (this._linkedDisplay.backend.metric(this._linkedDisplay.display,
 			UIMetricType.INPUT_FLAGS) &
 			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION)) ==
 			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION);
@@ -764,7 +759,7 @@ public class Display
 	 */
 	public boolean isColor()
 	{
-		return this._uiBackend.metric(this._uiDisplay,
+		return this._linkedDisplay.backend.metric(this._linkedDisplay.display,
 			UIMetricType.DISPLAY_MONOCHROMATIC) == 0;
 	}
 	
@@ -781,7 +776,7 @@ public class Display
 	@SuppressWarnings({"MagicNumber", "SwitchStatementWithTooFewBranches"})
 	public int numAlphaLevels()
 	{
-		switch (this._uiBackend.metric(this._uiDisplay,
+		switch (this._linkedDisplay.backend.metric(this._linkedDisplay.display,
 			UIMetricType.DISPLAY_PIXEL_FORMAT))
 		{
 				// If the display format is 16-bit, just use this here
@@ -809,8 +804,8 @@ public class Display
 	public int numColors()
 	{
 		int pf;
-		switch ((pf = this._uiBackend.metric(
-			this._uiDisplay, UIMetricType.DISPLAY_PIXEL_FORMAT)))
+		switch ((pf = this._linkedDisplay.backend.metric(
+			this._linkedDisplay.display, UIMetricType.DISPLAY_PIXEL_FORMAT)))
 		{
 			case UIPixelFormat.INT_RGB888:
 			case UIPixelFormat.INT_RGBA8888:
@@ -1062,7 +1057,7 @@ public class Display
 		throws IllegalArgumentException
 	{
 		// Depends
-		UIBackend backend = this._uiBackend;
+		UIBackend backend = this._linkedDisplay.backend;
 		switch (__e)
 		{
 			case Display.CHOICE_GROUP_ELEMENT:
@@ -1078,11 +1073,11 @@ public class Display
 				throw Debugging.todo();
 				
 			case Display.LIST_ELEMENT:
-				return backend.metric(this._uiDisplay, UIMetricType.LIST_ITEM_HEIGHT);
+				return backend.metric(this._linkedDisplay.display, UIMetricType.LIST_ITEM_HEIGHT);
 				
 			case Display.MENU:
 			case Display.COMMAND:
-				return backend.metric(this._uiDisplay, UIMetricType.COMMAND_BAR_HEIGHT);
+				return backend.metric(this._linkedDisplay.display, UIMetricType.COMMAND_BAR_HEIGHT);
 				
 				// {@squirreljme.error EB1o Cannot get the best image size of
 				// the specified element. (The element specifier)}
@@ -1109,7 +1104,8 @@ public class Display
 		// as we do not want to un-hide another form being displayed if it
 		// is from another process
 		if (current.__isShown())
-			this._uiBackend.displayShow(this._uiDisplay, null);
+			this._linkedDisplay.backend.displayShow(
+				this._linkedDisplay.display, null);
 		
 		// Unlink display
 		current._display = null;
@@ -1139,7 +1135,7 @@ public class Display
 		Debugging.debugNote("Showing %s on display.", __show.getClass());
 		
 		// Get the backend to call on
-		UIBackend backend = this._uiBackend;
+		UIBackend backend = this._linkedDisplay.backend;
 		
 		// Use the global callback thread
 		synchronized (StaticDisplayState.class)
@@ -1150,7 +1146,7 @@ public class Display
 		}
 		
 		// Show the form on the display, as long as it is not already on there
-		UIDisplayBracket uiDisplay = this._uiDisplay;
+		UIDisplayBracket uiDisplay = this._linkedDisplay.display;
 		UIFormBracket wasForm = backend.displayCurrent(uiDisplay);
 		if (wasForm == null || !backend.equals(__show._uiForm, wasForm))
 			backend.displayShow(uiDisplay, __show._uiForm);
@@ -1251,7 +1247,7 @@ public class Display
 			serialRuns.put(idRunner, __run);
 			
 			// Perform the call so it is done later
-			this._uiBackend.later(idDisplay, idRunner);
+			this._linkedDisplay.backend.later(idDisplay, idRunner);
 		}
 		
 		// This is the ID used to refer to this runner
