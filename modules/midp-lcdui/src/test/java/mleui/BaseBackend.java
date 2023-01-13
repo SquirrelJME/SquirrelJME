@@ -45,15 +45,27 @@ public abstract class BaseBackend
 	 * @since 2020/10/10
 	 */
 	@Override
-	public void test(String __backend)
+	public void test(String __input)
 		throws Throwable
 	{
-		// Debugging
-		/*DebugShelf.verbose(VerboseDebugFlag.ALL);
-		DebugShelf.verboseInternalThread(VerboseDebugFlag.ALL);*/
+		int at = __input.indexOf('@');
+		int displayNum = Integer.parseInt(__input.substring(0, at).trim());
+		String backendId = __input.substring(at + 1).trim();
 		
-		UIBackend backend = BaseBackend.__getBackend(__backend);
-		this.test(backend, backend.displays()[0]);
+		// Determine which display we are poking
+		UIBackend backend = BaseBackend.__getBackend(backendId);
+		UIDisplayBracket[] displays = backend.displays();
+		if (displayNum < 0 || displayNum >= displays.length)
+			throw new UntestableException(String.format(
+				"No display #%d for %s.", displayNum, backendId));
+		
+		// UIForms must be supported for this given backend
+		UIDisplayBracket display = displays[displayNum];
+		if (0 != UIFormShelf.metric(display, UIMetricType.UIFORMS_SUPPORTED))
+			throw new UntestableException(backendId);
+		
+		// Run the test on this display
+		this.test(backend, display);
 	}
 	
 	/**
@@ -71,9 +83,7 @@ public abstract class BaseBackend
 		switch (__backend)
 		{
 			case "NATIVE":
-				if (0 != UIFormShelf.metric(UIMetricType.UIFORMS_SUPPORTED))
-					return new NativeUIBackend();
-				throw new UntestableException(__backend);
+				return new NativeUIBackend();
 			
 			case "FRAMEBUFFER":
 				return new FBUIBackend(new HeadlessAttachment(

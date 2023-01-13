@@ -60,7 +60,7 @@ public abstract class Frame
 		
 		// Use default background color
 		int defaultBgColor = UIBackendFactory.getInstance(true)
-				.metric(UIMetricType.COLOR_CANVAS_BACKGROUND) | 0xFF_000000;
+				.metric(null, UIMetricType.COLOR_CANVAS_BACKGROUND) | 0xFF_000000;
 		this._bgColor = new __BGColor__(defaultBgColor);
 	}
 	

@@ -530,14 +530,17 @@ public final class SwingFormShelf
 	/**
 	 * Handles {@link UIFormShelf#metric(int)}. 
 	 * 
+	 * @param __display The display used.
 	 * @param __metricId The {@link UIMetricType}.
 	 * @return Metric value.
 	 * @throws MLECallError If the call is not valid.
 	 * @since 2020/07/01
 	 */
-	public static int metric(int __metricId)
+	public static int metric(UIDisplayBracket __display, int __metricId)
 		throws MLECallError
 	{
+		if (__display == null)
+			throw new MLECallError("No display.");
 		if (__metricId < 0 || __metricId >= UIMetricType.NUM_METRICS)
 			throw new MLECallError("Invalid metric.");
 		

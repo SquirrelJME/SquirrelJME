@@ -43,11 +43,18 @@ public abstract class BaseDisplay
 	public final void test(String __param)
 		throws Throwable
 	{
-		Debugging.todoNote("BaseDisplay::test() -- Headless check.");
-		if (0 == UIFormShelf.metric(UIMetricType.UIFORMS_SUPPORTED))
-			throw new UntestableException("Native forms not supported.");
+		// Extract parameters
+		int at = __param.indexOf('@');
+		int displayId = Integer.parseInt(__param.substring(0, at).trim());
+		String subParam = __param.substring(at + 1).trim();
 		
-		// Forward test
-		this.test(Display.getDisplays(0)[0], __param);
+		// Determine the display to test on
+		Display[] displays = Display.getDisplays(0);
+		if (displayId < 0 || displayId >= displays.length)
+			throw new UntestableException("No display " + displayId);
+		Display display = displays[displayId];	
+		
+		// Forward to native handler for test, for each display
+		this.test(display, subParam);
 	}
 }

@@ -57,7 +57,7 @@ public final class Vibration
 		
 		// Only perform the action if we can vibrate the device
 		UIBackend backend = UIBackendFactory.getInstance(true);
-		if (backend.metric(UIMetricType.SUPPORTS_VIBRATION) != 0)
+		if (backend.metric(null, UIMetricType.SUPPORTS_VIBRATION) != 0)
 			throw Debugging.todo();
 		
 		// There is none, so we cannot say we control it

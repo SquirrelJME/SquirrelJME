@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 result: NoResult
 thrown: NoExceptionThrown
-multi-parameters: NATIVE
-disabled-multi-parameters: FRAMEBUFFER
+multi-parameters: 0 1 2 3
+hyper-parameters: NATIVE
+disabled-hyper-parameters: FRAMEBUFFER

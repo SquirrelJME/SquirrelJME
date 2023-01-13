@@ -428,7 +428,8 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new UIItemObject(__thread.machine, UIFormShelf.itemNew((int)__args[0]));
+			return new UIItemObject(__thread.machine,
+				UIFormShelf.itemNew((int)__args[0]));
 		}
 	},
 	
@@ -447,8 +448,9 @@ public enum MLEUIForm
 		}
 	},
 	
-	/** {@link UIFormShelf#metric(int)}. */
-	METRIC("metric:(I)I")
+	/** {@link UIFormShelf#metric(UIDisplayBracket, int)}. */
+	METRIC("metric:(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;" +
+		"I)I")
 	{
 		/**
 		 * {@inheritDoc}
@@ -457,9 +459,10 @@ public enum MLEUIForm
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			int metric = (int)__args[0];
+			UIDisplayBracket display = MLEUIForm.__display(__args[0]).display;
+			int metric = (int)__args[1];
 			
-			return UIFormShelf.metric(metric);
+			return UIFormShelf.metric(display, metric);
 		}
 	},
 	

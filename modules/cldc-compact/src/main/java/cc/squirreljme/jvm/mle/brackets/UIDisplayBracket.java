@@ -13,7 +13,7 @@ import cc.squirreljme.jvm.mle.annotation.GhostObject;
 
 /**
  * This represents a single display head which {@link UIFormBracket}s may be
- * attached to.
+ * attached to, a framebuffer may also be available.
  *
  * @since 2020/07/01
  */
