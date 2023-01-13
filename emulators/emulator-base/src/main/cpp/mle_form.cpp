@@ -20,6 +20,7 @@
 #define SWINGUIFORM_DISPLAYCURRENT_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;)Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;"
 #define SWINGUIFORM_DISPLAYSHOW_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V"
 #define SWINGUIFORM_EQUALSDISPLAY_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;)Z"
+#define SWINGUIFORM_EQUALSDRAWABLE_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIDrawableBracket;Lcc/squirreljme/jvm/mle/brackets/UIDrawableBracket;)Z"
 #define SWINGUIFORM_EQUALSFORM_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)Z"
 #define SWINGUIFORM_EQUALSITEM_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;)Z"
 #define SWINGUIFORM_EQUALSWIDGET_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;)Z"
@@ -85,6 +86,14 @@ JNIEXPORT jboolean JNICALL Impl_mle_FormShelf_equalsDisplay(JNIEnv* env,
 {
 	return forwardCallStaticBoolean(env, SWINGUIFORM_CLASSNAME,
 		"equals", SWINGUIFORM_EQUALSDISPLAY_DESC,
+		a, b);
+}
+
+JNIEXPORT jboolean JNICALL Impl_mle_FormShelf_equalsDrawable(JNIEnv* env,
+	jclass classy, jobject a, jobject b)
+{
+	return forwardCallStaticBoolean(env, SWINGUIFORM_CLASSNAME,
+		"equals", SWINGUIFORM_EQUALSDRAWABLE_DESC,
 		a, b);
 }
 
@@ -268,6 +277,7 @@ static const JNINativeMethod mleFormMethods[] =
 	{"displayCurrent", SWINGUIFORM_DISPLAYCURRENT_DESC, (void*)Impl_mle_FormShelf_displayCurrent},
 	{"displayShow", SWINGUIFORM_DISPLAYSHOW_DESC, (void*)Impl_mle_FormShelf_displayShow},
 	{"equals", SWINGUIFORM_EQUALSDISPLAY_DESC, (void*)Impl_mle_FormShelf_equalsDisplay},
+	{"equals", SWINGUIFORM_EQUALSDRAWABLE_DESC, (void*)Impl_mle_FormShelf_equalsDrawable},
 	{"equals", SWINGUIFORM_EQUALSFORM_DESC, (void*)Impl_mle_FormShelf_equalsForm},
 	{"equals", SWINGUIFORM_EQUALSITEM_DESC, (void*)Impl_mle_FormShelf_equalsItem},
 	{"equals", SWINGUIFORM_EQUALSWIDGET_DESC, (void*)Impl_mle_FormShelf_equalsWidget},

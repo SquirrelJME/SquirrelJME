@@ -9,6 +9,9 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
+import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.ClassName;
@@ -89,24 +92,33 @@ public class UIFormCallbackProxy
 				return null;
 				
 			case "paint:(Lcc/squirreljme/jvm/mle/brackets/" +
-				"UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/" +
-				"UIItemBracket;IIILjava/lang/Object;I[IIIIII)V":
-				SpringArrayObjectInteger pal =
-					(SpringArrayObjectInteger)__args[7];
-				this.callback.paint(
-					MLEUIForm.__form(__args[0]).form,
-					MLEUIForm.__item(__args[1]).item,
-					(int)__args[2],
-					(int)__args[3],
-					(int)__args[4],
-					((SpringArrayObject)__args[5]).array(),
-					(int)__args[6],
-					(pal == null ? null : pal.array()),
-					(int)__args[8],
-					(int)__args[9],
-					(int)__args[10],
-					(int)__args[11],
-					(int)__args[12]);
+				"UIDrawableBracket;" +
+				"IIILjava/lang/Object;I[IIIIII)V":
+				{
+					UIDrawableBracket argZero;
+					if (__args[0] instanceof UIFormBracket)
+						argZero = MLEUIForm.__form(__args[0]).form;
+					else if (__args[1] instanceof UIItemBracket)
+						argZero = MLEUIForm.__item(__args[1]).item;
+					else
+						throw Debugging.todo();
+					
+					SpringArrayObjectInteger pal =
+						(SpringArrayObjectInteger)__args[6];
+					this.callback.paint(
+						argZero,
+						(int)__args[1],
+						(int)__args[2],
+						(int)__args[3],
+						((SpringArrayObject)__args[4]).array(),
+						(int)__args[5],
+						(pal == null ? null : pal.array()),
+						(int)__args[7],
+						(int)__args[8],
+						(int)__args[9],
+						(int)__args[10],
+						(int)__args[11]);
+				}
 				return null;
 				
 			case "propertyChange:(Lcc/squirreljme/jvm/mle/brackets/" +

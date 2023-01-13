@@ -80,7 +80,7 @@ public class ListIconUpdate
 		
 		// Draw icon into the given pixel buffer
 		int[] pixelBuffer = new int[dimension * dimension];
-		this.callback.paint(this.form, list,
+		this.callback.paint(list,
 			UIPixelFormat.INT_RGB888, dimension, dimension,
 			pixelBuffer,0, null,
 			0, 0, dimension, dimension, this.subIndex);

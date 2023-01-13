@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
@@ -116,6 +117,20 @@ public final class UIFormShelf
 	 */
 	public static native boolean equals(UIDisplayBracket __a,
 		UIDisplayBracket __b)
+		throws MLECallError;
+	
+	/**
+	 * Checks if the two drawables represent the same
+	 * {@link UIDrawableBracket}.
+	 * 
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return If these are the same drawable.
+	 * @throws MLECallError If either is {@code null}.
+	 * @since 2023/01/13
+	 */
+	public static native boolean equals(UIDrawableBracket __a,
+		UIDrawableBracket __b)
 		throws MLECallError;
 	
 	/**
