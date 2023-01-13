@@ -21,10 +21,14 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
+import cc.squirreljme.runtime.lcdui.mle.LinkedDisplay;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import cc.squirreljme.runtime.lcdui.mle.Vibration;
+import cc.squirreljme.runtime.lcdui.mle.fb.FBUIBackend;
+import cc.squirreljme.runtime.lcdui.mle.fb.NativeFBAttachment;
+import cc.squirreljme.runtime.lcdui.mle.pure.NativeUIBackend;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -233,15 +237,15 @@ public class Display
 	/**
 	 * Initializes the display instance.
 	 *
-	 * @param __uiBackend The backend used.
-	 * @param __uiDisplay The native display.
+	 * @param __linkedDisplay The display this is linked to along with its
+	 * backend.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/16
 	 */
-	Display(UIBackend __uiBackend, UIDisplayBracket __uiDisplay)
+	Display(LinkedDisplay __linkedDisplay)
 		throws NullPointerException
 	{
-		if (__uiBackend == null || __uiDisplay == null)
+		if (__linkedDisplay == null)
 			throw new NullPointerException("NARG");
 		
 		this._uiBackend = __uiBackend;
@@ -1378,17 +1382,45 @@ public class Display
 			if (all != null)
 				return all.clone();
 			
-			// Get the displays that are attached to the system
-			UIDisplayBracket[] uiDisplays = UIBackendFactory.getInstance(
-				true).displays();
-			int n = uiDisplays.length;
+			// Are there any native UIs to support?
+			NativeUIBackend nativeBackend = new NativeUIBackend();
+			UIDisplayBracket[] nativeDisplays = nativeBackend.displays();
 			
-			// Initialize display instances
-			all = new Display[n];
-			for (int i = 0; i < n; i++)
-				all[i] = new Display(uiDisplays[i]);
+			// Check each UI to see how it is classified
+			List<Display> result = new ArrayList<>(4);
+			for (int i = 0, n = nativeDisplays.length; i < n; i++)
+			{
+				UIDisplayBracket nativeDisplay = nativeDisplays[i];
+				
+				LinkedDisplay link;
+				LinkedDisplay nativeLink = new LinkedDisplay(nativeDisplay,
+					nativeBackend);
+				
+				// If the display supports widgets natively, then use that
+				// for displaying forms and such
+				if (nativeBackend.metric(nativeDisplay,
+					UIMetricType.UIFORMS_SUPPORTED) != 0)
+					link = nativeLink;
+				
+				// Otherwise, use a framebuffer to run graphics on the display
+				else
+				{
+					// Setup UI backend to attach to the display
+					NativeFBAttachment fbAttach =
+						new NativeFBAttachment(nativeLink);
+					FBUIBackend fbBackend = new FBUIBackend(fbAttach);
+					
+					// Setup link for the display
+					link = new LinkedDisplay(fbBackend.virtualDisplay(),
+						fbBackend);
+				}
+				
+				// Setup display
+				result.add(new Display(link));
+			}
 			
 			// Use these for future calls
+			all = result.toArray(new Display[result.size()]);
 			StaticDisplayState.DISPLAYS = all;
 			
 			// Inform any listeners that the displays exist now

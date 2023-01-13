@@ -99,7 +99,7 @@ public abstract class Displayable
 		this._displayTitle = title;
 		Debugging.debugNote("Default title: %s", title);
 		
-		// Setup the title item
+		// Set up the title item
 		backend.formItemPosition(uiForm, uiTitle, UIItemPosition.TITLE);
 		backend.widgetProperty(uiTitle, UIWidgetProperty.STRING_LABEL,
 			0, title);

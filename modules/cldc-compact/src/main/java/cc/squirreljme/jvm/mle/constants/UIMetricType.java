@@ -92,7 +92,11 @@ public interface UIMetricType
 	byte DISPLAY_HEIGHT_DPI =
 		16;
 	
+	/** Unique display ID. */
+	byte DISPLAY_ID =
+		17;
+	
 	/** The number of supported metrics. */
 	byte NUM_METRICS =
-		17;
+		18;
 }

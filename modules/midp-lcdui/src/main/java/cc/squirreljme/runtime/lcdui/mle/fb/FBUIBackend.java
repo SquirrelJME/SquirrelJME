@@ -310,6 +310,17 @@ public class FBUIBackend
 	}
 	
 	/**
+	 * Returns the virtual display widget for the framebuffer UI.
+	 * 
+	 * @return The display for this UI.
+	 * @since 2023/01/12
+	 */
+	public UIDisplayBracket virtualDisplay()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2020/07/19
 	 */
