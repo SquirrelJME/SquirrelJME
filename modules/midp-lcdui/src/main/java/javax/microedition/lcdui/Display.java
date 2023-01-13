@@ -21,10 +21,13 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
+import cc.squirreljme.runtime.lcdui.mle.LinkedDisplay;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import cc.squirreljme.runtime.lcdui.mle.Vibration;
+import cc.squirreljme.runtime.lcdui.mle.fb.FBUIBackend;
+import cc.squirreljme.runtime.lcdui.mle.fb.NativeFBAttachment;
+import cc.squirreljme.runtime.lcdui.mle.pure.NativeUIBackend;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -215,8 +218,8 @@ public class Display
 	/** The number of times there has been a non-unique serial run. */
 	private static volatile int _NON_UNIQUE_SERIAL_RUNS;
 	
-	/** The native display instance. */ 
-	final UIDisplayBracket _uiDisplay;
+	/** The linked display. */
+	final LinkedDisplay _linkedDisplay;
 	
 	/** The displayable to show. */
 	private volatile Displayable _current;
@@ -230,17 +233,18 @@ public class Display
 	/**
 	 * Initializes the display instance.
 	 *
-	 * @param __uiDisplay The native display.
+	 * @param __linkedDisplay The display this is linked to along with its
+	 * backend.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/16
 	 */
-	Display(UIDisplayBracket __uiDisplay)
+	Display(LinkedDisplay __linkedDisplay)
 		throws NullPointerException
 	{
-		if (__uiDisplay == null)
+		if (__linkedDisplay == null)
 			throw new NullPointerException("NARG");
 		
-		this._uiDisplay = __uiDisplay;
+		this._linkedDisplay = __linkedDisplay;
 		
 		// Check and ensure that the background thread exists
 		synchronized (StaticDisplayState.class)
@@ -262,7 +266,7 @@ public class Display
 			}
 			
 			// Register the display for callbacks
-			UIBackendFactory.getInstance(true).callback(this,
+			this._linkedDisplay.backend.callback(this,
 				(UIDisplayCallback)StaticDisplayState.callback());
 		}
 	}
@@ -421,11 +425,11 @@ public class Display
 	{
 		// These are all standard and expected to always be supported
 		int rv = Display.__defaultCapabilities();
-			
-		UIBackend backend = UIBackendFactory.getInstance(true);
+		
+		UIBackend backend = this._linkedDisplay.backend;
 		
 		// Supports any kind of input?
-		if (0 != backend.metric(UIMetricType.INPUT_FLAGS))
+		if (0 != backend.metric(this._linkedDisplay.display, UIMetricType.INPUT_FLAGS))
 			rv |= Display.SUPPORTS_INPUT_EVENTS;
 		
 		return rv;
@@ -632,8 +636,7 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		return UIBackendFactory.getInstance(true)
-			.metric(UIMetricType.DISPLAY_MAX_HEIGHT);
+		return this._linkedDisplay.backend.metric(this._linkedDisplay.display, UIMetricType.DISPLAY_MAX_HEIGHT);
 	}
 	
 	public IdleItem getIdleItem()
@@ -707,8 +710,7 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		return UIBackendFactory.getInstance(true)
-			.metric(UIMetricType.DISPLAY_MAX_WIDTH);
+		return this._linkedDisplay.backend.metric(this._linkedDisplay.display, UIMetricType.DISPLAY_MAX_WIDTH);
 	}
 	
 	/**
@@ -719,7 +721,7 @@ public class Display
 	 */
 	public boolean hasPointerEvents()
 	{
-		return (UIBackendFactory.getInstance(true).metric(
+		return (this._linkedDisplay.backend.metric(this._linkedDisplay.display,
 			UIMetricType.INPUT_FLAGS) & UIInputFlag.POINTER) ==
 			(UIInputFlag.POINTER);
 	}
@@ -732,7 +734,7 @@ public class Display
 	 */
 	public boolean hasPointerMotionEvents()
 	{
-		return (UIBackendFactory.getInstance(true).metric(
+		return (this._linkedDisplay.backend.metric(this._linkedDisplay.display,
 			UIMetricType.INPUT_FLAGS) &
 			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION)) ==
 			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION);
@@ -757,7 +759,7 @@ public class Display
 	 */
 	public boolean isColor()
 	{
-		return UIBackendFactory.getInstance(true).metric(
+		return this._linkedDisplay.backend.metric(this._linkedDisplay.display,
 			UIMetricType.DISPLAY_MONOCHROMATIC) == 0;
 	}
 	
@@ -774,7 +776,7 @@ public class Display
 	@SuppressWarnings({"MagicNumber", "SwitchStatementWithTooFewBranches"})
 	public int numAlphaLevels()
 	{
-		switch (UIBackendFactory.getInstance(true).metric(
+		switch (this._linkedDisplay.backend.metric(this._linkedDisplay.display,
 			UIMetricType.DISPLAY_PIXEL_FORMAT))
 		{
 				// If the display format is 16-bit, just use this here
@@ -802,8 +804,8 @@ public class Display
 	public int numColors()
 	{
 		int pf;
-		switch ((pf = UIBackendFactory.getInstance(true).metric(
-			UIMetricType.DISPLAY_PIXEL_FORMAT)))
+		switch ((pf = this._linkedDisplay.backend.metric(
+			this._linkedDisplay.display, UIMetricType.DISPLAY_PIXEL_FORMAT)))
 		{
 			case UIPixelFormat.INT_RGB888:
 			case UIPixelFormat.INT_RGBA8888:
@@ -1055,7 +1057,7 @@ public class Display
 		throws IllegalArgumentException
 	{
 		// Depends
-		UIBackend backend = UIBackendFactory.getInstance(true);
+		UIBackend backend = this._linkedDisplay.backend;
 		switch (__e)
 		{
 			case Display.CHOICE_GROUP_ELEMENT:
@@ -1071,11 +1073,11 @@ public class Display
 				throw Debugging.todo();
 				
 			case Display.LIST_ELEMENT:
-				return backend.metric(UIMetricType.LIST_ITEM_HEIGHT);
+				return backend.metric(this._linkedDisplay.display, UIMetricType.LIST_ITEM_HEIGHT);
 				
 			case Display.MENU:
 			case Display.COMMAND:
-				return backend.metric(UIMetricType.COMMAND_BAR_HEIGHT);
+				return backend.metric(this._linkedDisplay.display, UIMetricType.COMMAND_BAR_HEIGHT);
 				
 				// {@squirreljme.error EB1o Cannot get the best image size of
 				// the specified element. (The element specifier)}
@@ -1102,8 +1104,8 @@ public class Display
 		// as we do not want to un-hide another form being displayed if it
 		// is from another process
 		if (current.__isShown())
-			UIBackendFactory.getInstance(true)
-				.displayShow(this._uiDisplay, null);
+			this._linkedDisplay.backend.displayShow(
+				this._linkedDisplay.display, null);
 		
 		// Unlink display
 		current._display = null;
@@ -1133,7 +1135,7 @@ public class Display
 		Debugging.debugNote("Showing %s on display.", __show.getClass());
 		
 		// Get the backend to call on
-		UIBackend backend = UIBackendFactory.getInstance(true);
+		UIBackend backend = this._linkedDisplay.backend;
 		
 		// Use the global callback thread
 		synchronized (StaticDisplayState.class)
@@ -1144,7 +1146,7 @@ public class Display
 		}
 		
 		// Show the form on the display, as long as it is not already on there
-		UIDisplayBracket uiDisplay = this._uiDisplay;
+		UIDisplayBracket uiDisplay = this._linkedDisplay.display;
 		UIFormBracket wasForm = backend.displayCurrent(uiDisplay);
 		if (wasForm == null || !backend.equals(__show._uiForm, wasForm))
 			backend.displayShow(uiDisplay, __show._uiForm);
@@ -1245,7 +1247,7 @@ public class Display
 			serialRuns.put(idRunner, __run);
 			
 			// Perform the call so it is done later
-			UIBackendFactory.getInstance(true).later(idDisplay, idRunner);
+			this._linkedDisplay.backend.later(idDisplay, idRunner);
 		}
 		
 		// This is the ID used to refer to this runner
@@ -1285,7 +1287,7 @@ public class Display
 		
 		// Use the first display that is available.
 		// In the runtime, each program only ever gets a single MIDlet and
-		// creating new MIDlets is illegal. Thus since getDisplays() has zero
+		// creating new MIDlets is illegal. Thus, since getDisplays() has zero
 		// be the return value for this method, that is used here.
 		Display[] all = Display.getDisplays(0);
 		if (all.length > 0)
@@ -1310,28 +1312,8 @@ public class Display
 	public static Display[] getDisplays(int __caps)
 		throws IllegalStateException
 	{
-		// Use cached displays, but otherwise load them
-		Display[] all = StaticDisplayState.DISPLAYS;
-		if (all == null)
-		{
-			// Get the displays that are attached to the system
-			UIDisplayBracket[] uiDisplays =
-				UIBackendFactory.getInstance(true).displays();
-			int n = uiDisplays.length;
-			
-			// Initialize display instances
-			all = new Display[n];
-			for (int i = 0; i < n; i++)
-				all[i] = new Display(uiDisplays[i]);
-			
-			// Use these for future calls
-			StaticDisplayState.DISPLAYS = all;
-			
-			// Inform any listeners that the displays exist now
-			for (DisplayListener listener : StaticDisplayState.listeners())
-				for (Display display : all) 
-					listener.displayAdded(display);
-		}
+		// Get all of our displays
+		Display[] all = Display.__getDisplays();
 		
 		// If we do not care for the capabilities of the displays then just
 		// return all of them
@@ -1379,6 +1361,72 @@ public class Display
 			Display.SUPPORTS_LISTS | Display.SUPPORTS_TEXTBOXES |
 			Display.SUPPORTS_FILESELECTORS | Display.SUPPORTS_TABBEDPANES |
 			Display.SUPPORTS_MENUS;
+	}
+	
+	/**
+	 * Returns all the available displays.
+	 * 
+	 * @return All the available displays.
+	 * @since 2023/01/12
+	 */
+	static Display[] __getDisplays()
+	{
+		synchronized (Display.class)
+		{
+			// Use cached displays, but otherwise load them
+			Display[] all = StaticDisplayState.DISPLAYS;
+			if (all != null)
+				return all.clone();
+			
+			// Are there any native UIs to support?
+			NativeUIBackend nativeBackend = new NativeUIBackend();
+			UIDisplayBracket[] nativeDisplays = nativeBackend.displays();
+			
+			// Check each UI to see how it is classified
+			List<Display> result = new ArrayList<>(4);
+			for (int i = 0, n = nativeDisplays.length; i < n; i++)
+			{
+				UIDisplayBracket nativeDisplay = nativeDisplays[i];
+				
+				LinkedDisplay link;
+				LinkedDisplay nativeLink = new LinkedDisplay(nativeDisplay,
+					nativeBackend);
+				
+				// If the display supports widgets natively, then use that
+				// for displaying forms and such
+				if (nativeBackend.metric(nativeDisplay,
+					UIMetricType.UIFORMS_SUPPORTED) != 0)
+					link = nativeLink;
+				
+				// Otherwise, use a framebuffer to run graphics on the display
+				else
+				{
+					// Setup UI backend to attach to the display
+					NativeFBAttachment fbAttach =
+						new NativeFBAttachment(nativeLink);
+					FBUIBackend fbBackend = new FBUIBackend(fbAttach);
+					
+					// Setup link for the display
+					link = new LinkedDisplay(fbBackend.virtualDisplay(),
+						fbBackend);
+				}
+				
+				// Setup display
+				result.add(new Display(link));
+			}
+			
+			// Use these for future calls
+			all = result.toArray(new Display[result.size()]);
+			StaticDisplayState.DISPLAYS = all;
+			
+			// Inform any listeners that the displays exist now
+			for (DisplayListener listener : StaticDisplayState.listeners())
+				for (Display display : all)
+					listener.displayAdded(display);
+			
+			// Use resultant displays.
+			return all.clone();
+		}
 	}
 	
 	/**

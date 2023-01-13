@@ -1,23 +1,27 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// SquirrelJME
+// Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.brackets;
-
-import cc.squirreljme.jvm.mle.annotation.GhostObject;
+package cc.squirreljme.runtime.lcdui.mle;
 
 /**
- * This represents a single display head which {@link UIFormBracket}s may be
- * attached to, a framebuffer may also be available.
+ * Creator for linked display states.
  *
- * @since 2020/07/01
+ * @since 2023/01/12
  */
-@GhostObject
-public interface UIDisplayBracket
+public interface LinkedDisplayStateCreator
 {
+	/**
+	 * Creates the linked display state.
+	 * 
+	 * @param __display The display to create for.
+	 * @return The created state.
+	 * @since 2023/01/12
+	 */
+	LinkedDisplayState create(LinkedDisplay __display);
 }

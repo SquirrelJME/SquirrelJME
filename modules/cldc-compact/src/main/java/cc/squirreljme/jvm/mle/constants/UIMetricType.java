@@ -10,16 +10,21 @@
 package cc.squirreljme.jvm.mle.constants;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 
 /**
  * This contains information on UI metrics used by
- * {@link UIFormShelf#metric(int)}.
+ * {@link UIFormShelf#metric(UIDisplayBracket, int)}.
  *
  * @since 2020/06/30
  */
 public interface UIMetricType
 {
-	/** Is the UI form engine supported? This metric always works. */
+	/**
+	 * Is the UI form engine supported? This metric always works but does not
+	 * always have to return a non-negative value in the event that a display
+	 * is framebuffer only.
+	 */
 	byte UIFORMS_SUPPORTED =
 		0;
 	
@@ -71,7 +76,27 @@ public interface UIMetricType
 	byte SUPPORTS_BACKLIGHT_CONTROL =
 		12;
 	
+	/** The display width in millimeters, may be {@code 0} if unknown. */
+	byte DISPLAY_WIDTH_MM =
+		13;
+	
+	/** The display height in millimeters, may be {@code 0} if unknown. */
+	byte DISPLAY_HEIGHT_MM =
+		14;
+	
+	/** The dots per inch for the width, {@code 0} if unknown. */
+	byte DISPLAY_WIDTH_DPI =
+		15;
+	
+	/** The dots per inch for the height, {@code 0} if unknown. */
+	byte DISPLAY_HEIGHT_DPI =
+		16;
+	
+	/** Unique display ID. */
+	byte DISPLAY_ID =
+		17;
+	
 	/** The number of supported metrics. */
 	byte NUM_METRICS =
-		13;
+		18;
 }

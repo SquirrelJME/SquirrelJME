@@ -303,8 +303,19 @@ public class FBUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public int metric(int __metric)
+	public int metric(UIDisplayBracket __display, int __metric)
 		throws MLECallError
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Returns the virtual display widget for the framebuffer UI.
+	 * 
+	 * @return The display for this UI.
+	 * @since 2023/01/12
+	 */
+	public UIDisplayBracket virtualDisplay()
 	{
 		throw Debugging.todo();
 	}

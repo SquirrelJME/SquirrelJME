@@ -77,18 +77,18 @@ public class TestUIFormShelfInvalid
 	{
 		// Check to see if forms are actually supported, if not then we cannot
 		// check if it is invalid
-		if (0 == __backend.metric(UIMetricType.UIFORMS_SUPPORTED))
+		if (0 == __backend.metric(null, UIMetricType.UIFORMS_SUPPORTED))
 			throw new UntestableException("UIForms Not Supported!");
 		
 		UIItemBracket fake;
 		switch (__index)
 		{
 			case 0:
-				__backend.metric(-1);
+				__backend.metric(null, -1);
 				break;
 			
 			case 1:
-				__backend.metric(UIMetricType.NUM_METRICS);
+				__backend.metric(null, UIMetricType.NUM_METRICS);
 				break;
 			
 			case 2:

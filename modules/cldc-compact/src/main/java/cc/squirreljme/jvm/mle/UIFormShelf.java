@@ -22,7 +22,7 @@ import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 
 /**
- * This is the shelf which manages all of the form based user interface that
+ * This is the shelf which manages all the form based user interface that
  * LCDUI uses and such.
  * 
  * Every item on the form has an index, while some have special index numbers
@@ -316,15 +316,17 @@ public final class UIFormShelf
 	 * Returns a metric which describes something about the user interface
 	 * forms implementation or other details about the system.
 	 * 
+	 * @param __display The display to get the information from.
 	 * @param __metric One of {@link UIMetricType}. The metric
 	 * {@link UIMetricType#UIFORMS_SUPPORTED} is always a valid metric and
 	 * must be supported, even if the implementation lacks forms.
 	 * @return The value of the metric.
 	 * @throws MLECallError If the metric is out of range or forms are not
-	 * supported and the metric is not {@link UIMetricType#UIFORMS_SUPPORTED}.
+	 * supported and the metric is not {@link UIMetricType#UIFORMS_SUPPORTED},
+	 * or {@code __display} is {@code null} when {@code __display} is null.
 	 * @since 2020/06/30
 	 */
-	public static native int metric(int __metric)
+	public static native int metric(UIDisplayBracket __display, int __metric)
 		throws MLECallError;
 	
 	/**

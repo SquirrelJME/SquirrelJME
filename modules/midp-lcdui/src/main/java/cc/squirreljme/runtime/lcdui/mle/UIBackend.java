@@ -305,7 +305,8 @@ public interface UIBackend
 	/**
 	 * Returns a metric which describes something about the user interface
 	 * forms implementation or other details about the system.
-	 * 
+	 *
+	 * @param __display The display to get the metric from.
 	 * @param __metric One of {@link UIMetricType}. The metric
 	 * {@link UIMetricType#UIFORMS_SUPPORTED} is always a valid metric and
 	 * must be supported, even if the implementation lacks forms.
@@ -314,7 +315,7 @@ public interface UIBackend
 	 * supported and the metric is not {@link UIMetricType#UIFORMS_SUPPORTED}.
 	 * @since 2020/06/30
 	 */
-	int metric(int __metric)
+	int metric(UIDisplayBracket __display, int __metric)
 		throws MLECallError;
 	
 	/**
