@@ -10,6 +10,10 @@
 package cc.squirreljme.jvm.mle.callbacks;
 
 import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
+import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
+import cc.squirreljme.jvm.mle.constants.UIKeyModifier;
+import cc.squirreljme.jvm.mle.constants.UIMouseButton;
+import cc.squirreljme.jvm.mle.constants.UIMouseEventType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 
 /**
@@ -21,6 +25,40 @@ import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 public interface UIDrawableCallback
 	extends ShelfCallback
 {
+	/**
+	 * Request to exit the drawable, usually means the application is being
+	 * closed or attempted to be closed.
+	 *
+	 * @param __drawable The form being exited.
+	 * @since 2020/09/12
+	 */
+	void exitRequest(UIDrawableBracket __drawable);
+	
+	/**
+	 * This is called on a keyboard/joystick action.
+	 *
+	 * @param __drawable The item acted on.
+	 * @param __event One of {@link UIKeyEventType}.
+	 * @param __keyCode Key code for the event.
+	 * @param __modifiers Bit mask of {@link UIKeyModifier}.
+	 * @since 2020/07/19
+	 */
+	void eventKey(UIDrawableBracket __drawable, int __event,
+		int __keyCode, int __modifiers);
+	
+	/**
+	 * This is called on a mouse action.
+	 *
+	 * @param __drawable The item acted on.
+	 * @param __event One of {@link UIMouseEventType}.
+	 * @param __button One of {@link UIMouseButton}.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __modifiers Bit mask of {@link UIKeyModifier}.
+	 * @since 2020/07/19
+	 */
+	void eventMouse(UIDrawableBracket __drawable, int __event,
+		int __button, int __x, int __y, int __modifiers);
 	
 	/**
 	 * Callback that is used to draw a given drawable item.

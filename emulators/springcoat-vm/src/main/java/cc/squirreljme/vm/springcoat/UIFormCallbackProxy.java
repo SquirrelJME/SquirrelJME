@@ -9,11 +9,15 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.brackets.UIDisplayObject;
+import cc.squirreljme.vm.springcoat.brackets.UIFormObject;
+import cc.squirreljme.vm.springcoat.brackets.UIItemObject;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
@@ -62,51 +66,39 @@ public class UIFormCallbackProxy
 		switch (__method.toString())
 		{
 			case "eventKey:(Lcc/squirreljme/jvm/mle/brackets/" +
-				"UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/" +
-				"UIItemBracket;III)V":
+				"UIDrawableBracket;III)V":
 				this.callback.eventKey(
-					MLEUIForm.__form(__args[0]).form,
-					MLEUIForm.__item(__args[1]).item,
+					UIFormCallbackProxy.__drawableBracket(__args[0]),
+					(int)__args[1],
 					(int)__args[2],
-					(int)__args[3],
-					(int)__args[4]);
+					(int)__args[3]);
 				return null;
 				
 			case "eventMouse:(Lcc/squirreljme/jvm/mle/brackets/" +
-				"UIFormBracket;Lcc/squirreljme/jvm/mle/brackets/" +
-				"UIItemBracket;IIIII)V":
+				"UIDrawableBracket;IIIII)V":
 				this.callback.eventMouse(
-					MLEUIForm.__form(__args[0]).form,
-					MLEUIForm.__item(__args[1]).item,
+					UIFormCallbackProxy.__drawableBracket(__args[0]),
+					(int)__args[1],
 					(int)__args[2],
 					(int)__args[3],
 					(int)__args[4],
-					(int)__args[5],
-					(int)__args[6]);
+					(int)__args[5]);
 				return null;
 				
 			case "exitRequest:(Lcc/squirreljme/jvm/mle/brackets/" +
-				"UIFormBracket;)V":
+				"UIDrawableBracket;)V":
 				this.callback.exitRequest(
-					MLEUIForm.__form(__args[0]).form);
+					UIFormCallbackProxy.__drawableBracket(__args[0]));
 				return null;
 				
 			case "paint:(Lcc/squirreljme/jvm/mle/brackets/" +
 				"UIDrawableBracket;" +
 				"IIILjava/lang/Object;I[IIIIII)V":
 				{
-					UIDrawableBracket argZero;
-					if (__args[0] instanceof UIFormBracket)
-						argZero = MLEUIForm.__form(__args[0]).form;
-					else if (__args[1] instanceof UIItemBracket)
-						argZero = MLEUIForm.__item(__args[1]).item;
-					else
-						throw Debugging.todo();
-					
 					SpringArrayObjectInteger pal =
 						(SpringArrayObjectInteger)__args[6];
 					this.callback.paint(
-						argZero,
+						UIFormCallbackProxy.__drawableBracket(__args[0]),
 						(int)__args[1],
 						(int)__args[2],
 						(int)__args[3],
@@ -148,5 +140,24 @@ public class UIFormCallbackProxy
 			default:
 				throw Debugging.oops(__method);
 		}
+	}
+	
+	/**
+	 * Maps the drawable bracket.
+	 * 
+	 * @param __arg The argument to map.
+	 * @return The drawable bracket.
+	 * @since 2023/01/13
+	 */
+	private static UIDrawableBracket __drawableBracket(Object __arg)
+	{
+		if (__arg instanceof UIFormObject)
+			return MLEUIForm.__form(__arg).form;
+		else if (__arg instanceof UIItemObject)
+			return MLEUIForm.__item(__arg).item;
+		else if (__arg instanceof UIDisplayObject)
+			return MLEUIForm.__display(__arg).display;
+		else
+			throw Debugging.todo(__arg.getClass().toString());
 	}
 }

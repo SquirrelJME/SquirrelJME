@@ -9,7 +9,6 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
@@ -20,7 +19,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  * @since 2020/10/03
  */
 public class UIDisplayCallbackAdapter
-	extends SpringCallbackAdapter
+	extends UIDrawableCallbackAdapter
 	implements UIDisplayCallback
 {
 	/** The class used to call back. */
@@ -54,23 +53,5 @@ public class UIDisplayCallbackAdapter
 			MethodNameAndType.ofArguments("later", null,
 				"I", "I"),
 			__displayId, __serialId);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/01/05
-	 */
-	@Override
-	public void paint(UIDrawableBracket __drawable, int __pf, int __bw,
-		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
-		int __sw, int __sh, int __special)
-	{
-		this.invokeCallback(
-			MethodNameAndType.ofArguments("paint", null,
-				"Lcc/squirreljme/jvm/mle/brackets/UIDrawableBracket;",
-				"I", "I",
-				"I", "Ljava/lang/Object;", "I", "[I", "I", "I",
-				"I", "I", "I"), __drawable, __pf, __bw, __bh, __buf, __offset,
-			__pal, __sx, __sy, __sw, __sh, __special);
 	}
 }
