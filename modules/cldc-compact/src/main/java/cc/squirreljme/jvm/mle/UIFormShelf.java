@@ -23,7 +23,7 @@ import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 
 /**
- * This is the shelf which manages all of the form based user interface that
+ * This is the shelf which manages all the form based user interface that
  * LCDUI uses and such.
  * 
  * Every item on the form has an index, while some have special index numbers

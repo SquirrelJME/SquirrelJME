@@ -51,7 +51,7 @@ final class __MLEUIThread__
 	 * @since 2020/09/12
 	 */
 	@Override
-	public void eventKey(UIFormBracket __form, UIItemBracket __item,
+	public void eventKey(UIDrawableBracket __drawable,
 		int __event, int __keyCode, int __modifiers)
 	{
 		// Debug
@@ -59,7 +59,11 @@ final class __MLEUIThread__
 			System.identityHashCode(__form), System.identityHashCode(__item),
 			__event, __keyCode, __modifiers);*/
 		
-		DisplayWidget widget = StaticDisplayState.locate(__item);
+		if (!(__drawable instanceof UIWidgetBracket))
+			return;
+		
+		DisplayWidget widget = StaticDisplayState.locate(
+			(UIItemBracket)__drawable);
 		
 		// Commands are special key events
 		if (__event == UIKeyEventType.COMMAND_ACTIVATED)
@@ -122,15 +126,17 @@ final class __MLEUIThread__
 			}
 			
 			// Provided the position is valid, try to find an item to activate
-			if (pos != UIItemPosition.NOT_ON_FORM)
+			if (pos != UIItemPosition.NOT_ON_FORM &&
+				(widget instanceof Displayable))
 			{
 				// Locate the item and try to execute the command if it is one
 				UIItemBracket item = UIFormShelf.formItemAtPosition(
-					__form, pos);
+					((Displayable)widget)._uiForm, pos);
 				if (item != null)
 				{
 					// If this is mapped to a command then activate it
-					DisplayWidget attempt = StaticDisplayState.locate(__item);
+					DisplayWidget attempt = StaticDisplayState.locate(
+						(UIItemBracket)__drawable);
 					if (attempt instanceof __CommandWidget__)
 						((__CommandWidget__)attempt).__activate();
 					
@@ -179,7 +185,7 @@ final class __MLEUIThread__
 	 * @since 2020/09/12
 	 */
 	@Override
-	public void eventMouse(UIFormBracket __form, UIItemBracket __item,
+	public void eventMouse(UIDrawableBracket __drawable,
 		int __event, int __button, int __x, int __y, int __modifiers)
 	{
 		// Debug
@@ -194,11 +200,11 @@ final class __MLEUIThread__
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void exitRequest(UIFormBracket __form)
+	public void exitRequest(UIDrawableBracket __drawable)
 	{
 		// Debug
 		Debugging.debugNote("exitRequest(%08x) @ %s",
-			System.identityHashCode(__form), Thread.currentThread());
+			System.identityHashCode(__drawable), Thread.currentThread());
 			
 		// Obtain the application we are actually running, since this
 		// could be done different for different ones
