@@ -249,34 +249,14 @@ final class __MLEUIThread__
 	 * @since 2020/10/03
 	 */
 	@Override
-	public void later(int __displayId, int __serialId)
+	public void later(UIDisplayBracket __display, int __serialId)
 	{
-		// Call with the wrong ID? Ignore this
-		if (__displayId != System.identityHashCode(this))
+		DisplayWidget widget = StaticDisplayState.locate(__display);
+		if (!(widget instanceof Display))
 			return;
 		
-		// Look to see if it is a valid call
-		Integer key = __serialId;
-		synchronized (Display.class)
-		{
-			Map<Integer, Runnable> serialRuns = Display._SERIAL_RUNS;
-			
-			// Run it
-			Runnable runner = serialRuns.get(key);
-			if (runner != null)
-				try
-				{
-					runner.run();
-				}
-				finally
-				{
-					// Always clear it, even with failures
-					serialRuns.remove(key);
-					
-					// Notify all the threads that something happened
-					Display.class.notifyAll();
-				}
-		}
+		// Call the display callback
+		((Display)widget).__serialRun(__serialId);
 	}
 	
 	/**

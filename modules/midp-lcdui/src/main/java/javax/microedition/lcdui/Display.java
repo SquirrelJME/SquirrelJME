@@ -21,6 +21,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
@@ -33,6 +34,7 @@ import javax.microedition.midlet.MIDlet;
 
 @SuppressWarnings("OverlyComplexClass")
 public class Display
+	implements DisplayWidget
 {
 	/** The soft-key for the left command. */
 	static final int _SOFTKEY_LEFT_COMMAND =
@@ -208,8 +210,8 @@ public class Display
 	public static final int TAB =
 		4;
 	
-	/** Serial runs of this method. */
-	static final Map<Integer, Runnable> _SERIAL_RUNS =
+	/** Serial runs of a given method for this display. */
+	final Map<Integer, Runnable> _serialRuns =
 		new LinkedHashMap<>();
 	
 	/** The number of times there has been a non-unique serial run. */
@@ -261,8 +263,12 @@ public class Display
 				bgThread.start();
 			}
 			
+			// Register this object for the native display
+			UIDisplayBracket uiDisplay = this._uiDisplay;
+			StaticDisplayState.register(this, uiDisplay);
+			
 			// Register the display for callbacks
-			UIBackendFactory.getInstance(true).callback(this,
+			UIBackendFactory.getInstance(true).callback(uiDisplay,
 				(UIDisplayCallback)StaticDisplayState.callback());
 		}
 	}
@@ -283,28 +289,8 @@ public class Display
 	public void callSerially(Runnable __run)
 		throws NullPointerException
 	{
-		// Perform the serialization call
-		synchronized (Display.class)
-		{
-			int idRunner = this.__queueSerialRunner(__run, false);
-			
-			// Constantly loop waiting for the call to be gone
-			/*
-			for (Map<Integer, Runnable> serialRuns = Display._SERIAL_RUNS;;)
-				try
-				{
-					// If this disappeared from the map then it was invoked
-					if (!serialRuns.containsKey(idRunner))
-						break;
-					
-					// Wait for trigger or timeout
-					Display.class.wait(1_000L);
-				}
-				catch (InterruptedException ignored)
-				{
-				}
-			 */
-		}
+		// Enqueue serialized call
+		this.__queueSerialRunner(__run);
 	}
 	
 	/**
@@ -1154,7 +1140,7 @@ public class Display
 		this._current = __show;
 		
 		// Notify that it was shown
-		this.__queueSerialRunner(new __NotifyShow__(__show), false);
+		this.__queueSerialRunner(new __NotifyShow__(__show));
 	}
 	
 	/**
@@ -1215,41 +1201,76 @@ public class Display
 	
 	/**
 	 * Queues the serial runner.
-	 * 
+	 *
 	 * @param __run The method to run.
-	 * @param __unique Is this a unique runner that can only be called only
-	 * once?
 	 * @return The identifier for the runner item.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/27
 	 */
 	@SuppressWarnings({"WrapperTypeMayBePrimitive"})
-	final int __queueSerialRunner(Runnable __run, boolean __unique)
+	final int __queueSerialRunner(Runnable __run)
 		throws NullPointerException
 	{
 		if (__run == null)
 			throw new NullPointerException("NARG");
 		
-		// Get the identifiers for this display and the run call
-		int idDisplay = System.identityHashCode(StaticDisplayState.callback());
+		// Get next ID to use.
 		Integer idRunner;
-		
-		// Perform the serialization call
 		synchronized (Display.class)
 		{
-			idRunner = (__unique ? System.identityHashCode(__run) :
-				(++Display._NON_UNIQUE_SERIAL_RUNS));
-			
-			// Store into the serial runner
-			Map<Integer, Runnable> serialRuns = Display._SERIAL_RUNS;
-			serialRuns.put(idRunner, __run);
-			
-			// Perform the call so it is done later
-			UIBackendFactory.getInstance(true).later(idDisplay, idRunner);
+			idRunner = (++Display._NON_UNIQUE_SERIAL_RUNS);
 		}
+		
+		// Perform the serialization call
+		synchronized (this)
+		{
+			// Store into the serial runner
+			Map<Integer, Runnable> serialRuns = this._serialRuns;
+			serialRuns.put(idRunner, __run);
+		}
+		
+		// Perform the call so it is done later
+		UIBackendFactory.getInstance(true)
+			.later(this._uiDisplay, idRunner);
 		
 		// This is the ID used to refer to this runner
 		return idRunner;
+	}
+	
+	/**
+	 * Performs a serial run.
+	 * 
+	 * @param __serialId The serial run ID.
+	 * @since 2023/01/14
+	 */
+	protected void __serialRun(int __serialId)
+	{
+		// Look to see if it is a valid call
+		Integer key = __serialId;
+		Runnable runner;
+		synchronized (this)
+		{
+			// Locate the runner
+			runner = this._serialRuns.get(key);
+		}
+		
+		// Run it
+		try
+		{
+			if (runner != null)
+				runner.run();
+		}
+		finally
+		{
+			synchronized (this)
+			{
+				// Always clear it, even with failures
+				this._serialRuns.remove(key);
+				
+				// Notify all the display threads that something happened
+				this.notifyAll();
+			}
+		}
 	}
 	
 	/**

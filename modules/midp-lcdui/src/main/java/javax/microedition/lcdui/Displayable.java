@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
@@ -231,6 +232,7 @@ public abstract class Displayable
 	 * @return The ticker being shown or {@code null} if there is none.
 	 * @since 2018/03/26
 	 */
+	@Api
 	public Ticker getTicker()
 	{
 		return this._ticker;
@@ -253,6 +255,7 @@ public abstract class Displayable
 	 * 
 	 * @since 2020/09/27
 	 */
+	@Api
 	public void invalidateCommandLayout()
 	{
 		if (this.__isShown())
@@ -370,6 +373,7 @@ public abstract class Displayable
 	 * to clear it.
 	 * @since 2018/03/26
 	 */
+	@Api
 	public void setTicker(Ticker __t)
 	{
 		// Removing old ticker?
