@@ -18,7 +18,6 @@ import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
 /**
@@ -32,13 +31,14 @@ public class NativeUIBackend
 {
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/07/19
+	 * @since 2023/01/14
 	 */
 	@Override
-	public void callback(Object __ref, UIDisplayCallback __dc)
+	public void callback(UIDisplayBracket __display,
+		UIDisplayCallback __callback)
 		throws MLECallError
 	{
-		UIFormShelf.callback(__ref, __dc);
+		UIFormShelf.callback(__display, __callback);
 	}
 	
 	/**
@@ -72,6 +72,17 @@ public class NativeUIBackend
 		throws MLECallError
 	{
 		return UIFormShelf.displayCurrent(__display);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/01/14
+	 */
+	@Override
+	public void displayShow(UIDisplayBracket __display, boolean __show)
+		throws MLECallError
+	{
+		UIFormShelf.displayShow(__display, __show);
 	}
 	
 	/**
@@ -289,10 +300,10 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public void later(int __displayId, int __serialId)
+	public void later(UIDisplayBracket __display, int __serialId)
 		throws MLECallError
 	{
-		UIFormShelf.later(__displayId, __serialId);
+		UIFormShelf.later(__display, __serialId);
 	}
 	
 	/**

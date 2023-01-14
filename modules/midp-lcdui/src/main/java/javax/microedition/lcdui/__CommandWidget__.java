@@ -24,6 +24,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2020/09/27
  */
+@Deprecated
 final class __CommandWidget__
 	implements DisplayWidget
 {
@@ -44,6 +45,7 @@ final class __CommandWidget__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/27
 	 */
+	@Deprecated
 	__CommandWidget__(Displayable __owner, Command __action)
 		throws NullPointerException
 	{
@@ -73,6 +75,7 @@ final class __CommandWidget__
 	 * 
 	 * @since 2020/09/27
 	 */
+	@Deprecated
 	final void __activate()
 	{
 		// Do nothing if the owner is gone.
@@ -94,6 +97,7 @@ final class __CommandWidget__
 	 * 
 	 * @since 2021/11/30
 	 */
+	@Deprecated
 	final void __update()
 	{
 		// Set item text

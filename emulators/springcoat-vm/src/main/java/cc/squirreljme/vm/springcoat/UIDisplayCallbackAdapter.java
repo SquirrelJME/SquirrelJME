@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIDisplayCallback;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
@@ -47,11 +48,11 @@ public class UIDisplayCallbackAdapter
 	 * @since 2020/10/03
 	 */
 	@Override
-	public void later(int __displayId, int __serialId)
+	public void later(UIDisplayBracket __display, int __serialId)
 	{
 		this.invokeCallback(
 			MethodNameAndType.ofArguments("later", null,
-				"I", "I"),
-			__displayId, __serialId);
+				"Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;",
+				"I"), this.mapDrawable(__display), __serialId);
 	}
 }

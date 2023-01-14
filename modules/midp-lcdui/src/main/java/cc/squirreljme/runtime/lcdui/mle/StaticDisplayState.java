@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.lcdui.mle;
 
+import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
@@ -43,7 +45,7 @@ public final class StaticDisplayState
 		new LinkedList<>();
 	
 	/** The cached forms for {@link DisplayWidget}. */
-	private static final Map<Reference<DisplayWidget>, UIWidgetBracket>
+	private static final Map<Reference<DisplayWidget>, UIDrawableBracket>
 		_WIDGETS =
 		new LinkedHashMap<>();
 	
@@ -162,7 +164,7 @@ public final class StaticDisplayState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/20
 	 */
-	public static DisplayWidget locate(UIWidgetBracket __native)
+	public static DisplayWidget locate(UIDrawableBracket __native)
 		throws NoSuchElementException, NullPointerException
 	{
 		if (__native == null)
@@ -172,7 +174,7 @@ public final class StaticDisplayState
 		UIBackend instance = UIBackendFactory.getInstance(true);
 		synchronized (StaticDisplayState.class)
 		{
-			for (Map.Entry<Reference<DisplayWidget>, UIWidgetBracket> e :
+			for (Map.Entry<Reference<DisplayWidget>, UIDrawableBracket> e :
 				StaticDisplayState._WIDGETS.entrySet())
 			{
 				if (instance.equals(__native, e.getValue()))
@@ -198,7 +200,7 @@ public final class StaticDisplayState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/14
 	 */
-	public static UIWidgetBracket locate(DisplayWidget __widget)
+	public static UIDrawableBracket locate(DisplayWidget __widget)
 		throws NoSuchElementException, NullPointerException
 	{
 		return StaticDisplayState.locate(__widget, Integer.MIN_VALUE);
@@ -216,7 +218,7 @@ public final class StaticDisplayState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/14
 	 */
-	public static UIWidgetBracket locate(DisplayWidget __widget, int __type)
+	public static UIDrawableBracket locate(DisplayWidget __widget, int __type)
 		throws IllegalArgumentException, NoSuchElementException,
 			NullPointerException
 	{
@@ -238,7 +240,7 @@ public final class StaticDisplayState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/26
 	 */
-	public static UIWidgetBracket locate(DisplayWidget __widget, int __type,
+	public static UIDrawableBracket locate(DisplayWidget __widget, int __type,
 		UIBackend __backend)
 		throws IllegalArgumentException, NoSuchElementException,
 			NullPointerException
@@ -247,26 +249,32 @@ public final class StaticDisplayState
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error EB39 Invalid item type. (The type)}
-		if ((__type < UIItemType.FORM && __type != Integer.MIN_VALUE) ||
+		if ((__type < UIItemType.DISPLAY && __type != Integer.MIN_VALUE) ||
 			__type > UIItemType.NUM_TYPES)
 			throw new IllegalArgumentException("EB39 " + __type);
 		
 		// Would be previously cached
 		synchronized (StaticDisplayState.class)
 		{
-			for (Map.Entry<Reference<DisplayWidget>, UIWidgetBracket> e :
+			for (Map.Entry<Reference<DisplayWidget>, UIDrawableBracket> e :
 				StaticDisplayState._WIDGETS.entrySet())
 			{
 				DisplayWidget possible = e.getKey().get();
 				if (possible == __widget)
 				{
+					UIDrawableBracket value = e.getValue();
+					
 					// Are we looking for a specific type of item?
 					if (__type != Integer.MIN_VALUE)
-						if (__type != __backend.widgetPropertyInt(e.getValue(),
+						if (__type == UIItemType.DISPLAY &&
+							!(value instanceof UIDisplayBracket))
+							continue;
+						else if (__type != __backend.widgetPropertyInt(
+							(UIWidgetBracket)value,
 							UIWidgetProperty.INT_UIITEM_TYPE, 0))
 							continue;
 					
-					return e.getValue();
+					return value;
 				}
 			}
 		}
@@ -287,14 +295,14 @@ public final class StaticDisplayState
 		synchronized (StaticDisplayState.class)
 		{
 			ReferenceQueue<DisplayWidget> queue = StaticDisplayState._QUEUE;
-			Map<Reference<DisplayWidget>, UIWidgetBracket> widgets =
+			Map<Reference<DisplayWidget>, UIDrawableBracket> widgets =
 				StaticDisplayState._WIDGETS;
 			
 			// If there is anything in the queue, clear it out
 			for (Reference<? extends DisplayWidget> ref = queue.poll();
 				ref != null; ref = queue.poll())
 			{
-				UIWidgetBracket widget = widgets.get(ref);
+				UIDrawableBracket widget = widgets.get(ref);
 				
 				// Remove from the mapping since it is gone now
 				widgets.remove(ref);
@@ -344,7 +352,7 @@ public final class StaticDisplayState
 	 * @since 2020/07/01
 	 */
 	public static void register(DisplayWidget __widget,
-		UIWidgetBracket __native)
+		UIDrawableBracket __native)
 		throws NullPointerException
 	{
 		if (__widget == null || __native == null)
