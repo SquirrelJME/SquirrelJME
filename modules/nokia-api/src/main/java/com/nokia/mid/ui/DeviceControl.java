@@ -68,7 +68,8 @@ public class DeviceControl
 		
 		// If controlling the backlight is supported, allow it to be changed
 		UIBackend backend = UIBackendFactory.getInstance(true);
-		if (backend.metric(UIMetricType.SUPPORTS_BACKLIGHT_CONTROL) == 0)
+		if (backend.metric(backend.displays()[0],
+			UIMetricType.SUPPORTS_BACKLIGHT_CONTROL) == 0)
 			return;
 		
 		throw Debugging.todo();

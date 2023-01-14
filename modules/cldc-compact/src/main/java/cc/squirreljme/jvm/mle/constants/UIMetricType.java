@@ -13,7 +13,7 @@ import cc.squirreljme.jvm.mle.UIFormShelf;
 
 /**
  * This contains information on UI metrics used by
- * {@link UIFormShelf#metric(int)}.
+ * {@link UIFormShelf#metric(cc.squirreljme.jvm.mle.brackets.UIDisplayBracket, int)}.
  *
  * @since 2020/06/30
  */
