@@ -843,7 +843,8 @@ public abstract class Canvas
 			
 			// Determine the color to draw
 			int bgColor = UIBackendFactory.getInstance(true)
-				.metric(UIMetricType.COLOR_CANVAS_BACKGROUND);
+				.metric(this._display._uiDisplay,
+					UIMetricType.COLOR_CANVAS_BACKGROUND);
 			
 			// Draw entire background
 			__gfx.setAlphaColor(bgColor | 0xFF_000000);

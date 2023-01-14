@@ -411,7 +411,7 @@ public class Display
 		UIBackend backend = UIBackendFactory.getInstance(true);
 		
 		// Supports any kind of input?
-		if (0 != backend.metric(UIMetricType.INPUT_FLAGS))
+		if (0 != backend.metric(_uiDisplay, UIMetricType.INPUT_FLAGS))
 			rv |= Display.SUPPORTS_INPUT_EVENTS;
 		
 		return rv;
@@ -619,7 +619,7 @@ public class Display
 	public int getHeight()
 	{
 		return UIBackendFactory.getInstance(true)
-			.metric(UIMetricType.DISPLAY_MAX_HEIGHT);
+			.metric(_uiDisplay, UIMetricType.DISPLAY_MAX_HEIGHT);
 	}
 	
 	public IdleItem getIdleItem()
@@ -694,7 +694,7 @@ public class Display
 	public int getWidth()
 	{
 		return UIBackendFactory.getInstance(true)
-			.metric(UIMetricType.DISPLAY_MAX_WIDTH);
+			.metric(_uiDisplay, UIMetricType.DISPLAY_MAX_WIDTH);
 	}
 	
 	/**
@@ -705,7 +705,7 @@ public class Display
 	 */
 	public boolean hasPointerEvents()
 	{
-		return (UIBackendFactory.getInstance(true).metric(
+		return (UIBackendFactory.getInstance(true).metric(_uiDisplay,
 			UIMetricType.INPUT_FLAGS) & UIInputFlag.POINTER) ==
 			(UIInputFlag.POINTER);
 	}
@@ -718,7 +718,7 @@ public class Display
 	 */
 	public boolean hasPointerMotionEvents()
 	{
-		return (UIBackendFactory.getInstance(true).metric(
+		return (UIBackendFactory.getInstance(true).metric(_uiDisplay,
 			UIMetricType.INPUT_FLAGS) &
 			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION)) ==
 			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION);
@@ -743,7 +743,7 @@ public class Display
 	 */
 	public boolean isColor()
 	{
-		return UIBackendFactory.getInstance(true).metric(
+		return UIBackendFactory.getInstance(true).metric(_uiDisplay,
 			UIMetricType.DISPLAY_MONOCHROMATIC) == 0;
 	}
 	
@@ -760,7 +760,7 @@ public class Display
 	@SuppressWarnings({"MagicNumber", "SwitchStatementWithTooFewBranches"})
 	public int numAlphaLevels()
 	{
-		switch (UIBackendFactory.getInstance(true).metric(
+		switch (UIBackendFactory.getInstance(true).metric(_uiDisplay,
 			UIMetricType.DISPLAY_PIXEL_FORMAT))
 		{
 				// If the display format is 16-bit, just use this here
@@ -788,7 +788,7 @@ public class Display
 	public int numColors()
 	{
 		int pf;
-		switch ((pf = UIBackendFactory.getInstance(true).metric(
+		switch ((pf = UIBackendFactory.getInstance(true).metric(_uiDisplay,
 			UIMetricType.DISPLAY_PIXEL_FORMAT)))
 		{
 			case UIPixelFormat.INT_RGB888:
@@ -1057,11 +1057,11 @@ public class Display
 				throw Debugging.todo();
 				
 			case Display.LIST_ELEMENT:
-				return backend.metric(UIMetricType.LIST_ITEM_HEIGHT);
+				return backend.metric(_uiDisplay, UIMetricType.LIST_ITEM_HEIGHT);
 				
 			case Display.MENU:
 			case Display.COMMAND:
-				return backend.metric(UIMetricType.COMMAND_BAR_HEIGHT);
+				return backend.metric(_uiDisplay, UIMetricType.COMMAND_BAR_HEIGHT);
 				
 				// {@squirreljme.error EB1o Cannot get the best image size of
 				// the specified element. (The element specifier)}

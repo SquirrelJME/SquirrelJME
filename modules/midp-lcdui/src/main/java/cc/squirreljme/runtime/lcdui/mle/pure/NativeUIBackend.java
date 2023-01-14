@@ -311,10 +311,10 @@ public class NativeUIBackend
 	 * @since 2020/07/19
 	 */
 	@Override
-	public int metric(int __metric)
+	public int metric(UIDisplayBracket __display, int __metric)
 		throws MLECallError
 	{
-		return UIFormShelf.metric(__metric);
+		return UIFormShelf.metric(__display, __metric);
 	}
 	
 	/**

@@ -345,8 +345,9 @@ public final class UIFormShelf
 	
 	/**
 	 * Returns a metric which describes something about the user interface
-	 * forms implementation or other details about the system.
-	 * 
+	 * forms implementation or other details about a given display.
+	 *
+	 * @param __display The display to get the metric of.
 	 * @param __metric One of {@link UIMetricType}. The metric
 	 * {@link UIMetricType#UIFORMS_SUPPORTED} is always a valid metric and
 	 * must be supported, even if the implementation lacks forms.
@@ -355,7 +356,7 @@ public final class UIFormShelf
 	 * supported and the metric is not {@link UIMetricType#UIFORMS_SUPPORTED}.
 	 * @since 2020/06/30
 	 */
-	public static native int metric(int __metric)
+	public static native int metric(UIDisplayBracket __display, int __metric)
 		throws MLECallError;
 	
 	/**
