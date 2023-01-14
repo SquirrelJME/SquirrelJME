@@ -30,10 +30,7 @@ import java.awt.DisplayMode;
 import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
-import java.lang.ref.Reference;
 import java.lang.reflect.InvocationTargetException;
-import java.util.IdentityHashMap;
-import java.util.Map;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -548,14 +545,15 @@ public final class SwingFormShelf
 	}
 	
 	/**
-	 * Handles {@link UIFormShelf#metric(int)}. 
+	 * Handles {@link UIFormShelf#metric(UIDisplayBracket, int)}. 
 	 * 
+	 * @param __display The display used.
 	 * @param __metricId The {@link UIMetricType}.
 	 * @return Metric value.
 	 * @throws MLECallError If the call is not valid.
 	 * @since 2020/07/01
 	 */
-	public static int metric(int __metricId)
+	public static int metric(UIDisplayBracket __display, int __metricId)
 		throws MLECallError
 	{
 		if (__metricId < 0 || __metricId >= UIMetricType.NUM_METRICS)

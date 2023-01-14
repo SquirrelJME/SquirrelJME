@@ -39,7 +39,7 @@
 #define SWINGUIFORM_ITEMNEW_DESC "(I)Lcc/squirreljme/jvm/mle/brackets/UIItemBracket;"
 #define SWINGUIFORM_FORMREFRESH_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIFormBracket;)V"
 #define SWINGUIFORM_LATER_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;I)V"
-#define SWINGUIFORM_METRIC_DESC "(I)I"
+#define SWINGUIFORM_METRIC_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;I)I"
 #define SWINGUIFORM_WIDGETPROPERTY_INT_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;III)V"
 #define SWINGUIFORM_WIDGETPROPERTY_STR_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;IILjava/lang/String;)V"
 #define SWINGUIFORM_WIDGETPROPERTY_GET_INT_DESC "(Lcc/squirreljme/jvm/mle/brackets/UIWidgetBracket;II)I"
@@ -239,11 +239,11 @@ JNIEXPORT void JNICALL Impl_mle_FormShelf_later(JNIEnv* env, jclass classy,
 }
 
 JNIEXPORT jint JNICALL Impl_mle_FormShelf_metric(JNIEnv* env, jclass classy,
-	jint metricId)
+	jobject display, jint metricId)
 {
 	return forwardCallStaticInteger(env, SWINGUIFORM_CLASSNAME,
 		"metric", SWINGUIFORM_METRIC_DESC,
-		metricId);
+		display, metricId);
 }
 
 JNIEXPORT void JNICALL Impl_mle_FormShelf_widgetPropertyInt(JNIEnv* env,
