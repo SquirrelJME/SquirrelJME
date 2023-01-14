@@ -34,16 +34,17 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 public interface UIBackend
 {
 	/**
-	 * Registers a display callback that is to be called when information about
-	 * displays changes.
+	 * Registers a callback for a display when it needs to be drawn or the
+	 * display state changes.
 	 * 
-	 * @param __ref The object this refers to, if it gets garbage collected
-	 * then this becomes invalidated.
-	 * @param __dc The display callback to use.
-	 * @throws MLECallError On null arguments.
-	 * @since 2020/10/03
+	 * @param __display The display that the callback will act under.
+	 * @param __callback The callback to register.
+	 * @throws MLECallError If {@code __display} is {@code null}.
+	 * @see UIDisplayCallback
+	 * @since 2023/01/14
 	 */
-	void callback(Object __ref, UIDisplayCallback __dc)
+	void callback(UIDisplayBracket __display,
+		UIDisplayCallback __callback)
 		throws MLECallError;
 	
 	/**
@@ -78,6 +79,21 @@ public interface UIBackend
 	 * @since 2020/07/01
 	 */
 	UIFormBracket displayCurrent(UIDisplayBracket __display)
+		throws MLECallError;
+	
+	/**
+	 * Shows the given display without having a form be displayed on the
+	 * display, this can be used for raw graphics operations such as canvases
+	 * and otherwise.
+	 * 
+	 * @param __display The display to show.
+	 * @param __show Should the display be shown or hidden?
+	 * @throws MLECallError If {@code __display} is {@code null} or there was
+	 * an error showing the display.
+	 * @since 2023/01/14
+	 */
+	void displayShow(UIDisplayBracket __display,
+		boolean __show)
 		throws MLECallError;
 	
 	/**
@@ -307,13 +323,13 @@ public interface UIBackend
 	
 	/**
 	 * Calls the given method serially within the main event handler.
-	 * 
-	 * @param __displayId The display identifier.
+	 *
+	 * @param __display The display identifier.
 	 * @param __serialId The serial identifier.
 	 * @throws MLECallError If the call is not valid.
 	 * @since 2020/10/03
 	 */
-	void later(int __displayId, int __serialId)
+	void later(UIDisplayBracket __display, int __serialId)
 		throws MLECallError;
 	
 	/**

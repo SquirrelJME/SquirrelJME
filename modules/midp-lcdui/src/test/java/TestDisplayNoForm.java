@@ -1,31 +1,37 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// SquirrelJME
+// Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.callbacks;
-
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import mleui.BaseBackend;
 
 /**
- * This callback is used for any calls the display system makes to applications
- * and otherwise.
+ * Tests that a display is shown without a form.
  *
- * @since 2020/10/03
+ * @since 2023/01/14
  */
-public interface UIDisplayCallback
-	extends ShelfCallback, UIDrawableCallback
+public class TestDisplayNoForm
+	extends BaseBackend
 {
 	/**
-	 * This is used to refer to a later invocation, by its ID.
-	 *
-	 * @param __display The display identifier.
-	 * @param __serialId The identity of the serialized call.
-	 * @since 2020/10/03
+	 * {@inheritDoc}
+	 * @since 2023/01/14
 	 */
-	void later(UIDisplayBracket __display, int __serialId);
+	@Override
+	public void test(UIBackend __backend, UIDisplayBracket __display)
+		throws Throwable
+	{
+		// Show it
+		__backend.displayShow(__display, true);
+		
+		// Hide it
+		__backend.displayShow(__display, false);
+	}
 }
