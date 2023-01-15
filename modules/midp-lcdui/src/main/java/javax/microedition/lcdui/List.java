@@ -94,7 +94,7 @@ public class List
 		this._type = __type;
 		
 		// Build new list
-		UIBackend backend = UIBackendFactory.getInstance(true);
+		UIBackend backend = this.__backend();
 		UIItemBracket uiList = backend.itemNew(UIItemType.LIST);
 		this._uiList = uiList;
 		
@@ -540,7 +540,7 @@ public class List
 	private void __refresh()
 	{
 		UIItemBracket uiList = this._uiList;
-		UIBackend backend = UIBackendFactory.getInstance(true);
+		UIBackend backend = this.__backend();
 		java.util.List<__ChoiceEntry__> choices = this._items.valuesAsList();
 		
 		// Set new size of the list

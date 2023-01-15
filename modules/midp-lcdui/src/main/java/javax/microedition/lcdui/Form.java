@@ -297,7 +297,7 @@ public class Form
 			return;
 		this._staleLayout = false;
 		
-		UIBackend backend = UIBackendFactory.getInstance(true);
+		UIBackend backend = this.__backend();
 		UIFormBracket uiForm = this.__getUiForm();
 		FormLayoutPolicy layout = this._layout;
 		
@@ -406,7 +406,7 @@ public class Form
 		// Queue this up for later, so it is forced to be redrawn
 		Display display = this._display;
 		if (display != null)
-			UIBackendFactory.getInstance(true)
+			this.__backend()
 				.formRefresh(this.__getUiForm());
 	}
 	
