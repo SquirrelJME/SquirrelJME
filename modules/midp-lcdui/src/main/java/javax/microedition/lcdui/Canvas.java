@@ -21,6 +21,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
@@ -263,7 +264,7 @@ public abstract class Canvas
 		StaticDisplayState.register(this, uiCanvas);
 		
 		// Show it on the form for this displayable
-		backend.formItemPosition(this._uiForm, uiCanvas, 0);
+		backend.formItemPosition(this.__getUiForm(), uiCanvas, 0);
 	}
 	
 	/**
@@ -373,7 +374,7 @@ public abstract class Canvas
 		
 		// Use the item's actual position
 		int uiPos = Display.__layoutSoftKeyToPos(__sk);
-		UIItemBracket item = backend.formItemAtPosition(this._uiForm, uiPos);
+		UIItemBracket item = backend.formItemAtPosition(this.__getUiForm(), uiPos);
 		if (item != null)
 			return new int[]{
 					backend.widgetPropertyInt(item,
@@ -701,7 +702,7 @@ public abstract class Canvas
 		// Depending on full-screen either choose the first position or the
 		// full-screen body of the form
 		UIBackend backend = UIBackendFactory.getInstance(true);
-		backend.formItemPosition(this._uiForm, this._uiCanvas, (__f ?
+		backend.formItemPosition(this.__getUiForm(), this._uiCanvas, (__f ?
 			UIItemPosition.BODY : 0));
 		
 		// Update form title
@@ -942,6 +943,38 @@ public abstract class Canvas
 		
 		// Call the notification handler
 		this.showNotify();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/01/14
+	 */
+	@Override
+	final __CommonState__ __stateInit(UIBackend __backend)
+		throws NullPointerException
+	{
+		return new __CanvasState__(__backend, this);
+	}
+	
+	/**
+	 * File selector state.
+	 * 
+	 * @since 2023/01/14
+	 */
+	static class __CanvasState__
+		extends Displayable.__DisplayableState__
+	{
+		/**
+		 * Initializes the backend state.
+		 *
+		 * @param __backend The backend used.
+		 * @param __self Self widget.
+		 * @since 2023/01/14
+		 */
+		__CanvasState__(UIBackend __backend, DisplayWidget __self)
+		{
+			super(__backend, __self);
+		}
 	}
 }
 

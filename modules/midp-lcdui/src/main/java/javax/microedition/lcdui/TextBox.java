@@ -11,6 +11,8 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.common.EditableText;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
 public class TextBox
 	extends Screen
@@ -146,6 +148,38 @@ public class TextBox
 	public int size()
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/01/14
+	 */
+	@Override
+	__CommonState__ __stateInit(UIBackend __backend)
+		throws NullPointerException
+	{
+		return new __TextBoxState__(__backend, this);
+	}
+	
+	/**
+	 * File selector state.
+	 * 
+	 * @since 2023/01/14
+	 */
+	static class __TextBoxState__
+		extends Screen.__ScreenState__
+	{
+		/**
+		 * Initializes the backend state.
+		 *
+		 * @param __backend The backend used.
+		 * @param __self Self widget.
+		 * @since 2023/01/14
+		 */
+		__TextBoxState__(UIBackend __backend, DisplayWidget __self)
+		{
+			super(__backend, __self);
+		}
 	}
 }
 

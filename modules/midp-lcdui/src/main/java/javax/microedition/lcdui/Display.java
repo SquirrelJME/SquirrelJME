@@ -1125,15 +1125,15 @@ public class Display
 		synchronized (StaticDisplayState.class)
 		{
 			// Set callback for the displayed form so it can receive events
-			backend.callback(__show._uiForm,
+			backend.callback(__show.__getUiForm(),
 				StaticDisplayState.callback());
 		}
 		
 		// Show the form on the display, as long as it is not already on there
 		UIDisplayBracket uiDisplay = this._uiDisplay;
 		UIFormBracket wasForm = backend.displayCurrent(uiDisplay);
-		if (wasForm == null || !backend.equals(__show._uiForm, wasForm))
-			backend.displayShow(uiDisplay, __show._uiForm);
+		if (wasForm == null || !backend.equals(__show.__getUiForm(), wasForm))
+			backend.displayShow(uiDisplay, __show.__getUiForm());
 		
 		// Set new parent
 		__show._display = this;

@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.font.FontUtilities;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
@@ -101,7 +102,7 @@ public class List
 		StaticDisplayState.register(this, uiList);
 		
 		// Show it on the form for this displayable
-		backend.formItemPosition(this._uiForm, uiList, 0);
+		backend.formItemPosition(this.__getUiForm(), uiList, 0);
 		
 		// Append all of the items to the list
 		for (int i = 0, n = __strs.length; i < n; i++)
@@ -638,6 +639,38 @@ public class List
 		__VolatileList__<__ChoiceEntry__> items = this._items;
 		for (int i = 0, n = flags.length; i < n; i++)
 			items.get(i)._selected = flags[i];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/01/14
+	 */
+	@Override
+	__CommonState__ __stateInit(UIBackend __backend)
+		throws NullPointerException
+	{
+		return new __ListState__(__backend, this);
+	}
+	
+	/**
+	 * File selector state.
+	 * 
+	 * @since 2023/01/14
+	 */
+	static class __ListState__
+		extends Screen.__ScreenState__
+	{
+		/**
+		 * Initializes the backend state.
+		 *
+		 * @param __backend The backend used.
+		 * @param __self Self widget.
+		 * @since 2023/01/14
+		 */
+		__ListState__(UIBackend __backend, DisplayWidget __self)
+		{
+			super(__backend, __self);
+		}
 	}
 }
 

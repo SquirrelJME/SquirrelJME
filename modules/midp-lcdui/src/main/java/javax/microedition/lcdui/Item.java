@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
@@ -301,6 +302,27 @@ public abstract class Item
 		Displayable displayable = this._displayable;
 		if (displayable instanceof Form)
 			((Form)displayable).__update();
+	}
+	
+	/**
+	 * Base state for items.
+	 * 
+	 * @since 2023/01/14
+	 */
+	abstract static class __ItemState__
+		extends Displayable.__CommonState__
+	{
+		/**
+		 * Initializes the backend state.
+		 *
+		 * @param __backend The backend used.
+		 * @param __self Self widget.
+		 * @since 2023/01/14
+		 */
+		__ItemState__(UIBackend __backend, DisplayWidget __self)
+		{
+			super(__backend, __self);
+		}
 	}
 }
 
