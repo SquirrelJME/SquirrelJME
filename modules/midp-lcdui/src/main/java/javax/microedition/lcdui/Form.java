@@ -14,7 +14,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
 public class Form
 	extends Screen
@@ -298,7 +297,8 @@ public class Form
 		this._staleLayout = false;
 		
 		UIBackend backend = this.__backend();
-		UIFormBracket uiForm = this.__getUiForm();
+		UIFormBracket uiForm = this.__state(
+			__DisplayableState__.class)._uiForm;
 		FormLayoutPolicy layout = this._layout;
 		
 		// Indicate we are in an update
@@ -407,7 +407,7 @@ public class Form
 		Display display = this._display;
 		if (display != null)
 			this.__backend()
-				.formRefresh(this.__getUiForm());
+				.formRefresh(this.__state(__DisplayableState__.class)._uiForm);
 	}
 	
 	/**

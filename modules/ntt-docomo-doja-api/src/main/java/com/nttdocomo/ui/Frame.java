@@ -60,7 +60,7 @@ public abstract class Frame
 			softKeys[i] = new Command("", Command.ITEM, i);
 		
 		// Use default background color
-		UIBackend backend = this.__backend();
+		UIBackend backend = UIBackendFactory.getInstance(true);
 		int defaultBgColor = backend
 				.metric(backend.displays()[0],
 					UIMetricType.COLOR_CANVAS_BACKGROUND) | 0xFF_000000;

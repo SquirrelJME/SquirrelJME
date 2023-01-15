@@ -398,7 +398,8 @@ public abstract class Displayable
 		
 		// We can always set the title for the widget as the form should be
 		// allocated
-		this.__backend().widgetProperty(this.__getUiTitle(),
+		this.__backend().widgetProperty(
+			this.__state(__DisplayableState__.class)._uiTitle,
 			UIWidgetProperty.STRING_LABEL, 0, __t);
 		
 		// Update the form title
@@ -415,22 +416,7 @@ public abstract class Displayable
 	@SerializedEvent
 	protected void sizeChanged(int __w, int __h)
 	{
-		// Implemented by sub-classes
-	}
-	
-	UIFormBracket __getUiForm()
-	{
-		return this.__state(__DisplayableState__.class)._uiForm;
-	}
-	
-	UIItemBracket __getUiTicker()
-	{
-		return this.__state(__DisplayableState__.class)._uiTicker;
-	}
-	
-	UIItemBracket __getUiTitle()
-	{
-		return this.__state(__DisplayableState__.class)._uiTitle;
+		// Implemented by subclasses
 	}
 	
 	/**
@@ -449,7 +435,7 @@ public abstract class Displayable
 		// When checking if shown, actually probe the current form on the
 		// display as another task may have taken the display from us
 		UIBackend backend = this.__backend();
-		return backend.equals(this.__getUiForm(),
+		return backend.equals(this.__state(__DisplayableState__.class)._uiForm,
 			backend.displayCurrent(display._uiDisplay));
 	}
 	
@@ -643,7 +629,7 @@ public abstract class Displayable
 		if (__layout == null)
 			throw new NullPointerException("NARG");
 		
-		UIFormBracket form = this.__getUiForm();
+		UIFormBracket form = this.__state(__DisplayableState__.class)._uiForm;
 		UIBackend backend = this.__backend();
 		
 		// If there is nothing here, clear it
@@ -732,7 +718,8 @@ public abstract class Displayable
 			useTitle = this._displayTitle;
 		
 		// Set the form title
-		this.__backend().widgetProperty(this.__getUiForm(),
+		this.__backend().widgetProperty(
+			this.__state(__DisplayableState__.class)._uiForm,
 			UIWidgetProperty.STRING_FORM_TITLE, 0, useTitle);
 		
 		// If this is a form, since we updated the title we should update
@@ -750,14 +737,16 @@ public abstract class Displayable
 	final void __updateTicker()
 	{
 		UIBackend backend = this.__backend();
-		UIFormBracket uiForm = this.__getUiForm();
+		UIFormBracket uiForm = this.__state(
+			__DisplayableState__.class)._uiForm;
 		
 		// Has this changed?
 		boolean hasChanged;
 		
 		// Is the ticker being removed?
 		Ticker ticker = this._ticker;
-		UIItemBracket uiTicker = this.__getUiTicker();
+		UIItemBracket uiTicker = this.__state(
+			__DisplayableState__.class)._uiTicker;
 		if (ticker == null)
 		{
 			// Remove the ticker if it is currently being displayed
@@ -853,7 +842,8 @@ public abstract class Displayable
 		
 		// Get current form size
 		return __d.__backend().widgetPropertyInt(
-			(__alt != null ? __alt : __d.__getUiForm()),
+			(__alt != null ? __alt :
+				__d.__state(__DisplayableState__.class)._uiForm),
 			UIWidgetProperty.INT_HEIGHT, 0);
 	}
 	
@@ -878,7 +868,8 @@ public abstract class Displayable
 		
 		// Get current form size
 		return __d.__backend().widgetPropertyInt(
-			(__alt != null ? __alt : __d.__getUiForm()),
+			(__alt != null ? __alt :
+				__d.__state(__DisplayableState__.class)._uiForm),
 			UIWidgetProperty.INT_WIDTH, 0);
 	}
 	

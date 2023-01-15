@@ -21,7 +21,6 @@ import cc.squirreljme.runtime.lcdui.font.FontUtilities;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
 public class List
 	extends Screen
@@ -102,7 +101,8 @@ public class List
 		StaticDisplayState.register(this, uiList);
 		
 		// Show it on the form for this displayable
-		backend.formItemPosition(this.__getUiForm(), uiList, 0);
+		backend.formItemPosition(
+			this.__state(__DisplayableState__.class)._uiForm, uiList, 0);
 		
 		// Append all of the items to the list
 		for (int i = 0, n = __strs.length; i < n; i++)

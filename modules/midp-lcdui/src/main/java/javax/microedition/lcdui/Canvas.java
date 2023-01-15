@@ -24,7 +24,6 @@ import cc.squirreljme.runtime.lcdui.event.KeyNames;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
 /**
  * The canvas acts as the base class for primary display interfaces that
@@ -222,9 +221,6 @@ public abstract class Canvas
 	public static final int UP =
 		1;
 	
-	/** The native display instance. */
-	final UIItemBracket _uiCanvas;
-	
 	/** Lock for repaints and servicing repaints. */
 	private final Object _repaintLock =
 		new Object();
@@ -255,16 +251,6 @@ public abstract class Canvas
 	 */
 	protected Canvas()
 	{
-		// Build new canvas
-		UIBackend backend = this.__backend();
-		UIItemBracket uiCanvas = backend.itemNew(UIItemType.CANVAS);
-		this._uiCanvas = uiCanvas;
-		
-		// Register self for future paint events
-		StaticDisplayState.register(this, uiCanvas);
-		
-		// Show it on the form for this displayable
-		backend.formItemPosition(this.__getUiForm(), uiCanvas, 0);
 	}
 	
 	/**
@@ -305,7 +291,8 @@ public abstract class Canvas
 	@Override
 	public int getHeight()
 	{
-		return Displayable.__getHeight(this, this._uiCanvas);
+		return Displayable.__getHeight(this,
+			this.__state(__CanvasState__.class)._uiCanvas);
 	}
 	
 	/**
@@ -374,7 +361,8 @@ public abstract class Canvas
 		
 		// Use the item's actual position
 		int uiPos = Display.__layoutSoftKeyToPos(__sk);
-		UIItemBracket item = backend.formItemAtPosition(this.__getUiForm(), uiPos);
+		UIItemBracket item = backend.formItemAtPosition(
+			this.__state(__DisplayableState__.class)._uiForm, uiPos);
 		if (item != null)
 			return new int[]{
 					backend.widgetPropertyInt(item,
@@ -411,7 +399,8 @@ public abstract class Canvas
 	@Override
 	public int getWidth()
 	{
-		return Displayable.__getWidth(this, this._uiCanvas);
+		return Displayable.__getWidth(this,
+			this.__state(__CanvasState__.class)._uiCanvas);
 	}
 	
 	/**
@@ -607,16 +596,16 @@ public abstract class Canvas
 		UIBackend instance = this.__backend();
 		
 		// Send repaint properties
-		instance.widgetProperty(this._uiCanvas,
+		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
 			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
 				UISpecialCode.REPAINT_KEY_X | __x);
-		instance.widgetProperty(this._uiCanvas,
+		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
 			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
 				UISpecialCode.REPAINT_KEY_Y | __y);
-		instance.widgetProperty(this._uiCanvas,
+		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
 			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
 				UISpecialCode.REPAINT_KEY_WIDTH | __w);
-		instance.widgetProperty(this._uiCanvas,
+		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
 			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
 				UISpecialCode.REPAINT_KEY_HEIGHT | __h);
 		
@@ -627,7 +616,7 @@ public abstract class Canvas
 		}
 		
 		// Execute the paint
-		instance.widgetProperty(this._uiCanvas,
+		instance.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
 			UIWidgetProperty.INT_SIGNAL_REPAINT, 0,
 			UISpecialCode.REPAINT_EXECUTE);
 	}
@@ -702,7 +691,9 @@ public abstract class Canvas
 		// Depending on full-screen either choose the first position or the
 		// full-screen body of the form
 		UIBackend backend = this.__backend();
-		backend.formItemPosition(this.__getUiForm(), this._uiCanvas, (__f ?
+		backend.formItemPosition(
+			this.__state(__DisplayableState__.class)._uiForm,
+			this.__state(__CanvasState__.class)._uiCanvas, (__f ?
 			UIItemPosition.BODY : 0));
 		
 		// Update form title
@@ -873,7 +864,7 @@ public abstract class Canvas
 				if (pending > 0)
 				{
 					// Clear all paints, since this could have been called
-					// multiple times and we may have done one
+					// multiple times, and we may have done one
 					this._pendingPaints = 0;
 					
 					// Signal that a repaint was done
@@ -894,7 +885,8 @@ public abstract class Canvas
 		UIBackend instance = this.__backend();
 		
 		// Only act on the canvas item
-		if (!instance.equals(__item, this._uiCanvas))
+		if (!instance.equals(__item,
+			this.__state(__CanvasState__.class)._uiCanvas))
 			return false;
 		
 		// Depends on the property
@@ -938,7 +930,7 @@ public abstract class Canvas
 	{
 		// Signal focus on this canvas since it has been shown
 		UIBackend backend = this.__backend();
-		backend.widgetProperty(this._uiCanvas,
+		backend.widgetProperty(this.__state(__CanvasState__.class)._uiCanvas,
 			UIWidgetProperty.INT_SIGNAL_FOCUS, 0, 0);
 		
 		// Call the notification handler
@@ -964,6 +956,9 @@ public abstract class Canvas
 	static class __CanvasState__
 		extends Displayable.__DisplayableState__
 	{
+		/** The native display instance. */
+		final UIItemBracket _uiCanvas;
+		
 		/**
 		 * Initializes the backend state.
 		 *
@@ -974,6 +969,16 @@ public abstract class Canvas
 		__CanvasState__(UIBackend __backend, DisplayWidget __self)
 		{
 			super(__backend, __self);
+			
+			// Build new canvas
+			UIItemBracket uiCanvas = __backend.itemNew(UIItemType.CANVAS);
+			this._uiCanvas = uiCanvas;
+			
+			// Register self for future paint events
+			StaticDisplayState.register(__self, uiCanvas);
+			
+			// Show it on the form for this displayable
+			__backend.formItemPosition(this._uiForm, uiCanvas, 0);
 		}
 	}
 }
