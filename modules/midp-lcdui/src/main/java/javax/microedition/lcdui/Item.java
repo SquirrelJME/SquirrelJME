@@ -15,7 +15,6 @@ import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
 public abstract class Item
 	extends __CommonWidget__
@@ -71,9 +70,6 @@ public abstract class Item
 	public static final int PLAIN =
 		0;
 	
-	/** The label item. */
-	final UIItemBracket _labelItem;
-	
 	/** The owning displayable. */
 	volatile Displayable _displayable;
 	
@@ -110,10 +106,6 @@ public abstract class Item
 	 */
 	Item(String __l)
 	{
-		// Setup label item
-		UIBackend backend = this.__backend();
-		this._labelItem = backend.itemNew(UIItemType.LABEL);
-		
 		// Set the label accordingly
 		this.__setLabel(__l);
 	}
@@ -295,7 +287,7 @@ public abstract class Item
 		
 		// Update the label
 		UIBackend backend = this.__backend();
-		backend.widgetProperty(this._labelItem,
+		backend.widgetProperty(this.__state(__ItemState__.class)._labelItem,
 			UIWidgetProperty.STRING_LABEL, 0, __l);
 		
 		// Perform an update on the form
@@ -312,6 +304,9 @@ public abstract class Item
 	abstract static class __ItemState__
 		extends Displayable.__CommonState__
 	{
+		/** The label item. */
+		final UIItemBracket _labelItem;
+		
 		/**
 		 * Initializes the backend state.
 		 *
@@ -322,6 +317,9 @@ public abstract class Item
 		__ItemState__(UIBackend __backend, DisplayWidget __self)
 		{
 			super(__backend, __self);
+			
+			// Setup label item
+			this._labelItem = __backend.itemNew(UIItemType.LABEL);
 		}
 	}
 }

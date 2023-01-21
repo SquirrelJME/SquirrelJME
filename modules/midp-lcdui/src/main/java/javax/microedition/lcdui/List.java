@@ -34,9 +34,6 @@ public class List
 	final __VolatileList__<__ChoiceEntry__> _items =
 		new __VolatileList__<>();
 	
-	/** The user interface list. */
-	final UIItemBracket _uiList;
-	
 	/** The type of list this is. */
 	private final int _type;
 	
@@ -92,18 +89,6 @@ public class List
 		this._userTitle = __title;
 		this._type = __type;
 		
-		// Build new list
-		UIBackend backend = this.__backend();
-		UIItemBracket uiList = backend.itemNew(UIItemType.LIST);
-		this._uiList = uiList;
-		
-		// Register self for future events
-		StaticDisplayState.register(this, uiList);
-		
-		// Show it on the form for this displayable
-		backend.formItemPosition(
-			this.__state(__DisplayableState__.class)._uiForm, uiList, 0);
-		
 		// Append all of the items to the list
 		for (int i = 0, n = __strs.length; i < n; i++)
 			this.append(__strs[i], (__imgs == null ? null : __imgs[i]));
@@ -128,8 +113,10 @@ public class List
 		}
 		
 		// Inform the backend that this is the kind of list we want
-		backend.widgetProperty(uiList, UIWidgetProperty.INT_LIST_TYPE, 0,
-			nativeType);
+		__ListState__ state = this.<__ListState__>__state(
+			__ListState__.class);
+		state._backend.widgetProperty(state._uiList,
+			UIWidgetProperty.INT_LIST_TYPE, 0, nativeType);
 	}
 	
 	/**
@@ -539,7 +526,7 @@ public class List
 	 */
 	private void __refresh()
 	{
-		UIItemBracket uiList = this._uiList;
+		UIItemBracket uiList = this.__state(__ListState__.class)._uiList;
 		UIBackend backend = this.__backend();
 		java.util.List<__ChoiceEntry__> choices = this._items.valuesAsList();
 		
@@ -659,7 +646,10 @@ public class List
 	 */
 	static class __ListState__
 		extends Screen.__ScreenState__
-	{
+	{	
+		/** The user interface list. */
+		final UIItemBracket _uiList;
+		
 		/**
 		 * Initializes the backend state.
 		 *
@@ -670,6 +660,16 @@ public class List
 		__ListState__(UIBackend __backend, DisplayWidget __self)
 		{
 			super(__backend, __self);
+			
+			// Build new list
+			UIItemBracket uiList = __backend.itemNew(UIItemType.LIST);
+			this._uiList = uiList;
+			
+			// Register self for future events
+			StaticDisplayState.register(__self, uiList);
+			
+			// Show it on the form for this displayable
+			__backend.formItemPosition(this._uiForm, uiList, 0);
 		}
 	}
 }
