@@ -10,6 +10,8 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
 public class Alert
 	extends Screen
@@ -222,6 +224,38 @@ public class Alert
 		/*
 		this._type = __t;
 		*/
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/01/14
+	 */
+	@Override
+	__CommonState__ __stateInit(UIBackend __backend)
+		throws NullPointerException
+	{
+		return new __AlertState__(__backend, this);
+	}
+	
+	/**
+	 * State for alerts.
+	 * 
+	 * @since 2023/01/14
+	 */
+	static class __AlertState__
+		extends Screen.__ScreenState__
+	{
+		/**
+		 * Initializes the backend state.
+		 *
+		 * @param __backend The backend used.
+		 * @param __self Self widget.
+		 * @since 2023/01/14
+		 */
+		__AlertState__(UIBackend __backend, DisplayWidget __self)
+		{
+			super(__backend, __self);
+		}
 	}
 }
 

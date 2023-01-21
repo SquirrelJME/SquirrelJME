@@ -29,7 +29,6 @@ import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
-import java.util.Map;
 
 /**
  * This thread is responsible for handling graphics operations.
@@ -131,7 +130,8 @@ final class __MLEUIThread__
 			{
 				// Locate the item and try to execute the command if it is one
 				UIItemBracket item = UIFormShelf.formItemAtPosition(
-					((Displayable)widget)._uiForm, pos);
+					((Displayable)widget).__state(
+						Displayable.__DisplayableState__.class)._uiForm, pos);
 				if (item != null)
 				{
 					// If this is mapped to a command then activate it
