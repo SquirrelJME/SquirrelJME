@@ -9,12 +9,11 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
 public class Form
 	extends Screen
@@ -297,8 +296,9 @@ public class Form
 			return;
 		this._staleLayout = false;
 		
-		UIBackend backend = UIBackendFactory.getInstance(true);
-		UIFormBracket uiForm = this._uiForm;
+		UIBackend backend = this.__backend();
+		UIFormBracket uiForm = this.__state(
+			__DisplayableState__.class)._uiForm;
 		FormLayoutPolicy layout = this._layout;
 		
 		// Indicate we are in an update
@@ -406,8 +406,40 @@ public class Form
 		// Queue this up for later, so it is forced to be redrawn
 		Display display = this._display;
 		if (display != null)
-			UIBackendFactory.getInstance(true)
-				.formRefresh(this._uiForm);
+			this.__backend()
+				.formRefresh(this.__state(__DisplayableState__.class)._uiForm);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/01/14
+	 */
+	@Override
+	__CommonState__ __stateInit(UIBackend __backend)
+		throws NullPointerException
+	{
+		return new __FormState__(__backend, this);
+	}
+	
+	/**
+	 * File selector state.
+	 * 
+	 * @since 2023/01/14
+	 */
+	static class __FormState__
+		extends Screen.__ScreenState__
+	{
+		/**
+		 * Initializes the backend state.
+		 *
+		 * @param __backend The backend used.
+		 * @param __self Self widget.
+		 * @since 2023/01/14
+		 */
+		__FormState__(UIBackend __backend, DisplayWidget __self)
+		{
+			super(__backend, __self);
+		}
 	}
 }
 

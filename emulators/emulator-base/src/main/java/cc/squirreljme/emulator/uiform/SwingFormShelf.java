@@ -110,6 +110,16 @@ public final class SwingFormShelf
 	public static UIDisplayBracket[] displays()
 		throws MLECallError
 	{
+		// If there is no head, then just return nothing
+		try
+		{
+			Toolkit.getDefaultToolkit().getScreenSize();
+		}
+		catch (HeadlessException e)
+		{
+			return new UIDisplayBracket[0];
+		}
+		
 		// Just wrap the instance of the display
 		return new UIDisplayBracket[]{SwingDisplay.getInstance()};
 	}
