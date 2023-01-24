@@ -26,29 +26,25 @@ public class FileSelector
 	 * having any file selected.
 	 */
 	@Api
-	public static final Command CANCEL_COMMAND =
-		new Command("Cancel", Command.CANCEL, 1, true);
+	public static final Command CANCEL_COMMAND = new Command("Cancel",
+		Command.CANCEL,
+		1, true);
 	
 	/** This is used when the user has selected a file. */
 	@Api
-	public static final Command OK_COMMAND =
-		new Command("Select", Command.OK, 0, true);
+	public static final Command OK_COMMAND = new Command("Select", Command.OK, 0, true);
 	
 	@Api
-	public static final int DIRECTORY_CREATE =
-		3;
+	public static final int DIRECTORY_CREATE = 3;
 	
 	@Api
-	public static final int DIRECTORY_SELECT =
-		2;
+	public static final int DIRECTORY_SELECT = 2;
 	
 	@Api
-	public static final int LOAD =
-		0;
+	public static final int LOAD = 0;
 	
 	@Api
-	public static final int SAVE =
-		1;
+	public static final int SAVE = 1;
 	
 	@Api
 	public FileSelector(String __title, int __mode)
@@ -66,7 +62,6 @@ public class FileSelector
 	 * {@inheritDoc}
 	 * @since 2017/05/24
 	 */
-	@Api
 	@Override
 	public int getHeight()
 	{
@@ -92,7 +87,6 @@ public class FileSelector
 	 * {@inheritDoc}
 	 * @since 2017/05/24
 	 */
-	@Api
 	@Override
 	public int getWidth()
 	{
@@ -132,17 +126,15 @@ public class FileSelector
 	 * {@inheritDoc}
 	 * @since 2023/01/14
 	 */
-	@Api
 	@Override
 	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
 	{
 		return new __FileSelectorState__(__backend, this);
 	}
 	
 	/**
 	 * File selector state.
-	 * 
+	 *
 	 * @since 2023/01/14
 	 */
 	static class __FileSelectorState__

@@ -29,15 +29,13 @@ public class TextField
 	extends Item
 {
 	/** This is a constraint which has no limitations. */
-	public static final int ANY =
-		0;
+	public static final int ANY = 0;
 	
 	/**
 	 * This mask is used to split the constraint between the type and any
 	 * flags which may be used.
 	 */
-	public static final int CONSTRAINT_MASK =
-		65535;
+	public static final int CONSTRAINT_MASK = 65535;
 	
 	/**
 	 * This constraint is used to specify that the value represents currency
@@ -46,8 +44,7 @@ public class TextField
 	 *
 	 * Value requirements are exactly the same as {@link #DECIMAL}.
 	 */
-	public static final int CURRENCY =
-		6;
+	public static final int CURRENCY = 6;
 	
 	/**
 	 * This constraint is used to specify that the value represents a decimal
@@ -59,28 +56,24 @@ public class TextField
 	 * When rendering the value, the number will be formatted to the current
 	 * system's locale.
 	 */
-	public static final int DECIMAL =
-		5;
+	public static final int DECIMAL = 5;
 	
 	/**
 	 * A constraint which specifies that an e-mail address is being entered.
 	 */
-	public static final int EMAILADDR =
-		1;
+	public static final int EMAILADDR = 1;
 	
 	/**
 	 * This is a constraint flag which hints that the start of a sentence
 	 * should start with a capital letter.
 	 */
-	public static final int INITIAL_CAPS_SENTENCE =
-		2097152;
+	public static final int INITIAL_CAPS_SENTENCE = 2097152;
 	
 	/**
 	 * This is a constraint flag which hints that the start of every word
 	 * should be capitalized.
 	 */
-	public static final int INITIAL_CAPS_WORD =
-		1048576;
+	public static final int INITIAL_CAPS_WORD = 1048576;
 	
 	/**
 	 * This is a constraint flags which indicates that what is to be input
@@ -89,8 +82,7 @@ public class TextField
 	 * An example usage for this, would be user names for accounts which might
 	 * not match dictionary words.
 	 */
-	public static final int NON_PREDICTIVE =
-		524288;
+	public static final int NON_PREDICTIVE = 524288;
 	
 	/**
 	 * This is a constraint which requires that only an integer value is used,
@@ -99,8 +91,7 @@ public class TextField
 	 *
 	 * The value will be presented in the system's current locale.
 	 */
-	public static final int NUMERIC =
-		2;
+	public static final int NUMERIC = 2;
 	
 	/**
 	 * This is a constriant flag which masks any input character with a
@@ -111,8 +102,7 @@ public class TextField
 	 * implicitely set along with {@link #INITIAL_CAPS_SENTENCE} and
 	 * {@link #INITIAL_CAPS_WORD} are impliticely cleared.
 	 */
-	public static final int PASSWORD =
-		65536;
+	public static final int PASSWORD = 65536;
 	
 	/**
 	 * This is a constraint which allows input for a phone number.
@@ -124,8 +114,7 @@ public class TextField
 	 * depending on the phone number.
 	 */
 	@Api
-	public static final int PHONENUMBER =
-		3;
+	public static final int PHONENUMBER = 3;
 	
 	/**
 	 * This is a constraint flag which specifies that the given text should
@@ -137,23 +126,19 @@ public class TextField
 	 * the dictionary will often add them to the dictionary so that they can
 	 * become available to learn new words. This prevents this behavior.
 	 */
-	public static final int SENSITIVE =
-		262144;
+	public static final int SENSITIVE = 262144;
 	
 	/**
 	 * This is a constraint flag which specifies that the text field cannot
 	 * be edited.
 	 */
-	public static final int UNEDITABLE =
-		131072;
+	public static final int UNEDITABLE = 131072;
 	
 	/** This is a consraint which specifies that a URL is being inserted. */
-	public static final int URL =
-		4;
+	public static final int URL = 4;
 	
 	/** The common text editor this is associated with. */
-	private final EditableText _editabletext =
-		new EditableText();
+	private final EditableText _editabletext = new EditableText();
 	
 	/**
 	 * Initializes the text field.
@@ -319,17 +304,15 @@ public class TextField
 	 * {@inheritDoc}
 	 * @since 2023/01/14
 	 */
-	@Api
 	@Override
 	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
 	{
 		return new __TextFieldState__(__backend, this);
 	}
 	
 	/**
 	 * Text field state.
-	 * 
+	 *
 	 * @since 2023/01/14
 	 */
 	static class __TextFieldState__

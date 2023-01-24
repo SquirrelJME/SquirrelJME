@@ -17,7 +17,6 @@ public class TextEditor
 	extends CanvasItem
 {
 	/** The common text editor this is associated with. */
-	@Api
 	private final EditableText _editabletext =
 		new EditableText();
 	

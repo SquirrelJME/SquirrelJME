@@ -28,7 +28,6 @@ public interface List<E>
 	@Override
 	void clear();
 	
-	@Api
 	@Override
 	boolean contains(Object __a);
 	
@@ -88,7 +87,6 @@ public interface List<E>
 	@Api
 	List<E> subList(int __a, int __b);
 	
-	@Api
 	@Override
 	Object[] toArray();
 	

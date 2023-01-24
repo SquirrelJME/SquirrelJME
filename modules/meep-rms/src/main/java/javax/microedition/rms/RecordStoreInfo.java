@@ -22,7 +22,6 @@ import cc.squirreljme.runtime.rms.VinylRecord;
 public final class RecordStoreInfo
 {
 	/** The volume ID. */
-	@Api
 	private final int _vid;
 	
 	/**

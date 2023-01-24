@@ -50,7 +50,6 @@ public class Throwable
 	private Throwable _cause;
 	
 	/** The stack trace for this throwable (in mostly-raw form). */
-	@Api
 	private TracePointBracket[] _stack;
 	
 	/**

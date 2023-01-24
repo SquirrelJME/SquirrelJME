@@ -23,7 +23,6 @@ final class __ExitHandler__
 {
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/01/26
 	 */
 	@Override

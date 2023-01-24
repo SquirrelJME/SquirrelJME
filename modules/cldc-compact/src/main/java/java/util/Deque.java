@@ -21,13 +21,11 @@ public interface Deque<E>
 	
 	void addLast(E __a);
 	
-	@Api
 	@Override
 	boolean contains(Object __a);
 	
 	Iterator<E> descendingIterator();
 	
-	@Api
 	@Override
 	E element();
 	
@@ -38,7 +36,6 @@ public interface Deque<E>
 	@Override
 	Iterator<E> iterator();
 	
-	@Api
 	@Override
 	boolean offer(E __a);
 	
@@ -46,7 +43,6 @@ public interface Deque<E>
 	
 	boolean offerLast(E __a);
 	
-	@Api
 	@Override
 	E peek();
 	
@@ -65,7 +61,6 @@ public interface Deque<E>
 	
 	void push(E __a);
 	
-	@Api
 	@Override
 	E remove();
 	
@@ -80,7 +75,6 @@ public interface Deque<E>
 	
 	boolean removeLastOccurrence(Object __a);
 	
-	@Api
 	@Override
 	int size();
 }

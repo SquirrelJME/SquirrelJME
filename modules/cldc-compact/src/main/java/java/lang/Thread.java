@@ -46,7 +46,6 @@ public class Thread
 		1_000_000L;
 	
 	/** The runnable that this thread uses for its main code, if applicable. */
-	@Api
 	private final Runnable _runnable;
 	
 	/** The virtual machine thread this uses. */
@@ -56,11 +55,9 @@ public class Thread
 	private volatile String _name;
 	
 	/** Has this thread been started? */
-	@Api
 	private volatile boolean _started;
 	
 	/** Is this thread alive? */
-	@Api
 	private volatile boolean _isAlive;
 	
 	/** The priority of the thread. */
@@ -410,7 +407,6 @@ public class Thread
 	 * {@inheritDoc}
 	 * @since 2018/11/20
 	 */
-	@Api
 	@Override
 	public String toString()
 	{

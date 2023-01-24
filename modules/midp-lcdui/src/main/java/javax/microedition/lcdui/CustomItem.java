@@ -25,40 +25,31 @@ public abstract class CustomItem
 	extends Item
 {
 	@Api
-	protected static final int KEY_PRESS =
-		4;
+	protected static final int KEY_PRESS = 4;
 	
 	@Api
-	protected static final int KEY_RELEASE =
-		8;
+	protected static final int KEY_RELEASE = 8;
 	
 	@Api
-	protected static final int KEY_REPEAT =
-		16;
+	protected static final int KEY_REPEAT = 16;
 	
 	@Api
-	protected static final int NONE =
-		0;
+	protected static final int NONE = 0;
 	
 	@Api
-	protected static final int POINTER_DRAG =
-		128;
+	protected static final int POINTER_DRAG = 128;
 	
 	@Api
-	protected static final int POINTER_PRESS =
-		32;
+	protected static final int POINTER_PRESS = 32;
 	
 	@Api
-	protected static final int POINTER_RELEASE =
-		64;
+	protected static final int POINTER_RELEASE = 64;
 	
 	@Api
-	protected static final int TRAVERSE_HORIZONTAL =
-		1;
+	protected static final int TRAVERSE_HORIZONTAL = 1;
 	
 	@Api
-	protected static final int TRAVERSE_VERTICAL =
-		2;
+	protected static final int TRAVERSE_VERTICAL = 2;
 	
 	/** Is the rendering transparent or opaque? */
 	boolean _transparent;
@@ -205,7 +196,8 @@ public abstract class CustomItem
 	/**
 	 * Sets the key listener which is used to handle key events.
 	 *
-	 * If this is set then {@link #keyPressed(int)}, {@link #keyReleased(int)},
+	 * If this is set then {@link #keyPressed(int)},
+	 * {@link #keyReleased(int)},
 	 * and {@link #keyRepeated} will still be called.
 	 *
 	 * @param __kl The key listener to use, {@code null} clears it.
@@ -268,7 +260,6 @@ public abstract class CustomItem
 	 * {@inheritDoc}
 	 * @since 2020/09/21
 	 */
-	@Api
 	@Override
 	final void __paint(Graphics __gfx, int __sw, int __sh, int __special)
 	{
@@ -280,8 +271,7 @@ public abstract class CustomItem
 		if (!this._transparent)
 		{
 			int old = __gfx.getAlphaColor();
-			__gfx.setColor(this.__backend().metric(
-				this._displayable._display._uiDisplay, 
+			__gfx.setColor(this.__backend().metric(this._displayable._display._uiDisplay,
 				UIMetricType.COLOR_CANVAS_BACKGROUND));
 			
 			__gfx.fillRect(0, 0, __sw, __sh);
@@ -295,7 +285,7 @@ public abstract class CustomItem
 	
 	/**
 	 * Returns the default key listener implementation for this class.
-	 * 
+	 *
 	 * @return The default key listener.
 	 * @since 2020/10/16
 	 */
@@ -327,7 +317,7 @@ public abstract class CustomItem
 		// Depends on the property
 		switch (__intProp)
 		{
-				// Shown state changed?
+			// Shown state changed?
 			case UIWidgetProperty.INT_IS_SHOWN:
 				if (__new == 0)
 					this.hideNotify();
@@ -335,7 +325,7 @@ public abstract class CustomItem
 					this.showNotify();
 				return true;
 			
-				// New size?
+			// New size?
 			case UIWidgetProperty.INT_WIDTH:
 			case UIWidgetProperty.INT_HEIGHT:
 			case UIWidgetProperty.INT_WIDTH_AND_HEIGHT:
@@ -355,11 +345,11 @@ public abstract class CustomItem
 					__old = this._lastWidth;
 					this._lastHeight = __new;
 				}
-			
+				
 				this.sizeChanged(__old, __new);
 				return true;
 			
-				// Un-Handled
+			// Un-Handled
 			default:
 				return false;
 		}
@@ -369,17 +359,15 @@ public abstract class CustomItem
 	 * {@inheritDoc}
 	 * @since 2023/01/14
 	 */
-	@Api
 	@Override
 	final __CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
 	{
 		return new __CustomItemState__(__backend, this);
 	}
 	
 	/**
 	 * Item state.
-	 * 
+	 *
 	 * @since 2023/01/14
 	 */
 	static class __CustomItemState__

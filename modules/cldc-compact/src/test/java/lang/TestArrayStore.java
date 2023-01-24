@@ -21,7 +21,6 @@ public class TestArrayStore
 {
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2022/06/20
 	 */
 	@SuppressWarnings({"UnnecessaryBoxing", "StringOperationCanBeSimplified"})

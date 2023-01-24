@@ -28,14 +28,12 @@ public abstract class AbstractDevice<P extends Device<? super P>>
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public final <U extends P> DeviceDescriptor<U> getDescriptor()
 	{
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public void tryLock(int __a)
 		throws UnavailableDeviceException, ClosedDeviceException, 
@@ -50,7 +48,6 @@ public abstract class AbstractDevice<P extends Device<? super P>>
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public void unlock()
 		throws IOException

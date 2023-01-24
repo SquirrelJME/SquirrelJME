@@ -19,17 +19,13 @@ import java.util.TimeZone;
 public class DateField
 	extends Item
 {
-	public static final int DATE =
-		1;
+	public static final int DATE = 1;
 	
-	public static final int DATE_TIME =
-		3;
+	public static final int DATE_TIME = 3;
 	
-	public static final int TIME =
-		2;
+	public static final int TIME = 2;
 	
 	/** The timezone to use. */
-	@Api
 	private final TimeZone _zone;
 	
 	/**
@@ -97,17 +93,15 @@ public class DateField
 	 * {@inheritDoc}
 	 * @since 2023/01/14
 	 */
-	@Api
 	@Override
 	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
 	{
 		return new __DateFieldState__(__backend, this);
 	}
 	
 	/**
 	 * Date field state.
-	 * 
+	 *
 	 * @since 2023/01/14
 	 */
 	static class __DateFieldState__

@@ -26,11 +26,9 @@ public class WeakHashMap<K, V>
 		0.75F;
 	
 	/** The load factor. */
-	@Api
 	private final float _load;
 	
 	/** This is used to clear keys when they are collected. */
-	@Api
 	private final ReferenceQueue<K> _rq =
 		new ReferenceQueue<>();
 	
@@ -148,7 +146,6 @@ public class WeakHashMap<K, V>
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public Set<K> keySet()
 	{

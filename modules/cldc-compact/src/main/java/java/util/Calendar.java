@@ -248,14 +248,12 @@ public abstract class Calendar
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public Object clone()
 	{
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public int compareTo(Calendar __a)
 	{
@@ -268,7 +266,6 @@ public abstract class Calendar
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public boolean equals(Object __a)
 	{
@@ -323,7 +320,6 @@ public abstract class Calendar
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public int hashCode()
 	{
@@ -415,7 +411,6 @@ public abstract class Calendar
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public String toString()
 	{

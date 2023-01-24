@@ -45,7 +45,6 @@ public abstract class Permission
 	 * {@inheritDoc}
 	 * @since 2018/12/08
 	 */
-	@Api
 	@Override
 	public abstract boolean equals(Object __a);
 	
@@ -62,7 +61,6 @@ public abstract class Permission
 	 * {@inheritDoc}
 	 * @since 2018/12/08
 	 */
-	@Api
 	@Override
 	public abstract int hashCode();
 	
@@ -109,7 +107,6 @@ public abstract class Permission
 	 * {@inheritDoc}
 	 * @since 2018/12/08
 	 */
-	@Api
 	@Override
 	public String toString()
 	{

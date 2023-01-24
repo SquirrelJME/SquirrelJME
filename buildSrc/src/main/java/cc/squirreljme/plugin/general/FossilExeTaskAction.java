@@ -23,7 +23,6 @@ public class FossilExeTaskAction
 {
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2020/06/24
 	 */
 	@Override

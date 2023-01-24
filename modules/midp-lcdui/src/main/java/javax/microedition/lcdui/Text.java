@@ -91,7 +91,6 @@ public class Text
 	private int _spacebelow;
 	
 	/** The alignment of each line. */
-	@Api
 	private int _align;
 	
 	/** Indentation. */

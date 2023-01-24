@@ -47,7 +47,6 @@ public final class Class<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/07
 	 */
-	@Api
 	private Class(TypeBracket __type)
 		throws NullPointerException
 	{
@@ -329,7 +328,6 @@ public final class Class<T>
 	 * {@inheritDoc}
 	 * @since 2018/11/03
 	 */
-	@Api
 	@Override
 	public String toString()
 	{

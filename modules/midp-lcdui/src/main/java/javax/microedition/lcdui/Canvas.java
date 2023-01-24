@@ -243,7 +243,6 @@ public abstract class Canvas
 	private KeyListener _defaultKeyListener;
 	
 	/** The actions which are required. */
-	@Api
 	private int _requiredActions;
 	
 	/**

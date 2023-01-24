@@ -18,38 +18,30 @@ public class ImageItem
 	extends Item
 {
 	@Api
-	public static final int LAYOUT_CENTER =
-		3;
+	public static final int LAYOUT_CENTER = 3;
 	
-	public static final int LAYOUT_DEFAULT =
-		0;
+	public static final int LAYOUT_DEFAULT = 0;
 	
 	@Api
-	public static final int LAYOUT_LEFT =
-		1;
+	public static final int LAYOUT_LEFT = 1;
 	
 	@Api
-	public static final int LAYOUT_NEWLINE_AFTER =
-		512;
+	public static final int LAYOUT_NEWLINE_AFTER = 512;
 	
 	@Api
-	public static final int LAYOUT_NEWLINE_BEFORE =
-		256;
+	public static final int LAYOUT_NEWLINE_BEFORE = 256;
 	
 	@Api
-	public static final int LAYOUT_RIGHT =
-		2;
+	public static final int LAYOUT_RIGHT = 2;
 	
 	/** Apperance mode. */
 	@Api
 	final int _amode;
 	
 	/** Cache of the used image. */
-	@Api
 	private volatile Image _image;
 	
 	/** Alternative text. */
-	@Api
 	private volatile String _alt;
 	
 	/**
@@ -161,17 +153,15 @@ public class ImageItem
 	 * {@inheritDoc}
 	 * @since 2023/01/14
 	 */
-	@Api
 	@Override
 	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
 	{
 		return new __ImageItemState__(__backend, this);
 	}
 	
 	/**
 	 * Image item state.
-	 * 
+	 *
 	 * @since 2023/01/14
 	 */
 	static class __ImageItemState__

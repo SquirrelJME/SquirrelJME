@@ -112,7 +112,6 @@ public class ArrayDeque<E>
 	 * {@inheritDoc}
 	 * @since 2020/06/20
 	 */
-	@Api
 	@Override
 	public void addFirst(E __v)
 		throws NullPointerException
@@ -127,7 +126,6 @@ public class ArrayDeque<E>
 	 * {@inheritDoc}
 	 * @since 2020/06/20
 	 */
-	@Api
 	@Override
 	public void addLast(E __v)
 		throws NullPointerException
@@ -174,7 +172,6 @@ public class ArrayDeque<E>
 	 * {@inheritDoc}
 	 * @since 2020/06/20
 	 */
-	@Api
 	@Override
 	public Iterator<E> descendingIterator()
 	{
@@ -200,7 +197,6 @@ public class ArrayDeque<E>
 	 * {@inheritDoc}
 	 * @since 2020/06/20
 	 */
-	@Api
 	@Override
 	public E getFirst()
 		throws NoSuchElementException
@@ -216,7 +212,6 @@ public class ArrayDeque<E>
 	 * {@inheritDoc}
 	 * @since 2020/06/20
 	 */
-	@Api
 	@Override
 	public E getLast()
 		throws NoSuchElementException
@@ -257,7 +252,6 @@ public class ArrayDeque<E>
 	 * {@inheritDoc}
 	 * @since 2020/06/20
 	 */
-	@Api
 	@Override
 	public boolean offerFirst(E __v)
 		throws NullPointerException
@@ -273,7 +267,6 @@ public class ArrayDeque<E>
 	 * {@inheritDoc}
 	 * @since 2020/06/20
 	 */
-	@Api
 	@Override
 	public boolean offerLast(E __v)
 		throws NullPointerException
@@ -303,7 +296,6 @@ public class ArrayDeque<E>
 	 * {@inheritDoc}
 	 * @since 2020/06/20
 	 */
-	@Api
 	@Override
 	public E peekFirst()
 	{
@@ -318,7 +310,6 @@ public class ArrayDeque<E>
 	 * {@inheritDoc}
 	 * @since 2020/06/20
 	 */
-	@Api
 	@Override
 	public E peekLast()
 	{
@@ -347,7 +338,6 @@ public class ArrayDeque<E>
 	 * {@inheritDoc}
 	 * @since 2020/06/20
 	 */
-	@Api
 	@Override
 	public E pollFirst()
 	{
@@ -362,7 +352,6 @@ public class ArrayDeque<E>
 	 * {@inheritDoc}
 	 * @since 2020/06/20
 	 */
-	@Api
 	@Override
 	public E pollLast()
 	{
@@ -377,7 +366,6 @@ public class ArrayDeque<E>
 	 * {@inheritDoc}
 	 * @since 2020/06/20
 	 */
-	@Api
 	@Override
 	public E pop()
 		throws NoSuchElementException
@@ -393,7 +381,6 @@ public class ArrayDeque<E>
 	 * {@inheritDoc}
 	 * @since 2020/06/20
 	 */
-	@Api
 	@Override
 	public void push(E __v)
 		throws NullPointerException
@@ -423,7 +410,6 @@ public class ArrayDeque<E>
 	 * {@inheritDoc}
 	 * @since 2020/06/20
 	 */
-	@Api
 	@Override
 	public E removeFirst()
 		throws NoSuchElementException
@@ -439,7 +425,6 @@ public class ArrayDeque<E>
 	 * {@inheritDoc}
 	 * @since 2020/06/20
 	 */
-	@Api
 	@Override
 	public boolean removeFirstOccurrence(Object __v)
 	{
@@ -454,7 +439,6 @@ public class ArrayDeque<E>
 	 * {@inheritDoc}
 	 * @since 2020/06/20
 	 */
-	@Api
 	@Override
 	public E removeLast()
 		throws NoSuchElementException
@@ -470,7 +454,6 @@ public class ArrayDeque<E>
 	 * {@inheritDoc}
 	 * @since 2020/06/20
 	 */
-	@Api
 	@Override
 	public boolean removeLastOccurrence(Object __v)
 	{

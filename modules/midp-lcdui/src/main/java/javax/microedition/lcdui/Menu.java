@@ -16,7 +16,6 @@ public class Menu
 	extends __Action__
 {
 	/** The image used. */
-	@Api
 	private volatile Image _image;
 	
 	@Api

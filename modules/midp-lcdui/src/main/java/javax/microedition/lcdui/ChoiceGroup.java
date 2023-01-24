@@ -28,16 +28,13 @@ public class ChoiceGroup
 	implements Choice
 {
 	/** The minimum permitted type. */
-	static final int _MIN_TYPE =
-		Choice.EXCLUSIVE;
+	static final int _MIN_TYPE = Choice.EXCLUSIVE;
 	
 	/** The maximum permitted type. */
-	static final int _MAX_TYPE =
-		Choice.POPUP;
+	static final int _MAX_TYPE = Choice.POPUP;
 	
 	/** Entries which are available in the group. */
-	private final List<__ChoiceEntry__> _entries =
-		new ArrayList<>();
+	private final List<__ChoiceEntry__> _entries = new ArrayList<>();
 	
 	/** The valid choice selection type. */
 	private final int _type;
@@ -64,9 +61,10 @@ public class ChoiceGroup
 	 * @param __l The label for this group.
 	 * @param __ct The type of choice selection to use.
 	 * @param __se The , this cannot be {@code null}
-	 * @param __ie The images for each choice, this must either be {@code null}
+	 * @param __ie The images for each choice, this must either be {@code
+	 * null}
 	 * or be the exact same length as the input {@code __se}.
-	 * @throws IllegalArgumentException If the choice type is not valid; 
+	 * @throws IllegalArgumentException If the choice type is not valid;
 	 * if {@link Choice#IMPLICIT} was specified; If the image array is not
 	 * null and is not the same length as the string array.
 	 * @throws NullPointerException If {@code __se} is {@code null} or it
@@ -89,8 +87,7 @@ public class ChoiceGroup
 		
 		// {@squirreljme.error EB1c Invalid choice type specified for a
 		// choice group. (The choice type)}
-		if (__ct < ChoiceGroup._MIN_TYPE || __ct > ChoiceGroup._MAX_TYPE ||
-			__ct == Choice.IMPLICIT)
+		if (__ct < ChoiceGroup._MIN_TYPE || __ct > ChoiceGroup._MAX_TYPE || __ct == Choice.IMPLICIT)
 			throw new IllegalArgumentException(String.format("EB1c %d", __ct));
 		
 		// Set
@@ -133,14 +130,12 @@ public class ChoiceGroup
 		return rv;
 	}
 	
-	@Api
 	@Override
 	public void delete(int __dx)
 	{
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public void deleteAll()
 	{
@@ -153,21 +148,18 @@ public class ChoiceGroup
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public Font getFont(int __a)
 	{
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public Image getImage(int __a)
 	{
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public int getSelectedFlags(boolean[] __result)
 	{
@@ -178,14 +170,12 @@ public class ChoiceGroup
 	 * {@inheritDoc}
 	 * @since 2020/10/31
 	 */
-	@Api
 	@Override
 	public int getSelectedIndex()
 	{
 		return __Utils__.__getSelectedIndex(this, this._type);
 	}
 	
-	@Api
 	@Override
 	public String getString(int __a)
 	{
@@ -218,35 +208,30 @@ public class ChoiceGroup
 		// index because it is not within bounds. (The index to add at)}
 		List<__ChoiceEntry__> entries = this._entries;
 		if (__v < 0 || __v > entries.size())
-			throw new IndexOutOfBoundsException(String.format("EB1e %d",
-				__v));
+			throw new IndexOutOfBoundsException(String.format("EB1e %d", __v));
 		
 		// Insert
 		entries.add(__v, new __ChoiceEntry__(__s, __i));
 	}
 	
-	@Api
 	@Override
 	public boolean isEnabled(int __i)
 	{
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public boolean isSelected(int __a)
 	{
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public void set(int __i, String __label, Image __icon)
 	{
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public void setEnabled(int __i, boolean __e)
 	{
@@ -259,21 +244,18 @@ public class ChoiceGroup
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public void setFont(int __a, Font __b)
 	{
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public void setSelectedFlags(boolean[] __flags)
 	{
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public void setSelectedIndex(int __a, boolean __b)
 	{
@@ -296,17 +278,15 @@ public class ChoiceGroup
 	 * {@inheritDoc}
 	 * @since 2023/01/14
 	 */
-	@Api
 	@Override
 	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
 	{
 		return new __ChoiceGroupState__(__backend, this);
 	}
 	
 	/**
 	 * Choice group state.
-	 * 
+	 *
 	 * @since 2023/01/14
 	 */
 	static class __ChoiceGroupState__

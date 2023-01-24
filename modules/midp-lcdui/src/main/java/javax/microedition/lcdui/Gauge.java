@@ -17,20 +17,15 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 public class Gauge
 	extends Item
 {
-	public static final int CONTINUOUS_IDLE =
-		0;
+	public static final int CONTINUOUS_IDLE = 0;
 	
-	public static final int CONTINUOUS_RUNNING =
-		2;
+	public static final int CONTINUOUS_RUNNING = 2;
 	
-	public static final int INCREMENTAL_IDLE =
-		1;
+	public static final int INCREMENTAL_IDLE = 1;
 	
-	public static final int INCREMENTAL_UPDATING =
-		3;
+	public static final int INCREMENTAL_UPDATING = 3;
 	
-	public static final int INDEFINITE =
-		-1;
+	public static final int INDEFINITE = -1;
 	
 	/** Is this interactive? */
 	@Api
@@ -74,9 +69,7 @@ public class Gauge
 			throw new IllegalArgumentException("EB25");
 		
 		// {@squirreljme.error EB26 Invalid symbolism for indefinite range.}
-		if (__max == Gauge.INDEFINITE && __iv != Gauge.CONTINUOUS_IDLE &&
-			__iv != Gauge.CONTINUOUS_RUNNING && __iv != Gauge.INCREMENTAL_IDLE &&
-			__iv != Gauge.INCREMENTAL_UPDATING)
+		if (__max == Gauge.INDEFINITE && __iv != Gauge.CONTINUOUS_IDLE && __iv != Gauge.CONTINUOUS_RUNNING && __iv != Gauge.INCREMENTAL_IDLE && __iv != Gauge.INCREMENTAL_UPDATING)
 			throw new IllegalArgumentException("EB26");
 		
 		this._interactive = __int;
@@ -122,6 +115,7 @@ public class Gauge
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @throws IllegalArgumentException If this gauge is associated with an
 	 * alert.
 	 * @since 2019/05/17
@@ -161,17 +155,15 @@ public class Gauge
 	 * {@inheritDoc}
 	 * @since 2023/01/14
 	 */
-	@Api
 	@Override
 	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
 	{
 		return new __GaugeState__(__backend, this);
 	}
 	
 	/**
 	 * Gauge state.
-	 * 
+	 *
 	 * @since 2023/01/14
 	 */
 	static class __GaugeState__

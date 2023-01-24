@@ -42,7 +42,6 @@ public abstract class PermissionCollection
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public String toString()
 	{

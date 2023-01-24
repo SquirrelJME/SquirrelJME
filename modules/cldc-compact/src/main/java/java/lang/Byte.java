@@ -80,7 +80,6 @@ public final class Byte
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
-	@Api
 	@Override
 	public byte byteValue()
 	{
@@ -91,7 +90,6 @@ public final class Byte
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
-	@Api
 	@Override
 	public int compareTo(Byte __o)
 	{
@@ -102,7 +100,6 @@ public final class Byte
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
-	@Api
 	@Override
 	public double doubleValue()
 	{
@@ -113,7 +110,6 @@ public final class Byte
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
-	@Api
 	@Override
 	public boolean equals(Object __o)
 	{
@@ -130,7 +126,6 @@ public final class Byte
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
-	@Api
 	@Override
 	public float floatValue()
 	{
@@ -141,7 +136,6 @@ public final class Byte
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
-	@Api
 	@Override
 	public int hashCode()
 	{
@@ -152,7 +146,6 @@ public final class Byte
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
-	@Api
 	@Override
 	public int intValue()
 	{
@@ -163,7 +156,6 @@ public final class Byte
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
-	@Api
 	@Override
 	public long longValue()
 	{
@@ -174,7 +166,6 @@ public final class Byte
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
-	@Api
 	@Override
 	public short shortValue()
 	{
@@ -185,7 +176,6 @@ public final class Byte
 	 * {@inheritDoc}
 	 * @since 2018/11/14
 	 */
-	@Api
 	@Override
 	public String toString()
 	{

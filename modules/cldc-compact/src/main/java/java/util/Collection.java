@@ -25,11 +25,9 @@ public interface Collection<E>
 	@Api
 	boolean containsAll(Collection<?> __a);
 	
-	@Api
 	@Override
 	boolean equals(Object __a);
 	
-	@Api
 	@Override
 	int hashCode();
 	

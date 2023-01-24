@@ -35,7 +35,6 @@ class __TocFutureCount__
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/09/06
 	 */
 	@Override

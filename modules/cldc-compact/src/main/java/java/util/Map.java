@@ -21,7 +21,6 @@ public interface Map<K, V>
 	
 	Set<Map.Entry<K, V>> entrySet();
 	
-	@Api
 	@Override
 	boolean equals(Object __a);
 	
@@ -34,7 +33,6 @@ public interface Map<K, V>
 	 */
 	V get(Object __key);
 	
-	@Api
 	@Override
 	int hashCode();
 	

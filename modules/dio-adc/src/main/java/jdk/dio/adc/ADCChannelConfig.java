@@ -47,14 +47,12 @@ public final class ADCChannelConfig
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public String getControllerName()
 	{
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public int getControllerNumber()
 	{
@@ -97,7 +95,6 @@ public final class ADCChannelConfig
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public int serialize(OutputStream __a)
 		throws IOException

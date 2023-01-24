@@ -80,7 +80,6 @@ public final class GPIOPortConfig
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public int serialize(OutputStream __a)
 		throws IOException

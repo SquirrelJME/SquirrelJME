@@ -94,7 +94,6 @@ public class Hashtable<K, V>
 	 * {@inheritDoc}
 	 * @since 2019/05/05
 	 */
-	@Api
 	@Override
 	public void clear()
 	{
@@ -157,7 +156,6 @@ public class Hashtable<K, V>
 	 * {@inheritDoc}
 	 * @since 2019/05/05
 	 */
-	@Api
 	@Override
 	public boolean containsKey(Object __k)
 	{
@@ -225,7 +223,6 @@ public class Hashtable<K, V>
 	 * @since 2019/05/05
 	 * @param __k
 	 */
-	@Api
 	@Override
 	public V get(Object __k)
 		throws NullPointerException
@@ -262,7 +259,6 @@ public class Hashtable<K, V>
 	 * {@inheritDoc}
 	 * @since 2019/05/05
 	 */
-	@Api
 	@Override
 	public boolean isEmpty()
 	{
@@ -364,7 +360,6 @@ public class Hashtable<K, V>
 	 * @throws NullPointerException If a null key was specified.
 	 * @since 2019/05/05
 	 */
-	@Api
 	@Override
 	public V remove(Object __k)
 		throws NullPointerException
@@ -394,7 +389,6 @@ public class Hashtable<K, V>
 	 * {@inheritDoc}
 	 * @since 2019/05/05
 	 */
-	@Api
 	@Override
 	public int size()
 	{
@@ -408,7 +402,6 @@ public class Hashtable<K, V>
 	 * {@inheritDoc}
 	 * @since 2019/05/05
 	 */
-	@Api
 	@Override
 	public String toString()
 	{

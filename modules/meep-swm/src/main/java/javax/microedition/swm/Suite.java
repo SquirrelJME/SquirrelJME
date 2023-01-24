@@ -44,7 +44,6 @@ public class Suite
 	final String _name;
 	
 	/** The state lock. */
-	@Api
 	private final Object _lock =
 		new Object();
 	

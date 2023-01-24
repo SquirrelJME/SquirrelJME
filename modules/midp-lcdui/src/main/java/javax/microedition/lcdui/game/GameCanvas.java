@@ -55,7 +55,6 @@ public abstract class GameCanvas
 		2;
 	
 	/** Are game keys being suppressed?. */
-	@Api
 	private volatile boolean _suppressGameKeys;
 	
 	/** Is the buffer preserved after a flush? */
@@ -173,7 +172,6 @@ public abstract class GameCanvas
 	 * {@inheritDoc}
 	 * @since 2016/10/10
 	 */
-	@Api
 	@Override
 	public void paint(Graphics __g)
 	{

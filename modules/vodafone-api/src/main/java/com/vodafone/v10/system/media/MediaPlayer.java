@@ -69,14 +69,12 @@ public class MediaPlayer extends Canvas {
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public int getWidth()
 	{
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public int getHeight()
 	{
@@ -125,21 +123,18 @@ public class MediaPlayer extends Canvas {
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	protected  void paint(Graphics var1)
 	{
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	protected  void showNotify()
 	{
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	protected  void hideNotify()
 	{

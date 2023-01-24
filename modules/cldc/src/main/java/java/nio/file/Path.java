@@ -23,7 +23,6 @@ public interface Path
 	@Api
 	boolean endsWith(String __a);
 	
-	@Api
 	@Override
 	boolean equals(Object __a);
 	

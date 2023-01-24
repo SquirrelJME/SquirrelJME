@@ -19,7 +19,6 @@ final class __TerminateDisplay__
 {
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2022/02/014
 	 */
 	@Override

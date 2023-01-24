@@ -96,7 +96,6 @@ public class Display
 		0;
 	
 	/** Internal lock. */
-	@Api
 	private final Object _lock =
 		new Object();
 	

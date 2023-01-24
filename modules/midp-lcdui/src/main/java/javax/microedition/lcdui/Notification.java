@@ -15,11 +15,9 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public class Notification
 {
 	/** Cache of the used label. */
-	@Api
 	private volatile String _label;
 	
 	/** Cache of the used image. */
-	@Api
 	private volatile Image _image;
 	
 	@Api

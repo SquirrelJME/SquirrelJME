@@ -219,7 +219,6 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
-	@Api
 	@Override
 	public StringBuffer append(char __a)
 	{

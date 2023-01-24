@@ -205,7 +205,6 @@ public class Form
 	 * {@inheritDoc}
 	 * @since 2017/05/24
 	 */
-	@Api
 	@Override
 	public int getHeight()
 	{
@@ -232,7 +231,6 @@ public class Form
 	 * {@inheritDoc}
 	 * @since 2017/05/24
 	 */
-	@Api
 	@Override
 	public int getWidth()
 	{

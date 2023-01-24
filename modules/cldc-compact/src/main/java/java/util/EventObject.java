@@ -55,7 +55,6 @@ public class EventObject
 	 * {@inheritDoc}
 	 * @since 2019/01/20
 	 */
-	@Api
 	@Override
 	public String toString()
 	{

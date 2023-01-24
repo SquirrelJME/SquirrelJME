@@ -44,7 +44,6 @@ public abstract class TimeZone
 	@Api
 	public abstract boolean useDaylightTime();
 	
-	@Api
 	@Override
 	public Object clone()
 	{

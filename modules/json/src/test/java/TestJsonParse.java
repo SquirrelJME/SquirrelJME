@@ -25,7 +25,6 @@ public class TestJsonParse
 {
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2022/07/12
 	 */
 	@Override

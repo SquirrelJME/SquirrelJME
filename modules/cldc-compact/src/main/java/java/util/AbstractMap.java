@@ -37,7 +37,6 @@ public abstract class AbstractMap<K, V>
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
-	@Api
 	@Override
 	protected Object clone()
 		throws CloneNotSupportedException
@@ -45,7 +44,6 @@ public abstract class AbstractMap<K, V>
 		return (AbstractMap<?, ?>)super.clone();
 	}
 	
-	@Api
 	@Override
 	public boolean containsKey(Object __a)
 	{
@@ -82,7 +80,6 @@ public abstract class AbstractMap<K, V>
 	 * @since 2022/07/12
 	 * @param __key
 	 */
-	@Api
 	@Override
 	public V get(Object __key)
 	{
@@ -154,7 +151,6 @@ public abstract class AbstractMap<K, V>
 	 * {@inheritDoc}
 	 * @since 2018/11/04
 	 */
-	@Api
 	@Override
 	public V remove(Object __k)
 	{
@@ -191,7 +187,6 @@ public abstract class AbstractMap<K, V>
 	 * {@inheritDoc}
 	 * @since 2018/10/13
 	 */
-	@Api
 	@Override
 	public String toString()
 	{
@@ -220,7 +215,6 @@ public abstract class AbstractMap<K, V>
 	 * {@inheritDoc}
 	 * @since 2018/10/29
 	 */
-	@Api
 	@Override
 	public Collection<V> values()
 	{

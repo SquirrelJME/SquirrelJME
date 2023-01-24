@@ -86,14 +86,12 @@ public final class Double
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
-	@Api
 	@Override
 	public byte byteValue()
 	{
 		return (byte)this._value;
 	}
 	
-	@Api
 	@Override
 	public int compareTo(Double __a)
 	{
@@ -104,7 +102,6 @@ public final class Double
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
-	@Api
 	@Override
 	public double doubleValue()
 	{
@@ -115,7 +112,6 @@ public final class Double
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
-	@Api
 	@Override
 	public boolean equals(Object __o)
 	{
@@ -147,7 +143,6 @@ public final class Double
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
-	@Api
 	@Override
 	public float floatValue()
 	{
@@ -158,7 +153,6 @@ public final class Double
 	 * {@inheritDoc}
 	 * @since 2018/11/04
 	 */
-	@Api
 	@Override
 	public int hashCode()
 	{
@@ -170,7 +164,6 @@ public final class Double
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
-	@Api
 	@Override
 	public int intValue()
 	{
@@ -199,7 +192,6 @@ public final class Double
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
-	@Api
 	@Override
 	public long longValue()
 	{
@@ -210,7 +202,6 @@ public final class Double
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
-	@Api
 	@Override
 	public short shortValue()
 	{

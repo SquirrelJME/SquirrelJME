@@ -1372,7 +1372,7 @@ public class AdvancedGraphics
 		
 		// Perform the transformation, possibly returning a new data buffer
 		int[] transdim = new int[]{__wsrc, __hsrc, __wdest, __hdest};
-		data = __transform(__trans, data, __wsrc, __hsrc, transdim,
+		data = AdvancedGraphics.__transform(__trans, data, __wsrc, __hsrc, transdim,
 			__dswap);
 		
 		// Re-read the new image sizes!

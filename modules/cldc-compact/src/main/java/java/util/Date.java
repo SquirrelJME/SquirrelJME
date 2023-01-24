@@ -53,7 +53,6 @@ public class Date
 	 * {@inheritDoc}
 	 * @since 2019/12/25
 	 */
-	@Api
 	@Override
 	public Object clone()
 	{
@@ -64,7 +63,6 @@ public class Date
 	 * {@inheritDoc}
 	 * @since 2019/12/25
 	 */
-	@Api
 	@Override
 	public int compareTo(Date __b)
 		throws NullPointerException
@@ -82,7 +80,6 @@ public class Date
 	 * {@inheritDoc}
 	 * @since 2019/12/25
 	 */
-	@Api
 	@Override
 	public boolean equals(Object __o)
 	{
@@ -110,7 +107,6 @@ public class Date
 	 * {@inheritDoc}
 	 * @since 2019/12/25
 	 */
-	@Api
 	@Override
 	public int hashCode()
 	{
@@ -134,7 +130,6 @@ public class Date
 	 * {@inheritDoc}
 	 * @since 2019/12/25
 	 */
-	@Api
 	@Override
 	public String toString()
 	{

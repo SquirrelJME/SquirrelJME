@@ -89,14 +89,12 @@ public final class Float
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
-	@Api
 	@Override
 	public byte byteValue()
 	{
 		return (byte)this._value;
 	}
 	
-	@Api
 	@Override
 	public int compareTo(Float __a)
 	{
@@ -107,7 +105,6 @@ public final class Float
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
-	@Api
 	@Override
 	public double doubleValue()
 	{
@@ -118,7 +115,6 @@ public final class Float
 	 * {@inheritDoc}
 	 * @since 2018/11/04
 	 */
-	@Api
 	@Override
 	@ProgrammerTip("NaN values are equal to each other, positive and " + "negative zero are not equal to each other.")
 	public boolean equals(Object __o)
@@ -151,7 +147,6 @@ public final class Float
 	 * {@inheritDoc}
 	 * @since 2018/11/04
 	 */
-	@Api
 	@Override
 	public float floatValue()
 	{
@@ -162,7 +157,6 @@ public final class Float
 	 * {@inheritDoc}
 	 * @since 2018/11/04
 	 */
-	@Api
 	@Override
 	public int hashCode()
 	{
@@ -173,7 +167,6 @@ public final class Float
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
-	@Api
 	@Override
 	public int intValue()
 	{
@@ -202,7 +195,6 @@ public final class Float
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
-	@Api
 	@Override
 	public long longValue()
 	{
@@ -213,7 +205,6 @@ public final class Float
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
-	@Api
 	@Override
 	public short shortValue()
 	{

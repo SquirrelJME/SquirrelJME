@@ -19,8 +19,7 @@ public class TextBox
 	extends Screen
 {
 	/** The common text editor this is associated with. */
-	private final EditableText _editabletext =
-		new EditableText();
+	private final EditableText _editabletext = new EditableText();
 	
 	/**
 	 * Initializes the text box.
@@ -74,7 +73,6 @@ public class TextBox
 	 * {@inheritDoc}
 	 * @since 2017/05/24
 	 */
-	@Api
 	@Override
 	public int getHeight()
 	{
@@ -100,7 +98,6 @@ public class TextBox
 	 * {@inheritDoc}
 	 * @since 2017/05/24
 	 */
-	@Api
 	@Override
 	public int getWidth()
 	{
@@ -174,17 +171,15 @@ public class TextBox
 	 * {@inheritDoc}
 	 * @since 2023/01/14
 	 */
-	@Api
 	@Override
 	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
 	{
 		return new __TextBoxState__(__backend, this);
 	}
 	
 	/**
 	 * File selector state.
-	 * 
+	 *
 	 * @since 2023/01/14
 	 */
 	static class __TextBoxState__

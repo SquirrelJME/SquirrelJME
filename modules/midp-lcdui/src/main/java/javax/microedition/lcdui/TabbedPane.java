@@ -45,7 +45,6 @@ public class TabbedPane
 	 * {@inheritDoc}
 	 * @since 2017/05/24
 	 */
-	@Api
 	@Override
 	public int getHeight()
 	{
@@ -74,7 +73,6 @@ public class TabbedPane
 	 * {@inheritDoc}
 	 * @since 2017/05/24
 	 */
-	@Api
 	@Override
 	public int getWidth()
 	{
@@ -109,17 +107,15 @@ public class TabbedPane
 	 * {@inheritDoc}
 	 * @since 2023/01/14
 	 */
-	@Api
 	@Override
 	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
 	{
 		return new __TabbedPaneState__(__backend, this);
 	}
 	
 	/**
 	 * File selector state.
-	 * 
+	 *
 	 * @since 2023/01/14
 	 */
 	static class __TabbedPaneState__

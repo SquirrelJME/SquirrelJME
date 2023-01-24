@@ -79,17 +79,15 @@ public class Spacer
 	 * {@inheritDoc}
 	 * @since 2023/01/14
 	 */
-	@Api
 	@Override
 	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
 	{
 		return new __SpacerState__(__backend, this);
 	}
 	
 	/**
 	 * Spacer state.
-	 * 
+	 *
 	 * @since 2023/01/14
 	 */
 	static class __SpacerState__

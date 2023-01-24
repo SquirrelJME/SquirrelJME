@@ -76,7 +76,6 @@ public final class Boolean
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
-	@Api
 	@Override
 	public int compareTo(Boolean __o)
 		throws NullPointerException
@@ -97,7 +96,6 @@ public final class Boolean
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
-	@Api
 	@Override
 	public boolean equals(Object __o)
 	{
@@ -114,7 +112,6 @@ public final class Boolean
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
-	@Api
 	@Override
 	public int hashCode()
 	{

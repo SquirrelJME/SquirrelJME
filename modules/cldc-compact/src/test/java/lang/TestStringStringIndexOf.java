@@ -21,7 +21,6 @@ public class TestStringStringIndexOf
 {
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2022/10/11
 	 */
 	@Override

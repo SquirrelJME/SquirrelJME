@@ -37,208 +37,152 @@ public class Display
 	implements DisplayWidget
 {
 	/** The soft-key for the left command. */
-	static final int _SOFTKEY_LEFT_COMMAND =
-		Display.SOFTKEY_BOTTOM + 1;
+	static final int _SOFTKEY_LEFT_COMMAND = Display.SOFTKEY_BOTTOM + 1;
 	
 	/** The soft-key for the right command. */
-	static final int _SOFTKEY_RIGHT_COMMAND =
-		Display.SOFTKEY_BOTTOM + 2;
+	static final int _SOFTKEY_RIGHT_COMMAND = Display.SOFTKEY_BOTTOM + 2;
 	
-	public static final int ALERT =
-		3;
-
-	public static final int CHOICE_GROUP_ELEMENT =
-		2;
-
-	public static final int COLOR_BACKGROUND =
-		0;
-
-	public static final int COLOR_BORDER =
-		4;
-
-	public static final int COLOR_FOREGROUND =
-		1;
-
-	public static final int COLOR_HIGHLIGHTED_BACKGROUND =
-		2;
-
-	public static final int COLOR_HIGHLIGHTED_BORDER =
-		5;
-
-	public static final int COLOR_HIGHLIGHTED_FOREGROUND =
-		3;
-
-	public static final int COLOR_IDLE_BACKGROUND =
-		6;
-
-	public static final int COLOR_IDLE_FOREGROUND =
-		7;
-
+	public static final int ALERT = 3;
+	
+	public static final int CHOICE_GROUP_ELEMENT = 2;
+	
+	public static final int COLOR_BACKGROUND = 0;
+	
+	public static final int COLOR_BORDER = 4;
+	
+	public static final int COLOR_FOREGROUND = 1;
+	
+	public static final int COLOR_HIGHLIGHTED_BACKGROUND = 2;
+	
+	public static final int COLOR_HIGHLIGHTED_BORDER = 5;
+	
+	public static final int COLOR_HIGHLIGHTED_FOREGROUND = 3;
+	
+	public static final int COLOR_IDLE_BACKGROUND = 6;
+	
+	public static final int COLOR_IDLE_FOREGROUND = 7;
+	
 	@SuppressWarnings("FieldNamingConvention")
-	public static final int COLOR_IDLE_HIGHLIGHTED_BACKGROUND =
-		8;
-
+	public static final int COLOR_IDLE_HIGHLIGHTED_BACKGROUND = 8;
+	
 	@SuppressWarnings("FieldNamingConvention")
-	public static final int COLOR_IDLE_HIGHLIGHTED_FOREGROUND =
-		9;
-
-	public static final int COMMAND =
-		5;
+	public static final int COLOR_IDLE_HIGHLIGHTED_FOREGROUND = 9;
+	
+	public static final int COMMAND = 5;
 	
 	@Api
-	public static final int DISPLAY_HARDWARE_ABSENT =
-		2;
+	public static final int DISPLAY_HARDWARE_ABSENT = 2;
 	
 	@Api
-	public static final int DISPLAY_HARDWARE_DISABLED =
-		1;
+	public static final int DISPLAY_HARDWARE_DISABLED = 1;
 	
 	@Api
-	public static final int DISPLAY_HARDWARE_ENABLED =
-		0;
-
-	public static final int LIST_ELEMENT =
-		1;
-
-	public static final int MENU =
-		7;
-
+	public static final int DISPLAY_HARDWARE_ENABLED = 0;
+	
+	public static final int LIST_ELEMENT = 1;
+	
+	public static final int MENU = 7;
+	
 	/** This is the activity mode that enables power saving inhibition. */
-	public static final int MODE_ACTIVE =
-		1;
+	public static final int MODE_ACTIVE = 1;
 	
 	/** This is the activity mode that is the default behavior. */
-	public static final int MODE_NORMAL =
-		0;
-
-	public static final int NOTIFICATION =
-		6;
-
-	public static final int ORIENTATION_LANDSCAPE =
-		2;
-
-	public static final int ORIENTATION_LANDSCAPE_180 =
-		8;
-
-	public static final int ORIENTATION_PORTRAIT =
-		1;
-
-	public static final int ORIENTATION_PORTRAIT_180 =
-		4;
-
+	public static final int MODE_NORMAL = 0;
+	
+	public static final int NOTIFICATION = 6;
+	
+	public static final int ORIENTATION_LANDSCAPE = 2;
+	
+	public static final int ORIENTATION_LANDSCAPE_180 = 8;
+	
+	public static final int ORIENTATION_PORTRAIT = 1;
+	
+	public static final int ORIENTATION_PORTRAIT_180 = 4;
+	
 	/** The mask and number of items that are permitted for soft-key items. */
-	public static final int SOFTKEY_INDEX_MASK =
-		15;
-
+	public static final int SOFTKEY_INDEX_MASK = 15;
+	
 	/** Displayed at the bottom of the screen. */
-	public static final int SOFTKEY_BOTTOM =
-		800;
-
+	public static final int SOFTKEY_BOTTOM = 800;
+	
 	/** Displayed on the left side of the screen. */
-	public static final int SOFTKEY_LEFT =
-		820;
-
+	public static final int SOFTKEY_LEFT = 820;
+	
 	/** Displayed at the top of the screen. */
-	public static final int SOFTKEY_TOP =
-		840;
-
+	public static final int SOFTKEY_TOP = 840;
+	
 	/** Displayed on the right side of the screen. */
-	public static final int SOFTKEY_RIGHT =
-		860;
-
+	public static final int SOFTKEY_RIGHT = 860;
+	
 	/** Displayed off-screen, using physical hardware buttons. */
-	public static final int SOFTKEY_OFFSCREEN =
-		880;
+	public static final int SOFTKEY_OFFSCREEN = 880;
 	
 	@Api
-	public static final int STATE_BACKGROUND =
-		0;
+	public static final int STATE_BACKGROUND = 0;
 	
 	@Api
-	public static final int STATE_FOREGROUND =
-		2;
+	public static final int STATE_FOREGROUND = 2;
 	
 	@Api
-	public static final int STATE_VISIBLE =
-		1;
-
-	public static final int SUPPORTS_ALERTS =
-		32;
-
-	public static final int SUPPORTS_COMMANDS =
-		2;
-
-	public static final int SUPPORTS_FILESELECTORS =
-		512;
-
-	public static final int SUPPORTS_FORMS =
-		4;
+	public static final int STATE_VISIBLE = 1;
+	
+	public static final int SUPPORTS_ALERTS = 32;
+	
+	public static final int SUPPORTS_COMMANDS = 2;
+	
+	public static final int SUPPORTS_FILESELECTORS = 512;
+	
+	public static final int SUPPORTS_FORMS = 4;
 	
 	@Api
-	public static final int SUPPORTS_IDLEITEM =
-		2048;
-
+	public static final int SUPPORTS_IDLEITEM = 2048;
+	
 	/** This specifies that the display supports user input. */
-	public static final int SUPPORTS_INPUT_EVENTS =
-		1;
-
-	public static final int SUPPORTS_LISTS =
-		64;
-
-	public static final int SUPPORTS_MENUS =
-		1024;
+	public static final int SUPPORTS_INPUT_EVENTS = 1;
+	
+	public static final int SUPPORTS_LISTS = 64;
+	
+	public static final int SUPPORTS_MENUS = 1024;
 	
 	@Api
-	public static final int SUPPORTS_ORIENTATION_LANDSCAPE =
-		8192;
-
+	public static final int SUPPORTS_ORIENTATION_LANDSCAPE = 8192;
+	
 	@SuppressWarnings({"FieldNamingConvention", "unused"})
-	public static final int SUPPORTS_ORIENTATION_LANDSCAPE180 =
-		32768;
+	public static final int SUPPORTS_ORIENTATION_LANDSCAPE180 = 32768;
 	
 	@Api
-	public static final int SUPPORTS_ORIENTATION_PORTRAIT =
-		4096;
+	public static final int SUPPORTS_ORIENTATION_PORTRAIT = 4096;
 	
 	@Api
-	public static final int SUPPORTS_ORIENTATION_PORTRAIT180 =
-		16384;
-
-	public static final int SUPPORTS_TABBEDPANES =
-		256;
-
-	public static final int SUPPORTS_TEXTBOXES =
-		128;
-
-	public static final int SUPPORTS_TICKER =
-		8;
+	public static final int SUPPORTS_ORIENTATION_PORTRAIT180 = 16384;
+	
+	public static final int SUPPORTS_TABBEDPANES = 256;
+	
+	public static final int SUPPORTS_TEXTBOXES = 128;
+	
+	public static final int SUPPORTS_TICKER = 8;
 	
 	@Api
-	public static final int SUPPORTS_TITLE =
-		16;
-
-	public static final int TAB =
-		4;
+	public static final int SUPPORTS_TITLE = 16;
+	
+	public static final int TAB = 4;
 	
 	/** Serial runs of a given method for this display. */
-	final Map<Integer, Runnable> _serialRuns =
-		new LinkedHashMap<>();
+	final Map<Integer, Runnable> _serialRuns = new LinkedHashMap<>();
 	
 	/** The number of times there has been a non-unique serial run. */
 	private static volatile int _NON_UNIQUE_SERIAL_RUNS;
 	
-	/** The native display instance. */ 
+	/** The native display instance. */
 	final UIDisplayBracket _uiDisplay;
 	
 	/** The displayable to show. */
 	private volatile Displayable _current;
 	
 	/** The displayable to show on exit. */
-	@Api
 	private volatile Displayable _exit;
 	
 	/** The layout policy of this display. */
-	@Api
 	private CommandLayoutPolicy _layoutPolicy;
 	
 	/**
@@ -287,13 +231,13 @@ public class Display
 	
 	/**
 	 * Calls the given runner within the event handler serially.
-	 * 
+	 *
 	 * Note that the {@link Runnable#run()} will be called as if it were
 	 * serialized like everything else with {@link SerializedEvent}.
-	 * 
+	 *
 	 * Calls to this method will never block and wait for the {@link Runnable}
 	 * to complete.
-	 * 
+	 *
 	 * @param __run The method to run.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/03
@@ -337,7 +281,7 @@ public class Display
 		return (SystemCallError.NO_ERROR ==
 			Assembly.sysCallV(SystemCallIndex.ERROR_GET,
 				SystemCallIndex.DEVICE_FEEDBACK));*/
-				
+		
 	}
 	
 	/**
@@ -408,8 +352,10 @@ public class Display
 	}
 	
 	/**
-	 * This returns the capabilities that the display supports. This means that
-	 * displays which do not support specific widget types can be known so that
+	 * This returns the capabilities that the display supports. This means 
+	 * that
+	 * displays which do not support specific widget types can be known so 
+	 * that
 	 * potential alternative handling may be performed.
 	 *
 	 * The capabilities are the constants starting with {@code SUPPORTS_}
@@ -422,7 +368,7 @@ public class Display
 	{
 		// These are all standard and expected to always be supported
 		int rv = Display.__defaultCapabilities();
-			
+		
 		UIBackend backend = UIBackendFactory.getInstance(true);
 		
 		// Supports any kind of input?
@@ -477,7 +423,7 @@ public class Display
 			case Display.COLOR_HIGHLIGHTED_BORDER:
 				rv = CommonColors.HIGHLIGHTED_BORDER;
 				break;
-				
+			
 			case Display.COLOR_HIGHLIGHTED_BACKGROUND:
 			case Display.COLOR_IDLE_HIGHLIGHTED_BACKGROUND:
 				rv = CommonColors.HIGHLIGHTED_BACKGROUND;
@@ -487,9 +433,9 @@ public class Display
 			case Display.COLOR_IDLE_HIGHLIGHTED_FOREGROUND:
 				rv = CommonColors.HIGHLIGHTED_FOREGROUND;
 				break;
-		
-				// {@squirreljme.error EB1h Unknown color specifier. (The
-				// color specifier)}
+			
+			// {@squirreljme.error EB1h Unknown color specifier. (The
+			// color specifier)}
 			default:
 				throw new IllegalArgumentException("EB1h " + __c);
 		}
@@ -501,7 +447,7 @@ public class Display
 	/**
 	 * Returns the current command layout policy. The policy of the
 	 * {@link Displayable} takes precedence.
-	 * 
+	 *
 	 * @return The current command layout policy, may be {@code null}.
 	 * @since 2020/09/27
 	 */
@@ -512,7 +458,7 @@ public class Display
 	
 	/**
 	 * Returns the preferred placement for commands.
-	 * 
+	 *
 	 * @param __ct The command type, see {@link Command}.
 	 * @return The preferred placements or {@code null} if there are none.
 	 * @throws IllegalArgumentException If the command type is not valid.
@@ -565,16 +511,16 @@ public class Display
 	/**
 	 * Returns all of the possible exact placements where items may go on
 	 * a given border.
-	 * 
+	 *
 	 * The orientation of the display does affect the border positions, if
 	 * the orientation has changed then this must be called again.
-	 * 
+	 *
 	 * For top/bottom borders, the order is from left to right.
-	 * 
+	 *
 	 * For left/right borders, the order is top to bottom.
-	 * 
+	 *
 	 * The first possible placement on a border is always {@code BORDER + 1}.
-	 * 
+	 *
 	 * @param __b The border to get, must be one of {@link #SOFTKEY_TOP},
 	 * {@link #SOFTKEY_BOTTOM}, {@link #SOFTKEY_LEFT}, {@link #SOFTKEY_RIGHT},
 	 * or {@link #SOFTKEY_OFFSCREEN}.
@@ -592,20 +538,19 @@ public class Display
 		// Depends on the border that was requested
 		switch (__b)
 		{
-				// None of these positions are valid in SquirrelJME
+			// None of these positions are valid in SquirrelJME
 			case Display.SOFTKEY_OFFSCREEN:
 			case Display.SOFTKEY_TOP:
 			case Display.SOFTKEY_LEFT:
 			case Display.SOFTKEY_RIGHT:
 				return null;
-				
-				// There are only two slots along the bottom of the screen
-			case Display.SOFTKEY_BOTTOM:
-				return new int[]{
-					this.__layoutProject(Display.SOFTKEY_BOTTOM + 1),
-					this.__layoutProject(Display.SOFTKEY_BOTTOM + 2)};
 			
-				// {@squirreljme.error EB1p Invalid border. (The border)}
+			// There are only two slots along the bottom of the screen
+			case Display.SOFTKEY_BOTTOM:
+				return new int[] {this.__layoutProject(Display.SOFTKEY_BOTTOM + 1), this.__layoutProject(
+					Display.SOFTKEY_BOTTOM + 2)};
+			
+			// {@squirreljme.error EB1p Invalid border. (The border)}
 			default:
 				throw new IllegalArgumentException("EB1p " + __b);
 		}
@@ -636,8 +581,8 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		return UIBackendFactory.getInstance(true)
-			.metric(_uiDisplay, UIMetricType.DISPLAY_MAX_HEIGHT);
+		return UIBackendFactory.getInstance(true).metric(_uiDisplay,
+			UIMetricType.DISPLAY_MAX_HEIGHT);
 	}
 	
 	@Api
@@ -648,7 +593,7 @@ public class Display
 	
 	/**
 	 * Returns the preferred placement for menus.
-	 * 
+	 *
 	 * @return The preferred placements or {@code null} if there are none.
 	 * @since 2020/09/27
 	 */
@@ -661,7 +606,7 @@ public class Display
 	
 	/**
 	 * Returns all of the placements which support menu items.
-	 *  
+	 *
 	 * @return The list of supported menu item placements.
 	 * @since 2020/09/27
 	 */
@@ -712,8 +657,8 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		return UIBackendFactory.getInstance(true)
-			.metric(_uiDisplay, UIMetricType.DISPLAY_MAX_WIDTH);
+		return UIBackendFactory.getInstance(true).metric(_uiDisplay,
+			UIMetricType.DISPLAY_MAX_WIDTH);
 	}
 	
 	/**
@@ -725,8 +670,7 @@ public class Display
 	public boolean hasPointerEvents()
 	{
 		return (UIBackendFactory.getInstance(true).metric(_uiDisplay,
-			UIMetricType.INPUT_FLAGS) & UIInputFlag.POINTER) ==
-			(UIInputFlag.POINTER);
+			UIMetricType.INPUT_FLAGS) & UIInputFlag.POINTER) == (UIInputFlag.POINTER);
 	}
 	
 	/**
@@ -738,9 +682,7 @@ public class Display
 	public boolean hasPointerMotionEvents()
 	{
 		return (UIBackendFactory.getInstance(true).metric(_uiDisplay,
-			UIMetricType.INPUT_FLAGS) &
-			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION)) ==
-			(UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION);
+			UIMetricType.INPUT_FLAGS) & (UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION)) == (UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION);
 	}
 	
 	/**
@@ -770,7 +712,7 @@ public class Display
 	/**
 	 * Returns the number of alpha-transparency levels. Alpha levels range
 	 * from fully transparent to fully opaque.
-	 * 
+	 *
 	 * It is required by implementations to support at least 16 levels of
 	 * alpha transparency.
 	 *
@@ -784,12 +726,12 @@ public class Display
 		switch (UIBackendFactory.getInstance(true).metric(_uiDisplay,
 			UIMetricType.DISPLAY_PIXEL_FORMAT))
 		{
-				// If the display format is 16-bit, just use this here
+			// If the display format is 16-bit, just use this here
 			case UIPixelFormat.SHORT_RGBA4444:
 				return 16;
 			
-				// Use 256 since all other image formats would get their
-				// alpha colors calculated.
+			// Use 256 since all other image formats would get their
+			// alpha colors calculated.
 			default:
 				return 256;
 		}
@@ -837,7 +779,7 @@ public class Display
 			case UIPixelFormat.PACKED_INDEXED1:
 				return 2;
 			
-				// {@squirreljme.error EB3j Unhandled pixel format. (Format)}.
+			// {@squirreljme.error EB3j Unhandled pixel format. (Format)}.
 			default:
 				throw Debugging.oops("EB3j", pf);
 		}
@@ -845,7 +787,7 @@ public class Display
 	
 	/**
 	 * Removes the currently displayed displayable.
-	 * 
+	 *
 	 * @since 2020/10/04
 	 */
 	public void removeCurrent()
@@ -870,12 +812,12 @@ public class Display
 		// Active?
 		if (__m == Display.MODE_ACTIVE)
 			throw Debugging.todo();
-	
-		// Normal
+			
+			// Normal
 		else if (__m == Display.MODE_NORMAL)
 			throw Debugging.todo();
-	
-		// {@squirreljme.error EB1i Unknown activity mode specified.}
+			
+			// {@squirreljme.error EB1i Unknown activity mode specified.}
 		else
 			throw new IllegalArgumentException("EB1i");
 	}
@@ -905,7 +847,7 @@ public class Display
 	 */
 	public void setCurrent(Alert __show, Displayable __exit)
 		throws DisplayCapabilityException, IllegalStateException,
-			NullPointerException
+		NullPointerException
 	{
 		// {@squirreljme.error EB1j Cannot show another alert when the alert
 		// to show is cleared.}
@@ -959,7 +901,8 @@ public class Display
 	 *
 	 * The displayable if specified will be put into the foreground state.
 	 *
-	 * Note that it is unspecified when the displayable is made current, it may
+	 * Note that it is unspecified when the displayable is made current, it
+	 * may
 	 * be done when this is called or it may be queued for later.
 	 *
 	 * @param __show The displayable to show, if {@code null} this tells the
@@ -1037,12 +980,14 @@ public class Display
 	 * background, the device cannot vibrate, or the vibrator cannot be
 	 * controlled.
 	 *
-	 * Note that excessive vibration may cause the battery life for a device to
+	 * Note that excessive vibration may cause the battery life for a 
+	 * device to
 	 * be lowered, thus it should be used sparingly.
 	 *
 	 * @param __d The number of milliseconds to vibrate for, if zero the
 	 * vibrator will be switched off.
-	 * @return {@code true} if the vibrator is controllable by this application
+	 * @return {@code true} if the vibrator is controllable by this 
+	 * application
 	 * and the display is active.
 	 * @throws IllegalArgumentException If the duration is negative.
 	 * @since 2017/02/26
@@ -1073,34 +1018,35 @@ public class Display
 		{
 			case Display.CHOICE_GROUP_ELEMENT:
 				throw Debugging.todo();
-				
+			
 			case Display.ALERT:
 				throw Debugging.todo();
-				
+			
 			case Display.TAB:
 				throw Debugging.todo();
-				
+			
 			case Display.NOTIFICATION:
 				throw Debugging.todo();
-				
+			
 			case Display.LIST_ELEMENT:
-				return backend.metric(_uiDisplay, UIMetricType.LIST_ITEM_HEIGHT);
-				
+				return backend.metric(_uiDisplay,
+					UIMetricType.LIST_ITEM_HEIGHT);
+			
 			case Display.MENU:
 			case Display.COMMAND:
-				return backend.metric(_uiDisplay, UIMetricType.COMMAND_BAR_HEIGHT);
-				
-				// {@squirreljme.error EB1o Cannot get the best image size of
-				// the specified element. (The element specifier)}
+				return backend.metric(_uiDisplay,
+					UIMetricType.COMMAND_BAR_HEIGHT);
+			
+			// {@squirreljme.error EB1o Cannot get the best image size of
+			// the specified element. (The element specifier)}
 			default:
-				throw new IllegalArgumentException(String.format("EB1o %d",
-					__e));
+				throw new IllegalArgumentException(String.format("EB1o %d", __e));
 		}
 	}
 	
 	/**
 	 * Hides the current displayable.
-	 * 
+	 *
 	 * @return The currently displayed displayable unless not set.
 	 * @since 2020/09/27
 	 */
@@ -1115,8 +1061,7 @@ public class Display
 		// as we do not want to un-hide another form being displayed if it
 		// is from another process
 		if (current.__isShown())
-			UIBackendFactory.getInstance(true)
-				.displayShow(this._uiDisplay, null);
+			UIBackendFactory.getInstance(true).displayShow(this._uiDisplay, null);
 		
 		// Unlink display
 		current._display = null;
@@ -1177,7 +1122,7 @@ public class Display
 	 * Projects the border for the given layout according to the screen
 	 * orientation. Calling this method twice with a previously projected item
 	 * will result in the projection being reversed.
-	 * 
+	 *
 	 * @param __b The border or item to project.
 	 * @return The projection of the border.
 	 * @since 2020/09/27
@@ -1191,38 +1136,38 @@ public class Display
 		// Depends if the display is flipped or not
 		switch (this.getOrientation())
 		{
-				// Normal layout, does not get modified
+			// Normal layout, does not get modified
 			case Display.ORIENTATION_PORTRAIT:
 			case Display.ORIENTATION_LANDSCAPE:
 				return __b;
 			
-				// Rotation will adjust which border items appear on
+			// Rotation will adjust which border items appear on
 			case Display.ORIENTATION_PORTRAIT_180:
 			case Display.ORIENTATION_LANDSCAPE_180:
 				switch (border)
 				{
-						// If the item is offscreen, it never gets adjusted
+					// If the item is offscreen, it never gets adjusted
 					case Display.SOFTKEY_OFFSCREEN:
 						return __b;
 					
 					case Display.SOFTKEY_TOP:
 						return Display.SOFTKEY_BOTTOM + position;
-						
+					
 					case Display.SOFTKEY_BOTTOM:
 						return Display.SOFTKEY_TOP + position;
-						
+					
 					case Display.SOFTKEY_LEFT:
 						return Display.SOFTKEY_RIGHT + position;
-						
+					
 					case Display.SOFTKEY_RIGHT:
 						return Display.SOFTKEY_LEFT + position;
 					
-						// {@squirreljme.error EB3k Invalid border position.
-						// (The border position).
+					// {@squirreljme.error EB3k Invalid border position.
+					// (The border position).
 					default:
 						throw new IllegalArgumentException("EB3k " + border);
 				}
-			
+				
 				// This should not occur
 			default:
 				throw Debugging.oops("Invalid orientation.");
@@ -1260,8 +1205,7 @@ public class Display
 		}
 		
 		// Perform the call so it is done later
-		UIBackendFactory.getInstance(true)
-			.later(this._uiDisplay, idRunner);
+		UIBackendFactory.getInstance(true).later(this._uiDisplay, idRunner);
 		
 		// This is the ID used to refer to this runner
 		return idRunner;
@@ -1269,7 +1213,7 @@ public class Display
 	
 	/**
 	 * Performs a serial run.
-	 * 
+	 *
 	 * @param __serialId The serial run ID.
 	 * @since 2023/01/14
 	 */
@@ -1352,7 +1296,8 @@ public class Display
 	 * Obtains the displays which have the given capability from all internal
 	 * display providers.
 	 *
-	 * @param __caps The capabilities to use, this is a bitfield and the values
+	 * @param __caps The capabilities to use, this is a bitfield and the 
+	 * values
 	 * include all of the {@code SUPPORT_} prefixed constants. If {@code 0} is
 	 * specified then capabilities are not checked.
 	 * @return An array containing the displays with these capabilities.
@@ -1367,8 +1312,7 @@ public class Display
 		if (all == null)
 		{
 			// Get the displays that are attached to the system
-			UIDisplayBracket[] uiDisplays =
-				UIBackendFactory.getInstance(true).displays();
+			UIDisplayBracket[] uiDisplays = UIBackendFactory.getInstance(true).displays();
 			int n = uiDisplays.length;
 			
 			// Initialize display instances
@@ -1381,7 +1325,7 @@ public class Display
 			
 			// Inform any listeners that the displays exist now
 			for (DisplayListener listener : StaticDisplayState.listeners())
-				for (Display display : all) 
+				for (Display display : all)
 					listener.displayAdded(display);
 		}
 		
@@ -1421,34 +1365,29 @@ public class Display
 	
 	/**
 	 * The default display capabilities.
-	 * 
+	 *
 	 * @return The default display capabilities.
 	 * @since 2021/11/30
 	 */
 	static int __defaultCapabilities()
 	{
-		return Display.SUPPORTS_COMMANDS | Display.SUPPORTS_FORMS |
-			Display.SUPPORTS_TICKER | Display.SUPPORTS_ALERTS |
-			Display.SUPPORTS_LISTS | Display.SUPPORTS_TEXTBOXES |
-			Display.SUPPORTS_FILESELECTORS | Display.SUPPORTS_TABBEDPANES |
-			Display.SUPPORTS_MENUS;
+		return Display.SUPPORTS_COMMANDS | Display.SUPPORTS_FORMS | Display.SUPPORTS_TICKER | Display.SUPPORTS_ALERTS | Display.SUPPORTS_LISTS | Display.SUPPORTS_TEXTBOXES | Display.SUPPORTS_FILESELECTORS | Display.SUPPORTS_TABBEDPANES | Display.SUPPORTS_MENUS;
 	}
 	
 	/**
 	 * Converts a {@link UIItemPosition} to a softkey.
-	 * 
+	 *
 	 * @param __pos The {@link UIItemPosition} to get the soft key of.
 	 * @return The softkey position or a negative value if not valid.
 	 * @since 2020/10/03
 	 */
-	@Api
 	static int __layoutPosToSoftKey(int __pos)
 	{
 		switch (__pos)
 		{
 			case UIItemPosition.LEFT_COMMAND:
 				return Display._SOFTKEY_LEFT_COMMAND;
-				
+			
 			case UIItemPosition.RIGHT_COMMAND:
 				return Display._SOFTKEY_RIGHT_COMMAND;
 			
@@ -1459,7 +1398,7 @@ public class Display
 	
 	/**
 	 * Returns the position where the soft key belongs.
-	 * 
+	 *
 	 * @param __softKey The soft key to get the UI position from.
 	 * @return The {@link UIItemPosition} of the item, or
 	 * {@link UIItemPosition#NOT_ON_FORM} if not valid.
@@ -1471,7 +1410,7 @@ public class Display
 		{
 			case Display._SOFTKEY_LEFT_COMMAND:
 				return UIItemPosition.LEFT_COMMAND;
-				
+			
 			case Display._SOFTKEY_RIGHT_COMMAND:
 				return UIItemPosition.RIGHT_COMMAND;
 			

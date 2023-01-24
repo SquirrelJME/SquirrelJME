@@ -253,7 +253,6 @@ public abstract class AbstractList<E>
 	 * {@inheritDoc}
 	 * @since 2018/10/28
 	 */
-	@Api
 	@Override
 	public ListIterator<E> listIterator()
 	{

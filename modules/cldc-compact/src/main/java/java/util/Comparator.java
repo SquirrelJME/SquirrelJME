@@ -22,7 +22,6 @@ public interface Comparator<T>
 	 * {@inheritDoc}
 	 * @since 2016/04/12
 	 */
-	@Api
 	@Override
 	boolean equals(Object __a);
 }

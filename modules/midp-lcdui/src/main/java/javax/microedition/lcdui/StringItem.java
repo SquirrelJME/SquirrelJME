@@ -138,17 +138,15 @@ public class StringItem
 	 * {@inheritDoc}
 	 * @since 2023/01/14
 	 */
-	@Api
 	@Override
 	__CommonState__ __stateInit(UIBackend __backend)
-		throws NullPointerException
 	{
 		return new __StringItemState__(__backend, this);
 	}
 	
 	/**
 	 * String item state.
-	 * 
+	 *
 	 * @since 2023/01/14
 	 */
 	static class __StringItemState__

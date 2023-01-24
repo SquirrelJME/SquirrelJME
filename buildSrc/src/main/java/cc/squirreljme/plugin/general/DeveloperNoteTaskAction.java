@@ -28,7 +28,6 @@ class DeveloperNoteTaskAction
 {
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2022/07/10
 	 */
 	@SuppressWarnings("HttpUrlsUsage")
@@ -64,7 +63,7 @@ class DeveloperNoteTaskAction
 			DeveloperNoteTask.__launchBrowser(__task, url);
 			
 			// Continuous handling loop
-			for (; ; )
+			for (;;)
 				try
 				{
 					// Stop the loop if we were interrupted

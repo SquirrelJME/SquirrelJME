@@ -85,7 +85,6 @@ public final class Integer
 	 * {@inheritDoc}
 	 * @since 2019/05/11
 	 */
-	@Api
 	@Override
 	public byte byteValue()
 	{
@@ -96,7 +95,6 @@ public final class Integer
 	 * {@inheritDoc}
 	 * @since 2019/05/10
 	 */
-	@Api
 	@Override
 	public int compareTo(Integer __b)
 	{
@@ -115,7 +113,6 @@ public final class Integer
 	 * {@inheritDoc}
 	 * @since 2019/05/11
 	 */
-	@Api
 	@Override
 	public double doubleValue()
 	{
@@ -126,7 +123,6 @@ public final class Integer
 	 * {@inheritDoc}
 	 * @since 2018/11/04
 	 */
-	@Api
 	@Override
 	public boolean equals(Object __o)
 	{
@@ -143,7 +139,6 @@ public final class Integer
 	 * {@inheritDoc}
 	 * @since 2019/05/11
 	 */
-	@Api
 	@Override
 	public float floatValue()
 	{
@@ -154,7 +149,6 @@ public final class Integer
 	 * {@inheritDoc}
 	 * @since 2018/11/02
 	 */
-	@Api
 	@Override
 	public int hashCode()
 	{
@@ -165,7 +159,6 @@ public final class Integer
 	 * {@inheritDoc}
 	 * @since 2018/10/12
 	 */
-	@Api
 	@Override
 	public int intValue()
 	{
@@ -176,7 +169,6 @@ public final class Integer
 	 * {@inheritDoc}
 	 * @since 2018/11/03
 	 */
-	@Api
 	@Override
 	public long longValue()
 	{
@@ -187,7 +179,6 @@ public final class Integer
 	 * {@inheritDoc}
 	 * @since 2019/05/11
 	 */
-	@Api
 	@Override
 	public short shortValue()
 	{

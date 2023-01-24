@@ -19,7 +19,6 @@ class NothingRunnable
 {
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2020/10/09
 	 */
 	@Override

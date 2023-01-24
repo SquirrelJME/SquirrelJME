@@ -157,7 +157,6 @@ public abstract class BasicPermission
 	 * {@inheritDoc}
 	 * @since 2020/07/09
 	 */
-	@Api
 	@Override
 	public boolean implies(Permission __o)
 	{

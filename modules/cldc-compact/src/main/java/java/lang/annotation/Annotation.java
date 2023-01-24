@@ -52,7 +52,6 @@ public interface Annotation
 	 * @return {@code true} if they are logically equivalent.
 	 * @since 2014/10/13
 	 */
-	@Api
 	@Override
 	boolean equals(Object __o);
 	
@@ -71,7 +70,6 @@ public interface Annotation
 	 * @return The hash code for this annotation.
 	 * @since 2014/10/13
 	 */
-	@Api
 	@Override
 	int hashCode();
 	
@@ -82,7 +80,6 @@ public interface Annotation
 	 * @return The string representation of this annotation.
 	 * @since 2014/10/13
 	 */
-	@Api
 	@Override
 	String toString();
 }

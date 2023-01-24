@@ -166,7 +166,6 @@ public class ArrayList<E>
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
-	@Api
 	@Override
 	public Object clone()
 	{

@@ -15,8 +15,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * This is not used by Java ME 8 or SquirrelJME, however it is needed by
@@ -28,8 +26,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Api
 @Documented
-@Retention(RUNTIME)
-@Target(TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
 public @interface FunctionalInterface
 {
 }

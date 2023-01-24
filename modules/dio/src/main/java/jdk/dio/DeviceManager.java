@@ -29,7 +29,6 @@ public class DeviceManager
 	public static final int UNSPECIFIED_ID =
 		-1;
 	
-	@Api
 	private DeviceManager()
 	{
 		throw Debugging.todo();

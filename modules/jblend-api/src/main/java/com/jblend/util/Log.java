@@ -43,7 +43,6 @@ public final class Log
 		throw Debugging.todo();
 	}
 	
-	@Api
 	private static final class PrivateOutputStream extends OutputStream {
         @Override
 		public void write(int var1) throws IOException

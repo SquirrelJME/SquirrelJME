@@ -46,7 +46,6 @@ public final class AccessController
 	 * in effect for the current program, these are not at a virtual machine
 	 * level.}
 	 */
-	@Api
 	private static final String _POLICY_PROPERTY =
 		"cc.squirreljme.policy";
 	

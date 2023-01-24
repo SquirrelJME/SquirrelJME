@@ -54,7 +54,6 @@ public final class ServiceLoader<S>
 	 * {@inheritDoc}
 	 * @since 2018/12/06
 	 */
-	@Api
 	@Override
 	public Iterator<S> iterator()
 	{
@@ -86,7 +85,6 @@ public final class ServiceLoader<S>
 	 * {@inheritDoc}
 	 * @since 2018/12/06
 	 */
-	@Api
 	@Override
 	public String toString()
 	{

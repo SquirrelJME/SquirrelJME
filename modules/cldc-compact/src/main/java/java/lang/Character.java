@@ -88,7 +88,6 @@ public final class Character
 	 * {@inheritDoc}
 	 * @since 2018/10/13
 	 */
-	@Api
 	@Override
 	public int compareTo(Character __o)
 		throws NullPointerException
@@ -103,7 +102,6 @@ public final class Character
 	 * {@inheritDoc}
 	 * @since 2018/10/13
 	 */
-	@Api
 	@Override
 	public boolean equals(Object __o)
 	{
@@ -120,7 +118,6 @@ public final class Character
 	 * {@inheritDoc}
 	 * @since 2018/10/13
 	 */
-	@Api
 	@Override
 	public int hashCode()
 	{

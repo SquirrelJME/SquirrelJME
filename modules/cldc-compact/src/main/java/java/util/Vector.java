@@ -187,7 +187,6 @@ public class Vector<E>
 		}
 	}
 	
-	@Api
 	@Override
 	public Vector<E> clone()
 	{

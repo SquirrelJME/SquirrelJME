@@ -62,42 +62,36 @@ public final class Short
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public byte byteValue()
 	{
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public int compareTo(Short __a)
 	{
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public double doubleValue()
 	{
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public boolean equals(Object __a)
 	{
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public float floatValue()
 	{
 		throw Debugging.todo();
 	}
 	
-	@Api
 	@Override
 	public int hashCode()
 	{
@@ -108,7 +102,6 @@ public final class Short
 	 * {@inheritDoc}
 	 * @since 2021/02/25
 	 */
-	@Api
 	@Override
 	public int intValue()
 	{
@@ -119,7 +112,6 @@ public final class Short
 	 * {@inheritDoc}
 	 * @since 2021/02/25
 	 */
-	@Api
 	@Override
 	public long longValue()
 	{
@@ -130,7 +122,6 @@ public final class Short
 	 * {@inheritDoc}
 	 * @since 2021/02/25
 	 */
-	@Api
 	@Override
 	public short shortValue()
 	{
@@ -141,7 +132,6 @@ public final class Short
 	 * {@inheritDoc}
 	 * @since 2018/11/14
 	 */
-	@Api
 	@Override
 	public String toString()
 	{
