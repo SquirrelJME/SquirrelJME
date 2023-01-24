@@ -11,6 +11,7 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import java.lang.ref.WeakReference;
 import javax.microedition.lcdui.Command;
@@ -59,8 +60,10 @@ public abstract class Frame
 			softKeys[i] = new Command("", Command.ITEM, i);
 		
 		// Use default background color
-		int defaultBgColor = UIBackendFactory.getInstance(true)
-				.metric(UIMetricType.COLOR_CANVAS_BACKGROUND) | 0xFF_000000;
+		UIBackend backend = UIBackendFactory.getInstance(true);
+		int defaultBgColor = backend
+				.metric(backend.displays()[0],
+					UIMetricType.COLOR_CANVAS_BACKGROUND) | 0xFF_000000;
 		this._bgColor = new __BGColor__(defaultBgColor);
 	}
 	

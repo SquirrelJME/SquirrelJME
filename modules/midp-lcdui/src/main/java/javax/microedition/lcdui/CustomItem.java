@@ -11,12 +11,13 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
-import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
 @SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
 public abstract class CustomItem
@@ -48,9 +49,6 @@ public abstract class CustomItem
 	
 	protected static final int TRAVERSE_VERTICAL =
 		2;
-	
-	/** The native display instance. */
-	final UIItemBracket _uiCanvas;
 	
 	/** Is the rendering transparent or opaque? */
 	boolean _transparent;
@@ -254,7 +252,8 @@ public abstract class CustomItem
 		if (!this._transparent)
 		{
 			int old = __gfx.getAlphaColor();
-			__gfx.setColor(UIBackendFactory.getInstance(true).metric(
+			__gfx.setColor(this.__backend().metric(
+				this._displayable._display._uiDisplay, 
 				UIMetricType.COLOR_CANVAS_BACKGROUND));
 			
 			__gfx.fillRect(0, 0, __sw, __sh);
@@ -290,10 +289,11 @@ public abstract class CustomItem
 	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __intProp, int __sub, int __old, int __new)
 	{
-		UIBackend instance = UIBackendFactory.getInstance(true);
+		UIBackend instance = this.__backend();
 		
 		// Only act on the canvas item
-		if (!instance.equals(__item, this._uiCanvas))
+		if (!instance.equals(__item,
+			this.__state(__CustomItemState__.class)._uiCanvas))
 			return false;
 		
 		// Depends on the property
@@ -334,6 +334,44 @@ public abstract class CustomItem
 				// Un-Handled
 			default:
 				return false;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/01/14
+	 */
+	@Override
+	final __CommonState__ __stateInit(UIBackend __backend)
+		throws NullPointerException
+	{
+		return new __CustomItemState__(__backend, this);
+	}
+	
+	/**
+	 * Item state.
+	 * 
+	 * @since 2023/01/14
+	 */
+	static class __CustomItemState__
+		extends Item.__ItemState__
+	{
+		/** The native display instance. */
+		final UIItemBracket _uiCanvas;
+		
+		/**
+		 * Initializes the backend state.
+		 *
+		 * @param __backend The backend used.
+		 * @param __self Self widget.
+		 * @since 2023/01/21
+		 */
+		__CustomItemState__(UIBackend __backend, DisplayWidget __self)
+		{
+			super(__backend, __self);
+			
+			// Build new canvas
+			this._uiCanvas = __backend.itemNew(UIItemType.CANVAS);
 		}
 	}
 }

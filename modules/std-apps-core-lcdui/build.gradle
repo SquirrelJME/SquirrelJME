@@ -1,0 +1,19 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "LCDUI interface for core standard applications."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "SL"
+	swmType = JavaMEMidletType.LIBRARY
+	swmName = "Core Standard Applications LCDUI Interface"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+dependencies
+{
+	implementation project(":modules:cldc-compact")
+	implementation project(":modules:std-apps-core")
+	implementation project(":modules:midp-lcdui")
+}

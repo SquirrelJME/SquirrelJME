@@ -18,5 +18,6 @@ import cc.squirreljme.jvm.mle.annotation.GhostObject;
  */
 @GhostObject
 public interface UIWidgetBracket
+	extends UIDrawableBracket
 {
 }

@@ -13,6 +13,8 @@ import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 
 /**
  * This is the base class that is under various widgets.
@@ -22,6 +24,42 @@ import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 abstract class __CommonWidget__
 	implements DisplayWidget
 {
+	/** The common display state. */
+	private final __CommonState__ _commonState;
+	
+	/**
+	 * Initializes the common base state.
+	 * 
+	 * @since 2023/01/14
+	 */
+	__CommonWidget__()
+	{
+		this._commonState = this.__stateInit(
+			UIBackendFactory.getInstance(true));
+	}
+	
+	/**
+	 * Initializes the display state.
+	 * 
+	 * @param __backend The backend to use.
+	 * @return The created state.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/01/14
+	 */
+	abstract __CommonState__ __stateInit(UIBackend __backend)
+		throws NullPointerException;
+	
+	/**
+	 * Returns the current backend used for this widget.
+	 * 
+	 * @return The used backend.
+	 * @since 2023/01/14
+	 */
+	final UIBackend __backend()
+	{
+		return this._commonState._backend;
+	}
+	
 	/**
 	 * Is this item painted?
 	 * 
@@ -96,5 +134,51 @@ abstract class __CommonWidget__
 		
 		// Un-Handled
 		return false;
+	}
+	
+	/**
+	 * Returns the state for the widget or displayable.
+	 * 
+	 * @param <S> The state type used.
+	 * @param __type The state type used.
+	 * @return The state.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/01/14
+	 */
+	final <S extends __CommonState__> S __state(Class<S> __type)
+		throws NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		return __type.cast(this._commonState);
+	}
+	
+	/**
+	 * Common widget state.
+	 * 
+	 * @since 2023/01/14
+	 */
+	abstract static class __CommonState__
+	{
+		/** The backend to use. */
+		final UIBackend _backend;
+		
+		/**
+		 * Initializes the common base state.
+		 *
+		 * @param __backend The backend to use.
+		 * @param __self The current item, may be used or ignored.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2023/01/14
+		 */
+		__CommonState__(UIBackend __backend, DisplayWidget __self)
+			throws NullPointerException
+		{
+			if (__backend == null)
+				throw new NullPointerException("NARG");
+			
+			this._backend = __backend;
+		}
 	}
 }

@@ -18,6 +18,10 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
  */
 public interface UIItemType
 {
+	/** Special ID type for displays. */
+	byte DISPLAY =
+		-2;
+	
 	/** Special ID type for forms. */
 	byte FORM =
 		-1;

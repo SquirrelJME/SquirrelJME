@@ -10,6 +10,8 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -272,6 +274,38 @@ public class ChoiceGroup
 	public int size()
 	{
 		return this._entries.size();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/01/14
+	 */
+	@Override
+	__CommonState__ __stateInit(UIBackend __backend)
+		throws NullPointerException
+	{
+		return new __ChoiceGroupState__(__backend, this);
+	}
+	
+	/**
+	 * Choice group state.
+	 * 
+	 * @since 2023/01/14
+	 */
+	static class __ChoiceGroupState__
+		extends Item.__ItemState__
+	{
+		/**
+		 * Initializes the backend state.
+		 *
+		 * @param __backend The backend used.
+		 * @param __self Self widget.
+		 * @since 2023/01/14
+		 */
+		__ChoiceGroupState__(UIBackend __backend, DisplayWidget __self)
+		{
+			super(__backend, __self);
+		}
 	}
 }
 

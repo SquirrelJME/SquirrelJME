@@ -74,6 +74,8 @@
             <option value="$PROJECT_DIR$/modules/profile-meep" />
             <option value="$PROJECT_DIR$/modules/sprint-api" />
             <option value="$PROJECT_DIR$/modules/squirrel-quarrel" />
+            <option value="$PROJECT_DIR$/modules/std-apps-core" />
+            <option value="$PROJECT_DIR$/modules/std-apps-core-lcdui" />
             <option value="$PROJECT_DIR$/modules/tac" />
             <option value="$PROJECT_DIR$/modules/tango-icon-theme" />
             <option value="$PROJECT_DIR$/modules/tool-classfile" />

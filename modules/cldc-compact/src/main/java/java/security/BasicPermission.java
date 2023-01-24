@@ -60,7 +60,7 @@ public abstract class BasicPermission
 	 * @since 2018/09/18
 	 */
 	public BasicPermission(String __name,
-		@SuppressWarnings("unused") String __act)
+		@Api String __act)
 		throws IllegalArgumentException, NullPointerException
 	{
 		super(__name);
