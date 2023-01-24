@@ -10,16 +10,20 @@
 package jdk.dio;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class DeviceAlreadyExistsException
 	extends DeviceException
 {
+	@Api
 	public DeviceAlreadyExistsException()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public DeviceAlreadyExistsException(String __a)
 	{
 		throw Debugging.todo();

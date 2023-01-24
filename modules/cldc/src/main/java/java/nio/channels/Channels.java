@@ -9,10 +9,12 @@
 
 package java.nio.channels;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+@Api
 public final class Channels
 {
 	private Channels()
@@ -20,21 +22,25 @@ public final class Channels
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static ReadableByteChannel newChannel(InputStream __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static WritableByteChannel newChannel(OutputStream __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static InputStream newInputStream(ReadableByteChannel __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static OutputStream newOutputStream(WritableByteChannel __a)
 	{
 		throw Debugging.todo();

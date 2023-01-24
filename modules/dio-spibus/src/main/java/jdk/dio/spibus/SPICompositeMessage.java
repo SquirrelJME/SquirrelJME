@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
 import jdk.dio.ClosedDeviceException;
 import jdk.dio.UnavailableDeviceException;
 
+@SuppressWarnings("DuplicateThrows")
 public interface SPICompositeMessage
 {
 	SPICompositeMessage appendDelay(int __a)

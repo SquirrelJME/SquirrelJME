@@ -13,6 +13,7 @@ import java.io.IOException;
 import jdk.dio.ClosedDeviceException;
 import jdk.dio.UnavailableDeviceException;
 
+@SuppressWarnings("DuplicateThrows")
 public interface RawRegister<T extends Number>
 	extends RawMemory
 {

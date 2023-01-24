@@ -9,12 +9,15 @@
 
 package jdk.dio;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.nio.Buffer;
 
+@Api
 public interface OutputRoundListener<P extends Device<? super P>, B extends 
 	Buffer>
 	extends DeviceEventListener, AsyncErrorHandler<P>
 {
+	@Api
 	void outputRoundCompleted(RoundCompletionEvent<P, B> __a);
 }
 

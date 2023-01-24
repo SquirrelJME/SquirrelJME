@@ -10,8 +10,12 @@
 package jdk.dio.atcmd;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface UnsolicitedResponseHandler
 {
+	@Api
 	void processResponse(ATDevice __a, String __b);
 }
 

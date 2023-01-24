@@ -9,12 +9,15 @@
 
 package jdk.dio;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.nio.channels.ClosedChannelException;
 
+@Api
 public class ClosedDeviceException
 	extends ClosedChannelException
 {
+	@Api
 	public ClosedDeviceException()
 	{
 		throw Debugging.todo();

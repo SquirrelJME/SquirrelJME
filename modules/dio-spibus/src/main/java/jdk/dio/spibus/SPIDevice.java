@@ -18,6 +18,7 @@ import jdk.dio.Device;
 import jdk.dio.UnavailableDeviceException;
 import jdk.dio.UnsupportedByteOrderException;
 
+@SuppressWarnings("DuplicateThrows")
 public interface SPIDevice
 	extends Device<SPIDevice>, ByteChannel, BufferAccess<ByteBuffer>
 {

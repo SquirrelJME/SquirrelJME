@@ -9,22 +9,28 @@
 
 package jdk.dio;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.security.Permission;
 import java.security.PermissionCollection;
 
+@Api
 public class DeviceMgmtPermission
 	extends Permission
 {
+	@Api
 	public static final String OPEN =
 		"open";
 	
+	@Api
 	public static final String REGISTER =
 		"register";
 	
+	@Api
 	public static final String UNREGISTER =
 		"unregister";
 	
+	@Api
 	public DeviceMgmtPermission(String __a, String __b)
 	{
 		super((String)null);

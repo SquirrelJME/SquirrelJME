@@ -9,14 +9,18 @@
 
 package java.nio.file;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.Closeable;
 import java.io.IOException;
 
+@Api
 public interface DirectoryStream<T>
 	extends Closeable, Iterable<T>
 {
+	@Api
 	interface Filter<T>
 	{
+		@Api
 		boolean accept(T __a)
 			throws IOException;
 	}

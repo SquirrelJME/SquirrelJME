@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
 import jdk.dio.ClosedDeviceException;
 import jdk.dio.UnavailableDeviceException;
 
+@SuppressWarnings("DuplicateThrows")
 public interface I2CCombinedMessage
 {
 	I2CCombinedMessage appendRead(I2CDevice __a, ByteBuffer __b)

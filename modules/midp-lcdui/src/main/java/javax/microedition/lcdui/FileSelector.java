@@ -16,6 +16,7 @@ import java.io.IOException;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.StreamConnection;
 
+@SuppressWarnings("DuplicateThrows")
 public class FileSelector
 	extends Screen
 {

@@ -18,6 +18,7 @@ import jdk.dio.UnavailableDeviceException;
 import jdk.dio.UnsupportedByteOrderException;
 import jdk.dio.gpio.GPIOPin;
 
+@SuppressWarnings("DuplicateThrows")
 public interface PWMChannel
 	extends Device<PWMChannel>, BufferAccess<IntBuffer>
 {

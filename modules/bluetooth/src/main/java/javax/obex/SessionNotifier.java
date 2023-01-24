@@ -9,17 +9,19 @@
 
 package javax.obex;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 import javax.microedition.io.Connection;
 
+@Api
 public interface SessionNotifier
 	extends Connection
 {
-	@SuppressWarnings("RedundantThrows")
+	@Api
 	Connection acceptAndOpen(ServerRequestHandler __a)
 		throws IOException;
 	
-	@SuppressWarnings("RedundantThrows")
+	@Api
 	Connection acceptAndOpen(ServerRequestHandler __a, Authenticator __b)
 		throws IOException;
 }

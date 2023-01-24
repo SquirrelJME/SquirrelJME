@@ -9,22 +9,27 @@
 
 package java.nio.file;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
+@Api
 public class FileSystemException
 	extends IOException
 {
+	@Api
 	public FileSystemException(String __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public FileSystemException(String __a, String __b, String __c)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public String getFile()
 	{
 		throw Debugging.todo();
@@ -36,11 +41,13 @@ public class FileSystemException
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public String getOtherFile()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public String getReason()
 	{
 		throw Debugging.todo();

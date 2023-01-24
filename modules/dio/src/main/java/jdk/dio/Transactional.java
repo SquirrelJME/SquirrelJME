@@ -9,13 +9,18 @@
 
 package jdk.dio;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 
+@SuppressWarnings("DuplicateThrows")
+@Api
 public interface Transactional
 {
+	@Api
 	void begin()
 		throws ClosedDeviceException, IOException;
 	
+	@Api
 	void end()
 		throws ClosedDeviceException, IOException;
 }

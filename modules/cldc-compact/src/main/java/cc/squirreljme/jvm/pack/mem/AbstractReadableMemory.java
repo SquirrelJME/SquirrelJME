@@ -19,7 +19,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2019/04/21
  */
-@SuppressWarnings("MagicNumber")
+@SuppressWarnings({"MagicNumber", "DuplicateThrows"})
 public abstract class AbstractReadableMemory
 	implements HasByteOrder, ReadableMemory
 {

@@ -9,11 +9,14 @@
 
 package java.nio.file;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This indicates that the given path is not valid.
  *
  * @since 2019/12/22
  */
+@Api
 public class InvalidPathException
 	extends IllegalArgumentException
 {
@@ -36,6 +39,7 @@ public class InvalidPathException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/22
 	 */
+	@Api
 	public InvalidPathException(String __in, String __reason, int __index)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -60,6 +64,7 @@ public class InvalidPathException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/22
 	 */
+	@Api
 	public InvalidPathException(String __in, String __reason)
 		throws NullPointerException
 	{
@@ -73,6 +78,7 @@ public class InvalidPathException
 	 * known.
 	 * @since 2019/12/22
 	 */
+	@Api
 	public int getIndex()
 	{
 		return this._index;
@@ -84,6 +90,7 @@ public class InvalidPathException
 	 * @return The input path.
 	 * @since 2019/12/22
 	 */
+	@Api
 	public String getInput()
 	{
 		return this._input;
@@ -108,6 +115,7 @@ public class InvalidPathException
 	 * @return The reason the path is not valid.
 	 * @since 2019/12/22
 	 */
+	@Api
 	public String getReason()
 	{
 		return this._reason;

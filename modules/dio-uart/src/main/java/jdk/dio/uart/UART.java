@@ -19,6 +19,7 @@ import jdk.dio.InputRoundListener;
 import jdk.dio.OutputRoundListener;
 import jdk.dio.UnavailableDeviceException;
 
+@SuppressWarnings("DuplicateThrows")
 public interface UART
 	extends Device<UART>, ByteChannel, BufferAccess<ByteBuffer>
 {

@@ -14,6 +14,7 @@ import jdk.dio.ClosedDeviceException;
 import jdk.dio.Device;
 import jdk.dio.UnavailableDeviceException;
 
+@SuppressWarnings("DuplicateThrows")
 public interface GPIOPin
 	extends Device<GPIOPin>
 {

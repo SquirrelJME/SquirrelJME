@@ -12,6 +12,7 @@ package jdk.dio.watchdog;
 import java.io.IOException;
 import jdk.dio.ClosedDeviceException;
 
+@SuppressWarnings("DuplicateThrows")
 public interface WindowedWatchdogTimer
 	extends WatchdogTimer
 {

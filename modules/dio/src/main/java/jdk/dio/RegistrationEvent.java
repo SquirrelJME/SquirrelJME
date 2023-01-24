@@ -9,29 +9,35 @@
 
 package jdk.dio;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.EventObject;
 
+@Api
 public class RegistrationEvent<P extends Device<? super P>>
 	extends EventObject
 {
+	@Api
 	public RegistrationEvent(String __a, DeviceDescriptor<P> __b)
 	{
 		super((Object)null);
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public RegistrationEvent(DeviceDescriptor<P> __a)
 	{
 		super((Object)null);
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public DeviceDescriptor<P> getDescriptor()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public String getInitiator()
 	{
 		throw Debugging.todo();

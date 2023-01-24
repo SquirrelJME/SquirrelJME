@@ -39,6 +39,7 @@ import net.multiphasicapps.collections.IdentityLinkedHashSet;
  *
  * @since 2017/02/26
  */
+@SuppressWarnings("DuplicateThrows")
 public class RecordStore
 	implements AutoCloseable
 {

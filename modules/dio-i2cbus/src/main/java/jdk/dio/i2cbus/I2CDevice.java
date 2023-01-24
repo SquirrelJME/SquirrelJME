@@ -17,6 +17,7 @@ import jdk.dio.ClosedDeviceException;
 import jdk.dio.Device;
 import jdk.dio.UnavailableDeviceException;
 
+@SuppressWarnings("DuplicateThrows")
 public interface I2CDevice
 	extends Device<I2CDevice>, ByteChannel, BufferAccess<ByteBuffer>
 {

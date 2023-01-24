@@ -9,10 +9,15 @@
 
 package java.nio.file.attribute;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface FileAttribute<T>
 {
+	@Api
 	String name();
 	
+	@Api
 	T value();
 }
 

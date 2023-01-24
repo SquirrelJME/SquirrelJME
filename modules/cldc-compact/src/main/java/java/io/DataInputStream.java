@@ -16,6 +16,7 @@ package java.io;
  *
  * @since 2018/12/01
  */
+@SuppressWarnings("DuplicateThrows")
 public class DataInputStream
 	extends InputStream
 	implements DataInput

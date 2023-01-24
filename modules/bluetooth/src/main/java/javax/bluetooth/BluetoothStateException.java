@@ -9,18 +9,21 @@
 
 package javax.bluetooth;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
+@Api
 public class BluetoothStateException
 	extends IOException
 {
+	@Api
 	public BluetoothStateException()
 	{
 		throw Debugging.todo();
 	}
 	
-	@SuppressWarnings("unused")
+	@Api
 	public BluetoothStateException(String __s)
 	{
 		throw Debugging.todo();
