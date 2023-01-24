@@ -1726,7 +1726,6 @@ public final class SpringThreadWorker
 		// our breakpoints
 		SpringThread.Frame frame = thread.currentFrame();
 		SpringMethod method = frame.method();
-		ByteCode code = frame.byteCode();
 		
 		// Poll the JDWP debugger for any new debugging state
 		JDWPController jdwp = this.machine.tasks.jdwpController;
@@ -1764,6 +1763,9 @@ public final class SpringThreadWorker
 			// Poll and block on suspension when debugging
 			this.__debugSuspension();
 		}
+		
+		// Obtain the method byte code
+		ByteCode code = frame.byteCode();
 		
 		// Increase the step count
 		this._stepCount++;
