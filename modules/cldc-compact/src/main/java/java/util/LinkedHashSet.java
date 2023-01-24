@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is a set which is backed by a hash table except that the iterator
  * order is in the order of which elements were added first.
@@ -32,6 +34,7 @@ public class LinkedHashSet<E>
 	 * load factor is not positive.
 	 * @since 2018/11/01
 	 */
+	@Api
 	public LinkedHashSet(int __initcap, float __load)
 		throws IllegalArgumentException
 	{
@@ -45,6 +48,7 @@ public class LinkedHashSet<E>
 	 * @throws IllegalArgumentException If the capacity is negative.
 	 * @since 2018/11/01
 	 */
+	@Api
 	public LinkedHashSet(int __initcap)
 		throws IllegalArgumentException
 	{

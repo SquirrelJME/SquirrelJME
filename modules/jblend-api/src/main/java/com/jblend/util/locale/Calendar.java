@@ -9,21 +9,25 @@
 
 package com.jblend.util.locale;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public final class Calendar
 {
-    public Calendar()
+	@Api
+	public Calendar()
 	{
 		throw Debugging.todo();
 	}
-
-    public static String getMonthString(int var0)
+	
+	@Api
+	public static String getMonthString(int var0)
 	{
 		throw Debugging.todo();
 	}
-
-    public static String getWeekString(int var0)
+	
+	@Api
+	public static String getWeekString(int var0)
 	{
 		throw Debugging.todo();
 	}

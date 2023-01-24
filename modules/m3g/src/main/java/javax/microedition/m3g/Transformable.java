@@ -10,6 +10,7 @@
 package javax.microedition.m3g;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public abstract class Transformable
@@ -20,66 +21,79 @@ public abstract class Transformable
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void getCompositeTransform(Transform __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void getOrientation(float[] __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void getScale(float[] __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void getTransform(Transform __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void getTranslation(float[] __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void postRotate(float __a, float __b, float __c, float __d)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void preRotate(float __a, float __b, float __c, float __d)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void scale(float __a, float __b, float __c)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setOrientation(float __a, float __b, float __c, float __d)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setScale(float __a, float __b, float __c)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setTransform(Transform __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setTranslation(float __a, float __b, float __c)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void translate(float __a, float __b, float __c)
 	{
 		throw Debugging.todo();

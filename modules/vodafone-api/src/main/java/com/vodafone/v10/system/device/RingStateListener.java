@@ -9,9 +9,13 @@
 
 package com.vodafone.v10.system.device;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface RingStateListener
 {
-    void ringStarted();
-
-    void ringStopped();
+	@Api
+	void ringStarted();
+	
+	@Api
+	void ringStopped();
 }

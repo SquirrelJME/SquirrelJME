@@ -9,6 +9,8 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This represents the stage of an installation.
  *
@@ -17,22 +19,22 @@ package javax.microedition.swm;
 public enum SuiteInstallStage
 {
 	/** Installation finished. */
-	DONE,
+	@Api DONE,
 	
 	/** Downloading document body. */
-	DOWNLOAD_BODY,
+	@Api DOWNLOAD_BODY,
 	
 	/** Downloading data. */
-	DOWNLOAD_DATA,
+	@Api DOWNLOAD_DATA,
 	
 	/** Downloading descriptor. */
-	DOWNLOAD_DESCRIPTOR,
+	@Api DOWNLOAD_DESCRIPTOR,
 	
 	/** Storing suite data. */
-	STORING,
+	@Api STORING,
 	
 	/** Verifying the download. */
-	VERIFYING,
+	@Api VERIFYING,
 	
 	/** End. */
 	;

@@ -9,6 +9,7 @@
 
 package com.nokia.mid.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -31,6 +32,7 @@ public class DirectUtils
 	 * or exceed the array bounds.
 	 * @since 2019/10/07
 	 */
+	@Api
 	public static Image createImage(int __w, int __h, int __argb)
 		throws IllegalArgumentException
 	{
@@ -50,6 +52,7 @@ public class DirectUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/10/07
 	 */
+	@Api
 	public static Image createImage(byte[] __b, int __o, int __l)
 	{
 		// Load the base image
@@ -83,6 +86,7 @@ public class DirectUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/10/07
 	 */
+	@Api
 	public static DirectGraphics getDirectGraphics(Graphics __g)
 		throws NullPointerException
 	{

@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.common.TextStorage;
@@ -90,6 +91,7 @@ public class Text
 	private int _spacebelow;
 	
 	/** The alignment of each line. */
+	@Api
 	private int _align;
 	
 	/** Indentation. */
@@ -182,6 +184,7 @@ public class Text
 	 * @throws IndexOutOfBoundsException If the index is out of bounds.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public void delete(int __i, int __l)
 		throws IndexOutOfBoundsException
 	{
@@ -287,6 +290,7 @@ public class Text
 		}
 	}
 	
+	@Api
 	public int getCharIndex(int __x, int __y)
 	{
 		throw Debugging.todo();
@@ -439,6 +443,7 @@ public class Text
 	 * @return The number of lines which are required.
 	 * @since 2018/12/01
 	 */
+	@Api
 	public int getRequiredLineCount()
 	{
 		// Update
@@ -574,11 +579,13 @@ public class Text
 		this._dirty = true;
 	}
 	
+	@Api
 	public int lastRenderedIndex()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void moveCaret(int __nl)
 	{
 		throw Debugging.todo();
@@ -860,6 +867,7 @@ public class Text
 	 * @return If all of the text fits within the bounds of the box.
 	 * @since 2018/12/01
 	 */
+	@Api
 	public boolean textFits()
 	{
 		// Update

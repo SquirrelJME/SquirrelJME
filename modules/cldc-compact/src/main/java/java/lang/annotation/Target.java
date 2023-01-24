@@ -9,6 +9,8 @@
 
 package java.lang.annotation;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * Specifies the context in which the annotation is valid.
  *
@@ -24,6 +26,6 @@ public @interface Target
 	 * @return An array of permitted targets.
 	 * @since 2014/10/13
 	 */
-	ElementType[] value();
+	@Api ElementType[] value();
 }
 

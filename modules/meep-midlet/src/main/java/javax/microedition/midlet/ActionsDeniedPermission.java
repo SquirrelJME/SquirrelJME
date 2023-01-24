@@ -9,6 +9,7 @@
 
 package javax.microedition.midlet;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.security.BasicPermission;
 import java.security.Permission;
@@ -16,6 +17,7 @@ import java.security.Permission;
 public final class ActionsDeniedPermission
 	extends BasicPermission
 {
+	@Api
 	public ActionsDeniedPermission()
 	{
 		// No name or actions are used

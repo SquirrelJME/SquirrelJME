@@ -9,6 +9,8 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when there is an exception in the code.
  *
@@ -17,18 +19,22 @@ package com.nttdocomo.ui;
 public class UIException
 	extends RuntimeException
 {
+	@Api
 	public static final int BUSY_RESOURCE =
 		3;
 		
 	public static final int ILLEGAL_STATE =
 		1;
-		
+	
+	@Api
 	public static final int NO_RESOURCES =
 		2;
-		
+	
+	@Api
 	public static final int STATUS_FIRST =
 		0;
-		
+	
+	@Api
 	public static final int STATUS_LAST =
 		63;
 		
@@ -41,16 +47,19 @@ public class UIException
 	/** Represents the status of the exception. */
 	private final int _status;
 	
+	@Api
 	public UIException()
 	{
 		this(UIException.UNDEFINED);
 	}
 	
+	@Api
 	public UIException(int __status)
 	{
 		this(__status, null);
 	}
 	
+	@Api
 	public UIException(int __status, String __message)
 	{
 		super(__message);
@@ -58,6 +67,7 @@ public class UIException
 		this._status = __status;
 	}
 	
+	@Api
 	public int getStatus()
 	{
 		return this._status;

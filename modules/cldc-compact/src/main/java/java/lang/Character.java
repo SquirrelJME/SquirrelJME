@@ -10,6 +10,7 @@
 package java.lang;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import java.lang.ref.Reference;
@@ -28,6 +29,7 @@ public final class Character
 		36;
 	
 	/** The maximum value for characters. */
+	@Api
 	public static final char MAX_VALUE =
 		65535;
 	
@@ -36,14 +38,17 @@ public final class Character
 		2;
 	
 	/** The minimum value for characters. */
+	@Api
 	public static final char MIN_VALUE =
 		0;
 	
 	/** The number of bits used to represent a character. */
+	@Api
 	public static final int SIZE =
 		16;
 	
 	/** The class representing the primitive type. */
+	@Api
 	public static final Class<Character> TYPE =
 		TypeShelf.<Character>typeToClass(TypeShelf.typeOfCharacter());
 	
@@ -70,6 +75,7 @@ public final class Character
 	 * @return The character value.
 	 * @since 2018/10/11
 	 */
+	@Api
 	public char charValue()
 	{
 		return this._value;
@@ -82,6 +88,7 @@ public final class Character
 	 * {@inheritDoc}
 	 * @since 2018/10/13
 	 */
+	@Api
 	@Override
 	public int compareTo(Character __o)
 		throws NullPointerException
@@ -96,6 +103,7 @@ public final class Character
 	 * {@inheritDoc}
 	 * @since 2018/10/13
 	 */
+	@Api
 	@Override
 	public boolean equals(Object __o)
 	{
@@ -112,6 +120,7 @@ public final class Character
 	 * {@inheritDoc}
 	 * @since 2018/10/13
 	 */
+	@Api
 	@Override
 	public int hashCode()
 	{
@@ -199,6 +208,7 @@ public final class Character
 	 * @return True if the character is a digit.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public static boolean isDigit(char __c)
 	{
 		return (__c >= '0' && __c <= '9');
@@ -211,6 +221,7 @@ public final class Character
 	 * @return True if the character is an ISO control code.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public static boolean isISOControl(char __c)
 	{
 		return (__c >= 0 && __c <= 0x1F) || (__c >= 0x7F && __c <= 0x9F);
@@ -225,6 +236,7 @@ public final class Character
 	 * @return True if the character is lowercase.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public static boolean isLowerCase(char __c)
 	{
 		// 0xF7 is Divide
@@ -239,6 +251,7 @@ public final class Character
 	 * @return True if the character is a space character.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public static boolean isSpaceChar(char __c)
 	{
 		return (__c == 0x09 || __c == 0x0A || __c == 0x0C || __c == 0x0D ||
@@ -254,6 +267,7 @@ public final class Character
 	 * @return True if the character is uppercase.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public static boolean isUpperCase(char __c)
 	{
 		// 0xD7 is multiply
@@ -268,6 +282,7 @@ public final class Character
 	 * @return True if the character is whitespace.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public static boolean isWhitespace(char __c)
 	{
 		switch (__c)

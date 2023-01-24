@@ -9,6 +9,7 @@
 
 package com.sprintpcs.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.CleanupHandler;
 
@@ -26,6 +27,7 @@ public class System
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/08/28
 	 */
+	@Api
 	public static void addSystemListener(SystemEventListener __listener)
 		throws NullPointerException
 	{
@@ -45,6 +47,7 @@ public class System
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/08/28
 	 */
+	@Api
 	public static String getSystemState(String __option)
 		throws NullPointerException
 	{
@@ -71,6 +74,7 @@ public class System
 	 * @param __uri The URL to execute on exit.
 	 * @since 2022/08/28
 	 */
+	@Api
 	public static void setExitURI(String __uri)
 	{
 		if (__uri != null)

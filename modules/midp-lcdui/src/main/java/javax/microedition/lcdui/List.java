@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIListType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
@@ -138,6 +139,7 @@ public class List
 	 * {@inheritDoc}
 	 * @since 2020/11/21
 	 */
+	@Api
 	@Override
 	public void delete(int __dx)
 	{
@@ -175,6 +177,7 @@ public class List
 	 * @throws IndexOutOfBoundsException On null arguments.
 	 * @since 2019/05/18
 	 */
+	@Api
 	@Override
 	public Font getFont(int __i)
 		throws IndexOutOfBoundsException
@@ -186,6 +189,7 @@ public class List
 	 * {@inheritDoc}
 	 * @since 2017/05/24
 	 */
+	@Api
 	@Override
 	public int getHeight()
 	{
@@ -200,6 +204,7 @@ public class List
 	 * @throws IndexOutOfBoundsException If the index is not valid.
 	 * @since 2019/05/18
 	 */
+	@Api
 	@Override
 	public Image getImage(int __i)
 		throws IndexOutOfBoundsException
@@ -211,6 +216,7 @@ public class List
 	 * {@inheritDoc}
 	 * @since 2020/10/31
 	 */
+	@Api
 	@Override
 	public int getSelectedFlags(boolean[] __result)
 		throws IllegalArgumentException, NullPointerException
@@ -236,6 +242,7 @@ public class List
 	 * @throws IndexOutOfBoundsException If the index is out of bounds.
 	 * @since 2019/05/18
 	 */
+	@Api
 	@Override
 	public String getString(int __i)
 		throws IndexOutOfBoundsException
@@ -249,6 +256,7 @@ public class List
 	 * @return The list type.
 	 * @since 2019/05/18
 	 */
+	@Api
 	@ImplementationNote("This is a SquirrelJME specific method.")
 	public int getType()
 	{
@@ -259,6 +267,7 @@ public class List
 	 * {@inheritDoc}
 	 * @since 2017/05/24
 	 */
+	@Api
 	@Override
 	public int getWidth()
 	{
@@ -295,6 +304,7 @@ public class List
 	 * {@inheritDoc}
 	 * @since 2019/05/18
 	 */
+	@Api
 	@Override
 	public boolean isEnabled(int __i)
 		throws IndexOutOfBoundsException
@@ -306,6 +316,7 @@ public class List
 	 * {@inheritDoc}
 	 * @since 2019/05/18
 	 */
+	@Api
 	@Override
 	public boolean isSelected(int __i)
 		throws IndexOutOfBoundsException
@@ -317,6 +328,7 @@ public class List
 	 * {@inheritDoc}
 	 * @since 2020/11/14
 	 */
+	@Api
 	@Override
 	public void set(int __i, String __label, Image __icon)
 		throws IndexOutOfBoundsException, NullPointerException
@@ -371,6 +383,7 @@ public class List
 		this.__refresh();
 	}
 	
+	@Api
 	public void setSelectCommand(Command __a)
 	{
 		throw Debugging.todo();
@@ -380,6 +393,7 @@ public class List
 	 * {@inheritDoc}
 	 * @since 2020/11/20
 	 */
+	@Api
 	@Override
 	public void setSelectedFlags(boolean[] __flags)
 		throws IllegalArgumentException, NullPointerException

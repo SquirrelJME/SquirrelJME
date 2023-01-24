@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -23,26 +24,31 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public class Stack<E>
 	extends Vector<E>
 {
+	@Api
 	public boolean empty()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public E peek()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public E pop()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public E push(E __item)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int search(Object __o)
 	{
 		throw Debugging.todo();

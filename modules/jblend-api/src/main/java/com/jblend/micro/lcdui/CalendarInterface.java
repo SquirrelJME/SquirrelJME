@@ -9,20 +9,30 @@
 
 package com.jblend.micro.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.lcdui.Graphics;
 
 @SuppressWarnings({"FieldNamingConvention",
 "InterfaceWithOnlyOneDirectInheritor"})
 public interface CalendarInterface {
-    int kYearSelectionMode = 1;
-    int kMonthSelectionMode = 2;
-    int kDaySelectionMode = 3;
-
-    void initCalendarValues(int var1, int var2);
-
-    void paint(Graphics var1, int var2, int var3, int var4, int var5, int var6, int var7);
-
-    String getBackCommand();
-
-    String getSaveCommand();
+	@Api
+	int kYearSelectionMode = 1;
+	
+	@Api
+	int kMonthSelectionMode = 2;
+	
+	@Api
+	int kDaySelectionMode = 3;
+	
+	@Api
+	void initCalendarValues(int var1, int var2);
+	
+	@Api
+	void paint(Graphics var1, int var2, int var3, int var4, int var5, int var6, int var7);
+	
+	@Api
+	String getBackCommand();
+	
+	@Api
+	String getSaveCommand();
 }

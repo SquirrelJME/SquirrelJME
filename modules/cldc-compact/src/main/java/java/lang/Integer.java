@@ -12,6 +12,7 @@ package java.lang;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
@@ -35,10 +36,12 @@ public final class Integer
 		-2147483648;
 	
 	/** The number of bits this uses. */
+	@Api
 	public static final int SIZE =
 		32;
 	
 	/** The class type representing the primitive type. */
+	@Api
 	public static final Class<Integer> TYPE =
 		TypeShelf.<Integer>typeToClass(TypeShelf.typeOfInteger());
 	
@@ -68,6 +71,7 @@ public final class Integer
 	 * @throws NumberFormatException If the number is not valid.
 	 * @since 2019/05/11
 	 */
+	@Api
 	public Integer(String __v)
 		throws NullPointerException, NumberFormatException
 	{
@@ -81,6 +85,7 @@ public final class Integer
 	 * {@inheritDoc}
 	 * @since 2019/05/11
 	 */
+	@Api
 	@Override
 	public byte byteValue()
 	{
@@ -91,6 +96,7 @@ public final class Integer
 	 * {@inheritDoc}
 	 * @since 2019/05/10
 	 */
+	@Api
 	@Override
 	public int compareTo(Integer __b)
 	{
@@ -109,6 +115,7 @@ public final class Integer
 	 * {@inheritDoc}
 	 * @since 2019/05/11
 	 */
+	@Api
 	@Override
 	public double doubleValue()
 	{
@@ -119,6 +126,7 @@ public final class Integer
 	 * {@inheritDoc}
 	 * @since 2018/11/04
 	 */
+	@Api
 	@Override
 	public boolean equals(Object __o)
 	{
@@ -135,6 +143,7 @@ public final class Integer
 	 * {@inheritDoc}
 	 * @since 2019/05/11
 	 */
+	@Api
 	@Override
 	public float floatValue()
 	{
@@ -145,6 +154,7 @@ public final class Integer
 	 * {@inheritDoc}
 	 * @since 2018/11/02
 	 */
+	@Api
 	@Override
 	public int hashCode()
 	{
@@ -155,6 +165,7 @@ public final class Integer
 	 * {@inheritDoc}
 	 * @since 2018/10/12
 	 */
+	@Api
 	@Override
 	public int intValue()
 	{
@@ -165,6 +176,7 @@ public final class Integer
 	 * {@inheritDoc}
 	 * @since 2018/11/03
 	 */
+	@Api
 	@Override
 	public long longValue()
 	{
@@ -175,6 +187,7 @@ public final class Integer
 	 * {@inheritDoc}
 	 * @since 2019/05/11
 	 */
+	@Api
 	@Override
 	public short shortValue()
 	{
@@ -306,6 +319,7 @@ public final class Integer
 	 * @throws SecurityException If access to the property is denied.
 	 * @since 2018/11/11
 	 */
+	@Api
 	public static Integer getInteger(String __key)
 		throws NumberFormatException, SecurityException
 	{
@@ -323,6 +337,7 @@ public final class Integer
 	 * @throws SecurityException If access to the property is denied.
 	 * @since 2018/11/11
 	 */
+	@Api
 	public static Integer getInteger(String __key, int __def)
 		throws NumberFormatException, SecurityException
 	{
@@ -522,6 +537,7 @@ public final class Integer
 	 * @throws NumberFormatException If the string is not valid.
 	 * @since 2018/10/12
 	 */
+	@Api
 	public static int parseInt(String __v)
 		throws NumberFormatException
 	{
@@ -564,11 +580,13 @@ public final class Integer
 		return (__i >>> 16) | (__i << 16);
 	}
 	
+	@Api
 	public static int rotateLeft(int __i, int __d)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static int rotateRight(int __i, int __d)
 	{
 		throw Debugging.todo();
@@ -583,6 +601,7 @@ public final class Integer
 	 * @return The sign of the given value.
 	 * @since 2019/05/11
 	 */
+	@Api
 	public static int signum(int __v)
 	{
 		if (__v < 0)
@@ -593,16 +612,19 @@ public final class Integer
 			return 0;
 	}
 	
+	@Api
 	public static String toBinaryString(int __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static String toHexString(int __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static String toOctalString(int __a)
 	{
 		throw Debugging.todo();
@@ -647,6 +669,7 @@ public final class Integer
 	 * is outside of the valid bounds.
 	 * @since 2018/10/12
 	 */
+	@Api
 	public static Integer valueOf(String __v, int __r)
 		throws NumberFormatException
 	{

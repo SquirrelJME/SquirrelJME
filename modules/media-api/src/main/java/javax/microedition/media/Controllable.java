@@ -10,10 +10,14 @@
 package javax.microedition.media;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface Controllable
 {
+	@Api
 	Control getControl(String __a);
 	
+	@Api
 	Control[] getControls();
 }
 

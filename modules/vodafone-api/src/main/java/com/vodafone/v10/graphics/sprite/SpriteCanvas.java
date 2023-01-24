@@ -9,73 +9,87 @@
 
 package com.vodafone.v10.graphics.sprite;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Canvas;
 
 public abstract class SpriteCanvas
 	extends Canvas
 {
-    public SpriteCanvas(int var1, int var2)
+	@Api
+	public SpriteCanvas(int var1, int var2)
 	{
 		throw Debugging.todo();
 	}
-
-    public void createFrameBuffer(int var1, int var2)
+	
+	@Api
+	public void createFrameBuffer(int var1, int var2)
 	{
 		throw Debugging.todo();
 	}
-
-    public void disposeFrameBuffer()
+	
+	@Api
+	public void disposeFrameBuffer()
 	{
 		throw Debugging.todo();
 	}
-
-    public static  int getVirtualWidth()
+	
+	@Api
+	public static  int getVirtualWidth()
 	{
 		throw Debugging.todo();
 	}
-
-    public static  int getVirtualHeight()
+	
+	@Api
+	public static  int getVirtualHeight()
 	{
 		throw Debugging.todo();
 	}
-
-    public void setPalette(int var1, int var2)
+	
+	@Api
+	public void setPalette(int var1, int var2)
 	{
 		throw Debugging.todo();
 	}
-
-    public void setPattern(int var1, byte[] var2)
+	
+	@Api
+	public void setPattern(int var1, byte[] var2)
 	{
 		throw Debugging.todo();
 	}
-
-    public static  short createCharacterCommand(int var0, boolean var1, int var2, boolean var3, boolean var4, int var5)
+	
+	@Api
+	public static  short createCharacterCommand(int var0, boolean var1, int var2, boolean var3, boolean var4, int var5)
 	{
 		throw Debugging.todo();
 	}
-
-    public void drawSpriteChar(short var1, short var2, short var3)
+	
+	@Api
+	public void drawSpriteChar(short var1, short var2, short var3)
 	{
 		throw Debugging.todo();
 	}
-
-    public void drawBackground(short var1, short var2, short var3)
+	
+	@Api
+	public void drawBackground(short var1, short var2, short var3)
 	{
 		throw Debugging.todo();
 	}
-
-    public void copyArea(int var1, int var2, int var3, int var4, int var5, int var6)
+	
+	@Api
+	public void copyArea(int var1, int var2, int var3, int var4, int var5, int var6)
 	{
 		throw Debugging.todo();
 	}
-
-    public void copyFullScreen(int var1, int var2)
+	
+	@Api
+	public void copyFullScreen(int var1, int var2)
 	{
 		throw Debugging.todo();
 	}
-
-    public void drawFrameBuffer(int var1, int var2)
+	
+	@Api
+	public void drawFrameBuffer(int var1, int var2)
 	{
 		throw Debugging.todo();
 	}

@@ -9,6 +9,7 @@
 
 package com.oracle.json.stream;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import com.oracle.json.JsonException;
 
 /**
@@ -28,6 +29,7 @@ public class JsonGenerationException
 	 * @param __m Message to set.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public JsonGenerationException(String __m)
 	{
 		super(__m);
@@ -40,6 +42,7 @@ public class JsonGenerationException
 	 * @param __c Cause of the exception.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public JsonGenerationException(String __m, Throwable __c)
 	{
 		super(__m, __c);

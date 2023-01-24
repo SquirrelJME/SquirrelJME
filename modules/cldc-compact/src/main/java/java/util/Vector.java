@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
 import cc.squirreljme.runtime.cldc.util.SynchronizedIterator;
@@ -143,7 +144,7 @@ public class Vector<E>
 	 * @param __v The element to add.
 	 * @since 2019/05/14
 	 */
-	@SuppressWarnings("UnnecessarySuperQualifier")
+	@SuppressWarnings({"UnnecessarySuperQualifier", "unused"})
 	public void addElement(E __v)
 	{
 		synchronized (this)
@@ -158,6 +159,7 @@ public class Vector<E>
 	 * @return The capacity of this vector.
 	 * @since 2020/06/17
 	 */
+	@Api
 	public int capacity()
 	{
 		synchronized (this)
@@ -185,6 +187,7 @@ public class Vector<E>
 		}
 	}
 	
+	@Api
 	@Override
 	public Vector<E> clone()
 	{
@@ -230,7 +233,7 @@ public class Vector<E>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/24
 	 */
-	@SuppressWarnings("ManualArrayCopy")
+	@SuppressWarnings({"ManualArrayCopy", "unused"})
 	public void copyInto(Object[] __a)
 		throws ArrayStoreException, IndexOutOfBoundsException,
 			NullPointerException
@@ -259,6 +262,7 @@ public class Vector<E>
 	 * @return The element.
 	 * @since 2019/05/14
 	 */
+	@Api
 	public E elementAt(int __i)
 	{
 		synchronized (this)
@@ -273,6 +277,7 @@ public class Vector<E>
 	 * @return The element enumeration.
 	 * @since 2019/05/14
 	 */
+	@Api
 	public Enumeration<E> elements()
 	{
 		synchronized (this)
@@ -332,7 +337,7 @@ public class Vector<E>
 	 * @throws NoSuchElementException If the vector is empty.
 	 * @since 2019/05/14
 	 */
-	@SuppressWarnings({"unchecked"})
+	@SuppressWarnings({"unchecked", "unused"})
 	public E firstElement()
 		throws NoSuchElementException
 	{
@@ -384,6 +389,7 @@ public class Vector<E>
 		}
 	}
 	
+	@Api
 	public int indexOf(Object __v, int __base)
 	{
 		synchronized (this)
@@ -399,6 +405,7 @@ public class Vector<E>
 	 * @param __at The index to add at.
 	 * @since 2020/06/17
 	 */
+	@Api
 	public void insertElementAt(E __v, int __at)
 	{
 		synchronized (this)
@@ -427,7 +434,7 @@ public class Vector<E>
 	 * @throws NoSuchElementException If there is none.
 	 * @since 2020/06/17
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "unused"})
 	public E lastElement()
 		throws NoSuchElementException
 	{
@@ -454,6 +461,7 @@ public class Vector<E>
 		}
 	}
 	
+	@Api
 	public int lastIndexOf(Object __v, int __base)
 	{
 		synchronized (this)
@@ -526,6 +534,7 @@ public class Vector<E>
 	 *
 	 * @since 2019/05/14
 	 */
+	@Api
 	public void removeAllElements()
 	{
 		synchronized (this)
@@ -541,6 +550,7 @@ public class Vector<E>
 	 * @return If it was removed.
 	 * @since 2019/05/19
 	 */
+	@Api
 	public boolean removeElement(Object __v)
 	{
 		synchronized (this)
@@ -556,6 +566,7 @@ public class Vector<E>
 	 * @throws ArrayIndexOutOfBoundsException If the index is out of bounds.
 	 * @since 2019/05/19
 	 */
+	@Api
 	public void removeElementAt(int __i)
 		throws ArrayIndexOutOfBoundsException
 	{
@@ -627,6 +638,7 @@ public class Vector<E>
 	 * @throws ArrayIndexOutOfBoundsException If the index is out of bounds.
 	 * @since 2019/05/14
 	 */
+	@Api
 	public void setElementAt(E __v, int __i)
 		throws ArrayIndexOutOfBoundsException
 	{
@@ -644,6 +656,7 @@ public class Vector<E>
 	 * @throws ArrayIndexOutOfBoundsException If the size is negative.
 	 * @since 2019/05/14
 	 */
+	@Api
 	public void setSize(int __n)
 		throws ArrayIndexOutOfBoundsException
 	{
@@ -701,6 +714,7 @@ public class Vector<E>
 	 *
 	 * @since 2020/06/17
 	 */
+	@Api
 	public void trimToSize()
 	{
 		synchronized (this)

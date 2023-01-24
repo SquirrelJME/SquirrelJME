@@ -9,6 +9,8 @@
 
 package java.net;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when the remote system has a port which cannot be reached.
  *
@@ -22,6 +24,7 @@ public class PortUnreachableException
 	 *
 	 * @since 2018/12/08
 	 */
+	@Api
 	public PortUnreachableException()
 	{
 	}
@@ -32,6 +35,7 @@ public class PortUnreachableException
 	 * @param __m The message.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public PortUnreachableException(String __m)
 	{
 		super(__m);

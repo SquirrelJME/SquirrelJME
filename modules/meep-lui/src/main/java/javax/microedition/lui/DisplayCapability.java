@@ -9,6 +9,8 @@
 
 package javax.microedition.lui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This represents the capabilities that a display supports in hardware.
  *
@@ -17,25 +19,25 @@ package javax.microedition.lui;
 public enum DisplayCapability
 {
 	/** Supports background colors. */
-	SUPPORTS_BACKGROUND_COLORS,
+	@Api SUPPORTS_BACKGROUND_COLORS,
 	
 	/** Supports horizontal scrolling. */
-	SUPPORTS_HORIZONTAL_SCROLLING,
+	@Api SUPPORTS_HORIZONTAL_SCROLLING,
 	
 	/** Supports key events. */
-	SUPPORTS_KEY_EVENTS,
+	@Api SUPPORTS_KEY_EVENTS,
 	
 	/** Supports lighting (backlight). */
-	SUPPORTS_LIGHTING,
+	@Api SUPPORTS_LIGHTING,
 	
 	/** Supports lighting with different colors (backlight). */
-	SUPPORTS_LIGHTING_COLORS,
+	@Api SUPPORTS_LIGHTING_COLORS,
 	
 	/** Supports text colors. */
-	SUPPORTS_TEXT_COLORS,
+	@Api SUPPORTS_TEXT_COLORS,
 	
 	/** Supports vertical scrolling. */
-	SUPPORTS_VERTICAL_SCROLLING,
+	@Api SUPPORTS_VERTICAL_SCROLLING,
 	
 	/** End. */
 	;

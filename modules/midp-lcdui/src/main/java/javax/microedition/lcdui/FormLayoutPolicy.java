@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import java.lang.ref.Reference;
@@ -22,10 +23,12 @@ import net.multiphasicapps.collections.IdentityMap;
 public abstract class FormLayoutPolicy
 {
 	/** Left to right direction. */
+	@Api
 	public static int DIRECTION_LTR =
 		0;
 	
 	/** Right to left direction. */
+	@Api
 	public static int DIRECTION_RTL =
 		1;
 	
@@ -76,11 +79,13 @@ public abstract class FormLayoutPolicy
 	 * {@code __totalSize} has a length smaller than 2.
 	 * @since 2022/07/20
 	 */
+	@Api
 	@SerializedEvent
 	protected abstract void doLayout(int __viewportX, int __viewportY,
 		int __viewportW, int __viewportH, int[] __totalSize)
 		throws ArrayIndexOutOfBoundsException;
 	
+	@Api
 	protected abstract Item getTraverse(Item __i, int __dir);
 	
 	/**
@@ -99,6 +104,7 @@ public abstract class FormLayoutPolicy
 		return rv;
 	}
 	
+	@Api
 	protected final int getHeight(Item __i)
 	{
 		try (__LayoutLock__ lock = this._lock.utilize())
@@ -107,6 +113,7 @@ public abstract class FormLayoutPolicy
 		}
 	}
 	
+	@Api
 	protected final int getWidth(Item __i)
 	{
 		try (__LayoutLock__ lock = this._lock.utilize())
@@ -115,6 +122,7 @@ public abstract class FormLayoutPolicy
 		}
 	}
 	
+	@Api
 	protected final int getX(Item __i)
 	{
 		try (__LayoutLock__ lock = this._lock.utilize())
@@ -123,6 +131,7 @@ public abstract class FormLayoutPolicy
 		}
 	}
 	
+	@Api
 	protected final int getY(Item __i)
 	{
 		try (__LayoutLock__ lock = this._lock.utilize())
@@ -131,6 +140,7 @@ public abstract class FormLayoutPolicy
 		}
 	}
 	
+	@Api
 	protected final boolean isValid(Item __i)
 	{
 		try (__LayoutLock__ lock = this._lock.utilize())
@@ -139,6 +149,7 @@ public abstract class FormLayoutPolicy
 		}
 	}
 	
+	@Api
 	protected final void setPosition(Item __i, int __x, int __y)
 	{
 		try (__LayoutLock__ lock = this._lock.utilize())
@@ -147,6 +158,7 @@ public abstract class FormLayoutPolicy
 		}
 	}
 	
+	@Api
 	protected final void setSize(Item __i, int __w, int __h)
 	{
 		try (__LayoutLock__ lock = this._lock.utilize())
@@ -155,6 +167,7 @@ public abstract class FormLayoutPolicy
 		}
 	}
 	
+	@Api
 	protected final void setValid(Item __i)
 	{
 		try (__LayoutLock__ lock = this._lock.utilize())
@@ -163,6 +176,7 @@ public abstract class FormLayoutPolicy
 		}
 	}
 	
+	@Api
 	public static final int getLayoutDirection()
 	{
 		throw Debugging.todo();

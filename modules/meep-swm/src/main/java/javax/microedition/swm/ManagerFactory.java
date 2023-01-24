@@ -9,6 +9,8 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This class provides static methods for obtaining the application suite and
  * task manager.
@@ -38,6 +40,7 @@ public class ManagerFactory
 	 * "manageSuite")} permission is not permitted.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public static SuiteManager getSuiteManager()
 		throws SecurityException
 	{
@@ -63,6 +66,7 @@ public class ManagerFactory
 	 * "manageTask")} permission is not permitted.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public static TaskManager getTaskManager()
 		throws SecurityException
 	{

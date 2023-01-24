@@ -9,11 +9,13 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 
 public interface StreamConnectionNotifier
 	extends Connection
 {
+	@Api
 	StreamConnection acceptAndOpen()
 		throws IOException;
 }

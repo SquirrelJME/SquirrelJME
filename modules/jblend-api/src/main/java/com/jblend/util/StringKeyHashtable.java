@@ -9,6 +9,7 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Hashtable;
 
@@ -20,19 +21,22 @@ public class StringKeyHashtable
         
         throw Debugging.todo();
     }
-
-    public StringKeyHashtable(int var1) {
+	
+	@Api
+	public StringKeyHashtable(int var1) {
         super(0, 0.0F);
         
         throw Debugging.todo();
     }
-
-    public final Object get(String var1)
+	
+	@Api
+	public final Object get(String var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public final boolean containsKey(String var1)
+	
+	@Api
+	public final boolean containsKey(String var1)
 	{
 		throw Debugging.todo();
 	}

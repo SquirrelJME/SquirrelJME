@@ -9,13 +9,16 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 public interface ItemTraversalListener
 {
+	@Api
 	@SerializedEvent
 	void itemTraversedIn(Item __i);
 	
+	@Api
 	@SerializedEvent
 	void itemTraversedOut(Item __i);
 }

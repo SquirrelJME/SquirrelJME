@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -20,17 +21,21 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 @SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
 public abstract class Image
 {
+	@Api
 	protected Image()
 	{
 	}
 	
+	@Api
 	public abstract void dispose();
 	
+	@Api
 	public int getHeight()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getWidth()
 	{
 		throw Debugging.todo();

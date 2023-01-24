@@ -9,6 +9,8 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This represents a flag which may be associated with a suite.
  *
@@ -17,22 +19,22 @@ package javax.microedition.swm;
 public enum SuiteStateFlag
 {
 	/** Available. */
-	AVAILABLE,
+	@Api AVAILABLE,
 	
 	/** Enabled, the application or library may be used. */
-	ENABLED,
+	@Api ENABLED,
 	
 	/** The application or library is pre-installed with the system. */
-	PREINSTALLED,
+	@Api PREINSTALLED,
 	
 	/** Remove is not supported. */
-	REMOVE_DENIED,
+	@Api REMOVE_DENIED,
 	
 	/** A suite provided by the system. */
-	SYSTEM,
+	@Api SYSTEM,
 	
 	/** The suite cannot be updated. */
-	UPDATE_DENIED,
+	@Api UPDATE_DENIED,
 	
 	/** End. */
 	;

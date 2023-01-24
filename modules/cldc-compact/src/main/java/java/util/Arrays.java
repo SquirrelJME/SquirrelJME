@@ -11,6 +11,7 @@ package java.util;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.ByteIntegerArray;
 import cc.squirreljme.runtime.cldc.util.CharacterIntegerArray;
@@ -64,11 +65,13 @@ public class Arrays
 		return new __ArraysList__<T>(__a);
 	}
 	
+	@Api
 	public static int binarySearch(long[] __a, long __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static int binarySearch(long[] __a, int __b, int __c, long __d)
 	{
 		throw Debugging.todo();
@@ -215,6 +218,7 @@ public class Arrays
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09
 	 */
+	@Api
 	public static int binarySearch(byte[] __a, byte __key)
 		throws NullPointerException
 	{
@@ -249,42 +253,50 @@ public class Arrays
 			__from, __to, __key);
 	}
 	
+	@Api
 	public static int binarySearch(double[] __a, double __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static int binarySearch(double[] __a, int __b, int __c, double __d)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static int binarySearch(float[] __a, float __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static int binarySearch(float[] __a, int __b, int __c, float __d)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static int binarySearch(Object[] __a, Object __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static int binarySearch(Object[] __a, int __b, int __c, Object __d)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static <T> int binarySearch(T[] __a, T __b, Comparator<? super T>
 		__c)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static <T> int binarySearch(T[] __a, int __b, int __c, T __d,
 		Comparator<? super T> __e)
 	{
@@ -383,6 +395,7 @@ public class Arrays
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
+	@Api
 	public static short[] copyOf(short[] __src, int __newLen)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -435,6 +448,7 @@ public class Arrays
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
+	@Api
 	public static long[] copyOf(long[] __src, int __newLen)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -487,6 +501,7 @@ public class Arrays
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
+	@Api
 	public static float[] copyOf(float[] __src, int __newLen)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -513,6 +528,7 @@ public class Arrays
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
+	@Api
 	public static double[] copyOf(double[] __src, int __newLen)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -539,6 +555,7 @@ public class Arrays
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
+	@Api
 	public static boolean[] copyOf(boolean[] __src, int __newLen)
 		throws NegativeArraySizeException, NullPointerException
 	{
@@ -851,6 +868,7 @@ public class Arrays
 	 * @throws NullPointerException If the array is null.
 	 * @since 2020/01/01
 	 */
+	@Api
 	public static void fill(long[] __a, long __v)
 		throws NullPointerException
 	{
@@ -868,6 +886,7 @@ public class Arrays
 	 * @throws NullPointerException If the array is null.
 	 * @since 2020/01/01
 	 */
+	@Api
 	public static void fill(int[] __a, int __v)
 		throws NullPointerException
 	{
@@ -885,6 +904,7 @@ public class Arrays
 	 * @throws NullPointerException If the array is null.
 	 * @since 2020/01/01
 	 */
+	@Api
 	public static void fill(short[] __a, short __v)
 		throws NullPointerException
 	{
@@ -902,6 +922,7 @@ public class Arrays
 	 * @throws NullPointerException If the array is null.
 	 * @since 2020/01/01
 	 */
+	@Api
 	public static void fill(char[] __a, char __v)
 		throws NullPointerException
 	{
@@ -919,6 +940,7 @@ public class Arrays
 	 * @throws NullPointerException If the array is null.
 	 * @since 2020/01/01
 	 */
+	@Api
 	public static void fill(byte[] __a, byte __v)
 		throws NullPointerException
 	{
@@ -936,6 +958,7 @@ public class Arrays
 	 * @throws NullPointerException If the array is null.
 	 * @since 2020/01/01
 	 */
+	@Api
 	public static void fill(boolean[] __a, boolean __v)
 		throws NullPointerException
 	{
@@ -953,6 +976,7 @@ public class Arrays
 	 * @throws NullPointerException If the array is null.
 	 * @since 2020/01/01
 	 */
+	@Api
 	public static void fill(double[] __a, double __v)
 		throws NullPointerException
 	{
@@ -970,6 +994,7 @@ public class Arrays
 	 * @throws NullPointerException If the array is null.
 	 * @since 2020/01/01
 	 */
+	@Api
 	public static void fill(float[] __a, float __v)
 		throws NullPointerException
 	{
@@ -987,6 +1012,7 @@ public class Arrays
 	 * @throws NullPointerException If the array is null.
 	 * @since 2020/01/01
 	 */
+	@Api
 	public static void fill(Object[] __a, Object __v)
 		throws NullPointerException
 	{
@@ -1041,6 +1067,7 @@ public class Arrays
 	 * @throws NullPointerException If no array was specified.
 	 * @since 2016/09/30
 	 */
+	@Api
 	public static void sort(long[] __a)
 		throws NullPointerException
 	{
@@ -1207,6 +1234,7 @@ public class Arrays
 	 * @throws NullPointerException If no array was specified.
 	 * @since 2016/09/30
 	 */
+	@Api
 	public static void sort(float[] __a)
 		throws NullPointerException
 	{
@@ -1258,6 +1286,7 @@ public class Arrays
 	 * @throws NullPointerException If no array was specified.
 	 * @since 2016/09/30
 	 */
+	@Api
 	public static void sort(double[] __a)
 		throws NullPointerException
 	{
@@ -1332,6 +1361,7 @@ public class Arrays
 	 * @throws NullPointerException If no array was specified.
 	 * @since 2019/05/09
 	 */
+	@Api
 	public static void sort(Object[] __a, int __from, int __to)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
@@ -1352,6 +1382,7 @@ public class Arrays
 	 * @throws NullPointerException If no array was specified.
 	 * @since 2019/05/09
 	 */
+	@Api
 	public static <T> void sort(T[] __a, Comparator<? super T> __comp)
 		throws NullPointerException
 	{

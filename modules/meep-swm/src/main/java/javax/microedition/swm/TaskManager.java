@@ -9,6 +9,7 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.util.List;
 
 /**
@@ -27,6 +28,7 @@ public interface TaskManager
 	 * @param __tl The listener for events.
 	 * @since 2016/06/24
 	 */
+	@Api
 	void addTaskListener(TaskListener __tl);
 	
 	/**
@@ -35,6 +37,7 @@ public interface TaskManager
 	 * @return The task of the current caller.
 	 * @since 2016/06/24
 	 */
+	@Api
 	Task getCurrentTask();
 	
 	/**
@@ -46,6 +49,7 @@ public interface TaskManager
 	 * machine.
 	 * @since 2016/06/24
 	 */
+	@Api
 	List<Task> getTaskList(boolean __incsys);
 	
 	/**
@@ -55,6 +59,7 @@ public interface TaskManager
 	 * @param __tl The task listener to remove.
 	 * @since 2016/06/24
 	 */
+	@Api
 	void removeTaskListener(TaskListener __tl);
 	
 	/**
@@ -70,6 +75,7 @@ public interface TaskManager
 	 * @throws IllegalArgumentException If the task is a system task.
 	 * @since 2016/06/24
 	 */
+	@Api
 	boolean setForeground(Task __t)
 		throws IllegalArgumentException;
 	
@@ -85,6 +91,7 @@ public interface TaskManager
 	 * @throws IllegalArgumentException if the task is a system task.
 	 * @since 2016/06/24
 	 */
+	@Api
 	boolean setPriority(Task __t, TaskPriority __p)
 		throws IllegalArgumentException;
 	
@@ -111,6 +118,7 @@ public interface TaskManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/24
 	 */
+	@Api
 	Task startTask(Suite __s, String __cn)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException;
@@ -126,6 +134,7 @@ public interface TaskManager
 	 * @throws IllegalStateException If the task is a system task.
 	 * @since 2016/06/24
 	 */
+	@Api
 	boolean stopTask(Task __t)
 		throws IllegalArgumentException, IllegalStateException;
 }

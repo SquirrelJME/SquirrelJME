@@ -9,6 +9,7 @@
 
 package com.jblend.media.audio;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.jblend.media.MediaData;
 import java.io.IOException;
@@ -16,20 +17,24 @@ import java.io.IOException;
 public class AudioData
 	extends MediaData
 {
-    public static final String type = "AUDIO";
-
-    public AudioData()
+	@Api
+	public static final String type = "AUDIO";
+	
+	@Api
+	public AudioData()
 	{
 		throw Debugging.todo();
 	}
-
-    public AudioData(String var1)
+	
+	@Api
+	public AudioData(String var1)
     	throws IOException
 	{
 		throw Debugging.todo();
 	}
-
-    public AudioData(byte[] var1)
+	
+	@Api
+	public AudioData(byte[] var1)
 	{
 		throw Debugging.todo();
 	}

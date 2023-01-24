@@ -10,41 +10,54 @@
 package javax.microedition.media;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface PlayerListener
 {
+	@Api
 	String BUFFERING_STARTED =
 		"bufferingStarted";
 	
+	@Api
 	String BUFFERING_STOPPED =
 		"bufferingStopped";
 	
 	String CLOSED =
 		"closed";
 	
+	@Api
 	String DEVICE_AVAILABLE =
 		"deviceAvailable";
 	
+	@Api
 	String DEVICE_UNAVAILABLE =
 		"deviceUnavailable";
 	
+	@Api
 	String DURATION_UPDATED =
 		"durationUpdated";
 	
+	@Api
 	String END_OF_MEDIA =
 		"endOfMedia";
 	
+	@Api
 	String ERROR =
 		"error";
 	
+	@Api
 	String RECORD_ERROR =
 		"recordError";
 	
+	@Api
 	String RECORD_STARTED =
 		"recordStarted";
 	
+	@Api
 	String RECORD_STOPPED =
 		"recordStopped";
 	
+	@Api
 	String SIZE_CHANGED =
 		"sizeChanged";
 	
@@ -54,9 +67,11 @@ public interface PlayerListener
 	String STOPPED =
 		"stopped";
 	
+	@Api
 	String STOPPED_AT_TIME =
 		"stoppedAtTime";
 	
+	@Api
 	String VOLUME_CHANGED =
 		"volumeChanged";
 	

@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface Collection<E>
 	extends Iterable<E>
 {
@@ -20,11 +22,14 @@ public interface Collection<E>
 	
 	boolean contains(Object __a);
 	
+	@Api
 	boolean containsAll(Collection<?> __a);
 	
+	@Api
 	@Override
 	boolean equals(Object __a);
 	
+	@Api
 	@Override
 	int hashCode();
 	
@@ -35,8 +40,10 @@ public interface Collection<E>
 	
 	boolean remove(Object __a);
 	
+	@Api
 	boolean removeAll(Collection<?> __a);
 	
+	@Api
 	boolean retainAll(Collection<?> __a);
 	
 	int size();

@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -108,6 +109,7 @@ public class Graphics
 		this._bgColor = __bgColor;
 	}
 	
+	@Api
 	public void clearRect(int __x, int __y, int __w, int __h)
 		throws IllegalArgumentException
 	{
@@ -140,22 +142,26 @@ public class Graphics
 		}
 	}
 	
+	@Api
 	public Graphics copy()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void dispose()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void drawChars(char[] __c, int __x, int __y, int __off, int __len)
 		throws IllegalArgumentException, NullPointerException
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void drawImage(Image __i, int __x, int __y)
 		throws NullPointerException
 	{
@@ -173,17 +179,20 @@ public class Graphics
 			javax.microedition.lcdui.Graphics.LEFT);
 	}
 	
+	@Api
 	public void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void drawPolyline(int[] __x, int[] __y, int __n)
 		throws IllegalArgumentException
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void drawRect(int __x, int __y, int __w, int __h)
 		throws IllegalArgumentException
 	{
@@ -198,6 +207,7 @@ public class Graphics
 		this._graphics.drawRect(__x, __y, __w, __h);
 	}
 	
+	@Api
 	public void drawString(String __s, int __x, int __y)
 		throws NullPointerException
 	{
@@ -208,12 +218,14 @@ public class Graphics
 			javax.microedition.lcdui.Graphics.BASELINE);
 	}
 	
+	@Api
 	public void fillPolygon(int[] __x, int[] __y, int __n)
 		throws IllegalArgumentException
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void fillRect(int __x, int __y, int __w, int __h)
 		throws IllegalArgumentException
 	{
@@ -228,11 +240,13 @@ public class Graphics
 		this._graphics.fillRect(__x, __y, __w, __h);
 	}
 	
+	@Api
 	public void lock()
 	{
 		// Has no effect on SquirrelJME
 	}
 	
+	@Api
 	public void setColor(int __c)
 		throws IllegalArgumentException
 	{
@@ -242,6 +256,7 @@ public class Graphics
 		this._graphics.setColor(__c);
 	}
 	
+	@Api
 	public void setFont(Font __f)
 	{
 		throw Debugging.todo();
@@ -254,6 +269,7 @@ public class Graphics
 	 * @param __y The Y position.
 	 * @since 2022/02/14
 	 */
+	@Api
 	public void setOrigin(int __x, int __y)
 	{
 		javax.microedition.lcdui.Graphics graphics = this._graphics;
@@ -262,12 +278,13 @@ public class Graphics
 			__y - graphics.getTranslateY());
 	}
 	
+	@Api
 	public void unlock(boolean __forced)
 	{
 		// Has no effect on SquirrelJME
 	}
 	
-	@SuppressWarnings("MagicNumber")
+	@SuppressWarnings({"MagicNumber", "unused"})
 	public static int getColorOfName(int __name)
 		throws IllegalArgumentException
 	{
@@ -295,6 +312,7 @@ public class Graphics
 		throw new IllegalArgumentException("AH0r " + __name);
 	}
 	
+	@Api
 	public static int getColorOfRGB(int __r, int __g, int __b)
 	{
 		throw Debugging.todo();

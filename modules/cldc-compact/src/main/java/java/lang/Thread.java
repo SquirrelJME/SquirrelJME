@@ -12,6 +12,7 @@ package java.lang;
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * A thread represents literally a single stream of execution that can
@@ -45,7 +46,7 @@ public class Thread
 		1_000_000L;
 	
 	/** The runnable that this thread uses for its main code, if applicable. */
-	@SuppressWarnings("unused")
+	@Api
 	private final Runnable _runnable;
 	
 	/** The virtual machine thread this uses. */
@@ -55,11 +56,11 @@ public class Thread
 	private volatile String _name;
 	
 	/** Has this thread been started? */
-	@SuppressWarnings("unused")
+	@Api
 	private volatile boolean _started;
 	
 	/** Is this thread alive? */
-	@SuppressWarnings("unused")
+	@Api
 	private volatile boolean _isAlive;
 	
 	/** The priority of the thread. */
@@ -75,6 +76,7 @@ public class Thread
 	 *
 	 * @since 2018/11/17
 	 */
+	@Api
 	public Thread()
 	{
 		this(null, false, null);
@@ -162,6 +164,7 @@ public class Thread
 	 * @return The thread ID.
 	 * @since 2018/11/20
 	 */
+	@Api
 	public long getId()
 	{
 		return ThreadShelf.vmThreadId(this._vmThread);
@@ -173,6 +176,7 @@ public class Thread
 	 * @return The thread name.
 	 * @since 2018/11/17
 	 */
+	@Api
 	public final String getName()
 	{
 		return this._name;
@@ -184,6 +188,7 @@ public class Thread
 	 * @return The thread priority.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public final int getPriority()
 	{
 		return this._priority;
@@ -246,6 +251,7 @@ public class Thread
 	 * waiting.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public final void join()
 		throws InterruptedException
 	{
@@ -265,6 +271,7 @@ public class Thread
 	 * waiting.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public final void join(long __ms)
 		throws IllegalArgumentException, InterruptedException
 	{
@@ -334,6 +341,7 @@ public class Thread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/21
 	 */
+	@Api
 	public final void setName(String __n)
 		throws NullPointerException
 	{
@@ -358,6 +366,7 @@ public class Thread
 	 * @throws SecurityException If setting the priority is not permitted.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public final void setPriority(int __p)
 		throws IllegalArgumentException, SecurityException
 	{
@@ -401,6 +410,7 @@ public class Thread
 	 * {@inheritDoc}
 	 * @since 2018/11/20
 	 */
+	@Api
 	@Override
 	public String toString()
 	{
@@ -415,6 +425,7 @@ public class Thread
 	 * @return The number of alive threads.
 	 * @since 2018/11/20
 	 */
+	@Api
 	public static int activeCount()
 	{
 		return ThreadShelf.aliveThreadCount(
@@ -456,6 +467,7 @@ public class Thread
 	 * @return If this thread was interrupted.
 	 * @since 2018/11/21
 	 */
+	@Api
 	public static boolean interrupted()
 	{
 		return ThreadShelf.javaThreadClearInterrupt(Thread.currentThread());
@@ -516,6 +528,7 @@ public class Thread
 	 *
 	 * @since 2018/12/05
 	 */
+	@Api
 	public static void yield()
 	{
 		// Zero times means to yield

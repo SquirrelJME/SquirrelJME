@@ -9,62 +9,74 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 public final class ByteRingBuffer
 {
-    public ByteRingBuffer()
+	@Api
+	public ByteRingBuffer()
 	{
 		throw Debugging.todo();
 	}
-
-    public ByteRingBuffer(int var1)
+	
+	@Api
+	public ByteRingBuffer(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public ByteRingBuffer(int var1, int var2)
+	
+	@Api
+	public ByteRingBuffer(int var1, int var2)
 	{
 		throw Debugging.todo();
 	}
-
-    public void write(byte var1) throws IOException
+	
+	@Api
+	public void write(byte var1) throws IOException
 	{
 		throw Debugging.todo();
 	}
-
-    public void write(byte[] var1) throws IOException
+	
+	@Api
+	public void write(byte[] var1) throws IOException
 	{
 		throw Debugging.todo();
 	}
-
-    public byte read() throws IOException
+	
+	@Api
+	public byte read() throws IOException
 	{
 		throw Debugging.todo();
 	}
-
-    public void read(byte[] var1) throws IOException
+	
+	@Api
+	public void read(byte[] var1) throws IOException
 	{
 		throw Debugging.todo();
 	}
-
-    public byte peek() throws IOException
+	
+	@Api
+	public byte peek() throws IOException
 	{
 		throw Debugging.todo();
 	}
-
-    public void peek(byte[] var1) throws IOException
+	
+	@Api
+	public void peek(byte[] var1) throws IOException
 	{
 		throw Debugging.todo();
 	}
-
-    public int available()
+	
+	@Api
+	public int available()
 	{
 		throw Debugging.todo();
 	}
-
-    public int getFreeArea()
+	
+	@Api
+	public int getFreeArea()
 	{
 		throw Debugging.todo();
 	}

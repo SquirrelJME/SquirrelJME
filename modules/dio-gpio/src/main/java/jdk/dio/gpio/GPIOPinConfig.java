@@ -73,9 +73,11 @@ public final class GPIOPinConfig
 	public static final int TRIGGER_LOW_LEVEL =
 		5;
 	
+	@Api
 	public static final int TRIGGER_NONE =
 		0;
 	
+	@Api
 	public static final int TRIGGER_RISING_EDGE =
 		2;
 	
@@ -101,12 +103,14 @@ public final class GPIOPinConfig
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public String getControllerName()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public int getControllerNumber()
 	{
@@ -149,6 +153,7 @@ public final class GPIOPinConfig
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public int serialize(OutputStream __a)
 		throws IOException

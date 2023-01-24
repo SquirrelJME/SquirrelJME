@@ -9,6 +9,8 @@
 
 package javax.microedition.media;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface Player
 	extends Controllable
 {
@@ -30,41 +32,57 @@ public interface Player
 	int UNREALIZED =
 		100;
 	
+	@Api
 	void addPlayerListener(PlayerListener __a);
 	
+	@Api
 	void close();
 	
+	@Api
 	void deallocate();
 	
+	@Api
 	String getContentType();
 	
+	@Api
 	long getDuration();
 	
+	@Api
 	long getMediaTime();
 	
+	@Api
 	int getState();
 	
+	@Api
 	TimeBase getTimeBase();
 	
+	@Api
 	void prefetch()
 		throws MediaException;
 	
+	@Api
 	void realize()
 		throws MediaException;
 	
+	@Api
 	void removePlayerListener(PlayerListener __a);
 	
+	@Api
 	void setLoopCount(int __a);
 	
+	@Api
 	long setMediaTime(long __now)
 		throws MediaException;
 	
+	@Api
 	void setTimeBase(TimeBase __a)
 		throws MediaException;
 	
+	@Api
 	void start()
 		throws MediaException;
 	
+	@Api
 	void stop()
 		throws MediaException;
 }

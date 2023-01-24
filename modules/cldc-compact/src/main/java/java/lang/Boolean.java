@@ -10,6 +10,7 @@
 package java.lang;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is a boxed boolean value.
@@ -30,6 +31,7 @@ public final class Boolean
 		new Boolean(true);
 	
 	/** The class representing the primitive type. */
+	@Api
 	public static final Class<Boolean> TYPE =
 		TypeShelf.<Boolean>typeToClass(TypeShelf.typeOfBoolean());
 	
@@ -64,6 +66,7 @@ public final class Boolean
 	 * @return The boolean value.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public boolean booleanValue()
 	{
 		return this._value;
@@ -73,6 +76,7 @@ public final class Boolean
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
+	@Api
 	@Override
 	public int compareTo(Boolean __o)
 		throws NullPointerException
@@ -93,6 +97,7 @@ public final class Boolean
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
+	@Api
 	@Override
 	public boolean equals(Object __o)
 	{
@@ -109,6 +114,7 @@ public final class Boolean
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
+	@Api
 	@Override
 	public int hashCode()
 	{

@@ -9,6 +9,8 @@
 
 package java.security;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when access to a system critical resource such as a file
  * or network stream is denied.
@@ -28,6 +30,7 @@ public class AccessControlException
 	 * @param __s The message.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public AccessControlException(String __s)
 	{
 		super(__s);
@@ -43,6 +46,7 @@ public class AccessControlException
 	 * @param __p The permission.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public AccessControlException(String __s, Permission __p)
 	{
 		super(__s);
@@ -56,6 +60,7 @@ public class AccessControlException
 	 * @return The specified permission or {@code null} if there was none.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public Permission getPermission()
 	{
 		return this._permission;

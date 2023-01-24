@@ -10,6 +10,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.image.AccessibleImage;
 import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
@@ -72,6 +73,7 @@ public class Image
 				__data[i] |= 0xFF_000000;
 	}
 	
+	@Api
 	public final void getARGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h)
 	{
@@ -221,6 +223,7 @@ public class Image
 		}
 	}
 	
+	@Api
 	public final void getRGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h)
 	{
@@ -441,6 +444,7 @@ public class Image
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
 	 */
+	@Api
 	public static Image createImage(String __s)
 		throws IOException, NullPointerException
 	{
@@ -491,6 +495,7 @@ public class Image
 			false, __i._alpha);
 	}
 	
+	@Api
 	public static Image createImage(Image __i, int __x, int __y,
 		int __w, int __h, int __trans)
 	{

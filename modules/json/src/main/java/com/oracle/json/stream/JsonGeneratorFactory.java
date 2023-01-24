@@ -9,6 +9,7 @@
 
 package com.oracle.json.stream;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
@@ -44,6 +45,7 @@ public interface JsonGeneratorFactory
 	 * @return A new generator.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator createGenerator(OutputStream __o, String __charSet)
 		throws UnsupportedEncodingException;
 	
@@ -65,6 +67,7 @@ public interface JsonGeneratorFactory
 	 * empty but must never be {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	Map<String, ?> getConfigInUse();
 }
 

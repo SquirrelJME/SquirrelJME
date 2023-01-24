@@ -9,6 +9,7 @@
 
 package java.lang.ref;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -32,6 +33,7 @@ public class ReferenceQueue<T>
 	 * @return The next removed reference or {@code null} if there is none.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Reference<? extends T> poll()
 	{
 		// Lock and remove
@@ -53,6 +55,7 @@ public class ReferenceQueue<T>
 	 * waiting.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Reference<? extends T> remove(long __ms)
 		throws IllegalArgumentException, InterruptedException
 	{
@@ -125,7 +128,7 @@ public class ReferenceQueue<T>
 	 * @param __ref The reference to enqueue.
 	 * @since 2018/09/23
 	 */
-	@SuppressWarnings("unused")
+	@Api
 	final void __enqueue(Reference<? extends T> __ref)
 	{
 		// Just ignore and do nothing

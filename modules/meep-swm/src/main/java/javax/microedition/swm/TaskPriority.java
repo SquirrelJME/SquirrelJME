@@ -9,6 +9,8 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This represents the priority of a task.
  *
@@ -17,13 +19,13 @@ package javax.microedition.swm;
 public enum TaskPriority
 {
 	/** Maximum priority. */
-	MAX,
+	@Api MAX,
 	
 	/** Minimum priority. */
-	MIN,
+	@Api MIN,
 	
 	/** Normal priority. */
-	NORM,
+	@Api NORM,
 	
 	/** End. */
 	;

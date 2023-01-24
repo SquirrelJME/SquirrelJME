@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when a thread is interrupted.
  *
@@ -24,6 +26,7 @@ public class InterruptedException
 	 *
 	 * @since 2018/11/21
 	 */
+	@Api
 	public InterruptedException()
 	{
 	}

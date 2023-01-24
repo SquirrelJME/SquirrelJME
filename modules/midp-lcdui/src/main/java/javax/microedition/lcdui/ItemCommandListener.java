@@ -9,10 +9,12 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 public interface ItemCommandListener
 {
+	@Api
 	@SerializedEvent
 	void commandAction(Command __a, Item __b);
 }

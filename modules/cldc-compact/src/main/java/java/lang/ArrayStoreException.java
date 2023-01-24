@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when the given value cannot be stored into the given array
  * because it is of the wrong type.
@@ -23,6 +25,7 @@ public class ArrayStoreException
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public ArrayStoreException()
 	{
 	}

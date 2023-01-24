@@ -9,6 +9,7 @@
 
 package com.nokia.mid.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
@@ -37,22 +38,27 @@ public abstract class FullCanvas
 		new Command("Soft3", Command.SCREEN, 2);
 	
 	/** Down arrow. */
+	@Api
 	public static final int KEY_DOWN_ARROW =
 		-2;
 	
 	/** End. */
+	@Api
 	public static final int KEY_END =
 		-11;
 	
 	/** Left arrow. */
+	@Api
 	public static final int KEY_LEFT_ARROW =
 		-3;
 	
 	/** Right arrow. */
+	@Api
 	public static final int KEY_RIGHT_ARROW =
 		-4;
 	
 	/** Send. */
+	@Api
 	public static final int KEY_SEND =
 		-10;
 	
@@ -69,6 +75,7 @@ public abstract class FullCanvas
 		-5;
 	
 	/** Up Arrow. */
+	@Api
 	public static final int KEY_UP_ARROW =
 		-1;
 	

@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when an attempt is made to read from an index within a string
  * which is not within bounds.
@@ -23,6 +25,7 @@ public class StringIndexOutOfBoundsException
 	 *
 	 * @since 2018/09/16
 	 */
+	@Api
 	public StringIndexOutOfBoundsException()
 	{
 	}

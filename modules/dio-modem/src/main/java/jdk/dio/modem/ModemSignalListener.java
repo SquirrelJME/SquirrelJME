@@ -9,12 +9,14 @@
 
 package jdk.dio.modem;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import jdk.dio.Device;
 import jdk.dio.DeviceEventListener;
 
 public interface ModemSignalListener<P extends Device<? super P>>
 	extends DeviceEventListener
 {
+	@Api
 	void signalStateChanged(ModemSignalEvent<P> __a);
 }
 

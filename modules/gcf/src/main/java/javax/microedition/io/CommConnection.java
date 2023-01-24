@@ -10,11 +10,15 @@
 package javax.microedition.io;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface CommConnection
 	extends StreamConnection
 {
+	@Api
 	int getBaudRate();
 	
+	@Api
 	int setBaudRate(int __a);
 }
 

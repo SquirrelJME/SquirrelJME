@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is an old class which duplicates the functionality of {@link Iterator}
  * without having support for removal.
@@ -30,6 +32,7 @@ public interface Enumeration<E>
 	 * @return {@code true} if there are more elements available.
 	 * @since 2016/04/12
 	 */
+	@Api
 	boolean hasMoreElements();
 	
 	/**
@@ -39,6 +42,7 @@ public interface Enumeration<E>
 	 * @throws NoSuchElementException If no more elements remain.
 	 * @since 2016/04/12
 	 */
+	@Api
 	E nextElement()
 		throws NoSuchElementException;
 }

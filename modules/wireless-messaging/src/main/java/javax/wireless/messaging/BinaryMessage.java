@@ -9,10 +9,14 @@
 
 package javax.wireless.messaging;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface BinaryMessage
 	extends Message
 {
+	@Api
 	byte[] getPayloadData();
 	
+	@Api
 	void setPayloadData(byte[] __data);
 }

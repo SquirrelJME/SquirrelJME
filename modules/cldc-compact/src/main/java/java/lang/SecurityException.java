@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when the security manager has detected a security violation.
  *
@@ -23,6 +25,7 @@ public class SecurityException
 	 *
 	 * @since 2018/09/18
 	 */
+	@Api
 	public SecurityException()
 	{
 	}
@@ -45,6 +48,7 @@ public class SecurityException
 	 * @param __t The cause.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public SecurityException(String __m, Throwable __t)
 	{
 		super(__m, __t);
@@ -56,6 +60,7 @@ public class SecurityException
 	 * @param __t The cause.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public SecurityException(Throwable __t)
 	{
 		super(__t);

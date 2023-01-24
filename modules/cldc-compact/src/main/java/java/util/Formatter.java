@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.IOException;
@@ -180,6 +181,7 @@ public final class Formatter
 	 * @throws IllegalStateException If this formatter was closed.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public void flush()
 		throws IllegalStateException
 	{
@@ -292,6 +294,7 @@ public final class Formatter
 	 * thrown.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public IOException ioException()
 	{
 		return this._ioe;
@@ -304,6 +307,7 @@ public final class Formatter
 	 * @throws IllegalStateException If this formatter was closed.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Appendable out()
 		throws IllegalStateException
 	{

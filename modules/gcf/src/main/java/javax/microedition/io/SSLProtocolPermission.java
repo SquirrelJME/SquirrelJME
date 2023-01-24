@@ -9,12 +9,14 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.security.Permission;
 
 public final class SSLProtocolPermission
 	extends GCFPermission
 {
+	@Api
 	public SSLProtocolPermission(String __a)
 	{
 		super((String)null);

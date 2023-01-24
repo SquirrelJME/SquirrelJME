@@ -9,6 +9,7 @@
 
 package com.oracle.json;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.util.Map;
 
 /**
@@ -46,6 +47,7 @@ public interface JsonObject
 	 * @return The specified value.
 	 * @since 2014/07/25
 	 */
+	@Api
 	boolean getBoolean(String __n, boolean __def);
 	
 	/**
@@ -68,6 +70,7 @@ public interface JsonObject
 	 * @return The specified value.
 	 * @since 2014/07/25
 	 */
+	@Api
 	int getInt(String __n, int __def);
 	
 	/**
@@ -108,6 +111,7 @@ public interface JsonObject
 	 * @throws ClassCastException If the key does not have a string value.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonString getJsonString(String __n);
 	
 	/**
@@ -131,6 +135,7 @@ public interface JsonObject
 	 * @param __def The value to return if this is not a string.
 	 * @since 2014/07/25
 	 */
+	@Api
 	String getString(String __n, String __def);
 	
 	/**
@@ -141,6 +146,7 @@ public interface JsonObject
 	 * @throws NullPointerException If the name has no mapping.
 	 * @since 2014/07/25
 	 */
+	@Api
 	boolean isNull(String __n);
 }
 

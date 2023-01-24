@@ -12,6 +12,7 @@ package java.lang;
 import cc.squirreljme.jvm.SoftFloat;
 import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -19,12 +20,14 @@ public final class Float
 	extends Number
 	implements Comparable<Float>
 {
+	@Api
 	public static final int MAX_EXPONENT =
 		127;
 	
 	public static final float MAX_VALUE =
 		+0x1.FFFFFEp127F;
 	
+	@Api
 	public static final int MIN_EXPONENT =
 		-126;
 	
@@ -44,10 +47,12 @@ public final class Float
 		Float.intBitsToFloat(2139095040);
 	
 	/** The number of bits float requires for storage. */
+	@Api
 	public static final int SIZE =
 		32;
 	
 	/** The class representing the primitive type. */
+	@Api
 	public static final Class<Float> TYPE =
 		TypeShelf.<Float>typeToClass(TypeShelf.typeOfFloat());
 	
@@ -65,11 +70,13 @@ public final class Float
 		this._value = __v;
 	}
 	
+	@Api
 	public Float(double __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public Float(String __a)
 		throws NumberFormatException
 	{
@@ -82,12 +89,14 @@ public final class Float
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
+	@Api
 	@Override
 	public byte byteValue()
 	{
 		return (byte)this._value;
 	}
 	
+	@Api
 	@Override
 	public int compareTo(Float __a)
 	{
@@ -98,6 +107,7 @@ public final class Float
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
+	@Api
 	@Override
 	public double doubleValue()
 	{
@@ -108,9 +118,9 @@ public final class Float
 	 * {@inheritDoc}
 	 * @since 2018/11/04
 	 */
+	@Api
 	@Override
-	@ProgrammerTip("NaN values are equal to each other, positive and " +
-		"negative zero are not equal to each other.")
+	@ProgrammerTip("NaN values are equal to each other, positive and " + "negative zero are not equal to each other.")
 	public boolean equals(Object __o)
 	{
 		if (this == __o)
@@ -141,6 +151,7 @@ public final class Float
 	 * {@inheritDoc}
 	 * @since 2018/11/04
 	 */
+	@Api
 	@Override
 	public float floatValue()
 	{
@@ -151,6 +162,7 @@ public final class Float
 	 * {@inheritDoc}
 	 * @since 2018/11/04
 	 */
+	@Api
 	@Override
 	public int hashCode()
 	{
@@ -161,12 +173,14 @@ public final class Float
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
+	@Api
 	@Override
 	public int intValue()
 	{
 		return (int)this._value;
 	}
 	
+	@Api
 	public boolean isInfinite()
 	{
 		throw Debugging.todo();
@@ -178,6 +192,7 @@ public final class Float
 	 * @return If this is the NaN value.
 	 * @since 2018/11/04
 	 */
+	@Api
 	public boolean isNaN()
 	{
 		return Float.isNaN(this._value);
@@ -187,6 +202,7 @@ public final class Float
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
+	@Api
 	@Override
 	public long longValue()
 	{
@@ -197,6 +213,7 @@ public final class Float
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
+	@Api
 	@Override
 	public short shortValue()
 	{
@@ -209,6 +226,7 @@ public final class Float
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static int compare(float __a, float __b)
 	{
 		throw Debugging.todo();
@@ -261,6 +279,7 @@ public final class Float
 		return MathShelf.rawIntToFloat(__b);
 	}
 	
+	@Api
 	public static boolean isInfinite(float __a)
 	{
 		throw Debugging.todo();
@@ -278,6 +297,7 @@ public final class Float
 		return SoftFloat.isNaN(Float.floatToRawIntBits(__v));
 	}
 	
+	@Api
 	public static float parseFloat(String __a)
 		throws NumberFormatException
 	{
@@ -291,6 +311,7 @@ public final class Float
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Float valueOf(String __a)
 		throws NumberFormatException
 	{

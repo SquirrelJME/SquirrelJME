@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when an instance could not be instantiated.
  *
@@ -22,6 +24,7 @@ public class InstantiationException
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public InstantiationException()
 	{
 	}
@@ -32,6 +35,7 @@ public class InstantiationException
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public InstantiationException(String __m)
 	{
 		super(__m);

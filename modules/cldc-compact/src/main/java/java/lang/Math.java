@@ -9,6 +9,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.FDMLMath;
@@ -23,10 +24,12 @@ import cc.squirreljme.runtime.cldc.util.FDMLMath;
 public final strictfp class Math
 {
 	/** E. */
+	@Api
 	public static final double E =
 		+0x1.5BF0A8B145769p1D;
 	
 	/** Pi. */
+	@Api
 	public static final double PI =
 		+0x1.921FB54442D18p1D;
 	
@@ -58,6 +61,7 @@ public final strictfp class Math
 	 * @return The absolute value.
 	 * @since 2019/04/14
 	 */
+	@Api
 	public static strictfp long abs(long __v)
 	{
 		return (__v < 0 ? -__v : __v);
@@ -70,6 +74,7 @@ public final strictfp class Math
 	 * @return The absolute value.
 	 * @since 2019/04/14
 	 */
+	@Api
 	public static strictfp float abs(float __v)
 	{
 		return Float.intBitsToFloat(0x7FFFFFFF & Float.floatToIntBits(__v));
@@ -82,62 +87,74 @@ public final strictfp class Math
 	 * @return The absolute value.
 	 * @since 2019/04/14
 	 */
+	@Api
 	public static strictfp double abs(double __v)
 	{
 		return Double.longBitsToDouble(0x7FFFFFFFFFFFFFFFL &
 			Double.doubleToLongBits(__v));
 	}
 	
+	@Api
 	public static strictfp double acos(double __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static strictfp double asin(double __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static strictfp double atan(double __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static strictfp double atan2(double __a, double __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static strictfp double ceil(double __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static strictfp double copySign(double __a, double __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static strictfp float copySign(float __a, float __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static strictfp double cos(double __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static strictfp double floor(double __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static strictfp int getExponent(float __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static strictfp int getExponent(double __a)
 	{
 		throw Debugging.todo();
@@ -214,7 +231,7 @@ public final strictfp class Math
 	 * @return The lower value.
 	 * @since 2018/12/08
 	 */
-	@SuppressWarnings("ManualMinMaxCalculation")
+	@SuppressWarnings({"ManualMinMaxCalculation", "unused"})
 	public static strictfp long min(long __a, long __b)
 	{
 		if (__a < __b)
@@ -230,7 +247,7 @@ public final strictfp class Math
 	 * @return The lower value.
 	 * @since 2018/12/08
 	 */
-	@SuppressWarnings("ManualMinMaxCalculation")
+	@SuppressWarnings({"ManualMinMaxCalculation", "unused"})
 	public static strictfp float min(float __a, float __b)
 	{
 		if (__a < __b)
@@ -246,7 +263,7 @@ public final strictfp class Math
 	 * @return The lower value.
 	 * @since 2018/12/08
 	 */
-	@SuppressWarnings("ManualMinMaxCalculation")
+	@SuppressWarnings({"ManualMinMaxCalculation", "unused"})
 	public static strictfp double min(double __a, double __b)
 	{
 		if (__a < __b)
@@ -254,31 +271,37 @@ public final strictfp class Math
 		return __b;
 	}
 	
+	@Api
 	public static strictfp double random()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static strictfp int round(float __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static strictfp long round(double __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static strictfp double signum(double __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static strictfp float signum(float __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static strictfp double sin(double __a)
 	{
 		throw Debugging.todo();
@@ -296,16 +319,19 @@ public final strictfp class Math
 		return FDMLMath.sqrt(__v);
 	}
 	
+	@Api
 	public static strictfp double tan(double __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static strictfp double toDegrees(double __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static strictfp double toRadians(double __a)
 	{
 		throw Debugging.todo();

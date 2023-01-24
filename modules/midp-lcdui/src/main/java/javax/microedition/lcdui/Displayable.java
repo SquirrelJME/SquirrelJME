@@ -132,6 +132,7 @@ public abstract class Displayable
 			this.__layoutCommands();
 	}
 	
+	@Api
 	public Command getCommand(int __p)
 	{
 		throw Debugging.todo();
@@ -155,6 +156,7 @@ public abstract class Displayable
 	 * @return The command listener.
 	 * @since 2019/05/18
 	 */
+	@Api
 	protected CommandListener getCommandListener()
 	{
 		return this._cmdListener;
@@ -186,6 +188,7 @@ public abstract class Displayable
 		return this._display;
 	}
 	
+	@Api
 	public Menu getMenu(int __p)
 	{
 		throw Debugging.todo();
@@ -209,6 +212,7 @@ public abstract class Displayable
 	 * @return The title of this displayable.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public String getTitle()
 	{
 		return this._userTitle;
@@ -233,6 +237,7 @@ public abstract class Displayable
 	 * @return If the displayable is being shown.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public boolean isShown()
 	{
 		return this.__isShown();
@@ -260,6 +265,7 @@ public abstract class Displayable
 		}
 	}
 	
+	@Api
 	public void removeCommandOrMenu(int __p)
 	{
 		throw Debugging.todo();
@@ -324,6 +330,7 @@ public abstract class Displayable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/27
 	 */
+	@Api
 	public void setMenu(Menu __m, int __p)
 		throws DisplayCapabilityException, IllegalArgumentException,
 			IllegalStateException, NullPointerException 
@@ -413,6 +420,7 @@ public abstract class Displayable
 	 * @param __h The new height of the displayable.
 	 * @since 2016/10/10
 	 */
+	@Api
 	@SerializedEvent
 	protected void sizeChanged(int __w, int __h)
 	{

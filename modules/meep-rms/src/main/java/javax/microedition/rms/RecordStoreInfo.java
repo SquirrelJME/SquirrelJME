@@ -9,6 +9,7 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.rms.VinylLock;
 import cc.squirreljme.runtime.rms.VinylRecord;
@@ -21,6 +22,7 @@ import cc.squirreljme.runtime.rms.VinylRecord;
 public final class RecordStoreInfo
 {
 	/** The volume ID. */
+	@Api
 	private final int _vid;
 	
 	/**
@@ -29,6 +31,7 @@ public final class RecordStoreInfo
 	 * @param __vid The volume ID.
 	 * @since 2017/02/26
 	 */
+	@Api
 	RecordStoreInfo(int __vid)
 	{
 		this._vid = __vid;
@@ -43,6 +46,7 @@ public final class RecordStoreInfo
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public int getAuthMode()
 		throws RecordStoreNotOpenException
 	{
@@ -92,6 +96,7 @@ public final class RecordStoreInfo
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public boolean isEncrypted()
 		throws RecordStoreNotOpenException
 	{
@@ -108,6 +113,7 @@ public final class RecordStoreInfo
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public boolean isWriteable()
 		throws RecordStoreNotOpenException
 	{

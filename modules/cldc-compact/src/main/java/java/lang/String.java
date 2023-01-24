@@ -9,6 +9,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
@@ -82,6 +83,7 @@ public final class String
 	 *
 	 * @since 2018/02/24
 	 */
+	@Api
 	public String()
 	{
 		this._chars = new char[0];
@@ -164,6 +166,7 @@ public final class String
 	 * @throws UnsupportedEncodingException If the encoding is not supported.
 	 * @since 2018/11/06
 	 */
+	@Api
 	public String(byte[] __b, int __o, int __l, String __e)
 		throws IndexOutOfBoundsException, NullPointerException,
 			UnsupportedEncodingException
@@ -210,6 +213,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
+	@Api
 	public String(byte[] __b)
 		throws NullPointerException
 	{
@@ -223,6 +227,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public String(StringBuffer __a)
 		throws NullPointerException
 	{
@@ -236,6 +241,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public String(StringBuilder __a)
 		throws NullPointerException
 	{
@@ -468,6 +474,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/15
 	 */
+	@Api
 	public String concat(String __s)
 		throws NullPointerException
 	{
@@ -514,6 +521,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/14
 	 */
+	@Api
 	public boolean contains(CharSequence __b)
 		throws NullPointerException
 	{
@@ -558,6 +566,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/15
 	 */
+	@Api
 	public boolean contentEquals(CharSequence __s)
 		throws NullPointerException
 	{
@@ -706,6 +715,7 @@ public final class String
 	 * @return The resulting byte array.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public byte[] getBytes()
 	{
 		return this.__getBytes(CodecFactory.defaultEncoder());
@@ -743,6 +753,7 @@ public final class String
 		}
 	}
 	
+	@Api
 	public void getChars(int __a, int __b, char[] __c, int __d)
 	{
 		throw Debugging.todo();
@@ -820,6 +831,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/14
 	 */
+	@Api
 	public int indexOf(String __b)
 		throws NullPointerException
 	{
@@ -952,6 +964,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public int lastIndexOf(String __s)
 		throws NullPointerException
 	{
@@ -1470,6 +1483,7 @@ public final class String
 	 * @return The result of the other call.
 	 * @since 2016/06/13
 	 */
+	@Api
 	public static String copyValueOf(char[] __c, int __o, int __l)
 	{
 		return String.valueOf(__c, __o, __l);
@@ -1482,6 +1496,7 @@ public final class String
 	 * @return The result of the other call.
 	 * @since 2016/06/13
 	 */
+	@Api
 	public static String copyValueOf(char[] __c)
 	{
 		return String.valueOf(__c);
@@ -1514,6 +1529,7 @@ public final class String
 	 * @return The string value of the given object or {@code "null"}
 	 * @since 2016/06/13
 	 */
+	@Api
 	public static String valueOf(Object __a)
 	{
 		// The value is a string already
@@ -1567,6 +1583,7 @@ public final class String
 	 * @return The resulting string.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public static String valueOf(boolean __a)
 	{
 		return Boolean.valueOf(__a).toString();
@@ -1579,6 +1596,7 @@ public final class String
 	 * @return The resulting string.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public static String valueOf(char __a)
 	{
 		return Character.valueOf(__a).toString();
@@ -1591,6 +1609,7 @@ public final class String
 	 * @return The resulting string.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public static String valueOf(int __a)
 	{
 		return Integer.valueOf(__a).toString();
@@ -1603,6 +1622,7 @@ public final class String
 	 * @return The resulting string.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public static String valueOf(long __a)
 	{
 		return Long.valueOf(__a).toString();
@@ -1615,6 +1635,7 @@ public final class String
 	 * @return The resulting string.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public static String valueOf(float __a)
 	{
 		return Float.valueOf(__a).toString();
@@ -1627,6 +1648,7 @@ public final class String
 	 * @return The resulting string.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public static String valueOf(double __a)
 	{
 		return Double.valueOf(__a).toString();

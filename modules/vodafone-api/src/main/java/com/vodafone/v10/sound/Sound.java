@@ -9,30 +9,35 @@
 
 package com.vodafone.v10.sound;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 public class Sound
 {
-    public Sound(String var1)
+	@Api
+	public Sound(String var1)
     	throws IOException
 	{
 		if (false)
 			throw new IOException();
 		throw Debugging.todo();
 	}
-
-    public Sound(byte[] var1)
+	
+	@Api
+	public Sound(byte[] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public int getSize()
+	
+	@Api
+	public int getSize()
 	{
 		throw Debugging.todo();
 	}
-
-    public int getUseTracks()
+	
+	@Api
+	public int getUseTracks()
 	{
 		throw Debugging.todo();
 	}

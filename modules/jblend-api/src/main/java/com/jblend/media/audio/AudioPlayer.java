@@ -9,6 +9,7 @@
 
 package com.jblend.media.audio;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.jblend.media.MediaData;
 import com.jblend.media.MediaPlayer;
@@ -17,27 +18,32 @@ import com.jblend.media.MediaPlayerListener;
 public class AudioPlayer
 	extends MediaPlayer
 {
-    public AudioPlayer()
+	@Api
+	public AudioPlayer()
 	{
 		throw Debugging.todo();
 	}
-
-    public AudioPlayer(AudioData var1)
+	
+	@Api
+	public AudioPlayer(AudioData var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public AudioPlayer(byte[] var1)
+	
+	@Api
+	public AudioPlayer(byte[] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public static int checkData(byte[] var0)
+	
+	@Api
+	public static int checkData(byte[] var0)
 	{
 		throw Debugging.todo();
 	}
-
-    public void setData(AudioData var1)
+	
+	@Api
+	public void setData(AudioData var1)
 	{
 		throw Debugging.todo();
 	}
@@ -47,18 +53,21 @@ public class AudioPlayer
 	{
 		throw Debugging.todo();
 	}
-
-    public int getCurrent()
+	
+	@Api
+	public int getCurrent()
 	{
 		throw Debugging.todo();
 	}
-
-    public int getVolume()
+	
+	@Api
+	public int getVolume()
 	{
 		throw Debugging.todo();
 	}
-
-    public void setVolume(int var1)
+	
+	@Api
+	public void setVolume(int var1)
 	{
 		throw Debugging.todo();
 	}

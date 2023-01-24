@@ -9,6 +9,8 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is the key listener interface which is used for a slightly more
  * advanced means of listening for and responding to key events.
@@ -22,26 +24,32 @@ package javax.microedition.lcdui;
 public interface KeyListener
 {
 	/** Alt key modifier. */
+	@Api
 	int MODIFIER_ALT =
 		65536;
 		
 	/** Function (Fn/Chr) key modifier. */
+	@Api
 	int MODIFIER_CHR =
 		8388608;
 	
 	/** Command key modifier. */
+	@Api
 	int MODIFIER_COMMAND =
 		4194304;
 	
 	/** Ctrl key modifier. */
+	@Api
 	int MODIFIER_CTRL =
 		262144;
 	
 	/** Mask for all the modifier keys. */
+	@Api
 	int MODIFIER_MASK =
 		13041664;
 	
 	/** Shift key modifier. */
+	@Api
 	int MODIFIER_SHIFT =
 		131072;
 	

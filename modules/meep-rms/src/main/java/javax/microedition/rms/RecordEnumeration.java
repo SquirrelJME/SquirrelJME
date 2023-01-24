@@ -9,6 +9,8 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is used to enumerate over a record store and may travel in either
  * direction.
@@ -37,6 +39,7 @@ public interface RecordEnumeration
 	 *
 	 * @since 2017/02/26
 	 */
+	@Api
 	void destroy();
 	
 	/**
@@ -50,6 +53,7 @@ public interface RecordEnumeration
 	 * least {@link #numRecords()}.
 	 * @since 2017/02/26
 	 */
+	@Api
 	int getRecordId(int __i)
 		throws IllegalArgumentException;
 	
@@ -59,6 +63,7 @@ public interface RecordEnumeration
 	 * @return {@code true} if there is a next element.
 	 * @since 2017/02/26
 	 */
+	@Api
 	boolean hasNextElement();
 	
 	/**
@@ -67,6 +72,7 @@ public interface RecordEnumeration
 	 * @return {@code true} if there is a previous element.
 	 * @since 2017/02/26
 	 */
+	@Api
 	boolean hasPreviousElement();
 	
 	/**
@@ -75,6 +81,7 @@ public interface RecordEnumeration
 	 * @return {@code true} if the enumeration is kept up to date with changes.
 	 * @since 2017/02/26
 	 */
+	@Api
 	boolean isKeptUpdated();
 	
 	/**
@@ -89,6 +96,7 @@ public interface RecordEnumeration
 	 * @param __u If {@code true} then the enumeration is kept updated.
 	 * @since 2017/02/26
 	 */
+	@Api
 	void keepUpdated(boolean __u);
 	
 	/**
@@ -102,6 +110,7 @@ public interface RecordEnumeration
 	 * is no longer open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	byte[] nextRecord()
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException;
@@ -113,6 +122,7 @@ public interface RecordEnumeration
 	 * @throws InvalidRecordIDException If there is no next record.
 	 * @since 2017/02/26
 	 */
+	@Api
 	int nextRecordId()
 		throws InvalidRecordIDException;
 	
@@ -122,6 +132,7 @@ public interface RecordEnumeration
 	 * @return The record count.
 	 * @since 2020/02/16
 	 */
+	@Api
 	int numRecords();
 	
 	/**
@@ -135,6 +146,7 @@ public interface RecordEnumeration
 	 * is no longer open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	byte[] previousRecord()
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException;
@@ -146,6 +158,7 @@ public interface RecordEnumeration
 	 * @throws InvalidRecordIDException If there is no next record.
 	 * @since 2017/02/26
 	 */
+	@Api
 	int previousRecordId()
 		throws InvalidRecordIDException;
 	
@@ -157,6 +170,7 @@ public interface RecordEnumeration
 	 * @see #keepUpdated(boolean)
 	 * @since 2017/02/26
 	 */
+	@Api
 	void rebuild()
 		throws IllegalStateException;
 	
@@ -167,6 +181,7 @@ public interface RecordEnumeration
 	 *
 	 * @since 2017/02/26
 	 */
+	@Api
 	void reset();
 }
 

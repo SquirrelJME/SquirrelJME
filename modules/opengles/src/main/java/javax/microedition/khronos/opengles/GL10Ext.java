@@ -10,9 +10,12 @@
 package javax.microedition.khronos.opengles;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface GL10Ext
 	extends GL
 {
+	@Api
 	int glQueryMatrixxOES(int[] __a, int __b, int[] __c, int __d);
 }
 

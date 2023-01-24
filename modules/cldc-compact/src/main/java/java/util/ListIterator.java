@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface ListIterator<E>
 	extends Iterator<E>
 {
@@ -30,10 +32,12 @@ public interface ListIterator<E>
 	@Override
 	E next();
 	
+	@Api
 	int nextIndex();
 	
 	E previous();
 	
+	@Api
 	int previousIndex();
 	
 	/**

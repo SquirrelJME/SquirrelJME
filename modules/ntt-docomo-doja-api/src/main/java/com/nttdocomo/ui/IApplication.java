@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public abstract class IApplication
@@ -28,6 +29,7 @@ public abstract class IApplication
 	
 	public abstract void start();
 	
+	@Api
 	public String[] getArgs()
 	{
 		synchronized (IApplication.class)
@@ -36,11 +38,13 @@ public abstract class IApplication
 		}
 	}
 	
+	@Api
 	public final String getSourceUrl()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void resume()
 	{
 		throw Debugging.todo();

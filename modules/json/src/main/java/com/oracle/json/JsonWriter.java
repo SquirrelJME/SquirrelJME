@@ -9,6 +9,7 @@
 
 package com.oracle.json;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -57,6 +58,7 @@ public interface JsonWriter
 	 * called previously.
 	 * @since 2014/07/26
 	 */
+	@Api
 	void writeArray(JsonArray __v);
 	
 	/**
@@ -69,6 +71,7 @@ public interface JsonWriter
 	 * called previously.
 	 * @since 2014/07/26
 	 */
+	@Api
 	void writeObject(JsonObject __v);
 }
 

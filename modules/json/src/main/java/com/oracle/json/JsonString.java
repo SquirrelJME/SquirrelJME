@@ -9,6 +9,8 @@
 
 package com.oracle.json;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * An immutable string value.
  *
@@ -34,6 +36,7 @@ public interface JsonString
 	 * @return A character sequence for this specified string.
 	 * @since 2014/07/26
 	 */
+	@Api
 	CharSequence getChars();
 	
 	/**

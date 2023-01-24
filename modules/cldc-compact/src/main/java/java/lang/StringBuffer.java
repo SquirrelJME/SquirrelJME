@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is a thread safe version of {@link StringBuilder}, to reduce the need
  * to document everything please see that documentation instead.
@@ -40,6 +42,7 @@ public final class StringBuffer
 	 * @param __a The value.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer(int __a)
 	{
 		this._builder = new StringBuilder(__a);
@@ -51,6 +54,7 @@ public final class StringBuffer
 	 * @param __a The value.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer(String __a)
 	{
 		this._builder = new StringBuilder(__a);
@@ -62,6 +66,7 @@ public final class StringBuffer
 	 * @param __a The value.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer(CharSequence __a)
 	{
 		this._builder = new StringBuilder(__a);
@@ -74,6 +79,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer append(Object __a)
 	{
 		synchronized (this)
@@ -90,6 +96,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer append(String __a)
 	{
 		synchronized (this)
@@ -106,6 +113,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer append(StringBuffer __a)
 	{
 		synchronized (this)
@@ -158,6 +166,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer append(char[] __a)
 	{
 		synchronized (this)
@@ -176,6 +185,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer append(char[] __a, int __b, int __c)
 	{
 		synchronized (this)
@@ -192,6 +202,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer append(boolean __a)
 	{
 		synchronized (this)
@@ -208,6 +219,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	@Override
 	public StringBuffer append(char __a)
 	{
@@ -225,6 +237,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer append(int __a)
 	{
 		synchronized (this)
@@ -241,6 +254,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer append(long __a)
 	{
 		synchronized (this)
@@ -257,6 +271,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer append(float __a)
 	{
 		synchronized (this)
@@ -273,6 +288,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer append(double __a)
 	{
 		synchronized (this)
@@ -288,6 +304,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public int capacity()
 	{
 		synchronized (this)
@@ -320,6 +337,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer delete(int __a, int __b)
 	{
 		synchronized (this)
@@ -336,6 +354,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer deleteCharAt(int __a)
 	{
 		synchronized (this)
@@ -351,6 +370,7 @@ public final class StringBuffer
 	 * @param __a Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public void ensureCapacity(int __a)
 	{
 		synchronized (this)
@@ -368,6 +388,7 @@ public final class StringBuffer
 	 * @param __d Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public void getChars(int __a, int __b, char[] __c, int __d)
 	{
 		synchronized (this)
@@ -383,6 +404,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public int indexOf(String __a)
 	{
 		synchronized (this)
@@ -399,6 +421,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public int indexOf(String __a, int __b)
 	{
 		synchronized (this)
@@ -417,6 +440,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer insert(int __a, char[] __b, int __c, int __d)
 	{
 		synchronized (this)
@@ -434,6 +458,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer insert(int __a, Object __b)
 	{
 		synchronized (this)
@@ -451,6 +476,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer insert(int __a, String __b)
 	{
 		synchronized (this)
@@ -468,6 +494,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer insert(int __a, char[] __b)
 	{
 		synchronized (this)
@@ -485,6 +512,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer insert(int __a, CharSequence __b)
 	{
 		synchronized (this)
@@ -504,6 +532,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer insert(int __a, CharSequence __b, int __c,
 		int __d)
 	{
@@ -522,6 +551,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer insert(int __a, boolean __b)
 	{
 		synchronized (this)
@@ -539,6 +569,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer insert(int __a, char __b)
 	{
 		synchronized (this)
@@ -556,6 +587,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer insert(int __a, int __b)
 	{
 		synchronized (this)
@@ -573,6 +605,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer insert(int __a, long __b)
 	{
 		synchronized (this)
@@ -590,6 +623,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer insert(int __a, float __b)
 	{
 		synchronized (this)
@@ -607,6 +641,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer insert(int __a, double __b)
 	{
 		synchronized (this)
@@ -623,6 +658,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public int lastIndexOf(String __a)
 	{
 		synchronized (this)
@@ -639,6 +675,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public int lastIndexOf(String __a, int __b)
 	{
 		synchronized (this)
@@ -671,6 +708,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer replace(int __a, int __b, String __c)
 	{
 		synchronized (this)
@@ -686,6 +724,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public StringBuffer reverse()
 	{
 		synchronized (this)
@@ -702,6 +741,7 @@ public final class StringBuffer
 	 * @param __b Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public void setCharAt(int __a, char __b)
 	{
 		synchronized (this)
@@ -716,6 +756,7 @@ public final class StringBuffer
 	 * @param __a Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public void setLength(int __a)
 	{
 		synchronized (this)
@@ -748,6 +789,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public String substring(int __a)
 	{
 		synchronized (this)
@@ -764,6 +806,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public String substring(int __a, int __b)
 	{
 		synchronized (this)
@@ -792,6 +835,7 @@ public final class StringBuffer
 	 *
 	 * @since 2018/12/08
 	 */
+	@Api
 	public void trimToSize()
 	{
 		synchronized (this)

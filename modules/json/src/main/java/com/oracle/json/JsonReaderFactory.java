@@ -9,6 +9,7 @@
 
 package com.oracle.json;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
@@ -44,6 +45,7 @@ public interface JsonReaderFactory
 	 * supported.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonReader createReader(InputStream __i, String __cs)
 		throws UnsupportedEncodingException;
 
@@ -65,6 +67,7 @@ public interface JsonReaderFactory
 	 * empty but must never be {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	Map<String, ?> getConfigInUse();
 }
 

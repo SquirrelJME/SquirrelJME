@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.font.FontUtilities;
 import cc.squirreljme.runtime.lcdui.font.SQFFont;
@@ -165,6 +166,7 @@ public final class Font
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/06
 	 */
+	@Api
 	public int charsWidth(char[] __c, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
@@ -292,6 +294,7 @@ public final class Font
 	 * @return The baseline of the font.
 	 * @since 2018/11/29
 	 */
+	@Api
 	public int getBaselinePosition()
 	{
 		return this._sqf.maxascent;
@@ -320,6 +323,7 @@ public final class Font
 		return this._face;
 	}
 	
+	@Api
 	public String getFamily()
 	{
 		throw Debugging.todo();
@@ -366,11 +370,13 @@ public final class Font
 		return this._sqf.leading;
 	}
 	
+	@Api
 	public int getMaxAscent()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getMaxDescent()
 	{
 		throw Debugging.todo();
@@ -393,6 +399,7 @@ public final class Font
 	 * @return The logical font size.
 	 * @since 2018/11/24
 	 */
+	@Api
 	public int getSize()
 	{
 		return FontUtilities.pixelSizeToLogicalSize(this._pixelsize);
@@ -421,21 +428,25 @@ public final class Font
 			this._pixelsize;
 	}
 	
+	@Api
 	public boolean isBold()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public boolean isItalic()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public boolean isPlain()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public boolean isUnderlined()
 	{
 		throw Debugging.todo();
@@ -518,6 +529,7 @@ public final class Font
 		}
 	}
 	
+	@Api
 	public static Font createFont(InputStream __data)
 		throws IOException
 	{
@@ -557,6 +569,7 @@ public final class Font
 	 * @throws IllegalArgumentException If the parameters are not correct.
 	 * @since 2017/05/25
 	 */
+	@Api
 	public static Font[] getAvailableFonts(int __style)
 		throws IllegalArgumentException
 	{
@@ -649,6 +662,7 @@ public final class Font
 	 * @throws IllegalArgumentException If the specifier is not valid.
 	 * @since 2018/11/24
 	 */
+	@Api
 	public static Font getFont(int __spec)
 		throws IllegalArgumentException
 	{
@@ -765,6 +779,7 @@ public final class Font
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/24
 	 */
+	@Api
 	public static int getPixelSize(String __name)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -789,6 +804,7 @@ public final class Font
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/24
 	 */
+	@Api
 	public static int getStyle(String __name)
 		throws IllegalArgumentException, NullPointerException
 	{

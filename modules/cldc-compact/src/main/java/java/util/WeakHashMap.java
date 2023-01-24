@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.ReferenceQueue;
 
@@ -25,9 +26,11 @@ public class WeakHashMap<K, V>
 		0.75F;
 	
 	/** The load factor. */
+	@Api
 	private final float _load;
 	
 	/** This is used to clear keys when they are collected. */
+	@Api
 	private final ReferenceQueue<K> _rq =
 		new ReferenceQueue<>();
 	
@@ -67,6 +70,7 @@ public class WeakHashMap<K, V>
 	 * @throws IllegalArgumentException If the capacity is negative.
 	 * @since 2016/04/19
 	 */
+	@Api
 	public WeakHashMap(int __icap)
 		throws IllegalArgumentException
 	{
@@ -79,6 +83,7 @@ public class WeakHashMap<K, V>
 	 *
 	 * @since 2016/04/19
 	 */
+	@Api
 	public WeakHashMap()
 	{
 		this(WeakHashMap._DEFAULT_CAPACITY, WeakHashMap._DEFAULT_LOAD);
@@ -92,6 +97,7 @@ public class WeakHashMap<K, V>
 	 * @throws NullPointerException If no map was specified.
 	 * @since 2016/04/19
 	 */
+	@Api
 	public WeakHashMap(Map<? extends K, ? extends V> __a)
 	{
 		// {@squirreljme.error ZZ35 No map to copy data from was specified.}
@@ -142,6 +148,7 @@ public class WeakHashMap<K, V>
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public Set<K> keySet()
 	{

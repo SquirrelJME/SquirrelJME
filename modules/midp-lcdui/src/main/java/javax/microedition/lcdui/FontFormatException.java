@@ -9,6 +9,8 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when the format of a font is not correct.
  *
@@ -22,6 +24,7 @@ public class FontFormatException
 	 *
 	 * @since 2018/11/23
 	 */
+	@Api
 	public FontFormatException()
 	{
 	}
@@ -32,6 +35,7 @@ public class FontFormatException
 	 * @param __m The message.
 	 * @since 2018/11/23
 	 */
+	@Api
 	public FontFormatException(String __m)
 	{
 		super(__m);

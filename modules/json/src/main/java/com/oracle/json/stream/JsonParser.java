@@ -9,6 +9,7 @@
 
 package com.oracle.json.stream;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import com.oracle.json.JsonException;
 import java.io.Closeable;
 import java.io.IOException;
@@ -46,6 +47,7 @@ public interface JsonParser
 	 * {@link Event#VALUE_NUMBER}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	int getInt();
 	
 	/**
@@ -56,6 +58,7 @@ public interface JsonParser
 	 * @return A non-{@code null} location matching the current parser state.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonLocation getLocation();
 	
 	/**
@@ -68,6 +71,7 @@ public interface JsonParser
 	 * {@link Event#VALUE_NUMBER}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	long getLong();
 	
 	/**
@@ -80,6 +84,7 @@ public interface JsonParser
 	 * {@link Event#KEY_NAME}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	String getString();
 	
 	/**
@@ -91,6 +96,7 @@ public interface JsonParser
 	 * @throws JsonParsingException Invalid JSON data was detected.
 	 * @since 2014/07/25
 	 */
+	@Api
 	boolean hasNext();
 	
 	/**
@@ -102,6 +108,7 @@ public interface JsonParser
 	 * {@link Event#VALUE_NUMBER}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	boolean isIntegralNumber();
 	
 	/**
@@ -113,6 +120,7 @@ public interface JsonParser
 	 * @throws java.util.NoSuchElementException If there is nothing left.
 	 * @since 2014/07/25
 	 */
+	@Api
 	Event next();
 	
 	/**
@@ -124,10 +132,10 @@ public interface JsonParser
 	enum Event
 	{
 		/** The start of an array, the parser sits after the '['. */
-		START_ARRAY,
+		@Api START_ARRAY,
 		
 		/** The start of an object, the parser sits after the '{'. */
-		START_OBJECT,
+		@Api START_OBJECT,
 		
 		/**
 		 * The name of an object key, the parser sits after the name,
@@ -149,19 +157,19 @@ public interface JsonParser
 		VALUE_NUMBER,
 		
 		/** The value is {@code true}, the parser sits after the literal. */
-		VALUE_TRUE,
+		@Api VALUE_TRUE,
 		
 		/** The value is {@code false}, the parser sits after the literal. */
-		VALUE_FALSE,
+		@Api VALUE_FALSE,
 		
 		/** The value is {@code null}, the parser sits after the literal. */
-		VALUE_NULL,
+		@Api VALUE_NULL,
 		
 		/** End of an object, the parser sits after the '}'. */
-		END_OBJECT,
+		@Api END_OBJECT,
 		
 		/** End of an array, the parser sits after the ']'. */
-		END_ARRAY,
+		@Api END_ARRAY,
 		
 		/** End. */
 		;

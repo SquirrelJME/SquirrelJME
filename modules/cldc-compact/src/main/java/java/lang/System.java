@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.constants.PhoneModelType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
@@ -225,6 +226,7 @@ public final class System
 	 *
 	 * @since 2017/02/08
 	 */
+	@Api
 	public static void gc()
 	{
 		Runtime.getRuntime().gc();
@@ -467,6 +469,7 @@ public final class System
 	 * not permitted.
 	 * @since 2017/08/13
 	 */
+	@Api
 	public static String getProperty(String __k, String __d)
 		throws IllegalArgumentException, NullPointerException,
 			SecurityException
@@ -555,6 +558,7 @@ public final class System
 	 * permission to set the stream.
 	 * @since 2016/03/17
 	 */
+	@Api
 	public static void setErr(PrintStream __a)
 		throws NullPointerException
 	{
@@ -581,6 +585,7 @@ public final class System
 	 * permission to set the stream.
 	 * @since 2016/03/17
 	 */
+	@Api
 	public static void setOut(PrintStream __a)
 		throws NullPointerException
 	{

@@ -9,6 +9,7 @@
 
 package java.security;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -59,8 +60,7 @@ public abstract class BasicPermission
 	 * @throws NullPointerException If no name was specified.
 	 * @since 2018/09/18
 	 */
-	public BasicPermission(String __name,
-		@SuppressWarnings("unused") String __act)
+	public BasicPermission(String __name, @Api String __act)
 		throws IllegalArgumentException, NullPointerException
 	{
 		super(__name);
@@ -157,6 +157,7 @@ public abstract class BasicPermission
 	 * {@inheritDoc}
 	 * @since 2020/07/09
 	 */
+	@Api
 	@Override
 	public boolean implies(Permission __o)
 	{

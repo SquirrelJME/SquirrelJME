@@ -9,6 +9,7 @@
 
 package javax.microedition.midlet;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 
 /**
@@ -26,6 +27,7 @@ public class MIDletStateChangeException
 	 *
 	 * @since 2019/09/25
 	 */
+	@Api
 	@ApiDefinedDeprecated
 	public MIDletStateChangeException()
 	{
@@ -37,6 +39,7 @@ public class MIDletStateChangeException
 	 * @param __s The message to use.
 	 * @since 2019/09/25
 	 */
+	@Api
 	@ApiDefinedDeprecated
 	public MIDletStateChangeException(String __s)
 	{

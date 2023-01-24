@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.util.FDMLMath;
 
@@ -41,6 +42,7 @@ public class Random
 	 *
 	 * @since 2018/11/02
 	 */
+	@Api
 	public Random()
 	{
 		this(System.currentTimeMillis() +

@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -30,6 +31,7 @@ public class Date
 	 *
 	 * @since 2019/12/25
 	 */
+	@Api
 	public Date()
 	{
 		this(System.currentTimeMillis());
@@ -41,6 +43,7 @@ public class Date
 	 * @param __time The time to set.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public Date(long __time)
 	{
 		this._javatime = __time;
@@ -50,6 +53,7 @@ public class Date
 	 * {@inheritDoc}
 	 * @since 2019/12/25
 	 */
+	@Api
 	@Override
 	public Object clone()
 	{
@@ -60,6 +64,7 @@ public class Date
 	 * {@inheritDoc}
 	 * @since 2019/12/25
 	 */
+	@Api
 	@Override
 	public int compareTo(Date __b)
 		throws NullPointerException
@@ -77,6 +82,7 @@ public class Date
 	 * {@inheritDoc}
 	 * @since 2019/12/25
 	 */
+	@Api
 	@Override
 	public boolean equals(Object __o)
 	{
@@ -104,6 +110,7 @@ public class Date
 	 * {@inheritDoc}
 	 * @since 2019/12/25
 	 */
+	@Api
 	@Override
 	public int hashCode()
 	{
@@ -117,6 +124,7 @@ public class Date
 	 * @param __v The time to set.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public void setTime(long __v)
 	{
 		this._javatime = __v;
@@ -126,6 +134,7 @@ public class Date
 	 * {@inheritDoc}
 	 * @since 2019/12/25
 	 */
+	@Api
 	@Override
 	public String toString()
 	{

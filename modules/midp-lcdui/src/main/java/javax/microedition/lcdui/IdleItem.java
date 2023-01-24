@@ -9,24 +9,28 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 public abstract class IdleItem
 	extends CustomItem
 {
+	@Api
 	protected IdleItem(String __label)
 	{
 		super(__label);
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@SerializedEvent
 	protected void addedToDisplay(Display __d)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@SerializedEvent
 	protected void removedFromDisplay(Display __d)
 	{

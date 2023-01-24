@@ -9,6 +9,7 @@
 
 package jdk.dio.i2cbus;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
@@ -19,18 +20,22 @@ import jdk.dio.DeviceConfig;
 public final class I2CDeviceConfig
 	implements DeviceConfig<I2CDevice>, DeviceConfig.HardwareAddressing
 {
+	@Api
 	public static final int ADDR_SIZE_10 =
 		10;
 	
+	@Api
 	public static final int ADDR_SIZE_7 =
 		7;
 	
+	@Api
 	@ApiDefinedDeprecated
 	public I2CDeviceConfig(int __a, int __b, int __c, int __d)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@ApiDefinedDeprecated
 	public I2CDeviceConfig(String __a, int __b, int __c, int __d)
 	{
@@ -43,38 +48,45 @@ public final class I2CDeviceConfig
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getAddress()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getAddressSize()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getClockFrequency()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public String getControllerName()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public int getControllerNumber()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getInputBufferSize()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getOutputBufferSize()
 	{
 		throw Debugging.todo();
@@ -86,6 +98,7 @@ public final class I2CDeviceConfig
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public int serialize(OutputStream __a)
 		throws IOException
@@ -95,6 +108,7 @@ public final class I2CDeviceConfig
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static I2CDeviceConfig deserialize(InputStream __a)
 		throws IOException
 	{
@@ -105,41 +119,49 @@ public final class I2CDeviceConfig
 	
 	public static final class Builder
 	{
+		@Api
 		public Builder()
 		{
 			throw Debugging.todo();
 		}
 		
+		@Api
 		public I2CDeviceConfig build()
 		{
 			throw Debugging.todo();
 		}
 		
+		@Api
 		public Builder setAddress(int __a, int __b)
 		{
 			throw Debugging.todo();
 		}
 		
+		@Api
 		public Builder setClockFrequency(int __a)
 		{
 			throw Debugging.todo();
 		}
 		
+		@Api
 		public Builder setControllerName(String __a)
 		{
 			throw Debugging.todo();
 		}
 		
+		@Api
 		public Builder setControllerNumber(int __a)
 		{
 			throw Debugging.todo();
 		}
 		
+		@Api
 		public Builder setInputBufferSize(int __a)
 		{
 			throw Debugging.todo();
 		}
 		
+		@Api
 		public Builder setOutputBufferSize(int __a)
 		{
 			throw Debugging.todo();

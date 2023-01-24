@@ -9,11 +9,14 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * This is not used by Java ME 8 or SquirrelJME, however it is needed by
@@ -23,9 +26,10 @@ import java.lang.annotation.Target;
  *
  * @since 2020/07/14
  */
+@Api
 @Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Retention(RUNTIME)
+@Target(TYPE)
 public @interface FunctionalInterface
 {
 }

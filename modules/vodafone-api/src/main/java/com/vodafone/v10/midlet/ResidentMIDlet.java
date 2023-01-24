@@ -9,6 +9,7 @@
 
 package com.vodafone.v10.midlet;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.vodafone.v10.system.device.MailListener;
 import com.vodafone.v10.system.device.RingStateListener;
@@ -21,7 +22,8 @@ public abstract class ResidentMIDlet
 	implements TelephonyListener, MailListener, ScheduledAlarmListener,
 		RingStateListener
 {
-    protected ResidentMIDlet()
+	@Api
+	protected ResidentMIDlet()
 	{
 		throw Debugging.todo();
 	}

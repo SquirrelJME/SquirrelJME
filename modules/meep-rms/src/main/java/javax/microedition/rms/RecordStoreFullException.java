@@ -9,6 +9,8 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when the operation could not be completed because the record
  * store is full.
@@ -23,6 +25,7 @@ public class RecordStoreFullException
 	 *
 	 * @since 2017/02/26
 	 */
+	@Api
 	public RecordStoreFullException()
 	{
 	}

@@ -10,11 +10,15 @@
 package javax.microedition.io;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface IMCServerConnection
 	extends StreamConnectionNotifier
 {
+	@Api
 	String getName();
 	
+	@Api
 	String getVersion();
 }
 

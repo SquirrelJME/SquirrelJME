@@ -9,17 +9,22 @@
 
 package javax.microedition.media.control;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.media.Control;
 
 public interface RateControl
 	extends Control
 {
+	@Api
 	int getMaxRate();
 	
+	@Api
 	int getMinRate();
 	
+	@Api
 	int getRate();
 	
+	@Api
 	int setRate(int __a);
 }
 

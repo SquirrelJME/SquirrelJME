@@ -9,6 +9,7 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.util.List;
 
 /**
@@ -27,6 +28,7 @@ public interface SuiteManager
 	 * @param __sl The listener to be added.
 	 * @since 2016/06/24
 	 */
+	@Api
 	void addSuiteListener(SuiteListener __sl);
 	
 	/**
@@ -39,6 +41,7 @@ public interface SuiteManager
 	 * found.
 	 * @since 2016/06/24
 	 */
+	@Api
 	Suite getSuite(String __vendor, String __name);
 	
 	/**
@@ -62,6 +65,7 @@ public interface SuiteManager
 	 * to install new suites.
 	 * @since 2016/06/24
 	 */
+	@Api
 	SuiteInstaller getSuiteInstaller(byte[] __b, int __o, int __l,
 		boolean __ignuplock)
 		throws IllegalArgumentException, SecurityException;
@@ -86,6 +90,7 @@ public interface SuiteManager
 	 * to install new suites.
 	 * @since 2016/06/24
 	 */
+	@Api
 	SuiteInstaller getSuiteInstaller(String __url, boolean __ignuplock)
 		throws IllegalArgumentException, SecurityException;
 	
@@ -101,6 +106,7 @@ public interface SuiteManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/24
 	 */
+	@Api
 	List<Suite> getSuites(SuiteType __t)
 		throws IllegalArgumentException, NullPointerException;
 	
@@ -128,6 +134,7 @@ public interface SuiteManager
 	 * parameter.
 	 * @since 2016/06/24
 	 */
+	@Api
 	void removeSuite(Suite __s, boolean __ignuplock)
 		throws IllegalArgumentException, SuiteLockedException;
 	
@@ -138,6 +145,7 @@ public interface SuiteManager
 	 * @param __sl The listener to remove.
 	 * @since 2016/06/24
 	 */
+	@Api
 	void removeSuiteListener(SuiteListener __sl);
 }
 

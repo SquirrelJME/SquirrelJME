@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when the version of a class is not supported.
  *
@@ -22,6 +24,7 @@ public class UnsupportedClassVersionError
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public UnsupportedClassVersionError()
 	{
 	}
@@ -32,6 +35,7 @@ public class UnsupportedClassVersionError
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public UnsupportedClassVersionError(String __m)
 	{
 		super(__m);

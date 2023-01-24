@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface List<E>
 	extends Collection<E>
 {
@@ -20,11 +22,13 @@ public interface List<E>
 	@Override
 	boolean addAll(Collection<? extends E> __a);
 	
+	@Api
 	boolean addAll(int __a, Collection<? extends E> __b);
 	
 	@Override
 	void clear();
 	
+	@Api
 	@Override
 	boolean contains(Object __a);
 	
@@ -49,6 +53,7 @@ public interface List<E>
 	@Override
 	int hashCode();
 	
+	@Api
 	int indexOf(Object __a);
 	
 	@Override
@@ -57,6 +62,7 @@ public interface List<E>
 	@Override
 	Iterator<E> iterator();
 	
+	@Api
 	int lastIndexOf(Object __a);
 	
 	ListIterator<E> listIterator();
@@ -79,8 +85,10 @@ public interface List<E>
 	@Override
 	int size();
 	
+	@Api
 	List<E> subList(int __a, int __b);
 	
+	@Api
 	@Override
 	Object[] toArray();
 	

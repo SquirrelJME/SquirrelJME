@@ -11,6 +11,7 @@ package java.lang.ref;
 
 import cc.squirreljme.jvm.mle.ReferenceShelf;
 import cc.squirreljme.jvm.mle.brackets.RefLinkBracket;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This class represents references which may be referred to using various
@@ -174,6 +175,7 @@ public abstract class Reference<T>
 	 * @return If this object was enqueued.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public boolean isEnqueued()
 	{
 		return this._enqueued;

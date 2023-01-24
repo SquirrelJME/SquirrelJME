@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.common.EditableText;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
@@ -122,6 +123,7 @@ public class TextField
 	 * When rendered the value may be represented in a more friendly fashion
 	 * depending on the phone number.
 	 */
+	@Api
 	public static final int PHONENUMBER =
 		3;
 	
@@ -172,6 +174,7 @@ public class TextField
 	 * exceeds the maximum specified characters.
 	 * @since 2017/08/19
 	 */
+	@Api
 	public TextField(String __l, String __t, int __ms, int __c)
 		throws IllegalArgumentException
 	{
@@ -182,51 +185,61 @@ public class TextField
 		this._editabletext.initialize(__t, __ms, __c);
 	}
 	
+	@Api
 	public void delete(int __a, int __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getCaretPosition()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getChars(char[] __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getConstraints()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getMaxSize()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public String getString()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void insert(char[] __a, int __b, int __c, int __d)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void insert(String __a, int __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setCaret(int __i)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setChars(char[] __a, int __b, int __c)
 	{
 		throw Debugging.todo();
@@ -242,17 +255,20 @@ public class TextField
 	 * valid.
 	 * @since 2017/08/20
 	 */
+	@Api
 	public void setConstraints(int __c)
 		throws IllegalArgumentException
 	{
 		this._editabletext.setConstraints(__c);
 	}
 	
+	@Api
 	public void setHighlight(int __i, int __l)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setInitialInputMode(String __a)
 	{
 		throw Debugging.todo();
@@ -270,6 +286,7 @@ public class TextField
 	 * constraints are used.
 	 * @since 2017/08/19
 	 */
+	@Api
 	public int setMaxSize(int __ms)
 		throws IllegalArgumentException
 	{
@@ -285,12 +302,14 @@ public class TextField
 	 * the constraints or character count limitations.
 	 * @since 2017/08/20
 	 */
+	@Api
 	public void setString(String __s)
 		throws IllegalArgumentException
 	{
 		this._editabletext.setString(__s);
 	}
 	
+	@Api
 	public int size()
 	{
 		throw Debugging.todo();
@@ -300,6 +319,7 @@ public class TextField
 	 * {@inheritDoc}
 	 * @since 2023/01/14
 	 */
+	@Api
 	@Override
 	__CommonState__ __stateInit(UIBackend __backend)
 		throws NullPointerException

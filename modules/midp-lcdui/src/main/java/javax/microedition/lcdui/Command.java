@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
@@ -21,6 +22,7 @@ public class Command
 	extends __Action__
 { 
 	/** Returns the user to the previous screen.. */
+	@Api
 	public static final int BACK =
 		2;
 	
@@ -49,6 +51,7 @@ public class Command
 		1;
 	
 	/** A command which will stop an in-progress operation. */
+	@Api
 	public static final int STOP =
 		6;
 	
@@ -119,6 +122,7 @@ public class Command
 	 * @throws NullPointerException If no short label was specified.
 	 * @since 2017/02/28
 	 */
+	@Api
 	public Command(String __sl, String __ll, int __type, int __pri)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -137,6 +141,7 @@ public class Command
 	 * @throws NullPointerException If no short label was specified.
 	 * @since 2017/02/28
 	 */
+	@Api
 	public Command(String __sl, String __ll, Image __i, int __type, int __pri)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -189,11 +194,13 @@ public class Command
 	 * @return The command type.
 	 * @since 2018/03/31
 	 */
+	@Api
 	public int getCommandType()
 	{
 		return this._type;
 	}
 	
+	@Api
 	public boolean getEnabled()
 	{
 		throw Debugging.todo();
@@ -206,6 +213,7 @@ public class Command
 	 * @return The font that should be used as a hint.
 	 * @since 2018/03/31
 	 */
+	@Api
 	public Font getFont()
 	{
 		throw Debugging.todo();
@@ -220,6 +228,7 @@ public class Command
 	 * @return The image of the command or {@code null} if it has none.
 	 * @since 2018/03/29
 	 */
+	@Api
 	public Image getImage()
 	{
 		// Do not provide implementation specific images
@@ -235,6 +244,7 @@ public class Command
 	 * @return The label used for the command.
 	 * @since 2018/03/29
 	 */
+	@Api
 	public String getLabel()
 	{
 		// Do not provide implementation specific labels
@@ -250,6 +260,7 @@ public class Command
 	 * @return The long label of the command or {@code null} if it has none.
 	 * @since 2018/03/29
 	 */
+	@Api
 	public String getLongLabel()
 	{
 		// Do not provide implementation specific labels
@@ -288,6 +299,7 @@ public class Command
 	 * @param __e If the command is enabled or not.
 	 * @since 2018/04/01
 	 */
+	@Api
 	public void setEnabled(boolean __e)
 	{
 		// Do nothing for implementation specific commands
@@ -304,6 +316,7 @@ public class Command
 	 * {@code null} will use the default.
 	 * @since 2018/03/31
 	 */
+	@Api
 	public void setFont(Font __f)
 	{
 		// Do nothing for implementation specific commands
@@ -331,6 +344,7 @@ public class Command
 	 * @param __i The image to set or {@code null} to clear it.
 	 * @since 2018/04/06
 	 */
+	@Api
 	public void setImage(Image __i)
 	{
 		throw Debugging.todo();
@@ -374,6 +388,7 @@ public class Command
 	 * @param __s The long label to use, {@code null} clears it.
 	 * @since 2018/03/29
 	 */
+	@Api
 	public void setLongLabel(String __s)
 	{
 		// Do nothing for implementation specific commands

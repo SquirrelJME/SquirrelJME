@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.BacklightControl;
 import cc.squirreljme.runtime.lcdui.mle.Vibration;
@@ -28,14 +29,16 @@ public class PhoneSystem
 
 	public static final int DEV_BACKLIGHT =
 		0;
-
+	
+	@Api
 	public static final int MAX_VENDOR_ATTR =
 		127;
-
+	
+	@Api
 	public static final int MIN_VENDOR_ATTR =
 		64;
 	
-	@SuppressWarnings("FinalStaticMethod")
+	@SuppressWarnings({"FinalStaticMethod", "unused"})
 	public static final void setAttribute(int __attr, int __value)
 	{
 		// Backlight control

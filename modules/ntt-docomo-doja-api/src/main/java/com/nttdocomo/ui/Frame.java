@@ -10,6 +10,7 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
@@ -27,10 +28,12 @@ import javax.microedition.lcdui.Displayable;
 public abstract class Frame
 {
 	/** The left soft key. */
+	@Api
 	public static final int SOFT_KEY_1 =
 		0;
 	
 	/** The right soft key. */
+	@Api
 	public static final int SOFT_KEY_2 =
 		1;
 	
@@ -97,6 +100,7 @@ public abstract class Frame
 		return this.__displayable().getWidth();
 	}
 	
+	@Api
 	public void setBackground(int __c)
 	{
 		throw Debugging.todo();
@@ -109,6 +113,7 @@ public abstract class Frame
 	 * @param __label The label for the key.
 	 * @since 2021/11/30
 	 */
+	@Api
 	public void setSoftLabel(int __key, String __label)
 	{
 		if (__key < 0 || __key >= Frame._NUM_SOFT_KEYS)

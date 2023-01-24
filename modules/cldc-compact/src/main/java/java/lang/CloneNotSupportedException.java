@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when cloning is not supported for the given object.
  *
@@ -22,6 +24,7 @@ public class CloneNotSupportedException
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public CloneNotSupportedException()
 	{
 	}

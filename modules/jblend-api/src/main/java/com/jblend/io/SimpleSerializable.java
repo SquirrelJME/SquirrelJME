@@ -9,12 +9,15 @@
 
 package com.jblend.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 
 public interface SimpleSerializable
 {
-    void writeObject(SimpleObjectOutputStream var1) throws IOException;
-
-    void readObject(SimpleObjectInputStream var1) throws IOException;
+	@Api
+	void writeObject(SimpleObjectOutputStream var1) throws IOException;
+	
+	@Api
+	void readObject(SimpleObjectInputStream var1) throws IOException;
 }
 

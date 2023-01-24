@@ -9,6 +9,8 @@
 
 package java.lang.annotation;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is the common interface in which all annotation types are inherited
  * from.
@@ -26,6 +28,7 @@ public interface Annotation
 	 * @return The annotation type.
 	 * @since 2014/10/13
 	 */
+	@Api
 	Class<? extends Annotation> annotationType();
 	
 	/**
@@ -49,6 +52,7 @@ public interface Annotation
 	 * @return {@code true} if they are logically equivalent.
 	 * @since 2014/10/13
 	 */
+	@Api
 	@Override
 	boolean equals(Object __o);
 	
@@ -67,6 +71,7 @@ public interface Annotation
 	 * @return The hash code for this annotation.
 	 * @since 2014/10/13
 	 */
+	@Api
 	@Override
 	int hashCode();
 	
@@ -77,6 +82,7 @@ public interface Annotation
 	 * @return The string representation of this annotation.
 	 * @since 2014/10/13
 	 */
+	@Api
 	@Override
 	String toString();
 }

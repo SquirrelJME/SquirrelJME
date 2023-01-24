@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when access is denied.
  *
@@ -22,6 +24,7 @@ public class IllegalAccessException
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public IllegalAccessException()
 	{
 	}
@@ -32,6 +35,7 @@ public class IllegalAccessException
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public IllegalAccessException(String __m)
 	{
 		super(__m);

@@ -9,6 +9,8 @@
 
 package com.oracle.json;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is a builder which is able to generate {@link JsonArray}s, it also
  * makes it possible to chain them together as successive object calls (most
@@ -25,6 +27,7 @@ public interface JsonArrayBuilder
 	 * @return {@code this}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArrayBuilder add(boolean __v);
 	
 	/**
@@ -35,6 +38,7 @@ public interface JsonArrayBuilder
 	 * @throws NumberFormatException If {@code __v} is an infinity or NaN.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArrayBuilder add(double __v);
 	
 	/**
@@ -44,6 +48,7 @@ public interface JsonArrayBuilder
 	 * @return {@code this}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArrayBuilder add(int __v);
 	
 	/**
@@ -54,6 +59,7 @@ public interface JsonArrayBuilder
 	 * @throws NullPointerException If {@code __v} is null.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArrayBuilder add(JsonArrayBuilder __v);
 	
 	/**
@@ -64,6 +70,7 @@ public interface JsonArrayBuilder
 	 * @throws NullPointerException If {@code __v} is null.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArrayBuilder add(JsonObjectBuilder __v);
 	
 	/**
@@ -83,6 +90,7 @@ public interface JsonArrayBuilder
 	 * @return {@code this}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArrayBuilder add(long __v);
 	
 	/**
@@ -93,6 +101,7 @@ public interface JsonArrayBuilder
 	 * @throws NullPointerException If {@code __v} is null.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArrayBuilder add(String __v);
 	
 	/**
@@ -101,6 +110,7 @@ public interface JsonArrayBuilder
 	 * @return {@code this}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArrayBuilder addNull();
 	
 	/**

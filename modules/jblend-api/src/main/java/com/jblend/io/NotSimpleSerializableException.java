@@ -9,9 +9,12 @@
 
 package com.jblend.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public class NotSimpleSerializableException
 	extends SimpleSerializeException
 {
+	@Api
 	public NotSimpleSerializableException()
 	{
 		super(null);

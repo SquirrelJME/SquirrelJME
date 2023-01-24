@@ -9,6 +9,8 @@
 
 package java.net;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when a connection could not be made to a remote host.
  *
@@ -22,6 +24,7 @@ public class ConnectException
 	 *
 	 * @since 2018/12/08
 	 */
+	@Api
 	public ConnectException()
 	{
 	}
@@ -32,6 +35,7 @@ public class ConnectException
 	 * @param __m The message.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public ConnectException(String __m)
 	{
 		super(__m);

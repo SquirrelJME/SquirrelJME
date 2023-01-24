@@ -11,6 +11,7 @@ package java.security;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -45,6 +46,7 @@ public final class AccessController
 	 * in effect for the current program, these are not at a virtual machine
 	 * level.}
 	 */
+	@Api
 	private static final String _POLICY_PROPERTY =
 		"cc.squirreljme.policy";
 	

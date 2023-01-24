@@ -13,13 +13,13 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class MediaManager
 {
-	@SuppressWarnings("FinalStaticMethod")
+	@SuppressWarnings({"FinalStaticMethod", "unused"})
 	public static final MediaData getData(String __uri)
 	{
 		throw Debugging.todo();
 	}
 	
-	@SuppressWarnings("FinalStaticMethod")
+	@SuppressWarnings({"FinalStaticMethod", "unused"})
 	public static final MediaImage getImage(String __uri)
 		throws NullPointerException
 	{
@@ -29,7 +29,7 @@ public class MediaManager
 		return new __MIDPImage__(__uri);
 	}
 	
-	@SuppressWarnings("FinalStaticMethod")
+	@SuppressWarnings({"FinalStaticMethod", "unused"})
 	public static final MediaSound getSound(String __uri)
 	{
 		throw Debugging.todo();

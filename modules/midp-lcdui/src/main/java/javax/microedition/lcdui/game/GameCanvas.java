@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui.game;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.gfx.DoubleBuffer;
 import javax.microedition.lcdui.Canvas;
@@ -17,34 +18,44 @@ import javax.microedition.lcdui.Graphics;
 public abstract class GameCanvas
 	extends Canvas
 {
+	@Api
 	public static final int DOWN_PRESSED =
 		64;
 	
+	@Api
 	public static final int FIRE_PRESSED =
 		256;
 	
+	@Api
 	public static final int GAME_A_PRESSED =
 		512;
 	
+	@Api
 	public static final int GAME_B_PRESSED =
 		1024;
 	
+	@Api
 	public static final int GAME_C_PRESSED =
 		2048;
 	
+	@Api
 	public static final int GAME_D_PRESSED =
 		4096;
 	
+	@Api
 	public static final int LEFT_PRESSED =
 		4;
 	
+	@Api
 	public static final int RIGHT_PRESSED =
 		32;
 	
+	@Api
 	public static final int UP_PRESSED =
 		2;
 	
 	/** Are game keys being suppressed?. */
+	@Api
 	private volatile boolean _suppressGameKeys;
 	
 	/** Is the buffer preserved after a flush? */
@@ -63,6 +74,7 @@ public abstract class GameCanvas
 	 * suppressed.
 	 * @since 2016/10/08
 	 */
+	@Api
 	protected GameCanvas(boolean __suppressGameKeys)
 	{
 		this(__suppressGameKeys, false);
@@ -95,6 +107,7 @@ public abstract class GameCanvas
 	 *
 	 * @since 2017/02/08
 	 */
+	@Api
 	public void flushGraphics()
 	{
 		// Do nothing if this is not on a display
@@ -115,6 +128,7 @@ public abstract class GameCanvas
 	 * @throws IllegalStateException If the buffer is preserved.
 	 * @since 2017/02/28
 	 */
+	@Api
 	public void flushGraphics(int __x, int __y, int __w, int __h)
 		throws IllegalStateException
 	{
@@ -142,12 +156,14 @@ public abstract class GameCanvas
 	 * @return The graphics object for the off-screen buffer.
 	 * @since 2016/10/10
 	 */
+	@Api
 	protected Graphics getGraphics()
 	{
 		return this._doubleBuffer.getGraphics(
 			this.getWidth(), this.getHeight());
 	}
 	
+	@Api
 	public int getKeyStates()
 	{
 		throw Debugging.todo();
@@ -157,6 +173,7 @@ public abstract class GameCanvas
 	 * {@inheritDoc}
 	 * @since 2016/10/10
 	 */
+	@Api
 	@Override
 	public void paint(Graphics __g)
 	{

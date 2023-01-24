@@ -9,6 +9,7 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -19,22 +20,22 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public enum TaskStatus
 {
 	/** Fatally exited. */
-	EXITED_FATAL,
+	@Api EXITED_FATAL,
 	
 	/** Normal exit. */
-	EXITED_REGULAR,
+	@Api EXITED_REGULAR,
 	
 	/** Terminated. */
-	EXITED_TERMINATED,
+	@Api EXITED_TERMINATED,
 	
 	/** Running. */
-	RUNNING,
+	@Api RUNNING,
 	
 	/** Failed to start. */
 	START_FAILED,
 	
 	/** Starting. */
-	STARTING,
+	@Api STARTING,
 	
 	/** End. */
 	;

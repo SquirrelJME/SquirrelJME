@@ -9,28 +9,33 @@
 
 package com.vodafone.v10.graphics.j3d;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 public class Figure
 {
-    public Figure(byte[] var1)
+	@Api
+	public Figure(byte[] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public Figure(String var1)
+	
+	@Api
+	public Figure(String var1)
     	throws IOException
 	{
 		throw Debugging.todo();
 	}
-
-    public void setPosture(ActionTable var1, int var2, int var3)
+	
+	@Api
+	public void setPosture(ActionTable var1, int var2, int var3)
 	{
 		throw Debugging.todo();
 	}
-
-    public void setTexture(Texture var1)
+	
+	@Api
+	public void setTexture(Texture var1)
 	{
 		throw Debugging.todo();
 	}

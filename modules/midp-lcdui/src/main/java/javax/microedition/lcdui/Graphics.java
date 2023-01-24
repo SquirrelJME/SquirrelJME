@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.lcdui.game.Sprite;
 
 /**
@@ -113,6 +114,7 @@ public abstract class Graphics
 	 * @param __h The height of the rectangle.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract void clipRect(int __x, int __y, int __w, int __h);
 	
 	/**
@@ -291,6 +293,7 @@ public abstract class Graphics
 		int __anchor)
 		throws NullPointerException;
 	
+	@Api
 	public abstract void drawSubstring(String __s, int __o, int __l, int __x,
 		int __y, int __anchor)
 		throws NullPointerException, StringIndexOutOfBoundsException;
@@ -358,6 +361,7 @@ public abstract class Graphics
 	 * @return The color in the range of {@code [0, 255]}.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract int getBlueComponent();
 	
 	/**
@@ -399,6 +403,7 @@ public abstract class Graphics
 	 * for alpha will always be zero.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract int getColor();
 	
 	/**
@@ -428,6 +433,7 @@ public abstract class Graphics
 	 * @return The color in the range of {@code [0, 255]}.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract int getGrayScale();
 	
 	/**
@@ -436,6 +442,7 @@ public abstract class Graphics
 	 * @return The color in the range of {@code [0, 255]}.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract int getGreenComponent();
 	
 	/**
@@ -444,6 +451,7 @@ public abstract class Graphics
 	 * @return The color in the range of {@code [0, 255]}.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract int getRedComponent();
 	
 	/**
@@ -478,6 +486,7 @@ public abstract class Graphics
 	 * {@code [0, 255]}.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract void setAlpha(int __a)
 		throws IllegalArgumentException;
 	
@@ -547,6 +556,7 @@ public abstract class Graphics
 	 * range of {@code [0, 255]}.
 	 * @since 2017/02/09
 	 */
+	@Api
 	public abstract void setColor(int __r, int __g, int __b)
 		throws IllegalArgumentException;
 	
@@ -566,6 +576,7 @@ public abstract class Graphics
 	 * @param __v The value to use for the color.
 	 * @since 2017/02/09
 	 */
+	@Api
 	public abstract void setGrayScale(int __v);
 	
 	/**

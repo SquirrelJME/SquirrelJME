@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 
@@ -252,6 +253,7 @@ public abstract class AbstractList<E>
 	 * {@inheritDoc}
 	 * @since 2018/10/28
 	 */
+	@Api
 	@Override
 	public ListIterator<E> listIterator()
 	{

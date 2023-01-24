@@ -9,6 +9,7 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 
 public interface SocketConnection
@@ -44,21 +45,27 @@ public interface SocketConnection
 	byte TIMEOUT =
 		5;
 	
+	@Api
 	AccessPoint getAccessPoint()
 		throws IOException;
 	
+	@Api
 	String getAddress()
 		throws IOException;
 	
+	@Api
 	String getLocalAddress()
 		throws IOException;
 	
+	@Api
 	int getLocalPort()
 		throws IOException;
 	
+	@Api
 	int getPort()
 		throws IOException;
 	
+	@Api
 	int getSocketOption(byte __o)
 		throws IllegalArgumentException, IOException;
 	
@@ -71,6 +78,7 @@ public interface SocketConnection
 	 * @throws IOException If it could not be set.
 	 * @since 2019/05/12
 	 */
+	@Api
 	void setSocketOption(byte __o, int __v)
 		throws IllegalArgumentException, IOException;
 }

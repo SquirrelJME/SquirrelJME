@@ -9,6 +9,7 @@
 
 package com.oracle.json;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import com.oracle.json.stream.JsonParsingException;
 import java.io.Closeable;
 import java.io.IOException;
@@ -42,6 +43,7 @@ public interface JsonReader
 	 * @throws JsonParsingException The input JSON is incorrect.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonStructure read();
 	
 	/**
@@ -53,6 +55,7 @@ public interface JsonReader
 	 * @throws JsonParsingException The input JSON is incorrect.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArray readArray();
 	
 	/**

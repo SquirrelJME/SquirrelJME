@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -165,6 +166,7 @@ public class ArrayList<E>
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
+	@Api
 	@Override
 	public Object clone()
 	{
@@ -177,7 +179,7 @@ public class ArrayList<E>
 	 * @param __n The number of elements.
 	 * @since 2019/05/14
 	 */
-	@SuppressWarnings({"unchecked"})
+	@SuppressWarnings({"unchecked", "unused"})
 	public void ensureCapacity(int __n)
 	{
 		// Pointless
@@ -283,6 +285,7 @@ public class ArrayList<E>
 		return this._size;
 	}
 	
+	@Api
 	public void trimToSize()
 	{
 		throw Debugging.todo();

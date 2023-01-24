@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when a class has changed and when that change is no longer
  * compatible.
@@ -23,6 +25,7 @@ public class IncompatibleClassChangeError
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public IncompatibleClassChangeError()
 	{
 	}

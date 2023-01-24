@@ -9,6 +9,7 @@
 
 package com.oracle.json;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
@@ -43,6 +44,7 @@ public interface JsonWriterFactory
 	 * supported.
 	 * @since 2014/07/26
 	 */
+	@Api
 	JsonWriter createWriter(OutputStream __o, String __charSet)
 		throws UnsupportedEncodingException;
 	
@@ -64,6 +66,7 @@ public interface JsonWriterFactory
 	 * empty but must never be {@code null}.
 	 * @since 2014/07/26
 	 */
+	@Api
 	Map<String, ?> getConfigInUse();
 }
 

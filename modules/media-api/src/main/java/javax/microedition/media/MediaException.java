@@ -9,6 +9,8 @@
 
 package javax.microedition.media;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when there was a problem with the media.
  *
@@ -22,6 +24,7 @@ public class MediaException
 	 *
 	 * @since 2019/04/15
 	 */
+	@Api
 	public MediaException()
 	{
 	}
@@ -32,6 +35,7 @@ public class MediaException
 	 * @param __m The message to use.
 	 * @since 2019/04/15
 	 */
+	@Api
 	public MediaException(String __m)
 	{
 		super(__m);

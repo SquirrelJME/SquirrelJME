@@ -9,6 +9,7 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -16,28 +17,34 @@ import java.io.PrintStream;
 
 public final class Log
 {
-    public static final PrintStream out =
+	@Api
+	public static final PrintStream out =
     	Debugging.<PrintStream>todoObject();
-    	
-    public static final PrintStream err =
+	
+	@Api
+	public static final PrintStream err =
     	Debugging.<PrintStream>todoObject();
-
-    public Log()
+	
+	@Api
+	public Log()
 	{
 		throw Debugging.todo();
 	}
-
-    public static final void out(String var0)
+	
+	@Api
+	public static final void out(String var0)
 	{
 		throw Debugging.todo();
 	}
-
-    public static final void err(String var0)
+	
+	@Api
+	public static final void err(String var0)
 	{
 		throw Debugging.todo();
 	}
-
-    private static final class PrivateOutputStream extends OutputStream {
+	
+	@Api
+	private static final class PrivateOutputStream extends OutputStream {
         @Override
 		public void write(int var1) throws IOException
 		{

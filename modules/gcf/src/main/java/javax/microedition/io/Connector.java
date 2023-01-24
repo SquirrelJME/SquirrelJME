@@ -9,6 +9,7 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import cc.squirreljme.runtime.gcf.HTTPAddress;
@@ -56,6 +57,7 @@ public class Connector
 	{
 	}
 	
+	@Api
 	public static long getBytesRead(Connection __a)
 		throws IOException
 	{
@@ -64,6 +66,7 @@ public class Connector
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static long getBytesWritten(Connection __a)
 		throws IOException
 	{
@@ -83,6 +86,7 @@ public class Connector
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static boolean isProtocolSupported(String __uri, boolean __server)
 		throws NullPointerException
 	{
@@ -154,6 +158,7 @@ public class Connector
 	 * @throws IOException As forwarded.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static Connection open(String __uri, ConnectionOption<?>... __opts)
 		throws IOException
 	{
@@ -170,6 +175,7 @@ public class Connector
 	 * @throws IOException As forwarded.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static Connection open(String __uri, int __mode)
 		throws IOException
 	{
@@ -187,6 +193,7 @@ public class Connector
 	 * @throws IOException As forwarded.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static Connection open(String __uri, int __mode,
 		ConnectionOption<?>... __opts)
 		throws IOException
@@ -205,6 +212,7 @@ public class Connector
 	 * @throws IOException As forwarded.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static Connection open(String __uri, int __mode, boolean __timeouts)
 		throws IOException
 	{
@@ -262,6 +270,7 @@ public class Connector
 	 * @throws IOException As forwarded.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static DataInputStream openDataInputStream(String __uri)
 		throws IOException
 	{
@@ -276,6 +285,7 @@ public class Connector
 	 * @throws IOException As forwarded.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static DataOutputStream openDataOutputStream(String __uri)
 		throws IOException
 	{

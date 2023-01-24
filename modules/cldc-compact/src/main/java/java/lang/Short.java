@@ -10,6 +10,7 @@
 package java.lang;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -18,16 +19,20 @@ public final class Short
 	extends Number
 	implements Comparable<Short>
 {
+	@Api
 	public static final short MAX_VALUE =
 		32767;
 	
+	@Api
 	public static final short MIN_VALUE =
 		-32768;
 	
+	@Api
 	public static final int SIZE =
 		16;
 	
 	/** The class representing the primitive type. */
+	@Api
 	public static final Class<Short> TYPE =
 		TypeShelf.<Short>typeToClass(TypeShelf.typeOfShort());
 	
@@ -48,6 +53,7 @@ public final class Short
 		this._value = __v;
 	}
 	
+	@Api
 	public Short(String __a)
 		throws NumberFormatException
 	{
@@ -56,36 +62,42 @@ public final class Short
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public byte byteValue()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public int compareTo(Short __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public double doubleValue()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public boolean equals(Object __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public float floatValue()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public int hashCode()
 	{
@@ -96,6 +108,7 @@ public final class Short
 	 * {@inheritDoc}
 	 * @since 2021/02/25
 	 */
+	@Api
 	@Override
 	public int intValue()
 	{
@@ -106,6 +119,7 @@ public final class Short
 	 * {@inheritDoc}
 	 * @since 2021/02/25
 	 */
+	@Api
 	@Override
 	public long longValue()
 	{
@@ -116,6 +130,7 @@ public final class Short
 	 * {@inheritDoc}
 	 * @since 2021/02/25
 	 */
+	@Api
 	@Override
 	public short shortValue()
 	{
@@ -126,6 +141,7 @@ public final class Short
 	 * {@inheritDoc}
 	 * @since 2018/11/14
 	 */
+	@Api
 	@Override
 	public String toString()
 	{
@@ -139,6 +155,7 @@ public final class Short
 		return rv;
 	}
 	
+	@Api
 	public static Short decode(String __a)
 		throws NumberFormatException
 	{
@@ -147,6 +164,7 @@ public final class Short
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static short parseShort(String __a, int __b)
 		throws NumberFormatException
 	{
@@ -155,6 +173,7 @@ public final class Short
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static short parseShort(String __a)
 		throws NumberFormatException
 	{
@@ -170,6 +189,7 @@ public final class Short
 	 * @return The reversed value.
 	 * @since 2021/02/18
 	 */
+	@Api
 	public static short reverseBytes(short __i)
 	{
 		// 0xBBAA -> 0xAABB
@@ -188,6 +208,7 @@ public final class Short
 		return Integer.toString(__v, 10);
 	}
 	
+	@Api
 	public static Short valueOf(String __a, int __b)
 		throws NumberFormatException
 	{
@@ -196,6 +217,7 @@ public final class Short
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Short valueOf(String __a)
 		throws NumberFormatException
 	{

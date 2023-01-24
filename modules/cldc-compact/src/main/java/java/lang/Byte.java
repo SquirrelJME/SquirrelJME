@@ -10,6 +10,7 @@
 package java.lang;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -31,10 +32,12 @@ public final class Byte
 		-128;
 	
 	/** The number of bits in a byte. */
+	@Api
 	public static final int SIZE =
 		8;
 	
 	/** The class representing the primitive type. */
+	@Api
 	public static final Class<Byte> TYPE =
 		TypeShelf.<Byte>typeToClass(TypeShelf.typeOfByte());
 	
@@ -63,6 +66,7 @@ public final class Byte
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public Byte(String __s)
 		throws NumberFormatException, NullPointerException
 	{
@@ -76,6 +80,7 @@ public final class Byte
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
+	@Api
 	@Override
 	public byte byteValue()
 	{
@@ -86,6 +91,7 @@ public final class Byte
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
+	@Api
 	@Override
 	public int compareTo(Byte __o)
 	{
@@ -96,6 +102,7 @@ public final class Byte
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
+	@Api
 	@Override
 	public double doubleValue()
 	{
@@ -106,6 +113,7 @@ public final class Byte
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
+	@Api
 	@Override
 	public boolean equals(Object __o)
 	{
@@ -122,6 +130,7 @@ public final class Byte
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
+	@Api
 	@Override
 	public float floatValue()
 	{
@@ -132,6 +141,7 @@ public final class Byte
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
+	@Api
 	@Override
 	public int hashCode()
 	{
@@ -142,6 +152,7 @@ public final class Byte
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
+	@Api
 	@Override
 	public int intValue()
 	{
@@ -152,6 +163,7 @@ public final class Byte
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
+	@Api
 	@Override
 	public long longValue()
 	{
@@ -162,6 +174,7 @@ public final class Byte
 	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
+	@Api
 	@Override
 	public short shortValue()
 	{
@@ -172,6 +185,7 @@ public final class Byte
 	 * {@inheritDoc}
 	 * @since 2018/11/14
 	 */
+	@Api
 	@Override
 	public String toString()
 	{
@@ -195,6 +209,7 @@ public final class Byte
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public static Byte decode(String __s)
 		throws NumberFormatException, NullPointerException
 	{
@@ -282,6 +297,7 @@ public final class Byte
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public static Byte valueOf(String __s, int __r)
 		throws NumberFormatException, NullPointerException
 	{
@@ -297,6 +313,7 @@ public final class Byte
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public static Byte valueOf(String __s)
 		throws NumberFormatException, NullPointerException
 	{

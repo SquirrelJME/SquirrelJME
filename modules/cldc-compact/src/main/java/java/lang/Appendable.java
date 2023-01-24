@@ -9,6 +9,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 
 /**
@@ -42,6 +43,7 @@ public interface Appendable
 	 * @throws IOException On write errors.
 	 * @since 2018/12/07
 	 */
+	@Api
 	Appendable append(CharSequence __c, int __s, int __e)
 		throws IndexOutOfBoundsException, IOException;
 	

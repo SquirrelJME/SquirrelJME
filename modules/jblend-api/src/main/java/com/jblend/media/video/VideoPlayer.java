@@ -9,6 +9,7 @@
 
 package com.jblend.media.video;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.jblend.media.MediaData;
 import com.jblend.media.MediaImageOperator;
@@ -18,27 +19,32 @@ import com.jblend.media.MediaPlayerListener;
 public class VideoPlayer
 	extends MediaPlayer
 	implements MediaImageOperator {
-    public VideoPlayer()
+	@Api
+	public VideoPlayer()
 	{
 		throw Debugging.todo();
 	}
-
-    public VideoPlayer(VideoData var1)
+	
+	@Api
+	public VideoPlayer(VideoData var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public VideoPlayer(byte[] var1)
+	
+	@Api
+	public VideoPlayer(byte[] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public static int checkData(byte[] var0)
+	
+	@Api
+	public static int checkData(byte[] var0)
 	{
 		throw Debugging.todo();
 	}
-
-    public void setData(VideoData var1)
+	
+	@Api
+	public void setData(VideoData var1)
 	{
 		throw Debugging.todo();
 	}
@@ -108,8 +114,9 @@ public class VideoPlayer
 	{
 		throw Debugging.todo();
 	}
-
-    public void repaintCurrent()
+	
+	@Api
+	public void repaintCurrent()
 	{
 		throw Debugging.todo();
 	}

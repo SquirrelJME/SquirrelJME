@@ -115,7 +115,7 @@ public class HashSet<E>
 	 * @since 2018/11/01
 	 */
 	@Override
-	@SuppressWarnings({"unchecked"})
+	@SuppressWarnings({"unchecked", "unused"})
 	@ImplementationNote("This creates a new instance of this class and " +
 		"then places all the entries into it.")
 	public Object clone()

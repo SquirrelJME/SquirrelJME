@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is the base class for non-checked errors.
  *
@@ -55,6 +57,7 @@ public class Error
 	 * @param __t The cause of this error.
 	 * @since 2018/09/16
 	 */
+	@Api
 	public Error(Throwable __t)
 	{
 		super(__t);

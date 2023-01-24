@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.WeakReference;
 
@@ -32,6 +33,7 @@ public abstract class Canvas
 	 * 
 	 * @since 2022/02/14
 	 */
+	@Api
 	public Canvas()
 	{
 		// Needed to initialize the command listener 
@@ -44,6 +46,7 @@ public abstract class Canvas
 	 * @return A {@link Graphics} object for drawing onto the canvas surface.
 	 * @since 2022/02/25
 	 */
+	@Api
 	public Graphics getGraphics()
 	{
 		// Use the backing double buffered graphics, but without a draw
@@ -53,6 +56,7 @@ public abstract class Canvas
 			this._bgColor);
 	}
 	
+	@Api
 	public int getKeypadState()
 	{
 		throw Debugging.todo();
@@ -63,11 +67,13 @@ public abstract class Canvas
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void repaint()
 	{
 		this.__displayable().repaint();
 	}
 	
+	@Api
 	public void repaint(int __x, int __y, int __w, int __h)
 	{
 		this.__displayable().repaint(__x, __y, __w, __h);

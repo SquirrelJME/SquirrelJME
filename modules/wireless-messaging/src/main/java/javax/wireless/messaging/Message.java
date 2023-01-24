@@ -9,13 +9,17 @@
 
 package javax.wireless.messaging;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.util.Date;
 
 public interface Message
 {
+	@Api
 	String getAddress();
 	
+	@Api
 	Date getTimeStamp();
 	
+	@Api
 	void setAddress(String __address);
 }

@@ -9,8 +9,11 @@
 
 package jdk.dio.mmio;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface RawMemory
 {
+	@Api
 	String getName();
 }
 

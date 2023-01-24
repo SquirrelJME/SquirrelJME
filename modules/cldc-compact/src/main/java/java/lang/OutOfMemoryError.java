@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when the virtual machine is out of memory.
  *
@@ -22,6 +24,7 @@ public class OutOfMemoryError
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public OutOfMemoryError()
 	{
 	}

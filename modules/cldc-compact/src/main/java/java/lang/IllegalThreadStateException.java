@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when the state of a thread is not valid.
  *
@@ -22,6 +24,7 @@ public class IllegalThreadStateException
 	 *
 	 * @since 2018/02/21
 	 */
+	@Api
 	public IllegalThreadStateException()
 	{
 	}

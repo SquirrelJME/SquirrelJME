@@ -9,6 +9,7 @@
 
 package jdk.dio.pwm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
@@ -21,27 +22,34 @@ import jdk.dio.gpio.GPIOPinConfig;
 public final class PWMChannelConfig
 	implements DeviceConfig<PWMChannel>, DeviceConfig.HardwareAddressing
 {
+	@Api
 	public static final int ALIGN_CENTER =
 		0;
 	
+	@Api
 	public static final int ALIGN_LEFT =
 		1;
 	
+	@Api
 	public static final int ALIGN_RIGHT =
 		2;
 	
+	@Api
 	public static final int IDLE_STATE_HIGH =
 		0;
 	
+	@Api
 	public static final int IDLE_STATE_LOW =
 		1;
 	
+	@Api
 	@ApiDefinedDeprecated
 	public PWMChannelConfig(int __a, int __b, int __c, int __d, int __e)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@ApiDefinedDeprecated
 	public PWMChannelConfig(int __a, int __b, int __c, int __d, int __e, 
 		GPIOPinConfig __f)
@@ -49,12 +57,14 @@ public final class PWMChannelConfig
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@ApiDefinedDeprecated
 	public PWMChannelConfig(String __a, int __b, int __c, int __d, int __e)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@ApiDefinedDeprecated
 	public PWMChannelConfig(String __a, int __b, int __c, int __d, int __e, 
 		GPIOPinConfig __f)
@@ -68,54 +78,64 @@ public final class PWMChannelConfig
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getChannelNumber()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public String getControllerName()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public int getControllerNumber()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getIdleState()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@ApiDefinedDeprecated
 	public GPIOPin getOutput()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getOutputBufferSize()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public GPIOPinConfig getOutputConfig()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getPulseAlignment()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getPulsePeriod()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public double getScaleFactor()
 	{
 		throw Debugging.todo();
@@ -127,6 +147,7 @@ public final class PWMChannelConfig
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public int serialize(OutputStream __a)
 		throws IOException
@@ -136,6 +157,7 @@ public final class PWMChannelConfig
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static PWMChannelConfig deserialize(InputStream __a)
 		throws IOException
 	{
@@ -146,56 +168,67 @@ public final class PWMChannelConfig
 	
 	public static final class Builder
 	{
+		@Api
 		public Builder()
 		{
 			throw Debugging.todo();
 		}
 		
+		@Api
 		public PWMChannelConfig build()
 		{
 			throw Debugging.todo();
 		}
 		
+		@Api
 		public Builder setChannelNumber(int __a)
 		{
 			throw Debugging.todo();
 		}
 		
+		@Api
 		public Builder setControllerName(String __a)
 		{
 			throw Debugging.todo();
 		}
 		
+		@Api
 		public Builder setControllerNumber(int __a)
 		{
 			throw Debugging.todo();
 		}
 		
+		@Api
 		public Builder setIdleState(int __a)
 		{
 			throw Debugging.todo();
 		}
 		
+		@Api
 		public Builder setOutputBufferSize(int __a)
 		{
 			throw Debugging.todo();
 		}
 		
+		@Api
 		public Builder setOutputConfig(GPIOPinConfig __a)
 		{
 			throw Debugging.todo();
 		}
 		
+		@Api
 		public Builder setPulseAlignment(int __a)
 		{
 			throw Debugging.todo();
 		}
 		
+		@Api
 		public Builder setPulsePeriod(int __a)
 		{
 			throw Debugging.todo();
 		}
 		
+		@Api
 		public Builder setScaleFactor(double __a)
 		{
 			throw Debugging.todo();

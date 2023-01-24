@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when a certain state is invalid.
  *
@@ -22,6 +24,7 @@ public class IllegalStateException
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public IllegalStateException()
 	{
 	}
@@ -44,6 +47,7 @@ public class IllegalStateException
 	 * @param __t The cause.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public IllegalStateException(String __m, Throwable __t)
 	{
 		super(__m, __t);
@@ -55,6 +59,7 @@ public class IllegalStateException
 	 * @param __t The cause.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public IllegalStateException(Throwable __t)
 	{
 		super(__t);

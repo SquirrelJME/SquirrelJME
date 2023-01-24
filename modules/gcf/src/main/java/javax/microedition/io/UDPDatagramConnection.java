@@ -9,14 +9,17 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 
 public interface UDPDatagramConnection
 	extends DatagramConnection
 {
+	@Api
 	String getLocalAddress()
 		throws IOException;
 	
+	@Api
 	int getLocalPort()
 		throws IOException;
 }

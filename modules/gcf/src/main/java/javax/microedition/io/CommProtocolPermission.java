@@ -9,6 +9,7 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.security.Permission;
 import java.security.PermissionCollection;
@@ -16,6 +17,7 @@ import java.security.PermissionCollection;
 public final class CommProtocolPermission
 	extends GCFPermission
 {
+	@Api
 	public CommProtocolPermission(String __a)
 	{
 		super((String)null);

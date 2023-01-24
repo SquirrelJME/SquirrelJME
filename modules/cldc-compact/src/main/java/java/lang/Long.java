@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
@@ -31,10 +32,12 @@ public final class Long
 		-9223372036854775808L;
 	
 	/** The size of the type in bits. */
+	@Api
 	public static final int SIZE =
 		64;
 	
 	/** The class representing the primitive long type. */
+	@Api
 	public static final Class<Long> TYPE =
 		TypeShelf.<Long>typeToClass(TypeShelf.typeOfLong());
 	
@@ -55,6 +58,7 @@ public final class Long
 		this._value = __v;
 	}
 	
+	@Api
 	public Long(String __a)
 		throws NumberFormatException
 	{
@@ -67,12 +71,14 @@ public final class Long
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
+	@Api
 	@Override
 	public byte byteValue()
 	{
 		return (byte)this._value;
 	}
 	
+	@Api
 	@Override
 	public int compareTo(Long __a)
 	{
@@ -83,6 +89,7 @@ public final class Long
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
+	@Api
 	@Override
 	public double doubleValue()
 	{
@@ -93,6 +100,7 @@ public final class Long
 	 * {@inheritDoc}
 	 * @since 2018/11/04
 	 */
+	@Api
 	@Override
 	public boolean equals(Object __o)
 	{
@@ -109,6 +117,7 @@ public final class Long
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
+	@Api
 	@Override
 	public float floatValue()
 	{
@@ -119,6 +128,7 @@ public final class Long
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
+	@Api
 	@Override
 	public int hashCode()
 	{
@@ -130,6 +140,7 @@ public final class Long
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
+	@Api
 	@Override
 	public int intValue()
 	{
@@ -140,6 +151,7 @@ public final class Long
 	 * {@inheritDoc}
 	 * @since 2018/11/03
 	 */
+	@Api
 	@Override
 	public long longValue()
 	{
@@ -150,6 +162,7 @@ public final class Long
 	 * {@inheritDoc}
 	 * @since 2022/01/06
 	 */
+	@Api
 	@Override
 	public short shortValue()
 	{
@@ -178,11 +191,13 @@ public final class Long
 		return rv;
 	}
 	
+	@Api
 	public static int bitCount(long __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Long decode(String __a)
 		throws NumberFormatException
 	{
@@ -191,36 +206,43 @@ public final class Long
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Long getLong(String __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Long getLong(String __a, long __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Long getLong(String __a, Long __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static long highestOneBit(long __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static long lowestOneBit(long __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static int numberOfLeadingZeros(long __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static int numberOfTrailingZeros(long __a)
 	{
 		throw Debugging.todo();
@@ -297,6 +319,7 @@ public final class Long
 	 * @throws NumberFormatException If the string is not valid.
 	 * @since 2020/06/18
 	 */
+	@Api
 	public static long parseLong(String __v)
 		throws NumberFormatException
 	{
@@ -310,6 +333,7 @@ public final class Long
 	 * @return The integer but with the bits reversed.
 	 * @since 2022/01/07
 	 */
+	@Api
 	public static long reverse(long __l)
 	{
 		int hi = Assembly.longUnpackHigh(__l);
@@ -326,6 +350,7 @@ public final class Long
 	 * @return The reversed bytes.
 	 * @since 2021/02/18
 	 */
+	@Api
 	public static long reverseBytes(long __i)
 	{
 		// 0xAABBCCDD_EEFFGGHH -> 0xBBAADDCC_FFEEHHGG
@@ -340,21 +365,25 @@ public final class Long
 		return (__i >>> 32) | (__i << 32);
 	}
 	
+	@Api
 	public static long rotateLeft(long __a, int __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static long rotateRight(long __a, int __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static int signum(long __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static long sum(long __a, long __b)
 	{
 		throw Debugging.todo();
@@ -367,6 +396,7 @@ public final class Long
 	 * @return The representing string.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public static String toBinaryString(long __v)
 	{
 		return Long.__unsignedString(__v, 2);
@@ -379,6 +409,7 @@ public final class Long
 	 * @return The representing string.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public static String toHexString(long __v)
 	{
 		return Long.__unsignedString(__v, 16);
@@ -391,6 +422,7 @@ public final class Long
 	 * @return The representing string.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public static String toOctalString(long __v)
 	{
 		return Long.__unsignedString(__v, 8);
@@ -487,6 +519,7 @@ public final class Long
 	 * is outside of the valid bounds.
 	 * @since 2022/01/07
 	 */
+	@Api
 	public static Long valueOf(String __v, int __r)
 		throws NumberFormatException
 	{
@@ -501,6 +534,7 @@ public final class Long
 	 * @throws NumberFormatException If the string is not valid.
 	 * @since 2022/01/07
 	 */
+	@Api
 	public static Long valueOf(String __v)
 		throws NumberFormatException
 	{

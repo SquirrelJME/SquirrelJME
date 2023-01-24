@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.common.EditableText;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
@@ -33,6 +34,7 @@ public class TextBox
 	 * {@link EditableText#initialize(String, int, int)}.
 	 * @since 2017/10/20
 	 */
+	@Api
 	public TextBox(String __title, String __text, int __max, int __con)
 		throws IllegalArgumentException
 	{
@@ -44,21 +46,25 @@ public class TextBox
 		this._editabletext.initialize(__text, __max, __con);
 	}
 	
+	@Api
 	public void delete(int __a, int __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getCaretPosition()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getChars(char[] __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getConstraints()
 	{
 		throw Debugging.todo();
@@ -68,6 +74,7 @@ public class TextBox
 	 * {@inheritDoc}
 	 * @since 2017/05/24
 	 */
+	@Api
 	@Override
 	public int getHeight()
 	{
@@ -77,11 +84,13 @@ public class TextBox
 		*/
 	}
 	
+	@Api
 	public int getMaxSize()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public String getString()
 	{
 		throw Debugging.todo();
@@ -91,6 +100,7 @@ public class TextBox
 	 * {@inheritDoc}
 	 * @since 2017/05/24
 	 */
+	@Api
 	@Override
 	public int getWidth()
 	{
@@ -100,51 +110,61 @@ public class TextBox
 		*/
 	}
 	
+	@Api
 	public void insert(char[] __a, int __b, int __c, int __d)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void insert(String __a, int __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setCaret(int __i)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setChars(char[] __a, int __b, int __c)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setConstraints(int __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setHighlight(int __i, int __l)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setInitialInputMode(String __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int setMaxSize(int __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setString(String __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int size()
 	{
 		throw Debugging.todo();
@@ -154,6 +174,7 @@ public class TextBox
 	 * {@inheritDoc}
 	 * @since 2023/01/14
 	 */
+	@Api
 	@Override
 	__CommonState__ __stateInit(UIBackend __backend)
 		throws NullPointerException

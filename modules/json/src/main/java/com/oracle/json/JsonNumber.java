@@ -9,6 +9,8 @@
 
 package com.oracle.json;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is an immutable numerical value.
  *
@@ -61,6 +63,7 @@ public interface JsonNumber
 	 * fit within an int.
 	 * @since 2014/07/25
 	 */
+	@Api
 	int intValueExact();
 	
 	/**
@@ -71,6 +74,7 @@ public interface JsonNumber
 	 * @return {@code true} if this is an integer.
 	 * @since 2014/07/25
 	 */
+	@Api
 	boolean isIntegral();
 	
 	/**
@@ -79,6 +83,7 @@ public interface JsonNumber
 	 * @return The value that represents this number.
 	 * @since 2022/07/12
 	 */
+	@Api
 	Number numberValue();
 	
 	/**
@@ -97,6 +102,7 @@ public interface JsonNumber
 	 * fit within a long.
 	 * @since 2014/07/25
 	 */
+	@Api
 	long longValueExact();
 	
 	/**

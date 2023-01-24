@@ -9,6 +9,7 @@
 
 package com.nokia.mid.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import javax.microedition.lcdui.Image;
@@ -23,6 +24,7 @@ class __NokiaGraphics__
 	implements DirectGraphics
 {
 	/** The raw graphics to use. */
+	@Api
 	protected final PencilGraphics graphics;
 	
 	/**

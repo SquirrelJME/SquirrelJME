@@ -9,55 +9,68 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Enumeration;
 
 public final class SimpleStack
 {
-    public Object[] elementData;
-    public int size;
-
-    public SimpleStack()
+	@Api
+	public Object[] elementData;
+	
+	@Api
+	public int size;
+	
+	@Api
+	public SimpleStack()
 	{
 		throw Debugging.todo();
 	}
-
-    public SimpleStack(int var1)
+	
+	@Api
+	public SimpleStack(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public Object push(Object var1)
+	
+	@Api
+	public Object push(Object var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public Object pop()
+	
+	@Api
+	public Object pop()
 	{
 		throw Debugging.todo();
 	}
-
-    public Object peek()
+	
+	@Api
+	public Object peek()
 	{
 		throw Debugging.todo();
 	}
-
-    public int size()
+	
+	@Api
+	public int size()
 	{
 		throw Debugging.todo();
 	}
-
-    public boolean empty()
+	
+	@Api
+	public boolean empty()
 	{
 		throw Debugging.todo();
 	}
-
-    public Enumeration elements()
+	
+	@Api
+	public Enumeration elements()
 	{
 		throw Debugging.todo();
 	}
-
-    static final class SimpleStackEnumerator implements Enumeration {
+	
+	@Api
+	static final class SimpleStackEnumerator implements Enumeration {
         @Override
 		public boolean hasMoreElements()
 		{

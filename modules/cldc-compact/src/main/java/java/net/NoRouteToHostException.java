@@ -9,6 +9,8 @@
 
 package java.net;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when there is no route to the remote destination.
  *
@@ -22,6 +24,7 @@ public class NoRouteToHostException
 	 *
 	 * @since 2018/12/08
 	 */
+	@Api
 	public NoRouteToHostException()
 	{
 	}
@@ -32,6 +35,7 @@ public class NoRouteToHostException
 	 * @param __m The message.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public NoRouteToHostException(String __m)
 	{
 		super(__m);

@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 
 /**
@@ -86,6 +87,7 @@ public class LinkedList<E>
 	 * {@inheritDoc}
 	 * @since 2016/09/05
 	 */
+	@Api
 	@Override
 	public void addLast(E __v)
 	{
@@ -117,6 +119,7 @@ public class LinkedList<E>
 	 * {@inheritDoc}
 	 * @since 2016/09/05
 	 */
+	@Api
 	@Override
 	public Object clone()
 	{
@@ -127,6 +130,7 @@ public class LinkedList<E>
 	 * {@inheritDoc}
 	 * @since 2016/09/05
 	 */
+	@Api
 	@Override
 	public Iterator<E> descendingIterator()
 	{
@@ -166,6 +170,7 @@ public class LinkedList<E>
 	 * {@inheritDoc}
 	 * @since 2016/09/05
 	 */
+	@Api
 	@Override
 	public E getLast()
 	{
@@ -203,6 +208,7 @@ public class LinkedList<E>
 	 * {@inheritDoc}
 	 * @since 2016/09/05
 	 */
+	@Api
 	@Override
 	public boolean offerFirst(E __v)
 	{
@@ -252,6 +258,7 @@ public class LinkedList<E>
 	 * {@inheritDoc}
 	 * @since 2016/09/05
 	 */
+	@Api
 	@Override
 	public E peekLast()
 	{
@@ -296,6 +303,7 @@ public class LinkedList<E>
 	 * {@inheritDoc}
 	 * @since 2016/09/05
 	 */
+	@Api
 	@Override
 	public E pollLast()
 	{
@@ -314,6 +322,7 @@ public class LinkedList<E>
 	 * {@inheritDoc}
 	 * @since 2016/09/05
 	 */
+	@Api
 	@Override
 	public E pop()
 	{
@@ -324,6 +333,7 @@ public class LinkedList<E>
 	 * {@inheritDoc}
 	 * @since 2016/09/05
 	 */
+	@Api
 	@Override
 	public void push(E __v)
 	{
@@ -363,6 +373,7 @@ public class LinkedList<E>
 	 * {@inheritDoc}
 	 * @since 2016/09/05
 	 */
+	@Api
 	@Override
 	public boolean removeFirstOccurrence(Object __a)
 	{
@@ -388,6 +399,7 @@ public class LinkedList<E>
 	 * {@inheritDoc}
 	 * @since 2016/09/05
 	 */
+	@Api
 	@Override
 	public E removeLast()
 	{
@@ -406,6 +418,7 @@ public class LinkedList<E>
 	 * {@inheritDoc}
 	 * @since 2016/09/05
 	 */
+	@Api
 	@Override
 	public boolean removeLastOccurrence(Object __a)
 	{

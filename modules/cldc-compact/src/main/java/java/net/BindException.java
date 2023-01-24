@@ -9,6 +9,8 @@
 
 package java.net;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when an attempt to bind to a local address and/or port has
  * failed.
@@ -23,6 +25,7 @@ public class BindException
 	 *
 	 * @since 2018/12/08
 	 */
+	@Api
 	public BindException()
 	{
 	}
@@ -33,6 +36,7 @@ public class BindException
 	 * @param __m The message.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public BindException(String __m)
 	{
 		super(__m);

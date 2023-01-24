@@ -10,20 +10,24 @@
 package javax.microedition.io;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class ConnectionOption<T>
 {
+	@Api
 	public ConnectionOption(String __a, T __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public String getName()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public T getValue()
 	{
 		throw Debugging.todo();

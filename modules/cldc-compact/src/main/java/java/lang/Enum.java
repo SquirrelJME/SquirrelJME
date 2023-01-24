@@ -11,6 +11,7 @@ package java.lang;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is the base class for enum types.
@@ -55,6 +56,7 @@ public abstract class Enum<E extends Enum<E>>
 	 * {@inheritDoc}
 	 * @since 2018/09/24
 	 */
+	@Api
 	@Override
 	protected final Object clone()
 		throws CloneNotSupportedException
@@ -149,6 +151,7 @@ public abstract class Enum<E extends Enum<E>>
 	 * {@inheritDoc}
 	 * @since 2018/09/24
 	 */
+	@Api
 	@Override
 	public String toString()
 	{

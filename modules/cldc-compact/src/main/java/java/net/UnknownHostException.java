@@ -9,6 +9,7 @@
 
 package java.net;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 
 /**
@@ -24,6 +25,7 @@ public class UnknownHostException
 	 *
 	 * @since 2018/12/08
 	 */
+	@Api
 	public UnknownHostException()
 	{
 	}
@@ -34,6 +36,7 @@ public class UnknownHostException
 	 * @param __m The message.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public UnknownHostException(String __m)
 	{
 		super(__m);

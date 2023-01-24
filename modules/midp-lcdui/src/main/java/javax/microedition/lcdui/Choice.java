@@ -9,6 +9,8 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 @SuppressWarnings("UnusedReturnValue")
 public interface Choice
 {
@@ -24,12 +26,15 @@ public interface Choice
 	int POPUP =
 		4;
 	
+	@Api
 	int TEXT_WRAP_DEFAULT =
 		0;
 	
+	@Api
 	int TEXT_WRAP_OFF =
 		2;
 	
+	@Api
 	int TEXT_WRAP_ON =
 		1;
 	
@@ -57,6 +62,7 @@ public interface Choice
 	
 	void deleteAll();
 	
+	@Api
 	int getFitPolicy();
 	
 	Font getFont(int __a);
@@ -124,6 +130,7 @@ public interface Choice
 	
 	void setEnabled(int __i, boolean __e);
 	
+	@Api
 	void setFitPolicy(int __a);
 	
 	void setFont(int __a, Font __b);

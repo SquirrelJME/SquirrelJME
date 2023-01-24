@@ -9,6 +9,7 @@
 
 package java.security;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -44,6 +45,7 @@ public abstract class Permission
 	 * {@inheritDoc}
 	 * @since 2018/12/08
 	 */
+	@Api
 	@Override
 	public abstract boolean equals(Object __a);
 	
@@ -53,12 +55,14 @@ public abstract class Permission
 	 * @return The actions performed on this permission.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public abstract String getActions();
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/12/08
 	 */
+	@Api
 	@Override
 	public abstract int hashCode();
 	
@@ -95,6 +99,7 @@ public abstract class Permission
 	 * @return The permission collection.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public PermissionCollection newPermissionCollection()
 	{
 		return null;
@@ -104,6 +109,7 @@ public abstract class Permission
 	 * {@inheritDoc}
 	 * @since 2018/12/08
 	 */
+	@Api
 	@Override
 	public String toString()
 	{

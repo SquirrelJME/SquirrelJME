@@ -10,6 +10,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
@@ -87,6 +88,7 @@ public class Form
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/17
 	 */
+	@Api
 	public int append(String __s)
 		throws NullPointerException
 	{
@@ -104,6 +106,7 @@ public class Form
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/17
 	 */
+	@Api
 	public int append(Image __i)
 		throws NullPointerException
 	{
@@ -153,6 +156,7 @@ public class Form
 	 * @throws IndexOutOfBoundsException If the item is not valid.
 	 * @since 2022/07/07
 	 */
+	@Api
 	public void delete(int __i)
 		throws IndexOutOfBoundsException
 	{
@@ -163,6 +167,7 @@ public class Form
 		this.__update();
 	}
 	
+	@Api
 	public void deleteAll()
 	{
 		throw Debugging.todo();
@@ -176,6 +181,7 @@ public class Form
 	 * @throws IndexOutOfBoundsException If the index is not within range.
 	 * @since 2019/05/19
 	 */
+	@Api
 	public Item get(int __i)
 		throws IndexOutOfBoundsException
 	{
@@ -189,6 +195,7 @@ public class Form
 	 * @return The current focus item.
 	 * @since 2019/12/09
 	 */
+	@Api
 	public Item getCurrent()
 	{
 		throw Debugging.todo();
@@ -198,6 +205,7 @@ public class Form
 	 * {@inheritDoc}
 	 * @since 2017/05/24
 	 */
+	@Api
 	@Override
 	public int getHeight()
 	{
@@ -224,27 +232,32 @@ public class Form
 	 * {@inheritDoc}
 	 * @since 2017/05/24
 	 */
+	@Api
 	@Override
 	public int getWidth()
 	{
 		return Displayable.__getWidth(this, null);
 	}
 	
+	@Api
 	public void insert(int __a, Item __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void set(int __a, Item __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setItemStateListener(ItemStateListener __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setItemTraversalListener(ItemTraversalListener __itl)
 	{
 		throw Debugging.todo();
@@ -259,6 +272,7 @@ public class Form
 	 * does not match this form.
 	 * @since 2021/11/26
 	 */
+	@Api
 	public void setLayoutPolicy(FormLayoutPolicy __layout)
 		throws IllegalArgumentException
 	{
@@ -271,6 +285,7 @@ public class Form
 	 * @return The number of form items.
 	 * @since 2109/05/19
 	 */
+	@Api
 	public int size()
 	{
 		return this._items.size();

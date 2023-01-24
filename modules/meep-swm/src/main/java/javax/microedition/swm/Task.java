@@ -9,6 +9,7 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Objects;
 
@@ -81,6 +82,7 @@ public final class Task
 	 * @return The number of bytes the task is estimated to be using.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public int getHeapUse()
 	{
 		throw Debugging.todo();
@@ -116,6 +118,7 @@ public final class Task
 	 * @return The task priority.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public TaskPriority getPriority()
 	{
 		throw Debugging.todo();
@@ -135,6 +138,7 @@ public final class Task
 	 * @return The task status.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public TaskStatus getStatus()
 	{
 		// If the TID is negative then it failed to start

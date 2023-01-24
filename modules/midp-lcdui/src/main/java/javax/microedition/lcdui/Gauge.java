@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
@@ -32,12 +33,15 @@ public class Gauge
 		-1;
 	
 	/** Is this interactive? */
+	@Api
 	final boolean _interactive;
 	
 	/** Maximum value. */
+	@Api
 	volatile int _maxvalue;
 	
 	/** Current value. */
+	@Api
 	volatile int _value;
 	
 	/**
@@ -53,6 +57,7 @@ public class Gauge
 	 * is not one of the special values if it is {@link #INDEFINITE}.
 	 * @since 2019/05/17
 	 */
+	@Api
 	public Gauge(String __l, boolean __int, int __max, int __iv)
 		throws IllegalArgumentException
 	{
@@ -79,31 +84,37 @@ public class Gauge
 		this._maxvalue = __max;
 	}
 	
+	@Api
 	public int getIncrementValue()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getMaxValue()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getMinValue()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getValue()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public boolean isInteractive()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setIncrementValue(int __v)
 	{
 		throw Debugging.todo();
@@ -128,16 +139,19 @@ public class Gauge
 		super.setLabel(__l);
 	}
 	
+	@Api
 	public void setMaxValue(int __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setMinValue(int __v)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setValue(int __a)
 	{
 		throw Debugging.todo();
@@ -147,6 +161,7 @@ public class Gauge
 	 * {@inheritDoc}
 	 * @since 2023/01/14
 	 */
+	@Api
 	@Override
 	__CommonState__ __stateInit(UIBackend __backend)
 		throws NullPointerException

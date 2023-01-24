@@ -9,6 +9,8 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when an operation was attempted on a closed record store.
  *
@@ -22,6 +24,7 @@ public class RecordStoreNotOpenException
 	 *
 	 * @since 2017/02/26
 	 */
+	@Api
 	public RecordStoreNotOpenException()
 	{
 	}

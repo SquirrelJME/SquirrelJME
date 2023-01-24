@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.MatchResult;
 import cc.squirreljme.jvm.suite.SuiteInfo;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +44,7 @@ public class Suite
 	final String _name;
 	
 	/** The state lock. */
+	@Api
 	private final Object _lock =
 		new Object();
 	
@@ -117,6 +119,7 @@ public class Suite
 	 * an empty iteration.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public Iterator<String> getAttributes()
 	{
 		throw Debugging.todo();
@@ -141,6 +144,7 @@ public class Suite
 	 * found. The system suite always returns null.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public String getAttributeValue(String __a)
 	{
 		// System suite always returns null
@@ -163,6 +167,7 @@ public class Suite
 	 * always returns an empty iterator.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public Iterator<Suite> getDependencies()
 	{
 		throw Debugging.todo();
@@ -207,6 +212,7 @@ public class Suite
 	 * raw byte array then this will return null.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public String getDownloadUrl()
 	{
 		throw Debugging.todo();
@@ -228,6 +234,7 @@ public class Suite
 	 * in the manifest. The system suite always returns an empty iterator.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public Iterator<String> getMIDlets()
 	{
 		// System suite always returns null
@@ -358,6 +365,7 @@ public class Suite
 	 * returns {@code true}.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public boolean isInstalled()
 	{
 		throw Debugging.todo();
@@ -378,6 +386,7 @@ public class Suite
 	 * @return {@code true} if the flag is set.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public boolean isSuiteState(SuiteStateFlag __f)
 	{
 		throw Debugging.todo();
@@ -413,6 +422,7 @@ public class Suite
 	 * returns {@code true}.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public boolean isTrusted()
 	{
 		throw Debugging.todo();
@@ -441,6 +451,7 @@ public class Suite
 	 * "manageSuite")} permission is not permitted.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public void setSuiteStateFlag(SuiteStateFlag __f, boolean __v)
 		throws IllegalArgumentException, IllegalStateException,
 			SecurityException

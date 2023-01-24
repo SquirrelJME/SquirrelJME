@@ -9,10 +9,14 @@
 
 package javax.wireless.messaging;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface TextMessage
 	extends Message
 {
+	@Api
 	String getPayloadText();
 	
+	@Api
 	String setPayloadText(String __data);
 }

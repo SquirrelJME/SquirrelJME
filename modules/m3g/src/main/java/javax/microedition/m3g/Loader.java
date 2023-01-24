@@ -9,6 +9,7 @@
 
 package javax.microedition.m3g;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
@@ -19,6 +20,7 @@ public class Loader
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Object3D[] load(byte[] __a, int __b)
 		throws IOException
 	{
@@ -27,6 +29,7 @@ public class Loader
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Object3D[] load(String __a)
 		throws IOException
 	{

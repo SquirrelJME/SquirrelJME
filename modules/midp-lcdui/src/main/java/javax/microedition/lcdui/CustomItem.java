@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
@@ -23,30 +24,39 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 public abstract class CustomItem
 	extends Item
 {
+	@Api
 	protected static final int KEY_PRESS =
 		4;
 	
+	@Api
 	protected static final int KEY_RELEASE =
 		8;
 	
+	@Api
 	protected static final int KEY_REPEAT =
 		16;
 	
+	@Api
 	protected static final int NONE =
 		0;
 	
+	@Api
 	protected static final int POINTER_DRAG =
 		128;
 	
+	@Api
 	protected static final int POINTER_PRESS =
 		32;
 	
+	@Api
 	protected static final int POINTER_RELEASE =
 		64;
 	
+	@Api
 	protected static final int TRAVERSE_HORIZONTAL =
 		1;
 	
+	@Api
 	protected static final int TRAVERSE_VERTICAL =
 		2;
 	
@@ -70,15 +80,19 @@ public abstract class CustomItem
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@SerializedEvent
 	protected abstract int getMinContentHeight();
 	
+	@Api
 	@SerializedEvent
 	protected abstract int getMinContentWidth();
 	
+	@Api
 	@SerializedEvent
 	protected abstract int getPrefContentHeight(int __a);
 	
+	@Api
 	@SerializedEvent
 	protected abstract int getPrefContentWidth(int __a);
 	
@@ -100,16 +114,19 @@ public abstract class CustomItem
 	@SerializedEvent
 	protected abstract void paint(Graphics __g, int __w, int __h);
 	
+	@Api
 	public int getGameAction(int __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	protected final int getInteractionModes()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getKeyCode(int __action)
 	{
 		throw Debugging.todo();
@@ -128,6 +145,7 @@ public abstract class CustomItem
 		// Implemented by sub-classes
 	}
 	
+	@Api
 	protected final void invalidate()
 	{
 		throw Debugging.todo();
@@ -151,29 +169,34 @@ public abstract class CustomItem
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@SerializedEvent
 	protected void pointerDragged(int __a, int __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@SerializedEvent
 	protected void pointerPressed(int __a, int __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@SerializedEvent
 	protected void pointerReleased(int __a, int __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	protected final void repaint()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	protected final void repaint(int __a, int __b, int __c, int __d)
 	{
 		throw Debugging.todo();
@@ -188,6 +211,7 @@ public abstract class CustomItem
 	 * @param __kl The key listener to use, {@code null} clears it.
 	 * @since 2020/10/16
 	 */
+	@Api
 	public void setKeyListener(KeyListener __kl)
 	{
 		this._keyListener = __kl;
@@ -208,6 +232,7 @@ public abstract class CustomItem
 	 * @param __opaque If {@code true} then opaque mode is enabled.
 	 * @since 2018/03/28
 	 */
+	@Api
 	public void setPaintMode(boolean __opaque)
 	{
 		this._transparent = !__opaque;
@@ -225,12 +250,14 @@ public abstract class CustomItem
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@SerializedEvent
 	protected boolean traverse(int __a, int __b, int __c, int[] __d)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@SerializedEvent
 	protected void traverseOut()
 	{
@@ -241,6 +268,7 @@ public abstract class CustomItem
 	 * {@inheritDoc}
 	 * @since 2020/09/21
 	 */
+	@Api
 	@Override
 	final void __paint(Graphics __gfx, int __sw, int __sh, int __special)
 	{
@@ -341,6 +369,7 @@ public abstract class CustomItem
 	 * {@inheritDoc}
 	 * @since 2023/01/14
 	 */
+	@Api
 	@Override
 	final __CommonState__ __stateInit(UIBackend __backend)
 		throws NullPointerException

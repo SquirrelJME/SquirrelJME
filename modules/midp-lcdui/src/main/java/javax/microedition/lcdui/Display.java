@@ -84,10 +84,12 @@ public class Display
 
 	public static final int COMMAND =
 		5;
-
+	
+	@Api
 	public static final int DISPLAY_HARDWARE_ABSENT =
 		2;
-
+	
+	@Api
 	public static final int DISPLAY_HARDWARE_DISABLED =
 		1;
 	
@@ -147,13 +149,16 @@ public class Display
 	/** Displayed off-screen, using physical hardware buttons. */
 	public static final int SOFTKEY_OFFSCREEN =
 		880;
-
+	
+	@Api
 	public static final int STATE_BACKGROUND =
 		0;
-
+	
+	@Api
 	public static final int STATE_FOREGROUND =
 		2;
-
+	
+	@Api
 	public static final int STATE_VISIBLE =
 		1;
 
@@ -168,7 +173,8 @@ public class Display
 
 	public static final int SUPPORTS_FORMS =
 		4;
-
+	
+	@Api
 	public static final int SUPPORTS_IDLEITEM =
 		2048;
 
@@ -181,17 +187,20 @@ public class Display
 
 	public static final int SUPPORTS_MENUS =
 		1024;
-
+	
+	@Api
 	public static final int SUPPORTS_ORIENTATION_LANDSCAPE =
 		8192;
 
-	@SuppressWarnings("FieldNamingConvention")
+	@SuppressWarnings({"FieldNamingConvention", "unused"})
 	public static final int SUPPORTS_ORIENTATION_LANDSCAPE180 =
 		32768;
-
+	
+	@Api
 	public static final int SUPPORTS_ORIENTATION_PORTRAIT =
 		4096;
-
+	
+	@Api
 	public static final int SUPPORTS_ORIENTATION_PORTRAIT180 =
 		16384;
 
@@ -203,7 +212,8 @@ public class Display
 
 	public static final int SUPPORTS_TICKER =
 		8;
-
+	
+	@Api
 	public static final int SUPPORTS_TITLE =
 		16;
 
@@ -224,9 +234,11 @@ public class Display
 	private volatile Displayable _current;
 	
 	/** The displayable to show on exit. */
+	@Api
 	private volatile Displayable _exit;
 	
 	/** The layout policy of this display. */
+	@Api
 	private CommandLayoutPolicy _layoutPolicy;
 	
 	/**
@@ -305,6 +317,7 @@ public class Display
 	 * and the display is in the foreground, otherwise {@code false}.
 	 * @since 2019/10/05
 	 */
+	@Api
 	public boolean flashBacklight(int __ms)
 		throws IllegalArgumentException
 	{
@@ -334,6 +347,7 @@ public class Display
 	 * @return Either {@link #MODE_ACTIVE} or {@link #MODE_NORMAL}.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public int getActivityMode()
 	{
 		throw Debugging.todo();
@@ -387,6 +401,7 @@ public class Display
 		return this.__bestImageSize(__a, false);
 	}
 	
+	@Api
 	public int getBorderStyle(boolean __a)
 	{
 		throw Debugging.todo();
@@ -438,6 +453,7 @@ public class Display
 	 * @throws IllegalArgumentException If the specified color is not valid.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public int getColor(int __c)
 		throws IllegalArgumentException
 	{
@@ -540,6 +556,7 @@ public class Display
 	 * @return The dot pitch in microns.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public int getDotPitch()
 	{
 		throw Debugging.todo();
@@ -600,6 +617,7 @@ public class Display
 	 * @return The hardware state.
 	 * @since 2018/12/10
 	 */
+	@Api
 	public int getHardwareState()
 	{
 		throw Debugging.todo();
@@ -622,6 +640,7 @@ public class Display
 			.metric(_uiDisplay, UIMetricType.DISPLAY_MAX_HEIGHT);
 	}
 	
+	@Api
 	public IdleItem getIdleItem()
 	{
 		throw Debugging.todo();
@@ -730,6 +749,7 @@ public class Display
 	 * @return {@code true} if it is built-in.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public boolean isBuiltIn()
 	{
 		throw Debugging.todo();
@@ -757,7 +777,8 @@ public class Display
 	 * @return The alpha transparency levels.
 	 * @since 2016/10/14
 	 */
-	@SuppressWarnings({"MagicNumber", "SwitchStatementWithTooFewBranches"})
+	@SuppressWarnings({"MagicNumber", "SwitchStatementWithTooFewBranches", 
+		"unused"})
 	public int numAlphaLevels()
 	{
 		switch (UIBackendFactory.getInstance(true).metric(_uiDisplay,
@@ -842,6 +863,7 @@ public class Display
 	 * @throws IllegalArgumentException If the specified mode is not valid.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public void setActivityMode(int __m)
 		throws IllegalArgumentException
 	{
@@ -858,6 +880,7 @@ public class Display
 			throw new IllegalArgumentException("EB1i");
 	}
 	
+	@Api
 	public void setCommandLayoutPolicy(CommandLayoutPolicy __clp)
 	{
 		throw Debugging.todo();
@@ -986,16 +1009,19 @@ public class Display
 		this.__doShowCurrent(__show);
 	}
 	
+	@Api
 	public void setCurrentItem(Item __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setIdleItem(IdleItem __i)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setPreferredOrientation(int __o)
 	{
 		throw Debugging.todo();
@@ -1021,6 +1047,7 @@ public class Display
 	 * @throws IllegalArgumentException If the duration is negative.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public boolean vibrate(int __d)
 		throws IllegalArgumentException
 	{
@@ -1286,6 +1313,7 @@ public class Display
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/24
 	 */
+	@Api
 	public static void addDisplayListener(DisplayListener __dl)
 		throws NullPointerException
 	{
@@ -1384,6 +1412,7 @@ public class Display
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/24
 	 */
+	@Api
 	public static void removeDisplayListener(DisplayListener __dl)
 		throws IllegalStateException, NullPointerException
 	{
@@ -1412,6 +1441,7 @@ public class Display
 	 * @return The softkey position or a negative value if not valid.
 	 * @since 2020/10/03
 	 */
+	@Api
 	static int __layoutPosToSoftKey(int __pos)
 	{
 		switch (__pos)

@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.security.BasicPermission;
 import java.security.Permission;
@@ -34,15 +35,19 @@ public final class PropertyPermission
 	extends BasicPermission
 {
 	/** The key to check or the prefix if a wildcard. */
+	@Api
 	private final String _key;
 	
 	/** If this is a wildcard permission. */
+	@Api
 	private final boolean _iswildcard;
 	
 	/** Is this read permission? */
+	@Api
 	private final boolean _isread;
 	
 	/** Is this write permission? */
+	@Api
 	private final boolean _iswrite;
 	
 	/**

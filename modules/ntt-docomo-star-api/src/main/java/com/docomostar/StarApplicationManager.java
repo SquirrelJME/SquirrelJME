@@ -9,8 +9,11 @@
 
 package com.docomostar;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public final class StarApplicationManager
 {
 	/** Launched application arguments. */
+	@Api
 	static String[] _appArgs;
 }

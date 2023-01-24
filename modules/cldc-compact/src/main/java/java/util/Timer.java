@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * The timer class is used to schedule events for the future which may
  * repeatedly happen or may happen once.
@@ -33,6 +35,7 @@ public class Timer
 	 *
 	 * @since 2018/12/11
 	 */
+	@Api
 	public Timer()
 	{
 		this("TimerThread");
@@ -62,6 +65,7 @@ public class Timer
 	 *
 	 * @since 2018/12/11
 	 */
+	@Api
 	public void cancel()
 	{
 		__TimerThread__ thread = this._thread;
@@ -81,6 +85,7 @@ public class Timer
 	 *
 	 * @since 2018/12/11
 	 */
+	@Api
 	public void purge()
 	{
 		// Lock to prevent adds
@@ -106,6 +111,7 @@ public class Timer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/11
 	 */
+	@Api
 	public void schedule(TimerTask __task, Date __time)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
@@ -127,6 +133,7 @@ public class Timer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/11
 	 */
+	@Api
 	public void schedule(TimerTask __task, Date __time, long __period)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
@@ -145,6 +152,7 @@ public class Timer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/11
 	 */
+	@Api
 	public void schedule(TimerTask __task, long __delay)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
@@ -166,6 +174,7 @@ public class Timer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/11
 	 */
+	@Api
 	public void schedule(TimerTask __task, long __delay, long __period)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
@@ -188,6 +197,7 @@ public class Timer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/11
 	 */
+	@Api
 	public void scheduleAtFixedRate(TimerTask __task, Date __first,
 		long __period)
 		throws IllegalArgumentException, IllegalStateException,
@@ -211,6 +221,7 @@ public class Timer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/11
 	 */
+	@Api
 	public void scheduleAtFixedRate(TimerTask __task, long __delay,
 		long __period)
 		throws IllegalArgumentException, IllegalStateException,

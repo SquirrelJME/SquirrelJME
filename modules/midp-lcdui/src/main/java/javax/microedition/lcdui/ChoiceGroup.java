@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
@@ -50,6 +51,7 @@ public class ChoiceGroup
 	 * if {@link Choice#IMPLICIT} was specified.
 	 * @since 2017/08/20
 	 */
+	@Api
 	public ChoiceGroup(String __l, int __ct)
 		throws IllegalArgumentException
 	{
@@ -131,12 +133,14 @@ public class ChoiceGroup
 		return rv;
 	}
 	
+	@Api
 	@Override
 	public void delete(int __dx)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public void deleteAll()
 	{
@@ -149,18 +153,21 @@ public class ChoiceGroup
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public Font getFont(int __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public Image getImage(int __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public int getSelectedFlags(boolean[] __result)
 	{
@@ -171,12 +178,14 @@ public class ChoiceGroup
 	 * {@inheritDoc}
 	 * @since 2020/10/31
 	 */
+	@Api
 	@Override
 	public int getSelectedIndex()
 	{
 		return __Utils__.__getSelectedIndex(this, this._type);
 	}
 	
+	@Api
 	@Override
 	public String getString(int __a)
 	{
@@ -216,24 +225,28 @@ public class ChoiceGroup
 		entries.add(__v, new __ChoiceEntry__(__s, __i));
 	}
 	
+	@Api
 	@Override
 	public boolean isEnabled(int __i)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public boolean isSelected(int __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public void set(int __i, String __label, Image __icon)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public void setEnabled(int __i, boolean __e)
 	{
@@ -246,18 +259,21 @@ public class ChoiceGroup
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public void setFont(int __a, Font __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public void setSelectedFlags(boolean[] __flags)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public void setSelectedIndex(int __a, boolean __b)
 	{
@@ -280,6 +296,7 @@ public class ChoiceGroup
 	 * {@inheritDoc}
 	 * @since 2023/01/14
 	 */
+	@Api
 	@Override
 	__CommonState__ __stateInit(UIBackend __backend)
 		throws NullPointerException

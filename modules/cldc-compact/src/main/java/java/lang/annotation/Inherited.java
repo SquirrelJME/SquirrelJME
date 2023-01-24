@@ -9,6 +9,10 @@
 
 package java.lang.annotation;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 /**
  * Indicates that the annotation type should automatically be inherited so that
  * the subclass type appears to have this annotation when it is requested. That
@@ -20,8 +24,9 @@ package java.lang.annotation;
  *
  * @since 2014/10/13
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.ANNOTATION_TYPE})
+@Api
+@Retention(RUNTIME)
+@Target({ANNOTATION_TYPE})
 public @interface Inherited
 {
 }

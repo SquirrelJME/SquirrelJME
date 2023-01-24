@@ -9,6 +9,8 @@
 
 package com.oracle.json;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This represents an immutable JSON value.
  *
@@ -20,6 +22,7 @@ public interface JsonValue
 	JsonValue NULL =
 		new JsonValue()
 		{
+			@Api
 			@Override
 			public ValueType getValueType()
 			{
@@ -37,6 +40,7 @@ public interface JsonValue
 	JsonValue TRUE =
 		new JsonValue()
 		{
+			@Api
 			@Override
 			public ValueType getValueType()
 			{
@@ -54,6 +58,7 @@ public interface JsonValue
 	JsonValue FALSE =
 		new JsonValue()
 		{
+			@Api
 			@Override
 			public ValueType getValueType()
 			{

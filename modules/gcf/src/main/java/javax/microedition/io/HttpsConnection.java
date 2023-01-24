@@ -9,12 +9,14 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 
 public interface HttpsConnection
 	extends HttpConnection
 {
 	
+	@Api
 	SecurityInfo getSecurityInfo()
 		throws IOException;
 }

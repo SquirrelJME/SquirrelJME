@@ -9,6 +9,7 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -17,6 +18,7 @@ import java.io.OutputStream;
 public interface OutputConnection
 	extends Connection
 {
+	@Api
 	DataOutputStream openDataOutputStream()
 		throws IOException;
 	

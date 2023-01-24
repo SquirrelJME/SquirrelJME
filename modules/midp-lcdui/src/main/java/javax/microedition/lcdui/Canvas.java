@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UISpecialCode;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
@@ -242,6 +243,7 @@ public abstract class Canvas
 	private KeyListener _defaultKeyListener;
 	
 	/** The actions which are required. */
+	@Api
 	private int _requiredActions;
 	
 	/**
@@ -341,6 +343,7 @@ public abstract class Canvas
 	 * @return The coordinates, these will be {@code [x, y, width, height]}.
 	 * @since 2020/10/03
 	 */
+	@Api
 	public int[] getSoftkeyLabelCoordinates(int __sk)
 		throws IllegalArgumentException
 	{
@@ -425,6 +428,7 @@ public abstract class Canvas
 	 * @return {@code true} if pointer motion events are available.
 	 * @since 2017/02/12
 	 */
+	@Api
 	@ApiDefinedDeprecated
 	public boolean hasPointerMotionEvents()
 	{
@@ -440,6 +444,7 @@ public abstract class Canvas
 	 * @return Always {@code true}.
 	 * @since 2017/02/12
 	 */
+	@Api
 	public boolean hasRepeatEvents()
 	{
 		return true;
@@ -465,6 +470,7 @@ public abstract class Canvas
 	 * @return {@code true}.
 	 * @since 2017/05/13
 	 */
+	@Api
 	public boolean isDoubleBuffered()
 	{
 		return true;
@@ -517,6 +523,7 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
+	@Api
 	@SerializedEvent
 	protected void pointerDragged(int __x, int __y)
 	{
@@ -533,6 +540,7 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
+	@Api
 	@SerializedEvent
 	protected void pointerPressed(int __x, int __y)
 	{
@@ -549,6 +557,7 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
+	@Api
 	@SerializedEvent
 	protected void pointerReleased(int __x, int __y)
 	{
@@ -709,6 +718,7 @@ public abstract class Canvas
 	 * @param __kl The key listener to use, {@code null} clears it.
 	 * @since 2017/02/12
 	 */
+	@Api
 	public void setKeyListener(KeyListener __kl)
 	{
 		this._keyListener = __kl;
@@ -742,6 +752,7 @@ public abstract class Canvas
 	 * @throws IllegalArgumentException If the actions are not valid.
 	 * @since 2020/10/03
 	 */
+	@Api
 	public void setRequiredActions(int __actions)
 		throws IllegalArgumentException
 	{

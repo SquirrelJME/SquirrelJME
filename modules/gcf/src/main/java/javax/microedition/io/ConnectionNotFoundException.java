@@ -9,6 +9,7 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 
 /**
@@ -24,6 +25,7 @@ public class ConnectionNotFoundException
 	 *
 	 * @since 2019/05/06
 	 */
+	@Api
 	public ConnectionNotFoundException()
 	{
 	}
@@ -34,6 +36,7 @@ public class ConnectionNotFoundException
 	 * @param __m The message.
 	 * @since 2019/05/06
 	 */
+	@Api
 	public ConnectionNotFoundException(String __m)
 	{
 		super(__m);

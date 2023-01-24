@@ -9,9 +9,11 @@
 
 package com.jblend.micro.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Graphics;
 
+@Api
 public class GaugeImpl implements GaugeInterface {
 	
 	@Override

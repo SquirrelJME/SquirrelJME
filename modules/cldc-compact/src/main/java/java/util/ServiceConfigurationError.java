@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when a service has not been configured properly.
  *
@@ -23,6 +25,7 @@ public class ServiceConfigurationError
 	 * @param __m The message.
 	 * @since 2018/12/06
 	 */
+	@Api
 	public ServiceConfigurationError(String __m)
 	{
 		super(__m);

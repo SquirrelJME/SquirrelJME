@@ -11,6 +11,7 @@ package java.lang;
 
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -49,7 +50,7 @@ public class Throwable
 	private Throwable _cause;
 	
 	/** The stack trace for this throwable (in mostly-raw form). */
-	@SuppressWarnings("unused")
+	@Api
 	private TracePointBracket[] _stack;
 	
 	/**
@@ -159,6 +160,7 @@ public class Throwable
 	 * @return {@code this}.
 	 * @since 2018/09/15
 	 */
+	@Api
 	public Throwable fillInStackTrace()
 	{
 		// Get stack trace, ignore this method

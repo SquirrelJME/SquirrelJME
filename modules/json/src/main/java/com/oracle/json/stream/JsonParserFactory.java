@@ -9,6 +9,7 @@
 
 package com.oracle.json.stream;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import com.oracle.json.JsonArray;
 import com.oracle.json.JsonException;
 import com.oracle.json.JsonObject;
@@ -42,6 +43,7 @@ public interface JsonParserFactory
 	 * @return A parser for JSON.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonParser createParser(InputStream __i, String __charSet)
 		throws UnsupportedEncodingException;
 	
@@ -53,6 +55,7 @@ public interface JsonParserFactory
 	 * @return A parser for JSON.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonParser createParser(JsonArray __a);
 	
 	/**
@@ -63,6 +66,7 @@ public interface JsonParserFactory
 	 * @return A parser for JSON.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonParser createParser(JsonObject __o);
 	
 	/**
@@ -83,6 +87,7 @@ public interface JsonParserFactory
 	 * empty but must never be {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	Map<String, ?> getConfigInUse();
 }
 

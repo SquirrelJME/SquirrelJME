@@ -9,12 +9,15 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class NativeThreadMonitor
 	extends Thread
 {
-    public static void reset()
+	@Api
+	public static void reset()
 	{
 		throw Debugging.todo();
 	}

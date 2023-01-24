@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is a basic implementation of a {@link Collection}.
  *
@@ -82,6 +84,7 @@ public abstract class AbstractCollection<E>
 	 * {@inheritDoc}
 	 * @since 2018/11/05
 	 */
+	@Api
 	@Override
 	public void clear()
 	{
@@ -228,6 +231,7 @@ public abstract class AbstractCollection<E>
 	 * {@inheritDoc}
 	 * @since 2018/12/06
 	 */
+	@Api
 	@Override
 	public Object[] toArray()
 	{
@@ -282,6 +286,7 @@ public abstract class AbstractCollection<E>
 	 * {@inheritDoc}
 	 * @since 2018/10/29
 	 */
+	@Api
 	@Override
 	public String toString()
 	{

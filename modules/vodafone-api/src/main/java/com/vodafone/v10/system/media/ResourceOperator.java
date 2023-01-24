@@ -9,23 +9,34 @@
 
 package com.vodafone.v10.system.media;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface ResourceOperator
 {
-    int getResourceType();
-
-    int getResourceCount();
-
-    int getResourceID(int var1);
-
-    String getResourceName(int var1);
-
-    String[] getResourceNames();
-
-    void setResourceByID(MediaPlayer var1, int var2);
-
-    void setResourceByTitle(MediaPlayer var1, String var2);
-
-    void setResource(MediaPlayer var1, int var2);
-
-    int getIndexOfResource(int var1);
+	@Api
+	int getResourceType();
+	
+	@Api
+	int getResourceCount();
+	
+	@Api
+	int getResourceID(int var1);
+	
+	@Api
+	String getResourceName(int var1);
+	
+	@Api
+	String[] getResourceNames();
+	
+	@Api
+	void setResourceByID(MediaPlayer var1, int var2);
+	
+	@Api
+	void setResourceByTitle(MediaPlayer var1, String var2);
+	
+	@Api
+	void setResource(MediaPlayer var1, int var2);
+	
+	@Api
+	int getIndexOfResource(int var1);
 }

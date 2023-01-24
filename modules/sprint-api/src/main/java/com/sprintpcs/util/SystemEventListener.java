@@ -9,6 +9,8 @@
 
 package com.sprintpcs.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is a listener for any system events that occur.
  *
@@ -24,5 +26,6 @@ public interface SystemEventListener
 	 * @param __value The new value of the option.
 	 * @since 2022/08/28
 	 */
+	@Api
 	void systemEvent(String __option, String __value);
 }

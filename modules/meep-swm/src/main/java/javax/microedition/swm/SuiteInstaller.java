@@ -9,6 +9,7 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.swm.JarStreamSupplier;
 import java.util.Set;
@@ -35,6 +36,7 @@ public final class SuiteInstaller
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/24
 	 */
+	@Api
 	SuiteInstaller(JarStreamSupplier __sup)
 		throws NullPointerException
 	{
@@ -51,6 +53,7 @@ public final class SuiteInstaller
 	 * @param __sl The listener to add.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public final void addInstallationListener(SuiteInstallListener __sl)
 	{
 		// Ignore
@@ -65,6 +68,7 @@ public final class SuiteInstaller
 	 *
 	 * @since 2016/06/24
 	 */
+	@Api
 	public final void cancel()
 	{
 		throw Debugging.todo();
@@ -77,6 +81,7 @@ public final class SuiteInstaller
 	 * @param __sl The listener to remove.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public final void removeInstallationListener(SuiteInstallListener __sl)
 	{
 		// Ignore
@@ -99,6 +104,7 @@ public final class SuiteInstaller
 	 * @return The tracker for the given suite.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public final SuiteManagementTracker start()
 	{
 		return new __SuiteTracker__(this);

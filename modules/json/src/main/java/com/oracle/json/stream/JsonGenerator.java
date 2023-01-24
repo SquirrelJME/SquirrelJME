@@ -9,6 +9,7 @@
 
 package com.oracle.json.stream;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import com.oracle.json.JsonException;
 import com.oracle.json.JsonValue;
 import java.io.Closeable;
@@ -47,6 +48,7 @@ public interface JsonGenerator
 	 * wrapped in this exception.
 	 * @since 2014/07/25
 	 */
+	@Api
 	void flush();
 	
 	/**
@@ -60,6 +62,7 @@ public interface JsonGenerator
 	 * @throws JsonGenerationException If the current context is not an array.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator write(boolean __v);
 	
 	/**
@@ -73,6 +76,7 @@ public interface JsonGenerator
 	 * @throws JsonGenerationException If the current context is not an array.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator write(double __v);
 	
 	/**
@@ -86,6 +90,7 @@ public interface JsonGenerator
 	 * @throws JsonGenerationException If the current context is not an array.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator write(int __v);
 	
 	/**
@@ -111,6 +116,7 @@ public interface JsonGenerator
 	 * @throws JsonGenerationException If the current context is not an array.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator write(long __v);
 	
 	/**
@@ -123,6 +129,7 @@ public interface JsonGenerator
 	 * @throws JsonGenerationException If the current context is not an array.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator write(String __v);
 	
 	/**
@@ -137,6 +144,7 @@ public interface JsonGenerator
 	 * @throws JsonGenerationException If the current context is not an object.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator write(String __n, boolean __v);
 	
 	/**
@@ -151,6 +159,7 @@ public interface JsonGenerator
 	 * @throws JsonGenerationException If the current context is not an object.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator write(String __n, double __v);
 	
 	/**
@@ -165,6 +174,7 @@ public interface JsonGenerator
 	 * @throws JsonGenerationException If the current context is not an object.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator write(String __n, int __v);
 	
 	/**
@@ -178,6 +188,7 @@ public interface JsonGenerator
 	 * @throws JsonGenerationException If the current context is not an object.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator write(String __n, JsonValue __v);
 	
 	/**
@@ -192,6 +203,7 @@ public interface JsonGenerator
 	 * @throws JsonGenerationException If the current context is not an object.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator write(String __n, long __v);
 	
 	/**
@@ -205,6 +217,7 @@ public interface JsonGenerator
 	 * @throws JsonGenerationException If the current context is not an object.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator write(String __n, String __v);
 	
 	/**
@@ -218,6 +231,7 @@ public interface JsonGenerator
 	 * @throws JsonGenerationException If there is no context.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator writeEnd();
 	
 	/**
@@ -229,6 +243,7 @@ public interface JsonGenerator
 	 * @throws JsonGenerationException If the current context is not an array.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator writeNull();
 	
 	/**
@@ -241,6 +256,7 @@ public interface JsonGenerator
 	 * @throws JsonGenerationException If the current context is not an object.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator writeNull(String __n);
 	
 	/**
@@ -256,6 +272,7 @@ public interface JsonGenerator
 	 * or is called more than once when in no context.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator writeStartArray();
 	
 	/**
@@ -270,6 +287,7 @@ public interface JsonGenerator
 	 * @throws JsonGenerationException If this is not within an object context.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator writeStartArray(String __n);
 	
 	/**
@@ -284,6 +302,7 @@ public interface JsonGenerator
 	 * or is called more than once when in no context.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator writeStartObject();
 	
 	/**
@@ -297,6 +316,7 @@ public interface JsonGenerator
 	 * @throws JsonGenerationException If this is not within an object context.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator writeStartObject(String __n);
 }
 

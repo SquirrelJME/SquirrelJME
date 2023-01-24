@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when the format of a class is not valid.
  *
@@ -22,6 +24,7 @@ public class ClassFormatError
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public ClassFormatError()
 	{
 	}

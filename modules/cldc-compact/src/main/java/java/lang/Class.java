@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.InputStream;
 
@@ -46,6 +47,7 @@ public final class Class<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/07
 	 */
+	@Api
 	private Class(TypeBracket __type)
 		throws NullPointerException
 	{
@@ -71,7 +73,7 @@ public final class Class<T>
 	 * @see Class#isAssignableFrom(Class)
 	 * @since 2016/06/13
 	 */
-	@SuppressWarnings({"unchecked"})
+	@SuppressWarnings({"unchecked", "unused"})
 	public <U> Class<? extends U> asSubclass(Class<U> __cl)
 		throws ClassCastException, NullPointerException
 	{
@@ -126,6 +128,7 @@ public final class Class<T>
 	 * this may return {@code false} if they are disabled for a class.
 	 * @since 2016/06/13
 	 */
+	@Api
 	public boolean desiredAssertionStatus()
 	{
 		// If assertions have been checked, they do not have to be rechecked
@@ -239,6 +242,7 @@ public final class Class<T>
 	 * @return {@code true} if this class represents an array type.
 	 * @since 2016/06/16
 	 */
+	@Api
 	public boolean isArray()
 	{
 		return TypeShelf.isArray(this._type);
@@ -325,6 +329,7 @@ public final class Class<T>
 	 * {@inheritDoc}
 	 * @since 2018/11/03
 	 */
+	@Api
 	@Override
 	public String toString()
 	{
@@ -382,7 +387,7 @@ public final class Class<T>
 	 * be accessed.
 	 * @since 2018/12/04
 	 */
-	@SuppressWarnings("RedundantThrows")
+	@SuppressWarnings({"RedundantThrows", "unused"})
 	final Object __newInstance()
 		throws InstantiationException, IllegalAccessException
 	{

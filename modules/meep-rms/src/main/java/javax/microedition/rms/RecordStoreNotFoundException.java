@@ -9,6 +9,8 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when the record store is missing.
  *
@@ -22,6 +24,7 @@ public class RecordStoreNotFoundException
 	 *
 	 * @since 2017/02/26
 	 */
+	@Api
 	public RecordStoreNotFoundException()
 	{
 	}

@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -111,6 +112,7 @@ public final class Objects
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/12
 	 */
+	@Api
 	public static <T> T requireNonNull(T __a)
 		throws NullPointerException
 	{
@@ -149,6 +151,7 @@ public final class Objects
 	 * {@code null}.
 	 * @since 2016/04/12
 	 */
+	@Api
 	public static String toString(Object __a)
 	{
 		if (__a == null)

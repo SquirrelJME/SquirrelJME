@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface Comparator<T>
 {
 	int compare(T __a, T __b);
@@ -20,6 +22,7 @@ public interface Comparator<T>
 	 * {@inheritDoc}
 	 * @since 2016/04/12
 	 */
+	@Api
 	@Override
 	boolean equals(Object __a);
 }

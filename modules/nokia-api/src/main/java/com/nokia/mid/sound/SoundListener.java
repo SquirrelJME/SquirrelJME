@@ -9,6 +9,7 @@
 
 package com.nokia.mid.sound;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
@@ -30,6 +31,7 @@ public interface SoundListener
 	 * @see PlayerListener#playerUpdate(Player, String, Object) 
 	 * @since 2022/02/03
 	 */
+	@Api
 	@ApiDefinedDeprecated()
 	void soundStateChanged(Sound __sound, int __event);
 }

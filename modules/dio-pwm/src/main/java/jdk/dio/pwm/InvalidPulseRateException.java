@@ -10,16 +10,19 @@
 package jdk.dio.pwm;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class InvalidPulseRateException
 	extends RuntimeException
 {
+	@Api
 	public InvalidPulseRateException()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public InvalidPulseRateException(String __a)
 	{
 		throw Debugging.todo();

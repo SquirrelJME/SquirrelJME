@@ -9,25 +9,32 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public final class NotificationType
 {
+	@Api
 	public static final NotificationType CALL =
 		new NotificationType(null, null);
 	
+	@Api
 	public static final NotificationType EMAIL =
 		new NotificationType(null, null);
 	
+	@Api
 	public static final NotificationType IM =
 		new NotificationType(null, null);
 	
+	@Api
 	public static final NotificationType MMS =
 		new NotificationType(null, null);
 	
+	@Api
 	public static final NotificationType REMINDER =
 		new NotificationType(null, null);
 	
+	@Api
 	public static final NotificationType SMS =
 		new NotificationType(null, null);
 	

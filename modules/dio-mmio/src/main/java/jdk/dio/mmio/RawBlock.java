@@ -9,6 +9,7 @@
 
 package jdk.dio.mmio;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import jdk.dio.ClosedDeviceException;
@@ -18,6 +19,7 @@ import jdk.dio.UnavailableDeviceException;
 public interface RawBlock
 	extends RawMemory
 {
+	@Api
 	ByteBuffer asDirectBuffer()
 		throws ClosedDeviceException, IOException, UnavailableDeviceException;
 }

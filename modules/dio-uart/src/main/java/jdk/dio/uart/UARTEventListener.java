@@ -9,11 +9,13 @@
 
 package jdk.dio.uart;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import jdk.dio.DeviceEventListener;
 
 public interface UARTEventListener
 	extends DeviceEventListener
 {
+	@Api
 	void eventDispatched(UARTEvent __a);
 }
 

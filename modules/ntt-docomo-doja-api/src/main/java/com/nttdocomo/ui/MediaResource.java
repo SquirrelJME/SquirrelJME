@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import com.nttdocomo.io.ConnectionException;
 
 public interface MediaResource
@@ -19,6 +20,7 @@ public interface MediaResource
 	 * @throws UIException If the resource has already been disposed. 
 	 * @since 2022/02/14
 	 */
+	@Api
 	void dispose()
 		throws UIException;
 	
@@ -31,6 +33,7 @@ public interface MediaResource
 	 * @throws UIException If the resource could not be freed.
 	 * @since 2022/02/14
 	 */
+	@Api
 	void unuse()
 		throws UIException;
 	
@@ -45,6 +48,7 @@ public interface MediaResource
 	 * @throws UIException If the resource could not be opened.
 	 * @since 2022/02/14
 	 */
+	@Api
 	void use()
 		throws ConnectionException, SecurityException, UIException;
 }

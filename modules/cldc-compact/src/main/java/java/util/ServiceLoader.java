@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * The service loader is used to lookup services which may be defined in the
  * classpath.
@@ -52,6 +54,7 @@ public final class ServiceLoader<S>
 	 * {@inheritDoc}
 	 * @since 2018/12/06
 	 */
+	@Api
 	@Override
 	public Iterator<S> iterator()
 	{
@@ -83,6 +86,7 @@ public final class ServiceLoader<S>
 	 * {@inheritDoc}
 	 * @since 2018/12/06
 	 */
+	@Api
 	@Override
 	public String toString()
 	{

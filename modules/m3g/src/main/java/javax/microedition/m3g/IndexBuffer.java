@@ -10,6 +10,7 @@
 package javax.microedition.m3g;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public abstract class IndexBuffer
@@ -20,8 +21,10 @@ public abstract class IndexBuffer
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public abstract int getIndexCount();
 	
+	@Api
 	public abstract void getIndices(int[] __a);
 }
 

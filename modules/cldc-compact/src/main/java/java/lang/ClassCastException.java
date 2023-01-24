@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when a class cannot be cast to another class.
  *
@@ -22,6 +24,7 @@ public class ClassCastException
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public ClassCastException()
 	{
 	}

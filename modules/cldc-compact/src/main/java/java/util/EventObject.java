@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 
 /**
@@ -44,6 +45,7 @@ public class EventObject
 	 * @return The source object.
 	 * @since 2019/01/20
 	 */
+	@Api
 	public Object getSource()
 	{
 		return this._source;
@@ -53,6 +55,7 @@ public class EventObject
 	 * {@inheritDoc}
 	 * @since 2019/01/20
 	 */
+	@Api
 	@Override
 	public String toString()
 	{

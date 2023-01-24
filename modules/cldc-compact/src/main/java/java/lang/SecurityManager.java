@@ -9,6 +9,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.security.AccessController;
 import java.security.Permission;
@@ -50,6 +51,7 @@ public class SecurityManager
 		}
 	}
 	
+	@Api
 	public void checkAccept(String __a, int __b)
 	{
 		throw Debugging.todo();
@@ -68,11 +70,13 @@ public class SecurityManager
 		this.checkPermission(new RuntimePermission("modifyThread"));
 	}
 	
+	@Api
 	public void checkConnect(String __a, int __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void checkDelete(String __a)
 	{
 		throw Debugging.todo();
@@ -91,6 +95,7 @@ public class SecurityManager
 		this.checkPermission(new RuntimePermission("exitVM." + __code));
 	}
 	
+	@Api
 	public void checkListen(int __a)
 	{
 		throw Debugging.todo();
@@ -138,11 +143,13 @@ public class SecurityManager
 		this.checkPermission(new PropertyPermission(__key, "read"));
 	}
 	
+	@Api
 	public void checkRead(String __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void checkWrite(String __a)
 	{
 		throw Debugging.todo();

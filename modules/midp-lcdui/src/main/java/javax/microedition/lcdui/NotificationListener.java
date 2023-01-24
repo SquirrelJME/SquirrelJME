@@ -9,12 +9,17 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface NotificationListener
 {
+	@Api
 	void notificationDismissed(Notification __n);
 	
+	@Api
 	void notificationSelected(Notification __n);
 	
+	@Api
 	void notificationTimeout(Notification __n);
 }
 

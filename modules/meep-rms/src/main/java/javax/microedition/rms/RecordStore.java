@@ -9,6 +9,7 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
@@ -211,6 +212,7 @@ public class RecordStore
 	 * already been added will not be added a second time.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public void addRecordListener(RecordListener __l)
 	{
 		// Ignore
@@ -284,6 +286,7 @@ public class RecordStore
 	 * @throws SecurityException If the record cannot be deleted.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public void deleteRecord(int __id)
 		throws InvalidRecordIDException, RecordStoreNotOpenException,
 			RecordStoreException, SecurityException
@@ -352,6 +355,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException As forwarded.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public RecordEnumeration enumerateRecords(RecordFilter __f,
 		RecordComparator __c, boolean __ku)
 		throws RecordStoreNotOpenException
@@ -366,6 +370,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If this record store is not open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public long getLastModified()
 		throws RecordStoreNotOpenException
 	{
@@ -407,6 +412,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If this record store is not open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public String getName()
 		throws RecordStoreNotOpenException
 	{
@@ -429,6 +435,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If this record store is not open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public int getNextRecordID()
 		throws RecordStoreException, RecordStoreNotOpenException
 	{
@@ -504,6 +511,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If this record store is not open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public byte[] getRecord(int __id)
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
@@ -599,6 +607,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2016/02/26
 	 */
+	@Api
 	public int getRecordSize(int __id)
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
@@ -643,6 +652,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2016/02/26
 	 */
+	@Api
 	@ApiDefinedDeprecated
 	public int getSize()
 		throws RecordStoreNotOpenException
@@ -659,6 +669,7 @@ public class RecordStore
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2016/02/26
 	 */
+	@Api
 	@ApiDefinedDeprecated
 	public int getSizeAvailable()
 		throws RecordStoreNotOpenException
@@ -742,6 +753,7 @@ public class RecordStore
 	 * @param __l The record listener to remove.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public void removeRecordListener(RecordListener __l)
 	{
 		// Ignore
@@ -783,6 +795,7 @@ public class RecordStore
 	 * @throws SecurityException If changing the mode is not permitted.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public void setMode(int __auth, boolean __write)
 		throws IllegalArgumentException, IllegalStateException,
 			RecordStoreException, SecurityException
@@ -982,6 +995,7 @@ public class RecordStore
 	 * will be returned.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public static String[] listRecordStores()
 	{
 		// Our suite identifier to find our own records
@@ -1070,6 +1084,7 @@ public class RecordStore
 	 * @throws SecurityException As forwarded.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public static RecordStore openRecordStore(String __n, boolean __create,
 		int __auth, boolean __write)
 		throws IllegalArgumentException, RecordStoreException,
@@ -1157,6 +1172,7 @@ public class RecordStore
 	 * @throws SecurityException As forwarded.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public static RecordStore openRecordStore(String __n, String __vend,
 		String __suite)
 		throws IllegalArgumentException, RecordStoreException,

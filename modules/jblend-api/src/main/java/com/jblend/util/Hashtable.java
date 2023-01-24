@@ -9,6 +9,7 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.jblend.io.SimpleObjectInputStream;
 import com.jblend.io.SimpleObjectOutputStream;
@@ -19,13 +20,15 @@ public class Hashtable
 	extends java.util.Hashtable
 	implements SimpleSerializable
 {
-    public Hashtable() {
+	@Api
+	public Hashtable() {
         super(0, 0.0F);
         
         throw Debugging.todo();
     }
-
-    public Hashtable(int var1) {
+	
+	@Api
+	public Hashtable(int var1) {
         super(0, 0.0F);
         
         throw Debugging.todo();

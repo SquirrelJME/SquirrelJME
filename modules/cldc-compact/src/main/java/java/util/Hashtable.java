@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
@@ -93,6 +94,7 @@ public class Hashtable<K, V>
 	 * {@inheritDoc}
 	 * @since 2019/05/05
 	 */
+	@Api
 	@Override
 	public void clear()
 	{
@@ -107,7 +109,7 @@ public class Hashtable<K, V>
 	 * @since 2019/05/05
 	 */
 	@Override
-	@SuppressWarnings({"unchecked"})
+	@SuppressWarnings({"unchecked", "unused"})
 	@ImplementationNote("This creates a new instance of this class and " +
 		"then places all the entries into it.")
 	public Object clone()
@@ -142,7 +144,7 @@ public class Hashtable<K, V>
 	 * @return If the map contains the value or not.
 	 * @since 2019/05/05
 	 */
-	@SuppressWarnings("RedundantCollectionOperation")
+	@SuppressWarnings({"RedundantCollectionOperation", "unused"})
 	public boolean contains(Object __v)
 	{
 		synchronized (this)
@@ -155,6 +157,7 @@ public class Hashtable<K, V>
 	 * {@inheritDoc}
 	 * @since 2019/05/05
 	 */
+	@Api
 	@Override
 	public boolean containsKey(Object __k)
 	{
@@ -184,6 +187,7 @@ public class Hashtable<K, V>
 	 * @return The enumerator over the elements.
 	 * @since 2019/05/05
 	 */
+	@Api
 	public Enumeration<V> elements()
 	{
 		synchronized (this)
@@ -221,6 +225,7 @@ public class Hashtable<K, V>
 	 * @since 2019/05/05
 	 * @param __k
 	 */
+	@Api
 	@Override
 	public V get(Object __k)
 		throws NullPointerException
@@ -257,6 +262,7 @@ public class Hashtable<K, V>
 	 * {@inheritDoc}
 	 * @since 2019/05/05
 	 */
+	@Api
 	@Override
 	public boolean isEmpty()
 	{
@@ -282,6 +288,7 @@ public class Hashtable<K, V>
 	 * @return The key enumeration.
 	 * @since 2019/05/05
 	 */
+	@Api
 	public Enumeration<K> keys()
 	{
 		synchronized (this)
@@ -357,6 +364,7 @@ public class Hashtable<K, V>
 	 * @throws NullPointerException If a null key was specified.
 	 * @since 2019/05/05
 	 */
+	@Api
 	@Override
 	public V remove(Object __k)
 		throws NullPointerException
@@ -386,6 +394,7 @@ public class Hashtable<K, V>
 	 * {@inheritDoc}
 	 * @since 2019/05/05
 	 */
+	@Api
 	@Override
 	public int size()
 	{
@@ -399,6 +408,7 @@ public class Hashtable<K, V>
 	 * {@inheritDoc}
 	 * @since 2019/05/05
 	 */
+	@Api
 	@Override
 	public String toString()
 	{

@@ -10,6 +10,7 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.lcdui.Canvas;
 
 /**
@@ -83,31 +84,39 @@ public class Display
 
 	public static final int KEY_UP =
 		0x11;
-
+	
+	@Api
 	public static final int MAX_VENDOR_EVENT =
 		127;
 
 	public static final int MAX_VENDOR_KEY =
 		0x1F;
-
+	
+	@Api
 	public static final int MEDIA_EVENT =
 		8;
-
+	
+	@Api
 	public static final int MIN_VENDOR_EVENT =
 		64;
-
+	
+	@Api
 	public static final int MIN_VENDOR_KEY =
 		0x1A;
-
+	
+	@Api
 	public static final int RESET_VM_EVENT =
 		5;
-
+	
+	@Api
 	public static final int RESUME_VM_EVENT =
 		4;
-
+	
+	@Api
 	public static final int TIMER_EXPIRED_EVENT =
 		7;
-
+	
+	@Api
 	public static final int UPDATE_VM_EVENT =
 		6;
 		
@@ -126,7 +135,7 @@ public class Display
 	{
 	}
 	
-	@SuppressWarnings("FinalStaticMethod")
+	@SuppressWarnings({"FinalStaticMethod", "unused"})
 	public static final Frame getCurrent()
 	{
 		synchronized (Display.class)
@@ -135,31 +144,31 @@ public class Display
 		}
 	}
 	
-	@SuppressWarnings("FinalStaticMethod")
+	@SuppressWarnings({"FinalStaticMethod", "unused"})
 	public static final int getHeight()
 	{
 		return Display.__midpDisplay().getHeight();
 	}
 	
-	@SuppressWarnings("FinalStaticMethod")
+	@SuppressWarnings({"FinalStaticMethod", "unused"})
 	public static final int getWidth()
 	{
 		return Display.__midpDisplay().getWidth();
 	}
 	
-	@SuppressWarnings("FinalStaticMethod")
+	@SuppressWarnings({"FinalStaticMethod", "unused"})
 	public static final boolean isColor()
 	{
 		return Display.__midpDisplay().isColor();
 	}
 	
-	@SuppressWarnings("FinalStaticMethod")
+	@SuppressWarnings({"FinalStaticMethod", "unused"})
 	public static final int numColors()
 	{
 		return Display.__midpDisplay().numColors();
 	}
 	
-	@SuppressWarnings("FinalStaticMethod")
+	@SuppressWarnings({"FinalStaticMethod", "unused"})
 	public static final void setCurrent(Frame __frame)
 	{
 		synchronized (Display.class)

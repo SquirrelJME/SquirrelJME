@@ -9,6 +9,7 @@
 
 package javax.microedition.key;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Iterator;
 
@@ -23,26 +24,31 @@ public class KeyManager
 	{
 	}
 	
+	@Api
 	public static Iterator<InputDevice> getInputDevices()
 	{
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	public static Iterator<InputDevice> getHeadlessInputDevices()
 	{
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	public static void addInputDeviceListener(InputDeviceListener __dl)
 	{
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	public static void removeInputDeviceListener(InputDeviceListener __dl)
 	{
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	public static void setGeneralKeyListener(KeyListener __kl)
 	{
 		throw Debugging.todo();

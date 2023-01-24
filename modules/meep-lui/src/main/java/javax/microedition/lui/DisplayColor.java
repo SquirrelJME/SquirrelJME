@@ -9,6 +9,8 @@
 
 package javax.microedition.lui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This represents a color to be used for text colors, background colors, and
  * lighting colors.
@@ -31,6 +33,7 @@ public class DisplayColor
 	 * range if {@code [0, 255]}.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public DisplayColor(int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{

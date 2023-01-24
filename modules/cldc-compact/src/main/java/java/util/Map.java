@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface Map<K, V>
 {
 	void clear();
@@ -19,6 +21,7 @@ public interface Map<K, V>
 	
 	Set<Map.Entry<K, V>> entrySet();
 	
+	@Api
 	@Override
 	boolean equals(Object __a);
 	
@@ -31,6 +34,7 @@ public interface Map<K, V>
 	 */
 	V get(Object __key);
 	
+	@Api
 	@Override
 	int hashCode();
 	
@@ -50,6 +54,7 @@ public interface Map<K, V>
 	
 	interface Entry<K, V>
 	{
+		@Api
 		@Override
 		boolean equals(Object __a);
 		

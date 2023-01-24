@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface Set<E>
 	extends Collection<E>
 {
@@ -21,6 +23,7 @@ public interface Set<E>
 	@Override
 	void clear();
 	
+	@Api
 	@Override
 	boolean contains(Object __a);
 	
@@ -51,6 +54,7 @@ public interface Set<E>
 	@Override
 	int size();
 	
+	@Api
 	@Override
 	Object[] toArray();
 	

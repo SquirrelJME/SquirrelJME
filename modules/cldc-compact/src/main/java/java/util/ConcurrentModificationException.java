@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when through iteration the structure of the collection
  * was modified between iterations.
@@ -23,6 +25,7 @@ public class ConcurrentModificationException
 	 *
 	 * @since 2018/12/08
 	 */
+	@Api
 	public ConcurrentModificationException()
 	{
 	}

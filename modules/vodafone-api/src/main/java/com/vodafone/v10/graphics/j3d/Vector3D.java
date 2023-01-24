@@ -9,80 +9,100 @@
 
 package com.vodafone.v10.graphics.j3d;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class Vector3D
 {
-    public int x;
-    public int y;
-    public int z;
-
-    public Vector3D()
+	@Api
+	public int x;
+	
+	@Api
+	public int y;
+	
+	@Api
+	public int z;
+	
+	@Api
+	public Vector3D()
 	{
 		throw Debugging.todo();
 	}
-
-    public Vector3D(int var1, int var2, int var3)
+	
+	@Api
+	public Vector3D(int var1, int var2, int var3)
 	{
 		throw Debugging.todo();
 	}
-
-    public int getX()
+	
+	@Api
+	public int getX()
 	{
 		throw Debugging.todo();
 	}
-
-    public int getY()
+	
+	@Api
+	public int getY()
 	{
 		throw Debugging.todo();
 	}
-
-    public int getZ()
+	
+	@Api
+	public int getZ()
 	{
 		throw Debugging.todo();
 	}
-
-    public void setX(int var1)
+	
+	@Api
+	public void setX(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public void setY(int var1)
+	
+	@Api
+	public void setY(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public void setZ(int var1)
+	
+	@Api
+	public void setZ(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public void set(int var1, int var2, int var3)
+	
+	@Api
+	public void set(int var1, int var2, int var3)
 	{
 		throw Debugging.todo();
 	}
-
-    public void unit()
+	
+	@Api
+	public void unit()
 	{
 		throw Debugging.todo();
 	}
-
-    public int innerProduct(Vector3D var1)
+	
+	@Api
+	public int innerProduct(Vector3D var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public void outerProduct(Vector3D var1)
+	
+	@Api
+	public void outerProduct(Vector3D var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public static  int innerProduct(Vector3D var0, Vector3D var1)
+	
+	@Api
+	public static  int innerProduct(Vector3D var0, Vector3D var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public static  Vector3D outerProduct(Vector3D var0, Vector3D var1)
+	
+	@Api
+	public static  Vector3D outerProduct(Vector3D var0, Vector3D var1)
 	{
 		throw Debugging.todo();
 	}

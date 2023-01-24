@@ -9,6 +9,8 @@
 
 package com.oracle.json;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is a builder which is able to generate {@link JsonObject}s, it also
  * makes it possible to chain them together as successive object calls (most
@@ -32,6 +34,7 @@ public interface JsonObjectBuilder
 	 * @throws NullPointerException If {@code __n} is {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonObjectBuilder add(String __n, boolean __v);
 	
 	/**
@@ -46,6 +49,7 @@ public interface JsonObjectBuilder
 	 * @throws NullPointerException If {@code __n} is {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonObjectBuilder add(String __n, double __v);
 	
 	/**
@@ -60,6 +64,7 @@ public interface JsonObjectBuilder
 	 * @throws NullPointerException If {@code __n} is {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonObjectBuilder add(String __n, int __v);
 	
 	/**
@@ -75,6 +80,7 @@ public interface JsonObjectBuilder
 	 * {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonObjectBuilder add(String __n, JsonArrayBuilder __v);
 	
 	/**
@@ -90,6 +96,7 @@ public interface JsonObjectBuilder
 	 * {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonObjectBuilder add(String __n, JsonObjectBuilder __v);
 	
 	/**
@@ -118,6 +125,7 @@ public interface JsonObjectBuilder
 	 * @throws NullPointerException If {@code __n} is {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonObjectBuilder add(String __n, long __v);
 	
 	/**
@@ -133,6 +141,7 @@ public interface JsonObjectBuilder
 	 * {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonObjectBuilder add(String __n, String __v);
 	
 	/**
@@ -145,6 +154,7 @@ public interface JsonObjectBuilder
 	 * @throws NullPointerException If {@code __n} is {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonObjectBuilder addNull(String __n);
 	
 	/**
