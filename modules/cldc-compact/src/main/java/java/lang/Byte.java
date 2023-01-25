@@ -10,6 +10,7 @@
 package java.lang;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -18,23 +19,28 @@ import java.lang.ref.WeakReference;
  *
  * @since 2018/12/07
  */
+@Api
 public final class Byte
 	extends Number
 	implements Comparable<Byte>
 {
 	/** The maximum value. */
+	@Api
 	public static final byte MAX_VALUE =
 		127;
 	
 	/** The minimum value. */
+	@Api
 	public static final byte MIN_VALUE =
 		-128;
 	
 	/** The number of bits in a byte. */
+	@Api
 	public static final int SIZE =
 		8;
 	
 	/** The class representing the primitive type. */
+	@Api
 	public static final Class<Byte> TYPE =
 		TypeShelf.<Byte>typeToClass(TypeShelf.typeOfByte());
 	
@@ -50,6 +56,7 @@ public final class Byte
 	 * @param __v The value to store.
 	 * @since 2018/11/14
 	 */
+	@Api
 	public Byte(byte __v)
 	{
 		this._value = __v;
@@ -63,6 +70,7 @@ public final class Byte
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public Byte(String __s)
 		throws NumberFormatException, NullPointerException
 	{
@@ -195,6 +203,7 @@ public final class Byte
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public static Byte decode(String __s)
 		throws NumberFormatException, NullPointerException
 	{
@@ -219,6 +228,7 @@ public final class Byte
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public static byte parseByte(String __s, int __r)
 		throws NumberFormatException, NullPointerException
 	{
@@ -242,6 +252,7 @@ public final class Byte
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public static byte parseByte(String __s)
 		throws NumberFormatException, NullPointerException
 	{
@@ -255,6 +266,7 @@ public final class Byte
 	 * @return The string value.
 	 * @since 2018/11/14
 	 */
+	@Api
 	public static String toString(byte __v)
 	{
 		return Integer.toString(__v, 10);
@@ -267,6 +279,7 @@ public final class Byte
 	 * @return The boxed value.
 	 * @since 2018/11/14
 	 */
+	@Api
 	public static Byte valueOf(byte __v)
 	{
 		return new Byte(__v);
@@ -282,6 +295,7 @@ public final class Byte
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public static Byte valueOf(String __s, int __r)
 		throws NumberFormatException, NullPointerException
 	{
@@ -297,6 +311,7 @@ public final class Byte
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public static Byte valueOf(String __s)
 		throws NumberFormatException, NullPointerException
 	{

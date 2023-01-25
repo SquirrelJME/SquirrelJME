@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is an abstract set which provides only a few more methods than the
  * base collection class.
@@ -16,6 +18,7 @@ package java.util;
  * @param <E> The storage type.
  * @since 2018/12/07
  */
+@Api
 public abstract class AbstractSet<E>
 	extends AbstractCollection<E>
 	implements Set<E>
@@ -25,6 +28,7 @@ public abstract class AbstractSet<E>
 	 *
 	 * @since 2018/10/10
 	 */
+	@Api
 	protected AbstractSet()
 	{
 	}

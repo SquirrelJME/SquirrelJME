@@ -9,6 +9,9 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface Set<E>
 	extends Collection<E>
 {

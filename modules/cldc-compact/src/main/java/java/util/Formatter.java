@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.IOException;
@@ -65,6 +66,7 @@ import java.io.Writer;
  * @since 2018/09/23
  */
 @SuppressWarnings("OverlyComplexClass")
+@Api
 public final class Formatter
 	implements Closeable
 {
@@ -108,6 +110,7 @@ public final class Formatter
 	 *
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Formatter()
 	{
 		this(new StringBuilder());
@@ -120,6 +123,7 @@ public final class Formatter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Formatter(Appendable __a)
 		throws NullPointerException
 	{
@@ -141,6 +145,7 @@ public final class Formatter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Formatter(PrintStream __ps)
 		throws NullPointerException
 	{
@@ -180,6 +185,7 @@ public final class Formatter
 	 * @throws IllegalStateException If this formatter was closed.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public void flush()
 		throws IllegalStateException
 	{
@@ -217,6 +223,7 @@ public final class Formatter
 	 * @throws NullPointerException If no format was specified.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Formatter format(String __fmt, Object... __args)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
@@ -292,6 +299,7 @@ public final class Formatter
 	 * thrown.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public IOException ioException()
 	{
 		return this._ioe;
@@ -304,6 +312,7 @@ public final class Formatter
 	 * @throws IllegalStateException If this formatter was closed.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Appendable out()
 		throws IllegalStateException
 	{

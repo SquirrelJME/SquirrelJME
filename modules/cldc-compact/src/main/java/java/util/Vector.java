@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
 import cc.squirreljme.runtime.cldc.util.SynchronizedIterator;
@@ -20,18 +21,22 @@ import cc.squirreljme.runtime.cldc.util.SynchronizedIterator;
  * @see ArrayList
  * @since 2019/05/13
  */
+@Api
 @SuppressWarnings("UseOfClone")
 public class Vector<E>
 	extends AbstractList<E>
 	implements RandomAccess, Cloneable
 {
 	/** The number of elements to add if the size is too small. */
+	@Api
 	protected int capacityIncrement;
 	
 	/** The number of elements in the vector. */
+	@Api
 	protected int elementCount;
 	
 	/** The elements in the vector. */
+	@Api
 	protected Object[] elementData;
 	
 	/**
@@ -42,6 +47,7 @@ public class Vector<E>
 	 * @throws IllegalArgumentException If the capacity is negative.
 	 * @since 2019/05/13
 	 */
+	@Api
 	public Vector(int __cap, int __inc)
 		throws IllegalArgumentException
 	{
@@ -60,6 +66,7 @@ public class Vector<E>
 	 * @throws IllegalArgumentException If the capacity is negative.
 	 * @since 2019/05/13
 	 */
+	@Api
 	public Vector(int __cap)
 		throws IllegalArgumentException
 	{
@@ -71,6 +78,7 @@ public class Vector<E>
 	 *
 	 * @since 2019/05/13
 	 */
+	@Api
 	public Vector()
 	{
 		this(10, 0);
@@ -83,6 +91,7 @@ public class Vector<E>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/17
 	 */
+	@Api
 	public Vector(Collection<? extends E> __c)
 		throws NullPointerException
 	{
@@ -158,6 +167,7 @@ public class Vector<E>
 	 * @return The capacity of this vector.
 	 * @since 2020/06/17
 	 */
+	@Api
 	public int capacity()
 	{
 		synchronized (this)
@@ -259,6 +269,7 @@ public class Vector<E>
 	 * @return The element.
 	 * @since 2019/05/14
 	 */
+	@Api
 	public E elementAt(int __i)
 	{
 		synchronized (this)
@@ -273,6 +284,7 @@ public class Vector<E>
 	 * @return The element enumeration.
 	 * @since 2019/05/14
 	 */
+	@Api
 	public Enumeration<E> elements()
 	{
 		synchronized (this)
@@ -288,6 +300,7 @@ public class Vector<E>
 	 * @since 2019/05/14
 	 */
 	@SuppressWarnings("ManualArrayCopy")
+	@Api
 	public void ensureCapacity(int __n)
 	{
 		synchronized (this)
@@ -333,6 +346,7 @@ public class Vector<E>
 	 * @since 2019/05/14
 	 */
 	@SuppressWarnings({"unchecked"})
+	@Api
 	public E firstElement()
 		throws NoSuchElementException
 	{
@@ -384,6 +398,7 @@ public class Vector<E>
 		}
 	}
 	
+	@Api
 	public int indexOf(Object __v, int __base)
 	{
 		synchronized (this)
@@ -399,6 +414,7 @@ public class Vector<E>
 	 * @param __at The index to add at.
 	 * @since 2020/06/17
 	 */
+	@Api
 	public void insertElementAt(E __v, int __at)
 	{
 		synchronized (this)
@@ -427,6 +443,7 @@ public class Vector<E>
 	 * @throws NoSuchElementException If there is none.
 	 * @since 2020/06/17
 	 */
+	@Api
 	@SuppressWarnings("unchecked")
 	public E lastElement()
 		throws NoSuchElementException
@@ -454,6 +471,7 @@ public class Vector<E>
 		}
 	}
 	
+	@Api
 	public int lastIndexOf(Object __v, int __base)
 	{
 		synchronized (this)
@@ -526,6 +544,7 @@ public class Vector<E>
 	 *
 	 * @since 2019/05/14
 	 */
+	@Api
 	public void removeAllElements()
 	{
 		synchronized (this)
@@ -541,6 +560,7 @@ public class Vector<E>
 	 * @return If it was removed.
 	 * @since 2019/05/19
 	 */
+	@Api
 	public boolean removeElement(Object __v)
 	{
 		synchronized (this)
@@ -556,6 +576,7 @@ public class Vector<E>
 	 * @throws ArrayIndexOutOfBoundsException If the index is out of bounds.
 	 * @since 2019/05/19
 	 */
+	@Api
 	public void removeElementAt(int __i)
 		throws ArrayIndexOutOfBoundsException
 	{
@@ -627,6 +648,7 @@ public class Vector<E>
 	 * @throws ArrayIndexOutOfBoundsException If the index is out of bounds.
 	 * @since 2019/05/14
 	 */
+	@Api
 	public void setElementAt(E __v, int __i)
 		throws ArrayIndexOutOfBoundsException
 	{
@@ -644,6 +666,7 @@ public class Vector<E>
 	 * @throws ArrayIndexOutOfBoundsException If the size is negative.
 	 * @since 2019/05/14
 	 */
+	@Api
 	public void setSize(int __n)
 		throws ArrayIndexOutOfBoundsException
 	{
@@ -701,6 +724,7 @@ public class Vector<E>
 	 *
 	 * @since 2020/06/17
 	 */
+	@Api
 	public void trimToSize()
 	{
 		synchronized (this)

@@ -9,11 +9,14 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when the stack is empty.
  *
  * @since 2018/11/29
  */
+@Api
 public class EmptyStackException
 	extends RuntimeException
 {

@@ -9,11 +9,14 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when an assertion check fails.
  *
  * @since 2018/12/04
  */
+@Api
 public class AssertionError
 	extends Error
 {
@@ -22,6 +25,7 @@ public class AssertionError
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public AssertionError()
 	{
 	}
@@ -32,6 +36,7 @@ public class AssertionError
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public AssertionError(Object __m)
 	{
 		super(AssertionError.__convert(__m));
@@ -43,6 +48,7 @@ public class AssertionError
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public AssertionError(boolean __m)
 	{
 		super(AssertionError.__convert(__m));
@@ -54,6 +60,7 @@ public class AssertionError
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public AssertionError(char __m)
 	{
 		super(AssertionError.__convert(__m));
@@ -65,6 +72,7 @@ public class AssertionError
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public AssertionError(int __m)
 	{
 		super(AssertionError.__convert(__m));
@@ -76,6 +84,7 @@ public class AssertionError
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public AssertionError(long __m)
 	{
 		super(AssertionError.__convert(__m));
@@ -87,6 +96,7 @@ public class AssertionError
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public AssertionError(float __m)
 	{
 		super(AssertionError.__convert(__m));
@@ -98,6 +108,7 @@ public class AssertionError
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public AssertionError(double __m)
 	{
 		super(AssertionError.__convert(__m));

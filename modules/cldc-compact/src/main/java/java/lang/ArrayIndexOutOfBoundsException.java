@@ -9,12 +9,15 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when an attempt is made to read from or write to an array
  * index which is out of bounds.
  *
  * @since 2018/12/04
  */
+@Api
 public class ArrayIndexOutOfBoundsException
 	extends IndexOutOfBoundsException
 {
@@ -23,6 +26,7 @@ public class ArrayIndexOutOfBoundsException
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public ArrayIndexOutOfBoundsException()
 	{
 	}
@@ -34,6 +38,7 @@ public class ArrayIndexOutOfBoundsException
 	 * @param __i The out of bounds index.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public ArrayIndexOutOfBoundsException(int __i)
 	{
 		// {@squirreljme.error ZZ0r Array index out of bounds. (The index)}
@@ -46,6 +51,7 @@ public class ArrayIndexOutOfBoundsException
 	 * @param __m The exception message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public ArrayIndexOutOfBoundsException(String __m)
 	{
 		super(__m);

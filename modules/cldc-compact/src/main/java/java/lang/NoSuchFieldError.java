@@ -9,11 +9,14 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when a field in a class does not exist.
  *
  * @since 2018/12/04
  */
+@Api
 public class NoSuchFieldError
 	extends IncompatibleClassChangeError
 {
@@ -22,6 +25,7 @@ public class NoSuchFieldError
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public NoSuchFieldError()
 	{
 	}
@@ -32,6 +36,7 @@ public class NoSuchFieldError
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public NoSuchFieldError(String __m)
 	{
 		super(__m);

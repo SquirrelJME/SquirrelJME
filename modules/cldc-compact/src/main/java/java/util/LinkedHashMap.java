@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is a map which is backed by a hash table except that the iterator
  * order is in the order of which elements were added first.
@@ -20,6 +22,7 @@ package java.util;
  * @see HashMap
  * @since 2019/05/09
  */
+@Api
 public class LinkedHashMap<K, V>
 	extends HashMap<K, V>
 	implements Map<K, V>
@@ -33,6 +36,7 @@ public class LinkedHashMap<K, V>
 	 * load factor is not positive.
 	 * @since 2019/05/09
 	 */
+	@Api
 	public LinkedHashMap(int __cap, float __load)
 		throws IllegalArgumentException
 	{
@@ -46,6 +50,7 @@ public class LinkedHashMap<K, V>
 	 * @throws IllegalArgumentException If the capacity is negative.
 	 * @since 2019/05/09
 	 */
+	@Api
 	public LinkedHashMap(int __initcap)
 		throws IllegalArgumentException
 	{
@@ -57,6 +62,7 @@ public class LinkedHashMap<K, V>
 	 *
 	 * @since 2019/05/09
 	 */
+	@Api
 	public LinkedHashMap()
 	{
 	}
@@ -71,6 +77,7 @@ public class LinkedHashMap<K, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09
 	 */
+	@Api
 	public LinkedHashMap(Map<? extends K, ? extends V> __m)
 		throws NullPointerException
 	{
@@ -89,6 +96,7 @@ public class LinkedHashMap<K, V>
 	 * load factor is not positive.
 	 * @since 2019/05/09
 	 */
+	@Api
 	public LinkedHashMap(int __cap, float __load, boolean __ao)
 	{
 		super(__cap, __load, __ao);
@@ -130,6 +138,7 @@ public class LinkedHashMap<K, V>
 	 * @return If the map was modified.
 	 * @since 2019/05/09
 	 */
+	@Api
 	protected boolean removeEldestEntry(Map.Entry<K, V> __e)
 	{
 		return false;

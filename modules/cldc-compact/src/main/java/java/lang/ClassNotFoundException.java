@@ -9,11 +9,14 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when a class has not been found.
  *
  * @since 2018/12/04
  */
+@Api
 public class ClassNotFoundException
 	extends Exception
 {
@@ -22,6 +25,7 @@ public class ClassNotFoundException
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public ClassNotFoundException()
 	{
 	}
@@ -32,6 +36,7 @@ public class ClassNotFoundException
 	 * @param __m The message.
 	 * @since 2018/09/16
 	 */
+	@Api
 	public ClassNotFoundException(String __m)
 	{
 		super(__m);
@@ -44,6 +49,7 @@ public class ClassNotFoundException
 	 * @param __t The cause.
 	 * @since 2018/09/16
 	 */
+	@Api
 	public ClassNotFoundException(String __m, Throwable __t)
 	{
 		super(__m, __t);
@@ -55,6 +61,7 @@ public class ClassNotFoundException
 	 * @return The cause of the exception.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public Throwable getException()
 	{
 		return this.getCause();

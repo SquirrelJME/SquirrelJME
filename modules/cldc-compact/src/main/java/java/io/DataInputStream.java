@@ -9,6 +9,8 @@
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This class provides the ability to read binary data from a stream.
  *
@@ -16,12 +18,14 @@ package java.io;
  *
  * @since 2018/12/01
  */
+@Api
 @SuppressWarnings("DuplicateThrows")
 public class DataInputStream
 	extends InputStream
 	implements DataInput
 {
 	/** The wrapped stream. */
+	@Api
 	protected final InputStream in;
 	
 	/**
@@ -31,6 +35,7 @@ public class DataInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/01
 	 */
+	@Api
 	public DataInputStream(InputStream __in)
 		throws NullPointerException
 	{
@@ -476,6 +481,7 @@ public class DataInputStream
 	 * @throws UTFDataFormatException If the input UTF data is not correct.
 	 * @since 2018/12/03
 	 */
+	@Api
 	public static final String readUTF(DataInput __in)
 		throws EOFException, IOException, NullPointerException,
 			UTFDataFormatException

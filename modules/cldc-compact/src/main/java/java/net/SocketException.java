@@ -9,6 +9,7 @@
 
 package java.net;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 
 /**
@@ -16,6 +17,7 @@ import java.io.IOException;
  *
  * @since 2018/12/08
  */
+@Api
 public class SocketException
 	extends IOException
 {
@@ -24,6 +26,7 @@ public class SocketException
 	 *
 	 * @since 2018/12/08
 	 */
+	@Api
 	public SocketException()
 	{
 	}
@@ -34,6 +37,7 @@ public class SocketException
 	 * @param __m The message.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public SocketException(String __m)
 	{
 		super(__m);

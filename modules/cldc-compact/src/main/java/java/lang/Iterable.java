@@ -9,6 +9,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.util.Iterator;
 
 /**
@@ -18,6 +19,7 @@ import java.util.Iterator;
  * @param <T> The type this returns.
  * @since 2018/12/08
  */
+@Api
 public interface Iterable<T>
 {
 	/**
@@ -26,6 +28,7 @@ public interface Iterable<T>
 	 * @return The object iterator.
 	 * @since 2018/12/08
 	 */
+	@Api
 	Iterator<T> iterator();
 }
 

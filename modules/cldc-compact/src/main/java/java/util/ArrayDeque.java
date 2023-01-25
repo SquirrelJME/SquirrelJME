@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 
 /**
@@ -22,6 +23,7 @@ import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 @SuppressWarnings("UseOfClone")
 @ImplementationNote("In SquirrelJME, the current implementation is naive " +
 	"in that it uses an ArrayList, a more optimal solution should be added.")
+@Api
 public class ArrayDeque<E>
 	extends AbstractCollection<E>
 	implements Deque<E>, Cloneable
@@ -38,6 +40,7 @@ public class ArrayDeque<E>
 	 *
 	 * @since 2020/06/19
 	 */
+	@Api
 	public ArrayDeque()
 	{
 		this(ArrayDeque._DEFAULT_CAPACITY);
@@ -50,6 +53,7 @@ public class ArrayDeque<E>
 	 * @throws IllegalArgumentException If the capacity is negative.
 	 * @since 2020/06/19
 	 */
+	@Api
 	public ArrayDeque(int __initialCap)
 		throws IllegalArgumentException
 	{
@@ -70,6 +74,7 @@ public class ArrayDeque<E>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/19
 	 */
+	@Api
 	public ArrayDeque(Collection<? extends E> __c)
 		throws NullPointerException
 	{

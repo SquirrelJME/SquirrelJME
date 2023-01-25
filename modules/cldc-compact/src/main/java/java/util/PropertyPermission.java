@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.security.BasicPermission;
 import java.security.Permission;
@@ -30,6 +31,7 @@ import java.security.PermissionCollection;
  *
  * @since 2018/09/18
  */
+@Api
 public final class PropertyPermission
 	extends BasicPermission
 {
@@ -54,6 +56,7 @@ public final class PropertyPermission
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public PropertyPermission(String __key, String __act)
 		throws IllegalArgumentException, NullPointerException
 	{

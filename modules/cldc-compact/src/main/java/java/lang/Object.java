@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.constants.MonitorResultType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -25,6 +26,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 @ImplementationNote("The Java compiler does not allow any final fields to " +
 	"exist in Object and if they are set via assignment no code will be " +
 	"generated for them, so as such Object effectively has no fields.")
+@Api
 public class Object
 {
 	/**
@@ -39,6 +41,7 @@ public class Object
 	 * @since 2016/02/08
 	 */
 	@SuppressWarnings({"SuspiciousSystemArraycopy", "UseOfClone"})
+	@Api
 	protected Object clone()
 		throws CloneNotSupportedException
 	{
@@ -78,6 +81,7 @@ public class Object
 	 * @return {@code true} if the two objects are equal.
 	 * @since 2016/02/08
 	 */
+	@Api
 	public boolean equals(Object __o)
 	{
 		return this == __o;
@@ -90,6 +94,7 @@ public class Object
 	 * @return The current class object.
 	 * @since 2016/02/08
 	 */
+	@Api
 	public final Class<?> getClass()
 	{
 		return TypeShelf.typeToClass(TypeShelf.objectType(this));
@@ -104,6 +109,7 @@ public class Object
 	 * @return The hash code of this object.
 	 * @since 2016/02/08
 	 */
+	@Api
 	public int hashCode()
 	{
 		return System.identityHashCode(this);
@@ -116,6 +122,7 @@ public class Object
 	 * the monitor for this object.
 	 * @since 2016/02/08
 	 */
+	@Api
 	public final void notify()
 		throws IllegalMonitorStateException
 	{
@@ -132,6 +139,7 @@ public class Object
 	 * the monitor for this object.
 	 * @since 2016/02/09
 	 */
+	@Api
 	public final void notifyAll()
 		throws IllegalMonitorStateException
 	{
@@ -149,6 +157,7 @@ public class Object
 	 * @return The string representation of this object.
 	 * @since 2016/02/09
 	 */
+	@Api
 	@SuppressWarnings("MagicNumber")
 	public String toString()
 	{
@@ -169,6 +178,7 @@ public class Object
 	 * during the wait.
 	 * @since 2016/02/09
 	 */
+	@Api
 	public final void wait()
 		throws InterruptedException, IllegalMonitorStateException
 	{
@@ -192,6 +202,7 @@ public class Object
 	 * during the wait.
 	 * @since 2016/02/09
 	 */
+	@Api
 	public final void wait(long __ms)
 		throws IllegalArgumentException, IllegalMonitorStateException,
 			InterruptedException
@@ -221,6 +232,7 @@ public class Object
 	 * during the wait.
 	 * @since 2016/02/09
 	 */
+	@Api
 	public final void wait(long __ms, int __ns)
 		throws IllegalArgumentException, IllegalMonitorStateException,
 			InterruptedException

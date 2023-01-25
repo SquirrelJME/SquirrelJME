@@ -11,6 +11,7 @@ package java.lang;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is the base class for enum types.
@@ -18,6 +19,7 @@ import cc.squirreljme.jvm.mle.brackets.TypeBracket;
  * @param <E> The enum type.
  * @since 2018/09/24
  */
+@Api
 public abstract class Enum<E extends Enum<E>>
 	implements Comparable<E>
 {
@@ -36,6 +38,7 @@ public abstract class Enum<E extends Enum<E>>
 	 * @throws NullPointerException If no name was specified.
 	 * @since 2018/09/24
 	 */
+	@Api
 	protected Enum(String __s, int __o)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -101,6 +104,7 @@ public abstract class Enum<E extends Enum<E>>
 	 * @since 2018/09/24
 	 */
 	@SuppressWarnings({"unchecked"})
+	@Api
 	public final Class<E> getDeclaringClass()
 	{
 		// Enums are either directly extending or extending a base class which
@@ -129,6 +133,7 @@ public abstract class Enum<E extends Enum<E>>
 	 * @return The constant name.
 	 * @since 2018/09/24
 	 */
+	@Api
 	public final String name()
 	{
 		return this._name;
@@ -140,6 +145,7 @@ public abstract class Enum<E extends Enum<E>>
 	 * @return The ordinal constant.
 	 * @since 2018/09/24
 	 */
+	@Api
 	public final int ordinal()
 	{
 		return this._ordinal;
@@ -167,6 +173,7 @@ public abstract class Enum<E extends Enum<E>>
 	 * @since 2018/12/07
 	 */
 	@SuppressWarnings({"rawtypes"})
+	@Api
 	public static <T extends Enum<T>> T valueOf(Class<T> __cl, String __s)
 		throws IllegalArgumentException, NullPointerException
 	{
