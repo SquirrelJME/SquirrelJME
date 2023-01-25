@@ -39,16 +39,5 @@ public final class Log
 	{
 		throw Debugging.todo();
 	}
-	
-	private static final class PrivateOutputStream
-		extends OutputStream
-	{
-		@Override
-		public void write(int var1)
-			throws IOException
-		{
-			throw Debugging.todo();
-		}
-	}
 }
 

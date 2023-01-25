@@ -111,6 +111,7 @@ public class Graphics
 	
 	@Api
 	public void clearRect(int __x, int __y, int __w, int __h)
+		throws IllegalArgumentException
 	{
 		// {@squirreljme.error AH0o Invalid rectangle size.}
 		if (__w < 0 || __h < 0)
@@ -155,12 +156,14 @@ public class Graphics
 	
 	@Api
 	public void drawChars(char[] __c, int __x, int __y, int __off, int __len)
+		throws IllegalArgumentException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	public void drawImage(Image __i, int __x, int __y)
+		throws NullPointerException
 	{
 		if (__i == null)
 			throw new NullPointerException("NARG");
@@ -183,12 +186,14 @@ public class Graphics
 	
 	@Api
 	public void drawPolyline(int[] __x, int[] __y, int __n)
+		throws IllegalArgumentException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	public void drawRect(int __x, int __y, int __w, int __h)
+		throws IllegalArgumentException
 	{
 		// {@squirreljme.error AH0p Invalid rectangle size.}
 		if (__w < 0 || __h < 0)
@@ -203,6 +208,7 @@ public class Graphics
 	
 	@Api
 	public void drawString(String __s, int __x, int __y)
+		throws NullPointerException
 	{
 		if (__s == null)
 			throw new NullPointerException("NARG");
@@ -213,12 +219,14 @@ public class Graphics
 	
 	@Api
 	public void fillPolygon(int[] __x, int[] __y, int __n)
+		throws IllegalArgumentException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	public void fillRect(int __x, int __y, int __w, int __h)
+		throws IllegalArgumentException
 	{
 		// {@squirreljme.error AH0q Invalid rectangle size.}
 		if (__w < 0 || __h < 0)
@@ -239,6 +247,7 @@ public class Graphics
 	
 	@Api
 	public void setColor(int __c)
+		throws IllegalArgumentException
 	{
 		if ((__c & 0xFF_000000) != 0)
 			throw Debugging.todo("Invalid color? %08x", __c);

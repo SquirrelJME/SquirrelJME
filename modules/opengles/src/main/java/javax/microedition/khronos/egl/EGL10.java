@@ -539,7 +539,8 @@ public interface EGL10
 	 */
 	@Api
 	boolean eglChooseConfig(EGLDisplay __disp, int[] __attrl,
-		EGLConfig[] __confs, int __confssize, int[] __numconf);
+		EGLConfig[] __confs, int __confssize, int[] __numconf)
+		throws IllegalArgumentException;
 	
 	@Api
 	boolean eglCopyBuffers(EGLDisplay __a, EGLSurface __b, Object __c);
@@ -600,7 +601,8 @@ public interface EGL10
 	 * @since 2016/10/10
 	 */
 	@Api
-	EGLDisplay eglGetDisplay(Object __nd);
+	EGLDisplay eglGetDisplay(Object __nd)
+		throws IllegalArgumentException;
 	
 	/**
 	 * Returns the last error code that was emitted from the last operation
@@ -642,7 +644,8 @@ public interface EGL10
 	 * @since 2016/10/11
 	 */
 	@Api
-	boolean eglInitialize(EGLDisplay __disp, int[] __ver);
+	boolean eglInitialize(EGLDisplay __disp, int[] __ver)
+		throws IllegalArgumentException;
 	
 	@Api
 	boolean eglMakeCurrent(EGLDisplay __a, EGLSurface __b, EGLSurface __c,
@@ -671,7 +674,8 @@ public interface EGL10
 	 * @since 2016/10/11
 	 */
 	@Api
-	String eglQueryString(EGLDisplay __disp, int __key);
+	String eglQueryString(EGLDisplay __disp, int __key)
+		throws IllegalArgumentException;
 	
 	@Api
 	boolean eglQuerySurface(EGLDisplay __a, EGLSurface __b, int __c, int[] __d);

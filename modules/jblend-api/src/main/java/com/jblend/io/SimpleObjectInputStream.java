@@ -15,6 +15,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+@SuppressWarnings("RedundantThrows")
 public class SimpleObjectInputStream
 	extends DataInputStream
 {
@@ -27,18 +28,21 @@ public class SimpleObjectInputStream
 	
 	@Api
 	public String readString()
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	public SimpleSerializable read(SimpleSerializable var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	public Object dispatchReadCommand(Class var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}

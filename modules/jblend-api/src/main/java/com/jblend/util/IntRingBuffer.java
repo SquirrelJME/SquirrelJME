@@ -32,42 +32,49 @@ public class IntRingBuffer
 	
 	@Api
 	public void write(int var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	public void write(int var1, int var2, int var3, int var4, int var5)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	public void write(int[] var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	public int read()
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	public void read(int[] var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	public int peek()
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	public void peek(int[] var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}

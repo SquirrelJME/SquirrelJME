@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+@SuppressWarnings("RedundantThrows")
 public class BASE64Decoder
 {
 	public BASE64Decoder()
@@ -42,12 +43,14 @@ public class BASE64Decoder
 	
 	@Api
 	protected static void decodeAtom(InputStream var0, OutputStream var1, int var2)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	protected static int readFully(InputStream var0, byte[] var1, int var2, int var3)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}

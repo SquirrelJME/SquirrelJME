@@ -33,6 +33,7 @@ public class DeviceControl
 	 */
 	@Api
 	public static void flashLights(long __ms)
+		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB2z Cannot blink for a negative duration.}
 		if (__ms < 0)
@@ -57,6 +58,7 @@ public class DeviceControl
 	 */
 	@Api
 	public static void setLights(int __num, int __lvl)
+		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB31 Only light number zero is supported.
 		// (The light number)}
@@ -104,6 +106,7 @@ public class DeviceControl
 	 */
 	@Api
 	public static void startVibra(int __freq, long __ms)
+		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB33 Cannot vibrate for a negative duration.}
 		if (__ms < 0)

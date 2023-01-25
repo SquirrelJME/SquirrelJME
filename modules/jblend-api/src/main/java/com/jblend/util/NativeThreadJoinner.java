@@ -52,12 +52,14 @@ public final class NativeThreadJoinner
 	
 	@Api
 	public synchronized void join()
+		throws InterruptedException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	public synchronized void join(long var1)
+		throws InterruptedException
 	{
 		throw Debugging.todo();
 	}

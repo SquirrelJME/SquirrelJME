@@ -43,12 +43,14 @@ public class BASE64Encoder
 	@Api
 	protected static void encodeAtom(OutputStream var0, byte[] var1, int var2,
 		int var3)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	protected static int readFully(InputStream var0, byte[] var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}

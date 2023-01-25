@@ -15,6 +15,7 @@ import java.io.IOException;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
+@SuppressWarnings("RedundantThrows")
 public class MediaPlayer
 	extends Canvas
 {
@@ -50,6 +51,7 @@ public class MediaPlayer
 	
 	@Api
 	public void setMediaData(String var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}

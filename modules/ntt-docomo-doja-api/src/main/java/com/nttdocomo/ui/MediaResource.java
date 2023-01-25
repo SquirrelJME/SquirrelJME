@@ -21,7 +21,8 @@ public interface MediaResource
 	 * @since 2022/02/14
 	 */
 	@Api
-	void dispose();
+	void dispose()
+		throws UIException;
 	
 	/**
 	 * Specifies that the media should stop being used and frees up
@@ -34,7 +35,8 @@ public interface MediaResource
 	 * @since 2022/02/14
 	 */
 	@Api
-	void unuse();
+	void unuse()
+		throws UIException;
 	
 	/**
 	 * Specifies that the resource is to be used now, it will be loaded from

@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
+@SuppressWarnings("RedundantThrows")
 public final class ByteRingBuffer
 {
 	public ByteRingBuffer()
@@ -32,36 +33,42 @@ public final class ByteRingBuffer
 	
 	@Api
 	public void write(byte var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	public void write(byte[] var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	public byte read()
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	public void read(byte[] var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	public byte peek()
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	public void peek(byte[] var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}

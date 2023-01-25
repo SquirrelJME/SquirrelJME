@@ -27,18 +27,21 @@ public class SimpleObjectOutputStream
 	
 	@Api
 	public void write(String var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	public void write(SimpleSerializable var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
 	public void dispatchWriteCommand(Object var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
