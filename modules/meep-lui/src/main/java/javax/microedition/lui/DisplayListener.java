@@ -9,6 +9,8 @@
 
 package javax.microedition.lui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is a listener which is associated with the {@link Display} class and
  * is called in the event that new displays are added or removed from a
@@ -16,6 +18,7 @@ package javax.microedition.lui;
  *
  * @since 2016/08/30
  */
+@Api
 public interface DisplayListener
 {
 	/**
@@ -24,6 +27,7 @@ public interface DisplayListener
 	 * @param __d The display which was added.
 	 * @since 2016/08/30
 	 */
+	@Api
 	void displayAdded(Display __d);
 	
 	/**
@@ -33,6 +37,7 @@ public interface DisplayListener
 	 * @param __d The display which was removed.
 	 * @since 2016/08/30
 	 */
+	@Api
 	void displayRemoved(Display __d);
 	
 	/**
@@ -43,6 +48,7 @@ public interface DisplayListener
 	 * underlying hardware, if {@code false} then the display was unassigned.
 	 * @since 2016/08/30
 	 */
+	@Api
 	void hardwareStateChanged(Display __d, boolean __ns);
 }
 

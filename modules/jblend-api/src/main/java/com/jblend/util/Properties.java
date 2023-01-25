@@ -15,54 +15,62 @@ import java.util.Enumeration;
 public class Properties
 	extends StringKeyHashtable
 {
-    protected Properties defaults;
-
-    public Properties()
+	@Api
+	protected Properties defaults;
+	
+	public Properties()
 	{
 		throw Debugging.todo();
 	}
-
-    public Properties(int var1)
+	
+	public Properties(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public Properties(Properties var1)
+	
+	public Properties(Properties var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public synchronized String getProperty(String var1)
+	
+	@Api
+	public synchronized String getProperty(String var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public synchronized Integer getIntegerProperty(String var1)
+	
+	@Api
+	public synchronized Integer getIntegerProperty(String var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public synchronized String getProperty(String var1, String var2)
+	
+	@Api
+	public synchronized String getProperty(String var1, String var2)
 	{
 		throw Debugging.todo();
 	}
-
-    public synchronized Integer getIntegerProperty(String var1, Integer var2)
+	
+	@Api
+	public synchronized Integer getIntegerProperty(String var1, Integer var2)
 	{
 		throw Debugging.todo();
 	}
-
-    public synchronized String setProperty(String var1, String var2)
+	
+	@Api
+	public synchronized String setProperty(String var1, String var2)
 	{
 		throw Debugging.todo();
 	}
-
-    public synchronized Integer setProperty(String var1, Integer var2)
+	
+	@Api
+	public synchronized Integer setProperty(String var1, Integer var2)
 	{
 		throw Debugging.todo();
 	}
-
-    public synchronized Enumeration propertyNames()
+	
+	@Api
+	public synchronized Enumeration propertyNames()
 	{
 		throw Debugging.todo();
 	}

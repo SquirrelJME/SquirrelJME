@@ -17,23 +17,27 @@ import java.io.OutputStream;
 public class SimpleObjectOutputStream
 	extends DataOutputStream
 {
-    public SimpleObjectOutputStream(OutputStream var1) {
-        super((OutputStream)null);
-        
-        throw Debugging.todo();
-    }
-
-    public void write(String var1) throws IOException
+	public SimpleObjectOutputStream(OutputStream var1)
+	{
+		super((OutputStream)null);
+		
+		throw Debugging.todo();
+	}
+	
+	@Api
+	public void write(String var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public void write(SimpleSerializable var1) throws IOException
+	
+	@Api
+	public void write(SimpleSerializable var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public void dispatchWriteCommand(Object var1) throws IOException
+	
+	@Api
+	public void dispatchWriteCommand(Object var1)
 	{
 		throw Debugging.todo();
 	}

@@ -13,52 +13,61 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public final class Hack
 {
-    public Hack()
-	{
-		throw Debugging.todo();
-	}
-
-    public static final void disableDispatch()
-	{
-		throw Debugging.todo();
-	}
-
-    public static final void enableDispatch()
-	{
-		throw Debugging.todo();
-	}
-
-    public static final void initializeDispatch()
-	{
-		throw Debugging.todo();
-	}
-
-    public static final void expandTimeslice(int var0)
-	{
-		throw Debugging.todo();
-	}
-
-    public static final void setTimeslice(int var0)
+	public Hack()
 	{
 		throw Debugging.todo();
 	}
 	
-    public static final void dumpTheHeap()
+	@Api
+	public static final void disableDispatch()
 	{
 		throw Debugging.todo();
 	}
-
-    public static final void traceMethod(boolean var0)
+	
+	@Api
+	public static final void enableDispatch()
 	{
 		throw Debugging.todo();
 	}
-
-    public static final void printAllThreadStatus()
+	
+	@Api
+	public static final void initializeDispatch()
 	{
 		throw Debugging.todo();
 	}
-
-    public static final boolean isSomeoneWaiting(Object var0)
+	
+	@Api
+	public static final void expandTimeslice(int var0)
+	{
+		throw Debugging.todo();
+	}
+	
+	@Api
+	public static final void setTimeslice(int var0)
+	{
+		throw Debugging.todo();
+	}
+	
+	@Api
+	public static final void dumpTheHeap()
+	{
+		throw Debugging.todo();
+	}
+	
+	@Api
+	public static final void traceMethod(boolean var0)
+	{
+		throw Debugging.todo();
+	}
+	
+	@Api
+	public static final void printAllThreadStatus()
+	{
+		throw Debugging.todo();
+	}
+	
+	@Api
+	public static final boolean isSomeoneWaiting(Object var0)
 	{
 		throw Debugging.todo();
 	}

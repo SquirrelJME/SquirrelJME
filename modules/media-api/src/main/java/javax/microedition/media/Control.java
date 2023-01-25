@@ -10,6 +10,9 @@
 package javax.microedition.media;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface Control
 {
 }

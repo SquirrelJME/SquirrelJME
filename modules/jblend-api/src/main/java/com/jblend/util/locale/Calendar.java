@@ -13,17 +13,19 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public final class Calendar
 {
-    public Calendar()
+	public Calendar()
 	{
 		throw Debugging.todo();
 	}
-
-    public static String getMonthString(int var0)
+	
+	@Api
+	public static String getMonthString(int var0)
 	{
 		throw Debugging.todo();
 	}
-
-    public static String getWeekString(int var0)
+	
+	@Api
+	public static String getWeekString(int var0)
 	{
 		throw Debugging.todo();
 	}

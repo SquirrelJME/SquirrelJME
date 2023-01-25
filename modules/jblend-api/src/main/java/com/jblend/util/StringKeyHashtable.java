@@ -15,35 +15,39 @@ import java.util.Hashtable;
 public class StringKeyHashtable
 	extends Hashtable
 {
-    public StringKeyHashtable() {
-        super(0, 0.0F);
-        
-        throw Debugging.todo();
-    }
-
-    public StringKeyHashtable(int var1) {
-        super(0, 0.0F);
-        
-        throw Debugging.todo();
-    }
-
-    public final Object get(String var1)
+	public StringKeyHashtable()
+	{
+		super(0, 0.0F);
+		
+		throw Debugging.todo();
+	}
+	
+	public StringKeyHashtable(int var1)
+	{
+		super(0, 0.0F);
+		
+		throw Debugging.todo();
+	}
+	
+	@Api
+	public final Object get(String var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public final boolean containsKey(String var1)
+	
+	@Api
+	public final boolean containsKey(String var1)
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public final Object put(Object var1, Object var2)
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	protected final void rehash()
 	{
 		throw Debugging.todo();

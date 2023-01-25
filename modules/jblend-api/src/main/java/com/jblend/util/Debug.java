@@ -13,14 +13,16 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public final class Debug
 {
-    public static final boolean WATCH_TIME = false;
-
-    public Debug()
+	@Api
+	public static final boolean WATCH_TIME = false;
+	
+	public Debug()
 	{
 		throw Debugging.todo();
 	}
-
-    public static void trace(Object var0, String var1)
+	
+	@Api
+	public static void trace(Object var0, String var1)
 	{
 		throw Debugging.todo();
 	}

@@ -11,17 +11,42 @@ package com.jblend.io.j2me.events;
 
 public interface EventType
 {
-    int PRESSED = 1;
-    int RELEASED = 2;
-    int CLICKED = 3;
-    int EXPIRED = 4;
-    int STARTED = 5;
-    int STOPPED = 6;
-    int PAUSED = 7;
-    int REQUEST_PAUSE = 8;
-    int REQUEST_STOP = 9;
-    int REQUEST_RESUME = 10;
-    int CALLING = 11;
-    int RECEIVED = 12;
-    int SCHEDULED_ALARM = 13;
+	@Api
+	int PRESSED = 1;
+	
+	@Api
+	int RELEASED = 2;
+	
+	@Api
+	int CLICKED = 3;
+	
+	@Api
+	int EXPIRED = 4;
+	
+	@Api
+	int STARTED = 5;
+	
+	@Api
+	int STOPPED = 6;
+	
+	@Api
+	int PAUSED = 7;
+	
+	@Api
+	int REQUEST_PAUSE = 8;
+	
+	@Api
+	int REQUEST_STOP = 9;
+	
+	@Api
+	int REQUEST_RESUME = 10;
+	
+	@Api
+	int CALLING = 11;
+	
+	@Api
+	int RECEIVED = 12;
+	
+	@Api
+	int SCHEDULED_ALARM = 13;
 }

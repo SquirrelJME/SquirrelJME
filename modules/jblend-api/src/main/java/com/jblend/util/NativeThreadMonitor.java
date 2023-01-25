@@ -14,12 +14,13 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public class NativeThreadMonitor
 	extends Thread
 {
-    public static void reset()
+	@Api
+	public static void reset()
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public void run()
 	{
 		throw Debugging.todo();

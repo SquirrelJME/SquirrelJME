@@ -10,11 +10,16 @@
 package javax.microedition.media.control;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface TempoControl
 	extends RateControl
 {
+	@Api
 	int getTempo();
 	
+	@Api
 	int setTempo(int __a);
 }
 

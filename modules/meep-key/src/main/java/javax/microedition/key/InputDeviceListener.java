@@ -9,17 +9,23 @@
 
 package javax.microedition.key;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * DESCRIBE THIS.
  *
  * @since 2016/08/30
  */
+@Api
 public interface InputDeviceListener
 {
+	@Api
 	void hardwareStateChanged(InputDevice __dev, boolean __hw);
 
+	@Api
 	void inputDeviceAdded(InputDevice __dev);
 
+	@Api
 	void inputDeviceRemoved(InputDevice __dev);
 }
 

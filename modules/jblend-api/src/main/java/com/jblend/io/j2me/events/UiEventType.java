@@ -11,13 +11,30 @@ package com.jblend.io.j2me.events;
 
 public interface UiEventType
 {
-    int CLICKED = 1;
-    int SELECTED = 2;
-    int DESELECTED = 3;
-    int CHANGED = 4;
-    int REPAINT = 5;
-    int GOTDISPLAY = 6;
-    int LOSTFOCUS = 7;
-    int REPAINTCOMPONENT = 8;
-    int RELEASEDISPLAY = 9;
+	@Api
+	int CLICKED = 1;
+	
+	@Api
+	int SELECTED = 2;
+	
+	@Api
+	int DESELECTED = 3;
+	
+	@Api
+	int CHANGED = 4;
+	
+	@Api
+	int REPAINT = 5;
+	
+	@Api
+	int GOTDISPLAY = 6;
+	
+	@Api
+	int LOSTFOCUS = 7;
+	
+	@Api
+	int REPAINTCOMPONENT = 8;
+	
+	@Api
+	int RELEASEDISPLAY = 9;
 }

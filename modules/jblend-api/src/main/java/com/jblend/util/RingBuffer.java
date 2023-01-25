@@ -14,57 +14,65 @@ import java.io.IOException;
 
 public final class RingBuffer
 {
-    public RingBuffer()
+	public RingBuffer()
 	{
 		throw Debugging.todo();
 	}
-
-    public RingBuffer(int var1)
+	
+	public RingBuffer(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public RingBuffer(int var1, int var2)
+	
+	public RingBuffer(int var1, int var2)
 	{
 		throw Debugging.todo();
 	}
-
-    public void write(Object var1) throws IOException
+	
+	@Api
+	public void write(Object var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public void write(Object[] var1) throws IOException
+	
+	@Api
+	public void write(Object[] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public Object read() throws IOException
+	
+	@Api
+	public Object read()
 	{
 		throw Debugging.todo();
 	}
-
-    public void read(Object[] var1) throws IOException
+	
+	@Api
+	public void read(Object[] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public Object peek() throws IOException
+	
+	@Api
+	public Object peek()
 	{
 		throw Debugging.todo();
 	}
-
-    public void peek(Object[] var1) throws IOException
+	
+	@Api
+	public void peek(Object[] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public int available()
+	
+	@Api
+	public int available()
 	{
 		throw Debugging.todo();
 	}
-
-    public int getFreeArea()
+	
+	@Api
+	public int getFreeArea()
 	{
 		throw Debugging.todo();
 	}

@@ -14,62 +14,71 @@ import java.io.IOException;
 
 public class IntRingBuffer
 {
-    public IntRingBuffer()
+	public IntRingBuffer()
 	{
 		throw Debugging.todo();
 	}
-
-    public IntRingBuffer(int var1)
+	
+	public IntRingBuffer(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public IntRingBuffer(int var1, int var2)
+	
+	public IntRingBuffer(int var1, int var2)
 	{
 		throw Debugging.todo();
 	}
-
-    public void write(int var1) throws IOException
+	
+	@Api
+	public void write(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public void write(int var1, int var2, int var3, int var4, int var5) throws IOException
+	
+	@Api
+	public void write(int var1, int var2, int var3, int var4, int var5)
 	{
 		throw Debugging.todo();
 	}
-
-    public void write(int[] var1) throws IOException
+	
+	@Api
+	public void write(int[] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public int read() throws IOException
+	
+	@Api
+	public int read()
 	{
 		throw Debugging.todo();
 	}
-
-    public void read(int[] var1) throws IOException
+	
+	@Api
+	public void read(int[] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public int peek() throws IOException
+	
+	@Api
+	public int peek()
 	{
 		throw Debugging.todo();
 	}
-
-    public void peek(int[] var1) throws IOException
+	
+	@Api
+	public void peek(int[] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public int available()
+	
+	@Api
+	public int available()
 	{
 		throw Debugging.todo();
 	}
-
-    public int getFreeArea()
+	
+	@Api
+	public int getFreeArea()
 	{
 		throw Debugging.todo();
 	}

@@ -14,23 +14,25 @@ import java.io.IOException;
 
 public abstract class MediaData
 {
-    public MediaData()
+	public MediaData()
 	{
 		throw Debugging.todo();
 	}
-
-    public MediaData(String var1)
-    	throws IOException
+	
+	public MediaData(String var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
-
-    public MediaData(byte[] var1)
+	
+	public MediaData(byte[] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public abstract String getMediaType();
-
-    public abstract void setData(byte[] var1);
+	
+	@Api
+	public abstract String getMediaType();
+	
+	@Api
+	public abstract void setData(byte[] var1);
 }

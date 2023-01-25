@@ -13,8 +13,10 @@ import java.io.IOException;
 
 public interface SimpleSerializable
 {
-    void writeObject(SimpleObjectOutputStream var1) throws IOException;
-
-    void readObject(SimpleObjectInputStream var1) throws IOException;
+	@Api
+	void writeObject(SimpleObjectOutputStream var1);
+	
+	@Api
+	void readObject(SimpleObjectInputStream var1);
 }
 

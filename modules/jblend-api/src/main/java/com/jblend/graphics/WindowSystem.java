@@ -9,26 +9,45 @@
 
 package com.jblend.graphics;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class WindowSystem
 {
-    public final int real_width;
-    public final int real_height;
-    public final int virtual_width;
-    public final int virtual_height;
-    public final boolean isColor;
-    public final int numColors;
-    public final boolean hasPointerEvents;
-    public final boolean hasPointerMotionEvents;
-    public final int numSoftkeys;
-    
-    public WindowSystem()
+	@Api
+	public final int real_width;
+	
+	@Api
+	public final int real_height;
+	
+	@Api
+	public final int virtual_width;
+	
+	@Api
+	public final int virtual_height;
+	
+	@Api
+	public final boolean isColor;
+	
+	@Api
+	public final int numColors;
+	
+	@Api
+	public final boolean hasPointerEvents;
+	
+	@Api
+	public final boolean hasPointerMotionEvents;
+	
+	@Api
+	public final int numSoftkeys;
+	
+	public WindowSystem()
 	{
 		throw Debugging.todo();
 	}
-
-    public static WindowSystem getDefaultWindowSystem()
+	
+	@Api
+	public static WindowSystem getDefaultWindowSystem()
 	{
 		throw Debugging.todo();
 	}

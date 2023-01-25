@@ -11,7 +11,9 @@ package com.jblend.ui;
 
 public interface SequenceInterface
 {
-    void sequenceStart();
-
-    void sequenceStop();
+	@Api
+	void sequenceStart();
+	
+	@Api
+	void sequenceStop();
 }

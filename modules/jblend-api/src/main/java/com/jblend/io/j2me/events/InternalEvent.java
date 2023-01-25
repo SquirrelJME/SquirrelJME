@@ -11,26 +11,69 @@ package com.jblend.io.j2me.events;
 
 public interface InternalEvent
 {
-    int BEAM_RECEIVE_KVM_EVENT = 0;
-    int PEN_DOWN_KVM_EVENT = 1;
-    int PEN_UP_KVM_EVENT = 2;
-    int PEN_MOVE_KVM_EVENT = 3;
-    int KEY_DOWN_KVM_EVENT = 4;
-    int KEY_UP_KVM_EVENT = 5;
-    int LAST_KVM_EVENT = 6;
-    int APP_STOP_KVM_EVENT = 7;
-    int UI_KVM_EVENT = 8;
-    int TIMER_KVM_EVENT = 9;
-    int PLATFORM_KVM_EVENT = 10;
-    int SOUND_KVM_EVENT = 11;
-    int MEDIA_KVM_EVENT = 12;
-    int DIAL_KVM_EVENT = 14;
-    int APP_RESUME_KVM_EVENT = 100;
-    int APP_SUSPEND_KVM_EVENT = 101;
-    int GENERAL_NOTIFY_EVENT = 200;
-    int ANI_CHAR_EVENT = 221;
-    int USER_KVM_EVENT = 255;
-    int VENDOR_KVM_EVENT = 1000;
-    int OPTIONAL_EVENT_ORIGIN = 10000;
-    int MAX_OPTIONAL_EVENT = 5;
+	@Api
+	int BEAM_RECEIVE_KVM_EVENT = 0;
+	
+	@Api
+	int PEN_DOWN_KVM_EVENT = 1;
+	
+	@Api
+	int PEN_UP_KVM_EVENT = 2;
+	
+	@Api
+	int PEN_MOVE_KVM_EVENT = 3;
+	
+	@Api
+	int KEY_DOWN_KVM_EVENT = 4;
+	
+	@Api
+	int KEY_UP_KVM_EVENT = 5;
+	
+	@Api
+	int LAST_KVM_EVENT = 6;
+	
+	@Api
+	int APP_STOP_KVM_EVENT = 7;
+	
+	@Api
+	int UI_KVM_EVENT = 8;
+	
+	@Api
+	int TIMER_KVM_EVENT = 9;
+	
+	@Api
+	int PLATFORM_KVM_EVENT = 10;
+	
+	@Api
+	int SOUND_KVM_EVENT = 11;
+	
+	@Api
+	int MEDIA_KVM_EVENT = 12;
+	
+	@Api
+	int DIAL_KVM_EVENT = 14;
+	
+	@Api
+	int APP_RESUME_KVM_EVENT = 100;
+	
+	@Api
+	int APP_SUSPEND_KVM_EVENT = 101;
+	
+	@Api
+	int GENERAL_NOTIFY_EVENT = 200;
+	
+	@Api
+	int ANI_CHAR_EVENT = 221;
+	
+	@Api
+	int USER_KVM_EVENT = 255;
+	
+	@Api
+	int VENDOR_KVM_EVENT = 1000;
+	
+	@Api
+	int OPTIONAL_EVENT_ORIGIN = 10000;
+	
+	@Api
+	int MAX_OPTIONAL_EVENT = 5;
 }

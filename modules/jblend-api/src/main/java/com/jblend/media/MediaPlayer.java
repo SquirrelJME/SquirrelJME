@@ -14,44 +14,65 @@ import com.jblend.io.j2me.events.NativeMediaEventDispatcher;
 
 public abstract class MediaPlayer
 {
-    public static final int NO_DATA = 0;
-    public static final int READY = 1;
-    public static final int PLAYING = 2;
-    public static final int PAUSED = 3;
-    public static final int ERROR = 65536;
-    
-    protected static final int REAL_WIDTH =
-    	Debugging.<Integer>todoObject();
-    	
-    protected static final int REAL_HEIGHT =
-    	Debugging.<Integer>todoObject();
-
-    public MediaPlayer()
+	@Api
+	public static final int NO_DATA = 0;
+	
+	@Api
+	public static final int READY = 1;
+	
+	@Api
+	public static final int PLAYING = 2;
+	
+	@Api
+	public static final int PAUSED = 3;
+	
+	@Api
+	public static final int ERROR = 65536;
+	
+	@Api
+	protected static final int REAL_WIDTH = Debugging.<Integer>todoObject();
+	
+	@Api
+	protected static final int REAL_HEIGHT = Debugging.<Integer>todoObject();
+	
+	public MediaPlayer()
 	{
 		throw Debugging.todo();
 	}
-
-    public abstract void setData(MediaData var1);
-
-    public abstract void play();
-
-    public abstract void play(boolean var1);
-
-    public abstract void play(int var1);
-
-    public abstract void stop();
-
-    public abstract void pause();
-
-    public abstract void resume();
-
-    public abstract int getState();
-
-    public abstract void addMediaPlayerListener(MediaPlayerListener var1);
-
-    public abstract void removeMediaPlayerListener(MediaPlayerListener var1);
-
-    protected static void addNativeMediaEventDispatcher(NativeMediaEventDispatcher var0)
+	
+	@Api
+	public abstract void setData(MediaData var1);
+	
+	@Api
+	public abstract void play();
+	
+	@Api
+	public abstract void play(boolean var1);
+	
+	@Api
+	public abstract void play(int var1);
+	
+	@Api
+	public abstract void stop();
+	
+	@Api
+	public abstract void pause();
+	
+	@Api
+	public abstract void resume();
+	
+	@Api
+	public abstract int getState();
+	
+	@Api
+	public abstract void addMediaPlayerListener(MediaPlayerListener var1);
+	
+	@Api
+	public abstract void removeMediaPlayerListener(MediaPlayerListener var1);
+	
+	@Api
+	protected static void addNativeMediaEventDispatcher(
+		NativeMediaEventDispatcher var0)
 	{
 		throw Debugging.todo();
 	}

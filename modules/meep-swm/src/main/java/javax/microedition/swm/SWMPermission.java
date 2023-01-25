@@ -9,6 +9,7 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.security.BasicPermission;
 
@@ -25,6 +26,7 @@ import java.security.BasicPermission;
  *
  * @since 2016/06/24
  */
+@Api
 public final class SWMPermission
 	extends BasicPermission
 {
@@ -39,6 +41,7 @@ public final class SWMPermission
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public SWMPermission(String __scope, String __actions)
 		throws IllegalArgumentException, NullPointerException
 	{

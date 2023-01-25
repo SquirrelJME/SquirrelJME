@@ -11,5 +11,6 @@ package com.jblend.io.j2me.events;
 
 public interface UiEventDispatcherInterface
 {
-    void dispatchUi(int var1, int var2, int var3, int var4, int var5);
+	@Api
+	void dispatchUi(int var1, int var2, int var3, int var4, int var5);
 }

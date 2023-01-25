@@ -17,101 +17,106 @@ import com.jblend.media.MediaPlayerListener;
 public class AudioPlayer
 	extends MediaPlayer
 {
-    public AudioPlayer()
+	public AudioPlayer()
 	{
 		throw Debugging.todo();
 	}
-
-    public AudioPlayer(AudioData var1)
+	
+	public AudioPlayer(AudioData var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public AudioPlayer(byte[] var1)
+	
+	public AudioPlayer(byte[] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public static int checkData(byte[] var0)
+	
+	@Api
+	public static int checkData(byte[] var0)
 	{
 		throw Debugging.todo();
 	}
-
-    public void setData(AudioData var1)
+	
+	@Api
+	public void setData(AudioData var1)
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public void setData(MediaData var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public int getCurrent()
+	
+	@Api
+	public int getCurrent()
 	{
 		throw Debugging.todo();
 	}
-
-    public int getVolume()
+	
+	@Api
+	public int getVolume()
 	{
 		throw Debugging.todo();
 	}
-
-    public void setVolume(int var1)
+	
+	@Api
+	public void setVolume(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public void play()
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public void play(boolean var1)
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public void play(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public void stop()
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public void pause()
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public void resume()
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public int getState()
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public void addMediaPlayerListener(MediaPlayerListener var1)
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public void removeMediaPlayerListener(MediaPlayerListener var1)
 	{
 		throw Debugging.todo();

@@ -9,14 +9,21 @@
 
 package javax.microedition.key;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface InputDevice
 {
+	@Api
 	void setKeyListener(KeyListener __l);
 
+	@Api
 	String getId();
 
+	@Api
 	boolean isHardwareAssigned();
 
+	@Api
 	void setHardwareAssigned(boolean __h);
 }
 

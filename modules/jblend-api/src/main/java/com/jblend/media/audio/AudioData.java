@@ -16,31 +16,32 @@ import java.io.IOException;
 public class AudioData
 	extends MediaData
 {
-    public static final String type = "AUDIO";
-
-    public AudioData()
+	@Api
+	public static final String type = "AUDIO";
+	
+	public AudioData()
 	{
 		throw Debugging.todo();
 	}
-
-    public AudioData(String var1)
-    	throws IOException
+	
+	public AudioData(String var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
-
-    public AudioData(byte[] var1)
+	
+	public AudioData(byte[] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public String getMediaType()
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public void setData(byte[] var1)
 	{
 		throw Debugging.todo();

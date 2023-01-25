@@ -14,57 +14,65 @@ import java.io.IOException;
 
 public final class ByteRingBuffer
 {
-    public ByteRingBuffer()
+	public ByteRingBuffer()
 	{
 		throw Debugging.todo();
 	}
-
-    public ByteRingBuffer(int var1)
+	
+	public ByteRingBuffer(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public ByteRingBuffer(int var1, int var2)
+	
+	public ByteRingBuffer(int var1, int var2)
 	{
 		throw Debugging.todo();
 	}
-
-    public void write(byte var1) throws IOException
+	
+	@Api
+	public void write(byte var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public void write(byte[] var1) throws IOException
+	
+	@Api
+	public void write(byte[] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public byte read() throws IOException
+	
+	@Api
+	public byte read()
 	{
 		throw Debugging.todo();
 	}
-
-    public void read(byte[] var1) throws IOException
+	
+	@Api
+	public void read(byte[] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public byte peek() throws IOException
+	
+	@Api
+	public byte peek()
 	{
 		throw Debugging.todo();
 	}
-
-    public void peek(byte[] var1) throws IOException
+	
+	@Api
+	public void peek(byte[] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public int available()
+	
+	@Api
+	public int available()
 	{
 		throw Debugging.todo();
 	}
-
-    public int getFreeArea()
+	
+	@Api
+	public int getFreeArea()
 	{
 		throw Debugging.todo();
 	}

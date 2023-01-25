@@ -21,28 +21,37 @@ public class JoclEventDispatcher
 	{
 		throw Debugging.todo();
 	}
-
-    public static void setPhraseEventDispatcherInterface(JoclEventDispatcherInterface var0)
+	
+	@Api
+	public static void setPhraseEventDispatcherInterface(
+		JoclEventDispatcherInterface var0)
 	{
 		throw Debugging.todo();
 	}
-
-    public static void setMediaEventDispatcherInterface(JoclEventDispatcherInterface var0)
+	
+	@Api
+	public static void setMediaEventDispatcherInterface(
+		JoclEventDispatcherInterface var0)
 	{
 		throw Debugging.todo();
 	}
-
-    public static void setPlatformEventDispatcherInterface(JoclEventDispatcherInterface var0)
+	
+	@Api
+	public static void setPlatformEventDispatcherInterface(
+		JoclEventDispatcherInterface var0)
 	{
 		throw Debugging.todo();
 	}
-
-    public static void setVendorEventDispatcherInterface(JoclEventDispatcherInterface var0)
+	
+	@Api
+	public static void setVendorEventDispatcherInterface(
+		JoclEventDispatcherInterface var0)
 	{
 		throw Debugging.todo();
 	}
-
-    public static void init()
+	
+	@Api
+	public static void init()
 	{
 		throw Debugging.todo();
 	}

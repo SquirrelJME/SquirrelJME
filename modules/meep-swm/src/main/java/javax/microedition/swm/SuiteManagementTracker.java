@@ -9,12 +9,16 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is used to track the the progress of a suite that is currently
  * being installed.
  *
  * @since 2016/06/24
  */
+@SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
+@Api
 public abstract class SuiteManagementTracker
 {
 	/**
@@ -22,6 +26,7 @@ public abstract class SuiteManagementTracker
 	 *
 	 * @since 2016/06/24
 	 */
+	@Api
 	protected SuiteManagementTracker()
 	{
 	}
@@ -34,6 +39,7 @@ public abstract class SuiteManagementTracker
 	 * has not yet been installed.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public abstract Suite getSuite();
 }
 

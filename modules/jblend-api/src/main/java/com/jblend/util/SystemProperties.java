@@ -13,12 +13,13 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class SystemProperties
 {
-    public SystemProperties()
+	public SystemProperties()
 	{
 		throw Debugging.todo();
 	}
-
-    public static Properties getSystemProperties()
+	
+	@Api
+	public static Properties getSystemProperties()
 	{
 		throw Debugging.todo();
 	}

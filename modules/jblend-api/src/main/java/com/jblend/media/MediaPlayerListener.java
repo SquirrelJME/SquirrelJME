@@ -11,8 +11,10 @@ package com.jblend.media;
 
 public interface MediaPlayerListener
 {
-    void playerStateChanged(MediaPlayer var1);
-
-    void playerRepeated(MediaPlayer var1);
+	@Api
+	void playerStateChanged(MediaPlayer var1);
+	
+	@Api
+	void playerRepeated(MediaPlayer var1);
 }
 

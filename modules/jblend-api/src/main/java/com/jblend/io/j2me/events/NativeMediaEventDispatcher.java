@@ -11,10 +11,13 @@ package com.jblend.io.j2me.events;
 
 public interface NativeMediaEventDispatcher
 {
-    void stateChanged(int var1);
-
-    void repeated(int var1);
-
-    int getMediaType();
+	@Api
+	void stateChanged(int var1);
+	
+	@Api
+	void repeated(int var1);
+	
+	@Api
+	int getMediaType();
 }
 

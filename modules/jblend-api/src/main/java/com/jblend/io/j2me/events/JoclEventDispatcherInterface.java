@@ -11,7 +11,8 @@ package com.jblend.io.j2me.events;
 
 public interface JoclEventDispatcherInterface
 {
-    void dispatch(int var1, int var2, int var3);
+	@Api
+	void dispatch(int var1, int var2, int var3);
 }
 
 

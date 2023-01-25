@@ -17,23 +17,27 @@ import java.io.InputStream;
 public class SimpleObjectInputStream
 	extends DataInputStream
 {
-    public SimpleObjectInputStream(InputStream var1) {
-        super((InputStream)null);
-        
-        throw Debugging.todo();
-    }
-
-    public String readString() throws IOException
+	public SimpleObjectInputStream(InputStream var1)
+	{
+		super((InputStream)null);
+		
+		throw Debugging.todo();
+	}
+	
+	@Api
+	public String readString()
 	{
 		throw Debugging.todo();
 	}
-
-    public SimpleSerializable read(SimpleSerializable var1) throws IOException
+	
+	@Api
+	public SimpleSerializable read(SimpleSerializable var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public Object dispatchReadCommand(Class var1) throws IOException
+	
+	@Api
+	public Object dispatchReadCommand(Class var1)
 	{
 		throw Debugging.todo();
 	}
