@@ -25,12 +25,14 @@ public class Figure
 		throw Debugging.todo();
 	}
 
-    public void setPosture(ActionTable var1, int var2, int var3)
+    @Api public
+void setPosture(ActionTable var1, int var2, int var3)
 	{
 		throw Debugging.todo();
 	}
 
-    public void setTexture(Texture var1)
+    @Api public
+void setTexture(Texture var1)
 	{
 		throw Debugging.todo();
 	}

@@ -11,7 +11,9 @@ package com.vodafone.v10.system.device;
 
 public interface RingStateListener
 {
-    void ringStarted();
+    @Api
+void ringStarted();
 
-    void ringStopped();
+    @Api
+void ringStopped();
 }

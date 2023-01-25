@@ -9,11 +9,14 @@
 
 package com.sprintpcs.media;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
 
+@Api
 public class DualTone
 {
+	@Api
 	public DualTone(int[] __unknownA, int[] __unknownB, int[] __unknownC,
 		int __unknownD, int __unknownE)
 	{

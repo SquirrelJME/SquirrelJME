@@ -11,7 +11,8 @@ package com.vodafone.v10.graphics.j3d;
 
 public interface Graphics3D
 {
-    void drawFigure(Figure var1, int var2, int var3, FigureLayout var4,
+    @Api
+void drawFigure(Figure var1, int var2, int var3, FigureLayout var4,
     	Effect3D var5);
 }
 

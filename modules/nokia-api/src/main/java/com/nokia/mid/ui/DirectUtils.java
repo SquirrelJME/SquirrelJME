@@ -31,8 +31,8 @@ public class DirectUtils
 	 * or exceed the array bounds.
 	 * @since 2019/10/07
 	 */
-	public static Image createImage(int __w, int __h, int __argb)
-		throws IllegalArgumentException
+	@Api public static
+Image createImage(int __w, int __h, int __argb)
 	{
 		return Image.createImage(__w, __h, true, __argb);
 	}
@@ -50,7 +50,8 @@ public class DirectUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/10/07
 	 */
-	public static Image createImage(byte[] __b, int __o, int __l)
+	@Api public static
+Image createImage(byte[] __b, int __o, int __l)
 	{
 		// Load the base image
 		Image base = Image.createImage(__b, __o, __l);
@@ -83,8 +84,8 @@ public class DirectUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/10/07
 	 */
-	public static DirectGraphics getDirectGraphics(Graphics __g)
-		throws NullPointerException
+	@Api public static
+DirectGraphics getDirectGraphics(Graphics __g)
 	{
 		if (__g == null)
 			throw new NullPointerException("NARG");

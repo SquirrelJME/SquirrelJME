@@ -9,10 +9,13 @@
 
 package com.sprintpcs.media;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class Player
 {
+	@Api
 	public static void play(DualTone __tone, int __unknown2)
 	{
 		Debugging.todoNote("play(%s, %d)", __tone, __unknown2);

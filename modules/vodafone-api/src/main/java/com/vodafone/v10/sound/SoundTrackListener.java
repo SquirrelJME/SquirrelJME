@@ -11,5 +11,6 @@ package com.vodafone.v10.sound;
 
 public interface SoundTrackListener
 {
-    void eventOccurred(int var1);
+    @Api
+void eventOccurred(int var1);
 }

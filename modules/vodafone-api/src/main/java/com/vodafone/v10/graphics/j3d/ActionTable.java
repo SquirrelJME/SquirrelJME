@@ -24,12 +24,14 @@ public class ActionTable
 		throw Debugging.todo();
 	}
 
-    public final  int getNumAction()
+    @Api public final
+int getNumAction()
 	{
 		throw Debugging.todo();
 	}
 
-    public final  int getNumFrame(int var1)
+    @Api public final
+int getNumFrame(int var1)
 	{
 		throw Debugging.todo();
 	}

@@ -9,11 +9,14 @@
 
 package com.docomostar;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.midlet.CleanupHandler;
 
+@Api
 public abstract class StarApplication
 {
 	/** Application was launched from the launcher. */
+	@Api
 	public static final int LAUNCHED_FROM_LAUNCHER =
 		8;
 	
@@ -27,6 +30,7 @@ public abstract class StarApplication
 	 * have the prefix of {@code LAUNCHED_}.
 	 * @since 2022/02/28
 	 */
+	@Api
 	public abstract void started(int __launchType);
 	
 	/**
@@ -34,6 +38,7 @@ public abstract class StarApplication
 	 * 
 	 * @since 2022/02/28
 	 */
+	@Api
 	public final void terminate()
 	{
 		// Run all cleanup handlers

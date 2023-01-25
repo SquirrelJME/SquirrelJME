@@ -11,7 +11,9 @@ package com.vodafone.v10.system.device;
 
 public interface TelephonyListener
 {
-    void ring();
+    @Api
+void ring();
 
-    void hungup();
+    @Api
+void hungup();
 }

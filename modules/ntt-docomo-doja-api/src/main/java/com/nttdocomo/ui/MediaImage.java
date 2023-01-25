@@ -12,9 +12,12 @@ package com.nttdocomo.ui;
 public interface MediaImage
 	extends MediaResource
 {
+	@Api
 	int getHeight();
 	
+	@Api
 	Image getImage();
 	
+	@Api
 	int getWidth();
 }

@@ -21,95 +21,95 @@ import javax.microedition.lcdui.Canvas;
  */
 public class Display
 {
-	public static final int KEY_0 =
-		0x00;
+	@Api public static final
+int KEY_0 = 0x00;
 		
-	public static final int KEY_1 =
-		0x01;
+	@Api public static final
+int KEY_1 = 0x01;
 		
-	public static final int KEY_2 =
-		0x02;
+	@Api public static final
+int KEY_2 = 0x02;
 		
-	public static final int KEY_3 =
-		0x03;
+	@Api public static final
+int KEY_3 = 0x03;
 		
-	public static final int KEY_4 =
-		0x04;
+	@Api public static final
+int KEY_4 = 0x04;
 		
-	public static final int KEY_5 =
-		0x05;
+	@Api public static final
+int KEY_5 = 0x05;
 		
-	public static final int KEY_6 =
-		0x06;
+	@Api public static final
+int KEY_6 = 0x06;
 		
-	public static final int KEY_7 =
-		0x07;
+	@Api public static final
+int KEY_7 = 0x07;
 		
-	public static final int KEY_8 =
-		0x08;
+	@Api public static final
+int KEY_8 = 0x08;
 		
-	public static final int KEY_9 =
-		0x09;
+	@Api public static final
+int KEY_9 = 0x09;
 		
-	public static final int KEY_ASTERISK =
-		0x0A;
+	@Api public static final
+int KEY_ASTERISK = 0x0A;
 
-	public static final int KEY_DOWN =
-		0x13;
+	@Api public static final
+int KEY_DOWN = 0x13;
 
-	public static final int KEY_LEFT =
-		0x10;
+	@Api public static final
+int KEY_LEFT = 0x10;
 
-	public static final int KEY_POUND =
-		0x0B;
+	@Api public static final
+int KEY_POUND = 0x0B;
 
-	public static final int KEY_PRESSED_EVENT =
-		0;
+	@Api public static final
+int KEY_PRESSED_EVENT = 0;
 
-	public static final int KEY_RELEASED_EVENT =
-		1;
+	@Api public static final
+int KEY_RELEASED_EVENT = 1;
 
-	public static final int KEY_RIGHT =
-		0x12;
+	@Api public static final
+int KEY_RIGHT = 0x12;
 
-	public static final int KEY_SELECT =
-		0x14;
+	@Api public static final
+int KEY_SELECT = 0x14;
 
-	public static final int KEY_SOFT1 =
-		0x15;
+	@Api public static final
+int KEY_SOFT1 = 0x15;
 
-	public static final int KEY_SOFT2 =
-		0x16;
+	@Api public static final
+int KEY_SOFT2 = 0x16;
 
-	public static final int KEY_UP =
-		0x11;
+	@Api public static final
+int KEY_UP = 0x11;
 
-	public static final int MAX_VENDOR_EVENT =
-		127;
+	@Api public static final
+int MAX_VENDOR_EVENT = 127;
 
-	public static final int MAX_VENDOR_KEY =
-		0x1F;
+	@Api public static final
+int MAX_VENDOR_KEY = 0x1F;
 
-	public static final int MEDIA_EVENT =
-		8;
+	@Api public static final
+int MEDIA_EVENT = 8;
 
-	public static final int MIN_VENDOR_EVENT =
-		64;
+	@Api public static final
+int MIN_VENDOR_EVENT = 64;
 
-	public static final int MIN_VENDOR_KEY =
-		0x1A;
+	@Api public static final
+int MIN_VENDOR_KEY = 0x1A;
 
-	public static final int RESET_VM_EVENT =
-		5;
+	@Api public static final
+int RESET_VM_EVENT = 5;
 
-	public static final int RESUME_VM_EVENT =
-		4;
+	@Api public static final
+int RESUME_VM_EVENT = 4;
 
-	public static final int TIMER_EXPIRED_EVENT =
-		7;
+	@Api public static final
+int TIMER_EXPIRED_EVENT = 7;
 
-	public static final int UPDATE_VM_EVENT =
-		6;
+	@Api public static final
+int UPDATE_VM_EVENT = 6;
 		
 	/** The backing MIDP Display. */
 	private static volatile javax.microedition.lcdui.Display _midpDisplay;

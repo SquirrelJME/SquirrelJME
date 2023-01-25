@@ -13,47 +13,56 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class SoundPlayer
 {
-    public static  SoundPlayer getPlayer()
+    @Api public static
+SoundPlayer getPlayer()
 	{
 		throw Debugging.todo();
 	}
 
-    public SoundTrack getTrack()
+    @Api public
+SoundTrack getTrack()
 	{
 		throw Debugging.todo();
 	}
 
-    public SoundTrack getTrack(int var1)
+    @Api public
+SoundTrack getTrack(int var1)
 	{
 		throw Debugging.todo();
 	}
 
-    public int getTrackCount()
+    @Api public
+int getTrackCount()
 	{
 		throw Debugging.todo();
 	}
 
-    public void disposePlayer()
+    @Api public
+void disposePlayer()
 	{
 		throw Debugging.todo();
 	}
 
-    public void disposeTrack(SoundTrack var1)
+    @Api public
+void disposeTrack(SoundTrack var1)
 	{
 		throw Debugging.todo();
 	}
 
-    public void kill()
+    @Api public
+void kill()
 	{
 		throw Debugging.todo();
 	}
 
-    public void pause()
+    @Api public
+void pause()
 	{
 		throw Debugging.todo();
 	}
 
-    public void resume()
+    @Api public
+void resume()
 	{
 		throw Debugging.todo();
 	}

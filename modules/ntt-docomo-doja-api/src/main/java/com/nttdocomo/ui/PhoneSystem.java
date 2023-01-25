@@ -20,20 +20,20 @@ public class PhoneSystem
 	private static final int _MAX_VIBRATION_TIME =
 		7_000;
 	
-	public static final int ATTR_BACKLIGHT_OFF =
-		0;
+	@Api public static final
+int ATTR_BACKLIGHT_OFF = 0;
 
-	public static final int ATTR_BACKLIGHT_ON =
-		1;
+	@Api public static final
+int ATTR_BACKLIGHT_ON = 1;
 
-	public static final int DEV_BACKLIGHT =
-		0;
+	@Api public static final
+int DEV_BACKLIGHT = 0;
 
-	public static final int MAX_VENDOR_ATTR =
-		127;
+	@Api public static final
+int MAX_VENDOR_ATTR = 127;
 
-	public static final int MIN_VENDOR_ATTR =
-		64;
+	@Api public static final
+int MIN_VENDOR_ATTR = 64;
 	
 	@SuppressWarnings("FinalStaticMethod")
 	public static final void setAttribute(int __attr, int __value)

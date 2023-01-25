@@ -22,14 +22,14 @@ public abstract class Canvas
 	extends Frame
 {
 	/** The native Java Canvas. */
-	final __MIDPCanvas__ _midpCanvas =
-		new __MIDPCanvas__(new WeakReference<>(this));
+	final __MIDPCanvas__ _midpCanvas = new __MIDPCanvas__(new WeakReference<>(this));
 	
+	@Api
 	public abstract void paint(Graphics __g);
 	
 	/**
 	 * Initializes the base canvas.
-	 * 
+	 *
 	 * @since 2022/02/14
 	 */
 	public Canvas()
@@ -40,34 +40,38 @@ public abstract class Canvas
 	
 	/**
 	 * Returns the graphics object that is used for drawing onto the canvas.
-	 * 
+	 *
 	 * @return A {@link Graphics} object for drawing onto the canvas surface.
 	 * @since 2022/02/25
 	 */
+	@Api
 	public Graphics getGraphics()
 	{
 		// Use the backing double buffered graphics, but without a draw
-		return new com.nttdocomo.ui.Graphics(
-			this._midpCanvas._doubleBuffer.getGraphics(
-				this.getWidth(), this.getHeight()),
+		return new Graphics(
+			this._midpCanvas._doubleBuffer.getGraphics(this.getWidth(), this.getHeight()),
 			this._bgColor);
 	}
 	
+	@Api
 	public int getKeypadState()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void processEvent(int __type, int __param)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void repaint()
 	{
 		this.__displayable().repaint();
 	}
 	
+	@Api
 	public void repaint(int __x, int __y, int __w, int __h)
 	{
 		this.__displayable().repaint(__x, __y, __w, __h);
@@ -75,6 +79,7 @@ public abstract class Canvas
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/11/30
 	 */
 	@Override

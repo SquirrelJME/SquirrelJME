@@ -28,57 +28,68 @@ public class Vector2D
 		throw Debugging.todo();
 	}
 
-    public void add(Vector2D var1)
+    @Api public
+void add(Vector2D var1)
 	{
 		throw Debugging.todo();
 	}
 
-    public void add(int var1, int var2)
+    @Api public
+void add(int var1, int var2)
 	{
 		throw Debugging.todo();
 	}
 
-    public void subtract(Vector2D var1)
+    @Api public
+void subtract(Vector2D var1)
 	{
 		throw Debugging.todo();
 	}
 
-    public void subtract(int var1, int var2)
+    @Api public
+void subtract(int var1, int var2)
 	{
 		throw Debugging.todo();
 	}
 
-    public void normalize()
+    @Api public
+void normalize()
 	{
 		throw Debugging.todo();
 	}
 
-    public static  FixedPoint innerProduct(Vector2D var0, Vector2D var1)
+    @Api public static
+FixedPoint innerProduct(Vector2D var0, Vector2D var1)
 	{
 		throw Debugging.todo();
 	}
 
-    public static  FixedPoint outerProduct(Vector2D var0, Vector2D var1)
+    @Api public static
+FixedPoint outerProduct(Vector2D var0, Vector2D var1)
 	{
 		throw Debugging.todo();
 	}
 
-    public void setValue(int var1, int var2)
+    @Api public
+void setValue(int var1, int var2)
 	{
 		throw Debugging.todo();
 	}
 
-    public void setValue(FixedPoint var1, FixedPoint var2)
+    @Api public
+void setValue(FixedPoint var1, FixedPoint var2)
 	{
 		throw Debugging.todo();
 	}
 
-    public FixedPoint getX()
+    @Api public
+FixedPoint getX()
 	{
 		throw Debugging.todo();
 	}
 
-    public FixedPoint getY()
+    @Api public
+FixedPoint getY()
 	{
 		throw Debugging.todo();
 	}

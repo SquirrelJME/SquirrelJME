@@ -27,12 +27,14 @@ public class Sound
 		throw Debugging.todo();
 	}
 
-    public int getSize()
+    @Api public
+int getSize()
 	{
 		throw Debugging.todo();
 	}
 
-    public int getUseTracks()
+    @Api public
+int getUseTracks()
 	{
 		throw Debugging.todo();
 	}

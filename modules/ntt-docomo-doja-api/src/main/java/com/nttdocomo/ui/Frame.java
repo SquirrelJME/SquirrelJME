@@ -27,16 +27,15 @@ import javax.microedition.lcdui.Displayable;
 public abstract class Frame
 {
 	/** The left soft key. */
-	public static final int SOFT_KEY_1 =
-		0;
+	@Api
+	public static final int SOFT_KEY_1 = 0;
 	
 	/** The right soft key. */
-	public static final int SOFT_KEY_2 =
-		1;
+	@Api
+	public static final int SOFT_KEY_2 = 1;
 	
 	/** The number of soft keys which are valid. */
-	static final int _NUM_SOFT_KEYS =
-		2;
+	static final int _NUM_SOFT_KEYS = 2;
 	
 	/** The actual soft key commands. */
 	final Command[] _softKeys;
@@ -46,7 +45,7 @@ public abstract class Frame
 	
 	/**
 	 * Base constructor.
-	 * 
+	 *
 	 * @since 2021/11/30
 	 */
 	Frame()
@@ -61,15 +60,13 @@ public abstract class Frame
 		
 		// Use default background color
 		UIBackend backend = UIBackendFactory.getInstance(true);
-		int defaultBgColor = backend
-				.metric(backend.displays()[0],
-					UIMetricType.COLOR_CANVAS_BACKGROUND) | 0xFF_000000;
+		int defaultBgColor = backend.metric(backend.displays()[0], UIMetricType.COLOR_CANVAS_BACKGROUND) | 0xFF_000000;
 		this._bgColor = new __BGColor__(defaultBgColor);
 	}
 	
 	/**
 	 * Returns the {@link Displayable} this wraps.
-	 * 
+	 *
 	 * @return The MIDP {@link Displayable} used.
 	 * @since 2021/11/30
 	 */
@@ -77,10 +74,11 @@ public abstract class Frame
 	
 	/**
 	 * Returns the height of the current frame.
-	 * 
+	 *
 	 * @return The height of the current frame.
 	 * @since 2021/11/30
 	 */
+	@Api
 	public int getHeight()
 	{
 		return this.__displayable().getHeight();
@@ -88,15 +86,17 @@ public abstract class Frame
 	
 	/**
 	 * Returns the width of the current frame.
-	 * 
+	 *
 	 * @return The width of the current frame.
 	 * @since 2021/11/30
 	 */
+	@Api
 	public int getWidth()
 	{
 		return this.__displayable().getWidth();
 	}
 	
+	@Api
 	public void setBackground(int __c)
 	{
 		throw Debugging.todo();
@@ -104,11 +104,12 @@ public abstract class Frame
 	
 	/**
 	 * Sets the label for a soft key.
-	 * 
+	 *
 	 * @param __key The key to set.
 	 * @param __label The label for the key.
 	 * @since 2021/11/30
 	 */
+	@Api
 	public void setSoftLabel(int __key, String __label)
 	{
 		if (__key < 0 || __key >= Frame._NUM_SOFT_KEYS)
@@ -139,7 +140,7 @@ public abstract class Frame
 	/**
 	 * Must be called after construction so SquirrelJME can implement more
 	 * operations.
-	 * 
+	 *
 	 * @since 2022/02/14
 	 */
 	final void __postConstruct()

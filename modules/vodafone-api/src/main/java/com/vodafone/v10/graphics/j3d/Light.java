@@ -23,32 +23,38 @@ public class Light
 		throw Debugging.todo();
 	}
 
-    public int getDirIntensity()
+    @Api public
+int getDirIntensity()
 	{
 		throw Debugging.todo();
 	}
 
-    public void setDirIntensity(int var1)
+    @Api public
+void setDirIntensity(int var1)
 	{
 		throw Debugging.todo();
 	}
 
-    public int getAmbIntensity()
+    @Api public
+int getAmbIntensity()
 	{
 		throw Debugging.todo();
 	}
 
-    public void setAmbIntensity(int var1)
+    @Api public
+void setAmbIntensity(int var1)
 	{
 		throw Debugging.todo();
 	}
 
-    public Vector3D getDirection()
+    @Api public
+Vector3D getDirection()
 	{
 		throw Debugging.todo();
 	}
 
-    public void setDirection(Vector3D var1)
+    @Api public
+void setDirection(Vector3D var1)
 	{
 		throw Debugging.todo();
 	}

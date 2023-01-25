@@ -17,26 +17,26 @@ package com.nttdocomo.ui;
 public class UIException
 	extends RuntimeException
 {
-	public static final int BUSY_RESOURCE =
-		3;
-		
-	public static final int ILLEGAL_STATE =
-		1;
-		
-	public static final int NO_RESOURCES =
-		2;
-		
-	public static final int STATUS_FIRST =
-		0;
-		
-	public static final int STATUS_LAST =
-		63;
-		
-	public static final int UNDEFINED =
-		0;
-		
-	public static final int UNSUPPORTED_FORMAT =
-		4;
+	@Api
+	public static final int BUSY_RESOURCE = 3;
+	
+	@Api
+	public static final int ILLEGAL_STATE = 1;
+	
+	@Api
+	public static final int NO_RESOURCES = 2;
+	
+	@Api
+	public static final int STATUS_FIRST = 0;
+	
+	@Api
+	public static final int STATUS_LAST = 63;
+	
+	@Api
+	public static final int UNDEFINED = 0;
+	
+	@Api
+	public static final int UNSUPPORTED_FORMAT = 4;
 	
 	/** Represents the status of the exception. */
 	private final int _status;
@@ -58,6 +58,7 @@ public class UIException
 		this._status = __status;
 	}
 	
+	@Api
 	public int getStatus()
 	{
 		return this._status;

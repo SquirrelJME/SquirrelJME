@@ -11,5 +11,6 @@ package com.vodafone.v10.system.device;
 
 public interface ScheduledAlarmListener
 {
-    void notice(String var1);
+    @Api
+void notice(String var1);
 }

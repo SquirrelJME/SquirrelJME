@@ -9,10 +9,17 @@
 
 package com.vodafone.v10.system.media;
 
-public interface MediaPlayerListener {
-    int PLAYED = 0;
-    int STOPPED = 1;
-    int PAUSED = 2;
-
-    void mediaStateChanged(int var1);
+public interface MediaPlayerListener
+{
+	@Api
+	int PLAYED = 0;
+	
+	@Api
+	int STOPPED = 1;
+	
+	@Api
+	int PAUSED = 2;
+	
+	@Api
+	void mediaStateChanged(int var1);
 }

@@ -26,8 +26,10 @@ public abstract class IApplication
 		}
 	}
 	
+	@Api
 	public abstract void start();
 	
+	@Api
 	public String[] getArgs()
 	{
 		synchronized (IApplication.class)
@@ -36,22 +38,26 @@ public abstract class IApplication
 		}
 	}
 	
+	@Api
 	public final String getSourceUrl()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void resume()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public final void terminate()
 	{
 		// Do nothing here as the application handler will handle our exit
 		// status accordingly.
 	}
 	
+	@Api
 	public static IApplication getCurrentApp()
 	{
 		synchronized (IApplication.class)

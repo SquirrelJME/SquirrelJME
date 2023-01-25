@@ -11,21 +11,30 @@ package com.vodafone.v10.system.media;
 
 public interface ResourceOperator
 {
-    int getResourceType();
+    @Api
+int getResourceType();
 
-    int getResourceCount();
+    @Api
+int getResourceCount();
 
-    int getResourceID(int var1);
+    @Api
+int getResourceID(int var1);
 
-    String getResourceName(int var1);
+    @Api
+String getResourceName(int var1);
 
-    String[] getResourceNames();
+    @Api
+String[] getResourceNames();
 
-    void setResourceByID(MediaPlayer var1, int var2);
+    @Api
+void setResourceByID(MediaPlayer var1, int var2);
 
-    void setResourceByTitle(MediaPlayer var1, String var2);
+    @Api
+void setResourceByTitle(MediaPlayer var1, String var2);
 
-    void setResource(MediaPlayer var1, int var2);
+    @Api
+void setResource(MediaPlayer var1, int var2);
 
-    int getIndexOfResource(int var1);
+    @Api
+int getIndexOfResource(int var1);
 }

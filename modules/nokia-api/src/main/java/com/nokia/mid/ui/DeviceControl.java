@@ -30,8 +30,8 @@ public class DeviceControl
 	 * @throws IllegalArgumentException If the duration is negative.
 	 * @since 2019/10/05
 	 */
-	public static void flashLights(long __ms)
-		throws IllegalArgumentException
+	@Api public static
+void flashLights(long __ms)
 	{
 		// {@squirreljme.error EB2z Cannot blink for a negative duration.}
 		if (__ms < 0)
@@ -54,8 +54,8 @@ public class DeviceControl
 	 * the level is out of range.
 	 * @since 2019/10/05
 	 */
-	public static void setLights(int __num, int __lvl)
-		throws IllegalArgumentException
+	@Api public static
+void setLights(int __num, int __lvl)
 	{
 		// {@squirreljme.error EB31 Only light number zero is supported.
 		// (The light number)}
@@ -101,8 +101,8 @@ public class DeviceControl
 	 * frequency is out of range.
 	 * @since 2019/10/05
 	 */
-	public static void startVibra(int __freq, long __ms)
-		throws IllegalArgumentException
+	@Api public static
+void startVibra(int __freq, long __ms)
 	{
 		// {@squirreljme.error EB33 Cannot vibrate for a negative duration.}
 		if (__ms < 0)
@@ -121,7 +121,8 @@ public class DeviceControl
 	 *
 	 * @since 2019/10/05
 	 */
-	public static void stopVibra()
+	@Api public static
+void stopVibra()
 	{
 		Vibration.vibrate(0);
 	}
