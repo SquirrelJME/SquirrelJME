@@ -10,11 +10,13 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
+@Api
 public class Form
 	extends Screen
 {
@@ -35,6 +37,7 @@ public class Form
 	 * @param __t The title of the form, may be {@code null}.
 	 * @since 2017/08/19
 	 */
+	@Api
 	public Form(String __t)
 	{
 		this(__t, null);
@@ -52,6 +55,7 @@ public class Form
 	 * {@code null}.
 	 * @since 2017/08/19
 	 */
+	@Api
 	public Form(String __t, Item[] __i)
 		throws IllegalStateException, NullPointerException
 	{
@@ -87,6 +91,7 @@ public class Form
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/17
 	 */
+	@Api
 	public int append(String __s)
 		throws NullPointerException
 	{
@@ -104,6 +109,7 @@ public class Form
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/17
 	 */
+	@Api
 	public int append(Image __i)
 		throws NullPointerException
 	{
@@ -124,6 +130,7 @@ public class Form
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/17
 	 */
+	@Api
 	public int append(Item __i)
 		throws NullPointerException
 	{
@@ -153,6 +160,7 @@ public class Form
 	 * @throws IndexOutOfBoundsException If the item is not valid.
 	 * @since 2022/07/07
 	 */
+	@Api
 	public void delete(int __i)
 		throws IndexOutOfBoundsException
 	{
@@ -163,6 +171,7 @@ public class Form
 		this.__update();
 	}
 	
+	@Api
 	public void deleteAll()
 	{
 		throw Debugging.todo();
@@ -176,6 +185,7 @@ public class Form
 	 * @throws IndexOutOfBoundsException If the index is not within range.
 	 * @since 2019/05/19
 	 */
+	@Api
 	public Item get(int __i)
 		throws IndexOutOfBoundsException
 	{
@@ -189,6 +199,7 @@ public class Form
 	 * @return The current focus item.
 	 * @since 2019/12/09
 	 */
+	@Api
 	public Item getCurrent()
 	{
 		throw Debugging.todo();
@@ -211,6 +222,7 @@ public class Form
 	 * this will be {@code null}.
 	 * @since 2021/11/26
 	 */
+	@Api
 	public FormLayoutPolicy getLayoutPolicy()
 	{
 		FormLayoutPolicy layout = this._layout;
@@ -230,21 +242,25 @@ public class Form
 		return Displayable.__getWidth(this, null);
 	}
 	
+	@Api
 	public void insert(int __a, Item __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void set(int __a, Item __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setItemStateListener(ItemStateListener __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setItemTraversalListener(ItemTraversalListener __itl)
 	{
 		throw Debugging.todo();
@@ -259,6 +275,7 @@ public class Form
 	 * does not match this form.
 	 * @since 2021/11/26
 	 */
+	@Api
 	public void setLayoutPolicy(FormLayoutPolicy __layout)
 		throws IllegalArgumentException
 	{
@@ -271,6 +288,7 @@ public class Form
 	 * @return The number of form items.
 	 * @since 2109/05/19
 	 */
+	@Api
 	public int size()
 	{
 		return this._items.size();

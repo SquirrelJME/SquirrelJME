@@ -9,6 +9,8 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This interface is called when commands need to be laid out onto the display.
  * 
@@ -19,6 +21,8 @@ package javax.microedition.lcdui;
  * 
  * @since 2020/09/27
  */
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
+@Api
 public interface CommandLayoutPolicy
 {
 	/**
@@ -27,6 +31,7 @@ public interface CommandLayoutPolicy
 	 * @param __d The displayable getting the policy set.
 	 * @since 2020/09/27
 	 */
+	@Api
 	void onCommandLayout(Displayable __d);
 }
 

@@ -9,12 +9,15 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when an attempt is made to do something on a display which
  * does not support a given capability.
  *
  * @since 2018/11/17
  */
+@Api
 public class DisplayCapabilityException
 	extends RuntimeException
 {
@@ -23,6 +26,7 @@ public class DisplayCapabilityException
 	 *
 	 * @since 2018/11/17
 	 */
+	@Api
 	public DisplayCapabilityException()
 	{
 	}
@@ -33,6 +37,7 @@ public class DisplayCapabilityException
 	 * @param __m The message.
 	 * @since 2018/11/17
 	 */
+	@Api
 	public DisplayCapabilityException(String __m)
 	{
 		super(__m);

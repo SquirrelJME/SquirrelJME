@@ -34,6 +34,7 @@ import javax.microedition.midlet.MIDlet;
  *
  * @since 2016/10/08
  */
+@Api
 @SuppressWarnings("OverlyComplexClass")
 public abstract class Displayable
 	extends __CommonWidget__
@@ -84,6 +85,7 @@ public abstract class Displayable
 	 * visible then the default height is returned.
 	 * @since 2017/02/08
 	 */
+	@Api
 	public abstract int getHeight();
 	
 	/**
@@ -94,6 +96,7 @@ public abstract class Displayable
 	 * visible then the default width is returned.
 	 * @since 2017/02/08
 	 */
+	@Api
 	public abstract int getWidth();
 	
 	/**
@@ -106,6 +109,7 @@ public abstract class Displayable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/17
 	 */
+	@Api
 	public void addCommand(Command __c)
 		throws DisplayCapabilityException, NullPointerException
 	{
@@ -132,6 +136,7 @@ public abstract class Displayable
 			this.__layoutCommands();
 	}
 	
+	@Api
 	public Command getCommand(int __p)
 	{
 		throw Debugging.todo();
@@ -144,6 +149,7 @@ public abstract class Displayable
 	 * @return The current command layout policy, may be {@code null}.
 	 * @since 2020/09/27
 	 */
+	@Api
 	public CommandLayoutPolicy getCommandLayoutPolicy()
 	{
 		return this._layoutPolicy;
@@ -155,6 +161,7 @@ public abstract class Displayable
 	 * @return The command listener.
 	 * @since 2019/05/18
 	 */
+	@Api
 	protected CommandListener getCommandListener()
 	{
 		return this._cmdListener;
@@ -166,6 +173,7 @@ public abstract class Displayable
 	 * @return The available commands.
 	 * @since 2019/05/17
 	 */
+	@Api
 	public Command[] getCommands()
 	{
 		List<Command> rv = new ArrayList<>();
@@ -181,11 +189,13 @@ public abstract class Displayable
 	 * @return The owning display or {@code null} if not found.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public Display getCurrentDisplay()
 	{
 		return this._display;
 	}
 	
+	@Api
 	public Menu getMenu(int __p)
 	{
 		throw Debugging.todo();
@@ -209,6 +219,7 @@ public abstract class Displayable
 	 * @return The title of this displayable.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public String getTitle()
 	{
 		return this._userTitle;
@@ -233,6 +244,7 @@ public abstract class Displayable
 	 * @return If the displayable is being shown.
 	 * @since 2018/12/02
 	 */
+	@Api
 	public boolean isShown()
 	{
 		return this.__isShown();
@@ -246,6 +258,7 @@ public abstract class Displayable
 	 * @param __c The command to remove.
 	 * @since 2019/04/15
 	 */
+	@Api
 	public void removeCommand(Command __c)
 	{
 		if (__c == null)
@@ -260,6 +273,7 @@ public abstract class Displayable
 		}
 	}
 	
+	@Api
 	public void removeCommandOrMenu(int __p)
 	{
 		throw Debugging.todo();
@@ -279,6 +293,7 @@ public abstract class Displayable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/27
 	 */
+	@Api
 	public void setCommand(Command __c, int __p)
 		throws DisplayCapabilityException, IllegalArgumentException,
 			IllegalStateException, NullPointerException 
@@ -293,6 +308,7 @@ public abstract class Displayable
 	 * the display.
 	 * @since 2021/11/30
 	 */
+	@Api
 	public void setCommandLayoutPolicy(CommandLayoutPolicy __p)
 	{
 		this._layoutPolicy = __p;
@@ -305,6 +321,7 @@ public abstract class Displayable
 	 * the listener is cleared.
 	 * @since 2017/08/19
 	 */
+	@Api
 	public void setCommandListener(CommandListener __l)
 	{
 		this._cmdListener = __l;
@@ -324,6 +341,7 @@ public abstract class Displayable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/27
 	 */
+	@Api
 	public void setMenu(Menu __m, int __p)
 		throws DisplayCapabilityException, IllegalArgumentException,
 			IllegalStateException, NullPointerException 
@@ -383,6 +401,7 @@ public abstract class Displayable
 	 * @param __t The title to use, {@code null} clears it.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public void setTitle(String __t)
 	{
 		// Cache it for later return
@@ -413,6 +432,7 @@ public abstract class Displayable
 	 * @param __h The new height of the displayable.
 	 * @since 2016/10/10
 	 */
+	@Api
 	@SerializedEvent
 	protected void sizeChanged(int __w, int __h)
 	{

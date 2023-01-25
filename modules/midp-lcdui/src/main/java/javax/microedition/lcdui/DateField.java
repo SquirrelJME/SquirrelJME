@@ -9,21 +9,26 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import java.util.Date;
 import java.util.TimeZone;
 
+@Api
 public class DateField
 	extends Item
 {
+	@Api
 	public static final int DATE =
 		1;
 	
+	@Api
 	public static final int DATE_TIME =
 		3;
 	
+	@Api
 	public static final int TIME =
 		2;
 	
@@ -38,6 +43,7 @@ public class DateField
 	 * @throws IllegalArgumentException If the mode is not valid.
 	 * @since 2019/05/17
 	 */
+	@Api
 	public DateField(String __l, int __m)
 		throws IllegalArgumentException
 	{
@@ -53,6 +59,7 @@ public class DateField
 	 * @throws IllegalArgumentException If the mode is not valid.
 	 * @since 2019/05/17
 	 */
+	@Api
 	public DateField(String __l, int __m, TimeZone __z)
 		throws IllegalArgumentException
 	{
@@ -65,21 +72,25 @@ public class DateField
 		this._zone = __z;
 	}
 	
+	@Api
 	public Date getDate()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getInputMode()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setDate(Date __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setInputMode(int __a)
 	{
 		throw Debugging.todo();

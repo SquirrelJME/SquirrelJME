@@ -9,6 +9,9 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface ItemLayoutHint
 {
 }

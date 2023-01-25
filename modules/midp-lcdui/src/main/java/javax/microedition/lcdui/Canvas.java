@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UISpecialCode;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
@@ -36,6 +37,7 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackend;
  *
  * @since 2016/10/08
  */
+@Api
 public abstract class Canvas
 	extends Displayable
 {
@@ -57,6 +59,7 @@ public abstract class Canvas
 	 * - {@link #GAME_C}.
 	 * - {@link #GAME_D}.
 	 */
+	@Api
 	public static final int ACTIONS_ALL =
 		-2;
 	
@@ -70,10 +73,12 @@ public abstract class Canvas
 	 * - {@link #RIGHT}.
 	 * - {@link #FIRE}.
 	 */
+	@Api
 	public static final int ACTIONS_NAVIGATION =
 		-1;
 	
 	/** No actions are required. */
+	@Api
 	public static final int ACTIONS_NONE =
 		0;
 	
@@ -82,118 +87,147 @@ public abstract class Canvas
 	 * 
 	 * The bits of this key are {@code 0b110}, inverted from {@link #UP}.
 	 */
+	@Api
 	public static final int DOWN =
 		6;
 	
 	/** This is a game key for the fire button. */
+	@Api
 	public static final int FIRE =
 		8;
 	
 	/** This is a game key for the A button. */
+	@Api
 	public static final int GAME_A =
 		9;
 	
 	/** This is a game key for the B button. */
+	@Api
 	public static final int GAME_B =
 		10;
 	
 	/** This is a game key for the C button. */
+	@Api
 	public static final int GAME_C =
 		11;
 	
 	/** This is a game key for the D button. */
+	@Api
 	public static final int GAME_D =
 		12;
 	
 	/** Backspace keyboard key. */
+	@Api
 	public static final int KEY_BACKSPACE =
 		8;
 	
 	/** Delete keyboard key. */
+	@Api
 	public static final int KEY_DELETE =
 		127;
 	
 	/** Down arrow keyboard key. */
+	@Api
 	public static final int KEY_DOWN =
 		-2;
 	
 	/** Enter keyboard key. */
+	@Api
 	public static final int KEY_ENTER =
 		10;
 	
 	/** Escape keyboard key. */
+	@Api
 	public static final int KEY_ESCAPE =
 		27;
 	
 	/** Left arrow keyboard key. */
+	@Api
 	public static final int KEY_LEFT =
 		-3;
 	
 	/** Number pad zero keyboard key. */
+	@Api
 	public static final int KEY_NUM0 =
 		48;
 	
 	/** Number pad one keyboard key. */
+	@Api
 	public static final int KEY_NUM1 =
 		49;
 	
 	/** Number pad two keyboard key. */
+	@Api
 	public static final int KEY_NUM2 =
 		50;
 	
 	/** Number pad three keyboard key. */
+	@Api
 	public static final int KEY_NUM3 =
 		51;
 	
 	/** Number pad four keyboard key. */
+	@Api
 	public static final int KEY_NUM4 =
 		52;
 	
 	/** Number pad five keyboard key. */
+	@Api
 	public static final int KEY_NUM5 =
 		53;
 	
 	/** Number pad six keyboard key. */
+	@Api
 	public static final int KEY_NUM6 =
 		54;
 	
 	/** Number pad seven keyboard key. */
+	@Api
 	public static final int KEY_NUM7 =
 		55;
 	
 	/** Number pad eight keyboard key. */
+	@Api
 	public static final int KEY_NUM8 =
 		56;
 	
 	/** Number pad nine keyboard key. */
+	@Api
 	public static final int KEY_NUM9 =
 		57;
 	
 	/** Pound/hash keyboard key. */
+	@Api
 	public static final int KEY_POUND =
 		35;
 	
 	/** Right arrow keyboard key. */
+	@Api
 	public static final int KEY_RIGHT =
 		-4;
 	
 	/** The select key. */
+	@Api
 	public static final int KEY_SELECT =
 		-5;
 	
 	/** The space bar keyboard key. */
+	@Api
 	public static final int KEY_SPACE =
 		32;
 	
 	/** The star/asterisk keyboard key. */
+	@Api
 	public static final int KEY_STAR =
 		42;
 	
 	/** The horizontal tab keyboard key. */
+	@Api
 	public static final int KEY_TAB =
 		9;
 	
 	/** The up arrow key. */
+	@Api
 	public static final int KEY_UP =
 		-1;
 	
@@ -202,6 +236,7 @@ public abstract class Canvas
 	 * 
 	 * The bits of this key are {@code 0b010}, inverted from {@link #RIGHT}.
 	 */
+	@Api
 	public static final int LEFT =
 		2;
 	
@@ -210,6 +245,7 @@ public abstract class Canvas
 	 * 
 	 * The bits of this key are {@code 0b101}, inverted from {@link #LEFT}.
 	 */
+	@Api
 	public static final int RIGHT =
 		5;
 	
@@ -218,6 +254,7 @@ public abstract class Canvas
 	 * 
 	 * The bits of this key are {@code 0b001}, inverted from {@link #DOWN}.
 	 */
+	@Api
 	public static final int UP =
 		1;
 	
@@ -249,6 +286,7 @@ public abstract class Canvas
 	 *
 	 * @since 2016/10/08
 	 */
+	@Api
 	protected Canvas()
 	{
 	}
@@ -266,6 +304,7 @@ public abstract class Canvas
 	 * @param __g The graphics to draw into.
 	 * @since 2018/03/28
 	 */
+	@Api
 	@SerializedEvent
 	protected abstract void paint(Graphics __g);
 	
@@ -278,6 +317,7 @@ public abstract class Canvas
 	 * @throws IllegalArgumentException If the specified keycode is not valid.
 	 * @since 2017/02/12
 	 */
+	@Api
 	public int getGameAction(int __kc)
 		throws IllegalArgumentException
 	{
@@ -303,6 +343,7 @@ public abstract class Canvas
 	 * @throws IllegalArgumentException If the game action is not valid.
 	 * @since 2019/04/14
 	 */
+	@Api
 	public int getKeyCode(int __gc)
 		throws IllegalArgumentException
 	{
@@ -321,6 +362,7 @@ public abstract class Canvas
 	 * @throws IllegalArgumentException If the key is not valid.
 	 * @since 2017/02/12
 	 */
+	@Api
 	public String getKeyName(int __a)
 		throws IllegalArgumentException
 	{
@@ -341,6 +383,7 @@ public abstract class Canvas
 	 * @return The coordinates, these will be {@code [x, y, width, height]}.
 	 * @since 2020/10/03
 	 */
+	@Api
 	public int[] getSoftkeyLabelCoordinates(int __sk)
 		throws IllegalArgumentException
 	{
@@ -410,6 +453,7 @@ public abstract class Canvas
 	 * @return {@code true} if pointer events are available.
 	 * @since 2017/02/12
 	 */
+	@Api
 	@ApiDefinedDeprecated
 	public boolean hasPointerEvents()
 	{
@@ -425,6 +469,7 @@ public abstract class Canvas
 	 * @return {@code true} if pointer motion events are available.
 	 * @since 2017/02/12
 	 */
+	@Api
 	@ApiDefinedDeprecated
 	public boolean hasPointerMotionEvents()
 	{
@@ -440,6 +485,7 @@ public abstract class Canvas
 	 * @return Always {@code true}.
 	 * @since 2017/02/12
 	 */
+	@Api
 	public boolean hasRepeatEvents()
 	{
 		return true;
@@ -452,6 +498,7 @@ public abstract class Canvas
 	 *
 	 * @since 2018/03/28
 	 */
+	@Api
 	@SerializedEvent
 	protected void hideNotify()
 	{
@@ -465,6 +512,7 @@ public abstract class Canvas
 	 * @return {@code true}.
 	 * @since 2017/05/13
 	 */
+	@Api
 	public boolean isDoubleBuffered()
 	{
 		return true;
@@ -476,6 +524,7 @@ public abstract class Canvas
 	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
+	@Api
 	@SerializedEvent
 	protected void keyPressed(int __code)
 	{
@@ -488,6 +537,7 @@ public abstract class Canvas
 	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
+	@Api
 	@SerializedEvent
 	protected void keyReleased(int __code)
 	{
@@ -500,6 +550,7 @@ public abstract class Canvas
 	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
+	@Api
 	@SerializedEvent
 	protected void keyRepeated(int __code)
 	{
@@ -517,6 +568,7 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
+	@Api
 	@SerializedEvent
 	protected void pointerDragged(int __x, int __y)
 	{
@@ -533,6 +585,7 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
+	@Api
 	@SerializedEvent
 	protected void pointerPressed(int __x, int __y)
 	{
@@ -549,6 +602,7 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
+	@Api
 	@SerializedEvent
 	protected void pointerReleased(int __x, int __y)
 	{
@@ -560,6 +614,7 @@ public abstract class Canvas
 	 *
 	 * @since 2017/02/10
 	 */
+	@Api
 	public final void repaint()
 	{
 		// A remote repaint call is performed for the canvas so it is
@@ -586,6 +641,7 @@ public abstract class Canvas
 	 * @param __h The height.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public final void repaint(int __x, int __y, int __w, int __h)
 	{
 		// Do nothing
@@ -632,6 +688,7 @@ public abstract class Canvas
 	 *
 	 * @since 2019/04/14
 	 */
+	@Api
 	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	public final void serviceRepaints()
 	{
@@ -679,6 +736,7 @@ public abstract class Canvas
 	 * @param __f If {@code true} then fullscreen mode should be used.
 	 * @since 2017/02/28
 	 */
+	@Api
 	public void setFullScreenMode(boolean __f)
 	{
 		// Do nothing if the state is the same
@@ -709,6 +767,7 @@ public abstract class Canvas
 	 * @param __kl The key listener to use, {@code null} clears it.
 	 * @since 2017/02/12
 	 */
+	@Api
 	public void setKeyListener(KeyListener __kl)
 	{
 		this._keyListener = __kl;
@@ -729,6 +788,7 @@ public abstract class Canvas
 	 * @param __opaque If {@code true} then opaque mode is enabled.
 	 * @since 2017/02/12
 	 */
+	@Api
 	public void setPaintMode(boolean __opaque)
 	{
 		this._isOpaque = __opaque;
@@ -742,6 +802,7 @@ public abstract class Canvas
 	 * @throws IllegalArgumentException If the actions are not valid.
 	 * @since 2020/10/03
 	 */
+	@Api
 	public void setRequiredActions(int __actions)
 		throws IllegalArgumentException
 	{
@@ -777,6 +838,7 @@ public abstract class Canvas
 	 *
 	 * @since 2018/12/02.
 	 */
+	@Api
 	@SerializedEvent
 	protected void showNotify()
 	{
@@ -787,6 +849,7 @@ public abstract class Canvas
 	 * {@inheritDoc}
 	 * @since 2017/02/10
 	 */
+	@Api
 	@Override
 	@SerializedEvent
 	protected void sizeChanged(int __w, int __h)

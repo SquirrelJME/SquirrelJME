@@ -9,28 +9,36 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
+@Api
 public class ImageItem
 	extends Item
 {
+	@Api
 	public static final int LAYOUT_CENTER =
 		3;
 	
+	@Api
 	public static final int LAYOUT_DEFAULT =
 		0;
 	
+	@Api
 	public static final int LAYOUT_LEFT =
 		1;
 	
+	@Api
 	public static final int LAYOUT_NEWLINE_AFTER =
 		512;
 	
+	@Api
 	public static final int LAYOUT_NEWLINE_BEFORE =
 		256;
 	
+	@Api
 	public static final int LAYOUT_RIGHT =
 		2;
 	
@@ -53,6 +61,7 @@ public class ImageItem
 	 * @throws IllegalArgumentException If the layout is not valid.
 	 * @since 2019/05/17
 	 */
+	@Api
 	public ImageItem(String __l, Image __i, int __lay, String __alt)
 		throws IllegalArgumentException
 	{
@@ -70,6 +79,7 @@ public class ImageItem
 	 * @throws IllegalArgumentException If the layout is not valid.
 	 * @since 2019/05/17
 	 */
+	@Api
 	public ImageItem(String __l, Image __i, int __lay, String __alt, int __am)
 		throws IllegalArgumentException
 	{
@@ -88,21 +98,25 @@ public class ImageItem
 		this.setLayout(__lay);
 	}
 	
+	@Api
 	public String getAltText()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getAppearanceMode()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public Image getImage()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setAltText(String __a)
 	{
 		throw Debugging.todo();
@@ -119,6 +133,7 @@ public class ImageItem
 	 * @param __i The image to set or {@code null} to clear it.
 	 * @since 2018/04/06
 	 */
+	@Api
 	public void setImage(Image __i)
 	{
 		throw Debugging.todo();
