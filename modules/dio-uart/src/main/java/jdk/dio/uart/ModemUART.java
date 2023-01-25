@@ -9,8 +9,10 @@
 
 package jdk.dio.uart;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import jdk.dio.modem.ModemSignalsControl;
 
+@Api
 public interface ModemUART
 	extends UART, ModemSignalsControl<ModemUART>
 {
