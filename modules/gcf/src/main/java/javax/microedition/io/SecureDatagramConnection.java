@@ -9,11 +9,14 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 
+@Api
 public interface SecureDatagramConnection
 	extends UDPDatagramConnection
 {
+	@Api
 	SecurityInfo getSecurityInfo()
 		throws IOException;
 }

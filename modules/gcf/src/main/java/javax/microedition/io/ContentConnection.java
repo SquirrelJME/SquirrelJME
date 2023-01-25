@@ -10,13 +10,19 @@
 package javax.microedition.io;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface ContentConnection
 	extends StreamConnection
 {
+	@Api
 	String getEncoding();
 	
+	@Api
 	long getLength();
 	
+	@Api
 	String getType();
 }
 

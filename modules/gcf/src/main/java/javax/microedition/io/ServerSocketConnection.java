@@ -9,17 +9,23 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
+@Api
 public interface ServerSocketConnection
 	extends StreamConnectionNotifier
 {
+	@Api
 	AccessPoint[] getAccessPoints()
 		throws IOException;
 	
+	@Api
 	String getLocalAddress()
 		throws IOException;
 	
+	@Api
 	int getLocalPort()
 		throws IOException;
 }

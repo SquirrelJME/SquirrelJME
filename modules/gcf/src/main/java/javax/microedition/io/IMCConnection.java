@@ -9,15 +9,20 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.midlet.MIDletIdentity;
 
+@Api
 public interface IMCConnection
 	extends StreamConnection
 {
+	@Api
 	MIDletIdentity getRemoteIdentity();
 	
+	@Api
 	String getRequestedServerVersion();
 	
+	@Api
 	String getServerName();
 }
 

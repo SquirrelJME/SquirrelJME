@@ -9,6 +9,7 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -17,6 +18,7 @@ import java.io.IOException;
  *
  * @since 2019/05/06
  */
+@Api
 public interface Connection
 	extends Closeable
 {
