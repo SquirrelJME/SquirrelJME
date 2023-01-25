@@ -9,6 +9,8 @@
 
 package javax.microedition.khronos.egl;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This represents an OpenGL ES Surface.
  *
@@ -17,6 +19,8 @@ package javax.microedition.khronos.egl;
  *
  * @since 2016/10/10
  */
+@SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
+@Api
 public abstract class EGLSurface
 {
 }
