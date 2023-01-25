@@ -9,8 +9,10 @@
 
 package com.vodafone.v10.sound;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface SoundTrackListener
 {
-    @Api
-void eventOccurred(int var1);
+	@Api
+	void eventOccurred(int var1);
 }

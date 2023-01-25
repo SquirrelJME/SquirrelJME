@@ -9,10 +9,12 @@
 
 package com.vodafone.v10.graphics.j3d;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface Graphics3D
 {
-    @Api
-void drawFigure(Figure var1, int var2, int var3, FigureLayout var4,
-    	Effect3D var5);
+	@Api
+	void drawFigure(Figure var1, int var2, int var3, FigureLayout var4,
+		Effect3D var5);
 }
 

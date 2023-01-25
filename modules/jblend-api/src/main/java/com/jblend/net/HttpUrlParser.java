@@ -9,6 +9,7 @@
 
 package com.jblend.net;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class HttpUrlParser

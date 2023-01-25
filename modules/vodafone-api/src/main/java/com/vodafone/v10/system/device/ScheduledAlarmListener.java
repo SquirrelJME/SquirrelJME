@@ -9,8 +9,10 @@
 
 package com.vodafone.v10.system.device;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface ScheduledAlarmListener
 {
-    @Api
-void notice(String var1);
+	@Api
+	void notice(String var1);
 }

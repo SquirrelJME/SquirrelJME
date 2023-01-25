@@ -10,6 +10,7 @@
 package com.nokia.mid.ui;
 
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
@@ -30,8 +31,8 @@ public class DeviceControl
 	 * @throws IllegalArgumentException If the duration is negative.
 	 * @since 2019/10/05
 	 */
-	@Api public static
-void flashLights(long __ms)
+	@Api
+	public static void flashLights(long __ms)
 	{
 		// {@squirreljme.error EB2z Cannot blink for a negative duration.}
 		if (__ms < 0)
@@ -54,14 +55,14 @@ void flashLights(long __ms)
 	 * the level is out of range.
 	 * @since 2019/10/05
 	 */
-	@Api public static
-void setLights(int __num, int __lvl)
+	@Api
+	public static void setLights(int __num, int __lvl)
 	{
 		// {@squirreljme.error EB31 Only light number zero is supported.
 		// (The light number)}
 		if (__num != 0)
 			throw new IllegalArgumentException("EB31 " + __num);
-			
+		
 		// {@squirreljme.error EB32 Light level out of range. (The level)}
 		if (__lvl < 0 || __lvl > 100)
 			throw new IllegalArgumentException("EB32 " + __lvl);
@@ -101,8 +102,8 @@ void setLights(int __num, int __lvl)
 	 * frequency is out of range.
 	 * @since 2019/10/05
 	 */
-	@Api public static
-void startVibra(int __freq, long __ms)
+	@Api
+	public static void startVibra(int __freq, long __ms)
 	{
 		// {@squirreljme.error EB33 Cannot vibrate for a negative duration.}
 		if (__ms < 0)
@@ -121,8 +122,8 @@ void startVibra(int __freq, long __ms)
 	 *
 	 * @since 2019/10/05
 	 */
-	@Api public static
-void stopVibra()
+	@Api
+	public static void stopVibra()
 	{
 		Vibration.vibrate(0);
 	}

@@ -9,6 +9,8 @@
 
 package com.vodafone.v10.sound;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface SoundEventType
 {
 	@Api

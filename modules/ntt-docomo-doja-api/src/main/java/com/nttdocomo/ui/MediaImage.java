@@ -9,6 +9,8 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface MediaImage
 	extends MediaResource
 {

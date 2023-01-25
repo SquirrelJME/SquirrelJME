@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import com.nttdocomo.io.ConnectionException;
 
 public interface MediaResource
@@ -47,5 +48,6 @@ public interface MediaResource
 	 * @since 2022/02/14
 	 */
 	@Api
-	void use();
+	void use()
+		throws ConnectionException, SecurityException, UIException;
 }

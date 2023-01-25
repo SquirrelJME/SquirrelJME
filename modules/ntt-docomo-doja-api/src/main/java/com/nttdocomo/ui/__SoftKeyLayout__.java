@@ -24,7 +24,7 @@ final class __SoftKeyLayout__
 {
 	/**
 	 * Performs layout of the commands.
-	 * 
+	 *
 	 * @param __d The displayable this is for.
 	 * @since 2021/11/30
 	 */

@@ -9,6 +9,8 @@
 
 package com.vodafone.v10.system.media;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface MediaPlayerListener
 {
 	@Api

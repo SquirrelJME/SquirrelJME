@@ -9,60 +9,61 @@
 
 package com.vodafone.v10.sound;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class SoundPlayer
 {
-    @Api public static
-SoundPlayer getPlayer()
+	@Api
+	public static SoundPlayer getPlayer()
 	{
 		throw Debugging.todo();
 	}
-
-    @Api public
-SoundTrack getTrack()
+	
+	@Api
+	public SoundTrack getTrack()
 	{
 		throw Debugging.todo();
 	}
-
-    @Api public
-SoundTrack getTrack(int var1)
+	
+	@Api
+	public SoundTrack getTrack(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    @Api public
-int getTrackCount()
+	
+	@Api
+	public int getTrackCount()
 	{
 		throw Debugging.todo();
 	}
-
-    @Api public
-void disposePlayer()
+	
+	@Api
+	public void disposePlayer()
 	{
 		throw Debugging.todo();
 	}
-
-    @Api public
-void disposeTrack(SoundTrack var1)
+	
+	@Api
+	public void disposeTrack(SoundTrack var1)
 	{
 		throw Debugging.todo();
 	}
-
-    @Api public
-void kill()
+	
+	@Api
+	public void kill()
 	{
 		throw Debugging.todo();
 	}
-
-    @Api public
-void pause()
+	
+	@Api
+	public void pause()
 	{
 		throw Debugging.todo();
 	}
-
-    @Api public
-void resume()
+	
+	@Api
+	public void resume()
 	{
 		throw Debugging.todo();
 	}

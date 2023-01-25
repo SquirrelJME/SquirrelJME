@@ -33,7 +33,7 @@ final class __IAppliInterface__
 	
 	/**
 	 * Initializes the i-application interface.
-	 * 
+	 *
 	 * @param __mainClass The main class.
 	 * @param __args The application arguments.
 	 * @throws NullPointerException On null arguments.
@@ -51,6 +51,7 @@ final class __IAppliInterface__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/11/30
 	 */
 	@Override
@@ -72,6 +73,7 @@ final class __IAppliInterface__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/11/30
 	 */
 	@Override
@@ -104,8 +106,8 @@ final class __IAppliInterface__
 		catch (ClassNotFoundException e)
 		{
 			// {@squirreljme.error AH01 Could not find main i-appli. (Class)}
-			throw new RuntimeException(String.format(
-				"AH01 %s", mainClass), e);
+			throw new RuntimeException(String.format("AH01 %s", mainClass),
+				e);
 		}
 		
 		// Create instance of the MIDlet
@@ -126,7 +128,7 @@ final class __IAppliInterface__
 				throw new RuntimeException("AH02", e);
 			}
 		}
-		catch (IllegalAccessException|InstantiationException e)
+		catch (IllegalAccessException | InstantiationException e)
 		{
 			// {@squirreljme.error AH03 Could not instantiate class.}
 			throw new RuntimeException("AH03", e);
@@ -135,6 +137,7 @@ final class __IAppliInterface__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/11/30
 	 */
 	@Override
@@ -150,6 +153,7 @@ final class __IAppliInterface__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2022/07/21
 	 */
 	@Override

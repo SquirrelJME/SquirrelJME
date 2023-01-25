@@ -75,40 +75,51 @@ public interface DirectGraphics
 	int TYPE_USHORT_565_RGB = 565;
 	
 	@ApiDefinedDeprecated
-	void drawImage(Image __var1, int __var2, int __var3, int __var4, int __var5);
+	void drawImage(Image __var1, int __var2, int __var3, int __var4,
+		int __var5);
 	
 	@Api
-	void drawPixels(byte[] __var1, byte[] __var2, int __var3, int __var4, int __var5, int __var6, int __var7, int __var8, int __var9,
+	void drawPixels(byte[] __var1, byte[] __var2, int __var3, int __var4,
+		int __var5, int __var6, int __var7, int __var8, int __var9,
 		int __var10);
 	
 	@Api
-	void drawPixels(short[] __var1, boolean __var2, int __var3, int __var4, int __var5, int __var6, int __var7, int __var8, int __var9,
+	void drawPixels(short[] __var1, boolean __var2, int __var3, int __var4,
+		int __var5, int __var6, int __var7, int __var8, int __var9,
 		int __var10);
 	
 	@Api
-	void drawPixels(int[] __var1, boolean __var2, int __var3, int __var4, int __var5, int __var6, int __var7, int __var8, int __var9,
+	void drawPixels(int[] __var1, boolean __var2, int __var3, int __var4,
+		int __var5, int __var6, int __var7, int __var8, int __var9,
 		int __var10);
 	
 	@Api
-	void drawPolygon(int[] __var1, int __var2, int[] __var3, int __var4, int __var5, int __var6);
+	void drawPolygon(int[] __var1, int __var2, int[] __var3, int __var4,
+		int __var5, int __var6);
 	
 	@Api
-	void drawTriangle(int __var1, int __var2, int __var3, int __var4, int __var5, int __var6, int __var7);
+	void drawTriangle(int __var1, int __var2, int __var3, int __var4,
+		int __var5, int __var6, int __var7);
 	
 	@Api
-	void fillPolygon(int[] __var1, int __var2, int[] __var3, int __var4, int __var5, int __var6);
+	void fillPolygon(int[] __var1, int __var2, int[] __var3, int __var4,
+		int __var5, int __var6);
 	
 	@Api
-	void fillTriangle(int __var1, int __var2, int __var3, int __var4, int __var5, int __var6, int __var7);
+	void fillTriangle(int __var1, int __var2, int __var3, int __var4,
+		int __var5, int __var6, int __var7);
 	
 	@Api
-	void getPixels(byte[] __var1, byte[] __var2, int __var3, int __var4, int __var5, int __var6, int __var7, int __var8, int __var9);
+	void getPixels(byte[] __var1, byte[] __var2, int __var3, int __var4,
+		int __var5, int __var6, int __var7, int __var8, int __var9);
 	
 	@Api
-	void getPixels(int[] __var1, int __var2, int __var3, int __var4, int __var5, int __var6, int __var7, int __var8);
+	void getPixels(int[] __var1, int __var2, int __var3, int __var4,
+		int __var5, int __var6, int __var7, int __var8);
 	
 	@Api
-	void getPixels(short[] __var1, int __var2, int __var3, int __var4, int __var5, int __var6, int __var7, int __var8);
+	void getPixels(short[] __var1, int __var2, int __var3, int __var4,
+		int __var5, int __var6, int __var7, int __var8);
 	
 	@Api
 	void setARGBColor(int __var1);

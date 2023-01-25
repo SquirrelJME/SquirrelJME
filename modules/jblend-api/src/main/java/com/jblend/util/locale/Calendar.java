@@ -9,6 +9,7 @@
 
 package com.jblend.util.locale;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public final class Calendar

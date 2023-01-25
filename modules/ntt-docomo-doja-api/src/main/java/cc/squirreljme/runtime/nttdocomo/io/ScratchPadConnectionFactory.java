@@ -18,7 +18,7 @@ import javax.microedition.io.ConnectionOption;
 
 /**
  * Factory for creating {@link ScratchPadConnection}.
- * 
+ *
  * These are in the format of {@code scratchpad:///0;pos=0,length=0}.
  *
  * @see ScratchPadConnection
@@ -29,6 +29,7 @@ public class ScratchPadConnectionFactory
 {
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/11/30
 	 */
 	@Override
@@ -60,19 +61,17 @@ public class ScratchPadConnectionFactory
 			int semi = __part.indexOf(';');
 			if (semi < 0)
 				wantPad = Integer.parseInt(__part.substring(3), 10);
-			
-			// Parameters are given
+				
+				// Parameters are given
 			else
 			{
 				// The wanted scratch pad
-				wantPad = Integer.parseInt(
-					__part.substring(3, semi), 10);
+				wantPad = Integer.parseInt(__part.substring(3, semi), 10);
 				
 				// Handle various parameters
 				String parms = __part.substring(semi + 1);
 				if (!parms.isEmpty())
-					for (String item : StringUtils.basicSplit(
-						',', parms))
+					for (String item : StringUtils.basicSplit(',', parms))
 					{
 						// {@squirreljme.error AH0d Missing equal sign in the
 						// parameter. (The URI part)}
@@ -96,7 +95,7 @@ public class ScratchPadConnectionFactory
 										"AH0f " + __part);
 								wantPos = val;
 								break;
-								
+							
 							case "length":
 								// {@squirreljme.error AH0g Invalid length
 								// for scratchpad. (The URI part)}
@@ -106,8 +105,8 @@ public class ScratchPadConnectionFactory
 								wantLen = val;
 								break;
 							
-								// {@squirreljme.error AH0e Invalid parameter
-								// for scratch pads. (The URI part)}
+							// {@squirreljme.error AH0e Invalid parameter
+							// for scratch pads. (The URI part)}
 							default:
 								throw new ConnectionNotFoundException(
 									"AH0e " + __part);
@@ -137,8 +136,8 @@ public class ScratchPadConnectionFactory
 		// The desired length; The max length)}
 		if (wantPos + wantLen > params.getLength(wantPad))
 			throw new ConnectionNotFoundException(
-				String.format("AH0h %s %d %d %d", __part,
-					wantPos, wantLen, params.getLength(wantPad)));
+				String.format("AH0h %s %d %d %d", __part, wantPos, wantLen,
+					params.getLength(wantPad)));
 		
 		// Initialize the connection
 		return new ScratchPadConnection(params, wantPad, wantPos, wantLen);
@@ -146,6 +145,7 @@ public class ScratchPadConnectionFactory
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/11/30
 	 */
 	@Override

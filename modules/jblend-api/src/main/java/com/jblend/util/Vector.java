@@ -32,13 +32,15 @@ public class Vector
     }
 
     @Override
-	public void writeObject(SimpleObjectOutputStream var1) throws IOException
+	public void writeObject(SimpleObjectOutputStream var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
 
     @Override
-	public void readObject(SimpleObjectInputStream var1) throws IOException
+	public void readObject(SimpleObjectInputStream var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}

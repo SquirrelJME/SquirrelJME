@@ -9,6 +9,8 @@
 
 package com.jblend.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface SequenceInterface
 {
 	@Api

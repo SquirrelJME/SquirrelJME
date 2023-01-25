@@ -9,6 +9,7 @@
 
 package com.nttdocomo.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 
 /**

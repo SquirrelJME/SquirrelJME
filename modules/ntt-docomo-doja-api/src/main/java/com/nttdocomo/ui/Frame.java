@@ -10,6 +10,7 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
@@ -60,7 +61,8 @@ public abstract class Frame
 		
 		// Use default background color
 		UIBackend backend = UIBackendFactory.getInstance(true);
-		int defaultBgColor = backend.metric(backend.displays()[0], UIMetricType.COLOR_CANVAS_BACKGROUND) | 0xFF_000000;
+		int defaultBgColor = backend.metric(backend.displays()[0],
+			UIMetricType.COLOR_CANVAS_BACKGROUND) | 0xFF_000000;
 		this._bgColor = new __BGColor__(defaultBgColor);
 	}
 	

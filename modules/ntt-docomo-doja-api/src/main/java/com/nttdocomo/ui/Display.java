@@ -10,6 +10,7 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.lcdui.Canvas;
 
 /**
@@ -21,96 +22,96 @@ import javax.microedition.lcdui.Canvas;
  */
 public class Display
 {
-	@Api public static final
-int KEY_0 = 0x00;
-		
-	@Api public static final
-int KEY_1 = 0x01;
-		
-	@Api public static final
-int KEY_2 = 0x02;
-		
-	@Api public static final
-int KEY_3 = 0x03;
-		
-	@Api public static final
-int KEY_4 = 0x04;
-		
-	@Api public static final
-int KEY_5 = 0x05;
-		
-	@Api public static final
-int KEY_6 = 0x06;
-		
-	@Api public static final
-int KEY_7 = 0x07;
-		
-	@Api public static final
-int KEY_8 = 0x08;
-		
-	@Api public static final
-int KEY_9 = 0x09;
-		
-	@Api public static final
-int KEY_ASTERISK = 0x0A;
-
-	@Api public static final
-int KEY_DOWN = 0x13;
-
-	@Api public static final
-int KEY_LEFT = 0x10;
-
-	@Api public static final
-int KEY_POUND = 0x0B;
-
-	@Api public static final
-int KEY_PRESSED_EVENT = 0;
-
-	@Api public static final
-int KEY_RELEASED_EVENT = 1;
-
-	@Api public static final
-int KEY_RIGHT = 0x12;
-
-	@Api public static final
-int KEY_SELECT = 0x14;
-
-	@Api public static final
-int KEY_SOFT1 = 0x15;
-
-	@Api public static final
-int KEY_SOFT2 = 0x16;
-
-	@Api public static final
-int KEY_UP = 0x11;
-
-	@Api public static final
-int MAX_VENDOR_EVENT = 127;
-
-	@Api public static final
-int MAX_VENDOR_KEY = 0x1F;
-
-	@Api public static final
-int MEDIA_EVENT = 8;
-
-	@Api public static final
-int MIN_VENDOR_EVENT = 64;
-
-	@Api public static final
-int MIN_VENDOR_KEY = 0x1A;
-
-	@Api public static final
-int RESET_VM_EVENT = 5;
-
-	@Api public static final
-int RESUME_VM_EVENT = 4;
-
-	@Api public static final
-int TIMER_EXPIRED_EVENT = 7;
-
-	@Api public static final
-int UPDATE_VM_EVENT = 6;
-		
+	@Api
+	public static final int KEY_0 = 0x00;
+	
+	@Api
+	public static final int KEY_1 = 0x01;
+	
+	@Api
+	public static final int KEY_2 = 0x02;
+	
+	@Api
+	public static final int KEY_3 = 0x03;
+	
+	@Api
+	public static final int KEY_4 = 0x04;
+	
+	@Api
+	public static final int KEY_5 = 0x05;
+	
+	@Api
+	public static final int KEY_6 = 0x06;
+	
+	@Api
+	public static final int KEY_7 = 0x07;
+	
+	@Api
+	public static final int KEY_8 = 0x08;
+	
+	@Api
+	public static final int KEY_9 = 0x09;
+	
+	@Api
+	public static final int KEY_ASTERISK = 0x0A;
+	
+	@Api
+	public static final int KEY_DOWN = 0x13;
+	
+	@Api
+	public static final int KEY_LEFT = 0x10;
+	
+	@Api
+	public static final int KEY_POUND = 0x0B;
+	
+	@Api
+	public static final int KEY_PRESSED_EVENT = 0;
+	
+	@Api
+	public static final int KEY_RELEASED_EVENT = 1;
+	
+	@Api
+	public static final int KEY_RIGHT = 0x12;
+	
+	@Api
+	public static final int KEY_SELECT = 0x14;
+	
+	@Api
+	public static final int KEY_SOFT1 = 0x15;
+	
+	@Api
+	public static final int KEY_SOFT2 = 0x16;
+	
+	@Api
+	public static final int KEY_UP = 0x11;
+	
+	@Api
+	public static final int MAX_VENDOR_EVENT = 127;
+	
+	@Api
+	public static final int MAX_VENDOR_KEY = 0x1F;
+	
+	@Api
+	public static final int MEDIA_EVENT = 8;
+	
+	@Api
+	public static final int MIN_VENDOR_EVENT = 64;
+	
+	@Api
+	public static final int MIN_VENDOR_KEY = 0x1A;
+	
+	@Api
+	public static final int RESET_VM_EVENT = 5;
+	
+	@Api
+	public static final int RESUME_VM_EVENT = 4;
+	
+	@Api
+	public static final int TIMER_EXPIRED_EVENT = 7;
+	
+	@Api
+	public static final int UPDATE_VM_EVENT = 6;
+	
 	/** The backing MIDP Display. */
 	private static volatile javax.microedition.lcdui.Display _midpDisplay;
 	
@@ -119,7 +120,7 @@ int UPDATE_VM_EVENT = 6;
 	
 	/**
 	 * Internal only.
-	 * 
+	 *
 	 * @since 2021/11/30
 	 */
 	private Display()
@@ -170,9 +171,10 @@ int UPDATE_VM_EVENT = 6;
 				return;
 			
 			// Try changing the display first
-			javax.microedition.lcdui.Display display = Display.__midpDisplay();
-			display.setCurrent((__frame == null ? null :
-				__frame.__displayable()));
+			javax.microedition.lcdui.Display display =
+				Display.__midpDisplay();
+			display.setCurrent(
+				(__frame == null ? null : __frame.__displayable()));
 			
 			// Is now the current frame
 			Display._currentFrame = __frame;
@@ -181,7 +183,7 @@ int UPDATE_VM_EVENT = 6;
 	
 	/**
 	 * Returns the true display to use, only the first is used.
-	 * 
+	 *
 	 * @return The true display to use.
 	 * @since 2022/02/14
 	 */
@@ -204,7 +206,7 @@ int UPDATE_VM_EVENT = 6;
 	
 	/**
 	 * Maps a MIDP Key to i-mode.
-	 * 
+	 *
 	 * @param __code The code to map.
 	 * @return The mapped key.
 	 * @since 2022/02/14
@@ -213,29 +215,48 @@ int UPDATE_VM_EVENT = 6;
 	{
 		switch (__code)
 		{
-			case Canvas.KEY_UP:			return Display.KEY_UP;
-			case Canvas.KEY_DOWN:		return Display.KEY_DOWN;
-			case Canvas.KEY_LEFT:		return Display.KEY_LEFT;
-			case Canvas.KEY_RIGHT:		return Display.KEY_RIGHT;
-			case Canvas.KEY_NUM0:		return Display.KEY_0;
-			case Canvas.KEY_NUM1:		return Display.KEY_1;
-			case Canvas.KEY_NUM2:		return Display.KEY_2;
-			case Canvas.KEY_NUM3:		return Display.KEY_3;
-			case Canvas.KEY_NUM4:		return Display.KEY_4;
-			case Canvas.KEY_NUM5:		return Display.KEY_5;
-			case Canvas.KEY_NUM6:		return Display.KEY_6;
-			case Canvas.KEY_NUM7:		return Display.KEY_7;
-			case Canvas.KEY_NUM8:		return Display.KEY_8;
-			case Canvas.KEY_NUM9:		return Display.KEY_9;
-			case Canvas.KEY_STAR:		return Display.KEY_ASTERISK;
-			case Canvas.KEY_POUND:		return Display.KEY_POUND;
+			case Canvas.KEY_UP:
+				return Display.KEY_UP;
+			case Canvas.KEY_DOWN:
+				return Display.KEY_DOWN;
+			case Canvas.KEY_LEFT:
+				return Display.KEY_LEFT;
+			case Canvas.KEY_RIGHT:
+				return Display.KEY_RIGHT;
+			case Canvas.KEY_NUM0:
+				return Display.KEY_0;
+			case Canvas.KEY_NUM1:
+				return Display.KEY_1;
+			case Canvas.KEY_NUM2:
+				return Display.KEY_2;
+			case Canvas.KEY_NUM3:
+				return Display.KEY_3;
+			case Canvas.KEY_NUM4:
+				return Display.KEY_4;
+			case Canvas.KEY_NUM5:
+				return Display.KEY_5;
+			case Canvas.KEY_NUM6:
+				return Display.KEY_6;
+			case Canvas.KEY_NUM7:
+				return Display.KEY_7;
+			case Canvas.KEY_NUM8:
+				return Display.KEY_8;
+			case Canvas.KEY_NUM9:
+				return Display.KEY_9;
+			case Canvas.KEY_STAR:
+				return Display.KEY_ASTERISK;
+			case Canvas.KEY_POUND:
+				return Display.KEY_POUND;
 			
 			case Canvas.KEY_SELECT:
-			case Canvas.KEY_ENTER:		return Display.KEY_SELECT;
+			case Canvas.KEY_ENTER:
+				return Display.KEY_SELECT;
 			
-				// SquirrelJME specific keys
-			case NonStandardKey.F1:		return Display.KEY_SOFT1;
-			case NonStandardKey.F2:		return Display.KEY_SOFT2;
+			// SquirrelJME specific keys
+			case NonStandardKey.F1:
+				return Display.KEY_SOFT1;
+			case NonStandardKey.F2:
+				return Display.KEY_SOFT2;
 		}
 		
 		// Unknown

@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.WeakReference;
 
@@ -22,7 +23,8 @@ public abstract class Canvas
 	extends Frame
 {
 	/** The native Java Canvas. */
-	final __MIDPCanvas__ _midpCanvas = new __MIDPCanvas__(new WeakReference<>(this));
+	final __MIDPCanvas__ _midpCanvas = new __MIDPCanvas__(
+		new WeakReference<>(this));
 	
 	@Api
 	public abstract void paint(Graphics __g);
@@ -49,8 +51,8 @@ public abstract class Canvas
 	{
 		// Use the backing double buffered graphics, but without a draw
 		return new Graphics(
-			this._midpCanvas._doubleBuffer.getGraphics(this.getWidth(), this.getHeight()),
-			this._bgColor);
+			this._midpCanvas._doubleBuffer.getGraphics(this.getWidth(),
+				this.getHeight()), this._bgColor);
 	}
 	
 	@Api

@@ -14,55 +14,55 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 class MelodyResourceOperator
 	implements ResourceOperator
 {
-    @Override
+	@Override
 	public int getResourceType()
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public int getResourceCount()
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public int getResourceID(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public String getResourceName(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public String[] getResourceNames()
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public void setResourceByID(MediaPlayer var1, int var2)
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public void setResourceByTitle(MediaPlayer var1, String var2)
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public void setResource(MediaPlayer var1, int var2)
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public int getIndexOfResource(int var1)
 	{
 		throw Debugging.todo();

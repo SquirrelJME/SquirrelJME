@@ -9,29 +9,31 @@
 
 package com.vodafone.v10.graphics.j3d;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 public class ActionTable
 {
-    public ActionTable(byte[] var1)
+	public ActionTable(byte[] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public ActionTable(String var1) throws IOException
+	
+	public ActionTable(String var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
-
-    @Api public final
-int getNumAction()
+	
+	@Api
+	public final int getNumAction()
 	{
 		throw Debugging.todo();
 	}
-
-    @Api public final
-int getNumFrame(int var1)
+	
+	@Api
+	public final int getNumFrame(int var1)
 	{
 		throw Debugging.todo();
 	}

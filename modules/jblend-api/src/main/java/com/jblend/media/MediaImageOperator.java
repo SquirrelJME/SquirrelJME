@@ -9,6 +9,8 @@
 
 package com.jblend.media;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface MediaImageOperator
 {
 	@Api

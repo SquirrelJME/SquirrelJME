@@ -27,7 +27,7 @@ class __NokiaGraphics__
 	
 	/**
 	 * Initializes the Nokia Graphics wrapper.
-	 * 
+	 *
 	 * @param __g The graphics to wrap.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/01/04
@@ -43,6 +43,7 @@ class __NokiaGraphics__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/01/04
 	 */
 	@Override
@@ -54,12 +55,13 @@ class __NokiaGraphics__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/01/04
 	 */
 	@Override
 	public void drawPixels(byte[] __var1, byte[] __var2, int __var3,
 		int __var4, int __var5, int __var6, int __var7, int __var8,
-		 int __var9,
+		int __var9,
 		int __var10)
 	{
 		throw Debugging.todo();
@@ -67,12 +69,13 @@ class __NokiaGraphics__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/01/04
 	 */
 	@Override
 	public void drawPixels(short[] __var1, boolean __var2, int __var3,
 		int __var4, int __var5, int __var6, int __var7, int __var8,
-		 int __var9,
+		int __var9,
 		int __var10)
 	{
 		throw Debugging.todo();
@@ -80,12 +83,13 @@ class __NokiaGraphics__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/01/04
 	 */
 	@Override
 	public void drawPixels(int[] __var1, boolean __var2, int __var3,
 		int __var4, int __var5, int __var6, int __var7, int __var8,
-		 int __var9,
+		int __var9,
 		int __var10)
 	{
 		throw Debugging.todo();
@@ -93,11 +97,12 @@ class __NokiaGraphics__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/01/04
 	 */
 	@Override
 	public void drawPolygon(int[] __var1, int __var2, int[] __var3,
-	 int __var4,
+		int __var4,
 		int __var5, int __var6)
 	{
 		throw Debugging.todo();
@@ -105,6 +110,7 @@ class __NokiaGraphics__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/01/04
 	 */
 	@Override
@@ -116,11 +122,12 @@ class __NokiaGraphics__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/01/04
 	 */
 	@Override
 	public void fillPolygon(int[] __var1, int __var2, int[] __var3,
-	 int __var4,
+		int __var4,
 		int __var5, int __var6)
 	{
 		throw Debugging.todo();
@@ -128,6 +135,7 @@ class __NokiaGraphics__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/01/04
 	 */
 	@Override
@@ -139,11 +147,12 @@ class __NokiaGraphics__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/01/04
 	 */
 	@Override
 	public void getPixels(byte[] __var1, byte[] __var2, int __var3,
-	 int __var4,
+		int __var4,
 		int __var5, int __var6, int __var7, int __var8, int __var9)
 	{
 		throw Debugging.todo();
@@ -151,6 +160,7 @@ class __NokiaGraphics__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/01/04
 	 */
 	@Override
@@ -162,6 +172,7 @@ class __NokiaGraphics__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/01/04
 	 */
 	@Override
@@ -173,6 +184,7 @@ class __NokiaGraphics__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/01/04
 	 */
 	@Override
