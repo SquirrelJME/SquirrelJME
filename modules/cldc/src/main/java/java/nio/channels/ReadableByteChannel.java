@@ -9,12 +9,15 @@
 
 package java.nio.channels;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+@Api
 public interface ReadableByteChannel
 	extends Channel
 {
+	@Api
 	int read(ByteBuffer __a)
 		throws IOException;
 }

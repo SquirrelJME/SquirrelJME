@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is a basic implementation of a {@link Collection}.
  *
@@ -22,6 +24,7 @@ package java.util;
  * @param <E> The element type.
  * @since 2018/09/15
  */
+@Api
 public abstract class AbstractCollection<E>
 	implements Collection<E>
 {
@@ -30,6 +33,7 @@ public abstract class AbstractCollection<E>
 	 *
 	 * @since 2018/09/15
 	 */
+	@Api
 	protected AbstractCollection()
 	{
 	}

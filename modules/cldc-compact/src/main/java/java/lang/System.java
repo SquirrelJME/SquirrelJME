@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.constants.PhoneModelType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
@@ -29,15 +30,18 @@ import java.io.PrintStream;
  *
  * @since 2018/10/14
  */
+@Api
 public final class System
 {
 	/** Standard error stream (stderr). */
+	@Api
 	public static final PrintStream err =
 		new __CanSetPrintStream__(new PrintStream(
 			new ConsoleOutputStream(StandardPipeType.STDERR,
 				true), true));
 	
 	/** Standard output stream (stdout). */
+	@Api
 	public static final PrintStream out =
 		new __CanSetPrintStream__(new PrintStream(
 			new ConsoleOutputStream(StandardPipeType.STDOUT,
@@ -67,6 +71,7 @@ public final class System
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/27
 	 */
+	@Api
 	public static void arraycopy(Object __src, int __srcOff,
 		Object __dest, int __destOff, int __copyLen)
 		throws ArrayStoreException, IndexOutOfBoundsException,
@@ -200,6 +205,7 @@ public final class System
 	 * @return The number of milliseconds since the epoch.
 	 * @since 2017/11/10
 	 */
+	@Api
 	public static long currentTimeMillis()
 	{
 		// Returns the current time in UTC, not local time zone.
@@ -214,6 +220,7 @@ public final class System
 	 * with the given code.
 	 * @since 2017/02/08
 	 */
+	@Api
 	public static void exit(int __e)
 	{
 		Runtime.getRuntime().exit(__e);
@@ -225,6 +232,7 @@ public final class System
 	 *
 	 * @since 2017/02/08
 	 */
+	@Api
 	public static void gc()
 	{
 		Runtime.getRuntime().gc();
@@ -303,6 +311,7 @@ public final class System
 	 * access system properties or obtain the value of a specific property.
 	 * @since 2016/05/21
 	 */
+	@Api
 	public static String getProperty(String __k)
 		throws IllegalArgumentException, NullPointerException,
 			SecurityException
@@ -467,6 +476,7 @@ public final class System
 	 * not permitted.
 	 * @since 2017/08/13
 	 */
+	@Api
 	public static String getProperty(String __k, String __d)
 		throws IllegalArgumentException, NullPointerException,
 			SecurityException
@@ -486,6 +496,7 @@ public final class System
 	 * @return The current security manager in use.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public static SecurityManager getSecurityManager()
 	{
 		// Lock because it is managed by that class for checking
@@ -507,6 +518,7 @@ public final class System
 	 * input is {@code null} then {@code 0} is returned.
 	 * @since 2015/11/09
 	 */
+	@Api
 	public static int identityHashCode(Object __o)
 	{
 		// If null, this is zero
@@ -537,6 +549,7 @@ public final class System
 	 * @return The number of nanoseconds which have passed.
 	 * @since 2016/06/16
 	 */
+	@Api
 	public static long nanoTime()
 	{
 		// Returns the current monotonic clock time
@@ -555,6 +568,7 @@ public final class System
 	 * permission to set the stream.
 	 * @since 2016/03/17
 	 */
+	@Api
 	public static void setErr(PrintStream __a)
 		throws NullPointerException
 	{
@@ -581,6 +595,7 @@ public final class System
 	 * permission to set the stream.
 	 * @since 2016/03/17
 	 */
+	@Api
 	public static void setOut(PrintStream __a)
 		throws NullPointerException
 	{

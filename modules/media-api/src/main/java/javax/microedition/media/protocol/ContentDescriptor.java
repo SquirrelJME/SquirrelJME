@@ -10,15 +10,19 @@
 package javax.microedition.media.protocol;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class ContentDescriptor
 {
+	@Api
 	public ContentDescriptor(String __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public String getContentType()
 	{
 		throw Debugging.todo();

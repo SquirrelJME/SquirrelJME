@@ -9,16 +9,21 @@
 
 package javax.microedition.media.control;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.media.Control;
 
+@Api
 public interface StopTimeControl
 	extends Control
 {
+	@Api
 	long RESET =
 		9223372036854775807L;
 	
+	@Api
 	long getStopTime();
 	
+	@Api
 	void setStopTime(long __a);
 }
 

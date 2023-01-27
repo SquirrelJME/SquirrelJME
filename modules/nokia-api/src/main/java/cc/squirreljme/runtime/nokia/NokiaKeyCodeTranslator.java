@@ -14,7 +14,7 @@ import com.nokia.mid.ui.FullCanvas;
 
 /**
  * Translator for Nokia events.
- * 
+ *
  * @since 2022/02/03
  */
 public class NokiaKeyCodeTranslator
@@ -22,6 +22,7 @@ public class NokiaKeyCodeTranslator
 {
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2022/02/03
 	 */
 	@Override
@@ -29,19 +30,19 @@ public class NokiaKeyCodeTranslator
 	{
 		switch (__kc)
 		{
-				// Nokia Soft Key 1
+			// Nokia Soft Key 1
 			case NonStandardKey.F1:
 			case NonStandardKey.VGAME_COMMAND_LEFT:
 			case FullCanvas.KEY_SOFTKEY1:
 				return FullCanvas.KEY_SOFTKEY1;
-				
-				// Nokia Soft Key 2
+			
+			// Nokia Soft Key 2
 			case NonStandardKey.F2:
 			case NonStandardKey.VGAME_COMMAND_CENTER:
 			case FullCanvas.KEY_SOFTKEY2:
 				return FullCanvas.KEY_SOFTKEY2;
-				
-				// Nokia Soft Key 3
+			
+			// Nokia Soft Key 3
 			case NonStandardKey.F3:
 			case NonStandardKey.VGAME_COMMAND_RIGHT:
 			case FullCanvas.KEY_SOFTKEY3:
@@ -53,6 +54,7 @@ public class NokiaKeyCodeTranslator
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2022/02/03
 	 */
 	@Override
@@ -66,11 +68,11 @@ public class NokiaKeyCodeTranslator
 			case NonStandardKey.F1:
 			case NonStandardKey.VGAME_COMMAND_LEFT:
 				return FullCanvas.KEY_SOFTKEY1;
-				
+			
 			case NonStandardKey.F2:
 			case NonStandardKey.VGAME_COMMAND_RIGHT:
 				return FullCanvas.KEY_SOFTKEY2;
-				
+			
 			case NonStandardKey.F3:
 			case NonStandardKey.VGAME_COMMAND_CENTER:
 				return FullCanvas.KEY_SOFTKEY3;

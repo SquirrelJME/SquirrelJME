@@ -19,7 +19,7 @@ import javax.microedition.io.StreamConnection;
 /**
  * Handles the scratch pad for i-mode/i-appli applications, this is a small
  * storage area within the application.
- * 
+ *
  * These are in the format of {@code scratchpad:///0;pos=0,length=0}.
  *
  * @since 2021/11/30
@@ -41,7 +41,7 @@ public class ScratchPadConnection
 	
 	/**
 	 * Initializes the scratch pad connection.
-	 * 
+	 *
 	 * @param __params The scratch pad parameters.
 	 * @param __pad The requested pad.
 	 * @param __pos The position.
@@ -64,6 +64,7 @@ public class ScratchPadConnection
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/11/30
 	 */
 	@Override
@@ -75,6 +76,7 @@ public class ScratchPadConnection
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/11/30
 	 */
 	@Override
@@ -86,6 +88,7 @@ public class ScratchPadConnection
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/11/30
 	 */
 	@Override
@@ -97,25 +100,27 @@ public class ScratchPadConnection
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/11/30
 	 */
 	@Override
 	public OutputStream openOutputStream()
 		throws IOException
 	{
-		return __ScratchPadStore__.__open(this.pad, this.params)
-			.outputStream(this.pos, this.length);
+		return __ScratchPadStore__.__open(this.pad, this.params).outputStream(
+			this.pos, this.length);
 	}
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/11/30
 	 */
 	@Override
 	public InputStream openInputStream()
 		throws IOException
 	{
-		return __ScratchPadStore__.__open(this.pad, this.params)
-			.inputStream(this.pos, this.length);
+		return __ScratchPadStore__.__open(this.pad, this.params).inputStream(
+			this.pos, this.length);
 	}
 }

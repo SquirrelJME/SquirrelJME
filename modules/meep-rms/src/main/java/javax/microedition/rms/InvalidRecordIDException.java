@@ -9,11 +9,14 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when the ID for a record is not valid.
  *
  * @since 2017/02/26
  */
+@Api
 public class InvalidRecordIDException
 	extends RecordStoreException
 {
@@ -22,6 +25,7 @@ public class InvalidRecordIDException
 	 *
 	 * @since 2017/02/26
 	 */
+	@Api
 	public InvalidRecordIDException()
 	{
 	}
@@ -32,6 +36,7 @@ public class InvalidRecordIDException
 	 * @param __m The exception message.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public InvalidRecordIDException(String __m)
 	{
 		super(__m);

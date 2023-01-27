@@ -9,75 +9,111 @@
 
 package com.vodafone.v10.graphics.j3d;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 @SuppressWarnings("FieldNamingConvention")
 public class AffineTrans
 {
-    public int m00;
-    public int m01;
-    public int m02;
-    public int m03;
-    public int m10;
-    public int m11;
-    public int m12;
-    public int m13;
-    public int m20;
-    public int m21;
-    public int m22;
-    public int m23;
-
-    public AffineTrans()
+	@Api
+	public int m00;
+	
+	@Api
+	public int m01;
+	
+	@Api
+	public int m02;
+	
+	@Api
+	public int m03;
+	
+	@Api
+	public int m10;
+	
+	@Api
+	public int m11;
+	
+	@Api
+	public int m12;
+	
+	@Api
+	public int m13;
+	
+	@Api
+	public int m20;
+	
+	@Api
+	public int m21;
+	
+	@Api
+	public int m22;
+	
+	@Api
+	public int m23;
+	
+	@Api
+	public AffineTrans()
 	{
 		throw Debugging.todo();
 	}
-
-    public AffineTrans(int[][] var1)
+	
+	@Api
+	public AffineTrans(int[][] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public void set(int[][] var1)
+	
+	@Api
+	public void set(int[][] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public Vector3D transPoint(Vector3D var1)
+	
+	@Api
+	public Vector3D transPoint(Vector3D var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public void multiply(AffineTrans var1)
+	
+	@Api
+	public void multiply(AffineTrans var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public void multiply(AffineTrans var1, AffineTrans var2)
+	
+	@Api
+	public void multiply(AffineTrans var1, AffineTrans var2)
 	{
 		throw Debugging.todo();
 	}
-
-    public void rotationX(int var1)
+	
+	@Api
+	public void rotationX(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public void rotationY(int var1)
+	
+	@Api
+	public void rotationY(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public void rotationZ(int var1)
+	
+	@Api
+	public void rotationZ(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public void rotationV(Vector3D var1, int var2)
+	
+	@Api
+	public void rotationV(Vector3D var1, int var2)
 	{
 		throw Debugging.todo();
 	}
-
-    public void setViewTrans(Vector3D var1, Vector3D var2, Vector3D var3)
+	
+	@Api
+	public void setViewTrans(Vector3D var1, Vector3D var2, Vector3D var3)
 	{
 		throw Debugging.todo();
 	}

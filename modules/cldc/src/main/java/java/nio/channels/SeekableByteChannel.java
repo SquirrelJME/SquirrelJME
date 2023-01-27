@@ -9,20 +9,26 @@
 
 package java.nio.channels;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 
+@Api
 public interface SeekableByteChannel
 	extends ByteChannel
 {
+	@Api
 	long position()
 		throws IOException;
 	
+	@Api
 	SeekableByteChannel position(long __a)
 		throws IOException;
 	
+	@Api
 	long size()
 		throws IOException;
 	
+	@Api
 	SeekableByteChannel truncate(long __a)
 		throws IOException;
 	

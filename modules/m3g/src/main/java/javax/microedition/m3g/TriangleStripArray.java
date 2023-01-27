@@ -10,16 +10,20 @@
 package javax.microedition.m3g;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class TriangleStripArray
 	extends IndexBuffer
 {
+	@Api
 	public TriangleStripArray(int[] __a, int[] __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public TriangleStripArray(int __a, int[] __b)
 	{
 		throw Debugging.todo();

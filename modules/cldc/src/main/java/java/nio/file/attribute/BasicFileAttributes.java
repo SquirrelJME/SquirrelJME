@@ -9,22 +9,33 @@
 
 package java.nio.file.attribute;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface BasicFileAttributes
 {
+	@Api
 	FileTime creationTime();
 	
+	@Api
 	boolean isDirectory();
 	
+	@Api
 	boolean isOther();
 	
+	@Api
 	boolean isRegularFile();
 	
+	@Api
 	boolean isSymbolicLink();
 	
+	@Api
 	FileTime lastAccessTime();
 	
+	@Api
 	FileTime lastModifiedTime();
 	
+	@Api
 	long size();
 }
 

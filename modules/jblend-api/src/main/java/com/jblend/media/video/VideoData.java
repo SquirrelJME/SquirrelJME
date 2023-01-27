@@ -9,39 +9,53 @@
 
 package com.jblend.media.video;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.jblend.media.MediaData;
 import java.io.IOException;
 
-public class VideoData extends MediaData {
-    public static final String type = "VIDEO";
-
-    public VideoData() {
-    }
-
-    public VideoData(String var1) throws IOException {
-    }
-
-    public VideoData(byte[] var1) {
-    }
-
-    public int getWidth()
+@Api
+public class VideoData
+	extends MediaData
+{
+	@Api
+	public static final String type = "VIDEO";
+	
+	@Api
+	public VideoData()
+	{
+	}
+	
+	@Api
+	public VideoData(String var1)
+		throws IOException
+	{
+	}
+	
+	@Api
+	public VideoData(byte[] var1)
+	{
+	}
+	
+	@Api
+	public int getWidth()
 	{
 		throw Debugging.todo();
 	}
-
-    public int getHeight()
+	
+	@Api
+	public int getHeight()
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public String getMediaType()
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public void setData(byte[] var1)
 	{
 		throw Debugging.todo();

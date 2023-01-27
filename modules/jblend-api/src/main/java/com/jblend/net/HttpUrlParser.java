@@ -9,42 +9,51 @@
 
 package com.jblend.net;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class HttpUrlParser
 {
-    public HttpUrlParser(String var1)
-    	throws IllegalArgumentException
+	@Api
+	public HttpUrlParser(String var1)
+		throws IllegalArgumentException
 	{
 		throw Debugging.todo();
 	}
-
-    public String getFile()
+	
+	@Api
+	public String getFile()
 	{
 		throw Debugging.todo();
 	}
-
-    public String getHost()
+	
+	@Api
+	public String getHost()
 	{
 		throw Debugging.todo();
 	}
-
-    public int getPort()
+	
+	@Api
+	public int getPort()
 	{
 		throw Debugging.todo();
 	}
-
-    public String getQuery()
+	
+	@Api
+	public String getQuery()
 	{
 		throw Debugging.todo();
 	}
-
-    public String getRef()
+	
+	@Api
+	public String getRef()
 	{
 		throw Debugging.todo();
 	}
-
-    public String getRequestUri()
+	
+	@Api
+	public String getRequestUri()
 	{
 		throw Debugging.todo();
 	}

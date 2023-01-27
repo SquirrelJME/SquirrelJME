@@ -10,6 +10,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.image.AccessibleImage;
 import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
@@ -19,6 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+@Api
 public class Image
 	extends AccessibleImage
 {
@@ -72,6 +74,7 @@ public class Image
 				__data[i] |= 0xFF_000000;
 	}
 	
+	@Api
 	public final void getARGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h)
 	{
@@ -97,6 +100,7 @@ public class Image
 	 * @throws IllegalStateException If the image is not mutable.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public final Graphics getGraphics()
 		throws IllegalStateException
 	{
@@ -120,6 +124,7 @@ public class Image
 	 * @return The height of the image.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public final int getHeight()
 	{
 		return this._height;
@@ -151,6 +156,7 @@ public class Image
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/11
 	 */
+	@Api
 	public final void getRGB(int[] __b, int __o, int __sl, int __x, int __y,
 		int __w, int __h)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
@@ -221,6 +227,7 @@ public class Image
 		}
 	}
 	
+	@Api
 	public final void getRGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h)
 	{
@@ -233,6 +240,7 @@ public class Image
 	 * @return The width of the image.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public final int getWidth()
 	{
 		return this._width;
@@ -244,6 +252,7 @@ public class Image
 	 * @return {@code true} if this image has an alpha channel.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public final boolean hasAlpha()
 	{
 		return this._alpha;
@@ -255,6 +264,7 @@ public class Image
 	 * @return {@code true} if this image is animated.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public final boolean isAnimated()
 	{
 		return (this instanceof AnimatedImage);
@@ -266,6 +276,7 @@ public class Image
 	 * @return {@code true} if this image is mutable.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public final boolean isMutable()
 	{
 		return this._mutable && !this.isAnimated() && !this.isScalable();
@@ -277,6 +288,7 @@ public class Image
 	 * @return {@code true} if this image is scalable.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public final boolean isScalable()
 	{
 		return (this instanceof ScalableImage);
@@ -341,6 +353,7 @@ public class Image
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
 	 */
+	@Api
 	public static Image createImage(byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
@@ -372,6 +385,7 @@ public class Image
 	 * or negative dimension.
 	 * @since 2017/02/11
 	 */
+	@Api
 	public static Image createImage(int __w, int __h)
 		throws IllegalArgumentException
 	{
@@ -390,6 +404,7 @@ public class Image
 	 * or negative dimension.
 	 * @since 2017/02/11
 	 */
+	@Api
 	public static Image createImage(int __w, int __h, boolean __alpha, int __c)
 		throws IllegalArgumentException
 	{
@@ -420,6 +435,7 @@ public class Image
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
 	 */
+	@Api
 	public static Image createImage(InputStream __is)
 		throws IOException, NullPointerException
 	{
@@ -441,6 +457,7 @@ public class Image
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
 	 */
+	@Api
 	public static Image createImage(String __s)
 		throws IOException, NullPointerException
 	{
@@ -472,6 +489,7 @@ public class Image
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/24
 	 */
+	@Api
 	public static Image createImage(Image __i)
 		throws NullPointerException
 	{
@@ -491,6 +509,7 @@ public class Image
 			false, __i._alpha);
 	}
 	
+	@Api
 	public static Image createImage(Image __i, int __x, int __y,
 		int __w, int __h, int __trans)
 	{
@@ -498,6 +517,7 @@ public class Image
 			__i.getWidth(), __i.getHeight());
 	}
 	
+	@Api
 	public static Image createImage(Image __i, int __x, int __y, int __w,
 		int __h, int __trans, int __iw, int __ih)
 	{
@@ -518,6 +538,7 @@ public class Image
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public static Image createRGBImage(int[] __rgb, int __w, int __h, boolean 
 		__alpha)
 		throws IllegalArgumentException, IndexOutOfBoundsException,

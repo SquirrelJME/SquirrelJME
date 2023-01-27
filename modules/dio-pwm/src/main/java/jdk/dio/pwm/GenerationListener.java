@@ -9,13 +9,16 @@
 
 package jdk.dio.pwm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import jdk.dio.AsyncErrorHandler;
 import jdk.dio.DeviceEventListener;
 
+@Api
 public interface GenerationListener
 	extends DeviceEventListener, AsyncErrorHandler<PWMChannel>
 {
 	
+	@Api
 	void pulseGenerationCompleted(GenerationEvent __a);
 }
 

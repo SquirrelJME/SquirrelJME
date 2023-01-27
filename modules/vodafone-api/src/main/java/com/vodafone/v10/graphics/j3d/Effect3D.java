@@ -9,79 +9,98 @@
 
 package com.vodafone.v10.graphics.j3d;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class Effect3D
 {
-    public static final int NORMAL_SHADING = 0;
-    public static final int TOON_SHADING = 1;
-
-    public Effect3D()
+	@Api
+	public static final int NORMAL_SHADING = 0;
+	
+	@Api
+	public static final int TOON_SHADING = 1;
+	
+	@Api
+	public Effect3D()
 	{
 		throw Debugging.todo();
 	}
-
-    public Effect3D(Light var1, int var2, boolean var3, Texture var4)
+	
+	@Api
+	public Effect3D(Light var1, int var2, boolean var3, Texture var4)
 	{
 		throw Debugging.todo();
 	}
-
-    public Light getLight()
+	
+	@Api
+	public Light getLight()
 	{
 		throw Debugging.todo();
 	}
-
-    public void setLight(Light var1)
+	
+	@Api
+	public void setLight(Light var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public int getShading()
+	
+	@Api
+	public int getShading()
 	{
 		throw Debugging.todo();
 	}
-
-    public void setShading(int var1)
+	
+	@Api
+	public void setShading(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public int getThreshold()
+	
+	@Api
+	public int getThreshold()
 	{
 		throw Debugging.todo();
 	}
-
-    public int getThresholdHigh()
+	
+	@Api
+	public int getThresholdHigh()
 	{
 		throw Debugging.todo();
 	}
-
-    public int getThresholdLow()
+	
+	@Api
+	public int getThresholdLow()
 	{
 		throw Debugging.todo();
 	}
-
-    public void setThreshold(int var1, int var2, int var3)
+	
+	@Api
+	public void setThreshold(int var1, int var2, int var3)
 	{
 		throw Debugging.todo();
 	}
-
-    public boolean isSemiTransparentEnabled()
+	
+	@Api
+	public boolean isSemiTransparentEnabled()
 	{
 		throw Debugging.todo();
 	}
-
-    public void setSemiTransparentEnabled(boolean var1)
+	
+	@Api
+	public void setSemiTransparentEnabled(boolean var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public Texture getSphereMap()
+	
+	@Api
+	public Texture getSphereMap()
 	{
 		throw Debugging.todo();
 	}
-
-    public void setSphereMap(Texture var1)
+	
+	@Api
+	public void setSphereMap(Texture var1)
 	{
 		throw Debugging.todo();
 	}

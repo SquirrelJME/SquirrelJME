@@ -37,7 +37,7 @@ final class __MIDPImage__
 	
 	/**
 	 * Initializes the wrapped image.
-	 * 
+	 *
 	 * @param __uri The image to wrap.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/01
@@ -53,6 +53,7 @@ final class __MIDPImage__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/12/01
 	 */
 	@Override
@@ -63,6 +64,7 @@ final class __MIDPImage__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/12/01
 	 */
 	@Override
@@ -73,6 +75,7 @@ final class __MIDPImage__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/12/01
 	 */
 	@Override
@@ -84,6 +87,7 @@ final class __MIDPImage__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/12/01
 	 */
 	@Override
@@ -94,6 +98,7 @@ final class __MIDPImage__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/12/01
 	 */
 	@Override
@@ -115,6 +120,7 @@ final class __MIDPImage__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/12/01
 	 */
 	@Override
@@ -153,7 +159,7 @@ final class __MIDPImage__
 	
 	/**
 	 * Returns the used MIDP {@link javax.microedition.lcdui.Image}.
-	 * 
+	 *
 	 * @return The MIDP {@link javax.microedition.lcdui.Image}.
 	 * @throws UIException If the image is not in use.
 	 * @since 2022/02/14

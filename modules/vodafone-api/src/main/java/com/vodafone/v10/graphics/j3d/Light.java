@@ -9,46 +9,56 @@
 
 package com.vodafone.v10.graphics.j3d;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class Light
 {
-    public Light()
+	@Api
+	public Light()
 	{
 		throw Debugging.todo();
 	}
-
-    public Light(Vector3D var1, int var2, int var3)
+	
+	@Api
+	public Light(Vector3D var1, int var2, int var3)
 	{
 		throw Debugging.todo();
 	}
-
-    public int getDirIntensity()
+	
+	@Api
+	public int getDirIntensity()
 	{
 		throw Debugging.todo();
 	}
-
-    public void setDirIntensity(int var1)
+	
+	@Api
+	public void setDirIntensity(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public int getAmbIntensity()
+	
+	@Api
+	public int getAmbIntensity()
 	{
 		throw Debugging.todo();
 	}
-
-    public void setAmbIntensity(int var1)
+	
+	@Api
+	public void setAmbIntensity(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public Vector3D getDirection()
+	
+	@Api
+	public Vector3D getDirection()
 	{
 		throw Debugging.todo();
 	}
-
-    public void setDirection(Vector3D var1)
+	
+	@Api
+	public void setDirection(Vector3D var1)
 	{
 		throw Debugging.todo();
 	}

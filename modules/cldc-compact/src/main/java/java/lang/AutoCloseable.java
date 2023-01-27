@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This interface is used with the classes which are initialized in the
  * {@code try-with-resources} block, after the entire block has been finished
@@ -40,6 +42,7 @@ package java.lang;
  *
  * @since 2015/03/23
  */
+@Api
 public interface AutoCloseable
 {
 	/**
@@ -60,6 +63,7 @@ public interface AutoCloseable
 	 * @throws Exception If there was an error closing the specified object.
 	 * @since 2015/03/23
 	 */
+	@Api
 	void close()
 		throws Exception;
 }

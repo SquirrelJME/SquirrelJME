@@ -9,11 +9,14 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public final class TableLayoutPolicy
 	extends FormLayoutPolicy
 {
+	@Api
 	public TableLayoutPolicy(Form __f, int __cols)
 	{
 		super(__f);
@@ -31,6 +34,7 @@ public final class TableLayoutPolicy
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getColumns()
 	{
 		throw Debugging.todo();

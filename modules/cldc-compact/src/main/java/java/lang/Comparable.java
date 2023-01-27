@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This interface is used to set two classes as being comparable to other
  * classes.
@@ -26,6 +28,7 @@ package java.lang;
  * @param <T> The type to compare.
  * @since 2018/09/19
  */
+@Api
 public interface Comparable<T>
 {
 	/**
@@ -40,6 +43,7 @@ public interface Comparable<T>
 	 * mean {@code this > __b}.
 	 * @since 2018/09/19
 	 */
+	@Api
 	int compareTo(T __b);
 }
 

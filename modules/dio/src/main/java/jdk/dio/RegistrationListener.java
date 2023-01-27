@@ -9,13 +9,17 @@
 
 package jdk.dio;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.util.EventListener;
 
+@Api
 public interface RegistrationListener<P extends Device<? super P>>
 	extends EventListener
 {
+	@Api
 	void deviceRegistered(RegistrationEvent<P> __a);
 	
+	@Api
 	void deviceUnregistered(RegistrationEvent<P> __a);
 }
 

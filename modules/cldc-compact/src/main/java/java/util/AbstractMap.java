@@ -9,12 +9,15 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.MapKeySetView;
 
+@Api
 public abstract class AbstractMap<K, V>
 	implements Map<K, V>
 {
+	@Api
 	protected AbstractMap()
 	{
 	}

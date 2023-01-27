@@ -9,17 +9,21 @@
 
 package java.nio.file;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class FileAlreadyExistsException
 	extends FileSystemException
 {
+	@Api
 	public FileAlreadyExistsException(String __a)
 	{
 		super((String)null);
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public FileAlreadyExistsException(String __a, String __b, String __c)
 	{
 		super((String)null);

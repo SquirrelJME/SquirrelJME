@@ -9,6 +9,7 @@
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -26,6 +27,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 @ImplementationNote("The buffer size is undefined in the class library, " +
 	"therefor due to potential memory limitations the buffer size should " +
 	"be kept small.")
+@Api
 public class BufferedWriter
 	extends Writer
 {
@@ -52,6 +54,7 @@ public class BufferedWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public BufferedWriter(Writer __out)
 		throws NullPointerException
 	{
@@ -70,6 +73,7 @@ public class BufferedWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public BufferedWriter(Writer __out, int __bs)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -115,6 +119,7 @@ public class BufferedWriter
 	 * @throws IOException On write errors.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public void newLine()
 		throws IOException
 	{

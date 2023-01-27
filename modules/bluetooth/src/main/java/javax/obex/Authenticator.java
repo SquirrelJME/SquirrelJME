@@ -9,10 +9,15 @@
 
 package javax.obex;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface Authenticator
 {
+	@Api
 	PasswordAuthentication onAuthenticationChallenge(String __a, boolean __b,
 		boolean __c);
 	
+	@Api
 	byte[] onAuthenticationResponse(byte[] __a);
 }

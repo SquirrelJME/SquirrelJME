@@ -16,9 +16,9 @@ import javax.microedition.io.InputConnection;
 
 /**
  * Connects to resources which are on the class path.
- * 
+ *
  * I am assuming that i-mode does not support or does not recommend that
- * {@link Class#getResourceAsStream(String)} be used. 
+ * {@link Class#getResourceAsStream(String)} be used.
  *
  * @since 2021/11/30
  */
@@ -33,7 +33,7 @@ public class ResourceConnection
 	
 	/**
 	 * Initializes the resource connection.
-	 * 
+	 *
 	 * @param __pivot The pivot class.
 	 * @param __rcName The resource name.
 	 * @throws NullPointerException On null arguments.
@@ -51,6 +51,7 @@ public class ResourceConnection
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/11/30
 	 */
 	@Override
@@ -62,6 +63,7 @@ public class ResourceConnection
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/11/30
 	 */
 	@Override
@@ -73,6 +75,7 @@ public class ResourceConnection
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/11/30
 	 */
 	@Override

@@ -9,8 +9,12 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface Comparator<T>
 {
+	@Api
 	int compare(T __a, T __b);
 	
 	/**

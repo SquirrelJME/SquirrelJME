@@ -9,10 +9,12 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
+@Api
 public class Alert
 	extends Screen
 {
@@ -20,10 +22,12 @@ public class Alert
 	 * This is delivered to a listener to specify that the alert has been
 	 * dismissed.
 	 */
+	@Api
 	public static final Command DISMISS_COMMAND =
 		new Command("Okay", Command.OK, 0, true);
 	
 	/** Specifies that the alert should last forever. */
+	@Api
 	public static final int FOREVER =
 		-2;
 	
@@ -45,6 +49,7 @@ public class Alert
 	 * @param __title The title of the alert, may be {@code null}.
 	 * @since 2017/02/28
 	 */
+	@Api
 	public Alert(String __title)
 	{
 		this(__title, null, null, null);
@@ -59,6 +64,7 @@ public class Alert
 	 * @param __type The type of this alert, may be {@code null}.
 	 * @since 2017/02/28
 	 */
+	@Api
 	public Alert(String __title, String __message, Image __icon,
 		AlertType __type)
 	{
@@ -78,6 +84,7 @@ public class Alert
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getDefaultTimeout()
 	{
 		throw Debugging.todo();
@@ -96,26 +103,31 @@ public class Alert
 		*/
 	}
 	
+	@Api
 	public Image getImage()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public Gauge getIndicator()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public String getString()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getTimeout()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public AlertType getType()
 	{
 		throw Debugging.todo();
@@ -157,6 +169,7 @@ public class Alert
 	 * @param __i The image to set or {@code null} to clear it.
 	 * @since 2018/04/06
 	 */
+	@Api
 	public void setImage(Image __i)
 	{
 		throw Debugging.todo();
@@ -170,6 +183,7 @@ public class Alert
 		*/
 	}
 	
+	@Api
 	public void setIndicator(Gauge __a)
 	{
 		throw Debugging.todo();
@@ -181,6 +195,7 @@ public class Alert
 	 * @param __s The message to use.
 	 * @since 2017/02/28
 	 */
+	@Api
 	public void setString(String __s)
 	{
 		throw Debugging.todo();
@@ -200,6 +215,7 @@ public class Alert
 	 * not {@link #FOREVER}.
 	 * @since 2017/02/28
 	 */
+	@Api
 	public void setTimeout(int __ms)
 		throws IllegalArgumentException
 	{
@@ -218,6 +234,7 @@ public class Alert
 	 * @param __t The alert type, may be {@code null}.
 	 * @since 2017/02/28
 	 */
+	@Api
 	public void setType(AlertType __t)
 	{
 		throw Debugging.todo();

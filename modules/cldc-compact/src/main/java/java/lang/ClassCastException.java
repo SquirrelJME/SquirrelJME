@@ -9,11 +9,14 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when a class cannot be cast to another class.
  *
  * @since 2018/12/04
  */
+@Api
 public class ClassCastException
 	extends RuntimeException
 {
@@ -22,6 +25,7 @@ public class ClassCastException
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public ClassCastException()
 	{
 	}
@@ -32,6 +36,7 @@ public class ClassCastException
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public ClassCastException(String __m)
 	{
 		super(__m);

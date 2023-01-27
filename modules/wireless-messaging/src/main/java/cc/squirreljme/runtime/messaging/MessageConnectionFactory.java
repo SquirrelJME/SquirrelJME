@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.messaging;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import javax.microedition.io.ConnectionOption;
  *
  * @since 2022/02/27
  */
+@Api
 public class MessageConnectionFactory
 	implements CustomConnectionFactory
 {

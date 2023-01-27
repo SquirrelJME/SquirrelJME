@@ -9,9 +9,13 @@
 
 package com.vodafone.v10.system.device;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface TelephonyListener
 {
-    void ring();
-
-    void hungup();
+	@Api
+	void ring();
+	
+	@Api
+	void hungup();
 }

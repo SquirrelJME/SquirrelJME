@@ -33,6 +33,7 @@ import java.util.Map;
 import javax.microedition.midlet.MIDlet;
 
 @SuppressWarnings("OverlyComplexClass")
+@Api
 public class Display
 	implements DisplayWidget
 {
@@ -44,50 +45,65 @@ public class Display
 	static final int _SOFTKEY_RIGHT_COMMAND =
 		Display.SOFTKEY_BOTTOM + 2;
 	
+	@Api
 	public static final int ALERT =
 		3;
 
+	@Api
 	public static final int CHOICE_GROUP_ELEMENT =
 		2;
 
+	@Api
 	public static final int COLOR_BACKGROUND =
 		0;
 
+	@Api
 	public static final int COLOR_BORDER =
 		4;
 
+	@Api
 	public static final int COLOR_FOREGROUND =
 		1;
 
+	@Api
 	public static final int COLOR_HIGHLIGHTED_BACKGROUND =
 		2;
 
+	@Api
 	public static final int COLOR_HIGHLIGHTED_BORDER =
 		5;
 
+	@Api
 	public static final int COLOR_HIGHLIGHTED_FOREGROUND =
 		3;
 
+	@Api
 	public static final int COLOR_IDLE_BACKGROUND =
 		6;
 
+	@Api
 	public static final int COLOR_IDLE_FOREGROUND =
 		7;
 
+	@Api
 	@SuppressWarnings("FieldNamingConvention")
 	public static final int COLOR_IDLE_HIGHLIGHTED_BACKGROUND =
 		8;
 
+	@Api
 	@SuppressWarnings("FieldNamingConvention")
 	public static final int COLOR_IDLE_HIGHLIGHTED_FOREGROUND =
 		9;
 
+	@Api
 	public static final int COMMAND =
 		5;
 
+	@Api
 	public static final int DISPLAY_HARDWARE_ABSENT =
 		2;
 
+	@Api
 	public static final int DISPLAY_HARDWARE_DISABLED =
 		1;
 	
@@ -95,118 +111,153 @@ public class Display
 	public static final int DISPLAY_HARDWARE_ENABLED =
 		0;
 
+	@Api
 	public static final int LIST_ELEMENT =
 		1;
 
+	@Api
 	public static final int MENU =
 		7;
 
 	/** This is the activity mode that enables power saving inhibition. */
+	@Api
 	public static final int MODE_ACTIVE =
 		1;
 	
 	/** This is the activity mode that is the default behavior. */
+	@Api
 	public static final int MODE_NORMAL =
 		0;
 
+	@Api
 	public static final int NOTIFICATION =
 		6;
 
+	@Api
 	public static final int ORIENTATION_LANDSCAPE =
 		2;
 
+	@Api
 	public static final int ORIENTATION_LANDSCAPE_180 =
 		8;
 
+	@Api
 	public static final int ORIENTATION_PORTRAIT =
 		1;
 
+	@Api
 	public static final int ORIENTATION_PORTRAIT_180 =
 		4;
 
 	/** The mask and number of items that are permitted for soft-key items. */
+	@Api
 	public static final int SOFTKEY_INDEX_MASK =
 		15;
 
 	/** Displayed at the bottom of the screen. */
+	@Api
 	public static final int SOFTKEY_BOTTOM =
 		800;
 
 	/** Displayed on the left side of the screen. */
+	@Api
 	public static final int SOFTKEY_LEFT =
 		820;
 
 	/** Displayed at the top of the screen. */
+	@Api
 	public static final int SOFTKEY_TOP =
 		840;
 
 	/** Displayed on the right side of the screen. */
+	@Api
 	public static final int SOFTKEY_RIGHT =
 		860;
 
 	/** Displayed off-screen, using physical hardware buttons. */
+	@Api
 	public static final int SOFTKEY_OFFSCREEN =
 		880;
 
+	@Api
 	public static final int STATE_BACKGROUND =
 		0;
 
+	@Api
 	public static final int STATE_FOREGROUND =
 		2;
 
+	@Api
 	public static final int STATE_VISIBLE =
 		1;
 
+	@Api
 	public static final int SUPPORTS_ALERTS =
 		32;
 
+	@Api
 	public static final int SUPPORTS_COMMANDS =
 		2;
 
+	@Api
 	public static final int SUPPORTS_FILESELECTORS =
 		512;
 
+	@Api
 	public static final int SUPPORTS_FORMS =
 		4;
 
+	@Api
 	public static final int SUPPORTS_IDLEITEM =
 		2048;
 
 	/** This specifies that the display supports user input. */
+	@Api
 	public static final int SUPPORTS_INPUT_EVENTS =
 		1;
 
+	@Api
 	public static final int SUPPORTS_LISTS =
 		64;
 
+	@Api
 	public static final int SUPPORTS_MENUS =
 		1024;
 
+	@Api
 	public static final int SUPPORTS_ORIENTATION_LANDSCAPE =
 		8192;
 
+	@Api
 	@SuppressWarnings("FieldNamingConvention")
 	public static final int SUPPORTS_ORIENTATION_LANDSCAPE180 =
 		32768;
 
+	@Api
 	public static final int SUPPORTS_ORIENTATION_PORTRAIT =
 		4096;
 
+	@Api
 	public static final int SUPPORTS_ORIENTATION_PORTRAIT180 =
 		16384;
 
+	@Api
 	public static final int SUPPORTS_TABBEDPANES =
 		256;
 
+	@Api
 	public static final int SUPPORTS_TEXTBOXES =
 		128;
 
+	@Api
 	public static final int SUPPORTS_TICKER =
 		8;
 
+	@Api
 	public static final int SUPPORTS_TITLE =
 		16;
 
+	@Api
 	public static final int TAB =
 		4;
 	
@@ -286,6 +337,7 @@ public class Display
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/03
 	 */
+	@Api
 	public void callSerially(Runnable __run)
 		throws NullPointerException
 	{
@@ -305,6 +357,7 @@ public class Display
 	 * and the display is in the foreground, otherwise {@code false}.
 	 * @since 2019/10/05
 	 */
+	@Api
 	public boolean flashBacklight(int __ms)
 		throws IllegalArgumentException
 	{
@@ -334,6 +387,7 @@ public class Display
 	 * @return Either {@link #MODE_ACTIVE} or {@link #MODE_NORMAL}.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public int getActivityMode()
 	{
 		throw Debugging.todo();
@@ -357,6 +411,7 @@ public class Display
 	 * @throws IllegalArgumentException On null arguments.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public int getBestImageHeight(int __a)
 		throws IllegalArgumentException
 	{
@@ -381,12 +436,14 @@ public class Display
 	 * @throws IllegalArgumentException On null arguments.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public int getBestImageWidth(int __a)
 		throws IllegalArgumentException
 	{
 		return this.__bestImageSize(__a, false);
 	}
 	
+	@Api
 	public int getBorderStyle(boolean __a)
 	{
 		throw Debugging.todo();
@@ -403,6 +460,7 @@ public class Display
 	 * {@code 0} is returned then only a {@link Canvas} is supported.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public int getCapabilities()
 	{
 		// These are all standard and expected to always be supported
@@ -438,6 +496,7 @@ public class Display
 	 * @throws IllegalArgumentException If the specified color is not valid.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public int getColor(int __c)
 		throws IllegalArgumentException
 	{
@@ -489,6 +548,7 @@ public class Display
 	 * @return The current command layout policy, may be {@code null}.
 	 * @since 2020/09/27
 	 */
+	@Api
 	public CommandLayoutPolicy getCommandLayoutPolicy()
 	{
 		return this._layoutPolicy;
@@ -502,6 +562,7 @@ public class Display
 	 * @throws IllegalArgumentException If the command type is not valid.
 	 * @since 2020/09/27
 	 */
+	@Api
 	public int[] getCommandPreferredPlacements(int __ct)
 		throws IllegalArgumentException
 	{
@@ -519,6 +580,7 @@ public class Display
 	 * @return The current displayable or {@code null} if it is not set.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public Displayable getCurrent()
 	{
 		return this._current;
@@ -540,6 +602,7 @@ public class Display
 	 * @return The dot pitch in microns.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public int getDotPitch()
 	{
 		throw Debugging.todo();
@@ -566,6 +629,7 @@ public class Display
 	 * @throws IllegalArgumentException If the border is not valid.
 	 * @since 2020/09/27
 	 */
+	@Api
 	public int[] getExactPlacementPositions(int __b)
 		throws IllegalArgumentException
 	{
@@ -600,6 +664,7 @@ public class Display
 	 * @return The hardware state.
 	 * @since 2018/12/10
 	 */
+	@Api
 	public int getHardwareState()
 	{
 		throw Debugging.todo();
@@ -616,12 +681,14 @@ public class Display
 	 * @return The maximum display height.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public int getHeight()
 	{
 		return UIBackendFactory.getInstance(true)
 			.metric(_uiDisplay, UIMetricType.DISPLAY_MAX_HEIGHT);
 	}
 	
+	@Api
 	public IdleItem getIdleItem()
 	{
 		throw Debugging.todo();
@@ -633,6 +700,7 @@ public class Display
 	 * @return The preferred placements or {@code null} if there are none.
 	 * @since 2020/09/27
 	 */
+	@Api
 	public int[] getMenuPreferredPlacements()
 	{
 		// The preferred placements for menus are the same as the supported
@@ -646,6 +714,7 @@ public class Display
 	 * @return The list of supported menu item placements.
 	 * @since 2020/09/27
 	 */
+	@Api
 	public int[] getMenuSupportedPlacements()
 	{
 		// In SquirrelJME, commands and menus can only be placed along the
@@ -659,6 +728,7 @@ public class Display
 	 * @return The display orientation.
 	 * @since 2017/10/27
 	 */
+	@Api
 	public int getOrientation()
 	{
 		int width, height;
@@ -691,6 +761,7 @@ public class Display
 	 * @return The maximum display width.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public int getWidth()
 	{
 		return UIBackendFactory.getInstance(true)
@@ -703,6 +774,7 @@ public class Display
 	 * @return {@code true} if they are supported.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public boolean hasPointerEvents()
 	{
 		return (UIBackendFactory.getInstance(true).metric(_uiDisplay,
@@ -716,6 +788,7 @@ public class Display
 	 * @return {@code true} if they are supported.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public boolean hasPointerMotionEvents()
 	{
 		return (UIBackendFactory.getInstance(true).metric(_uiDisplay,
@@ -730,6 +803,7 @@ public class Display
 	 * @return {@code true} if it is built-in.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public boolean isBuiltIn()
 	{
 		throw Debugging.todo();
@@ -741,6 +815,7 @@ public class Display
 	 * @return {@code true} if color is supported.
 	 * @since 2016/10/14
 	 */
+	@Api
 	public boolean isColor()
 	{
 		return UIBackendFactory.getInstance(true).metric(_uiDisplay,
@@ -757,6 +832,7 @@ public class Display
 	 * @return The alpha transparency levels.
 	 * @since 2016/10/14
 	 */
+	@Api
 	@SuppressWarnings({"MagicNumber", "SwitchStatementWithTooFewBranches"})
 	public int numAlphaLevels()
 	{
@@ -784,6 +860,7 @@ public class Display
 	 * @return The number of available colors.
 	 * @since 2016/10/14
 	 */
+	@Api
 	@SuppressWarnings("MagicNumber")
 	public int numColors()
 	{
@@ -827,6 +904,7 @@ public class Display
 	 * 
 	 * @since 2020/10/04
 	 */
+	@Api
 	public void removeCurrent()
 	{
 		// Just performs the internal hiding logic
@@ -842,6 +920,7 @@ public class Display
 	 * @throws IllegalArgumentException If the specified mode is not valid.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public void setActivityMode(int __m)
 		throws IllegalArgumentException
 	{
@@ -858,6 +937,7 @@ public class Display
 			throw new IllegalArgumentException("EB1i");
 	}
 	
+	@Api
 	public void setCommandLayoutPolicy(CommandLayoutPolicy __clp)
 	{
 		throw Debugging.todo();
@@ -880,6 +960,7 @@ public class Display
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public void setCurrent(Alert __show, Displayable __exit)
 		throws DisplayCapabilityException, IllegalStateException,
 			NullPointerException
@@ -947,6 +1028,7 @@ public class Display
 	 * the displayable is associated with another display or tab pane.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public void setCurrent(Displayable __show)
 		throws DisplayCapabilityException, IllegalStateException
 	{
@@ -986,16 +1068,19 @@ public class Display
 		this.__doShowCurrent(__show);
 	}
 	
+	@Api
 	public void setCurrentItem(Item __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setIdleItem(IdleItem __i)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setPreferredOrientation(int __o)
 	{
 		throw Debugging.todo();
@@ -1021,6 +1106,7 @@ public class Display
 	 * @throws IllegalArgumentException If the duration is negative.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public boolean vibrate(int __d)
 		throws IllegalArgumentException
 	{
@@ -1286,6 +1372,7 @@ public class Display
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/24
 	 */
+	@Api
 	public static void addDisplayListener(DisplayListener __dl)
 		throws NullPointerException
 	{
@@ -1300,6 +1387,7 @@ public class Display
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public static Display getDisplay(MIDlet __m)
 		throws NullPointerException
 	{
@@ -1331,6 +1419,7 @@ public class Display
 	 * @throws IllegalStateException If there are no compatible displays.
 	 * @since 2016/10/08
 	 */
+	@Api
 	public static Display[] getDisplays(int __caps)
 		throws IllegalStateException
 	{
@@ -1384,6 +1473,7 @@ public class Display
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/24
 	 */
+	@Api
 	public static void removeDisplayListener(DisplayListener __dl)
 		throws IllegalStateException, NullPointerException
 	{

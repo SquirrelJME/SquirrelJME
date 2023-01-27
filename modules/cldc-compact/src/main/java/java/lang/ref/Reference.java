@@ -11,6 +11,7 @@ package java.lang.ref;
 
 import cc.squirreljme.jvm.mle.ReferenceShelf;
 import cc.squirreljme.jvm.mle.brackets.RefLinkBracket;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This class represents references which may be referred to using various
@@ -21,6 +22,7 @@ import cc.squirreljme.jvm.mle.brackets.RefLinkBracket;
  * @since 2018/09/23
  */
 @SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
+@Api
 public abstract class Reference<T>
 {
 	/** The chain-link for this reference. */
@@ -75,6 +77,7 @@ public abstract class Reference<T>
 	 *
 	 * @since 2018/09/23
 	 */
+	@Api
 	public void clear()
 	{
 		// Only unlink once
@@ -100,6 +103,7 @@ public abstract class Reference<T>
 	 * return false.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public boolean enqueue()
 	{
 		synchronized (this)
@@ -141,6 +145,7 @@ public abstract class Reference<T>
 	 * @return The reference of this object.
 	 * @since 2018/09/23
 	 */
+	@Api
 	@SuppressWarnings({"unchecked"})
 	public T get()
 	{
@@ -174,6 +179,7 @@ public abstract class Reference<T>
 	 * @return If this object was enqueued.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public boolean isEnqueued()
 	{
 		return this._enqueued;

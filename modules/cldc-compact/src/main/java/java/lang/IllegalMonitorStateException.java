@@ -9,12 +9,15 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is usually thrown when an attempt is made to use a monitor which is
  * not owned by the current thread.
  *
  * @since 2018/12/04
  */
+@Api
 public class IllegalMonitorStateException
 	extends RuntimeException
 {
@@ -23,6 +26,7 @@ public class IllegalMonitorStateException
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public IllegalMonitorStateException()
 	{
 	}
@@ -33,6 +37,7 @@ public class IllegalMonitorStateException
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public IllegalMonitorStateException(String __m)
 	{
 		super(__m);

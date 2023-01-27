@@ -10,20 +10,25 @@
 package jdk.dio.generic;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class GenericDeviceControl<T>
 {
+	@Api
 	public GenericDeviceControl(int __a, Class<T> __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getID()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public Class<T> getType()
 	{
 		throw Debugging.todo();

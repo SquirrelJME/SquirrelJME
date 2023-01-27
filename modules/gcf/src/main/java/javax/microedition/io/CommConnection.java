@@ -10,11 +10,17 @@
 package javax.microedition.io;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
+@Api
 public interface CommConnection
 	extends StreamConnection
 {
+	@Api
 	int getBaudRate();
 	
+	@Api
 	int setBaudRate(int __a);
 }
 

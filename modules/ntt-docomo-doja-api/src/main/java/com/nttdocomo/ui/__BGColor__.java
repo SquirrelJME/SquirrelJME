@@ -21,7 +21,7 @@ final class __BGColor__
 	
 	/**
 	 * Initializes the background color with an initial color.
-	 * 
+	 *
 	 * @param __bgColor The background color used.
 	 * @since 2022/02/14
 	 */

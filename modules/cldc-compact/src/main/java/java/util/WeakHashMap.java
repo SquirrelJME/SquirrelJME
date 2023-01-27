@@ -9,9 +9,11 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.ReferenceQueue;
 
+@Api
 public class WeakHashMap<K, V>
 	extends AbstractMap<K, V>
 	implements Map<K, V>
@@ -41,6 +43,7 @@ public class WeakHashMap<K, V>
 	 * load factor is not positive.
 	 * @since 2016/04/19
 	 */
+	@Api
 	public WeakHashMap(int __icap, float __load)
 		throws IllegalArgumentException
 	{
@@ -67,6 +70,7 @@ public class WeakHashMap<K, V>
 	 * @throws IllegalArgumentException If the capacity is negative.
 	 * @since 2016/04/19
 	 */
+	@Api
 	public WeakHashMap(int __icap)
 		throws IllegalArgumentException
 	{
@@ -79,6 +83,7 @@ public class WeakHashMap<K, V>
 	 *
 	 * @since 2016/04/19
 	 */
+	@Api
 	public WeakHashMap()
 	{
 		this(WeakHashMap._DEFAULT_CAPACITY, WeakHashMap._DEFAULT_LOAD);
@@ -92,6 +97,7 @@ public class WeakHashMap<K, V>
 	 * @throws NullPointerException If no map was specified.
 	 * @since 2016/04/19
 	 */
+	@Api
 	public WeakHashMap(Map<? extends K, ? extends V> __a)
 	{
 		// {@squirreljme.error ZZ35 No map to copy data from was specified.}

@@ -9,11 +9,14 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This class must be implemented by anything that listens for events.
  *
  * @since 2016/06/23
  */
+@Api
 public interface EventListener
 {
 }

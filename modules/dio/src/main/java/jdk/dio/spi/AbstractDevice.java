@@ -9,6 +9,7 @@
 
 package jdk.dio.spi;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import jdk.dio.ClosedDeviceException;
@@ -16,9 +17,12 @@ import jdk.dio.Device;
 import jdk.dio.DeviceDescriptor;
 import jdk.dio.UnavailableDeviceException;
 
+@SuppressWarnings("DuplicateThrows")
+@Api
 public abstract class AbstractDevice<P extends Device<? super P>>
 	implements Device<P>
 {
+	@Api
 	public AbstractDevice()
 	{
 		throw Debugging.todo();

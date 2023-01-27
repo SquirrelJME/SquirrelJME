@@ -23,8 +23,7 @@ import java.lang.ref.WeakReference;
 final class __ScratchPadParams__
 {
 	/** The maximum number of allowed scratch pads. */
-	public static final int MAX_SCRATCH_PADS =
-		16;
+	public static final int MAX_SCRATCH_PADS = 16;
 	
 	/** Declared parameters. */
 	private static volatile Reference<__ScratchPadParams__> _params;
@@ -34,7 +33,7 @@ final class __ScratchPadParams__
 	
 	/**
 	 * Initializes the parameters.
-	 * 
+	 *
 	 * @param __sizes The sizes to use for the scratch pads.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/01
@@ -50,7 +49,7 @@ final class __ScratchPadParams__
 	
 	/**
 	 * Returns the number of available scratch pads.
-	 * 
+	 *
 	 * @return The number of scratch pads available.
 	 * @since 2021/12/01
 	 */
@@ -61,7 +60,7 @@ final class __ScratchPadParams__
 	
 	/**
 	 * Gets the given scratch pad size.
-	 * 
+	 *
 	 * @param __i The index to get.
 	 * @return The size to use.
 	 * @throws IndexOutOfBoundsException If this is not a valid scratchpad.
@@ -75,7 +74,7 @@ final class __ScratchPadParams__
 	
 	/**
 	 * Loads the scratch pad parameters.
-	 * 
+	 *
 	 * @return The scratch pad parameters.
 	 * @since 2021/12/01
 	 */

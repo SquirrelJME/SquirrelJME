@@ -9,25 +9,33 @@
 
 package javax.microedition.media.control;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.media.Control;
 
+@Api
 public interface MetaDataControl
 	extends Control
 {
+	@Api
 	String AUTHOR_KEY =
 		"author";
 	
+	@Api
 	String COPYRIGHT_KEY =
 		"copyright";
 	
+	@Api
 	String DATE_KEY =
 		"date";
 	
+	@Api
 	String TITLE_KEY =
 		"title";
 	
+	@Api
 	String getKeyValue(String __a);
 	
+	@Api
 	String[] getKeys();
 }
 

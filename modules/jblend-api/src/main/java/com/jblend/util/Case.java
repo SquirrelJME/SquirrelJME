@@ -9,16 +9,19 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public final class Case
 {
-    public static final String toLower(String var0)
+	@Api
+	public static final String toLower(String var0)
 	{
 		throw Debugging.todo();
 	}
-
-    public static final String toUpper(String var0)
+	
+	@Api
+	public static final String toUpper(String var0)
 	{
 		throw Debugging.todo();
 	}

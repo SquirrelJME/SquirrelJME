@@ -9,6 +9,8 @@
 
 package java.lang.annotation;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This indicates that the specified annotation should be documented by the
  * Java documentation tool whenever it is used.
@@ -17,6 +19,7 @@ package java.lang.annotation;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.ANNOTATION_TYPE})
+@Api
 public @interface Documented
 {
 }

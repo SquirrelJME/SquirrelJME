@@ -9,6 +9,8 @@
 
 package com.oracle.json.stream;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * Provides location information on the source of the JSON data when an
  * event occurs. All information provided here is optional, and where any
@@ -16,6 +18,7 @@ package com.oracle.json.stream;
  *
  * @since 2014/07/25
  */
+@Api
 public interface JsonLocation
 {
 	/**
@@ -25,6 +28,7 @@ public interface JsonLocation
 	 * @return Column number or {@code -1}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	long getColumnNumber();
 	
 	/**
@@ -34,6 +38,7 @@ public interface JsonLocation
 	 * @return Line number or {@code -1}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	long getLineNumber();
 	
 	/**
@@ -43,6 +48,7 @@ public interface JsonLocation
 	 * @return Stream offset or {@code -1}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	long getStreamOffset();
 }
 

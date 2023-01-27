@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
@@ -20,6 +21,7 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackend;
  *
  * @since 2017/02/28
  */
+@Api
 public abstract class Screen
 	extends Displayable
 {

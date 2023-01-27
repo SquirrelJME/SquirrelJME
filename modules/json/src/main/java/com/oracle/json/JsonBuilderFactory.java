@@ -9,6 +9,7 @@
 
 package com.oracle.json;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.util.Map;
 
 /**
@@ -19,6 +20,8 @@ import java.util.Map;
  *
  * @since 2014/07/25
  */
+@Api
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface JsonBuilderFactory
 {
 	/**
@@ -28,6 +31,7 @@ public interface JsonBuilderFactory
 	 * @return A new array builder.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonArrayBuilder createArrayBuilder();
 	
 	/**
@@ -37,6 +41,7 @@ public interface JsonBuilderFactory
 	 * @return A new object builder.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonObjectBuilder createObjectBuilder();
 	
 	/**
@@ -47,6 +52,7 @@ public interface JsonBuilderFactory
 	 * empty but must never be {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	Map<String, ?> getConfigInUse();
 }
 

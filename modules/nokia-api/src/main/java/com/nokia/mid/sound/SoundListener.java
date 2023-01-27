@@ -15,7 +15,7 @@ import javax.microedition.media.PlayerListener;
 
 /**
  * This is a listener for any updates to sounds.
- * 
+ *
  * @see PlayerListener
  * @since 2022/02/03
  */
@@ -24,10 +24,10 @@ public interface SoundListener
 {
 	/**
 	 * Indicates when the state of a sound has changed.
-	 * 
+	 *
 	 * @param __sound The sound that changed.
 	 * @param __event What happened with this sound?
-	 * @see PlayerListener#playerUpdate(Player, String, Object) 
+	 * @see PlayerListener#playerUpdate(Player, String, Object)
 	 * @since 2022/02/03
 	 */
 	@ApiDefinedDeprecated()

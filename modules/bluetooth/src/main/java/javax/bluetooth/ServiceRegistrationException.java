@@ -9,17 +9,21 @@
 
 package javax.bluetooth;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
+@Api
 public class ServiceRegistrationException
 	extends IOException
 {
+	@Api
 	public ServiceRegistrationException()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@SuppressWarnings("unused")
 	public ServiceRegistrationException(String __s)
 	{

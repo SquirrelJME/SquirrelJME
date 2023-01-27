@@ -9,25 +9,37 @@
 
 package com.jblend.media;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface MediaImageOperator
 {
-    int getX();
-
-    int getY();
-
-    int getWidth();
-
-    int getHeight();
-
-    void setBounds(int var1, int var2, int var3, int var4);
-
-    int getOriginX();
-
-    int getOriginY();
-
-    void setOrigin(int var1, int var2);
-
-    int getMediaWidth();
-
-    int getMediaHeight();
+	@Api
+	int getX();
+	
+	@Api
+	int getY();
+	
+	@Api
+	int getWidth();
+	
+	@Api
+	int getHeight();
+	
+	@Api
+	void setBounds(int var1, int var2, int var3, int var4);
+	
+	@Api
+	int getOriginX();
+	
+	@Api
+	int getOriginY();
+	
+	@Api
+	void setOrigin(int var1, int var2);
+	
+	@Api
+	int getMediaWidth();
+	
+	@Api
+	int getMediaHeight();
 }

@@ -9,12 +9,15 @@
 
 package com.jblend.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
+@Api
 public class SimpleSerializeException
 	extends IOException
 {
+	@Api
     public SimpleSerializeException(String var1)
 	{
 		throw Debugging.todo();

@@ -9,12 +9,15 @@
 
 package java.nio.channels;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
+@Api
 public class ClosedChannelException
 	extends IOException
 {
+	@Api
 	public ClosedChannelException()
 	{
 		throw Debugging.todo();

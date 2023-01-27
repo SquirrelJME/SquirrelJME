@@ -21,6 +21,7 @@ import java.nio.file.StandardOpenOption;
  *
  * @since 2016/12/27
  */
+@SuppressWarnings("DuplicateThrows")
 public class FileChannelBlockAccessor
 	implements BlockAccessor
 {

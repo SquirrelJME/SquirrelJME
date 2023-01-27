@@ -9,11 +9,14 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when there is a divide by zero.
  *
  * @since 2018/12/04
  */
+@Api
 public class ArithmeticException
 	extends RuntimeException
 {
@@ -22,6 +25,7 @@ public class ArithmeticException
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public ArithmeticException()
 	{
 	}
@@ -32,6 +36,7 @@ public class ArithmeticException
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public ArithmeticException(String __m)
 	{
 		super(__m);

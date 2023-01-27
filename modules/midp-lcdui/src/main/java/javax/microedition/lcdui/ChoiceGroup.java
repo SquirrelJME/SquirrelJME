@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
@@ -22,6 +23,7 @@ import java.util.List;
  *
  * @since 2017/08/20
  */
+@Api
 public class ChoiceGroup
 	extends Item
 	implements Choice
@@ -50,6 +52,7 @@ public class ChoiceGroup
 	 * if {@link Choice#IMPLICIT} was specified.
 	 * @since 2017/08/20
 	 */
+	@Api
 	public ChoiceGroup(String __l, int __ct)
 		throws IllegalArgumentException
 	{
@@ -72,6 +75,7 @@ public class ChoiceGroup
 	 * elements.
 	 * @since 2017/08/20
 	 */
+	@Api
 	public ChoiceGroup(String __l, int __ct, String[] __se, Image[] __ie)
 		throws IllegalArgumentException, NullPointerException
 	{

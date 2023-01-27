@@ -9,6 +9,8 @@
 
 package javax.microedition.khronos.egl;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This stores an OpenGL ES configuration.
  *
@@ -17,6 +19,7 @@ package javax.microedition.khronos.egl;
  *
  * @since 2016/10/10
  */
+@Api
 public abstract class EGLConfig
 {
 }

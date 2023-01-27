@@ -10,16 +10,20 @@
 package javax.microedition.io.file;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class IllegalModeException
 	extends RuntimeException
 {
+	@Api
 	public IllegalModeException()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public IllegalModeException(String __a)
 	{
 		throw Debugging.todo();

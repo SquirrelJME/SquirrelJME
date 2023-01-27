@@ -9,21 +9,25 @@
 
 package javax.obex;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class PasswordAuthentication
 {
-	@SuppressWarnings("unused")
+	@Api
 	public PasswordAuthentication(byte[] __bytes, byte[] __bytes1)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public byte[] getPassword()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public byte[] getUserName()
 	{
 		throw Debugging.todo();

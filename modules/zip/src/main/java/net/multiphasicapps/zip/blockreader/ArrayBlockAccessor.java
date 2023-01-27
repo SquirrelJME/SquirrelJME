@@ -18,6 +18,7 @@ import java.io.IOException;
  *
  * @since 2016/12/27
  */
+@SuppressWarnings("DuplicateThrows")
 public class ArrayBlockAccessor
 	implements BlockAccessor
 {

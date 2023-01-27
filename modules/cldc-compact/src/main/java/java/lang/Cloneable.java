@@ -9,12 +9,15 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This represents an object which may be cloned via the {@link Object#clone()}
  * method.
  *
  * @since 2018/12/07
  */
+@Api
 public interface Cloneable
 {
 }

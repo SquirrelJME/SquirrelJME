@@ -10,8 +10,12 @@
 package jdk.dio.gpio;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface PortListener
 {
+	@Api
 	void valueChanged(PortEvent __a);
 }
 

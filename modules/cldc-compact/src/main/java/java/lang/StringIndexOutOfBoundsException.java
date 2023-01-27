@@ -9,12 +9,15 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when an attempt is made to read from an index within a string
  * which is not within bounds.
  *
  * @since 2018/09/16
  */
+@Api
 public class StringIndexOutOfBoundsException
 	extends IndexOutOfBoundsException
 {
@@ -23,6 +26,7 @@ public class StringIndexOutOfBoundsException
 	 *
 	 * @since 2018/09/16
 	 */
+	@Api
 	public StringIndexOutOfBoundsException()
 	{
 	}
@@ -33,6 +37,7 @@ public class StringIndexOutOfBoundsException
 	 * @param __dx The index to reference.
 	 * @since 2018/09/16
 	 */
+	@Api
 	public StringIndexOutOfBoundsException(int __dx)
 	{
 		// {@squirreljme.error ZZ1v String index out of bounds. (The index)}
@@ -45,6 +50,7 @@ public class StringIndexOutOfBoundsException
 	 * @param __m The message used.
 	 * @since 2018/09/16
 	 */
+	@Api
 	public StringIndexOutOfBoundsException(String __m)
 	{
 		super(__m);

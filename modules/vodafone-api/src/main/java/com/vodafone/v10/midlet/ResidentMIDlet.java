@@ -19,9 +19,9 @@ import javax.microedition.midlet.MIDlet;
 public abstract class ResidentMIDlet
 	extends MIDlet
 	implements TelephonyListener, MailListener, ScheduledAlarmListener,
-		RingStateListener
+	RingStateListener
 {
-    protected ResidentMIDlet()
+	protected ResidentMIDlet()
 	{
 		throw Debugging.todo();
 	}

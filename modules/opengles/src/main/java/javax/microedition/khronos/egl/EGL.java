@@ -10,6 +10,10 @@
 package javax.microedition.khronos.egl;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface EGL
 {
 }

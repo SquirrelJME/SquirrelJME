@@ -9,11 +9,14 @@
 
 package jdk.dio.mmio;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import jdk.dio.DeviceEventListener;
 
+@Api
 public interface MMIOEventListener
 	extends DeviceEventListener
 {
+	@Api
 	void eventDispatched(MMIOEvent __e);
 }
 

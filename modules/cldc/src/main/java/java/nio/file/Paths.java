@@ -9,12 +9,15 @@
 
 package java.nio.file;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This class provides a single static method which is used to create instances
  * of {@link Path} which represent native filesystem paths.
  *
  * @since 2017/06/12
  */
+@Api
 public final class Paths
 {
 	/**
@@ -38,6 +41,7 @@ public final class Paths
 	 * on the native system.
 	 * @since 2017/06/12
 	 */
+	@Api
 	public static Path get(String __a, String... __b)
 		throws InvalidPathException
 	{

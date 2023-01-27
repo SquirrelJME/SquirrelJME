@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.opengles;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.CanvasItem;
@@ -18,6 +19,7 @@ import javax.microedition.lcdui.CanvasItem;
  *
  * @since 2016/10/10
  */
+@Api
 public class DefaultDisplay
 	extends EGLDisplay
 {
@@ -36,6 +38,7 @@ public class DefaultDisplay
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/10
 	 */
+	@Api
 	public DefaultDisplay(Object __nd)
 		throws IllegalArgumentException, NullPointerException
 	{

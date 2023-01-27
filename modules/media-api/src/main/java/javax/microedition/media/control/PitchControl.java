@@ -9,17 +9,23 @@
 
 package javax.microedition.media.control;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.media.Control;
 
+@Api
 public interface PitchControl
 	extends Control
 {
+	@Api
 	int getMaxPitch();
 	
+	@Api
 	int getMinPitch();
 	
+	@Api
 	int getPitch();
 	
+	@Api
 	int setPitch(int __a);
 }
 

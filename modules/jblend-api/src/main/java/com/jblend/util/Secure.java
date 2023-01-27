@@ -9,19 +9,25 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public final class Secure
 {
-    public static final String javaPackageName = "java.";
-    public static final String javaxPackageName = "javax.";
-
-    public static void checkPackage()
+	@Api
+	public static final String javaPackageName = "java.";
+	
+	@Api
+	public static final String javaxPackageName = "javax.";
+	
+	@Api
+	public static void checkPackage()
 	{
 		throw Debugging.todo();
 	}
-
-    public static void checkPackage(String var0)
+	
+	@Api
+	public static void checkPackage(String var0)
 	{
 		throw Debugging.todo();
 	}

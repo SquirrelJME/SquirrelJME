@@ -9,6 +9,8 @@
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is attached to a resource which may be closed when it is no longer
  * required.
@@ -19,6 +21,7 @@ package java.io;
  *
  * @since 2016/04/12
  */
+@Api
 public interface Closeable
 	extends AutoCloseable
 {

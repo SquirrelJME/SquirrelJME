@@ -9,12 +9,22 @@
 
 package com.vodafone.v10.system.device;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface MailListener
 {
-    int SMS = 1;
-    int MMS = 2;
-    int CBS = 3;
-    int WEB = 4;
-
-    void received(int var1);
+	@Api
+	int SMS = 1;
+	
+	@Api
+	int MMS = 2;
+	
+	@Api
+	int CBS = 3;
+	
+	@Api
+	int WEB = 4;
+	
+	@Api
+	void received(int var1);
 }
