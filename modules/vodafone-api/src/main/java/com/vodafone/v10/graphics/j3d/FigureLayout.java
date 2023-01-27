@@ -12,13 +12,16 @@ package com.vodafone.v10.graphics.j3d;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class FigureLayout
 {
+	@Api
 	public FigureLayout()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public FigureLayout(AffineTrans var1, int var2, int var3, int var4,
 		int var5)
 	{

@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Enumeration;
 
+@Api
 public final class SimpleVector
 {
 	@Api
@@ -21,11 +22,13 @@ public final class SimpleVector
 	@Api
 	public int elementCount;
 	
+	@Api
 	public SimpleVector()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public SimpleVector(int var1)
 	{
 		throw Debugging.todo();

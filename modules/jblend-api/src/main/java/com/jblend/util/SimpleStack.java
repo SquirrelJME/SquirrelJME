@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Enumeration;
 
+@Api
 public final class SimpleStack
 {
 	@Api
@@ -21,11 +22,13 @@ public final class SimpleStack
 	@Api
 	public int size;
 	
+	@Api
 	public SimpleStack()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public SimpleStack(int var1)
 	{
 		throw Debugging.todo();

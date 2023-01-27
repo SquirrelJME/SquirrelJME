@@ -13,8 +13,10 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.midlet.MIDlet;
 
+@Api
 public class EventDispatcher
 {
+	@Api
 	public EventDispatcher()
 	{
 		throw Debugging.todo();

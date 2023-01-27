@@ -13,22 +13,26 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Enumeration;
 
+@Api
 public class Properties
 	extends StringKeyHashtable
 {
 	@Api
 	protected Properties defaults;
 	
+	@Api
 	public Properties()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public Properties(int var1)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public Properties(Properties var1)
 	{
 		throw Debugging.todo();

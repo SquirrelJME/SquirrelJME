@@ -14,21 +14,25 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.jblend.media.MediaData;
 import java.io.IOException;
 
+@Api
 public class VideoData
 	extends MediaData
 {
 	@Api
 	public static final String type = "VIDEO";
 	
+	@Api
 	public VideoData()
 	{
 	}
 	
+	@Api
 	public VideoData(String var1)
 		throws IOException
 	{
 	}
 	
+	@Api
 	public VideoData(byte[] var1)
 	{
 	}

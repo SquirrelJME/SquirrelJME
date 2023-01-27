@@ -19,6 +19,7 @@ import java.lang.ref.WeakReference;
  * @see javax.microedition.lcdui.Canvas
  * @since 2021/11/30
  */
+@Api
 public abstract class Canvas
 	extends Frame
 {
@@ -34,6 +35,7 @@ public abstract class Canvas
 	 *
 	 * @since 2022/02/14
 	 */
+	@Api
 	public Canvas()
 	{
 		// Needed to initialize the command listener 

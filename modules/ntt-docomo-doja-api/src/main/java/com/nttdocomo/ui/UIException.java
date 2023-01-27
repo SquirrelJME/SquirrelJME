@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
  *
  * @since 2021/11/30
  */
+@Api
 public class UIException
 	extends RuntimeException
 {
@@ -43,16 +44,19 @@ public class UIException
 	/** Represents the status of the exception. */
 	private final int _status;
 	
+	@Api
 	public UIException()
 	{
 		this(UIException.UNDEFINED);
 	}
 	
+	@Api
 	public UIException(int __status)
 	{
 		this(__status, null);
 	}
 	
+	@Api
 	public UIException(int __status, String __message)
 	{
 		super(__message);

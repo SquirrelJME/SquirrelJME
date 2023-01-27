@@ -12,6 +12,7 @@ package com.vodafone.v10.system.media;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class ResourceOperatorManager
 {
 	@Api
@@ -20,6 +21,7 @@ public class ResourceOperatorManager
 	@Api
 	public static final int IMAGE_RESOURCE = 1;
 	
+	@Api
 	public ResourceOperatorManager()
 	{
 		throw Debugging.todo();

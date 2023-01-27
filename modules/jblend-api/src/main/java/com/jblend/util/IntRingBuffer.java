@@ -13,18 +13,22 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
+@Api
 public class IntRingBuffer
 {
+	@Api
 	public IntRingBuffer()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public IntRingBuffer(int var1)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public IntRingBuffer(int var1, int var2)
 	{
 		throw Debugging.todo();

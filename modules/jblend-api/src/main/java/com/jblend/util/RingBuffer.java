@@ -13,19 +13,23 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
+@Api
 @SuppressWarnings("RedundantThrows")
 public final class RingBuffer
 {
+	@Api
 	public RingBuffer()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public RingBuffer(int var1)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public RingBuffer(int var1, int var2)
 	{
 		throw Debugging.todo();

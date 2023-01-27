@@ -13,19 +13,23 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
+@Api
 public abstract class MediaData
 {
+	@Api
 	public MediaData()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public MediaData(String var1)
 		throws IOException
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public MediaData(byte[] var1)
 	{
 		throw Debugging.todo();

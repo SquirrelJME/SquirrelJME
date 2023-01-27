@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.jblend.io.j2me.events.NativeMediaEventDispatcher;
 
+@Api
 public abstract class MediaPlayer
 {
 	@Api
@@ -36,6 +37,7 @@ public abstract class MediaPlayer
 	@Api
 	protected static final int REAL_HEIGHT = Debugging.<Integer>todoObject();
 	
+	@Api
 	public MediaPlayer()
 	{
 		throw Debugging.todo();

@@ -16,20 +16,24 @@ import com.jblend.media.MediaImageOperator;
 import com.jblend.media.MediaPlayer;
 import com.jblend.media.MediaPlayerListener;
 
+@Api
 public class VideoPlayer
 	extends MediaPlayer
 	implements MediaImageOperator
 {
+	@Api
 	public VideoPlayer()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public VideoPlayer(VideoData var1)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public VideoPlayer(byte[] var1)
 	{
 		throw Debugging.todo();

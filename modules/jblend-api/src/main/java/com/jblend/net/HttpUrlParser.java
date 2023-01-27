@@ -12,8 +12,10 @@ package com.jblend.net;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class HttpUrlParser
 {
+	@Api
 	public HttpUrlParser(String var1)
 		throws IllegalArgumentException
 	{

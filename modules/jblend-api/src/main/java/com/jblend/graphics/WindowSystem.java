@@ -12,6 +12,7 @@ package com.jblend.graphics;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class WindowSystem
 {
 	@Api
@@ -41,6 +42,7 @@ public class WindowSystem
 	@Api
 	public final int numSoftkeys;
 	
+	@Api
 	public WindowSystem()
 	{
 		throw Debugging.todo();

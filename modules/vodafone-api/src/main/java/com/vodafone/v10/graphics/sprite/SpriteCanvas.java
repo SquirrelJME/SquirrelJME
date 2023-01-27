@@ -13,9 +13,11 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Canvas;
 
+@Api
 public abstract class SpriteCanvas
 	extends Canvas
 {
+	@Api
 	public SpriteCanvas(int var1, int var2)
 	{
 		throw Debugging.todo();

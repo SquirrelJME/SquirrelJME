@@ -9,22 +9,26 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.jblend.io.SimpleObjectInputStream;
 import com.jblend.io.SimpleObjectOutputStream;
 import com.jblend.io.SimpleSerializable;
 import java.io.IOException;
 
+@Api
 public class Vector
 	extends java.util.Vector
 	implements SimpleSerializable
 {
+	@Api
     public Vector() {
         super(0, 0);
         
         throw Debugging.todo();
     }
 
+	@Api
     public Vector(int var1) {
         super(0, 0);
         

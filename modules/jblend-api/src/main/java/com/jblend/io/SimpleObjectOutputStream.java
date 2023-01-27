@@ -15,9 +15,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+@Api
 public class SimpleObjectOutputStream
 	extends DataOutputStream
 {
+	@Api
 	public SimpleObjectOutputStream(OutputStream var1)
 	{
 		super((OutputStream)null);

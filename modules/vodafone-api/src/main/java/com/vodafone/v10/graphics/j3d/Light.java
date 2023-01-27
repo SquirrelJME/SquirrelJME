@@ -12,13 +12,16 @@ package com.vodafone.v10.graphics.j3d;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class Light
 {
+	@Api
 	public Light()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public Light(Vector3D var1, int var2, int var3)
 	{
 		throw Debugging.todo();

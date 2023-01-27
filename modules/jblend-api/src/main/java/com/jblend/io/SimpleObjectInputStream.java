@@ -15,10 +15,12 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+@Api
 @SuppressWarnings("RedundantThrows")
 public class SimpleObjectInputStream
 	extends DataInputStream
 {
+	@Api
 	public SimpleObjectInputStream(InputStream var1)
 	{
 		super((InputStream)null);

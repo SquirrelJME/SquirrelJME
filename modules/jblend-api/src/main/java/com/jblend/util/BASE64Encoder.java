@@ -15,8 +15,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+@Api
 public class BASE64Encoder
 {
+	@Api
 	public BASE64Encoder()
 	{
 		throw Debugging.todo();

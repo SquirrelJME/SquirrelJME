@@ -12,6 +12,7 @@ package com.vodafone.v10.graphics.j3d;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class Vector3D
 {
 	@Api
@@ -23,11 +24,13 @@ public class Vector3D
 	@Api
 	public int z;
 	
+	@Api
 	public Vector3D()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public Vector3D(int var1, int var2, int var3)
 	{
 		throw Debugging.todo();

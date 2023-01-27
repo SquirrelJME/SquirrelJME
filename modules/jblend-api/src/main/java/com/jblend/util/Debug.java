@@ -12,11 +12,13 @@ package com.jblend.util;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public final class Debug
 {
 	@Api
 	public static final boolean WATCH_TIME = false;
 	
+	@Api
 	public Debug()
 	{
 		throw Debugging.todo();

@@ -12,8 +12,10 @@ package com.jblend.util;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public final class Hack
 {
+	@Api
 	public Hack()
 	{
 		throw Debugging.todo();

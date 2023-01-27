@@ -13,13 +13,16 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
+@Api
 public class Figure
 {
+	@Api
 	public Figure(byte[] var1)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public Figure(String var1)
 		throws IOException
 	{

@@ -15,19 +15,23 @@ import com.jblend.media.MediaData;
 import com.jblend.media.MediaPlayer;
 import com.jblend.media.MediaPlayerListener;
 
+@Api
 public class AudioPlayer
 	extends MediaPlayer
 {
+	@Api
 	public AudioPlayer()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public AudioPlayer(AudioData var1)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public AudioPlayer(byte[] var1)
 	{
 		throw Debugging.todo();

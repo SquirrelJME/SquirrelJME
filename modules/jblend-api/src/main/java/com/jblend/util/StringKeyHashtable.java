@@ -13,9 +13,11 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Hashtable;
 
+@Api
 public class StringKeyHashtable
 	extends Hashtable
 {
+	@Api
 	public StringKeyHashtable()
 	{
 		super(0, 0.0F);
@@ -23,6 +25,7 @@ public class StringKeyHashtable
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public StringKeyHashtable(int var1)
 	{
 		super(0, 0.0F);

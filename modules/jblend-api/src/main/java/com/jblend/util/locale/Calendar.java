@@ -12,8 +12,10 @@ package com.jblend.util.locale;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public final class Calendar
 {
+	@Api
 	public Calendar()
 	{
 		throw Debugging.todo();

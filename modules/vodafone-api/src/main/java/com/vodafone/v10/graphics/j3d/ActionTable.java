@@ -13,13 +13,16 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
+@Api
 public class ActionTable
 {
+	@Api
 	public ActionTable(byte[] var1)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public ActionTable(String var1)
 		throws IOException
 	{

@@ -48,6 +48,7 @@ public interface JsonWriter
 	 * called previously.
 	 * @since 2014/07/26
 	 */
+	@Api
 	void write(JsonStructure __v);
 	
 	/**

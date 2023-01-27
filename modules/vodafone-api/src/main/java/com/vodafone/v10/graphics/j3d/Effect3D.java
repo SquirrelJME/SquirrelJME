@@ -12,6 +12,7 @@ package com.vodafone.v10.graphics.j3d;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class Effect3D
 {
 	@Api
@@ -20,11 +21,13 @@ public class Effect3D
 	@Api
 	public static final int TOON_SHADING = 1;
 	
+	@Api
 	public Effect3D()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public Effect3D(Light var1, int var2, boolean var3, Texture var4)
 	{
 		throw Debugging.todo();

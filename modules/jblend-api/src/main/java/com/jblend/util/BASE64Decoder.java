@@ -15,9 +15,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+@Api
 @SuppressWarnings("RedundantThrows")
 public class BASE64Decoder
 {
+	@Api
 	public BASE64Decoder()
 	{
 		throw Debugging.todo();

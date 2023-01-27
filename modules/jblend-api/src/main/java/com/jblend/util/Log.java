@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
+@Api
 public final class Log
 {
 	@Api
@@ -23,6 +24,7 @@ public final class Log
 	@Api
 	public static final PrintStream err = Debugging.<PrintStream>todoObject();
 	
+	@Api
 	public Log()
 	{
 		throw Debugging.todo();

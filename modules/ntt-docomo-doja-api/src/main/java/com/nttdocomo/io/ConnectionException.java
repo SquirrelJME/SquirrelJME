@@ -17,6 +17,7 @@ import java.io.IOException;
  *
  * @since 2021/11/30
  */
+@Api
 public class ConnectionException
 	extends IOException
 {
@@ -65,6 +66,7 @@ public class ConnectionException
 	/** The error status. */
 	private final int _status;
 	
+	@Api
 	public ConnectionException(int __status)
 	{
 		this._status = __status;

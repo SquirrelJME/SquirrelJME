@@ -13,8 +13,10 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
+@Api
 public class Sound
 {
+	@Api
 	public Sound(String var1)
 		throws IOException
 	{
@@ -23,6 +25,7 @@ public class Sound
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public Sound(byte[] var1)
 	{
 		throw Debugging.todo();

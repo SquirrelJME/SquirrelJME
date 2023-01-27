@@ -12,13 +12,16 @@ package com.vodafone.v10.util;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class FixedPoint
 {
+	@Api
 	public FixedPoint()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public FixedPoint(int var1)
 	{
 		throw Debugging.todo();
