@@ -9,25 +9,29 @@
 
 package cc.squirreljme.plugin.multivm;
 
-import cc.squirreljme.plugin.util.FileLocation;
-import java.util.Collection;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Value;
 
 /**
- * Candidate test file sources.
+ * Default SummerCoat Variants.
  *
- * @since 2022/09/05
+ * @since 2022/09/30
  */
 @AllArgsConstructor
-@Value
-@Builder
-public class CandidateTestFileSource
+public enum BangletVariant
 {
-	/** Primary set of sources? */
-	public boolean primary;
+	/** None. */
+	NONE("", "none:none:none:none"),
 	
-	/** The files making up the sources. */
-	public Collection<FileLocation> collection;
+	/** Pure SummerCoat (only SummerCoat). */
+	SUMMERCOAT("Pure",
+		"summercoat:pure:summercoat:none"),
+	
+	/* End. */
+	;
+	
+	/** The title for this variant. */
+	public final String properNoun;
+	
+	/** The banglet for this variant. */
+	public final String banglet;
 }

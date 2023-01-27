@@ -7,27 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.plugin.multivm;
-
-import cc.squirreljme.plugin.util.FileLocation;
-import java.util.Collection;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Value;
-
 /**
- * Candidate test file sources.
+ * This package contains common identifiers.
  *
- * @since 2022/09/05
+ * @since 2022/10/01
  */
-@AllArgsConstructor
-@Value
-@Builder
-public class CandidateTestFileSource
-{
-	/** Primary set of sources? */
-	public boolean primary;
-	
-	/** The files making up the sources. */
-	public Collection<FileLocation> collection;
-}
+
+package cc.squirreljme.plugin.multivm.ident;

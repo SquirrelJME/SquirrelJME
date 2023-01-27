@@ -11,6 +11,7 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.general.UpdateFossilJavaDoc;
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.tasks.AdditionalManifestPropertiesTask;
 import cc.squirreljme.plugin.tasks.GenerateTestsListTask;
 import cc.squirreljme.plugin.tasks.JasminAssembleTask;
@@ -205,6 +206,26 @@ public final class TaskInitialization
 		if (__project == null || __sourceSet == null || __vmType == null)
 			throw new NullPointerException("NARG");
 		
+		for (BangletVariant variant : __vmType.banglets())
+			TaskInitialization.initialize(__project,
+				new SourceTargetClassifier(__sourceSet, __vmType, variant));
+	}
+	
+	/**
+	 * Initializes the virtual machine for the given project's sourceset.
+	 * 
+	 * @param __project The project to initialize for.
+	 * @param __classifier The classifier used.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2020/08/07
+	 */
+	public static void initialize(Project __project,
+		SourceTargetClassifier __classifier)
+		throws NullPointerException
+	{
+		if (__project == null || __classifier == null)
+			throw new NullPointerException("NARG");
+		
 		// Everything will be working on these tasks
 		TaskContainer tasks = __project.getTasks();
 		
@@ -212,13 +233,14 @@ public final class TaskInitialization
 		try
 		{
 			__project.getConvention().getPlugin(JavaPluginConvention.class)
-				.getSourceSets().getByName(__sourceSet);
+				.getSourceSets().getByName(__classifier.getSourceSet());
 		}
 		catch (UnknownDomainObjectException e)
 		{
 			__project.getLogger().debug(String.format(
 				"Could not find sourceSet %s in project %s (available: %s)",
-				__sourceSet, __project.getPath(), new ArrayList<>(
+				__classifier.getSourceSet(), __project.getPath(),
+				new ArrayList<>(
 					__project.getConvention()
 					.getPlugin(JavaPluginConvention.class).getSourceSets())),
 				e);
@@ -226,40 +248,40 @@ public final class TaskInitialization
 		
 		// Library that needs to be constructed so execution happens properly
 		VMLibraryTask libTask = tasks.create(
-			TaskInitialization.task("lib", __sourceSet, __vmType),
-			VMLibraryTask.class, __sourceSet, __vmType);
+			TaskInitialization.task("lib", __classifier),
+			VMLibraryTask.class, __classifier);
 		
 		// Is dumping available?
-		if (__vmType.hasDumping())
+		if (__classifier.getVmType().hasDumping())
 			tasks.create(
-				TaskInitialization.task("dump", __sourceSet, __vmType),
-				VMDumpLibraryTask.class, __sourceSet, __vmType, libTask);
+				TaskInitialization.task("dump", __classifier),
+				VMDumpLibraryTask.class, __classifier, libTask);
 		
 		// Running the target
-		if (__sourceSet.equals(SourceSet.MAIN_SOURCE_SET_NAME))
+		if (__classifier.isMainSourceSet())
 			tasks.create(
-				TaskInitialization.task("run", __sourceSet, __vmType),
-				VMRunTask.class, __sourceSet, __vmType, libTask);
+				TaskInitialization.task("run", __classifier),
+				VMRunTask.class, __classifier, libTask);
 		
 		// Testing the target
-		else if (__sourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME))
+		else if (__classifier.isTestSourceSet())
 		{
 			Task vmTest;
 			String taskName = TaskInitialization.task("test",
-				__sourceSet, __vmType);
+				__classifier);
 			
 			// Creating the legacy or modern test task? Using the modern one
 			// is recommended if using IntelliJ or otherwise...
 			if (TaskInitialization.LEGACY_TEST_FRAMEWORK)
 				vmTest = tasks.create(taskName,
-					VMLegacyTestTask.class, __sourceSet, __vmType, libTask);
+					VMLegacyTestTask.class, __classifier, libTask);
 			else
 				vmTest = tasks.create(taskName,
-					VMModernTestTask.class, __sourceSet, __vmType, libTask);
+					VMModernTestTask.class, __classifier, libTask);
 			
 			// Make the standard test task depend on these two VM tasks
 			// so that way if it is run, both are run accordingly
-			if (__vmType == VMType.HOSTED || __vmType == VMType.SPRINGCOAT)
+			if (__classifier.getVmType().isGoldTest())
 			{
 				Test test = (Test)__project.getTasks().getByName("test");
 				
@@ -318,9 +340,11 @@ public final class TaskInitialization
 			throw new NullPointerException("NARG");
 		
 		for (VMType vmType : VMType.values())
-			for (String sourceSet : TaskInitialization._SOURCE_SETS)
-				TaskInitialization.initializeFullSuiteTask(__project,
-					sourceSet, vmType);
+			for (BangletVariant variant : vmType.banglets())
+				for (String sourceSet : TaskInitialization._SOURCE_SETS)
+					TaskInitialization.initializeFullSuiteTask(__project,
+						new SourceTargetClassifier(sourceSet, vmType,
+							variant));
 	}
 	
 	/**
@@ -329,22 +353,21 @@ public final class TaskInitialization
 	 * launching.
 	 * 
 	 * @param __project The root project.
-	 * @param __sourceSet Source set used.
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/17
 	 */
 	private static void initializeFullSuiteTask(Project __project,
-		String __sourceSet, VMType __vmType)
+		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__project == null || __sourceSet == null || __vmType == null)
+		if (__project == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
 		// Standard ROM
 		__project.getTasks().create(
-			TaskInitialization.task("full", __sourceSet, __vmType),
-			VMFullSuite.class, __sourceSet, __vmType);
+			TaskInitialization.task("full", __classifier),
+			VMFullSuite.class, __classifier);
 	}
 	
 	/**
@@ -385,9 +408,12 @@ public final class TaskInitialization
 		
 		// We are using a specific classpath, in this case it is just
 		// SpringCoat's libraries for runtime
+		SourceTargetClassifier classifier = new SourceTargetClassifier(
+			SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT,
+			BangletVariant.NONE);
 		FileCollection useClassPath = __project.files(
 			(Object[])VMHelpers.runClassPath(__project,
-				SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT));
+				classifier));
 				
 		// We need to know how to make the classes
 		Task classes = __project.getTasks().getByName(TaskInitialization.task(
@@ -401,8 +427,8 @@ public final class TaskInitialization
 		// SpringCoat related tasks
 		Provider<Iterable<Task>> springCoatTasks = __project.provider(() ->
 			VMHelpers.<Task>resolveProjectTasks(
-			Task.class, __project, VMHelpers.runClassTasks(__project,
-			SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT)));
+				Task.class, __project, VMHelpers.runClassTasks(__project,
+				classifier)));
 		
 		// Classes need to compile first, and we need the doclet Jar too
 		// However we do not know it exists yet
@@ -541,23 +567,25 @@ public final class TaskInitialization
 		// Initialize or both main classes and such
 		for (String sourceSet : TaskInitialization._SOURCE_SETS)
 			for (VMType vmType : VMType.values())
-				TaskInitialization.romTasks(__project, sourceSet, vmType);
+				for (BangletVariant variant : vmType.banglets())
+					TaskInitialization.romTasks(__project,
+						new SourceTargetClassifier(sourceSet, vmType,
+							variant));
 	}
 	
 	/**
 	 * Initializes ROM tasks for the given base project.
 	 * 
 	 * @param __project The root project.
-	 * @param __sourceSet The source set to use.
-	 * @param __vmType The virtual machine type used.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/23
 	 */
-	private static void romTasks(Project __project, String __sourceSet,
-		VMType __vmType)
+	private static void romTasks(Project __project,
+		SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__project == null || __sourceSet == null || __vmType == null)
+		if (__project == null || __classifier == null)
 			throw new NullPointerException("NARG");
 			
 		// Everything will be working on these tasks
@@ -566,17 +594,18 @@ public final class TaskInitialization
 		// Does the VM utilize ROMs?
 		// Test fixtures are just for testing, so there is no test fixtures
 		// ROM variant...
-		if (__vmType.hasRom() &&
-			!__sourceSet.equals(VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME))
+		if (__classifier.getVmType()
+			.hasRom(__classifier.getBangletVariant()) &&
+			!__classifier.isTestFixturesSourceSet())
 		{
 			String baseName = TaskInitialization.task("rom",
-				__sourceSet, __vmType);
-			VMRomTask rom = tasks.create(baseName,
-				VMRomTask.class, __sourceSet, __vmType);
+				__classifier);
+			VMRomTask rom = tasks.create(baseName, VMRomTask.class,
+				__classifier);
 			
 			// Full RatufaCoat Built-In
 			__project.getTasks().create(baseName + "RatufaCoat",
-				RatufaCoatBuiltInTask.class,  __sourceSet, __vmType, rom);
+				RatufaCoatBuiltInTask.class,  __classifier, rom);
 		}
 	}
 	
@@ -660,11 +689,54 @@ public final class TaskInitialization
 		VMSpecifier __vmType)
 		throws NullPointerException
 	{
-		if (__name == null || __sourceSet == null || __vmType == null)
+		return TaskInitialization.task(__name, __sourceSet, __vmType,
+			BangletVariant.NONE);
+	}
+	
+	/**
+	 * Initializes the task name.
+	 * 
+	 * @param __name The name of the task.
+	 * @param __classifier The classifier for the target.
+	 * @return The task name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/10/01
+	 */
+	public static String task(String __name,
+		SourceTargetClassifier __classifier)
+		throws NullPointerException
+	{
+		if (__name == null || __classifier == null)
+			throw new NullPointerException("NARG");
+		
+		return TaskInitialization.task(__name,
+			__classifier.getSourceSet(),
+			__classifier.getTargetClassifier().getVmType(),
+			__classifier.getTargetClassifier().getBangletVariant());
+	}
+	
+	/**
+	 * Builds a name for a task.
+	 * 
+	 * @param __name The task name.
+	 * @param __sourceSet The source set for the task base.
+	 * @param __vmType The type of virtual machine used.
+	 * @param __variant The banglet variant.
+	 * @return A string representing the task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/10/01
+	 */
+	public static String task(String __name, String __sourceSet,
+		VMSpecifier __vmType, BangletVariant __variant)
+		throws NullPointerException
+	{
+		if (__name == null || __sourceSet == null || __vmType == null ||
+			__variant == null)
 			throw new NullPointerException("NARG");
 		
 		return TaskInitialization.task(__name, __sourceSet) +
-			__vmType.vmName(VMNameFormat.PROPER_NOUN);
+			__vmType.vmName(VMNameFormat.PROPER_NOUN) +
+			TaskInitialization.uppercaseFirst(__variant.properNoun);
 	}
 	
 	/**

@@ -32,7 +32,7 @@ public interface VMLibraryExecuteFunction
 	 * @throws IOException Any read/write errors.
 	 * @since 2021/05/16
 	 */
-	void function(Task __task, boolean __isTest, InputStream __in,
+	void function(VMBaseTask __task, boolean __isTest, InputStream __in,
 		OutputStream __out)
 		throws IOException;
 }
