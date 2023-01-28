@@ -9,38 +9,48 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
+
 /**
  * Special user interface constants.
  *
  * @since 2020/09/21
  */
+@Exported
 public interface UISpecialCode
 {
 	/** Fire repaint. */
+	@Exported
 	byte REPAINT_EXECUTE =
 		0x0;
 	
 	/** Repaint X Coordinate ({@link UIWidgetProperty#INT_SIGNAL_REPAINT}. */
+	@Exported
 	int REPAINT_KEY_X =
 		0x1_0000000;
 	
 	/** Repaint Y Coordinate ({@link UIWidgetProperty#INT_SIGNAL_REPAINT}. */
+	@Exported
 	int REPAINT_KEY_Y =
 		0x2_0000000;
 	
 	/** Repaint Width ({@link UIWidgetProperty#INT_SIGNAL_REPAINT}. */
+	@Exported
 	int REPAINT_KEY_WIDTH =
 		0x3_0000000;
 	
 	/** Repaint Height ({@link UIWidgetProperty#INT_SIGNAL_REPAINT}. */
+	@Exported
 	int REPAINT_KEY_HEIGHT =
 		0x4_0000000;
 	
 	/** Repaint Key Mask ({@link UIWidgetProperty#INT_SIGNAL_REPAINT}. */
+	@Exported
 	int REPAINT_KEY_MASK =
 		0xF_0000000;
 	
 	/** Repaint Key Value ({@link UIWidgetProperty#INT_SIGNAL_REPAINT}. */
+	@Exported
 	int REPAINT_VALUE_MASK =
 		0x0_FFFFFFF;
 }

@@ -10,12 +10,14 @@
 package cc.squirreljme.jvm.mle.brackets;
 
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * This represents a resource within a JAR file.
  *
  * @since 2020/06/07
  */
+@Exported
 @GhostObject
 public interface JarResourceBracket
 {

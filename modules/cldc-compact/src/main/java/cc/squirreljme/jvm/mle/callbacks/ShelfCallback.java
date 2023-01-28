@@ -9,11 +9,14 @@
 
 package cc.squirreljme.jvm.mle.callbacks;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
+
 /**
  * This is the base class for shelf callbacks.
  *
  * @since 2020/07/03
  */
+@Exported
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface ShelfCallback
 {

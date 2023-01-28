@@ -10,12 +10,14 @@
 package cc.squirreljme.jvm.mle.brackets;
 
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * This represents a single point of tracing within the virtual machine.
  *
  * @since 2020/06/11
  */
+@Exported
 @GhostObject
 public interface TracePointBracket
 {

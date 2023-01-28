@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle.brackets;
 
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * This represents a form as a whole, it is displayed with
@@ -19,6 +20,7 @@ import cc.squirreljme.jvm.mle.annotation.GhostObject;
  *
  * @since 2020/07/01
  */
+@Exported
 @GhostObject
 public interface UIFormBracket
 	extends UIWidgetBracket

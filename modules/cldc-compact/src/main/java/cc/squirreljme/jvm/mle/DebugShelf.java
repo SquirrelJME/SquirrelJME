@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * This is the shelf used for accessing the debugging features of SquirrelJME
@@ -18,9 +19,11 @@ import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
  *
  * @since 2020/06/11
  */
+@Exported
 public final class DebugShelf
 {
 	/** Verbose ID for internal threads. */
+	@Exported
 	public static final int INTERNAL_THREAD_VERBOSE_ID =
 		Integer.MIN_VALUE;
 	
@@ -40,6 +43,7 @@ public final class DebugShelf
 	 * @return The trace that was within the given throwable.
 	 * @since 2020/06/11
 	 */
+	@Exported
 	public static native TracePointBracket[] getThrowableTrace(Throwable __t);
 	
 	/**
@@ -49,6 +53,7 @@ public final class DebugShelf
 	 * @return The address.
 	 * @since 2020/06/16
 	 */
+	@Exported
 	public static native long pointAddress(TracePointBracket __point);
 	
 	/**
@@ -58,6 +63,7 @@ public final class DebugShelf
 	 * @return The class.
 	 * @since 2020/06/16
 	 */
+	@Exported
 	public static native String pointClass(TracePointBracket __point);
 	
 	/**
@@ -67,6 +73,7 @@ public final class DebugShelf
 	 * @return The file.
 	 * @since 2020/06/16
 	 */
+	@Exported
 	public static native String pointFile(TracePointBracket __point);
 	
 	/**
@@ -76,6 +83,7 @@ public final class DebugShelf
 	 * @return The Java address.
 	 * @since 2020/06/16
 	 */
+	@Exported
 	public static native int pointJavaAddress(TracePointBracket __point);
 	
 	/**
@@ -85,6 +93,7 @@ public final class DebugShelf
 	 * @return The Java operation.
 	 * @since 2020/06/16
 	 */
+	@Exported
 	public static native int pointJavaOperation(TracePointBracket __point);
 	
 	/**
@@ -94,6 +103,7 @@ public final class DebugShelf
 	 * @return The line.
 	 * @since 2020/06/16
 	 */
+	@Exported
 	public static native int pointLine(TracePointBracket __point);
 	
 	/**
@@ -103,6 +113,7 @@ public final class DebugShelf
 	 * @return The method name.
 	 * @since 2020/06/16
 	 */
+	@Exported
 	public static native String pointMethodName(TracePointBracket __point);
 	
 	/**
@@ -112,6 +123,7 @@ public final class DebugShelf
 	 * @return The method type.
 	 * @since 2020/06/16
 	 */
+	@Exported
 	public static native String pointMethodType(TracePointBracket __point);
 	
 	/**
@@ -121,6 +133,7 @@ public final class DebugShelf
 	 * @return The stack trace.
 	 * @since 2020/06/11
 	 */
+	@Exported
 	public static native TracePointBracket[] traceStack();
 	
 	/**
@@ -136,6 +149,7 @@ public final class DebugShelf
 	 * @return An integer to be passed to {@link DebugShelf#verboseStop(int)}.
 	 * @since 2020/07/11
 	 */
+	@Exported
 	public static native int verbose(int __flags);
 	
 	/**
@@ -154,6 +168,7 @@ public final class DebugShelf
 	 * can be passed to {@link DebugShelf#verboseStop(int)}.
 	 * @since 2022/06/12
 	 */
+	@Exported
 	public static native int verboseInternalThread(int __flags);
 	
 	/**
@@ -167,5 +182,6 @@ public final class DebugShelf
 	 * threads.
 	 * @since 2020/07/11
 	 */
+	@Exported
 	public static native void verboseStop(int __code);
 }

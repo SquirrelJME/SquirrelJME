@@ -9,22 +9,28 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
+
 /**
  * The status on what a {@link Thread} is doing.
  *
  * @since 2021/03/15
  */
+@Exported
 public interface ThreadStatusType
 {
 	/** Running. */
+	@Exported
 	byte RUNNING =
 		0;
 	
 	/** Sleeping. */
+	@Exported
 	byte SLEEPING =
 		1;
 	
 	/** Waiting on a monitor. */
+	@Exported
 	byte MONITOR_WAIT =
 		2;
 }

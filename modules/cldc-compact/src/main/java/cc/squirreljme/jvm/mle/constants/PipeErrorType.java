@@ -9,22 +9,28 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
+
 /**
  * Represents the type of error that occurred on a pipe.
  *
  * @since 2020/07/06
  */
+@Exported
 public interface PipeErrorType
 {
 	/** No error. */
+	@Exported
 	byte NO_ERROR =
 		0;
 	
 	/** End of file reached. */
+	@Exported
 	byte END_OF_FILE =
 		-1;
 	
 	/** Read/write error. */
+	@Exported
 	byte IO_EXCEPTION =
 		-2;
 }

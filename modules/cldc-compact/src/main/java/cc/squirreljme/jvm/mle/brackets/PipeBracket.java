@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle.brackets;
 
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * This represents a pipe that contains a connection to either the terminal,
@@ -17,6 +18,7 @@ import cc.squirreljme.jvm.mle.annotation.GhostObject;
  *
  * @since 2022/03/19
  */
+@Exported
 @GhostObject
 public interface PipeBracket
 {

@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle.brackets;
 
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * This represents a single display head which {@link UIFormBracket}s may be
@@ -17,6 +18,7 @@ import cc.squirreljme.jvm.mle.annotation.GhostObject;
  *
  * @since 2020/07/01
  */
+@Exported
 @GhostObject
 public interface UIDisplayBracket
 	extends UIDrawableBracket

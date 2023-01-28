@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle.brackets;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * This bracket represents extra information regarding threads and otherwise.
@@ -18,6 +19,7 @@ import cc.squirreljme.jvm.mle.annotation.GhostObject;
  * @see ThreadShelf
  * @since 2020/06/17
  */
+@Exported
 @GhostObject
 public interface VMThreadBracket
 {

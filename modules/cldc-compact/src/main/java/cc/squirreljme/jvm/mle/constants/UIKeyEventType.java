@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle.constants;
 
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * Key events for
@@ -17,25 +18,31 @@ import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
  *
  * @since 2020/07/19
  */
+@Exported
 public interface UIKeyEventType
 {
 	/** Key pressed. */
+	@Exported
 	byte KEY_PRESSED =
 		0;
 	
 	/** Key released. */
+	@Exported
 	byte KEY_RELEASE =
 		1;
 	
 	/** Key repeated. */
+	@Exported
 	byte KEY_REPEATED =
 		2;
 	
 	/** Command activated (special). */
+	@Exported
 	byte COMMAND_ACTIVATED =
 		3;
 	
 	/** The number of key events. */
+	@Exported
 	byte NUM_KEY_EVENTS =
 		4;
 }

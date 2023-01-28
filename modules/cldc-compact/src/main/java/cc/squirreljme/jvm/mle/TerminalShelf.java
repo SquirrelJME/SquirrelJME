@@ -13,12 +13,14 @@ import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * This contains the shell for printing to the console and otherwise.
  *
  * @since 2020/06/14
  */
+@Exported
 public final class TerminalShelf
 {
 	/**
@@ -39,6 +41,7 @@ public final class TerminalShelf
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2020/11/22
 	 */
+	@Exported
 	public static native int available(PipeBracket __fd)
 		throws MLECallError;
 	
@@ -50,6 +53,7 @@ public final class TerminalShelf
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2020/07/02
 	 */
+	@Exported
 	public static native int close(PipeBracket __fd)
 		throws MLECallError;
 	
@@ -61,6 +65,7 @@ public final class TerminalShelf
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2018/12/08
 	 */
+	@Exported
 	public static native int flush(PipeBracket __fd)
 		throws MLECallError;
 	
@@ -74,6 +79,7 @@ public final class TerminalShelf
 	 * valid.
 	 * @since 2022/03/19
 	 */
+	@Exported
 	public static native PipeBracket fromStandard(int __fd)
 		throws MLECallError;
 	
@@ -90,6 +96,7 @@ public final class TerminalShelf
 	 * {@code null}.
 	 * @since 2018/12/05
 	 */
+	@Exported
 	public static native int read(PipeBracket __fd,
 		byte[] __b, int __o, int __l)
 		throws MLECallError;
@@ -103,6 +110,7 @@ public final class TerminalShelf
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2018/09/21
 	 */
+	@Exported
 	public static native int write(PipeBracket __fd, int __c)
 		throws MLECallError;
 	
@@ -119,6 +127,7 @@ public final class TerminalShelf
 	 * {@code null}.
 	 * @since 2018/12/05
 	 */
+	@Exported
 	public static native int write(PipeBracket __fd,
 		byte[] __b, int __o, int __l)
 		throws MLECallError;

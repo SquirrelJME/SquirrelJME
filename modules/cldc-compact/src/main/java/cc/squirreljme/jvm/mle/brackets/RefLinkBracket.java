@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle.brackets;
 
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * This contains a reference to an object that is not bound strongly to a
@@ -19,6 +20,7 @@ import cc.squirreljme.jvm.mle.annotation.GhostObject;
  *
  * @since 2020/05/30
  */
+@Exported
 @GhostObject
 public interface RefLinkBracket
 {

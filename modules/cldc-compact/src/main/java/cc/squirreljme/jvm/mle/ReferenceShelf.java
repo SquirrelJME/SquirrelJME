@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.RefLinkBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * This provides the interface for references which are used to weakly refer
@@ -19,6 +20,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
  * @see RefLinkBracket
  * @since 2020/05/30
  */
+@Exported
 public final class ReferenceShelf
 {
 	/**
@@ -36,6 +38,7 @@ public final class ReferenceShelf
 	 * @param __link The link to delete.
 	 * @since 2020/05/30
 	 */
+	@Exported
 	public static native void deleteLink(RefLinkBracket __link);
 	
 	/**
@@ -46,6 +49,7 @@ public final class ReferenceShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2022/09/01
 	 */
+	@Exported
 	public static native void linkChain(RefLinkBracket __thisLink,
 		Object __forObject)
 		throws MLECallError;
@@ -57,6 +61,7 @@ public final class ReferenceShelf
 	 * @return The next link or {@code null} if there is none.
 	 * @since 2020/05/30
 	 */
+	@Exported
 	public static native RefLinkBracket linkGetNext(RefLinkBracket __link);
 	
 	/**
@@ -67,6 +72,7 @@ public final class ReferenceShelf
 	 * is no pointed object.
 	 * @since 2020/05/30
 	 */
+	@Exported
 	public static native Object linkGetObject(RefLinkBracket __link);
 	
 	/**
@@ -76,6 +82,7 @@ public final class ReferenceShelf
 	 * @return The previous link or {@code null} if there is none.
 	 * @since 2020/05/30
 	 */
+	@Exported
 	public static native RefLinkBracket linkGetPrev(RefLinkBracket __link);
 	
 	/**
@@ -86,6 +93,7 @@ public final class ReferenceShelf
 	 * @deprecated Do not use.
 	 * @since 2020/05/30
 	 */
+	@Exported
 	@Deprecated
 	public static native void linkSetNext(RefLinkBracket __link,
 		RefLinkBracket __next);
@@ -97,6 +105,7 @@ public final class ReferenceShelf
 	 * @param __v The object to set to, may be {@code null}.
 	 * @since 2020/05/30
 	 */
+	@Exported
 	public static native void linkSetObject(RefLinkBracket __link, Object __v);
 	
 	/**
@@ -106,6 +115,7 @@ public final class ReferenceShelf
 	 * @param __prev The new link to set, may be {@code null} to clear.
 	 * @since 2020/05/30
 	 */
+	@Exported
 	public static native void linkSetPrev(RefLinkBracket __link,
 		RefLinkBracket __prev);
 	
@@ -116,6 +126,7 @@ public final class ReferenceShelf
 	 * @throws MLECallError If the links could not be unchained.
 	 * @since 2022/09/01
 	 */
+	@Exported
 	public static native void linkUnchain(RefLinkBracket __link)
 		throws MLECallError;
 	
@@ -126,6 +137,7 @@ public final class ReferenceShelf
 	 * @throws MLECallError If the link is null or could not be unchained.
 	 * @since 2022/10/08
 	 */
+	@Exported
 	public static native void linkUnlinkAndClear(RefLinkBracket __link)
 		throws MLECallError;
 	
@@ -135,6 +147,7 @@ public final class ReferenceShelf
 	 * @return The newly created reference link.
 	 * @since 2020/05/30
 	 */
+	@Exported
 	public static native RefLinkBracket newLink();
 	
 	/**
@@ -144,6 +157,7 @@ public final class ReferenceShelf
 	 * @return The link of the object or {@code null} if there is none.
 	 * @since 2020/05/30
 	 */
+	@Exported
 	public static native RefLinkBracket objectGet(Object __o);
 	
 	/**
@@ -153,5 +167,6 @@ public final class ReferenceShelf
 	 * @param __link The link to set to it.
 	 * @since 2020/05/30
 	 */
+	@Exported
 	public static native void objectSet(Object __o, RefLinkBracket __link);
 }

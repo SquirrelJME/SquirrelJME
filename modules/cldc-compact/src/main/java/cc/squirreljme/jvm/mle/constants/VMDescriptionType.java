@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.security.AccessController;
 
 /**
@@ -16,45 +17,56 @@ import java.security.AccessController;
  *
  * @since 2020/06/17
  */
+@Exported
 public interface VMDescriptionType
 {
 	/** Unspecified. */
+	@Exported
 	byte UNSPECIFIED =
 		0;
 	
 	/** The VM version. */
+	@Exported
 	byte VM_VERSION =
 		1;
 	
 	/** The VM name. */
+	@Exported
 	byte VM_NAME =
 		2;
 	
 	/** The VM Vendor. */
+	@Exported
 	byte VM_VENDOR =
 		3;
 	
 	/** The VM E-mail. */
+	@Exported
 	byte VM_EMAIL =
 		4;
 	
 	/** The VM URL. */
+	@Exported
 	byte VM_URL =
 		5;
 	
 	/** The executable path of the VM. */
+	@Exported
 	byte EXECUTABLE_PATH =
 		6;
 	
 	/** The operating system name. */
+	@Exported
 	byte OS_NAME =
 		7;
 	
 	/** The operating system version. */
+	@Exported
 	byte OS_VERSION =
 		8;
 	
 	/** The operating system architecture. */
+	@Exported
 	byte OS_ARCH =
 		9;
 	
@@ -62,10 +74,12 @@ public interface VMDescriptionType
 	 * The current virtual machine security policy, this is used by
 	 * {@link AccessController}.
 	 */
+	@Exported
 	byte VM_SECURITY_POLICY =
 		10;
 	
 	/** The current number of properties. */
+	@Exported
 	byte NUM_TYPES =
 		11;
 }

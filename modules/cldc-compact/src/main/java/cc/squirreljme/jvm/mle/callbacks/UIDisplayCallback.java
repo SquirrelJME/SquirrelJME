@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle.callbacks;
 
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * This callback is used for any calls the display system makes to applications
@@ -17,6 +18,7 @@ import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
  *
  * @since 2020/10/03
  */
+@Exported
 public interface UIDisplayCallback
 	extends ShelfCallback, UIDrawableCallback
 {

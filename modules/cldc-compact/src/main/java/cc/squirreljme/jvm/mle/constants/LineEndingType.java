@@ -9,30 +9,38 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
+
 /**
  * Constants for line ending.
  *
  * @since 2020/06/09
  */
+@Exported
 public interface LineEndingType
 {
 	/** Unknown. */
+	@Exported
 	byte UNSPECIFIED =
 		0;
 	
 	/** LF. */
+	@Exported
 	byte LF =
 		1;
 	
 	/** CR. */
+	@Exported
 	byte CR =
 		2;
 	
 	/** CRLF. */
+	@Exported
 	byte CRLF =
 		3;
 		
 	/** Number of line types. */
+	@Exported
 	byte NUM_LINE_ENDINGS =
 		4;
 }
