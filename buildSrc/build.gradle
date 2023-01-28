@@ -13,6 +13,9 @@ dependencies {
 	// Jasmin Sable (Java byte code assembler)
 	implementation "ca.mcgill.sable:jasmin:3.0.3"
 	
+	// ProGuard, minification
+	implementation "com.guardsquare:proguard-gradle:7.3.0"
+	
 	// Lombok for simpler getters/setters
 	implementation 'org.projectlombok:lombok:1.18.24'
 	annotationProcessor 'org.projectlombok:lombok:1.18.24'
