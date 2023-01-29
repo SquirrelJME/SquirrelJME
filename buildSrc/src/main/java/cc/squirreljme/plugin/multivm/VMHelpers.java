@@ -275,8 +275,9 @@ public final class VMHelpers
 		
 		return __project.provider(() -> __project.getBuildDir().toPath()
 			.resolve("squirreljme").resolve(
-				String.format("vm-%s-%s", __classifier.getSourceSet(),
-					__classifier.getVmType().vmName(VMNameFormat.LOWERCASE)))
+				String.format("vm-%s-%s-%s", __classifier.getSourceSet(),
+					__classifier.getVmType().vmName(VMNameFormat.LOWERCASE),
+					__classifier.getTargetClassifier().getClutterLevel()))
 			.resolve(__classifier.getBangletVariant().properNoun));
 	}
 	
