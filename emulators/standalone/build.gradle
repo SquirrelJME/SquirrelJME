@@ -1,5 +1,6 @@
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier
 import cc.squirreljme.plugin.multivm.BangletVariant
+import cc.squirreljme.plugin.multivm.ClutterLevel
 import cc.squirreljme.plugin.multivm.VMFullSuiteDepends
 import cc.squirreljme.plugin.multivm.VMHelpers
 import cc.squirreljme.plugin.multivm.VMRunUpToDateWhen
@@ -69,7 +70,8 @@ static String flatClasspath(Project project) {
 	return VMHelpers.classpathAsString(mapBaseNameP(VMHelpers
 		.runClassPath(project, new SourceTargetClassifier(
 			SourceSet.MAIN_SOURCE_SET_NAME,
-			VMType.SPRINGCOAT, BangletVariant.NONE)) as List<Path>))
+			VMType.SPRINGCOAT, BangletVariant.NONE,
+			ClutterLevel.DEBUG)) as List<Path>))
 }
 
 static java.nio.file.Path nameToDiskFile(java.nio.file.Path jarOut,
@@ -87,7 +89,7 @@ String MERGED_PREFIX = "SQUIRRELJME.SQC"
 task collateResourceJars {
 	dependsOn new VMFullSuiteDepends(collateResourceJars,
 		new SourceTargetClassifier(SourceSet.MAIN_SOURCE_SET_NAME,
-			VMType.SPRINGCOAT, BangletVariant.NONE))
+			VMType.SPRINGCOAT, BangletVariant.NONE, ClutterLevel.DEBUG))
 	mustRunAfter processResources
 	
 	// About this task
@@ -141,7 +143,7 @@ task collateResourceJars {
 	// Up to date when dependencies are updated
 	outputs.upToDateWhen(new VMRunUpToDateWhen(new SourceTargetClassifier(
 		SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT,
-		BangletVariant.NONE)))
+		BangletVariant.NONE, ClutterLevel.DEBUG)))
 		
 	// Explode the JARs into the resource root
 	doFirst {

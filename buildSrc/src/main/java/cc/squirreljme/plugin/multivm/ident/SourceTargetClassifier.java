@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.multivm.ident;
 
 import cc.squirreljme.plugin.multivm.BangletVariant;
+import cc.squirreljme.plugin.multivm.ClutterLevel;
 import cc.squirreljme.plugin.multivm.VMHelpers;
 import cc.squirreljme.plugin.multivm.VMSpecifier;
 import cc.squirreljme.plugin.multivm.VMType;
@@ -43,12 +44,14 @@ public class SourceTargetClassifier
 	 * @param __sourceSet The source set.
 	 * @param __vmType The virtual machine type.
 	 * @param __variant The variant used.
+	 * @param __clutterLevel The clutter level used.
 	 * @since 2022/10/01
 	 */
 	public SourceTargetClassifier(String __sourceSet, VMSpecifier __vmType,
-		BangletVariant __variant)
+		BangletVariant __variant, ClutterLevel __clutterLevel)
 	{
-		this(__sourceSet, new TargetClassifier(__vmType, __variant));
+		this(__sourceSet, new TargetClassifier(__vmType, __variant,
+			__clutterLevel));
 	}
 	
 	/**

@@ -132,7 +132,7 @@ public final class VMHelpers
 		// details and such
 		for (ProjectAndTaskName projectTask : VMHelpers.runClassTasks(
 			__project, new SourceTargetClassifier(__sourceSet, VMType.HOSTED,
-				BangletVariant.NONE)))
+				BangletVariant.NONE, ClutterLevel.DEBUG)))
 		{
 			// Only consider actual projects
 			Project subProject = __project.project(projectTask.project);

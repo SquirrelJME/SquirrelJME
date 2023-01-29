@@ -206,9 +206,11 @@ public final class TaskInitialization
 		if (__project == null || __sourceSet == null || __vmType == null)
 			throw new NullPointerException("NARG");
 		
-		for (BangletVariant variant : __vmType.banglets())
-			TaskInitialization.initialize(__project,
-				new SourceTargetClassifier(__sourceSet, __vmType, variant));
+		for (ClutterLevel clutterLevel : ClutterLevel.values())
+			for (BangletVariant variant : __vmType.banglets())
+				TaskInitialization.initialize(__project,
+					new SourceTargetClassifier(__sourceSet, __vmType, variant,
+						clutterLevel));
 	}
 	
 	/**
@@ -339,12 +341,13 @@ public final class TaskInitialization
 		if (__project == null)
 			throw new NullPointerException("NARG");
 		
-		for (VMType vmType : VMType.values())
-			for (BangletVariant variant : vmType.banglets())
-				for (String sourceSet : TaskInitialization._SOURCE_SETS)
-					TaskInitialization.initializeFullSuiteTask(__project,
-						new SourceTargetClassifier(sourceSet, vmType,
-							variant));
+		for (ClutterLevel clutterLevel : ClutterLevel.values())
+			for (VMType vmType : VMType.values())
+				for (BangletVariant variant : vmType.banglets())
+					for (String sourceSet : TaskInitialization._SOURCE_SETS)
+						TaskInitialization.initializeFullSuiteTask(__project,
+							new SourceTargetClassifier(sourceSet, vmType,
+								variant, clutterLevel));
 	}
 	
 	/**
@@ -410,7 +413,7 @@ public final class TaskInitialization
 		// SpringCoat's libraries for runtime
 		SourceTargetClassifier classifier = new SourceTargetClassifier(
 			SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT,
-			BangletVariant.NONE);
+			BangletVariant.NONE, ClutterLevel.DEBUG);
 		FileCollection useClassPath = __project.files(
 			(Object[])VMHelpers.runClassPath(__project,
 				classifier));
@@ -565,12 +568,13 @@ public final class TaskInitialization
 			throw new NullPointerException("NARG");
 			
 		// Initialize or both main classes and such
-		for (String sourceSet : TaskInitialization._SOURCE_SETS)
-			for (VMType vmType : VMType.values())
-				for (BangletVariant variant : vmType.banglets())
-					TaskInitialization.romTasks(__project,
-						new SourceTargetClassifier(sourceSet, vmType,
-							variant));
+		for (ClutterLevel clutterLevel : ClutterLevel.values())
+			for (String sourceSet : TaskInitialization._SOURCE_SETS)
+				for (VMType vmType : VMType.values())
+					for (BangletVariant variant : vmType.banglets())
+						TaskInitialization.romTasks(__project,
+							new SourceTargetClassifier(sourceSet, vmType,
+								variant, clutterLevel));
 	}
 	
 	/**
@@ -690,7 +694,7 @@ public final class TaskInitialization
 		throws NullPointerException
 	{
 		return TaskInitialization.task(__name, __sourceSet, __vmType,
-			BangletVariant.NONE);
+			BangletVariant.NONE, ClutterLevel.DEBUG);
 	}
 	
 	/**
@@ -712,7 +716,8 @@ public final class TaskInitialization
 		return TaskInitialization.task(__name,
 			__classifier.getSourceSet(),
 			__classifier.getTargetClassifier().getVmType(),
-			__classifier.getTargetClassifier().getBangletVariant());
+			__classifier.getTargetClassifier().getBangletVariant(),
+			__classifier.getTargetClassifier().getClutterLevel());
 	}
 	
 	/**
@@ -727,16 +732,18 @@ public final class TaskInitialization
 	 * @since 2022/10/01
 	 */
 	public static String task(String __name, String __sourceSet,
-		VMSpecifier __vmType, BangletVariant __variant)
+		VMSpecifier __vmType, BangletVariant __variant,
+		ClutterLevel __clutterLevel)
 		throws NullPointerException
 	{
 		if (__name == null || __sourceSet == null || __vmType == null ||
-			__variant == null)
+			__variant == null || __clutterLevel == null)
 			throw new NullPointerException("NARG");
 		
 		return TaskInitialization.task(__name, __sourceSet) +
 			__vmType.vmName(VMNameFormat.PROPER_NOUN) +
-			TaskInitialization.uppercaseFirst(__variant.properNoun);
+			TaskInitialization.uppercaseFirst(__variant.properNoun) +
+			TaskInitialization.uppercaseFirst(__clutterLevel.toString());
 	}
 	
 	/**
