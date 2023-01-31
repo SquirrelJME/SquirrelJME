@@ -9,6 +9,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.security.AccessController;
 import java.security.Permission;
@@ -22,6 +23,7 @@ import java.util.PropertyPermission;
  * 
  * @since 2020/07/02
  */
+@Api
 public class SecurityManager
 {
 	/** The current security manager, defaults to the system one. */
@@ -35,6 +37,7 @@ public class SecurityManager
 	 * @throws SecurityException If the manager could not be created.
 	 * @since 2018/09/18 
 	 */
+	@Api
 	public SecurityManager()
 		throws SecurityException
 	{
@@ -50,6 +53,7 @@ public class SecurityManager
 		}
 	}
 	
+	@Api
 	public void checkAccept(String __a, int __b)
 	{
 		throw Debugging.todo();
@@ -62,17 +66,20 @@ public class SecurityManager
 	 * @throws SecurityException If threads cannot be modified.
 	 * @since 2018/11/21
 	 */
+	@Api
 	public void checkAccess(Thread __t)
 		throws SecurityException
 	{
 		this.checkPermission(new RuntimePermission("modifyThread"));
 	}
 	
+	@Api
 	public void checkConnect(String __a, int __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void checkDelete(String __a)
 	{
 		throw Debugging.todo();
@@ -85,12 +92,14 @@ public class SecurityManager
 	 * @throws SecurityException If exit is not permitted.
 	 * @since 2018/10/13
 	 */
+	@Api
 	public void checkExit(int __code)
 		throws SecurityException
 	{
 		this.checkPermission(new RuntimePermission("exitVM." + __code));
 	}
 	
+	@Api
 	public void checkListen(int __a)
 	{
 		throw Debugging.todo();
@@ -104,6 +113,7 @@ public class SecurityManager
 	 * @throws SecurityException If permission is denied.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public void checkPermission(Permission __p)
 		throws NullPointerException, SecurityException
 	{
@@ -122,6 +132,7 @@ public class SecurityManager
 	 * @throws SecurityException If access to the property is denied.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public void checkPropertyAccess(String __key)
 		throws IllegalArgumentException, NullPointerException,
 			SecurityException
@@ -138,11 +149,13 @@ public class SecurityManager
 		this.checkPermission(new PropertyPermission(__key, "read"));
 	}
 	
+	@Api
 	public void checkRead(String __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void checkWrite(String __a)
 	{
 		throw Debugging.todo();

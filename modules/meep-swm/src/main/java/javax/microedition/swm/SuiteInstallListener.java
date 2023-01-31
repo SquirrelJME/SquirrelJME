@@ -9,12 +9,15 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is a listener which is called when an application is currently being
  * installed, has finished installation, or failed to install.
  *
  * @since 2016/06/24
  */
+@Api
 public interface SuiteInstallListener
 {
 	/**
@@ -30,6 +33,7 @@ public interface SuiteInstallListener
 	 * was started to be performed.
 	 * @since 2016/06/24
 	 */
+	@Api
 	void installationDone(InstallErrorCodes __ec,
 		SuiteManagementTracker __track);
 	
@@ -45,6 +49,7 @@ public interface SuiteInstallListener
 	 * should be a value between zero and one hundred.
 	 * @since 2016/06/24
 	 */
+	@Api
 	void updateStatus(SuiteManagementTracker __track,
 		SuiteInstallStage __stage, int __pct);
 }

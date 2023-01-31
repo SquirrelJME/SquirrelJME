@@ -9,6 +9,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.security.BasicPermission;
 
 /**
@@ -25,6 +26,7 @@ import java.security.BasicPermission;
  *
  * @since 2018/09/18
  */
+@Api
 public final class RuntimePermission
 	extends BasicPermission
 {
@@ -36,6 +38,7 @@ public final class RuntimePermission
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public RuntimePermission(String __name)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -51,6 +54,7 @@ public final class RuntimePermission
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public RuntimePermission(String __name, String __act)
 		throws IllegalArgumentException, NullPointerException
 	{

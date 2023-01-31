@@ -9,6 +9,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -27,6 +28,7 @@ import java.lang.annotation.Target;
 @Target(value={ElementType.CONSTRUCTOR, ElementType.FIELD,
 	ElementType.LOCAL_VARIABLE, ElementType.METHOD, ElementType.PACKAGE,
 	ElementType.PARAMETER, ElementType.TYPE})
+@Api
 public @interface Deprecated
 {
 }

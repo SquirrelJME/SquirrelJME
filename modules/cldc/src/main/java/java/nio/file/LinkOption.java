@@ -9,11 +9,14 @@
 
 package java.nio.file;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public enum LinkOption
 	implements OpenOption, CopyOption
 {
+	@Api
 	NOFOLLOW_LINKS(),
 	
 	/** End. */

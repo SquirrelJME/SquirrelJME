@@ -9,11 +9,14 @@
 
 package com.oracle.json;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * Indicates that an exception happened during JSON parsing.
  *
  * @since 2014/07/25
  */
+@Api
 public class JsonException
 	extends RuntimeException
 {
@@ -26,6 +29,7 @@ public class JsonException
 	 * @param __m Message to set.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public JsonException(String __m)
 	{
 		super(__m);
@@ -38,6 +42,7 @@ public class JsonException
 	 * @param __c Cause of the exception.
 	 * @since 2014/07/25
 	 */
+	@Api
 	public JsonException(String __m, Throwable __c)
 	{
 		super(__m, __c);

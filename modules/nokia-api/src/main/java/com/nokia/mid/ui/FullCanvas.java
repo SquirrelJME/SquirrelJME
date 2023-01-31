@@ -9,6 +9,7 @@
 
 package com.nokia.mid.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
@@ -25,52 +26,49 @@ public abstract class FullCanvas
 	extends Canvas
 {
 	/** Virtual soft key 1. */
-	static final Command _SOFT1 =
-		new Command("Soft1", Command.SCREEN, 0);
-		
+	static final Command _SOFT1 = new Command("Soft1", Command.SCREEN, 0);
+	
 	/** Virtual soft key 2. */
-	static final Command _SOFT2 =
-		new Command("Soft2", Command.SCREEN, 1);
-		
+	static final Command _SOFT2 = new Command("Soft2", Command.SCREEN, 1);
+	
 	/** Virtual soft key 3. */
-	static final Command _SOFT3 =
-		new Command("Soft3", Command.SCREEN, 2);
+	static final Command _SOFT3 = new Command("Soft3", Command.SCREEN, 2);
 	
 	/** Down arrow. */
-	public static final int KEY_DOWN_ARROW =
-		-2;
+	@Api
+	public static final int KEY_DOWN_ARROW = -2;
 	
 	/** End. */
-	public static final int KEY_END =
-		-11;
+	@Api
+	public static final int KEY_END = -11;
 	
 	/** Left arrow. */
-	public static final int KEY_LEFT_ARROW =
-		-3;
+	@Api
+	public static final int KEY_LEFT_ARROW = -3;
 	
 	/** Right arrow. */
-	public static final int KEY_RIGHT_ARROW =
-		-4;
+	@Api
+	public static final int KEY_RIGHT_ARROW = -4;
 	
 	/** Send. */
-	public static final int KEY_SEND =
-		-10;
+	@Api
+	public static final int KEY_SEND = -10;
 	
 	/** Soft Key 1. */
-	public static final int KEY_SOFTKEY1 =
-		-6;
+	@Api
+	public static final int KEY_SOFTKEY1 = -6;
 	
 	/** Soft Key 2. */
-	public static final int KEY_SOFTKEY2 =
-		-7;
+	@Api
+	public static final int KEY_SOFTKEY2 = -7;
 	
 	/** Soft Key 3. */
-	public static final int KEY_SOFTKEY3 =
-		-5;
+	@Api
+	public static final int KEY_SOFTKEY3 = -5;
 	
 	/** Up Arrow. */
-	public static final int KEY_UP_ARROW =
-		-1;
+	@Api
+	public static final int KEY_UP_ARROW = -1;
 	
 	/**
 	 * Initializes the base canvas and sets as full-screen.
@@ -106,8 +104,7 @@ public abstract class FullCanvas
 	{
 		// Since we are providing this special functionality we need to wrap
 		// but still access these internal commands
-		if (__c == FullCanvas._SOFT1 || __c == FullCanvas._SOFT2 ||
-			__c == FullCanvas._SOFT3)
+		if (__c == FullCanvas._SOFT1 || __c == FullCanvas._SOFT2 || __c == FullCanvas._SOFT3)
 		{
 			super.addCommand(__c);
 			return;
@@ -149,6 +146,7 @@ public abstract class FullCanvas
 	{
 		/**
 		 * {@inheritDoc}
+		 *
 		 * @since 2019/09/23
 		 */
 		@Override
@@ -166,8 +164,8 @@ public abstract class FullCanvas
 				code = FullCanvas.KEY_SOFTKEY2;
 			else if (__c == FullCanvas._SOFT3)
 				code = FullCanvas.KEY_SOFTKEY3;
-			
-			// Unknown?
+				
+				// Unknown?
 			else
 				return;
 			

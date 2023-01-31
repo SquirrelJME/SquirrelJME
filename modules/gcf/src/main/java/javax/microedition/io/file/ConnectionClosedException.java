@@ -10,16 +10,20 @@
 package javax.microedition.io.file;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class ConnectionClosedException
 	extends RuntimeException
 {
+	@Api
 	public ConnectionClosedException()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public ConnectionClosedException(String __a)
 	{
 		throw Debugging.todo();

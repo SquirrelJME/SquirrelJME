@@ -10,7 +10,7 @@
 /**
  * Nokia sound implementation. Note that since MIDP-2.0 this should no longer
  * be used by developer and is only provided for backwards compatibility.
- * 
+ *
  * @since 2022/02/03
  */
 

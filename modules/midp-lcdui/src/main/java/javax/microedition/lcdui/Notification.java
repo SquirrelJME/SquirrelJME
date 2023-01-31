@@ -9,8 +9,10 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class Notification
 {
 	/** Cache of the used label. */
@@ -19,43 +21,51 @@ public class Notification
 	/** Cache of the used image. */
 	private volatile Image _image;
 	
+	@Api
 	public Notification(NotificationType __t)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public Notification(NotificationType __t, String __l)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public Notification(NotificationType __t, String __l, Image __i)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public long getTimeStamp()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public NotificationType getType()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void post(boolean __s)
 	{
 		Debugging.todoNote("Update mutable image on post.", new Object[] {});
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void post(boolean __s, int __dur)
 	{
 		Debugging.todoNote("Update mutable image on post.", new Object[] {});
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void remove()
 	{
 		throw Debugging.todo();
@@ -71,6 +81,7 @@ public class Notification
 	 * @param __i The image to set or {@code null} to clear it.
 	 * @since 2018/04/06
 	 */
+	@Api
 	public void setImage(Image __i)
 	{
 		throw Debugging.todo();
@@ -84,11 +95,13 @@ public class Notification
 		*/
 	}
 	
+	@Api
 	public void setLabel(String __l)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setListener(NotificationListener __nl)
 	{
 		throw Debugging.todo();

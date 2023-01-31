@@ -12,6 +12,7 @@ package java.lang;
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * A thread represents literally a single stream of execution that can
@@ -25,18 +26,22 @@ import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
  *
  * @since 2018/12/07
  */
+@Api
 public class Thread
 	implements Runnable
 {
 	/** Maximum supported priority. */
+	@Api
 	public static final int MAX_PRIORITY =
 		10;
 	
 	/** Minimum supported priority. */
+	@Api
 	public static final int MIN_PRIORITY =
 		1;
 	
 	/** Default priority. */
+	@Api
 	public static final int NORM_PRIORITY =
 		5;
 	
@@ -75,6 +80,7 @@ public class Thread
 	 *
 	 * @since 2018/11/17
 	 */
+	@Api
 	public Thread()
 	{
 		this(null, false, null);
@@ -87,6 +93,7 @@ public class Thread
 	 * @param __r The runnable to execute.
 	 * @since 2018/11/17
 	 */
+	@Api
 	public Thread(Runnable __r)
 	{
 		this(__r, false, null);
@@ -100,6 +107,7 @@ public class Thread
 	 * @throws NullPointerException If the thread name is null.
 	 * @since 2018/11/17
 	 */
+	@Api
 	public Thread(String __n)
 		throws NullPointerException
 	{
@@ -115,6 +123,7 @@ public class Thread
 	 * @throws NullPointerException If the thread name is null.
 	 * @since 2018/11/17
 	 */
+	@Api
 	public Thread(Runnable __r, String __n)
 		throws NullPointerException
 	{
@@ -129,6 +138,7 @@ public class Thread
 	 * @param __name The name of the thread.
 	 * @since 2022/09/24
 	 */
+	@Api
 	private Thread(Runnable __runnable, boolean __hasName, String __name)
 	{
 		if (__hasName && __name == null)
@@ -148,6 +158,7 @@ public class Thread
 	 * @throws SecurityException If access is denied.
 	 * @since 2018/11/21
 	 */
+	@Api
 	public final void checkAccess()
 		throws SecurityException
 	{
@@ -162,6 +173,7 @@ public class Thread
 	 * @return The thread ID.
 	 * @since 2018/11/20
 	 */
+	@Api
 	public long getId()
 	{
 		return ThreadShelf.vmThreadId(this._vmThread);
@@ -173,6 +185,7 @@ public class Thread
 	 * @return The thread name.
 	 * @since 2018/11/17
 	 */
+	@Api
 	public final String getName()
 	{
 		return this._name;
@@ -184,6 +197,7 @@ public class Thread
 	 * @return The thread priority.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public final int getPriority()
 	{
 		return this._priority;
@@ -199,6 +213,7 @@ public class Thread
 	 * interrupt this thread.
 	 * @since 2018/11/21
 	 */
+	@Api
 	public void interrupt()
 		throws SecurityException
 	{
@@ -220,6 +235,7 @@ public class Thread
 	 * @return If this thread is alive.
 	 * @since 2018/11/20
 	 */
+	@Api
 	public final boolean isAlive()
 	{
 		return this._isAlive;
@@ -231,6 +247,7 @@ public class Thread
 	 * @return If this thread is interrupted.
 	 * @since 2018/11/21
 	 */
+	@Api
 	public boolean isInterrupted()
 	{
 		return this._interrupted;
@@ -246,6 +263,7 @@ public class Thread
 	 * waiting.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public final void join()
 		throws InterruptedException
 	{
@@ -265,6 +283,7 @@ public class Thread
 	 * waiting.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public final void join(long __ms)
 		throws IllegalArgumentException, InterruptedException
 	{
@@ -286,6 +305,7 @@ public class Thread
 	 * waiting.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public final void join(long __ms, int __ns)
 		throws IllegalArgumentException, InterruptedException
 	{
@@ -334,6 +354,7 @@ public class Thread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/21
 	 */
+	@Api
 	public final void setName(String __n)
 		throws NullPointerException
 	{
@@ -358,6 +379,7 @@ public class Thread
 	 * @throws SecurityException If setting the priority is not permitted.
 	 * @since 2018/12/07
 	 */
+	@Api
 	public final void setPriority(int __p)
 		throws IllegalArgumentException, SecurityException
 	{
@@ -382,6 +404,7 @@ public class Thread
 	 * or failed to start.
 	 * @since 2018/11/17
 	 */
+	@Api
 	public void start()
 		throws IllegalThreadStateException
 	{
@@ -415,6 +438,7 @@ public class Thread
 	 * @return The number of alive threads.
 	 * @since 2018/11/20
 	 */
+	@Api
 	public static int activeCount()
 	{
 		return ThreadShelf.aliveThreadCount(
@@ -427,6 +451,7 @@ public class Thread
 	 * @return The current thread.
 	 * @since 2018/11/20
 	 */
+	@Api
 	public static Thread currentThread()
 	{
 		return ThreadShelf.currentJavaThread();
@@ -440,6 +465,7 @@ public class Thread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/21
 	 */
+	@Api
 	public static boolean holdsLock(Object __o)
 		throws NullPointerException
 	{
@@ -456,6 +482,7 @@ public class Thread
 	 * @return If this thread was interrupted.
 	 * @since 2018/11/21
 	 */
+	@Api
 	public static boolean interrupted()
 	{
 		return ThreadShelf.javaThreadClearInterrupt(Thread.currentThread());
@@ -468,6 +495,7 @@ public class Thread
 	 * @throws InterruptedException If the thread was interrupted.
 	 * @since 2018/11/04
 	 */
+	@Api
 	public static void sleep(long __ms)
 		throws InterruptedException
 	{
@@ -487,6 +515,7 @@ public class Thread
 	 * @throws InterruptedException If the thread was interrupted.
 	 * @since 2018/11/04
 	 */
+	@Api
 	@SuppressWarnings("MagicNumber")
 	public static void sleep(long __ms, int __ns)
 		throws IllegalArgumentException, InterruptedException
@@ -516,6 +545,7 @@ public class Thread
 	 *
 	 * @since 2018/12/05
 	 */
+	@Api
 	public static void yield()
 	{
 		// Zero times means to yield

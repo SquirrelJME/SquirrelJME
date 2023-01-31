@@ -9,14 +9,19 @@
 
 package javax.microedition.media.control;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.media.Control;
 
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
+@Api
 public interface GUIControl
 	extends Control
 {
+	@Api
 	int USE_GUI_PRIMITIVE =
 		0;
 	
+	@Api
 	Object initDisplayMode(int __a, Object __b);
 }
 

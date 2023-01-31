@@ -9,91 +9,111 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Enumeration;
 
+@Api
 public final class SimpleVector
 {
-    public Object[] elementData;
-    public int elementCount;
-
-    public SimpleVector()
+	@Api
+	public Object[] elementData;
+	
+	@Api
+	public int elementCount;
+	
+	@Api
+	public SimpleVector()
 	{
 		throw Debugging.todo();
 	}
-
-    public SimpleVector(int var1)
+	
+	@Api
+	public SimpleVector(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public void addElement(Object var1)
+	
+	@Api
+	public void addElement(Object var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public boolean removeElement(Object var1)
+	
+	@Api
+	public boolean removeElement(Object var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public int size()
+	
+	@Api
+	public int size()
 	{
 		throw Debugging.todo();
 	}
-
-    public Object elementAt(int var1)
+	
+	@Api
+	public Object elementAt(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public Object lastElement()
+	
+	@Api
+	public Object lastElement()
 	{
 		throw Debugging.todo();
 	}
-
-    public boolean contains(Object var1)
+	
+	@Api
+	public boolean contains(Object var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public int indexOf(Object var1, int var2)
+	
+	@Api
+	public int indexOf(Object var1, int var2)
 	{
 		throw Debugging.todo();
 	}
-
-    public void removeElementAt(int var1)
+	
+	@Api
+	public void removeElementAt(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public void insertElementAt(Object var1, int var2)
+	
+	@Api
+	public void insertElementAt(Object var1, int var2)
 	{
 		throw Debugging.todo();
 	}
-
-    public void removeAllElements()
+	
+	@Api
+	public void removeAllElements()
 	{
 		throw Debugging.todo();
 	}
-
-    public Enumeration elements()
+	
+	@Api
+	public Enumeration elements()
 	{
 		throw Debugging.todo();
 	}
-
-    static final class SimpleVectorEnumerator implements Enumeration {
-        @Override
+	
+	static final class SimpleVectorEnumerator
+		implements Enumeration
+	{
+		@Override
 		public boolean hasMoreElements()
 		{
 			throw Debugging.todo();
 		}
-
-        @Override
+		
+		@Override
 		public Object nextElement()
 		{
 			throw Debugging.todo();
 		}
-    }
+	}
 }
 

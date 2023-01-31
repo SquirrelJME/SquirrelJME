@@ -34,8 +34,8 @@ final class __AppLaunch__
 		
 		// Are there any arguments to the application call?
 		int argLen = __args.length;
-		String[] appArgs = (argLen <= 1 ? new String[0] :
-			new String[argLen - 1]);
+		String[] appArgs =
+			(argLen <= 1 ? new String[0] : new String[argLen - 1]);
 		for (int i = 1, o = 0; i < argLen; i++, o++)
 			appArgs[o] = __args[i];
 		

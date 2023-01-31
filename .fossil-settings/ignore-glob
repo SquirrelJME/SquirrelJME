@@ -75,6 +75,7 @@ CMakeCache.txt
 ratufacoat/cmake-build-release
 ratufacoat/cmake-build-debug
 ratufacoat/cmake-build-*
+ratufacoat/venv
 ratufacoat/src/Debug
 ratufacoat/src/Release
 ratufacoat/src/SquirrelJME.dir
@@ -130,7 +131,3 @@ out-*C
 out-*D
 out-*E
 out-*F
-
-# Python
-ratufacoat/venv
-venv

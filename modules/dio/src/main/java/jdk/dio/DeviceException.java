@@ -9,17 +9,21 @@
 
 package jdk.dio;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
+@Api
 public class DeviceException
 	extends IOException
 {
+	@Api
 	public DeviceException()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public DeviceException(String __a)
 	{
 		throw Debugging.todo();

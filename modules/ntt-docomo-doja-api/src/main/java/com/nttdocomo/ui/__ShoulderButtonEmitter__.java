@@ -28,7 +28,7 @@ final class __ShoulderButtonEmitter__
 	
 	/**
 	 * Initializes the button handler.
-	 * 
+	 *
 	 * @param __frame The frame to call into.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/14
@@ -44,6 +44,7 @@ final class __ShoulderButtonEmitter__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2022/02/14
 	 */
 	@Override
@@ -58,10 +59,14 @@ final class __ShoulderButtonEmitter__
 		int whichKey;
 		switch (__command.getPriority())
 		{
-			case 0:	whichKey = Display.KEY_SOFT1; break;
-			case 1: whichKey = Display.KEY_SOFT2; break;
+			case 0:
+				whichKey = Display.KEY_SOFT1;
+				break;
+			case 1:
+				whichKey = Display.KEY_SOFT2;
+				break;
 			
-				// Ignore, unknown
+			// Ignore, unknown
 			default:
 				return;
 		}

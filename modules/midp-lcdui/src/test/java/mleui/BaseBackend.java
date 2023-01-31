@@ -71,7 +71,10 @@ public abstract class BaseBackend
 		switch (__backend)
 		{
 			case "NATIVE":
-				if (0 != UIFormShelf.metric(UIMetricType.UIFORMS_SUPPORTED))
+				UIDisplayBracket[] displays = UIFormShelf.displays();
+				if (displays != null && displays.length > 0 &&
+					0 != UIFormShelf.metric(displays[0],
+						UIMetricType.UIFORMS_SUPPORTED))
 					return new NativeUIBackend();
 				throw new UntestableException(__backend);
 			

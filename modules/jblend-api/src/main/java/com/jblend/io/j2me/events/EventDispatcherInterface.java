@@ -9,8 +9,12 @@
 
 package com.jblend.io.j2me.events;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface EventDispatcherInterface
 {
-    void dispatch(int var1, int var2, int var3, int var4);
+	@Api
+	void dispatch(int var1, int var2, int var3, int var4);
 }
 

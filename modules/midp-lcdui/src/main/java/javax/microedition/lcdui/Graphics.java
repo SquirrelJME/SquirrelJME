@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.lcdui.game.Sprite;
 
 /**
@@ -29,6 +30,7 @@ import javax.microedition.lcdui.game.Sprite;
  *
  * @since 2017/02/09
  */
+@Api
 public abstract class Graphics
 {
 	/**
@@ -38,30 +40,37 @@ public abstract class Graphics
 	 * letters such as {@code j} the baseline will be higher than the lowest
 	 * point.
 	 */
+	@Api
 	public static final int BASELINE =
 		64;
 	
 	/** The anchor point to position below the specified point. */
+	@Api
 	public static final int BOTTOM =
 		32;
 	
 	/** Dotted stroke line style. */
+	@Api
 	public static final int DOTTED =
 		1;
 	
 	/** The anchor point to position in the center horizontally. */
+	@Api
 	public static final int HCENTER =
 		1;
 	
 	/** The anchor point to position the item to the left. */
+	@Api
 	public static final int LEFT =
 		4;
 	
 	/** The anchor point to position the item on the right. */
+	@Api
 	public static final int RIGHT =
 		8;
 	
 	/** Solid stroke line style. */
+	@Api
 	public static final int SOLID =
 		0;
 	
@@ -69,6 +78,7 @@ public abstract class Graphics
 	 * The blending mode, the destination alpha becomes the source and as such
 	 * the operation is a copy (or overwrite).
 	 */
+	@Api
 	public static final int SRC =
 		1;
 	
@@ -76,14 +86,17 @@ public abstract class Graphics
 	 * The blending mode, the source alpha is a composited over the
 	 * destination.
 	 */
+	@Api
 	public static final int SRC_OVER =
 		0;
 	
 	/** The anchor point to position the item on the top. */
+	@Api
 	public static final int TOP =
 		16;
 	
 	/** The anchor point to position in the center vertically. */
+	@Api
 	public static final int VCENTER =
 		2;
 	
@@ -113,6 +126,7 @@ public abstract class Graphics
 	 * @param __h The height of the rectangle.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract void clipRect(int __x, int __y, int __w, int __h);
 	
 	/**
@@ -139,6 +153,7 @@ public abstract class Graphics
 	 * @throws IllegalStateException If the destination is a display device.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract void copyArea(int __sx, int __sy, int __w, int __h,
 		int __dx, int __dy, int __anchor)
 		throws IllegalArgumentException, IllegalStateException;
@@ -172,15 +187,19 @@ public abstract class Graphics
 	 * clockwise direction while positive values are counter clockwise.
 	 * @since 2017/02/10
 	 */ 
+	@Api
 	public abstract void drawArc(int __x, int __y, int __w, int __h, int __sa,
 		int __aa);
 	
+	@Api
 	public abstract void drawARGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException;
 	
+	@Api
 	public abstract void drawChar(char __s, int __x, int __y, int __anchor);
 	
+	@Api
 	public abstract void drawChars(char[] __s, int __o, int __l, int __x,
 		int __y, int __anchor)
 		throws NullPointerException;
@@ -200,6 +219,7 @@ public abstract class Graphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/11
 	 */
+	@Api
 	public abstract void drawImage(Image __i, int __x, int __y, int __anchor)
 		throws IllegalArgumentException, NullPointerException;
 	
@@ -212,16 +232,20 @@ public abstract class Graphics
 	 * @param __y2 Ending Y position.
 	 * @since 2017/02/11
 	 */
+	@Api
 	public abstract void drawLine(int __x1, int __y1, int __x2, int __y2);
 	
+	@Api
 	public abstract void drawRGB(int[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h, boolean __alpha)
 		throws NullPointerException;
 	
+	@Api
 	public abstract void drawRGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException;
 	
+	@Api
 	public abstract void drawRect(int __x, int __y, int __w, int __h);
 	
 	/**
@@ -243,6 +267,7 @@ public abstract class Graphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/11 
 	 */
+	@Api
 	public abstract void drawRegion(Image __src, int __xsrc, int __ysrc,
 		int __wsrc, int __hsrc, int __trans, int __xdest, int __ydest,
 		int __anch)
@@ -269,11 +294,13 @@ public abstract class Graphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/11 
 	 */
+	@Api
 	public abstract void drawRegion(Image __src, int __xsrc, int __ysrc,
 		int __wsrc, int __hsrc, int __trans, int __xdest, int __ydest,
 		int __anch, int __wdest, int __hdest)
 		throws IllegalArgumentException, NullPointerException;
 	
+	@Api
 	public abstract void drawRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah);
 	
@@ -287,14 +314,17 @@ public abstract class Graphics
 	 * @throws NullPointerException If no string was specified.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract void drawString(String __s, int __x, int __y,
 		int __anchor)
 		throws NullPointerException;
 	
+	@Api
 	public abstract void drawSubstring(String __s, int __o, int __l, int __x,
 		int __y, int __anchor)
 		throws NullPointerException, StringIndexOutOfBoundsException;
 	
+	@Api
 	public abstract void drawText(Text __t, int __x, int __y);
 	
 	/**
@@ -317,14 +347,18 @@ public abstract class Graphics
 	 * @see #drawArc(int, int, int, int, int, int)
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract void fillArc(int __x, int __y, int __w, int __h, int __sa,
 		int __aa);
 	
+	@Api
 	public abstract void fillRect(int __x, int __y, int __w, int __h);
 	
+	@Api
 	public abstract void fillRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah);
 	
+	@Api
 	public abstract void fillTriangle(int __x1, int __y1, int __x2, int __y2,
 		int __x3, int __y3);
 	
@@ -334,6 +368,7 @@ public abstract class Graphics
 	 * @return The alpha in the range of {@code [0, 255]}.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract int getAlpha();
 	
 	/**
@@ -342,6 +377,7 @@ public abstract class Graphics
 	 * @return The color in the form of {@code @0xAARRGGBB}.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract int getAlphaColor();
 	
 	/**
@@ -350,6 +386,7 @@ public abstract class Graphics
 	 * @return The current blending mode.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract int getBlendingMode();
 	
 	/**
@@ -358,6 +395,7 @@ public abstract class Graphics
 	 * @return The color in the range of {@code [0, 255]}.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract int getBlueComponent();
 	
 	/**
@@ -366,6 +404,7 @@ public abstract class Graphics
 	 * @return The clipping area height.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract int getClipHeight();
 	
 	/**
@@ -374,6 +413,7 @@ public abstract class Graphics
 	 * @return The clipping area width.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract int getClipWidth();
 	
 	/**
@@ -382,6 +422,7 @@ public abstract class Graphics
 	 * @return The clipping area X coordinate, which is transformed.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract int getClipX();
 	
 	/**
@@ -390,6 +431,7 @@ public abstract class Graphics
 	 * @return The clipping area Y coordinate, which is transformed.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract int getClipY();
 	
 	/**
@@ -399,6 +441,7 @@ public abstract class Graphics
 	 * for alpha will always be zero.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract int getColor();
 	
 	/**
@@ -409,6 +452,7 @@ public abstract class Graphics
 	 * @return The color that will actually be drawn on the display.
 	 * @since 2017/02/09
 	 */
+	@Api
 	public abstract int getDisplayColor(int __rgb);
 	
 	/**
@@ -417,6 +461,7 @@ public abstract class Graphics
 	 * @return The current font that is used.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract Font getFont();
 	
 	/**
@@ -428,6 +473,7 @@ public abstract class Graphics
 	 * @return The color in the range of {@code [0, 255]}.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract int getGrayScale();
 	
 	/**
@@ -436,6 +482,7 @@ public abstract class Graphics
 	 * @return The color in the range of {@code [0, 255]}.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract int getGreenComponent();
 	
 	/**
@@ -444,6 +491,7 @@ public abstract class Graphics
 	 * @return The color in the range of {@code [0, 255]}.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract int getRedComponent();
 	
 	/**
@@ -452,6 +500,7 @@ public abstract class Graphics
 	 * @return The current stroke style.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract int getStrokeStyle();
 	
 	/**
@@ -460,6 +509,7 @@ public abstract class Graphics
 	 * @return The X coordinate of the translated coordinate system.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract int getTranslateX();
 	
 	/**
@@ -468,6 +518,7 @@ public abstract class Graphics
 	 * @return The Y coordinate of the translated coordinate system.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract int getTranslateY();
 	
 	/**
@@ -478,6 +529,7 @@ public abstract class Graphics
 	 * {@code [0, 255]}.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract void setAlpha(int __a)
 		throws IllegalArgumentException;
 	
@@ -487,6 +539,7 @@ public abstract class Graphics
 	 * @param __argb The color in the form of {@code 0xAARRGGBB}.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract void setAlphaColor(int __argb);
 	
 	/**
@@ -500,6 +553,7 @@ public abstract class Graphics
 	 * range of {@code [0, 255]}.
 	 * @since 2017/02/09
 	 */
+	@Api
 	public abstract void setAlphaColor(int __a, int __r, int __g, int __b)
 		throws IllegalArgumentException;
 	
@@ -510,6 +564,7 @@ public abstract class Graphics
 	 * @throws IllegalArgumentException If the mode is not valid.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract void setBlendingMode(int __m)
 		throws IllegalArgumentException;
 	
@@ -527,6 +582,7 @@ public abstract class Graphics
 	 * @param __h The height.
 	 * @since 2017/02/10
 	 */
+	@Api
 	public abstract void setClip(int __x, int __y, int __w, int __h);
 	
 	/**
@@ -535,6 +591,7 @@ public abstract class Graphics
 	 * @param __rgb The color to use, the format is {@code 0xRRGGBB}.
 	 * @since 2017/02/09
 	 */
+	@Api
 	public abstract void setColor(int __rgb);
 	
 	/**
@@ -547,6 +604,7 @@ public abstract class Graphics
 	 * range of {@code [0, 255]}.
 	 * @since 2017/02/09
 	 */
+	@Api
 	public abstract void setColor(int __r, int __g, int __b)
 		throws IllegalArgumentException;
 	
@@ -557,6 +615,7 @@ public abstract class Graphics
 	 * default font is used.
 	 * @since 2017/02/09
 	 */
+	@Api
 	public abstract void setFont(Font __font);
 	
 	/**
@@ -566,6 +625,7 @@ public abstract class Graphics
 	 * @param __v The value to use for the color.
 	 * @since 2017/02/09
 	 */
+	@Api
 	public abstract void setGrayScale(int __v);
 	
 	/**
@@ -576,6 +636,7 @@ public abstract class Graphics
 	 * @throws IllegalArgumentException If the stroke is not valid.
 	 * @since 2017/02/09
 	 */
+	@Api
 	public abstract void setStrokeStyle(int __style)
 		throws IllegalArgumentException;
 	
@@ -593,6 +654,7 @@ public abstract class Graphics
 	 * @param __y The Y value to use for the new origin.
 	 * @since 2017/02/09
 	 */
+	@Api
 	public abstract void translate(int __x, int __y);
 }
 

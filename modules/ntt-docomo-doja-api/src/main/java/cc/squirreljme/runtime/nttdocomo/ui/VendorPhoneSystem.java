@@ -20,10 +20,8 @@ import com.nttdocomo.ui.PhoneSystem;
 public interface VendorPhoneSystem
 {
 	/** Vibrate attribute for F503i and So503i. */
-	byte VIBRATE_ATTRIBUTE_F503I_SO503I =
-		64;
+	byte VIBRATE_ATTRIBUTE_F503I_SO503I = 64;
 	
 	/** Vibration attribute for P503i.. */
-	byte VIBRATE_ATTRIBUTE_P503I =
-		120;
+	byte VIBRATE_ATTRIBUTE_P503I = 120;
 }

@@ -9,11 +9,14 @@
 
 package jdk.dio.mmio;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * DESCRIBE THIS.
  *
  * @since 2016/06/23
  */
+@Api
 public class AccessOutOfBoundsException
 {
 }

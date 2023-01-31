@@ -9,7 +9,8 @@
 
 /**
  * This package contains SquirrelJME specific support for Nokia APIs.
- * 
+ *
  * @since 2022/02/03
  */
+
 package cc.squirreljme.runtime.nokia;

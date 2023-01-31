@@ -9,9 +9,11 @@
 
 package jdk.dio.dac;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.nio.IntBuffer;
 import jdk.dio.OutputRoundListener;
 
+@Api
 public interface GenerationRoundListener
 	extends OutputRoundListener<DACChannel, IntBuffer>
 {

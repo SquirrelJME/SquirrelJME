@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 
 /**
@@ -29,6 +30,7 @@ import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
  */
 @ImplementationNote("For simplicity this uses base anchor nodes for the " +
 	"head and tail of the list.")
+@Api
 public class LinkedList<E>
 	extends AbstractSequentialList<E>
 	implements List<E>, Deque<E>, Cloneable
@@ -49,6 +51,7 @@ public class LinkedList<E>
 	 *
 	 * @since 2016/09/05
 	 */
+	@Api
 	public LinkedList()
 	{
 	}
@@ -61,6 +64,7 @@ public class LinkedList<E>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/05
 	 */
+	@Api
 	public LinkedList(Collection<? extends E> __a)
 		throws NullPointerException
 	{

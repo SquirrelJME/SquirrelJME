@@ -9,11 +9,14 @@
 
 package jdk.dio.generic;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import jdk.dio.DeviceEventListener;
 
+@Api
 public interface GenericEventListener
 	extends DeviceEventListener
 {
+	@Api
 	void eventDispatched(GenericEvent __a);
 }
 

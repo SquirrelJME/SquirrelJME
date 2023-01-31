@@ -9,6 +9,8 @@
 
 package java.lang.ref;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * A weak reference is one which is garbage collected when there are no strong
  * references to it.
@@ -16,6 +18,7 @@ package java.lang.ref;
  * @param <T> The type of object to store.
  * @since 2018/09/23
  */
+@Api
 public class WeakReference<T>
 	extends Reference<T>
 {
@@ -25,6 +28,7 @@ public class WeakReference<T>
 	 * @param __v The object to point to, may be {@code null}.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public WeakReference(T __v)
 	{
 		super(__v, null);
@@ -41,6 +45,7 @@ public class WeakReference<T>
 	 * {@code null}
 	 * @since 2018/09/23
 	 */
+	@Api
 	public WeakReference(T __v, ReferenceQueue<? super T> __q)
 	{
 		super(__v, __q);

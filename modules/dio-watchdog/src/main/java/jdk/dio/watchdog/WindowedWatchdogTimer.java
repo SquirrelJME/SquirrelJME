@@ -9,12 +9,16 @@
 
 package jdk.dio.watchdog;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 import jdk.dio.ClosedDeviceException;
 
+@SuppressWarnings("DuplicateThrows")
+@Api
 public interface WindowedWatchdogTimer
 	extends WatchdogTimer
 {
+	@Api
 	long getClosedWindowTimeout()
 		throws IOException, ClosedDeviceException;
 	
@@ -22,6 +26,7 @@ public interface WindowedWatchdogTimer
 	void start(long __a)
 		throws IOException, ClosedDeviceException;
 	
+	@Api
 	void start(long __a, long __b)
 		throws IOException, ClosedDeviceException;
 }

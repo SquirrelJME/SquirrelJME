@@ -9,33 +9,37 @@
 
 package javax.bluetooth;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 import javax.microedition.io.Connection;
 
+@Api
 public interface L2CAPConnection
 	extends Connection
 {
+	@Api
 	int DEFAULT_MTU = 672;
 	
+	@Api
 	int MINIMUM_MTU = 48;
 	
-	@SuppressWarnings("RedundantThrows")
+	@Api
 	int getReceiveMTU()
 		throws IOException;
 	
-	@SuppressWarnings("RedundantThrows")
+	@Api
 	int getTransmitMTU()
 		throws IOException;
 	
-	@SuppressWarnings("RedundantThrows")
+	@Api
 	boolean ready()
 		throws IOException;
 	
-	@SuppressWarnings("RedundantThrows")
+	@Api
 	int receive(byte[] __a)
 		throws IOException;
 	
-	@SuppressWarnings("RedundantThrows")
+	@Api
 	void send(byte[] __a)
 		throws IOException;
 }

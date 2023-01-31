@@ -9,12 +9,15 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.security.Permission;
 
+@Api
 public final class HttpProtocolPermission
 	extends GCFPermission
 {
+	@Api
 	public HttpProtocolPermission(String __a)
 	{
 		super((String)null);

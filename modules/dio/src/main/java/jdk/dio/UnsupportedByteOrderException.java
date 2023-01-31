@@ -10,16 +10,20 @@
 package jdk.dio;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class UnsupportedByteOrderException
 	extends DeviceException
 {
+	@Api
 	public UnsupportedByteOrderException()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public UnsupportedByteOrderException(String __a)
 	{
 		throw Debugging.todo();

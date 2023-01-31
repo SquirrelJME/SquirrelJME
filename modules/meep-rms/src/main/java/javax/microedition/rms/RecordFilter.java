@@ -9,6 +9,8 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is used to filter through records which may exist within an enumerated
  * record set.
@@ -17,8 +19,10 @@ package javax.microedition.rms;
  * @see RecordEnumeration
  * @since 2017/02/26
  */
+@Api
 public interface RecordFilter
 {
+	@Api
 	/**
 	 * Checks whether the given record is a match for the criteria of this
 	 * filter.

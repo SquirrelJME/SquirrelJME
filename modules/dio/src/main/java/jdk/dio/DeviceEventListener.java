@@ -10,6 +10,9 @@
 package jdk.dio;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface DeviceEventListener
 {
 }

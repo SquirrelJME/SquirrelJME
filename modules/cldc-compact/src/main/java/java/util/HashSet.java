@@ -9,8 +9,10 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 
+@Api
 public class HashSet<E>
 	extends AbstractSet<E>
 	implements Set<E>, Cloneable
@@ -27,6 +29,7 @@ public class HashSet<E>
 	 * load factor is not positive.
 	 * @since 2018/11/01
 	 */
+	@Api
 	public HashSet(int __cap, float __load)
 		throws IllegalArgumentException
 	{
@@ -41,6 +44,7 @@ public class HashSet<E>
 	 * @throws IllegalArgumentException If the capacity is negative.
 	 * @since 2018/11/01
 	 */
+	@Api
 	public HashSet(int __cap)
 		throws IllegalArgumentException
 	{
@@ -53,6 +57,7 @@ public class HashSet<E>
 	 *
 	 * @since 2018/11/01
 	 */
+	@Api
 	public HashSet()
 	{
 		this._map = new __BucketMap__<E, Object>(
@@ -69,6 +74,7 @@ public class HashSet<E>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/07
 	 */
+	@Api
 	public HashSet(Collection<? extends E> __s)
 		throws NullPointerException
 	{

@@ -19,6 +19,10 @@ squirreljme
 	tags += "meep"
 	
 	// Parts that may exist as of this profile
+	optionalDependencies += project(":modules:gcf")
+	optionalDependencies += project(":modules:meep-rms")
+	optionalDependencies += project(":modules:meep-swm")
+	optionalDependencies += project(":modules:midp-lcdui")
 	optionalDependencies += project(":modules:media-api")
 	optionalDependencies += project(":modules:meep-cellular")
 	optionalDependencies += project(":modules:meep-concurrency")
@@ -47,9 +51,6 @@ dependencies
 {
 	api project(":modules:cldc-compact")
 	
-	api project(":modules:gcf")
+	// MIDlet support is required for everything to even function properly
 	api project(":modules:meep-midlet")
-	api project(":modules:meep-rms")
-	api project(":modules:meep-swm")
-	api project(":modules:midp-lcdui")
 }

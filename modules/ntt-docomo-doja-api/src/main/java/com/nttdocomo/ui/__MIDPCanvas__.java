@@ -25,12 +25,11 @@ final class __MIDPCanvas__
 	private final Reference<Canvas> _imodeCanvas;
 	
 	/** Double buffered image for drawing operations. */
-	final DoubleBuffer _doubleBuffer =
-		new DoubleBuffer(0xFFFFFFFF);
+	final DoubleBuffer _doubleBuffer = new DoubleBuffer(0xFFFFFFFF);
 	
 	/**
 	 * Initializes the base canvas.
-	 * 
+	 *
 	 * @param __imodeCanvas The canvas to draw into.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/14
@@ -46,6 +45,7 @@ final class __MIDPCanvas__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2022/02/14
 	 */
 	@Override
@@ -56,12 +56,12 @@ final class __MIDPCanvas__
 		if (rv == null)
 			return;
 		
-		rv.processEvent(Display.KEY_PRESSED_EVENT,
-			Display.__mapKey(__code));
+		rv.processEvent(Display.KEY_PRESSED_EVENT, Display.__mapKey(__code));
 	}
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2022/02/14
 	 */
 	@Override
@@ -72,12 +72,12 @@ final class __MIDPCanvas__
 		if (rv == null)
 			return;
 		
-		rv.processEvent(Display.KEY_RELEASED_EVENT,
-			Display.__mapKey(__code));
+		rv.processEvent(Display.KEY_RELEASED_EVENT, Display.__mapKey(__code));
 	}
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2022/02/14
 	 */
 	@Override
@@ -89,6 +89,7 @@ final class __MIDPCanvas__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/11/30
 	 */
 	@Override

@@ -9,110 +9,142 @@
 
 package com.vodafone.v10.system.media;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
-public class MediaPlayer extends Canvas {
-    public static final int NO_DATA = 0;
-    public static final int READY = 1;
-    public static final int PLAYING = 2;
-    public static final int PAUSED = 3;
-    public static final int ERROR = 65536;
-
-    public MediaPlayer(byte[] var1) {
-    }
-
-    public MediaPlayer(String var1) throws IOException {
-    }
-
-    public void setMediaData(byte[] var1)
+@Api
+@SuppressWarnings("RedundantThrows")
+public class MediaPlayer
+	extends Canvas
+{
+	@Api
+	public static final int NO_DATA = 0;
+	
+	@Api
+	public static final int READY = 1;
+	
+	@Api
+	public static final int PLAYING = 2;
+	
+	@Api
+	public static final int PAUSED = 3;
+	
+	@Api
+	public static final int ERROR = 65536;
+	
+	@Api
+	public MediaPlayer(byte[] var1)
+	{
+	}
+	
+	@Api
+	public MediaPlayer(String var1)
+		throws IOException
+	{
+	}
+	
+	@Api
+	public void setMediaData(byte[] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public void setMediaData(String var1) throws IOException
+	
+	@Api
+	public void setMediaData(String var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
-
-    public int getState()
+	
+	@Api
+	public int getState()
 	{
 		throw Debugging.todo();
 	}
-
-    public int getMediaWidth()
+	
+	@Api
+	public int getMediaWidth()
 	{
 		throw Debugging.todo();
 	}
-
-    public int getMediaHeight()
+	
+	@Api
+	public int getMediaHeight()
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public int getWidth()
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
+	
+	@Override
 	public int getHeight()
 	{
 		throw Debugging.todo();
 	}
-
-    public void setContentPos(int var1, int var2)
+	
+	@Api
+	public void setContentPos(int var1, int var2)
 	{
 		throw Debugging.todo();
 	}
-
-    public void play()
+	
+	@Api
+	public void play()
 	{
 		throw Debugging.todo();
 	}
-
-    public void play(boolean var1)
+	
+	@Api
+	public void play(boolean var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public void stop()
+	
+	@Api
+	public void stop()
 	{
 		throw Debugging.todo();
 	}
-
-    public void pause()
+	
+	@Api
+	public void pause()
 	{
 		throw Debugging.todo();
 	}
-
-    public void resume()
+	
+	@Api
+	public void resume()
 	{
 		throw Debugging.todo();
 	}
-
-    public void setMediaPlayerListener(MediaPlayerListener var1)
+	
+	@Api
+	public void setMediaPlayerListener(MediaPlayerListener var1)
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
-	protected  void paint(Graphics var1)
+	
+	@Override
+	protected void paint(Graphics var1)
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
-	protected  void showNotify()
+	
+	@Override
+	protected void showNotify()
 	{
 		throw Debugging.todo();
 	}
-
-    @Override
-	protected  void hideNotify()
+	
+	@Override
+	protected void hideNotify()
 	{
 		throw Debugging.todo();
 	}

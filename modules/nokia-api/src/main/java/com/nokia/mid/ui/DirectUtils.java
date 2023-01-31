@@ -9,6 +9,7 @@
 
 package com.nokia.mid.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -31,6 +32,7 @@ public class DirectUtils
 	 * or exceed the array bounds.
 	 * @since 2019/10/07
 	 */
+	@Api
 	public static Image createImage(int __w, int __h, int __argb)
 		throws IllegalArgumentException
 	{
@@ -50,25 +52,26 @@ public class DirectUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/10/07
 	 */
+	@Api
 	public static Image createImage(byte[] __b, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
 	{
 		// Load the base image
 		Image base = Image.createImage(__b, __o, __l);
 		
 		// Create blank mutable
 		int w, h;
-		Image mutable = Image.createImage(
-			(w = base.getWidth()), (h = base.getHeight()),
-			base.hasAlpha(), 0);
-			
+		Image mutable = Image.createImage((w = base.getWidth()),
+			(h = base.getHeight()), base.hasAlpha(), 0);
+		
 		// Setup graphics state, use SRC blending mode since it is just a
 		// copy of the alpha channel data!
 		Graphics g = mutable.getGraphics();
 		g.setBlendingMode(Graphics.SRC);
 		
 		// Draw image on top
-		g.drawRegion(base, 0, 0, w, h, 0, 0, 
-			0, 0);
+		g.drawRegion(base, 0, 0, w, h, 0, 0, 0, 0);
 		
 		// Use resulting image
 		return mutable;
@@ -83,6 +86,7 @@ public class DirectUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/10/07
 	 */
+	@Api
 	public static DirectGraphics getDirectGraphics(Graphics __g)
 		throws NullPointerException
 	{

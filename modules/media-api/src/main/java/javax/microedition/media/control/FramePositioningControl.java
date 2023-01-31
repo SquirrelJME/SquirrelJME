@@ -9,17 +9,23 @@
 
 package javax.microedition.media.control;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.media.Control;
 
+@Api
 public interface FramePositioningControl
 	extends Control
 {
+	@Api
 	long mapFrameToTime(int __a);
 	
+	@Api
 	int mapTimeToFrame(long __a);
 	
+	@Api
 	int seek(int __a);
 	
+	@Api
 	int skip(int __a);
 }
 

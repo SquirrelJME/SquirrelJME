@@ -9,6 +9,9 @@
 
 package java.nio.channels;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface ByteChannel
 	extends ReadableByteChannel, WritableByteChannel
 {

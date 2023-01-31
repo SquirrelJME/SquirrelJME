@@ -41,7 +41,7 @@ final class __ScratchPadOutputTransaction__
 	
 	/**
 	 * Initializes the scratch pad transaction.
-	 * 
+	 *
 	 * @param __store The store to write into.
 	 * @param __pos The position into the store.
 	 * @param __length The number of bytes to write.
@@ -66,6 +66,7 @@ final class __ScratchPadOutputTransaction__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/12/02
 	 */
 	@Override
@@ -86,6 +87,7 @@ final class __ScratchPadOutputTransaction__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/12/02
 	 */
 	@Override
@@ -105,6 +107,7 @@ final class __ScratchPadOutputTransaction__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/12/02
 	 */
 	@Override

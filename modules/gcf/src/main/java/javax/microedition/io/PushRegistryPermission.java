@@ -9,13 +9,16 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.security.Permission;
 import java.security.PermissionCollection;
 
+@Api
 public final class PushRegistryPermission
 	extends Permission
 {
+	@Api
 	public PushRegistryPermission(String __a, String __b)
 	{
 		super((String)null);

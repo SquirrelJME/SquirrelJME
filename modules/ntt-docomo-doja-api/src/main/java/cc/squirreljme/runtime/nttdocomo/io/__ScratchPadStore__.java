@@ -28,8 +28,7 @@ final class __ScratchPadStore__
 	private static volatile __ScratchPadStore__[] _STORES;
 	
 	/** The record store key prefix. */
-	private static final String _STORE_KEY_PREFIX =
-		"SquirrelJME-i-Appli-";
+	private static final String _STORE_KEY_PREFIX = "SquirrelJME-i-Appli-";
 	
 	/** The scratch pad being accessed. */
 	private final int _pad;
@@ -42,7 +41,7 @@ final class __ScratchPadStore__
 	
 	/**
 	 * Initializes the scratch pad store.
-	 * 
+	 *
 	 * @param __pad The pad to load.
 	 * @param __length The length of bytes.
 	 * @throws IOException On read errors.
@@ -78,7 +77,7 @@ final class __ScratchPadStore__
 	
 	/**
 	 * Flushes the output.
-	 * 
+	 *
 	 * @throws IOException If it could not be flushed.
 	 * @since 2021/12/02
 	 */
@@ -109,7 +108,7 @@ final class __ScratchPadStore__
 	
 	/**
 	 * Opens an input stream to the given scratch pad data.
-	 * 
+	 *
 	 * @param __pos The position to open from.
 	 * @param __length The number of bytes to read.
 	 * @return The stream to the data bytes.
@@ -129,7 +128,7 @@ final class __ScratchPadStore__
 	/**
 	 * Opens an output stream for writing to the given scratch pad via a
 	 * single transaction, all or nothing.
-	 * 
+	 *
 	 * @param __pos The position to open from.
 	 * @param __len The number of bytes to write.
 	 * @return The stream for writing the data.
@@ -150,7 +149,7 @@ final class __ScratchPadStore__
 	
 	/**
 	 * Writes to the internal data buffer.
-	 * 
+	 *
 	 * @param __b The buffer.
 	 * @param __o The offset.
 	 * @param __l The number of bytes to write.
@@ -171,14 +170,13 @@ final class __ScratchPadStore__
 		// Perform the copy
 		synchronized (this)
 		{
-			System.arraycopy(__b, 0,
-				this._data, __o, __l);
+			System.arraycopy(__b, 0, this._data, __o, __l);
 		}
 	}
 	
 	/**
 	 * Attempts to open the record store.
-	 * 
+	 *
 	 * @return The record store.
 	 * @throws RecordStoreException If it could not be opened or created.
 	 * @since 2021/12/02
@@ -188,11 +186,11 @@ final class __ScratchPadStore__
 	{
 		return RecordStore.openRecordStore(this._storeKey, true,
 			RecordStore.AUTHMODE_ANY, true, null);
-	} 
+	}
 	
 	/**
 	 * Opens a scratch pad store.
-	 * 
+	 *
 	 * @param __pad The scratch pad to open.
 	 * @param __params The parameters for the scratch pad.
 	 * @return The storage for the scratch pad.
@@ -200,7 +198,8 @@ final class __ScratchPadStore__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/02
 	 */
-	static __ScratchPadStore__ __open(int __pad, __ScratchPadParams__ __params)
+	static __ScratchPadStore__ __open(int __pad,
+		__ScratchPadParams__ __params)
 		throws IOException, NullPointerException
 	{
 		if (__params == null)
@@ -217,8 +216,8 @@ final class __ScratchPadStore__
 			// Do we need to initialize the already existing store?
 			__ScratchPadStore__ store = stores[__pad];
 			if (store == null)
-				stores[__pad] = (store = new __ScratchPadStore__(
-					__pad, __params.getLength(__pad)));
+				stores[__pad] = (store = new __ScratchPadStore__(__pad,
+					__params.getLength(__pad)));
 			
 			return store;
 		}

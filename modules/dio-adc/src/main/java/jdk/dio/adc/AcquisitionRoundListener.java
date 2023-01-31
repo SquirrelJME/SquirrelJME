@@ -9,9 +9,11 @@
 
 package jdk.dio.adc;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.nio.IntBuffer;
 import jdk.dio.InputRoundListener;
 
+@Api
 public interface AcquisitionRoundListener
 	extends InputRoundListener<ADCChannel, IntBuffer>
 {

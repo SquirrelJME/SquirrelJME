@@ -66,11 +66,11 @@ public class TestCanvasKeyTyping
 	private void __sendKey(UIFormCallback __injector, UIFormBracket __form,
 		UIItemBracket __item, int __c)
 	{
-		__injector.eventKey(__form, __item, UIKeyEventType.KEY_PRESSED,
+		__injector.eventKey(__item, UIKeyEventType.KEY_PRESSED,
 			__c, 0);
-		__injector.eventKey(__form, __item, UIKeyEventType.KEY_REPEATED,
+		__injector.eventKey(__item, UIKeyEventType.KEY_REPEATED,
 			__c, 0);
-		__injector.eventKey(__form, __item, UIKeyEventType.KEY_RELEASE,
+		__injector.eventKey(__item, UIKeyEventType.KEY_RELEASE,
 			__c, 0);
 	}
 }

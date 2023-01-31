@@ -28,6 +28,7 @@ public class ResourceConnectionFactory
 {
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/11/30
 	 */
 	@SuppressWarnings("resource")
@@ -61,6 +62,7 @@ public class ResourceConnectionFactory
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2021/11/30
 	 */
 	@Override

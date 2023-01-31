@@ -9,11 +9,14 @@
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when there is a general input and/or output exception.
  *
  * @since 2018/12/08
  */
+@Api
 public class IOException
 	extends Exception
 {
@@ -22,6 +25,7 @@ public class IOException
 	 *
 	 * @since 2018/12/08
 	 */
+	@Api
 	public IOException()
 	{
 	}
@@ -32,6 +36,7 @@ public class IOException
 	 * @param __m The message.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public IOException(String __m)
 	{
 		super(__m);
@@ -44,6 +49,7 @@ public class IOException
 	 * @param __t The cause.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public IOException(String __m, Throwable __t)
 	{
 		super(__m, __t);
@@ -55,6 +61,7 @@ public class IOException
 	 * @param __t The cause.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public IOException(Throwable __t)
 	{
 		super(__t);

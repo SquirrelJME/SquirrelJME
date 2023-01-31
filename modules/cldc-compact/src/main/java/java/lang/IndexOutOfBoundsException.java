@@ -9,11 +9,14 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when an index which is not within bounds was accessed.
  *
  * @since 2018/09/16
  */
+@Api
 public class IndexOutOfBoundsException
 	extends RuntimeException
 {
@@ -22,6 +25,7 @@ public class IndexOutOfBoundsException
 	 *
 	 * @since 2018/09/16
 	 */
+	@Api
 	public IndexOutOfBoundsException()
 	{
 	}
@@ -32,6 +36,7 @@ public class IndexOutOfBoundsException
 	 * @param __m The message.
 	 * @since 2018/09/16
 	 */
+	@Api
 	public IndexOutOfBoundsException(String __m)
 	{
 		super(__m);

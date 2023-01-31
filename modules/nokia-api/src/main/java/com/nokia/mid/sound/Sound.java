@@ -16,9 +16,9 @@ import javax.microedition.media.MediaException;
 
 /**
  * Provides an interface for playing digitized audio along with simple sounds.
- * 
+ *
  * All implementations must support tone based sounds.
- * 
+ *
  * @since 2022/02/03
  */
 @ApiDefinedDeprecated
@@ -26,28 +26,23 @@ public class Sound
 {
 	/** A simple tone based sound. */
 	@ApiDefinedDeprecated
-	public static final int FORMAT_TONE =
-		1;
+	public static final int FORMAT_TONE = 1;
 	
 	/** A digitized waveform audio. */
 	@ApiDefinedDeprecated
-	public static final int FORMAT_WAVE =
-		5;
+	public static final int FORMAT_WAVE = 5;
 	
 	/** A sound is playing. */
 	@ApiDefinedDeprecated
-	public static final int SOUND_PLAYING =
-		0;
+	public static final int SOUND_PLAYING = 0;
 	
 	/** A sound is stopped. */
 	@ApiDefinedDeprecated
-	public static final int SOUND_STOPPED =
-		1;
+	public static final int SOUND_STOPPED = 1;
 	
 	/** A sound is not initialized. */
 	@ApiDefinedDeprecated
-	public static final int SOUND_UNINITIALIZED =
-		3;
+	public static final int SOUND_UNINITIALIZED = 3;
 	
 	@ApiDefinedDeprecated
 	public Sound(byte[] __data, int __type)
@@ -82,7 +77,7 @@ public class Sound
 	
 	/**
 	 * Plays a simple tone through the device speaker.
-	 * 
+	 *
 	 * @param __freq The frequency to play the sound at.
 	 * @param __duration The duration in milliseconds to play the sound for.
 	 * @throws IllegalArgumentException If the frequency is not within range
@@ -101,8 +96,7 @@ public class Sound
 		try
 		{
 			Manager.playTone(__freq,
-				(int)Math.min(__duration, Integer.MAX_VALUE),
-				100);
+				(int)Math.min(__duration, Integer.MAX_VALUE), 100);
 		}
 		catch (MediaException e)
 		{

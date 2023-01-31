@@ -9,10 +9,14 @@
 
 package com.jblend.media;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 public interface MediaPlayerListener
 {
-    void playerStateChanged(MediaPlayer var1);
-
-    void playerRepeated(MediaPlayer var1);
+	@Api
+	void playerStateChanged(MediaPlayer var1);
+	
+	@Api
+	void playerRepeated(MediaPlayer var1);
 }
 

@@ -9,6 +9,7 @@
 
 package java.security;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -30,6 +31,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * 
  * @since 2020/07/09
  */
+@Api
 public abstract class BasicPermission
 	extends Permission
 {
@@ -44,6 +46,7 @@ public abstract class BasicPermission
 	 * @throws NullPointerException If no name was specified.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public BasicPermission(String __name)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -59,6 +62,7 @@ public abstract class BasicPermission
 	 * @throws NullPointerException If no name was specified.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public BasicPermission(String __name,
 		@SuppressWarnings("unused") String __act)
 		throws IllegalArgumentException, NullPointerException

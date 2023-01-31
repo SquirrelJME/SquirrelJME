@@ -9,6 +9,7 @@
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.Decoder;
 
@@ -18,6 +19,7 @@ import cc.squirreljme.runtime.cldc.io.Decoder;
  *
  * @since 2018/10/13
  */
+@Api
 public class InputStreamReader
 	extends Reader
 {
@@ -38,6 +40,7 @@ public class InputStreamReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/13
 	 */
+	@Api
 	public InputStreamReader(InputStream __in)
 		throws NullPointerException
 	{
@@ -61,6 +64,7 @@ public class InputStreamReader
 	 * @throws UnsupportedEncodingException If the encoding is not supported.
 	 * @since 2018/10/13
 	 */
+	@Api
 	public InputStreamReader(InputStream __in, String __enc)
 		throws NullPointerException, UnsupportedEncodingException
 	{
@@ -91,6 +95,7 @@ public class InputStreamReader
 	 * @return The encoding name.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public String getEncoding()
 	{
 		return this._decoder.encodingName();

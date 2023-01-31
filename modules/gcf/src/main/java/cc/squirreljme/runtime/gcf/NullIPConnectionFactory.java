@@ -19,6 +19,7 @@ import javax.microedition.io.ConnectionNotFoundException;
  *
  * @since 2019/05/12
  */
+@SuppressWarnings("DuplicateThrows")
 public final class NullIPConnectionFactory
 	extends IPConnectionFactory
 {

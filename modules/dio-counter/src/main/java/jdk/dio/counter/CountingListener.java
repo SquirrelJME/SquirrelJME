@@ -9,12 +9,15 @@
 
 package jdk.dio.counter;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import jdk.dio.AsyncErrorHandler;
 import jdk.dio.DeviceEventListener;
 
+@Api
 public interface CountingListener
 	extends DeviceEventListener, AsyncErrorHandler<PulseCounter>
 {
+	@Api
 	void countValueAvailable(CountingEvent __a);
 	
 }

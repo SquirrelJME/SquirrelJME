@@ -9,11 +9,14 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when the format of a number is not correct.
  *
  * @since 2018/10/12
  */
+@Api
 public class NumberFormatException
 	extends IllegalArgumentException
 {
@@ -22,6 +25,7 @@ public class NumberFormatException
 	 *
 	 * @since 2018/10/12
 	 */
+	@Api
 	public NumberFormatException()
 	{
 	}
@@ -32,6 +36,7 @@ public class NumberFormatException
 	 * @param __m The message.
 	 * @since 2018/10/12
 	 */
+	@Api
 	public NumberFormatException(String __m)
 	{
 		super(__m);

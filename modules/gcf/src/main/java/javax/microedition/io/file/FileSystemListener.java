@@ -10,14 +10,20 @@
 package javax.microedition.io.file;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface FileSystemListener
 {
+	@Api
 	int ROOT_ADDED =
 		0;
 	
+	@Api
 	int ROOT_REMOVED =
 		1;
 	
+	@Api
 	void rootChanged(int __a, String __b);
 }
 

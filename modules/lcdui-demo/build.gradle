@@ -34,4 +34,5 @@ dependencies
 {
 	api project(":modules:cldc-compact")
 	api project(":modules:profile-meep")
+	api project(":modules:midp-lcdui")
 }

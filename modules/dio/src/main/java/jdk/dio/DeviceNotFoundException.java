@@ -10,16 +10,20 @@
 package jdk.dio;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class DeviceNotFoundException
 	extends DeviceException
 {
+	@Api
 	public DeviceNotFoundException()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public DeviceNotFoundException(String __a)
 	{
 		throw Debugging.todo();

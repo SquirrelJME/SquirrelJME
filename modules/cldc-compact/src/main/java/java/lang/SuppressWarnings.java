@@ -9,6 +9,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -33,9 +34,11 @@ import java.lang.annotation.Target;
 	ElementType.PARAMETER, ElementType.CONSTRUCTOR,
 	ElementType.LOCAL_VARIABLE})
 @Retention(value=RetentionPolicy.SOURCE)
+@Api
 public @interface SuppressWarnings
 {
 	/** @return The warnings that should be suppressed. */
+	@Api
 	String[] value();
 }
 

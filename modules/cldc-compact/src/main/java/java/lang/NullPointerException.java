@@ -9,12 +9,15 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown by the virtual machine when an attempt is made to read from
  * a reference which is {@code null}.
  *
  * @since 2016/02/26
  */
+@Api
 public class NullPointerException
 	extends RuntimeException
 {
@@ -23,6 +26,7 @@ public class NullPointerException
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public NullPointerException()
 	{
 	}
@@ -33,6 +37,7 @@ public class NullPointerException
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public NullPointerException(String __m)
 	{
 		super(__m);

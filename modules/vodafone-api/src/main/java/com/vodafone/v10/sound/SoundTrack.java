@@ -9,106 +9,133 @@
 
 package com.vodafone.v10.sound;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 public class SoundTrack
 {
-    public static final int NO_DATA = 0;
-    public static final int READY = 1;
-    public static final int PLAYING = 2;
-    public static final int PAUSED = 3;
-
-    public void setSound(Sound var1)
+	@Api
+	public static final int NO_DATA = 0;
+	
+	@Api
+	public static final int READY = 1;
+	
+	@Api
+	public static final int PLAYING = 2;
+	
+	@Api
+	public static final int PAUSED = 3;
+	
+	@Api
+	public void setSound(Sound var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public Sound getSound()
+	
+	@Api
+	public Sound getSound()
 	{
 		throw Debugging.todo();
 	}
-
-    public void removeSound()
+	
+	@Api
+	public void removeSound()
 	{
 		throw Debugging.todo();
 	}
-
-    public void play()
+	
+	@Api
+	public void play()
 	{
 		throw Debugging.todo();
 	}
-
-    public void play(int var1)
+	
+	@Api
+	public void play(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public void stop()
+	
+	@Api
+	public void stop()
 	{
 		throw Debugging.todo();
 	}
-
-    public void pause()
+	
+	@Api
+	public void pause()
 	{
 		throw Debugging.todo();
 	}
-
-    public void resume()
+	
+	@Api
+	public void resume()
 	{
 		throw Debugging.todo();
 	}
-
-    public void mute(boolean var1)
+	
+	@Api
+	public void mute(boolean var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public int getState()
+	
+	@Api
+	public int getState()
 	{
 		throw Debugging.todo();
 	}
-
-    public void setVolume(int var1)
+	
+	@Api
+	public void setVolume(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public int getVolume()
+	
+	@Api
+	public int getVolume()
 	{
 		throw Debugging.todo();
 	}
-
-    public void setPanpot(int var1)
+	
+	@Api
+	public void setPanpot(int var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public int getPanpot()
+	
+	@Api
+	public int getPanpot()
 	{
 		throw Debugging.todo();
 	}
-
-    public void setSubjectTo(SoundTrack var1)
+	
+	@Api
+	public void setSubjectTo(SoundTrack var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public SoundTrack getSyncMaster()
+	
+	@Api
+	public SoundTrack getSyncMaster()
 	{
 		throw Debugging.todo();
 	}
-
-    public int getID()
+	
+	@Api
+	public int getID()
 	{
 		throw Debugging.todo();
 	}
-
-    public void setEventListener(SoundTrackListener var1)
+	
+	@Api
+	public void setEventListener(SoundTrackListener var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public boolean isMute()
+	
+	@Api
+	public boolean isMute()
 	{
 		throw Debugging.todo();
 	}

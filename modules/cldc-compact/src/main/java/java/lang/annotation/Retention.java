@@ -9,6 +9,8 @@
 
 package java.lang.annotation;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is used to indicate how far into the compilation and runtime process
  * should keep a visible mark on an annotation.
@@ -17,6 +19,7 @@ package java.lang.annotation;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.ANNOTATION_TYPE})
+@Api
 public @interface Retention
 {
 	/**
@@ -27,6 +30,7 @@ public @interface Retention
 	 * @see RetentionPolicy
 	 * @since 2014/10/13
 	 */
+	@Api
 	RetentionPolicy value();
 }
 

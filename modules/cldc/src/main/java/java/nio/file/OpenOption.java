@@ -9,6 +9,9 @@
 
 package java.nio.file;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface OpenOption
 {
 }

@@ -9,13 +9,15 @@
 
 package javax.bluetooth;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 import javax.microedition.io.Connection;
 
+@Api
 public interface L2CAPConnectionNotifier
 	extends Connection
 {
-	@SuppressWarnings("RedundantThrows")
+	@Api
 	L2CAPConnection acceptAndOpen()
 		throws IOException;
 }

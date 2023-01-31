@@ -9,6 +9,7 @@
 
 package java.lang.ref;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -19,6 +20,7 @@ import java.util.LinkedList;
  * @param <T> The type of reference to store.
  * @since 2018/09/23
  */
+@Api
 public class ReferenceQueue<T>
 {
 	/** Internal queue of references. */
@@ -32,6 +34,7 @@ public class ReferenceQueue<T>
 	 * @return The next removed reference or {@code null} if there is none.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Reference<? extends T> poll()
 	{
 		// Lock and remove
@@ -53,6 +56,7 @@ public class ReferenceQueue<T>
 	 * waiting.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Reference<? extends T> remove(long __ms)
 		throws IllegalArgumentException, InterruptedException
 	{
@@ -98,6 +102,7 @@ public class ReferenceQueue<T>
 	 * @throws InterruptedException If the thread was interrupted.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Reference<? extends T> remove()
 		throws InterruptedException
 	{

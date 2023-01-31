@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 /**
@@ -16,6 +17,7 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
  * 
  * @since 2020/11/13
  */
+@Api
 public interface CommandListener
 {
 	/**
@@ -25,6 +27,7 @@ public interface CommandListener
 	 * @param __displayable The displayable the command is acting under.
 	 * @since 2020/11/13
 	 */
+	@Api
 	@SerializedEvent
 	void commandAction(Command __command, Displayable __displayable);
 }

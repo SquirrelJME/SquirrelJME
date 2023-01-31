@@ -9,7 +9,11 @@
 
 package javax.wireless.messaging;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface MessageListener
 {
+	@Api
 	void notifyIncomingMessage(MessageConnection __connection);
 }

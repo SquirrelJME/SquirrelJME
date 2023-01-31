@@ -9,23 +9,30 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This represents the state that a suite is in.
  *
  * @since 2016/06/24
  */
+@Api
 public enum SuiteState
 {
 	/** Installation failed. */
+	@Api
 	INSTALLATION_FAILED,
 	
 	/** Installed. */
+	@Api
 	INSTALLED,
 	
 	/** Currently being installed. */
+	@Api
 	INSTALLING,
 	
 	/** Removed. */
+	@Api
 	REMOVED,
 	
 	/** End. */

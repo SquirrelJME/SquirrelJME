@@ -9,23 +9,32 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
+@Api
 public class Gauge
 	extends Item
 {
+	@Api
 	public static final int CONTINUOUS_IDLE =
 		0;
 	
+	@Api
 	public static final int CONTINUOUS_RUNNING =
 		2;
 	
+	@Api
 	public static final int INCREMENTAL_IDLE =
 		1;
 	
+	@Api
 	public static final int INCREMENTAL_UPDATING =
 		3;
 	
+	@Api
 	public static final int INDEFINITE =
 		-1;
 	
@@ -51,6 +60,7 @@ public class Gauge
 	 * is not one of the special values if it is {@link #INDEFINITE}.
 	 * @since 2019/05/17
 	 */
+	@Api
 	public Gauge(String __l, boolean __int, int __max, int __iv)
 		throws IllegalArgumentException
 	{
@@ -77,31 +87,37 @@ public class Gauge
 		this._maxvalue = __max;
 	}
 	
+	@Api
 	public int getIncrementValue()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getMaxValue()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getMinValue()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getValue()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public boolean isInteractive()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setIncrementValue(int __v)
 	{
 		throw Debugging.todo();
@@ -126,19 +142,54 @@ public class Gauge
 		super.setLabel(__l);
 	}
 	
+	@Api
 	public void setMaxValue(int __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setMinValue(int __v)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setValue(int __a)
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/01/14
+	 */
+	@Override
+	__CommonState__ __stateInit(UIBackend __backend)
+		throws NullPointerException
+	{
+		return new __GaugeState__(__backend, this);
+	}
+	
+	/**
+	 * Gauge state.
+	 * 
+	 * @since 2023/01/14
+	 */
+	static class __GaugeState__
+		extends Item.__ItemState__
+	{
+		/**
+		 * Initializes the backend state.
+		 *
+		 * @param __backend The backend used.
+		 * @param __self Self widget.
+		 * @since 2023/01/14
+		 */
+		__GaugeState__(UIBackend __backend, DisplayWidget __self)
+		{
+			super(__backend, __self);
+		}
 	}
 }
 

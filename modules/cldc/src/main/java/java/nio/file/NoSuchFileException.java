@@ -9,17 +9,21 @@
 
 package java.nio.file;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class NoSuchFileException
 	extends FileSystemException
 {
+	@Api
 	public NoSuchFileException(String __a)
 	{
 		super((String)null);
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public NoSuchFileException(String __a, String __b, String __c)
 	{
 		super((String)null);

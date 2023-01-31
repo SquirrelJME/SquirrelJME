@@ -9,12 +9,15 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when through iteration the structure of the collection
  * was modified between iterations.
  *
  * @since 2018/12/08
  */
+@Api
 public class ConcurrentModificationException
 	extends RuntimeException
 {
@@ -23,6 +26,7 @@ public class ConcurrentModificationException
 	 *
 	 * @since 2018/12/08
 	 */
+	@Api
 	public ConcurrentModificationException()
 	{
 	}
@@ -33,6 +37,7 @@ public class ConcurrentModificationException
 	 * @param __m The message.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public ConcurrentModificationException(String __m)
 	{
 		super(__m);

@@ -14,6 +14,8 @@ import cc.squirreljme.jvm.mle.annotation.GhostObject;
 /**
  * This represents a form as a whole, it is displayed with
  * {@link UIDisplayBracket} and contains {@link UIItemBracket}.
+ * 
+ * Every form has a title, a ticker, command buttons, and/or a menu.
  *
  * @since 2020/07/01
  */

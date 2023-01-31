@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.BacklightControl;
 import cc.squirreljme.runtime.lcdui.mle.Vibration;
@@ -17,23 +18,22 @@ import cc.squirreljme.runtime.nttdocomo.ui.VendorPhoneSystem;
 public class PhoneSystem
 {
 	/** Maximum time for a steady vibration. */
-	private static final int _MAX_VIBRATION_TIME =
-		7_000;
+	private static final int _MAX_VIBRATION_TIME = 7_000;
 	
-	public static final int ATTR_BACKLIGHT_OFF =
-		0;
-
-	public static final int ATTR_BACKLIGHT_ON =
-		1;
-
-	public static final int DEV_BACKLIGHT =
-		0;
-
-	public static final int MAX_VENDOR_ATTR =
-		127;
-
-	public static final int MIN_VENDOR_ATTR =
-		64;
+	@Api
+	public static final int ATTR_BACKLIGHT_OFF = 0;
+	
+	@Api
+	public static final int ATTR_BACKLIGHT_ON = 1;
+	
+	@Api
+	public static final int DEV_BACKLIGHT = 0;
+	
+	@Api
+	public static final int MAX_VENDOR_ATTR = 127;
+	
+	@Api
+	public static final int MIN_VENDOR_ATTR = 64;
 	
 	@SuppressWarnings("FinalStaticMethod")
 	public static final void setAttribute(int __attr, int __value)
@@ -50,8 +50,7 @@ public class PhoneSystem
 		}
 		
 		// Vibration
-		else if (__attr == VendorPhoneSystem.VIBRATE_ATTRIBUTE_F503I_SO503I ||
-			__attr == VendorPhoneSystem.VIBRATE_ATTRIBUTE_P503I)
+		else if (__attr == VendorPhoneSystem.VIBRATE_ATTRIBUTE_F503I_SO503I || __attr == VendorPhoneSystem.VIBRATE_ATTRIBUTE_P503I)
 		{
 			// Different phones have different means of turning on the shake
 			boolean isOn;

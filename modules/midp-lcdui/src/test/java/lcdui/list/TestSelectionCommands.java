@@ -68,7 +68,7 @@ public class TestSelectionCommands
 			// Send event and wait for it to be flushed out
 			backend.injector().propertyChange(form, item,
 				UIWidgetProperty.INT_LIST_ITEM_SELECTED, i, 0, 1);
-			backend.injector().eventKey(form, item,
+			backend.injector().eventKey(item,
 				UIKeyEventType.COMMAND_ACTIVATED, i, 0);
 			backend.flushEvents();
 			

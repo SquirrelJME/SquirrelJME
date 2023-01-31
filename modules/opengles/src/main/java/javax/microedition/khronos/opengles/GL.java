@@ -10,6 +10,9 @@
 package javax.microedition.khronos.opengles;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface GL
 {
 }

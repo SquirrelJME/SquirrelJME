@@ -9,11 +9,14 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This represents a sequence of characters.
  *
  * @since 2018/12/07
  */
+@Api
 public interface CharSequence
 {
 	/**
@@ -24,6 +27,7 @@ public interface CharSequence
 	 * @throws IndexOutOfBoundsException If the index is out of bounds.
 	 * @since 2018/12/07
 	 */
+	@Api
 	char charAt(int __i)
 		throws IndexOutOfBoundsException;
 	
@@ -33,6 +37,7 @@ public interface CharSequence
 	 * @return The length of the sequence.
 	 * @since 2018/12/07
 	 */
+	@Api
 	int length();
 	
 	/**
@@ -45,6 +50,7 @@ public interface CharSequence
 	 * sequence bounds or start is greater than end.
 	 * @since 2018/12/07
 	 */
+	@Api
 	CharSequence subSequence(int __s, int __e)
 		throws IndexOutOfBoundsException;
 	

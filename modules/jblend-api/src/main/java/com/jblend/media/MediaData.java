@@ -9,28 +9,35 @@
 
 package com.jblend.media;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
+@Api
 public abstract class MediaData
 {
-    public MediaData()
+	@Api
+	public MediaData()
 	{
 		throw Debugging.todo();
 	}
-
-    public MediaData(String var1)
-    	throws IOException
+	
+	@Api
+	public MediaData(String var1)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
-
-    public MediaData(byte[] var1)
+	
+	@Api
+	public MediaData(byte[] var1)
 	{
 		throw Debugging.todo();
 	}
-
-    public abstract String getMediaType();
-
-    public abstract void setData(byte[] var1);
+	
+	@Api
+	public abstract String getMediaType();
+	
+	@Api
+	public abstract void setData(byte[] var1);
 }

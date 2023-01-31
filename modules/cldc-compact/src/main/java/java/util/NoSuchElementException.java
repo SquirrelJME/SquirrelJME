@@ -9,11 +9,14 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when no element exists, usually from an {@link Iterator}.
  *
  * @since 2018/10/29
  */
+@Api
 public class NoSuchElementException
 	extends RuntimeException
 {
@@ -22,6 +25,7 @@ public class NoSuchElementException
 	 *
 	 * @since 2018/10/29
 	 */
+	@Api
 	public NoSuchElementException()
 	{
 	}
@@ -32,6 +36,7 @@ public class NoSuchElementException
 	 * @param __m The message.
 	 * @since 2018/10/29
 	 */
+	@Api
 	public NoSuchElementException(String __m)
 	{
 		super(__m);

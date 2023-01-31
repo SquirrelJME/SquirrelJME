@@ -9,11 +9,14 @@
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This thrown when the end of file has been reached.
  *
  * @since 2018/12/08
  */
+@Api
 public class EOFException
 	extends IOException
 {
@@ -22,6 +25,7 @@ public class EOFException
 	 *
 	 * @since 2018/12/08
 	 */
+	@Api
 	public EOFException()
 	{
 	}
@@ -32,6 +36,7 @@ public class EOFException
 	 * @param __m The message.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public EOFException(String __m)
 	{
 		super(__m);
