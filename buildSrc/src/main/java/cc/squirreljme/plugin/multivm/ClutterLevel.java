@@ -26,6 +26,17 @@ public enum ClutterLevel
 	;
 	
 	/**
+	 * Is this considered a debug task?
+	 * 
+	 * @return If this is considered debugging.
+	 * @since 2023/02/01
+	 */
+	public final boolean isDebug()
+	{
+		return this == ClutterLevel.DEBUG;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2023/01/28
 	 */

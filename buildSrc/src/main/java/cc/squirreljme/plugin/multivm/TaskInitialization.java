@@ -29,10 +29,12 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.UnknownDomainObjectException;
 import org.gradle.api.file.FileCollection;
+import org.gradle.api.internal.AbstractTask;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskContainer;
+import org.gradle.api.tasks.bundling.AbstractArchiveTask;
 import org.gradle.api.tasks.javadoc.Javadoc;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.external.javadoc.CoreJavadocOptions;
@@ -248,10 +250,28 @@ public final class TaskInitialization
 				e);
 		}
 		
+		// The source library task depends on whether we are debugging or not
+		Jar sourceJar = VMHelpers.jarTask(__project,
+			__classifier.getSourceSet());
+		AbstractTask usedSourceJar;
+		
+		// If we are debugging, then we keep everything... otherwise we just
+		// strip everything out that we can to minimize the size as much as
+		// possible...
+		if (__classifier.getTargetClassifier().getClutterLevel().isDebug())
+			usedSourceJar = sourceJar;
+		
+		// Otherwise set up a new task to compact the Jar and remove any
+		// debugging information and unneeded symbols for execution.
+		else
+			usedSourceJar = tasks.create(
+				TaskInitialization.task("compactLib", __classifier),
+				VMCompactLibraryTask.class, __classifier, sourceJar);
+		
 		// Library that needs to be constructed so execution happens properly
 		VMLibraryTask libTask = tasks.create(
 			TaskInitialization.task("lib", __classifier),
-			VMLibraryTask.class, __classifier);
+			VMLibraryTask.class, __classifier, usedSourceJar);
 		
 		// Is dumping available?
 		if (__classifier.getVmType().hasDumping())
