@@ -38,6 +38,12 @@ public class VMCompactLibraryTaskAction
 			    "public", "protected", "*", ";",
 				"}",*/
 			
+			// Keep anything with main in it
+			"-keepclasseswithmembers", "class", "*", "{",
+				"public", "static", "void", "main", "(",
+					"java.lang.String[]", ")", ";",
+			"}",
+			
 			// Keep classes annotation with @Api and @Exported
 			"-keep", "public",
 				"@cc.squirreljme.runtime.cldc.annotation.Api",
@@ -105,6 +111,10 @@ public class VMCompactLibraryTaskAction
 	@Override
 	public void execute(Task __task)
 	{
+		// Where are we writing to?
+		Path outputPath = __task.getOutputs().getFiles().getSingleFile()
+			.toPath();
+		
 		// Run the task
 		Path tempFile = null;
 		try
@@ -138,17 +148,34 @@ public class VMCompactLibraryTaskAction
 			//config.printMapping = Configuration.STD_OUT;
 			config.printConfiguration = Configuration.STD_OUT;
 			
+			// We need to include all the inputs that were already ran through
+			// ProGuard...
+			ClassPath libraryJars = new ClassPath();
+			config.libraryJars = libraryJars;
+			for (Path jar : VMHelpers.runClassPath(__task, this.classifier))
+			{
+				// Ignore our own output as it will never actually work, or
+				// will go badly as it would be stale
+				if (jar.equals(outputPath) ||
+					Files.isSameFile(jar, outputPath))
+					continue;
+				
+				// Add otherwise
+				libraryJars.add(new ClassPathEntry(jar.toFile(),
+					false));
+			}
+			
 			// Setup input and output Jar
-			ClassPath classPath = new ClassPath();
-			config.programJars = classPath;
+			ClassPath programJars = new ClassPath();
+			config.programJars = programJars;
 			
 			// Input source Jar
-			classPath.add(
+			programJars.add(
 				new ClassPathEntry(__task.getInputs().getFiles()
 					.getSingleFile(), false));
 			
 			// Output temporary Jar
-			classPath.add(new ClassPathEntry(
+			programJars.add(new ClassPathEntry(
 				tempFile.toFile(), true));
 			
 			// Run the shrinking/obfuscation
@@ -160,7 +187,7 @@ public class VMCompactLibraryTaskAction
 			
 			// Move to output
 			Files.move(tempFile,
-				__task.getOutputs().getFiles().getSingleFile().toPath(),
+				outputPath,
 				StandardCopyOption.REPLACE_EXISTING);
 		}
 		catch (Exception __e)
