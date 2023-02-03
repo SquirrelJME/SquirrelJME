@@ -85,23 +85,23 @@ public class VMCompactLibraryTaskAction
 				"}",
 		};
 	
-	/** The classifier used. */
-	public final SourceTargetClassifier classifier;
+	/** The source set used. */
+	public final String sourceSet;
 	
 	/**
 	 * Initializes the task action.
 	 * 
-	 * @param __classifier The classifier used.
+	 * @param __sourceSet The source set used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/02/01
 	 */
-	public VMCompactLibraryTaskAction(SourceTargetClassifier __classifier)
+	public VMCompactLibraryTaskAction(String __sourceSet)
 		throws NullPointerException
 	{
-		if (__classifier == null)
+		if (__sourceSet == null)
 			throw new NullPointerException("NARG");
 		
-		this.classifier = __classifier;
+		this.sourceSet = __sourceSet;
 	}
 	
 	/**
@@ -152,7 +152,7 @@ public class VMCompactLibraryTaskAction
 			// ProGuard...
 			ClassPath libraryJars = new ClassPath();
 			config.libraryJars = libraryJars;
-			for (Path jar : VMHelpers.runClassPath(__task, this.classifier))
+			/*for (Path jar : VMHelpers.runClassPath(__task, this.classifier))
 			{
 				// Ignore our own output as it will never actually work, or
 				// will go badly as it would be stale
@@ -163,7 +163,7 @@ public class VMCompactLibraryTaskAction
 				// Add otherwise
 				libraryJars.add(new ClassPathEntry(jar.toFile(),
 					false));
-			}
+			}*/
 			
 			// Setup input and output Jar
 			ClassPath programJars = new ClassPath();

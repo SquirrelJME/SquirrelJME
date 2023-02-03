@@ -27,36 +27,35 @@ import org.gradle.jvm.tasks.Jar;
  */
 public class VMCompactLibraryTask
 	extends DefaultTask
-	implements VMExecutableTask
 {
 	/** The base JAR. */
 	@Internal
 	@Getter
 	public final Jar baseJar;
 	
-	/** The classifier used. */
+	/** The source set used. */
 	@Internal
 	@Getter
-	private final SourceTargetClassifier classifier;
+	private final String sourceSet;
 	
 	/**
 	 * Initializes the compacting task.
 	 * 
-	 * @param __classifier The classifier used.
+	 * @param __sourceSet The source set this belongs to.
 	 * @param __baseJar The original source Jar.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/02/01
 	 */
 	@Inject
-	public VMCompactLibraryTask(SourceTargetClassifier __classifier,
+	public VMCompactLibraryTask(String __sourceSet,
 		Jar __baseJar)
 		throws NullPointerException
 	{
-		if (__classifier == null || __baseJar == null)
+		if (__sourceSet == null || __baseJar == null)
 			throw new NullPointerException("NARG");
 		
 		this.baseJar = __baseJar;
-		this.classifier = __classifier;
+		this.sourceSet = __sourceSet;
 		
 		// Set details of this task
 		this.setGroup("squirreljme");
@@ -75,11 +74,11 @@ public class VMCompactLibraryTask
 		// The output of this JAR is just where it should be placed
 		this.getOutputs().files(
 			this.getProject().provider(() -> this.outputPath()));
-		this.getOutputs().upToDateWhen(
-			new VMLibraryTaskUpToDate(__classifier.getTargetClassifier()));
+		/*this.getOutputs().upToDateWhen(
+			new VMLibraryTaskUpToDate(__classifier.getTargetClassifier()));*/
 		
 		// Performs the action of the task
-		this.doLast(new VMCompactLibraryTaskAction(__classifier));
+		this.doLast(new VMCompactLibraryTaskAction(__sourceSet));
 	}
 	
 	/**
@@ -102,10 +101,11 @@ public class VMCompactLibraryTask
 	 */
 	public final Provider<Path> outputPath()
 	{
-		return this.getProject().provider(() -> VMHelpers.cacheDir(
-			this.getProject(), this.classifier).get()
-			.resolve("compactified-" + this.classifier.getVmType()
-				.outputLibraryName(this.getProject(),
-					this.classifier.getSourceSet())));
+		return this.getProject().provider(() ->
+			this.getProject().getBuildDir().toPath()
+				.resolve("squirreljme").resolve("compact")
+				.resolve(String.format("%s.%s.jar",
+					this.getProject().getName(),
+					this.sourceSet)));
 	}
 }

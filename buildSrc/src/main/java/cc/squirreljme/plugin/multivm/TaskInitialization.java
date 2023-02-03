@@ -264,9 +264,24 @@ public final class TaskInitialization
 		// Otherwise set up a new task to compact the Jar and remove any
 		// debugging information and unneeded symbols for execution.
 		else
-			usedSourceJar = tasks.create(
-				TaskInitialization.task("compactLib", __classifier),
-				VMCompactLibraryTask.class, __classifier, sourceJar);
+		{
+			// Look for that task first
+			String checkName = TaskInitialization.task("compactLib",
+				__classifier.getSourceSet());
+			AbstractTask maybe = (AbstractTask)tasks.findByName(checkName);
+			
+			// If it exists, use that one
+			if (maybe != null)
+				usedSourceJar = maybe;
+			
+			// Otherwise, create it
+			else
+			{
+				usedSourceJar = tasks.create(checkName,
+					VMCompactLibraryTask.class, __classifier.getSourceSet(),
+					sourceJar);
+			}
+		}
 		
 		// Library that needs to be constructed so execution happens properly
 		VMLibraryTask libTask = tasks.create(
