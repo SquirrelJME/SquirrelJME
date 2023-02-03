@@ -133,6 +133,21 @@ public final class RuntimeShelf
 	public static native int phoneModel();
 	
 	/**
+	 * Returns the value of a system environment variable.
+	 * 
+	 * Not every platform and/or system may have these, so these should not
+	 * be depended upon.
+	 * 
+	 * @param __key The environment variable key.
+	 * @return The value of the variable if it is set, otherwise {@code null}.
+	 * @throws MLECallError If key is {@code null}.
+	 * @since 2023/02/02
+	 */
+	@Exported
+	public static native String systemEnv(String __key)
+		throws MLECallError;
+	
+	/**
 	 * Returns the system property for the given key, if there is one.
 	 *
 	 * @param __key The property key.
