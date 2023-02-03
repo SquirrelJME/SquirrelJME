@@ -9,12 +9,15 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
+
 /**
  * This is used to obtain the number of bytes which were read from or written
  * to a given stream.
  *
  * @since 2016/07/10
  */
+@Exported
 public interface SizedStream
 {
 	/**
@@ -23,6 +26,7 @@ public interface SizedStream
 	 * @return The number of read or written bytes.
 	 * @since 2016/07/10
 	 */
+	@Exported
 	long size();
 }
 

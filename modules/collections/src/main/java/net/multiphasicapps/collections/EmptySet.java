@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.collections;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractSet;
@@ -21,6 +22,7 @@ import java.util.Set;
  *
  * @since 2016/04/10
  */
+@Exported
 public final class EmptySet
 	extends AbstractSet
 {
@@ -93,6 +95,7 @@ public final class EmptySet
 	 * @return The unmodifiable and empty set.
 	 * @since 2016/04/10
 	 */
+	@Exported
 	@SuppressWarnings({"unchecked"})
 	public static <V> Set<V> empty()
 	{

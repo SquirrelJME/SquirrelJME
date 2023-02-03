@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.zip.streamreader;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.archive.ArchiveStreamEntry;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +28,7 @@ import net.multiphasicapps.zip.ZipException;
  *
  * @since 2016/07/19
  */
+@Exported
 public final class ZipStreamEntry
 	extends InputStream
 	implements ArchiveStreamEntry

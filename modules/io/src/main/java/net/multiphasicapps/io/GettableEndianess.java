@@ -9,11 +9,14 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
+
 /**
  * This interface is used for classes which can get their endianess obtained.
  *
  * @since 2016/08/11
  */
+@Exported
 public interface GettableEndianess
 {
 	/**
@@ -22,6 +25,7 @@ public interface GettableEndianess
 	 * @return The current endianess.
 	 * @since 2016/07/10
 	 */
+	@Exported
 	DataEndianess getEndianess();
 }
 

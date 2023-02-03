@@ -9,11 +9,14 @@
 
 package cc.squirreljme.jvm.manifest;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
+
 /**
  * This is thrown when the manifest is not valid.
  *
  * @since 2016/06/15
  */
+@Exported
 public class JavaManifestException
 	extends RuntimeException
 {
@@ -22,6 +25,7 @@ public class JavaManifestException
 	 *
 	 * @since 2016/06/15
 	 */
+	@Exported
 	public JavaManifestException()
 	{
 	}
@@ -32,6 +36,7 @@ public class JavaManifestException
 	 * @param __m The message.
 	 * @since 2016/06/15
 	 */
+	@Exported
 	public JavaManifestException(String __m)
 	{
 		super(__m);
@@ -44,6 +49,7 @@ public class JavaManifestException
 	 * @param __c The cause.
 	 * @since 2016/06/15
 	 */
+	@Exported
 	public JavaManifestException(String __m, Throwable __c)
 	{
 		super(__m, __c);
@@ -55,6 +61,7 @@ public class JavaManifestException
 	 * @param __c The cause.
 	 * @since 2016/06/15
 	 */
+	@Exported
 	public JavaManifestException(Throwable __c)
 	{
 		super(__c);

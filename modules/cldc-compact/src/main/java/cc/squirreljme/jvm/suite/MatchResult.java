@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.suite;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -16,6 +17,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2017/11/30
  */
+@Exported
 public final class MatchResult
 {
 	/** The matched results. */
@@ -32,6 +34,7 @@ public final class MatchResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/31
 	 */
+	@Exported
 	public MatchResult(DependencyInfo __matched, DependencyInfo __unmatched)
 		throws NullPointerException
 	{
@@ -66,6 +69,7 @@ public final class MatchResult
 	 * @return Has there been any matches?
 	 * @since 2017/11/30
 	 */
+	@Exported
 	public final boolean hasMatches()
 	{
 		return !this.matched.isEmpty();
@@ -89,6 +93,7 @@ public final class MatchResult
 	 * @return The dependency information containing only matched items.
 	 * @since 2017/11/30
 	 */
+	@Exported
 	public final DependencyInfo matched()
 	{
 		return this.matched;
@@ -101,6 +106,7 @@ public final class MatchResult
 	 * @return The dependency information containing only unmatched items.
 	 * @since 2017/11/30
 	 */
+	@Exported
 	public final DependencyInfo unmatched()
 	{
 		return this.unmatched;

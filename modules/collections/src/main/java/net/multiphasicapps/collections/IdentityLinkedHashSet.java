@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.collections;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
@@ -20,6 +21,7 @@ import java.util.LinkedHashSet;
  * @param <T> The type of element to store in the set.
  * @since 2017/12/28
  */
+@Exported
 public final class IdentityLinkedHashSet<T>
 	extends __IdentityBaseSet__<T>
 {
@@ -28,6 +30,7 @@ public final class IdentityLinkedHashSet<T>
 	 *
 	 * @since 2017/12/28
 	 */
+	@Exported
 	public IdentityLinkedHashSet()
 	{
 		super(new LinkedHashSet<Identity<T>>());
@@ -40,6 +43,7 @@ public final class IdentityLinkedHashSet<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/28
 	 */
+	@Exported
 	public IdentityLinkedHashSet(Collection<? extends T> __from)
 		throws NullPointerException
 	{

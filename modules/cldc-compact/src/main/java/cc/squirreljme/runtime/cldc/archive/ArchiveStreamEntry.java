@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.archive;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -17,6 +18,7 @@ import java.io.IOException;
  *
  * @since 2022/08/20
  */
+@Exported
 public interface ArchiveStreamEntry
 	extends Closeable
 {
@@ -26,6 +28,7 @@ public interface ArchiveStreamEntry
 	 * @return The entry name.
 	 * @since 2022/08/20
 	 */
+	@Exported
 	String name();
 		
 	/**
@@ -36,6 +39,7 @@ public interface ArchiveStreamEntry
 	 * @throws IOException On read errors.
 	 * @since 2022/08/20
 	 */
+	@Exported
 	int read()
 		throws IOException;
 		
@@ -49,6 +53,7 @@ public interface ArchiveStreamEntry
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/08/20
 	 */
+	@Exported
 	int read(byte[] __b)
 		throws IOException, NullPointerException;
 	
@@ -66,6 +71,7 @@ public interface ArchiveStreamEntry
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/08/20
 	 */
+	@Exported
 	int read(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException;
 }

@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -22,6 +23,7 @@ import java.io.OutputStream;
  *
  * @since 2018/11/10
  */
+@Exported
 public class DeflaterOutputStream
 	extends OutputStream
 	implements CompressionStream
@@ -60,6 +62,7 @@ public class DeflaterOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/10
 	 */
+	@Exported
 	public DeflaterOutputStream(OutputStream __os)
 		throws NullPointerException
 	{
@@ -74,6 +77,7 @@ public class DeflaterOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/10
 	 */
+	@Exported
 	public DeflaterOutputStream(OutputStream __os, CompressionLevel __cl)
 		throws NullPointerException
 	{

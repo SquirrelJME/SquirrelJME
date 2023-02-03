@@ -9,18 +9,23 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
+
 /**
  * This can be set on a stream which sets the default endianess on methods
  * that do not read using a specified endianess.
  *
  * @since 2016/07/10
  */
+@Exported
 public enum DataEndianess
 {
 	/** Big endian. */
+	@Exported
 	BIG,
 	
 	/** Little endian. */
+	@Exported
 	LITTLE,
 	
 	/** End. */

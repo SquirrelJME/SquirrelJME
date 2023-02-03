@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.collections;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.List;
 
 /**
@@ -16,6 +17,7 @@ import java.util.List;
  *
  * @since 2017/11/30
  */
+@Exported
 public final class ArrayUtils
 {
 	/**

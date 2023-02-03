@@ -9,20 +9,26 @@
 
 package cc.squirreljme.runtime.midlet;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
+
 /**
  * Represents the type of application one is.
  *
  * @since 2022/07/21
  */
+@Exported
 public enum ApplicationType
 {
 	/** Standard Java MIDlet. */
+	@Exported
 	MIDLET,
 	
 	/** NTT Docomo DoJa. */
+	@Exported
 	NTT_DOCOMO_DOJA,
 	
 	/** NTT Docomo Star. */
+	@Exported
 	NTT_DOCOMO_STAR,
 	
 	/* End. */

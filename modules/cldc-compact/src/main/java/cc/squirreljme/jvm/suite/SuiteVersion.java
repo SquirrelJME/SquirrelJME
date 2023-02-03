@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.suite;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -17,14 +18,17 @@ import java.lang.ref.WeakReference;
  *
  * @since 2016/10/12
  */
+@Exported
 public final class SuiteVersion
 	implements Comparable<SuiteVersion>
 {
 	/** The minimum version number. */
+	@Exported
 	public static final SuiteVersion MIN_VERSION =
 		new SuiteVersion(0, 0, 0);
 	
 	/** The maximum version number. */
+	@Exported
 	public static final SuiteVersion MAX_VERSION =
 		new SuiteVersion(99, 99, 99);
 	
@@ -50,6 +54,7 @@ public final class SuiteVersion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
+	@Exported
 	public SuiteVersion(String __v)
 		throws InvalidSuiteException, NullPointerException
 	{
@@ -67,6 +72,7 @@ public final class SuiteVersion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
+	@Exported
 	public SuiteVersion(int[] __v)
 		throws InvalidSuiteException, NullPointerException
 	{
@@ -87,6 +93,7 @@ public final class SuiteVersion
 	 * range value.
 	 * @since 2016/10/13
 	 */
+	@Exported
 	public SuiteVersion(boolean __hash, int __maj)
 		throws InvalidSuiteException
 	{
@@ -102,6 +109,7 @@ public final class SuiteVersion
 	 * @throws IllegalArgumentException If any value is out of range.
 	 * @since 2016/10/12
 	 */
+	@Exported
 	public SuiteVersion(int __maj)
 	{
 		this(__maj, 0, 0);
@@ -115,6 +123,7 @@ public final class SuiteVersion
 	 * @throws IllegalArgumentException If any value is out of range.
 	 * @since 2016/10/12
 	 */
+	@Exported
 	public SuiteVersion(int __maj, int __min)
 	{
 		this(__maj, __min, 0);
@@ -129,6 +138,7 @@ public final class SuiteVersion
 	 * @throws InvalidSuiteException If any value is out of range.
 	 * @since 2016/10/12
 	 */
+	@Exported
 	public SuiteVersion(int __maj, int __min, int __rel)
 		throws InvalidSuiteException
 	{
@@ -153,6 +163,7 @@ public final class SuiteVersion
 	 * @return {@code true} if this version is at least the other.
 	 * @throws NullPointerException On nul arguments.
 	 */
+	@Exported
 	public boolean atLeast(SuiteVersion __v)
 		throws NullPointerException
 	{
@@ -229,6 +240,7 @@ public final class SuiteVersion
 	 * @return The major version.
 	 * @since 2017/02/22
 	 */
+	@Exported
 	public int major()
 	{
 		return this.major;
@@ -240,6 +252,7 @@ public final class SuiteVersion
 	 * @return The minor version.
 	 * @since 2017/02/22
 	 */
+	@Exported
 	public int minor()
 	{
 		return this.minor;
@@ -251,6 +264,7 @@ public final class SuiteVersion
 	 * @return The release version.
 	 * @since 2017/02/22
 	 */
+	@Exported
 	public int release()
 	{
 		return this.release;

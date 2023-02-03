@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +24,7 @@ import java.io.InputStream;
  *
  * @since 2016/07/19
  */
+@Exported
 public class DynamicHistoryInputStream
 	extends InputStream
 {
@@ -46,6 +48,7 @@ public class DynamicHistoryInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/19
 	 */
+	@Exported
 	public DynamicHistoryInputStream(InputStream __is)
 		throws NullPointerException
 	{
@@ -87,6 +90,7 @@ public class DynamicHistoryInputStream
 	 * @throws IOException On read errors.
 	 * @since 2016/07/19
 	 */
+	@Exported
 	public int grab(int __i)
 		throws IndexOutOfBoundsException, IOException
 	{
@@ -147,6 +151,7 @@ public class DynamicHistoryInputStream
 	 * @throws IOException On read errors.
 	 * @since 2016/07/19
 	 */
+	@Exported
 	public int peek(int __a)
 		throws IndexOutOfBoundsException, IOException
 	{
@@ -185,6 +190,7 @@ public class DynamicHistoryInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/19
 	 */
+	@Exported
 	public int peek(int __a, byte[] __b)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
@@ -207,6 +213,7 @@ public class DynamicHistoryInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/19
 	 */
+	@Exported
 	public int peek(int __a, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{

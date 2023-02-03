@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.DataInput;
 import java.io.DataInputStream;
@@ -24,6 +25,7 @@ import java.io.InputStream;
  *
  * @since 2016/07/10
  */
+@Exported
 public class ExtendedDataInputStream
 	extends InputStream
 	implements DataInput, SettableEndianess, SizedStream
@@ -56,6 +58,7 @@ public class ExtendedDataInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/10
 	 */
+	@Exported
 	public ExtendedDataInputStream(InputStream __is)
 		throws NullPointerException
 	{
@@ -365,6 +368,7 @@ public class ExtendedDataInputStream
 	 * @throws IOException On read errors.
 	 * @since 2021/12/08
 	 */
+	@Exported
 	public int readThree()
 		throws IOException
 	{
@@ -401,6 +405,7 @@ public class ExtendedDataInputStream
 	 * @throws IOException On read errors.
 	 * @since 2021/12/08
 	 */
+	@Exported
 	public int readUnsignedThree()
 		throws IOException
 	{

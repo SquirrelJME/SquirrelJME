@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.collections;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
@@ -22,6 +23,7 @@ import java.util.RandomAccess;
  *
  * @since 2016/04/10
  */
+@Exported
 public final class EmptyList
 	extends AbstractList
 	implements RandomAccess
@@ -126,6 +128,7 @@ public final class EmptyList
 	 * @return The empty list.
 	 * @since 2016/04/10
 	 */
+	@Exported
 	@SuppressWarnings({"unchecked"})
 	public static <V> List<V> empty()
 	{

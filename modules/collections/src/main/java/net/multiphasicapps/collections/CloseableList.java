@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.collections;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
  *
  * @since 2017/11/28
  */
+@Exported
 public class CloseableList<T extends Closeable>
 	extends ArrayList<T>
 	implements Closeable

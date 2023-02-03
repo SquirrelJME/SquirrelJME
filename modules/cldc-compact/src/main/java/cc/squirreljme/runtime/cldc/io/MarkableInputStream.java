@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -18,6 +19,7 @@ import java.util.Arrays;
  *
  * @since 2021/12/04
  */
+@Exported
 public class MarkableInputStream
 	extends InputStream
 {

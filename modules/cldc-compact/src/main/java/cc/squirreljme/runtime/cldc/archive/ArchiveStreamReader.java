@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.archive;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -17,6 +18,7 @@ import java.io.IOException;
  *
  * @since 2022/08/20
  */
+@Exported
 public interface ArchiveStreamReader
 	extends Closeable
 {
@@ -27,6 +29,7 @@ public interface ArchiveStreamReader
 	 * @throws IOException On read errors.
 	 * @since 2022/08/20
 	 */
+	@Exported
 	ArchiveStreamEntry nextEntry()
 		throws IOException;
 }

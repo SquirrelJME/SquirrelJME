@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.InputStream;
 
 /**
@@ -17,6 +18,7 @@ import java.io.InputStream;
  *
  * @since 2017/08/22
  */
+@Exported
 public abstract class DecompressionInputStream
 	extends InputStream
 	implements CompressionStream
@@ -35,6 +37,7 @@ public abstract class DecompressionInputStream
 	 * is not known then {@code false} must be returned.
 	 * @since 2017/08/22
 	 */
+	@Exported
 	public abstract boolean detectsEOF();
 }
 

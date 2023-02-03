@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -18,6 +19,7 @@ import java.io.InputStream;
  *
  * @since 2017/03/05
  */
+@Exported
 public class ChecksumInputStream
 	extends InputStream
 {
@@ -35,6 +37,7 @@ public class ChecksumInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
 	 */
+	@Exported
 	public ChecksumInputStream(Checksum __calc, InputStream __in)
 		throws NullPointerException
 	{

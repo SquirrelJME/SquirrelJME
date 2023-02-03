@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.collections;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.ArrayList;
 
 /**
@@ -20,6 +21,7 @@ import java.util.ArrayList;
  *
  * @since 2021/06/19
  */
+@Exported
 public class AutoCloseableList<T extends AutoCloseable>
 	extends ArrayList<T>
 	implements AutoCloseable

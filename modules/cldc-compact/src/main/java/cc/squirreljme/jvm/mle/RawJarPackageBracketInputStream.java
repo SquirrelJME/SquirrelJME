@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -20,6 +21,7 @@ import java.io.InputStream;
  *
  * @since 2022/03/04
  */
+@Exported
 public class RawJarPackageBracketInputStream
 	extends InputStream
 {
@@ -45,6 +47,7 @@ public class RawJarPackageBracketInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/03/04
 	 */
+	@Exported
 	public RawJarPackageBracketInputStream(JarPackageBracket __jar)
 		throws IOException, NullPointerException
 	{
@@ -62,6 +65,7 @@ public class RawJarPackageBracketInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/09
 	 */
+	@Exported
 	public RawJarPackageBracketInputStream(JarPackageBracket __jar,
 		int __offset)
 		throws IndexOutOfBoundsException, IOException, NullPointerException

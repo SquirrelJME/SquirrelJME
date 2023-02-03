@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.midlet;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
+
 /**
  * Handles differences in various types of applications so that they all
  * have a uniform start and ending cycle.
@@ -17,6 +19,7 @@ package cc.squirreljme.runtime.midlet;
  * @see ApplicationHandler
  * @since 2021/11/30
  */
+@Exported
 public interface ApplicationInterface<A>
 {
 	/**
@@ -29,6 +32,7 @@ public interface ApplicationInterface<A>
 	 * @throws Throwable On any exception.
 	 * @since 2021/11/30
 	 */
+	@Exported
 	void destroy(A __instance, Throwable __thrown)
 		throws NullPointerException, Throwable;
 	
@@ -39,6 +43,7 @@ public interface ApplicationInterface<A>
 	 * @throws Throwable On any exception.
 	 * @since 2021/11/30
 	 */
+	@Exported
 	A newInstance()
 		throws Throwable;
 	
@@ -50,6 +55,7 @@ public interface ApplicationInterface<A>
 	 * @throws Throwable On any exception.
 	 * @since 2021/11/30
 	 */
+	@Exported
 	void startApp(A __instance)
 		throws NullPointerException, Throwable;
 	
@@ -59,5 +65,6 @@ public interface ApplicationInterface<A>
 	 * @return The application type.
 	 * @since 2022/07/21
 	 */
+	@Exported
 	ApplicationType type();
 }

@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.collections;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
@@ -20,6 +21,7 @@ import java.util.Set;
  *
  * @since 2017/10/09
  */
+@Exported
 public final class UnmodifiableCollection<T>
 	extends AbstractCollection<T>
 {
@@ -127,6 +129,7 @@ public final class UnmodifiableCollection<T>
 	 * @return An unmodifiable view of the collection.
 	 * @since 2017/10/09
 	 */
+	@Exported
 	public static <T> Collection<T> of(Collection<T> __c)
 	{
 		// If already one, return that collection

@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
+
 /**
  * This is a data sink which supports the CRC 32 algorithm.
  *
@@ -16,6 +18,7 @@ package net.multiphasicapps.io;
  *
  * @since 2016/07/16
  */
+@Exported
 public class CRC32Calculator
 	implements Checksum
 {
@@ -54,6 +57,7 @@ public class CRC32Calculator
 	 * @param __fxor The value to XOR the remainder with on return.
 	 * @since 2016/07/16
 	 */
+	@Exported
 	public CRC32Calculator(boolean __rdata, boolean __rrem, int __poly,
 		int __initrem, int __fxor)
 	{
