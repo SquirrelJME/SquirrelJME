@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMType;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.io.NonClosedOutputStream;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
@@ -32,6 +33,7 @@ import java.io.PrintStream;
  *
  * @since 2020/03/21
  */
+@Exported
 public final class Debugging
 {
 	/** Only bytes up to this value are permitted in the output. */
@@ -61,6 +63,7 @@ public final class Debugging
 	 * @param __fmt The format.
 	 * @since 2020/05/13
 	 */
+	@Exported
 	public static void debugNote(String __fmt)
 	{
 		Debugging.__format('D', 'B', __fmt, (Object[])null);
@@ -73,6 +76,7 @@ public final class Debugging
 	 * @param __args The arguments to the string.
 	 * @since 2020/03/27
 	 */
+	@Exported
 	public static void debugNote(String __fmt, Object... __args)
 	{
 		Debugging.__format('D', 'B', __fmt, __args);
@@ -85,6 +89,7 @@ public final class Debugging
 	 * @param __args The arguments to the string.
 	 * @since 2021/01/18
 	 */
+	@Exported
 	public static void notice(String __fmt, Object... __args)
 	{
 		Debugging.__format('\0', '\0', __fmt, __args);
@@ -96,6 +101,7 @@ public final class Debugging
 	 * @return The generated error.
 	 * @since 2020/12/31
 	 */
+	@Exported
 	public static Error oops()
 	{
 		return Debugging.todo();
@@ -108,6 +114,7 @@ public final class Debugging
 	 * @return The generated error.
 	 * @since 2020/03/22
 	 */
+	@Exported
 	public static Error oops(Object... __args)
 	{
 		return Debugging.todo(__args);
@@ -119,6 +126,7 @@ public final class Debugging
 	 * @param __c The character to print.
 	 * @since 2020/05/07
 	 */
+	@Exported
 	@SuppressWarnings({"SameParameterValue"})
 	public static void print(char __c)
 	{
@@ -132,6 +140,7 @@ public final class Debugging
 	 * @param __d Second character to print.
 	 * @since 2020/05/07
 	 */
+	@Exported
 	@SuppressWarnings("FeatureEnvy")
 	public static void print(char __c, char __d)
 	{
@@ -169,6 +178,7 @@ public final class Debugging
 	 * @return The generated error.
 	 * @since 2020/03/21
 	 */
+	@Exported
 	public static Error todo()
 	{
 		return Debugging.todo((Object[])null);
@@ -181,6 +191,7 @@ public final class Debugging
 	 * @return The generated error.
 	 * @since 2020/03/21
 	 */
+	@Exported
 	@SuppressWarnings("StaticVariableUsedBeforeInitialization")
 	public static Error todo(Object... __args)
 	{
@@ -333,6 +344,7 @@ public final class Debugging
 	 * @param __fmt Format string.
 	 * @since 2020/05/13
 	 */
+	@Exported
 	public static void todoNote(String __fmt)
 	{
 		Debugging.__format('T', 'D', __fmt, (Object[])null);
@@ -345,6 +357,7 @@ public final class Debugging
 	 * @param __args Arguments.
 	 * @since 2020/03/31
 	 */
+	@Exported
 	public static void todoNote(String __fmt, Object... __args)
 	{
 		Debugging.__format('T', 'D', __fmt, __args);
@@ -358,6 +371,7 @@ public final class Debugging
 	 * @return Never returns.
 	 * @since 2020/04/09
 	 */
+	@Exported
 	public static <T> T todoObject(Object... __args)
 	{
 		throw Debugging.todo(__args);

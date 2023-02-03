@@ -26,6 +26,8 @@ import java.lang.annotation.Target;
 @Target(value={ElementType.CONSTRUCTOR, ElementType.FIELD,
 	ElementType.LOCAL_VARIABLE, ElementType.METHOD, ElementType.PACKAGE,
 	ElementType.PARAMETER, ElementType.TYPE})
+@Api
+@Exported
 public @interface Exported
 {
 	/** @return The API version. */

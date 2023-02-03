@@ -11,6 +11,7 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
+import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.util.FileLocation;
 import cc.squirreljme.plugin.util.TestDetection;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -55,6 +57,7 @@ import org.gradle.api.capabilities.Capability;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.jvm.tasks.Jar;
+import proguard.ClassPathEntry;
 
 /**
  * Helpers for the multi-VM handlers.
@@ -343,6 +346,57 @@ public final class VMHelpers
 			result.add(Paths.get(split));
 		
 		return result.<Path>toArray(new Path[result.size()]);
+	}
+	
+	/**
+	 * Returns all the compact library tasks that the specified project
+	 * depends upon.
+	 * 
+	 * @param __project The project to get the dependencies from.
+	 * @param __sourceSet The source set to base off.
+	 * @return The tasks which are part of the compaction dependencies.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/02/02
+	 */
+	public static Collection<VMCompactLibraryTask> compactLibTaskDepends(
+		Project __project, String __sourceSet)
+		throws NullPointerException
+	{
+		if (__project == null || __sourceSet == null)
+			throw new NullPointerException("NARG");
+		
+		// Where does this go?
+		Collection<VMCompactLibraryTask> result = new ArrayList<>();
+		
+		// This is a bit messy but it works for now
+		Collection<ProjectAndTaskName> runTasks =
+			VMHelpers.runClassTasks(__project,
+				SourceTargetClassifier.builder()
+					.sourceSet(__sourceSet)
+					.targetClassifier(TargetClassifier.builder()
+						.bangletVariant(BangletVariant.NONE)
+						.vmType(VMType.SPRINGCOAT)
+						.clutterLevel(ClutterLevel.RELEASE)
+						.build())
+					.build());
+		for (ProjectAndTaskName projectAndTask : runTasks)
+		{
+			// Find the referenced project
+			Project subProject = __project.project(projectAndTask.project); 
+			
+			// Ignore our own project
+			if (__project.equals(subProject))
+				continue;
+			
+			// Check the main source set
+			String checkName = TaskInitialization.task("compactLib",
+				SourceSet.MAIN_SOURCE_SET_NAME);
+			Task maybe = subProject.getTasks().findByName(checkName);
+			if (maybe instanceof VMCompactLibraryTask)
+				result.add((VMCompactLibraryTask)maybe);
+		}
+		
+		return result;
 	}
 	
 	/**

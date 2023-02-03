@@ -9,7 +9,6 @@
 
 package cc.squirreljme.plugin.multivm;
 
-import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,6 +36,10 @@ public class VMCompactLibraryTaskAction
 			/*"-keep", "public", "class", "*", "{",
 			    "public", "protected", "*", ";",
 				"}",*/
+			
+			// Consumers of the libraries/APIs need to see the annotation
+			// information if it is there, to make sure it is retained
+			"-keepattributes", "*Annotation*",
 			
 			// Keep anything with main in it
 			"-keepclasseswithmembers", "class", "*", "{",
@@ -83,6 +86,17 @@ public class VMCompactLibraryTaskAction
 				"@cc.squirreljme.runtime.cldc.annotation.Exported",
 				"public", "protected", "*", ";",
 				"}",
+			
+			// Keep implementors of the annotations
+			"-keep", "class", "*", "implements",
+				"@cc.squirreljme.runtime.cldc.annotation.Api", "*",
+			"-keep", "public", "class", "*", "implements",
+			"@cc.squirreljme.runtime.cldc.annotation.Api", "*",
+			
+			"-keep", "class", "*", "implements",
+				"@cc.squirreljme.runtime.cldc.annotation.Exported", "*",
+			"-keep", "public", "class", "*", "implements",
+				"@cc.squirreljme.runtime.cldc.annotation.Exported", "*",
 		};
 	
 	/** The source set used. */
@@ -149,21 +163,15 @@ public class VMCompactLibraryTaskAction
 			config.printConfiguration = Configuration.STD_OUT;
 			
 			// We need to include all the inputs that were already ran through
-			// ProGuard...
+			// ProGuard, so we basically need to look at the dependencies and
+			// map them around accordingly
 			ClassPath libraryJars = new ClassPath();
 			config.libraryJars = libraryJars;
-			/*for (Path jar : VMHelpers.runClassPath(__task, this.classifier))
-			{
-				// Ignore our own output as it will never actually work, or
-				// will go badly as it would be stale
-				if (jar.equals(outputPath) ||
-					Files.isSameFile(jar, outputPath))
-					continue;
-				
-				// Add otherwise
-				libraryJars.add(new ClassPathEntry(jar.toFile(),
-					false));
-			}*/
+			for (VMCompactLibraryTask compactDep :
+				VMHelpers.compactLibTaskDepends(__task.getProject(),
+					this.sourceSet))
+				libraryJars.add(new ClassPathEntry(
+					compactDep.outputPath().get().toFile(), false));
 			
 			// Setup input and output Jar
 			ClassPath programJars = new ClassPath();

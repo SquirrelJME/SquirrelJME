@@ -61,8 +61,11 @@ public class VMCompactLibraryTask
 		this.setGroup("squirreljme");
 		this.setDescription("Compacts the library and removes debugging.");
 		
-		// The base Jar has to be done first
-		this.dependsOn(__baseJar);
+		// Depends on the base Jar but also depends on all the
+		// compactLibs for all dependencies
+		this.dependsOn(__baseJar, this.getProject().provider(() ->
+			VMHelpers.compactLibTaskDepends(this.getProject(),
+				this.sourceSet)));
 		
 		// Only run if the source JAR would run
 		this.onlyIf(this::onlyIf);
@@ -104,8 +107,7 @@ public class VMCompactLibraryTask
 		return this.getProject().provider(() ->
 			this.getProject().getBuildDir().toPath()
 				.resolve("squirreljme").resolve("compact")
-				.resolve(String.format("%s.%s.jar",
-					this.getProject().getName(),
-					this.sourceSet)));
+				.resolve(this.baseJar.getOutputs().getFiles()
+					.getSingleFile().toPath().getFileName()));
 	}
 }
