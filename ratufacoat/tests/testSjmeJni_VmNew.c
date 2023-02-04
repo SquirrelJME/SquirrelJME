@@ -17,7 +17,7 @@
  *
  * @since 2022/12/18
  */
-SJME_TEST_PROTOTYPE(testJniVmNew)
+SJME_TEST_PROTOTYPE(testSjmeJni_VmNew)
 {
 	sjme_vmState* vm = NULL;
 	sjme_vmThread* thread = NULL;
