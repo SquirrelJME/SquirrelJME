@@ -9,11 +9,15 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Objects;
 import javax.inject.Inject;
 import lombok.Getter;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Internal;
@@ -54,6 +58,8 @@ public class VMCompactLibraryTask
 		if (__sourceSet == null || __baseJar == null)
 			throw new NullPointerException("NARG");
 		
+		Project project = this.getProject();
+		
 		this.baseJar = __baseJar;
 		this.sourceSet = __sourceSet;
 		
@@ -74,11 +80,28 @@ public class VMCompactLibraryTask
 		this.getInputs().file(__baseJar.getOutputs()
 			.getFiles().getSingleFile());
 		
+		// Inputs are the proguard options, so if this changes we need to
+		// do a rebuild!
+		this.getInputs().property("squirreljme.proguardOptions",
+			this.getProject().provider(() -> Objects.toString(
+				SquirrelJMEPluginConfiguration.configuration(project)
+					.proGuardOptions)));
+		
+		// Remember if the shrinking option has changed
+		this.getInputs().property("squirreljme.noShrinking",
+			this.getProject().provider(() -> Boolean.toString(
+				SquirrelJMEPluginConfiguration.configuration(project)
+					.noShrinking)));
+		
+		// Also include the built-in plugin options, in case those change as
+		// well!
+		this.getInputs().property("squirreljme.proguardOptionsDefault",
+			this.getProject().provider(() -> Arrays.toString(
+				VMCompactLibraryTaskAction._PARSE_SETTINGS)));
+		
 		// The output of this JAR is just where it should be placed
 		this.getOutputs().files(
 			this.getProject().provider(() -> this.outputPath()));
-		/*this.getOutputs().upToDateWhen(
-			new VMLibraryTaskUpToDate(__classifier.getTargetClassifier()));*/
 		
 		// Performs the action of the task
 		this.doLast(new VMCompactLibraryTaskAction(__sourceSet));

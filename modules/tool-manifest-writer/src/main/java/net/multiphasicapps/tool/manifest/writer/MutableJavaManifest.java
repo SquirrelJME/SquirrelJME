@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.manifest.JavaManifestException;
 import cc.squirreljme.jvm.manifest.JavaManifestKey;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,6 +33,7 @@ import java.util.Set;
  *
  * @since 2016/09/19
  */
+@Exported
 public class MutableJavaManifest
 	extends AbstractMap<String, MutableJavaManifestAttributes>
 {
@@ -48,6 +50,7 @@ public class MutableJavaManifest
 	 *
 	 * @since 2016/09/19
 	 */
+	@Exported
 	public MutableJavaManifest()
 	{
 		// Always add a main attribute
@@ -62,6 +65,7 @@ public class MutableJavaManifest
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/26
 	 */
+	@Exported
 	public MutableJavaManifest(JavaManifest __man)
 		throws NullPointerException
 	{
@@ -96,6 +100,7 @@ public class MutableJavaManifest
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/26
 	 */
+	@Exported
 	public MutableJavaManifest(MutableJavaManifest __man)
 		throws NullPointerException
 	{
@@ -129,6 +134,7 @@ public class MutableJavaManifest
 	 * @throws RuntimeException If the manifest could not be built.
 	 * @since 2017/11/17
 	 */
+	@Exported
 	public final JavaManifest build()
 		throws RuntimeException
 	{
@@ -176,6 +182,7 @@ public class MutableJavaManifest
 	 * @return The main attribute mapping.
 	 * @since 2016/09/19
 	 */
+	@Exported
 	public final MutableJavaManifestAttributes getMainAttributes()
 	{
 		return this.get("");
@@ -212,6 +219,7 @@ public class MutableJavaManifest
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/19
 	 */
+	@Exported
 	public final OutputStream write(OutputStream __os)
 		throws IOException, NullPointerException
 	{
@@ -232,6 +240,7 @@ public class MutableJavaManifest
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/19
 	 */
+	@Exported
 	public final Appendable write(Appendable __os)
 		throws IOException, NullPointerException
 	{

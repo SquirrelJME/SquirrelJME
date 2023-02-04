@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.lcdui.mle;
 
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -17,6 +18,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2022/02/14
  */
+@Exported
 public final class Vibration
 {
 	/**
@@ -48,6 +50,7 @@ public final class Vibration
 	 * @throws IllegalArgumentException If the duration is negative.
 	 * @since 2022/02/14
 	 */
+	@Exported
 	public static boolean vibrate(int __d)
 		throws IllegalArgumentException
 	{

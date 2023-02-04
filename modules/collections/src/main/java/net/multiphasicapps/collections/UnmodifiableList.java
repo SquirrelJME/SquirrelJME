@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.collections;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.AbstractList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.RandomAccess;
  * @param <V> The type of value the list stores.
  * @since 2016/03/03
  */
+@Exported
 public abstract class UnmodifiableList<V>
 	extends AbstractList<V>
 {
@@ -113,6 +115,7 @@ public abstract class UnmodifiableList<V>
 	 * @return An unmodifiable view of the list.
 	 * @since 2016/03/03
 	 */
+	@Exported
 	public static <V> UnmodifiableList<V> of(List<V> __l)
 	{
 		// If already one, return it
@@ -265,7 +268,7 @@ public abstract class UnmodifiableList<V>
 		 * @param __l The list to wrap.
 		 * @since 2016/04/28
 		 */
-		private __Random__(List<V> __l)
+		__Random__(List<V> __l)
 		{
 			super(__l);
 		}
@@ -288,7 +291,7 @@ public abstract class UnmodifiableList<V>
 		 * @param __l The list to wrap.
 		 * @since 2016/04/28
 		 */
-		private __Sequential__(List<V> __l)
+		__Sequential__(List<V> __l)
 		{
 			super(__l);
 		}

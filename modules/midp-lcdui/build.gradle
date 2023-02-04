@@ -16,6 +16,16 @@ squirreljme
 	definedStandards += new JavaMEStandard("microedition.lcdui;;")
 	tags += "graphics"
 	tags += "j2me"
+	
+	// ProGuard thinks this method has no side effects so it removes this
+	// however, we really do need to keep this method but we can obfuscate it
+	proGuardOptions += ["-keepclassmembers,allowobfuscation",
+		"class", "*", "{",
+			"javax.microedition.lcdui.__CommonWidget__\$__CommonState__",
+				"__stateInit", "(",
+					"cc.squirreljme.runtime.lcdui.mle.UIBackend",
+				")", ";",
+		"}"]
 }
 
 dependencies

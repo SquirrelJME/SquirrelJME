@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.font;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +37,7 @@ import javax.microedition.lcdui.Font;
  *
  * @since 2018/11/27
  */
+@Exported
 public final class SQFFont
 {
 	/** SQF Font data. */

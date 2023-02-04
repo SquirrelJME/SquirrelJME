@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,6 +27,7 @@ import java.util.List;
  *
  * @since 2019/08/11
  */
+@Exported
 public final class ChunkSection
 	extends OutputStream
 	implements DataOutput
@@ -116,6 +118,7 @@ public final class ChunkSection
 	 * @return A copy of the byte array that makes up this data.
 	 * @since 2020/12/16
 	 */
+	@Exported
 	public byte[] currentBytes()
 	{
 		return Arrays.copyOf(this._data, this._size);
@@ -128,6 +131,7 @@ public final class ChunkSection
 	 * @return An input stream of the current buffer data.
 	 * @since 2020/12/13
 	 */
+	@Exported
 	public final InputStream currentStream()
 	{
 		return new ByteArrayInputStream(this._data, 0, this._size);
@@ -149,6 +153,7 @@ public final class ChunkSection
 	 * @return The future.
 	 * @since 2020/12/04
 	 */
+	@Exported
 	public final ChunkFutureSection futureAddress()
 	{
 		return this.futureAddress(0);
@@ -161,6 +166,7 @@ public final class ChunkSection
 	 * @return The future.
 	 * @since 2020/12/04
 	 */
+	@Exported
 	public final ChunkFutureSection futureAddress(int __off)
 	{
 		return new ChunkFutureSection(
@@ -173,6 +179,7 @@ public final class ChunkSection
 	 * @return The future.
 	 * @since 2020/12/04
 	 */
+	@Exported
 	public final ChunkFutureSection futureSize()
 	{
 		return this.futureSize(0);
@@ -185,6 +192,7 @@ public final class ChunkSection
 	 * @return The future.
 	 * @since 2020/12/04
 	 */
+	@Exported
 	public final ChunkFutureSection futureSize(int __off)
 	{
 		return new ChunkFutureSection(
@@ -197,6 +205,7 @@ public final class ChunkSection
 	 * @return The current section size.
 	 * @since 2019/08/11
 	 */
+	@Exported
 	public final int size()
 	{
 		return this._size;
@@ -297,6 +306,7 @@ public final class ChunkSection
 	 * @throws IOException On write errors.
 	 * @since 2019/08/11
 	 */
+	@Exported
 	public final int writeAlignment(int __n)
 		throws IllegalArgumentException, IOException
 	{
@@ -409,6 +419,7 @@ public final class ChunkSection
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/04
 	 */
+	@Exported
 	public final void writeFuture(ChunkDataType __dt, ChunkFuture __val)
 		throws IOException, NullPointerException
 	{
@@ -420,24 +431,6 @@ public final class ChunkSection
 		
 		// Place padding
 		this.writePadding(__dt.numBytes);
-	}
-	
-	/**
-	 * Writes a future integer.
-	 * 
-	 * @return Future integer value.
-	 * @throws IOException On read/write errors.
-	 * @since 2020/11/29
-	 */
-	@Deprecated
-	public ChunkFutureInteger writeFutureInt()
-		throws IOException
-	{
-		ChunkFutureInteger rv = new ChunkFutureInteger();
-		
-		this.writeFuture(ChunkDataType.INTEGER, rv);
-		
-		return rv;
 	}
 	
 	/**
@@ -480,6 +473,7 @@ public final class ChunkSection
 	 * @throws IOException On write errors.
 	 * @since 2019/08/11
 	 */
+	@Exported
 	public final void writePadding(int __n)
 		throws IOException
 	{
@@ -495,6 +489,7 @@ public final class ChunkSection
 	 * @throws IOException On write errors.
 	 * @since 2019/08/11
 	 */
+	@Exported
 	public final void writePadding(int __n, int __v)
 		throws IllegalArgumentException, IOException
 	{
@@ -509,110 +504,6 @@ public final class ChunkSection
 		// Write the padding
 		for (int i = 0; i < __n; i++)
 			this.write(__v);
-	}
-	
-	/**
-	 * Writes the address of the given section as an integer.
-	 *
-	 * @param __s The section to write the address of.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/08/24
-	 */
-	@Deprecated
-	public final void writeSectionAddressInt(ChunkSection __s)
-		throws IOException, NullPointerException
-	{
-		this.writeSectionAddressInt(__s, 0);
-	}
-	
-	/**
-	 * Writes the address of the given section as an integer.
-	 *
-	 * @param __s The section to write the address of.
-	 * @param __o The offset to use.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/08/11
-	 */
-	@Deprecated
-	public final void writeSectionAddressInt(ChunkSection __s, int __o)
-		throws IOException, NullPointerException
-	{
-		if (__s == null)
-			throw new NullPointerException("NARG");
-		
-		this.writeFuture(ChunkDataType.INTEGER, __s.futureAddress(__o));
-	}
-	
-	/**
-	 * Writes the address of the given section as a short.
-	 *
-	 * @param __s The section to write the address of.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/08/24
-	 */
-	@Deprecated
-	public final void writeSectionAddressShort(ChunkSection __s)
-		throws IOException, NullPointerException
-	{
-		this.writeSectionAddressShort(__s, 0);
-	}
-	
-	/**
-	 * Writes the address of the given section as a short.
-	 *
-	 * @param __s The section to write the address of.
-	 * @param __o The offset value.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/08/11
-	 */
-	@Deprecated
-	public final void writeSectionAddressShort(ChunkSection __s, int __o)
-		throws IOException, NullPointerException
-	{
-		if (__s == null)
-			throw new NullPointerException("NARG");
-		
-		this.writeFuture(ChunkDataType.SHORT, __s.futureAddress(__o));
-	}
-	
-	/**
-	 * Writes the size of the given section as an integer.
-	 *
-	 * @param __s The section and its size to write.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/08/11
-	 */
-	@Deprecated
-	public final void writeSectionSizeInt(ChunkSection __s)
-		throws IOException, NullPointerException
-	{
-		if (__s == null)
-			throw new NullPointerException("NARG");
-		
-		this.writeFuture(ChunkDataType.INTEGER, __s.futureSize());
-	}
-	
-	/**
-	 * Writes the size of the given section as a short.
-	 *
-	 * @param __s The section and its size to write.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/08/11
-	 */
-	@Deprecated
-	public final void writeSectionSizeShort(ChunkSection __s)
-		throws IOException, NullPointerException
-	{
-		if (__s == null)
-			throw new NullPointerException("NARG");
-		
-		this.writeFuture(ChunkDataType.SHORT, __s.futureSize());
 	}
 	
 	/**
@@ -636,6 +527,7 @@ public final class ChunkSection
 	 * exceeds the range of a short value.
 	 * @since 2019/08/11
 	 */
+	@Exported
 	public final void writeShortChecked(int __v)
 		throws IOException
 	{
@@ -657,6 +549,7 @@ public final class ChunkSection
 	 * exceeds the range of an unsigned short value.
 	 * @since 2019/08/11
 	 */
+	@Exported
 	public final void writeUnsignedShortChecked(int __v)
 		throws IOException
 	{

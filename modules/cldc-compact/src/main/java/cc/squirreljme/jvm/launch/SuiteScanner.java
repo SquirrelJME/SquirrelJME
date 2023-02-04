@@ -19,6 +19,7 @@ import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.jvm.suite.EntryPoints;
 import cc.squirreljme.jvm.suite.InvalidSuiteException;
 import cc.squirreljme.jvm.suite.SuiteInfo;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,6 +37,7 @@ import java.util.Map;
  *
  * @since 2020/12/28
  */
+@Exported
 public final class SuiteScanner
 {
 	/** Data resource name. */
@@ -58,6 +60,7 @@ public final class SuiteScanner
 	 * @return The state of scanned suites.
 	 * @since 2020/12/28
 	 */
+	@Exported
 	public static AvailableSuites scanSuites()
 	{
 		return SuiteScanner.scanSuites(null);
@@ -72,6 +75,7 @@ public final class SuiteScanner
 	 * @return The state of scanned suites.
 	 * @since 2020/12/29
 	 */
+	@Exported
 	public static AvailableSuites scanSuites(SuiteScanListener __listener)
 	{
 		// Get all the available libraries

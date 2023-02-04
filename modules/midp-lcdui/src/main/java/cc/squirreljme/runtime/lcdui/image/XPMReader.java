@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.image;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,6 +29,7 @@ import javax.microedition.lcdui.Image;
  *
  * @since 2016/05/08
  */
+@Exported
 public class XPMReader
 {
 	/** Source stream. */
@@ -39,6 +41,7 @@ public class XPMReader
 	 * @param __is The input stream.
 	 * @since 2016/05/08
 	 */
+	@Exported
 	public XPMReader(InputStream __is)
 		throws NullPointerException
 	{
@@ -55,6 +58,7 @@ public class XPMReader
 	 * @throws IOException If the XPM is not valid.
 	 * @since 2017/02/10
 	 */
+	@Exported
 	public Image parse()
 		throws IOException
 	{

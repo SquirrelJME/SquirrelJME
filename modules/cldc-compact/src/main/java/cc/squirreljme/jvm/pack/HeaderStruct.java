@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.pack;
 
 import cc.squirreljme.jvm.pack.constants.ClassInfoConstants;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.DataInput;
 import java.io.IOException;
 
@@ -18,6 +19,7 @@ import java.io.IOException;
  *
  * @since 2021/04/07
  */
+@Exported
 public final class HeaderStruct
 {
 	/** The ROM Magic Number. */
@@ -58,6 +60,7 @@ public final class HeaderStruct
 	 * @throws IndexOutOfBoundsException If the property is not within bounds.
 	 * @since 2021/04/07
 	 */
+	@Exported
 	public int getInteger(int __prop)
 		throws IndexOutOfBoundsException
 	{
@@ -78,6 +81,7 @@ public final class HeaderStruct
 	 * @throws IndexOutOfBoundsException If the property is not within bounds.
 	 * @since 2021/07/13
 	 */
+	@Exported
 	@SuppressWarnings("MagicNumber")
 	public long getLong(int __prop)
 		throws IndexOutOfBoundsException
@@ -92,6 +96,7 @@ public final class HeaderStruct
 	 * @return The structure's magic number.
 	 * @since 2021/07/11
 	 */
+	@Exported
 	public int magicNumber()
 	{
 		return this.magicNumber;
@@ -103,6 +108,7 @@ public final class HeaderStruct
 	 * @return The number of properties.
 	 * @since 2021/05/16
 	 */
+	@Exported
 	public final int numProperties()
 	{
 		return this._properties.length;
@@ -117,6 +123,7 @@ public final class HeaderStruct
 	 * @throws IOException On read errors.
 	 * @since 2021/04/07
 	 */
+	@Exported
 	public static HeaderStruct decode(DataInput __in, int __maxProps)
 		throws IOException
 	{

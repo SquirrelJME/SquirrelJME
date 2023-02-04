@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
@@ -29,6 +30,7 @@ import javax.microedition.lcdui.game.Sprite;
  *
  * @since 2020/09/25
  */
+@Exported
 public final class PencilGraphics
 	extends Graphics
 {
@@ -971,6 +973,7 @@ public final class PencilGraphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/25
 	 */
+	@Exported
 	public static Graphics hardwareGraphics(int __pf, int __bw,
 		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
 		int __sw, int __sh)

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.AbstractList;
 import java.util.List;
 import java.util.RandomAccess;
@@ -18,6 +19,7 @@ import java.util.RandomAccess;
  *
  * @since 2020/07/11
  */
+@Exported
 public class IntegerArrayList
 	extends AbstractList<Integer>
 	implements RandomAccess
@@ -38,6 +40,7 @@ public class IntegerArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/11
 	 */
+	@Exported
 	public IntegerArrayList(int[] __a)
 		throws NullPointerException
 	{
@@ -55,6 +58,7 @@ public class IntegerArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/11
 	 */
+	@Exported
 	public IntegerArrayList(int[] __a, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -90,6 +94,7 @@ public class IntegerArrayList
 	 * @throws IndexOutOfBoundsException If the index is not within bounds.
 	 * @since 2020/07/11
 	 */
+	@Exported
 	public int set(int __i, int __v)
 		throws IndexOutOfBoundsException
 	{
@@ -140,6 +145,7 @@ public class IntegerArrayList
 	 * @return The boxed list type.
 	 * @since 2020/07/11
 	 */
+	@Exported
 	public static List<Integer> asList(int... __array)
 	{
 		return new IntegerArrayList(__array);
@@ -152,6 +158,7 @@ public class IntegerArrayList
 	 * @return The array as a string or {@code "null"} if {@code null}.
 	 * @since 2022/02/04
 	 */
+	@Exported
 	public static String toString(int... __ints)
 	{
 		if (__ints == null)

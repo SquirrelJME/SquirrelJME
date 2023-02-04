@@ -102,7 +102,7 @@ JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_phoneModel(JNIEnv*, jclass)
 	return 0;
 };
 
-JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_systemEnv(
+JNIEXPORT jobject JNICALL Impl_mle_RuntimeShelf_systemEnv(
 	JNIEnv* env, jclass classy, jstring key)
 {
 	return forwardCallStaticObject(env, RUNTIME_CLASSNAME,
@@ -122,7 +122,7 @@ static const JNINativeMethod mleRuntimeMethods[] =
 	{"lineEnding", "()I", (void*)Impl_mle_RuntimeShelf_lineEnding},
 	{"memoryProfile", RUNTIME_MEMORYPROFILE_DESC, (void*)Impl_mle_RuntimeShelf_memoryProfile},
 	{"phoneModel", "()I", (void*)Impl_mle_RuntimeShelf_phoneModel},
-	{"systemEnv", RUNTIME_SYSTEMENV_DESC, (void*)Impl_mle_RuntimeShelf_systemEnv}
+	{"systemEnv", RUNTIME_SYSTEMENV_DESC, (void*)Impl_mle_RuntimeShelf_systemEnv},
 	{"vmDescription", RUNTIME_VMDESCRIPTION_DESC, (void*)Impl_mle_RuntimeShelf_vmDescription},
 	{"vmStatistic", RUNTIME_VMSTATISTIC_DESC, (void*)Impl_mle_RuntimeShelf_vmStatistic},
 	{"vmType", "()I", (void*)Impl_mle_RuntimeShelf_vmType},

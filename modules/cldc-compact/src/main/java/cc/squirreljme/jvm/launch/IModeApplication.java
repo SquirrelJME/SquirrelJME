@@ -21,6 +21,7 @@ import cc.squirreljme.jvm.suite.InvalidSuiteException;
 import cc.squirreljme.jvm.suite.MarkedDependency;
 import cc.squirreljme.jvm.suite.Profile;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -30,6 +31,7 @@ import java.util.Objects;
  *
  * @since 2021/06/13
  */
+@Exported
 public class IModeApplication
 	extends Application
 {
@@ -167,6 +169,7 @@ public class IModeApplication
 	 * @return If this is a Star application.
 	 * @since 2022/02/28
 	 */
+	@Exported
 	public boolean isStarApplication()
 	{
 		// Check if any dependency implements the Star APIs

@@ -9,10 +9,14 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
@@ -31,11 +35,15 @@ public class VMCompactLibraryTaskAction
 	implements Action<Task>
 {
 	/** Settings to use in the configuration for keeping, etc. */
-	private static final String[] _PARSE_SETTINGS = new String[]
+	static final String[] _PARSE_SETTINGS = new String[]
 		{
 			/*"-keep", "public", "class", "*", "{",
 			    "public", "protected", "*", ";",
 				"}",*/
+			
+			// Adjust manifest resources
+			"-adaptresourcefilecontents",
+				"META-INF/MANIFEST.MF,META-INF/services/**",
 			
 			// Consumers of the libraries/APIs need to see the annotation
 			// information if it is there, to make sure it is retained
@@ -46,6 +54,10 @@ public class VMCompactLibraryTaskAction
 				"public", "static", "void", "main", "(",
 					"java.lang.String[]", ")", ";",
 			"}",
+			
+			// Keep any MIDlet
+			"-keep", "class", "*", "extends",
+				"javax.microedition.midlet.MIDlet",
 			
 			// Keep classes annotation with @Api and @Exported
 			"-keep", "public",
@@ -88,15 +100,15 @@ public class VMCompactLibraryTaskAction
 				"}",
 			
 			// Keep implementors of the annotations
-			"-keep", "class", "*", "implements",
+			/*"-keep", "class", "*", "implements",
 				"@cc.squirreljme.runtime.cldc.annotation.Api", "*",
 			"-keep", "public", "class", "*", "implements",
-			"@cc.squirreljme.runtime.cldc.annotation.Api", "*",
+			"@cc.squirreljme.runtime.cldc.annotation.Api", "*",*/
 			
-			"-keep", "class", "*", "implements",
+			/*"-keep", "class", "*", "implements",
 				"@cc.squirreljme.runtime.cldc.annotation.Exported", "*",
 			"-keep", "public", "class", "*", "implements",
-				"@cc.squirreljme.runtime.cldc.annotation.Exported", "*",
+				"@cc.squirreljme.runtime.cldc.annotation.Exported", "*",*/
 		};
 	
 	/** The source set used. */
@@ -126,13 +138,31 @@ public class VMCompactLibraryTaskAction
 	public void execute(Task __task)
 	{
 		// Where are we writing to?
+		Path inputPath = __task.getInputs().getFiles().getSingleFile()
+			.toPath();
 		Path outputPath = __task.getOutputs().getFiles().getSingleFile()
 			.toPath();
+		
+		Path outMap = outputPath.resolveSibling("mapping.txt");
+		
+		// Some settings may be configured
+		SquirrelJMEPluginConfiguration projectConfig =
+			SquirrelJMEPluginConfiguration.configuration(__task.getProject());
 		
 		// Run the task
 		Path tempFile = null;
 		try
 		{
+			// If we are not shrinking, since we cannot check the config at
+			// initialization stage... just do a copy operation here
+			if (projectConfig.noShrinking)
+			{
+				Files.copy(inputPath, outputPath,
+					StandardCopyOption.REPLACE_EXISTING);
+				
+				return;
+			}
+			
 			// Setup temporary file to output to when finished
 			tempFile = Files.createTempFile("tiny", ".jar");
 			
@@ -140,10 +170,21 @@ public class VMCompactLibraryTaskAction
 			// will just say "The output appears up to date" and do nothing
 			Files.delete(tempFile);
 			
+			// Base options to use
+			List<String> proGuardOptions = new ArrayList<>();
+			proGuardOptions.addAll(
+				Arrays.asList(VMCompactLibraryTaskAction._PARSE_SETTINGS));
+			
+			// Add any additional options as needed
+			if (projectConfig.proGuardOptions != null &&
+				!projectConfig.proGuardOptions.isEmpty())
+				proGuardOptions.addAll(projectConfig.proGuardOptions);
+			
 			// Parse initial configuration with settings
 			Configuration config = new Configuration();
 			try (ConfigurationParser parser = new ConfigurationParser(
-				VMCompactLibraryTaskAction._PARSE_SETTINGS, new Properties()))
+				proGuardOptions.toArray(new String[proGuardOptions.size()]),
+				new Properties()))
 			{
 				parser.parse(config);
 			}
@@ -155,11 +196,18 @@ public class VMCompactLibraryTaskAction
 			config.optimize = true;
 			config.shrink = true;
 			
+			// For mapping files, members do need to be unique
+			config.useUniqueClassMemberNames = true;
+			
+			// Do not use mix case class names, so that more strings can
+			// be compacted together accordingly
+			config.useMixedCaseClassNames = false;
+			
 			// Be noisy
 			config.verbose = true;
 			//config.dump = Configuration.STD_OUT;
 			//config.printUsage = Configuration.STD_OUT;
-			//config.printMapping = Configuration.STD_OUT;
+			config.printMapping = outMap.toFile();
 			config.printConfiguration = Configuration.STD_OUT;
 			
 			// We need to include all the inputs that were already ran through
@@ -179,8 +227,7 @@ public class VMCompactLibraryTaskAction
 			
 			// Input source Jar
 			programJars.add(
-				new ClassPathEntry(__task.getInputs().getFiles()
-					.getSingleFile(), false));
+				new ClassPathEntry(inputPath.toFile(), false));
 			
 			// Output temporary Jar
 			programJars.add(new ClassPathEntry(

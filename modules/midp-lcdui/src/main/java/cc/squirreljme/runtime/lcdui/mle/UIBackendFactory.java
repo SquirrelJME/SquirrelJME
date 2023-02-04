@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.fb.FBUIBackend;
 import cc.squirreljme.runtime.lcdui.mle.fb.NativeFBAttachment;
@@ -24,6 +25,7 @@ import cc.squirreljme.runtime.lcdui.mle.pure.NativeUIBackend;
  *
  * @since 2020/07/19
  */
+@Exported
 public final class UIBackendFactory
 {
 	/**
@@ -54,6 +56,7 @@ public final class UIBackendFactory
 	 * @return The instance of the engine to use.
 	 * @since 2020/06/30
 	 */
+	@Exported
 	@SuppressWarnings("StaticVariableUsedBeforeInitialization")
 	public static UIBackend getInstance(boolean __allowHeadless)
 	{
@@ -72,7 +75,6 @@ public final class UIBackendFactory
 		boolean forceHeadless = Boolean.getBoolean(
 			UIBackendFactory.FORCE_HEADLESS_PROPERTY);
 		boolean isForcing = (forceFallback || forceHeadless);
-		
 		
 		// Use native forms if supported unless we are forcing other options
 		UIDisplayBracket[] displays = UIFormShelf.displays();

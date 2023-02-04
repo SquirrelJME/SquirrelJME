@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.AbstractList;
 import java.util.List;
 import java.util.RandomAccess;
@@ -18,6 +19,7 @@ import java.util.RandomAccess;
  *
  * @since 2020/07/11
  */
+@Exported
 public class ByteArrayList
 	extends AbstractList<Byte>
 	implements RandomAccess
@@ -38,6 +40,7 @@ public class ByteArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/11
 	 */
+	@Exported
 	public ByteArrayList(byte[] __a)
 		throws NullPointerException
 	{
@@ -55,6 +58,7 @@ public class ByteArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/11
 	 */
+	@Exported
 	public ByteArrayList(byte[] __a, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -90,6 +94,7 @@ public class ByteArrayList
 	 * @throws IndexOutOfBoundsException If the index is not within bounds.
 	 * @since 2020/07/11
 	 */
+	@Exported
 	public byte set(int __i, byte __v)
 		throws IndexOutOfBoundsException
 	{
@@ -140,6 +145,7 @@ public class ByteArrayList
 	 * @return The boxed list type.
 	 * @since 2020/07/11
 	 */
+	@Exported
 	public static List<Byte> asList(byte... __array)
 	{
 		return new ByteArrayList(__array);

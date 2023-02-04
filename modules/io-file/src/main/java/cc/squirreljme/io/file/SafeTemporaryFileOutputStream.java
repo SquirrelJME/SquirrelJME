@@ -9,6 +9,7 @@
 
 package cc.squirreljme.io.file;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -22,6 +23,7 @@ import java.nio.file.StandardOpenOption;
  *
  * @since 2022/08/29
  */
+@Exported
 public final class SafeTemporaryFileOutputStream
 	extends OutputStream
 {
@@ -47,6 +49,7 @@ public final class SafeTemporaryFileOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/08/29
 	 */
+	@Exported
 	public SafeTemporaryFileOutputStream(Path __target)
 		throws NullPointerException
 	{

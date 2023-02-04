@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -20,6 +21,7 @@ import java.nio.file.StandardOpenOption;
  *
  * @since 2020/11/23
  */
+@Exported
 public class SummerCoatJarLibrary
 	implements VMClassLibrary
 {
@@ -37,6 +39,7 @@ public class SummerCoatJarLibrary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/23
 	 */
+	@Exported
 	public SummerCoatJarLibrary(Path __path)
 		throws NullPointerException
 	{
@@ -113,6 +116,7 @@ public class SummerCoatJarLibrary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/27
 	 */
+	@Exported
 	public static boolean isSqc(Path __s)
 		throws NullPointerException
 	{
@@ -130,6 +134,7 @@ public class SummerCoatJarLibrary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/27
 	 */
+	@Exported
 	public static boolean isSqc(String __s)
 		throws NullPointerException
 	{

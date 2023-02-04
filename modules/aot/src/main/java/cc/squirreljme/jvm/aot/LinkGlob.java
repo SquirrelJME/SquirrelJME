@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -17,6 +18,7 @@ import java.io.InputStream;
  *
  * @since 2020/11/22
  */
+@Exported
 public interface LinkGlob
 {
 	/**
@@ -26,6 +28,7 @@ public interface LinkGlob
 	 * @throws IOException On read/write errors.
 	 * @since 2020/11/22
 	 */
+	@Exported
 	void finish()
 		throws IOException;
 		
@@ -39,6 +42,7 @@ public interface LinkGlob
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/22
 	 */
+	@Exported
 	void join(String __name, boolean __isRc, InputStream __data)
 		throws IOException, NullPointerException;
 }

@@ -19,6 +19,7 @@ import cc.squirreljme.jvm.pack.constants.PackTocFlag;
 import cc.squirreljme.jvm.pack.constants.PackTocProperty;
 import cc.squirreljme.jvm.pack.JarRom;
 import cc.squirreljme.jvm.pack.PackRom;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
@@ -34,6 +35,7 @@ import net.multiphasicapps.io.ChunkWriter;
  *
  * @since 2021/09/04
  */
+@Exported
 public final class ChunkUtils
 {
 	/**
@@ -55,6 +57,7 @@ public final class ChunkUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/06
 	 */
+	@Exported
 	public static void copyDataContainer(DataContainerLibrary __lib,
 		ChunkSection __jarChunk, TableOfContentsEntry __entry)
 		throws IOException, NullPointerException
@@ -82,6 +85,7 @@ public final class ChunkUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/06
 	 */
+	@Exported
 	public static void copyPlainJarClasses(VMClassLibrary __lib,
 		ChunkSection __jarChunk, TableOfContentsEntry __entry)
 		throws IOException, NullPointerException
@@ -150,6 +154,7 @@ public final class ChunkUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/06
 	 */
+	@Exported
 	public static int defaultJarEntryFlags(String __resource)
 		throws NullPointerException
 	{
@@ -200,6 +205,7 @@ public final class ChunkUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/06
 	 */
+	@Exported
 	public static boolean isJarManifest(String __resource)
 		throws NullPointerException
 	{
@@ -217,6 +223,7 @@ public final class ChunkUtils
 	 * @return If this is valid for a Java identifier.
 	 * @since 2021/09/06
 	 */
+	@Exported
 	private static boolean isValidJavaIdentifierChar(boolean __start, char __c)
 	{
 		// TODO: Put in a better way to do this? Since we do not have
@@ -252,6 +259,7 @@ public final class ChunkUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/06
 	 */
+	@Exported
 	public static void storeCommonJarHeader(ChunkWriter __mainChunk,
 		HeaderStructWriter __header, VMClassLibrary __lib)
 		throws IOException, NullPointerException
@@ -280,6 +288,7 @@ public final class ChunkUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/06
 	 */
+	@Exported
 	public static void storeCommonJarToc(TableOfContentsWriter __toc,
 		ChunkSection __tocChunk, HeaderStructWriter __header,
 		int __manifestIndex)
@@ -311,6 +320,7 @@ public final class ChunkUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/06
 	 */
+	@Exported
 	public static void storeCommonJarTocEntry(TableOfContentsEntry __entry,
 		String __resource, ChunkWriter __mainChunk, ChunkSection __entryChunk)
 		throws IOException, NullPointerException
@@ -344,6 +354,7 @@ public final class ChunkUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/04
 	 */
+	@Exported
 	public static void storeCommonPackHeader(ChunkWriter __chunk,
 		RomSettings __settings, HeaderStructWriter __header)
 		throws IOException, NullPointerException
@@ -420,6 +431,7 @@ public final class ChunkUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/06
 	 */
+	@Exported
 	public static void storeCommonPackToc(TableOfContentsWriter __toc,
 		ChunkSection __tocChunk, HeaderStructWriter __header)
 		throws IOException, NullPointerException
@@ -444,6 +456,7 @@ public final class ChunkUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/06
 	 */
+	@Exported
 	public static void storeCommonPackTocEntry(TableOfContentsEntry __entry,
 		VMClassLibrary __lib, ChunkWriter __mainChunk,
 		ChunkSection __jarChunk)
@@ -478,6 +491,7 @@ public final class ChunkUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/06
 	 */
+	@Exported
 	public static void storeCommonSharedHeader(ChunkSection __chunk,
 		int __magic, int __formatVersion, PropertySpan __properties)
 		throws IOException, NullPointerException
@@ -503,6 +517,7 @@ public final class ChunkUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/06
 	 */
+	@Exported
 	public static void storeCommonSharedToc(TableOfContentsWriter __toc,
 		ChunkSection __tocChunk)
 		throws IOException
@@ -532,6 +547,7 @@ public final class ChunkUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/04
 	 */
+	@Exported
 	public static ChunkSection writeIntegers(ChunkWriter __chunk,
 		Iterable<Integer> __values)
 		throws IOException, NullPointerException
@@ -558,6 +574,7 @@ public final class ChunkUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/04
 	 */
+	@Exported
 	public static ChunkSection writeString(ChunkWriter __chunk, String __value)
 		throws IOException, NullPointerException
 	{
@@ -582,6 +599,7 @@ public final class ChunkUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/09/04
 	 */
+	@Exported
 	public static ChunkSection writeStrings(ChunkWriter __chunk,
 		Iterable<String> __values)
 		throws IOException, NullPointerException

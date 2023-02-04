@@ -9,11 +9,14 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
+
 /**
  * Represents the type of the member.
  *
  * @since 2018/09/09
  */
+@Exported
 public interface MemberDescriptor
 {
 }

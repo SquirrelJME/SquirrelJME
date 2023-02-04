@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.collections;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 import java.util.Iterator;
 
@@ -18,6 +19,7 @@ import java.util.Iterator;
  * @param <T> The type to iterate through.
  * @since 2021/04/25
  */
+@Exported
 public final class UnmodifiableIterable<T>
 	implements Iterable<T>
 {
@@ -59,6 +61,7 @@ public final class UnmodifiableIterable<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/25
 	 */
+	@Exported
 	public static <T> Iterable<T> of(Iterable<T> __it)
 		throws NullPointerException
 	{

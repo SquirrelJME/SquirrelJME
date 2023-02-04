@@ -26,6 +26,77 @@ squirreljme
 	tags += "lite"
 	noEmitConfiguration = true
 	
+	// Needed for SquirrelJME VMs to start and operate properly, as this is
+	// the entry point into any code that starts and otherwise
+	proGuardOptions += ["-keep", "class", "java.lang.__Start__"]
+	proGuardOptions += ["-keepnames", "class", "java.lang.__Start__"]
+	proGuardOptions += ["-keepclassmembers", "class", 
+		"java.lang.__Start__", "{",
+			"void", "__base", "(", ")", ";",
+			"void", "__main", "(", ")", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.__Start__", "{",
+			"void", "__base", "(", ")", ";",
+			"void", "__main", "(", ")", ";",
+		"}"]
+	
+	// There are some hidden fields in Thread that need to be kept
+	proGuardOptions += ["-keepclassmembers", "class",
+		"java.lang.Thread", "{",
+			"boolean", "_started", ";",
+			"boolean", "_isAlive", ";",
+			"boolean", "_interrupted", ";",
+			"java.lang.Runnable", "_runnable", ";",
+			"cc.squirreljme.jvm.mle.brackets.VMThreadBracket", "_vmThread",
+				";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Thread", "{",
+			"boolean", "_started", ";",
+			"boolean", "_isAlive", ";",
+			"boolean", "_interrupted", ";",
+			"java.lang.Runnable", "_runnable", ";",
+			"cc.squirreljme.jvm.mle.brackets.VMThreadBracket", "_vmThread",
+				";",
+		"}"]
+	
+	// Throwable has the internal stack trace
+	proGuardOptions += ["-keepclassmembers", "class",
+		"java.lang.Throwable", "{",
+			"cc.squirreljme.jvm.mle.brackets.TracePointBracket[]",
+				"_stack", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Throwable", "{",
+			"cc.squirreljme.jvm.mle.brackets.TracePointBracket[]",
+				"_stack", ";",
+		"}"]
+	
+	// Class has hidden fields that are directly accessed
+	proGuardOptions += ["-keepclassmembers", "class",
+		"java.lang.Class", "{",
+			"cc.squirreljme.jvm.mle.brackets.TypeBracket", "_type", ";",
+		
+			// Constructor used internally
+			"Class", "(", "cc.squirreljme.jvm.mle.brackets.TypeBracket",
+				")", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Class", "{",
+			"cc.squirreljme.jvm.mle.brackets.TypeBracket", "_type", ";",
+		"}"]
+	
+	// Integer's value is directly accessed as an optimization
+	proGuardOptions += ["-keepclassmembers", "class",
+		"java.lang.Integer", "{",
+			"int", "_value", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Integer", "{",
+			"int", "_value", ";",
+		"}"]
+	
 	// This is considered a boot loader for SummerCoat
 	isBootLoader = true
 	bootLoaderMainClass = "cc.squirreljme.jvm.summercoat.Bootstrap"

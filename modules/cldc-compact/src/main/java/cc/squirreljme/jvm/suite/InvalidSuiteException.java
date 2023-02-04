@@ -9,12 +9,15 @@
 
 package cc.squirreljme.jvm.suite;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
+
 /**
  * This is thrown when a midlet has an invalid property or is otherwise not
  * valid.
  *
  * @since 2017/11/23
  */
+@Exported
 public class InvalidSuiteException
 	extends IllegalArgumentException
 {
@@ -23,6 +26,7 @@ public class InvalidSuiteException
 	 *
 	 * @since 2017/11/23
 	 */
+	@Exported
 	public InvalidSuiteException()
 	{
 	}
@@ -33,6 +37,7 @@ public class InvalidSuiteException
 	 * @param __m The message.
 	 * @since 2017/11/23
 	 */
+	@Exported
 	public InvalidSuiteException(String __m)
 	{
 		super(__m);
@@ -45,6 +50,7 @@ public class InvalidSuiteException
 	 * @param __c The cause.
 	 * @since 2017/11/23
 	 */
+	@Exported
 	public InvalidSuiteException(String __m, Throwable __c)
 	{
 		super(__m, __c);
@@ -56,6 +62,7 @@ public class InvalidSuiteException
 	 * @param __c The cause.
 	 * @since 2017/11/23
 	 */
+	@Exported
 	public InvalidSuiteException(Throwable __c)
 	{
 		super(__c);

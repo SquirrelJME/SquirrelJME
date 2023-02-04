@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.List;
 import java.util.RandomAccess;
 
@@ -17,6 +18,7 @@ import java.util.RandomAccess;
  *
  * @since 2021/02/25
  */
+@Exported
 public final class CollectionUtils
 {
 	/**
@@ -36,6 +38,7 @@ public final class CollectionUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/02/25
 	 */
+	@Exported
 	public static List<Integer> asIntegerList(List<Character> __chars)
 		throws NullPointerException
 	{

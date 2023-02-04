@@ -18,6 +18,7 @@ import javax.microedition.lcdui.Image;
  *
  * @since 2019/10/07
  */
+@Api
 public interface DirectGraphics
 {
 	@Api

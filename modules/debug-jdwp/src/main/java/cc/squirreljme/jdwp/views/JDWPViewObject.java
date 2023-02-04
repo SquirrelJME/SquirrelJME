@@ -10,12 +10,14 @@
 package cc.squirreljme.jdwp.views;
 
 import cc.squirreljme.jdwp.JDWPValue;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * An object viewer.
  *
  * @since 2021/04/10
  */
+@Exported
 public interface JDWPViewObject
 	extends JDWPViewValidObject
 {
@@ -26,6 +28,7 @@ public interface JDWPViewObject
 	 * @return The array length, negative for objects that are not arrays.
 	 * @since 2021/04/11
 	 */
+	@Exported
 	int arrayLength(Object __which);
 	
 	/**
@@ -35,6 +38,7 @@ public interface JDWPViewObject
 	 * @return If it is {@code null} or not.
 	 * @since 2022/09/21
 	 */
+	@Exported
 	boolean isNullObject(Object __value);
 	
 	/**
@@ -46,6 +50,7 @@ public interface JDWPViewObject
 	 * @return {@code true} if this is a valid value.
 	 * @since 2021/04/10
 	 */
+	@Exported
 	boolean readArray(Object __which, int __index, JDWPValue __out);
 	
 	/**
@@ -57,6 +62,7 @@ public interface JDWPViewObject
 	 * @return {@code true} if this is a valid value.
 	 * @since 2021/04/10
 	 */
+	@Exported
 	boolean readValue(Object __which, int __index, JDWPValue __out);
 	
 	/**
@@ -66,5 +72,6 @@ public interface JDWPViewObject
 	 * @return The type of the given object.
 	 * @since 2021/04/11
 	 */
+	@Exported
 	Object type(Object __which);
 }

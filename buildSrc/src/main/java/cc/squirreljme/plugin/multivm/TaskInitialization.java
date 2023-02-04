@@ -258,6 +258,7 @@ public final class TaskInitialization
 		// If we are debugging, then we keep everything... otherwise we just
 		// strip everything out that we can to minimize the size as much as
 		// possible...
+		// Or it is just disabled completely
 		if (__classifier.getTargetClassifier().getClutterLevel().isDebug())
 			usedSourceJar = sourceJar;
 		

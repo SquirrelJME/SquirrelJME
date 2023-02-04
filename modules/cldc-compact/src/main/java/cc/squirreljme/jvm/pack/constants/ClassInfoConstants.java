@@ -9,11 +9,14 @@
 
 package cc.squirreljme.jvm.pack.constants;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
+
 /**
  * Constants for class information.
  *
  * @since 2020/11/29
  */
+@Exported
 public interface ClassInfoConstants
 {
 	/** Legacy class version from a long time ago. */
@@ -45,10 +48,12 @@ public interface ClassInfoConstants
 		8 + (PackProperty.NUM_PACK_PROPERTIES * 4);
 	
 	/** Magic number for the JAR. */
+	@Exported
 	int JAR_MAGIC_NUMBER =
 		0x00456570;
 	
 	/** Magic number for the pack file. */
+	@Exported
 	int PACK_MAGIC_NUMBER =
 		0x58455223;
 }

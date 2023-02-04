@@ -12,6 +12,9 @@ squirreljme
 	swmVendor = "Stephanie Gawroriski"
 	tags += "meep"
 	tags += "graphics"
+	
+	// TODO: Temporary until there are classes
+	noShrinking = true
 }
 
 dependencies

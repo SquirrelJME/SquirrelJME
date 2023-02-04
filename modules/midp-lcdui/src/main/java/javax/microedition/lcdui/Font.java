@@ -10,6 +10,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.font.FontUtilities;
 import cc.squirreljme.runtime.lcdui.font.SQFFont;
@@ -134,6 +135,7 @@ public final class Font
 	 * @param __px The pixel size of this font.
 	 * @since 2017/10/20
 	 */
+	@Exported
 	private Font(String __n, int __st, int __px)
 		throws NullPointerException
 	{

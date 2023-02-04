@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -16,13 +17,16 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2021/11/30
  */
+@Exported
 public final class BacklightControl
 {
 	/** The minimum backlight level. */
+	@Exported
 	public static final byte MIN_LEVEL =
 		0;
 	
 	/** The maximum backlight level. */
+	@Exported
 	public static final byte MAX_LEVEL =
 		100;
 	
@@ -33,6 +37,7 @@ public final class BacklightControl
 	 * capped accordingly.
 	 * @since 2021/11/30
 	 */
+	@Exported
 	public static void setLevel(int __level)
 	{
 		Debugging.todoNote("Implement backlight set: %d", __level);

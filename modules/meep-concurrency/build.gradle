@@ -13,6 +13,9 @@ squirreljme
 	swmVendor = "Stephanie Gawroriski"
 	definedStandards += new JavaMEStandard("microedition.concurrency;;")
 	tags += "meep"
+	
+	// TODO: Temporary until there are classes
+	noShrinking = true
 }
 
 dependencies

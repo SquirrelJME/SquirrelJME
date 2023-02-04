@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.lang.ref.WeakReference;
 
 /**
@@ -16,6 +17,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2020/12/05
  */
+@Exported
 public class ChunkFutureChunk
 	implements ChunkFuture
 {
@@ -29,6 +31,7 @@ public class ChunkFutureChunk
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/05
 	 */
+	@Exported
 	public ChunkFutureChunk(ChunkWriter __chunk)
 		throws NullPointerException
 	{

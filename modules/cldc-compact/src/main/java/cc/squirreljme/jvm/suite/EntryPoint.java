@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.suite;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
@@ -18,6 +19,7 @@ import java.util.Objects;
  *
  * @since 2017/08/20
  */
+@Exported
 public final class EntryPoint
 	implements Comparable<EntryPoint>
 {
@@ -46,6 +48,7 @@ public final class EntryPoint
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/20
 	 */
+	@Exported
 	public EntryPoint(String __name, String __entry, String __imgRc,
 		boolean __mid)
 		throws NullPointerException
@@ -93,6 +96,7 @@ public final class EntryPoint
 	 * @return The entry point class.
 	 * @since 2017/08/20
 	 */
+	@Exported
 	public String entryPoint()
 	{
 		return this.entry;
@@ -135,6 +139,7 @@ public final class EntryPoint
 	 * @return The image resource or {@code null} if there is none.
 	 * @since 2020/10/31
 	 */
+	@Exported
 	public String imageResource()
 	{
 		return this.imageResource;
@@ -146,6 +151,7 @@ public final class EntryPoint
 	 * @return If this is a MIDlet or not.
 	 * @since 2017/08/20
 	 */
+	@Exported
 	public boolean isMidlet()
 	{
 		return this.isMidlet;
@@ -157,6 +163,7 @@ public final class EntryPoint
 	 * @return The entry point name.
 	 * @since 2017/08/20
 	 */
+	@Exported
 	public String name()
 	{
 		return this.name;

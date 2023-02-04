@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.pack;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import net.multiphasicapps.io.ChunkFuture;
 
 /**
@@ -16,6 +17,7 @@ import net.multiphasicapps.io.ChunkFuture;
  *
  * @since 2021/09/05
  */
+@Exported
 public final class TableOfContentsEntry
 {
 	/** Properties to write. */
@@ -42,6 +44,7 @@ public final class TableOfContentsEntry
 	 * @return The future chunk.
 	 * @since 2021/09/06
 	 */
+	@Exported
 	public ChunkFuture get(int __i)
 	{
 		return this.properties.get(__i);
@@ -56,6 +59,7 @@ public final class TableOfContentsEntry
 	 * set bounds.
 	 * @since 2021/09/05
 	 */
+	@Exported
 	public final void set(int __property, int __value)
 		throws IndexOutOfBoundsException
 	{
@@ -71,6 +75,7 @@ public final class TableOfContentsEntry
 	 * set bounds.
 	 * @since 2021/09/05
 	 */
+	@Exported
 	public final void set(int __property, ChunkFuture __value)
 		throws IndexOutOfBoundsException
 	{

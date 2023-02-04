@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.suite;
 import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.manifest.JavaManifestKey;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
  *
  * @since 2017/08/20
  */
+@Exported
 public class EntryPoints
 	extends AbstractList<EntryPoint>
 {
@@ -34,6 +36,7 @@ public class EntryPoints
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/24
 	 */
+	@Exported
 	public EntryPoints(JavaManifest __man)
 		throws NullPointerException
 	{
@@ -47,6 +50,7 @@ public class EntryPoints
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/20
 	 */
+	@Exported
 	public EntryPoints(JavaManifestAttributes __attr)
 		throws NullPointerException
 	{

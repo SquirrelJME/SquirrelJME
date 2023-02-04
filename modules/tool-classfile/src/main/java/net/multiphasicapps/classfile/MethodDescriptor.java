@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
  *
  * @since 2017/06/12
  */
+@Exported
 public final class MethodDescriptor
 	implements Comparable<MethodDescriptor>, MemberDescriptor
 {
@@ -39,6 +41,7 @@ public final class MethodDescriptor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/08
 	 */
+	@Exported
 	public MethodDescriptor(FieldDescriptor __rv, FieldDescriptor... __args)
 		throws InvalidClassFormatException, NullPointerException
 	{
@@ -78,6 +81,7 @@ public final class MethodDescriptor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/12
 	 */
+	@Exported
 	public MethodDescriptor(String __n)
 		throws InvalidClassFormatException, NullPointerException
 	{
@@ -180,6 +184,7 @@ public final class MethodDescriptor
 	 * @throws IndexOutOfBoundsException If the argument is not within bounds.
 	 * @since 2017/07/28
 	 */
+	@Exported
 	public FieldDescriptor argument(int __i)
 		throws IndexOutOfBoundsException
 	{
@@ -192,6 +197,7 @@ public final class MethodDescriptor
 	 * @return The slot count for arguments.
 	 * @since 2022/09/21
 	 */
+	@Exported
 	public int argumentSlotCount()
 	{
 		int total = 0;
@@ -207,6 +213,7 @@ public final class MethodDescriptor
 	 * @return The arguments.
 	 * @since 2019/04/14
 	 */
+	@Exported
 	public FieldDescriptor[] arguments()
 	{
 		return this._args.clone();
@@ -218,6 +225,7 @@ public final class MethodDescriptor
 	 * @return The number of arguments this descriptor has.
 	 * @since 2017/07/28
 	 */
+	@Exported
 	public int argumentCount()
 	{
 		return this._args.length;
@@ -305,6 +313,7 @@ public final class MethodDescriptor
 	 * @return If the method has a return value.
 	 * @since 2018/09/16
 	 */
+	@Exported
 	public final boolean hasReturnValue()
 	{
 		return null != this.rvalue;
@@ -316,6 +325,7 @@ public final class MethodDescriptor
 	 * @return The descriptor as it appears on the Java Stack.
 	 * @since 2017/09/16
 	 */
+	@Exported
 	public JavaType[] javaStack()
 	{
 		// Handle all arguments now
@@ -342,6 +352,7 @@ public final class MethodDescriptor
 	 * is no return value.
 	 * @since 2017/09/22
 	 */
+	@Exported
 	public FieldDescriptor returnValue()
 	{
 		return this.rvalue;
@@ -366,6 +377,7 @@ public final class MethodDescriptor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/15
 	 */
+	@Exported
 	public static MethodDescriptor ofArguments(String __rv, String... __args)
 		throws NullPointerException
 	{

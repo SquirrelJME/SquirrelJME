@@ -9,11 +9,14 @@
 
 package cc.squirreljme.jvm.launch;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
+
 /**
  * This contains the list of suites and libraries.
  *
  * @since 2020/12/28
  */
+@Exported
 public final class AvailableSuites
 {
 	/** The applications available. */

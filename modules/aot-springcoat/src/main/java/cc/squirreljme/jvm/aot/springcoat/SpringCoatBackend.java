@@ -22,6 +22,7 @@ import cc.squirreljme.jvm.pack.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.pack.constants.PackFlag;
 import cc.squirreljme.jvm.pack.constants.PackProperty;
 import cc.squirreljme.jvm.pack.constants.PackTocProperty;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.IOException;
@@ -38,6 +39,7 @@ import net.multiphasicapps.io.ChunkWriter;
  *
  * @since 2021/08/21
  */
+@Exported
 public class SpringCoatBackend
 	implements Backend
 {

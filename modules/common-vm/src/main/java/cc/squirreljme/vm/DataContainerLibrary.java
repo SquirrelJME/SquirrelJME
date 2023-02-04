@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -21,6 +22,7 @@ import java.nio.file.StandardOpenOption;
  *
  * @since 2021/06/13
  */
+@Exported
 public class DataContainerLibrary
 	implements VMClassLibrary
 {
@@ -38,6 +40,7 @@ public class DataContainerLibrary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/06/13
 	 */
+	@Exported
 	public DataContainerLibrary(Path __path)
 		throws NullPointerException
 	{
@@ -54,6 +57,7 @@ public class DataContainerLibrary
 	 * @throws IOException If it could not be opened.
 	 * @since 2021/09/04
 	 */
+	@Exported
 	public final InputStream asStream()
 		throws IOException
 	{

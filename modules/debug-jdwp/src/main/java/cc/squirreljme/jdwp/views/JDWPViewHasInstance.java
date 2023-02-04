@@ -9,11 +9,14 @@
 
 package cc.squirreljme.jdwp.views;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
+
 /**
  * Represents a type that has an instance view.
  *
  * @since 2022/09/24
  */
+@Exported
 public interface JDWPViewHasInstance
 	extends JDWPViewValidObject
 {
@@ -26,5 +29,6 @@ public interface JDWPViewHasInstance
 	 * @return The in-VM instance of the given representation.
 	 * @since 2022/09/24
 	 */
+	@Exported
 	Object instance(Object __which);
 }

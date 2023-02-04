@@ -9,11 +9,14 @@
 
 package cc.squirreljme.jdwp.views;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
+
 /**
  * This is a view of something on JDWP.
  *
  * @since 2021/04/10
  */
+@Exported
 public interface JDWPView
 {
 }

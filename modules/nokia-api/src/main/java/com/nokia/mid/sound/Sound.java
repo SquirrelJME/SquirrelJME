@@ -9,6 +9,7 @@
 
 package com.nokia.mid.sound;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.media.Manager;
@@ -22,52 +23,63 @@ import javax.microedition.media.MediaException;
  * @since 2022/02/03
  */
 @ApiDefinedDeprecated
+@Api
 public class Sound
 {
 	/** A simple tone based sound. */
+	@Api
 	@ApiDefinedDeprecated
 	public static final int FORMAT_TONE = 1;
 	
 	/** A digitized waveform audio. */
+	@Api
 	@ApiDefinedDeprecated
 	public static final int FORMAT_WAVE = 5;
 	
 	/** A sound is playing. */
+	@Api
 	@ApiDefinedDeprecated
 	public static final int SOUND_PLAYING = 0;
 	
 	/** A sound is stopped. */
+	@Api
 	@ApiDefinedDeprecated
 	public static final int SOUND_STOPPED = 1;
 	
 	/** A sound is not initialized. */
+	@Api
 	@ApiDefinedDeprecated
 	public static final int SOUND_UNINITIALIZED = 3;
 	
+	@Api
 	@ApiDefinedDeprecated
 	public Sound(byte[] __data, int __type)
 	{
 		this.init(__data, __type);
 	}
 	
+	@Api
 	@ApiDefinedDeprecated
 	public Sound(int __freq, long __duration)
 	{
 		this.init(__freq, __duration);
 	}
 	
+	@Api
 	@ApiDefinedDeprecated
 	public int getGain()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@ApiDefinedDeprecated
 	public int getState()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@ApiDefinedDeprecated
 	public void init(byte[] __data, int __type)
 	{
@@ -85,6 +97,7 @@ public class Sound
 	 * @see Manager#playTone(int, int, int)
 	 * @since 2022/02/03
 	 */
+	@Api
 	@ApiDefinedDeprecated
 	public void init(int __freq, long __duration)
 		throws IllegalArgumentException
@@ -106,48 +119,56 @@ public class Sound
 		}
 	}
 	
+	@Api
 	@ApiDefinedDeprecated
 	public void play(int __loop)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@ApiDefinedDeprecated
 	public void release()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@ApiDefinedDeprecated
 	public void resume()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@ApiDefinedDeprecated
 	public void setGain(int __gain)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@ApiDefinedDeprecated
 	public void setSoundListener(SoundListener __listener)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@ApiDefinedDeprecated
 	public void stop()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@ApiDefinedDeprecated
 	public static int getConcurrentSoundCount(int __type)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@ApiDefinedDeprecated
 	public static int[] getSupportedFormats()
 	{

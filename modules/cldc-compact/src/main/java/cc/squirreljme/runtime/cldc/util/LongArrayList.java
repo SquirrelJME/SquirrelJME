@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.AbstractList;
 import java.util.List;
 import java.util.RandomAccess;
@@ -18,6 +19,7 @@ import java.util.RandomAccess;
  *
  * @since 2020/01/01
  */
+@Exported
 public class LongArrayList
 	extends AbstractList<Long>
 	implements RandomAccess
@@ -38,6 +40,7 @@ public class LongArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/01/01
 	 */
+	@Exported
 	public LongArrayList(long[] __a)
 		throws NullPointerException
 	{
@@ -55,6 +58,7 @@ public class LongArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/01/01
 	 */
+	@Exported
 	public LongArrayList(long[] __a, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -90,6 +94,7 @@ public class LongArrayList
 	 * @throws IndexOutOfBoundsException If the index is not within bounds.
 	 * @since 2020/01/01
 	 */
+	@Exported
 	public long set(int __i, long __v)
 		throws IndexOutOfBoundsException
 	{
@@ -140,6 +145,7 @@ public class LongArrayList
 	 * @return The boxed list type.
 	 * @since 2020/07/11
 	 */
+	@Exported
 	public static List<Long> asList(long... __array)
 	{
 		return new LongArrayList(__array);

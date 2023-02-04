@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.aot.pack;
 
 import cc.squirreljme.jvm.pack.HeaderStruct;
+import cc.squirreljme.runtime.cldc.annotation.Exported;
 import net.multiphasicapps.io.ChunkFuture;
 
 /**
@@ -17,6 +18,7 @@ import net.multiphasicapps.io.ChunkFuture;
  *
  * @since 2021/09/03
  */
+@Exported
 public final class HeaderStructWriter
 {
 	/** Properties to write. */
@@ -30,6 +32,7 @@ public final class HeaderStructWriter
 	 * negative.
 	 * @since 2021/09/03
 	 */
+	@Exported
 	public HeaderStructWriter(int __numProperties)
 		throws IllegalArgumentException
 	{
@@ -45,6 +48,7 @@ public final class HeaderStructWriter
 	 * set bounds.
 	 * @since 2021/09/03
 	 */
+	@Exported
 	public final void set(int __property, int __value)
 		throws IndexOutOfBoundsException
 	{
@@ -60,6 +64,7 @@ public final class HeaderStructWriter
 	 * set bounds.
 	 * @since 2021/09/03
 	 */
+	@Exported
 	public final void set(int __property, ChunkFuture __value)
 		throws IndexOutOfBoundsException
 	{
