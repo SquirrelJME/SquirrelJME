@@ -53,7 +53,7 @@ SJME_TEST_PROTOTYPE(testMemIo_memTags)
 
 	/* Setup tag group. */
 	tagGroup = NULL;
-	if (!sjme_memIo_taggedGroupNew(&tagGroup, &shim->error))
+	if (!sjme_memIo_taggedGroupNew(NULL, &tagGroup, &shim->error))
 		return FAIL_TEST(1);
 
 	/* Sizeof the base should be the same. */
@@ -63,7 +63,7 @@ SJME_TEST_PROTOTYPE(testMemIo_memTags)
 	/* Allocating with sizeof() should fail. */
 	nullIsh = NULL;
 	if (sjme_memIo_taggedNew(tagGroup, nullIsh, sizeof(nullIsh), /* NOLINT */
-			SJME_MEM_TAG_STATIC, &shim->error))
+			&shim->error))
 		return FAIL_TEST(3);
 
 	if (shim->error.code != SJME_ERROR_NULLARGS)
@@ -72,7 +72,7 @@ SJME_TEST_PROTOTYPE(testMemIo_memTags)
 	/* Allocating with sizeof() should fail. */
 	alloc = NULL;
 	if (sjme_memIo_taggedNew(tagGroup, &alloc, sizeof(alloc),
-		SJME_MEM_TAG_STATIC, &shim->error))
+		&shim->error))
 		return FAIL_TEST(4);
 
 	if (shim->error.code != SJME_ERROR_TAGGED_WRONG_SIZE_OF)
@@ -81,7 +81,7 @@ SJME_TEST_PROTOTYPE(testMemIo_memTags)
 	/* Allocating not using &alloc, should fail due to protection. */
 	if (sjme_memIo_taggedNew(tagGroup, notValid, /* NOLINT */
 			sjme_memIo_taggedNewSizeOf(notValid),
-			SJME_MEM_TAG_STATIC, &shim->error))
+			&shim->error))
 		return FAIL_TEST(5);
 
 	if (shim->error.code != SJME_ERROR_PROTECTED_MEM_VIOLATION)
@@ -90,7 +90,7 @@ SJME_TEST_PROTOTYPE(testMemIo_memTags)
 	/* Allocating over a pointer that already has something there. */
 	alreadySet = (void*)INT32_C(0xCAFE);
 	if (sjme_memIo_taggedNew(tagGroup, &alreadySet,
-			sjme_memIo_taggedNewSizeOf(alreadySet), SJME_MEM_TAG_STATIC,
+			sjme_memIo_taggedNewSizeOf(alreadySet),
 			&shim->error))
 		return FAIL_TEST(6);
 
@@ -99,7 +99,7 @@ SJME_TEST_PROTOTYPE(testMemIo_memTags)
 
 	/* Try allocating memory. */
 	if (!sjme_memIo_taggedNew(tagGroup, &alloc,
-		sjme_memIo_taggedNewSizeOf(alloc), SJME_MEM_TAG_STATIC, &shim->error))
+		sjme_memIo_taggedNewSizeOf(alloc), &shim->error))
 		return FAIL_TEST(7);
 
 	/* Access it. */
@@ -111,7 +111,7 @@ SJME_TEST_PROTOTYPE(testMemIo_memTags)
 	memset(set, 0, sizeof(set));
 	for (i = 0; i < TEST_NUM_POINTERS; i++)
 		if (!sjme_memIo_taggedNew(tagGroup, &set[i],
-			sjme_memIo_taggedNewSizeOf(set[i]), SJME_MEM_TAG_STATIC,
+			sjme_memIo_taggedNewSizeOf(set[i]),
 			&shim->error))
 			return FAIL_TEST_SUB(8, i);
 

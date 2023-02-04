@@ -10,7 +10,6 @@
 #include "memio/memtag.h"
 #include "debug.h"
 #include "error.h"
-#include "memio/atomic.h"
 #include "memio/memdirect.h"
 #include "memio/memtaginternal.h"
 
@@ -27,8 +26,8 @@ sjme_jboolean sjme_memIo_taggedGroupFree(sjme_memIo_tagGroup** inPtr,
 	return sjme_false;
 }
 
-sjme_jboolean sjme_memIo_taggedGroupNew(sjme_memIo_tagGroup** outPtr,
-	sjme_error* error)
+sjme_jboolean sjme_memIo_taggedGroupNew(sjme_memIo_tagGroup* parent,
+	sjme_memIo_tagGroup** outPtr, sjme_error* error)
 {
 	sjme_memIo_tagGroup* result;
 
@@ -68,7 +67,7 @@ sjme_jboolean sjme_memIo_taggedFreeZ(void*** inPtr, sjme_error* error,
 }
 
 sjme_jboolean sjme_memIo_taggedNewZ(sjme_memIo_tagGroup* group, void*** outPtr,
-	sjme_jsize size, sjme_memIo_tagType tagType, sjme_error* error,
+	sjme_jsize size, sjme_error* error,
 	sjme_jsize protectA, sjme_jsize protectB)
 {
 	if (group == NULL || outPtr == NULL)
