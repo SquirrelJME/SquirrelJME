@@ -44,7 +44,7 @@ typedef struct sjme_memTagInternal
 	sjme_memIo_tagGroupInternal* inGroup;
 
 	/** The free function for this tag, is called on free. */
-	sjme_memIo_tagFreeFuncType* freeFunc;
+	sjme_memIo_taggedFreeFuncType freeFunc;
 
 	/** The allocation size used currently. */
 	sjme_jsize allocSize;
@@ -60,6 +60,9 @@ struct sjme_memIo_tagGroupInternal
 {
 	/** The parent tag group, if there is one. */
 	sjme_memIo_tagGroupInternal* parent;
+
+	/** The free function for any tag in this group. */
+	sjme_memIo_taggedFreeFuncType freeFunc;
 
 	/** Estimated memory used in total. */
 	sjme_jlong estimatedUsedSize;

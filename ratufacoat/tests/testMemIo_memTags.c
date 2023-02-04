@@ -34,6 +34,25 @@ typedef struct testStruct
 /** Tagged version of the struct. */
 SJME_MEMIO_DECL_TAGGED(testStruct);
 
+/** The free count. */
+static int test_freeCount;
+
+/**
+ * Function called on free.
+ *
+ * @param freeingPtr The pointer being freed.
+ * @param error Any error.
+ * @return Does not fail here.
+ * @since 2023/02/04
+ */
+static sjme_jboolean test_freeFunc(sjme_memIo_tagGroup* inGroup,
+	void** freeingPtr, sjme_error* error)
+{
+	test_freeCount++;
+
+	return sjme_true;
+}
+
 /**
  * Tests that JNI memory tags work.
  *
@@ -53,7 +72,8 @@ SJME_TEST_PROTOTYPE(testMemIo_memTags)
 
 	/* Setup tag group. */
 	tagGroup = NULL;
-	if (!sjme_memIo_taggedGroupNew(NULL, &tagGroup, &shim->error))
+	if (!sjme_memIo_taggedGroupNew(NULL, &tagGroup,
+		test_freeFunc, &shim->error))
 		return FAIL_TEST(1);
 
 	/* Sizeof the base should be the same. */
@@ -63,7 +83,7 @@ SJME_TEST_PROTOTYPE(testMemIo_memTags)
 	/* Allocating with sizeof() should fail. */
 	nullIsh = NULL;
 	if (sjme_memIo_taggedNew(tagGroup, nullIsh, sizeof(nullIsh), /* NOLINT */
-			&shim->error))
+			test_freeFunc, &shim->error))
 		return FAIL_TEST(3);
 
 	if (shim->error.code != SJME_ERROR_NULLARGS)
@@ -72,7 +92,7 @@ SJME_TEST_PROTOTYPE(testMemIo_memTags)
 	/* Allocating with sizeof() should fail. */
 	alloc = NULL;
 	if (sjme_memIo_taggedNew(tagGroup, &alloc, sizeof(alloc),
-		&shim->error))
+			test_freeFunc, &shim->error))
 		return FAIL_TEST(4);
 
 	if (shim->error.code != SJME_ERROR_TAGGED_WRONG_SIZE_OF)
@@ -81,7 +101,7 @@ SJME_TEST_PROTOTYPE(testMemIo_memTags)
 	/* Allocating not using &alloc, should fail due to protection. */
 	if (sjme_memIo_taggedNew(tagGroup, notValid, /* NOLINT */
 			sjme_memIo_taggedNewSizeOf(notValid),
-			&shim->error))
+			test_freeFunc, &shim->error))
 		return FAIL_TEST(5);
 
 	if (shim->error.code != SJME_ERROR_PROTECTED_MEM_VIOLATION)
@@ -91,7 +111,7 @@ SJME_TEST_PROTOTYPE(testMemIo_memTags)
 	alreadySet = (void*)INT32_C(0xCAFE);
 	if (sjme_memIo_taggedNew(tagGroup, &alreadySet,
 			sjme_memIo_taggedNewSizeOf(alreadySet),
-			&shim->error))
+			test_freeFunc, &shim->error))
 		return FAIL_TEST(6);
 
 	if (shim->error.code != SJME_ERROR_TAG_NOT_NULL)
@@ -99,7 +119,7 @@ SJME_TEST_PROTOTYPE(testMemIo_memTags)
 
 	/* Try allocating memory. */
 	if (!sjme_memIo_taggedNew(tagGroup, &alloc,
-		sjme_memIo_taggedNewSizeOf(alloc), &shim->error))
+		sjme_memIo_taggedNewSizeOf(alloc), test_freeFunc, &shim->error))
 		return FAIL_TEST(7);
 
 	/* Access it. */
@@ -112,7 +132,7 @@ SJME_TEST_PROTOTYPE(testMemIo_memTags)
 	for (i = 0; i < TEST_NUM_POINTERS; i++)
 		if (!sjme_memIo_taggedNew(tagGroup, &set[i],
 			sjme_memIo_taggedNewSizeOf(set[i]),
-			&shim->error))
+			test_freeFunc, &shim->error))
 			return FAIL_TEST_SUB(8, i);
 
 	/* Free only half of them. */
@@ -127,6 +147,10 @@ SJME_TEST_PROTOTYPE(testMemIo_memTags)
 	/* Pointer should be cleared here. */
 	if ((*alloc) != NULL)
 		return FAIL_TEST(11);
+
+	/* This count should be all the passing allocations above, plus groups. */
+	if (test_freeCount != (TEST_NUM_POINTERS + 2))
+		return FAIL_TEST(12);
 
 	return PASS_TEST();
 }

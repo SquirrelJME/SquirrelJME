@@ -111,17 +111,6 @@ SJME_MEMIO_DECL_TAGGED_ALIAS(sjme_jdoubleArray);
 SJME_MEMIO_DECL_TAGGED_ALIAS(sjme_jobjectArray);
 
 /**
- * This is called when the given pointer is freed.
- *
- * @param freeingPtr The pointer being freed.
- * @param error Any resultant error state.
- * @return If the free operation was successful or it failed.
- * @since 2023/02/04
- */
-typedef sjme_jboolean (*sjme_memIo_tagFreeFuncType)(void** freeingPtr,
-	sjme_error* error);
-
-/**
  * Internal representation of a memory tag group.
  *
  * @since 2022/12/20
@@ -139,18 +128,34 @@ typedef struct sjme_memIo_tagGroupInternal sjme_memIo_tagGroupInternal;
 typedef struct sjme_memIo_tagGroupInternal* sjme_memIo_tagGroup;
 
 /**
+ * This is called when the given pointer is freed.
+ *
+ * @param inGroup The group that this pointer is in.
+ * @param freeingPtr The pointer being freed, if only the group is being freed
+ * then this will be @c NULL.
+ * @param error Any resultant error state.
+ * @return If the free operation was successful or it failed.
+ * @since 2023/02/04
+ */
+typedef sjme_jboolean (*sjme_memIo_taggedFreeFuncType)(
+	sjme_memIo_tagGroup* inGroup, void** freeingPtr, sjme_error* error);
+
+/**
  * Allocates a group which contains tagged pointers which are used for
  * collection multiple allocations together within a single virtual machine
  * instance.
  *
  * @param parent The parent memory group.
  * @param outPtr The output for the group.
+ * @param freeFunc This is called whenever a tag in this group, but not any
+ * sub-group, is being freed. This is optional and may be @c NULL.
  * @param error Any resultant error state.
  * @return If the group was successfully allocated.
  * @since 2022/12/20
  */
 sjme_jboolean sjme_memIo_taggedGroupNew(sjme_memIo_tagGroup* parent,
-	sjme_memIo_tagGroup** outPtr, sjme_error* error);
+	sjme_memIo_tagGroup** outPtr, sjme_memIo_taggedFreeFuncType freeFunc,
+	sjme_error* error);
 
 /**
  * Frees a memory group and all of the memory that was previously allocated.
@@ -171,6 +176,7 @@ sjme_jboolean sjme_memIo_taggedGroupFree(sjme_memIo_tagGroup** inPtr,
  * @param outPtr The output pointer, should be a tagged pointer.
  * @param size The size of the data to allocate,
  * use @c sjme_memIo_taggedNewSizeOf().
+ * @param freeFunc The function to call on free, which is optional.
  * @param error The resultant error if allocation failed.
  * @param protectA Should be @c sizeof(void*).
  * @param protectB Should be @c sizeof(void*).
@@ -178,7 +184,7 @@ sjme_jboolean sjme_memIo_taggedGroupFree(sjme_memIo_tagGroup** inPtr,
  * @since 2022/12/20
  */
 sjme_jboolean sjme_memIo_taggedNewZ(sjme_memIo_tagGroup* group, void*** outPtr,
-	sjme_jsize size, sjme_error* error,
+	sjme_jsize size, sjme_memIo_taggedFreeFuncType freeFunc, sjme_error* error,
 	sjme_jsize protectA, sjme_jsize protectB);
 
 /**
@@ -197,13 +203,14 @@ sjme_jboolean sjme_memIo_taggedNewZ(sjme_memIo_tagGroup* group, void*** outPtr,
  * @param outPtr The output pointer, should be a tagged pointer.
  * @param size The size of the data to allocate,
  * use @c sjme_memIo_taggedNewSizeOf().
+ * @param freeFunc The function to call on free, which is optional.
  * @param error The resultant error if allocation failed.
  * @return If allocation was successful or not.
  * @since 2022/12/20
  */
-#define sjme_memIo_taggedNew(group, outPtr, size, error) \
+#define sjme_memIo_taggedNew(group, outPtr, size, freeFunc, error) \
 	sjme_memIo_taggedNewZ((group), (void***)(outPtr), (size), \
-		(error), \
+		(freeFunc), (error), \
 		sizeof(*(outPtr)), \
 		sizeof(**(outPtr))) /* NOLINT(bugprone-sizeof-expression) */
 

@@ -27,7 +27,8 @@ sjme_jboolean sjme_memIo_taggedGroupFree(sjme_memIo_tagGroup** inPtr,
 }
 
 sjme_jboolean sjme_memIo_taggedGroupNew(sjme_memIo_tagGroup* parent,
-	sjme_memIo_tagGroup** outPtr, sjme_error* error)
+	sjme_memIo_tagGroup** outPtr, sjme_memIo_taggedFreeFuncType freeFunc,
+	sjme_error* error)
 {
 	sjme_memIo_tagGroup* result;
 
@@ -67,7 +68,7 @@ sjme_jboolean sjme_memIo_taggedFreeZ(void*** inPtr, sjme_error* error,
 }
 
 sjme_jboolean sjme_memIo_taggedNewZ(sjme_memIo_tagGroup* group, void*** outPtr,
-	sjme_jsize size, sjme_error* error,
+	sjme_jsize size, sjme_memIo_taggedFreeFuncType freeFunc, sjme_error* error,
 	sjme_jsize protectA, sjme_jsize protectB)
 {
 	if (group == NULL || outPtr == NULL)
