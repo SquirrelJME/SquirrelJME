@@ -71,7 +71,8 @@ typedef struct sjme_vmThreadShadow
  * @param vm The VM state to shadow.
  * @since 2022/12/18
  */
-#define sjme_vmGetStateShadow(vm) ((sjme_vmStateShadow*)(*(vm)))
+#define sjme_vmGetStateShadow(vm) \
+	((sjme_vmStateShadow*)((*(vm))->reserved1))
 
 /**
  * Returns the virtual machine shadow of a thread.
@@ -79,7 +80,8 @@ typedef struct sjme_vmThreadShadow
  * @param vm The VM thread to shadow.
  * @since 2022/12/18
  */
-#define sjme_vmGetThreadShadow(thread) ((sjme_vmThreadShadow*)(*(thread)))
+#define sjme_vmGetThreadShadow(thread) \
+	((sjme_vmThreadShadow*)((*(thread))->reserved1))
 
 /*--------------------------------------------------------------------------*/
 
