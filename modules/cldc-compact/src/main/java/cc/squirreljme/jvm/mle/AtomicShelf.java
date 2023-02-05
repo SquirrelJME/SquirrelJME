@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * This shelf provides helpers for atomic operations.

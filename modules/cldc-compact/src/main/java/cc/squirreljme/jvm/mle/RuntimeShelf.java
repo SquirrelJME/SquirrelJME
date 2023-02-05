@@ -20,6 +20,7 @@ import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * Run-time shelf which contains system information.

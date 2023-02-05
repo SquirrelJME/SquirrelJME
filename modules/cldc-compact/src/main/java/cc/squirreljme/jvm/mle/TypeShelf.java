@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * Provides the shelf for types that exist within the JVM.

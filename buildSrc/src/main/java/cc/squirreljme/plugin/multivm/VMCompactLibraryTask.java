@@ -86,12 +86,6 @@ public class VMCompactLibraryTask
 				SquirrelJMEPluginConfiguration.configuration(project)
 					.proGuardOptions)));
 		
-		// Remember if the shrinking option has changed
-		this.getInputs().property("squirreljme.noShrinking",
-			this.getProject().provider(() -> Boolean.toString(
-				SquirrelJMEPluginConfiguration.configuration(project)
-					.noShrinking)));
-		
 		// Error code that is used for the prefix
 		this.getInputs().property("squirreljme.javaDocErrorCode",
 			this.getProject().provider(() -> Objects.toString(

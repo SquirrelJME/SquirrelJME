@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle.brackets;
 
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * A widget that can be displayed for forms and such.

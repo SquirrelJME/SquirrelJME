@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
 

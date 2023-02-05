@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * This shelf is responsible for accelerated graphics drawing.

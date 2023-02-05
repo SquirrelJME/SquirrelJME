@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.constants.MonitorResultType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * This shelf supports object anything that has to do with objects.

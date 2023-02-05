@@ -18,9 +18,6 @@ squirreljme
 	definedProfiles += new JavaMEProfile("MEEP-8")
 	tags += "meep"
 	
-	// Do not shrink
-	noShrinking = true
-	
 	// Parts that may exist as of this profile
 	optionalDependencies += project(":modules:gcf")
 	optionalDependencies += project(":modules:meep-rms")

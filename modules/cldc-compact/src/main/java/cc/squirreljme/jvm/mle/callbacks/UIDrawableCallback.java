@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.constants.UIMouseButton;
 import cc.squirreljme.jvm.mle.constants.UIMouseEventType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * Base interface for any callbacks which have a paint operation for drawing

@@ -143,7 +143,7 @@ public class VMCompactLibraryTaskAction
 		{
 			// If we are not shrinking, since we cannot check the config at
 			// initialization stage... just do a copy operation here
-			if (projectConfig.noShrinking)
+			if (false)
 			{
 				Files.copy(inputPath, outputJarPath,
 					StandardCopyOption.REPLACE_EXISTING);

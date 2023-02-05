@@ -9,9 +9,6 @@ squirreljme
 	swmType = JavaMEMidletType.LIBRARY
 	swmName = "Core Standard Applications LCDUI Interface"
 	swmVendor = "Stephanie Gawroriski"
-	
-	// TODO: Temporary until there are classes
-	noShrinking = true
 }
 
 dependencies
