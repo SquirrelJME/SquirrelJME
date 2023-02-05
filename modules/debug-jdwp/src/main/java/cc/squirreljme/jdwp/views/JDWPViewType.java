@@ -12,7 +12,6 @@ package cc.squirreljme.jdwp.views;
 import cc.squirreljme.jdwp.JDWPLocalVariable;
 import cc.squirreljme.jdwp.JDWPValue;
 import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * Represents a type.

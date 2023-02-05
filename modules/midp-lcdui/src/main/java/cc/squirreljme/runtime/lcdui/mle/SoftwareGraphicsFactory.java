@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.lcdui.mle;
 
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.lcdui.gfx.AdvancedGraphics;
 import javax.microedition.lcdui.Graphics;
 

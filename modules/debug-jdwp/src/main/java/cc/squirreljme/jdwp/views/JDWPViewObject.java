@@ -10,7 +10,6 @@
 package cc.squirreljme.jdwp.views;
 
 import cc.squirreljme.jdwp.JDWPValue;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * An object viewer.

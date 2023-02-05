@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.List;
 import java.util.RandomAccess;
 

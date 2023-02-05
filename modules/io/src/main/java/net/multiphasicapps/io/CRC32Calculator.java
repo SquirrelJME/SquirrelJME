@@ -9,8 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * This is a data sink which supports the CRC 32 algorithm.
  *

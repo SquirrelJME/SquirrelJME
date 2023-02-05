@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui.event;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.ServiceLoader;
 
 /**

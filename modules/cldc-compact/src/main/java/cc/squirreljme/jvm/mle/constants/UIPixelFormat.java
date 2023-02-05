@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * Pixel format used for user interface drawing and otherwise.
  *

@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * Capabilities for the hardware accelerated pencil graphics drawing.
  * 

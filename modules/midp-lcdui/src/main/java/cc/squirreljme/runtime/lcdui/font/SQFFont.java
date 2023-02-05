@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui.font;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;

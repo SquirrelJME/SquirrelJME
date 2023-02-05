@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.mle.constants;
 
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * Integer and String properties for {@link UIItemBracket}.

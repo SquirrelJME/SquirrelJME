@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.aot.pack;
 
 import cc.squirreljme.jvm.pack.HeaderStruct;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import net.multiphasicapps.io.ChunkFuture;
 
 /**

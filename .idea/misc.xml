@@ -3,7 +3,7 @@
   <component name="EntryPointsManager">
     <list size="2">
       <item index="0" class="java.lang.String" itemvalue="cc.squirreljme.runtime.cldc.annotation.Api" />
-      <item index="1" class="java.lang.String" itemvalue="cc.squirreljme.runtime.cldc.annotation.Exported" />
+      <item index="1" class="java.lang.String" itemvalue="cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi" />
     </list>
     <pattern value="javax.microedition.midlet.MIDlet" hierarchically="true" method="startApp" />
     <pattern value="com.nttdocomo.ui.IApplication" hierarchically="true" method="start" />

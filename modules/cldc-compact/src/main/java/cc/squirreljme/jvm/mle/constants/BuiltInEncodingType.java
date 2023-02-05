@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * Encoding IDs which are built-in to SquirrelJME.
  *

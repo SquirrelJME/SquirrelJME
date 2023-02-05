@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * Modifier keys for when key and mouse events occur.
  *

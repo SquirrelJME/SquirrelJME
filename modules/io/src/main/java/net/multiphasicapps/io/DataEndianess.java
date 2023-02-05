@@ -9,8 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * This can be set on a stream which sets the default endianess on methods
  * that do not read using a specified endianess.

@@ -9,8 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * A future value that constants a long value.
  *

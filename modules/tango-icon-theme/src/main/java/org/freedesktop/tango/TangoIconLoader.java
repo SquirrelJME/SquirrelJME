@@ -9,7 +9,6 @@
 
 package org.freedesktop.tango;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.InputStream;
 
 /**

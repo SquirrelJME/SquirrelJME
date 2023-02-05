@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.classfile;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;

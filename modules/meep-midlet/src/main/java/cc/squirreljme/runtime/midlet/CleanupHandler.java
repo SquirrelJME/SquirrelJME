@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.midlet;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.LinkedList;
 import java.util.Queue;
 

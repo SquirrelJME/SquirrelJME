@@ -19,7 +19,6 @@ import cc.squirreljme.jvm.pack.constants.PackTocFlag;
 import cc.squirreljme.jvm.pack.constants.PackTocProperty;
 import cc.squirreljme.jvm.pack.JarRom;
 import cc.squirreljme.jvm.pack.PackRom;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.VMClassLibrary;

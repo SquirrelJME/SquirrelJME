@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.manifest.JavaManifestException;
 import cc.squirreljme.jvm.manifest.JavaManifestKey;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

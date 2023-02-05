@@ -11,7 +11,6 @@ package cc.squirreljme.jvm;
 
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * This class is used special by the compiler to transform all the various

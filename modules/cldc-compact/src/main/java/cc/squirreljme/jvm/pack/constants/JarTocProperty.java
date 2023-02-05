@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.pack.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * Properties for Jar table of contents.
  *

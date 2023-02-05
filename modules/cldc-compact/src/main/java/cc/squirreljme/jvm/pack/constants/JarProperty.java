@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.pack.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * Properties that are associated with JAR files.
  *

@@ -21,7 +21,6 @@ import cc.squirreljme.jvm.suite.InvalidSuiteException;
 import cc.squirreljme.jvm.suite.MarkedDependency;
 import cc.squirreljme.jvm.suite.Profile;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;

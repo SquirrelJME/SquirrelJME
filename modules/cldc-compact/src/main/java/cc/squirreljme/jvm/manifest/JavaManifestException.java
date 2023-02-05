@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.manifest;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * This is thrown when the manifest is not valid.
  *

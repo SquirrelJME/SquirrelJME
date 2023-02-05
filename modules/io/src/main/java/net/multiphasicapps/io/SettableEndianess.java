@@ -9,8 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * This is used by both data streams to indicate that they allow their default
  * endianess to be set and obtained.

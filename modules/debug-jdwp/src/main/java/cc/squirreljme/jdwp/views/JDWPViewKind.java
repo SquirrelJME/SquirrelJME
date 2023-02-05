@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jdwp.views;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * Represents the kind of view that is used for an object or otherwise.
  *

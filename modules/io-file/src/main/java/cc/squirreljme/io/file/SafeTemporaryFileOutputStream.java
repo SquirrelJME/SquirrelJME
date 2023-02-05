@@ -9,8 +9,6 @@
 
 package cc.squirreljme.io.file;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;

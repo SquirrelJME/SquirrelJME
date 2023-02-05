@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.midlet;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * This overrides the active MIDlet restriction allowing it to replace
  * other active MIDlets, this should only be used for tests.

@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.markdownwriter;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;

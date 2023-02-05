@@ -11,7 +11,6 @@ package cc.squirreljme.jvm.mle.brackets;
 
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * Represents a bracket which is drawable onto.

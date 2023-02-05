@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.zip;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.IOException;
 
 /**

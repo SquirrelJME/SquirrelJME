@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.aot.pack;
 
 import cc.squirreljme.jvm.pack.TableOfContents;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

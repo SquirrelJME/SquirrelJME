@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.suite;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * This is thrown when a midlet has an invalid property or is otherwise not
  * valid.

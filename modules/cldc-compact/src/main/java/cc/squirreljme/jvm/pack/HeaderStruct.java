@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.pack;
 
 import cc.squirreljme.jvm.pack.constants.ClassInfoConstants;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.DataInput;
 import java.io.IOException;
 

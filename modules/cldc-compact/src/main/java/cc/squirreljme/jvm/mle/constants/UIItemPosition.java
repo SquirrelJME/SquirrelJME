@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * These indexes in this class are the special form indexes which specify that
  * certain form items be placed in a special position.

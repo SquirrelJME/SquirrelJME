@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jdwp.views;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * A viewer over something which has a valid object as its subject.
  *

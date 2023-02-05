@@ -12,7 +12,6 @@ package cc.squirreljme.jvm.aot.pack;
 import cc.squirreljme.jvm.pack.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.pack.JarRom;
 import cc.squirreljme.jvm.pack.PackRom;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.IOException;
 import net.multiphasicapps.io.ChunkDataType;
 import net.multiphasicapps.io.ChunkSection;

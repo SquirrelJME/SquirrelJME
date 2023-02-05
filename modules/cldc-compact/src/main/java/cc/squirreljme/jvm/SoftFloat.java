@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.UnsignedInteger;
 

@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.zip.streamreader;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.archive.ArchiveStreamReader;
 import java.io.Closeable;
 import java.io.EOFException;

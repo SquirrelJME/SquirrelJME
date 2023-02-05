@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.launch;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * This is a listener which specifies when a suite has been scanned in.
  * 

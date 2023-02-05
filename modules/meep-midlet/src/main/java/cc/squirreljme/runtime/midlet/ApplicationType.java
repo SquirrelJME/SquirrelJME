@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.midlet;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * Represents the type of application one is.
  *

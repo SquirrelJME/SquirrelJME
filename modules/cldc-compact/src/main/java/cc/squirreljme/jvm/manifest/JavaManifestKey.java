@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.manifest;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * This represents a key which is used in a manifest, it is case insensitive
  * when it comes to ASCII values.

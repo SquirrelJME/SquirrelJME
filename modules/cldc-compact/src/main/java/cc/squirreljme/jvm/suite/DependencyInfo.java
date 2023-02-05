@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.suite;
 
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 import java.lang.ref.Reference;

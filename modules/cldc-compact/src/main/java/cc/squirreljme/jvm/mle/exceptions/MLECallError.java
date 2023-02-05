@@ -11,7 +11,6 @@ package cc.squirreljme.jvm.mle.exceptions;
 
 import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * This is thrown when there was an error made during a MLE call.

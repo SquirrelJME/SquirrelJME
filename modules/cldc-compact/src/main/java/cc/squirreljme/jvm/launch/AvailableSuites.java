@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.launch;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * This contains the list of suites and libraries.
  *

@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Comparator;

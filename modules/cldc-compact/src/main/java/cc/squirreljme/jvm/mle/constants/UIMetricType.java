@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.mle.constants;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * This contains information on UI metrics used by

@@ -10,7 +10,6 @@
 
 package net.multiphasicapps.collections;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.ArrayList;
 
 /**

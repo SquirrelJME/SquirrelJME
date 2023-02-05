@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.gcf;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.IOException;
 import java.util.ServiceLoader;
 import javax.microedition.io.Connection;

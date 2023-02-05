@@ -9,7 +9,6 @@
 
 package cc.squirreljme.vm;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;

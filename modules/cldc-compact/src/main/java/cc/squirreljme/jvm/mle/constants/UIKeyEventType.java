@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.mle.constants;
 
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * Key events for

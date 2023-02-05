@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.midlet;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * Handles differences in various types of applications so that they all
  * have a uniform start and ending cycle.

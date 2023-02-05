@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jdwp.views;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * This is a view of something on JDWP.
  *

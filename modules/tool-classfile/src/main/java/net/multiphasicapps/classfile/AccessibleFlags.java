@@ -9,8 +9,6 @@
 
 package net.multiphasicapps.classfile;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * These are flags which are associated with accessible objects to determine
  * if they can be accessed from one location to another.

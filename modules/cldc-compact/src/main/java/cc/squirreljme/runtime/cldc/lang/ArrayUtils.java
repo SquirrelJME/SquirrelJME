@@ -12,7 +12,6 @@ package cc.squirreljme.runtime.cldc.lang;
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.Arrays;
 
 /**

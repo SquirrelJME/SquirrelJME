@@ -11,7 +11,6 @@ package net.multiphasicapps.tool.manifest.writer;
 
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.manifest.JavaManifestKey;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.AbstractMap;
 import java.util.LinkedHashMap;
 import java.util.Map;

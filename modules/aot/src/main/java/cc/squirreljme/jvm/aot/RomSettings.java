@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.aot;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;

@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * This contains various math functions.

@@ -13,7 +13,6 @@ import cc.squirreljme.jdwp.JDWPStepTracker;
 import cc.squirreljme.jdwp.JDWPThreadSuspension;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * A viewer of threads.

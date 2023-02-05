@@ -11,7 +11,6 @@ package cc.squirreljme.jvm.pack.constants;
 
 import cc.squirreljme.jvm.pack.JarRom;
 import cc.squirreljme.jvm.pack.TableOfContents;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * Flags for {@link TableOfContents} in {@link JarRom}.

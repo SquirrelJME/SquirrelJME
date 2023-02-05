@@ -9,8 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.Exported;
-
 /**
  * This interface is implemented by checksum calculators and may be used to
  * assist in the calculation of checksums.

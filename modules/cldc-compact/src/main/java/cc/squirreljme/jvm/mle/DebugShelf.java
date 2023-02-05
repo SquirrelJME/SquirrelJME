@@ -12,7 +12,6 @@ package cc.squirreljme.jvm.mle;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
  * This is the shelf used for accessing the debugging features of SquirrelJME
