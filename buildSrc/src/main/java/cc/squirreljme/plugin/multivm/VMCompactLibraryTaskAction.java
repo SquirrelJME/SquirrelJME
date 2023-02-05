@@ -38,10 +38,6 @@ public class VMCompactLibraryTaskAction
 	/** Settings to use in the configuration for keeping, etc. */
 	static final String[] _PARSE_SETTINGS = new String[]
 		{
-			/*"-keep", "public", "class", "*", "{",
-			    "public", "protected", "*", ";",
-				"}",*/
-			
 			// Adjust manifest resources
 			"-adaptresourcefilenames", "**",
 			"-adaptresourcefilecontents",
@@ -61,55 +57,45 @@ public class VMCompactLibraryTaskAction
 			"-keep", "class", "*", "extends",
 				"javax.microedition.midlet.MIDlet",
 			
-			// Keep classes annotation with @Api and			"-keep", "public",
+			// Keep classes annotation with @Api and
+			"-keep", "public",
 				"@cc.squirreljme.runtime.cldc.annotation.Api",
 				"class", "*", "{",
 				"public", "protected", "*", ";",
 				"}",
-			/*"-keep", "public",
-				"@cc.squirreljme.runtime.cldc.annotation.Exported",
+			"-keep", "public",
+				"@cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi",
 				"class", "*", "{",
 				"public", "protected", "*", ";",
-				"}",*/
+				"}",
 			
 			// Keep the names of these classes as well
 			"-keepnames", "public",
 				"@cc.squirreljme.runtime.cldc.annotation.Api",
 				"class", "*",
-			/*"-keepnames", "public",
-				"@cc.squirreljme.runtime.cldc.annotation.Exported",
-				"class", "*",*/
+			"-keepnames", "public",
+				"@cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi",
+				"class", "*",
 			
 			// Keep members with these two annotations
 			"-keepclassmembers", "public", "class", "*", "{",
 				"@cc.squirreljme.runtime.cldc.annotation.Api",
 				"public", "protected", "*", ";",
 				"}",
-			/*"-keepclassmembers", "public", "class", "*", "{",
-				"@cc.squirreljme.runtime.cldc.annotation.Exported",
+			"-keepclassmembers", "public", "class", "*", "{",
+				"@cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi",
 				"public", "protected", "*", ";",
-				"}",*/
+				"}",
 			
 			// Keep names as well
 			"-keepclassmembernames", "public", "class", "*", "{",
 				"@cc.squirreljme.runtime.cldc.annotation.Api",
 				"public", "protected", "*", ";",
 				"}",
-			/*"-keepclassmembernames", "public", "class", "*", "{",
-				"@cc.squirreljme.runtime.cldc.annotation.Exported",
+			"-keepclassmembernames", "public", "class", "*", "{",
+				"@cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi",
 				"public", "protected", "*", ";",
-				"}",*/
-			
-			// Keep implementors of the annotations
-			/*"-keep", "class", "*", "implements",
-				"@cc.squirreljme.runtime.cldc.annotation.Api", "*",
-			"-keep", "public", "class", "*", "implements",
-			"@cc.squirreljme.runtime.cldc.annotation.Api", "*",*/
-			
-			/*"-keep", "class", "*", "implements",
-				"@cc.squirreljme.runtime.cldc.annotation.Exported", "*",
-			"-keep", "public", "class", "*", "implements",
-				"@cc.squirreljme.runtime.cldc.annotation.Exported", "*",*/
+				"}",
 		};
 	
 	/** The source set used. */
