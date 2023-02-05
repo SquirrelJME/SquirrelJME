@@ -11,6 +11,7 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 import proguard.ClassPath;
@@ -141,9 +144,28 @@ public class VMCompactLibraryTaskAction
 		Path tempOutputMapFile = null;
 		try
 		{
-			// If we are not shrinking, since we cannot check the config at
-			// initialization stage... just do a copy operation here
-			if (false)
+			// Look into the Jar file and check if there are class files, if
+			// there are none then there is nothing to compact
+			boolean atLeastOneClass = false;
+			try (InputStream in = Files.newInputStream(inputPath,
+					StandardOpenOption.READ);
+				ZipInputStream zip = new ZipInputStream(in))
+			{
+				for (;;)
+				{
+					// Get the next entry
+					ZipEntry entry = zip.getNextEntry();
+					if (entry == null)
+						break;
+					
+					String name = entry.getName();
+					if (name.endsWith(".class"))
+						atLeastOneClass = true;
+				}
+			}
+			
+			// No classes were found, so do nothing
+			if (!atLeastOneClass)
 			{
 				Files.copy(inputPath, outputJarPath,
 					StandardCopyOption.REPLACE_EXISTING);
