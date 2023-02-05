@@ -33,7 +33,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
  *
  * @since 2020/06/30
  */
-@Api
+@SquirrelJMEVendorApi
 public final class UIFormShelf
 {
 	/**
@@ -55,7 +55,7 @@ public final class UIFormShelf
 	 * @see UIDisplayCallback
 	 * @since 2023/01/14
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native void callback(UIDisplayBracket __display,
 		UIDisplayCallback __callback)
 		throws MLECallError;
@@ -70,7 +70,7 @@ public final class UIFormShelf
 	 * @see UIFormCallback
 	 * @since 2020/07/03
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native void callback(UIFormBracket __form,
 		UIFormCallback __callback)
 		throws MLECallError;
@@ -83,7 +83,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If there are no displays.
 	 * @since 2020/07/01
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native UIDisplayBracket[] displays()
 		throws MLECallError;
 	
@@ -95,7 +95,7 @@ public final class UIFormShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2020/07/01
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native UIFormBracket displayCurrent(
 		UIDisplayBracket __display)
 		throws MLECallError;
@@ -111,7 +111,7 @@ public final class UIFormShelf
 	 * an error showing the display.
 	 * @since 2023/01/14
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native void displayShow(UIDisplayBracket __display,
 		boolean __show)
 		throws MLECallError;
@@ -125,7 +125,7 @@ public final class UIFormShelf
 	 * @throws MLECallError On {@code __display} is {@code null}.
 	 * @since 2020/07/01
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native void displayShow(UIDisplayBracket __display,
 		UIFormBracket __form)
 		throws MLECallError;
@@ -139,7 +139,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native boolean equals(UIDisplayBracket __a,
 		UIDisplayBracket __b)
 		throws MLECallError;
@@ -154,7 +154,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2023/01/13
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native boolean equals(UIDrawableBracket __a,
 		UIDrawableBracket __b)
 		throws MLECallError;
@@ -168,7 +168,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native boolean equals(UIFormBracket __a,
 		UIFormBracket __b)
 		throws MLECallError;
@@ -182,7 +182,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native boolean equals(UIItemBracket __a,
 		UIItemBracket __b)
 		throws MLECallError;
@@ -196,7 +196,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/09/20
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native boolean equals(UIWidgetBracket __a,
 		UIWidgetBracket __b)
 		throws MLECallError;
@@ -207,7 +207,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If events could not be flushed.
 	 * @since 2020/07/26
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native void flushEvents()
 		throws MLECallError;
 	
@@ -218,7 +218,7 @@ public final class UIFormShelf
 	 * @throws MLECallError On null arguments or the form could not be deleted.
 	 * @since 2020/07/01
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native void formDelete(UIFormBracket __form)
 		throws MLECallError;
 	
@@ -233,7 +233,7 @@ public final class UIFormShelf
 	 * not valid.
 	 * @since 2020/07/19
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native UIItemBracket formItemAtPosition(UIFormBracket __form,
 		int __pos)
 		throws MLECallError;
@@ -246,7 +246,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If the form is null or not valid.
 	 * @since 2020/07/19
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native int formItemCount(UIFormBracket __form)
 		throws MLECallError;
 	
@@ -262,7 +262,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If the form and item are null.
 	 * @since 2020/07/18
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native int formItemPosition(UIFormBracket __form,
 		UIItemBracket __item)
 		throws MLECallError;
@@ -278,7 +278,7 @@ public final class UIFormShelf
 	 * is not valid.
 	 * @since 2020/07/18
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native void formItemPosition(UIFormBracket __form,
 		UIItemBracket __item, int __pos)
 		throws MLECallError;
@@ -293,7 +293,7 @@ public final class UIFormShelf
 	 * not valid, or there was no item at the position.
 	 * @since 2020/07/18
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native UIItemBracket formItemRemove(UIFormBracket __form,
 		int __pos)
 		throws MLECallError;
@@ -305,7 +305,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If the form could not be created.
 	 * @since 2020/07/01
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native UIFormBracket formNew()
 		throws MLECallError;
 	
@@ -316,7 +316,7 @@ public final class UIFormShelf
 	 * @throws MLECallError On null arguments or the form is not valid.
 	 * @since 2022/07/20
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native void formRefresh(UIFormBracket __form)
 		throws MLECallError;
 	
@@ -327,7 +327,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If injecting is not supported.
 	 * @since 2020/07/26
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native UIFormCallback injector()
 		throws MLECallError;
 	
@@ -340,7 +340,7 @@ public final class UIFormShelf
 	 * active within a form.
 	 * @since 2020/07/18
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native void itemDelete(UIItemBracket __item)
 		throws MLECallError;
 	
@@ -352,7 +352,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If {@code __item} is {@code null}.
 	 * @since 2021/01/03
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native UIFormBracket itemForm(UIItemBracket __item)
 		throws MLECallError;
 	
@@ -365,7 +365,7 @@ public final class UIFormShelf
 	 * not valid.
 	 * @since 2020/07/17
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native UIItemBracket itemNew(int __type)
 		throws MLECallError;
 	
@@ -382,7 +382,7 @@ public final class UIFormShelf
 	 * supported and the metric is not {@link UIMetricType#UIFORMS_SUPPORTED}.
 	 * @since 2020/06/30
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native int metric(UIDisplayBracket __display, int __metric)
 		throws MLECallError;
 	
@@ -394,7 +394,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If the call is not valid.
 	 * @since 2020/10/03
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native void later(UIDisplayBracket __display,
 		int __serialId)
 		throws MLECallError;
@@ -410,7 +410,7 @@ public final class UIFormShelf
 	 * valid or not an integer property.
 	 * @since 2020/09/13
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native void widgetProperty(UIWidgetBracket __widget,
 		int __intProp, int __sub, int __newValue)
 		throws MLECallError;
@@ -426,7 +426,7 @@ public final class UIFormShelf
 	 * valid or not a string property.
 	 * @since 2020/09/13
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native void widgetProperty(UIWidgetBracket __widget,
 		int __strProp, int __sub, String __newValue)
 		throws MLECallError;
@@ -441,7 +441,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If the widget or property is not valid.
 	 * @since 2020/09/21
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native int widgetPropertyInt(UIWidgetBracket __widget,
 		int __intProp, int __sub)
 		throws MLECallError;
@@ -456,7 +456,7 @@ public final class UIFormShelf
 	 * @throws MLECallError If the widget or property is not valid.
 	 * @since 2020/09/21
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native String widgetPropertyStr(UIWidgetBracket __widget,
 		int __strProp, int __sub)
 		throws MLECallError;

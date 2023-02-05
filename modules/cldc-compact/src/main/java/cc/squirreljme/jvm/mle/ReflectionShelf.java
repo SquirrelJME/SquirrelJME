@@ -18,7 +18,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
  *
  * @since 2022/09/07
  */
-@Api
+@SquirrelJMEVendorApi
 public final class ReflectionShelf
 {
 	/**
@@ -26,7 +26,7 @@ public final class ReflectionShelf
 	 * 
 	 * @since 2022/09/07
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	private ReflectionShelf()
 	{
 	}
@@ -40,7 +40,7 @@ public final class ReflectionShelf
 	 * @throws Throwable Any exception thrown by the target.
 	 * @since 2022/09/07
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native void invokeMain(TypeBracket __type,
 		String... __args)
 		throws MLECallError, Throwable;

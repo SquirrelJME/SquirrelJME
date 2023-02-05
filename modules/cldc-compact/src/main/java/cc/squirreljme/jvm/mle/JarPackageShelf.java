@@ -19,7 +19,7 @@ import java.io.InputStream;
  *
  * @since 2020/06/07
  */
-@Api
+@SquirrelJMEVendorApi
 public final class JarPackageShelf
 {
 	/**
@@ -28,7 +28,7 @@ public final class JarPackageShelf
 	 * @return The classpath of the current program.
 	 * @since 2020/06/07
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native JarPackageBracket[] classPath();
 	
 	/**
@@ -40,7 +40,7 @@ public final class JarPackageShelf
 	 * @throws MLECallError If either argument is {@code null}.
 	 * @since 2020/07/02
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native boolean equals(
 		JarPackageBracket __a, JarPackageBracket __b)
 		throws MLECallError;
@@ -51,7 +51,7 @@ public final class JarPackageShelf
 	 * @return The libraries that are currently available.
 	 * @since 2020/10/31
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native JarPackageBracket[] libraries();
 	
 	/**
@@ -65,7 +65,7 @@ public final class JarPackageShelf
 	 * @throws MLECallError If the JAR is not valid.
 	 * @since 2020/10/31
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native String libraryPath(JarPackageBracket __jar)
 		throws MLECallError;
 	
@@ -80,7 +80,7 @@ public final class JarPackageShelf
 	 * specified.
 	 * @since 2020/06/07
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native InputStream openResource(JarPackageBracket __jar,
 		String __rc)
 		throws MLECallError;
@@ -100,7 +100,7 @@ public final class JarPackageShelf
 	 * exceed the array bounds.
 	 * @since 2022/03/04
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native int rawData(JarPackageBracket __jar,
 		int __jarOffset, byte[] __b, int __o, int __l)
 		throws MLECallError;
@@ -115,7 +115,7 @@ public final class JarPackageShelf
 	 * @throws MLECallError If {@code __jar} is null.
 	 * @since 2022/03/04
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native int rawSize(JarPackageBracket __jar)
 		throws MLECallError;
 }

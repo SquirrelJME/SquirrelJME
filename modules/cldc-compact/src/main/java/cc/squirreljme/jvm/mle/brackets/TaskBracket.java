@@ -17,7 +17,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
  *
  * @since 2020/07/02
  */
-@Api
+@SquirrelJMEVendorApi
 @GhostObject
 public interface TaskBracket
 {

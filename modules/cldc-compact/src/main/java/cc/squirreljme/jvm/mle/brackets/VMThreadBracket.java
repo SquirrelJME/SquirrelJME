@@ -19,7 +19,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
  * @see ThreadShelf
  * @since 2020/06/17
  */
-@Api
+@SquirrelJMEVendorApi
 @GhostObject
 public interface VMThreadBracket
 {

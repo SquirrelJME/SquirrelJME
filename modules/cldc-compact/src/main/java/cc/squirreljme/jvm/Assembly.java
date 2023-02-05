@@ -23,7 +23,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
  *
  * @since 2019/04/20
  */
-@Api
+@SquirrelJMEVendorApi
 @SuppressWarnings({"NewMethodNamingConvention", "OverlyComplexClass"})
 public final class Assembly
 {
@@ -119,7 +119,7 @@ public final class Assembly
 	 * @return The unpacked high value.
 	 * @since 2020/02/24
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native int doubleUnpackHigh(double __d);
 	
 	/**
@@ -129,7 +129,7 @@ public final class Assembly
 	 * @return The unpacked low value.
 	 * @since 2020/02/24
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native int doubleUnpackLow(double __d);
 	
 	/**
@@ -564,7 +564,7 @@ public final class Assembly
 	 * @return The long value.
 	 * @since 2019/06/21
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native long longPack(int __lo, int __hi);
 	
 	/**
@@ -574,7 +574,7 @@ public final class Assembly
 	 * @return The unpacked fragment.
 	 * @since 2019/06/21
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native int longUnpackHigh(long __v);
 	
 	/**
@@ -584,7 +584,7 @@ public final class Assembly
 	 * @return The unpacked fragment.
 	 * @since 2019/06/21
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native int longUnpackLow(long __v);
 	
 	/**

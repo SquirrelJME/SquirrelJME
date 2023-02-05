@@ -16,7 +16,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
  *
  * @since 2020/05/30
  */
-@Api
+@SquirrelJMEVendorApi
 public final class AtomicShelf
 {
 	/**
@@ -34,7 +34,7 @@ public final class AtomicShelf
 	 * @return The locking key if locked, otherwise {@code 0} when busy.
 	 * @since 2020/05/30
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native int gcLock();
 	
 	/**
@@ -45,7 +45,7 @@ public final class AtomicShelf
 	 * collector.
 	 * @since 2020/05/30
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native void gcUnlock(int __key);
 	
 	/**
@@ -58,7 +58,7 @@ public final class AtomicShelf
 	 * @param __count The number of times the lock has spun.
 	 * @since 2020/05/30
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native void spinLock(int __count);
 	
 	/**
@@ -70,6 +70,6 @@ public final class AtomicShelf
 	 * other than equality.
 	 * @since 2020/05/03
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native int tick();
 }

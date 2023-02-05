@@ -18,7 +18,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
  *
  * @since 2020/09/25
  */
-@Api
+@SquirrelJMEVendorApi
 @GhostObject
 public interface PencilBracket
 {

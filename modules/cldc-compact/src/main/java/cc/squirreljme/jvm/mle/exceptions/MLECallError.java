@@ -17,7 +17,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
  *
  * @since 2020/06/22
  */
-@Api
+@SquirrelJMEVendorApi
 public class MLECallError
 	extends VirtualMachineError
 {
@@ -26,7 +26,7 @@ public class MLECallError
 	 *
 	 * @since 2020/06/22
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public MLECallError()
 	{
 	}
@@ -37,7 +37,7 @@ public class MLECallError
 	 * @param __m The message.
 	 * @since 2020/06/22
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public MLECallError(String __m)
 	{
 		super(__m);
@@ -50,7 +50,7 @@ public class MLECallError
 	 * @param __t The cause.
 	 * @since 2020/06/22
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public MLECallError(String __m, Throwable __t)
 	{
 		super(__m);
@@ -64,7 +64,7 @@ public class MLECallError
 	 * @param __t The cause.
 	 * @since 2020/06/22
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public MLECallError(Throwable __t)
 	{
 		this.initCause(__t);
@@ -77,7 +77,7 @@ public class MLECallError
 	 * @param __code The {@link SystemCallError}.
 	 * @since 2020/11/29
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public MLECallError(int __callId, int __code)
 	{
 		// {@squirreljme.error ZZ4k Failed system call. (The ID; The Error)}

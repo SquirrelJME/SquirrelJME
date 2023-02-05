@@ -18,7 +18,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
  *
  * @since 2022/03/19
  */
-@Api
+@SquirrelJMEVendorApi
 @GhostObject
 public interface PipeBracket
 {

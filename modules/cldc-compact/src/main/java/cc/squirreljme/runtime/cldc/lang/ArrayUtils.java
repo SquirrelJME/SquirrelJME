@@ -20,7 +20,7 @@ import java.util.Arrays;
  *
  * @since 2018/11/03
  */
-@Api
+@SquirrelJMEVendorApi
 public final class ArrayUtils
 {
 	/** Boolean array. */
@@ -375,7 +375,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a)
 		throws NegativeArraySizeException, NullPointerException
@@ -398,7 +398,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b)
 		throws NegativeArraySizeException, NullPointerException
@@ -422,7 +422,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c)
 		throws NegativeArraySizeException, NullPointerException
@@ -447,7 +447,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d)
 		throws NegativeArraySizeException, NullPointerException
@@ -473,7 +473,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e)
 		throws NegativeArraySizeException, NullPointerException
@@ -500,7 +500,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f)
 		throws NegativeArraySizeException, NullPointerException
@@ -528,7 +528,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g)
 		throws NegativeArraySizeException, NullPointerException
@@ -557,7 +557,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g,
 		int __h)
@@ -588,7 +588,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g,
 		int __h, int __i)
@@ -620,7 +620,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g,
 		int __h, int __i, int __j)
@@ -643,7 +643,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/03
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int[] __dims)
 		throws NegativeArraySizeException, NullPointerException

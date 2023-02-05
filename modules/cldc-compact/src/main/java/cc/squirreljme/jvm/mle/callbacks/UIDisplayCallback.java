@@ -18,7 +18,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
  *
  * @since 2020/10/03
  */
-@Api
+@SquirrelJMEVendorApi
 public interface UIDisplayCallback
 	extends ShelfCallback, UIDrawableCallback
 {
@@ -29,6 +29,6 @@ public interface UIDisplayCallback
 	 * @param __serialId The identity of the serialized call.
 	 * @since 2020/10/03
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	void later(UIDisplayBracket __display, int __serialId);
 }

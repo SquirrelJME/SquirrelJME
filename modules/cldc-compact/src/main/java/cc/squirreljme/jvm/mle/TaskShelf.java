@@ -25,7 +25,7 @@ import java.io.Closeable;
  *
  * @since 2020/07/02
  */
-@Api
+@SquirrelJMEVendorApi
 public final class TaskShelf
 {
 	/**
@@ -43,7 +43,7 @@ public final class TaskShelf
 	 * @return The active tasks.
 	 * @since 2020/07/09
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native TaskBracket[] active();
 	
 	/**
@@ -52,7 +52,7 @@ public final class TaskShelf
 	 * @return The current task.
 	 * @since 2020/07/02
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native TaskBracket current();
 	
 	/**
@@ -64,7 +64,7 @@ public final class TaskShelf
 	 * @throws MLECallError If either argument is {@code null}.
 	 * @since 2020/07/02
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native boolean equals(TaskBracket __a, TaskBracket __b)
 		throws MLECallError;
 	
@@ -77,7 +77,7 @@ public final class TaskShelf
 	 * @throws MLECallError If the task is not valid.
 	 * @since 2020/07/02
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native int exitCode(TaskBracket __task)
 		throws MLECallError;
 	
@@ -91,7 +91,7 @@ public final class TaskShelf
 	 * if {@code __outMessage} is too small.
 	 * @since 2020/07/02
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native TracePointBracket[] getTrace(TaskBracket __task,
 		String[] __outMessage)
 		throws MLECallError;
@@ -118,7 +118,7 @@ public final class TaskShelf
 	 * are negative or exceed the array bounds.
 	 * @since 2020/07/02
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native int read(TaskBracket __task, int __fd,
 		byte[] __b, int __o, int __l)
 		throws MLECallError;
@@ -152,7 +152,7 @@ public final class TaskShelf
 	 * are not valid.
 	 * @since 2020/07/02
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native TaskBracket start(
 		JarPackageBracket[] __classPath, String __mainClass, String[] __args,
 		String[] __sysPropPairs, int __stdOut, int __stdErr)
@@ -166,7 +166,7 @@ public final class TaskShelf
 	 * @throws MLECallError If the task is not valid.
 	 * @since 2020/07/02
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	public static native int status(TaskBracket __task)
 		throws MLECallError;
 }

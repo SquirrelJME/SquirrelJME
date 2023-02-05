@@ -18,7 +18,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
  *
  * @since 2020/07/01
  */
-@Api
+@SquirrelJMEVendorApi
 @GhostObject
 public interface UIDisplayBracket
 	extends UIDrawableBracket

@@ -19,7 +19,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
  *
  * @since 2020/07/03
  */
-@Api
+@SquirrelJMEVendorApi
 public interface UIFormCallback
 	extends ShelfCallback, UIDrawableCallback
 {
@@ -38,7 +38,7 @@ public interface UIFormCallback
 	 * @param __sh Surface height.
 	 * @since 2022/07/20
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	void formRefresh(UIFormBracket __form, int __sx, int __sy,
 		int __sw, int __sh);
 	
@@ -53,7 +53,7 @@ public interface UIFormCallback
 	 * @param __new The new value.
 	 * @since 2020/07/19
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	void propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __intProp, int __sub, int __old, int __new);
 	
@@ -68,7 +68,7 @@ public interface UIFormCallback
 	 * @param __new The new value.
 	 * @since 2020/07/19
 	 */
-	@Api
+	@SquirrelJMEVendorApi
 	void propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __strProp, int __sub, String __old, String __new);
 }
