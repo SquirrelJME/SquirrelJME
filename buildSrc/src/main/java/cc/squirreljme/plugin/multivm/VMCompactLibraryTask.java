@@ -92,6 +92,12 @@ public class VMCompactLibraryTask
 				SquirrelJMEPluginConfiguration.configuration(project)
 					.noShrinking)));
 		
+		// Error code that is used for the prefix
+		this.getInputs().property("squirreljme.javaDocErrorCode",
+			this.getProject().provider(() -> Objects.toString(
+				SquirrelJMEPluginConfiguration.configuration(project)
+					.javaDocErrorCode)));
+		
 		// Also include the built-in plugin options, in case those change as
 		// well!
 		this.getInputs().property("squirreljme.proguardOptionsDefault",

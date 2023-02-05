@@ -234,7 +234,9 @@ public class VMCompactLibraryTaskAction
 			// this time
 			config.shrink = false;
 			config.optimize = false;
-			config.flattenPackageHierarchy = "$";
+			config.flattenPackageHierarchy = "$" +
+				(projectConfig.javaDocErrorCode == null ? "??" :
+				projectConfig.javaDocErrorCode);
 			
 			// For mapping files, members do need to be unique
 			config.useUniqueClassMemberNames = true;
