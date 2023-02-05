@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle.brackets;
 
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
@@ -17,7 +18,7 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2020/06/11
  */
-@Exported
+@Api
 @GhostObject
 public interface TracePointBracket
 {

@@ -54,6 +54,7 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.ProjectDependency;
 import org.gradle.api.capabilities.Capability;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.jvm.tasks.Jar;
@@ -485,6 +486,30 @@ public final class VMHelpers
 	}
 	
 	/**
+	 * Gets the base name of the file without the extension, if there is one.
+	 * 
+	 * @param __path The path to get from.
+	 * @return The file base name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/02/05
+	 */
+	public static String getBaseName(Path __path)
+		throws NullPointerException
+	{
+		if (__path == null)
+			throw new NullPointerException("NARG");
+		
+		// Does this file even have an extension to it?
+		String fileName = __path.getFileName().toString();
+		int ld = fileName.lastIndexOf('.');
+		if (ld < 0)
+			return fileName;
+		
+		// Otherwise extract it
+		return fileName.substring(0, ld);
+	}
+	
+	/**
 	 * Gets the extension from the given path.
 	 * 
 	 * @param __path The path to get from.
@@ -562,6 +587,47 @@ public final class VMHelpers
 			UnassistedLaunchEntry.MIDLET_MAIN_CLASS :
 			Objects.requireNonNull(__cfg.mainClass,
 			"No main class in project."));
+	}
+	
+	/**
+	 * Returns the only file with the given extension in the given collection.
+	 * 
+	 * @param __collection The collection to get.
+	 * @param __ext The extension to get from.
+	 * @return The only file in the collection with the extension.
+	 * @throws IllegalStateException If there are multiple or no files
+	 * available.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/02/05
+	 */
+	public static Path onlyFile(FileCollection __collection, String __ext)
+		throws IllegalStateException, NullPointerException
+	{
+		if (__collection == null || __ext == null)
+			throw new NullPointerException("NARG");
+		
+		// Scan through everything and look for it
+		Path result = null;
+		for (File file : __collection.getFiles())
+		{
+			Path path = file.toPath();
+			
+			if (__ext.equals(VMHelpers.getExtension(path)))
+			{
+				if (result != null)
+					throw new IllegalStateException(
+						String.format("Multiple .%s in %s",
+							__ext, __collection));
+				
+				result = path;
+			}
+		}
+		
+		// None found?
+		if (result == null)
+			throw new IllegalStateException(
+				String.format("No .%s in %s", __ext, __collection));
+		return result;
 	}
 	
 	/**

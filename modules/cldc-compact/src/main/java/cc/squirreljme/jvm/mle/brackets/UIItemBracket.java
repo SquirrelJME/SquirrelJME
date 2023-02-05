@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.mle.brackets;
 import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
@@ -20,7 +21,7 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2020/07/01
  */
-@Exported
+@Api
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 @GhostObject
 public interface UIItemBracket

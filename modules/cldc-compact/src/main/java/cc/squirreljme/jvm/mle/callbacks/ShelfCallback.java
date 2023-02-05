@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle.callbacks;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
@@ -16,7 +17,7 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2020/07/03
  */
-@Exported
+@Api
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface ShelfCallback
 {

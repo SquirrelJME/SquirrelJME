@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle.callbacks;
 
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
@@ -18,7 +19,7 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2020/10/03
  */
-@Exported
+@Api
 public interface UIDisplayCallback
 	extends ShelfCallback, UIDrawableCallback
 {
@@ -29,5 +30,6 @@ public interface UIDisplayCallback
 	 * @param __serialId The identity of the serialized call.
 	 * @since 2020/10/03
 	 */
+	@Api
 	void later(UIDisplayBracket __display, int __serialId);
 }

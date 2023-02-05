@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.constants.UIKeyModifier;
 import cc.squirreljme.jvm.mle.constants.UIMouseButton;
 import cc.squirreljme.jvm.mle.constants.UIMouseEventType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
@@ -23,7 +24,7 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2023/01/13
  */
-@Exported
+@Api
 public interface UIDrawableCallback
 	extends ShelfCallback
 {
@@ -34,6 +35,7 @@ public interface UIDrawableCallback
 	 * @param __drawable The form being exited.
 	 * @since 2020/09/12
 	 */
+	@Api
 	void exitRequest(UIDrawableBracket __drawable);
 	
 	/**
@@ -45,6 +47,7 @@ public interface UIDrawableCallback
 	 * @param __modifiers Bit mask of {@link UIKeyModifier}.
 	 * @since 2020/07/19
 	 */
+	@Api
 	void eventKey(UIDrawableBracket __drawable, int __event,
 		int __keyCode, int __modifiers);
 	
@@ -59,6 +62,7 @@ public interface UIDrawableCallback
 	 * @param __modifiers Bit mask of {@link UIKeyModifier}.
 	 * @since 2020/07/19
 	 */
+	@Api
 	void eventMouse(UIDrawableBracket __drawable, int __event,
 		int __button, int __x, int __y, int __modifiers);
 	
@@ -81,6 +85,7 @@ public interface UIDrawableCallback
 	 * other value if it is meaningful to what is being painted.
 	 * @since 2022/01/05
 	 */
+	@Api
 	void paint(UIDrawableBracket __drawable, int __pf, int __bw,
 		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
 		int __sw, int __sh, int __special);

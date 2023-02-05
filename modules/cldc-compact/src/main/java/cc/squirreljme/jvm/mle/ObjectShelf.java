@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.mle;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.constants.MonitorResultType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
@@ -19,7 +20,7 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2020/06/09
  */
-@Exported
+@Api
 public final class ObjectShelf
 {
 	/**
@@ -41,7 +42,7 @@ public final class ObjectShelf
 	 * is {@code null}.
 	 * @since 2021/02/07
 	 */
-	@Exported
+	@Api
 	public static native boolean arrayCheckStore(Object __array, Object __val)
 		throws MLECallError;
 	
@@ -56,7 +57,7 @@ public final class ObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	@Exported
+	@Api
 	public static native void arrayCopy(boolean[] __src, int __srcOff,
 		boolean[] __dest, int __destOff, int __len);
 	
@@ -71,7 +72,7 @@ public final class ObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	@Exported
+	@Api
 	public static native void arrayCopy(byte[] __src, int __srcOff,
 		byte[] __dest, int __destOff, int __len);
 	
@@ -86,7 +87,7 @@ public final class ObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	@Exported
+	@Api
 	public static native void arrayCopy(short[] __src, int __srcOff,
 		short[] __dest, int __destOff, int __len);
 	
@@ -101,7 +102,7 @@ public final class ObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	@Exported
+	@Api
 	public static native void arrayCopy(char[] __src, int __srcOff,
 		char[] __dest, int __destOff, int __len);
 	
@@ -116,7 +117,7 @@ public final class ObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	@Exported
+	@Api
 	public static native void arrayCopy(int[] __src, int __srcOff,
 		int[] __dest, int __destOff, int __len);
 	
@@ -131,7 +132,7 @@ public final class ObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	@Exported
+	@Api
 	public static native void arrayCopy(long[] __src, int __srcOff,
 		long[] __dest, int __destOff, int __len);
 	
@@ -146,7 +147,7 @@ public final class ObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	@Exported
+	@Api
 	public static native void arrayCopy(float[] __src, int __srcOff,
 		float[] __dest, int __destOff, int __len);
 	
@@ -161,7 +162,7 @@ public final class ObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	@Exported
+	@Api
 	public static native void arrayCopy(double[] __src, int __srcOff,
 		double[] __dest, int __destOff, int __len);
 	
@@ -176,7 +177,7 @@ public final class ObjectShelf
 	 * and/or length exceed the array bounds.
 	 * @since 2021/12/26
 	 */
-	@Exported
+	@Api
 	public static native void arrayFill(boolean[] __b, int __o, int __l,
 		boolean __v)
 		throws MLECallError;
@@ -192,7 +193,7 @@ public final class ObjectShelf
 	 * and/or length exceed the array bounds.
 	 * @since 2021/12/26
 	 */
-	@Exported
+	@Api
 	public static native void arrayFill(byte[] __b, int __o, int __l,
 		byte __v)
 		throws MLECallError;
@@ -208,7 +209,7 @@ public final class ObjectShelf
 	 * and/or length exceed the array bounds.
 	 * @since 2021/12/26
 	 */
-	@Exported
+	@Api
 	public static native void arrayFill(short[] __b, int __o, int __l,
 		short __v)
 		throws MLECallError;
@@ -224,7 +225,7 @@ public final class ObjectShelf
 	 * and/or length exceed the array bounds.
 	 * @since 2021/12/26
 	 */
-	@Exported
+	@Api
 	public static native void arrayFill(char[] __b, int __o, int __l,
 		char __v)
 		throws MLECallError;
@@ -240,7 +241,7 @@ public final class ObjectShelf
 	 * and/or length exceed the array bounds.
 	 * @since 2021/12/26
 	 */
-	@Exported
+	@Api
 	public static native void arrayFill(int[] __b, int __o, int __l,
 		int __v)
 		throws MLECallError;
@@ -256,7 +257,7 @@ public final class ObjectShelf
 	 * and/or length exceed the array bounds.
 	 * @since 2021/12/26
 	 */
-	@Exported
+	@Api
 	public static native void arrayFill(long[] __b, int __o, int __l,
 		long __v)
 		throws MLECallError;
@@ -272,7 +273,7 @@ public final class ObjectShelf
 	 * and/or length exceed the array bounds.
 	 * @since 2021/12/26
 	 */
-	@Exported
+	@Api
 	public static native void arrayFill(float[] __b, int __o, int __l,
 		float __v)
 		throws MLECallError;
@@ -288,7 +289,7 @@ public final class ObjectShelf
 	 * and/or length exceed the array bounds.
 	 * @since 2021/12/26
 	 */
-	@Exported
+	@Api
 	public static native void arrayFill(double[] __b, int __o, int __l,
 		double __v)
 		throws MLECallError;
@@ -301,7 +302,7 @@ public final class ObjectShelf
 	 * array.
 	 * @since 2020/06/09
 	 */
-	@Exported
+	@Api
 	public static native int arrayLength(Object __object);
 	
 	/**
@@ -313,7 +314,7 @@ public final class ObjectShelf
 	 * @return The newly allocated array as the given object.
 	 * @since 2020/06/09
 	 */
-	@Exported
+	@Api
 	public static native <T> T arrayNew(TypeBracket __type, int __len);
 	
 	/**
@@ -324,7 +325,7 @@ public final class ObjectShelf
 	 * @return If the given thread holds the lock.
 	 * @since 2020/06/17
 	 */
-	@Exported
+	@Api
 	public static native boolean holdsLock(Thread __javaThread, Object __o);
 	
 	/**
@@ -334,7 +335,7 @@ public final class ObjectShelf
 	 * @return The identity hashcode of the object.
 	 * @since 2020/06/18
 	 */
-	@Exported
+	@Api
 	public static native int identityHashCode(Object __o);
 	
 	/**
@@ -344,7 +345,7 @@ public final class ObjectShelf
 	 * @return If this object is an array.
 	 * @since 2021/04/07
 	 */
-	@Exported
+	@Api
 	public static native boolean isArray(Object __object);
 	
 	/**
@@ -356,7 +357,7 @@ public final class ObjectShelf
 	 * @throws MLECallError If {@code __type} is null.
 	 * @since 2021/02/07
 	 */
-	@Exported
+	@Api
 	public static native boolean isInstance(Object __o, TypeBracket __type)
 		throws MLECallError;
 	
@@ -368,7 +369,7 @@ public final class ObjectShelf
 	 * memory left.
 	 * @since 2020/06/17
 	 */
-	@Exported
+	@Api
 	public static native Object newInstance(TypeBracket __type);
 	
 	/**
@@ -379,7 +380,7 @@ public final class ObjectShelf
 	 * @return The {@link MonitorResultType}.
 	 * @since 2020/06/22
 	 */
-	@Exported
+	@Api
 	public static native int notify(Object __object, boolean __all);
 	
 	/**
@@ -395,6 +396,6 @@ public final class ObjectShelf
 	 * @return The {@link MonitorResultType}.
 	 * @since 2020/06/22
 	 */
-	@Exported
+	@Api
 	public static native int wait(Object __object, long __ms, int __ns);
 }

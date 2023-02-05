@@ -75,8 +75,9 @@ public class VMLibraryTask
 		this.onlyIf(this::onlyIf);
 		
 		// The input of this task is the JAR that was created
-		this.getInputs().file(__baseJar.getOutputs()
-			.getFiles().getSingleFile());
+		this.getInputs().file(this.getProject().provider(() ->
+			VMHelpers.onlyFile(__baseJar.getOutputs().getFiles(),
+				"jar")));
 		
 		// The output depends on the task and its source set
 		this.getOutputs().files(

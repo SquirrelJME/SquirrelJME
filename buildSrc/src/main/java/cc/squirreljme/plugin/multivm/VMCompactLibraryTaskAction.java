@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,39 +66,39 @@ public class VMCompactLibraryTaskAction
 				"class", "*", "{",
 				"public", "protected", "*", ";",
 				"}",
-			"-keep", "public",
+			/*"-keep", "public",
 				"@cc.squirreljme.runtime.cldc.annotation.Exported",
 				"class", "*", "{",
 				"public", "protected", "*", ";",
-				"}",
+				"}",*/
 			
 			// Keep the names of these classes as well
 			"-keepnames", "public",
 				"@cc.squirreljme.runtime.cldc.annotation.Api",
 				"class", "*",
-			"-keepnames", "public",
+			/*"-keepnames", "public",
 				"@cc.squirreljme.runtime.cldc.annotation.Exported",
-				"class", "*",
+				"class", "*",*/
 			
 			// Keep members with these two annotations
 			"-keepclassmembers", "public", "class", "*", "{",
 				"@cc.squirreljme.runtime.cldc.annotation.Api",
 				"public", "protected", "*", ";",
 				"}",
-			"-keepclassmembers", "public", "class", "*", "{",
+			/*"-keepclassmembers", "public", "class", "*", "{",
 				"@cc.squirreljme.runtime.cldc.annotation.Exported",
 				"public", "protected", "*", ";",
-				"}",
+				"}",*/
 			
 			// Keep names as well
 			"-keepclassmembernames", "public", "class", "*", "{",
 				"@cc.squirreljme.runtime.cldc.annotation.Api",
 				"public", "protected", "*", ";",
 				"}",
-			"-keepclassmembernames", "public", "class", "*", "{",
+			/*"-keepclassmembernames", "public", "class", "*", "{",
 				"@cc.squirreljme.runtime.cldc.annotation.Exported",
 				"public", "protected", "*", ";",
-				"}",
+				"}",*/
 			
 			// Keep implementors of the annotations
 			/*"-keep", "class", "*", "implements",
@@ -137,38 +138,71 @@ public class VMCompactLibraryTaskAction
 	@Override
 	public void execute(Task __task)
 	{
-		// Where are we writing to?
-		Path inputPath = __task.getInputs().getFiles().getSingleFile()
-			.toPath();
-		Path outputPath = __task.getOutputs().getFiles().getSingleFile()
-			.toPath();
+		VMCompactLibraryTask compactTask = (VMCompactLibraryTask)__task;
 		
-		Path outMap = outputPath.resolveSibling("mapping.txt");
+		// Where are we reading/writing to/from?
+		Path inputPath = compactTask.inputBaseJarPath().get();
+		Path outputJarPath = compactTask.outputJarPath().get();
+		Path outputMapPath = compactTask.outputMapPath().get();
 		
 		// Some settings may be configured
 		SquirrelJMEPluginConfiguration projectConfig =
 			SquirrelJMEPluginConfiguration.configuration(__task.getProject());
 		
 		// Run the task
-		Path tempFile = null;
+		Path tempJarFile = null;
+		Path tempInputMapFile = null;
+		Path tempOutputMapFile = null;
 		try
 		{
 			// If we are not shrinking, since we cannot check the config at
 			// initialization stage... just do a copy operation here
 			if (projectConfig.noShrinking)
 			{
-				Files.copy(inputPath, outputPath,
+				Files.copy(inputPath, outputJarPath,
 					StandardCopyOption.REPLACE_EXISTING);
 				
 				return;
 			}
 			
 			// Setup temporary file to output to when finished
-			tempFile = Files.createTempFile("tiny", ".jar");
+			tempJarFile = Files.createTempFile("out", ".jar");
+			tempInputMapFile = Files.createTempFile("in", ".map");
+			tempOutputMapFile = Files.createTempFile("out", ".map");
 			
 			// Need to delete the created temporary file, otherwise Proguard
 			// will just say "The output appears up to date" and do nothing
-			Files.delete(tempFile);
+			Files.delete(tempJarFile);
+			Files.delete(tempOutputMapFile);
+			
+			// We need to include all the inputs that were already ran through
+			// ProGuard, so we basically need to look at the dependencies and
+			// map them around accordingly
+			// We also need to combine the mapping files as well
+			ClassPath libraryJars = new ClassPath();
+			boolean applyMapping = false;
+			for (VMCompactLibraryTask compactDep :
+				VMHelpers.compactLibTaskDepends(__task.getProject(),
+					this.sourceSet))
+			{
+				// Add the library, but the pre-obfuscated form since we need
+				// to know what it is
+				libraryJars.add(new ClassPathEntry(
+					compactDep.baseJar.getOutputs().getFiles().getSingleFile(),
+					false));
+				
+				// If the mapping file exists, concatenate it
+				if (Files.exists(compactDep.outputMapPath().get()))
+				{
+					// Do use mapping now
+					applyMapping = true;
+					
+					// Add all the information
+					Files.write(tempInputMapFile,
+						Files.readAllLines(compactDep.outputMapPath().get()),
+						StandardOpenOption.APPEND, StandardOpenOption.WRITE);
+				}
+			}
 			
 			// Base options to use
 			List<String> proGuardOptions = new ArrayList<>();
@@ -189,12 +223,17 @@ public class VMCompactLibraryTaskAction
 				parser.parse(config);
 			}
 			
-			// Setup shrink/obfuscation rules
+			// We are neither of these platforms, we say we are not Java ME
+			// because it will remove StackMapTable and instead use StackMap
+			// which is not what we want
 			config.android = false;
-			config.flattenPackageHierarchy = "_sjme";
 			config.microEdition = false;
-			config.optimize = true;
-			config.shrink = true;
+			
+			// Reduce space and obfuscate, but we cannot remove everything at
+			// this time
+			config.shrink = false;
+			config.optimize = false;
+			config.flattenPackageHierarchy = "$";
 			
 			// For mapping files, members do need to be unique
 			config.useUniqueClassMemberNames = true;
@@ -203,23 +242,22 @@ public class VMCompactLibraryTaskAction
 			// be compacted together accordingly
 			config.useMixedCaseClassNames = false;
 			
+			// Write mapping to the output file, since we will use it later on
+			config.printMapping = tempOutputMapFile.toFile();
+			
+			// Utilize the combined mapping file that was made so that we can
+			// use everything we have?
+			if (applyMapping)
+				config.applyMapping = tempInputMapFile.toFile();
+			
 			// Be noisy
 			config.verbose = true;
 			//config.dump = Configuration.STD_OUT;
 			//config.printUsage = Configuration.STD_OUT;
-			config.printMapping = outMap.toFile();
 			config.printConfiguration = Configuration.STD_OUT;
 			
-			// We need to include all the inputs that were already ran through
-			// ProGuard, so we basically need to look at the dependencies and
-			// map them around accordingly
-			ClassPath libraryJars = new ClassPath();
+			// Use whatever libraries were found
 			config.libraryJars = libraryJars;
-			for (VMCompactLibraryTask compactDep :
-				VMHelpers.compactLibTaskDepends(__task.getProject(),
-					this.sourceSet))
-				libraryJars.add(new ClassPathEntry(
-					compactDep.outputPath().get().toFile(), false));
 			
 			// Setup input and output Jar
 			ClassPath programJars = new ClassPath();
@@ -231,18 +269,31 @@ public class VMCompactLibraryTaskAction
 			
 			// Output temporary Jar
 			programJars.add(new ClassPathEntry(
-				tempFile.toFile(), true));
+				tempJarFile.toFile(), true));
 			
 			// Run the shrinking/obfuscation
-			new ProGuard(config).execute();
+			try
+			{
+				new ProGuard(config).execute();
+			}
+			finally
+			{
+				Files.move(tempInputMapFile,
+					outputMapPath.resolveSibling(
+						outputMapPath.getFileName() + ".in"),
+					StandardCopyOption.REPLACE_EXISTING);
+			}
 			
 			// Insurance
-			if (Files.size(tempFile) <= 12)
+			if (Files.size(tempJarFile) <= 12)
 				throw new RuntimeException("Nothing happened?");
 			
 			// Move to output
-			Files.move(tempFile,
-				outputPath,
+			Files.move(tempJarFile,
+				outputJarPath,
+				StandardCopyOption.REPLACE_EXISTING);
+			Files.move(tempOutputMapFile,
+				outputMapPath,
 				StandardCopyOption.REPLACE_EXISTING);
 		}
 		catch (Exception __e)
@@ -253,10 +304,28 @@ public class VMCompactLibraryTaskAction
 		// Cleanup anything left over
 		finally
 		{
-			if (tempFile != null)
+			if (tempJarFile != null)
 				try
 				{
-					Files.delete(tempFile);
+					Files.delete(tempJarFile);
+				}
+				catch (IOException ignored)
+				{
+				}
+			
+			if (tempInputMapFile != null)
+				try
+				{
+					Files.delete(tempInputMapFile);
+				}
+				catch (IOException ignored)
+				{
+				}
+			
+			if (tempOutputMapFile != null)
+				try
+				{
+					Files.delete(tempOutputMapFile);
 				}
 				catch (IOException ignored)
 				{

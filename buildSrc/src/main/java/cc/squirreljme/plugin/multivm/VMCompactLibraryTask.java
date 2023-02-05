@@ -10,7 +10,6 @@
 package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
-import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
@@ -65,7 +64,8 @@ public class VMCompactLibraryTask
 		
 		// Set details of this task
 		this.setGroup("squirreljme");
-		this.setDescription("Compacts the library and removes debugging.");
+		this.setDescription(
+			"Compacts the library and removes debugging info.");
 		
 		// Depends on the base Jar but also depends on all the
 		// compactLibs for all dependencies
@@ -77,8 +77,7 @@ public class VMCompactLibraryTask
 		this.onlyIf(this::onlyIf);
 		
 		// The input of this is the original Jar
-		this.getInputs().file(__baseJar.getOutputs()
-			.getFiles().getSingleFile());
+		this.getInputs().files(this.inputBaseJarPath());
 		
 		// Inputs are the proguard options, so if this changes we need to
 		// do a rebuild!
@@ -99,9 +98,9 @@ public class VMCompactLibraryTask
 			this.getProject().provider(() -> Arrays.toString(
 				VMCompactLibraryTaskAction._PARSE_SETTINGS)));
 		
-		// The output of this JAR is just where it should be placed
-		this.getOutputs().files(
-			this.getProject().provider(() -> this.outputPath()));
+		// The output of this JAR is just where it should be placed, this
+		// includes the mapping file for incremental mapping
+		this.getOutputs().files(this.outputJarPath(), this.outputMapPath());
 		
 		// Performs the action of the task
 		this.doLast(new VMCompactLibraryTaskAction(__sourceSet));
@@ -120,17 +119,46 @@ public class VMCompactLibraryTask
 	}
 	
 	/**
+	 * Returns the input Jar that will get transformed accordingly.
+	 * 
+	 * @return The input Jar that we will be transforming.
+	 * @since 2023/02/05
+	 */
+	public final Provider<Path> inputBaseJarPath()
+	{
+		return this.getProject().provider(() -> this.baseJar.getOutputs()
+			.getFiles().getSingleFile().toPath());
+	}
+	
+	/**
 	 * Returns the output path of the archive. 
 	 * 
 	 * @return The output path.
 	 * @since 2023/02/01
 	 */
-	public final Provider<Path> outputPath()
+	public final Provider<Path> outputJarPath()
 	{
 		return this.getProject().provider(() ->
 			this.getProject().getBuildDir().toPath()
-				.resolve("squirreljme").resolve("compact")
+				.resolve("squirreljme").resolve("obfuscated")
 				.resolve(this.baseJar.getOutputs().getFiles()
 					.getSingleFile().toPath().getFileName()));
+	}
+	
+	/**
+	 * Returns the output path of the mapping file.
+	 * 
+	 * @return The output path of the mapping file.
+	 * @since 2023/02/05
+	 */
+	public final Provider<Path> outputMapPath()
+	{
+		return this.getProject().provider(() ->
+			{
+				Path jarOut = this.outputJarPath().get();
+				
+				return jarOut.resolveSibling(
+					VMHelpers.getBaseName(jarOut) + ".map");
+			});
 	}
 }

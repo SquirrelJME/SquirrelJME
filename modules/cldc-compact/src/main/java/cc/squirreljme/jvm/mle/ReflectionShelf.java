@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
@@ -18,7 +19,7 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2022/09/07
  */
-@Exported
+@Api
 public final class ReflectionShelf
 {
 	/**
@@ -26,7 +27,7 @@ public final class ReflectionShelf
 	 * 
 	 * @since 2022/09/07
 	 */
-	@Exported
+	@Api
 	private ReflectionShelf()
 	{
 	}
@@ -40,7 +41,7 @@ public final class ReflectionShelf
 	 * @throws Throwable Any exception thrown by the target.
 	 * @since 2022/09/07
 	 */
-	@Exported
+	@Api
 	public static native void invokeMain(TypeBracket __type,
 		String... __args)
 		throws MLECallError, Throwable;

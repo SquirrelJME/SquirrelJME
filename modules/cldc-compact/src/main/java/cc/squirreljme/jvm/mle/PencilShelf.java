@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
 import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.Exported;
 
 /**
@@ -23,7 +24,7 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  * @see PencilBracket
  * @since 2020/09/25
  */
-@Exported
+@Api
 public final class PencilShelf
 {
 	/**
@@ -31,7 +32,7 @@ public final class PencilShelf
 	 * 
 	 * @since 2020/09/25
 	 */
-	@Exported
+	@Api
 	private PencilShelf()
 	{
 	}
@@ -47,7 +48,7 @@ public final class PencilShelf
 	 * then {@code 0} will be returned.
 	 * @since 2020/09/25
 	 */
-	@Exported
+	@Api
 	public static native int capabilities(int __pf)
 		throws MLECallError;
 	
@@ -62,7 +63,7 @@ public final class PencilShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2021/12/05
 	 */
-	@Exported
+	@Api
 	public static native void hardwareDrawLine(PencilBracket __g,
 		int __x1, int __y1, int __x2, int __y2)
 		throws MLECallError;
@@ -90,7 +91,7 @@ public final class PencilShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2022/01/26
 	 */
-	@Exported
+	@Api
 	public static native void hardwareDrawXRGB32Region(
 		PencilBracket __hardware, int[] __data, int __off, int __scanLen,
 		boolean __alpha, int __xSrc, int __ySrc, int __wSrc, int __hSrc,
@@ -109,7 +110,7 @@ public final class PencilShelf
 	 * @throws MLECallError On {@code null} arguments.
 	 * @since 2021/12/05
 	 */
-	@Exported
+	@Api
 	public static native void hardwareFillRect(PencilBracket __g,
 		int __x, int __y, int __w, int __h)
 		throws MLECallError;
@@ -131,7 +132,7 @@ public final class PencilShelf
 	 * @throws MLECallError If the requested graphics are not valid.
 	 * @since 2020/09/25
 	 */
-	@Exported
+	@Api
 	public static native PencilBracket hardwareGraphics(int __pf, int __bw,
 		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
 		int __sw, int __sh)
@@ -145,7 +146,7 @@ public final class PencilShelf
 	 * @throws MLECallError On {@code null} arguments.
 	 * @since 2021/12/05
 	 */
-	@Exported
+	@Api
 	public static native void hardwareSetAlphaColor(PencilBracket __g,
 		int __argb)
 		throws MLECallError;
@@ -158,7 +159,7 @@ public final class PencilShelf
 	 * @throws MLECallError On {@code null} arguments.
 	 * @since 2021/12/05
 	 */
-	@Exported
+	@Api
 	public static native void hardwareSetBlendingMode(PencilBracket __g,
 		int __mode)
 		throws MLECallError;
@@ -174,7 +175,7 @@ public final class PencilShelf
 	 * @throws MLECallError On {@code null} arguments.
 	 * @since 2021/12/05
 	 */
-	@Exported
+	@Api
 	public static native void hardwareSetClip(PencilBracket __g,
 		int __x, int __y, int __w, int __h)
 		throws MLECallError;
@@ -187,7 +188,7 @@ public final class PencilShelf
 	 * @throws MLECallError On {@code null} arguments.
 	 * @since 2021/12/05
 	 */
-	@Exported
+	@Api
 	public static native void hardwareSetStrokeStyle(PencilBracket __g,
 		int __style)
 		throws MLECallError;
@@ -201,7 +202,7 @@ public final class PencilShelf
 	 * @throws MLECallError On {@code null} arguments.
 	 * @since 2021/12/05
 	 */
-	@Exported
+	@Api
 	public static native void hardwareTranslate(PencilBracket __g, int __x,
 		int __y)
 		throws MLECallError;
@@ -219,7 +220,7 @@ public final class PencilShelf
 	 * @throws MLECallError If the image could not be loaded.
 	 * @since 2021/12/05
 	 */
-	@Exported
+	@Api
 	public static native int[] nativeImageLoadRGBA(int __type,
 		byte[] __b, int __o, int __l)
 		throws MLECallError;
@@ -233,6 +234,6 @@ public final class PencilShelf
 	 * natively loaded.
 	 * @since 2021/12/05
 	 */
-	@Exported
+	@Api
 	public static native int nativeImageLoadTypes();
 }
