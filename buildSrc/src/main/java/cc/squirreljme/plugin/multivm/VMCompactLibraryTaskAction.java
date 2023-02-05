@@ -100,6 +100,20 @@ public class VMCompactLibraryTaskAction
 				"@cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi",
 				"public", "protected", "*", ";",
 				"}",
+			
+			// Do not trash enumerations as we need those to work properly
+			"-keepclassmembers,allowoptimization", "enum", "*", "{",
+			    "public", "static", "**[]", "values",
+					"(", ")", ";",
+			    "public", "static", "**", "valueOf",
+					"(", "java.lang.String", ")", ";",
+				"}",
+			"-keepclassmembernames,allowoptimization", "enum", "*", "{",
+			    "public", "static", "**[]", "values",
+					"(", ")", ";",
+			    "public", "static", "**", "valueOf",
+					"(", "java.lang.String", ")", ";",
+				"}",
 		};
 	
 	/** Settings for tests. */
