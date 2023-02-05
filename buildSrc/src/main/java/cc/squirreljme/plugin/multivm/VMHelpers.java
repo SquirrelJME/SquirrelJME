@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -58,7 +57,6 @@ import org.gradle.api.file.FileCollection;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.jvm.tasks.Jar;
-import proguard.ClassPathEntry;
 
 /**
  * Helpers for the multi-VM handlers.
@@ -367,7 +365,12 @@ public final class VMHelpers
 			throw new NullPointerException("NARG");
 		
 		// Where does this go?
-		Collection<VMCompactLibraryTask> result = new ArrayList<>();
+		Collection<VMCompactLibraryTask> result = new LinkedHashSet<>();
+		
+		// Are we testing?
+		boolean isTest = SourceSet.TEST_SOURCE_SET_NAME.equals(__sourceSet);
+		boolean isTestFixtures =
+			VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME.equals(__sourceSet);
 		
 		// This is a bit messy but it works for now
 		Collection<ProjectAndTaskName> runTasks =
@@ -385,8 +388,8 @@ public final class VMHelpers
 			// Find the referenced project
 			Project subProject = __project.project(projectAndTask.project); 
 			
-			// Ignore our own project
-			if (__project.equals(subProject))
+			// Ignore our own project, if not testing
+			if (__project.equals(subProject) && !isTest && !isTestFixtures)
 				continue;
 			
 			// Check the main source set
@@ -394,7 +397,23 @@ public final class VMHelpers
 				SourceSet.MAIN_SOURCE_SET_NAME);
 			Task maybe = subProject.getTasks().findByName(checkName);
 			if (maybe instanceof VMCompactLibraryTask)
-				result.add((VMCompactLibraryTask)maybe);
+			{
+				VMCompactLibraryTask task = (VMCompactLibraryTask)maybe;
+				result.add(task);
+			}
+			
+			// If we are testing, see if we can pull in any test fixtures
+			if (isTest)
+			{
+				String check = TaskInitialization.task("compactLib",
+					VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME);
+				Task fixture = subProject.getTasks().findByName(check);
+				if (fixture instanceof VMCompactLibraryTask)
+				{
+					VMCompactLibraryTask task = (VMCompactLibraryTask)fixture;
+					result.add(task);
+				}
+			}
 		}
 		
 		return result;

@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.junit.Test;
 
 /**
@@ -16,6 +17,7 @@ import org.junit.Test;
  *
  * @since 2019/12/25
  */
+@SquirrelJMEVendorApi
 public abstract class TestBoolean
 	extends __CoreTest__
 {
@@ -27,6 +29,7 @@ public abstract class TestBoolean
 	 * @since 2019/12/25
 	 */
 	@Test
+	@SquirrelJMEVendorApi
 	public abstract boolean test()
 		throws Throwable;
 	

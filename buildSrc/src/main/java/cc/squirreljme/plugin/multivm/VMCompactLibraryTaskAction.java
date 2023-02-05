@@ -24,6 +24,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
+import org.gradle.api.tasks.SourceSet;
 import proguard.ClassPath;
 import proguard.ClassPathEntry;
 import proguard.Configuration;
@@ -99,6 +100,17 @@ public class VMCompactLibraryTaskAction
 				"@cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi",
 				"public", "protected", "*", ";",
 				"}",
+		};
+	
+	/** Settings for tests. */
+	static final String[] _TEST_SETTINGS =
+		{
+			// This keeps everything about tests but will use pre-existing
+			// mappings and otherwise if we are using obfuscated classes
+			// This is the only thing I have found that works
+			"-keep", "class", "*",
+			"-keepnames", "class", "*",
+			"-keepclassmembernames", "class", "*",
 		};
 	
 	/** The source set used. */
@@ -193,11 +205,15 @@ public class VMCompactLibraryTaskAction
 				VMHelpers.compactLibTaskDepends(__task.getProject(),
 					this.sourceSet))
 			{
+				Path baseJarFile = compactDep.baseJar.getOutputs().getFiles()
+					.getSingleFile().toPath();
+				
 				// Add the library, but the pre-obfuscated form since we need
 				// to know what it is
-				libraryJars.add(new ClassPathEntry(
-					compactDep.baseJar.getOutputs().getFiles().getSingleFile(),
-					false));
+				if (Files.exists(baseJarFile))
+					libraryJars.add(new ClassPathEntry(
+						compactDep.baseJar.getOutputs().getFiles()
+							.getSingleFile(), false));
 				
 				// If the mapping file exists, concatenate it
 				if (Files.exists(compactDep.outputMapPath().get()))
@@ -216,6 +232,16 @@ public class VMCompactLibraryTaskAction
 			List<String> proGuardOptions = new ArrayList<>();
 			proGuardOptions.addAll(
 				Arrays.asList(VMCompactLibraryTaskAction._PARSE_SETTINGS));
+			
+			// Are we testing?
+			boolean isTesting =
+				SourceSet.TEST_SOURCE_SET_NAME.equals(this.sourceSet) ||
+				VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME.equals(this.sourceSet);
+			
+			// Test settings?
+			if (isTesting)
+				proGuardOptions.addAll(Arrays.asList(
+					VMCompactLibraryTaskAction._TEST_SETTINGS));
 			
 			// Add any additional options as needed
 			if (projectConfig.proGuardOptions != null &&
@@ -302,9 +328,11 @@ public class VMCompactLibraryTaskAction
 			Files.move(tempJarFile,
 				outputJarPath,
 				StandardCopyOption.REPLACE_EXISTING);
-			Files.move(tempOutputMapFile,
-				outputMapPath,
-				StandardCopyOption.REPLACE_EXISTING);
+			
+			if (Files.exists(tempOutputMapFile))
+				Files.move(tempOutputMapFile,
+					outputMapPath,
+					StandardCopyOption.REPLACE_EXISTING);
 		}
 		catch (Exception __e)
 		{

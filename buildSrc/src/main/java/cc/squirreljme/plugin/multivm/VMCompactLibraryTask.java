@@ -96,7 +96,8 @@ public class VMCompactLibraryTask
 		// well!
 		this.getInputs().property("squirreljme.proguardOptionsDefault",
 			this.getProject().provider(() -> Arrays.toString(
-				VMCompactLibraryTaskAction._PARSE_SETTINGS)));
+				VMCompactLibraryTaskAction._PARSE_SETTINGS) +
+				Arrays.toString(VMCompactLibraryTaskAction._TEST_SETTINGS)));
 		
 		// The output of this JAR is just where it should be placed, this
 		// includes the mapping file for incremental mapping
