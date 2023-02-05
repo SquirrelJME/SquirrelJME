@@ -22,7 +22,6 @@ import net.multiphasicapps.zip.streamreader.ZipStreamReader;
  *
  * @since 2020/04/19
  */
-@Exported
 public class JarClassLibrary
 	implements VMClassLibrary
 {
@@ -39,7 +38,6 @@ public class JarClassLibrary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/04/19
 	 */
-	@Exported
 	public JarClassLibrary(Path __path)
 		throws NullPointerException
 	{
@@ -142,7 +140,6 @@ public class JarClassLibrary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/06/13
 	 */
-	@Exported
 	public static boolean isJar(Path __s)
 		throws NullPointerException
 	{
@@ -160,7 +157,6 @@ public class JarClassLibrary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/06/13
 	 */
-	@Exported
 	public static boolean isJar(String __s)
 		throws NullPointerException
 	{
@@ -181,7 +177,6 @@ public class JarClassLibrary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/04/19
 	 */
-	@Exported
 	public static VMClassLibrary of(Path __path)
 		throws NullPointerException
 	{

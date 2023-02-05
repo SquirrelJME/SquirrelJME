@@ -19,7 +19,6 @@ import java.io.Reader;
  *
  * @since 2021/05/22
  */
-@Exported
 public final class Base64Encoder
 	extends Reader
 {
@@ -61,7 +60,6 @@ public final class Base64Encoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/05/22
 	 */
-	@Exported
 	public Base64Encoder(InputStream __in)
 		throws NullPointerException
 	{
@@ -76,7 +74,6 @@ public final class Base64Encoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/05/22
 	 */
-	@Exported
 	public Base64Encoder(InputStream __in, Base64Alphabet __alphabet)
 		throws NullPointerException
 	{

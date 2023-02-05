@@ -22,7 +22,6 @@ import javax.microedition.io.ConnectionOption;
  *
  * @since 2021/11/30
  */
-@Exported
 public interface CustomConnectionFactory
 {
 	/**
@@ -37,7 +36,6 @@ public interface CustomConnectionFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/11/30
 	 */
-	@Exported
 	Connection connect(String __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException;
@@ -48,6 +46,5 @@ public interface CustomConnectionFactory
 	 * @return The protocol scheme used.
 	 * @since 2021/11/30
 	 */
-	@Exported
 	String scheme();
 }

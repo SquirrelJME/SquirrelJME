@@ -19,7 +19,6 @@ import javax.microedition.lcdui.Image;
  *
  * @since 2022/02/25
  */
-@Exported
 public final class DoubleBuffer
 {
 	/** The proxy for the off-screen graphics. */
@@ -48,7 +47,6 @@ public final class DoubleBuffer
 	 * prevent skewed graphics from appearing.
 	 * @since 2022/02/25
 	 */
-	@Exported
 	public DoubleBuffer(int __resizeFillColor)
 	{
 		this._offScreen = new SingleBuffer(__resizeFillColor);
@@ -60,7 +58,6 @@ public final class DoubleBuffer
 	 * 
 	 * @since 2022/02/25
 	 */
-	@Exported
 	public void clear()
 	{
 		this._offScreen.clear();
@@ -71,7 +68,6 @@ public final class DoubleBuffer
 	 * 
 	 * @since 2022/02/25
 	 */
-	@Exported
 	public void flush()
 	{
 		this._onScreen.copyFrom(this._offScreen);
@@ -86,7 +82,6 @@ public final class DoubleBuffer
 	 * @throws IllegalArgumentException If the width and/or height are invalid.
 	 * @since 2022/02/25
 	 */
-	@Exported
 	public Graphics getGraphics(int __width, int __height)
 		throws IllegalArgumentException
 	{
@@ -121,7 +116,6 @@ public final class DoubleBuffer
 	 * @param __g The graphics to paint onto.
 	 * @since 2022/02/25
 	 */
-	@Exported
 	public void paint(Graphics __g)
 	{
 		this._onScreen.paint(__g);

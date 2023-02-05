@@ -17,26 +17,21 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2020/07/02
  */
-@Exported
 public interface TaskPipeRedirectType
 {
 	/** Discard all program output. */
-	@Exported
 	byte DISCARD =
 		0;
 	
 	/** Buffer the resultant program's output. */
-	@Exported
 	byte BUFFER =
 		1;
 	
 	/** Send the output to the virtual machine's terminal output. */
-	@Exported
 	byte TERMINAL =
 		2;
 	
 	/** The number of redirect types. */
-	@Exported
 	byte NUM_REDIRECT_TYPES =
 		3;
 }

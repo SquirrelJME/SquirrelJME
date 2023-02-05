@@ -20,7 +20,6 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2021/04/10
  */
-@Exported
 public interface JDWPViewThread
 	extends JDWPViewHasInstance, JDWPViewValidObject
 {
@@ -32,7 +31,6 @@ public interface JDWPViewThread
 	 * the array.
 	 * @since 2021/04/11
 	 */
-	@Exported
 	Object[] frames(Object __which);
 	
 	/**
@@ -42,7 +40,6 @@ public interface JDWPViewThread
 	 * @return The thread from the given bracket.
 	 * @since 2022/09/24
 	 */
-	@Exported
 	Object fromBracket(Object __bracket);
 	
 	/**
@@ -61,7 +58,6 @@ public interface JDWPViewThread
 	 * @param __which Which thread to interrupt?
 	 * @since 2021/04/30
 	 */
-	@Exported
 	void interrupt(Object __which);
 	
 	/**
@@ -71,7 +67,6 @@ public interface JDWPViewThread
 	 * @return Is this a debug callback thread?
 	 * @since 2022/09/23
 	 */
-	@Exported
 	boolean isDebugCallback(Object __thread);
 	
 	/**
@@ -81,7 +76,6 @@ public interface JDWPViewThread
 	 * @return If the given thread is terminated.
 	 * @since 2021/04/19
 	 */
-	@Exported
 	boolean isTerminated(Object __which);
 	
 	/**
@@ -91,7 +85,6 @@ public interface JDWPViewThread
 	 * @return The name of the thread.
 	 * @since 2021/04/10
 	 */
-	@Exported
 	String name(Object __which);
 	
 	/**
@@ -101,7 +94,6 @@ public interface JDWPViewThread
 	 * @return The parent of the given thread.
 	 * @since 2021/04/10
 	 */
-	@Exported
 	Object parentGroup(Object __which);
 	
 	/**
@@ -112,7 +104,6 @@ public interface JDWPViewThread
 	 * missing.
 	 * @since 2021/04/28
 	 */
-	@Exported
 	JDWPStepTracker stepTracker(Object __which);
 	
 	/**
@@ -122,7 +113,6 @@ public interface JDWPViewThread
 	 * @return The thread suspension manager.
 	 * @since 2021/04/10
 	 */
-	@Exported
 	JDWPThreadSuspension suspension(Object __which);
 	
 	/**
@@ -132,6 +122,5 @@ public interface JDWPViewThread
 	 * @return The {@link ThreadStatusType}.
 	 * @since 2021/04/10
 	 */
-	@Exported
 	int status(Object __which);
 }

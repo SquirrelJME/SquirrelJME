@@ -18,43 +18,34 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2018/11/10
  */
-@Exported
 public enum CompressionLevel
 {
 	/** Fast compression level. */
-	@Exported
 	FASTEST,
 	
 	/** Faster compression. */
-	@Exported
 	FASTER,
 	
 	/** Fast compression. */
-	@Exported
 	FAST,
 	
 	/** Slow compression. */
-	@Exported
 	SLOW,
 	
 	/** Slower compression. */
-	@Exported
 	SLOWER,
 	
 	/** Slowest compression. */
-	@Exported
 	SLOWEST,
 	
 	/** End. */
 	;
 	
 	/** The default compression level. */
-	@Exported
 	public static final CompressionLevel DEFAULT =
 		CompressionLevel.SLOW;
 	
 	/** The best compression level. */
-	@Exported
 	public static final CompressionLevel BEST =
 		CompressionLevel.SLOWEST;
 	
@@ -65,7 +56,6 @@ public enum CompressionLevel
 	 * @return The block size to use for compression.
 	 * @since 2018/11/10
 	 */
-	@Exported
 	public final int blockSize()
 	{
 		switch (this)
@@ -92,7 +82,6 @@ public enum CompressionLevel
 	 * @return The compression level for the scale.
 	 * @since 2018/11/10
 	 */
-	@Exported
 	public static final CompressionLevel ofLevel(int __i)
 	{
 		switch (__i)

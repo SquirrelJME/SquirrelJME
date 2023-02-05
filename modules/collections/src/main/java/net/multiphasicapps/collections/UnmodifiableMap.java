@@ -25,7 +25,6 @@ import java.util.Set;
  * @param <V> Value type to store.
  * @since 2016/02/29
  */
-@Exported
 public final class UnmodifiableMap<K, V>
 	extends AbstractMap<K, V>
 {
@@ -136,7 +135,6 @@ public final class UnmodifiableMap<K, V>
 	 * @return An unmodifiable view of the map.
 	 * @since 2016/02/28
 	 */
-	@Exported
 	public static <K, V> Map<K, V> of(Map<K, V> __m)
 	{
 		// If already one, return it

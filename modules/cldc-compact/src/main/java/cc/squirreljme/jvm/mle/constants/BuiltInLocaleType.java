@@ -16,16 +16,13 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2020/06/11
  */
-@Exported
 public interface BuiltInLocaleType
 {
 	/** Unspecified. */
-	@Exported
 	byte UNSPECIFIED =
 		0;
 	
 	/** English, US. */
-	@Exported
 	byte ENGLISH_US =
 		1;
 }

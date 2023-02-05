@@ -21,7 +21,6 @@ import java.util.Objects;
  *
  * @since 2017/11/30
  */
-@Exported
 public final class SuiteInfo
 {
 	/** The manifest for this suite. */
@@ -56,7 +55,6 @@ public final class SuiteInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/04
 	 */
-	@Exported
 	public SuiteInfo(JavaManifest __man)
 		throws InvalidSuiteException, NullPointerException
 	{
@@ -95,7 +93,6 @@ public final class SuiteInfo
 	 * @return The dependencies required by this suite.
 	 * @since 2017/12/04
 	 */
-	@Exported
 	public final DependencyInfo dependencies()
 	{
 		Reference<DependencyInfo> ref = this._dependencies;
@@ -114,7 +111,6 @@ public final class SuiteInfo
 	 * @return The manifest suite.
 	 * @since 2017/12/05
 	 */
-	@Exported
 	public final JavaManifest manifest()
 	{
 		return this.manifest;
@@ -126,7 +122,6 @@ public final class SuiteInfo
 	 * @return The name.
 	 * @since 2017/12/31
 	 */
-	@Exported
 	public final SuiteName name()
 	{
 		return this.name;
@@ -138,7 +133,6 @@ public final class SuiteInfo
 	 * @return The provided dependencies for this suite.
 	 * @since 2017/12/04
 	 */
-	@Exported
 	public final ProvidedInfo provided()
 	{
 		Reference<ProvidedInfo> ref = this._provided;
@@ -157,7 +151,6 @@ public final class SuiteInfo
 	 * @return The suite.
 	 * @since 2017/12/05
 	 */
-	@Exported
 	public final SuiteIdentifier suite()
 	{
 		Reference<SuiteIdentifier> ref = this._suite;
@@ -176,7 +169,6 @@ public final class SuiteInfo
 	 * @return The type of suite.
 	 * @since 2017/12/04
 	 */
-	@Exported
 	public final SuiteType type()
 	{
 		return this.type;
@@ -188,7 +180,6 @@ public final class SuiteInfo
 	 * @return The vendor.
 	 * @since 2017/12/31
 	 */
-	@Exported
 	public final SuiteVendor vendor()
 	{
 		return this.vendor;
@@ -200,7 +191,6 @@ public final class SuiteInfo
 	 * @return The version.
 	 * @since 2017/12/31
 	 */
-	@Exported
 	public final SuiteVersion version()
 	{
 		return this.version;

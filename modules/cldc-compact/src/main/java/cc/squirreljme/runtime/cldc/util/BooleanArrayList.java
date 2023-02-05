@@ -19,7 +19,6 @@ import java.util.RandomAccess;
  *
  * @since 2020/07/11
  */
-@Exported
 public class BooleanArrayList
 	extends AbstractList<Boolean>
 	implements RandomAccess
@@ -40,7 +39,6 @@ public class BooleanArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/11
 	 */
-	@Exported
 	public BooleanArrayList(boolean[] __a)
 		throws NullPointerException
 	{
@@ -58,7 +56,6 @@ public class BooleanArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/11
 	 */
-	@Exported
 	public BooleanArrayList(boolean[] __a, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -94,7 +91,6 @@ public class BooleanArrayList
 	 * @throws IndexOutOfBoundsException If the index is not within bounds.
 	 * @since 2020/07/11
 	 */
-	@Exported
 	public boolean set(int __i, boolean __v)
 		throws IndexOutOfBoundsException
 	{
@@ -145,7 +141,6 @@ public class BooleanArrayList
 	 * @return The boxed list type.
 	 * @since 2020/07/11
 	 */
-	@Exported
 	public static List<Boolean> asList(boolean... __array)
 	{
 		return new BooleanArrayList(__array);

@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2019/05/24
  */
-@Exported
 @SuppressWarnings("MagicNumber")
 public final class SoftLong
 {
@@ -40,7 +39,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@Exported
 	public static long add(int __al, int __ah, int __bl, int __bh)
 	{
 		// Add the higher/lower parts
@@ -66,7 +64,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@Exported
 	public static long and(int __al, int __ah, int __bl, int __bh)
 	{
 		return Assembly.longPack(__al & __bl, __ah & __bh);
@@ -82,7 +79,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@Exported
 	public static int cmp(int __al, int __ah, int __bl, int __bh)
 	{
 		// Compare high values firsts
@@ -111,7 +107,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@Exported
 	public static long div(int __al, int __ah, int __bl, int __bh)
 	{
 		// Dividing by zero?
@@ -131,7 +126,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@Exported
 	public static long mul(int __al, int __ah, int __bl, int __bh)
 	{
 		// Are both sides negative?
@@ -165,7 +159,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@Exported
 	public static long neg(int __al, int __ah)
 	{
 		// Negate and check for overflow
@@ -188,7 +181,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@Exported
 	public static long or(int __al, int __ah, int __bl, int __bh)
 	{
 		return Assembly.longPack(__al | __bl, __ah | __bh);
@@ -204,7 +196,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@Exported
 	public static long rem(int __al, int __ah, int __bl, int __bh)
 	{
 		// Dividing by zero?
@@ -223,7 +214,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@Exported
 	public static long shl(int __al, int __ah, int __s)
 	{
 		// Mask the shift amount
@@ -251,7 +241,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@Exported
 	public static long shr(int __al, int __ah, int __s)
 	{
 		// Mask the shift amount
@@ -281,7 +270,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@Exported
 	public static long sub(int __al, int __ah, int __bl, int __bh)
 	{
 		// The same as add, but the second operand is negated
@@ -312,7 +300,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@Exported
 	public static double toDouble(int __al, int __ah)
 	{
 		Assembly.breakpoint();
@@ -327,7 +314,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@Exported
 	public static float toFloat(int __al, int __ah)
 	{
 		Assembly.breakpoint();
@@ -342,7 +328,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@Exported
 	public static int toInteger(int __al, @SuppressWarnings("unused") int __ah)
 	{
 		// Just return the low order bits
@@ -358,7 +343,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@Exported
 	public static long ushr(int __al, int __ah, int __s)
 	{
 		// Mask the shift amount
@@ -387,7 +371,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@Exported
 	public static long xor(int __al, int __ah, int __bl, int __bh)
 	{
 		return Assembly.longPack(__al ^ __bl, __ah ^ __bh);

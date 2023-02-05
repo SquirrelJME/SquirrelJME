@@ -22,7 +22,6 @@ import net.multiphasicapps.io.ChunkFuture;
  *
  * @since 2021/09/03
  */
-@Exported
 public final class TableOfContentsWriter
 {
 	/** The number of entries per table of contents entry. */ 
@@ -41,7 +40,6 @@ public final class TableOfContentsWriter
 	 * negative.
 	 * @since 2021/09/05
 	 */
-	@Exported
 	public TableOfContentsWriter(int __numTocProperties)
 		throws IllegalArgumentException
 	{
@@ -59,7 +57,6 @@ public final class TableOfContentsWriter
 	 * @return The added entry.
 	 * @since 2021/09/05
 	 */
-	@Exported
 	public TableOfContentsEntry add()
 	{
 		TableOfContentsEntry rv = new TableOfContentsEntry(this.spanLength);
@@ -79,7 +76,6 @@ public final class TableOfContentsWriter
 	 * @return The number of items in the table of contents.
 	 * @since 2021/09/06
 	 */
-	@Exported
 	public int currentCount()
 	{
 		synchronized (this)
@@ -94,7 +90,6 @@ public final class TableOfContentsWriter
 	 * @return The entries in the table of contents.
 	 * @since 2021/09/06
 	 */
-	@Exported
 	public List<TableOfContentsEntry> entries()
 	{
 		synchronized (this)
@@ -111,7 +106,6 @@ public final class TableOfContentsWriter
 	 * @return The number of future items in the table of contents.
 	 * @since 2021/09/06
 	 */
-	@Exported
 	public ChunkFuture futureCount()
 	{
 		return new __TocFutureCount__(this);

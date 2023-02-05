@@ -19,7 +19,6 @@ import java.util.RandomAccess;
  *
  * @since 2020/07/11
  */
-@Exported
 public class ShortArrayList
 	extends AbstractList<Short>
 	implements RandomAccess
@@ -40,7 +39,6 @@ public class ShortArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/11
 	 */
-	@Exported
 	public ShortArrayList(short[] __a)
 		throws NullPointerException
 	{
@@ -58,7 +56,6 @@ public class ShortArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/11
 	 */
-	@Exported
 	public ShortArrayList(short[] __a, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -94,7 +91,6 @@ public class ShortArrayList
 	 * @throws IndexOutOfBoundsException If the index is not within bounds.
 	 * @since 2020/07/11
 	 */
-	@Exported
 	public short set(int __i, short __v)
 		throws IndexOutOfBoundsException
 	{
@@ -145,7 +141,6 @@ public class ShortArrayList
 	 * @return The boxed list type.
 	 * @since 2020/07/11
 	 */
-	@Exported
 	public static List<Short> asList(short... __array)
 	{
 		return new ShortArrayList(__array);

@@ -16,46 +16,37 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2020/04/07
  */
-@Exported
 public interface BuiltInEncodingType
 {
 	/** Unspecified, use defined property or assume UTF-8. */
-	@Exported
 	byte UNSPECIFIED =
 		0;
 	
 	/** UTF-8. */
-	@Exported
 	byte UTF8 =
 		1;
 	
 	/** ASCII. */
-	@Exported
 	byte ASCII =
 		2;
 	
 	/** IBM037 (EBCDIC). */
-	@Exported
 	byte IBM037 =
 		3;
 	
 	/** ISO-8859-1. */
-	@Exported
 	byte ISO_8859_1 =
 		4;
 	
 	/** ISO-8859-15. */
-	@Exported
 	byte ISO_8859_15 =
 		5;
 	
 	/** Shift-JIS. */
-	@Exported
 	byte SHIFT_JIS =
 		6;
 	
 	/** The number of built-in encodings. */
-	@Exported
 	byte NUM_BUILTIN_ENCODINGS =
 		7;
 }

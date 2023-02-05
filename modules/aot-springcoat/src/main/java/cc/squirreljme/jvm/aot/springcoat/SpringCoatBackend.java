@@ -39,7 +39,6 @@ import net.multiphasicapps.io.ChunkWriter;
  *
  * @since 2021/08/21
  */
-@Exported
 public class SpringCoatBackend
 	implements Backend
 {

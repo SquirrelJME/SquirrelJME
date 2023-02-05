@@ -28,7 +28,6 @@ import net.multiphasicapps.zip.ZipException;
  *
  * @since 2016/07/19
  */
-@Exported
 public final class ZipStreamEntry
 	extends InputStream
 	implements ArchiveStreamEntry

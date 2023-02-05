@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2020/12/07
  */
-@Exported
 public interface JarProperty
 {
 	/** The property based version ID. */
@@ -24,37 +23,30 @@ public interface JarProperty
 		0;
 	
 	/** Number of resources. */
-	@Exported
 	byte COUNT_TOC =
 		1;
 	
 	/** Table of contents offset. */
-	@Exported
 	byte OFFSET_TOC =
 		2;
 	
 	/** Table of contents size. */
-	@Exported
 	byte SIZE_TOC =
 		3;
 	
 	/** The hash code for the JAR name. */
-	@Exported
 	byte HASHCODE_NAME =
 		4;
 	
 	/** The offset to the name of this JAR. */
-	@Exported
 	byte OFFSET_NAME =
 		5;
 	
 	/** The size of the JAR name. */
-	@Exported
 	byte SIZE_NAME =
 		6;
 	
 	/** The manifest index. */
-	@Exported
 	byte RCDX_MANIFEST =
 		7;
 	
@@ -102,7 +94,6 @@ public interface JarProperty
 		17;
 	
 	/** The number of properties in the JAR. */
-	@Exported
 	byte NUM_JAR_PROPERTIES =
 		18;
 }

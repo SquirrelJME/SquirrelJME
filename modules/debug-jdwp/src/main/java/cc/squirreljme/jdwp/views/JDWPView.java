@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2021/04/10
  */
-@Exported
 public interface JDWPView
 {
 }

@@ -19,7 +19,6 @@ import java.util.Arrays;
  *
  * @since 2021/12/04
  */
-@Exported
 public class MarkableInputStream
 	extends InputStream
 {

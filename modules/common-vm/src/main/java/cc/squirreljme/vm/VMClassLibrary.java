@@ -20,7 +20,6 @@ import java.nio.file.Path;
  *
  * @since 2018/09/13
  */
-@Exported
 public interface VMClassLibrary
 {
 	/**
@@ -29,7 +28,6 @@ public interface VMClassLibrary
 	 * @return The resource names.
 	 * @since 2019/04/21
 	 */
-	@Exported
 	String[] listResources();
 	
 	/**
@@ -38,7 +36,6 @@ public interface VMClassLibrary
 	 * @return The library name.
 	 * @since 2018/09/13
 	 */
-	@Exported
 	String name();
 	
 	/**
@@ -48,7 +45,6 @@ public interface VMClassLibrary
 	 * {@code null} if not valid.
 	 * @since 2021/06/13
 	 */
-	@Exported
 	Path path();
 	
 	/**
@@ -61,7 +57,6 @@ public interface VMClassLibrary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/13
 	 */
-	@Exported
 	InputStream resourceAsStream(String __rc)
 		throws IOException, NullPointerException;
 }

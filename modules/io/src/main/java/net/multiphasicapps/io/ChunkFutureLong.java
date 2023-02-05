@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2021/01/17
  */
-@Exported
 public interface ChunkFutureLong
 	extends ChunkFuture
 {
@@ -26,6 +25,5 @@ public interface ChunkFutureLong
 	 * @return The value of this future.
 	 * @since 2021/01/17
 	 */
-	@Exported
 	long getLong();
 }

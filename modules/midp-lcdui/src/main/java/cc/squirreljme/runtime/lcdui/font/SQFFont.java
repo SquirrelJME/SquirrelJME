@@ -37,7 +37,6 @@ import javax.microedition.lcdui.Font;
  *
  * @since 2018/11/27
  */
-@Exported
 public final class SQFFont
 {
 	/** SQF Font data. */

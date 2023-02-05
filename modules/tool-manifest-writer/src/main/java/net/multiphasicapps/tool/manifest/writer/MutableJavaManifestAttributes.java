@@ -22,7 +22,6 @@ import java.util.Set;
  *
  * @since 2016/09/19
  */
-@Exported
 public class MutableJavaManifestAttributes
 	extends AbstractMap<JavaManifestKey, String>
 {
@@ -35,7 +34,6 @@ public class MutableJavaManifestAttributes
 	 *
 	 * @since 2017/11/19
 	 */
-	@Exported
 	public MutableJavaManifestAttributes()
 	{
 	}
@@ -47,7 +45,6 @@ public class MutableJavaManifestAttributes
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/19
 	 */
-	@Exported
 	public MutableJavaManifestAttributes(JavaManifestAttributes __a)
 		throws NullPointerException
 	{
@@ -64,7 +61,6 @@ public class MutableJavaManifestAttributes
 	 * @return {@code true} if a value is defined.
 	 * @since 2017/12/04
 	 */
-	@Exported
 	public boolean definesValue(JavaManifestKey __k)
 	{
 		return this.containsKey(__k);
@@ -77,7 +73,6 @@ public class MutableJavaManifestAttributes
 	 * @return {@code true} if a value is defined.
 	 * @since 2017/12/04
 	 */
-	@Exported
 	public boolean definesValue(String __k)
 	{
 		return this.containsKey(__k == null ? null : new JavaManifestKey(__k));
@@ -101,7 +96,6 @@ public class MutableJavaManifestAttributes
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/04
 	 */
-	@Exported
 	public String getValue(JavaManifestKey __k)
 	{
 		if (__k == null)
@@ -118,7 +112,6 @@ public class MutableJavaManifestAttributes
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/21
 	 */
-	@Exported
 	public String getValue(String __s)
 		throws NullPointerException
 	{
@@ -140,7 +133,6 @@ public class MutableJavaManifestAttributes
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/18
 	 */
-	@Exported
 	public String getValue(JavaManifestKey __k, String __dv)
 		throws NullPointerException
 	{
@@ -163,7 +155,6 @@ public class MutableJavaManifestAttributes
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/18
 	 */
-	@Exported
 	public String getValue(String __k, String __dv)
 		throws NullPointerException
 	{
@@ -200,7 +191,6 @@ public class MutableJavaManifestAttributes
 	 * @return The old value.
 	 * @since 2016/12/27
 	 */
-	@Exported
 	public String putValue(String __k, String __v)
 	{
 		// Check

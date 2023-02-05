@@ -23,7 +23,6 @@ import java.nio.file.StandardOpenOption;
  *
  * @since 2022/08/29
  */
-@Exported
 public final class SafeTemporaryFileOutputStream
 	extends OutputStream
 {
@@ -49,7 +48,6 @@ public final class SafeTemporaryFileOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/08/29
 	 */
-	@Exported
 	public SafeTemporaryFileOutputStream(Path __target)
 		throws NullPointerException
 	{

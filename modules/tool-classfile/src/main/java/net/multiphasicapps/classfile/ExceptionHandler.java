@@ -19,7 +19,6 @@ import java.util.Objects;
  *
  * @since 2017/02/09
  */
-@Exported
 public final class ExceptionHandler
 {
 	/** The start address. */
@@ -76,7 +75,6 @@ public final class ExceptionHandler
 	 * @return The end address.
 	 * @since 2017/02/09
 	 */
-	@Exported
 	public int endAddress()
 	{
 		return this.endpc;
@@ -110,7 +108,6 @@ public final class ExceptionHandler
 	 * @return The handler address.
 	 * @since 2017/02/09
 	 */
-	@Exported
 	public int handlerAddress()
 	{
 		return this.handlerpc;
@@ -135,7 +132,6 @@ public final class ExceptionHandler
 	 * @return {@code true} if the address is in range.
 	 * @since 2017/04/01
 	 */
-	@Exported
 	public boolean inRange(int __i)
 	{
 		return __i >= this.startpc && __i < this.endpc;
@@ -147,7 +143,6 @@ public final class ExceptionHandler
 	 * @return The exception handler range.
 	 * @since 2019/03/21
 	 */
-	@Exported
 	public final InstructionAddressRange range()
 	{
 		return new InstructionAddressRange(this.startpc, this.endpc);
@@ -159,7 +154,6 @@ public final class ExceptionHandler
 	 * @return The start address.
 	 * @since 2017/02/09
 	 */
-	@Exported
 	public int startAddress()
 	{
 		return this.startpc;
@@ -190,7 +184,6 @@ public final class ExceptionHandler
 	 * @return The type of exception to handle.
 	 * @since 2017/02/09
 	 */
-	@Exported
 	public ClassName type()
 	{
 		return this.type;

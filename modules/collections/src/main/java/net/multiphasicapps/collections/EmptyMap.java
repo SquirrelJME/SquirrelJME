@@ -22,7 +22,6 @@ import java.util.Set;
  *
  * @since 2016/05/12
  */
-@Exported
 public class EmptyMap
 	extends AbstractMap
 {
@@ -117,7 +116,6 @@ public class EmptyMap
 	 * @return The unmodifiable and empty map.
 	 * @since 2016/05/12
 	 */
-	@Exported
 	@SuppressWarnings({"unchecked"})
 	public static <K, V> Map<K, V> empty()
 	{

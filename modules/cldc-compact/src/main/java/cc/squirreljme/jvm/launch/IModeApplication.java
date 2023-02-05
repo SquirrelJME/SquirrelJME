@@ -31,7 +31,6 @@ import java.util.Objects;
  *
  * @since 2021/06/13
  */
-@Exported
 public class IModeApplication
 	extends Application
 {
@@ -169,7 +168,6 @@ public class IModeApplication
 	 * @return If this is a Star application.
 	 * @since 2022/02/28
 	 */
-	@Exported
 	public boolean isStarApplication()
 	{
 		// Check if any dependency implements the Star APIs

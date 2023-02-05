@@ -20,7 +20,6 @@ import net.multiphasicapps.collections.UnmodifiableList;
  *
  * @since 2020/11/27
  */
-@Exported
 public final class RomSettings
 {
 	/** The loader main class. */
@@ -68,7 +67,6 @@ public final class RomSettings
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/27
 	 */
-	@Exported
 	public static RomSettings parse(Deque<String> __args)
 		throws IllegalArgumentException, NullPointerException
 	{

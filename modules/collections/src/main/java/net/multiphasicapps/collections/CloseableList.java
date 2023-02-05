@@ -21,7 +21,6 @@ import java.util.ArrayList;
  *
  * @since 2017/11/28
  */
-@Exported
 public class CloseableList<T extends Closeable>
 	extends ArrayList<T>
 	implements Closeable

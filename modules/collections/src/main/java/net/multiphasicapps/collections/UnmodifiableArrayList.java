@@ -20,7 +20,6 @@ import java.util.RandomAccess;
  * @param <T> The type of values to store.
  * @since 2018/05/13
  */
-@Exported
 public final class UnmodifiableArrayList<T>
 	extends AbstractList<T>
 	implements RandomAccess
@@ -91,7 +90,6 @@ public final class UnmodifiableArrayList<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/13
 	 */
-	@Exported
 	@SuppressWarnings({"unchecked"})
 	public static <T> List<T> of(T... __a)
 		throws NullPointerException
@@ -115,7 +113,6 @@ public final class UnmodifiableArrayList<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/13
 	 */
-	@Exported
 	public static <T> List<T> of(T[] __a, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{

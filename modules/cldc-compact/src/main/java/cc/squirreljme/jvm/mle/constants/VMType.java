@@ -18,31 +18,25 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2020/06/16
  */
-@Exported
 public interface VMType
 {
 	/** Not known. */
-	@Exported
 	byte UNKNOWN =
 		0;
 	
 	/** Running on Standard Java SE. */
-	@Exported
 	byte JAVA_SE =
 		1;
 	
 	/** Running on SpringCoat. */
-	@Exported
 	byte SPRINGCOAT =
 		2;
 	
 	/** Running on SummerCoat. */
-	@Exported
 	byte SUMMERCOAT =
 		3;
 	
 	/** The number of VM types. */
-	@Exported
 	byte NUM_VMTYPES =
 		4;
 }

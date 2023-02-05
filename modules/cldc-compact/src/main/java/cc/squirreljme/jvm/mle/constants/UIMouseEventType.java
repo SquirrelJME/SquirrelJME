@@ -17,36 +17,29 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2020/07/19
  */
-@Exported
 public interface UIMouseEventType
 {
 	/** Mouse down. */
-	@Exported
 	byte MOUSE_DOWN =
 		0;
 	
 	/** Mouse up. */
-	@Exported
 	byte MOUSE_UP =
 		1;
 	
 	/** Mouse dragged. */
-	@Exported
 	byte MOUSE_DRAGGED =
 		2;
 	
 	/** Mouse entered. */
-	@Exported
 	byte MOUSE_ENTERED =
 		3;
 	
 	/** Mouse exited. */
-	@Exported
 	byte MOUSE_EXITED =
 		4;
 	
 	/** The number of events. */
-	@Exported
 	byte NUM_MOUSE_EVENTS =
 		5;
 }

@@ -24,7 +24,6 @@ import net.multiphasicapps.io.ChunkWriter;
  *
  * @since 2021/09/03
  */
-@Exported
 public final class StandardPackWriter
 {
 	/** The magic number to write. */
@@ -56,7 +55,6 @@ public final class StandardPackWriter
 	 * or negative.
 	 * @since 2021/09/03
 	 */
-	@Exported
 	public StandardPackWriter(int __magic, int __numPackProperties,
 		int __numTocProperties)
 		throws IllegalArgumentException
@@ -82,7 +80,6 @@ public final class StandardPackWriter
 	 * @return The header to write into.
 	 * @since 2021/09/03
 	 */
-	@Exported
 	public HeaderStructWriter header()
 	{
 		return this.header;
@@ -94,7 +91,6 @@ public final class StandardPackWriter
 	 * @throws IOException On write errors.
 	 * @since 2021/09/06
 	 */
-	@Exported
 	public void initialize()
 		throws IOException
 	{
@@ -121,7 +117,6 @@ public final class StandardPackWriter
 	 * @return The table of contents.
 	 * @since 2021/09/05
 	 */
-	@Exported
 	public TableOfContentsWriter toc()
 	{
 		return this.toc;

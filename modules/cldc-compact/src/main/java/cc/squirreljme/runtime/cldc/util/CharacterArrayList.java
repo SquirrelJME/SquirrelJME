@@ -19,7 +19,6 @@ import java.util.RandomAccess;
  *
  * @since 2020/07/11
  */
-@Exported
 public class CharacterArrayList
 	extends AbstractList<Character>
 	implements RandomAccess
@@ -40,7 +39,6 @@ public class CharacterArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/11
 	 */
-	@Exported
 	public CharacterArrayList(char[] __a)
 		throws NullPointerException
 	{
@@ -58,7 +56,6 @@ public class CharacterArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/11
 	 */
-	@Exported
 	public CharacterArrayList(char[] __a, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -94,7 +91,6 @@ public class CharacterArrayList
 	 * @throws IndexOutOfBoundsException If the index is not within bounds.
 	 * @since 2020/07/11
 	 */
-	@Exported
 	public char set(int __i, char __v)
 		throws IndexOutOfBoundsException
 	{
@@ -145,7 +141,6 @@ public class CharacterArrayList
 	 * @return The boxed list type.
 	 * @since 2020/07/11
 	 */
-	@Exported
 	public static List<Character> asList(char... __array)
 	{
 		return new CharacterArrayList(__array);

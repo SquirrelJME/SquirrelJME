@@ -20,7 +20,6 @@ import java.util.HashSet;
  * @param <T> The type of element to store in the set.
  * @since 2017/12/28
  */
-@Exported
 public final class IdentityHashSet<T>
 	extends __IdentityBaseSet__<T>
 {
@@ -29,7 +28,6 @@ public final class IdentityHashSet<T>
 	 *
 	 * @since 2017/12/28
 	 */
-	@Exported
 	public IdentityHashSet()
 	{
 		super(new HashSet<Identity<T>>());
@@ -42,7 +40,6 @@ public final class IdentityHashSet<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/28
 	 */
-	@Exported
 	public IdentityHashSet(Collection<? extends T> __from)
 		throws NullPointerException
 	{

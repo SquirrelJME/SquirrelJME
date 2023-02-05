@@ -21,56 +21,45 @@ import java.util.Objects;
  *
  * @since 2017/07/26
  */
-@Exported
 public final class JavaType
 {
 	/** The top of a long. */
-	@Exported
 	public static final JavaType TOP_LONG =
 		new JavaType(1);
 	
 	/** The top of a double. */
-	@Exported
 	public static final JavaType TOP_DOUBLE =
 		new JavaType(2);
 	
 	/** Top of an undefined type. */
-	@Exported
 	public static final JavaType TOP_UNDEFINED =
 		new JavaType(3);
 	
 	/** Nothing. */
-	@Exported
 	public static final JavaType NOTHING =
 		new JavaType(4);
 	
 	/** Integer. */
-	@Exported
 	public static final JavaType INTEGER =
 		new JavaType(new FieldDescriptor("I"));
 	
 	/** Long. */
-	@Exported
 	public static final JavaType LONG =
 		new JavaType(new FieldDescriptor("J"));
 	
 	/** Float. */
-	@Exported
 	public static final JavaType FLOAT =
 		new JavaType(new FieldDescriptor("F"));
 	
 	/** Double. */
-	@Exported
 	public static final JavaType DOUBLE =
 		new JavaType(new FieldDescriptor("D"));
 	
 	/** Plain object. */
-	@Exported
 	public static final JavaType OBJECT =
 		new JavaType(new FieldDescriptor("Ljava/lang/Object;"));
 	
 	/** Throwable. */
-	@Exported
 	public static final JavaType THROWABLE =
 		new JavaType(new FieldDescriptor("Ljava/lang/Throwable;"));
 	
@@ -90,7 +79,6 @@ public final class JavaType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/28
 	 */
-	@Exported
 	public JavaType(ClassName __cn)
 		throws NullPointerException
 	{
@@ -105,7 +93,6 @@ public final class JavaType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/28
 	 */
-	@Exported
 	public JavaType(FieldDescriptor __f)
 		throws IllegalStateException, NullPointerException
 	{
@@ -131,7 +118,6 @@ public final class JavaType
 	 * @throws RuntimeException If the internal value is zero.
 	 * @since 2017/07/28
 	 */
-	@Exported
 	private JavaType(int __i)
 		throws RuntimeException
 	{
@@ -149,7 +135,6 @@ public final class JavaType
 	 * @return The type class name.
 	 * @since 2019/05/24
 	 */
-	@Exported
 	public final ClassName className()
 	{
 		FieldDescriptor type = this.type;
@@ -190,7 +175,6 @@ public final class JavaType
 	 * @return True if this is an array.
 	 * @since 2019/05/25
 	 */
-	@Exported
 	public final boolean isArray()
 	{
 		FieldDescriptor type = this.type;
@@ -203,7 +187,6 @@ public final class JavaType
 	 * @return {@code true} if this is an object type.
 	 * @since 2017/08/13
 	 */
-	@Exported
 	public boolean isObject()
 	{
 		FieldDescriptor type = this.type;
@@ -216,7 +199,6 @@ public final class JavaType
 	 * @return {@code true} if this is a primitive type.
 	 * @since 2017/08/13
 	 */
-	@Exported
 	public boolean isPrimitive()
 	{
 		FieldDescriptor type = this.type;
@@ -229,7 +211,6 @@ public final class JavaType
 	 * @return If this is the nothing type.
 	 * @since 2017/10/20
 	 */
-	@Exported
 	public boolean isNothing()
 	{
 		return this.equals(JavaType.NOTHING);
@@ -241,7 +222,6 @@ public final class JavaType
 	 * @return If this is a top type or not.
 	 * @since 2017/09/16
 	 */
-	@Exported
 	public boolean isTop()
 	{
 		return this.equals(JavaType.TOP_LONG) ||
@@ -255,7 +235,6 @@ public final class JavaType
 	 * @return {@code true} if the type is a wide type.
 	 * @since 2017/07/28
 	 */
-	@Exported
 	public boolean isWide()
 	{
 		FieldDescriptor type = this.type;
@@ -272,7 +251,6 @@ public final class JavaType
 	 * there is none.
 	 * @since 2017/07/28
 	 */
-	@Exported
 	public JavaType topType()
 	{
 		PrimitiveType pt = this.type.primitiveType();
@@ -329,7 +307,6 @@ public final class JavaType
 	 * @return The type used.
 	 * @since 2017/09/19
 	 */
-	@Exported
 	public FieldDescriptor type()
 	{
 		return this.type;
@@ -341,7 +318,6 @@ public final class JavaType
 	 * @return The width of the type.
 	 * @since 2017/09/03
 	 */
-	@Exported
 	public int width()
 	{
 		return (this.isWide() ? 2 : 1);

@@ -25,57 +25,46 @@ import java.util.Arrays;
 public final class ArrayUtils
 {
 	/** Boolean array. */
-	@Exported
 	public static final byte ARRAY_BOOLEAN =
 		1;
 		
 	/** The first array type. */
-	@Exported
 	public static final byte FIRST_TYPE =
 		ArrayUtils.ARRAY_BOOLEAN;
 	
 	/** Byte array. */
-	@Exported
 	public static final byte ARRAY_BYTE =
 		2;
 	
 	/** Short array. */
-	@Exported
 	public static final byte ARRAY_SHORT =
 		3;
 	
 	/** Character array. */
-	@Exported
 	public static final byte ARRAY_CHARACTER =
 		4;
 	
 	/** Integer array. */
-	@Exported
 	public static final byte ARRAY_INTEGER =
 		5;
 	
 	/** Long array. */
-	@Exported
 	public static final byte ARRAY_LONG =
 		6;
 	
 	/** Float array. */
-	@Exported
 	public static final byte ARRAY_FLOAT =
 		7;
 	
 	/** Double array. */
-	@Exported
 	public static final byte ARRAY_DOUBLE =
 		8;
 	
 	/** Object array. */
-	@Exported
 	public static final byte ARRAY_OBJECT =
 		9;
 	
 	/** The number of array types. */
-	@Exported
 	public static final byte NUM_ARRAY_TYPES =
 		10;
 	
@@ -96,7 +85,6 @@ public final class ArrayUtils
 	 * @return If the arrays are equal.
 	 * @since 2020/11/15
 	 */
-	@Exported
 	public static boolean arrayEquals(Object __a, Object __b)
 	{
 		// Same exact array reference?
@@ -153,7 +141,6 @@ public final class ArrayUtils
 	 * @throws IndexOutOfBoundsException If the array length is negative.
 	 * @since 2021/12/27
 	 */
-	@Exported
 	public static <T> T arrayNew(Class<T> __class, int __type, int __len)
 		throws ClassCastException, IllegalArgumentException,
 			IndexOutOfBoundsException
@@ -209,7 +196,6 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/01/05
 	 */
-	@Exported
 	public static <T> T arrayGet(Class<T> __cast,
 		int __type, Object __a, int __dx)
 		throws ArrayIndexOutOfBoundsException, ClassCastException,
@@ -266,7 +252,6 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/13
 	 */
-	@Exported
 	public static void arraySet(Object __a, int __dx, Object __v)
 		throws ArrayIndexOutOfBoundsException, ClassCastException,
 			IllegalArgumentException, NullPointerException
@@ -287,7 +272,6 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/13
 	 */
-	@Exported
 	public static void arraySet(int __type, Object __a, int __dx,
 		Object __v)
 		throws ArrayIndexOutOfBoundsException, ClassCastException,
@@ -350,7 +334,6 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/13
 	 */
-	@Exported
 	public static int arrayType(Object __a)
 		throws IllegalArgumentException, NullPointerException
 	{

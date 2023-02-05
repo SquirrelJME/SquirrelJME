@@ -18,7 +18,6 @@ import java.util.Queue;
  *
  * @since 2020/07/03
  */
-@Exported
 public final class CleanupHandler
 {
 	/** Queue of handles waiting to be closed. */
@@ -41,7 +40,6 @@ public final class CleanupHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/03
 	 */
-	@Exported
 	public static void add(AutoCloseable __task)
 		throws NullPointerException
 	{
@@ -59,7 +57,6 @@ public final class CleanupHandler
 	 * 
 	 * @since 2020/07/03
 	 */
-	@Exported
 	public static void runAll()
 	{
 		// Clear out the queue and drain everything to an array

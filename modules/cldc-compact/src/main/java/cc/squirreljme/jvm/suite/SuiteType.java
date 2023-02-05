@@ -21,19 +21,15 @@ import java.lang.ref.WeakReference;
  *
  * @since 2017/12/04
  */
-@Exported
 public enum SuiteType
 {
 	/** MIDlet. */
-	@Exported
 	MIDLET("MIDlet"),
 	
 	/** LIBlet. */
-	@Exported
 	LIBLET("LIBlet"),
 	
 	/** An API. */
-	@Exported
 	SQUIRRELJME_API("X-SquirrelJME-API"),
 	
 	/** End. */
@@ -77,7 +73,6 @@ public enum SuiteType
 	 * @return The key for the given dependency index.
 	 * @since 2017/12/05
 	 */
-	@Exported
 	public JavaManifestKey dependencyKey(int __i)
 	{
 		// {@squirreljme.error DG0f Cannot have a zero or negative dependency
@@ -94,7 +89,6 @@ public enum SuiteType
 	 * @return The description manifest key.
 	 * @since 2017/12/04
 	 */
-	@Exported
 	public JavaManifestKey descriptionKey()
 	{
 		Reference<JavaManifestKey> ref = this._description;
@@ -113,7 +107,6 @@ public enum SuiteType
 	 * @return The name manifest key.
 	 * @since 2017/12/04
 	 */
-	@Exported
 	public JavaManifestKey nameKey()
 	{
 		Reference<JavaManifestKey> ref = this._name;
@@ -132,7 +125,6 @@ public enum SuiteType
 	 * @return The vendor manifest key.
 	 * @since 2017/12/04
 	 */
-	@Exported
 	public JavaManifestKey vendorKey()
 	{
 		Reference<JavaManifestKey> ref = this._vendor;
@@ -151,7 +143,6 @@ public enum SuiteType
 	 * @return The version manifest key.
 	 * @since 2017/12/04
 	 */
-	@Exported
 	public JavaManifestKey versionKey()
 	{
 		Reference<JavaManifestKey> ref = this._version;
@@ -173,7 +164,6 @@ public enum SuiteType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/04
 	 */
-	@Exported
 	public static final SuiteType ofManifest(JavaManifest __man)
 		throws InvalidSuiteException, NullPointerException
 	{

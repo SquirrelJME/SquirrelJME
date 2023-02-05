@@ -23,7 +23,6 @@ import java.io.OutputStream;
  *
  * @since 2018/11/10
  */
-@Exported
 public class DeflaterOutputStream
 	extends OutputStream
 	implements CompressionStream
@@ -62,7 +61,6 @@ public class DeflaterOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/10
 	 */
-	@Exported
 	public DeflaterOutputStream(OutputStream __os)
 		throws NullPointerException
 	{
@@ -77,7 +75,6 @@ public class DeflaterOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/10
 	 */
-	@Exported
 	public DeflaterOutputStream(OutputStream __os, CompressionLevel __cl)
 		throws NullPointerException
 	{

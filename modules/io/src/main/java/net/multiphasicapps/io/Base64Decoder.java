@@ -22,7 +22,6 @@ import java.io.Reader;
  *
  * @since 2018/03/05
  */
-@Exported
 public final class Base64Decoder
 	extends InputStream
 {
@@ -66,7 +65,6 @@ public final class Base64Decoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/23
 	 */
-	@Exported
 	public Base64Decoder(Reader __in)
 	{
 		this(__in, Base64Alphabet.BASIC);
@@ -80,7 +78,6 @@ public final class Base64Decoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/05
 	 */
-	@Exported
 	public Base64Decoder(Reader __in, Base64Alphabet __chars)
 		throws NullPointerException
 	{
@@ -97,7 +94,6 @@ public final class Base64Decoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/05
 	 */
-	@Exported
 	public Base64Decoder(Reader __in, String __chars)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -114,7 +110,6 @@ public final class Base64Decoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/05
 	 */
-	@Exported
 	public Base64Decoder(Reader __in, char[] __chars)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -131,7 +126,6 @@ public final class Base64Decoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/05
 	 */
-	@Exported
 	public Base64Decoder(Reader __in, Base64Alphabet __chars, boolean __ip)
 		throws NullPointerException
 	{
@@ -150,7 +144,6 @@ public final class Base64Decoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/05
 	 */
-	@Exported
 	public Base64Decoder(Reader __in, String __chars, boolean __ip)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -169,7 +162,6 @@ public final class Base64Decoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/05
 	 */
-	@Exported
 	public Base64Decoder(Reader __in, char[] __chars, boolean __ip)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -474,7 +466,6 @@ public final class Base64Decoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
-	@Exported
 	public static final byte[] decode(String __in, Base64Alphabet __ab)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -492,7 +483,6 @@ public final class Base64Decoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/04
 	 */
-	@Exported
 	public static byte[] decode(String __in, Base64Alphabet __ab,
 		boolean __ip)
 		throws IllegalArgumentException, NullPointerException

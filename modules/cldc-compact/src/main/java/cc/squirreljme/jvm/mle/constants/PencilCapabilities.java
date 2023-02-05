@@ -18,7 +18,6 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2020/09/25
  */
-@Exported
 public interface PencilCapabilities
 {
 	/**
@@ -53,7 +52,6 @@ public interface PencilCapabilities
 	 * - {@code setStrokeStyle}.
 	 * - {@code translate}.
 	 */
-	@Exported
 	byte MINIMUM =
 		1;
 	
@@ -61,7 +59,6 @@ public interface PencilCapabilities
 	 * Capable of the following:
 	 * - {@code copyArea}. 
 	 */
-	@Exported
 	byte COPY_AREA =
 		2;
 	
@@ -70,14 +67,12 @@ public interface PencilCapabilities
 	 * - {@code drawARGB16}. 
 	 * - {@code drawRGB16}.
 	 */
-	@Exported
 	byte DRAW_XRGB16_SIMPLE =
 		4;
 	
 	/**
 	 * Reserved.
 	 */
-	@Exported
 	@Deprecated
 	byte RESERVED_8 =
 		8;
@@ -85,7 +80,6 @@ public interface PencilCapabilities
 	/**
 	 * Reserved.
 	 */
-	@Exported
 	@Deprecated
 	byte RESERVED_16 =
 		16;
@@ -96,7 +90,6 @@ public interface PencilCapabilities
 	 * - {@code drawImage}. 
 	 * - {@code drawRegion}.
 	 */
-	@Exported
 	byte DRAW_XRGB32_REGION =
 		32;
 	
@@ -104,7 +97,6 @@ public interface PencilCapabilities
 	 * Capable of the following:
 	 * - {@code drawArc}. 
 	 */
-	@Exported
 	byte DRAW_ARC =
 		64;
 	
@@ -112,7 +104,6 @@ public interface PencilCapabilities
 	 * Capable of the following:
 	 * - {@code drawLine}. 
 	 */
-	@Exported
 	short DRAW_LINE =
 		128;
 	
@@ -120,7 +111,6 @@ public interface PencilCapabilities
 	 * Capable of the following:
 	 * - {@code drawRect}. 
 	 */
-	@Exported
 	short DRAW_RECT =
 		256;
 	
@@ -128,7 +118,6 @@ public interface PencilCapabilities
 	 * Capable of the following:
 	 * - {@code drawRoundRect}. 
 	 */
-	@Exported
 	short DRAW_ROUND_RECT =
 		512;
 	
@@ -136,7 +125,6 @@ public interface PencilCapabilities
 	 * Capable of the following:
 	 * - {@code fillArc}. 
 	 */
-	@Exported
 	short FILL_ARC =
 		1024;
 	
@@ -144,7 +132,6 @@ public interface PencilCapabilities
 	 * Capable of the following:
 	 * - {@code fillRect}. 
 	 */
-	@Exported
 	short FILL_RECT =
 		2048;
 	
@@ -152,7 +139,6 @@ public interface PencilCapabilities
 	 * Capable of the following:
 	 * - {@code fillRoundRect}. 
 	 */
-	@Exported
 	short FILL_ROUND_RECT =
 		4096;
 	
@@ -160,7 +146,6 @@ public interface PencilCapabilities
 	 * Capable of the following:
 	 * - {@code fillTriangle}. 
 	 */
-	@Exported
 	short FILL_TRIANGLE =
 		8192;
 	
@@ -174,7 +159,6 @@ public interface PencilCapabilities
 	 * - {@code getFont}.
 	 * - {@code setFont}.
 	 */
-	@Exported
 	short FONT_TEXT =
 		16384;
 }

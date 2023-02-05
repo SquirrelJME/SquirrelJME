@@ -18,7 +18,6 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2017/03/05
  */
-@Exported
 public class Adler32Calculator
 	implements Checksum
 {

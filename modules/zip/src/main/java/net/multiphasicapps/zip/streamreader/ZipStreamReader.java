@@ -33,7 +33,6 @@ import net.multiphasicapps.zip.ZipException;
  *
  * @since 2016/07/19
  */
-@Exported
 public class ZipStreamReader
 	implements ArchiveStreamReader, Closeable
 {
@@ -75,7 +74,6 @@ public class ZipStreamReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/19
 	 */
-	@Exported
 	public ZipStreamReader(InputStream __is)
 		throws NullPointerException
 	{

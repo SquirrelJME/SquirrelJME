@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2021/04/11
  */
-@Exported
 public interface JDWPViewValidObject
 	extends JDWPView
 {
@@ -27,6 +26,5 @@ public interface JDWPViewValidObject
 	 * @return If it is valid or not.
 	 * @since 2021/04/10
 	 */
-	@Exported
 	boolean isValid(Object __which);
 }

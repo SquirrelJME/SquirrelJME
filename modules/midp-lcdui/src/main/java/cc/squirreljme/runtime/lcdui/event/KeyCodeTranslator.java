@@ -19,7 +19,6 @@ import java.util.ServiceLoader;
  * @since 2022/02/23
  */
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
-@Exported
 public interface KeyCodeTranslator
 {
 	/**
@@ -29,7 +28,6 @@ public interface KeyCodeTranslator
 	 * @return The game action or {@code 0} if it is not valid.
 	 * @since 2022/02/03
 	 */
-	@Exported
 	int keyCodeToGameAction(int __kc);
 	
 	/**
@@ -39,6 +37,5 @@ public interface KeyCodeTranslator
 	 * @return The normalized key code or {@code 0} if it is not normalizable.
 	 * @since 2022/02/03
 	 */
-	@Exported
 	int normalizeKeyCode(int __kc);
 }

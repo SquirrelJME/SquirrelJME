@@ -16,26 +16,21 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2020/06/14
  */
-@Exported
 public interface StandardPipeType
 {
 	/** Standard input. */
-	@Exported
 	byte STDIN =
 		0;
 	
 	/** Standard output. */
-	@Exported
 	byte STDOUT =
 		1;
 	
 	/** Standard error. */
-	@Exported
 	byte STDERR =
 		2;
 	
 	/** The number of standard pipes. */
-	@Exported
 	byte NUM_STANDARD_PIPES =
 		3;
 }

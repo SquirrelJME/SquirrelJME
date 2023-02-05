@@ -22,7 +22,6 @@ import java.util.RandomAccess;
  * @param <V> The type of value the list stores.
  * @since 2016/03/03
  */
-@Exported
 public abstract class UnmodifiableList<V>
 	extends AbstractList<V>
 {
@@ -115,7 +114,6 @@ public abstract class UnmodifiableList<V>
 	 * @return An unmodifiable view of the list.
 	 * @since 2016/03/03
 	 */
-	@Exported
 	public static <V> UnmodifiableList<V> of(List<V> __l)
 	{
 		// If already one, return it

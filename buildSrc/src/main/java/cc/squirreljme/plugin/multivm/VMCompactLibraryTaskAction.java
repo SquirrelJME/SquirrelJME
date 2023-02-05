@@ -61,8 +61,7 @@ public class VMCompactLibraryTaskAction
 			"-keep", "class", "*", "extends",
 				"javax.microedition.midlet.MIDlet",
 			
-			// Keep classes annotation with @Api and @Exported
-			"-keep", "public",
+			// Keep classes annotation with @Api and			"-keep", "public",
 				"@cc.squirreljme.runtime.cldc.annotation.Api",
 				"class", "*", "{",
 				"public", "protected", "*", ";",

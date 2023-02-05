@@ -17,31 +17,25 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2018/12/05
  */
-@Exported
 public final class SquirrelJME
 {
 	/** The major version of SquirrelJME. */
-	@Exported
 	public static final byte MAJOR_VERSION =
 		0;
 	
 	/** The minor version of SquirrelJME. */
-	@Exported
 	public static final byte MINOR_VERSION =
 		3;
 	
 	/** The release version of SquirrelJME. */
-	@Exported
 	public static final byte RELEASE_VERSION =
 		0;
 	
 	/** The version of this SquirrelJME runtime. */
-	@Exported
 	public static final String RUNTIME_VERSION =
 		"0.3.0";
 	
 	/** The microedition platform. */
-	@Exported
 	public static final String MICROEDITION_PLATFORM =
 		"SquirrelJME/0.3.0";
 	
@@ -60,7 +54,6 @@ public final class SquirrelJME
 	 * @param __phoneModel The current phone model.
 	 * @since 2022/02/14
 	 */
-	@Exported
 	public static String platform(int __phoneModel)
 	{
 		// This can vary

@@ -30,7 +30,6 @@ import javax.microedition.lcdui.game.Sprite;
  *
  * @since 2020/09/25
  */
-@Exported
 public final class PencilGraphics
 	extends Graphics
 {
@@ -973,7 +972,6 @@ public final class PencilGraphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/25
 	 */
-	@Exported
 	public static Graphics hardwareGraphics(int __pf, int __bw,
 		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
 		int __sw, int __sh)

@@ -21,7 +21,6 @@ import java.util.Set;
  * @param <V> The value type.
  * @since 2021/11/28
  */
-@Exported
 public final class IdentityMap<K, V>
 	extends AbstractMap<K, V>
 {
@@ -35,7 +34,6 @@ public final class IdentityMap<K, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/11/28
 	 */
-	@Exported
 	public IdentityMap(Map<Identity<K>, V> __backing)
 		throws NullPointerException
 	{

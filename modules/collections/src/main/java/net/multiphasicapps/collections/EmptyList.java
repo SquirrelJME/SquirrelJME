@@ -23,7 +23,6 @@ import java.util.RandomAccess;
  *
  * @since 2016/04/10
  */
-@Exported
 public final class EmptyList
 	extends AbstractList
 	implements RandomAccess
@@ -128,7 +127,6 @@ public final class EmptyList
 	 * @return The empty list.
 	 * @since 2016/04/10
 	 */
-	@Exported
 	@SuppressWarnings({"unchecked"})
 	public static <V> List<V> empty()
 	{

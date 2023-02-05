@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2016/05/12
  */
-@Exported
 public interface AccessibleFlags
 {
 	/**
@@ -26,7 +25,6 @@ public interface AccessibleFlags
 	 * @return {@code true} if package private.
 	 * @since 2016/05/12
 	 */
-	@Exported
 	boolean isPackagePrivate();
 	
 	/**
@@ -35,7 +33,6 @@ public interface AccessibleFlags
 	 * @return {@code true} if private.
 	 * @since 2016/05/12
 	 */
-	@Exported
 	boolean isPrivate();
 	
 	/**
@@ -44,7 +41,6 @@ public interface AccessibleFlags
 	 * @return {@code true} if protected.
 	 * @since 2016/05/12
 	 */
-	@Exported
 	boolean isProtected();
 	
 	/**
@@ -53,7 +49,6 @@ public interface AccessibleFlags
 	 * @return {@code true} if public.
 	 * @since 2016/05/12
 	 */
-	@Exported
 	boolean isPublic();
 }
 

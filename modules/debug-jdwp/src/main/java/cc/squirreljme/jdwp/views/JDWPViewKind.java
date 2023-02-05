@@ -16,27 +16,21 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2021/04/10
  */
-@Exported
 public enum JDWPViewKind
 {
 	/** Thread frames. */
-	@Exported
 	FRAME(JDWPViewFrame.class),
 	
 	/** An object. */
-	@Exported
 	OBJECT(JDWPViewObject.class),
 	
 	/** Thread. */
-	@Exported
 	THREAD(JDWPViewThread.class),
 	
 	/** A group of threads. */
-	@Exported
 	THREAD_GROUP(JDWPViewThreadGroup.class),
 	
 	/** A type such as a class. */
-	@Exported
 	TYPE(JDWPViewType.class),
 	
 	/* End. */

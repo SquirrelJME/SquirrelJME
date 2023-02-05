@@ -27,7 +27,6 @@ import java.util.Objects;
  *
  * @since 2021/06/13
  */
-@Exported
 public abstract class Application
 {
 	/** The JAR this references. */
@@ -60,7 +59,6 @@ public abstract class Application
 	 * @return The display name of the application.
 	 * @since 2020/12/29
 	 */
-	@Exported
 	public abstract String displayName();
 	
 	/**
@@ -69,7 +67,6 @@ public abstract class Application
 	 * @return The entry point that represents this application.
 	 * @since 2020/12/29
 	 */
-	@Exported
 	public abstract EntryPoint entryPoint();
 	
 	/**
@@ -78,7 +75,6 @@ public abstract class Application
 	 * @return Dependencies needed for loading.
 	 * @since 2021/06/13
 	 */
-	@Exported
 	public abstract DependencyInfo loaderDependencies();
 	
 	/**
@@ -87,7 +83,6 @@ public abstract class Application
 	 * @return Entry point arguments for loading.
 	 * @since 2021/06/13
 	 */
-	@Exported
 	public abstract String[] loaderEntryArgs();
 	
 	/**
@@ -97,7 +92,6 @@ public abstract class Application
 	 * starting the application.
 	 * @since 2021/06/13
 	 */
-	@Exported
 	public abstract String loaderEntryClass();
 	
 	/**
@@ -107,7 +101,6 @@ public abstract class Application
 	 * no icon.
 	 * @since 2020/12/29
 	 */
-	@Exported
 	public final InputStream iconStream()
 	{
 		String imgRc = this.entryPoint().imageResource();
@@ -123,7 +116,6 @@ public abstract class Application
 	 * @return If this should not appear on the launcher.
 	 * @since 2020/12/29
 	 */
-	@Exported
 	public boolean isNoLauncher()
 	{
 		return false;
@@ -135,7 +127,6 @@ public abstract class Application
 	 * @return The bracket for the task.
 	 * @since 2020/12/29
 	 */
-	@Exported
 	public final TaskBracket launch()
 	{
 		// Find libraries to base off
@@ -181,7 +172,6 @@ public abstract class Application
 	 * @return The system properties to use for the application.
 	 * @since 2021/12/01
 	 */
-	@Exported
 	public Map<String, String> loaderSystemProperties()
 	{
 		return null;
@@ -193,7 +183,6 @@ public abstract class Application
 	 * @return The SquirrelJME name of the application.
 	 * @since 2020/12/29
 	 */
-	@Exported
 	public final String squirrelJMEName()
 	{
 		String fromName = Objects.toString(this.displayName(),

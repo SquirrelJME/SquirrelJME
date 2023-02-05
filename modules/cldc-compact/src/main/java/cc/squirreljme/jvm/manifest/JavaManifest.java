@@ -28,7 +28,6 @@ import java.util.Set;
  *
  * @since 2016/05/20
  */
-@Exported
 public final class JavaManifest
 	extends AbstractMap<String, JavaManifestAttributes>
 {
@@ -40,7 +39,6 @@ public final class JavaManifest
 	 *
 	 * @since 2018/02/10
 	 */
-	@Exported
 	public JavaManifest()
 	{
 		// Initialize a blank set of main attributes
@@ -61,7 +59,6 @@ public final class JavaManifest
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/20
 	 */
-	@Exported
 	public JavaManifest(InputStream __is)
 		throws IOException, JavaManifestException, NullPointerException
 	{
@@ -78,7 +75,6 @@ public final class JavaManifest
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/22
 	 */
-	@Exported
 	public JavaManifest(Reader __r)
 		throws IOException, JavaManifestException, NullPointerException
 	{
@@ -247,7 +243,6 @@ public final class JavaManifest
 	 * @return The main attribute mapping.
 	 * @since 2016/05/29
 	 */
-	@Exported
 	public JavaManifestAttributes getMainAttributes()
 	{
 		return this._attributes.get("");

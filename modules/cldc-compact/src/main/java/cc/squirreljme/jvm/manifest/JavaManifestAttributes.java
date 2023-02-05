@@ -23,7 +23,6 @@ import java.util.Set;
  *
  * @since 2016/05/20
  */
-@Exported
 public final class JavaManifestAttributes
 	extends AbstractMap<JavaManifestKey, String>
 {
@@ -75,7 +74,6 @@ public final class JavaManifestAttributes
 	 * @return {@code true} if a value is defined.
 	 * @since 2017/11/26
 	 */
-	@Exported
 	public boolean definesValue(JavaManifestKey __k)
 	{
 		return this.containsKey(__k);
@@ -88,7 +86,6 @@ public final class JavaManifestAttributes
 	 * @return {@code true} if a value is defined.
 	 * @since 2017/11/26
 	 */
-	@Exported
 	public boolean definesValue(String __k)
 	{
 		return this.containsKey(__k == null ? null : new JavaManifestKey(__k));
@@ -123,7 +120,6 @@ public final class JavaManifestAttributes
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/04
 	 */
-	@Exported
 	public String getValue(JavaManifestKey __k)
 	{
 		if (__k == null)
@@ -140,7 +136,6 @@ public final class JavaManifestAttributes
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/21
 	 */
-	@Exported
 	public String getValue(String __s)
 		throws NullPointerException
 	{
@@ -162,7 +157,6 @@ public final class JavaManifestAttributes
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/18
 	 */
-	@Exported
 	public String getValue(JavaManifestKey __k, String __dv)
 		throws NullPointerException
 	{
@@ -185,7 +179,6 @@ public final class JavaManifestAttributes
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/18
 	 */
-	@Exported
 	public String getValue(String __k, String __dv)
 		throws NullPointerException
 	{

@@ -17,7 +17,6 @@ import java.io.Closeable;
  *
  * @since 2017/08/22
  */
-@Exported
 public interface CompressionStream
 	extends Closeable
 {
@@ -27,7 +26,6 @@ public interface CompressionStream
 	 * @return The number of compressed bytes which were read.
 	 * @since 2017/08/22
 	 */
-	@Exported
 	long compressedBytes();
 	
 	/**
@@ -36,7 +34,6 @@ public interface CompressionStream
 	 * @return The number of read uncompressed bytes.
 	 * @since 2017/08/22
 	 */
-	@Exported
 	long uncompressedBytes();
 }
 

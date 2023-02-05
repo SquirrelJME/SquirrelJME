@@ -19,7 +19,6 @@ import java.util.Set;
  *
  * @since 2021/03/13
  */
-@Exported
 public final class EnumTypeMap<E extends Enum<E>, V>
 	extends AbstractMap<E, V>
 {
@@ -37,7 +36,6 @@ public final class EnumTypeMap<E extends Enum<E>, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/13
 	 */
-	@Exported
 	public EnumTypeMap(Class<E> __type, E... __keys)
 		throws NullPointerException
 	{

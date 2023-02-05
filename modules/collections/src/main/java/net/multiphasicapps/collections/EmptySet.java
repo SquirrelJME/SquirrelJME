@@ -22,7 +22,6 @@ import java.util.Set;
  *
  * @since 2016/04/10
  */
-@Exported
 public final class EmptySet
 	extends AbstractSet
 {
@@ -95,7 +94,6 @@ public final class EmptySet
 	 * @return The unmodifiable and empty set.
 	 * @since 2016/04/10
 	 */
-	@Exported
 	@SuppressWarnings({"unchecked"})
 	public static <V> Set<V> empty()
 	{

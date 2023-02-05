@@ -20,7 +20,6 @@ import java.util.NoSuchElementException;
  *
  * @since 2016/04/10
  */
-@Exported
 public final class EmptyIterator
 	implements Iterator
 {
@@ -76,7 +75,6 @@ public final class EmptyIterator
 	 * @return The empty iterator.
 	 * @since 2016/04/10
 	 */
-	@Exported
 	@SuppressWarnings({"unchecked"})
 	public static <V> Iterator<V> empty()
 	{

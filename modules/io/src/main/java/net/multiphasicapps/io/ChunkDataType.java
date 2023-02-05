@@ -16,23 +16,18 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2019/08/17
  */
-@Exported
 public enum ChunkDataType
 {
 	/** Byte. */
-	@Exported
 	BYTE(1),
 	
 	/** Short. */
-	@Exported
 	SHORT(2),
 	
 	/** Integer. */
-	@Exported
 	INTEGER(4),
 	
 	/** Long. */
-	@Exported
 	LONG(8),
 	
 	/* End. */

@@ -17,15 +17,12 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2016/07/10
  */
-@Exported
 public enum DataEndianess
 {
 	/** Big endian. */
-	@Exported
 	BIG,
 	
 	/** Little endian. */
-	@Exported
 	LITTLE,
 	
 	/** End. */

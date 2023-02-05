@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2021/04/10
  */
-@Exported
 public interface JDWPViewThreadGroup
 	extends JDWPViewHasInstance, JDWPViewValidObject
 {
@@ -27,7 +26,6 @@ public interface JDWPViewThreadGroup
 	 * @return All of the types that are known by this thread group.
 	 * @since 2021/04/25
 	 */
-	@Exported
 	Object[] allTypes(Object __which);
 	
 	/**
@@ -37,7 +35,6 @@ public interface JDWPViewThreadGroup
 	 * @param __code The exit code.
 	 * @since 2021/04/30
 	 */
-	@Exported
 	void exit(Object __which, int __code);
 	
 	/**
@@ -48,7 +45,6 @@ public interface JDWPViewThreadGroup
 	 * @return The found type.
 	 * @since 2021/04/18
 	 */
-	@Exported
 	Object findType(Object __which, String __name);
 	
 	/**
@@ -77,6 +73,5 @@ public interface JDWPViewThreadGroup
 	 * @return The threads that are part of this thread group.
 	 * @since 2021/04/10
 	 */
-	@Exported
 	Object[] threads(Object __which);
 }

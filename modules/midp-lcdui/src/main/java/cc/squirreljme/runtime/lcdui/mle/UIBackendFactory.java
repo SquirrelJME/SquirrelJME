@@ -25,7 +25,6 @@ import cc.squirreljme.runtime.lcdui.mle.pure.NativeUIBackend;
  *
  * @since 2020/07/19
  */
-@Exported
 public final class UIBackendFactory
 {
 	/**
@@ -56,7 +55,6 @@ public final class UIBackendFactory
 	 * @return The instance of the engine to use.
 	 * @since 2020/06/30
 	 */
-	@Exported
 	@SuppressWarnings("StaticVariableUsedBeforeInitialization")
 	public static UIBackend getInstance(boolean __allowHeadless)
 	{

@@ -21,7 +21,6 @@ import java.util.ArrayList;
  *
  * @since 2021/06/19
  */
-@Exported
 public class AutoCloseableList<T extends AutoCloseable>
 	extends ArrayList<T>
 	implements AutoCloseable

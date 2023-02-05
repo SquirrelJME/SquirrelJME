@@ -17,7 +17,6 @@ import java.io.InputStream;
  *
  * @since 2022/10/03
  */
-@Exported
 public final class TangoIconLoader
 {
 	/**
@@ -38,7 +37,6 @@ public final class TangoIconLoader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/10/03
 	 */
-	@Exported
 	public static InputStream loadIcon(int __size, String __icon)
 		throws NullPointerException
 	{

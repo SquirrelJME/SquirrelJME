@@ -32,7 +32,6 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2020/06/30
  */
-@Exported
 public interface UIBackend
 {
 	/**
@@ -45,7 +44,6 @@ public interface UIBackend
 	 * @see UIDisplayCallback
 	 * @since 2023/01/14
 	 */
-	@Exported
 	void callback(UIDisplayBracket __display,
 		UIDisplayCallback __callback)
 		throws MLECallError;
@@ -59,7 +57,6 @@ public interface UIBackend
 	 * @throws MLECallError If {@code __form} is {@code null}.
 	 * @since 2020/07/03
 	 */
-	@Exported
 	void callback(UIFormBracket __form, UIFormCallback __callback)
 		throws MLECallError;
 	
@@ -71,7 +68,6 @@ public interface UIBackend
 	 * @throws MLECallError If there are no displays.
 	 * @since 2020/07/01
 	 */
-	@Exported
 	UIDisplayBracket[] displays()
 		throws MLECallError;
 	
@@ -83,7 +79,6 @@ public interface UIBackend
 	 * @throws MLECallError On null arguments.
 	 * @since 2020/07/01
 	 */
-	@Exported
 	UIFormBracket displayCurrent(UIDisplayBracket __display)
 		throws MLECallError;
 	
@@ -98,7 +93,6 @@ public interface UIBackend
 	 * an error showing the display.
 	 * @since 2023/01/14
 	 */
-	@Exported
 	void displayShow(UIDisplayBracket __display,
 		boolean __show)
 		throws MLECallError;
@@ -112,7 +106,6 @@ public interface UIBackend
 	 * @throws MLECallError On {@code __display} is {@code null}.
 	 * @since 2020/07/01
 	 */
-	@Exported
 	void displayShow(UIDisplayBracket __display, UIFormBracket __form)
 		throws MLECallError;
 	
@@ -125,7 +118,6 @@ public interface UIBackend
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
-	@Exported
 	boolean equals(UIDisplayBracket __a, UIDisplayBracket __b)
 		throws MLECallError;
 	
@@ -139,7 +131,6 @@ public interface UIBackend
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2023/01/13
 	 */
-	@Exported
 	boolean equals(UIDrawableBracket __a, UIDrawableBracket __b)
 		throws MLECallError;
 	
@@ -152,7 +143,6 @@ public interface UIBackend
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
-	@Exported
 	boolean equals(UIFormBracket __a, UIFormBracket __b)
 		throws MLECallError;
 	
@@ -165,7 +155,6 @@ public interface UIBackend
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/07/01
 	 */
-	@Exported
 	boolean equals(UIItemBracket __a, UIItemBracket __b)
 		throws MLECallError;
 	
@@ -178,7 +167,6 @@ public interface UIBackend
 	 * @throws MLECallError If either is {@code null}.
 	 * @since 2020/09/20
 	 */
-	@Exported
 	boolean equals(UIWidgetBracket __a, UIWidgetBracket __b)
 		throws MLECallError;
 	
@@ -188,7 +176,6 @@ public interface UIBackend
 	 * @throws MLECallError If events could not be flushed.
 	 * @since 2020/07/26
 	 */
-	@Exported
 	void flushEvents()
 		throws MLECallError;
 	
@@ -199,7 +186,6 @@ public interface UIBackend
 	 * @throws MLECallError On null arguments or the form could not be deleted.
 	 * @since 2020/07/01
 	 */
-	@Exported
 	void formDelete(UIFormBracket __form)
 		throws MLECallError;
 	
@@ -214,7 +200,6 @@ public interface UIBackend
 	 * not valid.
 	 * @since 2020/07/19
 	 */
-	@Exported
 	UIItemBracket formItemAtPosition(UIFormBracket __form, int __pos)
 		throws MLECallError;
 	
@@ -226,7 +211,6 @@ public interface UIBackend
 	 * @throws MLECallError If the form is null or not valid.
 	 * @since 2020/07/19
 	 */
-	@Exported
 	int formItemCount(UIFormBracket __form)
 		throws MLECallError;
 	
@@ -242,7 +226,6 @@ public interface UIBackend
 	 * @throws MLECallError If the form and item are null.
 	 * @since 2020/07/18
 	 */
-	@Exported
 	int formItemPosition(UIFormBracket __form, UIItemBracket __item)
 		throws MLECallError;
 	
@@ -257,7 +240,6 @@ public interface UIBackend
 	 * is not valid.
 	 * @since 2020/07/18
 	 */
-	@Exported
 	void formItemPosition(UIFormBracket __form, UIItemBracket __item,
 		int __pos)
 		throws MLECallError;
@@ -272,7 +254,6 @@ public interface UIBackend
 	 * not valid, or there was no item at the position.
 	 * @since 2020/07/18
 	 */
-	@Exported
 	UIItemBracket formItemRemove(UIFormBracket __form, int __pos)
 		throws MLECallError;
 	
@@ -283,7 +264,6 @@ public interface UIBackend
 	 * @throws MLECallError If the form could not be created.
 	 * @since 2020/07/01
 	 */
-	@Exported
 	UIFormBracket formNew()
 		throws MLECallError;
 		
@@ -294,7 +274,6 @@ public interface UIBackend
 	 * @throws MLECallError On null arguments or the form is not valid.
 	 * @since 2022/07/20
 	 */
-	@Exported
 	void formRefresh(UIFormBracket __form)
 		throws MLECallError;
 	
@@ -305,7 +284,6 @@ public interface UIBackend
 	 * @throws MLECallError If injecting is not supported.
 	 * @since 2020/07/26
 	 */
-	@Exported
 	UIFormCallback injector()
 		throws MLECallError;
 	
@@ -318,7 +296,6 @@ public interface UIBackend
 	 * active within a form.
 	 * @since 2020/07/18
 	 */
-	@Exported
 	void itemDelete(UIItemBracket __item)
 		throws MLECallError;
 	
@@ -330,7 +307,6 @@ public interface UIBackend
 	 * @throws MLECallError If {@code __item} is {@code null}.
 	 * @since 2021/01/03
 	 */
-	@Exported
 	UIFormBracket itemForm(UIItemBracket __item)
 		throws MLECallError;
 	
@@ -343,7 +319,6 @@ public interface UIBackend
 	 * not valid.
 	 * @since 2020/07/17
 	 */
-	@Exported
 	UIItemBracket itemNew(int __type)
 		throws MLECallError;
 	
@@ -355,7 +330,6 @@ public interface UIBackend
 	 * @throws MLECallError If the call is not valid.
 	 * @since 2020/10/03
 	 */
-	@Exported
 	void later(UIDisplayBracket __display, int __serialId)
 		throws MLECallError;
 	
@@ -372,7 +346,6 @@ public interface UIBackend
 	 * supported and the metric is not {@link UIMetricType#UIFORMS_SUPPORTED}.
 	 * @since 2020/06/30
 	 */
-	@Exported
 	int metric(UIDisplayBracket __display, int __metric)
 		throws MLECallError;
 	
@@ -387,7 +360,6 @@ public interface UIBackend
 	 * valid or not an integer property.
 	 * @since 2020/09/13
 	 */
-	@Exported
 	void widgetProperty(UIWidgetBracket __item, int __intProp, int __sub,
 		int __newValue);
 	
@@ -402,7 +374,6 @@ public interface UIBackend
 	 * valid or not a string property.
 	 * @since 2020/09/13
 	 */
-	@Exported
 	void widgetProperty(UIWidgetBracket __item, int __strProp, int __sub,
 		String __newValue);
 	
@@ -416,7 +387,6 @@ public interface UIBackend
 	 * @throws MLECallError If the widget or property is not valid.
 	 * @since 2020/09/21
 	 */
-	@Exported
 	int widgetPropertyInt(UIWidgetBracket __widget, int __intProp, int __sub)
 		throws MLECallError;
 	
@@ -430,7 +400,6 @@ public interface UIBackend
 	 * @throws MLECallError If the widget or property is not valid.
 	 * @since 2020/09/21
 	 */
-	@Exported
 	String widgetPropertyStr(UIWidgetBracket __widget, int __strProp,
 		int __sub)
 		throws MLECallError;

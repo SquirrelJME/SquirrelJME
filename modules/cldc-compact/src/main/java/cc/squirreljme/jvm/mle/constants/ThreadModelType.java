@@ -16,26 +16,21 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2021/05/07
  */
-@Exported
 public interface ThreadModelType
 {
 	/** Invalid model. */
-	@Exported
 	byte INVALID =
 		0;
 	
 	/** Single cooperatively threaded. */
-	@Exported
 	byte SINGLE_COOP_THREAD =
 		1;
 	
 	/** Simultaneous Multi-threaded. */
-	@Exported
 	byte SIMULTANEOUS_MULTI_THREAD =
 		2;
 	
 	/** The number of threading models. */
-	@Exported
 	byte NUM_MODELS =
 		3;
 }

@@ -30,7 +30,6 @@ import java.util.Objects;
  *
  * @since 2016/09/13
  */
-@Exported
 public class MarkdownWriter
 	implements Appendable, Closeable
 {
@@ -67,7 +66,6 @@ public class MarkdownWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/13
 	 */
-	@Exported
 	public MarkdownWriter(Appendable __a)
 		throws NullPointerException
 	{
@@ -114,7 +112,6 @@ public class MarkdownWriter
 	 * @throws IOException On write errors.
 	 * @since 2022/08/26
 	 */
-	@Exported
 	public MarkdownWriter append(boolean __wholeWords, CharSequence __cs)
 		throws IOException
 	{
@@ -144,7 +141,6 @@ public class MarkdownWriter
 	 * the bounds of the sequence, or the start exceeds the end.
 	 * @since 2022/08/26
 	 */
-	@Exported
 	public MarkdownWriter append(boolean __wholeWords, CharSequence __cs,
 		int __s, int __e)
 		throws IndexOutOfBoundsException, IOException
@@ -254,7 +250,6 @@ public class MarkdownWriter
 	 * @throws IOException If it could not be flushed.
 	 * @since 2016/09/13
 	 */
-	@Exported
 	public void flush()
 		throws IOException
 	{
@@ -280,7 +275,6 @@ public class MarkdownWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/13
 	 */
-	@Exported
 	public void header(boolean __abs, int __level, String __s)
 		throws IOException, NullPointerException
 	{
@@ -314,7 +308,6 @@ public class MarkdownWriter
 	 * @throws IOException On write errors.
 	 * @since 2016/10/01
 	 */
-	@Exported
 	public void listEnd()
 		throws IOException
 	{
@@ -336,7 +329,6 @@ public class MarkdownWriter
 	 * @throws IOException On write errors.
 	 * @since 2016/10/01
 	 */
-	@Exported
 	public void listNext()
 		throws IOException
 	{
@@ -352,7 +344,6 @@ public class MarkdownWriter
 	 * @throws IOException On write errors.
 	 * @since 2016/10/01
 	 */
-	@Exported
 	public void listStart()
 		throws IOException
 	{
@@ -366,7 +357,6 @@ public class MarkdownWriter
 	 * @throws IOException On write errors.
 	 * @since 2016/10/02
 	 */
-	@Exported
 	public void paragraph()
 		throws IOException
 	{
@@ -380,7 +370,6 @@ public class MarkdownWriter
 	 * @throws IOException On write errors.
 	 * @since 2016/10/02
 	 */
-	@Exported
 	public void print(char __c)
 		throws IOException
 	{
@@ -394,7 +383,6 @@ public class MarkdownWriter
 	 * @throws IOException On write errors.
 	 * @since 2016/10/01
 	 */
-	@Exported
 	public void print(Object __o)
 		throws IOException
 	{
@@ -409,7 +397,6 @@ public class MarkdownWriter
 	 * @throws IOException On write errors.
 	 * @since 2022/08/26
 	 */
-	@Exported
 	public void print(boolean __wholeWords, Object __o)
 		throws IOException
 	{
@@ -425,7 +412,6 @@ public class MarkdownWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/08/26
 	 */
-	@Exported
 	public void printf(String __f, Object... __args)
 		throws IOException, NullPointerException
 	{
@@ -442,7 +428,6 @@ public class MarkdownWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/13
 	 */
-	@Exported
 	public void printf(boolean __wholeWords, String __f, Object... __args)
 		throws IOException, NullPointerException
 	{
@@ -467,7 +452,6 @@ public class MarkdownWriter
 	 * @throws IOException On write errors.
 	 * @since 2016/10/01
 	 */
-	@Exported
 	public void println()
 		throws IOException
 	{
@@ -481,7 +465,6 @@ public class MarkdownWriter
 	 * @throws IOException On write errors.
 	 * @since 2016/10/01
 	 */
-	@Exported
 	public void println(Object __o)
 		throws IOException
 	{
@@ -497,7 +480,6 @@ public class MarkdownWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/01
 	 */
-	@Exported
 	public void uri(String __uri)
 		throws IOException, NullPointerException
 	{
@@ -532,7 +514,6 @@ public class MarkdownWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/01
 	 */
-	@Exported
 	public void uri(String __uri, String __text)
 		throws IOException, NullPointerException
 	{
@@ -550,7 +531,6 @@ public class MarkdownWriter
 	 * {@code __title}.
 	 * @since 2016/10/01
 	 */
-	@Exported
 	public void uri(String __uri, String __text, String __title)
 		throws IOException, NullPointerException
 	{

@@ -20,7 +20,6 @@ import javax.microedition.lcdui.Graphics;
  *
  * @since 2020/09/25
  */
-@Exported
 public final class SoftwareGraphicsFactory
 {
 	/**
@@ -52,7 +51,6 @@ public final class SoftwareGraphicsFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/25
 	 */
-	@Exported
 	public static Graphics softwareGraphics(int __pf, int __bw,
 		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
 		int __sw, int __sh)

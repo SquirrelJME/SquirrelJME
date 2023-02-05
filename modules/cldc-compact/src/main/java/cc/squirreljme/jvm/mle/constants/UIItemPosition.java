@@ -20,23 +20,19 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2020/06/30
  */
-@Exported
 public interface UIItemPosition
 {
 	/** The left command button. */
-	@Exported
 	@Deprecated
 	byte LEFT_COMMAND =
 		-1;
 	
 	/** The right command button. */
-	@Exported
 	@Deprecated
 	byte RIGHT_COMMAND =
 		-2;
 	
 	/** The main title which is at the top of the form always. */
-	@Exported
 	@Deprecated
 	byte TITLE =
 		-3;
@@ -45,33 +41,27 @@ public interface UIItemPosition
 	 * The ticker position which is always below the title, a scrolling effect
 	 * may happen on the item.
 	 */
-	@Exported
 	@Deprecated
 	byte TICKER =
 		-4;
 	
 	/** The body of the form, this acts as a "full-screen" view. */
-	@Exported
 	byte BODY =
 		-5;
 	
 	/** The touch-screen control interface. */
-	@Exported
 	byte TOUCH_CONTROLS =
 		-6;
 	
 	/** The lowest permitted value, no value can be lower than this. */
-	@Exported
 	byte MIN_VALUE =
 		-6;
 	
 	/** The number of special items, for shifting. */
-	@Exported
 	byte SPECIAL_SHIFT =
 		6;
 	
 	/** The item is not on the form. */
-	@Exported
 	int NOT_ON_FORM =
 		Integer.MIN_VALUE;
 }

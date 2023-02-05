@@ -18,7 +18,6 @@ import java.io.IOException;
  *
  * @since 2022/08/20
  */
-@Exported
 public interface ArchiveStreamReader
 	extends Closeable
 {
@@ -29,7 +28,6 @@ public interface ArchiveStreamReader
 	 * @throws IOException On read errors.
 	 * @since 2022/08/20
 	 */
-	@Exported
 	ArchiveStreamEntry nextEntry()
 		throws IOException;
 }

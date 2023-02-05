@@ -25,11 +25,9 @@ import java.util.List;
  *
  * @since 2019/08/11
  */
-@Exported
 public final class ChunkWriter
 {
 	/** This represents a variable sized section. */
-	@Exported
 	public static final int VARIABLE_SIZE =
 		Integer.MIN_VALUE;
 	
@@ -50,7 +48,6 @@ public final class ChunkWriter
 	 * @return The resulting section.
 	 * @since 2019/08/11
 	 */
-	@Exported
 	public final ChunkSection addSection()
 	{
 		return this.addSection(ChunkWriter.VARIABLE_SIZE, 1);
@@ -65,7 +62,6 @@ public final class ChunkWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/08/11
 	 */
-	@Exported
 	public final ChunkSection addSection(byte[] __bytes)
 		throws IOException, NullPointerException
 	{
@@ -85,7 +81,6 @@ public final class ChunkWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/08/11
 	 */
-	@Exported
 	public final ChunkSection addSection(byte[] __bytes,
 		int __align)
 		throws IllegalArgumentException, IOException, NullPointerException
@@ -113,7 +108,6 @@ public final class ChunkWriter
 	 * is not the variable size, or the alignment is below one.
 	 * @since 2019/08/11
 	 */
-	@Exported
 	public final ChunkSection addSection(int __size)
 		throws IllegalArgumentException
 	{
@@ -133,7 +127,6 @@ public final class ChunkWriter
 	 * is not the variable size, or the alignment is below one.
 	 * @since 2019/08/11
 	 */
-	@Exported
 	public final ChunkSection addSection(int __size,
 		int __align)
 		throws IllegalArgumentException
@@ -166,7 +159,6 @@ public final class ChunkWriter
 	 * @return The file size.
 	 * @since 2019/08/25
 	 */
-	@Exported
 	public final int fileSize()
 	{
 		this.undirty();
@@ -179,7 +171,6 @@ public final class ChunkWriter
 	 * @return The future for this chunk.
 	 * @since 2020/12/05
 	 */
-	@Exported
 	public final ChunkFutureChunk futureSize()
 	{
 		return new ChunkFutureChunk(this);
@@ -193,7 +184,6 @@ public final class ChunkWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/08/25
 	 */
-	@Exported
 	public final int sectionAddress(ChunkSection __s)
 		throws NullPointerException
 	{
@@ -212,7 +202,6 @@ public final class ChunkWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/08/25
 	 */
-	@Exported
 	public final int sectionSize(ChunkSection __s)
 		throws NullPointerException
 	{
@@ -229,7 +218,6 @@ public final class ChunkWriter
 	 * @return The resulting byte array.
 	 * @since 2019/08/11
 	 */
-	@Exported
 	public final byte[] toByteArray()
 	{
 		// Setup output byte array which has a base size for the size of the
@@ -256,7 +244,6 @@ public final class ChunkWriter
 	 *
 	 * @since 2019/08/25
 	 */
-	@Exported
 	public void undirty()
 	{
 		// There is no need to calculate if this is not dirty at all
@@ -304,7 +291,6 @@ public final class ChunkWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/08/11
 	 */
-	@Exported
 	public final void writeTo(OutputStream __os)
 		throws IOException, NullPointerException
 	{

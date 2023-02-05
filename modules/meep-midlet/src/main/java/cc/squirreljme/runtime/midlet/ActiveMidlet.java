@@ -18,7 +18,6 @@ import javax.microedition.midlet.MIDlet;
  *
  * @since 2017/02/26
  */
-@Exported
 public final class ActiveMidlet
 {
 	/** Lock to prevent multiple midlets from running. */
@@ -44,7 +43,6 @@ public final class ActiveMidlet
 	 * @throws IllegalStateException If no midlet is set.
 	 * @since 2017/02/26
 	 */
-	@Exported
 	public static MIDlet get()
 		throws IllegalStateException
 	{
@@ -63,7 +61,6 @@ public final class ActiveMidlet
 	 * @return The active midlet or {@code null} if none is active.
 	 * @since 2019/04/14
 	 */
-	@Exported
 	public static MIDlet optional()
 		throws IllegalStateException
 	{
@@ -82,7 +79,6 @@ public final class ActiveMidlet
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/26
 	 */
-	@Exported
 	public static void set(MIDlet __m)
 		throws IllegalStateException, NullPointerException
 	{

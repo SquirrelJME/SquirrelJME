@@ -26,7 +26,6 @@ import java.util.NoSuchElementException;
  *
  * @since 2017/02/24
  */
-@Exported
 public class InflaterInputStream
 	extends DecompressionInputStream
 {
@@ -162,7 +161,6 @@ public class InflaterInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/24
 	 */
-	@Exported
 	public InflaterInputStream(InputStream __in)
 		throws NullPointerException
 	{
@@ -178,7 +176,6 @@ public class InflaterInputStream
 	 * @throws NullPointerException On null arguments, except for {@code __cs}.
 	 * @since 2017/02/24
 	 */
-	@Exported
 	public InflaterInputStream(InputStream __in, Checksum __cs)
 		throws NullPointerException
 	{
@@ -194,7 +191,6 @@ public class InflaterInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/04
 	 */
-	@Exported
 	public InflaterInputStream(InputStream __in, int __sls)
 	{
 		this(__in, __sls, null);
@@ -214,7 +210,6 @@ public class InflaterInputStream
 	 * {@code __checksum}.
 	 * @since 2017/08/22
 	 */
-	@Exported
 	public InflaterInputStream(InputStream __in, int __sls,
 		Checksum __checksum)
 	{

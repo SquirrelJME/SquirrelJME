@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2020/02/23
  */
-@Exported
 public interface OverrideActiveMidletRestriction
 {
 }

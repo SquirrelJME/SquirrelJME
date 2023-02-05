@@ -19,7 +19,6 @@ import java.lang.ref.WeakReference;
  *
  * @since 2020/12/04
  */
-@Exported
 public class ChunkFutureSection
 	implements ChunkFuture
 {
@@ -41,7 +40,6 @@ public class ChunkFutureSection
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/04
 	 */
-	@Exported
 	public ChunkFutureSection(ChunkFutureSectionKind __kind,
 		ChunkSection __section, int __off)
 		throws NullPointerException

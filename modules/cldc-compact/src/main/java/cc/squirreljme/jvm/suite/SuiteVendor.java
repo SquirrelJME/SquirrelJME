@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.util.StringUtils;
  *
  * @since 2016/10/12
  */
-@Exported
 public final class SuiteVendor
 	implements Comparable<SuiteVendor>
 {
@@ -32,7 +31,6 @@ public final class SuiteVendor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
-	@Exported
 	public SuiteVendor(String __v)
 		throws InvalidSuiteException, NullPointerException
 	{

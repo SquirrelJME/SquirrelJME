@@ -26,7 +26,6 @@ import java.util.ServiceLoader;
  * @since 2020/11/22
  */
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
-@Exported
 public interface Backend
 {
 	/**
@@ -42,7 +41,6 @@ public interface Backend
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/22
 	 */
-	@Exported
 	void compileClass(CompileSettings __settings, LinkGlob __glob,
 		String __name, InputStream __in, OutputStream __out)
 		throws IOException, NullPointerException;
@@ -58,7 +56,6 @@ public interface Backend
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/05/16
 	 */
-	@Exported
 	void dumpGlob(byte[] __inGlob, String __name, PrintStream __out)
 		throws IOException, NullPointerException;
 	
@@ -73,7 +70,6 @@ public interface Backend
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/22
 	 */
-	@Exported
 	LinkGlob linkGlob(CompileSettings __settings, String __name,
 		OutputStream __out)
 		throws IOException, NullPointerException;
@@ -84,7 +80,6 @@ public interface Backend
 	 * @return The name of the backend.
 	 * @since 2020/11/22
 	 */
-	@Exported
 	String name();
 	
 	/**
@@ -98,7 +93,6 @@ public interface Backend
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/27
 	 */
-	@Exported
 	void rom(RomSettings __settings, OutputStream __out,
 		VMClassLibrary... __libs)
 		throws IOException, NullPointerException;

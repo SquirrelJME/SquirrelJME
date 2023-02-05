@@ -16,31 +16,25 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2020/10/03
  */
-@Exported
 public interface UIInputFlag
 {
 	/** Has gamepad input. */
-	@Exported
 	byte GAMEPAD =
 		1;
 	
 	/** Has keyboard input. */
-	@Exported
 	byte KEYBOARD =
 		2;
 	
 	/** Has pointer input. */
-	@Exported
 	byte POINTER =
 		4;
 	
 	/** Has pointer motion. */
-	@Exported
 	byte POINTER_MOTION =
 		8;
 	
 	/** All input types. */
-	@Exported
 	byte ALL_MASK =
 		UIInputFlag.GAMEPAD | UIInputFlag.KEYBOARD |
 		UIInputFlag.POINTER | UIInputFlag.POINTER_MOTION;

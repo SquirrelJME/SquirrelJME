@@ -19,7 +19,6 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2021/04/10
  */
-@Exported
 public interface JDWPViewType
 	extends JDWPViewHasInstance, JDWPViewValidObject
 {
@@ -31,7 +30,6 @@ public interface JDWPViewType
 	 * @return If the cast is possible.
 	 * @since 2022/08/28
 	 */
-	@Exported
 	boolean canCastTo(Object __fromWhich, Object __toWhich);
 	
 	/**
@@ -42,7 +40,6 @@ public interface JDWPViewType
 	 * @return The class loader for the given type.
 	 * @since 2021/04/20
 	 */
-	@Exported
 	Object classLoader(Object __which);
 	
 	/**
@@ -52,7 +49,6 @@ public interface JDWPViewType
 	 * @return The component type or {@code null} if this is not an array.
 	 * @since 2021/04/11
 	 */
-	@Exported
 	Object componentType(Object __which);
 	
 	/**
@@ -63,7 +59,6 @@ public interface JDWPViewType
 	 * @return The class flags.
 	 * @since 2021/04/11
 	 */
-	@Exported
 	int flags(Object __which);
 	
 	/**
@@ -73,7 +68,6 @@ public interface JDWPViewType
 	 * @return The interfaces for this type.
 	 * @since 2021/04/14
 	 */
-	@Exported
 	Object[] interfaceTypes(Object __which);
 	
 	/**
@@ -84,7 +78,6 @@ public interface JDWPViewType
 	 * @return If this is a valid field index in this class.
 	 * @since 2021/04/14
 	 */
-	@Exported
 	boolean isValidField(Object __which, int __fieldDx);
 	
 	/**
@@ -95,7 +88,6 @@ public interface JDWPViewType
 	 * @return If this is a valid method index in this class.
 	 * @since 2021/04/13
 	 */
-	@Exported
 	boolean isValidMethod(Object __which, int __methodDx);
 	
 	/**
@@ -106,7 +98,6 @@ public interface JDWPViewType
 	 * @return The field flags.
 	 * @since 2021/04/14
 	 */
-	@Exported
 	int fieldFlags(Object __which, int __fieldDx);
 	
 	/**
@@ -117,7 +108,6 @@ public interface JDWPViewType
 	 * @return The field name.
 	 * @since 2021/04/14
 	 */
-	@Exported
 	String fieldName(Object __which, int __fieldDx);
 	
 	/**
@@ -127,7 +117,6 @@ public interface JDWPViewType
 	 * @return All of the field indexes within the class.
 	 * @since 2021/04/14
 	 */
-	@Exported
 	int[] fields(Object __which);
 	
 	/**
@@ -138,7 +127,6 @@ public interface JDWPViewType
 	 * @return The field signature.
 	 * @since 2021/04/14
 	 */
-	@Exported
 	String fieldSignature(Object __which, int __fieldDx);
 	
 	/**
@@ -152,7 +140,6 @@ public interface JDWPViewType
 	 * field access is enabled.
 	 * @since 2021/04/30
 	 */
-	@Exported
 	void fieldWatch(Object __which, int __fieldDx, boolean __write);
 	
 	/**
@@ -174,7 +161,6 @@ public interface JDWPViewType
 	 * @param __trip The trip to call when this code is executed.
 	 * @since 2021/04/25
 	 */
-	@Exported
 	void methodBreakpoint(Object __which, int __methodDx, int __codeDx,
 		JDWPTripBreakpoint __trip);
 	
@@ -187,7 +173,6 @@ public interface JDWPViewType
 	 * there is no byte code.
 	 * @since 2021/04/14
 	 */
-	@Exported
 	byte[] methodByteCode(Object __which, int __methodDx);
 	
 	/**
@@ -198,7 +183,6 @@ public interface JDWPViewType
 	 * @return The method flags.
 	 * @since 2021/04/14
 	 */
-	@Exported
 	int methodFlags(Object __which, int __methodDx);
 	
 	/**
@@ -211,7 +195,6 @@ public interface JDWPViewType
 	 * the method, will be {@code null} if not available.
 	 * @since 2021/04/14
 	 */
-	@Exported
 	int[] methodLineTable(Object __which, int __methodDx);
 	
 	/**
@@ -223,7 +206,6 @@ public interface JDWPViewType
 	 * if it is unknown ({@code native}).
 	 * @since 2021/04/14
 	 */
-	@Exported
 	int methodLocationCount(Object __which, int __methodDx);
 	
 	/**
@@ -234,7 +216,6 @@ public interface JDWPViewType
 	 * @return The method name.
 	 * @since 2021/04/14
 	 */
-	@Exported
 	String methodName(Object __which, int __methodDx);
 	
 	/**
@@ -244,7 +225,6 @@ public interface JDWPViewType
 	 * @return The method indexes.
 	 * @since 2021/04/14
 	 */
-	@Exported
 	int[] methods(Object __which);
 	
 	/**
@@ -255,7 +235,6 @@ public interface JDWPViewType
 	 * @return The method signature.
 	 * @since 2021/04/14
 	 */
-	@Exported
 	String methodSignature(Object __which, int __methodDx);
 	
 	/**
@@ -267,7 +246,6 @@ public interface JDWPViewType
 	 * is not considered valid.
 	 * @since 2022/09/21
 	 */
-	@Exported
 	JDWPLocalVariable[] methodVariableTable(Object __which, int __methodDx);
 	
 	/**
@@ -279,7 +257,6 @@ public interface JDWPViewType
 	 * @return {@code true} if this is a valid value.
 	 * @since 2021/04/10
 	 */
-	@Exported
 	boolean readValue(Object __which, int __index, JDWPValue __out);
 	
 	/**
@@ -291,7 +268,6 @@ public interface JDWPViewType
 	 * @return The signature of the given type.
 	 * @since 2021/04/11
 	 */
-	@Exported
 	String signature(Object __which);
 	
 	/**
@@ -302,7 +278,6 @@ public interface JDWPViewType
 	 * known.
 	 * @since 2021/04/14
 	 */
-	@Exported
 	String sourceFile(Object __which);
 	
 	/**
@@ -312,7 +287,6 @@ public interface JDWPViewType
 	 * @return The super class or {@code null} if there is none.
 	 * @since 2021/04/12
 	 */
-	@Exported
 	Object superType(Object __which);
 	
 	/**
@@ -323,6 +297,5 @@ public interface JDWPViewType
 	 * valid.
 	 * @since 2022/09/01
 	 */
-	@Exported
 	Object typeOfClassInstance(Object __object);
 }

@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2018/09/09
  */
-@Exported
 public interface MemberDescriptor
 {
 }

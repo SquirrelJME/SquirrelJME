@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2017/03/05
  */
-@Exported
 public interface Checksum
 {
 	/**
@@ -26,7 +25,6 @@ public interface Checksum
 	 * @return The current checksum value.
 	 * @since 2017/03/05
 	 */
-	@Exported
 	int checksum();
 	
 	/**
@@ -35,7 +33,6 @@ public interface Checksum
 	 * @param __b The byte to offer.
 	 * @since 2017/03/05
 	 */
-	@Exported
 	void offer(byte __b);
 	
 	/**
@@ -45,7 +42,6 @@ public interface Checksum
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/05
 	 */
-	@Exported
 	void offer(byte[] __b)
 		throws NullPointerException;
 	
@@ -60,7 +56,6 @@ public interface Checksum
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/05
 	 */
-	@Exported
 	void offer(byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException;
 	
@@ -69,7 +64,6 @@ public interface Checksum
 	 *
 	 * @since 2017/03/05
 	 */
-	@Exported
 	void reset();
 }
 

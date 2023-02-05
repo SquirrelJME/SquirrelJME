@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2021/04/11
  */
-@Exported
 public interface JDWPViewFrame
 	extends JDWPViewValidObject
 {
@@ -28,7 +27,6 @@ public interface JDWPViewFrame
 	 * @return The class the frame is in.
 	 * @since 2021/04/11
 	 */
-	@Exported
 	Object atClass(Object __which);
 	
 	/**
@@ -39,7 +37,6 @@ public interface JDWPViewFrame
 	 * @return The code index the frame is at.
 	 * @since 2021/04/11
 	 */
-	@Exported
 	long atCodeIndex(Object __which);
 	
 	/**
@@ -49,7 +46,6 @@ public interface JDWPViewFrame
 	 * @return The line index the frame is at or a negative value if not valid.
 	 * @since 2021/04/28
 	 */
-	@Exported
 	long atLineIndex(Object __which);
 	
 	/**
@@ -59,7 +55,6 @@ public interface JDWPViewFrame
 	 * @return The method index.
 	 * @since 2021/04/11
 	 */
-	@Exported
 	int atMethodIndex(Object __which);
 	
 	/**
@@ -71,7 +66,6 @@ public interface JDWPViewFrame
 	 * @return {@code true} if this is a valid value.
 	 * @since 2021/04/14
 	 */
-	@Exported
 	boolean readValue(Object __which, int __index, JDWPValue __out);
 	
 	/**
@@ -81,6 +75,5 @@ public interface JDWPViewFrame
 	 * @return The number of values to store in the frame.
 	 * @since 2021/04/14
 	 */
-	@Exported
 	int numValues(Object __which);
 }

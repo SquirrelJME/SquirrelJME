@@ -21,7 +21,6 @@ import java.io.InputStream;
  *
  * @since 2016/03/09
  */
-@Exported
 public class SizeLimitedInputStream
 	extends InputStream
 {
@@ -58,7 +57,6 @@ public class SizeLimitedInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/09
 	 */
-	@Exported
 	public SizeLimitedInputStream(InputStream __is, long __li, boolean __ex)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -81,7 +79,6 @@ public class SizeLimitedInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/28
 	 */
-	@Exported
 	public SizeLimitedInputStream(InputStream __is, long __li, boolean __ex,
 		boolean __prop)
 		throws IllegalArgumentException, NullPointerException

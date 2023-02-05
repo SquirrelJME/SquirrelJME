@@ -17,17 +17,14 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2017/06/12
  */
-@Exported
 public final class FieldDescriptor
 	implements Comparable<FieldDescriptor>, MemberDescriptor
 {
 	/** The short type. */
-	@Exported
 	public static final FieldDescriptor SHORT =
 		new FieldDescriptor("S");
 	
 	/** The integer type. */
-	@Exported
 	public static final FieldDescriptor INTEGER =
 		new FieldDescriptor("I");
 	
@@ -54,7 +51,6 @@ public final class FieldDescriptor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/12
 	 */
-	@Exported
 	public FieldDescriptor(String __n)
 		throws InvalidClassFormatException, NullPointerException
 	{
@@ -141,7 +137,6 @@ public final class FieldDescriptor
 	 * @throws IllegalArgumentException If the dimensions are negative.
 	 * @since 2018/09/15
 	 */
-	@Exported
 	public final FieldDescriptor addDimensions(int __d)
 		throws IllegalArgumentException
 	{
@@ -169,7 +164,6 @@ public final class FieldDescriptor
 	 * this is a primitive type.
 	 * @since 2018/09/01
 	 */
-	@Exported
 	public final ClassName className()
 	{
 		// If this is an array then the class name will be the array descriptor
@@ -198,7 +192,6 @@ public final class FieldDescriptor
 	 * @return The component type or {@code null} if this is not one.
 	 * @since 2018/09/27
 	 */
-	@Exported
 	public final FieldDescriptor componentType()
 	{
 		return this.component;
@@ -210,7 +203,6 @@ public final class FieldDescriptor
 	 * @return The number of dimensions in the class.
 	 * @since 2018/09/28
 	 */
-	@Exported
 	public final int dimensions()
 	{
 		return this.dimensions;
@@ -249,7 +241,6 @@ public final class FieldDescriptor
 	 * @return {@code true} if an array type.
 	 * @since 2017/10/08
 	 */
-	@Exported
 	public boolean isArray()
 	{
 		return this.component != null;
@@ -261,7 +252,6 @@ public final class FieldDescriptor
 	 * @return {@code true} if this is a primitive type.
 	 * @since 2017/07/28
 	 */
-	@Exported
 	public boolean isPrimitive()
 	{
 		return this.primitive;
@@ -273,7 +263,6 @@ public final class FieldDescriptor
 	 * @return If this is an object type.
 	 * @since 2017/09/16
 	 */
-	@Exported
 	public boolean isObject()
 	{
 		return !this.isPrimitive();
@@ -285,7 +274,6 @@ public final class FieldDescriptor
 	 * @return If this is a wide field.
 	 * @since 2019/02/05
 	 */
-	@Exported
 	public final boolean isWide()
 	{
 		if (this.isObject())
@@ -307,7 +295,6 @@ public final class FieldDescriptor
 	 * @return The primitive type to use or {@code null} if there is none.
 	 * @since 2017/10/16
 	 */
-	@Exported
 	public PrimitiveType primitiveType()
 	{
 		// Quick detect
@@ -336,7 +323,6 @@ public final class FieldDescriptor
 	 * @return The simple storage type for this field.
 	 * @since 2018/09/15
 	 */
-	@Exported
 	public final SimpleStorageType simpleStorageType()
 	{
 		// Objects
@@ -374,7 +360,6 @@ public final class FieldDescriptor
 	 * @return The width of the field on the stack.
 	 * @since 2019/02/05
 	 */
-	@Exported
 	public final int stackWidth()
 	{
 		return (this.isWide() ? 2 : 1);

@@ -37,7 +37,6 @@ import java.util.Map;
  *
  * @since 2020/12/28
  */
-@Exported
 public final class SuiteScanner
 {
 	/** Data resource name. */
@@ -60,7 +59,6 @@ public final class SuiteScanner
 	 * @return The state of scanned suites.
 	 * @since 2020/12/28
 	 */
-	@Exported
 	public static AvailableSuites scanSuites()
 	{
 		return SuiteScanner.scanSuites(null);
@@ -75,7 +73,6 @@ public final class SuiteScanner
 	 * @return The state of scanned suites.
 	 * @since 2020/12/29
 	 */
-	@Exported
 	public static AvailableSuites scanSuites(SuiteScanListener __listener)
 	{
 		// Get all the available libraries

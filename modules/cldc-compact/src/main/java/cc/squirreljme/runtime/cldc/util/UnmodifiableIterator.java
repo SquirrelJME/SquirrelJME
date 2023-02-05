@@ -19,7 +19,6 @@ import java.util.NoSuchElementException;
  * @param <T> The type to use.
  * @since 2018/05/13
  */
-@Exported
 public final class UnmodifiableIterator<T>
 	implements Iterator<T>
 {
@@ -84,7 +83,6 @@ public final class UnmodifiableIterator<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/13
 	 */
-	@Exported
 	public static <T> Iterator<T> of(Iterable<T> __i)
 		throws NullPointerException
 	{
@@ -103,7 +101,6 @@ public final class UnmodifiableIterator<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/13
 	 */
-	@Exported
 	public static <T> Iterator<T> of(Iterator<T> __i)
 		throws NullPointerException
 	{
@@ -145,7 +142,6 @@ public final class UnmodifiableIterator<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/13
 	 */
-	@Exported
 	public static <T> Iterator<T> of(T[] __a, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{

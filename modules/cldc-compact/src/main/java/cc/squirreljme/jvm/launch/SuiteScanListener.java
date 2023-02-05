@@ -19,7 +19,6 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2020/12/29
  */
-@Exported
 public interface SuiteScanListener
 {
 	/**
@@ -30,6 +29,5 @@ public interface SuiteScanListener
 	 * @param __total The total number of JARs scanned.
 	 * @since 2020/12/29
 	 */
-	@Exported
 	void scanned(Application __app, int __dx, int __total);
 }

@@ -17,7 +17,6 @@ import java.util.Deque;
  *
  * @since 2020/11/22
  */
-@Exported
 public final class CompileSettings
 {
 	/** Is this a boot loader? */
@@ -29,7 +28,6 @@ public final class CompileSettings
 	 * @param __isBootLoader Is this a boot loader?
 	 * @since 2020/11/23
 	 */
-	@Exported
 	public CompileSettings(boolean __isBootLoader)
 	{
 		this.isBootLoader = __isBootLoader;
@@ -43,7 +41,6 @@ public final class CompileSettings
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/23
 	 */
-	@Exported
 	public static CompileSettings parse(Deque<String> __args)
 		throws NullPointerException
 	{

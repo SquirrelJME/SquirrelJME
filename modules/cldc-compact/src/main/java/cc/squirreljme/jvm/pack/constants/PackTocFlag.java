@@ -18,14 +18,12 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2021/09/03
  */
-@Exported
 public interface PackTocFlag
 {
 	/**
 	 * Resource item, not a JAR but a data file, this can be a manifest file
 	 * for i-Mode for example.
 	 */
-	@Exported
 	byte RESOURCE =
 		1;
 }

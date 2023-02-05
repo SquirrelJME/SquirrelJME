@@ -135,7 +135,6 @@ public final class Font
 	 * @param __px The pixel size of this font.
 	 * @since 2017/10/20
 	 */
-	@Exported
 	private Font(String __n, int __st, int __px)
 		throws NullPointerException
 	{

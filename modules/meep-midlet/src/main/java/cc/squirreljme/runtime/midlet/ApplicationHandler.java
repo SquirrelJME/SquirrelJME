@@ -21,11 +21,9 @@ import javax.microedition.midlet.MIDlet;
  * @see ApplicationInterface
  * @since 2021/11/30
  */
-@Exported
 public final class ApplicationHandler
 {
 	/** Undefined application name. */
-	@Exported
 	public static final String UNDEFINED_NAME =
 		"UndefinedName";
 	
@@ -55,7 +53,6 @@ public final class ApplicationHandler
 	 * @return The current application interface.
 	 * @since 2022/02/14
 	 */
-	@Exported
 	public static ApplicationInterface<?> currentInterface()
 	{
 		return ApplicationHandler._CURRENT_INTERFACE;
@@ -67,7 +64,6 @@ public final class ApplicationHandler
 	 * @return The current application instance.
 	 * @since 2022/02/14
 	 */
-	@Exported
 	public static Object currentInstance()
 	{
 		return ApplicationHandler._CURRENT_INSTANCE;
@@ -79,7 +75,6 @@ public final class ApplicationHandler
 	 * @return The current name.
 	 * @since 2019/04/14
 	 */
-	@Exported
 	public static String currentName()
 	{
 		String rv;
@@ -119,7 +114,6 @@ public final class ApplicationHandler
 	 * @return The current vendor.
 	 * @since 2019/04/14
 	 */
-	@Exported
 	public static String currentVendor()
 	{
 		String rv;
@@ -162,7 +156,6 @@ public final class ApplicationHandler
 	 * @throws Throwable On any exception.
 	 * @since 2021/11/30
 	 */
-	@Exported
 	public static <T> void main(ApplicationInterface<T> __ai)
 		throws NullPointerException, Throwable
 	{
@@ -268,7 +261,6 @@ public final class ApplicationHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/02
 	 */
-	@Exported
 	public static void setNameAndVendor(String __name, String __vend)
 		throws NullPointerException
 	{

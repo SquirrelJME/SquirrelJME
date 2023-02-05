@@ -27,7 +27,6 @@ import java.util.Set;
  *
  * @since 2017/11/30
  */
-@Exported
 public final class ProvidedInfo
 	implements Iterable<MarkedProvided>
 {
@@ -43,7 +42,6 @@ public final class ProvidedInfo
 	 * @param __provs The provided set.
 	 * @since 2017/12/31
 	 */
-	@Exported
 	public ProvidedInfo(MarkedProvided... __provs)
 	{
 		// Defensive copy
@@ -64,7 +62,6 @@ public final class ProvidedInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/31
 	 */
-	@Exported
 	public ProvidedInfo(Collection<MarkedProvided> __provs)
 		throws NullPointerException
 	{
@@ -135,7 +132,6 @@ public final class ProvidedInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/20
 	 */
-	@Exported
 	public static ProvidedInfo of(SuiteInfo __info)
 		throws InvalidSuiteException, NullPointerException
 	{

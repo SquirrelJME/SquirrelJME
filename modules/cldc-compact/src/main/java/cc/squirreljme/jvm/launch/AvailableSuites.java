@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.Exported;
  *
  * @since 2020/12/28
  */
-@Exported
 public final class AvailableSuites
 {
 	/** The applications available. */
