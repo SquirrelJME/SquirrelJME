@@ -43,6 +43,7 @@ public class VMCompactLibraryTaskAction
 				"}",*/
 			
 			// Adjust manifest resources
+			"-adaptresourcefilenames", "**",
 			"-adaptresourcefilecontents",
 				"META-INF/MANIFEST.MF,META-INF/services/**",
 			
