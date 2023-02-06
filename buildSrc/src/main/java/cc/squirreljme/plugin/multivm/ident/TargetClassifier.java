@@ -44,6 +44,24 @@ public class TargetClassifier
 	ClutterLevel clutterLevel;
 	
 	/**
+	 * Sets up a new classifier with the clutter level.
+	 * 
+	 * @param __clutterLevel The new clutter level.
+	 * @return The classifier with the new clutter level.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/02/05
+	 */
+	public TargetClassifier withClutterLevel(ClutterLevel __clutterLevel)
+		throws NullPointerException
+	{
+		if (__clutterLevel == null)
+			throw new NullPointerException("NARG");
+		
+		return new TargetClassifier(this.vmType, this.bangletVariant,
+			__clutterLevel);
+	}
+	
+	/**
 	 * Specifies an alternative virtual machine to use, but with the same
 	 * banglet.
 	 *

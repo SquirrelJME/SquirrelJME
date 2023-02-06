@@ -110,6 +110,24 @@ public class SourceTargetClassifier
 	}
 	
 	/**
+	 * Sets up a new classifier with the clutter level.
+	 * 
+	 * @param __clutterLevel The new clutter level.
+	 * @return The classifier with the new clutter level.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/02/05
+	 */
+	public SourceTargetClassifier withClutterLevel(ClutterLevel __clutterLevel)
+		throws NullPointerException
+	{
+		if (__clutterLevel == null)
+			throw new NullPointerException("NARG");
+		
+		return new SourceTargetClassifier(this.sourceSet,
+			this.targetClassifier.withClutterLevel(__clutterLevel));
+	}
+	
+	/**
 	 * Modifies this classifier with the given source set.
 	 * 
 	 * @param __sourceSet The source set to use instead.

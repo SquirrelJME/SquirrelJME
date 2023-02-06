@@ -37,6 +37,19 @@ public enum ClutterLevel
 	}
 	
 	/**
+	 * Returns the opposite clutter level.
+	 * 
+	 * @return The opposite clutter level.
+	 * @since 2023/02/05
+	 */
+	public final ClutterLevel opposite()
+	{
+		if (this == ClutterLevel.RELEASE)
+			return ClutterLevel.DEBUG;
+		return ClutterLevel.RELEASE;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2023/01/28
 	 */

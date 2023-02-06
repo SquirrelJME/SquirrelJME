@@ -317,6 +317,40 @@ public final class TaskInitialization
 				vmTest = tasks.create(taskName,
 					VMModernTestTask.class, __classifier, libTask);
 			
+			// Since there is a release and debug variant, have the base test
+			// refer to both of these
+			String bothName = TaskInitialization.task("test",
+				__classifier.getSourceSet(),
+				__classifier.getVmType(), __classifier.getBangletVariant(),
+				null);
+			
+			// If the task is missing, create it
+			Test bothTest = (Test)__project.getTasks().findByName(bothName);
+			if (bothTest == null)
+			{
+				// Create a test task, so IDEs like IntelliJ can pick this up
+				// despite there being no actual tests that exist
+				bothTest = __project.getTasks().create(bothName, Test.class);
+				
+				// Setup description of these
+				bothTest.setGroup("squirreljme");
+				bothTest.setDescription(
+					String.format("Runs both test tasks %s and %s.",
+						taskName, TaskInitialization.task("test",
+							__classifier.withClutterLevel(__classifier
+								.getTargetClassifier().getClutterLevel()
+								.opposite()))));
+				
+				// Gradle will think these are JUnit tests and then fail
+				// so exclude everything
+				bothTest.setScanForTestClasses(false);
+				bothTest.include();
+				bothTest.exclude("**");
+			}
+			
+			// Add to the both task as a dependency
+			bothTest.dependsOn(vmTest);
+			
 			// Make the standard test task depend on these two VM tasks
 			// so that way if it is run, both are run accordingly
 			if (__classifier.getVmType().isGoldTest())
@@ -763,6 +797,7 @@ public final class TaskInitialization
 	 * @param __sourceSet The source set for the task base.
 	 * @param __vmType The type of virtual machine used.
 	 * @param __variant The banglet variant.
+	 * @param __clutterLevel Release or debug, may be {@code null}.
 	 * @return A string representing the task.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/10/01
@@ -773,13 +808,14 @@ public final class TaskInitialization
 		throws NullPointerException
 	{
 		if (__name == null || __sourceSet == null || __vmType == null ||
-			__variant == null || __clutterLevel == null)
+			__variant == null)
 			throw new NullPointerException("NARG");
 		
 		return TaskInitialization.task(__name, __sourceSet) +
 			__vmType.vmName(VMNameFormat.PROPER_NOUN) +
 			TaskInitialization.uppercaseFirst(__variant.properNoun) +
-			TaskInitialization.uppercaseFirst(__clutterLevel.toString());
+			(__clutterLevel == null ? "" :
+				TaskInitialization.uppercaseFirst(__clutterLevel.toString()));
 	}
 	
 	/**
