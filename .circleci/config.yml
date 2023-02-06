@@ -450,7 +450,7 @@ jobs:
           destination: SquirrelJME
 
   ### SpringCoat
-  test_springcoat:
+  test_springcoat_debug:
     executor: build-on-linux-amd64
     steps:
       - checkout
@@ -459,16 +459,28 @@ jobs:
           at: .
       - run:
           name: SpringCoat Tests
-          command: timeout --foreground 30m ./gradlew testSpringCoat <<pipeline.parameters.standard-gradle-options>>
+          command: timeout --foreground 30m ./gradlew testSpringCoatDebug <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 30m
       - save-test-results:
           where: "vm-test-springcoat-debug"
           os: "linux"
           vm: "springcoat"
+  test_springcoat_release:
+    executor: build-on-linux-amd64
+    steps:
+      - checkout
+      - linux-install-required
+      - attach_workspace:
+          at: .
+      - run:
+          name: SpringCoat Tests
+          command: timeout --foreground 30m ./gradlew testSpringCoatRelease <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 30m
       - save-test-results:
           where: "vm-test-springcoat-release"
           os: "linux"
           vm: "springcoat"
+
   test_summercoat:
     executor: build-on-linux-amd64
     steps:
@@ -594,7 +606,10 @@ workflows:
       ############################# STANDARD TESTS ############################
       - build_linux_amd64
 #      - build_linux_arm64
-      - test_springcoat:
+      - test_springcoat_debug:
+          requires:
+            - construct_testJars
+      - test_springcoat_release:
           requires:
             - construct_testJars
 #      - test_summercoat:
