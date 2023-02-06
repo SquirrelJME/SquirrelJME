@@ -274,9 +274,12 @@ There is a task which initializes a full suite of SquirrelJME, including
 every module. This can be used to run a specific program within SquirrelJME's
 environment through Gradle.
 
- * `fullHosted` -- Hosted Environment.
- * `fullSpringCoat` -- SpringCoat.
- * `fullSummerCoat` -- SummerCoat.
+ * Hosted Environment.
+   * `fullHostedRelease`
+   * `fullHostedDebug`
+ * SpringCoat
+   * `fullSpringCoatRelease`
+   * `fullSpringCoatDebug`
 
 There are system properties that are available and can be used to modify
 the behavior:

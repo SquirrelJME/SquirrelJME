@@ -98,7 +98,7 @@ task collateResourceJars {
 	
 	// Inputs for this, it is just all of the input JARs and such
 	inputs.files(project.provider({ -> VMHelpers.fullSuiteLibraries(
-		rootProject.tasks.getByName("fullSpringCoat")) as Iterable<Path>}))
+		rootProject.tasks.getByName("fullSpringCoatRelease")) as Iterable<Path>}))
 	outputs.files(project.provider({ ->
 			java.nio.file.Path outBase = processResources.getOutputs().
 				files.getSingleFile().toPath().resolve(MERGED_PREFIX)
@@ -279,7 +279,7 @@ jar {
 			"X-SquirrelJME-Standalone-Library": project.provider({ ->
 					return VMHelpers.classpathAsString(
 						mapBaseNameP(VMHelpers.fullSuiteLibraries(
-							rootProject.tasks.getByName("fullSpringCoat"))
+							rootProject.tasks.getByName("fullSpringCoatRelease"))
 							as Iterable<Path>))
 				}),
 			"X-SquirrelJME-Standalone-Internal-Jar-Root": project.provider({ ->
