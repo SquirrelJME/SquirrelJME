@@ -76,7 +76,7 @@ parameters:
   # Standard build for systems
   standard-build-options:
     type: string
-    default: build testHosted -x testSpringCoat -x javadoc -x javadocJar -x sourcesJar -x markdownJavaDoc
+    default: build testHosted -x testSpringCoat -x testSpringCoatRelease -x testSpringCoatDebug -x javadoc -x javadocJar -x sourcesJar -x markdownJavaDoc
 
 # Commands that are used by almost everything
 commands:
