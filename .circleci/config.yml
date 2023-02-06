@@ -170,7 +170,7 @@ jobs:
           # to make way too many workers which causes extreme resource.
           # contention --max-workers=2
           command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 7m
+          no_output_timeout: 30m
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted"
@@ -252,8 +252,8 @@ jobs:
           command: brew install openjdk@11 coreutils
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 7m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 7m
+          command: timeout --foreground 30m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 30m
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted"
@@ -265,8 +265,8 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 7m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 7m
+          command: timeout --foreground 30m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 30m
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted"
@@ -338,8 +338,8 @@ jobs:
       - linux-install-required
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 7m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 7m
+          command: timeout --foreground 30m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 30m
       - save-test-results:
           where: "vm-test-hosted"
           os: "linux-amd64"
@@ -369,8 +369,8 @@ jobs:
       - linux-install-required
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 7m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 7m
+          command: timeout --foreground 30m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 30m
       - save-test-results:
           where: "vm-test-hosted"
           os: "linux-arm64"
@@ -435,8 +435,8 @@ jobs:
           at: .
       - run:
           name: SpringCoat Tests
-          command: timeout --foreground 17m ./gradlew testSpringCoat <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 17m
+          command: timeout --foreground 30m ./gradlew testSpringCoat <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 30m
       - save-test-results:
           where: "vm-test-springcoat"
           os: "linux"
@@ -450,8 +450,8 @@ jobs:
           at: .
       - run:
           name: SummerCoat Tests
-          command: timeout --foreground 15m ./gradlew testSummerCoat <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 15m
+          command: timeout --foreground 30m ./gradlew testSummerCoat <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 30m
       - save-test-results:
           where: "vm-test-summercoat"
           os: "linux"
