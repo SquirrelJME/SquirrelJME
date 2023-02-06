@@ -118,22 +118,22 @@ commands:
           shell: <<parameters.shell>>
           name: Save test results
           command: |
-            mkdir -p "<<parameters.home>>/test-results/junit-<<parameters.os>>/"
-            <<parameters.find>> . -type f -regex '.*/'"<<parameters.where>>"'/junit/.*\.xml' -exec cp {} "<<parameters.home>>/test-results/junit-<<parameters.os>>/" \;
+            mkdir -p "<<parameters.home>>/test-results/junit-<<parameters.os>>-<<parameters.where>>/"
+            <<parameters.find>> . -type f -regex '.*/'"<<parameters.where>>"'/junit/.*\.xml' -exec cp {} "<<parameters.home>>/test-results/junit-<<parameters.os>>-<<parameters.where>>/" \;
           when: always
       - run:
           shell: <<parameters.shell>>
           name: Save test results
           command: |
-            mkdir -p "<<parameters.home>>/test-results/csv-<<parameters.os>>/"
-            <<parameters.find>> . -type f -regex '.*/'"<<parameters.where>>"'/csv/.*\.csv' -exec cp {} "<<parameters.home>>/test-results/csv-<<parameters.os>>/" \;
+            mkdir -p "<<parameters.home>>/test-results/csv-<<parameters.os>>-<<parameters.where>>/"
+            <<parameters.find>> . -type f -regex '.*/'"<<parameters.where>>"'/csv/.*\.csv' -exec cp {} "<<parameters.home>>/test-results/csv-<<parameters.os>>-<<parameters.where>>/" \;
           when: always
       - run:
           shell: <<parameters.shell>>
           name: Save snapshots
           command: |
-            mkdir -p "<<parameters.home>>/test-results/nps-<<parameters.vm>>-<<parameters.os>>/"
-            <<parameters.find>> . -type f -regex '.*/'"<<parameters.where>>"'/nps/.*\.nps' -exec cp {} "<<parameters.home>>/test-results/nps-<<parameters.vm>>-<<parameters.os>>/" \;
+            mkdir -p "<<parameters.home>>/test-results/nps-<<parameters.vm>>-<<parameters.os>>-<<parameters.where>>/"
+            <<parameters.find>> . -type f -regex '.*/'"<<parameters.where>>"'/nps/.*\.nps' -exec cp {} "<<parameters.home>>/test-results/nps-<<parameters.vm>>-<<parameters.os>>-<<parameters.where>>/" \;
           when: always
       - store_test_results:
           path: <<parameters.store-home>>/test-results
@@ -173,7 +173,15 @@ jobs:
           no_output_timeout: 30m
       - persist-gradle
       - save-test-results:
-          where: "vm-test-hosted"
+          where: "vm-test-hosted-debug"
+          os: "windows"
+          vm: "hosted"
+          shell: bash.exe
+          find: /usr/bin/find
+          home: "/c/users/circleci/"
+          store-home: "c:/users/circleci/"
+      - save-test-results:
+          where: "vm-test-hosted-release"
           os: "windows"
           vm: "hosted"
           shell: bash.exe
@@ -256,7 +264,11 @@ jobs:
           no_output_timeout: 30m
       - persist-gradle
       - save-test-results:
-          where: "vm-test-hosted"
+          where: "vm-test-hosted-debug"
+          os: "macosx"
+          vm: "hosted"
+      - save-test-results:
+          where: "vm-test-hosted-release"
           os: "macosx"
           vm: "hosted"
   build_macosx_m1:
@@ -269,7 +281,11 @@ jobs:
           no_output_timeout: 30m
       - persist-gradle
       - save-test-results:
-          where: "vm-test-hosted"
+          where: "vm-test-hosted-debug"
+          os: "macosx-m1"
+          vm: "hosted"
+      - save-test-results:
+          where: "vm-test-hosted-release"
           os: "macosx-m1"
           vm: "hosted"
 
@@ -341,7 +357,11 @@ jobs:
           command: timeout --foreground 30m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 30m
       - save-test-results:
-          where: "vm-test-hosted"
+          where: "vm-test-hosted-debug"
+          os: "linux-amd64"
+          vm: "hosted"
+      - save-test-results:
+          where: "vm-test-hosted-release"
           os: "linux-amd64"
           vm: "hosted"
       - persist-gradle
@@ -372,7 +392,11 @@ jobs:
           command: timeout --foreground 30m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 30m
       - save-test-results:
-          where: "vm-test-hosted"
+          where: "vm-test-hosted-debug"
+          os: "linux-arm64"
+          vm: "hosted"
+      - save-test-results:
+          where: "vm-test-hosted-release"
           os: "linux-arm64"
           vm: "hosted"
       - persist-gradle
@@ -438,7 +462,11 @@ jobs:
           command: timeout --foreground 30m ./gradlew testSpringCoat <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 30m
       - save-test-results:
-          where: "vm-test-springcoat"
+          where: "vm-test-springcoat-debug"
+          os: "linux"
+          vm: "springcoat"
+      - save-test-results:
+          where: "vm-test-springcoat-release"
           os: "linux"
           vm: "springcoat"
   test_summercoat:
@@ -453,7 +481,11 @@ jobs:
           command: timeout --foreground 30m ./gradlew testSummerCoat <<pipeline.parameters.standard-gradle-options>>
           no_output_timeout: 30m
       - save-test-results:
-          where: "vm-test-summercoat"
+          where: "vm-test-summercoat-debug"
+          os: "linux"
+          vm: "summercoat"
+      - save-test-results:
+          where: "vm-test-summercoat-release"
           os: "linux"
           vm: "summercoat"
 
