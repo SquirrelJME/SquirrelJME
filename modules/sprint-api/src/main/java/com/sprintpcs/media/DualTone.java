@@ -17,35 +17,42 @@ import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
 public class DualTone
 {
 	@Api
-	public DualTone(int[] __unknownA, int[] __unknownB, int[] __unknownC,
-		int __unknownD, int __unknownE)
+	public DualTone(int __aFreq, int __bFreq, int __duration, int __priority,
+		int __vibration)
 	{
-		// __unknownA = first frequency??
+		throw Debugging.todo();
+	}
+	
+	@Api
+	public DualTone(int[] __aFreq, int[] __bFreq, int[] __duration,
+		int __priority, int __vibration)
+	{
+		// __aFreq = first frequency??
 		//     new int[]{1047, 1109, 1175, 1245, 1319, 1397, 1480, 1568, ...};
-		// __unknownB = second frequency??
+		// __bFreq = second frequency??
 		//     new int[]{1047, 988, 932, 880, 830, 784, 740, 698, 659, ...};
-		// __unknownC = duration??
+		// __duration = duration??
 		//     new int[]{120, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 400};
-		// __unknownD = always zero??
-		// __unknownE = always one or zero??
+		// __priority = always zero??
+		// __vibration = always one or zero??
 		
-		if (__unknownA == null || __unknownB == null || __unknownC == null)
+		if (__aFreq == null || __bFreq == null || __duration == null)
 			throw Debugging.todo("Throw NullPointerException???");
 		
-		if (__unknownA.length != __unknownB.length ||
-			__unknownA.length != __unknownC.length)
+		if (__aFreq.length != __bFreq.length ||
+			__aFreq.length != __duration.length)
 			throw Debugging.todo("Unequal lengths???");
 		
-		if (__unknownD != 0)
+		if (__priority != 0)
 			throw Debugging.todo("D is not zero???");
 		
-		if (__unknownE != 0 && __unknownE != 1)
+		if (__vibration != 0 && __vibration != 1)
 			throw Debugging.todo("E is not zero or one???");
 		
 		Debugging.todoNote("DualTone(%s, %s, %s, %d, %d)",
-			IntegerArrayList.toString(__unknownA),
-			IntegerArrayList.toString(__unknownB),
-			IntegerArrayList.toString(__unknownC),
-			__unknownD, __unknownE);
+			IntegerArrayList.toString(__aFreq),
+			IntegerArrayList.toString(__bFreq),
+			IntegerArrayList.toString(__duration),
+			__priority, __vibration);
 	}
 }

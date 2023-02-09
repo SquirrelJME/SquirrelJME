@@ -40,6 +40,19 @@ public class System
 		Debugging.todoNote("Add listeners...");
 	}
 	
+	@Api
+	public static String[] getPropertiesList()
+	{
+		throw Debugging.todo();
+	}
+	
+	@Api
+	public static String getProtectedProperty(String __key)
+		throws SecurityException
+	{
+		throw Debugging.todo();
+	}
+	
 	/**
 	 * Returns the state of the given option.
 	 * 
@@ -68,6 +81,12 @@ public class System
 		}
 	}
 	
+	@Api
+	public static void promptMasterVolume()
+	{
+		throw Debugging.todo();
+	}
+	
 	/**
 	 * When the system exits, the specified URL will be activated in the
 	 * browser.
@@ -80,5 +99,12 @@ public class System
 	{
 		if (__uri != null)
 			CleanupHandler.add(new __ExitUri__(__uri));
+	}
+	
+	@Api
+	public static void setSystemSetting(String __key, String __value)
+		throws SecurityException, IllegalArgumentException, NullPointerException
+	{
+		throw Debugging.todo();
 	}
 }
