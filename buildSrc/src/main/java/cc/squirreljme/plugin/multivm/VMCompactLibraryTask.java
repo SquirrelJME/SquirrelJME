@@ -12,6 +12,8 @@ package cc.squirreljme.plugin.multivm;
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import javax.inject.Inject;
 import lombok.Getter;
@@ -76,8 +78,25 @@ public class VMCompactLibraryTask
 		// Only run if the source JAR would run
 		this.onlyIf(this::onlyIf);
 		
-		// The input of this is the original Jar
-		this.getInputs().files(this.inputBaseJarPath());
+		// The input of this is the original Jar and any Jars and maps that are
+		// needed by ProGuard
+		this.getInputs().files(this.inputBaseJarPath(),
+			this.getProject().provider(() -> {
+				Collection<Object> result = new LinkedHashSet<>();
+				for (VMCompactLibraryTask compactTask :
+						VMHelpers.compactLibTaskDepends(this.getProject(),
+							this.sourceSet))
+				{
+					// If the input Jar changes, we want to update this one
+					result.add(compactTask.inputBaseJarPath());
+					
+					// If the output Jar changes, we want that one as well
+					// since the mappings will be different
+					result.add(compactTask.outputJarPath());
+				}
+				
+				return result;
+			}));
 		
 		// Inputs are the proguard options, so if this changes we need to
 		// do a rebuild!
