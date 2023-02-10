@@ -95,6 +95,14 @@ public class VMCompactLibraryTaskAction
 				"public", "protected", "*", ";",
 				"}",
 			
+			// Keep all clone methods
+			"-keepclassmembers", "class", "*", "{",
+				"public", "java.lang.Object", "clone", "(", ")", ";",
+				"}",
+			"-keepclassmembernames", "class", "*", "{",
+				"public", "java.lang.Object", "clone", "(", ")", ";",
+				"}",
+			
 			// Keep names as well
 			"-keepclassmembernames", "public", "class", "*", "{",
 				"@cc.squirreljme.runtime.cldc.annotation.Api",
