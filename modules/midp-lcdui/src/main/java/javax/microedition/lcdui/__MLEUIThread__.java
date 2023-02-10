@@ -29,6 +29,7 @@ import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
+import java.util.Objects;
 
 /**
  * This thread is responsible for handling graphics operations.
@@ -54,8 +55,8 @@ final class __MLEUIThread__
 		int __event, int __keyCode, int __modifiers)
 	{
 		// Debug
-		/*Debugging.debugNote("eventKey(%08x, %08x, %d, %d, %x)",
-			System.identityHashCode(__form), System.identityHashCode(__item),
+		/*Debugging.debugNote("eventKey(%08x, %08x, %d, %d, %s)",
+			Objects.toString(__drawable),
 			__event, __keyCode, __modifiers);*/
 		
 		if (!(__drawable instanceof UIWidgetBracket))

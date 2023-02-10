@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.CleanupHandler;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
@@ -252,6 +253,9 @@ public final class StaticDisplayState
 		if ((__type < UIItemType.DISPLAY && __type != Integer.MIN_VALUE) ||
 			__type > UIItemType.NUM_TYPES)
 			throw new IllegalArgumentException("EB39 " + __type);
+		
+		Debugging.debugNote("locate(%s, %d, %s)",
+			__widget, __type, __backend);
 		
 		// Would be previously cached
 		synchronized (StaticDisplayState.class)
