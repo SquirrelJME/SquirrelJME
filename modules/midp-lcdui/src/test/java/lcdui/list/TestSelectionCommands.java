@@ -71,8 +71,11 @@ public class TestSelectionCommands
 			backend.injector().eventKey(item,
 				UIKeyEventType.COMMAND_ACTIVATED, i, 0);
 			backend.flushEvents();
-			
-			// Make sure it was selected
+		}
+		
+		// Make sure they were selected
+		for (int i = 0; i < TestSelectionCommands.NUM_ITEMS; i++)
+		{
 			synchronized (listener)
 			{
 				this.secondary("selected-" + i,

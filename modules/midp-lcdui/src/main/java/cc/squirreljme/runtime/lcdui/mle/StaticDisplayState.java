@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.lcdui.mle;
 
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
+import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
@@ -257,6 +258,9 @@ public final class StaticDisplayState
 						if (__type == UIItemType.DISPLAY &&
 							!(drawable instanceof UIDisplayBracket))
 							continue;
+						else if (__type == UIItemType.FORM &&
+							!(drawable instanceof UIFormBracket))
+							continue;
 						else if (__type != __backend.widgetPropertyInt(
 							(UIWidgetBracket)drawable,
 							UIWidgetProperty.INT_UIITEM_TYPE, 0))
@@ -267,8 +271,9 @@ public final class StaticDisplayState
 		}
 		
 		// {@squirreljme.error EB3c No form exists for the given
-		// displayable.}
-		throw new NoSuchElementException("EB3c");
+		// displayable. (The widget class; The type requested)}
+		throw new NoSuchElementException(String.format("EB3c %s %d",
+			__widget.getClass(), __type));
 	}
 	
 	/**
