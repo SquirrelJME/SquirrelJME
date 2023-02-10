@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// SquirrelJME
+// Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -11,45 +11,21 @@ package com.sprintpcs.media;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.IOException;
 
 @Api
-public class Player
+public class Clip
 {
 	@Api
-	public static void addPlayerListener(PlayerListener __listener)
+	public Clip(byte[] __data, String __mime, int __priority, int __vibration)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
-	public static void play(Clip __clip, int __repeat)
-		throws IllegalArgumentException
-	{
-		throw Debugging.todo();
-	}
-		
-	@Api
-	public static void play(DualTone __tone, int __repeat)
-		throws IllegalArgumentException
-	{
-		Debugging.todoNote("play(%s, %d)", __tone, __repeat);
-	}
-	
-	@Api
-	public static void playBackground(Clip __clip, int __repeat)
-		throws IllegalArgumentException
-	{
-		throw Debugging.todo();
-	}
-	
-	@Api
-	public static void resume()
-	{
-		throw Debugging.todo();
-	}
-	
-	@Api
-	public static void stop()
+	public Clip(String __rcName, String __mine, int __priority, int __vibration)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}

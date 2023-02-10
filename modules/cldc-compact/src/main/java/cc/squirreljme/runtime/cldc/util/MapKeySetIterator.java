@@ -20,7 +20,7 @@ import java.util.NoSuchElementException;
  * @param <V> The value type.
  * @since 2018/11/01
  */
-final class __MapKeySetIterator__<K, V>
+public final class MapKeySetIterator<K, V>
 	implements Iterator<K>
 {
 	/** The entry set iterator. */
@@ -33,7 +33,7 @@ final class __MapKeySetIterator__<K, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/01
 	 */
-	__MapKeySetIterator__(Iterator<Map.Entry<K, V>> __it)
+	public MapKeySetIterator(Iterator<Map.Entry<K, V>> __it)
 		throws NullPointerException
 	{
 		if (__it == null)

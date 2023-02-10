@@ -1,13 +1,13 @@
 import cc.squirreljme.plugin.swm.JavaMEMidletType
 
-description = "Implements support for the Sprint PCS APIs."
+description = "Implements support for the SprintPCS 2.2 API."
 version = rootProject.version
 
 squirreljme
 {
 	javaDocErrorCode = "AJ"
 	swmType = JavaMEMidletType.API
-	swmName = "Sprint PCS API"
+	swmName = "SprintPCS 2.2 API"
 	swmVendor = "Stephanie Gawroriski"
 	tags += "sprint"
 }
