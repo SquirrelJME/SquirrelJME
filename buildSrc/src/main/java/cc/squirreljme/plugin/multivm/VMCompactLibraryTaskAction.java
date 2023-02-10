@@ -42,8 +42,9 @@ public class VMCompactLibraryTaskAction
 	/** Settings to use in the configuration for keeping, etc. */
 	static final String[] _PARSE_SETTINGS = new String[]
 		{
-			// ProGuard's method inlining causes code to break! So disable it
-			// otherwise it generates an incorrect StackMapTable... *facepalm*
+			// ProGuard's method inlining causes code to break! So disable
+			// it otherwise it generates an incorrect StackMapTable...
+			// *facepaw*
 			"-optimizations", "!method/inlining/*",
 			
 			// Adjust manifest resources
