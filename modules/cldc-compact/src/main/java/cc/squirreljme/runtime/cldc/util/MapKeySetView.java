@@ -84,7 +84,7 @@ public final class MapKeySetView<K, V>
 	@Override
 	public final Iterator<K> iterator()
 	{
-		return new __MapKeySetIterator__<K, V>(this.map.entrySet().iterator());
+		return new MapKeySetIterator<K, V>(this.map.entrySet().iterator());
 	}
 	
 	/**
