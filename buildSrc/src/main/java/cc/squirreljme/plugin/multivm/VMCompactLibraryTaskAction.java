@@ -45,6 +45,7 @@ public class VMCompactLibraryTaskAction
 			// ProGuard's method inlining causes code to break! So disable
 			// it otherwise it generates an incorrect StackMapTable...
 			// *facepaw*
+			"-dontoptimize",
 			"-optimizations", "!method/inlining/*",
 			
 			// Adjust manifest resources
@@ -141,7 +142,18 @@ public class VMCompactLibraryTaskAction
 			// This is the only thing I have found that works
 			"-keep", "class", "*",
 			"-keepnames", "class", "*",
-			"-keepclassmembernames", "class", "*",
+			"-keepclassmembers", "class", "*", "{",
+				"<fields>", ";",
+				"<methods>", ";",
+				"}",
+			"-keepclassmembernames", "class", "*", "{",
+				"<fields>", ";",
+				"<methods>", ";",
+			"}",
+			
+			// Keep more debugging attributes
+			"-keepattributes", "*Annotation*,SourceFile,LineNumberTable," +
+				"LocalVariableTable",
 		};
 	
 	/** The source set used. */

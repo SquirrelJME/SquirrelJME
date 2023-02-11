@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.CleanupHandler;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -247,6 +248,11 @@ public final class StaticDisplayState
 		// Would be previously cached
 		synchronized (StaticDisplayState.class)
 		{
+			// Debugging
+			Debugging.debugNote("locate(%s, %d, %s) <- %s",
+				__widget, __type, __backend,
+				StaticDisplayState._WIDGETS);
+			
 			// Go through drawables that are available
 			List<UIDrawableBracket> drawables =
 				StaticDisplayState._WIDGETS.get(__widget);
@@ -304,6 +310,10 @@ public final class StaticDisplayState
 	{
 		if (__widget == null || __native == null)
 			throw new NullPointerException("NARG");
+		
+		// Debug
+		Debugging.debugNote("register(%s, %s)",
+			__widget, __native);
 		
 		// Prevent thread mishaps between threads doing this
 		Map<DisplayWidget, List<UIDrawableBracket>> widgets =

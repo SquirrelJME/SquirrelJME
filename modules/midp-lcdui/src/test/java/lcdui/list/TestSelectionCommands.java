@@ -71,6 +71,12 @@ public class TestSelectionCommands
 			backend.injector().eventKey(item,
 				UIKeyEventType.COMMAND_ACTIVATED, i, 0);
 			backend.flushEvents();
+			
+			synchronized (listener)
+			{
+				this.secondary("last-" + i,
+					listener.lastSelected == i);
+			}
 		}
 		
 		// Make sure they were selected
@@ -80,8 +86,6 @@ public class TestSelectionCommands
 			{
 				this.secondary("selected-" + i,
 					listener.selectedItems.contains(i)); 
-				this.secondary("last-" + i,
-					listener.lastSelected == i);
 			}
 		}
 	}
