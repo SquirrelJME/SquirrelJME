@@ -22,6 +22,7 @@ import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
 import cc.squirreljme.jvm.mle.constants.UIKeyModifier;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
 import cc.squirreljme.runtime.lcdui.event.KeyCodeTranslator;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
@@ -407,6 +408,7 @@ final class __MLEUIThread__
 	 * null.
 	 * @since 2020/10/16
 	 */
+	@SerializedEvent
 	private void __eventKey(Canvas __canvas, CustomItem __cItem, int __event,
 		int __keyCode, int __modifiers)
 		throws IllegalArgumentException, NullPointerException

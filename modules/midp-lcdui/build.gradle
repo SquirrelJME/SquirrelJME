@@ -26,6 +26,19 @@ squirreljme
 					"cc.squirreljme.runtime.lcdui.mle.UIBackend",
 				")", ";",
 		"}"]
+	
+	// Performing optimizations here breaks MLE callbacks
+	proGuardOptions += ["-keep,includecode",
+		"class", "javax.microedition.lcdui.__MLEUIThread__", "{",
+			"<methods>", ";",
+		"}"]
+	
+	// Keep any class members that are marked as serialized events and do not
+	// optimize them
+	proGuardOptions += ["-keepclassmembers,includecode",
+		"class", "*", "{",
+			"@cc.squirreljme.runtime.lcdui.SerializedEvent", "*", ";",
+		"}"]
 }
 
 dependencies

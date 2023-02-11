@@ -190,6 +190,15 @@ squirreljme
 			"double", "_value", ";",
 		"}"]
 	
+	// Optimizing this method seems to break the launcher somehow...
+	proGuardOptions += ["-keepclassmembers,includecode",
+		"class", "cc.squirreljme.jvm.launch.SuiteScanner", "{",
+			"cc.squirreljme.jvm.launch.AvailableSuites", "scanSuites", "(",
+				")", ";",
+			"cc.squirreljme.jvm.launch.AvailableSuites", "scanSuites", "(",
+				"cc.squirreljme.jvm.launch.SuiteScanListener", ")", ";",
+		"}"]
+	
 	// This is considered a boot loader for SummerCoat
 	isBootLoader = true
 	bootLoaderMainClass = "cc.squirreljme.jvm.summercoat.Bootstrap"

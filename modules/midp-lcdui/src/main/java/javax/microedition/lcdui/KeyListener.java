@@ -10,6 +10,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 /**
  * This is the key listener interface which is used for a slightly more
@@ -62,6 +63,7 @@ public interface KeyListener
 	 * @since 2017/02/12
 	 */
 	@Api
+	@SerializedEvent
 	void keyPressed(int __kc, int __km);
 	
 	/**
@@ -72,6 +74,7 @@ public interface KeyListener
 	 * @since 2017/02/12
 	 */
 	@Api
+	@SerializedEvent
 	void keyReleased(int __kc, int __km);
 	
 	/**
@@ -82,6 +85,7 @@ public interface KeyListener
 	 * @since 2017/02/12
 	 */
 	@Api
+	@SerializedEvent
 	void keyRepeated(int __kc, int __km);
 }
 
