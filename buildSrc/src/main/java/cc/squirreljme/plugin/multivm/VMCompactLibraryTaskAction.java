@@ -149,8 +149,11 @@ public class VMCompactLibraryTaskAction
 					"(", "java.lang.String", ")", ";",
 				"}",
 			
-			// Keep constructors, since they can be called and utilized
+			// Keep constructors, since they can be called and utilized... if
+			// they are removed then some things actually break and stop
+			// working properly
 			"-keepclassmembers", "class", "*", "{",
+					"void", "<clinit>", "(", ")", ";",
 					"<init>", "(", "...", ")", ";",
 				"}",
 			

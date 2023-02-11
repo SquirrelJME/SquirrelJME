@@ -214,11 +214,12 @@ SquirrelJME run-time. Modules within SquirrelJME have tasks which allow them
 to be ran accordingly.
 
  * SpringCoat
-   * `:modules:<name>:runSpringCoat` (running)
+   * `:modules:<name>:runSpringCoatDebug` (running)
+   * `:modules:<name>:runSpringCoatRelease` (running)
    * `:modules:<name>:testSpringCoat` (testing)
  * Native (runs on the host Java SE)
-   * `:modules:<name>:runHosted` (running)
-   * `:modules:<name>:testHosted` (testing)
+   * `:modules:<name>:runHostedDebug` (running)
+   * `:modules:<name>:testHostedDebug` (testing)
 
 Note that the `test` task is not supported and will throw an exception, it
 is not able to reliably test within SquirrelJME.
