@@ -199,6 +199,19 @@ squirreljme
 				"cc.squirreljme.jvm.launch.SuiteScanListener", ")", ";",
 		"}"]
 	
+	// Keep this and do not optimize it out, otherwise it breaks the launcher
+	// and stops it from working
+	proGuardOptions += ["-keep,allowobfuscation",
+		"class", "cc.squirreljme.jvm.launch.SuiteScanListener"]
+	proGuardOptions += ["-keepclassmembers,allowobfuscation",
+		"class", "cc.squirreljme.jvm.launch.SuiteScanListener", "{",
+			"void", "scanned", "(",
+					"cc.squirreljme.jvm.launch.Application", ",",
+					"int", ",",
+					"int",
+				")", ";",
+		"}"]
+	
 	// This is considered a boot loader for SummerCoat
 	isBootLoader = true
 	bootLoaderMainClass = "cc.squirreljme.jvm.summercoat.Bootstrap"
