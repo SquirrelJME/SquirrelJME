@@ -9,16 +9,18 @@
 
 package cc.squirreljme.jvm.mle.callbacks;
 
-import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * Interface that is used a callback on a user-interface form is to be done.
  *
  * @since 2020/07/03
  */
+@SquirrelJMEVendorApi
 public interface UIFormCallback
 	extends ShelfCallback, UIDrawableCallback
 {
@@ -37,6 +39,7 @@ public interface UIFormCallback
 	 * @param __sh Surface height.
 	 * @since 2022/07/20
 	 */
+	@SquirrelJMEVendorApi
 	void formRefresh(UIFormBracket __form, int __sx, int __sy,
 		int __sw, int __sh);
 	
@@ -51,6 +54,7 @@ public interface UIFormCallback
 	 * @param __new The new value.
 	 * @since 2020/07/19
 	 */
+	@SquirrelJMEVendorApi
 	void propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __intProp, int __sub, int __old, int __new);
 	
@@ -65,6 +69,7 @@ public interface UIFormCallback
 	 * @param __new The new value.
 	 * @since 2020/07/19
 	 */
+	@SquirrelJMEVendorApi
 	void propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __strProp, int __sub, String __old, String __new);
 }

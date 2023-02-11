@@ -15,6 +15,7 @@ import cc.squirreljme.runtime.lcdui.BacklightControl;
 import cc.squirreljme.runtime.lcdui.mle.Vibration;
 import cc.squirreljme.runtime.nttdocomo.ui.VendorPhoneSystem;
 
+@Api
 public class PhoneSystem
 {
 	/** Maximum time for a steady vibration. */

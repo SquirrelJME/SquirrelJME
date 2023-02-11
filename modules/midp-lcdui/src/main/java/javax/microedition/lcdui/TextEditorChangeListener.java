@@ -10,6 +10,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 @Api
 public interface TextEditorChangeListener
@@ -43,6 +44,7 @@ public interface TextEditorChangeListener
 		8;
 	
 	@Api
+	@SerializedEvent
 	void inputAction(TextEditor __e, int __act);
 }
 

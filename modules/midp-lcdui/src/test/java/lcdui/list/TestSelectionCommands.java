@@ -72,13 +72,20 @@ public class TestSelectionCommands
 				UIKeyEventType.COMMAND_ACTIVATED, i, 0);
 			backend.flushEvents();
 			
-			// Make sure it was selected
+			synchronized (listener)
+			{
+				this.secondary("last-" + i,
+					listener.lastSelected == i);
+			}
+		}
+		
+		// Make sure they were selected
+		for (int i = 0; i < TestSelectionCommands.NUM_ITEMS; i++)
+		{
 			synchronized (listener)
 			{
 				this.secondary("selected-" + i,
 					listener.selectedItems.contains(i)); 
-				this.secondary("last-" + i,
-					listener.lastSelected == i);
 			}
 		}
 	}

@@ -73,7 +73,6 @@ public final class UIBackendFactory
 			UIBackendFactory.FORCE_HEADLESS_PROPERTY);
 		boolean isForcing = (forceFallback || forceHeadless);
 		
-		
 		// Use native forms if supported unless we are forcing other options
 		UIDisplayBracket[] displays = UIFormShelf.displays();
 		if (displays != null && displays.length > 0 &&

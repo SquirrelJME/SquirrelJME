@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.util.Map;
@@ -19,6 +20,7 @@ import java.util.Map;
  *
  * @since 2019/05/08
  */
+@SquirrelJMEVendorApi
 public final class TestResultBuilder
 {
 	/** Secondary test values. */
@@ -37,6 +39,7 @@ public final class TestResultBuilder
 	 * @return The test result.
 	 * @since 2019/05/09
 	 */
+	@SquirrelJMEVendorApi
 	public final TestResult build()
 	{
 		// Lock
@@ -63,6 +66,7 @@ public final class TestResultBuilder
 	 * @return The return value.
 	 * @since 2019/05/09
 	 */
+	@SquirrelJMEVendorApi
 	public final String getReturn()
 	{
 		synchronized (this)
@@ -79,6 +83,7 @@ public final class TestResultBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09
 	 */
+	@SquirrelJMEVendorApi
 	public final String getSecondary(String __key)
 		throws NullPointerException
 	{
@@ -97,6 +102,7 @@ public final class TestResultBuilder
 	 * @return The exception value.
 	 * @since 2019/05/09
 	 */
+	@SquirrelJMEVendorApi
 	public final String getThrown()
 	{
 		synchronized (this)
@@ -113,6 +119,7 @@ public final class TestResultBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09
 	 */
+	@SquirrelJMEVendorApi
 	public final void putSecondaryEncoded(String __key, String __val)
 		throws NullPointerException
 	{
@@ -140,6 +147,7 @@ public final class TestResultBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09
 	 */
+	@SquirrelJMEVendorApi
 	public final void putSecondaryValue(String __key, Object __val)
 		throws NullPointerException
 	{
@@ -157,6 +165,7 @@ public final class TestResultBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09
 	 */
+	@SquirrelJMEVendorApi
 	public final void setReturnEncoded(String __val)
 		throws NullPointerException
 	{
@@ -176,6 +185,7 @@ public final class TestResultBuilder
 	 * @param __val The value to use.
 	 * @since 2019/05/09
 	 */
+	@SquirrelJMEVendorApi
 	public final void setReturnValue(Object __val)
 	{
 		this.setReturnEncoded(DataSerialization.serialize(__val));
@@ -188,6 +198,7 @@ public final class TestResultBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09
 	 */
+	@SquirrelJMEVendorApi
 	public final void setThrownEncoded(String __val)
 		throws NullPointerException
 	{
@@ -207,6 +218,7 @@ public final class TestResultBuilder
 	 * @param __val The value to use.
 	 * @since 2019/05/09
 	 */
+	@SquirrelJMEVendorApi
 	public final void setThrownValue(Object __val)
 	{
 		this.setThrownEncoded(DataSerialization.serialize(__val));

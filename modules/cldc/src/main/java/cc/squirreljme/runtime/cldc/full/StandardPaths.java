@@ -9,8 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.full;
 
-import cc.squirreljme.runtime.cldc.asm.SystemAccess;
-import cc.squirreljme.runtime.cldc.asm.SystemProperties;
+import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -163,7 +162,7 @@ public final class StandardPaths
 		// Using a basic home path
 		String basichome = Objects.toString(System.getProperty(
 			StandardPaths.HOME_PROPERTY),
-			SystemAccess.getEnv(StandardPaths.HOME_ENV));
+			RuntimeShelf.systemEnv(StandardPaths.HOME_ENV));
 		if (basichome != null)
 			rv = new Path[]{Paths.get(basichome)};
 		
@@ -194,13 +193,13 @@ public final class StandardPaths
 		// Setup paths
 		return new StandardPaths(StandardPaths.__triple(rv[0], System.getProperty(
 			StandardPaths.CONFIG_PATH_PROPERTY),
-				SystemAccess.getEnv(StandardPaths.CONFIG_PATH_ENV)),
+				RuntimeShelf.systemEnv(StandardPaths.CONFIG_PATH_ENV)),
 			StandardPaths.__triple(rv[1], System.getProperty(
 				StandardPaths.DATA_PATH_PROPERTY),
-				SystemAccess.getEnv(StandardPaths.DATA_PATH_ENV)),
+				RuntimeShelf.systemEnv(StandardPaths.DATA_PATH_ENV)),
 			StandardPaths.__triple(rv[2], System.getProperty(
 				StandardPaths.CACHE_PATH_PROPERTY),
-				SystemAccess.getEnv(StandardPaths.CACHE_PATH_ENV)));
+				RuntimeShelf.systemEnv(StandardPaths.CACHE_PATH_ENV)));
 	}
 	
 	/**
@@ -213,7 +212,7 @@ public final class StandardPaths
 	private static Path[] __defaultPathsOs()
 	{
 		// Based on OS
-		int ostype = SystemProperties.operatingSystemType();
+		int ostype = Debugging.todoObject("osType");
 		
 		// These may be used by either OS
 		Path userhome = StandardPaths.__getPropertyPath("user.home");
@@ -262,7 +261,7 @@ public final class StandardPaths
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		String v = SystemAccess.getEnv(__s);
+		String v = RuntimeShelf.systemEnv(__s);
 		if (v != null)
 			return Paths.get(v);
 		return null;

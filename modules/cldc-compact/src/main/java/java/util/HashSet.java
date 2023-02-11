@@ -11,6 +11,7 @@ package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.util.MapKeySetIterator;
 
 @Api
 public class HashSet<E>
@@ -163,7 +164,8 @@ public class HashSet<E>
 	@Override
 	public Iterator<E> iterator()
 	{
-		return this._map.keySet().iterator();
+		return new MapKeySetIterator<E, Object>(
+			this._map.entrySet().iterator());
 	}
 	
 	/**

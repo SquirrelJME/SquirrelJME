@@ -16,8 +16,41 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public class Player
 {
 	@Api
-	public static void play(DualTone __tone, int __unknown2)
+	public static void addPlayerListener(PlayerListener __listener)
 	{
-		Debugging.todoNote("play(%s, %d)", __tone, __unknown2);
+		throw Debugging.todo();
+	}
+	
+	@Api
+	public static void play(Clip __clip, int __repeat)
+		throws IllegalArgumentException
+	{
+		throw Debugging.todo();
+	}
+		
+	@Api
+	public static void play(DualTone __tone, int __repeat)
+		throws IllegalArgumentException
+	{
+		Debugging.todoNote("play(%s, %d)", __tone, __repeat);
+	}
+	
+	@Api
+	public static void playBackground(Clip __clip, int __repeat)
+		throws IllegalArgumentException
+	{
+		throw Debugging.todo();
+	}
+	
+	@Api
+	public static void resume()
+	{
+		throw Debugging.todo();
+	}
+	
+	@Api
+	public static void stop()
+	{
+		throw Debugging.todo();
 	}
 }

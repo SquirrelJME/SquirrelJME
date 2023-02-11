@@ -1332,6 +1332,7 @@ public class Display
 	 * @param __serialId The serial run ID.
 	 * @since 2023/01/14
 	 */
+	@SerializedEvent
 	protected void __serialRun(int __serialId)
 	{
 		// Look to see if it is a valid call

@@ -12,19 +12,22 @@ package java.util;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.ReferenceQueue;
+import java.lang.ref.WeakReference;
 
+/**
+ * This is a variant of {@link HashMap} which is backed by keys that are
+ * {@link WeakReference}s.
+ * 
+ * @param <K> The key type.
+ * @param <V> The value type.
+ * @since 2023/02/09
+ */
 @Api
 public class WeakHashMap<K, V>
 	extends AbstractMap<K, V>
-	implements Map<K, V>
 {
-	/** The default capacity. */
-	private static final int _DEFAULT_CAPACITY =
-		16;
-	
-	/** The default load factor. */
-	private static final float _DEFAULT_LOAD =
-		0.75F;
+	/** Internal map. */
+	private final __BucketMap__<__WeakHashMapKey__<K>, V> _map;
 	
 	/** The load factor. */
 	private final float _load;
@@ -61,6 +64,8 @@ public class WeakHashMap<K, V>
 		
 		// Setup
 		this._load = __load;
+		this._map = new __BucketMap__<>(false, false,
+			__icap, __load);
 	}
 	
 	/**
@@ -74,7 +79,7 @@ public class WeakHashMap<K, V>
 	public WeakHashMap(int __icap)
 		throws IllegalArgumentException
 	{
-		this(__icap, WeakHashMap._DEFAULT_LOAD);
+		this(__icap, __BucketMap__._DEFAULT_LOAD);
 	}
 	
 	/**
@@ -86,7 +91,7 @@ public class WeakHashMap<K, V>
 	@Api
 	public WeakHashMap()
 	{
-		this(WeakHashMap._DEFAULT_CAPACITY, WeakHashMap._DEFAULT_LOAD);
+		this(__BucketMap__._DEFAULT_CAPACITY, __BucketMap__._DEFAULT_LOAD);
 	}
 	
 	/**
@@ -105,83 +110,60 @@ public class WeakHashMap<K, V>
 			throw new NullPointerException("ZZ35");
 		
 		// Setup initial map
-		this._load = WeakHashMap._DEFAULT_LOAD;
+		this._load = __BucketMap__._DEFAULT_LOAD;
+		this._map = new __BucketMap__<>(false, false,
+			__BucketMap__._DEFAULT_CAPACITY, __BucketMap__._DEFAULT_LOAD);
 		
 		// Add all entries to it
-		for (Map.Entry<? extends K, ? extends V> e : __a.entrySet())
-			this.put(e.getKey(), e.getValue());
+		this.putAll(__a);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/02/09
+	 */
 	@Override
 	public void clear()
 	{
-		throw Debugging.todo();
+		this._map.clear();
 	}
 	
 	@Override
-	public boolean containsKey(Object __a)
+	public Object clone()
 	{
 		throw Debugging.todo();
 	}
 	
-	@Override
-	public boolean containsValue(Object __a)
-	{
-		throw Debugging.todo();
-	}
-	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/02/09
+	 */
 	@Override
 	public Set<Map.Entry<K, V>> entrySet()
 	{
-		throw Debugging.todo();
+		return new __WeakHashMapEntrySet__<K, V>(
+			this._map.entrySet());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/02/09
+	 */
 	@Override
-	public V get(Object __key)
+	public V put(K __key, V __value)
 	{
-		throw Debugging.todo();
+		return this._map.putEntry(new __WeakHashMapKey__<K>(__key))
+			.setValue(__value);
 	}
 	
-	@Override
-	public boolean isEmpty()
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public Set<K> keySet()
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public V put(K __a, V __b)
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public void putAll(Map<? extends K, ? extends V> __a)
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public V remove(Object __a)
-	{
-		throw Debugging.todo();
-	}
-	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/02/09
+	 */
 	@Override
 	public int size()
 	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public Collection<V> values()
-	{
-		throw Debugging.todo();
+		return this._map._size;
 	}
 }
 

@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.CleanupHandler;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
@@ -135,7 +136,7 @@ public final class StaticDisplayState
 			for (DisplayListener listener : StaticDisplayState.listeners())
 				StaticDisplayState.removeListener(listener);
 			
-			// Perform garbage collection to cleanup anything
+			// Perform garbage collection to clean up anything
 			StaticDisplayState.gc();
 		}
 	}
@@ -253,13 +254,27 @@ public final class StaticDisplayState
 			__type > UIItemType.NUM_TYPES)
 			throw new IllegalArgumentException("EB39 " + __type);
 		
+		// Debug
+		if (false)
+			Debugging.debugNote("locate(%s, %d, %s)",
+				__widget, __type, __backend);
+		
 		// Would be previously cached
 		synchronized (StaticDisplayState.class)
 		{
+			// Collect entries first
+			StaticDisplayState.gc();
+			
+			// Run through entries
 			for (Map.Entry<Reference<DisplayWidget>, UIDrawableBracket> e :
 				StaticDisplayState._WIDGETS.entrySet())
 			{
 				DisplayWidget possible = e.getKey().get();
+				
+				if (false)
+					Debugging.debugNote("locate(...) -> possible = %s",
+						possible);
+				
 				if (possible == __widget)
 				{
 					UIDrawableBracket value = e.getValue();
@@ -304,6 +319,11 @@ public final class StaticDisplayState
 			{
 				UIDrawableBracket widget = widgets.get(ref);
 				
+				// Notice
+				if (false)
+					Debugging.debugNote("gc() -> %s",
+						widget);
+				
 				// Remove from the mapping since it is gone now
 				widgets.remove(ref);
 				
@@ -316,7 +336,7 @@ public final class StaticDisplayState
 					UIItemBracket item = (UIItemBracket)widget;
 					
 					// The item could be part of a form still, so remove it
-					// from that form. If items happen to garnage collect
+					// from that form. If items happen to garbage collect
 					// before forms it will be removed
 					UIFormBracket form = instance.itemForm(item);
 					if (form != null)
@@ -357,6 +377,10 @@ public final class StaticDisplayState
 	{
 		if (__widget == null || __native == null)
 			throw new NullPointerException("NARG");
+		
+		if (false)
+			Debugging.debugNote("register(%s, %s)",
+				__widget, __native);
 		
 		// Prevent thread mishaps between threads doing this
 		synchronized (StaticDisplayState.class)

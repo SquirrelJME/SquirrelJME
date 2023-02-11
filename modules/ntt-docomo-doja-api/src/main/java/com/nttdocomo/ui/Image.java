@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @see javax.microedition.lcdui.Image
  * @since 2021/11/30
  */
+@Api
 @SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
 public abstract class Image
 {
