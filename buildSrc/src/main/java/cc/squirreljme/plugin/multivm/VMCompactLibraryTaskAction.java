@@ -39,15 +39,31 @@ import proguard.ProGuard;
 public class VMCompactLibraryTaskAction
 	implements Action<Task>
 {
-	/** Settings to use in the configuration for keeping, etc. */
-	static final String[] _PARSE_SETTINGS = new String[]
+	/** The optimizations to use. */
+	static final String[] _OPTIMIZATIONS = new String[]
 		{
 			// ProGuard's method inlining causes code to break! So disable
 			// it otherwise it generates an incorrect StackMapTable...
 			// *facepaw*
-			"-dontoptimize",
-			"-optimizations", "!method/inlining/*",
+			"!method/inlining/*",
 			
+			// These cause incompatible class change errors if such things
+			// were to be accessed
+			"!class/marking/final",
+			"!field/marking/private",
+			"!method/marking/private",
+			"!method/marking/static",
+			"!method/marking/final",
+			"!method/marking/synchronized",
+			
+			// Do not propagate parameters to method calls nor remove them
+			"!method/propagation/parameter",
+			"!method/removal/parameter",
+		};
+	
+	/** Settings to use in the configuration for keeping, etc. */
+	static final String[] _PARSE_SETTINGS = new String[]
+		{
 			// Adjust manifest resources
 			"-adaptresourcefilenames", "**",
 			"-adaptresourcefilecontents",
@@ -132,11 +148,19 @@ public class VMCompactLibraryTaskAction
 			    "public", "static", "**", "valueOf",
 					"(", "java.lang.String", ")", ";",
 				"}",
+			
+			// Keep constructors, since they can be called and utilized
+			"-keepclassmembers", "class", "*", "{",
+					"<init>", "(", "...", ")", ";",
+				"}",
 		};
 	
 	/** Settings for tests. */
 	static final String[] _TEST_SETTINGS =
 		{
+			// Do not optimize here, we want to keep everything around
+			"-dontoptimize",
+			
 			// This keeps everything about tests but will use pre-existing
 			// mappings and otherwise if we are using obfuscated classes
 			// This is the only thing I have found that works
@@ -151,7 +175,8 @@ public class VMCompactLibraryTaskAction
 				"<methods>", ";",
 			"}",
 			
-			// Keep more debugging attributes
+			// Keep more debugging attributes, so we can more easily figure
+			// things out when debugging
 			"-keepattributes", "*Annotation*,SourceFile,LineNumberTable," +
 				"LocalVariableTable",
 		};
@@ -276,6 +301,18 @@ public class VMCompactLibraryTaskAction
 			proGuardOptions.addAll(
 				Arrays.asList(VMCompactLibraryTaskAction._PARSE_SETTINGS));
 			
+			// Optimization settings
+			proGuardOptions.add("-optimizations");
+			StringBuilder optimizationOptions = new StringBuilder();
+			for (String optimize : VMCompactLibraryTaskAction._OPTIMIZATIONS)
+			{
+				if (optimizationOptions.length() > 0)
+					optimizationOptions.append(',');
+				
+				optimizationOptions.append(optimize);
+			}
+			proGuardOptions.add(optimizationOptions.toString());
+			
 			// Are we testing?
 			boolean isTesting =
 				SourceSet.TEST_SOURCE_SET_NAME.equals(this.sourceSet) ||
@@ -309,7 +346,8 @@ public class VMCompactLibraryTaskAction
 			// Reduce space and obfuscate, but we cannot remove everything at
 			// this time
 			config.shrink = false;
-			config.optimize = false;
+			config.optimizationPasses = 2;
+			/*config.optimize = false;*/
 			config.flattenPackageHierarchy = "$" +
 				(projectConfig.javaDocErrorCode == null ? "??" :
 				projectConfig.javaDocErrorCode);

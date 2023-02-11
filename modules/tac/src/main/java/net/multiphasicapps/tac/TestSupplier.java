@@ -39,6 +39,7 @@ public abstract class TestSupplier<R>
 	 * @since 2018/10/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{

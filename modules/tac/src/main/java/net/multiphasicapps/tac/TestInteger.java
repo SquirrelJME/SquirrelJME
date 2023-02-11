@@ -38,6 +38,7 @@ public abstract class TestInteger
 	 * @since 2019/12/24
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{

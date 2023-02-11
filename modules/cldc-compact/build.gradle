@@ -87,14 +87,107 @@ squirreljme
 			"cc.squirreljme.jvm.mle.brackets.TypeBracket", "_type", ";",
 		"}"]
 	
-	// Integer's value is directly accessed as an optimization
+	// String information that needs to be kept
 	proGuardOptions += ["-keepclassmembers", "class",
+		"java.lang.String", "{",
+			"char[]", "_chars", ";",
+			"int", "_hashCode", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.String", "{",
+			"char[]", "_chars", ";",
+			"int", "_hashCode", ";",
+		"}"]
+	
+	// Prevent certain java.lang.Boolean optimizations
+	proGuardOptions += ["-keepclassmembers,includecode", "class",
+		"java.lang.Boolean", "{",
+			"java.lang.Boolean", "TRUE", ";",
+			"java.lang.Boolean", "FALSE", ";",
+			"boolean", "_value", ";",
+			"void", "<clinit>", "(", ")", ";",
+			"java.lang.Boolean", "valueOf", "(", "boolean", ")", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Boolean", "{",
+			"boolean", "_value", ";",
+		"}"]
+	
+	// Prevent certain java.lang.Character optimizations
+	proGuardOptions += ["-keepclassmembers,includecode", "class",
+		"java.lang.Character", "{",
+			"char", "_value", ";",
+			"java.lang.Character", "valueOf", "(", "char", ")", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Character", "{",
+			"char", "_value", ";",
+		"}"]
+	
+	// Prevent certain java.lang.Byte optimizations
+	proGuardOptions += ["-keepclassmembers,includecode", "class",
+		"java.lang.Byte", "{",
+			"byte", "_value", ";",
+			"java.lang.Byte", "valueOf", "(", "byte", ")", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Byte", "{",
+			"byte", "_value", ";",
+		"}"]
+	
+	// Prevent certain java.lang.Short optimizations
+	proGuardOptions += ["-keepclassmembers,includecode", "class",
+		"java.lang.Short", "{",
+			"short", "_value", ";",
+			"java.lang.Short", "valueOf", "(", "short", ")", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Short", "{",
+			"short", "_value", ";",
+		"}"]
+	
+	// Prevent certain java.lang.Integer optimizations
+	proGuardOptions += ["-keepclassmembers,includecode", "class",
 		"java.lang.Integer", "{",
 			"int", "_value", ";",
+			"java.lang.Integer", "valueOf", "(", "int", ")", ";",
 		"}"]
 	proGuardOptions += ["-keepclassmembernames", "class",
 		"java.lang.Integer", "{",
 			"int", "_value", ";",
+		"}"]
+	
+	// Prevent certain java.lang.Long optimizations
+	proGuardOptions += ["-keepclassmembers,includecode", "class",
+		"java.lang.Long", "{",
+			"long", "_value", ";",
+			"java.lang.Long", "valueOf", "(", "long", ")", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Long", "{",
+			"long", "_value", ";",
+		"}"]
+	
+	// Prevent certain java.lang.Float optimizations
+	proGuardOptions += ["-keepclassmembers,includecode", "class",
+		"java.lang.Float", "{",
+			"float", "_value", ";",
+			"java.lang.Float", "valueOf", "(", "float", ")", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Float", "{",
+			"float", "_value", ";",
+		"}"]
+	
+	// Prevent certain java.lang.Double optimizations
+	proGuardOptions += ["-keepclassmembers,includecode", "class",
+		"java.lang.Double", "{",
+			"double", "_value", ";",
+			"java.lang.Double", "valueOf", "(", "double", ")", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Double", "{",
+			"double", "_value", ";",
 		"}"]
 	
 	// This is considered a boot loader for SummerCoat

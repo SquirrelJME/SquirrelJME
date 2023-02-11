@@ -40,6 +40,7 @@ public abstract class TestConsumer<A>
 	 */
 	@Override
 	@SuppressWarnings({"unchecked"})
+	@SquirrelJMEVendorApi
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{

@@ -363,6 +363,7 @@ public final class Character
 	 */
 	@Api
 	@ImplementationNote("This is not cached.")
+	@SuppressWarnings("UnnecessaryBoxing")
 	public static Character valueOf(char __v)
 	{
 		return new Character(__v);

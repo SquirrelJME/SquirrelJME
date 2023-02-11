@@ -52,6 +52,7 @@ abstract class __CoreTest__
 	 * @since 2018/10/06
 	 */
 	@Test
+	@SquirrelJMEVendorApi
 	abstract Object __runTest(Object... __args)
 		throws Throwable;
 	

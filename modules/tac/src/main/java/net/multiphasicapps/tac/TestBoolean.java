@@ -38,6 +38,7 @@ public abstract class TestBoolean
 	 * @since 2019/12/25
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{

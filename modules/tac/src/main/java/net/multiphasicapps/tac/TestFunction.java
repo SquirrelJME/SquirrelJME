@@ -42,6 +42,7 @@ public abstract class TestFunction<A, R>
 	 */
 	@Override
 	@SuppressWarnings({"unchecked"})
+	@SquirrelJMEVendorApi
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{

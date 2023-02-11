@@ -114,8 +114,9 @@ public class VMCompactLibraryTask
 		// Also include the built-in plugin options, in case those change as
 		// well!
 		this.getInputs().property("squirreljme.proguardOptionsDefault",
-			this.getProject().provider(() -> Arrays.toString(
-				VMCompactLibraryTaskAction._PARSE_SETTINGS) +
+			this.getProject().provider(() ->
+				Arrays.toString(VMCompactLibraryTaskAction._OPTIMIZATIONS) +
+				Arrays.toString(VMCompactLibraryTaskAction._PARSE_SETTINGS) +
 				Arrays.toString(VMCompactLibraryTaskAction._TEST_SETTINGS)));
 		
 		// The output of this JAR is just where it should be placed, this

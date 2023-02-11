@@ -221,6 +221,11 @@ public enum VMType
 			sysProps.put("squirreljme.orig.microedition.platform",
 				"SquirrelJME/0.3.0");
 			
+			// VM Tracing?
+			String tracing = System.getProperty("cc.squirreljme.vm.trace");
+			if (tracing != null)
+				sysProps.put("cc.squirreljme.vm.trace", tracing);
+			
 			// Declare system properties that are all the originally defined
 			// system properties
 			for (Map.Entry<String, String> e : __sysProps.entrySet())

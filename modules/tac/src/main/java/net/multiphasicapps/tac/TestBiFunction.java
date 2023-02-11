@@ -44,6 +44,7 @@ public abstract class TestBiFunction<A, B, R>
 	 */
 	@Override
 	@SuppressWarnings({"unchecked"})
+	@SquirrelJMEVendorApi
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{
