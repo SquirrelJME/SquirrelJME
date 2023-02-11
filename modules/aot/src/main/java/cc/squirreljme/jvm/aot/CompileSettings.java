@@ -18,18 +18,23 @@ import java.util.Deque;
  */
 public final class CompileSettings
 {
-	/** Is this a boot loader? */
+	/** Is this a bootloader? */
 	public final boolean isBootLoader;
+	
+	/** The variant used for compilation. */
+	public final String variant;
 	
 	/**
 	 * Initializes the compilation settings.
 	 * 
-	 * @param __isBootLoader Is this a boot loader?
+	 * @param __isBootLoader Is this a bootloader?
+	 * @param __variant The variant used for compilation.
 	 * @since 2020/11/23
 	 */
-	public CompileSettings(boolean __isBootLoader)
+	public CompileSettings(boolean __isBootLoader, String __variant)
 	{
 		this.isBootLoader = __isBootLoader;
+		this.variant = __variant;
 	}
 	
 	/**
@@ -48,17 +53,35 @@ public final class CompileSettings
 		
 		// Possible settings
 		boolean isBootLoader = false;
+		String variant = null;
 		
 		// Parse settings
 		while (!__args.isEmpty())
 		{
 			String arg = __args.removeFirst();
 			
+			// Does this have a value?
+			int colonDx = arg.indexOf(':');
+			String value;
+			if (colonDx < 0)
+				value = null;
+			else
+			{
+				value = arg.substring(colonDx + 1);
+				arg = arg.substring(0, colonDx);
+			}
+			
+			// Which argument is this?
 			switch (arg)
 			{
 					// Is this a bootloader?
 				case "-boot":
 					isBootLoader = true;
+					break;
+					
+					// Variant used?
+				case "-variant":
+					variant = value;
 					break;
 				
 					// {@squirreljme.error AE06 Unknown compilation setting.
@@ -69,6 +92,6 @@ public final class CompileSettings
 		}
 		
 		// Initialize final settings
-		return new CompileSettings(isBootLoader);
+		return new CompileSettings(isBootLoader, variant);
 	}
 }

@@ -43,7 +43,7 @@ public class SpringCoatFactory
 	 * @since 2018/11/17
 	 */
 	@Override
-	protected VirtualMachine createVM(ProfilerSnapshot __ps,
+	public VirtualMachine createVM(ProfilerSnapshot __ps,
 		JDWPFactory __jdwp, VMThreadModel __threadModel, VMSuiteManager __sm,
 		VMClassLibrary[] __cp, String __maincl, Map<String, String> __sprops,
 		String[] __args)

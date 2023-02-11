@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
@@ -36,6 +37,9 @@ public final class SpringMethod
 	/** The file this method is in. */
 	protected final String infile;
 	
+	/** The virtual machine to load in. */
+	protected final String inVm;
+	
 	/** Breakpoints for the method. */
 	private volatile Map<Integer, JDWPTripBreakpoint> _breakpoints;
 	
@@ -52,10 +56,12 @@ public final class SpringMethod
 	 * @param __m The method to wrap.
 	 * @param __if The file this is in.
 	 * @param __dx The method index.
+	 * @param __inVm The virtual machine to load in.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/03
 	 */
-	SpringMethod(ClassName __ic, Method __m, String __if, int __dx)
+	SpringMethod(ClassName __ic, Method __m, String __if, int __dx,
+		String __inVm)
 		throws NullPointerException
 	{
 		if (__ic == null || __m == null)
@@ -65,6 +71,7 @@ public final class SpringMethod
 		this.method = __m;
 		this.infile = __if;
 		this.methodIndex = __dx;
+		this.inVm = __inVm;
 	}
 	
 	/**
@@ -75,7 +82,11 @@ public final class SpringMethod
 	 */
 	public final ByteCode byteCode()
 	{
-		return this.method.byteCode();
+		// If not using another VM, use the plain Java byte code for it
+		if (this.inVm == null || this.inVm.isEmpty())
+			return this.method.byteCode();
+		
+		throw Debugging.todo();
 	}
 	
 	/**

@@ -24,7 +24,6 @@ import cc.squirreljme.jdwp.trips.JDWPTripThread;
 import cc.squirreljme.jvm.Assembly;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.springcoat.brackets.TaskObject;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArithmeticException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassCastException;
@@ -391,7 +390,7 @@ public final class SpringThreadWorker
 		// Object array type
 		else if (__in instanceof SpringObject[])
 			return new SpringArrayObjectGeneric(
-				this.loadClass(new ClassName("java/lang/Object")),
+				this.loadClass(new ClassName("java/lang/Object"), null),
 				(SpringObject[])__in);
 		
 		// String array
@@ -402,7 +401,7 @@ public final class SpringThreadWorker
 			// Setup return array
 			int n = in.length;
 			SpringArrayObject rv = this.allocateArray(
-				this.loadClass(new ClassName("[Ljava/lang/String;")), n);
+				this.loadClass(new ClassName("[Ljava/lang/String;"), null), n);
 			
 			// Copy array values
 			for (int i = 0; i < n; i++)
@@ -429,7 +428,7 @@ public final class SpringThreadWorker
 			
 			// Locate the string class
 			SpringClass strclass = this.loadClass(
-				new ClassName("java/lang/String"));
+				new ClassName("java/lang/String"), null);
 				
 			// Setup an array of characters to represent the string data,
 			// this is the simplest thing to do right now
@@ -510,7 +509,8 @@ public final class SpringThreadWorker
 					return rv;
 				
 				// Resolve the input class, so it is initialized
-				SpringClass resClass = (__noclassres ? this.loadClass(name) :
+				SpringClass resClass = (__noclassres ? this.loadClass(name,
+					null) :
 					this.resolveClass(name));
 				
 				// Resolve the class object
@@ -587,49 +587,49 @@ public final class SpringThreadWorker
 		// Boolean
 		else if (__a instanceof boolean[])
 			return new SpringArrayObjectBoolean(
-				this.loadClass(new ClassName("[Z")),
+				this.loadClass(new ClassName("[Z"), null),
 				(boolean[])__a);
 		
 		// Byte
 		else if (__a instanceof byte[])
 			return new SpringArrayObjectByte(
-				this.loadClass(new ClassName("[B")),
+				this.loadClass(new ClassName("[B"), null),
 				(byte[])__a);
 		
 		// Short
 		else if (__a instanceof short[])
 			return new SpringArrayObjectShort(
-				this.loadClass(new ClassName("[S")),
+				this.loadClass(new ClassName("[S"), null),
 				(short[])__a);
 		
 		// Character
 		else if (__a instanceof char[])
 			return new SpringArrayObjectChar(
-				this.loadClass(new ClassName("[C")),
+				this.loadClass(new ClassName("[C"), null),
 				(char[])__a);
 		
 		// Integer
 		else if (__a instanceof int[])
 			return new SpringArrayObjectInteger(
-				this.loadClass(new ClassName("[I")),
+				this.loadClass(new ClassName("[I"), null),
 				(int[])__a);
 		
 		// Long
 		else if (__a instanceof long[])
 			return new SpringArrayObjectLong(
-				this.loadClass(new ClassName("[J")),
+				this.loadClass(new ClassName("[J"), null),
 				(long[])__a);
 		
 		// Float
 		else if (__a instanceof float[])
 			return new SpringArrayObjectFloat(
-				this.loadClass(new ClassName("[F")),
+				this.loadClass(new ClassName("[F"), null),
 				(float[])__a);
 		
 		// Double
 		else if (__a instanceof double[])
 			return new SpringArrayObjectDouble(
-				this.loadClass(new ClassName("[D")),
+				this.loadClass(new ClassName("[D"), null),
 				(double[])__a);
 		
 		// {@squirreljme.error BK22 Cannot wrap this as a native array.
@@ -713,7 +713,7 @@ public final class SpringThreadWorker
 		
 		// Need the current and the target class to check permissions
 		SpringClass self = this.contextClass(),
-			target = this.loadClass(__m.inClass());
+			target = this.loadClass(__m.inClass(), null);
 		
 		// No current class, treat as always valid
 		if (self == null)
@@ -778,7 +778,7 @@ public final class SpringThreadWorker
 			if (icl.toString().startsWith("cc/squirreljme/runtime/cldc/asm/"))
 				continue;
 			
-			return this.machine.classLoader().loadClass(icl);
+			return this.machine.classLoader().loadClass(icl, null);
 		}
 		
 		return null;
@@ -896,6 +896,7 @@ public final class SpringThreadWorker
 	 * if it has not been initialized.
 	 *
 	 * @param __cn The class to load.
+	 * @param __inVm The virtual machine to load in.
 	 * @return The loaded class.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringClassFormatException If the class is not formatted
@@ -903,11 +904,11 @@ public final class SpringThreadWorker
 	 * @throws SpringClassNotFoundException If the class was not found.
 	 * @since 2020/06/17
 	 */
-	public final SpringClass loadClass(String __cn)
+	public final SpringClass loadClass(String __cn, String __inVm)
 		throws NullPointerException, SpringClassFormatException,
 			SpringClassNotFoundException
 	{
-		return this.loadClass(new ClassName(__cn));
+		return this.loadClass(new ClassName(__cn), __inVm);
 	}
 	
 	/**
@@ -915,6 +916,7 @@ public final class SpringThreadWorker
 	 * if it has not been initialized.
 	 *
 	 * @param __cn The class to load.
+	 * @param __inVm The virtual machine to load in.
 	 * @return The loaded class.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringClassFormatException If the class is not formatted
@@ -922,7 +924,7 @@ public final class SpringThreadWorker
 	 * @throws SpringClassNotFoundException If the class was not found.
 	 * @since 2018/09/08
 	 */
-	public final SpringClass loadClass(ClassName __cn)
+	public final SpringClass loadClass(ClassName __cn, String __inVm)
 		throws NullPointerException, SpringClassFormatException,
 			SpringClassNotFoundException
 	{
@@ -935,7 +937,7 @@ public final class SpringThreadWorker
 		synchronized (classloader.classLoadingLock())
 		{
 			// Load the class from the class loader
-			return this.loadClass(classloader.loadClass(__cn));
+			return this.loadClass(classloader.loadClass(__cn, __inVm));
 		}
 	}
 	
@@ -1141,7 +1143,7 @@ public final class SpringThreadWorker
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		return this.newInstance(this.loadClass(__cl), __desc, __args);
+		return this.newInstance(this.loadClass(__cl, null), __desc, __args);
 	}
 	
 	/**
@@ -1225,7 +1227,7 @@ public final class SpringThreadWorker
 		
 		// {@squirreljme.error BK26 Could not access the specified class.
 		// (The class to access; The context class)}
-		SpringClass rv = this.loadClass(__cl);
+		SpringClass rv = this.loadClass(__cl, null);
 		if (!this.checkAccess(rv))
 			throw new SpringIllegalAccessException(String.format("BK26 %s %s",
 				__cl, this.contextClass()));
@@ -1347,7 +1349,7 @@ public final class SpringThreadWorker
 		
 		// Locate the main class
 		SpringClass bootClass = this.loadClass(
-			machine.bootClass.replace('.', '/'));
+			machine.bootClass.replace('.', '/'), null);
 		
 		// Lookup the main method
 		SpringMethod main = bootClass.lookupMethod(true,
@@ -1491,7 +1493,7 @@ public final class SpringThreadWorker
 		{
 			// Is this handler compatible for the thrown
 			// exception?
-			SpringClass ehcl = this.loadClass(eh.type());
+			SpringClass ehcl = this.loadClass(eh.type(), null);
 			
 			if (ehcl.isCompatible(__o))
 			{
@@ -1622,7 +1624,7 @@ public final class SpringThreadWorker
 			
 		// {@squirreljme.error BK28 Could not access the target class for
 		// instance field access. (The field reference)}
-		SpringClass inclass = this.loadClass(__f.className());
+		SpringClass inclass = this.loadClass(__f.className(), null);
 		if (!this.checkAccess(inclass))
 			throw new SpringIncompatibleClassChangeException(
 				String.format("BK28 %s", __f));
@@ -1661,7 +1663,7 @@ public final class SpringThreadWorker
 		
 		// Static fields can point to a parent class but truly exist in a
 		// super class
-		SpringClass inClass = this.loadClass(__f.className());
+		SpringClass inClass = this.loadClass(__f.className(), null);
 		while (inClass != null)
 		{
 			// {@squirreljme.error BK2a Could not access the target class for
@@ -1749,7 +1751,6 @@ public final class SpringThreadWorker
 		// our breakpoints
 		SpringThread.Frame frame = thread.currentFrame();
 		SpringMethod method = frame.method();
-		ByteCode code = frame.byteCode();
 		
 		// Poll the JDWP debugger for any new debugging state
 		JDWPController jdwp = this.machine.tasks.jdwpController;
@@ -1787,6 +1788,9 @@ public final class SpringThreadWorker
 			// Poll and block on suspension when debugging
 			this.__debugSuspension();
 		}
+		
+		// Obtain the method byte code
+		ByteCode code = frame.byteCode();
 		
 		// Increase the step count
 		this._stepCount++;
@@ -2525,7 +2529,7 @@ public final class SpringThreadWorker
 						if (jdwp != null && ssf.isDebugWatching(false))
 							jdwp.trip(JDWPTripField.class,
 								JDWPGlobalTrip.FIELD).field(thread,
-									this.loadClass(ssf.inclass),
+									this.loadClass(ssf.inclass, null),
 									ssf.index, false, ref, null);
 					}
 					break;
@@ -2550,7 +2554,7 @@ public final class SpringThreadWorker
 							field[0].isDebugWatching(false))
 							jdwp.trip(JDWPTripField.class,
 								JDWPGlobalTrip.FIELD).field(thread,
-									this.loadClass(ssf.inclass),
+									this.loadClass(ssf.inclass, null),
 									ssf.fieldIndex, false,
 									null, null);
 					}
@@ -3489,7 +3493,7 @@ public final class SpringThreadWorker
 						
 						// {@squirreljme.error BK2u Cannot store value into
 						// a field which belongs to another class.}
-						if (!this.loadClass(ssf.inClass()).isAssignableFrom(
+						if (!this.loadClass(ssf.inClass(), null).isAssignableFrom(
 							sso.type()))
 							throw new SpringClassCastException("BK2u");
 						
@@ -3501,7 +3505,7 @@ public final class SpringThreadWorker
 									DebugViewObject.__normalizeNull(value));
 								jdwp.trip(JDWPTripField.class,
 									JDWPGlobalTrip.FIELD).field(thread,
-										this.loadClass(ssf.inclass),
+										this.loadClass(ssf.inclass, null),
 										ssf.index, true, ref, jVal);
 							}
 						
@@ -3535,7 +3539,7 @@ public final class SpringThreadWorker
 									DebugViewObject.__normalizeNull(value));
 								jdwp.trip(JDWPTripField.class,
 									JDWPGlobalTrip.FIELD).field(thread,
-										this.loadClass(ssf.inclass),
+										this.loadClass(ssf.inclass, null),
 										ssf.fieldIndex, true,
 										null, jVal);
 							}
@@ -3633,7 +3637,7 @@ public final class SpringThreadWorker
 				SpringMethod inmethod = frame.method();
 				ClassName inclassname = inmethod.inClass();
 				SpringClass inclass = machine.classLoader().loadClass(
-					inclassname);
+					inclassname, null);
 				
 				// Location information if debugging is used, this makes it
 				// easier to see exactly where failed code happened
@@ -3712,7 +3716,7 @@ public final class SpringThreadWorker
 			0, MethodReference.class);
 		
 		// Resolve the method reference
-		SpringClass refclass = this.loadClass(ref.className());
+		SpringClass refclass = this.loadClass(ref.className(), null);
 		SpringMethod refmethod = refclass.lookupMethod(false,
 			ref.memberNameAndType());
 		
@@ -3771,7 +3775,7 @@ public final class SpringThreadWorker
 			0, MethodReference.class);
 		
 		// Resolve the method reference
-		SpringClass refClass = this.loadClass(ref.className());
+		SpringClass refClass = this.loadClass(ref.className(), null);
 		SpringMethod refMethod = refClass.lookupMethod(false,
 			ref.memberNameAndType());
 		
@@ -3791,7 +3795,7 @@ public final class SpringThreadWorker
 		// Get the class of the current method being executed, lookup depends
 		// on it
 		SpringClass currentClass = this.loadClass(
-			this.thread.currentFrame().method().inClass());
+			this.thread.currentFrame().method().inClass(), null);
 		
 		// {@squirreljme.error BK35 Instance object for special invoke is
 		// null.}
@@ -3849,7 +3853,7 @@ public final class SpringThreadWorker
 			0, MethodReference.class);
 		
 		// Resolve the method reference
-		SpringClass refclass = this.loadClass(ref.className());
+		SpringClass refclass = this.loadClass(ref.className(), null);
 		SpringMethod refmethod = refclass.lookupMethod(true,
 			ref.memberNameAndType());
 		
@@ -3961,7 +3965,7 @@ public final class SpringThreadWorker
 			0, MethodReference.class);
 		
 		// Resolve the method reference
-		SpringClass refclass = this.loadClass(ref.className());
+		SpringClass refclass = this.loadClass(ref.className(), null);
 		SpringMethod refmethod = refclass.lookupMethod(false,
 			ref.memberNameAndType());
 		
@@ -4022,7 +4026,7 @@ public final class SpringThreadWorker
 		// Lookup class we want to allocate
 		ClassName allocName;
 		SpringClass toAlloc = this.loadClass((allocName =
-			__i.<ClassName>argument(0, ClassName.class)));
+			__i.<ClassName>argument(0, ClassName.class)), null);
 		
 		// {@squirreljme.error BK3a Cannot allocate an instance of the given
 		// class because it cannot be accessed. (The class to allocate)}

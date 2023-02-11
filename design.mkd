@@ -18,7 +18,7 @@ this document is mostly within the scope of Java ME and not Java SE.
  * Reduced library subset.
    * The main library is much smaller which means it will load faster and
      use less memory. Less memory means it can run on smaller/weaker systems.
- * No reflection.
+ * Minimal reflection.
    * There is `Class.forName()` and `Class.newInstance()`, however they are
      trivial to support.
    * More secure because access checks do not have to be performed at run-time

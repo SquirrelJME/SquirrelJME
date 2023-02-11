@@ -40,7 +40,7 @@ public abstract class AbstractGhostObject
 			throw new NullPointerException("NARG");
 		
 		this.represents = __machine.classLoader().loadClass(
-			new ClassName(__rep.getName().replace('.', '/')));
+			new ClassName(__rep.getName().replace('.', '/')), null);
 	}
 	
 	/**

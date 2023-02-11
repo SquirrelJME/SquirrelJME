@@ -85,6 +85,6 @@ public abstract class SpringProxyObject
 	@Override
 	public final SpringClass type()
 	{
-		return this.machine.classLoader().loadClass(this.type);
+		return this.machine.classLoader().loadClass(this.type, null);
 	}
 }

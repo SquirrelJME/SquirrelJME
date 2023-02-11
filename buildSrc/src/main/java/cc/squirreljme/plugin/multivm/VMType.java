@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
@@ -59,7 +60,7 @@ public enum VMType
 		{
 			return true;
 		}
-		
+	
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/05/16
@@ -359,6 +360,99 @@ public enum VMType
 			
 			// Is just pure copy of the JAR
 			VMHelpers.copy(__in, __out);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/08/15
+		 */
+		@Override
+		public void spawnJvmArguments(VMBaseTask __task,
+			boolean __debugEligible,
+			JavaExecSpecFiller __execSpec, String __mainClass,
+			String __commonName, Map<String, String> __sysProps,
+			Path[] __libPath, Path[] __classPath, String... __args)
+			throws NullPointerException
+		{
+			// Use a common handler to execute the VM as the VMs all have
+			// the same entry point handlers and otherwise
+			this.spawnVmViaFactory(__task, __debugEligible, __execSpec,
+				__mainClass, __commonName, __sysProps, __libPath,
+				__classPath, __args);
+		}
+	},
+	
+	/** SummerCoat virtual machine. */
+	SUMMERCOAT("SummerCoat", "sqc",
+		new String[]{":emulators:summercoat-vm", ":emulators:springcoat-vm"})
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2022/09/30
+		 */
+		@Override
+		public Set<BangletVariant> banglets()
+		{
+			// Everything except none
+			EnumSet<BangletVariant> rv = EnumSet.allOf(BangletVariant.class);
+			rv.remove(BangletVariant.NONE);
+			
+			return Collections.unmodifiableSet(rv);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/05/16
+		 */
+		@Override
+		public void dumpLibrary(VMBaseTask __task, boolean __isTest,
+			InputStream __in, OutputStream __out)
+			throws IOException, NullPointerException
+		{
+			// Run the specified command
+			this.__aotCommand(__task, __in, __out,
+				"dumpCompile", null);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2022/12/23
+		 */
+		@Override
+		public boolean hasEmulatorJit()
+		{
+			return true;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/08/15
+		 */
+		@Override
+		public void processLibrary(VMBaseTask __task, boolean __isTest,
+			InputStream __in, OutputStream __out)
+			throws IOException, NullPointerException
+		{
+			if (__in == null || __out == null)
+				throw new NullPointerException("NARG");
+			
+			// Need to access the config for ROM building
+			SquirrelJMEPluginConfiguration config =
+				SquirrelJMEPluginConfiguration
+				.configuration(__task.getProject());
+				
+			// Potential extra arguments
+			Collection<String> args = new ArrayList<>();
+			
+			// Is this a bootloader? This is never valid for tests as they
+			// are just extra libraries, it does not make sense to have them
+			// be loadable.
+			if (!__isTest && config.isBootLoader)
+				args.add("-boot");
+				
+			// Run the specified command
+			this.__aotCommand(__task, __in, __out,
+				"compile", args);
 		}
 		
 		/**

@@ -13,8 +13,6 @@ import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.SummerCoatJarLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -199,6 +197,9 @@ public class Main
 		// Setup glob for final linking
 		LinkGlob glob = __backend.linkGlob(settings, __name, __outGlob);
 		
+		// Count statistics
+		CompilationStatistics statistics = glob.statistics();
+		
 		// Read input JAR and perform inline compilation
 		try (InputStream in = __inZip;
 			ZipStreamReader zip = new ZipStreamReader(in))
@@ -217,28 +218,16 @@ public class Main
 					if (!name.endsWith(".class"))
 					{
 						// Link in the resource as-is however
-						glob.join(name, true, entry);
+						glob.joinResource(name, entry);
 						
 						continue;
 					}
 					
-					// Perform class compilation
-					try (ByteArrayOutputStream classBytes =
-						new ByteArrayOutputStream())
-					{
-						// Perform compilation
-						__backend.compileClass(settings, glob,
-							name.substring(0,
-								name.length() - ".class".length()),
-							entry, classBytes);
-						
-						// Link in the resultant object
-						try (InputStream bain = new ByteArrayInputStream(
-							classBytes.toByteArray()))
-						{
-							glob.join(name, false, bain);
-						}
-					} 
+					// Perform compilation, this should output to the link
+					// glob
+					__backend.compileClass(glob,
+						name.substring(0, name.length() - ".class".length()),
+						entry);
 				}
 			
 			// Linking stage is finished

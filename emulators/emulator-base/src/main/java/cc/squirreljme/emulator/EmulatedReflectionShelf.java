@@ -11,7 +11,9 @@ package cc.squirreljme.emulator;
 
 import cc.squirreljme.jvm.mle.ReflectionShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.jvm.mle.callbacks.ReflectiveLoaderCallback;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -32,6 +34,7 @@ public class EmulatedReflectionShelf
 	 * @throws Throwable Any exception thrown by the target.
 	 * @since 2022/09/07
 	 */
+	@Api
 	public static void invokeMain(TypeBracket __type,
 		String... __args)
 		throws MLECallError, Throwable

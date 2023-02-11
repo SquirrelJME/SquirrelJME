@@ -242,7 +242,7 @@ public final class SpringThread
 		// Create new frame
 		List<SpringThread.Frame> frames = this._frames;
 		Frame rv = new Frame(frames.size(),
-			this._worker.loadClass(__m.inClass()), __m, vmArgs);
+			this._worker.loadClass(__m.inClass(), null), __m, vmArgs);
 		
 		// Profile for this frame
 		rv._profiler = this.profiler.enterFrame(__m.inClass().toString(),
@@ -846,7 +846,7 @@ public final class SpringThread
 					locals[o++] = SpringStackTop.TOP;
 			}
 			
-			// Store the this object, if needed
+			// Store the "this" object, if needed
 			this.thisobject = (__m.flags().isStatic() ? null :
 				(SpringObject)__args[0]);
 			

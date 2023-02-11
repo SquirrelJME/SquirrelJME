@@ -139,7 +139,7 @@ public enum MLETask
 					inTraces[i]); 
 			
 			return __thread.asVMObjectArray(__thread.loadClass(
-				"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;"),
+				"[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;", null),
 				outTraces);
 		}
 	},

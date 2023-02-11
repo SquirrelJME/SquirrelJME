@@ -12,6 +12,7 @@ package cc.squirreljme.emulator;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -44,7 +45,28 @@ public class EmulatedTypeShelf
 	 * found.
 	 * @since 2020/06/02
 	 */
+	@Api
 	public static TypeBracket findType(String __name)
+		throws MLECallError
+	{
+		return EmulatedTypeShelf.findType(__name, null);
+	}
+	
+	/**
+	 * Finds a type by its name, if it is not yet loaded and/or initialized
+	 * it may occur at this time and will use the specified virtual machine to
+	 * load the class.
+	 * 
+	 * @param __name The name of the type.
+	 * @param __inVm The virtual machine to look within, may be {@code null}
+	 * which specifies default virtual machine behavior.
+	 * @return The type bracket for the type or {@code null} if none was
+	 * found.
+	 * @throws MLECallError If no name was specified.
+	 * @since 2022/12/24
+	 */
+	@Api
+	public static TypeBracket findType(String __name, String __inVm)
 		throws MLECallError
 	{
 		if (__name == null)
@@ -53,7 +75,8 @@ public class EmulatedTypeShelf
 		try
 		{
 			return new EmulatedTypeBracket(
-				Class.forName(__name.replace('/', '.')));
+				Thread.currentThread().getContextClassLoader()
+					.loadClass(__name.replace('/', '.')));
 		}
 		catch (ClassNotFoundException __e)
 		{

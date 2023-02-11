@@ -39,8 +39,8 @@ public final class RomSettings
 	/**
 	 * Initializes the ROM settings.
 	 * 
-	 * @param __bootLoaderMainClass The boot loader main class. 
-	 * @param __bootLoaderClassPath The boot loader class path.
+	 * @param __bootLoaderMainClass The bootloader main class. 
+	 * @param __bootLoaderClassPath The bootloader class path.
 	 * @param __launcherMainClass The launcher main class.
 	 * @param __launcherArgs The arguments to the launcher.
 	 * @param __launcherClassPath The launcher class path.

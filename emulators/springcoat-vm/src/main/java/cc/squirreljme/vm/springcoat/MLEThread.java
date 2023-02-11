@@ -664,7 +664,8 @@ public enum MLEThread
 				worker.verbose().add(0, target._initVerboseFlags);
 			
 			// Enter the base setup frame
-			target.enterFrame(worker.loadClass(MLEThread._START_CLASS)
+			target.enterFrame(worker.loadClass(MLEThread._START_CLASS,
+					null)
 				.lookupMethod(true, MLEThread._BASE_THREAD_METHOD));
 			
 			// Try to start it

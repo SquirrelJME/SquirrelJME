@@ -9,6 +9,9 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+
 /**
  * Runs a single test.
  *
@@ -16,6 +19,10 @@ package net.multiphasicapps.tac;
  */
 public class MainSingleRunner
 {
+	/** Perform the find type in a given VM instead. */
+	public static final String RUN_IN_VM_PROPERTY =
+		"cc.squirreljme.test.vm";
+	
 	/**
 	 * Main entry point for test running.
 	 *
@@ -52,9 +59,11 @@ public class MainSingleRunner
 		Class<?> type;
 		try
 		{
-			type = Class.forName(typeName);
+			type = TypeShelf.typeToClass(TypeShelf.findType(
+				typeName.replace('.', '/'),
+				System.getProperty(MainSingleRunner.RUN_IN_VM_PROPERTY)));
 		}
-		catch (ClassNotFoundException e)
+		catch (MLECallError e)
 		{
 			// {@squirreljme.error BU0g Could not find main test class.
 			// (The class name)}

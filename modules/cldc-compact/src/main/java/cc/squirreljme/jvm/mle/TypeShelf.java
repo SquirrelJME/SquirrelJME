@@ -134,7 +134,8 @@ public final class TypeShelf
 		throws MLECallError;
 	
 	/**
-	 * Finds a type by its name.
+	 * Finds a type by its name, if it is not yet loaded and/or initialized
+	 * it may occur at this time.
 	 *
 	 * @param __name The name of the type.
 	 * @return The type bracket for the type or {@code null} if none was
@@ -147,14 +148,20 @@ public final class TypeShelf
 		throws MLECallError;
 	
 	/**
-	 * Initializes the given class.
+	 * Finds a type by its name, if it is not yet loaded and/or initialized
+	 * it may occur at this time and will use the specified virtual machine to
+	 * load the class.
 	 * 
-	 * @param __info The class info to initialize.
-	 * @throws MLECallError If the class is {@code null}.
-	 * @since 2020/11/28
+	 * @param __name The name of the type.
+	 * @param __inVm The virtual machine to look within, may be {@code null}
+	 * which specifies default virtual machine behavior.
+	 * @return The type bracket for the type or {@code null} if none was
+	 * found.
+	 * @throws MLECallError If no name was specified.
+	 * @since 2022/12/24
 	 */
 	@SquirrelJMEVendorApi
-	public static native void initClass(TypeBracket __info)
+	public static native TypeBracket findType(String __name, String __inVm)
 		throws MLECallError;
 	
 	/**

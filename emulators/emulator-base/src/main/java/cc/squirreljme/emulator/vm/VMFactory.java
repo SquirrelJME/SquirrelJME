@@ -119,7 +119,7 @@ public abstract class VMFactory
 	 * @throws VMException If the virtual machine could not be created.
 	 * @since 2018/11/17
 	 */
-	protected abstract VirtualMachine createVM(ProfilerSnapshot __ps,
+	public abstract VirtualMachine createVM(ProfilerSnapshot __ps,
 		JDWPFactory __jdwp, VMThreadModel __threadModel, VMSuiteManager __sm,
 		VMClassLibrary[] __cp,
 		String __maincl, Map<String, String> __sprops, String[] __args)

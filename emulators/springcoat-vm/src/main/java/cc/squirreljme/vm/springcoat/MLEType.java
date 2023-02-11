@@ -11,6 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
@@ -170,17 +171,37 @@ public enum MLEType
 	{
 		/**
 		 * {@inheritDoc}
+		 *
+		 * @since 2020/06/18
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return MLEType.FIND_TYPEVM.handle(__thread,
+				__args[0], SpringNullObject.NULL);
+		}
+	},
+	
+	/** {@link TypeShelf#findType(String)}. */
+	FIND_TYPEVM("findType:(Ljava/lang/String;Ljava/lang/String;)" +
+		"Lcc/squirreljme/jvm/mle/brackets/TypeBracket;")
+	{
+		/**
+		 * {@inheritDoc}
 		 * @since 2020/06/18
 		 */
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			SpringObject name = MLEType.__notNullObject(__args[0]);
+			String inVm = __thread.<String>asNativeObject(String.class,
+				__args[1]);
 			
 			try
 			{
 				return new TypeObject(__thread.machine, __thread.loadClass(
-					__thread.<String>asNativeObject(String.class, name)));
+					__thread.<String>asNativeObject(String.class, name),
+					inVm));
 			}
 			
 			// Since the method returns null when not found, we want to return
@@ -323,7 +344,8 @@ public enum MLEType
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return new TypeObject(__thread.machine, __thread.loadClass(
-				MLEType.__notNullObject(__args[0]).type().name().toString()));
+				MLEType.__notNullObject(__args[0]).type().name().toString(),
+				null));
 		}
 	},
 	
@@ -375,7 +397,7 @@ public enum MLEType
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return new TypeObject(__thread.machine, __thread.loadClass(
-				ClassName.fromPrimitiveType(PrimitiveType.BOOLEAN)));
+				ClassName.fromPrimitiveType(PrimitiveType.BOOLEAN), null));
 		}
 	},
 	
@@ -391,7 +413,7 @@ public enum MLEType
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return new TypeObject(__thread.machine, __thread.loadClass(
-				ClassName.fromPrimitiveType(PrimitiveType.BYTE)));
+				ClassName.fromPrimitiveType(PrimitiveType.BYTE), null));
 		}
 	},
 	
@@ -407,7 +429,7 @@ public enum MLEType
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return new TypeObject(__thread.machine, __thread.loadClass(
-				ClassName.fromPrimitiveType(PrimitiveType.CHARACTER)));
+				ClassName.fromPrimitiveType(PrimitiveType.CHARACTER), null));
 		}
 	},
 	
@@ -423,7 +445,7 @@ public enum MLEType
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return new TypeObject(__thread.machine, __thread.loadClass(
-				ClassName.fromPrimitiveType(PrimitiveType.DOUBLE)));
+				ClassName.fromPrimitiveType(PrimitiveType.DOUBLE), null));
 		}
 	},
 	
@@ -439,7 +461,7 @@ public enum MLEType
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return new TypeObject(__thread.machine, __thread.loadClass(
-				ClassName.fromPrimitiveType(PrimitiveType.FLOAT)));
+				ClassName.fromPrimitiveType(PrimitiveType.FLOAT), null));
 		}
 	},
 	
@@ -455,7 +477,7 @@ public enum MLEType
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return new TypeObject(__thread.machine, __thread.loadClass(
-				ClassName.fromPrimitiveType(PrimitiveType.INTEGER)));
+				ClassName.fromPrimitiveType(PrimitiveType.INTEGER), null));
 		}
 	},
 	
@@ -471,7 +493,7 @@ public enum MLEType
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return new TypeObject(__thread.machine, __thread.loadClass(
-				ClassName.fromPrimitiveType(PrimitiveType.LONG)));
+				ClassName.fromPrimitiveType(PrimitiveType.LONG), null));
 		}
 	},
 	
@@ -487,7 +509,7 @@ public enum MLEType
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return new TypeObject(__thread.machine, __thread.loadClass(
-				ClassName.fromPrimitiveType(PrimitiveType.SHORT)));
+				ClassName.fromPrimitiveType(PrimitiveType.SHORT), null));
 		}
 	},
 	

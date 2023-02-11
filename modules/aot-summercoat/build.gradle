@@ -1,0 +1,29 @@
+import cc.squirreljme.plugin.swm.JavaMEConfiguration
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+version = "1.8.$squirreljmeVMVersion"
+description = "Layer 1 SummerCoat compiler."
+
+squirreljme
+{
+	javaDocErrorCode = "RA"
+	swmType = JavaMEMidletType.API
+	swmName = "Ahead-Of-Time Support - SummerCoat"
+	swmVendor = "Stephanie Gawroriski"
+	tags += "aot-compiler"
+	tags += "summercoat"
+	
+	// Pull in all dependencies that provide support for architectures and
+	// operating systems, along with any potential variants... This is so that
+	// these can be bulk tested with the same essential suite of tests. Note
+	// that these modules could implement their own unique tests accordingly.
+	//optionalDependenciesTest += project(":modules:aot-summercoat-c")
+}
+
+dependencies
+{
+	api project(":modules:aot")
+	api project(":modules:tool-classfile")
+	
+	testImplementation testFixtures(project(":modules:aot"))
+}

@@ -10,7 +10,6 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jdwp.views.JDWPViewThreadGroup;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import net.multiphasicapps.classfile.ClassName;
 
@@ -77,7 +76,7 @@ public class DebugViewThreadGroup
 	public Object findType(Object __which, String __name)
 	{
 		return ((SpringMachine)__which).classLoader()
-			.loadClass(new ClassName(__name));
+			.loadClass(new ClassName(__name), null);
 	}
 	
 	/**

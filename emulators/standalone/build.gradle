@@ -1,5 +1,9 @@
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier
 import cc.squirreljme.plugin.multivm.BangletVariant
+import cc.squirreljme.plugin.multivm.VMFullSuiteDepends
+import cc.squirreljme.plugin.multivm.VMFullSuiteDepends
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier
+import cc.squirreljme.plugin.multivm.BangletVariant
 import cc.squirreljme.plugin.multivm.ClutterLevel
 import cc.squirreljme.plugin.multivm.VMFullSuiteDepends
 import cc.squirreljme.plugin.multivm.VMHelpers

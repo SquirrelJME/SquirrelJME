@@ -205,9 +205,7 @@ public final class Boolean
 	@Api
 	public static Boolean valueOf(String __v)
 	{
-		if (__v != null && __v.equalsIgnoreCase("true"))
-			return Boolean.TRUE;
-		return Boolean.FALSE;
+		return Boolean.parseBoolean(__v);
 	}
 }
 

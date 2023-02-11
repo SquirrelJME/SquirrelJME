@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassFormatException;
@@ -132,6 +133,7 @@ public final class SpringClassLoader
 	 * Loads the specified class.
 	 *
 	 * @param __cn The name of the class to load.
+	 * @param __inVm The virtual machine to load in.
 	 * @return The loaded class.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringClassFormatException If the class is not formatted
@@ -139,7 +141,7 @@ public final class SpringClassLoader
 	 * @throws SpringClassNotFoundException If the class was not found.
 	 * @since 2018/09/01
 	 */
-	public final SpringClass loadClass(ClassName __cn)
+	public final SpringClass loadClass(ClassName __cn, String __inVm)
 		throws NullPointerException, SpringClassFormatException,
 			SpringClassNotFoundException
 	{
@@ -161,7 +163,8 @@ public final class SpringClassLoader
 				return rv;
 			
 			// Debug
-			/*todo.DEBUG.note("Loading class `%s`...", __cn);*/
+			Debugging.debugNote("Loading class `%s` (via %s)...", __cn,
+				__inVm);
 			
 			// Load class file for this class
 			ClassFile cf;
@@ -181,23 +184,24 @@ public final class SpringClassLoader
 			// Load the super class
 			ClassName supername = cf.superName();
 			SpringClass superclass = (supername == null ? null :
-				this.loadClass(supername));
+				this.loadClass(supername, __inVm));
 			
 			// Load any interfaces
 			ClassName[] interfacenames = cf.interfaceNames().toArray();
 			int numinterfaces = interfacenames.length;
 			SpringClass[] interfaceclasses = new SpringClass[numinterfaces];
 			for (int i = 0; i < numinterfaces; i++)
-				interfaceclasses[i] = this.loadClass(interfacenames[i]);
+				interfaceclasses[i] = this.loadClass(interfacenames[i],
+					__inVm);
 			
 			// Component?
 			SpringClass component = null;
 			if (__cn.isArray())
-				component = this.loadClass(__cn.componentType());
+				component = this.loadClass(__cn.componentType(), __inVm);
 			
 			// Load class information
 			rv = new SpringClass(superclass, interfaceclasses, cf,
-				component, inJar[0], this._machineRef);
+				component, inJar[0], this._machineRef, __inVm);
 			
 			// Store for later use
 			synchronized (this)

@@ -240,9 +240,10 @@
     </inspection_tool>
     <inspection_tool class="MisspelledHeader" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="CUSTOM_HEADERS">
-        <header value="multi-parameters" />
+        <header value="hyper-parameters" />
         <header value="result" />
         <header value="secondary-key" />
+        <header value="test-vm-target" />
         <header value="thrown" />
       </option>
     </inspection_tool>
