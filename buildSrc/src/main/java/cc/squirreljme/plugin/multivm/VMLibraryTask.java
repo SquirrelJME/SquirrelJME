@@ -16,8 +16,10 @@ import lombok.Getter;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.internal.AbstractTask;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.bundling.AbstractArchiveTask;
 import org.gradle.jvm.tasks.Jar;
 
 /**
@@ -33,7 +35,7 @@ public class VMLibraryTask
 	/** The base JAR. */
 	@Internal
 	@Getter
-	public final Jar baseJar;
+	public final AbstractTask baseJar;
 	
 	/** The classifier used. */
 	@Internal
@@ -44,21 +46,20 @@ public class VMLibraryTask
 	 * Initializes the library creation task.
 	 * 
 	 * @param __classifier The classifier used.
+	 * @param __baseJar The task with the Jar output.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/07
 	 */
 	@Inject
-	public VMLibraryTask(SourceTargetClassifier __classifier)
+	public VMLibraryTask(SourceTargetClassifier __classifier,
+		AbstractTask __baseJar)
 		throws NullPointerException
 	{
-		if (__classifier == null)
+		if (__classifier == null || __baseJar == null)
 			throw new NullPointerException("NARG");
-			
-		Project project = this.getProject();
-		Jar baseJar = VMHelpers.jarTask(project, __classifier.getSourceSet());
-		this.baseJar = baseJar;
 		
 		// These are used at the build stage
+		this.baseJar = __baseJar;
 		this.classifier = __classifier;
 		
 		// Set details of this task
@@ -67,14 +68,16 @@ public class VMLibraryTask
 		
 		// The JAR we are compiling has to be built first
 		// We also need the virtual machine library compiler as well
-		this.dependsOn(baseJar, new VMLibraryTaskDependencies(this,
+		this.dependsOn(__baseJar, new VMLibraryTaskDependencies(this,
 			__classifier.getTargetClassifier()));
-		
+		 
 		// Only run if the JAR would run
 		this.onlyIf(this::onlyIf);
 		
 		// The input of this task is the JAR that was created
-		this.getInputs().file(baseJar.getArchiveFile());
+		this.getInputs().file(this.getProject().provider(() ->
+			VMHelpers.onlyFile(__baseJar.getOutputs().getFiles(),
+				"jar")));
 		
 		// The output depends on the task and its source set
 		this.getOutputs().files(

@@ -1,5 +1,6 @@
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier
 import cc.squirreljme.plugin.multivm.BangletVariant
+import cc.squirreljme.plugin.multivm.ClutterLevel
 import cc.squirreljme.plugin.multivm.VMFullSuiteDepends
 import cc.squirreljme.plugin.multivm.VMHelpers
 import cc.squirreljme.plugin.multivm.VMRunUpToDateWhen
@@ -69,7 +70,8 @@ static String flatClasspath(Project project) {
 	return VMHelpers.classpathAsString(mapBaseNameP(VMHelpers
 		.runClassPath(project, new SourceTargetClassifier(
 			SourceSet.MAIN_SOURCE_SET_NAME,
-			VMType.SPRINGCOAT, BangletVariant.NONE)) as List<Path>))
+			VMType.SPRINGCOAT, BangletVariant.NONE,
+			ClutterLevel.RELEASE)) as List<Path>))
 }
 
 static java.nio.file.Path nameToDiskFile(java.nio.file.Path jarOut,
@@ -87,7 +89,7 @@ String MERGED_PREFIX = "SQUIRRELJME.SQC"
 task collateResourceJars {
 	dependsOn new VMFullSuiteDepends(collateResourceJars,
 		new SourceTargetClassifier(SourceSet.MAIN_SOURCE_SET_NAME,
-			VMType.SPRINGCOAT, BangletVariant.NONE))
+			VMType.SPRINGCOAT, BangletVariant.NONE, ClutterLevel.RELEASE))
 	mustRunAfter processResources
 	
 	// About this task
@@ -96,7 +98,7 @@ task collateResourceJars {
 	
 	// Inputs for this, it is just all of the input JARs and such
 	inputs.files(project.provider({ -> VMHelpers.fullSuiteLibraries(
-		rootProject.tasks.getByName("fullSpringCoat")) as Iterable<Path>}))
+		rootProject.tasks.getByName("fullSpringCoatRelease")) as Iterable<Path>}))
 	outputs.files(project.provider({ ->
 			java.nio.file.Path outBase = processResources.getOutputs().
 				files.getSingleFile().toPath().resolve(MERGED_PREFIX)
@@ -141,7 +143,7 @@ task collateResourceJars {
 	// Up to date when dependencies are updated
 	outputs.upToDateWhen(new VMRunUpToDateWhen(new SourceTargetClassifier(
 		SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT,
-		BangletVariant.NONE)))
+		BangletVariant.NONE, ClutterLevel.RELEASE)))
 		
 	// Explode the JARs into the resource root
 	doFirst {
@@ -277,7 +279,7 @@ jar {
 			"X-SquirrelJME-Standalone-Library": project.provider({ ->
 					return VMHelpers.classpathAsString(
 						mapBaseNameP(VMHelpers.fullSuiteLibraries(
-							rootProject.tasks.getByName("fullSpringCoat"))
+							rootProject.tasks.getByName("fullSpringCoatRelease"))
 							as Iterable<Path>))
 				}),
 			"X-SquirrelJME-Standalone-Internal-Jar-Root": project.provider({ ->

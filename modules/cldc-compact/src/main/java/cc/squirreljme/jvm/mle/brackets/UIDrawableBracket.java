@@ -10,12 +10,15 @@
 package cc.squirreljme.jvm.mle.brackets;
 
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * Represents a bracket which is drawable onto.
  *
  * @since 2023/01/13
  */
+@SquirrelJMEVendorApi
 @GhostObject
 public interface UIDrawableBracket
 {

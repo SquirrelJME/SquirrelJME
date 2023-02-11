@@ -25,6 +25,7 @@
 #define RUNTIME_CLASSNAME "cc/squirreljme/emulator/EmulatedRuntimeShelf"
 
 #define RUNTIME_MEMORYPROFILE_DESC "()I"
+#define RUNTIME_SYSTEMENV_DESC "(Ljava/lang/String;)Ljava/lang/String;"
 #define RUNTIME_VMDESCRIPTION_DESC "(I)Ljava/lang/String;"
 #define RUNTIME_VMSTATISTIC_DESC "(I)J"
 
@@ -101,6 +102,14 @@ JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_phoneModel(JNIEnv*, jclass)
 	return 0;
 };
 
+JNIEXPORT jobject JNICALL Impl_mle_RuntimeShelf_systemEnv(
+	JNIEnv* env, jclass classy, jstring key)
+{
+	return forwardCallStaticObject(env, RUNTIME_CLASSNAME,
+		"systemEnv", RUNTIME_SYSTEMENV_DESC,
+		key);
+}
+
 JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_vmType(JNIEnv*, jclass)
 {
 	// The value 1 is Java SE type
@@ -112,9 +121,10 @@ static const JNINativeMethod mleRuntimeMethods[] =
 	{"garbageCollect", "()V", (void*)Impl_mle_RuntimeShelf_garbageCollect},
 	{"lineEnding", "()I", (void*)Impl_mle_RuntimeShelf_lineEnding},
 	{"memoryProfile", RUNTIME_MEMORYPROFILE_DESC, (void*)Impl_mle_RuntimeShelf_memoryProfile},
+	{"phoneModel", "()I", (void*)Impl_mle_RuntimeShelf_phoneModel},
+	{"systemEnv", RUNTIME_SYSTEMENV_DESC, (void*)Impl_mle_RuntimeShelf_systemEnv},
 	{"vmDescription", RUNTIME_VMDESCRIPTION_DESC, (void*)Impl_mle_RuntimeShelf_vmDescription},
 	{"vmStatistic", RUNTIME_VMSTATISTIC_DESC, (void*)Impl_mle_RuntimeShelf_vmStatistic},
-	{"phoneModel", "()I", (void*)Impl_mle_RuntimeShelf_phoneModel},
 	{"vmType", "()I", (void*)Impl_mle_RuntimeShelf_vmType},
 };
 

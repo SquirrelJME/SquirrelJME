@@ -12,6 +12,12 @@ squirreljme
 	swmName = "Testing Framework"
 	swmVendor = "Stephanie Gawroriski"
 	tags += "testing"
+	
+	// Keep the core test class, we need that
+	proGuardOptions += ["-keep", "class",
+		"java.lang.net.multiphasicapps.tac.__CoreTest__"]
+	proGuardOptions += ["-keepnames", "class",
+		"java.lang.net.multiphasicapps.tac.__CoreTest__"]
 }
 
 dependencies

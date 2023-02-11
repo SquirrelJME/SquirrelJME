@@ -33,7 +33,8 @@ public interface NativeImageLoadType
 		8;
 	
 	/** All types. */
-	int ALL_TYPES = NativeImageLoadType.LOAD_PNG |
+	int ALL_TYPES =
+		NativeImageLoadType.LOAD_PNG |
 		NativeImageLoadType.LOAD_GIF | NativeImageLoadType.LOAD_JPEG |
 		NativeImageLoadType.LOAD_XPM;
 }

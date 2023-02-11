@@ -223,9 +223,9 @@ public final class JavaType
 	 */
 	public boolean isTop()
 	{
-		return this.equals(JavaType.TOP_LONG) || this.equals(JavaType.TOP_DOUBLE) || this
-			.equals(
-			JavaType.TOP_UNDEFINED);
+		return this.equals(JavaType.TOP_LONG) ||
+			this.equals(JavaType.TOP_DOUBLE) ||
+			this.equals(JavaType.TOP_UNDEFINED);
 	}
 	
 	/**

@@ -42,6 +42,7 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.regex.Pattern;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFlags;
 import net.multiphasicapps.classfile.ClassName;
@@ -73,8 +74,11 @@ public final class SpringThreadWorker
 	 * {@squirreljme.property cc.squirreljme.vm.trace=bool
 	 * Enable tracing within the virtual machine?}
 	 */
-	public static final boolean TRACING_ENABLED =
-		Boolean.getBoolean("cc.squirreljme.vm.trace");
+	public static final String TRACING_ENABLED =
+		"cc.squirreljme.vm.trace";
+	
+	/** Bits where tracing is enabled for. */
+	public static final int TRACING_ENABLED_BITS;
 	
 	/** Number of instructions which can be executed before warning. */
 	private static final int _EXECUTION_THRESHOLD =
@@ -95,6 +99,24 @@ public final class SpringThreadWorker
 	
 	/** The current step count. */
 	private volatile int _stepCount;
+	
+	static
+	{
+		// Decode the tracing flags to see if some bits are enabled
+		String tracing = System.getProperty(
+			SpringThreadWorker.TRACING_ENABLED);
+		int enableBits = 0;
+		if (tracing != null)
+			for (String item : tracing.split(Pattern.quote(",")))
+			{
+				for (VerboseDebugFlagName flag : VerboseDebugFlagName.values())
+					if (flag.names.contains(item))
+						enableBits |= flag.bits;
+			}
+		
+		// Set enabled bits
+		TRACING_ENABLED_BITS = enableBits;
+	}
 	
 	/**
 	 * Initialize the worker.
@@ -1365,14 +1387,17 @@ public final class SpringThreadWorker
 	/**
 	 * Checks if the verbosity is enabled.
 	 * 
-	 * @param __flags The flags to check.
+	 * @param __flags The flags to check, one of {@link VerboseDebugFlag}.
 	 * @return If this check is enabled.
 	 * @since 2020/07/11
 	 */
 	public boolean verboseCheck(int __flags)
 	{
-		SpringThread.Frame frame = this.thread.currentFrame();
+		// Was tracing enabled for this flag?
+		if ((SpringThreadWorker.TRACING_ENABLED_BITS & __flags) != 0)
+			return true;
 		
+		SpringThread.Frame frame = this.thread.currentFrame();
 		return this._verbose.check((frame == null ? 0 : frame.level), __flags);
 	}
 	
@@ -3956,7 +3981,15 @@ public final class SpringThreadWorker
 		// null.}
 		SpringObject instance = (SpringObject)args[0];
 		if (instance == null || instance == SpringNullObject.NULL)
-			throw new SpringNullPointerException("BK39");
+		{
+			SpringNullPointerException toss =
+				new SpringNullPointerException("BK39");
+			
+			Debugging.debugNote("Class is incorrect?");
+			toss.printStackTrace(System.err);
+			
+			throw toss;
+		}
 		
 		// Re-resolve method for this object's class
 		refmethod = instance.type().lookupMethod(false,

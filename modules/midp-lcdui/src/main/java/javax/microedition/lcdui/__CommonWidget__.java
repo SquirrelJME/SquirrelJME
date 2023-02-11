@@ -11,6 +11,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
@@ -66,6 +67,7 @@ abstract class __CommonWidget__
 	 * @return If this can be painted on.
 	 * @since 2020/10/17
 	 */
+	@SerializedEvent
 	boolean __isPainted()
 	{
 		return false;
@@ -81,6 +83,7 @@ abstract class __CommonWidget__
 	 * other value depending on what is being painted.
 	 * @since 2020/09/21
 	 */
+	@SerializedEvent
 	void __paint(Graphics __gfx, int __sw, int __sh, int __special)
 	{
 	}
@@ -97,6 +100,7 @@ abstract class __CommonWidget__
 	 * @return If the event was handled and we should stop.
 	 * @since 2020/10/17
 	 */
+	@SerializedEvent
 	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __intProp, int __sub, int __old, int __new)
 	{
@@ -122,6 +126,7 @@ abstract class __CommonWidget__
 	 * @return If the event was handled and we should stop.
 	 * @since 2020/10/17
 	 */
+	@SerializedEvent
 	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __strProp, int __sub, String __old, String __new)
 	{

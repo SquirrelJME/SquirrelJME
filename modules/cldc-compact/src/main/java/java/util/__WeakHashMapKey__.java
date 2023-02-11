@@ -64,7 +64,7 @@ final class __WeakHashMapKey__<K>
 		
 		// Check if it is the same, compare the ref itself because although
 		// for every reference used it will be null, otherwise both sides
-		// must not be null so we can cleanly deref without a NPE
+		// must not be null, so we can cleanly deref without a NPE
 		__WeakHashMapKey__<?> o = (__WeakHashMapKey__<?>)__o;
 		return this._hashCode == o._hashCode && (this._ref == o._ref ||
 			(this._ref != null && o._ref != null && Objects.equals(

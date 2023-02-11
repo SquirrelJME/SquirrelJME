@@ -12,6 +12,7 @@ package com.nttdocomo.ui;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import com.nttdocomo.io.ConnectionException;
 
+@Api
 public interface MediaResource
 {
 	/**

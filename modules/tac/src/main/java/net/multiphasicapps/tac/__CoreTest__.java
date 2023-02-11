@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.VMType;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +30,7 @@ import org.junit.Test;
  *
  * @since 2018/10/06
  */
+@SquirrelJMEVendorApi
 abstract class __CoreTest__
 	implements TestInterface
 {
@@ -50,6 +52,7 @@ abstract class __CoreTest__
 	 * @since 2018/10/06
 	 */
 	@Test
+	@SquirrelJMEVendorApi
 	abstract Object __runTest(Object... __args)
 		throws Throwable;
 	

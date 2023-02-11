@@ -25,6 +25,7 @@ import javax.microedition.lcdui.Displayable;
  * @see Displayable
  * @since 2021/11/30
  */
+@Api
 public abstract class Frame
 {
 	/** The left soft key. */

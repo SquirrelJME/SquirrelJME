@@ -423,24 +423,6 @@ public final class ChunkSection
 	}
 	
 	/**
-	 * Writes a future integer.
-	 * 
-	 * @return Future integer value.
-	 * @throws IOException On read/write errors.
-	 * @since 2020/11/29
-	 */
-	@Deprecated
-	public ChunkFutureInteger writeFutureInt()
-		throws IOException
-	{
-		ChunkFutureInteger rv = new ChunkFutureInteger();
-		
-		this.writeFuture(ChunkDataType.INTEGER, rv);
-		
-		return rv;
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @since 2019/08/11
 	 */
@@ -509,110 +491,6 @@ public final class ChunkSection
 		// Write the padding
 		for (int i = 0; i < __n; i++)
 			this.write(__v);
-	}
-	
-	/**
-	 * Writes the address of the given section as an integer.
-	 *
-	 * @param __s The section to write the address of.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/08/24
-	 */
-	@Deprecated
-	public final void writeSectionAddressInt(ChunkSection __s)
-		throws IOException, NullPointerException
-	{
-		this.writeSectionAddressInt(__s, 0);
-	}
-	
-	/**
-	 * Writes the address of the given section as an integer.
-	 *
-	 * @param __s The section to write the address of.
-	 * @param __o The offset to use.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/08/11
-	 */
-	@Deprecated
-	public final void writeSectionAddressInt(ChunkSection __s, int __o)
-		throws IOException, NullPointerException
-	{
-		if (__s == null)
-			throw new NullPointerException("NARG");
-		
-		this.writeFuture(ChunkDataType.INTEGER, __s.futureAddress(__o));
-	}
-	
-	/**
-	 * Writes the address of the given section as a short.
-	 *
-	 * @param __s The section to write the address of.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/08/24
-	 */
-	@Deprecated
-	public final void writeSectionAddressShort(ChunkSection __s)
-		throws IOException, NullPointerException
-	{
-		this.writeSectionAddressShort(__s, 0);
-	}
-	
-	/**
-	 * Writes the address of the given section as a short.
-	 *
-	 * @param __s The section to write the address of.
-	 * @param __o The offset value.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/08/11
-	 */
-	@Deprecated
-	public final void writeSectionAddressShort(ChunkSection __s, int __o)
-		throws IOException, NullPointerException
-	{
-		if (__s == null)
-			throw new NullPointerException("NARG");
-		
-		this.writeFuture(ChunkDataType.SHORT, __s.futureAddress(__o));
-	}
-	
-	/**
-	 * Writes the size of the given section as an integer.
-	 *
-	 * @param __s The section and its size to write.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/08/11
-	 */
-	@Deprecated
-	public final void writeSectionSizeInt(ChunkSection __s)
-		throws IOException, NullPointerException
-	{
-		if (__s == null)
-			throw new NullPointerException("NARG");
-		
-		this.writeFuture(ChunkDataType.INTEGER, __s.futureSize());
-	}
-	
-	/**
-	 * Writes the size of the given section as a short.
-	 *
-	 * @param __s The section and its size to write.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/08/11
-	 */
-	@Deprecated
-	public final void writeSectionSizeShort(ChunkSection __s)
-		throws IOException, NullPointerException
-	{
-		if (__s == null)
-			throw new NullPointerException("NARG");
-		
-		this.writeFuture(ChunkDataType.SHORT, __s.futureSize());
 	}
 	
 	/**

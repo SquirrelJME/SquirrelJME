@@ -24,6 +24,7 @@ import java.util.ServiceLoader;
  *
  * @since 2020/11/22
  */
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface Backend
 {
 	/**

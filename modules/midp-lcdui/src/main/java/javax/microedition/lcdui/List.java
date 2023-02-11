@@ -94,7 +94,7 @@ public class List
 		this._userTitle = __title;
 		this._type = __type;
 		
-		// Append all of the items to the list
+		// Append all the items to the list
 		for (int i = 0, n = __strs.length; i < n; i++)
 			this.append(__strs[i], (__imgs == null ? null : __imgs[i]));
 		

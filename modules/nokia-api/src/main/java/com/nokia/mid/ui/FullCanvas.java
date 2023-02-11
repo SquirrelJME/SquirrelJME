@@ -22,6 +22,7 @@ import javax.microedition.lcdui.Displayable;
  *
  * @since 2019/09/23
  */
+@Api
 public abstract class FullCanvas
 	extends Canvas
 {
@@ -75,6 +76,7 @@ public abstract class FullCanvas
 	 *
 	 * @since 2019/09/23
 	 */
+	@Api
 	@ApiDefinedDeprecated
 	public FullCanvas()
 	{

@@ -5,7 +5,7 @@ version = rootProject.version
 
 squirreljme
 {
-	javaDocErrorCode = "AI"
+	javaDocErrorCode = "NO"
 	swmType = JavaMEMidletType.API
 	swmName = "Nokia API"
 	swmVendor = "Stephanie Gawroriski"

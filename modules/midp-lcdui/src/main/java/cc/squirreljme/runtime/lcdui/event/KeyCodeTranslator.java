@@ -17,6 +17,7 @@ import java.util.ServiceLoader;
  * 
  * @since 2022/02/23
  */
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface KeyCodeTranslator
 {
 	/**
