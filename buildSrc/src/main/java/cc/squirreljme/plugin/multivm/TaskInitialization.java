@@ -29,10 +29,12 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.UnknownDomainObjectException;
 import org.gradle.api.file.FileCollection;
+import org.gradle.api.internal.AbstractTask;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskContainer;
+import org.gradle.api.tasks.bundling.AbstractArchiveTask;
 import org.gradle.api.tasks.javadoc.Javadoc;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.external.javadoc.CoreJavadocOptions;
@@ -206,9 +208,18 @@ public final class TaskInitialization
 		if (__project == null || __sourceSet == null || __vmType == null)
 			throw new NullPointerException("NARG");
 		
-		for (BangletVariant variant : __vmType.banglets())
-			TaskInitialization.initialize(__project,
-				new SourceTargetClassifier(__sourceSet, __vmType, variant));
+		for (ClutterLevel clutterLevel : ClutterLevel.values())
+		{
+			// Only allow debug targets for this?
+			if (__vmType.allowOnlyDebug() && !clutterLevel.isDebug())
+				continue;
+			
+			// Initialize tasks
+			for (BangletVariant variant : __vmType.banglets())
+				TaskInitialization.initialize(__project,
+					new SourceTargetClassifier(__sourceSet, __vmType, variant,
+						clutterLevel));
+		}
 	}
 	
 	/**
@@ -246,10 +257,44 @@ public final class TaskInitialization
 				e);
 		}
 		
+		// The source library task depends on whether we are debugging or not
+		Jar sourceJar = VMHelpers.jarTask(__project,
+			__classifier.getSourceSet());
+		AbstractTask usedSourceJar;
+		
+		// If we are debugging, then we keep everything... otherwise we just
+		// strip everything out that we can to minimize the size as much as
+		// possible...
+		// Or it is just disabled completely
+		if (__classifier.getTargetClassifier().getClutterLevel().isDebug())
+			usedSourceJar = sourceJar;
+		
+		// Otherwise set up a new task to compact the Jar and remove any
+		// debugging information and unneeded symbols for execution.
+		else
+		{
+			// Look for that task first
+			String checkName = TaskInitialization.task("compactLib",
+				__classifier.getSourceSet());
+			AbstractTask maybe = (AbstractTask)tasks.findByName(checkName);
+			
+			// If it exists, use that one
+			if (maybe != null)
+				usedSourceJar = maybe;
+			
+			// Otherwise, create it
+			else
+			{
+				usedSourceJar = tasks.create(checkName,
+					VMCompactLibraryTask.class, __classifier.getSourceSet(),
+					sourceJar);
+			}
+		}
+		
 		// Library that needs to be constructed so execution happens properly
 		VMLibraryTask libTask = tasks.create(
 			TaskInitialization.task("lib", __classifier),
-			VMLibraryTask.class, __classifier);
+			VMLibraryTask.class, __classifier, usedSourceJar);
 		
 		// Is dumping available?
 		if (__classifier.getVmType().hasDumping())
@@ -278,6 +323,46 @@ public final class TaskInitialization
 			else
 				vmTest = tasks.create(taskName,
 					VMModernTestTask.class, __classifier, libTask);
+			
+			// Since there is a release and debug variant, have the base test
+			// refer to both of these
+			String bothName = TaskInitialization.task("test",
+				__classifier.getSourceSet(),
+				__classifier.getVmType(), __classifier.getBangletVariant(),
+				null);
+			
+			// If the task is missing, create it
+			Test bothTest = (Test)__project.getTasks().findByName(bothName);
+			if (bothTest == null)
+			{
+				// Create a test task, so IDEs like IntelliJ can pick this up
+				// despite there being no actual tests that exist
+				bothTest = __project.getTasks().create(bothName, Test.class);
+				
+				// Setup description of these
+				bothTest.setGroup("squirreljme");
+				
+				// Make sure the description makes sense
+				if (__classifier.getVmType().allowOnlyDebug())
+					bothTest.setDescription(String.format("Alias for %s.",
+						taskName));
+				else
+					bothTest.setDescription(
+						String.format("Runs both test tasks %s and %s.",
+							taskName, TaskInitialization.task("test",
+								__classifier.withClutterLevel(__classifier
+									.getTargetClassifier().getClutterLevel()
+									.opposite()))));
+				
+				// Gradle will think these are JUnit tests and then fail
+				// so exclude everything
+				bothTest.setScanForTestClasses(false);
+				bothTest.include();
+				bothTest.exclude("**");
+			}
+			
+			// Add to the both task as a dependency
+			bothTest.dependsOn(vmTest);
 			
 			// Make the standard test task depend on these two VM tasks
 			// so that way if it is run, both are run accordingly
@@ -339,12 +424,13 @@ public final class TaskInitialization
 		if (__project == null)
 			throw new NullPointerException("NARG");
 		
-		for (VMType vmType : VMType.values())
-			for (BangletVariant variant : vmType.banglets())
-				for (String sourceSet : TaskInitialization._SOURCE_SETS)
-					TaskInitialization.initializeFullSuiteTask(__project,
-						new SourceTargetClassifier(sourceSet, vmType,
-							variant));
+		for (ClutterLevel clutterLevel : ClutterLevel.values())
+			for (VMType vmType : VMType.values())
+				for (BangletVariant variant : vmType.banglets())
+					for (String sourceSet : TaskInitialization._SOURCE_SETS)
+						TaskInitialization.initializeFullSuiteTask(__project,
+							new SourceTargetClassifier(sourceSet, vmType,
+								variant, clutterLevel));
 	}
 	
 	/**
@@ -410,7 +496,7 @@ public final class TaskInitialization
 		// SpringCoat's libraries for runtime
 		SourceTargetClassifier classifier = new SourceTargetClassifier(
 			SourceSet.MAIN_SOURCE_SET_NAME, VMType.SPRINGCOAT,
-			BangletVariant.NONE);
+			BangletVariant.NONE, ClutterLevel.DEBUG);
 		FileCollection useClassPath = __project.files(
 			(Object[])VMHelpers.runClassPath(__project,
 				classifier));
@@ -565,12 +651,13 @@ public final class TaskInitialization
 			throw new NullPointerException("NARG");
 			
 		// Initialize or both main classes and such
-		for (String sourceSet : TaskInitialization._SOURCE_SETS)
-			for (VMType vmType : VMType.values())
-				for (BangletVariant variant : vmType.banglets())
-					TaskInitialization.romTasks(__project,
-						new SourceTargetClassifier(sourceSet, vmType,
-							variant));
+		for (ClutterLevel clutterLevel : ClutterLevel.values())
+			for (String sourceSet : TaskInitialization._SOURCE_SETS)
+				for (VMType vmType : VMType.values())
+					for (BangletVariant variant : vmType.banglets())
+						TaskInitialization.romTasks(__project,
+							new SourceTargetClassifier(sourceSet, vmType,
+								variant, clutterLevel));
 	}
 	
 	/**
@@ -690,7 +777,7 @@ public final class TaskInitialization
 		throws NullPointerException
 	{
 		return TaskInitialization.task(__name, __sourceSet, __vmType,
-			BangletVariant.NONE);
+			BangletVariant.NONE, ClutterLevel.DEBUG);
 	}
 	
 	/**
@@ -712,7 +799,8 @@ public final class TaskInitialization
 		return TaskInitialization.task(__name,
 			__classifier.getSourceSet(),
 			__classifier.getTargetClassifier().getVmType(),
-			__classifier.getTargetClassifier().getBangletVariant());
+			__classifier.getTargetClassifier().getBangletVariant(),
+			__classifier.getTargetClassifier().getClutterLevel());
 	}
 	
 	/**
@@ -722,12 +810,14 @@ public final class TaskInitialization
 	 * @param __sourceSet The source set for the task base.
 	 * @param __vmType The type of virtual machine used.
 	 * @param __variant The banglet variant.
+	 * @param __clutterLevel Release or debug, may be {@code null}.
 	 * @return A string representing the task.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/10/01
 	 */
 	public static String task(String __name, String __sourceSet,
-		VMSpecifier __vmType, BangletVariant __variant)
+		VMSpecifier __vmType, BangletVariant __variant,
+		ClutterLevel __clutterLevel)
 		throws NullPointerException
 	{
 		if (__name == null || __sourceSet == null || __vmType == null ||
@@ -736,7 +826,9 @@ public final class TaskInitialization
 		
 		return TaskInitialization.task(__name, __sourceSet) +
 			__vmType.vmName(VMNameFormat.PROPER_NOUN) +
-			TaskInitialization.uppercaseFirst(__variant.properNoun);
+			TaskInitialization.uppercaseFirst(__variant.properNoun) +
+			(__clutterLevel == null ? "" :
+				TaskInitialization.uppercaseFirst(__clutterLevel.toString()));
 	}
 	
 	/**

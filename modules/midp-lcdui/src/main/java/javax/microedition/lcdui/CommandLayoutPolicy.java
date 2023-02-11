@@ -10,6 +10,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 /**
  * This interface is called when commands need to be laid out onto the display.
@@ -32,6 +33,7 @@ public interface CommandLayoutPolicy
 	 * @since 2020/09/27
 	 */
 	@Api
+	@SerializedEvent
 	void onCommandLayout(Displayable __d);
 }
 

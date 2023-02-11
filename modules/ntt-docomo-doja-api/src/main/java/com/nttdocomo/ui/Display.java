@@ -20,6 +20,7 @@ import javax.microedition.lcdui.Canvas;
  * @see javax.microedition.lcdui.Display
  * @since 2021/11/30
  */
+@Api
 public class Display
 {
 	@Api

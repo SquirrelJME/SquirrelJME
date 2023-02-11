@@ -22,6 +22,7 @@ import cc.squirreljme.jvm.mle.constants.UIItemPosition;
 import cc.squirreljme.jvm.mle.constants.UIKeyEventType;
 import cc.squirreljme.jvm.mle.constants.UIKeyModifier;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
 import cc.squirreljme.runtime.lcdui.event.KeyCodeTranslator;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
@@ -29,6 +30,7 @@ import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
+import java.util.Objects;
 
 /**
  * This thread is responsible for handling graphics operations.
@@ -54,8 +56,8 @@ final class __MLEUIThread__
 		int __event, int __keyCode, int __modifiers)
 	{
 		// Debug
-		/*Debugging.debugNote("eventKey(%08x, %08x, %d, %d, %x)",
-			System.identityHashCode(__form), System.identityHashCode(__item),
+		/*Debugging.debugNote("eventKey(%08x, %08x, %d, %d, %s)",
+			Objects.toString(__drawable),
 			__event, __keyCode, __modifiers);*/
 		
 		if (!(__drawable instanceof UIWidgetBracket))
@@ -406,6 +408,7 @@ final class __MLEUIThread__
 	 * null.
 	 * @since 2020/10/16
 	 */
+	@SerializedEvent
 	private void __eventKey(Canvas __canvas, CustomItem __cItem, int __event,
 		int __keyCode, int __modifiers)
 		throws IllegalArgumentException, NullPointerException

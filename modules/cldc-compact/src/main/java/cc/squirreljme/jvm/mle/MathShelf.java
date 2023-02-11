@@ -9,11 +9,15 @@
 
 package cc.squirreljme.jvm.mle;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * This contains various math functions.
  *
  * @since 2020/06/18
  */
+@SquirrelJMEVendorApi
 public final class MathShelf
 {
 	/**
@@ -32,6 +36,7 @@ public final class MathShelf
 	 * @return The raw bits.
 	 * @since 2020/06/18
 	 */
+	@SquirrelJMEVendorApi
 	public static native long rawDoubleToLong(double __v);
 	
 	/**
@@ -41,6 +46,7 @@ public final class MathShelf
 	 * @return The raw bits.
 	 * @since 2020/06/18
 	 */
+	@SquirrelJMEVendorApi
 	public static native int rawFloatToInt(float __v);
 	
 	/**
@@ -50,6 +56,7 @@ public final class MathShelf
 	 * @return The value.
 	 * @since 2020/06/18
 	 */
+	@SquirrelJMEVendorApi
 	public static native float rawIntToFloat(int __b);
 	
 	/**
@@ -59,5 +66,6 @@ public final class MathShelf
 	 * @return The value.
 	 * @since 2020/06/18
 	 */
+	@SquirrelJMEVendorApi
 	public static native double rawLongToDouble(long __b);
 }

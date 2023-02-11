@@ -108,6 +108,18 @@ public class SquirrelJMEPluginConfiguration
 	/** The main class for the boot loader. */
 	public String bootLoaderMainClass;
 	
+	/** Extra proguard options. */
+	public List<String> proGuardOptions =
+		new ArrayList<>();
+	
+	/** Extra proguard options, for testing. */
+	public List<String> proGuardOptionsTest =
+		new ArrayList<>();
+	
+	/** Extra proguard options, for test fixtures. */
+	public List<String> proGuardOptionsTestFixtures =
+		new ArrayList<>();
+	
 	/**
 	 * Initializes the configuration with the contained project.
 	 *

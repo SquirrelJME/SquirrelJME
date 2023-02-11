@@ -11,6 +11,7 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
+import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import cc.squirreljme.plugin.swm.JavaMEMidlet;
 import cc.squirreljme.plugin.util.FileLocation;
 import cc.squirreljme.plugin.util.TestDetection;
@@ -52,6 +53,7 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.ProjectDependency;
 import org.gradle.api.capabilities.Capability;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.jvm.tasks.Jar;
@@ -132,7 +134,7 @@ public final class VMHelpers
 		// details and such
 		for (ProjectAndTaskName projectTask : VMHelpers.runClassTasks(
 			__project, new SourceTargetClassifier(__sourceSet, VMType.HOSTED,
-				BangletVariant.NONE)))
+				BangletVariant.NONE, ClutterLevel.DEBUG)))
 		{
 			// Only consider actual projects
 			Project subProject = __project.project(projectTask.project);
@@ -275,8 +277,9 @@ public final class VMHelpers
 		
 		return __project.provider(() -> __project.getBuildDir().toPath()
 			.resolve("squirreljme").resolve(
-				String.format("vm-%s-%s", __classifier.getSourceSet(),
-					__classifier.getVmType().vmName(VMNameFormat.LOWERCASE)))
+				String.format("vm-%s-%s-%s", __classifier.getSourceSet(),
+					__classifier.getVmType().vmName(VMNameFormat.LOWERCASE),
+					__classifier.getTargetClassifier().getClutterLevel()))
 			.resolve(__classifier.getBangletVariant().properNoun));
 	}
 	
@@ -342,6 +345,78 @@ public final class VMHelpers
 			result.add(Paths.get(split));
 		
 		return result.<Path>toArray(new Path[result.size()]);
+	}
+	
+	/**
+	 * Returns all the compact library tasks that the specified project
+	 * depends upon.
+	 * 
+	 * @param __project The project to get the dependencies from.
+	 * @param __sourceSet The source set to base off.
+	 * @return The tasks which are part of the compaction dependencies.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/02/02
+	 */
+	public static Collection<VMCompactLibraryTask> compactLibTaskDepends(
+		Project __project, String __sourceSet)
+		throws NullPointerException
+	{
+		if (__project == null || __sourceSet == null)
+			throw new NullPointerException("NARG");
+		
+		// Where does this go?
+		Collection<VMCompactLibraryTask> result = new LinkedHashSet<>();
+		
+		// Are we testing?
+		boolean isTest = SourceSet.TEST_SOURCE_SET_NAME.equals(__sourceSet);
+		boolean isTestFixtures =
+			VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME.equals(__sourceSet);
+		
+		// This is a bit messy but it works for now
+		Collection<ProjectAndTaskName> runTasks =
+			VMHelpers.runClassTasks(__project,
+				SourceTargetClassifier.builder()
+					.sourceSet(__sourceSet)
+					.targetClassifier(TargetClassifier.builder()
+						.bangletVariant(BangletVariant.NONE)
+						.vmType(VMType.SPRINGCOAT)
+						.clutterLevel(ClutterLevel.RELEASE)
+						.build())
+					.build());
+		for (ProjectAndTaskName projectAndTask : runTasks)
+		{
+			// Find the referenced project
+			Project subProject = __project.project(projectAndTask.project); 
+			
+			// Ignore our own project, if not testing
+			if (__project.equals(subProject) && !isTest && !isTestFixtures)
+				continue;
+			
+			// Check the main source set
+			String checkName = TaskInitialization.task("compactLib",
+				SourceSet.MAIN_SOURCE_SET_NAME);
+			Task maybe = subProject.getTasks().findByName(checkName);
+			if (maybe instanceof VMCompactLibraryTask)
+			{
+				VMCompactLibraryTask task = (VMCompactLibraryTask)maybe;
+				result.add(task);
+			}
+			
+			// If we are testing, see if we can pull in any test fixtures
+			if (isTest)
+			{
+				String check = TaskInitialization.task("compactLib",
+					VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME);
+				Task fixture = subProject.getTasks().findByName(check);
+				if (fixture instanceof VMCompactLibraryTask)
+				{
+					VMCompactLibraryTask task = (VMCompactLibraryTask)fixture;
+					result.add(task);
+				}
+			}
+		}
+		
+		return result;
 	}
 	
 	/**
@@ -430,6 +505,30 @@ public final class VMHelpers
 	}
 	
 	/**
+	 * Gets the base name of the file without the extension, if there is one.
+	 * 
+	 * @param __path The path to get from.
+	 * @return The file base name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/02/05
+	 */
+	public static String getBaseName(Path __path)
+		throws NullPointerException
+	{
+		if (__path == null)
+			throw new NullPointerException("NARG");
+		
+		// Does this file even have an extension to it?
+		String fileName = __path.getFileName().toString();
+		int ld = fileName.lastIndexOf('.');
+		if (ld < 0)
+			return fileName;
+		
+		// Otherwise extract it
+		return fileName.substring(0, ld);
+	}
+	
+	/**
 	 * Gets the extension from the given path.
 	 * 
 	 * @param __path The path to get from.
@@ -507,6 +606,47 @@ public final class VMHelpers
 			UnassistedLaunchEntry.MIDLET_MAIN_CLASS :
 			Objects.requireNonNull(__cfg.mainClass,
 			"No main class in project."));
+	}
+	
+	/**
+	 * Returns the only file with the given extension in the given collection.
+	 * 
+	 * @param __collection The collection to get.
+	 * @param __ext The extension to get from.
+	 * @return The only file in the collection with the extension.
+	 * @throws IllegalStateException If there are multiple or no files
+	 * available.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/02/05
+	 */
+	public static Path onlyFile(FileCollection __collection, String __ext)
+		throws IllegalStateException, NullPointerException
+	{
+		if (__collection == null || __ext == null)
+			throw new NullPointerException("NARG");
+		
+		// Scan through everything and look for it
+		Path result = null;
+		for (File file : __collection.getFiles())
+		{
+			Path path = file.toPath();
+			
+			if (__ext.equals(VMHelpers.getExtension(path)))
+			{
+				if (result != null)
+					throw new IllegalStateException(
+						String.format("Multiple .%s in %s",
+							__ext, __collection));
+				
+				result = path;
+			}
+		}
+		
+		// None found?
+		if (result == null)
+			throw new IllegalStateException(
+				String.format("No .%s in %s", __ext, __collection));
+		return result;
 	}
 	
 	/**

@@ -46,16 +46,36 @@ public abstract class AbstractMap<K, V>
 		return (AbstractMap<?, ?>)super.clone();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/02/09
+	 */
 	@Override
-	public boolean containsKey(Object __a)
+	public boolean containsKey(Object __key)
 	{
-		throw Debugging.todo();
+		// Manual scan through to find it
+		for (Map.Entry<K, V> e : this.entrySet())
+			if (Objects.equals(e.getKey(), __key))
+				return true;
+		
+		// Not found
+		return false;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/02/09
+	 */
 	@Override
-	public boolean containsValue(Object __a)
+	public boolean containsValue(Object __value)
 	{
-		throw Debugging.todo();
+		// Manual scan through to find it
+		for (Map.Entry<K, V> e : this.entrySet())
+			if (Objects.equals(e.getValue(), __value))
+				return true;
+		
+		// Not found
+		return false;
 	}
 	
 	/**
@@ -127,10 +147,14 @@ public abstract class AbstractMap<K, V>
 		return new MapKeySetView<K, V>(this, false);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/02/09
+	 */
 	@Override
 	public V put(K __a, V __b)
 	{
-		throw Debugging.todo();
+		throw new UnsupportedOperationException("RORO");
 	}
 	
 	/**

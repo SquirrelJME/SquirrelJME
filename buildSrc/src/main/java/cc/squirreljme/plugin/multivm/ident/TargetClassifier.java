@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.multivm.ident;
 
 import cc.squirreljme.plugin.multivm.BangletVariant;
+import cc.squirreljme.plugin.multivm.ClutterLevel;
 import cc.squirreljme.plugin.multivm.VMSpecifier;
 import cc.squirreljme.plugin.multivm.VMType;
 import java.io.Serializable;
@@ -38,6 +39,28 @@ public class TargetClassifier
 	@NonNull
 	BangletVariant bangletVariant;
 	
+	/** The clutter level used. */
+	@NonNull
+	ClutterLevel clutterLevel;
+	
+	/**
+	 * Sets up a new classifier with the clutter level.
+	 * 
+	 * @param __clutterLevel The new clutter level.
+	 * @return The classifier with the new clutter level.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/02/05
+	 */
+	public TargetClassifier withClutterLevel(ClutterLevel __clutterLevel)
+		throws NullPointerException
+	{
+		if (__clutterLevel == null)
+			throw new NullPointerException("NARG");
+		
+		return new TargetClassifier(this.vmType, this.bangletVariant,
+			__clutterLevel);
+	}
+	
 	/**
 	 * Specifies an alternative virtual machine to use, but with the same
 	 * banglet.
@@ -53,7 +76,8 @@ public class TargetClassifier
 		if (__vm == null)
 			throw new NullPointerException("NARG");
 		
-		return new TargetClassifier(__vm, this.bangletVariant);
+		return new TargetClassifier(__vm, this.bangletVariant,
+			this.clutterLevel);
 	}
 	
 	/**
@@ -67,7 +91,7 @@ public class TargetClassifier
 	{
 		if (this.vmType.hasEmulatorJit())
 			return new TargetClassifier(VMType.SPRINGCOAT,
-				BangletVariant.NONE);
+				BangletVariant.NONE, ClutterLevel.DEBUG);
 		return this;
 	}
 }

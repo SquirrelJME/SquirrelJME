@@ -10,6 +10,7 @@
 package cc.squirreljme.plugin.multivm.ident;
 
 import cc.squirreljme.plugin.multivm.BangletVariant;
+import cc.squirreljme.plugin.multivm.ClutterLevel;
 import cc.squirreljme.plugin.multivm.VMHelpers;
 import cc.squirreljme.plugin.multivm.VMSpecifier;
 import cc.squirreljme.plugin.multivm.VMType;
@@ -43,12 +44,14 @@ public class SourceTargetClassifier
 	 * @param __sourceSet The source set.
 	 * @param __vmType The virtual machine type.
 	 * @param __variant The variant used.
+	 * @param __clutterLevel The clutter level used.
 	 * @since 2022/10/01
 	 */
 	public SourceTargetClassifier(String __sourceSet, VMSpecifier __vmType,
-		BangletVariant __variant)
+		BangletVariant __variant, ClutterLevel __clutterLevel)
 	{
-		this(__sourceSet, new TargetClassifier(__vmType, __variant));
+		this(__sourceSet, new TargetClassifier(__vmType, __variant,
+			__clutterLevel));
 	}
 	
 	/**
@@ -104,6 +107,24 @@ public class SourceTargetClassifier
 	public boolean isTestSourceSet()
 	{
 		return this.sourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME);
+	}
+	
+	/**
+	 * Sets up a new classifier with the clutter level.
+	 * 
+	 * @param __clutterLevel The new clutter level.
+	 * @return The classifier with the new clutter level.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/02/05
+	 */
+	public SourceTargetClassifier withClutterLevel(ClutterLevel __clutterLevel)
+		throws NullPointerException
+	{
+		if (__clutterLevel == null)
+			throw new NullPointerException("NARG");
+		
+		return new SourceTargetClassifier(this.sourceSet,
+			this.targetClassifier.withClutterLevel(__clutterLevel));
 	}
 	
 	/**

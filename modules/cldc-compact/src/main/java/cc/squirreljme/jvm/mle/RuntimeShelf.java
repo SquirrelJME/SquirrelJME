@@ -19,12 +19,15 @@ import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * Run-time shelf which contains system information.
  *
  * @since 2020/06/09
  */
+@SquirrelJMEVendorApi
 public final class RuntimeShelf
 {
 	/**
@@ -42,6 +45,7 @@ public final class RuntimeShelf
 	 * @return The {@link ByteOrderType} of the system.
 	 * @since 2021/02/09
 	 */
+	@SquirrelJMEVendorApi
 	public static native int byteOrder();
 	
 	/**
@@ -50,6 +54,7 @@ public final class RuntimeShelf
 	 * @return The current time in milliseconds since UTC.
 	 * @since 2020/06/18
 	 */
+	@SquirrelJMEVendorApi
 	public static native long currentTimeMillis();
 	
 	/**
@@ -59,6 +64,7 @@ public final class RuntimeShelf
 	 * @see BuiltInEncodingType
 	 * @since 2020/06/11
 	 */
+	@SquirrelJMEVendorApi
 	public static native int encoding();
 	
 	/**
@@ -67,6 +73,7 @@ public final class RuntimeShelf
 	 * @param __code The exit code.
 	 * @since 2020/06/16
 	 */
+	@SquirrelJMEVendorApi
 	public static native void exit(int __code);
 	
 	/**
@@ -75,6 +82,7 @@ public final class RuntimeShelf
 	 * 
 	 * @since 2021/01/04
 	 */
+	@SquirrelJMEVendorApi
 	public static native void garbageCollect();
 	
 	/**
@@ -84,6 +92,7 @@ public final class RuntimeShelf
 	 * @see LineEndingType
 	 * @since 2020/06/09
 	 */
+	@SquirrelJMEVendorApi
 	public static native int lineEnding();
 	
 	/**
@@ -93,6 +102,7 @@ public final class RuntimeShelf
 	 * @see BuiltInLocaleType
 	 * @since 2020/06/11
 	 */
+	@SquirrelJMEVendorApi
 	public static native int locale();
 	
 	/**
@@ -102,6 +112,7 @@ public final class RuntimeShelf
 	 * @return The {@link MemoryProfileType} of the system.
 	 * @since 2021/02/19
 	 */
+	@SquirrelJMEVendorApi
 	public static native int memoryProfile();
 	
 	/**
@@ -110,6 +121,7 @@ public final class RuntimeShelf
 	 * @return The monotonic nanosecond clock.
 	 * @since 2020/06/18
 	 */
+	@SquirrelJMEVendorApi
 	public static native long nanoTime();
 	
 	/**
@@ -118,7 +130,23 @@ public final class RuntimeShelf
 	 * @return The {@link PhoneModelType}.
 	 * @since 2022/02/14
 	 */
+	@SquirrelJMEVendorApi
 	public static native int phoneModel();
+	
+	/**
+	 * Returns the value of a system environment variable.
+	 * 
+	 * Not every platform and/or system may have these, so these should not
+	 * be depended upon.
+	 * 
+	 * @param __key The environment variable key.
+	 * @return The value of the variable if it is set, otherwise {@code null}.
+	 * @throws MLECallError If key is {@code null}.
+	 * @since 2023/02/02
+	 */
+	@SquirrelJMEVendorApi
+	public static native String systemEnv(String __key)
+		throws MLECallError;
 	
 	/**
 	 * Returns the system property for the given key, if there is one.
@@ -128,6 +156,7 @@ public final class RuntimeShelf
 	 * @throws MLECallError If {@code __key} is {@code null}.
 	 * @since 2020/06/17
 	 */
+	@SquirrelJMEVendorApi
 	public static native String systemProperty(String __key)
 		throws MLECallError;
 	
@@ -140,6 +169,7 @@ public final class RuntimeShelf
 	 * @throws MLECallError If {@code __type} is not valid.
 	 * @since 2020/06/17
 	 */
+	@SquirrelJMEVendorApi
 	public static native String vmDescription(int __type)
 		throws MLECallError;
 	
@@ -151,6 +181,7 @@ public final class RuntimeShelf
 	 * @throws MLECallError If {@code __type} is not valid.
 	 * @since 2020/06/17
 	 */
+	@SquirrelJMEVendorApi
 	public static native long vmStatistic(int __type)
 		throws MLECallError;
 	
@@ -160,5 +191,6 @@ public final class RuntimeShelf
 	 * @return The current {@link VMType}.
 	 * @since 2020/06/16
 	 */
+	@SquirrelJMEVendorApi
 	public static native int vmType();
 }

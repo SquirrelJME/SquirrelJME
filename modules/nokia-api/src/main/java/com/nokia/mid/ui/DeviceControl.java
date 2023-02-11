@@ -22,6 +22,7 @@ import cc.squirreljme.runtime.lcdui.mle.Vibration;
  *
  * @since 2019/10/05
  */
+@Api
 public class DeviceControl
 {
 	/**

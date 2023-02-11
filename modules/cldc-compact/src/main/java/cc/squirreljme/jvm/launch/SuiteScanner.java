@@ -343,7 +343,12 @@ public final class SuiteScanner
 		{
 			// If no manifest exists, might not be a JAR
 			if (rc == null)
+			{
+				Debugging.debugNote("No META-INF/MANIFEST.MF in %s...",
+					JarPackageShelf.libraryPath(__jar));
+				
 				return;
+			}
 			
 			man = new JavaManifest(rc);
 			info = new SuiteInfo(man);

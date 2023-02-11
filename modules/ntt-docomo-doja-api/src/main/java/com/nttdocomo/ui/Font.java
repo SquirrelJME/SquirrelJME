@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @see javax.microedition.lcdui.Font
  * @since 2021/11/30
  */
+@Api
 public class Font
 {
 	@Api

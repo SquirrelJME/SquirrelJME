@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @see javax.microedition.lcdui.Graphics
  * @since 2021/11/30
  */
+@Api
 public class Graphics
 {
 	/** {@code #00FF00} via {@link #getColorOfName(int)}. */

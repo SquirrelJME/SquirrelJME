@@ -16,8 +16,8 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public class Vibrator
 {
 	@Api
-	public static void vibrate(int __unknown1)
+	public static void vibrate(int __duration)
 	{
-		Debugging.debugNote("vibrate(%d)", __unknown1);
+		Debugging.debugNote("vibrate(%d)", __duration);
 	}
 }

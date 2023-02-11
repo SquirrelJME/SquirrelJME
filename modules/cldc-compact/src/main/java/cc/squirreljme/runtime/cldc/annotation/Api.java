@@ -21,10 +21,11 @@ import java.lang.annotation.Target;
  * @since 2018/12/05
  */
 @Documented
-@Retention(value=RetentionPolicy.SOURCE)
+@Retention(value=RetentionPolicy.CLASS)
 @Target(value={ElementType.CONSTRUCTOR, ElementType.FIELD,
 	ElementType.LOCAL_VARIABLE, ElementType.METHOD, ElementType.PACKAGE,
 	ElementType.PARAMETER, ElementType.TYPE})
+@SquirrelJMEVendorApi
 public @interface Api
 {
 	/** @return The API version. */

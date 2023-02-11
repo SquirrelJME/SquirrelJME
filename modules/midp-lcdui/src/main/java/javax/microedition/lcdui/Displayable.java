@@ -504,6 +504,7 @@ public abstract class Displayable
 	 * 
 	 * @since 2020/09/27
 	 */
+	@SerializedEvent
 	private void __layoutCommands()
 	{
 		// Get our own policy or the one specified by the display
@@ -619,6 +620,7 @@ public abstract class Displayable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/27
 	 */
+	@SerializedEvent
 	private void __layoutExecute(__Layout__ __layout)
 		throws NullPointerException
 	{
@@ -643,6 +645,7 @@ public abstract class Displayable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/27
 	 */
+	@SerializedEvent
 	private void __layoutExecute(__Layout__ __layout, int __from, int __to)
 		throws NullPointerException
 	{

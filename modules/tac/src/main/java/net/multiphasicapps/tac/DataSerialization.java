@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.BooleanArrayList;
 import cc.squirreljme.runtime.cldc.util.ByteArrayList;
 import cc.squirreljme.runtime.cldc.util.CharacterArrayList;
@@ -24,6 +25,7 @@ import java.util.List;
  *
  * @since 2019/01/20
  */
+@SquirrelJMEVendorApi
 public final class DataSerialization
 {
 	/**
@@ -37,6 +39,7 @@ public final class DataSerialization
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09
 	 */
+	@SquirrelJMEVendorApi
 	public static String encodeKey(String __key)
 		throws NullPointerException
 	{
@@ -102,6 +105,7 @@ public final class DataSerialization
 	 * @return The encoded string, {@code null} has a special value.
 	 * @since 2018/10/06
 	 */
+	@SquirrelJMEVendorApi
 	public static String encodeString(String __s)
 	{
 		// Special value for null strings
@@ -227,6 +231,7 @@ public final class DataSerialization
 	 * @return The resulting serialization.
 	 * @since 2019/01/20
 	 */
+	@SquirrelJMEVendorApi
 	public static String serialize(Object __o)
 	{
 		// Null

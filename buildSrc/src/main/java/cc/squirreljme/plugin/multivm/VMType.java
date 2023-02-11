@@ -12,6 +12,8 @@ package cc.squirreljme.plugin.multivm;
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
+import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.GuardedOutputStream;
 import cc.squirreljme.plugin.util.JavaExecSpecFiller;
@@ -137,11 +139,6 @@ public enum VMType
 				VMHelpers.classpathAsString(__libPath));
 			sysProps.put("squirreljme.hosted.classpath",
 				VMHelpers.classpathAsString(__classPath));
-			
-			// Use different wrapped class loader, so we have full access to
-			// it accordingly
-			sysProps.put("java.system.class.loader",
-				"cc.squirreljme.emulator.WrappedClassLoader");
 			
 			// For Linux, if this variable is specified we can set the UI
 			// scale for Swing so that things are a bit bigger and not
@@ -522,6 +519,16 @@ public enum VMType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/02/10
+	 */
+	@Override
+	public boolean allowOnlyDebug()
+	{
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2022/09/30
 	 */
 	@Override
@@ -637,7 +644,7 @@ public enum VMType
 		Collection<Task> rv = new LinkedList<>();
 		for (ProjectAndTaskName task : VMHelpers.runClassTasks(project,
 			new SourceTargetClassifier(SourceSet.MAIN_SOURCE_SET_NAME,
-				VMType.HOSTED, BangletVariant.NONE)))
+				VMType.HOSTED, BangletVariant.NONE, ClutterLevel.DEBUG)))
 		{
 			Project taskProject = rootProject.project(task.project);
 			
@@ -654,7 +661,8 @@ public enum VMType
 		// Make sure the hosted environment is working since it needs to
 		// be kept up to date as well
 		for (Task task : new VMEmulatorDependencies(__task,
-			new TargetClassifier(VMType.HOSTED, BangletVariant.NONE)).call())
+			new TargetClassifier(VMType.HOSTED, BangletVariant.NONE,
+				ClutterLevel.DEBUG)).call())
 			rv.add(task);
 		
 		return rv;
@@ -885,7 +893,7 @@ public enum VMType
 				this.vmName(VMNameFormat.LOWERCASE)),
 			new SourceTargetClassifier(
 				SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED,
-				BangletVariant.NONE));
+				BangletVariant.NONE, ClutterLevel.DEBUG));
 		
 		// Setup arguments for compilation
 		Collection<String> args = new ArrayList<>();

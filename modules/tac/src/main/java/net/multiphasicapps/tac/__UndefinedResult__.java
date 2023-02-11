@@ -9,11 +9,14 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * This represents a result which has not been defined.
  *
  * @since 2018/10/06
  */
+@SquirrelJMEVendorApi
 final class __UndefinedResult__
 {
 	/**
