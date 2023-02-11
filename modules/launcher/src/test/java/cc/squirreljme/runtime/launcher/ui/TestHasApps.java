@@ -9,7 +9,12 @@
 
 package cc.squirreljme.runtime.launcher.ui;
 
+import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
+import cc.squirreljme.jvm.mle.constants.UIMetricType;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.tac.TestBoolean;
+import net.multiphasicapps.tac.UntestableException;
 
 /**
  * Tests that the application list has applications on it, that all the
@@ -28,6 +33,13 @@ public class TestHasApps
 	@Override
 	public boolean test()
 	{
+		// Check for native display
+		UIDisplayBracket[] displays = UIFormShelf.displays();
+		if (displays == null || displays.length == 0 ||
+			0 == UIFormShelf.metric(displays[0],
+				UIMetricType.UIFORMS_SUPPORTED))
+			throw new UntestableException("Native forms not supported.");
+		
 		MidletMain main = new MidletMain();
 		
 		// Perform refresh
