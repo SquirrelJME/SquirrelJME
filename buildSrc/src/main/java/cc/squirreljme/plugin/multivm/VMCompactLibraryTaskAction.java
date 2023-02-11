@@ -73,6 +73,15 @@ public class VMCompactLibraryTaskAction
 			// information if it is there, to make sure it is retained
 			"-keepattributes", "*Annotation*",
 			
+			// Keep interfaces, because with them being used elsewhere and
+			// otherwise things can easily break... also keep the methods they
+			// contain as well
+			"-keep,allowobfuscation", "public", "interface", "*",
+			"-keepclassmembers,allowobfuscation",
+				"public", "interface", "*", "{",
+					"<methods>", ";",
+			"}",
+			
 			// Keep anything with main in it
 			"-keepclasseswithmembers", "class", "*", "{",
 				"public", "static", "void", "main", "(",
