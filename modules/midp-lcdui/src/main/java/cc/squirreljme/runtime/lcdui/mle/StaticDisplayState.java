@@ -12,18 +12,21 @@ package cc.squirreljme.runtime.lcdui.mle;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
+import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.brackets.UIWidgetBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.CleanupHandler;
-import java.util.ArrayList;
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.WeakReference;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.WeakHashMap;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.DisplayListener;
 
@@ -43,8 +46,13 @@ public final class StaticDisplayState
 		new LinkedList<>();
 	
 	/** The cached forms for {@link DisplayWidget}. */
-	private static final Map<DisplayWidget, List<UIDrawableBracket>> _WIDGETS =
-		new WeakHashMap<>();
+	private static final Map<Reference<DisplayWidget>, UIDrawableBracket>
+		_WIDGETS =
+		new LinkedHashMap<>();
+	
+	/** Queue which is used for garbage collection of forms. */
+	private static final ReferenceQueue<DisplayWidget> _QUEUE =
+		new ReferenceQueue<>();
 	
 	/** Graphics handling thread. */
 	private static Thread _BACKGROUND_THREAD;
@@ -128,8 +136,8 @@ public final class StaticDisplayState
 			for (DisplayListener listener : StaticDisplayState.listeners())
 				StaticDisplayState.removeListener(listener);
 			
-			// Delete everything
-			StaticDisplayState._WIDGETS.clear();
+			// Perform garbage collection to clean up anything
+			StaticDisplayState.gc();
 		}
 	}
 	
@@ -167,14 +175,15 @@ public final class StaticDisplayState
 		UIBackend instance = UIBackendFactory.getInstance(true);
 		synchronized (StaticDisplayState.class)
 		{
-			for (Map.Entry<DisplayWidget, List<UIDrawableBracket>> e :
+			for (Map.Entry<Reference<DisplayWidget>, UIDrawableBracket> e :
 				StaticDisplayState._WIDGETS.entrySet())
 			{
-				List<UIDrawableBracket> items = e.getValue();
-				if (items != null)
-					for (UIDrawableBracket bracket : items)
-						if (instance.equals(__native, bracket))
-							return e.getKey();
+				if (instance.equals(__native, e.getValue()))
+				{
+					DisplayWidget rv = e.getKey().get();
+					if (rv != null)
+						return rv; 
+				}
 			}
 		}
 		
@@ -245,41 +254,96 @@ public final class StaticDisplayState
 			__type > UIItemType.NUM_TYPES)
 			throw new IllegalArgumentException("EB39 " + __type);
 		
+		// Debug
+		Debugging.debugNote("locate(%s, %d, %s)",
+			__widget, __type, __backend);
+		
 		// Would be previously cached
 		synchronized (StaticDisplayState.class)
 		{
-			// Debugging
-			Debugging.debugNote("locate(%s, %d, %s) <- %s",
-				__widget, __type, __backend,
-				StaticDisplayState._WIDGETS);
+			// Collect entries first
+			StaticDisplayState.gc();
 			
-			// Go through drawables that are available
-			List<UIDrawableBracket> drawables =
-				StaticDisplayState._WIDGETS.get(__widget);
-			if (drawables != null)
-				for (UIDrawableBracket drawable : drawables)
+			// Run through entries
+			for (Map.Entry<Reference<DisplayWidget>, UIDrawableBracket> e :
+				StaticDisplayState._WIDGETS.entrySet())
+			{
+				DisplayWidget possible = e.getKey().get();
+				
+				Debugging.debugNote("locate(...) -> possible = %s",
+					possible);
+				
+				if (possible == __widget)
 				{
+					UIDrawableBracket value = e.getValue();
+					
 					// Are we looking for a specific type of item?
 					if (__type != Integer.MIN_VALUE)
 						if (__type == UIItemType.DISPLAY &&
-							!(drawable instanceof UIDisplayBracket))
-							continue;
-						else if (__type == UIItemType.FORM &&
-							!(drawable instanceof UIFormBracket))
+							!(value instanceof UIDisplayBracket))
 							continue;
 						else if (__type != __backend.widgetPropertyInt(
-							(UIWidgetBracket)drawable,
+							(UIWidgetBracket)value,
 							UIWidgetProperty.INT_UIITEM_TYPE, 0))
 							continue;
 					
-					return drawable;
+					return value;
 				}
+			}
 		}
 		
 		// {@squirreljme.error EB3c No form exists for the given
-		// displayable. (The widget class; The type requested)}
-		throw new NoSuchElementException(String.format("EB3c %s %d",
-			__widget.getClass(), __type));
+		// displayable.}
+		throw new NoSuchElementException("EB3c");
+	}
+	
+	/**
+	 * Garbage collects the displays and forms.
+	 * 
+	 * @since 2020/07/01
+	 */
+	public static void gc()
+	{
+		// Prevent thread mishaps between threads doing this
+		synchronized (StaticDisplayState.class)
+		{
+			ReferenceQueue<DisplayWidget> queue = StaticDisplayState._QUEUE;
+			Map<Reference<DisplayWidget>, UIDrawableBracket> widgets =
+				StaticDisplayState._WIDGETS;
+			
+			// If there is anything in the queue, clear it out
+			for (Reference<? extends DisplayWidget> ref = queue.poll();
+				ref != null; ref = queue.poll())
+			{
+				UIDrawableBracket widget = widgets.get(ref);
+				
+				// Notice
+				Debugging.debugNote("gc() -> %s",
+					widget);
+				
+				// Remove from the mapping since it is gone now
+				widgets.remove(ref);
+				
+				// Perform collection on it
+				UIBackend instance = UIBackendFactory.getInstance(true);
+				if (widget instanceof UIFormBracket)
+					instance.formDelete((UIFormBracket)widget);
+				else if (widget instanceof UIItemBracket)
+				{
+					UIItemBracket item = (UIItemBracket)widget;
+					
+					// The item could be part of a form still, so remove it
+					// from that form. If items happen to garbage collect
+					// before forms it will be removed
+					UIFormBracket form = instance.itemForm(item);
+					if (form != null)
+						instance.formItemRemove(form,
+							instance.formItemPosition(form, item));
+					
+					instance.itemDelete(item);
+				}
+			}
+		}
 	}
 	
 	/**
@@ -311,13 +375,10 @@ public final class StaticDisplayState
 		if (__widget == null || __native == null)
 			throw new NullPointerException("NARG");
 		
-		// Debug
 		Debugging.debugNote("register(%s, %s)",
 			__widget, __native);
 		
 		// Prevent thread mishaps between threads doing this
-		Map<DisplayWidget, List<UIDrawableBracket>> widgets =
-			StaticDisplayState._WIDGETS;
 		synchronized (StaticDisplayState.class)
 		{
 			// When terminating, destroy and cleanup all the display state
@@ -329,14 +390,16 @@ public final class StaticDisplayState
 				StaticDisplayState._addedCleanup = true;
 			}
 			
-			// Make sure the list exists
-			List<UIDrawableBracket> drawables =
-				widgets.get(__widget);
-			if (drawables == null)
-				widgets.put(__widget, (drawables = new ArrayList<>()));
+			// Perform quick garbage collection on forms in the event any
+			// have gone away
+			StaticDisplayState.gc();
 			
-			// Add to the bracket set
-			drawables.add(__native);
+			// Queue the form for future cleanup
+			Reference<DisplayWidget> ref = new WeakReference<>(__widget,
+				StaticDisplayState._QUEUE);
+			
+			// Bind this displayable to the form
+			StaticDisplayState._WIDGETS.put(ref, __native);
 		}
 	}
 	
