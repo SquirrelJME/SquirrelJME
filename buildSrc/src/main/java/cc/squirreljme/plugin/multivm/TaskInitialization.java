@@ -209,10 +209,17 @@ public final class TaskInitialization
 			throw new NullPointerException("NARG");
 		
 		for (ClutterLevel clutterLevel : ClutterLevel.values())
+		{
+			// Only allow debug targets for this?
+			if (__vmType.allowOnlyDebug() && !clutterLevel.isDebug())
+				continue;
+			
+			// Initialize tasks
 			for (BangletVariant variant : __vmType.banglets())
 				TaskInitialization.initialize(__project,
 					new SourceTargetClassifier(__sourceSet, __vmType, variant,
 						clutterLevel));
+		}
 	}
 	
 	/**
@@ -334,12 +341,18 @@ public final class TaskInitialization
 				
 				// Setup description of these
 				bothTest.setGroup("squirreljme");
-				bothTest.setDescription(
-					String.format("Runs both test tasks %s and %s.",
-						taskName, TaskInitialization.task("test",
-							__classifier.withClutterLevel(__classifier
-								.getTargetClassifier().getClutterLevel()
-								.opposite()))));
+				
+				// Make sure the description makes sense
+				if (__classifier.getVmType().allowOnlyDebug())
+					bothTest.setDescription(String.format("Alias for %s.",
+						taskName));
+				else
+					bothTest.setDescription(
+						String.format("Runs both test tasks %s and %s.",
+							taskName, TaskInitialization.task("test",
+								__classifier.withClutterLevel(__classifier
+									.getTargetClassifier().getClutterLevel()
+									.opposite()))));
 				
 				// Gradle will think these are JUnit tests and then fail
 				// so exclude everything

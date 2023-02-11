@@ -33,6 +33,15 @@ import org.gradle.api.tasks.SourceSet;
 public interface VMSpecifier
 {
 	/**
+	 * Is only debugging permitted for this target, that is when being ran
+	 * it cannot use a release variant.
+	 * 
+	 * @return If only debug is permitted for this target.
+	 * @since 2023/02/10
+	 */
+	boolean allowOnlyDebug();
+	
+	/**
 	 * Returns the supported target banglets.
 	 * 
 	 * @return The supported banglets for this target.

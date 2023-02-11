@@ -9,7 +9,6 @@
 
 package cc.squirreljme.plugin.multivm;
 
-import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
@@ -51,6 +50,16 @@ public enum VMType
 	HOSTED("Hosted", "jar",
 		":emulators:emulator-base")
 	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/02/10
+		 */
+		@Override
+		public boolean allowOnlyDebug()
+		{
+			return true;
+		}
+		
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/05/16
@@ -420,6 +429,16 @@ public enum VMType
 		this.extension = __extension;
 		this.emulatorProjects = Collections.unmodifiableList(
 			Arrays.asList(__emulatorProject.clone()));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/02/10
+	 */
+	@Override
+	public boolean allowOnlyDebug()
+	{
+		return false;
 	}
 	
 	/**

@@ -255,8 +255,9 @@ public final class StaticDisplayState
 			throw new IllegalArgumentException("EB39 " + __type);
 		
 		// Debug
-		Debugging.debugNote("locate(%s, %d, %s)",
-			__widget, __type, __backend);
+		if (false)
+			Debugging.debugNote("locate(%s, %d, %s)",
+				__widget, __type, __backend);
 		
 		// Would be previously cached
 		synchronized (StaticDisplayState.class)
@@ -270,8 +271,9 @@ public final class StaticDisplayState
 			{
 				DisplayWidget possible = e.getKey().get();
 				
-				Debugging.debugNote("locate(...) -> possible = %s",
-					possible);
+				if (false)
+					Debugging.debugNote("locate(...) -> possible = %s",
+						possible);
 				
 				if (possible == __widget)
 				{
@@ -318,8 +320,9 @@ public final class StaticDisplayState
 				UIDrawableBracket widget = widgets.get(ref);
 				
 				// Notice
-				Debugging.debugNote("gc() -> %s",
-					widget);
+				if (false)
+					Debugging.debugNote("gc() -> %s",
+						widget);
 				
 				// Remove from the mapping since it is gone now
 				widgets.remove(ref);
@@ -375,8 +378,9 @@ public final class StaticDisplayState
 		if (__widget == null || __native == null)
 			throw new NullPointerException("NARG");
 		
-		Debugging.debugNote("register(%s, %s)",
-			__widget, __native);
+		if (false)
+			Debugging.debugNote("register(%s, %s)",
+				__widget, __native);
 		
 		// Prevent thread mishaps between threads doing this
 		synchronized (StaticDisplayState.class)
