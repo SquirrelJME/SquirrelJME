@@ -71,7 +71,9 @@ public class VMCompactLibraryTaskAction
 			
 			// Consumers of the libraries/APIs need to see the annotation
 			// information if it is there, to make sure it is retained
-			"-keepattributes", "*Annotation*",
+			"-keepattributes", "RuntimeVisibleAnnotations," +
+				"RuntimeInvisibleAnnotations," +
+				"AnnotationDefault",
 			
 			// Keep interfaces, because with them being used elsewhere and
 			// otherwise things can easily break... also keep the methods they
