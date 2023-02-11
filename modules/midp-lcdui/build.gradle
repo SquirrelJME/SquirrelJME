@@ -39,6 +39,31 @@ squirreljme
 		"class", "*", "{",
 			"@cc.squirreljme.runtime.lcdui.SerializedEvent", "*", ";",
 		"}"]
+	
+	// Buggy when these are optimized
+	proGuardOptions += ["-keep,includecode", "class",
+		"javax.microedition.lcdui.__NotifyShow__"]
+	proGuardOptions += ["-keepclassmembers,includecode",
+		"class", "javax.microedition.lcdui.Displayable", "{",
+			"void", "__showNotify", "(",
+				"javax.microedition.lcdui.Displayable", ")", ";",
+			"void", "__layoutCommands", "(", ")", ";",
+			"void", "__layoutDefault", "(",
+					"javax.microedition.lcdui.__Layout__",
+				")", ";",
+			"void", "__layoutExecute", "(",
+					"javax.microedition.lcdui.__Layout__",
+				")", ";",
+			"void", "__layoutExecute", "(",
+					"javax.microedition.lcdui.__Layout__", ",",
+					"int", ",",
+					"int",
+				")", ";",
+			"void", "__layoutActionSet", "(",
+					"javax.microedition.lcdui.__Action__", ",",
+					"int",
+				")", ";",
+		"}"]
 }
 
 dependencies
