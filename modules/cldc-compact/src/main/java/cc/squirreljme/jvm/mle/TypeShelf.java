@@ -160,6 +160,7 @@ public final class TypeShelf
 	 * @throws MLECallError If no name was specified.
 	 * @since 2022/12/24
 	 */
+	@SquirrelJMEVendorApi
 	public static native TypeBracket findType(String __name, String __inVm)
 		throws MLECallError;
 	

@@ -12,8 +12,6 @@ package cc.squirreljme.plugin.multivm;
 import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
-import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
-import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.GuardedOutputStream;
 import cc.squirreljme.plugin.util.JavaExecSpecFiller;
@@ -53,6 +51,16 @@ public enum VMType
 	HOSTED("Hosted", "jar",
 		":emulators:emulator-base")
 	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/02/10
+		 */
+		@Override
+		public boolean allowOnlyDebug()
+		{
+			return true;
+		}
+	
 		/**
 		 * {@inheritDoc}
 		 * @since 2021/05/16
@@ -213,6 +221,11 @@ public enum VMType
 			sysProps.put("microedition.platform", "SquirrelJME/0.3.0");
 			sysProps.put("squirreljme.orig.microedition.platform",
 				"SquirrelJME/0.3.0");
+			
+			// VM Tracing?
+			String tracing = System.getProperty("cc.squirreljme.vm.trace");
+			if (tracing != null)
+				sysProps.put("cc.squirreljme.vm.trace", tracing);
 			
 			// Declare system properties that are all the originally defined
 			// system properties
