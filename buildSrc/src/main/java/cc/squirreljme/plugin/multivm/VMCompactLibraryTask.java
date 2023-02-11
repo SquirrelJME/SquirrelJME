@@ -13,7 +13,9 @@ import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
 import javax.inject.Inject;
 import lombok.Getter;
@@ -22,6 +24,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.SourceSet;
 import org.gradle.jvm.tasks.Jar;
 
 /**
@@ -102,8 +105,8 @@ public class VMCompactLibraryTask
 		// do a rebuild!
 		this.getInputs().property("squirreljme.proguardOptions",
 			this.getProject().provider(() -> Objects.toString(
-				SquirrelJMEPluginConfiguration.configuration(project)
-					.proGuardOptions)));
+				VMCompactLibraryTask.__optionsBySourceSet(
+					this.getProject(), __sourceSet).get())));
 		
 		// Error code that is used for the prefix
 		this.getInputs().property("squirreljme.javaDocErrorCode",
@@ -180,6 +183,46 @@ public class VMCompactLibraryTask
 				
 				return jarOut.resolveSibling(
 					VMHelpers.getBaseName(jarOut) + ".map");
+			});
+	}
+	
+	/**
+	 * Returns the options to use for the given source set.
+	 * 
+	 * @param __project The project to get from.
+	 * @param __sourceSet The source set to use.
+	 * @return The provider to the ProGuard options for the source set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/02/11
+	 */
+	static Provider<List<String>> __optionsBySourceSet(Project __project,
+		String __sourceSet)
+		throws NullPointerException
+	{
+		if (__project == null || __sourceSet == null)
+			throw new NullPointerException("NARG");
+		
+		return __project.provider(() ->
+			{
+				SquirrelJMEPluginConfiguration projectConfig =
+					SquirrelJMEPluginConfiguration.configuration(__project);
+				
+				switch (__sourceSet)
+				{
+						// Main sources
+					case SourceSet.MAIN_SOURCE_SET_NAME:
+						return projectConfig.proGuardOptions;
+						
+						// Test sources
+					case SourceSet.TEST_SOURCE_SET_NAME:
+						return projectConfig.proGuardOptionsTest;
+					
+						// Test fixtures
+					case VMHelpers.TEST_FIXTURES_SOURCE_SET_NAME:
+						return projectConfig.proGuardOptionsTestFixtures;
+				}
+				
+				return Collections.emptyList();
 			});
 	}
 }

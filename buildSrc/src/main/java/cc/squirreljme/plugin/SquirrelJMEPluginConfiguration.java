@@ -112,6 +112,14 @@ public class SquirrelJMEPluginConfiguration
 	public List<String> proGuardOptions =
 		new ArrayList<>();
 	
+	/** Extra proguard options, for testing. */
+	public List<String> proGuardOptionsTest =
+		new ArrayList<>();
+	
+	/** Extra proguard options, for test fixtures. */
+	public List<String> proGuardOptionsTestFixtures =
+		new ArrayList<>();
+	
 	/**
 	 * Initializes the configuration with the contained project.
 	 *

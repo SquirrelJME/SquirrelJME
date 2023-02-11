@@ -365,9 +365,13 @@ public class VMCompactLibraryTaskAction
 					VMCompactLibraryTaskAction._TEST_SETTINGS));
 			
 			// Add any additional options as needed
-			if (projectConfig.proGuardOptions != null &&
-				!projectConfig.proGuardOptions.isEmpty())
-				proGuardOptions.addAll(projectConfig.proGuardOptions);
+			List<String> projectOptions =
+				VMCompactLibraryTask.__optionsBySourceSet(
+					__task.getProject(), this.sourceSet).get();
+			
+			// Add the options
+			if (projectOptions != null && !projectOptions.isEmpty())
+				proGuardOptions.addAll(projectOptions);
 			
 			// Parse initial configuration with settings
 			Configuration config = new Configuration();
