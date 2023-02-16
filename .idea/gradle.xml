@@ -75,6 +75,7 @@
             <option value="$PROJECT_DIR$/modules/tool-manifest-writer" />
             <option value="$PROJECT_DIR$/modules/vendor-api-danger-hiptop" />
             <option value="$PROJECT_DIR$/modules/vendor-api-jblend" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-jphone" />
             <option value="$PROJECT_DIR$/modules/vendor-api-kwisf-wipi" />
             <option value="$PROJECT_DIR$/modules/vendor-api-lg-mmpp" />
             <option value="$PROJECT_DIR$/modules/vendor-api-mascot-capsule-3d" />
