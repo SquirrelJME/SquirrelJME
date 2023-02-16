@@ -1,0 +1,22 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import org.iban4j.CountryCode
+
+description = "Samsung API"
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "SS"
+	swmType = JavaMEMidletType.API
+	swmName = "Samsung API"
+	swmVendor = "Stephanie Gawroriski"
+	originalApiVendor = "Samsung Group"
+	originalApiVendorUrl = "https://www.samsung.com/"
+	originalApiVendorCountry = CountryCode.KR
+	tags += "samsung"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+}

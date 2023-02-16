@@ -73,10 +73,17 @@
             <option value="$PROJECT_DIR$/modules/tango-icon-theme" />
             <option value="$PROJECT_DIR$/modules/tool-classfile" />
             <option value="$PROJECT_DIR$/modules/tool-manifest-writer" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-danger-hiptop" />
             <option value="$PROJECT_DIR$/modules/vendor-api-jblend" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-kwisf-wipi" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-lg-mmpp" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-mascot-capsule-3d" />
             <option value="$PROJECT_DIR$/modules/vendor-api-nokia" />
             <option value="$PROJECT_DIR$/modules/vendor-api-ntt-docomo-doja" />
             <option value="$PROJECT_DIR$/modules/vendor-api-ntt-docomo-star" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-samsung" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-siemens" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-skt" />
             <option value="$PROJECT_DIR$/modules/vendor-api-sprintpcs" />
             <option value="$PROJECT_DIR$/modules/vendor-api-vodafone" />
             <option value="$PROJECT_DIR$/modules/wireless-messaging" />

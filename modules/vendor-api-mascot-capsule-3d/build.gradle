@@ -1,25 +1,23 @@
 import cc.squirreljme.plugin.swm.JavaMEMidletType
 import org.iban4j.CountryCode
 
-description = "Proprietary Aplix JBlend API"
+description = "Mascot Capsule 3D APIs."
 version = rootProject.version
 
 squirreljme
 {
-	javaDocErrorCode = "LB"
+	javaDocErrorCode = "TD"
 	swmType = JavaMEMidletType.API
-	swmName = "Aplix JBlend API"
+	swmName = "Mascot Capsule 3D API"
 	swmVendor = "Stephanie Gawroriski"
-	originalApiVendor = "Aplix"
-	originalApiVendorUrl = "https://www.aplix.co.jp/"
+	originalApiVendor = "Hi Corporation"
+	originalApiVendorUrl = "http://www.hicorp.co.jp/"
 	originalApiVendorCountry = CountryCode.JP
-	tags += "jblend"
+	tags += "m3d"
+	tags += "mascotcapsule3d"
 }
 
 dependencies
 {
 	api project(":modules:cldc-compact")
-
-	api project(":modules:meep-midlet")
-	api project(":modules:midp-lcdui")
 }
