@@ -51,7 +51,9 @@ public enum MLEPencil
 			
 			return PencilCapabilities.MINIMUM |
 				PencilCapabilities.FILL_RECT |
+				PencilCapabilities.FILL_TRIANGLE |
 				PencilCapabilities.DRAW_LINE |
+				PencilCapabilities.DRAW_RECT |
 				PencilCapabilities.DRAW_XRGB32_REGION;
 		}
 	},
@@ -71,6 +73,29 @@ public enum MLEPencil
 		{
 			MLEPencil.__graphics(__args[0])
 				.drawLine((Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3],
+					(Integer)__args[4]);
+			
+			return null;
+		}
+	},
+	
+	/**
+	 * {@link PencilShelf#hardwareDrawRect(PencilBracket, int, int, int, int)}.
+	 */
+	HARDWARE_DRAW_RECT("hardwareDrawRect:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;IIII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2021/12/05
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEPencil.__graphics(__args[0])
+				.drawRect((Integer)__args[1],
 					(Integer)__args[2],
 					(Integer)__args[3],
 					(Integer)__args[4]);
@@ -193,7 +218,33 @@ public enum MLEPencil
 			
 			return null;
 		}
-	}, 
+	},
+	
+	/**
+	 * {@link PencilShelf#hardwareFillTriangle(PencilBracket, int, int, int,
+	 * int, int, int)}.
+	 */
+	HARDWARE_FILL_TRIANGLE("hardwareFillTriangle:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;IIIIII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/02/16
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEPencil.__graphics(__args[0])
+				.fillTriangle((Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3],
+					(Integer)__args[4],
+					(Integer)__args[5],
+					(Integer)__args[6]);
+			
+			return null;
+		}
+	},
 	
 	/**
 	 * {@link PencilShelf#hardwareGraphics(int, int, int, Object, int, int[],

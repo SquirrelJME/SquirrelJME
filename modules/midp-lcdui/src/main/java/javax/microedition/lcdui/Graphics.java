@@ -245,6 +245,19 @@ public abstract class Graphics
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException;
 	
+	/**
+	 * Draws the outline of the given rectangle using the current color and
+	 * stroke style. The rectangle will cover an area that is
+	 * {@code [width + 1, height + 1]}.
+	 * 
+	 * Nothing is drawn if the width and/or height are zero.
+	 * 
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2023/02/16
+	 */
 	@Api
 	public abstract void drawRect(int __x, int __y, int __w, int __h);
 	
@@ -358,6 +371,18 @@ public abstract class Graphics
 	public abstract void fillRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah);
 	
+	/**
+	 * Draws a filled triangle using the current color, the lines which make
+	 * up the triangle are included in the filled area.
+	 * 
+	 * @param __x1 First X coordinate.
+	 * @param __y1 First Y coordinate.
+	 * @param __x2 Second X coordinate.
+	 * @param __y2 Second Y coordinate.
+	 * @param __x3 Third X coordinate.
+	 * @param __y3 Third Y coordinate.
+	 * @since 2023/02/16
+	 */
 	@Api
 	public abstract void fillTriangle(int __x1, int __y1, int __x2, int __y2,
 		int __x3, int __y3);

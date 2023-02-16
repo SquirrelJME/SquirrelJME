@@ -69,6 +69,27 @@ public final class PencilShelf
 		throws MLECallError;
 	
 	/**
+	 * Draws the outline of the given rectangle using the current color and
+	 * stroke style. The rectangle will cover an area that is
+	 * {@code [width + 1, height + 1]}.
+	 *
+	 * Nothing is drawn if the width and/or height are zero.
+	 *
+	 * @param __g The hardware graphics to draw with.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @throws MLECallError If the graphics is not valid or does not support
+	 * the given operation.
+	 * @since 2023/02/16
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareDrawRect(PencilBracket __g,
+		int __x, int __y, int __w, int __h)
+		throws MLECallError;
+	
+	/**
 	 * Draws a region of 32-bit RGB data into the target.
 	 * 
 	 * @param __data The source buffer.
@@ -113,6 +134,26 @@ public final class PencilShelf
 	@SquirrelJMEVendorApi
 	public static native void hardwareFillRect(PencilBracket __g,
 		int __x, int __y, int __w, int __h)
+		throws MLECallError;
+	
+	/**
+	 * Draws a filled triangle using the current color, the lines which make
+	 * up the triangle are included in the filled area.
+	 *
+	 * @param __g The graphics to use for drawing.
+	 * @param __x1 First X coordinate.
+	 * @param __y1 First Y coordinate.
+	 * @param __x2 Second X coordinate.
+	 * @param __y2 Second Y coordinate.
+	 * @param __x3 Third X coordinate.
+	 * @param __y3 Third Y coordinate.
+	 * @throws MLECallError If no graphics were specified or the graphics does
+	 * not actually support the given operation.
+	 * @since 2023/02/16
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareFillTriangle(PencilBracket __g,
+		int __x1, int __y1, int __x2, int __y2, int __x3, int __y3)
 		throws MLECallError;
 	
 	/**
