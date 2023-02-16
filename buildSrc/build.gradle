@@ -21,4 +21,7 @@ dependencies {
 	// Lombok for simpler getters/setters
 	implementation 'org.projectlombok:lombok:1.18.24'
 	annotationProcessor 'org.projectlombok:lombok:1.18.24'
+	
+	// Country codes
+	implementation 'org.iban4j:iban4j:3.2.4-RELEASE'
 }

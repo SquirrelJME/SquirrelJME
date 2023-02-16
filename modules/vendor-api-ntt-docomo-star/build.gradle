@@ -1,5 +1,6 @@
 import cc.squirreljme.plugin.swm.JavaMEMidletType
 import cc.squirreljme.plugin.swm.JavaMEProfile
+import org.iban4j.CountryCode
 
 description = "Proprietary NTT Docomo Star API"
 version = rootProject.version
@@ -10,6 +11,9 @@ squirreljme
 	swmType = JavaMEMidletType.API
 	swmName = "NTT Docomo Star API"
 	swmVendor = "Stephanie Gawroriski"
+	originalApiVendor = "NTT Docomo"
+	originalApiVendorUrl = "https://www.docomo.ne.jp/english"
+	originalApiVendorCountry = CountryCode.JP
 	definedProfiles += new JavaMEProfile("Star-1.0")
 	definedProfiles += new JavaMEProfile("Star-1.1")
 	definedProfiles += new JavaMEProfile("Star-1.2")

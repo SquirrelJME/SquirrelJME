@@ -1,4 +1,5 @@
 import cc.squirreljme.plugin.swm.JavaMEMidletType
+import org.iban4j.CountryCode
 
 description = "Implements support for the Nokia APIs."
 version = rootProject.version
@@ -9,6 +10,9 @@ squirreljme
 	swmType = JavaMEMidletType.API
 	swmName = "Nokia API"
 	swmVendor = "Stephanie Gawroriski"
+	originalApiVendor = "Nokia Corporation"
+	originalApiVendorUrl = "https://www.nokia.com/"
+	originalApiVendorCountry = CountryCode.FI
 	tags += "nokia"
 }
 

@@ -1,0 +1,23 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import org.iban4j.CountryCode
+
+description = "Mascot Capsule 3D APIs."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "TD"
+	swmType = JavaMEMidletType.API
+	swmName = "Mascot Capsule 3D API"
+	swmVendor = "Stephanie Gawroriski"
+	originalApiVendor = "Hi Corporation"
+	originalApiVendorUrl = "http://www.hicorp.co.jp/"
+	originalApiVendorCountry = CountryCode.JP
+	tags += "m3d"
+	tags += "mascotcapsule3d"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+}

@@ -1,15 +1,20 @@
 import cc.squirreljme.plugin.swm.JavaMEMidletType
+import org.iban4j.CountryCode
 
-description = "Proprietary Aplix JBlend API"
+description = "Proprietary Vodafone API"
 version = rootProject.version
 
 squirreljme
 {
-	javaDocErrorCode = "LB"
+	javaDocErrorCode = "LA"
 	swmType = JavaMEMidletType.API
-	swmName = "Aplix JBlend API"
+	swmName = "Vodafone API"
 	swmVendor = "Stephanie Gawroriski"
-	tags += "jblend"
+	originalApiVendor = "Vodafone Group plc"
+	originalApiVendorUrl = "https://www.vodafone.com/"
+	originalApiVendorCountry = CountryCode.GB
+	tags += "j2me"
+	tags += "vodafone"
 }
 
 dependencies

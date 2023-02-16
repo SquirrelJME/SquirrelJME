@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import org.gradle.api.Project;
 import org.gradle.api.UnknownDomainObjectException;
+import org.iban4j.CountryCode;
 
 /**
  * Allows SquirrelJME specific parts of modules to be configured.
@@ -50,6 +51,15 @@ public class SquirrelJMEPluginConfiguration
 	
 	/** The vendor of the MIDlet or LIBlet. */
 	public String swmVendor;
+	
+	/** The original vendor of the API. */
+	public String originalApiVendor;
+	
+	/** The URL to the original vendor's homepage. */
+	public String originalApiVendorUrl;
+	
+	/** The country of origin for the original vendor. */
+	public CountryCode originalApiVendorCountry;
 	
 	/** Ignore in the launcher? */
 	public boolean ignoreInLauncher;

@@ -41,10 +41,10 @@ squirreljme
 	optionalDependencies += project(":modules:opengles")
 	
 	// Third Party APIs, which are optionally included
-	optionalDependencies += project(":modules:jblend-api")
-	optionalDependencies += project(":modules:nokia-api")
-	optionalDependencies += project(":modules:sprint-api")
-	optionalDependencies += project(":modules:vodafone-api")
+	optionalDependencies += project(":modules:vendor-api-jblend")
+	optionalDependencies += project(":modules:vendor-api-nokia")
+	optionalDependencies += project(":modules:vendor-api-sprintpcs")
+	optionalDependencies += project(":modules:vendor-api-vodafone")
 }
 
 dependencies
