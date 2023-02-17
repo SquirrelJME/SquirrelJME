@@ -1,7 +1,8 @@
 import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
 import org.iban4j.CountryCode
 
-description = "Proprietary Vodafone API"
+description = "Proprietary Vodafone 1.0 and 2.0 API"
 version = rootProject.version
 
 squirreljme
@@ -13,8 +14,11 @@ squirreljme
 	originalApiVendor = "Vodafone Group plc"
 	originalApiVendorUrl = "https://www.vodafone.com/"
 	originalApiVendorCountry = CountryCode.GB
+	definedStandards += new JavaMEStandard("vscl;com.vodafone;1.0")
+	definedStandards += new JavaMEStandard("vscl;com.vodafone;2.0")
 	tags += "j2me"
 	tags += "vodafone"
+	tags += "vscl-2.0"
 }
 
 dependencies
@@ -23,4 +27,7 @@ dependencies
 
 	api project(":modules:meep-midlet")
 	api project(":modules:midp-lcdui")
+
+	// Carbon Copy
+	api project(":modules:vendor-api-jphone")
 }

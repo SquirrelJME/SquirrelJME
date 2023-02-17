@@ -327,7 +327,8 @@ public final class PencilGraphics
 			return;
 		}
 		
-		throw Debugging.todo();
+		// Forward to hardware
+		PencilShelf.hardwareDrawRect(this.hardware, __x, __y, __w, __h);
 	}
 	
 	/**
@@ -532,7 +533,9 @@ public final class PencilGraphics
 			return;
 		}
 		
-		throw Debugging.todo();
+		// Forward to hardware
+		PencilShelf.hardwareFillTriangle(this.hardware, __x1, __y1, __x2, __y2,
+			__x3, __y3);
 	}
 	
 	/**
