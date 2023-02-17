@@ -16,7 +16,7 @@ import cc.squirreljme.runtime.midlet.ApplicationHandler;
  *
  * @since 2019/04/14
  */
-public final class SuiteIdentifier
+public final class IdentityHash
 {
 	/** The identifier for the current suite. */
 	private static long _CURRENT_ID;
@@ -26,7 +26,7 @@ public final class SuiteIdentifier
 	 *
 	 * @since 2019/04/14
 	 */
-	private SuiteIdentifier()
+	private IdentityHash()
 	{
 	}
 	
@@ -39,13 +39,14 @@ public final class SuiteIdentifier
 	public static long currentIdentifier()
 	{
 		// Already been cached?
-		long rv = SuiteIdentifier._CURRENT_ID;
+		long rv = IdentityHash._CURRENT_ID;
 		if (rv != 0)
 			return rv;
 		
 		// Set, cache, and store
-		SuiteIdentifier._CURRENT_ID = (rv = SuiteIdentifier.identifier(
-			ApplicationHandler.currentVendor(), ApplicationHandler.currentName()));
+		IdentityHash._CURRENT_ID = (rv = IdentityHash.identifier(
+			ApplicationHandler.currentVendor(),
+			ApplicationHandler.currentName()));
 		return rv;
 	}
 	

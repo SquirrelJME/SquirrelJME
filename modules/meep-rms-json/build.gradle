@@ -18,7 +18,11 @@ squirreljme
 dependencies
 {
 	api project(":modules:cldc")
-	
 	api project(":modules:meep-rms")
+	
+	// For encoding/decoding base64
+	api project(":modules:io")
+	
+	// For the actual JSON data
 	api project(":modules:json")
 }
