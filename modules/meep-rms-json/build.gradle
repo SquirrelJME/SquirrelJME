@@ -1,0 +1,24 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEStandard
+
+description = "Implements RMS over JSON"
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "DX"
+	swmType = JavaMEMidletType.API
+	swmName = "RMS Implementation over JSON"
+	swmVendor = "Stephanie Gawroriski"
+	tags += "meep"
+	tags += "j2me"
+	tags += "rms"
+}
+
+dependencies
+{
+	api project(":modules:cldc")
+	
+	api project(":modules:meep-rms")
+	api project(":modules:json")
+}

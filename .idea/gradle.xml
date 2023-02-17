@@ -61,6 +61,7 @@
             <option value="$PROJECT_DIR$/modules/meep-power" />
             <option value="$PROJECT_DIR$/modules/meep-provisioning" />
             <option value="$PROJECT_DIR$/modules/meep-rms" />
+            <option value="$PROJECT_DIR$/modules/meep-rms-json" />
             <option value="$PROJECT_DIR$/modules/meep-securityframework" />
             <option value="$PROJECT_DIR$/modules/meep-swm" />
             <option value="$PROJECT_DIR$/modules/midp-lcdui" />

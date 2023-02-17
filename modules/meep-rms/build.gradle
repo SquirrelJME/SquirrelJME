@@ -15,14 +15,16 @@ squirreljme
 	definedStandards += new JavaMEStandard("microedition.rms;;")
 	tags += "meep"
 	tags += "j2me"
+	
+	// JSON implementation, if available
+	optionalDependencies += project(":modules:meep-rms-json")
 }
 
 dependencies
 {
-	api project(":modules:cldc")
+	api project(":modules:cldc-compact")
 
 	api project(":modules:meep-midlet")
-	api project(":modules:tool-manifest-writer")
 	api project(":modules:meep-swm")
 	api project(":modules:collections")
 }
