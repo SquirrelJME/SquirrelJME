@@ -22,6 +22,9 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 public class MLECallError
 	extends VirtualMachineError
 {
+	/** the distinctive error code. */
+	public final int distinction;
+	
 	/**
 	 * Initializes the exception with no message or cause.
 	 *
@@ -30,6 +33,7 @@ public class MLECallError
 	@SquirrelJMEVendorApi
 	public MLECallError()
 	{
+		this.distinction = 0;
 	}
 	
 	/**
@@ -42,6 +46,8 @@ public class MLECallError
 	public MLECallError(String __m)
 	{
 		super(__m);
+		
+		this.distinction = 0;
 	}
 	
 	/**
@@ -57,6 +63,8 @@ public class MLECallError
 		super(__m);
 		
 		this.initCause(__t);
+		
+		this.distinction = 0;
 	}
 	
 	/**
@@ -69,6 +77,68 @@ public class MLECallError
 	public MLECallError(Throwable __t)
 	{
 		this.initCause(__t);
+		
+		this.distinction = 0;
+	}
+	
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @param __dist The distinction used.
+	 * @since 2023/02/19
+	 */
+	@SquirrelJMEVendorApi
+	public MLECallError(int __dist)
+	{
+		this.distinction = __dist;
+	}
+	
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @param __dist The distinction used.
+	 * @since 2023/02/19
+	 */
+	@SquirrelJMEVendorApi
+	public MLECallError(String __m, int __dist)
+	{
+		super(__m);
+		
+		this.distinction = __dist;
+	}
+	
+	/**
+	 * Initializes the exception with the given message and cause.
+	 *
+	 * @param __m The message.
+	 * @param __t The cause.
+	 * @param __dist The distinction used.
+	 * @since 2023/02/19
+	 */
+	@SquirrelJMEVendorApi
+	public MLECallError(String __m, Throwable __t, int __dist)
+	{
+		super(__m);
+		
+		this.initCause(__t);
+		
+		this.distinction = __dist;
+	}
+	
+	/**
+	 * Initializes the exception with the given cause and no message.
+	 *
+	 * @param __t The cause.
+	 * @param __dist The distinction used.
+	 * @since 2023/02/19
+	 */
+	@SquirrelJMEVendorApi
+	public MLECallError(Throwable __t, int __dist)
+	{
+		this.initCause(__t);
+		
+		this.distinction = __dist;
 	}
 	
 	/**
@@ -83,5 +153,7 @@ public class MLECallError
 	{
 		// {@squirreljme.error ZZ4k Failed system call. (The ID; The Error)}
 		super("ZZ4k " + __callId + " " + __code);
+		
+		this.distinction = 0;
 	}
 }

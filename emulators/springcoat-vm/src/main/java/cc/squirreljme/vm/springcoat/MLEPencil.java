@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.constants.NativeImageLoadParameter;
 import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
 import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
+import cc.squirreljme.jvm.mle.constants.PencilShelfError;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
@@ -50,11 +51,52 @@ public enum MLEPencil
 					pf);
 			
 			return PencilCapabilities.MINIMUM |
+				PencilCapabilities.COPY_AREA |
 				PencilCapabilities.FILL_RECT |
 				PencilCapabilities.FILL_TRIANGLE |
 				PencilCapabilities.DRAW_LINE |
 				PencilCapabilities.DRAW_RECT |
 				PencilCapabilities.DRAW_XRGB32_REGION;
+		}
+	},
+	
+	/**
+	 * {@link PencilShelf#hardwareCopyArea(PencilBracket, int, int, int, int,
+	 * int, int, int)}.
+	 */
+	HARDWARE_COPY_AREA("hardwareCopyArea:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;IIIIIII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/02/19
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				MLEPencil.__graphics(__args[0])
+					.copyArea((Integer)__args[1],
+						(Integer)__args[2],
+						(Integer)__args[3],
+						(Integer)__args[4],
+						(Integer)__args[5],
+						(Integer)__args[6],
+						(Integer)__args[7]);
+			}
+			catch (IllegalArgumentException e)
+			{
+				throw new SpringMLECallError(e,
+					PencilShelfError.COPY_AREA_ILLEGAL_ARGUMENT);
+			}
+			catch (IllegalStateException e)
+			{
+				throw new SpringMLECallError(e, 
+					PencilShelfError.COPY_AREA_ILLEGAL_STATE);
+			}
+			
+			return null;
 		}
 	},
 	

@@ -53,6 +53,35 @@ public final class PencilShelf
 		throws MLECallError;
 	
 	/**
+	 * This copies one region of the image to another region.
+	 *
+	 * Copying to a display device is not permitted because it may impact how
+	 * double buffering is implemented, as such it is not supported.
+	 *
+	 * Pixels are copied directly and no alpha compositing is performed.
+	 *
+	 * If the source and destination overlap then it must be as if they did not
+	 * overlap at all, this means that the destination will be an exact copy of
+	 * the source.
+	 *
+	 * @param __g The hardware graphics to draw with.
+	 * @param __sx The source X position, will be translated.
+	 * @param __sy The source Y position, will be translated.
+	 * @param __w The width to copy.
+	 * @param __h The height to copy.
+	 * @param __dx The destination X position, will be translated.
+	 * @param __dy The destination Y position, will be translated.
+	 * @param __anchor The anchor point of the destination.
+	 * @throws MLECallError If the call is not valid or the native graphics
+	 * does not support this operation.
+	 * @since 2023/02/19
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareCopyArea(PencilBracket __g,
+		int __sx, int __sy, int __w, int __h, int __dx, int __dy, int __anchor)
+		throws MLECallError;
+	
+	/**
 	 * Draws a line in hardware.
 	 * 
 	 * @param __g The hardware graphics to draw with.

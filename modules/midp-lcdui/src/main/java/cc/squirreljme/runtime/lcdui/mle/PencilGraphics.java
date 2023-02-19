@@ -12,7 +12,9 @@ package cc.squirreljme.runtime.lcdui.mle;
 import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
+import cc.squirreljme.jvm.mle.constants.PencilShelfError;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
@@ -169,7 +171,28 @@ public final class PencilGraphics
 			return;
 		}
 		
-		throw Debugging.todo();
+		// Forward to native call
+		try
+		{
+			PencilShelf.hardwareCopyArea(this.hardware,
+				__sx, __sy, __w, __h, __dx, __dy, __anchor);
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			switch (e.distinction)
+			{
+				case PencilShelfError.COPY_AREA_ILLEGAL_ARGUMENT:
+					throw new IllegalArgumentException(e.getMessage(), e);
+					
+				case PencilShelfError.COPY_AREA_ILLEGAL_STATE:
+					throw new IllegalStateException(e.getMessage(), e);
+			}
+			
+			// No distinction
+			throw e;
+		}
 	}
 	
 	/**
