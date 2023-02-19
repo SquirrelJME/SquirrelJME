@@ -52,11 +52,11 @@ public enum MLEPencil
 			
 			return PencilCapabilities.MINIMUM |
 				PencilCapabilities.COPY_AREA |
-				PencilCapabilities.FILL_RECT |
-				PencilCapabilities.FILL_TRIANGLE |
 				PencilCapabilities.DRAW_LINE |
 				PencilCapabilities.DRAW_RECT |
-				PencilCapabilities.DRAW_XRGB32_REGION;
+				PencilCapabilities.DRAW_XRGB32_REGION |
+				PencilCapabilities.FILL_RECT |
+				PencilCapabilities.FILL_TRIANGLE;
 		}
 	},
 	
