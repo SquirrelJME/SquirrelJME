@@ -24,6 +24,7 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -56,7 +57,8 @@ public enum MLEPencil
 				PencilCapabilities.DRAW_RECT |
 				PencilCapabilities.DRAW_XRGB32_REGION |
 				PencilCapabilities.FILL_RECT |
-				PencilCapabilities.FILL_TRIANGLE;
+				PencilCapabilities.FILL_TRIANGLE |
+				PencilCapabilities.TEXT_BASIC;
 		}
 	},
 	
@@ -88,12 +90,51 @@ public enum MLEPencil
 			catch (IllegalArgumentException e)
 			{
 				throw new SpringMLECallError(e,
-					PencilShelfError.COPY_AREA_ILLEGAL_ARGUMENT);
+					PencilShelfError.ILLEGAL_ARGUMENT);
 			}
 			catch (IllegalStateException e)
 			{
 				throw new SpringMLECallError(e, 
-					PencilShelfError.COPY_AREA_ILLEGAL_STATE);
+					PencilShelfError.ILLEGAL_STATE);
+			}
+			
+			return null;
+		}
+	},
+	
+	/**
+	 * {@link PencilShelf#hardwareDrawChars(PencilBracket, char[], int, int,
+	 * int, int, int)}.
+	 */
+	HARDWARE_DRAW_CHARS("hardwareDrawChars:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;[CIIIII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/02/19
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				MLEPencil.__graphics(__args[0])
+					.drawChars(((SpringArrayObjectChar)__args[1]).array(),
+						(Integer)__args[2],
+						(Integer)__args[3],
+						(Integer)__args[4],
+						(Integer)__args[5],
+						(Integer)__args[6]);
+			}
+			catch (IllegalArgumentException e)
+			{
+				throw new SpringMLECallError(e,
+					PencilShelfError.ILLEGAL_ARGUMENT);
+			}
+			catch (IndexOutOfBoundsException e)
+			{
+				throw new SpringMLECallError(e,
+					PencilShelfError.INDEX_OUT_OF_BOUNDS);
 			}
 			
 			return null;
@@ -141,6 +182,47 @@ public enum MLEPencil
 					(Integer)__args[2],
 					(Integer)__args[3],
 					(Integer)__args[4]);
+			
+			return null;
+		}
+	},
+	
+	/**
+	 * {@link PencilShelf#hardwareDrawSubstring(PencilBracket, String, int,
+	 * int, int, int, int)}.
+	 */
+	HARDWARE_DRAW_SUBSTRING("hardwareDrawSubstring:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;" +
+		"Ljava/lang/String;IIIII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/02/19
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				MLEPencil.__graphics(__args[0])
+					.drawSubstring(
+						__thread.asNativeObject(String.class, __args[1]),
+						(Integer)__args[2],
+						(Integer)__args[3],
+						(Integer)__args[4],
+						(Integer)__args[5],
+						(Integer)__args[6]);
+			}
+			catch (IllegalArgumentException e)
+			{
+				throw new SpringMLECallError(e,
+					PencilShelfError.ILLEGAL_ARGUMENT);
+			}
+			catch (StringIndexOutOfBoundsException e)
+			{
+				throw new SpringMLECallError(e,
+					PencilShelfError.INDEX_OUT_OF_BOUNDS);
+			}
 			
 			return null;
 		}
@@ -392,7 +474,49 @@ public enum MLEPencil
 			
 			return null;
 		}
-	}, 
+	},
+	
+	/** {@link PencilShelf#hardwareSetDefaultFont(PencilBracket)}. */
+	HARDWARE_SET_DEFAULT_FONT("hardwareSetDefaultFont:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/02/19
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			MLEPencil.__graphics(__args[0])
+				.setFont(null);
+			
+			return null;
+		}
+	},
+	
+	/**
+	 * {@link PencilShelf#hardwareSetFont(PencilBracket, String, int, int)}.
+	 */
+	HARDWARE_SET_FONT("hardwareSetFont:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;" +
+		"Ljava/lang/String;II)V")
+		{
+			/**
+			 * {@inheritDoc}
+			 * @since 2023/02/19
+			 */
+			@Override
+			public Object handle(SpringThreadWorker __thread, Object... __args)
+			{
+				MLEPencil.__graphics(__args[0])
+					.setFont(Font.getFont(
+						__thread.asNativeObject(String.class, __args[1]),
+						(Integer)__args[2],
+						(Integer)__args[3]));
+				
+				return null;
+			}
+		},
 	
 	/** {@link PencilShelf#hardwareSetStrokeStyle(PencilBracket, int)}. */
 	HARDWARE_SET_STROKE_STYLE("hardwareSetStrokeStyle:" +

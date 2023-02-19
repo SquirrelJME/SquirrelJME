@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.mle.constants;
 
 import cc.squirreljme.jvm.mle.PencilShelf;
-import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
@@ -21,21 +20,18 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 @SquirrelJMEVendorApi
 public interface PencilShelfError
 {
-	/**
-	 * {@link IllegalArgumentException} for {@link
-	 * PencilShelf#hardwareCopyArea(PencilBracket, int, int, int, int, int,
-	 * int, int)}.
-	 */
+	/** {@link IllegalArgumentException}. */
 	@SquirrelJMEVendorApi
-	byte COPY_AREA_ILLEGAL_ARGUMENT =
+	byte ILLEGAL_ARGUMENT =
 		1;
 	
-	/**
-	 * {@link IllegalStateException} for {@link
-	 * PencilShelf#hardwareCopyArea(PencilBracket, int, int, int, int, int,
-	 * int, int)}.
-	 */
+	/** {@link IllegalStateException}. */
 	@SquirrelJMEVendorApi
-	byte COPY_AREA_ILLEGAL_STATE =
+	byte ILLEGAL_STATE =
 		2;
+	
+	/** {@link java.lang.IndexOutOfBoundsException}. */
+	@SquirrelJMEVendorApi
+	byte INDEX_OUT_OF_BOUNDS =
+		3;
 }
