@@ -19,8 +19,8 @@ dependencies {
 	//implementation "com.guardsquare:proguard-gradle:7.3.1"
 	
 	// Lombok for simpler getters/setters
-	implementation 'org.projectlombok:lombok:1.18.24'
-	annotationProcessor 'org.projectlombok:lombok:1.18.24'
+	implementation 'org.projectlombok:lombok:1.18.26'
+	annotationProcessor 'org.projectlombok:lombok:1.18.26'
 	
 	// Country codes
 	implementation 'org.iban4j:iban4j:3.2.4-RELEASE'
