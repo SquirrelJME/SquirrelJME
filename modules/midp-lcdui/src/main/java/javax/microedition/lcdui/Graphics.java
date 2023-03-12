@@ -199,10 +199,26 @@ public abstract class Graphics
 	@Api
 	public abstract void drawChar(char __s, int __x, int __y, int __anchor);
 	
+	/**
+	 * Draws the given characters.
+	 * 
+	 * @param __s The characters to draw.
+	 * @param __o The offset into the buffer.
+	 * @param __l The number of characters to draw.
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __anchor The anchor point.
+	 * @throws IllegalArgumentException If {@code __anchor} is not valid.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or are not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/02/19
+	 */
 	@Api
 	public abstract void drawChars(char[] __s, int __o, int __l, int __x,
 		int __y, int __anchor)
-		throws NullPointerException;
+		throws IllegalArgumentException, IndexOutOfBoundsException,
+			NullPointerException;
 	
 	/**
 	 * Draws the specified image.
@@ -332,6 +348,20 @@ public abstract class Graphics
 		int __anchor)
 		throws NullPointerException;
 	
+	/**
+	 * Draws the given substring.
+	 * 
+	 * @param __s The string to draw.
+	 * @param __o The offset into the string.
+	 * @param __l The offset into the length.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __anchor The anchor point.
+	 * @throws NullPointerException On null arguments.
+	 * @throws StringIndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the string bounds.
+	 * @since 2023/02/19
+	 */
 	@Api
 	public abstract void drawSubstring(String __s, int __o, int __l, int __x,
 		int __y, int __anchor)

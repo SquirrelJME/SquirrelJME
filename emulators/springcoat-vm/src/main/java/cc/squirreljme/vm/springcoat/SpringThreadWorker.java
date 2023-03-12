@@ -33,6 +33,7 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIllegalAccessException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringIncompatibleClassChangeException;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNegativeArraySizeException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
@@ -417,6 +418,12 @@ public final class SpringThreadWorker
 			SpringConvertableThrowable e = (SpringConvertableThrowable)__in;
 			
 			// Initialize new instance with this type, use the input message
+			// MLECallError has a distinction for certain sub-errors
+			if (e instanceof SpringMLECallError)
+				return this.newInstance(new ClassName(e.targetClass()),
+					new MethodDescriptor("(Ljava/lang/String;I)V"),
+					this.asVMObject(e.getMessage()),
+					((SpringMLECallError)e).distinction);
 			return this.newInstance(new ClassName(e.targetClass()),
 				new MethodDescriptor("(Ljava/lang/String;)V"),
 				this.asVMObject(e.getMessage()));

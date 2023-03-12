@@ -15,12 +15,12 @@ dependencies {
 	
 	// ProGuard, minification
 	implementation "com.guardsquare:proguard-base:7.3.1"
-	implementation "com.guardsquare:proguard-core:7.3.1"
+	implementation "com.guardsquare:proguard-core:9.0.7"
 	//implementation "com.guardsquare:proguard-gradle:7.3.1"
 	
 	// Lombok for simpler getters/setters
-	implementation 'org.projectlombok:lombok:1.18.24'
-	annotationProcessor 'org.projectlombok:lombok:1.18.24'
+	implementation 'org.projectlombok:lombok:1.18.26'
+	annotationProcessor 'org.projectlombok:lombok:1.18.26'
 	
 	// Country codes
 	implementation 'org.iban4j:iban4j:3.2.4-RELEASE'

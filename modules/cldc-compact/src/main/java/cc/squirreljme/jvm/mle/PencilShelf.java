@@ -53,6 +53,55 @@ public final class PencilShelf
 		throws MLECallError;
 	
 	/**
+	 * This copies one region of the image to another region.
+	 *
+	 * Copying to a display device is not permitted because it may impact how
+	 * double buffering is implemented, as such it is not supported.
+	 *
+	 * Pixels are copied directly and no alpha compositing is performed.
+	 *
+	 * If the source and destination overlap then it must be as if they did not
+	 * overlap at all, this means that the destination will be an exact copy of
+	 * the source.
+	 *
+	 * @param __g The hardware graphics to draw with.
+	 * @param __sx The source X position, will be translated.
+	 * @param __sy The source Y position, will be translated.
+	 * @param __w The width to copy.
+	 * @param __h The height to copy.
+	 * @param __dx The destination X position, will be translated.
+	 * @param __dy The destination Y position, will be translated.
+	 * @param __anchor The anchor point of the destination.
+	 * @throws MLECallError If the call is not valid or the native graphics
+	 * does not support this operation.
+	 * @since 2023/02/19
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareCopyArea(PencilBracket __g,
+		int __sx, int __sy, int __w, int __h, int __dx, int __dy, int __anchor)
+		throws MLECallError;
+	
+	/**
+	 * Draws the given characters.
+	 *
+	 * @param __g The hardware graphics to draw with.
+	 * @param __s The characters to draw.
+	 * @param __o The offset into the buffer.
+	 * @param __l The number of characters to draw.
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __anchor The anchor point.
+	 * @throws MLECallError If the graphics is not valid, does not support
+	 * the given operation, if the anchor point is not valid, or if the
+	 * offset and/or length are out of bounds.
+	 * @since 2023/02/19
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareDrawChars(PencilBracket __g,
+		char[] __s, int __o, int __l, int __x, int __y, int __anchor)
+		throws MLECallError;
+	
+	/**
 	 * Draws a line in hardware.
 	 * 
 	 * @param __g The hardware graphics to draw with.
@@ -90,8 +139,29 @@ public final class PencilShelf
 		throws MLECallError;
 	
 	/**
+	 * Draws the given substring.
+	 *
+	 * @param __g The hardware graphics to draw with.
+	 * @param __s The string to draw.
+	 * @param __o The offset into the string.
+	 * @param __l The offset into the length.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __anchor The anchor point.
+	 * @throws MLECallError If the graphics is not valid, this operation is
+	 * not supported, or on null arguments, or if the offset and/or length are
+	 * negative or exceed the string bounds.
+	 * @since 2023/02/19
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareDrawSubstring(PencilBracket __g,
+		String __s, int __o, int __l, int __x, int __y, int __anchor)
+		throws MLECallError;
+	
+	/**
 	 * Draws a region of 32-bit RGB data into the target.
-	 * 
+	 *
+	 * @param __hardware The hardware graphics to draw with.
 	 * @param __data The source buffer.
 	 * @param __off The offset into the buffer.
 	 * @param __scanLen The scanline length.
@@ -219,6 +289,34 @@ public final class PencilShelf
 	@SquirrelJMEVendorApi
 	public static native void hardwareSetClip(PencilBracket __g,
 		int __x, int __y, int __w, int __h)
+		throws MLECallError;
+	
+	/**
+	 * Sets that the graphics should now use the default font.
+	 * 
+	 * @param __g The graphics used.
+	 * @throws MLECallError If the graphics is not valid or does not support
+	 * this operation.
+	 * @since 2023/02/19
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareSetDefaultFont(PencilBracket __g)
+		throws MLECallError;
+	
+	/**
+	 * Sets to use the specified font.
+	 *
+	 * @param __g The graphics used.
+	 * @param __name The font name.
+	 * @param __style The style of the font.
+	 * @param __pixelSize The pixel size of the font.
+	 * @throws MLECallError If the graphics is not valid or does not support
+	 * this operation.
+	 * @since 2023/02/19
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareSetFont(PencilBracket __g,
+		String __name, int __style, int __pixelSize)
 		throws MLECallError;
 	
 	/**
