@@ -41,11 +41,17 @@ sjme_jboolean sjme_memIo_taggedGroupNew(sjme_memIo_tagGroup* parent,
 
 	/* Allocate memory group. */
 	result = NULL;
-	if (!sjme_memIo_directNew((void**)&result, sizeof(*result), error))
-		return sjme_setErrorF(error, SJME_ERROR_NO_MEMORY, 0);
+	if (!sjme_memIo_taggedNewUnowned(&result,
+		sjme_memIo_taggedNewSizeOf(result), NULL, error))
+		return sjme_keepErrorF(error, SJME_ERROR_NO_MEMORY, 0);
 
 	sjme_todo("Implement this?");
-	return sjme_false;
+	if (sjme_true)
+		return sjme_false;
+
+	/* Set output. */
+	*outPtr = result;
+	return sjme_true;
 }
 
 sjme_jboolean sjme_memIo_taggedFreeZ(void*** inPtr, sjme_error* error,
@@ -71,7 +77,32 @@ sjme_jboolean sjme_memIo_taggedNewZ(sjme_memIo_tagGroup* group, void*** outPtr,
 	sjme_jsize size, sjme_memIo_taggedFreeFuncType freeFunc, sjme_error* error,
 	sjme_jsize protectA, sjme_jsize protectB)
 {
-	if (group == NULL || outPtr == NULL)
+	void** result;
+
+	if (group == NULL)
+		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
+
+	/* Allocate unowned tag that will get bound into a group. */
+	result = NULL;
+	if (!sjme_memIo_taggedNewUnownedZ(&result, size, freeFunc, error,
+		protectA, protectB) || result == NULL)
+		return sjme_keepErrorF(error, SJME_ERROR_NO_MEMORY, 0);
+
+	/* Fill in group information. */
+	sjme_todo("Implement this?");
+	if (sjme_true)
+		return sjme_false;
+
+	/* Set result. */
+	*outPtr = result;
+	return sjme_true;
+}
+
+sjme_jboolean sjme_memIo_taggedNewUnownedZ(void*** outPtr,
+	sjme_jsize size, sjme_memIo_taggedFreeFuncType freeFunc, sjme_error* error,
+	sjme_jsize protectA, sjme_jsize protectB)
+{
+	if (outPtr == NULL)
 		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 
 	/* Protect values must be the same size as pointers, this is to detect */
@@ -82,7 +113,7 @@ sjme_jboolean sjme_memIo_taggedNewZ(sjme_memIo_tagGroup* group, void*** outPtr,
 	/* Make sure the correct sizeof() is used and that the value is not */
 	/* erroneously zero. */
 	if (((size & SJME_MEMIO_NEW_TAGGED_PROTECT) !=
-		SJME_MEMIO_NEW_TAGGED_PROTECT) ||
+			SJME_MEMIO_NEW_TAGGED_PROTECT) ||
 		(size & SJME_MEMIO_NEW_TAGGED_PROTECT_LOW) != 0)
 		return sjme_setErrorF(error, SJME_ERROR_TAGGED_WRONG_SIZE_OF, 0);
 

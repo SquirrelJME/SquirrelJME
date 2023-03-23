@@ -173,6 +173,7 @@ sjme_jboolean sjme_memIo_taggedGroupFree(sjme_memIo_tagGroup** inPtr,
 /**
  * Allocates tagged memory.
  *
+ * @param group The owning group.
  * @param outPtr The output pointer, should be a tagged pointer.
  * @param size The size of the data to allocate,
  * use @c sjme_memIo_taggedNewSizeOf().
@@ -184,6 +185,23 @@ sjme_jboolean sjme_memIo_taggedGroupFree(sjme_memIo_tagGroup** inPtr,
  * @since 2022/12/20
  */
 sjme_jboolean sjme_memIo_taggedNewZ(sjme_memIo_tagGroup* group, void*** outPtr,
+	sjme_jsize size, sjme_memIo_taggedFreeFuncType freeFunc, sjme_error* error,
+	sjme_jsize protectA, sjme_jsize protectB);
+
+/**
+ * Allocates tagged memory which is not owned by any group.
+ *
+ * @param outPtr The output pointer, should be a tagged pointer.
+ * @param size The size of the data to allocate,
+ * use @c sjme_memIo_taggedNewSizeOf().
+ * @param freeFunc The function to call on free, which is optional.
+ * @param error The resultant error if allocation failed.
+ * @param protectA Should be @c sizeof(void*).
+ * @param protectB Should be @c sizeof(void*).
+ * @return If allocation was successful or not.
+ * @since 2023/03/23
+ */
+sjme_jboolean sjme_memIo_taggedNewUnownedZ(void*** outPtr,
 	sjme_jsize size, sjme_memIo_taggedFreeFuncType freeFunc, sjme_error* error,
 	sjme_jsize protectA, sjme_jsize protectB);
 
@@ -210,6 +228,23 @@ sjme_jboolean sjme_memIo_taggedNewZ(sjme_memIo_tagGroup* group, void*** outPtr,
  */
 #define sjme_memIo_taggedNew(group, outPtr, size, freeFunc, error) \
 	sjme_memIo_taggedNewZ((group), (void***)(outPtr), (size), \
+		(freeFunc), (error), \
+		sizeof(*(outPtr)), \
+		sizeof(**(outPtr))) /* NOLINT(bugprone-sizeof-expression) */
+
+/**
+ * Allocates tagged memory which is not owned by any group.
+ *
+ * @param outPtr The output pointer, should be a tagged pointer.
+ * @param size The size of the data to allocate,
+ * use @c sjme_memIo_taggedNewSizeOf().
+ * @param freeFunc The function to call on free, which is optional.
+ * @param error The resultant error if allocation failed.
+ * @return If allocation was successful or not.
+ * @since 2023/03/23
+ */
+#define sjme_memIo_taggedNewUnowned(outPtr, size, freeFunc, error) \
+	sjme_memIo_taggedNewUnownedZ((void***)(outPtr), (size), \
 		(freeFunc), (error), \
 		sizeof(*(outPtr)), \
 		sizeof(**(outPtr))) /* NOLINT(bugprone-sizeof-expression) */
