@@ -12,7 +12,7 @@ set(CMAKE_SYSTEM_NAME ieee1275)
 set(CMAKE_SYSTEM_PROCESSOR sparc)
 
 # Compilers to use
-find_program(CMAKE_ASM_COMPILER sparc-elf-as)
+find_program(CMAKE_ASM_COMPILER sparc-elf-gcc)
 find_program(CMAKE_C_COMPILER sparc-elf-gcc)
 
 # Flags for compilation

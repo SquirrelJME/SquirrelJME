@@ -19,7 +19,7 @@ int fputs(const char* string, FILE* file)
 	size_t len;
 
 	len = strlen(string);
-	return file->write(file, string, 0, len);
+	return file->write(file, (void*)string, 0, len);
 }
 
 int puts(const char* string)

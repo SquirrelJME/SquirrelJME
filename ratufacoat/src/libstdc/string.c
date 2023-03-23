@@ -58,6 +58,8 @@ void* memmove(void* dest, const void* src, size_t size)
 		for (i = 0; i < size; i++)
 			((uint8_t*)dest)[i] = ((uint8_t*)src)[i];
 	}
+
+	return dest;
 }
 
 void* memset(void* dest, int value, size_t size)
