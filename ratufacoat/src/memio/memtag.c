@@ -11,6 +11,7 @@
 #include "debug.h"
 #include "error.h"
 #include "memio/memdirect.h"
+#include "memio/memdirectinternal.h"
 #include "memio/memtaginternal.h"
 
 sjme_jboolean sjme_memIo_taggedGroupFree(sjme_memIo_tagGroup** inPtr,
@@ -58,6 +59,7 @@ sjme_jboolean sjme_memIo_taggedFreeZ(void*** inPtr, sjme_error* error,
 	sjme_jsize protectA, sjme_jsize protectB)
 {
 	sjme_memTagInternal* internal;
+	sjme_memIo_directChunk* directCheck;
 
 	if (inPtr == NULL)
 		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
@@ -73,9 +75,14 @@ sjme_jboolean sjme_memIo_taggedFreeZ(void*** inPtr, sjme_error* error,
 
 	/* Make sure the tag has not been corrupted. */
 	internal = (sjme_memTagInternal*)(*inPtr);
-	if (internal->allocSize < 0 ||
+	directCheck = NULL;
+	if (internal->allocSize <= 0 ||
 		internal->checkKey != (sjme_jsize)(
-			SJME_MEMIO_TAG_CHECK_KEY ^ internal->allocSize))
+			SJME_MEMIO_TAG_CHECK_KEY ^ internal->allocSize) ||
+		!sjme_memIo_directGetChunk(internal, &directCheck,
+			error) || directCheck == NULL ||
+		(internal->inGroup != NULL &&
+			internal->inGroup->checkKey != SJME_MEMIO_GROUP_CHECK_KEY))
 		return sjme_setErrorF(error, SJME_ERROR_PROTECTED_MEM_VIOLATION,
 			internal->checkKey);
 

@@ -11,26 +11,7 @@
 #include "memio/memtag.h"
 #include "memio/memtaginternal.h"
 #include "debug.h"
-
-/**
- * Structure.
- *
- * @since 2022/12/20
- */
-typedef struct testStruct
-{
-	/** First. */
-	sjme_jint a;
-
-	/* Second. */
-	sjme_jint b;
-
-	/* Third. */
-	sjme_jint c;
-} testStruct;
-
-/** Tagged version of the struct. */
-SJME_MEMIO_DECL_TAGGED(testStruct);
+#include "include/memIoTestStruct.h"
 
 /** The free count. */
 static int test_freeCountUnowned;

@@ -36,6 +36,9 @@ extern "C" {
 /** The tag check key. */
 #define SJME_MEMIO_TAG_CHECK_KEY SJME_JSIZE(0xCAFEF00D)
 
+/** The group check key. */
+#define SJME_MEMIO_GROUP_CHECK_KEY SJME_JSIZE(0xFA57FA17)
+
 /**
  * Macro to undo @c sizeof() equivalent for memory tags.
  *
@@ -68,7 +71,7 @@ typedef struct sjme_memTagInternal
 	sjme_jsize checkKey;
 
 	/** Data within the tag itself. */
-	sjme_jbyte data[SJME_ZERO_SIZE_ARRAY];
+	SJME_ALIGN_POINTER sjme_jbyte data[SJME_ZERO_SIZE_ARRAY];
 } sjme_memTagInternal;
 
 struct sjme_memIo_tagGroupInternal
@@ -78,6 +81,9 @@ struct sjme_memIo_tagGroupInternal
 
 	/** The free function for any tag in this group. */
 	sjme_memIo_taggedFreeFuncType freeFunc;
+
+	/** Magical group number, for valid group check. */
+	sjme_jsize checkKey;
 
 	/** Estimated memory used in total. */
 	sjme_jlong estimatedUsedSize;

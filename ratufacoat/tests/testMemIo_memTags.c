@@ -10,29 +10,10 @@
 #include "tests.h"
 #include "memio/memtag.h"
 #include "debug.h"
+#include "include/memIoTestStruct.h"
 
 /** The number of pointers to allocate. */
 #define TEST_NUM_POINTERS 16
-
-/**
- * Structure.
- *
- * @since 2022/12/20
- */
-typedef struct testStruct
-{
-	/** First. */
-	sjme_jint a;
-
-	/* Second. */
-	sjme_jint b;
-
-	/* Third. */
-	sjme_jint c;
-} testStruct;
-
-/** Tagged version of the struct. */
-SJME_MEMIO_DECL_TAGGED(testStruct);
 
 /** The free count. */
 static int test_freeCountOwned;
