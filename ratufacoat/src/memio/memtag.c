@@ -57,6 +57,8 @@ sjme_jboolean sjme_memIo_taggedGroupNew(sjme_memIo_tagGroup* parent,
 sjme_jboolean sjme_memIo_taggedFreeZ(void*** inPtr, sjme_error* error,
 	sjme_jsize protectA, sjme_jsize protectB)
 {
+	sjme_memTagInternal* internal;
+
 	if (inPtr == NULL)
 		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 
@@ -69,8 +71,33 @@ sjme_jboolean sjme_memIo_taggedFreeZ(void*** inPtr, sjme_error* error,
 	if (protectA != sizeof(void*) || protectB != sizeof(void*))
 		return sjme_setErrorF(error, SJME_ERROR_PROTECTED_MEM_VIOLATION, 0);
 
-	sjme_todo("Implement this?");
-	return sjme_false;
+	/* Make sure the tag has not been corrupted. */
+	internal = (sjme_memTagInternal*)(*inPtr);
+	if (internal->allocSize < 0 ||
+		internal->checkKey != (sjme_jsize)(
+			SJME_MEMIO_TAG_CHECK_KEY ^ internal->allocSize))
+		return sjme_setErrorF(error, SJME_ERROR_PROTECTED_MEM_VIOLATION,
+			internal->checkKey);
+
+	/* Call the free function, before everything. */
+	if (internal->freeFunc != NULL)
+		if (!internal->freeFunc(&internal->inGroup, *inPtr, error))
+			return sjme_keepErrorF(error, SJME_ERROR_FREE_FUNC_FAIL, 0);
+
+	/* Remove from owning group. */
+	if (internal->inGroup != NULL)
+	{
+		sjme_todo("Implement this?");
+		return sjme_false;
+	}
+
+	/* Free the memory. */
+	if (!sjme_memIo_directFree(&internal, error))
+		return sjme_keepErrorF(error, SJME_ERROR_INVALID_FREE_MEMORY, 0);
+
+	/* Free successful. */
+	*inPtr = NULL;
+	return sjme_true;
 }
 
 sjme_jboolean sjme_memIo_taggedNewZ(sjme_memIo_tagGroup* group, void*** outPtr,
@@ -102,6 +129,9 @@ sjme_jboolean sjme_memIo_taggedNewUnownedZ(void*** outPtr,
 	sjme_jsize size, sjme_memIo_taggedFreeFuncType freeFunc, sjme_error* error,
 	sjme_jsize protectA, sjme_jsize protectB)
 {
+	sjme_memTagInternal* internal;
+	sjme_jsize fixedSize;
+
 	if (outPtr == NULL)
 		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 
@@ -121,6 +151,21 @@ sjme_jboolean sjme_memIo_taggedNewUnownedZ(void*** outPtr,
 	if (*outPtr != NULL)
 		return sjme_setErrorF(error, SJME_ERROR_TAG_NOT_NULL, 0);
 
-	sjme_todo("Implement this?");
-	return sjme_false;
+	/* Allocate internal memory. */
+	internal = NULL;
+	fixedSize = sjme_memIo_taggedNewUnSizeOf(size);
+	if (!sjme_memIo_directNew(&internal, sizeof(*internal) + fixedSize,
+		error) || internal == NULL)
+		return sjme_keepErrorF(error, SJME_ERROR_NO_MEMORY, 0);
+
+	/* Fill in information. */
+	sjme_memIo_atomicPointerSet(&internal->pointer,
+		&internal->data[0]);
+	internal->allocSize = fixedSize;
+	internal->checkKey = SJME_MEMIO_TAG_CHECK_KEY ^ fixedSize;
+	internal->freeFunc = freeFunc;
+
+	/* Return this internal tag. */
+	*outPtr = (void**)internal;
+	return sjme_true;
 }

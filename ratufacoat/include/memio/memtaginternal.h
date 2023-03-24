@@ -33,6 +33,18 @@ extern "C" {
 /** Lower bit protection for the size. */
 #define SJME_MEMIO_NEW_TAGGED_PROTECT_LOW INT32_C(0x40000000)
 
+/** The tag check key. */
+#define SJME_MEMIO_TAG_CHECK_KEY SJME_JSIZE(0xCAFEF00D)
+
+/**
+ * Macro to undo @c sizeof() equivalent for memory tags.
+ *
+ * @param size The size to undo.
+ * @since 2023/03/24
+ */
+#define sjme_memIo_taggedNewUnSizeOf(size) \
+	(((sjme_jsize)(size)) ^ SJME_MEMIO_NEW_TAGGED_PROTECT)
+
 /**
  * Internal tagged memory representation.
  *
@@ -40,20 +52,23 @@ extern "C" {
  */
 typedef struct sjme_memTagInternal
 {
+	/** The pointer to the data. */
+	sjme_memIo_atomicPointer pointer;
+
+	/** The allocation size used currently. */
+	sjme_jsize allocSize;
+
 	/** The group this tag is a part of. */
 	sjme_memIo_tagGroupInternal* inGroup;
 
 	/** The free function for this tag, is called on free. */
 	sjme_memIo_taggedFreeFuncType freeFunc;
 
-	/** The allocation size used currently. */
-	sjme_jsize allocSize;
-
 	/** The key used to check if a tag is valid. */
-	sjme_jint checkKey;
+	sjme_jsize checkKey;
 
-	/** The pointer to the actual data in the tag. */
-	sjme_memIo_atomicPointer ptr;
+	/** Data within the tag itself. */
+	sjme_jbyte data[SJME_ZERO_SIZE_ARRAY];
 } sjme_memTagInternal;
 
 struct sjme_memIo_tagGroupInternal

@@ -138,7 +138,8 @@ typedef struct sjme_memIo_tagGroupInternal* sjme_memIo_tagGroup;
  * @since 2023/02/04
  */
 typedef sjme_jboolean (*sjme_memIo_taggedFreeFuncType)(
-	sjme_memIo_tagGroup* inGroup, void** freeingPtr, sjme_error* error);
+	sjme_memIo_tagGroup* inGroup, void** freeingPtr, sjme_error* error)
+	SJME_CODE_SECTION("memio");
 
 /**
  * Allocates a group which contains tagged pointers which are used for
@@ -155,7 +156,8 @@ typedef sjme_jboolean (*sjme_memIo_taggedFreeFuncType)(
  */
 sjme_jboolean sjme_memIo_taggedGroupNew(sjme_memIo_tagGroup* parent,
 	sjme_memIo_tagGroup** outPtr, sjme_memIo_taggedFreeFuncType freeFunc,
-	sjme_error* error);
+	sjme_error* error)
+	SJME_CODE_SECTION("memio");
 
 /**
  * Frees a memory group and all of the memory that was previously allocated.
@@ -168,7 +170,8 @@ sjme_jboolean sjme_memIo_taggedGroupNew(sjme_memIo_tagGroup* parent,
  * @since 2022/12/20
  */
 sjme_jboolean sjme_memIo_taggedGroupFree(sjme_memIo_tagGroup** inPtr,
-	sjme_error* error);
+	sjme_error* error)
+	SJME_CODE_SECTION("memio");
 
 /**
  * Allocates tagged memory.
@@ -186,7 +189,8 @@ sjme_jboolean sjme_memIo_taggedGroupFree(sjme_memIo_tagGroup** inPtr,
  */
 sjme_jboolean sjme_memIo_taggedNewZ(sjme_memIo_tagGroup* group, void*** outPtr,
 	sjme_jsize size, sjme_memIo_taggedFreeFuncType freeFunc, sjme_error* error,
-	sjme_jsize protectA, sjme_jsize protectB);
+	sjme_jsize protectA, sjme_jsize protectB)
+	SJME_CODE_SECTION("memio");
 
 /**
  * Allocates tagged memory which is not owned by any group.
@@ -203,7 +207,8 @@ sjme_jboolean sjme_memIo_taggedNewZ(sjme_memIo_tagGroup* group, void*** outPtr,
  */
 sjme_jboolean sjme_memIo_taggedNewUnownedZ(void*** outPtr,
 	sjme_jsize size, sjme_memIo_taggedFreeFuncType freeFunc, sjme_error* error,
-	sjme_jsize protectA, sjme_jsize protectB);
+	sjme_jsize protectA, sjme_jsize protectB)
+	SJME_CODE_SECTION("memio");
 
 /**
  * Macro to ensure that for tagged types, @c sizeof() is not used.

@@ -549,12 +549,21 @@ typedef enum sjme_errorCode
 	/** Pointer is already @c NULL . */
 	SJME_ERROR_POINTER_IS_NULL = INT32_C(-73),
 
+	/** Failure in free function. */
+	SJME_ERROR_FREE_FUNC_FAIL = INT32_C(-74),
+
+	/** Could not free pointer. */
+	SJME_ERROR_INVALID_FREE_MEMORY = INT32_C(-75),
+
 	/** The lowest error code. */
-	SJME_ERROR_LOWEST_CODE = INT32_C(-74)
+	SJME_ERROR_LOWEST_CODE = INT32_C(-76)
 } sjme_errorCode;
 
 /** Size type. */
 typedef sjme_jint sjme_jsize;
+
+/** Macro for size type constants. */
+#define SJME_JSIZE(x) INT32_C(x)
 
 /**
  * The reference type of an object.
