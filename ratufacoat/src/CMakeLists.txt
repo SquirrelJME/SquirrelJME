@@ -28,7 +28,6 @@ add_library(SquirrelJMECore OBJECT
 	counter.c
 	debug.c
 	error.c
-	lock.c
 	memory.c
 	random.c
 	softmath.c

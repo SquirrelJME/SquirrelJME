@@ -15,11 +15,11 @@
 	#endif
 #endif
 
+#include "memio/lock.h"
 #include "debug.h"
-#include "lock.h"
 
 /** The unlocked key value. */
-#define SJME_UNLOCKED SJME_JINT_C(0)
+#define SJME_MEMIO_UNLOCKED SJME_JINT_C(0)
 
 /** The next locking key to use. */
 static sjme_memIo_atomicInt sjme_nextLockKey;
@@ -29,7 +29,7 @@ static sjme_memIo_atomicInt sjme_nextLockKey;
  *
  * @since 2022/12/10
  */
-static void sjme_memoryBarrier(void)
+static void sjme_memIo_memoryBarrier(void)
 {
 #if defined(SQUIRRELJME_THREADS_WIN32)
 	MemoryBarrier();
@@ -47,22 +47,22 @@ static void sjme_memoryBarrier(void)
  * @return Will return @c sjme_true on a successful lock.
  * @since 2022/04/01 
  */
-static sjme_jboolean sjme_lockShift(sjme_spinLock* lock,
+static sjme_jboolean sjme_memIo_lockShift(sjme_memIo_spinLock* lock,
 	sjme_jint keyFrom, sjme_jint keyTo)
 {
 	sjme_jint result;
 
 	/* Try shifting the lock now. */
-	sjme_memoryBarrier();
+	sjme_memIo_memoryBarrier();
 	result = sjme_memIo_atomicIntCompareThenSet(&lock->lock,
 		keyFrom, keyTo);
-	sjme_memoryBarrier();
+	sjme_memIo_memoryBarrier();
 
 	return result;
 }
 
-sjme_jboolean sjme_lock(sjme_spinLock* lock, sjme_spinLockKey* key,
-	sjme_error* error)
+sjme_jboolean sjme_memIo_lock(sjme_memIo_spinLock* lock,
+	sjme_memIo_spinLockKey* key, sjme_error* error)
 {
 	sjme_jint useKey;
 	
@@ -70,10 +70,16 @@ sjme_jboolean sjme_lock(sjme_spinLock* lock, sjme_spinLockKey* key,
 		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Get the next locking key to use. */
-	useKey = sjme_memIo_atomicIntGetThenAdd(&sjme_nextLockKey, 1) + 1;
+	useKey = SJME_MEMIO_UNLOCKED;
+	while (useKey == SJME_MEMIO_UNLOCKED)
+	{
+		useKey = sjme_memIo_atomicIntGetThenAdd(&sjme_nextLockKey,
+			1) + 1;
+	}
 	
 	/* Burn forever trying to use the given key. */
-	while (!sjme_lockShift(lock, SJME_UNLOCKED, useKey))
+	while (!sjme_memIo_lockShift(lock, SJME_MEMIO_UNLOCKED,
+		useKey))
 		;
 	
 	/* Set key and return. */
@@ -81,7 +87,8 @@ sjme_jboolean sjme_lock(sjme_spinLock* lock, sjme_spinLockKey* key,
 	return sjme_true;
 }
 
-sjme_jboolean sjme_tryLock(sjme_spinLock* lock, sjme_spinLockKey* key,
+sjme_jboolean sjme_memIo_tryLock(sjme_memIo_spinLock* lock,
+	sjme_memIo_spinLockKey* key,
 	sjme_error* error)
 {
 	sjme_jint useKey;
@@ -90,10 +97,15 @@ sjme_jboolean sjme_tryLock(sjme_spinLock* lock, sjme_spinLockKey* key,
 		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 	
 	/* Get the next locking key to use. */
-	useKey = sjme_memIo_atomicIntGetThenAdd(&sjme_nextLockKey, 1) + 1;
+	useKey = SJME_MEMIO_UNLOCKED;
+	while (useKey == SJME_MEMIO_UNLOCKED)
+	{
+		useKey = sjme_memIo_atomicIntGetThenAdd(&sjme_nextLockKey,
+			1) + 1;
+	}
 	
 	/* Attempt only once to lock. */
-	if (!sjme_lockShift(lock, SJME_UNLOCKED, useKey))
+	if (!sjme_memIo_lockShift(lock, SJME_MEMIO_UNLOCKED, useKey))
 		return sjme_false;
 	
 	/* Set key and return. */
@@ -101,7 +113,8 @@ sjme_jboolean sjme_tryLock(sjme_spinLock* lock, sjme_spinLockKey* key,
 	return sjme_true;
 }
 
-sjme_jboolean sjme_unlock(sjme_spinLock* lock, sjme_spinLockKey* key,
+sjme_jboolean sjme_memIo_unlock(sjme_memIo_spinLock* lock,
+	sjme_memIo_spinLockKey* key,
 	sjme_error* error)
 {
 	sjme_jint useKey;
@@ -111,7 +124,7 @@ sjme_jboolean sjme_unlock(sjme_spinLock* lock, sjme_spinLockKey* key,
 	
 	/* Make sure the unlocking key is valid before we try using it. */
 	useKey = key->key;
-	if (useKey == SJME_UNLOCKED)
+	if (useKey == SJME_MEMIO_UNLOCKED)
 	{
 		sjme_setError(error, SJME_ERROR_INVALID_UNLOCK_KEY, useKey);
 		
@@ -119,12 +132,15 @@ sjme_jboolean sjme_unlock(sjme_spinLock* lock, sjme_spinLockKey* key,
 	}
 	
 	/* Perform unlock. */
-	if (!sjme_lockShift(lock, useKey, SJME_UNLOCKED))
+	if (!sjme_memIo_lockShift(lock, useKey, SJME_MEMIO_UNLOCKED))
 	{
 		sjme_setError(error, SJME_ERROR_NOT_LOCK_OWNER, useKey);
 		
 		return sjme_false;
 	}
+
+	/* Clear key value. */
+	key->key = SJME_MEMIO_UNLOCKED;
 	
 	/* Success! */
 	return sjme_true;

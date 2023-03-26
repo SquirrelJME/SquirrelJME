@@ -34,21 +34,21 @@ extern "C" {
  * 
  * @since 2022/03/27
  */
-typedef struct sjme_spinLock
+typedef struct sjme_memIo_spinLock
 {
 	/** The lock value. */
 	sjme_memIo_atomicInt lock;
-} sjme_spinLock;
+} sjme_memIo_spinLock;
 
 /**
  * The key used to unlock a spinlock.
  * 
  * @since 2022/03/27
  */
-typedef struct sjme_spinLockKey
+typedef struct sjme_memIo_spinLockKey
 {
 	sjme_jint key;
-} sjme_spinLockKey;
+} sjme_memIo_spinLockKey;
 
 /**
  * Locks the given lock, this will block and burn CPU until a lock can be
@@ -61,8 +61,8 @@ typedef struct sjme_spinLockKey
  * will return @c sjme_false if the parameters are not correct.
  * @since 2022/03/29
  */
-sjme_jboolean sjme_lock(sjme_spinLock* lock, sjme_spinLockKey* key,
-	sjme_error* error);
+sjme_jboolean sjme_memIo_lock(sjme_memIo_spinLock* lock,
+	sjme_memIo_spinLockKey* key, sjme_error* error);
 
 /**
  * Attempts to lock the given lock, if it cannot be done then this will
@@ -75,8 +75,8 @@ sjme_jboolean sjme_lock(sjme_spinLock* lock, sjme_spinLockKey* key,
  * @c sjme_false will be returned instead.
  * @since 2022/04/01
  */
-sjme_jboolean sjme_tryLock(sjme_spinLock* lock, sjme_spinLockKey* key,
-	sjme_error* error);
+sjme_jboolean sjme_memIo_tryLock(sjme_memIo_spinLock* lock,
+	sjme_memIo_spinLockKey* key, sjme_error* error);
 
 /**
  * Unlocks the given lock with the specified key.
@@ -88,8 +88,8 @@ sjme_jboolean sjme_tryLock(sjme_spinLock* lock, sjme_spinLockKey* key,
  * an error will occur.
  * @since 2022/03/30
  */
-sjme_jboolean sjme_unlock(sjme_spinLock* lock, sjme_spinLockKey* key,
-	sjme_error* error);
+sjme_jboolean sjme_memIo_unlock(sjme_memIo_spinLock* lock,
+	sjme_memIo_spinLockKey* key, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
 

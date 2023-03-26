@@ -27,7 +27,7 @@
  * 
  * @since 2021/03/06
  */
-SJME_TEST_PROTOTYPE(testMemIo_Atomic)
+SJME_TEST_PROTOTYPE(testMemIo_atomic)
 {
 	sjme_memIo_atomicInt integer;
 	sjme_memIo_atomicPointer pointer;
@@ -46,7 +46,8 @@ SJME_TEST_PROTOTYPE(testMemIo_Atomic)
 		return FAIL_TEST(1);
 	
 	/* Adding should return the old value but update it. */
-	if (VALUE_A != sjme_memIo_atomicIntGetThenAdd(&integer, ADD_VALUE))
+	if (VALUE_A != sjme_memIo_atomicIntGetThenAdd(&integer,
+		ADD_VALUE))
 		return FAIL_TEST(2);
 	
 	/* Getting it should match the add plus the old value. */
@@ -54,11 +55,13 @@ SJME_TEST_PROTOTYPE(testMemIo_Atomic)
 		return FAIL_TEST(3);
 	
 	/* Revert value, old should be the former value. */
-	if ((VALUE_A + ADD_VALUE) != sjme_memIo_atomicIntSet(&integer, VALUE_A))
+	if ((VALUE_A + ADD_VALUE) != sjme_memIo_atomicIntSet(&integer,
+		VALUE_A))
 		return FAIL_TEST(4);
 	
 	/* Fail to change the conditional value. */
-	if (sjme_memIo_atomicIntCompareThenSet(&integer, VALUE_B, VALUE_A))
+	if (sjme_memIo_atomicIntCompareThenSet(&integer,
+		VALUE_B, VALUE_A))
 		return FAIL_TEST(5);
 	
 	/* Should still be the first value. */
@@ -66,7 +69,8 @@ SJME_TEST_PROTOTYPE(testMemIo_Atomic)
 		return FAIL_TEST(6);
 	
 	/* Successfully change the value. */
-	if (!sjme_memIo_atomicIntCompareThenSet(&integer, VALUE_A, VALUE_B))
+	if (!sjme_memIo_atomicIntCompareThenSet(&integer,
+		VALUE_A, VALUE_B))
 		return FAIL_TEST(7);
 	
 	/* Should be the second value. */
@@ -104,7 +108,8 @@ SJME_TEST_PROTOTYPE(testMemIo_Atomic)
 		return FAIL_TEST(12);
 	
 	/* It should be value B here, we cannot set to C. */
-	if (sjme_memIo_atomicPointerCompareThenSet(&pointer, pointerA, pointerC))
+	if (sjme_memIo_atomicPointerCompareThenSet(&pointer,
+		pointerA, pointerC))
 		return FAIL_TEST(13);
 	
 	/* It should be pointer B here still. */
@@ -112,7 +117,8 @@ SJME_TEST_PROTOTYPE(testMemIo_Atomic)
 		return FAIL_TEST(14);
 	
 	/* It should be value B here and we can change it to A. */
-	if (!sjme_memIo_atomicPointerCompareThenSet(&pointer, pointerB, pointerA))
+	if (!sjme_memIo_atomicPointerCompareThenSet(&pointer,
+		pointerB, pointerA))
 		return FAIL_TEST(15);
 	
 	/* It should be pointer A here. */

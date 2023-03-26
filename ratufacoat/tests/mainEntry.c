@@ -17,7 +17,7 @@
 /**
  * Exit code for termination from tests
  * 
- * @a https://cmake.org/cmake/help/latest/prop_test/SKIP_RETURN_CODE.html#prop_test:SKIP_RETURN_CODE
+ * @a https://cmake.org/cmake/help/latest/prop_test/SKIP_RETURN_CODE.html
  * @since 2021/03/04
  */
 #define CTEST_EXIT_SKIPPED 42
@@ -47,7 +47,7 @@ sjme_jint shimStdErrWrite(sjme_jint b)
  * @return The new shim.
  * @since 2021/03/04 
  */
-sjme_testShim* shimNew()
+sjme_testShim* shimNew(void)
 {
 	sjme_testShim* rv;
 	
@@ -194,7 +194,8 @@ int main(int argc, char** argv)
 				errorBufLen = ERROR_BUF_LEN;
 				
 				/* Describe it. */
-				sjme_describeJvmError(&shim->error, errorBuf, &errorBufLen);
+				sjme_describeJvmError(&shim->error, errorBuf,
+					&errorBufLen);
 				
 				/* Print it. */
 				fprintf(stderr, "Test %s error: %s\n",

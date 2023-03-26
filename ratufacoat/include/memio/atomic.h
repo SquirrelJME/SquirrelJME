@@ -46,9 +46,9 @@
 	#endif
 #endif
 
-/* Fallback to non-atomic. */
+/* Fallback to old way of doing atomics. */
 #if !defined(SJME_HAS_ATOMIC)
-	#define SJME_MEMIO_ATOMIC_RELAXED_NOT_ATOMIC
+	#define SJME_MEMIO_ATOMIC_OLD
 #endif
 
 #include "sjmerc.h"
@@ -214,6 +214,25 @@ void* sjme_memIo_atomicPointerSet(sjme_memIo_atomicPointer* atomic,
  */
 #define sjme_memIo_atomicPointerSetType(atomic, value, type) \
 	((type)(sjme_memIo_atomicPointerSet(atomic, value)))
+
+
+#if defined(SJME_MEMIO_ATOMIC_OLD)
+/**
+ * Disables interrupts.
+ *
+ * @since 2023/03/26
+ */
+void sjme_memIo_interruptsDisable(void);
+#endif
+
+#if defined(SJME_MEMIO_ATOMIC_OLD)
+/**
+ * Enables interrupts.
+ *
+ * @since 2023/03/26
+ */
+void sjme_memIo_interruptsEnable(void);
+#endif
 
 /*--------------------------------------------------------------------------*/
 

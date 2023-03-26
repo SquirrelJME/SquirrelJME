@@ -16,6 +16,7 @@ endif()
 add_library(SquirrelJMEMemIO OBJECT
 	atomic.c
 	crc.c
+	lock.c
 	memchunk.c
 	memdirect.c
 	memtag.c

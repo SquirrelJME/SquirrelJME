@@ -18,8 +18,8 @@
 #include "counter.h"
 #include "debug.h"
 #include "error.h"
-#include "lock.h"
 #include "memio/atomic.h"
+#include "memio/lock.h"
 #include "memio/memdirect.h"
 #include "memio/memtag.h"
 #include "memory.h"
@@ -27,7 +27,7 @@
 #include "sjmerc.h"
 
 /** Lock on memory operations to ensure that all of them are atomic. */
-static sjme_spinLock sjme_memLock;
+static sjme_memIo_spinLock sjme_memLock;
 
 /** The last @c sjme_memIo_atomicPointer in the memory chain. */
 static sjme_memIo_atomicPointer sjme_lastMemNode;
@@ -82,7 +82,7 @@ void* sjme_mallocGc(sjme_jint size, sjme_freeCallback freeCallback,
 	sjme_memNode* result;
 	sjme_memNode* checkNode;
 	sjme_memNode* lastNode;
-	sjme_spinLockKey lockKey;
+	sjme_memIo_spinLockKey lockKey;
 	
 	/* Considered an error. */
 	if (size < 0)
@@ -144,7 +144,7 @@ void* sjme_mallocGc(sjme_jint size, sjme_freeCallback freeCallback,
 	}
 
 	/* Lock to link in. */
-	if (!sjme_lock(&sjme_memLock, &lockKey, error))
+	if (!sjme_memIo_lock(&sjme_memLock, &lockKey, error))
 	{
 		sjme_setError(error, SJME_ERROR_INVALID_LOCK, 1);
 		return NULL;
@@ -158,7 +158,7 @@ void* sjme_mallocGc(sjme_jint size, sjme_freeCallback freeCallback,
 	sjme_memIo_atomicPointerSet(&sjme_lastMemNode, result);
 
 	/* Unlock. */
-	if (!sjme_unlock(&sjme_memLock, &lockKey, error))
+	if (!sjme_memIo_unlock(&sjme_memLock, &lockKey, error))
 	{
 		sjme_setError(error, SJME_ERROR_INVALID_LOCK, 0);
 		return NULL;
@@ -175,7 +175,7 @@ sjme_jboolean sjme_free(void* p, sjme_error* error)
 	sjme_memNode* lastNode;
 	sjme_memNode* prevNode;
 	sjme_memNode* nextNode;
-	sjme_spinLockKey lockKey;
+	sjme_memIo_spinLockKey lockKey;
 	
 	/* Ignore null pointers. */
 	if (p == NULL)
@@ -198,7 +198,7 @@ sjme_jboolean sjme_free(void* p, sjme_error* error)
 	}
 
 	/* Unlink into the node tree. */
-	if (!sjme_lock(&sjme_memLock, &lockKey, error))
+	if (!sjme_memIo_lock(&sjme_memLock, &lockKey, error))
 		return sjme_setErrorF(error, SJME_ERROR_INVALID_LOCK, 3);
 
 	/* Unlink from the node tree. */
@@ -218,7 +218,7 @@ sjme_jboolean sjme_free(void* p, sjme_error* error)
 		sjme_memIo_atomicPointerSet(&sjme_lastMemNode, nextNode);
 
 	/* Unlock. */
-	if (!sjme_unlock(&sjme_memLock, &lockKey, error))
+	if (!sjme_memIo_unlock(&sjme_memLock, &lockKey, error))
 		return sjme_setErrorF(error, SJME_ERROR_INVALID_LOCK, 2);
 
 	/* Wipe memory here, to invalidate it. */
