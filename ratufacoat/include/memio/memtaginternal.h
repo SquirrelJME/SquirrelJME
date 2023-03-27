@@ -18,6 +18,7 @@
 
 #include "memio/memtag.h"
 #include "memio/atomic.h"
+#include "memio/lock.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -53,7 +54,28 @@ extern "C" {
  *
  * @since 2022/12/20
  */
-typedef struct sjme_memTagInternal
+typedef struct sjme_memIo_memTagInternal sjme_memIo_memTagInternal;
+
+/**
+ * Internal memory tag links.
+ *
+ * @since 2023/02/27
+ */
+typedef struct sjme_memIo_memTagLink sjme_memIo_memTagLink;
+
+struct sjme_memIo_memTagLink
+{
+	/* The current memory tag link. */
+	sjme_memIo_memTagInternal* thisLink;
+
+	/* The previous in the chain. */
+	sjme_memIo_memTagLink* prev;
+
+	/* The next in the chain. */
+	sjme_memIo_memTagLink* next;
+};
+
+struct sjme_memIo_memTagInternal
 {
 	/** The pointer to the data. */
 	sjme_memIo_atomicPointer pointer;
@@ -62,28 +84,37 @@ typedef struct sjme_memTagInternal
 	sjme_jsize allocSize;
 
 	/** The group this tag is a part of. */
-	sjme_memIo_tagGroupInternal* inGroup;
+	sjme_memIo_tagGroup* inGroup;
 
 	/** The free function for this tag, is called on free. */
 	sjme_memIo_taggedFreeFuncType freeFunc;
+
+	/** The current chain link, all tags effectively will be linked. */
+	sjme_memIo_memTagLink link;
 
 	/** The key used to check if a tag is valid. */
 	sjme_jsize checkKey;
 
 	/** Data within the tag itself. */
 	SJME_ALIGN_POINTER sjme_jbyte data[SJME_ZERO_SIZE_ARRAY];
-} sjme_memTagInternal;
+};
 
 struct sjme_memIo_tagGroupInternal
 {
 	/** The parent tag group, if there is one. */
-	sjme_memIo_tagGroupInternal* parent;
+	sjme_memIo_tagGroup* parent;
 
 	/** The free function for any tag in this group. */
 	sjme_memIo_taggedFreeFuncType freeFunc;
 
 	/** Magical group number, for valid group check. */
 	sjme_jsize checkKey;
+
+	/** The lock for this group, prevents contention within this group. */
+	sjme_memIo_spinLock lock;
+
+	/** The first link in the memory chain. */
+	sjme_memIo_memTagLink* firstLink;
 
 	/** Estimated memory used in total. */
 	sjme_jlong estimatedUsedSize;

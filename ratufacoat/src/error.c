@@ -32,8 +32,8 @@ sjme_errorCode sjme_getError(sjme_error* error, sjme_errorCode ifMissing)
 sjme_jboolean sjme_hasError(sjme_error* error)
 {
 	if (error != NULL && error->code != SJME_ERROR_NONE)
-		return sjme_false;
-	return sjme_true;
+		return sjme_true;
+	return sjme_false;
 }
 
 sjme_jboolean sjme_keepErrorBL(sjme_jboolean returning, sjme_error* error,

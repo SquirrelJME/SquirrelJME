@@ -62,6 +62,7 @@ SJME_TEST_PROTOTYPE(testMemIo_memTags)
 		return FAIL_TEST(2);
 
 	/* Allocating with sizeof() should fail. */
+	sjme_clearError(&shim->error);
 	nullIsh = NULL;
 	if (sjme_memIo_taggedNew(tagGroup, nullIsh, sizeof(nullIsh), /* NOLINT */
 			test_freeFuncOwned, &shim->error))
@@ -121,17 +122,25 @@ SJME_TEST_PROTOTYPE(testMemIo_memTags)
 		if (!sjme_memIo_taggedFree(&set[i], &shim->error))
 			return FAIL_TEST_SUB(9, i);
 
+	/* Allocate another half. */
+	memset(set, 0, sizeof(set));
+	for (i = 0; i < TEST_NUM_POINTERS; i += 2)
+	if (!sjme_memIo_taggedNew(tagGroup, &set[i],
+			sjme_memIo_taggedNewSizeOf(set[i]),
+			test_freeFuncOwned, &shim->error))
+		return FAIL_TEST_SUB(10, i);
+
 	/* Free the memory group, this should also free the pointer. */
 	if (!sjme_memIo_taggedGroupFree(&tagGroup, &shim->error))
-		return FAIL_TEST(10);
+		return FAIL_TEST(11);
 
 	/* Pointer should be cleared here. */
 	if ((*alloc) != NULL)
-		return FAIL_TEST(11);
+		return FAIL_TEST(12);
 
 	/* This count should be all the passing allocations above, plus groups. */
 	if (test_freeCountOwned != (TEST_NUM_POINTERS + 2))
-		return FAIL_TEST(12);
+		return FAIL_TEST(13);
 
 	return PASS_TEST();
 }
