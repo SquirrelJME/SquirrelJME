@@ -32,6 +32,8 @@ sjme_jboolean sjme_memIo_taggedGroupNew(sjme_memIo_tagGroup* parent,
 	sjme_error* error)
 {
 	sjme_memIo_tagGroup* result;
+	sjme_memIo_tagGroupInternal* internal;
+	sjme_memIo_tagGroupInternal* parentInternal;
 	sjme_memIo_spinLockKey selfKey;
 	sjme_memIo_spinLockKey parentKey;
 	sjme_errorCode fail;
@@ -50,8 +52,10 @@ sjme_jboolean sjme_memIo_taggedGroupNew(sjme_memIo_tagGroup* parent,
 		return sjme_keepErrorF(error, SJME_ERROR_NO_MEMORY, 0);
 
 	/* Fill in information about ourselves. */
-	(*result)->freeFunc = freeFunc;
-	(*result)->checkKey = SJME_MEMIO_GROUP_CHECK_KEY;
+	internal = (*result);
+	internal->freeFunc = freeFunc;
+	internal->checkKey = SJME_MEMIO_GROUP_CHECK_KEY;
+	sjme_memIo_lockInit(&internal->lock, error);
 
 	/* Later operations could fail, so revert accordingly. */
 	fail = SJME_ERROR_NONE;
@@ -59,22 +63,26 @@ sjme_jboolean sjme_memIo_taggedGroupNew(sjme_memIo_tagGroup* parent,
 	/* If this is a subgroup, add to the parent. */
 	if (parent != NULL)
 	{
+		/* Operate on an easier pointer. */
+		parentInternal = (*parent);
+
 		/* Lock ourselves because if anything happens with the parent while */
 		/* this one is being worked on, we do not want to mess this one up. */
 		memset(&selfKey, 0, sizeof(selfKey));
-		if (sjme_memIo_lock(&((*result)->lock), &selfKey, error))
+		if (sjme_memIo_lock(&internal->lock, &selfKey, error))
 		{
 			/* Perform locking on the parent to add this one. */
 			memset(&parentKey, 0, sizeof(parentKey));
-			if (sjme_memIo_lock(&((*parent)->lock), &parentKey, error))
+			if (sjme_memIo_lock(&parentInternal->lock, &parentKey,
+				error))
 			{
 				sjme_todo("Implement this?");
 				if (sjme_true)
 					return sjme_false;
 
 				/* Unlock before leaving. */
-				if (!sjme_memIo_unlock(&((*parent)->lock), &parentKey,
-					error))
+				if (!sjme_memIo_unlock(&parentInternal->lock,
+					&parentKey, error))
 					fail = SJME_ERROR_INVALID_LOCK;
 			}
 
@@ -83,7 +91,7 @@ sjme_jboolean sjme_memIo_taggedGroupNew(sjme_memIo_tagGroup* parent,
 				fail = SJME_ERROR_INVALID_LOCK;
 
 			/* Unlock before leaving. */
-			if (!sjme_memIo_unlock(&((*result)->lock), &selfKey,
+			if (!sjme_memIo_unlock(&internal->lock, &selfKey,
 					error))
 				fail = SJME_ERROR_INVALID_LOCK;
 		}

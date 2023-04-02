@@ -86,7 +86,8 @@ sjme_jint sjme_memIo_atomicIntGet(sjme_memIo_atomicInt* atomic)
 #endif
 }
 
-sjme_jint sjme_memIo_atomicIntSet(sjme_memIo_atomicInt* atomic, sjme_jint value)
+sjme_jint sjme_memIo_atomicIntSet(sjme_memIo_atomicInt* atomic,
+	sjme_jint value)
 {
 #if defined(SJME_MEMIO_ATOMIC_C11)
 	return atomic_exchange(&atomic->value, value);

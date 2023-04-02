@@ -63,10 +63,29 @@ typedef struct sjme_memIo_memTagInternal sjme_memIo_memTagInternal;
  */
 typedef struct sjme_memIo_memTagLink sjme_memIo_memTagLink;
 
+/**
+ * Internal memory tag groups.
+ *
+ * @since 2023/03/31
+ */
+typedef struct sjme_memIo_tagGroupLink sjme_memIo_tagGroupLink;
+
 struct sjme_memIo_memTagLink
 {
 	/* The current memory tag link. */
 	sjme_memIo_memTagInternal* thisLink;
+
+	/* The previous in the chain. */
+	sjme_memIo_memTagLink* prev;
+
+	/* The next in the chain. */
+	sjme_memIo_memTagLink* next;
+};
+
+struct sjme_memIo_tagGroupLink
+{
+	/* The current memory tag group link. */
+	sjme_memIo_tagGroupInternal* thisLink;
 
 	/* The previous in the chain. */
 	sjme_memIo_memTagLink* prev;
@@ -112,6 +131,9 @@ struct sjme_memIo_tagGroupInternal
 
 	/** The lock for this group, prevents contention within this group. */
 	sjme_memIo_spinLock lock;
+
+	/** The memory tag group linkage. */
+	sjme_memIo_tagGroupLink groupLink;
 
 	/** The first link in the memory chain. */
 	sjme_memIo_memTagLink* firstLink;

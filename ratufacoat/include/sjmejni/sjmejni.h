@@ -555,8 +555,11 @@ typedef enum sjme_errorCode
 	/** Could not free pointer. */
 	SJME_ERROR_INVALID_FREE_MEMORY = INT32_C(-75),
 
+	/** Lock key is in use. */
+	SJME_ERROR_LOCK_KEY_IN_USE = INT32_C(-76),
+
 	/** The lowest error code. */
-	SJME_ERROR_LOWEST_CODE = INT32_C(-76)
+	SJME_ERROR_LOWEST_CODE = INT32_C(-77)
 } sjme_errorCode;
 
 /** Size type. */

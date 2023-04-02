@@ -34,11 +34,7 @@ extern "C" {
  * 
  * @since 2022/03/27
  */
-typedef struct sjme_memIo_spinLock
-{
-	/** The lock value. */
-	sjme_memIo_atomicInt lock;
-} sjme_memIo_spinLock;
+typedef struct sjme_memIo_spinLock sjme_memIo_spinLock;
 
 /**
  * The key used to unlock a spinlock.
@@ -63,6 +59,12 @@ typedef struct sjme_memIo_spinLockKey
  */
 sjme_jboolean sjme_memIo_lock(sjme_memIo_spinLock* lock,
 	sjme_memIo_spinLockKey* key, sjme_error* error);
+
+sjme_jboolean sjme_memIo_lockDestroy(sjme_memIo_spinLock* lock,
+	sjme_error* error);
+
+sjme_jboolean sjme_memIo_lockInit(sjme_memIo_spinLock* lock,
+	sjme_error* error);
 
 /**
  * Attempts to lock the given lock, if it cannot be done then this will
@@ -92,6 +94,9 @@ sjme_jboolean sjme_memIo_unlock(sjme_memIo_spinLock* lock,
 	sjme_memIo_spinLockKey* key, sjme_error* error);
 
 /*--------------------------------------------------------------------------*/
+
+/* Include internal locking details. */
+#include "memio/lockinternal.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
