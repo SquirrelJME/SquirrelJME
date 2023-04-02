@@ -101,7 +101,8 @@ endif()
 
 # Use specific threading libraries?
 if(NOT CMAKE_SYSTEM_NAME STREQUAL "ieee1275" AND
-	NOT CMAKE_SYSTEM_NAME STREQUAL "palmos")
+	NOT CMAKE_SYSTEM_NAME STREQUAL "palmos" AND
+	NOT SQUIRRELJME_ON_ANDROID_BUILD)
 	# For compatibility for Windows, do not use pthreads even if available
 	find_package(Threads)
 	if(WIN32)

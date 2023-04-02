@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "memio/lock.h"
+#include "memio/lockinternal.h"
 #include "debug.h"
 
 /** The unlocked key value. */
