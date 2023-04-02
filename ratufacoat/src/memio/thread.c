@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjmejni/ccfeatures.h"
+
 #if defined(SJME_HAS_LINUX)
 	#include <unistd.h>
 	#include <sys/syscall.h>
@@ -26,10 +28,10 @@
 
 sjme_memIo_threadId sjme_memIo_threadCurrentId(void)
 {
-#if defined(SQUIRRELJME_THREADS_PTHREAD_BSD)
-	return (sjme_memIo_threadId)pthread_getthreadid_np();
-#elif defined(SJME_HAS_LINUX)
+#if defined(SJME_HAS_LINUX)
 	return syscall(SYS_gettid);
+#elif defined(SQUIRRELJME_THREADS_PTHREAD_BSD)
+	return (sjme_memIo_threadId)pthread_getthreadid_np();
 #elif defined(SQUIRRELJME_THREADS_PTHREAD)
 	return (sjme_memIo_threadId)pthread_self();
 #elif defined(SQUIRRELJME_THREADS_WIN32)
@@ -41,8 +43,10 @@ sjme_memIo_threadId sjme_memIo_threadCurrentId(void)
 
 void sjme_memIo_threadYield(void)
 {
-#if defined(SQUIRRELJME_THREADS_PTHREAD)
-	return pthread_yield();
+#if defined(SJME_HAS_LINUX)
+	sched_yield();
+#elif defined(SQUIRRELJME_THREADS_PTHREAD)
+	pthread_yield();
 #elif defined(SQUIRRELJME_THREADS_WIN32)
 	YieldProcessor();
 #endif
