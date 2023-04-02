@@ -23,7 +23,7 @@ static sjme_memIo_atomicInt sjme_nextLockKey;
  */
 static void sjme_memIo_memoryBarrier(void)
 {
-#if defined(SQUIRRELJME_THREADS_WIN32)
+#if defined(SJME_THREADS_WIN32)
 	MemoryBarrier();
 #elif defined(SJME_FEATURE_GCC) && !defined(SJME_FEATURE_OLD_GCC)
 	__sync_synchronize();
@@ -54,7 +54,7 @@ static sjme_jint sjme_memIo_lockNextLockKey(void)
 sjme_jboolean sjme_memIo_lock(sjme_memIo_spinLock* lock,
 	sjme_memIo_spinLockKey* key, sjme_error* error)
 {
-#if defined(SQUIRRELJME_THREADS_PTHREAD)
+#if defined(SJME_THREADS_PTHREAD)
 	int errorCode;
 #else
 	sjme_memIo_threadId currentThreadId;
@@ -71,7 +71,7 @@ sjme_jboolean sjme_memIo_lock(sjme_memIo_spinLock* lock,
 	/* Get the next locking key to use. */
 	useKey = sjme_memIo_lockNextLockKey();
 
-#if defined(SQUIRRELJME_THREADS_PTHREAD)
+#if defined(SJME_THREADS_PTHREAD)
 	/* Lock and block, pthreads will halt the CPU accordingly. */
 	/* Unlike tryLock(), this results in failure if non-zero. */
 	if (0 != pthread_mutex_lock(&lock->mutex))
@@ -118,7 +118,7 @@ sjme_jboolean sjme_memIo_lockDestroy(sjme_memIo_spinLock* lock,
 	if (lock == NULL)
 		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 
-#if defined(SQUIRRELJME_THREADS_PTHREAD)
+#if defined(SJME_THREADS_PTHREAD)
 	/* Destroy pthread mutex. */
 	if (0 != pthread_mutex_destroy(&lock->mutex))
 		return sjme_setErrorF(error, SJME_ERROR_INVALID_LOCK, 0);
@@ -140,7 +140,7 @@ sjme_jboolean sjme_memIo_lockInit(sjme_memIo_spinLock* lock,
 	if (lock == NULL)
 		return sjme_setErrorF(error, SJME_ERROR_NULLARGS, 0);
 
-#if defined(SQUIRRELJME_THREADS_PTHREAD)
+#if defined(SJME_THREADS_PTHREAD)
 	/* Initialize the attributes. */
 	if (0 != pthread_mutexattr_init(&lock->mutexAttr))
 		return sjme_setErrorF(error, SJME_ERROR_INVALID_LOCK, 0);
@@ -169,7 +169,7 @@ sjme_jboolean sjme_memIo_tryLock(sjme_memIo_spinLock* lock,
 	sjme_memIo_spinLockKey* key,
 	sjme_error* error)
 {
-#if defined(SQUIRRELJME_THREADS_PTHREAD)
+#if defined(SJME_THREADS_PTHREAD)
 	int errorCode;
 #else
 	sjme_memIo_threadId currentThreadId;
@@ -186,7 +186,7 @@ sjme_jboolean sjme_memIo_tryLock(sjme_memIo_spinLock* lock,
 	/* Get the next locking key to use. */
 	useKey = sjme_memIo_lockNextLockKey();
 
-#if defined(SQUIRRELJME_THREADS_PTHREAD)
+#if defined(SJME_THREADS_PTHREAD)
 	/* Try locking. */
 	errorCode = pthread_mutex_trylock(&lock->mutex);
 	if (0 != errorCode)

@@ -96,7 +96,7 @@ endif()
 # Does the static ROM file exist? If it does we can pack it into the binary
 if(SQUIRRELJME_HAS_BUILTIN)
 	message("Including built-in ROM!")
-	add_compile_definitions(SQUIRRELJME_HAS_BUILTIN=1)
+	add_compile_definitions(SJME_HAS_BUILTIN=1)
 endif()
 
 # Use specific threading libraries?
@@ -105,18 +105,18 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL "ieee1275" AND
 	# For compatibility for Windows, do not use pthreads even if available
 	find_package(Threads)
 	if(WIN32)
-		add_compile_definitions(SQUIRRELJME_THREADS=1)
-		add_compile_definitions(SQUIRRELJME_THREADS_WIN32=1)
+		add_compile_definitions(SJME_THREADS=1)
+		add_compile_definitions(SJME_THREADS_WIN32=1)
 	elseif(Threads_FOUND)
 		if(CMAKE_USE_PTHREADS_INIT)
-			add_compile_definitions(SQUIRRELJME_THREADS=1)
-			add_compile_definitions(SQUIRRELJME_THREADS_PTHREAD=1)
+			add_compile_definitions(SJME_THREADS=1)
+			add_compile_definitions(SJME_THREADS_PTHREAD=1)
 
 			# Specific OSes?
 			if (LINUX)
-				add_compile_definitions(SQUIRRELJME_THREADS_PTHREAD_LINUX=1)
+				add_compile_definitions(SJME_THREADS_PTHREAD_LINUX=1)
 			elseif (APPLE OR BSD)
-				add_compile_definitions(SQUIRRELJME_THREADS_PTHREAD_BSD=1)
+				add_compile_definitions(SJME_THREADS_PTHREAD_BSD=1)
 			endif()
 		endif()
 	endif()
@@ -136,11 +136,16 @@ elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 # Versioning information
-add_compile_definitions(SQUIRRELJME_VERSION=${SQUIRRELJME_VERSION})
-add_compile_definitions(SQUIRRELJME_VERSION_ID=${SQUIRRELJME_VERSION_ID})
-add_compile_definitions(SQUIRRELJME_VERSION_ID_TIME=${SQUIRRELJME_VERSION_ID_TIME})
-add_compile_definitions(SQUIRRELJME_VERSION_WINDOWS=${SQUIRRELJME_VERSION_WINDOWS})
-add_compile_definitions(SQUIRRELJME_VERSION_WINDOWS_RC=${SQUIRRELJME_VERSION_WINDOWS_RC})
+add_compile_definitions(SJME_VERSION=${SQUIRRELJME_VERSION})
+add_compile_definitions(SJME_VERSION_ID=${SQUIRRELJME_VERSION_ID})
+add_compile_definitions(SJME_VERSION_ID_TIME=${SQUIRRELJME_VERSION_ID_TIME})
+add_compile_definitions(SJME_VERSION_WINDOWS=${SQUIRRELJME_VERSION_WINDOWS})
+add_compile_definitions(SJME_VERSION_WINDOWS_RC=${SQUIRRELJME_VERSION_WINDOWS_RC})
+
+# CMake platform information
+add_compile_definitions(SJME_CMAKE_VERSION=${CMAKE_VERSION})
+add_compile_definitions(SJME_CMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME})
+add_compile_definitions(SJME_CMAKE_SYSTEM_PROCESSOR=${CMAKE_SYSTEM_PROCESSOR})
 
 # Enable testing by default, if not set
 if(NOT DEFINED SQUIRRELJME_ALLOW_TESTING)

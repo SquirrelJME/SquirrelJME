@@ -62,7 +62,7 @@ sjme_returnNever sjme_todoR(const char* file, int line,
 #endif
 	
 	/* Exit and stop. */
-#if defined(_DEBUG) || defined (SJME_DEBUG)
+#if defined(_DEBUG) || defined(SJME_DEBUG)
 	abort();
 #endif
 	exit(EXIT_FAILURE);

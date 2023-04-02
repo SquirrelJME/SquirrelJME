@@ -115,9 +115,14 @@ int main(int argc, char** argv)
 	sjme_jint i;
 	
 	/* General test report. */
-	fprintf(stderr, "Testing SquirrelJME %s (%s)\n",
-		SJME_STRINGIFY(SQUIRRELJME_VERSION),
-		SJME_STRINGIFY(SQUIRRELJME_VERSION_ID));
+	fprintf(stderr, "Testing SquirrelJME %s (%s at %s) "
+			"on CMake %s %s:%s\n",
+		SJME_STRINGIFY(SJME_VERSION),
+		SJME_STRINGIFY(SJME_VERSION_ID),
+		SJME_STRINGIFY(SJME_VERSION_ID_TIME),
+		SJME_STRINGIFY(SJME_CMAKE_VERSION),
+		SJME_STRINGIFY(SJME_CMAKE_SYSTEM_NAME),
+		SJME_STRINGIFY(SJME_CMAKE_SYSTEM_PROCESSOR));
 	fprintf(stderr, "Built-In ROM is %s\n",
 		(sjme_builtInRomSize == 0 ? "Unavailable" : "Available"));
 	fflush(stderr);

@@ -15,7 +15,7 @@
  * This is used for the tests so that they do not need to know about the
  * macros or otherwise from the library.
  */
-#if !defined(SQUIRRELJME_HAS_BUILTIN)
+#if !defined(SJME_HAS_BUILTIN)
 const sjme_jbyte sjme_builtInRomId[] = {0};
 const sjme_jint sjme_builtInRomIdLen = 0;
 const sjme_jint sjme_builtInRomDate[] = {0, 0};

@@ -75,7 +75,7 @@ extern "C" {
 
 /** Linux. */
 #if defined(__linux__) || defined(__gnu_linux__)
-	#define SJME_HAS_LINUX 1
+	#define SQUIRRELJME_HAS_LINUX 1
 #endif
 
 /* Is there a terminal output? */
