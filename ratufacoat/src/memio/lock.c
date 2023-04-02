@@ -51,31 +51,6 @@ static sjme_jint sjme_memIo_lockNextLockKey(void)
 	return useKey;
 }
 
-#if !defined(SQUIRRELJME_THREADS_PTHREAD)
-/**
- * Attempts a lock shift.
- * 
- * @param lock The lock to lock.
- * @param keyFrom The key that should be in the lock.
- * @param keyTo The key to shift to.
- * @return Will return @c sjme_true on a successful lock.
- * @since 2022/04/01 
- */
-static sjme_jboolean sjme_memIo_lockShift(sjme_memIo_spinLock* lock,
-	sjme_jint keyFrom, sjme_jint keyTo)
-{
-	sjme_jint result;
-
-	/* Try shifting the lock now. */
-	sjme_memIo_memoryBarrier();
-	result = sjme_memIo_atomicIntCompareThenSet(&lock->lock,
-		keyFrom, keyTo);
-	sjme_memIo_memoryBarrier();
-
-	return result;
-}
-#endif
-
 sjme_jboolean sjme_memIo_lock(sjme_memIo_spinLock* lock,
 	sjme_memIo_spinLockKey* key, sjme_error* error)
 {
@@ -129,6 +104,9 @@ sjme_jboolean sjme_memIo_lock(sjme_memIo_spinLock* lock,
 	sjme_memIo_atomicIntCompareThenSet(&lock->lock,
 		SJME_MEMIO_UNLOCKED, useKey);
 	key->key = sjme_memIo_atomicIntGet(&lock->lock);
+
+	/* Memory barrier before we leave. */
+	sjme_memIo_memoryBarrier();
 
 	/* Success! */
 	return sjme_true;
@@ -242,6 +220,9 @@ sjme_jboolean sjme_memIo_tryLock(sjme_memIo_spinLock* lock,
 		SJME_MEMIO_UNLOCKED, useKey);
 	key->key = sjme_memIo_atomicIntGet(&lock->lock);
 
+	/* Memory barrier before we leave. */
+	sjme_memIo_memoryBarrier();
+
 	/* Success! */
 	return sjme_true;
 }
@@ -339,6 +320,9 @@ sjme_jboolean sjme_memIo_unlock(sjme_memIo_spinLock* lock,
 	if (0 != pthread_mutex_unlock(&lock->mutex))
 		result = sjme_false;
 #endif
+
+	/* Memory barrier before we leave. */
+	sjme_memIo_memoryBarrier();
 
 	/* Use whatever result from the unlock we just performed. */
 	return result;
