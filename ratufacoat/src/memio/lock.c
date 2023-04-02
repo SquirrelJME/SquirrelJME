@@ -8,7 +8,6 @@
 // -------------------------------------------------------------------------*/
 
 #include "memio/lock.h"
-#include "memio/lockinternal.h"
 #include "debug.h"
 
 /** The unlocked key value. */
@@ -46,7 +45,7 @@ static sjme_jint sjme_memIo_lockNextLockKey(void)
 	while (useKey == SJME_MEMIO_UNLOCKED)
 	{
 		useKey = sjme_memIo_atomicIntGetThenAdd(&sjme_nextLockKey,
-					 1) + 1;
+			1) + 1;
 	}
 
 	return useKey;
@@ -82,6 +81,8 @@ sjme_jboolean sjme_memIo_lock(sjme_memIo_spinLock* lock,
 {
 #if defined(SQUIRRELJME_THREADS_PTHREAD)
 	int errorCode;
+#else
+	sjme_memIo_threadId currentThreadId;
 #endif
 	sjme_jint useKey;
 	
@@ -100,6 +101,26 @@ sjme_jboolean sjme_memIo_lock(sjme_memIo_spinLock* lock,
 	/* Unlike tryLock(), this results in failure if non-zero. */
 	if (0 != pthread_mutex_lock(&lock->mutex))
 		return sjme_setErrorF(error, SJME_ERROR_INVALID_LOCK, errorCode);
+#else
+	/* We need to be the thread that owns this lock. */
+	/* Yield in the lock until we obtain this. */
+	currentThreadId = sjme_memIo_threadCurrentId();
+	for (;;)
+	{
+		/* See if an unowned lock can become owned. */
+		if (sjme_memIo_atomicIntPointerCompareThenSet(&lock->thread,
+				SJME_MEMIO_INVALID_THREAD_ID, currentThreadId))
+			break;
+
+		/* If we are the actual owner then stop and continue. */
+		if (sjme_memIo_atomicIntPointerCompareThenSet(&lock->thread,
+				currentThreadId, currentThreadId))
+			break;
+
+		/* Yield for a moment to let other threads run. */
+		sjme_memIo_threadYield();
+	}
+#endif
 
 	/* Increase the lock count. */
 	sjme_memIo_atomicIntGetThenAdd(&lock->count, 1);
@@ -111,16 +132,6 @@ sjme_jboolean sjme_memIo_lock(sjme_memIo_spinLock* lock,
 
 	/* Success! */
 	return sjme_true;
-#else
-	/* Burn forever trying to use the given key. */
-	while (!sjme_memIo_lockShift(lock, SJME_MEMIO_UNLOCKED,
-		useKey))
-		;
-	
-	/* Set key and return. */
-	key->key = useKey;
-	return sjme_true;
-#endif
 }
 
 sjme_jboolean sjme_memIo_lockDestroy(sjme_memIo_spinLock* lock,
@@ -167,7 +178,11 @@ sjme_jboolean sjme_memIo_lockInit(sjme_memIo_spinLock* lock,
 
 	return sjme_true;
 #else
-	/* Does nothing. */
+	/** Set the initial thread to be invalid. */
+	sjme_memIo_atomicIntPointerSet(&lock->thread,
+		SJME_MEMIO_INVALID_THREAD_ID);
+
+	/* Success!. */
 	return sjme_true;
 #endif
 }
@@ -178,6 +193,8 @@ sjme_jboolean sjme_memIo_tryLock(sjme_memIo_spinLock* lock,
 {
 #if defined(SQUIRRELJME_THREADS_PTHREAD)
 	int errorCode;
+#else
+	sjme_memIo_threadId currentThreadId;
 #endif
 	sjme_jint useKey;
 	
@@ -196,13 +213,26 @@ sjme_jboolean sjme_memIo_tryLock(sjme_memIo_spinLock* lock,
 	errorCode = pthread_mutex_trylock(&lock->mutex);
 	if (0 != errorCode)
 	{
-		/* If not busy, then just ignore. */
+		/* If not busy, then fail here. */
 		if (errorCode != EBUSY)
 			return sjme_setErrorF(error, SJME_ERROR_INVALID_LOCK, errorCode);
 
 		/* Normal fail otherwise. */
 		return sjme_false;
 	}
+#else
+	/* We need to be the thread that owns this lock. */
+	/* If it fails, someone else already owns the lock. */
+	currentThreadId = sjme_memIo_threadCurrentId();
+	if (!sjme_memIo_atomicIntPointerCompareThenSet(&lock->thread,
+			SJME_MEMIO_INVALID_THREAD_ID, currentThreadId))
+	{
+		/* Are we the owner or not? */
+		if (!sjme_memIo_atomicIntPointerCompareThenSet(&lock->thread,
+				currentThreadId, currentThreadId))
+			return sjme_false;
+	}
+#endif
 
 	/* Increase the lock count only once. */
 	sjme_memIo_atomicIntGetThenAdd(&lock->count, 1);
@@ -214,15 +244,6 @@ sjme_jboolean sjme_memIo_tryLock(sjme_memIo_spinLock* lock,
 
 	/* Success! */
 	return sjme_true;
-#else
-	/* Attempt only once to lock. */
-	if (!sjme_memIo_lockShift(lock, SJME_MEMIO_UNLOCKED, useKey))
-		return sjme_false;
-	
-	/* Set key and return. */
-	key->key = useKey;
-	return sjme_true;
-#endif
 }
 
 sjme_jboolean sjme_memIo_unlock(sjme_memIo_spinLock* lock,
@@ -230,9 +251,11 @@ sjme_jboolean sjme_memIo_unlock(sjme_memIo_spinLock* lock,
 {
 #if defined(SQUIRRELJME_THREADS_PTHREAD)
 	int errorCode;
+#else
+	sjme_memIo_threadId currentThreadId;
+#endif
 	sjme_jint existingKey, currentCount;
 	sjme_jboolean result;
-#endif
 	sjme_jint useKey;
 	
 	if (lock == NULL || key == NULL)
@@ -247,10 +270,10 @@ sjme_jboolean sjme_memIo_unlock(sjme_memIo_spinLock* lock,
 		return sjme_false;
 	}
 
-#if defined(SQUIRRELJME_THREADS_PTHREAD)
 	/* Default to failure. */
 	result = sjme_false;
 
+#if defined(SQUIRRELJME_THREADS_PTHREAD)
 	/* Lock before we unlock, because we will check the key. */
 	errorCode = pthread_mutex_trylock(&lock->mutex);
 	if (0 != errorCode)
@@ -262,6 +285,14 @@ sjme_jboolean sjme_memIo_unlock(sjme_memIo_spinLock* lock,
 		/* Otherwise another failure. */
 		return sjme_setErrorF(error, SJME_ERROR_INVALID_LOCK, 0);
 	}
+#else
+	/* Perform an atomic check, keep same value if matched, */
+	/* this is so that we know we are the owner of this lock. */
+	currentThreadId = sjme_memIo_threadCurrentId();
+	if (!sjme_memIo_atomicIntPointerCompareThenSet(&lock->thread,
+			currentThreadId, currentThreadId))
+		sjme_setError(error, SJME_ERROR_NOT_LOCK_OWNER, currentThreadId);
+#endif
 
 	/* Only perform unlock logic if the key matches. */
 	existingKey = sjme_memIo_atomicIntGet(&lock->lock);
@@ -273,9 +304,19 @@ sjme_jboolean sjme_memIo_unlock(sjme_memIo_spinLock* lock,
 
 		/* We are the last to unlock, so clear the lock state in the key. */
 		if (currentCount == 1)
+		{
+			/* Clear key and set as unlocked. */
 			sjme_memIo_atomicIntSet(&lock->lock,
 				SJME_MEMIO_UNLOCKED);
 
+#if !defined(SQUIRRELJME_THREADS_PTHREAD)
+			/* We no longer own this lock, so just say as such. */
+			sjme_memIo_atomicIntPointerSet(&lock->thread,
+				SJME_MEMIO_INVALID_THREAD_ID);
+#endif
+		}
+
+#if defined(SQUIRRELJME_THREADS_PTHREAD)
 		/* Unlock the key for this once, from tryLock or lock. */
 		if (0 != pthread_mutex_unlock(&lock->mutex))
 			result = sjme_false;
@@ -283,27 +324,22 @@ sjme_jboolean sjme_memIo_unlock(sjme_memIo_spinLock* lock,
 		/* Otherwise is success here... */
 		else
 			result = sjme_true;
+#else
+		/* Result passes here. */
+		result = sjme_true;
+#endif
 	}
 
 	/* Set as not lock owner. */
 	else
 		sjme_setError(error, SJME_ERROR_NOT_LOCK_OWNER, existingKey);
 
+#if defined(SQUIRRELJME_THREADS_PTHREAD)
 	/* Always unlock before leaving, since we did do a lock. */
 	if (0 != pthread_mutex_unlock(&lock->mutex))
 		result = sjme_false;
-
-	return result;
-#else
-	
-	/* Perform unlock. */
-	if (!sjme_memIo_lockShift(lock, useKey, SJME_MEMIO_UNLOCKED))
-		return sjme_setErrorF(error, SJME_ERROR_NOT_LOCK_OWNER, useKey);
-
-	/* Clear key value. */
-	key->key = SJME_MEMIO_UNLOCKED;
-	
-	/* Success! */
-	return sjme_true;
 #endif
+
+	/* Use whatever result from the unlock we just performed. */
+	return result;
 }

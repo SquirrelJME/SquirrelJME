@@ -283,6 +283,7 @@ SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/memio/memchunk.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/memio/memdirect.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/memio/memtag.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/memio/stream.c
+SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/memio/thread.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/frontend/libretro/lraudio.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/frontend/libretro/lrcheat.c
 SOURCES_C   := $(SOURCES_C) $(CORE_DIR)/src/frontend/libretro/lrenv.c

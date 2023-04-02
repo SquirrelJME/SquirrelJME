@@ -204,6 +204,42 @@ void* sjme_memIo_atomicPointerSet(sjme_memIo_atomicPointer* atomic,
 	SJME_CODE_SECTION("memio");
 
 /**
+ * Sets the value of the given atomic provided the check value is a match,
+ * it then returns the old value atomically.
+ *
+ * @param atomic The atomic to check and set.
+ * @param check The value to check against, which if equal will set @c set.
+ * @param set The value to set if @c check is equal.
+ * @return If @c check matched and the atomic is set.
+ * @since 2024/04/01
+ */
+#define sjme_memIo_atomicIntPointerCompareThenSet(atomic, check, set) \
+	(sjme_memIo_atomicPointerCompareThenSet((atomic), \
+	(void*)((sjme_jpointer)(check)), (void*)((sjme_jpointer)(set))))
+
+/**
+ * Gets the value of the atomic as a @c sjme_jpointer.
+ *
+ * @param atomic The atomic to read from.
+ * @return The read value.
+ * @since 2024/04/01
+ */
+#define sjme_memIo_atomicIntPointerGet(atomic) \
+	((sjme_jpointer)sjme_memIo_atomicPointerGet((atomic)))
+
+/**
+ * Sets the given atomic pointer value.
+ *
+ * @param atomic The atomic to set.
+ * @param value The value to set.
+ * @return The former atomic value.
+ * @since 2024/04/01
+ */
+#define sjme_memIo_atomicIntPointerSet(atomic, value) \
+	((sjme_jpointer)sjme_memIo_atomicPointerSet((atomic), \
+	(void*)((sjme_jpointer)(value))))
+
+/**
  * Sets an atomic pointer with the given type.
  * 
  * @param atomic The atomic to set. 
@@ -214,7 +250,6 @@ void* sjme_memIo_atomicPointerSet(sjme_memIo_atomicPointer* atomic,
  */
 #define sjme_memIo_atomicPointerSetType(atomic, value, type) \
 	((type)(sjme_memIo_atomicPointerSet(atomic, value)))
-
 
 #if defined(SJME_MEMIO_ATOMIC_OLD)
 /**

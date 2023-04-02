@@ -35,6 +35,7 @@ extern "C" {
 #endif
 
 #include "memio/lock.h"
+#include "memio/thread.h"
 
 /*--------------------------------------------------------------------------*/
 
@@ -52,6 +53,9 @@ struct sjme_memIo_spinLock
 
 	/** The lock mutex. */
 	pthread_mutex_t mutex;
+#else
+	/** The ID of the current thread. */
+	sjme_memIo_atomicPointer thread;
 #endif
 };
 

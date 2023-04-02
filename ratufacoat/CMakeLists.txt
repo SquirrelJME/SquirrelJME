@@ -111,6 +111,13 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL "ieee1275" AND
 		if(CMAKE_USE_PTHREADS_INIT)
 			add_compile_definitions(SQUIRRELJME_THREADS=1)
 			add_compile_definitions(SQUIRRELJME_THREADS_PTHREAD=1)
+
+			# Specific OSes?
+			if (LINUX)
+				add_compile_definitions(SQUIRRELJME_THREADS_PTHREAD_LINUX=1)
+			elseif (APPLE OR BSD)
+				add_compile_definitions(SQUIRRELJME_THREADS_PTHREAD_BSD=1)
+			endif()
 		endif()
 	endif()
 endif()

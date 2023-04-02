@@ -60,9 +60,25 @@ typedef struct sjme_memIo_spinLockKey
 sjme_jboolean sjme_memIo_lock(sjme_memIo_spinLock* lock,
 	sjme_memIo_spinLockKey* key, sjme_error* error);
 
+/**
+ * Destroys the lock.
+ *
+ * @param lock The lock to destroy.
+ * @param error Any resultant error state.
+ * @return If destruction was successful.
+ * @since 2023/04/01
+ */
 sjme_jboolean sjme_memIo_lockDestroy(sjme_memIo_spinLock* lock,
 	sjme_error* error);
 
+/**
+ * Initializes the lock.
+ *
+ * @param lock The lock to initialize.
+ * @param error Any resultant error state.
+ * @return If initialization was successful.
+ * @since 2023/04/01
+ */
 sjme_jboolean sjme_memIo_lockInit(sjme_memIo_spinLock* lock,
 	sjme_error* error);
 

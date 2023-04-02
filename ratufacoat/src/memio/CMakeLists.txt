@@ -20,7 +20,8 @@ add_library(SquirrelJMEMemIO OBJECT
 	memchunk.c
 	memdirect.c
 	memtag.c
-	stream.c)
+	stream.c
+	thread.c)
 
 # Common C Directives
 squirreljme_common_c(SquirrelJMEMemIO)
