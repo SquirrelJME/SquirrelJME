@@ -1,0 +1,17 @@
+# Supported File Formats
+
+The list of supported file formats.
+
+ * DoJa/Star Application
+   * `.jam` -- ADF properties file.
+   * `.jar` -- Java classes and resource data.
+ * Java ME Application
+   * `.jad` -- Java ME manifest file.
+   * `.jar` -- Java classes and resource data.
+ * JV-Lite2 Wireless Edition
+   * `.adf` -- Binary ADF properties file.
+   * `.jar` -- Java classes and resource data.
+   * `.sec` -- Secondary ADF properties file (optional).
+   * `.sto` -- Scratchpad storage seed.
+ * KDDI EZ-appli
+   * `.kjx` -- Java classes and resource data, with in-built `.jad`.
