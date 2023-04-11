@@ -62,15 +62,15 @@ final class __AdfUtils__
 		// 0x04: Unknown??? (2)
 		int unknownHeader0x04Zero = in.readUnsignedShort();
 		
-		// 0x06: SPSize
+		// 0x06: Unknown Size???
 		// Calculated as part of "Used Storage"
-		int scratchPadSize = in.readInt();
+		int unknownSize = in.readInt();
 		
 		// 0x0A: Jar Size (5)
 		// Calculated as part of "Used Storage"
 		int jarSize = in.readUnsignedShort();
 		
-		// 0x0C: Size of the .Sto file (6)
+		// 0x0C: Size of the .Sto file (SPsize) (6)
 		// Calculated as part of "Used Storage"
 		int stoSize = in.readInt();
 		
@@ -136,7 +136,6 @@ final class __AdfUtils__
 		// 0x2F: Unknown Zero??? (26)
 		int unknown0x2FZero = in.readUnsignedByte();
 		
-		// 0x30: Possibly SPsize?
 		// 0x30: Unknown 129??? (27)
 		int unknown0x30 = in.readUnsignedShort();
 		

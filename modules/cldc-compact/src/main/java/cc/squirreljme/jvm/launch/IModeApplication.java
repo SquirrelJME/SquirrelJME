@@ -33,21 +33,25 @@ import java.util.Objects;
 public class IModeApplication
 	extends Application
 {
-	/** Property for the scratch pad sizes. */
-	public static final String SCRATCH_PAD_PROPERTY =
-		"cc.squirreljme.imode.scratchpads";
+	/** The prefix for ADF properties. */
+	public static final String ADF_PROPERTY_PREFIX =
+		"cc.squirrlejme.imode.adf";
 	
 	/** Property for the application name. */
 	public static final String NAME_PROPERTY =
 		"cc.squirreljme.imode.name";
 	
+	/** Property for the scratch pad sizes. */
+	public static final String SCRATCH_PAD_PROPERTY =
+		"cc.squirreljme.imode.scratchpads";
+	
+	/** Initial seed for the scratch pad. */
+	public static final String SCRATCH_PAD_SEED_PROPERTY =
+		"cc.squirrlejme.imode.scratchpadseed";
+	
 	/** Property for the application vendor. */
 	public static final String VENDOR_PROPERTY =
 		"cc.squirreljme.imode.vendor";
-	
-	/** The prefix for ADF properties. */
-	public static final String ADF_PROPERTY_PREFIX =
-		"cc.squirrlejme.imode.adf";
 	
 	/** Boot class for DoJa. */
 	private static final String _DOJA_BOOT_CLASS =
