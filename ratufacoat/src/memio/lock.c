@@ -7,6 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#if defined(SJME_THREADS_WIN32)
+	#include <windows.h>
+#endif
+
 #include "memio/lock.h"
 #include "memio/lockinternal.h"
 #include "debug.h"
