@@ -63,12 +63,15 @@ final class __AdfUtils__
 		int unknownHeader0x04Zero = in.readUnsignedShort();
 		
 		// 0x06: SPSize
+		// Calculated as part of "Used Storage"
 		int scratchPadSize = in.readInt();
 		
 		// 0x0A: Jar Size (5)
+		// Calculated as part of "Used Storage"
 		int jarSize = in.readUnsignedShort();
 		
 		// 0x0C: Size of the .Sto file (6)
+		// Calculated as part of "Used Storage"
 		int stoSize = in.readInt();
 		
 		// 0x10: Unknown??? (7)
@@ -105,6 +108,7 @@ final class __AdfUtils__
 		int drawAreaHeight = in.readUnsignedShort();
 		
 		// 0x26: Length of variable data section (18)
+		// Calculated as part of "Used Storage"
 		int lengthVarData = in.readUnsignedShort();
 		
 		// 0x28: Unknown byte??? (19) [0x07???]
