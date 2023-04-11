@@ -20,10 +20,8 @@ import cc.squirreljme.jvm.suite.EntryPoints;
 import cc.squirreljme.jvm.suite.InvalidSuiteException;
 import cc.squirreljme.jvm.suite.SuiteInfo;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -264,37 +262,14 @@ public final class SuiteScanner
 			if (jamIn == null)
 				return;
 			
-			// Load in the JAM (Is encoded in Japanese)
-			try (BufferedReader jamBr = new BufferedReader(
-				new InputStreamReader(jamIn, "shift-jis")))
-			{
-				for (;;)
-				{
-					// EOF?
-					String ln = jamBr.readLine();
-					if (ln == null)
-						break;
-					
-					// No equal sign, ignore
-					int eq = ln.indexOf('=');
-					if (eq < 0)
-						continue;
-					
-					// Split into key and value form
-					String key = ln.substring(0, eq).trim();
-					String val = ln.substring(eq + 1).trim();
-					
-					// Store into if the key is valid
-					if (!key.isEmpty())
-						adfProps.put(key, val);
-				}
-			}
+			// Parse by text
+			__AdfUtils__.__parseAdfText(adfProps, jamIn);
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 			return;
-		} 
+		}
 			
 		// Load application
 		try
@@ -345,6 +320,24 @@ public final class SuiteScanner
 		// If there is no ADF file, this cannot be an i-mode application
 		if (binaryAdf == null)
 			return;
+		
+		// Decode the Binary ADF information
+		Map<String, String> adfProps = new LinkedHashMap<>();
+		try (InputStream binaryAdfIn = JarPackageShelf.openResource(binaryAdf,
+			SuiteScanner._DATA_RESOURCE))
+		{
+			// Missing? Cannot be an i-mode application
+			if (binaryAdfIn == null)
+				return;
+			
+			// Parse by text
+			__AdfUtils__.__parseAdfBinary(adfProps, binaryAdfIn);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			return;
+		}
 		
 		throw Debugging.todo();
 	}
