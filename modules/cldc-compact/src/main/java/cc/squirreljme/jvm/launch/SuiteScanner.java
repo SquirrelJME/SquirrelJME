@@ -219,6 +219,8 @@ public final class SuiteScanner
 				accurateJarIndex, jar);
 			SuiteScanner.__scanIMode(__listener, __numJars, __libs,
 				__nameToJar, __result, accurateJarIndex, jar);
+			SuiteScanner.__scanIModeJVLite2(__listener, __numJars, __libs,
+				__nameToJar, __result, accurateJarIndex, jar);
 		}
 	}
 	
@@ -240,13 +242,7 @@ public final class SuiteScanner
 	{
 		// Try to determine what our JAM would be called
 		String jarName = JarPackageShelf.libraryPath(__jar);
-		String jamName;
-		if (jarName.endsWith(".jar"))
-			jamName = jarName.substring(0, jarName.length() - 4) + ".jam";
-		else if (jarName.endsWith(".JAR"))
-			jamName = jarName.substring(0, jarName.length() - 4) + ".JAM";
-		else
-			jamName = jarName + ".jam";
+		String jamName = SuiteScanner.__siblingByExt(jarName, ".jam");
 		
 		// Determine the name of the JAM file to load
 		JarPackageBracket jam;
@@ -317,6 +313,40 @@ public final class SuiteScanner
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Scans for a JV-Lite2 i-Mode application, which is in binary form.
+	 * 
+	 * @param __listener The listener used for load events.
+	 * @param __nameToJar The name to JAR mapping, used to find the JAM file.
+	 * @param __result The target applications.
+	 * @param __jarDx The JAR index.
+	 * @param __jar The JAR to check.
+	 * @since 2023/04/10
+	 */
+	private static void __scanIModeJVLite2(SuiteScanListener __listener,
+		int __numJars, __Libraries__ __libs,
+		Map<String, JarPackageBracket> __nameToJar,
+		List<Application> __result,
+		int __jarDx, JarPackageBracket __jar)
+	{
+		// We need to locate the binary form of the ADF
+		String jarName = JarPackageShelf.libraryPath(__jar);
+		String adfName = SuiteScanner.__siblingByExt(jarName, ".adf");
+		
+		// Determine the name of the JAM file to load
+		JarPackageBracket binaryAdf;
+		synchronized (__nameToJar)
+		{
+			binaryAdf = __nameToJar.get(adfName);
+		}
+		
+		// If there is no ADF file, this cannot be an i-mode application
+		if (binaryAdf == null)
+			return;
+		
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -393,6 +423,31 @@ public final class SuiteScanner
 			default:
 				throw Debugging.oops();
 		}
+	}
+	
+	/**
+	 * Returns a sibling file with the same base name but a differing
+	 * extension.
+	 * 
+	 * @param __jar The other Jar to check.
+	 * @param __ext The extension to map to.
+	 * @return The sibling file based on the extension.
+	 * @since 2023/04/10
+	 */
+	private static String __siblingByExt(String __jar, String __ext)
+	{
+		boolean lower = __jar.endsWith(".jar");
+		boolean upper = __jar.endsWith(".JAR");
+		
+		// Does not end with it? Just append it
+		if (!lower && !upper)
+			return __jar + __ext;
+		
+		// Remove old extension and just append the new one
+		String baseName = __jar.substring(0, __jar.length() - 4);
+		if (upper)
+			return baseName + __ext.toUpperCase();
+		return baseName + __ext;
 	}
 }
 
