@@ -71,7 +71,7 @@ public interface JDWPViewFrame
 	 * Returns the number of values stored in the frame.
 	 * 
 	 * @param __which Which frame to get from?
-	 * @return The number of alues to store in the frame.
+	 * @return The number of values to store in the frame.
 	 * @since 2021/04/14
 	 */
 	int numValues(Object __which);

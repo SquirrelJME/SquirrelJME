@@ -631,6 +631,10 @@ public class AdvancedGraphics
 	@Override
 	public void drawRect(int __x, int __y, int __w, int __h)
 	{
+		// Do nothing if less than zero
+		if (__w < 0 || __h < 0)
+			return;
+		
 		// The width and height are increased by a single pixel
 		__w += 1;
 		__h += 1;
@@ -751,6 +755,10 @@ public class AdvancedGraphics
 	@Override
 	public void fillRect(int __x, int __y, int __w, int __h)
 	{
+		// Do nothing if less than zero
+		if (__w < 0 || __h < 0)
+			return;
+		
 		// Get actual end points
 		int ex = __x + __w,
 			ey = __y + __h;
@@ -827,6 +835,9 @@ public class AdvancedGraphics
 		int __x3, int __y3)
 	{
 		this.__unimplemented(__x1, __y1, "fillTriangle");
+		this.drawLine(__x1, __y1, __x2, __y2);
+		this.drawLine(__x2, __y2, __x3, __y3);
+		this.drawLine(__x3, __y3, __x1, __y1);
 	}
 	
 	/**

@@ -141,8 +141,25 @@ final class __ProgressListener__
 		{
 			// Get the preferred icon size
 			Display mainDisplay = this.mainDisplay;
-			int prefW = mainDisplay.getBestImageWidth(Display.LIST_ELEMENT);
-			int prefH = mainDisplay.getBestImageHeight(Display.LIST_ELEMENT);
+			if (mainDisplay == null)
+				try
+				{
+					mainDisplay = Display.getDisplays(0)[0];
+				}
+				catch (IllegalStateException ignored)
+				{
+					mainDisplay = null;
+				}
+			
+			int prefW;
+			int prefH;
+			if (mainDisplay != null)
+			{
+				prefW = mainDisplay.getBestImageWidth(Display.LIST_ELEMENT);
+				prefH = mainDisplay.getBestImageHeight(Display.LIST_ELEMENT);
+			}
+			else
+				prefW = prefH = 16;
 			
 			// Scale the icon
 			if (icon.getWidth() > prefW ||

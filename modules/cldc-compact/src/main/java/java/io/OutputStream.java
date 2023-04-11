@@ -9,11 +9,14 @@
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This class is the base class for all byte oriented output streams.
  *
  * @since 2016/04/16
  */
+@Api
 public abstract class OutputStream
 	implements Closeable
 {
@@ -27,6 +30,7 @@ public abstract class OutputStream
 	 * @throws IOException On write errors.
 	 * @since 2016/04/16
 	 */
+	@Api
 	public abstract void write(int __b)
 		throws IOException;
 	
@@ -52,6 +56,7 @@ public abstract class OutputStream
 	 * @throws IOException If flushing failed.
 	 * @since 2016/04/16
 	 */
+	@Api
 	public void flush()
 		throws IOException
 	{
@@ -69,6 +74,7 @@ public abstract class OutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/16
 	 */
+	@Api
 	public void write(byte[] __a)
 		throws IOException, NullPointerException
 	{
@@ -93,6 +99,7 @@ public abstract class OutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/16
 	 */
+	@Api
 	public void write(byte[] __a, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{

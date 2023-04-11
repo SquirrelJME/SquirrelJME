@@ -359,7 +359,9 @@ public class AdditionalManifestPropertiesTaskAction
 		if (subSwmType == JavaMEMidletType.APPLICATION)
 		{
 			// If this is another project, we cannot just depend on it at all
-			if (project.compareTo(__dependency.dependency) != 0)
+			// Unless we are testing, then we can bend the rules a little
+			if (project.compareTo(__dependency.dependency) != 0 &&
+				!__sourceSourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME))
 				throw new IllegalArgumentException(String.format(
 					"Project %s:%s cannot depend on application %s:%s.",
 						project.getPath(), __sourceSourceSet,

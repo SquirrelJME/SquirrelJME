@@ -10,13 +10,18 @@
 package cc.squirreljme.jvm.mle.brackets;
 
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * This represents a form as a whole, it is displayed with
  * {@link UIDisplayBracket} and contains {@link UIItemBracket}.
+ * 
+ * Every form has a title, a ticker, command buttons, and/or a menu.
  *
  * @since 2020/07/01
  */
+@SquirrelJMEVendorApi
 @GhostObject
 public interface UIFormBracket
 	extends UIWidgetBracket

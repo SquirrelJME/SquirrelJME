@@ -9,18 +9,22 @@
 
 package jdk.dio.pwm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import jdk.dio.DevicePermission;
 
+@Api
 public class PWMPermission
 	extends DevicePermission
 {
+	@Api
 	public PWMPermission(String __a)
 	{
 		super((String)null);
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public PWMPermission(String __a, String __b)
 	{
 		super((String)null);

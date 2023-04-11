@@ -63,7 +63,7 @@ public class SwingItemButton
 			return;
 		
 		// Fake this as a key being pressed on this item
-		callback.eventKey(form, this, UIKeyEventType.COMMAND_ACTIVATED,
+		callback.eventKey(this, UIKeyEventType.COMMAND_ACTIVATED,
 			0, 0);
 	}
 	

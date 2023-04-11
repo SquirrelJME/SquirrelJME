@@ -9,8 +9,10 @@
 
 package java.nio.file.attribute;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public final class FileTime
 	implements Comparable<FileTime>
 {
@@ -37,6 +39,7 @@ public final class FileTime
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public long toMillis()
 	{
 		throw Debugging.todo();
@@ -48,6 +51,7 @@ public final class FileTime
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static FileTime fromMillis(long __v)
 	{
 		throw Debugging.todo();

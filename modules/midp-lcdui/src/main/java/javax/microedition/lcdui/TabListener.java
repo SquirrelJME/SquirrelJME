@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 /**
@@ -18,6 +19,7 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
  *
  * @since 2018/03/29
  */
+@Api
 public interface TabListener
 {
 	/**
@@ -28,6 +30,7 @@ public interface TabListener
 	 * @param __tab The screen that was added to the tabbed pane.
 	 * @since 2018/03/29
 	 */
+	@Api
 	@SerializedEvent
 	void tabAddedEvent(int __i, Screen __tab);
 	
@@ -38,6 +41,7 @@ public interface TabListener
 	 * @param __tab The tab which now has focus.
 	 * @since 2018/03/29
 	 */
+	@Api
 	@SerializedEvent
 	void tabChangeEvent(Screen __tab);
 	
@@ -48,6 +52,7 @@ public interface TabListener
 	 * @param __i The tab that has been removed.
 	 * @since 2018/03/29
 	 */
+	@Api
 	@SerializedEvent
 	void tabRemoveEvent(int __i);
 }

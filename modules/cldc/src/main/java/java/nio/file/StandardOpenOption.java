@@ -9,29 +9,41 @@
 
 package java.nio.file;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public enum StandardOpenOption
 	implements OpenOption
 {
+	@Api
 	APPEND(),
 	
+	@Api
 	CREATE(),
 	
+	@Api
 	CREATE_NEW(),
 	
+	@Api
 	DELETE_ON_CLOSE(),
 	
+	@Api
 	DSYNC(),
 	
+	@Api
 	READ(),
 	
+	@Api
 	SPARSE(),
 	
+	@Api
 	SYNC(),
 	
+	@Api
 	TRUNCATE_EXISTING(),
 	
+	@Api
 	WRITE(),
 	
 	/** End. */

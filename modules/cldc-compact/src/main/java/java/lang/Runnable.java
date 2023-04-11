@@ -9,6 +9,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This interface should be used by any class which is intended and capable
  * of being run in its own thread (via {@link Thread#Thread(Runnable)}.
@@ -18,6 +20,7 @@ package java.lang;
  *
  * @since 2018/09/19
  */
+@Api
 public interface Runnable
 {
 	/**
@@ -25,6 +28,7 @@ public interface Runnable
 	 *
 	 * @since 2018/09/19
 	 */
+	@Api
 	void run();
 }
 

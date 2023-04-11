@@ -9,8 +9,12 @@
 
 package jdk.dio;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface AsyncErrorHandler<P extends Device<? super P>>
 {
+	@Api
 	void failed(Throwable __a, P __b);
 }
 

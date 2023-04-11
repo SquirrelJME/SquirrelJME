@@ -9,11 +9,14 @@
 
 package jdk.dio.atcmd;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.nio.channels.ByteChannel;
 
+@Api
 public interface DataConnection
 	extends ByteChannel
 {
+	@Api
 	ATDevice getDevice();
 }
 

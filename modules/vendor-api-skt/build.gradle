@@ -1,0 +1,22 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import org.iban4j.CountryCode
+
+description = "SKT API"
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "SK"
+	swmType = JavaMEMidletType.API
+	swmName = "SKT API"
+	swmVendor = "Stephanie Gawroriski"
+	originalApiVendor = "SK Telecom Co., Ltd."
+	originalApiVendorUrl = "https://www.sktelecom.com/"
+	originalApiVendorCountry = CountryCode.KR
+	tags += "skt"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+}

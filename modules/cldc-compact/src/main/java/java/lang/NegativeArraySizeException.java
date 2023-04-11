@@ -9,12 +9,15 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when an attempt is made to allocate an array that is of a
  * negative size.
  *
  * @since 2018/09/22
  */
+@Api
 public class NegativeArraySizeException
 	extends RuntimeException
 {
@@ -23,6 +26,7 @@ public class NegativeArraySizeException
 	 *
 	 * @since 2018/09/22
 	 */
+	@Api
 	public NegativeArraySizeException()
 	{
 	}
@@ -33,6 +37,7 @@ public class NegativeArraySizeException
 	 * @param __m The message.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public NegativeArraySizeException(String __m)
 	{
 		super(__m);

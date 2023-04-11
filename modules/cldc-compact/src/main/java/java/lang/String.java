@@ -9,6 +9,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
@@ -32,6 +33,7 @@ import java.util.Formatter;
  *
  * @since 2018/09/16
  */
+@Api
 @SuppressWarnings("StringOperationCanBeSimplified")
 public final class String
 	implements Comparable<String>, CharSequence
@@ -82,6 +84,7 @@ public final class String
 	 *
 	 * @since 2018/02/24
 	 */
+	@Api
 	public String()
 	{
 		this._chars = new char[0];
@@ -96,6 +99,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/24
 	 */
+	@Api
 	public String(String __s)
 		throws NullPointerException
 	{
@@ -116,6 +120,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public String(char[] __c)
 		throws NullPointerException
 	{
@@ -134,6 +139,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public String(char[] __c, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -164,6 +170,7 @@ public final class String
 	 * @throws UnsupportedEncodingException If the encoding is not supported.
 	 * @since 2018/11/06
 	 */
+	@Api
 	public String(byte[] __b, int __o, int __l, String __e)
 		throws IndexOutOfBoundsException, NullPointerException,
 			UnsupportedEncodingException
@@ -180,6 +187,7 @@ public final class String
 	 * @throws UnsupportedEncodingException If the encoding is not supported.
 	 * @since 2018/11/06
 	 */
+	@Api
 	public String(byte[] __b, String __e)
 		throws NullPointerException, UnsupportedEncodingException
 	{
@@ -197,6 +205,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
+	@Api
 	public String(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -210,6 +219,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
+	@Api
 	public String(byte[] __b)
 		throws NullPointerException
 	{
@@ -223,6 +233,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public String(StringBuffer __a)
 		throws NullPointerException
 	{
@@ -236,6 +247,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public String(StringBuilder __a)
 		throws NullPointerException
 	{
@@ -254,6 +266,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
+	@Api
 	private String(byte[] __b, int __o, int __l, Decoder __dec)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -315,6 +328,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/24
 	 */
+	@Api
 	String(char[] __c, short __qf)
 		throws NullPointerException
 	{
@@ -414,6 +428,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/04
 	 */
+	@Api
 	public int compareToIgnoreCase(String __o)
 		throws NullPointerException
 	{
@@ -468,6 +483,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/15
 	 */
+	@Api
 	public String concat(String __s)
 		throws NullPointerException
 	{
@@ -514,6 +530,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/14
 	 */
+	@Api
 	public boolean contains(CharSequence __b)
 		throws NullPointerException
 	{
@@ -533,6 +550,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/15
 	 */
+	@Api
 	public boolean contentEquals(StringBuffer __s)
 		throws NullPointerException
 	{
@@ -558,6 +576,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/15
 	 */
+	@Api
 	public boolean contentEquals(CharSequence __s)
 		throws NullPointerException
 	{
@@ -580,6 +599,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/20
 	 */
+	@Api
 	public boolean endsWith(String __s)
 		throws NullPointerException
 	{
@@ -669,6 +689,7 @@ public final class String
 	 * @return If the two strings are equal.
 	 * @since 2018/10/29
 	 */
+	@Api
 	@ProgrammerTip("Locale is not considered.")
 	public boolean equalsIgnoreCase(String __o)
 	{
@@ -706,6 +727,7 @@ public final class String
 	 * @return The resulting byte array.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public byte[] getBytes()
 	{
 		return this.__getBytes(CodecFactory.defaultEncoder());
@@ -722,6 +744,7 @@ public final class String
 	 * @throws UnsupportedEncodingException If the encoding is unknown.
 	 * @since 2018/12/08
 	 */
+	@Api
 	public byte[] getBytes(String __enc)
 		throws NullPointerException, UnsupportedEncodingException
 	{
@@ -743,6 +766,7 @@ public final class String
 		}
 	}
 	
+	@Api
 	public void getChars(int __a, int __b, char[] __c, int __d)
 	{
 		throw Debugging.todo();
@@ -780,6 +804,7 @@ public final class String
 	 * @return The character index or {@code -1} if it was not found.
 	 * @since 2018/09/20
 	 */
+	@Api
 	public int indexOf(int __c)
 	{
 		return this.indexOf(__c, 0);
@@ -795,6 +820,7 @@ public final class String
 	 * @return The character index or {@code -1} if it was not found.
 	 * @since 2018/09/20
 	 */
+	@Api
 	public int indexOf(int __c, int __i)
 	{
 		char[] ch = this._chars;
@@ -820,6 +846,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/14
 	 */
+	@Api
 	public int indexOf(String __b)
 		throws NullPointerException
 	{
@@ -837,6 +864,7 @@ public final class String
 	 * @return The index of the sequence or {@code -1} if it is not found.
 	 * @since 2019/05/14
 	 */
+	@Api
 	public int indexOf(String __b, int __i)
 	{
 		if (__b == null)
@@ -860,6 +888,7 @@ public final class String
 	 * @return The unique string instance.
 	 * @since 2016/04/01
 	 */
+	@Api
 	public String intern()
 	{
 		// If this string is already the interned target then use this one
@@ -893,6 +922,7 @@ public final class String
 	 * @return {@code true} if this string is empty.
 	 * @since 2017/08/15
 	 */
+	@Api
 	public boolean isEmpty()
 	{
 		return this._chars.length == 0;
@@ -906,6 +936,7 @@ public final class String
 	 * not found.
 	 * @since 2018/09/29
 	 */
+	@Api
 	public int lastIndexOf(int __c)
 	{
 		return this.lastIndexOf(__c, Integer.MAX_VALUE);
@@ -923,6 +954,7 @@ public final class String
 	 * not found.
 	 * @since 2018/09/29
 	 */
+	@Api
 	public int lastIndexOf(int __c, int __dx)
 	{
 		// Never going to find anything at all
@@ -952,12 +984,14 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public int lastIndexOf(String __s)
 		throws NullPointerException
 	{
 		return this.lastIndexOf(__s, Integer.MAX_VALUE);
 	}
 	
+	@Api
 	public int lastIndexOf(String __s, int __dx)
 		throws NullPointerException
 	{
@@ -990,6 +1024,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/01/18
 	 */
+	@Api
 	public boolean regionMatches(int __toff, String __b, int __boff, int __len)
 	{
 		return this.regionMatches(false, __toff, __b, __boff, __len);
@@ -1008,6 +1043,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/01/18
 	 */
+	@Api
 	public boolean regionMatches(boolean __igncase, int __toff, String __b,
 		int __boff, int __len)
 	{
@@ -1055,6 +1091,7 @@ public final class String
 	 * @return The resulting string.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public String replace(char __a, char __b)
 	{
 		// If a character is going to be replaced with itself then no
@@ -1091,6 +1128,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public boolean startsWith(String __s, int __sdx)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -1135,6 +1173,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public boolean startsWith(String __s)
 		throws NullPointerException
 	{
@@ -1160,6 +1199,7 @@ public final class String
 	 * @throws IndexOutOfBoundsException If the start is outside of the bounds.
 	 * @since 2018/11/04
 	 */
+	@Api
 	public String substring(int __s)
 		throws IndexOutOfBoundsException
 	{
@@ -1181,6 +1221,7 @@ public final class String
 	 * bounds.
 	 * @since 2018/09/29
 	 */
+	@Api
 	public String substring(int __s, int __e)
 		throws IndexOutOfBoundsException
 	{
@@ -1217,6 +1258,7 @@ public final class String
 	 * @return A character array containing the characters of this string.
 	 * @since 2017/08/15
 	 */
+	@Api
 	public char[] toCharArray()
 	{
 		// Direct copy of the character array
@@ -1231,6 +1273,7 @@ public final class String
 	 * @return The lowercased result of this string.
 	 * @since 2018/09/20
 	 */
+	@Api
 	public String toLowerCase()
 	{
 		// If this string is lowercased already do not mess with it
@@ -1291,6 +1334,7 @@ public final class String
 	 * @return The uppercased result of this string.
 	 * @since 2018/09/29
 	 */
+	@Api
 	public String toUpperCase()
 	{
 		// If this string is uppercased already do not mess with it
@@ -1344,6 +1388,7 @@ public final class String
 	 * start or end in whitespace then {@code this} is returned.
 	 * @since 2016/04/20
 	 */
+	@Api
 	@SuppressWarnings("StatementWithEmptyBody")
 	public String trim()
 	{
@@ -1470,6 +1515,7 @@ public final class String
 	 * @return The result of the other call.
 	 * @since 2016/06/13
 	 */
+	@Api
 	public static String copyValueOf(char[] __c, int __o, int __l)
 	{
 		return String.valueOf(__c, __o, __l);
@@ -1482,6 +1528,7 @@ public final class String
 	 * @return The result of the other call.
 	 * @since 2016/06/13
 	 */
+	@Api
 	public static String copyValueOf(char[] __c)
 	{
 		return String.valueOf(__c);
@@ -1499,6 +1546,7 @@ public final class String
 	 * @see java.util.Formatter
 	 * @since 2018/11/02
 	 */
+	@Api
 	public static String format(String __fmt, Object... __args)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -1514,6 +1562,7 @@ public final class String
 	 * @return The string value of the given object or {@code "null"}
 	 * @since 2016/06/13
 	 */
+	@Api
 	public static String valueOf(Object __a)
 	{
 		// The value is a string already
@@ -1536,6 +1585,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public static String valueOf(char[] __a)
 		throws NullPointerException
 	{
@@ -1554,6 +1604,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public static String valueOf(char[] __c, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -1567,6 +1618,7 @@ public final class String
 	 * @return The resulting string.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public static String valueOf(boolean __a)
 	{
 		return Boolean.valueOf(__a).toString();
@@ -1579,6 +1631,7 @@ public final class String
 	 * @return The resulting string.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public static String valueOf(char __a)
 	{
 		return Character.valueOf(__a).toString();
@@ -1591,6 +1644,7 @@ public final class String
 	 * @return The resulting string.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public static String valueOf(int __a)
 	{
 		return Integer.valueOf(__a).toString();
@@ -1603,6 +1657,7 @@ public final class String
 	 * @return The resulting string.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public static String valueOf(long __a)
 	{
 		return Long.valueOf(__a).toString();
@@ -1615,6 +1670,7 @@ public final class String
 	 * @return The resulting string.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public static String valueOf(float __a)
 	{
 		return Float.valueOf(__a).toString();
@@ -1627,6 +1683,7 @@ public final class String
 	 * @return The resulting string.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public static String valueOf(double __a)
 	{
 		return Double.valueOf(__a).toString();

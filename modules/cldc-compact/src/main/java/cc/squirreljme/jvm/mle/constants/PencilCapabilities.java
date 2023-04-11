@@ -76,10 +76,10 @@ public interface PencilCapabilities
 		8;
 	
 	/**
-	 * Reserved.
+	 * Capable of the following:
+	 * - {@code drawText}.
 	 */
-	@Deprecated
-	byte RESERVED_16 =
+	byte TEXT_ADVANCED =
 		16;
 	
 	/**
@@ -153,10 +153,9 @@ public interface PencilCapabilities
 	 * - {@code drawChars}.
 	 * - {@code drawString}.
 	 * - {@code drawSubstring}.
-	 * - {@code drawText}.
 	 * - {@code getFont}.
 	 * - {@code setFont}.
 	 */
-	short FONT_TEXT =
+	short TEXT_BASIC =
 		16384;
 }

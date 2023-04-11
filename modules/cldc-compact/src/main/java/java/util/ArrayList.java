@@ -9,6 +9,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -23,6 +24,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @see Vector
  * @since 2018/09/15
  */
+@Api
 public class ArrayList<E>
 	extends AbstractList<E>
 	implements List<E>, RandomAccess, Cloneable
@@ -42,6 +44,7 @@ public class ArrayList<E>
 	 *
 	 * @since 2018/09/15
 	 */
+	@Api
 	public ArrayList()
 	{
 		this(10);
@@ -177,6 +180,7 @@ public class ArrayList<E>
 	 * @param __n The number of elements.
 	 * @since 2019/05/14
 	 */
+	@Api
 	@SuppressWarnings({"unchecked"})
 	public void ensureCapacity(int __n)
 	{
@@ -283,6 +287,7 @@ public class ArrayList<E>
 		return this._size;
 	}
 	
+	@Api
 	public void trimToSize()
 	{
 		throw Debugging.todo();

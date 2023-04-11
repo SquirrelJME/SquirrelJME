@@ -24,7 +24,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @since 2018/10/07
  */
 final class __BucketMap__<K, V>
-	extends AbstractMap<K, V>
+	//extends AbstractMap<K, V>
 {
 	/** Special holder for when backing for a set. */
 	static final Object _TAKEN =
@@ -137,6 +137,28 @@ final class __BucketMap__<K, V>
 	}
 	
 	/**
+	 * Clears the bucket map.
+	 * 
+	 * @since 2023/02/09
+	 */
+	public void clear()
+	{
+		// Forward clear
+		this.__clear();
+	}
+	
+	/**
+	 * Returns the entry set over the bucket map.
+	 *
+	 * @return The entry set.
+	 * @since 2018/11/01
+	 */
+	public final Set<Map.Entry<K, V>> entrySet()
+	{
+		return new __EntrySet__();
+	}
+	
+	/**
 	 * Gets the entry for the given key.
 	 *
 	 * @param __k The key to get.
@@ -181,13 +203,14 @@ final class __BucketMap__<K, V>
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2018/11/01
+	 * Is this bucket map empty?
+	 * 
+	 * @return If this is empty.
+	 * @since 2023/02/09
 	 */
-	@Override
-	public final Set<Map.Entry<K, V>> entrySet()
+	public boolean isEmpty()
 	{
-		return new __EntrySet__();
+		return this.size() <= 0;
 	}
 	
 	/**
@@ -253,7 +276,8 @@ final class __BucketMap__<K, V>
 							__BucketMap__.<K, V>__newChain(cn + 1);
 						
 						// Copy all the old chain stuff over
-						System.arraycopy(newchain, 0, newnewchain, 0, cn);
+						System.arraycopy(newchain, 0,
+							newnewchain, 0, cn);
 						
 						// Use this chain
 						newchain = newnewchain;
@@ -370,10 +394,12 @@ final class __BucketMap__<K, V>
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Removes the given key from the bucket map.
+	 * 
+	 * @param __k The key to remove.
+	 * @return The removed key.
 	 * @since 2018/11/04
 	 */
-	@Override
 	public final V remove(Object __k)
 	{
 		__BucketMapEntry__<K, V> rv = this.removeEntry(__k, false);
@@ -453,10 +479,11 @@ final class __BucketMap__<K, V>
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Returns the size of the bucket map.
+	 * 
+	 * @return The bucket map size.
 	 * @since 2018/10/08
 	 */
-	@Override
 	public final int size()
 	{
 		return this._size;

@@ -9,12 +9,15 @@
 
 package java.nio.channels;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.Closeable;
 
+@Api
 public interface Channel
 	extends Closeable
 {
 	
+	@Api
 	boolean isOpen();
 }
 

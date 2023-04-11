@@ -10,24 +10,30 @@
 package java.lang;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
+@Api
 public final class Short
 	extends Number
 	implements Comparable<Short>
 {
+	@Api
 	public static final short MAX_VALUE =
 		32767;
 	
+	@Api
 	public static final short MIN_VALUE =
 		-32768;
 	
+	@Api
 	public static final int SIZE =
 		16;
 	
 	/** The class representing the primitive type. */
+	@Api
 	public static final Class<Short> TYPE =
 		TypeShelf.<Short>typeToClass(TypeShelf.typeOfShort());
 	
@@ -43,11 +49,13 @@ public final class Short
 	 * @param __v The value to wrap.
 	 * @since 2018/11/14
 	 */
+	@Api
 	public Short(short __v)
 	{
 		this._value = __v;
 	}
 	
+	@Api
 	public Short(String __a)
 		throws NumberFormatException
 	{
@@ -139,6 +147,7 @@ public final class Short
 		return rv;
 	}
 	
+	@Api
 	public static Short decode(String __a)
 		throws NumberFormatException
 	{
@@ -147,6 +156,7 @@ public final class Short
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static short parseShort(String __a, int __b)
 		throws NumberFormatException
 	{
@@ -155,6 +165,7 @@ public final class Short
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static short parseShort(String __a)
 		throws NumberFormatException
 	{
@@ -170,6 +181,7 @@ public final class Short
 	 * @return The reversed value.
 	 * @since 2021/02/18
 	 */
+	@Api
 	public static short reverseBytes(short __i)
 	{
 		// 0xBBAA -> 0xAABB
@@ -183,11 +195,13 @@ public final class Short
 	 * @return The string representation of it.
 	 * @since 2018/11/14
 	 */
+	@Api
 	public static String toString(short __v)
 	{
 		return Integer.toString(__v, 10);
 	}
 	
+	@Api
 	public static Short valueOf(String __a, int __b)
 		throws NumberFormatException
 	{
@@ -196,6 +210,7 @@ public final class Short
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Short valueOf(String __a)
 		throws NumberFormatException
 	{
@@ -211,6 +226,7 @@ public final class Short
 	 * @return The boxed value.
 	 * @since 2018/11/14
 	 */
+	@Api
 	public static Short valueOf(short __v)
 	{
 		return new Short(__v);

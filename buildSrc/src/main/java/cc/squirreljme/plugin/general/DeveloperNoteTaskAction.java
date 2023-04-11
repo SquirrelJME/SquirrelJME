@@ -64,7 +64,7 @@ class DeveloperNoteTaskAction
 			DeveloperNoteTask.__launchBrowser(__task, url);
 			
 			// Continuous handling loop
-			for (; ; )
+			for (;;)
 				try
 				{
 					// Stop the loop if we were interrupted

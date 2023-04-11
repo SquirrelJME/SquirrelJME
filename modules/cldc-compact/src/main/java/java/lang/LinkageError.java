@@ -9,11 +9,14 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when a class could not be linked into the virtual machine.
  *
  * @since 2018/12/04
  */
+@Api
 public class LinkageError
 	extends Error
 {
@@ -22,6 +25,7 @@ public class LinkageError
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public LinkageError()
 	{
 	}
@@ -32,6 +36,7 @@ public class LinkageError
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public LinkageError(String __m)
 	{
 		super(__m);

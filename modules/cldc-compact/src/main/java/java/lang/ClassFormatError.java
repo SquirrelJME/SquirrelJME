@@ -9,11 +9,14 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when the format of a class is not valid.
  *
  * @since 2018/12/04
  */
+@Api
 public class ClassFormatError
 	extends LinkageError
 {
@@ -22,6 +25,7 @@ public class ClassFormatError
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public ClassFormatError()
 	{
 	}
@@ -32,6 +36,7 @@ public class ClassFormatError
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public ClassFormatError(String __m)
 	{
 		super(__m);

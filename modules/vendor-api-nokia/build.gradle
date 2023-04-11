@@ -1,0 +1,25 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import org.iban4j.CountryCode
+
+description = "Implements support for the Nokia APIs."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "NO"
+	swmType = JavaMEMidletType.API
+	swmName = "Nokia API"
+	swmVendor = "Stephanie Gawroriski"
+	originalApiVendor = "Nokia Corporation"
+	originalApiVendorUrl = "https://www.nokia.com/"
+	originalApiVendorCountry = CountryCode.FI
+	tags += "nokia"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+
+	api project(":modules:media-api")
+	api project(":modules:midp-lcdui")
+}

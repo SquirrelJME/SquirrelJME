@@ -12,6 +12,8 @@ package cc.squirreljme.jvm.mle.brackets;
 import cc.squirreljme.jvm.mle.UIFormShelf;
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.jvm.mle.constants.UIItemType;
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * This represents an item within a {@link UIFormShelf}, it has one of the
@@ -19,6 +21,7 @@ import cc.squirreljme.jvm.mle.constants.UIItemType;
  *
  * @since 2020/07/01
  */
+@SquirrelJMEVendorApi
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 @GhostObject
 public interface UIItemBracket

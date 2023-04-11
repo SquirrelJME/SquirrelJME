@@ -9,18 +9,22 @@
 
 package javax.bluetooth;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class UUID
 {
 	private final String _uuid;
 	
+	@Api
 	@SuppressWarnings("unused")
 	public UUID(long __l)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@SuppressWarnings("unused")
 	public UUID(String __uuid, boolean __short)
 	{

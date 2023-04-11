@@ -9,11 +9,14 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * This is an indicator that an exception was thrown.
  *
  * @since 2018/10/06
  */
+@SquirrelJMEVendorApi
 final class __ExceptionThrown__
 {
 	/**

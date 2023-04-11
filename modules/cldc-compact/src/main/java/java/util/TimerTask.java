@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
  *
  * @since 2018/12/11
  */
+@Api
 public abstract class TimerTask
 	implements Runnable
 {
@@ -50,6 +51,7 @@ public abstract class TimerTask
 	 *
 	 * @since 2018/12/11
 	 */
+	@Api
 	protected TimerTask()
 	{
 	}
@@ -79,7 +81,8 @@ public abstract class TimerTask
 	 * @return The scheduled execution time.
 	 * @since 2018/12/11
 	 */
-	public long scheduledExcutionTime()
+	@Api
+	public long scheduledExecutionTime()
 	{
 		if (this._inrun)
 			return this._lastrun;

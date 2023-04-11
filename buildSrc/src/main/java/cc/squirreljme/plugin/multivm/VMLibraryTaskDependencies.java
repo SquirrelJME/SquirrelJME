@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import java.util.concurrent.Callable;
 import org.gradle.api.Task;
 
@@ -23,26 +24,26 @@ public class VMLibraryTaskDependencies
 	/** The task this is for. */
 	protected final VMLibraryTask task;
 	
-	/** The virtual machine to target. */
-	protected final VMSpecifier vmType;
+	/** The classifier used. */
+	protected final TargetClassifier classifier;
 	
 	/**
 	 * Initializes the task dependencies.
 	 * 
 	 * @param __task The task owning this.
-	 * @param __vmType The virtual machine to target.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/21
 	 */
 	public VMLibraryTaskDependencies(VMLibraryTask __task,
-		VMSpecifier __vmType)
+		TargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__task == null || __vmType == null)
+		if (__task == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
 		this.task = __task;
-		this.vmType = __vmType;
+		this.classifier = __classifier;
 	}
 	
 	/**
@@ -52,6 +53,7 @@ public class VMLibraryTaskDependencies
 	@Override
 	public Iterable<Task> call()
 	{
-		return this.vmType.processLibraryDependencies(this.task);
+		return this.classifier.getVmType().processLibraryDependencies(
+			this.task, this.classifier.getBangletVariant());
 	}
 }

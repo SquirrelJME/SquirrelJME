@@ -11,9 +11,16 @@ dependencies {
 	implementation gradleApi()
 
 	// Jasmin Sable (Java byte code assembler)
-	implementation "ca.mcgill.sable:jasmin:3.0.2"
+	implementation "ca.mcgill.sable:jasmin:3.0.3"
+	
+	// ProGuard, minification
+	implementation "com.guardsquare:proguard-base:7.3.2"
+	implementation "com.guardsquare:proguard-core:9.0.8"
 	
 	// Lombok for simpler getters/setters
-	implementation 'org.projectlombok:lombok:1.18.24'
-	annotationProcessor 'org.projectlombok:lombok:1.18.24'
+	implementation 'org.projectlombok:lombok:1.18.26'
+	annotationProcessor 'org.projectlombok:lombok:1.18.26'
+	
+	// Country codes
+	implementation 'org.iban4j:iban4j:3.2.4-RELEASE'
 }

@@ -9,11 +9,14 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when no class definition was found.
  *
  * @since 2018/12/04
  */
+@Api
 public class NoClassDefFoundError
 	extends LinkageError
 {
@@ -22,6 +25,7 @@ public class NoClassDefFoundError
 	 *
 	 * @since 2018/12/04
 	 */
+	@Api
 	public NoClassDefFoundError()
 	{
 	}
@@ -32,6 +36,7 @@ public class NoClassDefFoundError
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
+	@Api
 	public NoClassDefFoundError(String __m)
 	{
 		super(__m);

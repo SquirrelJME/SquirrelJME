@@ -9,11 +9,14 @@
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This is thrown when the format of a UTF string is not correct.
  *
  * @since 2018/12/03
  */
+@Api
 public class UTFDataFormatException
 	extends IOException
 {
@@ -22,6 +25,7 @@ public class UTFDataFormatException
 	 *
 	 * @since 2018/12/03
 	 */
+	@Api
 	public UTFDataFormatException()
 	{
 	}
@@ -32,6 +36,7 @@ public class UTFDataFormatException
 	 * @param __m The message to use.
 	 * @since 2018/12/03
 	 */
+	@Api
 	public UTFDataFormatException(String __m)
 	{
 		super(__m);

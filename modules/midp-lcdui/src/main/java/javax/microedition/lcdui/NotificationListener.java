@@ -9,12 +9,22 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
+
+@Api
 public interface NotificationListener
 {
+	@Api
+	@SerializedEvent
 	void notificationDismissed(Notification __n);
 	
+	@Api
+	@SerializedEvent
 	void notificationSelected(Notification __n);
 	
+	@Api
+	@SerializedEvent
 	void notificationTimeout(Notification __n);
 }
 

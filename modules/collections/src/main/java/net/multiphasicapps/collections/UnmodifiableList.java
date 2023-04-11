@@ -265,7 +265,7 @@ public abstract class UnmodifiableList<V>
 		 * @param __l The list to wrap.
 		 * @since 2016/04/28
 		 */
-		private __Random__(List<V> __l)
+		__Random__(List<V> __l)
 		{
 			super(__l);
 		}
@@ -288,7 +288,7 @@ public abstract class UnmodifiableList<V>
 		 * @param __l The list to wrap.
 		 * @since 2016/04/28
 		 */
-		private __Sequential__(List<V> __l)
+		__Sequential__(List<V> __l)
 		{
 			super(__l);
 		}

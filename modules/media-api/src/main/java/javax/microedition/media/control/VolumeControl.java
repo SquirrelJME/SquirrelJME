@@ -9,17 +9,23 @@
 
 package javax.microedition.media.control;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.media.Control;
 
+@Api
 public interface VolumeControl
 	extends Control
 {
+	@Api
 	int getLevel();
 	
+	@Api
 	boolean isMuted();
 	
+	@Api
 	int setLevel(int __a);
 	
+	@Api
 	void setMute(boolean __a);
 }
 

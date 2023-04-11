@@ -92,14 +92,21 @@ public abstract class SpringCallbackAdapter
 			{
 				MethodInvokeException mie = (MethodInvokeException)result;
 				
+				Debugging.debugNote("--------------------------------");
+				
+				// Print outside exception to try to get the original call
 				Debugging.debugNote("Callback exception: %s",
 					mie.exception);
+				mie.printStackTrace(System.err);
 				
 				// Print stack trace through the VM if possible
+				Debugging.debugNote("Within VM:");
 				cb.thread().invokeMethod(false,
 					SpringCallbackAdapter._THROWABLE_CLASS,
 					SpringCallbackAdapter._PRINT_STACK_TRACE_NAT,
 					mie.exception);
+				
+				Debugging.debugNote("--------------------------------");
 				
 				throw new SpringMLECallError("Callback threw exception!");
 			}

@@ -9,7 +9,8 @@
 
 package cc.squirreljme.plugin.multivm;
 
-import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
+import cc.squirreljme.plugin.multivm.ident.TargetClassifier;
 import cc.squirreljme.plugin.util.GradleJavaExecSpecFiller;
 import cc.squirreljme.plugin.util.GuardedOutputStream;
 import cc.squirreljme.plugin.util.JavaExecSpecFiller;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -50,10 +52,20 @@ public enum VMType
 	{
 		/**
 		 * {@inheritDoc}
+		 * @since 2023/02/10
+		 */
+		@Override
+		public boolean allowOnlyDebug()
+		{
+			return true;
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2021/05/16
 		 */
 		@Override
-		public void dumpLibrary(Task __task, boolean __isTest,
+		public void dumpLibrary(VMBaseTask __task, boolean __isTest,
 			InputStream __in, OutputStream __out)
 			throws IOException, NullPointerException
 		{
@@ -62,10 +74,20 @@ public enum VMType
 		
 		/**
 		 * {@inheritDoc}
+		 * @since 2022/10/01
+		 */
+		@Override
+		public boolean isGoldTest()
+		{
+			return true;
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void processLibrary(Task __task, boolean __isTest,
+		public void processLibrary(VMBaseTask __task, boolean __isTest,
 			InputStream __in, OutputStream __out)
 			throws IOException, NullPointerException
 		{
@@ -81,8 +103,8 @@ public enum VMType
 		 * @since 2020/11/21
 		 */
 		@Override
-		public Iterable<Task> processLibraryDependencies(
-			VMExecutableTask __task)
+		public Iterable<Task> processLibraryDependencies(VMBaseTask __task,
+			BangletVariant __variant)
 			throws NullPointerException
 		{
 			return Collections.emptyList();
@@ -93,8 +115,8 @@ public enum VMType
 		 * @since 2020/11/27
 		 */
 		@Override
-		public void processRom(Task __task, OutputStream __out,
-			RomBuildParameters __build, List<Path> __libs)
+		public void processRom(VMBaseTask __task, BangletVariant __variant,
+			OutputStream __out, RomBuildParameters __build, List<Path> __libs)
 			throws IOException, NullPointerException
 		{
 			throw new RuntimeException(this.name() + " is not ROM capable.");
@@ -106,7 +128,8 @@ public enum VMType
 		 */
 		@SuppressWarnings("CallToSystemGetenv")
 		@Override
-		public void spawnJvmArguments(Task __task, boolean __debugEligible,
+		public void spawnJvmArguments(VMBaseTask __task,
+			boolean __debugEligible,
 			JavaExecSpecFiller __execSpec, String __mainClass,
 			String __commonName, Map<String, String> __sysProps,
 			Path[] __libPath, Path[] __classPath, String... __args)
@@ -197,6 +220,11 @@ public enum VMType
 			sysProps.put("microedition.platform", "SquirrelJME/0.3.0");
 			sysProps.put("squirreljme.orig.microedition.platform",
 				"SquirrelJME/0.3.0");
+			
+			// VM Tracing?
+			String tracing = System.getProperty("cc.squirreljme.vm.trace");
+			if (tracing != null)
+				sysProps.put("cc.squirreljme.vm.trace", tracing);
 			
 			// Declare system properties that are all the originally defined
 			// system properties
@@ -300,7 +328,7 @@ public enum VMType
 		 * @since 2021/05/16
 		 */
 		@Override
-		public void dumpLibrary(Task __task, boolean __isTest,
+		public void dumpLibrary(VMBaseTask __task, boolean __isTest,
 			InputStream __in, OutputStream __out)
 			throws IOException, NullPointerException
 		{
@@ -309,10 +337,20 @@ public enum VMType
 		
 		/**
 		 * {@inheritDoc}
+		 * @since 2022/10/01
+		 */
+		@Override
+		public boolean isGoldTest()
+		{
+			return true;
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void processLibrary(Task __task, boolean __isTest,
+		public void processLibrary(VMBaseTask __task, boolean __isTest,
 			InputStream __in, OutputStream __out)
 			throws IOException, NullPointerException
 		{
@@ -328,7 +366,8 @@ public enum VMType
 		 * @since 2020/08/15
 		 */
 		@Override
-		public void spawnJvmArguments(Task __task, boolean __debugEligible,
+		public void spawnJvmArguments(VMBaseTask __task,
+			boolean __debugEligible,
 			JavaExecSpecFiller __execSpec, String __mainClass,
 			String __commonName, Map<String, String> __sysProps,
 			Path[] __libPath, Path[] __classPath, String... __args)
@@ -399,10 +438,31 @@ public enum VMType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/02/10
+	 */
+	@Override
+	public boolean allowOnlyDebug()
+	{
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2022/09/30
+	 */
+	@Override
+	public Set<BangletVariant> banglets()
+	{
+		// Defaults to none
+		return Collections.unmodifiableSet(EnumSet.of(BangletVariant.NONE));
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/08/16
 	 */
 	@Override
-	public final List<String> emulatorProjects()
+	public final List<String> emulatorProjects(BangletVariant __variant)
 	{
 		return this.emulatorProjects;
 	}
@@ -419,10 +479,21 @@ public enum VMType
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2020/08/23
+	 * @since 2022/12/23
 	 */
 	@Override
-	public final boolean hasRom()
+	public boolean hasEmulatorJit()
+	{
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/08/23
+	 * @param __variant
+	 */
+	@Override
+	public final boolean hasRom(BangletVariant __variant)
 	{
 		return this != VMType.HOSTED;
 	}
@@ -442,7 +513,7 @@ public enum VMType
 		if (SourceSet.MAIN_SOURCE_SET_NAME.equals(__sourceSet))
 			return __project.getName() + "." + this.extension;
 		
-		// Otherwise include the source sets
+		// Otherwise, include the source sets
 		return __project.getName() + "-" + __sourceSet + "." + this.extension;
 	}
 	
@@ -451,12 +522,25 @@ public enum VMType
 	 * @since 2020/11/27
 	 */
 	@Override
-	public String outputRomName(String __sourceSet)
+	public String outputRomName(String __sourceSet, BangletVariant __variant)
 		throws NullPointerException
 	{
+		// If this is the main source set, then just do not include "main"
+		// as it is pointless
+		String variantNoun = __variant.properNoun;
 		if (SourceSet.MAIN_SOURCE_SET_NAME.equals(__sourceSet))
-			return "squirreljme." + this.extension;
-		return "squirreljme-" + __sourceSet + "." + this.extension;
+		{
+			if (variantNoun.isEmpty())
+				return "squirreljme." + this.extension;
+			return "squirreljme-" + variantNoun + "." + this.extension;
+		}
+		
+		// If there is no variant include it
+		if (variantNoun.isEmpty())
+			return "squirreljme-" + __sourceSet + "." + this.extension;
+		
+		return "squirreljme-" + __sourceSet + "-" + variantNoun + "." +
+			this.extension;
 	}
 	
 	/**
@@ -464,8 +548,8 @@ public enum VMType
 	 * @since 2020/11/21
 	 */
 	@Override
-	public Iterable<Task> processLibraryDependencies(
-		VMExecutableTask __task)
+	public Iterable<Task> processLibraryDependencies(VMBaseTask __task,
+		BangletVariant __variant)
 		throws NullPointerException
 	{
 		Project project = __task.getProject().getRootProject()
@@ -473,12 +557,13 @@ public enum VMType
 				this.vmName(VMNameFormat.LOWERCASE));
 		Project rootProject = project.getRootProject();
 		
-		// Make sure the AOT compiler is always up to date when this is
+		// Make sure the AOT compiler is always up-to-date when this is
 		// ran, otherwise things can be very weird if it is not updated
 		// which would not be a good thing at all
 		Collection<Task> rv = new LinkedList<>();
 		for (ProjectAndTaskName task : VMHelpers.runClassTasks(project,
-			SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED))
+			new SourceTargetClassifier(SourceSet.MAIN_SOURCE_SET_NAME,
+				VMType.HOSTED, BangletVariant.NONE, ClutterLevel.DEBUG)))
 		{
 			Project taskProject = rootProject.project(task.project);
 			
@@ -495,7 +580,8 @@ public enum VMType
 		// Make sure the hosted environment is working since it needs to
 		// be kept up to date as well
 		for (Task task : new VMEmulatorDependencies(__task,
-			VMType.HOSTED).call())
+			new TargetClassifier(VMType.HOSTED, BangletVariant.NONE,
+				ClutterLevel.DEBUG)).call())
 			rv.add(task);
 		
 		return rv;
@@ -506,8 +592,8 @@ public enum VMType
 	 * @since 2020/11/27
 	 */
 	@Override
-	public void processRom(Task __task, OutputStream __out,
-		RomBuildParameters __build, List<Path> __libs)
+	public void processRom(VMBaseTask __task, BangletVariant __variant,
+		OutputStream __out, RomBuildParameters __build, List<Path> __libs)
 		throws IOException, NullPointerException
 	{
 		if (__task == null || __out == null || __build == null ||
@@ -574,7 +660,7 @@ public enum VMType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	public void spawnVmViaFactory(Task __task, boolean __debugEligible,
+	public void spawnVmViaFactory(VMBaseTask __task, boolean __debugEligible,
 		JavaExecSpecFiller __execSpec, String __mainClass,
 		String __commonName, Map<String, String> __sysProps, Path[] __libPath,
 		Path[] __classPath, String[] __args)
@@ -637,9 +723,8 @@ public enum VMType
 		// Determine where profiler snapshots are to go, try to use the
 		// profiler directory for that
 		Path profilerDir = ((__task instanceof VMExecutableTask) ?
-			VMHelpers.profilerDir(__task.getProject(), this,
-			((VMExecutableTask)__task).getSourceSet()).get() :
-			__task.getProject().getBuildDir().toPath());
+			VMHelpers.profilerDir(__task.getProject(), __task.getClassifier())
+			.get() : __task.getProject().getBuildDir().toPath());
 		
 		// Use the main class name unless this is a test, so that they are
 		// named better
@@ -697,7 +782,8 @@ public enum VMType
 				
 			case PROPER_NOUN:
 			default:
-				return properName;
+				return Character.toUpperCase(properName.charAt(0)) +
+					properName.substring(1);
 		}
 	}
 	
@@ -713,7 +799,7 @@ public enum VMType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/05/16
 	 */
-	void __aotCommand(Task __task, InputStream __in, OutputStream __out,
+	void __aotCommand(VMBaseTask __task, InputStream __in, OutputStream __out,
 		String __command, Iterable<String> __args)
 		throws NullPointerException
 	{
@@ -724,7 +810,9 @@ public enum VMType
 		Path[] classPath = VMHelpers.runClassPath(__task.getProject()
 			.getRootProject().project(":modules:aot-" +
 				this.vmName(VMNameFormat.LOWERCASE)),
-			SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED);
+			new SourceTargetClassifier(
+				SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED,
+				BangletVariant.NONE, ClutterLevel.DEBUG));
 		
 		// Setup arguments for compilation
 		Collection<String> args = new ArrayList<>();

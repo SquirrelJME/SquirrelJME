@@ -9,6 +9,7 @@
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -16,14 +17,17 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2018/11/18
  */
+@Api
 public class DataOutputStream
 	extends OutputStream
 	implements DataOutput
 {
 	/** The underlying stream to write to. */
+	@Api
 	protected OutputStream out;
 	
 	/** The number of bytes written. */
+	@Api
 	protected int written;
 	
 	/**
@@ -33,6 +37,7 @@ public class DataOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/18
 	 */
+	@Api
 	public DataOutputStream(OutputStream __o)
 		throws NullPointerException
 	{
@@ -62,6 +67,7 @@ public class DataOutputStream
 	 * @return The number of bytes which were written.
 	 * @since 2018/11/18
 	 */
+	@Api
 	public final int size()
 	{
 		return this.written;

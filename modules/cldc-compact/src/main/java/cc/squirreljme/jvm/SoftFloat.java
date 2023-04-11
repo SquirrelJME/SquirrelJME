@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.UnsignedInteger;
 
@@ -20,26 +21,32 @@ import cc.squirreljme.runtime.cldc.util.UnsignedInteger;
  *
  * @since 2019/05/24
  */
+@SquirrelJMEVendorApi
 @SuppressWarnings({"CommentedOutCode", "MagicNumber", "OverlyComplexClass"})
 public final class SoftFloat
 {
 	/** The sign mask. */
+	@SquirrelJMEVendorApi
 	public static final int SIGN_MASK =
 		0b1000_0000_0000_0000__0000_0000_0000_0000;
 	
 	/** The zero check mask. */
+	@SquirrelJMEVendorApi
 	public static final int ZERO_CHECK_MASK =
 		0x7FFFFFFF;
 	
 	/** Exponent Mask. */
+	@SquirrelJMEVendorApi
 	public static final int EXPONENT_MASK =
 		0b0111_1111_1000_0000__0000_0000_0000_0000;
 	
 	/** Fraction Mask. */
+	@SquirrelJMEVendorApi
 	public static final int FRACTION_MASK =
 		0b0000_0000_0111_1111__1111_1111_1111_1111;
 	
 	/** The mask for NaN values. */
+	@SquirrelJMEVendorApi
 	public static final int NAN_MASK =
 		0b0111_1111_1000_0000__0000_0000_0000_0000;
 	
@@ -80,6 +87,7 @@ public final class SoftFloat
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static float add(int __a, int __b)
 	{
 		Assembly.breakpoint();
@@ -94,6 +102,7 @@ public final class SoftFloat
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	@SuppressWarnings("SpellCheckingInspection")
 	public static int cmpl(int __a, int __b)
 	{
@@ -111,6 +120,7 @@ public final class SoftFloat
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	@SuppressWarnings("SpellCheckingInspection")
 	public static int cmpg(int __a, int __b)
 	{
@@ -128,6 +138,7 @@ public final class SoftFloat
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static float div(int __a, int __b)
 	{
 		Assembly.breakpoint();
@@ -141,6 +152,7 @@ public final class SoftFloat
 	 * @return If this is not a number.
 	 * @since 2021/04/07
 	 */
+	@SquirrelJMEVendorApi
 	public static boolean isNaN(int __a)
 	{
 		return SoftFloat.NAN_MASK == (__a & SoftFloat.NAN_MASK);
@@ -154,6 +166,7 @@ public final class SoftFloat
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static float mul(int __a, int __b)
 	{
 		// First value
@@ -256,6 +269,7 @@ public final class SoftFloat
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static float neg(int __a)
 	{
 		Assembly.breakpoint();
@@ -270,6 +284,7 @@ public final class SoftFloat
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static float or(int __a, int __b)
 	{
 		return Assembly.intBitsToFloat(__a | __b);
@@ -283,6 +298,7 @@ public final class SoftFloat
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static float rem(int __a, int __b)
 	{
 		Assembly.breakpoint();
@@ -297,6 +313,7 @@ public final class SoftFloat
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static float sub(int __a, int __b)
 	{
 		Assembly.breakpoint();
@@ -310,6 +327,7 @@ public final class SoftFloat
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static double toDouble(int __a)
 	{
 		Assembly.breakpoint();
@@ -323,6 +341,7 @@ public final class SoftFloat
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static int toInteger(int __a)
 	{
 		boolean sign = SoftFloat.__signF32UI(__a);
@@ -349,6 +368,7 @@ public final class SoftFloat
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
+	@SquirrelJMEVendorApi
 	public static long toLong(int __a)
 	{
 		Assembly.breakpoint();

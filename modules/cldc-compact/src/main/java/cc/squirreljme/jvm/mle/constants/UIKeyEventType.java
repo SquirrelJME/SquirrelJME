@@ -9,14 +9,11 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
-import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
 
 /**
  * Key events for
- * {@link UIFormCallback#eventKey(UIFormBracket, UIItemBracket, int, int,
- * int)}.
+ * {@link UIFormCallback#eventKey(cc.squirreljme.jvm.mle.brackets.UIDrawableBracket, int, int, int)}.
  *
  * @since 2020/07/19
  */

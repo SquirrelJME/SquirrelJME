@@ -9,12 +9,15 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This represents a collection which may be randomly accessed without
  * additional cost.
  *
  * @since 2018/12/08
  */
+@Api
 public interface RandomAccess
 {
 }

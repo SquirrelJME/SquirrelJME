@@ -65,7 +65,15 @@ public interface VMDescriptionType
 	byte VM_SECURITY_POLICY =
 		10;
 	
+	/** Single lines of legal text and copyrights used for ports. */
+	byte THIRD_PARTY_LEGAL_LINE =
+		11;
+	
+	/** Full document of legal text, with entire licenses. */
+	byte THIRD_PARTY_LEGAL_DOCUMENT =
+		12;
+	
 	/** The current number of properties. */
 	byte NUM_TYPES =
-		11;
+		13;
 }

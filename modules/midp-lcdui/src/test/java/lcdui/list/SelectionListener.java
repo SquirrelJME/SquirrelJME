@@ -40,6 +40,8 @@ public class SelectionListener
 	@Override
 	public void commandAction(Command __command, Displayable __displayable)
 	{
+		Debugging.debugNote("Command callback...");
+		
 		if (__command == List.SELECT_COMMAND)
 			synchronized (this)
 			{

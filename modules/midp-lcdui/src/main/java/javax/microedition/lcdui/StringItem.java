@@ -9,8 +9,12 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
+@Api
 public class StringItem
 	extends Item
 {
@@ -30,6 +34,7 @@ public class StringItem
 	 * @param __t The text.
 	 * @since 2019/05/17
 	 */
+	@Api
 	public StringItem(String __l, String __t)
 	{
 		this(__l, __t, Item.PLAIN);
@@ -44,6 +49,7 @@ public class StringItem
 	 * @throws IllegalArgumentException If the appearance mode is not valid.
 	 * @since 2019/05/17
 	 */
+	@Api
 	public StringItem(String __l, String __t, int __am)
 		throws IllegalArgumentException
 	{
@@ -58,6 +64,7 @@ public class StringItem
 		this._amode = __am;
 	}
 	
+	@Api
 	public int getAppearanceMode()
 	{
 		throw Debugging.todo();
@@ -69,6 +76,7 @@ public class StringItem
 	 * @return The font used to draw the item.
 	 * @since 2019/12/09
 	 */
+	@Api
 	public Font getFont()
 	{
 		Font rv = this._font;
@@ -111,19 +119,54 @@ public class StringItem
 	 * @return The text content.
 	 * @since 2019/12/09
 	 */
+	@Api
 	public String getText()
 	{
 		return this._text;
 	}
 	
+	@Api
 	public void setFont(Font __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setText(String __a)
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/01/14
+	 */
+	@Override
+	__CommonState__ __stateInit(UIBackend __backend)
+		throws NullPointerException
+	{
+		return new __StringItemState__(__backend, this);
+	}
+	
+	/**
+	 * String item state.
+	 * 
+	 * @since 2023/01/14
+	 */
+	static class __StringItemState__
+		extends Item.__ItemState__
+	{
+		/**
+		 * Initializes the backend state.
+		 *
+		 * @param __backend The backend used.
+		 * @param __self Self widget.
+		 * @since 2023/01/14
+		 */
+		__StringItemState__(UIBackend __backend, DisplayWidget __self)
+		{
+			super(__backend, __self);
+		}
 	}
 }
 

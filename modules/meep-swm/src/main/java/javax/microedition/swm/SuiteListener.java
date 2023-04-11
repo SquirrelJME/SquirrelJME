@@ -9,12 +9,15 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
 /**
  * This interface is called when a suite has been installed, is being
  * installed, or has been removed.
  *
  * @since 2016/06/24
  */
+@Api
 public interface SuiteListener
 {
 	/**
@@ -31,6 +34,7 @@ public interface SuiteListener
 	 * @param __state The new state of the suite.
 	 * @since 2016/06/24
 	 */
+	@Api
 	void notifySuiteStateChanged(SuiteManagementTracker __track,
 		SuiteState __state);
 }

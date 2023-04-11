@@ -9,11 +9,14 @@
 
 package jdk.dio.gpio;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import jdk.dio.DeviceEventListener;
 
+@Api
 public interface PinListener
 	extends DeviceEventListener
 {
+	@Api
 	void valueChanged(PinEvent __a);
 }
 

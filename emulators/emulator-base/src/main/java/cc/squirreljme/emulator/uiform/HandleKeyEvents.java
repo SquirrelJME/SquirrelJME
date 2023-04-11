@@ -119,7 +119,7 @@ public class HandleKeyEvents
 			modifiers |= UIKeyModifier.MODIFIER_RIGHT_COMMAND;
 		
 		// Send the event
-		callback.eventKey(widget.form(), (UIItemBracket)widget, __type,
+		callback.eventKey((UIItemBracket)widget, __type,
 			keyCode, modifiers);
 	}
 	

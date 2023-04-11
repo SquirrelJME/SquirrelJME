@@ -9,8 +9,10 @@
 
 package jdk.dio.atcmd;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import jdk.dio.modem.ModemSignalsControl;
 
+@Api
 public interface ATModem
 	extends ATDevice, ModemSignalsControl<ATModem>
 {

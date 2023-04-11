@@ -10,16 +10,20 @@
 package jdk.dio;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class UnsupportedDeviceTypeException
 	extends DeviceException
 {
+	@Api
 	public UnsupportedDeviceTypeException()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public UnsupportedDeviceTypeException(String __a)
 	{
 		throw Debugging.todo();

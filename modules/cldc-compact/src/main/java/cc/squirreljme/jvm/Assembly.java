@@ -10,6 +10,8 @@
 package cc.squirreljme.jvm;
 
 import cc.squirreljme.jvm.mle.brackets.TypeBracket;
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * This class is used special by the compiler to transform all the various
@@ -22,6 +24,7 @@ import cc.squirreljme.jvm.mle.brackets.TypeBracket;
  *
  * @since 2019/04/20
  */
+@SquirrelJMEVendorApi
 @SuppressWarnings({"NewMethodNamingConvention", "OverlyComplexClass"})
 public final class Assembly
 {
@@ -117,6 +120,7 @@ public final class Assembly
 	 * @return The unpacked high value.
 	 * @since 2020/02/24
 	 */
+	@SquirrelJMEVendorApi
 	public static native int doubleUnpackHigh(double __d);
 	
 	/**
@@ -126,6 +130,7 @@ public final class Assembly
 	 * @return The unpacked low value.
 	 * @since 2020/02/24
 	 */
+	@SquirrelJMEVendorApi
 	public static native int doubleUnpackLow(double __d);
 	
 	/**
@@ -560,6 +565,7 @@ public final class Assembly
 	 * @return The long value.
 	 * @since 2019/06/21
 	 */
+	@SquirrelJMEVendorApi
 	public static native long longPack(int __lo, int __hi);
 	
 	/**
@@ -569,6 +575,7 @@ public final class Assembly
 	 * @return The unpacked fragment.
 	 * @since 2019/06/21
 	 */
+	@SquirrelJMEVendorApi
 	public static native int longUnpackHigh(long __v);
 	
 	/**
@@ -578,7 +585,9 @@ public final class Assembly
 	 * @return The unpacked fragment.
 	 * @since 2019/06/21
 	 */
+	@SquirrelJMEVendorApi
 	public static native int longUnpackLow(long __v);
+	
 	/**
 	 * Reads the given value from the memory handle.
 	 *

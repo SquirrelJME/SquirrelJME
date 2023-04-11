@@ -1,0 +1,23 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import org.iban4j.CountryCode
+
+description = "LG MMPP APIs."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "LG"
+	swmType = JavaMEMidletType.API
+	swmName = "LG MMPP API"
+	swmVendor = "Stephanie Gawroriski"
+	originalApiVendor = "LG Corporation"
+	originalApiVendorUrl = "http://www.lgcorp.com/"
+	originalApiVendorCountry = CountryCode.KR
+	tags += "lg"
+	tags += "mmpp"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+}

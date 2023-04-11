@@ -9,18 +9,22 @@
 
 package jdk.dio.dac;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import jdk.dio.DevicePermission;
 
+@Api
 public class DACPermission
 	extends DevicePermission
 {
+	@Api
 	public DACPermission(String __a)
 	{
 		super((String)null);
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public DACPermission(String __a, String __b)
 	{
 		super((String)null);

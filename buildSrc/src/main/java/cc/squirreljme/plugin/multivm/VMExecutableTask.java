@@ -17,13 +17,6 @@ import org.gradle.api.Task;
  * @since 2020/08/15
  */
 public interface VMExecutableTask
-	extends Task
+	extends VMBaseTask
 {
-	/**
-	 * Returns the source set that is used.
-	 * 
-	 * @return The source set for the task.
-	 * @since 2020/08/21
-	 */
-	String getSourceSet();
 }

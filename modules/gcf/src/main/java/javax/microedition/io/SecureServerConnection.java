@@ -10,6 +10,9 @@
 package javax.microedition.io;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface SecureServerConnection
 	extends ServerSocketConnection
 {

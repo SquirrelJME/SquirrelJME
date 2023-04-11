@@ -9,6 +9,7 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import cc.squirreljme.runtime.gcf.HTTPAddress;
@@ -30,17 +31,21 @@ import java.util.ServiceLoader;
  *
  * @since 2016/10/12
  */
+@Api
 public class Connector
 {
 	/** Access mode to allow reading from the connection stream. */
+	@Api
 	public static final int READ =
 		1;
 	
 	/** Access mode to allow for writing to the connection stream. */
+	@Api
 	public static final int WRITE =
 		2;
 	
 	/** Access mode to allow for read and writing from/to the stream. */
+	@Api
 	public static final int READ_WRITE = Connector.READ | Connector.WRITE;
 	
 	/** Services support. */
@@ -56,6 +61,7 @@ public class Connector
 	{
 	}
 	
+	@Api
 	public static long getBytesRead(Connection __a)
 		throws IOException
 	{
@@ -64,6 +70,7 @@ public class Connector
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static long getBytesWritten(Connection __a)
 		throws IOException
 	{
@@ -83,6 +90,7 @@ public class Connector
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static boolean isProtocolSupported(String __uri, boolean __server)
 		throws NullPointerException
 	{
@@ -138,6 +146,7 @@ public class Connector
 	 * @throws IOException As forwarded.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static Connection open(String __uri)
 		throws IOException
 	{
@@ -154,6 +163,7 @@ public class Connector
 	 * @throws IOException As forwarded.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static Connection open(String __uri, ConnectionOption<?>... __opts)
 		throws IOException
 	{
@@ -170,6 +180,7 @@ public class Connector
 	 * @throws IOException As forwarded.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static Connection open(String __uri, int __mode)
 		throws IOException
 	{
@@ -187,6 +198,7 @@ public class Connector
 	 * @throws IOException As forwarded.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static Connection open(String __uri, int __mode,
 		ConnectionOption<?>... __opts)
 		throws IOException
@@ -205,6 +217,7 @@ public class Connector
 	 * @throws IOException As forwarded.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static Connection open(String __uri, int __mode, boolean __timeouts)
 		throws IOException
 	{
@@ -231,6 +244,7 @@ public class Connector
 	 * @throws SecurityException If access to the protocol is not permitted.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static Connection open(String __uri, int __mode, boolean __timeouts,
 		ConnectionOption<?>... __opts)
 		throws ConnectionNotFoundException, IllegalArgumentException,
@@ -263,6 +277,7 @@ public class Connector
 	 * @throws IOException As forwarded.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static DataInputStream openDataInputStream(String __uri)
 		throws IOException
 	{
@@ -277,6 +292,7 @@ public class Connector
 	 * @throws IOException As forwarded.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static DataOutputStream openDataOutputStream(String __uri)
 		throws IOException
 	{
@@ -294,6 +310,7 @@ public class Connector
 	 * @throws IOException On open errors.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static InputStream openInputStream(String __uri)
 		throws IllegalArgumentException, IOException
 	{
@@ -322,6 +339,7 @@ public class Connector
 	 * @throws IOException On open errors.
 	 * @since 2016/10/12
 	 */
+	@Api
 	public static OutputStream openOutputStream(String __uri)
 		throws IllegalArgumentException, IOException
 	{
@@ -357,6 +375,7 @@ public class Connector
 	 * @throws SecurityException If access to the protocol is not permitted.
 	 * @since 2016/10/12
 	 */
+	@Api
 	private static Connection __open(String __uri, int __mode,
 		boolean __timeouts, ConnectionOption<?>... __opts)
 		throws ConnectionNotFoundException, IllegalArgumentException,

@@ -10,8 +10,12 @@
 package javax.microedition.media;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface TimeBase
 {
+	@Api
 	long getTime();
 }
 

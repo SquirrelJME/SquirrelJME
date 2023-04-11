@@ -9,25 +9,27 @@
 
 package javax.obex;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 import javax.microedition.io.ContentConnection;
 
+@Api
 public interface Operation
 	extends ContentConnection
 {
-	@SuppressWarnings("RedundantThrows")
+	@Api
 	void abort()
 		throws IOException;
 	
-	@SuppressWarnings("RedundantThrows")
+	@Api
 	HeaderSet getReceivedHeaders()
 		throws IOException;
 	
-	@SuppressWarnings("RedundantThrows")
+	@Api
 	int getResponseCode()
 		throws IOException;
 	
-	@SuppressWarnings("RedundantThrows")
+	@Api
 	void sendHeaders(HeaderSet __a)
 		throws IOException;
 }
