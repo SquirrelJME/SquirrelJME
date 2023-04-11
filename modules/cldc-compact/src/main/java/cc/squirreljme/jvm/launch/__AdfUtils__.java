@@ -104,9 +104,8 @@ final class __AdfUtils__
 		// 0x24: Draw Area Height (17)
 		int drawAreaHeight = in.readUnsignedShort();
 		
-		// 0x26: Length of variable data section?? (18)
-		// 0x26: Or start position of SPsize value?? (18)
-		int lengthVarDataSectionOrOffsetSPSize = in.readUnsignedShort();
+		// 0x26: Length of variable data section (18)
+		int lengthVarData = in.readUnsignedShort();
 		
 		// 0x28: Unknown byte??? (19) [0x07???]
 		int unknownHeader0x28Byte = in.readUnsignedByte();
