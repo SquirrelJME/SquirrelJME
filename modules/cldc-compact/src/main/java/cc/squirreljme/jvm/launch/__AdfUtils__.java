@@ -53,6 +53,10 @@ final class __AdfUtils__
 		// This is binary data
 		DataInputStream in = new DataInputStream(__in);
 		
+		// TODO: Determine which index specifies start of application name
+		Debugging.todoNote("AppName position is unknown?");
+		int varDataOffsetAppName = 0;
+		
 		// 0x00: Unknown??? (0)
 		int unknownHeader0x00Zero = in.readUnsignedShort();
 		
@@ -111,8 +115,8 @@ final class __AdfUtils__
 		// Calculated as part of "Used Storage"
 		int lengthVarData = in.readUnsignedShort();
 		
-		// 0x28: Unknown byte??? (19) [0x07???]
-		int unknownHeader0x28Byte = in.readUnsignedByte();
+		// 0x28: Class name length (19)
+		int lengthAppClass = in.readUnsignedByte();
 		
 		// 0x29: Length of AppParam (20)
 		int lengthAppParam = in.readUnsignedByte();
@@ -130,14 +134,17 @@ final class __AdfUtils__
 		int lengthLastModified = in.readUnsignedByte();
 		
 		// 0x2E: Unknown??? (25) [1???]
+		// 0x2E: Possible position of AppName?
 		// 0x2E: Application Type? 0 = None? 1 = i-Appli?
 		int unknown0x2EOne = in.readUnsignedByte();
 		
 		// 0x2F: Unknown Zero??? (26)
+		// 0x2F: Possible position of AppName?
+		// 0x2F: Application Type? 0 = None? 1 = i-Appli?
 		int unknown0x2FZero = in.readUnsignedByte();
 		
 		// 0x30: Unknown 129??? (27)
-		int unknown0x30 = in.readUnsignedShort();
+		int unknown0x30OneTwentyNine = in.readUnsignedShort();
 		
 		// 0x32: Tracing is enabled (0x01) Maybe other flags?
 		int enableTracing = in.readUnsignedByte();
@@ -150,15 +157,72 @@ final class __AdfUtils__
 		int autoStartIntervalHours = in.readUnsignedByte();
 		
 		// Variable data section
-		if (true)
-			throw Debugging.todo();
+		byte[] varData = new byte[lengthVarData];
+		in.readFully(varData);
 		
-		// Value 0xFDFD? Possibly EOF marker for validity?
-		// Seems to be ignored by the device
-		if (true)
-			throw Debugging.todo();
+		// Store application name
+		if (lengthAppName > 0)
+			__outProps.put(IModeApplication._APP_NAME,
+				new String(varData, varDataOffsetAppName, lengthAppName,
+					"shift-jis"));
 		
-		throw Debugging.todo();
+		// Store application class
+		if (lengthAppClass > 0)
+			__outProps.put(IModeApplication._APP_CLASS,
+				new String(varData, varDataOffsetAppClass, lengthAppClass,
+					"shift-jis"));
+		
+		// Store application parameters
+		if (lengthAppParam > 0)
+			__outProps.put(IModeApplication._APP_PARAMS,
+				new String(varData, varDataOffsetAppParam, lengthAppParam,
+					"shift-jis"));
+		
+		// Store application version
+		if (lengthAppVer > 0)
+			__outProps.put(IModeApplication._APP_VERSION,
+				new String(varData, varDataOffsetAppVer, lengthAppVer,
+					"shift-jis"));
+		
+		// Store Package URL
+		if (lengthPackageUrl > 0)
+			__outProps.put(IModeApplication._PACKAGE_URL,
+				new String(varData, varDataOffsetPackageUrl,
+					lengthPackageUrl, "shift-jis"));
+		
+		// Last modified time
+		if (lengthLastModified > 0)
+			__outProps.put(IModeApplication._LAST_MODIFIED,
+				new String(varData, varDataOffsetLastModified,
+					lengthLastModified, "shift-jis"));
+		
+		// Store size of JAR
+		if (jarSize > 0)
+			__outProps.put(IModeApplication._APP_SIZE,
+				Integer.toString(jarSize));
+		
+		// Store size of scratchpad
+		if (stoSize > 0)
+			__outProps.put(IModeApplication._SP_SIZE,
+				Integer.toString(stoSize));
+		
+		// Store drawing area size
+		if (drawAreaWidth > 0 && drawAreaHeight > 0)
+			__outProps.put(IModeApplication._DRAW_AREA,
+				String.format("%dx%d", drawAreaWidth, drawAreaHeight));
+		
+		// Store start interval
+		if (autoStartIntervalHours > 0)
+			__outProps.put(IModeApplication._LAUNCH_AT,
+				String.format("I %d", autoStartIntervalHours));
+		
+		// Application tracing enabled?
+		if (enableTracing == 1)
+			__outProps.put(IModeApplication._APP_TRACE,
+				"on");
+		
+		// Debugging
+		Debugging.debugNote("Decoded ADF: %s%n", __outProps);
 	}
 	
 	/**

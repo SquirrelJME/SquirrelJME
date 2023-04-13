@@ -270,7 +270,7 @@ public final class SuiteScanner
 			e.printStackTrace();
 			return;
 		}
-			
+		
 		// Load application
 		try
 		{
@@ -330,7 +330,7 @@ public final class SuiteScanner
 			if (binaryAdfIn == null)
 				return;
 			
-			// Parse by text
+			// Parse using binary format
 			__AdfUtils__.__parseAdfBinary(adfProps, binaryAdfIn);
 		}
 		catch (IOException e)
@@ -339,7 +339,41 @@ public final class SuiteScanner
 			return;
 		}
 		
-		throw Debugging.todo();
+		// Additional i-mode specific properties?
+		Map<String, String> extraSysProps = new LinkedHashMap<>();
+		
+		// Try to locate the scratchpad seed archive
+		String stoName = SuiteScanner.__siblingByExt(jarName, ".sto");
+		JarPackageBracket binarySto;
+		synchronized (__nameToJar)
+		{
+			binarySto = __nameToJar.get(stoName);
+		}
+		
+		// Store where the scratchpad seed should be found
+		if (binarySto != null)
+			extraSysProps.put(
+				IModeApplication.SEED_SCRATCHPAD_PREFIX + ".0",
+				JarPackageShelf.libraryPath(binarySto));
+		
+		// Load application
+		try
+		{
+			Application app = new IModeApplication(__jar, __libs, adfProps,
+				extraSysProps);
+			synchronized (app)
+			{
+				__result.add(app);
+			}
+			
+			// Indicate that it was scanned
+			if (__listener != null)
+				__listener.scanned(app, __jarDx, __numJars);
+		}
+		catch (InvalidSuiteException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	/**

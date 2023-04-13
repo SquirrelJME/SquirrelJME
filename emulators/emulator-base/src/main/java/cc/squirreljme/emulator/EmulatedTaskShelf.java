@@ -61,6 +61,15 @@ public final class EmulatedTaskShelf
 	public static final String ORIGINAL_PROP_PREFIX =
 		"squirreljme.orig.";
 	
+	/** Are we on Windows? */
+	private static final boolean _ON_WINDOWS;
+	
+	static
+	{
+		String osName = System.getProperty("os.name");
+		_ON_WINDOWS = osName.toLowerCase().contains("windows");
+	}
+	
 	/**
 	 * As {@link TaskShelf#start(JarPackageBracket[], String, String[],
 	 * String[], int, int)}. 
@@ -176,8 +185,8 @@ public final class EmulatedTaskShelf
 		// Use all declared system properties to ensure that they are properly
 		// inherited from the host virtual machine
 		for (Map.Entry<String, String> e : sysProps.entrySet())
-			args.add(String.format("-D%s=%s",
-				e.getKey(), e.getValue()));
+			args.add(EmulatedTaskShelf.__escape(String.format("-D%s=%s",
+				e.getKey(), e.getValue())));
 		
 		
 		// Use special main handler which handles loading the required
@@ -331,5 +340,37 @@ public final class EmulatedTaskShelf
 			result.add(Paths.get(split));
 		
 		return result.<Path>toArray(new Path[result.size()]);
+	}
+	
+	/**
+	 * Escapes the given string.
+	 * 
+	 * @param __s The string to escape.
+	 * @return The escaped string.
+	 * @since 2023/04/13
+	 */
+	static String __escape(String __s)
+	{
+		// Do not escape outside of Windows
+		if (!EmulatedTaskShelf._ON_WINDOWS)
+			return __s;
+		
+		// No quotes to escape?
+		if (__s.indexOf('"') < 0)
+			return __s;
+		
+		// Process each character and look for quotes
+		StringBuilder result = new StringBuilder();
+		for (int i = 0, n = __s.length(); i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			// Escape quote if found
+			if (c == '"')
+				result.append('\\');
+			result.append(c);
+		}
+		
+		return result.toString();
 	}
 }
