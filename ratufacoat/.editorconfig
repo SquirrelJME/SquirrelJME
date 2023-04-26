@@ -32,7 +32,7 @@ insert_final_newline = unset
 indent_style = unset
 
 # Standard source code
-[*.{md,mkd,c,cpp,h,java,js,json,j,sh,xpm,gradle}]
+[*.{md,mkd,c,cpp,h,java,js,json,j,sh,xpm,gradle,cxx,hxx}]
 charset = latin1
 indent_style = tab
 trim_trailing_whitespace = false
