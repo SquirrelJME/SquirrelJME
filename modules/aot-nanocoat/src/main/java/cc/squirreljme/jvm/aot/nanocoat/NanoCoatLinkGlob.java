@@ -18,6 +18,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
  * Stores the link glob information for NanoCoat.
@@ -29,6 +30,12 @@ public class NanoCoatLinkGlob
 {
 	/** The name of this glob. */
 	protected final String name;
+	
+	/** The name of this output file. */
+	protected final String fileName;
+	
+	/** The wrapped ZIP file. */
+	protected final ZipStreamWriter zip;
 	
 	/** The output. */
 	protected final CSourceWriter out;
@@ -47,15 +54,22 @@ public class NanoCoatLinkGlob
 		if (__name == null || __out == null)
 			throw new NullPointerException("NARG");
 		
+		// Determine output names
 		this.name = __name;
+		this.fileName = Utils.dosFileName(__name + ".c");
+		
+		// Setup ZIP output
+		ZipStreamWriter zip = new ZipStreamWriter(__out);
+		this.zip = zip;
 		
 		// Setup output
 		try
 		{
 			this.out = new CSourceWriter(
-				new PrintStream(__out, true, "utf-8"));
+				new PrintStream(zip.nextEntry(this.fileName),
+					true, "utf-8"));
 		}
-		catch (UnsupportedEncodingException __e)
+		catch (IOException __e)
 		{
 			throw new RuntimeException(__e);
 		}
@@ -69,7 +83,9 @@ public class NanoCoatLinkGlob
 	public void close()
 		throws IOException
 	{
-		throw Debugging.todo();
+		// Close out ZIP
+		this.zip.flush();
+		this.zip.close();
 	}
 	
 	/**
@@ -80,6 +96,31 @@ public class NanoCoatLinkGlob
 	public void finish()
 		throws IOException
 	{
-		throw Debugging.todo();
+		// Close out the entry
+		this.out.flush();
+		this.out.close();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/05/28
+	 */
+	@Override
+	public void initialize()
+		throws IOException
+	{
+		CSourceWriter out = this.out;
+		
+		// If we are compiling source, include ourselves via the header
+		out.preprocessorLine("ifndef", "SJME_C_CH");
+		
+		// Do the actual include of ourself
+		out.preprocessorLine("define", "SJME_C_CH 1");
+		out.preprocessorLine("include", "\"%s\"",
+			this.fileName);
+		out.preprocessorLine("undef", "SJME_C_CH");
+		
+		// End trickery
+		out.preprocessorLine("endif", "");
 	}
 }

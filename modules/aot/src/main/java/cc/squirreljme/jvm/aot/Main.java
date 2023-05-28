@@ -199,6 +199,9 @@ public class Main
 		// Setup glob for final linking
 		try (LinkGlob glob = __backend.linkGlob(settings, __name, __outGlob))
 		{
+			// Starting linking
+			glob.initialize();
+			
 			// Read input JAR and perform inline compilation
 			try (InputStream in = __inZip; ZipStreamReader zip =
 				new ZipStreamReader(in))

@@ -30,4 +30,13 @@ public interface LinkGlob
 	 */
 	void finish()
 		throws IOException;
+	
+	/**
+	 * Indicates that the compilation step is soon to start.
+	 * 
+	 * @throws IOException On read/write errors.
+	 * @since 2023/05/28
+	 */
+	void initialize()
+		throws IOException;
 }

@@ -393,7 +393,7 @@ public enum VMType
 	},
 	
 	/** Nanocoat, an even smaller and limited C implemented run-time. */
-	NANOCOAT("NanoCoat", "c", (String)null)
+	NANOCOAT("NanoCoat", "zip", (String)null)
 	{
 		/**
 		 * {@inheritDoc}

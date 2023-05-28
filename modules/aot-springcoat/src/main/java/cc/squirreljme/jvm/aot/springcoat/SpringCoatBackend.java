@@ -48,7 +48,7 @@ public class SpringCoatBackend
 	 */
 	@Override
 	public void compileClass(CompileSettings __settings, LinkGlob __glob,
-		String __name, InputStream __in, OutputStream __out)
+		String __name, InputStream __in)
 		throws IOException, NullPointerException
 	{
 		throw new IllegalArgumentException("AI01");
@@ -60,7 +60,7 @@ public class SpringCoatBackend
 	 */
 	@Override
 	public void compileResource(CompileSettings __settings, LinkGlob __glob,
-		String __path, InputStream __in, OutputStream __out)
+		String __path, InputStream __in)
 		throws IOException, NullPointerException
 	{
 		throw new IllegalArgumentException("AI01");

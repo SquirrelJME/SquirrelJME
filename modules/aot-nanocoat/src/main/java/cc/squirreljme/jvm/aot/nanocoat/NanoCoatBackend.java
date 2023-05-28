@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
  * Nanocoat support.
@@ -44,22 +45,22 @@ public class NanoCoatBackend
 		CSourceWriter out = ((NanoCoatLinkGlob)__glob).out;
 		
 		// Start header definition
-		out.preprocessorLine("ifdef", "SJME_COMPILE_HEADER");
+		out.preprocessorLine("ifdef", "SJME_C_CH");
 		
 		if (true)
 			throw Debugging.todo();
 		
 		// End header definition
-		out.preprocessorLine("endif", "SJME_COMPILE_HEADER");
+		out.preprocessorLine("endif", "");
 		
 		// Start source definition
-		out.preprocessorLine("ifdef", "SJME_COMPILE_SOURCE");
+		out.preprocessorLine("ifndef", "SJME_C_CH");
 		
 		if (true)
 			throw Debugging.todo();
 		
 		// End source definition
-		out.preprocessorLine("endif", "SJME_COMPILE_SOURCE");
+		out.preprocessorLine("endif", "");
 	}
 	
 	/**
@@ -78,22 +79,22 @@ public class NanoCoatBackend
 		CSourceWriter out = ((NanoCoatLinkGlob)__glob).out;
 		
 		// Start header definition
-		out.preprocessorLine("ifdef", "SJME_COMPILE_HEADER");
+		out.preprocessorLine("ifdef", "SJME_C_CH");
 		
 		if (true)
 			throw Debugging.todo();
 		
 		// End header definition
-		out.preprocessorLine("endif", "SJME_COMPILE_HEADER");
+		out.preprocessorLine("endif", "");
 		
 		// Start source definition
-		out.preprocessorLine("ifdef", "SJME_COMPILE_SOURCE");
+		out.preprocessorLine("ifndef", "SJME_C_CH");
 		
 		if (true)
 			throw Debugging.todo();
 		
 		// End source definition
-		out.preprocessorLine("endif", "SJME_COMPILE_SOURCE");
+		out.preprocessorLine("endif", "");
 	}
 	
 	/**

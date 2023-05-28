@@ -60,7 +60,7 @@ public class CSourceWriter
 	public void close()
 		throws IOException
 	{
-		throw Debugging.todo();
+		this.out.close();
 	}
 	
 	/**
@@ -104,7 +104,7 @@ public class CSourceWriter
 		String __format, Object... __args)
 		throws IOException, NullPointerException
 	{
-		if (__symbol == null || __format == null)
+		if (__symbol == null)
 			throw new NullPointerException("NARG");
 		
 		// Start on fresh line?
@@ -114,12 +114,21 @@ public class CSourceWriter
 		this.write("#");
 		this.write(__symbol);
 		
-		// Space
-		this.write(" ");
-		
-		// Write the preprocessor line
-		this.write(String.format(__format, __args));
-		this.write("\n");
+		// Only if there is a format...
+		if (__format != null && !__format.isEmpty())
+		{
+			// Do not write empty lines
+			String result = String.format(__format, __args);
+			if (!result.isEmpty())
+			{
+				// Space
+				this.write(" ");
+				
+				// Write the preprocessor line
+				this.write(result);
+				this.write("\n");
+			}
+		}
 			
 		// End of a fresh line
 		this.freshLine();
