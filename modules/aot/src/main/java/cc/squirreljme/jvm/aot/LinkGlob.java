@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -18,6 +19,7 @@ import java.io.InputStream;
  * @since 2020/11/22
  */
 public interface LinkGlob
+	extends Closeable
 {
 	/**
 	 * Indicates that compilation is complete and the final binary should
@@ -28,17 +30,4 @@ public interface LinkGlob
 	 */
 	void finish()
 		throws IOException;
-		
-	/**
-	 * Joins this into the linking structure.
-	 * 
-	 * @param __name The name of the object to link.
-	 * @param __isRc Is this a resource and not an executable?
-	 * @param __data The data to link in.
-	 * @throws IOException On read/write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/11/22
-	 */
-	void join(String __name, boolean __isRc, InputStream __data)
-		throws IOException, NullPointerException;
 }

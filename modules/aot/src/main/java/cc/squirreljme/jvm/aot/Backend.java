@@ -35,13 +35,28 @@ public interface Backend
 	 * compilation step.
 	 * @param __name The name of the class being compiled.
 	 * @param __in The input stream.
-	 * @param __out The output stream.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/22
 	 */
 	void compileClass(CompileSettings __settings, LinkGlob __glob,
-		String __name, InputStream __in, OutputStream __out)
+		String __name, InputStream __in)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * Performs compilation of a resource class.
+	 * 
+	 * @param __settings The settings for compilation.
+	 * @param __glob The compilation glob if this is needed by the source
+	 * compilation step.
+	 * @param __path The path of the resource being compiled.
+	 * @param __in The input stream.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/28
+	 */
+	void compileResource(CompileSettings __settings, LinkGlob __glob,
+		String __path, InputStream __in)
 		throws IOException, NullPointerException;
 	
 	/**

@@ -22,6 +22,7 @@ import cc.squirreljme.jvm.pack.constants.ClassInfoConstants;
 import cc.squirreljme.jvm.pack.constants.PackFlag;
 import cc.squirreljme.jvm.pack.constants.PackProperty;
 import cc.squirreljme.jvm.pack.constants.PackTocProperty;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.IOException;
@@ -48,6 +49,18 @@ public class SpringCoatBackend
 	@Override
 	public void compileClass(CompileSettings __settings, LinkGlob __glob,
 		String __name, InputStream __in, OutputStream __out)
+		throws IOException, NullPointerException
+	{
+		throw new IllegalArgumentException("AI01");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/05/28
+	 */
+	@Override
+	public void compileResource(CompileSettings __settings, LinkGlob __glob,
+		String __path, InputStream __in, OutputStream __out)
 		throws IOException, NullPointerException
 	{
 		throw new IllegalArgumentException("AI01");

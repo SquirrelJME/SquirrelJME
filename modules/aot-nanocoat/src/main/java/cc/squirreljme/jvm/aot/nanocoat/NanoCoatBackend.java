@@ -34,10 +34,66 @@ public class NanoCoatBackend
 	 */
 	@Override
 	public void compileClass(CompileSettings __settings, LinkGlob __glob,
-		String __name, InputStream __in, OutputStream __out)
+		String __name, InputStream __in)
 		throws IOException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__settings == null || __glob == null || __name == null ||
+			__in == null)
+			throw new NullPointerException("NARG");
+		
+		CSourceWriter out = ((NanoCoatLinkGlob)__glob).out;
+		
+		// Start header definition
+		out.preprocessorLine("ifdef", "SJME_COMPILE_HEADER");
+		
+		if (true)
+			throw Debugging.todo();
+		
+		// End header definition
+		out.preprocessorLine("endif", "SJME_COMPILE_HEADER");
+		
+		// Start source definition
+		out.preprocessorLine("ifdef", "SJME_COMPILE_SOURCE");
+		
+		if (true)
+			throw Debugging.todo();
+		
+		// End source definition
+		out.preprocessorLine("endif", "SJME_COMPILE_SOURCE");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/05/28
+	 */
+	@Override
+	public void compileResource(CompileSettings __settings, LinkGlob __glob,
+		String __path, InputStream __in)
+		throws IOException, NullPointerException
+	{
+		if (__settings == null || __glob == null || __path == null ||
+			__in == null)
+			throw new NullPointerException("NARG");
+		
+		CSourceWriter out = ((NanoCoatLinkGlob)__glob).out;
+		
+		// Start header definition
+		out.preprocessorLine("ifdef", "SJME_COMPILE_HEADER");
+		
+		if (true)
+			throw Debugging.todo();
+		
+		// End header definition
+		out.preprocessorLine("endif", "SJME_COMPILE_HEADER");
+		
+		// Start source definition
+		out.preprocessorLine("ifdef", "SJME_COMPILE_SOURCE");
+		
+		if (true)
+			throw Debugging.todo();
+		
+		// End source definition
+		out.preprocessorLine("endif", "SJME_COMPILE_SOURCE");
 	}
 	
 	/**
@@ -60,7 +116,10 @@ public class NanoCoatBackend
 		OutputStream __out)
 		throws IOException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__settings == null || __name == null || __out == null)
+			throw new NullPointerException("NARG");
+		
+		return new NanoCoatLinkGlob(__name, __out);
 	}
 	
 	/**
