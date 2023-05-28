@@ -381,6 +381,64 @@ public enum VMType
 		}
 	},
 	
+	/** Nanocoat, an even smaller and limited C implemented run-time. */
+	NANOCOAT("NanoCoat", "c", (String)null)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public void dumpLibrary(VMBaseTask __task, boolean __isTest,
+			InputStream __in, OutputStream __out)
+			throws IOException, NullPointerException
+		{
+			throw new RuntimeException(this.name() + " cannot be dumped.");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public boolean isGoldTest()
+		{
+			return false;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public void processLibrary(VMBaseTask __task, boolean __isTest,
+			InputStream __in, OutputStream __out)
+			throws IOException, NullPointerException
+		{
+			if (__in == null || __out == null)
+				throw new NullPointerException("NARG");
+			
+			// Run compilation task
+			this.__aotCommand(__task, __in, __out,
+				"compile", Collections.emptyList());
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public void spawnJvmArguments(VMBaseTask __task,
+			boolean __debugEligible,
+			JavaExecSpecFiller __execSpec, String __mainClass,
+			String __commonName, Map<String, String> __sysProps,
+			Path[] __libPath, Path[] __classPath, String... __args)
+			throws NullPointerException
+		{
+			throw new Error("TODO");
+		}
+	},
+	
 	/* End. */
 	;
 	
@@ -410,7 +468,8 @@ public enum VMType
 		String __emulatorProject)
 		throws NullPointerException
 	{
-		this(__properName, __extension, new String[]{__emulatorProject});
+		this(__properName, __extension, (__emulatorProject == null ?
+			new String[0] : new String[]{__emulatorProject}));
 	}
 	
 	/**
