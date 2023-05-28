@@ -302,82 +302,91 @@ public final class TaskInitialization
 				TaskInitialization.task("dump", __classifier),
 				VMDumpLibraryTask.class, __classifier, libTask);
 		
-		// Running the target
-		if (__classifier.isMainSourceSet())
-			tasks.create(
-				TaskInitialization.task("run", __classifier),
-				VMRunTask.class, __classifier, libTask);
-		
-		// Testing the target
-		else if (__classifier.isTestSourceSet())
+		// Emulator targets, which run the VM with the resultant code
+		if (__classifier.getVmType().hasEmulator())
 		{
-			Task vmTest;
-			String taskName = TaskInitialization.task("test",
-				__classifier);
-			
-			// Creating the legacy or modern test task? Using the modern one
-			// is recommended if using IntelliJ or otherwise...
-			if (TaskInitialization.LEGACY_TEST_FRAMEWORK)
-				vmTest = tasks.create(taskName,
-					VMLegacyTestTask.class, __classifier, libTask);
-			else
-				vmTest = tasks.create(taskName,
-					VMModernTestTask.class, __classifier, libTask);
-			
-			// Since there is a release and debug variant, have the base test
-			// refer to both of these
-			String bothName = TaskInitialization.task("test",
-				__classifier.getSourceSet(),
-				__classifier.getVmType(), __classifier.getBangletVariant(),
-				null);
-			
-			// If the task is missing, create it
-			Test bothTest = (Test)__project.getTasks().findByName(bothName);
-			if (bothTest == null)
+			// Running the target
+			if (__classifier.isMainSourceSet())
 			{
-				// Create a test task, so IDEs like IntelliJ can pick this up
-				// despite there being no actual tests that exist
-				bothTest = __project.getTasks().create(bothName, Test.class);
-				
-				// Setup description of these
-				bothTest.setGroup("squirreljme");
-				
-				// Make sure the description makes sense
-				if (__classifier.getVmType().allowOnlyDebug())
-					bothTest.setDescription(String.format("Alias for %s.",
-						taskName));
-				else
-					bothTest.setDescription(
-						String.format("Runs both test tasks %s and %s.",
-							taskName, TaskInitialization.task("test",
-								__classifier.withClutterLevel(__classifier
-									.getTargetClassifier().getClutterLevel()
-									.opposite()))));
-				
-				// Gradle will think these are JUnit tests and then fail
-				// so exclude everything
-				bothTest.setScanForTestClasses(false);
-				bothTest.include();
-				bothTest.exclude("**");
+				tasks.create(
+					TaskInitialization.task("run", __classifier),
+					VMRunTask.class, __classifier, libTask);
 			}
 			
-			// Add to the both task as a dependency
-			bothTest.dependsOn(vmTest);
-			
-			// Make the standard test task depend on these two VM tasks
-			// so that way if it is run, both are run accordingly
-			if (__classifier.getVmType().isGoldTest())
+			// Testing the target
+			else if (__classifier.isTestSourceSet())
 			{
-				Test test = (Test)__project.getTasks().getByName("test");
+				Task vmTest;
+				String taskName = TaskInitialization.task("test",
+					__classifier);
 				
-				// Test needs this
-				test.dependsOn(vmTest);
+				// Creating the legacy or modern test task? Using the modern
+				// one is recommended if using IntelliJ or otherwise...
+				if (TaskInitialization.LEGACY_TEST_FRAMEWORK)
+					vmTest = tasks.create(taskName, VMLegacyTestTask.class,
+						__classifier, libTask);
+				else
+					vmTest = tasks.create(taskName, VMModernTestTask.class,
+						__classifier, libTask);
 				
-				// Gradle will think these are JUnit tests and then fail
-				// so exclude everything
-				test.setScanForTestClasses(false);
-				test.include();
-				test.exclude("**");
+				// Since there is a release and debug variant, have the base
+				// test refer to both of these
+				String bothName = TaskInitialization.task("test",
+					__classifier.getSourceSet(), __classifier.getVmType(),
+					__classifier.getBangletVariant(), null);
+				
+				// If the task is missing, create it
+				Test bothTest = (Test)__project.getTasks()
+					.findByName(bothName);
+				if (bothTest == null)
+				{
+					// Create a test task, so IDEs like IntelliJ can pick this
+					// up despite there being no actual tests that exist
+					bothTest = __project.getTasks().create(bothName,
+						Test.class);
+					
+					// Setup description of these
+					bothTest.setGroup("squirreljme");
+					
+					// Make sure the description makes sense
+					if (__classifier.getVmType().allowOnlyDebug())
+						bothTest.setDescription(
+							String.format("Alias for %s.", taskName));
+					else
+						bothTest.setDescription(
+							String.format("Runs both test tasks %s and %s.",
+								taskName, TaskInitialization.task(
+									"test",
+									__classifier.withClutterLevel(
+										__classifier.getTargetClassifier()
+											.getClutterLevel().opposite()))));
+					
+					// Gradle will think these are JUnit tests and then fail
+					// so exclude everything
+					bothTest.setScanForTestClasses(false);
+					bothTest.include();
+					bothTest.exclude("**");
+				}
+				
+				// Add to the both task as a dependency
+				bothTest.dependsOn(vmTest);
+				
+				// Make the standard test task depend on these two VM tasks
+				// so that way if it is run, both are run accordingly
+				if (__classifier.getVmType().isGoldTest())
+				{
+					Test test = (Test)__project.getTasks()
+						.getByName("test");
+					
+					// Test needs this
+					test.dependsOn(vmTest);
+					
+					// Gradle will think these are JUnit tests and then fail
+					// so exclude everything
+					test.setScanForTestClasses(false);
+					test.include();
+					test.exclude("**");
+				}
 			}
 		}
 	}
@@ -450,10 +459,11 @@ public final class TaskInitialization
 		if (__project == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
-		// Standard ROM
-		__project.getTasks().create(
-			TaskInitialization.task("full", __classifier),
-			VMFullSuite.class, __classifier);
+		// Running the full ROM in the emulator, only for ones with emulators
+		if (__classifier.getVmType().hasEmulator())
+			__project.getTasks().create(
+				TaskInitialization.task("full", __classifier),
+				VMFullSuite.class, __classifier);
 	}
 	
 	/**
@@ -690,9 +700,10 @@ public final class TaskInitialization
 			VMRomTask rom = tasks.create(baseName, VMRomTask.class,
 				__classifier);
 			
-			// Full RatufaCoat Built-In
-			__project.getTasks().create(baseName + "RatufaCoat",
-				RatufaCoatBuiltInTask.class,  __classifier, rom);
+			// Full RatufaCoat Built-In, only if supported
+			if (__classifier.getVmType().hasRatufaCoatSupport())
+				__project.getTasks().create(baseName + "RatufaCoat",
+					RatufaCoatBuiltInTask.class,  __classifier, rom);
 		}
 	}
 	

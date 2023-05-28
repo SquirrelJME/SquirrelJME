@@ -73,6 +73,14 @@ public interface VMSpecifier
 	boolean hasDumping();
 	
 	/**
+	 * Does this have an emulator available
+	 * 
+	 * @return If an emulator is available.
+	 * @since 2023/05/28
+	 */
+	boolean hasEmulator();
+	
+	/**
 	 * Is the emulator for this JIT capable, as in there does not need to be
 	 * a library or ROM compilation before running?
 	 * 
@@ -80,6 +88,14 @@ public interface VMSpecifier
 	 * @since 2022/12/23
 	 */
 	boolean hasEmulatorJit();
+	
+	/**
+	 * Is this ROM supported in RatufaCoat?
+	 * 
+	 * @return If this has RatufaCoat support.
+	 * @since 2023/05/28
+	 */
+	boolean hasRatufaCoatSupport();
 	
 	/**
 	 * Is there a ROM task for the VM?

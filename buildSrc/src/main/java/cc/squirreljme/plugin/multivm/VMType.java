@@ -337,6 +337,17 @@ public enum VMType
 		
 		/**
 		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public boolean hasRatufaCoatSupport()
+		{
+			// Can be ran in RatufaCoat
+			return true;
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2022/10/01
 		 */
 		@Override
@@ -395,6 +406,17 @@ public enum VMType
 		{
 			throw new RuntimeException(this.name() + " cannot be dumped.");
 		}
+	
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public boolean hasEmulator()
+		{
+			// Nanocoat is just outputted C code, so nothing happens
+			return false;
+		}
 		
 		/**
 		 * {@inheritDoc}
@@ -435,7 +457,7 @@ public enum VMType
 			Path[] __libPath, Path[] __classPath, String... __args)
 			throws NullPointerException
 		{
-			throw new Error("TODO");
+			throw new RuntimeException(this.name() + " cannot be spawned.");
 		}
 	},
 	
@@ -538,6 +560,16 @@ public enum VMType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/05/28
+	 */
+	@Override
+	public boolean hasEmulator()
+	{
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2022/12/23
 	 */
 	@Override
@@ -548,8 +580,18 @@ public enum VMType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/05/28
+	 */
+	@Override
+	public boolean hasRatufaCoatSupport()
+	{
+		// Not supported by default
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2020/08/23
-	 * @param __variant
 	 */
 	@Override
 	public final boolean hasRom(BangletVariant __variant)
