@@ -22,7 +22,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
-import net.multiphasicapps.classfile.Method;
 
 /**
  * Nanocoat support.
@@ -61,16 +60,19 @@ public class NanoCoatBackend
 			"defined(SJME_C_CH)"))
 		{	
 			// Write class identifier
-			out.declareVariable(CModifiers.EXTERN_CONST,
+			out.variableSet(CModifiers.EXTERN_CONST,
 				CBasicType.JCLASS, classIdentifier);
 			
 			// Write method identifiers
+			if (true)
+				throw Debugging.todo();
+			/*
 			for (Method method : classFile.methods())
 			{
 				out.printf("sjme_nanostatus %s(sjme_nanostate* state);",
 					Utils.symbolMethodName(glob, method));
 				out.freshLine();
-			}
+			}*/
 			
 			// Start of source
 			block.preprocessorElse();
@@ -104,7 +106,7 @@ public class NanoCoatBackend
 			"defined(SJME_C_CH)"))
 		{
 			// Write identifier reference
-			out.declareVariable(CModifiers.EXTERN_CONST,
+			out.variableSet(CModifiers.EXTERN_CONST,
 				CBasicType.SJME_NANORESOURCE, rcIdentifier);
 			
 			// Else for source code
@@ -114,12 +116,16 @@ public class NanoCoatBackend
 			byte[] data = StreamUtils.readAll(__in);
 			
 			// Write values for the resource data
-			try (CBlock struct = out.defineStruct(CModifiers.EXTERN_CONST,
-				CBasicType.SJME_NANORESOURCE, rcIdentifier))
+			try (CStructVariableBlock struct = out.structVariableSet(
+				CModifiers.EXTERN_CONST, CBasicType.SJME_NANORESOURCE,
+				rcIdentifier))
 			{
-				out.defineStructMember("path", "\"" + __path + "\"");
-				out.defineStructMember("size", data.length);
-				out.defineStructMember("data", data);
+				struct.memberSet("path",
+					"\"" + __path + "\"");
+				struct.memberSet("size",
+					data.length);
+				struct.memberSet("data",
+					data);
 			}
 		}
 	}

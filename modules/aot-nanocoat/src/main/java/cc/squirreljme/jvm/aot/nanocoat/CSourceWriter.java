@@ -297,74 +297,6 @@ public class CSourceWriter
 	}
 	
 	/**
-	 * Writes a variable to the output.
-	 * 
-	 * @param __type The type of the variable.
-	 * @param __name The name of the variable.
-	 * @param __valueTokens The value tokens of this variable, if any.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/29
-	 */
-	public CSourceWriter declareVariable(CType __type,
-		String __name, String... __valueTokens)
-		throws IOException, NullPointerException
-	{
-		return this.declareVariable(null, __type, __name,
-			__valueTokens);
-	}
-	
-	/**
-	 * Writes a variable to the output.
-	 * 
-	 * @param __modifier The modifiers to use, may be {@code null}.
-	 * @param __type The type of the variable.
-	 * @param __name The name of the variable.
-	 * @param __valueTokens The value tokens of this variable, if any.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/29
-	 */
-	public CSourceWriter declareVariable(CModifier __modifier, CType __type,
-		String __name, String... __valueTokens)
-		throws IOException, NullPointerException
-	{
-		if (__type == null || __name == null)
-			throw new NullPointerException("NARG");
-		
-		// This is nicer when it is on a fresh line
-		this.freshLine();
-		
-		// Without modifiers
-		List<String> modifiers = (__modifier == null ? null :
-			__modifier.modifierTokens());
-		if (modifiers == null || modifiers.isEmpty())
-		{
-			if (__valueTokens == null || __valueTokens.length <= 0)
-				this.tokens(__type.token(), __name, ";");
-			else
-				this.tokens(__type.token(), __name,
-					"=", __valueTokens, ";");
-		}
-		
-		// With modifiers
-		else
-		{
-			if (__valueTokens == null || __valueTokens.length <= 0)
-				this.tokens(modifiers, __type.token(),
-					__name, ";");
-			else
-				this.tokens(modifiers, __type.token(),
-					__name, "=", __valueTokens, ";");
-		}
-		
-		// Self
-		return this;
-	}
-	
-	/**
 	 * Flushes the output.
 	 * 
 	 * @throws IOException On flush errors.
@@ -374,156 +306,6 @@ public class CSourceWriter
 		throws IOException
 	{
 		this.out.flush();
-	}
-	
-	/**
-	 * Writes a single token to the output.
-	 * 
-	 * @param __token The token to write.
-	 * @return {@code this}.
-	 * @throws IllegalArgumentException If newlines or tabs were printed.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/29
-	 */
-	public CSourceWriter token(CharSequence __token)
-		throws IllegalArgumentException, IOException, NullPointerException
-	{
-		if (__token == null)
-			throw new NullPointerException("NARG");
-		
-		// Do nothing if empty as there is nothing to print
-		int n = __token.length();
-		if (n == 0)
-			return this;
-		
-		// If the last character we wrote is not whitespace, then we need to
-		// add some space before we write this token
-		char lastChar = this._lastChar;
-		if (!(lastChar == ' ' || lastChar == '\t' ||
-			lastChar == '\r' || lastChar == '\n'))
-			this.__out(' ');
-		
-		// Would this write over the side?
-		if (this._column + n > CSourceWriter._GUTTER_THRESHOLD)
-		{
-			// Is this a string that will be written off the side of the
-			// gutter?
-			if (__token.charAt(0) == '"' && __token.charAt(1) == '"')
-			{
-				/*throw Debugging.todo();*/	
-			}
-			
-			// Move to fresh line so that all of it is on this line
-			this.freshLine();
-		}
-		
-		// Write the output
-		PrintStream out = this.out;
-		for (int i = 0; i < n; i++)
-		{
-			char c = __token.charAt(i);
-			
-			// {@squirreljme.error NC06 Cannot print newlines or tabs.}
-			if (c == '\t' || c == '\r' || c == '\n')
-				throw new IllegalArgumentException("NC06");
-			
-			// Output
-			this.__out(c);
-		}
-		
-		// Self
-		return this;
-	}
-	
-	/**
-	 * Writes a single token to the output.
-	 * 
-	 * @param __token The token to write.
-	 * @return {@code this}.
-	 * @throws IllegalArgumentException If the token type is not valid.
-	 * @throws IOException On write errors.
-	 * @since 2023/05/29
-	 */
-	public CSourceWriter token(Object __token)
-		throws IllegalArgumentException, IOException
-	{
-		// null
-		if (__token == null)
-			return this.token("NULL");
-		
-		// Primitive arrays
-		else if (__token instanceof boolean[])
-			return this.array((boolean[])__token);
-		else if (__token instanceof byte[])
-			return this.array((byte[])__token);
-		else if (__token instanceof short[])
-			return this.array((short[])__token);
-		else if (__token instanceof int[])
-			return this.array((int[])__token);
-		else if (__token instanceof long[])
-			return this.array((long[])__token);
-		else if (__token instanceof float[])
-			return this.array((float[])__token);
-		else if (__token instanceof double[])
-			return this.array((double[])__token);
-		
-		// Forward writing of arrays
-		else if (__token.getClass().isArray())
-			return this.tokens((Object[])__token);
-		
-		// Forward writing of collections
-		else if (__token instanceof Collection)
-		{
-			Collection<?> tokens = (Collection<?>)__token;
-			
-			return this.tokens(tokens.toArray(new Object[tokens.size()]));
-		}
-		
-		// String
-		else if (__token instanceof CharSequence)
-			return this.token((CharSequence)__token);
-		
-		// A type
-		else if (__token instanceof CType)
-			return this.token(((CType)__token).token());
-		
-		// A boolean
-		else if (__token instanceof Boolean)
-			return this.token(((Boolean)__token) ? "JNI_TRUE" : "JNI_FALSE");
-		
-		// A character
-		else if (__token instanceof Character)
-			return this.character((Character)__token);
-		
-		// A number value
-		else if (__token instanceof Number)
-			return this.number((Number)__token);
-		
-		// {@squirreljme.error NC05 Unknown token type. (The type)}
-		throw new IllegalArgumentException("NC05 " + __token.getClass());
-	}
-	
-	/**
-	 * Writes the specified tokens to the output.
-	 * 
-	 * @param __tokens The tokens to write.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @since 2023/05/29
-	 */
-	public CSourceWriter tokens(Object... __tokens)
-		throws IOException
-	{
-		if (__tokens == null || __tokens.length == 0)
-			return this;
-		
-		// Write each token
-		for (int i = 0, n = __tokens.length; i < n; i++)
-			this.token(__tokens[i]);
-		
-		// Self
-		return this;
 	}
 	
 	/**
@@ -741,6 +523,35 @@ public class CSourceWriter
 	}
 	
 	/**
+	 * Defines a struct.
+	 *
+	 * @param __modifiers The modifiers used.
+	 * @param __structType The struct type.
+	 * @param __structName The struct name.
+	 * @return The block for being within the struct.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/29
+	 */
+	public CStructVariableBlock structVariableSet(CModifier __modifiers,
+		CBasicType __structType, String __structName)
+		throws IOException, NullPointerException
+	{
+		if (__structType == null || __structName == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup new block
+		CStructVariableBlock rv = new CStructVariableBlock(this._selfRef);
+		this._blocks.push(rv);
+		
+		// Write the variable and the opening
+		this.variable(__modifiers, __structType, __structName);
+		this.tokens("=", "{");
+		
+		return rv;
+	}
+	
+	/**
 	 * Surrounds the set of tokens with a parenthesis, with an optional
 	 * prefix.
 	 * 
@@ -757,6 +568,233 @@ public class CSourceWriter
 		if (__prefix == null)
 			return this.tokens("(", __tokens, ")");
 		return this.tokens(__prefix, "(", __tokens, ")");
+	}
+	
+	/**
+	 * Writes a single token to the output.
+	 *
+	 * @param __token The token to write.
+	 * @return {@code this}.
+	 * @throws IllegalArgumentException If newlines or tabs were printed.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/29
+	 */
+	public CSourceWriter token(CharSequence __token)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		if (__token == null)
+			throw new NullPointerException("NARG");
+		
+		// Do nothing if empty as there is nothing to print
+		int n = __token.length();
+		if (n == 0)
+			return this;
+		
+		// If the last character we wrote is not whitespace, then we need to
+		// add some space before we write this token
+		char lastChar = this._lastChar;
+		if (!(lastChar == ' ' || lastChar == '\t' ||
+			lastChar == '\r' || lastChar == '\n'))
+			this.__out(' ');
+		
+		// Would this write over the side?
+		if (this._column + n > CSourceWriter._GUTTER_THRESHOLD)
+		{
+			// Is this a string that will be written off the side of the
+			// gutter?
+			if (__token.charAt(0) == '"' && __token.charAt(1) == '"')
+			{
+				/*throw Debugging.todo();*/
+			}
+			
+			// Move to fresh line so that all of it is on this line
+			this.freshLine();
+		}
+		
+		// Write the output
+		PrintStream out = this.out;
+		for (int i = 0; i < n; i++)
+		{
+			char c = __token.charAt(i);
+			
+			// {@squirreljme.error NC06 Cannot print newlines or tabs.}
+			if (c == '\t' || c == '\r' || c == '\n')
+				throw new IllegalArgumentException("NC06");
+			
+			// Output
+			this.__out(c);
+		}
+		
+		// Self
+		return this;
+	}
+	
+	/**
+	 * Writes a single token to the output.
+	 *
+	 * @param __token The token to write.
+	 * @return {@code this}.
+	 * @throws IllegalArgumentException If the token type is not valid.
+	 * @throws IOException On write errors.
+	 * @since 2023/05/29
+	 */
+	public CSourceWriter token(Object __token)
+		throws IllegalArgumentException, IOException
+	{
+		// null
+		if (__token == null)
+			return this.token("NULL");
+			
+			// Primitive arrays
+		else if (__token instanceof boolean[])
+			return this.array((boolean[])__token);
+		else if (__token instanceof byte[])
+			return this.array((byte[])__token);
+		else if (__token instanceof short[])
+			return this.array((short[])__token);
+		else if (__token instanceof int[])
+			return this.array((int[])__token);
+		else if (__token instanceof long[])
+			return this.array((long[])__token);
+		else if (__token instanceof float[])
+			return this.array((float[])__token);
+		else if (__token instanceof double[])
+			return this.array((double[])__token);
+			
+			// Forward writing of arrays
+		else if (__token.getClass().isArray())
+			return this.tokens((Object[])__token);
+			
+			// Forward writing of collections
+		else if (__token instanceof Collection)
+		{
+			Collection<?> tokens = (Collection<?>)__token;
+			
+			return this.tokens(tokens.toArray(new Object[tokens.size()]));
+		}
+		
+		// String
+		else if (__token instanceof CharSequence)
+			return this.token((CharSequence)__token);
+			
+			// A type
+		else if (__token instanceof CType)
+			return this.token(((CType)__token).token());
+			
+			// A boolean
+		else if (__token instanceof Boolean)
+			return this.token(((Boolean)__token) ? "JNI_TRUE" : "JNI_FALSE");
+			
+			// A character
+		else if (__token instanceof Character)
+			return this.character((Character)__token);
+			
+			// A number value
+		else if (__token instanceof Number)
+			return this.number((Number)__token);
+		
+		// {@squirreljme.error NC05 Unknown token type. (The type)}
+		throw new IllegalArgumentException("NC05 " + __token.getClass());
+	}
+	
+	/**
+	 * Writes the specified tokens to the output.
+	 *
+	 * @param __tokens The tokens to write.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @since 2023/05/29
+	 */
+	public CSourceWriter tokens(Object... __tokens)
+		throws IOException
+	{
+		if (__tokens == null || __tokens.length == 0)
+			return this;
+		
+		// Write each token
+		for (int i = 0, n = __tokens.length; i < n; i++)
+			this.token(__tokens[i]);
+		
+		// Self
+		return this;
+	}
+	
+	/**
+	 * Writes a variable to the output.
+	 *
+	 * @param __type The type of the variable.
+	 * @param __name The name of the variable.
+	 * @param __valueTokens The value tokens of this variable, if any.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/29
+	 */
+	public CSourceWriter variableSet(CType __type,
+		String __name, String... __valueTokens)
+		throws IOException, NullPointerException
+	{
+		return this.variableSet(null, __type, __name,
+			__valueTokens);
+	}
+	
+	/**
+	 * Writes a variable to the output.
+	 *
+	 * @param __modifier The modifiers to use, may be {@code null}.
+	 * @param __type The type of the variable.
+	 * @param __name The name of the variable.
+	 * @param __valueTokens The value tokens of this variable, if any.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/29
+	 */
+	public CSourceWriter variableSet(CModifier __modifier, CType __type,
+		String __name, String... __valueTokens)
+		throws IOException, NullPointerException
+	{
+		if (__type == null || __name == null)
+			throw new NullPointerException("NARG");
+		
+		// This is nicer when it is on a fresh line
+		this.freshLine();
+		
+		// Write base variable
+		this.variable(__modifier, __type, __name);
+		
+		// Then write the value, if any
+		if (__valueTokens == null || __valueTokens.length <= 0)
+			return this.tokens(";");
+		return this.tokens("=", __valueTokens, ";");
+	}
+	
+	/**
+	 * Writes a variable.
+	 * 
+	 * @param __modifier The modifiers to use.
+	 * @param __type The variable type.
+	 * @param __name The variable name.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/29
+	 */
+	private CSourceWriter variable(CModifier __modifier, CType __type,
+		String __name)
+		throws IOException, NullPointerException
+	{
+		if (__type == null || __name == null)
+			throw new NullPointerException("NARG");
+		
+		// Without modifiers
+		List<String> modifiers = (__modifier == null ? null :
+			__modifier.modifierTokens());
+		
+		if (modifiers == null || modifiers.isEmpty())
+			return this.tokens(__type.token(), __name);
+		return this.tokens(modifiers, __type.token(), __name);
 	}
 	
 	/**
