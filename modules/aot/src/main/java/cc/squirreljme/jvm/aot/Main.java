@@ -221,7 +221,7 @@ public class Main
 							continue;
 						
 						// Compile resource file?
-						if (!name.endsWith(".class"))
+						if (!Main.__isValidClass(name))
 							__backend.compileResource(settings, glob,
 								name, entry);
 						
@@ -285,5 +285,37 @@ public class Main
 		
 		// Perform combined linking
 		__backend.rom(settings, __out, vmLibs);
+	}
+	
+	/**
+	 * Is this a valid class?
+	 * 
+	 * @param __name The file name.
+	 * @return If this is a valid class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/28
+	 */
+	private static boolean __isValidClass(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// If not a class file, ignore
+		if (!__name.endsWith(".class"))
+			return false;
+		
+		// Check for invalid characters
+		for (int i = 0, n = __name.length() - 6; i < n; i++)
+		{
+			char c = __name.charAt(i);
+			
+			// Only these are invalid
+			if (c == '-' || c == '.' || c == ';' || c == '[')
+				return false;
+		}
+		
+		// No failure, so is a valid class
+		return true;
 	}
 }

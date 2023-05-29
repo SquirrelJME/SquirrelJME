@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.ClassName;
 
 /**
  * Nanocoat support.
@@ -42,10 +44,24 @@ public class NanoCoatBackend
 			__in == null)
 			throw new NullPointerException("NARG");
 		
-		CSourceWriter out = ((NanoCoatLinkGlob)__glob).out;
+		NanoCoatLinkGlob glob = (NanoCoatLinkGlob)__glob;
+		CSourceWriter out = glob.out;
+		ClassName className = new ClassName(__name);
+		String classIdentifier = Utils.symbolClassName(glob, className);
+		
+		// Load input class
+		// {@squirreljme.error NC01 Mismatched class name.}
+		ClassFile classFile = ClassFile.decode(__in);
+		if (!classFile.thisName().equals(new ClassName(__name)))
+			throw new RuntimeException("NC01");
 		
 		// Start of header
 		out.preprocessorLine("ifdef", "SJME_C_CH");
+		
+		// Write identifier reference
+		out.printf("extern SJME_CONST sjme_nanoclass %s;",
+			classIdentifier);
+		out.freshLine();
 		
 		if (true)
 			throw Debugging.todo();

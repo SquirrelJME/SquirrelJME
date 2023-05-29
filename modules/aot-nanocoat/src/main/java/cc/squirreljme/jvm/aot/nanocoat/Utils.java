@@ -120,7 +120,7 @@ public final class Utils
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		return Utils.mangle(__in.toString());
 	}
 	
 	/**
@@ -190,6 +190,25 @@ public final class Utils
 		}
 		
 		return result.toString();
+	}
+	
+	/**
+	 * Determines the mangled symbol name for a class.
+	 * 
+	 * @param __module The module used.
+	 * @param __in The input class name.
+	 * @return The mangled symbol name for the class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/28
+	 */
+	public static String symbolClassName(NanoCoatLinkGlob __module,
+		ClassName __in)
+		throws NullPointerException
+	{
+		if (__module == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		return "sjmeCl__" + __module.baseName + "__" + Utils.mangle(__in);
 	}
 	
 	/**
