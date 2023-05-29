@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Identifier;
+import net.multiphasicapps.classfile.Method;
 
 /**
  * General utilities.
@@ -137,7 +138,7 @@ public final class Utils
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		return Utils.mangle(__in.toString());
 	}
 	
 	/**
@@ -228,5 +229,26 @@ public final class Utils
 			throw new NullPointerException("NARG");
 		
 		return "sjmeRc__" + __module.baseName + "__" + Utils.mangle(__in);
+	}
+	
+	/**
+	 * Determines the symbol for the method.
+	 * 
+	 * @param __module The glob used.
+	 * @param __method The method used.
+	 * @return The symbol for the method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/28
+	 */
+	public static String symbolMethodName(NanoCoatLinkGlob __module,
+		Method __method)
+		throws NullPointerException
+	{
+		if (__module == null || __method == null)
+			throw new NullPointerException("NARG");
+		
+		return "sjmeMt__" + __module.baseName + "__" +
+			Utils.mangle(__method.inClass()) + "__" +
+			Utils.mangle(__method.name()) + "__" + __method.methodIndex();
 	}
 }

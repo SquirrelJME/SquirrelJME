@@ -174,6 +174,17 @@ public final class Method
 	}
 	
 	/**
+	 * Returns the class this method is in.
+	 * 
+	 * @return The class this method is in.
+	 * @since 2023/05/28
+	 */
+	public ClassName inClass()
+	{
+		return this.classname;
+	}
+	
+	/**
 	 * Returns if this method is effectively final, meaning that it cannot be
 	 * replaced.
 	 *

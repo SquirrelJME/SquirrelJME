@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.Method;
 
 /**
  * Nanocoat support.
@@ -58,13 +59,18 @@ public class NanoCoatBackend
 		// Start of header
 		out.preprocessorLine("ifdef", "SJME_C_CH");
 		
-		// Write identifier reference
+		// Write class identifier
 		out.printf("extern SJME_CONST sjme_nanoclass %s;",
 			classIdentifier);
 		out.freshLine();
 		
-		if (true)
-			throw Debugging.todo();
+		// Write method identifiers
+		for (Method method : classFile.methods())
+		{
+			out.printf("sjme_nanostatus %s;",
+				Utils.symbolMethodName(glob, method));
+			out.freshLine();
+		}
 		
 		// Start of source
 		out.preprocessorLine("else", "");
