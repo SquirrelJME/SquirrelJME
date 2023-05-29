@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.BooleanArrayList;
 import cc.squirreljme.runtime.cldc.util.ByteArrayList;
 import cc.squirreljme.runtime.cldc.util.CharacterArrayList;
@@ -21,8 +20,12 @@ import cc.squirreljme.runtime.cldc.util.ShortArrayList;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.List;
 
 /**
@@ -43,6 +46,14 @@ public class CSourceWriter
 	/** Single character buffer. */
 	private final char[] _singleBuf =
 		new char[1];
+	
+	/** C Block stack. */
+	private final Deque<CBlock> _blocks =
+		new ArrayDeque<>();
+	
+	/** Reference to self, for blocks. */
+	private final Reference<CSourceWriter> _selfRef =
+		new WeakReference<>(this);
 	
 	/** The current line. */
 	private volatile int _line;
@@ -209,16 +220,20 @@ public class CSourceWriter
 	public CSourceWriter array(List<?> __values)
 		throws IOException
 	{
-		this.token("{");
-		if (__values != null)
-			for (int i = 0, n = __values.size(); i < n; i++)
-			{
-				if (i > 0)
-					this.token(",");
-				
-				this.token(__values.get(i));
-			}
-		return this.token("}");
+		try (CBlock block = this.curly())
+		{
+			if (__values != null)
+				for (int i = 0, n = __values.size(); i < n; i++)
+				{
+					if (i > 0)
+						this.token(",");
+					
+					this.token(__values.get(i));
+				}
+		}
+		
+		// Self
+		return this;
 	}
 	
 	/**
@@ -262,6 +277,26 @@ public class CSourceWriter
 	}
 	
 	/**
+	 * Opens a curly block.
+	 * 
+	 * @return The block to open.
+	 * @throws IOException On 
+	 * @since 2023/05/29
+	 */
+	public CBlock curly()
+		throws IOException
+	{
+		// Setup new block
+		CBlock rv = new CBlock(this._selfRef, "}");
+		this._blocks.push(rv);
+		
+		// Output open block
+		this.__out('{');
+		
+		return rv;
+	}
+	
+	/**
 	 * Writes a variable to the output.
 	 * 
 	 * @param __type The type of the variable.
@@ -272,17 +307,61 @@ public class CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter declareVariable(CType __type, String __name,
-		String... __valueTokens)
+	public CSourceWriter declareVariable(CType __type,
+		String __name, String... __valueTokens)
+		throws IOException, NullPointerException
+	{
+		return this.declareVariable(null, __type, __name,
+			__valueTokens);
+	}
+	
+	/**
+	 * Writes a variable to the output.
+	 * 
+	 * @param __modifier The modifiers to use, may be {@code null}.
+	 * @param __type The type of the variable.
+	 * @param __name The name of the variable.
+	 * @param __valueTokens The value tokens of this variable, if any.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/29
+	 */
+	public CSourceWriter declareVariable(CModifier __modifier, CType __type,
+		String __name, String... __valueTokens)
 		throws IOException, NullPointerException
 	{
 		if (__type == null || __name == null)
 			throw new NullPointerException("NARG");
 		
-		if (__valueTokens == null || __valueTokens.length <= 0)
-			return this.tokens(__type.token(), __name, ";");
-		return this.tokens(__type.token(), __name, "=",
-			__valueTokens, ";");
+		// This is nicer when it is on a fresh line
+		this.freshLine();
+		
+		// Without modifiers
+		List<String> modifiers = (__modifier == null ? null :
+			__modifier.modifierTokens());
+		if (modifiers == null || modifiers.isEmpty())
+		{
+			if (__valueTokens == null || __valueTokens.length <= 0)
+				this.tokens(__type.token(), __name, ";");
+			else
+				this.tokens(__type.token(), __name,
+					"=", __valueTokens, ";");
+		}
+		
+		// With modifiers
+		else
+		{
+			if (__valueTokens == null || __valueTokens.length <= 0)
+				this.tokens(modifiers, __type.token(),
+					__name, ";");
+			else
+				this.tokens(modifiers, __type.token(),
+					__name, "=", __valueTokens, ";");
+		}
+		
+		// Self
+		return this;
 	}
 	
 	/**
@@ -532,14 +611,62 @@ public class CSourceWriter
 	}
 	
 	/**
-	 * Writes a preprocessor include.
+	 * Writes a preprocessor define.
 	 * 
-	 * @param __fileName The file name to use.
+	 * @param __symbol The symbol to define.
+	 * @param __tokens The tokens to define.
+	 * @return {@code this}.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	public void preprocessorInclude(String __fileName)
+	public CSourceWriter preprocessorDefine(String __symbol,
+		Object... __tokens)
+		throws IOException, NullPointerException
+	{
+		if (__symbol == null)
+			throw new NullPointerException("NARG");
+		
+		if (__tokens == null || __tokens.length == 0)
+			return this.preprocessorLine("define", __symbol);
+		return this.preprocessorLine("define", __symbol, __tokens);
+	}
+	
+	/**
+	 * Adds an if check for preprocessing.
+	 * 
+	 * @param __condition The tokens to use for the check.
+	 * @return The opened block.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/29
+	 */
+	public CPPBlock preprocessorIf(Object... __condition)
+		throws IOException, NullPointerException
+	{
+		if (__condition == null || __condition.length == 0)
+			throw new NullPointerException("NARG");
+		
+		// Setup new block
+		CPPBlock rv = new CPPBlock(this._selfRef);
+		this._blocks.push(rv);
+		
+		// Start the check
+		this.preprocessorLine("if", __condition);
+		
+		return rv;
+	}
+	
+	/**
+	 * Writes a preprocessor include.
+	 * 
+	 * @param __fileName The file name to use.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/29
+	 */
+	public CSourceWriter preprocessorInclude(String __fileName)
 		throws IOException, NullPointerException
 	{
 		if (__fileName == null)
@@ -596,6 +723,24 @@ public class CSourceWriter
 	}
 	
 	/**
+	 * Writes a preprocessor undefine.
+	 * 
+	 * @param __symbol The symbol to undefine.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/29
+	 */
+	public CSourceWriter preprocessorUndefine(String __symbol)
+		throws IOException, NullPointerException
+	{
+		if (__symbol == null)
+			throw new NullPointerException("NARG");
+		
+		return this.preprocessorLine("undef", __symbol);
+	}
+	
+	/**
 	 * Surrounds the set of tokens with a parenthesis, with an optional
 	 * prefix.
 	 * 
@@ -612,6 +757,35 @@ public class CSourceWriter
 		if (__prefix == null)
 			return this.tokens("(", __tokens, ")");
 		return this.tokens(__prefix, "(", __tokens, ")");
+	}
+	
+	/**
+	 * Closes the given block.
+	 * 
+	 * @param __cBlock The block to close.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/29
+	 */
+	@SuppressWarnings("resource")
+	void __close(CBlock __cBlock)
+		throws IOException, NullPointerException
+	{
+		if (__cBlock == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error NC07 Closing block is not the last opened
+		// block.}
+		Deque<CBlock> blocks = this._blocks;
+		CBlock peek = blocks.peek();
+		if (peek != __cBlock)
+			throw new IllegalStateException("NC07");
+		
+		// Remove it
+		blocks.pop();
+		
+		// Write finisher
+		__cBlock.__finish(this);
 	}
 	
 	/**

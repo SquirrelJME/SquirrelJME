@@ -56,6 +56,9 @@ public enum CBasicType
 	/** A NanoCoat thread. */
 	SJME_NANOTHREAD("sjme_nanothread"),
 	
+	/** A NanoCoat resource. */
+	SJME_NANORESOURCE("sjme_nanoresource"),
+	
 	/* End. */
 	;
 	

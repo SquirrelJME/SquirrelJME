@@ -57,29 +57,27 @@ public class NanoCoatBackend
 			throw new RuntimeException("NC01");
 		
 		// Start of header
-		out.preprocessorLine("ifdef", "SJME_C_CH");
-		
-		// Write class identifier
-		out.printf("extern SJME_CONST sjme_nanoclass %s;",
-			classIdentifier);
-		out.freshLine();
-		
-		// Write method identifiers
-		for (Method method : classFile.methods())
-		{
-			out.printf("sjme_nanostatus %s(sjme_nanostate* state);",
-				Utils.symbolMethodName(glob, method));
-			out.freshLine();
+		try (CPPBlock block = out.preprocessorIf(
+			"defined(SJME_C_CH)"))
+		{	
+			// Write class identifier
+			out.declareVariable(CModifiers.EXTERN_CONST,
+				CBasicType.JCLASS, classIdentifier);
+			
+			// Write method identifiers
+			for (Method method : classFile.methods())
+			{
+				out.printf("sjme_nanostatus %s(sjme_nanostate* state);",
+					Utils.symbolMethodName(glob, method));
+				out.freshLine();
+			}
+			
+			// Start of source
+			block.preprocessorElse();
+			
+			if (true)
+				throw Debugging.todo();
 		}
-		
-		// Start of source
-		out.preprocessorLine("else");
-		
-		if (true)
-			throw Debugging.todo();
-		
-		// End source/header
-		out.preprocessorLine("endif");
 	}
 	
 	/**
@@ -102,24 +100,28 @@ public class NanoCoatBackend
 		String rcIdentifier = Utils.symbolResourcePath(glob, __path);
 		
 		// Start of header
-		out.preprocessorLine("ifdef", "SJME_C_CH");
-		
-		// Write identifier reference
-		out.printf("extern SJME_CONST sjme_jbyte %s;", rcIdentifier);
-		out.freshLine();
-		
-		// Start of source
-		out.preprocessorLine("else");
-		
-		// Load in byte values
-		out.printf("SJME_CONST sjme_jbyte %s = {", rcIdentifier);
-		out.freshLine();
-		out.byteArray(StreamUtils.readAll(__in));
-		out.printf("};");
-		out.freshLine();
-		
-		// End source/header
-		out.preprocessorLine("endif");
+		try (CPPBlock block = out.preprocessorIf(
+			"defined(SJME_C_CH)"))
+		{
+			// Write identifier reference
+			out.declareVariable(CModifiers.EXTERN_CONST,
+				CBasicType.SJME_NANORESOURCE, rcIdentifier);
+			
+			// Else for source code
+			block.preprocessorElse();
+			
+			// Load in byte values
+			byte[] data = StreamUtils.readAll(__in);
+			
+			// Write values for the resource data
+			try (CBlock struct = out.defineStruct(CModifiers.EXTERN_CONST,
+				CBasicType.SJME_NANORESOURCE, rcIdentifier))
+			{
+				out.defineStructMember("path", "\"" + __path + "\"");
+				out.defineStructMember("size", data.length);
+				out.defineStructMember("data", data);
+			}
+		}
 	}
 	
 	/**

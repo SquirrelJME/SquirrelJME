@@ -10,14 +10,9 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.jvm.aot.LinkGlob;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.io.PrintStreamWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
@@ -116,15 +111,17 @@ public class NanoCoatLinkGlob
 		CSourceWriter out = this.out;
 		
 		// If we are compiling source, include ourselves via the header
-		out.preprocessorLine("ifndef", "SJME_C_CH");
-		
-		// Do the actual include of ourselves
-		out.preprocessorLine("define", "SJME_C_CH", 1);
-		out.preprocessorInclude("sjmejni.h");
-		out.preprocessorInclude(this.fileName);
-		out.preprocessorLine("undef", "SJME_C_CH");
-		
-		// End trickery
-		out.preprocessorLine("endif", "");
+		try (CPPBlock block = out.preprocessorIf("!defined(SJME_C_CH)"))
+		{
+			// Do not do this again
+			out.preprocessorDefine("SJME_C_CH", 1);
+			
+			// Do the actual include of ourselves
+			out.preprocessorInclude("sjmejni.h");
+			out.preprocessorInclude(this.fileName);
+			
+			// Stop doing this so we can continue back to normal source code
+			out.preprocessorUndefine("SJME_C_CH");
+		}
 	}
 }
