@@ -67,7 +67,7 @@ public class NanoCoatBackend
 		// Write method identifiers
 		for (Method method : classFile.methods())
 		{
-			out.printf("sjme_nanostatus %s;",
+			out.printf("sjme_nanostatus %s(sjme_nanostate* state);",
 				Utils.symbolMethodName(glob, method));
 			out.freshLine();
 		}

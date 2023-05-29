@@ -29,7 +29,11 @@ public class CSourceWriter
 		70;
 	
 	/** The stream to write to. */
-	private final PrintStreamWriter out;
+	protected final PrintStream out;
+	
+	/** Single character buffer. */
+	private final char[] _singleBuf =
+		new char[1];
 	
 	/** The current line. */
 	private volatile int _line;
@@ -53,7 +57,7 @@ public class CSourceWriter
 		if (__out == null)
 			throw new NullPointerException("NARG");
 		
-		this.out = new PrintStreamWriter(__out);
+		this.out = __out;
 	}
 	
 	/**
@@ -63,7 +67,7 @@ public class CSourceWriter
 	 * @throws IOException On write errors.
 	 * @since 2023/05/28
 	 */
-	private void byteValue(byte __byte)
+	public void byteValue(byte __byte)
 		throws IOException
 	{
 		this.write(Integer.toString(__byte));
@@ -140,7 +144,7 @@ public class CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/28
 	 */
-	protected void preprocessorLine(String __symbol,
+	public void preprocessorLine(String __symbol,
 		String __format, Object... __args)
 		throws IOException, NullPointerException
 	{
@@ -200,12 +204,35 @@ public class CSourceWriter
 	public void write(int __c)
 		throws IOException
 	{
+		this.__write((char)__c);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/05/28
+	 */
+	@Override
+	public void write(char[] __c, int __o, int __l)
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Writes a single character to the output.
+	 * 
+	 * @param __c The character to write.
+	 * @throws IOException On write errors.
+	 * @since 2023/05/28
+	 */
+	private void __write(char __c)
+		throws IOException
+	{
 		// Write to output
 		char lastChar = this._lastChar;
-		char c = (char)__c;
 		
 		// New line?
-		if (c == '\r' || c == '\n')
+		if (__c == '\r' || __c == '\n')
 		{
 			// Do not write double newlines
 			if (lastChar == '\r' || lastChar == '\n')
@@ -217,7 +244,7 @@ public class CSourceWriter
 		}
 		
 		// Align tabs always to four columns
-		else if (c == '\t')
+		else if (__c == '\t')
 			this._column += 4 - (this._column % 4);
 			
 		// Otherwise, increase column size
@@ -225,72 +252,22 @@ public class CSourceWriter
 			this._column++;
 		
 		// Just write single character, as long as it is not CR
-		if (c != '\r')
+		if (__c != '\r')
 		{
 			// Debug
-			if (c == '\n')
+			if (__c == '\n')
+			{
 				System.err.println();
+				this.out.println(__c);
+			}
 			else
-				System.err.print(c);
-			
-			// Write to output file
-			this.out.write(c);
+			{
+				System.err.print(__c);
+				this.out.write(__c);
+			}
 		}
 		
 		// Store last character for later writes
-		this._lastChar = c;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/05/28
-	 */
-	@Override
-	public void write(char[] __c, int __o, int __l)
-		throws IOException
-	{
-		// Write to output
-		char lastChar = this._lastChar;
-		for (int i = 0; i < __l; i++, __o++)
-		{
-			char c = __c[__o];
-			
-			// New line?
-			if (c == '\r' || c == '\n')
-			{
-				// Do not write double newlines
-				if (lastChar == '\r' || lastChar == '\n')
-					continue;
-				
-				// Move line ahead
-				this._line++;
-				this._column = 0;
-			}
-			
-			// Align tabs always to four columns
-			else if (c == '\t')
-				this._column += 4 - (this._column % 4);
-				
-			// Otherwise, increase column size
-			else
-				this._column++;
-			
-			// Just write single character, as long as it is not CR
-			if (c != '\r')
-			{
-				// Debug
-				if (c == '\n')
-					System.err.println();
-				else
-					System.err.print(__c[__o]);
-				
-				// Write to output file
-				this.out.write(__c, __o, 1);
-			}
-			lastChar = c;
-		}
-		
-		// Store last character for later writes
-		this._lastChar = lastChar;
+		this._lastChar = __c;
 	}
 }
