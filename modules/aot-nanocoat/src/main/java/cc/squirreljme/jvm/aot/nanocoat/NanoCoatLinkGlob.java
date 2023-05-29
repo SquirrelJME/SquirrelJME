@@ -119,10 +119,9 @@ public class NanoCoatLinkGlob
 		out.preprocessorLine("ifndef", "SJME_C_CH");
 		
 		// Do the actual include of ourselves
-		out.preprocessorLine("define", "SJME_C_CH 1");
-		out.preprocessorLine("include", "\"sjmejni.h\"");
-		out.preprocessorLine("include", "\"%s\"",
-			this.fileName);
+		out.preprocessorLine("define", "SJME_C_CH", 1);
+		out.preprocessorInclude("sjmejni.h");
+		out.preprocessorInclude(this.fileName);
 		out.preprocessorLine("undef", "SJME_C_CH");
 		
 		// End trickery

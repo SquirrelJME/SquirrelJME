@@ -73,13 +73,13 @@ public class NanoCoatBackend
 		}
 		
 		// Start of source
-		out.preprocessorLine("else", "");
+		out.preprocessorLine("else");
 		
 		if (true)
 			throw Debugging.todo();
 		
 		// End source/header
-		out.preprocessorLine("endif", "");
+		out.preprocessorLine("endif");
 	}
 	
 	/**
@@ -109,17 +109,17 @@ public class NanoCoatBackend
 		out.freshLine();
 		
 		// Start of source
-		out.preprocessorLine("else", "");
+		out.preprocessorLine("else");
 		
 		// Load in byte values
 		out.printf("SJME_CONST sjme_jbyte %s = {", rcIdentifier);
 		out.freshLine();
-		out.byteValues(StreamUtils.readAll(__in));
+		out.byteArray(StreamUtils.readAll(__in));
 		out.printf("};");
 		out.freshLine();
 		
 		// End source/header
-		out.preprocessorLine("endif", "");
+		out.preprocessorLine("endif");
 	}
 	
 	/**
