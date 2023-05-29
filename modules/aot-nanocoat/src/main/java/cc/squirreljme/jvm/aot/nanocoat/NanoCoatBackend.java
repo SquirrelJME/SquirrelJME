@@ -14,12 +14,12 @@ import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.RomSettings;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
  * Nanocoat support.
@@ -44,22 +44,19 @@ public class NanoCoatBackend
 		
 		CSourceWriter out = ((NanoCoatLinkGlob)__glob).out;
 		
-		// Start header definition
+		// Start of header
 		out.preprocessorLine("ifdef", "SJME_C_CH");
 		
 		if (true)
 			throw Debugging.todo();
 		
-		// End header definition
-		out.preprocessorLine("endif", "");
-		
-		// Start source definition
-		out.preprocessorLine("ifndef", "SJME_C_CH");
+		// Start of source
+		out.preprocessorLine("else", "");
 		
 		if (true)
 			throw Debugging.todo();
 		
-		// End source definition
+		// End source/header
 		out.preprocessorLine("endif", "");
 	}
 	
@@ -76,24 +73,30 @@ public class NanoCoatBackend
 			__in == null)
 			throw new NullPointerException("NARG");
 		
-		CSourceWriter out = ((NanoCoatLinkGlob)__glob).out;
+		NanoCoatLinkGlob glob = (NanoCoatLinkGlob)__glob;
+		CSourceWriter out = glob.out;
 		
-		// Start header definition
+		// Mangle path of this resource to name it
+		String rcIdentifier = Utils.symbolResourcePath(glob, __path);
+		
+		// Start of header
 		out.preprocessorLine("ifdef", "SJME_C_CH");
 		
-		if (true)
-			throw Debugging.todo();
+		// Write identifier reference
+		out.printf("extern SJME_CONST sjme_jbyte %s;", rcIdentifier);
+		out.freshLine();
 		
-		// End header definition
-		out.preprocessorLine("endif", "");
+		// Start of source
+		out.preprocessorLine("else", "");
 		
-		// Start source definition
-		out.preprocessorLine("ifndef", "SJME_C_CH");
+		// Load in byte values
+		out.printf("SJME_CONST sjme_jbyte %s = {", rcIdentifier);
+		out.freshLine();
+		out.byteValues(StreamUtils.readAll(__in));
+		out.printf("};");
+		out.freshLine();
 		
-		if (true)
-			throw Debugging.todo();
-		
-		// End source definition
+		// End source/header
 		out.preprocessorLine("endif", "");
 	}
 	

@@ -10,8 +10,9 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.io.UnsupportedEncodingException;
-import net.multiphasicapps.io.Base64Encoder;
+import net.multiphasicapps.classfile.BinaryName;
+import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.Identifier;
 
 /**
  * General utilities.
@@ -55,7 +56,7 @@ public final class Utils
 			char c = __in.charAt(i);
 			
 			if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-				(c >= '0' && c <= '9') || c == '_' || c == '-')
+				(c >= '0' && c <= '9') || c == '_')
 				base.append(c);
 			else
 				base.append('_');
@@ -86,5 +87,127 @@ public final class Utils
 		
 		// Build name
 		return (base + ext).toLowerCase();
+	}
+	
+	/**
+	 * Mangles the given input.
+	 * 
+	 * @param __in The input to mangle.
+	 * @return The mangled output.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/28
+	 */
+	public static final String mangle(BinaryName __in)
+		throws NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Mangles the given input.
+	 * 
+	 * @param __in The input to mangle.
+	 * @return The mangled output.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/28
+	 */
+	public static final String mangle(ClassName __in)
+		throws NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Mangles the given input.
+	 * 
+	 * @param __in The input to mangle.
+	 * @return The mangled output.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/28
+	 */
+	public static final String mangle(Identifier __in)
+		throws NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Mangles the given input.
+	 * 
+	 * @param __in The input to mangle.
+	 * @return The mangled output.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/28
+	 */
+	public static final String mangle(String __in)
+		throws NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		StringBuilder result = new StringBuilder();
+		char lastChar = 0;
+		for (int i = 0, n = __in.length(); i < n; i++)
+		{
+			char c = __in.charAt(i);
+			
+			// Simple mangles (same as JNI)
+			if (c == '_')
+				result.append("_1");
+			else if (c == ';')
+				result.append("_2");
+			else if (c == '[')
+				result.append("_3");
+			else if (c == '/')
+				result.append("_");
+			
+			// Copy over, for numbers we cannot demangle if there was a _
+			// because otherwise there could be a collision, also numbers
+			// cannot be first but if they ever are we escape them
+			else if ((c >= 'a' && c <= 'z') ||
+				(c >= 'A' && c <= 'Z') ||
+				((c >= '0' && c <= '9') && i > 0 && lastChar != '/'))
+				result.append(c);
+			
+			// Unicode mangle
+			else
+			{
+				result.append("_0");
+				result.append(String.format("%04x", c & 0xFFFF));
+			}
+			
+			// Used for some number sequences
+			lastChar = c;
+		}
+		
+		return result.toString();
+	}
+	
+	/**
+	 * Returns the symbol for the resource path.
+	 * 
+	 * @param __module The input module.
+	 * @param __in The input.
+	 * @return The mangled symbol.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/28
+	 */
+	public static String symbolResourcePath(NanoCoatLinkGlob __module,
+		String __in)
+		throws NullPointerException
+	{
+		if (__module == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		return "sjmeRc__" + __module.baseName + "__" + Utils.mangle(__in);
 	}
 }

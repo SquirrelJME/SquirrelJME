@@ -31,6 +31,9 @@ public class NanoCoatLinkGlob
 	/** The name of this glob. */
 	protected final String name;
 	
+	/** The base name of the source file. */
+	protected final String baseName;
+	
 	/** The name of this output file. */
 	protected final String fileName;
 	
@@ -56,7 +59,8 @@ public class NanoCoatLinkGlob
 		
 		// Determine output names
 		this.name = __name;
-		this.fileName = Utils.dosFileName(__name + ".c");
+		this.baseName = Utils.dosFileName(__name);
+		this.fileName = this.baseName + ".c";
 		
 		// Setup ZIP output
 		ZipStreamWriter zip = new ZipStreamWriter(__out);
@@ -114,8 +118,9 @@ public class NanoCoatLinkGlob
 		// If we are compiling source, include ourselves via the header
 		out.preprocessorLine("ifndef", "SJME_C_CH");
 		
-		// Do the actual include of ourself
+		// Do the actual include of ourselves
 		out.preprocessorLine("define", "SJME_C_CH 1");
+		out.preprocessorLine("include", "\"sjmejni.h\"");
 		out.preprocessorLine("include", "\"%s\"",
 			this.fileName);
 		out.preprocessorLine("undef", "SJME_C_CH");

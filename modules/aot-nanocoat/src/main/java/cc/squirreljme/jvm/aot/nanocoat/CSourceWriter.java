@@ -24,6 +24,10 @@ import java.io.Writer;
 public class CSourceWriter
 	extends Writer
 {
+	/** Right side threshold. */
+	private static final byte _GUTTER_THRESHOLD =
+		70;
+	
 	/** The stream to write to. */
 	private final PrintStreamWriter out;
 	
@@ -50,6 +54,42 @@ public class CSourceWriter
 			throw new NullPointerException("NARG");
 		
 		this.out = new PrintStreamWriter(__out);
+	}
+	
+	/**
+	 * Writes an optimized byte value.
+	 * 
+	 * @param __byte The byte to write.
+	 * @throws IOException On write errors.
+	 * @since 2023/05/28
+	 */
+	private void byteValue(byte __byte)
+		throws IOException
+	{
+		this.write(Integer.toString(__byte));
+	}
+	
+	/**
+	 * Writes optimized byte values.
+	 * 
+	 * @param __bytes The bytes to write.
+	 * @throws IOException On write errors.
+	 * @since 2023/05/28
+	 */
+	public void byteValues(byte... __bytes)
+		throws IOException
+	{
+		for (int i = 0, n = __bytes.length; i < n; i++)
+		{
+			if (i > 0)
+				this.write(',');
+			
+			this.byteValue(__bytes[i]);
+			
+			// Too far into the gutter?
+			if (this._column >= CSourceWriter._GUTTER_THRESHOLD)
+				this.freshLine();
+		}
 	}
 	
 	/**
@@ -82,7 +122,7 @@ public class CSourceWriter
 	 * @throws IOException On write errors.
 	 * @since 2023/05/28
 	 */
-	private void freshLine()
+	public void freshLine()
 		throws IOException
 	{
 		// Only need to do this if we are not at the line start
@@ -132,6 +172,73 @@ public class CSourceWriter
 			
 		// End of a fresh line
 		this.freshLine();
+	}
+	
+	/**
+	 * Writes the given format string.
+	 * 
+	 * @param __format The format specifiers.
+	 * @param __args The arguments.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/28
+	 */
+	public void printf(String __format, Object... __args)
+		throws IOException, NullPointerException
+	{
+		if (__format == null)
+			throw new NullPointerException("NARG");
+		
+		this.write(String.format(__format, __args));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/05/28
+	 */
+	@Override
+	public void write(int __c)
+		throws IOException
+	{
+		// Write to output
+		char lastChar = this._lastChar;
+		char c = (char)__c;
+		
+		// New line?
+		if (c == '\r' || c == '\n')
+		{
+			// Do not write double newlines
+			if (lastChar == '\r' || lastChar == '\n')
+				return;
+			
+			// Move line ahead
+			this._line++;
+			this._column = 0;
+		}
+		
+		// Align tabs always to four columns
+		else if (c == '\t')
+			this._column += 4 - (this._column % 4);
+			
+		// Otherwise, increase column size
+		else
+			this._column++;
+		
+		// Just write single character, as long as it is not CR
+		if (c != '\r')
+		{
+			// Debug
+			if (c == '\n')
+				System.err.println();
+			else
+				System.err.print(c);
+			
+			// Write to output file
+			this.out.write(c);
+		}
+		
+		// Store last character for later writes
+		this._lastChar = c;
 	}
 	
 	/**

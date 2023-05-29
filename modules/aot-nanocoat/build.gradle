@@ -26,4 +26,5 @@ squirreljme
 dependencies
 {
 	api project(":modules:aot")
+	api project(":modules:tool-classfile")
 }

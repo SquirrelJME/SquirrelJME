@@ -215,8 +215,12 @@ public class Main
 						if (entry == null)
 							break;
 						
-						// Compile resource file?
+						// Ignore directories
 						String name = entry.name();
+						if (name.endsWith("/"))
+							continue;
+						
+						// Compile resource file?
 						if (!name.endsWith(".class"))
 							__backend.compileResource(settings, glob,
 								name, entry);
