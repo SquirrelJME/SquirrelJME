@@ -50,7 +50,6 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static double add(long __a, long __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
@@ -65,7 +64,6 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static int cmpl(long __a, long __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
@@ -80,7 +78,6 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static int cmpg(long __a, long __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
@@ -95,7 +92,6 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static double div(long __a, long __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
@@ -123,7 +119,6 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static double mul(long __a, long __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
@@ -137,7 +132,6 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static double neg(long __a)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
@@ -166,7 +160,6 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static double rem(long __a, long __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
@@ -181,7 +174,6 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static double sub(long __a, long __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
@@ -195,7 +187,6 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static float toFloat(long __a)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
@@ -209,7 +200,6 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static int toInteger(long __a)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
@@ -223,7 +213,6 @@ public final class SoftDouble
 	@SquirrelJMEVendorApi
 	public static long toLong(long __a)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 }
