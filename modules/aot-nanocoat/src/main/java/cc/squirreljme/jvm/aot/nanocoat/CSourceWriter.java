@@ -38,7 +38,7 @@ public class CSourceWriter
 {
 	/** Right side threshold. */
 	private static final byte _GUTTER_THRESHOLD =
-		70;
+		60;
 	
 	/** The stream to write to. */
 	protected final PrintStream out;
@@ -591,12 +591,16 @@ public class CSourceWriter
 		if (n == 0)
 			return this;
 		
+		// Single character token?
+		char singleChar = (__token.length() == 1 ? __token.charAt(0) : 0);
+		
 		// If the last character we wrote is not whitespace, then we need to
 		// add some space before we write this token
 		char lastChar = this._lastChar;
-		if (!(lastChar == ' ' || lastChar == '\t' ||
-			lastChar == '\r' || lastChar == '\n'))
-			this.__out(' ');
+		if (lastChar != ' ' && lastChar != '\t' &&
+			lastChar != '\r' && lastChar != '\n')
+			if (singleChar != ',')
+				this.__out(' ');
 		
 		// Would this write over the side?
 		if (this._column + n > CSourceWriter._GUTTER_THRESHOLD)

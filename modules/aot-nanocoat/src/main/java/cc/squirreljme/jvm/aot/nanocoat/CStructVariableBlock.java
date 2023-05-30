@@ -60,11 +60,12 @@ public class CStructVariableBlock
 			writer.token(",");
 		
 		// Write out member setting
-		writer.tokens("." + __memberName, __value);
+		writer.tokens("." + __memberName, "=", __value);
 		
 		// For later
 		this._index = index + 1;
 		
-		throw Debugging.todo();
+		// Self
+		return this;
 	}
 }
