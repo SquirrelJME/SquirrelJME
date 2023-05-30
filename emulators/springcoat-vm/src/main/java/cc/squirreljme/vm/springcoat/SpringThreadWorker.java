@@ -21,10 +21,9 @@ import cc.squirreljme.jdwp.trips.JDWPTripBreakpoint;
 import cc.squirreljme.jdwp.trips.JDWPTripClassStatus;
 import cc.squirreljme.jdwp.trips.JDWPTripField;
 import cc.squirreljme.jdwp.trips.JDWPTripThread;
-import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.springcoat.brackets.TaskObject;
 import cc.squirreljme.vm.springcoat.brackets.TypeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArithmeticException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassCastException;
@@ -1086,24 +1085,8 @@ public final class SpringThreadWorker
 		
 		// All low-level calls are considered invalid in SpringCoat because
 		// it does not have the given functionality.
-		if (__class.toString().startsWith("cc/squirreljme/jvm/Assembly") ||
-			__class.toString().startsWith("cc/squirreljme/jvm/pack/lle/"))
+		if (__class.toString().startsWith("cc/squirreljme/jvm/pack/lle/"))
 		{
-			// The only exception is made for packing/unpacking longs
-			if (__class.toString().startsWith("cc/squirreljme/jvm/Assembly"))
-				switch (__method.name().toString())
-				{
-					case "longPack":
-						return Assembly.longPack(
-							(int)__args[0], (int)__args[1]);
-					
-					case "longUnpackHigh":
-						return Assembly.longUnpackHigh((long)__args[0]);
-					
-					case "longUnpackLow":
-						return Assembly.longUnpackLow((long)__args[0]);
-				}
-			
 			// Otherwise fail
 			throw new SpringVirtualMachineException(String.format(
 				"Invalid LLE native call: %s:%s %s", __class, __method,

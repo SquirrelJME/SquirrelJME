@@ -9,7 +9,7 @@
 
 package java.lang;
 
-import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
@@ -332,11 +332,11 @@ public final class Long
 	@Api
 	public static long reverse(long __l)
 	{
-		int hi = Assembly.longUnpackHigh(__l);
-		int lo = Assembly.longUnpackLow(__l);
+		int hi = MathShelf.longUnpackHigh(__l);
+		int lo = MathShelf.longUnpackLow(__l);
 		
 		// Hi is placed lo, and lo is placed hi
-		return Assembly.longPack(Integer.reverse(hi), Integer.reverse(lo));
+		return MathShelf.longPack(Integer.reverse(hi), Integer.reverse(lo));
 	}
 	
 	/**
