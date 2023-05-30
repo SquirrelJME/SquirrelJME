@@ -17,6 +17,9 @@ package cc.squirreljme.jvm.aot.nanocoat;
 public enum CBasicType
 	implements CType
 {
+	/** Void. */
+	VOID("void"),
+	
 	/** Boolean. */
 	JBOOLEAN("jboolean"),
 	

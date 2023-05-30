@@ -29,7 +29,7 @@ public class CPointerType
 	 * the pointer level.
 	 */
 	private static final Map<CBasicType, List<CPointerType>> _CACHE =
-		new EnumTypeMap<>(CBasicType.class);
+		new EnumTypeMap<>(CBasicType.class, CBasicType.values());
 	
 	/** The root type. */
 	protected final CType root;

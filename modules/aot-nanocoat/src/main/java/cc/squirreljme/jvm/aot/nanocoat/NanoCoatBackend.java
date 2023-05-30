@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.Method;
 
 /**
  * Nanocoat support.
@@ -64,15 +65,13 @@ public class NanoCoatBackend
 				CBasicType.JCLASS, classIdentifier);
 			
 			// Write method identifiers
-			if (true)
-				throw Debugging.todo();
-			/*
 			for (Method method : classFile.methods())
-			{
-				out.printf("sjme_nanostatus %s(sjme_nanostate* state);",
-					Utils.symbolMethodName(glob, method));
-				out.freshLine();
-			}*/
+				out.functionPrototype(null,
+					Utils.symbolMethodName(glob, method),
+					null,
+					CFunctionArgument.of(
+						CBasicType.SJME_NANOSTATE.pointerType(),
+						"state"));
 			
 			// Start of source
 			block.preprocessorElse();

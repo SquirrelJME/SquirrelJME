@@ -59,6 +59,9 @@ public class CStructVariableBlock
 		if (index > 0)
 			writer.token(",");
 		
+		// Start on fresh line for readability
+		writer.freshLine();
+		
 		// Write out member setting
 		writer.tokens("." + __memberName, "=", __value);
 		

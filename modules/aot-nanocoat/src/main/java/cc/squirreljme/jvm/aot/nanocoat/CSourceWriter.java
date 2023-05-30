@@ -330,6 +330,63 @@ public class CSourceWriter
 	}
 	
 	/**
+	 * Writes a function.
+	 * 
+	 * @param __modifier The function modifier.
+	 * @param __name The name of the function.
+	 * @param __returnVal The return value.
+	 * @param __arguments The arguments to the function.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException If no name was specified.
+	 * @since 2023/05/30
+	 */
+	public CSourceWriter function(CModifier __modifier, String __name,
+		CType __returnVal, CFunctionArgument... __arguments)
+		throws IOException, NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// Write modifiers first
+		if (__modifier != null)
+			this.token(__modifier);
+		
+		// Return value?
+		this.token((__returnVal == null ? CBasicType.VOID : __returnVal));
+		
+		// Function name and arguments
+		return this.surroundDelimited(__name, ",",
+			(Object[])__arguments);
+	}
+	
+	/**
+	 * Writes a function prototype.
+	 * 
+	 * @param __modifier The function modifier.
+	 * @param __name The name of the function.
+	 * @param __returnVal The return value.
+	 * @param __arguments The arguments to the function.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException If no name was specified.
+	 * @since 2023/05/30
+	 */
+	public CSourceWriter functionPrototype(CModifier __modifier, String __name,
+		CType __returnVal, CFunctionArgument... __arguments)
+		throws IOException, NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// Start on a fresh line, is cleaner
+		this.freshLine();
+		
+		this.function(__modifier, __name, __returnVal, __arguments);
+		return this.token(";");
+	}
+	
+	/**
 	 * Writes the specified number.
 	 * 
 	 * @param __number The number to write.
@@ -559,15 +616,50 @@ public class CSourceWriter
 	 * @param __tokens The tokens to wrap.
 	 * @return {@code this}.
 	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
 	public CSourceWriter surround(String __prefix, Object... __tokens)
-		throws IOException, NullPointerException
+		throws IOException
 	{
 		if (__prefix == null)
 			return this.tokens("(", __tokens, ")");
 		return this.tokens(__prefix, "(", __tokens, ")");
+	}
+	
+	/**
+	 * Surround with parenthesis, potentially delimited.
+	 * 
+	 * @param __prefix The prefix to use.
+	 * @param __delim The delimiter to use.
+	 * @param __tokens The tokens to wrap and delimit.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException If no delimiter was specified.
+	 * @since 3023/05/30
+	 */
+	public CSourceWriter surroundDelimited(String __prefix, String __delim,
+		Object... __tokens)
+		throws IOException, NullPointerException
+	{
+		if (__delim == null)
+			throw new NullPointerException("NARG");
+		
+		// Open
+		if (__prefix != null)
+			this.token(__prefix);
+		this.token("(");
+		
+		// Go through each item
+		if (__tokens != null && __tokens.length > 0)
+			for (int i = 0, n = __tokens.length; i < n; i++)
+			{
+				if (i > 0)
+					this.token(__delim);
+				this.token(__tokens[i]);
+			}
+		
+		// Close
+		return this.token(")");
 	}
 	
 	/**
@@ -650,7 +742,7 @@ public class CSourceWriter
 		if (__token == null)
 			return this.token("NULL");
 			
-			// Primitive arrays
+		// Primitive arrays
 		else if (__token instanceof boolean[])
 			return this.array((boolean[])__token);
 		else if (__token instanceof byte[])
@@ -666,11 +758,11 @@ public class CSourceWriter
 		else if (__token instanceof double[])
 			return this.array((double[])__token);
 			
-			// Forward writing of arrays
+		// Forward writing of arrays
 		else if (__token.getClass().isArray())
 			return this.tokens((Object[])__token);
 			
-			// Forward writing of collections
+		// Forward writing of collections
 		else if (__token instanceof Collection)
 		{
 			Collection<?> tokens = (Collection<?>)__token;
@@ -682,19 +774,30 @@ public class CSourceWriter
 		else if (__token instanceof CharSequence)
 			return this.token((CharSequence)__token);
 			
-			// A type
+		// A type
 		else if (__token instanceof CType)
 			return this.token(((CType)__token).token());
+		
+		// Modifiers
+		else if (__token instanceof CModifiers)
+			return this.token(((CModifiers)__token).modifierTokens());
+		
+		// Function argument
+		else if (__token instanceof CFunctionArgument)
+		{
+			CFunctionArgument token = (CFunctionArgument)__token;
+			return this.tokens(token.type, token.name);
+		}
 			
-			// A boolean
+		// A boolean
 		else if (__token instanceof Boolean)
 			return this.token(((Boolean)__token) ? "JNI_TRUE" : "JNI_FALSE");
 			
-			// A character
+		// A character
 		else if (__token instanceof Character)
 			return this.character((Character)__token);
 			
-			// A number value
+		// A number value
 		else if (__token instanceof Number)
 			return this.number((Number)__token);
 		
@@ -785,7 +888,7 @@ public class CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	private CSourceWriter variable(CModifier __modifier, CType __type,
+	public CSourceWriter variable(CModifier __modifier, CType __type,
 		String __name)
 		throws IOException, NullPointerException
 	{
