@@ -47,8 +47,6 @@ public class NanoCoatBackend
 		
 		NanoCoatLinkGlob glob = (NanoCoatLinkGlob)__glob;
 		CSourceWriter out = glob.out;
-		ClassName className = new ClassName(__name);
-		String classIdentifier = Utils.symbolClassName(glob, className);
 		
 		// Load input class
 		// {@squirreljme.error NC01 Mismatched class name.}
@@ -60,24 +58,18 @@ public class NanoCoatBackend
 		try (CPPBlock block = out.preprocessorIf(
 			"defined(SJME_C_CH)"))
 		{	
-			// Write class identifier
-			out.variableSet(CModifiers.EXTERN_CONST,
-				CBasicType.JCLASS, classIdentifier);
+			// Setup and perform class processing, with state
+			ClassProcessor processor = new ClassProcessor(glob, out,
+				classFile);
 			
-			// Write method identifiers
-			for (Method method : classFile.methods())
-				out.functionPrototype(null,
-					Utils.symbolMethodName(glob, method),
-					null,
-					CFunctionArgument.of(
-						CBasicType.SJME_NANOSTATE.pointerType(),
-						"state"));
+			// Process header code
+			processor.processHeader();
 			
 			// Start of source
 			block.preprocessorElse();
 			
-			if (true)
-				throw Debugging.todo();
+			// Process source code
+			processor.processSource();
 		}
 	}
 	
