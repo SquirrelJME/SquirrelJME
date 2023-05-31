@@ -114,7 +114,7 @@ public final class MethodProcessor
 	}
 	
 	/**
-	 * Processes the source details for this method outside of the class
+	 * Processes the source details for this method outside the class
 	 * definition.
 	 * 
 	 * @throws IOException On write errors.
@@ -129,12 +129,13 @@ public final class MethodProcessor
 			return;
 		
 		// Write function code
+		ByteCodeProcessor processor = new ByteCodeProcessor(
+			this, code);
 		try (CFunctionBlock function = this.out.functionDefine(null,
 			this.methodIdentifier, null, CFunctionArgument.of(
 				CBasicType.SJME_NANOSTATE.pointerType(), "state")))
 		{
-			
-			throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+			processor.process(function);
 		}
 	}
 }
