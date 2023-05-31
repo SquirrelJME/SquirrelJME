@@ -90,12 +90,12 @@ public interface VMSpecifier
 	boolean hasEmulatorJit();
 	
 	/**
-	 * Is this ROM supported in RatufaCoat?
+	 * Does this have native port support?
 	 * 
-	 * @return If this has RatufaCoat support.
-	 * @since 2023/05/28
+	 * @return The native port support.
+	 * @since 2023/05/31
 	 */
-	boolean hasRatufaCoatSupport();
+	NativePortSupport[] hasNativePortSupport();
 	
 	/**
 	 * Is there a ROM task for the VM?

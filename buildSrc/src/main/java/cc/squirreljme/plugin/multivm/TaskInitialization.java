@@ -700,10 +700,21 @@ public final class TaskInitialization
 			VMRomTask rom = tasks.create(baseName, VMRomTask.class,
 				__classifier);
 			
-			// Full RatufaCoat Built-In, only if supported
-			if (__classifier.getVmType().hasRatufaCoatSupport())
-				__project.getTasks().create(baseName + "RatufaCoat",
-					RatufaCoatBuiltInTask.class,  __classifier, rom);
+			// Which native ports are supported?
+			for (NativePortSupport nativePort :
+				__classifier.getVmType().hasNativePortSupport())
+				switch (nativePort)
+				{
+					case RATUFACOAT:
+						__project.getTasks().create(baseName + "RatufaCoat",
+							RatufaCoatBuiltInTask.class,  __classifier, rom);
+						break;
+						
+					case NANOCOAT:
+						__project.getTasks().create(baseName + "NanoCoat",
+							NanoCoatBuiltInTask.class,  __classifier, rom);
+						break;
+				}
 		}
 	}
 	

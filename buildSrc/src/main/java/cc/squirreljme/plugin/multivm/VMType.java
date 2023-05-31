@@ -340,10 +340,10 @@ public enum VMType
 		 * @since 2023/05/28
 		 */
 		@Override
-		public boolean hasRatufaCoatSupport()
+		public NativePortSupport[] hasNativePortSupport()
 		{
-			// Can be ran in RatufaCoat
-			return true;
+			// Can be run in RatufaCoat
+			return new NativePortSupport[]{NativePortSupport.RATUFACOAT};
 		}
 		
 		/**
@@ -416,6 +416,17 @@ public enum VMType
 		{
 			// Nanocoat is just outputted C code, so nothing happens
 			return false;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/05/28
+		 */
+		@Override
+		public NativePortSupport[] hasNativePortSupport()
+		{
+			// Can be run in NanoCoat
+			return new NativePortSupport[]{NativePortSupport.NANOCOAT};
 		}
 		
 		/**
@@ -580,13 +591,14 @@ public enum VMType
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2023/05/28
 	 */
 	@Override
-	public boolean hasRatufaCoatSupport()
+	public NativePortSupport[] hasNativePortSupport()
 	{
 		// Not supported by default
-		return false;
+		return new NativePortSupport[0];
 	}
 	
 	/**
