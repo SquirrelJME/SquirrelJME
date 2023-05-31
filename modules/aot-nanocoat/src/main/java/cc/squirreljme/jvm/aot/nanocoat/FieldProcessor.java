@@ -9,8 +9,10 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.ConstantValue;
 import net.multiphasicapps.classfile.Field;
 
 /**
@@ -68,31 +70,45 @@ public class FieldProcessor
 	}
 	
 	/**
-	 * Processes the source details for this field.
-	 * 
-	 * @param __struct The struct to write to.
+	 * Processes field information outside the class struct.
+	 *
+	 * @param __array The array to write into.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	public void processSourceInClass(CStructVariableBlock __struct)
+	public void processInFieldsStruct(CArrayBlock __array)
 		throws IOException, NullPointerException
 	{
-		if (__struct == null)
+		if (__array == null)
 			throw new NullPointerException("NARG");
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
-	}
-	
-	/**
-	 * Processes field information outside the class struct.
-	 * 
-	 * @throws IOException On write errors.
-	 * @since 2023/05/31
-	 */
-	public void processSourceOutside()
-		throws IOException
-	{
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		Field field = this.field;
+		try (CStructVariableBlock struct = __array.struct())
+		{
+			struct.memberSet("name",
+				field.name().toString());
+			struct.memberSet("type",
+				field.type().toString());
+			struct.memberSet("flags",
+				field.flags().toJavaBits());
+			
+			// Constant value?
+			ConstantValue value = field.constantValue();
+			if (value != null)
+			{
+				struct.memberSet("valueType",
+					value.type().javaType().toString());
+				try (CStructVariableBlock valueStruct = struct.memberStructSet(
+					"value"))
+				{
+					switch (value.type())
+					{
+						default:
+							throw Debugging.todo();
+					}
+				}
+			}
+		}
 	}
 }

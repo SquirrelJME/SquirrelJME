@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.Method;
@@ -80,16 +81,32 @@ public final class MethodProcessor
 	}
 	
 	/**
-	 * Processes source code within the class struct.
+	 * Processes the methods in the method structure.
 	 * 
-	 * @param __struct The struct to write into.
+	 * @param __array The array to write into.
 	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	public void processSourceInClass(CStructVariableBlock __struct)
-		throws IOException
+	public void processInMethodsStruct(CArrayBlock __array)
+		throws IOException, NullPointerException
 	{
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		if (__array == null)
+			throw new NullPointerException("NARG");
+		
+		Method method = this.method;
+		try (CStructVariableBlock struct = __array.struct())
+		{
+			// Method details
+			struct.memberSet("name",
+				method.name().toString());
+			struct.memberSet("type",
+				method.type().toString());
+			struct.memberSet("flags",
+				method.flags().toJavaBits());
+			
+			throw Debugging.todo();
+		}
 	}
 	
 	/**

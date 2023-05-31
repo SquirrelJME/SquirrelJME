@@ -38,6 +38,12 @@ public class ClassProcessor
 	/** The C identifier for this class. */
 	protected final String classIdentifier;
 	
+	/** Field storage. */
+	protected final String fieldsIdentifier;
+	
+	/** Method storage. */
+	protected final String methodsIdentifier;
+	
 	/** Field processing. */
 	private final Map<FieldNameAndType, FieldProcessor> _fields =
 		new LinkedHashMap<>();
@@ -69,6 +75,8 @@ public class ClassProcessor
 		// Determine the identifier used for this class
 		this.classIdentifier = Utils.symbolClassName(__glob,
 			this.classFile.thisName());
+		this.fieldsIdentifier = this.classIdentifier + "__fields";
+		this.methodsIdentifier = this.classIdentifier + "__methods";
 		
 		// Create processors for each field
 		Map<FieldNameAndType, FieldProcessor> fields = this._fields;
@@ -122,12 +130,40 @@ public class ClassProcessor
 		ClassFile classFile = this.classFile;
 		
 		// Process field source details outside the class struct
-		for (FieldProcessor field : this._fields.values())
-			field.processSourceOutside();
+		try (CStructVariableBlock struct = this.out.structVariableSet(
+			CBasicModifier.CONST, CBasicType.SJME_NANOFIELDS,
+			this.fieldsIdentifier))
+		{
+			// Field count
+			struct.memberSet("count", this._fields.size());
+			
+			// Then the actual members
+			try (CArrayBlock array = struct.memberArraySet("fields"))
+			{
+				for (FieldProcessor field : this._fields.values())
+					field.processInFieldsStruct(array);
+			}
+		}
 		
 		// Process method source details outside the class struct
 		for (MethodProcessor method : this._methods.values())
 			method.processSourceOutside();
+		
+		// Process method details for method structure
+		try (CStructVariableBlock struct = this.out.structVariableSet(
+			CBasicModifier.CONST, CBasicType.SJME_NANOMETHODS,
+			this.methodsIdentifier))
+		{
+			// Method count
+			struct.memberSet("count", this._methods.size());
+			
+			// Then the actual members
+			try (CArrayBlock array = struct.memberArraySet("methods"))
+			{
+				for (MethodProcessor method : this._methods.values())
+					method.processInMethodsStruct(array);
+			}
+		}
 		
 		// Open class details
 		try (CStructVariableBlock struct = this.out.structVariableSet(
@@ -138,21 +174,16 @@ public class ClassProcessor
 				classFile.thisName());
 			struct.memberSet("superName",
 				classFile.superName());
-			struct.memberSet("fields",
+			struct.memberSet("flags",
 				classFile.flags().toJavaBits());
 			
-			if (true)
-				throw Debugging.todo();
+			// Fields
+			struct.memberSet("fields",
+				this.fieldsIdentifier);
 			
-			// Write fields
-			for (FieldProcessor field : this._fields.values())
-				field.processSourceInClass(struct);
-			
-			// Write methods
-			for (MethodProcessor method : this._methods.values())
-				method.processSourceInClass(struct);
+			// Methods
+			struct.memberSet("methods",
+				this.methodsIdentifier);
 		}
-		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
 	}
 }

@@ -53,6 +53,12 @@ public enum CBasicType
 	/** String. */
 	JSTRING("jstring"),
 	
+	/** Field. */
+	JFIELD("jfield"),
+	
+	/** Method. */
+	JMETHOD("jmethod"),
+	
 	/** The NanoCoat state. */
 	SJME_NANOSTATE("sjme_nanostate"),
 	
@@ -61,6 +67,12 @@ public enum CBasicType
 	
 	/** A NanoCoat resource. */
 	SJME_NANORESOURCE("sjme_nanoresource"),
+	
+	/** Field information. */
+	SJME_NANOFIELDS("sjme_nanofields"),
+	
+	/** Method information. */
+	SJME_NANOMETHODS("sjme_nanomethods"),
 	
 	/* End. */
 	;
