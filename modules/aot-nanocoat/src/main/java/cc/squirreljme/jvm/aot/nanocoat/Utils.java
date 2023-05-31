@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.IOException;
 import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Identifier;
@@ -250,5 +251,50 @@ public final class Utils
 		return "sjmeMt__" + __module.baseName + "__" +
 			Utils.mangle(__method.inClass()) + "__" +
 			Utils.mangle(__method.name()) + "__" + __method.methodIndex();
+	}
+	
+	/**
+	 * Quotes the input as a string.
+	 * 
+	 * @param __input The input.
+	 * @return The input as a quoted string.
+	 * @since 2023/05/31
+	 */
+	public static String quotedString(Object __input)
+	{
+		if (__input == null)
+			return null;
+		
+		// Open string
+		StringBuilder sb = new StringBuilder("\"");
+		
+		// Whatever bytes need to be encoded properly
+		try
+		{
+			for (byte b : __input.toString().getBytes("utf-8"))
+			{
+				if (b == '\t')
+					sb.append("\\t");
+				else if (b == '\r')
+					sb.append("\\r");
+				else if (b == '\n')
+					sb.append("\\n");
+				else if (b >= 0x20 && b < 0x7F)
+					sb.append((char)b);
+				
+				// This is really the only most consistent here
+				else
+					sb.append(String.format("\\x%03o", b & 0xFF));
+			}
+		}
+		catch (IOException __e)
+		{
+			throw new RuntimeException(__e);
+		}
+		
+		// Close string
+		sb.append("\"");
+		
+		return sb.toString();
 	}
 }

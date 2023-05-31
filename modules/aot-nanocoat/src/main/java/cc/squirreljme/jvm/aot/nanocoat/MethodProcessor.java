@@ -9,8 +9,8 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
+import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.Method;
 
@@ -99,13 +99,17 @@ public final class MethodProcessor
 		{
 			// Method details
 			struct.memberSet("name",
-				method.name().toString());
+				Utils.quotedString(method.name().toString()));
 			struct.memberSet("type",
-				method.type().toString());
+				Utils.quotedString(method.type().toString()));
 			struct.memberSet("flags",
 				method.flags().toJavaBits());
 			
-			throw Debugging.todo();
+			// Code for the method?
+			ByteCode code = method.byteCode();
+			if (code != null)
+				struct.memberSet("code",
+					this.methodIdentifier);
 		}
 	}
 	
@@ -119,6 +123,11 @@ public final class MethodProcessor
 	public void processSourceOutside()
 		throws IOException
 	{
+		// Only write byte code of the method if there is actual byte code
+		ByteCode code = this.method.byteCode();
+		if (code == null)
+			return;
+		
 		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
 	}
 }

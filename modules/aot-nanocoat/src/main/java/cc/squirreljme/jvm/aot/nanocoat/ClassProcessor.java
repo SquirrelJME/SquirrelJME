@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -171,9 +170,9 @@ public class ClassProcessor
 		{
 			// Class details
 			struct.memberSet("thisName",
-				classFile.thisName());
+				Utils.quotedString(classFile.thisName()));
 			struct.memberSet("superName",
-				classFile.superName());
+				Utils.quotedString(classFile.superName()));
 			struct.memberSet("flags",
 				classFile.flags().toJavaBits());
 			

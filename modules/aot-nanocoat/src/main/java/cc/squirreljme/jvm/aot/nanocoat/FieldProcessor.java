@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ConstantValue;
+import net.multiphasicapps.classfile.ConstantValueClass;
 import net.multiphasicapps.classfile.Field;
 
 /**
@@ -87,9 +88,9 @@ public class FieldProcessor
 		try (CStructVariableBlock struct = __array.struct())
 		{
 			struct.memberSet("name",
-				field.name().toString());
+				Utils.quotedString(field.name().toString()));
 			struct.memberSet("type",
-				field.type().toString());
+				Utils.quotedString(field.type().toString()));
 			struct.memberSet("flags",
 				field.flags().toJavaBits());
 			
@@ -98,12 +99,42 @@ public class FieldProcessor
 			if (value != null)
 			{
 				struct.memberSet("valueType",
-					value.type().javaType().toString());
+					"SJME_VALUETYPE_" + value.type().name());
 				try (CStructVariableBlock valueStruct = struct.memberStructSet(
 					"value"))
 				{
 					switch (value.type())
 					{
+						case INTEGER:
+							valueStruct.memberSet("jint",
+								value.boxedValue());
+							break;
+							
+						case LONG:
+							valueStruct.memberSet("jlong",
+								value.boxedValue());
+							break;
+							
+						case FLOAT:
+							valueStruct.memberSet("jfloat",
+								value.boxedValue());
+							break;
+							
+						case DOUBLE:
+							valueStruct.memberSet("jdouble",
+								value.boxedValue());
+							break;
+							
+						case STRING:
+							valueStruct.memberSet("jstring",
+								value);
+							break;
+							
+						case CLASS:
+							valueStruct.memberSet("jclass",
+								((ConstantValueClass)value).className());
+							break;
+							
 						default:
 							throw Debugging.todo();
 					}

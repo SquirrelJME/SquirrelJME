@@ -52,7 +52,7 @@ public class CSourceWriter
 		new ArrayDeque<>();
 	
 	/** Reference to self, for blocks. */
-	private final Reference<CSourceWriter> _selfRef =
+	final Reference<CSourceWriter> _selfRef =
 		new WeakReference<>(this);
 	
 	/** The current line. */
@@ -288,7 +288,7 @@ public class CSourceWriter
 	{
 		// Setup new block
 		CBlock rv = new CBlock(this._selfRef, "}");
-		this._blocks.push(rv);
+		this.__pushBlock(rv);
 		
 		// Output open block
 		this.__out('{');
@@ -488,7 +488,7 @@ public class CSourceWriter
 		
 		// Setup new block
 		CPPBlock rv = new CPPBlock(this._selfRef);
-		this._blocks.push(rv);
+		this.__pushBlock(rv);
 		
 		// Start the check
 		this.preprocessorLine("if", __condition);
@@ -599,7 +599,7 @@ public class CSourceWriter
 		
 		// Setup new block
 		CStructVariableBlock rv = new CStructVariableBlock(this._selfRef);
-		this._blocks.push(rv);
+		this.__pushBlock(rv);
 		
 		// Write the variable and the opening
 		this.variable(__modifiers, __structType, __structName);
@@ -984,5 +984,24 @@ public class CSourceWriter
 		
 		// Store last character for later writes
 		this._lastChar = __c;
+	}
+	
+	/**
+	 * Pushes the block to the stack.
+	 * 
+	 * @param <B> The type of block to push.
+	 * @param __block The block to push.
+	 * @return The block to push.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/31
+	 */
+	<B extends CBlock> B __pushBlock(B __block)
+		throws NullPointerException
+	{
+		if (__block == null)
+			throw new NullPointerException("NARG");
+		
+		this._blocks.push(__block);
+		return __block;
 	}
 }
