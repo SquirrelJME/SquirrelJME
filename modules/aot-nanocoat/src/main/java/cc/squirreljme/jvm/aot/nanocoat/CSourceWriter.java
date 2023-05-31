@@ -361,6 +361,36 @@ public class CSourceWriter
 	}
 	
 	/**
+	 * Defines a function.
+	 * 
+	 * @param __modifier The function modifier.
+	 * @param __name The name of the function.
+	 * @param __returnVal The return value.
+	 * @param __arguments The arguments to the function.
+	 * @return The block for writing functions.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException If no name was specified.
+	 * @since 2023/05/30
+	 */
+	public CFunctionBlock functionDefine(CModifier __modifier,
+		String __name, CType __returnVal, CFunctionArgument... __arguments)
+		throws IOException, NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// Start on a fresh line, is cleaner
+		this.freshLine();
+		
+		// Start function
+		this.function(__modifier, __name, __returnVal, __arguments);
+		this.token("{");
+		
+		// Push block for it
+		return this.__pushBlock(new CFunctionBlock(this._selfRef));
+	}
+	
+	/**
 	 * Writes a function prototype.
 	 * 
 	 * @param __modifier The function modifier.

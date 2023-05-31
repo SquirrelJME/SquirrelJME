@@ -128,6 +128,13 @@ public final class MethodProcessor
 		if (code == null)
 			return;
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		// Write function code
+		try (CFunctionBlock function = this.out.functionDefine(null,
+			this.methodIdentifier, null, CFunctionArgument.of(
+				CBasicType.SJME_NANOSTATE.pointerType(), "state")))
+		{
+			
+			throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		}
 	}
 }
