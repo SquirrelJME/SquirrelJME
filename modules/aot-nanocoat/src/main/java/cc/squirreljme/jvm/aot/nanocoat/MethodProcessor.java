@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.aot.nanocoat;
 import java.io.IOException;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.Method;
 
 /**
@@ -104,6 +105,16 @@ public final class MethodProcessor
 				Utils.quotedString(method.type().toString()));
 			struct.memberSet("flags",
 				method.flags().toJavaBits());
+			
+			// Slots of return value
+			FieldDescriptor rVal = method.type().returnValue();
+			if (rVal != null)
+				struct.memberSet("rValSlots",
+					rVal.stackWidth());
+			
+			// Argument slots
+			struct.memberSet("argSlots",
+				method.argumentSlotCount());
 			
 			// Code for the method?
 			ByteCode code = method.byteCode();

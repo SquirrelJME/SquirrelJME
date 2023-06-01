@@ -361,6 +361,26 @@ public class CSourceWriter
 	}
 	
 	/**
+	 * Performs a function call.
+	 * 
+	 * @param __function The function to call.
+	 * @param __args The arguments to the call.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/31
+	 */
+	public CSourceWriter functionCall(String __function, Object... __args)
+		throws IOException, NullPointerException
+	{
+		if (__function == null)
+			throw new NullPointerException("NARG");
+		
+		this.surroundDelimited(__function, ",", __args);
+		return this.token(";");
+	}
+	
+	/**
 	 * Defines a function.
 	 * 
 	 * @param __modifier The function modifier.

@@ -119,6 +119,19 @@ public final class Method
 	}
 	
 	/**
+	 * Returns the number of slots used for the method call.
+	 * 
+	 * @return The argument slot count for this method, handles static or
+	 * instance methods.
+	 * @since 2023/05/31
+	 */
+	public int argumentSlotCount()
+	{
+		return (this.methodflags.isStatic() ? 0 : 1) +
+			this.methodtype.argumentSlotCount();
+	}
+	
+	/**
 	 * Returns the byte code for this method.
 	 *
 	 * @return The byte code for this method or {@code null} if there is none.

@@ -15,12 +15,15 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InstructionJumpTargets;
+import net.multiphasicapps.classfile.Method;
+import net.multiphasicapps.classfile.MethodReference;
 
 /**
  * This processes the byte code of a method.
@@ -34,6 +37,9 @@ public class ByteCodeProcessor
 	
 	/** The processor this is in. */
 	protected final Reference<MethodProcessor> methodProcessor;
+	
+	/** The method being processed. */
+	protected final Method method;
 	
 	/** Basic block mappings. */
 	private final Map<Integer, BasicBlock> _basicBlocks =
@@ -59,6 +65,7 @@ public class ByteCodeProcessor
 		
 		this.methodProcessor = new WeakReference<>(__method);
 		this.code = __code;
+		this.method = __method.method;
 		
 		// Reverse jump targets for instructions
 		Map<Integer, InstructionJumpTargets> reverseJumpsTable =
@@ -317,10 +324,34 @@ public class ByteCodeProcessor
 			case InstructionIndex.ALOAD_3:
 				this.__doALoad(__block, op - InstructionIndex.ALOAD_0);
 				break;
+				
+			case InstructionIndex.INVOKESPECIAL:
+				this.__doInvokeSpecial(__block,
+					__instruction.argument(0, MethodReference.class));
+				break;
 			
 			default:
 				throw Debugging.todo(__instruction);
 		}
+	}
+	
+	/**
+	 * Invokes a special method.
+	 * 
+	 * @param __block The output block.
+	 * @param __method The method being invoked.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/31
+	 */
+	private void __doInvokeSpecial(CFunctionBlock __block,
+		MethodReference __method)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __method == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -338,6 +369,11 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		CSourceWriter writer = __block.writer();
+		
+		// Copy reference over
+		writer.functionCall("sjme_copyReferenceInFrame",
+			"&current->locals", __localDx,
+			"&current->stack", "current->stackTop++");
 	}
 }
