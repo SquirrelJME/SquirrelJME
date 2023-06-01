@@ -1,0 +1,39 @@
+/* ---------------------------------------------------------------------------
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the GNU General Public License v3+, or later.
+// See license.mkd for licensing and copyright information.
+// -------------------------------------------------------------------------*/
+
+/* Application Info. */
+APPLICATION ID 1 "sJmE"
+APPLICATIONICONNAME ID 100 "SquirrelJME"
+LAUNCHERCATEGORY "Utilities"
+VERSION ID 1 "0.3.0"
+
+/* Large Icon. */
+ICONFAMILYEX
+BEGIN
+    BITMAP "large-l1.ppm" BPP 1
+    BITMAP "large-l2.ppm" BPP 2
+    BITMAP "large-l4.ppm" BPP 4
+    BITMAP "large-l8.ppm" BPP 8 TRANSPARENT 0 255 0
+    BITMAP "large-h1.ppm" BPP 1 DENSITY 2
+    BITMAP "large-h2.ppm" BPP 2 DENSITY 2
+    BITMAP "large-h4.ppm" BPP 4 DENSITY 2
+    BITMAP "large-h8.ppm" BPP 8 TRANSPARENT 0 255 0 DENSITY 2
+END
+
+/* Small Icon. */
+SMALLICONFAMILYEX
+BEGIN
+    BITMAP "small-l1.ppm" BPP 1
+    BITMAP "small-l2.ppm" BPP 2
+    BITMAP "small-l4.ppm" BPP 4
+    BITMAP "small-l8.ppm" BPP 8 TRANSPARENT 0 255 0
+    BITMAP "small-h1.ppm" BPP 1 DENSITY 2
+    BITMAP "small-h2.ppm" BPP 2 DENSITY 2
+    BITMAP "small-h4.ppm" BPP 4 DENSITY 2
+    BITMAP "small-h8.ppm" BPP 8 TRANSPARENT 0 255 0 DENSITY 2
+END

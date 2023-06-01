@@ -1,0 +1,20 @@
+# Memory Tags
+
+In standard Java JNI all objects and otherwise are pointers to pointers, as
+such SquirrelJME RatufaCoat operates in the same manner. These are called
+memory tags and as such they are called _memtags_ in SquirrelJME. It can be
+a bit confusing understanding how these work, so this document describes how
+they function and otherwise as a high level overview.
+
+# Groups
+
+Groups may contain multiple tags and may also contain sub-groups at an
+infinite depth. When a group is freed, every sub-group and tag within the
+group is also freed. Groups are made so that deallocating objects in bulk
+is possible to do in an efficient manner. 
+
+# Tags
+
+Individual tags contain allocated memory. Since tags are always doubly
+references, the sub-pointer in the tag always points to itself for the most
+part.

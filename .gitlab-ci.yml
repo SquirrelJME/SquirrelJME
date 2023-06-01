@@ -11,6 +11,12 @@
 ################################# BOILERPLATE ################################
 ##############################################################################
 
+# Stages for building
+stages:
+  - build-prepare
+  - build-shared
+  - build-static
+
 # Core definitions
 .core-defs:
   variables:
@@ -18,51 +24,67 @@
     JNI_PATH: ratufacoat/libretro/
     MAKEFILE_PATH: ratufacoat
     MAKEFILE: makefilelibretro
+    SQUIRRELJME_HAS_BUILTIN: 1
+    SQUIRRELJME_ROM_URL: https://circleci.com/api/v1.1/project/github/SquirrelJME/SquirrelJME/$SQUIRRELJME_ROM_ID/artifacts
+
+    # CMake Settings
+    CMAKE_SOURCE_ROOT: ratufacoat
+    EXTRA_PATH: src/frontend/libretro
+
+# SquirrelJME Support (Common)
+.squirreljme-support-common:
+  # Only trigger from external triggers
+  only:
+    - triggers
+  before_script:
+    # Make sure the directories exist first
+    - mkdir -p ratufacoat/build/
+
+    # Download the built-in ROM
+    - echo Downloading External ROM...
+    - "curl -L -H \"Circle-Token: $CIRCLECI_ACCESS_TOKEN\" \"$SQUIRRELJME_ROM_URL\" | tr -d '\n' | tr -d ' ' | sed 's/.*\"url\":\"\\([^\"]*\\)\".*/\\1/' > .rom-url"
+    - "curl -L \"$(cat .rom-url)\" > ratufacoat/build/builtin.c"
 
 # Inclusion templates, required for the build to work
 include:
   ################################## DESKTOPS ################################
-  # Linux 32-bit
+  # Linux 32-bit and 64-bit
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/linux-i686.yml'
+    file: '/linux-cmake.yml'
 
-  # Linux 64-bit
+  # MacOS 32-bit and 64-bit
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/linux-x64.yml'
-
-  # MacOS 64-bit
-  - project: 'libretro-infrastructure/ci-templates'
-    file: '/osx-x64.yml'
+    file: '/osx-cmake-x86.yml'
 
   # MacOS ARM 64-bit
   - project: 'libretro-infrastructure/ci-templates'
     file: '/osx-arm64.yml'
 
-  # Windows 32-bit
+  # Windows 32-bit and 64-bit
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/windows-i686-mingw.yml'
-
-  # Windows 64-bit
-  - project: 'libretro-infrastructure/ci-templates'
-    file: '/windows-x64-mingw.yml'
+    file: '/windows-cmake-mingw.yml'
 
   ################################## CELLULAR ################################
   # Android
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/android-jni.yml'
+    file: '/android-cmake.yml'
 
   # iOS 9
   - project: 'libretro-infrastructure/ci-templates'
     file: '/ios9.yml'
 
+  # tvOS
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/tvos-arm64.yml'
+
   ################################## CONSOLES ################################
   # Dingux (GCW Zero)
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/dingux-mips32.yml'
+    file: '/dingux-cmake.yml'
 
   # Nintendo 3DS
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/ctr-static.yml'
+    file: '/ctr-static-cmake.yml'
 
   # Nintendo GameCube
   - project: 'libretro-infrastructure/ci-templates'
@@ -70,7 +92,7 @@ include:
 
   # Nintendo Switch
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/libnx-static.yml'
+    file: '/libnx-static-cmake.yml'
 
   # Nintendo Wii
   - project: 'libretro-infrastructure/ci-templates'
@@ -78,151 +100,222 @@ include:
 
   # Nintendo Wii U
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/wiiu-static.yml'
+    file: '/wiiu-static-cmake.yml'
 
-  # PLayStation 2
+  # PlayStation 2
   - project: 'libretro-infrastructure/ci-templates'
     file: '/ps2-static.yml'
 
+  # PlayStation Portable
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/psp-static-cmake.yml'
+
   # PlayStation Vita
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/vita-static.yml'
+    file: '/vita-static-cmake.yml'
 
   #################################### MISC ##################################
   # Emscripten
   - project: 'libretro-infrastructure/ci-templates'
-    file: '/emscripten-static.yml'
-
-# Stages for building
-stages:
-  - build-prepare
-  - build-shared
-  - build-static
+    file: '/emscripten-static-cmake.yml'
 
 ##############################################################################
 #################################### STAGES ##################################
 ##############################################################################
 
+########################### SUMMERCOAT BUILT-IN ROM ##########################
+#summercoat-built-in:
+#  image: openjdk:8-jdk
+#  stage: squirreljme-rom
+#  artifacts:
+#    paths:
+#      - "ratufacoat/build/builtin.c"
+#    expire_in: 10 min
+#  script:
+#    # Debugging
+#    - "echo \"CI_PIPELINE_ID: $CI_PIPELINE_ID\""
+#    - "echo \"CI_JOB_NAME: $CI_JOB_NAME\""
+#    - "echo \"CI_COMMIT_SHA: $CI_COMMIT_SHA\""
+#    - "echo \"CI_JOB_ID: $CI_JOB_ID\""
+#
+#    # We need a compile to generate the native code used to compile ROMs
+#    - apt-get update
+#    - apt-get --no-install-recommends -y install build-essential gcc g++
+#
+#    # Then perform the ROM generation
+#    - ./gradlew :romSummerCoatRatufaCoat --full-stacktrace
+
 ################################### DESKTOPS #################################
-# Linux 32-bit
+# Linux 32-bit [CMake]
 libretro-build-linux-i686:
   extends:
-    - .libretro-linux-i686-make-default
+    - .libretro-linux-cmake-x86
     - .core-defs
+    - .squirreljme-support-common
 
-# Linux 64-bit
+# Linux 64-bit [CMake]
 libretro-build-linux-x64:
   extends:
-    - .libretro-linux-x64-make-default
+    - .libretro-linux-cmake-x86_64
     - .core-defs
+    - .squirreljme-support-common
 
-# MacOS 64-bit
+# MacOS 32-bit [CMake]
+libretro-build-osx-x86:
+  extends:
+    - .libretro-osx-cmake-x86
+    - .core-defs
+    - .squirreljme-support-common
+
+# MacOS 64-bit [CMake]
 libretro-build-osx-x64:
   extends:
-    - .libretro-osx-x64-make-default
+    - .libretro-osx-cmake-x86_64
     - .core-defs
+    - .squirreljme-support-common
 
-# MacOS ARM 64-bit
+## MacOS ARM 64-bit (TODO: Move to CMake)
 libretro-build-osx-arm64:
   extends:
     - .libretro-osx-arm64-make-default
     - .core-defs
+    - .squirreljme-support-common
 
-# Windows 32-bit
+# Windows 32-bit [CMake]
 libretro-build-windows-i686:
   extends:
-    - .libretro-windows-i686-mingw-make-default
+    - .libretro-windows-cmake-x86
     - .core-defs
+    - .squirreljme-support-common
 
-# Windows 64-bit
+# Windows 64-bit [CMake]
 libretro-build-windows-x64:
   extends:
-    - .libretro-windows-x64-mingw-make-default
+    - .libretro-windows-cmake-x86_64
     - .core-defs
+    - .squirreljme-support-common
 
 ################################### CELLULAR #################################
-# Android ARMv7a
+# Android ARMv7a [CMake]
 android-armeabi-v7a:
+  variables:
+    CMAKE_VERBOSE_MAKEFILE: 1
   extends:
-    - .libretro-android-jni-armeabi-v7a
+    - .libretro-android-cmake-armeabi-v7a
     - .core-defs
+    - .squirreljme-support-common
 
-# Android ARMv8a
+# Android ARMv8a [CMake]
 android-arm64-v8a:
+  variables:
+    CMAKE_VERBOSE_MAKEFILE: 1
   extends:
-    - .libretro-android-jni-arm64-v8a
+    - .libretro-android-cmake-arm64-v8a
     - .core-defs
+    - .squirreljme-support-common
 
-# Android 64-bit x86
+# Android 64-bit x86 [CMake]
 android-x86_64:
+  variables:
+    CMAKE_VERBOSE_MAKEFILE: 1
   extends:
-    - .libretro-android-jni-x86_64
+    - .libretro-android-cmake-x86
     - .core-defs
+    - .squirreljme-support-common
 
-# Android 32-bit x86
+# Android 32-bit x86 [CMake]
 android-x86:
+  variables:
+    CMAKE_VERBOSE_MAKEFILE: 1
   extends:
-    - .libretro-android-jni-x86
+    - .libretro-android-cmake-x86_64
     - .core-defs
+    - .squirreljme-support-common
 
-# iOS 9
+## iOS 9 (TODO: Move to CMake)
 libretro-build-ios9:
   extends:
     - .libretro-ios9-make-default
     - .core-defs
+    - .squirreljme-support-common
+
+## tvOS (TODO: Move to CMake)
+libretro-build-tvos-arm64:
+  extends:
+    - .libretro-tvos-arm64-make-default
+    - .core-defs
+    - .squirreljme-support-common
 
 ################################### CONSOLES #################################
-# Dingux (GCW Zero)
+# Dingux (GCW Zero) [CMake]
 libretro-build-dingux-mips32:
   extends:
-    - .libretro-dingux-mips32-make-default
+    - .libretro-dingux-cmake-mips32
     - .core-defs
+    - .squirreljme-support-common
 
-# Nintendo 3DS
+# Nintendo 3DS [CMake]
 libretro-build-ctr:
+  variables:
+    CMAKE_VERBOSE_MAKEFILE: 1
   extends:
-    - .libretro-ctr-static-retroarch-master
+    - .libretro-ctr-static-cmake-retroarch-master
     - .core-defs
+    - .squirreljme-support-common
 
-# Nintendo GameCube
+## Nintendo GameCube (TODO: Move to CMake)
 libretro-build-ngc:
   extends:
     - .libretro-ngc-static-retroarch-master
     - .core-defs
+    - .squirreljme-support-common
 
-# Nintendo Switch
+## Nintendo Switch [CMake]
 libretro-build-libnx-aarch64:
   extends:
-    - .libretro-libnx-static-retroarch-master
+    - .libretro-libnx-static-cmake-retroarch-master
     - .core-defs
+    - .squirreljme-support-common
 
-# Nintendo Wii
+## Nintendo Wii (TODO: Move to CMake)
 libretro-build-wii:
   extends:
     - .libretro-wii-static-retroarch-master
     - .core-defs
+    - .squirreljme-support-common
 
-# Nintendo Wii U
+## Nintendo Wii U [CMake]
 libretro-build-wiiu:
   extends:
-    - .libretro-wiiu-static-retroarch-master
+    - .libretro-wiiu-static-cmake-retroarch-master
     - .core-defs
+    - .squirreljme-support-common
 
-# PlayStation 2
+## PlayStation 2 (TODO: Move to CMake)
 libretro-build-ps2:
   extends:
     - .libretro-ps2-static-retroarch-master
     - .core-defs
+    - .squirreljme-support-common
 
-# PlayStation Vita
+## PlayStation Portable [CMake]
+libretro-build-psp:
+  extends:
+    - .libretro-psp-static-cmake-retroarch-master
+    - .core-defs
+    - .squirreljme-support-common
+
+## PlayStation Vita [CMake]
 libretro-build-vita:
   extends:
-    - .libretro-vita-static-retroarch-master
+    - .libretro-vita-static-cmake-retroarch-master
     - .core-defs
+    - .squirreljme-support-common
 
 #################################### MISC ##################################
-# Emscripten
+## Emscripten [CMake]
 libretro-build-emscripten:
   extends:
-    - .libretro-emscripten-static-retroarch-master
+    - .libretro-emscripten-static-cmake-retroarch-master
     - .core-defs
+    - .squirreljme-support-common

@@ -28,6 +28,10 @@ executors:
     environment:
       # Allow Gradle to be fully cached
       GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+  build-on-linux-ratufacoat:
+    docker:
+      - image: debian:bullseye-backports
+    resource_class: medium
 
 # This is in the documentation but does not actually work, new feature?
 #  build-on-windows:
@@ -150,6 +154,59 @@ commands:
           name: Install required dependencies
           command: sudo apt-get install -y --no-install-recommends cmake build-essential curl wget openjdk-11-jdk gcc g++ make
 
+  # Cross architecture building, since it is all the same
+  ratufacoat_cross_arch_template:
+    description: Performs common cross-archicture testing of RatufaCoat.
+    parameters:
+      debian-packages:
+        type: string
+      qemu-binary:
+        type: string
+      gcc-binary:
+        type: string
+      gpp-binary:
+        type: string
+      ar-binary:
+        type: string
+      ld-binary:
+        type: string
+    steps:
+      - checkout
+      - run:
+          name: Install required dependencies
+          command: |
+            apt-get update -y
+            apt-get install -y build-essential python3 git cmake qemu-user-static <<parameters.debian-packages>>
+      - attach_workspace:
+          at: .
+      - run:
+          name: Setup CMake build
+          working_directory: ratufacoat
+          command: cmake -DSQUIRRELJME_TEST_WRAPPER="$(which <<parameters.qemu-binary>>)" -DCMAKE_C_COMPILER="$(which <<parameters.gcc-binary>>)" -DCMAKE_CXX_COMPILER="$(which <<parameters.gpp-binary>>)" -DCMAKE_AR="$(which <<parameters.ar-binary>>)" -DCMAKE_LINKER="$(which <<parameters.ld-binary>>)" .
+      - run:
+          name: Compile CMake build
+          working_directory: ratufacoat
+          command: cmake --build .
+      - run:
+          name: Test CMake Build
+          working_directory: ratufacoat
+          command: ctest --extra-verbose -T Test .
+      - run:
+          name: Convert CTest to JUnit XML
+          command: python3 ctest-to-junit.py < Testing/*/Test.xml
+          working_directory: ratufacoat
+          when: always
+      - run:
+          name: Save test results
+          working_directory: ratufacoat
+          command: |
+            mkdir -p ~/test-results/junit-linux/
+            find . -type f -regex '.*/build/junit/.*\.xml' -exec cp {} ~/test-results/junit-linux/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
+
+# Standard Build Jobs
 jobs:
   ################################## WINDOWS #################################
   build_windows:
@@ -214,15 +271,12 @@ jobs:
           path: emulators/standalone/build/libs/
           destination: .
 
-  ratufacoat_build_windows:
+  # Microsoft Visual Studio 32-bit
+  ratufacoat_build_windows_msvc32:
     executor:
       name: win/default
       shell: cmd.exe
-      size: medium
-    environment:
-      # Use a reduced amount of memory to all the VMs so that it does not
-      # try grabbing all the memory that is available to the system.
-      JAVA_OPTS: -Xmx3g
+      size: xlarge
     steps:
       - checkout
       - attach_workspace:
@@ -237,15 +291,96 @@ jobs:
           working_directory: ratufacoat
           shell: bash.exe
           command: |
-            "$PROGRAMFILES/CMake/bin/cmake.exe" .
+            "$PROGRAMFILES/CMake/bin/cmake.exe" . \
+                -G "Visual Studio 16 2019" -A Win32 \
+                -DCMAKE_BUILD_TYPE=Release
       - run:
           name: Compile CMake build
           working_directory: ratufacoat
           shell: bash.exe
           command: |
-            "$PROGRAMFILES/CMake/bin/cmake.exe" --build .
+            "$PROGRAMFILES/CMake/bin/cmake.exe" --build . --config Release
+      - run:
+          name: Test CMake Build
+          working_directory: ratufacoat
+          shell: bash.exe
+          command: |
+            "$PROGRAMFILES/CMake/bin/ctest.exe" --extra-verbose -T Test \
+                -C Release .
+      - run:
+          shell: bash.exe
+          name: Convert CTest to JUnit XML
+          command: python ctest-to-junit.py < Testing/*/Test.xml
+          working_directory: ratufacoat
+          when: always
+      - run:
+          shell: bash.exe
+          name: Save test results
+          working_directory: ratufacoat
+          command: |
+            mkdir -p /c/users/circleci/test-results/junit-windows
+            /usr/bin/find . -type f -regex '.*/build/junit/.*\.xml' -exec cp {} /c/users/circleci/test-results/junit-windows/ \;
+          when: always
+      - store_test_results:
+          path: c:\users\circleci\test-results
       - store_artifacts:
-          path: ratufacoat\src\Debug\SquirrelJME.exe
+          path: ratufacoat\src\sdl2\Debug\SquirrelJME.exe
+          destination: SquirrelJME.exe
+
+  # Microsoft Visual Studio 64-bit
+  ratufacoat_build_windows_msvc64:
+    executor:
+      name: win/default
+      shell: cmd.exe
+      size: xlarge
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install required dependencies
+          working_directory: ratufacoat
+          shell: cmd.exe
+          command: choco install cmake.install
+      - run:
+          name: Setup CMake build
+          working_directory: ratufacoat
+          shell: bash.exe
+          command: |
+            "$PROGRAMFILES/CMake/bin/cmake.exe" . \
+                -G "Visual Studio 16 2019" -A x64 \
+                -DCMAKE_BUILD_TYPE=Release
+      - run:
+          name: Compile CMake build
+          working_directory: ratufacoat
+          shell: bash.exe
+          command: |
+            "$PROGRAMFILES/CMake/bin/cmake.exe" --build . --config Release
+      - run:
+          name: Test CMake Build
+          working_directory: ratufacoat
+          shell: bash.exe
+          command: |
+            "$PROGRAMFILES/CMake/bin/ctest.exe" --extra-verbose -T Test \
+                -C Release .
+      - run:
+          shell: bash.exe
+          name: Convert CTest to JUnit XML
+          command: python ctest-to-junit.py < Testing/*/Test.xml
+          working_directory: ratufacoat
+          when: always
+      - run:
+          shell: bash.exe
+          name: Save test results
+          working_directory: ratufacoat
+          command: |
+            mkdir -p /c/users/circleci/test-results/junit-windows
+            /usr/bin/find . -type f -regex '.*/build/junit/.*\.xml' -exec cp {} /c/users/circleci/test-results/junit-windows/ \;
+          when: always
+      - store_test_results:
+          path: c:\users\circleci\test-results
+      - store_artifacts:
+          path: ratufacoat\src\sdl2\Debug\SquirrelJME.exe
           destination: SquirrelJME.exe
 
   ################################# MAC OS X #################################
@@ -309,6 +444,7 @@ jobs:
       - store_artifacts:
           path: emulators/standalone/build/libs/
           destination: .
+
   build_macosx_m1_standalone:
     executor: build-on-macos-m1
     steps:
@@ -342,8 +478,62 @@ jobs:
           name: Compile CMake build
           working_directory: ratufacoat
           command: cmake --build .
+      - run:
+          name: Test CMake Build
+          working_directory: ratufacoat
+          command: ctest --extra-verbose -T Test .
+      - run:
+          name: Convert CTest to JUnit XML
+          command: python3 ctest-to-junit.py < Testing/*/Test.xml
+          working_directory: ratufacoat
+          when: always
+      - run:
+          name: Save test results
+          working_directory: ratufacoat
+          command: |
+            mkdir -p ~/test-results/junit-macosx/
+            find . -type f -regex '.*/build/junit/.*\.xml' -exec cp {} ~/test-results/junit-macosx/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
       - store_artifacts:
-          path: ratufacoat/src/SquirrelJME
+          path: ratufacoat/src/sdl2/SquirrelJME
+          destination: SquirrelJME
+
+  ratufacoat_build_macosx_m1:
+    executor: build-on-macos-m1
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Setup CMake build
+          working_directory: ratufacoat
+          command: cmake .
+      - run:
+          name: Compile CMake build
+          working_directory: ratufacoat
+          command: cmake --build .
+      - run:
+          name: Test CMake Build
+          working_directory: ratufacoat
+          command: ctest --extra-verbose -T Test .
+      - run:
+          name: Convert CTest to JUnit XML
+          command: python3 ctest-to-junit.py < Testing/*/Test.xml
+          working_directory: ratufacoat
+          when: always
+      - run:
+          name: Save test results
+          working_directory: ratufacoat
+          command: |
+            mkdir -p ~/test-results/junit-macosx/
+            find . -type f -regex '.*/build/junit/.*\.xml' -exec cp {} ~/test-results/junit-macosx/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ratufacoat/src/sdl2/SquirrelJME
           destination: SquirrelJME
 
   ################################### LINUX ##################################
@@ -431,7 +621,7 @@ jobs:
 
   ### RatufaCoat
   ratufacoat_build_linux:
-    executor: build-on-linux-amd64
+    executor: build-on-linux-ratufacoat
     steps:
       - checkout
       - linux-install-required
@@ -445,9 +635,146 @@ jobs:
           name: Compile CMake build
           working_directory: ratufacoat
           command: cmake --build .
+      - run:
+          name: Test CMake Build
+          working_directory: ratufacoat
+          command: ctest --extra-verbose -T Test .
+      - run:
+          name: Convert CTest to JUnit XML
+          command: python3 ctest-to-junit.py < Testing/*/Test.xml
+          working_directory: ratufacoat
+          when: always
+      - run:
+          name: Save test results
+          working_directory: ratufacoat
+          command: |
+            mkdir -p ~/test-results/junit-linux/
+            find . -type f -regex '.*/build/junit/.*\.xml' -exec cp {} ~/test-results/junit-linux/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
       - store_artifacts:
-          path: ratufacoat/src/SquirrelJME
+          path: ratufacoat/src/sdl2/SquirrelJME
           destination: SquirrelJME
+
+  ### RatufaCoat (EmScripten/Browser)
+  ratufacoat_build_emscripten:
+    executor: build-on-linux-ratufacoat
+    steps:
+      - checkout
+      - run:
+          name: Install required dependencies
+          command: |
+            apt-get update -y
+            apt-get install -y build-essential python3 git valgrind cmake emscripten
+      - attach_workspace:
+          at: .
+      - run:
+          name: Setup CMake build
+          working_directory: ratufacoat
+          command: emcmake cmake -G "Unix Makefiles" . && emcmake cmake -G "Unix Makefiles" .
+      - run:
+          name: Compile CMake build
+          working_directory: ratufacoat
+          command: emmake make
+      - run:
+          name: Where are all the files?
+          working_directory: ratufacoat
+          command: find -type f
+          when: always
+      - store_artifacts:
+          path: ratufacoat/src/sdl2/SquirrelJME.html
+          destination: SquirrelJME.html
+      - store_artifacts:
+          path: ratufacoat/src/sdl2/SquirrelJME.js
+          destination: SquirrelJME.js
+      - store_artifacts:
+          path: ratufacoat/src/sdl2/SquirrelJME.wasm
+          destination: SquirrelJME.wasm
+
+  ### RatufaCoat (m68k, Cross Arch Testing)
+  ratufacoat_build_linux_m68k:
+    executor: build-on-linux-ratufacoat
+    steps:
+      - ratufacoat_cross_arch_template:
+          debian-packages: gcc-m68k-linux-gnu g++-m68k-linux-gnu binutils-m68k-linux-gnu
+          qemu-binary: qemu-m68k-static
+          gcc-binary: m68k-linux-gnu-gcc
+          gpp-binary: m68k-linux-gnu-g++
+          ar-binary: m68k-linux-gnu-ar
+          ld-binary: m68k-linux-gnu-ld
+
+  ### RatufaCoat (MIPS, Cross Arch Testing)
+  ratufacoat_build_linux_mips:
+    executor: build-on-linux-ratufacoat
+    steps:
+      - ratufacoat_cross_arch_template:
+          debian-packages: gcc-mips-linux-gnu g++-mips-linux-gnu binutils-mips-linux-gnu
+          qemu-binary: qemu-mips-static
+          gcc-binary: mips-linux-gnu-gcc
+          gpp-binary: mips-linux-gnu-g++
+          ar-binary: mips-linux-gnu-ar
+          ld-binary: mips-linux-gnu-ld
+
+  ### RatufaCoat (MIPS 64-bit, Cross Arch Testing)
+  ratufacoat_build_linux_mips64:
+    executor: build-on-linux-ratufacoat
+    steps:
+      - ratufacoat_cross_arch_template:
+          debian-packages: gcc-mips64-linux-gnu g++-mips64-linux-gnu binutils-mips64-linux-gnu
+          qemu-binary: qemu-mips64-static
+          gcc-binary: mips64-linux-gnu-gcc
+          gpp-binary: mips64-linux-gnu-g++
+          ar-binary: mips64-linux-gnu-ar
+          ld-binary: mips64-linux-gnu-ld
+
+  ### RatufaCoat (PowerPC, Cross Arch Testing)
+  ratufacoat_build_linux_powerpc:
+    executor: build-on-linux-ratufacoat
+    steps:
+      - ratufacoat_cross_arch_template:
+          debian-packages: gcc-powerpc-linux-gnu g++-powerpc-linux-gnu binutils-powerpc-linux-gnu
+          qemu-binary: qemu-ppc-static
+          gcc-binary: powerpc-linux-gnu-gcc
+          gpp-binary: powerpc-linux-gnu-g++
+          ar-binary: powerpc-linux-gnu-ar
+          ld-binary: powerpc-linux-gnu-ld
+
+  ### RatufaCoat (PowerPC 64-bit, Cross Arch Testing)
+  ratufacoat_build_linux_powerpc64:
+    executor: build-on-linux-ratufacoat
+    steps:
+      - ratufacoat_cross_arch_template:
+          debian-packages: gcc-powerpc64-linux-gnu g++-powerpc64-linux-gnu binutils-powerpc64-linux-gnu
+          qemu-binary: qemu-ppc64-static
+          gcc-binary: powerpc64-linux-gnu-gcc
+          gpp-binary: powerpc64-linux-gnu-g++
+          ar-binary: powerpc64-linux-gnu-ar
+          ld-binary: powerpc64-linux-gnu-ld
+
+  ### RatufaCoat (SH4, Cross Arch Testing)
+  ratufacoat_build_linux_sh4:
+    executor: build-on-linux-ratufacoat
+    steps:
+      - ratufacoat_cross_arch_template:
+          debian-packages: gcc-sh4-linux-gnu g++-sh4-linux-gnu binutils-sh4-linux-gnu
+          qemu-binary: qemu-sh4-static
+          gcc-binary: sh4-linux-gnu-gcc
+          gpp-binary: sh4-linux-gnu-g++
+          ar-binary: sh4-linux-gnu-ar
+          ld-binary: sh4-linux-gnu-ld
+
+  ### RatufaCoat (SPARC 64-bit, Cross Arch Testing)
+  ratufacoat_build_linux_sparc64:
+    executor: build-on-linux-ratufacoat
+    steps:
+      - ratufacoat_cross_arch_template:
+          debian-packages: gcc-sparc64-linux-gnu g++-sparc64-linux-gnu binutils-sparc64-linux-gnu
+          qemu-binary: qemu-sparc64-static
+          gcc-binary: sparc64-linux-gnu-gcc
+          gpp-binary: sparc64-linux-gnu-g++
+          ar-binary: sparc64-linux-gnu-ar
+          ld-binary: sparc64-linux-gnu-ld
 
   ### SpringCoat
   test_springcoat_debug:
@@ -599,6 +926,38 @@ jobs:
           command: ./gradlew romTestSummerCoat <<pipeline.parameters.standard-gradle-options>>
       - persist-gradle
 
+  # Construct the built-in ROM for RatufaCoat
+  construct_builtInRatufaCoatRom:
+    executor: build-on-linux-amd64
+    steps:
+      - run:
+          name: TODO
+          command: false
+
+  # Construct release ROM for RetroArch
+  construct_builtInRatufaCoatRomRelease:
+    executor: build-on-linux-amd64
+    steps:
+      - run:
+          name: TODO
+          command: false
+
+  # Poke RetroArch for building the cores
+  poke_RetroArch:
+    executor: build-on-linux-amd64
+    environment:
+      # Allow Gradle to be fully cached
+      GRADLE_USER_HOME: ${CIRCLE_WORKING_DIRECTORY}/.gradle/home
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - store_artifacts:
+          path: ratufacoat/build/builtin.c
+      - run:
+          name: Poking RetroArch CI/CD Platform
+          command: curl -X POST -F "token=$RETROARCH_GITLAB_TRIGGER_TOKEN" -F "ref=$CIRCLE_BRANCH" -F "variables[SQUIRRELJME_ROM_ID]=$CIRCLE_BUILD_NUM" https://git.libretro.com/api/v4/projects/120/trigger/pipeline
+
 workflows:
   version: 2
   tests:
@@ -684,18 +1043,51 @@ workflows:
 #            - construct_libTestSummerCoat
 
       ############################## RATUFACOAT ##############################
-#      - ratufacoat_build_windows:
-#          requires:
-#            - build_windows
-#            - construct_romTestSummerCoat
-#      - ratufacoat_build_linux:
-#          requires:
-#            - build_linux_amd64
-#            - construct_romTestSummerCoat
-#      - ratufacoat_build_macosx:
-#          requires:
-#            - build_macosx
-#            - construct_romTestSummerCoat
+      - ratufacoat_build_linux:
+          requires:
+            - construct_builtInRatufaCoatRom
+      - ratufacoat_build_linux_m68k:
+          requires:
+            - ratufacoat_build_linux
+      - ratufacoat_build_linux_mips:
+          requires:
+            - ratufacoat_build_linux
+      - ratufacoat_build_linux_mips64:
+          requires:
+            - ratufacoat_build_linux
+      - ratufacoat_build_linux_powerpc:
+          requires:
+            - ratufacoat_build_linux
+      - ratufacoat_build_linux_powerpc64:
+          requires:
+            - ratufacoat_build_linux
+      - ratufacoat_build_linux_sh4:
+          requires:
+            - ratufacoat_build_linux
+      - ratufacoat_build_linux_sparc64:
+          requires:
+            - ratufacoat_build_linux
+      - ratufacoat_build_windows_msvc32:
+          requires:
+            - construct_builtInRatufaCoatRom
+      - ratufacoat_build_windows_msvc64:
+          requires:
+            - construct_builtInRatufaCoatRom
+      - ratufacoat_build_macosx:
+          requires:
+            - construct_builtInRatufaCoatRom
+      - ratufacoat_build_macosx_m1:
+          requires:
+            - construct_builtInRatufaCoatRom
+      - ratufacoat_build_emscripten:
+          requires:
+            - construct_builtInRatufaCoatRom
+
+      # RetroArch
+      - poke_RetroArch:
+          requires:
+            - ratufacoat_build_linux
+            - construct_builtInRatufaCoatRomRelease
 
   #################### TASKS TO INCREASE USER FRIENDLINESS ####################
   friendliness:

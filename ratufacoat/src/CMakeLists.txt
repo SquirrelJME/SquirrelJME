@@ -5,6 +5,89 @@
 # SquirrelJME is under the GNU General Public License v3+, or later.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
+# DESCRIPTION: Main project source code
 
-add_executable(SquirrelJME
-	sjmerc.c sjmercnm.c sjmercvm.c sys_stdc.c)
+# Verbosity?
+if(DEFINED ENV{CMAKE_VERBOSE_MAKEFILE})
+	set(CMAKE_VERBOSE_MAKEFILE $ENV{CMAKE_VERBOSE_MAKEFILE})
+endif()
+
+# Base core library
+# Note that OBJECT libraries are used to define groups of object files for
+# linking and otherwise. CMake does not support linking multiple static
+# libraries together into one, however using OBJECT libraries allows them
+# to include all the objects. We need to do this for RetroArch's static
+# targets since they are linked directly against RetroArch executables.
+# It also changes how linking is done completely:
+# CMake Error at tests/CMakeLists.txt:25 (target_link_libraries):
+#  Target "SquirrelJMECore" of type OBJECT_LIBRARY may not be linked into
+#  another target.  One may link only to STATIC or SHARED libraries, or to
+#  executables with the ENABLE_EXPORTS property set.
+add_library(SquirrelJMECore OBJECT
+	corefont.c
+	counter.c
+	debug.c
+	error.c
+	memory.c
+	random.c
+	softmath.c
+	stringies.c
+	utf.c
+	util.c
+	xbuiltin.c
+	${SQUIRRELJME_BUILTIN_FILE})
+
+# Common C Directives
+squirreljme_common_c(SquirrelJMECore)
+
+# Make this position independent so it can be linked into shared libraries
+squirreljme_enable_pic(SquirrelJMECore)
+
+# Bundled C library?
+if(SQUIRRELJME_BUNDLED_STDC)
+	add_subdirectory(libstdc)
+endif()
+
+# Include MiniZ if permitted
+if(NOT SQUIRRELJME_BLOCK_LIBMINIZ)
+	message("MiniZ: Yes")
+
+	add_subdirectory(libminiz)
+	set(SQUIRRELJME_OBJANDSRC_LIBMINIZ SquirrelJMELibMiniZ)
+else()
+	message("MiniZ: No")
+
+	set(SQUIRRELJME_OBJANDSRC_LIBMINIZ)
+endif()
+
+# Include Nuklear if permitted
+if (NOT SQUIRRELJME_BLOCK_LIBNUKLEAR)
+	message("Nuklear: Yes")
+
+	add_subdirectory(libnuklear)
+	set(SQUIRRELJME_OBJANDSRC_LIBNUKLEAR SquirrelJMELibNuklear)
+else()
+	message("Nuklear: No")
+
+	set(SQUIRRELJME_OBJANDSRC_LIBNUKLEAR)
+endif()
+
+# Internal support libraries and modules
+add_subdirectory(engine)
+add_subdirectory(format)
+add_subdirectory(memio)
+add_subdirectory(sjmejni)
+
+# Execute this with all of the targets we want to collect
+squirreljme_object_and_sources(SquirrelJMECoreTarget
+	SquirrelJMECore
+	SquirrelJMEEngine
+	SquirrelJMEEngineSpringCoat
+	SquirrelJMEFormat
+	SquirrelJMEJNI
+	${SQUIRRELJME_OBJANDSRC_LIBNUKLEAR}
+	${SQUIRRELJME_OBJANDSRC_LIBMINIZ}
+	SquirrelJMEMemIO)
+
+# Front ends
+add_subdirectory(frontend)

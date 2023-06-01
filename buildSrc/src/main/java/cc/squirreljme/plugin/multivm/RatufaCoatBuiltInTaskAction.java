@@ -132,7 +132,7 @@ public class RatufaCoatBuiltInTaskAction
 				
 				// Only when built-in is enabled
 				out.println();
-				out.println("#if defined(SQUIRRELJME_HAS_BUILTIN)");
+				out.println("#if defined(SJME_HAS_BUILTIN)");
 				out.println();
 				
 				// Which source set was this created for?

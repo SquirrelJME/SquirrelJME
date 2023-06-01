@@ -1,0 +1,4 @@
+# Mapping file for HFS CD
+# EXTN   XLate   CREATOR   TYPE     Comment
+.b       Text    'chrp'    'tbxi'   "Boot Script"
+*        Raw     '????'    '????'   "Other File"

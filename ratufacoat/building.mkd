@@ -21,19 +21,64 @@ To perform the build, you must do the following:
 
 For an IDE, you can try [CLion](https://www.jetbrains.com/clion/).
 
-## libRetro 
+## libRetro
 
-_libRetro_ uses a bit of an archaic build system consisting of makefiles, as
-such it requires `make` and `gcc`/`clang`/`MSVC`.
+For _libRetro_, [CMake](https://cmake.org/) is used.
 
-### Windows
+## IEEE1275 Open Firmware
 
-This requires that `mingw-w64` be installed, you can download it from:
+This is a firmware interface for out-of-date systems.
 
- * <https://mingw-w64.org/doku.php/download/mingw-builds>
+### PowerPC
 
-Then to compile:
+#### binutils
 
- * 32-bit: `make -f makefilelibretro platform=windows_x86`
- * 64-bit: `make -f makefilelibretro platform=windows_x86_64`
+Requirements:
 
+ * `binutils` 2.39 is working.
+
+Building:
+
+```shell
+../binutils/configure --target powerpc-elf --prefix=/usr/local \
+    --disable-nls --with-sysroot
+```
+
+#### gcc
+
+Building:
+
+```shell
+../gcc/configure --target powerpc-elf --prefix=/usr/local --disable-nls \
+    --enable-languages=c --without-headers --disable-shared \
+    --disable-libsanitizer --disable-libssp
+```
+
+### SPARC
+
+#### binutils
+
+Requirements:
+
+ * `binutils` up to 2.30 only, afterwards removes a.out support.
+   * Will not work with 2.31 and up!
+
+Building:
+
+```shell
+../binutils/configure --target sparc-elf --prefix=/usr/local --disable-nls
+make
+sudo make install
+```
+
+#### gcc
+
+Building:
+
+```shell
+../gcc/configure --target sparc-elf --prefix=/usr/local --disable-nls \
+    --enable-languages=c --without-headers --disable-shared \
+    --disable-libsanitizer --disable-libssp
+make
+sudo make install
+```

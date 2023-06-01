@@ -7,9 +7,15 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Makefile specifically for SquirrelJME RatufaCoat on RetroArch.
 
+# THIS BUILD TYPE IS DEPRECATED AND IS ONLY HERE FOR BACKWARDS COMPATIBILITY
+$(warning -------------------------------------------------------------------)
+$(warning Makefile RetroArch is deprecated and will be removed in the future.)
+$(warning CMake? $(shell cmake --version))
+$(warning -------------------------------------------------------------------)
+
 ###### CORE DEFINED OPTIONS ######
 CORE_DIR := .
-BUILD_DIR = libretro
+BUILD_DIR = src/frontend/libretro/legacy
 ##################################
 
 DEBUG = 0

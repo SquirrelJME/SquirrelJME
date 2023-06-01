@@ -17,35 +17,42 @@
 #ifndef SJME_hGRATUFACOATSJMERCHSJMERCH
 #define SJME_hGRATUFACOATSJMERCHSJMERCH
 
-/** Standard Includes. */
-#include <stddef.h>
-#include <limits.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
+/* Java header */
+#include "sjmejni/sjmejni.h"
 
-/** Version string. */
-#define SQUIRRELJME_VERSION_STRING "0.3.0"
+/* Variable counting. */
+#include "varcount.h"
 
-/** Is this a 64-bit system? */
-#if !defined(SJME_BITS)
-	#if defined(_LP64) || defined(__LP64__) || defined(__x86_64__) || \
-		defined(_M_X64) || defined(_M_AMD64) || defined(__aarch64__) || \
-		defined(__ia64__) || defined(__ia64) || defined(_M_IA64) || \
-		defined(__itanium__) || defined(__powerpc64__) || \
-		defined(__ppc64__) || defined(_ARCH_PPC64) || defined(_ARCH_PPC64)
-		#define SJME_BITS 64
-	#else
-		#define SJME_BITS 32
+/* Debugging? */
+#if !defined(SJME_DEBUG)
+	#if defined(DEBUG) || defined(_DEBUG) || !defined(NDEBUG)
+		#define SJME_DEBUG
 	#endif
+#endif
+
+/* Versioning identifier. */
+#if !defined(SQUIRRELJME_VERSION)
+	/** Version string. */
+	#define SQUIRRELJME_VERSION 0.3.0
+#endif
+
+/* Version ID. */
+#if !defined(SQUIRRELJME_VERSION_ID)
+	/** Version ID. */
+	#define SQUIRRELJME_VERSION_ID unknown
+#endif
+
+/* Version time. */
+#if !defined(SQUIRRELJME_VERSION_ID_TIME)
+	/** Version ID. */
+	#define SQUIRRELJME_VERSION_ID_TIME unknown
 #endif
 
 /** Possibly detect endianess. */
 #if !defined(SJME_BIG_ENDIAN) && !defined(SJME_LITTLE_ENDIAN)
 	/** Defined by the system? */
 	#if !defined(SJME_BIG_ENDIAN)
-		#if defined(MSB_FIRST) || \
-			(defined(WORDS_BIGENDIAN) && WORDS_BIGENDIAN != 0)
+		#if defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 			#define SJME_BIG_ENDIAN
 		#endif
 	#endif
@@ -74,6 +81,7 @@
 #endif
 
 /** C99 includes. */
+#if 0
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) || \
 	(defined(__WATCOMC__) && __WATCOMC__ >= 1270) || \
 	(defined(_MSC_VER) && _MSC_VER >= 1600) || \
@@ -100,7 +108,7 @@
 	#define UINT32_C(x) x##U
 
 /** Palm OS. */
-#elif defined(__palmos__)
+#elif defined(SJME_SYSTEM_PALMOS)
 	#include <PalmTypes.h>
 	
 	typedef Int8 int8_t;
@@ -123,6 +131,10 @@
 	#define UINT32_C(x) x##UL
 	
 	#define SIZE_MAX UINT32_C(0xFFFFFFFF)
+	
+	#if !defined(SQUIRRELJME_PALMOS)
+		#define SQUIRRELJME_PALMOS
+	#endif
 
 /** Guessed otherwise. */
 #else
@@ -159,33 +171,66 @@
 		#define UINT32_C(x) x##UL
 	#endif
 #endif
+#endif
 
-/** Anti-C++. */
+#if defined(PS2)
+	/** Building for the PlayStation 2. */
+	#define SQUIRRELJME_PS2
+#endif
+
+/** Force as C. */
+#if defined(_cplusplus)
+	#define SJME_EXTERN_C extern "C"
+#else
+	#define SJME_EXTERN_C
+#endif
+
+/* Anti-C++. */
 #ifdef _cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
 #define SJME_cXRATUFACOATSJMERCHSJMERCH
 extern "C"
 {
-#endif /** #ifdef SJME_CXX_IS_EXTERNED */
-#endif /** #ifdef __cplusplus */
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
 
-/****************************************************************************/
+/*--------------------------------------------------------------------------*/
 
-/** {@code byte} type. */
+#if 0
+/** @c byte type. */
 typedef int8_t sjme_jbyte;
 
-/** {@code short} type. */
+/** @c short type. */
 typedef int16_t sjme_jshort;
 
-/** {@code char} type. */
+/** @c char type. */
 typedef uint16_t sjme_jchar;
 
-/** {@code int} type. */
+/** @c int type. */
 typedef int32_t sjme_jint;
 
-/** Unsigned {@code int} type. */
+/** Unsigned @c byte type. */
+typedef uint8_t sjme_jubyte;
+
+/** Unsigned @c short type. */
+typedef uint16_t sjme_jushort;
+
+/** Unsigned @c int type. */
 typedef uint32_t sjme_juint;
+#endif
+
+#if 0
+/** Boolean type. */
+typedef enum sjme_jboolean
+{
+	/** False. */
+	sjme_false = 0,
+
+	/** True. */
+	sjme_true = 1,
+} sjme_jboolean;
+#endif
 
 /** Constant value macros. */
 #define SJME_JBYTE_C(x) INT8_C(x)
@@ -200,20 +245,34 @@ typedef uint32_t sjme_juint;
 /** Unsigned short mask. */
 #define SJME_JINT_USHORT_MASK INT32_C(0xFFFF)
 
-/** Pointer conversion. */
+/** @deprecated Do not use, this is not safe! */
 #define SJME_POINTER_TO_JINT(x) ((sjme_jint)((uintptr_t)(x)))
-#define SJME_JINT_TO_POINTER(x) ((void*)((uintptr_t)((sjme_jint)(x))))
 
+/**
+ * Casts a pointer to a memory address.
+ * 
+ * @param x The pointer to cast.
+ * @since 2022/03/09
+ */
 #define SJME_POINTER_TO_JMEM(x) (((uintptr_t)(x)))
+
+/**
+ * Casts a memory address to a pointer.
+ * 
+ * @param x The memory address to cast.
+ * @since 2022/03/09
+ */
 #define SJME_JMEM_TO_POINTER(x) ((void*)((uintptr_t)((x))))
 
-/** Pointer math. */
-#define SJME_POINTER_OFFSET(p, o) SJME_JINT_TO_POINTER( \
-	SJME_POINTER_TO_JINT(p) + ((sjme_jint)(o)))
-
-/** Pointer math, no precision loss. */
-#define SJME_POINTER_OFFSET_LONG(p, o) SJME_JMEM_TO_POINTER( \
-	SJME_POINTER_TO_JMEM(p) + ((uintptr_t)(o)))
+/**
+ * Calculates the value from the given pointer offset.
+ * 
+ * @param p The pointer.
+ * @param o The offset.
+ * @since 2022/03/09
+ */
+#define SJME_POINTER_OFFSET_LONG(p, o) (SJME_JMEM_TO_POINTER( \
+	SJME_POINTER_TO_JMEM(p) + ((intptr_t)(o))))
 
 /** Standard C format for arguments. */
 #define SJME_JVMARG_FORMAT_STDC SJME_JINT_C(1)
@@ -226,90 +285,6 @@ typedef uint32_t sjme_juint;
 
 /** Open file for read and writing, create new file or truncate existing. */
 #define SJME_OPENMODE_READWRITETRUNCATE SJME_JINT_C(3)
-
-/** No error. */
-#define SJME_ERROR_NONE SJME_JINT_C(0)
-
-/** Unknown error. */
-#define SJME_ERROR_UNKNOWN SJME_JINT_C(-1)
-
-/** File does not exist. */
-#define SJME_ERROR_NOSUCHFILE SJME_JINT_C(-2)
-
-/** Invalid argument. */
-#define SJME_ERROR_INVALIDARG SJME_JINT_C(-3)
-
-/** End of file reached. */
-#define SJME_ERROR_ENDOFFILE SJME_JINT_C(-4)
-
-/** No memory available. */
-#define SJME_ERROR_NOMEMORY SJME_JINT_C(-5)
-
-/** No native ROM file specified. */
-#define SJME_ERROR_NONATIVEROM SJME_JINT_C(-6)
-
-/** No support for files. */
-#define SJME_ERROR_NOFILES SJME_JINT_C(-7)
-
-/** Invalid ROM magic number. */
-#define SJME_ERROR_INVALIDROMMAGIC SJME_JINT_C(-8)
-
-/** Invalid JAR magic number. */
-#define SJME_ERROR_INVALIDJARMAGIC SJME_JINT_C(-9)
-
-/** Invalid end of BootRAM. */
-#define SJME_ERROR_INVALIDBOOTRAMEND SJME_JINT_C(-10)
-
-/** Invalid BootRAM seed. */
-#define SJME_ERROR_INVALIDBOOTRAMSEED SJME_JINT_C(-11)
-
-/** CPU hit breakpoint. */
-#define SJME_ERROR_CPUBREAKPOINT SJME_JINT_C(-12)
-
-/** Cannot write Java values. */
-#define SJME_ERROR_NOJAVAWRITE SJME_JINT_C(-13)
-
-/** Read error. */
-#define SJME_ERROR_READERROR SJME_JINT_C(-14)
-
-/** Early end of file reached. */
-#define SJME_ERROR_EARLYEOF SJME_JINT_C(-15)
-
-/** Virtual machine not ready. */
-#define SJME_ERROR_JVMNOTREADY SJME_JINT_C(-16)
-
-/** The virtual machine has exited, supervisor boot okay. */
-#define SJME_ERROR_JVMEXIT_SUV_OKAY SJME_JINT_C(-17)
-
-/** The virtual machine has exited, the supervisor did not flag! */
-#define SJME_ERROR_JVMEXIT_SUV_FAIL SJME_JINT_C(-18)
-
-/** Thread returned at the top-most frame and not through a system call. */
-#define SJME_ERROR_THREADRETURN SJME_JINT_C(-19)
-
-/** Bad memory access. */
-#define SJME_ERROR_BADADDRESS SJME_JINT_C(-20)
-
-/** Invalid CPU operation. */
-#define SJME_ERROR_INVALIDOP SJME_JINT_C(-21)
-
-/** Could not initialize the VMM. */
-#define SJME_ERROR_VMMNEWFAIL SJME_JINT_C(-22)
-
-/** Invalid size. */
-#define SJME_ERROR_INVALIDSIZE SJME_JINT_C(-23)
-
-/** Address resolution error. */
-#define SJME_ERROR_ADDRRESFAIL SJME_JINT_C(-24)
-
-/** Invalid memory type. */
-#define SJME_ERROR_INVALIDMEMTYPE SJME_JINT_C(-25)
-
-/** Register value overflowed. */
-#define SJME_ERROR_REGISTEROVERFLOW SJME_JINT_C(-26)
-
-/** Could not map address. */
-#define SJME_ERROR_VMMMAPFAIL SJME_JINT_C(-27)
 
 /** VMM Type: Byte. */
 #define SJME_VMMTYPE_BYTE SJME_JINT_C(-1)
@@ -326,40 +301,35 @@ typedef uint32_t sjme_juint;
 /** VMM Type: Java Integer. */
 #define SJME_VMMTYPE_JAVAINTEGER SJME_JINT_C(-5)
 
-/** Pixel format: Integer RGB888. */
-#define SJME_PIXELFORMAT_INTEGER_RGB888 SJME_JINT_C(0)
+#if !defined(SJME_MEMORYPROFILE_NORMAL) && !defined(SJME_MEMORYPROFILE_MINIMAL)
+	/** Normal memory profile. */
+	#define SJME_MEMORYPROFILE_NORMAL
+#endif
 
-/** Pixel format: Byte Indexed. */
-#define SJME_PIXELFORMAT_BYTE_INDEXED SJME_JINT_C(1)
+#if defined(__GNUC__)
+	/** Function is actually used. */
+	#define SJME_GCC_USED __attribute__((unused))
+#elif defined(_MSC_VER)
+	#define SJME_GCC_USED __pragma(warning(suppress: 4505))
+#else
+	/** Function is actually used. */
+	#define SJME_GCC_USED
+#endif
 
-/** Pixel format: Short RGB565. */
-#define SJME_PIXELFORMAT_SHORT_RGB565 SJME_JINT_C(2)
-
-/** Pixel format: Packed 1-bit. */
-#define SJME_PIXELFORMAT_PACKED_ONE SJME_JINT_C(3)
-
-/** Pixel format: Packed 2-bit. */
-#define SJME_PIXELFORMAT_PACKED_TWO SJME_JINT_C(4)
-
-/** Pixel format: Packed 4-bit. */
-#define SJME_PIXELFORMAT_PACKED_FOUR SJME_JINT_C(5)
-
-/** This represents an error. */
-typedef struct sjme_error
-{
-	/** Error code. */
-	sjme_jint code;
-	
-	/** The value of it. */
-	sjme_jint value;
-} sjme_error;
+#if !defined(PATH_MAX)
+	/** Maximum path size. */
+	#define PATH_MAX 4096
+#endif
 
 /**
- * Virtual memory information.
- *
- * @since 2019/06/25
+ * Marker indicating that the method never returns.
+ * 
+ * @since 2021/02/28
  */
-typedef struct sjme_vmem sjme_vmem;
+typedef struct sjme_returnNever
+{
+	int ignored;
+} sjme_returnNever;
 
 /**
  * Virtual memory pointer.
@@ -369,415 +339,48 @@ typedef struct sjme_vmem sjme_vmem;
 typedef sjme_jint sjme_vmemptr;
 
 /**
- * Virtual memory mapping.
- *
- * @since 2019/06/25
+ * Reverses the operation of @c offsetof to access a member.
+ * 
+ * @param type The expected member type.
+ * @param offset The offset to the member.
+ * @param val The value to read from.
+ * @since 2021/09/19 
  */
-typedef struct sjme_vmemmap
-{
-	/** The real memory pointer. */
-	uintptr_t realptr;
-	
-	/** The fake memory pointer. */
-	sjme_jint fakeptr;
-	
-	/** The memory region size. */
-	sjme_jint size;
-	
-	/** Banked access function. */
-	uintptr_t (*bank)(sjme_jint* offset);
-} sjme_vmemmap;
+#define sjme_unoffsetof(type, offset, val) \
+	(*((type*)((uintptr_t)(val) + (uintptr_t)(offset))))
 
-/**
- * Java virtual machine arguments.
- *
- * @since 2019/06/03
- */
-typedef struct sjme_jvmargs
-{
-	/** The format of the arguments. */
-	int format;
-	
-	/** Arguments that can be used. */
-	union
-	{
-		/** Standard C. */
-		struct
-		{
-			/** Argument count. */
-			int argc;
-			
-			/** Arguments. */
-			char** argv;
-		} stdc;
-	} args;
-} sjme_jvmargs;
+/** Inlining for Visual Studio. */
+#if defined(_MSC_VER) && !defined(__cplusplus)
+	/** Inlined function. */
+	#define inline __inline
+#endif
 
-/**
- * Options used to initialize the virtual machine.
- *
- * @since 2019/06/06
- */
-typedef struct sjme_jvmoptions
-{
-	/** The amount of RAM to allocate, 0 is default. */
-	sjme_jint ramsize;
-	
-	/** Preset ROM pointer, does not need loading? */
-	void* presetrom;
-	
-	/** Preset ROM size. */
-	sjme_jint romsize;
-	
-	/** If non-zero then the ROM needs to be copied (address unsafe). */
-	sjme_jbyte copyrom;
-	
-	/** Command line arguments sent to the VM. */
-	sjme_jvmargs args;
-} sjme_jvmoptions;
+/** Force inlining for GCC, but not under Mingw-w64. */
+#if defined(__GNUC__) && !defined(__forceinline)
+	/** Force inlining of function. */
+	#define __forceinline __attribute__((always_inline))
+#endif
 
-/**
- * SQF Font information.
- *
- * @since 2019/06/20
- */
-typedef struct sjme_sqf
-{
-	/** The pixel height of the font. */
-	sjme_jint pixelheight;
-	
-	/** The ascent of the font. */
-	sjme_jint ascent;
-	
-	/** The descent of the font. */
-	sjme_jint descent;
-	
-	/** The bytes per scanline. */
-	sjme_jint bytesperscan;
-	
-	/** Widths for each character. */
-	sjme_jbyte* charwidths;
-	
-	/** Which characters are valid? */
-	sjme_jbyte* isvalidchar;
-	
-	/** Which characters make up the bitmap? */
-	sjme_jbyte* charbmp;
-} sjme_sqf;
+/** Min constant macro. */
+#define sjme_min(a, b) ((a) <= (b) ? (a) : (b))
 
-/**
- * Represents the framebuffer for SquirrelJME.
- *
- * @since 2019/06/20
- */
-typedef struct sjme_framebuffer
-{
-	/** Video pixels. */
-	sjme_jint* pixels;
-	
-	/** Screen width. */
-	sjme_jint width;
-	
-	/** Screen height. */
-	sjme_jint height;
-	
-	/** Scanline length. */
-	sjme_jint scanlen;
-	
-	/** Scanline length in bytes. */
-	sjme_jint scanlenbytes;
-	
-	/** The number of bits per pixel. */
-	sjme_jint bitsperpixel;
-	
-	/** The number of available pixels. */
-	sjme_jint numpixels;
-	
-	/** The pixel format used. */
-	sjme_jint format;
-	
-	/** Flush the framebuffer. */
-	void (*flush)(void);
-} sjme_framebuffer;
+/** Max constant macro. */
+#define sjme_max(a, b) ((a) >= (b) ? (a) : (b))
 
-/**
- * This represents the name of a file in native form, system dependent.
- *
- * @since 2019/06/08
- */
-typedef struct sjme_nativefilename sjme_nativefilename;
+/** Translation units (sources) cannot be empty. */
+#define SJME_EMPTY_TRANSLATION_UNIT \
+	static SJME_GCC_USED void sjme_emptyTranslationUnitDoIgnore(void) {}
 
-/**
- * Represents an open file.
- *
- * @since 2019/06/08
- */
-typedef struct sjme_nativefile sjme_nativefile;
+/*--------------------------------------------------------------------------*/
 
-/**
- * Instance of the JVM.
- *
- * @since 2019/06/03
- */
-typedef struct sjme_jvm sjme_jvm;
-
-/**
- * Native functions available for the JVM to use.
- *
- * @since 2019/06/03
- */
-typedef struct sjme_nativefuncs
-{
-	/** Current monotonic nano-seconds, returns low nanos. */
-	sjme_jint (*nanotime)(sjme_jint* hi);
-	
-	/** Current system clock in Java time, returns low time. */
-	sjme_jint (*millitime)(sjme_jint* hi);
-	
-	/** The filename to use for the native ROM. */
-	sjme_nativefilename* (*nativeromfile)(void);
-	
-	/** Converts the Java char sequence to native filename. */
-	sjme_nativefilename* (*nativefilename)(sjme_jint len, sjme_jchar* chars);
-	
-	/** Frees the specified filename. */
-	void (*freefilename)(sjme_nativefilename* filename);
-	
-	/** Opens the specified file. */
-	sjme_nativefile* (*fileopen)(sjme_nativefilename* filename,
-		sjme_jint mode, sjme_error* error);
-	
-	/** Closes the specified file. */
-	void (*fileclose)(sjme_nativefile* file, sjme_error* error);
-	
-	/** Returns the size of the file. */
-	sjme_jint (*filesize)(sjme_nativefile* file, sjme_error* error);
-	
-	/** Reads part of a file. */
-	sjme_jint (*fileread)(sjme_nativefile* file, void* dest, sjme_jint len,
-		sjme_error* error);
-	
-	/** Writes single byte to standard output. */
-	sjme_jint (*stdout_write)(sjme_jint b);
-	
-	/** Writes single byte to standard error. */
-	sjme_jint (*stderr_write)(sjme_jint b);
-	
-	/** Obtains the framebuffer. */
-	sjme_framebuffer* (*framebuffer)(void);
-	
-	/** Returns information on where to load optional JAR from. */
-	sjme_jint (*optional_jar)(void** ptr, sjme_jint* size);
-} sjme_nativefuncs;
-
-/**
- * Allocates the given number of bytes.
- *
- * @param size The number of bytes to allocate.
- * @since 2019/06/07
- */
-void* sjme_malloc(sjme_jint size);
-
-/**
- * Frees the given pointer.
- *
- * @param p The pointer to free.
- * @since 2019/06/07
- */
-void sjme_free(void* p);
-
-/**
- * Sets the error code.
- *
- * @param error The error to set.
- * @param code The error code.
- * @param value The error value.
- * @since 2019/06/25
- */
-void sjme_seterror(sjme_error* error, sjme_jint code, sjme_jint value);
-
-/**
- * Executes code running within the JVM.
- *
- * @param jvm The JVM to execute.
- * @param error JVM execution error.
- * @param cycles The number of cycles to execute for.
- * @return Non-zero if the JVM is resuming, otherwise zero on its exit.
- * @since 2019/06/05
- */
-sjme_jint sjme_jvmexec(sjme_jvm* jvm, sjme_error* error, sjme_jint cycles);
-
-/**
- * Destroys the virtual machine instance.
- *
- * @param jvm The JVM to destroy.
- * @param error The error state.
- * @return Non-zero if successful.
- * @since 2019/06/09
- */
-sjme_jint sjme_jvmdestroy(sjme_jvm* jvm, sjme_error* error);
-
-/**
- * Creates a new instance of a SquirrelJME JVM.
- *
- * @param args Arguments to the JVM.
- * @param options Options used to initialize the JVM.
- * @param nativefuncs Native functions used in the JVM.
- * @param error Error flag.
- * @return The resulting JVM or {@code NULL} if it could not be created.
- * @since 2019/06/03
- */
-sjme_jvm* sjme_jvmnew(sjme_jvmoptions* options, sjme_nativefuncs* nativefuncs,
-	sjme_error* error);
-
-/**
- * Creates a new virtual memory manager.
- *
- * @param error The error state.
- * @return The virtual memory manager.
- * @since 2019/06/25
- */
-sjme_vmem* sjme_vmmnew(sjme_error* error);
-
-/**
- * Virtually maps the given region of memory.
- *
- * @param vmem The virtual memory to map to.
- * @param at The address to map to, if possible to map there.
- * @param ptr The region to map.
- * @param size The number of bytes to map.
- * @param error The error state.
- * @return The memory mapping information, returns {@code NULL} on error.
- * @since 2019/06/25
- */
-sjme_vmemmap* sjme_vmmmap(sjme_vmem* vmem, sjme_jint at, void* ptr,
-	sjme_jint size, sjme_error* error);
-
-/**
- * Resolves the given memory pointer.
- *
- * @param vmem The virtual memory.
- * @param ptr The pointer to resolve.
- * @param off The offset.
- * @param error The error.
- * @since 2019/06/27
- */
-void* sjme_vmmresolve(sjme_vmem* vmem, sjme_vmemptr ptr, sjme_jint off,
-	sjme_error* error);
-
-/**
- * Convert size to Java type.
- *
- * @param type The input size.
- * @param error The error state.
- * @return The resulting type.
- * @since 2019/06/25
- */
-sjme_jint sjme_vmmsizetojavatype(sjme_jint size, sjme_error* error);
-
-/**
- * Convert size to type.
- *
- * @param type The input size.
- * @param error The error state.
- * @return The resulting type.
- * @since 2019/06/25
- */
-sjme_jint sjme_vmmsizetotype(sjme_jint size, sjme_error* error);
-
-/**
- * Reads from virtual memory.
- *
- * @param vmem Virtual memory.
- * @param type The type to utilize.
- * @param ptr The pointer address.
- * @param off The offset.
- * @param error The error state.
- * @return The read value.
- * @since 2019/06/25
- */
-sjme_jint sjme_vmmread(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
-	sjme_jint off, sjme_error* error);
-
-/**
- * Reads from virtual memory.
- *
- * @param vmem Virtual memory.
- * @param type The type to utilize.
- * @param ptr The pointer address, is incremented accordingly.
- * @param error The error state.
- * @return The read value.
- * @since 2019/06/25
- */
-sjme_jint sjme_vmmreadp(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr* ptr,
-	sjme_error* error);
-
-/**
- * Write to virtual memory.
- *
- * @param vmem Virtual memory.
- * @param type The type to utilize.
- * @param ptr The pointer address.
- * @param off The offset.
- * @param val The value to write.
- * @param error The error state.
- * @since 2019/06/25
- */
-void sjme_vmmwrite(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr ptr,
-	sjme_jint off, sjme_jint val, sjme_error* error);
-
-/**
- * Write to virtual memory.
- *
- * @param vmem Virtual memory.
- * @param type The type to utilize.
- * @param ptr The pointer address, is incremented accordingly.
- * @param val The value to write.
- * @param error The error state.
- * @since 2019/06/25
- */
-void sjme_vmmwritep(sjme_vmem* vmem, sjme_jint type, sjme_vmemptr* ptr,
-	sjme_jint val, sjme_error* error);
-
-/**
- * Atomically reads, checks, and then sets the value.
- *
- * @param vmem Virtual memory.
- * @param check The check value.
- * @param set The set value.
- * @param ptr The pointer address.
- * @param off The offset.
- * @param error The error state.
- * @return The value which was read.
- * @since 2019/07/01
- */
-sjme_jint sjme_vmmatomicintcheckgetandset(sjme_vmem* vmem, sjme_jint check,
-	sjme_jint set, sjme_vmemptr ptr, sjme_jint off, sjme_error* error);
-
-/**
- * Atomically increments and integer and then gets its value.
- *
- * @param vmem Virtual memory.
- * @param ptr The pointer address.
- * @param off The offset.
- * @param add The value to add.
- * @param error The error state.
- * @return The value after the addition.
- * @since 2019/06/25
- */
-sjme_jint sjme_vmmatomicintaddandget(sjme_vmem* vmem,
-	sjme_vmemptr ptr, sjme_jint off, sjme_jint add, sjme_error* error);
-
-/****************************************************************************/
-
-/** Anti-C++. */
+/* Anti-C++. */
 #ifdef __cplusplus
 #ifdef SJME_cXRATUFACOATSJMERCHSJMERCH
 }
 #undef SJME_cXRATUFACOATSJMERCHSJMERCH
 #undef SJME_CXX_IS_EXTERNED
 #endif /** #ifdef SJME_cXRATUFACOATSJMERCHSJMERCH */
-#endif /** #ifdef __cplusplus */
+#endif /* #ifdef __cplusplus */
 
 /** Header guard. */
 #endif /* #ifndef SJME_hGRATUFACOATSJMERCHSJMERCH */

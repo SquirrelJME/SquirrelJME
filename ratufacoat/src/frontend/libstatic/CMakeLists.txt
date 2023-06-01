@@ -1,0 +1,28 @@
+# ---------------------------------------------------------------------------
+# Multi-Phasic Applications: SquirrelJME
+#     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+# ---------------------------------------------------------------------------
+# SquirrelJME is under the GNU General Public License v3+, or later.
+# See license.mkd for licensing and copyright information.
+# ---------------------------------------------------------------------------
+# DESCRIPTION: Static Library
+
+# Load target objects
+get_property(SQUIRRELJMECORELIB_TARGET_OBJECTS
+	GLOBAL PROPERTY SquirrelJMECoreTargetObjects)
+
+# Core library for SquirrelJME as a static library, which includes all of
+# the objects together as one
+add_library(SquirrelJMELibStatic STATIC
+	blank.c
+	${SQUIRRELJMECORELIB_TARGET_OBJECTS})
+
+# Change the name of the library
+set_target_properties(SquirrelJMELibStatic PROPERTIES
+	OUTPUT_NAME "squirreljme")
+
+# Common C Directives
+squirreljme_common_c(SquirrelJMELibStatic)
+
+# Make this position independent so it can be linked into shared libraries
+squirreljme_enable_pic(SquirrelJMELibStatic)
