@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -250,9 +251,19 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
+		CSourceWriter writer = __block.writer();
+		
+		// Keep track of the current top state, so we need not worry about
+		// pushing or popping
+		writer.variableDeclare(null,
+			CBasicType.SJME_NANOFRAME.pointerType(), "current");
+		
+		// Set known variables
+		writer.variableAssign("current", "stack->top");
+		
 		// Switch case based on the current group index
 		try (CSwitch cases = __block.switchCase(
-			"state->top->groupIndex"))
+			"current->groupIndex"))
 		{
 			// Write each basic block
 			for (Map.Entry<Integer, BasicBlock> entry :
@@ -293,11 +304,10 @@ public class ByteCodeProcessor
 		writer.freshLine();
 		
 		// Depends on the target operation
-		writer.tokens("/*", __instruction.mnemonic(), "*/");
-		/*switch (__instruction.operation())
+		switch (__instruction.operation())
 		{
 			default:
 				throw Debugging.todo(__instruction);
-		}*/
+		}
 	}
 }

@@ -36,28 +36,28 @@ public enum CBasicType
 	JINT("jint"),
 	
 	/** Long. */
-	JLONG("jlong"),
+	JLONG("sjme_jlong"),
 	
 	/** Float. */
-	JFLOAT("jfloat"),
+	JFLOAT("sjme_jfloat"),
 	
 	/** Double. */
-	JDOUBLE("jdouble"),
+	JDOUBLE("sjme_jdouble"),
 	
 	/** Class. */
-	JCLASS("jclass"),
+	JCLASS("sjme_jclass"),
 	
 	/** Object. */
-	JOBJECT("jobject"),
+	JOBJECT("sjme_jobject"),
 	
 	/** String. */
-	JSTRING("jstring"),
+	JSTRING("sjme_jstring"),
 	
 	/** Field. */
-	JFIELD("jfield"),
+	JFIELD("sjme_jfield"),
 	
 	/** Method. */
-	JMETHOD("jmethod"),
+	JMETHOD("sjme_jmethod"),
 	
 	/** The NanoCoat state. */
 	SJME_NANOSTATE("sjme_nanostate"),
@@ -73,6 +73,9 @@ public enum CBasicType
 	
 	/** Method information. */
 	SJME_NANOMETHODS("sjme_nanomethods"),
+	
+	/** Stack frame. */
+	SJME_NANOFRAME("sjme_nanoframe"),
 	
 	/* End. */
 	;

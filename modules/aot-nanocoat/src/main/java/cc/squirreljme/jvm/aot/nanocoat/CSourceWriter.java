@@ -858,6 +858,50 @@ public class CSourceWriter
 	}
 	
 	/**
+	 * Assigns the given variable.
+	 * 
+	 * @param __target The target variable.
+	 * @param __value The value to set.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/31
+	 */
+	public CSourceWriter variableAssign(String __target, Object... __value)
+		throws IOException, NullPointerException 
+	{
+		if (__target == null || __value == null || __value.length == 0)
+			throw new NullPointerException("NARG");
+		
+		return this.tokens(__target, "=", __value, ";");
+	}
+	
+	/**
+	 * Declares a variable.
+	 * 
+	 * @param __modifier The modifier.
+	 * @param __type The type.
+	 * @param __name The name.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/31
+	 */
+	public CSourceWriter variableDeclare(CModifier __modifier, CType __type,
+		String __name)
+		throws IOException, NullPointerException
+	{
+		if (__type == null || __name == null)
+			throw new NullPointerException("NARG");
+		
+		// Start on fresh line for readability
+		this.freshLine();
+		
+		this.variable(__modifier, __type, __name);
+		return this.token(";");
+	}
+	
+	/**
 	 * Writes a variable to the output.
 	 *
 	 * @param __type The type of the variable.
