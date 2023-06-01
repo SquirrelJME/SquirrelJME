@@ -304,10 +304,40 @@ public class ByteCodeProcessor
 		writer.freshLine();
 		
 		// Depends on the target operation
-		switch (__instruction.operation())
+		int op = __instruction.operation();
+		switch (op)
 		{
+			case InstructionIndex.ALOAD:
+				this.__doALoad(__block, __instruction.intArgument(0));
+				break;
+			
+			case InstructionIndex.ALOAD_0:
+			case InstructionIndex.ALOAD_1:
+			case InstructionIndex.ALOAD_2:
+			case InstructionIndex.ALOAD_3:
+				this.__doALoad(__block, op - InstructionIndex.ALOAD_0);
+				break;
+			
 			default:
 				throw Debugging.todo(__instruction);
 		}
+	}
+	
+	/**
+	 * Performs reference loading.
+	 * 
+	 * @param __block The block to write into.
+	 * @param __localDx The local index.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2032/05/31
+	 */
+	private void __doALoad(CFunctionBlock __block, int __localDx)
+		throws IOException, NullPointerException
+	{
+		if (__block == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
 	}
 }
