@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -39,6 +38,10 @@ public class ByteCodeProcessor
 	private final Map<Integer, BasicBlock> _basicBlocks =
 		new SortedTreeMap<>();
 	
+	/** Address to basic block group IDs. */
+	private final Map<Integer, Integer> _addrToGroupId =
+		new SortedTreeMap<>();
+	
 	/**
 	 * Initializes the byte code processor.
 	 * 
@@ -62,6 +65,7 @@ public class ByteCodeProcessor
 		
 		// Break down function into basic blocks
 		Map<Integer, BasicBlock> basicBlocks = this._basicBlocks;
+		Map<Integer, Integer> addrToGroupId = this._addrToGroupId;
 		List<Instruction> blockInstructions = new ArrayList<>();
 		boolean lastSingular = false;
 		for (int logicalAddr = 0, maxLogicalAddr = __code.instructionCount();
@@ -213,14 +217,14 @@ public class ByteCodeProcessor
 				// Each block has a specific group Id
 				int groupId = basicBlocks.size();
 				
+				// If we jump to another block, we need to know where to go
+				addrToGroupId.put(blockInstructions.get(0).address(), groupId);
+				
 				// Setup block and clear
 				BasicBlock block = new BasicBlock(groupId,
 					blockInstructions);
 				basicBlocks.put(groupId, block);
 				blockInstructions.clear();
-				
-				Debugging.debugNote("Block %d: %s",
-					block.groupId, block.instructions);
 			}
 			
 			// Only add instructions after the block
