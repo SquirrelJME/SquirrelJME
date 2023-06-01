@@ -42,7 +42,10 @@ public class CSwitch
 	public void breakCase()
 		throws IOException
 	{
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		CSourceWriter writer = this.writer();
+		
+		writer.freshLine();
+		writer.tokens("break", ";");
 	}
 	
 	/**
@@ -59,6 +62,9 @@ public class CSwitch
 		if (__condition == null || __condition.length == 0)
 			throw new NullPointerException("NARG");
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		CSourceWriter writer = this.writer();
+		
+		writer.freshLine();
+		writer.tokens("case", __condition, ":");
 	}
 }

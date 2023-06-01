@@ -682,7 +682,7 @@ public final class ByteCode
 		// Get the original jump table
 		Map<Integer, InstructionJumpTargets> jumpmap = this.jumpTargets();
 		
-		// The target jump table has both normals and exceptions so it must
+		// The target jump table has both normals and exceptions, so it must
 		// remember that state accordingly
 		class Working
 		{

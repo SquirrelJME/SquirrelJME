@@ -86,6 +86,17 @@ public final class InstructionJumpTargets
 	}
 	
 	/**
+	 * Returns the number of normal functional flow.
+	 * 
+	 * @return The number of normal instructional flow.
+	 * @since 2023/05/31
+	 */
+	public int countNormal()
+	{
+		return this._normal.length;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/30
 	 */
@@ -111,6 +122,17 @@ public final class InstructionJumpTargets
 		if (__i >= numnormal)
 			return this._exception[__i - numnormal];
 		return this._normal[__i];
+	}
+	
+	/**
+	 * Checks if this has any exception specified.
+	 * 
+	 * @return If this has any exception.
+	 * @since 2023/05/31
+	 */
+	public boolean hasAnyException()
+	{
+		return this._exception.length > 0;
 	}
 	
 	/**

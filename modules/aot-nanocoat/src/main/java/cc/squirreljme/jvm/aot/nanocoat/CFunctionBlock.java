@@ -44,6 +44,13 @@ public class CFunctionBlock
 	public CSwitch switchCase(Object... __condition)
 		throws IOException
 	{
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		CSourceWriter writer = this.writer();
+		
+		// Write up tokens for the switch
+		writer.tokens("switch", "(", __condition, ")", "{");
+		
+		// Push
+		CSwitch rv = new CSwitch(writer._selfRef);
+		return writer.__pushBlock(rv);
 	}
 }
