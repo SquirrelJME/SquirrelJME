@@ -9,14 +9,16 @@
 
 package cc.squirreljme.runtime.rms;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 
 /**
- * This is used to help identify suites and such.
+ * Hash for suites.
  *
  * @since 2019/04/14
  */
-public final class SuiteIdentifier
+public final class SuiteHash
+	implements Comparable<SuiteHash>
 {
 	/** The identifier for the current suite. */
 	private static long _CURRENT_ID;
@@ -26,8 +28,18 @@ public final class SuiteIdentifier
 	 *
 	 * @since 2019/04/14
 	 */
-	private SuiteIdentifier()
+	private SuiteHash()
 	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/02/16
+	 */
+	@Override
+	public int compareTo(SuiteHash __o)
+	{
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -39,13 +51,14 @@ public final class SuiteIdentifier
 	public static long currentIdentifier()
 	{
 		// Already been cached?
-		long rv = SuiteIdentifier._CURRENT_ID;
+		long rv = SuiteHash._CURRENT_ID;
 		if (rv != 0)
 			return rv;
 		
 		// Set, cache, and store
-		SuiteIdentifier._CURRENT_ID = (rv = SuiteIdentifier.identifier(
-			ApplicationHandler.currentVendor(), ApplicationHandler.currentName()));
+		SuiteHash._CURRENT_ID = (rv = SuiteHash.identifier(
+			ApplicationHandler.currentVendor(),
+			ApplicationHandler.currentName()));
 		return rv;
 	}
 	

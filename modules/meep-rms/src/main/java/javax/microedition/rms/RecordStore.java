@@ -13,7 +13,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
-import cc.squirreljme.runtime.rms.SuiteIdentifier;
+import cc.squirreljme.runtime.rms.SuiteHash;
 import cc.squirreljme.runtime.rms.TemporaryVinylRecord;
 import cc.squirreljme.runtime.rms.VinylLock;
 import cc.squirreljme.runtime.rms.VinylRecord;
@@ -971,7 +971,7 @@ public class RecordStore
 			throw new NullPointerException("NARG");
 		
 		// Our suite identifier to find our own records
-		long mysid = SuiteIdentifier.currentIdentifier();
+		long mysid = SuiteHash.currentIdentifier();
 		
 		// Lock
 		VinylRecord vinyl = RecordStore._VINYL;
@@ -1015,7 +1015,7 @@ public class RecordStore
 	public static String[] listRecordStores()
 	{
 		// Our suite identifier to find our own records
-		long mysid = SuiteIdentifier.currentIdentifier();
+		long mysid = SuiteHash.currentIdentifier();
 		
 		// Lock
 		VinylRecord vinyl = RecordStore._VINYL;
@@ -1285,8 +1285,8 @@ public class RecordStore
 			throw new IllegalArgumentException("DC0d " + __name);
 		
 		// Get identifier, used to find the record
-		long sid = SuiteIdentifier.identifier(__vend, __suite),
-			mysid = SuiteIdentifier.currentIdentifier();
+		long sid = SuiteHash.identifier(__vend, __suite),
+			mysid = SuiteHash.currentIdentifier();
 		
 		// Lock
 		VinylRecord vinyl = RecordStore._VINYL;
