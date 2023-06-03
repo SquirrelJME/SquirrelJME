@@ -7,18 +7,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot.nanocoat;
+package cc.squirreljme.jvm.aot.nanocoat.linkage;
 
 /**
- * This is the type of linkage that is used for the constant pool.
- *
- * @since 2023/05/31
+ * Represents the class linkage table.
+ * 
+ * @since 2023/06/03
  */
-public enum PoolLinkageType
+public class ClassLinkTable
 {
-	/** Invoke special linkage, uses source and destination class. */
-	INVOKE_SPECIAL,
-	
-	/* End. */
-	;
 }
