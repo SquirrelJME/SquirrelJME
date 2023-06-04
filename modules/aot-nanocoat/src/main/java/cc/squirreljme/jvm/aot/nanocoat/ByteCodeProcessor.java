@@ -288,6 +288,8 @@ public class ByteCodeProcessor
 		// pushing or popping
 		writer.variableDeclare(null,
 			CBasicType.SJME_NANOFRAME.pointerType(), "current");
+		writer.variableDeclare(null,
+			CBasicType.JBOOLEAN, "tmpBoolean");
 		
 		// Set known variables
 		writer.variableAssign("current", "stack->top");
@@ -350,7 +352,14 @@ public class ByteCodeProcessor
 			case InstructionIndex.ALOAD_1:
 			case InstructionIndex.ALOAD_2:
 			case InstructionIndex.ALOAD_3:
-				this.__doALoad(__block, op - InstructionIndex.ALOAD_0);
+				this.__doALoad(__block, 
+					op - InstructionIndex.ALOAD_0);
+				break;
+				
+			case InstructionIndex.IFNULL:
+			case InstructionIndex.IFNONNULL:
+				this.__doIfMaybeNull(__block,
+					op == InstructionIndex.IFNULL);
 				break;
 				
 			case InstructionIndex.INVOKESPECIAL:
@@ -367,6 +376,46 @@ public class ByteCodeProcessor
 		}
 	}
 	
+	/**
+	 * Writes a null check.
+	 * 
+	 * @param __block The block to write.
+	 * @param __null If checking against null.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/03
+	 */
+	private void __doIfMaybeNull(CFunctionBlock __block, boolean __null)
+		throws IOException, NullPointerException
+	{
+		if (__block == null)
+			throw new NullPointerException("NARG");
+		
+		CSourceWriter writer = __block.writer();
+		
+		// Write check
+		throw Debugging.todo();
+		/*
+		writer.variableAssignViaFunctionCall("tmpBoolean",
+			"sjme_nvm_unCountReferenceInFrame",
+			"&current->stack", "--current->stackTop");
+		try (CFunctionBlock sub = writer.ifCheck("tmpBoolean"))
+		{
+			if (true)
+				throw Debugging.todo();
+		}
+		
+		 */
+	}
+	
+	/**
+	 * Performs return from method.
+	 * 
+	 * @param __block The block to write in.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/03
+	 */
 	private void __doReturn(CFunctionBlock __block)
 		throws IOException, NullPointerException
 	{
