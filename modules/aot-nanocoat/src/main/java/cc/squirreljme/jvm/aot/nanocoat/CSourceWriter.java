@@ -630,6 +630,22 @@ public class CSourceWriter
 	}
 	
 	/**
+	 * Writes a return from a function.
+	 * 
+	 * @param __tokens The tokens to write, optional.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @since 2023/06/03
+	 */
+	public CSourceWriter returnValue(Object... __tokens)
+		throws IOException
+	{
+		if (__tokens == null || __tokens.length == 0)
+			return this.tokens("return", ";");
+		return this.tokens("return", __tokens, ";");
+	}
+	
+	/**
 	 * Defines a struct.
 	 *
 	 * @param __modifiers The modifiers used.

@@ -116,6 +116,24 @@ public class ByteCodeProcessor
 					case InstructionIndex.TABLESWITCH:
 					case InstructionIndex.GOTO:
 					case InstructionIndex.GOTO_W:
+					case InstructionIndex.IF_ACMPEQ:
+					case InstructionIndex.IF_ACMPNE:
+					case InstructionIndex.IF_ICMPEQ:
+					case InstructionIndex.IF_ICMPGE:
+					case InstructionIndex.IF_ICMPGT:
+					case InstructionIndex.IF_ICMPLE:
+					case InstructionIndex.IF_ICMPLT:
+					case InstructionIndex.IF_ICMPNE:
+					case InstructionIndex.IFEQ:
+					case InstructionIndex.IFGE:
+					case InstructionIndex.IFGT:
+					case InstructionIndex.IFLE:
+					case InstructionIndex.IFLT:
+					case InstructionIndex.IFNE:
+					case InstructionIndex.IFNONNULL:
+					case InstructionIndex.IFNULL:
+						
+						// Returning from method
 					case InstructionIndex.RETURN:
 					case InstructionIndex.ARETURN:
 					case InstructionIndex.IRETURN:
@@ -278,6 +296,10 @@ public class ByteCodeProcessor
 		try (CSwitch cases = __block.switchCase(
 			"current->groupIndex"))
 		{
+			// Return from call when execution of method finishes
+			cases.nextCase("SJME_NANOCOAT_END_CALL");
+			writer.returnValue();
+			
 			// Write each basic block
 			for (Map.Entry<Integer, BasicBlock> entry :
 				this._basicBlocks.entrySet())
@@ -335,10 +357,26 @@ public class ByteCodeProcessor
 				this.__doInvokeSpecial(__block,
 					__instruction.argument(0, MethodReference.class));
 				break;
+				
+			case InstructionIndex.RETURN:
+				this.__doReturn(__block);
+				break;
 			
 			default:
 				throw Debugging.todo(__instruction);
 		}
+	}
+	
+	private void __doReturn(CFunctionBlock __block)
+		throws IOException, NullPointerException
+	{
+		if (__block == null)
+			throw new NullPointerException("NARG");
+		
+		CSourceWriter writer = __block.writer();
+		
+		writer.functionCall("sjme_nvm_returnMethod",
+			"state");
 	}
 	
 	/**
@@ -364,7 +402,7 @@ public class ByteCodeProcessor
 			this.method.nameAndType(), __method);
 		
 		// Special invokes have special processing depending on the source
-		writer.functionCall("sjme_invokeSpecial",
+		writer.functionCall("sjme_nvm_invokeSpecial",
 			"state",
 			"&current->linkage[" + linkage.index() + "]->data.invokespecial");
 	}
@@ -387,7 +425,7 @@ public class ByteCodeProcessor
 		CSourceWriter writer = __block.writer();
 		
 		// Copy reference over
-		writer.functionCall("sjme_copyReferenceInFrame",
+		writer.functionCall("sjme_nvm_copyReferenceInFrame",
 			"&current->locals", __localDx,
 			"&current->stack", "current->stackTop++");
 	}
