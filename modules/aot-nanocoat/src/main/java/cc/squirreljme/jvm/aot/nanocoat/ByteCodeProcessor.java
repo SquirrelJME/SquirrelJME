@@ -9,6 +9,9 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
+import cc.squirreljme.jvm.aot.nanocoat.linkage.Container;
+import cc.squirreljme.jvm.aot.nanocoat.linkage.InvokeSpecialLinkage;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.IOException;
@@ -40,6 +43,9 @@ public class ByteCodeProcessor
 	/** The method being processed. */
 	protected final Method method;
 	
+	/** The link table for the class. */
+	protected final ClassLinkTable linkTable;
+	
 	/** Basic block mappings. */
 	private final Map<Integer, BasicBlock> _basicBlocks =
 		new SortedTreeMap<>();
@@ -65,6 +71,7 @@ public class ByteCodeProcessor
 		this.methodProcessor = new WeakReference<>(__method);
 		this.code = __code;
 		this.method = __method.method;
+		this.linkTable = __method.linkTable;
 		
 		// Reverse jump targets for instructions
 		Map<Integer, InstructionJumpTargets> reverseJumpsTable =
@@ -350,9 +357,16 @@ public class ByteCodeProcessor
 		if (__block == null || __method == null)
 			throw new NullPointerException("NARG");
 		
+		CSourceWriter writer = __block.writer();
 		
+		// Setup linkage
+		Container<InvokeSpecialLinkage> linkage = this.linkTable.invokeSpecial(
+			this.method.nameAndType(), __method);
 		
-		throw Debugging.todo();
+		// Special invokes have special processing depending on the source
+		writer.functionCall("sjme_invokeSpecial",
+			"state",
+			"&current->linkage[" + linkage.index() + "]->data.invokespecial");
 	}
 	
 	/**

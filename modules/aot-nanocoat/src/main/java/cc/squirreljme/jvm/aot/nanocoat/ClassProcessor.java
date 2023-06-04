@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -42,6 +43,10 @@ public class ClassProcessor
 	
 	/** Method storage. */
 	protected final String methodsIdentifier;
+	
+	/** The link table for the class. */
+	protected final ClassLinkTable linkTable =
+		new ClassLinkTable();
 	
 	/** Field processing. */
 	private final Map<FieldNameAndType, FieldProcessor> _fields =

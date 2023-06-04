@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import java.io.IOException;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFile;
@@ -37,6 +38,9 @@ public final class MethodProcessor
 	/** The method being processed. */
 	protected final Method method;
 	
+	/** The link table for the class. */
+	protected final ClassLinkTable linkTable;
+	
 	/**
 	 * Initializes the method processor.
 	 * 
@@ -59,6 +63,7 @@ public final class MethodProcessor
 		this.out = __out;
 		this.classFile = __classProcessor.classFile;
 		this.method = __method;
+		this.linkTable = __classProcessor.linkTable;
 		
 		// Determine the identifier used for this class
 		this.methodIdentifier = Utils.symbolMethodName(__glob,
