@@ -9,6 +9,11 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CBasicType;
+import cc.squirreljme.c.CModifiers;
+import cc.squirreljme.c.CPPBlock;
+import cc.squirreljme.c.CSourceWriter;
+import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.jvm.aot.Backend;
 import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
@@ -22,7 +27,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
-import net.multiphasicapps.classfile.Method;
 
 /**
  * Nanocoat support.

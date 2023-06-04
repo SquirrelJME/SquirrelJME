@@ -27,4 +27,5 @@ dependencies
 {
 	api project(":modules:aot")
 	api project(":modules:tool-classfile")
+	api project(":modules:c-source-writer")
 }

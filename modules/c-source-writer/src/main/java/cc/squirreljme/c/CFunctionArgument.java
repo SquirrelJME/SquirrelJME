@@ -7,9 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot.nanocoat;
-
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+package cc.squirreljme.c;
 
 /**
  * Argument for a C function.

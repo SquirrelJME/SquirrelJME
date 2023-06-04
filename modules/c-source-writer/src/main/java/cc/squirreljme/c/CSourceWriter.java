@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot.nanocoat;
+package cc.squirreljme.c;
 
 import cc.squirreljme.runtime.cldc.util.BooleanArrayList;
 import cc.squirreljme.runtime.cldc.util.ByteArrayList;
@@ -780,9 +780,9 @@ public class CSourceWriter
 		{
 			char c = __token.charAt(i);
 			
-			// {@squirreljme.error NC06 Cannot print newlines or tabs.}
+			// {@squirreljme.error CW06 Cannot print newlines or tabs.}
 			if (c == '\t' || c == '\r' || c == '\n')
-				throw new IllegalArgumentException("NC06");
+				throw new IllegalArgumentException("CW06");
 			
 			// Output
 			this.__out(c);
@@ -867,8 +867,8 @@ public class CSourceWriter
 		else if (__token instanceof Number)
 			return this.number((Number)__token);
 		
-		// {@squirreljme.error NC05 Unknown token type. (The type)}
-		throw new IllegalArgumentException("NC05 " + __token.getClass());
+		// {@squirreljme.error CW05 Unknown token type. (The type)}
+		throw new IllegalArgumentException("CW05 " + __token.getClass());
 	}
 	
 	/**
@@ -1029,12 +1029,12 @@ public class CSourceWriter
 		if (__cBlock == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error NC07 Closing block is not the last opened
+		// {@squirreljme.error CW07 Closing block is not the last opened
 		// block.}
 		Deque<CBlock> blocks = this._blocks;
 		CBlock peek = blocks.peek();
 		if (peek != __cBlock)
-			throw new IllegalStateException("NC07");
+			throw new IllegalStateException("CW07");
 		
 		// Remove it
 		blocks.pop();

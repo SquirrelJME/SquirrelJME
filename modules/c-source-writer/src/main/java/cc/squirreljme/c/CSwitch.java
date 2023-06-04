@@ -7,50 +7,64 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot.nanocoat;
+package cc.squirreljme.c;
 
 import java.io.IOException;
 import java.lang.ref.Reference;
 
 /**
- * C function.
+ * Handles C switch case.
  *
  * @since 2023/05/31
  */
-public class CFunctionBlock
-	extends CBlock
+public class CSwitch
+	extends CFunctionBlock
 {
 	/**
-	 * Initializes the C function block.
+	 * Initializes the C switch case block.
 	 *
 	 * @param __ref The reference to use.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	CFunctionBlock(Reference<CSourceWriter> __ref)
+	CSwitch(Reference<CSourceWriter> __ref)
 		throws NullPointerException
 	{
-		super(__ref, "}");
+		super(__ref);
 	}
 	
 	/**
-	 * Initializes the switch case.
+	 * Writes a break to the case.
 	 * 
-	 * @param __condition The condition.
-	 * @return The switch case writer.
 	 * @throws IOException On write errors.
 	 * @since 2023/05/31
 	 */
-	public CSwitch switchCase(Object... __condition)
+	public void breakCase()
 		throws IOException
 	{
 		CSourceWriter writer = this.writer();
 		
-		// Write up tokens for the switch
-		writer.tokens("switch", "(", __condition, ")", "{");
+		writer.freshLine();
+		writer.tokens("break", ";");
+	}
+	
+	/**
+	 * Starts the next case statement.
+	 * 
+	 * @param __condition The condition.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/31
+	 */
+	public void nextCase(Object... __condition)
+		throws IOException, NullPointerException
+	{
+		if (__condition == null || __condition.length == 0)
+			throw new NullPointerException("NARG");
 		
-		// Push
-		CSwitch rv = new CSwitch(writer._selfRef);
-		return writer.__pushBlock(rv);
+		CSourceWriter writer = this.writer();
+		
+		writer.freshLine();
+		writer.tokens("case", __condition, ":");
 	}
 }

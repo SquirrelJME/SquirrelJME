@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot.nanocoat;
+package cc.squirreljme.c;
 
 /**
  * Represents a basic type within NanoCoat.
@@ -107,8 +107,8 @@ public enum CBasicType
 	public CType dereferenceType()
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error NC03 Cannot dereference a basic type.}
-		throw new IllegalArgumentException("NC03");
+		// {@squirreljme.error CW03 Cannot dereference a basic type.}
+		throw new IllegalArgumentException("CW03");
 	}
 	
 	/**

@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CPPBlock;
+import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import java.io.IOException;
 import java.io.OutputStream;

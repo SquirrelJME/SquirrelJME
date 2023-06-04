@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot.nanocoat;
+package cc.squirreljme.c;
 
 import cc.squirreljme.runtime.cldc.util.EnumTypeMap;
 import java.lang.ref.Reference;
@@ -56,9 +56,9 @@ public class CPointerType
 		if (__type == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error NC02 There cannot be zero or negative pointers.}
+		// {@squirreljme.error CW02 There cannot be zero or negative pointers.}
 		if (__numPointers <= 0)
-			throw new IllegalArgumentException("NC02");
+			throw new IllegalArgumentException("CW02");
 		
 		this.root = __type.rootType();
 		this.numPointers = __type.pointerLevel() + __numPointers;
@@ -173,9 +173,9 @@ public class CPointerType
 		if (__type == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error NC04 There cannot be zero or negative pointers.}
+		// {@squirreljme.error CW04 There cannot be zero or negative pointers.}
 		if (__numPointers <= 0)
-			throw new IllegalArgumentException("NC04");
+			throw new IllegalArgumentException("CW04");
 		
 		// If the root type is not a basic type, we always want to classify
 		// pointer levels based on that for cache purposes

@@ -9,6 +9,12 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CArrayBlock;
+import cc.squirreljme.c.CBasicType;
+import cc.squirreljme.c.CFunctionArgument;
+import cc.squirreljme.c.CFunctionBlock;
+import cc.squirreljme.c.CSourceWriter;
+import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import java.io.IOException;
 import net.multiphasicapps.classfile.ByteCode;

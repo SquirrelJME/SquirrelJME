@@ -9,6 +9,9 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CArrayBlock;
+import cc.squirreljme.c.CSourceWriter;
+import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import net.multiphasicapps.classfile.ClassFile;

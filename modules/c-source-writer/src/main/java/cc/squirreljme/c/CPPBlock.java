@@ -7,9 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot.nanocoat;
+package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.lang.ref.Reference;
 
@@ -47,9 +46,9 @@ public class CPPBlock
 	protected void preprocessorElse()
 		throws IOException, IllegalStateException
 	{
-		// {@squirreljme.error NC08 Cannot else else the preprocessor.}
+		// {@squirreljme.error CW08 Cannot else else the preprocessor.}
 		if (this._finalElse)
-			throw new IllegalStateException("NC08");
+			throw new IllegalStateException("CW08");
 		
 		// Add line
 		this.writer().preprocessorLine("else");
@@ -73,9 +72,9 @@ public class CPPBlock
 		if (__condition == null || __condition.length == 0)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error NC08 Cannot else else the preprocessor.}
+		// {@squirreljme.error CW08 Cannot else else the preprocessor.}
 		if (this._finalElse)
-			throw new IllegalStateException("NC08");
+			throw new IllegalStateException("CW08");
 		
 		// Add line
 		this.writer().preprocessorLine("elif", __condition);

@@ -9,6 +9,10 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CBasicType;
+import cc.squirreljme.c.CFunctionBlock;
+import cc.squirreljme.c.CSourceWriter;
+import cc.squirreljme.c.CSwitch;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Container;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.InvokeSpecialLinkage;
