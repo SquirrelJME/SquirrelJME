@@ -43,7 +43,7 @@ public class CPPBlock
 	 * @throws IllegalStateException If else was already done.
 	 * @since 2023/05/29
 	 */
-	protected void preprocessorElse()
+	public void preprocessorElse()
 		throws IOException, IllegalStateException
 	{
 		// {@squirreljme.error CW08 Cannot else else the preprocessor.}
