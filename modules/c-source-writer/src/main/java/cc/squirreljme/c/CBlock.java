@@ -20,6 +20,7 @@ import java.lang.ref.Reference;
  * @since 2023/05/29
  */
 public class CBlock
+	extends __CFileProxy__
 	implements Closeable
 {
 	/** The character to close with. */
@@ -55,22 +56,6 @@ public class CBlock
 		throws IOException
 	{
 		this.writer().__close(this);
-	}
-	
-	/**
-	 * Returns the used source writer, for inlining.
-	 * 
-	 * @return The source writer user.
-	 * @throws IllegalStateException If the writer was garbage collected.
-	 * @since 2023/05/29
-	 */
-	public CSourceWriter writer()
-		throws IllegalStateException
-	{
-		CSourceWriter rv = this._writer.get();
-		if (rv == null)
-			throw new IllegalStateException("GCGC");
-		return rv;
 	}
 	
 	/**

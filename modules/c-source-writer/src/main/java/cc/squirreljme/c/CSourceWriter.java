@@ -9,23 +9,7 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.util.BooleanArrayList;
-import cc.squirreljme.runtime.cldc.util.ByteArrayList;
-import cc.squirreljme.runtime.cldc.util.CharacterArrayList;
-import cc.squirreljme.runtime.cldc.util.DoubleArrayList;
-import cc.squirreljme.runtime.cldc.util.FloatArrayList;
-import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
-import cc.squirreljme.runtime.cldc.util.LongArrayList;
-import cc.squirreljme.runtime.cldc.util.ShortArrayList;
-import java.io.Closeable;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Deque;
 import java.util.List;
 
 /**
@@ -33,55 +17,18 @@ import java.util.List;
  *
  * @since 2023/05/28
  */
-public class CSourceWriter
-	implements Closeable
+public interface CSourceWriter
 {
-	/** Right side threshold. */
-	private static final byte _GUTTER_THRESHOLD =
-		60;
-	
-	/** The stream to write to. */
-	protected final PrintStream out;
-	
-	/** Single character buffer. */
-	private final char[] _singleBuf =
-		new char[1];
-	
-	/** C Block stack. */
-	private final Deque<CBlock> _blocks =
-		new ArrayDeque<>();
-	
-	/** Reference to self, for blocks. */
-	final Reference<CSourceWriter> _selfRef =
-		new WeakReference<>(this);
-	
-	/** The current line. */
-	private volatile int _line;
-	
-	/** The current column. */
-	private volatile int _column;
-	
-	/** The last character written. */
-	private volatile char _lastChar;
-	
-	/** Writing preprocessor lines? */
-	private volatile boolean _preprocessorLines;
-	
 	/**
-	 * Initializes the C source writer.
+	 * Writes the given array to the output.
 	 * 
-	 * @param __out The stream output.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/28
+	 * @param __values The values to write.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @since 2023/05/29
 	 */
-	public CSourceWriter(PrintStream __out)
-		throws NullPointerException
-	{
-		if (__out == null)
-			throw new NullPointerException("NARG");
-		
-		this.out = __out;
-	}
+	CSourceWriter array(Object... __values)
+		throws IOException;
 	
 	/**
 	 * Writes the given array to the output.
@@ -91,11 +38,8 @@ public class CSourceWriter
 	 * @throws IOException On write errors.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter array(Object... __values)
-		throws IOException
-	{
-		return this.array(Arrays.asList(__values));
-	}
+	CSourceWriter array(boolean... __values)
+		throws IOException;
 	
 	/**
 	 * Writes the given array to the output.
@@ -105,11 +49,8 @@ public class CSourceWriter
 	 * @throws IOException On write errors.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter array(boolean... __values)
-		throws IOException
-	{
-		return this.array(BooleanArrayList.asList(__values));
-	}
+	CSourceWriter array(byte... __values)
+		throws IOException;
 	
 	/**
 	 * Writes the given array to the output.
@@ -119,11 +60,8 @@ public class CSourceWriter
 	 * @throws IOException On write errors.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter array(byte... __values)
-		throws IOException
-	{
-		return this.array(ByteArrayList.asList(__values));
-	}
+	CSourceWriter array(short... __values)
+		throws IOException;
 	
 	/**
 	 * Writes the given array to the output.
@@ -133,11 +71,8 @@ public class CSourceWriter
 	 * @throws IOException On write errors.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter array(short... __values)
-		throws IOException
-	{
-		return this.array(ShortArrayList.asList(__values));
-	}
+	CSourceWriter array(char... __values)
+		throws IOException;
 	
 	/**
 	 * Writes the given array to the output.
@@ -147,11 +82,8 @@ public class CSourceWriter
 	 * @throws IOException On write errors.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter array(char... __values)
-		throws IOException
-	{
-		return this.array(CharacterArrayList.asList(__values));
-	}
+	CSourceWriter array(int... __values)
+		throws IOException;
 	
 	/**
 	 * Writes the given array to the output.
@@ -161,11 +93,8 @@ public class CSourceWriter
 	 * @throws IOException On write errors.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter array(int... __values)
-		throws IOException
-	{
-		return this.array(IntegerArrayList.asList(__values));
-	}
+	CSourceWriter array(long... __values)
+		throws IOException;
 	
 	/**
 	 * Writes the given array to the output.
@@ -175,11 +104,8 @@ public class CSourceWriter
 	 * @throws IOException On write errors.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter array(long... __values)
-		throws IOException
-	{
-		return this.array(LongArrayList.asList(__values));
-	}
+	CSourceWriter array(float... __values)
+		throws IOException;
 	
 	/**
 	 * Writes the given array to the output.
@@ -189,11 +115,8 @@ public class CSourceWriter
 	 * @throws IOException On write errors.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter array(float... __values)
-		throws IOException
-	{
-		return this.array(FloatArrayList.asList(__values));
-	}
+	CSourceWriter array(double... __values)
+		throws IOException;
 	
 	/**
 	 * Writes the given array to the output.
@@ -203,38 +126,8 @@ public class CSourceWriter
 	 * @throws IOException On write errors.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter array(double... __values)
-		throws IOException
-	{
-		return this.array(DoubleArrayList.asList(__values));
-	}
-	
-	/**
-	 * Writes the given array to the output.
-	 * 
-	 * @param __values The values to write.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @since 2023/05/29
-	 */
-	public CSourceWriter array(List<?> __values)
-		throws IOException
-	{
-		try (CBlock block = this.curly())
-		{
-			if (__values != null)
-				for (int i = 0, n = __values.size(); i < n; i++)
-				{
-					if (i > 0)
-						this.token(",");
-					
-					this.token(__values.get(i));
-				}
-		}
-		
-		// Self
-		return this;
-	}
+	CSourceWriter array(List<?> __values)
+		throws IOException;
 	
 	/**
 	 * Writes the given character.
@@ -244,37 +137,8 @@ public class CSourceWriter
 	 * @throws IOException On write errors.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter character(char __c)
-		throws IOException
-	{
-		// These characters can be input directly
-		if (__c == '\t')
-			return this.token("\\t");
-		else if (__c == '\r')
-			return this.token("\\r");
-		else if (__c == '\n')
-			return this.token("\\n");
-		else if (__c == '\'')
-			return this.token("\\'");
-		else if (__c == '\"')
-			return this.token("\\\"");
-		else if (__c >= 0x20 && __c < 0x7F)
-			return this.token("'" + __c + "'");
-		
-		// Fallback to number input
-		return this.number(CNumberType.JCHAR, (int)__c);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/05/28
-	 */
-	@Override
-	public void close()
-		throws IOException
-	{
-		this.out.close();
-	}
+	CSourceWriter character(char __c)
+		throws IOException;
 	
 	/**
 	 * Opens a curly block.
@@ -283,51 +147,18 @@ public class CSourceWriter
 	 * @throws IOException On 
 	 * @since 2023/05/29
 	 */
-	public CBlock curly()
-		throws IOException
-	{
-		// Setup new block
-		CBlock rv = new CBlock(this._selfRef, "}");
-		this.__pushBlock(rv);
-		
-		// Output open block
-		this.__out('{');
-		
-		return rv;
-	}
-	
-	/**
-	 * Flushes the output.
-	 * 
-	 * @throws IOException On flush errors.
-	 * @since 2023/05/28
-	 */
-	public void flush()
-		throws IOException
-	{
-		this.out.flush();
-	}
+	CBlock curly()
+		throws IOException;
 	
 	/**
 	 * Start on a fresh line.
 	 * 
 	 * @throws IOException On write errors.
+	 * @return {@code this}.
 	 * @since 2023/05/28
 	 */
-	public void freshLine()
-		throws IOException
-	{
-		// Only need to do this if we are not at the line start
-		if (this._column > 0)
-		{
-			// Preprocessor lines can do multi-line if they end in a slash
-			// so we need to do that before we return
-			if (this._preprocessorLines)
-				this.__out('\\');
-			
-			this.__out('\n');
-		}
-	}
+	CSourceWriter freshLine()
+		throws IOException;
 	
 	/**
 	 * Writes a function.
@@ -341,24 +172,9 @@ public class CSourceWriter
 	 * @throws NullPointerException If no name was specified.
 	 * @since 2023/05/30
 	 */
-	public CSourceWriter function(CModifier __modifier, String __name,
+	CSourceWriter function(CModifier __modifier, String __name,
 		CType __returnVal, CFunctionArgument... __arguments)
-		throws IOException, NullPointerException
-	{
-		if (__name == null)
-			throw new NullPointerException("NARG");
-		
-		// Write modifiers first
-		if (__modifier != null)
-			this.token(__modifier);
-		
-		// Return value?
-		this.token((__returnVal == null ? CBasicType.VOID : __returnVal));
-		
-		// Function name and arguments
-		return this.surroundDelimited(__name, ",",
-			(Object[])__arguments);
-	}
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Performs a function call.
@@ -370,15 +186,8 @@ public class CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	public CSourceWriter functionCall(String __function, Object... __args)
-		throws IOException, NullPointerException
-	{
-		if (__function == null)
-			throw new NullPointerException("NARG");
-		
-		this.surroundDelimited(__function, ",", __args);
-		return this.token(";");
-	}
+	CSourceWriter functionCall(String __function, Object... __args)
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Defines a function.
@@ -392,23 +201,9 @@ public class CSourceWriter
 	 * @throws NullPointerException If no name was specified.
 	 * @since 2023/05/30
 	 */
-	public CFunctionBlock functionDefine(CModifier __modifier,
+	CFunctionBlock functionDefine(CModifier __modifier,
 		String __name, CType __returnVal, CFunctionArgument... __arguments)
-		throws IOException, NullPointerException
-	{
-		if (__name == null)
-			throw new NullPointerException("NARG");
-		
-		// Start on a fresh line, is cleaner
-		this.freshLine();
-		
-		// Start function
-		this.function(__modifier, __name, __returnVal, __arguments);
-		this.token("{");
-		
-		// Push block for it
-		return this.__pushBlock(new CFunctionBlock(this._selfRef));
-	}
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Writes a function prototype.
@@ -422,19 +217,9 @@ public class CSourceWriter
 	 * @throws NullPointerException If no name was specified.
 	 * @since 2023/05/30
 	 */
-	public CSourceWriter functionPrototype(CModifier __modifier, String __name,
+	CSourceWriter functionPrototype(CModifier __modifier, String __name,
 		CType __returnVal, CFunctionArgument... __arguments)
-		throws IOException, NullPointerException
-	{
-		if (__name == null)
-			throw new NullPointerException("NARG");
-		
-		// Start on a fresh line, is cleaner
-		this.freshLine();
-		
-		this.function(__modifier, __name, __returnVal, __arguments);
-		return this.token(";");
-	}
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Writes the specified number.
@@ -445,24 +230,8 @@ public class CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter number(Number __number)
-		throws IOException, NullPointerException
-	{
-		if (__number == null)
-			throw new NullPointerException("NARG");
-		
-		// Determine the type of number this is
-		CNumberType type = null;
-		for (CNumberType maybe : CNumberType.VALUES)
-			if (maybe.classType.isAssignableFrom(__number.getClass()))
-			{
-				type = maybe;
-				break;
-			}
-		
-		// Forward
-		return this.number(type, __number);
-	}
+	CSourceWriter number(Number __number)
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Writes the specified number.
@@ -474,30 +243,8 @@ public class CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter number(CNumberType __type, Number __number)
-		throws IOException, NullPointerException
-	{
-		if (__number == null)
-			throw new NullPointerException("NARG");
-		
-		// Determine the value number
-		long value;
-		if (__number instanceof Double)
-			value = Double.doubleToRawLongBits((Double)__number);
-		else if (__number instanceof Float)
-			value = Float.floatToRawIntBits((Float)__number);
-		else
-			value = __number.longValue();
-		
-		// No type specified, so just use whatever value it is... but never
-		// use a prefix when using the preprocessor
-		if (__type == null || __type.prefix == null ||
-			this._preprocessorLines)
-			return this.token(Long.toString(value));
-		
-		// Prefix it
-		return this.surround(__type.prefix, Long.toString(value));
-	}
+	CSourceWriter number(CNumberType __type, Number __number)
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Writes a preprocessor define.
@@ -509,17 +256,9 @@ public class CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter preprocessorDefine(String __symbol,
+	CSourceWriter preprocessorDefine(String __symbol,
 		Object... __tokens)
-		throws IOException, NullPointerException
-	{
-		if (__symbol == null)
-			throw new NullPointerException("NARG");
-		
-		if (__tokens == null || __tokens.length == 0)
-			return this.preprocessorLine("define", __symbol);
-		return this.preprocessorLine("define", __symbol, __tokens);
-	}
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Adds an if check for preprocessing.
@@ -530,21 +269,8 @@ public class CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	public CPPBlock preprocessorIf(Object... __condition)
-		throws IOException, NullPointerException
-	{
-		if (__condition == null || __condition.length == 0)
-			throw new NullPointerException("NARG");
-		
-		// Setup new block
-		CPPBlock rv = new CPPBlock(this._selfRef);
-		this.__pushBlock(rv);
-		
-		// Start the check
-		this.preprocessorLine("if", __condition);
-		
-		return rv;
-	}
+	CPPBlock preprocessorIf(Object... __condition)
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Writes a preprocessor include.
@@ -555,15 +281,8 @@ public class CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter preprocessorInclude(String __fileName)
-		throws IOException, NullPointerException
-	{
-		if (__fileName == null)
-			throw new NullPointerException("NARG");
-		
-		return this.preprocessorLine("include",
-			"\"" + __fileName + "\"");
-	}
+	CSourceWriter preprocessorInclude(String __fileName)
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Outputs a preprocessor line.
@@ -575,41 +294,9 @@ public class CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/28
 	 */
-	public CSourceWriter preprocessorLine(String __directive,
+	CSourceWriter preprocessorLine(String __directive,
 		Object... __tokens)
-		throws IOException, NullPointerException
-	{
-		if (__directive == null)
-			throw new NullPointerException("NARG");
-		
-		// Always start this directive on a fresh line
-		if (this._column > 0)
-			this.freshLine();
-		
-		// Need to restore old state when continuing
-		try
-		{
-			// Indicate we are writing the preprocessor
-			this._preprocessorLines = true;
-			
-			// Write out directive
-			this.token("#" + __directive);
-			
-			// Write tokens for the directive
-			if (__tokens != null && __tokens.length > 0)
-				this.tokens(__tokens);
-		}
-		finally
-		{
-			this._preprocessorLines = false;
-		}
-		
-		// Always end with a fresh line, so we can continue accordingly
-		this.freshLine();
-		
-		// Self
-		return this;
-	}
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Writes a preprocessor undefine.
@@ -620,14 +307,8 @@ public class CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter preprocessorUndefine(String __symbol)
-		throws IOException, NullPointerException
-	{
-		if (__symbol == null)
-			throw new NullPointerException("NARG");
-		
-		return this.preprocessorLine("undef", __symbol);
-	}
+	CSourceWriter preprocessorUndefine(String __symbol)
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Writes a return from a function.
@@ -637,13 +318,8 @@ public class CSourceWriter
 	 * @throws IOException On write errors.
 	 * @since 2023/06/03
 	 */
-	public CSourceWriter returnValue(Object... __tokens)
-		throws IOException
-	{
-		if (__tokens == null || __tokens.length == 0)
-			return this.tokens("return", ";");
-		return this.tokens("return", __tokens, ";");
-	}
+	CSourceWriter returnValue(Object... __tokens)
+		throws IOException;
 	
 	/**
 	 * Defines a struct.
@@ -656,23 +332,9 @@ public class CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	public CStructVariableBlock structVariableSet(CModifier __modifiers,
+	CStructVariableBlock structVariableSet(CModifier __modifiers,
 		CBasicType __structType, String __structName)
-		throws IOException, NullPointerException
-	{
-		if (__structType == null || __structName == null)
-			throw new NullPointerException("NARG");
-		
-		// Setup new block
-		CStructVariableBlock rv = new CStructVariableBlock(this._selfRef);
-		this.__pushBlock(rv);
-		
-		// Write the variable and the opening
-		this.variable(__modifiers, __structType, __structName);
-		this.tokens("=", "{");
-		
-		return rv;
-	}
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Surrounds the set of tokens with a parenthesis, with an optional
@@ -684,13 +346,8 @@ public class CSourceWriter
 	 * @throws IOException On write errors.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter surround(String __prefix, Object... __tokens)
-		throws IOException
-	{
-		if (__prefix == null)
-			return this.tokens("(", __tokens, ")");
-		return this.tokens(__prefix, "(", __tokens, ")");
-	}
+	CSourceWriter surround(String __prefix, Object... __tokens)
+		throws IOException;
 	
 	/**
 	 * Surround with parenthesis, potentially delimited.
@@ -703,30 +360,9 @@ public class CSourceWriter
 	 * @throws NullPointerException If no delimiter was specified.
 	 * @since 3023/05/30
 	 */
-	public CSourceWriter surroundDelimited(String __prefix, String __delim,
+	CSourceWriter surroundDelimited(String __prefix, String __delim,
 		Object... __tokens)
-		throws IOException, NullPointerException
-	{
-		if (__delim == null)
-			throw new NullPointerException("NARG");
-		
-		// Open
-		if (__prefix != null)
-			this.token(__prefix);
-		this.token("(");
-		
-		// Go through each item
-		if (__tokens != null && __tokens.length > 0)
-			for (int i = 0, n = __tokens.length; i < n; i++)
-			{
-				if (i > 0)
-					this.token(__delim);
-				this.token(__tokens[i]);
-			}
-		
-		// Close
-		return this.token(")");
-	}
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Writes a single token to the output.
@@ -738,59 +374,8 @@ public class CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter token(CharSequence __token)
-		throws IllegalArgumentException, IOException, NullPointerException
-	{
-		if (__token == null)
-			throw new NullPointerException("NARG");
-		
-		// Do nothing if empty as there is nothing to print
-		int n = __token.length();
-		if (n == 0)
-			return this;
-		
-		// Single character token?
-		char singleChar = (__token.length() == 1 ? __token.charAt(0) : 0);
-		
-		// If the last character we wrote is not whitespace, then we need to
-		// add some space before we write this token
-		char lastChar = this._lastChar;
-		if (lastChar != ' ' && lastChar != '\t' &&
-			lastChar != '\r' && lastChar != '\n')
-			if (singleChar != ',')
-				this.__out(' ');
-		
-		// Would this write over the side?
-		if (this._column + n > CSourceWriter._GUTTER_THRESHOLD)
-		{
-			// Is this a string that will be written off the side of the
-			// gutter?
-			if (__token.charAt(0) == '"' && __token.charAt(1) == '"')
-			{
-				/*throw Debugging.todo();*/
-			}
-			
-			// Move to fresh line so that all of it is on this line
-			this.freshLine();
-		}
-		
-		// Write the output
-		PrintStream out = this.out;
-		for (int i = 0; i < n; i++)
-		{
-			char c = __token.charAt(i);
-			
-			// {@squirreljme.error CW06 Cannot print newlines or tabs.}
-			if (c == '\t' || c == '\r' || c == '\n')
-				throw new IllegalArgumentException("CW06");
-			
-			// Output
-			this.__out(c);
-		}
-		
-		// Self
-		return this;
-	}
+	CSourceWriter token(CharSequence __token)
+		throws IllegalArgumentException, IOException, NullPointerException;
 	
 	/**
 	 * Writes a single token to the output.
@@ -801,75 +386,8 @@ public class CSourceWriter
 	 * @throws IOException On write errors.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter token(Object __token)
-		throws IllegalArgumentException, IOException
-	{
-		// null
-		if (__token == null)
-			return this.token("NULL");
-			
-		// Primitive arrays
-		else if (__token instanceof boolean[])
-			return this.array((boolean[])__token);
-		else if (__token instanceof byte[])
-			return this.array((byte[])__token);
-		else if (__token instanceof short[])
-			return this.array((short[])__token);
-		else if (__token instanceof int[])
-			return this.array((int[])__token);
-		else if (__token instanceof long[])
-			return this.array((long[])__token);
-		else if (__token instanceof float[])
-			return this.array((float[])__token);
-		else if (__token instanceof double[])
-			return this.array((double[])__token);
-			
-		// Forward writing of arrays
-		else if (__token.getClass().isArray())
-			return this.tokens((Object[])__token);
-			
-		// Forward writing of collections
-		else if (__token instanceof Collection)
-		{
-			Collection<?> tokens = (Collection<?>)__token;
-			
-			return this.tokens(tokens.toArray(new Object[tokens.size()]));
-		}
-		
-		// String
-		else if (__token instanceof CharSequence)
-			return this.token((CharSequence)__token);
-			
-		// A type
-		else if (__token instanceof CType)
-			return this.token(((CType)__token).token());
-		
-		// Modifiers
-		else if (__token instanceof CModifiers)
-			return this.token(((CModifiers)__token).modifierTokens());
-		
-		// Function argument
-		else if (__token instanceof CFunctionArgument)
-		{
-			CFunctionArgument token = (CFunctionArgument)__token;
-			return this.tokens(token.type, token.name);
-		}
-			
-		// A boolean
-		else if (__token instanceof Boolean)
-			return this.token(((Boolean)__token) ? "JNI_TRUE" : "JNI_FALSE");
-			
-		// A character
-		else if (__token instanceof Character)
-			return this.character((Character)__token);
-			
-		// A number value
-		else if (__token instanceof Number)
-			return this.number((Number)__token);
-		
-		// {@squirreljme.error CW05 Unknown token type. (The type)}
-		throw new IllegalArgumentException("CW05 " + __token.getClass());
-	}
+	CSourceWriter token(Object __token)
+		throws IllegalArgumentException, IOException;
 	
 	/**
 	 * Writes the specified tokens to the output.
@@ -879,19 +397,8 @@ public class CSourceWriter
 	 * @throws IOException On write errors.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter tokens(Object... __tokens)
-		throws IOException
-	{
-		if (__tokens == null || __tokens.length == 0)
-			return this;
-		
-		// Write each token
-		for (int i = 0, n = __tokens.length; i < n; i++)
-			this.token(__tokens[i]);
-		
-		// Self
-		return this;
-	}
+	CSourceWriter tokens(Object... __tokens)
+		throws IOException;
 	
 	/**
 	 * Assigns the given variable.
@@ -903,14 +410,8 @@ public class CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	public CSourceWriter variableAssign(String __target, Object... __value)
-		throws IOException, NullPointerException 
-	{
-		if (__target == null || __value == null || __value.length == 0)
-			throw new NullPointerException("NARG");
-		
-		return this.tokens(__target, "=", __value, ";");
-	}
+	CSourceWriter variableAssign(String __target, Object... __value)
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Declares a variable.
@@ -923,19 +424,9 @@ public class CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	public CSourceWriter variableDeclare(CModifier __modifier, CType __type,
+	CSourceWriter variableDeclare(CModifier __modifier, CType __type,
 		String __name)
-		throws IOException, NullPointerException
-	{
-		if (__type == null || __name == null)
-			throw new NullPointerException("NARG");
-		
-		// Start on fresh line for readability
-		this.freshLine();
-		
-		this.variable(__modifier, __type, __name);
-		return this.token(";");
-	}
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Writes a variable to the output.
@@ -948,13 +439,9 @@ public class CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter variableSet(CType __type,
+	CSourceWriter variableSet(CType __type,
 		String __name, String... __valueTokens)
-		throws IOException, NullPointerException
-	{
-		return this.variableSet(null, __type, __name,
-			__valueTokens);
-	}
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Writes a variable to the output.
@@ -968,24 +455,9 @@ public class CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter variableSet(CModifier __modifier, CType __type,
+	CSourceWriter variableSet(CModifier __modifier, CType __type,
 		String __name, String... __valueTokens)
-		throws IOException, NullPointerException
-	{
-		if (__type == null || __name == null)
-			throw new NullPointerException("NARG");
-		
-		// This is nicer when it is on a fresh line
-		this.freshLine();
-		
-		// Write base variable
-		this.variable(__modifier, __type, __name);
-		
-		// Then write the value, if any
-		if (__valueTokens == null || __valueTokens.length <= 0)
-			return this.tokens(";");
-		return this.tokens("=", __valueTokens, ";");
-	}
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Writes a variable.
@@ -998,120 +470,7 @@ public class CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	public CSourceWriter variable(CModifier __modifier, CType __type,
+	CSourceWriter variable(CModifier __modifier, CType __type,
 		String __name)
-		throws IOException, NullPointerException
-	{
-		if (__type == null || __name == null)
-			throw new NullPointerException("NARG");
-		
-		// Without modifiers
-		List<String> modifiers = (__modifier == null ? null :
-			__modifier.modifierTokens());
-		
-		if (modifiers == null || modifiers.isEmpty())
-			return this.tokens(__type.token(), __name);
-		return this.tokens(modifiers, __type.token(), __name);
-	}
-	
-	/**
-	 * Closes the given block.
-	 * 
-	 * @param __cBlock The block to close.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/29
-	 */
-	@SuppressWarnings("resource")
-	void __close(CBlock __cBlock)
-		throws IOException, NullPointerException
-	{
-		if (__cBlock == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error CW07 Closing block is not the last opened
-		// block.}
-		Deque<CBlock> blocks = this._blocks;
-		CBlock peek = blocks.peek();
-		if (peek != __cBlock)
-			throw new IllegalStateException("CW07");
-		
-		// Remove it
-		blocks.pop();
-		
-		// Write finisher
-		__cBlock.__finish(this);
-	}
-	
-	/**
-	 * Writes a single character to the output.
-	 * 
-	 * @param __c The character to write.
-	 * @throws IOException On write errors.
-	 * @since 2023/05/28
-	 */
-	private void __out(char __c)
-		throws IOException
-	{
-		// Write to output
-		char lastChar = this._lastChar;
-		
-		// New line?
-		if (__c == '\r' || __c == '\n')
-		{
-			// Do not write double newlines
-			if (lastChar == '\r' || lastChar == '\n')
-				return;
-			
-			// Move line ahead
-			this._line++;
-			this._column = 0;
-		}
-		
-		// Align tabs always to four columns
-		else if (__c == '\t')
-			this._column += 4 - (this._column % 4);
-			
-		// Otherwise, increase column size
-		else
-			this._column++;
-		
-		// Just write single character, as long as it is not CR
-		if (__c != '\r')
-		{
-			// Debug
-			if (__c == '\n')
-			{
-				System.err.println();
-				this.out.println();
-			}
-			else
-			{
-				System.err.print(__c);
-				this.out.write(__c);
-			}
-		}
-		
-		// Store last character for later writes
-		this._lastChar = __c;
-	}
-	
-	/**
-	 * Pushes the block to the stack.
-	 * 
-	 * @param <B> The type of block to push.
-	 * @param __block The block to push.
-	 * @return The block to push.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/31
-	 */
-	<B extends CBlock> B __pushBlock(B __block)
-		throws NullPointerException
-	{
-		if (__block == null)
-			throw new NullPointerException("NARG");
-		
-		this._blocks.push(__block);
-		return __block;
-	}
+		throws IOException, NullPointerException;
 }
