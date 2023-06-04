@@ -11,8 +11,7 @@ package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CBasicType;
 import cc.squirreljme.c.CFunctionBlock;
-import cc.squirreljme.c.CSourceWriter;
-import cc.squirreljme.c.CSwitch;
+import cc.squirreljme.c.CSwitchBlock;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Container;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.InvokeSpecialLinkage;
@@ -297,7 +296,7 @@ public class ByteCodeProcessor
 		__block.variableAssign("current", "stack->top");
 		
 		// Switch case based on the current group index
-		try (CSwitch cases = __block.switchCase(
+		try (CSwitchBlock cases = __block.switchCase(
 			"current->groupIndex"))
 		{
 			// Return from call when execution of method finishes

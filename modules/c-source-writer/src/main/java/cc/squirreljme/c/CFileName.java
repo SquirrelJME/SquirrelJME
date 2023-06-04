@@ -10,44 +10,42 @@
 package cc.squirreljme.c;
 
 /**
- * Represents an identifier in C.
+ * Represents a file name in C.
  *
  * @since 2023/06/04
  */
-public final class CIdentifier
-	implements Comparable<CIdentifier>
+public final class CFileName
+	implements Comparable<CFileName>
 {
-	/** The string identifier. */
-	protected String identifier;
+	/** The file name. */
+	protected String fileName;
 	
 	/**
-	 * Initializes the C identifier.
+	 * Initializes the C file name.
 	 * 
-	 * @param __identifier The C identifier.
-	 * @throws IllegalArgumentException If the identifier contains invalid
-	 * characters.
+	 * @param __fileName The C file name.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/04
 	 */
-	CIdentifier(String __identifier)
-		throws IllegalArgumentException, NullPointerException
+	CFileName(String __fileName)
+		throws NullPointerException
 	{
-		if (__identifier == null)
+		if (__fileName == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error CW0a Identifier cannot be blank.}
-		if (__identifier.isEmpty())
+		if (__fileName.isEmpty())
 			throw new IllegalArgumentException("CW0a");
 		
 		// Check identifier
-		for (int i = 0, n = __identifier.length(); i < n; i++)
+		for (int i = 0, n = __fileName.length(); i < n; i++)
 		{
-			char c = __identifier.charAt(i);
+			char c = __fileName.charAt(i);
 			
 			// {@squirreljme.error CW01 Identifier cannot start with a number.
 			// (The identifier)}
 			if (i == 0 && c >= '0' && c <= '9')
-				throw new IllegalArgumentException("CW01 " + __identifier);
+				throw new IllegalArgumentException("CW01 " + __fileName);
 			
 			// {@squirreljme.error CW09 Identifier contains an invalid
 			// character. (The identifier)}
@@ -55,11 +53,11 @@ public final class CIdentifier
 				(c >= 'A' && c <= 'Z') ||
 				(c >= '0' && c <= '9') ||
 				c == '_'))
-				throw new IllegalArgumentException("CW09 " + __identifier);
+				throw new IllegalArgumentException("CW09 " + __fileName);
 		}
 		
 		// Is fine
-		this.identifier = __identifier;
+		this.fileName = __fileName;
 	}
 	
 	/**
@@ -67,9 +65,9 @@ public final class CIdentifier
 	 * @since 2023/06/04
 	 */
 	@Override
-	public int compareTo(CIdentifier __b)
+	public int compareTo(CFileName __b)
 	{
-		return this.identifier.compareTo(__b.identifier);
+		return this.fileName.compareTo(__b.fileName);
 	}
 	
 	/**
@@ -81,10 +79,10 @@ public final class CIdentifier
 	{
 		if (__o == this)
 			return true;
-		if (!(__o instanceof CIdentifier))
+		if (!(__o instanceof CFileName))
 			return false;
 		
-		return this.identifier.equals(((CIdentifier)__o).identifier);
+		return this.fileName.equals(((CFileName)__o).fileName);
 	}
 	
 	/**
@@ -94,7 +92,7 @@ public final class CIdentifier
 	@Override
 	public int hashCode()
 	{
-		return this.identifier.hashCode();
+		return this.fileName.hashCode();
 	}
 	
 	/**
@@ -104,21 +102,19 @@ public final class CIdentifier
 	@Override
 	public String toString()
 	{
-		return this.identifier;
+		return this.fileName;
 	}
 	
 	/**
-	 * Initializes the C identifier.
+	 * Initializes the C file name.
 	 * 
-	 * @param __identifier The C identifier.
-	 * @throws IllegalArgumentException If the identifier contains invalid
-	 * characters.
+	 * @param __fileName The C file name.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/04
 	 */
-	public static CIdentifier of(String __identifier)
-		throws IllegalArgumentException, NullPointerException
+	public static CFileName of(String __fileName)
+		throws NullPointerException
 	{
-		return new CIdentifier(__identifier);
+		return new CFileName(__fileName);
 	}
 }

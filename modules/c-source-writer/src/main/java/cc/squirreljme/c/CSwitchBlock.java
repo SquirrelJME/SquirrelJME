@@ -10,14 +10,13 @@
 package cc.squirreljme.c;
 
 import java.io.IOException;
-import java.lang.ref.Reference;
 
 /**
  * Handles C switch case.
  *
  * @since 2023/05/31
  */
-public class CSwitch
+public class CSwitchBlock
 	extends CFunctionBlock
 {
 	/**
@@ -27,7 +26,7 @@ public class CSwitch
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	CSwitch(CSourceWriter __ref)
+	CSwitchBlock(CSourceWriter __ref)
 		throws NullPointerException
 	{
 		super(__ref);

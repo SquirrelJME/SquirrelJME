@@ -10,7 +10,6 @@
 package cc.squirreljme.c;
 
 import java.io.IOException;
-import java.lang.ref.Reference;
 
 /**
  * C function.
@@ -41,14 +40,14 @@ public class CFunctionBlock
 	 * @throws IOException On write errors.
 	 * @since 2023/05/31
 	 */
-	public CSwitch switchCase(Object... __condition)
+	public CSwitchBlock switchCase(Object... __condition)
 		throws IOException
 	{
 		// Write up tokens for the switch
 		this.tokens("switch", "(", __condition, ")", "{");
 		
 		// Push
-		CSwitch rv = new CSwitch(this);
+		CSwitchBlock rv = new CSwitchBlock(this);
 		return this.__file().__pushBlock(rv);
 	}
 }

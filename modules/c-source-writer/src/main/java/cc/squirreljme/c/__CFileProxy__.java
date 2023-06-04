@@ -195,7 +195,7 @@ abstract class __CFileProxy__
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CSourceWriter function(CModifier __modifier, String __name,
+	public CSourceWriter function(CModifier __modifier, CIdentifier __name,
 		CType __returnVal, CFunctionArgument... __arguments)
 		throws IOException, NullPointerException
 	{
@@ -208,7 +208,7 @@ abstract class __CFileProxy__
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CSourceWriter functionCall(String __function, Object... __args)
+	public CSourceWriter functionCall(CIdentifier __function, Object... __args)
 		throws IOException, NullPointerException
 	{
 		return this.__file().functionCall(__function, __args);
@@ -219,8 +219,9 @@ abstract class __CFileProxy__
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CFunctionBlock functionDefine(CModifier __modifier, String __name,
-		CType __returnVal, CFunctionArgument... __arguments)
+	public CFunctionBlock functionDefine(CModifier __modifier,
+		CIdentifier __name, CType __returnVal,
+		CFunctionArgument... __arguments)
 		throws IOException, NullPointerException
 	{
 		return this.__file().functionDefine(__modifier, __name, __returnVal,
@@ -232,8 +233,9 @@ abstract class __CFileProxy__
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CSourceWriter functionPrototype(CModifier __modifier, String __name,
-		CType __returnVal, CFunctionArgument... __arguments)
+	public CSourceWriter functionPrototype(CModifier __modifier,
+		CIdentifier __name, CType __returnVal,
+		CFunctionArgument... __arguments)
 		throws IOException, NullPointerException
 	{
 		return this.__file().functionPrototype(__modifier, __name, __returnVal,
@@ -267,7 +269,7 @@ abstract class __CFileProxy__
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CSourceWriter preprocessorDefine(String __symbol,
+	public CSourceWriter preprocessorDefine(CIdentifier __symbol,
 		Object... __tokens)
 		throws IOException, NullPointerException
 	{
@@ -290,7 +292,7 @@ abstract class __CFileProxy__
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CSourceWriter preprocessorInclude(String __fileName)
+	public CSourceWriter preprocessorInclude(CFileName __fileName)
 		throws IOException, NullPointerException
 	{
 		return this.__file().preprocessorInclude(__fileName);
@@ -301,7 +303,7 @@ abstract class __CFileProxy__
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CSourceWriter preprocessorLine(String __directive,
+	public CSourceWriter preprocessorLine(CPPDirective __directive,
 		Object... __tokens)
 		throws IOException, NullPointerException
 	{
@@ -313,7 +315,7 @@ abstract class __CFileProxy__
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CSourceWriter preprocessorUndefine(String __symbol)
+	public CSourceWriter preprocessorUndefine(CIdentifier __symbol)
 		throws IOException, NullPointerException
 	{
 		return this.__file().preprocessorUndefine(__symbol);
@@ -336,7 +338,7 @@ abstract class __CFileProxy__
 	 */
 	@Override
 	public CStructVariableBlock structVariableSet(CModifier __modifiers,
-		CBasicType __structType, String __structName)
+		CBasicType __structType, CIdentifier __structName)
 		throws IOException, NullPointerException
 	{
 		return this.__file().structVariableSet(__modifiers, __structType,
@@ -404,7 +406,8 @@ abstract class __CFileProxy__
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CSourceWriter variableAssign(String __target, Object... __value)
+	public CSourceWriter variableAssign(CIdentifier __target,
+		Object... __value)
 		throws IOException, NullPointerException
 	{
 		return this.__file().variableAssign(__target, __value);
@@ -416,7 +419,7 @@ abstract class __CFileProxy__
 	 */
 	@Override
 	public CSourceWriter variableDeclare(CModifier __modifier, CType __type,
-		String __name)
+		CIdentifier __name)
 		throws IOException, NullPointerException
 	{
 		return this.__file().variableDeclare(__modifier, __type, __name);
@@ -427,7 +430,7 @@ abstract class __CFileProxy__
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CSourceWriter variableSet(CType __type, String __name,
+	public CSourceWriter variableSet(CType __type, CIdentifier __name,
 		String... __valueTokens)
 		throws IOException, NullPointerException
 	{
@@ -440,7 +443,7 @@ abstract class __CFileProxy__
 	 */
 	@Override
 	public CSourceWriter variableSet(CModifier __modifier, CType __type,
-		String __name, String... __valueTokens)
+		CIdentifier __name, String... __valueTokens)
 		throws IOException, NullPointerException
 	{
 		return this.__file().variableSet(__modifier, __type, __name,
@@ -453,7 +456,7 @@ abstract class __CFileProxy__
 	 */
 	@Override
 	public CSourceWriter variable(CModifier __modifier, CType __type,
-		String __name)
+		CIdentifier __name)
 		throws IOException, NullPointerException
 	{
 		return this.__file().variable(__modifier, __type, __name);

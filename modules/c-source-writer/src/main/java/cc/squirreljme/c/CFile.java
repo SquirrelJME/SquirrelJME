@@ -357,7 +357,7 @@ public class CFile
 	 * @since 2023/05/30
 	 */
 	@Override
-	public CSourceWriter function(CModifier __modifier, String __name,
+	public CSourceWriter function(CModifier __modifier, CIdentifier __name,
 		CType __returnVal, CFunctionArgument... __arguments)
 		throws IOException, NullPointerException
 	{
@@ -387,13 +387,13 @@ public class CFile
 	 * @since 2023/05/31
 	 */
 	@Override
-	public CSourceWriter functionCall(String __function, Object... __args)
+	public CSourceWriter functionCall(CIdentifier __function, Object... __args)
 		throws IOException, NullPointerException
 	{
 		if (__function == null)
 			throw new NullPointerException("NARG");
 		
-		this.surroundDelimited(__function, ",", __args);
+		this.surroundDelimited(__function.identifier, ",", __args);
 		return this.token(";");
 	}
 	
@@ -411,7 +411,8 @@ public class CFile
 	 */
 	@Override
 	public CFunctionBlock functionDefine(CModifier __modifier,
-		String __name, CType __returnVal, CFunctionArgument... __arguments)
+		CIdentifier __name, CType __returnVal,
+		CFunctionArgument... __arguments)
 		throws IOException, NullPointerException
 	{
 		if (__name == null)
@@ -441,8 +442,9 @@ public class CFile
 	 * @since 2023/05/30
 	 */
 	@Override
-	public CSourceWriter functionPrototype(CModifier __modifier, String __name,
-		CType __returnVal, CFunctionArgument... __arguments)
+	public CSourceWriter functionPrototype(CModifier __modifier,
+		CIdentifier __name, CType __returnVal,
+		CFunctionArgument... __arguments)
 		throws IOException, NullPointerException
 	{
 		if (__name == null)
@@ -531,7 +533,7 @@ public class CFile
 	 * @since 2023/05/29
 	 */
 	@Override
-	public CSourceWriter preprocessorDefine(String __symbol,
+	public CSourceWriter preprocessorDefine(CIdentifier __symbol,
 		Object... __tokens)
 		throws IOException, NullPointerException
 	{
@@ -539,8 +541,10 @@ public class CFile
 			throw new NullPointerException("NARG");
 		
 		if (__tokens == null || __tokens.length == 0)
-			return this.preprocessorLine("define", __symbol);
-		return this.preprocessorLine("define", __symbol, __tokens);
+			return this.preprocessorLine(CPPDirective.DEFINE,
+				__symbol);
+		return this.preprocessorLine(CPPDirective.DEFINE,
+			__symbol, __tokens);
 	}
 	
 	/**
@@ -564,7 +568,7 @@ public class CFile
 		this.__pushBlock(rv);
 		
 		// Start the check
-		this.preprocessorLine("if", __condition);
+		this.preprocessorLine(CPPDirective.IF, __condition);
 		
 		return rv;
 	}
@@ -579,14 +583,14 @@ public class CFile
 	 * @since 2023/05/29
 	 */
 	@Override
-	public CSourceWriter preprocessorInclude(String __fileName)
+	public CSourceWriter preprocessorInclude(CFileName __fileName)
 		throws IOException, NullPointerException
 	{
 		if (__fileName == null)
 			throw new NullPointerException("NARG");
 		
-		return this.preprocessorLine("include",
-			"\"" + __fileName + "\"");
+		return this.preprocessorLine(CPPDirective.INCLUDE,
+			"\"" + __fileName.fileName + "\"");
 	}
 	
 	/**
@@ -600,7 +604,7 @@ public class CFile
 	 * @since 2023/05/28
 	 */
 	@Override
-	public CSourceWriter preprocessorLine(String __directive,
+	public CSourceWriter preprocessorLine(CPPDirective __directive,
 		Object... __tokens)
 		throws IOException, NullPointerException
 	{
@@ -618,7 +622,7 @@ public class CFile
 			this._preprocessorLines = true;
 			
 			// Write out directive
-			this.token("#" + __directive);
+			this.token("#" + __directive.directive);
 			
 			// Write tokens for the directive
 			if (__tokens != null && __tokens.length > 0)
@@ -646,13 +650,13 @@ public class CFile
 	 * @since 2023/05/29
 	 */
 	@Override
-	public CSourceWriter preprocessorUndefine(String __symbol)
+	public CSourceWriter preprocessorUndefine(CIdentifier __symbol)
 		throws IOException, NullPointerException
 	{
 		if (__symbol == null)
 			throw new NullPointerException("NARG");
 		
-		return this.preprocessorLine("undef", __symbol);
+		return this.preprocessorLine(CPPDirective.UNDEF, __symbol);
 	}
 	
 	/**
@@ -685,7 +689,7 @@ public class CFile
 	 */
 	@Override
 	public CStructVariableBlock structVariableSet(CModifier __modifiers,
-		CBasicType __structType, String __structName)
+		CBasicType __structType, CIdentifier __structName)
 		throws IOException, NullPointerException
 	{
 		if (__structType == null || __structName == null)
@@ -871,6 +875,10 @@ public class CFile
 		// String
 		else if (__token instanceof CharSequence)
 			return this.token((CharSequence)__token);
+		
+		// An identifier
+		else if (__token instanceof CIdentifier)
+			return this.token(((CIdentifier)__token).identifier);
 			
 		// A type
 		else if (__token instanceof CType)
@@ -985,7 +993,7 @@ public class CFile
 	 */
 	@Override
 	public CSourceWriter variableSet(CType __type,
-		String __name, String... __valueTokens)
+		CIdentifier __name, String... __valueTokens)
 		throws IOException, NullPointerException
 	{
 		return this.variableSet(null, __type, __name,
@@ -1006,7 +1014,7 @@ public class CFile
 	 */
 	@Override
 	public CSourceWriter variableSet(CModifier __modifier, CType __type,
-		String __name, String... __valueTokens)
+		CIdentifier __name, String... __valueTokens)
 		throws IOException, NullPointerException
 	{
 		if (__type == null || __name == null)
@@ -1037,7 +1045,7 @@ public class CFile
 	 */
 	@Override
 	public CSourceWriter variable(CModifier __modifier, CType __type,
-		String __name)
+		CIdentifier __name)
 		throws IOException, NullPointerException
 	{
 		if (__type == null || __name == null)

@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CFile;
+import cc.squirreljme.c.CFileName;
 import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.jvm.aot.LinkGlob;
@@ -33,7 +34,7 @@ public class NanoCoatLinkGlob
 	protected final String baseName;
 	
 	/** The name of this output file. */
-	protected final String fileName;
+	protected final CFileName fileName;
 	
 	/** The wrapped ZIP file. */
 	protected final ZipStreamWriter zip;
@@ -58,7 +59,7 @@ public class NanoCoatLinkGlob
 		// Determine output names
 		this.name = __name;
 		this.baseName = Utils.dosFileName(__name);
-		this.fileName = this.baseName + ".c";
+		this.fileName = CFileName.of(this.baseName + ".c");
 		
 		// Setup ZIP output
 		ZipStreamWriter zip = new ZipStreamWriter(__out);
@@ -68,7 +69,7 @@ public class NanoCoatLinkGlob
 		try
 		{
 			this.out = new CFile(
-				new PrintStream(zip.nextEntry(this.fileName),
+				new PrintStream(zip.nextEntry(this.fileName.toString()),
 					true, "utf-8"));
 		}
 		catch (IOException __e)
@@ -115,17 +116,17 @@ public class NanoCoatLinkGlob
 		
 		// If we are compiling source, include ourselves via the header
 		try (CPPBlock block = out.preprocessorIf(
-			"!defined(SJME_C_CH)"))
+			"!defined(" + Constants.CODE_GUARD + ")"))
 		{
 			// Do not do this again
-			out.preprocessorDefine("SJME_C_CH", 1);
+			out.preprocessorDefine(Constants.CODE_GUARD, 1);
 			
 			// Do the actual include of ourselves
-			out.preprocessorInclude("sjmejni.h");
+			out.preprocessorInclude(Constants.SJME_JNI_HEADER);
 			out.preprocessorInclude(this.fileName);
 			
-			// Stop doing this so we can continue back to normal source code
-			out.preprocessorUndefine("SJME_C_CH");
+			// Stop doing this, so we can continue back to normal source code
+			out.preprocessorUndefine(Constants.CODE_GUARD);
 		}
 	}
 }

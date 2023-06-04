@@ -172,7 +172,7 @@ public interface CSourceWriter
 	 * @throws NullPointerException If no name was specified.
 	 * @since 2023/05/30
 	 */
-	CSourceWriter function(CModifier __modifier, String __name,
+	CSourceWriter function(CModifier __modifier, CIdentifier __name,
 		CType __returnVal, CFunctionArgument... __arguments)
 		throws IOException, NullPointerException;
 	
@@ -186,7 +186,7 @@ public interface CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	CSourceWriter functionCall(String __function, Object... __args)
+	CSourceWriter functionCall(CIdentifier __function, Object... __args)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -202,7 +202,8 @@ public interface CSourceWriter
 	 * @since 2023/05/30
 	 */
 	CFunctionBlock functionDefine(CModifier __modifier,
-		String __name, CType __returnVal, CFunctionArgument... __arguments)
+		CIdentifier __name, CType __returnVal,
+		CFunctionArgument... __arguments)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -217,7 +218,7 @@ public interface CSourceWriter
 	 * @throws NullPointerException If no name was specified.
 	 * @since 2023/05/30
 	 */
-	CSourceWriter functionPrototype(CModifier __modifier, String __name,
+	CSourceWriter functionPrototype(CModifier __modifier, CIdentifier __name,
 		CType __returnVal, CFunctionArgument... __arguments)
 		throws IOException, NullPointerException;
 	
@@ -256,7 +257,7 @@ public interface CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	CSourceWriter preprocessorDefine(String __symbol,
+	CSourceWriter preprocessorDefine(CIdentifier __symbol,
 		Object... __tokens)
 		throws IOException, NullPointerException;
 	
@@ -281,7 +282,7 @@ public interface CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	CSourceWriter preprocessorInclude(String __fileName)
+	CSourceWriter preprocessorInclude(CFileName __fileName)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -294,7 +295,7 @@ public interface CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/28
 	 */
-	CSourceWriter preprocessorLine(String __directive,
+	CSourceWriter preprocessorLine(CPPDirective __directive,
 		Object... __tokens)
 		throws IOException, NullPointerException;
 	
@@ -307,7 +308,7 @@ public interface CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	CSourceWriter preprocessorUndefine(String __symbol)
+	CSourceWriter preprocessorUndefine(CIdentifier __symbol)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -333,7 +334,7 @@ public interface CSourceWriter
 	 * @since 2023/05/29
 	 */
 	CStructVariableBlock structVariableSet(CModifier __modifiers,
-		CBasicType __structType, String __structName)
+		CBasicType __structType, CIdentifier __structName)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -410,7 +411,7 @@ public interface CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	CSourceWriter variableAssign(String __target, Object... __value)
+	CSourceWriter variableAssign(CIdentifier __target, Object... __value)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -425,7 +426,7 @@ public interface CSourceWriter
 	 * @since 2023/05/31
 	 */
 	CSourceWriter variableDeclare(CModifier __modifier, CType __type,
-		String __name)
+		CIdentifier __name)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -440,7 +441,7 @@ public interface CSourceWriter
 	 * @since 2023/05/29
 	 */
 	CSourceWriter variableSet(CType __type,
-		String __name, String... __valueTokens)
+		CIdentifier __name, String... __valueTokens)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -456,7 +457,7 @@ public interface CSourceWriter
 	 * @since 2023/05/29
 	 */
 	CSourceWriter variableSet(CModifier __modifier, CType __type,
-		String __name, String... __valueTokens)
+		CIdentifier __name, String... __valueTokens)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -471,6 +472,6 @@ public interface CSourceWriter
 	 * @since 2023/05/29
 	 */
 	CSourceWriter variable(CModifier __modifier, CType __type,
-		String __name)
+		CIdentifier __name)
 		throws IOException, NullPointerException;
 }
