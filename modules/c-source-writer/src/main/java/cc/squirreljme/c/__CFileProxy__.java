@@ -11,7 +11,6 @@ package cc.squirreljme.c;
 
 import java.io.IOException;
 import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -24,38 +23,28 @@ abstract class __CFileProxy__
 	implements CSourceWriter
 {
 	/** The file to proxy writes to. */
-	private final Reference<CFile> _file;
+	final Reference<? extends CFile> _fileRef;
 	
 	/**
 	 * Initializes the proxy.
 	 * 
-	 * @param __file The file to proxy to.
+	 * @param __writer The file to proxy to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/04
 	 */
-	__CFileProxy__(CFile __file)
+	__CFileProxy__(CSourceWriter __writer)
 		throws NullPointerException
 	{
-		if (__file == null)
+		if (__writer == null)
 			throw new NullPointerException("NARG");
 		
-		this._file = new WeakReference<>(__file);
-	}
-	
-	/**
-	 * Initializes the proxy.
-	 * 
-	 * @param __file The file to proxy to.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/06/04
-	 */
-	__CFileProxy__(Reference<CFile> __file)
-		throws NullPointerException
-	{
-		if (__file == null || __file.get() == null)
-			throw new NullPointerException("NARG");
-		
-		this._file = __file;
+		// Try to get the original file
+		if (__writer instanceof CFile)
+			this._fileRef = ((CFile)__writer)._fileRef;
+		else if (__writer instanceof __CFileProxy__)
+			this._fileRef = ((__CFileProxy__)__writer)._fileRef;
+		else
+			throw new ClassCastException("CCEE");
 	}
 	
 	/**
@@ -66,7 +55,7 @@ abstract class __CFileProxy__
 	public CSourceWriter array(Object... __values)
 		throws IOException
 	{
-		return this.writer().array(__values);
+		return this.__file().array(__values);
 	}
 	
 	/**
@@ -77,7 +66,7 @@ abstract class __CFileProxy__
 	public CSourceWriter array(boolean... __values)
 		throws IOException
 	{
-		return this.writer().array(__values);
+		return this.__file().array(__values);
 	}
 	
 	/**
@@ -88,7 +77,7 @@ abstract class __CFileProxy__
 	public CSourceWriter array(byte... __values)
 		throws IOException
 	{
-		return this.writer().array(__values);
+		return this.__file().array(__values);
 	}
 	
 	/**
@@ -99,7 +88,7 @@ abstract class __CFileProxy__
 	public CSourceWriter array(short... __values)
 		throws IOException
 	{
-		return this.writer().array(__values);
+		return this.__file().array(__values);
 	}
 	
 	/**
@@ -110,7 +99,7 @@ abstract class __CFileProxy__
 	public CSourceWriter array(char... __values)
 		throws IOException
 	{
-		return this.writer().array(__values);
+		return this.__file().array(__values);
 	}
 	
 	/**
@@ -121,7 +110,7 @@ abstract class __CFileProxy__
 	public CSourceWriter array(int... __values)
 		throws IOException
 	{
-		return this.writer().array(__values);
+		return this.__file().array(__values);
 	}
 	
 	/**
@@ -132,7 +121,7 @@ abstract class __CFileProxy__
 	public CSourceWriter array(long... __values)
 		throws IOException
 	{
-		return this.writer().array(__values);
+		return this.__file().array(__values);
 	}
 	
 	/**
@@ -143,7 +132,7 @@ abstract class __CFileProxy__
 	public CSourceWriter array(float... __values)
 		throws IOException
 	{
-		return this.writer().array(__values);
+		return this.__file().array(__values);
 	}
 	
 	/**
@@ -154,7 +143,7 @@ abstract class __CFileProxy__
 	public CSourceWriter array(double... __values)
 		throws IOException
 	{
-		return this.writer().array(__values);
+		return this.__file().array(__values);
 	}
 	
 	/**
@@ -165,7 +154,7 @@ abstract class __CFileProxy__
 	public CSourceWriter array(List<?> __values)
 		throws IOException
 	{
-		return this.writer().array(__values);
+		return this.__file().array(__values);
 	}
 	
 	/**
@@ -176,7 +165,7 @@ abstract class __CFileProxy__
 	public CSourceWriter character(char __c)
 		throws IOException
 	{
-		return this.writer().character(__c);
+		return this.__file().character(__c);
 	}
 	
 	/**
@@ -187,7 +176,7 @@ abstract class __CFileProxy__
 	public CBlock curly()
 		throws IOException
 	{
-		return this.writer().curly();
+		return this.__file().curly();
 	}
 	
 	/**
@@ -198,7 +187,7 @@ abstract class __CFileProxy__
 	public CSourceWriter freshLine()
 		throws IOException
 	{
-		return this.writer().freshLine();
+		return this.__file().freshLine();
 	}
 	
 	/**
@@ -210,7 +199,7 @@ abstract class __CFileProxy__
 		CType __returnVal, CFunctionArgument... __arguments)
 		throws IOException, NullPointerException
 	{
-		return this.writer().function(__modifier, __name, __returnVal,
+		return this.__file().function(__modifier, __name, __returnVal,
 			__arguments);
 	}
 	
@@ -222,7 +211,7 @@ abstract class __CFileProxy__
 	public CSourceWriter functionCall(String __function, Object... __args)
 		throws IOException, NullPointerException
 	{
-		return this.writer().functionCall(__function, __args);
+		return this.__file().functionCall(__function, __args);
 	}
 	
 	/**
@@ -234,7 +223,7 @@ abstract class __CFileProxy__
 		CType __returnVal, CFunctionArgument... __arguments)
 		throws IOException, NullPointerException
 	{
-		return this.writer().functionDefine(__modifier, __name, __returnVal,
+		return this.__file().functionDefine(__modifier, __name, __returnVal,
 			__arguments);
 	}
 	
@@ -247,7 +236,7 @@ abstract class __CFileProxy__
 		CType __returnVal, CFunctionArgument... __arguments)
 		throws IOException, NullPointerException
 	{
-		return this.writer().functionPrototype(__modifier, __name, __returnVal,
+		return this.__file().functionPrototype(__modifier, __name, __returnVal,
 			__arguments);
 	}
 	
@@ -259,7 +248,7 @@ abstract class __CFileProxy__
 	public CSourceWriter number(Number __number)
 		throws IOException, NullPointerException
 	{
-		return this.writer().number(__number);
+		return this.__file().number(__number);
 	}
 	
 	/**
@@ -270,7 +259,7 @@ abstract class __CFileProxy__
 	public CSourceWriter number(CNumberType __type, Number __number)
 		throws IOException, NullPointerException
 	{
-		return this.writer().number(__type, __number);
+		return this.__file().number(__type, __number);
 	}
 	
 	/**
@@ -282,7 +271,7 @@ abstract class __CFileProxy__
 		Object... __tokens)
 		throws IOException, NullPointerException
 	{
-		return this.writer().preprocessorDefine(__symbol, __tokens);
+		return this.__file().preprocessorDefine(__symbol, __tokens);
 	}
 	
 	/**
@@ -293,7 +282,7 @@ abstract class __CFileProxy__
 	public CPPBlock preprocessorIf(Object... __condition)
 		throws IOException, NullPointerException
 	{
-		return this.writer().preprocessorIf(__condition);
+		return this.__file().preprocessorIf(__condition);
 	}
 	
 	/**
@@ -304,7 +293,7 @@ abstract class __CFileProxy__
 	public CSourceWriter preprocessorInclude(String __fileName)
 		throws IOException, NullPointerException
 	{
-		return this.writer().preprocessorInclude(__fileName);
+		return this.__file().preprocessorInclude(__fileName);
 	}
 	
 	/**
@@ -316,7 +305,7 @@ abstract class __CFileProxy__
 		Object... __tokens)
 		throws IOException, NullPointerException
 	{
-		return this.writer().preprocessorLine(__directive, __tokens);
+		return this.__file().preprocessorLine(__directive, __tokens);
 	}
 	
 	/**
@@ -327,7 +316,7 @@ abstract class __CFileProxy__
 	public CSourceWriter preprocessorUndefine(String __symbol)
 		throws IOException, NullPointerException
 	{
-		return this.writer().preprocessorUndefine(__symbol);
+		return this.__file().preprocessorUndefine(__symbol);
 	}
 	
 	/**
@@ -338,7 +327,7 @@ abstract class __CFileProxy__
 	public CSourceWriter returnValue(Object... __tokens)
 		throws IOException
 	{
-		return this.writer().returnValue(__tokens);
+		return this.__file().returnValue(__tokens);
 	}
 	
 	/**
@@ -350,7 +339,7 @@ abstract class __CFileProxy__
 		CBasicType __structType, String __structName)
 		throws IOException, NullPointerException
 	{
-		return this.writer().structVariableSet(__modifiers, __structType,
+		return this.__file().structVariableSet(__modifiers, __structType,
 			__structName);
 	}
 	
@@ -362,7 +351,7 @@ abstract class __CFileProxy__
 	public CSourceWriter surround(String __prefix, Object... __tokens)
 		throws IOException
 	{
-		return this.writer().surround(__prefix, __tokens);
+		return this.__file().surround(__prefix, __tokens);
 	}
 	
 	/**
@@ -374,7 +363,7 @@ abstract class __CFileProxy__
 		Object... __tokens)
 		throws IOException, NullPointerException
 	{
-		return this.writer().surroundDelimited(__prefix, __delim, __tokens);
+		return this.__file().surroundDelimited(__prefix, __delim, __tokens);
 	}
 	
 	/**
@@ -385,7 +374,7 @@ abstract class __CFileProxy__
 	public CSourceWriter token(CharSequence __token)
 		throws IllegalArgumentException, IOException, NullPointerException
 	{
-		return this.writer().token(__token);
+		return this.__file().token(__token);
 	}
 	
 	/**
@@ -396,7 +385,7 @@ abstract class __CFileProxy__
 	public CSourceWriter token(Object __token)
 		throws IllegalArgumentException, IOException
 	{
-		return this.writer().token(__token);
+		return this.__file().token(__token);
 	}
 	
 	/**
@@ -407,7 +396,7 @@ abstract class __CFileProxy__
 	public CSourceWriter tokens(Object... __tokens)
 		throws IOException
 	{
-		return this.writer().tokens(__tokens);
+		return this.__file().tokens(__tokens);
 	}
 	
 	/**
@@ -418,7 +407,7 @@ abstract class __CFileProxy__
 	public CSourceWriter variableAssign(String __target, Object... __value)
 		throws IOException, NullPointerException
 	{
-		return this.writer().variableAssign(__target, __value);
+		return this.__file().variableAssign(__target, __value);
 	}
 	
 	/**
@@ -430,7 +419,7 @@ abstract class __CFileProxy__
 		String __name)
 		throws IOException, NullPointerException
 	{
-		return this.writer().variableDeclare(__modifier, __type, __name);
+		return this.__file().variableDeclare(__modifier, __type, __name);
 	}
 	
 	/**
@@ -442,7 +431,7 @@ abstract class __CFileProxy__
 		String... __valueTokens)
 		throws IOException, NullPointerException
 	{
-		return this.writer().variableSet(__type, __name, __valueTokens);
+		return this.__file().variableSet(__type, __name, __valueTokens);
 	}
 	
 	/**
@@ -454,7 +443,7 @@ abstract class __CFileProxy__
 		String __name, String... __valueTokens)
 		throws IOException, NullPointerException
 	{
-		return this.writer().variableSet(__modifier, __type, __name,
+		return this.__file().variableSet(__modifier, __type, __name,
 			__valueTokens);
 	}
 	
@@ -467,7 +456,7 @@ abstract class __CFileProxy__
 		String __name)
 		throws IOException, NullPointerException
 	{
-		return this.writer().variable(__modifier, __type, __name);
+		return this.__file().variable(__modifier, __type, __name);
 	}
 	
 	/**
@@ -477,10 +466,10 @@ abstract class __CFileProxy__
 	 * @throws IllegalStateException If the writer was garbage collected.
 	 * @since 2023/05/29
 	 */
-	public final CFile writer()
+	final CFile __file()
 		throws IllegalStateException
 	{
-		CFile rv = this._file.get();
+		CFile rv = this._fileRef.get();
 		if (rv == null)
 			throw new IllegalStateException("GCGC");
 		return rv;

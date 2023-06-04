@@ -26,9 +26,6 @@ public class CBlock
 	/** The character to close with. */
 	final String _closeString;
 	
-	/** The referenced writer. */
-	private final Reference<CSourceWriter> _writer;
-	
 	/**
 	 * Initializes the C Block.
 	 * 
@@ -37,13 +34,11 @@ public class CBlock
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	CBlock(Reference<CSourceWriter> __ref, String __close)
+	CBlock(CSourceWriter __ref, String __close)
 		throws NullPointerException
 	{
-		if (__ref == null || __ref.get() == null)
-			throw new NullPointerException("NARG");
+		super(__ref);
 		
-		this._writer = __ref;
 		this._closeString = __close;
 	}
 	
@@ -55,24 +50,19 @@ public class CBlock
 	public void close()
 		throws IOException
 	{
-		this.writer().__close(this);
+		this.__file().__close(this);
 	}
 	
 	/**
 	 * Finishes the output.
 	 * 
-	 * @param __writer The writer to write to.
 	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	void __finish(CSourceWriter __writer)
-		throws IOException, NullPointerException
+	void __finish()
+		throws IOException
 	{
-		if (__writer == null)
-			throw new NullPointerException("NARG");
-		
 		if (this._closeString != null)
-			__writer.token(this._closeString);
+			this.token(this._closeString);
 	}
 }

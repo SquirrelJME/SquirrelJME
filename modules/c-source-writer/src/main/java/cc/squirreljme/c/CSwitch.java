@@ -27,7 +27,7 @@ public class CSwitch
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	CSwitch(Reference<CSourceWriter> __ref)
+	CSwitch(CSourceWriter __ref)
 		throws NullPointerException
 	{
 		super(__ref);
@@ -42,10 +42,8 @@ public class CSwitch
 	public void breakCase()
 		throws IOException
 	{
-		CSourceWriter writer = this.writer();
-		
-		writer.freshLine();
-		writer.tokens("break", ";");
+		this.freshLine();
+		this.tokens("break", ";");
 	}
 	
 	/**
@@ -62,9 +60,7 @@ public class CSwitch
 		if (__condition == null || __condition.length == 0)
 			throw new NullPointerException("NARG");
 		
-		CSourceWriter writer = this.writer();
-		
-		writer.freshLine();
-		writer.tokens("case", __condition, ":");
+		this.freshLine();
+		this.tokens("case", __condition, ":");
 	}
 }

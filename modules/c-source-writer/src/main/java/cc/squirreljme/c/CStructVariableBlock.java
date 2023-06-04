@@ -29,7 +29,7 @@ public class CStructVariableBlock
 	 * @param __writer The writer used.
 	 * @since 2023/05/29
 	 */
-	CStructVariableBlock(Reference<CSourceWriter> __writer)
+	CStructVariableBlock(CSourceWriter __writer)
 	{
 		this(__writer, "};");
 	}
@@ -41,7 +41,7 @@ public class CStructVariableBlock
 	 * @param __close The closing type.
 	 * @since 2023/05/31
 	 */
-	CStructVariableBlock(Reference<CSourceWriter> __writer, String __close)
+	CStructVariableBlock(CSourceWriter __writer, String __close)
 	{
 		super(__writer, __close);
 	}
@@ -61,15 +61,13 @@ public class CStructVariableBlock
 		if (__memberName == null)
 			throw new NullPointerException("NARG");
 		
-		CSourceWriter writer = this.writer();
-		
 		// Write opening
 		this.__startMember(__memberName);
-		writer.tokens("{");
+		this.tokens("{");
 		
 		// Setup block
-		CArrayBlock rv = new CArrayBlock(writer._selfRef);
-		return writer.__pushBlock(rv);
+		CArrayBlock rv = new CArrayBlock(this);
+		return this.__file().__pushBlock(rv);
 	}
 	
 	/**
@@ -89,10 +87,8 @@ public class CStructVariableBlock
 		if (__memberName == null || __value == null || __value.length == 0)
 			throw new NullPointerException("NARG");
 		
-		CSourceWriter writer = this.writer();
-		
 		this.__startMember(__memberName);
-		writer.tokens(__value);
+		this.tokens(__value);
 		
 		// Self
 		return this;
@@ -113,14 +109,12 @@ public class CStructVariableBlock
 		if (__memberName == null)
 			throw new NullPointerException("NARG");
 		
-		CSourceWriter writer = this.writer();
-		
 		// Start writing member
 		this.__startMember(__memberName);
-		writer.token("{");
+		this.token("{");
 		
 		// Open block
-		return writer.__pushBlock(new CStructVariableBlock(writer._selfRef,
+		return this.__file().__pushBlock(new CStructVariableBlock(this,
 			"}"));
 	}
 	
@@ -138,18 +132,16 @@ public class CStructVariableBlock
 		if (__memberName == null)
 			throw new NullPointerException("NARG");
 		
-		CSourceWriter writer = this.writer();
-		
 		// Do we need to prefix with a comma?
 		int index = this._index;
 		if (index > 0)
-			writer.token(",");
+			this.token(",");
 		
 		// Start on fresh line for readability
-		writer.freshLine();
+		this.freshLine();
 		
 		// Write out member setting
-		writer.tokens("." + __memberName, "=");
+		this.tokens("." + __memberName, "=");
 		
 		// For later
 		this._index = index + 1;

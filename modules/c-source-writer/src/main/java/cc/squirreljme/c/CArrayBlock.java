@@ -10,7 +10,6 @@
 package cc.squirreljme.c;
 
 import java.io.IOException;
-import java.lang.ref.Reference;
 
 /**
  * Array data block.
@@ -30,7 +29,7 @@ public class CArrayBlock
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	CArrayBlock(Reference<CSourceWriter> __ref)
+	CArrayBlock(CSourceWriter __ref)
 		throws NullPointerException
 	{
 		super(__ref, "}");
@@ -46,19 +45,17 @@ public class CArrayBlock
 	public CStructVariableBlock struct()
 		throws IOException
 	{
-		CSourceWriter writer = this.writer();
-		
 		// Prefix element with comma?
 		int index = this._index;
 		if (index > 0)
-			writer.token(",");
+			this.token(",");
 		
 		// Open block
 		CStructVariableBlock rv = new CStructVariableBlock(
-			writer._selfRef, "}");
-		writer.token("{");
+			this, "}");
+		this.token("{");
 		
 		// Push it to the writer
-		return writer.__pushBlock(rv);
+		return this.__file().__pushBlock(rv);
 	}
 }

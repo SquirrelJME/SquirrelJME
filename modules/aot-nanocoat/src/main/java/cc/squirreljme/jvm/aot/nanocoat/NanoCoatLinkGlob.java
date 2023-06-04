@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.jvm.aot.LinkGlob;
@@ -38,7 +39,7 @@ public class NanoCoatLinkGlob
 	protected final ZipStreamWriter zip;
 	
 	/** The output. */
-	protected final CSourceWriter out;
+	protected final CFile out;
 	
 	/**
 	 * Initializes the link glob.
@@ -66,7 +67,7 @@ public class NanoCoatLinkGlob
 		// Setup output
 		try
 		{
-			this.out = new CSourceWriter(
+			this.out = new CFile(
 				new PrintStream(zip.nextEntry(this.fileName),
 					true, "utf-8"));
 		}
@@ -113,7 +114,8 @@ public class NanoCoatLinkGlob
 		CSourceWriter out = this.out;
 		
 		// If we are compiling source, include ourselves via the header
-		try (CPPBlock block = out.preprocessorIf("!defined(SJME_C_CH)"))
+		try (CPPBlock block = out.preprocessorIf(
+			"!defined(SJME_C_CH)"))
 		{
 			// Do not do this again
 			out.preprocessorDefine("SJME_C_CH", 1);

@@ -26,14 +26,14 @@ public class CPPBlock
 	/**
 	 * Initializes the C Block.
 	 *
-	 * @param __ref The reference to use.
+	 * @param __writer The reference to use.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	CPPBlock(Reference<CSourceWriter> __ref)
+	CPPBlock(CSourceWriter __writer)
 		throws NullPointerException
 	{
-		super(__ref, null);
+		super(__writer, null);
 	}
 	
 	/**
@@ -51,7 +51,7 @@ public class CPPBlock
 			throw new IllegalStateException("CW08");
 		
 		// Add line
-		this.writer().preprocessorLine("else");
+		this.preprocessorLine("else");
 		
 		// We cannot else anymore
 		this._finalElse = true;
@@ -77,7 +77,7 @@ public class CPPBlock
 			throw new IllegalStateException("CW08");
 		
 		// Add line
-		this.writer().preprocessorLine("elif", __condition);
+		this.preprocessorLine("elif", __condition);
 	}
 	
 	/**
@@ -85,10 +85,10 @@ public class CPPBlock
 	 * @since 2023/05/29
 	 */
 	@Override
-	void __finish(CSourceWriter __writer)
-		throws IOException, NullPointerException
+	void __finish()
+		throws IOException
 	{
 		// Just end with this endif
-		__writer.preprocessorLine("endif");
+		this.preprocessorLine("endif");
 	}
 }

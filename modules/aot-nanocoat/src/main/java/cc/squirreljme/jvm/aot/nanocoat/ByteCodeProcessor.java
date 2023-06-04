@@ -286,17 +286,15 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
-		CSourceWriter writer = __block.writer();
-		
 		// Keep track of the current top state, so we need not worry about
 		// pushing or popping
-		writer.variableDeclare(null,
+		__block.variableDeclare(null,
 			CBasicType.SJME_NANOFRAME.pointerType(), "current");
-		writer.variableDeclare(null,
+		__block.variableDeclare(null,
 			CBasicType.JBOOLEAN, "tmpBoolean");
 		
 		// Set known variables
-		writer.variableAssign("current", "stack->top");
+		__block.variableAssign("current", "stack->top");
 		
 		// Switch case based on the current group index
 		try (CSwitch cases = __block.switchCase(
@@ -304,7 +302,7 @@ public class ByteCodeProcessor
 		{
 			// Return from call when execution of method finishes
 			cases.nextCase("SJME_NANOCOAT_END_CALL");
-			writer.returnValue();
+			__block.returnValue();
 			
 			// Write each basic block
 			for (Map.Entry<Integer, BasicBlock> entry :
@@ -341,8 +339,7 @@ public class ByteCodeProcessor
 			throw new NullPointerException("NARG");
 		
 		// Put each instruction on its own line
-		CSourceWriter writer = __block.writer();
-		writer.freshLine();
+		__block.freshLine();
 		
 		// Depends on the target operation
 		int op = __instruction.operation();
@@ -395,8 +392,6 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
-		CSourceWriter writer = __block.writer();
-		
 		// Write check
 		throw Debugging.todo();
 		/*
@@ -426,9 +421,7 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
-		CSourceWriter writer = __block.writer();
-		
-		writer.functionCall("sjme_nvm_returnMethod",
+		__block.functionCall("sjme_nvm_returnMethod",
 			"state");
 	}
 	
@@ -448,14 +441,12 @@ public class ByteCodeProcessor
 		if (__block == null || __method == null)
 			throw new NullPointerException("NARG");
 		
-		CSourceWriter writer = __block.writer();
-		
 		// Setup linkage
 		Container<InvokeSpecialLinkage> linkage = this.linkTable.invokeSpecial(
 			this.method.nameAndType(), __method);
 		
 		// Special invokes have special processing depending on the source
-		writer.functionCall("sjme_nvm_invokeSpecial",
+		__block.functionCall("sjme_nvm_invokeSpecial",
 			"state",
 			"&current->linkage[" + linkage.index() + "]->data.invokespecial");
 	}
@@ -475,10 +466,8 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
-		CSourceWriter writer = __block.writer();
-		
 		// Copy reference over
-		writer.functionCall("sjme_nvm_copyReferenceInFrame",
+		__block.functionCall("sjme_nvm_copyReferenceInFrame",
 			"&current->locals", __localDx,
 			"&current->stack", "current->stackTop++");
 	}

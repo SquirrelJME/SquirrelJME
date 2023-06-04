@@ -52,7 +52,7 @@ public class CFile
 		new ArrayDeque<>();
 	
 	/** Reference to self, for blocks. */
-	final Reference<CFile> _selfRef =
+	final Reference<CFile> _fileRef =
 		new WeakReference<>(this);
 	
 	/** The current line. */
@@ -299,7 +299,7 @@ public class CFile
 		throws IOException
 	{
 		// Setup new block
-		CBlock rv = new CBlock(this._selfRef, "}");
+		CBlock rv = new CBlock(this, "}");
 		this.__pushBlock(rv);
 		
 		// Output open block
@@ -425,7 +425,7 @@ public class CFile
 		this.token("{");
 		
 		// Push block for it
-		return this.__pushBlock(new CFunctionBlock(this._selfRef));
+		return this.__pushBlock(new CFunctionBlock(this));
 	}
 	
 	/**
@@ -560,7 +560,7 @@ public class CFile
 			throw new NullPointerException("NARG");
 		
 		// Setup new block
-		CPPBlock rv = new CPPBlock(this._selfRef);
+		CPPBlock rv = new CPPBlock(this);
 		this.__pushBlock(rv);
 		
 		// Start the check
@@ -692,7 +692,7 @@ public class CFile
 			throw new NullPointerException("NARG");
 		
 		// Setup new block
-		CStructVariableBlock rv = new CStructVariableBlock(this._selfRef);
+		CStructVariableBlock rv = new CStructVariableBlock(this);
 		this.__pushBlock(rv);
 		
 		// Write the variable and the opening
@@ -792,7 +792,7 @@ public class CFile
 				this.__out(' ');
 		
 		// Would this write over the side?
-		if (this._column + n > CSourceWriter._GUTTER_THRESHOLD)
+		if (this._column + n > CFile._GUTTER_THRESHOLD)
 		{
 			// Is this a string that will be written off the side of the
 			// gutter?
@@ -1078,7 +1078,7 @@ public class CFile
 		blocks.pop();
 		
 		// Write finisher
-		__cBlock.__finish(this);
+		__cBlock.__finish();
 	}
 	
 	/**

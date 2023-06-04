@@ -27,7 +27,7 @@ public class CFunctionBlock
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	CFunctionBlock(Reference<CSourceWriter> __ref)
+	CFunctionBlock(CSourceWriter __ref)
 		throws NullPointerException
 	{
 		super(__ref, "}");
@@ -44,13 +44,11 @@ public class CFunctionBlock
 	public CSwitch switchCase(Object... __condition)
 		throws IOException
 	{
-		CSourceWriter writer = this.writer();
-		
 		// Write up tokens for the switch
-		writer.tokens("switch", "(", __condition, ")", "{");
+		this.tokens("switch", "(", __condition, ")", "{");
 		
 		// Push
-		CSwitch rv = new CSwitch(writer._selfRef);
-		return writer.__pushBlock(rv);
+		CSwitch rv = new CSwitch(this);
+		return this.__file().__pushBlock(rv);
 	}
 }
