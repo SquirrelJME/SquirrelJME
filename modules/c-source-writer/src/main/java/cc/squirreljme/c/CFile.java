@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.BooleanArrayList;
 import cc.squirreljme.runtime.cldc.util.ByteArrayList;
 import cc.squirreljme.runtime.cldc.util.CharacterArrayList;
@@ -309,6 +310,36 @@ public class CFile
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/04
+	 */
+	@Override
+	public CFunctionBlock declare(CFunction __function)
+		throws IOException, NullPointerException
+	{
+		if (__function == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/04
+	 */
+	@Override
+	public CSourceWriter define(CDefinable __what)
+		throws IOException, NullPointerException
+	{
+		if (__what == null)
+			throw new NullPointerException("NARG");
+		
+		
+		
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * Flushes the output.
 	 * 
 	 * @throws IOException On flush errors.
@@ -372,7 +403,7 @@ public class CFile
 		this.token((__returnVal == null ? CBasicType.VOID : __returnVal));
 		
 		// Function name and arguments
-		return this.surroundDelimited(__name, ",",
+		return this.surroundDelimited(__name.toString(), ",",
 			(Object[])__arguments);
 	}
 	
@@ -945,7 +976,8 @@ public class CFile
 	 * @since 2023/05/31
 	 */
 	@Override
-	public CSourceWriter variableAssign(String __target, Object... __value)
+	public CSourceWriter variableAssign(CIdentifier __target,
+		Object... __value)
 		throws IOException, NullPointerException 
 	{
 		if (__target == null || __value == null || __value.length == 0)
@@ -967,7 +999,7 @@ public class CFile
 	 */
 	@Override
 	public CSourceWriter variableDeclare(CModifier __modifier, CType __type,
-		String __name)
+		CIdentifier __name)
 		throws IOException, NullPointerException
 	{
 		if (__type == null || __name == null)

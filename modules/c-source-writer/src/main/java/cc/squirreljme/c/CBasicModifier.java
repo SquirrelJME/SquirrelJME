@@ -21,9 +21,6 @@ import net.multiphasicapps.collections.UnmodifiableList;
 public enum CBasicModifier
 	implements CModifier
 {
-	/** External symbol. */
-	EXTERN("extern"),
-	
 	/** Constant. */
 	CONST("SJME_CONST"),
 	

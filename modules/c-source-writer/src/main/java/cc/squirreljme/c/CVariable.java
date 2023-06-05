@@ -9,6 +9,8 @@
 
 package cc.squirreljme.c;
 
+import java.util.Objects;
+
 /**
  * C variable type.
  *
@@ -17,6 +19,9 @@ package cc.squirreljme.c;
 public class CVariable
 	implements CDeclarable, CDefinable
 {
+	/** Modifier for the variable. */
+	public final CModifier modifier;
+	
 	/** The type of this variable. */
 	public final CType type;
 	
@@ -26,17 +31,19 @@ public class CVariable
 	/**
 	 * Initializes a variable.
 	 * 
+	 * @param __modifier The variable modifier.
 	 * @param __type The type used.
 	 * @param __name The name of the variable.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/30
 	 */
-	CVariable(CType __type, String __name)
+	private CVariable(CModifier __modifier, CType __type, String __name)
 		throws NullPointerException
 	{
 		if (__type == null || __name == null)
 			throw new NullPointerException("NARG");
 		
+		this.modifier = __modifier;
 		this.type = __type;
 		this.name = __name;
 	}
@@ -54,8 +61,27 @@ public class CVariable
 			return false;
 		
 		CVariable o = (CVariable)__o;
-		return this.name.equals(o.name) &&
+		return Objects.equals(this.modifier, o.modifier) &&
+			this.name.equals(o.name) &&
 			this.type.equals(o.type);
+	}
+	
+	/**
+	 * Returns the {@code extern} variant of this variable. 
+	 * 
+	 * @return The {@code extern} version of this variable.
+	 * @since 2023/06/05
+	 */
+	public CVariable extern()
+	{
+		// If the modifier is already of the extern, then nothing needs to be
+		// done
+		if (this.modifier instanceof CExternModifier)
+			return this;
+		
+		// Otherwise setup new variable
+		return CVariable.of(CExternModifier.of(this.modifier),
+			this.type, this.name);
 	}
 	
 	/**
@@ -65,7 +91,8 @@ public class CVariable
 	@Override
 	public int hashCode()
 	{
-		return this.name.hashCode() ^ this.type.hashCode();
+		return Objects.hashCode(this.modifier) ^
+			this.name.hashCode() ^ this.type.hashCode();
 	}
 	
 	/**
@@ -80,6 +107,23 @@ public class CVariable
 	public static CVariable of(CType __type, String __name)
 		throws NullPointerException
 	{
-		return new CVariable(__type, __name);
+		return CVariable.of(null, __type, __name);
+	}
+	
+	/**
+	 * Initializes a variable.
+	 * 
+	 * @param __modifier The variable modifier.
+	 * @param __type The type used.
+	 * @param __name The name of the variable.
+	 * @return The created variable.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/30
+	 */
+	public static CVariable of(CModifier __modifier, CType __type,
+		String __name)
+		throws NullPointerException
+	{
+		return new CVariable(__modifier, __type, __name);
 	}
 }
