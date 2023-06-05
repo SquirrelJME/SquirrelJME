@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.util.List;
@@ -177,6 +178,28 @@ abstract class __CFileProxy__
 		throws IOException
 	{
 		return this.__file().curly();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/04
+	 */
+	@Override
+	public CFunctionBlock declare(CFunction __function)
+		throws IOException, NullPointerException
+	{
+		return this.__file().declare(__function);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/04
+	 */
+	@Override
+	public CSourceWriter define(CDefinable __what)
+		throws IOException, NullPointerException
+	{
+		return this.__file().define(__what);
 	}
 	
 	/**
