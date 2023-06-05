@@ -151,6 +151,30 @@ public interface CSourceWriter
 		throws IOException;
 	
 	/**
+	 * Declares the given function and returns a block for writing a function.
+	 * 
+	 * @param __function The function to be declared.
+	 * @return The function block for writing the function.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/04
+	 */
+	CFunctionBlock declare(CFunction __function)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * Defines something which can be defined.
+	 * 
+	 * @param __what What is to be defined?
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/03
+	 */
+	CSourceWriter define(CDefinable __what)
+		throws IOException, NullPointerException;
+	
+	/**
 	 * Start on a fresh line.
 	 * 
 	 * @throws IOException On write errors.
@@ -173,7 +197,7 @@ public interface CSourceWriter
 	 * @since 2023/05/30
 	 */
 	CSourceWriter function(CModifier __modifier, CIdentifier __name,
-		CType __returnVal, CFunctionArgument... __arguments)
+		CType __returnVal, CVariable... __arguments)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -203,7 +227,7 @@ public interface CSourceWriter
 	 */
 	CFunctionBlock functionDefine(CModifier __modifier,
 		CIdentifier __name, CType __returnVal,
-		CFunctionArgument... __arguments)
+		CVariable... __arguments)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -219,7 +243,7 @@ public interface CSourceWriter
 	 * @since 2023/05/30
 	 */
 	CSourceWriter functionPrototype(CModifier __modifier, CIdentifier __name,
-		CType __returnVal, CFunctionArgument... __arguments)
+		CType __returnVal, CVariable... __arguments)
 		throws IOException, NullPointerException;
 	
 	/**

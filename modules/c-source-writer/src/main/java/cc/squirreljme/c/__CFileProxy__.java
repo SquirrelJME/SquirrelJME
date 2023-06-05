@@ -196,7 +196,7 @@ abstract class __CFileProxy__
 	 */
 	@Override
 	public CSourceWriter function(CModifier __modifier, CIdentifier __name,
-		CType __returnVal, CFunctionArgument... __arguments)
+		CType __returnVal, CVariable... __arguments)
 		throws IOException, NullPointerException
 	{
 		return this.__file().function(__modifier, __name, __returnVal,
@@ -221,7 +221,7 @@ abstract class __CFileProxy__
 	@Override
 	public CFunctionBlock functionDefine(CModifier __modifier,
 		CIdentifier __name, CType __returnVal,
-		CFunctionArgument... __arguments)
+		CVariable... __arguments)
 		throws IOException, NullPointerException
 	{
 		return this.__file().functionDefine(__modifier, __name, __returnVal,
@@ -235,7 +235,7 @@ abstract class __CFileProxy__
 	@Override
 	public CSourceWriter functionPrototype(CModifier __modifier,
 		CIdentifier __name, CType __returnVal,
-		CFunctionArgument... __arguments)
+		CVariable... __arguments)
 		throws IOException, NullPointerException
 	{
 		return this.__file().functionPrototype(__modifier, __name, __returnVal,

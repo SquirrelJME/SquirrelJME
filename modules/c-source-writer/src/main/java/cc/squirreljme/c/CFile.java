@@ -358,7 +358,7 @@ public class CFile
 	 */
 	@Override
 	public CSourceWriter function(CModifier __modifier, CIdentifier __name,
-		CType __returnVal, CFunctionArgument... __arguments)
+		CType __returnVal, CVariable... __arguments)
 		throws IOException, NullPointerException
 	{
 		if (__name == null)
@@ -412,7 +412,7 @@ public class CFile
 	@Override
 	public CFunctionBlock functionDefine(CModifier __modifier,
 		CIdentifier __name, CType __returnVal,
-		CFunctionArgument... __arguments)
+		CVariable... __arguments)
 		throws IOException, NullPointerException
 	{
 		if (__name == null)
@@ -444,7 +444,7 @@ public class CFile
 	@Override
 	public CSourceWriter functionPrototype(CModifier __modifier,
 		CIdentifier __name, CType __returnVal,
-		CFunctionArgument... __arguments)
+		CVariable... __arguments)
 		throws IOException, NullPointerException
 	{
 		if (__name == null)
@@ -889,9 +889,9 @@ public class CFile
 			return this.token(((CModifiers)__token).modifierTokens());
 		
 		// Function argument
-		else if (__token instanceof CFunctionArgument)
+		else if (__token instanceof CVariable)
 		{
-			CFunctionArgument token = (CFunctionArgument)__token;
+			CVariable token = (CVariable)__token;
 			return this.tokens(token.type, token.name);
 		}
 			

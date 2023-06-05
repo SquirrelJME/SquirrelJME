@@ -10,27 +10,28 @@
 package cc.squirreljme.c;
 
 /**
- * Argument for a C function.
+ * C variable type.
  *
  * @since 2023/05/30
  */
-public class CFunctionArgument
+public class CVariable
+	implements CDeclarable, CDefinable
 {
-	/** The type of this argument. */
+	/** The type of this variable. */
 	public final CType type;
 	
-	/** The name of this argument. */
+	/** The name of this variable. */
 	public final String name;
 	
 	/**
-	 * Initializes a function argument.
+	 * Initializes a variable.
 	 * 
 	 * @param __type The type used.
-	 * @param __name The name of the argument.
+	 * @param __name The name of the variable.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/30
 	 */
-	public CFunctionArgument(CType __type, String __name)
+	CVariable(CType __type, String __name)
 		throws NullPointerException
 	{
 		if (__type == null || __name == null)
@@ -49,10 +50,10 @@ public class CFunctionArgument
 	{
 		if (this == __o)
 			return true;
-		if (!(__o instanceof CFunctionArgument))
+		if (!(__o instanceof CVariable))
 			return false;
 		
-		CFunctionArgument o = (CFunctionArgument)__o;
+		CVariable o = (CVariable)__o;
 		return this.name.equals(o.name) &&
 			this.type.equals(o.type);
 	}
@@ -68,17 +69,17 @@ public class CFunctionArgument
 	}
 	
 	/**
-	 * Initializes a function argument.
+	 * Initializes a variable.
 	 * 
 	 * @param __type The type used.
-	 * @param __name The name of the argument.
-	 * @return The created argument.
+	 * @param __name The name of the variable.
+	 * @return The created variable.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/30
 	 */
-	public static CFunctionArgument of(CType __type, String __name)
+	public static CVariable of(CType __type, String __name)
 		throws NullPointerException
 	{
-		return new CFunctionArgument(__type, __name);
+		return new CVariable(__type, __name);
 	}
 }
