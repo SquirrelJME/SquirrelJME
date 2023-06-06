@@ -10,6 +10,8 @@
 package cc.squirreljme.c;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.collections.UnmodifiableList;
@@ -88,6 +90,12 @@ public enum CBasicType
 	/** The single token used. */
 	protected final List<String> token;
 	
+	/** Pointer type. */
+	private volatile Reference<CType> _pointerType;
+	
+	/** Constant type. */
+	private volatile Reference<CType> _constType;
+	
 	/**
 	 * Initializes the basic type.
 	 * 
@@ -112,7 +120,16 @@ public enum CBasicType
 	public CType constType()
 		throws IllegalArgumentException
 	{
-		return CModifiedType.of(CConstModifier.CONST, this);
+		Reference<CType> ref = this._constType;
+		CType rv = null;
+		
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			rv = CModifiedType.of(CConstModifier.CONST, this);
+			this._constType = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
 	/**
@@ -145,7 +162,16 @@ public enum CBasicType
 	public CType pointerType()
 		throws IllegalArgumentException
 	{
-		return CPointerType.of(this);
+		Reference<CType> ref = this._pointerType;
+		CType rv = null;
+		
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			rv = CPointerType.of(this);
+			this._pointerType = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
 	/**
