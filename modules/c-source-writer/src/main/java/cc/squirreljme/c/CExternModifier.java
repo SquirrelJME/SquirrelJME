@@ -50,7 +50,7 @@ public final class CExternModifier
 		// If the modifier already is extern, do nothing with it
 		// Note that functions are always implicitly extern
 		if (__modifier instanceof CExternModifier ||
-			__modifier instanceof CFunction)
+			__modifier instanceof CFunctionType)
 			return __modifier;
 		
 		// If there is no target modifier, just get the extern one

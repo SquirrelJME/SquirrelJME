@@ -9,7 +9,6 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ import net.multiphasicapps.collections.UnmodifiableList;
  * @since 2023/06/05
  */
 public final class CModifiedType
-	implements CType
+	extends __CAbstractType__
 {
 	/** The modifier for the type. */
 	protected final CModifier modifier;
@@ -198,7 +197,7 @@ public final class CModifiedType
 		}
 		
 		// Functions are limited in what they can become
-		if (__type instanceof CFunction)
+		if (__type instanceof CFunctionType)
 		{
 			// {@squirreljme.error CW0h Functions may only be static.}
 			if (!CStaticModifier.STATIC.equals(__modifier))

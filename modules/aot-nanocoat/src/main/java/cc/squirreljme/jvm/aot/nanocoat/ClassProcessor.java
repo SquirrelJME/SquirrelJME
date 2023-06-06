@@ -10,8 +10,7 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CArrayBlock;
-import cc.squirreljme.c.CBasicType;
-import cc.squirreljme.c.CModifiedType;
+import cc.squirreljme.c.CPrimitiveType;
 import cc.squirreljme.c.CModifiers;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
@@ -116,7 +115,7 @@ public class ClassProcessor
 		
 		// Write class identifier
 		out.variableSet(CModifiers.EXTERN_CONST,
-			CBasicType.JCLASS, this.classIdentifier);
+			CPrimitiveType.JCLASS, this.classIdentifier);
 		
 		// Process field header details
 		for (FieldProcessor field : this._fields.values())
@@ -141,7 +140,7 @@ public class ClassProcessor
 		
 		// Process field source details outside the class struct
 		try (CStructVariableBlock struct = this.out.structVariableSet(
-			CBasicType.SJME_NANOFIELDS.constType(),
+			CPrimitiveType.SJME_NANOFIELDS.constType(),
 			this.fieldsIdentifier))
 		{
 			// Field count
@@ -161,7 +160,7 @@ public class ClassProcessor
 		
 		// Process method details for method structure
 		try (CStructVariableBlock struct = this.out.structVariableSet(
-			CBasicModifier.CONST, CBasicType.SJME_NANOMETHODS,
+			CBasicModifier.CONST, CPrimitiveType.SJME_NANOMETHODS,
 			this.methodsIdentifier))
 		{
 			// Method count
@@ -177,7 +176,7 @@ public class ClassProcessor
 		
 		// Open class details
 		try (CStructVariableBlock struct = this.out.structVariableSet(
-			CBasicModifier.CONST, CBasicType.JCLASS, this.classIdentifier))
+			CBasicModifier.CONST, CPrimitiveType.JCLASS, this.classIdentifier))
 		{
 			// Class details
 			struct.memberSet("thisName",

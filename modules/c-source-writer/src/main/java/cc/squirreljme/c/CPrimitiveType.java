@@ -9,7 +9,6 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
@@ -21,7 +20,7 @@ import net.multiphasicapps.collections.UnmodifiableList;
  *
  * @since 2023/05/29
  */
-public enum CBasicType
+public enum CPrimitiveType
 	implements CType
 {
 	/** Void. */
@@ -103,7 +102,7 @@ public enum CBasicType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	CBasicType(String __token)
+	CPrimitiveType(String __token)
 		throws NullPointerException
 	{
 		if (__token == null)
@@ -179,8 +178,9 @@ public enum CBasicType
 	 * @since 2023/05/29
 	 */
 	@Override
-	public List<String> tokens()
+	public List<String> tokens(CTokenSet __set)
 	{
+		// Primitive types are all the same
 		return this.token;
 	}
 }

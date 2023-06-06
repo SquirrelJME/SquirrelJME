@@ -9,27 +9,46 @@
 
 package cc.squirreljme.c;
 
-import net.multiphasicapps.tac.TestRunnable;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.List;
 
 /**
- * Tests function pointers.
+ * This is a type that is a typedef of another type.
  *
- * @since 2023/06/05
+ * @since 2023/06/06
  */
-public class TestFunctionPointer
-	extends TestRunnable
+public class CTypeDefType
+	extends __CAbstractType__
 {
 	/**
 	 * {@inheritDoc}
-	 * @since 2023/06/05
+	 * @since 2023/06/06
 	 */
 	@Override
-	public void test()
+	public CType dereferenceType()
+		throws IllegalArgumentException
 	{
-		this.secondary("intboopsqueak",
-			CFunctionType.of(CIdentifier.of("boop"),
-			CPrimitiveType.JINT,
-			CVariable.of(CPrimitiveType.JBOOLEAN, "squeak"))
-				.pointerType().tokens());
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/06
+	 */
+	@Override
+	public boolean isPointer()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/06
+	 */
+	@Override
+	List<String> __generateTokens(CTokenSet __set)
+		throws NullPointerException
+	{
+		throw Debugging.todo();
 	}
 }

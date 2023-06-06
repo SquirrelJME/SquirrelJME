@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
-import cc.squirreljme.c.CBasicType;
+import cc.squirreljme.c.CPrimitiveType;
 import cc.squirreljme.c.CFunctionBlock;
 import cc.squirreljme.c.CSwitchBlock;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
@@ -288,9 +288,9 @@ public class ByteCodeProcessor
 		// Keep track of the current top state, so we need not worry about
 		// pushing or popping
 		__block.variableDeclare(null,
-			CBasicType.SJME_NANOFRAME.pointerType(), "current");
+			CPrimitiveType.SJME_NANOFRAME.pointerType(), "current");
 		__block.variableDeclare(null,
-			CBasicType.JBOOLEAN, "tmpBoolean");
+			CPrimitiveType.JBOOLEAN, "tmpBoolean");
 		
 		// Set known variables
 		__block.variableAssign("current", "stack->top");

@@ -19,8 +19,9 @@ import net.multiphasicapps.collections.UnmodifiableList;
  *
  * @since 2023/06/04
  */
-public class CFunction
-	implements CDeclarable, CDefinable, CType
+public class CFunctionType
+	extends __CAbstractType__
+	implements CDeclarable, CDefinable
 {
 	/** The name of the function. */
 	public final CIdentifier name;
@@ -40,7 +41,7 @@ public class CFunction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/04
 	 */
-	private CFunction(CIdentifier __name, CType __rVal, CVariable... __args)
+	private CFunctionType(CIdentifier __name, CType __rVal, CVariable... __args)
 		throws NullPointerException
 	{
 		if (__name == null)
@@ -61,7 +62,7 @@ public class CFunction
 		
 		// Setup
 		this.name = __name;
-		this.returnType = (__rVal == null ? CBasicType.VOID : __rVal);
+		this.returnType = (__rVal == null ? CPrimitiveType.VOID : __rVal);
 		this.arguments = UnmodifiableList.of(Arrays.asList(__args));
 	}
 	
@@ -152,10 +153,10 @@ public class CFunction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/04
 	 */
-	public static CFunction of(CIdentifier __name, CType __rVal,
+	public static CFunctionType of(CIdentifier __name, CType __rVal,
 		CVariable... __args)
 		throws NullPointerException
 	{
-		return new CFunction(__name, __rVal, __args);
+		return new CFunctionType(__name, __rVal, __args);
 	}
 }

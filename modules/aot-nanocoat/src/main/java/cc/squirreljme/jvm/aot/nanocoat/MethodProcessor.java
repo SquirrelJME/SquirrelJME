@@ -10,7 +10,7 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CArrayBlock;
-import cc.squirreljme.c.CBasicType;
+import cc.squirreljme.c.CPrimitiveType;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.c.CFunctionBlock;
 import cc.squirreljme.c.CSourceWriter;
@@ -88,7 +88,7 @@ public final class MethodProcessor
 		// Write out the prototype
 		this.out.functionPrototype(null,
 			this.methodIdentifier, null,
-			CVariable.of(CBasicType.SJME_NANOSTATE.pointerType(),
+			CVariable.of(CPrimitiveType.SJME_NANOSTATE.pointerType(),
 				"state"));
 	}
 	
@@ -155,7 +155,7 @@ public final class MethodProcessor
 			this, code);
 		try (CFunctionBlock function = this.out.functionDefine(null,
 			this.methodIdentifier, null, CVariable.of(
-				CBasicType.SJME_NANOSTATE.pointerType(), "state")))
+				CPrimitiveType.SJME_NANOSTATE.pointerType(), "state")))
 		{
 			processor.process(function);
 		}

@@ -9,7 +9,6 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ import net.multiphasicapps.collections.UnmodifiableList;
  * @since 2023/05/29
  */
 public class CPointerType
-	implements CType
+	extends __CAbstractType__
 {
 	/** The type this points to. */
 	protected final CType pointedType;
@@ -132,13 +131,13 @@ public class CPointerType
 			// Determine if this ultimately leads to a function
 			CType root = this.pointedType;
 			int functionDepth = 0;
-			CFunction function = null;
+			CFunctionType function = null;
 			for (CType at = root;;)
 			{
 				// This is a function pointer
-				if (at instanceof CFunction)
+				if (at instanceof CFunctionType)
 				{
-					function = (CFunction)at;
+					function = (CFunctionType)at;
 					break;
 				}
 				
@@ -213,7 +212,7 @@ public class CPointerType
 		
 		// If the root type is not a basic type, we always want to classify
 		// pointer levels based on that for cache purposes, possibly anyway
-		if (!(__type instanceof CBasicType))
+		if (!(__type instanceof CPrimitiveType))
 		{
 			// There are restrictions as to what can get a pointer of
 			if (__type instanceof CModifiedType)

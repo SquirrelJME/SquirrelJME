@@ -314,7 +314,7 @@ public class CFile
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CFunctionBlock declare(CFunction __function)
+	public CFunctionBlock declare(CFunctionType __function)
 		throws IOException, NullPointerException
 	{
 		if (__function == null)
@@ -400,7 +400,7 @@ public class CFile
 			this.token(__modifier);
 		
 		// Return value?
-		this.token((__returnVal == null ? CBasicType.VOID : __returnVal));
+		this.token((__returnVal == null ? CPrimitiveType.VOID : __returnVal));
 		
 		// Function name and arguments
 		return this.surroundDelimited(__name.toString(), ",",
@@ -720,7 +720,7 @@ public class CFile
 	 */
 	@Override
 	public CStructVariableBlock structVariableSet(CModifier __modifiers,
-		CBasicType __structType, CIdentifier __structName)
+		CPrimitiveType __structType, CIdentifier __structName)
 		throws IOException, NullPointerException
 	{
 		if (__structType == null || __structName == null)

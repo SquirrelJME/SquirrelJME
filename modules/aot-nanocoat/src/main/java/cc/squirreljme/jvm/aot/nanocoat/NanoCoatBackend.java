@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
-import cc.squirreljme.c.CBasicType;
+import cc.squirreljme.c.CPrimitiveType;
 import cc.squirreljme.c.CModifiers;
 import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CSourceWriter;
@@ -102,7 +102,7 @@ public class NanoCoatBackend
 		{
 			// Write identifier reference
 			out.variableSet(CModifiers.EXTERN_CONST,
-				CBasicType.SJME_NANORESOURCE, rcIdentifier);
+				CPrimitiveType.SJME_NANORESOURCE, rcIdentifier);
 			
 			// Else for source code
 			block.preprocessorElse();
@@ -112,7 +112,7 @@ public class NanoCoatBackend
 			
 			// Write values for the resource data
 			try (CStructVariableBlock struct = out.structVariableSet(
-				CModifiers.EXTERN_CONST, CBasicType.SJME_NANORESOURCE,
+				CModifiers.EXTERN_CONST, CPrimitiveType.SJME_NANORESOURCE,
 				rcIdentifier))
 			{
 				struct.memberSet("path",

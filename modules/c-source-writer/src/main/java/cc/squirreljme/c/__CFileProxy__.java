@@ -9,7 +9,6 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.util.List;
@@ -185,7 +184,7 @@ abstract class __CFileProxy__
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CFunctionBlock declare(CFunction __function)
+	public CFunctionBlock declare(CFunctionType __function)
 		throws IOException, NullPointerException
 	{
 		return this.__file().declare(__function);
@@ -361,7 +360,7 @@ abstract class __CFileProxy__
 	 */
 	@Override
 	public CStructVariableBlock structVariableSet(CModifier __modifiers,
-		CBasicType __structType, CIdentifier __structName)
+		CPrimitiveType __structType, CIdentifier __structName)
 		throws IOException, NullPointerException
 	{
 		return this.__file().structVariableSet(__modifiers, __structType,

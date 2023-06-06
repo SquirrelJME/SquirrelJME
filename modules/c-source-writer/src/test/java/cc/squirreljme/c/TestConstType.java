@@ -28,7 +28,7 @@ public class TestConstType
 	public void test()
 	{
 		// The type to be a constant
-		CType intType = CBasicType.JINT;
+		CType intType = CPrimitiveType.JINT;
 		
 		// const int
 		CType constInt = CModifiedType.of(CConstModifier.CONST, intType);

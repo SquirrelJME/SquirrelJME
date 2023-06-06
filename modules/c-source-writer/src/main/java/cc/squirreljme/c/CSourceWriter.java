@@ -159,7 +159,7 @@ public interface CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/04
 	 */
-	CFunctionBlock declare(CFunction __function)
+	CFunctionBlock declare(CFunctionType __function)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -358,7 +358,7 @@ public interface CSourceWriter
 	 * @since 2023/05/29
 	 */
 	CStructVariableBlock structVariableSet(CModifier __modifiers,
-		CBasicType __structType, CIdentifier __structName)
+		CPrimitiveType __structType, CIdentifier __structName)
 		throws IOException, NullPointerException;
 	
 	/**
