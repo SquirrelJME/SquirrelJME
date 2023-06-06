@@ -106,6 +106,17 @@ public enum CBasicType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/06/06
+	 */
+	@Override
+	public CType constType()
+		throws IllegalArgumentException
+	{
+		return CModifiedType.of(CConstModifier.CONST, this);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override

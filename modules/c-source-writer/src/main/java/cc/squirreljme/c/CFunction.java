@@ -67,6 +67,18 @@ public class CFunction
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/06/06
+	 */
+	@Override
+	public CType constType()
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error CW02 Cannot have a const function.}
+		throw new IllegalArgumentException("CW02");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2023/06/05
 	 */
 	@Override

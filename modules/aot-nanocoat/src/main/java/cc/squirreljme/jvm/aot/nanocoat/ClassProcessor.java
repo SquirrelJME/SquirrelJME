@@ -141,7 +141,7 @@ public class ClassProcessor
 		
 		// Process field source details outside the class struct
 		try (CStructVariableBlock struct = this.out.structVariableSet(
-			CModifiedType.of(CBasicModifier.CONST, CBasicType.SJME_NANOFIELDS),
+			CBasicType.SJME_NANOFIELDS.constType(),
 			this.fieldsIdentifier))
 		{
 			// Field count

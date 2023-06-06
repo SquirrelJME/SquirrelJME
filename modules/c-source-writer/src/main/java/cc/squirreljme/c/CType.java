@@ -19,6 +19,17 @@ import java.util.List;
 public interface CType
 {
 	/**
+	 * Gets the type as a constant.
+	 * 
+	 * @return The constant version of this type.
+	 * @throws IllegalArgumentException If this would not make a valid const
+	 * type.
+	 * @since 2023/06/06
+	 */
+	CType constType()
+		throws IllegalArgumentException;
+	
+	/**
 	 * Returns the type that would be used if this were de-referenced.
 	 * 
 	 * @return The de-referenced type.
