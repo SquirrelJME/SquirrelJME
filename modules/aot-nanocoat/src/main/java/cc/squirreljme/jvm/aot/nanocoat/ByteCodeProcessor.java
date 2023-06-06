@@ -290,7 +290,7 @@ public class ByteCodeProcessor
 		__block.variableDeclare(null,
 			CPrimitiveType.SJME_NANOFRAME.pointerType(), "current");
 		__block.variableDeclare(null,
-			CPrimitiveType.JBOOLEAN, "tmpBoolean");
+			CPrimitiveType.UINT8_T, "tmpBoolean");
 		
 		// Set known variables
 		__block.variableAssign("current", "stack->top");

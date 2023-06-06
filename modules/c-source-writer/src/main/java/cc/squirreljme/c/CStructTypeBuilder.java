@@ -9,27 +9,12 @@
 
 package cc.squirreljme.c;
 
-import net.multiphasicapps.tac.TestRunnable;
-
 /**
- * Tests function pointers.
+ * Builder for struct types.
  *
- * @since 2023/06/05
+ * @since 2023/06/06
  */
-public class TestFunctionPointer
-	extends TestRunnable
+public final class CStructTypeBuilder
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/05
-	 */
-	@Override
-	public void test()
-	{
-		this.secondary("intboopsqueak",
-			CFunctionType.of(CIdentifier.of("boop"),
-			CPrimitiveType.INT32_T,
-			CVariable.of(CPrimitiveType.UINT8_T, "squeak"))
-				.pointerType().tokens());
-	}
+	
 }

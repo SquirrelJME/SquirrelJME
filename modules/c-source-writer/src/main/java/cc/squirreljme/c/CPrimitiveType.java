@@ -26,62 +26,23 @@ public enum CPrimitiveType
 	/** Void. */
 	VOID("void"),
 	
-	/** Boolean. */
-	JBOOLEAN("jboolean"),
-	
 	/** Signed Byte. */
-	JBYTE("jbyte"),
+	INT8_T("int8_t"),
+	
+	/** Unsigned byte. */
+	UINT8_T("uint8_t"),
 	
 	/** Signed Short. */
-	JSHORT("jshort"),
+	INT16_T("int16_t"),
 	
-	/** Character. */
-	JCHAR("jchar"),
+	/** Unsigned short. */
+	UINT16_T("uint16_t"),
 	
-	/** Integer. */
-	JINT("jint"),
+	/** Signed Integer. */
+	INT32_T("int32_t"),
 	
-	/** Long. */
-	JLONG("sjme_jlong"),
-	
-	/** Float. */
-	JFLOAT("sjme_jfloat"),
-	
-	/** Double. */
-	JDOUBLE("sjme_jdouble"),
-	
-	/** Class. */
-	JCLASS("sjme_jclass"),
-	
-	/** Object. */
-	JOBJECT("sjme_jobject"),
-	
-	/** String. */
-	JSTRING("sjme_jstring"),
-	
-	/** Field. */
-	JFIELD("sjme_jfield"),
-	
-	/** Method. */
-	JMETHOD("sjme_jmethod"),
-	
-	/** The NanoCoat state. */
-	SJME_NANOSTATE("sjme_nanostate"),
-	
-	/** A NanoCoat thread. */
-	SJME_NANOTHREAD("sjme_nanothread"),
-	
-	/** A NanoCoat resource. */
-	SJME_NANORESOURCE("sjme_nanoresource"),
-	
-	/** Field information. */
-	SJME_NANOFIELDS("sjme_nanofields"),
-	
-	/** Method information. */
-	SJME_NANOMETHODS("sjme_nanomethods"),
-	
-	/** Stack frame. */
-	SJME_NANOFRAME("sjme_nanoframe"),
+	/** Unsigned Integer. */
+	UINT32_T("uint32_t"),
 	
 	/* End. */
 	;
