@@ -74,7 +74,7 @@ public class CVariable
 	 */
 	public CVariable extern()
 	{
-		// If the modifier is already of the extern, then nothing needs to be
+		// If the modifier is already extern, then nothing needs to be
 		// done
 		if (this.modifier instanceof CExternModifier)
 			return this;

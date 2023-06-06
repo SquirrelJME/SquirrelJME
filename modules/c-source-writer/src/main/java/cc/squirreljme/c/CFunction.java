@@ -48,8 +48,15 @@ public class CFunction
 		// Check arguments for validity
 		__args = __args.clone();
 		for (CVariable var : __args)
+		{
 			if (var == null)
 				throw new NullPointerException("NARG");
+			
+			// {@squirreljme.error CW0d An argument variable type cannot be
+			// extern.}
+			else if (var.modifier instanceof CExternModifier)
+				throw new IllegalArgumentException("CW0d");
+		}
 		
 		// Setup
 		this.name = __name;

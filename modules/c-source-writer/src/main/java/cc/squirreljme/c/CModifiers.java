@@ -123,6 +123,7 @@ public class CModifiers
 		
 		// Build modifiers accordingly
 		boolean hasExtern = false;
+		boolean hasStatic = false;
 		Set<CModifier> build = new LinkedHashSet<>();
 		
 		// Put all existing modifiers onto the queue for processing
@@ -147,6 +148,14 @@ public class CModifiers
 				queue.addFirst(((CExternModifier)modifier).wrapped);
 			}
 			
+			// Is there a static modifier?
+			else if (modifier instanceof CStaticModifier)
+			{
+				hasStatic = true;
+				
+				queue.addFirst(((CStaticModifier)modifier).wrapped);
+			}
+			
 			// Multiple modifiers
 			else if (modifier instanceof CModifiers)
 			{
@@ -164,12 +173,19 @@ public class CModifiers
 				build.add(modifier);
 		}
 		
+		// {@squirreljme.error CW0g A modifier cannot be both static and
+		// extern.}
+		if (hasStatic && hasExtern)
+			throw new IllegalArgumentException("CW0g");
+		
 		// This cannot technically be empty
 		if (build.isEmpty())
 		{
 			// If this is just extern
 			if (hasExtern)
 				return CExternModifier.of(null);
+			else if (hasStatic)
+				return CStaticModifier.of(null);
 			
 			// Otherwise, there is no modifier here
 			return null;
@@ -178,6 +194,10 @@ public class CModifiers
 		// If there is an extern modifier somewhere, we wrap the result with
 		// one so that extern is always first
 		CModifiers result = new CModifiers(build);
-		return (hasExtern ? CExternModifier.of(result) : result);
+		if (hasExtern)
+			return CExternModifier.of(result);
+		else if (hasStatic)
+			return CStaticModifier.of(result);
+		return result;
 	}
 }
