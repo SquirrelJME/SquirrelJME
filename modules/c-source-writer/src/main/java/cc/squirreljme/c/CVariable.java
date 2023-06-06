@@ -9,8 +9,6 @@
 
 package cc.squirreljme.c;
 
-import java.util.Objects;
-
 /**
  * C variable type.
  *
