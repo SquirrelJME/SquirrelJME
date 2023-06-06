@@ -220,6 +220,17 @@ public class CPointerType
 		// pointer levels based on that for cache purposes, possibly anyway
 		if (!(__type instanceof CBasicType))
 		{
+			// There are restrictions as to what can get a pointer
+			if (__type instanceof CModifiedType)
+			{
+				// {@squirreljme.error CW0i Cannot pointer an extern or
+				// static type.}
+				CModifiedType modifiedType = (CModifiedType)__type;
+				if (modifiedType.modifier instanceof CExternModifier ||
+					modifiedType.modifier instanceof CStaticModifier)
+					throw new IllegalArgumentException("CW0i");
+			}
+			
 			// If the original type has a pointer then normalize it
 			if (__type.pointerLevel() != 0)
 				return CPointerType.of(__type.rootType(),

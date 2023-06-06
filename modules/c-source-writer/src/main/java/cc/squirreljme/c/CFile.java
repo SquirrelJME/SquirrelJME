@@ -913,7 +913,7 @@ public class CFile
 			
 		// A type
 		else if (__token instanceof CType)
-			return this.token(((CType)__token).token());
+			return this.tokens(((CType)__token).tokens());
 		
 		// Modifiers
 		else if (__token instanceof CModifiers)
@@ -1088,8 +1088,8 @@ public class CFile
 			__modifier.modifierTokens());
 		
 		if (modifiers == null || modifiers.isEmpty())
-			return this.tokens(__type.token(), __name);
-		return this.tokens(modifiers, __type.token(), __name);
+			return this.tokens(__type.tokens(), __name);
+		return this.tokens(modifiers, __type.tokens(), __name);
 	}
 	
 	/**

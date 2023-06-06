@@ -20,9 +20,28 @@ import java.util.List;
 public final class CModifiedType
 	implements CType
 {
-	private CModifiedType()
+	/** The modifier for the type. */
+	protected final CModifier modifier;
+	
+	/** The type. */
+	protected final CType type;
+	
+	/**
+	 * Initializes the modified type.
+	 * 
+	 * @param __modifier The modifier to use.
+	 * @param __type The type to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/05
+	 */
+	private CModifiedType(CModifier __modifier, CType __type)
+		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__modifier == null || __type == null)
+			throw new NullPointerException("NARG");
+		
+		this.modifier = __modifier;
+		this.type = __type;
 	}
 	
 	/**
@@ -33,7 +52,13 @@ public final class CModifiedType
 	public CType dereferenceType()
 		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		// {@squirreljme.error CW0j Not a pointer that can be de-referenced.}
+		if (this.pointerLevel() == 0)
+			throw new IllegalArgumentException("CW0j");
+		
+		// We might be a non-const pointer to a const, in which case if we
+		// dereference our own pointer we get the type we are pointing to
+		return this.type.dereferenceType();
 	}
 	
 	/**
@@ -43,7 +68,14 @@ public final class CModifiedType
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw Debugging.todo();
+		if (__o == this)
+			return true;
+		if (!(__o instanceof CModifiedType))
+			return false;
+		
+		CModifiedType o = (CModifiedType)__o;
+		return this.type.equals(o.type) &&
+			this.modifier.equals(o.modifier);
 	}
 	
 	/**
@@ -53,7 +85,8 @@ public final class CModifiedType
 	@Override
 	public int hashCode()
 	{
-		throw Debugging.todo();
+		return this.modifier.hashCode() ^
+			this.type.hashCode();
 	}
 	
 	/**
@@ -63,7 +96,7 @@ public final class CModifiedType
 	@Override
 	public int pointerLevel()
 	{
-		throw Debugging.todo();
+		return this.type.pointerLevel();
 	}
 	
 	/**
@@ -74,7 +107,7 @@ public final class CModifiedType
 	public CType pointerType()
 		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		return CPointerType.of(this, 1);
 	}
 	
 	/**
@@ -84,7 +117,14 @@ public final class CModifiedType
 	@Override
 	public CType rootType()
 	{
-		throw Debugging.todo();
+		// If we are not a pointer, then the root type is ourselves as we might
+		// be const or something else
+		if (this.pointerLevel() == 0)
+			return this;
+		
+		// Otherwise we will be de-referencing pointers constantly, so as such
+		// we might lose a modifier such as const
+		return this.type.rootType();
 	}
 	
 	/**
@@ -122,9 +162,20 @@ public final class CModifiedType
 		{
 			CModifiedType modifiedType = (CModifiedType)__type;
 			return CModifiedType.of(CModifiers.of(__modifier,
-				modifiedType.modifiers), modifiedType.baseType);
+				modifiedType.modifier), modifiedType.type);
 		}
 		
-		throw Debugging.todo();
+		// Functions are limited in what they can become
+		if (__type instanceof CFunction)
+		{
+			// {@squirreljme.error CW0h Functions may only be static.}
+			if (!CStaticModifier.STATIC.equals(__modifier))
+				throw new IllegalArgumentException("CW0h");
+			
+			return new CModifiedType(CStaticModifier.STATIC, __type);
+		}
+		
+		// Build modified type
+		return new CModifiedType(__modifier, __type);
 	}
 }

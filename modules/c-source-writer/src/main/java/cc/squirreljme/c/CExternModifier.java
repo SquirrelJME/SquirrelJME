@@ -18,7 +18,7 @@ public final class CExternModifier
 	extends __SinglePrefixModifier__
 {
 	/** Constant for only extern. */
-	private static final CExternModifier _JUST_EXTERN =
+	public static final CExternModifier EXTERN =
 		new CExternModifier(null);
 	
 	/**
@@ -55,7 +55,7 @@ public final class CExternModifier
 		
 		// If there is no target modifier, just get the extern one
 		if (__modifier == null)
-			return CExternModifier._JUST_EXTERN;
+			return CExternModifier.EXTERN;
 		
 		// Otherwise wrap it
 		return new CExternModifier(__modifier);

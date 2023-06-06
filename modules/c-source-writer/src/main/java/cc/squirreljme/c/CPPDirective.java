@@ -19,6 +19,15 @@ public enum CPPDirective
 	/** Define macro. */
 	DEFINE("define"),
 	
+	/** Else if. */
+	ELIF("elif"),
+	
+	/** Else. */
+	ELSE("else"),
+	
+	/** End if. */
+	ENDIF("endif"),
+	
 	/** Check something. */
 	IF("if"),
 	

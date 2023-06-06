@@ -113,12 +113,9 @@ public class CModifiers
 	public static CModifier of(CModifier... __of)
 		throws NullPointerException
 	{
-		if (__of == null || __of.length == 0)
-			throw new NullPointerException("NARG");
-		
 		// If there is just a single modifier, there is no real point in doing
 		// much to wrap them because it will only ever contain a single one
-		if (__of.length == 1)
+		if (__of != null && __of.length == 1)
 			return __of[0];
 		
 		// Build modifiers accordingly
@@ -127,7 +124,9 @@ public class CModifiers
 		Set<CModifier> build = new LinkedHashSet<>();
 		
 		// Put all existing modifiers onto the queue for processing
-		Deque<CModifier> queue = new ArrayDeque<>(Arrays.asList(__of));
+		Deque<CModifier> queue = new ArrayDeque<>();
+		if (__of != null)
+			queue.addAll(Arrays.asList(__of));
 		
 		// Keep processing the queue
 		while (!queue.isEmpty())
@@ -145,7 +144,9 @@ public class CModifiers
 				hasExtern = true;
 				
 				// Extern has a target, so process that next
-				queue.addFirst(((CExternModifier)modifier).wrapped);
+				CExternModifier sub = (CExternModifier)modifier;
+				if (sub.wrapped != null)
+					queue.addFirst(sub.wrapped);
 			}
 			
 			// Is there a static modifier?
@@ -153,7 +154,9 @@ public class CModifiers
 			{
 				hasStatic = true;
 				
-				queue.addFirst(((CStaticModifier)modifier).wrapped);
+				CStaticModifier sub = (CStaticModifier)modifier;
+				if (sub.wrapped != null)
+					queue.addFirst(sub.wrapped);
 			}
 			
 			// Multiple modifiers
@@ -178,14 +181,16 @@ public class CModifiers
 		if (hasStatic && hasExtern)
 			throw new IllegalArgumentException("CW0g");
 		
-		// This cannot technically be empty
+		// There are no actual modifiers, likely other than extern/static
 		if (build.isEmpty())
 		{
-			// If this is just extern
+			// Only just extern
 			if (hasExtern)
-				return CExternModifier.of(null);
+				return CExternModifier.EXTERN;
+			
+			// Only just static
 			else if (hasStatic)
-				return CStaticModifier.of(null);
+				return CStaticModifier.STATIC;
 			
 			// Otherwise, there is no modifier here
 			return null;

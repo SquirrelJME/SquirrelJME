@@ -19,9 +19,6 @@ import java.util.Objects;
 public class CVariable
 	implements CDeclarable, CDefinable
 {
-	/** Modifier for the variable. */
-	public final CModifier modifier;
-	
 	/** The type of this variable. */
 	public final CType type;
 	
@@ -31,19 +28,17 @@ public class CVariable
 	/**
 	 * Initializes a variable.
 	 * 
-	 * @param __modifier The variable modifier.
 	 * @param __type The type used.
 	 * @param __name The name of the variable.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/30
 	 */
-	private CVariable(CModifier __modifier, CType __type, String __name)
+	private CVariable(CType __type, String __name)
 		throws NullPointerException
 	{
 		if (__type == null || __name == null)
 			throw new NullPointerException("NARG");
 		
-		this.modifier = __modifier;
 		this.type = __type;
 		this.name = __name;
 	}
@@ -61,8 +56,7 @@ public class CVariable
 			return false;
 		
 		CVariable o = (CVariable)__o;
-		return Objects.equals(this.modifier, o.modifier) &&
-			this.name.equals(o.name) &&
+		return this.name.equals(o.name) &&
 			this.type.equals(o.type);
 	}
 	
@@ -74,14 +68,12 @@ public class CVariable
 	 */
 	public CVariable extern()
 	{
-		// If the modifier is already extern, then nothing needs to be
-		// done
-		if (this.modifier instanceof CExternModifier)
+		// If the type is already modified, we need not do anything
+		if (this.isExtern())
 			return this;
 		
 		// Otherwise setup new variable
-		return CVariable.of(CExternModifier.of(this.modifier),
-			this.type, this.name);
+		return CVariable.of(CExternModifier.EXTERN, this.type, this.name);
 	}
 	
 	/**
@@ -91,8 +83,51 @@ public class CVariable
 	@Override
 	public int hashCode()
 	{
-		return Objects.hashCode(this.modifier) ^
-			this.name.hashCode() ^ this.type.hashCode();
+		return this.name.hashCode() ^ this.type.hashCode();
+	}
+	
+	/**
+	 * Returns whether this is extern.
+	 * 
+	 * @return If this is {@code extern}.
+	 * @since 2023/06/05
+	 */
+	public boolean isExtern()
+	{
+		// We need to figure out if this is extern
+		CType type = this.type;
+		if (type instanceof CModifiedType)
+		{
+			CModifiedType modifiedType = (CModifiedType)type;
+			
+			// Already extern?
+			return modifiedType.modifier instanceof CExternModifier;
+		}
+		
+		// Not extern
+		return false;
+	}
+	
+	/**
+	 * Returns if this variable is static.
+	 * 
+	 * @return If this variable is static.
+	 * @since 2023/06/05
+	 */
+	public boolean isStatic()
+	{
+		// We need to figure out if this is extern
+		CType type = this.type;
+		if (type instanceof CModifiedType)
+		{
+			CModifiedType modifiedType = (CModifiedType)type;
+			
+			// Already static?
+			return modifiedType.modifier instanceof CStaticModifier;
+		}
+		
+		// Not extern
+		return false;
 	}
 	
 	/**
@@ -124,6 +159,6 @@ public class CVariable
 		String __name)
 		throws NullPointerException
 	{
-		return new CVariable(__modifier, __type, __name);
+		return new CVariable(CModifiedType.of(__modifier, __type), __name);
 	}
 }

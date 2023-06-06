@@ -94,7 +94,8 @@ abstract class __SinglePrefixModifier__
 		{
 			List<String> build = new ArrayList<>();
 			build.add(this._keyword);
-			build.addAll(this.wrapped.modifierTokens());
+			if (this.wrapped != null)
+				build.addAll(this.wrapped.modifierTokens());
 			
 			rv = UnmodifiableList.of(build);
 			this._tokens = new WeakReference<>(rv);

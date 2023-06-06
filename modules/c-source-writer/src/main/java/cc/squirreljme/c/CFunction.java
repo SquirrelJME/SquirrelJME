@@ -53,8 +53,8 @@ public class CFunction
 				throw new NullPointerException("NARG");
 			
 			// {@squirreljme.error CW0d An argument variable type cannot be
-			// extern.}
-			else if (var.modifier instanceof CExternModifier)
+			// extern or static.}
+			else if (var.isExtern() || var.isStatic())
 				throw new IllegalArgumentException("CW0d");
 		}
 		

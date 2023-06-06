@@ -51,7 +51,7 @@ public class CPPBlock
 			throw new IllegalStateException("CW08");
 		
 		// Add line
-		this.preprocessorLine("else");
+		this.preprocessorLine(CPPDirective.ELSE);
 		
 		// We cannot else anymore
 		this._finalElse = true;
@@ -77,7 +77,7 @@ public class CPPBlock
 			throw new IllegalStateException("CW08");
 		
 		// Add line
-		this.preprocessorLine("elif", __condition);
+		this.preprocessorLine(CPPDirective.ELIF, __condition);
 	}
 	
 	/**
@@ -89,6 +89,6 @@ public class CPPBlock
 		throws IOException
 	{
 		// Just end with this endif
-		this.preprocessorLine("endif");
+		this.preprocessorLine(CPPDirective.ENDIF);
 	}
 }

@@ -18,7 +18,7 @@ public final class CStaticModifier
 	extends __SinglePrefixModifier__
 {
 	/** Constant for only static. */
-	private static final CStaticModifier _JUST_STATIC =
+	public static final CStaticModifier STATIC =
 		new CStaticModifier(null);
 	
 	/**
@@ -53,7 +53,7 @@ public final class CStaticModifier
 		
 		// If there is no target modifier, just get the static one
 		if (__modifier == null)
-			return CStaticModifier._JUST_STATIC;
+			return CStaticModifier.STATIC;
 		
 		// Otherwise wrap it
 		return new CStaticModifier(__modifier);
