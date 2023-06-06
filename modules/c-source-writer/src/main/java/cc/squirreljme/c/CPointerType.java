@@ -15,6 +15,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * Represents a pointer type.
@@ -37,8 +38,8 @@ public class CPointerType
 	/** The number of pointers used. */
 	protected final int numPointers;
 	
-	/** The string representation of this type. */
-	private volatile Reference<String> _string;
+	/** The token representation of this type. */
+	private volatile Reference<List<String>> _tokens;
 	
 	/**
 	 * Initializes the pointer type.
@@ -139,19 +140,57 @@ public class CPointerType
 	 * @since 2023/05/29
 	 */
 	@Override
-	public String token()
+	public List<String> tokens()
 	{
-		Reference<String> ref = this._string;
-		String rv;
+		Reference<List<String>> ref = this._tokens;
+		List<String> rv;
 		
 		if (ref == null || (rv = ref.get()) == null)
 		{
-			StringBuilder sb = new StringBuilder(this.root.token());
-			for (int i = 0, n = this.numPointers; i < n; i++)
-				sb.append('*');
+			List<String> build = new ArrayList<>();
 			
-			rv = sb.toString();
-			this._string = new WeakReference<>(rv);
+			// Functions are a bit different
+			CType root = this.root;
+			if (root instanceof CFunction)
+			{
+				CFunction function = (CFunction)root;
+				
+				// Return type, all the tokens used for it
+				build.addAll(function.returnType.tokens());
+				
+				// Add function surround
+				build.add("(");
+				for (int i = 0, n = this.numPointers; i < n; i++)
+					build.add("*");
+				build.add(function.name.identifier);
+				build.add(")");
+				
+				// Add all arguments
+				build.add("(");
+				List<CVariable> arguments = function.arguments;
+				for (int i = 0, n = arguments.size(); i < n; i++)
+				{
+					if (i > 0)
+						build.add(",");
+					
+					// We do not care about the parameter names for functions,
+					// only their types
+					build.addAll(arguments.get(i).type.tokens());
+				}
+				build.add(")");
+			}
+			
+			// Otherwise a simple pointer type (hopefully)
+			else
+			{
+				build.addAll(root.tokens());
+				for (int i = 0, n = this.numPointers; i < n; i++)
+					build.add("*");
+			}
+			
+			// Build and cache
+			rv = UnmodifiableList.of(build);
+			this._tokens = new WeakReference<>(rv);
 		}
 			
 		return rv;
@@ -178,10 +217,17 @@ public class CPointerType
 			throw new IllegalArgumentException("CW04");
 		
 		// If the root type is not a basic type, we always want to classify
-		// pointer levels based on that for cache purposes
+		// pointer levels based on that for cache purposes, possibly anyway
 		if (!(__type instanceof CBasicType))
-			return CPointerType.of(__type.rootType(),
-				__type.pointerLevel() + __numPointers);
+		{
+			// If the original type has a pointer then normalize it
+			if (__type.pointerLevel() != 0)
+				return CPointerType.of(__type.rootType(),
+					__type.pointerLevel() + __numPointers);
+			
+			// Probably an array or function pointer
+			return new CPointerType(__type, __numPointers);
+		}
 		
 		// We always operate on the basic type
 		CBasicType basicType = (CBasicType)__type;

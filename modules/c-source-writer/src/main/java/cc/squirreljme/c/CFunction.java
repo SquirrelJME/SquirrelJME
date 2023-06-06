@@ -19,7 +19,7 @@ import net.multiphasicapps.collections.UnmodifiableList;
  * @since 2023/06/04
  */
 public class CFunction
-	implements CDeclarable, CDefinable
+	implements CDeclarable, CDefinable, CType
 {
 	/** The name of the function. */
 	public final CIdentifier name;
@@ -39,7 +39,7 @@ public class CFunction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/04
 	 */
-	CFunction(CIdentifier __name, CType __rVal, CVariable... __args)
+	private CFunction(CIdentifier __name, CType __rVal, CVariable... __args)
 		throws NullPointerException
 	{
 		if (__name == null)
@@ -53,8 +53,62 @@ public class CFunction
 		
 		// Setup
 		this.name = __name;
-		this.returnType = __rVal;
+		this.returnType = (__rVal == null ? CBasicType.VOID : __rVal);
 		this.arguments = UnmodifiableList.of(Arrays.asList(__args));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/05
+	 */
+	@Override
+	public CType dereferenceType()
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error CW0c Cannot dereference a function.}
+		throw new IllegalArgumentException("CW0c");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/05
+	 */
+	@Override
+	public int pointerLevel()
+	{
+		return 0;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/05
+	 */
+	@Override
+	public CType pointerType()
+		throws IllegalArgumentException
+	{
+		return CPointerType.of(this, 1);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/05
+	 */
+	@Override
+	public CType rootType()
+	{
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/05
+	 */
+	@Override
+	public List<String> tokens()
+	{
+		// {@squirreljme.error CW0b Cannot get the tokens of a function.}
+		throw new IllegalStateException("CW0b");
 	}
 	
 	/**

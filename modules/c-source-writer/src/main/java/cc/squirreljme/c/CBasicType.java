@@ -9,6 +9,10 @@
 
 package cc.squirreljme.c;
 
+import java.util.Arrays;
+import java.util.List;
+import net.multiphasicapps.collections.UnmodifiableList;
+
 /**
  * Represents a basic type within NanoCoat.
  *
@@ -80,8 +84,8 @@ public enum CBasicType
 	/* End. */
 	;
 	
-	/** The token used. */
-	protected final String token;
+	/** The single token used. */
+	protected final List<String> token;
 	
 	/**
 	 * Initializes the basic type.
@@ -96,7 +100,7 @@ public enum CBasicType
 		if (__token == null)
 			throw new NullPointerException("NARG");
 		
-		this.token = __token;
+		this.token = UnmodifiableList.of(Arrays.asList(__token));
 	}
 	
 	/**
@@ -147,7 +151,7 @@ public enum CBasicType
 	 * @since 2023/05/29
 	 */
 	@Override
-	public String token()
+	public List<String> tokens()
 	{
 		return this.token;
 	}

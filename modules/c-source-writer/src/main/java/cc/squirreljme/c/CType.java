@@ -9,6 +9,8 @@
 
 package cc.squirreljme.c;
 
+import java.util.List;
+
 /**
  * Represents a C type.
  *
@@ -53,10 +55,10 @@ public interface CType
 	CType rootType();
 	
 	/**
-	 * Returns the string representation of the type.
+	 * Returns the token representation of the type.
 	 * 
-	 * @return The string representation of the type.
+	 * @return The token representation of the type.
 	 * @since 2023/05/29
 	 */
-	String token();
+	List<String> tokens();
 }
