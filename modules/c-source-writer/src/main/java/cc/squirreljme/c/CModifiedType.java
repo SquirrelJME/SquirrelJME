@@ -10,7 +10,11 @@
 package cc.squirreljme.c;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * Represents a type which is modified by a modifier.
@@ -25,6 +29,9 @@ public final class CModifiedType
 	
 	/** The type. */
 	protected final CType type;
+	
+	/** The tokens that make up this modified type. */
+	private volatile Reference<List<String>> _tokens;
 	
 	/**
 	 * Initializes the modified type.
@@ -53,7 +60,7 @@ public final class CModifiedType
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error CW0j Not a pointer that can be de-referenced.}
-		if (this.pointerLevel() == 0)
+		if (!this.isPointer())
 			throw new IllegalArgumentException("CW0j");
 		
 		// We might be a non-const pointer to a const, in which case if we
@@ -94,9 +101,9 @@ public final class CModifiedType
 	 * @since 2023/06/05
 	 */
 	@Override
-	public int pointerLevel()
+	public boolean isPointer()
 	{
-		return this.type.pointerLevel();
+		return this.type.isPointer();
 	}
 	
 	/**
@@ -107,24 +114,7 @@ public final class CModifiedType
 	public CType pointerType()
 		throws IllegalArgumentException
 	{
-		return CPointerType.of(this, 1);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/05
-	 */
-	@Override
-	public CType rootType()
-	{
-		// If we are not a pointer, then the root type is ourselves as we might
-		// be const or something else
-		if (this.pointerLevel() == 0)
-			return this;
-		
-		// Otherwise we will be de-referencing pointers constantly, so as such
-		// we might lose a modifier such as const
-		return this.type.rootType();
+		return CPointerType.of(this);
 	}
 	
 	/**
@@ -134,7 +124,38 @@ public final class CModifiedType
 	@Override
 	public List<String> tokens()
 	{
-		throw Debugging.todo();
+		Reference<List<String>> ref = this._tokens;
+		List<String> rv;
+		
+		// Build tokens?
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			List<String> build = new ArrayList<>();
+			
+			CModifier modifier = this.modifier;
+			CType type = this.type;
+			
+			// These modifiers are prefixes on the left unless the type is
+			// a pointer, in which is appears on the left
+			if (modifier instanceof __SinglePrefixModifier__ &&
+				!(type instanceof CPointerType))
+			{
+				build.addAll(modifier.tokens());
+				build.addAll(type.tokens());
+			}
+			
+			// Otherwise they attach to the right side (postfix)
+			else
+			{
+				build.addAll(type.tokens());
+				build.addAll(modifier.tokens());
+			}
+			
+			rv = UnmodifiableList.of(build);
+			this._tokens = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
 	/**

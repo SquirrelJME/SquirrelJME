@@ -24,5 +24,5 @@ public interface CModifier
 	 * @return The tokens used for the modifier.
 	 * @since 2023/05/29
 	 */
-	List<String> modifierTokens();
+	List<String> tokens();
 }

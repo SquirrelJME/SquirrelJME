@@ -85,7 +85,7 @@ abstract class __SinglePrefixModifier__
 	 * @since 2023/06/05
 	 */
 	@Override
-	public List<String> modifierTokens()
+	public List<String> tokens()
 	{
 		Reference<List<String>> ref = this._tokens;
 		List<String> rv;
@@ -93,14 +93,30 @@ abstract class __SinglePrefixModifier__
 		if (ref == null || (rv = ref.get()) == null)
 		{
 			List<String> build = new ArrayList<>();
-			build.add(this._keyword);
-			if (this.wrapped != null)
-				build.addAll(this.wrapped.modifierTokens());
+			this.__buildTokens(build);
 			
 			rv = UnmodifiableList.of(build);
 			this._tokens = new WeakReference<>(rv);
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Builds tokens that represent the modifier.
+	 * 
+	 * @param __result The result.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/05
+	 */
+	void __buildTokens(List<String> __result)
+		throws NullPointerException
+	{
+		if (__result == null)
+			throw new NullPointerException("NARG");
+		
+		__result.add(this._keyword);
+		if (this.wrapped != null)
+			__result.addAll(this.wrapped.tokens());
 	}
 }

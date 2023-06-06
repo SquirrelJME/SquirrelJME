@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.collections.UnmodifiableList;
@@ -81,9 +82,31 @@ public class CFunction
 	 * @since 2023/06/05
 	 */
 	@Override
-	public int pointerLevel()
+	public boolean equals(Object __o)
 	{
-		return 0;
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/05
+	 */
+	@Override
+	public int hashCode()
+	{
+		return this.name.hashCode() ^
+			this.returnType.hashCode() ^
+			this.arguments.hashCode();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/05
+	 */
+	@Override
+	public boolean isPointer()
+	{
+		return false;
 	}
 	
 	/**
@@ -94,17 +117,7 @@ public class CFunction
 	public CType pointerType()
 		throws IllegalArgumentException
 	{
-		return CPointerType.of(this, 1);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/05
-	 */
-	@Override
-	public CType rootType()
-	{
-		return this;
+		return CPointerType.of(this);
 	}
 	
 	/**

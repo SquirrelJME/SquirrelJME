@@ -917,7 +917,7 @@ public class CFile
 		
 		// Modifiers
 		else if (__token instanceof CModifiers)
-			return this.token(((CModifiers)__token).modifierTokens());
+			return this.token(((CModifiers)__token).tokens());
 		
 		// Function argument
 		else if (__token instanceof CVariable)
@@ -1085,7 +1085,7 @@ public class CFile
 		
 		// Without modifiers
 		List<String> modifiers = (__modifier == null ? null :
-			__modifier.modifierTokens());
+			__modifier.tokens());
 		
 		if (modifiers == null || modifiers.isEmpty())
 			return this.tokens(__type.tokens(), __name);

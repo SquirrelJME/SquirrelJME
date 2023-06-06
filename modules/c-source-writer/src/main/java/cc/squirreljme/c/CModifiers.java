@@ -15,10 +15,8 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Set;
 import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
@@ -42,13 +40,13 @@ public class CModifiers
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	private CModifiers(Set<CModifier> __of)
+	private CModifiers(List<CModifier> __of)
 		throws NullPointerException
 	{
 		if (__of == null || __of.isEmpty())
 			throw new NullPointerException("NARG");
 		
-		this.modifiers = UnmodifiableList.of(new ArrayList<>(__of));
+		this.modifiers = UnmodifiableList.of(__of);
 	}
 	
 	/**
@@ -81,7 +79,7 @@ public class CModifiers
 	 * @since 2023/05/29
 	 */
 	@Override
-	public List<String> modifierTokens()
+	public List<String> tokens()
 	{
 		Reference<List<String>> ref = this._tokens;
 		List<String> rv;
@@ -90,7 +88,7 @@ public class CModifiers
 		{
 			List<String> build = new ArrayList<>();
 			for (CModifier modifier : this.modifiers)
-				build.addAll(modifier.modifierTokens());
+				build.addAll(modifier.tokens());
 			
 			rv = UnmodifiableList.of(build);
 			this._tokens = new WeakReference<>(rv);
@@ -103,11 +101,12 @@ public class CModifiers
 	 * Initializes multiple modifiers.
 	 * 
 	 * @param __of The modifiers to use.
+	 * @throws IllegalArgumentException If the type would be invalid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
 	public static CModifier of(CModifier... __of)
-		throws NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
 		// If there is just a single modifier, there is no real point in doing
 		// much to wrap them because it will only ever contain a single one
@@ -117,7 +116,7 @@ public class CModifiers
 		// Build modifiers accordingly
 		boolean hasExtern = false;
 		boolean hasStatic = false;
-		Set<CModifier> build = new LinkedHashSet<>();
+		List<CModifier> build = new ArrayList<>();
 		
 		// Put all existing modifiers onto the queue for processing
 		Deque<CModifier> queue = new ArrayDeque<>();
@@ -169,7 +168,13 @@ public class CModifiers
 			
 			// Single modifier, most likely a basic or custom one
 			else
+			{
+				// {@squirreljme.error CW0l Duplicate modifier. (The modifier)}
+				if (build.contains(modifier))
+					throw new IllegalArgumentException("CW0l " + modifier);
+				
 				build.add(modifier);
+			}
 		}
 		
 		// {@squirreljme.error CW0g A modifier cannot be both static and

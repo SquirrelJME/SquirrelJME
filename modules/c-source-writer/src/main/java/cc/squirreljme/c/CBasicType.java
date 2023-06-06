@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.collections.UnmodifiableList;
@@ -117,12 +118,12 @@ public enum CBasicType
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2023/05/29
+	 * @since 2023/06/05
 	 */
 	@Override
-	public int pointerLevel()
+	public boolean isPointer()
 	{
-		return 0;
+		return false;
 	}
 	
 	/**
@@ -133,17 +134,7 @@ public enum CBasicType
 	public CType pointerType()
 		throws IllegalArgumentException
 	{
-		return CPointerType.of(this, 1);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/05/29
-	 */
-	@Override
-	public CType rootType()
-	{
-		return this;
+		return CPointerType.of(this);
 	}
 	
 	/**

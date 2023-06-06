@@ -27,10 +27,10 @@ public class TestFunctionPointer
 	@Override
 	public void test()
 	{
-		CType a = CFunction.of(CIdentifier.of("boop"),
+		this.secondary("intboopsqueak",
+			CFunction.of(CIdentifier.of("boop"),
 			CBasicType.JINT,
-			CVariable.of(CBasicType.JBOOLEAN, "squeak")).pointerType();
-		
-		Debugging.debugNote("Tokens: %s%n", a.tokens());
+			CVariable.of(CBasicType.JBOOLEAN, "squeak"))
+				.pointerType().tokens());
 	}
 }

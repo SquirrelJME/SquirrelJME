@@ -29,12 +29,12 @@ public interface CType
 		throws IllegalArgumentException;
 	
 	/**
-	 * Returns the number of pointers this type has.
+	 * Is this a pointer type?
 	 * 
-	 * @return The number of pointers this type has.
-	 * @since 2023/05/29
+	 * @return If this is a pointer type.
+	 * @since 2023/05/05
 	 */
-	int pointerLevel();
+	boolean isPointer();
 	
 	/**
 	 * Gets the pointer of this type.
@@ -44,15 +44,6 @@ public interface CType
 	 */
 	CType pointerType()
 		throws IllegalArgumentException;
-	
-	/**
-	 * Returns the root type of this type, if this is a pointer then this
-	 * will be the non-pointer type or otherwise just the root type.
-	 * 
-	 * @return The root of this type without any pointers.
-	 * @since 2023/05/29
-	 */
-	CType rootType();
 	
 	/**
 	 * Returns the token representation of the type.
