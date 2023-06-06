@@ -159,4 +159,15 @@ public class CFunctionType
 	{
 		return new CFunctionType(__name, __rVal, __args);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/06
+	 */
+	@Override
+	List<String> __generateTokens(CTokenSet __set)
+		throws NullPointerException
+	{
+		throw Debugging.todo();
+	}
 }

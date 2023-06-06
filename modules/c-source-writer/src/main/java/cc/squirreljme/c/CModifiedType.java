@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -166,6 +167,17 @@ public final class CModifiedType
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/06
+	 */
+	@Override
+	List<String> __generateTokens(CTokenSet __set)
+		throws NullPointerException
+	{
+		throw Debugging.todo();
 	}
 	
 	/**
