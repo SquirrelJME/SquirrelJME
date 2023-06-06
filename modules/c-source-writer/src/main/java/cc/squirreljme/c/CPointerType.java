@@ -231,12 +231,15 @@ public class CPointerType
 					throw new IllegalArgumentException("CW0i");
 			}
 			
-			// If the original type has a pointer then normalize it
-			if (__type.pointerLevel() != 0)
+			// If the original type has a pointer then normalize it, but this
+			// must also be an actual pointer type because we can create a
+			// non-const pointer to a const.
+			if (__type instanceof CPointerType && __type.pointerLevel() != 0)
 				return CPointerType.of(__type.rootType(),
 					__type.pointerLevel() + __numPointers);
 			
-			// Probably an array or function pointer
+			// Probably an array, function pointer, or other modified type such
+			// as one that is const
 			return new CPointerType(__type, __numPointers);
 		}
 		

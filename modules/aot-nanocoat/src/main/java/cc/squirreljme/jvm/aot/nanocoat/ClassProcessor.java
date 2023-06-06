@@ -10,8 +10,8 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CArrayBlock;
-import cc.squirreljme.c.CBasicModifier;
 import cc.squirreljme.c.CBasicType;
+import cc.squirreljme.c.CModifiedType;
 import cc.squirreljme.c.CModifiers;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
@@ -141,7 +141,7 @@ public class ClassProcessor
 		
 		// Process field source details outside the class struct
 		try (CStructVariableBlock struct = this.out.structVariableSet(
-			CBasicModifier.CONST, CBasicType.SJME_NANOFIELDS,
+			CModifiedType.of(CBasicModifier.CONST, CBasicType.SJME_NANOFIELDS),
 			this.fieldsIdentifier))
 		{
 			// Field count

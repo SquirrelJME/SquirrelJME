@@ -29,10 +29,6 @@ import net.multiphasicapps.collections.UnmodifiableList;
 public class CModifiers
 	implements CModifier
 {
-	/** Extern const as it is very common. */
-	public static final CModifier EXTERN_CONST =
-		CExternModifier.of(CBasicModifier.CONST);
-	
 	/** All the modifiers. */
 	protected final List<CModifier> modifiers;
 	
