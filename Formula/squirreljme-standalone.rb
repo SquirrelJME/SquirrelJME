@@ -15,7 +15,7 @@ class SquirreljmeStandalone < Formula
   homepage 'https://squirreljme.cc/'
   url 'https://squirreljme.cc/tarball/squirreljme-src.tar.gz?name=squirreljme-src&uuid=trunk'
   version '0.3.0'
-  license 'GPL-3.0-or-later'
+  license 'MPL-2.0'
   head 'https://squirreljme.cc/', using: :fossil
 
   depends_on 'openjdk@11'
