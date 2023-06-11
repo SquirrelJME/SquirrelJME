@@ -17,6 +17,7 @@ import java.util.List;
  * @since 2023/05/29
  */
 public interface CType
+	extends CTokenizable
 {
 	/**
 	 * Gets the type as a constant.
@@ -55,15 +56,4 @@ public interface CType
 	 */
 	CType pointerType()
 		throws IllegalArgumentException;
-	
-	/**
-	 * Returns the token representation of the type.
-	 * 
-	 * @param __set The token set to use for the type.
-	 * @return The token representation of the type.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/29
-	 */
-	List<String> tokens(CTokenSet __set)
-		throws NullPointerException;
 }

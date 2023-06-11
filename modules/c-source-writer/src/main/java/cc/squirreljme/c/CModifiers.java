@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayDeque;
@@ -79,8 +80,12 @@ public class CModifiers
 	 * @since 2023/05/29
 	 */
 	@Override
-	public List<String> tokens()
+	public List<String> tokens(CTokenSet __set)
+		throws NullPointerException
 	{
+		if (__set == null)
+			throw new NullPointerException("NARG");
+		
 		Reference<List<String>> ref = this._tokens;
 		List<String> rv;
 		

@@ -18,6 +18,9 @@ package cc.squirreljme.c;
  */
 public enum CTokenSet
 {
+	/** General token display, an alias of any of the below. */
+	GENERAL,
+	
 	/**
 	 * Cast to the given type.
 	 * 

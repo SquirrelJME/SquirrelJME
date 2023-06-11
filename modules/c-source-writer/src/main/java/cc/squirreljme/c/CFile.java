@@ -903,29 +903,15 @@ public class CFile
 			return this.tokens(tokens.toArray(new Object[tokens.size()]));
 		}
 		
-		// String
+		// String or character sequences
 		else if (__token instanceof CharSequence)
 			return this.token((CharSequence)__token);
 		
-		// An identifier
-		else if (__token instanceof CIdentifier)
-			return this.token(((CIdentifier)__token).identifier);
-			
-		// A type
-		else if (__token instanceof CType)
-			return this.tokens(((CType)__token).tokens());
+		// Tokenizable item
+		else if (__token instanceof CTokenizable)
+			return this.token(((CTokenizable)__token)
+				.tokens(CTokenSet.GENERAL));
 		
-		// Modifiers
-		else if (__token instanceof CModifiers)
-			return this.token(((CModifiers)__token).tokens());
-		
-		// Function argument
-		else if (__token instanceof CVariable)
-		{
-			CVariable token = (CVariable)__token;
-			return this.tokens(token.type, token.name);
-		}
-			
 		// A boolean
 		else if (__token instanceof Boolean)
 			return this.token(((Boolean)__token) ? "JNI_TRUE" : "JNI_FALSE");

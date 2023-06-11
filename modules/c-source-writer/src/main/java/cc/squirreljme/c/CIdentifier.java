@@ -9,13 +9,18 @@
 
 package cc.squirreljme.c;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import net.multiphasicapps.collections.UnmodifiableList;
+
 /**
  * Represents an identifier in C.
  *
  * @since 2023/06/04
  */
 public final class CIdentifier
-	implements Comparable<CIdentifier>
+	implements Comparable<CIdentifier>, CTokenizable
 {
 	/** The string identifier. */
 	protected String identifier;
@@ -105,6 +110,20 @@ public final class CIdentifier
 	public String toString()
 	{
 		return this.identifier;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/11
+	 */
+	@Override
+	public List<String> tokens(CTokenSet __set)
+		throws NullPointerException
+	{
+		if (__set == null)
+			throw new NullPointerException("NARG");
+		
+		return UnmodifiableList.of(Arrays.asList(this.identifier));
 	}
 	
 	/**
