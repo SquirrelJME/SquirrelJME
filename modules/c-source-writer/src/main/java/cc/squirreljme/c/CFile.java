@@ -874,6 +874,10 @@ public class CFile
 		// null
 		if (__token == null)
 			return this.token("NULL");
+		
+		// For anything tokenizable, it must explicitly be referenced
+		if (__token instanceof CTokenizable)
+			throw new NotTokenizableException(null);
 			
 		// Primitive arrays
 		else if (__token instanceof boolean[])
@@ -906,11 +910,6 @@ public class CFile
 		// String or character sequences
 		else if (__token instanceof CharSequence)
 			return this.token((CharSequence)__token);
-		
-		// Tokenizable item
-		else if (__token instanceof CTokenizable)
-			return this.token(((CTokenizable)__token)
-				.tokens(CTokenSet.GENERAL));
 		
 		// A boolean
 		else if (__token instanceof Boolean)
