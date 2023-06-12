@@ -135,13 +135,13 @@ public class CFunctionType
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2023/06/05
+	 * @since 2023/06/06
 	 */
 	@Override
-	public List<String> tokens()
+	List<String> __generateTokens(CTokenSet __set)
+		throws NullPointerException
 	{
-		// {@squirreljme.error CW0b Cannot get the tokens of a function.}
-		throw new IllegalStateException("CW0b");
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -158,16 +158,5 @@ public class CFunctionType
 		throws NullPointerException
 	{
 		return new CFunctionType(__name, __rVal, __args);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/06
-	 */
-	@Override
-	List<String> __generateTokens(CTokenSet __set)
-		throws NullPointerException
-	{
-		throw Debugging.todo();
 	}
 }

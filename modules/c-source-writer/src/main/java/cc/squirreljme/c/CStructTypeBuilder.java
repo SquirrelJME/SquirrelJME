@@ -9,6 +9,8 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+
 /**
  * Builder for struct types.
  *
@@ -17,4 +19,44 @@ package cc.squirreljme.c;
 public final class CStructTypeBuilder
 {
 	
+	/**
+	 * Builds the structure type.
+	 * 
+	 * @return The resultant struct.
+	 * @since 2023/06/12
+	 */
+	public CStructType build()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Adds a struct member.
+	 * 
+	 * @param __type The member type.
+	 * @param __name The member name.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/12
+	 */
+	public CStructTypeBuilder member(CType __type, String __name)
+		throws NullPointerException
+	{
+		return this.member(__type, CIdentifier.of(__name));
+	}
+	
+	/**
+	 * Adds a struct member.
+	 * 
+	 * @param __type The member type.
+	 * @param __name The member name.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/12
+	 */
+	public CStructTypeBuilder member(CType __type, CIdentifier __name)
+		throws NullPointerException
+	{
+		throw Debugging.todo();
+	}
 }

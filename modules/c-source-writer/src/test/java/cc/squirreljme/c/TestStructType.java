@@ -9,27 +9,34 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
- * Tests function pointers.
+ * Tests structure types.
  *
- * @since 2023/06/05
+ * @since 2023/06/12
  */
-public class TestFunctionPointer
+public class TestStructType
 	extends TestRunnable
 {
 	/**
 	 * {@inheritDoc}
-	 * @since 2023/06/05
+	 * @since 2023/06/12
 	 */
 	@Override
 	public void test()
+		throws Throwable
 	{
-		this.secondary("intboopsqueak",
-			CFunctionType.of(CIdentifier.of("boop"),
-			CPrimitiveType.INT32_T,
-			CVariable.of(CPrimitiveType.UINT8_T, "squeak"))
-				.pointerType().tokens(CTokenSet.DECLARE));
+		// Build a basic struct
+		CStructType struct = new CStructTypeBuilder()
+			.member(CPrimitiveType.INT32_T, "xint")
+			.member(CPrimitiveType.VOID.pointerType(), "xvoidptr")
+			.build();
+		
+		this.secondary("declare",
+			struct.tokens(CTokenSetNamed.of("foo")).toArray(new String[0]));
+		this.secondary("define",
+			struct.tokens(CTokenSetNamed.of("foo")).toArray(new String[0]));
 	}
 }

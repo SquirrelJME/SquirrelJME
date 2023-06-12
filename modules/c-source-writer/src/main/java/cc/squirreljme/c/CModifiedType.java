@@ -130,10 +130,11 @@ public final class CModifiedType
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2023/06/05
+	 * @since 2023/06/06
 	 */
 	@Override
-	public List<String> tokens()
+	List<String> __generateTokens(CTokenSet __set)
+		throws NullPointerException
 	{
 		Reference<List<String>> ref = this._tokens;
 		List<String> rv;
@@ -151,15 +152,15 @@ public final class CModifiedType
 			if (modifier instanceof __SinglePrefixModifier__ &&
 				!(type instanceof CPointerType))
 			{
-				build.addAll(modifier.tokens());
-				build.addAll(type.tokens());
+				build.addAll(modifier.tokens(CTokenSet.GENERAL));
+				build.addAll(type.tokens(CTokenSet.GENERAL));
 			}
 			
 			// Otherwise they attach to the right side (postfix)
 			else
 			{
-				build.addAll(type.tokens());
-				build.addAll(modifier.tokens());
+				build.addAll(type.tokens(CTokenSet.GENERAL));
+				build.addAll(modifier.tokens(CTokenSet.GENERAL));
 			}
 			
 			rv = UnmodifiableList.of(build);
@@ -167,17 +168,6 @@ public final class CModifiedType
 		}
 		
 		return rv;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/06
-	 */
-	@Override
-	List<String> __generateTokens(CTokenSet __set)
-		throws NullPointerException
-	{
-		throw Debugging.todo();
 	}
 	
 	/**

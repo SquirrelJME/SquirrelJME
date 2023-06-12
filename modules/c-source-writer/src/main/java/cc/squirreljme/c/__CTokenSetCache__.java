@@ -9,7 +9,10 @@
 
 package cc.squirreljme.c;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.List;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * Token set cache for a {@link CType} using {@link CTokenSet} as the cache
@@ -19,6 +22,12 @@ import java.util.List;
  */
 final class __CTokenSetCache__
 {
+	/** The internal cache. */
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	private static final Reference<List<String>>[] _cache =
+		(Reference<List<String>>[])
+			((Object)new WeakReference[CTokenSet._VALUES.length]);
+	
 	/**
 	 * Gets the tokens for the given set under the given type.
 	 * 
@@ -35,6 +44,21 @@ final class __CTokenSetCache__
 		if (__set == null || __type == null)
 			throw new NullPointerException("NARG");
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		List<String> rv;
+		
+		int dx = __set.ordinal();
+		Reference<List<String>>[] cache = this._cache;
+		synchronized (this)
+		{
+			Reference<List<String>> ref = cache[dx];
+			if (ref == null || (rv = ref.get()) == null)
+			{
+				// Build and store
+				rv = UnmodifiableList.of(__type.__generateTokens(__set));
+				cache[dx] = new WeakReference<>(rv);
+			}
+		}
+		
+		return rv;
 	}
 }

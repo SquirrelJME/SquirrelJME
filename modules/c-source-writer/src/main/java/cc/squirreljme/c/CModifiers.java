@@ -93,7 +93,7 @@ public class CModifiers
 		{
 			List<String> build = new ArrayList<>();
 			for (CModifier modifier : this.modifiers)
-				build.addAll(modifier.tokens());
+				build.addAll(modifier.tokens(CTokenSet.GENERAL));
 			
 			rv = UnmodifiableList.of(build);
 			this._tokens = new WeakReference<>(rv);

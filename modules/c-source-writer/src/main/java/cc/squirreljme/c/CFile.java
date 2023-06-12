@@ -1071,11 +1071,12 @@ public class CFile
 		
 		// Without modifiers
 		List<String> modifiers = (__modifier == null ? null :
-			__modifier.tokens());
+			__modifier.tokens(CTokenSet.GENERAL));
 		
 		if (modifiers == null || modifiers.isEmpty())
-			return this.tokens(__type.tokens(), __name);
-		return this.tokens(modifiers, __type.tokens(), __name);
+			return this.tokens(__type.tokens(CTokenSet.GENERAL), __name);
+		return this.tokens(modifiers,
+			__type.tokens(CTokenSet.GENERAL), __name);
 	}
 	
 	/**

@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+secondary-declarefail: true
+secondary-declare: string[1]:struct,foo
+secondary-define: string[1]:struct,foo,{,int32_t,xint,;,
+ void,*,voidptr,;,}

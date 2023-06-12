@@ -117,10 +117,11 @@ public class CPointerType
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2023/05/29
+	 * @since 2023/06/06
 	 */
 	@Override
-	public List<String> tokens()
+	List<String> __generateTokens(CTokenSet __set)
+		throws NullPointerException
 	{
 		Reference<List<String>> ref = this._tokens;
 		List<String> rv;
@@ -156,7 +157,7 @@ public class CPointerType
 			if (function != null)
 			{
 				// Return type, all the tokens used for it
-				build.addAll(function.returnType.tokens());
+				build.addAll(function.returnType.tokens(CTokenSet.GENERAL));
 				
 				// Add function surround
 				// The more pointers on the function,
@@ -177,7 +178,8 @@ public class CPointerType
 					
 					// We do not care about the parameter names for functions,
 					// only their types
-					build.addAll(arguments.get(i).type.tokens());
+					build.addAll(
+						arguments.get(i).type.tokens(CTokenSet.GENERAL));
 				}
 				build.add(")");
 			}
@@ -185,7 +187,7 @@ public class CPointerType
 			// Star follows the type
 			else
 			{
-				build.addAll(root.tokens());
+				build.addAll(root.tokens(CTokenSet.GENERAL));
 				build.add("*");
 			}
 			
@@ -195,17 +197,6 @@ public class CPointerType
 		}
 			
 		return rv;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/06
-	 */
-	@Override
-	List<String> __generateTokens(CTokenSet __set)
-		throws NullPointerException
-	{
-		throw Debugging.todo();
 	}
 	
 	/**

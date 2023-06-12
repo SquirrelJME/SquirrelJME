@@ -288,7 +288,7 @@ public class ByteCodeProcessor
 		// Keep track of the current top state, so we need not worry about
 		// pushing or popping
 		__block.variableDeclare(null,
-			CPrimitiveType.SJME_NANOFRAME.pointerType(), "current");
+			NanoCoatTypes.VMFRAME.type().pointerType(), "current");
 		__block.variableDeclare(null,
 			CPrimitiveType.UINT8_T, "tmpBoolean");
 		

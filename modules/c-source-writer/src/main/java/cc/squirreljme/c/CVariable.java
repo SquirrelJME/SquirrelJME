@@ -9,6 +9,9 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.List;
+
 /**
  * C variable type.
  *
@@ -126,6 +129,17 @@ public class CVariable
 		
 		// Not extern
 		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/12
+	 */
+	@Override
+	public List<String> tokens(CTokenSet __set)
+		throws NullPointerException
+	{
+		throw Debugging.todo();
 	}
 	
 	/**

@@ -20,7 +20,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public enum NanoCoatTypes
 {
 	/** Long. */
-	@Deprecated
 	JLONG
 	{
 		/**
@@ -35,7 +34,6 @@ public enum NanoCoatTypes
 	},
 	
 	/** Float. */
-	@Deprecated
 	JFLOAT
 	{
 		/**
@@ -50,7 +48,6 @@ public enum NanoCoatTypes
 	},
 	
 	/** Double. */
-	@Deprecated
 	JDOUBLE
 	{
 		/**
@@ -65,7 +62,6 @@ public enum NanoCoatTypes
 	},
 	
 	/** Class. */
-	@Deprecated
 	JCLASS
 	{
 		/**
@@ -80,7 +76,6 @@ public enum NanoCoatTypes
 	},
 	
 	/** Object. */
-	@Deprecated
 	JOBJECT
 	{
 		/**
@@ -95,7 +90,6 @@ public enum NanoCoatTypes
 	},
 	
 	/** String. */
-	@Deprecated
 	JSTRING
 	{
 		/**
@@ -110,7 +104,6 @@ public enum NanoCoatTypes
 	},
 	
 	/** Field. */
-	@Deprecated
 	JFIELD
 	{
 		/**
@@ -125,7 +118,6 @@ public enum NanoCoatTypes
 	},
 	
 	/** Method. */
-	@Deprecated
 	JMETHOD
 	{
 		/**
@@ -140,7 +132,6 @@ public enum NanoCoatTypes
 	},
 	
 	/** The NanoCoat state. */
-	@Deprecated
 	VMSTATE
 	{
 		/**
@@ -155,7 +146,6 @@ public enum NanoCoatTypes
 	},
 	
 	/** A NanoCoat thread. */
-	@Deprecated
 	VMTHREAD
 	{
 		/**
@@ -170,7 +160,6 @@ public enum NanoCoatTypes
 	},
 	
 	/** A NanoCoat resource. */
-	@Deprecated
 	RESOURCE
 	{
 		/**
@@ -185,7 +174,6 @@ public enum NanoCoatTypes
 	},
 	
 	/** Field information. */
-	@Deprecated
 	CLASS_FIELDS
 	{
 		/**
@@ -200,7 +188,6 @@ public enum NanoCoatTypes
 	},
 	
 	/** Method information. */
-	@Deprecated
 	CLASS_METHODS
 	{
 		/**
@@ -215,7 +202,6 @@ public enum NanoCoatTypes
 	},
 	
 	/** Stack frame. */
-	@Deprecated
 	VMFRAME
 	{
 		/**
