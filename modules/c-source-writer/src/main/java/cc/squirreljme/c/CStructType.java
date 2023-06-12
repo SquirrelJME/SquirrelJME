@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
@@ -79,7 +80,14 @@ public class CStructType
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw Debugging.todo();
+		if (this == __o)
+			return true;
+		if (!(__o instanceof CStructType))
+			return false;
+		
+		CStructType o = (CStructType)__o;
+		return Objects.equals(this.name, o.name) &&
+			this.members.equals(o.members);
 	}
 	
 	/**
@@ -89,7 +97,8 @@ public class CStructType
 	@Override
 	public int hashCode()
 	{
-		throw Debugging.todo();
+		return Objects.hashCode(this.name) ^
+			this.members.hashCode();
 	}
 	
 	/**
@@ -99,7 +108,8 @@ public class CStructType
 	@Override
 	public boolean isPointer()
 	{
-		throw Debugging.todo();
+		// Not a pointer type
+		return false;
 	}
 	
 	/**
@@ -113,10 +123,10 @@ public class CStructType
 	public CVariable member(int __dx)
 		throws IndexOutOfBoundsException
 	{
-		if (__dx < 0)
+		if (__dx < 0 || __dx >= this.members.size())
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		throw Debugging.todo();
+		return this.members.get(__dx);
 	}
 	
 	/**
@@ -162,7 +172,7 @@ public class CStructType
 	public CType pointerType()
 		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		return CPointerType.of(this);
 	}
 	
 	/**
