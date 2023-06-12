@@ -10,11 +10,11 @@
 package cc.squirreljme.c;
 
 /**
- * Base interface for anything which is a token set, this is used to refer
- * to anything that can be tokenized accordingly.
+ * A token set which is named.
  *
- * @since 2023/06/06
+ * @since 2023/06/12
  */
-public interface CTokenSet
+public enum CNamedTokenSet
+	implements CTokenSet
 {
 }

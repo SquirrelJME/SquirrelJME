@@ -18,6 +18,34 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  */
 public final class CStructTypeBuilder
 {
+	/**
+	 * Initializes the struct builder.
+	 * 
+	 * @param __name The name of this struct.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/12
+	 */
+	public CStructTypeBuilder(String __name)
+		throws NullPointerException
+	{
+		this(CIdentifier.of(__name));
+	}
+	
+	/**
+	 * Initializes the struct builder.
+	 * 
+	 * @param __name The name of this struct.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/12
+	 */
+	public CStructTypeBuilder(CIdentifier __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Builds the structure type.

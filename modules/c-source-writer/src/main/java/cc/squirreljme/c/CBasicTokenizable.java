@@ -9,12 +9,25 @@
 
 package cc.squirreljme.c;
 
+import java.util.List;
+
 /**
- * Base interface for anything which is a token set, this is used to refer
- * to anything that can be tokenized accordingly.
+ * Basic tokenizable item.
  *
- * @since 2023/06/06
+ * @since 2023/06/12
  */
-public interface CTokenSet
+public interface CBasicTokenizable
+	extends CTokenizable
 {
+	/**
+	 * Returns the token representation of this.
+	 * 
+	 * @param __set The token set to use for this.
+	 * @return The token representation of this.
+	 * @throws NotTokenizableException If this cannot be tokenized this way.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/29
+	 */
+	List<String> tokens(CBasicTokenSet __set)
+		throws NotTokenizableException, NullPointerException;
 }

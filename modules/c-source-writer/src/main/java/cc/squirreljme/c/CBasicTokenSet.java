@@ -10,11 +10,29 @@
 package cc.squirreljme.c;
 
 /**
- * Base interface for anything which is a token set, this is used to refer
- * to anything that can be tokenized accordingly.
+ * A basic token set.
  *
- * @since 2023/06/06
+ * @since 2023/06/12
  */
-public interface CTokenSet
+public enum CBasicTokenSet
+	implements CTokenSet
 {
+	/**
+	 * Cast to the given type.
+	 * 
+	 * Example: {@code (jint)squirrel}.
+	 */
+	CAST,
+	
+	/** A declaration of a struct. */
+	STRUCT_DECLARATION,
+	
+	/** A definition of a struct. */
+	STRUCT_DEFINITION,
+	
+	/** A member of a struct. */
+	STRUCT_MEMBER,
+	
+	/* End. */
+	;
 }

@@ -9,35 +9,24 @@
 
 package cc.squirreljme.c;
 
-import net.multiphasicapps.tac.TestRunnable;
-
 /**
- * Tests structure types.
+ * Exception for when something cannot be tokenized with this.
  *
  * @since 2023/06/12
  */
-public class TestStructType
-	extends TestRunnable
+public class NotTokenizableException
+	extends IllegalArgumentException
 {
 	/**
-	 * {@inheritDoc}
+	 * Initializes the exception.
+	 * 
+	 * @param __set The set this cannot be tokenized with.
 	 * @since 2023/06/12
 	 */
-	@Override
-	public void test()
-		throws Throwable
+	public NotTokenizableException(CTokenSet __set)
 	{
-		// Build a basic struct
-		CStructType struct = new CStructTypeBuilder("foo")
-			.member(CPrimitiveType.INT32_T, "xint")
-			.member(CPrimitiveType.VOID.pointerType(), "xvoidptr")
-			.build();
-		
-		this.secondary("declare",
-			struct.tokens(CBasicTokenSet.STRUCT_DECLARATION)
-				.toArray(new String[0]));
-		this.secondary("define",
-			struct.tokens(CBasicTokenSet.STRUCT_DEFINITION)
-				.toArray(new String[0]));
+		// {@squirreljme.error CW0b Cannot be tokenized with the
+		// following set. (The set)}
+		super("CW0b " + __set);
 	}
 }

@@ -18,14 +18,4 @@ import java.util.List;
  */
 public interface CTokenizable
 {
-	/**
-	 * Returns the token representation of the type.
-	 * 
-	 * @param __set The token set to use for the type.
-	 * @return The token representation of the type.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/29
-	 */
-	List<String> tokens(CTokenSet __set)
-		throws NullPointerException;
 }

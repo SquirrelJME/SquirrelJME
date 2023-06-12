@@ -19,21 +19,6 @@ import java.util.List;
 public abstract class __CAbstractType__
 	implements CType
 {
-	/** The token cache. */
-	private final __CTokenSetCache__ _tokenCache =
-		new __CTokenSetCache__();
-	
-	/**
-	 * Generates the set of tokens for this type.
-	 * 
-	 * @param __set The set to generate for.
-	 * @return The resultant tokens.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/06/06
-	 */
-	abstract List<String> __generateTokens(CTokenSet __set)
-		throws NullPointerException;
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2023/06/06
@@ -54,16 +39,5 @@ public abstract class __CAbstractType__
 		throws IllegalArgumentException
 	{
 		return CPointerType.of(this);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/06
-	 */
-	@Override
-	public final List<String> tokens(CTokenSet __set)
-		throws NullPointerException
-	{
-		return this._tokenCache.__get(__set, this);
 	}
 }

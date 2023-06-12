@@ -17,7 +17,7 @@ import java.util.List;
  * @since 2023/05/29
  */
 public interface CType
-	extends CTokenizable
+	extends CBasicTokenizable, CNamedTokenizable
 {
 	/**
 	 * Gets the type as a constant.
