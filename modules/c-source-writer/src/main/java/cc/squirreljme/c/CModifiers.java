@@ -79,12 +79,9 @@ public class CModifiers
 	 * @since 2023/05/29
 	 */
 	@Override
-	public List<String> tokens(CTokenSet __set)
+	public List<String> tokens()
 		throws NullPointerException
 	{
-		if (__set == null)
-			throw new NullPointerException("NARG");
-		
 		Reference<List<String>> ref = this._tokens;
 		List<String> rv;
 		
@@ -92,7 +89,7 @@ public class CModifiers
 		{
 			List<String> build = new ArrayList<>();
 			for (CModifier modifier : this.modifiers)
-				build.addAll(modifier.tokens(CTokenSet.GENERAL));
+				build.addAll(modifier.tokens());
 			
 			rv = UnmodifiableList.of(build);
 			this._tokens = new WeakReference<>(rv);

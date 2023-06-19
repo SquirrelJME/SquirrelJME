@@ -180,7 +180,7 @@ public class CStructType
 	 * @since 2023/06/12
 	 */
 	@Override
-	public List<String> tokens(CBasicTokenSet __set)
+	public List<String> tokens()
 		throws NotTokenizableException, NullPointerException
 	{
 		if (__set == null)
@@ -192,8 +192,8 @@ public class CStructType
 		if (__set == CBasicTokenSet.STRUCT_MEMBER)
 		{
 			if (this.name == null)
-				return this.tokens(CBasicTokenSet.STRUCT_DECLARATION);
-			return this.tokens(CBasicTokenSet.STRUCT_DECLARATION);
+				return this.tokens();
+			return this.tokens();
 		}
 		
 		// Declaring a struct is simple enough
@@ -211,7 +211,7 @@ public class CStructType
 		{
 			// Open struct
 			result = new ArrayList<>(
-				this.tokens(CBasicTokenSet.STRUCT_DECLARATION));
+				this.tokens());
 			result.add("{");
 			
 			// Add each member

@@ -12,8 +12,11 @@ package cc.squirreljme.c;
 /**
  * A basic token set.
  *
+ * @deprecated Not liking this because it leaves types wide open,
+ * will probably go away.
  * @since 2023/06/12
  */
+@Deprecated
 public enum CBasicTokenSet
 	implements CTokenSet
 {

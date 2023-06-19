@@ -13,8 +13,10 @@ package cc.squirreljme.c;
  * Base interface for anything which is a token set, this is used to refer
  * to anything that can be tokenized accordingly.
  *
+ * @deprecated Probably going to go away.
  * @since 2023/06/06
  */
+@Deprecated
 public interface CTokenSet
 {
 }

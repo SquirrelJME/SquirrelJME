@@ -9,15 +9,13 @@
 
 package cc.squirreljme.c;
 
-import java.util.List;
-
 /**
  * Represents a C type.
  *
  * @since 2023/05/29
  */
 public interface CType
-	extends CBasicTokenizable, CNamedTokenizable
+	extends CNamedTokenizable
 {
 	/**
 	 * Gets the type as a constant.

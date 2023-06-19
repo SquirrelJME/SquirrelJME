@@ -116,12 +116,8 @@ public final class CIdentifier
 	 * @since 2023/06/11
 	 */
 	@Override
-	public List<String> tokens(CBasicTokenSet __set)
-		throws NullPointerException
+	public List<String> tokens()
 	{
-		if (__set == null)
-			throw new NullPointerException("NARG");
-		
 		return UnmodifiableList.of(Arrays.asList(this.identifier));
 	}
 	

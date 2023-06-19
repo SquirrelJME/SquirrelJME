@@ -9,7 +9,6 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -157,7 +156,7 @@ public class CPointerType
 			if (function != null)
 			{
 				// Return type, all the tokens used for it
-				build.addAll(function.returnType.tokens(CTokenSet.GENERAL));
+				build.addAll(function.returnType.tokens());
 				
 				// Add function surround
 				// The more pointers on the function,
@@ -179,7 +178,7 @@ public class CPointerType
 					// We do not care about the parameter names for functions,
 					// only their types
 					build.addAll(
-						arguments.get(i).type.tokens(CTokenSet.GENERAL));
+						arguments.get(i).type.tokens());
 				}
 				build.add(")");
 			}
@@ -187,7 +186,7 @@ public class CPointerType
 			// Star follows the type
 			else
 			{
-				build.addAll(root.tokens(CTokenSet.GENERAL));
+				build.addAll(root.tokens());
 				build.add("*");
 			}
 			

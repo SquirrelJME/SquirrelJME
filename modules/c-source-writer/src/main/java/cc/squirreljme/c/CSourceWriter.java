@@ -449,19 +449,4 @@ public interface CSourceWriter
 	 */
 	CSourceWriter variableSet(CVariable __var, CExpression __value)
 		throws IllegalArgumentException, IOException, NullPointerException;
-	
-	/**
-	 * Writes a variable.
-	 * 
-	 * @param __modifier The modifiers to use.
-	 * @param __type The variable type.
-	 * @param __name The variable name.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/29
-	 */
-	CSourceWriter variable(CModifier __modifier, CType __type,
-		CIdentifier __name)
-		throws IOException, NullPointerException;
 }

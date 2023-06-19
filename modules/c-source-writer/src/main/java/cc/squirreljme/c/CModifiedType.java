@@ -9,7 +9,6 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -153,13 +152,13 @@ public final class CModifiedType
 				!(type instanceof CPointerType))
 			{
 				build.addAll(modifier.tokens(CTokenSet.GENERAL));
-				build.addAll(type.tokens(CTokenSet.GENERAL));
+				build.addAll(type.tokens());
 			}
 			
 			// Otherwise they attach to the right side (postfix)
 			else
 			{
-				build.addAll(type.tokens(CTokenSet.GENERAL));
+				build.addAll(type.tokens());
 				build.addAll(modifier.tokens(CTokenSet.GENERAL));
 			}
 			

@@ -12,8 +12,10 @@ package cc.squirreljme.c;
 /**
  * A token set which is named.
  *
+ * @deprecated Probably will be going away.
  * @since 2023/06/12
  */
+@Deprecated
 public enum CNamedTokenSet
 	implements CTokenSet
 {

@@ -34,10 +34,10 @@ public class TestStructType
 			.build();
 		
 		this.secondary("declare",
-			struct.tokens(CBasicTokenSet.STRUCT_DECLARATION)
+			struct.tokens()
 				.toArray(new String[0]));
 		this.secondary("define",
-			struct.tokens(CBasicTokenSet.STRUCT_DEFINITION)
+			struct.tokens()
 				.toArray(new String[0]));
 	}
 }

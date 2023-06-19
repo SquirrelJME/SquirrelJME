@@ -30,6 +30,6 @@ public class TestFunctionPointer
 			CFunctionType.of(CIdentifier.of("boop"),
 			CPrimitiveType.INT32_T,
 			CVariable.of(CPrimitiveType.UINT8_T, "squeak"))
-				.pointerType().tokens(CTokenSet.DECLARE));
+				.pointerType().tokens());
 	}
 }

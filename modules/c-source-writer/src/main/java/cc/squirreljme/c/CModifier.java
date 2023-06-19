@@ -17,6 +17,6 @@ import java.util.List;
  * @since 2023/05/29
  */
 public interface CModifier
-	extends CTokenizable
+	extends CBasicTokenizable
 {
 }

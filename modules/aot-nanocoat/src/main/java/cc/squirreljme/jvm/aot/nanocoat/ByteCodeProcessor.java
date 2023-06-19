@@ -306,7 +306,12 @@ public class ByteCodeProcessor
 		
 		// Switch case based on the current group index
 		try (CSwitchBlock cases = __block.switchCase(
-			"current->groupIndex"))
+			CExpressionBuilder.builder()
+				.identifier(codeVars.currentFrame())
+				.dereferenceStruct()
+				.identifier(NanoCoatTypes.VMFRAME.type(CStructType.class)
+					.member("groupIndex"))
+				.build()))
 		{
 			// Return from call when execution of method finishes
 			cases.nextCase("SJME_NANOCOAT_END_CALL");

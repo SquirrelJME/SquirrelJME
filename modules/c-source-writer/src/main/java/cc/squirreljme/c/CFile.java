@@ -946,33 +946,14 @@ public class CFile
 	}
 	
 	/**
-	 * Writes a variable.
-	 * 
-	 * @param __modifier The modifiers to use.
-	 * @param __type The variable type.
-	 * @param __name The variable name.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/29
+	 * {@inheritDoc}
+	 * @since 2023/06/19
 	 */
 	@Override
-	@Deprecated
-	public CSourceWriter variable(CModifier __modifier, CType __type,
-		CIdentifier __name)
-		throws IOException, NullPointerException
+	public CSourceWriter variableSet(CVariable __var, CExpression __value)
+		throws IllegalArgumentException, IOException, NullPointerException
 	{
-		if (__type == null || __name == null)
-			throw new NullPointerException("NARG");
-		
-		// Without modifiers
-		List<String> modifiers = (__modifier == null ? null :
-			__modifier.tokens(CTokenSet.GENERAL));
-		
-		if (modifiers == null || modifiers.isEmpty())
-			return this.tokens(__type.tokens(CTokenSet.GENERAL), __name);
-		return this.tokens(modifiers,
-			__type.tokens(CTokenSet.GENERAL), __name);
+		throw Debugging.todo();
 	}
 	
 	/**
