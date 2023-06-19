@@ -33,11 +33,22 @@ public class TestStructType
 			.member(CPrimitiveType.VOID.pointerType(), "xvoidptr")
 			.build();
 		
-		this.secondary("declare",
-			struct.tokens()
-				.toArray(new String[0]));
-		this.secondary("define",
-			struct.tokens()
-				.toArray(new String[0]));
+		// Declare struct
+		try (__Spool__ spool = new __Spool__();
+			CFile file = spool.file())
+		{
+			file.declare(CVariable.of(struct, "foo"));
+			
+			this.secondary("declare", spool.tokens());
+		}
+		
+		// Define struct
+		try (__Spool__ spool = new __Spool__();
+			 CFile file = spool.file())
+		{
+			file.define(CVariable.of(struct, "foo"));
+			
+			this.secondary("define", spool.tokens());
+		}
 	}
 }

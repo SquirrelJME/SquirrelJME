@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.c.out.CTokenOutput;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.BooleanArrayList;
 import cc.squirreljme.runtime.cldc.util.ByteArrayList;
@@ -20,7 +21,8 @@ import cc.squirreljme.runtime.cldc.util.LongArrayList;
 import cc.squirreljme.runtime.cldc.util.ShortArrayList;
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayDeque;
@@ -42,7 +44,7 @@ public class CFile
 		60;
 	
 	/** The stream to write to. */
-	protected final PrintStream out;
+	protected final CTokenOutput out;
 	
 	/** Single character buffer. */
 	private final char[] _singleBuf =
@@ -75,7 +77,7 @@ public class CFile
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/28
 	 */
-	public CFile(PrintStream __out)
+	public CFile(CTokenOutput __out)
 		throws NullPointerException
 	{
 		if (__out == null)
@@ -285,7 +287,17 @@ public class CFile
 	public void close()
 		throws IOException
 	{
-		this.out.close();
+		if (this.out instanceof AutoCloseable)
+			try
+			{
+				((AutoCloseable)this.out).close();
+			}
+			catch (Exception __e)
+			{
+				if (__e instanceof RuntimeException)
+					throw (RuntimeException)__e;
+				throw new IOException("CLOS", __e);
+			}
 	}
 	
 	/**
@@ -373,7 +385,10 @@ public class CFile
 	public void flush()
 		throws IOException
 	{
-		this.out.flush();
+		if (this.out instanceof OutputStream)
+			((OutputStream)this.out).flush();
+		else if (this.out instanceof Writer)
+			((Writer)this.out).flush();
 	}
 	
 	/**
@@ -836,7 +851,6 @@ public class CFile
 		}
 		
 		// Write the output
-		PrintStream out = this.out;
 		for (int i = 0; i < n; i++)
 		{
 			char c = __token.charAt(i);
@@ -1025,12 +1039,12 @@ public class CFile
 			if (__c == '\n')
 			{
 				System.err.println();
-				this.out.println();
+				this.out.append("\n");
 			}
 			else
 			{
 				System.err.print(__c);
-				this.out.write(__c);
+				this.out.append(__c);
 			}
 		}
 		

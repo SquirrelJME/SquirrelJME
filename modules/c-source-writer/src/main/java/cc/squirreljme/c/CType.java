@@ -15,7 +15,6 @@ package cc.squirreljme.c;
  * @since 2023/05/29
  */
 public interface CType
-	extends CNamedTokenizable
 {
 	/**
 	 * Gets the type as a constant.
