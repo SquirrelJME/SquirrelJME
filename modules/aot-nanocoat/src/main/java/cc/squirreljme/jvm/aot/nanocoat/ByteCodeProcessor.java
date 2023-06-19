@@ -9,8 +9,11 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CExpressionBuilder;
+import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CPrimitiveType;
 import cc.squirreljme.c.CFunctionBlock;
+import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CSwitchBlock;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Container;
@@ -285,15 +288,21 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
+		// All of these code variables are standardized and the same
+		__CodeVariables__ codeVars = __CodeVariables__.instance();
+		
 		// Keep track of the current top state, so we need not worry about
 		// pushing or popping
-		__block.variableDeclare(null,
-			NanoCoatTypes.VMFRAME.type().pointerType(), "current");
-		__block.variableDeclare(null,
-			CPrimitiveType.UINT8_T, "tmpBoolean");
+		__block.declare(codeVars.currentFrame());
 		
 		// Set known variables
-		__block.variableAssign("current", "stack->top");
+		__block.variableSet(codeVars.currentFrame(),
+			CExpressionBuilder.builder()
+				.identifier(codeVars.currentState())
+				.dereferenceStruct()
+				.identifier(NanoCoatTypes.VMSTATE.type(CStructType.class)
+					.member("top"))
+				.build());
 		
 		// Switch case based on the current group index
 		try (CSwitchBlock cases = __block.switchCase(

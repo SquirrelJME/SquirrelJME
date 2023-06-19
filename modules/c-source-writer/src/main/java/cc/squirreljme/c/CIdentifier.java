@@ -9,7 +9,6 @@
 
 package cc.squirreljme.c;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.collections.UnmodifiableList;
@@ -20,7 +19,7 @@ import net.multiphasicapps.collections.UnmodifiableList;
  * @since 2023/06/04
  */
 public final class CIdentifier
-	implements Comparable<CIdentifier>, CTokenizable
+	implements Comparable<CIdentifier>, CBasicTokenizable
 {
 	/** The string identifier. */
 	protected String identifier;
@@ -117,7 +116,7 @@ public final class CIdentifier
 	 * @since 2023/06/11
 	 */
 	@Override
-	public List<String> tokens(CTokenSet __set)
+	public List<String> tokens(CBasicTokenSet __set)
 		throws NullPointerException
 	{
 		if (__set == null)

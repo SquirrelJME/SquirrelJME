@@ -10,10 +10,13 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CArrayBlock;
+import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CPrimitiveType;
 import cc.squirreljme.c.CModifiers;
 import cc.squirreljme.c.CSourceWriter;
+import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CStructVariableBlock;
+import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -43,11 +46,14 @@ public class ClassProcessor
 	/** The C identifier for this class. */
 	protected final String classIdentifier;
 	
-	/** Field storage. */
-	protected final String fieldsIdentifier;
+	/** Fields variable for the class. */
+	protected final CVariable classFields;
 	
-	/** Method storage. */
-	protected final String methodsIdentifier;
+	/** Methods variable for the class. */
+	protected final CVariable classMethods;
+	
+	/** Class information table for the class. */
+	protected final CVariable classInfo;
 	
 	/** The link table for the class. */
 	protected final ClassLinkTable linkTable =
@@ -84,8 +90,15 @@ public class ClassProcessor
 		// Determine the identifier used for this class
 		this.classIdentifier = Utils.symbolClassName(__glob,
 			this.classFile.thisName());
-		this.fieldsIdentifier = this.classIdentifier + "__fields";
-		this.methodsIdentifier = this.classIdentifier + "__methods";
+		this.classInfo = CVariable.of(
+			NanoCoatTypes.JCLASS.type(CStructType.class).constType(),
+			CIdentifier.of(this.classIdentifier + "__info"));
+		this.classFields = CVariable.of(
+			NanoCoatTypes.CLASS_FIELDS.type(CStructType.class).constType(),
+			CIdentifier.of(this.classIdentifier + "__fields"));
+		this.classMethods = CVariable.of(
+			NanoCoatTypes.CLASS_METHODS.type(CStructType.class).constType(),
+			CIdentifier.of(this.classIdentifier + "__methods"));
 		
 		// Create processors for each field
 		Map<FieldNameAndType, FieldProcessor> fields = this._fields;
@@ -113,9 +126,8 @@ public class ClassProcessor
 		ClassFile classFile = this.classFile;
 		NanoCoatLinkGlob glob = this.glob;
 		
-		// Write class identifier
-		out.variableSet(CModifiers.EXTERN_CONST,
-			CPrimitiveType.JCLASS, this.classIdentifier);
+		// Write class identifier, as extern value
+		out.define(this.classInfo.extern());
 		
 		// Process field header details
 		for (FieldProcessor field : this._fields.values())
@@ -139,15 +151,15 @@ public class ClassProcessor
 		ClassFile classFile = this.classFile;
 		
 		// Process field source details outside the class struct
-		try (CStructVariableBlock struct = this.out.structVariableSet(
-			CPrimitiveType.SJME_NANOFIELDS.constType(),
-			this.fieldsIdentifier))
+		try (CStructVariableBlock struct = this.out.declare(
+			CStructVariableBlock.class, this.classFields))
 		{
 			// Field count
 			struct.memberSet("count", this._fields.size());
 			
 			// Then the actual members
-			try (CArrayBlock array = struct.memberArraySet("fields"))
+			try (CArrayBlock array =
+				 struct.memberArraySet("fields"))
 			{
 				for (FieldProcessor field : this._fields.values())
 					field.processInFieldsStruct(array);
@@ -159,15 +171,15 @@ public class ClassProcessor
 			method.processSourceOutside();
 		
 		// Process method details for method structure
-		try (CStructVariableBlock struct = this.out.structVariableSet(
-			CBasicModifier.CONST, CPrimitiveType.SJME_NANOMETHODS,
-			this.methodsIdentifier))
+		try (CStructVariableBlock struct = this.out.declare(
+			CStructVariableBlock.class, this.classMethods))
 		{
 			// Method count
 			struct.memberSet("count", this._methods.size());
 			
 			// Then the actual members
-			try (CArrayBlock array = struct.memberArraySet("methods"))
+			try (CArrayBlock array =
+				 struct.memberArraySet("methods"))
 			{
 				for (MethodProcessor method : this._methods.values())
 					method.processInMethodsStruct(array);
@@ -175,8 +187,8 @@ public class ClassProcessor
 		}
 		
 		// Open class details
-		try (CStructVariableBlock struct = this.out.structVariableSet(
-			CBasicModifier.CONST, CPrimitiveType.JCLASS, this.classIdentifier))
+		try (CStructVariableBlock struct = this.out.declare(
+			CStructVariableBlock.class, this.classInfo))
 		{
 			// Class details
 			struct.memberSet("thisName",
@@ -188,11 +200,11 @@ public class ClassProcessor
 			
 			// Fields
 			struct.memberSet("fields",
-				this.fieldsIdentifier);
+				this.classFields);
 			
 			// Methods
 			struct.memberSet("methods",
-				this.methodsIdentifier);
+				this.classMethods);
 		}
 	}
 }

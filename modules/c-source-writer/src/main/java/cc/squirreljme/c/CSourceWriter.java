@@ -163,6 +163,32 @@ public interface CSourceWriter
 		throws IOException, NullPointerException;
 	
 	/**
+	 * Declares a variable without setting it to anything.
+	 * 
+	 * @param __var The variable to declare.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/19
+	 */
+	CSourceWriter declare(CVariable __var)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * Declares a variable block.
+	 * 
+	 * @param <B> The block type.
+	 * @param __blockType The block type.
+	 * @param __var The variable to declare.
+	 * @return The block for the given variable.
+	 * @throws IOException On write errors. 
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/19
+	 */
+	<B extends CBlock> B declare(Class<B> __blockType, CVariable __var)
+		throws IOException, NullPointerException;
+	
+	/**
 	 * Defines something which can be defined.
 	 * 
 	 * @param __what What is to be defined?
@@ -347,21 +373,6 @@ public interface CSourceWriter
 		throws IOException;
 	
 	/**
-	 * Defines a struct.
-	 *
-	 * @param __modifiers The modifiers used.
-	 * @param __structType The struct type.
-	 * @param __structName The struct name.
-	 * @return The block for being within the struct.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/29
-	 */
-	CStructVariableBlock structVariableSet(CModifier __modifiers,
-		CPrimitiveType __structType, CIdentifier __structName)
-		throws IOException, NullPointerException;
-	
-	/**
 	 * Surrounds the set of tokens with a parenthesis, with an optional
 	 * prefix.
 	 * 
@@ -426,63 +437,18 @@ public interface CSourceWriter
 		throws IOException;
 	
 	/**
-	 * Assigns the given variable.
+	 * Sets the value of this variable.
 	 * 
-	 * @param __target The target variable.
-	 * @param __value The value to set.
+	 * @param __var The variable to set.
+	 * @param __value The value to set it as.
 	 * @return {@code this}.
+	 * @throws IllegalArgumentException If the value is not correct.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/31
+	 * @since 2023/06/19
 	 */
-	CSourceWriter variableAssign(CIdentifier __target, Object... __value)
-		throws IOException, NullPointerException;
-	
-	/**
-	 * Declares a variable.
-	 * 
-	 * @param __modifier The modifier.
-	 * @param __type The type.
-	 * @param __name The name.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/31
-	 */
-	CSourceWriter variableDeclare(CModifier __modifier, CType __type,
-		CIdentifier __name)
-		throws IOException, NullPointerException;
-	
-	/**
-	 * Writes a variable to the output.
-	 *
-	 * @param __type The type of the variable.
-	 * @param __name The name of the variable.
-	 * @param __valueTokens The value tokens of this variable, if any.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/29
-	 */
-	CSourceWriter variableSet(CType __type,
-		CIdentifier __name, String... __valueTokens)
-		throws IOException, NullPointerException;
-	
-	/**
-	 * Writes a variable to the output.
-	 *
-	 * @param __modifier The modifiers to use, may be {@code null}.
-	 * @param __type The type of the variable.
-	 * @param __name The name of the variable.
-	 * @param __valueTokens The value tokens of this variable, if any.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/29
-	 */
-	CSourceWriter variableSet(CModifier __modifier, CType __type,
-		CIdentifier __name, String... __valueTokens)
-		throws IOException, NullPointerException;
+	CSourceWriter variableSet(CVariable __var, CExpression __value)
+		throws IllegalArgumentException, IOException, NullPointerException;
 	
 	/**
 	 * Writes a variable.

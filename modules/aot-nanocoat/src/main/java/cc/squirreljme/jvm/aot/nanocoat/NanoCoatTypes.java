@@ -238,4 +238,22 @@ public enum NanoCoatTypes
 	{
 		throw Debugging.todo();
 	}
+	
+	/**
+	 * Returns the type used as the given class type.
+	 * 
+	 * @param <T> The class to cast to.
+	 * @param __class The class to cast to.
+	 * @return The resultant type as a class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/19
+	 */
+	public final <T extends CType> T type(Class<T> __class)
+		throws NullPointerException
+	{
+		if (__class == null)
+			throw new NullPointerException("NARG");
+		
+		return __class.cast(this.type());
+	}
 }

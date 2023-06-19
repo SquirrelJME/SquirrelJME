@@ -135,11 +135,22 @@ public class CFunctionType
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2023/06/06
+	 * @since 2023/06/19
 	 */
 	@Override
-	List<String> __generateTokens(CTokenSet __set)
-		throws NullPointerException
+	public List<String> tokens(CBasicTokenSet __set)
+		throws NotTokenizableException, NullPointerException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/19
+	 */
+	@Override
+	public List<String> tokens(CNamedTokenSet __set, CIdentifier __name)
+		throws NotTokenizableException, NullPointerException
 	{
 		throw Debugging.todo();
 	}

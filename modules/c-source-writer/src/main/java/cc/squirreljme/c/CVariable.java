@@ -9,22 +9,19 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.util.List;
-
 /**
  * C variable type.
  *
  * @since 2023/05/30
  */
 public class CVariable
-	implements CDeclarable, CDefinable, CTokenizable
+	implements CDeclarable, CDefinable
 {
 	/** The type of this variable. */
 	public final CType type;
 	
 	/** The name of this variable. */
-	public final String name;
+	public final CIdentifier name;
 	
 	/**
 	 * Initializes a variable.
@@ -34,7 +31,7 @@ public class CVariable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/30
 	 */
-	private CVariable(CType __type, String __name)
+	private CVariable(CType __type, CIdentifier __name)
 		throws NullPointerException
 	{
 		if (__type == null || __name == null)
@@ -132,17 +129,6 @@ public class CVariable
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/12
-	 */
-	@Override
-	public List<String> tokens(CTokenSet __set)
-		throws NullPointerException
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
 	 * Initializes a variable.
 	 * 
 	 * @param __type The type used.
@@ -152,6 +138,21 @@ public class CVariable
 	 * @since 2023/05/30
 	 */
 	public static CVariable of(CType __type, String __name)
+		throws NullPointerException
+	{
+		return CVariable.of(null, __type, CIdentifier.of(__name));
+	}
+	
+	/**
+	 * Initializes a variable.
+	 * 
+	 * @param __type The type used.
+	 * @param __name The name of the variable.
+	 * @return The created variable.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/19
+	 */
+	public static CVariable of(CType __type, CIdentifier __name)
 		throws NullPointerException
 	{
 		return CVariable.of(null, __type, __name);
@@ -169,6 +170,23 @@ public class CVariable
 	 */
 	public static CVariable of(CModifier __modifier, CType __type,
 		String __name)
+		throws NullPointerException
+	{
+		return CVariable.of(__modifier, __type, CIdentifier.of(__name));
+	}
+	
+	/**
+	 * Initializes a variable.
+	 * 
+	 * @param __modifier The variable modifier.
+	 * @param __type The type used.
+	 * @param __name The name of the variable.
+	 * @return The created variable.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/30
+	 */
+	public static CVariable of(CModifier __modifier, CType __type,
+		CIdentifier __name)
 		throws NullPointerException
 	{
 		return new CVariable(CModifiedType.of(__modifier, __type), __name);

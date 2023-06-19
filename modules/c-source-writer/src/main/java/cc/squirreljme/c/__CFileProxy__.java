@@ -192,6 +192,28 @@ abstract class __CFileProxy__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/06/19
+	 */
+	@Override
+	public CSourceWriter declare(CVariable __var)
+		throws IOException, NullPointerException
+	{
+		return this.__file().declare(__var);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/19
+	 */
+	@Override
+	public <B extends CBlock> B declare(Class<B> __blockType, CVariable __var)
+		throws IOException, NullPointerException
+	{
+		return this.__file().declare(__blockType, __var);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2023/06/04
 	 */
 	@Override
@@ -359,19 +381,6 @@ abstract class __CFileProxy__
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CStructVariableBlock structVariableSet(CModifier __modifiers,
-		CPrimitiveType __structType, CIdentifier __structName)
-		throws IOException, NullPointerException
-	{
-		return this.__file().structVariableSet(__modifiers, __structType,
-			__structName);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/04
-	 */
-	@Override
 	public CSourceWriter surround(String __prefix, Object... __tokens)
 		throws IOException
 	{
@@ -421,55 +430,6 @@ abstract class __CFileProxy__
 		throws IOException
 	{
 		return this.__file().tokens(__tokens);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/04
-	 */
-	@Override
-	public CSourceWriter variableAssign(CIdentifier __target,
-		Object... __value)
-		throws IOException, NullPointerException
-	{
-		return this.__file().variableAssign(__target, __value);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/04
-	 */
-	@Override
-	public CSourceWriter variableDeclare(CModifier __modifier, CType __type,
-		CIdentifier __name)
-		throws IOException, NullPointerException
-	{
-		return this.__file().variableDeclare(__modifier, __type, __name);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/04
-	 */
-	@Override
-	public CSourceWriter variableSet(CType __type, CIdentifier __name,
-		String... __valueTokens)
-		throws IOException, NullPointerException
-	{
-		return this.__file().variableSet(__type, __name, __valueTokens);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/04
-	 */
-	@Override
-	public CSourceWriter variableSet(CModifier __modifier, CType __type,
-		CIdentifier __name, String... __valueTokens)
-		throws IOException, NullPointerException
-	{
-		return this.__file().variableSet(__modifier, __type, __name,
-			__valueTokens);
 	}
 	
 	/**

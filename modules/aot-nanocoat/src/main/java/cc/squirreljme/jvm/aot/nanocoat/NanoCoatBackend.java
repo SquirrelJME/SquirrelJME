@@ -14,6 +14,7 @@ import cc.squirreljme.c.CModifiers;
 import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
+import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.Backend;
 import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
@@ -101,8 +102,10 @@ public class NanoCoatBackend
 			"defined(SJME_C_CH)"))
 		{
 			// Write identifier reference
-			out.variableSet(CModifiers.EXTERN_CONST,
-				CPrimitiveType.SJME_NANORESOURCE, rcIdentifier);
+			CVariable rcVar = CVariable.of(
+				NanoCoatTypes.RESOURCE.type().constType(),
+				rcIdentifier);
+			out.define(rcVar.extern());
 			
 			// Else for source code
 			block.preprocessorElse();
@@ -111,9 +114,8 @@ public class NanoCoatBackend
 			byte[] data = StreamUtils.readAll(__in);
 			
 			// Write values for the resource data
-			try (CStructVariableBlock struct = out.structVariableSet(
-				CModifiers.EXTERN_CONST, CPrimitiveType.SJME_NANORESOURCE,
-				rcIdentifier))
+			try (CStructVariableBlock struct = out.declare(
+				CStructVariableBlock.class, rcVar))
 			{
 				struct.memberSet("path",
 					"\"" + __path + "\"");

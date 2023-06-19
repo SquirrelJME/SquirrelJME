@@ -325,6 +325,31 @@ public class CFile
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/06/19
+	 */
+	@Override
+	public CSourceWriter declare(CVariable __var)
+		throws IOException, NullPointerException
+	{
+		if (__var == null)
+			throw new NullPointerException("NARG");
+			
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/19
+	 */
+	@Override
+	public <B extends CBlock> B declare(Class<B> __blockType, CVariable __var)
+		throws IOException, NullPointerException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2023/06/04
 	 */
 	@Override
@@ -708,36 +733,6 @@ public class CFile
 	}
 	
 	/**
-	 * Defines a struct.
-	 *
-	 * @param __modifiers The modifiers used.
-	 * @param __structType The struct type.
-	 * @param __structName The struct name.
-	 * @return The block for being within the struct.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/29
-	 */
-	@Override
-	public CStructVariableBlock structVariableSet(CModifier __modifiers,
-		CPrimitiveType __structType, CIdentifier __structName)
-		throws IOException, NullPointerException
-	{
-		if (__structType == null || __structName == null)
-			throw new NullPointerException("NARG");
-		
-		// Setup new block
-		CStructVariableBlock rv = new CStructVariableBlock(this);
-		this.__pushBlock(rv);
-		
-		// Write the variable and the opening
-		this.variable(__modifiers, __structType, __structName);
-		this.tokens("=", "{");
-		
-		return rv;
-	}
-	
-	/**
 	 * Surrounds the set of tokens with a parenthesis, with an optional
 	 * prefix.
 	 * 
@@ -951,105 +946,6 @@ public class CFile
 	}
 	
 	/**
-	 * Assigns the given variable.
-	 * 
-	 * @param __target The target variable.
-	 * @param __value The value to set.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/31
-	 */
-	@Override
-	public CSourceWriter variableAssign(CIdentifier __target,
-		Object... __value)
-		throws IOException, NullPointerException 
-	{
-		if (__target == null || __value == null || __value.length == 0)
-			throw new NullPointerException("NARG");
-		
-		return this.tokens(__target, "=", __value, ";");
-	}
-	
-	/**
-	 * Declares a variable.
-	 * 
-	 * @param __modifier The modifier.
-	 * @param __type The type.
-	 * @param __name The name.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/31
-	 */
-	@Override
-	public CSourceWriter variableDeclare(CModifier __modifier, CType __type,
-		CIdentifier __name)
-		throws IOException, NullPointerException
-	{
-		if (__type == null || __name == null)
-			throw new NullPointerException("NARG");
-		
-		// Start on fresh line for readability
-		this.freshLine();
-		
-		this.variable(__modifier, __type, __name);
-		return this.token(";");
-	}
-	
-	/**
-	 * Writes a variable to the output.
-	 *
-	 * @param __type The type of the variable.
-	 * @param __name The name of the variable.
-	 * @param __valueTokens The value tokens of this variable, if any.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/29
-	 */
-	@Override
-	public CSourceWriter variableSet(CType __type,
-		CIdentifier __name, String... __valueTokens)
-		throws IOException, NullPointerException
-	{
-		return this.variableSet(null, __type, __name,
-			__valueTokens);
-	}
-	
-	/**
-	 * Writes a variable to the output.
-	 *
-	 * @param __modifier The modifiers to use, may be {@code null}.
-	 * @param __type The type of the variable.
-	 * @param __name The name of the variable.
-	 * @param __valueTokens The value tokens of this variable, if any.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/29
-	 */
-	@Override
-	public CSourceWriter variableSet(CModifier __modifier, CType __type,
-		CIdentifier __name, String... __valueTokens)
-		throws IOException, NullPointerException
-	{
-		if (__type == null || __name == null)
-			throw new NullPointerException("NARG");
-		
-		// This is nicer when it is on a fresh line
-		this.freshLine();
-		
-		// Write base variable
-		this.variable(__modifier, __type, __name);
-		
-		// Then write the value, if any
-		if (__valueTokens == null || __valueTokens.length <= 0)
-			return this.tokens(";");
-		return this.tokens("=", __valueTokens, ";");
-	}
-	
-	/**
 	 * Writes a variable.
 	 * 
 	 * @param __modifier The modifiers to use.
@@ -1061,6 +957,7 @@ public class CFile
 	 * @since 2023/05/29
 	 */
 	@Override
+	@Deprecated
 	public CSourceWriter variable(CModifier __modifier, CType __type,
 		CIdentifier __name)
 		throws IOException, NullPointerException

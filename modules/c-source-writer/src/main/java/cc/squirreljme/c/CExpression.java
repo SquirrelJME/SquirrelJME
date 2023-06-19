@@ -10,13 +10,11 @@
 package cc.squirreljme.c;
 
 /**
- * Represents something which can be declared.
+ * Represents a C expression, which is a group of tokens that does something.
  *
- * @deprecated Not liking this, so going to be going away possibly unless
- * I like it again.
- * @since 2023/06/04
+ * @see CExpressionBuilder
+ * @since 2023/06/19
  */
-@Deprecated
-public interface CDeclarable
+public class CExpression
 {
 }
