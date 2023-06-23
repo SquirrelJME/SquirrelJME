@@ -12,8 +12,10 @@ package cc.squirreljme.c;
 /**
  * Exception for when something cannot be tokenized with this.
  *
+ * @deprecated Tokens cannot be obtained directly anymore.
  * @since 2023/06/12
  */
+@Deprecated
 public class NotTokenizableException
 	extends IllegalArgumentException
 {
