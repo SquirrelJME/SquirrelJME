@@ -19,16 +19,4 @@ package cc.squirreljme.c;
 public class NotTokenizableException
 	extends IllegalArgumentException
 {
-	/**
-	 * Initializes the exception.
-	 * 
-	 * @param __set The set this cannot be tokenized with.
-	 * @since 2023/06/12
-	 */
-	public NotTokenizableException(CTokenSet __set)
-	{
-		// {@squirreljme.error CW0b Cannot be tokenized with the
-		// following set. (The set)}
-		super("CW0b " + __set);
-	}
 }

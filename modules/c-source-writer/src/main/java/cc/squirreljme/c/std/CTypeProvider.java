@@ -7,16 +7,38 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.c;
+package cc.squirreljme.c.std;
+
+import cc.squirreljme.c.CType;
 
 /**
- * Base interface for anything which is a token set, this is used to refer
- * to anything that can be tokenized accordingly.
+ * Provides a {@link CType}.
  *
- * @deprecated Probably going to go away.
- * @since 2023/06/06
+ * @since 2023/06/23
  */
-@Deprecated
-public interface CTokenSet
+public interface CTypeProvider
 {
+	/**
+	 * Returns the constant type.
+	 * 
+	 * @return The constant type.
+	 * @since 2023/06/23
+	 */
+	CType constType();
+	
+	/**
+	 * Returns the pointer type.
+	 * 
+	 * @return The pointer type.
+	 * @since 2023/06/23
+	 */
+	CType pointerType();
+	
+	/**
+	 * Returns the type.
+	 * 
+	 * @return The type.
+	 * @since 2023/06/23
+	 */
+	CType type();
 }

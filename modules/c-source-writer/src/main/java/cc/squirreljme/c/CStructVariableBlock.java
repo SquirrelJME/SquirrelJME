@@ -10,7 +10,6 @@
 package cc.squirreljme.c;
 
 import java.io.IOException;
-import java.lang.ref.Reference;
 
 /**
  * Defines a struct variable block.
@@ -67,7 +66,7 @@ public class CStructVariableBlock
 		
 		// Setup block
 		CArrayBlock rv = new CArrayBlock(this);
-		return this.__file().__pushBlock(rv);
+		return this.__file().__pushBlock(rv, false);
 	}
 	
 	/**
@@ -115,7 +114,7 @@ public class CStructVariableBlock
 		
 		// Open block
 		return this.__file().__pushBlock(new CStructVariableBlock(this,
-			"}"));
+			"}"), true);
 	}
 	
 	/**

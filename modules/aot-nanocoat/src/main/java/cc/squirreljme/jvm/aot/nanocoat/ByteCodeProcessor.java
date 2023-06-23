@@ -10,8 +10,6 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CExpressionBuilder;
-import cc.squirreljme.c.CIdentifier;
-import cc.squirreljme.c.CPrimitiveType;
 import cc.squirreljme.c.CFunctionBlock;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CSwitchBlock;

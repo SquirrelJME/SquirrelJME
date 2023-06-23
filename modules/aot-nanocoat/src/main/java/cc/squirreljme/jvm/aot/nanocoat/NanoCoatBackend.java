@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
-import cc.squirreljme.c.CPrimitiveType;
-import cc.squirreljme.c.CModifiers;
 import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;

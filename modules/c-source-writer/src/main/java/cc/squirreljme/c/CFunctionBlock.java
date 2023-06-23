@@ -48,6 +48,6 @@ public class CFunctionBlock
 		
 		// Push
 		CSwitchBlock rv = new CSwitchBlock(this);
-		return this.__file().__pushBlock(rv);
+		return this.__file().__pushBlock(rv, true);
 	}
 }

@@ -413,6 +413,17 @@ abstract class __CFileProxy__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/06/23
+	 */
+	@Override
+	public CSourceWriter token(CharSequence __token, boolean __forceNewline)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		return this.__file().token(__token, __forceNewline);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2023/06/04
 	 */
 	@Override

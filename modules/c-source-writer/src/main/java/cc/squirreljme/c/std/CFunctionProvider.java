@@ -7,16 +7,22 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.c;
+package cc.squirreljme.c.std;
+
+import cc.squirreljme.c.CFunctionType;
 
 /**
- * Represents something which can be declared.
+ * Provider for C functions.
  *
- * @deprecated Not liking this, so going to be going away possibly unless
- * I like it again.
- * @since 2023/06/04
+ * @since 2023/06/23
  */
-@Deprecated
-public interface CDeclarable
+public interface CFunctionProvider
 {
+	/**
+	 * Returns the calculated function.
+	 * 
+	 * @return The function.
+	 * @since 2023/06/23
+	 */
+	CFunctionType function();
 }

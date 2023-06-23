@@ -11,8 +11,6 @@ package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CArrayBlock;
 import cc.squirreljme.c.CIdentifier;
-import cc.squirreljme.c.CPrimitiveType;
-import cc.squirreljme.c.CModifiers;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CStructVariableBlock;

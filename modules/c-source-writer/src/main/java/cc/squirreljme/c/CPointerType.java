@@ -10,10 +10,7 @@
 package cc.squirreljme.c;
 
 import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
-import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * Represents a pointer type.
@@ -112,90 +109,6 @@ public class CPointerType
 		throws IllegalArgumentException
 	{
 		return CPointerType.of(this);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/06
-	 */
-	@Override
-	List<String> __generateTokens(CTokenSet __set)
-		throws NullPointerException
-	{
-		Reference<List<String>> ref = this._tokens;
-		List<String> rv;
-		
-		if (ref == null || (rv = ref.get()) == null)
-		{
-			List<String> build = new ArrayList<>();
-			
-			// Determine if this ultimately leads to a function
-			CType root = this.pointedType;
-			int functionDepth = 0;
-			CFunctionType function = null;
-			for (CType at = root;;)
-			{
-				// This is a function pointer
-				if (at instanceof CFunctionType)
-				{
-					function = (CFunctionType)at;
-					break;
-				}
-				
-				// Go down the chain
-				if (at.isPointer())
-				{
-					functionDepth++;
-					at = at.dereferenceType();
-				}
-				else
-					break;
-			}
-			
-			// Functions are a bit different
-			if (function != null)
-			{
-				// Return type, all the tokens used for it
-				build.addAll(function.returnType.tokens());
-				
-				// Add function surround
-				// The more pointers on the function,
-				// the more stars attached: void (*foo)() -> void (**foo)()
-				build.add("(");
-				for (int i = 0; i <= functionDepth; i++)
-					build.add("*");
-				build.add(function.name.identifier);
-				build.add(")");
-				
-				// Add all arguments
-				build.add("(");
-				List<CVariable> arguments = function.arguments;
-				for (int i = 0, n = arguments.size(); i < n; i++)
-				{
-					if (i > 0)
-						build.add(",");
-					
-					// We do not care about the parameter names for functions,
-					// only their types
-					build.addAll(
-						arguments.get(i).type.tokens());
-				}
-				build.add(")");
-			}
-			
-			// Star follows the type
-			else
-			{
-				build.addAll(root.tokens());
-				build.add("*");
-			}
-			
-			// Build and cache
-			rv = UnmodifiableList.of(build);
-			this._tokens = new WeakReference<>(rv);
-		}
-			
-		return rv;
 	}
 	
 	/**

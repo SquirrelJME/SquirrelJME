@@ -19,7 +19,7 @@ import net.multiphasicapps.collections.UnmodifiableList;
  * @since 2023/06/04
  */
 public final class CIdentifier
-	implements Comparable<CIdentifier>, CBasicTokenizable
+	implements Comparable<CIdentifier>, CTokenizable
 {
 	/** The string identifier. */
 	protected String identifier;

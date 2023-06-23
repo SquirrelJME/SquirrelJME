@@ -10,10 +10,7 @@
 package cc.squirreljme.c;
 
 import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
-import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * Represents a type which is modified by a modifier.
@@ -125,48 +122,6 @@ public final class CModifiedType
 		throws IllegalArgumentException
 	{
 		return CPointerType.of(this);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/06
-	 */
-	@Override
-	List<String> __generateTokens(CTokenSet __set)
-		throws NullPointerException
-	{
-		Reference<List<String>> ref = this._tokens;
-		List<String> rv;
-		
-		// Build tokens?
-		if (ref == null || (rv = ref.get()) == null)
-		{
-			List<String> build = new ArrayList<>();
-			
-			CModifier modifier = this.modifier;
-			CType type = this.type;
-			
-			// These modifiers are prefixes on the left unless the type is
-			// a pointer, in which is appears on the left
-			if (modifier instanceof __SinglePrefixModifier__ &&
-				!(type instanceof CPointerType))
-			{
-				build.addAll(modifier.tokens(CTokenSet.GENERAL));
-				build.addAll(type.tokens());
-			}
-			
-			// Otherwise they attach to the right side (postfix)
-			else
-			{
-				build.addAll(type.tokens());
-				build.addAll(modifier.tokens(CTokenSet.GENERAL));
-			}
-			
-			rv = UnmodifiableList.of(build);
-			this._tokens = new WeakReference<>(rv);
-		}
-		
-		return rv;
 	}
 	
 	/**

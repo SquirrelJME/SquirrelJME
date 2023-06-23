@@ -417,6 +417,20 @@ public interface CSourceWriter
 	 * Writes a single token to the output.
 	 *
 	 * @param __token The token to write.
+	 * @param __forceNewline Force a newline to be written?
+	 * @return {@code this}.
+	 * @throws IllegalArgumentException If newlines or tabs were printed.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/23
+	 */
+	CSourceWriter token(CharSequence __token, boolean __forceNewline)
+		throws IllegalArgumentException, IOException, NullPointerException;
+	
+	/**
+	 * Writes a single token to the output.
+	 *
+	 * @param __token The token to write.
 	 * @return {@code this}.
 	 * @throws IllegalArgumentException If the token type is not valid.
 	 * @throws IOException On write errors.

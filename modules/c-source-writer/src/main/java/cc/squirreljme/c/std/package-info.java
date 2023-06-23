@@ -7,16 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.c;
-
 /**
- * A token set which is named.
+ * Standard C functions and types.
  *
- * @deprecated Probably will be going away.
- * @since 2023/06/12
+ * @since 2023/06/23
  */
-@Deprecated
-public enum CNamedTokenSet
-	implements CTokenSet
-{
-}
+
+package cc.squirreljme.c.std;

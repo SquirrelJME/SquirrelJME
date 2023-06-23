@@ -39,16 +39,8 @@ import java.util.List;
 public class CFile
 	implements Closeable, CSourceWriter
 {
-	/** Right side threshold. */
-	private static final byte _GUTTER_THRESHOLD =
-		60;
-	
 	/** The stream to write to. */
 	protected final CTokenOutput out;
-	
-	/** Single character buffer. */
-	private final char[] _singleBuf =
-		new char[1];
 	
 	/** C Block stack. */
 	private final Deque<CBlock> _blocks =
@@ -58,17 +50,8 @@ public class CFile
 	final Reference<CFile> _fileRef =
 		new WeakReference<>(this);
 	
-	/** The current line. */
-	private volatile int _line;
-	
-	/** The current column. */
-	private volatile int _column;
-	
-	/** The last character written. */
-	private volatile char _lastChar;
-	
-	/** Writing preprocessor lines? */
-	private volatile boolean _preprocessorLines;
+	/** Was the last written token a whitespace? */
+	private volatile boolean _lastWhitespace;
 	
 	/**
 	 * Initializes the C source writer.
@@ -87,11 +70,7 @@ public class CFile
 	}
 	
 	/**
-	 * Writes the given array to the output.
-	 * 
-	 * @param __values The values to write.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
@@ -102,11 +81,7 @@ public class CFile
 	}
 	
 	/**
-	 * Writes the given array to the output.
-	 * 
-	 * @param __values The values to write.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
@@ -117,11 +92,7 @@ public class CFile
 	}
 	
 	/**
-	 * Writes the given array to the output.
-	 * 
-	 * @param __values The values to write.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
@@ -132,11 +103,7 @@ public class CFile
 	}
 	
 	/**
-	 * Writes the given array to the output.
-	 * 
-	 * @param __values The values to write.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
@@ -147,11 +114,7 @@ public class CFile
 	}
 	
 	/**
-	 * Writes the given array to the output.
-	 * 
-	 * @param __values The values to write.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
@@ -162,11 +125,7 @@ public class CFile
 	}
 	
 	/**
-	 * Writes the given array to the output.
-	 * 
-	 * @param __values The values to write.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
@@ -177,11 +136,7 @@ public class CFile
 	}
 	
 	/**
-	 * Writes the given array to the output.
-	 * 
-	 * @param __values The values to write.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
@@ -192,11 +147,7 @@ public class CFile
 	}
 	
 	/**
-	 * Writes the given array to the output.
-	 * 
-	 * @param __values The values to write.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
@@ -207,11 +158,7 @@ public class CFile
 	}
 	
 	/**
-	 * Writes the given array to the output.
-	 * 
-	 * @param __values The values to write.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
@@ -222,11 +169,7 @@ public class CFile
 	}
 	
 	/**
-	 * Writes the given array to the output.
-	 * 
-	 * @param __values The values to write.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
@@ -250,11 +193,7 @@ public class CFile
 	}
 	
 	/**
-	 * Writes the given character.
-	 * 
-	 * @param __c The character to write.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
@@ -301,22 +240,19 @@ public class CFile
 	}
 	
 	/**
-	 * Opens a curly block.
-	 * 
-	 * @return The block to open.
-	 * @throws IOException On 
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
 	public CBlock curly()
 		throws IOException
 	{
-		// Setup new block
-		CBlock rv = new CBlock(this, "}");
-		this.__pushBlock(rv);
-		
 		// Output open block
-		this.__out('{');
+		CBlock rv = new CBlock(this, "}");
+		this.token("{");
+		
+		// Setup new block
+		this.__pushBlock(rv, true);
 		
 		return rv;
 	}
@@ -392,39 +328,24 @@ public class CFile
 	}
 	
 	/**
-	 * Start on a fresh line.
-	 * 
-	 * @throws IOException On write errors.
+	 * {@inheritDoc}
 	 * @since 2023/05/28
 	 */
 	@Override
 	public CSourceWriter freshLine()
 		throws IOException
 	{
-		// Only need to do this if we are not at the line start
-		if (this._column > 0)
-		{
-			// Preprocessor lines can do multi-line if they end in a slash
-			// so we need to do that before we return
-			if (this._preprocessorLines)
-				this.__out('\\');
-			
-			this.__out('\n');
-		}
+		// Emit newline
+		this.out.newLine(false);
+		
+		// Last was whitespace
+		this._lastWhitespace = true;
 		
 		return this;
 	}
 	
 	/**
-	 * Writes a function.
-	 * 
-	 * @param __modifier The function modifier.
-	 * @param __name The name of the function.
-	 * @param __returnVal The return value.
-	 * @param __arguments The arguments to the function.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException If no name was specified.
+	 * {@inheritDoc}
 	 * @since 2023/05/30
 	 */
 	@Override
@@ -448,13 +369,7 @@ public class CFile
 	}
 	
 	/**
-	 * Performs a function call.
-	 * 
-	 * @param __function The function to call.
-	 * @param __args The arguments to the call.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
+	 * {@inheritDoc}
 	 * @since 2023/05/31
 	 */
 	@Override
@@ -469,15 +384,7 @@ public class CFile
 	}
 	
 	/**
-	 * Defines a function.
-	 * 
-	 * @param __modifier The function modifier.
-	 * @param __name The name of the function.
-	 * @param __returnVal The return value.
-	 * @param __arguments The arguments to the function.
-	 * @return The block for writing functions.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException If no name was specified.
+	 * {@inheritDoc}
 	 * @since 2023/05/30
 	 */
 	@Override
@@ -497,19 +404,11 @@ public class CFile
 		this.token("{");
 		
 		// Push block for it
-		return this.__pushBlock(new CFunctionBlock(this));
+		return this.__pushBlock(new CFunctionBlock(this), true);
 	}
 	
 	/**
-	 * Writes a function prototype.
-	 * 
-	 * @param __modifier The function modifier.
-	 * @param __name The name of the function.
-	 * @param __returnVal The return value.
-	 * @param __arguments The arguments to the function.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException If no name was specified.
+	 * {@inheritDoc}
 	 * @since 2023/05/30
 	 */
 	@Override
@@ -529,12 +428,7 @@ public class CFile
 	}
 	
 	/**
-	 * Writes the specified number.
-	 * 
-	 * @param __number The number to write.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
@@ -558,13 +452,7 @@ public class CFile
 	}
 	
 	/**
-	 * Writes the specified number.
-	 * 
-	 * @param __type The type of number this is.
-	 * @param __number The number to write.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
@@ -594,13 +482,7 @@ public class CFile
 	}
 	
 	/**
-	 * Writes a preprocessor define.
-	 * 
-	 * @param __symbol The symbol to define.
-	 * @param __tokens The tokens to define.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
@@ -619,12 +501,7 @@ public class CFile
 	}
 	
 	/**
-	 * Adds an if check for preprocessing.
-	 * 
-	 * @param __condition The tokens to use for the check.
-	 * @return The opened block.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
@@ -636,7 +513,7 @@ public class CFile
 		
 		// Setup new block
 		CPPBlock rv = new CPPBlock(this);
-		this.__pushBlock(rv);
+		this.__pushBlock(rv, false);
 		
 		// Start the check
 		this.preprocessorLine(CPPDirective.IF, __condition);
@@ -645,12 +522,7 @@ public class CFile
 	}
 	
 	/**
-	 * Writes a preprocessor include.
-	 * 
-	 * @param __fileName The file name to use.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
@@ -665,13 +537,7 @@ public class CFile
 	}
 	
 	/**
-	 * Outputs a preprocessor line.
-	 * 
-	 * @param __directive The preprocesor symbol. 
-	 * @param __tokens The token to use.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
+	 * {@inheritDoc}
 	 * @since 2023/05/28
 	 */
 	@Override
@@ -712,12 +578,7 @@ public class CFile
 	}
 	
 	/**
-	 * Writes a preprocessor undefine.
-	 * 
-	 * @param __symbol The symbol to undefine.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
@@ -731,11 +592,7 @@ public class CFile
 	}
 	
 	/**
-	 * Writes a return from a function.
-	 * 
-	 * @param __tokens The tokens to write, optional.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
+	 * {@inheritDoc}
 	 * @since 2023/06/03
 	 */
 	@Override
@@ -748,13 +605,7 @@ public class CFile
 	}
 	
 	/**
-	 * Surrounds the set of tokens with a parenthesis, with an optional
-	 * prefix.
-	 * 
-	 * @param __prefix The of type, may be {@code null}.
-	 * @param __tokens The tokens to wrap.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
@@ -767,14 +618,7 @@ public class CFile
 	}
 	
 	/**
-	 * Surround with parenthesis, potentially delimited.
-	 * 
-	 * @param __prefix The prefix to use.
-	 * @param __delim The delimiter to use.
-	 * @param __tokens The tokens to wrap and delimit.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException If no delimiter was specified.
+	 * {@inheritDoc}
 	 * @since 3023/05/30
 	 */
 	@Override
@@ -804,17 +648,22 @@ public class CFile
 	}
 	
 	/**
-	 * Writes a single token to the output.
-	 *
-	 * @param __token The token to write.
-	 * @return {@code this}.
-	 * @throws IllegalArgumentException If newlines or tabs were printed.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/29
+	 * {@inheritDoc}
+	 * @since 2023/06/23
 	 */
 	@Override
 	public CSourceWriter token(CharSequence __token)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		return this.token(__token, false);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/23
+	 */
+	@Override
+	public CSourceWriter token(CharSequence __token, boolean __forceNewline)
 		throws IllegalArgumentException, IOException, NullPointerException
 	{
 		if (__token == null)
@@ -825,55 +674,37 @@ public class CFile
 		if (n == 0)
 			return this;
 		
-		// Single character token?
-		char singleChar = (__token.length() == 1 ? __token.charAt(0) : 0);
-		
-		// If the last character we wrote is not whitespace, then we need to
-		// add some space before we write this token
-		char lastChar = this._lastChar;
-		if (lastChar != ' ' && lastChar != '\t' &&
-			lastChar != '\r' && lastChar != '\n')
-			if (singleChar != ',')
-				this.__out(' ');
-		
-		// Would this write over the side?
-		if (this._column + n > CFile._GUTTER_THRESHOLD)
+		// Forward
+		CTokenOutput out = this.out;
+		char startChar = __token.charAt(0);
+		if (n == 1)
 		{
-			// Is this a string that will be written off the side of the
-			// gutter?
-			if (__token.charAt(0) == '"' && __token.charAt(1) == '"')
-			{
-				/*throw Debugging.todo();*/
-			}
-			
-			// Move to fresh line so that all of it is on this line
-			this.freshLine();
+			// Map single character outputs like this to spaces and whatnot
+			if (startChar == ' ')
+				out.space();
+			else if (startChar == '\t')
+				out.tab();
+			else if (startChar == '\r' || startChar == '\n')
+				out.newLine(__forceNewline);
+			else
+				out.token(__token, __forceNewline);
 		}
+		else
+			out.token(__token, __forceNewline);
 		
-		// Write the output
-		for (int i = 0; i < n; i++)
-		{
-			char c = __token.charAt(i);
-			
-			// {@squirreljme.error CW06 Cannot print newlines or tabs.}
-			if (c == '\t' || c == '\r' || c == '\n')
-				throw new IllegalArgumentException("CW06");
-			
-			// Output
-			this.__out(c);
-		}
+		// Did the token end on whitespace or was newline forced?
+		char endChar = __token.charAt(n - 1); 
+		if (__forceNewline ||
+			endChar == '\r' || endChar == '\n' ||
+			endChar == ' ' || endChar == '\t')
+			this._lastWhitespace = true;
 		
 		// Self
 		return this;
 	}
 	
 	/**
-	 * Writes a single token to the output.
-	 *
-	 * @param __token The token to write.
-	 * @return {@code this}.
-	 * @throws IllegalArgumentException If the token type is not valid.
-	 * @throws IOException On write errors.
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
@@ -883,13 +714,9 @@ public class CFile
 		// null
 		if (__token == null)
 			return this.token("NULL");
-		
-		// For anything tokenizable, it must explicitly be referenced
-		if (__token instanceof CTokenizable)
-			throw new NotTokenizableException(null);
 			
 		// Primitive arrays
-		else if (__token instanceof boolean[])
+		if (__token instanceof boolean[])
 			return this.array((boolean[])__token);
 		else if (__token instanceof byte[])
 			return this.array((byte[])__token);
@@ -937,11 +764,7 @@ public class CFile
 	}
 	
 	/**
-	 * Writes the specified tokens to the output.
-	 *
-	 * @param __tokens The tokens to write.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override
@@ -1000,73 +823,26 @@ public class CFile
 	}
 	
 	/**
-	 * Writes a single character to the output.
-	 * 
-	 * @param __c The character to write.
-	 * @throws IOException On write errors.
-	 * @since 2023/05/28
-	 */
-	private void __out(char __c)
-		throws IOException
-	{
-		// Write to output
-		char lastChar = this._lastChar;
-		
-		// New line?
-		if (__c == '\r' || __c == '\n')
-		{
-			// Do not write double newlines
-			if (lastChar == '\r' || lastChar == '\n')
-				return;
-			
-			// Move line ahead
-			this._line++;
-			this._column = 0;
-		}
-		
-		// Align tabs always to four columns
-		else if (__c == '\t')
-			this._column += 4 - (this._column % 4);
-			
-		// Otherwise, increase column size
-		else
-			this._column++;
-		
-		// Just write single character, as long as it is not CR
-		if (__c != '\r')
-		{
-			// Debug
-			if (__c == '\n')
-			{
-				System.err.println();
-				this.out.append("\n");
-			}
-			else
-			{
-				System.err.print(__c);
-				this.out.append(__c);
-			}
-		}
-		
-		// Store last character for later writes
-		this._lastChar = __c;
-	}
-	
-	/**
 	 * Pushes the block to the stack.
-	 * 
+	 *
 	 * @param <B> The type of block to push.
 	 * @param __block The block to push.
+	 * @param __indentUp Indentation is upped?
 	 * @return The block to push.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	<B extends CBlock> B __pushBlock(B __block)
+	<B extends CBlock> B __pushBlock(B __block, boolean __indentUp)
 		throws NullPointerException
 	{
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
+		// Increase indentation?
+		if (__indentUp)
+			this.out.indent(1);
+		
+		// Push block into
 		this._blocks.push(__block);
 		return __block;
 	}

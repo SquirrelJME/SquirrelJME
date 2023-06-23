@@ -15,7 +15,7 @@ package cc.squirreljme.c;
  * @since 2023/05/30
  */
 public class CVariable
-	implements CDeclarable, CDefinable
+	implements CDefinable
 {
 	/** The type of this variable. */
 	public final CType type;

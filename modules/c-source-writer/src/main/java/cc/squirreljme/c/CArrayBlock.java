@@ -56,6 +56,6 @@ public class CArrayBlock
 		this.token("{");
 		
 		// Push it to the writer
-		return this.__file().__pushBlock(rv);
+		return this.__file().__pushBlock(rv, false);
 	}
 }

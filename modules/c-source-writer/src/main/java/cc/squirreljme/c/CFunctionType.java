@@ -21,7 +21,7 @@ import net.multiphasicapps.collections.UnmodifiableList;
  */
 public class CFunctionType
 	extends __CAbstractType__
-	implements CDeclarable, CDefinable
+	implements CDefinable
 {
 	/** The name of the function. */
 	public final CIdentifier name;
@@ -131,17 +131,6 @@ public class CFunctionType
 		throws IllegalArgumentException
 	{
 		return CPointerType.of(this);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/19
-	 */
-	@Override
-	public List<String> tokens(CNamedTokenSet __set, CIdentifier __name)
-		throws NotTokenizableException, NullPointerException
-	{
-		throw Debugging.todo();
 	}
 	
 	/**

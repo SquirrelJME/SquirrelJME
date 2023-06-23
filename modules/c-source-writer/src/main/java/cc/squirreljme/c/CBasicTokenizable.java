@@ -16,16 +16,13 @@ import java.util.List;
  *
  * @since 2023/06/12
  */
-public interface CBasicTokenizable
-	extends CTokenizable
+public interface CTokenizable
 {
 	/**
 	 * Returns the token representation of this.
 	 *
 	 * @return The token representation of this.
-	 * @throws NotTokenizableException If this cannot be tokenized this way.
 	 * @since 2023/05/29
 	 */
-	List<String> tokens()
-		throws NotTokenizableException;
+	List<String> tokens();
 }

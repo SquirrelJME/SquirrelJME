@@ -40,15 +40,4 @@ public class CTypeDefType
 	{
 		throw Debugging.todo();
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/06
-	 */
-	@Override
-	List<String> __generateTokens(CTokenSet __set)
-		throws NullPointerException
-	{
-		throw Debugging.todo();
-	}
 }

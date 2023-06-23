@@ -133,15 +133,4 @@ public enum CPrimitiveType
 		
 		return rv;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/05/29
-	 */
-	@Override
-	public List<String> tokens(CTokenSet __set)
-	{
-		// Primitive types are all the same
-		return this.token;
-	}
 }
