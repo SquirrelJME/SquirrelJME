@@ -10,6 +10,7 @@
 package cc.squirreljme.c.out;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.IOException;
 
 /**
  * Wraps the output and makes it very pretty.
@@ -28,6 +29,71 @@ public class PrettyCTokenOutput
 	 */
 	public PrettyCTokenOutput(CTokenOutput __wrap)
 		throws NullPointerException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/22
+	 */
+	@Override
+	public void close()
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/22
+	 */
+	@Override
+	public void indent(int __adjust)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/22
+	 */
+	@Override
+	public void newLine(boolean __force)
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/22
+	 */
+	@Override
+	public void space()
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/22
+	 */
+	@Override
+	public void tab()
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/22
+	 */
+	@Override
+	public void token(CharSequence __cq, boolean __forceNewline)
+		throws IOException, NullPointerException
 	{
 		throw Debugging.todo();
 	}

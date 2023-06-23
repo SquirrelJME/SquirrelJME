@@ -34,19 +34,17 @@ public class TestStructType
 			.build();
 		
 		// Declare struct
-		try (__Spool__ spool = new __Spool__();
-			CFile file = spool.file())
+		try (__Spool__ spool = new __Spool__())
 		{
-			file.declare(CVariable.of(struct, "foo"));
+			spool.declare(CVariable.of(struct, "foo"));
 			
 			this.secondary("declare", spool.tokens());
 		}
 		
 		// Define struct
-		try (__Spool__ spool = new __Spool__();
-			 CFile file = spool.file())
+		try (__Spool__ spool = new __Spool__())
 		{
-			file.define(CVariable.of(struct, "foo"));
+			spool.define(CVariable.of(struct, "foo"));
 			
 			this.secondary("define", spool.tokens());
 		}

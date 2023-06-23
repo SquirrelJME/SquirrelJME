@@ -10,32 +10,37 @@
 package cc.squirreljme.c;
 
 import cc.squirreljme.c.out.StringCollectionCTokenOutput;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import net.multiphasicapps.tac.TestRunnable;
 
 /**
- * Token spool, used for testing.
+ * Token spool, used for testing, this makes it easier to collect all the
+ * tokens and shove them into {@link TestRunnable#secondary(String, Object)}.
  *
  * @since 2023/06/19
  */
 final class __Spool__
+	extends __CFileProxy__
 	implements AutoCloseable
 {
 	/** The resultant list. */
-	private final List<String> _list =
-		new ArrayList<>();
+	private final Collection<String> _list;
 	
 	/**
 	 * Initializes the spool.
 	 * 
-	 * @since 2023/06/19
+	 * @since 2023/06/22
 	 */
 	__Spool__()
 	{
-		this._output = ;
+		super(new CFile(new StringCollectionCTokenOutput(
+			new ArrayList<String>(), false)));
+		
+		this._list = ((StringCollectionCTokenOutput)super.__file().out)
+			.output();
 	}
 	
 	/**
@@ -44,19 +49,9 @@ final class __Spool__
 	 */
 	@Override
 	public void close()
+		throws IOException
 	{
-	}
-	
-	/**
-	 * Returns the file for writing.
-	 * 
-	 * @return The file.
-	 * @since 2023/06/19
-	 */
-	public CFile file()
-	{
-		return new CFile(new StringCollectionCTokenOutput(
-			this._list, false));
+		this.__file().close();
 	}
 	
 	/**
@@ -67,7 +62,7 @@ final class __Spool__
 	 */
 	public String[] tokens()
 	{
-		List<String> list = this._list;
+		Collection<String> list = this._list;
 		return list.toArray(new String[list.size()]);
 	}
 }

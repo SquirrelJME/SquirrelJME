@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c.out;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.util.Collection;
 
@@ -20,6 +21,9 @@ import java.util.Collection;
 public class StringCollectionCTokenOutput
 	implements CTokenOutput
 {
+	/** The output collection. */
+	protected final Collection<String> out;
+	
 	/**
 	 * Initializes the output to the string collection.
 	 * 
@@ -35,7 +39,7 @@ public class StringCollectionCTokenOutput
 		if (__out == null)
 			throw new NullPointerException("NARG");
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		this.out = __out;
 	}
 	
 	/**
@@ -47,5 +51,82 @@ public class StringCollectionCTokenOutput
 		throws IOException
 	{
 		// Collections do not get closed
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/22
+	 */
+	@Override
+	public void indent(int __adjust)
+	{
+		// Does nothing, string collection lacks this completely
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/22
+	 */
+	@Override
+	public void newLine(boolean __force)
+		throws IOException
+	{
+		// Only if forced
+		if (__force)
+			this.out.add("\n");
+	}
+	
+	/**
+	 * Returns the output collection.
+	 * 
+	 * @return The output.
+	 * @since 2023/06/22
+	 */
+	public final Collection<String> output()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/22
+	 */
+	@Override
+	public void space()
+		throws IOException
+	{
+		// Does nothing, string collection lacks this completely
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/22
+	 */
+	@Override
+	public void tab()
+		throws IOException
+	{
+		// Does nothing, string collection lacks this completely
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/22
+	 */
+	@Override
+	public void token(CharSequence __cq, boolean __forceNewline)
+		throws IOException, NullPointerException
+	{
+		if (__cq == null)
+			throw new NullPointerException("NARG");
+		
+		Collection<String> out = this.out;
+		
+		// Add to the output
+		out.add(__cq.toString());
+		
+		// Force newline at end, if preprocessor for example?
+		if (__forceNewline)
+			out.add("\n");
 	}
 }

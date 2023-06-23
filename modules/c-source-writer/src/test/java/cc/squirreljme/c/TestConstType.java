@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import java.io.IOException;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
@@ -26,43 +27,67 @@ public class TestConstType
 	 */
 	@Override
 	public void test()
+		throws IOException
 	{
 		// The type to be a constant
 		CType intType = CPrimitiveType.INT32_T;
 		
 		// const int
 		CType constInt = CModifiedType.of(CConstModifier.CONST, intType);
-		this.secondary("constint",
-			constInt.tokens().toArray(new String[0]));
+		try (__Spool__ spool = new __Spool__())
+		{
+			spool.declare(CVariable.of(constInt, "foo"));
+			
+			this.secondary("constint", spool.tokens());
+		}
 		
 		// pointer to const int
 		CType ptrConstInt = constInt.pointerType();
-		this.secondary("ptrtoconstint",
-			ptrConstInt.tokens().toArray(new String[0]));
+		try (__Spool__ spool = new __Spool__())
+		{
+			spool.declare(CVariable.of(ptrConstInt, "foo"));
+		
+			this.secondary("ptrtoconstint", spool.tokens());
+		}
 		
 		// const pointer to int
 		CType constPointerInt = CModifiedType.of(CConstModifier.CONST,
 			intType.pointerType());
-		this.secondary("constpointertoint",
-			constPointerInt.tokens().toArray(new String[0]));
+		try (__Spool__ spool = new __Spool__())
+		{
+			spool.declare(CVariable.of(constPointerInt, "foo"));
+		
+			this.secondary("constpointertoint", spool.tokens());
+		}
 		
 		// const pointer to const int
 		CType constPointerConstInt = CModifiedType.of(CConstModifier.CONST,
 			constInt.pointerType());
-		this.secondary("constpointertoconstint",
-			constPointerConstInt
-				.tokens().toArray(new String[0]));
+		try (__Spool__ spool = new __Spool__())
+		{
+			spool.declare(CVariable.of(constPointerConstInt, "foo"));
+		
+			this.secondary("constpointertoconstint", spool.tokens());
+		}
 		
 		// pointer to const pointer to const int
 		// const int * const *var
 		CType pTcpTci = constPointerConstInt.pointerType();
-		this.secondary("pTcpTci",
-			pTcpTci.tokens().toArray(new String[0]));
+		try (__Spool__ spool = new __Spool__())
+		{
+			spool.declare(CVariable.of(pTcpTci, "foo"));
+		
+			this.secondary("pTcpTci", spool.tokens());
+		}
 		
 		// pointer to pointer to const pointer to const int
 		// const int * const **var
 		CType ppTcpTci = pTcpTci.pointerType();
-		this.secondary("ppTcpTci",
-			ppTcpTci.tokens().toArray(new String[0]));
+		try (__Spool__ spool = new __Spool__())
+		{
+			spool.declare(CVariable.of(ppTcpTci, "foo"));
+		
+			this.secondary("ppTcpTci", spool.tokens());
+		}
 	}
 }

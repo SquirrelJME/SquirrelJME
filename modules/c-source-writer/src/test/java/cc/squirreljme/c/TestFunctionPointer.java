@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import java.io.IOException;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
@@ -25,11 +26,15 @@ public class TestFunctionPointer
 	 */
 	@Override
 	public void test()
+		throws IOException
 	{
-		this.secondary("intboopsqueak",
-			CFunctionType.of(CIdentifier.of("boop"),
-			CPrimitiveType.INT32_T,
-			CVariable.of(CPrimitiveType.UINT8_T, "squeak"))
-				.pointerType().tokens());
+		try (__Spool__ spool = new __Spool__())
+		{
+			spool.define(CFunctionType.of(CIdentifier.of("boop"),
+				CPrimitiveType.INT32_T,
+				CVariable.of(CPrimitiveType.UINT8_T, "squeak")));
+			
+			this.secondary("intboopsqueak", spool.tokens());
+		}
 	}
 }

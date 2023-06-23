@@ -61,8 +61,8 @@ public interface CTokenOutput
 	 * Emits a token.
 	 * 
 	 * @param __cq The token to emit.
-	 * @param __forceNewline If a newline is needed because this is a
-	 * preprocessor line or single line comment.
+	 * @param __forceNewline If a newline is needed at the end because this is
+	 * a preprocessor line or single line comment.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/19
