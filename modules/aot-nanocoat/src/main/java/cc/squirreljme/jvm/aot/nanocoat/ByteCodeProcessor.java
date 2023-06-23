@@ -313,7 +313,7 @@ public class ByteCodeProcessor
 		{
 			// Return from call when execution of method finishes
 			cases.nextCase("SJME_NANOCOAT_END_CALL");
-			__block.returnValue();
+			__block.returnValue(null);
 			
 			// Write each basic block
 			for (Map.Entry<Integer, BasicBlock> entry :

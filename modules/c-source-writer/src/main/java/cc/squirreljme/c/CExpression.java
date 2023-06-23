@@ -9,6 +9,9 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.List;
+
 /**
  * Represents a C expression, which is a group of tokens that does something.
  *
@@ -17,4 +20,14 @@ package cc.squirreljme.c;
  */
 public class CExpression
 {
+	/**
+	 * Returns the tokens that make up this expression.
+	 * 
+	 * @return The tokens that make up this expression.
+	 * @since 2023/06/23
+	 */
+	public List<String> tokens()
+	{
+		throw Debugging.todo();
+	}
 }

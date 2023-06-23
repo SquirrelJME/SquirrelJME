@@ -596,12 +596,12 @@ public class CFile
 	 * @since 2023/06/03
 	 */
 	@Override
-	public CSourceWriter returnValue(Object... __tokens)
+	public CSourceWriter returnValue(CExpression __expression)
 		throws IOException
 	{
-		if (__tokens == null || __tokens.length == 0)
+		if (__expression == null)
 			return this.tokens("return", ";");
-		return this.tokens("return", __tokens, ";");
+		return this.tokens("return", __expression, ";");
 	}
 	
 	/**
@@ -758,6 +758,10 @@ public class CFile
 		// A number value
 		else if (__token instanceof Number)
 			return this.number((Number)__token);
+		
+		// A C Expression
+		else if (__token instanceof CExpression)
+			return this.token(((CExpression)__token).tokens());
 		
 		// {@squirreljme.error CW05 Unknown token type. (The type)}
 		throw new IllegalArgumentException("CW05 " + __token.getClass());

@@ -363,13 +363,14 @@ public interface CSourceWriter
 	
 	/**
 	 * Writes a return from a function.
-	 * 
-	 * @param __tokens The tokens to write, optional.
+	 *
+	 * @param __expression The tokens to write, optional and if {@code null}
+	 * will not have one.
 	 * @return {@code this}.
 	 * @throws IOException On write errors.
 	 * @since 2023/06/03
 	 */
-	CSourceWriter returnValue(Object... __tokens)
+	CSourceWriter returnValue(CExpression __expression)
 		throws IOException;
 	
 	/**

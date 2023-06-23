@@ -9,7 +9,6 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.util.List;
@@ -371,10 +370,10 @@ abstract class __CFileProxy__
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CSourceWriter returnValue(Object... __tokens)
+	public CSourceWriter returnValue(CExpression __expression)
 		throws IOException
 	{
-		return this.__file().returnValue(__tokens);
+		return this.__file().returnValue(__expression);
 	}
 	
 	/**
