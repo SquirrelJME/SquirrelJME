@@ -85,12 +85,9 @@ abstract class __SinglePrefixModifier__
 	 * @since 2023/06/05
 	 */
 	@Override
-	public List<String> tokens(CTokenSet __set)
+	public List<String> tokens()
 		throws NullPointerException
 	{
-		if (__set == null)
-			throw new NullPointerException("NARG");
-		
 		Reference<List<String>> ref = this._tokens;
 		List<String> rv;
 		
@@ -121,6 +118,6 @@ abstract class __SinglePrefixModifier__
 		
 		__result.add(this._keyword);
 		if (this.wrapped != null)
-			__result.addAll(this.wrapped.tokens(CTokenSet.GENERAL));
+			__result.addAll(this.wrapped.tokens());
 	}
 }

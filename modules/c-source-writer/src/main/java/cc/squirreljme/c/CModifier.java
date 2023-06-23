@@ -17,6 +17,12 @@ import java.util.List;
  * @since 2023/05/29
  */
 public interface CModifier
-	extends CBasicTokenizable
 {
+	/**
+	 * Returns the tokens that make up the modifier.
+	 * 
+	 * @return The modifier tokens.
+	 * @since 2023/06/05
+	 */
+	List<String> tokens();
 }
