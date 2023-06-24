@@ -70,7 +70,7 @@ public class CStructType
 	{
 		// This is just "struct whatever"
 		return UnmodifiableList.of(Arrays.asList("struct",
-			(__name == null ? "anonymous" : __name.identifier)));
+			(__name == null ? this.name.identifier : __name.identifier)));
 	}
 	
 	/**

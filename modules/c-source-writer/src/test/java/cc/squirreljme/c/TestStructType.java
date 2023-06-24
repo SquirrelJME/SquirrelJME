@@ -44,7 +44,7 @@ public class TestStructType
 		// Define struct
 		try (__Spool__ spool = new __Spool__())
 		{
-			spool.define(CVariable.of(struct, "foo"));
+			spool.define(struct);
 			
 			this.secondary("define", spool.tokens());
 		}

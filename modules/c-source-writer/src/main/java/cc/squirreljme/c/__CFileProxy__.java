@@ -217,7 +217,7 @@ abstract class __CFileProxy__
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CSourceWriter define(CDefinable __what)
+	public CSourceWriter define(CStructType __what)
 		throws IOException, NullPointerException
 	{
 		return this.__file().define(__what);

@@ -21,7 +21,6 @@ import net.multiphasicapps.collections.UnmodifiableList;
  * @since 2023/05/30
  */
 public class CVariable
-	implements CDefinable
 {
 	/** The type of this variable. */
 	public final CType type;

@@ -21,7 +21,6 @@ import net.multiphasicapps.collections.UnmodifiableList;
  */
 public class CFunctionType
 	extends __CAbstractType__
-	implements CDefinable
 {
 	/** The name of the function. */
 	public final CIdentifier name;

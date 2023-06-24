@@ -189,7 +189,7 @@ public interface CSourceWriter
 		throws IOException, NullPointerException;
 	
 	/**
-	 * Defines something which can be defined.
+	 * Defines the given struct.
 	 * 
 	 * @param __what What is to be defined?
 	 * @return {@code this}.
@@ -197,7 +197,7 @@ public interface CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/03
 	 */
-	CSourceWriter define(CDefinable __what)
+	CSourceWriter define(CStructType __what)
 		throws IOException, NullPointerException;
 	
 	/**

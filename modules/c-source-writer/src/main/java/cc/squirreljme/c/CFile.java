@@ -309,15 +309,24 @@ public class CFile
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CSourceWriter define(CDefinable __what)
+	public CSourceWriter define(CStructType __what)
 		throws IOException, NullPointerException
 	{
 		if (__what == null)
 			throw new NullPointerException("NARG");
 		
+		// Open struct saying what it is
+		this.token(__what.declareTokens(null));
+		try (CBlock block = this.curly())
+		{
+			for (CVariable member : __what.members)
+				block.declare(member);
+		}
 		
+		// End semicolon
+		this.token(";");
 		
-		throw Debugging.todo();
+		return this;
 	}
 	
 	/**
