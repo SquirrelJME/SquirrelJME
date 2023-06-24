@@ -26,7 +26,7 @@ public class CStructType
 	extends __CAbstractType__
 {
 	/** The name of this structure type. */
-	protected final String name;
+	protected final CIdentifier name;
 	
 	/** Members within the struct. */
 	protected final List<CVariable> members;
@@ -39,7 +39,7 @@ public class CStructType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/12
 	 */
-	CStructType(String __name, CVariable... __members)
+	CStructType(CIdentifier __name, CVariable... __members)
 		throws NullPointerException
 	{
 		if (__name == null)
@@ -68,7 +68,9 @@ public class CStructType
 	@Override
 	public List<String> declareTokens(CIdentifier __name)
 	{
-		throw Debugging.todo();
+		// This is just "struct whatever"
+		return UnmodifiableList.of(Arrays.asList("struct",
+			(__name == null ? "anonymous" : __name.identifier)));
 	}
 	
 	/**

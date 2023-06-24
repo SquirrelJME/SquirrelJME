@@ -9,7 +9,8 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Builder for struct types.
@@ -18,6 +19,13 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  */
 public final class CStructTypeBuilder
 {
+	/** The name of the struct. */
+	protected final CIdentifier name;
+	
+	/** Members within the struct. */
+	protected final Map<CIdentifier, CVariable> members =
+		new LinkedHashMap<>();
+	
 	/**
 	 * Initializes the struct builder.
 	 * 
@@ -44,7 +52,7 @@ public final class CStructTypeBuilder
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		this.name = __name;
 	}
 	
 	/**
@@ -55,7 +63,9 @@ public final class CStructTypeBuilder
 	 */
 	public CStructType build()
 	{
-		throw Debugging.todo();
+		Map<CIdentifier, CVariable> members = this.members;
+		return new CStructType(this.name,
+			members.values().toArray(new CVariable[members.size()]));
 	}
 	
 	/**
@@ -79,12 +89,23 @@ public final class CStructTypeBuilder
 	 * @param __type The member type.
 	 * @param __name The member name.
 	 * @return {@code this}.
+	 * @throws IllegalArgumentException If the member already exists.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/12
 	 */
 	public CStructTypeBuilder member(CType __type, CIdentifier __name)
-		throws NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__type == null || __name == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error CW06 Member already exists.}
+		Map<CIdentifier, CVariable> members = this.members;
+		if (members.get(__name) != null)
+			throw new IllegalArgumentException("CW06");
+		
+		members.put(__name, CVariable.of(__type, __name));
+		
+		return this;
 	}
 }
