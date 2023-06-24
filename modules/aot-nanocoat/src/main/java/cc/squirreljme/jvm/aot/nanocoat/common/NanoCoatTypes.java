@@ -14,6 +14,8 @@ import cc.squirreljme.c.CTypeDefType;
 import cc.squirreljme.c.std.CStdIntType;
 import cc.squirreljme.c.std.CTypeProvider;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 /**
  * Types that are defined by NanoCoat.
@@ -250,6 +252,9 @@ public enum NanoCoatTypes
 	/* End. */
 	;
 	
+	/** Internal type cache. */
+	private volatile Reference<CType> _type;
+	
 	/**
 	 * Builds the type, this is done at run-time since this is an enum and
 	 * some types may refer to each other accordingly using either consts
@@ -269,7 +274,16 @@ public enum NanoCoatTypes
 	@Override
 	public final CType type()
 	{
-		throw Debugging.todo();
+		Reference<CType> ref = this._type;
+		CType rv;
+		
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			rv = this.__build();
+			this._type = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
 	/**
