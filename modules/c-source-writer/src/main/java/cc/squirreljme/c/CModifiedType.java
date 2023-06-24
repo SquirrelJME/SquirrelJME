@@ -72,7 +72,7 @@ public final class CModifiedType
 		
 		List<String> result = new ArrayList<>();
 		
-		// Pointers are a bit different in there order
+		// Pointers are a bit different in their order
 		if (type instanceof CPointerType)
 		{
 			result.addAll(this.type.declareTokens(null));

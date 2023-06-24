@@ -70,19 +70,46 @@ public class CPointerType
 	{
 		CType pointedType = this.pointedType;
 		
-		// Function pointers are a bit different
-		if (pointedType instanceof CFunctionType)
-			throw Debugging.todo();
-		
 		// Process pointer tokens
 		List<String> result = new ArrayList<>();
 		
-		// Pointers are to the right, generally
-		result.addAll(pointedType.declareTokens(null));
-		result.add(this.closeness.token + "*");
+		// Function pointers are a bit different
+		if (pointedType instanceof CFunctionType)
+		{
+			CFunctionType function = (CFunctionType)pointedType;
+			
+			result.addAll(function.returnType.declareTokens(null));
+			result.add("(");
+			result.add(this.closeness.token + "*");
+			
+			// Name of what we refer to is here, not the original function
+			// name
+			if (__name != null)
+				result.add(__name.identifier);
+			
+			result.add(")");
+			
+			// Add all arguments, note that the actual argument names are
+			// not important here
+			result.add("(");
+			List<CVariable> arguments = function.arguments;
+			for (int i = 0, n = arguments.size(); i < n; i++)
+				result.addAll(
+					arguments.get(i).type.declareTokens(null));
+			
+			result.add(")");
+		}
 		
-		if (__name != null)
-			result.add(__name.identifier);
+		// Simpler type used
+		else
+		{
+			// Pointers are to the right, generally
+			result.addAll(pointedType.declareTokens(null));
+			result.add(this.closeness.token + "*");
+			
+			if (__name != null)
+				result.add(__name.identifier);
+		}
 		
 		return UnmodifiableList.of(result);
 	}

@@ -30,9 +30,13 @@ public class TestFunctionPointer
 	{
 		try (__Spool__ spool = new __Spool__())
 		{
-			spool.define(CFunctionType.of(CIdentifier.of("boop"),
-				CPrimitiveType.SIGNED_INTEGER,
-				CVariable.of(CPrimitiveType.UNSIGNED_CHAR, "squeak")));
+			// int (*cute)(unsigned char squeak);
+			spool.declare(
+				CVariable.of(CFunctionType.of(CIdentifier.of("boop"),
+					CPrimitiveType.SIGNED_INTEGER,
+					CVariable.of(
+						CPrimitiveType.UNSIGNED_CHAR, "squeak"))
+				.pointerType(), "cute"));
 			
 			this.secondary("intboopsqueak", spool.tokens());
 		}
