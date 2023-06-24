@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 result: NoResult
 thrown: NoExceptionThrown
-secondary-constint: string[2]:const,jint
-secondary-ptrtoconstint: string[3]:const,jint,*
-secondary-constpointertoint: string[3]:jint,*,const
-secondary-constpointertoconstint: string[4]:const,jint,*,const
-secondary-pTcpTci: string[5]:const,jint,*,const,*
-secondary-ppTcpTci: string[6]:const,jint,*,const,*,*
+secondary-constint: string[4]:const,int,foo,;
+secondary-ptrtoconstint: string[5]:const,int,*,foo,;
+secondary-constpointertoint: string[5]:int,*,const,foo,;
+secondary-constpointertoconstint: string[6]:const,int,*,const,foo,;
+secondary-pTcpTci: string[7]:const,int,*,const,*,foo,;
+secondary-ppTcpTci: string[8]:const,int,*,const,*,*,foo,;

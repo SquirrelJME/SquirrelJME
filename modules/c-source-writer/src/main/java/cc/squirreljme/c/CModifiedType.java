@@ -11,7 +11,9 @@ package cc.squirreljme.c;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
+import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * Represents a type which is modified by a modifier.
@@ -68,11 +70,26 @@ public final class CModifiedType
 	{
 		CType type = this.type;
 		
-		// Pointers are a bit different
-		if (type instanceof CPointerType)
-			throw Debugging.todo();
+		List<String> result = new ArrayList<>();
 		
-		throw Debugging.todo();
+		// Pointers are a bit different in there order
+		if (type instanceof CPointerType)
+		{
+			result.addAll(this.type.declareTokens(null));
+			result.addAll(this.modifier.tokens());
+			
+			if (__name != null)
+				result.add(__name.identifier);
+		}
+		
+		// Otherwise normal modification
+		else
+		{
+			result.addAll(this.modifier.tokens());
+			result.addAll(this.type.declareTokens(__name));
+		}
+		
+		return UnmodifiableList.of(result);
 	}
 	
 	/**
