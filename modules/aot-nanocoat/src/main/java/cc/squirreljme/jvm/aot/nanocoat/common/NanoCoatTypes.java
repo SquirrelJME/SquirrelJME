@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.aot.nanocoat;
+package cc.squirreljme.jvm.aot.nanocoat.common;
 
 import cc.squirreljme.c.CType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;

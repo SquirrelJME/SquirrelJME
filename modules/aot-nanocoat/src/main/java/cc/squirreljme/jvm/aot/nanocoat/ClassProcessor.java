@@ -15,6 +15,7 @@ import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.c.CVariable;
+import cc.squirreljme.jvm.aot.nanocoat.common.NanoCoatTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import java.io.IOException;
 import java.util.LinkedHashMap;

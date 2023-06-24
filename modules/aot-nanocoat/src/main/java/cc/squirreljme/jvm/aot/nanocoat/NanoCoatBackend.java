@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.aot.Backend;
 import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.RomSettings;
+import cc.squirreljme.jvm.aot.nanocoat.common.NanoCoatTypes;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.VMClassLibrary;

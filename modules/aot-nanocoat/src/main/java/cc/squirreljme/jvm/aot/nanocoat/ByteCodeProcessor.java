@@ -13,6 +13,7 @@ import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFunctionBlock;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CSwitchBlock;
+import cc.squirreljme.jvm.aot.nanocoat.common.NanoCoatTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Container;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.InvokeSpecialLinkage;

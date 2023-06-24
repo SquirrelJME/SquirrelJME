@@ -14,6 +14,7 @@ import cc.squirreljme.c.CFileName;
 import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.jvm.aot.LinkGlob;
+import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;

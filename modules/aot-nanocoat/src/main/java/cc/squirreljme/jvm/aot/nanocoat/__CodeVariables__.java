@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CVariable;
+import cc.squirreljme.jvm.aot.nanocoat.common.NanoCoatTypes;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
