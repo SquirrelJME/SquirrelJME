@@ -93,7 +93,7 @@ public class ClassProcessor
 		this.classIdentifier = Utils.symbolClassName(__glob,
 			this.classFile.thisName());
 		this.classInfo = CVariable.of(
-			JvmTypes.JCLASS.type(CStructType.class).constType(),
+			JvmTypes.STATIC_CLASS_INFO.type(CStructType.class).constType(),
 			CIdentifier.of(this.classIdentifier + "__info"));
 		this.classFields = CVariable.of(
 			JvmTypes.STATIC_CLASS_FIELDS.type(CStructType.class).constType(),

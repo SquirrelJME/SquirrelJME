@@ -232,6 +232,20 @@ public enum JvmTypes
 		}
 	},
 	
+	/** Class information. */
+	STATIC_CLASS_INFO
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/24
+		 */
+		@Override
+		CType __build()
+		{
+			throw Debugging.todo();
+		}
+	},
+	
 	/** Field information. */
 	STATIC_CLASS_FIELDS
 	{
