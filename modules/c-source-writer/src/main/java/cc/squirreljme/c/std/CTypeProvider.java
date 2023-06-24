@@ -19,22 +19,6 @@ import cc.squirreljme.c.CType;
 public interface CTypeProvider
 {
 	/**
-	 * Returns the constant type.
-	 * 
-	 * @return The constant type.
-	 * @since 2023/06/23
-	 */
-	CType constType();
-	
-	/**
-	 * Returns the pointer type.
-	 * 
-	 * @return The pointer type.
-	 * @since 2023/06/23
-	 */
-	CType pointerType();
-	
-	/**
 	 * Returns the type.
 	 * 
 	 * @return The type.

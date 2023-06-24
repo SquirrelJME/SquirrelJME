@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.aot.nanocoat.common;
 
 import cc.squirreljme.c.CFunctionType;
+import cc.squirreljme.c.CVariable;
 import cc.squirreljme.c.std.CFunctionProvider;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
@@ -34,7 +35,9 @@ public enum JvmFunctions
 		CFunctionType __build()
 		{
 			return CFunctionType.of("sjme_nvm_pushLocalReference",
-				);
+				NanoCoatTypes.JBOOLEAN.type(),
+				CVariable.of(NanoCoatTypes.VMFRAME.type().pointerType(),
+					"frame"));
 		}
 	},
 	

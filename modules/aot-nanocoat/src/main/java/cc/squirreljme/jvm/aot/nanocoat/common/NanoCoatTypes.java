@@ -10,6 +10,9 @@
 package cc.squirreljme.jvm.aot.nanocoat.common;
 
 import cc.squirreljme.c.CType;
+import cc.squirreljme.c.CTypeDefType;
+import cc.squirreljme.c.std.CStdIntType;
+import cc.squirreljme.c.std.CTypeProvider;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -18,7 +21,22 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @since 2023/06/06
  */
 public enum NanoCoatTypes
+	implements CTypeProvider
 {
+	/** Boolean. */
+	JBOOLEAN
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/06
+		 */
+		@Override
+		CType __build()
+		{
+			return CTypeDefType.of(CStdIntType.UINT8.type(), "jboolean");
+		}
+	},
+	
 	/** Long. */
 	JLONG
 	{
@@ -248,6 +266,7 @@ public enum NanoCoatTypes
 	 * @return The type used.
 	 * @since 2023/06/06
 	 */
+	@Override
 	public final CType type()
 	{
 		throw Debugging.todo();

@@ -10,6 +10,8 @@
 package cc.squirreljme.c;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -20,6 +22,12 @@ import java.util.List;
 public abstract class __CAbstractType__
 	implements CType
 {
+	/** Constant type cache. */
+	private volatile Reference<CType> _constType;
+	
+	/** Pointer type cache. */
+	private volatile Reference<CType> _pointerType;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2023/06/06
@@ -28,7 +36,16 @@ public abstract class __CAbstractType__
 	public CType constType()
 		throws IllegalArgumentException
 	{
-		return CModifiedType.of(CConstModifier.CONST, this);
+		Reference<CType> ref = this._constType;
+		CType rv;
+		
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			rv = CModifiedType.of(CConstModifier.CONST, this);
+			this._constType = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
 	/**
@@ -39,7 +56,7 @@ public abstract class __CAbstractType__
 	public CType pointerType()
 		throws IllegalArgumentException
 	{
-		return CPointerType.of(this);
+		return this.pointerType(CPointerCloseness.NEAR);
 	}
 	
 	/**
@@ -50,6 +67,22 @@ public abstract class __CAbstractType__
 	public CType pointerType(CPointerCloseness __closeness)
 		throws IllegalArgumentException
 	{
+		// Near is the most common pointer
+		if (__closeness == null || __closeness == CPointerCloseness.NEAR)
+		{
+			Reference<CType> ref = this._pointerType;
+			CType rv;
+			
+			if (ref == null || (rv = ref.get()) == null)
+			{
+				rv = CPointerType.of(this, CPointerCloseness.NEAR);
+				this._pointerType = new WeakReference<>(rv);
+			}
+			
+			return rv;
+		}
+		
+		// Otherwise, whatever pointer of this type
 		return CPointerType.of(this, __closeness);
 	}
 }
