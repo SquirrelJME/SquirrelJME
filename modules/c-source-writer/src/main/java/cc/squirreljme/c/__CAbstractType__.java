@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.List;
 
 /**
@@ -39,5 +40,16 @@ public abstract class __CAbstractType__
 		throws IllegalArgumentException
 	{
 		return CPointerType.of(this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/24
+	 */
+	@Override
+	public CType pointerType(CPointerCloseness __closeness)
+		throws IllegalArgumentException
+	{
+		return CPointerType.of(this, __closeness);
 	}
 }

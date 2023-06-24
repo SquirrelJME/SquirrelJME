@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
@@ -26,29 +27,41 @@ public enum CPrimitiveType
 	/** Void. */
 	VOID("void"),
 	
-	/** Signed Byte. */
-	INT8_T("int8_t"),
+	/** Signed Char. */
+	SIGNED_CHAR("signed char"),
 	
-	/** Unsigned byte. */
-	UINT8_T("uint8_t"),
+	/** Unsigned char. */
+	UNSIGNED_CHAR("unsigned char"),
 	
-	/** Signed Short. */
-	INT16_T("int16_t"),
+	/** Signed short. */
+	SIGNED_SHORT("short"),
 	
 	/** Unsigned short. */
-	UINT16_T("uint16_t"),
+	UNSIGNED_SHORT("unsigned short"),
 	
-	/** Signed Integer. */
-	INT32_T("int32_t"),
+	/** Signed integer. */
+	SIGNED_INTEGER("int"),
 	
-	/** Unsigned Integer. */
-	UINT32_T("uint32_t"),
+	/** Unsigned integer. */
+	UNSIGNED_INTEGER("unsigned int"),
+	
+	/** Long. */
+	SIGNED_LONG("long"),
+	
+	/** Unsigned long. */
+	UNSIGNED_LONG("unsigned long"),
+	
+	/** Signed long-long. */
+	SIGNED_LONG_LONG("long long int"),
+	
+	/** Unsigned long-long. */
+	UNSIGNED_LONG_LONG("unsigned long long"),
 	
 	/* End. */
 	;
 	
 	/** The single token used. */
-	protected final List<String> token;
+	protected final String token;
 	
 	/** Pointer type. */
 	private volatile Reference<CType> _pointerType;
@@ -69,7 +82,7 @@ public enum CPrimitiveType
 		if (__token == null)
 			throw new NullPointerException("NARG");
 		
-		this.token = UnmodifiableList.of(Arrays.asList(__token));
+		this.token = __token;
 	}
 	
 	/**
@@ -90,6 +103,19 @@ public enum CPrimitiveType
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/24
+	 */
+	@Override
+	public List<String> declareTokens(CIdentifier __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			return Arrays.asList(this.token);
+		return Arrays.asList(this.token, __name.identifier);
 	}
 	
 	/**
@@ -132,5 +158,19 @@ public enum CPrimitiveType
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/24
+	 */
+	@Override
+	public CType pointerType(CPointerCloseness __closeness)
+		throws IllegalArgumentException
+	{
+		if (__closeness == CPointerCloseness.NEAR)
+			return this.pointerType();
+		
+		return CPointerType.of(this, __closeness);
 	}
 }

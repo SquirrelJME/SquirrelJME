@@ -30,7 +30,7 @@ public class TestConstType
 		throws IOException
 	{
 		// The type to be a constant
-		CType intType = CPrimitiveType.INT32_T;
+		CType intType = CPrimitiveType.SIGNED_INTEGER;
 		
 		// const int
 		CType constInt = CModifiedType.of(CConstModifier.CONST, intType);

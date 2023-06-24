@@ -80,6 +80,16 @@ public class CFunctionType
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/06/24
+	 */
+	@Override
+	public List<String> declareTokens(CIdentifier __name)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2023/06/05
 	 */
 	@Override

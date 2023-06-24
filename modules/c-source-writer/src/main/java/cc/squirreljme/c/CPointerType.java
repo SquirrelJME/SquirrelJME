@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.util.List;
 
@@ -23,6 +24,9 @@ public class CPointerType
 	/** The type this points to. */
 	protected final CType pointedType;
 	
+	/** The closeness of this pointer. */
+	protected final CPointerCloseness closeness;
+	
 	/** The token representation of this type. */
 	private volatile Reference<List<String>> _tokens;
 	
@@ -30,16 +34,18 @@ public class CPointerType
 	 * Initializes the pointer type.
 	 * 
 	 * @param __pointedType The type to point to.
+	 * @param __closeness The closeness of the pointer.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	private CPointerType(CType __pointedType)
+	private CPointerType(CType __pointedType, CPointerCloseness __closeness)
 		throws IllegalArgumentException, NullPointerException
 	{
-		if (__pointedType == null)
+		if (__pointedType == null || __closeness == null)
 			throw new NullPointerException("NARG");
 		
 		this.pointedType = __pointedType;
+		this.closeness = __closeness;
 	}
 	
 	/**
@@ -51,6 +57,16 @@ public class CPointerType
 		throws IllegalArgumentException
 	{
 		return CModifiedType.of(CConstModifier.CONST, this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/24
+	 */
+	@Override
+	public List<String> declareTokens(CIdentifier __name)
+	{
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -77,7 +93,8 @@ public class CPointerType
 			return false;
 		
 		CPointerType o = (CPointerType)__o;
-		return this.pointedType.equals(o.pointedType);
+		return this.pointedType.equals(o.pointedType) &&
+			this.closeness.equals(o.closeness);
 	}
 	
 	/**
@@ -87,7 +104,8 @@ public class CPointerType
 	@Override
 	public int hashCode()
 	{
-		return this.pointedType.hashCode();
+		return this.pointedType.hashCode() ^
+			this.closeness.hashCode();
 	}
 	
 	/**
@@ -122,7 +140,21 @@ public class CPointerType
 	public static CType of(CType __type)
 		throws IllegalArgumentException, NullPointerException
 	{
-		if (__type == null)
+		return CPointerType.of(__type, CPointerCloseness.NEAR);
+	}
+	
+	/**
+	 * Initializes the pointer type.
+	 * 
+	 * @param __type The type to use.
+	 * @throws IllegalArgumentException If the resultant type is invalid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/24
+	 */
+	public static CType of(CType __type, CPointerCloseness __closeness)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__type == null || __closeness == null)
 			throw new NullPointerException("NARG");
 		
 		// If the root type is not a basic type, we always want to classify
@@ -142,6 +174,6 @@ public class CPointerType
 		}
 		
 		// Just wrap in a pointer
-		return new CPointerType(__type);
+		return new CPointerType(__type, __closeness);
 	}
 }

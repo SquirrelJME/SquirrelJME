@@ -9,6 +9,8 @@
 
 package cc.squirreljme.c;
 
+import java.util.List;
+
 /**
  * Represents a C type.
  *
@@ -26,6 +28,16 @@ public interface CType
 	 */
 	CType constType()
 		throws IllegalArgumentException;
+	
+	/**
+	 * Returns the declaring tokens for the type with the given identifying
+	 * name.
+	 * 
+	 * @param __name The name to use.
+	 * @return The tokens for the declared type.
+	 * @since 2023/06/24
+	 */
+	List<String> declareTokens(CIdentifier __name);
 	
 	/**
 	 * Returns the type that would be used if this were de-referenced.
@@ -52,5 +64,15 @@ public interface CType
 	 * @since 2023/05/29
 	 */
 	CType pointerType()
+		throws IllegalArgumentException;
+	
+	/**
+	 * Gets the pointer of this type.
+	 * 
+	 * @param __closeness The closeness of the pointer.
+	 * @return The pointer type.
+	 * @since 2023/06/24
+	 */
+	CType pointerType(CPointerCloseness __closeness)
 		throws IllegalArgumentException;
 }

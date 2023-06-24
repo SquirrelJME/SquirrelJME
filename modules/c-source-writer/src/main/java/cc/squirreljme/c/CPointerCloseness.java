@@ -9,32 +9,38 @@
 
 package cc.squirreljme.c;
 
-import java.io.IOException;
-import net.multiphasicapps.tac.TestRunnable;
-
 /**
- * Tests function pointers.
+ * Returns the closeness of the pointer.
  *
- * @since 2023/06/05
+ * @since 2023/06/24
  */
-public class TestFunctionPointer
-	extends TestRunnable
+public enum CPointerCloseness
 {
+	/** Near pointers, which are also the default. */
+	NEAR(""),
+	
+	/** Far pointers. */
+	FAR("far"),
+	
+	/** Huge pointers. */
+	HUGE("huge"),
+	
+	/* End. */
+	;
+	
+	/** The token used for the closeness. */
+	protected final String token;
+	
 	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/05
+	 * Initializes the closeness level.
+	 * 
+	 * @param __token The token used.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/24
 	 */
-	@Override
-	public void test()
-		throws IOException
+	CPointerCloseness(String __token)
+		throws NullPointerException
 	{
-		try (__Spool__ spool = new __Spool__())
-		{
-			spool.define(CFunctionType.of(CIdentifier.of("boop"),
-				CPrimitiveType.SIGNED_INTEGER,
-				CVariable.of(CPrimitiveType.UNSIGNED_CHAR, "squeak")));
-			
-			this.secondary("intboopsqueak", spool.tokens());
-		}
+		this.token = __token;
 	}
 }

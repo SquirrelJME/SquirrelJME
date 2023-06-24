@@ -9,45 +9,31 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.util.List;
+import java.io.IOException;
+import net.multiphasicapps.tac.TestRunnable;
 
 /**
- * This is a type that is a typedef of another type.
+ * Test of basic types.
  *
- * @since 2023/06/06
+ * @since 2023/06/24
  */
-public class CTypeDefType
-	extends __CAbstractType__
+public class TestBasicTypes
+	extends TestRunnable
 {
 	/**
 	 * {@inheritDoc}
 	 * @since 2023/06/24
 	 */
 	@Override
-	public List<String> declareTokens(CIdentifier __name)
+	public void test()
+		throws IOException
 	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/06
-	 */
-	@Override
-	public CType dereferenceType()
-		throws IllegalArgumentException
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/06
-	 */
-	@Override
-	public boolean isPointer()
-	{
-		throw Debugging.todo();
+		try (__Spool__ spool = new __Spool__())
+		{
+			spool.declare(
+				CVariable.of(CPrimitiveType.SIGNED_INTEGER, "foo"));
+			
+			this.secondary("int", spool.tokens());
+		}
 	}
 }

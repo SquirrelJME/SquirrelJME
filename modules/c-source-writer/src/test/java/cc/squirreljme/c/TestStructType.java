@@ -29,7 +29,7 @@ public class TestStructType
 	{
 		// Build a basic struct
 		CStructType struct = new CStructTypeBuilder("foo")
-			.member(CPrimitiveType.INT32_T, "xint")
+			.member(CPrimitiveType.SIGNED_INTEGER, "xint")
 			.member(CPrimitiveType.VOID.pointerType(), "xvoidptr")
 			.build();
 		

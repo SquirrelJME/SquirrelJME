@@ -84,7 +84,7 @@ public class StringCollectionCTokenOutput
 	 */
 	public final Collection<String> output()
 	{
-		throw Debugging.todo();
+		return this.out;
 	}
 	
 	/**

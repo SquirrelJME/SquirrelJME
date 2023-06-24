@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.util.List;
 
@@ -56,6 +57,16 @@ public final class CModifiedType
 		throws IllegalArgumentException
 	{
 		return CModifiedType.of(CConstModifier.CONST, this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/24
+	 */
+	@Override
+	public List<String> declareTokens(CIdentifier __name)
+	{
+		throw Debugging.todo();
 	}
 	
 	/**

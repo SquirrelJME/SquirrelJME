@@ -284,8 +284,10 @@ public class CFile
 	{
 		if (__var == null)
 			throw new NullPointerException("NARG");
-			
-		throw Debugging.todo();
+		
+		this.tokens(__var.declareTokens(), ";");
+		
+		return this;
 	}
 	
 	/**
@@ -296,6 +298,9 @@ public class CFile
 	public <B extends CBlock> B declare(Class<B> __blockType, CVariable __var)
 		throws IOException, NullPointerException
 	{
+		if (__blockType == null || __var == null)
+			throw new NullPointerException("NARG");
+		
 		throw Debugging.todo();
 	}
 	

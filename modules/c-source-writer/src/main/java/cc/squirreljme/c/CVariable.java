@@ -9,6 +9,12 @@
 
 package cc.squirreljme.c;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+import net.multiphasicapps.collections.UnmodifiableList;
+
 /**
  * C variable type.
  *
@@ -22,6 +28,9 @@ public class CVariable
 	
 	/** The name of this variable. */
 	public final CIdentifier name;
+	
+	/** The tokens used for declaring this variable. */
+	private volatile Reference<List<String>> _declareTokens;
 	
 	/**
 	 * Initializes a variable.
@@ -39,6 +48,26 @@ public class CVariable
 		
 		this.type = __type;
 		this.name = __name;
+	}
+	
+	/**
+	 * The tokens used to declare this variable.
+	 * 
+	 * @return The tokens used for declaration.
+	 * @since 2023/06/24
+	 */
+	public List<String> declareTokens()
+	{
+		Reference<List<String>> ref = this._declareTokens;
+		List<String> rv;
+		
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			rv = UnmodifiableList.of(this.type.declareTokens(this.name));
+			this._declareTokens = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
 	/**
