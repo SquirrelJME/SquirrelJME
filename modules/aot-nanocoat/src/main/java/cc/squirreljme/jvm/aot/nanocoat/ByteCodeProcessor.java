@@ -13,6 +13,7 @@ import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFunctionBlock;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CSwitchBlock;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
 import cc.squirreljme.jvm.aot.nanocoat.common.NanoCoatTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Container;
@@ -433,8 +434,12 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
-		__block.functionCall("sjme_nvm_returnMethod",
-			"state");
+		__CodeVariables__ codeVars = __CodeVariables__.instance();
+		
+		__block.functionCall(JvmFunctions.NVM_RETURN_FROM_METHOD,
+			CExpressionBuilder.builder()
+				.identifier(codeVars.currentState())
+				.build());
 	}
 	
 	/**

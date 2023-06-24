@@ -9,6 +9,8 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.c.std.CFunctionProvider;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.util.List;
@@ -181,10 +183,11 @@ abstract class __CFileProxy__
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CFunctionBlock declare(CFunctionType __function)
+	public CSourceWriter declare(CFunctionType __function)
 		throws IOException, NullPointerException
 	{
 		return this.__file().declare(__function);
@@ -252,7 +255,8 @@ abstract class __CFileProxy__
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CSourceWriter functionCall(CIdentifier __function, Object... __args)
+	public CSourceWriter functionCall(
+		CFunctionType __function, CExpression... __args)
 		throws IOException, NullPointerException
 	{
 		return this.__file().functionCall(__function, __args);
@@ -260,16 +264,25 @@ abstract class __CFileProxy__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/06/24
+	 */
+	@Override
+	public CSourceWriter functionCall(CFunctionProvider __function,
+		CExpression... __args)
+		throws IOException, NullPointerException
+	{
+		return this.__file().functionCall(__function.function(), __args);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CFunctionBlock functionDefine(CModifier __modifier,
-		CIdentifier __name, CType __returnVal,
-		CVariable... __arguments)
+	public CFunctionBlock functionDefine(CFunctionType __function)
 		throws IOException, NullPointerException
 	{
-		return this.__file().functionDefine(__modifier, __name, __returnVal,
-			__arguments);
+		return this.__file().functionDefine(__function);
 	}
 	
 	/**

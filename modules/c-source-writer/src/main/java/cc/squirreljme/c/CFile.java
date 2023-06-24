@@ -10,6 +10,7 @@
 package cc.squirreljme.c;
 
 import cc.squirreljme.c.out.CTokenOutput;
+import cc.squirreljme.c.std.CFunctionProvider;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.BooleanArrayList;
 import cc.squirreljme.runtime.cldc.util.ByteArrayList;
@@ -265,13 +266,19 @@ public class CFile
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CFunctionBlock declare(CFunctionType __function)
+	public CSourceWriter declare(CFunctionType __function)
 		throws IOException, NullPointerException
 	{
 		if (__function == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// Cleaner this way
+		this.freshLine();
+		
+		// Emit
+		this.tokens(__function.declareTokens(null), ";");
+		
+		return this;
 	}
 	
 	/**
@@ -395,14 +402,28 @@ public class CFile
 	 * @since 2023/05/31
 	 */
 	@Override
-	public CSourceWriter functionCall(CIdentifier __function, Object... __args)
+	public CSourceWriter functionCall(
+		CFunctionType __function, CExpression... __args)
 		throws IOException, NullPointerException
 	{
 		if (__function == null)
 			throw new NullPointerException("NARG");
 		
-		this.surroundDelimited(__function.identifier, ",", __args);
-		return this.token(";");
+		throw Debugging.todo();
+		/*this.surroundDelimited(__function.identifier, ",", __args);
+		return this.token(";");*/
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/24
+	 */
+	@Override
+	public CSourceWriter functionCall(CFunctionProvider __function,
+		CExpression... __args)
+		throws IOException, NullPointerException
+	{
+		return this.functionCall(__function.function(), __args);
 	}
 	
 	/**
@@ -410,20 +431,17 @@ public class CFile
 	 * @since 2023/05/30
 	 */
 	@Override
-	public CFunctionBlock functionDefine(CModifier __modifier,
-		CIdentifier __name, CType __returnVal,
-		CVariable... __arguments)
+	public CFunctionBlock functionDefine(CFunctionType __function)
 		throws IOException, NullPointerException
 	{
-		if (__name == null)
+		if (__function == null)
 			throw new NullPointerException("NARG");
 		
 		// Start on a fresh line, is cleaner
 		this.freshLine();
 		
-		// Start function
-		this.function(__modifier, __name, __returnVal, __arguments);
-		this.token("{");
+		// Open up function
+		this.tokens(__function.declareTokens(null), "{");
 		
 		// Push block for it
 		return this.__pushBlock(new CFunctionBlock(this), true);

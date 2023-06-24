@@ -10,6 +10,7 @@
 package cc.squirreljme.c;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.collections.UnmodifiableList;
@@ -84,7 +85,28 @@ public class CFunctionType
 	@Override
 	public List<String> declareTokens(CIdentifier __name)
 	{
-		throw Debugging.todo();
+		List<String> result = new ArrayList<>();
+		
+		// Return type
+		result.addAll(this.returnType.declareTokens(null));
+		
+		// Function name
+		result.add((__name == null ? this.name.identifier :
+			__name.identifier));
+		
+		// All the arguments
+		result.add("(");
+		List<CVariable> arguments = this.arguments;
+		for (int i = 0, n = arguments.size(); i < n; i++)
+		{
+			if (i > 0)
+				result.add(",");
+			
+			result.addAll(arguments.get(i).declareTokens());
+		}
+		result.add(")");
+		
+		return UnmodifiableList.of(result);
 	}
 	
 	/**

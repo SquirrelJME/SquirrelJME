@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.c.std.CFunctionProvider;
 import java.io.IOException;
 import java.util.List;
 
@@ -152,14 +153,14 @@ public interface CSourceWriter
 	
 	/**
 	 * Declares the given function and returns a block for writing a function.
-	 * 
+	 *
 	 * @param __function The function to be declared.
-	 * @return The function block for writing the function.
+	 * @return {@link this}.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/04
 	 */
-	CFunctionBlock declare(CFunctionType __function)
+	CSourceWriter declare(CFunctionType __function)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -236,24 +237,32 @@ public interface CSourceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	CSourceWriter functionCall(CIdentifier __function, Object... __args)
+	CSourceWriter functionCall(CFunctionType __function, CExpression... __args)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * Performs a function call.
+	 * 
+	 * @param __function The function to call.
+	 * @param __args The arguments to the call.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/24
+	 */
+	CSourceWriter functionCall(CFunctionProvider __function,
+		CExpression... __args)
 		throws IOException, NullPointerException;
 	
 	/**
 	 * Defines a function.
-	 * 
-	 * @param __modifier The function modifier.
-	 * @param __name The name of the function.
-	 * @param __returnVal The return value.
-	 * @param __arguments The arguments to the function.
-	 * @return The block for writing functions.
+	 *
+	 * @param __function@return The block for writing functions.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException If no name was specified.
 	 * @since 2023/05/30
 	 */
-	CFunctionBlock functionDefine(CModifier __modifier,
-		CIdentifier __name, CType __returnVal,
-		CVariable... __arguments)
+	CFunctionBlock functionDefine(CFunctionType __function)
 		throws IOException, NullPointerException;
 	
 	/**
