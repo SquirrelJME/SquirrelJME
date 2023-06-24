@@ -66,6 +66,12 @@ public final class CModifiedType
 	@Override
 	public List<String> declareTokens(CIdentifier __name)
 	{
+		CType type = this.type;
+		
+		// Pointers are a bit different
+		if (type instanceof CPointerType)
+			throw Debugging.todo();
+		
 		throw Debugging.todo();
 	}
 	

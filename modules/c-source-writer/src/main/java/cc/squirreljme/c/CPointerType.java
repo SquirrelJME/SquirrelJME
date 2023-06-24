@@ -11,7 +11,9 @@ package cc.squirreljme.c;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
+import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * Represents a pointer type.
@@ -66,7 +68,19 @@ public class CPointerType
 	@Override
 	public List<String> declareTokens(CIdentifier __name)
 	{
-		throw Debugging.todo();
+		CType pointedType = this.pointedType;
+		
+		// Function pointers are a bit different
+		if (pointedType instanceof CFunctionType)
+			throw Debugging.todo();
+		
+		// Process pointer tokens
+		List<String> result = new ArrayList<>();
+		
+		if (true)
+			throw Debugging.todo();
+		
+		return UnmodifiableList.of(result);
 	}
 	
 	/**
