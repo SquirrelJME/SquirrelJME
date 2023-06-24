@@ -10,33 +10,18 @@
 package cc.squirreljme.c;
 
 /**
- * The type of number something is.
+ * Indicates the kind of struct.
  *
- * @since 2023/05/29
+ * @since 2023/06/24
  */
-public interface CNumberType
+public enum CStructKind
 {
-	/**
-	 * Returns the number prefix.
-	 * 
-	 * @return The number prefix.
-	 * @since 2023/06/24
-	 */
-	String prefix();
+	/** A standard struct. */
+	STRUCT,
 	
-	/**
-	 * Returns the number suffix.
-	 * 
-	 * @return The number suffix.
-	 * @since 2023/06/24
-	 */
-	String suffix();
+	/** A union. */
+	UNION,
 	
-	/**
-	 * Returns the number surround.
-	 * 
-	 * @return The number surround.
-	 * @since 2023/06/24
-	 */
-	String surround();
+	/* End. */
+	;
 }

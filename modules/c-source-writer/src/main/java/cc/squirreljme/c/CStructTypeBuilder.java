@@ -19,6 +19,9 @@ import java.util.Map;
  */
 public final class CStructTypeBuilder
 {
+	/** The kind of struct this is. */
+	protected final CStructKind kind;
+	
 	/** The name of the struct. */
 	protected final CIdentifier name;
 	
@@ -29,29 +32,32 @@ public final class CStructTypeBuilder
 	/**
 	 * Initializes the struct builder.
 	 * 
+	 * @param __kind The kind of struct this is.
 	 * @param __name The name of this struct.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/12
 	 */
-	public CStructTypeBuilder(String __name)
+	public CStructTypeBuilder(CStructKind __kind, String __name)
 		throws NullPointerException
 	{
-		this(CIdentifier.of(__name));
+		this(__kind, CIdentifier.of(__name));
 	}
 	
 	/**
 	 * Initializes the struct builder.
 	 * 
+	 * @param __kind The kind of struct this is.
 	 * @param __name The name of this struct.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/12
 	 */
-	public CStructTypeBuilder(CIdentifier __name)
+	public CStructTypeBuilder(CStructKind __kind, CIdentifier __name)
 		throws NullPointerException
 	{
-		if (__name == null)
+		if (__kind == null || __name == null)
 			throw new NullPointerException("NARG");
 		
+		this.kind = __kind;
 		this.name = __name;
 	}
 	
@@ -64,7 +70,7 @@ public final class CStructTypeBuilder
 	public CStructType build()
 	{
 		Map<CIdentifier, CVariable> members = this.members;
-		return new CStructType(this.name,
+		return new CStructType(this.kind, this.name,
 			members.values().toArray(new CVariable[members.size()]));
 	}
 	

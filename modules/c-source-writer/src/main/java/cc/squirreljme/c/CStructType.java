@@ -25,6 +25,9 @@ import net.multiphasicapps.collections.UnmodifiableList;
 public class CStructType
 	extends __CAbstractType__
 {
+	/** The kind of struct this is. */
+	protected final CStructKind kind;
+	
 	/** The name of this structure type. */
 	protected final CIdentifier name;
 	
@@ -34,17 +37,20 @@ public class CStructType
 	/**
 	 * Initializes the structure.
 	 * 
+	 * @param __kind The kind of struct this is.
 	 * @param __name The struct name.
 	 * @param __members The members of the struct.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/12
 	 */
-	CStructType(CIdentifier __name, CVariable... __members)
+	CStructType(CStructKind __kind, CIdentifier __name,
+		CVariable... __members)
 		throws NullPointerException
 	{
-		if (__name == null)
+		if (__kind == null || __name == null)
 			throw new NullPointerException("NARG");
 		
+		this.kind = __kind;
 		this.name = __name;
 		this.members = UnmodifiableList.of(Arrays.asList(
 			(__members != null ? __members.clone() : new CVariable[0])));
@@ -68,8 +74,9 @@ public class CStructType
 	@Override
 	public List<String> declareTokens(CIdentifier __name)
 	{
-		// This is just "struct whatever"
-		return UnmodifiableList.of(Arrays.asList("struct",
+		// This is just "struct/union whatever"
+		return UnmodifiableList.of(Arrays.asList(
+			(this.kind == CStructKind.STRUCT ? "struct" : "union"),
 			(__name == null ? this.name.identifier : __name.identifier)));
 	}
 	
@@ -99,7 +106,8 @@ public class CStructType
 		
 		CStructType o = (CStructType)__o;
 		return Objects.equals(this.name, o.name) &&
-			this.members.equals(o.members);
+			this.members.equals(o.members) &&
+			this.kind.equals(o.kind);
 	}
 	
 	/**
@@ -110,7 +118,8 @@ public class CStructType
 	public int hashCode()
 	{
 		return Objects.hashCode(this.name) ^
-			this.members.hashCode();
+			this.members.hashCode() ^
+			this.kind.hashCode();
 	}
 	
 	/**

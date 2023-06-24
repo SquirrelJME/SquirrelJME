@@ -157,6 +157,35 @@ public class CVariable
 	}
 	
 	/**
+	 * Returns the type used.
+	 * 
+	 * @return The type.
+	 * @since 2023/06/24
+	 */
+	public CType type()
+	{
+		return this.type;
+	}
+	
+	/**
+	 * Returns the type as a specified type.
+	 * 
+	 * @param <T> The type used.
+	 * @param __type The type used.
+	 * @return The type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/24
+	 */
+	public <T extends CType> T type(Class<T> __type)
+		throws NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		return __type.cast(this.type);
+	}
+	
+	/**
 	 * Initializes a variable.
 	 * 
 	 * @param __type The type used.

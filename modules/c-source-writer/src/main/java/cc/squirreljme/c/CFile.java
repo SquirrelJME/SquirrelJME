@@ -219,7 +219,7 @@ public class CFile
 			return this.token("'" + __c + "'");
 		
 		// Fallback to number input
-		return this.number(CNumberType.JCHAR, (int)__c);
+		return this.number(CPrimitiveNumberType.UNSIGNED, (int)__c);
 	}
 	
 	/**
@@ -448,20 +448,7 @@ public class CFile
 	public CSourceWriter number(Number __number)
 		throws IOException, NullPointerException
 	{
-		if (__number == null)
-			throw new NullPointerException("NARG");
-		
-		// Determine the type of number this is
-		CNumberType type = null;
-		for (CNumberType maybe : CNumberType.VALUES)
-			if (maybe.classType.isAssignableFrom(__number.getClass()))
-			{
-				type = maybe;
-				break;
-			}
-		
-		// Forward
-		return this.number(type, __number);
+		return this.number(null, __number);
 	}
 	
 	/**
@@ -475,21 +462,9 @@ public class CFile
 		if (__number == null)
 			throw new NullPointerException("NARG");
 		
-		// Determine the value number
-		long value;
-		if (__number instanceof Double)
-			value = Double.doubleToRawLongBits((Double)__number);
-		else if (__number instanceof Float)
-			value = Float.floatToRawIntBits((Float)__number);
-		else
-			value = __number.longValue();
-		
-		// No type specified, so just use whatever value it is...
-		if (__type == null || __type.prefix == null)
-			return this.token(Long.toString(value));
-		
-		// Prefix it
-		return this.surround(__type.prefix, Long.toString(value));
+		return this.expression(CExpressionBuilder.builder()
+				.number(__type, __number)
+			.build());
 	}
 	
 	/**

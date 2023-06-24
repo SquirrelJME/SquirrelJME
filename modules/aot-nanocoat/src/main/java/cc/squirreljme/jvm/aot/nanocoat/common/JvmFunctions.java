@@ -23,6 +23,36 @@ import java.lang.ref.WeakReference;
 public enum JvmFunctions
 	implements CFunctionProvider
 {
+	/** Copy reference in frame. */
+	NVM_PUSH_LOCAL_REFERENCE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/24
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_pushLocalReference",
+				);
+		}
+	},
+	
+	/** Invoke special method. */
+	NVM_INVOKE_SPECIAL
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/24
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_invokeSpecial",
+				);
+		}
+	},
+	
 	/** Return from method. */
 	NVM_RETURN_FROM_METHOD
 	{
@@ -33,7 +63,8 @@ public enum JvmFunctions
 		@Override
 		CFunctionType __build()
 		{
-			return CFunctionType.of("sjme_nvm_returnFromMethod",);
+			return CFunctionType.of("sjme_nvm_returnFromMethod",
+				);
 		}
 	},
 	

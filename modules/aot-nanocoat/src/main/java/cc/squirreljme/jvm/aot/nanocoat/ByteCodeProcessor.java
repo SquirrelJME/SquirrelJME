@@ -463,9 +463,26 @@ public class ByteCodeProcessor
 			this.method.nameAndType(), __method);
 		
 		// Special invokes have special processing depending on the source
-		__block.functionCall("sjme_nvm_invokeSpecial",
-			"state",
-			"&current->linkage[" + linkage.index() + "]->data.invokespecial");
+		__CodeVariables__ codeVars = __CodeVariables__.instance();
+		__block.functionCall(JvmFunctions.NVM_INVOKE_SPECIAL,
+			CExpressionBuilder.builder()
+				.identifier(codeVars.currentState())
+				.build(),
+			CExpressionBuilder.builder()
+				.reference()
+				.identifier(codeVars.currentFrame())
+				.dereferenceStruct()
+				.identifier(NanoCoatTypes.VMFRAME
+					.type(CStructType.class).member("linkage"))
+				.arrayAccess(linkage.index())
+				.dereferenceStruct()
+				.identifier(NanoCoatTypes.STATIC_LINKAGE
+					.type(CStructType.class).member("data"))
+				.structAccess()
+				.identifier(NanoCoatTypes.STATIC_LINKAGE
+					.type(CStructType.class).member("data")
+					.type(CStructType.class).member("invokespecial"))
+				.build());
 	}
 	
 	/**
@@ -484,8 +501,13 @@ public class ByteCodeProcessor
 			throw new NullPointerException("NARG");
 		
 		// Copy reference over
-		__block.functionCall("sjme_nvm_copyReferenceInFrame",
-			"&current->locals", __localDx,
-			"&current->stack", "current->stackTop++");
+		__CodeVariables__ codeVars = __CodeVariables__.instance();
+		__block.functionCall(JvmFunctions.NVM_PUSH_LOCAL_REFERENCE,
+			CExpressionBuilder.builder()
+				.identifier(codeVars.currentFrame())
+				.build(),
+			CExpressionBuilder.builder()
+				.number(__localDx)
+				.build());
 	}
 }

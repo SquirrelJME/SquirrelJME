@@ -28,10 +28,11 @@ public class TestStructType
 		throws Throwable
 	{
 		// Build a basic struct
-		CStructType struct = new CStructTypeBuilder("foo")
-			.member(CPrimitiveType.SIGNED_INTEGER, "xint")
-			.member(CPrimitiveType.VOID.pointerType(), "xvoidptr")
-			.build();
+		CStructType struct =
+			new CStructTypeBuilder(CStructKind.STRUCT, "foo")
+				.member(CPrimitiveType.SIGNED_INTEGER, "xint")
+				.member(CPrimitiveType.VOID.pointerType(), "xvoidptr")
+				.build();
 		
 		// Declare struct
 		try (__Spool__ spool = new __Spool__())

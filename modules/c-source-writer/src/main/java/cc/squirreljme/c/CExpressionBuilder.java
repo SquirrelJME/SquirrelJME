@@ -37,6 +37,48 @@ public abstract class CExpressionBuilder
 	}
 	
 	/**
+	 * Accesses an array.
+	 * 
+	 * @param __index The array access index.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/24
+	 */
+	public B arrayAccess(int __index)
+	{
+		List<String> tokens = this.tokens;
+		
+		tokens.add("[");
+		tokens.add(Integer.toString(__index));
+		tokens.add("]");
+		
+		return this.__this();
+	}
+	
+	/**
+	 * Accesses an array.
+	 * 
+	 * @param __expression The array access index.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/24
+	 */
+	public B arrayAccess(CExpression __expression)
+		throws NullPointerException
+	{
+		if (__expression == null)
+			throw new NullPointerException("NARG");
+		
+		List<String> tokens = this.tokens;
+		
+		tokens.add("[");
+		tokens.addAll(__expression.tokens);
+		tokens.add("]");
+		
+		return this.__this();
+	}
+	
+	/**
 	 * Adds a C dereference expression which lead to a struct value.
 	 * 
 	 * @return {@code this}.
@@ -44,7 +86,9 @@ public abstract class CExpressionBuilder
 	 */
 	public B dereferenceStruct()
 	{
-		throw Debugging.todo();
+		this.tokens.add("->");
+		
+		return this.__this();
 	}
 	
 	/**
@@ -86,6 +130,25 @@ public abstract class CExpressionBuilder
 	}
 	
 	/**
+	 * Identifies an identifier.
+	 * 
+	 * @param __identifier The identifier to identify.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/24
+	 */
+	public B identifier(CIdentifier __identifier)
+		throws NullPointerException
+	{
+		if (__identifier == null)
+			throw new NullPointerException("NARG");
+		
+		this.tokens.add(__identifier.identifier);
+		
+		return this.__this();
+	}
+	
+	/**
 	 * Identifies a variable.
 	 * 
 	 * @param __var The variable to identify.
@@ -99,7 +162,83 @@ public abstract class CExpressionBuilder
 		if (__var == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		return this.identifier(__var.name);
+	}
+	
+	/**
+	 * Writes the specified number.
+	 * 
+	 * @param __value The value to store.
+	 * @return {@code this}.
+	 * @throws IllegalArgumentException If the number is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/24
+	 */
+	public B number(Number __value)
+		throws IllegalArgumentException, NullPointerException
+	{
+		return this.number(null, __value);
+	}
+	
+	/**
+	 * Writes the specified number.
+	 * 
+	 * @param __type The type of number this is.
+	 * @param __value The value to store.
+	 * @return {@code this}.
+	 * @throws IllegalArgumentException If the number is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/24
+	 */
+	public B number(CNumberType __type, Number __value)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__value == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error CW22 Unsupported number.}
+		if (__value instanceof Float || __value instanceof Double)
+			throw new IllegalArgumentException("CW22");
+		
+		List<String> tokens = this.tokens;
+		
+		// Prefix/suffix/surround type, possibly?
+		String string = Long.toString(__value.longValue(), 10);
+		if (__type != null)
+		{
+			String prefix = __type.prefix();
+			String suffix = __type.suffix();
+			String surround = __type.surround();
+			
+			// Base surround?
+			if (surround != null)
+			{
+				tokens.add(surround);
+				tokens.add("(");
+			}
+			
+			// Put in the base number with its prefix and/or suffix
+			if (prefix != null)
+				if (suffix != null)
+					tokens.add(prefix + string + suffix);
+				else
+					tokens.add(prefix + string);
+			else
+				if (suffix != null)
+					tokens.add(string + suffix);
+				else
+					tokens.add(string);
+			
+			// End surround?
+			if (surround != null)
+				tokens.add(")");
+		}
+		
+		// Just plain digit
+		else
+			tokens.add(string);
+		
+		return this.__this();
 	}
 	
 	/**
@@ -114,6 +253,44 @@ public abstract class CExpressionBuilder
 		this.tokens.add("(");
 		return (CSubExpressionBuilder<B>)
 			new CSubExpressionBuilder(this, ")");
+	}
+	
+	/**
+	 * References a type.
+	 * 
+	 * @return {@code this}.
+	 * @since 2023/06/24
+	 */
+	public B reference()
+	{
+		this.tokens.add("&");
+		
+		return this.__this();
+	}
+	
+	/**
+	 * Accesses a struct.
+	 * 
+	 * @return {@code this}.
+	 * @since 2023/06/24
+	 */
+	public B structAccess()
+	{
+		this.tokens.add(".");
+		
+		return this.__this();
+	}
+	
+	/**
+	 * Returns {@code this}.
+	 * 
+	 * @return {@code this}.
+	 * @since 2023/06/24
+	 */
+	@SuppressWarnings("unchecked")
+	final B __this()
+	{
+		return (B)this;
 	}
 	
 	/**

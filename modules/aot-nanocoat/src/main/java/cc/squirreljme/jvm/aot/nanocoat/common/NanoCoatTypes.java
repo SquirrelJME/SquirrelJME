@@ -215,6 +215,20 @@ public enum NanoCoatTypes
 		}
 	},
 	
+	/** Linkage. */
+	STATIC_LINKAGE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/24
+		 */
+		@Override
+		CType __build()
+		{
+			throw Debugging.todo();
+		}
+	},
+	
 	/* End. */
 	;
 	
