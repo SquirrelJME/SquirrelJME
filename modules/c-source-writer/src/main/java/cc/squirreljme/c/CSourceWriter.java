@@ -299,28 +299,28 @@ public interface CSourceWriter
 	
 	/**
 	 * Writes a preprocessor define.
-	 * 
+	 *
 	 * @param __symbol The symbol to define.
-	 * @param __tokens The tokens to define.
+	 * @param __expression The tokens to define.
 	 * @return {@code this}.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
 	CSourceWriter preprocessorDefine(CIdentifier __symbol,
-		Object... __tokens)
+		CExpression __expression)
 		throws IOException, NullPointerException;
 	
 	/**
 	 * Adds an if check for preprocessing.
-	 * 
-	 * @param __condition The tokens to use for the check.
+	 *
+	 * @param __expression The tokens to use for the check.
 	 * @return The opened block.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
-	CPPBlock preprocessorIf(Object... __condition)
+	CPPBlock preprocessorIf(CExpression __expression)
 		throws IOException, NullPointerException;
 	
 	/**

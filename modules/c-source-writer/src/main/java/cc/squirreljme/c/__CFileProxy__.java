@@ -314,10 +314,10 @@ abstract class __CFileProxy__
 	 */
 	@Override
 	public CSourceWriter preprocessorDefine(CIdentifier __symbol,
-		Object... __tokens)
+		CExpression __expression)
 		throws IOException, NullPointerException
 	{
-		return this.__file().preprocessorDefine(__symbol, __tokens);
+		return this.__file().preprocessorDefine(__symbol, __expression);
 	}
 	
 	/**
@@ -325,10 +325,10 @@ abstract class __CFileProxy__
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CPPBlock preprocessorIf(Object... __condition)
+	public CPPBlock preprocessorIf(CExpression __expression)
 		throws IOException, NullPointerException
 	{
-		return this.__file().preprocessorIf(__condition);
+		return this.__file().preprocessorIf(__expression);
 	}
 	
 	/**

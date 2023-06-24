@@ -53,6 +53,9 @@ public class CFile
 	/** Was the last written token a whitespace? */
 	private volatile boolean _lastWhitespace;
 	
+	/** Was the last written token a newline? */
+	private volatile boolean _lastNewline;
+	
 	/**
 	 * Initializes the C source writer.
 	 * 
@@ -335,11 +338,16 @@ public class CFile
 	public CSourceWriter freshLine()
 		throws IOException
 	{
+		// Ignore if there was a newline
+		if (this._lastNewline)
+			return this;
+		
 		// Emit newline
 		this.out.newLine(false);
 		
 		// Last was whitespace
 		this._lastWhitespace = true;
+		this._lastNewline = true;
 		
 		return this;
 	}
@@ -471,10 +479,8 @@ public class CFile
 		else
 			value = __number.longValue();
 		
-		// No type specified, so just use whatever value it is... but never
-		// use a prefix when using the preprocessor
-		if (__type == null || __type.prefix == null ||
-			this._preprocessorLines)
+		// No type specified, so just use whatever value it is...
+		if (__type == null || __type.prefix == null)
 			return this.token(Long.toString(value));
 		
 		// Prefix it
@@ -487,17 +493,16 @@ public class CFile
 	 */
 	@Override
 	public CSourceWriter preprocessorDefine(CIdentifier __symbol,
-		Object... __tokens)
+		CExpression __expression)
 		throws IOException, NullPointerException
 	{
 		if (__symbol == null)
 			throw new NullPointerException("NARG");
 		
-		if (__tokens == null || __tokens.length == 0)
-			return this.preprocessorLine(CPPDirective.DEFINE,
-				__symbol);
+		if (__expression == null)
+			return this.preprocessorLine(CPPDirective.DEFINE, __symbol);
 		return this.preprocessorLine(CPPDirective.DEFINE,
-			__symbol, __tokens);
+			__symbol, __expression);
 	}
 	
 	/**
@@ -505,18 +510,18 @@ public class CFile
 	 * @since 2023/05/29
 	 */
 	@Override
-	public CPPBlock preprocessorIf(Object... __condition)
+	public CPPBlock preprocessorIf(CExpression __expression)
 		throws IOException, NullPointerException
 	{
-		if (__condition == null || __condition.length == 0)
+		if (__expression == null)
 			throw new NullPointerException("NARG");
+		
+		// Start the check
+		this.preprocessorLine(CPPDirective.IF, __expression);
 		
 		// Setup new block
 		CPPBlock rv = new CPPBlock(this);
 		this.__pushBlock(rv, false);
-		
-		// Start the check
-		this.preprocessorLine(CPPDirective.IF, __condition);
 		
 		return rv;
 	}
@@ -549,26 +554,14 @@ public class CFile
 			throw new NullPointerException("NARG");
 		
 		// Always start this directive on a fresh line
-		if (this._column > 0)
-			this.freshLine();
+		this.freshLine();
 		
-		// Need to restore old state when continuing
-		try
-		{
-			// Indicate we are writing the preprocessor
-			this._preprocessorLines = true;
-			
-			// Write out directive
-			this.token("#" + __directive.directive);
-			
-			// Write tokens for the directive
-			if (__tokens != null && __tokens.length > 0)
-				this.tokens(__tokens);
-		}
-		finally
-		{
-			this._preprocessorLines = false;
-		}
+		// Write out directive
+		this.token("#" + __directive.directive);
+		
+		// Write tokens for the directive
+		if (__tokens != null && __tokens.length > 0)
+			this.tokens(__tokens);
 		
 		// Always end with a fresh line, so we can continue accordingly
 		this.freshLine();
@@ -692,12 +685,30 @@ public class CFile
 		else
 			out.token(__token, __forceNewline);
 		
-		// Did the token end on whitespace or was newline forced?
+		// Ends on newline or forced newline?
 		char endChar = __token.charAt(n - 1); 
-		if (__forceNewline ||
-			endChar == '\r' || endChar == '\n' ||
-			endChar == ' ' || endChar == '\t')
+		if (__forceNewline || endChar == '\r' || endChar == '\n')
+		{
+			if (endChar != '\r' && endChar != '\n')
+				out.newLine(true);
+			
+			this._lastNewline = true;
 			this._lastWhitespace = true;
+		}
+		
+		// Normal whitespace
+		else if (endChar == ' ' || endChar == '\t')
+		{
+			this._lastNewline = false;
+			this._lastWhitespace = true;
+		}
+		
+		// Clear these otherwise
+		else
+		{
+			this._lastNewline = false;
+			this._lastWhitespace = false;
+		}
 		
 		// Self
 		return this;
@@ -714,9 +725,13 @@ public class CFile
 		// null
 		if (__token == null)
 			return this.token("NULL");
+		
+		// A C Expression
+		if (__token instanceof CExpression)
+			return this.token(((CExpression)__token).tokens());
 			
 		// Primitive arrays
-		if (__token instanceof boolean[])
+		else if (__token instanceof boolean[])
 			return this.array((boolean[])__token);
 		else if (__token instanceof byte[])
 			return this.array((byte[])__token);
@@ -758,10 +773,6 @@ public class CFile
 		// A number value
 		else if (__token instanceof Number)
 			return this.number((Number)__token);
-		
-		// A C Expression
-		else if (__token instanceof CExpression)
-			return this.token(((CExpression)__token).tokens());
 		
 		// {@squirreljme.error CW05 Unknown token type. (The type)}
 		throw new IllegalArgumentException("CW05 " + __token.getClass());
