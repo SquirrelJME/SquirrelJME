@@ -77,8 +77,12 @@ public class CPointerType
 		// Process pointer tokens
 		List<String> result = new ArrayList<>();
 		
-		if (true)
-			throw Debugging.todo();
+		// Pointers are to the right, generally
+		result.addAll(pointedType.declareTokens(null));
+		result.add(this.closeness.token + "*");
+		
+		if (__name != null)
+			result.add(__name.identifier);
 		
 		return UnmodifiableList.of(result);
 	}
