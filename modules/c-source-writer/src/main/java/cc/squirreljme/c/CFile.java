@@ -180,19 +180,8 @@ public class CFile
 	public CSourceWriter array(List<?> __values)
 		throws IOException
 	{
-		try (CBlock block = this.curly())
-		{
-			if (__values != null)
-				for (int i = 0, n = __values.size(); i < n; i++)
-				{
-					if (i > 0)
-						this.token(",");
-					
-					this.token(__values.get(i));
-				}
-		}
-		
-		// Self
+		CExpressionBuilder.__builder(this.out)
+			.array(__values);
 		return this;
 	}
 	
@@ -302,13 +291,37 @@ public class CFile
 	 * @since 2023/06/19
 	 */
 	@Override
-	public <B extends CBlock> B declare(Class<B> __blockType, CVariable __var)
+	public <B extends CBlock> B define(Class<B> __blockType, CVariable __var)
 		throws IOException, NullPointerException
 	{
 		if (__blockType == null || __var == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// Get the root type we are using
+		CType type = __var.type();
+		if (type instanceof CModifiedType)
+			type = ((CModifiedType)type).type;
+		
+		// Structure type
+		if (type instanceof CStructType)
+		{
+			CStructType struct = (CStructType)type;
+			
+			// Open struct
+			this.tokens(struct.declareTokens(null),
+				__var.name,
+				"{");
+			
+			// Setup block
+			CStructVariableBlock rv = new CStructVariableBlock(
+				this, struct, "};");
+			this.__pushBlock(rv, true);
+			return __blockType.cast(rv);
+		}
+		
+		// Unknown??
+		else
+			throw Debugging.todo(__var.getClass());
 	}
 	
 	/**
@@ -400,10 +413,11 @@ public class CFile
 		if (__function == null)
 			throw new NullPointerException("NARG");
 		
-		// Just forward to expression builder
-		this.tokens(CExpressionBuilder.builder()
+		// Just forward to expression __builder
+		CExpressionBuilder.__builder(this.out)
 			.functionCall(__function, __args)
-			.build(), ";");
+			.build();
+		this.tokens(";");
 		return this;
 	}
 	
@@ -462,9 +476,10 @@ public class CFile
 		if (__number == null)
 			throw new NullPointerException("NARG");
 		
-		return this.expression(CExpressionBuilder.builder()
-				.number(__type, __number)
-			.build());
+		CExpressionBuilder.__builder(this.out)
+			.number(__type, __number)
+			.build();
+		return this;
 	}
 	
 	/**
@@ -708,7 +723,13 @@ public class CFile
 		
 		// A C Expression
 		if (__token instanceof CExpression)
+		{
+			// {@squirreljme.error CW36 Cannot output token in such way.}
+			if (__token == CExpression._INVALID_EXPRESSION)
+				throw new IllegalArgumentException("CW36");
+			
 			return this.token(((CExpression)__token).tokens());
+		}
 			
 		// A C identifier
 		else if (__token instanceof CIdentifier)

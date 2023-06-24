@@ -10,8 +10,11 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CArrayBlock;
+import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
+import cc.squirreljme.c.CUtils;
+import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import net.multiphasicapps.classfile.ClassFile;
@@ -91,18 +94,26 @@ public class FieldProcessor
 		try (CStructVariableBlock struct = __array.struct())
 		{
 			struct.memberSet("name",
-				Utils.quotedString(field.name().toString()));
+				CExpressionBuilder.builder()
+					.string(field.name().toString())
+					.build());
 			struct.memberSet("type",
-				Utils.quotedString(field.type().toString()));
+				CExpressionBuilder.builder()
+					.string(field.type().toString())
+					.build());
 			struct.memberSet("flags",
-				field.flags().toJavaBits());
+				CExpressionBuilder.builder()
+					.number(Constants.JINT_C, field.flags().toJavaBits())
+					.build());
 			
 			// Constant value?
 			ConstantValue value = field.constantValue();
 			if (value != null)
 			{
-				struct.memberSet("valueType",
-					"SJME_VALUETYPE_" + value.type().name());
+				if (true)
+					throw Debugging.todo();
+				/*struct.memberSet("valueType",
+					"SJME_VALUETYPE_" + value.type().name());*/
 				try (CStructVariableBlock valueStruct = struct.memberStructSet(
 					"value"))
 				{
@@ -110,32 +121,51 @@ public class FieldProcessor
 					{
 						case INTEGER:
 							valueStruct.memberSet("jint",
-								value.boxedValue());
+								CExpressionBuilder.builder()
+									.number(Constants.JINT_C,
+										(Integer)value.boxedValue())
+									.build());
 							break;
 							
 						case LONG:
 							valueStruct.memberSet("jlong",
-								value.boxedValue());
+								CExpressionBuilder.builder()
+									.number(Constants.JLONG_C,
+										(Long)value.boxedValue())
+									.build());
 							break;
 							
 						case FLOAT:
 							valueStruct.memberSet("jfloat",
-								value.boxedValue());
+								CExpressionBuilder.builder()
+									.number(Constants.JINT_C,
+										Float.floatToRawIntBits(
+											(Float)value.boxedValue()))
+									.build());
 							break;
 							
 						case DOUBLE:
 							valueStruct.memberSet("jdouble",
-								value.boxedValue());
+								CExpressionBuilder.builder()
+									.number(Constants.JLONG_C,
+										Double.doubleToRawLongBits(
+											(Double)value.boxedValue()))
+									.build());
 							break;
 							
 						case STRING:
 							valueStruct.memberSet("jstring",
-								value);
+								CExpressionBuilder.builder()
+									.string((String)value.boxedValue())
+									.build());
 							break;
 							
 						case CLASS:
 							valueStruct.memberSet("jclass",
-								((ConstantValueClass)value).className());
+								CExpressionBuilder.builder()
+									.string(((ConstantValueClass)value)
+										.className().toString())
+									.build());
 							break;
 							
 						default:

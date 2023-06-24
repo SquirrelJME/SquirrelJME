@@ -10,11 +10,14 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CArrayBlock;
+import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CStructVariableBlock;
+import cc.squirreljme.c.CUtils;
 import cc.squirreljme.c.CVariable;
+import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import java.io.IOException;
@@ -150,11 +153,14 @@ public class ClassProcessor
 		ClassFile classFile = this.classFile;
 		
 		// Process field source details outside the class struct
-		try (CStructVariableBlock struct = this.out.declare(
+		try (CStructVariableBlock struct = this.out.define(
 			CStructVariableBlock.class, this.classFields))
 		{
 			// Field count
-			struct.memberSet("count", this._fields.size());
+			struct.memberSet("count",
+				CExpressionBuilder.builder()
+					.number(Constants.JINT_C, this._fields.size())
+					.build());
 			
 			// Then the actual members
 			try (CArrayBlock array =
@@ -170,11 +176,14 @@ public class ClassProcessor
 			method.processSourceOutside();
 		
 		// Process method details for method structure
-		try (CStructVariableBlock struct = this.out.declare(
+		try (CStructVariableBlock struct = this.out.define(
 			CStructVariableBlock.class, this.classMethods))
 		{
 			// Method count
-			struct.memberSet("count", this._methods.size());
+			struct.memberSet("count",
+				CExpressionBuilder.builder()
+					.number(Constants.JINT_C, this._methods.size())
+					.build());
 			
 			// Then the actual members
 			try (CArrayBlock array =
@@ -186,24 +195,34 @@ public class ClassProcessor
 		}
 		
 		// Open class details
-		try (CStructVariableBlock struct = this.out.declare(
+		try (CStructVariableBlock struct = this.out.define(
 			CStructVariableBlock.class, this.classInfo))
 		{
 			// Class details
 			struct.memberSet("thisName",
-				Utils.quotedString(classFile.thisName()));
+				CExpressionBuilder.builder()
+					.string(classFile.thisName().toString())
+					.build());
 			struct.memberSet("superName",
-				Utils.quotedString(classFile.superName()));
+				CExpressionBuilder.builder()
+					.string(classFile.superName().toString())
+					.build());
 			struct.memberSet("flags",
-				classFile.flags().toJavaBits());
+				CExpressionBuilder.builder()
+					.number(Constants.JINT_C, classFile.flags().toJavaBits())
+					.build());
 			
 			// Fields
 			struct.memberSet("fields",
-				this.classFields);
+				CExpressionBuilder.builder()
+					.identifier(this.classFields)
+					.build());
 			
 			// Methods
 			struct.memberSet("methods",
-				this.classMethods);
+				CExpressionBuilder.builder()
+					.identifier(this.classMethods)
+					.build());
 		}
 	}
 }

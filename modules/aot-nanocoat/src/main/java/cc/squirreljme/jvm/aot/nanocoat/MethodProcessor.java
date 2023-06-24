@@ -10,12 +10,15 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CArrayBlock;
+import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFunctionType;
-import cc.squirreljme.c.CPrimitiveType;
+import cc.squirreljme.c.CUtils;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.c.CFunctionBlock;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
+import cc.squirreljme.c.std.CStdIntNumberType;
+import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import java.io.IOException;
@@ -119,27 +122,39 @@ public final class MethodProcessor
 		{
 			// Method details
 			struct.memberSet("name",
-				Utils.quotedString(method.name().toString()));
+				CExpressionBuilder.builder()
+					.string(method.name().toString())
+					.build());
 			struct.memberSet("type",
-				Utils.quotedString(method.type().toString()));
+				CExpressionBuilder.builder()
+					.string(method.type().toString())
+					.build());
 			struct.memberSet("flags",
-				method.flags().toJavaBits());
+				CExpressionBuilder.builder()
+					.number(Constants.JINT_C, method.flags().toJavaBits())
+					.build());
 			
 			// Slots of return value
 			FieldDescriptor rVal = method.type().returnValue();
 			if (rVal != null)
 				struct.memberSet("rValSlots",
-					rVal.stackWidth());
+					CExpressionBuilder.builder()
+						.number(Constants.JINT_C, rVal.stackWidth())
+						.build());
 			
 			// Argument slots
 			struct.memberSet("argSlots",
-				method.argumentSlotCount());
+				CExpressionBuilder.builder()
+					.number(Constants.JINT_C, method.argumentSlotCount())
+					.build());
 			
 			// Code for the method?
 			ByteCode code = method.byteCode();
 			if (code != null)
 				struct.memberSet("code",
-					this.methodIdentifier);
+					CExpressionBuilder.builder()
+						.identifier(this.function.name)
+						.build());
 		}
 	}
 	

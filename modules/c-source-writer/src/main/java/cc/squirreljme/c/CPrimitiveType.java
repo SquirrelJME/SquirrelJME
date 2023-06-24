@@ -27,6 +27,9 @@ public enum CPrimitiveType
 	/** Void. */
 	VOID("void"),
 	
+	/** Unspecified signedness char. */
+	CHAR("char"),
+	
 	/** Signed Char. */
 	SIGNED_CHAR("signed char"),
 	

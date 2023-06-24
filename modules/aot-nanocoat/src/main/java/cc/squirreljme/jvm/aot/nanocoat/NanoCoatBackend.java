@@ -117,15 +117,21 @@ public class NanoCoatBackend
 			byte[] data = StreamUtils.readAll(__in);
 			
 			// Write values for the resource data
-			try (CStructVariableBlock struct = out.declare(
+			try (CStructVariableBlock struct = out.define(
 				CStructVariableBlock.class, rcVar))
 			{
 				struct.memberSet("path",
-					"\"" + __path + "\"");
+					CExpressionBuilder.builder()
+						.string(__path)
+						.build());
 				struct.memberSet("size",
-					data.length);
+					CExpressionBuilder.builder()
+						.number(Constants.JINT_C, data.length)
+						.build());
 				struct.memberSet("data",
-					data);
+					CExpressionBuilder.builder()
+						.array(data)
+						.build());
 			}
 		}
 	}

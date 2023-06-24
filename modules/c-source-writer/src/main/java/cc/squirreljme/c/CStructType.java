@@ -182,7 +182,11 @@ public class CStructType
 		if (__identifier == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		for (CVariable member : this.members)
+			if (__identifier.equals(member.name))
+				return member;
+		
+		throw new NoSuchElementException("NSEE " + __identifier);
 	}
 	
 	/**

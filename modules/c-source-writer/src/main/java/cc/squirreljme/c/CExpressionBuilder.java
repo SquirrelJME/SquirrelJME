@@ -9,31 +9,206 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.c.out.CTokenOutput;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.BooleanArrayList;
+import cc.squirreljme.runtime.cldc.util.ByteArrayList;
+import cc.squirreljme.runtime.cldc.util.CharacterArrayList;
+import cc.squirreljme.runtime.cldc.util.DoubleArrayList;
+import cc.squirreljme.runtime.cldc.util.FloatArrayList;
+import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
+import cc.squirreljme.runtime.cldc.util.LongArrayList;
+import cc.squirreljme.runtime.cldc.util.ShortArrayList;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This builds {@link CExpression}.
  *
  * @see CExpression
- * @param <B> The builder type.
+ * @param <B> The __builder type.
  * @since 2023/06/19
  */
 public abstract class CExpressionBuilder
 	<B extends CExpressionBuilder<? extends B>>
 {
+	/** Direct token output. */
+	private final CTokenOutput _direct;
+	
 	/** The output tokens. */
-	protected final List<String> tokens =
-		new ArrayList<>();
+	final List<String> _tokens;
 	
 	/**
-	 * Internal only.
+	 * Initializes the expression __builder.
 	 * 
+	 * @param __direct Direct token access?
 	 * @since 2023/06/24
 	 */
-	CExpressionBuilder()
+	CExpressionBuilder(CTokenOutput __direct)
 	{
+		if (__direct != null)
+		{
+			this._direct = __direct;
+			this._tokens = null;
+		}
+		else
+		{
+			this._direct = null;
+			this._tokens = new ArrayList<>();
+		}
+	}
+	
+	/**
+	 * Builds an array.
+	 * 
+	 * @param __values Values to set.
+	 * @return {@code this}.
+	 * @since 2023/06/24
+	 */
+	public B array(Object... __values)
+		throws IOException
+	{
+		return this.array(Arrays.asList(__values));
+	}
+	
+	/**
+	 * Builds an array.
+	 * 
+	 * @param __values Values to set.
+	 * @return {@code this}.
+	 * @since 2023/06/24
+	 */
+	public B array(boolean... __values)
+		throws IOException
+	{
+		return this.array(BooleanArrayList.asList(__values));
+	}
+	
+	/**
+	 * Builds an array.
+	 * 
+	 * @param __values Values to set.
+	 * @return {@code this}.
+	 * @since 2023/06/24
+	 */
+	public B array(byte... __values)
+		throws IOException
+	{
+		return this.array(ByteArrayList.asList(__values));
+	}
+	
+	/**
+	 * Builds an array.
+	 * 
+	 * @param __values Values to set.
+	 * @return {@code this}.
+	 * @since 2023/06/24
+	 */
+	public B array(short... __values)
+		throws IOException
+	{
+		return this.array(ShortArrayList.asList(__values));
+	}
+	
+	/**
+	 * Builds an array.
+	 * 
+	 * @param __values Values to set.
+	 * @return {@code this}.
+	 * @since 2023/06/24
+	 */
+	public B array(char... __values)
+		throws IOException
+	{
+		return this.array(CharacterArrayList.asList(__values));
+	}
+	
+	/**
+	 * Builds an array.
+	 * 
+	 * @param __values Values to set.
+	 * @return {@code this}.
+	 * @since 2023/06/24
+	 */
+	public B array(int... __values)
+		throws IOException
+	{
+		return this.array(IntegerArrayList.asList(__values));
+	}
+	
+	/**
+	 * Builds an array.
+	 * 
+	 * @param __values Values to set.
+	 * @return {@code this}.
+	 * @since 2023/06/24
+	 */
+	public B array(long... __values)
+		throws IOException
+	{
+		return this.array(LongArrayList.asList(__values));
+	}
+	
+	/**
+	 * Builds an array.
+	 * 
+	 * @param __values Values to set.
+	 * @return {@code this}.
+	 * @since 2023/06/24
+	 */
+	public B array(float... __values)
+		throws IOException
+	{
+		return this.array(FloatArrayList.asList(__values));
+	}
+	
+	/**
+	 * Builds an array.
+	 * 
+	 * @param __values Values to set.
+	 * @return {@code this}.
+	 * @since 2023/06/24
+	 */
+	public B array(double... __values)
+		throws IOException
+	{
+		return this.array(DoubleArrayList.asList(__values));
+	}
+	
+	/**
+	 * Builds an array.
+	 * 
+	 * @param __values Values to set.
+	 * @return {@code this}.
+	 * @since 2023/06/24
+	 */
+	public B array(List<?> __values)
+		throws IOException
+	{
+		// Open block
+		this.__add("{");
+		
+		if (__values != null)
+			for (int i = 0, n = __values.size(); i < n; i++)
+			{
+				if (i > 0)
+					this.__add(",");
+				
+				Object value = __values.get(i);
+				if (value instanceof Number)
+					this.number((Number)value);
+				else if (value instanceof String)
+					this.string((String)value);
+				else
+					this.__add(Objects.toString(value));
+			}
+		
+		// Close block
+		return this.__add("}");
 	}
 	
 	/**
@@ -45,12 +220,11 @@ public abstract class CExpressionBuilder
 	 * @since 2023/06/24
 	 */
 	public B arrayAccess(int __index)
+		throws IOException
 	{
-		List<String> tokens = this.tokens;
-		
-		tokens.add("[");
-		tokens.add(Integer.toString(__index));
-		tokens.add("]");
+		this.__add("[");
+		this.__add(Integer.toString(__index));
+		this.__add("]");
 		
 		return this.__this();
 	}
@@ -64,16 +238,14 @@ public abstract class CExpressionBuilder
 	 * @since 2023/06/24
 	 */
 	public B arrayAccess(CExpression __expression)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		if (__expression == null)
 			throw new NullPointerException("NARG");
 		
-		List<String> tokens = this.tokens;
-		
-		tokens.add("[");
-		tokens.addAll(__expression.tokens);
-		tokens.add("]");
+		this.__add("[");
+		this.__add(__expression.tokens);
+		this.__add("]");
 		
 		return this.__this();
 	}
@@ -85,8 +257,9 @@ public abstract class CExpressionBuilder
 	 * @since 2023/06/19
 	 */
 	public B dereferenceStruct()
+		throws IOException
 	{
-		this.tokens.add("->");
+		this.__add("->");
 		
 		return this.__this();
 	}
@@ -99,6 +272,7 @@ public abstract class CExpressionBuilder
 	 * @since 2023/06/24
 	 */
 	public B expression(CExpression __expression)
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
@@ -116,7 +290,7 @@ public abstract class CExpressionBuilder
 	 */
 	public B functionCall(CFunctionType __function,
 		CExpression... __args)
-		throws IllegalArgumentException, NullPointerException
+		throws IOException, IllegalArgumentException, NullPointerException
 	{
 		if (__function == null)
 			throw new NullPointerException("NARG");
@@ -138,12 +312,12 @@ public abstract class CExpressionBuilder
 	 * @since 2023/06/24
 	 */
 	public B identifier(CIdentifier __identifier)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		if (__identifier == null)
 			throw new NullPointerException("NARG");
 		
-		this.tokens.add(__identifier.identifier);
+		this.__add(__identifier.identifier);
 		
 		return this.__this();
 	}
@@ -157,7 +331,7 @@ public abstract class CExpressionBuilder
 	 * @since 2023/06/19
 	 */
 	public B identifier(CVariable __var)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		if (__var == null)
 			throw new NullPointerException("NARG");
@@ -172,8 +346,9 @@ public abstract class CExpressionBuilder
 	 * @since 2023/06/24
 	 */
 	public B not()
+		throws IOException
 	{
-		this.tokens.add("!");
+		this.__add("!");
 		
 		return this.__this();
 	}
@@ -188,7 +363,7 @@ public abstract class CExpressionBuilder
 	 * @since 2023/06/24
 	 */
 	public B number(Number __value)
-		throws IllegalArgumentException, NullPointerException
+		throws IOException, IllegalArgumentException, NullPointerException
 	{
 		return this.number(null, __value);
 	}
@@ -204,7 +379,7 @@ public abstract class CExpressionBuilder
 	 * @since 2023/06/24
 	 */
 	public B number(CNumberType __type, Number __value)
-		throws IllegalArgumentException, NullPointerException
+		throws IOException, IllegalArgumentException, NullPointerException
 	{
 		if (__value == null)
 			throw new NullPointerException("NARG");
@@ -212,8 +387,6 @@ public abstract class CExpressionBuilder
 		// {@squirreljme.error CW22 Unsupported number.}
 		if (__value instanceof Float || __value instanceof Double)
 			throw new IllegalArgumentException("CW22");
-		
-		List<String> tokens = this.tokens;
 		
 		// Prefix/suffix/surround type, possibly?
 		String string = Long.toString(__value.longValue(), 10);
@@ -226,44 +399,45 @@ public abstract class CExpressionBuilder
 			// Base surround?
 			if (surround != null)
 			{
-				tokens.add(surround);
-				tokens.add("(");
+				this.__add(surround);
+				this.__add("(");
 			}
 			
 			// Put in the base number with its prefix and/or suffix
 			if (prefix != null)
 				if (suffix != null)
-					tokens.add(prefix + string + suffix);
+					this.__add(prefix + string + suffix);
 				else
-					tokens.add(prefix + string);
+					this.__add(prefix + string);
 			else
 				if (suffix != null)
-					tokens.add(string + suffix);
+					this.__add(string + suffix);
 				else
-					tokens.add(string);
+					this.__add(string);
 			
 			// End surround?
 			if (surround != null)
-				tokens.add(")");
+				this.__add(")");
 		}
 		
 		// Just plain digit
 		else
-			tokens.add(string);
+			this.__add(string);
 		
 		return this.__this();
 	}
 	
 	/**
-	 * Returns a builder to make an expression in a parenthesis statement.
+	 * Returns a __builder to make an expression in a parenthesis statement.
 	 * 
-	 * @return The sub expression builder.
+	 * @return The sub expression __builder.
 	 * @since 2023/06/24
 	 */
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	public CSubExpressionBuilder<B> parenthesis()
+		throws IOException
 	{
-		this.tokens.add("(");
+		this.__add("(");
 		return (CSubExpressionBuilder<B>)
 			new CSubExpressionBuilder(this, ")");
 	}
@@ -277,17 +451,15 @@ public abstract class CExpressionBuilder
 	 * @since 2023/06/24
 	 */
 	public B preprocessorDefined(CIdentifier __identifier)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		if (__identifier == null)
 			throw new NullPointerException("NARG");
 		
-		List<String> tokens = this.tokens;
-		
-		tokens.add("defined");
-		tokens.add("(");
-		tokens.add(__identifier.identifier);
-		tokens.add(")");
+		this.__add("defined");
+		this.__add("(");
+		this.__add(__identifier.identifier);
+		this.__add(")");
 		
 		return this.__this();
 	}
@@ -299,8 +471,28 @@ public abstract class CExpressionBuilder
 	 * @since 2023/06/24
 	 */
 	public B reference()
+		throws IOException
 	{
-		this.tokens.add("&");
+		this.__add("&");
+		
+		return this.__this();
+	}
+	
+	/**
+	 * Writes the string to the output.
+	 * 
+	 * @param __string The string to write.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/24
+	 */
+	public B string(String __string)
+		throws IOException, NullPointerException
+	{
+		if (__string == null)
+			throw new NullPointerException("NARG");
+		
+		this.__add(CUtils.quotedString(__string));
 		
 		return this.__this();
 	}
@@ -312,9 +504,61 @@ public abstract class CExpressionBuilder
 	 * @since 2023/06/24
 	 */
 	public B structAccess()
+		throws IOException
 	{
-		this.tokens.add(".");
+		this.__add(".");
 		
+		return this.__this();
+	}
+	
+	/**
+	 * Adds the given token.
+	 * 
+	 * @param __token The token to add.
+	 * @return {@code this}.
+	 * @since 2023/06/24
+	 */
+	final B __add(String __token)
+		throws IOException
+	{
+		// Use direct output access?
+		if (this._direct != null)
+			this._direct.token(__token, false);
+		
+		// Otherwise enqueue
+		else
+			this._tokens.add(__token);
+		
+		return this.__this();
+	}
+	
+	/**
+	 * Adds the given tokens.
+	 * 
+	 * @param __tokens The tokens to add.
+	 * @return {@code this}.
+	 * @since 2023/06/24
+	 */
+	final B __add(String... __tokens)
+		throws IOException
+	{
+		for (String token : __tokens)
+			this.__add(token);
+		return this.__this();
+	}
+	
+	/**
+	 * Adds the given tokens.
+	 * 
+	 * @param __tokens The tokens to add.
+	 * @return {@code this}.
+	 * @since 2023/06/24
+	 */
+	final B __add(Collection<String> __tokens)
+		throws IOException
+	{
+		for (String token : __tokens)
+			this.__add(token);
 		return this.__this();
 	}
 	
@@ -331,13 +575,25 @@ public abstract class CExpressionBuilder
 	}
 	
 	/**
-	 * Creates an expression builder.
+	 * Creates an expression __builder.
 	 * 
-	 * @return The builder.
+	 * @return The __builder.
 	 * @since 2023/06/19
 	 */
 	public static final CRootExpressionBuilder builder()
 	{
-		return new CRootExpressionBuilder();
+		return CExpressionBuilder.__builder(null);
+	}
+	
+	/**
+	 * Creates an expression __builder.
+	 * 
+	 * @param __direct Direct token access?
+	 * @return The __builder.
+	 * @since 2023/06/24
+	 */
+	static final CRootExpressionBuilder __builder(CTokenOutput __direct)
+	{
+		return new CRootExpressionBuilder(__direct);
 	}
 }

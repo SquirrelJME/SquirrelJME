@@ -166,27 +166,13 @@ public interface CSourceWriter
 	/**
 	 * Declares a variable without setting it to anything.
 	 * 
-	 * @param __var The variable to declare.
+	 * @param __var The variable to define.
 	 * @return {@code this}.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/19
 	 */
 	CSourceWriter declare(CVariable __var)
-		throws IOException, NullPointerException;
-	
-	/**
-	 * Declares a variable block.
-	 * 
-	 * @param <B> The block type.
-	 * @param __blockType The block type.
-	 * @param __var The variable to declare.
-	 * @return The block for the given variable.
-	 * @throws IOException On write errors. 
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/06/19
-	 */
-	<B extends CBlock> B declare(Class<B> __blockType, CVariable __var)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -202,6 +188,31 @@ public interface CSourceWriter
 		throws IOException, NullPointerException;
 	
 	/**
+	 * Defines a function.
+	 *
+	 * @param __function@return The block for writing functions.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException If no name was specified.
+	 * @since 2023/05/30
+	 */
+	CFunctionBlock define(CFunctionType __function)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * Defines a variable block that assigned a variable value.
+	 * 
+	 * @param <B> The block type.
+	 * @param __blockType The block type.
+	 * @param __var The variable to define.
+	 * @return The block for the given variable.
+	 * @throws IOException On write errors. 
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/19
+	 */
+	<B extends CBlock> B define(Class<B> __blockType, CVariable __var)
+		throws IOException, NullPointerException;
+	
+	/**
 	 * Outputs an expression.
 	 * 
 	 * @param __expression The expression to write.
@@ -211,17 +222,6 @@ public interface CSourceWriter
 	 * @since 2023/06/24
 	 */
 	CSourceWriter expression(CExpression __expression)
-		throws IOException, NullPointerException;
-	
-	/**
-	 * Defines a function.
-	 *
-	 * @param __function@return The block for writing functions.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException If no name was specified.
-	 * @since 2023/05/30
-	 */
-	CFunctionBlock define(CFunctionType __function)
 		throws IOException, NullPointerException;
 	
 	/**

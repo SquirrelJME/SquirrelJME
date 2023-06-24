@@ -50,7 +50,7 @@ public class CVariable
 	}
 	
 	/**
-	 * The tokens used to declare this variable.
+	 * The tokens used to define this variable.
 	 * 
 	 * @return The tokens used for declaration.
 	 * @since 2023/06/24

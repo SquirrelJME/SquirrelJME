@@ -30,28 +30,14 @@ public final class CStructTypeBuilder
 		new LinkedHashMap<>();
 	
 	/**
-	 * Initializes the struct builder.
+	 * Initializes the struct __builder.
 	 * 
 	 * @param __kind The kind of struct this is.
 	 * @param __name The name of this struct.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/12
 	 */
-	public CStructTypeBuilder(CStructKind __kind, String __name)
-		throws NullPointerException
-	{
-		this(__kind, CIdentifier.of(__name));
-	}
-	
-	/**
-	 * Initializes the struct builder.
-	 * 
-	 * @param __kind The kind of struct this is.
-	 * @param __name The name of this struct.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/06/12
-	 */
-	public CStructTypeBuilder(CStructKind __kind, CIdentifier __name)
+	private CStructTypeBuilder(CStructKind __kind, CIdentifier __name)
 		throws NullPointerException
 	{
 		if (__kind == null || __name == null)
@@ -113,5 +99,37 @@ public final class CStructTypeBuilder
 		members.put(__name, CVariable.of(__type, __name));
 		
 		return this;
+	}
+	
+	/**
+	 * Initializes the struct __builder.
+	 * 
+	 * @param __kind The kind of struct this is.
+	 * @param __name The name of this struct.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/12
+	 */
+	public static CStructTypeBuilder builder(CStructKind __kind, String __name)
+		throws NullPointerException
+	{
+		return CStructTypeBuilder.builder(__kind, CIdentifier.of(__name));
+	}
+	
+	/**
+	 * Initializes the struct __builder.
+	 * 
+	 * @param __kind The kind of struct this is.
+	 * @param __name The name of this struct.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/12
+	 */
+	public static CStructTypeBuilder builder(CStructKind __kind,
+		CIdentifier __name)
+		throws NullPointerException
+	{
+		if (__kind == null || __name == null)
+			throw new NullPointerException("NARG");
+		
+		return new CStructTypeBuilder(__kind, __name);
 	}
 }

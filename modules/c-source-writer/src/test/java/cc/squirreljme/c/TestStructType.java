@@ -29,7 +29,7 @@ public class TestStructType
 	{
 		// Build a basic struct
 		CStructType struct =
-			new CStructTypeBuilder(CStructKind.STRUCT, "foo")
+			CStructTypeBuilder.builder(CStructKind.STRUCT, "foo")
 				.member(CPrimitiveType.SIGNED_INTEGER, "xint")
 				.member(CPrimitiveType.VOID.pointerType(), "xvoidptr")
 				.build();
@@ -39,7 +39,7 @@ public class TestStructType
 		{
 			spool.declare(CVariable.of(struct, "foo"));
 			
-			this.secondary("declare", spool.tokens());
+			this.secondary("define", spool.tokens());
 		}
 		
 		// Define struct

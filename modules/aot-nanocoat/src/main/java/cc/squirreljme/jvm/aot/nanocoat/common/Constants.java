@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.aot.nanocoat.common;
 
 import cc.squirreljme.c.CFileName;
 import cc.squirreljme.c.CIdentifier;
+import cc.squirreljme.c.std.CStdIntNumberType;
 
 /**
  * Generic constants for NanoCoat.
@@ -26,4 +27,12 @@ public interface Constants
 	/** Guard for header/source code. */
 	CIdentifier CODE_GUARD =
 		CIdentifier.of("SJME_C_CH");
+	
+	/** {@code jint} conversion. */
+	CStdIntNumberType JINT_C =
+		CStdIntNumberType.INT32;
+	
+	/** {@code jlong} conversion. */
+	CStdIntNumberType JLONG_C =
+		CStdIntNumberType.INT32;
 }

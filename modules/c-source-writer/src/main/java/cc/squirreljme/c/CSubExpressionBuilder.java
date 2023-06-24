@@ -9,8 +9,7 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.util.List;
+import java.io.IOException;
 
 /**
  * Builder for sub-expressions.
@@ -24,13 +23,13 @@ public class CSubExpressionBuilder<P extends CExpressionBuilder<? extends P>>
 	/** The closing token. */
 	protected final String closing;
 	
-	/** The parent builder. */
+	/** The parent __builder. */
 	protected final P parent;
 	
 	/**
-	 * Initializes the expression builder.
+	 * Initializes the expression __builder.
 	 * 
-	 * @param __parent The parent builder.
+	 * @param __parent The parent __builder.
 	 * @param __closing The closing token.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/24
@@ -38,6 +37,8 @@ public class CSubExpressionBuilder<P extends CExpressionBuilder<? extends P>>
 	CSubExpressionBuilder(P __parent, String __closing)
 		throws NullPointerException
 	{
+		super(null);
+		
 		if (__parent == null || __closing == null)
 			throw new NullPointerException("NARG");
 		
@@ -48,16 +49,17 @@ public class CSubExpressionBuilder<P extends CExpressionBuilder<? extends P>>
 	/**
 	 * Closes this expression and returns to the parent.
 	 * 
-	 * @return The parent expression builder.
+	 * @return The parent expression __builder.
 	 * @since 2023/06/24
 	 */
 	public P close()
+		throws IOException
 	{
-		List<String> parentTokens = this.parent.tokens;
+		P parent = this.parent;
 		
-		parentTokens.addAll(this.tokens);
-		parentTokens.add(this.closing);
+		parent.__add(this._tokens);
+		parent.__add(this.closing);
 		
-		return this.parent;
+		return parent;
 	}
 }

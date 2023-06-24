@@ -40,7 +40,7 @@ public class TestFunction
 		{
 			spool.declare(function);
 			
-			this.secondary("declare", spool.tokens());
+			this.secondary("define", spool.tokens());
 		}
 		
 		// Define function

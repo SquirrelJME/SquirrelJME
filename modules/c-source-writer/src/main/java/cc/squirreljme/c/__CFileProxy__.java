@@ -10,7 +10,6 @@
 package cc.squirreljme.c;
 
 import cc.squirreljme.c.std.CFunctionProvider;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.util.List;
@@ -209,10 +208,10 @@ abstract class __CFileProxy__
 	 * @since 2023/06/19
 	 */
 	@Override
-	public <B extends CBlock> B declare(Class<B> __blockType, CVariable __var)
+	public <B extends CBlock> B define(Class<B> __blockType, CVariable __var)
 		throws IOException, NullPointerException
 	{
-		return this.__file().declare(__blockType, __var);
+		return this.__file().define(__blockType, __var);
 	}
 	
 	/**

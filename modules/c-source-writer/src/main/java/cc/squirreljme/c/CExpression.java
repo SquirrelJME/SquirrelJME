@@ -21,6 +21,10 @@ import net.multiphasicapps.collections.UnmodifiableList;
  */
 public class CExpression
 {
+	/** Invalid expression. */
+	static final CExpression _INVALID_EXPRESSION =
+		new CExpression();
+	
 	/** The tokens used in the expression. */
 	protected final List<String> tokens;
 	

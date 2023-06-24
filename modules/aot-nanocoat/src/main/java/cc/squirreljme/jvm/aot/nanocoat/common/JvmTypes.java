@@ -9,6 +9,9 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.common;
 
+import cc.squirreljme.c.CPrimitiveType;
+import cc.squirreljme.c.CStructKind;
+import cc.squirreljme.c.CStructTypeBuilder;
 import cc.squirreljme.c.CType;
 import cc.squirreljme.c.CTypeDefType;
 import cc.squirreljme.c.std.CStdIntType;
@@ -219,7 +222,13 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			throw Debugging.todo();
+			return CStructTypeBuilder.builder(
+				CStructKind.STRUCT, "sjme_static_resource")
+				.member(CPrimitiveType.CHAR.pointerType(), "path")
+				.member(JvmTypes.JINT.type(), "size")
+				.member(CStdIntType.UINT8.type().constType().pointerType(),
+					"data")
+				.build();
 		}
 	},
 	

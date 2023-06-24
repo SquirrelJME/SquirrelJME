@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 
 /**
@@ -50,12 +51,16 @@ public class CArrayBlock
 		if (index > 0)
 			this.token(",");
 		
+		throw Debugging.todo();
+		/*
 		// Open block
 		CStructVariableBlock rv = new CStructVariableBlock(
-			this, "}");
+			this, struct, "}");
 		this.token("{");
 		
 		// Push it to the writer
 		return this.__file().__pushBlock(rv, false);
+		
+		 */
 	}
 }

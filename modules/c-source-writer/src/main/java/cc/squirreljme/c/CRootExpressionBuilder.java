@@ -9,17 +9,29 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.c.out.CTokenOutput;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.List;
 
 /**
- * Root expression builder.
+ * Root expression __builder.
  *
  * @since 2023/06/24
  */
 public class CRootExpressionBuilder
 	extends CExpressionBuilder<CRootExpressionBuilder>
 {
+	/**
+	 * Initializes the root token __builder.
+	 * 
+	 * @param __direct Direct token output?
+	 * @since 2023/06/24
+	 */
+	CRootExpressionBuilder(CTokenOutput __direct)
+	{
+		super(__direct);
+	}
+	
 	/**
 	 * Builds the C expression.
 	 * 
@@ -28,7 +40,10 @@ public class CRootExpressionBuilder
 	 */
 	public final CExpression build()
 	{
-		List<String> tokens = this.tokens;
+		List<String> tokens = this._tokens;
+		
+		if (tokens == null)
+			return CExpression._INVALID_EXPRESSION;
 		return new CExpression(tokens.toArray(new String[tokens.size()]));
 	}
 }

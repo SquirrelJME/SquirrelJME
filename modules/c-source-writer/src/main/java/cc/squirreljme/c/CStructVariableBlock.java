@@ -10,6 +10,10 @@
 package cc.squirreljme.c;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * Defines a struct variable block.
@@ -19,30 +23,50 @@ import java.io.IOException;
 public class CStructVariableBlock
 	extends CBlock
 {
+	/** The struct index we are on. */
+	protected final CStructType struct;
+	
+	/** Members written. */
+	private final Set<CIdentifier> _written =
+		new HashSet<>();
+	
 	/** Which member index is this? */
 	private volatile int _index;
 	
 	/**
 	 * Initializes the struct variable writer.
-	 * 
+	 *
 	 * @param __writer The writer used.
-	 * @since 2023/05/29
+	 * @param __struct The struct being accessed.
+	 * @param __close The closing type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/31
 	 */
-	CStructVariableBlock(CSourceWriter __writer)
+	CStructVariableBlock(CSourceWriter __writer, CStructType __struct,
+		String __close)
+		throws NullPointerException
 	{
-		this(__writer, "};");
+		super(__writer, __close);
+		
+		if (__struct == null)
+			throw new NullPointerException("NARG");
+		
+		this.struct = __struct;
 	}
 	
 	/**
-	 * Initializes the struct variable writer.
+	 * Writing of an array block.
 	 * 
-	 * @param __writer The writer used.
-	 * @param __close The closing type.
-	 * @since 2023/05/31
+	 * @param __memberName The member name.
+	 * @return The block for the array.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/24
 	 */
-	CStructVariableBlock(CSourceWriter __writer, String __close)
+	public CArrayBlock memberArraySet(String __memberName)
+		throws IOException, NullPointerException
 	{
-		super(__writer, __close);
+		return this.memberArraySet(CIdentifier.of(__memberName));
 	}
 	
 	/**
@@ -54,7 +78,7 @@ public class CStructVariableBlock
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	public CArrayBlock memberArraySet(String __memberName)
+	public CArrayBlock memberArraySet(CIdentifier __memberName)
 		throws IOException, NullPointerException
 	{
 		if (__memberName == null)
@@ -77,13 +101,30 @@ public class CStructVariableBlock
 	 * @return {@code this}.
 	 * @throws IOException on read errors.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/29
+	 * @since 2023/06/24
 	 */
 	public CStructVariableBlock memberSet(String __memberName,
-		Object... __value)
+		CExpression __value)
 		throws IOException, NullPointerException
 	{
-		if (__memberName == null || __value == null || __value.length == 0)
+		return this.memberSet(CIdentifier.of(__memberName), __value);
+	}
+	
+	/**
+	 * Writes a member of a struct.
+	 * 
+	 * @param __memberName The member name.
+	 * @param __value The value to write.
+	 * @return {@code this}.
+	 * @throws IOException on read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/29
+	 */
+	public CStructVariableBlock memberSet(CIdentifier __memberName,
+		CExpression __value)
+		throws IOException, NullPointerException
+	{
+		if (__memberName == null || __value == null)
 			throw new NullPointerException("NARG");
 		
 		this.__startMember(__memberName);
@@ -100,9 +141,24 @@ public class CStructVariableBlock
 	 * @return The struct variable block
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/31
+	 * @since 2023/06/24
 	 */
 	public CStructVariableBlock memberStructSet(String __memberName)
+		throws IOException, NullPointerException
+	{
+		return this.memberStructSet(CIdentifier.of(__memberName));
+	}
+	
+	/**
+	 * Initializes a new member struct that is also a struct.
+	 * 
+	 * @param __memberName The member name. 
+	 * @return The struct variable block
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/05/31
+	 */
+	public CStructVariableBlock memberStructSet(CIdentifier __memberName)
 		throws IOException, NullPointerException
 	{
 		if (__memberName == null)
@@ -113,8 +169,11 @@ public class CStructVariableBlock
 		this.token("{");
 		
 		// Open block
-		return this.__file().__pushBlock(new CStructVariableBlock(this,
-			"}"), true);
+		return this.__file().__pushBlock(
+			new CStructVariableBlock(this,
+				this.struct.member(__memberName).type(CStructType.class),
+				"}"),
+			true);
 	}
 	
 	/**
@@ -125,11 +184,21 @@ public class CStructVariableBlock
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	private void __startMember(String __memberName)
+	private void __startMember(CIdentifier __memberName)
 		throws IOException, NullPointerException
 	{
 		if (__memberName == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error CW33 Member already written.} 
+		Set<CIdentifier> written = this._written;
+		if (written.contains(__memberName))
+			throw new IllegalStateException("CW33");
+		written.add(__memberName);
+		
+		// {@squirreljme.error CW34 Struct has no such member.}
+		if (this.struct.member(__memberName) == null)
+			throw new NoSuchElementException("CW34");
 		
 		// Do we need to prefix with a comma?
 		int index = this._index;
@@ -140,7 +209,7 @@ public class CStructVariableBlock
 		this.freshLine();
 		
 		// Write out member setting
-		this.tokens("." + __memberName, "=");
+		this.tokens(".", __memberName.identifier, "=");
 		
 		// For later
 		this._index = index + 1;
