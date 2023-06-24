@@ -10,9 +10,9 @@
 package cc.squirreljme.jvm.aot.nanocoat.common;
 
 import cc.squirreljme.c.CFunctionType;
+import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.c.std.CFunctionProvider;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -35,9 +35,10 @@ public enum JvmFunctions
 		CFunctionType __build()
 		{
 			return CFunctionType.of("sjme_nvm_pushLocalReference",
-				NanoCoatTypes.JBOOLEAN.type(),
-				CVariable.of(NanoCoatTypes.VMFRAME.type().pointerType(),
-					"frame"));
+				JvmTypes.JBOOLEAN.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JINT.type(), "index"));
 		}
 	},
 	
@@ -52,7 +53,13 @@ public enum JvmFunctions
 		CFunctionType __build()
 		{
 			return CFunctionType.of("sjme_nvm_invokeSpecial",
-				);
+				JvmTypes.JBOOLEAN.type(),
+				CVariable.of(JvmTypes.VMSTATE.type().pointerType(),
+					"state"),
+				CVariable.of(JvmTypes.STATIC_LINKAGE.type(CStructType.class)
+					.member("data").type(CStructType.class)
+					.member("invokespecial").type.pointerType(),
+					"linkage"));
 		}
 	},
 	
@@ -67,7 +74,9 @@ public enum JvmFunctions
 		CFunctionType __build()
 		{
 			return CFunctionType.of("sjme_nvm_returnFromMethod",
-				);
+				JvmTypes.JBOOLEAN.type(),
+				CVariable.of(JvmTypes.VMSTATE.type().pointerType(),
+					"state"));
 		}
 	},
 	

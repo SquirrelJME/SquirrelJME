@@ -171,6 +171,22 @@ public class CFunctionType
 	 * @param __rVal The return value, may be {@code null}.
 	 * @param __args Arguments to the function.
 	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/24
+	 */
+	public static CFunctionType of(String __name, CType __rVal,
+		CVariable... __args)
+		throws NullPointerException
+	{
+		return CFunctionType.of(CIdentifier.of(__name), __rVal, __args);
+	}
+	
+	/**
+	 * Initializes the C function.
+	 * 
+	 * @param __name The function name.
+	 * @param __rVal The return value, may be {@code null}.
+	 * @param __args Arguments to the function.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/04
 	 */
 	public static CFunctionType of(CIdentifier __name, CType __rVal,

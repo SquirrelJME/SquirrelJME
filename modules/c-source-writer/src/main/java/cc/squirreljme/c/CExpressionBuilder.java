@@ -166,6 +166,19 @@ public abstract class CExpressionBuilder
 	}
 	
 	/**
+	 * Adds the not expression.
+	 * 
+	 * @return {@code this}.
+	 * @since 2023/06/24
+	 */
+	public B not()
+	{
+		this.tokens.add("!");
+		
+		return this.__this();
+	}
+	
+	/**
 	 * Writes the specified number.
 	 * 
 	 * @param __value The value to store.
@@ -253,6 +266,30 @@ public abstract class CExpressionBuilder
 		this.tokens.add("(");
 		return (CSubExpressionBuilder<B>)
 			new CSubExpressionBuilder(this, ")");
+	}
+	
+	/**
+	 * Wraps a defined statement.
+	 * 
+	 * @param __identifier The identifier.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/24
+	 */
+	public B preprocessorDefined(CIdentifier __identifier)
+		throws NullPointerException
+	{
+		if (__identifier == null)
+			throw new NullPointerException("NARG");
+		
+		List<String> tokens = this.tokens;
+		
+		tokens.add("defined");
+		tokens.add("(");
+		tokens.add(__identifier.identifier);
+		tokens.add(")");
+		
+		return this.__this();
 	}
 	
 	/**

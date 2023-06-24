@@ -10,11 +10,13 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CArrayBlock;
+import cc.squirreljme.c.CFunctionType;
 import cc.squirreljme.c.CPrimitiveType;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.c.CFunctionBlock;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import java.io.IOException;
 import net.multiphasicapps.classfile.ByteCode;
@@ -37,6 +39,9 @@ public final class MethodProcessor
 	
 	/** The output source writer. */
 	protected final CSourceWriter out;
+	
+	/** The function for this method. */
+	protected final CFunctionType function;
 	
 	/** The method identifier in C. */
 	protected final String methodIdentifier;
@@ -74,6 +79,12 @@ public final class MethodProcessor
 		// Determine the identifier used for this class
 		this.methodIdentifier = Utils.symbolMethodName(__glob,
 			__method);
+		
+		// Build common function
+		this.function = CFunctionType.of(this.methodIdentifier,
+			JvmTypes.JBOOLEAN.type(),
+			CVariable.of(JvmTypes.VMSTATE.type().pointerType(),
+				"state"));
 	}
 	
 	/**
@@ -86,10 +97,7 @@ public final class MethodProcessor
 		throws IOException
 	{
 		// Write out the prototype
-		this.out.functionPrototype(null,
-			this.methodIdentifier, null,
-			CVariable.of(CPrimitiveType.SJME_NANOSTATE.pointerType(),
-				"state"));
+		this.out.declare(this.function);
 	}
 	
 	/**
@@ -153,9 +161,7 @@ public final class MethodProcessor
 		// Write function code
 		ByteCodeProcessor processor = new ByteCodeProcessor(
 			this, code);
-		try (CFunctionBlock function = this.out.define(null,
-			this.methodIdentifier, null, CVariable.of(
-				CPrimitiveType.SJME_NANOSTATE.pointerType(), "state")))
+		try (CFunctionBlock function = this.out.define(this.function))
 		{
 			processor.process(function);
 		}

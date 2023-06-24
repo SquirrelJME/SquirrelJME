@@ -710,6 +710,10 @@ public class CFile
 		if (__token instanceof CExpression)
 			return this.token(((CExpression)__token).tokens());
 			
+		// A C identifier
+		else if (__token instanceof CIdentifier)
+			return this.token(((CIdentifier)__token).identifier);
+		
 		// Primitive arrays
 		else if (__token instanceof boolean[])
 			return this.array((boolean[])__token);

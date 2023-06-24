@@ -9,10 +9,12 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CFileName;
 import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CSourceWriter;
+import cc.squirreljme.c.out.AppendableCTokenOutput;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import java.io.IOException;
@@ -69,9 +71,9 @@ public class NanoCoatLinkGlob
 		// Setup output
 		try
 		{
-			this.out = new CFile(
+			this.out = new CFile(new AppendableCTokenOutput(
 				new PrintStream(zip.nextEntry(this.fileName.toString()),
-					true, "utf-8"));
+					true, "utf-8")));
 		}
 		catch (IOException __e)
 		{
@@ -116,11 +118,16 @@ public class NanoCoatLinkGlob
 		CSourceWriter out = this.out;
 		
 		// If we are compiling source, include ourselves via the header
-		try (CPPBlock block = out.preprocessorIf(
-			"!defined(" + Constants.CODE_GUARD + ")"))
+		try (CPPBlock block = out.preprocessorIf(CExpressionBuilder.builder()
+				.not()
+				.preprocessorDefined(Constants.CODE_GUARD)
+				.build()))
 		{
 			// Do not do this again
-			out.preprocessorDefine(Constants.CODE_GUARD, 1);
+			out.preprocessorDefine(Constants.CODE_GUARD,
+				CExpressionBuilder.builder()
+					.number(1)
+				.build());
 			
 			// Do the actual include of ourselves
 			out.preprocessorInclude(Constants.SJME_JNI_HEADER);

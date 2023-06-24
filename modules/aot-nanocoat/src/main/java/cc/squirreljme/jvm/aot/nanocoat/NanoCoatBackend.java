@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
@@ -17,7 +18,8 @@ import cc.squirreljme.jvm.aot.Backend;
 import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.RomSettings;
-import cc.squirreljme.jvm.aot.nanocoat.common.NanoCoatTypes;
+import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.VMClassLibrary;
@@ -59,8 +61,9 @@ public class NanoCoatBackend
 			throw new RuntimeException("NC01");
 		
 		// Start of header
-		try (CPPBlock block = out.preprocessorIf(
-			"defined(SJME_C_CH)"))
+		try (CPPBlock block = out.preprocessorIf(CExpressionBuilder.builder()
+				.preprocessorDefined(Constants.CODE_GUARD)
+				.build()))
 		{	
 			// Setup and perform class processing, with state
 			ClassProcessor processor = new ClassProcessor(glob, out,
@@ -97,14 +100,15 @@ public class NanoCoatBackend
 		String rcIdentifier = Utils.symbolResourcePath(glob, __path);
 		
 		// Start of header
-		try (CPPBlock block = out.preprocessorIf(
-			"defined(SJME_C_CH)"))
+		try (CPPBlock block = out.preprocessorIf(CExpressionBuilder.builder()
+			.preprocessorDefined(Constants.CODE_GUARD)
+			.build()))
 		{
 			// Write identifier reference
 			CVariable rcVar = CVariable.of(
-				NanoCoatTypes.RESOURCE.type().constType(),
+				JvmTypes.STATIC_RESOURCE.type().constType(),
 				rcIdentifier);
-			out.define(rcVar.extern());
+			out.declare(rcVar.extern());
 			
 			// Else for source code
 			block.preprocessorElse();

@@ -22,7 +22,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2023/06/06
  */
-public enum NanoCoatTypes
+public enum JvmTypes
 	implements CTypeProvider
 {
 	/** Boolean. */
@@ -35,7 +35,23 @@ public enum NanoCoatTypes
 		@Override
 		CType __build()
 		{
-			return CTypeDefType.of(CStdIntType.UINT8.type(), "jboolean");
+			return CTypeDefType.of(CStdIntType.UINT8.type(),
+				"jboolean");
+		}
+	},
+	
+	/** Integer. */
+	JINT
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/24
+		 */
+		@Override
+		CType __build()
+		{
+			return CTypeDefType.of(CStdIntType.INT32.type(),
+				"jint");
 		}
 	},
 	
@@ -179,8 +195,22 @@ public enum NanoCoatTypes
 		}
 	},
 	
+	/** Stack frame. */
+	VMFRAME
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/06
+		 */
+		@Override
+		CType __build()
+		{
+			throw Debugging.todo();
+		}
+	},
+	
 	/** A NanoCoat resource. */
-	RESOURCE
+	STATIC_RESOURCE
 	{
 		/**
 		 * {@inheritDoc}
@@ -194,7 +224,7 @@ public enum NanoCoatTypes
 	},
 	
 	/** Field information. */
-	CLASS_FIELDS
+	STATIC_CLASS_FIELDS
 	{
 		/**
 		 * {@inheritDoc}
@@ -208,21 +238,7 @@ public enum NanoCoatTypes
 	},
 	
 	/** Method information. */
-	CLASS_METHODS
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/06/06
-		 */
-		@Override
-		CType __build()
-		{
-			throw Debugging.todo();
-		}
-	},
-	
-	/** Stack frame. */
-	VMFRAME
+	STATIC_CLASS_METHODS
 	{
 		/**
 		 * {@inheritDoc}

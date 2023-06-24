@@ -14,7 +14,7 @@ import cc.squirreljme.c.CFunctionBlock;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CSwitchBlock;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
-import cc.squirreljme.jvm.aot.nanocoat.common.NanoCoatTypes;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Container;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.InvokeSpecialLinkage;
@@ -300,7 +300,7 @@ public class ByteCodeProcessor
 			CExpressionBuilder.builder()
 				.identifier(codeVars.currentState())
 				.dereferenceStruct()
-				.identifier(NanoCoatTypes.VMSTATE.type(CStructType.class)
+				.identifier(JvmTypes.VMSTATE.type(CStructType.class)
 					.member("top"))
 				.build());
 		
@@ -309,7 +309,7 @@ public class ByteCodeProcessor
 			CExpressionBuilder.builder()
 				.identifier(codeVars.currentFrame())
 				.dereferenceStruct()
-				.identifier(NanoCoatTypes.VMFRAME.type(CStructType.class)
+				.identifier(JvmTypes.VMFRAME.type(CStructType.class)
 					.member("groupIndex"))
 				.build()))
 		{
@@ -472,14 +472,14 @@ public class ByteCodeProcessor
 				.reference()
 				.identifier(codeVars.currentFrame())
 				.dereferenceStruct()
-				.identifier(NanoCoatTypes.VMFRAME
+				.identifier(JvmTypes.VMFRAME
 					.type(CStructType.class).member("linkage"))
 				.arrayAccess(linkage.index())
 				.dereferenceStruct()
-				.identifier(NanoCoatTypes.STATIC_LINKAGE
+				.identifier(JvmTypes.STATIC_LINKAGE
 					.type(CStructType.class).member("data"))
 				.structAccess()
-				.identifier(NanoCoatTypes.STATIC_LINKAGE
+				.identifier(JvmTypes.STATIC_LINKAGE
 					.type(CStructType.class).member("data")
 					.type(CStructType.class).member("invokespecial"))
 				.build());

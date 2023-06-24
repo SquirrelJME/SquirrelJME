@@ -10,7 +10,7 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CVariable;
-import cc.squirreljme.jvm.aot.nanocoat.common.NanoCoatTypes;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -51,7 +51,7 @@ public final class __CodeVariables__
 		CVariable rv;
 		if (ref == null || (rv = ref.get()) == null)
 		{
-			rv = CVariable.of(NanoCoatTypes.VMFRAME.type().pointerType(),
+			rv = CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
 				"currentFrame");
 			this._currentFrame = new WeakReference<>(rv);
 		}
@@ -71,7 +71,7 @@ public final class __CodeVariables__
 		CVariable rv;
 		if (ref == null || (rv = ref.get()) == null)
 		{
-			rv = CVariable.of(NanoCoatTypes.VMSTATE.type().pointerType(),
+			rv = CVariable.of(JvmTypes.VMSTATE.type().pointerType(),
 				"currentState");
 			this._currentState = new WeakReference<>(rv);
 		}

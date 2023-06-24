@@ -38,18 +38,28 @@ public final class CFileName
 			throw new IllegalArgumentException("CW0a");
 		
 		// Check identifier
+		boolean hasDot = false;
 		for (int i = 0, n = __fileName.length(); i < n; i++)
 		{
 			char c = __fileName.charAt(i);
 			
+			if (c == '.')
+			{
+				// {@squirreljme.error CW31 Filename has multiple extensions.}
+				if (hasDot)
+					throw new IllegalArgumentException("CW31");
+					
+				hasDot = true;
+			}
+			
 			// {@squirreljme.error CW01 Identifier cannot start with a number.
 			// (The identifier)}
-			if (i == 0 && c >= '0' && c <= '9')
+			else if (i == 0 && c >= '0' && c <= '9')
 				throw new IllegalArgumentException("CW01 " + __fileName);
 			
 			// {@squirreljme.error CW09 Identifier contains an invalid
 			// character. (The identifier)}
-			if (!((c >= 'a' && c <= 'z') ||
+			else if (!((c >= 'a' && c <= 'z') ||
 				(c >= 'A' && c <= 'Z') ||
 				(c >= '0' && c <= '9') ||
 				c == '_'))

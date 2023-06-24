@@ -15,7 +15,7 @@ import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.c.CVariable;
-import cc.squirreljme.jvm.aot.nanocoat.common.NanoCoatTypes;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -90,13 +90,13 @@ public class ClassProcessor
 		this.classIdentifier = Utils.symbolClassName(__glob,
 			this.classFile.thisName());
 		this.classInfo = CVariable.of(
-			NanoCoatTypes.JCLASS.type(CStructType.class).constType(),
+			JvmTypes.JCLASS.type(CStructType.class).constType(),
 			CIdentifier.of(this.classIdentifier + "__info"));
 		this.classFields = CVariable.of(
-			NanoCoatTypes.CLASS_FIELDS.type(CStructType.class).constType(),
+			JvmTypes.STATIC_CLASS_FIELDS.type(CStructType.class).constType(),
 			CIdentifier.of(this.classIdentifier + "__fields"));
 		this.classMethods = CVariable.of(
-			NanoCoatTypes.CLASS_METHODS.type(CStructType.class).constType(),
+			JvmTypes.STATIC_CLASS_METHODS.type(CStructType.class).constType(),
 			CIdentifier.of(this.classIdentifier + "__methods"));
 		
 		// Create processors for each field
@@ -126,7 +126,7 @@ public class ClassProcessor
 		NanoCoatLinkGlob glob = this.glob;
 		
 		// Write class identifier, as extern value
-		out.define(this.classInfo.extern());
+		out.declare(this.classInfo.extern());
 		
 		// Process field header details
 		for (FieldProcessor field : this._fields.values())
