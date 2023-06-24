@@ -202,6 +202,29 @@ public interface CSourceWriter
 		throws IOException, NullPointerException;
 	
 	/**
+	 * Outputs an expression.
+	 * 
+	 * @param __expression The expression to write.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/24
+	 */
+	CSourceWriter expression(CExpression __expression)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * Defines a function.
+	 *
+	 * @param __function@return The block for writing functions.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException If no name was specified.
+	 * @since 2023/05/30
+	 */
+	CFunctionBlock define(CFunctionType __function)
+		throws IOException, NullPointerException;
+	
+	/**
 	 * Start on a fresh line.
 	 * 
 	 * @throws IOException On write errors.
@@ -212,33 +235,19 @@ public interface CSourceWriter
 		throws IOException;
 	
 	/**
-	 * Writes a function.
-	 * 
-	 * @param __modifier The function modifier.
-	 * @param __name The name of the function.
-	 * @param __returnVal The return value.
-	 * @param __arguments The arguments to the function.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException If no name was specified.
-	 * @since 2023/05/30
-	 */
-	CSourceWriter function(CModifier __modifier, CIdentifier __name,
-		CType __returnVal, CVariable... __arguments)
-		throws IOException, NullPointerException;
-	
-	/**
 	 * Performs a function call.
 	 * 
 	 * @param __function The function to call.
 	 * @param __args The arguments to the call.
 	 * @return {@code this}.
+	 * @throws IllegalArgumentException If the number of passed arguments
+	 * does not meet the function arguments.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
 	CSourceWriter functionCall(CFunctionType __function, CExpression... __args)
-		throws IOException, NullPointerException;
+		throws IllegalArgumentException, IOException, NullPointerException;
 	
 	/**
 	 * Performs a function call.
@@ -252,33 +261,6 @@ public interface CSourceWriter
 	 */
 	CSourceWriter functionCall(CFunctionProvider __function,
 		CExpression... __args)
-		throws IOException, NullPointerException;
-	
-	/**
-	 * Defines a function.
-	 *
-	 * @param __function@return The block for writing functions.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException If no name was specified.
-	 * @since 2023/05/30
-	 */
-	CFunctionBlock functionDefine(CFunctionType __function)
-		throws IOException, NullPointerException;
-	
-	/**
-	 * Writes a function prototype.
-	 * 
-	 * @param __modifier The function modifier.
-	 * @param __name The name of the function.
-	 * @param __returnVal The return value.
-	 * @param __arguments The arguments to the function.
-	 * @return {@code this}.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException If no name was specified.
-	 * @since 2023/05/30
-	 */
-	CSourceWriter functionPrototype(CModifier __modifier, CIdentifier __name,
-		CType __returnVal, CVariable... __arguments)
 		throws IOException, NullPointerException;
 	
 	/**

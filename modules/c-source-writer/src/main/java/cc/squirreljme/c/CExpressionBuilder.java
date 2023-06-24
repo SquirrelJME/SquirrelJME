@@ -10,24 +10,30 @@
 package cc.squirreljme.c;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This builds {@link CExpression}.
  *
  * @see CExpression
+ * @param <B> The builder type.
  * @since 2023/06/19
  */
-public class CExpressionBuilder
+public abstract class CExpressionBuilder
+	<B extends CExpressionBuilder<? extends B>>
 {
+	/** The output tokens. */
+	protected final List<String> tokens =
+		new ArrayList<>();
+	
 	/**
-	 * Builds the C expression.
+	 * Internal only.
 	 * 
-	 * @return The C expression.
-	 * @since 2023/06/19
+	 * @since 2023/06/24
 	 */
-	public final CExpression build()
+	CExpressionBuilder()
 	{
-		throw Debugging.todo();
 	}
 	
 	/**
@@ -36,8 +42,46 @@ public class CExpressionBuilder
 	 * @return {@code this}.
 	 * @since 2023/06/19
 	 */
-	public CExpressionBuilder dereferenceStruct()
+	public B dereferenceStruct()
 	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Adds an expression directly.
+	 * 
+	 * @param __expression The expression.
+	 * @return {@code this}.
+	 * @since 2023/06/24
+	 */
+	public B expression(CExpression __expression)
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Performs a function call in the expression.
+	 * 
+	 * @param __function The function to call.
+	 * @param __args The function arguments.
+	 * @return {@code this}.
+	 * @throws IllegalArgumentException If the number of arguments to
+	 * the function call is not correct.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/24
+	 */
+	public B functionCall(CFunctionType __function,
+		CExpression... __args)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__function == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error CW21 Number of arguments in function does
+		// not match call.}
+		if (__args.length != __function.arguments.size())
+			throw new IllegalArgumentException("CW21");
+		
 		throw Debugging.todo();
 	}
 	
@@ -49,7 +93,7 @@ public class CExpressionBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/19
 	 */
-	public CExpressionBuilder identifier(CVariable __var)
+	public B identifier(CVariable __var)
 		throws NullPointerException
 	{
 		if (__var == null)
@@ -59,13 +103,27 @@ public class CExpressionBuilder
 	}
 	
 	/**
+	 * Returns a builder to make an expression in a parenthesis statement.
+	 * 
+	 * @return The sub expression builder.
+	 * @since 2023/06/24
+	 */
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	public CSubExpressionBuilder<B> parenthesis()
+	{
+		this.tokens.add("(");
+		return (CSubExpressionBuilder<B>)
+			new CSubExpressionBuilder(this, ")");
+	}
+	
+	/**
 	 * Creates an expression builder.
 	 * 
 	 * @return The builder.
 	 * @since 2023/06/19
 	 */
-	public static final CExpressionBuilder builder()
+	public static final CRootExpressionBuilder builder()
 	{
-		throw Debugging.todo();
+		return new CRootExpressionBuilder();
 	}
 }

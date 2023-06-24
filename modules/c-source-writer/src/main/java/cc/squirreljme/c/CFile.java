@@ -337,6 +337,21 @@ public class CFile
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/24
+	 */
+	@Override
+	public CSourceWriter expression(CExpression __expression)
+		throws IOException, NullPointerException
+	{
+		if (__expression == null)
+			throw new NullPointerException("NARG");
+		
+		this.token(__expression);
+		return this;
+	}
+	
+	/**
 	 * Flushes the output.
 	 * 
 	 * @throws IOException On flush errors.
@@ -375,43 +390,21 @@ public class CFile
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2023/05/30
-	 */
-	@Override
-	public CSourceWriter function(CModifier __modifier, CIdentifier __name,
-		CType __returnVal, CVariable... __arguments)
-		throws IOException, NullPointerException
-	{
-		if (__name == null)
-			throw new NullPointerException("NARG");
-		
-		// Write modifiers first
-		if (__modifier != null)
-			this.token(__modifier);
-		
-		// Return value?
-		this.token((__returnVal == null ? CPrimitiveType.VOID : __returnVal));
-		
-		// Function name and arguments
-		return this.surroundDelimited(__name.toString(), ",",
-			(Object[])__arguments);
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2023/05/31
 	 */
 	@Override
 	public CSourceWriter functionCall(
 		CFunctionType __function, CExpression... __args)
-		throws IOException, NullPointerException
+		throws IllegalArgumentException, IOException, NullPointerException
 	{
 		if (__function == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
-		/*this.surroundDelimited(__function.identifier, ",", __args);
-		return this.token(";");*/
+		// Just forward to expression builder
+		this.tokens(CExpressionBuilder.builder()
+			.functionCall(__function, __args)
+			.build(), ";");
+		return this;
 	}
 	
 	/**
@@ -431,7 +424,7 @@ public class CFile
 	 * @since 2023/05/30
 	 */
 	@Override
-	public CFunctionBlock functionDefine(CFunctionType __function)
+	public CFunctionBlock define(CFunctionType __function)
 		throws IOException, NullPointerException
 	{
 		if (__function == null)
@@ -445,26 +438,6 @@ public class CFile
 		
 		// Push block for it
 		return this.__pushBlock(new CFunctionBlock(this), true);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/05/30
-	 */
-	@Override
-	public CSourceWriter functionPrototype(CModifier __modifier,
-		CIdentifier __name, CType __returnVal,
-		CVariable... __arguments)
-		throws IOException, NullPointerException
-	{
-		if (__name == null)
-			throw new NullPointerException("NARG");
-		
-		// Start on a fresh line, is cleaner
-		this.freshLine();
-		
-		this.function(__modifier, __name, __returnVal, __arguments);
-		return this.token(";");
 	}
 	
 	/**

@@ -9,8 +9,9 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Arrays;
 import java.util.List;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * Represents a C expression, which is a group of tokens that does something.
@@ -20,6 +21,20 @@ import java.util.List;
  */
 public class CExpression
 {
+	/** The tokens used in the expression. */
+	protected final List<String> tokens;
+	
+	/**
+	 * Returns the tokens used for the expression.
+	 * 
+	 * @param __tokens The tokens used for the expression.
+	 * @since 2023/06/24
+	 */
+	CExpression(String... __tokens)
+	{
+		this.tokens = UnmodifiableList.of(Arrays.asList(__tokens));
+	}
+	
 	/**
 	 * Returns the tokens that make up this expression.
 	 * 
@@ -28,6 +43,6 @@ public class CExpression
 	 */
 	public List<String> tokens()
 	{
-		throw Debugging.todo();
+		return this.tokens;
 	}
 }

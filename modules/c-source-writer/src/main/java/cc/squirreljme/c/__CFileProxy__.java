@@ -228,6 +228,17 @@ abstract class __CFileProxy__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/06/24
+	 */
+	@Override
+	public CSourceWriter expression(CExpression __expression)
+		throws IOException, NullPointerException
+	{
+		return this.__file().expression(__expression);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2023/06/04
 	 */
 	@Override
@@ -242,22 +253,9 @@ abstract class __CFileProxy__
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CSourceWriter function(CModifier __modifier, CIdentifier __name,
-		CType __returnVal, CVariable... __arguments)
-		throws IOException, NullPointerException
-	{
-		return this.__file().function(__modifier, __name, __returnVal,
-			__arguments);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/04
-	 */
-	@Override
 	public CSourceWriter functionCall(
 		CFunctionType __function, CExpression... __args)
-		throws IOException, NullPointerException
+		throws IllegalArgumentException, IOException, NullPointerException
 	{
 		return this.__file().functionCall(__function, __args);
 	}
@@ -279,24 +277,10 @@ abstract class __CFileProxy__
 	 * @since 2023/06/04
 	 */
 	@Override
-	public CFunctionBlock functionDefine(CFunctionType __function)
+	public CFunctionBlock define(CFunctionType __function)
 		throws IOException, NullPointerException
 	{
-		return this.__file().functionDefine(__function);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/04
-	 */
-	@Override
-	public CSourceWriter functionPrototype(CModifier __modifier,
-		CIdentifier __name, CType __returnVal,
-		CVariable... __arguments)
-		throws IOException, NullPointerException
-	{
-		return this.__file().functionPrototype(__modifier, __name, __returnVal,
-			__arguments);
+		return this.__file().define(__function);
 	}
 	
 	/**

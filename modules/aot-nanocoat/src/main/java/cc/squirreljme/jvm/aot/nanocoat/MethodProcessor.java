@@ -153,7 +153,7 @@ public final class MethodProcessor
 		// Write function code
 		ByteCodeProcessor processor = new ByteCodeProcessor(
 			this, code);
-		try (CFunctionBlock function = this.out.functionDefine(null,
+		try (CFunctionBlock function = this.out.define(null,
 			this.methodIdentifier, null, CVariable.of(
 				CPrimitiveType.SJME_NANOSTATE.pointerType(), "state")))
 		{

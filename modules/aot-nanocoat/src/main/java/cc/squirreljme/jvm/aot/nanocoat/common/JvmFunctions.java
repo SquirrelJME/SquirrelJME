@@ -33,7 +33,7 @@ public enum JvmFunctions
 		@Override
 		CFunctionType __build()
 		{
-			return CFunctionType.of("sjme_nvm_returnFromMethod");
+			return CFunctionType.of("sjme_nvm_returnFromMethod",);
 		}
 	},
 	
