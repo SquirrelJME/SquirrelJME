@@ -54,7 +54,7 @@ public class TestFunctionPointer
 		try (__Spool__ spool = new __Spool__())
 		{
 			// int (** cute)(unsigned char squeak);
-			spool.declare(CVariable.of(type.pointerType().pointerType(),
+			spool.declare(CVariable.of(type.pointerType(),
 				"cute"));
 			
 			this.secondary("pointerpointer", spool.tokens());
@@ -64,7 +64,7 @@ public class TestFunctionPointer
 		try (__Spool__ spool = new __Spool__())
 		{
 			// int (*const cute)(unsigned char squeak);
-			spool.declare(CVariable.of(type.pointerType().pointerType()
+			spool.declare(CVariable.of(type
 					.constType().pointerType().pointerType().constType(),
 				"cute"));
 			

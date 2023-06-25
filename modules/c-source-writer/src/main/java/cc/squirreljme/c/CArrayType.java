@@ -64,32 +64,15 @@ public final class CArrayType
 	@Override
 	public List<String> declareTokens(CIdentifier __name)
 	{
-		List<String> result = new ArrayList<>();
-		
-		CType elementType = this.elementType;
-		
-		// Pivot from modified type?
-		CType pivotType = elementType;
-		CModifier modifier = null;
-		if (elementType instanceof CModifiedType)
-		{
-			CModifiedType modified = (CModifiedType)elementType;
-			
-			pivotType = modified.type;
-			modifier = modified.modifier;
-		}
-		
-		// Pointers may be treated slightly different
-		if (pivotType instanceof CPointerType)
-		{
-			CPointerType pointerType = (CPointerType)pivotType;
-			CType pointedType = pointerType.pointedType;
-			
-			if (CPointerType.__isComplex(pointedType))
-				return CPointerType.__declareComplex(this, __name);
-		}
+		// Is this a complex type?
+		if (CPointerType.__isComplex(this))
+			return CPointerType.__declareComplex(this, __name);
+	
+		// Setup builder
+		List<String> result = new ArrayList<>();	
 		
 		// Type and such
+		CType elementType = this.elementType;
 		result.addAll(elementType.declareTokens(__name));
 		
 		// Array size

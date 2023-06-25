@@ -68,20 +68,7 @@ public class CPointerType
 	@Override
 	public List<String> declareTokens(CIdentifier __name)
 	{
-		// Process pointer tokens
-		List<String> result = new ArrayList<>();
-		
-		// Pivot from modified type?
 		CType pointedType = this.pointedType;
-		CType pivotType = pointedType;
-		CModifier modifier = null;
-		if (pointedType instanceof CModifiedType)
-		{
-			CModifiedType modified = (CModifiedType)pointedType;
-			
-			pivotType = modified.type;
-			modifier = modified.modifier;
-		}
 		
 		// Function pointers and arrays need some work
 		if (CPointerType.__isComplex(pointedType))
@@ -90,15 +77,18 @@ public class CPointerType
 		// Simpler type used
 		else
 		{
+			// Process pointer tokens
+			List<String> result = new ArrayList<>();
+			
 			// Pointers are to the right, generally
 			result.addAll(pointedType.declareTokens(null));
 			result.add(this.closeness.token + "*");
 			
 			if (__name != null)
 				result.add(__name.identifier);
+			
+			return UnmodifiableList.of(result);
 		}
-		
-		return UnmodifiableList.of(result);
 	}
 	
 	/**
@@ -246,17 +236,27 @@ public class CPointerType
 			if (at instanceof CModifiedType)
 			{
 				lastModified = true;
+				rootType = at;
 				at = ((CModifiedType)at).type;
+				
+				// Debug
+				Debugging.debugNote("at (modified): %s", at);
 			}
 			else if (at instanceof CPointerType)
 			{
 				lastModified = false;
 				at = ((CPointerType)at).pointedType;
+				
+				// Debug
+				Debugging.debugNote("at (pointer): %s", at);
 			}
 			else if (at instanceof CArrayType)
 			{
 				lastModified = false;
 				at = ((CArrayType)at).elementType;
+				
+				// Debug
+				Debugging.debugNote("at (array): %s", at);
 			}
 			
 			// Is function pointer?
@@ -272,8 +272,9 @@ public class CPointerType
 			// We can stop as we reached a root type
 			else
 			{
+				if (!lastModified)
+					rootType = at;
 				lastModified = false;
-				rootType = at;
 				break;
 			}
 		}
