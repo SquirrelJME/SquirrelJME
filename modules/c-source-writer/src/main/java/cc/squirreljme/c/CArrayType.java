@@ -9,9 +9,7 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.collections.UnmodifiableList;
 
@@ -87,9 +85,8 @@ public final class CArrayType
 			CPointerType pointerType = (CPointerType)pivotType;
 			CType pointedType = pointerType.pointedType;
 			
-			if (pointedType instanceof CFunctionType ||
-				pointedType instanceof CArrayType)
-				return CPointerType.__declareLoop(this, __name);
+			if (CPointerType.__isComplex(pointedType))
+				return CPointerType.__declareComplex(this, __name);
 		}
 		
 		// Type and such

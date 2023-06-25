@@ -84,9 +84,8 @@ public class CPointerType
 		}
 		
 		// Function pointers and arrays need some work
-		if (pointedType instanceof CFunctionType ||
-			pointedType instanceof CArrayType)
-			return CPointerType.__declareLoop(this, __name);
+		if (CPointerType.__isComplex(pointedType))
+			return CPointerType.__declareComplex(this, __name);
 		
 		// Simpler type used
 		else
@@ -211,6 +210,42 @@ public class CPointerType
 	}
 	
 	/**
+	 * Is this a complex type?
+	 * 
+	 * @param __start The type to check.
+	 * @return If this is a complex type or not.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/25
+	 */
+	static boolean __isComplex(CType __start)
+		throws NullPointerException
+	{
+		if (__start == null)
+			throw new NullPointerException("NARG");
+		
+		for (CType at = __start;;)
+		{
+			// Dereference modified and pointer types
+			if (at instanceof CModifiedType)
+				at = ((CModifiedType)at).type;
+			else if (at instanceof CPointerType)
+				at = ((CPointerType)at).pointedType;
+			
+			// These two are complex
+			else if (at instanceof CArrayType ||
+				at instanceof CFunctionType)
+				return true;
+			
+			// Should be at root type
+			else
+				break;
+		}
+		
+		// Not one
+		return false;
+	}
+	
+	/**
 	 * Declaration loop.
 	 *
 	 * @param __start The starting type.
@@ -219,7 +254,7 @@ public class CPointerType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/25
 	 */
-	static List<String> __declareLoop(CType __start, CIdentifier __name)
+	static List<String> __declareComplex(CType __start, CIdentifier __name)
 		throws NullPointerException
 	{
 		if (__start == null)

@@ -78,9 +78,8 @@ public final class CModifiedType
 			CType pointedType = pointerType.pointedType;
 			
 			// Functions and arrays are different
-			if (pointedType instanceof CFunctionType ||
-				pointedType instanceof CArrayType)
-				return CPointerType.__declareLoop(this, __name);
+			if (CPointerType.__isComplex(pointedType))
+				return CPointerType.__declareComplex(this, __name);
 			
 			// Otherwise place on right side
 			else

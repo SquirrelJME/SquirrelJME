@@ -75,7 +75,7 @@ public class TestArrayType
 		try (__Spool__ spool = new __Spool__())
 		{
 			spool.declare(CVariable.of(
-				CPrimitiveType.SIGNED_INTEGER.arrayType(2).pointerType(),
+				CPrimitiveType.SIGNED_INTEGER.pointerType().arrayType(2),
 				"foo"));
 			
 			this.secondary("pointerarray", spool.tokens());
@@ -120,6 +120,18 @@ public class TestArrayType
 				"foo"));
 			
 			this.secondary("alt", spool.tokens());
+		}
+		
+		// int(*foo[2])[3]
+		// declare foo as array 2 of pointer to array 3 of int
+		try (__Spool__ spool = new __Spool__())
+		{
+			spool.declare(CVariable.of(
+				CPrimitiveType.SIGNED_INTEGER.arrayType(3)
+					.pointerType().arrayType(2),
+				"foo"));
+			
+			this.secondary("alttwo", spool.tokens());
 		}
 	}
 }
