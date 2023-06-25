@@ -210,39 +210,26 @@ public class CPointerType
 	}
 	
 	/**
-	 * Is this a complex type?
+	 * Performs complex clamping.
 	 * 
-	 * @param __start The type to check.
-	 * @return If this is a complex type or not.
-	 * @throws NullPointerException On null arguments.
+	 * @param __clamped What to clamp to.
+	 * @param __fillLeft Clamp from the left.
+	 * @param __fillRight Clamp from the right.
 	 * @since 2023/06/25
 	 */
-	static boolean __isComplex(CType __start)
-		throws NullPointerException
+	private static void __complexClamp(List<String> __clamped,
+		List<String> __fillLeft, List<String> __fillRight)
 	{
-		if (__start == null)
-			throw new NullPointerException("NARG");
+		__fillLeft.add(0, "(");
+		__fillRight.add(__fillRight.size(), ")");
 		
-		for (CType at = __start;;)
-		{
-			// Dereference modified and pointer types
-			if (at instanceof CModifiedType)
-				at = ((CModifiedType)at).type;
-			else if (at instanceof CPointerType)
-				at = ((CPointerType)at).pointedType;
-			
-			// These two are complex
-			else if (at instanceof CArrayType ||
-				at instanceof CFunctionType)
-				return true;
-			
-			// Should be at root type
-			else
-				break;
-		}
+		// Clamp both ends here
+		__clamped.addAll(0, __fillLeft);
+		__clamped.addAll(__clamped.size(), __fillRight);
 		
-		// Not one
-		return false;
+		// Nuke fill sides since they were clamped in
+		__fillLeft.clear();
+		__fillRight.clear();
 	}
 	
 	/**
@@ -322,9 +309,10 @@ public class CPointerType
 		else
 			result.addAll(rootType.declareTokens(null));
 		
-		// Setup fills for left side and right side
-		List<String> fillLeft = new ArrayList<>();
-		List<String> fillRight = new ArrayList<>();
+		// Pointers and arrays are like onions, they have layers
+		List<__PointerOnion__> layers = new ArrayList<>();
+		__PointerOnion__ currentLayer = new __PointerOnion__();
+		layers.add(currentLayer);
 		
 		// Go through all type items and add around them
 		CPointerType lastPointer = null;
@@ -355,8 +343,8 @@ public class CPointerType
 			// a pointer, we need to wrap with parenthesis
 			if (nowPointer != null && lastArray != null)
 			{
-				fillLeft.add(0, "(");
-				fillRight.add(fillRight.size(), ")");
+				currentLayer = new __PointerOnion__();
+				layers.add(currentLayer);
 			}
 			
 			// Only perform calculation if we have the both of these
@@ -365,19 +353,20 @@ public class CPointerType
 				// Pointer?
 				if (nowPointer != null)
 				{
-					fillLeft.add(nowPointer.closeness.token + "*");
+					currentLayer.left.add(nowPointer.closeness.token + "*");
 					
 					// All modifiers after the star
 					if (modifier != null)
-						fillLeft.addAll(modifier.tokens());
+						currentLayer.left.addAll(modifier.tokens());
 				}
 				
 				// Array?
 				else if (nowArray != null)
 				{
-					fillRight.add("[");
-					fillRight.add(Integer.toString(nowArray.size, 10));
-					fillRight.add("]");
+					currentLayer.right.add("[");
+					currentLayer.right.add(
+						Integer.toString(nowArray.size, 10));
+					currentLayer.right.add("]");
 				}
 				
 				// Store last state, for future potential parenthesis
@@ -386,20 +375,47 @@ public class CPointerType
 			}
 		}
 		
+		// Debug
+		Debugging.debugNote("Layers: %s", layers);
+		
+		// Clamped value in the middle
+		List<String> clamped = new ArrayList<>();
+		if (__name != null)
+			clamped.add(__name.identifier);
+		
+		// Go through each onion and add accordingly
+		for (int n = layers.size(), i = n - 1; i >= 0; i--)
+		{
+			__PointerOnion__ layer = layers.get(i);
+			
+			if (i < n - 1)
+			{
+				clamped.add(0, "(");
+				clamped.add(clamped.size(), ")");
+			}
+			
+			clamped.addAll(0, layer.left);
+			clamped.addAll(clamped.size(), layer.right);
+		}
+		
+		// Build final result
+		result.addAll(clamped);
+		
+		/*
 		// Open pointer array name group, do not add redundant parenthesis
 		if (!fillLeft.isEmpty() && !fillLeft.get(0).equals("("))
 			result.add("(");
 		
 		// Add all the filler items and the name of the item
 		result.addAll(fillLeft);
-		if (__name != null)
-			result.add(__name.identifier);
+		result.addAll(clamped);
 		result.addAll(fillRight);
 		
 		// Close pointer array name group, do not add redundant parenthesis
 		if (!fillRight.isEmpty() &&
 			!fillRight.get(fillRight.size() - 1).equals(")"))
 			result.add(")");
+		 */
 		
 		// Add all arguments if a function, note that the actual argument
 		// names are not important here
@@ -413,5 +429,41 @@ public class CPointerType
 		}
 		
 		return UnmodifiableList.of(result);
+	}
+	
+	/**
+	 * Is this a complex type?
+	 * 
+	 * @param __start The type to check.
+	 * @return If this is a complex type or not.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/25
+	 */
+	static boolean __isComplex(CType __start)
+		throws NullPointerException
+	{
+		if (__start == null)
+			throw new NullPointerException("NARG");
+		
+		for (CType at = __start;;)
+		{
+			// Dereference modified and pointer types
+			if (at instanceof CModifiedType)
+				at = ((CModifiedType)at).type;
+			else if (at instanceof CPointerType)
+				at = ((CPointerType)at).pointedType;
+			
+			// These two are complex
+			else if (at instanceof CArrayType ||
+				at instanceof CFunctionType)
+				return true;
+			
+			// Should be at root type
+			else
+				break;
+		}
+		
+		// Not one
+		return false;
 	}
 }

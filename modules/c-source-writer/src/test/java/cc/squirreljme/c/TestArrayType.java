@@ -78,7 +78,7 @@ public class TestArrayType
 				CPrimitiveType.SIGNED_INTEGER.pointerType().arrayType(2),
 				"foo"));
 			
-			this.secondary("pointerarray", spool.tokens());
+			this.secondary("arrayofpointer", spool.tokens());
 		}
 		
 		try (__Spool__ spool = new __Spool__())
