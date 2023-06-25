@@ -60,6 +60,17 @@ public class TestFunctionPointer
 			this.secondary("pointerpointer", spool.tokens());
 		}
 		
+		// Alternating
+		try (__Spool__ spool = new __Spool__())
+		{
+			// int (*const cute)(unsigned char squeak);
+			spool.declare(CVariable.of(type.pointerType().pointerType()
+					.constType().pointerType().pointerType().constType(),
+				"cute"));
+			
+			this.secondary("alt", spool.tokens());
+		}
+		
 		// Array
 		try (__Spool__ spool = new __Spool__())
 		{

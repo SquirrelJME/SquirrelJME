@@ -110,5 +110,16 @@ public class TestArrayType
 			
 			this.secondary("constpointerarray", spool.tokens());
 		}
+		
+		try (__Spool__ spool = new __Spool__())
+		{
+			spool.declare(CVariable.of(
+				CPrimitiveType.SIGNED_INTEGER.arrayType(2)
+					.pointerType().constType().pointerType()
+					.pointerType().constType(),
+				"foo"));
+			
+			this.secondary("alt", spool.tokens());
+		}
 	}
 }
