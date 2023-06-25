@@ -53,7 +53,7 @@ public class TestFunctionPointer
 		// Pointer pointer
 		try (__Spool__ spool = new __Spool__())
 		{
-			// int (*const cute)(unsigned char squeak);
+			// int (** cute)(unsigned char squeak);
 			spool.declare(CVariable.of(type.pointerType().pointerType(),
 				"cute"));
 			

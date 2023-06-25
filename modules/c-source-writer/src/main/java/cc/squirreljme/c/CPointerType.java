@@ -210,29 +210,6 @@ public class CPointerType
 	}
 	
 	/**
-	 * Performs complex clamping.
-	 * 
-	 * @param __clamped What to clamp to.
-	 * @param __fillLeft Clamp from the left.
-	 * @param __fillRight Clamp from the right.
-	 * @since 2023/06/25
-	 */
-	private static void __complexClamp(List<String> __clamped,
-		List<String> __fillLeft, List<String> __fillRight)
-	{
-		__fillLeft.add(0, "(");
-		__fillRight.add(__fillRight.size(), ")");
-		
-		// Clamp both ends here
-		__clamped.addAll(0, __fillLeft);
-		__clamped.addAll(__clamped.size(), __fillRight);
-		
-		// Nuke fill sides since they were clamped in
-		__fillLeft.clear();
-		__fillRight.clear();
-	}
-	
-	/**
 	 * Declaration loop.
 	 *
 	 * @param __start The starting type.
@@ -258,6 +235,9 @@ public class CPointerType
 		boolean lastModified = false;
 		for (CType at = __start;;)
 		{
+			// Debug
+			Debugging.debugNote("at: %s", at);
+			
 			// Add type to all of them, only if the type was not modified
 			if (!lastModified)
 				allTypes.add(at);
@@ -388,6 +368,7 @@ public class CPointerType
 		{
 			__PointerOnion__ layer = layers.get(i);
 			
+			// Only surround with parenthesis if we are on another layer
 			if (i < n - 1)
 			{
 				clamped.add(0, "(");
@@ -398,24 +379,12 @@ public class CPointerType
 			clamped.addAll(clamped.size(), layer.right);
 		}
 		
-		// Build final result
-		result.addAll(clamped);
-		
-		/*
-		// Open pointer array name group, do not add redundant parenthesis
-		if (!fillLeft.isEmpty() && !fillLeft.get(0).equals("("))
+		// Build final result, function pointers always have a surround
+		if (baseFunction != null)
 			result.add("(");
-		
-		// Add all the filler items and the name of the item
-		result.addAll(fillLeft);
 		result.addAll(clamped);
-		result.addAll(fillRight);
-		
-		// Close pointer array name group, do not add redundant parenthesis
-		if (!fillRight.isEmpty() &&
-			!fillRight.get(fillRight.size() - 1).equals(")"))
+		if (baseFunction != null)
 			result.add(")");
-		 */
 		
 		// Add all arguments if a function, note that the actual argument
 		// names are not important here
