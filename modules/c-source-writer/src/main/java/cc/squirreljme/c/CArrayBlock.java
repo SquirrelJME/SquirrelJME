@@ -64,6 +64,7 @@ public class CArrayBlock
 		int index = this._index;
 		if (index > 0)
 			this.token(",");
+		this._index = index + 1;
 		
 		// Open block
 		CStructVariableBlock rv = new CStructVariableBlock(

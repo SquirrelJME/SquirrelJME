@@ -405,6 +405,12 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
+		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		
+		__block.variableSet(null, CExpressionBuilder.builder()
+			.functionCall(null)
+			.build());
+		
 		// Write check
 		throw Debugging.todo();
 		/*
