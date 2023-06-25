@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,19 +83,10 @@ public class CPointerType
 			modifier = modified.modifier;
 		}
 		
-		// Function pointers are a bit different
-		if (pivotType instanceof CFunctionType)
-		{
-			return this.__declareFunction(result, __name,
-				(CFunctionType)pivotType, modifier, -1);
-		}
-		
-		// Arrays are also different as well
-		else if (pivotType instanceof CArrayType)
-		{
-			return this.__declareArray(result, __name,
-				(CArrayType)pivotType, modifier, -1);
-		}
+		// Function pointers and arrays need some work
+		if (pointedType instanceof CFunctionType ||
+			pointedType instanceof CArrayType)
+			return CPointerType.__declareLoop(this, __name);
 		
 		// Simpler type used
 		else
@@ -171,111 +163,6 @@ public class CPointerType
 	}
 	
 	/**
-	 * Declares an array.
-	 *
-	 * @param __result The output result.
-	 * @param __name The identifier name.
-	 * @param __arrayType The array type.
-	 * @param __modifier The modifier.
-	 * @param __arraySize The size of the array.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/06/14
-	 */
-	List<String> __declareArray(List<String> __result,
-		CIdentifier __name, CArrayType __arrayType, CModifier __modifier,
-		int __arraySize)
-		throws NullPointerException
-	{
-		if (__result == null || __arrayType == null)
-			throw new NullPointerException("NARG");
-		
-		__result.addAll(__arrayType.elementType.declareTokens(null));
-		__result.add("(");
-		__result.add(this.closeness.token + "*");
-		
-		// All modifiers after the star
-		if (__modifier != null)
-			__result.addAll(__modifier.tokens());
-		
-		// Name of what we refer to is here, not the original function
-		// name
-		if (__name != null)
-			__result.add(__name.identifier);
-		
-		// Array of pointers to array?
-		if (__arraySize >= 0)
-		{
-			__result.add("[");
-			__result.add(Integer.toString(__arraySize, 10));
-			__result.add("]");
-		}
-		
-		__result.add(")");
-		
-		// Array size
-		__result.add("[");
-		__result.add(Integer.toString(__arrayType.size, 10));
-		__result.add("]");
-		
-		return UnmodifiableList.of(__result);
-	}
-	
-	/**
-	 * Declares a function.
-	 *
-	 * @param __result The output result.
-	 * @param __name The identifier name.
-	 * @param __pointedType The pointed type.
-	 * @param __modifier The modifier.
-	 * @param __arraySize The size of the array.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/06/14
-	 */
-	List<String> __declareFunction(List<String> __result,
-		CIdentifier __name, CFunctionType __pointedType,
-		CModifier __modifier, int __arraySize)
-		throws NullPointerException
-	{
-		if (__result == null || __pointedType == null)
-			throw new NullPointerException("NARG");
-		
-		__result.addAll(__pointedType.returnType.declareTokens(null));
-		__result.add("(");
-		__result.add(this.closeness.token + "*");
-		
-		// All modifiers after the star
-		if (__modifier != null)
-			__result.addAll(__modifier.tokens());
-		
-		// Name of what we refer to is here, not the original function
-		// name
-		if (__name != null)
-			__result.add(__name.identifier);
-		
-		// Array of pointers to array of function pointers?
-		if (__arraySize >= 0)
-		{
-			__result.add("[");
-			__result.add(Integer.toString(__arraySize, 10));
-			__result.add("]");
-		}
-		
-		__result.add(")");
-		
-		// Add all arguments, note that the actual argument names are
-		// not important here
-		__result.add("(");
-		List<CVariable> arguments = __pointedType.arguments;
-		for (int i = 0, n = arguments.size(); i < n; i++)
-			__result.addAll(
-				arguments.get(i).type.declareTokens(null));
-		
-		__result.add(")");
-		
-		return UnmodifiableList.of(__result);
-	}
-	
-	/**
 	 * Initializes the pointer type.
 	 * 
 	 * @param __type The type to use.
@@ -321,5 +208,175 @@ public class CPointerType
 		
 		// Just wrap in a pointer
 		return new CPointerType(__type, __closeness);
+	}
+	
+	/**
+	 * Declaration loop.
+	 *
+	 * @param __start The starting type.
+	 * @param __name The name of the type to use.
+	 * @return The resultant declared tokens.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/25
+	 */
+	static List<String> __declareLoop(CType __start, CIdentifier __name)
+		throws NullPointerException
+	{
+		if (__start == null)
+			throw new NullPointerException("NARG");
+		
+		// Resultant tokens
+		List<String> result = new ArrayList<>();
+		
+		// We need to know if this refers to a function or not, but while
+		// we do so load all the types we are hitting here
+		CFunctionType baseFunction = null;
+		CType rootType = null;
+		List<CType> allTypes = new ArrayList<>();
+		boolean lastModified = false;
+		for (CType at = __start;;)
+		{
+			// Add type to all of them, only if the type was not modified
+			if (!lastModified)
+				allTypes.add(at);
+			
+			// Dereference modified, pointer, and array types
+			if (at instanceof CModifiedType)
+			{
+				lastModified = true;
+				at = ((CModifiedType)at).type;
+			}
+			else if (at instanceof CPointerType)
+			{
+				lastModified = false;
+				at = ((CPointerType)at).pointedType;
+			}
+			else if (at instanceof CArrayType)
+			{
+				lastModified = false;
+				at = ((CArrayType)at).elementType;
+			}
+			
+			// Is function pointer?
+			else if (at instanceof CFunctionType)
+			{
+				// This is the root type, we cannot go deeper
+				lastModified = false;
+				baseFunction = (CFunctionType)at;
+				rootType = at;
+				break;
+			}
+			
+			// We can stop as we reached a root type
+			else
+			{
+				lastModified = false;
+				rootType = at;
+				break;
+			}
+		}
+		
+		// Debug
+		Debugging.debugNote("All: %s", allTypes);
+		
+		// Return type, if a function?
+		if (baseFunction != null)
+			result.addAll(baseFunction.returnType.declareTokens(null));
+		
+		// Otherwise whatever the element type is, assuming array
+		else
+			result.addAll(rootType.declareTokens(null));
+		
+		// Setup fills for left side and right side
+		List<String> fillLeft = new ArrayList<>();
+		List<String> fillRight = new ArrayList<>();
+		
+		// Go through all type items and add around them
+		CPointerType lastPointer = null;
+		CArrayType lastArray = null;
+		for (int n = allTypes.size(), i = n - 1; i >= 0; i--)
+		{
+			CType at = allTypes.get(i);
+			
+			// Un-modify types, they are added in the chain accordingly
+			CModifier modifier = null;
+			if (at instanceof CModifiedType)
+			{
+				CModifiedType modifiedType = (CModifiedType)at;
+				
+				modifier = modifiedType.modifier;
+				at = modifiedType.type;
+			}
+			
+			// Determine which type this is
+			CPointerType nowPointer = null;
+			CArrayType nowArray = null;
+			if (at instanceof CPointerType)
+				nowPointer = (CPointerType)at;
+			else if (at instanceof CArrayType)
+				nowArray = (CArrayType)at;
+			
+			// Arrays are always last, so if we are going from an array to
+			// a pointer, we need to wrap with parenthesis
+			if (nowPointer != null && lastArray != null)
+			{
+				fillLeft.add(0, "(");
+				fillRight.add(fillRight.size(), ")");
+			}
+			
+			// Only perform calculation if we have the both of these
+			if (nowPointer != null || nowArray != null)
+			{
+				// Pointer?
+				if (nowPointer != null)
+				{
+					fillLeft.add(nowPointer.closeness.token + "*");
+					
+					// All modifiers after the star
+					if (modifier != null)
+						fillLeft.addAll(modifier.tokens());
+				}
+				
+				// Array?
+				else if (nowArray != null)
+				{
+					fillRight.add("[");
+					fillRight.add(Integer.toString(nowArray.size, 10));
+					fillRight.add("]");
+				}
+				
+				// Store last state, for future potential parenthesis
+				lastPointer = nowPointer;
+				lastArray = nowArray;
+			}
+		}
+		
+		// Open pointer array name group, do not add redundant parenthesis
+		if (!fillLeft.isEmpty() && !fillLeft.get(0).equals("("))
+			result.add("(");
+		
+		// Add all the filler items and the name of the item
+		result.addAll(fillLeft);
+		if (__name != null)
+			result.add(__name.identifier);
+		result.addAll(fillRight);
+		
+		// Close pointer array name group, do not add redundant parenthesis
+		if (!fillRight.isEmpty() &&
+			!fillRight.get(fillRight.size() - 1).equals(")"))
+			result.add(")");
+		
+		// Add all arguments if a function, note that the actual argument
+		// names are not important here
+		if (baseFunction != null)
+		{
+			result.add("(");
+			List<CVariable> args = baseFunction.arguments;
+			for (int i = 0, n = args.size(); i < n; i++)
+				result.addAll(args.get(i).type.declareTokens(null));
+			result.add(")");
+		}
+		
+		return UnmodifiableList.of(result);
 	}
 }

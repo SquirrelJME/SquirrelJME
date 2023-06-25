@@ -77,15 +77,10 @@ public final class CModifiedType
 			CPointerType pointerType = ((CPointerType)type);
 			CType pointedType = pointerType.pointedType;
 			
-			// Functions are different
-			if (pointedType instanceof CFunctionType)
-				return pointerType.__declareFunction(result, __name,
-					(CFunctionType)pointedType, this.modifier, -1);
-			
-			// Arrays are also different
-			else if (pointedType instanceof CArrayType)
-				return pointerType.__declareArray(result, __name,
-					(CArrayType)pointedType, this.modifier, -1);
+			// Functions and arrays are different
+			if (pointedType instanceof CFunctionType ||
+				pointedType instanceof CArrayType)
+				return CPointerType.__declareLoop(this, __name);
 			
 			// Otherwise place on right side
 			else

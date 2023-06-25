@@ -87,13 +87,9 @@ public final class CArrayType
 			CPointerType pointerType = (CPointerType)pivotType;
 			CType pointedType = pointerType.pointedType;
 			
-			if (pointedType instanceof CFunctionType)
-				return pointerType.__declareFunction(result, __name,
-					(CFunctionType)pointedType, modifier, this.size);
-				
-			else if (pointedType instanceof CArrayType)
-				return pointerType.__declareArray(result, __name,
-					(CArrayType)pointedType, modifier, this.size);
+			if (pointedType instanceof CFunctionType ||
+				pointedType instanceof CArrayType)
+				return CPointerType.__declareLoop(this, __name);
 		}
 		
 		// Type and such
