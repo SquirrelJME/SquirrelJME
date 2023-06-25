@@ -41,6 +41,17 @@ public abstract class __CAbstractType__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/06/25
+	 */
+	@Override
+	public <T extends CType> T cast(Class<T> __as)
+		throws NullPointerException
+	{
+		return __as.cast(this);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2023/06/06
 	 */
 	@Override

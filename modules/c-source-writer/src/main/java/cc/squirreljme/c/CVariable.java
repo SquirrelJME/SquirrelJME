@@ -152,6 +152,37 @@ public class CVariable
 	}
 	
 	/**
+	 * Renames this variable.
+	 * 
+	 * @param __newIdentifier The new name.
+	 * @return The variable with the new name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/25
+	 */
+	public CVariable rename(String __newIdentifier)
+		throws NullPointerException
+	{
+		return this.rename(CIdentifier.of(__newIdentifier));
+	}
+	
+	/**
+	 * Renames this variable.
+	 * 
+	 * @param __newIdentifier The new name.
+	 * @return The variable with the new name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/25
+	 */
+	public CVariable rename(CIdentifier __newIdentifier)
+		throws NullPointerException
+	{
+		if (__newIdentifier == null)
+			throw new NullPointerException("NARG");
+		
+		return new CVariable(this.type, __newIdentifier);
+	}
+	
+	/**
 	 * Returns the type used.
 	 * 
 	 * @return The type.

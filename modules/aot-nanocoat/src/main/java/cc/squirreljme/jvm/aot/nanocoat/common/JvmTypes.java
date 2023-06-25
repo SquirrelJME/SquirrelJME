@@ -220,6 +220,7 @@ public enum JvmTypes
 		{
 			return CStructTypeBuilder.builder(
 				CStructKind.STRUCT, "sjme_nvm_frame")
+				.member(JvmTypes.JINT.type(), "groupIndex")
 				.build();
 		}
 	},
@@ -281,7 +282,7 @@ public enum JvmTypes
 		CType __build()
 		{
 			return CStructTypeBuilder.builder(CStructKind.UNION,
-				"sjme_static_fieldCValue")
+				"sjme_static_constValue")
 				.member(JvmTypes.JINT.type(), "jint")
 				.member(JvmTypes.JLONG.type(), "jlong")
 				.member(JvmTypes.JFLOAT.type(), "jfloat")
@@ -307,6 +308,7 @@ public enum JvmTypes
 				.member(CPrimitiveType.CONST_CHAR_STAR, "name")
 				.member(CPrimitiveType.CONST_CHAR_STAR, "type")
 				.member(JvmTypes.JINT.type().constType(), "flags")
+				.member(JvmTypes.JINT.type(), "valueType")
 				.member(JvmTypes.STATIC_CLASS_CVALUE.type(),
 					"value")
 				.build();

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CPointerType;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
@@ -31,6 +32,9 @@ public final class __CodeVariables__
 	
 	/** Current state cache. */
 	private volatile Reference<CVariable> _currentState;
+	
+	/** Current thread cache. */
+	private volatile Reference<CVariable> _currentThread;
 	
 	/**
 	 * Not used.
@@ -55,8 +59,11 @@ public final class __CodeVariables__
 		{
 			rv = JvmFunctions.METHOD_CODE.function()
 				.argument("currentThread")
-				.type(CStructType.class)
-				.member("top");
+				.type(CPointerType.class)
+				.dereferenceType()
+				.cast(CStructType.class)
+				.member("top")
+				.rename("currentFrame");
 			this._currentFrame = new WeakReference<>(rv);
 		}
 		
@@ -77,6 +84,26 @@ public final class __CodeVariables__
 		{
 			rv = JvmFunctions.METHOD_CODE.function()
 				.argument("currentState");
+			this._currentState = new WeakReference<>(rv);
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the current thread.
+	 * 
+	 * @return The current thread.
+	 * @since 2023/06/25
+	 */
+	public CVariable currentThread()
+	{
+		Reference<CVariable> ref = this._currentState;
+		CVariable rv;
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			rv = JvmFunctions.METHOD_CODE.function()
+				.argument("currentThread");
 			this._currentState = new WeakReference<>(rv);
 		}
 		

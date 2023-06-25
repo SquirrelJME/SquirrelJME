@@ -30,6 +30,18 @@ public interface CType
 		throws IllegalArgumentException;
 	
 	/**
+	 * Cast the given type.
+	 * 
+	 * @param <T> The type to cast as.
+	 * @param __as The type to cast as.
+	 * @return The cast type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/25
+	 */
+	<T extends CType> T cast(Class<T> __as)
+		throws NullPointerException;
+	
+	/**
 	 * Gets the type as a constant.
 	 * 
 	 * @return The constant version of this type.

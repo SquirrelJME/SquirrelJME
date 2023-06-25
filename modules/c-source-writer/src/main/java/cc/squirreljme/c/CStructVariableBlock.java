@@ -84,12 +84,23 @@ public class CStructVariableBlock
 		if (__memberName == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error CW39 Not an array member.}
+		CVariable member = this.__checkMember(__memberName);
+		CType memberType = member.type;
+		CType elementType;
+		if (memberType instanceof CArrayType)
+			elementType = ((CArrayType)memberType).elementType;
+		else if (memberType instanceof CPointerType)
+			elementType = ((CPointerType)memberType).pointedType;
+		else
+			throw new IllegalArgumentException("CW39");
+		
 		// Write opening
 		this.__startMember(__memberName);
 		this.tokens("{");
 		
 		// Setup block
-		CArrayBlock rv = new CArrayBlock(this);
+		CArrayBlock rv = new CArrayBlock(this, elementType);
 		return this.__file().__pushBlock(rv, false);
 	}
 	
@@ -127,6 +138,7 @@ public class CStructVariableBlock
 		if (__memberName == null || __value == null)
 			throw new NullPointerException("NARG");
 		
+		this.__checkMember(__memberName);
 		this.__startMember(__memberName);
 		this.tokens(__value);
 		
@@ -165,15 +177,44 @@ public class CStructVariableBlock
 			throw new NullPointerException("NARG");
 		
 		// Start writing member
+		CVariable member = this.__checkMember(__memberName);
 		this.__startMember(__memberName);
 		this.token("{");
 		
 		// Open block
 		return this.__file().__pushBlock(
 			new CStructVariableBlock(this,
-				this.struct.member(__memberName).type(CStructType.class),
+				member.type(CStructType.class),
 				"}"),
 			true);
+	}
+	
+	/**
+	 * Checks and returns the variable for the member.
+	 * 
+	 * @param __memberName The name of the member.
+	 * @return The variable for the member.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/25
+	 */
+	private CVariable __checkMember(CIdentifier __memberName)
+		throws NullPointerException
+	{
+		if (__memberName == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error CW34 Struct has no such member.}
+		CVariable rv = this.struct.member(__memberName);
+		if (rv == null)
+			throw new NoSuchElementException("CW34");
+		
+		// {@squirreljme.error CW33 Member already written.} 
+		Set<CIdentifier> written = this._written;
+		if (written.contains(__memberName))
+			throw new IllegalStateException("CW33");
+		
+		written.add(__memberName);
+		return rv;
 	}
 	
 	/**
@@ -189,16 +230,6 @@ public class CStructVariableBlock
 	{
 		if (__memberName == null)
 			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error CW33 Member already written.} 
-		Set<CIdentifier> written = this._written;
-		if (written.contains(__memberName))
-			throw new IllegalStateException("CW33");
-		written.add(__memberName);
-		
-		// {@squirreljme.error CW34 Struct has no such member.}
-		if (this.struct.member(__memberName) == null)
-			throw new NoSuchElementException("CW34");
 		
 		// Do we need to prefix with a comma?
 		int index = this._index;

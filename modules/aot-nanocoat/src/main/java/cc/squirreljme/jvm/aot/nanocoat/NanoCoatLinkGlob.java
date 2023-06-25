@@ -15,6 +15,7 @@ import cc.squirreljme.c.CFileName;
 import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.out.AppendableCTokenOutput;
+import cc.squirreljme.c.out.EchoCTokenOutput;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import java.io.IOException;
@@ -71,9 +72,10 @@ public class NanoCoatLinkGlob
 		// Setup output
 		try
 		{
-			this.out = new CFile(new AppendableCTokenOutput(
+			this.out = new CFile(new EchoCTokenOutput(System.err,
+				new AppendableCTokenOutput(
 				new PrintStream(zip.nextEntry(this.fileName.toString()),
-					true, "utf-8")));
+					true, "utf-8"))));
 		}
 		catch (IOException __e)
 		{

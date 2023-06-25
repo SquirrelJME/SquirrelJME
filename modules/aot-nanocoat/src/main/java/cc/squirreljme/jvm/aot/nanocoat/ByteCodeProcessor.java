@@ -298,9 +298,9 @@ public class ByteCodeProcessor
 		// Set known variables
 		__block.variableSet(codeVars.currentFrame(),
 			CExpressionBuilder.builder()
-				.identifier(codeVars.currentState())
+				.identifier(codeVars.currentThread())
 				.dereferenceStruct()
-				.identifier(JvmTypes.VMSTATE.type(CStructType.class)
+				.identifier(JvmTypes.VMTHREAD.type(CStructType.class)
 					.member("top"))
 				.build());
 		

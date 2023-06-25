@@ -110,10 +110,10 @@ public class FieldProcessor
 			ConstantValue value = field.constantValue();
 			if (value != null)
 			{
-				if (true)
-					throw Debugging.todo();
-				/*struct.memberSet("valueType",
-					"SJME_VALUETYPE_" + value.type().name());*/
+				struct.memberSet("valueType",
+					CExpressionBuilder.builder()
+						.number(value.type().ordinal())
+						.build());
 				try (CStructVariableBlock valueStruct = struct.memberStructSet(
 					"value"))
 				{

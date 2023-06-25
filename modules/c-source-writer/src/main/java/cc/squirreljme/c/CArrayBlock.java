@@ -20,6 +20,9 @@ import java.io.IOException;
 public class CArrayBlock
 	extends CBlock
 {
+	/** The element type. */
+	protected final CType elementType;
+	
 	/** The current array index. */
 	private volatile int _index;
 	
@@ -27,13 +30,19 @@ public class CArrayBlock
 	 * Initializes the C array Block.
 	 *
 	 * @param __ref The reference to use.
+	 * @param __elementType The element type.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	CArrayBlock(CSourceWriter __ref)
+	CArrayBlock(CSourceWriter __ref, CType __elementType)
 		throws NullPointerException
 	{
 		super(__ref, "}");
+		
+		if (__elementType == null)
+			throw new NullPointerException("NARG");
+		
+		this.elementType = __elementType;
 	}
 	
 	/**
@@ -46,21 +55,22 @@ public class CArrayBlock
 	public CStructVariableBlock struct()
 		throws IOException
 	{
+		// {@squirreljme.error CW3f No an array of structs.}
+		CType elementType = this.elementType;
+		if (!(elementType instanceof CStructType))
+			throw new IllegalStateException("CW3f");
+		
 		// Prefix element with comma?
 		int index = this._index;
 		if (index > 0)
 			this.token(",");
 		
-		throw Debugging.todo();
-		/*
 		// Open block
 		CStructVariableBlock rv = new CStructVariableBlock(
-			this, struct, "}");
+			this, (CStructType)elementType, "}");
 		this.token("{");
 		
 		// Push it to the writer
 		return this.__file().__pushBlock(rv, false);
-		
-		 */
 	}
 }

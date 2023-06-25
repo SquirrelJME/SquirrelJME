@@ -675,10 +675,24 @@ public class CFile
 			else if (startChar == '\r' || startChar == '\n')
 				out.newLine(__forceNewline);
 			else
+			{
+				// Make sure a space is before this token if there was none
+				// before...
+				if (!this._lastWhitespace)
+					out.space();
+				
 				out.token(__token, __forceNewline);
+			}
 		}
 		else
+		{
+			// Make sure a space is before this token if there was none
+			// before...
+			if (!this._lastWhitespace)
+				out.space();
+				
 			out.token(__token, __forceNewline);
+		}
 		
 		// Ends on newline or forced newline?
 		char endChar = __token.charAt(n - 1); 
@@ -810,7 +824,10 @@ public class CFile
 	public CSourceWriter variableSet(CVariable __var, CExpression __value)
 		throws IllegalArgumentException, IOException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__var == null || __value == null)
+			throw new NullPointerException("NARG");
+		
+		return this.tokens(__var.name, "=", __value, ";");
 	}
 	
 	/**
