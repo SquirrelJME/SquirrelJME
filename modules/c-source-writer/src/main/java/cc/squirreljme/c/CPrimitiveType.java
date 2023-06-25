@@ -63,6 +63,14 @@ public enum CPrimitiveType
 	/* End. */
 	;
 	
+	/** Character string. */
+	public static final CType CHAR_STAR =
+		CPrimitiveType.CHAR.pointerType();
+	
+	/** Constant character string. */
+	public static final CType CONST_CHAR_STAR =
+		CPrimitiveType.CHAR.constType().pointerType();
+	
 	/** The single token used. */
 	protected final String token;
 	
@@ -86,6 +94,17 @@ public enum CPrimitiveType
 			throw new NullPointerException("NARG");
 		
 		this.token = __token;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/24
+	 */
+	@Override
+	public CType arrayType(int __size)
+		throws IllegalArgumentException
+	{
+		return CArrayType.of(this, __size);
 	}
 	
 	/**

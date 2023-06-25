@@ -30,6 +30,17 @@ public abstract class __CAbstractType__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/06/24
+	 */
+	@Override
+	public CType arrayType(int __size)
+		throws IllegalArgumentException
+	{
+		return CArrayType.of(this, __size);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2023/06/06
 	 */
 	@Override

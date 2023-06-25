@@ -19,6 +19,17 @@ import java.util.List;
 public interface CType
 {
 	/**
+	 * Returns an array type.
+	 * 
+	 * @param __size The size of the array.
+	 * @return The array type.
+	 * @throws IllegalArgumentException If the array is negative.
+	 * @since 2023/06/24
+	 */
+	CType arrayType(int __size)
+		throws IllegalArgumentException;
+	
+	/**
 	 * Gets the type as a constant.
 	 * 
 	 * @return The constant version of this type.

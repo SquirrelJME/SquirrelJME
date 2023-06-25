@@ -68,7 +68,8 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			throw Debugging.todo();
+			return CTypeDefType.of(JvmTypes.JINT.type().arrayType(2),
+				"jlong");
 		}
 	},
 	
@@ -82,7 +83,7 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			throw Debugging.todo();
+			return CTypeDefType.of(JvmTypes.JINT.type(), "jfloat");
 		}
 	},
 	
@@ -96,7 +97,8 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			throw Debugging.todo();
+			return CTypeDefType.of(JvmTypes.JINT.type().arrayType(2),
+				"jfloat");
 		}
 	},
 	
@@ -242,11 +244,66 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			throw Debugging.todo();
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+					"sjme_static_classInfo")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"thisName")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"superName")
+				.member(JvmTypes.JINT.type(),
+					"flags")
+				.member(JvmTypes.STATIC_CLASS_FIELDS.type()
+					.constType().pointerType(), "fields")
+				.member(JvmTypes.STATIC_CLASS_METHODS.type()
+					.constType().pointerType(), "methods")
+				.build();
+		}
+	},
+	
+	/** Constant value union. */
+	STATIC_CLASS_CVALUE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/24
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.UNION,
+				"sjme_static_fieldCValue")
+				.member(JvmTypes.JINT.type(), "jint")
+				.member(JvmTypes.JLONG.type(), "jlong")
+				.member(JvmTypes.JFLOAT.type(), "jfloat")
+				.member(JvmTypes.JDOUBLE.type(), "jdouble")
+				.member(CPrimitiveType.CONST_CHAR_STAR, "string")
+				.member(CPrimitiveType.CONST_CHAR_STAR, "jclass")
+				.build();	
 		}
 	},
 	
 	/** Field information. */
+	STATIC_CLASS_FIELD
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/24
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_static_classField")
+				.member(CPrimitiveType.CONST_CHAR_STAR, "name")
+				.member(CPrimitiveType.CONST_CHAR_STAR, "type")
+				.member(JvmTypes.JINT.type().constType(), "flags")
+				.member(JvmTypes.STATIC_CLASS_CVALUE.type(),
+					"value")
+				.build();
+		}
+	},
+	
+	/** Multiple fields. */
 	STATIC_CLASS_FIELDS
 	{
 		/**
@@ -256,11 +313,30 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			throw Debugging.todo();
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_static_classFields")
+				.member(JvmTypes.JINT.type(), "count")
+				.member(JvmTypes.STATIC_CLASS_FIELD.type()
+					.arrayType(0), "fields")
+				.build();
 		}
 	},
 	
 	/** Method information. */
+	STATIC_CLASS_METHOD
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/24
+		 */
+		@Override
+		CType __build()
+		{
+			throw Debugging.todo();
+		}
+	},
+	
+	/** Multiple class methods. */
 	STATIC_CLASS_METHODS
 	{
 		/**
@@ -270,7 +346,12 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			throw Debugging.todo();
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_static_classMethods")
+				.member(JvmTypes.JINT.type(), "count")
+				.member(JvmTypes.STATIC_CLASS_METHOD.type()
+					.arrayType(0), "methods")
+				.build();
 		}
 	},
 	
