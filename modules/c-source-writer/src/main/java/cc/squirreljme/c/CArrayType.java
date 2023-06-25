@@ -68,20 +68,32 @@ public final class CArrayType
 	{
 		List<String> result = new ArrayList<>();
 		
-		// Pointers may be treated slightly different
 		CType elementType = this.elementType;
-		if (elementType instanceof CPointerType)
+		
+		// Pivot from modified type?
+		CType pivotType = elementType;
+		CModifier modifier = null;
+		if (elementType instanceof CModifiedType)
 		{
-			CPointerType pointerType = (CPointerType)elementType;
+			CModifiedType modified = (CModifiedType)elementType;
+			
+			pivotType = modified.type;
+			modifier = modified.modifier;
+		}
+		
+		// Pointers may be treated slightly different
+		if (pivotType instanceof CPointerType)
+		{
+			CPointerType pointerType = (CPointerType)pivotType;
 			CType pointedType = pointerType.pointedType;
 			
 			if (pointedType instanceof CFunctionType)
 				return pointerType.__declareFunction(result, __name,
-					(CFunctionType)pointedType, null, this.size);
+					(CFunctionType)pointedType, modifier, this.size);
 				
 			else if (pointedType instanceof CArrayType)
 				return pointerType.__declareArray(result, __name,
-					(CArrayType)pointedType, null, this.size);
+					(CArrayType)pointedType, modifier, this.size);
 		}
 		
 		// Type and such

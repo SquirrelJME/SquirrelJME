@@ -5,5 +5,7 @@ secondary-int: string[6]:int,foo,[,2,],;
 secondary-intint: string[9]:int,foo,[,2,],[,3,],;
 secondary-constint: string[7]:const,int,foo,[,2,],;
 secondary-constarray: true
-secondary-pointerarray: string[9]:int,(,*,foo,),[,2,],;
-secondary-constpointerarray: string[10]:int,(,*,const,foo,),[,2,],;
+secondary-pointerarray: string[9]:int,(,*,foo,[,2,],),;
+secondary-pointerpointerarray: string[10]:int,(,*,*,foo,[,2,],),;
+secondary-pointerarrayarray: string[12]:int,(,*,foo,[,2,],[,3,],),;
+secondary-constpointerarray: string[10]:int,(,*,const,foo,[,2,],),;

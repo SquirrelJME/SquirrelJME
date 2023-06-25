@@ -85,6 +85,26 @@ public class TestArrayType
 		{
 			spool.declare(CVariable.of(
 				CPrimitiveType.SIGNED_INTEGER.arrayType(2)
+					.pointerType().pointerType(),
+				"foo"));
+			
+			this.secondary("pointerpointerarray", spool.tokens());
+		}
+		
+		try (__Spool__ spool = new __Spool__())
+		{
+			spool.declare(CVariable.of(
+				CPrimitiveType.SIGNED_INTEGER.arrayType(2)
+					.arrayType(3).pointerType(),
+				"foo"));
+			
+			this.secondary("pointerarrayarray", spool.tokens());
+		}
+		
+		try (__Spool__ spool = new __Spool__())
+		{
+			spool.declare(CVariable.of(
+				CPrimitiveType.SIGNED_INTEGER.arrayType(2)
 					.pointerType().constType(),
 				"foo"));
 			

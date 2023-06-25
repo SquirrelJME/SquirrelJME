@@ -50,6 +50,16 @@ public class TestFunctionPointer
 			this.secondary("const", spool.tokens());
 		}
 		
+		// Pointer pointer
+		try (__Spool__ spool = new __Spool__())
+		{
+			// int (*const cute)(unsigned char squeak);
+			spool.declare(CVariable.of(type.pointerType().pointerType(),
+				"cute"));
+			
+			this.secondary("pointerpointer", spool.tokens());
+		}
+		
 		// Array
 		try (__Spool__ spool = new __Spool__())
 		{
@@ -58,6 +68,17 @@ public class TestFunctionPointer
 				"cute"));
 			
 			this.secondary("array", spool.tokens());
+		}
+		
+		// Array of array
+		try (__Spool__ spool = new __Spool__())
+		{
+			// int (*const cute)(unsigned char squeak);
+			spool.declare(CVariable.of(type.constType()
+					.arrayType(2).arrayType(3),
+				"cute"));
+			
+			this.secondary("arrayarray", spool.tokens());
 		}
 	}
 }

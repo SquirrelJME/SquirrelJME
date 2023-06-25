@@ -70,19 +70,30 @@ public class CPointerType
 		// Process pointer tokens
 		List<String> result = new ArrayList<>();
 		
-		// Function pointers are a bit different
+		// Pivot from modified type?
 		CType pointedType = this.pointedType;
-		if (pointedType instanceof CFunctionType)
+		CType pivotType = pointedType;
+		CModifier modifier = null;
+		if (pointedType instanceof CModifiedType)
+		{
+			CModifiedType modified = (CModifiedType)pointedType;
+			
+			pivotType = modified.type;
+			modifier = modified.modifier;
+		}
+		
+		// Function pointers are a bit different
+		if (pivotType instanceof CFunctionType)
 		{
 			return this.__declareFunction(result, __name,
-				(CFunctionType)pointedType, null, -1);
+				(CFunctionType)pivotType, modifier, -1);
 		}
 		
 		// Arrays are also different as well
-		else if (pointedType instanceof CArrayType)
+		else if (pivotType instanceof CArrayType)
 		{
 			return this.__declareArray(result, __name,
-				(CArrayType)pointedType, null, -1);
+				(CArrayType)pivotType, modifier, -1);
 		}
 		
 		// Simpler type used
@@ -164,21 +175,21 @@ public class CPointerType
 	 *
 	 * @param __result The output result.
 	 * @param __name The identifier name.
-	 * @param __pointedType The pointed type.
+	 * @param __arrayType The array type.
 	 * @param __modifier The modifier.
 	 * @param __arraySize The size of the array.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/14
 	 */
 	List<String> __declareArray(List<String> __result,
-		CIdentifier __name, CArrayType __pointedType, CModifier __modifier,
+		CIdentifier __name, CArrayType __arrayType, CModifier __modifier,
 		int __arraySize)
 		throws NullPointerException
 	{
-		if (__result == null || __pointedType == null)
+		if (__result == null || __arrayType == null)
 			throw new NullPointerException("NARG");
 		
-		__result.addAll(__pointedType.elementType.declareTokens(null));
+		__result.addAll(__arrayType.elementType.declareTokens(null));
 		__result.add("(");
 		__result.add(this.closeness.token + "*");
 		
@@ -203,7 +214,7 @@ public class CPointerType
 		
 		// Array size
 		__result.add("[");
-		__result.add(Integer.toString(__pointedType.size, 10));
+		__result.add(Integer.toString(__arrayType.size, 10));
 		__result.add("]");
 		
 		return UnmodifiableList.of(__result);
