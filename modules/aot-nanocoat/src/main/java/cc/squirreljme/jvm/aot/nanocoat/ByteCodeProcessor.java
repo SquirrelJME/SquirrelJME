@@ -481,7 +481,7 @@ public class ByteCodeProcessor
 				.structAccess()
 				.identifier(JvmTypes.STATIC_LINKAGE
 					.type(CStructType.class).member("data")
-					.type(CStructType.class).member("invokespecial"))
+					.type(CStructType.class).member("invokeSpecial"))
 				.build());
 	}
 	

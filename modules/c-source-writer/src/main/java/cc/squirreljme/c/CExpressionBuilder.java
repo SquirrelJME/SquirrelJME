@@ -20,6 +20,7 @@ import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
 import cc.squirreljme.runtime.cldc.util.LongArrayList;
 import cc.squirreljme.runtime.cldc.util.ShortArrayList;
 import java.io.IOException;
+import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,7 +38,7 @@ public abstract class CExpressionBuilder
 	<B extends CExpressionBuilder<? extends B>>
 {
 	/** Direct token output. */
-	private final CTokenOutput _direct;
+	private final Reference<CFile> _direct;
 	
 	/** The output tokens. */
 	final List<String> _tokens;
@@ -48,7 +49,7 @@ public abstract class CExpressionBuilder
 	 * @param __direct Direct token access?
 	 * @since 2023/06/24
 	 */
-	CExpressionBuilder(CTokenOutput __direct)
+	CExpressionBuilder(Reference<CFile> __direct)
 	{
 		if (__direct != null)
 		{
@@ -297,10 +298,26 @@ public abstract class CExpressionBuilder
 		
 		// {@squirreljme.error CW21 Number of arguments in function does
 		// not match call.}
-		if (__args.length != __function.arguments.size())
+		List<CVariable> arguments = __function.arguments;
+		if (__args.length != arguments.size())
 			throw new IllegalArgumentException("CW21");
 		
-		throw Debugging.todo();
+		// Call function
+		this.__add(__function.name.identifier);
+		
+		// Put down all arguments
+		this.__add("(");
+		for (int i = 0, n = arguments.size(); i < n; i++)
+		{
+			// Comma split?
+			if (i > 0)
+				this.__add(",");
+			
+			this.__add(__args[i].tokens);
+		}
+		this.__add(")");
+		
+		return this.__this();
 	}
 	
 	/**
@@ -523,7 +540,13 @@ public abstract class CExpressionBuilder
 	{
 		// Use direct output access?
 		if (this._direct != null)
-			this._direct.token(__token, false);
+		{
+			CFile file = this._direct.get();
+			if (file == null)
+				throw new IllegalStateException("GCGC");
+			
+			file.token(__token, false);
+		}
 		
 		// Otherwise enqueue
 		else
@@ -592,8 +615,9 @@ public abstract class CExpressionBuilder
 	 * @return The __builder.
 	 * @since 2023/06/24
 	 */
-	static final CRootExpressionBuilder __builder(CTokenOutput __direct)
+	static final CRootExpressionBuilder __builder(CFile __direct)
 	{
-		return new CRootExpressionBuilder(__direct);
+		return new CRootExpressionBuilder((__direct == null ? null :
+			__direct._fileRef));
 	}
 }

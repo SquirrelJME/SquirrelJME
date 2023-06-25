@@ -77,7 +77,7 @@ public enum JvmFunctions
 					"state"),
 				CVariable.of(JvmTypes.STATIC_LINKAGE.type(CStructType.class)
 					.member("data").type(CStructType.class)
-					.member("invokespecial").type.pointerType(),
+					.member("invokeSpecial").type.pointerType(),
 					"linkage"));
 		}
 	},

@@ -180,7 +180,7 @@ public class CFile
 	public CSourceWriter array(List<?> __values)
 		throws IOException
 	{
-		CExpressionBuilder.__builder(this.out)
+		CExpressionBuilder.__builder(this)
 			.array(__values);
 		return this;
 	}
@@ -414,7 +414,7 @@ public class CFile
 			throw new NullPointerException("NARG");
 		
 		// Just forward to expression __builder
-		CExpressionBuilder.__builder(this.out)
+		CExpressionBuilder.__builder(this)
 			.functionCall(__function, __args)
 			.build();
 		this.tokens(";");
@@ -476,7 +476,7 @@ public class CFile
 		if (__number == null)
 			throw new NullPointerException("NARG");
 		
-		CExpressionBuilder.__builder(this.out)
+		CExpressionBuilder.__builder(this)
 			.number(__type, __number)
 			.build();
 		return this;

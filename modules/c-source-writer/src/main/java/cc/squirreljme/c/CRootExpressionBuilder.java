@@ -9,8 +9,7 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.c.out.CTokenOutput;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.lang.ref.Reference;
 import java.util.List;
 
 /**
@@ -27,7 +26,7 @@ public class CRootExpressionBuilder
 	 * @param __direct Direct token output?
 	 * @since 2023/06/24
 	 */
-	CRootExpressionBuilder(CTokenOutput __direct)
+	CRootExpressionBuilder(Reference<CFile> __direct)
 	{
 		super(__direct);
 	}

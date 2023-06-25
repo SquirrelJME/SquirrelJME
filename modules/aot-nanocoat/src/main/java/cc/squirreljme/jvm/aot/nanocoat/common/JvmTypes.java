@@ -221,6 +221,8 @@ public enum JvmTypes
 			return CStructTypeBuilder.builder(
 				CStructKind.STRUCT, "sjme_nvm_frame")
 				.member(JvmTypes.JINT.type(), "groupIndex")
+				.member(JvmTypes.STATIC_LINKAGE.type().pointerType(),
+					"linkage")
 				.build();
 		}
 	},
@@ -375,7 +377,7 @@ public enum JvmTypes
 		}
 	},
 	
-	/** Linkage. */
+	/** Static Linkage. */
 	STATIC_LINKAGE
 	{
 		/**
@@ -385,7 +387,45 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			throw Debugging.todo();
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_static_linkage")
+				.member(JvmTypes.STATIC_LINKAGE_DATA.type(), "data")
+				.build();
+		}
+	},
+	
+	/** Data for the static linkage table. */
+	STATIC_LINKAGE_DATA
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/25
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.UNION,
+				"sjme_static_linkageData")
+				.member(JvmTypes.STATIC_LINKAGE_DATA_INVOKESPECIAL.type(),
+					"invokeSpecial")
+				.build();
+		}
+	},
+	
+	/** Invoke special linkage data. */
+	STATIC_LINKAGE_DATA_INVOKESPECIAL
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/25
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_static_linkageData_invokeSpecial")
+				.member(JvmTypes.JINT.type(),"todo")
+				.build();
 		}
 	},
 	
