@@ -39,7 +39,7 @@ public class TestStructType
 		{
 			spool.declare(CVariable.of(struct, "foo"));
 			
-			this.secondary("define", spool.tokens());
+			this.secondary("declare", spool.tokens());
 		}
 		
 		// Define struct

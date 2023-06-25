@@ -123,12 +123,7 @@ public class CVariable
 		// We need to figure out if this is extern
 		CType type = this.type;
 		if (type instanceof CModifiedType)
-		{
-			CModifiedType modifiedType = (CModifiedType)type;
-			
-			// Already extern?
-			return modifiedType.modifier instanceof CExternModifier;
-		}
+			return CExternModifier.isExtern(((CModifiedType)type).modifier);
 		
 		// Not extern
 		return false;

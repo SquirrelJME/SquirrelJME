@@ -28,17 +28,36 @@ public class TestFunctionPointer
 	public void test()
 		throws IOException
 	{
+		CType type = CFunctionType.of(CIdentifier.of("boop"),
+				CPrimitiveType.SIGNED_INTEGER,
+				CVariable.of(CPrimitiveType.UNSIGNED_CHAR, "squeak"))
+			.pointerType();
+		
 		try (__Spool__ spool = new __Spool__())
 		{
 			// int (*cute)(unsigned char squeak);
-			spool.declare(
-				CVariable.of(CFunctionType.of(CIdentifier.of("boop"),
-					CPrimitiveType.SIGNED_INTEGER,
-					CVariable.of(
-						CPrimitiveType.UNSIGNED_CHAR, "squeak"))
-				.pointerType(), "cute"));
+			spool.declare(CVariable.of(type, "cute"));
 			
 			this.secondary("intboopsqueak", spool.tokens());
+		}
+		
+		// Then pointer for different rule
+		try (__Spool__ spool = new __Spool__())
+		{
+			// int (*const cute)(unsigned char squeak);
+			spool.declare(CVariable.of(type.constType(), "cute"));
+			
+			this.secondary("const", spool.tokens());
+		}
+		
+		// Array
+		try (__Spool__ spool = new __Spool__())
+		{
+			// int (*const cute)(unsigned char squeak);
+			spool.declare(CVariable.of(type.constType().arrayType(2),
+				"cute"));
+			
+			this.secondary("array", spool.tokens());
 		}
 	}
 }

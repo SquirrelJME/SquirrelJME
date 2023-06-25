@@ -41,6 +41,16 @@ public class TestArrayType
 		try (__Spool__ spool = new __Spool__())
 		{
 			spool.declare(CVariable.of(
+				CPrimitiveType.SIGNED_INTEGER.arrayType(2)
+					.arrayType(3),
+				"foo"));
+			
+			this.secondary("intint", spool.tokens());
+		}
+		
+		try (__Spool__ spool = new __Spool__())
+		{
+			spool.declare(CVariable.of(
 				CPrimitiveType.SIGNED_INTEGER.constType().arrayType(2),
 				"foo"));
 			
@@ -49,11 +59,17 @@ public class TestArrayType
 		
 		try (__Spool__ spool = new __Spool__())
 		{
-			spool.declare(CVariable.of(
-				CPrimitiveType.SIGNED_INTEGER.arrayType(2).constType(),
-				"foo"));
-			
-			this.secondary("constarray", spool.tokens());
+			try
+			{
+				spool.declare(CVariable.of(
+					CPrimitiveType.SIGNED_INTEGER.arrayType(2)
+						.constType(),
+					"foo"));
+			}
+			catch (Throwable t)
+			{
+				this.secondary("constarray", true);
+			}
 		}
 		
 		try (__Spool__ spool = new __Spool__())

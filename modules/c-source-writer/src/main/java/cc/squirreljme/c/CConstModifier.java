@@ -60,4 +60,32 @@ public final class CConstModifier
 		// Otherwise wrap it
 		return new CConstModifier(__modifier);
 	}
+	
+	/**
+	 * Checks if the modifier is constant.
+	 * 
+	 * @param __modifier The modifier to check.
+	 * @return If it is constant.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/24
+	 */
+	public static boolean isConst(CModifier __modifier)
+		throws NullPointerException
+	{
+		if (__modifier == null)
+			throw new NullPointerException("NARG");
+		
+		// This one is simple
+		if (__modifier instanceof CConstModifier)
+			return true;
+		
+		// Check multiple modifiers
+		if (__modifier instanceof CModifiers)
+			for (CModifier modifier : ((CModifiers)__modifier).modifiers)
+				if (CConstModifier.isConst(modifier))
+					return true;
+		
+		// Not one
+		return false;
+	}
 }

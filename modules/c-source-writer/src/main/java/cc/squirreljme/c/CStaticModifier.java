@@ -33,6 +33,20 @@ public final class CStaticModifier
 	}
 	
 	/**
+	 * Is this static?
+	 * 
+	 * @param __modifier The modifier to check.
+	 * @return If this it is static.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/24
+	 */
+	public static boolean isStatic(CModifier __modifier)
+		throws NullPointerException
+	{
+		return CStaticModifier.STATIC.isSame(__modifier);
+	}
+	
+	/**
 	 * Wraps the modifier to make it {@code static}.
 	 * 
 	 * @param __modifier The modifier to wrap, may be {@code null}.

@@ -9,7 +9,6 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,36 +67,22 @@ public class CPointerType
 	@Override
 	public List<String> declareTokens(CIdentifier __name)
 	{
-		CType pointedType = this.pointedType;
-		
 		// Process pointer tokens
 		List<String> result = new ArrayList<>();
 		
 		// Function pointers are a bit different
+		CType pointedType = this.pointedType;
 		if (pointedType instanceof CFunctionType)
 		{
-			CFunctionType function = (CFunctionType)pointedType;
-			
-			result.addAll(function.returnType.declareTokens(null));
-			result.add("(");
-			result.add(this.closeness.token + "*");
-			
-			// Name of what we refer to is here, not the original function
-			// name
-			if (__name != null)
-				result.add(__name.identifier);
-			
-			result.add(")");
-			
-			// Add all arguments, note that the actual argument names are
-			// not important here
-			result.add("(");
-			List<CVariable> arguments = function.arguments;
-			for (int i = 0, n = arguments.size(); i < n; i++)
-				result.addAll(
-					arguments.get(i).type.declareTokens(null));
-			
-			result.add(")");
+			return this.__declareFunction(result, __name,
+				(CFunctionType)pointedType, null, -1);
+		}
+		
+		// Arrays are also different as well
+		else if (pointedType instanceof CArrayType)
+		{
+			return this.__declareArray(result, __name,
+				(CArrayType)pointedType, null, -1);
 		}
 		
 		// Simpler type used
@@ -172,6 +157,111 @@ public class CPointerType
 		throws IllegalArgumentException
 	{
 		return CPointerType.of(this);
+	}
+	
+	/**
+	 * Declares an array.
+	 *
+	 * @param __result The output result.
+	 * @param __name The identifier name.
+	 * @param __pointedType The pointed type.
+	 * @param __modifier The modifier.
+	 * @param __arraySize The size of the array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/14
+	 */
+	List<String> __declareArray(List<String> __result,
+		CIdentifier __name, CArrayType __pointedType, CModifier __modifier,
+		int __arraySize)
+		throws NullPointerException
+	{
+		if (__result == null || __pointedType == null)
+			throw new NullPointerException("NARG");
+		
+		__result.addAll(__pointedType.elementType.declareTokens(null));
+		__result.add("(");
+		__result.add(this.closeness.token + "*");
+		
+		// All modifiers after the star
+		if (__modifier != null)
+			__result.addAll(__modifier.tokens());
+		
+		// Name of what we refer to is here, not the original function
+		// name
+		if (__name != null)
+			__result.add(__name.identifier);
+		
+		// Array of pointers to array?
+		if (__arraySize >= 0)
+		{
+			__result.add("[");
+			__result.add(Integer.toString(__arraySize, 10));
+			__result.add("]");
+		}
+		
+		__result.add(")");
+		
+		// Array size
+		__result.add("[");
+		__result.add(Integer.toString(__pointedType.size, 10));
+		__result.add("]");
+		
+		return UnmodifiableList.of(__result);
+	}
+	
+	/**
+	 * Declares a function.
+	 *
+	 * @param __result The output result.
+	 * @param __name The identifier name.
+	 * @param __pointedType The pointed type.
+	 * @param __modifier The modifier.
+	 * @param __arraySize The size of the array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/14
+	 */
+	List<String> __declareFunction(List<String> __result,
+		CIdentifier __name, CFunctionType __pointedType,
+		CModifier __modifier, int __arraySize)
+		throws NullPointerException
+	{
+		if (__result == null || __pointedType == null)
+			throw new NullPointerException("NARG");
+		
+		__result.addAll(__pointedType.returnType.declareTokens(null));
+		__result.add("(");
+		__result.add(this.closeness.token + "*");
+		
+		// All modifiers after the star
+		if (__modifier != null)
+			__result.addAll(__modifier.tokens());
+		
+		// Name of what we refer to is here, not the original function
+		// name
+		if (__name != null)
+			__result.add(__name.identifier);
+		
+		// Array of pointers to array of function pointers?
+		if (__arraySize >= 0)
+		{
+			__result.add("[");
+			__result.add(Integer.toString(__arraySize, 10));
+			__result.add("]");
+		}
+		
+		__result.add(")");
+		
+		// Add all arguments, note that the actual argument names are
+		// not important here
+		__result.add("(");
+		List<CVariable> arguments = __pointedType.arguments;
+		for (int i = 0, n = arguments.size(); i < n; i++)
+			__result.addAll(
+				arguments.get(i).type.declareTokens(null));
+		
+		__result.add(")");
+		
+		return UnmodifiableList.of(__result);
 	}
 	
 	/**

@@ -102,7 +102,8 @@ public class CModifiers
 	 * Initializes multiple modifiers.
 	 * 
 	 * @param __of The modifiers to use.
-	 * @throws IllegalArgumentException If the type would be invalid.
+	 * @throws IllegalArgumentException If the modifier results in an invalid
+	 * modifier.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/29
 	 */
@@ -137,6 +138,11 @@ public class CModifiers
 			// there can only be one of these
 			if (modifier instanceof CExternModifier)
 			{
+				// {@squirreljme.error CW3a Cannot have multiple extern
+				// modifiers.}
+				if (hasExtern)
+					throw new IllegalArgumentException("CW3a");
+				
 				hasExtern = true;
 				
 				// Extern has a target, so process that next
@@ -148,6 +154,11 @@ public class CModifiers
 			// Is there a static modifier?
 			else if (modifier instanceof CStaticModifier)
 			{
+				// {@squirreljme.error CW3b Cannot have multiple static
+				// modifiers.}
+				if (hasStatic)
+					throw new IllegalArgumentException("CW3b");
+			
 				hasStatic = true;
 				
 				CStaticModifier sub = (CStaticModifier)modifier;
@@ -198,8 +209,13 @@ public class CModifiers
 			return null;
 		}
 		
+		// If there is just a single modifier, we do not need to specify
+		// multiple modifiers, so just use it directly
+		if (build.size() == 1)
+			return build.get(0);
+		
 		// If there is an extern modifier somewhere, we wrap the result with
-		// one so that extern is always first
+		// one so that extern is always first, then static, then const...
 		CModifiers result = new CModifiers(build);
 		if (hasExtern)
 			return CExternModifier.of(result);

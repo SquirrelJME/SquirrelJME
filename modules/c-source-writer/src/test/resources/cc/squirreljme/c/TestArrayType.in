@@ -1,8 +1,9 @@
 Manifest-Version: 1.0
 result: NoResult
 thrown: NoExceptionThrown
-secondary-int: string[5]:int,foo,[,2,]
-secondary-constint: string[6]:const,int,foo,[,2,]
-secondary-constarray: string[]:
-secondary-pointerarray: string[8]:int,(,*,foo,),[,2,]
-secondary-constpointerarray: string[9]:int,(,*,const,foo,),[,2,]
+secondary-int: string[6]:int,foo,[,2,],;
+secondary-intint: string[9]:int,foo,[,2,],[,3,],;
+secondary-constint: string[7]:const,int,foo,[,2,],;
+secondary-constarray: true
+secondary-pointerarray: string[9]:int,(,*,foo,),[,2,],;
+secondary-constpointerarray: string[10]:int,(,*,const,foo,),[,2,],;

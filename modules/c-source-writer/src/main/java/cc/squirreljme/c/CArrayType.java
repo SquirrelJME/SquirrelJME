@@ -10,7 +10,10 @@
 package cc.squirreljme.c;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * Represents an array type.
@@ -21,14 +24,16 @@ public final class CArrayType
 	extends __CAbstractType__
 {
 	/** The element type. */
-	private final CType elementType;
+	protected final CType elementType;
+	
+	/** The size of the array. */
+	protected final int size;
 	
 	/**
 	 * Initializes the array type.
 	 * 
 	 * @param __type The type used.
 	 * @param __size The size of the array.
-	 * @return The type used.
 	 * @throws IllegalArgumentException If the length is not valid.
 	 * @since 2023/06/24
 	 */
@@ -39,17 +44,7 @@ public final class CArrayType
 			throw new IllegalArgumentException("NEGI");
 		
 		this.elementType = __type;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/24
-	 */
-	@Override
-	public CType arrayType(int __size)
-		throws IllegalArgumentException
-	{
-		throw Debugging.todo();
+		this.size = __size;
 	}
 	
 	/**
@@ -60,7 +55,8 @@ public final class CArrayType
 	public CType constType()
 		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		// {@squirreljme.error CW02 Cannot have a const function.}
+		throw new IllegalArgumentException("CW02");
 	}
 	
 	/**
@@ -70,7 +66,33 @@ public final class CArrayType
 	@Override
 	public List<String> declareTokens(CIdentifier __name)
 	{
-		throw Debugging.todo();
+		List<String> result = new ArrayList<>();
+		
+		// Pointers may be treated slightly different
+		CType elementType = this.elementType;
+		if (elementType instanceof CPointerType)
+		{
+			CPointerType pointerType = (CPointerType)elementType;
+			CType pointedType = pointerType.pointedType;
+			
+			if (pointedType instanceof CFunctionType)
+				return pointerType.__declareFunction(result, __name,
+					(CFunctionType)pointedType, null, this.size);
+				
+			else if (pointedType instanceof CArrayType)
+				return pointerType.__declareArray(result, __name,
+					(CArrayType)pointedType, null, this.size);
+		}
+		
+		// Type and such
+		result.addAll(elementType.declareTokens(__name));
+		
+		// Array size
+		result.add("[");
+		result.add(Integer.toString(this.size, 10));
+		result.add("]");
+		
+		return UnmodifiableList.of(result);
 	}
 	
 	/**
@@ -81,7 +103,8 @@ public final class CArrayType
 	public CType dereferenceType()
 		throws IllegalArgumentException
 	{
-		throw Debugging.todo();
+		// Dereferences to the element type
+		return this.elementType;
 	}
 	
 	/**
@@ -102,7 +125,14 @@ public final class CArrayType
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw Debugging.todo();
+		if (this == __o)
+			return true;
+		if (!(__o instanceof CArrayType))
+			return false;
+		
+		CArrayType o = (CArrayType)__o;
+		return this.size == o.size &&
+			this.elementType.equals(o.elementType);
 	}
 	
 	/**
@@ -112,29 +142,7 @@ public final class CArrayType
 	@Override
 	public int hashCode()
 	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/24
-	 */
-	@Override
-	public CType pointerType()
-		throws IllegalArgumentException
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/24
-	 */
-	@Override
-	public CType pointerType(CPointerCloseness __closeness)
-		throws IllegalArgumentException
-	{
-		throw Debugging.todo();
+		return this.elementType.hashCode() + this.size;
 	}
 	
 	/**
@@ -152,6 +160,23 @@ public final class CArrayType
 		if (__size < 0)
 			throw new IllegalArgumentException("NEGI");
 		
+		// {@squirreljme.error CW3h Cannot get array of function.}
+		if (__type instanceof CFunctionType)
+			throw new IllegalArgumentException("CW3h");
+		
+		// Some modifiers are not valid, it makes no sense to have an array
+		// static or extern, but there can be an extern/static array.
+		if (__type instanceof CModifiedType)
+		{
+			CModifier modifier = ((CModifiedType)__type).modifier;
+			
+			// {@squirreljme.error 3l Cannot array an extern or static.}
+			if (CExternModifier.isExtern(modifier) ||
+				CStaticModifier.isStatic(modifier))
+				throw new IllegalArgumentException("CW3l");
+		}
+		
+		// Create
 		return new CArrayType(__type, __size);
 	}
 }

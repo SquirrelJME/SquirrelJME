@@ -81,6 +81,34 @@ abstract class __SinglePrefixModifier__
 	}
 	
 	/**
+	 * Is this the same prefix type?
+	 * 
+	 * @param __modifier The modifier to check.
+	 * @return If the specified modifier is of the same type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/24
+	 */
+	public final boolean isSame(CModifier __modifier)
+		throws NullPointerException
+	{
+		if (__modifier == null)
+			throw new NullPointerException("NARG");
+		
+		// This one is simple
+		if (__modifier.getClass() == this.getClass())
+			return true;
+		
+		// Multiple ones?
+		if (__modifier instanceof CModifiers)
+			for (CModifier modifier : ((CModifiers)__modifier).modifiers)
+				if (this.isSame(modifier))
+					return true;
+		
+		// Not so
+		return false;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2023/06/05
 	 */

@@ -9,7 +9,6 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,11 +74,28 @@ public final class CModifiedType
 		// Pointers are a bit different in their order
 		if (type instanceof CPointerType)
 		{
-			result.addAll(this.type.declareTokens(null));
-			result.addAll(this.modifier.tokens());
+			CPointerType pointerType = ((CPointerType)type);
+			CType pointedType = pointerType.pointedType;
 			
-			if (__name != null)
-				result.add(__name.identifier);
+			// Functions are different
+			if (pointedType instanceof CFunctionType)
+				return pointerType.__declareFunction(result, __name,
+					(CFunctionType)pointedType, this.modifier, -1);
+			
+			// Arrays are also different
+			else if (pointedType instanceof CArrayType)
+				return pointerType.__declareArray(result, __name,
+					(CArrayType)pointedType, this.modifier, -1);
+			
+			// Otherwise place on right side
+			else
+			{
+				result.addAll(this.type.declareTokens(null));
+				result.addAll(this.modifier.tokens());
+				
+				if (__name != null)
+					result.add(__name.identifier);
+			}
 		}
 		
 		// Otherwise normal modification
@@ -189,11 +205,23 @@ public final class CModifiedType
 		// Functions are limited in what they can become
 		if (__type instanceof CFunctionType)
 		{
-			// {@squirreljme.error CW0h Functions may only be static.}
-			if (!CStaticModifier.STATIC.equals(__modifier))
+			// {@squirreljme.error CW0h Cannot extern a function.}
+			if (CExternModifier.isExtern(__modifier))
 				throw new IllegalArgumentException("CW0h");
 			
+			// {@squirreljme.error CW3g Cannot const a function.}
+			if (CConstModifier.isConst(__modifier))
+				throw new IllegalArgumentException("CW3g");
+			
 			return new CModifiedType(CStaticModifier.STATIC, __type);
+		}
+		
+		// Arrays cannot be made const
+		if (__type instanceof CArrayType)
+		{
+			// {@squirreljme.error CW3f Cannot const an array type.}
+			if (CConstModifier.isConst(__modifier))
+				throw new IllegalArgumentException("CW3f");
 		}
 		
 		// Build modified type

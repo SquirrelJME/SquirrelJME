@@ -33,6 +33,20 @@ public final class CExternModifier
 	}
 	
 	/**
+	 * Is this extern?
+	 * 
+	 * @param __modifier The modifier to check.
+	 * @return If this it is extern.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/24
+	 */
+	public static boolean isExtern(CModifier __modifier)
+		throws NullPointerException
+	{
+		return CExternModifier.EXTERN.isSame(__modifier);
+	}
+	
+	/**
 	 * Wraps the modifier to make it {@code extern}.
 	 * 
 	 * @param __modifier The modifier to wrap, may be {@code null}.
