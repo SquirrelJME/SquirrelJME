@@ -282,9 +282,30 @@ public class CPointerType
 		// Debug
 		Debugging.debugNote("All: %s", allTypes);
 		
-		// Return type, if a function?
+		// Return type, if a function? Also need to handle ending arrays
+		List<CArrayType> endArrays = new ArrayList<>();
 		if (baseFunction != null)
-			result.addAll(baseFunction.returnType.declareTokens(null));
+		{
+			// Collect all the subsequent array types
+			CType returnType = baseFunction.returnType;
+			for (;;)
+			{
+				if (returnType instanceof CArrayType)
+				{
+					CArrayType returnArray = (CArrayType)returnType;
+					
+					endArrays.add(0, returnArray);
+					returnType = returnArray.elementType;
+				}
+				
+				// Stop here
+				else
+					break;
+			}
+			
+			// Add the return type, with arrays removed
+			result.addAll(returnType.declareTokens(null));
+		}
 		
 		// Otherwise whatever the element type is, assuming array
 		else
@@ -396,6 +417,14 @@ public class CPointerType
 			for (int i = 0, n = args.size(); i < n; i++)
 				result.addAll(args.get(i).type.declareTokens(null));
 			result.add(")");
+		}
+		
+		// Arrays at the very end for return types?
+		for (CArrayType endArray : endArrays)
+		{
+			result.add("[");
+			result.add(Integer.toString(endArray.size, 10));
+			result.add("]");
 		}
 		
 		return UnmodifiableList.of(result);

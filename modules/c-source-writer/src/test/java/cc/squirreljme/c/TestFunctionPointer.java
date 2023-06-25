@@ -91,5 +91,32 @@ public class TestFunctionPointer
 			
 			this.secondary("arrayarray", spool.tokens());
 		}
+		
+		// Return an array type
+		try (__Spool__ spool = new __Spool__())
+		{
+			spool.declare(CVariable.of(
+				CFunctionType.of(CIdentifier.of("boop"),
+					CPrimitiveType.SIGNED_INTEGER.arrayType(2),
+					CVariable.of(CPrimitiveType.UNSIGNED_CHAR,
+						"squeak"))
+				.pointerType(), "cute"));
+			
+			this.secondary("returnarray", spool.tokens());
+		}
+		
+		// Return an array array type 
+		try (__Spool__ spool = new __Spool__())
+		{
+			spool.declare(CVariable.of(
+				CFunctionType.of(CIdentifier.of("boop"),
+					CPrimitiveType.SIGNED_INTEGER.arrayType(2)
+						.arrayType(3),
+					CVariable.of(CPrimitiveType.UNSIGNED_CHAR,
+						"squeak"))
+				.pointerType(), "cute"));
+			
+			this.secondary("returnarraytwo", spool.tokens());
+		}
 	}
 }
