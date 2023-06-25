@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
@@ -64,6 +65,43 @@ public class CFunctionType
 		this.name = __name;
 		this.returnType = (__rVal == null ? CPrimitiveType.VOID : __rVal);
 		this.arguments = UnmodifiableList.of(Arrays.asList(__args));
+	}
+	
+	/**
+	 * Returns the argument of the given name.
+	 * 
+	 * @param __memberName The member to get.
+	 * @return The found member.
+	 * @throws NoSuchElementException If no such member exists.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/25
+	 */
+	public CVariable argument(String __memberName)
+		throws NoSuchElementException, NullPointerException
+	{
+		return this.argument(CIdentifier.of(__memberName));
+	}
+	
+	/**
+	 * Returns the argument of the given name.
+	 * 
+	 * @param __memberName The member to get.
+	 * @return The found member.
+	 * @throws NoSuchElementException If no such member exists.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/25
+	 */
+	public CVariable argument(CIdentifier __memberName)
+		throws NoSuchElementException, NullPointerException
+	{
+		if (__memberName == null)
+			throw new NullPointerException("NARG");
+		
+		for (CVariable arg : this.arguments)
+			if (__memberName.equals(arg.name))
+				return arg;
+		
+		throw new NoSuchElementException("NSEE");
 	}
 	
 	/**
@@ -162,6 +200,38 @@ public class CFunctionType
 		throws IllegalArgumentException
 	{
 		return CPointerType.of(this);
+	}
+	
+	/**
+	 * Renames the function.
+	 * 
+	 * @param __newIdentifier The new identifier.
+	 * @return The newly named function.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/25
+	 */
+	public CFunctionType rename(String __newIdentifier)
+		throws NullPointerException
+	{
+		return this.rename(CIdentifier.of(__newIdentifier));
+	}
+	
+	/**
+	 * Renames the function.
+	 * 
+	 * @param __newIdentifier The new identifier.
+	 * @return The newly named function.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/25
+	 */
+	public CFunctionType rename(CIdentifier __newIdentifier)
+		throws NullPointerException
+	{
+		if (__newIdentifier == null)
+			throw new NullPointerException("NARG");
+		
+		return new CFunctionType(__newIdentifier, this.returnType,
+			this.arguments.toArray(new CVariable[this.arguments.size()]));
 	}
 	
 	/**

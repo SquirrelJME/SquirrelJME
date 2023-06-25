@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.common;
 
+import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CPrimitiveType;
 import cc.squirreljme.c.CStructKind;
 import cc.squirreljme.c.CStructTypeBuilder;
@@ -19,6 +20,8 @@ import cc.squirreljme.c.std.CTypeProvider;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.FieldDescriptor;
 
 /**
  * Types that are defined by NanoCoat.
@@ -182,7 +185,9 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			throw Debugging.todo();
+			return CStructTypeBuilder.builder(
+				CStructKind.STRUCT, "sjme_nvm_state")
+				.build();
 		}
 	},
 	
@@ -196,7 +201,10 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			throw Debugging.todo();
+			return CStructTypeBuilder.builder(
+				CStructKind.STRUCT, "sjme_nvm_thread")
+				.member(JvmTypes.VMFRAME.type().pointerType(), "top")
+				.build();
 		}
 	},
 	
@@ -210,7 +218,9 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			throw Debugging.todo();
+			return CStructTypeBuilder.builder(
+				CStructKind.STRUCT, "sjme_nvm_frame")
+				.build();
 		}
 	},
 	
@@ -332,7 +342,15 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			throw Debugging.todo();
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_static_classMethod")
+				.member(CPrimitiveType.CONST_CHAR_STAR, "name")
+				.member(CPrimitiveType.CONST_CHAR_STAR, "type")
+				.member(JvmTypes.JINT.type().constType(), "flags")
+				.member(JvmTypes.JINT.type(), "rValSlots")
+				.member(JvmTypes.JINT.type(), "argSlots")
+				.member(JvmFunctions.METHOD_CODE.function(), "code")
+				.build();
 		}
 	},
 	

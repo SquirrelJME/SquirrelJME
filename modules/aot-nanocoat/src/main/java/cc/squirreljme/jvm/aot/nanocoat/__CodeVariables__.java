@@ -9,7 +9,9 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CVariable;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -51,8 +53,10 @@ public final class __CodeVariables__
 		CVariable rv;
 		if (ref == null || (rv = ref.get()) == null)
 		{
-			rv = CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
-				"currentFrame");
+			rv = JvmFunctions.METHOD_CODE.function()
+				.argument("currentThread")
+				.type(CStructType.class)
+				.member("top");
 			this._currentFrame = new WeakReference<>(rv);
 		}
 		
@@ -71,8 +75,8 @@ public final class __CodeVariables__
 		CVariable rv;
 		if (ref == null || (rv = ref.get()) == null)
 		{
-			rv = CVariable.of(JvmTypes.VMSTATE.type().pointerType(),
-				"currentState");
+			rv = JvmFunctions.METHOD_CODE.function()
+				.argument("currentState");
 			this._currentState = new WeakReference<>(rv);
 		}
 		

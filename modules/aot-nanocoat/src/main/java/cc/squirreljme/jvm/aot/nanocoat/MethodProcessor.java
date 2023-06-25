@@ -19,6 +19,7 @@ import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
 import cc.squirreljme.c.std.CStdIntNumberType;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import java.io.IOException;
@@ -84,10 +85,8 @@ public final class MethodProcessor
 			__method);
 		
 		// Build common function
-		this.function = CFunctionType.of(this.methodIdentifier,
-			JvmTypes.JBOOLEAN.type(),
-			CVariable.of(JvmTypes.VMSTATE.type().pointerType(),
-				"state"));
+		this.function = JvmFunctions.METHOD_CODE.function()
+			.rename(this.methodIdentifier);
 	}
 	
 	/**

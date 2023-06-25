@@ -24,6 +24,25 @@ import java.lang.ref.WeakReference;
 public enum JvmFunctions
 	implements CFunctionProvider
 {
+	/** Method code. */
+	METHOD_CODE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/25
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("methodCode",
+				JvmTypes.JBOOLEAN.type(),
+				CVariable.of(JvmTypes.VMSTATE.type().pointerType(),
+					"currentState"),
+				CVariable.of(JvmTypes.VMTHREAD.type().pointerType(),
+					"currentThread"));
+		}
+	},
+	
 	/** Copy reference in frame. */
 	NVM_PUSH_LOCAL_REFERENCE
 	{
