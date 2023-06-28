@@ -19,25 +19,11 @@ import net.multiphasicapps.collections.UnmodifiableList;
  * @see CExpressionBuilder
  * @since 2023/06/19
  */
-public class CExpression
+public interface CExpression
 {
 	/** Invalid expression. */
-	static final CExpression _INVALID_EXPRESSION =
-		new CExpression();
-	
-	/** The tokens used in the expression. */
-	protected final List<String> tokens;
-	
-	/**
-	 * Returns the tokens used for the expression.
-	 * 
-	 * @param __tokens The tokens used for the expression.
-	 * @since 2023/06/24
-	 */
-	CExpression(String... __tokens)
-	{
-		this.tokens = UnmodifiableList.of(Arrays.asList(__tokens));
-	}
+	CExpression INVALID_EXPRESSION =
+		new CBasicExpression();
 	
 	/**
 	 * Returns the tokens that make up this expression.
@@ -45,8 +31,5 @@ public class CExpression
 	 * @return The tokens that make up this expression.
 	 * @since 2023/06/23
 	 */
-	public List<String> tokens()
-	{
-		return this.tokens;
-	}
+	List<String> tokens();
 }

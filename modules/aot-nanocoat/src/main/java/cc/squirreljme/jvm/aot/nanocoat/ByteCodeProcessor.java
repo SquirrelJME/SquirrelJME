@@ -13,6 +13,7 @@ import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFunctionBlock;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CSwitchBlock;
+import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
@@ -315,7 +316,7 @@ public class ByteCodeProcessor
 		{
 			// Return from call when execution of method finishes
 			cases.nextCase("SJME_NANOCOAT_END_CALL");
-			__block.returnValue(null);
+			__block.returnValue(Constants.FALSE);
 			
 			// Write each basic block
 			for (Map.Entry<Integer, BasicBlock> entry :

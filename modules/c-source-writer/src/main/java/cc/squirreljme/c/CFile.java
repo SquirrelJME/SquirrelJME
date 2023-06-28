@@ -733,7 +733,7 @@ public class CFile
 		if (__token instanceof CExpression)
 		{
 			// {@squirreljme.error CW36 Cannot output token in such way.}
-			if (__token == CExpression._INVALID_EXPRESSION)
+			if (__token == CExpression.INVALID_EXPRESSION)
 				throw new IllegalArgumentException("CW36");
 			
 			return this.token(((CExpression)__token).tokens());

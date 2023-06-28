@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.common;
 
+import cc.squirreljme.c.CExpression;
+import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFileName;
 import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.std.CStdIntNumberType;
@@ -35,4 +37,8 @@ public interface Constants
 	/** {@code jlong} conversion. */
 	CStdIntNumberType JLONG_C =
 		CStdIntNumberType.INT32;
+	
+	/** False. */
+	CIdentifier FALSE =
+		CIdentifier.of("JNI_FALSE");
 }

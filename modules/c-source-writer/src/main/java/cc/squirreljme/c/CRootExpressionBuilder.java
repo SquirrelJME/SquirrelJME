@@ -42,7 +42,7 @@ public class CRootExpressionBuilder
 		List<String> tokens = this._tokens;
 		
 		if (tokens == null)
-			return CExpression._INVALID_EXPRESSION;
-		return new CExpression(tokens.toArray(new String[tokens.size()]));
+			return CExpression.INVALID_EXPRESSION;
+		return new CBasicExpression(tokens.toArray(new String[tokens.size()]));
 	}
 }
