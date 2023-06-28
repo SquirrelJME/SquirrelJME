@@ -261,9 +261,6 @@ public class CFile
 		if (__function == null)
 			throw new NullPointerException("NARG");
 		
-		// Cleaner this way
-		this.freshLine();
-		
 		// Emit
 		this.tokens(__function.declareTokens(null), ";");
 		
@@ -392,7 +389,7 @@ public class CFile
 			return this;
 		
 		// Emit newline
-		this.out.newLine(false);
+		this.out.newLine(true);
 		
 		// Last was whitespace
 		this._lastWhitespace = true;
@@ -443,9 +440,6 @@ public class CFile
 	{
 		if (__function == null)
 			throw new NullPointerException("NARG");
-		
-		// Start on a fresh line, is cleaner
-		this.freshLine();
 		
 		// Open up function
 		this.tokens(__function.declareTokens(null), "{");

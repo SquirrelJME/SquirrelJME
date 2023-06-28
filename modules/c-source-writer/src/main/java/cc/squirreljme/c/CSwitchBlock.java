@@ -41,7 +41,6 @@ public class CSwitchBlock
 	public void breakCase()
 		throws IOException
 	{
-		this.freshLine();
 		this.tokens("break", ";");
 	}
 	
@@ -59,7 +58,6 @@ public class CSwitchBlock
 		if (__condition == null || __condition.length == 0)
 			throw new NullPointerException("NARG");
 		
-		this.freshLine();
 		this.tokens("case", __condition, ":");
 	}
 }

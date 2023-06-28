@@ -236,9 +236,6 @@ public class CStructVariableBlock
 		if (index > 0)
 			this.token(",");
 		
-		// Start on fresh line for readability
-		this.freshLine();
-		
 		// Write out member setting
 		this.tokens(".", __memberName.identifier, "=");
 		

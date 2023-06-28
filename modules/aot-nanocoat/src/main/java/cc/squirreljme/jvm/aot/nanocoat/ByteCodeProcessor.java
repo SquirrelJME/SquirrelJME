@@ -351,9 +351,6 @@ public class ByteCodeProcessor
 		if (__block == null || __instruction == null)
 			throw new NullPointerException("NARG");
 		
-		// Put each instruction on its own line
-		__block.freshLine();
-		
 		// Depends on the target operation
 		int op = __instruction.operation();
 		switch (op)
