@@ -245,7 +245,7 @@ public abstract class CExpressionBuilder
 			throw new NullPointerException("NARG");
 		
 		this.__add("[");
-		this.__add(__expression.tokens);
+		this.__add(__expression.tokens());
 		this.__add("]");
 		
 		return this.__this();
@@ -313,7 +313,7 @@ public abstract class CExpressionBuilder
 			if (i > 0)
 				this.__add(",");
 			
-			this.__add(__args[i].tokens);
+			this.__add(__args[i].tokens());
 		}
 		this.__add(")");
 		
