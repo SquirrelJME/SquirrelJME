@@ -42,7 +42,7 @@ executors:
 
   build-on-macos:
     macos:
-      xcode: 13.2.1
+      xcode: 13.4.1
     resource_class: macos.x86.medium.gen2
     environment:
       # Do not auto-update brew as this takes forever, and we really just want
