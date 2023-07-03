@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
@@ -48,6 +49,24 @@ public final class StackMapTableState
 		StackMapTableEntry[] __s, int __d)
 		throws InvalidClassFormatException, NullPointerException
 	{
+		this(__l, __s, __d, true);
+	}
+	
+	/**
+	 * Initializes the stack map table state.
+	 *
+	 * @param __l Local variables.
+	 * @param __s Stack variables.
+	 * @param __d The depth of the stack.
+	 * @param __copyDefensive Make clones of the locals and stack? 
+	 * @throws InvalidClassFormatException If the state is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/07/28
+	 */
+	StackMapTableState(StackMapTableEntry[] __l,
+		StackMapTableEntry[] __s, int __d, boolean __copyDefensive)
+		throws InvalidClassFormatException, NullPointerException
+	{
 		// Check
 		if (__l == null || __s == null)
 			throw new NullPointerException("NARG");
@@ -59,9 +78,12 @@ public final class StackMapTableState
 			throw new InvalidClassFormatException(
 				String.format("JC3x %d %d", __d, ns));
 		
-		// Duplicate
-		__l = __l.clone();
-		__s = __s.clone();
+		// Duplicate, if doing defensive copy
+		if (__copyDefensive)
+		{
+			__l = __l.clone();
+			__s = __s.clone();
+		}
 		
 		// Clear elements above the stack top
 		for (int i = __d; i < ns; i++)
@@ -86,6 +108,98 @@ public final class StackMapTableState
 	public int depth()
 	{
 		return this.depth;
+	}
+	
+	/**
+	 * Derives a set of a local variable.
+	 * 
+	 * @param __dx The index to set.
+	 * @param __entry The entry to set.
+	 * @return The derived stack map table state.
+	 * @throws InvalidClassFormatException If the set is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/03
+	 */
+	public StackMapTableState deriveLocalSet(int __dx,
+		StackMapTableEntry __entry)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		if (__entry == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JC02 New local state would not be valid.}
+		if (__dx < 0 || __dx >= this.maxLocals() ||
+			(__entry.isWide() && __dx >= this.maxLocals() - 1))
+			throw new InvalidClassFormatException("JC02");
+		
+		StackMapTableEntry[] newLocals = this._locals.clone();
+		
+		// Set new entry
+		newLocals[__dx] = __entry;
+		if (__entry.isWide())
+			newLocals[__dx + 1] = __entry.topType();
+		
+		// Initialize new state
+		return new StackMapTableState(newLocals,
+			this._stack, this.depth, false);
+	}
+	
+	/**
+	 * Derives a stack map that pops the top of the stack.
+	 * 
+	 * @return The derived table.
+	 * @throws InvalidClassFormatException If the pop is not valid.
+	 * @since 023/07/03
+	 */
+	public StackMapTableState deriveStackPop()
+		throws InvalidClassFormatException
+	{
+		// {@squirreljme.error JC03 Stack is empty.}
+		int depth = this.depth;
+		if (depth < 0)
+			throw new InvalidClassFormatException("JC03");
+		
+		// Remove top-most entry, double if wide... need to clone the stack
+		// because it will normalize the entries!
+		StackMapTableEntry top = this.getStackFromLogicalTop(0);
+		return new StackMapTableState(this._locals,
+			this._stack.clone(), depth - (top.isWide() ? 2 : 1),
+			false);
+	}
+	
+	/**
+	 * Derives a push to the table.
+	 * 
+	 * @param __entries The entries to push.
+	 * @return The derived table.
+	 * @throws InvalidClassFormatException If the entries are not valid or
+	 * would exceed the stack bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/03
+	 */
+	public StackMapTableState deriveStackPush(StackMapTableEntry... __entries)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		// Initialize basic state
+		StackMapTableEntry[] newStack = this._stack.clone();
+		int newDepth = this.depth;
+		
+		// Add entries accordingly
+		for (StackMapTableEntry entry : __entries)
+		{
+			// {@squirreljme.error JC04 Stack overflow.}
+			if (newDepth + (entry.isWide() ? 2 : 1) > newStack.length)
+				throw new InvalidClassFormatException("JC04");
+			
+			newStack[newDepth++] = entry;
+			
+			if (entry.isWide())
+				newStack[newDepth++] = entry.topType();
+		}
+		
+		// Setup new state
+		return new StackMapTableState(this._locals,
+			newStack, newDepth, false);
 	}
 	
 	/**
@@ -125,6 +239,56 @@ public final class StackMapTableState
 			throw new InvalidClassFormatException(
 				String.format("JC3z %d", __i));
 		return this._stack[__i];
+	}
+	
+	/**
+	 * Gets the logical stack entry from the top.
+	 * 
+	 * @param __i The index to get from the top.
+	 * @return The entry for the given entry.
+	 * @throws InvalidClassFormatException If it is not valid.
+	 * @since 2023/07/03
+	 */
+	public StackMapTableEntry getStackFromLogicalTop(int __i)
+		throws InvalidClassFormatException
+	{
+		for (int logical = 0, actual = 0;;)
+		{
+			StackMapTableEntry entry = this.getStackFromTop(actual);
+			
+			// If this is top of a wide, then move down
+			if (entry.isTop())
+				actual++;
+			
+			// Does this match the requested item?
+			else if (logical == __i)
+				return entry;
+			
+			// Move both entries
+			else
+			{
+				logical++;
+				actual++;
+			}
+		}
+	}
+	
+	/**
+	 * Gets a stack entry from the top.
+	 * 
+	 * @param __i The index to get from the top.
+	 * @return The entry from the top.
+	 * @throws InvalidClassFormatException If it is not valid.
+	 * @since 2023/07/03
+	 */
+	public StackMapTableEntry getStackFromTop(int __i)
+		throws InvalidClassFormatException
+	{
+		// {@squirreljme.error JC79 Cannot get stack from the top. (The index)}
+		if (__i < 0)
+			throw new InvalidClassFormatException("JC79 " + __i);
+		
+		return this.getStack((this.depth - 1) - __i);
 	}
 	
 	/**

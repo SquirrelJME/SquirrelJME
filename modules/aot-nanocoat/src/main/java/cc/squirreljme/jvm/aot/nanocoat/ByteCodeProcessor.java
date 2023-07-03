@@ -37,8 +37,14 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InstructionJumpTargets;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodReference;
+import net.multiphasicapps.classfile.SimpleStorageType;
+import net.multiphasicapps.classfile.StackMapTable;
+import net.multiphasicapps.classfile.StackMapTablePair;
+import net.multiphasicapps.classfile.StackMapTablePairs;
+import net.multiphasicapps.classfile.StackMapTableState;
 
 /**
  * This processes the byte code of a method.
@@ -58,6 +64,9 @@ public class ByteCodeProcessor
 	
 	/** The link table for the class. */
 	protected final ClassLinkTable linkTable;
+	
+	/** The stack map table at runtime. */
+	protected final StackMapTablePairs stackMap;
 	
 	/** Basic block mappings. */
 	private final Map<Integer, BasicBlock> _basicBlocks =
@@ -85,6 +94,7 @@ public class ByteCodeProcessor
 		this.code = __code;
 		this.method = __method.method;
 		this.linkTable = __method.linkTable;
+		this.stackMap = __code.stackMapTableFull();
 		
 		// Reverse jump targets for instructions
 		Map<Integer, InstructionJumpTargets> reverseJumpsTable =
@@ -371,12 +381,16 @@ public class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	private void processInstruction(CFunctionBlock __block,
+	public void processInstruction(CFunctionBlock __block,
 		Instruction __instruction)
 		throws IOException, NullPointerException
 	{
 		if (__block == null || __instruction == null)
 			throw new NullPointerException("NARG");
+		
+		// Stack state, used for some operations
+		StackMapTablePair stackPair = this.stackMap.get(
+			__instruction.address());
 		
 		// Depends on the target operation
 		int op = __instruction.operation();
@@ -392,6 +406,12 @@ public class ByteCodeProcessor
 			case InstructionIndex.ALOAD_3:
 				this.__doALoad(__block, 
 					op - InstructionIndex.ALOAD_0);
+				break;
+				
+			case InstructionIndex.DUP:
+				this.__doDup(__block,
+					stackPair.input.getStackFromLogicalTop(0)
+						.type().simpleStorageType());
 				break;
 				
 			case InstructionIndex.IFNULL:
@@ -448,6 +468,40 @@ public class ByteCodeProcessor
 		{
 			Debugging.debugNote("Thrown inner block?");
 		}
+	}
+	
+	/**
+	 * Duplicates the top most entry of the stack.
+	 * 
+	 * @param __block The block to write to.
+	 * @param __type The type to duplicate.
+	 * @throws InvalidClassFormatException If the duplication is not valid.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/03
+	 */
+	private void __doDup(CFunctionBlock __block, SimpleStorageType __type)
+		throws InvalidClassFormatException, IOException, NullPointerException
+	{
+		if (__block == null || __type == null)
+			throw new NullPointerException("NARG");
+		
+		// Reference types
+		if (__type == SimpleStorageType.OBJECT)
+		{
+			throw Debugging.todo();
+		}
+		
+		// Number types
+		else if (__type == SimpleStorageType.INTEGER ||
+			__type == SimpleStorageType.FLOAT)
+		{
+			throw Debugging.todo();
+		}
+		
+		// {@squirreljme.error NC02 Invalid DUP operation.}
+		else
+			throw new InvalidClassFormatException("NC02");
 	}
 	
 	/**

@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -101,6 +103,9 @@ public final class ByteCode
 	
 	/** The stack map table cache. */
 	private Reference<StackMapTable> _smt;
+	
+	/** Stack map at runtime. */
+	private Reference<StackMapTablePairs> _stackMapRunTime;
 	
 	/**
 	 * Initializes the byte code.
@@ -752,6 +757,314 @@ public final class ByteCode
 			this._smt = new SoftReference<>(rv = new __StackMapParser__(
 				this.pool, this.__method(), this._newsmtdata, this._smtdata,
 				this, new JavaType(this.thistype)).get());
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns a fully filled in {@link StackMapTable} for each instruction
+	 * as it would occur at runtime.
+	 * 
+	 * @return The stack map table at runtime.
+	 * @since 2023/07/03
+	 */
+	public StackMapTablePairs stackMapTableFull()
+	{
+		Reference<StackMapTablePairs> ref = this._stackMapRunTime;
+		StackMapTablePairs rv;
+		
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			// We need to get the base table
+			StackMapTable base = this.stackMapTable();
+			
+			// Resultant tables, will get big!
+			Map<Integer, StackMapTableState> inputs = new SortedTreeMap<>();
+			Map<Integer, StackMapTableState> outputs = new SortedTreeMap<>();
+			
+			// Go through each instruction and build the mapping
+			StackMapTableState current = null;
+			for (int addr = 0, n = this.instructionCount(); addr < n; addr++)
+			{
+				Instruction instruction = this.getByAddress(addr);
+				
+				// Use pre-existing table? At entry point that is
+				StackMapTableState exist = instruction.stackMapTableState();
+				if (exist != null)
+					current = exist;
+				
+				// At an input state currently
+				inputs.put(addr, current);
+				
+				// Depends on the instruction what happens
+				int op = instruction.op;
+				switch (op)
+				{
+						// No changes to the stack
+					case InstructionIndex.NOP:
+						break;
+						
+						// Push null object
+					case InstructionIndex.ACONST_NULL:
+						current = current.deriveStackPush(
+							StackMapTableEntry.INITIALIZED_OBJECT);
+						break;
+						
+						// Load local variable
+					case InstructionIndex.ALOAD:
+					case InstructionIndex.ALOAD_0:
+					case InstructionIndex.ALOAD_1:
+					case InstructionIndex.ALOAD_2:
+					case InstructionIndex.ALOAD_3:
+						current = current.deriveStackPush(
+							current.getLocal(
+								(op == InstructionIndex.ALOAD ?
+								instruction.intArgument(0) :
+								op - InstructionIndex.ALOAD_0)));
+						break;
+						
+						// Push single integer
+					case InstructionIndex.ICONST_M1:
+					case InstructionIndex.ICONST_0:
+					case InstructionIndex.ICONST_1:
+					case InstructionIndex.ICONST_2:
+					case InstructionIndex.ICONST_3:
+					case InstructionIndex.ICONST_4:
+					case InstructionIndex.ICONST_5:
+					case InstructionIndex.BIPUSH:
+					case InstructionIndex.SIPUSH:
+					case InstructionIndex.ILOAD:
+					case InstructionIndex.ILOAD_0:
+					case InstructionIndex.ILOAD_1:
+					case InstructionIndex.ILOAD_2:
+					case InstructionIndex.ILOAD_3:
+						current = current.deriveStackPush(
+							StackMapTableEntry.INTEGER);
+						break;
+						
+						// Push single long
+					case InstructionIndex.LCONST_0:
+					case InstructionIndex.LCONST_1:
+					case InstructionIndex.LLOAD:
+					case InstructionIndex.LLOAD_0:
+					case InstructionIndex.LLOAD_1:
+					case InstructionIndex.LLOAD_2:
+					case InstructionIndex.LLOAD_3:
+						current = current.deriveStackPush(
+							StackMapTableEntry.LONG);
+						break;
+						
+						// Push single float
+					case InstructionIndex.FCONST_0:
+					case InstructionIndex.FCONST_1:
+					case InstructionIndex.FCONST_2:
+					case InstructionIndex.FLOAD:
+					case InstructionIndex.FLOAD_0:
+					case InstructionIndex.FLOAD_1:
+					case InstructionIndex.FLOAD_2:
+					case InstructionIndex.FLOAD_3:
+						current = current.deriveStackPush(
+							StackMapTableEntry.FLOAT);
+						break;
+						
+						// Push single double
+					case InstructionIndex.DCONST_0:
+					case InstructionIndex.DCONST_1:
+					case InstructionIndex.DLOAD:
+					case InstructionIndex.DLOAD_0:
+					case InstructionIndex.DLOAD_1:
+					case InstructionIndex.DLOAD_2:
+					case InstructionIndex.DLOAD_3:
+						current = current.deriveStackPush(
+							StackMapTableEntry.DOUBLE);
+						break;
+						
+						
+					case InstructionIndex.LDC:
+					case InstructionIndex.LDC_W:
+					case InstructionIndex.LDC2_W:
+					case InstructionIndex.IALOAD:
+					case InstructionIndex.LALOAD:
+					case InstructionIndex.FALOAD:
+					case InstructionIndex.DALOAD:
+					case InstructionIndex.AALOAD:
+					case InstructionIndex.BALOAD:
+					case InstructionIndex.CALOAD:
+					case InstructionIndex.SALOAD:
+					case InstructionIndex.ISTORE:
+					case InstructionIndex.LSTORE:
+					case InstructionIndex.FSTORE:
+					case InstructionIndex.DSTORE:
+					case InstructionIndex.ASTORE:
+					case InstructionIndex.ISTORE_0:
+					case InstructionIndex.ISTORE_1:
+					case InstructionIndex.ISTORE_2:
+					case InstructionIndex.ISTORE_3:
+					case InstructionIndex.LSTORE_0:
+					case InstructionIndex.LSTORE_1:
+					case InstructionIndex.LSTORE_2:
+					case InstructionIndex.LSTORE_3:
+					case InstructionIndex.FSTORE_0:
+					case InstructionIndex.FSTORE_1:
+					case InstructionIndex.FSTORE_2:
+					case InstructionIndex.FSTORE_3:
+					case InstructionIndex.DSTORE_0:
+					case InstructionIndex.DSTORE_1:
+					case InstructionIndex.DSTORE_2:
+					case InstructionIndex.DSTORE_3:
+					case InstructionIndex.ASTORE_0:
+					case InstructionIndex.ASTORE_1:
+					case InstructionIndex.ASTORE_2:
+					case InstructionIndex.ASTORE_3:
+					case InstructionIndex.IASTORE:
+					case InstructionIndex.LASTORE:
+					case InstructionIndex.FASTORE:
+					case InstructionIndex.DASTORE:
+					case InstructionIndex.AASTORE:
+					case InstructionIndex.BASTORE:
+					case InstructionIndex.CASTORE:
+					case InstructionIndex.SASTORE:
+					case InstructionIndex.POP:
+					case InstructionIndex.POP2:
+					case InstructionIndex.DUP:
+					case InstructionIndex.DUP_X1:
+					case InstructionIndex.DUP_X2:
+					case InstructionIndex.DUP2:
+					case InstructionIndex.DUP2_X1:
+					case InstructionIndex.DUP2_X2:
+					case InstructionIndex.SWAP:
+					case InstructionIndex.IADD:
+					case InstructionIndex.LADD:
+					case InstructionIndex.FADD:
+					case InstructionIndex.DADD:
+					case InstructionIndex.ISUB:
+					case InstructionIndex.LSUB:
+					case InstructionIndex.FSUB:
+					case InstructionIndex.DSUB:
+					case InstructionIndex.IMUL:
+					case InstructionIndex.LMUL:
+					case InstructionIndex.FMUL:
+					case InstructionIndex.DMUL:
+					case InstructionIndex.IDIV:
+					case InstructionIndex.LDIV:
+					case InstructionIndex.FDIV:
+					case InstructionIndex.DDIV:
+					case InstructionIndex.IREM:
+					case InstructionIndex.LREM:
+					case InstructionIndex.FREM:
+					case InstructionIndex.DREM:
+					case InstructionIndex.INEG:
+					case InstructionIndex.LNEG:
+					case InstructionIndex.FNEG:
+					case InstructionIndex.DNEG:
+					case InstructionIndex.ISHL:
+					case InstructionIndex.LSHL:
+					case InstructionIndex.ISHR:
+					case InstructionIndex.LSHR:
+					case InstructionIndex.IUSHR:
+					case InstructionIndex.LUSHR:
+					case InstructionIndex.IAND:
+					case InstructionIndex.LAND:
+					case InstructionIndex.IOR:
+					case InstructionIndex.LOR:
+					case InstructionIndex.IXOR:
+					case InstructionIndex.LXOR:
+					case InstructionIndex.IINC:
+					case InstructionIndex.I2L:
+					case InstructionIndex.I2F:
+					case InstructionIndex.I2D:
+					case InstructionIndex.L2I:
+					case InstructionIndex.L2F:
+					case InstructionIndex.L2D:
+					case InstructionIndex.F2I:
+					case InstructionIndex.F2L:
+					case InstructionIndex.F2D:
+					case InstructionIndex.D2I:
+					case InstructionIndex.D2L:
+					case InstructionIndex.D2F:
+					case InstructionIndex.I2B:
+					case InstructionIndex.I2C:
+					case InstructionIndex.I2S:
+					case InstructionIndex.LCMP:
+					case InstructionIndex.FCMPL:
+					case InstructionIndex.FCMPG:
+					case InstructionIndex.DCMPL:
+					case InstructionIndex.DCMPG:
+					case InstructionIndex.IFEQ:
+					case InstructionIndex.IFNE:
+					case InstructionIndex.IFLT:
+					case InstructionIndex.IFGE:
+					case InstructionIndex.IFGT:
+					case InstructionIndex.IFLE:
+					case InstructionIndex.IF_ICMPEQ:
+					case InstructionIndex.IF_ICMPNE:
+					case InstructionIndex.IF_ICMPLT:
+					case InstructionIndex.IF_ICMPGE:
+					case InstructionIndex.IF_ICMPGT:
+					case InstructionIndex.IF_ICMPLE:
+					case InstructionIndex.IF_ACMPEQ:
+					case InstructionIndex.IF_ACMPNE:
+					case InstructionIndex.GOTO:
+					case InstructionIndex.JSR:
+					case InstructionIndex.RET:
+					case InstructionIndex.TABLESWITCH:
+					case InstructionIndex.LOOKUPSWITCH:
+					case InstructionIndex.IRETURN:
+					case InstructionIndex.LRETURN:
+					case InstructionIndex.FRETURN:
+					case InstructionIndex.DRETURN:
+					case InstructionIndex.ARETURN:
+					case InstructionIndex.RETURN:
+					case InstructionIndex.GETSTATIC:
+					case InstructionIndex.PUTSTATIC:
+					case InstructionIndex.GETFIELD:
+					case InstructionIndex.PUTFIELD:
+					case InstructionIndex.INVOKEVIRTUAL:
+					case InstructionIndex.INVOKESPECIAL:
+					case InstructionIndex.INVOKESTATIC:
+					case InstructionIndex.INVOKEINTERFACE:
+					case InstructionIndex.INVOKEDYNAMIC:
+					case InstructionIndex.NEW:
+					case InstructionIndex.NEWARRAY:
+					case InstructionIndex.ANEWARRAY:
+					case InstructionIndex.ARRAYLENGTH:
+					case InstructionIndex.ATHROW:
+					case InstructionIndex.CHECKCAST:
+					case InstructionIndex.INSTANCEOF:
+					case InstructionIndex.MONITORENTER:
+					case InstructionIndex.MONITOREXIT:
+					case InstructionIndex.WIDE:
+					case InstructionIndex.MULTIANEWARRAY:
+					case InstructionIndex.IFNULL:
+					case InstructionIndex.IFNONNULL:
+					case InstructionIndex.GOTO_W:
+					case InstructionIndex.JSR_W:
+					case InstructionIndex.BREAKPOINT:
+					case InstructionIndex.IMPDEP1:
+					case InstructionIndex.IMPDEP2:
+					case InstructionIndex.WIDE_ALOAD:
+					case InstructionIndex.WIDE_ILOAD:
+					case InstructionIndex.WIDE_LLOAD:
+					case InstructionIndex.WIDE_FLOAD:
+					case InstructionIndex.WIDE_DLOAD:
+					case InstructionIndex.WIDE_ASTORE:
+					case InstructionIndex.WIDE_ISTORE:
+					case InstructionIndex.WIDE_LSTORE:
+					case InstructionIndex.WIDE_FSTORE:
+					case InstructionIndex.WIDE_DSTORE:
+					case InstructionIndex.WIDE_IINC:
+						throw Debugging.todo(
+							InstructionMnemonics.toString(op));
+				}
+				
+				// Store output of the instruction
+				outputs.put(addr, current);
+			}
+			
+			// Setup table pair
+			rv = new StackMapTablePairs(inputs, outputs);
+			this._stackMapRunTime = new WeakReference<>(rv);
+		}
 		
 		return rv;
 	}

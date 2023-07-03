@@ -52,6 +52,10 @@ public final class StackMapTableEntry
 	public static final StackMapTableEntry DOUBLE =
 		new StackMapTableEntry(JavaType.DOUBLE, true);
 	
+	/** Initialized object. */
+	public static final StackMapTableEntry INITIALIZED_OBJECT =
+		new StackMapTableEntry(JavaType.OBJECT, true);
+	
 	/** The type. */
 	protected final JavaType type;
 	
