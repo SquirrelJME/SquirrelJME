@@ -821,7 +821,21 @@ public class CFile
 		if (__var == null || __value == null)
 			throw new NullPointerException("NARG");
 		
-		return this.tokens(__var.name, "=", __value, ";");
+		return this.variableSet(__var.name, __value);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/03
+	 */
+	@Override
+	public CSourceWriter variableSet(CExpression __var, CExpression __value)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		if (__var == null || __value == null)
+			throw new NullPointerException("NARG");
+		
+		return this.tokens(__var, "=", __value, ";");
 	}
 	
 	/**

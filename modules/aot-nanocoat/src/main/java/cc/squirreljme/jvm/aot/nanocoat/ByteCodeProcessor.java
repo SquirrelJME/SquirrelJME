@@ -9,10 +9,13 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CComparison;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFunctionBlock;
+import cc.squirreljme.c.CIfBlock;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CSwitchBlock;
+import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
@@ -371,7 +374,9 @@ public class ByteCodeProcessor
 			case InstructionIndex.IFNULL:
 			case InstructionIndex.IFNONNULL:
 				this.__doIfMaybeNull(__block,
-					op == InstructionIndex.IFNULL);
+					op == InstructionIndex.IFNULL,
+					this._addrToGroupId.get(
+						__instruction.jumpTargets().get(0).target()));
 				break;
 				
 			case InstructionIndex.INVOKESPECIAL:
@@ -390,14 +395,16 @@ public class ByteCodeProcessor
 	
 	/**
 	 * Writes a null check.
-	 * 
+	 *
 	 * @param __block The block to write.
 	 * @param __null If checking against null.
+	 * @param __targetGroupId The target group ID for the jump.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/03
 	 */
-	private void __doIfMaybeNull(CFunctionBlock __block, boolean __null)
+	private void __doIfMaybeNull(CFunctionBlock __block, boolean __null,
+		int __targetGroupId)
 		throws IOException, NullPointerException
 	{
 		if (__block == null)
@@ -405,23 +412,39 @@ public class ByteCodeProcessor
 		
 		__CodeVariables__ codeVariables = __CodeVariables__.instance();
 		
-		__block.variableSet(null, CExpressionBuilder.builder()
-			.functionCall(null)
+		// Pop from stack
+		CVariable object = codeVariables.temporary(0,
+			JvmTypes.JOBJECT.type());
+		__block.variableSet(object,
+			CExpressionBuilder.builder()
+				.functionCall(JvmFunctions.NVM_STACK_REFERENCE_POP.function(),
+					codeVariables.currentFrame())
 			.build());
 		
-		// Write check
-		throw Debugging.todo();
-		/*
-		writer.variableAssignViaFunctionCall("tmpBoolean",
-			"sjme_nvm_unCountReferenceInFrame",
-			"&current->stack", "--current->stackTop");
-		try (CFunctionBlock sub = writer.ifCheck("tmpBoolean"))
+		// Perform check on object, if NULL or not
+		try (CIfBlock iffy = __block.branchIf(
+			CExpressionBuilder.builder()
+				.compare(object,
+					(__null ? CComparison.EQUALS : CComparison.NOT_EQUALS),
+					CVariable.NULL)
+			.build()))
 		{
-			if (true)
-				throw Debugging.todo();
+			// Change grouping
+			iffy.variableSet(CExpressionBuilder.builder()
+					.identifier(codeVariables.currentFrame())
+					.dereferenceStruct()
+					.identifier(codeVariables.currentFrame()
+						.type(CStructType.class)
+						.member("groupIndex"))
+				.build(),
+				CExpressionBuilder.builder()
+						.number(__targetGroupId)
+					.build());
 		}
 		
-		 */
+		// Uncount reference, since we did pop it
+		__block.functionCall(JvmFunctions.NVM_COUNT_REFERENCE_DOWN.function(),
+			object);
 	}
 	
 	/**
@@ -506,7 +529,7 @@ public class ByteCodeProcessor
 		
 		// Copy reference over
 		__CodeVariables__ codeVars = __CodeVariables__.instance();
-		__block.functionCall(JvmFunctions.NVM_PUSH_LOCAL_REFERENCE,
+		__block.functionCall(JvmFunctions.NVM_LOCAL_REFERENCE_PUSH,
 			CExpressionBuilder.builder()
 				.identifier(codeVars.currentFrame())
 				.build(),

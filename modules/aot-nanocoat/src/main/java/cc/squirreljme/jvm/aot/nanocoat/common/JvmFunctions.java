@@ -43,21 +43,22 @@ public enum JvmFunctions
 		}
 	},
 	
-	/** Copy reference in frame. */
-	NVM_PUSH_LOCAL_REFERENCE
+	/** Count down a reference. */
+	NVM_COUNT_REFERENCE_DOWN
 	{
 		/**
 		 * {@inheritDoc}
-		 * @since 2023/06/24
+		 * @since 2023/07/03
 		 */
 		@Override
 		CFunctionType __build()
 		{
-			return CFunctionType.of("sjme_nvm_pushLocalReference",
+			return CFunctionType.of("sjme_nvm_countReferenceDown",
 				JvmTypes.JBOOLEAN.type(),
-				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
-					"frame"),
-				CVariable.of(JvmTypes.JINT.type(), "index"));
+				CVariable.of(JvmTypes.VMSTATE.type().pointerType(),
+					"currentState"),
+				CVariable.of(JvmTypes.JOBJECT.type().pointerType(),
+					"reference"));
 		}
 	},
 	
@@ -82,6 +83,24 @@ public enum JvmFunctions
 		}
 	},
 	
+	/** Copy reference in frame. */
+	NVM_LOCAL_REFERENCE_PUSH
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/24
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_localReferencePush",
+				JvmTypes.JBOOLEAN.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JINT.type(), "index"));
+		}
+	},
+	
 	/** Return from method. */
 	NVM_RETURN_FROM_METHOD
 	{
@@ -96,6 +115,23 @@ public enum JvmFunctions
 				JvmTypes.JBOOLEAN.type(),
 				CVariable.of(JvmTypes.VMSTATE.type().pointerType(),
 					"state"));
+		}
+	},
+	
+	/** Pop from stack. */
+	NVM_STACK_REFERENCE_POP
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/03
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_stackReferencePop",
+				JvmTypes.JOBJECT.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"));
 		}
 	},
 	

@@ -10,6 +10,7 @@
 package cc.squirreljme.c;
 
 import cc.squirreljme.c.std.CFunctionProvider;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.util.List;
@@ -445,6 +446,17 @@ abstract class __CFileProxy__
 	 */
 	@Override
 	public CSourceWriter variableSet(CVariable __var, CExpression __value)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		return this.__file().variableSet(__var, __value);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/03
+	 */
+	@Override
+	public CSourceWriter variableSet(CExpression __var, CExpression __value)
 		throws IllegalArgumentException, IOException, NullPointerException
 	{
 		return this.__file().variableSet(__var, __value);

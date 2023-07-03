@@ -9,9 +9,9 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.collections.UnmodifiableList;
 
@@ -21,7 +21,12 @@ import net.multiphasicapps.collections.UnmodifiableList;
  * @since 2023/05/30
  */
 public class CVariable
+	implements CExpression
 {
+	/** Null reference. */
+	public static final CVariable NULL =
+		CVariable.of(CPrimitiveType.VOID.pointerType(), "NULL");
+	
 	/** The type of this variable. */
 	public final CType type;
 	
@@ -180,6 +185,16 @@ public class CVariable
 			throw new NullPointerException("NARG");
 		
 		return new CVariable(this.type, __newIdentifier);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/03
+	 */
+	@Override
+	public List<String> tokens()
+	{
+		return this.name.tokens();
 	}
 	
 	/**

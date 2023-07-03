@@ -33,16 +33,43 @@ public class CFunctionBlock
 	}
 	
 	/**
+	 * Starts an {@code if} comparison.
+	 * 
+	 * @param __condition The expression to check.
+	 * @return The block for the {@code if}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/03
+	 */
+	public CIfBlock branchIf(CExpression __condition)
+		throws IOException, NullPointerException
+	{
+		if (__condition == null)
+			throw new NullPointerException("NARG");
+		
+		// Write up tokens for the switch
+		this.tokens("if", "(", __condition, ")", "{");
+		
+		// Push
+		CIfBlock rv = new CIfBlock(this);
+		return this.__file().__pushBlock(rv, true);
+	}
+	
+	/**
 	 * Initializes the switch case.
 	 * 
 	 * @param __condition The condition.
 	 * @return The switch case writer.
 	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	public CSwitchBlock switchCase(Object... __condition)
-		throws IOException
+	public CSwitchBlock switchCase(CExpression __condition)
+		throws IOException, NullPointerException
 	{
+		if (__condition == null)
+			throw new NullPointerException("NARG");
+		
 		// Write up tokens for the switch
 		this.tokens("switch", "(", __condition, ")", "{");
 		

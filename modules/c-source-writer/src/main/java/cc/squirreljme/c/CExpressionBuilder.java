@@ -252,6 +252,33 @@ public abstract class CExpressionBuilder
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/03
+	 */
+	public B compare(CExpression __a, CComparison __op, CExpression __b)
+		throws IOException, NullPointerException
+	{
+		if (__a == null || __op == null || __b == null)
+			throw new NullPointerException("NARG");
+		
+		// Protect with parenthesis
+		this.__add("(");
+		this.__add("(");
+		this.__add(__a.tokens());
+		this.__add(")");
+		
+		this.__add(__op.token);
+		
+		// Protect with parenthesis
+		this.__add("(");
+		this.__add(__b.tokens());
+		this.__add(")");
+		this.__add(")");
+		
+		return this.__this();
+	}
+	
+	/**
 	 * Adds a C dereference expression which lead to a struct value.
 	 * 
 	 * @return {@code this}.

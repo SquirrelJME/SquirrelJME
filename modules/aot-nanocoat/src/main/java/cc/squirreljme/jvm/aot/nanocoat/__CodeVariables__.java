@@ -11,9 +11,9 @@ package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CPointerType;
 import cc.squirreljme.c.CStructType;
+import cc.squirreljme.c.CType;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
-import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -108,6 +108,27 @@ public final class __CodeVariables__
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns a temporary variable.
+	 *
+	 * @param __index The temporary variable index.
+	 * @param __type The type of temporary to get.
+	 * @return The variable for the temporary.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/03
+	 */
+	public CVariable temporary(int __index, CType __type)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		if (__index < 0)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		return CVariable.of(__type, "temp");
 	}
 	
 	/**
