@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.aot.nanocoat.common;
 
 import cc.squirreljme.c.CFunctionType;
+import cc.squirreljme.c.CPrimitiveType;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.c.std.CFunctionProvider;
@@ -62,6 +63,25 @@ public enum JvmFunctions
 		}
 	},
 	
+	/** New instance. */
+	NVM_NEW_INSTANCE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/03
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_newInstance",
+				JvmTypes.JOBJECT.type().pointerType(),
+				CVariable.of(JvmTypes.VMSTATE.type().pointerType(),
+					"state"),
+				CVariable.of(CPrimitiveType.CHAR_STAR.constType(),
+					"type"));
+		}
+	},
+	
 	/** Invoke special method. */
 	NVM_INVOKE_SPECIAL
 	{
@@ -76,6 +96,8 @@ public enum JvmFunctions
 				JvmTypes.JBOOLEAN.type(),
 				CVariable.of(JvmTypes.VMSTATE.type().pointerType(),
 					"state"),
+				CVariable.of(JvmTypes.VMTHREAD.type().pointerType(),
+					"thread"),
 				CVariable.of(JvmTypes.STATIC_LINKAGE.type(CStructType.class)
 					.member("data").type(CStructType.class)
 					.member("invokeSpecial").type.pointerType(),
@@ -129,9 +151,28 @@ public enum JvmFunctions
 		CFunctionType __build()
 		{
 			return CFunctionType.of("sjme_nvm_stackReferencePop",
-				JvmTypes.JOBJECT.type(),
+				JvmTypes.JOBJECT.type().pointerType(),
 				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
 					"frame"));
+		}
+	},
+	
+	/** Push to stack. */
+	NVM_STACK_REFERENCE_PUSH
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/03
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_stackReferencePush",
+				JvmTypes.JBOOLEAN.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JOBJECT.type().pointerType(),
+					"object"));
 		}
 	},
 	

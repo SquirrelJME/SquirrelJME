@@ -241,6 +241,8 @@ public enum JvmTypes
 				.member(JvmTypes.JINT.type(), "groupIndex")
 				.member(JvmTypes.STATIC_LINKAGE.type().pointerType(),
 					"linkage")
+				.member(JvmTypes.JTHROWABLE.type().pointerType(),
+					"waitingThrown")
 				.build();
 		}
 	},

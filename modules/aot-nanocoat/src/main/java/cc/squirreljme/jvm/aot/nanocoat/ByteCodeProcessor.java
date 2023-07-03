@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InstructionJumpTargets;
@@ -319,10 +320,30 @@ public class ByteCodeProcessor
 					.member("groupIndex"))
 				.build()))
 		{
+			// Start of function call, initializes accordingly
+			cases.nextCase(Constants.SJME_NANOCOAT_START_CALL);
+			
+			// If synchronized, lock on monitor implicitly here
+			Method method = this.method;
+			if (method.flags().isSynchronized())
+				throw Debugging.todo();
+			
+			// --- Initialization ---
+			// Return here so the initialization does get complete
+			__block.returnValue(Constants.TRUE);
+				
 			// Return from call when execution of method finishes
-			cases.nextCase("SJME_NANOCOAT_END_CALL");
+			cases.nextCase(Constants.SJME_NANOCOAT_END_CALL);
+		
+			// --- Exit ---
+			// If synchronized, unlock on monitor implicitly here
+			if (method.flags().isSynchronized())
+				throw Debugging.todo();
+			
+			// Now return
 			__block.returnValue(Constants.FALSE);
 			
+			// --- Instruction Blocks ---
 			// Write each basic block
 			for (Map.Entry<Integer, BasicBlock> entry :
 				this._basicBlocks.entrySet())
@@ -385,6 +406,11 @@ public class ByteCodeProcessor
 				this.__doInvokeSpecial(__block,
 					__instruction.argument(0, MethodReference.class));
 				break;
+			
+			case InstructionIndex.NEW:
+				this.__doNew(__block,
+					__instruction.argument(0, ClassName.class));
+				break;
 				
 			case InstructionIndex.RETURN:
 				this.__doReturn(__block);
@@ -392,6 +418,35 @@ public class ByteCodeProcessor
 			
 			default:
 				throw Debugging.todo(__instruction);
+		}
+	}
+	
+	/**
+	 * Checks if an exception was thrown.
+	 * 
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/03
+	 */
+	private void __checkThrow(CFunctionBlock __block)
+		throws IOException, NullPointerException
+	{
+		if (__block == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		
+		// Check if there is something waiting to be thrown
+		try (CIfBlock iffy = __block.branchIf(CExpressionBuilder.builder()
+				.compare(CExpressionBuilder.builder()
+					.identifier(codeVariables.currentFrame())
+					.dereferenceStruct()
+					.identifier(JvmTypes.VMFRAME.type(CStructType.class)
+						.member("waitingThrown"))
+					.build(), CComparison.NOT_EQUALS, CVariable.NULL)
+			.build()))
+		{
+			Debugging.debugNote("Thrown inner block?");
 		}
 	}
 	
@@ -452,28 +507,6 @@ public class ByteCodeProcessor
 	}
 	
 	/**
-	 * Performs return from method.
-	 * 
-	 * @param __block The block to write in.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/06/03
-	 */
-	private void __doReturn(CFunctionBlock __block)
-		throws IOException, NullPointerException
-	{
-		if (__block == null)
-			throw new NullPointerException("NARG");
-		
-		__CodeVariables__ codeVars = __CodeVariables__.instance();
-		
-		__block.functionCall(JvmFunctions.NVM_RETURN_FROM_METHOD,
-			CExpressionBuilder.builder()
-				.identifier(codeVars.currentState())
-				.build());
-	}
-	
-	/**
 	 * Invokes a special method.
 	 * 
 	 * @param __block The output block.
@@ -496,9 +529,8 @@ public class ByteCodeProcessor
 		// Special invokes have special processing depending on the source
 		__CodeVariables__ codeVars = __CodeVariables__.instance();
 		__block.functionCall(JvmFunctions.NVM_INVOKE_SPECIAL,
-			CExpressionBuilder.builder()
-				.identifier(codeVars.currentState())
-				.build(),
+			codeVars.currentState(),
+			codeVars.currentThread(),
 			CExpressionBuilder.builder()
 				.reference()
 				.identifier(codeVars.currentFrame())
@@ -513,6 +545,66 @@ public class ByteCodeProcessor
 				.identifier(JvmTypes.STATIC_LINKAGE
 					.type(CStructType.class).member("data")
 					.type(CStructType.class).member("invokeSpecial"))
+				.build());
+		
+		// Did this throw anything?
+		this.__checkThrow(__block);
+	}
+	
+	/**
+	 * Allocates a new object.
+	 * 
+	 * @param __block The block to write to.
+	 * @param __what What is being allocated?
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/03
+	 */
+	private void __doNew(CFunctionBlock __block, ClassName __what)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __what == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		
+		// Allocate object
+		CExpression object = codeVariables.temporary(0,
+			JvmTypes.JOBJECT.type().pointerType());
+		__block.functionCall(JvmFunctions.NVM_NEW_INSTANCE,
+			codeVariables.currentState(),
+			CExpressionBuilder.builder()
+					.string(__what.toString())
+				.build());
+		
+		// Did this throw anything?
+		this.__checkThrow(__block);
+		
+		// Push to the stack
+		__block.functionCall(JvmFunctions.NVM_STACK_REFERENCE_PUSH,
+			codeVariables.currentFrame(),
+			object);
+	}
+	
+	/**
+	 * Performs return from method.
+	 * 
+	 * @param __block The block to write in.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/06/03
+	 */
+	private void __doReturn(CFunctionBlock __block)
+		throws IOException, NullPointerException
+	{
+		if (__block == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVars = __CodeVariables__.instance();
+		
+		__block.functionCall(JvmFunctions.NVM_RETURN_FROM_METHOD,
+			CExpressionBuilder.builder()
+				.identifier(codeVars.currentState())
 				.build());
 	}
 	

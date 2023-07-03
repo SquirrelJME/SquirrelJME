@@ -43,7 +43,19 @@ public interface Constants
 	CIdentifier FALSE =
 		CIdentifier.of("JNI_FALSE");
 	
+	/** False. */
+	CIdentifier TRUE =
+		CIdentifier.of("JNI_TRUE");
+	
 	/** Temporary value. */
 	CIdentifier TEMPORARY =
 		CIdentifier.of("temp");
+	
+	/** Start of NanoCoat call? */
+	CIdentifier SJME_NANOCOAT_START_CALL =
+		CIdentifier.of("SJME_NANOCOAT_START_CALL");
+	
+	/** End of NanoCoat call? */
+	CIdentifier SJME_NANOCOAT_END_CALL =
+		CIdentifier.of("SJME_NANOCOAT_END_CALL");
 }
