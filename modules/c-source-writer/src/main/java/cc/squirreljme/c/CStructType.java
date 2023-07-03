@@ -190,6 +190,17 @@ public class CStructType
 	}
 	
 	/**
+	 * Returns the members of the structure.
+	 * 
+	 * @return The structure members.
+	 * @since 2023/07/03
+	 */
+	public List<CVariable> members()
+	{
+		return this.members;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2023/06/06
 	 */
@@ -198,5 +209,15 @@ public class CStructType
 		throws IllegalArgumentException
 	{
 		return CPointerType.of(this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/03
+	 */
+	@Override
+	public String toString()
+	{
+		return this.declareTokens(null).toString();
 	}
 }

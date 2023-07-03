@@ -103,6 +103,20 @@ public class CPointerType
 	}
 	
 	/**
+	 * Casts the dereferenced type.
+	 * 
+	 * @param <T> The type to cast as.
+	 * @param __type The type to cast as.
+	 * @return The casted dereferenced type.
+	 * @since 2023/07/03
+	 */
+	public <T extends CType> T dereferenceType(Class<T> __type)
+		throws IllegalArgumentException
+	{
+		return __type.cast(this.pointedType);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */

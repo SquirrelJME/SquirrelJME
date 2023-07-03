@@ -13,6 +13,7 @@ import cc.squirreljme.c.CExpression;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFileName;
 import cc.squirreljme.c.CIdentifier;
+import cc.squirreljme.c.CVariable;
 import cc.squirreljme.c.std.CStdIntNumberType;
 
 /**
@@ -41,4 +42,8 @@ public interface Constants
 	/** False. */
 	CIdentifier FALSE =
 		CIdentifier.of("JNI_FALSE");
+	
+	/** Temporary value. */
+	CIdentifier TEMPORARY =
+		CIdentifier.of("temp");
 }

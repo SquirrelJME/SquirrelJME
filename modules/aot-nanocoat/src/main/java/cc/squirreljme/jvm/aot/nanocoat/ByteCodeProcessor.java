@@ -10,9 +10,11 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CComparison;
+import cc.squirreljme.c.CExpression;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFunctionBlock;
 import cc.squirreljme.c.CIfBlock;
+import cc.squirreljme.c.CPointerType;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CSwitchBlock;
 import cc.squirreljme.c.CVariable;
@@ -413,8 +415,8 @@ public class ByteCodeProcessor
 		__CodeVariables__ codeVariables = __CodeVariables__.instance();
 		
 		// Pop from stack
-		CVariable object = codeVariables.temporary(0,
-			JvmTypes.JOBJECT.type());
+		CExpression object = codeVariables.temporary(0,
+			JvmTypes.JOBJECT.type().pointerType());
 		__block.variableSet(object,
 			CExpressionBuilder.builder()
 				.functionCall(JvmFunctions.NVM_STACK_REFERENCE_POP.function(),
@@ -434,7 +436,8 @@ public class ByteCodeProcessor
 					.identifier(codeVariables.currentFrame())
 					.dereferenceStruct()
 					.identifier(codeVariables.currentFrame()
-						.type(CStructType.class)
+						.type(CPointerType.class)
+						.dereferenceType(CStructType.class)
 						.member("groupIndex"))
 				.build(),
 				CExpressionBuilder.builder()
@@ -444,6 +447,7 @@ public class ByteCodeProcessor
 		
 		// Uncount reference, since we did pop it
 		__block.functionCall(JvmFunctions.NVM_COUNT_REFERENCE_DOWN.function(),
+			codeVariables.currentState(),
 			object);
 	}
 	

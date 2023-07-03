@@ -30,7 +30,7 @@ public class CVariable
 	/** The type of this variable. */
 	public final CType type;
 	
-	/** The name of this variable. */
+	/** The expression of this variable. */
 	public final CIdentifier name;
 	
 	/** The tokens used for declaring this variable. */
@@ -104,7 +104,8 @@ public class CVariable
 			return this;
 		
 		// Otherwise setup new variable
-		return CVariable.of(CExternModifier.EXTERN, this.type, this.name);
+		return CVariable.of(
+			CModifiedType.of(CExternModifier.EXTERN, this.type), this.name);
 	}
 	
 	/**
@@ -238,7 +239,7 @@ public class CVariable
 	public static CVariable of(CType __type, String __name)
 		throws NullPointerException
 	{
-		return CVariable.of(null, __type, CIdentifier.of(__name));
+		return CVariable.of(__type, CIdentifier.of(__name));
 	}
 	
 	/**
@@ -253,40 +254,6 @@ public class CVariable
 	public static CVariable of(CType __type, CIdentifier __name)
 		throws NullPointerException
 	{
-		return CVariable.of(null, __type, __name);
-	}
-	
-	/**
-	 * Initializes a variable.
-	 * 
-	 * @param __modifier The variable modifier.
-	 * @param __type The type used.
-	 * @param __name The name of the variable.
-	 * @return The created variable.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/30
-	 */
-	public static CVariable of(CModifier __modifier, CType __type,
-		String __name)
-		throws NullPointerException
-	{
-		return CVariable.of(__modifier, __type, CIdentifier.of(__name));
-	}
-	
-	/**
-	 * Initializes a variable.
-	 * 
-	 * @param __modifier The variable modifier.
-	 * @param __type The type used.
-	 * @param __name The name of the variable.
-	 * @return The created variable.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/05/30
-	 */
-	public static CVariable of(CModifier __modifier, CType __type,
-		CIdentifier __name)
-		throws NullPointerException
-	{
-		return new CVariable(CModifiedType.of(__modifier, __type), __name);
+		return new CVariable(__type, __name);
 	}
 }

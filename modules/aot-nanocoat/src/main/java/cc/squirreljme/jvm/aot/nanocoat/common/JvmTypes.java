@@ -129,7 +129,9 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			throw Debugging.todo();
+			return CStructTypeBuilder.builder(
+				CStructKind.STRUCT, "jobject")
+				.build();
 		}
 	},
 	
@@ -138,12 +140,28 @@ public enum JvmTypes
 	{
 		/**
 		 * {@inheritDoc}
-		 * @since 2023/06/06
+		 * @since 2023/07/03
 		 */
 		@Override
 		CType __build()
 		{
-			throw Debugging.todo();
+			return CTypeDefType.of(JvmTypes.JOBJECT.type(),
+				"jstring");
+		}
+	},
+	
+	/** Throwable. */
+	JTHROWABLE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/03
+		 */
+		@Override
+		CType __build()
+		{
+			return CTypeDefType.of(JvmTypes.JOBJECT.type(),
+				"jthrowable");
 		}
 	},
 	
@@ -425,6 +443,26 @@ public enum JvmTypes
 			return CStructTypeBuilder.builder(CStructKind.STRUCT,
 				"sjme_static_linkageData_invokeSpecial")
 				.member(JvmTypes.JINT.type(),"todo")
+				.build();
+		}
+	},
+	
+	/** Temporary storage. */
+	TEMPORARY
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/03
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.UNION,
+				"sjme_temporary")
+				.member(JvmTypes.JINT.type(),
+					"jint")
+				.member(JvmTypes.JOBJECT.type().pointerType(),
+					"jobject")
 				.build();
 		}
 	},

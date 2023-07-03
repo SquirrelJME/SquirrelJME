@@ -9,11 +9,17 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CExpression;
+import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CPointerType;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CType;
 import cc.squirreljme.c.CVariable;
+import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -117,18 +123,39 @@ public final class __CodeVariables__
 	 * @param __type The type of temporary to get.
 	 * @return The variable for the temporary.
 	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/03
 	 */
-	public CVariable temporary(int __index, CType __type)
-		throws IndexOutOfBoundsException, NullPointerException
+	public CExpression temporary(int __index, CType __type)
+		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
 		if (__type == null)
 			throw new NullPointerException("NARG");
 		if (__index < 0)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		return CVariable.of(__type, "temp");
+		// Determine the type ID by looking for union members
+		CVariable member = null;
+		for (CVariable var : JvmTypes.TEMPORARY.type(CStructType.class)
+			.members())
+			if (__type.equals(var.type))
+			{
+				member = var;
+				break;
+			}
+		
+		// Need a member for this?
+		if (member == null)
+			throw Debugging.todo(__type);
+		
+		// Construct expression to access it
+		return CExpressionBuilder.builder()
+			.identifier(Constants.TEMPORARY)
+			.arrayAccess(__index)
+			.structAccess()
+			.identifier(member)
+			.build();
 	}
 	
 	/**
