@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.common;
 
+import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CExpression;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFileName;
@@ -58,4 +59,8 @@ public interface Constants
 	/** End of NanoCoat call? */
 	CIdentifier SJME_NANOCOAT_END_CALL =
 		CIdentifier.of("SJME_NANOCOAT_END_CALL");
+	
+	/** Zero value. */
+	CExpression ZERO =
+		CBasicExpression.of("0");
 }

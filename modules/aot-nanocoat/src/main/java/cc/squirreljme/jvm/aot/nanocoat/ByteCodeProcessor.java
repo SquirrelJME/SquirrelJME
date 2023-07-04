@@ -427,6 +427,18 @@ public class ByteCodeProcessor
 						__instruction.jumpTargets().get(0).target()));
 				break;
 				
+			case InstructionIndex.IFEQ:
+			case InstructionIndex.IFNE:
+			case InstructionIndex.IFLT:
+			case InstructionIndex.IFLE:
+			case InstructionIndex.IFGT:
+			case InstructionIndex.IFGE:
+				this.__doIf(__block,
+					ByteCodeProcessor.__compareIf(op),
+					this._addrToGroupId.get(
+						__instruction.jumpTargets().get(0).target()));
+				break;
+				
 			case InstructionIndex.INVOKESPECIAL:
 				this.__doInvokeSpecial(__block,
 					__instruction.argument(0, MethodReference.class));
@@ -541,6 +553,45 @@ public class ByteCodeProcessor
 	}
 	
 	/**
+	 * Compares against zero.
+	 * 
+	 * @param __block The block to write to.
+	 * @param __compare The comparison to make.
+	 * @param __targetGroupId The jump target if a successful branch.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
+	 */
+	private void __doIf(CFunctionBlock __block, CComparison __compare,
+		int __targetGroupId)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __compare == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		
+		// Pop from stack
+		CExpression value = codeVariables.temporary(0,
+			JvmTypes.JINT.type());
+		__block.variableSet(value,
+			CExpressionBuilder.builder()
+				.functionCall(JvmFunctions.NVM_STACK_INTEGER_POP.function(),
+					codeVariables.currentFrame())
+			.build());
+		
+		// Perform check against zero
+		try (CIfBlock iffy = __block.branchIf(
+			CExpressionBuilder.builder()
+				.compare(value, __compare, Constants.ZERO)
+			.build()))
+		{
+			// Change grouping
+			this.__jumpToGroup(iffy, __targetGroupId);
+		}
+	}
+	
+	/**
 	 * Writes a null check.
 	 *
 	 * @param __block The block to write.
@@ -577,17 +628,7 @@ public class ByteCodeProcessor
 			.build()))
 		{
 			// Change grouping
-			iffy.variableSet(CExpressionBuilder.builder()
-					.identifier(codeVariables.currentFrame())
-					.dereferenceStruct()
-					.identifier(codeVariables.currentFrame()
-						.type(CPointerType.class)
-						.dereferenceType(CStructType.class)
-						.member("groupIndex"))
-				.build(),
-				CExpressionBuilder.builder()
-						.number(__targetGroupId)
-					.build());
+			this.__jumpToGroup(iffy, __targetGroupId);
 		}
 		
 		// Uncount reference, since we did pop it
@@ -826,5 +867,71 @@ public class ByteCodeProcessor
 			// Count in shuffle?
 			Debugging.todoNote("Count up/down in shuffle?");
 		}
+	}
+	
+	/**
+	 * Jumps to the given group ID.
+	 * 
+	 * @param __block The block to write to.
+	 * @param __targetGroupId The target group ID.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
+	 */
+	private void __jumpToGroup(CFunctionBlock __block, int __targetGroupId)
+		throws IOException, NullPointerException
+	{
+		if (__block == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		
+		__block.variableSet(CExpressionBuilder.builder()
+				.identifier(codeVariables.currentFrame())
+				.dereferenceStruct()
+				.identifier(codeVariables.currentFrame()
+					.type(CPointerType.class)
+					.dereferenceType(CStructType.class)
+					.member("groupIndex"))
+			.build(),
+			CExpressionBuilder.builder()
+					.number(__targetGroupId)
+				.build());
+	}
+	
+	/**
+	 * Returns the comparison to use for the given {@code if} instruction.
+	 * 
+	 * @param __ifOp The {@code if} operation to get.
+	 * @return The comparison used for the given instruction.
+	 * @throws IllegalArgumentException If the operation is not valid.
+	 * @since 2023/07/04
+	 */
+	private static CComparison __compareIf(int __ifOp)
+		throws IllegalArgumentException
+	{
+		switch (__ifOp)
+		{
+			case InstructionIndex.IFEQ:
+				return CComparison.EQUALS;
+				
+			case InstructionIndex.IFNE:
+				return CComparison.NOT_EQUALS;
+				
+			case InstructionIndex.IFLT:
+				return CComparison.LESS_THAN;
+				
+			case InstructionIndex.IFLE:
+				return CComparison.LESS_EQUALS;
+				
+			case InstructionIndex.IFGT:
+				return CComparison.GREATER_THAN;
+				
+			case InstructionIndex.IFGE:
+				return CComparison.GREATER_EQUALS;
+		}
+		
+		// {@squirreljme.error NC71 Unknown comparison operation.}
+		throw new IllegalArgumentException("NC71");
 	}
 }

@@ -25,6 +25,18 @@ public enum CComparison
 	/** Not equals. */
 	NOT_EQUALS("!="),
 	
+	/** Less than. */
+	LESS_THAN("<"),
+	
+	/** Less than or equals. */
+	LESS_EQUALS("<="),
+	
+	/** Greater than. */
+	GREATER_THAN(">"),
+	
+	/** Greater than or equals. */
+	GREATER_EQUALS(">="),
+	
 	/* End. */
 	;
 	

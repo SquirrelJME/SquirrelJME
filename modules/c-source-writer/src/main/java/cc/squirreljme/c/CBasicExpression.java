@@ -30,4 +30,16 @@ public class CBasicExpression
 	{
 		return this.tokens;
 	}
+	
+	/**
+	 * Initializes a basic expression.
+	 * 
+	 * @param __tokens The tokens to use.
+	 * @return The expression.
+	 * @since 2023/07/04
+	 */
+	public static CExpression of(String... __tokens)
+	{
+		return new CBasicExpression(__tokens.clone());
+	}
 }

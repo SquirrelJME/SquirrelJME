@@ -219,6 +219,23 @@ public enum JvmFunctions
 		}
 	},
 	
+	/** Pop integer from stack. */
+	NVM_STACK_INTEGER_POP
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/04
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_stackIntegerPop",
+				JvmTypes.JINT.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"));
+		}
+	},
+	
 	/** Pop from stack. */
 	NVM_STACK_REFERENCE_POP
 	{
