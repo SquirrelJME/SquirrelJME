@@ -73,6 +73,22 @@ public final class StackMapTableEntry
 	 * @throws InvalidClassFormatException If a non-object is set as not
 	 * initialized.
 	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/03
+	 */
+	public StackMapTableEntry(FieldDescriptor __t, boolean __init)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		this(new JavaType(__t), __init);
+	}
+	
+	/**
+	 * Initializes the stack map entry.
+	 *
+	 * @param __t The type of variable to store.
+	 * @param __init If {@code true} this variable is initialized.
+	 * @throws InvalidClassFormatException If a non-object is set as not
+	 * initialized.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/02
 	 */
 	public StackMapTableEntry(JavaType __t, boolean __init)

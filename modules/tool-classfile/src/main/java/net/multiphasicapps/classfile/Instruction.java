@@ -43,6 +43,32 @@ public final class Instruction
 	/** String representation of the operation. */
 	private Reference<String> _string;
 	
+	/** The normalized instruction. */
+	private Reference<Instruction> _normalized;
+	
+	/**
+	 * Initializes base instruction.
+	 * 
+	 * @param __address The address.
+	 * @param __op The operation.
+	 * @param __naturalflow Is this natural flow?
+	 * @param __smtstate The SMT state.
+	 * @param __jumptargets The jump targets.
+	 * @param ___args Arguments.
+	 * @since 2023/07/03
+	 */
+	private Instruction(int __address, int __op, boolean __naturalflow,
+		StackMapTableState __smtstate, InstructionJumpTargets __jumptargets,
+		Object[] ___args)
+	{
+		this.address = __address;
+		this.op = __op;
+		this.naturalflow = __naturalflow;
+		this.smtstate = __smtstate;
+		this.jumptargets = __jumptargets;
+		this._args = ___args;
+	}
+	
 	/**
 	 * Initializes the instruction information.
 	 *
@@ -690,6 +716,254 @@ public final class Instruction
 	public final String mnemonic()
 	{
 		return InstructionMnemonics.toString(this.op);
+	}
+	
+	/**
+	 * Normalizes the instruction.
+	 * 
+	 * @return The normalized instruction.
+	 * @since 2023/07/03
+	 */
+	public Instruction normalize()
+	{
+		Reference<Instruction> ref = this._normalized;
+		Instruction rv;
+		
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			// Base normalization state
+			int normalizeTo = -1;
+			Object[] normalizeArgs = this._args;
+			
+			// Normalization depends on the input operation
+			int op = this.op;
+			switch (op)
+			{
+					// Goto becomes wide
+				case InstructionIndex.GOTO:
+					normalizeTo = InstructionIndex.GOTO_W;
+					break;
+				
+					// Become wide version of these, same arguments
+				case InstructionIndex.ILOAD:
+					normalizeTo = InstructionIndex.WIDE_ILOAD;
+					break;
+					
+				case InstructionIndex.LLOAD:
+					normalizeTo = InstructionIndex.WIDE_LLOAD;
+					break;
+				
+				case InstructionIndex.FLOAD:
+					normalizeTo = InstructionIndex.WIDE_FLOAD;
+					break;
+				
+				case InstructionIndex.DLOAD:
+					normalizeTo = InstructionIndex.WIDE_DLOAD;
+					break;
+				
+				case InstructionIndex.ALOAD:
+					normalizeTo = InstructionIndex.WIDE_ALOAD;
+					break;
+					
+				case InstructionIndex.ISTORE:
+					normalizeTo = InstructionIndex.WIDE_ISTORE;
+					break;
+				
+				case InstructionIndex.LSTORE:
+					normalizeTo = InstructionIndex.WIDE_LSTORE;
+					break;
+				
+				case InstructionIndex.FSTORE:
+					normalizeTo = InstructionIndex.WIDE_FSTORE;
+					break;
+				
+				case InstructionIndex.DSTORE:
+					normalizeTo = InstructionIndex.WIDE_DSTORE;
+					break;
+				
+				case InstructionIndex.ASTORE:
+					normalizeTo = InstructionIndex.WIDE_ASTORE;
+					break;
+				
+					// Becomes wide increment
+				case InstructionIndex.IINC:
+					normalizeTo = InstructionIndex.WIDE_IINC;
+					break;
+					
+					// Becomes wide LDC
+				case InstructionIndex.LDC:
+					normalizeTo = InstructionIndex.LDC_W;
+					break;
+					
+					// LDC Integer
+				case InstructionIndex.ICONST_M1:
+				case InstructionIndex.ICONST_0:
+				case InstructionIndex.ICONST_1:
+				case InstructionIndex.ICONST_2:
+				case InstructionIndex.ICONST_3:
+				case InstructionIndex.ICONST_4:
+				case InstructionIndex.ICONST_5:
+					normalizeTo = InstructionIndex.LDC_W;
+					normalizeArgs = new Object[]{
+						new ConstantValueInteger(
+							-1 + (op - InstructionIndex.ICONST_M1))
+					};
+					break;
+					
+					// Becomes LDC integer
+				case InstructionIndex.BIPUSH:
+				case InstructionIndex.SIPUSH:
+					normalizeTo = InstructionIndex.LDC_W;
+					normalizeArgs = new Object[]{
+						new ConstantValueInteger((Integer)normalizeArgs[0])
+					};
+					break;
+					
+					// Load long
+				case InstructionIndex.LCONST_0:
+				case InstructionIndex.LCONST_1:
+					normalizeTo = InstructionIndex.LDC2_W;
+					normalizeArgs = new Object[]{
+						new ConstantValueLong(
+							(op - InstructionIndex.LCONST_0))
+					};
+					break;
+					
+					// Load float
+				case InstructionIndex.FCONST_0:
+				case InstructionIndex.FCONST_1:
+				case InstructionIndex.FCONST_2:
+					normalizeTo = InstructionIndex.LDC_W;
+					normalizeArgs = new Object[]{
+						new ConstantValueFloat(
+							(op - InstructionIndex.FCONST_0))
+					};
+					break;
+					
+					// Load double
+				case InstructionIndex.DCONST_0:
+				case InstructionIndex.DCONST_1:
+					normalizeTo = InstructionIndex.LDC2_W;
+					normalizeArgs = new Object[]{
+						new ConstantValueDouble(
+							(op - InstructionIndex.DCONST_0))
+					};
+					break;
+					
+					// Load local integer
+				case InstructionIndex.ILOAD_0:
+				case InstructionIndex.ILOAD_1:
+				case InstructionIndex.ILOAD_2:
+				case InstructionIndex.ILOAD_3:
+					normalizeTo = InstructionIndex.WIDE_ILOAD;
+					normalizeArgs = new Object[]{
+						op - InstructionIndex.ILOAD_0
+					};
+					break;
+					
+				case InstructionIndex.LLOAD_0:
+				case InstructionIndex.LLOAD_1:
+				case InstructionIndex.LLOAD_2:
+				case InstructionIndex.LLOAD_3:
+					normalizeTo = InstructionIndex.WIDE_LLOAD;
+					normalizeArgs = new Object[]{
+						op - InstructionIndex.LLOAD_0
+					};
+					break;
+					
+				case InstructionIndex.FLOAD_0:
+				case InstructionIndex.FLOAD_1:
+				case InstructionIndex.FLOAD_2:
+				case InstructionIndex.FLOAD_3:
+					normalizeTo = InstructionIndex.WIDE_FLOAD;
+					normalizeArgs = new Object[]{
+						op - InstructionIndex.FLOAD_0
+					};
+					break;
+					
+				case InstructionIndex.DLOAD_0:
+				case InstructionIndex.DLOAD_1:
+				case InstructionIndex.DLOAD_2:
+				case InstructionIndex.DLOAD_3:
+					normalizeTo = InstructionIndex.WIDE_DLOAD;
+					normalizeArgs = new Object[]{
+						op - InstructionIndex.DLOAD_0
+					};
+					break;
+					
+				case InstructionIndex.ALOAD_0:
+				case InstructionIndex.ALOAD_1:
+				case InstructionIndex.ALOAD_2:
+				case InstructionIndex.ALOAD_3:
+					normalizeTo = InstructionIndex.WIDE_ALOAD;
+					normalizeArgs = new Object[]{
+						op - InstructionIndex.ALOAD_0
+					};
+					break;
+					
+				case InstructionIndex.ISTORE_0:
+				case InstructionIndex.ISTORE_1:
+				case InstructionIndex.ISTORE_2:
+				case InstructionIndex.ISTORE_3:
+					normalizeTo = InstructionIndex.WIDE_ISTORE;
+					normalizeArgs = new Object[]{
+						op - InstructionIndex.ISTORE_0
+					};
+					break;
+					
+				case InstructionIndex.LSTORE_0:
+				case InstructionIndex.LSTORE_1:
+				case InstructionIndex.LSTORE_2:
+				case InstructionIndex.LSTORE_3:
+					normalizeTo = InstructionIndex.WIDE_LSTORE;
+					normalizeArgs = new Object[]{
+						op - InstructionIndex.LSTORE_0
+					};
+					break;
+					
+				case InstructionIndex.FSTORE_0:
+				case InstructionIndex.FSTORE_1:
+				case InstructionIndex.FSTORE_2:
+				case InstructionIndex.FSTORE_3:
+					normalizeTo = InstructionIndex.WIDE_FSTORE;
+					normalizeArgs = new Object[]{
+						op - InstructionIndex.FSTORE_0
+					};
+					break;
+					
+				case InstructionIndex.DSTORE_0:
+				case InstructionIndex.DSTORE_1:
+				case InstructionIndex.DSTORE_2:
+				case InstructionIndex.DSTORE_3:
+					normalizeTo = InstructionIndex.WIDE_DSTORE;
+					normalizeArgs = new Object[]{
+						op - InstructionIndex.DSTORE_0
+					};
+					break;
+					
+				case InstructionIndex.ASTORE_0:
+				case InstructionIndex.ASTORE_1:
+				case InstructionIndex.ASTORE_2:
+				case InstructionIndex.ASTORE_3:
+					normalizeTo = InstructionIndex.WIDE_ASTORE;
+					normalizeArgs = new Object[]{
+						op - InstructionIndex.ASTORE_0
+					};
+					break;
+			}
+			
+			// Was this instruction normalized?
+			if (normalizeTo >= 0)
+				rv = new Instruction(this.address, normalizeTo,
+					this.naturalflow, this.smtstate, this.jumptargets,
+					normalizeArgs);
+			else
+				rv = this;
+			this._normalized = new WeakReference<>(rv);
+		}
+		
+		return rv;
+		
 	}
 	
 	/**

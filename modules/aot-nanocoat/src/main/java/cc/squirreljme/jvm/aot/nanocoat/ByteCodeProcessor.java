@@ -120,7 +120,7 @@ public class ByteCodeProcessor
 			else
 			{
 				// Get instruction
-				instruction = __code.getByIndex(logicalAddr);
+				instruction = __code.getByIndex(logicalAddr).normalize();
 				int physicalAddr = instruction.address();
 				int op = instruction.operation();
 				

@@ -9,10 +9,11 @@
 
 package net.multiphasicapps.classfile;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * This represents a single state within the stack map table which contains
@@ -111,6 +112,18 @@ public final class StackMapTableState
 	}
 	
 	/**
+	 * Derives the stack map from loading a local onto the stack.
+	 * 
+	 * @param __dx The local to load.
+	 * @return The resultant stack state.
+	 * @since 2023/07/03
+	 */
+	public StackMapTableState deriveLocalLoad(int __dx)
+	{
+		return this.deriveStackPush(this.getLocal(__dx));
+	}
+	
+	/**
 	 * Derives a set of a local variable.
 	 * 
 	 * @param __dx The index to set.
@@ -145,13 +158,56 @@ public final class StackMapTableState
 	}
 	
 	/**
+	 * Derives the stack map from storing to a local from the stack
+	 * 
+	 * @param __dx The local to store.
+	 * @return The resultant stack state.
+	 * @since 2023/07/03
+	 */
+	public StackMapTableState deriveLocalStore(int __dx)
+	{
+		List<StackMapTableEntry> popped = new ArrayList<>();
+		
+		StackMapTableState result = this.deriveStackPop(popped);
+		return result.deriveLocalSet(__dx, popped.get(0));
+	}
+	
+	/**
+	 * Derives a method call.
+	 * 
+	 * @param __isStatic Is this a static method call?
+	 * @param __method The method to call.
+	 * @return The resultant state.
+	 * @since 2023/07/03
+	 */
+	public StackMapTableState deriveMethodCall(boolean __isStatic,
+		MethodReference __method)
+		throws NullPointerException
+	{
+		if (__method == null)
+			throw new NullPointerException("NARG");
+		
+		// Pop method call arguments accordingly
+		MethodDescriptor type = __method.memberType();
+		StackMapTableState result = this.deriveStackPop(null,
+			type.argumentCount() + (__isStatic ? 0 : 1));
+		
+		// Push any return value?
+		if (type.hasReturnValue())
+			return result.deriveStackPush(type.arguments());
+		return result;
+	}
+	
+	/**
 	 * Derives a stack map that pops the top of the stack.
 	 * 
+	 * @param __popped The entries which were popped.
 	 * @return The derived table.
 	 * @throws InvalidClassFormatException If the pop is not valid.
-	 * @since 023/07/03
+	 * @since 2023/07/03
 	 */
-	public StackMapTableState deriveStackPop()
+	public StackMapTableState deriveStackPop(
+		List<StackMapTableEntry> __popped)
 		throws InvalidClassFormatException
 	{
 		// {@squirreljme.error JC03 Stack is empty.}
@@ -159,12 +215,81 @@ public final class StackMapTableState
 		if (depth < 0)
 			throw new InvalidClassFormatException("JC03");
 		
+		// Get top most item to add accordingly and determine if it is wide
+		// or not...
+		StackMapTableEntry top = this.getStackFromLogicalTop(0);
+		if (__popped != null)
+			__popped.add(0, top);
+		
 		// Remove top-most entry, double if wide... need to clone the stack
 		// because it will normalize the entries!
-		StackMapTableEntry top = this.getStackFromLogicalTop(0);
 		return new StackMapTableState(this._locals,
 			this._stack.clone(), depth - (top.isWide() ? 2 : 1),
 			false);
+	}
+	
+	/**
+	 * Derives a stack map that pops the top of the stack.
+	 *
+	 * @param __popped The entries which were popped.
+	 * @param __count The number of entries to pop.
+	 * @return The derived table.
+	 * @throws InvalidClassFormatException If the pop is not valid.
+	 * @since 2023/07/03
+	 */
+	public StackMapTableState deriveStackPop(
+		List<StackMapTableEntry> __popped, int __count)
+		throws InvalidClassFormatException
+	{
+		// {@squirreljme.error JC05 Negative pop count.}
+		if (__count <= 0)
+			throw new IllegalArgumentException("JC05");
+		
+		// Keep popping single values
+		StackMapTableState result = this;
+		for (int i = 0; i < __count; i++)
+			result = result.deriveStackPop(__popped);
+		return result;
+	}
+	
+	/**
+	 * Derives a stack map that pops the top of the stack and then pushes new
+	 * entries.
+	 * 
+	 * @param __popped The items that were popped.
+	 * @param __count The number of items to pop.
+	 * @param __entries The entries to push.
+	 * @return The derived table.
+	 * @throws InvalidClassFormatException If the pop is not valid.
+	 * @since 2023/07/03
+	 */
+	public StackMapTableState deriveStackPopThenPush(
+		List<StackMapTableEntry> __popped, int __count,
+		StackMapTableEntry... __entries)
+		throws InvalidClassFormatException
+	{
+		return this.deriveStackPop(__popped, __count)
+			.deriveStackPush(__entries);
+	}
+	
+	/**
+	 * Derives a push to the table.
+	 * 
+	 * @param __entries The entries to push.
+	 * @return The derived table.
+	 * @throws InvalidClassFormatException If the entries are not valid or
+	 * would exceed the stack bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/03
+	 */
+	public StackMapTableState deriveStackPush(FieldDescriptor... __entries)
+	{
+		int count = (__entries == null ? 0 : __entries.length);
+		
+		StackMapTableEntry[] mapped = new StackMapTableEntry[count];
+		for (int i = 0; i < count; i++)
+			mapped[i] = new StackMapTableEntry(__entries[i], true);
+		return this.deriveStackPush(mapped);
 	}
 	
 	/**
