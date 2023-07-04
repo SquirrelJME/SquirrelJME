@@ -109,6 +109,42 @@ public enum JvmFunctions
 		}
 	},
 	
+	/** Pop integer from the stack to local variable. */
+	NVM_LOCAL_INTEGER_POP
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/04
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_localIntegerPop",
+				JvmTypes.JBOOLEAN.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JINT.type(), "index"));
+		}
+	},
+	
+	/** Push integer value. */
+	NVM_LOCAL_INTEGER_PUSH
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/04
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_localIntegerPush",
+				JvmTypes.JBOOLEAN.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JINT.type(), "index"));
+		}
+	},
+	
 	/** Pop reference from the stack to local variable. */
 	NVM_LOCAL_REFERENCE_POP
 	{
