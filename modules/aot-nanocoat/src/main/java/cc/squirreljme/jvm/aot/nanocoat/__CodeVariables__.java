@@ -18,6 +18,9 @@ import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
+import cc.squirreljme.jvm.aot.nanocoat.linkage.Container;
+import cc.squirreljme.jvm.aot.nanocoat.linkage.InvokeSpecialLinkage;
+import cc.squirreljme.jvm.aot.nanocoat.linkage.Linkage;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -117,6 +120,40 @@ public final class __CodeVariables__
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Creates a linkage reference.
+	 * 
+	 * @param __linkage The linkage to refer to.
+	 * @param __what What member to look for.
+	 * @return The expression to refer to the linkage.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
+	 */
+	public CExpression linkageReference(
+		Container<? extends Linkage> __linkage, String __what)
+		throws IOException, NullPointerException
+	{
+		if (__linkage == null || __what == null)
+			throw new NullPointerException("NARG");
+		
+		return CExpressionBuilder.builder()
+			.reference(CExpressionBuilder.builder()
+				.identifier(this.currentFrame())
+				.dereferenceStruct()
+				.identifier(JvmTypes.VMFRAME
+					.type(CStructType.class).member("linkage"))
+				.arrayAccess(__linkage.index())
+				.dereferenceStruct()
+				.identifier(JvmTypes.STATIC_LINKAGE
+					.type(CStructType.class).member("data"))
+				.structAccess()
+				.identifier(JvmTypes.STATIC_LINKAGE
+					.type(CStructType.class).member("data")
+					.type(CStructType.class).member(__what))
+			.build()).build();
 	}
 	
 	/**

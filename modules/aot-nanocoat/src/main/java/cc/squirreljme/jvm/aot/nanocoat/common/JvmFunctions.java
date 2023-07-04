@@ -63,6 +63,29 @@ public enum JvmFunctions
 		}
 	},
 	
+	/** Invoke normal method. */
+	NVM_INVOKE_NORMAL
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/04
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_invokeNormal",
+				JvmTypes.JBOOLEAN.type(),
+				CVariable.of(JvmTypes.VMSTATE.type().pointerType(),
+					"state"),
+				CVariable.of(JvmTypes.VMTHREAD.type().pointerType(),
+					"thread"),
+				CVariable.of(JvmTypes.STATIC_LINKAGE.type(CStructType.class)
+					.member("data").type(CStructType.class)
+					.member("invokeNormal").type.pointerType(),
+					"linkage"));
+		}
+	},
+	
 	/** Invoke special method. */
 	NVM_INVOKE_SPECIAL
 	{

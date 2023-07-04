@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.linkage;
 
+import cc.squirreljme.c.CExpression;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Objects;
 

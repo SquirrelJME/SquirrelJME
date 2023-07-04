@@ -425,6 +425,25 @@ public enum JvmTypes
 				"sjme_static_linkageData")
 				.member(JvmTypes.STATIC_LINKAGE_DATA_INVOKESPECIAL.type(),
 					"invokeSpecial")
+				.member(JvmTypes.STATIC_LINKAGE_DATA_INVOKENORMAL.type(),
+					"invokeNormal")
+				.build();
+		}
+	},
+	
+	/** Invoke normal linkage data. */
+	STATIC_LINKAGE_DATA_INVOKENORMAL
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/04
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_static_linkageData_invokeNormal")
+				.member(JvmTypes.JINT.type(),"todo")
 				.build();
 		}
 	},

@@ -43,6 +43,28 @@ public class ClassLinkTable
 	}
 	
 	/**
+	 * Potentially creates or returns a pre-existing normal method invocation.
+	 * 
+	 * @param __source The source method.
+	 * @param __static Is this a static invocation?
+	 * @param __target The target method.
+	 * @return The normal linkage.
+	 * @throws IllegalArgumentException If the invocation is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
+	 */
+	public Container<InvokeNormalLinkage> invokeNormal(
+		MethodNameAndType __source, boolean __static, MethodReference __target)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__source == null || __target == null)
+			throw new NullPointerException("NARG");
+		
+		return this.put(InvokeNormalLinkage.class,
+			new InvokeNormalLinkage(__source, __static, __target));
+	}
+	
+	/**
 	 * Obtains a linkage for special invocations.
 	 * 
 	 * @param __source The source method performing the call.

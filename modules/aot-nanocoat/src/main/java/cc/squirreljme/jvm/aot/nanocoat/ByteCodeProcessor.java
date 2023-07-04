@@ -24,6 +24,7 @@ import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Container;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.InvokeSpecialLinkage;
+import cc.squirreljme.jvm.aot.nanocoat.linkage.Linkage;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.IOException;
@@ -430,6 +431,14 @@ public class ByteCodeProcessor
 				this.__doInvokeSpecial(__block,
 					__instruction.argument(0, MethodReference.class));
 				break;
+				
+			case InstructionIndex.INVOKEINTERFACE:
+			case InstructionIndex.INVOKESTATIC:
+			case InstructionIndex.INVOKEVIRTUAL:
+				this.__doInvokeNormal(__block,
+					op == InstructionIndex.INVOKESTATIC,
+					__instruction.argument(0, MethodReference.class));
+				break;
 			
 			case InstructionIndex.NEW:
 				this.__doNew(__block,
@@ -588,6 +597,67 @@ public class ByteCodeProcessor
 	}
 	
 	/**
+	 * Invokes a method in generic terms.
+	 *
+	 * @param __block The output block.
+	 * @param __linkage The method linkage.
+	 * @param __method The method being invoked.
+	 * @param __funcHandler The function handler.
+	 * @param __linkWhat What is being referred to in the link table?
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
+	 */
+	private void __doInvokeGeneric(CFunctionBlock __block,
+		Container<? extends Linkage> __linkage,
+		MethodReference __method, JvmFunctions __funcHandler,
+		String __linkWhat)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __linkage == null || __method == null ||
+			__funcHandler == null || __linkWhat == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		
+		// Just perform the function handler call, it will accordingly
+		// put things on the stack and otherwise
+		__block.functionCall(__funcHandler,
+			codeVariables.currentState(),
+			codeVariables.currentThread(),
+			codeVariables.linkageReference(__linkage, __linkWhat));
+		
+		// Did this throw anything?
+		this.__checkThrow(__block);
+	}
+	
+	/**
+	 * Invokes a "normal" method.
+	 *
+	 * @param __block The output block.
+	 * @param __static Is this a static invocation?
+	 * @param __method The method being invoked.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
+	 */
+	private void __doInvokeNormal(CFunctionBlock __block, boolean __static,
+		MethodReference __method)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __method == null)
+			throw new NullPointerException("NARG");
+		
+		// Forward call
+		this.__doInvokeGeneric(__block,
+			this.linkTable.invokeNormal(this.method.nameAndType(),
+				__static, __method),
+			__method,
+			JvmFunctions.NVM_INVOKE_NORMAL,
+			"invokeNormal");
+	}
+	
+	/**
 	 * Invokes a special method.
 	 * 
 	 * @param __block The output block.
@@ -603,33 +673,12 @@ public class ByteCodeProcessor
 		if (__block == null || __method == null)
 			throw new NullPointerException("NARG");
 		
-		// Setup linkage
-		Container<InvokeSpecialLinkage> linkage = this.linkTable.invokeSpecial(
-			this.method.nameAndType(), __method);
-		
-		// Special invokes have special processing depending on the source
-		__CodeVariables__ codeVars = __CodeVariables__.instance();
-		__block.functionCall(JvmFunctions.NVM_INVOKE_SPECIAL,
-			codeVars.currentState(),
-			codeVars.currentThread(),
-			CExpressionBuilder.builder()
-				.reference()
-				.identifier(codeVars.currentFrame())
-				.dereferenceStruct()
-				.identifier(JvmTypes.VMFRAME
-					.type(CStructType.class).member("linkage"))
-				.arrayAccess(linkage.index())
-				.dereferenceStruct()
-				.identifier(JvmTypes.STATIC_LINKAGE
-					.type(CStructType.class).member("data"))
-				.structAccess()
-				.identifier(JvmTypes.STATIC_LINKAGE
-					.type(CStructType.class).member("data")
-					.type(CStructType.class).member("invokeSpecial"))
-				.build());
-		
-		// Did this throw anything?
-		this.__checkThrow(__block);
+		// Forward call
+		this.__doInvokeGeneric(__block,
+			this.linkTable.invokeSpecial(this.method.nameAndType(), __method),
+			__method,
+			JvmFunctions.NVM_INVOKE_SPECIAL,
+			"invokeSpecial");
 	}
 	
 	/**
