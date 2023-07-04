@@ -514,6 +514,12 @@ public class ByteCodeProcessor
 				this.__doJumpTable(__block,
 					__instruction.argument(0, IntMatchingJumpTable.class));
 				break;
+				
+				// Direct jump
+			case InstructionIndex.GOTO_W:
+				this.__jumpToGroup(__block,
+					this.__addressToGroup(__instruction, 0));
+				break;
 			
 			default:
 				throw Debugging.todo(__instruction);
