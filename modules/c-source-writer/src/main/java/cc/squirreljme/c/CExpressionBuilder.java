@@ -252,30 +252,20 @@ public abstract class CExpressionBuilder
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2023/07/03
+	 * Compares two values.
+	 * 
+	 * @param __a The left side expression.
+	 * @param __op The operator to use.
+	 * @param __b The right side expression.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
 	 */
 	public B compare(CExpression __a, CComparison __op, CExpression __b)
 		throws IOException, NullPointerException
 	{
-		if (__a == null || __op == null || __b == null)
-			throw new NullPointerException("NARG");
-		
-		// Protect with parenthesis
-		this.__add("(");
-		this.__add("(");
-		this.__add(__a.tokens());
-		this.__add(")");
-		
-		this.__add(__op.token);
-		
-		// Protect with parenthesis
-		this.__add("(");
-		this.__add(__b.tokens());
-		this.__add(")");
-		this.__add(")");
-		
-		return this.__this();
+		return this.operate(__a, __op, __b);
 	}
 	
 	/**
@@ -409,6 +399,23 @@ public abstract class CExpressionBuilder
 	}
 	
 	/**
+	 * Performs math on two values.
+	 * 
+	 * @param __a The left side expression.
+	 * @param __op The operator to use.
+	 * @param __b The right side expression.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
+	 */
+	public B math(CExpression __a, CMathOperator __op, CExpression __b)
+		throws IOException, NullPointerException
+	{
+		return this.operate(__a, __op, __b);
+	}
+	
+	/**
 	 * Adds the not expression.
 	 * 
 	 * @return {@code this}.
@@ -418,6 +425,24 @@ public abstract class CExpressionBuilder
 		throws IOException
 	{
 		this.__add("!");
+		
+		return this.__this();
+	}
+	
+	/**
+	 * Adds the not expression.
+	 * 
+	 * @param __expression The expression to operate on.
+	 * @return {@code this}.
+	 * @since 2023/06/24
+	 */
+	public B not(CExpression __expression)
+		throws IOException
+	{
+		this.__add("!");
+		this.__add("(");
+		this.__add(__expression.tokens());
+		this.__add(")");
 		
 		return this.__this();
 	}
@@ -492,6 +517,40 @@ public abstract class CExpressionBuilder
 		// Just plain digit
 		else
 			this.__add(string);
+		
+		return this.__this();
+	}
+	
+	/**
+	 * Operates on two values.
+	 * 
+	 * @param __a The left side expression.
+	 * @param __op The operator to use.
+	 * @param __b The right side expression.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
+	 */
+	public B operate(CExpression __a, COperator __op, CExpression __b)
+		throws IOException, NullPointerException
+	{
+		if (__a == null || __op == null || __b == null)
+			throw new NullPointerException("NARG");
+		
+		// Protect with parenthesis
+		this.__add("(");
+		this.__add("(");
+		this.__add(__a.tokens());
+		this.__add(")");
+		
+		this.__add(__op.token());
+		
+		// Protect with parenthesis
+		this.__add("(");
+		this.__add(__b.tokens());
+		this.__add(")");
+		this.__add(")");
 		
 		return this.__this();
 	}
