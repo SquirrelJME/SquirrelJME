@@ -189,10 +189,6 @@ public final class StackMapTableState
 		if (__method == null)
 			throw new NullPointerException("NARG");
 		
-		// Debug
-		Debugging.debugNote("Derive method: %s%s <- %s",
-			(__isStatic ? "static " : ""), __method, this);
-		
 		// Pop method call arguments accordingly
 		MethodDescriptor type = __method.memberType();
 		StackMapTableState result = this.deriveStackPop(null,
@@ -200,7 +196,7 @@ public final class StackMapTableState
 		
 		// Push any return value?
 		if (type.hasReturnValue())
-			return result.deriveStackPush(type.arguments());
+			return result.deriveStackPush(type.returnValue());
 		return result;
 	}
 	
@@ -364,10 +360,6 @@ public final class StackMapTableState
 			pushed[i] = popped.get(function.out.logicalSlot(i));
 		
 		result = result.deriveStackPush(pushed);
-		
-		// Debug
-		Debugging.debugNote("Shuffle %s: %s -> %s",
-			function, this, result);
 		
 		return result;
 	}

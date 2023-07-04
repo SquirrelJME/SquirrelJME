@@ -810,6 +810,10 @@ public final class ByteCode
 					inputs.put(actualAddr, current);
 				}
 				
+				// Debug
+				Debugging.debugNote("I### %s: %s -> ...",
+					instruction, current);
+				
 				// Should not occur
 				if (current == null)
 					throw Debugging.oops();
@@ -1108,6 +1112,10 @@ public final class ByteCode
 							InstructionMnemonics.toString(op));
 				}
 				
+				// Debug
+				Debugging.debugNote("... -> %s",
+					current);
+				
 				// Store output of the instruction
 				outputs.put(actualAddr, current);
 				
@@ -1121,7 +1129,10 @@ public final class ByteCode
 					
 					// Set input if it does not exist
 					if (!inputs.containsKey(jump.target))
-						inputs.put(jump.target, current);
+					{
+						if (!isException)
+							inputs.put(jump.target, current);
+					}
 				}
 			}
 			
