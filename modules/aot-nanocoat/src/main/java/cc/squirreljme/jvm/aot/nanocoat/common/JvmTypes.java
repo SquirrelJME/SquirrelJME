@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.common;
 
-import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CPrimitiveType;
 import cc.squirreljme.c.CStructKind;
 import cc.squirreljme.c.CStructTypeBuilder;
@@ -20,8 +19,6 @@ import cc.squirreljme.c.std.CTypeProvider;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.classfile.ByteCode;
-import net.multiphasicapps.classfile.FieldDescriptor;
 
 /**
  * Types that are defined by NanoCoat.
@@ -449,18 +446,36 @@ public enum JvmTypes
 		}
 	},
 	
-	/** Temporary storage. */
-	TEMPORARY
+	/** Any/temporary storage. */
+	ANY
 	{
 		/**
 		 * {@inheritDoc}
-		 * @since 2023/07/03
+		 * @since 2023/07/04
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_any")
+				.member(JvmTypes.JINT.type(), "type")
+				.member(JvmTypes.ANY_DATA.type(), "data")
+				.build();
+		}
+	},
+	
+	/** Any data storage. */
+	ANY_DATA
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/04
 		 */
 		@Override
 		CType __build()
 		{
 			return CStructTypeBuilder.builder(CStructKind.UNION,
-				"sjme_temporary")
+				"sjme_anyData")
 				.member(JvmTypes.JINT.type(),
 					"jint")
 				.member(JvmTypes.JOBJECT.type().pointerType(),

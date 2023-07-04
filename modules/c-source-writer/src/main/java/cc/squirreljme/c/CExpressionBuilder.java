@@ -297,12 +297,18 @@ public abstract class CExpressionBuilder
 	 * 
 	 * @param __expression The expression.
 	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/24
 	 */
 	public B expression(CExpression __expression)
-		throws IOException
+		throws IOException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__expression == null)
+			throw new NullPointerException("NARG");
+		
+		this.__add(__expression.tokens());
+		
+		return this.__this();
 	}
 	
 	/**
@@ -343,6 +349,25 @@ public abstract class CExpressionBuilder
 			this.__add(__args[i].tokens());
 		}
 		this.__add(")");
+		
+		return this.__this();
+	}
+	
+	/**
+	 * Identifies an identifier.
+	 * 
+	 * @param __identifier The identifier to identify.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
+	 */
+	public B identifier(String __identifier)
+		throws IOException, NullPointerException
+	{
+		if (__identifier == null)
+			throw new NullPointerException("NARG");
+		
+		this.__add(__identifier);
 		
 		return this.__this();
 	}
@@ -509,7 +534,7 @@ public abstract class CExpressionBuilder
 	}
 	
 	/**
-	 * References a type.
+	 * References an identifier.
 	 * 
 	 * @return {@code this}.
 	 * @since 2023/06/24
@@ -518,6 +543,28 @@ public abstract class CExpressionBuilder
 		throws IOException
 	{
 		this.__add("&");
+		
+		return this.__this();
+	}
+	
+	/**
+	 * References an identifier.
+	 * 
+	 * @param __expression The expression
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
+	 */
+	public B reference(CExpression __expression)
+		throws IOException, NullPointerException
+	{
+		if (__expression == null)
+			throw new NullPointerException("NARG");
+		
+		this.__add("&");
+		this.__add("(");
+		this.__add(__expression.tokens());
+		this.__add(")");
 		
 		return this.__this();
 	}

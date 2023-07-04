@@ -120,6 +120,29 @@ public final class __CodeVariables__
 	 * Returns a temporary variable.
 	 *
 	 * @param __index The temporary variable index.
+	 * @return The variable for the temporary.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/03
+	 */
+	public CExpression temporary(int __index)
+		throws IndexOutOfBoundsException, IOException, NullPointerException
+	{
+		if (__index < 0)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Construct expression to access it
+		return CExpressionBuilder.builder()
+			.identifier(Constants.TEMPORARY)
+			.arrayAccess(__index)
+			.build();
+	}
+	
+	/**
+	 * Returns a temporary variable.
+	 *
+	 * @param __index The temporary variable index.
 	 * @param __type The type of temporary to get.
 	 * @return The variable for the temporary.
 	 * @throws IndexOutOfBoundsException If the index is not valid.
@@ -132,12 +155,10 @@ public final class __CodeVariables__
 	{
 		if (__type == null)
 			throw new NullPointerException("NARG");
-		if (__index < 0)
-			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Determine the type ID by looking for union members
 		CVariable member = null;
-		for (CVariable var : JvmTypes.TEMPORARY.type(CStructType.class)
+		for (CVariable var : JvmTypes.ANY_DATA.type(CStructType.class)
 			.members())
 			if (__type.equals(var.type))
 			{
@@ -151,8 +172,9 @@ public final class __CodeVariables__
 		
 		// Construct expression to access it
 		return CExpressionBuilder.builder()
-			.identifier(Constants.TEMPORARY)
-			.arrayAccess(__index)
+			.expression(this.temporary(__index))
+			.structAccess()
+			.identifier("data")
 			.structAccess()
 			.identifier(member)
 			.build();

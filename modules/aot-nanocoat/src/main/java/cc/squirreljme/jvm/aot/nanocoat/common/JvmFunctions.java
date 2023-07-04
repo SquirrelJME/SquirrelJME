@@ -140,6 +140,44 @@ public enum JvmFunctions
 		}
 	},
 	
+	/** Pop any from stack. */
+	NVM_STACK_ANY_POP
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/03
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_stackAnyPop",
+				JvmTypes.JBOOLEAN.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.ANY.type().pointerType(),
+					"output"));
+		}
+	},
+	
+	/** Push any onto stack. */
+	NVM_STACK_ANY_PUSH
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/03
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_stackAnyPush",
+				JvmTypes.JBOOLEAN.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.ANY.type().pointerType(),
+					"input"));
+		}
+	},
+	
 	/** Pop from stack. */
 	NVM_STACK_REFERENCE_POP
 	{

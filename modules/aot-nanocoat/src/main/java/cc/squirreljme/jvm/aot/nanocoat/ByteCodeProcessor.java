@@ -671,6 +671,35 @@ public class ByteCodeProcessor
 		if (__block == null || __function == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		__CodeVariables__ codeVars = __CodeVariables__.instance();
+		
+		// Need to read in for temporaries, using any types are simpler
+		int inCount = __function.in.logicalMax;
+		for (int i = inCount - 1; i >= 0; i--)
+			__block.functionCall(JvmFunctions.NVM_STACK_ANY_POP,
+				codeVars.currentFrame(),
+				CExpressionBuilder.builder()
+						.reference(codeVars.temporary(i))
+					.build());
+		
+		// Then have to push everything back in
+		int outCount = __function.out.logicalMax;
+		for (int i = 0; i < outCount; i++)
+		{
+			// Determine where this comes from
+			int sourceSlot = __function.in.logicalSlot(
+				__function.in.findVariableSlot(
+				__function.out.logicalVariable(i)));
+			
+			// Push back from the source slot
+			__block.functionCall(JvmFunctions.NVM_STACK_ANY_PUSH,
+				codeVars.currentFrame(),
+				CExpressionBuilder.builder()
+						.reference(codeVars.temporary(sourceSlot))
+					.build());
+			
+			// Count in shuffle?
+			Debugging.todoNote("Count up/down in shuffle?");
+		}
 	}
 }
