@@ -240,6 +240,8 @@ public enum JvmTypes
 					"linkage")
 				.member(JvmTypes.JTHROWABLE.type().pointerType(),
 					"waitingThrown")
+				.member(JvmTypes.ANY.type(),
+					"returnValue")
 				.build();
 		}
 	},

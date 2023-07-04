@@ -48,6 +48,9 @@ public final class __CodeVariables__
 	/** Waiting to be thrown. */
 	private volatile Reference<CExpression> _waitingThrown;
 	
+	/** Return value storage. */
+	private volatile Reference<CExpression> _returnValue;
+	
 	/**
 	 * Not used.
 	 * 
@@ -154,6 +157,33 @@ public final class __CodeVariables__
 					.type(CStructType.class).member("data")
 					.type(CStructType.class).member(__what))
 			.build()).build();
+	}
+	
+	/**
+	 * The return value expression.
+	 * 
+	 * @return The return value expression.
+	 * @throws IOException On write errors.
+	 * @since 2023/07/04
+	 */
+	public CExpression returnValue()
+		throws IOException
+	{
+		Reference<CExpression> ref = this._returnValue;
+		CExpression rv;
+		
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			rv = CExpressionBuilder.builder()
+				.identifier(this.currentFrame())
+				.dereferenceStruct()
+				.identifier(JvmTypes.VMFRAME.type(CStructType.class)
+					.member("returnValue"))
+				.build();
+			this._waitingThrown = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
 	/**

@@ -14,6 +14,7 @@ import cc.squirreljme.c.CExpression;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFunctionBlock;
 import cc.squirreljme.c.CIfBlock;
+import cc.squirreljme.c.CMathOperator;
 import cc.squirreljme.c.CPointerType;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CSwitchBlock;
@@ -23,7 +24,6 @@ import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Container;
-import cc.squirreljme.jvm.aot.nanocoat.linkage.InvokeSpecialLinkage;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Linkage;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
@@ -33,6 +33,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
@@ -461,9 +462,35 @@ public class ByteCodeProcessor
 				this.__doReturn(__block);
 				break;
 				
+			case InstructionIndex.IRETURN:
+				this.__doReturnValue(__block);
+				break;
+				
 			case InstructionIndex.WIDE_ALOAD:
 				this.__doALoad(__block, __instruction.intArgument(0));
 				break;
+				
+				// Integer math
+			case InstructionIndex.IADD:
+			case InstructionIndex.ISUB:
+			case InstructionIndex.IMUL:
+			case InstructionIndex.IDIV:
+			case InstructionIndex.IREM:
+			case InstructionIndex.IAND:
+			case InstructionIndex.IOR:
+			case InstructionIndex.IXOR:
+				this.__doMathInteger(__block, ByteCodeProcessor.__mathOp(op));
+				break;
+				
+				// Bit shift
+			case InstructionIndex.ISHL:
+			case InstructionIndex.ISHR:
+			case InstructionIndex.IUSHR:
+				throw Debugging.todo();
+				
+				// Integer Negative
+			case InstructionIndex.INEG:
+				throw Debugging.todo();
 			
 			default:
 				throw Debugging.todo(__instruction);
@@ -768,6 +795,47 @@ public class ByteCodeProcessor
 	}
 	
 	/**
+	 * Performs an integer math operation.
+	 * 
+	 * @param __block The block to write to.
+	 * @param __op The math operation to perform.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
+	 */
+	private void __doMathInteger(CFunctionBlock __block, CMathOperator __op)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __op == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		
+		CExpression a = codeVariables.temporary(0,
+			JvmTypes.JINT.type());
+		CExpression b = codeVariables.temporary(1,
+			JvmTypes.JINT.type());
+		
+		// Pop in both values
+		__block.variableSetViaFunction(b,
+			JvmFunctions.NVM_STACK_INTEGER_POP,
+			codeVariables.currentFrame());
+		__block.variableSetViaFunction(a,
+			JvmFunctions.NVM_STACK_INTEGER_POP,
+			codeVariables.currentFrame());
+		
+		// Perform operation
+		__block.variableSet(a, CExpressionBuilder.builder()
+				.math(a, __op, b)
+			.build());
+		
+		// Push back on
+		__block.functionCall(JvmFunctions.NVM_STACK_INTEGER_PUSH,
+			codeVariables.currentFrame(),
+			a);
+	}
+	
+	/**
 	 * Allocates a new object.
 	 * 
 	 * @param __block The block to write to.
@@ -818,6 +886,35 @@ public class ByteCodeProcessor
 		
 		__CodeVariables__ codeVars = __CodeVariables__.instance();
 		
+		// Do actual return
+		__block.functionCall(JvmFunctions.NVM_RETURN_FROM_METHOD,
+			CExpressionBuilder.builder()
+				.identifier(codeVars.currentState())
+				.build());
+	}
+	
+	/**
+	 * Returns a value from the method.
+	 * 
+	 * @param __block The block to write to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
+	 */
+	private void __doReturnValue(CFunctionBlock __block)
+		throws IOException, NullPointerException
+	{
+		if (__block == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVars = __CodeVariables__.instance();
+		
+		// Pop into return value storage
+		__block.functionCall(JvmFunctions.NVM_STACK_ANY_POP,
+			codeVars.currentFrame(),
+			codeVars.returnValue());
+		
+		// Do actual return
 		__block.functionCall(JvmFunctions.NVM_RETURN_FROM_METHOD,
 			CExpressionBuilder.builder()
 				.identifier(codeVars.currentState())
@@ -936,5 +1033,46 @@ public class ByteCodeProcessor
 		
 		// {@squirreljme.error NC71 Unknown comparison operation.}
 		throw new IllegalArgumentException("NC71");
+	}
+	
+	
+	/**
+	 * Determines the math operator to use.
+	 * 
+	 * @param __op The operation.
+	 * @return The operator used.
+	 * @since 2023/07/04
+	 */
+	private static CMathOperator __mathOp(int __op)
+	{
+		switch (__op)
+		{
+			case InstructionIndex.IADD:
+				return CMathOperator.ADD;
+				
+			case InstructionIndex.ISUB:
+				return CMathOperator.SUBTRACT;
+				
+			case InstructionIndex.IMUL:
+				return CMathOperator.MULTIPLY;
+			
+			case InstructionIndex.IDIV:
+				return CMathOperator.DIVIDE;
+			
+			case InstructionIndex.IREM:
+				return CMathOperator.REMAINDER;
+			
+			case InstructionIndex.IAND:
+				return CMathOperator.AND;
+			
+			case InstructionIndex.IOR:
+				return CMathOperator.OR;
+			
+			case InstructionIndex.IXOR:
+				return CMathOperator.XOR;
+		}
+		
+		// {@squirreljme.error NC98 Unknown operation.}
+		throw new NoSuchElementException("NC98");
 	}
 }
