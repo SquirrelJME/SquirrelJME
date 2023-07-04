@@ -396,16 +396,8 @@ public class ByteCodeProcessor
 		int op = __instruction.operation();
 		switch (op)
 		{
-			case InstructionIndex.ALOAD:
+			case InstructionIndex.WIDE_ALOAD:
 				this.__doALoad(__block, __instruction.intArgument(0));
-				break;
-			
-			case InstructionIndex.ALOAD_0:
-			case InstructionIndex.ALOAD_1:
-			case InstructionIndex.ALOAD_2:
-			case InstructionIndex.ALOAD_3:
-				this.__doALoad(__block, 
-					op - InstructionIndex.ALOAD_0);
 				break;
 				
 			case InstructionIndex.DUP:

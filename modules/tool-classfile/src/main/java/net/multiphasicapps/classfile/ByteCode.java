@@ -789,9 +789,12 @@ public final class ByteCode
 			
 			// Go through each instruction and build the mapping
 			StackMapTableState current = null;
-			for (int addr = 0, n = this.instructionCount(); addr < n; addr++)
+			for (int logicalAddr = 0, n = this.instructionCount();
+				 logicalAddr < n; logicalAddr++)
 			{
-				Instruction instruction = this.getByIndex(addr).normalize();
+				int actualAddr = this.indexToAddress(logicalAddr);
+				Instruction instruction = this.getByIndex(logicalAddr)
+					.normalize();
 				
 				// Wipe popped state
 				popped.clear();
@@ -806,7 +809,7 @@ public final class ByteCode
 					throw Debugging.oops();
 				
 				// At an input state currently
-				inputs.put(addr, current);
+				inputs.put(actualAddr, current);
 				
 				// Depends on the instruction what happens
 				int op = instruction.op;
@@ -1097,7 +1100,7 @@ public final class ByteCode
 				}
 				
 				// Store output of the instruction
-				outputs.put(addr, current);
+				outputs.put(actualAddr, current);
 			}
 			
 			// Setup table pair
