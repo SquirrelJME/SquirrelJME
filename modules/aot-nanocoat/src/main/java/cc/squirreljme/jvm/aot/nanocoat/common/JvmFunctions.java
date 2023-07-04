@@ -236,6 +236,25 @@ public enum JvmFunctions
 		}
 	},
 	
+	/** Push integer to stack. */
+	NVM_STACK_INTEGER_PUSH
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/04
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_stackIntegerPush",
+				JvmTypes.JBOOLEAN.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JINT.type(),
+					"value"));
+		}
+	},
+	
 	/** Pop from stack. */
 	NVM_STACK_REFERENCE_POP
 	{

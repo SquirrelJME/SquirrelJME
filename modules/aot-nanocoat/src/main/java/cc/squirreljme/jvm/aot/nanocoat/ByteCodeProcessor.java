@@ -738,6 +738,14 @@ public class ByteCodeProcessor
 		CExpression temp;
 		switch (__value.type())
 		{
+			case INTEGER:
+				__block.functionCall(JvmFunctions.NVM_STACK_INTEGER_PUSH,
+					codeVariables.currentFrame(),
+					CExpressionBuilder.builder()
+						.number((Integer)__value.boxedValue())
+						.build());
+				break;
+			
 			case STRING:
 				// Get temporary, needed for string storage
 				temp = codeVariables.temporary(0,
