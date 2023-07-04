@@ -469,4 +469,36 @@ public interface CSourceWriter
 	 */
 	CSourceWriter variableSet(CExpression __var, CExpression __value)
 		throws IllegalArgumentException, IOException, NullPointerException;
+	
+	/**
+	 * Sets the value of a variable via a function call.
+	 * 
+	 * @param __var The variable expression to set.
+	 * @param __function The function to call.
+	 * @param __args Arguments to the function.
+	 * @return {@code this}.
+	 * @throws IllegalArgumentException If the value is not correct.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
+	 */
+	CSourceWriter variableSetViaFunction(CExpression __var,
+		CFunctionType __function, CExpression... __args)
+		throws IllegalArgumentException, IOException, NullPointerException;
+	
+	/**
+	 * Sets the value of a variable via a function call.
+	 * 
+	 * @param __var The variable expression to set.
+	 * @param __function The function to call.
+	 * @param __args Arguments to the function.
+	 * @return {@code this}.
+	 * @throws IllegalArgumentException If the value is not correct.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
+	 */
+	CSourceWriter variableSetViaFunction(CExpression __var,
+		CFunctionProvider __function, CExpression... __args)
+		throws IllegalArgumentException, IOException, NullPointerException;
 }

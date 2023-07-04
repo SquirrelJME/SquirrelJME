@@ -839,6 +839,33 @@ public class CFile
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/04
+	 */
+	@Override
+	public CSourceWriter variableSetViaFunction(CExpression __var,
+		CFunctionType __function, CExpression... __args)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		return this.variableSet(__var, CExpressionBuilder.builder()
+				.functionCall(__function, __args)
+			.build());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/04
+	 */
+	@Override
+	public CSourceWriter variableSetViaFunction(CExpression __var,
+		CFunctionProvider __function, CExpression... __args)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		return this.variableSetViaFunction(__var,
+			__function.function(), __args);
+	}
+	
+	/**
 	 * Closes the given block.
 	 * 
 	 * @param __cBlock The block to close.

@@ -463,6 +463,30 @@ abstract class __CFileProxy__
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/04
+	 */
+	@Override
+	public CSourceWriter variableSetViaFunction(CExpression __var,
+		CFunctionType __function, CExpression... __args)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		return this.__file().variableSetViaFunction(__var, __function, __args);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/04
+	 */
+	@Override
+	public CSourceWriter variableSetViaFunction(CExpression __var,
+		CFunctionProvider __function, CExpression... __args)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		return this.__file().variableSetViaFunction(__var, __function, __args);
+	}
+	
+	/**
 	 * Returns the used source writer, for inlining.
 	 * 
 	 * @return The source writer user.

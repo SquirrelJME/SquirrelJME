@@ -540,10 +540,9 @@ public class ByteCodeProcessor
 		// Read in object off the stack
 		CExpression object = codeVariables.temporary(0,
 			JvmTypes.JOBJECT.type().pointerType());
-		__block.variableSet(object, CExpressionBuilder.builder()
-				.functionCall(JvmFunctions.NVM_STACK_REFERENCE_POP.function(),
-					codeVariables.currentFrame())
-			.build());
+		__block.variableSetViaFunction(object,
+				JvmFunctions.NVM_STACK_REFERENCE_POP,
+				codeVariables.currentFrame());
 		
 		// Copy to throwing
 		__block.variableSet(codeVariables.waitingThrown(), object);
@@ -574,11 +573,9 @@ public class ByteCodeProcessor
 		// Pop from stack
 		CExpression value = codeVariables.temporary(0,
 			JvmTypes.JINT.type());
-		__block.variableSet(value,
-			CExpressionBuilder.builder()
-				.functionCall(JvmFunctions.NVM_STACK_INTEGER_POP.function(),
-					codeVariables.currentFrame())
-			.build());
+		__block.variableSetViaFunction(value,
+			JvmFunctions.NVM_STACK_INTEGER_POP,
+				codeVariables.currentFrame());
 		
 		// Perform check against zero
 		try (CIfBlock iffy = __block.branchIf(
@@ -613,11 +610,9 @@ public class ByteCodeProcessor
 		// Pop from stack
 		CExpression object = codeVariables.temporary(0,
 			JvmTypes.JOBJECT.type().pointerType());
-		__block.variableSet(object,
-			CExpressionBuilder.builder()
-				.functionCall(JvmFunctions.NVM_STACK_REFERENCE_POP.function(),
-					codeVariables.currentFrame())
-			.build());
+		__block.variableSetViaFunction(object,
+			JvmFunctions.NVM_STACK_REFERENCE_POP,
+				codeVariables.currentFrame());
 		
 		// Perform check on object, if NULL or not
 		try (CIfBlock iffy = __block.branchIf(
