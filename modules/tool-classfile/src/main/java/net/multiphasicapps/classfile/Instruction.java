@@ -510,9 +510,12 @@ public final class Instruction
 					// Load in tables
 					for (int i = 0, ra = pa + 8; i < n; i++, ra += 8)
 					{
-						keys[i] = Instruction.__readInt(__code, ra);
+						int key = Instruction.__readInt(__code, ra);
+						keys[i] = key;
 						jumps[i] = new InstructionJumpTarget(
-							__a + Instruction.__readInt(__code, ra + 4));
+							__a + Instruction.__readInt(__code,
+								ra + 4),
+							key);
 					}
 					
 					// Setup instruction properties
@@ -543,7 +546,8 @@ public final class Instruction
 					// Load in tables
 					for (int i = 0, ra = pa + 12; i < n; i++, ra += 4)
 						jumps[i] = new InstructionJumpTarget(
-							__a + Instruction.__readInt(__code, ra));
+							__a + Instruction.__readInt(__code, ra),
+							lo + i);
 					
 					// Setup instruction properties
 					naturalflow = true;

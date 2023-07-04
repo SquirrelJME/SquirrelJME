@@ -19,6 +19,9 @@ import java.io.IOException;
 public class CSwitchBlock
 	extends CFunctionBlock
 {
+	/** Did the default case? */
+	private boolean _didDefault;
+	
 	/**
 	 * Initializes the C switch case block.
 	 *
@@ -45,6 +48,23 @@ public class CSwitchBlock
 	}
 	
 	/**
+	 * Starts the default case.
+	 * 
+	 * @throws IOException On write errors.
+	 * @since 2023/07/04
+	 */
+	public void defaultCase()
+		throws IOException
+	{
+		// {@squirreljme.error CW0b There may only be a single default case.}
+		if (this._didDefault)
+			throw new IllegalStateException("CW0b");
+		this._didDefault = true;
+		
+		this.tokens("default", ":");
+	}
+	
+	/**
 	 * Starts the next case statement.
 	 * 
 	 * @param __condition The condition.
@@ -57,6 +77,10 @@ public class CSwitchBlock
 	{
 		if (__condition == null || __condition.length == 0)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error CW0c Already placed default case.}
+		if (this._didDefault)
+			throw new IllegalStateException("CW0c");
 		
 		this.tokens("case", __condition, ":");
 	}

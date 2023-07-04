@@ -39,7 +39,9 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
+import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.InstructionJumpTargets;
+import net.multiphasicapps.classfile.IntMatchingJumpTable;
 import net.multiphasicapps.classfile.JavaStackShuffleType;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodReference;
@@ -424,8 +426,7 @@ public class ByteCodeProcessor
 			case InstructionIndex.IFNONNULL:
 				this.__doIfMaybeNull(__block,
 					op == InstructionIndex.IFNULL,
-					this._addrToGroupId.get(
-						__instruction.jumpTargets().get(0).target()));
+					this.__addressToGroup(__instruction, 0));
 				break;
 				
 			case InstructionIndex.IFEQ:
@@ -436,8 +437,7 @@ public class ByteCodeProcessor
 			case InstructionIndex.IFGE:
 				this.__doIf(__block,
 					ByteCodeProcessor.__compareIf(op),
-					this._addrToGroupId.get(
-						__instruction.jumpTargets().get(0).target()));
+					this.__addressToGroup(__instruction, 0));
 				break;
 				
 			case InstructionIndex.INVOKESPECIAL:
@@ -507,10 +507,47 @@ public class ByteCodeProcessor
 				// Integer Negative
 			case InstructionIndex.INEG:
 				throw Debugging.todo();
+				
+				// Lookup/table switch
+			case InstructionIndex.LOOKUPSWITCH:
+			case InstructionIndex.TABLESWITCH:
+				this.__doJumpTable(__block,
+					__instruction.argument(0, IntMatchingJumpTable.class));
+				break;
 			
 			default:
 				throw Debugging.todo(__instruction);
 		}
+	}
+	
+	/**
+	 * Returns a group ID for the given instruction jump table.
+	 * 
+	 * @param __instruction The target instruction.
+	 * @param __jumpId The jump ID in the jump table.
+	 * @return The group ID for the instruction.
+	 * @since 2023/07/04
+	 */
+	private int __addressToGroup(Instruction __instruction, int __jumpId)
+		throws NullPointerException
+	{
+		if (__instruction == null)
+			throw new NullPointerException("NARG");
+		
+		return this.__addressToGroup(
+			__instruction.jumpTargets().get(__jumpId).target());
+	}
+	
+	/**
+	 * Returns a group ID for the given target address.
+	 * 
+	 * @param __target The target address.
+	 * @return The group ID for the instruction.
+	 * @since 2023/07/04
+	 */
+	private int __addressToGroup(int __target)
+	{
+		return this._addrToGroupId.get(__target);
 	}
 	
 	/**
@@ -780,8 +817,9 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
-		// Pop over
 		__CodeVariables__ codeVars = __CodeVariables__.instance();
+		
+		// Pop over
 		__block.functionCall((__store ? JvmFunctions.NVM_LOCAL_INTEGER_POP :
 			JvmFunctions.NVM_LOCAL_INTEGER_PUSH),
 			CExpressionBuilder.builder()
@@ -790,6 +828,66 @@ public class ByteCodeProcessor
 			CExpressionBuilder.builder()
 				.number(__localDx)
 				.build());
+	}
+	
+	/**
+	 * Writes a jump table.
+	 * 
+	 * @param __block The block to write to.
+	 * @param __jumpTable The jump table to write.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
+	 */
+	private void __doJumpTable(CFunctionBlock __block,
+		IntMatchingJumpTable __jumpTable)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __jumpTable == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		
+		// Read in the key for jumping
+		CExpression key = codeVariables.temporary(0,
+			JvmTypes.JINT.type());
+		__block.variableSetViaFunction(key,
+			JvmFunctions.NVM_STACK_INTEGER_POP,
+			codeVariables.currentFrame());
+		
+		// Gigantic switch on the value
+		try (CSwitchBlock branches = __block.switchCase(key))
+		{
+			InstructionJumpTarget[] targets = __jumpTable.targets();
+			int numTargets = targets.length;
+			
+			// Normal branches
+			for (int i = 1; i < numTargets; i++)
+			{
+				InstructionJumpTarget target = targets[i];
+				
+				// Start case here
+				branches.nextCase(target.key());
+				
+				// Perform jump
+				this.__jumpToGroup(branches,
+					this.__addressToGroup(target.target()));
+				
+				// End with break
+				branches.breakCase();
+			}
+			
+			// Default branch
+			branches.defaultCase();
+			
+			// Default branch is always zero
+			InstructionJumpTarget target = targets[0];
+			this.__jumpToGroup(branches,
+				this.__addressToGroup(target.target()));
+			
+			// End with break
+			branches.breakCase();
+		}
 	}
 	
 	/**
