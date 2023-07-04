@@ -109,7 +109,25 @@ public enum JvmFunctions
 		}
 	},
 	
-	/** Copy reference in frame. */
+	/** Pop reference from the stack to local variable. */
+	NVM_LOCAL_REFERENCE_POP
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/04
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_localReferencePush",
+				JvmTypes.JBOOLEAN.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JINT.type(), "index"));
+		}
+	},
+	
+	/** Push local variable reference to the stack. */
 	NVM_LOCAL_REFERENCE_PUSH
 	{
 		/**

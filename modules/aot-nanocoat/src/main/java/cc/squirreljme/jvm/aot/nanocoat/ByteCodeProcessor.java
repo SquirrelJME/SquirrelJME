@@ -470,6 +470,10 @@ public class ByteCodeProcessor
 				this.__doALoad(__block, __instruction.intArgument(0));
 				break;
 				
+			case InstructionIndex.WIDE_ASTORE:
+				this.__doAStore(__block, __instruction.intArgument(0));
+				break;
+				
 				// Integer math
 			case InstructionIndex.IADD:
 			case InstructionIndex.ISUB:
@@ -540,6 +544,32 @@ public class ByteCodeProcessor
 		// Copy reference over
 		__CodeVariables__ codeVars = __CodeVariables__.instance();
 		__block.functionCall(JvmFunctions.NVM_LOCAL_REFERENCE_PUSH,
+			CExpressionBuilder.builder()
+				.identifier(codeVars.currentFrame())
+				.build(),
+			CExpressionBuilder.builder()
+				.number(__localDx)
+				.build());
+	}
+	
+	/**
+	 * Store reference to local variable.
+	 * 
+	 * @param __block The block to write to.
+	 * @param __localDx The local to write to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
+	 */
+	private void __doAStore(CFunctionBlock __block, int __localDx)
+		throws IOException, NullPointerException
+	{
+		if (__block == null)
+			throw new NullPointerException("NARG");
+		
+		// Pop over
+		__CodeVariables__ codeVars = __CodeVariables__.instance();
+		__block.functionCall(JvmFunctions.NVM_LOCAL_REFERENCE_POP,
 			CExpressionBuilder.builder()
 				.identifier(codeVars.currentFrame())
 				.build(),
