@@ -63,25 +63,6 @@ public enum JvmFunctions
 		}
 	},
 	
-	/** New instance. */
-	NVM_NEW_INSTANCE
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/07/03
-		 */
-		@Override
-		CFunctionType __build()
-		{
-			return CFunctionType.of("sjme_nvm_newInstance",
-				JvmTypes.JOBJECT.type().pointerType(),
-				CVariable.of(JvmTypes.VMSTATE.type().pointerType(),
-					"state"),
-				CVariable.of(CPrimitiveType.CHAR_STAR.constType(),
-					"type"));
-		}
-	},
-	
 	/** Invoke special method. */
 	NVM_INVOKE_SPECIAL
 	{
@@ -120,6 +101,43 @@ public enum JvmFunctions
 				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
 					"frame"),
 				CVariable.of(JvmTypes.JINT.type(), "index"));
+		}
+	},
+	
+	/** Lookup a string. */
+	NVM_LOOKUP_STRING
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/04
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_lookupString",
+				JvmTypes.JSTRING.type().pointerType(),
+				CVariable.of(JvmTypes.VMTHREAD.type().pointerType(),
+					"thread"),
+				CVariable.of(CPrimitiveType.CHAR_STAR, "string"));
+		}
+	},
+	
+	/** New instance. */
+	NVM_NEW_INSTANCE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/03
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_newInstance",
+				JvmTypes.JOBJECT.type().pointerType(),
+				CVariable.of(JvmTypes.VMSTATE.type().pointerType(),
+					"state"),
+				CVariable.of(CPrimitiveType.CHAR_STAR.constType(),
+					"type"));
 		}
 	},
 	

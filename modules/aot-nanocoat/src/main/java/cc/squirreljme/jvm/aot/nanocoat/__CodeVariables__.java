@@ -42,6 +42,9 @@ public final class __CodeVariables__
 	/** Current thread cache. */
 	private volatile Reference<CVariable> _currentThread;
 	
+	/** Waiting to be thrown. */
+	private volatile Reference<CExpression> _waitingThrown;
+	
 	/**
 	 * Not used.
 	 * 
@@ -178,6 +181,33 @@ public final class __CodeVariables__
 			.structAccess()
 			.identifier(member)
 			.build();
+	}
+	
+	/**
+	 * Returns the waiting to be thrown.
+	 * 
+	 * @return The expression for waiting thrown.
+	 * @throws IOException On write errors.
+	 * @since 2023/07/04
+	 */
+	public CExpression waitingThrown()
+		throws IOException
+	{
+		Reference<CExpression> ref = this._waitingThrown;
+		CExpression rv;
+		
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			rv = CExpressionBuilder.builder()
+				.identifier(this.currentFrame())
+				.dereferenceStruct()
+				.identifier(JvmTypes.VMFRAME.type(CStructType.class)
+					.member("waitingThrown"))
+				.build();
+			this._waitingThrown = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
 	/**

@@ -34,18 +34,15 @@ import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.ConstantValue;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InstructionJumpTargets;
-import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.JavaStackShuffleType;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodReference;
-import net.multiphasicapps.classfile.SimpleStorageType;
-import net.multiphasicapps.classfile.StackMapTable;
 import net.multiphasicapps.classfile.StackMapTablePair;
 import net.multiphasicapps.classfile.StackMapTablePairs;
-import net.multiphasicapps.classfile.StackMapTableState;
 
 /**
  * This processes the byte code of a method.
@@ -397,10 +394,10 @@ public class ByteCodeProcessor
 		int op = __instruction.operation();
 		switch (op)
 		{
-			case InstructionIndex.WIDE_ALOAD:
-				this.__doALoad(__block, __instruction.intArgument(0));
+			case InstructionIndex.ATHROW:
+				this.__doAThrow(__block);
 				break;
-				
+			
 			case InstructionIndex.POP:
 			case InstructionIndex.POP2:
 			case InstructionIndex.DUP:
@@ -413,6 +410,12 @@ public class ByteCodeProcessor
 				this.__doStackShuffle(__block,
 					JavaStackShuffleType.ofOperation(op)
 						.findShuffleFunction(stackPair.input));
+				break;
+				
+			case InstructionIndex.LDC_W:
+			case InstructionIndex.LDC2_W:
+				this.__doLdc(__block,
+					__instruction.argument(0, ConstantValue.class));
 				break;
 				
 			case InstructionIndex.IFNULL:
@@ -435,6 +438,10 @@ public class ByteCodeProcessor
 				
 			case InstructionIndex.RETURN:
 				this.__doReturn(__block);
+				break;
+				
+			case InstructionIndex.WIDE_ALOAD:
+				this.__doALoad(__block, __instruction.intArgument(0));
 				break;
 			
 			default:
@@ -459,15 +466,11 @@ public class ByteCodeProcessor
 		
 		// Check if there is something waiting to be thrown
 		try (CIfBlock iffy = __block.branchIf(CExpressionBuilder.builder()
-				.compare(CExpressionBuilder.builder()
-					.identifier(codeVariables.currentFrame())
-					.dereferenceStruct()
-					.identifier(JvmTypes.VMFRAME.type(CStructType.class)
-						.member("waitingThrown"))
-					.build(), CComparison.NOT_EQUALS, CVariable.NULL)
+				.compare(codeVariables.waitingThrown(),
+					CComparison.NOT_EQUALS, CVariable.NULL)
 			.build()))
 		{
-			Debugging.debugNote("Thrown inner block?");
+			Debugging.todoNote("Thrown inner block?");
 		}
 	}
 	
@@ -495,6 +498,37 @@ public class ByteCodeProcessor
 			CExpressionBuilder.builder()
 				.number(__localDx)
 				.build());
+	}
+	
+	/**
+	 * Performs a throw of an exception.
+	 * 
+	 * @param __block The block to write to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
+	 */
+	private void __doAThrow(CFunctionBlock __block)
+		throws IOException, NullPointerException
+	{
+		if (__block == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		
+		// Read in object off the stack
+		CExpression object = codeVariables.temporary(0,
+			JvmTypes.JOBJECT.type().pointerType());
+		__block.variableSet(object, CExpressionBuilder.builder()
+				.functionCall(JvmFunctions.NVM_STACK_REFERENCE_POP.function(),
+					codeVariables.currentFrame())
+			.build());
+		
+		// Copy to throwing
+		__block.variableSet(codeVariables.waitingThrown(), object);
+		
+		// Perform throw check now
+		this.__checkThrow(__block);
 	}
 	
 	/**
@@ -596,6 +630,48 @@ public class ByteCodeProcessor
 		
 		// Did this throw anything?
 		this.__checkThrow(__block);
+	}
+	
+	/**
+	 * Loads a constant value onto the stack.
+	 * 
+	 * @param __block The block to write to.
+	 * @param __value The value to write.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
+	 */
+	private void __doLdc(CFunctionBlock __block, ConstantValue __value)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __value == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		
+		// Depends on the type
+		CExpression temp;
+		switch (__value.type())
+		{
+			case STRING:
+				// Get temporary, needed for string storage
+				temp = codeVariables.temporary(0,
+					JvmTypes.JOBJECT.type().pointerType());
+				
+				// Load string then push it
+				__block.functionCall(JvmFunctions.NVM_LOOKUP_STRING,
+					codeVariables.currentThread(),
+					CExpressionBuilder.builder()
+							.string(__value.boxedValue().toString())
+						.build());
+				__block.functionCall(JvmFunctions.NVM_STACK_REFERENCE_PUSH,
+					codeVariables.currentFrame(),
+					temp);
+				break;
+			
+			default:
+				throw Debugging.todo(__value.type());
+		}
 	}
 	
 	/**

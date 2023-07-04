@@ -9,9 +9,8 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.linkage;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.MethodNameAndType;
@@ -26,7 +25,7 @@ public class ClassLinkTable
 {
 	/** Linkage table map. */
 	private final Map<Linkage, Integer> _indexMap =
-		new SortedTreeMap<>();
+		new LinkedHashMap<>();
 	
 	/** Linkage values. */
 	private List<Linkage> _table =
