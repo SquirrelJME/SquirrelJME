@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -22,6 +23,7 @@ import java.util.Set;
  * @since 2019/03/30
  */
 public final class InstructionJumpTargets
+	extends AbstractList<InstructionJumpTarget>
 {
 	/** Normal jumps. */
 	private final InstructionJumpTarget[] _normal;
@@ -113,6 +115,7 @@ public final class InstructionJumpTargets
 	 * @return The target jump target.
 	 * @since 2019/03/31
 	 */
+	@Override
 	public final InstructionJumpTarget get(int __i)
 	{
 		InstructionJumpTarget[] normal = this._normal;
@@ -187,6 +190,7 @@ public final class InstructionJumpTargets
 	 * @return If this is empty or not.
 	 * @since 2019/03/31
 	 */
+	@Override
 	public final boolean isEmpty()
 	{
 		return this.size() == 0;
@@ -210,6 +214,7 @@ public final class InstructionJumpTargets
 	 * @return The number of jump targets.
 	 * @since 2019/03/31
 	 */
+	@Override
 	public final int size()
 	{
 		return this._normal.length + this._exception.length;

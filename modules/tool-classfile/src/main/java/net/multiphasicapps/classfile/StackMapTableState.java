@@ -9,11 +9,13 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * This represents a single state within the stack map table which contains
@@ -187,6 +189,10 @@ public final class StackMapTableState
 		if (__method == null)
 			throw new NullPointerException("NARG");
 		
+		// Debug
+		Debugging.debugNote("Derive method: %s%s <- %s",
+			(__isStatic ? "static " : ""), __method, this);
+		
 		// Pop method call arguments accordingly
 		MethodDescriptor type = __method.memberType();
 		StackMapTableState result = this.deriveStackPop(null,
@@ -328,6 +334,45 @@ public final class StackMapTableState
 	}
 	
 	/**
+	 * Derives stack operations for the given shuffle type.
+	 * 
+	 * @param __shuffle The shuffle type.
+	 * @return The derived shuffled state.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/03
+	 */
+	public StackMapTableState deriveStackShuffle(
+		JavaStackShuffleType __shuffle)
+		throws NullPointerException
+	{
+		if (__shuffle == null)
+			throw new NullPointerException("NARG");
+		
+		// Determine the shuffle function used
+		JavaStackShuffleType.Function function = JavaStackShuffleType
+			.findShuffleFunction(this, __shuffle);
+		
+		// Pop any inputs
+		List<StackMapTableEntry> popped = new ArrayList<>();
+		StackMapTableState result = this.deriveStackPop(popped,
+			function.in.logicalMax);
+		
+		// Go through and pop all outputs
+		int pushCount = function.out.logicalMax;
+		StackMapTableEntry[] pushed = new StackMapTableEntry[pushCount];
+		for (int i = 0; i < pushCount; i++)
+			pushed[i] = popped.get(function.out.logicalSlot(i));
+		
+		result = result.deriveStackPush(pushed);
+		
+		// Debug
+		Debugging.debugNote("Shuffle %s: %s -> %s",
+			function, this, result);
+		
+		return result;
+	}
+	
+	/**
 	 * Obtains the local at the given index.
 	 *
 	 * @param __i The index to get.
@@ -345,6 +390,17 @@ public final class StackMapTableState
 			throw new InvalidClassFormatException(
 				String.format("JC3y %d", __i));
 		return locals[__i];
+	}
+	
+	/**
+	 * Returns the stack.
+	 * 
+	 * @return The stack.
+	 * @since 2023/07/03
+	 */
+	public List<StackMapTableEntry> getStack()
+	{
+		return UnmodifiableList.of(Arrays.asList(this._stack));
 	}
 	
 	/**
@@ -409,9 +465,11 @@ public final class StackMapTableState
 	public StackMapTableEntry getStackFromTop(int __i)
 		throws InvalidClassFormatException
 	{
-		// {@squirreljme.error JC79 Cannot get stack from the top. (The index)}
-		if (__i < 0)
-			throw new InvalidClassFormatException("JC79 " + __i);
+		// {@squirreljme.error JC79 Cannot get stack from the top. (The index;
+		// The depth)}
+		if (__i < 0 || __i >= this.depth)
+			throw new InvalidClassFormatException(
+				String.format("JC79 %d %d", __i, this.depth));
 		
 		return this.getStack((this.depth - 1) - __i);
 	}

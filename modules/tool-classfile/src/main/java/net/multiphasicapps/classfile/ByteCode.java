@@ -789,8 +789,8 @@ public final class ByteCode
 			
 			// Go through each instruction and build the mapping
 			StackMapTableState current = null;
-			for (int logicalAddr = 0, n = this.instructionCount();
-				 logicalAddr < n; logicalAddr++)
+			for (int logicalAddr = 0, numAddrs = this.instructionCount();
+				 logicalAddr < numAddrs; logicalAddr++)
 			{
 				int actualAddr = this.indexToAddress(logicalAddr);
 				Instruction instruction = this.getByIndex(logicalAddr)
@@ -802,14 +802,21 @@ public final class ByteCode
 				// Use pre-existing table? At entry point that is
 				StackMapTableState exist = instruction.stackMapTableState();
 				if (exist != null)
+				{
 					current = exist;
+					
+					// Overwrite input with the one from the actual stack map
+					// table
+					inputs.put(actualAddr, current);
+				}
 				
 				// Should not occur
 				if (current == null)
 					throw Debugging.oops();
 				
-				// At an input state currently
-				inputs.put(actualAddr, current);
+				// At an input state currently, if not set already
+				if (!inputs.containsKey(actualAddr))
+					inputs.put(actualAddr, current);
 				
 				// Depends on the instruction what happens
 				int op = instruction.op;
@@ -894,7 +901,9 @@ public final class ByteCode
 					case InstructionIndex.DUP2_X1:
 					case InstructionIndex.DUP2_X2:
 					case InstructionIndex.SWAP:
-						throw Debugging.todo();
+						current = current.deriveStackShuffle(
+							JavaStackShuffleType.ofOperation(op));
+						break;
 						
 						// Pop two, push first type
 					case InstructionIndex.IADD:
@@ -1101,6 +1110,19 @@ public final class ByteCode
 				
 				// Store output of the instruction
 				outputs.put(actualAddr, current);
+				
+				// Set inputs for all jump targets
+				InstructionJumpTargets jumps = instruction.jumpTargets();
+				for (int i = 0, n = jumps.size(); i < n; i++)
+				{
+					// Get the designated jump target
+					InstructionJumpTarget jump = jumps.get(i);
+					boolean isException = jumps.isException(i);
+					
+					// Set input if it does not exist
+					if (!inputs.containsKey(jump.target))
+						inputs.put(jump.target, current);
+				}
 			}
 			
 			// Setup table pair
@@ -1309,19 +1331,20 @@ public final class ByteCode
 	
 	/**
 	 * Derives the LDC instruction.
-	 * 
+	 *
 	 * @param __instruction The instruction.
 	 * @return The derived entry.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/03
 	 */
-	private static StackMapTableEntry __deriveLdc(Instruction __instruction)
+	private static FieldDescriptor __deriveLdc(Instruction __instruction)
 		throws NullPointerException
 	{
 		if (__instruction == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		return __instruction.argument(0, ConstantValue.class)
+			.type.javaType().type;
 	}
 	
 	/**
