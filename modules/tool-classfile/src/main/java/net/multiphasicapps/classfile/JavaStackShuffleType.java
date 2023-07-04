@@ -90,6 +90,25 @@ public enum JavaStackShuffleType
 	 * Locates the shuffle function that is used to pop from the stack
 	 * accordingly to this stack state.
 	 *
+	 * @param __state The state to load from.
+	 * @return The matching shuffle function.
+	 * @throws InvalidClassFormatException If the shuffle function was not
+	 * found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/04
+	 */
+	public final JavaStackShuffleType.Function findShuffleFunction(
+		StackMapTableState __state)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		return JavaStackShuffleType.findShuffleFunction(__state, this);
+	}
+	
+	/**
+	 * Locates the shuffle function that is used to pop from the stack
+	 * accordingly to this stack state.
+	 *
+	 * @param __state The state to load from.
 	 * @param __t The type of shuffle to perform.
 	 * @return The matching shuffle function.
 	 * @throws InvalidClassFormatException If the shuffle function was not
@@ -101,7 +120,7 @@ public enum JavaStackShuffleType
 		StackMapTableState __state, JavaStackShuffleType __t)
 		throws InvalidClassFormatException, NullPointerException
 	{
-		if (__t == null)
+		if (__state == null || __t == null)
 			throw new NullPointerException("NARG");
 		
 		// Input stack properties

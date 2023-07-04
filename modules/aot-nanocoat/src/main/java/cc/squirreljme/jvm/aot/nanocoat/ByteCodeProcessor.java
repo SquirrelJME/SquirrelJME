@@ -38,6 +38,7 @@ import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InstructionJumpTargets;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.JavaStackShuffleType;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodReference;
 import net.multiphasicapps.classfile.SimpleStorageType;
@@ -400,10 +401,18 @@ public class ByteCodeProcessor
 				this.__doALoad(__block, __instruction.intArgument(0));
 				break;
 				
+			case InstructionIndex.POP:
+			case InstructionIndex.POP2:
 			case InstructionIndex.DUP:
-				this.__doDup(__block,
-					stackPair.input.getStackFromLogicalTop(0)
-						.type().simpleStorageType());
+			case InstructionIndex.DUP_X1:
+			case InstructionIndex.DUP_X2:
+			case InstructionIndex.DUP2:
+			case InstructionIndex.DUP2_X1:
+			case InstructionIndex.DUP2_X2:
+			case InstructionIndex.SWAP:
+				this.__doStackShuffle(__block,
+					JavaStackShuffleType.ofOperation(op)
+						.findShuffleFunction(stackPair.input));
 				break;
 				
 			case InstructionIndex.IFNULL:
@@ -463,37 +472,29 @@ public class ByteCodeProcessor
 	}
 	
 	/**
-	 * Duplicates the top most entry of the stack.
-	 * 
-	 * @param __block The block to write to.
-	 * @param __type The type to duplicate.
-	 * @throws InvalidClassFormatException If the duplication is not valid.
+	 * Performs reference loading.
+	 *
+	 * @param __block The block to write into.
+	 * @param __localDx The local index.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2023/07/03
+	 * @since 2032/05/31
 	 */
-	private void __doDup(CFunctionBlock __block, SimpleStorageType __type)
-		throws InvalidClassFormatException, IOException, NullPointerException
+	private void __doALoad(CFunctionBlock __block, int __localDx)
+		throws IOException, NullPointerException
 	{
-		if (__block == null || __type == null)
+		if (__block == null)
 			throw new NullPointerException("NARG");
 		
-		// Reference types
-		if (__type == SimpleStorageType.OBJECT)
-		{
-			throw Debugging.todo();
-		}
-		
-		// Number types
-		else if (__type == SimpleStorageType.INTEGER ||
-			__type == SimpleStorageType.FLOAT)
-		{
-			throw Debugging.todo();
-		}
-		
-		// {@squirreljme.error NC02 Invalid DUP operation.}
-		else
-			throw new InvalidClassFormatException("NC02");
+		// Copy reference over
+		__CodeVariables__ codeVars = __CodeVariables__.instance();
+		__block.functionCall(JvmFunctions.NVM_LOCAL_REFERENCE_PUSH,
+			CExpressionBuilder.builder()
+				.identifier(codeVars.currentFrame())
+				.build(),
+			CExpressionBuilder.builder()
+				.number(__localDx)
+				.build());
 	}
 	
 	/**
@@ -655,28 +656,21 @@ public class ByteCodeProcessor
 	}
 	
 	/**
-	 * Performs reference loading.
+	 * Performs stack shuffling.
 	 * 
-	 * @param __block The block to write into.
-	 * @param __localDx The local index.
+	 * @param __block The block to write to.
+	 * @param __function The shuffle function used.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2032/05/31
+	 * @since 2023/07/03
 	 */
-	private void __doALoad(CFunctionBlock __block, int __localDx)
+	private void __doStackShuffle(CFunctionBlock __block,
+		JavaStackShuffleType.Function __function)
 		throws IOException, NullPointerException
 	{
-		if (__block == null)
+		if (__block == null || __function == null)
 			throw new NullPointerException("NARG");
 		
-		// Copy reference over
-		__CodeVariables__ codeVars = __CodeVariables__.instance();
-		__block.functionCall(JvmFunctions.NVM_LOCAL_REFERENCE_PUSH,
-			CExpressionBuilder.builder()
-				.identifier(codeVars.currentFrame())
-				.build(),
-			CExpressionBuilder.builder()
-				.number(__localDx)
-				.build());
+		throw Debugging.todo();
 	}
 }
