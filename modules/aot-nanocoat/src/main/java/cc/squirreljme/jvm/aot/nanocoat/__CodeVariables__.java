@@ -226,6 +226,10 @@ public final class __CodeVariables__
 		if (__type == null)
 			throw new NullPointerException("NARG");
 		
+		// Passed ANY, but we really just want the existing any
+		if (JvmTypes.ANY.type().equals(__type))
+			return this.temporary(__index);
+		
 		// Determine the type ID by looking for union members
 		CVariable member = null;
 		for (CVariable var : JvmTypes.ANY_DATA.type(CStructType.class)

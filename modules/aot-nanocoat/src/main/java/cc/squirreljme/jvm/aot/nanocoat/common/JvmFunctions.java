@@ -63,6 +63,27 @@ public enum JvmFunctions
 		}
 	},
 	
+	/** Put value into field. */
+	NVM_FIELD_PUT
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/04
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_fieldPut",
+				JvmTypes.JBOOLEAN.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JOBJECT.type().pointerType(),
+					"instance"),
+				CVariable.of(JvmTypes.ANY.type().pointerType(),
+					"value"));
+		}
+	},
+	
 	/** Invoke normal method. */
 	NVM_INVOKE_NORMAL
 	{

@@ -663,7 +663,34 @@ public class ByteCodeProcessor
 		if (__block == null || __field == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		
+		// Read value
+		CExpression value = codeVariables.temporary(0,
+			JvmTypes.ANY.type());
+		__block.functionCall(JvmFunctions.NVM_STACK_ANY_POP,
+			codeVariables.currentFrame(),
+			CExpressionBuilder.builder()
+				.reference(value)
+				.build());
+		
+		// Read instance to act on
+		CExpression instance = codeVariables.temporary(0,
+			JvmTypes.JOBJECT.type().pointerType());
+		__block.variableSetViaFunction(instance,
+			JvmFunctions.NVM_STACK_REFERENCE_POP,
+			codeVariables.currentFrame());
+		
+		// Call put handler
+		__block.functionCall(JvmFunctions.NVM_FIELD_PUT,
+			codeVariables.currentFrame(),
+			instance,
+			CExpressionBuilder.builder()
+				.reference(value)
+			.build());
+		
+		// Were any exceptions emitted?
+		this.__checkThrow(__block);
 	}
 	
 	/**
