@@ -220,6 +220,27 @@ public enum JvmFunctions
 		}
 	},
 	
+	/** New array. */
+	NVM_NEW_ARRAY
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/05
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_newArray",
+				JvmTypes.JOBJECT.type().pointerType(),
+				CVariable.of(JvmTypes.VMTHREAD.type().pointerType(),
+					"thread"),
+				CVariable.of(CPrimitiveType.CHAR_STAR.constType(),
+					"componentType"),
+				CVariable.of(JvmTypes.JINT.type(),
+					"length"));
+		}
+	},
+	
 	/** New instance. */
 	NVM_NEW_INSTANCE
 	{
@@ -232,8 +253,8 @@ public enum JvmFunctions
 		{
 			return CFunctionType.of("sjme_nvm_newInstance",
 				JvmTypes.JOBJECT.type().pointerType(),
-				CVariable.of(JvmTypes.VMSTATE.type().pointerType(),
-					"state"),
+				CVariable.of(JvmTypes.VMTHREAD.type().pointerType(),
+					"thread"),
 				CVariable.of(CPrimitiveType.CHAR_STAR.constType(),
 					"type"));
 		}

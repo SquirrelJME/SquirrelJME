@@ -46,6 +46,7 @@ import net.multiphasicapps.classfile.IntMatchingJumpTable;
 import net.multiphasicapps.classfile.JavaStackShuffleType;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodReference;
+import net.multiphasicapps.classfile.PrimitiveType;
 import net.multiphasicapps.classfile.StackMapTablePair;
 import net.multiphasicapps.classfile.StackMapTablePairs;
 
@@ -453,10 +454,21 @@ public class ByteCodeProcessor
 					op == InstructionIndex.INVOKESTATIC,
 					__instruction.argument(0, MethodReference.class));
 				break;
+				
+			case InstructionIndex.ANEWARRAY:
+				this.__doNewArray(__block,
+					__instruction.argument(0, ClassName.class));
+				break;
 			
 			case InstructionIndex.NEW:
 				this.__doNew(__block,
 					__instruction.argument(0, ClassName.class));
+				break;
+				
+			case InstructionIndex.NEWARRAY:
+				this.__doNewArray(__block,
+					__instruction.argument(0, PrimitiveType.class)
+						.toClassName());
 				break;
 				
 			case InstructionIndex.RETURN:
@@ -1060,11 +1072,55 @@ public class ByteCodeProcessor
 		// Allocate object
 		CExpression object = codeVariables.temporary(0,
 			JvmTypes.JOBJECT.type().pointerType());
-		__block.functionCall(JvmFunctions.NVM_NEW_INSTANCE,
-			codeVariables.currentState(),
+		__block.variableSetViaFunction(object, JvmFunctions.NVM_NEW_INSTANCE,
+			codeVariables.currentThread(),
 			CExpressionBuilder.builder()
 					.string(__what.toString())
 				.build());
+		
+		// Did this throw anything?
+		this.__checkThrow(__block);
+		
+		// Push to the stack
+		__block.functionCall(JvmFunctions.NVM_STACK_REFERENCE_PUSH,
+			codeVariables.currentFrame(),
+			object);
+	}
+	
+	/**
+	 * Allocates a new array.
+	 * 
+	 * @param __block The block to write to.
+	 * @param __componentType The component type of the array.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/05
+	 */
+	private void __doNewArray(CFunctionBlock __block,
+		ClassName __componentType)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __componentType == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		
+		// Read in length
+		CExpression length = codeVariables.temporary(0,
+			JvmTypes.JINT.type());
+		__block.variableSetViaFunction(length,
+			JvmFunctions.NVM_STACK_INTEGER_POP,
+			codeVariables.currentFrame());
+		
+		// Perform allocation
+		CExpression object = codeVariables.temporary(0,
+			JvmTypes.JOBJECT.type().pointerType());
+		__block.variableSetViaFunction(object, JvmFunctions.NVM_NEW_ARRAY,
+			codeVariables.currentThread(),
+			CExpressionBuilder.builder()
+					.string(__componentType.toString())
+				.build(),
+			length);
 		
 		// Did this throw anything?
 		this.__checkThrow(__block);
