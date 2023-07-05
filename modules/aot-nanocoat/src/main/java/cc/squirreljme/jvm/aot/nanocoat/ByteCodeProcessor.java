@@ -37,6 +37,7 @@ import java.util.NoSuchElementException;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
+import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
@@ -520,6 +521,12 @@ public class ByteCodeProcessor
 				this.__jumpToGroup(__block,
 					this.__addressToGroup(__instruction, 0));
 				break;
+				
+				// Put field
+			case InstructionIndex.PUTFIELD:
+				this.__doFieldPut(__block,
+					__instruction.argument(0, FieldReference.class));
+				break;
 			
 			default:
 				throw Debugging.todo(__instruction);
@@ -638,6 +645,25 @@ public class ByteCodeProcessor
 		
 		// Perform throw check now
 		this.__checkThrow(__block);
+	}
+	
+	/**
+	 * Puts a field value.
+	 * 
+	 * @param __block The block to write to.
+	 * @param __field The field to put to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
+	 */
+	private void __doFieldPut(CFunctionBlock __block,
+		FieldReference __field)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __field == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
 	}
 	
 	/**
