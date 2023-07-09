@@ -38,4 +38,15 @@ public final class ByteCodeUtil
 			"squirrels", "are", "very", "cute"
 		};
 	}
+	
+	/**
+	 * Null reference to reference array.
+	 * 
+	 * @return A reference array.
+	 * @since 2023/07/09
+	 */
+	public static Object[] nullReferenceArray()
+	{
+		return null;
+	}
 }
