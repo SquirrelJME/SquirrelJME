@@ -49,4 +49,15 @@ public final class ByteCodeUtil
 	{
 		return null;
 	}
+	
+	/**
+	 * Returns a null throwable.
+	 * 
+	 * @return A null throwable.
+	 * @since 2023/07/09
+	 */
+	public static Throwable nullThrowable()
+	{
+		return null;
+	}
 }
