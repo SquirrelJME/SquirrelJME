@@ -16,7 +16,9 @@ version: 2.1
 executors:
   build-on-linux-amd64:
     docker:
-      - image: cimg/openjdk:11.0
+      # As of 2023/07/19 it appears .19 is broken since 2023/04/19, so use
+      # older .18 here
+      - image: cimg/openjdk:11.0.18
     resource_class: medium
     environment:
       # Allow Gradle to be fully cached
