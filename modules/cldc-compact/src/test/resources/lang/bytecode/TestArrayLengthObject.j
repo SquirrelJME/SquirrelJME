@@ -7,7 +7,7 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public lang/bytecode/TestArrayLengthBoolean
+.class public lang/bytecode/TestArrayLengthObject
 .super lang/bytecode/__ArrayLength__
 
 .method public <init>()V
@@ -20,7 +20,7 @@
 .limit stack 4
 ; Create array
 	invokestatic lang/bytecode/ByteCodeUtil/arrayLength()I
-	newarray boolean
+	anewarray java/lang/String
 	
 ; Return the length
 	arraylength

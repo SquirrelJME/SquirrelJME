@@ -7,12 +7,12 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public lang/bytecode/TestArrayLength
-.super net/multiphasicapps/tac/TestInteger
+.class public lang/bytecode/TestArrayLengthLongConst
+.super lang/bytecode/__ArrayLength__
 
 .method public <init>()V
 	aload 0
-	invokenonvirtual net/multiphasicapps/tac/TestInteger/<init>()V
+	invokenonvirtual lang/bytecode/__ArrayLength__/<init>()V
 	return
 .end method
 
@@ -20,7 +20,7 @@
 .limit stack 4
 ; Create array
 	bipush 4
-	anewarray java/lang/String
+	newarray long
 	
 ; Return the length
 	arraylength

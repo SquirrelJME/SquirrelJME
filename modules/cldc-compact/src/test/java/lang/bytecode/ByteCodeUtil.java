@@ -27,6 +27,17 @@ public final class ByteCodeUtil
 	}
 	
 	/**
+	 * Returns a size to use for arrays.
+	 * 
+	 * @return The length to use.
+	 * @since 2023/07/09
+	 */
+	public static int arrayLength()
+	{
+		return 4;
+	}
+	
+	/**
 	 * Makes a reference array.
 	 * 
 	 * @return A reference array.

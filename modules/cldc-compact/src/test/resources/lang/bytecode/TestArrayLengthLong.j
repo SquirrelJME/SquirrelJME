@@ -8,18 +8,18 @@
 ; ---------------------------------------------------------------------------
 
 .class public lang/bytecode/TestArrayLengthLong
-.super net/multiphasicapps/tac/TestInteger
+.super lang/bytecode/__ArrayLength__
 
 .method public <init>()V
 	aload 0
-	invokenonvirtual net/multiphasicapps/tac/TestInteger/<init>()V
+	invokenonvirtual lang/bytecode/__ArrayLength__/<init>()V
 	return
 .end method
 
 .method public test()I
 .limit stack 4
 ; Create array
-	bipush 4
+	invokestatic lang/bytecode/ByteCodeUtil/arrayLength()I
 	newarray long
 	
 ; Return the length

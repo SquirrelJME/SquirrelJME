@@ -7,7 +7,7 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public lang/bytecode/TestArrayLengthBoolean
+.class public lang/bytecode/TestArrayLengthDoubleConst
 .super lang/bytecode/__ArrayLength__
 
 .method public <init>()V
@@ -19,8 +19,8 @@
 .method public test()I
 .limit stack 4
 ; Create array
-	invokestatic lang/bytecode/ByteCodeUtil/arrayLength()I
-	newarray boolean
+	bipush 4
+	newarray double
 	
 ; Return the length
 	arraylength
