@@ -226,6 +226,14 @@ volatile
 
 ```text
 default
+boolean
+byte
+short
+char
+int
+long
+float
+double
 ```
 
 #### 3
