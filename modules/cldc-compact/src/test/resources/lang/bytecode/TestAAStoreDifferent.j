@@ -7,7 +7,7 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public lang/bytecode/TestAALoadUnderflow
+.class public lang/bytecode/TestAAStoreDifferent
 .super net/multiphasicapps/tac/TestSupplier
 
 .method public <init>()V
@@ -17,14 +17,19 @@
 .end method
 
 .method public test()Ljava/lang/Object;
-.limit stack 2
+.limit stack 6
 
 ; Obtain array
 	invokestatic lang/bytecode/ByteCodeUtil/makeStringArray()[Ljava/lang/String;
+	dup
 	
-; Load from array
-	bipush -3
-	aaload
+; Store to array
+	bipush 3
+	new java/lang/Integer
+	dup 
+	bipush 1
+	invokenonvirtual java/lang/Integer/<init>(I)V
+	aastore
 	
 ; Return value
 	areturn

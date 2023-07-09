@@ -20,7 +20,7 @@
 .limit stack 2
 
 ; Obtain array
-	invokestatic lang/bytecode/ByteCodeUtil/nullReferenceArray()[Ljava/lang/Object;
+	invokestatic lang/bytecode/ByteCodeUtil/nullStringArray()[Ljava/lang/String;
 	
 ; Load from array
 	bipush 3

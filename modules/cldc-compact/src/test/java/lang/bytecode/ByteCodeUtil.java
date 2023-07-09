@@ -32,9 +32,9 @@ public final class ByteCodeUtil
 	 * @return A reference array.
 	 * @since 2023/07/09
 	 */
-	public static Object[] makeReferenceArray()
+	public static String[] makeStringArray()
 	{
-		return new Object[]{
+		return new String[]{
 			"squirrels", "are", "very", "cute"
 		};
 	}
@@ -45,7 +45,7 @@ public final class ByteCodeUtil
 	 * @return A reference array.
 	 * @since 2023/07/09
 	 */
-	public static Object[] nullReferenceArray()
+	public static String[] nullStringArray()
 	{
 		return null;
 	}
