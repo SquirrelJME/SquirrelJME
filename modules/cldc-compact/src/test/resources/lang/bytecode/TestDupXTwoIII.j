@@ -19,16 +19,22 @@
 .method public test()I
 .limit stack 4
 	
-	sipush 1234	; c
-	sipush 3000	; b
-	sipush 7777 ; a
+; c
+	sipush 1234
+; b
+	sipush 3000
+; a
+	sipush 7777 
 	
-	; c, b, a -> a, c, b, a
+; c, b, a -> a, c, b, a
 	dup_x2
-	
-	iadd		; b + a -> x [a, c, x]
-	iadd		; c + x -> y [a, y]
-	iadd		; a + y -> z [z]
+
+; b + a -> x [a, c, x]
+	iadd		
+; c + x -> y [a, y]
+	iadd		
+; a + y -> z [z]
+	iadd		
 	
 	ireturn
 .end method

@@ -7,26 +7,25 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public lang/bytecode/TestSwap
-.super net/multiphasicapps/tac/TestInteger
+.class public lang/bytecode/TestAALoad
+.super net/multiphasicapps/tac/TestSupplier
 
 .method public <init>()V
 	aload 0
-	invokenonvirtual net/multiphasicapps/tac/TestInteger/<init>()V
+	invokenonvirtual net/multiphasicapps/tac/TestSupplier/<init>()V
 	return
 .end method
 
-.method public test()I
+.method public test()Ljava/lang/Object;
 .limit stack 2
+
+; Obtain array
+	invokestatic lang/bytecode/ByteCodeUtil/makeReferenceArray()[Ljava/lang/Object;
 	
-; b
-	sipush 1234	
-; a
-	sipush 3000	
+; Load from array
+	bipush 3
+	aaload
 	
-; b, a -> a, b
-	swap
-	
-	ireturn
+; Return value
+	areturn
 .end method
-	
