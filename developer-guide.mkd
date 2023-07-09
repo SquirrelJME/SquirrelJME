@@ -226,10 +226,6 @@ volatile
 
 ```text
 default
-field
-local
-method
-stack
 ```
 
 #### 3
@@ -238,10 +234,14 @@ stack
 .catch
 .class
 .end
+.end field
+.end method
 .field
 .implements
 .interface
 .limit
+.limit locals 
+.limit stack
 .line
 .method
 .source
