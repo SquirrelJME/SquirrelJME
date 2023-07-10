@@ -340,7 +340,8 @@ abstract class __CoreTest__
 		
 		// Determine the base name which is used for resources
 		int ld = classname.lastIndexOf('.');
-		String basename = (ld < 0 ? classname : classname.substring(ld + 1));
+		String basename = (ld < 0 ? classname :
+			classname.substring(ld + 1));
 		
 		// The system property prefix is just the class name but lowercased
 		String sysprefix = classname.toLowerCase();

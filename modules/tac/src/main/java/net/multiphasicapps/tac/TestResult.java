@@ -508,6 +508,10 @@ public final class TestResult
 		{
 			String key = a.getKey();
 			
+			// Ignore values which have been dropped
+			if ("Drop".equals(__exp.get(key)))
+				continue;
+			
 			// Second is missing key
 			if (!__exp.containsKey(key))
 				return false;
@@ -519,9 +523,15 @@ public final class TestResult
 		
 		// Just scan through the keys in the second map, if any keys are
 		// missing then extra keys were added
-		for (String k : __exp.keySet())
-			if (!__act.containsKey(k))
+		for (String key : __exp.keySet())
+			if (!__act.containsKey(key))
+			{
+				// Ignore values which have been dropped
+				if ("Drop".equals(__exp.get(key)))
+					continue;
+				
 				return false;
+			}
 		
 		// Is a match
 		return true;
