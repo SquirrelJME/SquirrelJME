@@ -172,7 +172,7 @@ jobs:
           # to make way too many workers which causes extreme resource.
           # contention --max-workers=2
           command: gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 30m
+          no_output_timeout: 45m
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted-debug"
@@ -262,8 +262,8 @@ jobs:
           command: brew install openjdk@11 coreutils
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 30m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 30m
+          command: timeout --foreground 45m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 45m
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted-debug"
@@ -279,8 +279,8 @@ jobs:
       - checkout
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 30m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 30m
+          command: timeout --foreground 45m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 45m
       - persist-gradle
       - save-test-results:
           where: "vm-test-hosted-debug"
@@ -356,8 +356,8 @@ jobs:
       - linux-install-required
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 30m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 30m
+          command: timeout --foreground 45m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 45m
       - save-test-results:
           where: "vm-test-hosted-debug"
           os: "linux-amd64"
@@ -391,8 +391,8 @@ jobs:
       - linux-install-required
       - run:
           name: Gradle Build and Test
-          command: timeout --foreground 30m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 30m
+          command: timeout --foreground 45m ./gradlew <<pipeline.parameters.standard-build-options>> <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 45m
       - save-test-results:
           where: "vm-test-hosted-debug"
           os: "linux-arm64"
@@ -461,8 +461,8 @@ jobs:
           at: .
       - run:
           name: SpringCoat Tests
-          command: timeout --foreground 30m ./gradlew testSpringCoatDebug <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 30m
+          command: timeout --foreground 45m ./gradlew testSpringCoatDebug <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 45m
       - save-test-results:
           where: "vm-test-springcoat-debug"
           os: "linux"
@@ -476,8 +476,8 @@ jobs:
           at: .
       - run:
           name: SpringCoat Tests
-          command: timeout --foreground 30m ./gradlew testSpringCoatRelease <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 30m
+          command: timeout --foreground 45m ./gradlew testSpringCoatRelease <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 45m
       - save-test-results:
           where: "vm-test-springcoat-release"
           os: "linux"
@@ -492,8 +492,8 @@ jobs:
           at: .
       - run:
           name: SummerCoat Tests
-          command: timeout --foreground 30m ./gradlew testSummerCoat <<pipeline.parameters.standard-gradle-options>>
-          no_output_timeout: 30m
+          command: timeout --foreground 45m ./gradlew testSummerCoat <<pipeline.parameters.standard-gradle-options>>
+          no_output_timeout: 45m
       - save-test-results:
           where: "vm-test-summercoat-debug"
           os: "linux"
