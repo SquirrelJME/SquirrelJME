@@ -179,7 +179,7 @@ public final strictfp class FDMLMath
 		i = hx - 0x6147A;
 		w = z * z;
 		j = 0x6B851 - hx;
-		t1 = w * (FDMLMath._LG2 + w * (FDMLMath._LG4 + w * FDMLMath._LG6));
+		tw1 = w * (FDMLMath._LG2 + w * (FDMLMath._LG4 + w * FDMLMath._LG6));
 		t2 = z * (FDMLMath._LG1 + w * (FDMLMath._LG3 + w * (FDMLMath._LG5 + w * FDMLMath._LG7)));
 		i |= j;
 		r = t2 + t1;

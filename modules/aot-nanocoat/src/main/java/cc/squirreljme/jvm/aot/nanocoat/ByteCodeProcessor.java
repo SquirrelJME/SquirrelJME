@@ -437,7 +437,18 @@ public class ByteCodeProcessor
 			case InstructionIndex.IFLE:
 			case InstructionIndex.IFGT:
 			case InstructionIndex.IFGE:
-				this.__doIf(__block,
+				this.__doIfZeroInt(__block,
+					ByteCodeProcessor.__compareIf(op),
+					this.__addressToGroup(__instruction, 0));
+				break;
+			
+			case InstructionIndex.IF_ICMPEQ:
+			case InstructionIndex.IF_ICMPNE:
+			case InstructionIndex.IF_ICMPLT:
+			case InstructionIndex.IF_ICMPLE:
+			case InstructionIndex.IF_ICMPGT:
+			case InstructionIndex.IF_ICMPGE:
+				this.__doIfCmpInt(__block,
 					ByteCodeProcessor.__compareIf(op),
 					this.__addressToGroup(__instruction, 0));
 				break;
@@ -706,8 +717,74 @@ public class ByteCodeProcessor
 	}
 	
 	/**
-	 * Compares against zero.
+	 * Performs a comparison.
 	 * 
+	 * @param __block The block to write to.
+	 * @param __compare The comparison to make.
+	 * @param __targetGroupId The jump target.
+	 * @param __a A value.
+	 * @param __b B value.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2032/07/05
+	 */
+	private void __doIf(CFunctionBlock __block, CComparison __compare,
+		int __targetGroupId, CExpression __a, CExpression __b)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __compare == null || __a == null || __b == null)
+			throw new NullPointerException("NARG");
+		
+		// Perform check against values
+		try (CIfBlock iffy = __block.branchIf(
+			CExpressionBuilder.builder()
+				.compare(__a, __compare, __b)
+			.build()))
+		{
+			// Change grouping
+			this.__jumpToGroup(iffy, __targetGroupId);
+		}
+	}
+	
+	/**
+	 * Performs integer comparison, popping two values from the stack and
+	 * comparing them.
+	 * 
+	 * @param __block The block to write to.
+	 * @param __compare The comparison to make.
+	 * @param __targetGroupId The target group ID.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/05
+	 */
+	private void __doIfCmpInt(CFunctionBlock __block, CComparison __compare,
+		int __targetGroupId)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __compare == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		
+		// Pop from stack
+		CExpression a = codeVariables.temporary(0,
+			JvmTypes.JINT.type());
+		CExpression b = codeVariables.temporary(0,
+			JvmTypes.JINT.type());
+		__block.variableSetViaFunction(b,
+			JvmFunctions.NVM_STACK_INTEGER_POP,
+				codeVariables.currentFrame());
+		__block.variableSetViaFunction(a,
+			JvmFunctions.NVM_STACK_INTEGER_POP,
+				codeVariables.currentFrame());
+		
+		// Compare value
+		this.__doIf(__block, __compare, __targetGroupId, a, b);
+	}
+	
+	/**
+	 * Compares against zero, popping a single value.
+	 *
 	 * @param __block The block to write to.
 	 * @param __compare The comparison to make.
 	 * @param __targetGroupId The jump target if a successful branch.
@@ -715,7 +792,7 @@ public class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/04
 	 */
-	private void __doIf(CFunctionBlock __block, CComparison __compare,
+	private void __doIfZeroInt(CFunctionBlock __block, CComparison __compare,
 		int __targetGroupId)
 		throws IOException, NullPointerException
 	{
@@ -731,15 +808,9 @@ public class ByteCodeProcessor
 			JvmFunctions.NVM_STACK_INTEGER_POP,
 				codeVariables.currentFrame());
 		
-		// Perform check against zero
-		try (CIfBlock iffy = __block.branchIf(
-			CExpressionBuilder.builder()
-				.compare(value, __compare, Constants.ZERO)
-			.build()))
-		{
-			// Change grouping
-			this.__jumpToGroup(iffy, __targetGroupId);
-		}
+		// Compare value
+		this.__doIf(__block, __compare, __targetGroupId, value,
+			Constants.ZERO);
 	}
 	
 	/**
@@ -1274,21 +1345,27 @@ public class ByteCodeProcessor
 		switch (__ifOp)
 		{
 			case InstructionIndex.IFEQ:
+			case InstructionIndex.IF_ICMPEQ:
 				return CComparison.EQUALS;
 				
 			case InstructionIndex.IFNE:
+			case InstructionIndex.IF_ICMPNE:
 				return CComparison.NOT_EQUALS;
 				
 			case InstructionIndex.IFLT:
+			case InstructionIndex.IF_ICMPLT:
 				return CComparison.LESS_THAN;
 				
 			case InstructionIndex.IFLE:
+			case InstructionIndex.IF_ICMPLE:
 				return CComparison.LESS_EQUALS;
 				
 			case InstructionIndex.IFGT:
+			case InstructionIndex.IF_ICMPGT:
 				return CComparison.GREATER_THAN;
 				
 			case InstructionIndex.IFGE:
+			case InstructionIndex.IF_ICMPGE:
 				return CComparison.GREATER_EQUALS;
 		}
 		
