@@ -10,6 +10,8 @@
 package java.util;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 /**
  * This is a bucket map which acts as the raw internal hash table
@@ -73,6 +75,9 @@ final class __BucketMap__<K, V>
 	
 	/** The rehash count. */
 	int _numrehash;
+	
+	/** Entry set cache. */
+	private volatile Reference<Set<Map.Entry<K, V>>> _entrySetCache;
 	
 	/**
 	 * Initializes the map with the default capacity and load factor.
@@ -155,7 +160,16 @@ final class __BucketMap__<K, V>
 	 */
 	public final Set<Map.Entry<K, V>> entrySet()
 	{
-		return new __EntrySet__();
+		Reference<Set<Map.Entry<K, V>>> ref = this._entrySetCache;
+		Set<Map.Entry<K, V>> rv;
+		
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			rv = new __EntrySet__();
+			this._entrySetCache = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
 	/**

@@ -11,6 +11,7 @@ package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 
@@ -32,9 +33,8 @@ public class WeakHashMap<K, V>
 	/** The load factor. */
 	private final float _load;
 	
-	/** This is used to clear keys when they are collected. */
-	private final ReferenceQueue<K> _rq =
-		new ReferenceQueue<>();
+	/** Entry set cache. */
+	private volatile Reference<Set<Entry<K, V>>> _entrySetCache; 
 	
 	/**
 	 * Initializes the weak hash map with the given initial capacity and load
@@ -141,8 +141,17 @@ public class WeakHashMap<K, V>
 	@Override
 	public Set<Map.Entry<K, V>> entrySet()
 	{
-		return new __WeakHashMapEntrySet__<K, V>(
-			this._map.entrySet());
+		Reference<Set<Entry<K, V>>> ref = this._entrySetCache;
+		Set<Map.Entry<K, V>> rv;
+		
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			rv = new __WeakHashMapEntrySet__<K, V>(
+				this._map.entrySet());
+			this._entrySetCache = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
 	/**
