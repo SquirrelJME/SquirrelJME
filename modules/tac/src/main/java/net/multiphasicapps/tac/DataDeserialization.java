@@ -243,6 +243,9 @@ public final class DataDeserialization
 			
 			case "NoExceptionThrown":
 				return new __NoExceptionThrown__();
+				
+			case "Drop":
+				return new __Drop__();
 			
 			case "true":
 				return Boolean.TRUE;

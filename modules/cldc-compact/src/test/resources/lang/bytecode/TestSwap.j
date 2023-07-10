@@ -19,10 +19,12 @@
 .method public test()I
 .limit stack 2
 	
-	sipush 1234	; b
-	sipush 3000	; a
+; b
+	sipush 1234	
+; a
+	sipush 3000	
 	
-	; b, a -> a, b
+; b, a -> a, b
 	swap
 	
 	ireturn

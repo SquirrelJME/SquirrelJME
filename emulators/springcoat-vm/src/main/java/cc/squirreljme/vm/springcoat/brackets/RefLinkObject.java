@@ -13,6 +13,8 @@ import cc.squirreljme.jvm.mle.brackets.RefLinkBracket;
 import cc.squirreljme.vm.springcoat.AbstractGhostObject;
 import cc.squirreljme.vm.springcoat.SpringMachine;
 import cc.squirreljme.vm.springcoat.SpringObject;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 /**
  * This contains the storage for reference links, these chain to each other.
@@ -24,7 +26,7 @@ public final class RefLinkObject
 	extends AbstractGhostObject
 {
 	/** The object this links. */
-	volatile SpringObject _object;
+	volatile Reference<SpringObject> _object;
 	
 	/** The next link in the chain. */
 	volatile RefLinkObject _next;
@@ -67,7 +69,10 @@ public final class RefLinkObject
 	{
 		synchronized (this)
 		{
-			return this._object;
+			Reference<SpringObject> ref = this._object;
+			if (ref == null)
+				return null;
+			return ref.get();
 		}
 	}
 	
@@ -109,7 +114,7 @@ public final class RefLinkObject
 	{
 		synchronized (this)
 		{
-			this._object = __o;
+			this._object = new WeakReference<>(__o);
 		}
 	}
 	

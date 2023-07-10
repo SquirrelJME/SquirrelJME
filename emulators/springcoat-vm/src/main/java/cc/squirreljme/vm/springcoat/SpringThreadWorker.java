@@ -1921,10 +1921,19 @@ public final class SpringThreadWorker
 					
 					// Throwing of an exception
 				case InstructionIndex.ATHROW:
-					nextpc = this.__handleException(
-						frame.<SpringObject>popFromStack(SpringObject.class));
-					if (nextpc < 0)
-						return;
+					{
+						SpringObject popped =
+							frame.<SpringObject>popFromStack(
+								SpringObject.class);
+						
+						// {@squirreljme.error BKnt Throwing null reference.}
+						if (popped == SpringNullObject.NULL)
+							throw new SpringNullPointerException("BKnt");
+						
+						nextpc = this.__handleException(popped);
+						if (nextpc < 0)
+							return;
+					}
 					break;
 					
 					// Push value

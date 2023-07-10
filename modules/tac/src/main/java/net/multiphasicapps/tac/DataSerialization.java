@@ -254,6 +254,10 @@ public final class DataSerialization
 		else if (__o instanceof __NoExceptionThrown__)
 			return "NoExceptionThrown";
 		
+		// Drop value
+		else if (__o instanceof __Drop__)
+			return "Drop";
+		
 		// Boolean values
 		else if (__o instanceof Boolean)
 			return __o.toString();

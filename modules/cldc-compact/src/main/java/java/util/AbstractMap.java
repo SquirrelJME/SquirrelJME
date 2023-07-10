@@ -10,13 +10,20 @@
 package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.MapKeySetView;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 @Api
 public abstract class AbstractMap<K, V>
 	implements Map<K, V>
 {
+	/** Key set cache. */
+	private volatile Reference<Set<K>> _keySetCache;
+	
+	/** Values cache. */
+	private volatile Reference<Collection<V>> _valuesCache;
+	
 	@Api
 	protected AbstractMap()
 	{
@@ -144,7 +151,15 @@ public abstract class AbstractMap<K, V>
 	@Override
 	public Set<K> keySet()
 	{
-		return new MapKeySetView<K, V>(this, false);
+		Reference<Set<K>> ref = this._keySetCache;
+		Set<K> rv;
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			rv = new MapKeySetView<K, V>(this, false);
+			this._keySetCache = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
 	/**
@@ -244,7 +259,16 @@ public abstract class AbstractMap<K, V>
 	@Override
 	public Collection<V> values()
 	{
-		return new __AbstractMapValues__<K, V>(this);
+		Reference<Collection<V>> ref = this._valuesCache;
+		Collection<V> rv;
+		
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			rv = new __AbstractMapValues__<K, V>(this);
+			this._valuesCache = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 }
 
