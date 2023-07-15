@@ -306,10 +306,58 @@ abstract class __CFileProxy__
 	 * @since 2023/07/15
 	 */
 	@Override
+	public CSourceWriter gotoLabel(String __target)
+		throws IOException, NullPointerException
+	{
+		this.__file().gotoLabel(__target);
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/15
+	 */
+	@Override
+	public CSourceWriter gotoLabel(CIdentifier __target)
+		throws IOException, NullPointerException
+	{
+		this.__file().gotoLabel(__target);
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/15
+	 */
+	@Override
 	public CSourceWriter indent(int __by)
 		throws IOException
 	{
 		this.__file().indent(__by);
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/15
+	 */
+	@Override
+	public CSourceWriter label(String __label)
+		throws IOException, NullPointerException
+	{
+		this.__file().label(__label);
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/15
+	 */
+	@Override
+	public CSourceWriter label(CIdentifier __label)
+		throws IOException, NullPointerException
+	{
+		this.__file().label(__label);
 		return this;
 	}
 	

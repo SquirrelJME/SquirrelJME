@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CComparison;
 import cc.squirreljme.c.CExpression;
 import cc.squirreljme.c.CExpressionBuilder;
@@ -313,9 +314,6 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
-		// All of these code variables are standardized and the same
-		__CodeVariables__ codeVars = this.__codeVars();
-		
 		// Splice method into three parts...
 		// intro, where variables go
 		// middle, where the giant switch block goes
@@ -327,7 +325,8 @@ public class ByteCodeProcessor
 			{
 				// Setup code variables where the variables get defined and
 				// such
-				this._codeVars = new __CodeVariables__(initVars);
+				__CodeVariables__ codeVars = new __CodeVariables__(initVars);
+				this._codeVars = codeVars;
 				
 				// Keep track of the current top state, so we need not worry
 				// about pushing or popping
@@ -346,6 +345,8 @@ public class ByteCodeProcessor
 			// Middle splice is the main body of the function
 			try (CFunctionBlock body = splices.splice(1))
 			{
+				__CodeVariables__ codeVars = this.__codeVars();
+				
 				// Switch case based on the current group index
 				try (CSwitchBlock cases = body.switchCase(
 					CExpressionBuilder.builder()
@@ -390,12 +391,55 @@ public class ByteCodeProcessor
 						// Write all instructions in the block
 						for (Instruction instruction :
 							basicBlock.instructions())
+						{
+							// Clear temporary count
+							codeVars._numTemporaries = 0;
+							
+							// Handle instruction
 							this.processInstruction(cases, instruction);
+							
+							// If there are temporaries, clear them out
+							if (codeVars._numTemporaries > 0)
+								cases.functionCall(
+									JvmFunctions.NVM_TEMP_DISCARD,
+									codeVars.currentFrame());
+						}
 						
 						// Do not fall through
 						cases.breakCase();
 					}
 				}
+			}
+			
+			// Declare local temporary variables
+			__CodeVariables__ codeVars = this.__codeVars();
+			if (codeVars._maxTemporaries > 0)
+				try (CFunctionBlock initVars = splices.splice(0))
+				{
+					initVars.declare(CVariable.of(
+						JvmTypes.ANY.type().arrayType(
+							codeVars._maxTemporaries),
+						Constants.TEMPORARY));
+				}
+			
+			// End outer base method with a throw check always
+			try (CFunctionBlock outroBlock = splices.splice(2))
+			{
+				// This is the outro of the method
+				outroBlock.label(Constants.OUTRO_LABEL);
+				
+				// Always check throwing
+				this.__checkThrow(outroBlock);
+				
+				// Return true from this call instance
+				outroBlock.returnValue(Constants.TRUE);
+				
+				// Exception handler implementation, keeps it together
+				outroBlock.label(Constants.THROW_HANDLER_LABEL);
+				this.__handleThrow(outroBlock);
+				
+				// Exception was thrown, so return false to indicate it
+				outroBlock.returnValue(Constants.FALSE);
 			}
 		}
 	}
@@ -637,15 +681,15 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVariables = this.__codeVars();
+		__CodeVariables__ codeVars = this.__codeVars();
 		
 		// Check if there is something waiting to be thrown
 		try (CIfBlock iffy = __block.branchIf(CExpressionBuilder.builder()
-				.compare(codeVariables.waitingThrown(),
+				.compare(codeVars.waitingThrown(),
 					CComparison.NOT_EQUALS, CVariable.NULL)
 			.build()))
 		{
-			Debugging.todoNote("Thrown inner block?");
+			iffy.gotoLabel(Constants.THROW_HANDLER_LABEL);
 		}
 	}
 	
@@ -670,9 +714,7 @@ public class ByteCodeProcessor
 		__CodeVariables__ codeVars = this.__codeVars();
 		__block.functionCall((__store ? JvmFunctions.NVM_LOCAL_POP_REFERENCE :
 				JvmFunctions.NVM_LOCAL_PUSH_REFERENCE),
-			CExpressionBuilder.builder()
-				.identifier(codeVars.currentFrame())
-				.build(),
+			codeVars.currentFrame(),
 			CExpressionBuilder.builder()
 				.number(__localDx)
 				.build());
@@ -695,14 +737,8 @@ public class ByteCodeProcessor
 		__CodeVariables__ codeVariables = this.__codeVars();
 		
 		// Read in object off the stack
-		CExpression object = codeVariables.temporary(0,
-			JvmTypes.JOBJECT.type().pointerType());
-		__block.variableSetViaFunction(object,
-				JvmFunctions.NVM_STACK_POP_REFERENCE,
-				codeVariables.currentFrame());
-		
-		// Copy to throwing
-		__block.variableSet(codeVariables.waitingThrown(), object);
+		__block.functionCall(JvmFunctions.NVM_STACK_POP_REFERENCE_THEN_THROW,
+			codeVariables.currentFrame());
 		
 		// Perform throw check now
 		this.__checkThrow(__block);
@@ -724,34 +760,29 @@ public class ByteCodeProcessor
 		if (__block == null || __field == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVariables = this.__codeVars();
+		__CodeVariables__ codeVars = this.__codeVars();
 		
 		// Read value
-		CExpression value = codeVariables.temporary(0,
-			JvmTypes.ANY.type());
-		__block.functionCall(JvmFunctions.NVM_STACK_POP_ANY,
-			codeVariables.currentFrame(),
-			CExpressionBuilder.builder()
-				.reference(value)
-				.build());
+		CExpression value = codeVars.temporary(0,
+			JvmTypes.TEMP_INDEX.type());
+		__block.variableSetViaFunction(value,
+			JvmFunctions.NVM_STACK_POP_ANY_TO_TEMP,
+			codeVars.currentFrame());
 		
 		// Read instance to act on
-		CExpression instance = codeVariables.temporary(0,
-			JvmTypes.JOBJECT.type().pointerType());
+		CExpression instance = codeVars.temporary(1,
+			JvmTypes.TEMP_INDEX.type());
 		__block.variableSetViaFunction(instance,
-			JvmFunctions.NVM_STACK_POP_REFERENCE,
-			codeVariables.currentFrame());
+			JvmFunctions.NVM_STACK_POP_REFERENCE_TO_TEMP,
+			codeVars.currentFrame());
 		
 		// Call put handler
 		__block.functionCall(JvmFunctions.NVM_FIELD_PUT,
-			codeVariables.currentFrame(),
-			instance,
-			CExpressionBuilder.builder()
-				.reference(value)
-			.build());
-		
-		// Were any exceptions emitted?
-		this.__checkThrow(__block);
+			codeVars.currentFrame(),
+			codeVars.temporaryReference(instance,
+				JvmTypes.JOBJECT.type().pointerType()),
+			codeVars.temporaryReference(value,
+				JvmTypes.ANY.type()));
 	}
 	
 	/**
@@ -925,9 +956,6 @@ public class ByteCodeProcessor
 			codeVariables.currentState(),
 			codeVariables.currentThread(),
 			codeVariables.linkageReference(__linkage, __linkWhat));
-		
-		// Did this throw anything?
-		this.__checkThrow(__block);
 	}
 	
 	/**
@@ -1261,6 +1289,9 @@ public class ByteCodeProcessor
 			CExpressionBuilder.builder()
 				.identifier(codeVars.currentState())
 				.build());
+		
+		// Jump to the outro directly
+		__block.gotoLabel(Constants.OUTRO_LABEL);
 	}
 	
 	/**
@@ -1280,15 +1311,18 @@ public class ByteCodeProcessor
 		__CodeVariables__ codeVars = this.__codeVars();
 		
 		// Pop into return value storage
-		__block.functionCall(JvmFunctions.NVM_STACK_POP_ANY,
-			codeVars.currentFrame(),
-			codeVars.returnValue());
+		CExpression value = codeVars.temporary(0,
+			JvmTypes.TEMP_INDEX.type());
+		__block.variableSetViaFunction(value,
+			JvmFunctions.NVM_STACK_POP_ANY_TO_TEMP,
+			codeVars.currentFrame());
 		
 		// Do actual return
 		__block.functionCall(JvmFunctions.NVM_RETURN_FROM_METHOD,
-			CExpressionBuilder.builder()
-				.identifier(codeVars.currentState())
-				.build());
+			codeVars.temporary(value, JvmTypes.ANY.type()));
+		
+		// Jump to the outro directly
+		__block.gotoLabel(Constants.OUTRO_LABEL);
 	}
 	
 	/**
@@ -1337,6 +1371,26 @@ public class ByteCodeProcessor
 			// Count in shuffle?
 			Debugging.todoNote("Count up/down in shuffle?");
 		}
+	}
+	
+	/**
+	 * Handles an exception being thrown.
+	 * 
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/15
+	 */
+	private void __handleThrow(CFunctionBlock __block)
+		throws IOException, NullPointerException
+	{
+		if (__block == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVars = this.__codeVars();
+		
+		// Execute throw
+		__block.functionCall(JvmFunctions.NVM_THROW_EXECUTE,
+			codeVars.currentFrame());
 	}
 	
 	/**

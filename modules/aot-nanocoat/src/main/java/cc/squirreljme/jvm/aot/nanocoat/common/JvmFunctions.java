@@ -296,6 +296,23 @@ public enum JvmFunctions
 		}
 	},
 	
+	/** Pop a reference on the stack to a temporary variable. */
+	NVM_STACK_POP_ANY_TO_TEMP
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/15
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_stackPopAnyToTemp",
+				JvmTypes.TEMP_INDEX.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"));
+		}
+	},
+	
 	/** Pop integer from stack. */
 	NVM_STACK_POP_INTEGER
 	{
@@ -313,7 +330,7 @@ public enum JvmFunctions
 		}
 	},
 	
-	/** Pop from stack. */
+	/** Pop reference from stack. */
 	NVM_STACK_POP_REFERENCE
 	{
 		/**
@@ -325,6 +342,24 @@ public enum JvmFunctions
 		{
 			return CFunctionType.of("sjme_nvm_stackPopReference",
 				JvmTypes.JOBJECT.type().pointerType(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"));
+		}
+	},
+	
+	/** Pop reference from stack, then throw it. */
+	NVM_STACK_POP_REFERENCE_THEN_THROW
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/03
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of(
+				"sjme_nvm_stackPopReferenceThenThrow",
+				JvmTypes.JBOOLEAN.type().pointerType(),
 				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
 					"frame"));
 		}
@@ -415,6 +450,23 @@ public enum JvmFunctions
 		CFunctionType __build()
 		{
 			return CFunctionType.of("sjme_nvm_tempDiscard",
+				JvmTypes.JBOOLEAN.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"));
+		}
+	},
+	
+	/** Execute throw from method. */
+	NVM_THROW_EXECUTE
+	{
+	 /**
+		 * {@inheritDoc}
+		 * @since 2023/07/15
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_throwExecute",
 				JvmTypes.JBOOLEAN.type(),
 				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
 					"frame"));

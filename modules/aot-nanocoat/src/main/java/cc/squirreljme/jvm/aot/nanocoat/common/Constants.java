@@ -63,4 +63,12 @@ public interface Constants
 	/** Zero value. */
 	CExpression ZERO =
 		CBasicExpression.of("0");
+	
+	/** Label for the method outro. */
+	CIdentifier OUTRO_LABEL =
+		CIdentifier.of("outro");
+	
+	/** The label for the throw handler. */
+	CIdentifier THROW_HANDLER_LABEL =
+		CIdentifier.of("throwHandler");
 }

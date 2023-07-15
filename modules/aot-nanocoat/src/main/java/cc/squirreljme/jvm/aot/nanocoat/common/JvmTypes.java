@@ -62,6 +62,8 @@ public enum JvmTypes
 					"jint")
 				.member(JvmTypes.JOBJECT.type().pointerType(),
 					"jobject")
+				.member(JvmTypes.TEMP_INDEX.type(),
+					"tempIndex")
 				.build();
 		}
 	},

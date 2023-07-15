@@ -1,5 +1,6 @@
 package cc.squirreljme.c;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.collections.UnmodifiableList;
@@ -41,5 +42,25 @@ public class CBasicExpression
 	public static CExpression of(String... __tokens)
 	{
 		return new CBasicExpression(__tokens.clone());
+	}
+	
+	/**
+	 * References the given value.
+	 * 
+	 * @param __value The value to reference.
+	 * @return The referenced value.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/15
+	 */
+	public static CExpression reference(CExpression __value)
+		throws IOException, NullPointerException
+	{
+		if (__value == null)
+			throw new NullPointerException("NARG");
+		
+		return CExpressionBuilder.builder()
+			.reference(__value)
+			.build();
 	}
 }

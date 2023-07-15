@@ -264,6 +264,30 @@ public interface CSourceWriter
 		throws IOException, NullPointerException;
 	
 	/**
+	 * Goes to a label.
+	 * 
+	 * @param __target The target label.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/15
+	 */
+	CSourceWriter gotoLabel(String __target)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * Goes to a label.
+	 * 
+	 * @param __target The target label.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/15
+	 */
+	CSourceWriter gotoLabel(CIdentifier __target)
+		throws IOException, NullPointerException;
+	
+	/**
 	 * Changes the output indentation.
 	 * 
 	 * @param __by The amount to change the indentation by.
@@ -273,6 +297,30 @@ public interface CSourceWriter
 	 */
 	CSourceWriter indent(int __by)
 		throws IOException;
+	
+	/**
+	 * Defines a label.
+	 * 
+	 * @param __label The label to define.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/15
+	 */
+	CSourceWriter label(String __label)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * Defines a label.
+	 * 
+	 * @param __label The label to define.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/15
+	 */
+	CSourceWriter label(CIdentifier __label)
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Writes the specified number.

@@ -9,23 +9,20 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CExpression;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFunctionBlock;
-import cc.squirreljme.c.CPointerType;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CType;
+import cc.squirreljme.c.CTypeDefType;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
-import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Container;
-import cc.squirreljme.jvm.aot.nanocoat.linkage.InvokeSpecialLinkage;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Linkage;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 
 /**
  * Utility class for making code variables.
@@ -37,6 +34,11 @@ public final class __CodeVariables__
 	/** Initial variables output. */
 	private final CFunctionBlock _initVars;
 	
+	/** The current number of temporaries. */
+	volatile int _numTemporaries;
+	
+	/** The current maximum number of temporaries. */
+	volatile int _maxTemporaries;
 	
 	/**
 	 * Initializes the code variables.
@@ -150,6 +152,10 @@ public final class __CodeVariables__
 		if (__index < 0)
 			throw new IndexOutOfBoundsException("IOOB");
 		
+		// Bump up count
+		this._numTemporaries = Math.max(this._numTemporaries, __index);
+		this._maxTemporaries = Math.max(this._maxTemporaries, __index);
+		
 		// Construct expression to access it
 		return CExpressionBuilder.builder()
 			.identifier(Constants.TEMPORARY)
@@ -174,9 +180,35 @@ public final class __CodeVariables__
 		if (__type == null)
 			throw new NullPointerException("NARG");
 		
+		// Bump up count
+		this._numTemporaries = Math.max(this._numTemporaries, __index);
+		this._maxTemporaries = Math.max(this._maxTemporaries, __index);
+		
 		// Passed ANY, but we really just want the existing any
 		if (JvmTypes.ANY.type().equals(__type))
 			return this.temporary(__index);
+		return this.temporary(this.temporary(__index), __type);
+	}
+	
+	/**
+	 * Returns a temporary with the given type expression.
+	 * 
+	 * @param __dx The index expression.
+	 * @param __type The type used.
+	 * @return The expression to refer to it by type.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/15
+	 */
+	public CExpression temporary(CExpression __dx, CType __type)
+		throws IOException, NullPointerException
+	{
+		if (__dx == null || __type == null)
+			throw new NullPointerException("NARG");
+		
+		// Self any type already? Just use the single expression
+		if (JvmTypes.ANY.type().equals(__type))
+			return __dx;
 		
 		// Determine the type ID by looking for union members
 		CVariable member = null;
@@ -194,12 +226,32 @@ public final class __CodeVariables__
 		
 		// Construct expression to access it
 		return CExpressionBuilder.builder()
-			.expression(this.temporary(__index))
+			.expression(__dx)
 			.structAccess()
 			.identifier("data")
 			.structAccess()
 			.identifier(member)
 			.build();
+	}
+	
+	/**
+	 * Returns a reference to a temporary known value.
+	 * 
+	 * @param __dx The index expression.
+	 * @param __type The type used.
+	 * @return The expression to refer to it by type.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/15
+	 */
+	public CExpression temporaryReference(CExpression __dx, CType __type)
+		throws IOException, NullPointerException
+	{
+		if (__dx == null || __type == null)
+			throw new NullPointerException("NARG");
+		
+		return CBasicExpression.reference(
+			this.temporary(__dx, __type));
 	}
 	
 	/**

@@ -453,11 +453,61 @@ public class CFile
 	 * @since 2023/07/15
 	 */
 	@Override
+	public CSourceWriter gotoLabel(String __target)
+		throws IOException, NullPointerException
+	{
+		return this.gotoLabel(CIdentifier.of(__target));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/15
+	 */
+	@Override
+	public CSourceWriter gotoLabel(CIdentifier __target)
+		throws IOException, NullPointerException
+	{
+		if (__target == null)
+			throw new NullPointerException("NARG");
+		
+		return this.tokens("goto", __target, ";");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/15
+	 */
+	@Override
 	public CSourceWriter indent(int __by)
 		throws IOException
 	{
 		this.out.indent(__by);
 		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/15
+	 */
+	@Override
+	public CSourceWriter label(String __label)
+		throws IOException, NullPointerException
+	{
+		return this.label(CIdentifier.of(__label));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/15
+	 */
+	@Override
+	public CSourceWriter label(CIdentifier __label)
+		throws IOException, NullPointerException
+	{
+		if (__label == null)
+			throw new NullPointerException("NARG");
+		
+		return this.tokens(__label, ":");
 	}
 	
 	/**
