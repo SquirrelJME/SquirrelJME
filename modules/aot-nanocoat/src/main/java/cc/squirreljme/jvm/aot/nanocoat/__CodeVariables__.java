@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CExpression;
 import cc.squirreljme.c.CExpressionBuilder;
+import cc.squirreljme.c.CFunctionBlock;
 import cc.squirreljme.c.CPointerType;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CType;
@@ -33,31 +34,24 @@ import java.lang.ref.WeakReference;
  */
 public final class __CodeVariables__
 {
-	/** Instance of this class. */
-	private static volatile __CodeVariables__ _INSTANCE;
+	/** Initial variables output. */
+	private final CFunctionBlock _initVars;
 	
-	/** Current frame cache. */
-	private volatile Reference<CVariable> _currentFrame;
-	
-	/** Current state cache. */
-	private volatile Reference<CVariable> _currentState;
-	
-	/** Current thread cache. */
-	private volatile Reference<CVariable> _currentThread;
-	
-	/** Waiting to be thrown. */
-	private volatile Reference<CExpression> _waitingThrown;
-	
-	/** Return value storage. */
-	private volatile Reference<CExpression> _returnValue;
 	
 	/**
-	 * Not used.
+	 * Initializes the code variables.
 	 * 
-	 * @since 2023/06/19
+	 * @param __initVars The initial variables to write in.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/15
 	 */
-	private __CodeVariables__()
+	__CodeVariables__(CFunctionBlock __initVars)
+		throws NullPointerException
 	{
+		if (__initVars == null)
+			throw new NullPointerException("NARG");
+		
+		this._initVars = __initVars;
 	}
 	
 	/**
@@ -68,21 +62,7 @@ public final class __CodeVariables__
 	 */
 	public CVariable currentFrame()
 	{
-		Reference<CVariable> ref = this._currentFrame;
-		CVariable rv;
-		if (ref == null || (rv = ref.get()) == null)
-		{
-			rv = JvmFunctions.METHOD_CODE.function()
-				.argument("currentThread")
-				.type(CPointerType.class)
-				.dereferenceType()
-				.cast(CStructType.class)
-				.member("top")
-				.rename("currentFrame");
-			this._currentFrame = new WeakReference<>(rv);
-		}
-		
-		return rv;
+		return __StaticCodeVariables__.currentFrame();
 	}
 	
 	/**
@@ -93,16 +73,7 @@ public final class __CodeVariables__
 	 */
 	public CVariable currentState()
 	{
-		Reference<CVariable> ref = this._currentState;
-		CVariable rv;
-		if (ref == null || (rv = ref.get()) == null)
-		{
-			rv = JvmFunctions.METHOD_CODE.function()
-				.argument("currentState");
-			this._currentState = new WeakReference<>(rv);
-		}
-		
-		return rv;
+		return __StaticCodeVariables__.currentState();
 	}
 	
 	/**
@@ -113,16 +84,7 @@ public final class __CodeVariables__
 	 */
 	public CVariable currentThread()
 	{
-		Reference<CVariable> ref = this._currentState;
-		CVariable rv;
-		if (ref == null || (rv = ref.get()) == null)
-		{
-			rv = JvmFunctions.METHOD_CODE.function()
-				.argument("currentThread");
-			this._currentState = new WeakReference<>(rv);
-		}
-		
-		return rv;
+		return __StaticCodeVariables__.currentThread();
 	}
 	
 	/**
@@ -169,21 +131,7 @@ public final class __CodeVariables__
 	public CExpression returnValue()
 		throws IOException
 	{
-		Reference<CExpression> ref = this._returnValue;
-		CExpression rv;
-		
-		if (ref == null || (rv = ref.get()) == null)
-		{
-			rv = CExpressionBuilder.builder()
-				.identifier(this.currentFrame())
-				.dereferenceStruct()
-				.identifier(JvmTypes.VMFRAME.type(CStructType.class)
-					.member("returnValue"))
-				.build();
-			this._waitingThrown = new WeakReference<>(rv);
-		}
-		
-		return rv;
+		return __StaticCodeVariables__.returnValue();
 	}
 	
 	/**
@@ -264,37 +212,6 @@ public final class __CodeVariables__
 	public CExpression waitingThrown()
 		throws IOException
 	{
-		Reference<CExpression> ref = this._waitingThrown;
-		CExpression rv;
-		
-		if (ref == null || (rv = ref.get()) == null)
-		{
-			rv = CExpressionBuilder.builder()
-				.identifier(this.currentFrame())
-				.dereferenceStruct()
-				.identifier(JvmTypes.VMFRAME.type(CStructType.class)
-					.member("waitingThrown"))
-				.build();
-			this._waitingThrown = new WeakReference<>(rv);
-		}
-		
-		return rv;
-	}
-	
-	/**
-	 * Returns the instance of the code variables.
-	 * 
-	 * @return The instance of this.
-	 * @since 2023/06/19
-	 */
-	public static final __CodeVariables__ instance()
-	{
-		__CodeVariables__ rv = __CodeVariables__._INSTANCE;
-		if (rv != null)
-			return rv;
-		
-		rv = new __CodeVariables__();
-		__CodeVariables__._INSTANCE = rv;
-		return rv;
+		return __StaticCodeVariables__.waitingThrown();
 	}
 }

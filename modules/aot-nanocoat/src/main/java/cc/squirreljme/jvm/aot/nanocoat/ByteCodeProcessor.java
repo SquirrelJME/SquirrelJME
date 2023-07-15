@@ -13,6 +13,7 @@ import cc.squirreljme.c.CComparison;
 import cc.squirreljme.c.CExpression;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFunctionBlock;
+import cc.squirreljme.c.CFunctionBlockSplices;
 import cc.squirreljme.c.CIfBlock;
 import cc.squirreljme.c.CMathOperator;
 import cc.squirreljme.c.CPointerType;
@@ -79,6 +80,9 @@ public class ByteCodeProcessor
 	/** Address to basic block group IDs. */
 	private final Map<Integer, Integer> _addrToGroupId =
 		new SortedTreeMap<>();
+	
+	/** Code variables for writing. */
+	private volatile __CodeVariables__ _codeVars;
 	
 	/**
 	 * Initializes the byte code processor.
@@ -310,68 +314,88 @@ public class ByteCodeProcessor
 			throw new NullPointerException("NARG");
 		
 		// All of these code variables are standardized and the same
-		__CodeVariables__ codeVars = __CodeVariables__.instance();
+		__CodeVariables__ codeVars = this.__codeVars();
 		
-		// Keep track of the current top state, so we need not worry about
-		// pushing or popping
-		__block.declare(codeVars.currentFrame());
-		
-		// Set known variables
-		__block.variableSet(codeVars.currentFrame(),
-			CExpressionBuilder.builder()
-				.identifier(codeVars.currentThread())
-				.dereferenceStruct()
-				.identifier(JvmTypes.VMTHREAD.type(CStructType.class)
-					.member("top"))
-				.build());
-		
-		// Switch case based on the current group index
-		try (CSwitchBlock cases = __block.switchCase(
-			CExpressionBuilder.builder()
-				.identifier(codeVars.currentFrame())
-				.dereferenceStruct()
-				.identifier(JvmTypes.VMFRAME.type(CStructType.class)
-					.member("groupIndex"))
-				.build()))
+		// Splice method into three parts...
+		// intro, where variables go
+		// middle, where the giant switch block goes
+		// outro, where the end stuff goes to clean up accordingly
+		try (CFunctionBlockSplices splices = __block.splice(3))
 		{
-			// Start of function call, initializes accordingly
-			cases.nextCase(Constants.SJME_NANOCOAT_START_CALL);
-			
-			// If synchronized, lock on monitor implicitly here
-			Method method = this.method;
-			if (method.flags().isSynchronized())
-				throw Debugging.todo();
-			
-			// --- Initialization ---
-			// Return here so the initialization does get complete
-			__block.returnValue(Constants.TRUE);
-				
-			// Return from call when execution of method finishes
-			cases.nextCase(Constants.SJME_NANOCOAT_END_CALL);
-		
-			// --- Exit ---
-			// If synchronized, unlock on monitor implicitly here
-			if (method.flags().isSynchronized())
-				throw Debugging.todo();
-			
-			// Now return
-			__block.returnValue(Constants.FALSE);
-			
-			// --- Instruction Blocks ---
-			// Write each basic block
-			for (Map.Entry<Integer, BasicBlock> entry :
-				this._basicBlocks.entrySet())
+			// Write initial top variables
+			try (CFunctionBlock initVars = splices.splice(0))
 			{
-				// Setup next case
-				BasicBlock basicBlock = entry.getValue();
-				cases.nextCase(entry.getKey());
+				// Setup code variables where the variables get defined and
+				// such
+				this._codeVars = new __CodeVariables__(initVars);
 				
-				// Write all instructions in the block
-				for (Instruction instruction : basicBlock.instructions())
-					this.processInstruction(cases, instruction);
+				// Keep track of the current top state, so we need not worry
+				// about pushing or popping
+				initVars.declare(codeVars.currentFrame());
 				
-				// Do not fall through
-				cases.breakCase();
+				// Set known variables
+				initVars.variableSet(codeVars.currentFrame(),
+					CExpressionBuilder.builder()
+						.identifier(codeVars.currentThread())
+						.dereferenceStruct()
+						.identifier(JvmTypes.VMTHREAD.type(CStructType.class)
+							.member("top"))
+						.build());
+			}
+			
+			// Middle splice is the main body of the function
+			try (CFunctionBlock body = splices.splice(1))
+			{
+				// Switch case based on the current group index
+				try (CSwitchBlock cases = body.switchCase(
+					CExpressionBuilder.builder()
+						.identifier(codeVars.currentFrame())
+						.dereferenceStruct()
+						.identifier(JvmTypes.VMFRAME.type(CStructType.class)
+							.member("groupIndex"))
+						.build()))
+				{
+					// Start of function call, initializes accordingly
+					cases.nextCase(Constants.SJME_NANOCOAT_START_CALL);
+					
+					// If synchronized, lock on monitor implicitly here
+					Method method = this.method;
+					if (method.flags().isSynchronized())
+						throw Debugging.todo();
+					
+					// --- Initialization ---
+					// Return here so the initialization does get complete
+					body.returnValue(Constants.TRUE);
+						
+					// Return from call when execution of method finishes
+					cases.nextCase(Constants.SJME_NANOCOAT_END_CALL);
+				
+					// --- Exit ---
+					// If synchronized, unlock on monitor implicitly here
+					if (method.flags().isSynchronized())
+						throw Debugging.todo();
+					
+					// Now return
+					body.returnValue(Constants.FALSE);
+					
+					// --- Instruction Blocks ---
+					// Write each basic block
+					for (Map.Entry<Integer, BasicBlock> entry :
+						this._basicBlocks.entrySet())
+					{
+						// Setup next case
+						BasicBlock basicBlock = entry.getValue();
+						cases.nextCase(entry.getKey());
+						
+						// Write all instructions in the block
+						for (Instruction instruction :
+							basicBlock.instructions())
+							this.processInstruction(cases, instruction);
+						
+						// Do not fall through
+						cases.breakCase();
+					}
+				}
 			}
 		}
 	}
@@ -587,6 +611,20 @@ public class ByteCodeProcessor
 	}
 	
 	/**
+	 * Returns the code variables for the processor.
+	 * 
+	 * @return The code variables.
+	 * @since 2023/07/05
+	 */
+	private __CodeVariables__ __codeVars()
+	{
+		__CodeVariables__ rv = this._codeVars;
+		if (rv == null)
+			throw Debugging.oops();
+		return rv;
+	}
+	
+	/**
 	 * Checks if an exception was thrown.
 	 * 
 	 * @throws IOException On write errors.
@@ -599,7 +637,7 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		__CodeVariables__ codeVariables = this.__codeVars();
 		
 		// Check if there is something waiting to be thrown
 		try (CIfBlock iffy = __block.branchIf(CExpressionBuilder.builder()
@@ -629,7 +667,7 @@ public class ByteCodeProcessor
 			throw new NullPointerException("NARG");
 		
 		// Copy reference over
-		__CodeVariables__ codeVars = __CodeVariables__.instance();
+		__CodeVariables__ codeVars = this.__codeVars();
 		__block.functionCall((__store ? JvmFunctions.NVM_LOCAL_POP_REFERENCE :
 				JvmFunctions.NVM_LOCAL_PUSH_REFERENCE),
 			CExpressionBuilder.builder()
@@ -654,7 +692,7 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		__CodeVariables__ codeVariables = this.__codeVars();
 		
 		// Read in object off the stack
 		CExpression object = codeVariables.temporary(0,
@@ -686,7 +724,7 @@ public class ByteCodeProcessor
 		if (__block == null || __field == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		__CodeVariables__ codeVariables = this.__codeVars();
 		
 		// Read value
 		CExpression value = codeVariables.temporary(0,
@@ -764,7 +802,7 @@ public class ByteCodeProcessor
 		if (__block == null || __compare == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		__CodeVariables__ codeVariables = this.__codeVars();
 		
 		// Pop from stack
 		CExpression a = codeVariables.temporary(0,
@@ -799,7 +837,7 @@ public class ByteCodeProcessor
 		if (__block == null || __compare == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		__CodeVariables__ codeVariables = this.__codeVars();
 		
 		// Pop from stack
 		CExpression value = codeVariables.temporary(0,
@@ -830,7 +868,7 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		__CodeVariables__ codeVariables = this.__codeVars();
 		
 		// Pop from stack
 		CExpression object = codeVariables.temporary(0,
@@ -879,7 +917,7 @@ public class ByteCodeProcessor
 			__funcHandler == null || __linkWhat == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		__CodeVariables__ codeVariables = this.__codeVars();
 		
 		// Just perform the function handler call, it will accordingly
 		// put things on the stack and otherwise
@@ -959,7 +997,7 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVars = __CodeVariables__.instance();
+		__CodeVariables__ codeVars = this.__codeVars();
 		
 		// Pop over
 		__block.functionCall((__store ? JvmFunctions.NVM_LOCAL_POP_INTEGER :
@@ -988,7 +1026,7 @@ public class ByteCodeProcessor
 		if (__block == null || __jumpTable == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		__CodeVariables__ codeVariables = this.__codeVars();
 		
 		// Read in the key for jumping
 		CExpression key = codeVariables.temporary(0,
@@ -1047,7 +1085,7 @@ public class ByteCodeProcessor
 		if (__block == null || __value == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		__CodeVariables__ codeVariables = this.__codeVars();
 		
 		// Depends on the type
 		CExpression temp;
@@ -1097,7 +1135,7 @@ public class ByteCodeProcessor
 		if (__block == null || __op == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		__CodeVariables__ codeVariables = this.__codeVars();
 		
 		CExpression a = codeVariables.temporary(0,
 			JvmTypes.JINT.type());
@@ -1138,7 +1176,7 @@ public class ByteCodeProcessor
 		if (__block == null || __what == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		__CodeVariables__ codeVariables = this.__codeVars();
 		
 		// Allocate object
 		CExpression object = codeVariables.temporary(0,
@@ -1174,7 +1212,7 @@ public class ByteCodeProcessor
 		if (__block == null || __componentType == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		__CodeVariables__ codeVariables = this.__codeVars();
 		
 		// Read in length
 		CExpression length = codeVariables.temporary(0,
@@ -1216,7 +1254,7 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVars = __CodeVariables__.instance();
+		__CodeVariables__ codeVars = this.__codeVars();
 		
 		// Do actual return
 		__block.functionCall(JvmFunctions.NVM_RETURN_FROM_METHOD,
@@ -1239,7 +1277,7 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVars = __CodeVariables__.instance();
+		__CodeVariables__ codeVars = this.__codeVars();
 		
 		// Pop into return value storage
 		__block.functionCall(JvmFunctions.NVM_STACK_POP_ANY,
@@ -1269,7 +1307,7 @@ public class ByteCodeProcessor
 		if (__block == null || __function == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVars = __CodeVariables__.instance();
+		__CodeVariables__ codeVars = this.__codeVars();
 		
 		// Need to read in for temporaries, using any types are simpler
 		int inCount = __function.in.logicalMax;
@@ -1316,7 +1354,7 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVariables = __CodeVariables__.instance();
+		__CodeVariables__ codeVariables = this.__codeVars();
 		
 		__block.variableSet(CExpressionBuilder.builder()
 				.identifier(codeVariables.currentFrame())

@@ -10,6 +10,7 @@
 package cc.squirreljme.c;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.IOException;
 
 /**
  * Contains multiple splices for a function, may be closed accordingly.
@@ -44,7 +45,7 @@ public final class CFunctionBlockSplices
 	 */
 	@Override
 	public void close()
-		throws Exception
+		throws IOException
 	{
 		// Close all blocks in the order they were defined, but use the
 		// internal close logic
