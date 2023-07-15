@@ -348,6 +348,24 @@ public class CFile
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/05/30
+	 */
+	@Override
+	public CFunctionBlock define(CFunctionType __function)
+		throws IOException, NullPointerException
+	{
+		if (__function == null)
+			throw new NullPointerException("NARG");
+		
+		// Open up function
+		this.tokens(__function.declareTokens(null), "{");
+		
+		// Push block for it
+		return this.__pushBlock(new CFunctionBlock(this), true);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2023/06/24
 	 */
 	@Override
@@ -432,20 +450,14 @@ public class CFile
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2023/05/30
+	 * @since 2023/07/15
 	 */
 	@Override
-	public CFunctionBlock define(CFunctionType __function)
-		throws IOException, NullPointerException
+	public CSourceWriter indent(int __by)
+		throws IOException
 	{
-		if (__function == null)
-			throw new NullPointerException("NARG");
-		
-		// Open up function
-		this.tokens(__function.declareTokens(null), "{");
-		
-		// Push block for it
-		return this.__pushBlock(new CFunctionBlock(this), true);
+		this.out.indent(__by);
+		return this;
 	}
 	
 	/**

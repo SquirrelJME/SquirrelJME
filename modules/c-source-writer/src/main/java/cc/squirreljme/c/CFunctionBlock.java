@@ -9,7 +9,9 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.c.out.StringCollectionCTokenOutput;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * C function.
@@ -29,7 +31,21 @@ public class CFunctionBlock
 	CFunctionBlock(CSourceWriter __ref)
 		throws NullPointerException
 	{
-		super(__ref, "}");
+		this(__ref, "}");
+	}
+	
+	/**
+	 * Initializes the C function block.
+	 *
+	 * @param __ref The reference to use.
+	 * @param __closing The closing token.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/15
+	 */
+	CFunctionBlock(CSourceWriter __ref, String __closing)
+		throws NullPointerException
+	{
+		super(__ref, __closing);
 	}
 	
 	/**
@@ -53,6 +69,43 @@ public class CFunctionBlock
 		// Push
 		CIfBlock rv = new CIfBlock(this);
 		return this.__file().__pushBlock(rv, true);
+	}
+	
+	/**
+	 * Splices the function so that multiple regions may be written at once,
+	 * when the returned splices are closed then the tokens will be
+	 * written to the output. This is
+	 * so that there can be regions written at the same time such as local
+	 * variable or the main function body.
+	 * 
+	 * @return The output splices.
+	 * @throws IllegalArgumentException If the count is zero or negative.
+	 * @throws IOException On write errors.
+	 * @since 2023/07/15
+	 */
+	public CFunctionBlockSplices splice(int __count)
+		throws IllegalArgumentException, IOException
+	{
+		// {@squirreljme.error CW0m Splice with zero or negative outputs.}
+		if (__count <= 0)
+			throw new IllegalArgumentException("CW0m");
+		
+		// Setup outputs
+		__CFunctionSplice__[] blocks = new __CFunctionSplice__[__count];
+		for (int i = 0; i < __count; i++)
+		{
+			StringCollectionCTokenOutput outTokens =
+				new StringCollectionCTokenOutput(new ArrayList<String>(),
+					true);
+			CFile outFile = new CFile(outTokens);
+			
+			// Set output accordingly
+			blocks[i] = new __CFunctionSplice__(outFile, outTokens,
+				this);
+		}
+		
+		// Self
+		return new CFunctionBlockSplices(blocks);
 	}
 	
 	/**

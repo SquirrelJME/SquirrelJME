@@ -9,7 +9,6 @@
 
 package cc.squirreljme.c.out;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.util.Collection;
 
@@ -21,8 +20,16 @@ import java.util.Collection;
 public class StringCollectionCTokenOutput
 	implements CTokenOutput
 {
+	/** Special forced newline instance. */
+	@SuppressWarnings("StringOperationCanBeSimplified")
+	public static final String FORCED_NEWLINE =
+		new String("\n");
+	
 	/** The output collection. */
 	protected final Collection<String> out;
+	
+	/** Is whitespace recorded for this output? */
+	protected final boolean whitespace;
 	
 	/**
 	 * Initializes the output to the string collection.
@@ -40,6 +47,7 @@ public class StringCollectionCTokenOutput
 			throw new NullPointerException("NARG");
 		
 		this.out = __out;
+		this.whitespace = __whitespace;
 	}
 	
 	/**
@@ -61,6 +69,8 @@ public class StringCollectionCTokenOutput
 	public void indent(int __adjust)
 	{
 		// Does nothing, string collection lacks this completely
+		if (this.whitespace)
+			this.out.add("\t" + (char)__adjust);
 	}
 	
 	/**
@@ -73,6 +83,10 @@ public class StringCollectionCTokenOutput
 	{
 		// Only if forced
 		if (__force)
+			this.out.add(StringCollectionCTokenOutput.FORCED_NEWLINE);
+		
+		// Only if whitespace is to be recorded
+		else if (this.whitespace)
 			this.out.add("\n");
 	}
 	
@@ -95,7 +109,9 @@ public class StringCollectionCTokenOutput
 	public void space()
 		throws IOException
 	{
-		// Does nothing, string collection lacks this completely
+		// Only if whitespace is to be recorded
+		if (this.whitespace)
+			this.out.add(" ");
 	}
 	
 	/**
@@ -106,7 +122,9 @@ public class StringCollectionCTokenOutput
 	public void tab()
 		throws IOException
 	{
-		// Does nothing, string collection lacks this completely
+		// Only if whitespace is to be recorded
+		if (this.whitespace)
+			this.out.add("\t");
 	}
 	
 	/**
@@ -123,10 +141,10 @@ public class StringCollectionCTokenOutput
 		Collection<String> out = this.out;
 		
 		// Add to the output
-		out.add(__cq.toString());
+		out.add((__cq instanceof String ? (String)__cq : __cq.toString()));
 		
 		// Force newline at end, if preprocessor for example?
 		if (__forceNewline)
-			out.add("\n");
+			out.add(StringCollectionCTokenOutput.FORCED_NEWLINE);
 	}
 }

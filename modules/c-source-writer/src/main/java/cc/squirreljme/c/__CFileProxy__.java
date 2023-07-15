@@ -57,7 +57,8 @@ abstract class __CFileProxy__
 	public CSourceWriter array(Object... __values)
 		throws IOException
 	{
-		return this.__file().array(__values);
+		this.__file().array(__values);
+		return this;
 	}
 	
 	/**
@@ -68,7 +69,8 @@ abstract class __CFileProxy__
 	public CSourceWriter array(boolean... __values)
 		throws IOException
 	{
-		return this.__file().array(__values);
+		this.__file().array(__values);
+		return this;
 	}
 	
 	/**
@@ -79,7 +81,8 @@ abstract class __CFileProxy__
 	public CSourceWriter array(byte... __values)
 		throws IOException
 	{
-		return this.__file().array(__values);
+		this.__file().array(__values);
+		return this;
 	}
 	
 	/**
@@ -90,7 +93,8 @@ abstract class __CFileProxy__
 	public CSourceWriter array(short... __values)
 		throws IOException
 	{
-		return this.__file().array(__values);
+		this.__file().array(__values);
+		return this;
 	}
 	
 	/**
@@ -101,7 +105,8 @@ abstract class __CFileProxy__
 	public CSourceWriter array(char... __values)
 		throws IOException
 	{
-		return this.__file().array(__values);
+		this.__file().array(__values);
+		return this;
 	}
 	
 	/**
@@ -112,7 +117,8 @@ abstract class __CFileProxy__
 	public CSourceWriter array(int... __values)
 		throws IOException
 	{
-		return this.__file().array(__values);
+		this.__file().array(__values);
+		return this;
 	}
 	
 	/**
@@ -123,7 +129,8 @@ abstract class __CFileProxy__
 	public CSourceWriter array(long... __values)
 		throws IOException
 	{
-		return this.__file().array(__values);
+		this.__file().array(__values);
+		return this;
 	}
 	
 	/**
@@ -134,7 +141,8 @@ abstract class __CFileProxy__
 	public CSourceWriter array(float... __values)
 		throws IOException
 	{
-		return this.__file().array(__values);
+		this.__file().array(__values);
+		return this;
 	}
 	
 	/**
@@ -145,7 +153,8 @@ abstract class __CFileProxy__
 	public CSourceWriter array(double... __values)
 		throws IOException
 	{
-		return this.__file().array(__values);
+		this.__file().array(__values);
+		return this;
 	}
 	
 	/**
@@ -156,7 +165,8 @@ abstract class __CFileProxy__
 	public CSourceWriter array(List<?> __values)
 		throws IOException
 	{
-		return this.__file().array(__values);
+		this.__file().array(__values);
+		return this;
 	}
 	
 	/**
@@ -167,7 +177,8 @@ abstract class __CFileProxy__
 	public CSourceWriter character(char __c)
 		throws IOException
 	{
-		return this.__file().character(__c);
+		this.__file().character(__c);
+		return this;
 	}
 	
 	/**
@@ -190,7 +201,8 @@ abstract class __CFileProxy__
 	public CSourceWriter declare(CFunctionType __function)
 		throws IOException, NullPointerException
 	{
-		return this.__file().declare(__function);
+		this.__file().declare(__function);
+		return this;
 	}
 	
 	/**
@@ -201,7 +213,8 @@ abstract class __CFileProxy__
 	public CSourceWriter declare(CVariable __var)
 		throws IOException, NullPointerException
 	{
-		return this.__file().declare(__var);
+		this.__file().declare(__var);
+		return this;
 	}
 	
 	/**
@@ -223,53 +236,8 @@ abstract class __CFileProxy__
 	public CSourceWriter define(CStructType __what)
 		throws IOException, NullPointerException
 	{
-		return this.__file().define(__what);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/24
-	 */
-	@Override
-	public CSourceWriter expression(CExpression __expression)
-		throws IOException, NullPointerException
-	{
-		return this.__file().expression(__expression);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/04
-	 */
-	@Override
-	public CSourceWriter freshLine()
-		throws IOException
-	{
-		return this.__file().freshLine();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/04
-	 */
-	@Override
-	public CSourceWriter functionCall(
-		CFunctionType __function, CExpression... __args)
-		throws IllegalArgumentException, IOException, NullPointerException
-	{
-		return this.__file().functionCall(__function, __args);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/24
-	 */
-	@Override
-	public CSourceWriter functionCall(CFunctionProvider __function,
-		CExpression... __args)
-		throws IOException, NullPointerException
-	{
-		return this.__file().functionCall(__function.function(), __args);
+		this.__file().define(__what);
+		return this;
 	}
 	
 	/**
@@ -285,13 +253,76 @@ abstract class __CFileProxy__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/06/24
+	 */
+	@Override
+	public CSourceWriter expression(CExpression __expression)
+		throws IOException, NullPointerException
+	{
+		this.__file().expression(__expression);
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/04
+	 */
+	@Override
+	public CSourceWriter freshLine()
+		throws IOException
+	{
+		this.__file().freshLine();
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/04
+	 */
+	@Override
+	public CSourceWriter functionCall(
+		CFunctionType __function, CExpression... __args)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		this.__file().functionCall(__function, __args);
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/24
+	 */
+	@Override
+	public CSourceWriter functionCall(CFunctionProvider __function,
+		CExpression... __args)
+		throws IOException, NullPointerException
+	{
+		this.__file().functionCall(__function.function(), __args);
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/15
+	 */
+	@Override
+	public CSourceWriter indent(int __by)
+		throws IOException
+	{
+		this.__file().indent(__by);
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2023/06/04
 	 */
 	@Override
 	public CSourceWriter number(Number __number)
 		throws IOException, NullPointerException
 	{
-		return this.__file().number(__number);
+		this.__file().number(__number);
+		return this;
 	}
 	
 	/**
@@ -302,7 +333,8 @@ abstract class __CFileProxy__
 	public CSourceWriter number(CNumberType __type, Number __number)
 		throws IOException, NullPointerException
 	{
-		return this.__file().number(__type, __number);
+		this.__file().number(__type, __number);
+		return this;
 	}
 	
 	/**
@@ -314,7 +346,8 @@ abstract class __CFileProxy__
 		CExpression __expression)
 		throws IOException, NullPointerException
 	{
-		return this.__file().preprocessorDefine(__symbol, __expression);
+		this.__file().preprocessorDefine(__symbol, __expression);
+		return this;
 	}
 	
 	/**
@@ -336,7 +369,8 @@ abstract class __CFileProxy__
 	public CSourceWriter preprocessorInclude(CFileName __fileName)
 		throws IOException, NullPointerException
 	{
-		return this.__file().preprocessorInclude(__fileName);
+		this.__file().preprocessorInclude(__fileName);
+		return this;
 	}
 	
 	/**
@@ -348,7 +382,8 @@ abstract class __CFileProxy__
 		Object... __tokens)
 		throws IOException, NullPointerException
 	{
-		return this.__file().preprocessorLine(__directive, __tokens);
+		this.__file().preprocessorLine(__directive, __tokens);
+		return this;
 	}
 	
 	/**
@@ -359,7 +394,8 @@ abstract class __CFileProxy__
 	public CSourceWriter preprocessorUndefine(CIdentifier __symbol)
 		throws IOException, NullPointerException
 	{
-		return this.__file().preprocessorUndefine(__symbol);
+		this.__file().preprocessorUndefine(__symbol);
+		return this;
 	}
 	
 	/**
@@ -370,7 +406,8 @@ abstract class __CFileProxy__
 	public CSourceWriter returnValue(CExpression __expression)
 		throws IOException
 	{
-		return this.__file().returnValue(__expression);
+		this.__file().returnValue(__expression);
+		return this;
 	}
 	
 	/**
@@ -381,7 +418,8 @@ abstract class __CFileProxy__
 	public CSourceWriter surround(String __prefix, Object... __tokens)
 		throws IOException
 	{
-		return this.__file().surround(__prefix, __tokens);
+		this.__file().surround(__prefix, __tokens);
+		return this;
 	}
 	
 	/**
@@ -393,7 +431,8 @@ abstract class __CFileProxy__
 		Object... __tokens)
 		throws IOException, NullPointerException
 	{
-		return this.__file().surroundDelimited(__prefix, __delim, __tokens);
+		this.__file().surroundDelimited(__prefix, __delim, __tokens);
+		return this;
 	}
 	
 	/**
@@ -404,7 +443,8 @@ abstract class __CFileProxy__
 	public CSourceWriter token(CharSequence __token)
 		throws IllegalArgumentException, IOException, NullPointerException
 	{
-		return this.__file().token(__token);
+		this.__file().token(__token);
+		return this;
 	}
 	
 	/**
@@ -415,7 +455,8 @@ abstract class __CFileProxy__
 	public CSourceWriter token(CharSequence __token, boolean __forceNewline)
 		throws IllegalArgumentException, IOException, NullPointerException
 	{
-		return this.__file().token(__token, __forceNewline);
+		this.__file().token(__token, __forceNewline);
+		return this;
 	}
 	
 	/**
@@ -426,7 +467,8 @@ abstract class __CFileProxy__
 	public CSourceWriter token(Object __token)
 		throws IllegalArgumentException, IOException
 	{
-		return this.__file().token(__token);
+		this.__file().token(__token);
+		return this;
 	}
 	
 	/**
@@ -437,7 +479,8 @@ abstract class __CFileProxy__
 	public CSourceWriter tokens(Object... __tokens)
 		throws IOException
 	{
-		return this.__file().tokens(__tokens);
+		this.__file().tokens(__tokens);
+		return this;
 	}
 	
 	/**
@@ -448,7 +491,8 @@ abstract class __CFileProxy__
 	public CSourceWriter variableSet(CVariable __var, CExpression __value)
 		throws IllegalArgumentException, IOException, NullPointerException
 	{
-		return this.__file().variableSet(__var, __value);
+		this.__file().variableSet(__var, __value);
+		return this;
 	}
 	
 	/**
@@ -459,7 +503,8 @@ abstract class __CFileProxy__
 	public CSourceWriter variableSet(CExpression __var, CExpression __value)
 		throws IllegalArgumentException, IOException, NullPointerException
 	{
-		return this.__file().variableSet(__var, __value);
+		this.__file().variableSet(__var, __value);
+		return this;
 	}
 	
 	/**
@@ -471,7 +516,8 @@ abstract class __CFileProxy__
 		CFunctionType __function, CExpression... __args)
 		throws IllegalArgumentException, IOException, NullPointerException
 	{
-		return this.__file().variableSetViaFunction(__var, __function, __args);
+		this.__file().variableSetViaFunction(__var, __function, __args);
+		return this;
 	}
 	
 	/**
@@ -483,7 +529,8 @@ abstract class __CFileProxy__
 		CFunctionProvider __function, CExpression... __args)
 		throws IllegalArgumentException, IOException, NullPointerException
 	{
-		return this.__file().variableSetViaFunction(__var, __function, __args);
+		this.__file().variableSetViaFunction(__var, __function, __args);
+		return this;
 	}
 	
 	/**

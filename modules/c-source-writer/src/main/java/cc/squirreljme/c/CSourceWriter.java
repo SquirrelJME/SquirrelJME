@@ -264,6 +264,17 @@ public interface CSourceWriter
 		throws IOException, NullPointerException;
 	
 	/**
+	 * Changes the output indentation.
+	 * 
+	 * @param __by The amount to change the indentation by.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @since 2023/07/15
+	 */
+	CSourceWriter indent(int __by)
+		throws IOException;
+	
+	/**
 	 * Writes the specified number.
 	 * 
 	 * @param __number The number to write.
