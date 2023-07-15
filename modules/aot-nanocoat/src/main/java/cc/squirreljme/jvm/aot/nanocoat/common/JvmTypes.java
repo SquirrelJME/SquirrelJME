@@ -28,6 +28,44 @@ import java.lang.ref.WeakReference;
 public enum JvmTypes
 	implements CTypeProvider
 {
+	/** Any/temporary storage. */
+	ANY
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/04
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_any")
+				.member(JvmTypes.JINT.type(), "type")
+				.member(JvmTypes.ANY_DATA.type(), "data")
+				.build();
+		}
+	},
+	
+	/** Any data storage. */
+	ANY_DATA
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/04
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.UNION,
+				"sjme_anyData")
+				.member(JvmTypes.JINT.type(),
+					"jint")
+				.member(JvmTypes.JOBJECT.type().pointerType(),
+					"jobject")
+				.build();
+		}
+	},
+	
 	/** Boolean. */
 	JBOOLEAN
 	{
@@ -40,6 +78,63 @@ public enum JvmTypes
 		{
 			return CTypeDefType.of(CStdIntType.UINT8.type(),
 				"jboolean");
+		}
+	},
+	
+	/** Class. */
+	JCLASS
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/06
+		 */
+		@Override
+		CType __build()
+		{
+			throw Debugging.todo();
+		}
+	},
+	
+	/** Double. */
+	JDOUBLE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/06
+		 */
+		@Override
+		CType __build()
+		{
+			return CTypeDefType.of(JvmTypes.JINT.type().arrayType(2),
+				"jfloat");
+		}
+	},
+	
+	/** Field. */
+	JFIELD
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/06
+		 */
+		@Override
+		CType __build()
+		{
+			throw Debugging.todo();
+		}
+	},
+	
+	/** Float. */
+	JFLOAT
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/06
+		 */
+		@Override
+		CType __build()
+		{
+			return CTypeDefType.of(JvmTypes.JINT.type(), "jfloat");
 		}
 	},
 	
@@ -73,37 +168,8 @@ public enum JvmTypes
 		}
 	},
 	
-	/** Float. */
-	JFLOAT
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/06/06
-		 */
-		@Override
-		CType __build()
-		{
-			return CTypeDefType.of(JvmTypes.JINT.type(), "jfloat");
-		}
-	},
-	
-	/** Double. */
-	JDOUBLE
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/06/06
-		 */
-		@Override
-		CType __build()
-		{
-			return CTypeDefType.of(JvmTypes.JINT.type().arrayType(2),
-				"jfloat");
-		}
-	},
-	
-	/** Class. */
-	JCLASS
+	/** Method. */
+	JMETHOD
 	{
 		/**
 		 * {@inheritDoc}
@@ -159,136 +225,6 @@ public enum JvmTypes
 		{
 			return CTypeDefType.of(JvmTypes.JOBJECT.type(),
 				"jthrowable");
-		}
-	},
-	
-	/** Field. */
-	JFIELD
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/06/06
-		 */
-		@Override
-		CType __build()
-		{
-			throw Debugging.todo();
-		}
-	},
-	
-	/** Method. */
-	JMETHOD
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/06/06
-		 */
-		@Override
-		CType __build()
-		{
-			throw Debugging.todo();
-		}
-	},
-	
-	/** The NanoCoat state. */
-	VMSTATE
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/06/06
-		 */
-		@Override
-		CType __build()
-		{
-			return CStructTypeBuilder.builder(
-				CStructKind.STRUCT, "sjme_nvm_state")
-				.build();
-		}
-	},
-	
-	/** A NanoCoat thread. */
-	VMTHREAD
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/06/06
-		 */
-		@Override
-		CType __build()
-		{
-			return CStructTypeBuilder.builder(
-				CStructKind.STRUCT, "sjme_nvm_thread")
-				.member(JvmTypes.VMFRAME.type().pointerType(), "top")
-				.build();
-		}
-	},
-	
-	/** Stack frame. */
-	VMFRAME
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/06/06
-		 */
-		@Override
-		CType __build()
-		{
-			return CStructTypeBuilder.builder(
-				CStructKind.STRUCT, "sjme_nvm_frame")
-				.member(JvmTypes.JINT.type(), "groupIndex")
-				.member(JvmTypes.STATIC_LINKAGE.type().pointerType(),
-					"linkage")
-				.member(JvmTypes.JTHROWABLE.type().pointerType(),
-					"waitingThrown")
-				.member(JvmTypes.ANY.type(),
-					"returnValue")
-				.build();
-		}
-	},
-	
-	/** A NanoCoat resource. */
-	STATIC_RESOURCE
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/06/06
-		 */
-		@Override
-		CType __build()
-		{
-			return CStructTypeBuilder.builder(
-				CStructKind.STRUCT, "sjme_static_resource")
-				.member(CPrimitiveType.CHAR.pointerType(), "path")
-				.member(JvmTypes.JINT.type(), "size")
-				.member(CStdIntType.UINT8.type().constType().pointerType(),
-					"data")
-				.build();
-		}
-	},
-	
-	/** Class information. */
-	STATIC_CLASS_INFO
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/06/24
-		 */
-		@Override
-		CType __build()
-		{
-			return CStructTypeBuilder.builder(CStructKind.STRUCT,
-					"sjme_static_classInfo")
-				.member(CPrimitiveType.CONST_CHAR_STAR,
-					"thisName")
-				.member(CPrimitiveType.CONST_CHAR_STAR,
-					"superName")
-				.member(JvmTypes.JINT.type(),
-					"flags")
-				.member(JvmTypes.STATIC_CLASS_FIELDS.type()
-					.constType().pointerType(), "fields")
-				.member(JvmTypes.STATIC_CLASS_METHODS.type()
-					.constType().pointerType(), "methods")
-				.build();
 		}
 	},
 	
@@ -396,6 +332,32 @@ public enum JvmTypes
 		}
 	},
 	
+	/** Class information. */
+	STATIC_CLASS_INFO
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/24
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+					"sjme_static_classInfo")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"thisName")
+				.member(CPrimitiveType.CONST_CHAR_STAR,
+					"superName")
+				.member(JvmTypes.JINT.type(),
+					"flags")
+				.member(JvmTypes.STATIC_CLASS_FIELDS.type()
+					.constType().pointerType(), "fields")
+				.member(JvmTypes.STATIC_CLASS_METHODS.type()
+					.constType().pointerType(), "methods")
+				.build();
+		}
+	},
+	
 	/** Static Linkage. */
 	STATIC_LINKAGE
 	{
@@ -467,40 +429,93 @@ public enum JvmTypes
 		}
 	},
 	
-	/** Any/temporary storage. */
-	ANY
+	/** A NanoCoat resource. */
+	STATIC_RESOURCE
 	{
 		/**
 		 * {@inheritDoc}
-		 * @since 2023/07/04
+		 * @since 2023/06/06
 		 */
 		@Override
 		CType __build()
 		{
-			return CStructTypeBuilder.builder(CStructKind.STRUCT,
-				"sjme_any")
-				.member(JvmTypes.JINT.type(), "type")
-				.member(JvmTypes.ANY_DATA.type(), "data")
+			return CStructTypeBuilder.builder(
+				CStructKind.STRUCT, "sjme_static_resource")
+				.member(CPrimitiveType.CHAR.pointerType(), "path")
+				.member(JvmTypes.JINT.type(), "size")
+				.member(CStdIntType.UINT8.type().constType().pointerType(),
+					"data")
 				.build();
 		}
 	},
 	
-	/** Any data storage. */
-	ANY_DATA
+	/** Temporary value index. */
+	TEMP_INDEX
 	{
 		/**
 		 * {@inheritDoc}
-		 * @since 2023/07/04
+		 * @since 2023/07/15
 		 */
 		@Override
 		CType __build()
 		{
-			return CStructTypeBuilder.builder(CStructKind.UNION,
-				"sjme_anyData")
-				.member(JvmTypes.JINT.type(),
-					"jint")
-				.member(JvmTypes.JOBJECT.type().pointerType(),
-					"jobject")
+			return CTypeDefType.of(JvmTypes.JINT.type(),
+				"sjme_tempIndex");
+		}
+	},
+	
+	/** Stack frame. */
+	VMFRAME
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/06
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(
+				CStructKind.STRUCT, "sjme_nvm_frame")
+				.member(JvmTypes.JINT.type(), "groupIndex")
+				.member(JvmTypes.STATIC_LINKAGE.type().pointerType(),
+					"linkage")
+				.member(JvmTypes.JTHROWABLE.type().pointerType(),
+					"waitingThrown")
+				.member(JvmTypes.ANY.type(),
+					"returnValue")
+				.build();
+		}
+	},
+	
+	/** The NanoCoat state. */
+	VMSTATE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/06
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(
+				CStructKind.STRUCT, "sjme_nvm_state")
+				.build();
+		}
+	},
+	
+	/** A NanoCoat thread. */
+	VMTHREAD
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/06
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(
+				CStructKind.STRUCT, "sjme_nvm_thread")
+				.member(JvmTypes.VMFRAME.type().pointerType(), "top")
 				.build();
 		}
 	},

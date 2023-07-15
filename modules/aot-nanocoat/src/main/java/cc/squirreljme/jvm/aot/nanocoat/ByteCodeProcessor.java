@@ -630,8 +630,8 @@ public class ByteCodeProcessor
 		
 		// Copy reference over
 		__CodeVariables__ codeVars = __CodeVariables__.instance();
-		__block.functionCall((__store ? JvmFunctions.NVM_LOCAL_REFERENCE_POP :
-				JvmFunctions.NVM_LOCAL_REFERENCE_PUSH),
+		__block.functionCall((__store ? JvmFunctions.NVM_LOCAL_POP_REFERENCE :
+				JvmFunctions.NVM_LOCAL_PUSH_REFERENCE),
 			CExpressionBuilder.builder()
 				.identifier(codeVars.currentFrame())
 				.build(),
@@ -660,7 +660,7 @@ public class ByteCodeProcessor
 		CExpression object = codeVariables.temporary(0,
 			JvmTypes.JOBJECT.type().pointerType());
 		__block.variableSetViaFunction(object,
-				JvmFunctions.NVM_STACK_REFERENCE_POP,
+				JvmFunctions.NVM_STACK_POP_REFERENCE,
 				codeVariables.currentFrame());
 		
 		// Copy to throwing
@@ -691,7 +691,7 @@ public class ByteCodeProcessor
 		// Read value
 		CExpression value = codeVariables.temporary(0,
 			JvmTypes.ANY.type());
-		__block.functionCall(JvmFunctions.NVM_STACK_ANY_POP,
+		__block.functionCall(JvmFunctions.NVM_STACK_POP_ANY,
 			codeVariables.currentFrame(),
 			CExpressionBuilder.builder()
 				.reference(value)
@@ -701,7 +701,7 @@ public class ByteCodeProcessor
 		CExpression instance = codeVariables.temporary(0,
 			JvmTypes.JOBJECT.type().pointerType());
 		__block.variableSetViaFunction(instance,
-			JvmFunctions.NVM_STACK_REFERENCE_POP,
+			JvmFunctions.NVM_STACK_POP_REFERENCE,
 			codeVariables.currentFrame());
 		
 		// Call put handler
@@ -772,10 +772,10 @@ public class ByteCodeProcessor
 		CExpression b = codeVariables.temporary(0,
 			JvmTypes.JINT.type());
 		__block.variableSetViaFunction(b,
-			JvmFunctions.NVM_STACK_INTEGER_POP,
+			JvmFunctions.NVM_STACK_POP_INTEGER,
 				codeVariables.currentFrame());
 		__block.variableSetViaFunction(a,
-			JvmFunctions.NVM_STACK_INTEGER_POP,
+			JvmFunctions.NVM_STACK_POP_INTEGER,
 				codeVariables.currentFrame());
 		
 		// Compare value
@@ -805,7 +805,7 @@ public class ByteCodeProcessor
 		CExpression value = codeVariables.temporary(0,
 			JvmTypes.JINT.type());
 		__block.variableSetViaFunction(value,
-			JvmFunctions.NVM_STACK_INTEGER_POP,
+			JvmFunctions.NVM_STACK_POP_INTEGER,
 				codeVariables.currentFrame());
 		
 		// Compare value
@@ -836,7 +836,7 @@ public class ByteCodeProcessor
 		CExpression object = codeVariables.temporary(0,
 			JvmTypes.JOBJECT.type().pointerType());
 		__block.variableSetViaFunction(object,
-			JvmFunctions.NVM_STACK_REFERENCE_POP,
+			JvmFunctions.NVM_STACK_POP_REFERENCE,
 				codeVariables.currentFrame());
 		
 		// Perform check on object, if NULL or not
@@ -962,8 +962,8 @@ public class ByteCodeProcessor
 		__CodeVariables__ codeVars = __CodeVariables__.instance();
 		
 		// Pop over
-		__block.functionCall((__store ? JvmFunctions.NVM_LOCAL_INTEGER_POP :
-			JvmFunctions.NVM_LOCAL_INTEGER_PUSH),
+		__block.functionCall((__store ? JvmFunctions.NVM_LOCAL_POP_INTEGER :
+			JvmFunctions.NVM_LOCAL_PUSH_INTEGER),
 			CExpressionBuilder.builder()
 				.identifier(codeVars.currentFrame())
 				.build(),
@@ -994,7 +994,7 @@ public class ByteCodeProcessor
 		CExpression key = codeVariables.temporary(0,
 			JvmTypes.JINT.type());
 		__block.variableSetViaFunction(key,
-			JvmFunctions.NVM_STACK_INTEGER_POP,
+			JvmFunctions.NVM_STACK_POP_INTEGER,
 			codeVariables.currentFrame());
 		
 		// Gigantic switch on the value
@@ -1054,7 +1054,7 @@ public class ByteCodeProcessor
 		switch (__value.type())
 		{
 			case INTEGER:
-				__block.functionCall(JvmFunctions.NVM_STACK_INTEGER_PUSH,
+				__block.functionCall(JvmFunctions.NVM_STACK_PUSH_INTEGER,
 					codeVariables.currentFrame(),
 					CExpressionBuilder.builder()
 						.number((Integer)__value.boxedValue())
@@ -1072,7 +1072,7 @@ public class ByteCodeProcessor
 					CExpressionBuilder.builder()
 							.string(__value.boxedValue().toString())
 						.build());
-				__block.functionCall(JvmFunctions.NVM_STACK_REFERENCE_PUSH,
+				__block.functionCall(JvmFunctions.NVM_STACK_PUSH_REFERENCE,
 					codeVariables.currentFrame(),
 					temp);
 				break;
@@ -1106,10 +1106,10 @@ public class ByteCodeProcessor
 		
 		// Pop in both values
 		__block.variableSetViaFunction(b,
-			JvmFunctions.NVM_STACK_INTEGER_POP,
+			JvmFunctions.NVM_STACK_POP_INTEGER,
 			codeVariables.currentFrame());
 		__block.variableSetViaFunction(a,
-			JvmFunctions.NVM_STACK_INTEGER_POP,
+			JvmFunctions.NVM_STACK_POP_INTEGER,
 			codeVariables.currentFrame());
 		
 		// Perform operation
@@ -1118,7 +1118,7 @@ public class ByteCodeProcessor
 			.build());
 		
 		// Push back on
-		__block.functionCall(JvmFunctions.NVM_STACK_INTEGER_PUSH,
+		__block.functionCall(JvmFunctions.NVM_STACK_PUSH_INTEGER,
 			codeVariables.currentFrame(),
 			a);
 	}
@@ -1153,7 +1153,7 @@ public class ByteCodeProcessor
 		this.__checkThrow(__block);
 		
 		// Push to the stack
-		__block.functionCall(JvmFunctions.NVM_STACK_REFERENCE_PUSH,
+		__block.functionCall(JvmFunctions.NVM_STACK_PUSH_REFERENCE,
 			codeVariables.currentFrame(),
 			object);
 	}
@@ -1180,7 +1180,7 @@ public class ByteCodeProcessor
 		CExpression length = codeVariables.temporary(0,
 			JvmTypes.JINT.type());
 		__block.variableSetViaFunction(length,
-			JvmFunctions.NVM_STACK_INTEGER_POP,
+			JvmFunctions.NVM_STACK_POP_INTEGER,
 			codeVariables.currentFrame());
 		
 		// Perform allocation
@@ -1197,7 +1197,7 @@ public class ByteCodeProcessor
 		this.__checkThrow(__block);
 		
 		// Push to the stack
-		__block.functionCall(JvmFunctions.NVM_STACK_REFERENCE_PUSH,
+		__block.functionCall(JvmFunctions.NVM_STACK_PUSH_REFERENCE,
 			codeVariables.currentFrame(),
 			object);
 	}
@@ -1242,7 +1242,7 @@ public class ByteCodeProcessor
 		__CodeVariables__ codeVars = __CodeVariables__.instance();
 		
 		// Pop into return value storage
-		__block.functionCall(JvmFunctions.NVM_STACK_ANY_POP,
+		__block.functionCall(JvmFunctions.NVM_STACK_POP_ANY,
 			codeVars.currentFrame(),
 			codeVars.returnValue());
 		
@@ -1274,7 +1274,7 @@ public class ByteCodeProcessor
 		// Need to read in for temporaries, using any types are simpler
 		int inCount = __function.in.logicalMax;
 		for (int i = inCount - 1; i >= 0; i--)
-			__block.functionCall(JvmFunctions.NVM_STACK_ANY_POP,
+			__block.functionCall(JvmFunctions.NVM_STACK_POP_ANY,
 				codeVars.currentFrame(),
 				CExpressionBuilder.builder()
 						.reference(codeVars.temporary(i))
@@ -1290,7 +1290,7 @@ public class ByteCodeProcessor
 				__function.out.logicalVariable(i)));
 			
 			// Push back from the source slot
-			__block.functionCall(JvmFunctions.NVM_STACK_ANY_PUSH,
+			__block.functionCall(JvmFunctions.NVM_STACK_PUSH_ANY,
 				codeVars.currentFrame(),
 				CExpressionBuilder.builder()
 						.reference(codeVars.temporary(sourceSlot))

@@ -57,7 +57,7 @@ public enum JvmFunctions
 			return CFunctionType.of("sjme_nvm_countReferenceDown",
 				JvmTypes.JBOOLEAN.type(),
 				CVariable.of(JvmTypes.VMSTATE.type().pointerType(),
-					"currentState"),
+					"state"),
 				CVariable.of(JvmTypes.JOBJECT.type().pointerType(),
 					"reference"));
 		}
@@ -131,7 +131,7 @@ public enum JvmFunctions
 	},
 	
 	/** Pop integer from the stack to local variable. */
-	NVM_LOCAL_INTEGER_POP
+	NVM_LOCAL_POP_INTEGER
 	{
 		/**
 		 * {@inheritDoc}
@@ -140,25 +140,7 @@ public enum JvmFunctions
 		@Override
 		CFunctionType __build()
 		{
-			return CFunctionType.of("sjme_nvm_localIntegerPop",
-				JvmTypes.JBOOLEAN.type(),
-				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
-					"frame"),
-				CVariable.of(JvmTypes.JINT.type(), "index"));
-		}
-	},
-	
-	/** Push integer value. */
-	NVM_LOCAL_INTEGER_PUSH
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/07/04
-		 */
-		@Override
-		CFunctionType __build()
-		{
-			return CFunctionType.of("sjme_nvm_localIntegerPush",
+			return CFunctionType.of("sjme_nvm_localPopInteger",
 				JvmTypes.JBOOLEAN.type(),
 				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
 					"frame"),
@@ -167,7 +149,7 @@ public enum JvmFunctions
 	},
 	
 	/** Pop reference from the stack to local variable. */
-	NVM_LOCAL_REFERENCE_POP
+	NVM_LOCAL_POP_REFERENCE
 	{
 		/**
 		 * {@inheritDoc}
@@ -176,7 +158,25 @@ public enum JvmFunctions
 		@Override
 		CFunctionType __build()
 		{
-			return CFunctionType.of("sjme_nvm_localReferencePush",
+			return CFunctionType.of("sjme_nvm_localPopReference",
+				JvmTypes.JBOOLEAN.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JINT.type(), "index"));
+		}
+	},
+	
+	/** Push integer value. */
+	NVM_LOCAL_PUSH_INTEGER
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/04
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_localPushInteger",
 				JvmTypes.JBOOLEAN.type(),
 				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
 					"frame"),
@@ -185,7 +185,7 @@ public enum JvmFunctions
 	},
 	
 	/** Push local variable reference to the stack. */
-	NVM_LOCAL_REFERENCE_PUSH
+	NVM_LOCAL_PUSH_REFERENCE
 	{
 		/**
 		 * {@inheritDoc}
@@ -194,7 +194,7 @@ public enum JvmFunctions
 		@Override
 		CFunctionType __build()
 		{
-			return CFunctionType.of("sjme_nvm_localReferencePush",
+			return CFunctionType.of("sjme_nvm_localPushReference",
 				JvmTypes.JBOOLEAN.type(),
 				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
 					"frame"),
@@ -278,7 +278,7 @@ public enum JvmFunctions
 	},
 	
 	/** Pop any from stack. */
-	NVM_STACK_ANY_POP
+	NVM_STACK_POP_ANY
 	{
 		/**
 		 * {@inheritDoc}
@@ -287,7 +287,7 @@ public enum JvmFunctions
 		@Override
 		CFunctionType __build()
 		{
-			return CFunctionType.of("sjme_nvm_stackAnyPop",
+			return CFunctionType.of("sjme_nvm_stackPopAny",
 				JvmTypes.JBOOLEAN.type(),
 				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
 					"frame"),
@@ -296,8 +296,25 @@ public enum JvmFunctions
 		}
 	},
 	
-	/** Push any onto stack. */
-	NVM_STACK_ANY_PUSH
+	/** Pop integer from stack. */
+	NVM_STACK_POP_INTEGER
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/04
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_stackPopInteger",
+				JvmTypes.JINT.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"));
+		}
+	},
+	
+	/** Pop from stack. */
+	NVM_STACK_POP_REFERENCE
 	{
 		/**
 		 * {@inheritDoc}
@@ -306,7 +323,41 @@ public enum JvmFunctions
 		@Override
 		CFunctionType __build()
 		{
-			return CFunctionType.of("sjme_nvm_stackAnyPush",
+			return CFunctionType.of("sjme_nvm_stackPopReference",
+				JvmTypes.JOBJECT.type().pointerType(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"));
+		}
+	},
+	
+	/** Pop a reference on the stack to a temporary variable. */
+	NVM_STACK_POP_REFERENCE_TO_TEMP
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/15
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_stackPopReferenceToTemp",
+				JvmTypes.TEMP_INDEX.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"));
+		}
+	},
+	
+	/** Push any onto stack. */
+	NVM_STACK_PUSH_ANY
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/03
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_stackPushAny",
 				JvmTypes.JBOOLEAN.type(),
 				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
 					"frame"),
@@ -315,25 +366,8 @@ public enum JvmFunctions
 		}
 	},
 	
-	/** Pop integer from stack. */
-	NVM_STACK_INTEGER_POP
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/07/04
-		 */
-		@Override
-		CFunctionType __build()
-		{
-			return CFunctionType.of("sjme_nvm_stackIntegerPop",
-				JvmTypes.JINT.type(),
-				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
-					"frame"));
-		}
-	},
-	
 	/** Push integer to stack. */
-	NVM_STACK_INTEGER_PUSH
+	NVM_STACK_PUSH_INTEGER
 	{
 		/**
 		 * {@inheritDoc}
@@ -342,7 +376,7 @@ public enum JvmFunctions
 		@Override
 		CFunctionType __build()
 		{
-			return CFunctionType.of("sjme_nvm_stackIntegerPush",
+			return CFunctionType.of("sjme_nvm_stackPushInteger",
 				JvmTypes.JBOOLEAN.type(),
 				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
 					"frame"),
@@ -351,25 +385,8 @@ public enum JvmFunctions
 		}
 	},
 	
-	/** Pop from stack. */
-	NVM_STACK_REFERENCE_POP
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/07/03
-		 */
-		@Override
-		CFunctionType __build()
-		{
-			return CFunctionType.of("sjme_nvm_stackReferencePop",
-				JvmTypes.JOBJECT.type().pointerType(),
-				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
-					"frame"));
-		}
-	},
-	
 	/** Push to stack. */
-	NVM_STACK_REFERENCE_PUSH
+	NVM_STACK_PUSH_REFERENCE
 	{
 		/**
 		 * {@inheritDoc}
@@ -378,12 +395,29 @@ public enum JvmFunctions
 		@Override
 		CFunctionType __build()
 		{
-			return CFunctionType.of("sjme_nvm_stackReferencePush",
+			return CFunctionType.of("sjme_nvm_stackPushReference",
 				JvmTypes.JBOOLEAN.type(),
 				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
 					"frame"),
 				CVariable.of(JvmTypes.JOBJECT.type().pointerType(),
 					"object"));
+		}
+	},
+	
+	/** Discard temporary values. */
+	NVM_TEMP_DISCARD
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/03
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_tempDiscard",
+				JvmTypes.JBOOLEAN.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"));
 		}
 	},
 	
