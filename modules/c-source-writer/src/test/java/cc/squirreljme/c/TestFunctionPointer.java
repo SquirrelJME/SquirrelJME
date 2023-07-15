@@ -33,7 +33,7 @@ public class TestFunctionPointer
 				CVariable.of(CPrimitiveType.UNSIGNED_CHAR, "squeak"))
 			.pointerType();
 		
-		try (__Spool__ spool = new __Spool__())
+		try (__Spool__ spool = new __Spool__(false))
 		{
 			// int (*cute)(unsigned char squeak);
 			spool.declare(CVariable.of(type, "cute"));
@@ -42,7 +42,7 @@ public class TestFunctionPointer
 		}
 		
 		// Then pointer for different rule
-		try (__Spool__ spool = new __Spool__())
+		try (__Spool__ spool = new __Spool__(false))
 		{
 			// int (*const cute)(unsigned char squeak);
 			spool.declare(CVariable.of(type.constType(), "cute"));
@@ -51,7 +51,7 @@ public class TestFunctionPointer
 		}
 		
 		// Pointer pointer
-		try (__Spool__ spool = new __Spool__())
+		try (__Spool__ spool = new __Spool__(false))
 		{
 			// int (** cute)(unsigned char squeak);
 			spool.declare(CVariable.of(type.pointerType(),
@@ -61,7 +61,7 @@ public class TestFunctionPointer
 		}
 		
 		// Alternating
-		try (__Spool__ spool = new __Spool__())
+		try (__Spool__ spool = new __Spool__(false))
 		{
 			// int (*const cute)(unsigned char squeak);
 			spool.declare(CVariable.of(type
@@ -72,7 +72,7 @@ public class TestFunctionPointer
 		}
 		
 		// Array
-		try (__Spool__ spool = new __Spool__())
+		try (__Spool__ spool = new __Spool__(false))
 		{
 			// int (*const cute)(unsigned char squeak);
 			spool.declare(CVariable.of(type.constType().arrayType(2),
@@ -82,7 +82,7 @@ public class TestFunctionPointer
 		}
 		
 		// Array of array
-		try (__Spool__ spool = new __Spool__())
+		try (__Spool__ spool = new __Spool__(false))
 		{
 			// int (*const cute)(unsigned char squeak);
 			spool.declare(CVariable.of(type.constType()
@@ -93,7 +93,7 @@ public class TestFunctionPointer
 		}
 		
 		// Return an array type
-		try (__Spool__ spool = new __Spool__())
+		try (__Spool__ spool = new __Spool__(false))
 		{
 			spool.declare(CVariable.of(
 				CFunctionType.of(CIdentifier.of("boop"),
@@ -106,7 +106,7 @@ public class TestFunctionPointer
 		}
 		
 		// Return an array array type 
-		try (__Spool__ spool = new __Spool__())
+		try (__Spool__ spool = new __Spool__(false))
 		{
 			spool.declare(CVariable.of(
 				CFunctionType.of(CIdentifier.of("boop"),

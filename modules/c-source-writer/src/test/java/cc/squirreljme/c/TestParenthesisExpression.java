@@ -29,7 +29,7 @@ public class TestParenthesisExpression
 	public void test()
 		throws IOException
 	{
-		try (__Spool__ spool = new __Spool__())
+		try (__Spool__ spool = new __Spool__(false))
 		{
 			spool.expression(CExpressionBuilder.builder()
 				.parenthesis()

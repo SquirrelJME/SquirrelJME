@@ -29,7 +29,7 @@ public class TestArrayType
 	public void test()
 		throws IOException
 	{
-		try (__Spool__ spool = new __Spool__())
+		try (__Spool__ spool = new __Spool__(false))
 		{
 			spool.declare(CVariable.of(
 				CPrimitiveType.SIGNED_INTEGER.arrayType(2),
@@ -38,7 +38,7 @@ public class TestArrayType
 			this.secondary("int", spool.tokens());
 		}
 		
-		try (__Spool__ spool = new __Spool__())
+		try (__Spool__ spool = new __Spool__(false))
 		{
 			spool.declare(CVariable.of(
 				CPrimitiveType.SIGNED_INTEGER.arrayType(2)
@@ -48,7 +48,7 @@ public class TestArrayType
 			this.secondary("intint", spool.tokens());
 		}
 		
-		try (__Spool__ spool = new __Spool__())
+		try (__Spool__ spool = new __Spool__(false))
 		{
 			spool.declare(CVariable.of(
 				CPrimitiveType.SIGNED_INTEGER.constType().arrayType(2),
@@ -57,7 +57,7 @@ public class TestArrayType
 			this.secondary("constint", spool.tokens());
 		}
 		
-		try (__Spool__ spool = new __Spool__())
+		try (__Spool__ spool = new __Spool__(false))
 		{
 			try
 			{
@@ -72,7 +72,7 @@ public class TestArrayType
 			}
 		}
 		
-		try (__Spool__ spool = new __Spool__())
+		try (__Spool__ spool = new __Spool__(false))
 		{
 			spool.declare(CVariable.of(
 				CPrimitiveType.SIGNED_INTEGER.pointerType().arrayType(2),
@@ -81,7 +81,7 @@ public class TestArrayType
 			this.secondary("arrayofpointer", spool.tokens());
 		}
 		
-		try (__Spool__ spool = new __Spool__())
+		try (__Spool__ spool = new __Spool__(false))
 		{
 			spool.declare(CVariable.of(
 				CPrimitiveType.SIGNED_INTEGER.arrayType(2)
@@ -91,7 +91,7 @@ public class TestArrayType
 			this.secondary("pointerpointerarray", spool.tokens());
 		}
 		
-		try (__Spool__ spool = new __Spool__())
+		try (__Spool__ spool = new __Spool__(false))
 		{
 			spool.declare(CVariable.of(
 				CPrimitiveType.SIGNED_INTEGER.arrayType(2)
@@ -101,7 +101,7 @@ public class TestArrayType
 			this.secondary("pointerarrayarray", spool.tokens());
 		}
 		
-		try (__Spool__ spool = new __Spool__())
+		try (__Spool__ spool = new __Spool__(false))
 		{
 			spool.declare(CVariable.of(
 				CPrimitiveType.SIGNED_INTEGER.arrayType(2)
@@ -111,7 +111,7 @@ public class TestArrayType
 			this.secondary("constpointerarray", spool.tokens());
 		}
 		
-		try (__Spool__ spool = new __Spool__())
+		try (__Spool__ spool = new __Spool__(false))
 		{
 			spool.declare(CVariable.of(
 				CPrimitiveType.SIGNED_INTEGER.arrayType(2)
@@ -124,7 +124,7 @@ public class TestArrayType
 		
 		// int(*foo[2])[3]
 		// declare foo as array 2 of pointer to array 3 of int
-		try (__Spool__ spool = new __Spool__())
+		try (__Spool__ spool = new __Spool__(false))
 		{
 			spool.declare(CVariable.of(
 				CPrimitiveType.SIGNED_INTEGER.arrayType(3)

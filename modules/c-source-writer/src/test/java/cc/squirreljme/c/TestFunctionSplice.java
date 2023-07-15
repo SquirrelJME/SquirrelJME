@@ -9,7 +9,6 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
@@ -28,7 +27,7 @@ public class TestFunctionSplice
 	public void test()
 		throws Throwable
 	{
-		try (__Spool__ spool = new __Spool__())
+		try (__Spool__ spool = new __Spool__(false))
 		{
 			// Start function
 			try (CFunctionBlock outer = spool.define(CFunctionType.of(

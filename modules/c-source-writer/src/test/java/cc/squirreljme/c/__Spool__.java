@@ -13,7 +13,6 @@ import cc.squirreljme.c.out.StringCollectionCTokenOutput;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
@@ -32,12 +31,13 @@ final class __Spool__
 	/**
 	 * Initializes the spool.
 	 * 
+	 * @param __whitespace Is whitespace important for this?
 	 * @since 2023/06/22
 	 */
-	__Spool__()
+	__Spool__(boolean __whitespace)
 	{
 		super(new CFile(new StringCollectionCTokenOutput(
-			new ArrayList<String>(), false)));
+			new ArrayList<String>(), __whitespace)));
 		
 		this._list = ((StringCollectionCTokenOutput)super.__file().out)
 			.output();
