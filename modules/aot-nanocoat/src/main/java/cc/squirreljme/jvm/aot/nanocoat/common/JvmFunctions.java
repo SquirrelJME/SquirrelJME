@@ -202,8 +202,8 @@ public enum JvmFunctions
 		}
 	},
 	
-	/** Lookup a string. */
-	NVM_LOOKUP_STRING
+	/** Lookup a string and store into temporary index. */
+	NVM_LOOKUP_STRING_INTO_TEMP
 	{
 		/**
 		 * {@inheritDoc}
@@ -212,16 +212,16 @@ public enum JvmFunctions
 		@Override
 		CFunctionType __build()
 		{
-			return CFunctionType.of("sjme_nvm_lookupString",
-				JvmTypes.JSTRING.type().pointerType(),
+			return CFunctionType.of("sjme_nvm_lookupStringIntoTemp",
+				JvmTypes.TEMP_INDEX.type(),
 				CVariable.of(JvmTypes.VMTHREAD.type().pointerType(),
 					"thread"),
 				CVariable.of(CPrimitiveType.CHAR_STAR, "string"));
 		}
 	},
 	
-	/** New array. */
-	NVM_NEW_ARRAY
+	/** New array into temporary variable. */
+	NVM_NEW_ARRAY_INTO_TEMP
 	{
 		/**
 		 * {@inheritDoc}
@@ -230,8 +230,8 @@ public enum JvmFunctions
 		@Override
 		CFunctionType __build()
 		{
-			return CFunctionType.of("sjme_nvm_newArray",
-				JvmTypes.JOBJECT.type().pointerType(),
+			return CFunctionType.of("sjme_nvm_newArrayIntoTemp",
+				JvmTypes.TEMP_INDEX.type(),
 				CVariable.of(JvmTypes.VMTHREAD.type().pointerType(),
 					"thread"),
 				CVariable.of(CPrimitiveType.CHAR_STAR.constType(),
@@ -241,8 +241,8 @@ public enum JvmFunctions
 		}
 	},
 	
-	/** New instance. */
-	NVM_NEW_INSTANCE
+	/** New instance into temporary. */
+	NVM_NEW_INSTANCE_INTO_TEMP
 	{
 		/**
 		 * {@inheritDoc}
@@ -251,8 +251,8 @@ public enum JvmFunctions
 		@Override
 		CFunctionType __build()
 		{
-			return CFunctionType.of("sjme_nvm_newInstance",
-				JvmTypes.JOBJECT.type().pointerType(),
+			return CFunctionType.of("sjme_nvm_newInstanceIntoTemp",
+				JvmTypes.TEMP_INDEX.type(),
 				CVariable.of(JvmTypes.VMTHREAD.type().pointerType(),
 					"thread"),
 				CVariable.of(CPrimitiveType.CHAR_STAR.constType(),
@@ -436,6 +436,26 @@ public enum JvmFunctions
 					"frame"),
 				CVariable.of(JvmTypes.JOBJECT.type().pointerType(),
 					"object"));
+		}
+	},
+	
+	/** Push reference to stack from temporary index. */
+	NVM_STACK_PUSH_REFERENCE_FROM_TEMP
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/015
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of(
+				"sjme_nvm_stackPushReferenceFromTemp",
+				JvmTypes.JBOOLEAN.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.TEMP_INDEX.type(),
+					"tempIndex"));
 		}
 	},
 	

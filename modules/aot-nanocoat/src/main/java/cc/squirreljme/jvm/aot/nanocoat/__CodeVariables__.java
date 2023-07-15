@@ -23,6 +23,8 @@ import cc.squirreljme.jvm.aot.nanocoat.linkage.Container;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Linkage;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Utility class for making code variables.
@@ -33,6 +35,10 @@ public final class __CodeVariables__
 {
 	/** Initial variables output. */
 	private final CFunctionBlock _initVars;
+	
+	/** Temporary cache. */
+	private final List<JvmTemporary> _temporaries =
+		new ArrayList<>();
 	
 	/** The current number of temporaries. */
 	volatile int _numTemporaries;
@@ -124,6 +130,17 @@ public final class __CodeVariables__
 	}
 	
 	/**
+	 * Returns the number of maximum temporaries used.
+	 * 
+	 * @return The maximum number of temporaries.
+	 * @since 2023/07/15
+	 */
+	public int maxTemporaries()
+	{
+		return this._temporaries.size();
+	}
+	
+	/**
 	 * The return value expression.
 	 * 
 	 * @return The return value expression.
@@ -146,112 +163,21 @@ public final class __CodeVariables__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/03
 	 */
-	public CExpression temporary(int __index)
+	public JvmTemporary temporary(int __index)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
 		if (__index < 0)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// Bump up count
+		// Bump up count for current "instruction"
 		this._numTemporaries = Math.max(this._numTemporaries, __index);
-		this._maxTemporaries = Math.max(this._maxTemporaries, __index);
 		
-		// Construct expression to access it
-		return CExpressionBuilder.builder()
-			.identifier(Constants.TEMPORARY)
-			.arrayAccess(__index)
-			.build();
-	}
-	
-	/**
-	 * Returns a temporary variable.
-	 *
-	 * @param __index The temporary variable index.
-	 * @param __type The type of temporary to get.
-	 * @return The variable for the temporary.
-	 * @throws IndexOutOfBoundsException If the index is not valid.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/07/03
-	 */
-	public CExpression temporary(int __index, CType __type)
-		throws IndexOutOfBoundsException, IOException, NullPointerException
-	{
-		if (__type == null)
-			throw new NullPointerException("NARG");
+		// Build a cache of temporaries since these are always kept around
+		List<JvmTemporary> temps = this._temporaries;
+		while (temps.size() <= __index)
+			temps.add(new JvmTemporary(temps.size()));
 		
-		// Bump up count
-		this._numTemporaries = Math.max(this._numTemporaries, __index);
-		this._maxTemporaries = Math.max(this._maxTemporaries, __index);
-		
-		// Passed ANY, but we really just want the existing any
-		if (JvmTypes.ANY.type().equals(__type))
-			return this.temporary(__index);
-		return this.temporary(this.temporary(__index), __type);
-	}
-	
-	/**
-	 * Returns a temporary with the given type expression.
-	 * 
-	 * @param __dx The index expression.
-	 * @param __type The type used.
-	 * @return The expression to refer to it by type.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/07/15
-	 */
-	public CExpression temporary(CExpression __dx, CType __type)
-		throws IOException, NullPointerException
-	{
-		if (__dx == null || __type == null)
-			throw new NullPointerException("NARG");
-		
-		// Self any type already? Just use the single expression
-		if (JvmTypes.ANY.type().equals(__type))
-			return __dx;
-		
-		// Determine the type ID by looking for union members
-		CVariable member = null;
-		for (CVariable var : JvmTypes.ANY_DATA.type(CStructType.class)
-			.members())
-			if (__type.equals(var.type))
-			{
-				member = var;
-				break;
-			}
-		
-		// Need a member for this?
-		if (member == null)
-			throw Debugging.todo(__type);
-		
-		// Construct expression to access it
-		return CExpressionBuilder.builder()
-			.expression(__dx)
-			.structAccess()
-			.identifier("data")
-			.structAccess()
-			.identifier(member)
-			.build();
-	}
-	
-	/**
-	 * Returns a reference to a temporary known value.
-	 * 
-	 * @param __dx The index expression.
-	 * @param __type The type used.
-	 * @return The expression to refer to it by type.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/07/15
-	 */
-	public CExpression temporaryReference(CExpression __dx, CType __type)
-		throws IOException, NullPointerException
-	{
-		if (__dx == null || __type == null)
-			throw new NullPointerException("NARG");
-		
-		return CBasicExpression.reference(
-			this.temporary(__dx, __type));
+		return temps.get(__index);
 	}
 	
 	/**

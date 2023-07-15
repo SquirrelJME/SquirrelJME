@@ -25,6 +25,10 @@ public interface CExpression
 	CExpression INVALID_EXPRESSION =
 		new CBasicExpression();
 	
+	/** Empty expression. */
+	CExpression EMPTY =
+		new CBasicExpression();
+	
 	/**
 	 * Returns the tokens that make up this expression.
 	 * 

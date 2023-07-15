@@ -485,6 +485,8 @@ public enum JvmTypes
 					"waitingThrown")
 				.member(JvmTypes.ANY.type(),
 					"returnValue")
+				.member(JvmTypes.ANY.type().pointerType().pointerType(),
+					"tempStack")
 				.build();
 		}
 	},

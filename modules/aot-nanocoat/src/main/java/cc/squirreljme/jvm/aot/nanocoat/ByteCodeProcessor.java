@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
-import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CComparison;
 import cc.squirreljme.c.CExpression;
 import cc.squirreljme.c.CExpressionBuilder;
@@ -413,12 +412,12 @@ public class ByteCodeProcessor
 			
 			// Declare local temporary variables
 			__CodeVariables__ codeVars = this.__codeVars();
-			if (codeVars._maxTemporaries > 0)
+			if (codeVars.maxTemporaries() > 0)
 				try (CFunctionBlock initVars = splices.splice(0))
 				{
 					initVars.declare(CVariable.of(
 						JvmTypes.ANY.type().arrayType(
-							codeVars._maxTemporaries),
+							codeVars.maxTemporaries()),
 						Constants.TEMPORARY));
 				}
 			
@@ -763,26 +762,22 @@ public class ByteCodeProcessor
 		__CodeVariables__ codeVars = this.__codeVars();
 		
 		// Read value
-		CExpression value = codeVars.temporary(0,
-			JvmTypes.TEMP_INDEX.type());
-		__block.variableSetViaFunction(value,
+		JvmTemporary value = codeVars.temporary(0);
+		__block.variableSetViaFunction(value.tempIndex(),
 			JvmFunctions.NVM_STACK_POP_ANY_TO_TEMP,
 			codeVars.currentFrame());
 		
 		// Read instance to act on
-		CExpression instance = codeVars.temporary(1,
-			JvmTypes.TEMP_INDEX.type());
-		__block.variableSetViaFunction(instance,
+		JvmTemporary instance = codeVars.temporary(1);
+		__block.variableSetViaFunction(instance.tempIndex(),
 			JvmFunctions.NVM_STACK_POP_REFERENCE_TO_TEMP,
 			codeVars.currentFrame());
 		
 		// Call put handler
 		__block.functionCall(JvmFunctions.NVM_FIELD_PUT,
 			codeVars.currentFrame(),
-			codeVars.temporaryReference(instance,
-				JvmTypes.JOBJECT.type().pointerType()),
-			codeVars.temporaryReference(value,
-				JvmTypes.ANY.type()));
+			instance.accessTemp(JvmTypes.JOBJECT.type().pointerType()),
+			value.accessTemp(JvmTypes.ANY));
 	}
 	
 	/**
@@ -836,10 +831,10 @@ public class ByteCodeProcessor
 		__CodeVariables__ codeVariables = this.__codeVars();
 		
 		// Pop from stack
-		CExpression a = codeVariables.temporary(0,
-			JvmTypes.JINT.type());
-		CExpression b = codeVariables.temporary(0,
-			JvmTypes.JINT.type());
+		CExpression a = codeVariables.temporary(0)
+			.access(JvmTypes.JINT);
+		CExpression b = codeVariables.temporary(1)
+			.access(JvmTypes.JINT);
 		__block.variableSetViaFunction(b,
 			JvmFunctions.NVM_STACK_POP_INTEGER,
 				codeVariables.currentFrame());
@@ -871,8 +866,8 @@ public class ByteCodeProcessor
 		__CodeVariables__ codeVariables = this.__codeVars();
 		
 		// Pop from stack
-		CExpression value = codeVariables.temporary(0,
-			JvmTypes.JINT.type());
+		CExpression value = codeVariables.temporary(0)
+			.access(JvmTypes.JINT);
 		__block.variableSetViaFunction(value,
 			JvmFunctions.NVM_STACK_POP_INTEGER,
 				codeVariables.currentFrame());
@@ -902,16 +897,16 @@ public class ByteCodeProcessor
 		__CodeVariables__ codeVariables = this.__codeVars();
 		
 		// Pop from stack
-		CExpression object = codeVariables.temporary(0,
-			JvmTypes.JOBJECT.type().pointerType());
-		__block.variableSetViaFunction(object,
-			JvmFunctions.NVM_STACK_POP_REFERENCE,
+		JvmTemporary object = codeVariables.temporary(0);
+		__block.variableSetViaFunction(object.tempIndex(),
+			JvmFunctions.NVM_STACK_POP_REFERENCE_TO_TEMP,
 				codeVariables.currentFrame());
 		
 		// Perform check on object, if NULL or not
 		try (CIfBlock iffy = __block.branchIf(
 			CExpressionBuilder.builder()
-				.compare(object,
+				.compare(object.referenceTemp(JvmTypes.JOBJECT.type()
+						.pointerType()),
 					(__null ? CComparison.EQUALS : CComparison.NOT_EQUALS),
 					CVariable.NULL)
 			.build()))
@@ -919,11 +914,6 @@ public class ByteCodeProcessor
 			// Change grouping
 			this.__jumpToGroup(iffy, __targetGroupId);
 		}
-		
-		// Uncount reference, since we did pop it
-		__block.functionCall(JvmFunctions.NVM_COUNT_REFERENCE_DOWN.function(),
-			codeVariables.currentState(),
-			object);
 	}
 	
 	/**
@@ -1057,8 +1047,8 @@ public class ByteCodeProcessor
 		__CodeVariables__ codeVariables = this.__codeVars();
 		
 		// Read in the key for jumping
-		CExpression key = codeVariables.temporary(0,
-			JvmTypes.JINT.type());
+		CExpression key = codeVariables.temporary(0)
+			.access(JvmTypes.JINT);
 		__block.variableSetViaFunction(key,
 			JvmFunctions.NVM_STACK_POP_INTEGER,
 			codeVariables.currentFrame());
@@ -1116,7 +1106,7 @@ public class ByteCodeProcessor
 		__CodeVariables__ codeVariables = this.__codeVars();
 		
 		// Depends on the type
-		CExpression temp;
+		JvmTemporary temp;
 		switch (__value.type())
 		{
 			case INTEGER:
@@ -1129,18 +1119,19 @@ public class ByteCodeProcessor
 			
 			case STRING:
 				// Get temporary, needed for string storage
-				temp = codeVariables.temporary(0,
-					JvmTypes.JOBJECT.type().pointerType());
+				temp = codeVariables.temporary(0);
 				
 				// Load string then push it
-				__block.functionCall(JvmFunctions.NVM_LOOKUP_STRING,
+				__block.variableSetViaFunction(temp.tempIndex(),
+					JvmFunctions.NVM_LOOKUP_STRING_INTO_TEMP,
 					codeVariables.currentThread(),
 					CExpressionBuilder.builder()
 							.string(__value.boxedValue().toString())
 						.build());
-				__block.functionCall(JvmFunctions.NVM_STACK_PUSH_REFERENCE,
+				__block.functionCall(
+					JvmFunctions.NVM_STACK_PUSH_REFERENCE_FROM_TEMP,
 					codeVariables.currentFrame(),
-					temp);
+					temp.tempIndex());
 				break;
 			
 			default:
@@ -1165,10 +1156,10 @@ public class ByteCodeProcessor
 		
 		__CodeVariables__ codeVariables = this.__codeVars();
 		
-		CExpression a = codeVariables.temporary(0,
-			JvmTypes.JINT.type());
-		CExpression b = codeVariables.temporary(1,
-			JvmTypes.JINT.type());
+		CExpression a = codeVariables.temporary(0)
+			.access(JvmTypes.JINT);
+		CExpression b = codeVariables.temporary(1)
+			.access(JvmTypes.JINT);
 		
 		// Pop in both values
 		__block.variableSetViaFunction(b,
@@ -1204,13 +1195,13 @@ public class ByteCodeProcessor
 		if (__block == null || __what == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVariables = this.__codeVars();
+		__CodeVariables__ codeVars = this.__codeVars();
 		
 		// Allocate object
-		CExpression object = codeVariables.temporary(0,
-			JvmTypes.JOBJECT.type().pointerType());
-		__block.variableSetViaFunction(object, JvmFunctions.NVM_NEW_INSTANCE,
-			codeVariables.currentThread(),
+		JvmTemporary object = codeVars.temporary(0);
+		__block.variableSetViaFunction(object.tempIndex(),
+			JvmFunctions.NVM_NEW_INSTANCE_INTO_TEMP,
+			codeVars.currentThread(),
 			CExpressionBuilder.builder()
 					.string(__what.toString())
 				.build());
@@ -1219,9 +1210,9 @@ public class ByteCodeProcessor
 		this.__checkThrow(__block);
 		
 		// Push to the stack
-		__block.functionCall(JvmFunctions.NVM_STACK_PUSH_REFERENCE,
-			codeVariables.currentFrame(),
-			object);
+		__block.functionCall(JvmFunctions.NVM_STACK_PUSH_REFERENCE_FROM_TEMP,
+			codeVars.currentFrame(),
+			object.tempIndex());
 	}
 	
 	/**
@@ -1243,16 +1234,16 @@ public class ByteCodeProcessor
 		__CodeVariables__ codeVariables = this.__codeVars();
 		
 		// Read in length
-		CExpression length = codeVariables.temporary(0,
-			JvmTypes.JINT.type());
+		CExpression length = codeVariables.temporary(0)
+			.access(JvmTypes.JINT);
 		__block.variableSetViaFunction(length,
 			JvmFunctions.NVM_STACK_POP_INTEGER,
 			codeVariables.currentFrame());
 		
 		// Perform allocation
-		CExpression object = codeVariables.temporary(0,
-			JvmTypes.JOBJECT.type().pointerType());
-		__block.variableSetViaFunction(object, JvmFunctions.NVM_NEW_ARRAY,
+		JvmTemporary object = codeVariables.temporary(1);
+		__block.variableSetViaFunction(object.tempIndex(),
+			JvmFunctions.NVM_NEW_ARRAY_INTO_TEMP,
 			codeVariables.currentThread(),
 			CExpressionBuilder.builder()
 					.string(__componentType.toString())
@@ -1263,9 +1254,9 @@ public class ByteCodeProcessor
 		this.__checkThrow(__block);
 		
 		// Push to the stack
-		__block.functionCall(JvmFunctions.NVM_STACK_PUSH_REFERENCE,
+		__block.functionCall(JvmFunctions.NVM_STACK_PUSH_REFERENCE_FROM_TEMP,
 			codeVariables.currentFrame(),
-			object);
+			object.tempIndex());
 	}
 	
 	/**
@@ -1311,15 +1302,14 @@ public class ByteCodeProcessor
 		__CodeVariables__ codeVars = this.__codeVars();
 		
 		// Pop into return value storage
-		CExpression value = codeVars.temporary(0,
-			JvmTypes.TEMP_INDEX.type());
-		__block.variableSetViaFunction(value,
+		JvmTemporary value = codeVars.temporary(0);
+		__block.variableSetViaFunction(value.tempIndex(),
 			JvmFunctions.NVM_STACK_POP_ANY_TO_TEMP,
 			codeVars.currentFrame());
 		
 		// Do actual return
 		__block.functionCall(JvmFunctions.NVM_RETURN_FROM_METHOD,
-			codeVars.temporary(value, JvmTypes.ANY.type()));
+			value.referenceTemp(JvmTypes.ANY));
 		
 		// Jump to the outro directly
 		__block.gotoLabel(Constants.OUTRO_LABEL);
@@ -1343,14 +1333,18 @@ public class ByteCodeProcessor
 		
 		__CodeVariables__ codeVars = this.__codeVars();
 		
-		// Need to read in for temporaries, using any types are simpler
+		// Need to actually declare temporaries as being used
 		int inCount = __function.in.logicalMax;
+		JvmTemporary[] in = new JvmTemporary[inCount];
+		for (int i = 0; i < inCount; i++)
+			in[i] = codeVars.temporary(i);
+		
+		// Need to read in for temporaries, using "any" types are simpler
 		for (int i = inCount - 1; i >= 0; i--)
-			__block.functionCall(JvmFunctions.NVM_STACK_POP_ANY,
-				codeVars.currentFrame(),
-				CExpressionBuilder.builder()
-						.reference(codeVars.temporary(i))
-					.build());
+			__block.variableSetViaFunction(
+				in[i].tempIndex(),
+				JvmFunctions.NVM_STACK_POP_ANY_TO_TEMP,
+				codeVars.currentFrame());
 		
 		// Then have to push everything back in
 		int outCount = __function.out.logicalMax;
@@ -1364,12 +1358,7 @@ public class ByteCodeProcessor
 			// Push back from the source slot
 			__block.functionCall(JvmFunctions.NVM_STACK_PUSH_ANY,
 				codeVars.currentFrame(),
-				CExpressionBuilder.builder()
-						.reference(codeVars.temporary(sourceSlot))
-					.build());
-			
-			// Count in shuffle?
-			Debugging.todoNote("Count up/down in shuffle?");
+				in[sourceSlot].accessTemp(JvmTypes.ANY));
 		}
 	}
 	
