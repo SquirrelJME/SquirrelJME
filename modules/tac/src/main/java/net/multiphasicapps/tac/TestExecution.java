@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.tac;
 
+import java.io.IOException;
 import java.io.PrintStream;
 
 /**
@@ -18,6 +19,10 @@ import java.io.PrintStream;
  */
 public final class TestExecution
 {
+	/** Print the resultant output manifest? */
+	public static final String RESULT_MANIFEST =
+		"net.multiphasicapps.tac.resultManifest";
+	
 	/** The status of the test. */
 	public final TestStatus status;
 	
@@ -65,6 +70,20 @@ public final class TestExecution
 	{
 		if (__ps == null)
 			throw new NullPointerException("NARG");
+		
+		// Write manifest value?
+		if (Boolean.getBoolean(TestExecution.RESULT_MANIFEST))
+		{
+			System.err.println("********************************");
+			try
+			{
+				this.result.writeAsManifest(System.err);
+			}
+			catch (IOException ignored)
+			{
+			}
+			System.err.println("********************************");
+		}
 			
 		switch (this.status)
 		{

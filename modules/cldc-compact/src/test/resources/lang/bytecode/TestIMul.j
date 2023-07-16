@@ -7,22 +7,22 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class abstract public lang/bytecode/__ArrayLength__
-.super net/multiphasicapps/tac/TestInteger
+.class public lang/bytecode/TestIMul
+.super lang/bytecode/BaseMathInteger
 
 .method public <init>()V
 	aload 0
-	invokenonvirtual net/multiphasicapps/tac/TestInteger/<init>()V
+	invokenonvirtual lang/bytecode/BaseMathInteger/<init>()V
 	return
 .end method
 
-.method public test()I
-.limit stack 4
-; Create array
-	bipush 4
-	newarray byte
-	
-; Return the length
-	arraylength
+.method public calc(II)I
+.limit locals 3
+.limit stack 2
+	iload_1
+	iload_2
+
+; Calculate then return
+	imul
 	ireturn
 .end method

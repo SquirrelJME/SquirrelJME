@@ -28,6 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -53,9 +54,14 @@ import org.gradle.workers.WorkerExecutor;
 public class VMTestTaskAction
 	implements Action<Task>
 {
+	
 	/** The special key for quick finding test results. */
 	static final String _SPECIAL_KEY = 
 		"XERSQUIRRELJMEXER";
+	
+	/** Print the test manifest? */
+	public static final String PRINT_TEST_MANIFEST =
+		"net.multiphasicapps.tac.resultManifest";
 	
 	/** The maximum parallel tests that can run at once. */
 	private static final int _MAX_PARALLEL_TESTS =
@@ -531,6 +537,13 @@ public class VMTestTaskAction
 			__candidate.expectedValues.get("test-vm-target")))
 			sysProps.put("cc.squirreljme.test.vm",
 				__classifier.getBangletVariant().banglet);
+		
+		// Print test result manifest?
+		if (Boolean.getBoolean(VMTestTaskAction.PRINT_TEST_MANIFEST) ||
+			(__task.hasProperty(VMTestTaskAction.PRINT_TEST_MANIFEST) &&
+			Boolean.parseBoolean(Objects.toString(
+				__task.property(VMTestTaskAction.PRINT_TEST_MANIFEST)))))
+			sysProps.put(VMTestTaskAction.PRINT_TEST_MANIFEST, "true");
 		
 		// Determine the arguments that are used to spawn the JVM
 		JavaExecSpecFiller execSpec = new SimpleJavaExecSpecFiller();
