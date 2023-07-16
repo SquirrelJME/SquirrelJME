@@ -1386,8 +1386,14 @@ public final class ByteCode
 		if (__entry == null)
 			throw new NullPointerException("NARG");
 		
-		return new StackMapTableEntry(__entry.type().type().componentType(),
-			true);
+		// {@squirreljme.error JCT1 Could not derive component type.
+		// (The type to derive from)}
+		FieldDescriptor type = __entry.type().type().componentType();
+		if (type == null)
+			throw new InvalidClassFormatException(String.format("JCT1 %s",
+				__entry));
+		
+		return new StackMapTableEntry(type, true);
 	}
 	
 	/**
