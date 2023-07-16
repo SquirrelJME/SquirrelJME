@@ -1,0 +1,12 @@
+# 2023/07/15
+
+## 13:33
+
+
+I did have an idea, I definitely am going to need JDB and profiling so those can get
+compiled in as a kind of top layer that still runs in Java but does not act as part
+of profiling or debugging itself. Then have some kind of possible TCP layer on top
+so it can be accessed and profiled accordingly. It would definitely help and I have
+already written a debugger interface and profiling interface. Although I probably
+am going to need a profiler interface that is on top of the debugger interface
+potentially, so it can be common shared code.
