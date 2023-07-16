@@ -30,7 +30,7 @@ public final class FieldAccessLinkage
 	protected final FieldReference target;
 	
 	/** Is this writing the field? */
-	protected final boolean isWrite;
+	protected final boolean isStore;
 	
 	/**
 	 * Initializes the linkage.
@@ -38,12 +38,12 @@ public final class FieldAccessLinkage
 	 * @param __source The source method.
 	 * @param __static Is the access static?
 	 * @param __target The target field being access.
-	 * @param __write Is the access writing the value?
+	 * @param __store Is the access writing the value?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/16
 	 */
 	public FieldAccessLinkage(MethodNameAndType __source, boolean __static,
-		FieldReference __target, boolean __write)
+		FieldReference __target, boolean __store)
 		throws NullPointerException
 	{
 		if (__source == null || __target == null)
@@ -52,7 +52,7 @@ public final class FieldAccessLinkage
 		this.source = __source;
 		this.isStatic = __static;
 		this.target = __target;
-		this.isWrite = __write;
+		this.isStore = __store;
 	}
 	
 	/**
@@ -69,7 +69,7 @@ public final class FieldAccessLinkage
 		
 		FieldAccessLinkage o = (FieldAccessLinkage)__o;
 		return this.isStatic == o.isStatic &&
-			this.isWrite == o.isWrite &&
+			this.isStore == o.isStore &&
 			this.source.equals(o.source) &&
 			this.target.equals(o.target);
 	}
@@ -84,6 +84,6 @@ public final class FieldAccessLinkage
 		return this.source.hashCode() ^
 			this.target.hashCode() +
 			(this.isStatic ? 1 : 0) +
-			(this.isWrite ? 2 : 0);
+			(this.isStore ? 2 : 0);
 	}
 }

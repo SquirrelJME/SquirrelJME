@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CComparison;
 import cc.squirreljme.c.CExpression;
 import cc.squirreljme.c.CExpressionBuilder;
@@ -22,6 +23,7 @@ import cc.squirreljme.c.CSwitchBlock;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Container;
@@ -505,7 +507,7 @@ public class ByteCodeProcessor
 			case InstructionIndex.IFGT:
 			case InstructionIndex.IFGE:
 				this.__doIfZeroInt(__block,
-					ByteCodeProcessor.__compareIf(op),
+					ByteCodeProcessor.__commonCompareIf(op),
 					this.__addressToGroup(__instruction, 0));
 				break;
 			
@@ -516,7 +518,7 @@ public class ByteCodeProcessor
 			case InstructionIndex.IF_ICMPGT:
 			case InstructionIndex.IF_ICMPGE:
 				this.__doIfCmpInt(__block,
-					ByteCodeProcessor.__compareIf(op),
+					ByteCodeProcessor.__commonCompareIf(op),
 					this.__addressToGroup(__instruction, 0));
 				break;
 				
@@ -586,7 +588,8 @@ public class ByteCodeProcessor
 			case InstructionIndex.IAND:
 			case InstructionIndex.IOR:
 			case InstructionIndex.IXOR:
-				this.__doMathInteger(__block, ByteCodeProcessor.__mathOp(op));
+				this.__doMathInteger(__block,
+					ByteCodeProcessor.__commonMathOp(op));
 				break;
 				
 				// Bit shift
@@ -612,16 +615,32 @@ public class ByteCodeProcessor
 					this.__addressToGroup(__instruction, 0));
 				break;
 				
-				// Get field
+				// Put field
 			case InstructionIndex.GETFIELD:
-				this.__doFieldGet(__block,
-					__instruction.argument(0, FieldReference.class));
+			case InstructionIndex.PUTFIELD:
+				this.__doFieldGetPut(__block,
+					__instruction.argument(0, FieldReference.class),
+					(op == InstructionIndex.PUTFIELD));
 				break;
 				
-				// Put field
-			case InstructionIndex.PUTFIELD:
-				this.__doFieldPut(__block,
-					__instruction.argument(0, FieldReference.class));
+				// Store or load primitive from array
+			case InstructionIndex.BALOAD:
+			case InstructionIndex.SALOAD:
+			case InstructionIndex.CALOAD:
+			case InstructionIndex.IALOAD:
+			case InstructionIndex.LALOAD:
+			case InstructionIndex.FALOAD:
+			case InstructionIndex.DALOAD:
+			case InstructionIndex.BASTORE:
+			case InstructionIndex.SASTORE:
+			case InstructionIndex.CASTORE:
+			case InstructionIndex.IASTORE:
+			case InstructionIndex.LASTORE:
+			case InstructionIndex.FASTORE:
+			case InstructionIndex.DASTORE:
+				this.__doPrimitiveArrayAccess(__block,
+					ByteCodeProcessor.__commonPrimitive(op),
+					ByteCodeProcessor.__commonStoreLoad(op));
 				break;
 			
 			default:
@@ -751,55 +770,16 @@ public class ByteCodeProcessor
 	
 	/**
 	 * Gets a field value.
-	 * 
+	 *
 	 * @param __block The block to write to.
 	 * @param __field The field to get from.
+	 * @param __store Is this a write to the field?
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/16
 	 */
-	private void __doFieldGet(CFunctionBlock __block,
-		FieldReference __field)
-		throws IOException, NullPointerException
-	{
-		if (__block == null || __field == null)
-			throw new NullPointerException("NARG");
-		
-		__CodeVariables__ codeVars = this.__codeVars();
-		
-		// Read instance to act on
-		JvmTemporary instance = codeVars.temporary(1);
-		__block.variableSetViaFunction(instance.tempIndex(),
-			JvmFunctions.NVM_STACK_POP_REFERENCE_TO_TEMP,
-			codeVars.currentFrame());
-		
-		// Call put handler
-		JvmTemporary value = codeVars.temporary(0);
-		__block.variableSetViaFunction(value.tempIndex(),
-			JvmFunctions.NVM_FIELD_GET_TO_TEMP,
-			codeVars.currentFrame(),
-			instance.accessTemp(JvmTypes.JOBJECT.type().pointerType()),
-			codeVars.linkageReference(this.linkTable.fieldAccess(
-				this.method.nameAndType(), false, __field,
-				false), "fieldAccess"));
-		
-		// Push value
-		__block.functionCall(JvmFunctions.NVM_STACK_PUSH_ANY_FROM_TEMP,
-			codeVars.currentFrame(),
-			value.tempIndex());
-	}
-	
-	/**
-	 * Puts a field value.
-	 * 
-	 * @param __block The block to write to.
-	 * @param __field The field to put to.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/07/04
-	 */
-	private void __doFieldPut(CFunctionBlock __block,
-		FieldReference __field)
+	private void __doFieldGetPut(CFunctionBlock __block,
+		FieldReference __field, boolean __store)
 		throws IOException, NullPointerException
 	{
 		if (__block == null || __field == null)
@@ -809,9 +789,10 @@ public class ByteCodeProcessor
 		
 		// Read value
 		JvmTemporary value = codeVars.temporary(0);
-		__block.variableSetViaFunction(value.tempIndex(),
-			JvmFunctions.NVM_STACK_POP_ANY_TO_TEMP,
-			codeVars.currentFrame());
+		if (__store)
+			__block.variableSetViaFunction(value.tempIndex(),
+				JvmFunctions.NVM_STACK_POP_ANY_TO_TEMP,
+				codeVars.currentFrame());
 		
 		// Read instance to act on
 		JvmTemporary instance = codeVars.temporary(1);
@@ -820,13 +801,35 @@ public class ByteCodeProcessor
 			codeVars.currentFrame());
 		
 		// Call put handler
-		__block.functionCall(JvmFunctions.NVM_FIELD_PUT,
-			codeVars.currentFrame(),
-			instance.accessTemp(JvmTypes.JOBJECT.type().pointerType()),
-			codeVars.linkageReference(this.linkTable.fieldAccess(
-				this.method.nameAndType(), false, __field,
-				true), "fieldAccess"),
-			value.accessTemp(JvmTypes.ANY));
+		if (__store)
+		{
+			// Call put handler
+			__block.functionCall(JvmFunctions.NVM_FIELD_PUT,
+				codeVars.currentFrame(),
+				instance.accessTemp(JvmTypes.JOBJECT.pointerType()),
+				codeVars.linkageReference(this.linkTable.fieldAccess(
+					this.method.nameAndType(), false, __field,
+					true), "fieldAccess"),
+				value.accessTemp(JvmTypes.ANY));
+		}
+		
+		// Call get handler
+		else
+		{
+			__block.variableSetViaFunction(value.tempIndex(),
+				JvmFunctions.NVM_FIELD_GET_TO_TEMP,
+				codeVars.currentFrame(),
+				instance.accessTemp(JvmTypes.JOBJECT.pointerType()),
+				codeVars.linkageReference(
+					this.linkTable.fieldAccess(this.method.nameAndType(),
+						false, __field,
+						false), "fieldAccess"));
+			
+			// Push value
+			__block.functionCall(JvmFunctions.NVM_STACK_PUSH_ANY_FROM_TEMP,
+				codeVars.currentFrame(),
+				value.tempIndex());
+		}
 	}
 	
 	/**
@@ -1309,6 +1312,72 @@ public class ByteCodeProcessor
 	}
 	
 	/**
+	 * Accesses a value in a primitive array.
+	 * 
+	 * @param __block The block to write to.
+	 * @param __type The type of primitive used.
+	 * @param __store Storing a value?
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	private void __doPrimitiveArrayAccess(CFunctionBlock __block,
+		JvmPrimitiveType __type, boolean __store)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __type == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVars = this.__codeVars();
+		
+		// Value to read/write
+		JvmTemporary value = codeVars.temporary(0);
+		
+		// Read in the value?
+		if (__store)
+			__block.variableSetViaFunction(value.tempIndex(),
+				JvmFunctions.NVM_STACK_POP_ANY_TO_TEMP,
+				codeVars.currentFrame());
+		
+		// Read array index
+		CExpression index = codeVars.temporary(2).access(JvmTypes.JINT);
+		__block.variableSetViaFunction(index,
+			JvmFunctions.NVM_STACK_POP_INTEGER,
+			codeVars.currentFrame());
+		
+		// Read array instance
+		JvmTemporary instance = codeVars.temporary(1);
+		__block.variableSetViaFunction(instance.tempIndex(),
+			JvmFunctions.NVM_STACK_POP_REFERENCE_TO_TEMP,
+			codeVars.currentFrame());
+		
+		// Store value?
+		if (__store)
+		{
+			__block.functionCall(JvmFunctions.NVM_ARRAY_STORE,
+				codeVars.currentFrame(),
+				CBasicExpression.number(__type.ordinal()),
+				instance.accessTemp(JvmTypes.JOBJECT.pointerType()),
+				index,
+				value.referenceTemp(JvmTypes.ANY));
+		}
+		
+		// Load value?
+		else
+		{
+			__block.variableSetViaFunction(value.tempIndex(),
+				JvmFunctions.NVM_ARRAY_LOAD_INTO_TEMP,
+				codeVars.currentFrame(),
+				CBasicExpression.number(__type.ordinal()),
+				instance.accessTemp(JvmTypes.JOBJECT.pointerType()),
+				index);
+			__block.functionCall(JvmFunctions.NVM_STACK_PUSH_ANY_FROM_TEMP,
+				codeVars.currentFrame(),
+				value.tempIndex());
+		}
+	}
+	
+	/**
 	 * Performs return from method.
 	 * 
 	 * @param __block The block to write in.
@@ -1466,11 +1535,11 @@ public class ByteCodeProcessor
 	 * 
 	 * @param __ifOp The {@code if} operation to get.
 	 * @return The comparison used for the given instruction.
-	 * @throws IllegalArgumentException If the operation is not valid.
+	 * @throws NoSuchElementException If the operation is not valid.
 	 * @since 2023/07/04
 	 */
-	private static CComparison __compareIf(int __ifOp)
-		throws IllegalArgumentException
+	private static CComparison __commonCompareIf(int __ifOp)
+		throws NoSuchElementException
 	{
 		switch (__ifOp)
 		{
@@ -1500,7 +1569,7 @@ public class ByteCodeProcessor
 		}
 		
 		// {@squirreljme.error NC71 Unknown comparison operation.}
-		throw new IllegalArgumentException("NC71");
+		throw new NoSuchElementException("NC71");
 	}
 	
 	
@@ -1509,38 +1578,140 @@ public class ByteCodeProcessor
 	 * 
 	 * @param __op The operation.
 	 * @return The operator used.
+	 * @throws NoSuchElementException If the operation is not valid.
 	 * @since 2023/07/04
 	 */
-	private static CMathOperator __mathOp(int __op)
+	private static CMathOperator __commonMathOp(int __op)
+		throws NoSuchElementException
 	{
 		switch (__op)
 		{
 			case InstructionIndex.IADD:
+			case InstructionIndex.LADD:
+			case InstructionIndex.FADD:
+			case InstructionIndex.DADD:
 				return CMathOperator.ADD;
 				
 			case InstructionIndex.ISUB:
+			case InstructionIndex.LSUB:
+			case InstructionIndex.FSUB:
+			case InstructionIndex.DSUB:
 				return CMathOperator.SUBTRACT;
 				
 			case InstructionIndex.IMUL:
+			case InstructionIndex.LMUL:
+			case InstructionIndex.FMUL:
+			case InstructionIndex.DMUL:
 				return CMathOperator.MULTIPLY;
 			
 			case InstructionIndex.IDIV:
+			case InstructionIndex.LDIV:
+			case InstructionIndex.FDIV:
+			case InstructionIndex.DDIV:
 				return CMathOperator.DIVIDE;
 			
 			case InstructionIndex.IREM:
+			case InstructionIndex.LREM:
+			case InstructionIndex.FREM:
+			case InstructionIndex.DREM:
 				return CMathOperator.REMAINDER;
 			
 			case InstructionIndex.IAND:
+			case InstructionIndex.LAND:
 				return CMathOperator.AND;
 			
 			case InstructionIndex.IOR:
+			case InstructionIndex.LOR:
 				return CMathOperator.OR;
 			
 			case InstructionIndex.IXOR:
+			case InstructionIndex.LXOR:
 				return CMathOperator.XOR;
 		}
 		
 		// {@squirreljme.error NC98 Unknown operation.}
 		throw new NoSuchElementException("NC98");
+	}
+	
+	/**
+	 * Returns the primitive to use for the given operation.
+	 * 
+	 * @param __op The operation.
+	 * @return The primitive for the given operation.
+	 * @throws NoSuchElementException If the operation is not valid.
+	 * @since 2023/07/16
+	 */
+	private static JvmPrimitiveType __commonPrimitive(int __op)
+		throws NoSuchElementException
+	{
+		switch (__op)
+		{
+			case InstructionIndex.BALOAD:
+			case InstructionIndex.BASTORE:
+				return JvmPrimitiveType.BOOLEAN_OR_BYTE;
+				
+			case InstructionIndex.SALOAD:
+			case InstructionIndex.SASTORE:
+				return JvmPrimitiveType.SHORT;
+				
+			case InstructionIndex.CALOAD:
+			case InstructionIndex.CASTORE:
+				return JvmPrimitiveType.CHARACTER;
+				
+			case InstructionIndex.IALOAD:
+			case InstructionIndex.IASTORE:
+				return JvmPrimitiveType.INTEGER;
+				
+			case InstructionIndex.LALOAD:
+			case InstructionIndex.LASTORE:
+				return JvmPrimitiveType.LONG;
+				
+			case InstructionIndex.FALOAD:
+			case InstructionIndex.FASTORE:
+				return JvmPrimitiveType.FLOAT;
+				
+			case InstructionIndex.DALOAD:
+			case InstructionIndex.DASTORE:
+				return JvmPrimitiveType.DOUBLE;
+		}
+		
+		// {@squirreljme.error NC99 Unknown operation.}
+		throw new NoSuchElementException("NC99");
+	}
+	
+	/**
+	 * Determines whether this is a store or load operation.
+	 * 
+	 * @param __op The operation.
+	 * @return {@code true} if this is a load operation.
+	 * @throws NoSuchElementException If the operation is not valid.
+	 * @since 2023/07/16
+	 */
+	private static boolean __commonStoreLoad(int __op)
+		throws NoSuchElementException
+	{
+		switch (__op)
+		{
+			case InstructionIndex.BALOAD:
+			case InstructionIndex.SALOAD:
+			case InstructionIndex.CALOAD:
+			case InstructionIndex.IALOAD:
+			case InstructionIndex.LALOAD:
+			case InstructionIndex.FALOAD:
+			case InstructionIndex.DALOAD:
+				return false;
+				
+			case InstructionIndex.BASTORE:
+			case InstructionIndex.SASTORE:
+			case InstructionIndex.CASTORE:
+			case InstructionIndex.IASTORE:
+			case InstructionIndex.LASTORE:
+			case InstructionIndex.FASTORE:
+			case InstructionIndex.DASTORE:
+				return true;
+		}
+		
+		// {@squirreljme.error NC9a Unknown operation.}
+		throw new NoSuchElementException("NC9a");
 	}
 }

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.c.std.CTypeProvider;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -257,6 +258,22 @@ public class CFunctionType
 	 * @param __rVal The return value, may be {@code null}.
 	 * @param __args Arguments to the function.
 	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public static CFunctionType of(String __name, CTypeProvider __rVal,
+		CVariable... __args)
+		throws NullPointerException
+	{
+		return CFunctionType.of(CIdentifier.of(__name), __rVal, __args);
+	}
+	
+	/**
+	 * Initializes the C function.
+	 * 
+	 * @param __name The function name.
+	 * @param __rVal The return value, may be {@code null}.
+	 * @param __args Arguments to the function.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/04
 	 */
 	public static CFunctionType of(CIdentifier __name, CType __rVal,
@@ -264,5 +281,24 @@ public class CFunctionType
 		throws NullPointerException
 	{
 		return new CFunctionType(__name, __rVal, __args);
+	}
+	
+	/**
+	 * Initializes the C function.
+	 * 
+	 * @param __name The function name.
+	 * @param __rVal The return value, may be {@code null}.
+	 * @param __args Arguments to the function.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public static CFunctionType of(CIdentifier __name, CTypeProvider __rVal,
+		CVariable... __args)
+		throws NullPointerException
+	{
+		if (__rVal == null)
+			throw new NullPointerException("NARG");
+		
+		return CFunctionType.of(__name, __rVal.type(), __args);
 	}
 }

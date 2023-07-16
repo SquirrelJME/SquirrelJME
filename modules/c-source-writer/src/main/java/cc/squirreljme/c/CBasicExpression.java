@@ -33,6 +33,26 @@ public class CBasicExpression
 	}
 	
 	/**
+	 * Returns a number expression.
+	 * 
+	 * @param __value The value to use.
+	 * @return The expression for the number.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public static CExpression number(Number __value)
+		throws IOException, NullPointerException
+	{
+		if (__value == null)
+			throw new NullPointerException("NARG");
+	
+		return CExpressionBuilder.builder()
+			.number(__value)
+			.build();
+	}
+	
+	/**
 	 * Initializes a basic expression.
 	 * 
 	 * @param __tokens The tokens to use.

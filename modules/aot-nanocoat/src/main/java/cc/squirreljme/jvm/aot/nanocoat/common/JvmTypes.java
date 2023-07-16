@@ -60,7 +60,7 @@ public enum JvmTypes
 				"sjme_anyData")
 				.member(JvmTypes.JINT,
 					"jint")
-				.member(JvmTypes.JOBJECT.type().pointerType(),
+				.member(JvmTypes.JOBJECT.pointerType(),
 					"jobject")
 				.member(JvmTypes.TEMP_INDEX,
 					"tempIndex")
@@ -227,6 +227,21 @@ public enum JvmTypes
 		{
 			return CTypeDefType.of(JvmTypes.JOBJECT.type(),
 				"jthrowable");
+		}
+	},
+	
+	/** Primitive type. */
+	PRIMITIVE_TYPE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CType __build()
+		{
+			return CTypeDefType.of(JvmTypes.JINT.type(),
+				"sjme_primitiveType");
 		}
 	},
 	
@@ -538,7 +553,7 @@ public enum JvmTypes
 		{
 			return CStructTypeBuilder.builder(
 				CStructKind.STRUCT, "sjme_nvm_thread")
-				.member(JvmTypes.VMFRAME.type().pointerType(), "top")
+				.member(JvmTypes.VMFRAME.pointerType(), "top")
 				.build();
 		}
 	},
@@ -558,6 +573,17 @@ public enum JvmTypes
 	 * @since 2023/06/06
 	 */
 	abstract CType __build();
+	
+	/**
+	 * Returns the pointer type for this.
+	 * 
+	 * @return The pointer type for this type.
+	 * @since 2023/07/16
+	 */
+	public final CType pointerType()
+	{
+		return this.type().pointerType();
+	}
 	
 	/**
 	 * Returns the type used.

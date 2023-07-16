@@ -49,21 +49,21 @@ public class ClassLinkTable
 	 * @param __source The source method.
 	 * @param __static Is the access static?
 	 * @param __target The target field being access.
-	 * @param __write Is the access writing the value?
+	 * @param __store Is the access writing the value?
 	 * @return The container for the linkage.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/16
 	 */
 	public Container<FieldAccessLinkage> fieldAccess(
 		MethodNameAndType __source, boolean __static, FieldReference __target,
-		boolean __write)
+		boolean __store)
 		throws NullPointerException
 	{
 		if (__source == null || __target == null)
 			throw new NullPointerException("NARG");
 		
 		return this.put(FieldAccessLinkage.class,
-			new FieldAccessLinkage(__source, __static, __target, __write));
+			new FieldAccessLinkage(__source, __static, __target, __store));
 	}
 	
 	/**
