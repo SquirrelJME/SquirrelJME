@@ -191,8 +191,14 @@ public final class StackMapTableState
 		
 		// Pop method call arguments accordingly
 		MethodDescriptor type = __method.memberType();
-		StackMapTableState result = this.deriveStackPop(null,
-			type.argumentCount() + (__isStatic ? 0 : 1));
+		
+		// How much is being popped off?
+		StackMapTableState result;
+		int popCount = type.argumentCount() + (__isStatic ? 0 : 1);
+		if (popCount > 0)
+			result = this.deriveStackPop(null, popCount);
+		else
+			result = this;
 		
 		// Push any return value?
 		if (type.hasReturnValue())

@@ -1308,7 +1308,8 @@ public final class ByteCode
 							InstructionMnemonics.toString(op));
 				}
 			}
-			catch (InvalidClassFormatException __e)
+			catch (InvalidClassFormatException|IllegalArgumentException|
+				IllegalStateException __e)
 			{
 				// {@squirreljme.error JC9b Could not process for instruction.
 				// (The instruction; The input; The output (may be partial)}
