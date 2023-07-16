@@ -77,7 +77,7 @@ public enum JvmFunctions
 				JvmTypes.TEMP_INDEX,
 				CVariable.of(JvmTypes.VMFRAME.pointerType(),
 					"frame"),
-				CVariable.of(JvmTypes.PRIMITIVE_TYPE,
+				CVariable.of(JvmTypes.BASIC_TYPE_ID,
 					"primitiveType"),
 				CVariable.of(JvmTypes.JOBJECT.pointerType(),
 					"reference"),
@@ -100,12 +100,35 @@ public enum JvmFunctions
 				JvmTypes.JBOOLEAN,
 				CVariable.of(JvmTypes.VMFRAME.pointerType(),
 					"frame"),
-				CVariable.of(JvmTypes.PRIMITIVE_TYPE,
-					"primitiveType"),
+				CVariable.of(JvmTypes.BASIC_TYPE_ID,
+					"type"),
 				CVariable.of(JvmTypes.JOBJECT.pointerType(),
 					"reference"),
 				CVariable.of(JvmTypes.JINT,
-					"index"));
+					"index"),
+				CVariable.of(JvmTypes.ANY.pointerType(),
+					"value"));
+		}
+	},
+	
+	/** Check cast. */
+	NVM_CHECK_CAST
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_checkCast",
+				JvmTypes.JBOOLEAN,
+				CVariable.of(JvmTypes.VMSTATE.pointerType(),
+					"state"),
+				CVariable.of(JvmTypes.JOBJECT.pointerType(),
+					"instance"),
+				JvmFunctions.__linkage("classObject",
+					"linkage"));
 		}
 	},
 	
@@ -124,7 +147,7 @@ public enum JvmFunctions
 				CVariable.of(JvmTypes.VMSTATE.pointerType(),
 					"state"),
 				CVariable.of(JvmTypes.JOBJECT.pointerType(),
-					"reference"));
+					"instance"));
 		}
 	},
 	
@@ -373,6 +396,28 @@ public enum JvmFunctions
 				CVariable.of(JvmTypes.VMFRAME.pointerType(),
 					"frame"),
 				CVariable.of(JvmTypes.JINT, "index"));
+		}
+	},
+	
+	/** Push to the stack whether this is an instance of the class or not. */
+	NVM_STACK_PUSH_INTEGER_IS_INSTANCE_OF
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of(
+				"sjme_nvm_localPushIntegerIsInstanceOf",
+				JvmTypes.JBOOLEAN,
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JOBJECT.pointerType(),
+					"instance"),
+				JvmFunctions.__linkage("classObject",
+					"linkage"));
 		}
 	},
 	
@@ -765,7 +810,7 @@ public enum JvmFunctions
 				CVariable.of(JvmTypes.VMFRAME.pointerType(),
 					"frame"),
 				CVariable.of(JvmTypes.JOBJECT.pointerType(),
-					"object"));
+					"instance"));
 		}
 	},
 	

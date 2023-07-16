@@ -68,6 +68,21 @@ public enum JvmTypes
 		}
 	},
 	
+	/** Basic Type ID. */
+	BASIC_TYPE_ID
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CType __build()
+		{
+			return CTypeDefType.of(JvmTypes.JINT.type(),
+				"sjme_basicTypeId");
+		}
+	},
+	
 	/** Boolean. */
 	JBOOLEAN
 	{
@@ -272,21 +287,6 @@ public enum JvmTypes
 		{
 			return CTypeDefType.of(JvmTypes.JOBJECT.type(),
 				"jthrowable");
-		}
-	},
-	
-	/** Primitive type. */
-	PRIMITIVE_TYPE
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2023/07/16
-		 */
-		@Override
-		CType __build()
-		{
-			return CTypeDefType.of(JvmTypes.JINT.type(),
-				"sjme_primitiveType");
 		}
 	},
 	

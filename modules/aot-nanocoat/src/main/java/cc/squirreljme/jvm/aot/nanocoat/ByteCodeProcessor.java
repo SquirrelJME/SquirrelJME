@@ -475,8 +475,24 @@ public class ByteCodeProcessor
 		int op = __instruction.operation();
 		switch (op)
 		{
+				// Do nothing
+			case InstructionIndex.NOP:
+				break;
+			
 			case InstructionIndex.ATHROW:
 				this.__doAThrow(__block);
+				break;
+				
+				// Check that value is the proper type
+			case InstructionIndex.CHECKCAST:
+				this.__doCheckCast(__block,
+					__instruction.argument(0, ClassName.class));
+				break;
+				
+				// Check that value is the proper type, without an exception
+			case InstructionIndex.INSTANCEOF:
+				this.__doInstanceOf(__block,
+					__instruction.argument(0, ClassName.class));
 				break;
 			
 			case InstructionIndex.POP:
@@ -734,6 +750,14 @@ public class ByteCodeProcessor
 					(op == InstructionIndex.PUTSTATIC));
 				break;
 				
+				// Store or load reference from array
+			case InstructionIndex.AALOAD:
+			case InstructionIndex.AASTORE:
+				this.__doArrayAccess(__block,
+					JvmPrimitiveType.OBJECT,
+					ByteCodeProcessor.__commonStoreLoad(op));
+				break;
+				
 				// Store or load primitive from array
 			case InstructionIndex.BALOAD:
 			case InstructionIndex.SALOAD:
@@ -749,7 +773,7 @@ public class ByteCodeProcessor
 			case InstructionIndex.LASTORE:
 			case InstructionIndex.FASTORE:
 			case InstructionIndex.DASTORE:
-				this.__doPrimitiveArrayAccess(__block,
+				this.__doArrayAccess(__block,
 					ByteCodeProcessor.__commonPrimitive(op),
 					ByteCodeProcessor.__commonStoreLoad(op));
 				break;
@@ -891,6 +915,73 @@ public class ByteCodeProcessor
 	}
 	
 	/**
+	 * Accesses a value in a primitive array.
+	 * 
+	 * @param __block The block to write to.
+	 * @param __type The type of primitive used.
+	 * @param __store Storing a value?
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	private void __doArrayAccess(CFunctionBlock __block,
+		JvmPrimitiveType __type, boolean __store)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __type == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVars = this.__codeVars();
+		
+		// Value to read/write
+		JvmTemporary value = codeVars.temporary(0);
+		
+		// Read in the value?
+		if (__store)
+			__block.variableSetViaFunction(value.tempIndex(),
+				JvmFunctions.NVM_STACK_POP_ANY_TO_TEMP,
+				codeVars.currentFrame());
+		
+		// Read array index
+		CExpression index = codeVars.temporary(2)
+			.access(JvmTypes.JINT);
+		__block.variableSetViaFunction(index,
+			JvmFunctions.NVM_STACK_POP_INTEGER,
+			codeVars.currentFrame());
+		
+		// Read array instance
+		JvmTemporary instance = codeVars.temporary(1);
+		__block.variableSetViaFunction(instance.tempIndex(),
+			JvmFunctions.NVM_STACK_POP_REFERENCE_TO_TEMP,
+			codeVars.currentFrame());
+		
+		// Store value?
+		if (__store)
+		{
+			__block.functionCall(JvmFunctions.NVM_ARRAY_STORE,
+				codeVars.currentFrame(),
+				CBasicExpression.number(__type.ordinal()),
+				instance.accessTemp(JvmTypes.JOBJECT.pointerType()),
+				index,
+				value.referenceTemp(JvmTypes.ANY));
+		}
+		
+		// Load value?
+		else
+		{
+			__block.variableSetViaFunction(value.tempIndex(),
+				JvmFunctions.NVM_ARRAY_LOAD_INTO_TEMP,
+				codeVars.currentFrame(),
+				CBasicExpression.number(__type.ordinal()),
+				instance.accessTemp(JvmTypes.JOBJECT.pointerType()),
+				index);
+			__block.functionCall(JvmFunctions.NVM_STACK_PUSH_ANY_FROM_TEMP,
+				codeVars.currentFrame(),
+				value.tempIndex());
+		}
+	}
+	
+	/**
 	 * Gets the length of the given array.
 	 * 
 	 * @param __block The block to write to.
@@ -948,6 +1039,47 @@ public class ByteCodeProcessor
 		
 		// Perform throw check now
 		this.__checkThrow(__block);
+	}
+	
+	/**
+	 * Checks if the value is the given type.
+	 *
+	 * @param __block The block to write to.
+	 * @param __class The class to check.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	private void __doCheckCast(CFunctionBlock __block, ClassName __class)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __class == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVars = this.__codeVars();
+		
+		// Load instance
+		JvmTemporary instance = codeVars.temporary(0);
+		__block.variableSetViaFunction(instance.tempIndex(),
+			JvmFunctions.NVM_STACK_POP_REFERENCE_TO_TEMP,
+			codeVars.currentFrame());
+		
+		// Refer to other class, then determine if it is that class
+		__block.functionCall(
+			JvmFunctions.NVM_CHECK_CAST,
+			codeVars.currentFrame(),
+			instance.referenceTemp(JvmTypes.JOBJECT.pointerType()),
+			codeVars.linkageReference(this.linkTable.classObject(
+				__class), "classObject"));
+		
+		// Check exception
+		this.__checkThrow(__block);
+		
+		// Push self
+		__block.functionCall(
+			JvmFunctions.NVM_STACK_PUSH_REFERENCE,
+			codeVars.currentFrame(),
+			instance.accessTemp(JvmTypes.JOBJECT.pointerType()));
 	}
 	
 	/**
@@ -1293,6 +1425,38 @@ public class ByteCodeProcessor
 				.math(value, CMathOperator.ADD,
 					CBasicExpression.number(__by))
 				.build());
+	}
+	
+	/**
+	 * Generates {@code instanceof} check.
+	 *
+	 * @param __block The block to write to.
+	 * @param __class The class to check.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	private void __doInstanceOf(CFunctionBlock __block, ClassName __class)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __class == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVars = this.__codeVars();
+		
+		// Load instance
+		JvmTemporary instance = codeVars.temporary(0);
+		__block.variableSetViaFunction(instance.tempIndex(),
+			JvmFunctions.NVM_STACK_POP_REFERENCE_TO_TEMP,
+			codeVars.currentFrame());
+		
+		// Refer to other class, then determine if it is that class
+		__block.functionCall(
+			JvmFunctions.NVM_STACK_PUSH_INTEGER_IS_INSTANCE_OF,
+			codeVars.currentFrame(),
+			instance.referenceTemp(JvmTypes.JOBJECT.pointerType()),
+			codeVars.linkageReference(this.linkTable.classObject(
+				__class), "classObject"));
 	}
 	
 	/**
@@ -1724,72 +1888,6 @@ public class ByteCodeProcessor
 		__block.functionCall(JvmFunctions.NVM_STACK_PUSH_REFERENCE_FROM_TEMP,
 			codeVariables.currentFrame(),
 			object.tempIndex());
-	}
-	
-	/**
-	 * Accesses a value in a primitive array.
-	 * 
-	 * @param __block The block to write to.
-	 * @param __type The type of primitive used.
-	 * @param __store Storing a value?
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/07/16
-	 */
-	private void __doPrimitiveArrayAccess(CFunctionBlock __block,
-		JvmPrimitiveType __type, boolean __store)
-		throws IOException, NullPointerException
-	{
-		if (__block == null || __type == null)
-			throw new NullPointerException("NARG");
-		
-		__CodeVariables__ codeVars = this.__codeVars();
-		
-		// Value to read/write
-		JvmTemporary value = codeVars.temporary(0);
-		
-		// Read in the value?
-		if (__store)
-			__block.variableSetViaFunction(value.tempIndex(),
-				JvmFunctions.NVM_STACK_POP_ANY_TO_TEMP,
-				codeVars.currentFrame());
-		
-		// Read array index
-		CExpression index = codeVars.temporary(2).access(JvmTypes.JINT);
-		__block.variableSetViaFunction(index,
-			JvmFunctions.NVM_STACK_POP_INTEGER,
-			codeVars.currentFrame());
-		
-		// Read array instance
-		JvmTemporary instance = codeVars.temporary(1);
-		__block.variableSetViaFunction(instance.tempIndex(),
-			JvmFunctions.NVM_STACK_POP_REFERENCE_TO_TEMP,
-			codeVars.currentFrame());
-		
-		// Store value?
-		if (__store)
-		{
-			__block.functionCall(JvmFunctions.NVM_ARRAY_STORE,
-				codeVars.currentFrame(),
-				CBasicExpression.number(__type.ordinal()),
-				instance.accessTemp(JvmTypes.JOBJECT.pointerType()),
-				index,
-				value.referenceTemp(JvmTypes.ANY));
-		}
-		
-		// Load value?
-		else
-		{
-			__block.variableSetViaFunction(value.tempIndex(),
-				JvmFunctions.NVM_ARRAY_LOAD_INTO_TEMP,
-				codeVars.currentFrame(),
-				CBasicExpression.number(__type.ordinal()),
-				instance.accessTemp(JvmTypes.JOBJECT.pointerType()),
-				index);
-			__block.functionCall(JvmFunctions.NVM_STACK_PUSH_ANY_FROM_TEMP,
-				codeVars.currentFrame(),
-				value.tempIndex());
-		}
 	}
 	
 	/**
@@ -2441,6 +2539,7 @@ public class ByteCodeProcessor
 	{
 		switch (__op)
 		{
+			case InstructionIndex.AALOAD:
 			case InstructionIndex.BALOAD:
 			case InstructionIndex.SALOAD:
 			case InstructionIndex.CALOAD:
@@ -2450,6 +2549,7 @@ public class ByteCodeProcessor
 			case InstructionIndex.DALOAD:
 				return false;
 				
+			case InstructionIndex.AASTORE:
 			case InstructionIndex.BASTORE:
 			case InstructionIndex.SASTORE:
 			case InstructionIndex.CASTORE:

@@ -46,6 +46,9 @@ public enum JvmPrimitiveType
 	/** Double. */
 	DOUBLE,
 	
+	/** Object. */
+	OBJECT,
+	
 	/* End. */
 	;
 	
