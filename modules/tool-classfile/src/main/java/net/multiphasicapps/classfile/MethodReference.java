@@ -71,6 +71,40 @@ public final class MethodReference
 	}
 	
 	/**
+	 * Initializes the method reference.
+	 *
+	 * @param __c The class the member resides in.
+	 * @param __i The name of the member.
+	 * @param __t The descriptor of the member.
+	 * @param __int Does this refer to an interface method?
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public MethodReference(String __c, MethodName __i,
+		MethodDescriptor __t, boolean __int)
+		throws NullPointerException
+	{
+		this(new ClassName(__c), __i, __t, __int);
+	}
+	
+	/**
+	 * Initializes the method reference.
+	 *
+	 * @param __c The class the member resides in.
+	 * @param __i The name of the member.
+	 * @param __t The descriptor of the member.
+	 * @param __int Does this refer to an interface method?
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public MethodReference(String __c, String __i,
+		MethodDescriptor __t, boolean __int)
+		throws NullPointerException
+	{
+		this(new ClassName(__c), new MethodName(__i), __t, __int);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/06/12
 	 */

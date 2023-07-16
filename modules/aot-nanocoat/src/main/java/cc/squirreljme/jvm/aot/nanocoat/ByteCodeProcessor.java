@@ -42,10 +42,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import jdk.nashorn.internal.runtime.Debug;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
 import net.multiphasicapps.classfile.ConstantValueType;
+import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
@@ -54,6 +56,7 @@ import net.multiphasicapps.classfile.InstructionJumpTargets;
 import net.multiphasicapps.classfile.IntMatchingJumpTable;
 import net.multiphasicapps.classfile.JavaStackShuffleType;
 import net.multiphasicapps.classfile.Method;
+import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodReference;
 import net.multiphasicapps.classfile.PrimitiveType;
 import net.multiphasicapps.classfile.StackMapTablePair;
@@ -576,6 +579,13 @@ public class ByteCodeProcessor
 				this.__doNewArray(__block,
 					__instruction.argument(0, ClassName.class));
 				break;
+				
+				// New array with multiple dimensions
+			case InstructionIndex.MULTIANEWARRAY:
+				this.__doNewArrayMulti(__block,
+					__instruction.argument(0, ClassName.class),
+					__instruction.argument(1, Integer.class));
+				break;
 			
 			case InstructionIndex.NEW:
 				this.__doNew(__block,
@@ -788,6 +798,13 @@ public class ByteCodeProcessor
 				this.__doIncrementInteger(__block,
 					__instruction.argument(0, Integer.class),
 					__instruction.argument(1, Integer.class));
+				break;
+				
+				// Synchronization monitors
+			case InstructionIndex.MONITORENTER:
+			case InstructionIndex.MONITOREXIT:
+				this.__doMonitor(__block,
+					(op == InstructionIndex.MONITORENTER));
 				break;
 			
 			default:
@@ -1760,6 +1777,24 @@ public class ByteCodeProcessor
 	}
 	
 	/**
+	 * Enters or exits a monitor.
+	 *
+	 * @param __block The block to enter.
+	 * @param __enter Entering the monitor?
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	private void __doMonitor(CFunctionBlock __block, boolean __enter)
+		throws IOException, NullPointerException
+	{
+		if (__block == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
+	}
+	
+	/**
 	 * Negates an integer. 
 	 *
 	 * @param __block The block to write to.
@@ -1888,6 +1923,50 @@ public class ByteCodeProcessor
 		__block.functionCall(JvmFunctions.NVM_STACK_PUSH_REFERENCE_FROM_TEMP,
 			codeVariables.currentFrame(),
 			object.tempIndex());
+	}
+	
+	/**
+	 * Allocates a multi instance array.
+	 *
+	 * @param __block The block to write to.
+	 * @param __type The type of array.
+	 * @param __dimensions The dimensions in the class.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	private void __doNewArrayMulti(CFunctionBlock __block, ClassName __type,
+		int __dimensions)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __type == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVars = this.__codeVars();
+		
+		// Get class instance for the target
+		JvmTemporary classObject = codeVars.temporary(0);
+		__block.variableSetViaFunction(classObject.tempIndex(),
+			JvmFunctions.NVM_LOOKUP_CLASS_OBJECT_INTO_TEMP,
+			codeVars.currentThread(),
+			codeVars.linkageReference(this.linkTable.classObject(
+				__type), "classObject"));
+		
+		// Determine the method call actually used
+		FieldDescriptor[] args = new FieldDescriptor[__dimensions + 1];
+		args[0] = new ClassName("java/lang/Class").field();
+		for (int i = 0; i < __dimensions; i++)
+			args[i + 1] = FieldDescriptor.INTEGER;
+		
+		// Just do a completely normal invocation here!
+		MethodDescriptor descriptor = new MethodDescriptor(
+			__type.field().addDimensions(__dimensions), args);
+		this.__doInvokeNormal(__block, true,
+			new MethodReference(
+				"cc/squirreljme/runtime/cldc/lang/ArrayUtils",
+				"multiANewArray",
+				descriptor,
+				false));
 	}
 	
 	/**
