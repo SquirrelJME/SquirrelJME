@@ -549,7 +549,16 @@ public class ByteCodeProcessor
 					ByteCodeProcessor.__commonPrimitive(op),
 					ByteCodeProcessor.__commonCompareOp(op));
 				break;
+				
+				// Reference comparison
+			case InstructionIndex.IF_ACMPEQ:
+			case InstructionIndex.IF_ACMPNE:
+				this.__doIfCmpReference(__block,
+					ByteCodeProcessor.__commonCompareIf(op),
+					this.__addressToGroup(__instruction, 0));
+				break;
 			
+				// Integer comparison
 			case InstructionIndex.IF_ICMPEQ:
 			case InstructionIndex.IF_ICMPNE:
 			case InstructionIndex.IF_ICMPLT:
@@ -1334,6 +1343,41 @@ public class ByteCodeProcessor
 		
 		// Compare value
 		this.__doIf(__block, __compare, __targetGroupId, a, b);
+	}
+	
+	/**
+	 * Performs object comparison.
+	 * 
+	 * @param __block The block to write to.
+	 * @param __compare The comparison to make.
+	 * @param __targetGroupId The target group ID.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	private void __doIfCmpReference(CFunctionBlock __block,
+		CComparison __compare, int __targetGroupId)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __compare == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVariables = this.__codeVars();
+		
+		// Pop from stack
+		JvmTemporary a = codeVariables.temporary(0);
+		JvmTemporary b = codeVariables.temporary(1);
+		__block.variableSetViaFunction(b.tempIndex(),
+			JvmFunctions.NVM_STACK_POP_REFERENCE_TO_TEMP,
+			codeVariables.currentFrame());
+		__block.variableSetViaFunction(a.tempIndex(),
+			JvmFunctions.NVM_STACK_POP_REFERENCE_TO_TEMP,
+			codeVariables.currentFrame());
+		
+		// Compare value
+		this.__doIf(__block, __compare, __targetGroupId,
+			a.accessTemp(JvmTypes.JOBJECT.pointerType()),
+			b.accessTemp(JvmTypes.JOBJECT.pointerType()));
 	}
 	
 	/**
@@ -2311,10 +2355,12 @@ public class ByteCodeProcessor
 		{
 			case InstructionIndex.IFEQ:
 			case InstructionIndex.IF_ICMPEQ:
+			case InstructionIndex.IF_ACMPEQ:
 				return CComparison.EQUALS;
 				
 			case InstructionIndex.IFNE:
 			case InstructionIndex.IF_ICMPNE:
+			case InstructionIndex.IF_ACMPNE:
 				return CComparison.NOT_EQUALS;
 				
 			case InstructionIndex.IFLT:
