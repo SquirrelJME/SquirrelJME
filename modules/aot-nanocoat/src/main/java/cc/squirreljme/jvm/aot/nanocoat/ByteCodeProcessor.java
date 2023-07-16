@@ -570,12 +570,20 @@ public class ByteCodeProcessor
 				break;
 				
 			case InstructionIndex.WIDE_ILOAD:
-				this.__doILoadStore(__block, false,
+			case InstructionIndex.WIDE_LLOAD:
+			case InstructionIndex.WIDE_FLOAD:
+			case InstructionIndex.WIDE_DLOAD:
+				this.__doPrimitiveLoadStore(__block, false,
+					ByteCodeProcessor.__commonPrimitive(op),
 					__instruction.intArgument(0));
 				break;
 				
 			case InstructionIndex.WIDE_ISTORE:
-				this.__doILoadStore(__block, true,
+			case InstructionIndex.WIDE_LSTORE:
+			case InstructionIndex.WIDE_FSTORE:
+			case InstructionIndex.WIDE_DSTORE:
+				this.__doPrimitiveLoadStore(__block, true,
+					ByteCodeProcessor.__commonPrimitive(op),
 					__instruction.intArgument(0));
 				break;
 				
@@ -589,6 +597,30 @@ public class ByteCodeProcessor
 			case InstructionIndex.IOR:
 			case InstructionIndex.IXOR:
 				this.__doMathInteger(__block,
+					ByteCodeProcessor.__commonMathOp(op));
+				break;
+				
+				// Software math
+			case InstructionIndex.LADD:
+			case InstructionIndex.LSUB:
+			case InstructionIndex.LMUL:
+			case InstructionIndex.LDIV:
+			case InstructionIndex.LREM:
+			case InstructionIndex.LAND:
+			case InstructionIndex.LOR:
+			case InstructionIndex.LXOR:
+			case InstructionIndex.FADD:
+			case InstructionIndex.FSUB:
+			case InstructionIndex.FMUL:
+			case InstructionIndex.FDIV:
+			case InstructionIndex.FREM:
+			case InstructionIndex.DADD:
+			case InstructionIndex.DSUB:
+			case InstructionIndex.DMUL:
+			case InstructionIndex.DDIV:
+			case InstructionIndex.DREM:
+				this.__doMathSoft(__block,
+					ByteCodeProcessor.__commonPrimitive(op),
 					ByteCodeProcessor.__commonMathOp(op));
 				break;
 				
@@ -1092,36 +1124,6 @@ public class ByteCodeProcessor
 	}
 	
 	/**
-	 * Store integer to local variable.
-	 *
-	 * @param __block The block to write to.
-	 * @param __store Store value?
-	 * @param __localDx The local to write to.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/07/04
-	 */
-	private void __doILoadStore(CFunctionBlock __block, boolean __store,
-		int __localDx)
-		throws IOException, NullPointerException
-	{
-		if (__block == null)
-			throw new NullPointerException("NARG");
-		
-		__CodeVariables__ codeVars = this.__codeVars();
-		
-		// Pop over
-		__block.functionCall((__store ? JvmFunctions.NVM_LOCAL_POP_INTEGER :
-			JvmFunctions.NVM_LOCAL_PUSH_INTEGER),
-			CExpressionBuilder.builder()
-				.identifier(codeVars.currentFrame())
-				.build(),
-			CExpressionBuilder.builder()
-				.number(__localDx)
-				.build());
-	}
-	
-	/**
 	 * Writes a jump table.
 	 * 
 	 * @param __block The block to write to.
@@ -1306,6 +1308,29 @@ public class ByteCodeProcessor
 	}
 	
 	/**
+	 * Performs software math on a type, these get mapped to static invocations
+	 * instead.
+	 * 
+	 * @param __block The block to write to.
+	 * @param __type The type of math being performed.
+	 * @param __mathOp The operation being performed.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	private void __doMathSoft(CFunctionBlock __block, JvmPrimitiveType __type,
+		CMathOperator __mathOp)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __type == null || __mathOp == null)
+			throw new NullPointerException("NARG");
+		
+		// Just do a completely normal invocation here!
+		this.__doInvokeNormal(__block, true,
+			__type.softMath(__mathOp));
+	}
+	
+	/**
 	 * Allocates a new object.
 	 * 
 	 * @param __block The block to write to.
@@ -1448,6 +1473,79 @@ public class ByteCodeProcessor
 				codeVars.currentFrame(),
 				value.tempIndex());
 		}
+	}
+	
+	/**
+	 * Store integer to local variable.
+	 *
+	 * @param __block The block to write to.
+	 * @param __store Store value?
+	 * @param __type The type to store.
+	 * @param __localDx The local to write to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/04
+	 */
+	private void __doPrimitiveLoadStore(CFunctionBlock __block,
+		boolean __store, JvmPrimitiveType __type, int __localDx)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __type == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVars = this.__codeVars();
+		
+		// Which function to actually call?
+		JvmFunctions function;
+		if (__store)
+			switch (__type)
+			{
+				case INTEGER:
+					function = JvmFunctions.NVM_LOCAL_PUSH_INTEGER;
+					break;
+					
+				case LONG:
+					function = JvmFunctions.NVM_LOCAL_PUSH_LONG;
+					break;
+				
+				case FLOAT:
+					function = JvmFunctions.NVM_LOCAL_PUSH_FLOAT;
+					break;
+				
+				case DOUBLE:
+					function = JvmFunctions.NVM_LOCAL_PUSH_DOUBLE;
+					break;
+					
+				default:
+					throw Debugging.oops();
+			}
+		else
+			switch (__type)
+			{
+				case INTEGER:
+					function = JvmFunctions.NVM_LOCAL_POP_INTEGER;
+					break;
+					
+				case LONG:
+					function = JvmFunctions.NVM_LOCAL_POP_LONG;
+					break;
+				
+				case FLOAT:
+					function = JvmFunctions.NVM_LOCAL_POP_FLOAT;
+					break;
+				
+				case DOUBLE:
+					function = JvmFunctions.NVM_LOCAL_POP_DOUBLE;
+					break;
+					
+				default:
+					throw Debugging.oops();
+			}
+		
+		// Pop over
+		__block.functionCall(function,
+			codeVars.currentFrame(),
+			CBasicExpression.number(__localDx));
 	}
 	
 	/**
@@ -1733,18 +1831,52 @@ public class ByteCodeProcessor
 				
 			case InstructionIndex.IALOAD:
 			case InstructionIndex.IASTORE:
+			case InstructionIndex.WIDE_ILOAD:
+			case InstructionIndex.WIDE_ISTORE:
+			case InstructionIndex.IADD:
+			case InstructionIndex.ISUB:
+			case InstructionIndex.IMUL:
+			case InstructionIndex.IDIV:
+			case InstructionIndex.IREM:
+			case InstructionIndex.IAND:
+			case InstructionIndex.IOR:
+			case InstructionIndex.IXOR:
 				return JvmPrimitiveType.INTEGER;
 				
 			case InstructionIndex.LALOAD:
 			case InstructionIndex.LASTORE:
+			case InstructionIndex.WIDE_LLOAD:
+			case InstructionIndex.WIDE_LSTORE:
+			case InstructionIndex.LADD:
+			case InstructionIndex.LSUB:
+			case InstructionIndex.LMUL:
+			case InstructionIndex.LDIV:
+			case InstructionIndex.LREM:
+			case InstructionIndex.LAND:
+			case InstructionIndex.LOR:
+			case InstructionIndex.LXOR:
 				return JvmPrimitiveType.LONG;
 				
 			case InstructionIndex.FALOAD:
 			case InstructionIndex.FASTORE:
+			case InstructionIndex.WIDE_FLOAD:
+			case InstructionIndex.WIDE_FSTORE:
+			case InstructionIndex.FADD:
+			case InstructionIndex.FSUB:
+			case InstructionIndex.FMUL:
+			case InstructionIndex.FDIV:
+			case InstructionIndex.FREM:
 				return JvmPrimitiveType.FLOAT;
 				
 			case InstructionIndex.DALOAD:
 			case InstructionIndex.DASTORE:
+			case InstructionIndex.WIDE_DLOAD:
+			case InstructionIndex.WIDE_DSTORE:
+			case InstructionIndex.DADD:
+			case InstructionIndex.DSUB:
+			case InstructionIndex.DMUL:
+			case InstructionIndex.DDIV:
+			case InstructionIndex.DREM:
 				return JvmPrimitiveType.DOUBLE;
 		}
 		

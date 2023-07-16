@@ -379,5 +379,24 @@ public final class MethodDescriptor
 		return new MethodDescriptor(
 			(__rv == null ? null : new FieldDescriptor(__rv)), args);
 	}
+	
+	/**
+	 * Creates a descriptor from the given input strings.
+	 * 
+	 * @param __rv The return value of the method, may be {@code null}.
+	 * @param __args The arguments of the method.
+	 * @return The descriptor.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public static MethodDescriptor ofArguments(FieldDescriptor __rv,
+		FieldDescriptor... __args)
+		throws NullPointerException
+	{
+		if (__args == null)
+			throw new NullPointerException("NARG");
+		
+		return new MethodDescriptor(__rv, __args.clone());
+	}
 }
 

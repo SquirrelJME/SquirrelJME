@@ -214,6 +214,42 @@ public enum JvmFunctions
 		}
 	},
 	
+	/** Pop double from the stack to local variable. */
+	NVM_LOCAL_POP_DOUBLE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_localPopDouble",
+				JvmTypes.JBOOLEAN,
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JINT, "index"));
+		}
+	},
+	
+	/** Pop float from the stack to local variable. */
+	NVM_LOCAL_POP_FLOAT
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_localPopFloat",
+				JvmTypes.JBOOLEAN,
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JINT, "index"));
+		}
+	},
+	
 	/** Pop integer from the stack to local variable. */
 	NVM_LOCAL_POP_INTEGER
 	{
@@ -225,6 +261,24 @@ public enum JvmFunctions
 		CFunctionType __build()
 		{
 			return CFunctionType.of("sjme_nvm_localPopInteger",
+				JvmTypes.JBOOLEAN,
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JINT, "index"));
+		}
+	},
+	
+	/** Pop long from the stack to local variable. */
+	NVM_LOCAL_POP_LONG
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_localPopLong",
 				JvmTypes.JBOOLEAN,
 				CVariable.of(JvmTypes.VMFRAME.pointerType(),
 					"frame"),
@@ -250,7 +304,43 @@ public enum JvmFunctions
 		}
 	},
 	
-	/** Push integer value. */
+	/** Push double value from local variable. */
+	NVM_LOCAL_PUSH_DOUBLE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_localPushDouble",
+				JvmTypes.JBOOLEAN,
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JINT, "index"));
+		}
+	},
+	
+	/** Push float value from local variable. */
+	NVM_LOCAL_PUSH_FLOAT
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_localPushFloat",
+				JvmTypes.JBOOLEAN,
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JINT, "index"));
+		}
+	},
+	
+	/** Push integer value from local variable. */
 	NVM_LOCAL_PUSH_INTEGER
 	{
 		/**
@@ -261,6 +351,24 @@ public enum JvmFunctions
 		CFunctionType __build()
 		{
 			return CFunctionType.of("sjme_nvm_localPushInteger",
+				JvmTypes.JBOOLEAN,
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JINT, "index"));
+		}
+	},
+	
+	/** Push long value from local variable. */
+	NVM_LOCAL_PUSH_LONG
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_localPushLong",
 				JvmTypes.JBOOLEAN,
 				CVariable.of(JvmTypes.VMFRAME.pointerType(),
 					"frame"),
