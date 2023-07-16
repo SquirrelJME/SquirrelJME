@@ -776,53 +776,244 @@ public final class ByteCode
 		StackMapTablePairs rv;
 		
 		if (ref == null || (rv = ref.get()) == null)
-		{
-			// We need to get the base table
-			StackMapTable base = this.stackMapTable();
-			
-			// Resultant tables, will get big!
-			Map<Integer, StackMapTableState> inputs = new SortedTreeMap<>();
-			Map<Integer, StackMapTableState> outputs = new SortedTreeMap<>();
-			
-			// Working pop set
-			List<StackMapTableEntry> popped = new ArrayList<>();
-			
-			// Go through each instruction and build the mapping
-			StackMapTableState current = null;
-			for (int logicalAddr = 0, numAddrs = this.instructionCount();
-				 logicalAddr < numAddrs; logicalAddr++)
+			try
 			{
-				int actualAddr = this.indexToAddress(logicalAddr);
-				Instruction instruction = this.getByIndex(logicalAddr)
-					.normalize();
+				rv = this.__calcStackMapTableFull();
+				this._stackMapRunTime = new WeakReference<>(rv);
+			}
+			catch (InvalidClassFormatException __e)
+			{
+				// {@squirreljme.error JC9a Could not calculate the full stack
+				// map in method. (The class; The method)}
+				Method method = this.__method();
+				throw new InvalidClassFormatException(
+					String.format("JC9a %s %s",
+						method.inClass(),
+						method.nameAndType()), __e);
+			}
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the name of the current class.
+	 *
+	 * @return The current class name.
+	 * @since 2019/03/24
+	 */
+	public final ClassName thisType()
+	{
+		return this.thistype;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/20
+	 */
+	@Override
+	public String toString()
+	{
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			StringBuilder sb = new StringBuilder("[");
+			
+			// Fill in instructions
+			boolean comma = false;
+			for (Iterator<Instruction> it = this.instructionIterator();
+				 it.hasNext();)
+			{
+				if (comma)
+					sb.append(", ");
+				else
+					comma = true;
 				
-				// Wipe popped state
-				popped.clear();
+				sb.append(it.next());
+			}
+			
+			sb.append(']');
+			this._string = new WeakReference<>((rv = sb.toString()));
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the method type.
+	 *
+	 * @return The method type.
+	 * @since 2019/04/22
+	 */
+	public final MethodDescriptor type()
+	{
+		return this.methodtype;
+	}
+	
+	/**
+	 * Returns all of the valid addresses within this code.
+	 * 
+	 * @return The list of valid addresses.
+	 * @since 2021/03/14
+	 */
+	public final int[] validAddresses()
+	{
+		return this._index.clone();
+	}
+	
+	/**
+	 * Returns all of the local variables which are written to.
+	 *
+	 * @return The local variables which are written to.
+	 * @since 2019/03/30
+	 */
+	public final int[] writtenLocals()
+	{
+		Set<Integer> written = new LinkedHashSet<>();
+		
+		// Go through all instructions and count anything which is written to
+		for (Instruction inst : this)
+		{
+			// Anything which is wide hits the adjacent local as well
+			boolean wide = false;
+			
+			// Only specific instructions will do so
+			int hit, op;
+			switch ((op = inst.operation()))
+			{
+				case InstructionIndex.ASTORE:
+				case InstructionIndex.WIDE_ASTORE:
+				case InstructionIndex.FSTORE:
+				case InstructionIndex.WIDE_FSTORE:
+				case InstructionIndex.IINC:
+				case InstructionIndex.WIDE_IINC:
+				case InstructionIndex.ISTORE:
+				case InstructionIndex.WIDE_ISTORE:
+					hit = inst.intArgument(0);
+					break;
 				
-				// Use pre-existing table? At entry point that is
-				StackMapTableState exist = instruction.stackMapTableState();
-				if (exist != null)
-				{
-					current = exist;
-					
-					// Overwrite input with the one from the actual stack map
-					// table
-					inputs.put(actualAddr, current);
-				}
+				case InstructionIndex.ASTORE_0:
+				case InstructionIndex.ASTORE_1:
+				case InstructionIndex.ASTORE_2:
+				case InstructionIndex.ASTORE_3:
+					hit = op - InstructionIndex.ASTORE_0;
+					break;
 				
-				// Debug
-				Debugging.debugNote("I### %s: %s -> ...",
-					instruction, current);
+				case InstructionIndex.DSTORE:
+				case InstructionIndex.WIDE_DSTORE:
+				case InstructionIndex.LSTORE:
+				case InstructionIndex.WIDE_LSTORE:
+					hit = inst.intArgument(0);
+					wide = true;
+					break;
 				
-				// Should not occur
-				if (current == null)
-					throw Debugging.oops();
+				case InstructionIndex.DSTORE_0:
+				case InstructionIndex.DSTORE_1:
+				case InstructionIndex.DSTORE_2:
+				case InstructionIndex.DSTORE_3:
+					hit = op - InstructionIndex.DSTORE_0;
+					wide = true;
+					break;
 				
-				// At an input state currently, if not set already
-				if (!inputs.containsKey(actualAddr))
-					inputs.put(actualAddr, current);
+				case InstructionIndex.FSTORE_0:
+				case InstructionIndex.FSTORE_1:
+				case InstructionIndex.FSTORE_2:
+				case InstructionIndex.FSTORE_3:
+					hit = op - InstructionIndex.FSTORE_0;
+					break;
 				
-				// Depends on the instruction what happens
+				case InstructionIndex.ISTORE_0:
+				case InstructionIndex.ISTORE_1:
+				case InstructionIndex.ISTORE_2:
+				case InstructionIndex.ISTORE_3:
+					hit = op - InstructionIndex.ISTORE_0;
+					break;
+				
+				case InstructionIndex.LSTORE_0:
+				case InstructionIndex.LSTORE_1:
+				case InstructionIndex.LSTORE_2:
+				case InstructionIndex.LSTORE_3:
+					hit = op - InstructionIndex.LSTORE_0;
+					wide = true;
+					break;
+				
+				default:
+					continue;
+			}
+			
+			// Set local as being written to, handle wides as well
+			written.add(hit);
+			if (wide)
+				written.add(hit + 1);
+		}
+		
+		// Convert to array
+		Integer[] from = written.<Integer>toArray(new Integer[written.size()]);
+		int n = from.length;
+		int[] rv = new int[n];
+		for (int i = 0; i < n; i++)
+			rv[i] = from[i];
+		return rv;
+	}
+	
+	/**
+	 * Calculates the full stack map.
+	 * 
+	 * @return The full stack map.
+	 * @since 2023/07/16
+	 */
+	private StackMapTablePairs __calcStackMapTableFull()
+	{
+		// We need to get the base table
+		StackMapTable base = this.stackMapTable();
+		
+		// Resultant tables, will get big!
+		Map<Integer, StackMapTableState> inputs = new SortedTreeMap<>();
+		Map<Integer, StackMapTableState> outputs = new SortedTreeMap<>();
+		
+		// Working pop set
+		List<StackMapTableEntry> popped = new ArrayList<>();
+		
+		// Go through each instruction and build the mapping
+		StackMapTableState current = null;
+		for (int logicalAddr = 0, numAddrs = this.instructionCount();
+			 logicalAddr < numAddrs; logicalAddr++)
+		{
+			int actualAddr = this.indexToAddress(logicalAddr);
+			Instruction instruction = this.getByIndex(logicalAddr)
+				.normalize();
+			
+			// Wipe popped state
+			popped.clear();
+			
+			// Use pre-existing table? At entry point that is
+			StackMapTableState exist = instruction.stackMapTableState();
+			if (exist != null)
+			{
+				current = exist;
+				
+				// Overwrite input with the one from the actual stack map
+				// table
+				inputs.put(actualAddr, current);
+			}
+			
+			// Debug
+			Debugging.debugNote("I### %s: %s -> ...",
+				instruction, current);
+			
+			// Should not occur
+			StackMapTableState input = current;
+			if (current == null)
+				throw Debugging.oops();
+			
+			// At an input state currently, if not set already
+			if (!inputs.containsKey(actualAddr))
+				inputs.put(actualAddr, current);
+			
+			// Depends on the instruction what happens
+			try
+			{
 				int op = instruction.op;
 				switch (op)
 				{
@@ -1111,199 +1302,45 @@ public final class ByteCode
 						throw Debugging.todo(
 							InstructionMnemonics.toString(op));
 				}
+			}
+			catch (InvalidClassFormatException __e)
+			{
+				// {@squirreljme.error JC9b Could not process for instruction.
+				// (The instruction; The input; The output (may be partial)}
+				throw new InvalidClassFormatException(
+					String.format("JC9b %s L#%d %s ?(%s)?",
+						instruction,
+						this.lineOfAddress(instruction.address()),
+						input,
+						current), __e);
+			}
+			
+			// Debug
+			Debugging.debugNote("... -> %s",
+				current);
+			
+			// Store output of the instruction
+			outputs.put(actualAddr, current);
+			
+			// Set inputs for all jump targets
+			InstructionJumpTargets jumps = instruction.jumpTargets();
+			for (int i = 0, n = jumps.size(); i < n; i++)
+			{
+				// Get the designated jump target
+				InstructionJumpTarget jump = jumps.get(i);
+				boolean isException = jumps.isException(i);
 				
-				// Debug
-				Debugging.debugNote("... -> %s",
-					current);
-				
-				// Store output of the instruction
-				outputs.put(actualAddr, current);
-				
-				// Set inputs for all jump targets
-				InstructionJumpTargets jumps = instruction.jumpTargets();
-				for (int i = 0, n = jumps.size(); i < n; i++)
+				// Set input if it does not exist
+				if (!inputs.containsKey(jump.target))
 				{
-					// Get the designated jump target
-					InstructionJumpTarget jump = jumps.get(i);
-					boolean isException = jumps.isException(i);
-					
-					// Set input if it does not exist
-					if (!inputs.containsKey(jump.target))
-					{
-						if (!isException)
-							inputs.put(jump.target, current);
-					}
+					if (!isException)
+						inputs.put(jump.target, current);
 				}
 			}
-			
-			// Setup table pair
-			rv = new StackMapTablePairs(inputs, outputs);
-			this._stackMapRunTime = new WeakReference<>(rv);
 		}
 		
-		return rv;
-	}
-	
-	/**
-	 * Returns the name of the current class.
-	 *
-	 * @return The current class name.
-	 * @since 2019/03/24
-	 */
-	public final ClassName thisType()
-	{
-		return this.thistype;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/05/20
-	 */
-	@Override
-	public String toString()
-	{
-		Reference<String> ref = this._string;
-		String rv;
-		
-		if (ref == null || null == (rv = ref.get()))
-		{
-			StringBuilder sb = new StringBuilder("[");
-			
-			// Fill in instructions
-			boolean comma = false;
-			for (Iterator<Instruction> it = this.instructionIterator();
-				 it.hasNext();)
-			{
-				if (comma)
-					sb.append(", ");
-				else
-					comma = true;
-				
-				sb.append(it.next());
-			}
-			
-			sb.append(']');
-			this._string = new WeakReference<>((rv = sb.toString()));
-		}
-		
-		return rv;
-	}
-	
-	/**
-	 * Returns the method type.
-	 *
-	 * @return The method type.
-	 * @since 2019/04/22
-	 */
-	public final MethodDescriptor type()
-	{
-		return this.methodtype;
-	}
-	
-	/**
-	 * Returns all of the valid addresses within this code.
-	 * 
-	 * @return The list of valid addresses.
-	 * @since 2021/03/14
-	 */
-	public final int[] validAddresses()
-	{
-		return this._index.clone();
-	}
-	
-	/**
-	 * Returns all of the local variables which are written to.
-	 *
-	 * @return The local variables which are written to.
-	 * @since 2019/03/30
-	 */
-	public final int[] writtenLocals()
-	{
-		Set<Integer> written = new LinkedHashSet<>();
-		
-		// Go through all instructions and count anything which is written to
-		for (Instruction inst : this)
-		{
-			// Anything which is wide hits the adjacent local as well
-			boolean wide = false;
-			
-			// Only specific instructions will do so
-			int hit, op;
-			switch ((op = inst.operation()))
-			{
-				case InstructionIndex.ASTORE:
-				case InstructionIndex.WIDE_ASTORE:
-				case InstructionIndex.FSTORE:
-				case InstructionIndex.WIDE_FSTORE:
-				case InstructionIndex.IINC:
-				case InstructionIndex.WIDE_IINC:
-				case InstructionIndex.ISTORE:
-				case InstructionIndex.WIDE_ISTORE:
-					hit = inst.intArgument(0);
-					break;
-				
-				case InstructionIndex.ASTORE_0:
-				case InstructionIndex.ASTORE_1:
-				case InstructionIndex.ASTORE_2:
-				case InstructionIndex.ASTORE_3:
-					hit = op - InstructionIndex.ASTORE_0;
-					break;
-				
-				case InstructionIndex.DSTORE:
-				case InstructionIndex.WIDE_DSTORE:
-				case InstructionIndex.LSTORE:
-				case InstructionIndex.WIDE_LSTORE:
-					hit = inst.intArgument(0);
-					wide = true;
-					break;
-				
-				case InstructionIndex.DSTORE_0:
-				case InstructionIndex.DSTORE_1:
-				case InstructionIndex.DSTORE_2:
-				case InstructionIndex.DSTORE_3:
-					hit = op - InstructionIndex.DSTORE_0;
-					wide = true;
-					break;
-				
-				case InstructionIndex.FSTORE_0:
-				case InstructionIndex.FSTORE_1:
-				case InstructionIndex.FSTORE_2:
-				case InstructionIndex.FSTORE_3:
-					hit = op - InstructionIndex.FSTORE_0;
-					break;
-				
-				case InstructionIndex.ISTORE_0:
-				case InstructionIndex.ISTORE_1:
-				case InstructionIndex.ISTORE_2:
-				case InstructionIndex.ISTORE_3:
-					hit = op - InstructionIndex.ISTORE_0;
-					break;
-				
-				case InstructionIndex.LSTORE_0:
-				case InstructionIndex.LSTORE_1:
-				case InstructionIndex.LSTORE_2:
-				case InstructionIndex.LSTORE_3:
-					hit = op - InstructionIndex.LSTORE_0;
-					wide = true;
-					break;
-				
-				default:
-					continue;
-			}
-			
-			// Set local as being written to, handle wides as well
-			written.add(hit);
-			if (wide)
-				written.add(hit + 1);
-		}
-		
-		// Convert to array
-		Integer[] from = written.<Integer>toArray(new Integer[written.size()]);
-		int n = from.length;
-		int[] rv = new int[n];
-		for (int i = 0; i < n; i++)
-			rv[i] = from[i];
-		return rv;
+		// Setup table pair
+		return new StackMapTablePairs(inputs, outputs);
 	}
 	
 	/**
