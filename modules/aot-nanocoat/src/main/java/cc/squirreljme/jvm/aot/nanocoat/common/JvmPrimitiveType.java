@@ -300,4 +300,51 @@ public enum JvmPrimitiveType
 		
 		return new ClassName(name);
 	}
+	
+	/**
+	 * Determines the method to use for soft shifting. 
+	 *
+	 * @param __op The operation to use.
+	 * @return The reference to the shifted method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public MethodReference softShift(JvmShiftOp __op)
+		throws NullPointerException
+	{
+		if (__op == null)
+			throw new NullPointerException("NARG");
+		
+		// Which class do we use?
+		ClassName useClass = this.softMathClass();
+		
+		// Name of the operation?
+		String methodName;
+		switch (__op)
+		{
+			case SIGNED_SHIFT_LEFT:
+				methodName = "shl";
+				break;
+				
+			case SIGNED_SHIFT_RIGHT:
+				methodName = "shr";
+				break;
+				
+			case UNSIGNED_SHIFT_RIGHT:
+				methodName = "ushr";
+				break;
+				
+				// {@squirreljme.error NCa2 Not valid for software math.}
+			default:
+				throw new IllegalArgumentException("NCa2");
+		}
+		
+		// Build
+		FieldDescriptor self = this.descriptor();
+		return new MethodReference(useClass,
+			new MethodName(methodName),
+			MethodDescriptor.ofArguments(self,
+				self, FieldDescriptor.INTEGER),
+			false);
+	}
 }

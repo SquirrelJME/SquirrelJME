@@ -18,14 +18,17 @@ import cc.squirreljme.c.CFunctionBlockSplices;
 import cc.squirreljme.c.CIfBlock;
 import cc.squirreljme.c.CMathOperator;
 import cc.squirreljme.c.CPointerType;
+import cc.squirreljme.c.CRootExpressionBuilder;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CSwitchBlock;
 import cc.squirreljme.c.CVariable;
+import cc.squirreljme.c.std.CStdIntType;
 import cc.squirreljme.c.std.CTypeProvider;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmCompareOp;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmShiftOp;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.Container;
@@ -670,7 +673,18 @@ public class ByteCodeProcessor
 			case InstructionIndex.ISHL:
 			case InstructionIndex.ISHR:
 			case InstructionIndex.IUSHR:
-				throw Debugging.todo();
+				this.__doShiftInteger(__block,
+					ByteCodeProcessor.__commonShiftOp(op));
+				break;
+				
+				// Software shift bit
+			case InstructionIndex.LSHL:
+			case InstructionIndex.LSHR:
+			case InstructionIndex.LUSHR:
+				this.__doShiftSoftware(__block,
+					ByteCodeProcessor.__commonPrimitive(op, false),
+					ByteCodeProcessor.__commonShiftOp(op));
+				break;
 				
 				// Integer Negative
 			case InstructionIndex.INEG:
@@ -1774,6 +1788,96 @@ public class ByteCodeProcessor
 	}
 	
 	/**
+	 * Shifts integer value.
+	 *
+	 * @param __block The block to write to.
+	 * @param __op The operation to use while shifting.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	private void __doShiftInteger(CFunctionBlock __block, JvmShiftOp __op)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __op == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVars = this.__codeVars();
+		
+		// Read in shift amount and value
+		CExpression rawShiftBy = codeVars.temporary(0)
+			.access(JvmTypes.JINT);
+		CExpression value = codeVars.temporary(1)
+			.access(JvmTypes.JINT);
+		__block.variableSetViaFunction(rawShiftBy,
+			JvmFunctions.NVM_STACK_POP_INTEGER,
+			codeVars.currentFrame());
+		__block.variableSetViaFunction(value,
+			JvmFunctions.NVM_STACK_POP_INTEGER,
+			codeVars.currentFrame());
+		
+		// The right shift amount is always AND the maximum bit count
+		CExpression shiftBy = CExpressionBuilder.builder()
+			.math(rawShiftBy, CMathOperator.AND,
+				CBasicExpression.number(31))
+			.build();
+		
+		// Determine the expression used for the shift
+		CRootExpressionBuilder expression = CExpressionBuilder.builder();
+		switch (__op)
+		{
+			case SIGNED_SHIFT_LEFT:
+				expression.math(value, CMathOperator.SHIFT_LEFT, shiftBy);
+				break;
+				
+			case SIGNED_SHIFT_RIGHT:
+				expression.math(value, CMathOperator.SHIFT_RIGHT, shiftBy);
+				break;
+				
+			case UNSIGNED_SHIFT_RIGHT:
+				expression.cast(JvmTypes.JINT,
+					CExpressionBuilder.builder()
+						.math(CExpressionBuilder.builder()
+								.cast(CStdIntType.UINT32, value)
+							.build(),
+							CMathOperator.SHIFT_RIGHT,
+							shiftBy)
+						.build());
+				break;
+				
+			default:
+				throw Debugging.oops();
+		}
+		
+		// Do the actual shift
+		__block.functionCall(JvmFunctions.NVM_STACK_PUSH_INTEGER,
+			codeVars.currentFrame(),
+			expression.build());
+	}
+	
+	/**
+	 * Shifts integer value.
+	 *
+	 * @param __block The block to write to.
+	 * @param __type The type of value being shifted.
+	 * @param __op The operation to use while shifting.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	private void __doShiftSoftware(CFunctionBlock __block,
+		JvmPrimitiveType __type, JvmShiftOp __op)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __type == null || __op == null)
+			throw new NullPointerException("NARG");
+		
+		// Just do a completely normal invocation here!
+		this.__doInvokeNormal(__block, true,
+			__type.softShift(__op));
+	}
+	
+	/**
 	 * Performs stack shuffling.
 	 * 
 	 * @param __block The block to write to.
@@ -2094,6 +2198,9 @@ public class ByteCodeProcessor
 				case InstructionIndex.I2B:
 				case InstructionIndex.I2S:
 				case InstructionIndex.I2C:
+				case InstructionIndex.ISHL:
+				case InstructionIndex.ISHR:
+				case InstructionIndex.IUSHR:
 					return JvmPrimitiveType.INTEGER;
 					
 				case InstructionIndex.LALOAD:
@@ -2112,6 +2219,9 @@ public class ByteCodeProcessor
 				case InstructionIndex.L2I:
 				case InstructionIndex.L2F:
 				case InstructionIndex.L2D:
+				case InstructionIndex.LSHL:
+				case InstructionIndex.LSHR:
+				case InstructionIndex.LUSHR:
 					return JvmPrimitiveType.LONG;
 					
 				case InstructionIndex.FALOAD:
@@ -2149,6 +2259,36 @@ public class ByteCodeProcessor
 		
 		// {@squirreljme.error NC99 Unknown operation.}
 		throw new NoSuchElementException("NC99");
+	}
+	
+	/**
+	 * Returns the shift operation used for the given operation.
+	 *
+	 * @param __op The operation used.
+	 * @return The shift operation that is used.
+	 * @throws NoSuchElementException On null arguments.
+	 * @since 2023/07/16
+	 */
+	private static JvmShiftOp __commonShiftOp(int __op)
+		throws NoSuchElementException
+	{
+		switch (__op)
+		{
+			case InstructionIndex.ISHL:
+			case InstructionIndex.LSHL:
+				return JvmShiftOp.SIGNED_SHIFT_LEFT;
+				
+			case InstructionIndex.ISHR:
+			case InstructionIndex.LSHR:
+				return JvmShiftOp.SIGNED_SHIFT_RIGHT;
+				
+			case InstructionIndex.IUSHR:
+			case InstructionIndex.LUSHR:
+				return JvmShiftOp.UNSIGNED_SHIFT_RIGHT;
+		}
+		
+		// {@squirreljme.error NC9l Unknown operation.}
+		throw new NoSuchElementException("NC9l");
 	}
 	
 	/**
