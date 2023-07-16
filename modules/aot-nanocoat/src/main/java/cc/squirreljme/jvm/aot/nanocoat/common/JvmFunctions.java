@@ -515,6 +515,27 @@ public enum JvmFunctions
 		}
 	},
 	
+	/** Access monitor of object. */
+	NVM_MONITOR
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_monitor",
+				JvmTypes.TEMP_INDEX.type(),
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JOBJECT.pointerType(),
+					"instance"),
+				CVariable.of(JvmTypes.JBOOLEAN,
+					"isEnter"));
+		}
+	},
+	
 	/** New array into temporary variable. */
 	NVM_NEW_ARRAY_INTO_TEMP
 	{

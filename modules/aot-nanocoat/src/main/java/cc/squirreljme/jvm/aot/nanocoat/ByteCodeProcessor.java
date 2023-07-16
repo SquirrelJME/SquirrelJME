@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import jdk.nashorn.internal.runtime.Debug;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
@@ -1791,7 +1790,19 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		__CodeVariables__ codeVars = this.__codeVars();
+		
+		// Read in reference
+		JvmTemporary instance = codeVars.temporary(0);
+		__block.variableSetViaFunction(instance.tempIndex(),
+			JvmFunctions.NVM_STACK_POP_REFERENCE_TO_TEMP,
+			codeVars.currentFrame());
+		
+		// Perform monitor change
+		__block.functionCall(JvmFunctions.NVM_MONITOR,
+			codeVars.currentFrame(),
+			instance.accessTemp(JvmTypes.JOBJECT.pointerType()),
+			(__enter ? Constants.TRUE : Constants.FALSE));
 	}
 	
 	/**
