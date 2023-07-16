@@ -94,6 +94,9 @@ public class ByteCodeProcessor
 	/** Code variables for writing. */
 	private volatile __CodeVariables__ _codeVars;
 	
+	/** Initial variables to not get cleared by garbage collection. */
+	private volatile CFunctionBlock _initVars;
+	
 	/**
 	 * Initializes the byte code processor.
 	 * 
@@ -336,6 +339,9 @@ public class ByteCodeProcessor
 				// such
 				__CodeVariables__ codeVars = new __CodeVariables__(initVars);
 				this._codeVars = codeVars;
+				
+				// Remember this, so it does not get GCed
+				this._initVars = initVars;
 				
 				// Keep track of the current top state, so we need not worry
 				// about pushing or popping
