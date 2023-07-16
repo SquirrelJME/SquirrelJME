@@ -22,6 +22,7 @@ import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CSwitchBlock;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
+import cc.squirreljme.jvm.aot.nanocoat.common.JvmCompareOp;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmPrimitiveType;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
@@ -511,6 +512,16 @@ public class ByteCodeProcessor
 					ByteCodeProcessor.__commonCompareIf(op),
 					this.__addressToGroup(__instruction, 0));
 				break;
+				
+			case InstructionIndex.LCMP:
+			case InstructionIndex.FCMPG:
+			case InstructionIndex.FCMPL:
+			case InstructionIndex.DCMPG:
+			case InstructionIndex.DCMPL:
+				this.__doCompareSoft(__block,
+					ByteCodeProcessor.__commonPrimitive(op),
+					ByteCodeProcessor.__commonCompareOp(op));
+				break;
 			
 			case InstructionIndex.IF_ICMPEQ:
 			case InstructionIndex.IF_ICMPNE:
@@ -557,6 +568,9 @@ public class ByteCodeProcessor
 				break;
 				
 			case InstructionIndex.IRETURN:
+			case InstructionIndex.LRETURN:
+			case InstructionIndex.FRETURN:
+			case InstructionIndex.DRETURN:
 				this.__doReturnValue(__block);
 				break;
 				
@@ -623,6 +637,24 @@ public class ByteCodeProcessor
 				this.__doMathSoft(__block,
 					ByteCodeProcessor.__commonPrimitive(op),
 					ByteCodeProcessor.__commonMathOp(op));
+				break;
+				
+				// Software conversion
+			case InstructionIndex.I2L:
+			case InstructionIndex.I2F:
+			case InstructionIndex.I2D:
+			case InstructionIndex.L2I:
+			case InstructionIndex.L2F:
+			case InstructionIndex.L2D:
+			case InstructionIndex.F2I:
+			case InstructionIndex.F2L:
+			case InstructionIndex.F2D:
+			case InstructionIndex.D2I:
+			case InstructionIndex.D2L:
+			case InstructionIndex.D2F:
+				this.__doConvertSoft(__block,
+					ByteCodeProcessor.__commonPrimitive(op, false),
+					ByteCodeProcessor.__commonPrimitive(op, true));
 				break;
 				
 				// Bit shift
@@ -840,6 +872,50 @@ public class ByteCodeProcessor
 		
 		// Perform throw check now
 		this.__checkThrow(__block);
+	}
+	
+	/**
+	 * Performs a soft comparison of values.
+	 *
+	 * @param __block The block to write to.
+	 * @param __type The type to act on.
+	 * @param __op The operation to perform.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	private void __doCompareSoft(CFunctionBlock __block,
+		JvmPrimitiveType __type, JvmCompareOp __op)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __type == null || __op == null)
+			throw new NullPointerException("NARG");
+		
+		// Just do a completely normal invocation here!
+		this.__doInvokeNormal(__block, true,
+			__type.softCompare(__op));
+	}
+	
+	/**
+	 * Converts a value using software.
+	 *
+	 * @param __block The block to write to.
+	 * @param __from The source value.
+	 * @param __to The target value.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	private void __doConvertSoft(CFunctionBlock __block,
+		JvmPrimitiveType __from, JvmPrimitiveType __to)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __from == null || __to == null)
+			throw new NullPointerException("NARG");
+		
+		// Just do a completely normal invocation here!
+		this.__doInvokeNormal(__block, true,
+			__from.softConvert(__to));
 	}
 	
 	/**
@@ -1755,6 +1831,32 @@ public class ByteCodeProcessor
 		throw new NoSuchElementException("NC71");
 	}
 	
+	/**
+	 * Returns the comparison operation.
+	 *
+	 * @param __op The operation to get for.
+	 * @return The comparison operation.
+	 * @since 2023/07/16
+	 */
+	private static JvmCompareOp __commonCompareOp(int __op)
+	{
+		switch (__op)
+		{
+			case InstructionIndex.LCMP:
+				return JvmCompareOp.CMP;
+				
+			case InstructionIndex.FCMPG:
+			case InstructionIndex.DCMPG:
+				return JvmCompareOp.CMPG;
+				
+			case InstructionIndex.FCMPL:
+			case InstructionIndex.DCMPL:
+				return JvmCompareOp.CMPL;
+		}
+		
+		// {@squirreljme.error NC74 Unknown comparison operation.}
+		throw new NoSuchElementException("NC74");
+	}
 	
 	/**
 	 * Determines the math operator to use.
@@ -1827,70 +1929,130 @@ public class ByteCodeProcessor
 	private static JvmPrimitiveType __commonPrimitive(int __op)
 		throws NoSuchElementException
 	{
-		switch (__op)
-		{
-			case InstructionIndex.BALOAD:
-			case InstructionIndex.BASTORE:
-				return JvmPrimitiveType.BOOLEAN_OR_BYTE;
-				
-			case InstructionIndex.SALOAD:
-			case InstructionIndex.SASTORE:
-				return JvmPrimitiveType.SHORT;
-				
-			case InstructionIndex.CALOAD:
-			case InstructionIndex.CASTORE:
-				return JvmPrimitiveType.CHARACTER;
-				
-			case InstructionIndex.IALOAD:
-			case InstructionIndex.IASTORE:
-			case InstructionIndex.WIDE_ILOAD:
-			case InstructionIndex.WIDE_ISTORE:
-			case InstructionIndex.IADD:
-			case InstructionIndex.ISUB:
-			case InstructionIndex.IMUL:
-			case InstructionIndex.IDIV:
-			case InstructionIndex.IREM:
-			case InstructionIndex.IAND:
-			case InstructionIndex.IOR:
-			case InstructionIndex.IXOR:
-				return JvmPrimitiveType.INTEGER;
-				
-			case InstructionIndex.LALOAD:
-			case InstructionIndex.LASTORE:
-			case InstructionIndex.WIDE_LLOAD:
-			case InstructionIndex.WIDE_LSTORE:
-			case InstructionIndex.LADD:
-			case InstructionIndex.LSUB:
-			case InstructionIndex.LMUL:
-			case InstructionIndex.LDIV:
-			case InstructionIndex.LREM:
-			case InstructionIndex.LAND:
-			case InstructionIndex.LOR:
-			case InstructionIndex.LXOR:
-				return JvmPrimitiveType.LONG;
-				
-			case InstructionIndex.FALOAD:
-			case InstructionIndex.FASTORE:
-			case InstructionIndex.WIDE_FLOAD:
-			case InstructionIndex.WIDE_FSTORE:
-			case InstructionIndex.FADD:
-			case InstructionIndex.FSUB:
-			case InstructionIndex.FMUL:
-			case InstructionIndex.FDIV:
-			case InstructionIndex.FREM:
-				return JvmPrimitiveType.FLOAT;
-				
-			case InstructionIndex.DALOAD:
-			case InstructionIndex.DASTORE:
-			case InstructionIndex.WIDE_DLOAD:
-			case InstructionIndex.WIDE_DSTORE:
-			case InstructionIndex.DADD:
-			case InstructionIndex.DSUB:
-			case InstructionIndex.DMUL:
-			case InstructionIndex.DDIV:
-			case InstructionIndex.DREM:
-				return JvmPrimitiveType.DOUBLE;
-		}
+		return ByteCodeProcessor.__commonPrimitive(__op, false);
+	}
+	
+	/**
+	 * Returns the primitive to use for the given operation.
+	 * 
+	 * @param __op The operation.
+	 * @param __second Second value?
+	 * @return The primitive for the given operation.
+	 * @throws NoSuchElementException If the operation is not valid.
+	 * @since 2023/07/16
+	 */
+	private static JvmPrimitiveType __commonPrimitive(int __op,
+		boolean __second)
+		throws NoSuchElementException
+	{
+		// Second value?
+		if (__second)
+			switch (__op)
+			{
+				case InstructionIndex.L2I:
+				case InstructionIndex.F2I:
+				case InstructionIndex.D2I:
+					return JvmPrimitiveType.INTEGER;
+					
+				case InstructionIndex.I2L:
+				case InstructionIndex.F2L:
+				case InstructionIndex.D2L:
+					return JvmPrimitiveType.LONG;
+					
+				case InstructionIndex.I2F:
+				case InstructionIndex.L2F:
+				case InstructionIndex.D2F:
+					return JvmPrimitiveType.FLOAT;
+					
+				case InstructionIndex.I2D:
+				case InstructionIndex.L2D:
+				case InstructionIndex.F2D:
+					return JvmPrimitiveType.DOUBLE;
+			}
+		
+		// First value
+		else
+			switch (__op)
+			{
+				case InstructionIndex.BALOAD:
+				case InstructionIndex.BASTORE:
+					return JvmPrimitiveType.BOOLEAN_OR_BYTE;
+					
+				case InstructionIndex.SALOAD:
+				case InstructionIndex.SASTORE:
+					return JvmPrimitiveType.SHORT;
+					
+				case InstructionIndex.CALOAD:
+				case InstructionIndex.CASTORE:
+					return JvmPrimitiveType.CHARACTER;
+					
+				case InstructionIndex.IALOAD:
+				case InstructionIndex.IASTORE:
+				case InstructionIndex.WIDE_ILOAD:
+				case InstructionIndex.WIDE_ISTORE:
+				case InstructionIndex.IADD:
+				case InstructionIndex.ISUB:
+				case InstructionIndex.IMUL:
+				case InstructionIndex.IDIV:
+				case InstructionIndex.IREM:
+				case InstructionIndex.IAND:
+				case InstructionIndex.IOR:
+				case InstructionIndex.IXOR:
+				case InstructionIndex.I2L:
+				case InstructionIndex.I2F:
+				case InstructionIndex.I2D:
+					return JvmPrimitiveType.INTEGER;
+					
+				case InstructionIndex.LALOAD:
+				case InstructionIndex.LASTORE:
+				case InstructionIndex.WIDE_LLOAD:
+				case InstructionIndex.WIDE_LSTORE:
+				case InstructionIndex.LADD:
+				case InstructionIndex.LSUB:
+				case InstructionIndex.LMUL:
+				case InstructionIndex.LDIV:
+				case InstructionIndex.LREM:
+				case InstructionIndex.LAND:
+				case InstructionIndex.LOR:
+				case InstructionIndex.LXOR:
+				case InstructionIndex.LCMP:
+				case InstructionIndex.L2I:
+				case InstructionIndex.L2F:
+				case InstructionIndex.L2D:
+					return JvmPrimitiveType.LONG;
+					
+				case InstructionIndex.FALOAD:
+				case InstructionIndex.FASTORE:
+				case InstructionIndex.WIDE_FLOAD:
+				case InstructionIndex.WIDE_FSTORE:
+				case InstructionIndex.FADD:
+				case InstructionIndex.FSUB:
+				case InstructionIndex.FMUL:
+				case InstructionIndex.FDIV:
+				case InstructionIndex.FREM:
+				case InstructionIndex.FCMPG:
+				case InstructionIndex.FCMPL:
+				case InstructionIndex.F2I:
+				case InstructionIndex.F2L:
+				case InstructionIndex.F2D:
+					return JvmPrimitiveType.FLOAT;
+					
+				case InstructionIndex.DALOAD:
+				case InstructionIndex.DASTORE:
+				case InstructionIndex.WIDE_DLOAD:
+				case InstructionIndex.WIDE_DSTORE:
+				case InstructionIndex.DADD:
+				case InstructionIndex.DSUB:
+				case InstructionIndex.DMUL:
+				case InstructionIndex.DDIV:
+				case InstructionIndex.DREM:
+				case InstructionIndex.DCMPG:
+				case InstructionIndex.DCMPL:
+				case InstructionIndex.D2I:
+				case InstructionIndex.D2L:
+				case InstructionIndex.D2F:
+					return JvmPrimitiveType.DOUBLE;
+			}
 		
 		// {@squirreljme.error NC99 Unknown operation.}
 		throw new NoSuchElementException("NC99");

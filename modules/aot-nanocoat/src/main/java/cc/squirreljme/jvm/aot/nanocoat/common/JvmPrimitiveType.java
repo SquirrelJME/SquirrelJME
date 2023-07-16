@@ -78,6 +78,101 @@ public enum JvmPrimitiveType
 	}
 	
 	/**
+	 * Returns the reference to a soft comparison.
+	 *
+	 * @param __op The compare operation.
+	 * @return The reference to the resultant method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public MethodReference softCompare(JvmCompareOp __op)
+		throws NullPointerException
+	{
+		if (__op == null)
+			throw new NullPointerException("NARG");
+		
+		// Which class do we use?
+		ClassName useClass = this.softMathClass();
+		
+		// Name of the operation?
+		String methodName;
+		switch (__op)
+		{
+			case CMP:
+				methodName = "cmp";
+				break;
+				
+			case CMPG:
+				methodName = "cmpg";
+				break;
+				
+			case CMPL:
+				methodName = "cmpl";
+				break;
+				
+				// {@squirreljme.error NCa7 Not valid for software math.}
+			default:
+				throw new IllegalArgumentException("NCa7");
+		}
+		
+		// Build
+		FieldDescriptor self = this.descriptor();
+		return new MethodReference(useClass,
+			new MethodName(methodName),
+			MethodDescriptor.ofArguments(self, self, FieldDescriptor.INTEGER),
+			false);
+	}
+	
+	/**
+	 * Returns the method to use for software comparison.
+	 *
+	 * @param __to The target type.
+	 * @return The reference to convert the type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public MethodReference softConvert(JvmPrimitiveType __to)
+		throws NullPointerException
+	{
+		if (__to == null)
+			throw new NullPointerException("NARG");
+		
+		// Which class do we use?
+		ClassName useClass = this.softMathClass();
+		
+		// Which method to call?
+		String methodName;
+		switch (__to)
+		{
+			case INTEGER:
+				methodName = "toInteger";
+				break;
+				
+			case LONG:
+				methodName = "toLong";
+				break;
+			
+			case FLOAT:
+				methodName = "toFloat";
+				break;
+			
+			case DOUBLE:
+				methodName = "toDouble";
+				break;
+				
+				// {@squirreljme.error NCad Not valid for software compare.}
+			default:
+				throw new IllegalArgumentException("NCad");
+		}
+		
+		// Build
+		return new MethodReference(useClass,
+			new MethodName(methodName),
+			MethodDescriptor.ofArguments(__to.descriptor(), this.descriptor()),
+			false);
+	}
+	
+	/**
 	 * Determines the method to use for software math operations.
 	 * 
 	 * @param __mathOp The math operator.
@@ -182,6 +277,10 @@ public enum JvmPrimitiveType
 		String name;
 		switch (this)
 		{
+			case INTEGER:
+				name = "cc/squirreljme/jvm/SoftInteger";
+				break;
+				
 			case LONG:
 				name = "cc/squirreljme/jvm/SoftLong";
 				break;
