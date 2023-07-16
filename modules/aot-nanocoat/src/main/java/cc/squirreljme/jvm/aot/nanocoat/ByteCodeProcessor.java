@@ -1202,12 +1202,44 @@ public class ByteCodeProcessor
 		JvmTemporary temp;
 		switch (__value.type())
 		{
+				// Integer value
 			case INTEGER:
 				__block.functionCall(JvmFunctions.NVM_STACK_PUSH_INTEGER,
 					codeVariables.currentFrame(),
-					CExpressionBuilder.builder()
-						.number((Integer)__value.boxedValue())
-						.build());
+					CBasicExpression.number((Integer)__value.boxedValue()));
+				break;
+				
+				// Long value
+			case LONG:
+				{
+					long value = (Long)__value.boxedValue();
+					__block.functionCall(
+						JvmFunctions.NVM_STACK_PUSH_LONG_PARTS,
+						codeVariables.currentFrame(),
+						CBasicExpression.number((int)(value >>> 32L)),
+						CBasicExpression.number((int)value));
+				}
+				break;
+				
+				// Float value
+			case FLOAT:
+				__block.functionCall(JvmFunctions.NVM_STACK_PUSH_FLOAT_RAW,
+					codeVariables.currentFrame(),
+					CBasicExpression.number(Float.floatToRawIntBits(
+						(Float)__value.boxedValue())));
+				break;
+				
+				// Double value
+			case DOUBLE:
+				{
+					long value = Double.doubleToRawLongBits(
+						(Double)__value.boxedValue());
+					__block.functionCall(
+						JvmFunctions.NVM_STACK_PUSH_DOUBLE_RAW_PARTS,
+						codeVariables.currentFrame(),
+						CBasicExpression.number((int)(value >>> 32L)),
+						CBasicExpression.number((int)value));
+				}
 				break;
 			
 			case STRING:

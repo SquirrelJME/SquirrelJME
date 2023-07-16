@@ -504,6 +504,46 @@ public enum JvmFunctions
 		}
 	},
 	
+	/** Push raw double fragments to the stack. */
+	NVM_STACK_PUSH_DOUBLE_RAW_PARTS
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_stackPushDoubleParts",
+				JvmTypes.JBOOLEAN,
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JINT,
+					"hi"),
+				CVariable.of(JvmTypes.JINT,
+					"lo"));
+		}
+	},
+	
+	/** Push raw float to stack. */
+	NVM_STACK_PUSH_FLOAT_RAW
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/04
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_stackPushFloatRaw",
+				JvmTypes.JBOOLEAN,
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JINT,
+					"value"));
+		}
+	},
+	
 	/** Push integer to stack. */
 	NVM_STACK_PUSH_INTEGER
 	{
@@ -520,6 +560,27 @@ public enum JvmFunctions
 					"frame"),
 				CVariable.of(JvmTypes.JINT,
 					"value"));
+		}
+	},
+	
+	/** Push long fragments to the stack. */
+	NVM_STACK_PUSH_LONG_PARTS
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_stackPushLongParts",
+				JvmTypes.JBOOLEAN,
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JINT,
+					"hi"),
+				CVariable.of(JvmTypes.JINT,
+					"lo"));
 		}
 	},
 	
