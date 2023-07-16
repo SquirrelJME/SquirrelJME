@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.MethodNameAndType;
 import net.multiphasicapps.classfile.MethodReference;
@@ -41,6 +42,38 @@ public class ClassLinkTable
 	{
 		// Zero is an invalid entry
 		this._table.add(null);
+	}
+	
+	/**
+	 * Linkage for referencing a class object.
+	 * 
+	 * @param __className The class name.
+	 * @return The linkage for the class object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public Container<ClassObjectLinkage> classObject(String __className)
+		throws NullPointerException
+	{
+		return this.classObject(new ClassName(__className));
+	}
+	
+	/**
+	 * Linkage for referencing a class object.
+	 * 
+	 * @param __className The class name.
+	 * @return The linkage for the class object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public Container<ClassObjectLinkage> classObject(ClassName __className)
+		throws NullPointerException
+	{
+		if (__className == null)
+			throw new NullPointerException("NARG");
+		
+		return this.put(ClassObjectLinkage.class,
+			new ClassObjectLinkage(__className));
 	}
 	
 	/**
@@ -140,5 +173,23 @@ public class ClassLinkTable
 		
 		// Setup container
 		return new Container<>(index, __type.cast(table.get(index)));
+	}
+	
+	/**
+	 * Obtain a linkage for a string.
+	 * 
+	 * @param __string The string to add.
+	 * @return The linkage for the given string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public Container<StringLinkage> string(String __string)
+		throws NullPointerException
+	{
+		if (__string == null)
+			throw new NullPointerException("NARG");
+		
+		return this.put(StringLinkage.class,
+			new StringLinkage(__string));
 	}
 }

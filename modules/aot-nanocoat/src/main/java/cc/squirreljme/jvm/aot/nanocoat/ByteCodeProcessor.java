@@ -40,6 +40,7 @@ import java.util.NoSuchElementException;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
+import net.multiphasicapps.classfile.ConstantValueType;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
@@ -1198,7 +1199,7 @@ public class ByteCodeProcessor
 		if (__block == null || __value == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVariables = this.__codeVars();
+		__CodeVariables__ codeVars = this.__codeVars();
 		
 		// Depends on the type
 		JvmTemporary temp;
@@ -1207,7 +1208,7 @@ public class ByteCodeProcessor
 				// Integer value
 			case INTEGER:
 				__block.functionCall(JvmFunctions.NVM_STACK_PUSH_INTEGER,
-					codeVariables.currentFrame(),
+					codeVars.currentFrame(),
 					CBasicExpression.number((Integer)__value.boxedValue()));
 				break;
 				
@@ -1217,7 +1218,7 @@ public class ByteCodeProcessor
 					long value = (Long)__value.boxedValue();
 					__block.functionCall(
 						JvmFunctions.NVM_STACK_PUSH_LONG_PARTS,
-						codeVariables.currentFrame(),
+						codeVars.currentFrame(),
 						CBasicExpression.number((int)(value >>> 32L)),
 						CBasicExpression.number((int)value));
 				}
@@ -1226,7 +1227,7 @@ public class ByteCodeProcessor
 				// Float value
 			case FLOAT:
 				__block.functionCall(JvmFunctions.NVM_STACK_PUSH_FLOAT_RAW,
-					codeVariables.currentFrame(),
+					codeVars.currentFrame(),
 					CBasicExpression.number(Float.floatToRawIntBits(
 						(Float)__value.boxedValue())));
 				break;
@@ -1238,29 +1239,40 @@ public class ByteCodeProcessor
 						(Double)__value.boxedValue());
 					__block.functionCall(
 						JvmFunctions.NVM_STACK_PUSH_DOUBLE_RAW_PARTS,
-						codeVariables.currentFrame(),
+						codeVars.currentFrame(),
 						CBasicExpression.number((int)(value >>> 32L)),
 						CBasicExpression.number((int)value));
 				}
 				break;
 			
 			case STRING:
-				// Get temporary, needed for string storage
-				temp = codeVariables.temporary(0);
+			case CLASS:
+				// Get temporary, needed for object storage
+				temp = codeVars.temporary(0);
 				
-				// Load string then push it
-				__block.variableSetViaFunction(temp.tempIndex(),
-					JvmFunctions.NVM_LOOKUP_STRING_INTO_TEMP,
-					codeVariables.currentThread(),
-					CExpressionBuilder.builder()
-							.string(__value.boxedValue().toString())
-						.build());
+				// Load string or class
+				if (__value.type() == ConstantValueType.STRING)
+					__block.variableSetViaFunction(temp.tempIndex(),
+						JvmFunctions.NVM_LOOKUP_STRING_INTO_TEMP,
+						codeVars.currentThread(),
+						codeVars.linkageReference(this.linkTable.string(
+							__value.boxedValue().toString()), 
+							"string"));
+				else
+					__block.variableSetViaFunction(temp.tempIndex(),
+						JvmFunctions.NVM_LOOKUP_CLASS_OBJECT_INTO_TEMP,
+						codeVars.currentThread(),
+						codeVars.linkageReference(this.linkTable.classObject(
+							__value.boxedValue().toString()),
+							"classObject"));
+				
+				// Push it
 				__block.functionCall(
 					JvmFunctions.NVM_STACK_PUSH_REFERENCE_FROM_TEMP,
-					codeVariables.currentFrame(),
+					codeVars.currentFrame(),
 					temp.tempIndex());
 				break;
-			
+				
 			default:
 				throw Debugging.todo(__value.type());
 		}

@@ -394,6 +394,26 @@ public enum JvmFunctions
 		}
 	},
 	
+	/** Lookup a class object and store into temporary index. */ 
+	NVM_LOOKUP_CLASS_OBJECT_INTO_TEMP
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of(
+				"sjme_nvm_lookupClassObjectIntoTemp",
+				JvmTypes.TEMP_INDEX.type(),
+				CVariable.of(JvmTypes.VMTHREAD.pointerType(),
+					"thread"),
+				JvmFunctions.__linkage("classObject",
+					"linkage"));
+		}
+	},
+	
 	/** Lookup a string and store into temporary index. */
 	NVM_LOOKUP_STRING_INTO_TEMP
 	{
@@ -408,7 +428,8 @@ public enum JvmFunctions
 				JvmTypes.TEMP_INDEX.type(),
 				CVariable.of(JvmTypes.VMTHREAD.pointerType(),
 					"thread"),
-				CVariable.of(CPrimitiveType.CHAR_STAR, "string"));
+				JvmFunctions.__linkage("string",
+					"linkage"));
 		}
 	},
 	

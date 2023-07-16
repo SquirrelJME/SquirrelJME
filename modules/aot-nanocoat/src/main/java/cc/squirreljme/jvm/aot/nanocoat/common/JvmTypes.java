@@ -410,6 +410,27 @@ public enum JvmTypes
 					"invokeNormal")
 				.member(JvmTypes.STATIC_LINKAGE_DATA_FIELD_ACCESS,
 					"fieldAccess")
+				.member(JvmTypes.STATIC_LINKAGE_DATA_STRING,
+					"string")
+				.member(JvmTypes.STATIC_LINKAGE_DATA_CLASS_OBJECT,
+					"classObject")
+				.build();
+		}
+	},
+	
+	/** A class object reference. */
+	STATIC_LINKAGE_DATA_CLASS_OBJECT
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_static_linkageData_classObject")
+				.member(JvmTypes.JINT,"todo")
 				.build();
 		}
 	},
@@ -460,6 +481,23 @@ public enum JvmTypes
 		{
 			return CStructTypeBuilder.builder(CStructKind.STRUCT,
 				"sjme_static_linkageData_invokeSpecial")
+				.member(JvmTypes.JINT,"todo")
+				.build();
+		}
+	},
+	
+	/** A string reference. */
+	STATIC_LINKAGE_DATA_STRING
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_static_linkageData_string")
 				.member(JvmTypes.JINT,"todo")
 				.build();
 		}
