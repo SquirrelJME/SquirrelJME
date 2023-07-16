@@ -306,7 +306,7 @@ public enum JvmTypes
 				.member(JvmTypes.JLONG, "jlong")
 				.member(JvmTypes.JFLOAT, "jfloat")
 				.member(JvmTypes.JDOUBLE, "jdouble")
-				.member(CPrimitiveType.CONST_CHAR_STAR, "string")
+				.member(CPrimitiveType.CONST_CHAR_STAR, "jstring")
 				.member(CPrimitiveType.CONST_CHAR_STAR, "jclass")
 				.build();	
 		}
