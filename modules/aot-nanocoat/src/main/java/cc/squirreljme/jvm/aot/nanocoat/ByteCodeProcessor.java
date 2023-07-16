@@ -680,12 +680,20 @@ public class ByteCodeProcessor
 					this.__addressToGroup(__instruction, 0));
 				break;
 				
-				// Put field
+				// Get/Put field
 			case InstructionIndex.GETFIELD:
 			case InstructionIndex.PUTFIELD:
-				this.__doFieldGetPut(__block,
+				this.__doFieldGetPut(__block, false,
 					__instruction.argument(0, FieldReference.class),
 					(op == InstructionIndex.PUTFIELD));
+				break;
+				
+				// Get/Put static field
+			case InstructionIndex.GETSTATIC:
+			case InstructionIndex.PUTSTATIC:
+				this.__doFieldGetPut(__block, true,
+					__instruction.argument(0, FieldReference.class),
+					(op == InstructionIndex.PUTSTATIC));
 				break;
 				
 				// Store or load primitive from array
@@ -919,16 +927,17 @@ public class ByteCodeProcessor
 	}
 	
 	/**
-	 * Gets a field value.
+	 * Gets or puts a field value.
 	 *
 	 * @param __block The block to write to.
+	 * @param __static Is this a static access?
 	 * @param __field The field to get from.
 	 * @param __store Is this a write to the field?
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/16
 	 */
-	private void __doFieldGetPut(CFunctionBlock __block,
+	private void __doFieldGetPut(CFunctionBlock __block, boolean __static,
 		FieldReference __field, boolean __store)
 		throws IOException, NullPointerException
 	{
@@ -945,10 +954,16 @@ public class ByteCodeProcessor
 				codeVars.currentFrame());
 		
 		// Read instance to act on
-		JvmTemporary instance = codeVars.temporary(1);
-		__block.variableSetViaFunction(instance.tempIndex(),
-			JvmFunctions.NVM_STACK_POP_REFERENCE_TO_TEMP,
-			codeVars.currentFrame());
+		JvmTemporary instance;
+		if (__static)
+			instance = null;
+		else
+		{
+			instance = codeVars.temporary(1);
+			__block.variableSetViaFunction(instance.tempIndex(),
+				JvmFunctions.NVM_STACK_POP_REFERENCE_TO_TEMP,
+				codeVars.currentFrame());
+		}
 		
 		// Call put handler
 		if (__store)
@@ -956,9 +971,11 @@ public class ByteCodeProcessor
 			// Call put handler
 			__block.functionCall(JvmFunctions.NVM_FIELD_PUT,
 				codeVars.currentFrame(),
-				instance.accessTemp(JvmTypes.JOBJECT.pointerType()),
+				(instance != null ?
+					instance.accessTemp(JvmTypes.JOBJECT.pointerType()) :
+					CVariable.NULL),
 				codeVars.linkageReference(this.linkTable.fieldAccess(
-					this.method.nameAndType(), false, __field,
+					this.method.nameAndType(), __static, __field,
 					true), "fieldAccess"),
 				value.accessTemp(JvmTypes.ANY));
 		}
@@ -969,10 +986,12 @@ public class ByteCodeProcessor
 			__block.variableSetViaFunction(value.tempIndex(),
 				JvmFunctions.NVM_FIELD_GET_TO_TEMP,
 				codeVars.currentFrame(),
-				instance.accessTemp(JvmTypes.JOBJECT.pointerType()),
+				(instance != null ?
+					instance.accessTemp(JvmTypes.JOBJECT.pointerType()) :
+					CVariable.NULL),
 				codeVars.linkageReference(
 					this.linkTable.fieldAccess(this.method.nameAndType(),
-						false, __field,
+						__static, __field,
 						false), "fieldAccess"));
 			
 			// Push value
