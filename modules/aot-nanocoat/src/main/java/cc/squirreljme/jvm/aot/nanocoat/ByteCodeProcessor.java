@@ -642,6 +642,11 @@ public class ByteCodeProcessor
 					ByteCodeProcessor.__commonPrimitive(op),
 					ByteCodeProcessor.__commonStoreLoad(op));
 				break;
+				
+				// Length of an array
+			case InstructionIndex.ARRAYLENGTH:
+				this.__doArrayLength(__block);
+				break;
 			
 			default:
 				throw Debugging.todo(__instruction);
@@ -745,6 +750,42 @@ public class ByteCodeProcessor
 	}
 	
 	/**
+	 * Gets the length of the given array.
+	 * 
+	 * @param __block The block to write to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/06
+	 */
+	private void __doArrayLength(CFunctionBlock __block)
+		throws IOException, NullPointerException
+	{
+		if (__block == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVars = this.__codeVars();
+		
+		// Read in instance
+		JvmTemporary instance = codeVars.temporary(0);
+		__block.variableSetViaFunction(instance.tempIndex(),
+			JvmFunctions.NVM_STACK_POP_REFERENCE_TO_TEMP,
+			codeVars.currentFrame());
+		
+		// Get length of it
+		CExpression length = codeVars.temporary(1)
+			.access(JvmTypes.JINT);
+		__block.variableSetViaFunction(length,
+			JvmFunctions.NVM_ARRAY_LENGTH,
+			codeVars.currentFrame(),
+			instance.accessTemp(JvmTypes.JOBJECT.pointerType()));
+		
+		// Push to the stack
+		__block.functionCall(JvmFunctions.NVM_STACK_PUSH_INTEGER,
+			codeVars.currentFrame(),
+			length);
+	}
+	
+	/**
 	 * Performs a throw of an exception.
 	 * 
 	 * @param __block The block to write to.
@@ -758,11 +799,11 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVariables = this.__codeVars();
+		__CodeVariables__ codeVars = this.__codeVars();
 		
 		// Read in object off the stack
 		__block.functionCall(JvmFunctions.NVM_STACK_POP_REFERENCE_THEN_THROW,
-			codeVariables.currentFrame());
+			codeVars.currentFrame());
 		
 		// Perform throw check now
 		this.__checkThrow(__block);

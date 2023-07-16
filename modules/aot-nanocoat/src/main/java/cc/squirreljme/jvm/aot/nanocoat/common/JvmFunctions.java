@@ -44,6 +44,25 @@ public enum JvmFunctions
 		}
 	},
 	
+	/** Returns the length of the given array. */
+	NVM_ARRAY_LENGTH
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_arrayLength",
+				JvmTypes.JINT,
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JOBJECT.pointerType(),
+					"arrayInstance"));
+		}
+	},
+	
 	/** Load from array. */
 	NVM_ARRAY_LOAD_INTO_TEMP
 	{
