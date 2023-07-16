@@ -493,6 +493,11 @@ public class ByteCodeProcessor
 						.findShuffleFunction(stackPair.input));
 				break;
 				
+				// Null value
+			case InstructionIndex.ACONST_NULL:
+				this.__doAConstNull(__block);
+				break;
+				
 			case InstructionIndex.LDC_W:
 			case InstructionIndex.LDC2_W:
 				this.__doLdc(__block,
@@ -571,6 +576,7 @@ public class ByteCodeProcessor
 				this.__doReturn(__block);
 				break;
 				
+			case InstructionIndex.ARETURN:
 			case InstructionIndex.IRETURN:
 			case InstructionIndex.LRETURN:
 			case InstructionIndex.FRETURN:
@@ -752,6 +758,13 @@ public class ByteCodeProcessor
 			case InstructionIndex.ARRAYLENGTH:
 				this.__doArrayLength(__block);
 				break;
+				
+				// Increment integer value and store into local
+			case InstructionIndex.WIDE_IINC:
+				this.__doIncrementInteger(__block,
+					__instruction.argument(0, Integer.class),
+					__instruction.argument(1, Integer.class));
+				break;
 			
 			default:
 				throw Debugging.todo(__instruction);
@@ -828,6 +841,28 @@ public class ByteCodeProcessor
 	}
 	
 	/**
+	 * Pushes null constant to the stack.
+	 *
+	 * @param __block The block to write to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	private void __doAConstNull(CFunctionBlock __block)
+		throws IOException, NullPointerException
+	{
+		if (__block == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVars = this.__codeVars();
+		
+		// Just push null to the stack
+		__block.functionCall(JvmFunctions.NVM_STACK_PUSH_REFERENCE,
+			codeVars.currentFrame(),
+			CVariable.NULL);
+	}
+	
+	/**
 	 * Performs reference loading.
 	 *
 	 * @param __block The block to write into.
@@ -844,8 +879,9 @@ public class ByteCodeProcessor
 		if (__block == null)
 			throw new NullPointerException("NARG");
 		
-		// Copy reference over
 		__CodeVariables__ codeVars = this.__codeVars();
+		
+		// Copy reference over
 		__block.functionCall((__store ? JvmFunctions.NVM_LOCAL_POP_REFERENCE :
 				JvmFunctions.NVM_LOCAL_PUSH_REFERENCE),
 			codeVars.currentFrame(),
@@ -1220,6 +1256,43 @@ public class ByteCodeProcessor
 			// Change grouping
 			this.__jumpToGroup(iffy, __targetGroupId);
 		}
+	}
+	
+	/**
+	 * Increments an integer in a local.
+	 *
+	 * @param __block The block to write to.
+	 * @param __index The index of the local.
+	 * @param __by The amount to increment by.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	private void __doIncrementInteger(CFunctionBlock __block,
+		int __index, int __by)
+		throws IOException, NullPointerException
+	{
+		if (__block == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVars = this.__codeVars();
+		
+		// Read in value
+		CExpression value = codeVars.temporary(0)
+			.access(JvmTypes.JINT);
+		__block.variableSetViaFunction(value,
+			JvmFunctions.NVM_LOCAL_LOAD_INTEGER,
+			codeVars.currentFrame(),
+			CBasicExpression.number(__index));
+		
+		// Write new value
+		__block.functionCall(JvmFunctions.NVM_LOCAL_STORE_INTEGER,
+			codeVars.currentFrame(),
+			CBasicExpression.number(__index),
+			CExpressionBuilder.builder()
+				.math(value, CMathOperator.ADD,
+					CBasicExpression.number(__by))
+				.build());
 	}
 	
 	/**

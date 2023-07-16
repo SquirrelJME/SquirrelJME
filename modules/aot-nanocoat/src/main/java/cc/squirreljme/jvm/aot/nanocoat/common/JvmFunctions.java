@@ -214,6 +214,24 @@ public enum JvmFunctions
 		}
 	},
 	
+	/** Load integer value. */
+	NVM_LOCAL_LOAD_INTEGER
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_localLoadInteger",
+				JvmTypes.JINT,
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JINT, "index"));
+		}
+	},
+	
 	/** Pop double from the stack to local variable. */
 	NVM_LOCAL_POP_DOUBLE
 	{
@@ -391,6 +409,25 @@ public enum JvmFunctions
 				CVariable.of(JvmTypes.VMFRAME.pointerType(),
 					"frame"),
 				CVariable.of(JvmTypes.JINT, "index"));
+		}
+	},
+	
+	/** Store integer value. */
+	NVM_LOCAL_STORE_INTEGER
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_localStoreInteger",
+				JvmTypes.JBOOLEAN,
+				CVariable.of(JvmTypes.VMFRAME.pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JINT, "index"),
+				CVariable.of(JvmTypes.JINT, "value"));
 		}
 	},
 	
