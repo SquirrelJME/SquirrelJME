@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.linkage;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.ClassName;
 
 /**
@@ -31,4 +32,28 @@ public class ClassObjectLinkage
 		this.className = __className;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/16
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		if (this == __o)
+			return true;
+		if (!(__o instanceof ClassObjectLinkage))
+			return false;
+		
+		return this.className.equals(((ClassObjectLinkage)__o).className);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/07/16
+	 */
+	@Override
+	public int hashCode()
+	{
+		return this.className.hashCode();
+	}
 }
