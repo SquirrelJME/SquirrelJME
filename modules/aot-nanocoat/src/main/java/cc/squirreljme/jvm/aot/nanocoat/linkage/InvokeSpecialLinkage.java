@@ -18,7 +18,7 @@ import net.multiphasicapps.classfile.MethodReference;
  *
  * @since 2023/06/03
  */
-public class InvokeSpecialLinkage
+public final class InvokeSpecialLinkage
 	implements Linkage
 {
 	/** The source method name and type. */

@@ -40,8 +40,8 @@ public enum JvmTypes
 		{
 			return CStructTypeBuilder.builder(CStructKind.STRUCT,
 				"sjme_any")
-				.member(JvmTypes.JINT.type(), "type")
-				.member(JvmTypes.ANY_DATA.type(), "data")
+				.member(JvmTypes.JINT, "type")
+				.member(JvmTypes.ANY_DATA, "data")
 				.build();
 		}
 	},
@@ -58,11 +58,11 @@ public enum JvmTypes
 		{
 			return CStructTypeBuilder.builder(CStructKind.UNION,
 				"sjme_anyData")
-				.member(JvmTypes.JINT.type(),
+				.member(JvmTypes.JINT,
 					"jint")
 				.member(JvmTypes.JOBJECT.type().pointerType(),
 					"jobject")
-				.member(JvmTypes.TEMP_INDEX.type(),
+				.member(JvmTypes.TEMP_INDEX,
 					"tempIndex")
 				.build();
 		}
@@ -242,10 +242,10 @@ public enum JvmTypes
 		{
 			return CStructTypeBuilder.builder(CStructKind.UNION,
 				"sjme_static_constValue")
-				.member(JvmTypes.JINT.type(), "jint")
-				.member(JvmTypes.JLONG.type(), "jlong")
-				.member(JvmTypes.JFLOAT.type(), "jfloat")
-				.member(JvmTypes.JDOUBLE.type(), "jdouble")
+				.member(JvmTypes.JINT, "jint")
+				.member(JvmTypes.JLONG, "jlong")
+				.member(JvmTypes.JFLOAT, "jfloat")
+				.member(JvmTypes.JDOUBLE, "jdouble")
 				.member(CPrimitiveType.CONST_CHAR_STAR, "string")
 				.member(CPrimitiveType.CONST_CHAR_STAR, "jclass")
 				.build();	
@@ -267,8 +267,8 @@ public enum JvmTypes
 				.member(CPrimitiveType.CONST_CHAR_STAR, "name")
 				.member(CPrimitiveType.CONST_CHAR_STAR, "type")
 				.member(JvmTypes.JINT.type().constType(), "flags")
-				.member(JvmTypes.JINT.type(), "valueType")
-				.member(JvmTypes.STATIC_CLASS_CVALUE.type(),
+				.member(JvmTypes.JINT, "valueType")
+				.member(JvmTypes.STATIC_CLASS_CVALUE,
 					"value")
 				.build();
 		}
@@ -286,7 +286,7 @@ public enum JvmTypes
 		{
 			return CStructTypeBuilder.builder(CStructKind.STRUCT,
 				"sjme_static_classFields")
-				.member(JvmTypes.JINT.type(), "count")
+				.member(JvmTypes.JINT, "count")
 				.member(JvmTypes.STATIC_CLASS_FIELD.type()
 					.arrayType(0), "fields")
 				.build();
@@ -308,8 +308,8 @@ public enum JvmTypes
 				.member(CPrimitiveType.CONST_CHAR_STAR, "name")
 				.member(CPrimitiveType.CONST_CHAR_STAR, "type")
 				.member(JvmTypes.JINT.type().constType(), "flags")
-				.member(JvmTypes.JINT.type(), "rValSlots")
-				.member(JvmTypes.JINT.type(), "argSlots")
+				.member(JvmTypes.JINT, "rValSlots")
+				.member(JvmTypes.JINT, "argSlots")
 				.member(JvmFunctions.METHOD_CODE.function(), "code")
 				.build();
 		}
@@ -327,7 +327,7 @@ public enum JvmTypes
 		{
 			return CStructTypeBuilder.builder(CStructKind.STRUCT,
 				"sjme_static_classMethods")
-				.member(JvmTypes.JINT.type(), "count")
+				.member(JvmTypes.JINT, "count")
 				.member(JvmTypes.STATIC_CLASS_METHOD.type()
 					.arrayType(0), "methods")
 				.build();
@@ -350,7 +350,7 @@ public enum JvmTypes
 					"thisName")
 				.member(CPrimitiveType.CONST_CHAR_STAR,
 					"superName")
-				.member(JvmTypes.JINT.type(),
+				.member(JvmTypes.JINT,
 					"flags")
 				.member(JvmTypes.STATIC_CLASS_FIELDS.type()
 					.constType().pointerType(), "fields")
@@ -372,7 +372,7 @@ public enum JvmTypes
 		{
 			return CStructTypeBuilder.builder(CStructKind.STRUCT,
 				"sjme_static_linkage")
-				.member(JvmTypes.STATIC_LINKAGE_DATA.type(), "data")
+				.member(JvmTypes.STATIC_LINKAGE_DATA, "data")
 				.build();
 		}
 	},
@@ -389,16 +389,35 @@ public enum JvmTypes
 		{
 			return CStructTypeBuilder.builder(CStructKind.UNION,
 				"sjme_static_linkageData")
-				.member(JvmTypes.STATIC_LINKAGE_DATA_INVOKESPECIAL.type(),
+				.member(JvmTypes.STATIC_LINKAGE_DATA_INVOKE_SPECIAL,
 					"invokeSpecial")
-				.member(JvmTypes.STATIC_LINKAGE_DATA_INVOKENORMAL.type(),
+				.member(JvmTypes.STATIC_LINKAGE_DATA_INVOKE_NORMAL,
 					"invokeNormal")
+				.member(JvmTypes.STATIC_LINKAGE_DATA_FIELD_ACCESS,
+					"fieldAccess")
+				.build();
+		}
+	},
+	
+	/** Field access. */
+	STATIC_LINKAGE_DATA_FIELD_ACCESS
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CType __build()
+		{
+			return CStructTypeBuilder.builder(CStructKind.STRUCT,
+				"sjme_static_linkageData_fieldAccess")
+				.member(JvmTypes.JINT,"todo")
 				.build();
 		}
 	},
 	
 	/** Invoke normal linkage data. */
-	STATIC_LINKAGE_DATA_INVOKENORMAL
+	STATIC_LINKAGE_DATA_INVOKE_NORMAL
 	{
 		/**
 		 * {@inheritDoc}
@@ -409,13 +428,13 @@ public enum JvmTypes
 		{
 			return CStructTypeBuilder.builder(CStructKind.STRUCT,
 				"sjme_static_linkageData_invokeNormal")
-				.member(JvmTypes.JINT.type(),"todo")
+				.member(JvmTypes.JINT,"todo")
 				.build();
 		}
 	},
 	
 	/** Invoke special linkage data. */
-	STATIC_LINKAGE_DATA_INVOKESPECIAL
+	STATIC_LINKAGE_DATA_INVOKE_SPECIAL
 	{
 		/**
 		 * {@inheritDoc}
@@ -426,7 +445,7 @@ public enum JvmTypes
 		{
 			return CStructTypeBuilder.builder(CStructKind.STRUCT,
 				"sjme_static_linkageData_invokeSpecial")
-				.member(JvmTypes.JINT.type(),"todo")
+				.member(JvmTypes.JINT,"todo")
 				.build();
 		}
 	},
@@ -444,7 +463,7 @@ public enum JvmTypes
 			return CStructTypeBuilder.builder(
 				CStructKind.STRUCT, "sjme_static_resource")
 				.member(CPrimitiveType.CHAR.pointerType(), "path")
-				.member(JvmTypes.JINT.type(), "size")
+				.member(JvmTypes.JINT, "size")
 				.member(CStdIntType.UINT8.type().constType().pointerType(),
 					"data")
 				.build();
@@ -478,12 +497,12 @@ public enum JvmTypes
 		{
 			return CStructTypeBuilder.builder(
 				CStructKind.STRUCT, "sjme_nvm_frame")
-				.member(JvmTypes.JINT.type(), "groupIndex")
+				.member(JvmTypes.JINT, "groupIndex")
 				.member(JvmTypes.STATIC_LINKAGE.type().pointerType(),
 					"linkage")
 				.member(JvmTypes.JTHROWABLE.type().pointerType(),
 					"waitingThrown")
-				.member(JvmTypes.ANY.type(),
+				.member(JvmTypes.ANY,
 					"returnValue")
 				.member(JvmTypes.ANY.type().pointerType().pointerType(),
 					"tempStack")

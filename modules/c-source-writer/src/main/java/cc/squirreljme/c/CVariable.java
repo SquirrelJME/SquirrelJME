@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.c.std.CTypeProvider;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -249,11 +250,44 @@ public class CVariable
 	 * @param __name The name of the variable.
 	 * @return The created variable.
 	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public static CVariable of(CTypeProvider __type, String __name)
+		throws NullPointerException
+	{
+		return CVariable.of(__type, CIdentifier.of(__name));
+	}
+	
+	/**
+	 * Initializes a variable.
+	 * 
+	 * @param __type The type used.
+	 * @param __name The name of the variable.
+	 * @return The created variable.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/19
 	 */
 	public static CVariable of(CType __type, CIdentifier __name)
 		throws NullPointerException
 	{
 		return new CVariable(__type, __name);
+	}
+	
+	/**
+	 * Initializes a variable.
+	 * 
+	 * @param __type The type used.
+	 * @param __name The name of the variable.
+	 * @return The created variable.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public static CVariable of(CTypeProvider __type, CIdentifier __name)
+		throws NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		return CVariable.of(__type.type(), __name);
 	}
 }

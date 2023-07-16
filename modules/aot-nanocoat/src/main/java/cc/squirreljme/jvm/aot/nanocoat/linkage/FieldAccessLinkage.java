@@ -9,15 +9,15 @@
 
 package cc.squirreljme.jvm.aot.nanocoat.linkage;
 
+import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.MethodNameAndType;
-import net.multiphasicapps.classfile.MethodReference;
 
 /**
- * Normal method invocation linkage.
+ * Represents linkage to accessing a field.
  *
- * @since 2023/07/04
+ * @since 2023/07/16
  */
-public final class InvokeNormalLinkage
+public final class FieldAccessLinkage
 	implements Linkage
 {
 	/** Is this static? */
@@ -27,19 +27,23 @@ public final class InvokeNormalLinkage
 	protected final MethodNameAndType source;
 	
 	/** The target method. */
-	protected final MethodReference target;
+	protected final FieldReference target;
+	
+	/** Is this writing the field? */
+	protected final boolean isWrite;
 	
 	/**
-	 * Initializes the normal linkage.
+	 * Initializes the linkage.
 	 * 
-	 * @param __source The source method name and type.
-	 * @param __static Is this static?
-	 * @param __target The target method.
+	 * @param __source The source method.
+	 * @param __static Is the access static?
+	 * @param __target The target field being access.
+	 * @param __write Is the access writing the value?
 	 * @throws NullPointerException On null arguments.
-	 * @since 2023/07/04
+	 * @since 2023/07/16
 	 */
-	public InvokeNormalLinkage(MethodNameAndType __source, boolean __static,
-		MethodReference __target)
+	public FieldAccessLinkage(MethodNameAndType __source, boolean __static,
+		FieldReference __target, boolean __write)
 		throws NullPointerException
 	{
 		if (__source == null || __target == null)
@@ -48,34 +52,38 @@ public final class InvokeNormalLinkage
 		this.source = __source;
 		this.isStatic = __static;
 		this.target = __target;
+		this.isWrite = __write;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2023/07/04
+	 * @since 2023/07/16
 	 */
 	@Override
 	public boolean equals(Object __o)
 	{
-		if (__o == this)
+		if (this == __o)
 			return true;
-		if (!(__o instanceof InvokeNormalLinkage))
+		if (!(__o instanceof FieldAccessLinkage))
 			return false;
 		
-		InvokeNormalLinkage o = (InvokeNormalLinkage)__o;
-		return this.source.equals(o.source) &&
-			this.target.equals(o.target) &&
-			this.isStatic == o.isStatic;
+		FieldAccessLinkage o = (FieldAccessLinkage)__o;
+		return this.isStatic == o.isStatic &&
+			this.isWrite == o.isWrite &&
+			this.source.equals(o.source) &&
+			this.target.equals(o.target);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2023/07/04
+	 * @since 2023/07/16
 	 */
 	@Override
 	public int hashCode()
 	{
-		return this.source.hashCode() ^ this.target.hashCode() +
-			(this.isStatic ? 1 : 0);
+		return this.source.hashCode() ^
+			this.target.hashCode() +
+			(this.isStatic ? 1 : 0) +
+			(this.isWrite ? 2 : 0);
 	}
 }

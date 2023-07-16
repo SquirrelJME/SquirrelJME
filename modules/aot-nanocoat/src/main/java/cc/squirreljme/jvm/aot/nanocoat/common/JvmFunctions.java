@@ -63,6 +63,27 @@ public enum JvmFunctions
 		}
 	},
 	
+	/** Get value from field and place into temp. */
+	NVM_FIELD_GET_TO_TEMP
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/04
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_fieldGetToTemp",
+				JvmTypes.TEMP_INDEX.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.JOBJECT.type().pointerType(),
+					"instance"),
+				JvmFunctions.__linkage("fieldAccess",
+					"linkage"));
+		}
+	},
+	
 	/** Put value into field. */
 	NVM_FIELD_PUT
 	{
@@ -79,6 +100,8 @@ public enum JvmFunctions
 					"frame"),
 				CVariable.of(JvmTypes.JOBJECT.type().pointerType(),
 					"instance"),
+				JvmFunctions.__linkage("fieldAccess",
+					"linkage"),
 				CVariable.of(JvmTypes.ANY.type().pointerType(),
 					"value"));
 		}
@@ -100,9 +123,7 @@ public enum JvmFunctions
 					"state"),
 				CVariable.of(JvmTypes.VMTHREAD.type().pointerType(),
 					"thread"),
-				CVariable.of(JvmTypes.STATIC_LINKAGE.type(CStructType.class)
-					.member("data").type(CStructType.class)
-					.member("invokeNormal").type.pointerType(),
+				JvmFunctions.__linkage("invokeNormal",
 					"linkage"));
 		}
 	},
@@ -123,9 +144,7 @@ public enum JvmFunctions
 					"state"),
 				CVariable.of(JvmTypes.VMTHREAD.type().pointerType(),
 					"thread"),
-				CVariable.of(JvmTypes.STATIC_LINKAGE.type(CStructType.class)
-					.member("data").type(CStructType.class)
-					.member("invokeSpecial").type.pointerType(),
+				JvmFunctions.__linkage("invokeSpecial",
 					"linkage"));
 		}
 	},
@@ -401,6 +420,25 @@ public enum JvmFunctions
 		}
 	},
 	
+	/** Push any to stack from temporary. */
+	NVM_STACK_PUSH_ANY_FROM_TEMP
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CFunctionType __build()
+		{
+			return CFunctionType.of("sjme_nvm_stackPushAnyFromTemp",
+				JvmTypes.JBOOLEAN.type(),
+				CVariable.of(JvmTypes.VMFRAME.type().pointerType(),
+					"frame"),
+				CVariable.of(JvmTypes.TEMP_INDEX,
+					"input"));
+		}
+	},
+	
 	/** Push integer to stack. */
 	NVM_STACK_PUSH_INTEGER
 	{
@@ -524,5 +562,26 @@ public enum JvmFunctions
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Calculates the variable for the given linkage.
+	 * 
+	 * @param __type The type to access.
+	 * @param __name The name of the variable.
+	 * @return The variable for the given linkage.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	static final CVariable __linkage(String __type, String __name)
+		throws NullPointerException
+	{
+		if (__type == null || __name == null)
+			throw new NullPointerException("NARG");
+		
+		return CVariable.of(JvmTypes.STATIC_LINKAGE.type(CStructType.class)
+			.member("data").type(CStructType.class)
+			.member(__type).type.pointerType(),
+			__name);
 	}
 }

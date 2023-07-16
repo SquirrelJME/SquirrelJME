@@ -612,6 +612,12 @@ public class ByteCodeProcessor
 					this.__addressToGroup(__instruction, 0));
 				break;
 				
+				// Get field
+			case InstructionIndex.GETFIELD:
+				this.__doFieldGet(__block,
+					__instruction.argument(0, FieldReference.class));
+				break;
+				
 				// Put field
 			case InstructionIndex.PUTFIELD:
 				this.__doFieldPut(__block,
@@ -744,6 +750,46 @@ public class ByteCodeProcessor
 	}
 	
 	/**
+	 * Gets a field value.
+	 * 
+	 * @param __block The block to write to.
+	 * @param __field The field to get from.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	private void __doFieldGet(CFunctionBlock __block,
+		FieldReference __field)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __field == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVars = this.__codeVars();
+		
+		// Read instance to act on
+		JvmTemporary instance = codeVars.temporary(1);
+		__block.variableSetViaFunction(instance.tempIndex(),
+			JvmFunctions.NVM_STACK_POP_REFERENCE_TO_TEMP,
+			codeVars.currentFrame());
+		
+		// Call put handler
+		JvmTemporary value = codeVars.temporary(0);
+		__block.variableSetViaFunction(value.tempIndex(),
+			JvmFunctions.NVM_FIELD_GET_TO_TEMP,
+			codeVars.currentFrame(),
+			instance.accessTemp(JvmTypes.JOBJECT.type().pointerType()),
+			codeVars.linkageReference(this.linkTable.fieldAccess(
+				this.method.nameAndType(), false, __field,
+				false), "fieldAccess"));
+		
+		// Push value
+		__block.functionCall(JvmFunctions.NVM_STACK_PUSH_ANY_FROM_TEMP,
+			codeVars.currentFrame(),
+			value.tempIndex());
+	}
+	
+	/**
 	 * Puts a field value.
 	 * 
 	 * @param __block The block to write to.
@@ -777,6 +823,9 @@ public class ByteCodeProcessor
 		__block.functionCall(JvmFunctions.NVM_FIELD_PUT,
 			codeVars.currentFrame(),
 			instance.accessTemp(JvmTypes.JOBJECT.type().pointerType()),
+			codeVars.linkageReference(this.linkTable.fieldAccess(
+				this.method.nameAndType(), false, __field,
+				true), "fieldAccess"),
 			value.accessTemp(JvmTypes.ANY));
 	}
 	
@@ -938,14 +987,14 @@ public class ByteCodeProcessor
 			__funcHandler == null || __linkWhat == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVariables = this.__codeVars();
+		__CodeVariables__ codeVars = this.__codeVars();
 		
 		// Just perform the function handler call, it will accordingly
 		// put things on the stack and otherwise
 		__block.functionCall(__funcHandler,
-			codeVariables.currentState(),
-			codeVariables.currentThread(),
-			codeVariables.linkageReference(__linkage, __linkWhat));
+			codeVars.currentState(),
+			codeVars.currentThread(),
+			codeVars.linkageReference(__linkage, __linkWhat));
 	}
 	
 	/**

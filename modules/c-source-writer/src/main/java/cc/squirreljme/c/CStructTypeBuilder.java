@@ -9,6 +9,7 @@
 
 package cc.squirreljme.c;
 
+import cc.squirreljme.c.std.CTypeProvider;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -81,6 +82,21 @@ public final class CStructTypeBuilder
 	 * @param __type The member type.
 	 * @param __name The member name.
 	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public CStructTypeBuilder member(CTypeProvider __type, String __name)
+		throws NullPointerException
+	{
+		return this.member(__type, CIdentifier.of(__name));
+	}
+	
+	/**
+	 * Adds a struct member.
+	 * 
+	 * @param __type The member type.
+	 * @param __name The member name.
+	 * @return {@code this}.
 	 * @throws IllegalArgumentException If the member already exists.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/06/12
@@ -99,6 +115,25 @@ public final class CStructTypeBuilder
 		members.put(__name, CVariable.of(__type, __name));
 		
 		return this;
+	}
+	
+	/**
+	 * Adds a struct member.
+	 * 
+	 * @param __type The member type.
+	 * @param __name The member name.
+	 * @return {@code this}.
+	 * @throws IllegalArgumentException If the member already exists.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public CStructTypeBuilder member(CTypeProvider __type, CIdentifier __name)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		return this.member(__type.type(), __name);
 	}
 	
 	/**

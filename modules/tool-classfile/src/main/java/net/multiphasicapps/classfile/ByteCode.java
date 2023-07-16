@@ -1337,7 +1337,8 @@ public final class ByteCode
 		if (__entry == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		return new StackMapTableEntry(__entry.type().type().componentType(),
+			true);
 	}
 	
 	/**

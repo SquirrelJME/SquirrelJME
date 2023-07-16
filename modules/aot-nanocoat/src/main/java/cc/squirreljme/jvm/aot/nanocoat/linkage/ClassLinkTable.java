@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.MethodNameAndType;
 import net.multiphasicapps.classfile.MethodReference;
 
@@ -40,6 +41,29 @@ public class ClassLinkTable
 	{
 		// Zero is an invalid entry
 		this._table.add(null);
+	}
+	
+	/**
+	 * Creates or retrieves a linkage to access a field.
+	 *
+	 * @param __source The source method.
+	 * @param __static Is the access static?
+	 * @param __target The target field being access.
+	 * @param __write Is the access writing the value?
+	 * @return The container for the linkage.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public Container<FieldAccessLinkage> fieldAccess(
+		MethodNameAndType __source, boolean __static, FieldReference __target,
+		boolean __write)
+		throws NullPointerException
+	{
+		if (__source == null || __target == null)
+			throw new NullPointerException("NARG");
+		
+		return this.put(FieldAccessLinkage.class,
+			new FieldAccessLinkage(__source, __static, __target, __write));
 	}
 	
 	/**
