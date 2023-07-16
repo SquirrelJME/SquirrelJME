@@ -9,8 +9,7 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.c.out.CTokenOutput;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.c.std.CTypeProvider;
 import cc.squirreljme.runtime.cldc.util.BooleanArrayList;
 import cc.squirreljme.runtime.cldc.util.ByteArrayList;
 import cc.squirreljme.runtime.cldc.util.CharacterArrayList;
@@ -249,6 +248,54 @@ public abstract class CExpressionBuilder
 		this.__add("]");
 		
 		return this.__this();
+	}
+	
+	/**
+	 * Writes a value cast.
+	 *
+	 * @param __to The type to cast to.
+	 * @param __expression The expression to cast.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public B cast(CType __to, CExpression __expression)
+		throws IOException, NullPointerException
+	{
+		if (__to == null || __expression == null)
+			throw new NullPointerException("NARG");
+		
+		this.__add("(");
+		this.__add("(");
+		this.__add(__to.declareTokens(null));
+		this.__add(")");
+		
+		this.__add("(");
+		this.__add(__expression.tokens());
+		this.__add(")");
+		this.__add(")");
+		
+		return this.__this();
+	}
+	
+	/**
+	 * Writes a value cast.
+	 *
+	 * @param __to The type to cast to.
+	 * @param __expression The expression to cast.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public B cast(CTypeProvider __to, CExpression __expression)
+		throws IOException, NullPointerException
+	{
+		if (__to == null)
+			throw new NullPointerException("NARG");
+		
+		return this.cast(__to.type(), __expression);
 	}
 	
 	/**

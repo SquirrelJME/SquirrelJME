@@ -21,6 +21,7 @@ import cc.squirreljme.c.CPointerType;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CSwitchBlock;
 import cc.squirreljme.c.CVariable;
+import cc.squirreljme.c.std.CTypeProvider;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmCompareOp;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
@@ -639,6 +640,14 @@ public class ByteCodeProcessor
 					ByteCodeProcessor.__commonMathOp(op));
 				break;
 				
+				// Integer conversion
+			case InstructionIndex.I2B:
+			case InstructionIndex.I2S:
+			case InstructionIndex.I2C:
+				this.__doConvertInteger(__block,
+					ByteCodeProcessor.__commonPrimitive(op, true));
+				break;
+				
 				// Software conversion
 			case InstructionIndex.I2L:
 			case InstructionIndex.I2F:
@@ -905,11 +914,64 @@ public class ByteCodeProcessor
 	}
 	
 	/**
+	 * Converts an integer value.
+	 *
+	 * @param __block The block to write to.
+	 * @param __to The target type.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	private void __doConvertInteger(CFunctionBlock __block,
+		JvmPrimitiveType __to)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __to == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVars = this.__codeVars();
+		
+		// Read in integer value
+		CExpression value = codeVars.temporary(0)
+			.access(JvmTypes.JINT);
+		__block.variableSetViaFunction(value,
+			JvmFunctions.NVM_STACK_POP_INTEGER,
+			codeVars.currentFrame());
+		
+		// What do we cast to?
+		CTypeProvider cast;
+		switch (__to)
+		{
+			case BOOLEAN_OR_BYTE:
+				cast = JvmTypes.JBYTE;
+				break;
+				
+			case SHORT:
+				cast = JvmTypes.JSHORT;
+				break;
+				
+			case CHARACTER:
+				cast = JvmTypes.JCHAR;
+				break;
+				
+			default:
+				throw Debugging.oops();
+		}
+		
+		// Push conversion
+		__block.functionCall(JvmFunctions.NVM_STACK_PUSH_INTEGER,
+			codeVars.currentFrame(),
+			CExpressionBuilder.builder()
+				.cast(cast, value)
+				.build());
+	}
+	
+	/**
 	 * Converts a value using software.
 	 *
 	 * @param __block The block to write to.
-	 * @param __from The source value.
-	 * @param __to The target value.
+	 * @param __from The source type.
+	 * @param __to The target type.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/07/16
@@ -1968,6 +2030,15 @@ public class ByteCodeProcessor
 		if (__second)
 			switch (__op)
 			{
+				case InstructionIndex.I2B:
+					return JvmPrimitiveType.BOOLEAN_OR_BYTE;
+					
+				case InstructionIndex.I2S:
+					return JvmPrimitiveType.SHORT;
+					
+				case InstructionIndex.I2C:
+					return JvmPrimitiveType.CHARACTER;
+					
 				case InstructionIndex.L2I:
 				case InstructionIndex.F2I:
 				case InstructionIndex.D2I:
@@ -2020,6 +2091,9 @@ public class ByteCodeProcessor
 				case InstructionIndex.I2L:
 				case InstructionIndex.I2F:
 				case InstructionIndex.I2D:
+				case InstructionIndex.I2B:
+				case InstructionIndex.I2S:
+				case InstructionIndex.I2C:
 					return JvmPrimitiveType.INTEGER;
 					
 				case InstructionIndex.LALOAD:

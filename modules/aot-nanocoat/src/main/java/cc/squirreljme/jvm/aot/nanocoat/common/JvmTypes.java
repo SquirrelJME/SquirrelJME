@@ -83,6 +83,36 @@ public enum JvmTypes
 		}
 	},
 	
+	/** Boolean. */
+	JBYTE
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/06/16
+		 */
+		@Override
+		CType __build()
+		{
+			return CTypeDefType.of(CStdIntType.INT8.type(),
+				"jbyte");
+		}
+	},
+	
+	/** Character. */
+	JCHAR
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CType __build()
+		{
+			return CTypeDefType.of(CStdIntType.UINT16.type(),
+				"jchar");
+		}
+	},
+	
 	/** Class. */
 	JCLASS
 	{
@@ -197,6 +227,21 @@ public enum JvmTypes
 			return CStructTypeBuilder.builder(
 				CStructKind.STRUCT, "jobject")
 				.build();
+		}
+	},
+	
+	/** Short. */
+	JSHORT
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/16
+		 */
+		@Override
+		CType __build()
+		{
+			return CTypeDefType.of(CStdIntType.INT16.type(),
+				"jshort");
 		}
 	},
 	
