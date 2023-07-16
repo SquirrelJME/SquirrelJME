@@ -463,6 +463,29 @@ public abstract class CExpressionBuilder
 	}
 	
 	/**
+	 * Negates the given value.
+	 *
+	 * @param __value The value to negate.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	public B negative(CExpression __value)
+		throws IOException, NullPointerException
+	{
+		if (__value == null)
+			throw new NullPointerException("NARG");
+		
+		this.__add("-");
+		this.__add("(");
+		this.__add(__value.tokens());
+		this.__add(")");
+		
+		return this.__this();
+	}
+	
+	/**
 	 * Adds the not expression.
 	 * 
 	 * @return {@code this}.

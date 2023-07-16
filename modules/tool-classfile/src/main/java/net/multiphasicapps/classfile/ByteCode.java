@@ -988,14 +988,19 @@ public final class ByteCode
 			popped.clear();
 			
 			// Use pre-existing table? At entry point that is
-			StackMapTableState exist = instruction.stackMapTableState();
-			if (exist != null)
+			if (inputs.containsKey(actualAddr))
+				current = inputs.get(actualAddr);
+			else
 			{
-				current = exist;
-				
-				// Overwrite input with the one from the actual stack map
-				// table
-				inputs.put(actualAddr, current);
+				StackMapTableState exist = instruction.stackMapTableState();
+				if (exist != null)
+				{
+					current = exist;
+					
+					// Overwrite input with the one from the actual stack map
+					// table
+					inputs.put(actualAddr, current);
+				}
 			}
 			
 			// Debug
@@ -1326,7 +1331,8 @@ public final class ByteCode
 				current);
 			
 			// Store output of the instruction
-			outputs.put(actualAddr, current);
+			if (!outputs.containsKey(actualAddr))
+				outputs.put(actualAddr, current);
 			
 			// Set inputs for all jump targets
 			InstructionJumpTargets jumps = instruction.jumpTargets();

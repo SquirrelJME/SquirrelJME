@@ -302,6 +302,22 @@ public enum JvmPrimitiveType
 	}
 	
 	/**
+	 * Returns the method used for software negative.
+	 *
+	 * @return The method used for software negative.
+	 * @since 2023/07/16
+	 */
+	public MethodReference softNegative()
+	{
+		// Build
+		FieldDescriptor self = this.descriptor();
+		return new MethodReference(this.softMathClass(),
+			new MethodName("neg"),
+			MethodDescriptor.ofArguments(self, self),
+			false);
+	}
+	
+	/**
 	 * Determines the method to use for soft shifting. 
 	 *
 	 * @param __op The operation to use.

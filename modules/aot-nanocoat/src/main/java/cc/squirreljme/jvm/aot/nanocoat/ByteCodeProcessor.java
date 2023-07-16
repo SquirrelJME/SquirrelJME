@@ -688,7 +688,16 @@ public class ByteCodeProcessor
 				
 				// Integer Negative
 			case InstructionIndex.INEG:
-				throw Debugging.todo();
+				this.__doNegativeInteger(__block);
+				break;
+				
+				// Soft Negative
+			case InstructionIndex.LNEG:
+			case InstructionIndex.FNEG:
+			case InstructionIndex.DNEG:
+				this.__doNegativeSoft(__block,
+					ByteCodeProcessor.__commonPrimitive(op, false));
+				break;
 				
 				// Lookup/table switch
 			case InstructionIndex.LOOKUPSWITCH:
@@ -1514,6 +1523,58 @@ public class ByteCodeProcessor
 	}
 	
 	/**
+	 * Negates an integer. 
+	 *
+	 * @param __block The block to write to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	private void __doNegativeInteger(CFunctionBlock __block)
+		throws IOException, NullPointerException
+	{
+		if (__block == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVars = this.__codeVars();
+		
+		// Read in value
+		CExpression value = codeVars.temporary(0)
+			.access(JvmTypes.JINT);
+		__block.variableSetViaFunction(value,
+			JvmFunctions.NVM_STACK_POP_INTEGER,
+			codeVars.currentFrame());
+		
+		// Push back on, but negate it
+		__block.functionCall(JvmFunctions.NVM_STACK_PUSH_INTEGER,
+			codeVars.currentFrame(),
+			CExpressionBuilder.builder()
+				.negative(value)
+				.build());
+	}
+	
+	/**
+	 * Negates a value via software. 
+	 *
+	 * @param __block The block to write to.
+	 * @param __type The type being handled.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/16
+	 */
+	private void __doNegativeSoft(CFunctionBlock __block,
+		JvmPrimitiveType __type)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __type == null)
+			throw new NullPointerException("NARG");
+		
+		// Just do a completely normal invocation here!
+		this.__doInvokeNormal(__block, true,
+			__type.softNegative());
+	}
+	
+	/**
 	 * Allocates a new object.
 	 * 
 	 * @param __block The block to write to.
@@ -2222,6 +2283,7 @@ public class ByteCodeProcessor
 				case InstructionIndex.LSHL:
 				case InstructionIndex.LSHR:
 				case InstructionIndex.LUSHR:
+				case InstructionIndex.LNEG:
 					return JvmPrimitiveType.LONG;
 					
 				case InstructionIndex.FALOAD:
@@ -2238,6 +2300,7 @@ public class ByteCodeProcessor
 				case InstructionIndex.F2I:
 				case InstructionIndex.F2L:
 				case InstructionIndex.F2D:
+				case InstructionIndex.FNEG:
 					return JvmPrimitiveType.FLOAT;
 					
 				case InstructionIndex.DALOAD:
@@ -2254,6 +2317,7 @@ public class ByteCodeProcessor
 				case InstructionIndex.D2I:
 				case InstructionIndex.D2L:
 				case InstructionIndex.D2F:
+				case InstructionIndex.DNEG:
 					return JvmPrimitiveType.DOUBLE;
 			}
 		
