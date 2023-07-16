@@ -1180,7 +1180,6 @@ public final class ByteCode
 					case InstructionIndex.IFLE:
 					case InstructionIndex.TABLESWITCH:
 					case InstructionIndex.LOOKUPSWITCH:
-					case InstructionIndex.ARRAYLENGTH:
 					case InstructionIndex.ATHROW:
 					case InstructionIndex.IRETURN:
 					case InstructionIndex.LRETURN:
@@ -1193,6 +1192,12 @@ public final class ByteCode
 					case InstructionIndex.IFNONNULL:
 					case InstructionIndex.PUTSTATIC:
 						current = current.deriveStackPop(popped, 1);
+						break;
+						
+						// Pop value, push integer
+					case InstructionIndex.ARRAYLENGTH:
+						current = current.deriveStackPopThenPush(popped,
+							1, StackMapTableEntry.INTEGER);
 						break;
 						
 						// Pop two values, push nothing
