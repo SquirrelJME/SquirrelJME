@@ -550,7 +550,7 @@ public enum JvmFunctions
 				JvmTypes.TEMP_INDEX.type(),
 				CVariable.of(JvmTypes.VMTHREAD.pointerType(),
 					"thread"),
-				CVariable.of(CPrimitiveType.CHAR_STAR.constType(),
+				JvmFunctions.__linkage("classObject",
 					"componentType"),
 				CVariable.of(JvmTypes.JINT,
 					"length"));
@@ -571,8 +571,8 @@ public enum JvmFunctions
 				JvmTypes.TEMP_INDEX.type(),
 				CVariable.of(JvmTypes.VMTHREAD.pointerType(),
 					"thread"),
-				CVariable.of(CPrimitiveType.CHAR_STAR.constType(),
-					"type"));
+				JvmFunctions.__linkage("classObject",
+					"linkage"));
 		}
 	},
 	

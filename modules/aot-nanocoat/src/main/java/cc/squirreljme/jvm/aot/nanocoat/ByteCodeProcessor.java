@@ -1932,9 +1932,8 @@ public class ByteCodeProcessor
 		__block.variableSetViaFunction(object.tempIndex(),
 			JvmFunctions.NVM_NEW_INSTANCE_INTO_TEMP,
 			codeVars.currentThread(),
-			CExpressionBuilder.builder()
-					.string(__what.toString())
-				.build());
+			codeVars.linkageReference(this.linkTable.classObject(
+				__what), "classObject"));
 		
 		// Did this throw anything?
 		this.__checkThrow(__block);
@@ -1961,23 +1960,22 @@ public class ByteCodeProcessor
 		if (__block == null || __componentType == null)
 			throw new NullPointerException("NARG");
 		
-		__CodeVariables__ codeVariables = this.__codeVars();
+		__CodeVariables__ codeVars = this.__codeVars();
 		
 		// Read in length
-		CExpression length = codeVariables.temporary(0)
+		CExpression length = codeVars.temporary(0)
 			.access(JvmTypes.JINT);
 		__block.variableSetViaFunction(length,
 			JvmFunctions.NVM_STACK_POP_INTEGER,
-			codeVariables.currentFrame());
+			codeVars.currentFrame());
 		
 		// Perform allocation
-		JvmTemporary object = codeVariables.temporary(1);
+		JvmTemporary object = codeVars.temporary(1);
 		__block.variableSetViaFunction(object.tempIndex(),
 			JvmFunctions.NVM_NEW_ARRAY_INTO_TEMP,
-			codeVariables.currentThread(),
-			CExpressionBuilder.builder()
-					.string(__componentType.toString())
-				.build(),
+			codeVars.currentThread(),
+			codeVars.linkageReference(this.linkTable.classObject(
+				__componentType), "classObject"),
 			length);
 		
 		// Did this throw anything?
@@ -1985,7 +1983,7 @@ public class ByteCodeProcessor
 		
 		// Push to the stack
 		__block.functionCall(JvmFunctions.NVM_STACK_PUSH_REFERENCE_FROM_TEMP,
-			codeVariables.currentFrame(),
+			codeVars.currentFrame(),
 			object.tempIndex());
 	}
 	
