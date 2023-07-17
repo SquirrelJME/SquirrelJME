@@ -1064,18 +1064,25 @@ public final class ByteCode
 							ByteCode.__deriveLdc(instruction));
 						break;
 						
-						// Load from array
+						// Load from reference array
+					case InstructionIndex.AALOAD:
+						current = current.deriveStackPop(popped, 2);
+						current = current.deriveStackPush(
+							ByteCode.__deriveComponentType(popped.get(0)));
+						break;
+						
+						// Load from array, note that the input could be
+						// Object, so we have to assume it is the right array
 					case InstructionIndex.IALOAD:
 					case InstructionIndex.LALOAD:
 					case InstructionIndex.FALOAD:
 					case InstructionIndex.DALOAD:
-					case InstructionIndex.AALOAD:
 					case InstructionIndex.BALOAD:
 					case InstructionIndex.CALOAD:
 					case InstructionIndex.SALOAD:
 						current = current.deriveStackPop(popped, 2);
 						current = current.deriveStackPush(
-							ByteCode.__deriveComponentType(popped.get(0)));
+							ByteCode.__deriveComponentTypeViaOp(op));
 						break;
 						
 						// Store into array
@@ -1386,14 +1393,59 @@ public final class ByteCode
 		if (__entry == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JCT1 Could not derive component type.
-		// (The type to derive from)}
+		// Get the component type, if it is not found, assume object
 		FieldDescriptor type = __entry.type().type().componentType();
 		if (type == null)
-			throw new InvalidClassFormatException(String.format("JCT1 %s",
-				__entry));
+			return StackMapTableEntry.INITIALIZED_OBJECT;
+		
+		// Promote smaller than int primitives
+		if (type.isPrimitive())
+			switch (type.primitiveType())
+			{
+				case BOOLEAN:
+				case BYTE:
+				case SHORT:
+				case CHARACTER:
+					type = FieldDescriptor.INTEGER;
+					break;
+			}
 		
 		return new StackMapTableEntry(type, true);
+	}
+	
+	/**
+	 * Derives the component type for primitive arrays.
+	 *
+	 * @param __op The operation to check.
+	 * @return The entry for the type.
+	 * @throws InvalidClassFormatException If the operation is not valid.
+	 * @since 2023/07/17
+	 */
+	private static StackMapTableEntry __deriveComponentTypeViaOp(int __op)
+		throws InvalidClassFormatException
+	{
+		switch (__op)
+		{
+			case InstructionIndex.BALOAD:
+			case InstructionIndex.CALOAD:
+			case InstructionIndex.SALOAD:
+			case InstructionIndex.IALOAD:
+				return StackMapTableEntry.INTEGER;
+			
+			case InstructionIndex.LALOAD:
+				return StackMapTableEntry.LONG;
+				
+			case InstructionIndex.FALOAD:
+				return StackMapTableEntry.FLOAT;
+				
+			case InstructionIndex.DALOAD:
+				return StackMapTableEntry.DOUBLE;
+		}
+			
+		// {@squirreljme.error JCl1 Could not derive primitive type of the
+		// array instruction. (The instruction)}
+		throw new InvalidClassFormatException(
+			String.format("JCl1 %s", InstructionMnemonics.toString(__op)));
 	}
 	
 	/**

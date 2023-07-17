@@ -203,10 +203,11 @@ public class ClassProcessor
 				CExpressionBuilder.builder()
 					.string(classFile.thisName().toString())
 					.build());
-			struct.memberSet("superName",
-				CExpressionBuilder.builder()
-					.string(classFile.superName().toString())
-					.build());
+			if (classFile.superName() != null)
+				struct.memberSet("superName",
+					CExpressionBuilder.builder()
+						.string(classFile.superName().toString())
+						.build());
 			struct.memberSet("flags",
 				CExpressionBuilder.builder()
 					.number(Constants.JINT_C, classFile.flags().toJavaBits())
