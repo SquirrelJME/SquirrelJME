@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CExpressionBuilder;
+import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CPPBlock;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
@@ -52,7 +53,7 @@ public class NanoCoatBackend
 			throw new NullPointerException("NARG");
 		
 		NanoCoatLinkGlob glob = (NanoCoatLinkGlob)__glob;
-		CSourceWriter out = glob.out;
+		CSourceWriter headerOut = glob.headerOut;
 		
 		// Load input class
 		// {@squirreljme.error NC01 Mismatched class name.}
@@ -60,23 +61,19 @@ public class NanoCoatBackend
 		if (!classFile.thisName().equals(new ClassName(__name)))
 			throw new RuntimeException("NC01");
 		
-		// Start of header
-		try (CPPBlock block = out.preprocessorIf(CExpressionBuilder.builder()
-				.preprocessorDefined(Constants.CODE_GUARD)
-				.build()))
-		{	
-			// Setup and perform class processing, with state
-			ClassProcessor processor = new ClassProcessor(glob, out,
-				classFile);
-			
-			// Process header code
-			processor.processHeader();
-			
-			// Start of source
-			block.preprocessorElse();
-			
+		// Setup and perform class processing, with state
+		ClassProcessor processor = new ClassProcessor(glob, classFile);
+		
+		// Write header output
+		processor.processHeader(glob.headerOut);
+		
+		// Process source code in single file
+		try (OutputStream out = glob.zip.nextEntry(
+			glob.inDirectory(Utils.dosFileName(__name + ".c")));
+			CFile sourceOut = Utils.cFile(out))
+		{
 			// Process source code
-			processor.processSource();
+			processor.processSource(sourceOut);
 		}
 	}
 	
@@ -94,7 +91,7 @@ public class NanoCoatBackend
 			throw new NullPointerException("NARG");
 		
 		NanoCoatLinkGlob glob = (NanoCoatLinkGlob)__glob;
-		CSourceWriter out = glob.out;
+		CSourceWriter out = glob.headerOut;
 		
 		// Mangle path of this resource to name it
 		String rcIdentifier = Utils.symbolResourcePath(glob, __path);

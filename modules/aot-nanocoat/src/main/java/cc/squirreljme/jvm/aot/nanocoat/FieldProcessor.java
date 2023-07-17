@@ -13,7 +13,6 @@ import cc.squirreljme.c.CArrayBlock;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
-import cc.squirreljme.c.CUtils;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
@@ -35,31 +34,26 @@ public class FieldProcessor
 	/** The glob this is being processed under. */
 	protected final NanoCoatLinkGlob glob;
 	
-	/** The output source writer. */
-	protected final CSourceWriter out;
-	
 	/** The field being processed. */
 	protected final Field field;
 	
 	/**
 	 * Initializes the method processor.
-	 * 
+	 *
 	 * @param __glob The link glob this is under.
-	 * @param __out The source output.
 	 * @param __classProcessor The class file this is processing under.
 	 * @param __field The method to be processed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	public FieldProcessor(NanoCoatLinkGlob __glob, CSourceWriter __out,
+	public FieldProcessor(NanoCoatLinkGlob __glob,
 		ClassProcessor __classProcessor, Field __field)
 	{
-		if (__glob == null || __out == null || __classProcessor == null ||
+		if (__glob == null || __classProcessor == null ||
 			__field == null)
 			throw new NullPointerException("NARG");
 		
 		this.glob = __glob;
-		this.out = __out;
 		this.classFile = __classProcessor.classFile;
 		this.field = __field;
 	}
@@ -70,7 +64,7 @@ public class FieldProcessor
 	 * @throws IOException On write errors.
 	 * @since 2023/05/31
 	 */
-	public void processHeader()
+	public void processHeader(CSourceWriter __out)
 		throws IOException
 	{
 		// Nothing needs to be done currently

@@ -1004,8 +1004,8 @@ public final class ByteCode
 			}
 			
 			// Debug
-			Debugging.debugNote("I### %s: %s -> ...",
-				instruction, current);
+			/*Debugging.debugNote("I### %s: %s -> ...",
+				instruction, current);*/
 			
 			// Should not occur
 			StackMapTableState input = current;
@@ -1334,8 +1334,8 @@ public final class ByteCode
 			}
 			
 			// Debug
-			Debugging.debugNote("... -> %s",
-				current);
+			/*Debugging.debugNote("... -> %s",
+				current);*/
 			
 			// Store output of the instruction
 			if (!outputs.containsKey(actualAddr))

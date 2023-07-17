@@ -9,7 +9,14 @@
 
 package cc.squirreljme.jvm.aot.nanocoat;
 
+import cc.squirreljme.c.CFile;
+import cc.squirreljme.c.out.AppendableCTokenOutput;
+import cc.squirreljme.c.out.CompactCTokenOutput;
+import cc.squirreljme.c.out.EchoCTokenOutput;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Identifier;
@@ -29,6 +36,28 @@ public final class Utils
 	 */
 	private Utils()
 	{
+	}
+	
+	/**
+	 * Wraps output to a {@link CFile} in a generic way.
+	 *
+	 * @param __out The output stream.
+	 * @return The resultant C File.
+	 * @throws IOException If it could not be opened.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/17
+	 */
+	public static CFile cFile(OutputStream __out)
+		throws IOException, NullPointerException
+	{
+		if (__out == null)
+			throw new NullPointerException("NARG");
+		
+		return new CFile(new CompactCTokenOutput(
+			new EchoCTokenOutput(System.err,
+			new AppendableCTokenOutput(
+			new PrintStream(__out, true,
+				"utf-8")))));
 	}
 	
 	/**

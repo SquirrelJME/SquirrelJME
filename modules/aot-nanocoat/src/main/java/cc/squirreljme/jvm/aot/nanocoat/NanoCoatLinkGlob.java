@@ -19,6 +19,8 @@ import cc.squirreljme.c.out.CompactCTokenOutput;
 import cc.squirreljme.c.out.EchoCTokenOutput;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -39,45 +41,45 @@ public class NanoCoatLinkGlob
 	protected final String baseName;
 	
 	/** The name of this output file. */
-	protected final CFileName fileName;
+	protected final CFileName headerFileName;
 	
 	/** The wrapped ZIP file. */
 	protected final ZipStreamWriter zip;
 	
+	/** Raw header output data. */
+	protected final ByteArrayOutputStream rawHeaderOut;
+	
 	/** The output. */
-	protected final CFile out;
+	protected final CFile headerOut;
 	
 	/**
 	 * Initializes the link glob.
 	 * 
 	 * @param __name The name of the glob.
-	 * @param __out The final output file.
+	 * @param __headerOut The final output file.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/28
 	 */
-	public NanoCoatLinkGlob(String __name, OutputStream __out)
+	public NanoCoatLinkGlob(String __name, OutputStream __headerOut)
 		throws NullPointerException
 	{
-		if (__name == null || __out == null)
+		if (__name == null || __headerOut == null)
 			throw new NullPointerException("NARG");
 		
 		// Determine output names
 		this.name = __name;
 		this.baseName = Utils.dosFileName(__name);
-		this.fileName = CFileName.of(this.baseName + ".c");
+		this.headerFileName = CFileName.of(this.baseName + ".h");
 		
 		// Setup ZIP output
-		ZipStreamWriter zip = new ZipStreamWriter(__out);
+		ZipStreamWriter zip = new ZipStreamWriter(__headerOut);
 		this.zip = zip;
 		
 		// Setup output
 		try
 		{
-			this.out = new CFile(new CompactCTokenOutput(
-				new EchoCTokenOutput(System.err,
-				new AppendableCTokenOutput(
-				new PrintStream(zip.nextEntry(this.fileName.toString()),
-					true, "utf-8")))));
+			this.rawHeaderOut = new ByteArrayOutputStream();
+			this.headerOut = Utils.cFile(this.rawHeaderOut);
 		}
 		catch (IOException __e)
 		{
@@ -106,9 +108,52 @@ public class NanoCoatLinkGlob
 	public void finish()
 		throws IOException
 	{
-		// Close out the entry
-		this.out.flush();
-		this.out.close();
+		// Need to write the raw header output for this class
+		try (OutputStream out = this.zip.nextEntry(
+			this.inDirectory(this.headerFileName)))
+		{
+			// Close out the header entry before we write it fully
+			this.headerOut.flush();
+			this.headerOut.close();
+			
+			// Copy to the ZIP
+			out.write(this.rawHeaderOut.toByteArray());
+			out.flush();
+		}
+	}
+	
+	/**
+	 * Returns the file name in the directory.
+	 *
+	 * @param __file The file to place.
+	 * @return The file in the directory.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/17
+	 */
+	public String inDirectory(CFileName __file)
+		throws NullPointerException
+	{
+		if (__file == null)
+			throw new NullPointerException("NARG");
+		
+		return this.inDirectory(__file.toString());
+	}
+	
+	/**
+	 * Returns the file name in the directory.
+	 *
+	 * @param __file The file to place.
+	 * @return The file in the directory.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/17
+	 */
+	public String inDirectory(String __file)
+		throws NullPointerException
+	{
+		if (__file == null)
+			throw new NullPointerException("NARG");
+		
+		return String.format("%s/%s", this.baseName, __file);
 	}
 	
 	/**
@@ -119,7 +164,7 @@ public class NanoCoatLinkGlob
 	public void initialize()
 		throws IOException
 	{
-		CSourceWriter out = this.out;
+		CSourceWriter out = this.headerOut;
 		
 		// If we are compiling source, include ourselves via the header
 		try (CPPBlock block = out.preprocessorIf(CExpressionBuilder.builder()
@@ -135,7 +180,7 @@ public class NanoCoatLinkGlob
 			
 			// Do the actual include of ourselves
 			out.preprocessorInclude(Constants.SJME_JNI_HEADER);
-			out.preprocessorInclude(this.fileName);
+			out.preprocessorInclude(this.headerFileName);
 			
 			// Stop doing this, so we can continue back to normal source code
 			out.preprocessorUndefine(Constants.CODE_GUARD);

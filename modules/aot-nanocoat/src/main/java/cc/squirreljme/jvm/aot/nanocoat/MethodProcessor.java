@@ -12,15 +12,11 @@ package cc.squirreljme.jvm.aot.nanocoat;
 import cc.squirreljme.c.CArrayBlock;
 import cc.squirreljme.c.CExpressionBuilder;
 import cc.squirreljme.c.CFunctionType;
-import cc.squirreljme.c.CUtils;
-import cc.squirreljme.c.CVariable;
 import cc.squirreljme.c.CFunctionBlock;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructVariableBlock;
-import cc.squirreljme.c.std.CStdIntNumberType;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmFunctions;
-import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
 import cc.squirreljme.jvm.aot.nanocoat.linkage.ClassLinkTable;
 import java.io.IOException;
 import net.multiphasicapps.classfile.ByteCode;
@@ -41,9 +37,6 @@ public final class MethodProcessor
 	/** The glob this is being processed under. */
 	protected final NanoCoatLinkGlob glob;
 	
-	/** The output source writer. */
-	protected final CSourceWriter out;
-	
 	/** The function for this method. */
 	protected final CFunctionType function;
 	
@@ -58,24 +51,22 @@ public final class MethodProcessor
 	
 	/**
 	 * Initializes the method processor.
-	 * 
+	 *
 	 * @param __glob The link glob this is under.
-	 * @param __out The source output.
 	 * @param __classProcessor The class file this is processing under.
 	 * @param __method The method to be processed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	public MethodProcessor(NanoCoatLinkGlob __glob, CSourceWriter __out,
+	public MethodProcessor(NanoCoatLinkGlob __glob,
 		ClassProcessor __classProcessor, Method __method)
 		throws NullPointerException
 	{
-		if (__glob == null || __out == null || __classProcessor == null ||
+		if (__glob == null || __classProcessor == null ||
 			__method == null)
 			throw new NullPointerException("NARG");
 		
 		this.glob = __glob;
-		this.out = __out;
 		this.classFile = __classProcessor.classFile;
 		this.method = __method;
 		this.linkTable = __classProcessor.linkTable;
@@ -95,11 +86,11 @@ public final class MethodProcessor
 	 * @throws IOException On write errors.
 	 * @since 2023/05/31
 	 */
-	public void processHeader()
+	public void processHeader(CSourceWriter __out)
 		throws IOException
 	{
 		// Write out the prototype
-		this.out.declare(this.function);
+		__out.declare(this.function);
 	}
 	
 	/**
@@ -164,7 +155,7 @@ public final class MethodProcessor
 	 * @throws IOException On write errors.
 	 * @since 2023/05/31
 	 */
-	public void processSourceOutside()
+	public void processSourceOutside(CSourceWriter __out)
 		throws IOException
 	{
 		// Only write byte code of the method if there is actual byte code
@@ -175,7 +166,7 @@ public final class MethodProcessor
 		// Write function code
 		ByteCodeProcessor processor = new ByteCodeProcessor(
 			this, code);
-		try (CFunctionBlock function = this.out.define(this.function))
+		try (CFunctionBlock function = __out.define(this.function))
 		{
 			processor.process(function);
 		}

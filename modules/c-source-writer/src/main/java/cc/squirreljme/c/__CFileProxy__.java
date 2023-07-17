@@ -24,8 +24,8 @@ import java.util.List;
 abstract class __CFileProxy__
 	implements CSourceWriter
 {
-	/** The file to proxy writes to. */
-	final Reference<? extends CFile> _fileRef;
+	/** The actual file. */
+	final CFile _file;
 	
 	/**
 	 * Initializes the proxy.
@@ -42,14 +42,14 @@ abstract class __CFileProxy__
 		
 		// Try to get the original file
 		if (__writer instanceof CFile)
-			this._fileRef = ((CFile)__writer)._fileRef;
+			this._file = ((CFile)__writer);
 		else if (__writer instanceof __CFileProxy__)
-			this._fileRef = ((__CFileProxy__)__writer)._fileRef;
+			this._file = ((__CFileProxy__)__writer)._file;
 		else
 			throw new ClassCastException("CCEE");
 		
 		// This should not occur, hopefully...
-		if (this._fileRef.get() == null)
+		if (this._file == null)
 			throw new NullPointerException("GCGC");
 	}
 	
@@ -595,9 +595,6 @@ abstract class __CFileProxy__
 	final CFile __file()
 		throws IllegalStateException
 	{
-		CFile rv = this._fileRef.get();
-		if (rv == null)
-			throw new IllegalStateException("GCGC");
-		return rv;
+		return this._file;
 	}
 }

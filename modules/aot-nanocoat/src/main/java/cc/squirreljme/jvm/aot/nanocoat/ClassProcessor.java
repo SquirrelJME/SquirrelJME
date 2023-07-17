@@ -16,7 +16,6 @@ import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.CStructType;
 import cc.squirreljme.c.CStructVariableBlock;
-import cc.squirreljme.c.CUtils;
 import cc.squirreljme.c.CVariable;
 import cc.squirreljme.jvm.aot.nanocoat.common.Constants;
 import cc.squirreljme.jvm.aot.nanocoat.common.JvmTypes;
@@ -42,9 +41,6 @@ public class ClassProcessor
 	
 	/** The glob this is being processed under. */
 	protected final NanoCoatLinkGlob glob;
-	
-	/** The output source writer. */
-	protected final CSourceWriter out;
 	
 	/** The C identifier for this class. */
 	protected final String classIdentifier;
@@ -74,20 +70,17 @@ public class ClassProcessor
 	 * Initializes the class processor.
 	 *
 	 * @param __glob The owning glob.
-	 * @param __out The output source writer.
 	 * @param __classFile The class file being processed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/05/31
 	 */
-	public ClassProcessor(NanoCoatLinkGlob __glob, CSourceWriter __out,
-		ClassFile __classFile)
+	public ClassProcessor(NanoCoatLinkGlob __glob, ClassFile __classFile)
 		throws NullPointerException
 	{
-		if (__glob == null || __out == null || __classFile == null)
+		if (__glob == null || __classFile == null)
 			throw new NullPointerException("NARG");
 		
 		this.glob = __glob;
-		this.out = __out;
 		this.classFile = __classFile;
 		
 		// Determine the identifier used for this class
@@ -107,13 +100,13 @@ public class ClassProcessor
 		Map<FieldNameAndType, FieldProcessor> fields = this._fields;
 		for (Field field : __classFile.fields())
 			fields.put(field.nameAndType(), new FieldProcessor(__glob,
-				__out, this, field));
+				this, field));
 		
 		// Create processors for each method
 		Map<MethodNameAndType, MethodProcessor> methods = this._methods;
 		for (Method method : __classFile.methods())
 			methods.put(method.nameAndType(), new MethodProcessor(__glob,
-				__out, this, method));
+				this, method));
 	}
 	
 	/**
@@ -122,23 +115,22 @@ public class ClassProcessor
 	 * @throws IOException On write errors.
 	 * @since 2023/05/31
 	 */
-	protected void processHeader()
+	protected void processHeader(CSourceWriter __out)
 		throws IOException
 	{
-		CSourceWriter out = this.out;
 		ClassFile classFile = this.classFile;
 		NanoCoatLinkGlob glob = this.glob;
 		
 		// Write class identifier, as extern value
-		out.declare(this.classInfo.extern());
+		__out.declare(this.classInfo.extern());
 		
 		// Process field header details
 		for (FieldProcessor field : this._fields.values())
-			field.processHeader();
+			field.processHeader(__out);
 		
 		// Process method header details
 		for (MethodProcessor method : this._methods.values())
-			method.processHeader();
+			method.processHeader(__out);
 	}
 	
 	/**
@@ -147,14 +139,13 @@ public class ClassProcessor
 	 * @throws IOException On write errors.
 	 * @since 2023/05/31
 	 */
-	protected void processSource()
+	protected void processSource(CSourceWriter __out)
 		throws IOException
 	{
-		CSourceWriter out = this.out;
 		ClassFile classFile = this.classFile;
 		
 		// Process field source details outside the class struct
-		try (CStructVariableBlock struct = this.out.define(
+		try (CStructVariableBlock struct = __out.define(
 			CStructVariableBlock.class, this.classFields))
 		{
 			// Field count
@@ -174,10 +165,10 @@ public class ClassProcessor
 		
 		// Process method source details outside the class struct
 		for (MethodProcessor method : this._methods.values())
-			method.processSourceOutside();
+			method.processSourceOutside(__out);
 		
 		// Process method details for method structure
-		try (CStructVariableBlock struct = this.out.define(
+		try (CStructVariableBlock struct = __out.define(
 			CStructVariableBlock.class, this.classMethods))
 		{
 			// Method count
@@ -196,7 +187,7 @@ public class ClassProcessor
 		}
 		
 		// Open class details
-		try (CStructVariableBlock struct = this.out.define(
+		try (CStructVariableBlock struct = __out.define(
 			CStructVariableBlock.class, this.classInfo))
 		{
 			// Class details
