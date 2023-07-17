@@ -47,6 +47,10 @@ abstract class __CFileProxy__
 			this._fileRef = ((__CFileProxy__)__writer)._fileRef;
 		else
 			throw new ClassCastException("CCEE");
+		
+		// This should not occur, hopefully...
+		if (this._fileRef.get() == null)
+			throw new NullPointerException("GCGC");
 	}
 	
 	/**

@@ -13,6 +13,7 @@ import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CComparison;
 import cc.squirreljme.c.CExpression;
 import cc.squirreljme.c.CExpressionBuilder;
+import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CFunctionBlock;
 import cc.squirreljme.c.CFunctionBlockSplices;
 import cc.squirreljme.c.CIfBlock;
@@ -333,6 +334,7 @@ public class ByteCodeProcessor
 		try (CFunctionBlockSplices splices = __block.splice(3))
 		{
 			// Write initial top variables
+			CFunctionBlock initVarsBase;
 			try (CFunctionBlock initVars = splices.splice(0))
 			{
 				// Setup code variables where the variables get defined and
@@ -342,6 +344,7 @@ public class ByteCodeProcessor
 				
 				// Remember this, so it does not get GCed
 				this._initVars = initVars;
+				initVarsBase = initVars;
 				
 				// Keep track of the current top state, so we need not worry
 				// about pushing or popping
@@ -429,7 +432,7 @@ public class ByteCodeProcessor
 			// Declare local temporary variables
 			__CodeVariables__ codeVars = this.__codeVars();
 			if (codeVars.maxTemporaries() > 0)
-				try (CFunctionBlock initVars = splices.splice(0))
+				try (CFunctionBlock initVars = initVarsBase)
 				{
 					initVars.declare(CVariable.of(
 						JvmTypes.ANY.type().arrayType(
