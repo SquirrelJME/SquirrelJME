@@ -15,6 +15,10 @@ import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.Blocking;
+import org.jetbrains.annotations.NonBlocking;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This contains the shell for printing to the console and otherwise.
@@ -36,14 +40,17 @@ public final class TerminalShelf
 	/**
 	 * Returns the number of available bytes for reading, if it is known.
 	 * 
-	 * @param __fd The {@link StandardPipeType} to close.
+	 * @param __fd The descriptor to close.
 	 * @return The number of bytes ready for immediate reading, will be
 	 * zero if there are none. For errors one of {@link PipeErrorType}.
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2020/11/22
 	 */
 	@SquirrelJMEVendorApi
-	public static native int available(PipeBracket __fd)
+	@MagicConstant(valuesFromClass = PipeErrorType.class,
+		intValues = {0, -1})
+	@NonBlocking
+	public static native int available(@NotNull PipeBracket __fd)
 		throws MLECallError;
 	
 	/**
@@ -55,7 +62,9 @@ public final class TerminalShelf
 	 * @since 2020/07/02
 	 */
 	@SquirrelJMEVendorApi
-	public static native int close(PipeBracket __fd)
+	@MagicConstant(valuesFromClass = PipeErrorType.class)
+	@Blocking
+	public static native int close(@NotNull PipeBracket __fd)
 		throws MLECallError;
 	
 	/**
@@ -67,21 +76,24 @@ public final class TerminalShelf
 	 * @since 2018/12/08
 	 */
 	@SquirrelJMEVendorApi
-	public static native int flush(PipeBracket __fd)
+	@MagicConstant(valuesFromClass = PipeErrorType.class)
+	@Blocking
+	public static native int flush(@NotNull PipeBracket __fd)
 		throws MLECallError;
 	
 	/**
 	 * Returns the pipe to a standardized input/output pipe that is shared
 	 * across many systems.
 	 * 
-	 * @param __fd The pipe to get the pipe of.
+	 * @param __fd The {@link StandardPipeType} to get the pipe of.
 	 * @return The pipe to the given pipe.
 	 * @throws MLECallError If the standard pipe does not exist or is not
 	 * valid.
 	 * @since 2022/03/19
 	 */
 	@SquirrelJMEVendorApi
-	public static native PipeBracket fromStandard(int __fd)
+	public static native PipeBracket fromStandard(
+		@MagicConstant(valuesFromClass = StandardPipeType.class) int __fd)
 		throws MLECallError;
 	
 	/**
@@ -98,8 +110,11 @@ public final class TerminalShelf
 	 * @since 2018/12/05
 	 */
 	@SquirrelJMEVendorApi
-	public static native int read(PipeBracket __fd,
-		byte[] __b, int __o, int __l)
+	@MagicConstant(valuesFromClass = PipeErrorType.class,
+		intValues = {-1, 0})
+	@Blocking
+	public static native int read(@NotNull PipeBracket __fd,
+		@NotNull byte[] __b, int __o, int __l)
 		throws MLECallError;
 	
 	/**
@@ -112,7 +127,10 @@ public final class TerminalShelf
 	 * @since 2018/09/21
 	 */
 	@SquirrelJMEVendorApi
-	public static native int write(PipeBracket __fd, int __c)
+	@MagicConstant(valuesFromClass = PipeErrorType.class,
+		intValues = {1})
+	@Blocking
+	public static native int write(@NotNull PipeBracket __fd, int __c)
 		throws MLECallError;
 	
 	/**
@@ -129,7 +147,10 @@ public final class TerminalShelf
 	 * @since 2018/12/05
 	 */
 	@SquirrelJMEVendorApi
-	public static native int write(PipeBracket __fd,
-		byte[] __b, int __o, int __l)
+	@MagicConstant(valuesFromClass = PipeErrorType.class,
+		intValues = {1})
+	@Blocking
+	public static native int write(@NotNull PipeBracket __fd,
+		@NotNull byte[] __b, int __o, int __l)
 		throws MLECallError;
 }

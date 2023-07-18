@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Formatter;
+import org.intellij.lang.annotations.PrintFormat;
 
 /**
  * A {@link String} represents a sequence of characters which make up a group
@@ -1547,7 +1548,7 @@ public final class String
 	 * @since 2018/11/02
 	 */
 	@Api
-	public static String format(String __fmt, Object... __args)
+	public static String format(@PrintFormat String __fmt, Object... __args)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Just forward everything to this formatter

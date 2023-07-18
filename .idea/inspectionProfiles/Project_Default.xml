@@ -1,6 +1,8 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
+    <inspection_tool class="65a552e9-f62d-3bdb-a825-d751c50c4ba6" enabled="true" level="INFORMATION" enabled_by_default="true" editorAttributes="DEPRECATED_ATTRIBUTES" />
+    <inspection_tool class="9be1bd10-89f8-3737-88e5-9b5e0640e57e" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
     <inspection_tool class="AbstractClassWithOnlyOneDirectInheritor" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="AbstractMethodOverridesAbstractMethod" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoreJavaDoc" value="true" />
@@ -191,6 +193,7 @@
       <option name="m_maxLength" value="20" />
     </inspection_tool>
     <inspection_tool class="LongLine" enabled="true" level="TYPO" enabled_by_default="true" />
+    <inspection_tool class="MagicConstant" enabled="true" level="WARNING" enabled_by_default="true" editorAttributes="TYPO" />
     <inspection_tool class="MagicNumber" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <scope name="Tests" level="WEAK WARNING" enabled="false" />
     </inspection_tool>
@@ -361,6 +364,29 @@
     </inspection_tool>
     <inspection_tool class="RedundantTypeArguments" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ReplaceNullCheck" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SSBasedInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <searchConfiguration name="SquirrelJME: Call to API defined deprecated method." description="These are marked as actually deprecated in the API code and should not be used." suppressId="squirreljme_apiDefinedDeprecated" problemDescriptor="SquirrelJME: Call to API defined deprecated method." text="@cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated&#10;$ReturnType$ $Method$($ParameterType$ $Parameter$);" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="member">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="ReturnType" within="" contains="" />
+        <constraint name="Method" within="" contains="" />
+        <constraint name="ParameterType" within="" contains="" />
+        <constraint name="Parameter" minCount="0" maxCount="2147483647" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="SquirrelJME: Flushable does not exist in Java ME, cannot implement or extend it." uuid="9be1bd10-89f8-3737-88e5-9b5e0640e57e" description="Call to non-extistent interface Flushable." suppressId="squirreljme_implementsFlushable" problemDescriptor="SquirrelJME: Flushable does not exist in Java ME, cannot implement or extend it." text="class $Class$ implements $Interface$ {}" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="Class" target="true" within="" contains="" />
+        <constraint name="Interface" regexp="java.io.Flushable" withinHierarchy="true" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="SquirrelJME: Flushable does not exist in Java ME, cannot implement or extend it." uuid="9be1bd10-89f8-3737-88e5-9b5e0640e57e" text="interface $Class$ extends $Interface$ {}" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="Class" target="true" within="" contains="" />
+        <constraint name="Interface" regexp="java.io.Flushable" withinHierarchy="true" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="SquirrelJME: Flushable does not exist in Java ME, cannot implement or extend it." uuid="9be1bd10-89f8-3737-88e5-9b5e0640e57e" text="((java.io.Flushable)$instance$).flush()" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="instance" within="" contains="" />
+      </searchConfiguration>
+    </inspection_tool>
     <inspection_tool class="SamePackageImport" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ShellCheck" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="SimplifiableJUnitAssertion" enabled="false" level="WARNING" enabled_by_default="false" />

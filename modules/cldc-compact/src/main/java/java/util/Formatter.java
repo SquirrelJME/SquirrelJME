@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Writer;
+import org.intellij.lang.annotations.PrintFormat;
 
 /**
  * This class implements C-style {@code printf()} formatted for text, it is
@@ -224,7 +225,7 @@ public final class Formatter
 	 * @since 2018/09/23
 	 */
 	@Api
-	public Formatter format(String __fmt, Object... __args)
+	public Formatter format(@PrintFormat String __fmt, Object... __args)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
 	{

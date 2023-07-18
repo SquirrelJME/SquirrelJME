@@ -14,6 +14,8 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.InputStream;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This allows access to the library class path and resources.
@@ -67,7 +69,7 @@ public final class JarPackageShelf
 	 * @since 2020/10/31
 	 */
 	@SquirrelJMEVendorApi
-	public static native String libraryPath(JarPackageBracket __jar)
+	public static native String libraryPath(@NotNull JarPackageBracket __jar)
 		throws MLECallError;
 	
 	/**
@@ -82,8 +84,9 @@ public final class JarPackageShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
-	public static native InputStream openResource(JarPackageBracket __jar,
-		String __rc)
+	public static native InputStream openResource(
+		@NotNull JarPackageBracket __jar,
+		@NotNull String __rc)
 		throws MLECallError;
 	
 	/**
@@ -102,8 +105,8 @@ public final class JarPackageShelf
 	 * @since 2022/03/04
 	 */
 	@SquirrelJMEVendorApi
-	public static native int rawData(JarPackageBracket __jar,
-		int __jarOffset, byte[] __b, int __o, int __l)
+	public static native int rawData(@NotNull JarPackageBracket __jar,
+		int __jarOffset, @NotNull byte[] __b, int __o, int __l)
 		throws MLECallError;
 	
 	/**
@@ -117,6 +120,6 @@ public final class JarPackageShelf
 	 * @since 2022/03/04
 	 */
 	@SquirrelJMEVendorApi
-	public static native int rawSize(JarPackageBracket __jar)
+	public static native int rawSize(@NotNull JarPackageBracket __jar)
 		throws MLECallError;
 }

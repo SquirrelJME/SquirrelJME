@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * SquirrelJME specific reflection oriented methods.
@@ -42,7 +43,7 @@ public final class ReflectionShelf
 	 * @since 2022/09/07
 	 */
 	@SquirrelJMEVendorApi
-	public static native void invokeMain(TypeBracket __type,
-		String... __args)
+	public static native void invokeMain(@NotNull TypeBracket __type,
+		@NotNull String... __args)
 		throws MLECallError, Throwable;
 }

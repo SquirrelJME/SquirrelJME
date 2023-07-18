@@ -23,6 +23,9 @@ import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.Async;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This is the shelf which manages all the form based user interface that
@@ -57,7 +60,7 @@ public final class UIFormShelf
 	 * @since 2023/01/14
 	 */
 	@SquirrelJMEVendorApi
-	public static native void callback(UIDisplayBracket __display,
+	public static native void callback(@NotNull UIDisplayBracket __display,
 		UIDisplayCallback __callback)
 		throws MLECallError;
 	
@@ -72,7 +75,7 @@ public final class UIFormShelf
 	 * @since 2020/07/03
 	 */
 	@SquirrelJMEVendorApi
-	public static native void callback(UIFormBracket __form,
+	public static native void callback(@NotNull UIFormBracket __form,
 		UIFormCallback __callback)
 		throws MLECallError;
 	
@@ -98,7 +101,7 @@ public final class UIFormShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native UIFormBracket displayCurrent(
-		UIDisplayBracket __display)
+		@NotNull UIDisplayBracket __display)
 		throws MLECallError;
 	
 	/**
@@ -113,7 +116,7 @@ public final class UIFormShelf
 	 * @since 2023/01/14
 	 */
 	@SquirrelJMEVendorApi
-	public static native void displayShow(UIDisplayBracket __display,
+	public static native void displayShow(@NotNull UIDisplayBracket __display,
 		boolean __show)
 		throws MLECallError;
 	
@@ -127,7 +130,7 @@ public final class UIFormShelf
 	 * @since 2020/07/01
 	 */
 	@SquirrelJMEVendorApi
-	public static native void displayShow(UIDisplayBracket __display,
+	public static native void displayShow(@NotNull UIDisplayBracket __display,
 		UIFormBracket __form)
 		throws MLECallError;
 	
@@ -220,7 +223,7 @@ public final class UIFormShelf
 	 * @since 2020/07/01
 	 */
 	@SquirrelJMEVendorApi
-	public static native void formDelete(UIFormBracket __form)
+	public static native void formDelete(@NotNull UIFormBracket __form)
 		throws MLECallError;
 	
 	/**
@@ -235,7 +238,8 @@ public final class UIFormShelf
 	 * @since 2020/07/19
 	 */
 	@SquirrelJMEVendorApi
-	public static native UIItemBracket formItemAtPosition(UIFormBracket __form,
+	public static native UIItemBracket formItemAtPosition(
+		@NotNull UIFormBracket __form,
 		int __pos)
 		throws MLECallError;
 	
@@ -248,7 +252,7 @@ public final class UIFormShelf
 	 * @since 2020/07/19
 	 */
 	@SquirrelJMEVendorApi
-	public static native int formItemCount(UIFormBracket __form)
+	public static native int formItemCount(@NotNull UIFormBracket __form)
 		throws MLECallError;
 	
 	/**
@@ -264,8 +268,8 @@ public final class UIFormShelf
 	 * @since 2020/07/18
 	 */
 	@SquirrelJMEVendorApi
-	public static native int formItemPosition(UIFormBracket __form,
-		UIItemBracket __item)
+	public static native int formItemPosition(@NotNull UIFormBracket __form,
+		@NotNull UIItemBracket __item)
 		throws MLECallError;
 	
 	/**
@@ -280,8 +284,8 @@ public final class UIFormShelf
 	 * @since 2020/07/18
 	 */
 	@SquirrelJMEVendorApi
-	public static native void formItemPosition(UIFormBracket __form,
-		UIItemBracket __item, int __pos)
+	public static native void formItemPosition(@NotNull UIFormBracket __form,
+		@NotNull UIItemBracket __item, int __pos)
 		throws MLECallError;
 	
 	/**
@@ -295,8 +299,8 @@ public final class UIFormShelf
 	 * @since 2020/07/18
 	 */
 	@SquirrelJMEVendorApi
-	public static native UIItemBracket formItemRemove(UIFormBracket __form,
-		int __pos)
+	public static native UIItemBracket formItemRemove(
+		@NotNull UIFormBracket __form, int __pos)
 		throws MLECallError;
 	
 	/**
@@ -318,7 +322,7 @@ public final class UIFormShelf
 	 * @since 2022/07/20
 	 */
 	@SquirrelJMEVendorApi
-	public static native void formRefresh(UIFormBracket __form)
+	public static native void formRefresh(@NotNull UIFormBracket __form)
 		throws MLECallError;
 	
 	/**
@@ -342,7 +346,7 @@ public final class UIFormShelf
 	 * @since 2020/07/18
 	 */
 	@SquirrelJMEVendorApi
-	public static native void itemDelete(UIItemBracket __item)
+	public static native void itemDelete(@NotNull UIItemBracket __item)
 		throws MLECallError;
 	
 	/**
@@ -354,7 +358,7 @@ public final class UIFormShelf
 	 * @since 2021/01/03
 	 */
 	@SquirrelJMEVendorApi
-	public static native UIFormBracket itemForm(UIItemBracket __item)
+	public static native UIFormBracket itemForm(@NotNull UIItemBracket __item)
 		throws MLECallError;
 	
 	/**
@@ -367,7 +371,8 @@ public final class UIFormShelf
 	 * @since 2020/07/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native UIItemBracket itemNew(int __type)
+	public static native UIItemBracket itemNew(
+		@MagicConstant(valuesFromClass = UIItemType.class) int __type)
 		throws MLECallError;
 	
 	/**
@@ -384,7 +389,8 @@ public final class UIFormShelf
 	 * @since 2020/06/30
 	 */
 	@SquirrelJMEVendorApi
-	public static native int metric(UIDisplayBracket __display, int __metric)
+	public static native int metric(@NotNull UIDisplayBracket __display,
+		@MagicConstant(valuesFromClass = UIMetricType.class) int __metric)
 		throws MLECallError;
 	
 	/**
@@ -396,7 +402,8 @@ public final class UIFormShelf
 	 * @since 2020/10/03
 	 */
 	@SquirrelJMEVendorApi
-	public static native void later(UIDisplayBracket __display,
+	@Async.Schedule
+	public static native void later(@NotNull UIDisplayBracket __display,
 		int __serialId)
 		throws MLECallError;
 	
@@ -412,8 +419,9 @@ public final class UIFormShelf
 	 * @since 2020/09/13
 	 */
 	@SquirrelJMEVendorApi
-	public static native void widgetProperty(UIWidgetBracket __widget,
-		int __intProp, int __sub, int __newValue)
+	public static native void widgetProperty(@NotNull UIWidgetBracket __widget,
+		@MagicConstant(valuesFromClass = UIWidgetProperty.class) int __intProp,
+		int __sub, int __newValue)
 		throws MLECallError;
 	
 	/**
@@ -428,8 +436,9 @@ public final class UIFormShelf
 	 * @since 2020/09/13
 	 */
 	@SquirrelJMEVendorApi
-	public static native void widgetProperty(UIWidgetBracket __widget,
-		int __strProp, int __sub, String __newValue)
+	public static native void widgetProperty(@NotNull UIWidgetBracket __widget,
+		@MagicConstant(valuesFromClass = UIWidgetProperty.class) int __strProp,
+		int __sub, String __newValue)
 		throws MLECallError;
 	
 	/**
@@ -443,8 +452,10 @@ public final class UIFormShelf
 	 * @since 2020/09/21
 	 */
 	@SquirrelJMEVendorApi
-	public static native int widgetPropertyInt(UIWidgetBracket __widget,
-		int __intProp, int __sub)
+	public static native int widgetPropertyInt(
+		@NotNull UIWidgetBracket __widget,
+		@MagicConstant(valuesFromClass = UIWidgetProperty.class) int __intProp,
+		int __sub)
 		throws MLECallError;
 	
 	/**
@@ -458,7 +469,9 @@ public final class UIFormShelf
 	 * @since 2020/09/21
 	 */
 	@SquirrelJMEVendorApi
-	public static native String widgetPropertyStr(UIWidgetBracket __widget,
-		int __strProp, int __sub)
+	public static native String widgetPropertyStr(
+		@NotNull UIWidgetBracket __widget,
+		@MagicConstant(valuesFromClass = UIWidgetProperty.class) int __strProp,
+		int __sub)
 		throws MLECallError;
 }

@@ -13,6 +13,8 @@ import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This is the shelf used for accessing the debugging features of SquirrelJME
@@ -45,7 +47,8 @@ public final class DebugShelf
 	 * @since 2020/06/11
 	 */
 	@SquirrelJMEVendorApi
-	public static native TracePointBracket[] getThrowableTrace(Throwable __t);
+	public static native TracePointBracket[] getThrowableTrace(
+		@NotNull Throwable __t);
 	
 	/**
 	 * Resolves the address from the given point.
@@ -55,7 +58,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@SquirrelJMEVendorApi
-	public static native long pointAddress(TracePointBracket __point);
+	public static native long pointAddress(@NotNull TracePointBracket __point);
 	
 	/**
 	 * Resolves the class from the given point.
@@ -65,7 +68,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@SquirrelJMEVendorApi
-	public static native String pointClass(TracePointBracket __point);
+	public static native String pointClass(@NotNull TracePointBracket __point);
 	
 	/**
 	 * Resolves the file from the given point.
@@ -75,7 +78,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@SquirrelJMEVendorApi
-	public static native String pointFile(TracePointBracket __point);
+	public static native String pointFile(@NotNull TracePointBracket __point);
 	
 	/**
 	 * Resolves the Java address from the given point.
@@ -85,7 +88,8 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@SquirrelJMEVendorApi
-	public static native int pointJavaAddress(TracePointBracket __point);
+	public static native int pointJavaAddress(
+		@NotNull TracePointBracket __point);
 	
 	/**
 	 * Resolves the Java operation from the given point.
@@ -95,7 +99,8 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@SquirrelJMEVendorApi
-	public static native int pointJavaOperation(TracePointBracket __point);
+	public static native int pointJavaOperation(
+		@NotNull TracePointBracket __point);
 	
 	/**
 	 * Resolves the line from the given point.
@@ -105,7 +110,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@SquirrelJMEVendorApi
-	public static native int pointLine(TracePointBracket __point);
+	public static native int pointLine(@NotNull TracePointBracket __point);
 	
 	/**
 	 * Resolves the method name from the given point.
@@ -115,7 +120,8 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@SquirrelJMEVendorApi
-	public static native String pointMethodName(TracePointBracket __point);
+	public static native String pointMethodName(
+		@NotNull TracePointBracket __point);
 	
 	/**
 	 * Resolves the method type from the given point.
@@ -125,7 +131,8 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@SquirrelJMEVendorApi
-	public static native String pointMethodType(TracePointBracket __point);
+	public static native String pointMethodType(
+		@NotNull TracePointBracket __point);
 	
 	/**
 	 * Traces the entire stack, the top-most trace point in the stack is always
@@ -151,7 +158,8 @@ public final class DebugShelf
 	 * @since 2020/07/11
 	 */
 	@SquirrelJMEVendorApi
-	public static native int verbose(int __flags);
+	public static native int verbose(
+		@MagicConstant(flagsFromClass = VerboseDebugFlag.class) int __flags);
 	
 	/**
 	 * Similar to {@link #verbose(int)} this will apply verbose flags to
@@ -170,7 +178,8 @@ public final class DebugShelf
 	 * @since 2022/06/12
 	 */
 	@SquirrelJMEVendorApi
-	public static native int verboseInternalThread(int __flags);
+	public static native int verboseInternalThread(
+		@MagicConstant(flagsFromClass = VerboseDebugFlag.class) int __flags);
 	
 	/**
 	 * Stops performing verbosity output.

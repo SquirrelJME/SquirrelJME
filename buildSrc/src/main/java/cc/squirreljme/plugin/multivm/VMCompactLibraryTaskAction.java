@@ -64,6 +64,10 @@ public class VMCompactLibraryTaskAction
 	/** Settings to use in the configuration for keeping, etc. */
 	static final String[] _PARSE_SETTINGS = new String[]
 		{
+			// Ignore all JetBrains IntelliJ related annotations
+			"-dontwarn", "org.jetbrains.annotations.**",
+			"-dontwarn", "org.intellij.lang.annotations.**",
+			
 			// Adjust manifest resources
 			"-adaptresourcefilenames", "**",
 			"-adaptresourcefilecontents",
