@@ -23,6 +23,7 @@ import cc.squirreljme.runtime.cldc.io.NonClosedOutputStream;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.PrintStream;
 import org.intellij.lang.annotations.PrintFormat;
+import org.jetbrains.annotations.Contract;
 
 /**
  * This class contains all of the static methods which are for writing debug
@@ -128,6 +129,7 @@ public final class Debugging
 	 * @since 2020/03/22
 	 */
 	@SquirrelJMEVendorApi
+	@Contract("_ -> fail")
 	public static Error oops(Object... __args)
 	{
 		return Debugging.todo(__args);
@@ -203,7 +205,9 @@ public final class Debugging
 	 * @since 2020/03/21
 	 */
 	@SquirrelJMEVendorApi
-	@SuppressWarnings("StaticVariableUsedBeforeInitialization")
+	@SuppressWarnings({"StaticVariableUsedBeforeInitialization", 
+		"squirreljme_thrownErrorToDo"})
+	@Contract("_ -> fail")
 	public static Error todo(Object... __args)
 	{
 		// Only trip this once! In the event this trips twice, just shortcut
