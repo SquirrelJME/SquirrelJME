@@ -31,6 +31,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.microedition.midlet.MIDlet;
+import org.jetbrains.annotations.Async;
+import org.jetbrains.annotations.NonBlocking;
 
 @SuppressWarnings("OverlyComplexClass")
 @Api
@@ -338,6 +340,8 @@ public class Display
 	 * @since 2020/10/03
 	 */
 	@Api
+	@NonBlocking
+	@Async.Schedule
 	public void callSerially(Runnable __run)
 		throws NullPointerException
 	{

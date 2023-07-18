@@ -13,4 +13,5 @@
  * @since 2022/02/03
  */
 
+@org.jetbrains.annotations.ApiStatus.Internal
 package cc.squirreljme.runtime.nokia;

@@ -13,4 +13,5 @@
  * @since 2020/07/19
  */
 
+@org.jetbrains.annotations.ApiStatus.Internal
 package cc.squirreljme.runtime.lcdui.mle.pure;
