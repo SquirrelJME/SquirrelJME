@@ -23,6 +23,7 @@ import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.PrintStream;
+import org.jetbrains.annotations.Contract;
 
 /**
  * This class contains methods which are used to interact with the system and
@@ -221,6 +222,7 @@ public final class System
 	 * @since 2017/02/08
 	 */
 	@Api
+	@Contract("_ -> fail")
 	public static void exit(int __e)
 	{
 		Runtime.getRuntime().exit(__e);

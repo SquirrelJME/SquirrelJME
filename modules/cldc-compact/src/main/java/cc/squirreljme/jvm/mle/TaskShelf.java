@@ -21,6 +21,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.Closeable;
 import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -28,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2020/07/02
  */
+@SuppressWarnings("UnstableApiUsage")
 @SquirrelJMEVendorApi
 public final class TaskShelf
 {
@@ -81,6 +83,7 @@ public final class TaskShelf
 	 * @since 2020/07/02
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native int exitCode(@NotNull TaskBracket __task)
 		throws MLECallError;
 	
@@ -124,6 +127,7 @@ public final class TaskShelf
 	 */
 	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PipeErrorType.class)
+	@CheckReturnValue
 	public static native int read(@NotNull TaskBracket __task, int __fd,
 		@NotNull byte[] __b, int __o, int __l)
 		throws MLECallError;

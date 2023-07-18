@@ -18,6 +18,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
  * @see PencilBracket
  * @since 2020/09/25
  */
+@SuppressWarnings("UnstableApiUsage")
 @SquirrelJMEVendorApi
 public final class PencilShelf
 {
@@ -51,6 +53,7 @@ public final class PencilShelf
 	 * @since 2020/09/25
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native int capabilities(int __pf)
 		throws MLECallError;
 	
@@ -381,6 +384,7 @@ public final class PencilShelf
 	 * @since 2021/12/05
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	@MagicConstant(valuesFromClass = NativeImageLoadType.class)
 	public static native int nativeImageLoadTypes();
 }

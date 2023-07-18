@@ -22,6 +22,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -78,6 +79,7 @@ public final class RuntimeShelf
 	 * @since 2020/06/16
 	 */
 	@SquirrelJMEVendorApi
+	@Contract("_ -> fail")
 	public static native void exit(int __code);
 	
 	/**

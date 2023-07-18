@@ -17,6 +17,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.Blocking;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2020/06/14
  */
+@SuppressWarnings("UnstableApiUsage")
 @SquirrelJMEVendorApi
 public final class TerminalShelf
 {
@@ -50,6 +52,7 @@ public final class TerminalShelf
 	@MagicConstant(valuesFromClass = PipeErrorType.class,
 		intValues = {0, -1})
 	@NonBlocking
+	@CheckReturnValue
 	public static native int available(@NotNull PipeBracket __fd)
 		throws MLECallError;
 	
@@ -64,6 +67,7 @@ public final class TerminalShelf
 	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PipeErrorType.class)
 	@Blocking
+	@CheckReturnValue
 	public static native int close(@NotNull PipeBracket __fd)
 		throws MLECallError;
 	
@@ -78,6 +82,7 @@ public final class TerminalShelf
 	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PipeErrorType.class)
 	@Blocking
+	@CheckReturnValue
 	public static native int flush(@NotNull PipeBracket __fd)
 		throws MLECallError;
 	
@@ -113,6 +118,7 @@ public final class TerminalShelf
 	@MagicConstant(valuesFromClass = PipeErrorType.class,
 		intValues = {-1, 0})
 	@Blocking
+	@CheckReturnValue
 	public static native int read(@NotNull PipeBracket __fd,
 		@NotNull byte[] __b, int __o, int __l)
 		throws MLECallError;
@@ -130,6 +136,7 @@ public final class TerminalShelf
 	@MagicConstant(valuesFromClass = PipeErrorType.class,
 		intValues = {1})
 	@Blocking
+	@CheckReturnValue
 	public static native int write(@NotNull PipeBracket __fd, int __c)
 		throws MLECallError;
 	
@@ -150,6 +157,7 @@ public final class TerminalShelf
 	@MagicConstant(valuesFromClass = PipeErrorType.class,
 		intValues = {1})
 	@Blocking
+	@CheckReturnValue
 	public static native int write(@NotNull PipeBracket __fd,
 		@NotNull byte[] __b, int __o, int __l)
 		throws MLECallError;
