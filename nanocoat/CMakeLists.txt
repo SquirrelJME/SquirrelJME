@@ -21,6 +21,9 @@ else()
 	cmake_minimum_required(VERSION 3.13)
 endif()
 
+# Determine version information
+squirreljme_include("identify-squirreljme-version.cmake")
+
 # Define project
 if(${CMAKE_VERSION} VERSION_LESS "3.12")
 	project(SquirrelJME
