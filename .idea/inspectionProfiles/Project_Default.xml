@@ -13,7 +13,6 @@
       </list>
     </option>
     <inspection_tool class="0a13ff53-5fcb-3e0d-aed2-4be555b30a99" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
-    <inspection_tool class="2fc9eef9-e551-3a2a-9291-b5c3465c8189" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="64b983f1-24ea-3e21-ab1a-d1f799d73f9b" enabled="true" level="INFORMATION" enabled_by_default="true" editorAttributes="WRONG_REFERENCES_ATTRIBUTES" />
     <inspection_tool class="65a552e9-f62d-3bdb-a825-d751c50c4ba6" enabled="true" level="INFORMATION" enabled_by_default="true" editorAttributes="DEPRECATED_ATTRIBUTES" />
     <inspection_tool class="9be1bd10-89f8-3737-88e5-9b5e0640e57e" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
@@ -771,10 +770,7 @@
     </inspection_tool>
     <inspection_tool class="VariableTypeCanBeExplicit" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="WaitNotifyNotInSynchronizedContext" enabled="true" level="WEAK WARNING" enabled_by_default="true" editorAttributes="INFO_ATTRIBUTES" />
-    <inspection_tool class="a5974be9-ecc1-37f0-8b8c-6f23c72c1291" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME Gradle Plugin (Include)" level="WARNING" enabled="false" />
-    </inspection_tool>
-    <inspection_tool class="ced03fc8-111a-390f-8655-ed7465debd5f" enabled="true" level="GRAMMAR_ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
+    <inspection_tool class="ced03fc8-111a-390f-8655-ed7465debd5f" enabled="true" level="GRAMMAR_ERROR" enabled_by_default="true" editorAttributes="TEXT_STYLE_ERROR" />
     <inspection_tool class="unused" enabled="true" level="WARNING" enabled_by_default="true" checkParameterExcludingHierarchy="false" test_entries="false">
       <option name="LOCAL_VARIABLE" value="true" />
       <option name="FIELD" value="true" />
