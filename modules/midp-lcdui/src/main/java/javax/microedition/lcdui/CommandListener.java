@@ -11,6 +11,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import org.jetbrains.annotations.Async;
 
 /**
  * This interface is for any listeners on commands when they occur.
@@ -29,6 +30,7 @@ public interface CommandListener
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	void commandAction(Command __command, Displayable __displayable);
 }
 

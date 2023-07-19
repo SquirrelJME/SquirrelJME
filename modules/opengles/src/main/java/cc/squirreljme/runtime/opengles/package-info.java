@@ -13,5 +13,6 @@
  * @since 2016/10/10
  */
 
+@org.jetbrains.annotations.ApiStatus.Internal
 package cc.squirreljme.runtime.opengles;
 

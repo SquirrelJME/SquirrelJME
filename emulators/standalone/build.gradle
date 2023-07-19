@@ -312,4 +312,13 @@ shadowJar {
 			return (osName + "-" + osArch).replaceAll(
 				Pattern.compile("[\\s<>:\"/\\\\|?*]"), "") 
 		}))
+	
+	// Exclude IntelliJ Annotations, they are not needed
+	exclude "org/jetbrains/annotations/*.class"
+	exclude "org/intellij/lang/annotations/*.class"
+	
+	dependencies {
+		// Exclude IntelliJ Annotations, they are not needed
+		exclude(dependency("org.jetbrains:annotations-java5:.*"))
+	}
 }

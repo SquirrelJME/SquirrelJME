@@ -20,12 +20,17 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.Closeable;
+import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.CheckReturnValue;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * This shelf allows for the management of tasks and otherwise.
  *
  * @since 2020/07/02
  */
+@SuppressWarnings("UnstableApiUsage")
 @SquirrelJMEVendorApi
 public final class TaskShelf
 {
@@ -79,7 +84,8 @@ public final class TaskShelf
 	 * @since 2020/07/02
 	 */
 	@SquirrelJMEVendorApi
-	public static native int exitCode(TaskBracket __task)
+	@CheckReturnValue
+	public static native int exitCode(@NotNull TaskBracket __task)
 		throws MLECallError;
 	
 	/**
@@ -93,8 +99,9 @@ public final class TaskShelf
 	 * @since 2020/07/02
 	 */
 	@SquirrelJMEVendorApi
-	public static native TracePointBracket[] getTrace(TaskBracket __task,
-		String[] __outMessage)
+	public static native TracePointBracket[] getTrace(
+		@NotNull TaskBracket __task,
+		@NotNull String[] __outMessage)
 		throws MLECallError;
 	
 	/**
@@ -120,8 +127,14 @@ public final class TaskShelf
 	 * @since 2020/07/02
 	 */
 	@SquirrelJMEVendorApi
-	public static native int read(TaskBracket __task, int __fd,
-		byte[] __b, int __o, int __l)
+	@MagicConstant(valuesFromClass = PipeErrorType.class)
+	@Range(from = -2, to = Integer.MAX_VALUE)
+	@CheckReturnValue
+	public static native int read(@NotNull TaskBracket __task,
+		@MagicConstant(valuesFromClass = StandardPipeType.class) int __fd,
+		@NotNull byte[] __b,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __l)
 		throws MLECallError;
 	
 	/**
@@ -155,8 +168,13 @@ public final class TaskShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native TaskBracket start(
-		JarPackageBracket[] __classPath, String __mainClass, String[] __args,
-		String[] __sysPropPairs, int __stdOut, int __stdErr)
+		@NotNull JarPackageBracket[] __classPath, @NotNull String __mainClass,
+		@NotNull String[] __args,
+		@NotNull String[] __sysPropPairs,
+		@MagicConstant(valuesFromClass = TaskPipeRedirectType.class)
+			int __stdOut,
+		@MagicConstant(valuesFromClass = TaskPipeRedirectType.class)
+			int __stdErr)
 		throws MLECallError;
 	
 	/**
@@ -168,6 +186,7 @@ public final class TaskShelf
 	 * @since 2020/07/02
 	 */
 	@SquirrelJMEVendorApi
-	public static native int status(TaskBracket __task)
+	@MagicConstant(valuesFromClass = TaskStatusType.class)
+	public static native int status(@NotNull TaskBracket __task)
 		throws MLECallError;
 }

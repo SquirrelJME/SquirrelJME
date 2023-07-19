@@ -13,4 +13,5 @@
  * @since 2020/07/03
  */
 
+@org.jetbrains.annotations.ApiStatus.Internal
 package cc.squirreljme.jvm.mle.callbacks;

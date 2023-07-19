@@ -13,5 +13,6 @@
  * @since 2019/04/15
  */
 
+@org.jetbrains.annotations.ApiStatus.Internal
 package cc.squirreljme.runtime.media;
 

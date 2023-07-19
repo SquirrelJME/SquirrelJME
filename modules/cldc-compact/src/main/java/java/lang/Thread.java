@@ -13,6 +13,8 @@ import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import org.jetbrains.annotations.Blocking;
+import org.jetbrains.annotations.Range;
 
 /**
  * A thread represents literally a single stream of execution that can
@@ -50,7 +52,7 @@ public class Thread
 		1_000_000L;
 	
 	/** The runnable that this thread uses for its main code, if applicable. */
-	@SuppressWarnings("unused")
+	@SuppressWarnings({"unused", "FieldCanBeLocal"})
 	private final Runnable _runnable;
 	
 	/** The virtual machine thread this uses. */
@@ -496,7 +498,9 @@ public class Thread
 	 * @since 2018/11/04
 	 */
 	@Api
-	public static void sleep(long __ms)
+	@Blocking
+	public static void sleep(
+		@Range(from = 0, to = Integer.MAX_VALUE) long __ms)
 		throws InterruptedException
 	{
 		Thread.sleep(__ms, 0);
@@ -516,8 +520,11 @@ public class Thread
 	 * @since 2018/11/04
 	 */
 	@Api
+	@Blocking
 	@SuppressWarnings("MagicNumber")
-	public static void sleep(long __ms, int __ns)
+	public static void sleep(
+		@Range(from = 0, to = Long.MAX_VALUE) long __ms,
+		@Range(from = 0, to = 999999) int __ns)
 		throws IllegalArgumentException, InterruptedException
 	{
 		// {@squirreljme.error ZZ23 Invalid sleep arguments.}
@@ -546,6 +553,7 @@ public class Thread
 	 * @since 2018/12/05
 	 */
 	@Api
+	@Blocking
 	public static void yield()
 	{
 		// Zero times means to yield

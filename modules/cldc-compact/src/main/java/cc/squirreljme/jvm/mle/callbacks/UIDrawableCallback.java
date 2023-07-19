@@ -17,6 +17,11 @@ import cc.squirreljme.jvm.mle.constants.UIMouseEventType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.Async;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * Base interface for any callbacks which have a paint operation for drawing
@@ -36,7 +41,8 @@ public interface UIDrawableCallback
 	 * @since 2020/09/12
 	 */
 	@SquirrelJMEVendorApi
-	void exitRequest(UIDrawableBracket __drawable);
+	@Async.Execute
+	void exitRequest(@NotNull UIDrawableBracket __drawable);
 	
 	/**
 	 * This is called on a keyboard/joystick action.
@@ -48,8 +54,11 @@ public interface UIDrawableCallback
 	 * @since 2020/07/19
 	 */
 	@SquirrelJMEVendorApi
-	void eventKey(UIDrawableBracket __drawable, int __event,
-		int __keyCode, int __modifiers);
+	@Async.Execute
+	void eventKey(@NotNull UIDrawableBracket __drawable,
+		@MagicConstant(valuesFromClass = UIKeyEventType.class) int __event,
+		int __keyCode,
+		@MagicConstant(flagsFromClass = UIKeyModifier.class) int __modifiers);
 	
 	/**
 	 * This is called on a mouse action.
@@ -63,8 +72,12 @@ public interface UIDrawableCallback
 	 * @since 2020/07/19
 	 */
 	@SquirrelJMEVendorApi
-	void eventMouse(UIDrawableBracket __drawable, int __event,
-		int __button, int __x, int __y, int __modifiers);
+	@Async.Execute
+	void eventMouse(@NotNull UIDrawableBracket __drawable,
+		@MagicConstant(valuesFromClass = UIMouseEventType.class) int __event,
+		@MagicConstant(valuesFromClass = UIMouseButton.class) int __button,
+		int __x, int __y,
+		@MagicConstant(flagsFromClass = UIKeyModifier.class) int __modifiers);
 	
 	/**
 	 * Callback that is used to draw a given drawable item.
@@ -86,7 +99,14 @@ public interface UIDrawableCallback
 	 * @since 2022/01/05
 	 */
 	@SquirrelJMEVendorApi
-	void paint(UIDrawableBracket __drawable, int __pf, int __bw,
-		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
-		int __sw, int __sh, int __special);
+	@Async.Execute
+	void paint(@NotNull UIDrawableBracket __drawable,
+		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __bw,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __bh,
+		@NotNull Object __buf, int __offset,
+		@Nullable int[] __pal, int __sx, int __sy,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __sw,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __sh,
+		int __special);
 }

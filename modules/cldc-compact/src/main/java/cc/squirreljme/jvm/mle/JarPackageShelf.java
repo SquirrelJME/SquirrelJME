@@ -14,12 +14,18 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.InputStream;
+import org.jetbrains.annotations.CheckReturnValue;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * This allows access to the library class path and resources.
  *
  * @since 2020/06/07
  */
+@SuppressWarnings("UnstableApiUsage")
 @SquirrelJMEVendorApi
 public final class JarPackageShelf
 {
@@ -67,7 +73,7 @@ public final class JarPackageShelf
 	 * @since 2020/10/31
 	 */
 	@SquirrelJMEVendorApi
-	public static native String libraryPath(JarPackageBracket __jar)
+	public static native String libraryPath(@NotNull JarPackageBracket __jar)
 		throws MLECallError;
 	
 	/**
@@ -82,8 +88,10 @@ public final class JarPackageShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
-	public static native InputStream openResource(JarPackageBracket __jar,
-		String __rc)
+	@Nullable
+	public static native InputStream openResource(
+		@NotNull JarPackageBracket __jar,
+		@NotNull String __rc)
 		throws MLECallError;
 	
 	/**
@@ -102,8 +110,12 @@ public final class JarPackageShelf
 	 * @since 2022/03/04
 	 */
 	@SquirrelJMEVendorApi
-	public static native int rawData(JarPackageBracket __jar,
-		int __jarOffset, byte[] __b, int __o, int __l)
+	@CheckReturnValue
+	public static native int rawData(@NotNull JarPackageBracket __jar,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __jarOffset,
+		@NotNull byte[] __b,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __l)
 		throws MLECallError;
 	
 	/**
@@ -117,6 +129,7 @@ public final class JarPackageShelf
 	 * @since 2022/03/04
 	 */
 	@SquirrelJMEVendorApi
-	public static native int rawSize(JarPackageBracket __jar)
+	@CheckReturnValue
+	public static native int rawSize(@NotNull JarPackageBracket __jar)
 		throws MLECallError;
 }

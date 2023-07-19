@@ -15,6 +15,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import org.jetbrains.annotations.Async;
 
 @Api
 public class Form
@@ -300,6 +301,7 @@ public class Form
 	 * @since 2022/07/20
 	 */
 	@SerializedEvent
+	@Async.Execute
 	void __performLayout()
 	{
 		// If this form is not on a display, do not calculate the layout as

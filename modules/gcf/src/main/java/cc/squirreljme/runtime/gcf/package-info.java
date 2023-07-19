@@ -13,5 +13,6 @@
  * @since 2016/10/12
  */
 
+@org.jetbrains.annotations.ApiStatus.Internal
 package cc.squirreljme.runtime.gcf;
 

@@ -21,6 +21,10 @@ import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.Blocking;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Run-time shelf which contains system information.
@@ -46,6 +50,7 @@ public final class RuntimeShelf
 	 * @since 2021/02/09
 	 */
 	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = ByteOrderType.class)
 	public static native int byteOrder();
 	
 	/**
@@ -65,6 +70,7 @@ public final class RuntimeShelf
 	 * @since 2020/06/11
 	 */
 	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = BuiltInEncodingType.class)
 	public static native int encoding();
 	
 	/**
@@ -74,6 +80,7 @@ public final class RuntimeShelf
 	 * @since 2020/06/16
 	 */
 	@SquirrelJMEVendorApi
+	@Contract("_ -> fail")
 	public static native void exit(int __code);
 	
 	/**
@@ -83,6 +90,7 @@ public final class RuntimeShelf
 	 * @since 2021/01/04
 	 */
 	@SquirrelJMEVendorApi
+	@Blocking
 	public static native void garbageCollect();
 	
 	/**
@@ -93,6 +101,7 @@ public final class RuntimeShelf
 	 * @since 2020/06/09
 	 */
 	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = LineEndingType.class)
 	public static native int lineEnding();
 	
 	/**
@@ -103,6 +112,7 @@ public final class RuntimeShelf
 	 * @since 2020/06/11
 	 */
 	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = BuiltInLocaleType.class)
 	public static native int locale();
 	
 	/**
@@ -113,6 +123,7 @@ public final class RuntimeShelf
 	 * @since 2021/02/19
 	 */
 	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = MemoryProfileType.class)
 	public static native int memoryProfile();
 	
 	/**
@@ -131,6 +142,7 @@ public final class RuntimeShelf
 	 * @since 2022/02/14
 	 */
 	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = PhoneModelType.class)
 	public static native int phoneModel();
 	
 	/**
@@ -145,7 +157,7 @@ public final class RuntimeShelf
 	 * @since 2023/02/02
 	 */
 	@SquirrelJMEVendorApi
-	public static native String systemEnv(String __key)
+	public static native String systemEnv(@NotNull String __key)
 		throws MLECallError;
 	
 	/**
@@ -157,7 +169,7 @@ public final class RuntimeShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native String systemProperty(String __key)
+	public static native String systemProperty(@NotNull String __key)
 		throws MLECallError;
 	
 	/**
@@ -170,7 +182,8 @@ public final class RuntimeShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native String vmDescription(int __type)
+	public static native String vmDescription(
+		@MagicConstant(valuesFromClass = VMDescriptionType.class) int __type)
 		throws MLECallError;
 	
 	/**
@@ -182,7 +195,8 @@ public final class RuntimeShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native long vmStatistic(int __type)
+	public static native long vmStatistic(
+		@MagicConstant(valuesFromClass = VMStatisticType.class) int __type)
 		throws MLECallError;
 	
 	/**
@@ -192,5 +206,6 @@ public final class RuntimeShelf
 	 * @since 2020/06/16
 	 */
 	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = VMType.class)
 	public static native int vmType();
 }

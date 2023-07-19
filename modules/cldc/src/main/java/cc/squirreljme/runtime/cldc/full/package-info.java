@@ -13,5 +13,5 @@
  * @since 2018/10/14
  */
 
+@org.jetbrains.annotations.ApiStatus.Internal
 package cc.squirreljme.runtime.cldc.full;
-

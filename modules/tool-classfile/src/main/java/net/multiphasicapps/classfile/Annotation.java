@@ -213,7 +213,7 @@ public final class Annotation
 			
 			case 's':
 				return new AnnotationValueString(
-					__pool.<ConstantValueString>get(ConstantValueString.class,
+					__pool.<UTFConstantEntry>get(UTFConstantEntry.class,
 					__in.readUnsignedShort()).toString());
 			
 			case 'e':

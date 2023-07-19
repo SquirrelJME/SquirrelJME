@@ -26,6 +26,7 @@ import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import java.util.ArrayList;
 import java.util.List;
 import javax.microedition.midlet.MIDlet;
+import org.jetbrains.annotations.Async;
 
 /**
  * A displayable is a primary container such as a form or a canvas that can be
@@ -434,6 +435,7 @@ public abstract class Displayable
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void sizeChanged(int __w, int __h)
 	{
 		// Implemented by subclasses
@@ -505,6 +507,7 @@ public abstract class Displayable
 	 * @since 2020/09/27
 	 */
 	@SerializedEvent
+	@Async.Execute
 	private void __layoutCommands()
 	{
 		// Get our own policy or the one specified by the display
@@ -621,6 +624,7 @@ public abstract class Displayable
 	 * @since 2020/09/27
 	 */
 	@SerializedEvent
+	@Async.Execute
 	private void __layoutExecute(__Layout__ __layout)
 		throws NullPointerException
 	{
@@ -646,6 +650,7 @@ public abstract class Displayable
 	 * @since 2020/09/27
 	 */
 	@SerializedEvent
+	@Async.Execute
 	private void __layoutExecute(__Layout__ __layout, int __from, int __to)
 		throws NullPointerException
 	{
@@ -688,6 +693,7 @@ public abstract class Displayable
 	 * @since 2020/09/27
 	 */
 	@SerializedEvent
+	@Async.Execute
 	final void __showNotify(Displayable __show)
 		throws NullPointerException
 	{

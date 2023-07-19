@@ -15,5 +15,6 @@
  * @since 2017/10/20
  */
 
+@org.jetbrains.annotations.ApiStatus.Internal
 package cc.squirreljme.runtime.lcdui.common;
 

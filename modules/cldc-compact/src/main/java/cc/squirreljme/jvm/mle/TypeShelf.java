@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.brackets.TypeBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Provides the shelf for types that exist within the JVM.
@@ -41,7 +42,7 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
-	public static native String binaryName(TypeBracket __type)
+	public static native String binaryName(@NotNull TypeBracket __type)
 		throws MLECallError;
 	
 	/**
@@ -52,7 +53,8 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
-	public static native String binaryPackageName(TypeBracket __type);
+	public static native String binaryPackageName(
+		@NotNull TypeBracket __type);
 	
 	/**
 	 * Returns the type that is used within the given class.
@@ -63,7 +65,8 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
-	public static native TypeBracket classToType(Class<?> __cl)
+	public static native TypeBracket classToType(
+		@NotNull Class<?> __cl)
 		throws MLECallError;
 	
 	/**
@@ -76,7 +79,7 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
-	public static native TypeBracket component(TypeBracket __type)
+	public static native TypeBracket component(@NotNull TypeBracket __type)
 		throws MLECallError;
 	
 	/**
@@ -89,7 +92,8 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
-	public static native TypeBracket componentRoot(TypeBracket __type);
+	public static native TypeBracket componentRoot(
+		@NotNull TypeBracket __type);
 	
 	/**
 	 * Returns the number of dimensions this type has.
@@ -101,7 +105,7 @@ public final class TypeShelf
 	 * @since 2020/07/06
 	 */
 	@SquirrelJMEVendorApi
-	public static native int dimensions(TypeBracket __type)
+	public static native int dimensions(@NotNull TypeBracket __type)
 		throws MLECallError;
 	
 	/**
@@ -115,7 +119,7 @@ public final class TypeShelf
 	 */
 	@SquirrelJMEVendorApi
 	@SuppressWarnings("rawtypes")
-	public static native Enum[] enumValues(TypeBracket __type)
+	public static native Enum[] enumValues(@NotNull TypeBracket __type)
 		throws MLECallError;
 	
 	/**
@@ -143,7 +147,7 @@ public final class TypeShelf
 	 * @since 2020/06/02
 	 */
 	@SquirrelJMEVendorApi
-	public static native TypeBracket findType(String __name)
+	public static native TypeBracket findType(@NotNull String __name)
 		throws MLECallError;
 	
 	/**
@@ -154,7 +158,7 @@ public final class TypeShelf
 	 * @since 2020/11/28
 	 */
 	@SquirrelJMEVendorApi
-	public static native void initClass(TypeBracket __info)
+	public static native void initClass(@NotNull TypeBracket __info)
 		throws MLECallError;
 	
 	/**
@@ -166,7 +170,7 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
-	public static native JarPackageBracket inJar(TypeBracket __type);
+	public static native JarPackageBracket inJar(@NotNull TypeBracket __type);
 	
 	/**
 	 * Returns the interfaces of the type.
@@ -177,7 +181,7 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
-	public static native TypeBracket[] interfaces(TypeBracket __type)
+	public static native TypeBracket[] interfaces(@NotNull TypeBracket __type)
 		throws MLECallError;
 	
 	/**
@@ -189,7 +193,7 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean isArray(TypeBracket __type)
+	public static native boolean isArray(@NotNull TypeBracket __type)
 		throws MLECallError;
 	
 	/**
@@ -206,8 +210,8 @@ public final class TypeShelf
 	 * @since 2021/02/07
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean isAssignableFrom(TypeBracket __this,
-		TypeBracket __other)
+	public static native boolean isAssignableFrom(@NotNull TypeBracket __this,
+		@NotNull TypeBracket __other)
 		throws MLECallError;
 	
 	/**
@@ -219,7 +223,7 @@ public final class TypeShelf
 	 * @since 2021/01/20
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean isClassInit(TypeBracket __type)
+	public static native boolean isClassInit(@NotNull TypeBracket __type)
 		throws MLECallError;
 	
 	/**
@@ -231,7 +235,7 @@ public final class TypeShelf
 	 * @since 2020/06/28
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean isEnum(TypeBracket __type)
+	public static native boolean isEnum(@NotNull TypeBracket __type)
 		throws MLECallError;
 	
 	/**
@@ -243,7 +247,7 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean isInterface(TypeBracket __type)
+	public static native boolean isInterface(@NotNull TypeBracket __type)
 		throws MLECallError;
 	
 	/**
@@ -255,7 +259,7 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean isPrimitive(TypeBracket __type)
+	public static native boolean isPrimitive(@NotNull TypeBracket __type)
 		throws MLECallError;
 	
 	/**
@@ -266,7 +270,7 @@ public final class TypeShelf
 	 * @since 2020/06/02
 	 */
 	@SquirrelJMEVendorApi
-	public static native TypeBracket objectType(Object __o);
+	public static native TypeBracket objectType(@NotNull Object __o);
 	
 	/**
 	 * Returns the run-time name of a type as it would be if
@@ -278,7 +282,7 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
-	public static native String runtimeName(TypeBracket __type)
+	public static native String runtimeName(@NotNull TypeBracket __type)
 		throws MLECallError;
 	
 	/**
@@ -290,7 +294,7 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
-	public static native TypeBracket superClass(TypeBracket __type)
+	public static native TypeBracket superClass(@NotNull TypeBracket __type)
 		throws MLECallError;
 	
 	/**
@@ -375,6 +379,6 @@ public final class TypeShelf
 	 * @since 2020/05/30
 	 */
 	@SquirrelJMEVendorApi
-	public static native <T> Class<T> typeToClass(TypeBracket __type)
+	public static native <T> Class<T> typeToClass(@NotNull TypeBracket __type)
 		throws MLECallError;
 }

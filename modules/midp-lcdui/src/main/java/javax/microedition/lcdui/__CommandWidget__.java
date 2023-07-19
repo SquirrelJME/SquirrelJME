@@ -19,6 +19,7 @@ import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import org.jetbrains.annotations.Async;
 
 /**
  * This is a widget that maps to a command or menu, for it to be displayed.
@@ -78,6 +79,7 @@ final class __CommandWidget__
 	 */
 	@Deprecated
 	@SerializedEvent
+	@Async.Execute
 	final void __activate()
 	{
 		// Do nothing if the owner is gone.

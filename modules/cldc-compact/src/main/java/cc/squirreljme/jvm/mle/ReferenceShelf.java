@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.RefLinkBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This provides the interface for references which are used to weakly refer
@@ -40,7 +41,7 @@ public final class ReferenceShelf
 	 * @since 2020/05/30
 	 */
 	@SquirrelJMEVendorApi
-	public static native void deleteLink(RefLinkBracket __link);
+	public static native void deleteLink(@NotNull RefLinkBracket __link);
 	
 	/**
 	 * Chains this link into the given object atomically.
@@ -51,8 +52,8 @@ public final class ReferenceShelf
 	 * @since 2022/09/01
 	 */
 	@SquirrelJMEVendorApi
-	public static native void linkChain(RefLinkBracket __thisLink,
-		Object __forObject)
+	public static native void linkChain(@NotNull RefLinkBracket __thisLink,
+		@NotNull Object __forObject)
 		throws MLECallError;
 	
 	/**
@@ -63,7 +64,8 @@ public final class ReferenceShelf
 	 * @since 2020/05/30
 	 */
 	@SquirrelJMEVendorApi
-	public static native RefLinkBracket linkGetNext(RefLinkBracket __link);
+	public static native RefLinkBracket linkGetNext(
+		@NotNull RefLinkBracket __link);
 	
 	/**
 	 * Gets the object this points to.
@@ -74,7 +76,7 @@ public final class ReferenceShelf
 	 * @since 2020/05/30
 	 */
 	@SquirrelJMEVendorApi
-	public static native Object linkGetObject(RefLinkBracket __link);
+	public static native Object linkGetObject(@NotNull RefLinkBracket __link);
 	
 	/**
 	 * Returns the link before the specified one.
@@ -84,7 +86,8 @@ public final class ReferenceShelf
 	 * @since 2020/05/30
 	 */
 	@SquirrelJMEVendorApi
-	public static native RefLinkBracket linkGetPrev(RefLinkBracket __link);
+	public static native RefLinkBracket linkGetPrev(
+		@NotNull RefLinkBracket __link);
 	
 	/**
 	 * Sets the link that is after this one
@@ -96,7 +99,7 @@ public final class ReferenceShelf
 	 */
 	@SquirrelJMEVendorApi
 	@Deprecated
-	public static native void linkSetNext(RefLinkBracket __link,
+	public static native void linkSetNext(@NotNull RefLinkBracket __link,
 		RefLinkBracket __next);
 	
 	/**
@@ -107,7 +110,8 @@ public final class ReferenceShelf
 	 * @since 2020/05/30
 	 */
 	@SquirrelJMEVendorApi
-	public static native void linkSetObject(RefLinkBracket __link, Object __v);
+	public static native void linkSetObject(@NotNull RefLinkBracket __link,
+		Object __v);
 	
 	/**
 	 * Sets the link that is before this one.
@@ -117,7 +121,7 @@ public final class ReferenceShelf
 	 * @since 2020/05/30
 	 */
 	@SquirrelJMEVendorApi
-	public static native void linkSetPrev(RefLinkBracket __link,
+	public static native void linkSetPrev(@NotNull RefLinkBracket __link,
 		RefLinkBracket __prev);
 	
 	/**
@@ -128,7 +132,7 @@ public final class ReferenceShelf
 	 * @since 2022/09/01
 	 */
 	@SquirrelJMEVendorApi
-	public static native void linkUnchain(RefLinkBracket __link)
+	public static native void linkUnchain(@NotNull RefLinkBracket __link)
 		throws MLECallError;
 	
 	/**
@@ -139,7 +143,8 @@ public final class ReferenceShelf
 	 * @since 2022/10/08
 	 */
 	@SquirrelJMEVendorApi
-	public static native void linkUnlinkAndClear(RefLinkBracket __link)
+	public static native void linkUnlinkAndClear(
+		@NotNull RefLinkBracket __link)
 		throws MLECallError;
 	
 	/**
@@ -159,7 +164,7 @@ public final class ReferenceShelf
 	 * @since 2020/05/30
 	 */
 	@SquirrelJMEVendorApi
-	public static native RefLinkBracket objectGet(Object __o);
+	public static native RefLinkBracket objectGet(@NotNull Object __o);
 	
 	/**
 	 * Sets the link of the object.
@@ -169,5 +174,6 @@ public final class ReferenceShelf
 	 * @since 2020/05/30
 	 */
 	@SquirrelJMEVendorApi
-	public static native void objectSet(Object __o, RefLinkBracket __link);
+	public static native void objectSet(@NotNull Object __o,
+		RefLinkBracket __link);
 }

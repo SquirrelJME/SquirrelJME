@@ -16,6 +16,12 @@ import cc.squirreljme.jvm.mle.constants.ThreadModelType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.Flow;
+import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.Blocking;
+import org.jetbrains.annotations.CheckReturnValue;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * This shelf handles everything regarding threading and otherwise.
@@ -23,6 +29,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @see VMThreadBracket
  * @since 2020/06/17
  */
+@SuppressWarnings("UnstableApiUsage")
 @SquirrelJMEVendorApi
 public final class ThreadShelf
 {
@@ -48,7 +55,8 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native VMThreadBracket createVMThread(Thread __javaThread,
+	public static native VMThreadBracket createVMThread(
+		@Flow(target = "this._vmThread") @NotNull Thread __javaThread,
 		String __name)
 		throws MLECallError;
 	
@@ -102,7 +110,8 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean javaThreadClearInterrupt(Thread __javaThread)
+	public static native boolean javaThreadClearInterrupt(
+		@NotNull Thread __javaThread)
 		throws MLECallError;
 	
 	/**
@@ -113,7 +122,8 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native void javaThreadFlagStarted(Thread __javaThread)
+	public static native void javaThreadFlagStarted(
+		@NotNull Thread __javaThread)
 		throws MLECallError;
 	
 	/**
@@ -125,7 +135,9 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean javaThreadIsStarted(Thread __javaThread)
+	@Flow(source = "this._started")
+	public static native boolean javaThreadIsStarted(
+		@NotNull Thread __javaThread)
 		throws MLECallError;
 	
 	/**
@@ -136,8 +148,11 @@ public final class ThreadShelf
 	 * @throws MLECallError If {@code __javaThread} is null.
 	 * @since 2020/06/17
 	 */
+	
 	@SquirrelJMEVendorApi
-	public static native Runnable javaThreadRunnable(Thread __javaThread)
+	@Flow(source = "this._runnable")
+	public static native Runnable javaThreadRunnable(
+		@NotNull Thread __javaThread)
 		throws MLECallError;
 	
 	/**
@@ -150,7 +165,7 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native void javaThreadSetAlive(Thread __javaThread,
+	public static native void javaThreadSetAlive(@NotNull Thread __javaThread,
 		boolean __set)
 		throws MLECallError;
 	
@@ -163,7 +178,7 @@ public final class ThreadShelf
 	 * @since 2020/09/12
 	 */
 	@SquirrelJMEVendorApi
-	public static native void javaThreadSetDaemon(Thread __javaThread)
+	public static native void javaThreadSetDaemon(@NotNull Thread __javaThread)
 		throws MLECallError;
 	
 	/**
@@ -173,6 +188,7 @@ public final class ThreadShelf
 	 * @since 2021/05/07
 	 */
 	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = ThreadModelType.class)
 	public static native int model();
 	
 	/**
@@ -204,8 +220,8 @@ public final class ThreadShelf
 	 * @since 2020/07/02
 	 */
 	@SquirrelJMEVendorApi
-	public static native void setTrace(String __message,
-		TracePointBracket[] __trace)
+	public static native void setTrace(@NotNull String __message,
+		@NotNull TracePointBracket[] __trace)
 		throws MLECallError;
 	
 	/**
@@ -226,7 +242,10 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean sleep(int __ms, int __ns)
+	@Blocking
+	public static native boolean sleep(
+		@Range(from = 0, to = Integer.MAX_VALUE) int __ms,
+		@Range(from = 0, to = 999999) int __ns)
 		throws MLECallError;
 	
 	/**
@@ -238,7 +257,8 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native Thread toJavaThread(VMThreadBracket __vmThread)
+	public static native Thread toJavaThread(
+		@NotNull VMThreadBracket __vmThread)
 		throws MLECallError;
 	
 	/**
@@ -250,7 +270,9 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native VMThreadBracket toVMThread(Thread __thread)
+	@Flow(source = "this._vmThread") 
+	public static native VMThreadBracket toVMThread(
+		@NotNull Thread __thread)
 		throws MLECallError;
 	
 	/**
@@ -262,7 +284,8 @@ public final class ThreadShelf
 	 * @since 2021/03/14
 	 */
 	@SquirrelJMEVendorApi
-	public static native void vmThreadEnd(VMThreadBracket __vmThread)
+	public static native void vmThreadEnd(
+		@NotNull VMThreadBracket __vmThread)
 		throws MLECallError;
 	
 	/**
@@ -274,7 +297,8 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native int vmThreadId(VMThreadBracket __vmThread)
+	public static native int vmThreadId(
+		@NotNull VMThreadBracket __vmThread)
 		throws MLECallError;
 	
 	/**
@@ -285,7 +309,8 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native void vmThreadInterrupt(VMThreadBracket __vmThread)
+	public static native void vmThreadInterrupt(
+		@NotNull VMThreadBracket __vmThread)
 		throws MLECallError;
 	
 	/**
@@ -297,7 +322,8 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean vmThreadIsMain(VMThreadBracket __vmThread)
+	public static native boolean vmThreadIsMain(
+		@NotNull VMThreadBracket __vmThread)
 		throws MLECallError;
 	
 	/**
@@ -316,8 +342,8 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native void vmThreadSetPriority(VMThreadBracket __vmThread,
-		int __p)
+	public static native void vmThreadSetPriority(
+		@NotNull VMThreadBracket __vmThread, int __p)
 		throws MLECallError;
 	
 	/**
@@ -329,7 +355,8 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean vmThreadStart(VMThreadBracket __vmThread)
+	public static native boolean vmThreadStart(
+		@NotNull VMThreadBracket __vmThread)
 		throws MLECallError;
 	
 	/**
@@ -341,7 +368,8 @@ public final class ThreadShelf
 	 * @since 2021/05/08
 	 */
 	@SquirrelJMEVendorApi
-	public static native TaskBracket vmThreadTask(VMThreadBracket __vmThread)
+	public static native TaskBracket vmThreadTask(
+		@NotNull VMThreadBracket __vmThread)
 		throws MLECallError;
 	
 	/**
@@ -360,6 +388,7 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
+	@Blocking
 	public static native boolean waitForUpdate(int __ms)
 		throws MLECallError;
 }

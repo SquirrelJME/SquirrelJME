@@ -25,6 +25,7 @@ import cc.squirreljme.runtime.lcdui.event.KeyNames;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import org.jetbrains.annotations.Async;
 
 /**
  * The canvas acts as the base class for primary display interfaces that
@@ -306,6 +307,7 @@ public abstract class Canvas
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected abstract void paint(Graphics __g);
 	
 	/**
@@ -500,6 +502,7 @@ public abstract class Canvas
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void hideNotify()
 	{
 		// Implemented by sub-classes
@@ -526,6 +529,7 @@ public abstract class Canvas
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void keyPressed(int __code)
 	{
 		// Does nothing, implemented by sub-classes
@@ -539,6 +543,7 @@ public abstract class Canvas
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void keyReleased(int __code)
 	{
 		// Does nothing, implemented by sub-classes
@@ -552,6 +557,7 @@ public abstract class Canvas
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void keyRepeated(int __code)
 	{
 		// Does nothing, implemented by sub-classes
@@ -570,6 +576,7 @@ public abstract class Canvas
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void pointerDragged(int __x, int __y)
 	{
 		// Does nothing by default
@@ -587,6 +594,7 @@ public abstract class Canvas
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void pointerPressed(int __x, int __y)
 	{
 		// Does nothing by default
@@ -604,6 +612,7 @@ public abstract class Canvas
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void pointerReleased(int __x, int __y)
 	{
 		// Does nothing by default
@@ -840,6 +849,7 @@ public abstract class Canvas
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void showNotify()
 	{
 		// Implemented by sub-classes
@@ -852,6 +862,7 @@ public abstract class Canvas
 	@Api
 	@Override
 	@SerializedEvent
+	@Async.Execute
 	protected void sizeChanged(int __w, int __h)
 	{
 	}

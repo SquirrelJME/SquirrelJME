@@ -22,6 +22,7 @@ import cc.squirreljme.runtime.lcdui.font.FontUtilities;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import org.jetbrains.annotations.Async;
 
 @Api
 public class List
@@ -591,6 +592,7 @@ public class List
 	 * @since 2020/11/14
 	 */
 	@SerializedEvent
+	@Async.Execute
 	final void __selectCommand(int __keyCode)
 	{
 		// This command is only executed for implicit lists only
@@ -615,6 +617,7 @@ public class List
 	 * @since 2020/11/15
 	 */
 	@SerializedEvent
+	@Async.Execute
 	private void __updateSelection(int __i, boolean __b)
 	{
 		// Drop any attempts to clear selection if not on multiple choice lists

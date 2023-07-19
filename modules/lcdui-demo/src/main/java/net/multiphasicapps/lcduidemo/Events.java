@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.lcduidemo;
 
+import cc.squirreljme.jvm.mle.ThreadShelf;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Font;
