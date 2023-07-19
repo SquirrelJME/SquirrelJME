@@ -23,7 +23,10 @@ import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.PrintStream;
+import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * This class contains methods which are used to interact with the system and
@@ -73,8 +76,13 @@ public final class System
 	 * @since 2018/09/27
 	 */
 	@Api
-	public static void arraycopy(Object __src, int __srcOff,
-		Object __dest, int __destOff, int __copyLen)
+	public static void arraycopy(
+		@Flow(sourceIsContainer=true, target="__dest",
+			targetIsContainer=true) @NotNull Object __src,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __srcOff,
+		@NotNull Object __dest,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __destOff,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __copyLen)
 		throws ArrayStoreException, IndexOutOfBoundsException,
 			NullPointerException
 	{

@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.constants.MonitorResultType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
@@ -64,7 +65,9 @@ public final class ObjectShelf
 	 * @since 2020/06/22
 	 */
 	@SquirrelJMEVendorApi
-	public static native void arrayCopy(@NotNull boolean[] __src,
+	public static native void arrayCopy(
+		@Flow(sourceIsContainer=true, target="__dest",
+			targetIsContainer=true) @NotNull boolean[] __src,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __srcOff,
 		@NotNull boolean[] __dest,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __destOff,
@@ -82,7 +85,9 @@ public final class ObjectShelf
 	 * @since 2020/06/22
 	 */
 	@SquirrelJMEVendorApi
-	public static native void arrayCopy(@NotNull byte[] __src,
+	public static native void arrayCopy(
+		@Flow(sourceIsContainer=true, target="__dest",
+			targetIsContainer=true) @NotNull byte[] __src,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __srcOff,
 		@NotNull byte[] __dest,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __destOff,
@@ -100,7 +105,9 @@ public final class ObjectShelf
 	 * @since 2020/06/22
 	 */
 	@SquirrelJMEVendorApi
-	public static native void arrayCopy(@NotNull short[] __src,
+	public static native void arrayCopy(
+		@Flow(sourceIsContainer=true, target="__dest",
+			targetIsContainer=true) @NotNull short[] __src,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __srcOff,
 		@NotNull short[] __dest,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __destOff,
@@ -118,7 +125,9 @@ public final class ObjectShelf
 	 * @since 2020/06/22
 	 */
 	@SquirrelJMEVendorApi
-	public static native void arrayCopy(@NotNull char[] __src,
+	public static native void arrayCopy(
+		@Flow(sourceIsContainer=true, target="__dest",
+			targetIsContainer=true) @NotNull char[] __src,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __srcOff,
 		@NotNull char[] __dest,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __destOff,
@@ -136,7 +145,9 @@ public final class ObjectShelf
 	 * @since 2020/06/22
 	 */
 	@SquirrelJMEVendorApi
-	public static native void arrayCopy(@NotNull int[] __src,
+	public static native void arrayCopy(
+		@Flow(sourceIsContainer=true, target="__dest",
+			targetIsContainer=true) @NotNull int[] __src,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __srcOff,
 		@NotNull int[] __dest,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __destOff,
@@ -154,7 +165,9 @@ public final class ObjectShelf
 	 * @since 2020/06/22
 	 */
 	@SquirrelJMEVendorApi
-	public static native void arrayCopy(@NotNull long[] __src,
+	public static native void arrayCopy(
+		@Flow(sourceIsContainer=true, target="__dest",
+			targetIsContainer=true) @NotNull long[] __src,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __srcOff,
 		@NotNull long[] __dest,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __destOff,
@@ -172,7 +185,9 @@ public final class ObjectShelf
 	 * @since 2020/06/22
 	 */
 	@SquirrelJMEVendorApi
-	public static native void arrayCopy(@NotNull float[] __src,
+	public static native void arrayCopy(
+		@Flow(sourceIsContainer=true, target="__dest",
+			targetIsContainer=true) @NotNull float[] __src,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __srcOff,
 		@NotNull float[] __dest,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __destOff,
@@ -190,7 +205,9 @@ public final class ObjectShelf
 	 * @since 2020/06/22
 	 */
 	@SquirrelJMEVendorApi
-	public static native void arrayCopy(@NotNull double[] __src,
+	public static native void arrayCopy(
+		@Flow(sourceIsContainer=true, target="__dest",
+			targetIsContainer=true) @NotNull double[] __src,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __srcOff,
 		@NotNull double[] __dest,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __destOff,
@@ -208,7 +225,9 @@ public final class ObjectShelf
 	 * @since 2021/12/26
 	 */
 	@SquirrelJMEVendorApi
-	public static native void arrayFill(@NotNull boolean[] __b,
+	public static native void arrayFill(
+		@Flow(target="__v",
+			targetIsContainer=true) @NotNull boolean[] __b,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __l, boolean __v)
 		throws MLECallError;
@@ -225,7 +244,9 @@ public final class ObjectShelf
 	 * @since 2021/12/26
 	 */
 	@SquirrelJMEVendorApi
-	public static native void arrayFill(@NotNull byte[] __b,
+	public static native void arrayFill(
+		@Flow(target="__v",
+			targetIsContainer=true) @NotNull byte[] __b,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __l, byte __v)
 		throws MLECallError;
@@ -242,7 +263,9 @@ public final class ObjectShelf
 	 * @since 2021/12/26
 	 */
 	@SquirrelJMEVendorApi
-	public static native void arrayFill(@NotNull short[] __b,
+	public static native void arrayFill(
+		@Flow(target="__v",
+			targetIsContainer=true) @NotNull short[] __b,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __l, short __v)
 		throws MLECallError;
@@ -259,7 +282,9 @@ public final class ObjectShelf
 	 * @since 2021/12/26
 	 */
 	@SquirrelJMEVendorApi
-	public static native void arrayFill(@NotNull char[] __b,
+	public static native void arrayFill(
+		@Flow(target="__v",
+			targetIsContainer=true) @NotNull char[] __b,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __l,
 		char __v)
@@ -277,7 +302,9 @@ public final class ObjectShelf
 	 * @since 2021/12/26
 	 */
 	@SquirrelJMEVendorApi
-	public static native void arrayFill(@NotNull int[] __b,
+	public static native void arrayFill(
+		@Flow(target="__v",
+			targetIsContainer=true) @NotNull int[] __b,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __l,
 		int __v)
@@ -295,7 +322,9 @@ public final class ObjectShelf
 	 * @since 2021/12/26
 	 */
 	@SquirrelJMEVendorApi
-	public static native void arrayFill(@NotNull long[] __b,
+	public static native void arrayFill(
+		@Flow(target="__v",
+			targetIsContainer=true) @NotNull long[] __b,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __l,
 		long __v)
@@ -313,7 +342,9 @@ public final class ObjectShelf
 	 * @since 2021/12/26
 	 */
 	@SquirrelJMEVendorApi
-	public static native void arrayFill(@NotNull float[] __b,
+	public static native void arrayFill(
+		@Flow(target="__v",
+			targetIsContainer=true) @NotNull float[] __b,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __l,
 		float __v)
@@ -331,7 +362,9 @@ public final class ObjectShelf
 	 * @since 2021/12/26
 	 */
 	@SquirrelJMEVendorApi
-	public static native void arrayFill(@NotNull double[] __b,
+	public static native void arrayFill(
+		@Flow(target="__v",
+			targetIsContainer=true) @NotNull double[] __b,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __l, double __v)
 		throws MLECallError;
