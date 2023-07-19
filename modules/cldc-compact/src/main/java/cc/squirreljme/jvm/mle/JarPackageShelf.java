@@ -112,7 +112,8 @@ public final class JarPackageShelf
 	@SquirrelJMEVendorApi
 	@CheckReturnValue
 	public static native int rawData(@NotNull JarPackageBracket __jar,
-		int __jarOffset, @NotNull byte[] __b,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __jarOffset,
+		@NotNull byte[] __b,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __l)
 		throws MLECallError;

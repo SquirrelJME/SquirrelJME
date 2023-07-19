@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.Async;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This callback is used for any calls the display system makes to applications
@@ -33,5 +34,5 @@ public interface UIDisplayCallback
 	 */
 	@SquirrelJMEVendorApi
 	@Async.Execute
-	void later(UIDisplayBracket __display, int __serialId);
+	void later(@NotNull UIDisplayBracket __display, int __serialId);
 }

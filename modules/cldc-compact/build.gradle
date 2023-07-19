@@ -190,6 +190,8 @@ squirreljme
 			"double", "_value", ";",
 		"}"]
 	
+	// Prevent software math methods from being changed, these are called
+	
 	// Optimizing this method seems to break the launcher somehow...
 	proGuardOptions += ["-keepclassmembers,includecode",
 		"class", "cc.squirreljme.jvm.launch.SuiteScanner", "{",
