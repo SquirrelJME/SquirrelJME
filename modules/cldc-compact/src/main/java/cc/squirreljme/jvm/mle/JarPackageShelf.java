@@ -95,6 +95,20 @@ public final class JarPackageShelf
 		throws MLECallError;
 	
 	/**
+	 * Returns the prefix code for the class.
+	 *
+	 * @param __jar The Jar to get the prefix code from.
+	 * @return The prefix code in the JAR, mapped accordingly to 37 radix,
+	 * will return -1 if there is none.
+	 * @throws MLECallError If {@code __jar} is null.
+	 * @since 2023/07/19
+	 */
+	@SquirrelJMEVendorApi
+	@Range(from = -1, to = 1296)
+	public static native int prefixCode(@NotNull JarPackageBracket __jar)
+		throws MLECallError;
+	
+	/**
 	 * Reads a section of a JAR representation, note that the format is not
 	 * necessarily in the format of a JAR or ZIP file but may exist in SQC
 	 * form.

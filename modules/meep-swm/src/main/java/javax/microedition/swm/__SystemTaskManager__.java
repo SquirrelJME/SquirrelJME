@@ -217,12 +217,12 @@ final class __SystemTaskManager__
 		if (tid < 0)
 		{
 			/* {@squirreljme.error DG0w Invalid entry point was specified
-			when starting task. (The entry point)} */
+			when starting task. (The entry point)} * /
 			if (tid == TaskAccess.ERROR_INVALID_ENTRY)
 				throw new IllegalArgumentException("DG0w " + __cn);
 			
 			/* {@squirreljme.error DG0x Could not launch the task because of
-			an unspecified error. (The error)} */
+			an unspecified error. (The error)} * /
 			throw new IllegalArgumentException("DG0x " + tid);
 		}
 		

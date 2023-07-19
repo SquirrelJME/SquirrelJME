@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+secondary-id: string:ZZ1234
+secondary-old: string:ZZ1295

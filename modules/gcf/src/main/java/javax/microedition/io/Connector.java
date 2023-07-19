@@ -463,7 +463,7 @@ public class Connector
 					return custom.connect(part, __mode, __timeouts, __opts);
 		}
 		
-		/* {@squirreljme.error EC12 Unhandled URI protocol. (The URI)} */.
+		/* {@squirreljme.error EC12 Unhandled URI protocol. (The URI)} */
 		throw new ConnectionNotFoundException(String.format("EC12 %s",
 			__uri));
 	}

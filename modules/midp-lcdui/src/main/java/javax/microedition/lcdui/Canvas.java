@@ -815,7 +815,7 @@ public abstract class Canvas
 	public void setRequiredActions(int __actions)
 		throws IllegalArgumentException
 	{
-		/* {@squirreljme.error EB18 Invalid action. {The action ID} */) */
+		/* {@squirreljme.error EB18 Invalid action. (The action ID)} */
 		if (__actions != Canvas.ACTIONS_ALL &&
 			__actions != Canvas.ACTIONS_NAVIGATION &&
 			__actions != Canvas.ACTIONS_NONE)

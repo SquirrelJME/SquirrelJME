@@ -179,10 +179,10 @@ public class SlidingByteWindow
 		if (__o < 0 || __l < 0 || (__o + __l > __b.length))
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		@squirreljme.error/* {BD1u Bulk read of window bytes would exceed 		
-the bounds of the window. (The bytes in the past to start the		
-copy from; The number of bytes to read; The total number of		
-bytes in the window)@squirreljme.error0} */
+		/* {@squirreljme.error BD1u Bulk read of window bytes would exceed 		
+		the bounds of the window. (The bytes in the past to start the		
+		copy from; The number of bytes to read; The total number of		
+		bytes in the window)@squirreljme.error0} */
 		int windowsize = this.windowsize;
 		int total = this._total;
 		if (__ago <= 0 || ((total - __ago) + __l) > total)

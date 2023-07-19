@@ -177,8 +177,8 @@ public final class FieldFlags
 		if (__oc == null)
 			throw new NullPointerException("NARG");
 		
-		/* {@squirreljme.error JC2u A field cannot be both {@code final} */ and
-		// {@code volatile}. (The field flags)}
+		/* {@squirreljme.error JC2u A field cannot be both `final` and
+		`volatile`. (The field flags)} */
 		if (this.isFinal() && this.isVolatile())
 			throw new InvalidClassFormatException(
 				String.format("JC2u %s", this));

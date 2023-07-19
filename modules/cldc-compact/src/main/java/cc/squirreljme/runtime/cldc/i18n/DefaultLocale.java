@@ -107,7 +107,7 @@ public final class DefaultLocale
 			case BuiltInLocaleType.ENGLISH_US:	return "en-US";
 			
 				/* {@squirreljme.error ZZ4a Unknown built-in encoding.
-				(The built-in encoding ID)} */.
+				(The built-in encoding ID)} */
 			default:
 				throw new IllegalArgumentException("ZZ4a " + __builtIn);
 		}

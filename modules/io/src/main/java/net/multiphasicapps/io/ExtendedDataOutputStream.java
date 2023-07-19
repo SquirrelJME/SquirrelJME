@@ -14,6 +14,7 @@ import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
  * This is an extended output stream which is better suited to writing
@@ -75,7 +76,7 @@ public class ExtendedDataOutputStream
 		/* {@squirreljme.error BD0x Cannot align to zero or a negative
 		amount.} */
 		if (__n <= 0)
-			throw new IndexOutOfBoundsException("BD0x");
+			throw new IndexOutOfBoundsException(__error__(1234));
 		
 		// Pad
 		while ((this.size() % __n) != 0)

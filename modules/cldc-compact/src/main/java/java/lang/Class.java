@@ -406,7 +406,7 @@ public final class Class<T>
 		String binaryName = data.binaryName();
 		
 		/* {@squirreljme.error ZZ0x Cannot construct new instance of class
-		because it has no default constructor.} */
+		because it has no default constructor.} * /
 		StaticMethod sm = data.defaultConstructorMethod();
 		if (sm == null)
 			throw new InstantiationException("ZZ0x " + binaryName);
@@ -414,7 +414,7 @@ public final class Class<T>
 		// Allocate class instance
 		Object rv = ObjectAccess.allocateObject(binaryName);
 		
-		/* {@squirreljme.error ZZ0y Could not allocate new instance.} */
+		/* {@squirreljme.error ZZ0y Could not allocate new instance.} * /
 		if (rv == null)
 			throw new OutOfMemoryError("ZZ0y");
 		

@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.TestOnly;
 
@@ -61,6 +62,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@SquirrelJMEVendorApi
+	@Range(from = -1, to = Long.MAX_VALUE)
 	public static native long pointAddress(@NotNull TracePointBracket __point);
 	
 	/**
@@ -71,6 +73,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@SquirrelJMEVendorApi
+	@Nullable
 	public static native String pointClass(@NotNull TracePointBracket __point);
 	
 	/**
@@ -81,6 +84,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@SquirrelJMEVendorApi
+	@Nullable
 	public static native String pointFile(@NotNull TracePointBracket __point);
 	
 	/**
@@ -91,6 +95,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@SquirrelJMEVendorApi
+	@Range(from = -1, to = Long.MAX_VALUE)
 	public static native int pointJavaAddress(
 		@NotNull TracePointBracket __point);
 	
@@ -125,6 +130,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@SquirrelJMEVendorApi
+	@Nullable
 	public static native String pointMethodName(
 		@NotNull TracePointBracket __point);
 	
@@ -136,6 +142,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@SquirrelJMEVendorApi
+	@Nullable
 	public static native String pointMethodType(
 		@NotNull TracePointBracket __point);
 	
