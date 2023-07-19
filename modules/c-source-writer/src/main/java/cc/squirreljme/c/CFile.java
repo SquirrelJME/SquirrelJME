@@ -512,6 +512,18 @@ public class CFile
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/07/19
+	 */
+	@Override
+	public CSourceWriter newLine(boolean __force)
+		throws IOException
+	{
+		this.out.newLine(true);
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2023/05/29
 	 */
 	@Override

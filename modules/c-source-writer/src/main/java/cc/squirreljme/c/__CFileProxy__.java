@@ -367,6 +367,18 @@ abstract class __CFileProxy__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2023/07/19
+	 */
+	@Override
+	public CSourceWriter newLine(boolean __force)
+		throws IOException
+	{
+		this.__file().newLine(__force);
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2023/06/04
 	 */
 	@Override

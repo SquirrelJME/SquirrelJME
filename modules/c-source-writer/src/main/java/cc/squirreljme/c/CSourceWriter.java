@@ -323,6 +323,18 @@ public interface CSourceWriter
 		throws IOException, NullPointerException;
 	
 	/**
+	 * Emits a newline.
+	 * 
+	 * @param __force If the newline should be forced because this is a start
+	 * of a preprocessor line.
+	 * @return {@code this}.
+	 * @throws IOException On write errors.
+	 * @since 2023/07/19
+	 */
+	CSourceWriter newLine(boolean __force)
+		throws IOException;
+	
+	/**
 	 * Writes the specified number.
 	 * 
 	 * @param __number The number to write.

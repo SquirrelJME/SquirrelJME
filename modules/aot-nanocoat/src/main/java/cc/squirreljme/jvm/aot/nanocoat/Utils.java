@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.aot.nanocoat;
 
 import cc.squirreljme.c.CFile;
+import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.out.AppendableCTokenOutput;
 import cc.squirreljme.c.out.CompactCTokenOutput;
 import cc.squirreljme.c.out.EchoCTokenOutput;
@@ -21,6 +22,7 @@ import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Identifier;
 import net.multiphasicapps.classfile.Method;
+import org.intellij.lang.annotations.Language;
 
 /**
  * General utilities.
@@ -29,6 +31,22 @@ import net.multiphasicapps.classfile.Method;
  */
 public final class Utils
 {
+	/** Source file header for branding and otherwise. */
+	@Language("C")
+	private static final String[] _HEADER =
+		new String[]{"/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-",
+			"// -----------------------------------------------------------" +
+				"----------------",
+			"// SquirrelJME",
+			"//     Copyright (C) Stephanie Gawroriski " +
+				"<xer@multiphasicapps.net>",
+			"// -----------------------------------------------------------" +
+				"----------------",
+			"// SquirrelJME is under the Mozilla Public License Version 2.0.",
+			"// See license.mkd for licensing and copyright information.",
+			"// -----------------------------------------------------------" +
+				"------------- */"};
+	
 	/**
 	 * Not used.
 	 * 
@@ -117,6 +135,28 @@ public final class Utils
 		
 		// Build name
 		return (base + ext).toLowerCase();
+	}
+	
+	/**
+	 * Writes the output file header.
+	 *
+	 * @param __out The stream to write to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/19
+	 */
+	public static void header(CSourceWriter __out)
+		throws IOException, NullPointerException
+	{
+		if (__out == null)
+			throw new NullPointerException("NARG");
+		
+		// Always use enforced newlines for the header
+		for (String line : Utils._HEADER)
+			__out.token(line, true);
+		
+		// Always have an extra space with enforced newline
+		__out.newLine(true);
 	}
 	
 	/**

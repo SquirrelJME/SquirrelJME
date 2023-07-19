@@ -166,6 +166,9 @@ public class NanoCoatLinkGlob
 	{
 		CSourceWriter out = this.headerOut;
 		
+		// Write header
+		Utils.header(out);
+		
 		// If we are compiling source, include ourselves via the header
 		try (CPPBlock block = out.preprocessorIf(CExpressionBuilder.builder()
 				.not()

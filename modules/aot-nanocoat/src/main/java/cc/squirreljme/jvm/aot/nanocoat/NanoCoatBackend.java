@@ -30,6 +30,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
  * Nanocoat support.
@@ -72,6 +73,9 @@ public class NanoCoatBackend
 			glob.inDirectory(Utils.dosFileName(__name + ".c")));
 			CFile sourceOut = Utils.cFile(out))
 		{
+			// Write header
+			Utils.header(sourceOut);
+			
 			// Process source code
 			processor.processSource(sourceOut);
 		}
@@ -178,6 +182,27 @@ public class NanoCoatBackend
 		VMClassLibrary... __libs)
 		throws IOException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__settings == null || __out == null || __libs == null ||
+			__libs.length == 0)
+			throw new NullPointerException("NARG");
+		
+		// The output is just a ZIP where we copy all the input entries for
+		// each library to... since NanoCoat is a collection of source code
+		try (ZipStreamWriter zip = new ZipStreamWriter(__out))
+		{
+			for (VMClassLibrary library : __libs)
+				for (String file : library.listResources())
+				{
+					// Ticker for debugging, there is lots
+					System.err.print(".");
+					
+					// Do the actual copy
+					try (InputStream data = library.resourceAsStream(
+						file); OutputStream entry = zip.nextEntry(file))
+					{
+						StreamUtils.copy(data, entry);
+					}
+				}
+		}
 	}
 }
