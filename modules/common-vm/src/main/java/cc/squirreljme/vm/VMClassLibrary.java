@@ -12,6 +12,7 @@ package cc.squirreljme.vm;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * This class represents a class library which represents a single JAR file
@@ -56,6 +57,7 @@ public interface VMClassLibrary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/13
 	 */
+	@Nullable
 	InputStream resourceAsStream(String __rc)
 		throws IOException, NullPointerException;
 }

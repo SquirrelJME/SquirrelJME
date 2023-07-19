@@ -468,12 +468,12 @@ public class Suite
 		
 		throw Debugging.todo();
 		/*
-		/* {@squirreljme.error DG0q The current suite has been removed.} */
+		/* {@squirreljme.error DG0q The current suite has been removed.} * /
 		if (!isInstalled())
 			throw new IllegalStateException("DG0q");
 		
 		/* {@squirreljme.error DG0r The given state flag cannot be set.
-		(The state flag)} */
+		(The state flag)} * /
 		if (__f == SuiteStateFlag.SYSTEM || __f == SuiteStateFlag.PREINSTALLED)
 			throw new IllegalArgumentException(String.format("DG0r %s", __f));
 		
@@ -481,7 +481,7 @@ public class Suite
 		synchronized (this._lock)
 		{
 			/* {@squirreljme.error DG0s Cannot change flags of the system
-			suite.} */
+			suite.} * /
 			if (0 != (this._state & (1 << SuiteStateFlag.SYSTEM.ordinal())))
 				throw new IllegalStateException("DG0s");
 			

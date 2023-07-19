@@ -897,7 +897,7 @@ public class Display
 			case UIPixelFormat.PACKED_INDEXED1:
 				return 2;
 			
-				/* {@squirreljme.error EB3j Unhandled pixel format. (Format)} */.
+				/* {@squirreljme.error EB3j Unhandled pixel format. (Format)} */
 			default:
 				throw Debugging.oops("EB3j", pf);
 		}
@@ -1006,7 +1006,7 @@ public class Display
 		}
 		
 		/* {@squirreljme.error EB1l Could not set the alert and its exit
-		displayable because it is already set on a display.} */
+		displayable because it is already set on a display.} * /
 		catch (LcdWidgetOwnedException e)
 		{
 			throw new IllegalStateException("EB1l", e);

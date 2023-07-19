@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Provides the shelf for types that exist within the JVM.
@@ -147,6 +148,7 @@ public final class TypeShelf
 	 * @since 2020/06/02
 	 */
 	@SquirrelJMEVendorApi
+	@Nullable
 	public static native TypeBracket findType(@NotNull String __name)
 		throws MLECallError;
 	
@@ -170,6 +172,7 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
+	@Nullable
 	public static native JarPackageBracket inJar(@NotNull TypeBracket __type);
 	
 	/**

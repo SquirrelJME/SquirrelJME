@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.jar.Attributes;
 import org.gradle.api.Action;
@@ -116,6 +117,10 @@ public class AdditionalManifestPropertiesTaskAction
 		attributes.putValue(type.vendorKey(), config.swmVendor);
 		attributes.putValue(type.versionKey(),
 			new SuiteVersion(project.getVersion().toString()).toString());
+		
+		// Error Prefix
+		attributes.putValue("X-SquirrelJME-PrefixCode",
+			Objects.toString(config.javaDocErrorCode, "XX"));
 		
 		// Application
 		if (type == JavaMEMidletType.APPLICATION)

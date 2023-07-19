@@ -172,7 +172,7 @@ final class __SuiteTracker__
 					// report
 					/* {@squirreljme.error DG0t Failed to install the program
 					due to the specified error. (The error code; The more
-					detailed message associated with the error)} */
+					detailed message associated with the error)} * /
 					System.err.printf("DG0t %s %s%n", code, report.message());
 					
 					// Mark as done

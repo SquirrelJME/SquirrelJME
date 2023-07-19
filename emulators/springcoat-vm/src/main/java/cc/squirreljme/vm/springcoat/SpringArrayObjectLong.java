@@ -9,9 +9,11 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayIndexOutOfBoundsException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayStoreException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNegativeArraySizeException;
+import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
  * Array backed by a long array.
@@ -88,7 +90,7 @@ public final class SpringArrayObjectLong
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK0n %d %d", __dx, this.length), e);
+				__error__("BK0n %d %d", __dx, this.length), e);
 		}
 	}
 	

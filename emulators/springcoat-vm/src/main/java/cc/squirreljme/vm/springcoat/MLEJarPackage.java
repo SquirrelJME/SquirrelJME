@@ -10,8 +10,11 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.vm.VMSuiteManager;
+import cc.squirreljme.jvm.manifest.JavaManifest;
+import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
@@ -171,6 +174,58 @@ public enum MLEJarPackage
 			{
 				throw new SpringVirtualMachineException(
 					"Failed to read resource", e);
+			}
+		}
+	},
+	
+	/** {@link JarPackageShelf#prefixCode(JarPackageBracket)}. */
+	PREFIX_CODE("prefixCode:(Lcc/squirreljme/jvm/mle/brackets/" +
+		"JarPackageBracket;)I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/07/19
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			if (__args[0] == null)
+				throw new SpringMLECallError("No JAR specified.");
+			
+			JarPackageObject __jar = MLEJarPackage.__jarObject(__args[0]);
+			
+			// Load manifest to get the info
+			try (InputStream in = __jar.library()
+				.resourceAsStream("META-INF/MANIFEST.MF"))
+			{
+				if (in == null)
+					return -1;
+				
+				// Load in manifest
+				JavaManifest manifest = new JavaManifest(in);
+				
+				// Load in value
+				String value = manifest.getMainAttributes()
+					.getValue(ErrorCode.PREFIX_PROPERTY);
+				if (value == null)
+					return -1;
+				
+				// Too short?
+				if (value.length() < 2)
+					return -1;
+				
+				// Get both characters for radix calculation
+				char a = value.charAt(0);
+				char b = value.charAt(1);
+				
+				// Calculate prefix code
+				return (Character.digit(a, Character.MAX_RADIX) * 
+					Character.MAX_RADIX) +
+					Character.digit(b, Character.MAX_RADIX);
+			}
+			catch (IOException ignored)
+			{
+				return -1;
 			}
 		}
 	},
