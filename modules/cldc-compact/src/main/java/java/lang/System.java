@@ -89,17 +89,17 @@ public final class System
 		if (__src == null || __dest == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ1w Negative offsets and/or length cannot be
-		// specified. (The source offset; The destination offset; The copy
-		// length)}
+		/* {@squirreljme.error ZZ1w Negative offsets and/or length cannot be
+		specified. (The source offset; The destination offset; The copy
+		length)} */
 		if (__srcOff < 0 || __destOff < 0 || __copyLen < 0)
 			throw new IndexOutOfBoundsException(
 				String.format("ZZ1w %d %d %d",
 					__srcOff, __destOff, __copyLen));
 		
-		// {@squirreljme.error ZZ1x Copy operation would exceed the bounds of
-		// the array. (Source offset; Source length; Destination offset;
-		// Destination length; The copy length)}
+		/* {@squirreljme.error ZZ1x Copy operation would exceed the bounds of
+		the array. (Source offset; Source length; Destination offset;
+		Destination length; The copy length)} */
 		int srcLen = ObjectShelf.arrayLength(__src);
 		int destLen = ObjectShelf.arrayLength(__dest);
 		if (__srcOff + __copyLen < 0 || __srcOff + __copyLen > srcLen ||
@@ -112,8 +112,8 @@ public final class System
 		Class<?> srcClass = __src.getClass();
 		Class<?> destClass = __dest.getClass();
 		
-		// {@squirreljme.error ZZ1y The source array type is not compatible
-		// with destination array. (The source array; The destination array)}
+		/* {@squirreljme.error ZZ1y The source array type is not compatible
+		with destination array. (The source array; The destination array)} */
 		if (srcClass != destClass && !destClass.isAssignableFrom(srcClass))
 			throw new ArrayStoreException(String.format(
 				"ZZ1y %s %s", __src, __dest));
@@ -166,7 +166,7 @@ public final class System
 				ObjectShelf.arrayCopy((double[])__src, __srcOff,
 					(double[])__dest, __destOff, __copyLen);
 			
-			// {@squirreljme.error ZZ1h Not a primitive array type.}
+			/* {@squirreljme.error ZZ1h Not a primitive array type.} */
 			else
 				throw new Error("ZZ1h");
 		}
@@ -330,8 +330,8 @@ public final class System
 		if (__k == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ1z Cannot request a system property which has
-		// a blank key.}
+		/* {@squirreljme.error ZZ1z Cannot request a system property which has
+		a blank key.} */
 		if (__k.equals(""))
 			throw new IllegalArgumentException("ZZ1z");
 		

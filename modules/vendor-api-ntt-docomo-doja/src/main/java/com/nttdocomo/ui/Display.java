@@ -194,7 +194,7 @@ public class Display
 		if (rv != null)
 			return rv;
 		
-		// {@squirreljme.error AH0n No native displays available.}
+		/* {@squirreljme.error AH0n No native displays available.} */
 		javax.microedition.lcdui.Display[] midpDisplays =
 			javax.microedition.lcdui.Display.getDisplays(0);
 		if (midpDisplays == null || midpDisplays.length == 0)

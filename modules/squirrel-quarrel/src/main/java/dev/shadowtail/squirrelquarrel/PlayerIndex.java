@@ -153,7 +153,7 @@ public enum PlayerIndex
 			case 4:	return PlayerIndex.YELLOW;
 			case 5:	return PlayerIndex.GRAY;
 			
-				// {@squirreljme.error BE0u Invalid player index.}
+				/* {@squirreljme.error BE0u Invalid player index.} */
 			default:
 				throw new NoSuchElementException("BE0u");
 		}

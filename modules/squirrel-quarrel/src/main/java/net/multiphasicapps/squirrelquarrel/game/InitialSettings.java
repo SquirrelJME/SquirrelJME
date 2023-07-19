@@ -185,8 +185,8 @@ public final class InitialSettings
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BE01 Invalid initial settings magic number.
-		// (The read magic number)}
+		/* {@squirreljme.error BE01 Invalid initial settings magic number.
+		(The read magic number)} */
 		long magic = __in.readLong();
 		if (magic != InitialSettings._MAGIC_NUMBER)
 			throw new ReplayFormatException(String.format("BE01 %08x", magic));

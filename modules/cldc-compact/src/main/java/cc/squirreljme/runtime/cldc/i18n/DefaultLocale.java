@@ -54,7 +54,7 @@ public final class DefaultLocale
 			case BuiltInLocaleType.ENGLISH_US:
 				return new LocaleEnUs();
 			
-				// {@squirreljme.error ZZ3v Unknown built-in locale ID. (ID)}
+				/* {@squirreljme.error ZZ3v Unknown built-in locale ID. (ID)} */
 			default:
 				throw new IllegalArgumentException("ZZ3v " + __id);
 		}
@@ -106,8 +106,8 @@ public final class DefaultLocale
 		{
 			case BuiltInLocaleType.ENGLISH_US:	return "en-US";
 			
-				// {@squirreljme.error ZZ4a Unknown built-in encoding.
-				// (The built-in encoding ID)}.
+				/* {@squirreljme.error ZZ4a Unknown built-in encoding.
+				(The built-in encoding ID)} */.
 			default:
 				throw new IllegalArgumentException("ZZ4a " + __builtIn);
 		}

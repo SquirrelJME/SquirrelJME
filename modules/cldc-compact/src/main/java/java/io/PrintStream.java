@@ -871,8 +871,8 @@ public class PrintStream
 		byte[] encBytes = this._minienc;
 		int wc = this._encoder.encode(__c, encBytes, 0, encBytes.length);
 		
-		// {@squirreljme.error ZZ0q Did not expect the buffer to be out of
-		// room or be too small.}
+		/* {@squirreljme.error ZZ0q Did not expect the buffer to be out of
+		room or be too small.} */
 		if (wc < 0 || wc > encBytes.length)
 			throw new Error("ZZ0q");
 		

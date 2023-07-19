@@ -117,7 +117,7 @@ public abstract class Displayable
 		if (__c == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB1s The display does not support commands.}
+		/* {@squirreljme.error EB1s The display does not support commands.} */
 		Display cd = this.getCurrentDisplay();
 		if (cd != null)
 			if ((cd.getCapabilities() & Display.SUPPORTS_COMMANDS) == 0)
@@ -482,16 +482,16 @@ public abstract class Displayable
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB3i The current display does not support
-		// commands.}
+		/* {@squirreljme.error EB3i The current display does not support
+		commands.} */
 		Display display = this._display;
 		int caps = (display == null ? Display.__defaultCapabilities() :
 			display.getCapabilities());
 		if (0 == (caps & Display.SUPPORTS_COMMANDS))
 			throw new IllegalArgumentException("EB3i");
 		
-		// {@squirreljme.error EB3h The current displayable is not getting
-		// its layout calculated.}
+		/* {@squirreljme.error EB3h The current displayable is not getting
+		its layout calculated.} */
 		__Layout__ layout = this._layout;
 		if (layout == null)
 			throw new IllegalStateException("EB3h");

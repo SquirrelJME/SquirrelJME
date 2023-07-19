@@ -46,8 +46,8 @@ public class InvalidPathException
 		if (__in == null || __reason == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZY04 Invalid path index specified for
-		// exception. (Index)}
+		/* {@squirreljme.error ZY04 Invalid path index specified for
+		exception. (Index)} */
 		if (__index < -1)
 			throw new IllegalArgumentException("ZY04 " + __index);
 		

@@ -174,8 +174,8 @@ public class Text
 		if (__o < 0 || __l < 0 || (__o + __l) > __c.length())
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// {@squirreljme.error EB2p The width and height cannot be negative
-		// for text.}
+		/* {@squirreljme.error EB2p The width and height cannot be negative
+		for text.} */
 		if (__w < 0 || __h < 0)
 			throw new IllegalArgumentException("EB2p");
 		
@@ -298,8 +298,8 @@ public class Text
 		}
 		catch (IndexOutOfBoundsException e)
 		{
-			// {@squirreljme.error EB2q Extent array length must at least
-			// be 4.}
+			/* {@squirreljme.error EB2q Extent array length must at least
+			be 4.} */
 			if (__ext.length < 4)
 				throw new IllegalArgumentException("EB2q");
 		}
@@ -530,8 +530,8 @@ public class Text
 	{
 		TextStorage storage = this._storage;
 		
-		// {@squirreljme.error EB2r Text outside of bounds. (The starting
-		// index; The ending index; The size of the text)}
+		/* {@squirreljme.error EB2r Text outside of bounds. (The starting
+		index; The ending index; The size of the text)} */
 		int size = storage.size;
 		if (__i < 0 || __l < 0 || (__i + __l) > size)
 			throw new IndexOutOfBoundsException(
@@ -634,7 +634,7 @@ public class Text
 	public void setAlignment(int __a)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2s Invalid alignment. (The alignment)}
+		/* {@squirreljme.error EB2s Invalid alignment. (The alignment)} */
 		if (__a != Text.ALIGN_LEFT && __a != Text.ALIGN_CENTER && __a != Text.ALIGN_RIGHT &&
 			__a != Text.ALIGN_JUSTIFY && __a != Text.ALIGN_DEFAULT)
 			throw new IllegalArgumentException("EB2s " + __a);
@@ -782,8 +782,8 @@ public class Text
 	public void setHeight(int __h)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2t The height of a font cannot be
-		// negative.}
+		/* {@squirreljme.error EB2t The height of a font cannot be
+		negative.} */
 		if (__h < 0)
 			throw new IllegalArgumentException("EB2t");
 		
@@ -839,7 +839,7 @@ public class Text
 	public void setInitialDirection(int __dir)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2u The direction to use. (The direction)}
+		/* {@squirreljme.error EB2u The direction to use. (The direction)} */
 		if (__dir != Text.DIRECTION_LTR && __dir != Text.DIRECTION_RTL &&
 			__dir != Text.DIRECTION_NEUTRAL)
 			throw new IllegalArgumentException("EB2u " + __dir);
@@ -894,7 +894,7 @@ public class Text
 	public void setWidth(int __w)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2v Cannot set the width to a negative value.}
+		/* {@squirreljme.error EB2v Cannot set the width to a negative value.} */
 		if (__w < 0)
 			throw new IllegalArgumentException("EB2v");
 		

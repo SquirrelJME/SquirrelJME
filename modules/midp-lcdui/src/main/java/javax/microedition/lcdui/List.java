@@ -81,12 +81,12 @@ public class List
 		if (__strs == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB2j String and image elements differ in
-		// size.}
+		/* {@squirreljme.error EB2j String and image elements differ in
+		size.} */
 		if (__imgs != null && __strs.length != __imgs.length)
 			throw new IllegalArgumentException("EB2j");
 		
-		// {@squirreljme.error EB2k Invalid list type. (The list type)}
+		/* {@squirreljme.error EB2k Invalid list type. (The list type)} */
 		if (__type != Choice.IMPLICIT && __type != Choice.EXCLUSIVE &&
 			__type != Choice.MULTIPLE)
 			throw new IllegalArgumentException("EB2k " + __type);
@@ -396,8 +396,8 @@ public class List
 			
 		java.util.List<__ChoiceEntry__> items = this._items.valuesAsList();
 		
-		// {@squirreljme.error EB3n Array is longer than the list size.
-		// (The list size; the array size)}
+		/* {@squirreljme.error EB3n Array is longer than the list size.
+		(The list size; the array size)} */
 		int n = items.size();
 		if (n > __flags.length)
 			throw new IllegalArgumentException("EB3n " + n + " " +

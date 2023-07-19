@@ -61,7 +61,7 @@ public final class HeaderStruct
 	public int getInteger(int __prop)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ55 Invalid property. (The property)}
+		/* {@squirreljme.error ZZ55 Invalid property. (The property)} */
 		int[] properties = this._properties;
 		if (__prop < 0 || __prop >= properties.length)
 			throw new IndexOutOfBoundsException("ZZ55 " + __prop);
@@ -126,9 +126,9 @@ public final class HeaderStruct
 		// Read the format version
 		int formatVersion = __in.readUnsignedShort();
 		
-		// {@squirreljme.error ZZ44 Cannot decode header because the
-		// version identifier is not known. (The format version of the header
-		// file)}
+		/* {@squirreljme.error ZZ44 Cannot decode header because the
+		version identifier is not known. (The format version of the header
+		file)} */
 		if (formatVersion != ClassInfoConstants.CLASS_VERSION_20201129)
 			throw new InvalidRomException("ZZ44 " + formatVersion);
 		

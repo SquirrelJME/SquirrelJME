@@ -45,7 +45,7 @@ public class ChunkFutureChunk
 	@Override
 	public int get()
 	{
-		// {@squirreljme.error BD06 The chunk was garbage collected.}
+		/* {@squirreljme.error BD06 The chunk was garbage collected.} */
 		ChunkWriter chunk = this.chunk.get();
 		if (chunk == null)
 			throw new IllegalStateException("BD06");

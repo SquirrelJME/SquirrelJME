@@ -87,11 +87,11 @@ public class ArrayBlockAccessor
 	public byte read(long __addr)
 		throws EOFException, IOException
 	{
-		// {@squirreljme.error BF04 Cannot read from a negative offset.}
+		/* {@squirreljme.error BF04 Cannot read from a negative offset.} */
 		if (__addr < 0)
 			throw new IOException("BF04");
 		
-		// {@squirreljme.error BF05 Read past end of the block.}
+		/* {@squirreljme.error BF05 Read past end of the block.} */
 		if (__addr > this.length)
 			throw new EOFException("BF05");
 		
@@ -114,7 +114,7 @@ public class ArrayBlockAccessor
 		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("AIOB");
 		
-		// {@squirreljme.error BF06 Cannot read from a negative offset.}
+		/* {@squirreljme.error BF06 Cannot read from a negative offset.} */
 		if (__addr < 0)
 			throw new IOException("BF06");
 		

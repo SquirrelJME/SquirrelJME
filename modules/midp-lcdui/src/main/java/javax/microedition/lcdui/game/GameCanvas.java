@@ -141,8 +141,8 @@ public abstract class GameCanvas
 		if (this.getCurrentDisplay() == null)
 			return;
 		
-		// {@squirreljme.error EB2w Cannot flush the graphics if the buffer
-		// is not preserved.}
+		/* {@squirreljme.error EB2w Cannot flush the graphics if the buffer
+		is not preserved.} */
 		if (!this._preserveBuffer)
 			throw new IllegalStateException("EB2w");
 		

@@ -80,7 +80,7 @@ public class MainMidlet
 			}
 		}
 		
-		// {@squirreljme.error BE02 Failed to rea/write something.}
+		/* {@squirreljme.error BE02 Failed to rea/write something.} */
 		catch (IOException e)
 		{
 			throw new RuntimeException("BE02", e);

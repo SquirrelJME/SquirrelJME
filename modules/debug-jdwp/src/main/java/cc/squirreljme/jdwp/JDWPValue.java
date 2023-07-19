@@ -89,7 +89,7 @@ public final class JDWPValue
 			// Must be open
 			this.__checkOpen();
 			
-			// {@squirreljme.error AG0j Value not set.}
+			/* {@squirreljme.error AG0j Value not set.} */
 			if (!this._isSet)
 				throw new IllegalStateException("AG0j");
 			
@@ -132,7 +132,7 @@ public final class JDWPValue
 			// Must be open
 			this.__checkOpen();
 			
-			// {@squirreljme.error AG0k Value already set.}
+			/* {@squirreljme.error AG0k Value already set.} */
 			if (this._isSet)
 				throw new IllegalStateException("AG0k");
 			
@@ -165,7 +165,7 @@ public final class JDWPValue
 	void __checkOpen()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error AG0i Value not open.}
+		/* {@squirreljme.error AG0i Value not open.} */
 		if (!this._isOpen)
 			throw new IllegalStateException("AG0i");
 	}

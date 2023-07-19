@@ -118,8 +118,8 @@ final class __ScratchPadOutputTransaction__
 		int writePos;
 		synchronized (this)
 		{
-			// {@squirreljme.error AH0k Write exceeds the bounds of the
-			// scratch pad.}
+			/* {@squirreljme.error AH0k Write exceeds the bounds of the
+			scratch pad.} */
 			writePos = this._writePos;
 			if (writePos >= this._length)
 				throw new IOException("AH0k");

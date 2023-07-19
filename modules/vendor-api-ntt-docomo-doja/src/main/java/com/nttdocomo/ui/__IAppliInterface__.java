@@ -105,7 +105,7 @@ final class __IAppliInterface__
 		}
 		catch (ClassNotFoundException e)
 		{
-			// {@squirreljme.error AH01 Could not find main i-appli. (Class)}
+			/* {@squirreljme.error AH01 Could not find main i-appli. (Class)} */
 			throw new RuntimeException(String.format("AH01 %s", mainClass),
 				e);
 		}
@@ -124,13 +124,13 @@ final class __IAppliInterface__
 			}
 			catch (ClassCastException e)
 			{
-				// {@squirreljme.error AH02 Class not an i-appli.}
+				/* {@squirreljme.error AH02 Class not an i-appli.} */
 				throw new RuntimeException("AH02", e);
 			}
 		}
 		catch (IllegalAccessException | InstantiationException e)
 		{
-			// {@squirreljme.error AH03 Could not instantiate class.}
+			/* {@squirreljme.error AH03 Could not instantiate class.} */
 			throw new RuntimeException("AH03", e);
 		}
 	}

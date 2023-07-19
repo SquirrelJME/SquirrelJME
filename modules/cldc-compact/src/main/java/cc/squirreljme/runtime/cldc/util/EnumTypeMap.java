@@ -90,7 +90,7 @@ public final class EnumTypeMap<E extends Enum<E>, V>
 	@Override
 	public V put(E __key, V __value)
 	{
-		// {@squirreljme.error ZZ1i Cannot store key into map.} 
+		/* {@squirreljme.error ZZ1i Cannot store key into map.} */ 
 		if (!this.type.isInstance(__key))
 			throw new IllegalArgumentException("ZZ1i");
 		

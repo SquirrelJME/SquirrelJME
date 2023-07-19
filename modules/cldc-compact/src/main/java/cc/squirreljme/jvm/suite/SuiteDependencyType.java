@@ -78,8 +78,8 @@ public enum SuiteDependencyType
 			case "service":		return SuiteDependencyType.SERVICE;
 			case "proprietary":	return SuiteDependencyType.PROPRIETARY;
 			
-				// {@squirreljme.error DG0a The specified string is not a valid
-				// dependency type. (The input string)}
+				/* {@squirreljme.error DG0a The specified string is not a valid
+				dependency type. (The input string)} */
 			default:
 				throw new InvalidSuiteException(
 					String.format("AR0a %s", __s));

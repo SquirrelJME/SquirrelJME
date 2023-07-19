@@ -43,8 +43,8 @@ public abstract class Identifier
 		{
 			char c = __n.charAt(i);
 			
-			// {@squirreljme.error JC2x The specified identifier contains an
-			// invalid character. (The identifier)}
+			/* {@squirreljme.error JC2x The specified identifier contains an
+			invalid character. (The identifier)} */
 			if (c == '.' || c == ';' || c == '[' || c == '/')
 				throw new InvalidClassFormatException(
 					String.format("JC2x %s", __n));

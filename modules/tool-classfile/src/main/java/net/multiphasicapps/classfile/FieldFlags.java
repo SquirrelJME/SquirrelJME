@@ -177,7 +177,7 @@ public final class FieldFlags
 		if (__oc == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC2u A field cannot be both {@code final} and
+		/* {@squirreljme.error JC2u A field cannot be both {@code final} */ and
 		// {@code volatile}. (The field flags)}
 		if (this.isFinal() && this.isVolatile())
 			throw new InvalidClassFormatException(
@@ -197,8 +197,8 @@ public final class FieldFlags
 				// Is it set?
 				boolean has = this.contains(f);
 				
-				// {@squirreljme.error JC2v Flags for interface field has an
-				// incorrect set of flags. (The field flags)}
+				/* {@squirreljme.error JC2v Flags for interface field has an
+				incorrect set of flags. (The field flags)} */
 				if (must != has && !maybe)
 					throw new InvalidClassFormatException(
 						String.format("JC2v %s", this));

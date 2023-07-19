@@ -38,8 +38,8 @@ public final class MethodName
 			{
 				char c = __s.charAt(i);
 				
-				// {@squirreljme.error JC3n Method names cannot contain less
-				// than or greater than signs. (The method name)}
+				/* {@squirreljme.error JC3n Method names cannot contain less
+				than or greater than signs. (The method name)} */
 				if (c == '<' || c == '>')
 					throw new InvalidClassFormatException(
 						String.format("JC3n %s", __s));

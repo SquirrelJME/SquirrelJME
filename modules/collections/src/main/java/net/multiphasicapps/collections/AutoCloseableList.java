@@ -47,8 +47,8 @@ public class AutoCloseableList<T extends AutoCloseable>
 				count++;
 			}
 		
-		// {@squirreljme.error AC06 There was at least one exception which
-		// occurred while closing the list. (The number of exceptions thrown)}
+		/* {@squirreljme.error AC06 There was at least one exception which
+		occurred while closing the list. (The number of exceptions thrown)} */
 		if (defer != null)
 			throw new RuntimeException(String.format("AC06 %d", count), defer);
 	}

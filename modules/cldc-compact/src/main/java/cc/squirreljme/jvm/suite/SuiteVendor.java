@@ -37,9 +37,9 @@ public final class SuiteVendor
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error DG0h An illegal character was
-		// specified in the midlet suite vendor. (The midlet suite
-		// vendor)}
+		/* {@squirreljme.error DG0h An illegal character was
+		specified in the midlet suite vendor. (The midlet suite
+		vendor)} */
 		if (StringUtils.firstIndex("\0\r\n:;", __v) >= 0)
 			throw new InvalidSuiteException(String.format("AD0d %s", __v));
 		

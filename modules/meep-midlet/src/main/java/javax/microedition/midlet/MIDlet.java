@@ -95,8 +95,8 @@ public abstract class MIDlet
 			// Makes it easier to use
 			profile = profile.toLowerCase();
 			
-			// {@squirreljme.error AD03 Cannot use check permission on
-			// MIDP 3.0 or MEEP suite profiles.}
+			/* {@squirreljme.error AD03 Cannot use check permission on
+			MIDP 3.0 or MEEP suite profiles.} */
 			if (profile.contains("midp-3") || profile.contains("meep"))
 				throw new IllegalStateException("AD03");
 		}
@@ -171,8 +171,8 @@ public abstract class MIDlet
 			if (manifest == null)
 				try (InputStream in = type.manifestStream(ourJar))
 				{
-					// {@squirreljme.error ZZ4j No manifest available for
-					// this current MIDlet of the given type. (The type)}
+					/* {@squirreljme.error ZZ4j No manifest available for
+					this current MIDlet of the given type. (The type)} */
 					if (in == null)
 						throw new IOException("ZZ4j " + type);
 					

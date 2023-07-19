@@ -69,7 +69,7 @@ public final class NullPlayer
 		if (__l == null)
 			return;
 		
-		// {@squirreljme.error EA01 Null Player has been closed.}
+		/* {@squirreljme.error EA01 Null Player has been closed.} */
 		if (this._state == Player.CLOSED)
 			throw new IllegalStateException("EA01");
 		
@@ -105,7 +105,7 @@ public final class NullPlayer
 	@Override
 	public final void deallocate()
 	{
-		// {@squirreljme.error EA03 Null Player has been closed.}
+		/* {@squirreljme.error EA03 Null Player has been closed.} */
 		if (this._state == Player.CLOSED)
 			throw new IllegalStateException("EA03");
 		
@@ -143,7 +143,7 @@ public final class NullPlayer
 	@Override
 	public final Control getControl(String __v)
 	{
-		// {@squirreljme.error AE07 No control specified.}
+		/* {@squirreljme.error AE07 No control specified.} */
 		if (__v == null)
 			throw new IllegalArgumentException("AE07");
 		
@@ -182,8 +182,8 @@ public final class NullPlayer
 	{
 		synchronized (this)
 		{
-			// {@squirreljme.error EA08 Cannot obtain the media time for a
-			// closed null stream.}
+			/* {@squirreljme.error EA08 Cannot obtain the media time for a
+			closed null stream.} */
 			if (this._state == Player.CLOSED)
 				throw new IllegalStateException("EA08");
 			
@@ -232,7 +232,7 @@ public final class NullPlayer
 	public final void realize()
 		throws MediaException
 	{
-		// {@squirreljme.error EA04 Null Player has been closed.}
+		/* {@squirreljme.error EA04 Null Player has been closed.} */
 		if (this._state == Player.CLOSED)
 			throw new IllegalStateException("EA04");
 		
@@ -252,7 +252,7 @@ public final class NullPlayer
 		if (__l == null)
 			return;
 		
-		// {@squirreljme.error EA02 Null Player has been closed.}
+		/* {@squirreljme.error EA02 Null Player has been closed.} */
 		if (this._state == Player.CLOSED)
 			throw new IllegalStateException("EA02");
 		
@@ -284,8 +284,8 @@ public final class NullPlayer
 	{
 		synchronized (this)
 		{
-			// {@squirreljme.error EA09 Cannot set the media time on a null
-			// stream.}
+			/* {@squirreljme.error EA09 Cannot set the media time on a null
+			stream.} */
 			if (this._state == Player.CLOSED ||
 				this._state == Player.UNREALIZED)
 				throw new IllegalStateException("EA09");
@@ -313,7 +313,7 @@ public final class NullPlayer
 	public final void start()
 		throws MediaException
 	{
-		// {@squirreljme.error EA05 Null Player has been closed.}
+		/* {@squirreljme.error EA05 Null Player has been closed.} */
 		if (this._state == Player.CLOSED)
 			throw new IllegalStateException("EA05");
 		
@@ -335,7 +335,7 @@ public final class NullPlayer
 	public final void stop()
 		throws MediaException
 	{
-		// {@squirreljme.error EA06 Null Player has been closed.}
+		/* {@squirreljme.error EA06 Null Player has been closed.} */
 		if (this._state == Player.CLOSED)
 			throw new IllegalStateException("EA06");
 		

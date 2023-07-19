@@ -99,8 +99,8 @@ public final class HTTPAddress
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EC02 HTTP address must start with double
-		// slash. (The URI part)}
+		/* {@squirreljme.error EC02 HTTP address must start with double
+		slash. (The URI part)} */
 		if (!__p.startsWith("//"))
 			throw new IllegalArgumentException("EC02 " + __p);
 		__p = __p.substring(2);

@@ -41,8 +41,8 @@ public class ShellSort
 	public static int[] gaps(int __n)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ5e Request of gaps with a negative list
-		// size.}
+		/* {@squirreljme.error ZZ5e Request of gaps with a negative list
+		size.} */
 		if (__n < 0)
 			throw new IllegalArgumentException("ZZ5e");
 		

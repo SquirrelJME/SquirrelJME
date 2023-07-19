@@ -161,7 +161,7 @@ public final class SpringFieldStorage
 		/*todo.DEBUG.note("%s::%s = %s", this.inclass, this.nameandtype,
 			__v);*/
 		
-		// {@squirreljme.error BK18 Attempt to write to final field.}
+		/* {@squirreljme.error BK18 Attempt to write to final field.} */
 		if (this.isFinal && !__writeFinal)
 			throw new SpringIllegalAccessException("BK18");
 		

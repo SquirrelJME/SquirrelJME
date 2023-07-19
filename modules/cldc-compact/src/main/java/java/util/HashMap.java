@@ -157,7 +157,7 @@ public class HashMap<K, V>
 		// Oops
 		catch (IllegalAccessException|InstantiationException e)
 		{
-			// {@squirreljme.error ZZ2p Could not clone the map.}
+			/* {@squirreljme.error ZZ2p Could not clone the map.} */
 			throw new RuntimeException("ZZ2p", e);
 		}
 	}

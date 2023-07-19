@@ -125,7 +125,7 @@ public final class PencilGraphics
 		if (__software == null || __hardware == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB3g Hardware graphics not capable enough.}
+		/* {@squirreljme.error EB3g Hardware graphics not capable enough.} */
 		if ((__caps & PencilCapabilities.MINIMUM) == 0)
 			throw new IllegalArgumentException("EB3g " + __caps);
 		
@@ -867,8 +867,8 @@ public final class PencilGraphics
 	public void setAlphaColor(int __a, int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB3t Color out of range. (Alpha; Red; Green;
-		// Blue)}
+		/* {@squirreljme.error EB3t Color out of range. (Alpha; Red; Green;
+		Blue)} */
 		if (__a < 0 || __a > 255 || __r < 0 || __r > 255 ||
 			__g < 0 || __g > 255 || __b < 0 || __b > 255)
 			throw new IllegalArgumentException(String.format(
@@ -886,7 +886,7 @@ public final class PencilGraphics
 	public void setBlendingMode(int __m)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB3u Invalid blending mode. (The mode)}
+		/* {@squirreljme.error EB3u Invalid blending mode. (The mode)} */
 		if ((__m != Graphics.SRC && __m != Graphics.SRC_OVER) ||
 			(__m == Graphics.SRC && !this.hasAlpha))
 			throw new IllegalArgumentException("EB3u " + __m);
@@ -1014,7 +1014,7 @@ public final class PencilGraphics
 	public void setStrokeStyle(int __style)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB3v Illegal stroke style.}
+		/* {@squirreljme.error EB3v Illegal stroke style.} */
 		if (__style != Graphics.SOLID && __style != Graphics.DOTTED)
 			throw new IllegalArgumentException("EB3v");
 		

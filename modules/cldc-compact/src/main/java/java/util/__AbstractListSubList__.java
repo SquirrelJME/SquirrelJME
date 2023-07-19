@@ -39,7 +39,7 @@ final class __AbstractListSubList__<E>
 		if (__list == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ3r End point is before starting point.}
+		/* {@squirreljme.error ZZ3r End point is before starting point.} */
 		if (__from > __to)
 			throw new IllegalArgumentException("ZZ3r");
 		

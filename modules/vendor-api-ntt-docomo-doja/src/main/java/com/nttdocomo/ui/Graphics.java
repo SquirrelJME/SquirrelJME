@@ -114,7 +114,7 @@ public class Graphics
 	public void clearRect(int __x, int __y, int __w, int __h)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AH0o Invalid rectangle size.}
+		/* {@squirreljme.error AH0o Invalid rectangle size.} */
 		if (__w < 0 || __h < 0)
 			throw new IllegalArgumentException("AH0o");
 		
@@ -196,7 +196,7 @@ public class Graphics
 	public void drawRect(int __x, int __y, int __w, int __h)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AH0p Invalid rectangle size.}
+		/* {@squirreljme.error AH0p Invalid rectangle size.} */
 		if (__w < 0 || __h < 0)
 			throw new IllegalArgumentException("AH0p");
 		
@@ -229,7 +229,7 @@ public class Graphics
 	public void fillRect(int __x, int __y, int __w, int __h)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AH0q Invalid rectangle size.}
+		/* {@squirreljme.error AH0q Invalid rectangle size.} */
 		if (__w < 0 || __h < 0)
 			throw new IllegalArgumentException("AH0q");
 		
@@ -323,7 +323,7 @@ public class Graphics
 				return 0xFFFF00;
 		}
 		
-		// {@squirreljme.error AH0r Invalid color. (The color)}
+		/* {@squirreljme.error AH0r Invalid color. (The color)} */
 		throw new IllegalArgumentException("AH0r " + __name);
 	}
 	

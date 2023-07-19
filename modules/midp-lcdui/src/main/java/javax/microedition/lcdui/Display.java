@@ -365,7 +365,7 @@ public class Display
 	public boolean flashBacklight(int __ms)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB30 Cannot blink for a negative duration.}
+		/* {@squirreljme.error EB30 Cannot blink for a negative duration.} */
 		if (__ms < 0)
 			throw new IllegalArgumentException("EB30");
 		
@@ -535,8 +535,8 @@ public class Display
 				rv = CommonColors.HIGHLIGHTED_FOREGROUND;
 				break;
 		
-				// {@squirreljme.error EB1h Unknown color specifier. (The
-				// color specifier)}
+				/* {@squirreljme.error EB1h Unknown color specifier. (The
+				color specifier)} */
 			default:
 				throw new IllegalArgumentException("EB1h " + __c);
 		}
@@ -570,7 +570,7 @@ public class Display
 	public int[] getCommandPreferredPlacements(int __ct)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB3l Invalid command type. (The type)}
+		/* {@squirreljme.error EB3l Invalid command type. (The type)} */
 		if (__ct < Command.SCREEN || __ct > Command.ITEM)
 			throw new IllegalArgumentException("EB3l " + __ct);
 		
@@ -656,7 +656,7 @@ public class Display
 					this.__layoutProject(Display.SOFTKEY_BOTTOM + 1),
 					this.__layoutProject(Display.SOFTKEY_BOTTOM + 2)};
 			
-				// {@squirreljme.error EB1p Invalid border. (The border)}
+				/* {@squirreljme.error EB1p Invalid border. (The border)} */
 			default:
 				throw new IllegalArgumentException("EB1p " + __b);
 		}
@@ -897,7 +897,7 @@ public class Display
 			case UIPixelFormat.PACKED_INDEXED1:
 				return 2;
 			
-				// {@squirreljme.error EB3j Unhandled pixel format. (Format)}.
+				/* {@squirreljme.error EB3j Unhandled pixel format. (Format)} */.
 			default:
 				throw Debugging.oops("EB3j", pf);
 		}
@@ -936,7 +936,7 @@ public class Display
 		else if (__m == Display.MODE_NORMAL)
 			throw Debugging.todo();
 	
-		// {@squirreljme.error EB1i Unknown activity mode specified.}
+		/* {@squirreljme.error EB1i Unknown activity mode specified.} */
 		else
 			throw new IllegalArgumentException("EB1i");
 	}
@@ -969,8 +969,8 @@ public class Display
 		throws DisplayCapabilityException, IllegalStateException,
 			NullPointerException
 	{
-		// {@squirreljme.error EB1j Cannot show another alert when the alert
-		// to show is cleared.}
+		/* {@squirreljme.error EB1j Cannot show another alert when the alert
+		to show is cleared.} */
 		if (__exit instanceof Alert)
 			throw new IllegalStateException("EB1j");
 		
@@ -978,8 +978,8 @@ public class Display
 		if (__show == null || __exit == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB1k The displayable to show on exit after
-		// showing an alert cannot be an alert.}
+		/* {@squirreljme.error EB1k The displayable to show on exit after
+		showing an alert cannot be an alert.} */
 		if (__exit instanceof Alert)
 			throw new IllegalStateException("EB1k");
 		
@@ -1005,8 +1005,8 @@ public class Display
 			this._heldexit = __exit;
 		}
 		
-		// {@squirreljme.error EB1l Could not set the alert and its exit
-		// displayable because it is already set on a display.}
+		/* {@squirreljme.error EB1l Could not set the alert and its exit
+		displayable because it is already set on a display.} */
 		catch (LcdWidgetOwnedException e)
 		{
 			throw new IllegalStateException("EB1l", e);
@@ -1062,8 +1062,8 @@ public class Display
 			return;
 		}
 		
-		// {@squirreljme.error EB1m The displayable to be displayed is already
-		// being displayed.}
+		/* {@squirreljme.error EB1m The displayable to be displayed is already
+		being displayed.} */
 		if (__show._display != null)
 			throw new IllegalStateException("EB1m");
 		
@@ -1153,8 +1153,8 @@ public class Display
 			case Display.COMMAND:
 				return backend.metric(_uiDisplay, UIMetricType.COMMAND_BAR_HEIGHT);
 				
-				// {@squirreljme.error EB1o Cannot get the best image size of
-				// the specified element. (The element specifier)}
+				/* {@squirreljme.error EB1o Cannot get the best image size of
+				the specified element. (The element specifier)} */
 			default:
 				throw new IllegalArgumentException(String.format("EB1o %d",
 					__e));
@@ -1280,8 +1280,8 @@ public class Display
 					case Display.SOFTKEY_RIGHT:
 						return Display.SOFTKEY_LEFT + position;
 					
-						// {@squirreljme.error EB3k Invalid border position.
-						// (The border position).
+						/* {@squirreljme.error EB3k Invalid border position.
+						(The border position).} */
 					default:
 						throw new IllegalArgumentException("EB3k " + border);
 				}
@@ -1409,8 +1409,8 @@ public class Display
 		if (all.length > 0)
 			return all[0];
 		
-		// {@squirreljme.error EB1p Could not get the display for the specified
-		// MIDlet because no displays are available.}
+		/* {@squirreljme.error EB1p Could not get the display for the specified
+		MIDlet because no displays are available.} */
 		throw new IllegalStateException("EB1p");
 	}
 	
@@ -1463,7 +1463,7 @@ public class Display
 			if ((potential.getCapabilities() & __caps) == __caps)
 				possible.add(potential);
 		
-		// {@squirreljme.error EB1q No displays are available.}
+		/* {@squirreljme.error EB1q No displays are available.} */
 		if (possible.isEmpty())
 			throw new IllegalStateException("EB1q");
 		

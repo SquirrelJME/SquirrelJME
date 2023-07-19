@@ -38,8 +38,8 @@ public class DisplayColor
 	public DisplayColor(int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error DA01 Initialization of color values out of
-		// range, they must be in the range of 0-255. (Red; Green; Blue)}
+		/* {@squirreljme.error DA01 Initialization of color values out of
+		range, they must be in the range of 0-255. (Red; Green; Blue)} */
 		if (__r < 0 || __r > 255 || __g < 0 || __g > 255 || __b < 0 ||
 			__b > 255)
 			throw new IllegalArgumentException(String.format("DA01 %d %d %d",

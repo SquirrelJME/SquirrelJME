@@ -95,8 +95,8 @@ public final class UIBackendFactory
 			// and the only have to have graphics is to fake it
 			if (forceHeadless)
 			{
-				// {@squirreljme.error EB33 Headless display not permitted
-				// at this current time.}
+				/* {@squirreljme.error EB33 Headless display not permitted
+				at this current time.} */
 				if (!__allowHeadless)
 					throw new IllegalStateException("EB33");
 				

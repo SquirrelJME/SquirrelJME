@@ -58,7 +58,7 @@ public class ChunkFutureSection
 	@Override
 	public int get()
 	{
-		// {@squirreljme.error BD07 Section was garbage collected.}
+		/* {@squirreljme.error BD07 Section was garbage collected.} */
 		ChunkSection section = this.section.get();
 		if (section == null)
 			throw new IllegalStateException("BD07");

@@ -34,7 +34,7 @@ public final class PropertySpan
 	public PropertySpan(int __numProperties)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AJ02 Invalid number of properties.}
+		/* {@squirreljme.error AJ02 Invalid number of properties.} */
 		if (__numProperties <= 0)
 			throw new IllegalArgumentException("AJ02 " + __numProperties);
 		

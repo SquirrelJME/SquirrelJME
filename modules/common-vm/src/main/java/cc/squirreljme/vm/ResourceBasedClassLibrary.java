@@ -96,7 +96,7 @@ public final class ResourceBasedClassLibrary
 			}
 		}
 		
-		// {@squirreljme.error AK09 Could not load resource list.}
+		/* {@squirreljme.error AK09 Could not load resource list.} */
 		catch (IOException e)
 		{
 			throw new RuntimeException("AK09");

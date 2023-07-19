@@ -35,7 +35,7 @@ public class Spacer
 	public void addCommand(Command __a)
 		throws IllegalStateException
 	{
-		// {@squirreljme.error EB2l Cannot add commands for spacers.}
+		/* {@squirreljme.error EB2l Cannot add commands for spacers.} */
 		throw new IllegalStateException("EB2l");
 	}
 	
@@ -50,8 +50,8 @@ public class Spacer
 	public void setDefaultCommand(Command __a)
 		throws IllegalStateException
 	{
-		// {@squirreljme.error EB2m Cannot set the default command for
-		// spacers.}
+		/* {@squirreljme.error EB2m Cannot set the default command for
+		spacers.} */
 		throw new IllegalStateException("EB2m");
 	}
 	
@@ -66,7 +66,7 @@ public class Spacer
 	public void setLabel(String __a)
 		throws IllegalStateException
 	{
-		// {@squirreljme.error EB2n Cannot set labels for spacers.}
+		/* {@squirreljme.error EB2n Cannot set labels for spacers.} */
 		throw new IllegalStateException("EB2n");
 	}
 	

@@ -74,14 +74,14 @@ public class RawJarPackageBracketInputStream
 		if (__jar == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ3u The specified JAR cannot be accessed
-		// directly. (The JAR path)}
+		/* {@squirreljme.error ZZ3u The specified JAR cannot be accessed
+		directly. (The JAR path)} */
 		int jarSize = JarPackageShelf.rawSize(__jar);
 		if (jarSize < 0)
 			throw new IOException("ZZ3u " +
 				JarPackageShelf.libraryPath(__jar));
 		
-		// {@squirreljme.error ZZ4j Invalid offset into direct JAR.}
+		/* {@squirreljme.error ZZ4j Invalid offset into direct JAR.} */
 		if (__offset < 0 || __offset > jarSize)
 			throw new IndexOutOfBoundsException("ZZ4j");
 		

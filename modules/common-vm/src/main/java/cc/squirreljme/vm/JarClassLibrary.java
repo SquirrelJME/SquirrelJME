@@ -59,7 +59,7 @@ public class JarClassLibrary
 		}
 		catch (IOException e)
 		{
-			// {@squirreljme.error AK01 Could not read contents. (Jar Path)}
+			/* {@squirreljme.error AK01 Could not read contents. (Jar Path)} */
 			throw new RuntimeException("AK01 " + this.path, e);
 		}
 	}

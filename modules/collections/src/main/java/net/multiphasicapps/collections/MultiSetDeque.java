@@ -171,7 +171,7 @@ public class MultiSetDeque<V>
 	public final Deque<V> subDeque(int __l)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AC05 The sub-deque limit is zero or negative.}
+		/* {@squirreljme.error AC05 The sub-deque limit is zero or negative.} */
 		if (__l <= 0)
 			throw new IllegalArgumentException("AC05");
 		

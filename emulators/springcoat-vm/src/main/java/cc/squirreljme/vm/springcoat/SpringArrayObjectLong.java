@@ -83,8 +83,8 @@ public final class SpringArrayObjectLong
 			return (C)Long.valueOf(this._elements[__dx]);
 		}
 		
-		// {@squirreljme.error BK0n Out of bounds access to array. (The index;
-		// The length of the array)}
+		/* {@squirreljme.error BK0n Out of bounds access to array. (The index;
+		The length of the array)} */
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
@@ -106,15 +106,15 @@ public final class SpringArrayObjectLong
 			this._elements[__dx] = ((Long)__v).longValue();
 		}
 		
-		// {@squirreljme.error BK0o Could not set the index in the long
-		// array.}
+		/* {@squirreljme.error BK0o Could not set the index in the long
+		array.} */
 		catch (ClassCastException e)
 		{
 			throw new SpringArrayStoreException("BK0o", e);
 		}
 		
-		// {@squirreljme.error BK0p Out of bounds access to array. (The index;
-		// The length of the array)}
+		/* {@squirreljme.error BK0p Out of bounds access to array. (The index;
+		The length of the array)} */
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(

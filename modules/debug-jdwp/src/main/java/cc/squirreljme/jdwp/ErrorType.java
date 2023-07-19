@@ -127,8 +127,8 @@ public enum ErrorType
 	public final JDWPCommandException toss(Object __context, int __id,
 		Throwable __cause)
 	{
-		// {@squirreljme.error AG0o Command cause an exception.
-		// (The error; The context; The context type; The ID number)}
+		/* {@squirreljme.error AG0o Command cause an exception.
+		(The error; The context; The context type; The ID number)} */
 		throw new JDWPCommandException(this,
 			String.format("AG0o %s %s (%s) %d", this, __context,
 				(__context == null ? "null" : __context.getClass()),

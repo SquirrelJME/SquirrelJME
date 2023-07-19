@@ -136,7 +136,7 @@ public final class CommLink
 				fail.addSuppressed(e);
 		}
 		
-		// {@squirreljme.error AG09 Could not close communication link.}
+		/* {@squirreljme.error AG09 Could not close communication link.} */
 		if (fail != null)
 			throw new JDWPException("AG09", fail);
 	}
@@ -185,7 +185,7 @@ public final class CommLink
 					// EOF?
 					if (rc < 0)
 					{
-						// {@squirreljme.error AG07 Short header read.}
+						/* {@squirreljme.error AG07 Short header read.} */
 						if (headerAt > 0)
 							throw new EOFException("AG07");
 							
@@ -225,7 +225,7 @@ public final class CommLink
 					// EOF?
 					if (rc < 0)
 					{
-						// {@squirreljme.error AG08 Short header read.}
+						/* {@squirreljme.error AG08 Short header read.} */
 						if (dataAt > 0)
 							throw new EOFException("AG08");
 							
@@ -260,7 +260,7 @@ public final class CommLink
 				return null;
 			}
 	
-			// {@squirreljme.error AG06 Read error.}
+			/* {@squirreljme.error AG06 Read error.} */
 			catch (IOException e)
 			{
 				throw new JDWPException("AG06", e);
@@ -308,7 +308,7 @@ public final class CommLink
 			}
 		}
 		
-		// {@squirreljme.error AG01 Could not send the packet. (The packet)}
+		/* {@squirreljme.error AG01 Could not send the packet. (The packet)} */
 		catch (IOException e)
 		{
 			throw new JDWPException("AG01 " + __packet, e);
@@ -339,14 +339,14 @@ public final class CommLink
 			{
 				int read = this.in.read();
 				
-				// {@squirreljme.error AG02 EOF reading handshake.}
+				/* {@squirreljme.error AG02 EOF reading handshake.} */
 				if (read < 0)
 					throw new JDWPException("AG02");
 				
 				debuggerShake[i] = (byte)read;
 			}
 			
-			// {@squirreljme.error AG03 Debugger sent an invalid handshake.}
+			/* {@squirreljme.error AG03 Debugger sent an invalid handshake.} */
 			if (!Arrays.equals(debuggerShake, CommLink._HANDSHAKE_SEQUENCE))
 				throw new JDWPException("AG03");
 			
@@ -363,7 +363,7 @@ public final class CommLink
 		}
 		catch (IOException e)
 		{
-			// {@squirreljme.error AG04 Failed to handshake.}
+			/* {@squirreljme.error AG04 Failed to handshake.} */
 			throw new JDWPException("AG04", e);
 		}
 	}

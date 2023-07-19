@@ -163,8 +163,8 @@ public enum GraphicsFunction
 			case 30:	return GraphicsFunction.SET_BLENDING_MODE;
 			case 31:	return GraphicsFunction.DRAW_REGION;
 				
-				// {@squirreljme.error EB0j Invalid graphics function.
-				// (The function ID)}
+				/* {@squirreljme.error EB0j Invalid graphics function.
+				(The function ID)} */
 			default:
 				throw new IllegalArgumentException("EB0j " + __id);
 		}

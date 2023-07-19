@@ -42,7 +42,7 @@ public class RepaintTimer
 		if (__c == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AW01 The timer cannot be zero or negative.}
+		/* {@squirreljme.error AW01 The timer cannot be zero or negative.} */
 		if (__ms <= 0)
 			throw new IllegalArgumentException("AW01");
 		

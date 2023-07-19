@@ -107,13 +107,13 @@ public final class SpringMonitor
 		// Lock on the monitor lock
 		synchronized (this)
 		{
-			// {@squirreljme.error BK1c This thread does not own the
-			// monitor.}
+			/* {@squirreljme.error BK1c This thread does not own the
+			monitor.} */
 			if (this._owner != __t)
 				throw new SpringIllegalMonitorStateException("BK1c");	
 			
-			// {@squirreljme.error BK1d No previous entry call was made.
-			// (The monitor entry count)}
+			/* {@squirreljme.error BK1d No previous entry call was made.
+			(The monitor entry count)} */
 			int count = this._count;
 			if (count <= 0)
 				throw new SpringIllegalMonitorStateException(

@@ -72,8 +72,8 @@ public class ExtendedDataOutputStream
 	public void align(int __n)
 		throws IndexOutOfBoundsException, IOException
 	{
-		// {@squirreljme.error BD0x Cannot align to zero or a negative
-		// amount.}
+		/* {@squirreljme.error BD0x Cannot align to zero or a negative
+		amount.} */
 		if (__n <= 0)
 			throw new IndexOutOfBoundsException("BD0x");
 		
@@ -226,7 +226,7 @@ public class ExtendedDataOutputStream
 	public final void writeByteExact(int __v)
 		throws IOException
 	{
-		// {@squirreljme.error BD0y Byte value out of range.}
+		/* {@squirreljme.error BD0y Byte value out of range.} */
 		if (__v < -128 || __v > 127)
 			throw new IOException("BD0y");
 		
@@ -402,7 +402,7 @@ public class ExtendedDataOutputStream
 	public final void writeShortExact(int __v)
 		throws IOException
 	{
-		// {@squirreljme.error BD0z Short value out of range.}
+		/* {@squirreljme.error BD0z Short value out of range.} */
 		if (__v < -32768 || __v > 32767)
 			throw new IOException("BD0z");
 		
@@ -420,7 +420,7 @@ public class ExtendedDataOutputStream
 	public final void writeUnsignedByteExact(int __v)
 		throws IOException
 	{
-		// {@squirreljme.error BD10 Unsigned byte value out of range.}
+		/* {@squirreljme.error BD10 Unsigned byte value out of range.} */
 		if (__v < 0 || __v > 255)
 			throw new IOException("BD10");
 		
@@ -438,7 +438,7 @@ public class ExtendedDataOutputStream
 	public final void writeUnsignedShortExact(int __v)
 		throws IOException
 	{
-		// {@squirreljme.error BD11 Unsigned short value out of range.}
+		/* {@squirreljme.error BD11 Unsigned short value out of range.} */
 		if (__v < 0 || __v > 65535)
 			throw new IOException("BD11");
 		

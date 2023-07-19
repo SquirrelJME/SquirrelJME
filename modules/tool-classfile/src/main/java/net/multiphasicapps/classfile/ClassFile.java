@@ -95,11 +95,11 @@ public final class ClassFile
 				if (f == null)
 					throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC29 Either Object has a superclass which it
-		// cannot extend any class or any other class does not have a super
-		// class. Additionally primitive types cannot have a super class.
-		// (The current class name; The super class name; Object class name;
-		// Is this primitive?)}
+		/* {@squirreljme.error JC29 Either Object has a superclass which it
+		cannot extend any class or any other class does not have a super
+		class. Additionally primitive types cannot have a super class.
+		(The current class name; The super class name; Object class name;
+		Is this primitive?)} */
 		ClassName objectcn = new ClassName("java/lang/Object");
 		if ((__tn.isPrimitive() ||
 			__tn.equals(objectcn)) != (__sn == null))
@@ -265,8 +265,8 @@ public final class ClassFile
 		if (__d == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC2a Cannot create a special class because it
-		// is not an array or primitive type. (The descriptor)}
+		/* {@squirreljme.error JC2a Cannot create a special class because it
+		is not an array or primitive type. (The descriptor)} */
 		if (!__d.isArray() && !__d.isPrimitive())
 			throw new IllegalArgumentException(String.format("JC2a %s", __d));
 		
@@ -311,16 +311,16 @@ public final class ClassFile
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC2b The magic number for the class is not
-		// valid. (The read magic number; The expected magic number)}
+		/* {@squirreljme.error JC2b The magic number for the class is not
+		valid. (The read magic number; The expected magic number)} */
 		DataInputStream in = new DataInputStream(__is);
 		int magic = in.readInt();
 		if (magic != ClassFile._MAGIC_NUMBER)
 			throw new InvalidClassFormatException(String.format(
 				"JC2b %08x %08x", magic, ClassFile._MAGIC_NUMBER));
 		
-		// {@squirreljme.error JC2c The version number of the input class
-		// file is not valid. (The version number)}
+		/* {@squirreljme.error JC2c The version number of the input class
+		file is not valid. (The version number)} */
 		int cver = in.readShort() | (in.readShort() << 16);
 		ClassVersion version = ClassVersion.findVersion(cver);
 		if (version == null)
@@ -364,8 +364,8 @@ public final class ClassFile
 		// Parse inner classes
 		InnerClasses innerclasses = InnerClasses.parse(pool, attrs);
 		
-		// {@squirreljme.error JC2d Expected end of the class to follow the
-		// attributes in the class. (The name of this class)}
+		/* {@squirreljme.error JC2d Expected end of the class to follow the
+		attributes in the class. (The name of this class)} */
 		if (in.read() >= 0)
 			throw new InvalidClassFormatException(
 				String.format("JC2d %s", thisname));
@@ -412,8 +412,8 @@ public final class ClassFile
 		__aname[0] = __pool.<UTFConstantEntry>require(UTFConstantEntry.class,
 			__in.readUnsignedShort()).toString();
 		
-		// {@squirreljme.error JC2e Attribute exceeds 2GiB in length. (The
-		// size of the attribute)}
+		/* {@squirreljme.error JC2e Attribute exceeds 2GiB in length. (The
+		size of the attribute)} */
 		int len = __in.readInt();
 		if (len < 0)
 			throw new InvalidClassFormatException(String.format("JC2e %d",

@@ -40,7 +40,7 @@ public class StringIndexOutOfBoundsException
 	@Api
 	public StringIndexOutOfBoundsException(int __dx)
 	{
-		// {@squirreljme.error ZZ1v String index out of bounds. (The index)}
+		/* {@squirreljme.error ZZ1v String index out of bounds. (The index)} */
 		super("ZZ1v " + __dx);
 	}
 	

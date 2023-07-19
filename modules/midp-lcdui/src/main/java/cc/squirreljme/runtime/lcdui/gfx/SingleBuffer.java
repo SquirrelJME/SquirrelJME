@@ -109,7 +109,7 @@ public final class SingleBuffer
 	public Graphics getGraphics(int __width, int __height)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB31 Invalid buffer dimensions.}
+		/* {@squirreljme.error EB31 Invalid buffer dimensions.} */
 		if (__width <= 0 || __height <= 0)
 			throw new IllegalArgumentException("EB31");
 		

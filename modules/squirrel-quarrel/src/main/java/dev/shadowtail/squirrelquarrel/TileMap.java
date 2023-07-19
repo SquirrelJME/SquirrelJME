@@ -66,8 +66,8 @@ public final class TileMap
 		if (__rand == null || __size == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BE0r Negative or zero players, there must be
-		// at least one player. (The player count)}
+		/* {@squirreljme.error BE0r Negative or zero players, there must be
+		at least one player. (The player count)} */
 		if (__numpl < 1)
 			throw new IllegalArgumentException("BE0r " + __numpl);
 		
@@ -115,8 +115,8 @@ public final class TileMap
 			rv = Image.createImage(in);
 		}
 		
-		// {@squirreljme.error BE0t Could not cache the image. (The index;
-		// The prefix)}
+		/* {@squirreljme.error BE0t Could not cache the image. (The index;
+		The prefix)} */
 		catch (IOException e)
 		{
 			throw new RuntimeException("BE0t " + __dx + " " + __prefix, e);
