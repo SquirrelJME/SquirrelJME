@@ -7,6 +7,7 @@
       <file path="$PROJECT_DIR$/src" />
     </sourceRoots>
     <excludeRoots>
+      <file path="$PROJECT_DIR$/.idea" />
       <file path="$PROJECT_DIR$/build" />
     </excludeRoots>
   </component>

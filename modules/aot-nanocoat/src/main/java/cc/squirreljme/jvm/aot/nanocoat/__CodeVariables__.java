@@ -63,6 +63,19 @@ public final class __CodeVariables__
 	}
 	
 	/**
+	 * Returns the reference to current class being executed.
+	 *
+	 * @return The current class reference.
+	 * @throws IOException On write errors.
+	 * @since 2023/07/19
+	 */
+	public CExpression classObjectRef()
+		throws IOException
+	{
+		return __StaticCodeVariables__.classObjectRef();
+	}
+	
+	/**
 	 * Returns the variable that represents the current stack frame.
 	 * 
 	 * @return The variable that represents the current stack frame.
@@ -178,6 +191,19 @@ public final class __CodeVariables__
 			temps.add(new JvmTemporary(temps.size()));
 		
 		return temps.get(__index);
+	}
+	
+	/**
+	 * Returns the reference to {@code this}.
+	 *
+	 * @return The current this reference.
+	 * @throws IOException On write errors.
+	 * @since 2023/07/19
+	 */
+	public CExpression thisRef()
+		throws IOException
+	{
+		return __StaticCodeVariables__.thisRef();
 	}
 	
 	/**

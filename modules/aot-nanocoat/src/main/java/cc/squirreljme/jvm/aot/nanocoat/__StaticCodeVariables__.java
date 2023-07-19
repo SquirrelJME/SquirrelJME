@@ -27,6 +27,9 @@ import java.lang.ref.WeakReference;
  */
 public class __StaticCodeVariables__
 {
+	/** The class object reference. */
+	private static volatile Reference<CExpression> _classObjectRef;
+	
 	/** Current frame cache. */
 	private static volatile Reference<CVariable> _currentFrame;
 	
@@ -36,11 +39,41 @@ public class __StaticCodeVariables__
 	/** Current thread cache. */
 	private static volatile Reference<CVariable> _currentThread;
 	
+	/** The current this reference. */
+	private static volatile Reference<CExpression> _thisRef;
+	
 	/** Waiting to be thrown. */
 	private static volatile Reference<CExpression> _waitingThrown;
 	
 	/** Return value storage. */
 	private static volatile Reference<CExpression> _returnValue;
+	
+	/**
+	 * Returns the reference to current class being executed.
+	 *
+	 * @return The current class reference.
+	 * @throws IOException On write errors.
+	 * @since 2023/07/19
+	 */
+	public static CExpression classObjectRef()
+		throws IOException
+	{
+		Reference<CExpression> ref = __StaticCodeVariables__._classObjectRef;
+		CExpression rv;
+		
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			rv = CExpressionBuilder.builder()
+				.identifier(__StaticCodeVariables__.currentFrame())
+				.dereferenceStruct()
+				.identifier(JvmTypes.VMFRAME.type(CStructType.class)
+					.member("classObjectRef"))
+				.build();
+			__StaticCodeVariables__._classObjectRef = new WeakReference<>(rv);
+		}
+		
+		return rv;
+	}
 	
 	/**
 	 * Returns the variable that represents the current stack frame.
@@ -129,6 +162,33 @@ public class __StaticCodeVariables__
 					.member("returnValue"))
 				.build();
 			__StaticCodeVariables__._returnValue = new WeakReference<>(rv);
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the reference to {@code this}.
+	 *
+	 * @return The current this reference.
+	 * @throws IOException On write errors.
+	 * @since 2023/07/19
+	 */
+	public static CExpression thisRef()
+		throws IOException
+	{
+		Reference<CExpression> ref = __StaticCodeVariables__._thisRef;
+		CExpression rv;
+		
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			rv = CExpressionBuilder.builder()
+				.identifier(__StaticCodeVariables__.currentFrame())
+				.dereferenceStruct()
+				.identifier(JvmTypes.VMFRAME.type(CStructType.class)
+					.member("thisRef"))
+				.build();
+			__StaticCodeVariables__._thisRef = new WeakReference<>(rv);
 		}
 		
 		return rv;

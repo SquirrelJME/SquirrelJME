@@ -13,7 +13,6 @@ import cc.squirreljme.c.CBasicExpression;
 import cc.squirreljme.c.CComparison;
 import cc.squirreljme.c.CExpression;
 import cc.squirreljme.c.CExpressionBuilder;
-import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CFunctionBlock;
 import cc.squirreljme.c.CFunctionBlockSplices;
 import cc.squirreljme.c.CIfBlock;
@@ -84,6 +83,9 @@ public class ByteCodeProcessor
 	/** The stack map table at runtime. */
 	protected final StackMapTablePairs stackMap;
 	
+	/** Is this static? */
+	protected final boolean isStatic;
+	
 	/** Basic block mappings. */
 	private final Map<Integer, BasicBlock> _basicBlocks =
 		new SortedTreeMap<>();
@@ -117,6 +119,7 @@ public class ByteCodeProcessor
 		this.method = __method.method;
 		this.linkTable = __method.linkTable;
 		this.stackMap = __code.stackMapTableFull();
+		this.isStatic = __method.method.flags().isStatic();
 		
 		// Reverse jump targets for instructions
 		Map<Integer, InstructionJumpTargets> reverseJumpsTable =
@@ -380,7 +383,8 @@ public class ByteCodeProcessor
 					// If synchronized, lock on monitor implicitly here
 					Method method = this.method;
 					if (method.flags().isSynchronized())
-						throw Debugging.todo();
+						this.__monitor(body, true, (this.isStatic ?
+							codeVars.classObjectRef() : codeVars.thisRef()));
 					
 					// --- Initialization ---
 					// Return here so the initialization does get complete
@@ -392,7 +396,8 @@ public class ByteCodeProcessor
 					// --- Exit ---
 					// If synchronized, unlock on monitor implicitly here
 					if (method.flags().isSynchronized())
-						throw Debugging.todo();
+						this.__monitor(body, false, (this.isStatic ?
+							codeVars.classObjectRef() : codeVars.thisRef()));
 					
 					// Now return
 					body.returnValue(Constants.FALSE);
@@ -1851,11 +1856,9 @@ public class ByteCodeProcessor
 			JvmFunctions.NVM_STACK_POP_REFERENCE_TO_TEMP,
 			codeVars.currentFrame());
 		
-		// Perform monitor change
-		__block.functionCall(JvmFunctions.NVM_MONITOR,
-			codeVars.currentFrame(),
-			instance.accessTemp(JvmTypes.JOBJECT.pointerType()),
-			(__enter ? Constants.TRUE : Constants.FALSE));
+		// Perform monitor logic
+		this.__monitor(__block, __enter,
+			instance.accessTemp(JvmTypes.JOBJECT.pointerType()));
 	}
 	
 	/**
@@ -2345,6 +2348,31 @@ public class ByteCodeProcessor
 			CExpressionBuilder.builder()
 					.number(__targetGroupId)
 				.build());
+	}
+	
+	/**
+	 * Performs monitor entry or exit.
+	 *
+	 * @param __block The block to write to.
+	 * @param __enter Enter the monitor?
+	 * @param __instance The instance to enter on.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/19
+	 */
+	private void __monitor(CFunctionBlock __block, boolean __enter,
+		CExpression __instance)
+		throws IOException, NullPointerException
+	{
+		if (__block == null || __instance == null)
+			throw new NullPointerException("NARG");
+		
+		__CodeVariables__ codeVars = this.__codeVars();
+		
+		// Perform monitor change
+		__block.functionCall(JvmFunctions.NVM_MONITOR,
+			codeVars.currentFrame(), __instance,
+			(__enter ? Constants.TRUE : Constants.FALSE));
 	}
 	
 	/**

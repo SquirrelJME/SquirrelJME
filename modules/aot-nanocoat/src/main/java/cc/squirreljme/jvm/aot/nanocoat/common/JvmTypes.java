@@ -138,7 +138,8 @@ public enum JvmTypes
 		@Override
 		CType __build()
 		{
-			throw Debugging.todo();
+			return CTypeDefType.of(JvmTypes.JOBJECT.type(),
+				"jclass");
 		}
 	},
 	
@@ -604,6 +605,10 @@ public enum JvmTypes
 					"returnValue")
 				.member(JvmTypes.ANY.type().pointerType().pointerType(),
 					"tempStack")
+				.member(JvmTypes.JOBJECT.type().pointerType(),
+					"thisRef")
+				.member(JvmTypes.JCLASS.pointerType(),
+					"classObjectRef")
 				.build();
 		}
 	},
