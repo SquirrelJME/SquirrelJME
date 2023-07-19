@@ -130,7 +130,8 @@ public final class TaskShelf
 	@MagicConstant(valuesFromClass = PipeErrorType.class)
 	@Range(from = -2, to = Integer.MAX_VALUE)
 	@CheckReturnValue
-	public static native int read(@NotNull TaskBracket __task, int __fd,
+	public static native int read(@NotNull TaskBracket __task,
+		@MagicConstant(valuesFromClass = StandardPipeType.class) int __fd,
 		@NotNull byte[] __b,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __l)

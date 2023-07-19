@@ -22,6 +22,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -89,6 +90,7 @@ public final class RuntimeShelf
 	 * @since 2021/01/04
 	 */
 	@SquirrelJMEVendorApi
+	@Blocking
 	public static native void garbageCollect();
 	
 	/**

@@ -23,6 +23,7 @@ import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.Flow;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.Async;
 import org.jetbrains.annotations.NotNull;
@@ -60,8 +61,10 @@ public final class UIFormShelf
 	 * @since 2023/01/14
 	 */
 	@SquirrelJMEVendorApi
-	public static native void callback(@NotNull UIDisplayBracket __display,
-		UIDisplayCallback __callback)
+	public static native void callback(
+		@NotNull UIDisplayBracket __display,
+		@Flow(target = "__display",
+			targetIsContainer = true) UIDisplayCallback __callback)
 		throws MLECallError;
 	
 	/**
@@ -76,7 +79,8 @@ public final class UIFormShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native void callback(@NotNull UIFormBracket __form,
-		UIFormCallback __callback)
+		@Flow(target = "__display",
+			targetIsContainer = true) UIFormCallback __callback)
 		throws MLECallError;
 	
 	/**
@@ -88,6 +92,7 @@ public final class UIFormShelf
 	 * @since 2020/07/01
 	 */
 	@SquirrelJMEVendorApi
+	@Flow(sourceIsContainer = true)
 	public static native UIDisplayBracket[] displays()
 		throws MLECallError;
 	
@@ -100,6 +105,7 @@ public final class UIFormShelf
 	 * @since 2020/07/01
 	 */
 	@SquirrelJMEVendorApi
+	@Flow(source = "__display", sourceIsContainer = true)
 	public static native UIFormBracket displayCurrent(
 		@NotNull UIDisplayBracket __display)
 		throws MLECallError;
@@ -131,7 +137,8 @@ public final class UIFormShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native void displayShow(@NotNull UIDisplayBracket __display,
-		UIFormBracket __form)
+		@Flow(target = "__display",
+			targetIsContainer = true) UIFormBracket __form)
 		throws MLECallError;
 	
 	/**
@@ -238,6 +245,7 @@ public final class UIFormShelf
 	 * @since 2020/07/19
 	 */
 	@SquirrelJMEVendorApi
+	@Flow(source = "__form", sourceIsContainer = true)
 	public static native UIItemBracket formItemAtPosition(
 		@NotNull UIFormBracket __form,
 		int __pos)
@@ -285,7 +293,8 @@ public final class UIFormShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native void formItemPosition(@NotNull UIFormBracket __form,
-		@NotNull UIItemBracket __item, int __pos)
+		@Flow(target = "__form",
+			targetIsContainer = true) @NotNull UIItemBracket __item, int __pos)
 		throws MLECallError;
 	
 	/**
@@ -299,6 +308,7 @@ public final class UIFormShelf
 	 * @since 2020/07/18
 	 */
 	@SquirrelJMEVendorApi
+	@Flow(source = "__form", sourceIsContainer = true)
 	public static native UIItemBracket formItemRemove(
 		@NotNull UIFormBracket __form, int __pos)
 		throws MLECallError;

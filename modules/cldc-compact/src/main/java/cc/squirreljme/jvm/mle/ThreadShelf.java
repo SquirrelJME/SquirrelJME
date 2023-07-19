@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.constants.ThreadModelType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.Flow;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.CheckReturnValue;
@@ -55,7 +56,8 @@ public final class ThreadShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native VMThreadBracket createVMThread(
-		@NotNull Thread __javaThread, String __name)
+		@Flow(target = "this._vmThread") @NotNull Thread __javaThread,
+		String __name)
 		throws MLECallError;
 	
 	/**
@@ -133,6 +135,7 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
+	@Flow(source = "this._started")
 	public static native boolean javaThreadIsStarted(
 		@NotNull Thread __javaThread)
 		throws MLECallError;
@@ -145,7 +148,9 @@ public final class ThreadShelf
 	 * @throws MLECallError If {@code __javaThread} is null.
 	 * @since 2020/06/17
 	 */
+	
 	@SquirrelJMEVendorApi
+	@Flow(source = "this._runnable")
 	public static native Runnable javaThreadRunnable(
 		@NotNull Thread __javaThread)
 		throws MLECallError;
@@ -265,6 +270,7 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
+	@Flow(source = "this._vmThread") 
 	public static native VMThreadBracket toVMThread(
 		@NotNull Thread __thread)
 		throws MLECallError;

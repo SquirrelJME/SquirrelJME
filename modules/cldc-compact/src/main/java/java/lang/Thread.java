@@ -52,7 +52,7 @@ public class Thread
 		1_000_000L;
 	
 	/** The runnable that this thread uses for its main code, if applicable. */
-	@SuppressWarnings("unused")
+	@SuppressWarnings({"unused", "FieldCanBeLocal"})
 	private final Runnable _runnable;
 	
 	/** The virtual machine thread this uses. */
