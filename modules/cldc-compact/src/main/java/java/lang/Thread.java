@@ -523,7 +523,7 @@ public class Thread
 	@Blocking
 	@SuppressWarnings("MagicNumber")
 	public static void sleep(
-		@Range(from = 0, to = Integer.MAX_VALUE) long __ms,
+		@Range(from = 0, to = Long.MAX_VALUE) long __ms,
 		@Range(from = 0, to = 999999) int __ns)
 		throws IllegalArgumentException, InterruptedException
 	{
