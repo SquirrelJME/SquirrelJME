@@ -38,7 +38,7 @@ public final class StackMapTablePairs
 		if (__inputs == null || __outputs == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC01 Stack map inputs and outputs do not match.}
+		/* {@squirreljme.error JC01 Stack map inputs and outputs do not match.} */
 		if (!__inputs.keySet().equals(__outputs.keySet()))
 			throw new IllegalArgumentException("JC01");
 		

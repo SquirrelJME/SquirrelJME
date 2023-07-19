@@ -407,7 +407,7 @@ public final class SoftLong
 	private static long __div(boolean __doRem, int __nl, int __nh,
 		int __dl, int __dh)
 	{
-		// {@squirreljme.error ZZ4z Divide by zero.}
+		/* {@squirreljme.error ZZ4z Divide by zero.} */
 		if (__dl == 0 && __dh == 0)
 			throw new ArithmeticException("ZZ4z");
 		

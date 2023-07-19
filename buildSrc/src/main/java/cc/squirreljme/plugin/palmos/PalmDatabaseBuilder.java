@@ -275,7 +275,7 @@ public final class PalmDatabaseBuilder
 			return baos.toByteArray();
 		}
 		
-		// {@squirreljme.error BP01 Could not write the database.}
+		/* {@squirreljme.error BP01 Could not write the database.} */
 		catch (IOException e)
 		{
 			throw new RuntimeException("BP01", e);

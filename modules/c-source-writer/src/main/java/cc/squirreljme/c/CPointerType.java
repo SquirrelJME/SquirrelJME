@@ -200,8 +200,8 @@ public class CPointerType
 			// There are restrictions as to what can get a pointer of
 			if (__type instanceof CModifiedType)
 			{
-				// {@squirreljme.error CW0i Cannot pointer an extern or
-				// static type.}
+				/* {@squirreljme.error CW0i Cannot pointer an extern or
+				static type.} */
 				CModifiedType modifiedType = (CModifiedType)__type;
 				if (modifiedType.modifier instanceof CExternModifier ||
 					modifiedType.modifier instanceof CStaticModifier)

@@ -53,7 +53,7 @@ public final class TrackedInputStream
 	public final int available()
 		throws IOException
 	{
-		// {@squirreljme.error EC0r The input has been closed.}
+		/* {@squirreljme.error EC0r The input has been closed.} */
 		if (this.tracker._inclosed)
 			throw new IOException("EC0r");
 		
@@ -83,7 +83,7 @@ public final class TrackedInputStream
 	public final int read()
 		throws IOException
 	{
-		// {@squirreljme.error EC0s The input has been closed.}
+		/* {@squirreljme.error EC0s The input has been closed.} */
 		if (this.tracker._inclosed)
 			throw new IOException("EC0s");
 		
@@ -102,7 +102,7 @@ public final class TrackedInputStream
 	public final int read(byte[] __b)
 		throws IOException
 	{
-		// {@squirreljme.error EC0t The input has been closed.}
+		/* {@squirreljme.error EC0t The input has been closed.} */
 		if (this.tracker._inclosed)
 			throw new IOException("EC0t");
 		
@@ -121,7 +121,7 @@ public final class TrackedInputStream
 	public final int read(byte[] __b, int __o, int __l)
 		throws IOException
 	{
-		// {@squirreljme.error EC0u The input has been closed.}
+		/* {@squirreljme.error EC0u The input has been closed.} */
 		if (this.tracker._inclosed)
 			throw new IOException("EC0u");
 		

@@ -151,7 +151,7 @@ public final class BaseUnitInfo
 			case "medium": this.size = UnitSize.MEDIUM; break;
 			case "large": this.size = UnitSize.LARGE; break;
 			
-				// {@squirreljme.error BE09 Unknown unit size. (Unit size)}
+				/* {@squirreljme.error BE09 Unknown unit size. (Unit size)} */
 			default:
 				throw new RuntimeException(String.format("BE09 %s", vsize));
 		}

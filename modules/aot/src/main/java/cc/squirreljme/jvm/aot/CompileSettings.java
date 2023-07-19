@@ -61,8 +61,8 @@ public final class CompileSettings
 					isBootLoader = true;
 					break;
 				
-					// {@squirreljme.error AE06 Unknown compilation setting.
-					// (The argument)}
+					/* {@squirreljme.error AE06 Unknown compilation setting.
+					(The argument)} */
 				default:
 					throw new IllegalArgumentException("AE06 " + arg);
 			}

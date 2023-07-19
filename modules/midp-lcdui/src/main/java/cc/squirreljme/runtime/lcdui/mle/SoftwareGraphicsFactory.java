@@ -72,8 +72,8 @@ public final class SoftwareGraphicsFactory
 					__offset,
 					__sx, __sy);
 			
-			// {@squirreljme.error EB3f Unsupported software pixel format.
-			// (The pixel format)}
+			/* {@squirreljme.error EB3f Unsupported software pixel format.
+			(The pixel format)} */
 			default:
 				throw new IllegalArgumentException("EB3f " + __pf);
 		}

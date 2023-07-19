@@ -179,16 +179,16 @@ public final class InnerClassFlags
 		}
 		catch (InvalidClassFormatException e)
 		{
-			// {@squirreljme.error JC2y Inner class flags are not valid
-			// because they would produce invalid standard outer class
-			// flags. (The flags)}
+			/* {@squirreljme.error JC2y Inner class flags are not valid
+			because they would produce invalid standard outer class
+			flags. (The flags)} */
 			throw new InvalidClassFormatException(String.format("JC2y %s",
 				this), e);
 		}
 		
-		// {@squirreljme.error JC2z Multiple access modifiers, inner classes
-		// can only be one or none of private, protected, or public.
-		// (The flags)}
+		/* {@squirreljme.error JC2z Multiple access modifiers, inner classes
+		can only be one or none of private, protected, or public.
+		(The flags)} */
 		int count = (this.isPublic() ? 1 : 0) +
 			(this.isProtected() ? 1 : 0) +
 			(this.isPrivate() ? 1 : 0);

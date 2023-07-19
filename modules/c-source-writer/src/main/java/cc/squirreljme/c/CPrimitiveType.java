@@ -159,7 +159,7 @@ public enum CPrimitiveType
 	public CType dereferenceType()
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error CW03 Cannot dereference a basic type.}
+		/* {@squirreljme.error CW03 Cannot dereference a basic type.} */
 		throw new IllegalArgumentException("CW03");
 	}
 	

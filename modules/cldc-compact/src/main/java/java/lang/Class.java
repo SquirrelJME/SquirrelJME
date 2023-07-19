@@ -81,8 +81,8 @@ public final class Class<T>
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ0v The specified class is not a sub-class
-		// of this class. (The class being checked; The current class)}
+		/* {@squirreljme.error ZZ0v The specified class is not a sub-class
+		of this class. (The class being checked; The current class)} */
 		if (!this.isAssignableFrom(__cl))
 			throw new ClassCastException("ZZ0v " + __cl + " " + this);
 		
@@ -106,8 +106,8 @@ public final class Class<T>
 		if (__o == null)
 			return null;
 		
-		// {@squirreljme.error ZZ0w The other class cannot be casted to this
-		// class. (This class; The other class)}
+		/* {@squirreljme.error ZZ0w The other class cannot be casted to this
+		class. (This class; The other class)} */
 		Class<?> other = __o.getClass();
 		if (!this.isAssignableFrom(other))
 			throw new ClassCastException("ZZ0w " + this.getName() + " " +
@@ -405,8 +405,8 @@ public final class Class<T>
 		ClassData data = this._data;
 		String binaryName = data.binaryName();
 		
-		// {@squirreljme.error ZZ0x Cannot construct new instance of class
-		// because it has no default constructor.}
+		/* {@squirreljme.error ZZ0x Cannot construct new instance of class
+		because it has no default constructor.} */
 		StaticMethod sm = data.defaultConstructorMethod();
 		if (sm == null)
 			throw new InstantiationException("ZZ0x " + binaryName);
@@ -414,7 +414,7 @@ public final class Class<T>
 		// Allocate class instance
 		Object rv = ObjectAccess.allocateObject(binaryName);
 		
-		// {@squirreljme.error ZZ0y Could not allocate new instance.}
+		/* {@squirreljme.error ZZ0y Could not allocate new instance.} */
 		if (rv == null)
 			throw new OutOfMemoryError("ZZ0y");
 		
@@ -453,8 +453,8 @@ public final class Class<T>
 		if (__n == null)
 			throw new NullPointerException();
 		
-		// {@squirreljme.error ZZ0z Could not find the specified class. (The
-		// name of the class)}
+		/* {@squirreljme.error ZZ0z Could not find the specified class. (The
+		name of the class)} */
 		TypeBracket found = TypeShelf.findType(
 			__n.replace('.', '/'));
 		if (found == null)

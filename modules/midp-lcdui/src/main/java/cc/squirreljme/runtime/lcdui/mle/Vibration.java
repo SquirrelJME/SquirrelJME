@@ -51,7 +51,7 @@ public final class Vibration
 	public static boolean vibrate(int __d)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1n Cannot vibrate for a negative duration.}
+		/* {@squirreljme.error EB1n Cannot vibrate for a negative duration.} */
 		if (__d < 0)
 			throw new IllegalArgumentException("EB1n");
 		

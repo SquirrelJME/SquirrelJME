@@ -228,7 +228,7 @@ final class __MLEUIThread__
 		}
 		catch (Throwable t)
 		{
-			// {@squirreljme.error EB0k Failed to terminate application.}
+			/* {@squirreljme.error EB0k Failed to terminate application.} */
 			throw new Error("EB0k", t);
 		}
 	}

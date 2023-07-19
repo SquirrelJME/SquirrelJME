@@ -56,7 +56,7 @@ public class NanoCoatBackend
 		CSourceWriter headerOut = glob.headerOut;
 		
 		// Load input class
-		// {@squirreljme.error NC01 Mismatched class name.}
+		/* {@squirreljme.error NC01 Mismatched class name.} */
 		ClassFile classFile = ClassFile.decode(__in);
 		if (!classFile.thisName().equals(new ClassName(__name)))
 			throw new RuntimeException("NC01");

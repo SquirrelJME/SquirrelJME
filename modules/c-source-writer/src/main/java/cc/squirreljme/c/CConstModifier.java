@@ -43,12 +43,12 @@ public final class CConstModifier
 	public static CModifier of(CModifier __modifier)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error CW0k Cannot const const a modifier.}
+		/* {@squirreljme.error CW0k Cannot const const a modifier.} */
 		if (__modifier instanceof CConstModifier)
 			throw new IllegalArgumentException("CW0k");
 		
-		// {@squirreljme.error CW0l Cannot have a const static or
-		// const extern, as in a static/extern.}
+		/* {@squirreljme.error CW0l Cannot have a const static or
+		const extern, as in a static/extern.} */
 		if (__modifier instanceof CExternModifier ||
 			__modifier instanceof CStaticModifier)
 			throw new IllegalArgumentException("CW0l");

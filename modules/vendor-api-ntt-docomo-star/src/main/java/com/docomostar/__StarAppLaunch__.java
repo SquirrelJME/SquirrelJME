@@ -28,7 +28,7 @@ final class __StarAppLaunch__
 	public static void main(String... __args)
 		throws Throwable
 	{
-		// {@squirreljme.error AN01 No main Star class specified.}
+		/* {@squirreljme.error AN01 No main Star class specified.} */
 		if (__args == null || __args.length < 1 || __args[0] == null)
 			throw new IllegalArgumentException("AN01");
 		

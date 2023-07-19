@@ -138,8 +138,8 @@ public class CModifiers
 			// there can only be one of these
 			if (modifier instanceof CExternModifier)
 			{
-				// {@squirreljme.error CW3a Cannot have multiple extern
-				// modifiers.}
+				/* {@squirreljme.error CW3a Cannot have multiple extern
+				modifiers.} */
 				if (hasExtern)
 					throw new IllegalArgumentException("CW3a");
 				
@@ -154,8 +154,8 @@ public class CModifiers
 			// Is there a static modifier?
 			else if (modifier instanceof CStaticModifier)
 			{
-				// {@squirreljme.error CW3b Cannot have multiple static
-				// modifiers.}
+				/* {@squirreljme.error CW3b Cannot have multiple static
+				modifiers.} */
 				if (hasStatic)
 					throw new IllegalArgumentException("CW3b");
 			
@@ -181,7 +181,7 @@ public class CModifiers
 			// Single modifier, most likely a basic or custom one
 			else
 			{
-				// {@squirreljme.error CW0l Duplicate modifier. (The modifier)}
+				/* {@squirreljme.error CW0l Duplicate modifier. (The modifier)} */
 				if (build.contains(modifier))
 					throw new IllegalArgumentException("CW0l " + modifier);
 				
@@ -189,8 +189,8 @@ public class CModifiers
 			}
 		}
 		
-		// {@squirreljme.error CW0g A modifier cannot be both static and
-		// extern.}
+		/* {@squirreljme.error CW0g A modifier cannot be both static and
+		extern.} */
 		if (hasStatic && hasExtern)
 			throw new IllegalArgumentException("CW0g");
 		

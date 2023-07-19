@@ -65,7 +65,7 @@ public class DateField
 	{
 		super(__l);
 		
-		// {@squirreljme.error EB1g Invalid date field mode. (The mode)}
+		/* {@squirreljme.error EB1g Invalid date field mode. (The mode)} */
 		if (__m != DateField.DATE && __m != DateField.DATE_TIME && __m != DateField.TIME)
 			throw new IllegalArgumentException("EB1g " + __m);
 		

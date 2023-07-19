@@ -53,7 +53,7 @@ public final class CArrayType
 	public CType constType()
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error CW02 Cannot have a const function.}
+		/* {@squirreljme.error CW02 Cannot have a const function.} */
 		throw new IllegalArgumentException("CW02");
 	}
 	
@@ -148,7 +148,7 @@ public final class CArrayType
 		if (__size < 0)
 			throw new IllegalArgumentException("NEGI");
 		
-		// {@squirreljme.error CW3h Cannot get array of function.}
+		/* {@squirreljme.error CW3h Cannot get array of function.} */
 		if (__type instanceof CFunctionType)
 			throw new IllegalArgumentException("CW3h");
 		
@@ -158,7 +158,7 @@ public final class CArrayType
 		{
 			CModifier modifier = ((CModifiedType)__type).modifier;
 			
-			// {@squirreljme.error 3l Cannot array an extern or static.}
+			/* {@squirreljme.error CW3l Cannot array an extern or static.} */
 			if (CExternModifier.isExtern(modifier) ||
 				CStaticModifier.isStatic(modifier))
 				throw new IllegalArgumentException("CW3l");

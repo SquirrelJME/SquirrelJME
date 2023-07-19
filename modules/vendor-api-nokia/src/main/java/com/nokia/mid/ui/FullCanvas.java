@@ -112,7 +112,7 @@ public abstract class FullCanvas
 			return;
 		}
 		
-		// {@squirreljme.error EB2x Commands are not supported.}
+		/* {@squirreljme.error EB2x Commands are not supported.} */
 		throw new IllegalStateException("EB2x");
 	}
 	
@@ -134,7 +134,7 @@ public abstract class FullCanvas
 			return;
 		}
 		
-		// {@squirreljme.error EB2y Commands are not supported.}
+		/* {@squirreljme.error EB2y Commands are not supported.} */
 		throw new IllegalStateException("EB2y");
 	}
 	

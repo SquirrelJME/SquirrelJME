@@ -107,7 +107,7 @@ public final class CStructTypeBuilder
 		if (__type == null || __name == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error CW06 Member already exists.}
+		/* {@squirreljme.error CW06 Member already exists.} */
 		Map<CIdentifier, CVariable> members = this.members;
 		if (members.get(__name) != null)
 			throw new IllegalArgumentException("CW06");

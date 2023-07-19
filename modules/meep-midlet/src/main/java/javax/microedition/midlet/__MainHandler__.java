@@ -37,7 +37,7 @@ final class __MainHandler__
 	public static void main(String... __args)
 		throws Throwable
 	{
-		// {@squirreljme.error AD02 No main MIDlet class specified.}
+		/* {@squirreljme.error AD02 No main MIDlet class specified.} */
 		if (__args == null || __args.length < 1 || __args[0] == null)
 			throw new IllegalArgumentException("AD02");
 		

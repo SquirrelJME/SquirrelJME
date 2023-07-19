@@ -2387,7 +2387,7 @@ public class ByteCodeProcessor
 				return CComparison.GREATER_EQUALS;
 		}
 		
-		// {@squirreljme.error NC71 Unknown comparison operation.}
+		/* {@squirreljme.error NC71 Unknown comparison operation.} */
 		throw new NoSuchElementException("NC71");
 	}
 	
@@ -2414,7 +2414,7 @@ public class ByteCodeProcessor
 				return JvmCompareOp.CMPL;
 		}
 		
-		// {@squirreljme.error NC74 Unknown comparison operation.}
+		/* {@squirreljme.error NC74 Unknown comparison operation.} */
 		throw new NoSuchElementException("NC74");
 	}
 	
@@ -2474,7 +2474,7 @@ public class ByteCodeProcessor
 				return CMathOperator.XOR;
 		}
 		
-		// {@squirreljme.error NC98 Unknown operation.}
+		/* {@squirreljme.error NC98 Unknown operation.} */
 		throw new NoSuchElementException("NC98");
 	}
 	
@@ -2635,7 +2635,7 @@ public class ByteCodeProcessor
 					return JvmPrimitiveType.DOUBLE;
 			}
 		
-		// {@squirreljme.error NC99 Unknown operation.}
+		/* {@squirreljme.error NC99 Unknown operation.} */
 		throw new NoSuchElementException("NC99");
 	}
 	
@@ -2665,7 +2665,7 @@ public class ByteCodeProcessor
 				return JvmShiftOp.UNSIGNED_SHIFT_RIGHT;
 		}
 		
-		// {@squirreljme.error NC9l Unknown operation.}
+		/* {@squirreljme.error NC9l Unknown operation.} */
 		throw new NoSuchElementException("NC9l");
 	}
 	
@@ -2703,7 +2703,7 @@ public class ByteCodeProcessor
 				return true;
 		}
 		
-		// {@squirreljme.error NC9a Unknown operation.}
+		/* {@squirreljme.error NC9a Unknown operation.} */
 		throw new NoSuchElementException("NC9a");
 	}
 }

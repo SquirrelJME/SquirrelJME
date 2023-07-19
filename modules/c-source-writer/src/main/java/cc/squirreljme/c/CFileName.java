@@ -33,7 +33,7 @@ public final class CFileName
 		if (__fileName == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error CW0a Identifier cannot be blank.}
+		/* {@squirreljme.error CW0a Identifier cannot be blank.} */
 		if (__fileName.isEmpty())
 			throw new IllegalArgumentException("CW0a");
 		
@@ -45,20 +45,20 @@ public final class CFileName
 			
 			if (c == '.')
 			{
-				// {@squirreljme.error CW31 Filename has multiple extensions.}
+				/* {@squirreljme.error CW31 Filename has multiple extensions.} */
 				if (hasDot)
 					throw new IllegalArgumentException("CW31");
 					
 				hasDot = true;
 			}
 			
-			// {@squirreljme.error CW01 Identifier cannot start with a number.
-			// (The identifier)}
+			/* {@squirreljme.error CW01 Identifier cannot start with a number.
+			(The identifier)} */
 			else if (i == 0 && c >= '0' && c <= '9')
 				throw new IllegalArgumentException("CW01 " + __fileName);
 			
-			// {@squirreljme.error CW09 Identifier contains an invalid
-			// character. (The identifier)}
+			/* {@squirreljme.error CW09 Identifier contains an invalid
+			character. (The identifier)} */
 			else if (!((c >= 'a' && c <= 'z') ||
 				(c >= 'A' && c <= 'Z') ||
 				(c >= '0' && c <= '9') ||

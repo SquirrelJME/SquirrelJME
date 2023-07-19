@@ -74,7 +74,7 @@ public final class GameBuilder
 	public final GameBuilder players(int __n)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error BE0s Out of range player count. (The count)}
+		/* {@squirreljme.error BE0s Out of range player count. (The count)} */
 		if (__n < 1 || __n > Players.MAX_PLAYERS)
 			throw new IllegalArgumentException("BE0s " + __n);
 		

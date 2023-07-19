@@ -309,8 +309,8 @@ final class __NodeTable__
 		public __Position__ increment(int __num)
 			throws IllegalArgumentException
 		{
-			// {@squirreljme.error AH08 Cannot write negative number of
-			// nodes.}
+			/* {@squirreljme.error AH08 Cannot write negative number of
+			nodes.} */
 			if (__num < 0)
 				throw new IllegalArgumentException("AH08");
 			

@@ -78,8 +78,8 @@ public final class JavaMEConfiguration
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error DG02 Expected two or three fields for the
-		// configuration. (The input string)}
+		/* {@squirreljme.error DG02 Expected two or three fields for the
+		configuration. (The input string)} */
 		String[] fields = StringUtils.fieldSplit('-', __n);
 		int fn = fields.length;
 		if (fn != 2 && fn != 3)

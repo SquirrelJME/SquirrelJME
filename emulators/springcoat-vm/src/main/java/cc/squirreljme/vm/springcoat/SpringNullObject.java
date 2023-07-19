@@ -40,8 +40,8 @@ public final class SpringNullObject
 	@Override
 	public final SpringMonitor monitor()
 	{
-		// {@squirreljme.error BK1e Cannot obtain the monitor of an object
-		// that is null.}
+		/* {@squirreljme.error BK1e Cannot obtain the monitor of an object
+		that is null.} */
 		throw new SpringVirtualMachineException("BK1e");
 	}
 	

@@ -56,8 +56,8 @@ public class CFunctionType
 			if (var == null)
 				throw new NullPointerException("NARG");
 			
-			// {@squirreljme.error CW0d An argument variable type cannot be
-			// extern or static.}
+			/* {@squirreljme.error CW0d An argument variable type cannot be
+			extern or static.} */
 			else if (var.isExtern() || var.isStatic())
 				throw new IllegalArgumentException("CW0d");
 		}
@@ -113,7 +113,7 @@ public class CFunctionType
 	public CType constType()
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error CW02 Cannot have a const function.}
+		/* {@squirreljme.error CW02 Cannot have a const function.} */
 		throw new IllegalArgumentException("CW02");
 	}
 	
@@ -156,7 +156,7 @@ public class CFunctionType
 	public CType dereferenceType()
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error CW0c Cannot dereference a function.}
+		/* {@squirreljme.error CW0c Cannot dereference a function.} */
 		throw new IllegalArgumentException("CW0c");
 	}
 	

@@ -110,7 +110,7 @@ public final class CModifiedType
 	public CType dereferenceType()
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error CW0j Not a pointer that can be de-referenced.}
+		/* {@squirreljme.error CW0j Not a pointer that can be de-referenced.} */
 		if (!this.isPointer())
 			throw new IllegalArgumentException("CW0j");
 		
@@ -199,11 +199,11 @@ public final class CModifiedType
 		// Functions are limited in what they can become
 		if (__type instanceof CFunctionType)
 		{
-			// {@squirreljme.error CW0h Cannot extern a function.}
+			/* {@squirreljme.error CW0h Cannot extern a function.} */
 			if (CExternModifier.isExtern(__modifier))
 				throw new IllegalArgumentException("CW0h");
 			
-			// {@squirreljme.error CW3g Cannot const a function.}
+			/* {@squirreljme.error CW3g Cannot const a function.} */
 			if (CConstModifier.isConst(__modifier))
 				throw new IllegalArgumentException("CW3g");
 			
@@ -213,7 +213,7 @@ public final class CModifiedType
 		// Arrays cannot be made const
 		if (__type instanceof CArrayType)
 		{
-			// {@squirreljme.error CW3f Cannot const an array type.}
+			/* {@squirreljme.error CW3f Cannot const an array type.} */
 			if (CConstModifier.isConst(__modifier))
 				throw new IllegalArgumentException("CW3f");
 		}

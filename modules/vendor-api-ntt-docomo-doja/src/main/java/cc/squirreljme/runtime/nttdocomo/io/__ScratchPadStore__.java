@@ -72,8 +72,8 @@ final class __ScratchPadStore__
 				Debugging.debugNote("i-appli record size mismatch?");
 		}
 		
-		// {@squirreljme.error AH0m Could not read pre-existing data from
-		// the record store.}
+		/* {@squirreljme.error AH0m Could not read pre-existing data from
+		the record store.} */
 		catch (RecordStoreException __e)
 		{
 			throw new IOException("AH0m", __e);
@@ -102,8 +102,8 @@ final class __ScratchPadStore__
 					store.setRecord(0, data, 0, data.length);
 			}
 			
-			// {@squirreljme.error AH0l Could not write scratch pad to the
-			// record store.}
+			/* {@squirreljme.error AH0l Could not write scratch pad to the
+			record store.} */
 			catch (RecordStoreException __e)
 			{
 				throw new IOException("AH0l", __e);

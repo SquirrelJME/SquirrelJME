@@ -372,7 +372,7 @@ public final class TestResult
 		if (__ts == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BU07 Not a throwable.}
+		/* {@squirreljme.error BU07 Not a throwable.} */
 		if (!__ts.startsWith("throwable:"))
 			throw new IllegalArgumentException("BU07");
 		__ts = __ts.substring(10);

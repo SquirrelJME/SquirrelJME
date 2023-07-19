@@ -48,8 +48,8 @@ public class CloseableList<T extends Closeable>
 				count++;
 			}
 		
-		// {@squirreljme.error AC01 There was at least one exception which
-		// occurred while closing the list. (The number of exceptions thrown)}
+		/* {@squirreljme.error AC01 There was at least one exception which
+		occurred while closing the list. (The number of exceptions thrown)} */
 		if (defer != null)
 			throw new IOException(String.format("AC01 %d", count), defer);
 	}

@@ -55,8 +55,8 @@ public class StringItem
 	{
 		super(__l);
 		
-		// {@squirreljme.error EB2o The appearance mode is not valid.
-		// (The appearance mode)}
+		/* {@squirreljme.error EB2o The appearance mode is not valid.
+		(The appearance mode)} */
 		if (__am != Item.PLAIN && __am != Item.BUTTON && __am != Item.HYPERLINK)
 			throw new IllegalArgumentException("EB2o " + __am);
 		

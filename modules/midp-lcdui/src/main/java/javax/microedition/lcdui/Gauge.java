@@ -66,17 +66,17 @@ public class Gauge
 	{
 		super(__l);
 		
-		// {@squirreljme.error EB24 An interactive gauge cannot have a negative
-		// maximum value.}
+		/* {@squirreljme.error EB24 An interactive gauge cannot have a negative
+		maximum value.} */
 		if (__int && __max < 0)
 			throw new IllegalArgumentException("EB24");
 		
-		// {@squirreljme.error EB25 A non-interactive gauge cannot have a
-		// negative value that is not indefinite.}
+		/* {@squirreljme.error EB25 A non-interactive gauge cannot have a
+		negative value that is not indefinite.} */
 		if (!__int && !(__max >= 0 || __max == Gauge.INDEFINITE))
 			throw new IllegalArgumentException("EB25");
 		
-		// {@squirreljme.error EB26 Invalid symbolism for indefinite range.}
+		/* {@squirreljme.error EB26 Invalid symbolism for indefinite range.} */
 		if (__max == Gauge.INDEFINITE && __iv != Gauge.CONTINUOUS_IDLE &&
 			__iv != Gauge.CONTINUOUS_RUNNING && __iv != Gauge.INCREMENTAL_IDLE &&
 			__iv != Gauge.INCREMENTAL_UPDATING)
@@ -133,8 +133,8 @@ public class Gauge
 	public void setLabel(String __l)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB27 Cannot set the label of a gauge associated
-		// with an alert.}
+		/* {@squirreljme.error EB27 Cannot set the label of a gauge associated
+		with an alert.} */
 		if (this._displayable instanceof Alert)
 			throw new IllegalArgumentException("EB27");
 		

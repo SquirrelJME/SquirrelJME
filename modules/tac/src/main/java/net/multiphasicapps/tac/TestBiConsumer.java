@@ -46,7 +46,7 @@ public abstract class TestBiConsumer<A, B>
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{
-		// {@squirreljme.error BU03 Test takes two parameters.}
+		/* {@squirreljme.error BU03 Test takes two parameters.} */
 		if (__args.length != 2)
 			throw new InvalidTestParameterException("BU03");
 		

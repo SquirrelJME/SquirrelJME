@@ -124,8 +124,8 @@ public final class JDWPController
 	public JDWPBinding bind()
 		throws JDWPException
 	{
-		// {@squirreljme.error AG0h The JDWP Binding has been garbage
-		// collected.}
+		/* {@squirreljme.error AG0h The JDWP Binding has been garbage
+		collected.} */
 		JDWPBinding rv = this._bind.get();
 		if (rv == null)
 			throw new JDWPException("AG0h");

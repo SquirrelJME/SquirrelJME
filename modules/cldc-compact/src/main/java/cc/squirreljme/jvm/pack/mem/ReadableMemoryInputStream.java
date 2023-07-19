@@ -382,8 +382,8 @@ public final class ReadableMemoryInputStream
 		if (__len <= 0)
 			throw new IllegalArgumentException("INEG");
 		
-		// {@squirreljme.error ZZ3z Reached end of memory stream.
-		// (The position; The length of the stream; The length checked)}
+		/* {@squirreljme.error ZZ3z Reached end of memory stream.
+		(The position; The length of the stream; The length checked)} */
 		int at = this._at;
 		if (at + (__len - 1) > this.length)
 			throw new EOFException(String.format("ZZ3z %d %d %d",

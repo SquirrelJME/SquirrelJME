@@ -51,7 +51,7 @@ public class Vector<E>
 	public Vector(int __cap, int __inc)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ32 Initial capacity cannot be negative.
+		/* {@squirreljme.error ZZ32 Initial capacity cannot be negative.} */
 		if (__cap < 0)
 			throw new IllegalArgumentException("ZZ32");
 		
@@ -250,7 +250,7 @@ public class Vector<E>
 		
 		synchronized (this)
 		{
-			// {@squirreljme.error ZZ3q The destination array is too small.}
+			/* {@squirreljme.error ZZ3q The destination array is too small.} */
 			int n = this.elementCount;
 			if (n > __a.length)
 				throw new IndexOutOfBoundsException("ZZ3q");

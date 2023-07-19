@@ -46,7 +46,7 @@ public class CPPBlock
 	public void preprocessorElse()
 		throws IOException, IllegalStateException
 	{
-		// {@squirreljme.error CW08 Cannot else else the preprocessor.}
+		/* {@squirreljme.error CW08 Cannot else else the preprocessor.} */
 		if (this._finalElse)
 			throw new IllegalStateException("CW08");
 		
@@ -72,7 +72,7 @@ public class CPPBlock
 		if (__condition == null || __condition.length == 0)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error CW08 Cannot else else the preprocessor.}
+		/* {@squirreljme.error CW08 Cannot else else the preprocessor.} */
 		if (this._finalElse)
 			throw new IllegalStateException("CW08");
 		

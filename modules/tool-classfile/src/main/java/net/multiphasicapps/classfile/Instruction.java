@@ -377,9 +377,9 @@ public final class Instruction
 					MethodReference.class,
 					Instruction.__readUnsignedShort(__code, argbase));
 				
-				// {@squirreljme.error JC31 Invocation of method did not
-				// have the matching interface/not-interface attribute.
-				// (The operation; The address; The method reference)}
+				/* {@squirreljme.error JC31 Invocation of method did not
+				have the matching interface/not-interface attribute.
+				(The operation; The address; The method reference)} */
 				if (mr.isInterface() !=
 					(op == InstructionIndex.INVOKEINTERFACE))
 					throw new InvalidClassFormatException(String.format(
@@ -406,9 +406,9 @@ public final class Instruction
 				else
 					cvalue = (ConstantValue)ldcv;
 				
-				// {@squirreljme.error JC32 Cannot load a constant value which
-				// is not of a narrow type. (The operation; The address; The
-				// constant value)}
+				/* {@squirreljme.error JC32 Cannot load a constant value which
+				is not of a narrow type. (The operation; The address; The
+				constant value)} */
 				if (!cvalue.type().isNarrow())
 					throw new InvalidClassFormatException(String.format(
 						"JC32 %d %d %s", op, __a, cvalue));
@@ -426,9 +426,9 @@ public final class Instruction
 					ConstantValue.class,
 					Instruction.__readUnsignedShort(__code, argbase));
 				
-				// {@squirreljme.error JC33 Cannot load a constant value which
-				// is not of a wide type. (The operation; The address;
-				// The constant value)}
+				/* {@squirreljme.error JC33 Cannot load a constant value which
+				is not of a wide type. (The operation; The address;
+				The constant value)} */
 				if (!cvalue.type().isWide())
 					throw new InvalidClassFormatException(String.format(
 						"JC33 %d %d %s", op, __a, cvalue));
@@ -455,9 +455,9 @@ public final class Instruction
 					case 10:	pt = PrimitiveType.INTEGER; break;
 					case 11:	pt = PrimitiveType.LONG; break;
 					
-						// {@squirreljme.error JC34 Unknown type specified for
-						// new primitive array. (The operation; The address;
-						// The type specifier)}
+						/* {@squirreljme.error JC34 Unknown type specified for
+						new primitive array. (The operation; The address;
+						The type specifier)} */
 					default:
 						throw new InvalidClassFormatException(String.format(
 							"JC34 %d %d %d", op, __a, pd));
@@ -474,9 +474,9 @@ public final class Instruction
 				int dims = Instruction.__readUnsignedByte(__code,
 					argbase + 2);
 				
-				// {@squirreljme.error JC35 Dimensions represented in type
-				// is smaller than the represented dimensions.
-				// (The operation; The address; The dimensions)}
+				/* {@squirreljme.error JC35 Dimensions represented in type
+				is smaller than the represented dimensions.
+				(The operation; The address; The dimensions)} */
 				if (cname.dimensions() < dims)
 					throw new InvalidClassFormatException(String.format(
 						"JC35 %d %d %d", op, __a, dims));
@@ -494,9 +494,9 @@ public final class Instruction
 					InstructionJumpTarget def = new InstructionJumpTarget(
 						__a + Instruction.__readInt(__code, pa));
 					
-					// {@squirreljme.error JC36 Pair count for lookup switch
-					// is negative. (The opcode; The address; The after padded
-					// address; The read length)}
+					/* {@squirreljme.error JC36 Pair count for lookup switch
+					is negative. (The opcode; The address; The after padded
+					address; The read length)} */
 					int n = Instruction.__readInt(__code, pa + 4);
 					if (n < 0)
 						throw new InvalidClassFormatException(String.format(
@@ -555,9 +555,9 @@ public final class Instruction
 				}
 				break;
 				
-				// {@squirreljme.error JC37 The operation at the specified
-				// address is not supported yet. (The operation; The name of
-				// the operation; The address it is at)}
+				/* {@squirreljme.error JC37 The operation at the specified
+				address is not supported yet. (The operation; The name of
+				the operation; The address it is at)} */
 			default:
 				throw new RuntimeException(String.format("JC37 %d %s %d",
 					op, InstructionMnemonics.toString(op), __a));
@@ -1085,8 +1085,8 @@ public final class Instruction
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC38 Illegal int read off the end of the
-		// instruction array. (The offset; The length of the code array)}
+		/* {@squirreljme.error JC38 Illegal int read off the end of the
+		instruction array. (The offset; The length of the code array)} */
 		if (__o < 0 || __o + 3 >= __a.length)
 			throw new InvalidClassFormatException(
 				String.format("JC38 %d %d", __o, __a.length));
@@ -1132,8 +1132,8 @@ public final class Instruction
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC39 Illegal byte read off the end of the
-		// instruction array. (The offset; The length of the code array)}
+		/* {@squirreljme.error JC39 Illegal byte read off the end of the
+		instruction array. (The offset; The length of the code array)} */
 		if (__o < 0 || __o >= __a.length)
 			throw new InvalidClassFormatException(
 				String.format("JC39 %d %d", __o, __a.length));
@@ -1159,8 +1159,8 @@ public final class Instruction
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC3a Illegal short read off the end of the
-		// instruction array. (The offset; The length of the code array)}
+		/* {@squirreljme.error JC3a Illegal short read off the end of the
+		instruction array. (The offset; The length of the code array)} */
 		if (__o < 0 || __o + 1 >= __a.length)
 			throw new InvalidClassFormatException(
 				String.format("JC3a %d %d", __o, __a.length));

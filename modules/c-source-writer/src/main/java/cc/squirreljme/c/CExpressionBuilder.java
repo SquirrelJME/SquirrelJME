@@ -366,8 +366,8 @@ public abstract class CExpressionBuilder
 		if (__function == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error CW21 Number of arguments in function does
-		// not match call.}
+		/* {@squirreljme.error CW21 Number of arguments in function does
+		not match call.} */
 		List<CVariable> arguments = __function.arguments;
 		if (__args.length != arguments.size())
 			throw new IllegalArgumentException("CW21");
@@ -548,7 +548,7 @@ public abstract class CExpressionBuilder
 		if (__value == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error CW22 Unsupported number.}
+		/* {@squirreljme.error CW22 Unsupported number.} */
 		if (__value instanceof Float || __value instanceof Double)
 			throw new IllegalArgumentException("CW22");
 		

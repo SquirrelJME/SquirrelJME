@@ -163,8 +163,8 @@ public enum JavaStackShuffleType
 				return tryf;
 		}
 		
-		// {@squirreljme.error JC1q Could not find a match for performing
-		// shuffled stack operations.}
+		/* {@squirreljme.error JC1q Could not find a match for performing
+		shuffled stack operations.} */
 		throw new InvalidClassFormatException("JC1q");
 	}
 	
@@ -209,7 +209,7 @@ public enum JavaStackShuffleType
 				return JavaStackShuffleType.SWAP;
 		}
 		
-		// {@squirreljme.error JC91 Unknown swap type.}
+		/* {@squirreljme.error JC91 Unknown swap type.} */
 		throw new NoSuchElementException("JC91");
 	}
 	
@@ -314,7 +314,7 @@ public enum JavaStackShuffleType
 			if (__s == null)
 				throw new NullPointerException("NARG");
 			
-			// {@squirreljme.error JC1d Expected colon in function form.}
+			/* {@squirreljme.error JC1d Expected colon in function form.} */
 			int col = __s.indexOf(':');
 			if (col < 0)
 				throw new IllegalArgumentException("JC1d");
@@ -426,8 +426,8 @@ public enum JavaStackShuffleType
 		 */
 		public final int findVariableSlot(int __var)
 		{
-			// {@squirreljme.error JC52 Cannot locate the slot of a wide
-			// value.}
+			/* {@squirreljme.error JC52 Cannot locate the slot of a wide
+			value.} */
 			if (__var < 0)
 				throw new IllegalArgumentException("JC52");
 			
@@ -435,8 +435,8 @@ public enum JavaStackShuffleType
 				if (this.variable(i) == __var)
 					return i;
 			
-			// {@squirreljme.error JC51 Could not find the slot for the given
-			// variable. (The variable)}
+			/* {@squirreljme.error JC51 Could not find the slot for the given
+			variable. (The variable)} */
 			throw new IllegalArgumentException("JC51 " + __var);
 		}
 		
@@ -478,8 +478,8 @@ public enum JavaStackShuffleType
 				at++;
 			}
 			
-			// {@squirreljme.error JC53 Could not find the variable for
-			// the logical slot. (The logical slot)}
+			/* {@squirreljme.error JC53 Could not find the variable for
+			the logical slot. (The logical slot)} */
 			throw new IllegalArgumentException("JC53 " + __dx);
 		}
 		

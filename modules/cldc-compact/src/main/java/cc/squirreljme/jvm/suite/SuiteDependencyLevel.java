@@ -88,7 +88,7 @@ public enum SuiteDependencyLevel
 			case "required":	return SuiteDependencyLevel.REQUIRED;
 			case "optional":	return SuiteDependencyLevel.OPTIONAL;
 			
-				// {@squirreljme.error DG82 Invalid dependency level. (Level)}
+				/* {@squirreljme.error DG82 Invalid dependency level. (Level)} */
 			default:
 				throw new IllegalArgumentException(String.format(
 					"DG82 %s", __s));

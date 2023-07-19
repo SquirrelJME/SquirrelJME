@@ -39,7 +39,7 @@ public final class CIdentifier
 		if (__identifier == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error CW0a Identifier cannot be blank.}
+		/* {@squirreljme.error CW0a Identifier cannot be blank.} */
 		if (__identifier.isEmpty())
 			throw new IllegalArgumentException("CW0a");
 		
@@ -48,13 +48,13 @@ public final class CIdentifier
 		{
 			char c = __identifier.charAt(i);
 			
-			// {@squirreljme.error CW01 Identifier cannot start with a number.
-			// (The identifier)}
+			/* {@squirreljme.error CW01 Identifier cannot start with a number.
+			(The identifier)} */
 			if (i == 0 && c >= '0' && c <= '9')
 				throw new IllegalArgumentException("CW01 " + __identifier);
 			
-			// {@squirreljme.error CW09 Identifier contains an invalid
-			// character. (The identifier)}
+			/* {@squirreljme.error CW09 Identifier contains an invalid
+			character. (The identifier)} */
 			if (!((c >= 'a' && c <= 'z') ||
 				(c >= 'A' && c <= 'Z') ||
 				(c >= '0' && c <= '9') ||

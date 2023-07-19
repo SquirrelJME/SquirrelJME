@@ -81,7 +81,7 @@ public class World
 	public MegaTile megaTile(int __x, int __y)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error BE0q Megatile not in level range.}
+		/* {@squirreljme.error BE0q Megatile not in level range.} */
 		int megaw = this.megaw,
 			megah = this.megah;
 		if (__x < 0 || __y < 0 || __x >= megaw || __y >= megah)

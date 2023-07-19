@@ -56,7 +56,7 @@ public class CSwitchBlock
 	public void defaultCase()
 		throws IOException
 	{
-		// {@squirreljme.error CW0b There may only be a single default case.}
+		/* {@squirreljme.error CW0b There may only be a single default case.} */
 		if (this._didDefault)
 			throw new IllegalStateException("CW0b");
 		this._didDefault = true;
@@ -78,7 +78,7 @@ public class CSwitchBlock
 		if (__condition == null || __condition.length == 0)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error CW0c Already placed default case.}
+		/* {@squirreljme.error CW0c Already placed default case.} */
 		if (this._didDefault)
 			throw new IllegalStateException("CW0c");
 		

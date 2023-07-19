@@ -42,7 +42,7 @@ public final class InstructionJumpTarget
 	public InstructionJumpTarget(int __t)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error JC3b Jump target is negative. (The target)}
+		/* {@squirreljme.error JC3b Jump target is negative. (The target)} */
 		if (__t < 0)
 			throw new IllegalArgumentException(String.format("JC3b %d", __t));
 		
@@ -62,7 +62,7 @@ public final class InstructionJumpTarget
 	public InstructionJumpTarget(int __t, int __key)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error JC3m Jump target is negative. (The target)}
+		/* {@squirreljme.error JC3m Jump target is negative. (The target)} */
 		if (__t < 0)
 			throw new IllegalArgumentException(String.format("JC3m %d", __t));
 		
@@ -137,7 +137,7 @@ public final class InstructionJumpTarget
 	public int key()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error JC06 Jump target has no key.}
+		/* {@squirreljme.error JC06 Jump target has no key.} */
 		if (!this.hasKey)
 			throw new IllegalStateException("JC06");
 		

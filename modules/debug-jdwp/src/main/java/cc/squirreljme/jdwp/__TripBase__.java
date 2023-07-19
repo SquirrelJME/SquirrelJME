@@ -47,8 +47,8 @@ abstract class __TripBase__
 	 */
 	final JDWPController __controller()
 	{
-		// {@squirreljme.error AG0n The debug controller was garbage
-		// collected.}
+		/* {@squirreljme.error AG0n The debug controller was garbage
+		collected.} */
 		JDWPController rv = this._controller.get();
 		if (rv == null)
 			throw new IllegalStateException("AG0n");

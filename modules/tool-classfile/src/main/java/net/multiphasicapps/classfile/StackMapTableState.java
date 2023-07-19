@@ -74,8 +74,8 @@ public final class StackMapTableState
 		if (__l == null || __s == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC3x The depth of the stack is not within the
-		// bounds of the stack. (The stack depth; The stack size)}
+		/* {@squirreljme.error JC3x The depth of the stack is not within the
+		bounds of the stack. (The stack depth; The stack size)} */
 		int ns = __s.length;
 		if (__d < 0 || __d > ns)
 			throw new InvalidClassFormatException(
@@ -142,7 +142,7 @@ public final class StackMapTableState
 		if (__entry == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC02 New local state would not be valid.}
+		/* {@squirreljme.error JC02 New local state would not be valid.} */
 		if (__dx < 0 || __dx >= this.maxLocals() ||
 			(__entry.isWide() && __dx >= this.maxLocals() - 1))
 			throw new InvalidClassFormatException("JC02");
@@ -218,7 +218,7 @@ public final class StackMapTableState
 		List<StackMapTableEntry> __popped)
 		throws InvalidClassFormatException
 	{
-		// {@squirreljme.error JC03 Stack is empty.}
+		/* {@squirreljme.error JC03 Stack is empty.} */
 		int depth = this.depth;
 		if (depth < 0)
 			throw new InvalidClassFormatException("JC03");
@@ -249,7 +249,7 @@ public final class StackMapTableState
 		List<StackMapTableEntry> __popped, int __count)
 		throws InvalidClassFormatException
 	{
-		// {@squirreljme.error JC05 Negative pop count.}
+		/* {@squirreljme.error JC05 Negative pop count.} */
 		if (__count <= 0)
 			throw new IllegalArgumentException("JC05");
 		
@@ -320,7 +320,7 @@ public final class StackMapTableState
 		// Add entries accordingly
 		for (StackMapTableEntry entry : __entries)
 		{
-			// {@squirreljme.error JC04 Stack overflow.}
+			/* {@squirreljme.error JC04 Stack overflow.} */
 			if (newDepth + (entry.isWide() ? 2 : 1) > newStack.length)
 				throw new InvalidClassFormatException("JC04");
 			
@@ -381,8 +381,8 @@ public final class StackMapTableState
 	public StackMapTableEntry getLocal(int __i)
 		throws InvalidClassFormatException
 	{
-		// {@squirreljme.error JC3y The specified local variable is out of
-		// range. (The index)}
+		/* {@squirreljme.error JC3y The specified local variable is out of
+		range. (The index)} */
 		StackMapTableEntry[] locals = this._locals;
 		if (__i < 0 || __i >= locals.length)
 			throw new InvalidClassFormatException(
@@ -412,8 +412,8 @@ public final class StackMapTableState
 	public StackMapTableEntry getStack(int __i)
 		throws InvalidClassFormatException
 	{
-		// {@squirreljme.error JC3z The specified stack variable is out of
-		// range. (The index)}
+		/* {@squirreljme.error JC3z The specified stack variable is out of
+		range. (The index)} */
 		if (__i < 0 || __i >= this.depth)
 			throw new InvalidClassFormatException(
 				String.format("JC3z %d", __i));
@@ -463,8 +463,8 @@ public final class StackMapTableState
 	public StackMapTableEntry getStackFromTop(int __i)
 		throws InvalidClassFormatException
 	{
-		// {@squirreljme.error JC79 Cannot get stack from the top. (The index;
-		// The depth)}
+		/* {@squirreljme.error JC79 Cannot get stack from the top. (The index;
+		The depth)} */
 		if (__i < 0 || __i >= this.depth)
 			throw new InvalidClassFormatException(
 				String.format("JC79 %d %d", __i, this.depth));
@@ -579,9 +579,9 @@ public final class StackMapTableState
 			// A wide type was pushed
 			if (w != null)
 			{
-				// {@squirreljme.error JC40 The type at the read index does
-				// not match the expected type following a wide type. (The wide
-				// type; The expected type; The actual type; The input map)}
+				/* {@squirreljme.error JC40 The type at the read index does
+				not match the expected type following a wide type. (The wide
+				type; The expected type; The actual type; The input map)} */
 				JavaType t = w.topType();
 				if (!t.equals(a))
 					throw new InvalidClassFormatException(
@@ -600,8 +600,8 @@ public final class StackMapTableState
 			}
 		}
 		
-		// {@squirreljme.error JC41 Long or double appears at the end of the
-		// type array and does not have a top associated with it.}
+		/* {@squirreljme.error JC41 Long or double appears at the end of the
+		type array and does not have a top associated with it.} */
 		if (w != null)
 			throw new InvalidClassFormatException("JC41");
 	}

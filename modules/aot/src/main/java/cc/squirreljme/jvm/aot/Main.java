@@ -55,8 +55,8 @@ public class Main
 			if (__compiler.equals(backend.name()))
 				return backend;
 		
-		// {@squirreljme.error AE04 The given compiler does not exist.
-		// (The compiler)}
+		/* {@squirreljme.error AE04 The given compiler does not exist.
+		(The compiler)} */
 		throw new IllegalArgumentException("AE04 " + __compiler);
 	}
 	
@@ -98,12 +98,12 @@ public class Main
 				break;
 			}
 			
-			// {@squirreljme.error AE01 Unknown argument. (The argument)}
+			/* {@squirreljme.error AE01 Unknown argument. (The argument)} */
 			else
 				throw new IllegalArgumentException("AE01 " + arg);
 		}
 		
-		// {@squirreljme.error AE03 Mode was not specified.}
+		/* {@squirreljme.error AE03 Mode was not specified.} */
 		if (mode == null)
 			throw new IllegalArgumentException("AE03");
 		
@@ -132,7 +132,7 @@ public class Main
 					Main.mainRom(backend, out, args);
 					break;
 				
-				// {@squirreljme.error AE02 Unknown mode. (The mode)}
+				/* {@squirreljme.error AE02 Unknown mode. (The mode)} */
 				default:
 					throw new IllegalArgumentException("AE02 " + mode);
 			}
@@ -275,7 +275,7 @@ public class Main
 			libs.add(lib);
 		}
 		
-		// {@squirreljme.error AE08 No libraries specified to link together.}
+		/* {@squirreljme.error AE08 No libraries specified to link together.} */
 		if (libs.isEmpty())
 			throw new IllegalArgumentException("AE08");
 		

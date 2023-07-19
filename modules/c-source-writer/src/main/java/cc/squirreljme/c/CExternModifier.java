@@ -57,7 +57,7 @@ public final class CExternModifier
 	public static CModifier of(CModifier __modifier)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error CW0e Cannot have a static extern modifier.}
+		/* {@squirreljme.error CW0e Cannot have a static extern modifier.} */
 		if (__modifier instanceof CStaticModifier)
 			throw new IllegalArgumentException("CW0e");
 		

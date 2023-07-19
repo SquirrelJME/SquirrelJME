@@ -86,7 +86,7 @@ public class CFunctionBlock
 	public CFunctionBlockSplices splice(int __count)
 		throws IllegalArgumentException, IOException
 	{
-		// {@squirreljme.error CW0m Splice with zero or negative outputs.}
+		/* {@squirreljme.error CW0m Splice with zero or negative outputs.} */
 		if (__count <= 0)
 			throw new IllegalArgumentException("CW0m");
 		

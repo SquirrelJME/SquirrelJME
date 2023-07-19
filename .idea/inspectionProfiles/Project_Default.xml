@@ -13,7 +13,7 @@
       </list>
     </option>
     <inspection_tool class="0a13ff53-5fcb-3e0d-aed2-4be555b30a99" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
-    <inspection_tool class="44b0438b-2ab8-3d3b-be8e-970193139796" enabled="true" level="WARNING" enabled_by_default="true" editorAttributes="TEXT_STYLE_ERROR" />
+    <inspection_tool class="64b983f1-24ea-3e21-ab1a-d1f799d73f9b" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="WRONG_REFERENCES_ATTRIBUTES" />
     <inspection_tool class="65a552e9-f62d-3bdb-a825-d751c50c4ba6" enabled="true" level="INFORMATION" enabled_by_default="true" editorAttributes="DEPRECATED_ATTRIBUTES" />
     <inspection_tool class="9be1bd10-89f8-3737-88e5-9b5e0640e57e" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
     <inspection_tool class="AbstractClassWithOnlyOneDirectInheritor" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -532,6 +532,11 @@
         <constraint name="Method" within="" contains="" />
         <constraint name="ParameterType" within="" contains="" />
         <constraint name="Parameter" minCount="0" maxCount="2147483647" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="SquirrelJME: Error definition" uuid="64b983f1-24ea-3e21-ab1a-d1f799d73f9b" suppressId="squirreljme_errorDefinition" problemDescriptor="SquirrelJME: Error definition" text="/* {@squirreljme.error $code$ $message$} */" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="code" within="" contains="" />
+        <constraint name="message" within="" contains="" />
       </searchConfiguration>
       <searchConfiguration name="SquirrelJME: Flushable does not exist in Java ME, cannot implement or extend it." uuid="9be1bd10-89f8-3737-88e5-9b5e0640e57e" description="Call to non-extistent interface Flushable." suppressId="squirreljme_implementsFlushable" problemDescriptor="SquirrelJME: Flushable does not exist in Java ME, cannot implement or extend it." text="class $Class$ implements $Interface$ {}" recursive="true" caseInsensitive="true" type="JAVA" pattern_context="default">
         <constraint name="__context__" within="" contains="" />

@@ -216,7 +216,7 @@ public class Random
 	public int nextInt(int __cap)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ2z Cap value must be a positive integer}
+		/* {@squirreljme.error ZZ2z Cap value must be a positive integer} */
 		if (__cap <= 0)
 			throw new IllegalArgumentException("ZZ2z");
 		

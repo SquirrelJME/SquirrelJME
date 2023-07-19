@@ -482,8 +482,8 @@ public abstract class VMFactory
 			}
 		}
 		
-		// {@squirreljme.error AK03 The specified virtual machine does not
-		// exist. (The virtual machine name)}
+		/* {@squirreljme.error AK03 The specified virtual machine does not
+		exist. (The virtual machine name)} */
 		if (factory == null)
 			throw new VMException("AK03 " + __vm);
 		

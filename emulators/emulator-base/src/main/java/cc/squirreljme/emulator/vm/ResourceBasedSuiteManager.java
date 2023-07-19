@@ -112,7 +112,7 @@ public final class ResourceBasedSuiteManager
 			return libs;
 		}
 		
-		// {@squirreljme.error AK01 Could not read the library list.}
+		/* {@squirreljme.error AK01 Could not read the library list.} */
 		catch (IOException e)
 		{
 			throw new RuntimeException("AK01", e);

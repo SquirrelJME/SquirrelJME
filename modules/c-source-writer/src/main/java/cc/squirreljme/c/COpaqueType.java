@@ -91,7 +91,7 @@ public final class COpaqueType
 	public CType dereferenceType()
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error CW23 Cannot throw an opaque type.}
+		/* {@squirreljme.error CW23 Cannot throw an opaque type.} */
 		throw new IllegalArgumentException("CW23");
 	}
 	

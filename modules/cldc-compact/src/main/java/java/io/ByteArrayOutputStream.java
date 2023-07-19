@@ -55,8 +55,8 @@ public class ByteArrayOutputStream
 	public ByteArrayOutputStream(int __cap)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ0i Cannot initialize output stream using a
-		// negative capacity.}
+		/* {@squirreljme.error ZZ0i Cannot initialize output stream using a
+		negative capacity.} */
 		if (__cap < 0)
 			throw new IllegalArgumentException("ZZ0i");
 		

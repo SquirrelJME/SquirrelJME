@@ -74,7 +74,7 @@ public enum JvmPrimitiveType
 			case DOUBLE:
 				return JavaType.DOUBLE.type();
 				
-				// {@squirreljme.error NCa3 Has no valid descriptor.}
+				/* {@squirreljme.error NCa3 Has no valid descriptor.} */
 			default:
 				throw new IllegalArgumentException("NCa3");
 		}
@@ -113,7 +113,7 @@ public enum JvmPrimitiveType
 				methodName = "cmpl";
 				break;
 				
-				// {@squirreljme.error NCa7 Not valid for software math.}
+				/* {@squirreljme.error NCa7 Not valid for software math.} */
 			default:
 				throw new IllegalArgumentException("NCa7");
 		}
@@ -163,7 +163,7 @@ public enum JvmPrimitiveType
 				methodName = "toDouble";
 				break;
 				
-				// {@squirreljme.error NCad Not valid for software compare.}
+				/* {@squirreljme.error NCad Not valid for software compare.} */
 			default:
 				throw new IllegalArgumentException("NCad");
 		}
@@ -237,7 +237,7 @@ public enum JvmPrimitiveType
 				methodName = "shr";
 				break;
 				
-				// {@squirreljme.error NCa2 Not valid for software math.}
+				/* {@squirreljme.error NCa2 Not valid for software math.} */
 			default:
 				throw new IllegalArgumentException("NCa2");
 		}
@@ -296,7 +296,7 @@ public enum JvmPrimitiveType
 				name = "cc/squirreljme/jvm/SoftDouble";
 				break;
 				
-				// {@squirreljme.error NCa1 Not valid for software math.}
+				/* {@squirreljme.error NCa1 Not valid for software math.} */
 			default:
 				throw new IllegalArgumentException("NCa1");
 		}
@@ -353,7 +353,7 @@ public enum JvmPrimitiveType
 				methodName = "ushr";
 				break;
 				
-				// {@squirreljme.error NCa2 Not valid for software math.}
+				/* {@squirreljme.error NCa2 Not valid for software math.} */
 			default:
 				throw new IllegalArgumentException("NCa2");
 		}

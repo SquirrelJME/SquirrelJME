@@ -84,7 +84,7 @@ final class __MIDletInterface__
 		}
 		catch (ClassNotFoundException e)
 		{
-			// {@squirreljme.error AD03 Could not find main MIDlet. (Class)}
+			/* {@squirreljme.error AD03 Could not find main MIDlet. (Class)} */
 			throw new RuntimeException(String.format(
 				"AD03 %s", mainClass), e);
 		}
@@ -103,13 +103,13 @@ final class __MIDletInterface__
 			}
 			catch (ClassCastException e)
 			{
-				// {@squirreljme.error AD05 Class not a MIDlet.}
+				/* {@squirreljme.error AD05 Class not a MIDlet.} */
 				throw new RuntimeException("AD05", e);
 			}
 		}
 		catch (IllegalAccessException|InstantiationException e)
 		{
-			// {@squirreljme.error AD04 Could not instantiate class.}
+			/* {@squirreljme.error AD04 Could not instantiate class.} */
 			throw new RuntimeException("AD04", e);
 		}
 	}

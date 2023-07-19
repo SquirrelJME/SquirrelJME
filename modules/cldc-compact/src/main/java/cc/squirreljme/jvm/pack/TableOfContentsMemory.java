@@ -80,8 +80,8 @@ public final class TableOfContentsMemory
 		if (this._count < 0)
 			this.__init();
 		
-		// {@squirreljme.error ZZ50 The entry and/or property is not within
-		// bounds. (The index; The property)}
+		/* {@squirreljme.error ZZ50 The entry and/or property is not within
+		bounds. (The index; The property)} */
 		int span = this._span;
 		if (__dx < 0 || __dx >= this._count ||
 			__prop < 0 || __prop >= span)
@@ -104,7 +104,7 @@ public final class TableOfContentsMemory
 		int count = data.memReadShort(0) & 0xFFFF;
 		int span = data.memReadShort(2) & 0xFFFF;
 		
-		// {@squirreljme.error ZZ4v ROM has no span.}
+		/* {@squirreljme.error ZZ4v ROM has no span.} */
 		if (span == 0)
 			throw new InvalidRomException("ZZ4v");
 		

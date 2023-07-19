@@ -138,8 +138,8 @@ public class Form
 		if (__i == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB23 Cannot append an item which has already
-		// been associated with a form.}
+		/* {@squirreljme.error EB23 Cannot append an item which has already
+		been associated with a form.} */
 		if (__i._displayable != null)
 			throw new IllegalStateException("EB23");
 		__i._displayable = this;
@@ -403,7 +403,7 @@ public class Form
 			return;
 		}
 		
-		// {@squirreljme.error EB3p The layout belong to a different form.}
+		/* {@squirreljme.error EB3p The layout belong to a different form.} */
 		if (__layout.getForm() != this)
 			throw new IllegalArgumentException("EB3p");
 		

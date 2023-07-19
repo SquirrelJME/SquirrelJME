@@ -101,7 +101,7 @@ public abstract class FormLayoutPolicy
 	@Api
 	protected final Form getForm()
 	{
-		// {@squirreljme.error EB0a The form has been garbage collected.}
+		/* {@squirreljme.error EB0a The form has been garbage collected.} */
 		Form rv = this._form.get();
 		if (rv == null)
 			throw new IllegalStateException("EB0a");

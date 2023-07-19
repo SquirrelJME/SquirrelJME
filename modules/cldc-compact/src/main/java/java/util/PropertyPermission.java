@@ -65,8 +65,8 @@ public final class PropertyPermission
 		if (__key == null || __act == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ2x Property permission key cannot be
-		// negative.}
+		/* {@squirreljme.error ZZ2x Property permission key cannot be
+		negative.} */
 		if (__key.isEmpty())
 			throw new IllegalArgumentException("ZZ2x");
 		
@@ -99,9 +99,9 @@ public final class PropertyPermission
 					w = true;
 					break;
 				
-					// {@squirreljme.error ZZ2y The specified action is not
-					// valid for property permissions. (The action; The input
-					// actions)}
+					/* {@squirreljme.error ZZ2y The specified action is not
+					valid for property permissions. (The action; The input
+					actions)} */
 				default:
 					throw new IllegalArgumentException(
 						String.format("ZZ2y %s %s", sub, __act));

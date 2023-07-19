@@ -81,7 +81,7 @@ class __CFunctionSplice__
 			return;
 		this._isClosed = true;
 		
-		// {@squirreljme.error CW0p Target has been garbage collected.}
+		/* {@squirreljme.error CW0p Target has been garbage collected.} */
 		CFunctionBlock target = this._target.get();
 		if (target == null)
 			throw new IOException("CW0p");

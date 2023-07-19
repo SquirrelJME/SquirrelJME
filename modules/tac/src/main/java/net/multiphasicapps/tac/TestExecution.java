@@ -105,14 +105,14 @@ public final class TestExecution
 				break;
 			
 			case TEST_EXCEPTION:
-				// {@squirreljme.error BU0d The test failed to run properly.
-				// (The given test)}
+				/* {@squirreljme.error BU0d The test failed to run properly.
+				(The given test)} */
 				__ps.printf("BU0d %s%n", this.testClass);
 				break;
 			
 			case UNTESTABLE:
-				// {@squirreljme.error BU0c Test could not be ran
-				// potentially because a condition was not met. (Test class)}
+				/* {@squirreljme.error BU0c Test could not be ran
+				potentially because a condition was not met. (Test class)} */
 				__ps.printf("BU0c %s%n", this.testClass);
 				break;
 		}

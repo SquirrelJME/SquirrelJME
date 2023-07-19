@@ -44,7 +44,7 @@ public final class ProtectedPackages
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ37 Package contains a period. (The name)}
+		/* {@squirreljme.error ZZ37 Package contains a period. (The name)} */
 		if (__name.indexOf('.') >= 0)
 			throw new IllegalArgumentException("ZZ37 " + __name);
 		

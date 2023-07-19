@@ -122,8 +122,8 @@ final class __ServiceLoaderFreshIterator__<S>
 					return true;
 				}
 				
-				// {@squirreljme.error ZZ30 Could not load the service
-				// class.}
+				/* {@squirreljme.error ZZ30 Could not load the service
+				class.} */
 				catch (ClassCastException|IllegalAccessException|
 					InstantiationException|ClassNotFoundException e)
 				{
@@ -241,8 +241,8 @@ final class __ServiceLoaderFreshIterator__<S>
 			}
 		}
 		
-		// {@squirreljme.error ZZ31 Could not read the services
-		// list.}
+		/* {@squirreljme.error ZZ31 Could not read the services
+		list.} */
 		catch (IOException e)
 		{
 			throw new ServiceConfigurationError("ZZ31", e);

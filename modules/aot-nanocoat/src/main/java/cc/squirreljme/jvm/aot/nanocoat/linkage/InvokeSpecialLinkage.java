@@ -43,8 +43,8 @@ public final class InvokeSpecialLinkage
 		if (__source == null || __target == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error NC09 Invoke special target cannot be an
-		// interface reference.}
+		/* {@squirreljme.error NC09 Invoke special target cannot be an
+		interface reference.} */
 		if (__target.isInterface())
 			throw new IllegalArgumentException("NC09");
 		

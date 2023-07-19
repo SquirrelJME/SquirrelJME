@@ -138,8 +138,8 @@ public class AssertionError
 			// Debug it
 			t.printStackTrace();
 			
-			// {@squirreljme.error ZZ0s Assertion string conversion failed
-			// with no message.}
+			/* {@squirreljme.error ZZ0s Assertion string conversion failed
+			with no message.} */
 			String m = t.getMessage();
 			return (m == null ? "ZZ0s" : m);
 		}

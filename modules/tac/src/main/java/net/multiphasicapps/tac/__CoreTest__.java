@@ -112,9 +112,9 @@ abstract class __CoreTest__
 					case "anycoat":		vmType = __CoreTest__._ANYCOAT; break;
 				}
 			
-			// {@squirreljme.error BU0k Test is only valid on
-			// AnyCoat (such as SpringCoat/SummerCoat).
-			// (The requested VM type; The system VM type)}
+			/* {@squirreljme.error BU0k Test is only valid on
+			AnyCoat (such as SpringCoat/SummerCoat).
+			(The requested VM type; The system VM type)} */
 			int systemVmType = RuntimeShelf.vmType();
 			if (vmType == __CoreTest__._ANYCOAT &&
 				systemVmType != VMType.SPRINGCOAT &&
@@ -122,8 +122,8 @@ abstract class __CoreTest__
 				throw new UntestableException("BU0k " + vmType + " " +
 					systemVmType);
 			
-			// {@squirreljme.error BU0j Test cannot run on a different VM.
-			// (The requested VM type; The system VM type)}
+			/* {@squirreljme.error BU0j Test cannot run on a different VM.
+			(The requested VM type; The system VM type)} */
 			else if (vmType >= 0 && vmType != systemVmType)
 				throw new UntestableException("BU0j " + vmType + " " +
 					systemVmType);

@@ -84,7 +84,7 @@ public class CStructVariableBlock
 		if (__memberName == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error CW39 Not an array member.}
+		/* {@squirreljme.error CW39 Not an array member.} */
 		CVariable member = this.__checkMember(__memberName);
 		CType memberType = member.type;
 		CType elementType;
@@ -203,12 +203,12 @@ public class CStructVariableBlock
 		if (__memberName == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error CW34 Struct has no such member.}
+		/* {@squirreljme.error CW34 Struct has no such member.} */
 		CVariable rv = this.struct.member(__memberName);
 		if (rv == null)
 			throw new NoSuchElementException("CW34");
 		
-		// {@squirreljme.error CW33 Member already written.} 
+		/* {@squirreljme.error CW33 Member already written.} */ 
 		Set<CIdentifier> written = this._written;
 		if (written.contains(__memberName))
 			throw new IllegalStateException("CW33");

@@ -41,7 +41,7 @@ public class ArrayIndexOutOfBoundsException
 	@Api
 	public ArrayIndexOutOfBoundsException(int __i)
 	{
-		// {@squirreljme.error ZZ0r Array index out of bounds. (The index)}
+		/* {@squirreljme.error ZZ0r Array index out of bounds. (The index)} */
 		super("ZZ0r " + __i);
 	}
 	

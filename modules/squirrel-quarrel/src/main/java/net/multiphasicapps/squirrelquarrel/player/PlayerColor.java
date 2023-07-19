@@ -161,8 +161,8 @@ public enum PlayerColor
 			case 4: return PlayerColor.PURPLE;
 			case 5: return PlayerColor.GRAY;
 			
-				// {@squirreljme.error BE04 Player index out of range. (The
-				// player index)}
+				/* {@squirreljme.error BE04 Player index out of range. (The
+				player index)} */
 			default:
 				throw new IllegalArgumentException(String.format("BE04 %d",
 					__i));

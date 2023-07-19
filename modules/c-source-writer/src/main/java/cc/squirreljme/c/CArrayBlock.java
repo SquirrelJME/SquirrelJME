@@ -55,7 +55,7 @@ public class CArrayBlock
 	public CStructVariableBlock struct()
 		throws IOException
 	{
-		// {@squirreljme.error CW3f No an array of structs.}
+		/* {@squirreljme.error CW3f No an array of structs.} */
 		CType elementType = this.elementType;
 		if (!(elementType instanceof CStructType))
 			throw new IllegalStateException("CW3f");

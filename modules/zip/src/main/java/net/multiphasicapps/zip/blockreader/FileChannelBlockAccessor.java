@@ -80,7 +80,7 @@ public class FileChannelBlockAccessor
 	public byte read(long __addr)
 		throws EOFException, IOException
 	{
-		// {@squirreljme.error BF07 Cannot read from a negative offset.}
+		/* {@squirreljme.error BF07 Cannot read from a negative offset.} */
 		if (__addr < 0)
 			throw new IOException("BF07");
 		
@@ -88,7 +88,7 @@ public class FileChannelBlockAccessor
 		byte[] val = new byte[1];
 		int rv = this.read(__addr, val, 0, 1);
 		
-		// {@squirreljme.error BF08 Read past end of file.}
+		/* {@squirreljme.error BF08 Read past end of file.} */
 		if (rv < 0)
 			throw new EOFException("BF08");
 		
@@ -110,7 +110,7 @@ public class FileChannelBlockAccessor
 		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("AIOB");
 		
-		// {@squirreljme.error BF09 Cannot read from a negative offset.}
+		/* {@squirreljme.error BF09 Cannot read from a negative offset.} */
 		if (__addr < 0)
 			throw new IOException("BF09");
 		

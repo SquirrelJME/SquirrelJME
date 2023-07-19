@@ -274,8 +274,8 @@ public interface EGL10
 		@Override
 		public GL getGL()
 		{
-			// {@squirreljme.error EJ0a Cannot get the GL instance of
-			// a null context.}
+			/* {@squirreljme.error EJ0a Cannot get the GL instance of
+			a null context.} */
 			throw new RuntimeException("EJ0a");
 		}
 	};

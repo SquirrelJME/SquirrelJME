@@ -99,7 +99,7 @@ final class __Layout__
 		// Determine if the grouping is valid, the border is always a
 		// multiple of 20 so if there is a remainder left over then we know
 		// it is not a valid placement
-		// {@squirreljme.error EB3m Invalid position. (The position)}
+		/* {@squirreljme.error EB3m Invalid position. (The position)} */
 		int groupId = (border - Display.SOFTKEY_BOTTOM) / 20;
 		int xvDiv = (border - Display.SOFTKEY_BOTTOM) % 20;
 		if (index <= 0 || xvDiv != 0 || groupId < 0 || groupId > 4)

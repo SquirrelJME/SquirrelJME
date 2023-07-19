@@ -88,7 +88,7 @@ public class CStructType
 	public CType dereferenceType()
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error CW04 Cannot dereference a struct.}
+		/* {@squirreljme.error CW04 Cannot dereference a struct.} */
 		throw new IllegalArgumentException("CW04");
 	}
 	

@@ -187,8 +187,8 @@ public final class StaticDisplayState
 			}
 		}
 		
-		// {@squirreljme.error EB3e No widget exists for the given
-		// native.}
+		/* {@squirreljme.error EB3e No widget exists for the given
+		native.} */
 		return null;
 	}
 	
@@ -249,7 +249,7 @@ public final class StaticDisplayState
 		if (__widget == null || __backend == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB39 Invalid item type. (The type)}
+		/* {@squirreljme.error EB39 Invalid item type. (The type)} */
 		if ((__type < UIItemType.DISPLAY && __type != Integer.MIN_VALUE) ||
 			__type > UIItemType.NUM_TYPES)
 			throw new IllegalArgumentException("EB39 " + __type);
@@ -294,8 +294,8 @@ public final class StaticDisplayState
 			}
 		}
 		
-		// {@squirreljme.error EB3c No form exists for the given
-		// displayable.}
+		/* {@squirreljme.error EB3c No form exists for the given
+		displayable.} */
 		throw new NoSuchElementException("EB3c");
 	}
 	
@@ -433,8 +433,8 @@ public final class StaticDisplayState
 					didRemove = true;
 				}
 			
-			// {@squirreljme.error EB1r The listener was never added to the
-			// listener set.}
+			/* {@squirreljme.error EB1r The listener was never added to the
+			listener set.} */
 			if (!didRemove)
 				throw new IllegalStateException("EB1r");
 		}
@@ -458,8 +458,8 @@ public final class StaticDisplayState
 		
 		synchronized (StaticDisplayState.class)
 		{
-			// {@squirreljme.error EB3d There is already a background thread
-			// present.}
+			/* {@squirreljme.error EB3d There is already a background thread
+			present.} */
 			if (StaticDisplayState._BACKGROUND_THREAD != null)
 				throw new IllegalStateException("EB3d");
 			

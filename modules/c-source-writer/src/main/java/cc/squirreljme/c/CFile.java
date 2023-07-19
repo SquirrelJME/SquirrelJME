@@ -794,7 +794,7 @@ public class CFile
 		// A C Expression
 		if (__token instanceof CExpression)
 		{
-			// {@squirreljme.error CW36 Cannot output token in such way.}
+			/* {@squirreljme.error CW36 Cannot output token in such way.} */
 			if (__token == CExpression.INVALID_EXPRESSION)
 				throw new IllegalArgumentException("CW36");
 			
@@ -849,7 +849,7 @@ public class CFile
 		else if (__token instanceof Number)
 			return this.number((Number)__token);
 		
-		// {@squirreljme.error CW05 Unknown token type. (The type)}
+		/* {@squirreljme.error CW05 Unknown token type. (The type)} */
 		throw new IllegalArgumentException("CW05 " + __token.getClass());
 	}
 	
@@ -942,8 +942,8 @@ public class CFile
 		if (__cBlock == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error CW07 Closing block is not the last opened
-		// block.}
+		/* {@squirreljme.error CW07 Closing block is not the last opened
+		block.} */
 		Deque<CBlock> blocks = this._blocks;
 		CBlock peek = blocks.peek();
 		if (peek != __cBlock)

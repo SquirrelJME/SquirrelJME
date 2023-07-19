@@ -42,8 +42,8 @@ public final class TableOfContentsWriter
 	public TableOfContentsWriter(int __numTocProperties)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AJ01 Zero or negative table of contents
-		// entries specified.}
+		/* {@squirreljme.error AJ01 Zero or negative table of contents
+		entries specified.} */
 		if (__numTocProperties <= 0)
 			throw new IllegalArgumentException("AJ01");
 		

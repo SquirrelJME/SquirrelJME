@@ -54,8 +54,8 @@ public final class TableSwitch
 		if (__def == null || __jumps == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC42 Table switch high index is less than or
-		// equal to the low index. (The low index; The high index)}
+		/* {@squirreljme.error JC42 Table switch high index is less than or
+		equal to the low index. (The low index; The high index)} */
 		if (__hi <= __lo)
 			throw new InvalidClassFormatException(String.format("JC42 %d %d",
 				__lo, __hi));

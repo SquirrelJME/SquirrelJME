@@ -385,7 +385,7 @@ public class Thread
 	public final void setPriority(int __p)
 		throws IllegalArgumentException, SecurityException
 	{
-		// {@squirreljme.error ZZ20 Invalid priority.}
+		/* {@squirreljme.error ZZ20 Invalid priority.} */
 		if (__p < Thread.MIN_PRIORITY || __p > Thread.MAX_PRIORITY)
 			throw new IllegalArgumentException("ZZ20");
 		
@@ -412,11 +412,11 @@ public class Thread
 	{
 		synchronized (this)
 		{
-			// {@squirreljme.error ZZ21 A thread may only be started once.}
+			/* {@squirreljme.error ZZ21 A thread may only be started once.} */
 			if (ThreadShelf.javaThreadIsStarted(this))
 				throw new IllegalThreadStateException("ZZ21");
 			
-			// {@squirreljme.error ZZ22 Failed to start the thread.}
+			/* {@squirreljme.error ZZ22 Failed to start the thread.} */
 			if (!ThreadShelf.vmThreadStart(this._vmThread))
 				throw new IllegalThreadStateException("ZZ22");
 		}
@@ -527,7 +527,7 @@ public class Thread
 		@Range(from = 0, to = 999999) int __ns)
 		throws IllegalArgumentException, InterruptedException
 	{
-		// {@squirreljme.error ZZ23 Invalid sleep arguments.}
+		/* {@squirreljme.error ZZ23 Invalid sleep arguments.} */
 		if (__ms < 0 || __ns < 0 || __ns > 999999)
 			throw new IllegalArgumentException("ZZ23");
 		
@@ -541,7 +541,7 @@ public class Thread
 			// The interrupt status becomes cleared for our current thread
 			ThreadShelf.javaThreadClearInterrupt(Thread.currentThread());
 			
-			// {@squirreljme.error ZZ24 Sleep was interrupted.}
+			/* {@squirreljme.error ZZ24 Sleep was interrupted.} */
 			throw new InterruptedException("ZZ24");
 		}
 	}

@@ -48,7 +48,7 @@ public abstract class TestBiFunction<A, B, R>
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{
-		// {@squirreljme.error BU04 Test takes two parameters.}
+		/* {@squirreljme.error BU04 Test takes two parameters.} */
 		if (__args.length != 2)
 			throw new InvalidTestParameterException("BU04");
 		

@@ -83,14 +83,14 @@ public class ChoiceGroup
 		if (__se == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB1b The image array does not have the same
-		// length as the string array.}
+		/* {@squirreljme.error EB1b The image array does not have the same
+		length as the string array.} */
 		int n = __se.length;
 		if (__ie != null && __ie.length != n)
 			throw new IllegalArgumentException("EB1b");
 		
-		// {@squirreljme.error EB1c Invalid choice type specified for a
-		// choice group. (The choice type)}
+		/* {@squirreljme.error EB1c Invalid choice type specified for a
+		choice group. (The choice type)} */
 		if (__ct < ChoiceGroup._MIN_TYPE || __ct > ChoiceGroup._MAX_TYPE ||
 			__ct == Choice.IMPLICIT)
 			throw new IllegalArgumentException(String.format("EB1c %d", __ct));
@@ -102,8 +102,8 @@ public class ChoiceGroup
 		// Append all elements
 		for (int i = 0; i < n; i++)
 		{
-			// {@squirreljme.error EB1d A string element contains a null
-			// entry.}
+			/* {@squirreljme.error EB1d A string element contains a null
+			entry.} */
 			String s = __se[i];
 			if (s == null)
 				throw new NullPointerException("EB1d");
@@ -209,8 +209,8 @@ public class ChoiceGroup
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB1e Cannot insert choice at the specified
-		// index because it is not within bounds. (The index to add at)}
+		/* {@squirreljme.error EB1e Cannot insert choice at the specified
+		index because it is not within bounds. (The index to add at)} */
 		List<__ChoiceEntry__> entries = this._entries;
 		if (__v < 0 || __v > entries.size())
 			throw new IndexOutOfBoundsException(String.format("EB1e %d",

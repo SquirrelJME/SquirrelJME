@@ -185,7 +185,7 @@ public class ShiftJisDecoder
 		}
 		catch (IOException e)
 		{
-			// {@squirreljme.error ZZ4i Could not load the Shift-JIS table.}
+			/* {@squirreljme.error ZZ4i Could not load the Shift-JIS table.} */
 			throw new RuntimeException("ZZ4i", e);
 		}
 	}

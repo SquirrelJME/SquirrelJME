@@ -137,8 +137,8 @@ final class __Libraries__
 					return new Library[0];
 			}
 			
-			// {@squirreljme.error DG0p Could not locate the suite which
-			// satisfies the given dependency. (The dependency to look for)}
+			/* {@squirreljme.error DG0p Could not locate the suite which
+			satisfies the given dependency. (The dependency to look for)} */
 			throw new RuntimeException(
 				String.format("DG0p %s", __set));
 		}

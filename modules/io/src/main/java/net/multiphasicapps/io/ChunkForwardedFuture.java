@@ -79,7 +79,7 @@ public final class ChunkForwardedFuture
 				if (this.zeroInit)
 					return 0;
 					
-				// {@squirreljme.error BD05 A future was never set.}
+				/* {@squirreljme.error BD05 A future was never set.} */
 				throw new IllegalStateException("BD05");
 			}
 			

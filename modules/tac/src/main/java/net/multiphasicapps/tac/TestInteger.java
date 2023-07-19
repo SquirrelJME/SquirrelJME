@@ -42,7 +42,7 @@ public abstract class TestInteger
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{
-		// {@squirreljme.error BU0e Test does not take any parameters.}
+		/* {@squirreljme.error BU0e Test does not take any parameters.} */
 		if (__args.length != 0)
 			throw new InvalidTestParameterException("BU0e");
 		

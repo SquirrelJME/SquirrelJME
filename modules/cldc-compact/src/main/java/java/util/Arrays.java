@@ -1457,7 +1457,7 @@ public class Arrays
 			ShellSort.<T>sort(Arrays.<T>asList(__a), __from, __to, __comp);
 		}
 		
-		// {@squirreljme.error ZZ2h Out of bounds access when sorting array.}
+		/* {@squirreljme.error ZZ2h Out of bounds access when sorting array.} */
 		catch (IndexOutOfBoundsException e)
 		{
 			if (e instanceof ArrayIndexOutOfBoundsException)
