@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.gradle.api.Action;
@@ -83,12 +84,25 @@ public class NanoCoatBuiltInTaskAction
 					if (entry.isDirectory())
 						continue;
 					
-					// Determine the base file name
-					String fileName = entry.getName();
-					int lastSlash = fileName.lastIndexOf('/');
-					String baseName = (lastSlash >= 0 ?
-						fileName.substring(lastSlash + 1) :
-						fileName);
+					// Debug ticker
+					System.err.print(".");
+					
+					// Split as slashes to get directories and whatnot
+					String[] fragments = entry.getName().split(
+						Pattern.quote("/"));
+					int numFragments = fragments.length;
+					
+					// Determine what our file is called and whatnot
+					Path targetParent = output;
+					for (int i = 0; i < numFragments - 1; i++)
+						targetParent = targetParent.resolve(fragments[i]);
+					
+					// Make sure directories exist
+					Files.createDirectories(targetParent);
+					
+					// Which file are we writing to?
+					Path targetFile = targetParent.resolve(
+						fragments[numFragments - 1]);
 					
 					// Dump everything into a temporary file first
 					Path tempFile = null;
@@ -104,20 +118,11 @@ public class NanoCoatBuiltInTaskAction
 							StandardOpenOption.WRITE,
 							StandardOpenOption.CREATE))
 						{
-							// Copy everything over
-							for (;;)
-							{
-								int rc = in.read(buf);
-								
-								if (rc < 0)
-									break;
-								
-								out.write(buf, 0, rc);
-							}
+							VMHelpers.copy(zip, out);
 						}
 						
 						// Copy over to target
-						Files.move(tempFile, output.resolve(baseName),
+						Files.move(tempFile, targetFile,
 							StandardCopyOption.REPLACE_EXISTING);
 					}
 					

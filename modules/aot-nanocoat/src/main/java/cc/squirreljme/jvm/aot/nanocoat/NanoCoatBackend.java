@@ -198,11 +198,21 @@ public class NanoCoatBackend
 					
 					// Do the actual copy
 					try (InputStream data = library.resourceAsStream(
-						file); OutputStream entry = zip.nextEntry(file))
+							file); 
+						OutputStream entry = zip.nextEntry(file))
 					{
 						StreamUtils.copy(data, entry);
+						
+						// Make sure entry is written
+						entry.flush();
 					}
 				}
+			
+			// Make sure this is flushed
+			zip.flush();
 		}
+		
+		// And make sure the output is truly flushed
+		__out.flush();
 	}
 }

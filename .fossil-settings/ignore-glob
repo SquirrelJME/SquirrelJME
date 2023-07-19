@@ -11,6 +11,8 @@ modules/*/build/libs
 modules/*/build/resources
 modules/*/build/squirreljme
 modules/*/build/tmp
+build/squirreljme/vm-main-*/squirreljme.zip
+build/squirreljme/vm-test-*/squirreljme.zip
 
 # VSCode Files
 *~
@@ -73,6 +75,7 @@ modules/*/out/test/
 
 # VisualVM files
 java_pid*.hprof
+*.nps
 
 # CMake
 CMakeFiles
@@ -100,6 +103,9 @@ cmake_install.cmake
 cmake-build-debug
 nanocoat/cmake-build-debug
 *.tmp
+nanocoat/rom/*.c
+nanocoat/rom/*.h
+nanocoat/rom/CMakeLists.txt
 
 # Fossil files
 _FOSSIL_
