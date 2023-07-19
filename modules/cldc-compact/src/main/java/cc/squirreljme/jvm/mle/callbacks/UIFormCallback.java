@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.jetbrains.annotations.Async;
 
 /**
  * Interface that is used a callback on a user-interface form is to be done.
@@ -40,6 +41,7 @@ public interface UIFormCallback
 	 * @since 2022/07/20
 	 */
 	@SquirrelJMEVendorApi
+	@Async.Execute
 	void formRefresh(UIFormBracket __form, int __sx, int __sy,
 		int __sw, int __sh);
 	
@@ -55,6 +57,7 @@ public interface UIFormCallback
 	 * @since 2020/07/19
 	 */
 	@SquirrelJMEVendorApi
+	@Async.Execute
 	void propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __intProp, int __sub, int __old, int __new);
 	
@@ -70,6 +73,7 @@ public interface UIFormCallback
 	 * @since 2020/07/19
 	 */
 	@SquirrelJMEVendorApi
+	@Async.Execute
 	void propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __strProp, int __sub, String __old, String __new);
 }

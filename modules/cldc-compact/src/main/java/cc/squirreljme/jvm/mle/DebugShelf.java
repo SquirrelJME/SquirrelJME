@@ -14,7 +14,10 @@ import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
+import org.jetbrains.annotations.TestOnly;
 
 /**
  * This is the shelf used for accessing the debugging features of SquirrelJME
@@ -99,6 +102,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@SquirrelJMEVendorApi
+	@Range(from = -1, to = 255)
 	public static native int pointJavaOperation(
 		@NotNull TracePointBracket __point);
 	
@@ -110,6 +114,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@SquirrelJMEVendorApi
+	@Range(from = -1, to = Integer.MAX_VALUE)
 	public static native int pointLine(@NotNull TracePointBracket __point);
 	
 	/**
@@ -158,6 +163,7 @@ public final class DebugShelf
 	 * @since 2020/07/11
 	 */
 	@SquirrelJMEVendorApi
+	@TestOnly
 	public static native int verbose(
 		@MagicConstant(flagsFromClass = VerboseDebugFlag.class) int __flags);
 	
@@ -178,6 +184,7 @@ public final class DebugShelf
 	 * @since 2022/06/12
 	 */
 	@SquirrelJMEVendorApi
+	@TestOnly
 	public static native int verboseInternalThread(
 		@MagicConstant(flagsFromClass = VerboseDebugFlag.class) int __flags);
 	
@@ -193,5 +200,6 @@ public final class DebugShelf
 	 * @since 2020/07/11
 	 */
 	@SquirrelJMEVendorApi
+	@TestOnly
 	public static native void verboseStop(int __code);
 }

@@ -1337,6 +1337,7 @@ public class Display
 	 * @since 2023/01/14
 	 */
 	@SerializedEvent
+	@Async.Execute
 	protected void __serialRun(int __serialId)
 	{
 		// Look to see if it is a valid call

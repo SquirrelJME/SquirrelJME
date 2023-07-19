@@ -11,12 +11,14 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import org.jetbrains.annotations.Async;
 
 @Api
 public interface ItemCommandListener
 {
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	void commandAction(Command __a, Item __b);
 }
 

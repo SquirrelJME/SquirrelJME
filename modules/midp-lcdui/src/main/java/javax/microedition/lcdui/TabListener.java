@@ -11,6 +11,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import org.jetbrains.annotations.Async;
 
 /**
  * This interface is used as a callback when there has been a change to the
@@ -32,6 +33,7 @@ public interface TabListener
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	void tabAddedEvent(int __i, Screen __tab);
 	
 	/**
@@ -43,6 +45,7 @@ public interface TabListener
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	void tabChangeEvent(Screen __tab);
 	
 	/**
@@ -54,6 +57,7 @@ public interface TabListener
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	void tabRemoveEvent(int __i);
 }
 

@@ -11,16 +11,19 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import org.jetbrains.annotations.Async;
 
 @Api
 public interface ItemTraversalListener
 {
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	void itemTraversedIn(Item __i);
 	
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	void itemTraversedOut(Item __i);
 }
 

@@ -11,6 +11,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import org.jetbrains.annotations.Async;
 
 /**
  * This interface is called when commands need to be laid out onto the display.
@@ -34,6 +35,7 @@ public interface CommandLayoutPolicy
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	void onCommandLayout(Displayable __d);
 }
 

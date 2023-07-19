@@ -20,6 +20,7 @@ import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * This shelf handles everything regarding threading and otherwise.
@@ -237,7 +238,9 @@ public final class ThreadShelf
 	 */
 	@SquirrelJMEVendorApi
 	@Blocking
-	public static native boolean sleep(int __ms, int __ns)
+	public static native boolean sleep(
+		@Range(from = 0, to = Integer.MAX_VALUE) int __ms,
+		@Range(from = 0, to = 999999) int __ns)
 		throws MLECallError;
 	
 	/**

@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import org.jetbrains.annotations.Async;
 
 @Api
 public abstract class IdleItem
@@ -26,6 +27,7 @@ public abstract class IdleItem
 	
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void addedToDisplay(Display __d)
 	{
 		throw Debugging.todo();
@@ -33,6 +35,7 @@ public abstract class IdleItem
 	
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void removedFromDisplay(Display __d)
 	{
 		throw Debugging.todo();

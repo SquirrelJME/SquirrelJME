@@ -31,6 +31,7 @@ import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
 import java.util.Objects;
+import org.jetbrains.annotations.Async;
 
 /**
  * This thread is responsible for handling graphics operations.
@@ -409,6 +410,7 @@ final class __MLEUIThread__
 	 * @since 2020/10/16
 	 */
 	@SerializedEvent
+	@Async.Execute
 	private void __eventKey(Canvas __canvas, CustomItem __cItem, int __event,
 		int __keyCode, int __modifiers)
 		throws IllegalArgumentException, NullPointerException

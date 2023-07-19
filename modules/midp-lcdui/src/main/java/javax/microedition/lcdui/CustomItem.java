@@ -19,6 +19,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import org.jetbrains.annotations.Async;
 
 @SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
 @Api
@@ -83,18 +84,22 @@ public abstract class CustomItem
 	
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected abstract int getMinContentHeight();
 	
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected abstract int getMinContentWidth();
 	
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected abstract int getPrefContentHeight(int __a);
 	
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected abstract int getPrefContentWidth(int __a);
 	
 	/**
@@ -114,6 +119,7 @@ public abstract class CustomItem
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected abstract void paint(Graphics __g, int __w, int __h);
 	
 	@Api
@@ -143,6 +149,7 @@ public abstract class CustomItem
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void hideNotify()
 	{
 		// Implemented by sub-classes
@@ -156,6 +163,7 @@ public abstract class CustomItem
 	
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void keyPressed(int __a)
 	{
 		throw Debugging.todo();
@@ -163,6 +171,7 @@ public abstract class CustomItem
 	
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void keyReleased(int __a)
 	{
 		throw Debugging.todo();
@@ -170,6 +179,7 @@ public abstract class CustomItem
 	
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void keyRepeated(int __a)
 	{
 		throw Debugging.todo();
@@ -177,6 +187,7 @@ public abstract class CustomItem
 	
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void pointerDragged(int __a, int __b)
 	{
 		throw Debugging.todo();
@@ -184,6 +195,7 @@ public abstract class CustomItem
 	
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void pointerPressed(int __a, int __b)
 	{
 		throw Debugging.todo();
@@ -191,6 +203,7 @@ public abstract class CustomItem
 	
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void pointerReleased(int __a, int __b)
 	{
 		throw Debugging.todo();
@@ -246,6 +259,7 @@ public abstract class CustomItem
 	
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void showNotify()
 	{
 		// Implemented by sub-classes
@@ -253,6 +267,7 @@ public abstract class CustomItem
 	
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void sizeChanged(int __a, int __b)
 	{
 		throw Debugging.todo();
@@ -260,6 +275,7 @@ public abstract class CustomItem
 	
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected boolean traverse(int __a, int __b, int __c, int[] __d)
 	{
 		throw Debugging.todo();
@@ -267,6 +283,7 @@ public abstract class CustomItem
 	
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void traverseOut()
 	{
 		throw Debugging.todo();
