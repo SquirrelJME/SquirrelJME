@@ -465,8 +465,7 @@ public final class SoftFloat
 	 * @return The resultant value.
 	 * @since 2021/04/08
 	 */
-	protected static int __normRoundPackToF32(boolean __sign, int __exp,
-		int __sig)
+	static int __normRoundPackToF32(boolean __sign, int __exp, int __sig)
 	{
 		int shiftDist;
 		
@@ -519,7 +518,7 @@ public final class SoftFloat
 	 * @return The packed value.
 	 * @since 2021/04/08
 	 */
-	protected static int __packToF32UI(boolean __sign, int __exp, int __sig)
+	static int __packToF32UI(boolean __sign, int __exp, int __sig)
 	{
 		// (((uint32_t) (sign)<<31) + ((uint32_t) (exp)<<23) + (sig))
 		return (__sign ? SoftFloat.SIGN_MASK : 0) + ((__exp) << 23) + (__sig);
