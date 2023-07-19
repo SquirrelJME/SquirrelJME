@@ -23,6 +23,7 @@ import java.io.Closeable;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * This shelf allows for the management of tasks and otherwise.
@@ -127,9 +128,12 @@ public final class TaskShelf
 	 */
 	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PipeErrorType.class)
+	@Range(from = -2, to = Integer.MAX_VALUE)
 	@CheckReturnValue
 	public static native int read(@NotNull TaskBracket __task, int __fd,
-		@NotNull byte[] __b, int __o, int __l)
+		@NotNull byte[] __b,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __l)
 		throws MLECallError;
 	
 	/**

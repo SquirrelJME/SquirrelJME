@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.RandomAccess;
+import org.jetbrains.annotations.UnmodifiableView;
 
 /**
  * This is a list which cannot be modified.
@@ -21,6 +22,7 @@ import java.util.RandomAccess;
  * @param <V> The type of value the list stores.
  * @since 2016/03/03
  */
+@UnmodifiableView
 public abstract class UnmodifiableList<V>
 	extends AbstractList<V>
 {

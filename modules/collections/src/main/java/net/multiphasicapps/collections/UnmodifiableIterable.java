@@ -11,6 +11,7 @@ package net.multiphasicapps.collections;
 
 import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 import java.util.Iterator;
+import org.jetbrains.annotations.UnmodifiableView;
 
 /**
  * Wraps an iterable which makes it not able to be modified.
@@ -18,6 +19,7 @@ import java.util.Iterator;
  * @param <T> The type to iterate through.
  * @since 2021/04/25
  */
+@UnmodifiableView
 public final class UnmodifiableIterable<T>
 	implements Iterable<T>
 {

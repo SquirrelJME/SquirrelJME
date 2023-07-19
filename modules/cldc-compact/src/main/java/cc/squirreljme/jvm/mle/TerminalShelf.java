@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * This contains the shell for printing to the console and otherwise.
@@ -115,12 +116,14 @@ public final class TerminalShelf
 	 * @since 2018/12/05
 	 */
 	@SquirrelJMEVendorApi
-	@MagicConstant(valuesFromClass = PipeErrorType.class,
-		intValues = {-1, 0})
+	@MagicConstant(valuesFromClass = PipeErrorType.class)
+	@Range(from = -2, to = Integer.MAX_VALUE)
 	@Blocking
 	@CheckReturnValue
 	public static native int read(@NotNull PipeBracket __fd,
-		@NotNull byte[] __b, int __o, int __l)
+		@NotNull byte[] __b,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __l)
 		throws MLECallError;
 	
 	/**
@@ -135,9 +138,11 @@ public final class TerminalShelf
 	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PipeErrorType.class,
 		intValues = {1})
+	@Range(from = -2, to = 1)
 	@Blocking
 	@CheckReturnValue
-	public static native int write(@NotNull PipeBracket __fd, int __c)
+	public static native int write(@NotNull PipeBracket __fd,
+		@Range(from = 0, to = 255) int __c)
 		throws MLECallError;
 	
 	/**
@@ -156,9 +161,12 @@ public final class TerminalShelf
 	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PipeErrorType.class,
 		intValues = {1})
+	@Range(from = -2, to = Integer.MAX_VALUE)
 	@Blocking
 	@CheckReturnValue
 	public static native int write(@NotNull PipeBracket __fd,
-		@NotNull byte[] __b, int __o, int __l)
+		@NotNull byte[] __b,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __l)
 		throws MLECallError;
 }

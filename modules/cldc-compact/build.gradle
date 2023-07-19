@@ -239,5 +239,5 @@ java
 dependencies
 {
 	// For IDE related information
-	api "org.jetbrains:annotations-java5:24.0.1"
+	api "org.jetbrains:annotations:24.0.1"
 }

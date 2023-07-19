@@ -12,6 +12,7 @@ package net.multiphasicapps.collections;
 import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Set;
+import org.jetbrains.annotations.UnmodifiableView;
 
 /**
  * This is a set which cannot be modified.
@@ -19,6 +20,7 @@ import java.util.Set;
  * @param <T> The value to store in the set.
  * @since 2016/02/28
  */
+@UnmodifiableView
 public final class UnmodifiableSet<T>
 	extends AbstractSet<T>
 {

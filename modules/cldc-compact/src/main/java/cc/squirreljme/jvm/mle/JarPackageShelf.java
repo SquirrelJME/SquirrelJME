@@ -14,14 +14,18 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.InputStream;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * This allows access to the library class path and resources.
  *
  * @since 2020/06/07
  */
+@SuppressWarnings("UnstableApiUsage")
 @SquirrelJMEVendorApi
 public final class JarPackageShelf
 {
@@ -84,6 +88,7 @@ public final class JarPackageShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
+	@Nullable
 	public static native InputStream openResource(
 		@NotNull JarPackageBracket __jar,
 		@NotNull String __rc)
@@ -105,8 +110,11 @@ public final class JarPackageShelf
 	 * @since 2022/03/04
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native int rawData(@NotNull JarPackageBracket __jar,
-		int __jarOffset, @NotNull byte[] __b, int __o, int __l)
+		int __jarOffset, @NotNull byte[] __b,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __l)
 		throws MLECallError;
 	
 	/**
@@ -120,6 +128,7 @@ public final class JarPackageShelf
 	 * @since 2022/03/04
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native int rawSize(@NotNull JarPackageBracket __jar)
 		throws MLECallError;
 }

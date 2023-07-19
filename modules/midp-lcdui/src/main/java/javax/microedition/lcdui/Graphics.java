@@ -11,6 +11,10 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.lcdui.game.Sprite;
+import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * The class describes the interface that is used for drawing operations.
@@ -127,7 +131,9 @@ public abstract class Graphics
 	 * @since 2017/02/10
 	 */
 	@Api
-	public abstract void clipRect(int __x, int __y, int __w, int __h);
+	public abstract void clipRect(int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h);
 	
 	/**
 	 * This copies one region of the image to another region.
@@ -154,8 +160,11 @@ public abstract class Graphics
 	 * @since 2017/02/10
 	 */
 	@Api
-	public abstract void copyArea(int __sx, int __sy, int __w, int __h,
-		int __dx, int __dy, int __anchor)
+	public abstract void copyArea(int __sx, int __sy,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
+		int __dx, int __dy,
+		@MagicConstant(valuesFromClass = Graphics.class) int __anchor)
 		throws IllegalArgumentException, IllegalStateException;
 	
 	/**
@@ -188,16 +197,24 @@ public abstract class Graphics
 	 * @since 2017/02/10
 	 */ 
 	@Api
-	public abstract void drawArc(int __x, int __y, int __w, int __h, int __sa,
+	public abstract void drawArc(int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h, int __sa,
 		int __aa);
 	
 	@Api
-	public abstract void drawARGB16(short[] __data, int __off, int __scanlen,
-		int __x, int __y, int __w, int __h)
+	public abstract void drawARGB16(
+		@NotNull short[] __data,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __scanlen,
+		int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h)
 		throws NullPointerException;
 	
 	@Api
-	public abstract void drawChar(char __s, int __x, int __y, int __anchor);
+	public abstract void drawChar(char __s, int __x, int __y,
+		@MagicConstant(valuesFromClass = Graphics.class) int __anchor);
 	
 	/**
 	 * Draws the given characters.
@@ -215,8 +232,11 @@ public abstract class Graphics
 	 * @since 2023/02/19
 	 */
 	@Api
-	public abstract void drawChars(char[] __s, int __o, int __l, int __x,
-		int __y, int __anchor)
+	public abstract void drawChars(@NotNull char[] __s,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __l,
+		int __x, int __y,
+		@MagicConstant(valuesFromClass = Graphics.class) int __anchor)
 		throws IllegalArgumentException, IndexOutOfBoundsException,
 			NullPointerException;
 	
@@ -236,7 +256,8 @@ public abstract class Graphics
 	 * @since 2017/02/11
 	 */
 	@Api
-	public abstract void drawImage(Image __i, int __x, int __y, int __anchor)
+	public abstract void drawImage(@NotNull Image __i, int __x, int __y,
+		@MagicConstant(valuesFromClass = Graphics.class) int __anchor)
 		throws IllegalArgumentException, NullPointerException;
 	
 	/**
@@ -252,13 +273,21 @@ public abstract class Graphics
 	public abstract void drawLine(int __x1, int __y1, int __x2, int __y2);
 	
 	@Api
-	public abstract void drawRGB(int[] __data, int __off, int __scanlen,
-		int __x, int __y, int __w, int __h, boolean __alpha)
+	public abstract void drawRGB(@NotNull int[] __data,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __scanlen,
+		int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h, boolean __alpha)
 		throws NullPointerException;
 	
 	@Api
-	public abstract void drawRGB16(short[] __data, int __off, int __scanlen,
-		int __x, int __y, int __w, int __h)
+	public abstract void drawRGB16(@NotNull short[] __data,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __scanlen,
+		int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h)
 		throws NullPointerException;
 	
 	/**
@@ -275,7 +304,9 @@ public abstract class Graphics
 	 * @since 2023/02/16
 	 */
 	@Api
-	public abstract void drawRect(int __x, int __y, int __w, int __h);
+	public abstract void drawRect(int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h);
 	
 	/**
 	 * Same as {@code drawRegion(__src, __xsrc __ysrc, __wsrc, __hsrc, __trans,
@@ -297,9 +328,13 @@ public abstract class Graphics
 	 * @since 2017/02/11 
 	 */
 	@Api
-	public abstract void drawRegion(Image __src, int __xsrc, int __ysrc,
-		int __wsrc, int __hsrc, int __trans, int __xdest, int __ydest,
-		int __anch)
+	public abstract void drawRegion(@NotNull Image __src,
+		int __xsrc, int __ysrc,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __wsrc,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __hsrc,
+		@MagicConstant(valuesFromClass = Graphics.class) int __trans,
+		int __xdest, int __ydest,
+		@MagicConstant(valuesFromClass = Graphics.class) int __anch)
 		throws IllegalArgumentException, NullPointerException;
 	
 	/**
@@ -324,14 +359,23 @@ public abstract class Graphics
 	 * @since 2017/02/11 
 	 */
 	@Api
-	public abstract void drawRegion(Image __src, int __xsrc, int __ysrc,
-		int __wsrc, int __hsrc, int __trans, int __xdest, int __ydest,
-		int __anch, int __wdest, int __hdest)
+	public abstract void drawRegion(@NotNull Image __src,
+		int __xsrc, int __ysrc,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __wsrc,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __hsrc,
+		@MagicConstant(valuesFromClass = Graphics.class) int __trans,
+		int __xdest, int __ydest,
+		@MagicConstant(valuesFromClass = Graphics.class) int __anch,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __wdest,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __hdest)
 		throws IllegalArgumentException, NullPointerException;
 	
 	@Api
-	public abstract void drawRoundRect(int __x, int __y, int __w, int __h,
-		int __aw, int __ah);
+	public abstract void drawRoundRect(int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __aw,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __ah);
 	
 	/**
 	 * Same as {@code drawSubstring(__s, 0, __s.length(), __x, __y, __anchor)}.
@@ -344,8 +388,8 @@ public abstract class Graphics
 	 * @since 2017/02/10
 	 */
 	@Api
-	public abstract void drawString(String __s, int __x, int __y,
-		int __anchor)
+	public abstract void drawString(@NotNull String __s, int __x, int __y,
+		@MagicConstant(valuesFromClass = Graphics.class) int __anchor)
 		throws NullPointerException;
 	
 	/**
@@ -363,12 +407,15 @@ public abstract class Graphics
 	 * @since 2023/02/19
 	 */
 	@Api
-	public abstract void drawSubstring(String __s, int __o, int __l, int __x,
-		int __y, int __anchor)
+	public abstract void drawSubstring(@NotNull String __s,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __l,
+		int __x, int __y,
+		@MagicConstant(valuesFromClass = Graphics.class) int __anchor)
 		throws NullPointerException, StringIndexOutOfBoundsException;
 	
 	@Api
-	public abstract void drawText(Text __t, int __x, int __y);
+	public abstract void drawText(@NotNull Text __t, int __x, int __y);
 	
 	/**
 	 * This draws the filled slice of an ellipse (like a pie slice) from the
@@ -391,14 +438,20 @@ public abstract class Graphics
 	 * @since 2017/02/10
 	 */
 	@Api
-	public abstract void fillArc(int __x, int __y, int __w, int __h, int __sa,
-		int __aa);
+	public abstract void fillArc(int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
+		int __sa, int __aa);
 	
 	@Api
-	public abstract void fillRect(int __x, int __y, int __w, int __h);
+	public abstract void fillRect(int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h);
 	
 	@Api
-	public abstract void fillRoundRect(int __x, int __y, int __w, int __h,
+	public abstract void fillRoundRect(int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
 		int __aw, int __ah);
 	
 	/**
@@ -424,6 +477,7 @@ public abstract class Graphics
 	 * @since 2017/02/10
 	 */
 	@Api
+	@Range(from = 0, to = 255)
 	public abstract int getAlpha();
 	
 	/**
@@ -442,6 +496,7 @@ public abstract class Graphics
 	 * @since 2017/02/10
 	 */
 	@Api
+	@MagicConstant(valuesFromClass = Graphics.class)
 	public abstract int getBlendingMode();
 	
 	/**
@@ -451,6 +506,7 @@ public abstract class Graphics
 	 * @since 2017/02/10
 	 */
 	@Api
+	@Range(from = 0, to = 255)
 	public abstract int getBlueComponent();
 	
 	/**
@@ -460,6 +516,7 @@ public abstract class Graphics
 	 * @since 2017/02/10
 	 */
 	@Api
+	@Range(from = 0, to = Integer.MAX_VALUE)
 	public abstract int getClipHeight();
 	
 	/**
@@ -469,6 +526,7 @@ public abstract class Graphics
 	 * @since 2017/02/10
 	 */
 	@Api
+	@Range(from = 0, to = Integer.MAX_VALUE)
 	public abstract int getClipWidth();
 	
 	/**
@@ -497,6 +555,7 @@ public abstract class Graphics
 	 * @since 2017/02/10
 	 */
 	@Api
+	@Range(from = 0, to = 0xFFFFFF)
 	public abstract int getColor();
 	
 	/**
@@ -517,6 +576,7 @@ public abstract class Graphics
 	 * @since 2017/02/10
 	 */
 	@Api
+	@Nullable
 	public abstract Font getFont();
 	
 	/**
@@ -529,6 +589,7 @@ public abstract class Graphics
 	 * @since 2017/02/10
 	 */
 	@Api
+	@Range(from = 0, to = 255)
 	public abstract int getGrayScale();
 	
 	/**
@@ -538,6 +599,7 @@ public abstract class Graphics
 	 * @since 2017/02/10
 	 */
 	@Api
+	@Range(from = 0, to = 255)
 	public abstract int getGreenComponent();
 	
 	/**
@@ -547,6 +609,7 @@ public abstract class Graphics
 	 * @since 2017/02/10
 	 */
 	@Api
+	@Range(from = 0, to = 255)
 	public abstract int getRedComponent();
 	
 	/**
@@ -556,6 +619,7 @@ public abstract class Graphics
 	 * @since 2017/02/10
 	 */
 	@Api
+	@MagicConstant(valuesFromClass = Graphics.class)
 	public abstract int getStrokeStyle();
 	
 	/**
@@ -585,7 +649,8 @@ public abstract class Graphics
 	 * @since 2017/02/10
 	 */
 	@Api
-	public abstract void setAlpha(int __a)
+	public abstract void setAlpha(
+		@Range(from = 0, to = 255) int __a)
 		throws IllegalArgumentException;
 	
 	/**
@@ -609,7 +674,11 @@ public abstract class Graphics
 	 * @since 2017/02/09
 	 */
 	@Api
-	public abstract void setAlphaColor(int __a, int __r, int __g, int __b)
+	public abstract void setAlphaColor(
+		@Range(from = 0, to = 255) int __a,
+		@Range(from = 0, to = 255) int __r,
+		@Range(from = 0, to = 255) int __g, 
+		@Range(from = 0, to = 255) int __b)
 		throws IllegalArgumentException;
 	
 	/**
@@ -620,7 +689,8 @@ public abstract class Graphics
 	 * @since 2017/02/10
 	 */
 	@Api
-	public abstract void setBlendingMode(int __m)
+	public abstract void setBlendingMode(
+		@MagicConstant(valuesFromClass = Graphics.class) int __m)
 		throws IllegalArgumentException;
 	
 	/**
@@ -638,7 +708,9 @@ public abstract class Graphics
 	 * @since 2017/02/10
 	 */
 	@Api
-	public abstract void setClip(int __x, int __y, int __w, int __h);
+	public abstract void setClip(int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h);
 	
 	/**
 	 * Sets the combined RGB value to use for drawing.
@@ -647,7 +719,8 @@ public abstract class Graphics
 	 * @since 2017/02/09
 	 */
 	@Api
-	public abstract void setColor(int __rgb);
+	public abstract void setColor(
+		@Range(from = 0, to = 0xFFFFFF) int __rgb);
 	
 	/**
 	 * Sets the color to use for drawing.
@@ -660,7 +733,10 @@ public abstract class Graphics
 	 * @since 2017/02/09
 	 */
 	@Api
-	public abstract void setColor(int __r, int __g, int __b)
+	public abstract void setColor(
+		@Range(from = 0, to = 255) int __r,
+		@Range(from = 0, to = 255) int __g,
+		@Range(from = 0, to = 255) int __b)
 		throws IllegalArgumentException;
 	
 	/**
@@ -671,7 +747,7 @@ public abstract class Graphics
 	 * @since 2017/02/09
 	 */
 	@Api
-	public abstract void setFont(Font __font);
+	public abstract void setFont(@Nullable Font __font);
 	
 	/**
 	 * Sets a grayscale color which has all the red, green, and blue
@@ -681,7 +757,8 @@ public abstract class Graphics
 	 * @since 2017/02/09
 	 */
 	@Api
-	public abstract void setGrayScale(int __v);
+	public abstract void setGrayScale(
+		@Range(from = 0, to = 255) int __v);
 	
 	/**
 	 * Sets the stroke style to use for lines.
@@ -692,7 +769,8 @@ public abstract class Graphics
 	 * @since 2017/02/09
 	 */
 	@Api
-	public abstract void setStrokeStyle(int __style)
+	public abstract void setStrokeStyle(
+		@MagicConstant(valuesFromClass = Graphics.class) int __style)
 		throws IllegalArgumentException;
 	
 	/**

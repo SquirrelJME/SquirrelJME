@@ -20,6 +20,8 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * This shelf is responsible for accelerated graphics drawing.
@@ -54,7 +56,9 @@ public final class PencilShelf
 	 */
 	@SquirrelJMEVendorApi
 	@CheckReturnValue
-	public static native int capabilities(int __pf)
+	@MagicConstant(flagsFromClass = PencilCapabilities.class)
+	public static native int capabilities(
+		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf)
 		throws MLECallError;
 	
 	/**
@@ -246,14 +250,21 @@ public final class PencilShelf
 	 * @param __sy Starting surface Y coordinate.
 	 * @param __sw Surface width.
 	 * @param __sh Surface height.
+	 * @return The bracket capable of drawing hardware accelerated graphics.
 	 * @throws MLECallError If the requested graphics are not valid.
 	 * @since 2020/09/25
 	 */
 	@SquirrelJMEVendorApi
-	public static native PencilBracket hardwareGraphics(int __pf, int __bw,
-		int __bh, @NotNull Object __buf, int __offset, int[] __pal,
+	public static native PencilBracket hardwareGraphics(
+		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __bw,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __bh,
+		@NotNull Object __buf,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
+		@Nullable int[] __pal,
 		int __sx, int __sy,
-		int __sw, int __sh)
+		@Range(from = 0, to = Integer.MAX_VALUE) int __sw,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __sh)
 		throws MLECallError;
 	
 	/**
@@ -295,7 +306,9 @@ public final class PencilShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native void hardwareSetClip(@NotNull PencilBracket __g,
-		int __x, int __y, int __w, int __h)
+		int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h)
 		throws MLECallError;
 	
 	/**
@@ -371,7 +384,9 @@ public final class PencilShelf
 	@SquirrelJMEVendorApi
 	public static native int[] nativeImageLoadRGBA(
 		@MagicConstant(valuesFromClass = NativeImageLoadType.class) int __type,
-		@NotNull byte[] __b, int __o, int __l)
+		@NotNull byte[] __b,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __l)
 		throws MLECallError;
 	
 	/**
