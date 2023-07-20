@@ -14,6 +14,7 @@ import cc.squirreljme.c.CSourceWriter;
 import cc.squirreljme.c.out.AppendableCTokenOutput;
 import cc.squirreljme.c.out.CompactCTokenOutput;
 import cc.squirreljme.c.out.EchoCTokenOutput;
+import cc.squirreljme.c.out.PrettyCTokenOutput;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -71,7 +72,7 @@ public final class Utils
 		if (__out == null)
 			throw new NullPointerException("NARG");
 		
-		return new CFile(new CompactCTokenOutput(
+		return new CFile(new PrettyCTokenOutput(
 			new EchoCTokenOutput(System.err,
 			new AppendableCTokenOutput(
 			new PrintStream(__out, true,

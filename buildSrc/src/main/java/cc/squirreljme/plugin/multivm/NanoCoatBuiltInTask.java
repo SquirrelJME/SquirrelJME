@@ -58,7 +58,7 @@ public class NanoCoatBuiltInTask
 		this.getInputs().file(this.inputPath(__romTask));
 		
 		// And the output is a primary single file for the ROM
-		this.getOutputs().file(this.outputPath());
+		this.getOutputs().dir(this.outputPath());
 		
 		// Actual running of everything
 		this.doLast(new NanoCoatBuiltInTaskAction(__classifier));

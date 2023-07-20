@@ -20,6 +20,23 @@ import java.io.IOException;
 public class PrettyCTokenOutput
 	implements CTokenOutput
 {
+	/** The tab size. */
+	private static final int _TAB_SIZE =
+		4;
+	
+	/** The column limit. */
+	private static final int _GUTTER =
+		69;
+	
+	/** The output. */
+	protected final CTokenOutput out;
+	
+	/** Current indentation level. */
+	private volatile int _indent;
+	
+	/** The current column. */
+	private volatile int _column;
+	
 	/**
 	 * Initializes the output wrapper.
 	 * 
@@ -30,7 +47,10 @@ public class PrettyCTokenOutput
 	public PrettyCTokenOutput(CTokenOutput __wrap)
 		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__wrap == null)
+			throw new NullPointerException("NARG");
+		
+		this.out = __wrap;
 	}
 	
 	/**
@@ -41,7 +61,7 @@ public class PrettyCTokenOutput
 	public void close()
 		throws IOException
 	{
-		throw Debugging.todo();
+		this.out.close();
 	}
 	
 	/**
@@ -51,7 +71,7 @@ public class PrettyCTokenOutput
 	@Override
 	public void indent(int __adjust)
 	{
-		throw Debugging.todo();
+		this._indent = Math.max(0, this._indent + __adjust);
 	}
 	
 	/**
@@ -62,7 +82,7 @@ public class PrettyCTokenOutput
 	public void newLine(boolean __force)
 		throws IOException
 	{
-		throw Debugging.todo();
+		this.__newLine(__force);
 	}
 	
 	/**
@@ -73,7 +93,8 @@ public class PrettyCTokenOutput
 	public void space()
 		throws IOException
 	{
-		throw Debugging.todo();
+		// Emit space
+		this.__token(" ");
 	}
 	
 	/**
@@ -84,7 +105,7 @@ public class PrettyCTokenOutput
 	public void tab()
 		throws IOException
 	{
-		throw Debugging.todo();
+		// Ignore explicit tabs
 	}
 	
 	/**
@@ -95,6 +116,105 @@ public class PrettyCTokenOutput
 	public void token(CharSequence __cq, boolean __forceNewline)
 		throws IOException, NullPointerException
 	{
-		throw Debugging.todo();
+		if (__cq == null)
+			throw new NullPointerException("NARG");
+		
+		// Is a newline being emitted?
+		int len = __cq.length();
+		char first = (len == 0 ? 0 : __cq.charAt(0));
+		if (len == 1 && first == '\n')
+		{
+			this.__newLine(__forceNewline);
+			return;
+		}
+		
+		// Ignore explicit tabs
+		else if (len == 1 && first == '\t')
+			return;
+		
+		// Open or close of brace
+		else if (len == 1 && (first == '{' || first == '}'))
+		{
+			// Always have a new line before
+			this.__newLine(true);
+			
+			// Emit token
+			this.__token(__cq);
+			
+			// Always have a new line after
+			this.__newLine(true);
+			return;
+		}
+		
+		// Emit token otherwise
+		this.__token(__cq);
+	}
+	
+	/**
+	 * Emits a newline.
+	 *
+	 * @param __forceNewline Is the newline forced?
+	 * @throws IOException On write errors.
+	 * @since 2023/07/20
+	 */
+	private void __newLine(boolean __forceNewline)
+		throws IOException
+	{
+		CTokenOutput out = this.out;
+		
+		// Emit newline only after the first column or when forced
+		int column = this._column;
+		if (column > 0 || __forceNewline)
+		{
+			// Emit newline
+			out.newLine(true);
+			
+			// Reset column back to the base
+			this._column = 0;
+		}
+	}
+	
+	/**
+	 * Emits a token.
+	 *
+	 * @param __cq The sequence to emit.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/07/20
+	 */
+	private void __token(CharSequence __cq)
+		throws IOException, NullPointerException
+	{
+		if (__cq == null)
+			throw new NullPointerException("NARG");
+		
+		CTokenOutput out = this.out;
+		
+		// If column is past the gutter, start on a fresh line
+		int column = this._column;
+		if (column >= PrettyCTokenOutput._GUTTER)
+		{
+			this.__newLine(true);
+			column = this._column;
+		}
+		
+		// If on the first column, we need to indent
+		if (column == 0)
+		{
+			// Get the current indentation level, to determine tabs to write
+			int indent = this._indent;
+			for (int i = 0; i < indent; i++)
+				out.tab();
+			
+			// Column is at this base
+			column = indent * PrettyCTokenOutput._TAB_SIZE;
+			this._column = column;
+		}
+		
+		// Emit token
+		out.token(__cq, false);
+		
+		// Move column up
+		this._column = column + __cq.length();
 	}
 }

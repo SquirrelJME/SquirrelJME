@@ -966,6 +966,9 @@ public class CFile
 		
 		// Write finisher
 		__cBlock.__finish();
+		
+		// Indent down
+		this.out.indent(-1);
 	}
 	
 	/**
