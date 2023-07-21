@@ -120,7 +120,12 @@ final class __IAppliInterface__
 			// instance is being created it will not be erroneously caught
 			try
 			{
-				return (IApplication)rawInstance;
+				IApplication result = (IApplication)rawInstance;
+				
+				// Some software really wants this as soon as possible
+				IApplication._lastApp = result;
+				
+				return result;
 			}
 			catch (ClassCastException e)
 			{
