@@ -18,7 +18,7 @@ import java.io.IOException;
  * @since 2023/06/19
  */
 public class PrettyCTokenOutput
-	implements CTokenOutput
+	extends __FormattedCTokenOutput__
 {
 	/** The tab size. */
 	private static final int _TAB_SIZE =
@@ -27,9 +27,6 @@ public class PrettyCTokenOutput
 	/** The column limit. */
 	private static final int _GUTTER =
 		69;
-	
-	/** The output. */
-	protected final CTokenOutput out;
 	
 	/** Current indentation level. */
 	private volatile int _indent;
@@ -47,10 +44,7 @@ public class PrettyCTokenOutput
 	public PrettyCTokenOutput(CTokenOutput __wrap)
 		throws NullPointerException
 	{
-		if (__wrap == null)
-			throw new NullPointerException("NARG");
-		
-		this.out = __wrap;
+		super(__wrap);
 	}
 	
 	/**
