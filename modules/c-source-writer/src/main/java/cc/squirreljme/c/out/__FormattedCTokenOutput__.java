@@ -23,10 +23,13 @@ abstract class __FormattedCTokenOutput__
 	protected final CTokenOutput out;
 	
 	/** The last character written. */
-	protected volatile char _lastChar;
+	protected volatile char lastChar;
 	
 	/** Push a space? */
-	protected volatile boolean _pushSpace;
+	protected volatile boolean pushSpace;
+	
+	/** The current column. */
+	protected volatile int column;
 	
 	/**
 	 * Initializes the output wrapper.
@@ -45,6 +48,119 @@ abstract class __FormattedCTokenOutput__
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/22
+	 */
+	@Override
+	public void close()
+		throws IOException
+	{
+		this.out.close();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/22
+	 */
+	@Override
+	public void indent(int __adjust)
+	{
+		// Ignore all indentation, we do not care for it here
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/22
+	 */
+	@Override
+	public void newLine(boolean __force)
+		throws IOException
+	{
+		// Only add newline if forced, and the last was not already a newline
+		if (__force && this.lastChar != '\n')
+		{
+			this.out.newLine(true);
+			
+			// We did whitespace here
+			this.lastChar = '\n';
+			
+			// We are back to zero
+			this.column = 0;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/22
+	 */
+	@Override
+	public void space()
+		throws IOException
+	{
+		// Only emit space when token requested
+		this.pushSpace = true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/22
+	 */
+	@Override
+	public void tab()
+		throws IOException
+	{
+		// Only emit space when token requested
+		this.pushSpace = true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/06/22
+	 */
+	@Override
+	public void token(CharSequence __cq, boolean __forceNewline)
+		throws IOException, NullPointerException
+	{
+		if (__cq == null)
+			throw new NullPointerException("NARG");
+		
+		// Always forward these
+		int len = __cq.length();
+		if (len > 0)
+		{
+			// Do we need a space after the last token?
+			if (this.pushSpace)
+			{
+				char firstChar = __cq.charAt(0);
+				if (this.__needSpace(firstChar))
+					this.__space();
+				
+				// Do not push anymore spaces
+				this.pushSpace = false;
+			}
+			
+			// Output token
+			this.out.token(__cq, __forceNewline);
+			
+			// Bump column up by token length
+			this.column += len;
+		}
+		
+		// If we forced a newline then we already have the whitespace there
+		// so we do not need to emit it at the end
+		if (__forceNewline)
+		{
+			this.lastChar = '\n';
+			this.pushSpace = false;
+			
+			// We are back to zero
+			this.column = 0;
+		}
+		else if (len > 0)
+			this.lastChar = __cq.charAt(len - 1);
+	}
+	
+	/**
 	 * Returns if the last character was whitespace.
 	 *
 	 * @return If the last character was a whitespace.
@@ -52,7 +168,7 @@ abstract class __FormattedCTokenOutput__
 	 */
 	boolean __lastWhitespace()
 	{
-		char lastChar = this._lastChar;
+		char lastChar = this.lastChar;
 		return lastChar == '\r' || lastChar == '\n' ||
 			lastChar == ' ' || lastChar == '\t';
 	}
@@ -66,7 +182,7 @@ abstract class __FormattedCTokenOutput__
 	 */
 	boolean __needSpace(char __first)
 	{
-		char last = this._lastChar;
+		char last = this.lastChar;
 		
 		// A space is never needed here
 		if (__first == ' ' || __first == '\t' ||
@@ -121,7 +237,10 @@ abstract class __FormattedCTokenOutput__
 			this.out.space();
 			
 			// Do not emit more whitespace
-			this._lastChar = ' ';
+			this.lastChar = ' ';
+					
+			// Column does get bumped up
+			this.column++;
 		}
 	}
 }

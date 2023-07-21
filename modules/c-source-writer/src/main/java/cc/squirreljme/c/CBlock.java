@@ -11,7 +11,6 @@ package cc.squirreljme.c;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.lang.ref.Reference;
 
 /**
  * Represents a C block, which can be used for the preprocessor or curly
@@ -23,6 +22,9 @@ public class CBlock
 	extends __CFileProxy__
 	implements Closeable
 {
+	/** Extra indentation that was performed here. */
+	protected int extraIndent;
+	
 	/** The character to close with. */
 	final String _closeString;
 	

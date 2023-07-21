@@ -31,8 +31,11 @@ public class PrettyCTokenOutput
 	/** Current indentation level. */
 	private volatile int _indent;
 	
-	/** The current column. */
-	private volatile int _column;
+	/** Did the indentation level change? */
+	private volatile boolean _indentChanged;
+	
+	/** Is a post newline pending? */
+	private volatile boolean _pendingPostNewline;
 	
 	/**
 	 * Initializes the output wrapper.
@@ -65,41 +68,26 @@ public class PrettyCTokenOutput
 	@Override
 	public void indent(int __adjust)
 	{
+		// Adjust indentation level
+		int lastIndent = this._indent;
 		this._indent = Math.max(0, this._indent + __adjust);
+		
+		// Did the indentation actually change?
+		this._indentChanged = (lastIndent != this._indent);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2023/06/22
+	 * @since 2023/07/21
 	 */
 	@Override
 	public void newLine(boolean __force)
 		throws IOException
 	{
-		this.__newLine(__force);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/22
-	 */
-	@Override
-	public void space()
-		throws IOException
-	{
-		// Emit space
-		this.__token(" ");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2023/06/22
-	 */
-	@Override
-	public void tab()
-		throws IOException
-	{
-		// Ignore explicit tabs
+		super.newLine(__force);
+		
+		// We newlined, so forget that indentation changed
+		this._indentChanged = false;
 	}
 	
 	/**
@@ -113,102 +101,62 @@ public class PrettyCTokenOutput
 		if (__cq == null)
 			throw new NullPointerException("NARG");
 		
-		// Is a newline being emitted?
+		// Specifically handle single character tokens
 		int len = __cq.length();
 		char first = (len == 0 ? 0 : __cq.charAt(0));
-		if (len == 1 && first == '\n')
+		char second = (len <= 1 ? 0 : __cq.charAt(1));
+		char last = (len == 0 ? 0 : __cq.charAt(len - 1));
+		
+		// Always indent around these characters
+		boolean alwaysIndent = ((len == 1 && (first == '{' || first == '}')) ||
+			(len == 2 && (first == '}' && second == ';')));
+		
+		// Do we hug the line start with this?
+		boolean hugLineStart = (first == '#' ||
+			(first == '/' && second == '/'));
+		
+		// Do not always indent if the last characters are these, for
+		// making formatting better...
+		boolean forgetIndent = (last == ',' || last == ';' || last == '.' ||
+			last == ':' || last == ')');
+		
+		// If we were pending a post newline, emit it now accordingly
+		if (this._pendingPostNewline)
 		{
-			this.__newLine(__forceNewline);
-			return;
-		}
-		
-		// Ignore explicit tabs
-		else if (len == 1 && first == '\t')
-			return;
-		
-		// Open or close of brace
-		else if (len == 1 && (first == '{' || first == '}'))
-		{
-			// Always have a new line before
-			this.__newLine(true);
+			// Emit newline, as long as we are not forgetting the indent
+			if (!forgetIndent)
+				this.newLine(true);
 			
-			// Emit token
-			this.__token(__cq);
-			
-			// Always have a new line after
-			this.__newLine(true);
-			return;
+			// Clear
+			this._pendingPostNewline = false;
 		}
-		
-		// Emit token otherwise
-		this.__token(__cq);
-	}
-	
-	/**
-	 * Emits a newline.
-	 *
-	 * @param __forceNewline Is the newline forced?
-	 * @throws IOException On write errors.
-	 * @since 2023/07/20
-	 */
-	private void __newLine(boolean __forceNewline)
-		throws IOException
-	{
-		CTokenOutput out = this.out;
-		
-		// Emit newline only after the first column or when forced
-		int column = this._column;
-		if (column > 0 || __forceNewline)
-		{
-			// Emit newline
-			out.newLine(true);
-			
-			// Reset column back to the base
-			this._column = 0;
-		}
-	}
-	
-	/**
-	 * Emits a token.
-	 *
-	 * @param __cq The sequence to emit.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2023/07/20
-	 */
-	private void __token(CharSequence __cq)
-		throws IOException, NullPointerException
-	{
-		if (__cq == null)
-			throw new NullPointerException("NARG");
-		
-		CTokenOutput out = this.out;
 		
 		// If column is past the gutter, start on a fresh line
-		int column = this._column;
-		if (column >= PrettyCTokenOutput._GUTTER)
-		{
-			this.__newLine(true);
-			column = this._column;
-		}
+		// Note that forgetting indent can override this!
+		// But do emit a newline if our indentation actually changed
+		if ((!forgetIndent && this.column >= PrettyCTokenOutput._GUTTER) ||
+			(this._indentChanged))
+			this.newLine(true);
 		
-		// If on the first column, we need to indent
-		if (column == 0)
-		{
-			// Get the current indentation level, to determine tabs to write
-			int indent = this._indent;
-			for (int i = 0; i < indent; i++)
-				out.tab();
+		// Newline before indentation, as long as we are not on the first
+		// column
+		if (alwaysIndent && !forgetIndent && this.column > 0)
+			this.newLine(true);
+		
+		// As long as we are not going to hug the line start
+		if (this.column == 0 && !hugLineStart)
+			for (int i = 0, n = this._indent; i < n; i++)
+			{
+				this.out.tab();
+				this.column += PrettyCTokenOutput._TAB_SIZE;
+			}
 			
-			// Column is at this base
-			column = indent * PrettyCTokenOutput._TAB_SIZE;
-			this._column = column;
-		}
-		
 		// Emit token
-		out.token(__cq, false);
+		super.token(__cq, __forceNewline);
 		
-		// Move column up
-		this._column = column + __cq.length();
+		// Always add indentation after this token, put post it instead of
+		// actually adding it.
+		if (alwaysIndent)
+			this._pendingPostNewline = true;
 	}
 }

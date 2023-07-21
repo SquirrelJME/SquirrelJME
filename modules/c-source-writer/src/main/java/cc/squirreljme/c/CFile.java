@@ -967,8 +967,8 @@ public class CFile
 		// Write finisher
 		__cBlock.__finish();
 		
-		// Indent down
-		this.out.indent(-1);
+		// Indent down, with any potential extra indentation that was added
+		this.out.indent(-(1 + __cBlock.extraIndent));
 	}
 	
 	/**
