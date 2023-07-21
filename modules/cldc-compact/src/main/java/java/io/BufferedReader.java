@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -66,8 +66,8 @@ public class BufferedReader
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ0g Cannot have a zero or negative buffer
-		// size.}
+		/* {@squirreljme.error ZZ0g Cannot have a zero or negative buffer
+		size.} */
 		if (__bs <= 0)
 			throw new IllegalArgumentException("ZZ0g");
 		

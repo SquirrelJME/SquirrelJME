@@ -3,13 +3,12 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.jvm.mle;
 
-import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
@@ -17,6 +16,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2020/05/30
  */
+@SuppressWarnings("UnstableApiUsage")
 @SquirrelJMEVendorApi
 public final class AtomicShelf
 {

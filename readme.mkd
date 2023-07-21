@@ -73,7 +73,7 @@ Information:
  * [User Guide](assets/user-guide/readme.mkd)
  * [Code of Conduct](code-of-conduct.mkd)
  * [License](license.mkd)
-   * _Source_: GNU General Public License, Version 3 or later
+   * _Source_: Mozilla Public License 2.0
    * _Assets_: Creative Commons CC-BY-SA 4.0
    * _Fonts_ : SIL Open Font License Version 1.1
    * [Third Party Licenses](third-party.mkd)

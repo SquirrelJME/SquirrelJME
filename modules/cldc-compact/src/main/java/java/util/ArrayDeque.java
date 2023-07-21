@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -57,8 +57,8 @@ public class ArrayDeque<E>
 	public ArrayDeque(int __initialCap)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZxx Cannot have an initial capacity that is
-		// negative. (The initial capacity)}
+		/* {@squirreljme.error ZZxx Cannot have an initial capacity that is
+		negative. (The initial capacity)} */
 		if (__initialCap < 0)
 			throw new IllegalArgumentException("ZZxx " + __initialCap);
 
@@ -517,7 +517,7 @@ public class ArrayDeque<E>
 	{
 		ArrayList<E> elements = this._elements;
 		
-		// {@squirreljme.error ZZ37 Get of element from an empty deque?}
+		/* {@squirreljme.error ZZ37 Get of element from an empty deque?} */
 		int size = elements.size();
 		if (size <= 0)
 			throw new IllegalStateException("ZZ37");

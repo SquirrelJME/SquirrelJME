@@ -3,13 +3,15 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 /**
  * This is a bucket map which acts as the raw internal hash table
@@ -74,6 +76,9 @@ final class __BucketMap__<K, V>
 	/** The rehash count. */
 	int _numrehash;
 	
+	/** Entry set cache. */
+	private volatile Reference<Set<Map.Entry<K, V>>> _entrySetCache;
+	
 	/**
 	 * Initializes the map with the default capacity and load factor.
 	 *
@@ -113,12 +118,12 @@ final class __BucketMap__<K, V>
 	__BucketMap__(boolean __o, boolean __ao, int __cap, float __load)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ36 The initial capacity of the map cannot be
-		// negative.}
+		/* {@squirreljme.error ZZ36 The initial capacity of the map cannot be
+		negative.} */
 		if (__cap < 0)
 			throw new IllegalArgumentException("ZZ36");
 		
-		// {@squirreljme.error ZZ37 The load factor must be a positive value.}
+		/* {@squirreljme.error ZZ37 The load factor must be a positive value.} */
 		if (__load <= 0.0F)
 			throw new IllegalArgumentException("ZZ37");
 		
@@ -155,7 +160,16 @@ final class __BucketMap__<K, V>
 	 */
 	public final Set<Map.Entry<K, V>> entrySet()
 	{
-		return new __EntrySet__();
+		Reference<Set<Map.Entry<K, V>>> ref = this._entrySetCache;
+		Set<Map.Entry<K, V>> rv;
+		
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			rv = new __EntrySet__();
+			this._entrySetCache = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
 	/**
@@ -619,7 +633,7 @@ final class __BucketMap__<K, V>
 		final void __checkModified()
 			throws ConcurrentModificationException
 		{
-			// {@squirreljme.error ZZ38 Backing map has been modified.}
+			/* {@squirreljme.error ZZ38 Backing map has been modified.} */
 			if (this._atmod != __BucketMap__.this._modcount)
 				throw new ConcurrentModificationException("ZZ38");
 		}
@@ -725,7 +739,7 @@ final class __BucketMap__<K, V>
 		public final Map.Entry<K, V> next()
 			throws NoSuchElementException
 		{
-			// {@squirreljme.error ZZ39 Map has no more entries remaining.}
+			/* {@squirreljme.error ZZ39 Map has no more entries remaining.} */
 			if (!this.hasNext())
 				throw new NoSuchElementException("ZZ39");
 			

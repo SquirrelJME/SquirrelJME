@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -14,6 +14,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.jetbrains.annotations.Async;
 
 /**
  * This annotation is used to specify that the given method is serialized and

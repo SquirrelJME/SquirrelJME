@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -104,8 +104,8 @@ public class Image
 	public final Graphics getGraphics()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error EB28 Cannot get mutable graphic operations for
-		// an immutable image.}
+		/* {@squirreljme.error EB28 Cannot get mutable graphic operations for
+		an immutable image.} */
 		if (!this.isMutable())
 			throw new IllegalStateException("EB28");
 		
@@ -174,25 +174,25 @@ public class Image
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB29 The source coordinates are negative.}
+		/* {@squirreljme.error EB29 The source coordinates are negative.} */
 		if (__x < 0 || __y < 0)
 			throw new IllegalArgumentException("EB29");
 	
-		// {@squirreljme.error EB2a The absolute value of the scanline length
-		// exceeds the read width.}
+		/* {@squirreljme.error EB2a The absolute value of the scanline length
+		exceeds the read width.} */
 		int scanLen = Math.abs(__sl);
 		if (scanLen < __w)
 			throw new IllegalArgumentException("EB2a");
 		
-		// {@squirreljme.error EB2b Reading of RGB data would exceed the bounds
-		// out the output array.}
+		/* {@squirreljme.error EB2b Reading of RGB data would exceed the bounds
+		out the output array.} */
 		int areaPix = __w * __h;
 		int areaScan = __sl * __h;
 		if (__o < 0 || (__o + areaScan) > __b.length || (__o + areaScan) < 0)
 			throw new ArrayIndexOutOfBoundsException("EB2b");
 		
-		// {@squirreljme.error EB2c The area to read exceeds the bounds of the
-		// image.}
+		/* {@squirreljme.error EB2c The area to read exceeds the bounds of the
+		image.} */
 		int ex = __x + __w,
 			ey = __y + __h;
 		int iw = this._width,
@@ -368,7 +368,7 @@ public class Image
 			return Image.createImage(new ByteArrayInputStream(__b, __o, __l));
 		}
 		
-		// {@squirreljme.error EB2d Could not load the image data.}
+		/* {@squirreljme.error EB2d Could not load the image data.} */
 		catch (IOException e)
 		{
 			throw new IllegalArgumentException("EB2d", e);
@@ -408,7 +408,7 @@ public class Image
 	public static Image createImage(int __w, int __h, boolean __alpha, int __c)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2e Zero or negative image size requested.}
+		/* {@squirreljme.error EB2e Zero or negative image size requested.} */
 		if (__w <= 0 || __h <= 0)
 			throw new IllegalArgumentException("EB2e");
 		
@@ -469,8 +469,8 @@ public class Image
 		try (InputStream is = ActiveMidlet.get().getClass().
 			getResourceAsStream(__s))
 		{
-			// {@squirreljme.error EB2f The specified resource does not
-			// exist. (The resource name)}
+			/* {@squirreljme.error EB2f The specified resource does not
+			exist. (The resource name)} */
 			if (is == null)
 				throw new IOException(String.format("EB2f %s", __s));
 			
@@ -548,15 +548,15 @@ public class Image
 		if (__rgb == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB2g Invalid image size. (The width;
-		// The height)}
+		/* {@squirreljme.error EB2g Invalid image size. (The width;
+		The height)} */
 		int area = __w * __h;
 		if (__w <= 0 || __h <= 0 || area <= 0)
 			throw new IllegalArgumentException(String.format("EB2g %d %d",
 				__w, __h));
 		
-		// {@squirreljme.error EB2h The input integer buffer is shorter than
-		// the specified image area.}
+		/* {@squirreljme.error EB2h The input integer buffer is shorter than
+		the specified image area.} */
 		int rgbLen = __rgb.length;
 		if (rgbLen < area)
 			throw new IndexOutOfBoundsException(String.format(

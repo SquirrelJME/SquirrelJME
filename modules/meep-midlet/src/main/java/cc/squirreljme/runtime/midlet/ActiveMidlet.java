@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -47,7 +47,7 @@ public final class ActiveMidlet
 	{
 		MIDlet rv = ActiveMidlet.optional();
 		
-		// {@squirreljme.error AD01 No MIDlet is currently active.}
+		/* {@squirreljme.error AD01 No MIDlet is currently active.} */
 		if (rv == null)
 			throw new IllegalStateException("AD01");
 		
@@ -88,8 +88,8 @@ public final class ActiveMidlet
 		// Prevent multiple MIDlet instantiations
 		synchronized (ActiveMidlet._ACTIVE_LOCK)
 		{
-			// {@squirreljme.error AD02 Only a single MIDlet may be active at
-			// a time.}
+			/* {@squirreljme.error AD02 Only a single MIDlet may be active at
+			a time.} */
 			MIDlet active = ActiveMidlet._ACTIVE_MIDLET;
 			if (active != null &&
 				!(__m instanceof OverrideActiveMidletRestriction))

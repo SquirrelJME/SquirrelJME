@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
@@ -16,6 +16,7 @@
 jint JNICALL mleDebugInit(JNIEnv* env, jclass classy);
 jint JNICALL mleFormInit(JNIEnv* env, jclass classy);
 jint JNICALL mleJarInit(JNIEnv* env, jclass classy);
+jint JNICALL mleMathInit(JNIEnv* env, jclass classy);
 jint JNICALL mleObjectInit(JNIEnv* env, jclass classy);
 jint JNICALL mlePencilInit(JNIEnv* env, jclass classy);
 jint JNICALL mleReflectionInit(JNIEnv* env, jclass classy);

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -98,8 +98,8 @@ final class __StarInterface__
 		}
 		catch (ClassNotFoundException e)
 		{
-			// {@squirreljme.error AN02 Could not find main Star class.
-			// (Class)}
+			/* {@squirreljme.error AN02 Could not find main Star class.
+			(Class)} */
 			throw new RuntimeException(String.format(
 				"AN02 %s", mainClass), e);
 		}
@@ -118,13 +118,13 @@ final class __StarInterface__
 			}
 			catch (ClassCastException e)
 			{
-				// {@squirreljme.error AN04 Class not a StarApplication.}
+				/* {@squirreljme.error AN04 Class not a StarApplication.} */
 				throw new RuntimeException("AN04", e);
 			}
 		}
 		catch (IllegalAccessException|InstantiationException e)
 		{
-			// {@squirreljme.error AN03 Could not instantiate class.}
+			/* {@squirreljme.error AN03 Could not instantiate class.} */
 			throw new RuntimeException("AN03", e);
 		}
 	}

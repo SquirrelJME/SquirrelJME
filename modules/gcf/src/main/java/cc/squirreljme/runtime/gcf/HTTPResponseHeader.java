@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -144,7 +144,7 @@ public final class HTTPResponseHeader
 			String line = sb.toString();
 			if (ln == 0)
 			{
-				// {@squirreljme.error EC09 Invalid status line. (The line)}
+				/* {@squirreljme.error EC09 Invalid status line. (The line)} */
 				if (!line.startsWith("HTTP/1.0 ") &&
 					!line.startsWith("HTTP/1.1 "))
 					throw new IOException("EC09 " + line);
@@ -170,7 +170,7 @@ public final class HTTPResponseHeader
 					}
 				}
 				
-				// {@squirreljme.error EC0a Invalid HTTP status code. (Line)}
+				/* {@squirreljme.error EC0a Invalid HTTP status code. (Line)} */
 				catch (NumberFormatException e)
 				{
 					throw new IOException("EC0a " + line);
@@ -180,7 +180,7 @@ public final class HTTPResponseHeader
 			// A header key/value otherwise
 			else
 			{
-				// {@squirreljme.error EC0b Invalid header pair. (The line)}
+				/* {@squirreljme.error EC0b Invalid header pair. (The line)} */
 				int lc = line.indexOf(':');
 				if (lc < 0)
 					throw new IOException("EC0b " + line);

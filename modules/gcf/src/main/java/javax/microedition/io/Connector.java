@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -317,8 +317,8 @@ public class Connector
 		// Open it, then close it
 		try (Connection c = Connector.open(__uri))
 		{
-			// {@squirreljme.error EC0z The specified URI is not an input
-			// connection. (The URI)}
+			/* {@squirreljme.error EC0z The specified URI is not an input
+			connection. (The URI)} */
 			if (!(c instanceof InputConnection))
 				throw new IllegalArgumentException(String.format("EC0z %s",
 					__uri));
@@ -346,8 +346,8 @@ public class Connector
 		// Open it, then close it
 		try (Connection c = Connector.open(__uri))
 		{
-			// {@squirreljme.error EC10 The specified URI is not an output
-			// connection. (The URI)}
+			/* {@squirreljme.error EC10 The specified URI is not an output
+			connection. (The URI)} */
 			if (!(c instanceof OutputConnection))
 				throw new IllegalArgumentException(String.format("EC10 %s",
 					__uri));
@@ -389,7 +389,7 @@ public class Connector
 		if (__opts == null)
 			__opts = new ConnectionOption<?>[0];
 		
-		// {@squirreljme.error EC11 The URI does not have a scheme. (The URI)}
+		/* {@squirreljme.error EC11 The URI does not have a scheme. (The URI)} */
 		int fc = __uri.indexOf(':');
 		if (fc < 0)
 			throw new IllegalArgumentException(String.format("EC11 %s",
@@ -464,7 +464,7 @@ public class Connector
 					return custom.connect(part, __mode, __timeouts, __opts);
 		}
 		
-		// {@squirreljme.error EC12 Unhandled URI protocol. (The URI)}.
+		/* {@squirreljme.error EC12 Unhandled URI protocol. (The URI)} */
 		throw new ConnectionNotFoundException(String.format("EC12 %s",
 			__uri));
 	}

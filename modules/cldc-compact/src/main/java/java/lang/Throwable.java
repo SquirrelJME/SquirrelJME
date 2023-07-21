@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -136,8 +136,8 @@ public class Throwable
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ26 Cannot add a suppressed exception which
-		// is this exception.}
+		/* {@squirreljme.error ZZ26 Cannot add a suppressed exception which
+		is this exception.} */
 		if (__t == this)
 			throw new IllegalArgumentException("ZZ26");
 		
@@ -247,13 +247,13 @@ public class Throwable
 	public Throwable initCause(Throwable __t)
 		throws IllegalArgumentException, IllegalStateException
 	{
-		// {@squirreljme.error ZZ27 Cannot initialize the cause of the
-		// throwable with itself as the cause.}
+		/* {@squirreljme.error ZZ27 Cannot initialize the cause of the
+		throwable with itself as the cause.} */
 		if (__t == this)
 			throw new IllegalArgumentException("ZZ27");
 		
-		// {@squirreljme.error ZZ28 The cause of the throwable has already
-		// been initialized.}
+		/* {@squirreljme.error ZZ28 The cause of the throwable has already
+		been initialized.} */
 		if (this._initCause)
 			throw new IllegalStateException("ZZ28");
 		

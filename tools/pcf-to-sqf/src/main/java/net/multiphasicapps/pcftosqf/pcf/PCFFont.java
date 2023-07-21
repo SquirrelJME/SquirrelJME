@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -106,7 +106,7 @@ public class PCFFont
 		// Need to read in the data!
 		DataInputStream dos = new DataInputStream(__in);
 		
-		// {@squirreljme.error AP01 Invalid PCF magic number.}
+		/* {@squirreljme.error AP01 Invalid PCF magic number.} */
 		int magic;
 		if ((magic = dos.readInt()) != 0x01666370)
 			throw new IOException(String.format("AP01 %08x", magic));
@@ -142,9 +142,9 @@ public class PCFFont
 		boolean waseofing = false;
 		for (PCFTableEntry te : tables)
 		{
-			// {@squirreljme.error AP02 Expected EOF to occur on the last
-			// entry, this likely means the file was truncated more than
-			// what was expected.}
+			/* {@squirreljme.error AP02 Expected EOF to occur on the last
+			entry, this likely means the file was truncated more than
+			what was expected.} */
 			if (waseofing)
 				throw new IOException("AP02");
 			
@@ -153,7 +153,7 @@ public class PCFFont
 			if (skippy > 0)
 				dos.skipBytes(skippy);
 			
-			// {@squirreljme.error AP03 Negative skip distance.}
+			/* {@squirreljme.error AP03 Negative skip distance.} */
 			else if (skippy < 0)
 				throw new IOException("AP03");
 			
@@ -258,7 +258,7 @@ public class PCFFont
 						new Object[] {});
 					break;
 					
-					// {@squirreljme.error AP04 Unknown PCF type. (The type)}
+					/* {@squirreljme.error AP04 Unknown PCF type. (The type)} */
 				default:
 					throw new IOException("AP04 " + te.type);
 			}

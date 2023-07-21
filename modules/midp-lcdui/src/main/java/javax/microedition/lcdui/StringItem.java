@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -55,8 +55,8 @@ public class StringItem
 	{
 		super(__l);
 		
-		// {@squirreljme.error EB2o The appearance mode is not valid.
-		// (The appearance mode)}
+		/* {@squirreljme.error EB2o The appearance mode is not valid.
+		(The appearance mode)} */
 		if (__am != Item.PLAIN && __am != Item.BUTTON && __am != Item.HYPERLINK)
 			throw new IllegalArgumentException("EB2o " + __am);
 		

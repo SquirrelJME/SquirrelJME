@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -48,8 +48,8 @@ public enum UnitType
 				"/net/multiphasicapps/squirrelquarrel/data/units/" +
 				this.name().toLowerCase() + "/info"))
 			{
-				// {@squirreljme.error BE0b Unit information for the given
-				// unit does not exist. (The unit)}
+				/* {@squirreljme.error BE0b Unit information for the given
+				unit does not exist. (The unit)} */
 				if (in == null)
 					throw new RuntimeException("BE0b " + this);
 				
@@ -57,7 +57,7 @@ public enum UnitType
 					new JavaManifest(in)));
 			}
 			
-			// {@squirreljme.error BE0c Could not load unit information.}
+			/* {@squirreljme.error BE0c Could not load unit information.} */
 			catch (IOException e)
 			{
 				throw new RuntimeException("BE0c", e);

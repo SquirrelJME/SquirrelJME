@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Formatter;
+import org.intellij.lang.annotations.PrintFormat;
 
 /**
  * A {@link String} represents a sequence of characters which make up a group
@@ -758,8 +759,8 @@ public final class String
 			return this.__getBytes(CodecFactory.encoder(__enc));
 		}
 		
-		// {@squirreljme.error ZZ1k The specified encoding is not supported by
-		// the virtual machine. (The encoding)}
+		/* {@squirreljme.error ZZ1k The specified encoding is not supported by
+		the virtual machine. (The encoding)} */
 		catch (UnsupportedEncodingException uee)
 		{
 			throw new AssertionError("ZZ1k " + __enc);
@@ -1135,8 +1136,8 @@ public final class String
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ1l Starting index in string is out of
-		// bounds. (The starting index)}
+		/* {@squirreljme.error ZZ1l Starting index in string is out of
+		bounds. (The starting index)} */
 		if (__sdx < 0)
 			throw new IndexOutOfBoundsException(
 				String.format("ZZ1l %d", __sdx));
@@ -1235,8 +1236,8 @@ public final class String
 		if (__s == __e)
 			return "";
 		
-		// {@squirreljme.error ZZ1m String substring is outside of bounds.
-		// (The start index; The end index; The length)}
+		/* {@squirreljme.error ZZ1m String substring is outside of bounds.
+		(The start index; The end index; The length)} */
 		if (__s < 0 || __s > __e || __e > n)
 			throw new IndexOutOfBoundsException("ZZ1m " + __s + " " + __e +
 				" " + n);
@@ -1547,7 +1548,7 @@ public final class String
 	 * @since 2018/11/02
 	 */
 	@Api
-	public static String format(String __fmt, Object... __args)
+	public static String format(@PrintFormat String __fmt, Object... __args)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Just forward everything to this formatter

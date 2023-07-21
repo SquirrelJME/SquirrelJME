@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -87,8 +87,8 @@ public final class MethodDescriptor
 		// Set
 		this.string = __n;
 		
-		// {@squirreljme.error JC3h Method descriptors must start with an open
-		// parenthesis. (The method descriptor)}
+		/* {@squirreljme.error JC3h Method descriptors must start with an open
+		parenthesis. (The method descriptor)} */
 		if (!__n.startsWith("("))
 			throw new InvalidClassFormatException(
 				String.format("JC3h %s", __n));
@@ -110,8 +110,8 @@ public final class MethodDescriptor
 				if ('[' != __n.charAt(at))
 					break;
 			
-			// {@squirreljme.error JC3i Reached end of descriptor parsing
-			// arguments. (The method descriptor)}
+			/* {@squirreljme.error JC3i Reached end of descriptor parsing
+			arguments. (The method descriptor)} */
 			if (at >= n)
 				throw new InvalidClassFormatException(
 					String.format("JC3i %s", __n));
@@ -137,8 +137,8 @@ public final class MethodDescriptor
 							break;
 					break;
 				
-					// {@squirreljme.error JC3j Unknown field descriptor in
-					// method descriptor argument. (The descriptor)}
+					/* {@squirreljme.error JC3j Unknown field descriptor in
+					method descriptor argument. (The descriptor)} */
 				default:
 					throw new InvalidClassFormatException(
 						String.format("JC3j %s", __n));
@@ -156,8 +156,8 @@ public final class MethodDescriptor
 		// Skip the ending parenthesis
 		i++;
 		
-		// {@squirreljme.error JC3k The method descriptor has no return
-		// value. (The method descriptor)}
+		/* {@squirreljme.error JC3k The method descriptor has no return
+		value. (The method descriptor)} */
 		if (i >= n)
 			throw new InvalidClassFormatException(
 				String.format("JC3k %s", __n));

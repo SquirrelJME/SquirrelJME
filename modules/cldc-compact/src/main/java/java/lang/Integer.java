@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -251,7 +251,7 @@ public final class Integer
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ16 Cannot decode an empty string.}
+		/* {@squirreljme.error ZZ16 Cannot decode an empty string.} */
 		if (__s.isEmpty())
 			throw new NumberFormatException("ZZ16");
 		
@@ -287,7 +287,7 @@ public final class Integer
 		else
 			radix = 10;
 		
-		// {@squirreljme.error ZZ17 Misplaced sign. (The input string)}
+		/* {@squirreljme.error ZZ17 Misplaced sign. (The input string)} */
 		if (__s.startsWith("-") || __s.startsWith("+"))
 			throw new NumberFormatException("ZZ2p " + orig);
 		
@@ -297,7 +297,7 @@ public final class Integer
 			return Integer.parseInt(sign + __s, radix);
 		}
 		
-		// {@squirreljme.error ZZ18 Could not parse number. (The input string)}
+		/* {@squirreljme.error ZZ18 Could not parse number. (The input string)} */
 		catch (NumberFormatException e)
 		{
 			RuntimeException t = new NumberFormatException("ZZ18 " + orig);
@@ -482,14 +482,14 @@ public final class Integer
 	public static int parseInt(String __v, int __r)
 		throws NumberFormatException
 	{
-		// {@squirreljme.error ZZ19 The radix is out of bounds. (The radix)}
+		/* {@squirreljme.error ZZ19 The radix is out of bounds. (The radix)} */
 		if (__r < Character.MIN_RADIX || __r > Character.MAX_RADIX)
 			throw new NumberFormatException("ZZ19 " + __r);
 			
 		if (__v == null)
 			throw new NumberFormatException("ZZ1a");
 		
-		// {@squirreljme.error ZZ1a String is null or has zero length.}
+		/* {@squirreljme.error ZZ1a String is null or has zero length.} */
 		int n = __v.length();
 		if (n <= 0)
 			throw new NumberFormatException("ZZ1a");
@@ -511,13 +511,13 @@ public final class Integer
 			// Convert to digit
 			int dig = Character.digit(c, __r);
 			
-			// {@squirreljme.error ZZ1b Character out of range of radix.
-			// (The input string; The out of range character)}
+			/* {@squirreljme.error ZZ1b Character out of range of radix.
+			(The input string; The out of range character)} */
 			if (dig < 0)
 				throw new NumberFormatException("ZZ1b " + __v + " " + c);
 			
-			// {@squirreljme.error ZZ1c Input integer out of range of 32-bit
-			// integer. (The input string)}
+			/* {@squirreljme.error ZZ1c Input integer out of range of 32-bit
+			integer. (The input string)} */
 			int prod = rv * __r;
 			if (rv != 0 && (neg ? (prod > rv) : (prod < rv)))
 				throw new NumberFormatException("ZZ1c " + __v);

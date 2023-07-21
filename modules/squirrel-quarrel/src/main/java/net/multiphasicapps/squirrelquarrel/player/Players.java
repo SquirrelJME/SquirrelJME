@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -57,7 +57,7 @@ public final class Players
 	public Player get(int __i)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error BE05 Invalid player index. (The index)}
+		/* {@squirreljme.error BE05 Invalid player index. (The index)} */
 		if (__i < 0 || __i >= PlayerColor.NUM_COLORS)
 			throw new IllegalArgumentException(String.format("BE05 %d", __i));
 		

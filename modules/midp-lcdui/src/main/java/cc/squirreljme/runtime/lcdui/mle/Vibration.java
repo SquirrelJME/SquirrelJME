@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -51,7 +51,7 @@ public final class Vibration
 	public static boolean vibrate(int __d)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1n Cannot vibrate for a negative duration.}
+		/* {@squirreljme.error EB1n Cannot vibrate for a negative duration.} */
 		if (__d < 0)
 			throw new IllegalArgumentException("EB1n");
 		

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -174,8 +174,8 @@ public abstract class Item
 	@Api
 	public int getMinimumHeight()
 	{
-		// {@squirreljme.error EB37 Minimum height must be implemented.
-		// (The class name)}
+		/* {@squirreljme.error EB37 Minimum height must be implemented.
+		(The class name)} */
 		throw new RuntimeException("EB37 " + this.getClass().getName());
 	}
 	
@@ -188,8 +188,8 @@ public abstract class Item
 	@Api
 	public int getMinimumWidth()
 	{
-		// {@squirreljme.error EB38 Minimum width must be implemented.
-		// (The class name)}
+		/* {@squirreljme.error EB38 Minimum width must be implemented.
+		(The class name)} */
 		throw new RuntimeException("EB38 " + this.getClass().getName());
 	}
 	
@@ -298,12 +298,12 @@ public abstract class Item
 	public void setPreferredSize(int __w, int __h)
 		throws IllegalArgumentException, IllegalStateException
 	{
-		// {@squirreljme.error EB35 Invalid preferred size requested.}
+		/* {@squirreljme.error EB35 Invalid preferred size requested.} */
 		if (__w < -1 || __h < -1)
 			throw new IllegalArgumentException("EB35");
 		
-		// {@squirreljme.error EB36 Cannot set preferred size of item within
-		// an alert.}
+		/* {@squirreljme.error EB36 Cannot set preferred size of item within
+		an alert.} */
 		if (this._displayable instanceof Alert)
 			throw new IllegalStateException("EB36");
 		

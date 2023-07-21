@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -80,7 +80,7 @@ public final class ChunkSection
 		if (__d == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BD3l Zero or negative size. (The size)}
+		/* {@squirreljme.error BD3l Zero or negative size. (The size)} */
 		if (__size != ChunkWriter.VARIABLE_SIZE && __size <= 0)
 			throw new IllegalArgumentException("BD3l " + __size);
 		
@@ -210,8 +210,8 @@ public final class ChunkSection
 	public final void write(int __b)
 		throws IOException
 	{
-		// {@squirreljme.error BD3m Size of section exceeded. (The size
-		// of the section)}
+		/* {@squirreljme.error BD3m Size of section exceeded. (The size
+		of the section)} */
 		int size = this._size;
 		if (!this.isVariable && size + 1 > this.fixedSize)
 			throw new IOException("BD3m " + size);
@@ -261,7 +261,7 @@ public final class ChunkSection
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// {@squirreljme.error BD3p Size of section exceeded.}
+		/* {@squirreljme.error BD3p Size of section exceeded.} */
 		int size = this._size;
 		if (!this.isVariable && size + __l > this.fixedSize)
 			throw new IOException("BD3p");
@@ -300,8 +300,8 @@ public final class ChunkSection
 	public final int writeAlignment(int __n)
 		throws IllegalArgumentException, IOException
 	{
-		// {@squirreljme.error BD3k Cannot align to a negative amount.
-		// (The alignment)}
+		/* {@squirreljme.error BD3k Cannot align to a negative amount.
+		(The alignment)} */
 		if (__n < 1)
 			throw new IllegalArgumentException("BD3k " + __n);
 		
@@ -480,7 +480,7 @@ public final class ChunkSection
 	public final void writePadding(int __n, int __v)
 		throws IllegalArgumentException, IOException
 	{
-		// {@squirreljme.error BD3j Negative padding. (The padding)}
+		/* {@squirreljme.error BD3j Negative padding. (The padding)} */
 		if (__n < 0)
 			throw new IllegalArgumentException("BD3j " + __n);
 		
@@ -517,8 +517,8 @@ public final class ChunkSection
 	public final void writeShortChecked(int __v)
 		throws IOException
 	{
-		// {@squirreljme.error BD3o Signed short value out of range.
-		// (The value)}
+		/* {@squirreljme.error BD3o Signed short value out of range.
+		(The value)} */
 		if (__v < -32768 || __v > 32767)
 			throw new IOException("BD3o " + __v);
 		
@@ -538,8 +538,8 @@ public final class ChunkSection
 	public final void writeUnsignedShortChecked(int __v)
 		throws IOException
 	{
-		// {@squirreljme.error BD3n Unsigned short value out of range.
-		// (The value)}
+		/* {@squirreljme.error BD3n Unsigned short value out of range.
+		(The value)} */
 		if (__v < 0 || __v > 65535)
 			throw new IOException("BD3n " + __v);
 		

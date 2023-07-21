@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -195,7 +195,7 @@ public class ExtendedDataInputStream
 		// Read value
 		int rv = this.read();
 		
-		// {@squirreljme.error BD0t End of file reached.}
+		/* {@squirreljme.error BD0t End of file reached.} */
 		if (rv < 0)
 			throw new EOFException("BD0t");
 		
@@ -442,13 +442,13 @@ public class ExtendedDataInputStream
 	public void reset()
 		throws IOException
 	{
-		// {@squirreljme.error BD0u The stream has not been marked.}
+		/* {@squirreljme.error BD0u The stream has not been marked.} */
 		long markstart = this._markstart;
 		if (markstart < 0)
 			throw new IOException("BD0u");
 		
-		// {@squirreljme.error BD0v Exceeded the number of bytes specified by
-		// mark.}
+		/* {@squirreljme.error BD0v Exceeded the number of bytes specified by
+		mark.} */
 		long count = this._count;
 		long markend = this._markend;
 		if (count > markend)

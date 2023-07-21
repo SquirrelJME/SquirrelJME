@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 import cc.squirreljme.runtime.lcdui.mle.UIBackendFactory;
+import org.jetbrains.annotations.Async;
 
 /**
  * This is the base class that is under various widgets.
@@ -68,6 +69,7 @@ abstract class __CommonWidget__
 	 * @since 2020/10/17
 	 */
 	@SerializedEvent
+	@Async.Execute
 	boolean __isPainted()
 	{
 		return false;
@@ -84,6 +86,7 @@ abstract class __CommonWidget__
 	 * @since 2020/09/21
 	 */
 	@SerializedEvent
+	@Async.Execute
 	void __paint(Graphics __gfx, int __sw, int __sh, int __special)
 	{
 	}
@@ -101,6 +104,7 @@ abstract class __CommonWidget__
 	 * @since 2020/10/17
 	 */
 	@SerializedEvent
+	@Async.Execute
 	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __intProp, int __sub, int __old, int __new)
 	{
@@ -127,6 +131,7 @@ abstract class __CommonWidget__
 	 * @since 2020/10/17
 	 */
 	@SerializedEvent
+	@Async.Execute
 	boolean __propertyChange(UIFormBracket __form, UIItemBracket __item,
 		int __strProp, int __sub, String __old, String __new)
 	{

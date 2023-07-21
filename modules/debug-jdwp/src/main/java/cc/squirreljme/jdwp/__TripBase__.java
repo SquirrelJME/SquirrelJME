@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -47,8 +47,8 @@ abstract class __TripBase__
 	 */
 	final JDWPController __controller()
 	{
-		// {@squirreljme.error AG0n The debug controller was garbage
-		// collected.}
+		/* {@squirreljme.error AG0n The debug controller was garbage
+		collected.} */
 		JDWPController rv = this._controller.get();
 		if (rv == null)
 			throw new IllegalStateException("AG0n");

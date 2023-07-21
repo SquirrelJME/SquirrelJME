@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -22,6 +22,8 @@ import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.io.NonClosedOutputStream;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.PrintStream;
+import org.intellij.lang.annotations.PrintFormat;
+import org.jetbrains.annotations.Contract;
 
 /**
  * This class contains all of the static methods which are for writing debug
@@ -64,7 +66,7 @@ public final class Debugging
 	 * @since 2020/05/13
 	 */
 	@SquirrelJMEVendorApi
-	public static void debugNote(String __fmt)
+	public static void debugNote(@PrintFormat String __fmt)
 	{
 		Debugging.__format('D', 'B', __fmt, (Object[])null);
 	}
@@ -77,7 +79,7 @@ public final class Debugging
 	 * @since 2020/03/27
 	 */
 	@SquirrelJMEVendorApi
-	public static void debugNote(String __fmt, Object... __args)
+	public static void debugNote(@PrintFormat String __fmt, Object... __args)
 	{
 		Debugging.__format('D', 'B', __fmt, __args);
 	}
@@ -89,7 +91,7 @@ public final class Debugging
 	 * @since 2023/02/10
 	 */
 	@SquirrelJMEVendorApi
-	public static void notice(String __fmt)
+	public static void notice(@PrintFormat String __fmt)
 	{
 		Debugging.__format('\0', '\0', __fmt, (Object[])null);
 	}
@@ -102,7 +104,7 @@ public final class Debugging
 	 * @since 2021/01/18
 	 */
 	@SquirrelJMEVendorApi
-	public static void notice(String __fmt, Object... __args)
+	public static void notice(@PrintFormat String __fmt, Object... __args)
 	{
 		Debugging.__format('\0', '\0', __fmt, __args);
 	}
@@ -127,6 +129,7 @@ public final class Debugging
 	 * @since 2020/03/22
 	 */
 	@SquirrelJMEVendorApi
+	@Contract("_ -> fail")
 	public static Error oops(Object... __args)
 	{
 		return Debugging.todo(__args);
@@ -202,7 +205,9 @@ public final class Debugging
 	 * @since 2020/03/21
 	 */
 	@SquirrelJMEVendorApi
-	@SuppressWarnings("StaticVariableUsedBeforeInitialization")
+	@SuppressWarnings({"StaticVariableUsedBeforeInitialization", 
+		"squirreljme_thrownErrorToDo"})
+	@Contract("_ -> fail")
 	public static Error todo(Object... __args)
 	{
 		// Only trip this once! In the event this trips twice, just shortcut
@@ -355,7 +360,7 @@ public final class Debugging
 	 * @since 2020/05/13
 	 */
 	@SquirrelJMEVendorApi
-	public static void todoNote(String __fmt)
+	public static void todoNote(@PrintFormat String __fmt)
 	{
 		Debugging.__format('T', 'D', __fmt, (Object[])null);
 	}
@@ -368,7 +373,7 @@ public final class Debugging
 	 * @since 2020/03/31
 	 */
 	@SquirrelJMEVendorApi
-	public static void todoNote(String __fmt, Object... __args)
+	public static void todoNote(@PrintFormat String __fmt, Object... __args)
 	{
 		Debugging.__format('T', 'D', __fmt, __args);
 	}

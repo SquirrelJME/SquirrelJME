@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -95,8 +95,8 @@ public final class UIBackendFactory
 			// and the only have to have graphics is to fake it
 			if (forceHeadless)
 			{
-				// {@squirreljme.error EB33 Headless display not permitted
-				// at this current time.}
+				/* {@squirreljme.error EB33 Headless display not permitted
+				at this current time.} */
 				if (!__allowHeadless)
 					throw new IllegalStateException("EB33");
 				

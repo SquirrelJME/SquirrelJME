@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -130,12 +130,12 @@ public final class ChunkWriter
 		int __align)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error BD3h Zero or negative size section. (The size)}
+		/* {@squirreljme.error BD3h Zero or negative size section. (The size)} */
 		if (__size != ChunkWriter.VARIABLE_SIZE && __size <= 0)
 			throw new IllegalArgumentException("BD3h " + __size);
 		
-		// {@squirreljme.error BD3q Zero or negative alignment.
-		// (The alignment)}
+		/* {@squirreljme.error BD3q Zero or negative alignment.
+		(The alignment)} */
 		if (__align < 1)
 			throw new IllegalArgumentException("BD3q " + __align);
 		
@@ -231,7 +231,7 @@ public final class ChunkWriter
 			return baos.toByteArray();
 		}
 		
-		// {@squirreljme.error BD3i Could not create the byte array.}
+		/* {@squirreljme.error BD3i Could not create the byte array.} */
 		catch (IOException e)
 		{
 			throw new RuntimeException("BD3i", e);

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -157,8 +157,8 @@ public class LinkedList<E>
 	public E getFirst()
 		throws NoSuchElementException
 	{
-		// {@squirreljme.error ZZ2s Cannot get the first element because the
-		// linked list is empty.}
+		/* {@squirreljme.error ZZ2s Cannot get the first element because the
+		linked list is empty.} */
 		if (this._size == 0)
 			throw new NoSuchElementException("ZZ2s");
 		
@@ -173,8 +173,8 @@ public class LinkedList<E>
 	@Override
 	public E getLast()
 	{
-		// {@squirreljme.error ZZ2t Cannot get the last element because the
-		// linked list is empty.}
+		/* {@squirreljme.error ZZ2t Cannot get the last element because the
+		linked list is empty.} */
 		int sz;
 		if ((sz = this._size) == 0)
 			throw new NoSuchElementException("ZZ2t");

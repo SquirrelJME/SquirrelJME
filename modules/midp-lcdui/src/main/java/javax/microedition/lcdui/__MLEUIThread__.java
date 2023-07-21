@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -31,6 +31,7 @@ import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
 import java.util.Objects;
+import org.jetbrains.annotations.Async;
 
 /**
  * This thread is responsible for handling graphics operations.
@@ -227,7 +228,7 @@ final class __MLEUIThread__
 		}
 		catch (Throwable t)
 		{
-			// {@squirreljme.error EB0k Failed to terminate application.}
+			/* {@squirreljme.error EB0k Failed to terminate application.} */
 			throw new Error("EB0k", t);
 		}
 	}
@@ -409,6 +410,7 @@ final class __MLEUIThread__
 	 * @since 2020/10/16
 	 */
 	@SerializedEvent
+	@Async.Execute
 	private void __eventKey(Canvas __canvas, CustomItem __cItem, int __event,
 		int __keyCode, int __modifiers)
 		throws IllegalArgumentException, NullPointerException

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -313,8 +313,8 @@ public final class Method
 				__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
 				__in.readUnsignedShort()).toString());
 			
-			// {@squirreljme.error JC3f A duplicate method exists within the
-			// class. (The method name; The method descriptor)}
+			/* {@squirreljme.error JC3f A duplicate method exists within the
+			class. (The method name; The method descriptor)} */
 			if (!dup.add(new NameAndType(name.toString(), type.toString())))
 				throw new InvalidClassFormatException(String.format(
 					"JC3f %s %s", name, type));
@@ -329,10 +329,10 @@ public final class Method
 			Attribute maybecode = attrs.get("Code");
 			byte[] code = (maybecode == null ? null : maybecode.bytes());
 			
-			// {@squirreljme.error JC3g The specified method does not have
-			// the correct matching for abstract and if code exists or not.
-			// (The current
-			// class; The method name; The method type; The method flags)}
+			/* {@squirreljme.error JC3g The specified method does not have
+			the correct matching for abstract and if code exists or not.
+			(The current
+			class; The method name; The method type; The method flags)} */
 			if ((code == null) != (flags.isAbstract() | flags.isNative()))
 				throw new InvalidClassFormatException(String.format(
 					"JC3g %s %s %s %s", __tn, name, type, flags));

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -151,7 +151,7 @@ public class MLECallError
 	@SquirrelJMEVendorApi
 	public MLECallError(int __callId, int __code)
 	{
-		// {@squirreljme.error ZZ4k Failed system call. (The ID; The Error)}
+		/* {@squirreljme.error ZZ4k Failed system call. (The ID; The Error)} */
 		super("ZZ4k " + __callId + " " + __code);
 		
 		this.distinction = 0;

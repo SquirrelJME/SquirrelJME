@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -14,6 +14,10 @@ import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.constants.UIWidgetProperty;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.Async;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Interface that is used a callback on a user-interface form is to be done.
@@ -40,8 +44,10 @@ public interface UIFormCallback
 	 * @since 2022/07/20
 	 */
 	@SquirrelJMEVendorApi
-	void formRefresh(UIFormBracket __form, int __sx, int __sy,
-		int __sw, int __sh);
+	@Async.Execute
+	void formRefresh(@NotNull UIFormBracket __form, int __sx, int __sy,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __sw,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __sh);
 	
 	/**
 	 * This is called when a property on an item has changed.
@@ -55,8 +61,11 @@ public interface UIFormCallback
 	 * @since 2020/07/19
 	 */
 	@SquirrelJMEVendorApi
-	void propertyChange(UIFormBracket __form, UIItemBracket __item,
-		int __intProp, int __sub, int __old, int __new);
+	@Async.Execute
+	void propertyChange(@NotNull UIFormBracket __form,
+		@NotNull UIItemBracket __item,
+		@MagicConstant(valuesFromClass = UIWidgetProperty.class) int __intProp,
+		int __sub, int __old, int __new);
 	
 	/**
 	 * This is called when a property on an item has changed.
@@ -70,6 +79,9 @@ public interface UIFormCallback
 	 * @since 2020/07/19
 	 */
 	@SquirrelJMEVendorApi
-	void propertyChange(UIFormBracket __form, UIItemBracket __item,
-		int __strProp, int __sub, String __old, String __new);
+	@Async.Execute
+	void propertyChange(@NotNull UIFormBracket __form,
+		@NotNull UIItemBracket __item,
+		@MagicConstant(valuesFromClass = UIWidgetProperty.class) int __strProp,
+		int __sub, String __old, String __new);
 }

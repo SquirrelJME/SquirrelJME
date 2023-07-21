@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -185,8 +185,8 @@ public final class InitialSettings
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BE01 Invalid initial settings magic number.
-		// (The read magic number)}
+		/* {@squirreljme.error BE01 Invalid initial settings magic number.
+		(The read magic number)} */
 		long magic = __in.readLong();
 		if (magic != InitialSettings._MAGIC_NUMBER)
 			throw new ReplayFormatException(String.format("BE01 %08x", magic));

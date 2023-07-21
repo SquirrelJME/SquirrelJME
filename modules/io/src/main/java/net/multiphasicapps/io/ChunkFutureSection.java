@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ public class ChunkFutureSection
 	@Override
 	public int get()
 	{
-		// {@squirreljme.error BD07 Section was garbage collected.}
+		/* {@squirreljme.error BD07 Section was garbage collected.} */
 		ChunkSection section = this.section.get();
 		if (section == null)
 			throw new IllegalStateException("BD07");

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -12,6 +12,8 @@ package cc.squirreljme.jvm.mle.callbacks;
 import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.jetbrains.annotations.Async;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This callback is used for any calls the display system makes to applications
@@ -31,5 +33,6 @@ public interface UIDisplayCallback
 	 * @since 2020/10/03
 	 */
 	@SquirrelJMEVendorApi
-	void later(UIDisplayBracket __display, int __serialId);
+	@Async.Execute
+	void later(@NotNull UIDisplayBracket __display, int __serialId);
 }

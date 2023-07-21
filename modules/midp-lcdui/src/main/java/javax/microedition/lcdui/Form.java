@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -15,6 +15,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import org.jetbrains.annotations.Async;
 
 @Api
 public class Form
@@ -137,8 +138,8 @@ public class Form
 		if (__i == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB23 Cannot append an item which has already
-		// been associated with a form.}
+		/* {@squirreljme.error EB23 Cannot append an item which has already
+		been associated with a form.} */
 		if (__i._displayable != null)
 			throw new IllegalStateException("EB23");
 		__i._displayable = this;
@@ -300,6 +301,7 @@ public class Form
 	 * @since 2022/07/20
 	 */
 	@SerializedEvent
+	@Async.Execute
 	void __performLayout()
 	{
 		// If this form is not on a display, do not calculate the layout as
@@ -401,7 +403,7 @@ public class Form
 			return;
 		}
 		
-		// {@squirreljme.error EB3p The layout belong to a different form.}
+		/* {@squirreljme.error EB3p The layout belong to a different form.} */
 		if (__layout.getForm() != this)
 			throw new IllegalArgumentException("EB3p");
 		

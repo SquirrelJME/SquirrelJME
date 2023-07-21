@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -175,7 +175,7 @@ public final class ArrayUtils
 				return __class.cast(Arrays.copyOf(new Object[0], __len,
 					(Class<? extends Object[]>)((Object)__class)));
 			
-				// {@squirreljme.error ZZ5f Invalid array type.}
+				/* {@squirreljme.error ZZ5f Invalid array type.} */
 			default:
 				throw new IllegalArgumentException("ZZ5f");
 		}
@@ -234,7 +234,7 @@ public final class ArrayUtils
 			case ArrayUtils.ARRAY_OBJECT:
 				return __cast.cast(((Object[])__a)[__dx]);
 			
-				// {@squirreljme.error ZZf7 Invalid array type.}
+				/* {@squirreljme.error ZZf7 Invalid array type.} */
 			default:
 				throw new IllegalArgumentException("ZZf7");
 		}
@@ -319,7 +319,7 @@ public final class ArrayUtils
 				((Object[])__a)[__dx] = __v;
 				break;
 			
-				// {@squirreljme.error ZZ0c Invalid array type.}
+				/* {@squirreljme.error ZZ0c Invalid array type.} */
 			default:
 				throw new IllegalArgumentException("ZZ0c");
 		}
@@ -359,7 +359,7 @@ public final class ArrayUtils
 		else if (__a instanceof double[])
 			return ArrayUtils.ARRAY_DOUBLE;
 		
-		// {@squirreljme.error ZZ0d Invalid array type. (The type)}
+		/* {@squirreljme.error ZZ0d Invalid array type. (The type)} */
 		throw new IllegalArgumentException("ZZ0d " + __a.getClass().getName());
 	}
 	
@@ -658,8 +658,8 @@ public final class ArrayUtils
 		while (typename.charAt(typeDims) == '[')
 			typeDims++;
 		
-		// {@squirreljme.error ZZ0e Negative number of dimensions available
-		// or input type is not correct for the array type.}
+		/* {@squirreljme.error ZZ0e Negative number of dimensions available
+		or input type is not correct for the array type.} */
 		int dims = __dims.length - __skip;
 		if (__skip < 0 || dims <= 0 || typeDims < dims)
 			throw new IllegalArgumentException("ZZ0e");
@@ -684,8 +684,8 @@ public final class ArrayUtils
 				subtype = Class.forName(typename.substring(1));
 			}
 			
-			// {@squirreljme.error ZZ0f Could not find the sub-type for
-			// multi-dimensional array.}
+			/* {@squirreljme.error ZZ0f Could not find the sub-type for
+			multi-dimensional array.} */
 			catch (ClassNotFoundException e)
 			{
 				throw new Error("ZZ0f", e);

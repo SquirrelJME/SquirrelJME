@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -309,8 +309,8 @@ final class __NodeTable__
 		public __Position__ increment(int __num)
 			throws IllegalArgumentException
 		{
-			// {@squirreljme.error AH08 Cannot write negative number of
-			// nodes.}
+			/* {@squirreljme.error AH08 Cannot write negative number of
+			nodes.} */
 			if (__num < 0)
 				throw new IllegalArgumentException("AH08");
 			

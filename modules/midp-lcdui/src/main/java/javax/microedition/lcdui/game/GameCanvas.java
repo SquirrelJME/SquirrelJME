@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -141,8 +141,8 @@ public abstract class GameCanvas
 		if (this.getCurrentDisplay() == null)
 			return;
 		
-		// {@squirreljme.error EB2w Cannot flush the graphics if the buffer
-		// is not preserved.}
+		/* {@squirreljme.error EB2w Cannot flush the graphics if the buffer
+		is not preserved.} */
 		if (!this._preserveBuffer)
 			throw new IllegalStateException("EB2w");
 		

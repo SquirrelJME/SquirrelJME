@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -83,8 +83,8 @@ public final class SpringArrayObjectByte
 			return (C)Integer.valueOf(this._elements[__dx]);
 		}
 		
-		// {@squirreljme.error BK05 Out of bounds access to array. (The index;
-		// The length of the array)}
+		/* {@squirreljme.error BK05 Out of bounds access to array. (The index;
+		The length of the array)} */
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
@@ -106,15 +106,15 @@ public final class SpringArrayObjectByte
 			this._elements[__dx] = ((Integer)__v).byteValue();
 		}
 		
-		// {@squirreljme.error BK06 Could not set the index in the char
-		// array.}
+		/* {@squirreljme.error BK06 Could not set the index in the char
+		array.} */
 		catch (ClassCastException e)
 		{
 			throw new SpringArrayStoreException("BK06", e);
 		}
 		
-		// {@squirreljme.error BK07 Out of bounds access to array. (The index;
-		// The length of the array)}
+		/* {@squirreljme.error BK07 Out of bounds access to array. (The index;
+		The length of the array)} */
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(

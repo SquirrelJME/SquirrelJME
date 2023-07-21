@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -186,7 +186,7 @@ public abstract class InputStream
 	public void reset()
 		throws IOException
 	{
-		// {@squirreljme.error ZZ0n Reset is not supported.}
+		/* {@squirreljme.error ZZ0n Reset is not supported.} */
 		throw new IOException("ZZ0n");
 	}
 	

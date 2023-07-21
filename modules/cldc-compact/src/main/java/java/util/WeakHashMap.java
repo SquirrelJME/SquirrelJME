@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,6 +11,7 @@ package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 
@@ -32,9 +33,8 @@ public class WeakHashMap<K, V>
 	/** The load factor. */
 	private final float _load;
 	
-	/** This is used to clear keys when they are collected. */
-	private final ReferenceQueue<K> _rq =
-		new ReferenceQueue<>();
+	/** Entry set cache. */
+	private volatile Reference<Set<Entry<K, V>>> _entrySetCache; 
 	
 	/**
 	 * Initializes the weak hash map with the given initial capacity and load
@@ -50,14 +50,14 @@ public class WeakHashMap<K, V>
 	public WeakHashMap(int __icap, float __load)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ33 The initial capacity of the weak
-		// hash map is negative. (The negative initial capacity)}
+		/* {@squirreljme.error ZZ33 The initial capacity of the weak
+		hash map is negative. (The negative initial capacity)} */
 		if (__icap < 0)
 			throw new IllegalArgumentException(String.format("ZZ33 %d",
 				__icap));
 		
-		// {@squirreljme.error ZZ34 The load factor of the weak hash map is
-		// not positive. (The non-positive load factor)}
+		/* {@squirreljme.error ZZ34 The load factor of the weak hash map is
+		not positive. (The non-positive load factor)} */
 		if (__load <= 0.0F)
 			throw new IllegalArgumentException(String.format("ZZ34 %f",
 				__load));
@@ -105,7 +105,7 @@ public class WeakHashMap<K, V>
 	@Api
 	public WeakHashMap(Map<? extends K, ? extends V> __a)
 	{
-		// {@squirreljme.error ZZ35 No map to copy data from was specified.}
+		/* {@squirreljme.error ZZ35 No map to copy data from was specified.} */
 		if (__a == null)
 			throw new NullPointerException("ZZ35");
 		
@@ -141,8 +141,17 @@ public class WeakHashMap<K, V>
 	@Override
 	public Set<Map.Entry<K, V>> entrySet()
 	{
-		return new __WeakHashMapEntrySet__<K, V>(
-			this._map.entrySet());
+		Reference<Set<Entry<K, V>>> ref = this._entrySetCache;
+		Set<Map.Entry<K, V>> rv;
+		
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			rv = new __WeakHashMapEntrySet__<K, V>(
+				this._map.entrySet());
+			this._entrySetCache = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
 	/**

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -174,7 +174,7 @@ public final class SpringThread
 		List<SpringThread.Frame> frames = this._frames;
 		SpringThread.Frame rv = new SpringThread.Frame(frames.size());
 		
-		// {@squirreljme.error BK1j Stack overflow.}
+		/* {@squirreljme.error BK1j Stack overflow.} */
 		if (frames.size() >= SpringThread.MAX_STACK_DEPTH)
 			throw new SpringVirtualMachineException("BK1j");
 		
@@ -224,8 +224,8 @@ public final class SpringThread
 		/*Debugging.debugNote("enterFrame(%s::%s, %s)", __m.inClass(),
 			__m.nameAndType(), Arrays.<Object>asList(__args));*/
 		
-		// {@squirreljme.error BK1k Cannot enter the frame for a method which
-		// is abstract. (The class the method is in; The method name and type)}
+		/* {@squirreljme.error BK1k Cannot enter the frame for a method which
+		is abstract. (The class the method is in; The method name and type)} */
 		if (__m.isAbstract())
 			throw new SpringVirtualMachineException(String.format("BK1k %s %s",
 				__m.inClass(), __m.nameAndType()));
@@ -267,9 +267,9 @@ public final class SpringThread
 			// load a class
 			if (__m.flags().isStatic())
 			{
-				// {@squirreljme.error BK1l Cannot enter a synchronized static
-				// method without a thread working, since we need to load
-				// the class object.}
+				/* {@squirreljme.error BK1l Cannot enter a synchronized static
+				method without a thread working, since we need to load
+				the class object.} */
 				if (worker == null)
 					throw new SpringVirtualMachineException("BK1l");
 				
@@ -281,13 +281,13 @@ public final class SpringThread
 			// On this object
 			else
 			{
-				// {@squirreljme.error BK1m Cannot enter a synchronized
-				// instance method with no arguments passed.}
+				/* {@squirreljme.error BK1m Cannot enter a synchronized
+				instance method with no arguments passed.} */
 				if (__args.length <= 0)
 					throw new SpringVirtualMachineException("BK1m");
 				
-				// {@squirreljme.error BK1n Cannot enter a monitor of nothing
-				// or a non-object.}
+				/* {@squirreljme.error BK1n Cannot enter a monitor of nothing
+				or a non-object.} */
 				Object argzero = __args[0];
 				if (!(argzero instanceof SpringObject))
 					throw new SpringVirtualMachineException("BK1n");
@@ -551,7 +551,7 @@ public final class SpringThread
 		List<SpringThread.Frame> frames = this._frames;
 		synchronized (this)
 		{
-			// {@squirreljme.error BK1o No frames to pop.}
+			/* {@squirreljme.error BK1o No frames to pop.} */
 			int n;
 			if ((n = frames.size()) <= 0)
 				throw new SpringVirtualMachineException("BK1o");	
@@ -951,10 +951,10 @@ public final class SpringThread
 		{
 			Object[] locals = this._locals;
 			
-			// {@squirreljme.error BK1p Cannot push local variable to the stack
-			// because it of the incorrect type. (The varible to push; The
-			// index to load from; The expected class; The value to push;
-			// The type of value to push)}
+			/* {@squirreljme.error BK1p Cannot push local variable to the stack
+			because it of the incorrect type. (The varible to push; The
+			index to load from; The expected class; The value to push;
+			The type of value to push)} */
 			Object pushy = locals[__dx];
 			if (!__cl.isInstance(pushy))
 				throw new SpringVirtualMachineException(String.format(
@@ -1038,8 +1038,8 @@ public final class SpringThread
 			Object[] stack = this._stack;
 			int stacktop = this._stacktop;
 			
-			// {@squirreljme.error BK1q Stack underflow. (The current top of
-			// the stack; The stack limit)}
+			/* {@squirreljme.error BK1q Stack underflow. (The current top of
+			the stack; The stack limit)} */
 			if (stacktop <= 0)
 				throw new SpringVirtualMachineException(String.format(
 					"BK1q %d %d", stacktop, stack.length));
@@ -1049,8 +1049,8 @@ public final class SpringThread
 			stack[stacktop] = null;
 			this._stacktop = stacktop;
 			
-			// {@squirreljme.error BK1r Popped a null value of the stack, which
-			// should not occur.}
+			/* {@squirreljme.error BK1r Popped a null value of the stack, which
+			should not occur.} */
 			if (rv == null)
 				throw new SpringVirtualMachineException("BK1r");
 			
@@ -1059,9 +1059,9 @@ public final class SpringThread
 			{
 				rv = this.popFromStack();
 				
-				// {@squirreljme.error BK1s Expected long or double below
-				// top entry in stack. (The current top of the stack; The
-				// stack limit)}
+				/* {@squirreljme.error BK1s Expected long or double below
+				top entry in stack. (The current top of the stack; The
+				stack limit)} */
 				if (!(rv instanceof Long || rv instanceof Double))
 					throw new SpringVirtualMachineException(String.format(
 						"BK1s %d %d", stacktop, stack.length));
@@ -1090,8 +1090,8 @@ public final class SpringThread
 			if (__cl == null)
 				throw new NullPointerException("NARG");
 			
-			// {@squirreljme.error BK1t Popped the wrong kind of value from the
-			// stack. (The popped type; The expected type)}
+			/* {@squirreljme.error BK1t Popped the wrong kind of value from the
+			stack. (The popped type; The expected type)} */
 			Object rv = this.popFromStack();
 			if (!__cl.isInstance(rv))
 				throw new SpringVirtualMachineException(
@@ -1124,14 +1124,14 @@ public final class SpringThread
 			// Pop from the stack
 			Object rv = this.popFromStack();
 			
-			// {@squirreljme.error BK1u Did not expect a null value to be
-			// popped from the stack.}
+			/* {@squirreljme.error BK1u Did not expect a null value to be
+			popped from the stack.} */
 			if (rv == SpringNullObject.NULL ||
 				(rv instanceof SpringNullObject))
 				throw new SpringNullPointerException("BK1u");
 			
-			// {@squirreljme.error BK1v Popped the wrong kind of value from the
-			// stack. (The popped type; The expected type)}
+			/* {@squirreljme.error BK1v Popped the wrong kind of value from the
+			stack. (The popped type; The expected type)} */
 			if (!__cl.isInstance(rv))
 				throw new SpringVirtualMachineException(
 					String.format("BK1v %s %s",
@@ -1161,8 +1161,8 @@ public final class SpringThread
 			// Debug
 			/*todo.DEBUG.note("push(%s) -> %d", __v, stacktop);*/
 			
-			// {@squirreljme.error BK1w Stack overflow pushing value. (The
-			// value; The current top of the stack; The stack limit)}
+			/* {@squirreljme.error BK1w Stack overflow pushing value. (The
+			value; The current top of the stack; The stack limit)} */
 			if (stacktop >= stack.length)
 				throw new SpringVirtualMachineException(String.format(
 					"BK1w %s %d %d", __v, stacktop, stack.length));

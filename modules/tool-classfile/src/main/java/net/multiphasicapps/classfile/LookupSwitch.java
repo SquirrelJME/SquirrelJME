@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -54,8 +54,8 @@ public final class LookupSwitch
 		if (__def == null || __keys == null || __jumps == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC3c Key and jump table for lookup switch
-		// table is of different lengths.}
+		/* {@squirreljme.error JC3c Key and jump table for lookup switch
+		table is of different lengths.} */
 		if (__keys.length != __jumps.length)
 			throw new IllegalArgumentException("JC3c");
 		
@@ -67,8 +67,8 @@ public final class LookupSwitch
 		long last = ((long)Integer.MIN_VALUE) - 1;
 		for (int i = 0, n = __keys.length; i < n; i++)
 		{
-			// {@squirreljme.error JC3d Lookup switch key is not in sorted
-			// order. (The index; The current key; The last key)}
+			/* {@squirreljme.error JC3d Lookup switch key is not in sorted
+			order. (The index; The current key; The last key)} */
 			int k = __keys[i];
 			if (k < last)
 				throw new InvalidClassFormatException(

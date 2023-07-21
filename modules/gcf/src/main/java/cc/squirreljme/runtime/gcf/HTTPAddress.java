@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -123,8 +123,8 @@ public final class HTTPAddress
 		// Debug
 		Debugging.debugNote("Decode %s", __p);
 		
-		// {@squirreljme.error EC02 HTTP address must start with double
-		// slash. (The URI part)}
+		/* {@squirreljme.error EC02 HTTP address must start with double
+		slash. (The URI part)} */
 		if (!__p.startsWith("//"))
 			throw new IllegalArgumentException("EC02 " + __p);
 		__p = __p.substring(2);

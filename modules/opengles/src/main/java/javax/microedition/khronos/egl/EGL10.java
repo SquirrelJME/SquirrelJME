@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -274,8 +274,8 @@ public interface EGL10
 		@Override
 		public GL getGL()
 		{
-			// {@squirreljme.error EJ0a Cannot get the GL instance of
-			// a null context.}
+			/* {@squirreljme.error EJ0a Cannot get the GL instance of
+			a null context.} */
 			throw new RuntimeException("EJ0a");
 		}
 	};

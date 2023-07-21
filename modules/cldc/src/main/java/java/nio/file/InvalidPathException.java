@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -46,8 +46,8 @@ public class InvalidPathException
 		if (__in == null || __reason == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZY04 Invalid path index specified for
-		// exception. (Index)}
+		/* {@squirreljme.error ZY04 Invalid path index specified for
+		exception. (Index)} */
 		if (__index < -1)
 			throw new IllegalArgumentException("ZY04 " + __index);
 		

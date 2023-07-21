@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -128,7 +128,6 @@ public final class ClassLoadingAdjustments
 			case "todo/DEBUG":
 			case "todo/OOPS":
 			case "todo/TODO":
-			case "cc/squirreljme/jvm/Assembly":
 			case "cc/squirreljme/jvm/Constants":
 			case "cc/squirreljme/runtime/cldc/debug/Debugging":
 			case "cc/squirreljme/jvm/IPCCallback":

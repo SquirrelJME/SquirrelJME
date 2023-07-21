@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -64,6 +64,10 @@ public class VMCompactLibraryTaskAction
 	/** Settings to use in the configuration for keeping, etc. */
 	static final String[] _PARSE_SETTINGS = new String[]
 		{
+			// Ignore all JetBrains IntelliJ related annotations
+			"-dontwarn", "org.jetbrains.annotations.**",
+			"-dontwarn", "org.intellij.lang.annotations.**",
+			
 			// Adjust manifest resources
 			"-adaptresourcefilenames", "**",
 			"-adaptresourcefilecontents",

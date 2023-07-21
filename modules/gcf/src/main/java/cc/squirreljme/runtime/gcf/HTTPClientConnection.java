@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -408,7 +408,7 @@ public class HTTPClientConnection
 	private HTTPRequestBuilder __request()
 		throws IOException
 	{
-		// {@squirreljme.error EC03 Cannot access the request
+		/* {@squirreljme.error EC03 Cannot access the request} */
 		if (this.tracker._state != HTTPState.SETUP)
 		{
 			// Clear before it is thrown

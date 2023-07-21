@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,6 +11,7 @@ package cc.squirreljme.plugin.general;
 
 import cc.squirreljme.plugin.multivm.AlwaysFalse;
 import cc.squirreljme.plugin.util.FossilExe;
+import cc.squirreljme.plugin.util.PathUtils;
 import cc.squirreljme.plugin.util.SimpleHTTPRequest;
 import cc.squirreljme.plugin.util.SimpleHTTPResponse;
 import cc.squirreljme.plugin.util.SimpleHTTPResponseBuilder;
@@ -24,12 +25,15 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Objects;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Task;
+import org.gradle.internal.os.OperatingSystem;
 
 /**
  * Edits the current day in developer notes.
@@ -212,8 +216,36 @@ public class DeveloperNoteTask
 		}
 		
 		// Do not fail on this, just try more
-		catch (IOException|HeadlessException ignored)
+		catch (Throwable ignored)
 		{
+			ignored.printStackTrace();
+		}
+		
+		// If we are on Linux, try to launch browser
+		if (OperatingSystem.current() == OperatingSystem.LINUX ||
+			OperatingSystem.current() == OperatingSystem.FREE_BSD)
+		{
+			// Try different potential browsers
+			for (String attempt : Arrays.asList(
+					"xdg-open",		// Standard XDG Open
+					"x-www-browser"	// On Debian
+				))
+			{
+				// Find executable
+				Path path = PathUtils.findPathExecutable(attempt);
+				if (path != null)
+					try
+					{
+						ProcessBuilder builder = new ProcessBuilder(
+							path.toAbsolutePath().toString(), __url);
+						
+						builder.start();
+						return;
+					}
+					catch (IOException ignored)
+					{
+					}
+			}
 		}
 		
 		// Open the browser using another means

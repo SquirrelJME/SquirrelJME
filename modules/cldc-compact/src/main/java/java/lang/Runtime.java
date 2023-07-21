@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -20,6 +20,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.io.NonClosedOutputStream;
 import java.io.PrintStream;
+import org.jetbrains.annotations.Contract;
 
 /**
  * This class contains information about the host memory environment along
@@ -54,6 +55,7 @@ public class Runtime
 	 * @since 2017/02/08
 	 */
 	@Api
+	@Contract("_ -> fail")
 	public void exit(int __v)
 		throws SecurityException
 	{

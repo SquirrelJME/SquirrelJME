@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -17,6 +17,11 @@ import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.CheckReturnValue;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * This shelf is responsible for accelerated graphics drawing.
@@ -24,6 +29,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @see PencilBracket
  * @since 2020/09/25
  */
+@SuppressWarnings("UnstableApiUsage")
 @SquirrelJMEVendorApi
 public final class PencilShelf
 {
@@ -49,7 +55,10 @@ public final class PencilShelf
 	 * @since 2020/09/25
 	 */
 	@SquirrelJMEVendorApi
-	public static native int capabilities(int __pf)
+	@CheckReturnValue
+	@MagicConstant(flagsFromClass = PencilCapabilities.class)
+	public static native int capabilities(
+		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf)
 		throws MLECallError;
 	
 	/**
@@ -77,8 +86,11 @@ public final class PencilShelf
 	 * @since 2023/02/19
 	 */
 	@SquirrelJMEVendorApi
-	public static native void hardwareCopyArea(PencilBracket __g,
-		int __sx, int __sy, int __w, int __h, int __dx, int __dy, int __anchor)
+	public static native void hardwareCopyArea(@NotNull PencilBracket __g,
+		int __sx, int __sy,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
+		int __dx, int __dy, int __anchor)
 		throws MLECallError;
 	
 	/**
@@ -97,8 +109,11 @@ public final class PencilShelf
 	 * @since 2023/02/19
 	 */
 	@SquirrelJMEVendorApi
-	public static native void hardwareDrawChars(PencilBracket __g,
-		char[] __s, int __o, int __l, int __x, int __y, int __anchor)
+	public static native void hardwareDrawChars(@NotNull PencilBracket __g,
+		@NotNull char[] __s,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __l,
+		int __x, int __y, int __anchor)
 		throws MLECallError;
 	
 	/**
@@ -113,7 +128,7 @@ public final class PencilShelf
 	 * @since 2021/12/05
 	 */
 	@SquirrelJMEVendorApi
-	public static native void hardwareDrawLine(PencilBracket __g,
+	public static native void hardwareDrawLine(@NotNull PencilBracket __g,
 		int __x1, int __y1, int __x2, int __y2)
 		throws MLECallError;
 	
@@ -134,8 +149,10 @@ public final class PencilShelf
 	 * @since 2023/02/16
 	 */
 	@SquirrelJMEVendorApi
-	public static native void hardwareDrawRect(PencilBracket __g,
-		int __x, int __y, int __w, int __h)
+	public static native void hardwareDrawRect(@NotNull PencilBracket __g,
+		int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h)
 		throws MLECallError;
 	
 	/**
@@ -154,8 +171,11 @@ public final class PencilShelf
 	 * @since 2023/02/19
 	 */
 	@SquirrelJMEVendorApi
-	public static native void hardwareDrawSubstring(PencilBracket __g,
-		String __s, int __o, int __l, int __x, int __y, int __anchor)
+	public static native void hardwareDrawSubstring(@NotNull PencilBracket __g,
+		@NotNull String __s,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __o, 
+		@Range(from = 0, to = Integer.MAX_VALUE) int __l,
+		int __x, int __y, int __anchor)
 		throws MLECallError;
 	
 	/**
@@ -184,10 +204,17 @@ public final class PencilShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native void hardwareDrawXRGB32Region(
-		PencilBracket __hardware, int[] __data, int __off, int __scanLen,
-		boolean __alpha, int __xSrc, int __ySrc, int __wSrc, int __hSrc,
-		int __trans, int __xDest, int __yDest, int __anch, int __wDest,
-		int __hDest, int __origImgWidth, int __origImgHeight)
+		@NotNull PencilBracket __hardware, @NotNull int[] __data,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __scanLen,
+		boolean __alpha, int __xSrc, int __ySrc,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __wSrc,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __hSrc,
+		int __trans, int __xDest, int __yDest, int __anch,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __wDest,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __hDest,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __origImgWidth,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __origImgHeight)
 		throws MLECallError;
 	
 	/**
@@ -202,8 +229,10 @@ public final class PencilShelf
 	 * @since 2021/12/05
 	 */
 	@SquirrelJMEVendorApi
-	public static native void hardwareFillRect(PencilBracket __g,
-		int __x, int __y, int __w, int __h)
+	public static native void hardwareFillRect(@NotNull PencilBracket __g,
+		int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h)
 		throws MLECallError;
 	
 	/**
@@ -222,7 +251,7 @@ public final class PencilShelf
 	 * @since 2023/02/16
 	 */
 	@SquirrelJMEVendorApi
-	public static native void hardwareFillTriangle(PencilBracket __g,
+	public static native void hardwareFillTriangle(@NotNull PencilBracket __g,
 		int __x1, int __y1, int __x2, int __y2, int __x3, int __y3)
 		throws MLECallError;
 	
@@ -240,13 +269,21 @@ public final class PencilShelf
 	 * @param __sy Starting surface Y coordinate.
 	 * @param __sw Surface width.
 	 * @param __sh Surface height.
+	 * @return The bracket capable of drawing hardware accelerated graphics.
 	 * @throws MLECallError If the requested graphics are not valid.
 	 * @since 2020/09/25
 	 */
 	@SquirrelJMEVendorApi
-	public static native PencilBracket hardwareGraphics(int __pf, int __bw,
-		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
-		int __sw, int __sh)
+	public static native PencilBracket hardwareGraphics(
+		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __bw,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __bh,
+		@NotNull Object __buf,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
+		@Nullable int[] __pal,
+		int __sx, int __sy,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __sw,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __sh)
 		throws MLECallError;
 	
 	/**
@@ -258,7 +295,7 @@ public final class PencilShelf
 	 * @since 2021/12/05
 	 */
 	@SquirrelJMEVendorApi
-	public static native void hardwareSetAlphaColor(PencilBracket __g,
+	public static native void hardwareSetAlphaColor(@NotNull PencilBracket __g,
 		int __argb)
 		throws MLECallError;
 	
@@ -271,8 +308,8 @@ public final class PencilShelf
 	 * @since 2021/12/05
 	 */
 	@SquirrelJMEVendorApi
-	public static native void hardwareSetBlendingMode(PencilBracket __g,
-		int __mode)
+	public static native void hardwareSetBlendingMode(
+		@NotNull PencilBracket __g, int __mode)
 		throws MLECallError;
 	
 	/**
@@ -287,8 +324,10 @@ public final class PencilShelf
 	 * @since 2021/12/05
 	 */
 	@SquirrelJMEVendorApi
-	public static native void hardwareSetClip(PencilBracket __g,
-		int __x, int __y, int __w, int __h)
+	public static native void hardwareSetClip(@NotNull PencilBracket __g,
+		int __x, int __y,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h)
 		throws MLECallError;
 	
 	/**
@@ -300,7 +339,8 @@ public final class PencilShelf
 	 * @since 2023/02/19
 	 */
 	@SquirrelJMEVendorApi
-	public static native void hardwareSetDefaultFont(PencilBracket __g)
+	public static native void hardwareSetDefaultFont(
+		@NotNull PencilBracket __g)
 		throws MLECallError;
 	
 	/**
@@ -315,8 +355,9 @@ public final class PencilShelf
 	 * @since 2023/02/19
 	 */
 	@SquirrelJMEVendorApi
-	public static native void hardwareSetFont(PencilBracket __g,
-		String __name, int __style, int __pixelSize)
+	public static native void hardwareSetFont(@NotNull PencilBracket __g,
+		@NotNull String __name, int __style,
+		@Range(from = 1, to = Integer.MAX_VALUE) int __pixelSize)
 		throws MLECallError;
 	
 	/**
@@ -328,7 +369,8 @@ public final class PencilShelf
 	 * @since 2021/12/05
 	 */
 	@SquirrelJMEVendorApi
-	public static native void hardwareSetStrokeStyle(PencilBracket __g,
+	public static native void hardwareSetStrokeStyle(
+		@NotNull PencilBracket __g,
 		int __style)
 		throws MLECallError;
 	
@@ -342,8 +384,8 @@ public final class PencilShelf
 	 * @since 2021/12/05
 	 */
 	@SquirrelJMEVendorApi
-	public static native void hardwareTranslate(PencilBracket __g, int __x,
-		int __y)
+	public static native void hardwareTranslate(@NotNull PencilBracket __g,
+		int __x, int __y)
 		throws MLECallError;
 	
 	/**
@@ -360,8 +402,11 @@ public final class PencilShelf
 	 * @since 2021/12/05
 	 */
 	@SquirrelJMEVendorApi
-	public static native int[] nativeImageLoadRGBA(int __type,
-		byte[] __b, int __o, int __l)
+	public static native int[] nativeImageLoadRGBA(
+		@MagicConstant(valuesFromClass = NativeImageLoadType.class) int __type,
+		@NotNull byte[] __b,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __l)
 		throws MLECallError;
 	
 	/**
@@ -374,5 +419,7 @@ public final class PencilShelf
 	 * @since 2021/12/05
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
+	@MagicConstant(valuesFromClass = NativeImageLoadType.class)
 	public static native int nativeImageLoadTypes();
 }

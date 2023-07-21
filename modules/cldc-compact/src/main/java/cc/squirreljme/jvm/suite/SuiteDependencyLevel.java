@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -88,7 +88,7 @@ public enum SuiteDependencyLevel
 			case "required":	return SuiteDependencyLevel.REQUIRED;
 			case "optional":	return SuiteDependencyLevel.OPTIONAL;
 			
-				// {@squirreljme.error DG82 Invalid dependency level. (Level)}
+				/* {@squirreljme.error DG82 Invalid dependency level. (Level)} */
 			default:
 				throw new IllegalArgumentException(String.format(
 					"DG82 %s", __s));

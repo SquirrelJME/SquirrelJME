@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -159,7 +159,7 @@ public class RecordStore
 		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		// {@squirreljme.error DC01 Cannot write record to read-only store.}
+		/* {@squirreljme.error DC01 Cannot write record to read-only store.} */
 		if (!this._write)
 			throw new RecordStoreException("DC01");
 		
@@ -404,8 +404,8 @@ public class RecordStore
 				if (e instanceof RecordStoreNotOpenException)
 					throw (RecordStoreNotOpenException)e;
 				
-				// {@squirreljme.error DC02 Could not get the record store
-				// time.}
+				/* {@squirreljme.error DC02 Could not get the record store
+				time.} */
 				throw new RuntimeException("DC02", e);
 			}
 			
@@ -495,8 +495,8 @@ public class RecordStore
 				}
 				catch (RecordStoreException e)
 				{
-					// {@squirreljme.error DC03 Error getting list of
-					// records.}
+					/* {@squirreljme.error DC03 Error getting list of
+					records.} */
 					RecordStoreNotOpenException t =
 						new RecordStoreNotOpenException("DC03");
 					t.initCause(e);
@@ -592,8 +592,8 @@ public class RecordStore
 			int size = vinyl.pageSize(vid, __id);
 			RecordStore.__checkError(size);
 			
-			// {@squirreljme.error DC04 The record does not fit into the
-			// output.}
+			/* {@squirreljme.error DC04 The record does not fit into the
+			output.} */
 			if (size < 0 || (__o + size) > __b.length)
 				throw new ArrayIndexOutOfBoundsException("DC04");
 			
@@ -750,8 +750,8 @@ public class RecordStore
 				if (e instanceof RecordStoreNotOpenException)
 					throw (RecordStoreNotOpenException)e;
 				
-				// {@squirreljme.error DC05 Could not get the record store
-				// version.}
+				/* {@squirreljme.error DC05 Could not get the record store
+				version.} */
 				throw new RuntimeException("DC05", e);
 			}
 			
@@ -851,7 +851,7 @@ public class RecordStore
 		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		// {@squirreljme.error DC06 Cannot write record to read-only store.}
+		/* {@squirreljme.error DC06 Cannot write record to read-only store.} */
 		if (!this._write)
 			throw new RecordStoreException("DC06");
 		
@@ -908,7 +908,7 @@ public class RecordStore
 	private void __checkOpen()
 		throws RecordStoreNotOpenException
 	{
-		// {@squirreljme.error DC07 This record store is not open.
+		/* {@squirreljme.error DC07 This record store is not open.} */
 		if (this._opens <= 0)
 			throw new RecordStoreNotOpenException("DC07");
 	}
@@ -993,8 +993,8 @@ public class RecordStore
 				}
 			}
 			
-			// {@squirreljme.error DC08 Cannot delete the specified record
-			// store because it does not exist. (The name of the store)}
+			/* {@squirreljme.error DC08 Cannot delete the specified record
+			store because it does not exist. (The name of the store)} */
 			if (got == -1)
 				throw new RecordStoreNotFoundException("DC08 " + __n);
 			
@@ -1214,20 +1214,20 @@ public class RecordStore
 		// Error was detected
 		if (__id < 0)
 		{
-			// {@squirreljme.error DC09 Could not add the record, there might
-			// not be enough free space available.}
+			/* {@squirreljme.error DC09 Could not add the record, there might
+			not be enough free space available.} */
 			if (__id == VinylRecord.ERROR_NO_MEMORY)
 				throw new RecordStoreFullException("DC09");
 			
-			// {@squirreljme.error DC0a No such record store exists.}
+			/* {@squirreljme.error DC0a No such record store exists.} */
 			if (__id == VinylRecord.ERROR_NO_VOLUME)
 				throw new RecordStoreNotFoundException("DC0a");
 			
-			// {@squirreljme.error DC0b No such record exists.}
+			/* {@squirreljme.error DC0b No such record exists.} */
 			if (__id == VinylRecord.ERROR_NO_PAGE)
 				throw new InvalidRecordIDException("DC0b");
 			
-			// {@squirreljme.error DC0c Unknown record store error. (Error)}
+			/* {@squirreljme.error DC0c Unknown record store error. (Error)} */
 			throw new RecordStoreException("DC0c " + __id);
 		}
 	}
@@ -1279,7 +1279,7 @@ public class RecordStore
 		if (__name == null || __vend == null || __suite == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error DC0d The name is not valid.}
+		/* {@squirreljme.error DC0d The name is not valid.} */
 		int namelen = __name.length();
 		if (namelen < 1 || namelen > 32)
 			throw new IllegalArgumentException("DC0d " + __name);
@@ -1323,14 +1323,14 @@ public class RecordStore
 				return rs;
 			}
 			
-			// {@squirreljme.error DC0e Could not find the specified record
-			// store. (The name; The vendor; The suite)}
+			/* {@squirreljme.error DC0e Could not find the specified record
+			store. (The name; The vendor; The suite)} */
 			if (!__create)
 				throw new RecordStoreNotFoundException(
 					String.format("DC0e %s %s %s", __name, __vend, __suite));
 			
-			// {@squirreljme.error DC0f Could not create the record, it is
-			// likely that there is not enough space remaining.}
+			/* {@squirreljme.error DC0f Could not create the record, it is
+			likely that there is not enough space remaining.} */
 			rv = vinyl.volumeCreate(sid, __name, __write);
 			if (rv < 0)
 				throw new RecordStoreFullException("DC0f");

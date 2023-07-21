@@ -190,6 +190,8 @@ squirreljme
 			"double", "_value", ";",
 		"}"]
 	
+	// Prevent software math methods from being changed, these are called
+	
 	// Optimizing this method seems to break the launcher somehow...
 	proGuardOptions += ["-keepclassmembers,includecode",
 		"class", "cc.squirreljme.jvm.launch.SuiteScanner", "{",
@@ -212,6 +214,19 @@ squirreljme
 				")", ";",
 		"}"]
 	
+	// The test method that takes 255 arguments completely breaks ProGuard
+	// so disable optimizations for it
+	proGuardOptionsTest += ["-keep", "class",
+		"lang.bytecode.TestInvoke255"]
+	proGuardOptionsTest += ["-keepnames", "class",
+		"lang.bytecode.TestInvoke255"]
+	proGuardOptionsTest += ["-keep,includecode",
+		"class", "lang.bytecode.TestInvoke255", "{",
+			"<fields>", ";",
+			"<methods>", ";",
+		"}"
+	]
+	
 	// This is considered a boot loader for SummerCoat
 	isBootLoader = true
 	bootLoaderMainClass = "cc.squirreljme.jvm.summercoat.Bootstrap"
@@ -225,4 +240,6 @@ java
 
 dependencies
 {
+	// For IDE related information
+	api "org.jetbrains:annotations:24.0.1"
 }

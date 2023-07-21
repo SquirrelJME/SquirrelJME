@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -22,6 +22,7 @@ import cc.squirreljme.runtime.lcdui.font.FontUtilities;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import org.jetbrains.annotations.Async;
 
 @Api
 public class List
@@ -80,12 +81,12 @@ public class List
 		if (__strs == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB2j String and image elements differ in
-		// size.}
+		/* {@squirreljme.error EB2j String and image elements differ in
+		size.} */
 		if (__imgs != null && __strs.length != __imgs.length)
 			throw new IllegalArgumentException("EB2j");
 		
-		// {@squirreljme.error EB2k Invalid list type. (The list type)}
+		/* {@squirreljme.error EB2k Invalid list type. (The list type)} */
 		if (__type != Choice.IMPLICIT && __type != Choice.EXCLUSIVE &&
 			__type != Choice.MULTIPLE)
 			throw new IllegalArgumentException("EB2k " + __type);
@@ -395,8 +396,8 @@ public class List
 			
 		java.util.List<__ChoiceEntry__> items = this._items.valuesAsList();
 		
-		// {@squirreljme.error EB3n Array is longer than the list size.
-		// (The list size; the array size)}
+		/* {@squirreljme.error EB3n Array is longer than the list size.
+		(The list size; the array size)} */
 		int n = items.size();
 		if (n > __flags.length)
 			throw new IllegalArgumentException("EB3n " + n + " " +
@@ -591,6 +592,7 @@ public class List
 	 * @since 2020/11/14
 	 */
 	@SerializedEvent
+	@Async.Execute
 	final void __selectCommand(int __keyCode)
 	{
 		// This command is only executed for implicit lists only
@@ -615,6 +617,7 @@ public class List
 	 * @since 2020/11/15
 	 */
 	@SerializedEvent
+	@Async.Execute
 	private void __updateSelection(int __i, boolean __b)
 	{
 		// Drop any attempts to clear selection if not on multiple choice lists

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -251,7 +251,7 @@ public final class Font
 	public Font deriveFont(int __style, int __pxs)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1t Invalid font style specified. (The style)}
+		/* {@squirreljme.error EB1t Invalid font style specified. (The style)} */
 		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_UNDERLINED | Font.STYLE_BOLD)) != 0)
 			throw new IllegalArgumentException(String.format("EB1t %d",
 				__style));
@@ -260,8 +260,8 @@ public final class Font
 		if (__pxs == 0)
 			__pxs = FontUtilities.logicalSizeToPixelSize(Font.SIZE_MEDIUM);
 		
-		// {@squirreljme.error EB1u The pixel size of a font cannot be
-		// negative.}
+		/* {@squirreljme.error EB1u The pixel size of a font cannot be
+		negative.} */
 		else if (__pxs < 0)
 			throw new IllegalArgumentException("EB1u");
 		
@@ -602,7 +602,7 @@ public final class Font
 	public static Font[] getAvailableFonts(int __style)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1v Invalid font style specified. (The style)}
+		/* {@squirreljme.error EB1v Invalid font style specified. (The style)} */
 		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_ITALIC |
 			Font.STYLE_UNDERLINED | Font.STYLE_BOLD)) != 0)
 			throw new IllegalArgumentException(String.format("EB1v %d",
@@ -639,7 +639,7 @@ public final class Font
 	public static Font[] getAvailableFonts(int __face, int __style, int __pxs)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1w Invalid font style specified. (The style)}
+		/* {@squirreljme.error EB1w Invalid font style specified. (The style)} */
 		if ((__style & ~(Font.STYLE_PLAIN | Font.STYLE_ITALIC |
 			Font.STYLE_UNDERLINED | Font.STYLE_BOLD)) != 0)
 			throw new IllegalArgumentException(String.format("EB1w %d",
@@ -697,7 +697,7 @@ public final class Font
 	public static Font getFont(int __spec)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1x Invalid font specifiers. (The specifiers)}
+		/* {@squirreljme.error EB1x Invalid font specifiers. (The specifiers)} */
 		if (__spec != Font.FONT_INPUT_TEXT &&
 			__spec != Font.FONT_STATIC_TEXT &&
 			__spec != Font.FONT_IDLE_TEXT &&
@@ -729,13 +729,13 @@ public final class Font
 	public static Font getFont(int __face, int __style, int __size)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1y Invalid font face specified. (The face)}
+		/* {@squirreljme.error EB1y Invalid font face specified. (The face)} */
 		if ((__face & ~(Font.FACE_SYSTEM | Font.FACE_MONOSPACE |
 			Font.FACE_PROPORTIONAL)) != 0 || Integer.bitCount(__face) > 1)
 			throw new IllegalArgumentException(String.format("EB1y %d",
 				__face));
 		
-		// {@squirreljme.error EB1z Invalid font size specified. (The size)}
+		/* {@squirreljme.error EB1z Invalid font size specified. (The size)} */
 		if ((__size & ~(Font.SIZE_SMALL | Font.SIZE_MEDIUM |
 			Font.SIZE_LARGE)) != 0 || Integer.bitCount(__size) > 1)
 			throw new IllegalArgumentException(String.format("EB1z %d",
@@ -798,8 +798,8 @@ public final class Font
 			if (__name.equals(f.getFontName()))
 				return f.deriveFont(__style, __pxs);
 		
-		// {@squirreljme.error EB20 Could not locate a font by the given
-		// name. (The font name)}
+		/* {@squirreljme.error EB20 Could not locate a font by the given
+		name. (The font name)} */
 		throw new IllegalArgumentException("EB20 " + __name);
 	}
 	
@@ -823,8 +823,8 @@ public final class Font
 			if (__name.equals(f.getFontName()))
 				return f.getPixelSize();
 		
-		// {@squirreljme.error EB21 No font with the given name exists.
-		// (The font name)}
+		/* {@squirreljme.error EB21 No font with the given name exists.
+		(The font name)} */
 		throw new IllegalArgumentException("EB21 " + __name);
 	}
 	
@@ -848,8 +848,8 @@ public final class Font
 			if (__name.equals(f.getFontName()))
 				return f.getStyle();
 		
-		// {@squirreljme.error EB22 No font with the given name exists.
-		// (The font name)}
+		/* {@squirreljme.error EB22 No font with the given name exists.
+		(The font name)} */
 		throw new IllegalArgumentException("EB2g " + __name);
 	}
 }

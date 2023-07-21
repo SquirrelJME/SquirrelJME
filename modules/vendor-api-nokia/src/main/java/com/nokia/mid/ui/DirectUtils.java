@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -98,8 +98,8 @@ public class DirectUtils
 		if (__g instanceof DirectGraphics)
 			return (DirectGraphics)__g;
 		
-		// {@squirreljme.error EB3o Can only make a Nokia DirectGraphics from
-		// a PencilGraphics instance.}
+		/* {@squirreljme.error EB3o Can only make a Nokia DirectGraphics from
+		a PencilGraphics instance.} */
 		if (!(__g instanceof PencilGraphics))
 			throw new RuntimeException("EB3o");
 		

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -40,7 +40,7 @@ public class StringIndexOutOfBoundsException
 	@Api
 	public StringIndexOutOfBoundsException(int __dx)
 	{
-		// {@squirreljme.error ZZ1v String index out of bounds. (The index)}
+		/* {@squirreljme.error ZZ1v String index out of bounds. (The index)} */
 		super("ZZ1v " + __dx);
 	}
 	

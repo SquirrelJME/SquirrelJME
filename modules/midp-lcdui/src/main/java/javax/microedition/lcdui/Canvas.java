@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -25,6 +25,7 @@ import cc.squirreljme.runtime.lcdui.event.KeyNames;
 import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
 import cc.squirreljme.runtime.lcdui.mle.StaticDisplayState;
 import cc.squirreljme.runtime.lcdui.mle.UIBackend;
+import org.jetbrains.annotations.Async;
 
 /**
  * The canvas acts as the base class for primary display interfaces that
@@ -306,6 +307,7 @@ public abstract class Canvas
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected abstract void paint(Graphics __g);
 	
 	/**
@@ -347,7 +349,7 @@ public abstract class Canvas
 	public int getKeyCode(int __gc)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1a The specified game action is not valid.}
+		/* {@squirreljme.error EB1a The specified game action is not valid.} */
 		int rv = EventTranslate.gameActionToKeyCode(__gc);
 		if (rv == 0)
 			throw new IllegalArgumentException("EB1a " + __gc);
@@ -394,8 +396,8 @@ public abstract class Canvas
 		
 		int index = (__sk & Display.SOFTKEY_INDEX_MASK);
 		
-		// {@squirreljme.error EB17 The placement is not valid or not supported
-		// on this device/implementation. (The placement)}
+		/* {@squirreljme.error EB17 The placement is not valid or not supported
+		on this device/implementation. (The placement)} */
 		if (index == 0 || (__sk != Display._SOFTKEY_LEFT_COMMAND &&
 			__sk != Display._SOFTKEY_RIGHT_COMMAND))
 			throw new IllegalArgumentException("EB17 " + __sk);
@@ -500,6 +502,7 @@ public abstract class Canvas
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void hideNotify()
 	{
 		// Implemented by sub-classes
@@ -526,6 +529,7 @@ public abstract class Canvas
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void keyPressed(int __code)
 	{
 		// Does nothing, implemented by sub-classes
@@ -539,6 +543,7 @@ public abstract class Canvas
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void keyReleased(int __code)
 	{
 		// Does nothing, implemented by sub-classes
@@ -552,6 +557,7 @@ public abstract class Canvas
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void keyRepeated(int __code)
 	{
 		// Does nothing, implemented by sub-classes
@@ -570,6 +576,7 @@ public abstract class Canvas
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void pointerDragged(int __x, int __y)
 	{
 		// Does nothing by default
@@ -587,6 +594,7 @@ public abstract class Canvas
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void pointerPressed(int __x, int __y)
 	{
 		// Does nothing by default
@@ -604,6 +612,7 @@ public abstract class Canvas
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void pointerReleased(int __x, int __y)
 	{
 		// Does nothing by default
@@ -806,7 +815,7 @@ public abstract class Canvas
 	public void setRequiredActions(int __actions)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB18 Invalid action. {The action ID}) */
+		/* {@squirreljme.error EB18 Invalid action. (The action ID)} */
 		if (__actions != Canvas.ACTIONS_ALL &&
 			__actions != Canvas.ACTIONS_NAVIGATION &&
 			__actions != Canvas.ACTIONS_NONE)
@@ -840,6 +849,7 @@ public abstract class Canvas
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void showNotify()
 	{
 		// Implemented by sub-classes
@@ -852,6 +862,7 @@ public abstract class Canvas
 	@Api
 	@Override
 	@SerializedEvent
+	@Async.Execute
 	protected void sizeChanged(int __w, int __h)
 	{
 	}

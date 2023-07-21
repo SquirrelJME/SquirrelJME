@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -19,6 +19,7 @@ import java.util.Iterator;
 import net.multiphasicapps.collections.Identity;
 import net.multiphasicapps.collections.IdentityHashSet;
 import net.multiphasicapps.collections.IdentityMap;
+import org.jetbrains.annotations.Async;
 
 @Api
 public abstract class FormLayoutPolicy
@@ -83,6 +84,7 @@ public abstract class FormLayoutPolicy
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected abstract void doLayout(int __viewportX, int __viewportY,
 		int __viewportW, int __viewportH, int[] __totalSize)
 		throws ArrayIndexOutOfBoundsException;
@@ -99,7 +101,7 @@ public abstract class FormLayoutPolicy
 	@Api
 	protected final Form getForm()
 	{
-		// {@squirreljme.error EB0a The form has been garbage collected.}
+		/* {@squirreljme.error EB0a The form has been garbage collected.} */
 		Form rv = this._form.get();
 		if (rv == null)
 			throw new IllegalStateException("EB0a");

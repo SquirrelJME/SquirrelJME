@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -179,8 +179,8 @@ public class Command
 		if (__sl == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB1f And invalid command type was specified.
-		// (The command type)}
+		/* {@squirreljme.error EB1f And invalid command type was specified.
+		(The command type)} */
 		if (__type < Command._FIRST_TYPE || __type > Command._LAST_TYPE)
 			throw new IllegalArgumentException(
 				String.format("EB1f %d", __type));

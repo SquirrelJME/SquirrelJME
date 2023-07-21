@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ public abstract class TestBiFunction<A, B, R>
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{
-		// {@squirreljme.error BU04 Test takes two parameters.}
+		/* {@squirreljme.error BU04 Test takes two parameters.} */
 		if (__args.length != 2)
 			throw new InvalidTestParameterException("BU04");
 		

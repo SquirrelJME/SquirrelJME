@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -26,6 +26,7 @@ import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import java.util.ArrayList;
 import java.util.List;
 import javax.microedition.midlet.MIDlet;
+import org.jetbrains.annotations.Async;
 
 /**
  * A displayable is a primary container such as a form or a canvas that can be
@@ -116,7 +117,7 @@ public abstract class Displayable
 		if (__c == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB1s The display does not support commands.}
+		/* {@squirreljme.error EB1s The display does not support commands.} */
 		Display cd = this.getCurrentDisplay();
 		if (cd != null)
 			if ((cd.getCapabilities() & Display.SUPPORTS_COMMANDS) == 0)
@@ -434,6 +435,7 @@ public abstract class Displayable
 	 */
 	@Api
 	@SerializedEvent
+	@Async.Execute
 	protected void sizeChanged(int __w, int __h)
 	{
 		// Implemented by subclasses
@@ -480,16 +482,16 @@ public abstract class Displayable
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB3i The current display does not support
-		// commands.}
+		/* {@squirreljme.error EB3i The current display does not support
+		commands.} */
 		Display display = this._display;
 		int caps = (display == null ? Display.__defaultCapabilities() :
 			display.getCapabilities());
 		if (0 == (caps & Display.SUPPORTS_COMMANDS))
 			throw new IllegalArgumentException("EB3i");
 		
-		// {@squirreljme.error EB3h The current displayable is not getting
-		// its layout calculated.}
+		/* {@squirreljme.error EB3h The current displayable is not getting
+		its layout calculated.} */
 		__Layout__ layout = this._layout;
 		if (layout == null)
 			throw new IllegalStateException("EB3h");
@@ -505,6 +507,7 @@ public abstract class Displayable
 	 * @since 2020/09/27
 	 */
 	@SerializedEvent
+	@Async.Execute
 	private void __layoutCommands()
 	{
 		// Get our own policy or the one specified by the display
@@ -621,6 +624,7 @@ public abstract class Displayable
 	 * @since 2020/09/27
 	 */
 	@SerializedEvent
+	@Async.Execute
 	private void __layoutExecute(__Layout__ __layout)
 		throws NullPointerException
 	{
@@ -646,6 +650,7 @@ public abstract class Displayable
 	 * @since 2020/09/27
 	 */
 	@SerializedEvent
+	@Async.Execute
 	private void __layoutExecute(__Layout__ __layout, int __from, int __to)
 		throws NullPointerException
 	{
@@ -688,6 +693,7 @@ public abstract class Displayable
 	 * @since 2020/09/27
 	 */
 	@SerializedEvent
+	@Async.Execute
 	final void __showNotify(Displayable __show)
 		throws NullPointerException
 	{

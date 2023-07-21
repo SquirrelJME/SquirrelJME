@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -219,8 +219,8 @@ public class Alert
 	public void setTimeout(int __ms)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB19 The specified number of milliseconds is
-		// negative. (The number of milliseconds specified)}
+		/* {@squirreljme.error EB19 The specified number of milliseconds is
+		negative. (The number of milliseconds specified)} */
 		if (__ms < 0 && __ms != Alert.FOREVER)
 			throw new IllegalArgumentException(String.format("EB19 %d", __ms));
 		

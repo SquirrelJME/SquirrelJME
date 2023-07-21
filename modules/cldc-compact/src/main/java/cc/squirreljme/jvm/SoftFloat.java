@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.jvm;
 
+import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.UnsignedInteger;
@@ -90,7 +91,6 @@ public final class SoftFloat
 	@SquirrelJMEVendorApi
 	public static float add(int __a, int __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
@@ -141,7 +141,6 @@ public final class SoftFloat
 	@SquirrelJMEVendorApi
 	public static float div(int __a, int __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
@@ -225,8 +224,8 @@ public final class SoftFloat
 					SoftFloat.__packToF32UI(signZ, 0, 0));
 				
 			long normExpSig = SoftFloat.__normSubnormalF32Sig(sigA);
-			expA = (short)Assembly.longUnpackHigh(normExpSig);
-			sigA = Assembly.longUnpackLow(normExpSig);
+			expA = (short)MathShelf.longUnpackHigh(normExpSig);
+			sigA = MathShelf.longUnpackLow(normExpSig);
 		}
 		
 		// if ( ! expB )
@@ -238,8 +237,8 @@ public final class SoftFloat
 					SoftFloat.__packToF32UI(signZ, 0, 0));
 				
 			long normExpSig = SoftFloat.__normSubnormalF32Sig(sigB);
-			expB = (short)Assembly.longUnpackHigh(normExpSig);
-			sigB = Assembly.longUnpackLow(normExpSig);
+			expB = (short)MathShelf.longUnpackHigh(normExpSig);
+			sigB = MathShelf.longUnpackLow(normExpSig);
 		}
 		
 		int expZ = (short)(expA + expB - 0x7F);
@@ -272,7 +271,6 @@ public final class SoftFloat
 	@SquirrelJMEVendorApi
 	public static float neg(int __a)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
@@ -287,7 +285,7 @@ public final class SoftFloat
 	@SquirrelJMEVendorApi
 	public static float or(int __a, int __b)
 	{
-		return Assembly.intBitsToFloat(__a | __b);
+		return MathShelf.rawIntToFloat(__a | __b);
 	}
 	
 	/**
@@ -301,7 +299,6 @@ public final class SoftFloat
 	@SquirrelJMEVendorApi
 	public static float rem(int __a, int __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
@@ -316,7 +313,6 @@ public final class SoftFloat
 	@SquirrelJMEVendorApi
 	public static float sub(int __a, int __b)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
@@ -330,7 +326,6 @@ public final class SoftFloat
 	@SquirrelJMEVendorApi
 	public static double toDouble(int __a)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
@@ -352,7 +347,7 @@ public final class SoftFloat
 			sig |= 0x0080_0000;
 		
 		// sig64 = (uint_fast64_t) sig<<32;
-		long sig64 = Assembly.longPack(0, sig);
+		long sig64 = MathShelf.longPack(0, sig);
 		int shiftDist = 0xAA - exp;
 		
 		if (UnsignedInteger.compareUnsigned(0, shiftDist) < 0)
@@ -371,7 +366,6 @@ public final class SoftFloat
 	@SquirrelJMEVendorApi
 	public static long toLong(int __a)
 	{
-		Assembly.breakpoint();
 		throw Debugging.todo();
 	}
 	
@@ -471,8 +465,7 @@ public final class SoftFloat
 	 * @return The resultant value.
 	 * @since 2021/04/08
 	 */
-	protected static int __normRoundPackToF32(boolean __sign, int __exp,
-		int __sig)
+	static int __normRoundPackToF32(boolean __sign, int __exp, int __sig)
 	{
 		int shiftDist;
 		
@@ -510,7 +503,7 @@ public final class SoftFloat
 		
 		// struct exp16_sig32 { int_fast16_t exp; uint_fast32_t sig; };
 		// exp = 1 - shiftDist ,, sig = sig<<shiftDist
-		return Assembly.longPack(__sig << shiftDist,
+		return MathShelf.longPack(__sig << shiftDist,
 			(short)(1 - shiftDist));
 	}
 	
@@ -525,7 +518,7 @@ public final class SoftFloat
 	 * @return The packed value.
 	 * @since 2021/04/08
 	 */
-	protected static int __packToF32UI(boolean __sign, int __exp, int __sig)
+	static int __packToF32UI(boolean __sign, int __exp, int __sig)
 	{
 		// (((uint32_t) (sign)<<31) + ((uint32_t) (exp)<<23) + (sig))
 		return (__sign ? SoftFloat.SIGN_MASK : 0) + ((__exp) << 23) + (__sig);
