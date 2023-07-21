@@ -3,13 +3,15 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the Mozilla Public License Version 2.0.
+// SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package com.nttdocomo.ui;
 
 import cc.squirreljme.jvm.launch.IModeApplication;
+import cc.squirreljme.jvm.mle.DebugShelf;
+import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
@@ -105,7 +107,7 @@ final class __IAppliInterface__
 		}
 		catch (ClassNotFoundException e)
 		{
-			/* {@squirreljme.error AH01 Could not find main i-appli. (Class)} */
+			// {@squirreljme.error AH01 Could not find main i-appli. (Class)}
 			throw new RuntimeException(String.format("AH01 %s", mainClass),
 				e);
 		}
@@ -120,22 +122,17 @@ final class __IAppliInterface__
 			// instance is being created it will not be erroneously caught
 			try
 			{
-				IApplication result = (IApplication)rawInstance;
-				
-				// Some software really wants this as soon as possible
-				IApplication._lastApp = result;
-				
-				return result;
+				return (IApplication)rawInstance;
 			}
 			catch (ClassCastException e)
 			{
-				/* {@squirreljme.error AH02 Class not an i-appli.} */
+				// {@squirreljme.error AH02 Class not an i-appli.}
 				throw new RuntimeException("AH02", e);
 			}
 		}
 		catch (IllegalAccessException | InstantiationException e)
 		{
-			/* {@squirreljme.error AH03 Could not instantiate class.} */
+			// {@squirreljme.error AH03 Could not instantiate class.}
 			throw new RuntimeException("AH03", e);
 		}
 	}
@@ -151,6 +148,9 @@ final class __IAppliInterface__
 	{
 		if (__instance == null)
 			throw new NullPointerException("NARG");
+		
+		// Set debug tracing for getting i-mode applications working
+		//DebugShelf.verbose(VerboseDebugFlag.ALLOCATION);
 		
 		// Start the application
 		__instance.start();

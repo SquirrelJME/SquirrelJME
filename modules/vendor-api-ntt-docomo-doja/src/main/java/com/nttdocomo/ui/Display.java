@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the Mozilla Public License Version 2.0.
+// SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -194,7 +194,7 @@ public class Display
 		if (rv != null)
 			return rv;
 		
-		/* {@squirreljme.error AH0n No native displays available.} */
+		// {@squirreljme.error AH0n No native displays available.}
 		javax.microedition.lcdui.Display[] midpDisplays =
 			javax.microedition.lcdui.Display.getDisplays(0);
 		if (midpDisplays == null || midpDisplays.length == 0)

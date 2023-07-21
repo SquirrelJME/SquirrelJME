@@ -35,4 +35,5 @@ dependencies
 	api project(":modules:meep-midlet")
 	api project(":modules:meep-rms")
 	api project(":modules:midp-lcdui")
+	api project(":modules:zip")
 }

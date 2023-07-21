@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the Mozilla Public License Version 2.0.
+// SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -102,7 +102,7 @@ public class Sound
 	public void init(int __freq, long __duration)
 		throws IllegalArgumentException
 	{
-		/* {@squirreljme.error AI01 Invalid frequency and/or duration.} */
+		// {@squirreljme.error AI01 Invalid frequency and/or duration.}
 		if (__freq < 0 || __duration <= 0)
 			throw new IllegalArgumentException("AI01");
 		
@@ -113,8 +113,8 @@ public class Sound
 		}
 		catch (MediaException e)
 		{
-			/* {@squirreljme.error AI02 Sound out of range or failed to
-			properly play.} */
+			// {@squirreljme.error AI02 Sound out of range or failed to
+			// properly play.}
 			throw new IllegalArgumentException("AI02", e);
 		}
 	}

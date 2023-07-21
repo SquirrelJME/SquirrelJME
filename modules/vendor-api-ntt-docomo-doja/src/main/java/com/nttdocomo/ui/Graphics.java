@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the Mozilla Public License Version 2.0.
+// SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,6 +11,7 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import com.nttdocomo.opt.ui.Graphics2;
 
 /**
  * This is used for drawing graphics onto a raster surface.
@@ -20,6 +21,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  */
 @Api
 public class Graphics
+	extends Graphics2
 {
 	/** {@code #00FF00} via {@link #getColorOfName(int)}. */
 	@Api
@@ -114,7 +116,7 @@ public class Graphics
 	public void clearRect(int __x, int __y, int __w, int __h)
 		throws IllegalArgumentException
 	{
-		/* {@squirreljme.error AH0o Invalid rectangle size.} */
+		// {@squirreljme.error AH0o Invalid rectangle size.}
 		if (__w < 0 || __h < 0)
 			throw new IllegalArgumentException("AH0o");
 		
@@ -155,6 +157,41 @@ public class Graphics
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * This draws the outer edge of the ellipse from the given angles using
+	 * the color, alpha, and stroke style.
+	 *
+	 * The coordinates are treated as if they were in a rectangular region. As
+	 * such the center of the ellipse to draw the outline of is in the center
+	 * of the specified rectangle.
+	 *
+	 * Note that no lines are drawn to the center point, so the shape does not
+	 * result in a pie slice.
+	 *
+	 * The angles are in degrees and visually the angles match those of the
+	 * unit circle correctly transformed to the output surface. As such, zero
+	 * degrees has the point of {@code (__w, __h / 2)}, that is it points to
+	 * the right. An angle at 45 degrees will always point to the top right
+	 * corner.
+	 *
+	 * If the width or height are zero, then nothing is drawn. The arc will
+	 * cover an area of {@code __w + 1} and {@code __h + 1}.
+	 *
+	 * @param __x The X position of the upper left corner, will be translated.
+	 * @param __y The Y position of the upper left corner, will be translated.
+	 * @param __w The width of the arc.
+	 * @param __h The height of the arc.
+	 * @param __startAngle The starting angle in degrees, 
+	 * @param __arcAngle The offset from the starting angle, negative values
+	 * indicate clockwise direction while positive values are counterclockwise.
+	 * @since 2022/10/07
+	 */
+	public void drawArc(int __x, int __y, int __w, int __h,
+		int __startAngle, int __arcAngle)
+	{
+		this._graphics.drawArc(__x, __y, __w, __h, __startAngle, __arcAngle);
+	}
+	
 	@Api
 	public void drawChars(char[] __c, int __x, int __y, int __off, int __len)
 		throws IllegalArgumentException
@@ -169,14 +206,29 @@ public class Graphics
 		if (__i == null)
 			throw new NullPointerException("NARG");
 		
+		this.drawImage(__i, __x, __y, 0, 0,
+			__i.getWidth(), __i.getHeight());
+	}
+	
+	public void drawImage(Image __i, int __dx, int __dy, int __sx, int __sy,
+		int __w, int __h)
+		throws IllegalArgumentException, NullPointerException, UIException
+	{
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		if (__w < 0 || __h < 0)
+			throw new IllegalArgumentException("ILLA");
+		
 		// What can even be done here?
 		if (!(__i instanceof __MIDPImage__))
 			throw new UIException(UIException.UNSUPPORTED_FORMAT);
 		
 		// Forward base image
 		__MIDPImage__ midpImage = (__MIDPImage__)__i;
-		this._graphics.drawImage(midpImage.__midpImage(), __x, __y,
-			javax.microedition.lcdui.Graphics.TOP | javax.microedition.lcdui.Graphics.LEFT);
+		this._graphics.drawRegion(midpImage.__midpImage(), __sx, __sy,
+			__w, __h, 0, __dx, __dy,
+			javax.microedition.lcdui.Graphics.TOP |
+			javax.microedition.lcdui.Graphics.LEFT);
 	}
 	
 	@Api
@@ -196,7 +248,7 @@ public class Graphics
 	public void drawRect(int __x, int __y, int __w, int __h)
 		throws IllegalArgumentException
 	{
-		/* {@squirreljme.error AH0p Invalid rectangle size.} */
+		// {@squirreljme.error AH0p Invalid rectangle size.}
 		if (__w < 0 || __h < 0)
 			throw new IllegalArgumentException("AH0p");
 		
@@ -218,6 +270,32 @@ public class Graphics
 			javax.microedition.lcdui.Graphics.BASELINE);
 	}
 	
+	/**
+	 * This draws the filled slice of an ellipse (like a pie slice) from the
+	 * given angles using the color, alpha, and stroke style.
+	 *
+	 * Unlike {@link #drawArc(int, int, int, int, int, int)}, the width and
+	 * height are not increased by a single pixel.
+	 *
+	 * Otherwise, this follows the same set of rules as
+	 * {@link #drawArc(int, int, int, int, int, int)}.
+	 *
+	 * @param __x The X position of the upper left corner, will be translated.
+	 * @param __y The Y position of the upper left corner, will be translated.
+	 * @param __w The width of the arc.
+	 * @param __h The height of the arc.
+	 * @param __startAngle The starting angle in degrees, 
+	 * @param __arcAngle The offset from the starting angle, negative values
+	 * indicate clockwise direction while positive values are counterclockwise.
+	 * @see #drawArc(int, int, int, int, int, int)
+	 * @since 2022/10/07
+	 */
+	public void fillArc(int __x, int __y, int __w, int __h,
+		int __startAngle, int __arcAngle)
+	{
+		this._graphics.fillArc(__x, __y, __w, __h, __startAngle, __arcAngle);
+	}
+	
 	@Api
 	public void fillPolygon(int[] __x, int[] __y, int __n)
 		throws IllegalArgumentException
@@ -229,7 +307,7 @@ public class Graphics
 	public void fillRect(int __x, int __y, int __w, int __h)
 		throws IllegalArgumentException
 	{
-		/* {@squirreljme.error AH0q Invalid rectangle size.} */
+		// {@squirreljme.error AH0q Invalid rectangle size.}
 		if (__w < 0 || __h < 0)
 			throw new IllegalArgumentException("AH0q");
 		
@@ -246,20 +324,51 @@ public class Graphics
 		// Has no effect on SquirrelJME
 	}
 	
+	/**
+	 * Sets the new clipping area of the destination image. The previous
+	 * clipping area is replaced.
+	 *
+	 * @param __x The X coordinate, will be translated.
+	 * @param __y The Y coordinate, will be translated.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2022/10/07
+	 */
+	public void setClip(int __x, int __y, int __w, int __h)
+	{
+		this._graphics.setClip(__x, __y, __w, __h);
+	}
+	
+	/**
+	 * Sets the given color.
+	 * 
+	 * @param __c The color to use.
+	 * @throws IllegalArgumentException If the color is not valid for this
+	 * device.
+	 * @since 202/10/07
+	 */
 	@Api
 	public void setColor(int __c)
 		throws IllegalArgumentException
 	{
-		if ((__c & 0xFF_000000) != 0)
-			throw Debugging.todo("Invalid color? %08x", __c);
-		
 		this._graphics.setColor(__c);
 	}
 	
+	/**
+	 * Sets the font to use for drawing.
+	 * 
+	 * @param __f The font to use.
+	 * @throws NullPointerException If no font was specified.
+	 * @since 2022/10/07
+	 */
 	@Api
 	public void setFont(Font __f)
+		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		this._graphics.setFont(__f._midpFont);
 	}
 	
 	/**
@@ -323,13 +432,40 @@ public class Graphics
 				return 0xFFFF00;
 		}
 		
-		/* {@squirreljme.error AH0r Invalid color. (The color)} */
+		// {@squirreljme.error AH0r Invalid color. (The color)}
 		throw new IllegalArgumentException("AH0r " + __name);
 	}
 	
 	@Api
 	public static int getColorOfRGB(int __r, int __g, int __b)
 	{
-		throw Debugging.todo();
+		return Graphics.getColorOfRGB(__r, __g, __b, 255);
+	}
+	
+	/**
+	 * Returns the color code for the given RGBA color.
+	 * 
+	 * @param __r The red color.
+	 * @param __g The green color.
+	 * @param __b The blue color.
+	 * @param __a The alpha level.
+	 * @return The color code.
+	 * @throws IllegalArgumentException If the values are out of range.
+	 * @since 2022/10/07
+	 */
+	public static int getColorOfRGB(int __r, int __g, int __b, int __a)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error AH0t Color out of range.}
+		if (__r < 0 || __r > 255 ||
+			__g < 0 || __g > 255 ||
+			__b < 0 || __b > 255 ||
+			__a < 0 || __a > 255)
+			throw new IllegalArgumentException("AH0t");
+		
+		return (__a << 24) |
+			(__r << 16) |
+			(__g << 8) |
+			__b;
 	}
 }

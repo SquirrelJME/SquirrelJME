@@ -3,15 +3,12 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the Mozilla Public License Version 2.0.
+// SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
-import cc.squirreljme.jvm.launch.IModeApplication;
-import cc.squirreljme.jvm.mle.JarPackageShelf;
-import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -19,7 +16,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
-import javax.microedition.rms.RecordStoreNotFoundException;
 
 /**
  * Represents storage for a single scratch pad.
@@ -32,8 +28,7 @@ final class __ScratchPadStore__
 	private static volatile __ScratchPadStore__[] _STORES;
 	
 	/** The record store key prefix. */
-	private static final String _STORE_KEY_PREFIX =
-		"X-SquirrelJME-i-Appli-";
+	private static final String _STORE_KEY_PREFIX = "SquirrelJME-i-Appli-";
 	
 	/** The scratch pad being accessed. */
 	private final int _pad;
@@ -72,8 +67,8 @@ final class __ScratchPadStore__
 				Debugging.debugNote("i-appli record size mismatch?");
 		}
 		
-		/* {@squirreljme.error AH0m Could not read pre-existing data from
-		the record store.} */
+		// {@squirreljme.error AH0m Could not read pre-existing data from
+		// the record store.}
 		catch (RecordStoreException __e)
 		{
 			throw new IOException("AH0m", __e);
@@ -102,8 +97,8 @@ final class __ScratchPadStore__
 					store.setRecord(0, data, 0, data.length);
 			}
 			
-			/* {@squirreljme.error AH0l Could not write scratch pad to the
-			record store.} */
+			// {@squirreljme.error AH0l Could not write scratch pad to the
+			// record store.}
 			catch (RecordStoreException __e)
 			{
 				throw new IOException("AH0l", __e);
@@ -191,59 +186,6 @@ final class __ScratchPadStore__
 	private RecordStore __rmsStore()
 		throws RecordStoreException
 	{
-		// If we are seeding the scratch pad, we need to try to open it first
-		// before we try to store data within
-		String seedProperty = System.getProperty(String.format("%s.%d",
-			IModeApplication.SEED_SCRATCHPAD_PREFIX, this._pad));
-		if (seedProperty != null && !seedProperty.isEmpty())
-		{
-			// If it already exists, then just use that
-			try
-			{
-				return RecordStore.openRecordStore(this._storeKey,
-					false, RecordStore.AUTHMODE_ANY, true,
-					null);
-			}
-			
-			// If not found, we need to create an initialize first
-			catch (RecordStoreNotFoundException ignored)
-			{
-			}
-			
-			// Try to find the seed data
-			JarPackageBracket found = null;
-			for (JarPackageBracket jar : JarPackageShelf.libraries())
-				if (seedProperty.equals(JarPackageShelf.libraryPath(jar)))
-				{
-					found = jar;
-					break;
-				}
-			
-			// Copy in the seed data accordingly
-			if (found != null)
-			{
-				// Load result
-				RecordStore result = RecordStore.openRecordStore(
-					this._storeKey, true, RecordStore.AUTHMODE_ANY,
-					true, null);
-				
-				// Setup buffer
-				int length = this._data.length; 
-				byte[] seedData = new byte[length];
-				
-				// Load seed into the buffer
-				JarPackageShelf.rawData(found, 0,
-					seedData, 0, length);
-				
-				// Store initial record data
-				result.setRecord(0, seedData, 0, seedData.length);
-				
-				// Use this
-				return result;
-			}
-		}
-		
-		// Just do a normal create
 		return RecordStore.openRecordStore(this._storeKey, true,
 			RecordStore.AUTHMODE_ANY, true, null);
 	}

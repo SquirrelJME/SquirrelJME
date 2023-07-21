@@ -191,16 +191,16 @@ public abstract class Graphics
 	 * @param __y The Y position of the upper left corner, will be translated.
 	 * @param __w The width of the arc.
 	 * @param __h The height of the arc.
-	 * @param __sa The starting angle in degrees, 
-	 * @param __aa The offset from the starting angle, negative values indicate
-	 * clockwise direction while positive values are counter clockwise.
+	 * @param __startAngle The starting angle in degrees, 
+	 * @param __arcAngle The offset from the starting angle, negative values
+	 * indicate clockwise direction while positive values are counterclockwise.
 	 * @since 2017/02/10
-	 */ 
+	 */
 	@Api
 	public abstract void drawArc(int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __h, int __sa,
-		int __aa);
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h, int __startAngle,
+		int __arcAngle);
 	
 	@Api
 	public abstract void drawARGB16(
@@ -431,9 +431,9 @@ public abstract class Graphics
 	 * @param __y The Y position of the upper left corner, will be translated.
 	 * @param __w The width of the arc.
 	 * @param __h The height of the arc.
-	 * @param __sa The starting angle in degrees, 
-	 * @param __aa The offset from the starting angle, negative values indicate
-	 * clockwise direction while positive values are counter clockwise.
+	 * @param __startAngle The starting angle in degrees, 
+	 * @param __arcAngle The offset from the starting angle, negative values
+	 * indicate clockwise direction while positive values are counterclockwise.
 	 * @see #drawArc(int, int, int, int, int, int)
 	 * @since 2017/02/10
 	 */
@@ -441,7 +441,7 @@ public abstract class Graphics
 	public abstract void fillArc(int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
-		int __sa, int __aa);
+		int __startAngle, int __arcAngle);
 	
 	@Api
 	public abstract void fillRect(int __x, int __y,
