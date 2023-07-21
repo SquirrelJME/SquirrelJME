@@ -69,12 +69,26 @@ public abstract class IApplication
 	 * @since 2022/10/07
 	 */
 	@Api
+	@SuppressWarnings("MethodNamesDifferingOnlyByCase")
 	public final String getSourceUrl()
 	{
 		// Our webroot is always non-networked, so we handle and potentially
 		// proxy all the various HTTP calls accordingly.
 		return SquirrelJMEWebRootConnectionFactory.URI_SCHEME +
 			"://";
+	}
+	
+	/**
+	 * Alias for {@link #getSourceUrl()}.
+	 *
+	 * @return The value of {@link #getSourceUrl()}.
+	 * @since 2023/07/21
+	 */
+	@Api
+	@SuppressWarnings("MethodNamesDifferingOnlyByCase")
+	public final String getSourceURL()
+	{
+		return this.getSourceUrl();
 	}
 	
 	@Api
