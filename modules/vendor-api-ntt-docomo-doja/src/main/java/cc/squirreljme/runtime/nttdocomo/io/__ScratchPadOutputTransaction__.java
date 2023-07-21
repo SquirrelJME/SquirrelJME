@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the Mozilla Public License Version 2.0.
+// SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -118,8 +118,8 @@ final class __ScratchPadOutputTransaction__
 		int writePos;
 		synchronized (this)
 		{
-			/* {@squirreljme.error AH0k Write exceeds the bounds of the
-			scratch pad.} */
+			// {@squirreljme.error AH0k Write exceeds the bounds of the
+			// scratch pad.}
 			writePos = this._writePos;
 			if (writePos >= this._length)
 				throw new IOException("AH0k");

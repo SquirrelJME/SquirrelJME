@@ -37,7 +37,7 @@ public final class FileAddress
 			throw new NullPointerException("NARG");
 		
 		// Decode the path
-		this.file = FileAddress.stringDecode(__p);
+		this.file = HTTPUtils.stringDecode(HTTPUrlCharacterSet.PATH, __p);
 	}
 	
 	/**
@@ -116,7 +116,7 @@ public final class FileAddress
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/06
 	 */
-	public static final FileAddress of(String __p)
+	public static FileAddress of(String __p)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__p == null)

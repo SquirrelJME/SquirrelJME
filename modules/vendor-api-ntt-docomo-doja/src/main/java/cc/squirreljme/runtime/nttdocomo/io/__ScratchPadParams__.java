@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the Mozilla Public License Version 2.0.
+// SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -97,16 +97,16 @@ final class __ScratchPadParams__
 		if (!prop.isEmpty())
 			for (String item : StringUtils.basicSplit(',', prop))
 			{
-				/* {@squirreljme.error AH06 Scratch pad property has an empty
-				item within the size list. (The property)} */
+				// {@squirreljme.error AH06 Scratch pad property has an empty
+				// item within the size list. (The property)}
 				if (item == null || item.isEmpty())
 					throw new IllegalArgumentException("AH06 " + prop);
 				
 				// Decode the number which represents the byte count
 				try
 				{
-					/* {@squirreljme.error AH08 Scratch pad property has an
-					item which is an empty size. (The property)} */
+					// {@squirreljme.error AH08 Scratch pad property has an
+					// item which is an empty size. (The property)}
 					int val = Integer.parseInt(item, 10);
 					if (val < 0)
 						throw new IllegalArgumentException("AH08 " + prop);
@@ -115,15 +115,15 @@ final class __ScratchPadParams__
 				}
 				catch (NumberFormatException __e)
 				{
-					/* {@squirreljme.error AH07 Scratch pad property is badly
-					formatted and contains an invalid number. (The
-					property)} */
+					// {@squirreljme.error AH07 Scratch pad property is badly
+					// formatted and contains an invalid number. (The
+					// property)}
 					throw new IllegalArgumentException("AH07 " + prop, __e);
 				}
 			}
 		
-		/* {@squirreljme.error AH09 Too many scratch pads were requested for
-		the application. (The property)} */
+		// {@squirreljme.error AH09 Too many scratch pads were requested for
+		// the application. (The property)}
 		if (sizes.size() > __ScratchPadParams__.MAX_SCRATCH_PADS)
 			throw new IllegalArgumentException("AH09 " + prop);
 		

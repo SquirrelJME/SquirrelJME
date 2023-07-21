@@ -107,14 +107,14 @@ public abstract class SerializedGraphics
 	 * @since 2018/11/19
 	 */
 	@Override
-	public void drawArc(int __x, int __y, int __w, int __h, int __sa,
-		int __aa)
+	public void drawArc(int __x, int __y, int __w, int __h, int __startAngle,
+		int __arcAngle)
 	{
 		int transx = this.transx,
 			transy = this.transy;
 		
 		this.serialize(GraphicsFunction.DRAW_ARC,
-			__x + transx, __y + transy, __w, __h, __sa, __aa);
+			__x + transx, __y + transy, __w, __h, __startAngle, __arcAngle);
 	}
 	
 	/**
@@ -347,11 +347,11 @@ public abstract class SerializedGraphics
 	 * @since 2018/11/19
 	 */
 	@Override
-	public void fillArc(int __x, int __y, int __w, int __h, int __sa,
-		int __aa)
+	public void fillArc(int __x, int __y, int __w, int __h, int __startAngle,
+		int __arcAngle)
 	{
 		this.serialize(GraphicsFunction.FILL_ARC,
-			__x, __y, __w, __h, __sa, __aa);
+			__x, __y, __w, __h, __startAngle, __arcAngle);
 	}
 	
 	/**

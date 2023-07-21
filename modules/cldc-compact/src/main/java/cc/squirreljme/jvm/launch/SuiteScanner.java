@@ -253,6 +253,21 @@ public final class SuiteScanner
 		if (jam == null)
 			return;
 		
+		// Try to locate the scratchpad seed archive
+		JarPackageBracket binarySto;
+		synchronized (__nameToJar)
+		{
+			binarySto = SuiteScanner.__scanIModeScratchPad(__nameToJar,
+				jarName);
+		}
+		
+		// Store where the scratchpad seed should be found
+		Map<String, String> extraSysProps = new LinkedHashMap<>();
+		if (binarySto != null)
+			extraSysProps.put(
+				IModeApplication.SEED_SCRATCHPAD_PREFIX + ".0",
+				JarPackageShelf.libraryPath(binarySto));
+		
 		// Load the ADF/JAM descriptor that describes this application
 		Map<String, String> adfProps = new LinkedHashMap<>();
 		try (InputStream jamIn = JarPackageShelf.openResource(jam,
@@ -274,7 +289,8 @@ public final class SuiteScanner
 		// Load application
 		try
 		{
-			Application app = new IModeApplication(__jar, __libs, adfProps);
+			Application app = new IModeApplication(__jar, __libs, adfProps,
+				extraSysProps);
 			synchronized (app)
 			{
 				__result.add(app);
@@ -343,11 +359,11 @@ public final class SuiteScanner
 		Map<String, String> extraSysProps = new LinkedHashMap<>();
 		
 		// Try to locate the scratchpad seed archive
-		String stoName = SuiteScanner.__siblingByExt(jarName, ".sto");
 		JarPackageBracket binarySto;
 		synchronized (__nameToJar)
 		{
-			binarySto = __nameToJar.get(stoName);
+			binarySto = SuiteScanner.__scanIModeScratchPad(__nameToJar,
+				jarName);
 		}
 		
 		// Store where the scratchpad seed should be found
@@ -374,6 +390,32 @@ public final class SuiteScanner
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Attempts to locate the scratch pad binary. 
+	 *
+	 * @param __nameToJar The name to Jar mapping.
+	 * @param __jarName The Jar name.
+	 * @return The found scratch pad binary, if found.
+	 * @since 2023/07/21
+	 */
+	private static JarPackageBracket __scanIModeScratchPad(
+		Map<String, JarPackageBracket> __nameToJar, String __jarName)
+		throws NullPointerException
+	{
+		if (__nameToJar == null || __jarName == null)
+			throw new NullPointerException("NARG");
+		
+		// Try this one first...
+		JarPackageBracket maybe = __nameToJar.get(
+			SuiteScanner.__siblingByExt(__jarName, ".sto"));
+		if (maybe != null)
+			return maybe;
+		
+		// Then alternative extension
+		return __nameToJar.get(
+			SuiteScanner.__siblingByExt(__jarName, ".sp"));
 	}
 	
 	/**

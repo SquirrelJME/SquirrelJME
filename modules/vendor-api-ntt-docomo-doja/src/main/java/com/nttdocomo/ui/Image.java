@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the Mozilla Public License Version 2.0.
+// SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -29,6 +29,12 @@ public abstract class Image
 	@Api
 	public abstract void dispose();
 	
+	public Graphics getGraphics()
+	{
+		// Only valid for Image.createGraphics(int, int, ...)
+		throw Debugging.todo();
+	}
+	
 	@Api
 	public int getHeight()
 	{
@@ -37,6 +43,11 @@ public abstract class Image
 	
 	@Api
 	public int getWidth()
+	{
+		throw Debugging.todo();
+	}
+	
+	public static Image createImage(int __w, int __h)
 	{
 		throw Debugging.todo();
 	}

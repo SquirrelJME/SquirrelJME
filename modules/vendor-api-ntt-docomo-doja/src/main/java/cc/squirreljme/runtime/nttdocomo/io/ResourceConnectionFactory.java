@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the Mozilla Public License Version 2.0.
+// SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -40,8 +40,8 @@ public class ResourceConnectionFactory
 		if (__part == null)
 			throw new NullPointerException("NARG");
 		
-		/* {@squirreljme.error AH0i Resource URI does not start with triple
-		slash. (The URI part)} */
+		// {@squirreljme.error AH0i Resource URI does not start with triple
+		// slash. (The URI part)}
 		if (!__part.startsWith("///"))
 			throw new ConnectionNotFoundException("AH0i " + __part);
 		
@@ -50,8 +50,8 @@ public class ResourceConnectionFactory
 		String rcName = __part.substring(2);
 		try (InputStream in = pivot.getResourceAsStream(rcName))
 		{
-			/* {@squirreljme.error AH0j The specified resource does not exist.
-			(The URI part)} */
+			// {@squirreljme.error AH0j The specified resource does not exist.
+			// (The URI part)}
 			if (in == null)
 				throw new ConnectionNotFoundException("AH0j " + __part);
 			

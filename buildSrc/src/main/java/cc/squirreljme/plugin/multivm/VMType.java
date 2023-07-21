@@ -778,7 +778,7 @@ public enum VMType
 		String __commonName, Map<String, String> __sysProps, Path[] __libPath,
 		Path[] __classPath, String[] __args)
 		throws NullPointerException
-	{
+	{ 
 		if (__task == null || __execSpec == null || __mainClass == null ||
 			__sysProps == null || __libPath == null || __classPath == null ||
 			__args == null)

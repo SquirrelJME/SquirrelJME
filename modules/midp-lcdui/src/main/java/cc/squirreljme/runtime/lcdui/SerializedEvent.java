@@ -18,7 +18,8 @@ import org.jetbrains.annotations.Async;
 
 /**
  * This annotation is used to specify that the given method is serialized and
- * will never be called in parallel ever by the LCDUI display driver.
+ * will never be called in parallel ever by the LCDUI display driver, it does
+ * not have any effect on the method and is just a documentation indicator.
  *
  * @since 2017/08/19
  */

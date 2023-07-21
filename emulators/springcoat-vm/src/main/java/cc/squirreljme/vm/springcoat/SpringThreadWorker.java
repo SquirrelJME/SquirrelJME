@@ -1400,8 +1400,13 @@ public final class SpringThreadWorker
 	 */
 	public void verboseEmit(String __format, Object... __args)
 	{
-		Debugging.debugNote("[%s] %s",
+		SpringThread.Frame frame = this.thread.currentFrame();
+		Debugging.debugNote("[%s @ %s] %s",
 			this.thread.toString(),
+			(frame == null ? null : String.format("%s:%d (%d)",
+				frame.method.nameAndType(),
+				frame.pc(),
+				frame.pcSourceLine())),
 			String.format(__format, __args));
 	}
 	

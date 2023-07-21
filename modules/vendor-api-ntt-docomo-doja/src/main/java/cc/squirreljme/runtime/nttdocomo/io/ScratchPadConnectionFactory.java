@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the Mozilla Public License Version 2.0.
+// SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -40,14 +40,14 @@ public class ScratchPadConnectionFactory
 		if (__part == null)
 			throw new NullPointerException("NARG");
 		
-		/* {@squirreljme.error AH05 Application JAD never set any available
-		scratch pads.} */
+		// {@squirreljme.error AH05 Application JAD never set any available
+		// scratch pads.}
 		__ScratchPadParams__ params = __ScratchPadParams__.__load();
 		if (params == null)
 			throw new ConnectionNotFoundException("AH05");
 		
-		/* {@squirreljme.error AH0a URI is missing the starting triple
-		slashes. (The URI part)} */
+		// {@squirreljme.error AH0a URI is missing the starting triple
+		// slashes. (The URI part)}
 		if (!__part.startsWith("///"))
 			throw new ConnectionNotFoundException("AH0a " + __part);
 		
@@ -60,8 +60,7 @@ public class ScratchPadConnectionFactory
 			// No parameters to the URI?
 			int semi = __part.indexOf(';');
 			if (semi < 0)
-				wantPad = Integer.parseInt(__part.substring(3),
-					10);
+				wantPad = Integer.parseInt(__part.substring(3), 10);
 				
 				// Parameters are given
 			else
@@ -72,26 +71,25 @@ public class ScratchPadConnectionFactory
 				// Handle various parameters
 				String parms = __part.substring(semi + 1);
 				if (!parms.isEmpty())
-					for (String item : StringUtils.basicSplit(',',
-						parms))
+					for (String item : StringUtils.basicSplit(',', parms))
 					{
-						/* {@squirreljme.error AH0d Missing equal sign in the
-						parameter. (The URI part)} */
+						// {@squirreljme.error AH0d Missing equal sign in the
+						// parameter. (The URI part)}
 						int eq = item.indexOf('=');
 						if (eq < 0)
 							throw new ConnectionNotFoundException(
 								"AH0d " + __part);
 						
 						// Parse the value
-						int val = Integer.parseInt(
-							item.substring(eq + 1), 10);
+						int val = Integer.parseInt(item.substring(eq + 1),
+							10);
 						
 						// And store it accordingly
 						switch (item.substring(0, eq))
 						{
 							case "pos":
-								/* {@squirreljme.error AH0f Invalid position
-								for scratchpad. (The URI part)} */
+								// {@squirreljme.error AH0f Invalid position
+								// for scratchpad. (The URI part)}
 								if (val < 0)
 									throw new ConnectionNotFoundException(
 										"AH0f " + __part);
@@ -99,16 +97,16 @@ public class ScratchPadConnectionFactory
 								break;
 							
 							case "length":
-								/* {@squirreljme.error AH0g Invalid length
-								for scratchpad. (The URI part)} */
+								// {@squirreljme.error AH0g Invalid length
+								// for scratchpad. (The URI part)}
 								if (val <= 0)
 									throw new ConnectionNotFoundException(
 										"AH0g " + __part);
 								wantLen = val;
 								break;
 							
-							/* {@squirreljme.error AH0e Invalid parameter
-							for scratch pads. (The URI part)} */
+							// {@squirreljme.error AH0e Invalid parameter
+							// for scratch pads. (The URI part)}
 							default:
 								throw new ConnectionNotFoundException(
 									"AH0e " + __part);
@@ -117,15 +115,15 @@ public class ScratchPadConnectionFactory
 			}
 		}
 		
-		/* {@squirreljme.error AH0b Invalid number value in URI. (The URI
-		part)} */
+		// {@squirreljme.error AH0b Invalid number value in URI. (The URI
+		// part)}
 		catch (NumberFormatException __e)
 		{
 			throw new ConnectionNotFoundException("AH0b " + __part);
 		}
 		
-		/* {@squirreljme.error AH0c Requested scratch pad is out of bounds.
-		(The scratch pad part)} */
+		// {@squirreljme.error AH0c Requested scratch pad is out of bounds.
+		// (The scratch pad part)}
 		if (wantPad < 0 || wantPad >= params.count())
 			throw new ConnectionNotFoundException("AH0c " + __part);
 		
@@ -133,9 +131,9 @@ public class ScratchPadConnectionFactory
 		if (wantLen < 0)
 			wantLen = params.getLength(wantPad) - wantPos;
 		
-		/* {@squirreljme.error AH0h Requested position and length exceeds
-		the bound of the scratch pad. (The URI part; The desired position;
-		The desired length; The max length)} */
+		// {@squirreljme.error AH0h Requested position and length exceeds
+		// the bound of the scratch pad. (The URI part; The desired position;
+		// The desired length; The max length)}
 		if (wantPos + wantLen > params.getLength(wantPad))
 			throw new ConnectionNotFoundException(
 				String.format("AH0h %s %d %d %d", __part, wantPos, wantLen,
