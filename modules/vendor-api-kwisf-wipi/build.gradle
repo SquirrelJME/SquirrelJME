@@ -1,0 +1,22 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import org.iban4j.CountryCode
+
+description = "Implements support for WIPI APIs."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "WI"
+	swmType = JavaMEMidletType.API
+	swmName = "Korea Wireless Internet Standardization Forum WIPI API"
+	swmVendor = "Stephanie Gawroriski"
+	originalApiVendor = "Korea Wireless Internet Standardization Forum"
+	originalApiVendorCountry = CountryCode.KR
+	tags += "kwisf"
+	tags += "wipi"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+}

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -56,7 +56,7 @@ public final class ReplayInputStream
 			return this.in.readByte();
 		}
 		
-		// {@squirreljme.error BE0i Could not read byte from the input.}
+		/* {@squirreljme.error BE0i Could not read byte from the input.} */
 		catch (IOException e)
 		{
 			throw new ReplayIOException("BE0i", e);
@@ -78,7 +78,7 @@ public final class ReplayInputStream
 			return this.in.readInt();
 		}
 		
-		// {@squirreljme.error BE0j Could not read integer from the input.}
+		/* {@squirreljme.error BE0j Could not read integer from the input.} */
 		catch (IOException e)
 		{
 			throw new ReplayIOException("BE0j", e);
@@ -103,7 +103,7 @@ public final class ReplayInputStream
 			return rv;
 		}
 		
-		// {@squirreljme.error BE0k Could not read long from the input.}
+		/* {@squirreljme.error BE0k Could not read long from the input.} */
 		catch (IOException e)
 		{
 			throw new ReplayIOException("BE0k", e);

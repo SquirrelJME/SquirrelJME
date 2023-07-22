@@ -3,17 +3,20 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.rms;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * General exception for record stores.
  *
  * @since 2017/02/26
  */
+@Api
 public class RecordStoreException
 	extends Exception
 {
@@ -22,6 +25,7 @@ public class RecordStoreException
 	 *
 	 * @since 2017/02/26
 	 */
+	@Api
 	public RecordStoreException()
 	{
 	}
@@ -32,6 +36,7 @@ public class RecordStoreException
 	 * @param __m The exception message.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public RecordStoreException(String __m)
 	{
 		super(__m);

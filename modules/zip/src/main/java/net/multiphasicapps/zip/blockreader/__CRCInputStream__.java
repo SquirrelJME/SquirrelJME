@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -97,8 +97,8 @@ class __CRCInputStream__
 		CRC32Calculator crccalc = this.crccalc;
 		if (rv < 0)
 		{
-			// {@squirreljme.error BF0s CRC mismatch. (The expected CRC; The
-			// calculated CRC; The number of read bytes})
+			/* {@squirreljme.error BF0s CRC mismatch. (The expected CRC; The
+			calculated CRC; The number of read bytes)} */
 			int thiscrc = crccalc.checksum(), wantcrc = this.crc;
 			if (thiscrc != wantcrc)
 				throw new IOException(String.format("BF0s %08x %08x %d",
@@ -138,8 +138,8 @@ class __CRCInputStream__
 		CRC32Calculator crccalc = this.crccalc;
 		if (rv < 0)
 		{
-			// {@squirreljme.error BF0t CRC mismatch. (The expected CRC; The
-			// calculated CRC; The number of read bytes})
+			/* {@squirreljme.error BF0t CRC mismatch. (The expected CRC; The
+			calculated CRC; The number of read bytes)} */
 			int thiscrc = crccalc.checksum(), wantcrc = this.crc;
 			if (thiscrc != wantcrc)
 				throw new IOException(String.format("BF0t %08x %08x %d",

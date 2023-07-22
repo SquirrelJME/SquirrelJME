@@ -3,15 +3,17 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.m3g;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public abstract class IndexBuffer
 	extends Object3D
 {
@@ -20,8 +22,10 @@ public abstract class IndexBuffer
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public abstract int getIndexCount();
 	
+	@Api
 	public abstract void getIndices(int[] __a);
 }
 

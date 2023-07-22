@@ -3,17 +3,20 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public final class TableLayoutPolicy
 	extends FormLayoutPolicy
 {
+	@Api
 	public TableLayoutPolicy(Form __f, int __cols)
 	{
 		super(__f);
@@ -31,6 +34,7 @@ public final class TableLayoutPolicy
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getColumns()
 	{
 		throw Debugging.todo();

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -20,7 +20,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  * @since 2020/10/03
  */
 public class UIDisplayCallbackAdapter
-	extends SpringCallbackAdapter
+	extends UIDrawableCallbackAdapter
 	implements UIDisplayCallback
 {
 	/** The class used to call back. */
@@ -48,30 +48,11 @@ public class UIDisplayCallbackAdapter
 	 * @since 2020/10/03
 	 */
 	@Override
-	public void later(int __displayId, int __serialId)
+	public void later(UIDisplayBracket __display, int __serialId)
 	{
 		this.invokeCallback(
 			MethodNameAndType.ofArguments("later", null,
-				"I", "I"),
-			__displayId, __serialId);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/01/05
-	 */
-	@Override
-	public void paintDisplay(UIDisplayBracket __display, int __pf, int __bw,
-		int __bh, Object __buf, int __offset, int[] __pal, int __sx, int __sy,
-		int __sw, int __sh, int __special)
-	{
-		this.invokeCallback(
-			MethodNameAndType.ofArguments("paintDisplay", null,
 				"Lcc/squirreljme/jvm/mle/brackets/UIDisplayBracket;",
-				"I", "I",
-				"I", "Ljava/lang/Object;", "I", "[I", "I", "I",
-				"I", "I", "I"),
-			__display, __pf, __bw, __bh, __buf, __offset, __pal,
-			__sx, __sy, __sw, __sh, __special);
+				"I"), this.mapDrawable(__display), __serialId);
 	}
 }

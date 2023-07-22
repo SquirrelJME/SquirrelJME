@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -81,8 +81,8 @@ public final class StackMapTableEntry
 		// Nothing can never be initialized
 		if (__t.equals(JavaType.NOTHING))
 		{
-			// {@squirreljme.error JC3v The nothing type cannot be initialized.
-			// (The type)}
+			/* {@squirreljme.error JC3v The nothing type cannot be initialized.
+			(The type)} */
 			if (__init && __t.equals(JavaType.NOTHING))
 				throw new InvalidClassFormatException(
 					String.format("JI3w %s", __t));
@@ -91,8 +91,8 @@ public final class StackMapTableEntry
 		// Otherwise only objects may be initialized
 		else
 		{
-			// {@squirreljme.error JC3w Non-object types cannot be.
-			// uninitialized (The type)}
+			/* {@squirreljme.error JC3w Non-object types cannot be.
+			uninitialized (The type)} */
 			if (!__init && !__t.isObject())
 				throw new InvalidClassFormatException(
 					String.format("JC3w %s", __t));

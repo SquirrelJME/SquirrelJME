@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -166,8 +166,8 @@ public class MegaTileCacher
 				 */
 			}
 			
-			// {@squirreljme.error BE03 Failed to read the image data for the
-			// specified file. (The terrain type)}
+			/* {@squirreljme.error BE03 Failed to read the image data for the
+			specified file. (The terrain type)} */
 			catch (IOException e)
 			{
 				throw new RuntimeException(String.format("BE03 %s", __t), e);

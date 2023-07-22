@@ -3,18 +3,24 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.io;
 
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
+@Api
 public interface CommConnection
 	extends StreamConnection
 {
+	@Api
 	int getBaudRate();
 	
+	@Api
 	int setBaudRate(int __a);
 }
 

@@ -3,13 +3,15 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.tasks;
 
+import cc.squirreljme.plugin.SquirrelJMEPluginConfiguration;
 import java.nio.file.Path;
+import java.util.Objects;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
@@ -63,6 +65,49 @@ public class AdditionalManifestPropertiesTask
 		
 		// Clean must happen first
 		this.mustRunAfter(__cleanTask);
+		
+		// Add a bunch of properties as input that will change if any of
+		// these change in the configuration
+		this.getInputs().property("squirreljme.javaDocErrorCode",
+			this.getProject().provider(() -> Objects.toString(
+				SquirrelJMEPluginConfiguration.configuration(project)
+					.javaDocErrorCode)));
+		this.getInputs().property("squirreljme.definedConfigurations",
+			this.getProject().provider(() -> Objects.toString(
+				SquirrelJMEPluginConfiguration.configuration(project)
+					.definedConfigurations)));
+		this.getInputs().property("squirreljme.definedProfiles",
+			this.getProject().provider(() -> Objects.toString(
+				SquirrelJMEPluginConfiguration.configuration(project)
+					.definedProfiles)));
+		this.getInputs().property("squirreljme.definedStandards",
+			this.getProject().provider(() -> Objects.toString(
+				SquirrelJMEPluginConfiguration.configuration(project)
+					.definedStandards)));
+		this.getInputs().property("squirreljme.midlets",
+			this.getProject().provider(() -> Objects.toString(
+				SquirrelJMEPluginConfiguration.configuration(project)
+					.midlets)));
+		this.getInputs().property("squirreljme.ignoreInLauncher",
+			this.getProject().provider(() -> Boolean.toString(
+				SquirrelJMEPluginConfiguration.configuration(project)
+					.ignoreInLauncher)));
+		this.getInputs().property("squirreljme.swmName",
+			this.getProject().provider(() -> Objects.toString(
+				SquirrelJMEPluginConfiguration.configuration(project)
+					.swmName)));
+		this.getInputs().property("squirreljme.swmType",
+			this.getProject().provider(() -> Objects.toString(
+				SquirrelJMEPluginConfiguration.configuration(project)
+					.swmType)));
+		this.getInputs().property("squirreljme.swmVendor",
+			this.getProject().provider(() -> Objects.toString(
+				SquirrelJMEPluginConfiguration.configuration(project)
+					.swmVendor)));
+		this.getInputs().property("squirreljme.mainClass",
+			this.getProject().provider(() -> Objects.toString(
+				SquirrelJMEPluginConfiguration.configuration(project)
+					.mainClass)));
 		
 		// This action creates the actual manifest file
 		this.doLast(new AdditionalManifestPropertiesTaskAction(

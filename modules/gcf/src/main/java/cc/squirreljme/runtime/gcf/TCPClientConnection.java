@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -143,8 +143,8 @@ public abstract class TCPClientConnection
 		// Exceptions were thrown?
 		if (supin != null || supout != null || supclo != null)
 		{
-			// {@squirreljme.error EC0k The connection could not be closed
-			// properly.}
+			/* {@squirreljme.error EC0k The connection could not be closed
+			properly.} */
 			IOException t = new IOException("EC0k");
 			
 			// Add suppressed exceptions
@@ -256,7 +256,7 @@ public abstract class TCPClientConnection
 	public final InputStream openInputStream()
 		throws IOException
 	{
-		// {@squirreljme.error EC0l The input has been closed.}
+		/* {@squirreljme.error EC0l The input has been closed.} */
 		ConnectionStateTracker tracker = this.tracker;
 		if (tracker._inclosed)
 			throw new IOException("EC0l");
@@ -271,7 +271,7 @@ public abstract class TCPClientConnection
 	public final OutputStream openOutputStream()
 		throws IOException
 	{
-		// {@squirreljme.error EC0m The output has been closed.}
+		/* {@squirreljme.error EC0m The output has been closed.} */
 		ConnectionStateTracker tracker = this.tracker;
 		if (tracker._outclosed)
 			throw new IOException("EC0m");
@@ -286,7 +286,7 @@ public abstract class TCPClientConnection
 	public final void setSocketOption(byte __o, int __v)
 		throws IllegalArgumentException, IOException
 	{
-		// {@squirreljme.error EC0n Invalid socket option. (The option)}
+		/* {@squirreljme.error EC0n Invalid socket option. (The option)} */
 		if (__o != SocketConnection.KEEPALIVE || __o != SocketConnection.LINGER || __o != SocketConnection.SNDBUF ||
 			__o != SocketConnection.RCVBUF || __o != SocketConnection.DELAY || __o != SocketConnection.TIMEOUT)
 			throw new IllegalArgumentException("EC0n " + __o);
@@ -295,23 +295,23 @@ public abstract class TCPClientConnection
 		switch (__o)
 		{
 			case SocketConnection.LINGER:
-				// {@squirreljme.error EC0o Linger cannot be negative.
-				// (The requested linger)}
+				/* {@squirreljme.error EC0o Linger cannot be negative.
+				(The requested linger)} */
 				if (__v < 0)
 					throw new IllegalArgumentException("EC0o " + __v);
 				break;
 			
 			case SocketConnection.RCVBUF:
 			case SocketConnection.SNDBUF:
-				// {@squirreljme.error EC0p Send/receive buffer size cannot
-				// be negative. (The requested buffer size)}
+				/* {@squirreljme.error EC0p Send/receive buffer size cannot
+				be negative. (The requested buffer size)} */
 				if (__v < 0)
 					throw new IllegalArgumentException("EC0p " + __v);
 				break;
 			
 			case SocketConnection.TIMEOUT:
-				// {@squirreljme.error EC0q Timeout cannot be negative.
-				// (The requested timeout)}
+				/* {@squirreljme.error EC0q Timeout cannot be negative.
+				(The requested timeout)} */
 				if (__v < 0)
 					throw new IllegalArgumentException("EC0q " + __v);
 				break;

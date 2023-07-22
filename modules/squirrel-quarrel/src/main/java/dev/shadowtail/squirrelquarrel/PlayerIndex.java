@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -153,7 +153,7 @@ public enum PlayerIndex
 			case 4:	return PlayerIndex.YELLOW;
 			case 5:	return PlayerIndex.GRAY;
 			
-				// {@squirreljme.error BE0u Invalid player index.}
+				/* {@squirreljme.error BE0u Invalid player index.} */
 			default:
 				throw new NoSuchElementException("BE0u");
 		}

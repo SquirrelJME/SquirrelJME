@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -93,11 +93,11 @@ public final class PackRom
 			String name = MemoryUtils.loadString(
 				rom, toc.get(dx, PackTocProperty.OFFSET_NAME));
 			
-			// {@squirreljme.error ZZ52 JAR has no name?}
+			/* {@squirreljme.error ZZ52 JAR has no name?} */
 			if (name == null)
 				throw new InvalidRomException("ZZ52");
 			
-			// {@squirreljme.error ZZ51 Name does not match hashed named.}
+			/* {@squirreljme.error ZZ51 Name does not match hashed named.} */
 			if (name.hashCode() != toc.get(dx,
 				PackTocProperty.HASHCODE_NAME))
 				throw new InvalidRomException("ZZ51");
@@ -134,8 +134,8 @@ public final class PackRom
 		int tocBase = this.header.getInteger(PackProperty.OFFSET_TOC);
 		int tocSize = this.header.getInteger(PackProperty.SIZE_TOC);
 		
-		// {@squirreljme.error ZZ4u ROM has invalid table of contents
-		// reference.}
+		/* {@squirreljme.error ZZ4u ROM has invalid table of contents
+		reference.} */
 		if (tocBase < 0 || tocSize <= 0)
 			throw new InvalidRomException("ZZ4u");
 		

@@ -3,13 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.io;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.Encoder;
@@ -36,6 +37,7 @@ import java.util.Formatter;
  *
  * @since 2018/09/16
  */
+@Api
 public class PrintStream
 	extends OutputStream
 	implements Appendable, Closeable
@@ -93,6 +95,7 @@ public class PrintStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/17
 	 */
+	@Api
 	public PrintStream(OutputStream __out)
 		throws NullPointerException
 	{
@@ -108,6 +111,7 @@ public class PrintStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/17
 	 */
+	@Api
 	public PrintStream(OutputStream __out, boolean __autoflush)
 		throws NullPointerException
 	{
@@ -125,6 +129,7 @@ public class PrintStream
 	 * @throws UnsupportedEncodingException If the encoding is not supported.
 	 * @since 2018/09/17
 	 */
+	@Api
 	public PrintStream(OutputStream __out, boolean __autoflush, String __enc)
 		throws NullPointerException, UnsupportedEncodingException
 	{
@@ -193,6 +198,7 @@ public class PrintStream
 	 * @return The current error state.
 	 * @since 2019/06/21
 	 */
+	@Api
 	public boolean checkError()
 	{
 		synchronized (this)
@@ -207,6 +213,7 @@ public class PrintStream
 	 *
 	 * @since 2019/06/21
 	 */
+	@Api
 	protected void clearError()
 	{
 		synchronized (this)
@@ -219,6 +226,7 @@ public class PrintStream
 	 * {@inheritDoc}
 	 * @since 2019/06/21
 	 */
+	@Api
 	@Override
 	public void close()
 	{
@@ -245,6 +253,7 @@ public class PrintStream
 	 * {@inheritDoc}
 	 * @since 2018/09/21
 	 */
+	@Api
 	@Override
 	public void flush()
 	{
@@ -265,6 +274,7 @@ public class PrintStream
 	 * @throws NullPointerException If no format was specified.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public PrintStream format(String __fmt, Object... __args)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -277,6 +287,7 @@ public class PrintStream
 	 * @param __v The value to print.
 	 * @since 2019/06/21
 	 */
+	@Api
 	public void print(boolean __v)
 	{
 		synchronized (this)
@@ -291,6 +302,7 @@ public class PrintStream
 	 * @param __v The character to print.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public void print(char __v)
 	{
 		synchronized (this)
@@ -305,6 +317,7 @@ public class PrintStream
 	 * @param __v The value to print.
 	 * @since 2018/11/04
 	 */
+	@Api
 	public void print(int __v)
 	{
 		synchronized (this)
@@ -319,6 +332,7 @@ public class PrintStream
 	 * @param __v The value to print.
 	 * @since 2019/06/21
 	 */
+	@Api
 	public void print(long __v)
 	{
 		synchronized (this)
@@ -333,6 +347,7 @@ public class PrintStream
 	 * @param __v The value to print.
 	 * @since 2019/06/21
 	 */
+	@Api
 	public void print(float __v)
 	{
 		synchronized (this)
@@ -347,6 +362,7 @@ public class PrintStream
 	 * @param __v The value to print.
 	 * @since 2019/06/21
 	 */
+	@Api
 	public void print(double __v)
 	{
 		synchronized (this)
@@ -362,6 +378,7 @@ public class PrintStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/21
 	 */
+	@Api
 	public void print(char[] __v)
 		throws NullPointerException
 	{
@@ -382,6 +399,7 @@ public class PrintStream
 	 * printed.
 	 * @since 2018/09/20
 	 */
+	@Api
 	public void print(String __v)
 	{
 		synchronized (this)
@@ -396,6 +414,7 @@ public class PrintStream
 	 * @param __v The value to print.
 	 * @since 2019/06/21
 	 */
+	@Api
 	public void print(Object __v)
 	{
 		synchronized (this)
@@ -415,6 +434,7 @@ public class PrintStream
 	 * @throws NullPointerException If no format was specified.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public PrintStream printf(String __fmt, Object... __args)
 	{
 		return this.__printf(__fmt, __args);
@@ -425,6 +445,7 @@ public class PrintStream
 	 *
 	 * @since 2018/09/21
 	 */
+	@Api
 	public void println()
 	{
 		synchronized (this)
@@ -439,6 +460,7 @@ public class PrintStream
 	 * @param __v The value to print.
 	 * @since 2019/06/21
 	 */
+	@Api
 	public void println(boolean __v)
 	{
 		synchronized (this)
@@ -454,6 +476,7 @@ public class PrintStream
 	 * @param __v The value to print.
 	 * @since 2019/06/21
 	 */
+	@Api
 	public void println(char __v)
 	{
 		synchronized (this)
@@ -469,6 +492,7 @@ public class PrintStream
 	 * @param __v The value to print.
 	 * @since 2019/06/21
 	 */
+	@Api
 	public void println(int __v)
 	{
 		synchronized (this)
@@ -484,6 +508,7 @@ public class PrintStream
 	 * @param __v The value to print.
 	 * @since 2019/06/21
 	 */
+	@Api
 	public void println(long __v)
 	{
 		synchronized (this)
@@ -499,6 +524,7 @@ public class PrintStream
 	 * @param __v The value to print.
 	 * @since 2019/06/21
 	 */
+	@Api
 	public void println(float __v)
 	{
 		synchronized (this)
@@ -514,6 +540,7 @@ public class PrintStream
 	 * @param __v The value to print.
 	 * @since 2019/06/21
 	 */
+	@Api
 	public void println(double __v)
 	{
 		synchronized (this)
@@ -530,6 +557,7 @@ public class PrintStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/21
 	 */
+	@Api
 	public void println(char[] __v)
 		throws NullPointerException
 	{
@@ -550,6 +578,7 @@ public class PrintStream
 	 * @param __v The string to write.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public void println(String __v)
 	{
 		synchronized (this)
@@ -565,6 +594,7 @@ public class PrintStream
 	 * @param __v The string to write.
 	 * @since 2018/11/20
 	 */
+	@Api
 	public void println(Object __v)
 	{
 		synchronized (this)
@@ -579,6 +609,7 @@ public class PrintStream
 	 *
 	 * @since 2019/06/21
 	 */
+	@Api
 	protected void setError()
 	{
 		this._inerror = true;
@@ -588,6 +619,7 @@ public class PrintStream
 	 * {@inheritDoc}
 	 * @since 2019/06/21
 	 */
+	@Api
 	@Override
 	@ImplementationNote("If newline is written, this will flush.")
 	public void write(int __c)
@@ -606,6 +638,7 @@ public class PrintStream
 	 * {@inheritDoc}
 	 * @since 2019/06/21
 	 */
+	@Api
 	@Override
 	@ImplementationNote("If auto-flushing, this calls flush after writing.")
 	public void write(byte[] __b)
@@ -624,6 +657,7 @@ public class PrintStream
 	 * {@inheritDoc}
 	 * @since 2019/06/21
 	 */
+	@Api
 	@Override
 	@ImplementationNote("If auto-flushing, this calls flush after writing.")
 	public void write(byte[] __b, int __o, int __l)
@@ -837,8 +871,8 @@ public class PrintStream
 		byte[] encBytes = this._minienc;
 		int wc = this._encoder.encode(__c, encBytes, 0, encBytes.length);
 		
-		// {@squirreljme.error ZZ0q Did not expect the buffer to be out of
-		// room or be too small.}
+		/* {@squirreljme.error ZZ0q Did not expect the buffer to be out of
+		room or be too small.} */
 		if (wc < 0 || wc > encBytes.length)
 			throw new Error("ZZ0q");
 		

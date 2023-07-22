@@ -3,15 +3,18 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.emulator;
 
+import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import cc.squirreljme.vm.DataContainerLibrary;
 import cc.squirreljme.vm.JarClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
@@ -25,6 +28,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Handlers for {@link JarPackageShelf}.
@@ -128,6 +133,52 @@ public final class EmulatedJarPackageShelf
 			throw new MLECallError("No JAR or resource.");
 		
 		return ((EmulatedJarPackageBracket)__jar).openResource(__rc);
+	}
+	
+	/**
+	 * Returns the prefix code for the class.
+	 *
+	 * @param __jar The Jar to get the prefix code from.
+	 * @return The prefix code in the JAR, mapped accordingly to 37 radix,
+	 * will return -1 if there is none.
+	 * @throws MLECallError If {@code __jar} is null.
+	 * @since 2023/07/19
+	 */
+	public static int prefixCode(JarPackageBracket __jar)
+		throws MLECallError
+	{
+		if (__jar == null)
+			throw new MLECallError("Null Jar");
+		
+		// Open manifest
+		try (InputStream in = ((EmulatedJarPackageBracket)__jar)
+			.openResource("META-INF/MANIFEST.MF"))
+		{
+			if (in == null)
+				return -1;
+			
+			// Load in manifest
+			JavaManifest manifest = new JavaManifest(in);
+			
+			// Is there an actual value for this?
+			String value = manifest.getMainAttributes()
+				.getValue(ErrorCode.PREFIX_PROPERTY);
+			if (value == null)
+				return -1;
+			
+			// Get both characters for radix calculation
+			char a = value.charAt(0);
+			char b = value.charAt(1);
+			
+			// Calculate prefix code
+			return (Character.digit(a, Character.MAX_RADIX) * 
+				Character.MAX_RADIX) +
+				Character.digit(b, Character.MAX_RADIX);
+		}
+		catch (IOException ignored)
+		{
+			return -1;
+		}
 	}
 	
 	/**

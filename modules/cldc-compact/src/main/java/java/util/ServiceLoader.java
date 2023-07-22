@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * The service loader is used to lookup services which may be defined in the
@@ -22,6 +24,7 @@ package java.util;
  * @param <S> The class to provide a service for.
  * @since 2018/12/06
  */
+@Api
 public final class ServiceLoader<S>
 	implements Iterable<S>
 {
@@ -39,6 +42,7 @@ public final class ServiceLoader<S>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/06
 	 */
+	@Api
 	private ServiceLoader(Class<S> __cl)
 		throws NullPointerException
 	{
@@ -73,6 +77,7 @@ public final class ServiceLoader<S>
 	 *
 	 * @since 2018/12/06
 	 */
+	@Api
 	public void reload()
 	{
 		// Clear the cache
@@ -99,6 +104,7 @@ public final class ServiceLoader<S>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/06
 	 */
+	@Api
 	public static <S> ServiceLoader<S> load(Class<S> __cl)
 		throws NullPointerException
 	{

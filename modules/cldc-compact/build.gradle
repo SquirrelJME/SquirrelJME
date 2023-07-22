@@ -26,6 +26,207 @@ squirreljme
 	tags += "lite"
 	noEmitConfiguration = true
 	
+	// Needed for SquirrelJME VMs to start and operate properly, as this is
+	// the entry point into any code that starts and otherwise
+	proGuardOptions += ["-keep", "class", "java.lang.__Start__"]
+	proGuardOptions += ["-keepnames", "class", "java.lang.__Start__"]
+	proGuardOptions += ["-keepclassmembers", "class", 
+		"java.lang.__Start__", "{",
+			"void", "__base", "(", ")", ";",
+			"void", "__main", "(", ")", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.__Start__", "{",
+			"void", "__base", "(", ")", ";",
+			"void", "__main", "(", ")", ";",
+		"}"]
+	
+	// There are some hidden fields in Thread that need to be kept
+	proGuardOptions += ["-keepclassmembers", "class",
+		"java.lang.Thread", "{",
+			"boolean", "_started", ";",
+			"boolean", "_isAlive", ";",
+			"boolean", "_interrupted", ";",
+			"java.lang.Runnable", "_runnable", ";",
+			"cc.squirreljme.jvm.mle.brackets.VMThreadBracket", "_vmThread",
+				";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Thread", "{",
+			"boolean", "_started", ";",
+			"boolean", "_isAlive", ";",
+			"boolean", "_interrupted", ";",
+			"java.lang.Runnable", "_runnable", ";",
+			"cc.squirreljme.jvm.mle.brackets.VMThreadBracket", "_vmThread",
+				";",
+		"}"]
+	
+	// Throwable has the internal stack trace
+	proGuardOptions += ["-keepclassmembers", "class",
+		"java.lang.Throwable", "{",
+			"cc.squirreljme.jvm.mle.brackets.TracePointBracket[]",
+				"_stack", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Throwable", "{",
+			"cc.squirreljme.jvm.mle.brackets.TracePointBracket[]",
+				"_stack", ";",
+		"}"]
+	
+	// Class has hidden fields that are directly accessed
+	proGuardOptions += ["-keepclassmembers", "class",
+		"java.lang.Class", "{",
+			"cc.squirreljme.jvm.mle.brackets.TypeBracket", "_type", ";",
+		
+			// Constructor used internally
+			"Class", "(", "cc.squirreljme.jvm.mle.brackets.TypeBracket",
+				")", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Class", "{",
+			"cc.squirreljme.jvm.mle.brackets.TypeBracket", "_type", ";",
+		"}"]
+	
+	// String information that needs to be kept
+	proGuardOptions += ["-keepclassmembers", "class",
+		"java.lang.String", "{",
+			"char[]", "_chars", ";",
+			"int", "_hashCode", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.String", "{",
+			"char[]", "_chars", ";",
+			"int", "_hashCode", ";",
+		"}"]
+	
+	// Prevent certain java.lang.Boolean optimizations
+	proGuardOptions += ["-keepclassmembers,includecode", "class",
+		"java.lang.Boolean", "{",
+			"java.lang.Boolean", "TRUE", ";",
+			"java.lang.Boolean", "FALSE", ";",
+			"boolean", "_value", ";",
+			"void", "<clinit>", "(", ")", ";",
+			"java.lang.Boolean", "valueOf", "(", "boolean", ")", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Boolean", "{",
+			"boolean", "_value", ";",
+		"}"]
+	
+	// Prevent certain java.lang.Character optimizations
+	proGuardOptions += ["-keepclassmembers,includecode", "class",
+		"java.lang.Character", "{",
+			"char", "_value", ";",
+			"java.lang.Character", "valueOf", "(", "char", ")", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Character", "{",
+			"char", "_value", ";",
+		"}"]
+	
+	// Prevent certain java.lang.Byte optimizations
+	proGuardOptions += ["-keepclassmembers,includecode", "class",
+		"java.lang.Byte", "{",
+			"byte", "_value", ";",
+			"java.lang.Byte", "valueOf", "(", "byte", ")", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Byte", "{",
+			"byte", "_value", ";",
+		"}"]
+	
+	// Prevent certain java.lang.Short optimizations
+	proGuardOptions += ["-keepclassmembers,includecode", "class",
+		"java.lang.Short", "{",
+			"short", "_value", ";",
+			"java.lang.Short", "valueOf", "(", "short", ")", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Short", "{",
+			"short", "_value", ";",
+		"}"]
+	
+	// Prevent certain java.lang.Integer optimizations
+	proGuardOptions += ["-keepclassmembers,includecode", "class",
+		"java.lang.Integer", "{",
+			"int", "_value", ";",
+			"java.lang.Integer", "valueOf", "(", "int", ")", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Integer", "{",
+			"int", "_value", ";",
+		"}"]
+	
+	// Prevent certain java.lang.Long optimizations
+	proGuardOptions += ["-keepclassmembers,includecode", "class",
+		"java.lang.Long", "{",
+			"long", "_value", ";",
+			"java.lang.Long", "valueOf", "(", "long", ")", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Long", "{",
+			"long", "_value", ";",
+		"}"]
+	
+	// Prevent certain java.lang.Float optimizations
+	proGuardOptions += ["-keepclassmembers,includecode", "class",
+		"java.lang.Float", "{",
+			"float", "_value", ";",
+			"java.lang.Float", "valueOf", "(", "float", ")", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Float", "{",
+			"float", "_value", ";",
+		"}"]
+	
+	// Prevent certain java.lang.Double optimizations
+	proGuardOptions += ["-keepclassmembers,includecode", "class",
+		"java.lang.Double", "{",
+			"double", "_value", ";",
+			"java.lang.Double", "valueOf", "(", "double", ")", ";",
+		"}"]
+	proGuardOptions += ["-keepclassmembernames", "class",
+		"java.lang.Double", "{",
+			"double", "_value", ";",
+		"}"]
+	
+	// Prevent software math methods from being changed, these are called
+	
+	// Optimizing this method seems to break the launcher somehow...
+	proGuardOptions += ["-keepclassmembers,includecode",
+		"class", "cc.squirreljme.jvm.launch.SuiteScanner", "{",
+			"cc.squirreljme.jvm.launch.AvailableSuites", "scanSuites", "(",
+				")", ";",
+			"cc.squirreljme.jvm.launch.AvailableSuites", "scanSuites", "(",
+				"cc.squirreljme.jvm.launch.SuiteScanListener", ")", ";",
+		"}"]
+	
+	// Keep this and do not optimize it out, otherwise it breaks the launcher
+	// and stops it from working
+	proGuardOptions += ["-keep,allowobfuscation",
+		"class", "cc.squirreljme.jvm.launch.SuiteScanListener"]
+	proGuardOptions += ["-keepclassmembers,allowobfuscation",
+		"class", "cc.squirreljme.jvm.launch.SuiteScanListener", "{",
+			"void", "scanned", "(",
+					"cc.squirreljme.jvm.launch.Application", ",",
+					"int", ",",
+					"int",
+				")", ";",
+		"}"]
+	
+	// The test method that takes 255 arguments completely breaks ProGuard
+	// so disable optimizations for it
+	proGuardOptionsTest += ["-keep", "class",
+		"lang.bytecode.TestInvoke255"]
+	proGuardOptionsTest += ["-keepnames", "class",
+		"lang.bytecode.TestInvoke255"]
+	proGuardOptionsTest += ["-keep,includecode",
+		"class", "lang.bytecode.TestInvoke255", "{",
+			"<fields>", ";",
+			"<methods>", ";",
+		"}"
+	]
+	
 	// This is considered a boot loader for SummerCoat
 	isBootLoader = true
 	bootLoaderMainClass = "cc.squirreljme.jvm.summercoat.Bootstrap"
@@ -39,4 +240,6 @@ java
 
 dependencies
 {
+	// For IDE related information
+	api "org.jetbrains:annotations:24.0.1"
 }

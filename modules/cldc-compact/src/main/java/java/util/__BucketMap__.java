@@ -3,13 +3,15 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 /**
  * This is a bucket map which acts as the raw internal hash table
@@ -24,7 +26,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @since 2018/10/07
  */
 final class __BucketMap__<K, V>
-	extends AbstractMap<K, V>
+	//extends AbstractMap<K, V>
 {
 	/** Special holder for when backing for a set. */
 	static final Object _TAKEN =
@@ -74,6 +76,9 @@ final class __BucketMap__<K, V>
 	/** The rehash count. */
 	int _numrehash;
 	
+	/** Entry set cache. */
+	private volatile Reference<Set<Map.Entry<K, V>>> _entrySetCache;
+	
 	/**
 	 * Initializes the map with the default capacity and load factor.
 	 *
@@ -113,12 +118,12 @@ final class __BucketMap__<K, V>
 	__BucketMap__(boolean __o, boolean __ao, int __cap, float __load)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ36 The initial capacity of the map cannot be
-		// negative.}
+		/* {@squirreljme.error ZZ36 The initial capacity of the map cannot be
+		negative.} */
 		if (__cap < 0)
 			throw new IllegalArgumentException("ZZ36");
 		
-		// {@squirreljme.error ZZ37 The load factor must be a positive value.}
+		/* {@squirreljme.error ZZ37 The load factor must be a positive value.} */
 		if (__load <= 0.0F)
 			throw new IllegalArgumentException("ZZ37");
 		
@@ -134,6 +139,37 @@ final class __BucketMap__<K, V>
 		// Set linked list for ordered storage if it is used
 		this._links = ((__o || __ao) ?
 			new LinkedList<__BucketMapEntry__<K, V>>() : null);
+	}
+	
+	/**
+	 * Clears the bucket map.
+	 * 
+	 * @since 2023/02/09
+	 */
+	public void clear()
+	{
+		// Forward clear
+		this.__clear();
+	}
+	
+	/**
+	 * Returns the entry set over the bucket map.
+	 *
+	 * @return The entry set.
+	 * @since 2018/11/01
+	 */
+	public final Set<Map.Entry<K, V>> entrySet()
+	{
+		Reference<Set<Map.Entry<K, V>>> ref = this._entrySetCache;
+		Set<Map.Entry<K, V>> rv;
+		
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			rv = new __EntrySet__();
+			this._entrySetCache = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
 	/**
@@ -181,13 +217,14 @@ final class __BucketMap__<K, V>
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2018/11/01
+	 * Is this bucket map empty?
+	 * 
+	 * @return If this is empty.
+	 * @since 2023/02/09
 	 */
-	@Override
-	public final Set<Map.Entry<K, V>> entrySet()
+	public boolean isEmpty()
 	{
-		return new __EntrySet__();
+		return this.size() <= 0;
 	}
 	
 	/**
@@ -253,7 +290,8 @@ final class __BucketMap__<K, V>
 							__BucketMap__.<K, V>__newChain(cn + 1);
 						
 						// Copy all the old chain stuff over
-						System.arraycopy(newchain, 0, newnewchain, 0, cn);
+						System.arraycopy(newchain, 0,
+							newnewchain, 0, cn);
 						
 						// Use this chain
 						newchain = newnewchain;
@@ -370,10 +408,12 @@ final class __BucketMap__<K, V>
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Removes the given key from the bucket map.
+	 * 
+	 * @param __k The key to remove.
+	 * @return The removed key.
 	 * @since 2018/11/04
 	 */
-	@Override
 	public final V remove(Object __k)
 	{
 		__BucketMapEntry__<K, V> rv = this.removeEntry(__k, false);
@@ -453,10 +493,11 @@ final class __BucketMap__<K, V>
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Returns the size of the bucket map.
+	 * 
+	 * @return The bucket map size.
 	 * @since 2018/10/08
 	 */
-	@Override
 	public final int size()
 	{
 		return this._size;
@@ -592,7 +633,7 @@ final class __BucketMap__<K, V>
 		final void __checkModified()
 			throws ConcurrentModificationException
 		{
-			// {@squirreljme.error ZZ38 Backing map has been modified.}
+			/* {@squirreljme.error ZZ38 Backing map has been modified.} */
 			if (this._atmod != __BucketMap__.this._modcount)
 				throw new ConcurrentModificationException("ZZ38");
 		}
@@ -698,7 +739,7 @@ final class __BucketMap__<K, V>
 		public final Map.Entry<K, V> next()
 			throws NoSuchElementException
 		{
-			// {@squirreljme.error ZZ39 Map has no more entries remaining.}
+			/* {@squirreljme.error ZZ39 Map has no more entries remaining.} */
 			if (!this.hasNext())
 				throw new NoSuchElementException("ZZ39");
 			

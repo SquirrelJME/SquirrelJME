@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle.callbacks;
 
 import cc.squirreljme.jvm.mle.PencilShelf;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * Callback to be used with
@@ -19,6 +20,7 @@ import cc.squirreljme.jvm.mle.PencilShelf;
  *
  * @since 2022/06/28
  */
+@SquirrelJMEVendorApi
 public interface NativeImageLoadCallback
 {
 	/**
@@ -32,6 +34,7 @@ public interface NativeImageLoadCallback
 	 * @param __hasAlpha Does this image have alpha?
 	 * @since 2022/06/28
 	 */
+	@SquirrelJMEVendorApi
 	void addImage(int[] __buf, int __off, int __len, int __frameDelay,
 		boolean __hasAlpha);
 	
@@ -41,6 +44,7 @@ public interface NativeImageLoadCallback
 	 * @return The final created image.
 	 * @since 2022/06/28
 	 */
+	@SquirrelJMEVendorApi
 	Object finish();
 	
 	/**
@@ -52,6 +56,7 @@ public interface NativeImageLoadCallback
 	 * @param __scalable Is this image scalable?
 	 * @since 2022/06/28
 	 */
+	@SquirrelJMEVendorApi
 	void initialize(int __width, int __height, boolean __animated,
 		boolean __scalable);
 	
@@ -61,5 +66,6 @@ public interface NativeImageLoadCallback
 	 * @param __loopCount The loop count.
 	 * @since 2022/06/28
 	 */
+	@SquirrelJMEVendorApi
 	void setLoopCount(int __loopCount);
 }

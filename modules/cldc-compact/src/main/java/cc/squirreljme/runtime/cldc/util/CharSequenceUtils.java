@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -47,28 +47,29 @@ public final class CharSequenceUtils
 			__index = 0;
 		
 		// If the sequence is empty, then it will always be a match
-		int an = __src.length();
-		int bn = __lookFor.length();
-		if (bn <= 0)
+		int srcLen = __src.length();
+		int lookLen = __lookFor.length();
+		if (lookLen <= 0)
 			return __index;
 		
 		// If the string is longer than ours, then it will never be a match
-		if (bn > an - __index)
+		if (lookLen > srcLen - __index)
 			return -1;
 		
 		// Do a long complicated loop matching, but we only need to check
 		// for as long as the sequence can actually fit
 __outer:
-		for (int a = __index, lim = an - bn; a < lim; a++)
+		for (int srcAt = __index, lim = (srcLen - lookLen) + 1;
+			 srcAt < lim; srcAt++)
 		{
 			// Check sequence characters
-			for (int x = a, b = 0; b < bn; x++, b++)
+			for (int x = srcAt, b = 0; b < lookLen; x++, b++)
 				if (__src.charAt(x) != __lookFor.charAt(b))
 					continue __outer;
 			
 			// Since the inner loop continues to the outer, if this was reached
 			// then we know the full sequence was matched
-			return a;
+			return srcAt;
 		}
 		
 		// Otherwise, nothing was found because we tried every character

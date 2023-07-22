@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -51,7 +51,7 @@ public final class EmptyIterator
 	@Override
 	public Object next()
 	{
-		// {@squirreljme.error AC02 The empty iterator contains no elements.}
+		/* {@squirreljme.error AC02 The empty iterator contains no elements.} */
 		throw new NoSuchElementException("AC02");
 	}
 	
@@ -62,8 +62,8 @@ public final class EmptyIterator
 	@Override
 	public void remove()
 	{
-		// {@squirreljme.error AC03 Cannot remove elements from the empty
-		// iterator.}
+		/* {@squirreljme.error AC03 Cannot remove elements from the empty
+		iterator.} */
 		throw new UnsupportedOperationException("AC03");
 	}
 	

@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
@@ -17,38 +18,47 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+@Api
 public class Command
 	extends __Action__
 { 
 	/** Returns the user to the previous screen.. */
+	@Api
 	public static final int BACK =
 		2;
 	
 	/** Specified a standard negative to something on the screen. */
+	@Api
 	public static final int CANCEL =
 		3;
 	
 	/** A command that is used to exit the application. */
+	@Api
 	public static final int EXIT =
 		7;
 	
 	/** A request for on-line help. */
+	@Api
 	public static final int HELP =
 		5;
 	
 	/** System specific type. */
+	@Api
 	public static final int ITEM =
 		8;
 	
 	/** Specified as a standard affirmative to something on the screen. */
+	@Api
 	public static final int OK =
 		4;
 	
 	/** A command which pertains to the current screen. */
+	@Api
 	public static final int SCREEN =
 		1;
 	
 	/** A command which will stop an in-progress operation. */
+	@Api
 	public static final int STOP =
 		6;
 	
@@ -83,6 +93,7 @@ public class Command
 	 * @throws NullPointerException If no short label was specified.
 	 * @since 2017/02/28
 	 */
+	@Api
 	public Command(String __sl, int __type, int __pri)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -119,6 +130,7 @@ public class Command
 	 * @throws NullPointerException If no short label was specified.
 	 * @since 2017/02/28
 	 */
+	@Api
 	public Command(String __sl, String __ll, int __type, int __pri)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -137,6 +149,7 @@ public class Command
 	 * @throws NullPointerException If no short label was specified.
 	 * @since 2017/02/28
 	 */
+	@Api
 	public Command(String __sl, String __ll, Image __i, int __type, int __pri)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -166,8 +179,8 @@ public class Command
 		if (__sl == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB1f And invalid command type was specified.
-		// (The command type)}
+		/* {@squirreljme.error EB1f And invalid command type was specified.
+		(The command type)} */
 		if (__type < Command._FIRST_TYPE || __type > Command._LAST_TYPE)
 			throw new IllegalArgumentException(
 				String.format("EB1f %d", __type));
@@ -189,11 +202,13 @@ public class Command
 	 * @return The command type.
 	 * @since 2018/03/31
 	 */
+	@Api
 	public int getCommandType()
 	{
 		return this._type;
 	}
 	
+	@Api
 	public boolean getEnabled()
 	{
 		throw Debugging.todo();
@@ -206,6 +221,7 @@ public class Command
 	 * @return The font that should be used as a hint.
 	 * @since 2018/03/31
 	 */
+	@Api
 	public Font getFont()
 	{
 		throw Debugging.todo();
@@ -220,6 +236,7 @@ public class Command
 	 * @return The image of the command or {@code null} if it has none.
 	 * @since 2018/03/29
 	 */
+	@Api
 	public Image getImage()
 	{
 		// Do not provide implementation specific images
@@ -235,6 +252,7 @@ public class Command
 	 * @return The label used for the command.
 	 * @since 2018/03/29
 	 */
+	@Api
 	public String getLabel()
 	{
 		// Do not provide implementation specific labels
@@ -250,6 +268,7 @@ public class Command
 	 * @return The long label of the command or {@code null} if it has none.
 	 * @since 2018/03/29
 	 */
+	@Api
 	public String getLongLabel()
 	{
 		// Do not provide implementation specific labels
@@ -265,6 +284,7 @@ public class Command
 	 * @return The command priority.
 	 * @since 2018/12/03
 	 */
+	@Api
 	public int getPriority()
 	{
 		return this._priority;
@@ -288,6 +308,7 @@ public class Command
 	 * @param __e If the command is enabled or not.
 	 * @since 2018/04/01
 	 */
+	@Api
 	public void setEnabled(boolean __e)
 	{
 		// Do nothing for implementation specific commands
@@ -304,6 +325,7 @@ public class Command
 	 * {@code null} will use the default.
 	 * @since 2018/03/31
 	 */
+	@Api
 	public void setFont(Font __f)
 	{
 		// Do nothing for implementation specific commands
@@ -331,6 +353,7 @@ public class Command
 	 * @param __i The image to set or {@code null} to clear it.
 	 * @since 2018/04/06
 	 */
+	@Api
 	public void setImage(Image __i)
 	{
 		throw Debugging.todo();
@@ -355,6 +378,7 @@ public class Command
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/29
 	 */
+	@Api
 	public void setLabel(String __s)
 		throws NullPointerException
 	{
@@ -374,6 +398,7 @@ public class Command
 	 * @param __s The long label to use, {@code null} clears it.
 	 * @since 2018/03/29
 	 */
+	@Api
 	public void setLongLabel(String __s)
 	{
 		// Do nothing for implementation specific commands

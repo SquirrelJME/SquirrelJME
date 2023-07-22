@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.lui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Iterator;
 
@@ -47,6 +48,7 @@ import java.util.Iterator;
  *
  * @since 2016/08/30
  */
+@Api
 public class Display
 {
 	/**
@@ -55,6 +57,7 @@ public class Display
 	 * The value will be either {@link #LIGHTING_ON}, {@link #LIGHTING_OFF},
 	 * or {@link #LIGHTING_DIM}.
 	 */
+	@Api
 	public static final String LIGHTING =
 		"LIGHTING";
 	
@@ -62,14 +65,17 @@ public class Display
 	 * This indicates that the light level is not fully bright nor off, but
 	 * is somewhere inbetween.
 	 */
+	@Api
 	public static final int LIGHTING_DIM =
 		2;
 	
 	/** This indicates that the light level for a display is zero (off). */
+	@Api
 	public static final int LIGHTING_OFF =
 		0;
 	
 	/** The indicates that the light level for a display is bright. */
+	@Api
 	public static final int LIGHTING_ON =
 		1;
 	
@@ -78,6 +84,7 @@ public class Display
 	 * display are to be deferred for as long as possible to increase the
 	 * amount of time that the display is visible for.
 	 */
+	@Api
 	public static final int MODE_ACTIVE =
 		1;
 	
@@ -85,6 +92,7 @@ public class Display
 	 * This is used to specify that the display may enter a power saving mode
 	 * for example when the device is idle and no input has been generated.
 	 */
+	@Api
 	public static final int MODE_NORMAL =
 		0;
 	
@@ -113,6 +121,7 @@ public class Display
 	 * @return The closest matching background color.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public DisplayColor getBackgroundColor()
 	{
 		throw Debugging.todo();
@@ -124,6 +133,7 @@ public class Display
 	 * @return The characters per line.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public int getCharacterNumberPerLine()
 	{
 		throw Debugging.todo();
@@ -145,6 +155,7 @@ public class Display
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public int getChars(char[] __o)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
@@ -172,6 +183,7 @@ public class Display
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public int getChars(int __l, char[] __o)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
@@ -189,6 +201,7 @@ public class Display
 	 * @return The text color which is used on the display.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public DisplayColor getCurrentTextColor()
 	{
 		throw Debugging.todo();
@@ -200,6 +213,7 @@ public class Display
 	 * @return The default background color.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public DisplayColor getDefaultBackgroundColor()
 	{
 		throw Debugging.todo();
@@ -211,6 +225,7 @@ public class Display
 	 * @return The default lighting color.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public DisplayColor getDefaultLightingColor()
 	{
 		throw Debugging.todo();
@@ -222,6 +237,7 @@ public class Display
 	 * @return The default text color.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public DisplayColor getDefaultTextColor()
 	{
 		throw Debugging.todo();
@@ -240,6 +256,7 @@ public class Display
 	 * within the bounds of the display.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public int getHorizontalScrollingInterval(int __l)
 		throws ArrayIndexOutOfBoundsException
 	{
@@ -254,6 +271,7 @@ public class Display
 	 * @return The display identification.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public String getId()
 	{
 		throw Debugging.todo();
@@ -266,6 +284,7 @@ public class Display
 	 * @return The currently set lighting color.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public DisplayColor getLightingColor()
 	{
 		throw Debugging.todo();
@@ -277,6 +296,7 @@ public class Display
 	 * @return The number of lines the display uses.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public int getNumberOfLines()
 	{
 		throw Debugging.todo();
@@ -288,6 +308,7 @@ public class Display
 	 * @return The current text display.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public String getText()
 	{
 		throw Debugging.todo();
@@ -302,6 +323,7 @@ public class Display
 	 * bounds of the display.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public String getText(int __l)
 		throws ArrayIndexOutOfBoundsException
 	{
@@ -316,6 +338,7 @@ public class Display
 	 * @return The interval used for vertical scrolling.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public int getVerticalScrollingInterval()
 	{
 		throw Debugging.todo();
@@ -327,6 +350,7 @@ public class Display
 	 * @return {@code true} if background colors are supported.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public boolean isBackgroundColorsSupported()
 	{
 		throw Debugging.todo();
@@ -340,6 +364,7 @@ public class Display
 	 * @return {@code true} if the display is built-in.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public boolean isBuiltIn()
 	{
 		throw Debugging.todo();
@@ -354,6 +379,7 @@ public class Display
 	 * hardware.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public boolean isHardwareAssigned()
 	{
 		throw Debugging.todo();
@@ -371,6 +397,7 @@ public class Display
 	 * bounds of the display.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public boolean isHorizontalScrollingEnabled(int __l)
 		throws ArrayIndexOutOfBoundsException
 	{
@@ -384,6 +411,7 @@ public class Display
 	 * @return {@code true} if horizontal scrolling is supported.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public boolean isHorizontalScrollingSupported()
 	{
 		throw Debugging.todo();
@@ -395,6 +423,7 @@ public class Display
 	 * @return {@code true} if the lighting color can be changed.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public boolean isLightingColorsSupported()
 	{
 		throw Debugging.todo();
@@ -406,6 +435,7 @@ public class Display
 	 * @return {@code true} if lighting is supported.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public boolean isLightingSupported()
 	{
 		throw Debugging.todo();
@@ -417,6 +447,7 @@ public class Display
 	 * @return {@code true} if text colors are supported.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public boolean isTextColorsSupported()
 	{
 		throw Debugging.todo();
@@ -428,6 +459,7 @@ public class Display
 	 * @return {@code true} if vertical scrolling is enabled.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public boolean isVerticalScrollingEnabled()
 	{
 		throw Debugging.todo();
@@ -439,6 +471,7 @@ public class Display
 	 * @return {@code true} if vertical scrolling is supported.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public boolean isVerticalScrollingSupported()
 	{
 		throw Debugging.todo();
@@ -456,6 +489,7 @@ public class Display
 	 * @return The color which was used by the display.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public DisplayColor setBackgroundColor(DisplayColor __c)
 	{
 		throw Debugging.todo();
@@ -471,6 +505,7 @@ public class Display
 	 * are negative or exceed the array bounds.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public void setChars(char[] __c, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException
 	{
@@ -489,6 +524,7 @@ public class Display
 	 * are negative or exceed the array bounds.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public void setChars(char[] __c, int __o, int __l, boolean __blink,
 		boolean __inverse)
 		throws ArrayIndexOutOfBoundsException
@@ -508,6 +544,7 @@ public class Display
 	 * bounds of the display.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public void setChars(int __ln, char[] __c, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException
 	{
@@ -528,6 +565,7 @@ public class Display
 	 * bounds of the display.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public void setChars(int __ln, char[] __c, int __o, int __l,
 		boolean __blink, boolean __inverse)
 		throws ArrayIndexOutOfBoundsException
@@ -542,6 +580,7 @@ public class Display
 	 * @return The actual color which has been set.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public DisplayColor setCurrentTextColor(DisplayColor __c)
 	{
 		throw Debugging.todo();
@@ -555,6 +594,7 @@ public class Display
 	 * otherwise {@code false} may unassign it.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public void setHardwareAssigned(boolean __h)
 	{
 		throw Debugging.todo();
@@ -572,6 +612,7 @@ public class Display
 	 * bounds of the display.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public void setHorizontalScrolling(int __l, boolean __e)
 		throws ArrayIndexOutOfBoundsException
 	{
@@ -589,6 +630,7 @@ public class Display
 	 * bounds of the display.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public void setHorizontalScrolling(int __l, boolean __e, boolean __dir)
 		throws ArrayIndexOutOfBoundsException
 	{
@@ -607,6 +649,7 @@ public class Display
 	 * @throws IllegalArgumentException If the interval is negative.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public void setHorizontalScrollingInterval(int __l, int __i)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException
 	{
@@ -623,6 +666,7 @@ public class Display
 	 * @return The actually used color.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public DisplayColor setLightingColor(DisplayColor __l)
 	{
 		throw Debugging.todo();
@@ -634,6 +678,7 @@ public class Display
 	 * @param __t The text to display.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public void setText(String __t)
 	{
 		this.setText(__t, false, false);
@@ -647,6 +692,7 @@ public class Display
 	 * @param __inverse Should characters be inverted, if supported?
 	 * @since 2016/08/30
 	 */
+	@Api
 	public void setText(String __t, boolean __blink, boolean __inverse)
 	{
 		throw Debugging.todo();
@@ -661,6 +707,7 @@ public class Display
 	 * bounds of the display.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public void setText(int __ln, String __t)
 		throws ArrayIndexOutOfBoundsException
 	{
@@ -678,6 +725,7 @@ public class Display
 	 * bounds of the display.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public void setText(int __ln, String __t, boolean __blink,
 		boolean __inverse)
 		throws ArrayIndexOutOfBoundsException
@@ -693,6 +741,7 @@ public class Display
 	 * @param __e If {@code true} then vertical scrolling is enabled.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public void setVerticalScrolling(boolean __e)
 	{
 		throw Debugging.todo();
@@ -706,6 +755,7 @@ public class Display
 	 * otherwise {@code false} scrolls bottom to top.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public void setVerticalScrolling(boolean __e, boolean __dir)
 	{
 		throw Debugging.todo();
@@ -721,6 +771,7 @@ public class Display
 	 * @throws IllegalArgumentException If the interval is negative.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public void setVerticalScrollingInterval(int __ms)
 		throws IllegalArgumentException
 	{
@@ -736,6 +787,7 @@ public class Display
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public static void addDisplayListener(DisplayListener __l)
 		throws NullPointerException
 	{
@@ -763,6 +815,7 @@ public class Display
 	 * the same display multiple times.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public static Iterator<Display> getDisplays(boolean __ks)
 	{
 		throw Debugging.todo();
@@ -777,6 +830,7 @@ public class Display
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public static void removeDisplayListener(DisplayListener __l)
 		throws NullPointerException
 	{

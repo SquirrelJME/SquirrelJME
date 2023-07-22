@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -20,10 +20,8 @@ import cc.squirreljme.jvm.suite.EntryPoints;
 import cc.squirreljme.jvm.suite.InvalidSuiteException;
 import cc.squirreljme.jvm.suite.SuiteInfo;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -219,6 +217,8 @@ public final class SuiteScanner
 				accurateJarIndex, jar);
 			SuiteScanner.__scanIMode(__listener, __numJars, __libs,
 				__nameToJar, __result, accurateJarIndex, jar);
+			SuiteScanner.__scanIModeJVLite2(__listener, __numJars, __libs,
+				__nameToJar, __result, accurateJarIndex, jar);
 		}
 	}
 	
@@ -240,13 +240,7 @@ public final class SuiteScanner
 	{
 		// Try to determine what our JAM would be called
 		String jarName = JarPackageShelf.libraryPath(__jar);
-		String jamName;
-		if (jarName.endsWith(".jar"))
-			jamName = jarName.substring(0, jarName.length() - 4) + ".jam";
-		else if (jarName.endsWith(".JAR"))
-			jamName = jarName.substring(0, jarName.length() - 4) + ".JAM";
-		else
-			jamName = jarName + ".jam";
+		String jamName = SuiteScanner.__siblingByExt(jarName, ".jam");
 		
 		// Determine the name of the JAM file to load
 		JarPackageBracket jam;
@@ -259,6 +253,21 @@ public final class SuiteScanner
 		if (jam == null)
 			return;
 		
+		// Try to locate the scratchpad seed archive
+		JarPackageBracket binarySto;
+		synchronized (__nameToJar)
+		{
+			binarySto = SuiteScanner.__scanIModeScratchPad(__nameToJar,
+				jarName);
+		}
+		
+		// Store where the scratchpad seed should be found
+		Map<String, String> extraSysProps = new LinkedHashMap<>();
+		if (binarySto != null)
+			extraSysProps.put(
+				IModeApplication.SEED_SCRATCHPAD_PREFIX + ".0",
+				JarPackageShelf.libraryPath(binarySto));
+		
 		// Load the ADF/JAM descriptor that describes this application
 		Map<String, String> adfProps = new LinkedHashMap<>();
 		try (InputStream jamIn = JarPackageShelf.openResource(jam,
@@ -268,42 +277,20 @@ public final class SuiteScanner
 			if (jamIn == null)
 				return;
 			
-			// Load in the JAM (Is encoded in Japanese)
-			try (BufferedReader jamBr = new BufferedReader(
-				new InputStreamReader(jamIn, "shift-jis")))
-			{
-				for (;;)
-				{
-					// EOF?
-					String ln = jamBr.readLine();
-					if (ln == null)
-						break;
-					
-					// No equal sign, ignore
-					int eq = ln.indexOf('=');
-					if (eq < 0)
-						continue;
-					
-					// Split into key and value form
-					String key = ln.substring(0, eq).trim();
-					String val = ln.substring(eq + 1).trim();
-					
-					// Store into if the key is valid
-					if (!key.isEmpty())
-						adfProps.put(key, val);
-				}
-			}
+			// Parse by text
+			__AdfUtils__.__parseAdfText(adfProps, jamIn);
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 			return;
-		} 
-			
+		}
+		
 		// Load application
 		try
 		{
-			Application app = new IModeApplication(__jar, __libs, adfProps);
+			Application app = new IModeApplication(__jar, __libs, adfProps,
+				extraSysProps);
 			synchronized (app)
 			{
 				__result.add(app);
@@ -317,6 +304,118 @@ public final class SuiteScanner
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Scans for a JV-Lite2 i-Mode application, which is in binary form.
+	 * 
+	 * @param __listener The listener used for load events.
+	 * @param __nameToJar The name to JAR mapping, used to find the JAM file.
+	 * @param __result The target applications.
+	 * @param __jarDx The JAR index.
+	 * @param __jar The JAR to check.
+	 * @since 2023/04/10
+	 */
+	private static void __scanIModeJVLite2(SuiteScanListener __listener,
+		int __numJars, __Libraries__ __libs,
+		Map<String, JarPackageBracket> __nameToJar,
+		List<Application> __result,
+		int __jarDx, JarPackageBracket __jar)
+	{
+		// We need to locate the binary form of the ADF
+		String jarName = JarPackageShelf.libraryPath(__jar);
+		String adfName = SuiteScanner.__siblingByExt(jarName, ".adf");
+		
+		// Determine the name of the JAM file to load
+		JarPackageBracket binaryAdf;
+		synchronized (__nameToJar)
+		{
+			binaryAdf = __nameToJar.get(adfName);
+		}
+		
+		// If there is no ADF file, this cannot be an i-mode application
+		if (binaryAdf == null)
+			return;
+		
+		// Decode the Binary ADF information
+		Map<String, String> adfProps = new LinkedHashMap<>();
+		try (InputStream binaryAdfIn = JarPackageShelf.openResource(binaryAdf,
+			SuiteScanner._DATA_RESOURCE))
+		{
+			// Missing? Cannot be an i-mode application
+			if (binaryAdfIn == null)
+				return;
+			
+			// Parse using binary format
+			__AdfUtils__.__parseAdfBinary(adfProps, binaryAdfIn);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			return;
+		}
+		
+		// Additional i-mode specific properties?
+		Map<String, String> extraSysProps = new LinkedHashMap<>();
+		
+		// Try to locate the scratchpad seed archive
+		JarPackageBracket binarySto;
+		synchronized (__nameToJar)
+		{
+			binarySto = SuiteScanner.__scanIModeScratchPad(__nameToJar,
+				jarName);
+		}
+		
+		// Store where the scratchpad seed should be found
+		if (binarySto != null)
+			extraSysProps.put(
+				IModeApplication.SEED_SCRATCHPAD_PREFIX + ".0",
+				JarPackageShelf.libraryPath(binarySto));
+		
+		// Load application
+		try
+		{
+			Application app = new IModeApplication(__jar, __libs, adfProps,
+				extraSysProps);
+			synchronized (app)
+			{
+				__result.add(app);
+			}
+			
+			// Indicate that it was scanned
+			if (__listener != null)
+				__listener.scanned(app, __jarDx, __numJars);
+		}
+		catch (InvalidSuiteException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Attempts to locate the scratch pad binary. 
+	 *
+	 * @param __nameToJar The name to Jar mapping.
+	 * @param __jarName The Jar name.
+	 * @return The found scratch pad binary, if found.
+	 * @since 2023/07/21
+	 */
+	private static JarPackageBracket __scanIModeScratchPad(
+		Map<String, JarPackageBracket> __nameToJar, String __jarName)
+		throws NullPointerException
+	{
+		if (__nameToJar == null || __jarName == null)
+			throw new NullPointerException("NARG");
+		
+		// Try this one first...
+		JarPackageBracket maybe = __nameToJar.get(
+			SuiteScanner.__siblingByExt(__jarName, ".sto"));
+		if (maybe != null)
+			return maybe;
+		
+		// Then alternative extension
+		return __nameToJar.get(
+			SuiteScanner.__siblingByExt(__jarName, ".sp"));
 	}
 	
 	/**
@@ -343,7 +442,12 @@ public final class SuiteScanner
 		{
 			// If no manifest exists, might not be a JAR
 			if (rc == null)
+			{
+				Debugging.debugNote("No META-INF/MANIFEST.MF in %s...",
+					JarPackageShelf.libraryPath(__jar));
+				
 				return;
+			}
 			
 			man = new JavaManifest(rc);
 			info = new SuiteInfo(man);
@@ -388,6 +492,31 @@ public final class SuiteScanner
 			default:
 				throw Debugging.oops();
 		}
+	}
+	
+	/**
+	 * Returns a sibling file with the same base name but a differing
+	 * extension.
+	 * 
+	 * @param __jar The other Jar to check.
+	 * @param __ext The extension to map to.
+	 * @return The sibling file based on the extension.
+	 * @since 2023/04/10
+	 */
+	private static String __siblingByExt(String __jar, String __ext)
+	{
+		boolean lower = __jar.endsWith(".jar");
+		boolean upper = __jar.endsWith(".JAR");
+		
+		// Does not end with it? Just append it
+		if (!lower && !upper)
+			return __jar + __ext;
+		
+		// Remove old extension and just append the new one
+		String baseName = __jar.substring(0, __jar.length() - 4);
+		if (upper)
+			return baseName + __ext.toUpperCase();
+		return baseName + __ext;
 	}
 }
 

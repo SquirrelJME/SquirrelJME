@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -318,8 +318,8 @@ public final class JDWPPacket
 			// Ensure this is open
 			this.__checkOpen();
 			
-			// {@squirreljme.error AG0d End of packet reached. 
-			// (The packet size)}
+			/* {@squirreljme.error AG0d End of packet reached. 
+			(The packet size)} */
 			int readPos = this._readPos;
 			if (readPos >= this._length)
 				throw new JDWPException("AG0d " + readPos);
@@ -558,7 +558,7 @@ public final class JDWPPacket
 			}
 			catch (UnsupportedEncodingException __e)
 			{
-				// {@squirreljme.error AG0f UTF-8 not supported?}
+				/* {@squirreljme.error AG0f UTF-8 not supported?} */
 				throw new JDWPException("AG0f", __e);
 			}
 		}
@@ -723,7 +723,7 @@ public final class JDWPPacket
 	{
 		synchronized (this)
 		{
-			// {@squirreljme.error AG05 Cannot reset an open packet.}
+			/* {@squirreljme.error AG05 Cannot reset an open packet.} */
 			if (this._open)
 				throw new JDWPException("AG05");
 			
@@ -1111,7 +1111,7 @@ public final class JDWPPacket
 				bytes = __string.getBytes("utf-8");
 			}
 			
-			// {@squirreljme.error AG0e UTF-8 is not supported?}
+			/* {@squirreljme.error AG0e UTF-8 is not supported?} */
 			catch (UnsupportedEncodingException __e)
 			{
 				throw new JDWPException("AG0e", __e);
@@ -1340,7 +1340,7 @@ public final class JDWPPacket
 	void __checkOpen()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error AG0b Packet not open.}
+		/* {@squirreljme.error AG0b Packet not open.} */
 		if (!this._open)
 			throw new IllegalStateException("AG0b");
 	}
@@ -1355,7 +1355,7 @@ public final class JDWPPacket
 	void __checkType(boolean __isReply)
 		throws IllegalStateException
 	{
-		// {@squirreljme.error AG0c Packet type mismatched. (Requested reply?)}
+		/* {@squirreljme.error AG0c Packet type mismatched. (Requested reply?)} */
 		if (__isReply != this.isReply())
 			throw new IllegalStateException("AG0c " + __isReply);
 	}
@@ -1374,7 +1374,7 @@ public final class JDWPPacket
 	{
 		synchronized (this)
 		{
-			// {@squirreljme.error AG0a Packet is already open.}
+			/* {@squirreljme.error AG0a Packet is already open.} */
 			if (this._open)
 				throw new IllegalStateException("AG0a");
 			

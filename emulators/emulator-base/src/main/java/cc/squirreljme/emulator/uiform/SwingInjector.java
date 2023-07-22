@@ -3,12 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.emulator.uiform;
 
+import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.jvm.mle.brackets.UIDrawableBracket;
 import cc.squirreljme.jvm.mle.brackets.UIFormBracket;
 import cc.squirreljme.jvm.mle.brackets.UIItemBracket;
 import cc.squirreljme.jvm.mle.callbacks.UIFormCallback;
@@ -27,12 +29,13 @@ public class SwingInjector
 	 * @since 2020/10/03
 	 */
 	@Override
-	public void eventKey(UIFormBracket __form, UIItemBracket __item,
+	public void eventKey(UIDrawableBracket __drawable,
 		int __event, int __keyCode, int __modifiers)
 	{
-		UIFormCallback callback = ((SwingForm)__form).callback();
+		UIFormCallback callback = SwingInjector.__drawableCallback(__drawable);
+		
 		if (callback != null)
-			callback.eventKey(__form, __item, __event, __keyCode, __modifiers);
+			callback.eventKey(__drawable, __event, __keyCode, __modifiers);
 	}
 	
 	/**
@@ -40,12 +43,13 @@ public class SwingInjector
 	 * @since 2020/10/03
 	 */
 	@Override
-	public void eventMouse(UIFormBracket __form, UIItemBracket __item,
+	public void eventMouse(UIDrawableBracket __drawable,
 		int __event, int __button, int __x, int __y, int __modifiers)
 	{
-		UIFormCallback callback = ((SwingForm)__form).callback();
+		UIFormCallback callback = SwingInjector.__drawableCallback(__drawable);
+		
 		if (callback != null)
-			callback.eventMouse(__form, __item, __event, __button, __x, __y,
+			callback.eventMouse(__drawable, __event, __button, __x, __y,
 				__modifiers);
 	}
 	
@@ -54,11 +58,11 @@ public class SwingInjector
 	 * @since 2020/10/03
 	 */
 	@Override
-	public void exitRequest(UIFormBracket __form)
+	public void exitRequest(UIDrawableBracket __drawable)
 	{
-		UIFormCallback callback = ((SwingForm)__form).callback();
+		UIFormCallback callback = ((SwingForm)__drawable).callback();
 		if (callback != null)
-			callback.exitRequest(__form);
+			callback.exitRequest(__drawable);
 	}
 	
 	/**
@@ -70,6 +74,7 @@ public class SwingInjector
 		int __sw, int __sh)
 	{
 		UIFormCallback callback = ((SwingForm)__form).callback();
+		
 		if (callback != null)
 			callback.formRefresh(__form, __sx, __sy, __sw, __sh);
 	}
@@ -79,13 +84,14 @@ public class SwingInjector
 	 * @since 2020/10/03
 	 */
 	@Override
-	public void paint(UIFormBracket __form, UIItemBracket __item, int __pf,
+	public void paint(UIDrawableBracket __drawable, int __pf,
 		int __bw, int __bh, Object __buf, int __offset, int[] __pal, int __sx,
 		int __sy, int __sw, int __sh, int __special)
 	{
-		UIFormCallback callback = ((SwingForm)__form).callback();
+		UIFormCallback callback = SwingInjector.__drawableCallback(__drawable);
+		
 		if (callback != null)
-			callback.paint(__form, __item, __pf, __bw, __bh, __buf, __offset,
+			callback.paint(__drawable, __pf, __bw, __bh, __buf, __offset,
 				__pal, __sx, __sy, __sw, __sh, __special);
 	}
 	
@@ -115,5 +121,23 @@ public class SwingInjector
 		if (callback != null)
 			callback.propertyChange(__form, __item, __strProp,
 				__sub, __old, __new);
+	}
+	
+	/**
+	 * Returns the drawable for the callback.
+	 * 
+	 * @param __drawable The drawable to get the callback from.
+	 * @return The callback for the drawable.
+	 * @since 2023/01/23
+	 */
+	private static UIFormCallback __drawableCallback(
+		UIDrawableBracket __drawable)
+	{
+		if (__drawable instanceof SwingForm)
+			return ((SwingForm)__drawable).callback();
+		else if (__drawable instanceof SwingItem)
+			return ((SwingItem)__drawable).callback();
+		else
+			throw Debugging.todo();
 	}
 }

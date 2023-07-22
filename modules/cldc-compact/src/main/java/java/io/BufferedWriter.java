@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -26,6 +27,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 @ImplementationNote("The buffer size is undefined in the class library, " +
 	"therefor due to potential memory limitations the buffer size should " +
 	"be kept small.")
+@Api
 public class BufferedWriter
 	extends Writer
 {
@@ -52,6 +54,7 @@ public class BufferedWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public BufferedWriter(Writer __out)
 		throws NullPointerException
 	{
@@ -70,14 +73,15 @@ public class BufferedWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public BufferedWriter(Writer __out, int __bs)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__out == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ0h Requested a buffer size that is zero or
-		// negative. (The requested buffer size)}
+		/* {@squirreljme.error ZZ0h Requested a buffer size that is zero or
+		negative. (The requested buffer size)} */
 		if (__bs <= 0)
 			throw new IllegalArgumentException(String.format("ZZ0h %d", __bs));
 		
@@ -115,6 +119,7 @@ public class BufferedWriter
 	 * @throws IOException On write errors.
 	 * @since 2018/09/18
 	 */
+	@Api
 	public void newLine()
 		throws IOException
 	{

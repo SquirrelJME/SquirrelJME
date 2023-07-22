@@ -3,13 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.CharArrayCharSequence;
@@ -25,6 +26,7 @@ import java.util.Arrays;
  *
  * @since 2018/09/22
  */
+@Api
 public final class StringBuilder
 	implements Appendable, CharSequence
 {
@@ -43,23 +45,25 @@ public final class StringBuilder
 	 *
 	 * @since 2018/09/22
 	 */
+	@Api
 	public StringBuilder()
 	{
 		this(StringBuilder._DEFAULT_CAPACITY);
 	}
 	
 	/**
-	 * Initailizes with the given capacity.
+	 * Initializes with the given capacity.
 	 *
 	 * @param __c The initial capacity.
 	 * @throws NegativeArraySizeException If the capacity is negative.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public StringBuilder(int __c)
 		throws NegativeArraySizeException
 	{
-		// {@squirreljme.error ZZ1n The initial capacity cannot be negative.
-		// (The initial capacity)}
+		/* {@squirreljme.error ZZ1n The initial capacity cannot be negative.
+		(The initial capacity)} */
 		if (__c < 0)
 			throw new NegativeArraySizeException(
 				String.format("ZZ1n %d", __c));
@@ -77,6 +81,7 @@ public final class StringBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public StringBuilder(String __s)
 		throws NullPointerException
 	{
@@ -92,6 +97,7 @@ public final class StringBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public StringBuilder(CharSequence __cs)
 	{
 		if (__cs == null)
@@ -112,6 +118,7 @@ public final class StringBuilder
 	 * @return {@code this}.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public StringBuilder append(Object __v)
 	{
 		return this.insert(this._at, __v);
@@ -124,6 +131,7 @@ public final class StringBuilder
 	 * @return {@code this}.
 	 * @since 2018/09/22 
 	 */
+	@Api
 	public StringBuilder append(String __v)
 	{
 		if (__v == null)
@@ -139,6 +147,7 @@ public final class StringBuilder
 	 * @return {@code this}.
 	 * @since 2018/09/22 
 	 */
+	@Api
 	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	public StringBuilder append(StringBuffer __v)
 	{
@@ -210,6 +219,7 @@ public final class StringBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public StringBuilder append(char[] __c)
 		throws NullPointerException
 	{
@@ -228,6 +238,7 @@ public final class StringBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public StringBuilder append(char[] __c, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -241,6 +252,7 @@ public final class StringBuilder
 	 * @return {@code this}.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public StringBuilder append(boolean __v)
 	{
 		return this.insert(this._at, __v);
@@ -273,6 +285,7 @@ public final class StringBuilder
 	 * @return {@code this}.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public StringBuilder append(int __v)
 	{
 		return this.insert(this._at, __v);
@@ -285,6 +298,7 @@ public final class StringBuilder
 	 * @return {@code this}.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public StringBuilder append(long __v)
 	{
 		return this.insert(this._at, __v);
@@ -297,6 +311,7 @@ public final class StringBuilder
 	 * @return {@code this}.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public StringBuilder append(float __v)
 	{
 		return this.insert(this._at, __v);
@@ -309,6 +324,7 @@ public final class StringBuilder
 	 * @return {@code this}.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public StringBuilder append(double __v)
 	{
 		return this.insert(this._at, __v);
@@ -320,6 +336,7 @@ public final class StringBuilder
 	 * @return The internal capacity.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public int capacity()
 	{
 		return this._buffer.length;
@@ -338,7 +355,7 @@ public final class StringBuilder
 	public char charAt(int __dx)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ1o Out of bound access. (The index)}
+		/* {@squirreljme.error ZZ1o Out of bound access. (The index)} */
 		if (__dx < 0 || __dx >= this._at)
 			throw new IndexOutOfBoundsException("ZZ1o " + __dx);
 		
@@ -356,6 +373,7 @@ public final class StringBuilder
 	 * {@code __toExclusive}.
 	 * @since 2022/06/29
 	 */
+	@Api
 	public StringBuilder delete(int __fromInclusive, int __toExclusive)
 		throws StringIndexOutOfBoundsException
 	{
@@ -396,6 +414,7 @@ public final class StringBuilder
 	 * the string bounds.
 	 * @since 2022/06/29
 	 */
+	@Api
 	public StringBuilder deleteCharAt(int __dx)
 		throws StringIndexOutOfBoundsException
 	{
@@ -416,6 +435,7 @@ public final class StringBuilder
 	 * the capacity {@code max(__minCapacity, (capacity() * 2) + 2)} is used.
 	 * @since 2022/06/29
 	 */
+	@Api
 	public void ensureCapacity(int __minCapacity)
 	{
 		// Pointless
@@ -427,6 +447,7 @@ public final class StringBuilder
 			this.__buffer(Math.max(__minCapacity, (limit << 1) + 2));
 	}
 	
+	@Api
 	public void getChars(int __a, int __b, char[] __c, int __d)
 	{
 		throw Debugging.todo();
@@ -440,6 +461,7 @@ public final class StringBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/06/29
 	 */
+	@Api
 	public int indexOf(String __s)
 		throws NullPointerException
 	{
@@ -454,6 +476,7 @@ public final class StringBuilder
 	 * @return The index of the sequence or {@code -1} if it is not found.
 	 * @since 2022/06/29
 	 */
+	@Api
 	public int indexOf(String __s, int __index)
 		throws NullPointerException
 	{
@@ -474,6 +497,7 @@ public final class StringBuilder
 	 * @throws IndexOutOfBoundsException If the index is out of bounds.
 	 * @since 2022/06/29
 	 */
+	@Api
 	public StringBuilder insert(int __dx, char[] __c, int __o, int __l)
 	{
 		return this.insert(__dx, new CharArrayCharSequence(__c, __o, __l));
@@ -488,6 +512,7 @@ public final class StringBuilder
 	 * @throws IndexOutOfBoundsException If the index is out of bounds.
 	 * @since 2018/09/29
 	 */
+	@Api
 	public StringBuilder insert(int __dx, Object __v)
 	{
 		return this.insert(__dx, (__v == null ? "null" : __v.toString()));
@@ -502,6 +527,7 @@ public final class StringBuilder
 	 * @throws StringIndexOutOfBoundsException If the index is out of bounds.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public StringBuilder insert(int __dx, String __v)
 		throws StringIndexOutOfBoundsException
 	{
@@ -518,6 +544,7 @@ public final class StringBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/06/29
 	 */
+	@Api
 	public StringBuilder insert(int __dx, char[] __chars)
 		throws StringIndexOutOfBoundsException, NullPointerException
 	{
@@ -536,6 +563,7 @@ public final class StringBuilder
 	 * @throws IndexOutOfBoundsException If the index is out of bounds.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public StringBuilder insert(int __dx, CharSequence __v)
 		throws IndexOutOfBoundsException
 	{
@@ -557,11 +585,12 @@ public final class StringBuilder
 	 * @throws IndexOutOfBoundsException If the index is out of bounds.
 	 * @since 2018/09/22
 	 */
+	@Api
 	public StringBuilder insert(int __dx, CharSequence __v, int __s, int __e)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ1p Cannot insert sequence at a negative
-		// index.}
+		/* {@squirreljme.error ZZ1p Cannot insert sequence at a negative
+		index.} */
 		if (__dx < 0)
 			throw new IndexOutOfBoundsException("ZZ1p");
 		
@@ -578,9 +607,9 @@ public final class StringBuilder
 		int at = this._at;
 		char[] buffer = (at + len > limit ? this.__buffer(len) : this._buffer);
 		
-		// {@squirreljme.error ZZ1q The index of insertion exceeds the
-		// length of the current string. (The insertion index; The string
-		// length)}
+		/* {@squirreljme.error ZZ1q The index of insertion exceeds the
+		length of the current string. (The insertion index; The string
+		length)} */
 		if (__dx > at)
 			throw new IndexOutOfBoundsException(
 				String.format("ZZ1q %d %d", __dx, at));
@@ -611,6 +640,7 @@ public final class StringBuilder
 	 * @throws IndexOutOfBoundsException If the index is not valid.
 	 * @since 2022/06/29
 	 */
+	@Api
 	public StringBuilder insert(int __dx, boolean __v)
 	{
 		return this.insert(__dx, Boolean.valueOf(__v).toString());
@@ -625,11 +655,12 @@ public final class StringBuilder
 	 * @throws IndexOutOfBoundsException If the index is not valid.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public StringBuilder insert(int __dx, char __v)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ1r Cannot insert sequence at a negative
-		// index.}
+		/* {@squirreljme.error ZZ1r Cannot insert sequence at a negative
+		index.} */
 		if (__dx < 0)
 			throw new IndexOutOfBoundsException("ZZ1r");
 		
@@ -638,9 +669,9 @@ public final class StringBuilder
 		int at = this._at;
 		char[] buffer = (at + 1 > limit ? this.__buffer(1) : this._buffer);
 		
-		// {@squirreljme.error ZZ1s The index of insertion exceeds the
-		// length of the current string. (The insertion index; The string
-		// length)}
+		/* {@squirreljme.error ZZ1s The index of insertion exceeds the
+		length of the current string. (The insertion index; The string
+		length)} */
 		if (__dx > at)
 			throw new IndexOutOfBoundsException(String.format(
 				"ZZ1s %d %d", __dx, at));
@@ -670,6 +701,7 @@ public final class StringBuilder
 	 * @throws IndexOutOfBoundsException If the index is not valid.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public StringBuilder insert(int __dx, int __v)
 	{
 		return this.insert(__dx, Long.valueOf(__v).toString());
@@ -684,6 +716,7 @@ public final class StringBuilder
 	 * @throws IndexOutOfBoundsException If the index is not valid.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public StringBuilder insert(int __dx, long __v)
 	{
 		return this.insert(__dx, Long.valueOf(__v).toString());
@@ -698,6 +731,7 @@ public final class StringBuilder
 	 * @throws IndexOutOfBoundsException If the index is not valid.
 	 * @since 2022/06/29
 	 */
+	@Api
 	public StringBuilder insert(int __dx, float __v)
 	{
 		return this.insert(__dx, Float.valueOf(__v).toString());
@@ -712,16 +746,19 @@ public final class StringBuilder
 	 * @throws IndexOutOfBoundsException If the index is not valid.
 	 * @since 2022/06/29
 	 */
+	@Api
 	public StringBuilder insert(int __dx, double __v)
 	{
 		return this.insert(__dx, Double.valueOf(__v).toString());
 	}
 	
+	@Api
 	public int lastIndexOf(String __s)
 	{
 		return this.lastIndexOf(__s, Integer.MAX_VALUE);
 	}
 	
+	@Api
 	public int lastIndexOf(String __s, int __fromDx)
 	{
 		throw Debugging.todo();
@@ -739,6 +776,7 @@ public final class StringBuilder
 		return this._at;
 	}
 	
+	@Api
 	public StringBuilder replace(int __a, int __b, String __c)
 	{
 		throw Debugging.todo();
@@ -750,6 +788,7 @@ public final class StringBuilder
 	 * @return {@code this}.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public StringBuilder reverse()
 	{
 		// Get the buffer
@@ -778,6 +817,7 @@ public final class StringBuilder
 	 * of this {@link StringBuilder}.
 	 * @since 2022/06/29
 	 */
+	@Api
 	public void setCharAt(int __dx, char __c)
 		throws IndexOutOfBoundsException
 	{
@@ -798,13 +838,14 @@ public final class StringBuilder
 	 * @throws IndexOutOfBoundsException If the length is negative.
 	 * @since 2018/10/13
 	 */
+	@Api
 	@ImplementationNote("This does not actually even pad NULs it just " +
 		"sets the length or regrows the buffer as needed.")
 	public void setLength(int __nl)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ1t Attempt to use a length of a negative
-		// size.}
+		/* {@squirreljme.error ZZ1t Attempt to use a length of a negative
+		size.} */
 		if (__nl < 0)
 			throw new IndexOutOfBoundsException("ZZ1t");
 		
@@ -851,6 +892,7 @@ public final class StringBuilder
 	 * are not within the string bounds.
 	 * @since 2019/05/11
 	 */
+	@Api
 	public String substring(int __s)
 		throws StringIndexOutOfBoundsException
 	{
@@ -868,10 +910,11 @@ public final class StringBuilder
 	 * are not within the string bounds.
 	 * @since 2019/05/11
 	 */
+	@Api
 	public String substring(int __s, int __e)
 		throws StringIndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ1u String index out of bounds.}
+		/* {@squirreljme.error ZZ1u String index out of bounds.} */
 		int len = this._at;
 		if (__s < 0 || __e < 0 || __s > __e || __s > len || __e > len)
 			throw new StringIndexOutOfBoundsException("ZZ1u");
@@ -900,6 +943,7 @@ public final class StringBuilder
 	 * 
 	 * @since 2022/06/29
 	 */
+	@Api
 	public void trimToSize()
 	{
 		char[] buffer = this._buffer;
@@ -918,6 +962,7 @@ public final class StringBuilder
 	 * @return The buffer.
 	 * @since 2018/09/23
 	 */
+	@Api
 	private char[] __buffer(int __l)
 	{
 		// Get buffer properties

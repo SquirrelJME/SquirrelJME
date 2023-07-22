@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -21,14 +21,17 @@ package cc.squirreljme.jvm.mle.constants;
 public interface UIItemPosition
 {
 	/** The left command button. */
+	@Deprecated
 	byte LEFT_COMMAND =
 		-1;
 	
 	/** The right command button. */
+	@Deprecated
 	byte RIGHT_COMMAND =
 		-2;
 	
 	/** The main title which is at the top of the form always. */
+	@Deprecated
 	byte TITLE =
 		-3;
 	
@@ -36,6 +39,7 @@ public interface UIItemPosition
 	 * The ticker position which is always below the title, a scrolling effect
 	 * may happen on the item.
 	 */
+	@Deprecated
 	byte TICKER =
 		-4;
 	

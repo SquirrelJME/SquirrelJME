@@ -3,13 +3,14 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.lcdui.mle;
 
 import cc.squirreljme.jvm.mle.UIFormShelf;
+import cc.squirreljme.jvm.mle.brackets.UIDisplayBracket;
 import cc.squirreljme.jvm.mle.constants.UIMetricType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -73,7 +74,10 @@ public final class UIBackendFactory
 		boolean isForcing = (forceFallback || forceHeadless);
 		
 		// Use native forms if supported unless we are forcing other options
-		if (0 != UIFormShelf.metric(UIMetricType.UIFORMS_SUPPORTED) &&
+		UIDisplayBracket[] displays = UIFormShelf.displays();
+		if (displays != null && displays.length > 0 &&
+			0 != UIFormShelf.metric(displays[0],
+				UIMetricType.UIFORMS_SUPPORTED) && 
 			!isForcing)
 			rv = new NativeUIBackend();
 		
@@ -91,8 +95,8 @@ public final class UIBackendFactory
 			// and the only have to have graphics is to fake it
 			if (forceHeadless)
 			{
-				// {@squirreljme.error EB33 Headless display not permitted
-				// at this current time.}
+				/* {@squirreljme.error EB33 Headless display not permitted
+				at this current time.} */
 				if (!__allowHeadless)
 					throw new IllegalStateException("EB33");
 				

@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 
 /**
@@ -17,6 +18,7 @@ import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
  *
  * @since 2019/01/20
  */
+@Api
 public abstract class InputStream
 	implements Closeable
 {
@@ -32,6 +34,7 @@ public abstract class InputStream
 	 * @throws IOException On read errors.
 	 * @since 2018/11/06
 	 */
+	@Api
 	public abstract int read()
 		throws IOException;
 	
@@ -45,6 +48,7 @@ public abstract class InputStream
 	 */
 	@SuppressWarnings("RedundantThrows")
 	@ProgrammerTip("The base implementation always returns 0.")
+	@Api
 	public int available()
 		throws IOException
 	{
@@ -72,6 +76,7 @@ public abstract class InputStream
 	 * @since 2019/01/20
 	 */
 	@ProgrammerTip("The base implementation does nothing.")
+	@Api
 	public void mark(int __l)
 	{
 	}
@@ -83,6 +88,7 @@ public abstract class InputStream
 	 * @since 2019/01/20
 	 */
 	@ProgrammerTip("The base implementation always returns false.")
+	@Api
 	public boolean markSupported()
 	{
 		return false;
@@ -98,6 +104,7 @@ public abstract class InputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
+	@Api
 	public int read(byte[] __b)
 		throws IOException, NullPointerException
 	{
@@ -139,6 +146,7 @@ public abstract class InputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/06
 	 */
+	@Api
 	public int read(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
@@ -174,10 +182,11 @@ public abstract class InputStream
 	 * invalidated by reading more than the limit bytes.
 	 * @since 2019/01/20
 	 */
+	@Api
 	public void reset()
 		throws IOException
 	{
-		// {@squirreljme.error ZZ0n Reset is not supported.}
+		/* {@squirreljme.error ZZ0n Reset is not supported.} */
 		throw new IOException("ZZ0n");
 	}
 	
@@ -194,6 +203,7 @@ public abstract class InputStream
 	 * @throws IOException On read errors.
 	 * @since 2019/01/20
 	 */
+	@Api
 	@ProgrammerTip("The base implementation allocates an array and reads " +
 		"into that array until all bytes have been skipped.")
 	public long skip(long __n)

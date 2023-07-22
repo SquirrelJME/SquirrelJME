@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -46,11 +46,11 @@ public final class IPAddress
 	public IPAddress(String __h, int __p)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EC0c IP port out of range. (The port)}
+		/* {@squirreljme.error EC0c IP port out of range. (The port)} */
 		if (__p != IPAddress.ASSIGNED_PORT && __p < 0 || __p > 65535)
 			throw new IllegalArgumentException("EC0c " + __p);
 		
-		// {@squirreljme.error EC0d No IP address was specified.}
+		/* {@squirreljme.error EC0d No IP address was specified.} */
 		if (__h == null && __p == IPAddress.ASSIGNED_PORT)
 			throw new IllegalArgumentException("EC0d");
 		
@@ -65,8 +65,8 @@ public final class IPAddress
 			String checkpart;
 			if ((isvsix = __h.startsWith("[")))
 			{
-				// {@squirreljme.error EC0e IPv6 address must end in bracket.
-				// (The hostname)}
+				/* {@squirreljme.error EC0e IPv6 address must end in bracket.
+				(The hostname)} */
 				if (!__h.endsWith("]"))
 					throw new IllegalArgumentException("EC0e " + __h);
 				
@@ -83,8 +83,8 @@ public final class IPAddress
 			{
 				int c = checkpart.charAt(i);
 				
-				// {@squirreljme.error EC0f Hostname has an invalid
-				// character. (The hostname)}
+				/* {@squirreljme.error EC0f Hostname has an invalid
+				character. (The hostname)} */
 				if (!((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') ||
 					c == '-' || c == '.' || (isvsix && c == ':')))
 					throw new IllegalArgumentException("EC0f " + __h);
@@ -171,8 +171,8 @@ public final class IPAddress
 		if (__part == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EC0g IP Address must start with double
-		// slash. (The URI part)}
+		/* {@squirreljme.error EC0g IP Address must start with double
+		slash. (The URI part)} */
 		if (!__part.startsWith("//"))
 			throw new IllegalArgumentException("EC0g " + __part);
 		
@@ -219,7 +219,7 @@ public final class IPAddress
 					Integer.parseInt(__s.substring(col + 1), 10));
 		}
 		
-		// {@squirreljme.error EC0h Invalid port number. (The URI part)}
+		/* {@squirreljme.error EC0h Invalid port number. (The URI part)} */
 		catch (NumberFormatException e)
 		{
 			throw new IllegalArgumentException("EC0h " + __s, e);

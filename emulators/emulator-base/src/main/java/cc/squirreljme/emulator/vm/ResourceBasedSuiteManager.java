@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -112,7 +112,7 @@ public final class ResourceBasedSuiteManager
 			return libs;
 		}
 		
-		// {@squirreljme.error AK01 Could not read the library list.}
+		/* {@squirreljme.error AK01 Could not read the library list.} */
 		catch (IOException e)
 		{
 			throw new RuntimeException("AK01", e);

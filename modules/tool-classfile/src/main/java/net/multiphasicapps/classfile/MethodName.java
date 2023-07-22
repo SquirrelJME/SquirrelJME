@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -38,8 +38,8 @@ public final class MethodName
 			{
 				char c = __s.charAt(i);
 				
-				// {@squirreljme.error JC3n Method names cannot contain less
-				// than or greater than signs. (The method name)}
+				/* {@squirreljme.error JC3n Method names cannot contain less
+				than or greater than signs. (The method name)} */
 				if (c == '<' || c == '>')
 					throw new InvalidClassFormatException(
 						String.format("JC3n %s", __s));

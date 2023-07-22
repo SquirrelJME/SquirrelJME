@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is the base list for classes which are optimized for sequential and
@@ -16,6 +18,7 @@ package java.util;
  * @param <E> The element to store in the list.
  * @since 2018/10/29
  */
+@Api
 public abstract class AbstractSequentialList<E>
 	extends AbstractList<E>
 {
@@ -24,6 +27,7 @@ public abstract class AbstractSequentialList<E>
 	 *
 	 * @since 2018/10/29
 	 */
+	@Api
 	protected AbstractSequentialList()
 	{
 	}

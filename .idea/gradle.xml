@@ -8,7 +8,7 @@
         <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleJvm" value="11.0.5" />
+        <option name="gradleJvm" value="liberica-11" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
@@ -44,7 +44,6 @@
             <option value="$PROJECT_DIR$/modules/gcf" />
             <option value="$PROJECT_DIR$/modules/io" />
             <option value="$PROJECT_DIR$/modules/io-file" />
-            <option value="$PROJECT_DIR$/modules/jblend-api" />
             <option value="$PROJECT_DIR$/modules/json" />
             <option value="$PROJECT_DIR$/modules/launcher" />
             <option value="$PROJECT_DIR$/modules/lcdui-demo" />
@@ -57,6 +56,7 @@
             <option value="$PROJECT_DIR$/modules/meep-key" />
             <option value="$PROJECT_DIR$/modules/meep-liblets" />
             <option value="$PROJECT_DIR$/modules/meep-lui" />
+            <option value="$PROJECT_DIR$/modules/meep-lui-lcdui" />
             <option value="$PROJECT_DIR$/modules/meep-midlet" />
             <option value="$PROJECT_DIR$/modules/meep-power" />
             <option value="$PROJECT_DIR$/modules/meep-provisioning" />
@@ -64,18 +64,29 @@
             <option value="$PROJECT_DIR$/modules/meep-securityframework" />
             <option value="$PROJECT_DIR$/modules/meep-swm" />
             <option value="$PROJECT_DIR$/modules/midp-lcdui" />
-            <option value="$PROJECT_DIR$/modules/nokia-api" />
-            <option value="$PROJECT_DIR$/modules/ntt-docomo-doja-api" />
-            <option value="$PROJECT_DIR$/modules/ntt-docomo-star-api" />
             <option value="$PROJECT_DIR$/modules/opengles" />
             <option value="$PROJECT_DIR$/modules/profile-meep" />
-            <option value="$PROJECT_DIR$/modules/sprint-api" />
             <option value="$PROJECT_DIR$/modules/squirrel-quarrel" />
+            <option value="$PROJECT_DIR$/modules/std-apps-core" />
+            <option value="$PROJECT_DIR$/modules/std-apps-core-lcdui" />
             <option value="$PROJECT_DIR$/modules/tac" />
             <option value="$PROJECT_DIR$/modules/tango-icon-theme" />
             <option value="$PROJECT_DIR$/modules/tool-classfile" />
             <option value="$PROJECT_DIR$/modules/tool-manifest-writer" />
-            <option value="$PROJECT_DIR$/modules/vodafone-api" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-danger-hiptop" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-jblend" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-jphone" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-kwisf-wipi" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-lg-mmpp" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-mascot-capsule-3d" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-nokia" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-ntt-docomo-doja" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-ntt-docomo-star" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-samsung" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-siemens" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-skt" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-sprintpcs" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-vodafone" />
             <option value="$PROJECT_DIR$/modules/wireless-messaging" />
             <option value="$PROJECT_DIR$/modules/zip" />
             <option value="$PROJECT_DIR$/tools" />

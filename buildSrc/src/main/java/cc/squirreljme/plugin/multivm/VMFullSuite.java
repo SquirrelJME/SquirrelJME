@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import javax.inject.Inject;
 import lombok.Getter;
 import org.gradle.api.DefaultTask;
@@ -21,35 +22,28 @@ import org.gradle.api.tasks.Internal;
  */
 public class VMFullSuite
 	extends DefaultTask
-	implements VMExecutableTask
+	implements VMBaseTask, VMExecutableTask
 {
-	/** The source set used. */
+	/** The source target classifier. */
 	@Internal
 	@Getter
-	public final String sourceSet;
-	
-	/** The virtual machine type. */
-	@Internal
-	@Getter
-	public final VMSpecifier vmType;
+	protected final SourceTargetClassifier classifier;
 	
 	/**
 	 * Initializes the full suite task.
 	 * 
-	 * @param __sourceSet The source set used.
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The target classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/10/17
 	 */
 	@Inject
-	public VMFullSuite(String __sourceSet, VMSpecifier __vmType)
+	public VMFullSuite(SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__vmType == null || __sourceSet == null)
+		if (__classifier == null)
 			throw new NullPointerException("NARG");
 		
-		this.sourceSet = __sourceSet;
-		this.vmType = __vmType;
+		this.classifier = __classifier;
 		
 		// Runs the entire API/Library suite of SquirrelJME to run a given
 		// application
@@ -61,11 +55,11 @@ public class VMFullSuite
 		this.getOutputs().upToDateWhen(new AlwaysFalse());
 		
 		// This depends on everything!
-		this.dependsOn(
-			new VMFullSuiteDepends(this, __sourceSet, __vmType),
-			new VMEmulatorDependencies(this, __vmType));
+		this.dependsOn(new VMFullSuiteDepends(this, __classifier),
+			new VMEmulatorDependencies(this,
+				__classifier.getTargetClassifier()));
 		
 		// Actual running of everything
-		this.doLast(new VMFullSuiteTaskAction(__sourceSet, __vmType));
+		this.doLast(new VMFullSuiteTaskAction(__classifier));
 	}
 }

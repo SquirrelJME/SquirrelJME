@@ -3,33 +3,38 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
+import java.lang.ref.WeakReference;
 
+/**
+ * This is a variant of {@link HashMap} which is backed by keys that are
+ * {@link WeakReference}s.
+ * 
+ * @param <K> The key type.
+ * @param <V> The value type.
+ * @since 2023/02/09
+ */
+@Api
 public class WeakHashMap<K, V>
 	extends AbstractMap<K, V>
-	implements Map<K, V>
 {
-	/** The default capacity. */
-	private static final int _DEFAULT_CAPACITY =
-		16;
-	
-	/** The default load factor. */
-	private static final float _DEFAULT_LOAD =
-		0.75F;
+	/** Internal map. */
+	private final __BucketMap__<__WeakHashMapKey__<K>, V> _map;
 	
 	/** The load factor. */
 	private final float _load;
 	
-	/** This is used to clear keys when they are collected. */
-	private final ReferenceQueue<K> _rq =
-		new ReferenceQueue<>();
+	/** Entry set cache. */
+	private volatile Reference<Set<Entry<K, V>>> _entrySetCache; 
 	
 	/**
 	 * Initializes the weak hash map with the given initial capacity and load
@@ -41,23 +46,26 @@ public class WeakHashMap<K, V>
 	 * load factor is not positive.
 	 * @since 2016/04/19
 	 */
+	@Api
 	public WeakHashMap(int __icap, float __load)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ33 The initial capacity of the weak
-		// hash map is negative. (The negative initial capacity)}
+		/* {@squirreljme.error ZZ33 The initial capacity of the weak
+		hash map is negative. (The negative initial capacity)} */
 		if (__icap < 0)
 			throw new IllegalArgumentException(String.format("ZZ33 %d",
 				__icap));
 		
-		// {@squirreljme.error ZZ34 The load factor of the weak hash map is
-		// not positive. (The non-positive load factor)}
+		/* {@squirreljme.error ZZ34 The load factor of the weak hash map is
+		not positive. (The non-positive load factor)} */
 		if (__load <= 0.0F)
 			throw new IllegalArgumentException(String.format("ZZ34 %f",
 				__load));
 		
 		// Setup
 		this._load = __load;
+		this._map = new __BucketMap__<>(false, false,
+			__icap, __load);
 	}
 	
 	/**
@@ -67,10 +75,11 @@ public class WeakHashMap<K, V>
 	 * @throws IllegalArgumentException If the capacity is negative.
 	 * @since 2016/04/19
 	 */
+	@Api
 	public WeakHashMap(int __icap)
 		throws IllegalArgumentException
 	{
-		this(__icap, WeakHashMap._DEFAULT_LOAD);
+		this(__icap, __BucketMap__._DEFAULT_LOAD);
 	}
 	
 	/**
@@ -79,9 +88,10 @@ public class WeakHashMap<K, V>
 	 *
 	 * @since 2016/04/19
 	 */
+	@Api
 	public WeakHashMap()
 	{
-		this(WeakHashMap._DEFAULT_CAPACITY, WeakHashMap._DEFAULT_LOAD);
+		this(__BucketMap__._DEFAULT_CAPACITY, __BucketMap__._DEFAULT_LOAD);
 	}
 	
 	/**
@@ -92,90 +102,77 @@ public class WeakHashMap<K, V>
 	 * @throws NullPointerException If no map was specified.
 	 * @since 2016/04/19
 	 */
+	@Api
 	public WeakHashMap(Map<? extends K, ? extends V> __a)
 	{
-		// {@squirreljme.error ZZ35 No map to copy data from was specified.}
+		/* {@squirreljme.error ZZ35 No map to copy data from was specified.} */
 		if (__a == null)
 			throw new NullPointerException("ZZ35");
 		
 		// Setup initial map
-		this._load = WeakHashMap._DEFAULT_LOAD;
+		this._load = __BucketMap__._DEFAULT_LOAD;
+		this._map = new __BucketMap__<>(false, false,
+			__BucketMap__._DEFAULT_CAPACITY, __BucketMap__._DEFAULT_LOAD);
 		
 		// Add all entries to it
-		for (Map.Entry<? extends K, ? extends V> e : __a.entrySet())
-			this.put(e.getKey(), e.getValue());
+		this.putAll(__a);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/02/09
+	 */
 	@Override
 	public void clear()
 	{
-		throw Debugging.todo();
+		this._map.clear();
 	}
 	
 	@Override
-	public boolean containsKey(Object __a)
+	public Object clone()
 	{
 		throw Debugging.todo();
 	}
 	
-	@Override
-	public boolean containsValue(Object __a)
-	{
-		throw Debugging.todo();
-	}
-	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/02/09
+	 */
 	@Override
 	public Set<Map.Entry<K, V>> entrySet()
 	{
-		throw Debugging.todo();
+		Reference<Set<Entry<K, V>>> ref = this._entrySetCache;
+		Set<Map.Entry<K, V>> rv;
+		
+		if (ref == null || (rv = ref.get()) == null)
+		{
+			rv = new __WeakHashMapEntrySet__<K, V>(
+				this._map.entrySet());
+			this._entrySetCache = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/02/09
+	 */
 	@Override
-	public V get(Object __key)
+	public V put(K __key, V __value)
 	{
-		throw Debugging.todo();
+		return this._map.putEntry(new __WeakHashMapKey__<K>(__key))
+			.setValue(__value);
 	}
 	
-	@Override
-	public boolean isEmpty()
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public Set<K> keySet()
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public V put(K __a, V __b)
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public void putAll(Map<? extends K, ? extends V> __a)
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public V remove(Object __a)
-	{
-		throw Debugging.todo();
-	}
-	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/02/09
+	 */
 	@Override
 	public int size()
 	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public Collection<V> values()
-	{
-		throw Debugging.todo();
+		return this._map._size;
 	}
 }
 

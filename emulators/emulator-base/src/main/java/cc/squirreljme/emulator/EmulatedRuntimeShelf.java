@@ -3,7 +3,7 @@
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -21,6 +21,24 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
  */
 public class EmulatedRuntimeShelf
 {
+	/**
+	 * Same as {@link RuntimeShelf#systemEnv(String)}.
+	 * 
+	 * @param __key The environment variable key.
+	 * @return The value of the variable if it is set, otherwise {@code null}.
+	 * @throws MLECallError If key is {@code null}.
+	 * @since 2023/02/02
+	 */
+	@SuppressWarnings("CallToSystemGetenv")
+	public static String systemEnv(String __key)
+		throws MLECallError
+	{
+		if (__key == null)
+			throw new MLECallError("No key specified.");
+		
+		return System.getenv(__key);
+	}
+	
 	/**
 	 * Same as {@link RuntimeShelf#vmDescription(int)}.
 	 *

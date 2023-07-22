@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.runtime.cldc.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -17,6 +18,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2018/10/29
  */
+@SquirrelJMEVendorApi
 public final class UncaughtExceptionHandler
 {
 	/** Exit status for when this is hit. */
@@ -39,6 +41,7 @@ public final class UncaughtExceptionHandler
 	 * @param __t The throwable to handle.
 	 * @since 2018/10/29
 	 */
+	@SquirrelJMEVendorApi
 	public static void handle(Throwable __t)
 	{
 		// Make sure this does not cause the thread to die again

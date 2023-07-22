@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -66,11 +66,11 @@ public class TestCanvasKeyTyping
 	private void __sendKey(UIFormCallback __injector, UIFormBracket __form,
 		UIItemBracket __item, int __c)
 	{
-		__injector.eventKey(__form, __item, UIKeyEventType.KEY_PRESSED,
+		__injector.eventKey(__item, UIKeyEventType.KEY_PRESSED,
 			__c, 0);
-		__injector.eventKey(__form, __item, UIKeyEventType.KEY_REPEATED,
+		__injector.eventKey(__item, UIKeyEventType.KEY_REPEATED,
 			__c, 0);
-		__injector.eventKey(__form, __item, UIKeyEventType.KEY_RELEASE,
+		__injector.eventKey(__item, UIKeyEventType.KEY_RELEASE,
 			__c, 0);
 	}
 }

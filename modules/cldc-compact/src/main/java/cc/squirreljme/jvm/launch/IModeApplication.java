@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -33,21 +33,25 @@ import java.util.Objects;
 public class IModeApplication
 	extends Application
 {
-	/** Property for the scratch pad sizes. */
-	public static final String SCRATCH_PAD_PROPERTY =
-		"cc.squirreljme.imode.scratchpads";
+	/** The prefix for ADF properties. */
+	public static final String ADF_PROPERTY_PREFIX =
+		"cc.squirrlejme.imode.adf";
 	
 	/** Property for the application name. */
 	public static final String NAME_PROPERTY =
 		"cc.squirreljme.imode.name";
 	
+	/** Property for the scratch pad sizes. */
+	public static final String SCRATCH_PAD_PROPERTY =
+		"cc.squirreljme.imode.scratchpads";
+	
+	/** Initial seed for the scratch pad. */
+	public static final String SEED_SCRATCHPAD_PREFIX =
+		"cc.squirreljme.imode.seedscratchpad";
+	
 	/** Property for the application vendor. */
 	public static final String VENDOR_PROPERTY =
 		"cc.squirreljme.imode.vendor";
-	
-	/** The prefix for ADF properties. */
-	public static final String ADF_PROPERTY_PREFIX =
-		"cc.squirrlejme.imode.adf";
 	
 	/** Boot class for DoJa. */
 	private static final String _DOJA_BOOT_CLASS =
@@ -57,48 +61,75 @@ public class IModeApplication
 	private static final String _STAR_BOOT_CLASS =
 		"com.docomostar.__StarAppLaunch__";
 	
-	/** The application name. */
-	private static final String _APP_NAME =
-		"AppName";
-	
 	/** The application launch class. */
-	private static final String _APP_CLASS =
+	static final String _APP_CLASS =
 		"AppClass";
 	
-	/** Application parameters. */
-	private static final String _APP_PARAMS =
-		"AppParam";
-	
-	/** Application type (Star). */
-	private static final String _APP_TYPE =
-		"AppType";
-	
-	/** The configuration to use. */
-	private static final String _CONFIGURATION_VER =
-		"Configurationver";
-	
-	/** KVM Version, same as {@link #_CONFIGURATION_VER}. */
-	private static final String _KVM_VER =
-		"KvmVer";
-	
-	/** Profile version (DoJa 2.0+). */
-	private static final String _PROFILE_VER =
-		"ProfileVer";
-	
 	/** Application icon. */
-	private static final String _APP_ICON =
+	static final String _APP_ICON =
 		"AppIcon";
 	
-	/** Scratch pad sizes. */
-	private static final String _SP_SIZE =
-		"SPsize";
+	/** The application name. */
+	static final String _APP_NAME =
+		"AppName";
+	
+	/** Application parameters. */
+	static final String _APP_PARAMS =
+		"AppParam";
+	
+	/** Application size of the Jar. */
+	static final String _APP_SIZE =
+		"AppSize";
+	
+	/** Application tracing enabled? */
+	static final String _APP_TRACE =
+		"AppTrace";
+	
+	/** Application type (Star). */
+	static final String _APP_TYPE =
+		"AppType";
+	
+	/** Application version. */
+	static final String _APP_VERSION =
+		"AppVer";
+	
+	/** The configuration to use. */
+	static final String _CONFIGURATION_VER =
+		"Configurationver";
 	
 	/** Draw area. */
-	private static final String _DRAW_AREA =
+	static final String _DRAW_AREA =
 		"DrawArea";
+	
+	/** KVM Version, same as {@link #_CONFIGURATION_VER}. */
+	static final String _KVM_VER =
+		"KvmVer";
+	
+	/** Last modified time. */
+	static final String _LAST_MODIFIED =
+		"LastModified";
+	
+	/** Launch at given time. */
+	static final String _LAUNCH_AT =
+		"LaunchAt";
+	
+	/** Package URL. */
+	static final String _PACKAGE_URL =
+		"PackageURL";
+	
+	/** Profile version (DoJa 2.0+). */
+	static final String _PROFILE_VER =
+		"ProfileVer";
+	
+	/** Scratch pad sizes. */
+	static final String _SP_SIZE =
+		"SPsize";
 	
 	/** ADF Properties. */
 	private final Map<String, String> _adfProps;
+	
+	/** Extra system properties. */
+	private final Map<String, String> _extraSysProps;
 	
 	/**
 	 * The application to load.
@@ -114,9 +145,28 @@ public class IModeApplication
 		Map<String, String> __adfProps)
 		throws InvalidSuiteException, NullPointerException
 	{
+		this(__jar, __libs, __adfProps, null);
+	}
+	
+	/**
+	 * The application to load.
+	 *
+	 * @param __jar The JAR used.
+	 * @param __libs The libraries to map.
+	 * @param __adfProps Properties for the ADF/JAM.
+	 * @param __sysProps Extra system properties.
+	 * @throws InvalidSuiteException If this suite is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2023/04/13
+	 */
+	IModeApplication(JarPackageBracket __jar, __Libraries__ __libs,
+		Map<String, String> __adfProps, Map<String, String> __sysProps)
+		throws InvalidSuiteException, NullPointerException
+	{
 		super(__jar, __libs);
 		
 		this._adfProps = __adfProps;
+		this._extraSysProps = __sysProps;
 		
 		if (!__adfProps.containsKey(IModeApplication._APP_NAME) ||
 			!__adfProps.containsKey(IModeApplication._APP_CLASS))
@@ -259,6 +309,11 @@ public class IModeApplication
 	{
 		Map<String, String> adfProps = this._adfProps;
 		Map<String, String> rv = new LinkedHashMap<>();
+		
+		// Any base system properties to be added
+		Map<String, String> extraSysProps = this._extraSysProps;
+		if (extraSysProps != null && !extraSysProps.isEmpty())
+			rv.putAll(extraSysProps);
 		
 		// Application name and vendor, needed for RMS
 		String nameProp = Objects.toString(

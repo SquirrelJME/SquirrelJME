@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -188,15 +188,15 @@ public final class EnforcedDrawingAreaGraphics
 	 * @since 2018/12/02
 	 */
 	@Override
-	public final void drawArc(int __x, int __y, int __w, int __h, int __sa,
-		int __aa)
+	public final void drawArc(int __x, int __y, int __w, int __h, int __startAngle,
+		int __arcAngle)
 	{
 		// Initialize?
 		if (!this._beeninit)
 			this.initialize();
 		
 		this.graphics.drawArc(this._dx + __x, this._dy + __y,
-			__w, __h, __sa, __aa);
+			__w, __h, __startAngle, __arcAngle);
 	}
 	
 	/**
@@ -435,15 +435,15 @@ public final class EnforcedDrawingAreaGraphics
 	 * @since 2018/12/02
 	 */
 	@Override
-	public final void fillArc(int __x, int __y, int __w, int __h, int __sa,
-		int __aa)
+	public final void fillArc(int __x, int __y, int __w, int __h, int __startAngle,
+		int __arcAngle)
 	{
 		// Initialize?
 		if (!this._beeninit)
 			this.initialize();
 		
 		this.graphics.fillArc(this._dx + __x, this._dy + __y,
-			__w, __h, __sa, __aa);
+			__w, __h, __startAngle, __arcAngle);
 	}
 	
 	/**

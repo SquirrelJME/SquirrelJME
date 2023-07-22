@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.MatchResult;
 import cc.squirreljme.jvm.suite.SuiteInfo;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,9 +34,11 @@ import net.multiphasicapps.collections.EmptyIterator;
  *
  * @since 2016/06/24
  */
+@Api
 public class Suite
 {
 	/** This is a suite that represents the system. */
+	@Api
 	public static Suite SYSTEM_SUITE =
 		new Suite(Suite.class);
 	
@@ -76,6 +79,7 @@ public class Suite
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/08
 	 */
+	@Api
 	Suite(String __n)
 		throws NullPointerException
 	{
@@ -117,6 +121,7 @@ public class Suite
 	 * an empty iteration.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public Iterator<String> getAttributes()
 	{
 		throw Debugging.todo();
@@ -141,6 +146,7 @@ public class Suite
 	 * found. The system suite always returns null.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public String getAttributeValue(String __a)
 	{
 		// System suite always returns null
@@ -163,6 +169,7 @@ public class Suite
 	 * always returns an empty iterator.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public Iterator<Suite> getDependencies()
 	{
 		throw Debugging.todo();
@@ -207,6 +214,7 @@ public class Suite
 	 * raw byte array then this will return null.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public String getDownloadUrl()
 	{
 		throw Debugging.todo();
@@ -228,6 +236,7 @@ public class Suite
 	 * in the manifest. The system suite always returns an empty iterator.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public Iterator<String> getMIDlets()
 	{
 		// System suite always returns null
@@ -265,6 +274,7 @@ public class Suite
 	 * @return The suite name. The system suite always returns null.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public String getName()
 	{
 		// System suite always returns null
@@ -281,6 +291,7 @@ public class Suite
 	 * {@link SuiteType#SYSTEM}.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public SuiteType getSuiteType()
 	{
 		// Is system suite
@@ -313,6 +324,7 @@ public class Suite
 	 * @return The vendor of this suite. The system suite always returns null.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public String getVendor()
 	{
 		// System suite always returns null
@@ -328,6 +340,7 @@ public class Suite
 	 * @return The version of this suite. The system suite always returns null.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public String getVersion()
 	{
 		// System suite always returns null
@@ -358,6 +371,7 @@ public class Suite
 	 * returns {@code true}.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public boolean isInstalled()
 	{
 		throw Debugging.todo();
@@ -378,6 +392,7 @@ public class Suite
 	 * @return {@code true} if the flag is set.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public boolean isSuiteState(SuiteStateFlag __f)
 	{
 		throw Debugging.todo();
@@ -413,6 +428,7 @@ public class Suite
 	 * returns {@code true}.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public boolean isTrusted()
 	{
 		throw Debugging.todo();
@@ -441,6 +457,7 @@ public class Suite
 	 * "manageSuite")} permission is not permitted.
 	 * @since 2016/06/24
 	 */
+	@Api
 	public void setSuiteStateFlag(SuiteStateFlag __f, boolean __v)
 		throws IllegalArgumentException, IllegalStateException,
 			SecurityException
@@ -451,20 +468,20 @@ public class Suite
 		
 		throw Debugging.todo();
 		/*
-		// {@squirreljme.error DG0q The current suite has been removed.}
+		/* {@squirreljme.error DG0q The current suite has been removed.} * /
 		if (!isInstalled())
 			throw new IllegalStateException("DG0q");
 		
-		// {@squirreljme.error DG0r The given state flag cannot be set.
-		// (The state flag)}
+		/* {@squirreljme.error DG0r The given state flag cannot be set.
+		(The state flag)} * /
 		if (__f == SuiteStateFlag.SYSTEM || __f == SuiteStateFlag.PREINSTALLED)
 			throw new IllegalArgumentException(String.format("DG0r %s", __f));
 		
 		// Lock
 		synchronized (this._lock)
 		{
-			// {@squirreljme.error DG0s Cannot change flags of the system
-			// suite.}
+			/* {@squirreljme.error DG0s Cannot change flags of the system
+			suite.} * /
 			if (0 != (this._state & (1 << SuiteStateFlag.SYSTEM.ordinal())))
 				throw new IllegalStateException("DG0s");
 			

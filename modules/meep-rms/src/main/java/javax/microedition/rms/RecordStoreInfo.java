@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.rms;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.rms.VinylLock;
 import cc.squirreljme.runtime.rms.VinylRecord;
@@ -18,6 +19,7 @@ import cc.squirreljme.runtime.rms.VinylRecord;
  *
  * @since 2017/02/26
  */
+@Api
 public final class RecordStoreInfo
 {
 	/** The volume ID. */
@@ -43,6 +45,7 @@ public final class RecordStoreInfo
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public int getAuthMode()
 		throws RecordStoreNotOpenException
 	{
@@ -58,6 +61,7 @@ public final class RecordStoreInfo
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public long getSize()
 		throws RecordStoreNotOpenException
 	{
@@ -74,6 +78,7 @@ public final class RecordStoreInfo
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public long getSizeAvailable()
 		throws RecordStoreNotOpenException
 	{
@@ -92,6 +97,7 @@ public final class RecordStoreInfo
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public boolean isEncrypted()
 		throws RecordStoreNotOpenException
 	{
@@ -108,6 +114,7 @@ public final class RecordStoreInfo
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2017/02/26
 	 */
+	@Api
 	public boolean isWriteable()
 		throws RecordStoreNotOpenException
 	{

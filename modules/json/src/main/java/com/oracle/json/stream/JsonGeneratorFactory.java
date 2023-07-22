@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package com.oracle.json.stream;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
@@ -22,6 +23,7 @@ import java.util.Map;
  *
  * @since 2014/07/25
  */
+@Api
 public interface JsonGeneratorFactory
 {
 	/**
@@ -32,6 +34,7 @@ public interface JsonGeneratorFactory
 	 * @return A new generator.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator createGenerator(OutputStream __o);
 	
 	/**
@@ -44,6 +47,7 @@ public interface JsonGeneratorFactory
 	 * @return A new generator.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator createGenerator(OutputStream __o, String __charSet)
 		throws UnsupportedEncodingException;
 	
@@ -55,6 +59,7 @@ public interface JsonGeneratorFactory
 	 * @return A new generator.
 	 * @since 2014/07/25
 	 */
+	@Api
 	JsonGenerator createGenerator(Writer __w);
 	
 	/**
@@ -65,6 +70,7 @@ public interface JsonGeneratorFactory
 	 * empty but must never be {@code null}.
 	 * @since 2014/07/25
 	 */
+	@Api
 	Map<String, ?> getConfigInUse();
 }
 

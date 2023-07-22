@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.nio.file;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.full.NullFileSystem;
 
@@ -18,6 +19,7 @@ import cc.squirreljme.runtime.cldc.full.NullFileSystem;
  *
  * @since 2017/06/12
  */
+@Api
 public final class FileSystems
 {
 	/**
@@ -36,6 +38,7 @@ public final class FileSystems
 	 * @return The system's default filesystem.
 	 * @since 2017/06/12
 	 */
+	@Api
 	public static FileSystem getDefault()
 	{
 		Debugging.debugNote("Implement FileSystem support!", new Object[] {});

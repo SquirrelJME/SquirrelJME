@@ -3,15 +3,19 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface ListIterator<E>
 	extends Iterator<E>
 {
+	@Api
 	void add(E __v);
 	
 	/**
@@ -21,6 +25,7 @@ public interface ListIterator<E>
 	@Override
 	boolean hasNext();
 	
+	@Api
 	boolean hasPrevious();
 	
 	/**
@@ -30,10 +35,13 @@ public interface ListIterator<E>
 	@Override
 	E next();
 	
+	@Api
 	int nextIndex();
 	
+	@Api
 	E previous();
 	
+	@Api
 	int previousIndex();
 	
 	/**
@@ -43,6 +51,7 @@ public interface ListIterator<E>
 	@Override
 	void remove();
 	
+	@Api
 	void set(E __v);
 }
 

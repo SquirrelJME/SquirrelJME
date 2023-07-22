@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 
 /**
@@ -21,6 +22,7 @@ import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
  *
  * @since 2018/10/07
  */
+@Api
 public class HashMap<K, V>
 	extends AbstractMap<K, V>
 	implements Map<K, V>, Cloneable
@@ -37,6 +39,7 @@ public class HashMap<K, V>
 	 * load factor is not positive.
 	 * @since 2018/10/07
 	 */
+	@Api
 	public HashMap(int __cap, float __load)
 		throws IllegalArgumentException
 	{
@@ -51,6 +54,7 @@ public class HashMap<K, V>
 	 * @throws IllegalArgumentException If the capacity is negative.
 	 * @since 2018/10/07
 	 */
+	@Api
 	public HashMap(int __cap)
 		throws IllegalArgumentException
 	{
@@ -63,6 +67,7 @@ public class HashMap<K, V>
 	 *
 	 * @since 2018/10/07
 	 */
+	@Api
 	public HashMap()
 	{
 		this._map = new __BucketMap__<K, V>((this instanceof LinkedHashMap));
@@ -78,6 +83,7 @@ public class HashMap<K, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/07
 	 */
+	@Api
 	public HashMap(Map<? extends K, ? extends V> __m)
 		throws NullPointerException
 	{
@@ -105,6 +111,7 @@ public class HashMap<K, V>
 	 * load factor is not positive.
 	 * @since 2018/11/01
 	 */
+	@Api
 	HashMap(int __cap, float __load, boolean __ao)
 		throws IllegalArgumentException
 	{
@@ -150,7 +157,7 @@ public class HashMap<K, V>
 		// Oops
 		catch (IllegalAccessException|InstantiationException e)
 		{
-			// {@squirreljme.error ZZ2p Could not clone the map.}
+			/* {@squirreljme.error ZZ2p Could not clone the map.} */
 			throw new RuntimeException("ZZ2p", e);
 		}
 	}

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.RandomAccess;
+import org.jetbrains.annotations.UnmodifiableView;
 
 /**
  * This is a list which cannot be modified.
@@ -21,6 +22,7 @@ import java.util.RandomAccess;
  * @param <V> The type of value the list stores.
  * @since 2016/03/03
  */
+@UnmodifiableView
 public abstract class UnmodifiableList<V>
 	extends AbstractList<V>
 {
@@ -265,7 +267,7 @@ public abstract class UnmodifiableList<V>
 		 * @param __l The list to wrap.
 		 * @since 2016/04/28
 		 */
-		private __Random__(List<V> __l)
+		__Random__(List<V> __l)
 		{
 			super(__l);
 		}
@@ -288,7 +290,7 @@ public abstract class UnmodifiableList<V>
 		 * @param __l The list to wrap.
 		 * @since 2016/04/28
 		 */
-		private __Sequential__(List<V> __l)
+		__Sequential__(List<V> __l)
 		{
 			super(__l);
 		}

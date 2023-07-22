@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,6 +11,8 @@ package cc.squirreljme.runtime.cldc.lang;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.Arrays;
 
 /**
@@ -19,6 +21,7 @@ import java.util.Arrays;
  *
  * @since 2018/11/03
  */
+@SquirrelJMEVendorApi
 public final class ArrayUtils
 {
 	/** Boolean array. */
@@ -172,7 +175,7 @@ public final class ArrayUtils
 				return __class.cast(Arrays.copyOf(new Object[0], __len,
 					(Class<? extends Object[]>)((Object)__class)));
 			
-				// {@squirreljme.error ZZ5f Invalid array type.}
+				/* {@squirreljme.error ZZ5f Invalid array type.} */
 			default:
 				throw new IllegalArgumentException("ZZ5f");
 		}
@@ -231,7 +234,7 @@ public final class ArrayUtils
 			case ArrayUtils.ARRAY_OBJECT:
 				return __cast.cast(((Object[])__a)[__dx]);
 			
-				// {@squirreljme.error ZZf7 Invalid array type.}
+				/* {@squirreljme.error ZZf7 Invalid array type.} */
 			default:
 				throw new IllegalArgumentException("ZZf7");
 		}
@@ -316,7 +319,7 @@ public final class ArrayUtils
 				((Object[])__a)[__dx] = __v;
 				break;
 			
-				// {@squirreljme.error ZZ0c Invalid array type.}
+				/* {@squirreljme.error ZZ0c Invalid array type.} */
 			default:
 				throw new IllegalArgumentException("ZZ0c");
 		}
@@ -356,7 +359,7 @@ public final class ArrayUtils
 		else if (__a instanceof double[])
 			return ArrayUtils.ARRAY_DOUBLE;
 		
-		// {@squirreljme.error ZZ0d Invalid array type. (The type)}
+		/* {@squirreljme.error ZZ0d Invalid array type. (The type)} */
 		throw new IllegalArgumentException("ZZ0d " + __a.getClass().getName());
 	}
 	
@@ -373,6 +376,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a)
 		throws NegativeArraySizeException, NullPointerException
@@ -395,6 +399,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b)
 		throws NegativeArraySizeException, NullPointerException
@@ -418,6 +423,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c)
 		throws NegativeArraySizeException, NullPointerException
@@ -442,6 +448,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d)
 		throws NegativeArraySizeException, NullPointerException
@@ -467,6 +474,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e)
 		throws NegativeArraySizeException, NullPointerException
@@ -493,6 +501,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f)
 		throws NegativeArraySizeException, NullPointerException
@@ -520,6 +529,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g)
 		throws NegativeArraySizeException, NullPointerException
@@ -548,6 +558,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g,
 		int __h)
@@ -578,6 +589,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g,
 		int __h, int __i)
@@ -609,6 +621,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/04
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int __a, int __b, int __c, int __d, int __e, int __f, int __g,
 		int __h, int __i, int __j)
@@ -631,6 +644,7 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/03
 	 */
+	@SquirrelJMEVendorApi
 	public static Object multiANewArray(Class<?> __type, int __skip,
 		int[] __dims)
 		throws NegativeArraySizeException, NullPointerException
@@ -644,8 +658,8 @@ public final class ArrayUtils
 		while (typename.charAt(typeDims) == '[')
 			typeDims++;
 		
-		// {@squirreljme.error ZZ0e Negative number of dimensions available
-		// or input type is not correct for the array type.}
+		/* {@squirreljme.error ZZ0e Negative number of dimensions available
+		or input type is not correct for the array type.} */
 		int dims = __dims.length - __skip;
 		if (__skip < 0 || dims <= 0 || typeDims < dims)
 			throw new IllegalArgumentException("ZZ0e");
@@ -670,8 +684,8 @@ public final class ArrayUtils
 				subtype = Class.forName(typename.substring(1));
 			}
 			
-			// {@squirreljme.error ZZ0f Could not find the sub-type for
-			// multi-dimensional array.}
+			/* {@squirreljme.error ZZ0f Could not find the sub-type for
+			multi-dimensional array.} */
 			catch (ClassNotFoundException e)
 			{
 				throw new Error("ZZ0f", e);

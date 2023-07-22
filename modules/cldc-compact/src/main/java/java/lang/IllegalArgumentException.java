@@ -3,17 +3,20 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is thrown when the argument of a method is not correct.
  *
  * @since 2018/10/12
  */
+@Api
 public class IllegalArgumentException
 	extends RuntimeException
 {
@@ -22,6 +25,7 @@ public class IllegalArgumentException
 	 *
 	 * @since 2018/10/12
 	 */
+	@Api
 	public IllegalArgumentException()
 	{
 	}
@@ -32,6 +36,7 @@ public class IllegalArgumentException
 	 * @param __m The message.
 	 * @since 2018/10/12
 	 */
+	@Api
 	public IllegalArgumentException(String __m)
 	{
 		super(__m);
@@ -44,6 +49,7 @@ public class IllegalArgumentException
 	 * @param __t The cause.
 	 * @since 2018/10/12
 	 */
+	@Api
 	public IllegalArgumentException(String __m, Throwable __t)
 	{
 		super(__m, __t);
@@ -55,6 +61,7 @@ public class IllegalArgumentException
 	 * @param __t The cause.
 	 * @since 2018/10/12
 	 */
+	@Api
 	public IllegalArgumentException(Throwable __t)
 	{
 		super(__t);

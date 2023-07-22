@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -17,6 +18,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2016/04/12
  */
+@Api
 public final class Objects
 {
 	/**
@@ -48,6 +50,7 @@ public final class Objects
 	 * comparator is unable to handle {@code null} arguments.
 	 * @since 2016/04/12
 	 */
+	@Api
 	public static <T> int compare(T __a, T __b, Comparator<? super T> __c)
 		throws NullPointerException
 	{
@@ -72,6 +75,7 @@ public final class Objects
 	 * @return {@code true} if they are both equal or both {@code null}.
 	 * @since 2016/04/12
 	 */
+	@Api
 	public static boolean equals(Object __a, Object __b)
 	{
 		// Same instance or both are null
@@ -94,6 +98,7 @@ public final class Objects
 	 * @return The object's hash code or {@code 0} if it is {@code null}.
 	 * @since 2016/04/12
 	 */
+	@Api
 	public static int hashCode(Object __a)
 	{
 		if (__a == null)
@@ -111,6 +116,7 @@ public final class Objects
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/12
 	 */
+	@Api
 	public static <T> T requireNonNull(T __a)
 		throws NullPointerException
 	{
@@ -132,6 +138,7 @@ public final class Objects
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/12
 	 */
+	@Api
 	public static <T> T requireNonNull(T __a, String __m)
 	{
 		// Check
@@ -149,6 +156,7 @@ public final class Objects
 	 * {@code null}.
 	 * @since 2016/04/12
 	 */
+	@Api
 	public static String toString(Object __a)
 	{
 		if (__a == null)
@@ -162,10 +170,11 @@ public final class Objects
 	 *
 	 * @param __a The object to get the string of.
 	 * @param __b The value to return if {@code __a} is {@code null}.
-	 * @return The string represention of {@code __a} or else {@code __b} if
+	 * @return The string representation of {@code __a} or else {@code __b} if
 	 * the input is {@code null}.
 	 * @since 2016/04/12
 	 */
+	@Api
 	public static String toString(Object __a, String __b)
 	{
 		if (__a == null)

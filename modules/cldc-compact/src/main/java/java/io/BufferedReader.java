@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -25,6 +26,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  */
 @ImplementationNote("This implementation uses a simple flat buffer with a " +
 	"length and size.")
+@Api
 public class BufferedReader
 	extends Reader
 {
@@ -57,14 +59,15 @@ public class BufferedReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/22
 	 */
+	@Api
 	public BufferedReader(Reader __r, int __bs)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ0g Cannot have a zero or negative buffer
-		// size.}
+		/* {@squirreljme.error ZZ0g Cannot have a zero or negative buffer
+		size.} */
 		if (__bs <= 0)
 			throw new IllegalArgumentException("ZZ0g");
 		
@@ -80,6 +83,7 @@ public class BufferedReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/22
 	 */
+	@Api
 	public BufferedReader(Reader __r)
 		throws NullPointerException
 	{
@@ -107,6 +111,7 @@ public class BufferedReader
 	@ProgrammerTip("If the mark length is greater than the length of the " +
 	 "internal buffer, it will be re-allocated to fit. Care must be taken " +
 	 "depending on how large of a buffer is needed to be stored.")
+	@Api
 	public void mark(int __l)
 		throws IOException
 	{
@@ -243,6 +248,7 @@ public class BufferedReader
 	 * @throws IOException On read errors.
 	 * @since 2018/11/22
 	 */
+	@Api
 	public String readLine()
 		throws IOException
 	{

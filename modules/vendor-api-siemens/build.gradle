@@ -1,0 +1,22 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import org.iban4j.CountryCode
+
+description = "Siemens API"
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "SN"
+	swmType = JavaMEMidletType.API
+	swmName = "Siemens API"
+	swmVendor = "Stephanie Gawroriski"
+	originalApiVendor = "Siemens AG"
+	originalApiVendorUrl = "https://www.siemens.com/"
+	originalApiVendorCountry = CountryCode.DE
+	tags += "siemens"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+}

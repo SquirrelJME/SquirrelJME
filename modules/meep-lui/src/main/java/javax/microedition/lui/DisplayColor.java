@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.lui;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This represents a color to be used for text colors, background colors, and
@@ -15,6 +17,7 @@ package javax.microedition.lui;
  *
  * @since 2016/08/30
  */
+@Api
 public class DisplayColor
 {
 	/** Color components. */
@@ -31,11 +34,12 @@ public class DisplayColor
 	 * range if {@code [0, 255]}.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public DisplayColor(int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error DA01 Initialization of color values out of
-		// range, they must be in the range of 0-255. (Red; Green; Blue)}
+		/* {@squirreljme.error DA01 Initialization of color values out of
+		range, they must be in the range of 0-255. (Red; Green; Blue)} */
 		if (__r < 0 || __r > 255 || __g < 0 || __g > 255 || __b < 0 ||
 			__b > 255)
 			throw new IllegalArgumentException(String.format("DA01 %d %d %d",
@@ -69,6 +73,7 @@ public class DisplayColor
 	 * @return The blue component.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public int getBlueComponent()
 	{
 		return (this._rgb & 0xFF);
@@ -80,6 +85,7 @@ public class DisplayColor
 	 * @return The green component.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public int getGreenComponent()
 	{
 		return ((this._rgb >>> 8) & 0xFF);
@@ -91,6 +97,7 @@ public class DisplayColor
 	 * @return The red component.
 	 * @since 2016/08/30
 	 */
+	@Api
 	public int getRedComponent()
 	{
 		return ((this._rgb >>> 16) & 0xFF);

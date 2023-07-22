@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,6 +11,8 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ReferenceShelf;
 import cc.squirreljme.jvm.mle.brackets.RefLinkBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.brackets.RefLinkHolder;
 import cc.squirreljme.vm.springcoat.brackets.RefLinkObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
@@ -62,23 +64,27 @@ public enum MLEReference
 				throw new SpringMLECallError("Invalid object");
 			
 			SpringSimpleObject object = (SpringSimpleObject)__args[1];
+			RefLinkHolder objRefLink = object.refLink();
 			
 			synchronized (GlobalState.class)
 			{
 				// If the object has an existing link, then we need to chain
 				// links
-				RefLinkObject oldLink = object.refLink().get();
-				if (oldLink != null)
+				synchronized (objRefLink)
 				{
-					// New link -> Old link
-					link.setNext(oldLink);
+					RefLinkObject oldLink = objRefLink.get();
+					if (oldLink != null)
+					{
+						// New link -> Old link
+						link.setNext(oldLink);
+						
+						// New link <- Old link
+						oldLink.setPrev(link);
+					}
 					
-					// New link <- Old link
-					oldLink.setPrev(link);
+					// The object uses the current link as the head now
+					objRefLink.set(link);
 				}
-				
-				// The object uses the current link as the head now
-				object.refLink().set(link);
 			}
 			
 			return null;
@@ -232,6 +238,37 @@ public enum MLEReference
 				// Clear our links because they are no longer valid
 				thisLink.setPrev(null);
 				thisLink.setNext(null);
+			}
+			
+			return null;
+		}
+	},
+	
+	/** {@link ReferenceShelf#linkUnlinkAndClear(RefLinkBracket)}. */ 
+	LINK_UNLINK_AND_CLEAR("linkUnlinkAndClear:(Lcc/squirreljme/jvm/" +
+		"mle/brackets/RefLinkBracket;)V")
+	{
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			RefLinkObject thisLink = MLEReference.__refLink(__args[0]);
+			
+			synchronized (GlobalState.class)
+			{
+				synchronized (thisLink)
+				{
+					// Unchain all the connected links atomically
+					MLEReference.LINK_UNCHAIN.handle(__thread, __args[0]);
+					
+					// Clear the object this links to
+					MLEReference.LINK_SET_OBJECT.handle(__thread, __args[0],
+						SpringNullObject.NULL);
+					
+					// We can delete our link now and free any associated
+					// memory because it is dangling and serves no purpose
+					// otherwise
+					MLEReference.DELETE_LINK.handle(__thread, __args[0]);
+				}
 			}
 			
 			return null;

@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang.annotation;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * Specifies the context in which the annotation is valid.
@@ -16,6 +18,7 @@ package java.lang.annotation;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.ANNOTATION_TYPE})
+@Api
 public @interface Target
 {
 	/**
@@ -24,6 +27,7 @@ public @interface Target
 	 * @return An array of permitted targets.
 	 * @since 2014/10/13
 	 */
+	@Api
 	ElementType[] value();
 }
 

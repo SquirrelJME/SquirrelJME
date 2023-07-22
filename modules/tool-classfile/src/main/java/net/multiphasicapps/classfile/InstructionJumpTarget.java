@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -36,7 +36,7 @@ public final class InstructionJumpTarget
 	public InstructionJumpTarget(int __t)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error JC3b Jump target is negative. (The target)}
+		/* {@squirreljme.error JC3b Jump target is negative. (The target)} */
 		if (__t < 0)
 			throw new IllegalArgumentException(String.format("JC3b %d", __t));
 		

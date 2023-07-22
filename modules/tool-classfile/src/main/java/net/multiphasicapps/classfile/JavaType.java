@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -223,9 +223,9 @@ public final class JavaType
 	 */
 	public boolean isTop()
 	{
-		return this.equals(JavaType.TOP_LONG) || this.equals(JavaType.TOP_DOUBLE) || this
-			.equals(
-			JavaType.TOP_UNDEFINED);
+		return this.equals(JavaType.TOP_LONG) ||
+			this.equals(JavaType.TOP_DOUBLE) ||
+			this.equals(JavaType.TOP_UNDEFINED);
 	}
 	
 	/**

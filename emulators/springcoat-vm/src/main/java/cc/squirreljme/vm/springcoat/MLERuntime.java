@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -192,6 +192,27 @@ public enum MLERuntime
 		{
 			// Just be a generic model
 			return PhoneModelType.GENERIC;
+		}
+	},
+	
+	/** {@link RuntimeShelf#systemEnv(String)}. */
+	SYSTEM_ENV("systemEnv:(Ljava/lang/String;)" +
+		"Ljava/lang/String;")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/02/02
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			String key = __thread
+				.<String>asNativeObject(String.class, __args[0]);
+			
+			if (key == null)
+				throw new SpringMLECallError("Null key.");
+			
+			return __thread.asVMObject(RuntimeShelf.systemEnv(key));
 		}
 	},
 	

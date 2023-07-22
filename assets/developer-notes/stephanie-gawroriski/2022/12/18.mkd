@@ -1,0 +1,8 @@
+# 2022/12/18
+
+## 20:13
+
+I suppose now I am going with an implementation of JNI, which I suppose will
+simplify some things with the API. I just need to implement it with some
+considerations of course. At least from an API there is less to do when
+building one I suppose.

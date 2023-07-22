@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -12,7 +12,9 @@ package cc.squirreljme.runtime.lcdui.mle;
 import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.constants.PencilCapabilities;
+import cc.squirreljme.jvm.mle.constants.PencilShelfError;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
@@ -60,6 +62,10 @@ public final class PencilGraphics
 	
 	/** Does this have alpha channel support? */
 	protected final boolean hasAlpha;
+	
+	/** Single character. */
+	private final char[] _singleChar =
+		new char[1];
 	
 	/** The current alpha color. */
 	private int _argbColor;
@@ -119,7 +125,7 @@ public final class PencilGraphics
 		if (__software == null || __hardware == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB3g Hardware graphics not capable enough.}
+		/* {@squirreljme.error EB3g Hardware graphics not capable enough.} */
 		if ((__caps & PencilCapabilities.MINIMUM) == 0)
 			throw new IllegalArgumentException("EB3g " + __caps);
 		
@@ -169,7 +175,28 @@ public final class PencilGraphics
 			return;
 		}
 		
-		throw Debugging.todo();
+		// Forward to native call
+		try
+		{
+			PencilShelf.hardwareCopyArea(this.hardware,
+				__sx, __sy, __w, __h, __dx, __dy, __anchor);
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			switch (e.distinction)
+			{
+				case PencilShelfError.ILLEGAL_ARGUMENT:
+					throw new IllegalArgumentException(e.getMessage(), e);
+					
+				case PencilShelfError.ILLEGAL_STATE:
+					throw new IllegalStateException(e.getMessage(), e);
+			}
+			
+			// No distinction
+			throw e;
+		}
 	}
 	
 	/**
@@ -177,12 +204,12 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public void drawArc(int __x, int __y, int __w, int __h, int __sa,
-	 int __aa)
+	public void drawArc(int __x, int __y, int __w, int __h, int __startAngle,
+	 int __arcAngle)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.DRAW_ARC))
 		{
-			this.software.drawArc(__x, __y, __w, __h, __sa, __aa);
+			this.software.drawArc(__x, __y, __w, __h, __startAngle, __arcAngle);
 			return;
 		}
 		
@@ -215,13 +242,33 @@ public final class PencilGraphics
 	@Override
 	public void drawChar(char __s, int __x, int __y, int __anchor)
 	{
-		if (0 == (this.capabilities & PencilCapabilities.FONT_TEXT))
+		if (0 == (this.capabilities & PencilCapabilities.TEXT_BASIC))
 		{
 			this.software.drawChar(__s, __x, __y, __anchor);
 			return;
 		}
 		
-		throw Debugging.todo();
+		// Fill single character first
+		char[] singleChar = this._singleChar;
+		singleChar[0] = __s;
+		
+		// Forward
+		try
+		{
+			PencilShelf.hardwareDrawChars(this.hardware,
+				singleChar, 0, 1, __x, __y, __anchor);
+		}
+		catch (MLECallError e)
+		{
+			RuntimeException x;
+			switch (e.distinction)
+			{
+				case PencilShelfError.ILLEGAL_ARGUMENT:
+					throw new IllegalArgumentException(e.getMessage(), e);
+			}
+			
+			throw e;
+		}
 	}
 	
 	/**
@@ -231,15 +278,43 @@ public final class PencilGraphics
 	@Override
 	public void drawChars(char[] __s, int __o, int __l, int __x, int __y,
 		int __anchor)
-		throws NullPointerException
+		throws IllegalArgumentException, IndexOutOfBoundsException,
+			NullPointerException
 	{
-		if (0 == (this.capabilities & PencilCapabilities.FONT_TEXT))
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __s.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		if (0 == (this.capabilities & PencilCapabilities.TEXT_BASIC))
 		{
 			this.software.drawChars(__s, __o, __l, __x, __y, __anchor);
 			return;
 		}
 		
-		throw Debugging.todo();
+		// Forward
+		try
+		{
+			PencilShelf.hardwareDrawChars(this.hardware,
+				__s, __o, __l, __x, __y, __anchor);
+		}
+		catch (MLECallError e)
+		{
+			RuntimeException x;
+			switch (e.distinction)
+			{
+				case PencilShelfError.INDEX_OUT_OF_BOUNDS:
+					x = new IndexOutOfBoundsException(e.getMessage());
+					x.initCause(e);
+					throw x;
+					
+				case PencilShelfError.ILLEGAL_ARGUMENT:
+					throw new IllegalArgumentException(e.getMessage(), e);
+			}
+			
+			throw e;
+		}
 	}
 	
 	/**
@@ -327,7 +402,8 @@ public final class PencilGraphics
 			return;
 		}
 		
-		throw Debugging.todo();
+		// Forward to hardware
+		PencilShelf.hardwareDrawRect(this.hardware, __x, __y, __w, __h);
 	}
 	
 	/**
@@ -424,13 +500,32 @@ public final class PencilGraphics
 	public void drawString(String __s, int __x, int __y, int __anchor)
 		throws NullPointerException
 	{
-		if (0 == (this.capabilities & PencilCapabilities.FONT_TEXT))
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		if (0 == (this.capabilities & PencilCapabilities.TEXT_BASIC))
 		{
 			this.software.drawString(__s, __x, __y, __anchor);
 			return;
 		}
 		
-		throw Debugging.todo();
+		// Forward
+		try
+		{
+			PencilShelf.hardwareDrawSubstring(this.hardware,
+				__s, 0, __s.length(), __x, __y, __anchor);
+		}
+		catch (MLECallError e)
+		{
+			RuntimeException x;
+			switch (e.distinction)
+			{
+				case PencilShelfError.ILLEGAL_ARGUMENT:
+					throw new IllegalArgumentException(e.getMessage(), e);
+			}
+			
+			throw e;
+		}
 	}
 	
 	/**
@@ -442,13 +537,34 @@ public final class PencilGraphics
 		int __x, int __y, int __anchor)
 		throws NullPointerException, StringIndexOutOfBoundsException
 	{
-		if (0 == (this.capabilities & PencilCapabilities.FONT_TEXT))
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __s.length())
+			throw new StringIndexOutOfBoundsException("IOOB");
+		
+		if (0 == (this.capabilities & PencilCapabilities.TEXT_BASIC))
 		{
 			this.software.drawSubstring(__s, __o, __l, __x, __y, __anchor);
 			return;
 		}
 		
-		throw Debugging.todo();
+		// Forward
+		try
+		{
+			PencilShelf.hardwareDrawSubstring(this.hardware,
+				__s, __o, __l, __x, __y, __anchor);
+		}
+		catch (MLECallError e)
+		{
+			RuntimeException x;
+			switch (e.distinction)
+			{
+				case PencilShelfError.ILLEGAL_ARGUMENT:
+					throw new IllegalArgumentException(e.getMessage(), e);
+			}
+			
+			throw e;
+		}
 	}
 	
 	/**
@@ -458,7 +574,7 @@ public final class PencilGraphics
 	@Override
 	public void drawText(Text __t, int __x, int __y)
 	{
-		if (0 == (this.capabilities & PencilCapabilities.FONT_TEXT))
+		if (0 == (this.capabilities & PencilCapabilities.TEXT_ADVANCED))
 		{
 			this.software.drawText(__t, __x, __y);
 			return;
@@ -472,12 +588,12 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	public void fillArc(int __x, int __y, int __w, int __h, int __sa,
-	 int __aa)
+	public void fillArc(int __x, int __y, int __w, int __h, int __startAngle,
+	 int __arcAngle)
 	{
 		if (0 == (this.capabilities & PencilCapabilities.FILL_ARC))
 		{
-			this.software.fillArc(__x, __y, __w, __h, __sa, __aa);
+			this.software.fillArc(__x, __y, __w, __h, __startAngle, __arcAngle);
 			return;
 		}
 		
@@ -532,7 +648,9 @@ public final class PencilGraphics
 			return;
 		}
 		
-		throw Debugging.todo();
+		// Forward to hardware
+		PencilShelf.hardwareFillTriangle(this.hardware, __x1, __y1, __x2, __y2,
+			__x3, __y3);
 	}
 	
 	/**
@@ -644,7 +762,7 @@ public final class PencilGraphics
 	@Override
 	public Font getFont()
 	{
-		if (0 == (this.capabilities & PencilCapabilities.FONT_TEXT))
+		if (0 == (this.capabilities & PencilCapabilities.TEXT_BASIC))
 			return this.software.getFont();
 		
 		return this._font;
@@ -749,8 +867,8 @@ public final class PencilGraphics
 	public void setAlphaColor(int __a, int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB3t Color out of range. (Alpha; Red; Green;
-		// Blue)}
+		/* {@squirreljme.error EB3t Color out of range. (Alpha; Red; Green;
+		Blue)} */
 		if (__a < 0 || __a > 255 || __r < 0 || __r > 255 ||
 			__g < 0 || __g > 255 || __b < 0 || __b > 255)
 			throw new IllegalArgumentException(String.format(
@@ -768,7 +886,7 @@ public final class PencilGraphics
 	public void setBlendingMode(int __m)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB3u Invalid blending mode. (The mode)}
+		/* {@squirreljme.error EB3u Invalid blending mode. (The mode)} */
 		if ((__m != Graphics.SRC && __m != Graphics.SRC_OVER) ||
 			(__m == Graphics.SRC && !this.hasAlpha))
 			throw new IllegalArgumentException("EB3u " + __m);
@@ -864,8 +982,18 @@ public final class PencilGraphics
 		this.software.setFont(__font);
 		
 		// If supported by hardware, set it here
-		if (0 != (this.capabilities & PencilCapabilities.FONT_TEXT))
-			throw Debugging.todo();
+		if (0 != (this.capabilities & PencilCapabilities.TEXT_BASIC))
+		{
+			// Clearing the font?
+			if (__font == null)
+				PencilShelf.hardwareSetDefaultFont(this.hardware);
+			
+			// Set font natively from the font details
+			else
+				PencilShelf.hardwareSetFont(this.hardware,
+					__font.getFontName(), __font.getStyle(),
+					__font.getPixelSize());
+		}
 	}
 	
 	/**
@@ -886,7 +1014,7 @@ public final class PencilGraphics
 	public void setStrokeStyle(int __style)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB3v Illegal stroke style.}
+		/* {@squirreljme.error EB3v Illegal stroke style.} */
 		if (__style != Graphics.SOLID && __style != Graphics.DOTTED)
 			throw new IllegalArgumentException("EB3v");
 		

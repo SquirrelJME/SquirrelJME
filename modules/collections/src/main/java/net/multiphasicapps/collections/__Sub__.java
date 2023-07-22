@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -124,7 +124,7 @@ final class __Sub__<V>
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AC09 Deque capacity would be exceeded.}
+		/* {@squirreljme.error AC09 Deque capacity would be exceeded.} */
 		List<V> deque = this._deque;
 		if (deque.size() + 1 >= this._limit)
 			throw new IllegalStateException("AC09");
@@ -208,7 +208,7 @@ final class __Sub__<V>
 	@Override
 	public V getFirst()
 	{
-		// {@squirreljme.error AC0a The deque is empty.}
+		/* {@squirreljme.error AC0a The deque is empty.} */
 		List<V> deque = this._deque;
 		if (deque.size() <= 0)
 			throw new NoSuchElementException("AC0a");
@@ -461,7 +461,7 @@ final class __Sub__<V>
 	public V removeFirst()
 		throws NoSuchElementException
 	{
-		// {@squirreljme.error AC0b The deque is empty.}
+		/* {@squirreljme.error AC0b The deque is empty.} */
 		List<V> deque = this._deque;
 		if (deque.size() <= 0)
 			throw new NoSuchElementException("AC0b");

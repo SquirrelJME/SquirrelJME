@@ -3,11 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.lcdui;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * A ticker contains an infinitely scrolling message.
@@ -18,6 +20,7 @@ package javax.microedition.lcdui;
  *
  * @since 2018/03/26
  */
+@Api
 public class Ticker
 {
 	/** {@code Displayable}s this ticker is attached to. */
@@ -34,6 +37,7 @@ public class Ticker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/26
 	 */
+	@Api
 	public Ticker(String __s)
 		throws NullPointerException
 	{
@@ -50,6 +54,7 @@ public class Ticker
 	 * @return The string contained within the ticker.
 	 * @since 2018/03/26
 	 */
+	@Api
 	public String getString()
 	{
 		return this._text;
@@ -62,6 +67,7 @@ public class Ticker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/26
 	 */
+	@Api
 	public void setString(String __s)
 		throws NullPointerException
 	{

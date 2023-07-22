@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -102,8 +102,8 @@ public class MegaTile
 	public TerrainType subTileTerrain(int __x, int __y)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error BE0o Cannot get terrain because the tile is
-		// out of range.}
+		/* {@squirreljme.error BE0o Cannot get terrain because the tile is
+		out of range.} */
 		if (__x < 0 || __y < 0 || __x >= MegaTile.TILES_PER_MEGA_TILE ||
 			__y >= MegaTile.TILES_PER_MEGA_TILE)
 			throw new IndexOutOfBoundsException("BE0o");

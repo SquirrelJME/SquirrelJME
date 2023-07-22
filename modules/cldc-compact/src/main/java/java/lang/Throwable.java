@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -11,6 +11,7 @@ package java.lang;
 
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -29,6 +30,7 @@ import java.util.Arrays;
  *
  * @since 2018/09/15
  */
+@Api
 public class Throwable
 {
 	/** The message for this exception. */
@@ -57,6 +59,7 @@ public class Throwable
 	 *
 	 * @since 2018/09/15
 	 */
+	@Api
 	public Throwable()
 	{
 		this._message = null;
@@ -70,6 +73,7 @@ public class Throwable
 	 * @param __m The message.
 	 * @since 2018/09/15
 	 */
+	@Api
 	public Throwable(String __m)
 	{
 		this._message = __m;
@@ -83,6 +87,7 @@ public class Throwable
 	 * @param __t The cause.
 	 * @since 2018/09/15
 	 */
+	@Api
 	public Throwable(Throwable __t)
 	{
 		this._message = null;
@@ -100,6 +105,7 @@ public class Throwable
 	 * @param __t The cause.
 	 * @since 2018/09/15
 	 */
+	@Api
 	public Throwable(String __m, Throwable __t)
 	{
 		this._message = __m;
@@ -123,14 +129,15 @@ public class Throwable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/15
 	 */
+	@Api
 	public final void addSuppressed(Throwable __t)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ26 Cannot add a suppressed exception which
-		// is this exception.}
+		/* {@squirreljme.error ZZ26 Cannot add a suppressed exception which
+		is this exception.} */
 		if (__t == this)
 			throw new IllegalArgumentException("ZZ26");
 		
@@ -159,6 +166,7 @@ public class Throwable
 	 * @return {@code this}.
 	 * @since 2018/09/15
 	 */
+	@Api
 	public Throwable fillInStackTrace()
 	{
 		// Get stack trace, ignore this method
@@ -173,6 +181,7 @@ public class Throwable
 	 * @return The throwable which caused this throwable.
 	 * @since 2018/09/15
 	 */
+	@Api
 	public Throwable getCause()
 	{
 		return this._cause;
@@ -185,6 +194,7 @@ public class Throwable
 	 * @return A localized message.
 	 * @since 2018/09/15
 	 */
+	@Api
 	public String getLocalizedMessage()
 	{
 		return this.getMessage();
@@ -197,6 +207,7 @@ public class Throwable
 	 * not set.
 	 * @since 2018/09/15
 	 */
+	@Api
 	public String getMessage()
 	{
 		return this._message;
@@ -210,6 +221,7 @@ public class Throwable
 	 * @return An array of all the suppressed {@link Throwable}s.
 	 * @since 2018/09/15
 	 */
+	@Api
 	public final Throwable[] getSuppressed()
 	{
 		Throwable[] rv = this._suppressed;
@@ -231,16 +243,17 @@ public class Throwable
 	 * @throws IllegalStateException If a cause has already been set.
 	 * @since 2018/09/15
 	 */
+	@Api
 	public Throwable initCause(Throwable __t)
 		throws IllegalArgumentException, IllegalStateException
 	{
-		// {@squirreljme.error ZZ27 Cannot initialize the cause of the
-		// throwable with itself as the cause.}
+		/* {@squirreljme.error ZZ27 Cannot initialize the cause of the
+		throwable with itself as the cause.} */
 		if (__t == this)
 			throw new IllegalArgumentException("ZZ27");
 		
-		// {@squirreljme.error ZZ28 The cause of the throwable has already
-		// been initialized.}
+		/* {@squirreljme.error ZZ28 The cause of the throwable has already
+		been initialized.} */
 		if (this._initCause)
 			throw new IllegalStateException("ZZ28");
 		
@@ -256,6 +269,7 @@ public class Throwable
 	 *
 	 * @since 2018/09/15
 	 */
+	@Api
 	public void printStackTrace()
 	{
 		CallTraceUtils.printStackTrace(System.err, this, 0);
@@ -268,6 +282,7 @@ public class Throwable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/15
 	 */
+	@Api
 	public void printStackTrace(PrintStream __ps)
 		throws NullPointerException
 	{

@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ public class TestDisplayMetrics
 		// Check that the lower count fails
 		try
 		{
-			__backend.metric(-1);
+			__backend.metric(__display, -1);
 			this.secondary("bad-lower", true);
 		}
 		catch (MLECallError e)
@@ -50,7 +50,7 @@ public class TestDisplayMetrics
 		// Check that the upper count fails
 		try
 		{
-			__backend.metric(UIMetricType.NUM_METRICS);
+			__backend.metric(__display, UIMetricType.NUM_METRICS);
 			this.secondary("bad-upper", true);
 		}
 		catch (MLECallError e)
@@ -63,7 +63,7 @@ public class TestDisplayMetrics
 		for (int metric = 0; metric < UIMetricType.NUM_METRICS; metric++)
 			try
 			{
-				this.testMetric(__backend, metric);
+				this.testMetric(__display, __backend, metric);
 				okayCount++;
 			}
 			catch (MLECallError e)
@@ -79,48 +79,50 @@ public class TestDisplayMetrics
 	
 	/**
 	 * Tests that the given metrics are correctly implemented.
-	 * 
+	 *
+	 * @param __display The display to test.
 	 * @param __backend The backend to test.
 	 * @param __metric The {@link UIMetricType} to test.
 	 * @since 2020/10/10
 	 */
-	private void testMetric(UIBackend __backend, int __metric)
+	private void testMetric(UIDisplayBracket __display, UIBackend __backend,
+		int __metric)
 	{
 		switch (__metric)
 		{
 			case UIMetricType.UIFORMS_SUPPORTED: 
 				this.secondary("forms-supported", 0 != __backend
-					.metric(__metric));
+					.metric(__display, __metric));
 				break;
 			
 			case UIMetricType.DISPLAY_MAX_WIDTH:
 				this.secondary("positive-max-width", __backend
-					.metric(__metric) > 0);
+					.metric(__display, __metric) > 0);
 				break;
 			
 			case UIMetricType.DISPLAY_MAX_HEIGHT:
 				this.secondary("positive-max-height", __backend
-					.metric(__metric) > 0);
+					.metric(__display, __metric) > 0);
 				break;
 			
 			case UIMetricType.DISPLAY_CURRENT_WIDTH:
 				this.secondary("positive-current-width",
-				__backend.metric(__metric) > 0);
+				__backend.metric(__display, __metric) > 0);
 				break;
 			
 			case UIMetricType.DISPLAY_CURRENT_HEIGHT:
 				this.secondary("positive-current-height",
-				__backend.metric(__metric) > 0);
+				__backend.metric(__display, __metric) > 0);
 				break;
 			
 				// Only two values are okay as this is a boolean
 			case UIMetricType.DISPLAY_MONOCHROMATIC:
-				int mono = __backend.metric(__metric);
+				int mono = __backend.metric(__display, __metric);
 				this.secondary("mono", (mono == 0 || mono == 1));
 				break;
 			
 			case UIMetricType.DISPLAY_PIXEL_FORMAT:
-				int pf = __backend.metric(__metric);
+				int pf = __backend.metric(__display, __metric);
 				this.secondary("pf",
 					(pf >= 0 && pf < UIPixelFormat.NUM_PIXEL_FORMATS));
 				
@@ -128,13 +130,14 @@ public class TestDisplayMetrics
 				// others are purely color based
 				this.secondary("pf-mono-okay",
 					TestDisplayMetrics.__canMono(pf) == (0 !=
-					__backend.metric(UIMetricType.DISPLAY_MONOCHROMATIC)));
+					__backend.metric(__display,
+						UIMetricType.DISPLAY_MONOCHROMATIC)));
 				break;
 			
 				// These do not make sense to test, but should still result in
 				// success
 			case UIMetricType.INPUT_FLAGS:
-				int inputs = __backend.metric(__metric);
+				int inputs = __backend.metric(__display, __metric);
 				this.secondary("inputs",
 					((inputs & (~UIInputFlag.ALL_MASK))));
 				break;
@@ -142,29 +145,29 @@ public class TestDisplayMetrics
 				// For colors, the alpha mask must never be set to anything as
 				// these are purely RGB colors
 			case UIMetricType.COLOR_CANVAS_BACKGROUND:
-				int color = __backend.metric(__metric);
+				int color = __backend.metric(__display, __metric);
 				if ((color & TestDisplayMetrics._ALPHA_MASK) != 0)
 					this.secondary("bad-color-" + __metric, color);
 				break;
 			
 				// Vibration support is limited to do
 			case UIMetricType.SUPPORTS_VIBRATION:
-				int vib = __backend.metric(__metric);
+				int vib = __backend.metric(__display, __metric);
 				this.secondary("vibrate", (vib == 0 || vib == 1));
 				break;
 			
 			case UIMetricType.LIST_ITEM_HEIGHT:
 				this.secondary("positive-list-height",
-				__backend.metric(__metric) > 0);
+				__backend.metric(__display, __metric) > 0);
 				break;
 			
 			case UIMetricType.COMMAND_BAR_HEIGHT:
 				this.secondary("positive-command-height",
-				__backend.metric(__metric) > 0);
+				__backend.metric(__display, __metric) > 0);
 				break;
 			
 			case UIMetricType.SUPPORTS_BACKLIGHT_CONTROL:
-				int bl = __backend.metric(__metric);
+				int bl = __backend.metric(__display, __metric);
 				this.secondary("backlight", (bl == 0 || bl == 1));
 				break;
 			

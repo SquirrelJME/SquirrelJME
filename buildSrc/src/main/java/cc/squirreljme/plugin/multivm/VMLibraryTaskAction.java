@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -18,7 +19,6 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
-import org.gradle.api.tasks.SourceSet;
 
 /**
  * Performs the action of building the virtual machine.
@@ -28,29 +28,23 @@ import org.gradle.api.tasks.SourceSet;
 public class VMLibraryTaskAction
 	implements Action<Task>
 {
-	/** The source set used. */
-	public final String sourceSet;
-	
-	/** The virtual machine type. */
-	public final VMSpecifier vmType;
+	/** The classifier used. */
+	public final SourceTargetClassifier classifier;
 	
 	/**
 	 * Initializes the task action.
 	 * 
-	 * @param __sourceSet The source set.
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The classifier used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/08/15
 	 */
-	public VMLibraryTaskAction(String __sourceSet,
-		VMSpecifier __vmType)
+	public VMLibraryTaskAction(SourceTargetClassifier __classifier)
 		throws NullPointerException
 	{
-		if (__sourceSet == null || __vmType == null)
+		if (__classifier == null)
 			throw new NullPointerException("NARG");
 		
-		this.sourceSet = __sourceSet;
-		this.vmType = __vmType;
+		this.classifier = __classifier;
 	}
 	
 	/**
@@ -60,21 +54,21 @@ public class VMLibraryTaskAction
 	@Override
 	public void execute(Task __task)
 	{
-		VMLibraryTaskAction.execute(__task, this.vmType, this.sourceSet,
-			this.vmType::processLibrary);
+		VMLibraryTaskAction.execute((VMBaseTask)__task, this.classifier,
+			((__t, __isTest, __in, __out) -> this.classifier.getVmType()
+				.processLibrary((VMBaseTask)__t, __isTest, __in, __out)));
 	}
 	
 	/**
 	 * Performs a library like action.
 	 * 
 	 * @param __task The task calling from.
-	 * @param __vmType The virtual machine type.
-	 * @param __sourceSet The source set used.
+	 * @param __classifier The classifier used.
 	 * @param __func The function to use.
 	 * @since 2021/05/16
 	 */
-	public static void execute(Task __task, VMSpecifier __vmType,
-		String __sourceSet, VMLibraryExecuteFunction __func)
+	public static void execute(VMBaseTask __task,
+		SourceTargetClassifier __classifier, VMLibraryExecuteFunction __func)
 	{
 		// Open the input library for processing
 		Path tempFile = null;
@@ -83,7 +77,9 @@ public class VMLibraryTaskAction
 		{
 			// Where shall this go?
 			tempFile = Files.createTempFile(
-				__vmType.vmName(VMNameFormat.LOWERCASE), __sourceSet);
+				__classifier.getVmType().vmName(VMNameFormat.LOWERCASE),
+				String.format("%s_%s", __classifier.getSourceSet(),
+					__classifier.getBangletVariant().properNoun));
 			
 			// Setup output file for writing
 			try (OutputStream out = Files.newOutputStream(tempFile,
@@ -91,7 +87,7 @@ public class VMLibraryTaskAction
 				StandardOpenOption.CREATE))
 			{
 				__func.function(__task,
-					SourceSet.TEST_SOURCE_SET_NAME.equals(__sourceSet),
+					__classifier.isTestSourceSet(),
 					in, out);
 			}
 			

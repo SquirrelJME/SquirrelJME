@@ -3,17 +3,20 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
+
+import cc.squirreljme.runtime.cldc.annotation.Api;
 
 /**
  * This is thrown when an index which is not within bounds was accessed.
  *
  * @since 2018/09/16
  */
+@Api
 public class IndexOutOfBoundsException
 	extends RuntimeException
 {
@@ -22,6 +25,7 @@ public class IndexOutOfBoundsException
 	 *
 	 * @since 2018/09/16
 	 */
+	@Api
 	public IndexOutOfBoundsException()
 	{
 	}
@@ -32,6 +36,7 @@ public class IndexOutOfBoundsException
 	 * @param __m The message.
 	 * @since 2018/09/16
 	 */
+	@Api
 	public IndexOutOfBoundsException(String __m)
 	{
 		super(__m);

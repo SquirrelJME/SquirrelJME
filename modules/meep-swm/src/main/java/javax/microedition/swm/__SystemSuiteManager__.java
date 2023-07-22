@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -12,7 +12,6 @@ package javax.microedition.swm;
 import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.InvalidSuiteException;
 import cc.squirreljme.jvm.suite.MatchResult;
-import cc.squirreljme.runtime.cldc.asm.SuiteAccess;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.swm.ByteArrayJarStreamSupplier;
 import java.util.ArrayList;
@@ -127,13 +126,15 @@ final class __SystemSuiteManager__
 	}
 	
 	/**
-	 * Returns all of the suites which are available.
+	 * Returns all the suites which are available.
 	 *
-	 * @return All of the available suites.
+	 * @return All the available suites.
 	 * @since 2018/10/30
 	 */
 	static List<Suite> __allSuites()
 	{
+		throw Debugging.todo();
+		/*
 		// Just get every suite
 		List<Suite> rv = new ArrayList<>();
 		for (String as : SuiteAccess.availableSuites())
@@ -144,7 +145,7 @@ final class __SystemSuiteManager__
 				rv.add(s);
 		}
 		
-		return rv;
+		return rv;*/
 	}
 	
 	/**
@@ -245,8 +246,8 @@ final class __SystemSuiteManager__
 				break;
 		}
 		
-		// {@squirreljme.error DG0u Could not locate the suite which
-		// statifies the given dependency. (The dependency to look for)}
+		/* {@squirreljme.error DG0u Could not locate the suite which
+		statifies the given dependency. (The dependency to look for)} */
 		if (rv.isEmpty())
 			throw new RuntimeException(
 				String.format("DG0u %s", __set));

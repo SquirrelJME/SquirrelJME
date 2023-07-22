@@ -3,38 +3,44 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package java.lang;
 
-import cc.squirreljme.jvm.Assembly;
+import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
+@Api
 public final class Long
 	extends Number
 	implements Comparable<Long>
 {
 	/** The maximum value. */
+	@Api
 	public static final long MAX_VALUE =
 		9223372036854775807L;
 	
 	/** The minimum value. */
+	@Api
 	public static final long MIN_VALUE =
 		-9223372036854775808L;
 	
 	/** The size of the type in bits. */
+	@Api
 	public static final int SIZE =
 		64;
 	
 	/** The class representing the primitive long type. */
+	@Api
 	public static final Class<Long> TYPE =
 		TypeShelf.<Long>typeToClass(TypeShelf.typeOfLong());
 	
@@ -50,11 +56,13 @@ public final class Long
 	 * @param __v The value to use.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public Long(long __v)
 	{
 		this._value = __v;
 	}
 	
+	@Api
 	public Long(String __a)
 		throws NumberFormatException
 	{
@@ -178,11 +186,13 @@ public final class Long
 		return rv;
 	}
 	
+	@Api
 	public static int bitCount(long __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Long decode(String __a)
 		throws NumberFormatException
 	{
@@ -191,36 +201,43 @@ public final class Long
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Long getLong(String __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Long getLong(String __a, long __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static Long getLong(String __a, Long __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static long highestOneBit(long __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static long lowestOneBit(long __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static int numberOfLeadingZeros(long __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static int numberOfTrailingZeros(long __a)
 	{
 		throw Debugging.todo();
@@ -236,17 +253,18 @@ public final class Long
 	 * is outside of the valid bounds.
 	 * @since 2020/06/18
 	 */
+	@Api
 	public static long parseLong(String __v, int __radix)
 		throws NumberFormatException
 	{
-		// {@squirreljme.error ZZ25 The radix is out of bounds. (The radix)}
+		/* {@squirreljme.error ZZ25 The radix is out of bounds. (The radix)} */
 		if (__radix < Character.MIN_RADIX || __radix > Character.MAX_RADIX)
 			throw new NumberFormatException("ZZ25 " + __radix);
 			
 		if (__v == null)
 			throw new NumberFormatException("ZZ26");
 		
-		// {@squirreljme.error ZZ26 String is null or has zero length.}
+		/* {@squirreljme.error ZZ26 String is null or has zero length.} */
 		int n = __v.length();
 		if (n <= 0)
 			throw new NumberFormatException("ZZ26");
@@ -268,13 +286,13 @@ public final class Long
 			// Convert to digit
 			long dig = Character.digit(c, __radix);
 			
-			// {@squirreljme.error ZZ27 Character out of range of radix.
-			// (The input string; The out of range character)}
+			/* {@squirreljme.error ZZ27 Character out of range of radix.
+			(The input string; The out of range character)} */
 			if (dig < 0)
 				throw new NumberFormatException("ZZ27 " + __v + " " + c);
 			
-			// {@squirreljme.error ZZ28 Input integer out of range of 64-bit
-			// long. (The input string)}
+			/* {@squirreljme.error ZZ28 Input integer out of range of 64-bit
+			long. (The input string)} */
 			long prod = rv * __radix;
 			if (rv != 0 && (neg ? (prod > rv) : (prod < rv)))
 				throw new NumberFormatException("ZZ28 " + __v);
@@ -297,6 +315,7 @@ public final class Long
 	 * @throws NumberFormatException If the string is not valid.
 	 * @since 2020/06/18
 	 */
+	@Api
 	public static long parseLong(String __v)
 		throws NumberFormatException
 	{
@@ -310,13 +329,14 @@ public final class Long
 	 * @return The integer but with the bits reversed.
 	 * @since 2022/01/07
 	 */
+	@Api
 	public static long reverse(long __l)
 	{
-		int hi = Assembly.longUnpackHigh(__l);
-		int lo = Assembly.longUnpackLow(__l);
+		int hi = MathShelf.longUnpackHigh(__l);
+		int lo = MathShelf.longUnpackLow(__l);
 		
 		// Hi is placed lo, and lo is placed hi
-		return Assembly.longPack(Integer.reverse(hi), Integer.reverse(lo));
+		return MathShelf.longPack(Integer.reverse(hi), Integer.reverse(lo));
 	}
 	
 	/**
@@ -326,6 +346,7 @@ public final class Long
 	 * @return The reversed bytes.
 	 * @since 2021/02/18
 	 */
+	@Api
 	public static long reverseBytes(long __i)
 	{
 		// 0xAABBCCDD_EEFFGGHH -> 0xBBAADDCC_FFEEHHGG
@@ -340,21 +361,25 @@ public final class Long
 		return (__i >>> 32) | (__i << 32);
 	}
 	
+	@Api
 	public static long rotateLeft(long __a, int __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static long rotateRight(long __a, int __b)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static int signum(long __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static long sum(long __a, long __b)
 	{
 		throw Debugging.todo();
@@ -367,6 +392,7 @@ public final class Long
 	 * @return The representing string.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public static String toBinaryString(long __v)
 	{
 		return Long.__unsignedString(__v, 2);
@@ -379,6 +405,7 @@ public final class Long
 	 * @return The representing string.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public static String toHexString(long __v)
 	{
 		return Long.__unsignedString(__v, 16);
@@ -391,6 +418,7 @@ public final class Long
 	 * @return The representing string.
 	 * @since 2019/12/25
 	 */
+	@Api
 	public static String toOctalString(long __v)
 	{
 		return Long.__unsignedString(__v, 8);
@@ -405,6 +433,7 @@ public final class Long
 	 * @return The resulting string.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public static String toString(long __v, int __r)
 	{
 		// If the radix is not valid, then just force to 10
@@ -472,6 +501,7 @@ public final class Long
 	 * @return The resulting string.
 	 * @since 2018/09/23
 	 */
+	@Api
 	public static String toString(long __v)
 	{
 		return Long.toString(__v, 10);
@@ -487,6 +517,7 @@ public final class Long
 	 * is outside of the valid bounds.
 	 * @since 2022/01/07
 	 */
+	@Api
 	public static Long valueOf(String __v, int __r)
 		throws NumberFormatException
 	{
@@ -501,6 +532,7 @@ public final class Long
 	 * @throws NumberFormatException If the string is not valid.
 	 * @since 2022/01/07
 	 */
+	@Api
 	public static Long valueOf(String __v)
 		throws NumberFormatException
 	{
@@ -514,6 +546,7 @@ public final class Long
 	 * @return The boxed value.
 	 * @since 2018/09/23
 	 */
+	@Api
 	@SuppressWarnings("UnnecessaryBoxing")
 	@ImplementationNote("This is not cached.")
 	public static Long valueOf(long __v)

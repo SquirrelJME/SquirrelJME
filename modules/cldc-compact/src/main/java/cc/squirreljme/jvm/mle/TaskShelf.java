@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -17,13 +17,21 @@ import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import cc.squirreljme.jvm.mle.constants.TaskStatusType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.Closeable;
+import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.CheckReturnValue;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * This shelf allows for the management of tasks and otherwise.
  *
  * @since 2020/07/02
  */
+@SuppressWarnings("UnstableApiUsage")
+@SquirrelJMEVendorApi
 public final class TaskShelf
 {
 	/**
@@ -41,6 +49,7 @@ public final class TaskShelf
 	 * @return The active tasks.
 	 * @since 2020/07/09
 	 */
+	@SquirrelJMEVendorApi
 	public static native TaskBracket[] active();
 	
 	/**
@@ -49,6 +58,7 @@ public final class TaskShelf
 	 * @return The current task.
 	 * @since 2020/07/02
 	 */
+	@SquirrelJMEVendorApi
 	public static native TaskBracket current();
 	
 	/**
@@ -60,6 +70,7 @@ public final class TaskShelf
 	 * @throws MLECallError If either argument is {@code null}.
 	 * @since 2020/07/02
 	 */
+	@SquirrelJMEVendorApi
 	public static native boolean equals(TaskBracket __a, TaskBracket __b)
 		throws MLECallError;
 	
@@ -72,7 +83,9 @@ public final class TaskShelf
 	 * @throws MLECallError If the task is not valid.
 	 * @since 2020/07/02
 	 */
-	public static native int exitCode(TaskBracket __task)
+	@SquirrelJMEVendorApi
+	@CheckReturnValue
+	public static native int exitCode(@NotNull TaskBracket __task)
 		throws MLECallError;
 	
 	/**
@@ -85,8 +98,10 @@ public final class TaskShelf
 	 * if {@code __outMessage} is too small.
 	 * @since 2020/07/02
 	 */
-	public static native TracePointBracket[] getTrace(TaskBracket __task,
-		String[] __outMessage)
+	@SquirrelJMEVendorApi
+	public static native TracePointBracket[] getTrace(
+		@NotNull TaskBracket __task,
+		@NotNull String[] __outMessage)
 		throws MLECallError;
 	
 	/**
@@ -111,8 +126,15 @@ public final class TaskShelf
 	 * are negative or exceed the array bounds.
 	 * @since 2020/07/02
 	 */
-	public static native int read(TaskBracket __task, int __fd,
-		byte[] __b, int __o, int __l)
+	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = PipeErrorType.class)
+	@Range(from = -2, to = Integer.MAX_VALUE)
+	@CheckReturnValue
+	public static native int read(@NotNull TaskBracket __task,
+		@MagicConstant(valuesFromClass = StandardPipeType.class) int __fd,
+		@NotNull byte[] __b,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __l)
 		throws MLECallError;
 	
 	/**
@@ -144,9 +166,15 @@ public final class TaskShelf
 	 * are not valid.
 	 * @since 2020/07/02
 	 */
+	@SquirrelJMEVendorApi
 	public static native TaskBracket start(
-		JarPackageBracket[] __classPath, String __mainClass, String[] __args,
-		String[] __sysPropPairs, int __stdOut, int __stdErr)
+		@NotNull JarPackageBracket[] __classPath, @NotNull String __mainClass,
+		@NotNull String[] __args,
+		@NotNull String[] __sysPropPairs,
+		@MagicConstant(valuesFromClass = TaskPipeRedirectType.class)
+			int __stdOut,
+		@MagicConstant(valuesFromClass = TaskPipeRedirectType.class)
+			int __stdErr)
 		throws MLECallError;
 	
 	/**
@@ -157,6 +185,8 @@ public final class TaskShelf
 	 * @throws MLECallError If the task is not valid.
 	 * @since 2020/07/02
 	 */
-	public static native int status(TaskBracket __task)
+	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = TaskStatusType.class)
+	public static native int status(@NotNull TaskBracket __task)
 		throws MLECallError;
 }

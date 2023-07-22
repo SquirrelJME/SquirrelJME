@@ -3,32 +3,42 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.DisplayWidget;
+import cc.squirreljme.runtime.lcdui.mle.UIBackend;
 
+@Api
 public class ImageItem
 	extends Item
 {
+	@Api
 	public static final int LAYOUT_CENTER =
 		3;
 	
+	@Api
 	public static final int LAYOUT_DEFAULT =
 		0;
 	
+	@Api
 	public static final int LAYOUT_LEFT =
 		1;
 	
+	@Api
 	public static final int LAYOUT_NEWLINE_AFTER =
 		512;
 	
+	@Api
 	public static final int LAYOUT_NEWLINE_BEFORE =
 		256;
 	
+	@Api
 	public static final int LAYOUT_RIGHT =
 		2;
 	
@@ -51,6 +61,7 @@ public class ImageItem
 	 * @throws IllegalArgumentException If the layout is not valid.
 	 * @since 2019/05/17
 	 */
+	@Api
 	public ImageItem(String __l, Image __i, int __lay, String __alt)
 		throws IllegalArgumentException
 	{
@@ -68,13 +79,14 @@ public class ImageItem
 	 * @throws IllegalArgumentException If the layout is not valid.
 	 * @since 2019/05/17
 	 */
+	@Api
 	public ImageItem(String __l, Image __i, int __lay, String __alt, int __am)
 		throws IllegalArgumentException
 	{
 		super(__l);
 		
-		// {@squirreljme.error EB2i The appearance mode is not valid.
-		// (The appearance mode)}
+		/* {@squirreljme.error EB2i The appearance mode is not valid.
+		(The appearance mode)} */
 		if (__am != Item.PLAIN && __am != Item.BUTTON && __am != Item.HYPERLINK)
 			throw new IllegalArgumentException("EB2i " + __am);
 		
@@ -86,21 +98,25 @@ public class ImageItem
 		this.setLayout(__lay);
 	}
 	
+	@Api
 	public String getAltText()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int getAppearanceMode()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public Image getImage()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void setAltText(String __a)
 	{
 		throw Debugging.todo();
@@ -117,6 +133,7 @@ public class ImageItem
 	 * @param __i The image to set or {@code null} to clear it.
 	 * @since 2018/04/06
 	 */
+	@Api
 	public void setImage(Image __i)
 	{
 		throw Debugging.todo();
@@ -139,6 +156,38 @@ public class ImageItem
 		throws IllegalArgumentException
 	{
 		super.setLayout(__lay);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2023/01/14
+	 */
+	@Override
+	__CommonState__ __stateInit(UIBackend __backend)
+		throws NullPointerException
+	{
+		return new __ImageItemState__(__backend, this);
+	}
+	
+	/**
+	 * Image item state.
+	 * 
+	 * @since 2023/01/14
+	 */
+	static class __ImageItemState__
+		extends Item.__ItemState__
+	{
+		/**
+		 * Initializes the backend state.
+		 *
+		 * @param __backend The backend used.
+		 * @param __self Self widget.
+		 * @since 2023/01/14
+		 */
+		__ImageItemState__(UIBackend __backend, DisplayWidget __self)
+		{
+			super(__backend, __self);
+		}
 	}
 }
 

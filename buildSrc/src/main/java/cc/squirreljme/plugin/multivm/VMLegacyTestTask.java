@@ -3,12 +3,13 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
 package cc.squirreljme.plugin.multivm;
 
+import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import cc.squirreljme.plugin.util.SingleTaskOutputFile;
 import javax.inject.Inject;
 import lombok.Getter;
@@ -23,7 +24,7 @@ import org.gradle.workers.WorkerExecutor;
  */
 public class VMLegacyTestTask
 	extends DefaultTask
-	implements VMExecutableTask
+	implements VMBaseTask, VMExecutableTask
 {
 	/** Property for running single test. */
 	public static final String SINGLE_TEST_PROPERTY =
@@ -33,38 +34,30 @@ public class VMLegacyTestTask
 	public static final String SINGLE_TEST_PROPERTY_B =
 		"single.test";
 	
-	/** The source set used. */
+	/** The classifier used. */
 	@Internal
 	@Getter
-	protected final String sourceSet;
-	
-	/** The virtual machine type. */
-	@Internal
-	@Getter
-	protected final VMSpecifier vmType;
+	protected final SourceTargetClassifier classifier;
 	
 	/**
 	 * Initializes the task.
 	 * 
 	 * @param __executor The executor for the task.
-	 * @param __sourceSet The source set to use.
-	 * @param __vmType The virtual machine type.
+	 * @param __classifier The classifier used.
 	 * @param __libTask The task used to create libraries, this may be directly
 	 * depended upon.
 	 * @since 2020/08/07
 	 */
 	@Inject
-	public VMLegacyTestTask(WorkerExecutor __executor, String __sourceSet,
-		VMSpecifier __vmType, VMLibraryTask __libTask)
+	public VMLegacyTestTask(WorkerExecutor __executor,
+		SourceTargetClassifier __classifier, VMLibraryTask __libTask)
 		throws NullPointerException
 	{
-		if (__executor == null || 
-			__sourceSet == null || __vmType == null || __libTask == null)
+		if (__executor == null || __classifier == null || __libTask == null)
 			throw new NullPointerException("NARG");
 			
 		// These are used at the test stage
-		this.sourceSet = __sourceSet;
-		this.vmType = __vmType;
+		this.classifier = __classifier;
 		
 		// Set details of this task
 		this.setGroup("squirreljme");
@@ -73,21 +66,22 @@ public class VMLegacyTestTask
 		// Depends on the library to exist first along with the emulator
 		// itself
 		this.dependsOn(this.getProject().provider(
-			new VMRunDependencies(this, __sourceSet, __vmType)),
-			new VMEmulatorDependencies(this, __vmType));
+			new VMRunDependencies(this, __classifier)),
+			new VMEmulatorDependencies(this,
+				__classifier.getTargetClassifier()));
 		
 		// Add the entire JAR as input, so that if it changes for any reason
 		// then all tests should be considered invalid and rerun
-		// All of the input source files to be tested
+		// All the input source files to be tested
 		this.getInputs().files(
 			this.getProject().provider(
 				new SingleTaskOutputFile(__libTask)),
 			this.getProject().provider(
-				new VMTestInputs(this, __sourceSet)));
+				new VMTestInputs(this, __classifier.getSourceSet())));
 		
 		// All the test results that are created
 		this.getOutputs().files(this.getProject().provider(
-			new VMTestOutputs(this, __sourceSet, __vmType)));
+			new VMTestOutputs(this, __classifier)));
 		
 		// Add additional testing to see if our test run will not be up-to-
 		// date when we run these. Also, this is never up-to-date if
@@ -96,17 +90,16 @@ public class VMLegacyTestTask
 		// situations.
 		this.getOutputs().upToDateWhen((__task) ->
 			{
-				return new VMRunUpToDateWhen(__sourceSet, __vmType)
+				return new VMRunUpToDateWhen(__classifier)
 						.isSatisfiedBy(__task) &&
 					!VMHelpers.runningTests(__task.getProject(),
-						this.sourceSet).isSingle;
+						__classifier.getSourceSet()).isSingle;
 			});
 		
 		// Only run if there are actual tests to run
-		this.onlyIf(new CheckForTests(__sourceSet));
+		this.onlyIf(new CheckForTests(__classifier.getSourceSet()));
 		
 		// Performs the action of the task
-		this.doLast(new VMTestTaskAction(__executor, __sourceSet,
-			__vmType));
+		this.doLast(new VMTestTaskAction(__executor, __classifier));
 	}
 }

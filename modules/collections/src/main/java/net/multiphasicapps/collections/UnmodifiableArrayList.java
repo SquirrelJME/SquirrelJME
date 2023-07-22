@@ -3,7 +3,7 @@
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
-// SquirrelJME is under the GNU General Public License v3+, or later.
+// SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
@@ -12,6 +12,7 @@ package net.multiphasicapps.collections;
 import java.util.AbstractList;
 import java.util.List;
 import java.util.RandomAccess;
+import org.jetbrains.annotations.UnmodifiableView;
 
 /**
  * This is a list representation of an array which cannot be modified.
@@ -19,6 +20,7 @@ import java.util.RandomAccess;
  * @param <T> The type of values to store.
  * @since 2018/05/13
  */
+@UnmodifiableView
 public final class UnmodifiableArrayList<T>
 	extends AbstractList<T>
 	implements RandomAccess
